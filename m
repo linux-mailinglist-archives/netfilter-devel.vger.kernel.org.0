@@ -2,76 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C455F0A0
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Apr 2019 08:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D477F491
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Apr 2019 12:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbfD3Gis (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 30 Apr 2019 02:38:48 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:42285 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbfD3Gis (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 30 Apr 2019 02:38:48 -0400
-Received: by mail-pf1-f194.google.com with SMTP id w25so6563029pfi.9;
-        Mon, 29 Apr 2019 23:38:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3XMsoBOZ0a13a6v6/opVGPc6Lyc003bautbs6jqRIj8=;
-        b=ZPU5G3fWXsWhHsBr0Po4QQUyx1Zy+IemAsyWEin4IIj4cbwdBhkdNUWXpnAGlHu7kL
-         PTOWHQPnczmNqpCbft/LYoNnWno1RkuXMorlIrWox1GKxxi5igBYsDhkA+udHyNn7hCI
-         G1tyB46vH/IiZuz7pN25/Y24Wcgh1FTpcknRM1ZlFX5o2FCuvaMEIObcEX1KjQYrGUro
-         GAvR02hXHLFwWuVWh8l4BYGFdUqGLrlE+ZYowBdUaU2FdJf9hnQUXRLS7FjXK1xIzNfk
-         i/L8VxnxMDoeHwrvIjRFua97YcVaOXphTba6NQ1OAWSrub5ptSgPbgkNvPxxIxDrcPhj
-         tygA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3XMsoBOZ0a13a6v6/opVGPc6Lyc003bautbs6jqRIj8=;
-        b=IQ7kPwOuIV4a51OdmuQlmomBDCh01YjoXz6AUV7WUGWw2L6fZgi+yTdC4xX2DnYPQ3
-         +ig70gG6Ji4f+XhdqaGmRVe3mIR1igshYZzAHY52yRXiqPbainyFsM6fSrH2FH+DII8t
-         +Uhs8GKLBWJ6xAIkK5mXXxQEqNIoEICTMHXDpk4C0jByQzB1tv8tSquMF7McGLP7JBrJ
-         fO8kvhzssdaKnQg5xfkR18TsUhcNy8CtHW3Gds4OhcF0ypQU4oXSnemerH8wg2JRqafP
-         9KurEx82aS4Si6kaBYRq4Jh9+pqSoEjPhBVZEn0DIy/kiUpPWXlAvUFhknNQLOUsXADF
-         87PQ==
-X-Gm-Message-State: APjAAAXWur5RkbyTUdDBYSj4ow0sS5MBcZUjaMsG7gTX1ucP7BLDmvlN
-        uJ8D6fU7nSAHrhcWlWSh4+pW6wHzG8Qkvh1NA0TJZA8H
-X-Google-Smtp-Source: APXvYqzga9+pMQDyzP03aL6EshmtcvBzFNg/W/jaOgNsEwyiW8gXVA3eOl0yNSsQiTRquRKUhMS5vJ3LYePN4ox2j+A=
-X-Received: by 2002:a63:af0a:: with SMTP id w10mr64252879pge.67.1556606327746;
- Mon, 29 Apr 2019 23:38:47 -0700 (PDT)
+        id S1727470AbfD3Kwd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 30 Apr 2019 06:52:33 -0400
+Received: from mail.us.es ([193.147.175.20]:40260 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727463AbfD3Kwc (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 30 Apr 2019 06:52:32 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 29FEDE7BAB
+        for <netfilter-devel@vger.kernel.org>; Tue, 30 Apr 2019 12:52:28 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 19811DA79F
+        for <netfilter-devel@vger.kernel.org>; Tue, 30 Apr 2019 12:52:28 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 1317EDA79B; Tue, 30 Apr 2019 12:52:28 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 0F618DA701;
+        Tue, 30 Apr 2019 12:52:26 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 30 Apr 2019 12:52:22 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (129.166.216.87.static.jazztel.es [87.216.166.129])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id CBC7F4265A31;
+        Tue, 30 Apr 2019 12:52:25 +0200 (CEST)
+Date:   Tue, 30 Apr 2019 12:52:25 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     shuah <shuah@kernel.org>,
+        Jeffrin Thalakkottoor <jeffrin@rajagiritech.edu.in>,
+        linu-kselftest@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH] selftests : netfilter: Wrote a error and exit code for a
+ command which needed veth kernel module.
+Message-ID: <20190430105225.bu5pil5fjxkltu4q@salvia>
+References: <20190405163126.7278-1-jeffrin@rajagiritech.edu.in>
+ <20190405164746.pfc6wxj4nrynjma4@breakpoint.cc>
+ <CAG=yYwnN37OoL1DSN8qPeKWhzVJOcUFtR-7Q9fVT5AULk5S54w@mail.gmail.com>
+ <c4660969-1287-0697-13c0-e598327551fb@kernel.org>
+ <20190430100256.mfgerggoccagi2hc@breakpoint.cc>
 MIME-Version: 1.0
-References: <20190417164944.1462-1-avagin@gmail.com> <20190422083813.jadafdr5mpwda2fe@salvia>
-In-Reply-To: <20190422083813.jadafdr5mpwda2fe@salvia>
-From:   Dexuan-Linux Cui <dexuan.linux@gmail.com>
-Date:   Mon, 29 Apr 2019 23:38:36 -0700
-Message-ID: <CAA42JLbgEBMmzYTBtDyVh7iBQ7QDvzOwo47BRfYEssEE3QKzfg@mail.gmail.com>
-Subject: Re: [PATCH] netfilter: fix nf_l4proto_log_invalid to log invalid packets
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Andrei Vagin <avagin@gmail.com>, Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        Dexuan Cui <decui@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190430100256.mfgerggoccagi2hc@breakpoint.cc>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Apr 22, 2019 at 1:40 AM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
->
-> On Wed, Apr 17, 2019 at 09:49:44AM -0700, Andrei Vagin wrote:
-> > It doesn't log a packet if sysctl_log_invalid isn't equal to protonum
-> > OR sysctl_log_invalid isn't equal to IPPROTO_RAW. This sentence is
-> > always true. I believe we need to replace OR to AND.
->
-> Applied, thanks.
+Cc'ing netfilter-devel@vger.kernel.org
 
-I also happened to find this bug today.
-I almost can not believe I'm the second guy to notice the issue -- the
-bug has been there for 1 year and a half...
+On Tue, Apr 30, 2019 at 12:02:56PM +0200, Florian Westphal wrote:
+> shuah <shuah@kernel.org> wrote:
+> > Would you like me to take this patch through ksleftest tree?
+> 
+> Please do, this patch is neither in nf nor nf-next and it looks fine to
+> me.
 
-Anyway, I'm glad to see that Andrei fixed it!
-
--- Dexuan
+Indeed, thanks.
