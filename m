@@ -2,104 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05206133AB
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 May 2019 20:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F60133BB
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 May 2019 20:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbfECSjQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 3 May 2019 14:39:16 -0400
-Received: from smtp.codeaurora.org ([198.145.29.96]:43530 "EHLO
-        smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbfECSjQ (ORCPT
+        id S1726687AbfECStP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 3 May 2019 14:49:15 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:34788 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbfECStO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 3 May 2019 14:39:16 -0400
-Received: by smtp.codeaurora.org (Postfix, from userid 1000)
-        id CB1A4607DE; Fri,  3 May 2019 18:39:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
-        s=default; t=1556908755;
-        bh=zENbYrmlDA+6v7volbsHgAXI1mHU9IOJBD+ztnEtoKw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AKRz2LKzvIyRhQU7KL9zqavRgKtRmlT8s5uQFMhM3Zcx7zWBViEaiGCgy9MKwwA+m
-         xuOZi4gGN1+5BTojxGBvwyRszwlUgZAQDa3FlqpBVNDU2KKFOqx37CUTTAAGQs/8qK
-         6LXRItH8vaVmrdGLfYETXgdCYoeRm8vn+KbW83gc=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        pdx-caf-mail.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_INVALID,DKIM_SIGNED autolearn=no autolearn_force=no version=3.4.0
-Received: from subashab-lnx.qualcomm.com (unknown [129.46.15.92])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: subashab@codeaurora.org)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F051A6076C;
-        Fri,  3 May 2019 18:39:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
-        s=default; t=1556908755;
-        bh=zENbYrmlDA+6v7volbsHgAXI1mHU9IOJBD+ztnEtoKw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AKRz2LKzvIyRhQU7KL9zqavRgKtRmlT8s5uQFMhM3Zcx7zWBViEaiGCgy9MKwwA+m
-         xuOZi4gGN1+5BTojxGBvwyRszwlUgZAQDa3FlqpBVNDU2KKFOqx37CUTTAAGQs/8qK
-         6LXRItH8vaVmrdGLfYETXgdCYoeRm8vn+KbW83gc=
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F051A6076C
-Authentication-Results: pdx-caf-mail.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: pdx-caf-mail.web.codeaurora.org; spf=none smtp.mailfrom=subashab@codeaurora.org
-From:   Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
-To:     fw@strlen.de, pablo@netfilter.org, netfilter-devel@vger.kernel.org
-Cc:     Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
-Subject: [PATCH nf v2] netfilter: nf_conntrack_h323: Remove deprecated config check
-Date:   Fri,  3 May 2019 12:39:08 -0600
-Message-Id: <1556908748-22202-1-git-send-email-subashab@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        Fri, 3 May 2019 14:49:14 -0400
+Received: by mail-pf1-f193.google.com with SMTP id b3so3317989pfd.1
+        for <netfilter-devel@vger.kernel.org>; Fri, 03 May 2019 11:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=xiT0+Ea8hsNB4aP6B/c1OzyBb44ZXhCttPJa06QdkmM=;
+        b=YRq/dp85TSSV84Yvigi5qxQYDElMWVTwxsU5zyzhZwVN3M9MVNnCIMsuBegS/+3wb5
+         ImbVbY0P7mkL4Ii3nYMZDpJWWLUKNDE4PMvXw04S/nkcEHw4iWZoZWZlVIhklUBzsPOI
+         +Fi78uarGj0mA4wJ8G8+2tA3zDYMcAIrHXTx7XinKOMkmSPCLtGuJOc2/YtMNBvSf883
+         GO392qAGhjCHbExd7DwBZj3jxw/XJVCGlO0qtyxlhY/mzQLg6GN7865b70cxIkDx2Eaz
+         MS9d24n6Jfp9Fbdn94HFjBE4y3648cq0+BR49zoEIh4DafdKliYAEo21bSU3N0cLW90Y
+         8hZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=xiT0+Ea8hsNB4aP6B/c1OzyBb44ZXhCttPJa06QdkmM=;
+        b=H4XYar8Ep3Ye0hnE0/8MFmWKYSfy866KIgU2OAsmAeyjzYyFRulRrbDyh8OQPTFKwf
+         /yoyo1C4A2hOs9SFPyY7mrsCUM5tTq/z1TQH+LbpT1yHM76FbQYJAeZ3vj7YHz3LLh1I
+         VRoLZXA7DF9xDerDM2OqXGUg3Rr4shxoJr+PDQPPCiG0+1jtzLqqZs+qmTOSp/M+kBsL
+         +9DmS9SkacaUOTAKLc/RhAvTscFZZaULxIbNTUTAE30nLg6Uc1zAVxZ0ROIUKUkrXQ4L
+         hYd70AD4HqGURgp82BfLA6qBrZukg6HkjipXN5aaf8AaP0OUnThOeAseELkE0gqBfg97
+         Cy8A==
+X-Gm-Message-State: APjAAAWO/CktgxwjZQVKaR5XpnAbBOfXHPZeLPBkMkV9DSWdTix3sh4E
+        +JhxpDFyc+k2PJw2iG8WTz4b9zvv5R8=
+X-Google-Smtp-Source: APXvYqykAAW+NkCY1dA8oXWl7AVaTBIlI4ee0pQEG+crcIYqOK38U72M8Je7dktYr4pCwWeclLI0DA==
+X-Received: by 2002:a62:5ec4:: with SMTP id s187mr9178112pfb.185.1556909353236;
+        Fri, 03 May 2019 11:49:13 -0700 (PDT)
+Received: from mangix-pc.lan (76-14-106-140.rk.wavecable.com. [76.14.106.140])
+        by smtp.gmail.com with ESMTPSA id 132sm3837980pfw.87.2019.05.03.11.49.12
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 03 May 2019 11:49:12 -0700 (PDT)
+From:   Rosen Penev <rosenp@gmail.com>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH] gmputil.h: Add missing header for va_list
+Date:   Fri,  3 May 2019 11:49:11 -0700
+Message-Id: <20190503184911.8394-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-CONFIG_NF_CONNTRACK_IPV6 has been deprecated so replace it with
-a check for IPV6 instead.
+Otherwise it errors with unknown type name when using uClibc.
 
-v1->v2: Use nf_ip6_route6() instead of v6ops->route() and keep
-the IS_MODULE() in nf_ipv6_ops as mentioned by Florian so that
-direct calls are used when IPV6 is builtin and indirect calls
-are used only when IPV6 is a module.
-
-Fixes: a0ae2562c6c4b2 ("netfilter: conntrack: remove l3proto abstraction")
-Signed-off-by: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- net/netfilter/nf_conntrack_h323_main.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ include/gmputil.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/netfilter/nf_conntrack_h323_main.c b/net/netfilter/nf_conntrack_h323_main.c
-index 005589c..12de403 100644
---- a/net/netfilter/nf_conntrack_h323_main.c
-+++ b/net/netfilter/nf_conntrack_h323_main.c
-@@ -748,24 +748,19 @@ static int callforward_do_filter(struct net *net,
- 		}
- 		break;
- 	}
--#if IS_ENABLED(CONFIG_NF_CONNTRACK_IPV6)
-+#if IS_ENABLED(CONFIG_IPV6)
- 	case AF_INET6: {
--		const struct nf_ipv6_ops *v6ops;
- 		struct rt6_info *rt1, *rt2;
- 		struct flowi6 fl1, fl2;
- 
--		v6ops = nf_get_ipv6_ops();
--		if (!v6ops)
--			return 0;
--
- 		memset(&fl1, 0, sizeof(fl1));
- 		fl1.daddr = src->in6;
- 
- 		memset(&fl2, 0, sizeof(fl2));
- 		fl2.daddr = dst->in6;
--		if (!v6ops->route(net, (struct dst_entry **)&rt1,
-+		if (!nf_ip6_route(net, (struct dst_entry **)&rt1,
- 				  flowi6_to_flowi(&fl1), false)) {
--			if (!v6ops->route(net, (struct dst_entry **)&rt2,
-+			if (!nf_ip6_route(net, (struct dst_entry **)&rt2,
- 					  flowi6_to_flowi(&fl2), false)) {
- 				if (ipv6_addr_equal(rt6_nexthop(rt1, &fl1.daddr),
- 						    rt6_nexthop(rt2, &fl2.daddr)) &&
+diff --git a/include/gmputil.h b/include/gmputil.h
+index 73959c1..ad63d67 100644
+--- a/include/gmputil.h
++++ b/include/gmputil.h
+@@ -7,6 +7,7 @@
+ #include <gmp.h>
+ #else
+ #include <mini-gmp.h>
++#include <stdarg.h>
+ #include <stdio.h>
+ /* mini-gmp doesn't come with gmp_vfprintf, so we use our own minimal variant */
+ extern int mpz_vfprintf(FILE *fp, const char *format, va_list args);
 -- 
-1.9.1
+2.17.1
 
