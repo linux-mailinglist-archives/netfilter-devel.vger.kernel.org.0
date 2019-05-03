@@ -2,107 +2,94 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D929120B3
-	for <lists+netfilter-devel@lfdr.de>; Thu,  2 May 2019 18:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F001267B
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 May 2019 05:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbfEBQ4t (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 2 May 2019 12:56:49 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:40272 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbfEBQ4t (ORCPT
+        id S1726121AbfECDW4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 2 May 2019 23:22:56 -0400
+Received: from smtp.codeaurora.org ([198.145.29.96]:43798 "EHLO
+        smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726114AbfECDW4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 2 May 2019 12:56:49 -0400
-Received: by mail-pg1-f193.google.com with SMTP id d31so1327172pgl.7
-        for <netfilter-devel@vger.kernel.org>; Thu, 02 May 2019 09:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=vjIghLEsCF0q4zPn2E6xDKpYUOgpjja76JJ8Ipip6R0=;
-        b=hwdjEkQ3y0hVYVJHIDwMaLI04AOHOqU+ePQMcUXkSe6vIHM4Ct2LTWnVwKVN9meoff
-         UCvCfaVX2CrIXjSs3Tjb2sb1C2GriSDYK4wMnhIZMb/x6eiu8CnzFpGuBEUAEUisF2St
-         zZDA5u9zUduweuGhQB2XljFzF6nuIJqThKgOzQx2/wKVw3C9jA1wugAOsUOGvZq+u90y
-         yDGUihsJVw3ThSkGmGsik2u8oJ9yRPcGIGrpxN6FE2PgSxJ0Y8jYkQVzDQ4gzjer5XqJ
-         3O/3SYvDVhyAHQXZXLzPjPMnPKPX0BXXjVk3auVnhYGkjBvAs3UiQj6F+Zwd+MaL4l1j
-         TySQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=vjIghLEsCF0q4zPn2E6xDKpYUOgpjja76JJ8Ipip6R0=;
-        b=r3lMtNC2htqWnrsHTXXMFR/ecfslL4rpduGqN8ZHsQjbJtZjg5dvYOTLNxdG1LA7Z/
-         tiJdPYIrymG18UL00y8ckD9ZZVbAgfg7yI65WOC+NENFt5sVWCH897T5qzurOrUXxaKJ
-         6LiIeWB55xMChH337xDCJ/D8aYZzgjxo+V3wsd7mdDNFPOObizbxeWN7auMVF2mV/6Nk
-         4zXeMVs5+ZlfTW6JqGPrUu9iMYP019oyQiSba4gKsIXn13QOcAfpvun+H0UDUcieIbOX
-         +ol5oMuCut0EAVo1IzjWXMLmPK5eZ2blcOz8TkX9LgWEQVl9AvdaU2i9wJD30gJrNLNn
-         Ge2g==
-X-Gm-Message-State: APjAAAV+1gR0BOR0nXIDITcLqDYeMHQfKznZmqURLhwH3pYQ2ngMs1lW
-        eYze4s8vS9i6/UzU2oTsf6Y=
-X-Google-Smtp-Source: APXvYqzoeDeFhkNmOtybCxkBH8aY0d6PpBLQQUVLvciEF880BME9kwQ0Ubq0fEC80maRguW68onBFg==
-X-Received: by 2002:aa7:83c6:: with SMTP id j6mr2184004pfn.117.1556816207967;
-        Thu, 02 May 2019 09:56:47 -0700 (PDT)
-Received: from ap-To-be-filled-by-O-E-M.8.8.8.8 ([14.33.120.60])
-        by smtp.gmail.com with ESMTPSA id b13sm57290919pfd.12.2019.05.02.09.56.46
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 May 2019 09:56:47 -0700 (PDT)
-From:   Taehee Yoo <ap420073@gmail.com>
-To:     pablo@netfilter.org, netfilter-devel@vger.kernel.org
-Cc:     ap420073@gmail.com
-Subject: [PATCH nf] netfilter: nf_flow_table: fix missing err check for rhashtable_insert_fast
-Date:   Fri,  3 May 2019 01:56:38 +0900
-Message-Id: <20190502165638.23509-1-ap420073@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 2 May 2019 23:22:56 -0400
+Received: by smtp.codeaurora.org (Postfix, from userid 1000)
+        id 580406115B; Fri,  3 May 2019 03:22:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+        s=default; t=1556853775;
+        bh=azniW0lytE8xplUR7z4aa5bQmjAruiH5oksE9dU3JaQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ByPE3kWFugvcgr1xNIs/snTH4CutpjA2aMdg7KmXOlWCm8GsM6/hNuSVyWeEEDZHF
+         qlFB8N+UPiD8qotHKJArVRFE4j8COa11ijZ7T1YaVC+P4XC5xBuSkXk7GB4QpHLj6d
+         F+TjfrEztc25juc/WKv5kgQl7PDpp6MgkobXPaMU=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        pdx-caf-mail.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.7 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_INVALID,DKIM_SIGNED autolearn=no autolearn_force=no version=3.4.0
+Received: from subashab-lnx.qualcomm.com (unknown [129.46.15.92])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: subashab@codeaurora.org)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47FA260E59;
+        Fri,  3 May 2019 03:22:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+        s=default; t=1556853774;
+        bh=azniW0lytE8xplUR7z4aa5bQmjAruiH5oksE9dU3JaQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TMwPT9sn4H8JNi50wYmNPbZ7VwvXJmGkXf9d7t+IWkwT7o0fROa1kaaBd/PUxju/+
+         wtfTbouP5yDkuVaSVvJjeMC8kMptv4RsxRxGd2lm2jP0CZFzZDo8NAOB5cUGWH34dO
+         MoX3/f8pVjLwOPKsf/MYs5NTIZhlELjD8IK/LawQ=
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 47FA260E59
+Authentication-Results: pdx-caf-mail.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: pdx-caf-mail.web.codeaurora.org; spf=none smtp.mailfrom=subashab@codeaurora.org
+From:   Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+To:     fw@strlen.de, pablo@netfilter.org, netfilter-devel@vger.kernel.org
+Cc:     Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+Subject: [PATCH nf] netfilter: nf_conntrack_h323: Remove deprecated config check
+Date:   Thu,  2 May 2019 21:22:17 -0600
+Message-Id: <1556853737-14697-1-git-send-email-subashab@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-rhashtable_insert_fast() could return err value when memory allocation
-is failed. but flow_offload_add() do not check values and this always
-returns success value.
-This patch just adds error check code.
+CONFIG_NF_CONNTRACK_IPV6 has been deprecated so replace it with
+a check for IPV6 instead.
 
-Fixes: ac2a66665e23 ("netfilter: add generic flow table infrastructure")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Fixes: a0ae2562c6c4b2 ("netfilter: conntrack: remove l3proto abstraction")
+Signed-off-by: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
 ---
- net/netfilter/nf_flow_table_core.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+ include/linux/netfilter_ipv6.h         | 2 +-
+ net/netfilter/nf_conntrack_h323_main.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-index 7aabfd4b1e50..a9e4f74b1ff6 100644
---- a/net/netfilter/nf_flow_table_core.c
-+++ b/net/netfilter/nf_flow_table_core.c
-@@ -185,14 +185,25 @@ static const struct rhashtable_params nf_flow_offload_rhash_params = {
- 
- int flow_offload_add(struct nf_flowtable *flow_table, struct flow_offload *flow)
- {
--	flow->timeout = (u32)jiffies;
-+	int err;
- 
--	rhashtable_insert_fast(&flow_table->rhashtable,
--			       &flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].node,
--			       nf_flow_offload_rhash_params);
--	rhashtable_insert_fast(&flow_table->rhashtable,
--			       &flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].node,
--			       nf_flow_offload_rhash_params);
-+	err = rhashtable_insert_fast(&flow_table->rhashtable,
-+				     &flow->tuplehash[0].node,
-+				     nf_flow_offload_rhash_params);
-+	if (err < 0)
-+		return err;
-+
-+	err = rhashtable_insert_fast(&flow_table->rhashtable,
-+				     &flow->tuplehash[1].node,
-+				     nf_flow_offload_rhash_params);
-+	if (err < 0) {
-+		rhashtable_remove_fast(&flow_table->rhashtable,
-+				       &flow->tuplehash[0].node,
-+				       nf_flow_offload_rhash_params);
-+		return err;
-+	}
-+
-+	flow->timeout = (u32)jiffies;
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(flow_offload_add);
+diff --git a/include/linux/netfilter_ipv6.h b/include/linux/netfilter_ipv6.h
+index 12113e5..61f7ac9 100644
+--- a/include/linux/netfilter_ipv6.h
++++ b/include/linux/netfilter_ipv6.h
+@@ -25,7 +25,7 @@ struct ip6_rt_info {
+  * if IPv6 is a module.
+  */
+ struct nf_ipv6_ops {
+-#if IS_MODULE(CONFIG_IPV6)
++#if IS_ENABLED(CONFIG_IPV6)
+ 	int (*chk_addr)(struct net *net, const struct in6_addr *addr,
+ 			const struct net_device *dev, int strict);
+ 	int (*route_me_harder)(struct net *net, struct sk_buff *skb);
+diff --git a/net/netfilter/nf_conntrack_h323_main.c b/net/netfilter/nf_conntrack_h323_main.c
+index 005589c..1c6769b 100644
+--- a/net/netfilter/nf_conntrack_h323_main.c
++++ b/net/netfilter/nf_conntrack_h323_main.c
+@@ -748,7 +748,7 @@ static int callforward_do_filter(struct net *net,
+ 		}
+ 		break;
+ 	}
+-#if IS_ENABLED(CONFIG_NF_CONNTRACK_IPV6)
++#if IS_ENABLED(CONFIG_IPV6)
+ 	case AF_INET6: {
+ 		const struct nf_ipv6_ops *v6ops;
+ 		struct rt6_info *rt1, *rt2;
 -- 
-2.17.1
+1.9.1
 
