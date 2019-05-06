@@ -2,85 +2,88 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0E514A90
-	for <lists+netfilter-devel@lfdr.de>; Mon,  6 May 2019 15:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE3414AAA
+	for <lists+netfilter-devel@lfdr.de>; Mon,  6 May 2019 15:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725886AbfEFNIW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 6 May 2019 09:08:22 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43675 "EHLO ozlabs.org"
+        id S1726236AbfEFNQM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 6 May 2019 09:16:12 -0400
+Received: from mail.us.es ([193.147.175.20]:40100 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725883AbfEFNIW (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 6 May 2019 09:08:22 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1725853AbfEFNQM (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 6 May 2019 09:16:12 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 35F509D3D7
+        for <netfilter-devel@vger.kernel.org>; Mon,  6 May 2019 15:16:10 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 26618DA717
+        for <netfilter-devel@vger.kernel.org>; Mon,  6 May 2019 15:16:10 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 1B8A0DA70A; Mon,  6 May 2019 15:16:10 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 4CECBDA717;
+        Mon,  6 May 2019 15:16:06 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 06 May 2019 15:16:06 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 44yNMk3gkdz9s9N;
-        Mon,  6 May 2019 23:08:18 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1557148098;
-        bh=G8r3qCd5HjzKUThew6yjTIbb6IoPOhqODEolin4V6Uc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=X5o5thvUAr9nZKDdmhgpzCd7DuISdJStUy5EpE8JuLxMrf/n8nAv+NSQj/Cis5UAu
-         6bdHnE0TcX1R6HYt+XrVumF3spOZDRpYPnXcTjBFRiBNTktuIxUTnFYqwks03S6vmx
-         msFve+EfgIzxRnBrdZ5DwGDylcgkd7znRYMnt7x9/XK5YMTtEUEmpVD8x4+Pd1vtZM
-         81WrxpRbuu0NY24zWyR0nKWT7z1Gdp6kQsm0yZhd9Rzbn4wUDDmSm/8VM+2ho3/0ME
-         KANPsc4nRY0jHbAW+WHcVWNK1u4RMQKj/iCnhB/36UU2M0LgRq2YQazXmp6LFDXLqH
-         5wJhxuQz6/jVQ==
-Date:   Mon, 6 May 2019 23:08:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kristian Evensen <kristian.evensen@gmail.com>
-Subject: linux-next: Fixes tag needs some work in the netfilter tree
-Message-ID: <20190506230816.22452c4d@canb.auug.org.au>
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 2503C4265A32;
+        Mon,  6 May 2019 15:16:06 +0200 (CEST)
+Date:   Mon, 6 May 2019 15:16:05 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc:     Kristian Evensen <kristian.evensen@gmail.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH] netfilter: ctnetlink: Resolve conntrack L3-protocol
+ flush regression
+Message-ID: <20190506131605.kapyns6gkyphbea2@salvia>
+References: <20190503154007.32495-1-kristian.evensen@gmail.com>
+ <20190505223229.3ujqpwmuefd3wh7b@salvia>
+ <4ecbebbb-0a7f-6d45-c2c0-00dee746e573@6wind.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/2dh7rGdDwXTz/NoDbDAJsn7"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4ecbebbb-0a7f-6d45-c2c0-00dee746e573@6wind.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
---Sig_/2dh7rGdDwXTz/NoDbDAJsn7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, May 06, 2019 at 10:49:52AM +0200, Nicolas Dichtel wrote:
+> Le 06/05/2019 à 00:32, Pablo Neira Ayuso a écrit :
+> > On Fri, May 03, 2019 at 05:40:07PM +0200, Kristian Evensen wrote:
+> >> Commit 59c08c69c278 ("netfilter: ctnetlink: Support L3 protocol-filter
+> >> on flush") introduced a user-space regression when flushing connection
+> >> track entries. Before this commit, the nfgen_family field was not used
+> >> by the kernel and all entries were removed. Since this commit,
+> >> nfgen_family is used to filter out entries that should not be removed.
+> >> One example a broken tool is conntrack. conntrack always sets
+> >> nfgen_family to AF_INET, so after 59c08c69c278 only IPv4 entries were
+> >> removed with the -F parameter.
+> >>
+> >> Pablo Neira Ayuso suggested using nfgenmsg->version to resolve the
+> >> regression, and this commit implements his suggestion. nfgenmsg->version
+> >> is so far set to zero, so it is well-suited to be used as a flag for
+> >> selecting old or new flush behavior. If version is 0, nfgen_family is
+> >> ignored and all entries are used. If user-space sets the version to one
+> >> (or any other value than 0), then the new behavior is used. As version
+> >> only can have two valid values, I chose not to add a new
+> >> NFNETLINK_VERSION-constant.
+> > 
+> > Applied, thanks.
+> > 
+> Thank you.
+> Is it possible to queue this for stable?
 
-Hi all,
-
-n commit
-
-  4ff6d55abba3 ("netfilter: ctnetlink: Resolve conntrack L3-protocol flush =
-regression")
-
-Fixes tag
-
-  Fixes: 59c08c69c278 ("netfilter: ctnetlink: Support L3 protocol-filter
-
-has these problem(s):
-
-  - Please do not split Fixes tags over more than one line.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/2dh7rGdDwXTz/NoDbDAJsn7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAlzQMcAACgkQAVBC80lX
-0Gxu7AgAjLH7b+D21AAun/ybz1JFuzbsjqUZM2urJFjKvGkFqvqIZMR+BiQ3NaR7
-RIKpUH3MUVVj1GrbA+eOCZiaWhL9yy59hZrLAdwJZO51NUdq1Z0Y+XuZaBEQjRR4
-kgqHjbteAMiY5EzrN2P5V/AMXg+nhcCROEAnINc0UfJHIVSw4YOxfry32DleYWbE
-ATfk0UL++vCIzF+FJE26g2zErza3vizazroIoUsQjdhkp2IaY6QrO0oewCx/pGpM
-Fbtgry3PpQY25AdVJyhKyOEIlIILKNKWB6S5NazFHXJ6NJcxU+R6uE7OjWfOUIFm
-3nBErmWA1Hh16rdIxL+f+CDKrYOrMg==
-=mrha
------END PGP SIGNATURE-----
-
---Sig_/2dh7rGdDwXTz/NoDbDAJsn7--
+Sure, as soon as this hits Linus' tree.
