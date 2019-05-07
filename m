@@ -2,37 +2,37 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EE115BDE
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 May 2019 07:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E24B15BC4
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 May 2019 07:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727757AbfEGF6D (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 May 2019 01:58:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57236 "EHLO mail.kernel.org"
+        id S1728510AbfEGF5d (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 May 2019 01:57:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728349AbfEGFh2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 May 2019 01:37:28 -0400
+        id S1728335AbfEGFhh (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 7 May 2019 01:37:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB2C3214AE;
-        Tue,  7 May 2019 05:37:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C91E205ED;
+        Tue,  7 May 2019 05:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557207447;
-        bh=LHiUuJoh83slDEKFzLWLnuKCeQ05X+dfCelRoDDjyrM=;
+        s=default; t=1557207456;
+        bh=/e5Rzz7OTo+vD5sjMdOifrw51uY0wJXphwAgI/IDy5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ASjGpjQcP/JW/m7VkMIE6tWujFImq7bxmbii5jSS/8SzJ4ayMucdtevZDG6T3d1s7
-         lmkznOAwDhaPnX0LUy/YzHg/b5c7A43RPtKZBp0N/5vH00YjUxh0jHeCIiSAg1t/jR
-         GVbRfNracWwEuzHT82CrHTxgYRLmjjqS374VrJLY=
+        b=A5KM7+jtqYMcvBqPzUif11sopmHYnUuUjikwTyKUi8eZkz2RdavfvZMhTscg0lqez
+         K/Eh3yiYk39h/Hy8btsf93Ss95h8BOjKm6EXTmpOxt3le8B33e92uL6ooO3d6DpIBo
+         Zf0tcx127WEgKJby3viBgtQqNsr7rbHPpFS3S3bg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+Cc:     Andrei Vagin <avagin@gmail.com>, Florian Westphal <fw@strlen.de>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 46/81] netfilter: nf_tables: prevent shift wrap in nft_chain_parse_hook()
-Date:   Tue,  7 May 2019 01:35:17 -0400
-Message-Id: <20190507053554.30848-46-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 52/81] netfilter: fix nf_l4proto_log_invalid to log invalid packets
+Date:   Tue,  7 May 2019 01:35:23 -0400
+Message-Id: <20190507053554.30848-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190507053554.30848-1-sashal@kernel.org>
 References: <20190507053554.30848-1-sashal@kernel.org>
@@ -45,37 +45,37 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Andrei Vagin <avagin@gmail.com>
 
-[ Upstream commit 33d1c018179d0a30c39cc5f1682b77867282694b ]
+[ Upstream commit d48668052b2603b6262459625c86108c493588dd ]
 
-I believe that "hook->num" can be up to UINT_MAX.  Shifting more than
-31 bits would is undefined in C but in practice it would lead to shift
-wrapping.  That would lead to an array overflow in nf_tables_addchain():
+It doesn't log a packet if sysctl_log_invalid isn't equal to protonum
+OR sysctl_log_invalid isn't equal to IPPROTO_RAW. This sentence is
+always true. I believe we need to replace OR to AND.
 
-	ops->hook       = hook.type->hooks[ops->hooknum];
-
-Fixes: fe19c04ca137 ("netfilter: nf_tables: remove nhooks field from struct nft_af_info")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Florian Westphal <fw@strlen.de>
+Fixes: c4f3db1595827 ("netfilter: conntrack: add and use nf_l4proto_log_invalid")
+Signed-off-by: Andrei Vagin <avagin@gmail.com>
+Acked-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_tables_api.c | 2 +-
+ net/netfilter/nf_conntrack_proto.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 1af54119bafc..f272f9538c44 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -1496,7 +1496,7 @@ static int nft_chain_parse_hook(struct net *net,
- 		if (IS_ERR(type))
- 			return PTR_ERR(type);
- 	}
--	if (!(type->hook_mask & (1 << hook->num)))
-+	if (hook->num > NF_MAX_HOOKS || !(type->hook_mask & (1 << hook->num)))
- 		return -EOPNOTSUPP;
+diff --git a/net/netfilter/nf_conntrack_proto.c b/net/netfilter/nf_conntrack_proto.c
+index 51c5d7eec0a3..e903ef9b96cf 100644
+--- a/net/netfilter/nf_conntrack_proto.c
++++ b/net/netfilter/nf_conntrack_proto.c
+@@ -86,7 +86,7 @@ void nf_l4proto_log_invalid(const struct sk_buff *skb,
+ 	struct va_format vaf;
+ 	va_list args;
  
- 	if (type->type == NFT_CHAIN_T_NAT &&
+-	if (net->ct.sysctl_log_invalid != protonum ||
++	if (net->ct.sysctl_log_invalid != protonum &&
+ 	    net->ct.sysctl_log_invalid != IPPROTO_RAW)
+ 		return;
+ 
 -- 
 2.20.1
 
