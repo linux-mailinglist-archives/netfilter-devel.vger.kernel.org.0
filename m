@@ -2,40 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 810F015C6A
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 May 2019 08:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB2C15BD3
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 May 2019 07:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbfEGGDd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 May 2019 02:03:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55136 "EHLO mail.kernel.org"
+        id S1728327AbfEGFh0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 May 2019 01:37:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727705AbfEGFfG (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 May 2019 01:35:06 -0400
+        id S1727732AbfEGFhZ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 7 May 2019 01:37:25 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D72732087F;
-        Tue,  7 May 2019 05:35:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04E04205ED;
+        Tue,  7 May 2019 05:37:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557207305;
-        bh=A4X9SQPPjfGkJkY0C5z49LKq+k0Ez1/oGHC7xzeoxxM=;
+        s=default; t=1557207445;
+        bh=3b4zzr5LfvdAV+NCulPVgMQ2AuGASKw4w0VVbW1Kpag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yTSN+U/XeXNNd2Iieni7R8Sr7Q7I7FYHNPmoLWSHyydOuBkmWTxMkgSmmQysAw/f3
-         BRSRg3aleSGZ10sR0crNpDxfD7dpLpBqwQhTOncfpfupqfriHG2E7HNlKSrR/nNMHs
-         iSxVppsJp34iP06+7F1VK6J4n8gv8OlOHKYkOSJ8=
+        b=AfbDK5XxRoU1UbMgxfH+88gE6mF8uCoRhkhfwHrMyX8iObIuIhZOICIJyXBiarbrv
+         KigZFg4b5eaMe62k7o4avIUj3p+327p89lDJq0wV5XZliDTOV7hjcVtCEhjwomdyPP
+         PamkXL7JCYFmKyaWvbqSafCly7tE+7dMR9oovIVg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrei Vagin <avagin@gmail.com>, Florian Westphal <fw@strlen.de>,
+Cc:     Julian Anastasov <ja@ssi.bg>, Simon Horman <horms@verge.net.au>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.0 75/99] netfilter: fix nf_l4proto_log_invalid to log invalid packets
-Date:   Tue,  7 May 2019 01:32:09 -0400
-Message-Id: <20190507053235.29900-75-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org
+Subject: [PATCH AUTOSEL 4.19 44/81] ipvs: do not schedule icmp errors from tunnels
+Date:   Tue,  7 May 2019 01:35:15 -0400
+Message-Id: <20190507053554.30848-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190507053235.29900-1-sashal@kernel.org>
-References: <20190507053235.29900-1-sashal@kernel.org>
+In-Reply-To: <20190507053554.30848-1-sashal@kernel.org>
+References: <20190507053554.30848-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,37 +45,38 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Andrei Vagin <avagin@gmail.com>
+From: Julian Anastasov <ja@ssi.bg>
 
-[ Upstream commit d48668052b2603b6262459625c86108c493588dd ]
+[ Upstream commit 0261ea1bd1eb0da5c0792a9119b8655cf33c80a3 ]
 
-It doesn't log a packet if sysctl_log_invalid isn't equal to protonum
-OR sysctl_log_invalid isn't equal to IPPROTO_RAW. This sentence is
-always true. I believe we need to replace OR to AND.
+We can receive ICMP errors from client or from
+tunneling real server. While the former can be
+scheduled to real server, the latter should
+not be scheduled, they are decapsulated only when
+existing connection is found.
 
-Cc: Florian Westphal <fw@strlen.de>
-Fixes: c4f3db1595827 ("netfilter: conntrack: add and use nf_l4proto_log_invalid")
-Signed-off-by: Andrei Vagin <avagin@gmail.com>
-Acked-by: Florian Westphal <fw@strlen.de>
+Fixes: 6044eeffafbe ("ipvs: attempt to schedule icmp packets")
+Signed-off-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Simon Horman <horms@verge.net.au>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_proto.c | 2 +-
+ net/netfilter/ipvs/ip_vs_core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_conntrack_proto.c b/net/netfilter/nf_conntrack_proto.c
-index 859f5d07a915..78361e462e80 100644
---- a/net/netfilter/nf_conntrack_proto.c
-+++ b/net/netfilter/nf_conntrack_proto.c
-@@ -86,7 +86,7 @@ void nf_l4proto_log_invalid(const struct sk_buff *skb,
- 	struct va_format vaf;
- 	va_list args;
+diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+index 3f963ea22277..a42c1bc7c698 100644
+--- a/net/netfilter/ipvs/ip_vs_core.c
++++ b/net/netfilter/ipvs/ip_vs_core.c
+@@ -1647,7 +1647,7 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
+ 	if (!cp) {
+ 		int v;
  
--	if (net->ct.sysctl_log_invalid != protonum ||
-+	if (net->ct.sysctl_log_invalid != protonum &&
- 	    net->ct.sysctl_log_invalid != IPPROTO_RAW)
- 		return;
+-		if (!sysctl_schedule_icmp(ipvs))
++		if (ipip || !sysctl_schedule_icmp(ipvs))
+ 			return NF_ACCEPT;
  
+ 		if (!ip_vs_try_to_schedule(ipvs, AF_INET, skb, pd, &v, &cp, &ciph))
 -- 
 2.20.1
 
