@@ -2,36 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3671890D
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 May 2019 13:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0F718916
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 May 2019 13:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725892AbfEILeP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 9 May 2019 07:34:15 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:56282 "EHLO mx1.riseup.net"
+        id S1726685AbfEILgC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 9 May 2019 07:36:02 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:35038 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725872AbfEILeP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 9 May 2019 07:34:15 -0400
-Received: from capuchin.riseup.net (capuchin-pn.riseup.net [10.0.1.176])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (verified OK))
-        by mx1.riseup.net (Postfix) with ESMTPS id 2FFA11B94CA
-        for <netfilter-devel@vger.kernel.org>; Thu,  9 May 2019 04:34:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1557401654; bh=Nj74gL9wrMEqFPb5vBPpjeIB+UHRpfJB45FobQ9AE5Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EPnY9KFQKiF0iF8ZvJLtCRsnvLBPrNCe4/UbRIk4UL1JIu76ukUqpemhGFKGBVhOb
-         0Nyuxp5/bN9akb3o8tB+3J9QqQTx2ZtFHxyq9C7CIqiNjnhTawPdGugsMDvGJQb/Ql
-         iV/PE4nRCQDvxfCZKDGzsijDyfLscez4j+TU/QOc=
-X-Riseup-User-ID: A9D2716FCF14C9A18C93FF8633BFD1D18669B59761D0F9B99D7031C25239C367
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by capuchin.riseup.net (Postfix) with ESMTPSA id D8CA5120D9E;
-        Thu,  9 May 2019 04:34:11 -0700 (PDT)
-From:   Fernando Fernandez Mancera <ffmancera@riseup.net>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Fernando Fernandez Mancera <ffmancera@riseup.net>
-Subject: [PATCH nft WIP] jump: Allow jump to a variable when using nft input files
-Date:   Thu,  9 May 2019 13:33:58 +0200
-Message-Id: <20190509113358.856-1-ffmancera@riseup.net>
+        id S1726054AbfEILgB (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 9 May 2019 07:36:01 -0400
+Received: from localhost ([::1]:48128 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1hOhLD-0000cW-PO; Thu, 09 May 2019 13:36:00 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nft PATCH 0/9] Testsuite-indicated fixes for JSON
+Date:   Thu,  9 May 2019 13:35:36 +0200
+Message-Id: <20190509113545.4017-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -39,140 +29,54 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch introduces the use of nft input files variables in 'jump'
-statements, e.g.
+Running tests/py/nft-test.py with -j flag and trying to eliminate
+errors/warnings resulted in the following series of fixes. They are
+about half and half changes to code and test cases.
 
-define dest = chainame
+Phil Sutter (9):
+  json: Support nat in inet family
+  parser_json: Fix igmp support
+  netlink: Fix printing of zero-length prefixes
+  tests/py: Fix JSON equivalents of osf tests
+  json: Fix tproxy support regarding latest changes
+  parser_json: Fix ct timeout object support
+  tests/py: Fix for ip dscp symbol "le"
+  tests/py: Fix JSON expexted output after expr merge change
+  tests/py: Fix JSON expected output for icmpv6 code values
 
-add rule ip filter input jump $dest
+ doc/libnftables-json.adoc         |   5 +
+ src/json.c                        |  31 +--
+ src/netlink_delinearize.c         |   4 +-
+ src/parser_json.c                 |  26 ++-
+ tests/py/inet/dnat.t.json         | 166 +++++++++++++++
+ tests/py/inet/osf.t.json          |  59 +++++-
+ tests/py/inet/snat.t.json         | 131 ++++++++++++
+ tests/py/inet/tcp.t.json.output   |  44 +---
+ tests/py/inet/tproxy.t            |   2 +-
+ tests/py/inet/tproxy.t.json       |  80 ++++++++
+ tests/py/inet/tproxy.t.payload    |   2 +-
+ tests/py/ip/igmp.t.json           | 323 ++++++++++++++++++++++++++++++
+ tests/py/ip/ip.t                  |   2 +-
+ tests/py/ip/ip.t.json             |   2 +-
+ tests/py/ip/ip.t.payload          |   4 +-
+ tests/py/ip/tproxy.t              |   2 +-
+ tests/py/ip/tproxy.t.json         |  26 ++-
+ tests/py/ip/tproxy.t.json.output  |  61 ++++++
+ tests/py/ip6/icmpv6.t.json.output |  59 ++++++
+ tests/py/ip6/ip6.t                |   2 +-
+ tests/py/ip6/ip6.t.json           |   2 +-
+ tests/py/ip6/ip6.t.payload.inet   |   4 +-
+ tests/py/ip6/ip6.t.payload.ip6    |   4 +-
+ tests/py/ip6/tproxy.t             |   2 +-
+ tests/py/ip6/tproxy.t.json        |  26 ++-
+ tests/py/ip6/tproxy.t.json.output |  60 ++++++
+ 26 files changed, 1041 insertions(+), 88 deletions(-)
+ create mode 100644 tests/py/inet/dnat.t.json
+ create mode 100644 tests/py/inet/snat.t.json
+ create mode 100644 tests/py/ip/igmp.t.json
+ create mode 100644 tests/py/ip/tproxy.t.json.output
+ create mode 100644 tests/py/ip6/tproxy.t.json.output
 
-Signed-off-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
----
- include/expression.h |  3 ++-
- src/expression.c     | 14 ++++++++++++--
- src/netlink.c        |  6 +++---
- src/parser_bison.y   | 16 ++++++++++------
- 4 files changed, 27 insertions(+), 12 deletions(-)
-
-diff --git a/include/expression.h b/include/expression.h
-index 6416ac0..0379eba 100644
---- a/include/expression.h
-+++ b/include/expression.h
-@@ -403,7 +403,8 @@ extern void relational_expr_pctx_update(struct proto_ctx *ctx,
- 					const struct expr *expr);
- 
- extern struct expr *verdict_expr_alloc(const struct location *loc,
--				       int verdict, const char *chain);
-+				       int verdict, const char *chain,
-+				       struct expr *variable);
- 
- extern struct expr *symbol_expr_alloc(const struct location *loc,
- 				      enum symbol_types type, struct scope *scope,
-diff --git a/src/expression.c b/src/expression.c
-index eece12e..7956a9c 100644
---- a/src/expression.c
-+++ b/src/expression.c
-@@ -236,15 +236,25 @@ static const struct expr_ops verdict_expr_ops = {
- };
- 
- struct expr *verdict_expr_alloc(const struct location *loc,
--				int verdict, const char *chain)
-+				int verdict, const char *chain,
-+				struct expr *variable)
- {
-+	struct symbol *sym;
- 	struct expr *expr;
-+	char *sym_chain;
- 
- 	expr = expr_alloc(loc, EXPR_VERDICT, &verdict_type,
- 			  BYTEORDER_INVALID, 0);
- 	expr->verdict = verdict;
--	if (chain != NULL)
-+	if (chain != NULL) {
- 		expr->chain = chain;
-+	} else if (variable != NULL) {
-+		sym = variable->sym;
-+		if (sym->expr->value)
-+			expr->chain = mpz_get_str(NULL, 10, sym->expr->value);
-+		//printf("%s", expr->chain);
-+	}
-+	printf("%s", expr->chain);
- 	expr->flags = EXPR_F_CONSTANT | EXPR_F_SINGLETON;
- 	return expr;
- }
-diff --git a/src/netlink.c b/src/netlink.c
-index c051ae6..ce1a8c4 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -265,7 +265,7 @@ static struct expr *netlink_alloc_verdict(const struct location *loc,
- 		break;
- 	}
- 
--	return verdict_expr_alloc(loc, nld->verdict, chain);
-+	return verdict_expr_alloc(loc, nld->verdict, chain, NULL);
- }
- 
- struct expr *netlink_alloc_data(const struct location *loc,
-@@ -1160,7 +1160,7 @@ static void trace_print_verdict(const struct nftnl_trace *nlt,
- 	verdict = nftnl_trace_get_u32(nlt, NFTNL_TRACE_VERDICT);
- 	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_JUMP_TARGET))
- 		chain = xstrdup(nftnl_trace_get_str(nlt, NFTNL_TRACE_JUMP_TARGET));
--	expr = verdict_expr_alloc(&netlink_location, verdict, chain);
-+	expr = verdict_expr_alloc(&netlink_location, verdict, chain, NULL);
- 
- 	nft_print(octx, "verdict ");
- 	expr_print(expr, octx);
-@@ -1175,7 +1175,7 @@ static void trace_print_policy(const struct nftnl_trace *nlt,
- 
- 	policy = nftnl_trace_get_u32(nlt, NFTNL_TRACE_POLICY);
- 
--	expr = verdict_expr_alloc(&netlink_location, policy, NULL);
-+	expr = verdict_expr_alloc(&netlink_location, policy, NULL, NULL);
- 
- 	nft_print(octx, "policy ");
- 	expr_print(expr, octx);
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 9aea652..7f131ad 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -3817,27 +3817,31 @@ relational_op		:	EQ		{ $$ = OP_EQ; }
- 
- verdict_expr		:	ACCEPT
- 			{
--				$$ = verdict_expr_alloc(&@$, NF_ACCEPT, NULL);
-+				$$ = verdict_expr_alloc(&@$, NF_ACCEPT, NULL, NULL);
- 			}
- 			|	DROP
- 			{
--				$$ = verdict_expr_alloc(&@$, NF_DROP, NULL);
-+				$$ = verdict_expr_alloc(&@$, NF_DROP, NULL, NULL);
- 			}
- 			|	CONTINUE
- 			{
--				$$ = verdict_expr_alloc(&@$, NFT_CONTINUE, NULL);
-+				$$ = verdict_expr_alloc(&@$, NFT_CONTINUE, NULL, NULL);
-+			}
-+			|	JUMP			variable_expr
-+			{
-+				$$ = verdict_expr_alloc(&@$, NFT_JUMP, NULL, $2);
- 			}
- 			|	JUMP			identifier
- 			{
--				$$ = verdict_expr_alloc(&@$, NFT_JUMP, $2);
-+				$$ = verdict_expr_alloc(&@$, NFT_JUMP, $2, NULL);
- 			}
- 			|	GOTO			identifier
- 			{
--				$$ = verdict_expr_alloc(&@$, NFT_GOTO, $2);
-+				$$ = verdict_expr_alloc(&@$, NFT_GOTO, $2, NULL);
- 			}
- 			|	RETURN
- 			{
--				$$ = verdict_expr_alloc(&@$, NFT_RETURN, NULL);
-+				$$ = verdict_expr_alloc(&@$, NFT_RETURN, NULL, NULL);
- 			}
- 			;
- 
 -- 
-2.20.1
+2.21.0
 
