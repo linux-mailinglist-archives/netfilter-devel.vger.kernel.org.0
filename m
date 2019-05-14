@@ -2,76 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B02DE1C7F2
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 May 2019 13:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C7C1C7F6
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 May 2019 13:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbfENLpG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 14 May 2019 07:45:06 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:48012 "EHLO orbyte.nwl.cc"
+        id S1726211AbfENLqA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 14 May 2019 07:46:00 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:48016 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725893AbfENLpG (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 14 May 2019 07:45:06 -0400
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1hQVrj-0007KG-Kc; Tue, 14 May 2019 13:45:03 +0200
-Date:   Tue, 14 May 2019 13:45:03 +0200
+        id S1725893AbfENLqA (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 14 May 2019 07:46:00 -0400
+Received: from localhost ([::1]:32874 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1hQVsc-0007Km-Ft; Tue, 14 May 2019 13:45:58 +0200
 From:   Phil Sutter <phil@nwl.cc>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [iptables PATCH] xtables: Fix typo in nft_rebuild_cache()
-Message-ID: <20190514114503.GV4851@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-References: <20190514085133.32674-1-phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH] tests: Fix ipt-restore/0004-restore-race_0 testcase
+Date:   Tue, 14 May 2019 13:46:00 +0200
+Message-Id: <20190514114600.19383-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190514085133.32674-1-phil@nwl.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+Two issues fixed:
 
-On Tue, May 14, 2019 at 10:51:33AM +0200, Phil Sutter wrote:
-> Conditional cache flush logic was inverted.
-> 
-> Fixes: 862818ac3a0de ("xtables: add and use nft_build_cache")
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
-> ---
->  iptables/nft.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/iptables/nft.c b/iptables/nft.c
-> index 6354b7e8e72fe..83e0d9a69b37c 100644
-> --- a/iptables/nft.c
-> +++ b/iptables/nft.c
-> @@ -1541,7 +1541,7 @@ void nft_build_cache(struct nft_handle *h)
->  
->  void nft_rebuild_cache(struct nft_handle *h)
->  {
-> -	if (!h->have_cache)
-> +	if (h->have_cache)
->  		flush_chain_cache(h, NULL);
->  
->  	__nft_build_cache(h);
+* XTABLES_LIBDIR was set wrong (CWD is not topdir but tests/). Drop the
+  export altogether, the testscript does this already.
 
-So with this change I broke your transaction reload logic. The problem
-is that data in h->obj_list potentially sits in cache, too. At least
-rules have to be there so insert with index works correctly. If the
-cache is flushed before regenerating the batch, use-after-free occurs
-which crashes the program.
+* $LINES is a variable set by bash, so initial dump sanity check failed
+  all the time complaining about a spurious initial dump line count. Use
+  $LINES1 instead.
 
-We need to either keep the old cache around or keep locally generated
-entries when flushing (which might require more intelligent cache
-update, too).
+Fixes: 4000b4cf2ea38 ("tests: add test script for race-free restore")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ .../tests/shell/testcases/ipt-restore/0004-restore-race_0  | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-I also have a fix for your testcase, will submit that in a minute as
-well.
+diff --git a/iptables/tests/shell/testcases/ipt-restore/0004-restore-race_0 b/iptables/tests/shell/testcases/ipt-restore/0004-restore-race_0
+index 14b910eb373bf..a92d18dcee058 100755
+--- a/iptables/tests/shell/testcases/ipt-restore/0004-restore-race_0
++++ b/iptables/tests/shell/testcases/ipt-restore/0004-restore-race_0
+@@ -1,6 +1,5 @@
+ #!/bin/bash
+ 
+-export XTABLES_LIBDIR=$(pwd)/extensions
+ have_nft=false
+ nft -v > /dev/null && have_nft=true
+ 
+@@ -77,12 +76,12 @@ dumpfile=$(mktemp) || exit 1
+ 
+ make_dummy_rules > $dumpfile
+ $XT_MULTI iptables-restore -w < $dumpfile
+-LINES=$(wc -l < $dumpfile)
++LINES1=$(wc -l < $dumpfile)
+ $XT_MULTI iptables-save | grep -v '^#' > $dumpfile
+ LINES2=$(wc -l < $dumpfile)
+ 
+-if [ $LINES -ne $LINES2 ]; then
+-	echo "Original dump has $LINES, not $LINES2" 1>&2
++if [ $LINES1 -ne $LINES2 ]; then
++	echo "Original dump has $LINES1, not $LINES2" 1>&2
+ 	exit 111
+ fi
+ 
+-- 
+2.21.0
 
-Cheers, Phil
