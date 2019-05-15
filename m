@@ -2,68 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E3E1F43A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 May 2019 14:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F591ECD0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 May 2019 13:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbfEOMVT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 15 May 2019 08:21:19 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:50516 "EHLO orbyte.nwl.cc"
+        id S1727799AbfEOLBy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 15 May 2019 07:01:54 -0400
+Received: from mx1.riseup.net ([198.252.153.129]:34534 "EHLO mx1.riseup.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726982AbfEOK6v (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 15 May 2019 06:58:51 -0400
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1hQrcY-0002KL-33; Wed, 15 May 2019 12:58:50 +0200
-Date:   Wed, 15 May 2019 12:58:50 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Fernando Fernandez Mancera <ffmancera@riseup.net>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH 2/2 nft] jump: Allow goto and jump to a variable using
- nft input files
-Message-ID: <20190515105850.GA4851@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Fernando Fernandez Mancera <ffmancera@riseup.net>,
-        netfilter-devel@vger.kernel.org
+        id S1727788AbfEOLBx (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 15 May 2019 07:01:53 -0400
+Received: from capuchin.riseup.net (capuchin-pn.riseup.net [10.0.1.176])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (verified OK))
+        by mx1.riseup.net (Postfix) with ESMTPS id 2DABA1A33BB;
+        Wed, 15 May 2019 04:01:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1557918113; bh=5iNfO5BCbbWNwWPCxu6vw75oqCusV1+DMzSO/CkCchA=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=A4S/8h2iM5TMMqAYKIroJe2AK/zVorLLgqlkRF2zdUfarM+kBnnyJxKaW1IOfTl2J
+         NNtqPB1xx89DbX+NrXq/Nbx5lU3HboXlwmMsxlPCZHNC7qc/2zUL9JhyT5kqWwFZQ+
+         geJmSQptovxXoDEATEYQN9vQOtsrewmLdfGmqCLg=
+X-Riseup-User-ID: 3A96ADDB5F6FF8D84CAEB9767B9D58C5F6AC1BBC23D1C93720A559119C05626A
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by capuchin.riseup.net (Postfix) with ESMTPSA id 79EF21207C9;
+        Wed, 15 May 2019 04:01:52 -0700 (PDT)
+Subject: Re: [PATCH 2/2 nft] jump: Allow goto and jump to a variable using nft
+ input files
+To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
 References: <20190514211340.913-1-ffmancera@riseup.net>
  <20190514211340.913-2-ffmancera@riseup.net>
+ <20190515105850.GA4851@orbyte.nwl.cc>
+From:   Fernando Fernandez Mancera <ffmancera@riseup.net>
+Openpgp: preference=signencrypt
+Message-ID: <347917dc-086b-998c-dd2f-b5e4a87b38b1@riseup.net>
+Date:   Wed, 15 May 2019 13:02:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190514211340.913-2-ffmancera@riseup.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190515105850.GA4851@orbyte.nwl.cc>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US-large
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hey,
 
-On Tue, May 14, 2019 at 11:13:40PM +0200, Fernando Fernandez Mancera wrote:
-[...]
-> diff --git a/src/datatype.c b/src/datatype.c
-> index 6aaf9ea..7e9ec5e 100644
-> --- a/src/datatype.c
-> +++ b/src/datatype.c
-> @@ -297,11 +297,22 @@ static void verdict_type_print(const struct expr *expr, struct output_ctx *octx)
->  	}
->  }
->  
-> +static struct error_record *verdict_type_parse(const struct expr *sym,
-> +					       struct expr **res)
-> +{
-> +	*res = constant_expr_alloc(&sym->location, &string_type,
-> +				   BYTEORDER_HOST_ENDIAN,
-> +				   (strlen(sym->identifier) + 1) * BITS_PER_BYTE,
-> +				   sym->identifier);
-> +	return NULL;
-> +}
 
-One more thing: The above lacks error checking of any kind. I *think*
-this is the place where one should make sure the symbol expression is
-actually a string (but I'm not quite sure how you do that).
+On 5/15/19 12:58 PM, Phil Sutter wrote:
+> Hey,
+> 
+> On Tue, May 14, 2019 at 11:13:40PM +0200, Fernando Fernandez Mancera wrote:
+> [...]
+>> diff --git a/src/datatype.c b/src/datatype.c
+>> index 6aaf9ea..7e9ec5e 100644
+>> --- a/src/datatype.c
+>> +++ b/src/datatype.c
+>> @@ -297,11 +297,22 @@ static void verdict_type_print(const struct expr *expr, struct output_ctx *octx)
+>>  	}
+>>  }
+>>  
+>> +static struct error_record *verdict_type_parse(const struct expr *sym,
+>> +					       struct expr **res)
+>> +{
+>> +	*res = constant_expr_alloc(&sym->location, &string_type,
+>> +				   BYTEORDER_HOST_ENDIAN,
+>> +				   (strlen(sym->identifier) + 1) * BITS_PER_BYTE,
+>> +				   sym->identifier);
+>> +	return NULL;
+>> +}
+> 
+> One more thing: The above lacks error checking of any kind. I *think*
+> this is the place where one should make sure the symbol expression is
+> actually a string (but I'm not quite sure how you do that).
+> 
+> In any case, please try to exploit that variable support in the testcase
+> (or maybe a separate one), just to make sure we don't allow weird
+> things.
+> 
 
-In any case, please try to exploit that variable support in the testcase
-(or maybe a separate one), just to make sure we don't allow weird
-things.
+I think I can get the symbol type and check if it is a string. I will
+check this on the testcase as you said. Thanks!
 
-Thanks, Phil
+> Thanks, Phil
+> 
