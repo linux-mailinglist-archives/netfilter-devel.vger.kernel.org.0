@@ -2,67 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE451F518
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 May 2019 15:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C961C1F58A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 May 2019 15:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727187AbfEONLZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 15 May 2019 09:11:25 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:40044 "EHLO mx1.redhat.com"
+        id S1726567AbfEONYi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 15 May 2019 09:24:38 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:35876 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725977AbfEONLZ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 15 May 2019 09:11:25 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        id S1726407AbfEONYi (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 15 May 2019 09:24:38 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 9585A3003715;
-        Wed, 15 May 2019 13:11:24 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id 48AED30A01B0;
+        Wed, 15 May 2019 13:24:38 +0000 (UTC)
 Received: from egarver.localdomain (ovpn-123-218.rdu2.redhat.com [10.10.123.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9A02F60CC0;
-        Wed, 15 May 2019 13:11:22 +0000 (UTC)
-Date:   Wed, 15 May 2019 09:11:21 -0400
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 998DC1001E61;
+        Wed, 15 May 2019 13:24:37 +0000 (UTC)
+Date:   Wed, 15 May 2019 09:24:36 -0400
 From:   Eric Garver <eric@garver.life>
-To:     Shekhar Sharma <shekhar250198@gmail.com>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft] tests: py: fix python3.
-Message-ID: <20190515131121.pbquqk7pbkfrhrhs@egarver.localdomain>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Phil Sutter <phil@nwl.cc>
+Subject: Re: [PATCH nft v2] evaluate: force full cache update on rule index
+ translation
+Message-ID: <20190515132436.xpndwgt5qtruzxsm@egarver.localdomain>
 Mail-Followup-To: Eric Garver <eric@garver.life>,
-        Shekhar Sharma <shekhar250198@gmail.com>,
-        netfilter-devel@vger.kernel.org
-References: <20190515070744.47828-1-shekhar250198@gmail.com>
+        netfilter-devel@vger.kernel.org, Phil Sutter <phil@nwl.cc>
+References: <20190506184038.17675-1-eric@garver.life>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190515070744.47828-1-shekhar250198@gmail.com>
+In-Reply-To: <20190506184038.17675-1-eric@garver.life>
 User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.47]); Wed, 15 May 2019 13:11:24 +0000 (UTC)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.43]); Wed, 15 May 2019 13:24:38 +0000 (UTC)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Shekhar,
+Hi Pablo,
 
-On Wed, May 15, 2019 at 12:37:44PM +0530, Shekhar Sharma wrote:
-> This changes all the python2 files to python3.
-> Signed-off-by: Shekhar Sharma <shekhar250198@gmail.com>
-> ---
->  py/nftables.py              |  2 +-
->  tests/json_echo/run-test.py | 40 ++++++++++++++++++-------------------
->  tests/py/nft-test.py        | 32 ++++++++++++++---------------
->  3 files changed, 37 insertions(+), 37 deletions(-)
+On Mon, May 06, 2019 at 02:40:38PM -0400, Eric Garver wrote:
+> If we've done a partial fetch of the cache and the genid is the same the
+> cache update will be skipped without fetching the rules. This causes the
+> index to handle lookup to fail. To remedy the situation we flush the
+> cache and force a full update.
 > 
-> diff --git a/py/nftables.py b/py/nftables.py
-> index 33cd2dfd..6503aedd 100644
-> --- a/py/nftables.py
-> +++ b/py/nftables.py
-> @@ -297,7 +297,7 @@ class Nftables:
->          val = self.nft_ctx_output_get_debug(self.__ctx)
->  
->          names = []
-> -        for n,v in self.debug_flags.items():
-> +        for n,v in linst(self.debug_flags.items()):
-
-typo, should be list()
-
+> Fixes: 816d8c7659c1 ("Support 'add/insert rule index <IDX>'")
+> Signed-off-by: Eric Garver <eric@garver.life>
 [..]
+
+Please drop this patch. After discussing with Phil we should fix cache
+issues like this generically by considering the cache "cmd". I have a
+patch mostly ready - I'll try to post it today.
+
+Thanks.
+Eric.
