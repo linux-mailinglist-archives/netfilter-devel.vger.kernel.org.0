@@ -2,52 +2,66 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D43B522391
-	for <lists+netfilter-devel@lfdr.de>; Sat, 18 May 2019 15:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840F922394
+	for <lists+netfilter-devel@lfdr.de>; Sat, 18 May 2019 15:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727367AbfERNrg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 18 May 2019 09:47:36 -0400
-Received: from slot0.a-jdistributors.com ([108.174.196.148]:38933 "EHLO
-        slot0.a-jdistributors.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726050AbfERNrg (ORCPT
+        id S1729321AbfERNyA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 18 May 2019 09:54:00 -0400
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:32787 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728557AbfERNyA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 18 May 2019 09:47:36 -0400
-X-Greylist: delayed 601 seconds by postgrey-1.27 at vger.kernel.org; Sat, 18 May 2019 09:47:36 EDT
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=a-jdistributors.com;
- h=Reply-To:From:To:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding; i=purchase@a-jdistributors.com;
- bh=JUrMPAj18TOJvNHXzeSv27Pjv5M=;
- b=CWmfsONrtjsNpcdieowHJhpt+edxOh5TUy7c8s9uK3yyhprFSPBiVR/I2sR5L60i0d2/reiZoV2A
-   HvXjyyq9/mBCIqY1FEV1Yolkx6mBGevcrBwopaAw8ydbSMKVb01ZAzBH0hHJvkww8b4tYPyC9env
-   hhRqkVYoFLsfj1UohgdRNprPYK7WDGhZYJsirpubjRVgz91sJZzkogWc27ZdI71HoOSdkSI7S143
-   tOcvHqK7UKnsgFPmXXrQAfJCxeokQwTR15P/FevphAqackjdycrq77Y/tqwKbZy5/wAJWxZ31iXJ
-   5uHjNLQeuM84iuw3gvZxAIlGuwzlL80is3R46A==
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=a-jdistributors.com;
- b=Z7ToFChI/fbmDO5I4qwg3yayDmGGL7FIKuYgM0kiJ4TondEwcS4A3ehOgamBlFdTtAqPiFEsoT/l
-   IiYvmkZOCGZ2lOOJcU463lqTXuTfNf2cpDYAdsqnVtWbyHIvmPdblEYk4fIXK+8ZarsxBjIEp6cH
-   N6pK9Rew2rD0FUSSkuiNKQhuHvrX0OetX1Esw9PL1Rt4eKAbd90BtXldJ/DR7MIqv7AbMBk0FPG1
-   etIyY353CKf1bGb1NL2lgxBTEMKIAYzLKYdKgJZj0GWSWFJXXmm6Au0TZdRfOcht8t4V2vLPyKRN
-   iBWNox6JSD0gsvrXeyghfmMse0M16PQ4HbGhoA==;
-Reply-To: purchase@a-jdistributors.com
-From:   purchase@a-jdistributors.com
-To:     netfilter-devel@vger.kernel.org
-Date:   18 May 2019 06:37:34 -0700
-Message-ID: <20190518063734.C122DA391C215B90@a-jdistributors.com>
+        Sat, 18 May 2019 09:54:00 -0400
+Received: by mail-vs1-f43.google.com with SMTP id y6so6456219vsb.0
+        for <netfilter-devel@vger.kernel.org>; Sat, 18 May 2019 06:53:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=G4/bS6ZbHRExSi1v1tHnPQiB+RzXCW6Q4jUtTrK90w0=;
+        b=Pp8oDXQvr1z59b2Iloa4kgHkE1FAYzoedGd5s7YIrNuKIXmN0Ii2kB7u14sF3ql5sB
+         WgvqiiRO8aEZRHaEsb4k6h0DBSBdNRpo3qWvfQHCCBABatFoNY6JcfpwxhENoirffDMz
+         ycdvRwsT1utHW/B8te5fK7IC0vDwltxjGSSaiL3Kj2uYe7ViztF1nDwq/9CAGcHXBTHF
+         S0fG+Mi2KnbbzlRkymej/JcIKcEGu779DXxFBf4saQ4geQ25zV4eG/ZfKKKHcbmjbSvd
+         OVOGJhl1G6MfPLglg2Z2iEy/+UQ1x3nRO7gr8NZmc8PyJVtgIk5l00zqp+WgH7VChpb6
+         RsCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=G4/bS6ZbHRExSi1v1tHnPQiB+RzXCW6Q4jUtTrK90w0=;
+        b=oEhplQ/hYChmimFZyBdGJ3lZb06o9h0YOsAJSxHbKrvUkIn9Zsy7YdgCbwHw3gSwtQ
+         HZ82n+l+DDBcs8tDECBRf/pfN9ThU0K6Zg2q1InYfRsK1VummyMVKGWBx/XYpK0pFIer
+         xITvT9ZvNMQnR9ZO/Nctlzf7rw2g4rDZ0B4ifLJq770BOWfI0NCdRr1ZK7R+yHdVr5IO
+         +mrUqugJjZlSbz6QDlnaTTb3UX4lkrHz5xJdamWApnIVWY8GU3csBRh1o1p+wXVIYPP+
+         7O0R81F2m6gl3fTPzXs07waHDQ16IvACMobpWAojhH2Pm+OYk2Fn6bll8puWA604thyy
+         tX4w==
+X-Gm-Message-State: APjAAAXkzDzBsGwgGUaM9tJSVlys7xR6Wr3N5U5oTUO0vMFLbp0KHaBc
+        cjic8O6JcATiGxHyAMuCmO8wmyMzIJbF8mj3vNBscw==
+X-Google-Smtp-Source: APXvYqy673HkbwmauBAOItBpXx/qaqZaCO6DuZr5B2/XLrvP1hnv8IvHleV03YaFma6OdXxdgN/NnYNMF3VaLcQEi0g=
+X-Received: by 2002:a67:f7d2:: with SMTP id a18mr19793683vsp.5.1558187638807;
+ Sat, 18 May 2019 06:53:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
+From:   =?UTF-8?Q?St=C3=A9phane_Veyret?= <sveyret@gmail.com>
+Date:   Sat, 18 May 2019 15:53:47 +0200
+Message-ID: <CAFs+hh7TAWAG9T9kgB2SS8m-xcQQWD4ormR8VT98RXe84MQREg@mail.gmail.com>
+Subject: Expectations
+To:     netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Hi,
 
-Hello,
-I am pleased to write you. We need your pricelist forv=20
-study,order/partnership.
-We are into general mechant and distribution of products(Marts).
-Kindly send pictures of any new item/design(s).
+I think I finished the work regarding expectations. I sent 4 patches
+(yesterday evening CEST) for 3 different projects : kernel, library
+and nft (now waiting for your feedback).
+I would like now to add a new helper module in the kernel to manage
+RTSP. Do you think it could be a good idea/useful thing?
 
-Best Regard
-Kal Scott
-A-J Distributor(USA)
+Regards,
+
+St=C3=A9phane Veyret
