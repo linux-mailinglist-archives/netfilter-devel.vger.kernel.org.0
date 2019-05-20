@@ -2,95 +2,112 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1BD235FE
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 May 2019 14:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E770B2376F
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 May 2019 15:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390634AbfETMmP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 May 2019 08:42:15 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:63495 "EHLO mx1.redhat.com"
+        id S2388567AbfETMsl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 May 2019 08:48:41 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:35452 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390124AbfETMmP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 May 2019 08:42:15 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 265E588306;
-        Mon, 20 May 2019 12:42:14 +0000 (UTC)
-Received: from egarver.localdomain (ovpn-122-94.rdu2.redhat.com [10.10.122.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D9E7F60CD1;
-        Mon, 20 May 2019 12:42:09 +0000 (UTC)
-Date:   Mon, 20 May 2019 08:42:07 -0400
-From:   Eric Garver <eric@garver.life>
-To:     Phil Sutter <phil@nwl.cc>
+        id S2388262AbfETMsk (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 20 May 2019 08:48:40 -0400
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1hShiX-0000Vb-I8; Mon, 20 May 2019 14:48:37 +0200
+Date:   Mon, 20 May 2019 14:48:37 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Florian Westphal <fw@strlen.de>
 Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
-Subject: Re: [nft PATCH 1/3] src: Improve cache_needs_more() algorithm
-Message-ID: <20190520124207.sgdrzok6uqoupzzp@egarver.localdomain>
-Mail-Followup-To: Eric Garver <eric@garver.life>, Phil Sutter <phil@nwl.cc>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH iptables 4/4] nft: keep old cache around until batch is
+ refreshed in case of ERESTART
+Message-ID: <20190520124837.GB31548@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Florian Westphal <fw@strlen.de>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
-References: <20190517230033.25417-1-phil@nwl.cc>
- <20190517230033.25417-2-phil@nwl.cc>
+        netfilter-devel@vger.kernel.org
+References: <20190519115121.32490-1-pablo@netfilter.org>
+ <20190519115121.32490-4-pablo@netfilter.org>
+ <20190519164508.GL4851@orbyte.nwl.cc>
+ <20190520120018.GA31548@orbyte.nwl.cc>
+ <20190520120620.nxxl65syr2b7eal7@breakpoint.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190517230033.25417-2-phil@nwl.cc>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.28]); Mon, 20 May 2019 12:42:14 +0000 (UTC)
+In-Reply-To: <20190520120620.nxxl65syr2b7eal7@breakpoint.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sat, May 18, 2019 at 01:00:31AM +0200, Phil Sutter wrote:
-> The old logic wasn't optimal: If e.g. current command was CMD_RESET and
-> old command was CMD_LIST, cache was already fully populated but still
-> refreshed.
+On Mon, May 20, 2019 at 02:06:20PM +0200, Florian Westphal wrote:
+> Phil Sutter <phil@nwl.cc> wrote:
+> > On Sun, May 19, 2019 at 06:45:08PM +0200, Phil Sutter wrote:
+> > [...]
+> > > The only way to make the above work is by keeping the original cache
+> > > copy around until mnl_batch_talk has finally succeeded or failed with
+> > > something else than ERESTART.
+> > 
+> > How about a completely different approach:
+> > 
+> > If memory serves right (and from reading the related Red Hat ticket),
+> > the actual problem we're trying to solve is that iptables-nft-restore
+> > creates NFT_MSG_DELTABLE only if that table exists already at the point
+> > of parsing but another client might create it in the mean time before
+> > committing.
+> > 
+> > My idea for solving this was to unconditionally create NFT_MSG_NEWTABLE
+> > followed by NFT_MSG_DELTABLE - in case the table exists, the first one
+> > is a noop; in case the table doesn't exist, the second one won't provoke
+> > an error message from kernel space.
 > 
-> Introduce a simple scoring system which reflects how
-> cache_init_objects() looks at the current command to decide if it is
-> finished already or not. Then use that in cache_needs_more(): If current
-> commands score is higher than old command's, cache needs an update.
+> Does that work even work?
+> new table x
+> del table x
+> add rule to x // table was deleted?
 > 
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
-> ---
->  src/rule.c | 20 ++++++++++++++------
->  1 file changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/src/rule.c b/src/rule.c
-> index afe37cd90b1da..17bf5bbbe680c 100644
-> --- a/src/rule.c
-> +++ b/src/rule.c
-> @@ -220,13 +220,21 @@ static int cache_init(struct netlink_ctx *ctx, enum cmd_ops cmd)
->  	return 0;
->  }
->  
-> -static int cache_needs_more(enum cmd_ops old_cmd, enum cmd_ops cmd)
-> +/* Return a "score" of how complete local cache will be if
-> + * cache_init_objects() ran for given cmd. Higher value
-> + * means more complete. */
-> +static int cache_completeness(enum cmd_ops cmd)
->  {
-> -	if (cmd == CMD_LIST && old_cmd != CMD_LIST)
-> -		return 1;
-> -	if (cmd == CMD_RESET && old_cmd != CMD_RESET)
-> -		return 1;
-> -	return 0;
-> +	if (cmd == CMD_LIST)
-> +		return 3;
-> +	if (cmd != CMD_RESET)
-> +		return 2;
-> +	return 1;
-> +}
-> +
-> +static bool cache_needs_more(enum cmd_ops old_cmd, enum cmd_ops cmd)
-> +{
-> +	return cache_completeness(old_cmd) < cache_completeness(cmd);
->  }
->  
->  int cache_update(struct nft_ctx *nft, enum cmd_ops cmd, struct list_head *msgs)
-> -- 
-> 2.21.0
+> Or are you talking about a new/del/new sequence?
 
-LGTM. Feel free to take my patch and fold it into this series.
+Oh, yes of course. Existing iptables-nft-restore does:
+
+1) delete table x if exists
+2) add table x
+3) add table x content
+
+My idea is to:
+
++ 0) add table x
+- 1) delete table x if exists
++ 1) delete table x
+  2) add table x
+  3) add table x content
+
+> If it works, ok/fine, but it seems ugly.
+
+Did you consider rule insert with index in your batch replay logic? I
+did when duplicating it for nft, but decided it's not worth it and
+people using 'add rule ... index IDX' have been warned already anyway.
+
+> > Since NFT_MSG_DELTABLE removes the table recursively, we don't need to
+> > care about any content added by the other client.
+> 
+> Yes, we can't do this in the --noflush case though.
+
+My state from our last talk about it was "--noflush users are screwed
+anyway". :)
+
+> > Or is this about a generic solution for all commands not just
+> > iptables-nft-restore (without --noflush)?
+> 
+> Its for ipt-nft-restore, including --noflush.
+> 
+> It would be good though to also speed up 'iptables-nft -A' later on
+> by eliding cache completely.
+
+The problem is that we can't unconditionally create NFT_MSG_NEWCHAIN
+because that will reset the chain policy if non-default. So we need at
+least a cache containing tables and chains, even for that simple rule
+append command.
+
+Cheers, Phil
