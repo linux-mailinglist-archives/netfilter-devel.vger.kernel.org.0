@@ -2,45 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A224240E6
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 May 2019 21:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAD3240E8
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 May 2019 21:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725905AbfETTIf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1725902AbfETTIf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Mon, 20 May 2019 15:08:35 -0400
-Received: from mail.us.es ([193.147.175.20]:38426 "EHLO mail.us.es"
+Received: from mail.us.es ([193.147.175.20]:38432 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbfETTIe (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 May 2019 15:08:34 -0400
+        id S1726019AbfETTIf (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 20 May 2019 15:08:35 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id D45F0BAEE4
-        for <netfilter-devel@vger.kernel.org>; Mon, 20 May 2019 21:08:32 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 5BE28BAEE7
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 May 2019 21:08:33 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id C6C92DA70A
-        for <netfilter-devel@vger.kernel.org>; Mon, 20 May 2019 21:08:32 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 4DB27DA70B
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 May 2019 21:08:33 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id BC3A5DA707; Mon, 20 May 2019 21:08:32 +0200 (CEST)
+        id 4357CDA708; Mon, 20 May 2019 21:08:33 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id BAC9BDA70A;
-        Mon, 20 May 2019 21:08:30 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 460DBDA702;
+        Mon, 20 May 2019 21:08:31 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 20 May 2019 21:08:30 +0200 (CEST)
+ Mon, 20 May 2019 21:08:31 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (sys.soleta.eu [212.170.55.40])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 8A72E4265A32;
-        Mon, 20 May 2019 21:08:30 +0200 (CEST)
+        by entrada.int (Postfix) with ESMTPA id 1D55D4265A32;
+        Mon, 20 May 2019 21:08:31 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     phil@nwl.cc, fw@strlen.de
-Subject: [PATCH iptables 4/6] nft: don't care about previous state in ERESTART
-Date:   Mon, 20 May 2019 21:08:20 +0200
-Message-Id: <20190520190822.18873-5-pablo@netfilter.org>
+Subject: [PATCH iptables 5/6] nft: do not retry on EINTR
+Date:   Mon, 20 May 2019 21:08:21 +0200
+Message-Id: <20190520190822.18873-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20190520190822.18873-1-pablo@netfilter.org>
 References: <20190520190822.18873-1-pablo@netfilter.org>
@@ -50,52 +50,86 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We need to re-evalute based on the existing cache generation.
+Patch ab1cd3b510fa ("nft: ensure cache consistency") already handles
+consistency via generation ID.
 
-Fixes: 58d7de0181f6 ("xtables: handle concurrent ruleset modifications")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- iptables/nft.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ iptables/nft.c | 26 +++++---------------------
+ 1 file changed, 5 insertions(+), 21 deletions(-)
 
 diff --git a/iptables/nft.c b/iptables/nft.c
-index 43b9153c2d58..f6d407029892 100644
+index f6d407029892..9a3e9fdf4f12 100644
 --- a/iptables/nft.c
 +++ b/iptables/nft.c
-@@ -2789,9 +2789,9 @@ static void nft_refresh_transaction(struct nft_handle *h)
- 			if (!tablename)
- 				continue;
- 			exists = nft_table_find(h, tablename);
--			if (n->skip && exists)
-+			if (exists)
- 				n->skip = 0;
--			else if (!n->skip && !exists)
-+			else
- 				n->skip = 1;
- 			break;
- 		case NFT_COMPAT_CHAIN_USER_ADD:
-@@ -2803,13 +2803,16 @@ static void nft_refresh_transaction(struct nft_handle *h)
- 			if (!chainname)
- 				continue;
+@@ -1383,7 +1383,6 @@ static int fetch_table_cache(struct nft_handle *h)
+ 	struct nftnl_table_list *list;
+ 	int ret;
  
-+			if (!h->noflush)
-+				break;
+-retry:
+ 	list = nftnl_table_list_alloc();
+ 	if (list == NULL)
+ 		return 0;
+@@ -1392,11 +1391,9 @@ retry:
+ 					NLM_F_DUMP, h->seq);
+ 
+ 	ret = mnl_talk(h, nlh, nftnl_table_list_cb, list);
+-	if (ret < 0 && errno == EINTR) {
++	if (ret < 0 && errno == EINTR)
+ 		assert(nft_restart(h) >= 0);
+-		nftnl_table_list_free(list);
+-		goto retry;
+-	}
 +
- 			c = nft_chain_find(h, tablename, chainname);
--			if (c && !n->skip) {
-+			if (c) {
- 				/* -restore -n flushes existing rules from redefined user-chain */
--				if (h->noflush)
--					__nft_rule_flush(h, tablename,
--							 chainname, false, true);
--			} else if (!c && n->skip) {
-+				__nft_rule_flush(h, tablename,
-+						 chainname, false, true);
-+				n->skip = 1;
-+			} else if (!c) {
- 				n->skip = 0;
- 			}
- 			break;
+ 	h->cache->tables = list;
+ 
+ 	return 1;
+@@ -1408,7 +1405,6 @@ static int fetch_chain_cache(struct nft_handle *h)
+ 	struct nlmsghdr *nlh;
+ 	int i, ret;
+ 
+-retry:
+ 	fetch_table_cache(h);
+ 
+ 	for (i = 0; i < NFT_TABLE_MAX; i++) {
+@@ -1426,11 +1422,8 @@ retry:
+ 					NLM_F_DUMP, h->seq);
+ 
+ 	ret = mnl_talk(h, nlh, nftnl_chain_list_cb, h);
+-	if (ret < 0 && errno == EINTR) {
++	if (ret < 0 && errno == EINTR)
+ 		assert(nft_restart(h) >= 0);
+-		flush_chain_cache(h, NULL);
+-		goto retry;
+-	}
+ 
+ 	return ret;
+ }
+@@ -1551,22 +1544,13 @@ static int nft_rule_list_update(struct nftnl_chain *c, void *data)
+ 	nftnl_rule_set_str(rule, NFTNL_RULE_CHAIN,
+ 			   nftnl_chain_get_str(c, NFTNL_CHAIN_NAME));
+ 
+-retry:
+ 	nlh = nftnl_rule_nlmsg_build_hdr(buf, NFT_MSG_GETRULE, h->family,
+ 					NLM_F_DUMP, h->seq);
+ 	nftnl_rule_nlmsg_build_payload(nlh, rule);
+ 
+ 	ret = mnl_talk(h, nlh, nftnl_rule_list_cb, c);
+-	if (ret < 0) {
+-		flush_rule_cache(c);
+-
+-		if (errno == EINTR) {
+-			assert(nft_restart(h) >= 0);
+-			goto retry;
+-		}
+-		nftnl_rule_free(rule);
+-		return -1;
+-	}
++	if (ret < 0 && errno == EINTR)
++		assert(nft_restart(h) >= 0);
+ 
+ 	nftnl_rule_free(rule);
+ 
 -- 
 2.11.0
 
