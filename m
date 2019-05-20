@@ -2,62 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8C92405F
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 May 2019 20:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32D92365F
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 May 2019 14:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726012AbfETScV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 May 2019 14:32:21 -0400
-Received: from westpalmbeachmassagegroup.com ([45.35.221.60]:59693 "EHLO
-        wolfgangdigital.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725995AbfETScV (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 May 2019 14:32:21 -0400
+        id S2389373AbfETM04 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 May 2019 08:26:56 -0400
+Received: from mail.us.es ([193.147.175.20]:34182 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389421AbfETM0z (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 20 May 2019 08:26:55 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 2CA141D94A5
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 May 2019 14:26:53 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 1E1F7DA70D
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 May 2019 14:26:53 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 13D5BDA705; Mon, 20 May 2019 14:26:53 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 01F11DA704;
+        Mon, 20 May 2019 14:26:51 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 20 May 2019 14:26:51 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (sys.soleta.eu [212.170.55.40])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id C15BF4265A31;
+        Mon, 20 May 2019 14:26:50 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: Print your logo
-Message-ID: <0969d35c356f6774ba3efaa56f895688@esquire.com>
-Date:   Mon, 20 May 2019 14:22:48 +0200
-From:   "Heather" <heather@usblogo.space>
-Reply-To: flashdrive@aliyun.com
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Cc:     phil@nwl.cc, fw@strlen.de
+Subject: [PATCH iptables 0/6] cache rework
+Date:   Mon, 20 May 2019 14:26:40 +0200
+Message-Id: <20190520122646.17788-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+This patchset updates the cache logic:
 
-I didn’t know if you had received my email from last week?
+* Update nft_table_list_get() to use a list of tables from the cache,
+  instead of listing them from the kernel.
 
-We manufacture ALL custom LOGO and branded products – over 300,000 to
-choose from.
+* Ensure cache consistency by checking for generation ID is consistent
+  when building up the cache.
 
-The most asked about product that we make, is the custom printed USB flash
-drives!
-We can print your logo on them and load your digital images, videos and
-files!
+Without this, we may end up with an inconsistent cache, hence defeating
+the refresh transaction logic.
 
-Here is what we include:
--Any size memory you need: 64MB up to 128GB
--We will print your logo on both sides, just ask!
--Very Low Order Minimums
--Need them quickly?  Not a problem, we offer Rush Service
+The other patches are just a few preparation patches to allow to
+maintain the original cache and a cache that is refreshed everytime this
+hits ERESTART.
 
-Email over a copy of your logo and we will create a design mock up for you
-at no cost!
+My plan is to send another batch to revisit the refresh transaction
+logic after this patchset, since 0004-restore-race_0 still does not
+work after this.
 
-Our higher memory sizes are a really good option right now!
+Pablo Neira Ayuso (6):
+  nft: add struct nft_cache
+  nft: statify nft_rebuild_cache()
+  nft: add __nft_table_builtin_find()
+  nft: add flush_cache()
+  nft: cache table list
+  nft: ensure cache consistency
 
-Pricing is low right now, so let us know what you need and we will get you
-a quick quote.
+ iptables/nft.c | 195 ++++++++++++++++++++++++++++++++++-----------------------
+ iptables/nft.h |  15 +++--
+ 2 files changed, 126 insertions(+), 84 deletions(-)
 
-We always offer great rates for schools and nonprofits as well.
-
-Let us know what you would like quoted?
-
-Regards,
-
-Heather Millons
-Custom USB Account Manager
+-- 
+2.11.0
 
