@@ -2,130 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F1624042
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 May 2019 20:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4BE240E2
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 May 2019 21:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725941AbfETSZ2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 May 2019 14:25:28 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:48774 "EHLO mx1.riseup.net"
+        id S1725763AbfETTIb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 May 2019 15:08:31 -0400
+Received: from mail.us.es ([193.147.175.20]:38338 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725763AbfETSZ2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 May 2019 14:25:28 -0400
-Received: from bell.riseup.net (bell-pn.riseup.net [10.0.1.178])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (verified OK))
-        by mx1.riseup.net (Postfix) with ESMTPS id 2BF781A33E7;
-        Mon, 20 May 2019 11:25:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1558376727; bh=JQw2wXyzs7TnHToTLfLbRU1DMB2iJr8EksxDgGSAtlA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=O9Tw/WQAIPUdVnS5WB1PT3KnCh50zy1Z/RDyxj53p7Qf5/AFP0FX5neDTXsEq+Emw
-         7nwjsprunvIYQIXCWhI10tq12YXur96w5acPt023WfM0rLSl1KHmgbi5SPfUxr80re
-         IW7P/xufLrEU4WuunK7q5LYbLsazETmWNjash8kg=
-X-Riseup-User-ID: 5A8C4A517D0F6B9E1A9536DE886B29447FDBB69F2385309F63B5FF7880EF465B
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by bell.riseup.net (Postfix) with ESMTPSA id 8A6FE222C2A;
-        Mon, 20 May 2019 11:25:26 -0700 (PDT)
-Subject: Re: [PATCH nf-next v2 2/4] netfilter: synproxy: remove module
- dependency on IPv6 SYNPROXY
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-References: <20190519205259.2821-1-ffmancera@riseup.net>
- <20190519205259.2821-3-ffmancera@riseup.net>
- <20190519211207.mi3mbgtjcsbijsve@breakpoint.cc>
-From:   Fernando Fernandez Mancera <ffmancera@riseup.net>
-Openpgp: preference=signencrypt
-Message-ID: <0d96ae82-74b8-4c30-d684-1221d8b4fe44@riseup.net>
-Date:   Mon, 20 May 2019 20:25:39 +0200
-MIME-Version: 1.0
-In-Reply-To: <20190519211207.mi3mbgtjcsbijsve@breakpoint.cc>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US-large
-Content-Transfer-Encoding: 7bit
+        id S1725536AbfETTIb (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 20 May 2019 15:08:31 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 12FDCBAEE7
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 May 2019 21:08:29 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 06E6DDA706
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 May 2019 21:08:29 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id F0DF8DA704; Mon, 20 May 2019 21:08:28 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id DA7B5DA701;
+        Mon, 20 May 2019 21:08:26 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 20 May 2019 21:08:26 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (sys.soleta.eu [212.170.55.40])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id A71324265A31;
+        Mon, 20 May 2019 21:08:26 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     phil@nwl.cc, fw@strlen.de
+Subject: [PATCH iptables 0/6] ERESTART fixes
+Date:   Mon, 20 May 2019 21:08:16 +0200
+Message-Id: <20190520190822.18873-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Florian,
+A batch of patches to fix concurrent updates via iptables-restore that
+result in ERESTART errors in iptables.
 
-On 5/19/19 11:12 PM, Florian Westphal wrote:
-> Fernando Fernandez Mancera <ffmancera@riseup.net> wrote:
->> This is a prerequisite for the new infrastructure module NF_SYNPROXY. The new
->> module is needed to avoid duplicated code for the SYNPROXY nftables support.
->>
->> Signed-off-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
->> ---
->>  include/linux/netfilter_ipv6.h | 3 +++
->>  net/ipv6/netfilter.c           | 1 +
->>  2 files changed, 4 insertions(+)
->>
->> diff --git a/include/linux/netfilter_ipv6.h b/include/linux/netfilter_ipv6.h
->> index 12113e502656..f440aaade612 100644
->> --- a/include/linux/netfilter_ipv6.h
->> +++ b/include/linux/netfilter_ipv6.h
->> @@ -8,6 +8,7 @@
->>  #define __LINUX_IP6_NETFILTER_H
->>  
->>  #include <uapi/linux/netfilter_ipv6.h>
->> +#include <net/tcp.h>
->>  
->>  /* Extra routing may needed on local out, as the QUEUE target never returns
->>   * control to the table.
->> @@ -35,6 +36,8 @@ struct nf_ipv6_ops {
->>  	int (*route)(struct net *net, struct dst_entry **dst, struct flowi *fl,
->>  		     bool strict);
->>  #endif
->> +	u32 (*cookie_init_sequence)(const struct ipv6hdr *iph,
->> +				    const struct tcphdr *th, u16 *mssp);
-> 
-> Could you place this above, in the #endif block?
-> 
-> You will need to create a helper as well:
-> static inline u32 nf_ipv6_cookie_init_sequence(const struct ipv6hdr *iph,
-> 					       const struct tcphdr *th,
-> 					       u16 *mssp)
-> {
-> #if IS_MODULE(CONFIG_IPV6)
-> 	const struct nf_ipv6_ops *v6_ops = nf_get_ipv6_ops();
-> 
-> 	if (v6_ops)
-> 		return v6_ops->cookie_init_sequence(iph, th, mssp);
-> #else
-> 	return __cookie_v6_init_sequence(iph, th, mssp);
-> #endif
-> }
-> 
+Pablo Neira Ayuso (5):
+  nft: keep original cache in case of ERESTART
+  nft: don't skip table addition from ERESTART
+  nft: don't care about previous state in ERESTART
+  nft: do not retry on EINTR
+  nft: reset netlink sender buffer size of socket restart
 
-Sure, I am going to do it.
+Phil Sutter (1):
+  xtables: Fix for explicit rule flushes
 
-> This way, when ipv6 is built-in, then we don't have the indirection
-> if netfilter uses the nf_ipv6_cookie_init_sequence() helper.
-> 
-> Also, can you check that if using CONFIG_IPV6=m then
-> "modinfo nf_synproxy" won't list ipv6 as a a module depencency?
-> 
+ iptables/nft.c | 79 ++++++++++++++++++++++++++++------------------------------
+ iptables/nft.h |  3 ++-
+ 2 files changed, 40 insertions(+), 42 deletions(-)
 
-Yes, I will check it. Also, I have some questions about the kbuild robot
-reports. Why are it reporting the following errors?
+-- 
+2.11.0
 
-> ERROR: "ipv4_synproxy_hook" [net/ipv6/netfilter/ip6t_SYNPROXY.ko] undefined!
->    ERROR: "synproxy_send_client_synack_ipv6" [net/ipv6/netfilter/ip6t_SYNPROXY.ko] undefined!
->    ERROR: "synproxy_recv_client_ack_ipv6" [net/ipv6/netfilter/ip6t_SYNPROXY.ko] undefined!
->    ERROR: "nf_synproxy_ipv6_init" [net/ipv6/netfilter/ip6t_SYNPROXY.ko] undefined!
->    ERROR: "nf_synproxy_ipv6_fini" [net/ipv6/netfilter/ip6t_SYNPROXY.ko] undefined!
->    ERROR: "ipv4_synproxy_hook" [net/ipv4/netfilter/ipt_SYNPROXY.ko] undefined!
->    ERROR: "synproxy_send_client_synack" [net/ipv4/netfilter/ipt_SYNPROXY.ko] undefined!
->    ERROR: "synproxy_recv_client_ack" [net/ipv4/netfilter/ipt_SYNPROXY.ko] undefined!
->    ERROR: "nf_synproxy_ipv4_init" [net/ipv4/netfilter/ipt_SYNPROXY.ko] undefined!
->    ERROR: "nf_synproxy_ipv4_fini" [net/ipv4/netfilter/ipt_SYNPROXY.ko] undefined!
-
-Why undefined? I have exported them with EXPORT_SYMBOL_GPL(). What am I
-missing? Thanks!
-
-
-> If it does, there is another symbol that pulls in ipv6 (depmod will
-> say which one).
-> 
-> Thanks!
-> 
