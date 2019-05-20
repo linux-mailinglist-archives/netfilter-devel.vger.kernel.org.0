@@ -2,78 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFDD2332E
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 May 2019 14:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8C92405F
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 May 2019 20:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730557AbfETMGW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 May 2019 08:06:22 -0400
-Received: from Chamillionaire.breakpoint.cc ([146.0.238.67]:56716 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730534AbfETMGW (ORCPT
+        id S1726012AbfETScV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 May 2019 14:32:21 -0400
+Received: from westpalmbeachmassagegroup.com ([45.35.221.60]:59693 "EHLO
+        wolfgangdigital.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725995AbfETScV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 May 2019 08:06:22 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
-        (envelope-from <fw@strlen.de>)
-        id 1hSh3c-0000MC-1O; Mon, 20 May 2019 14:06:20 +0200
-Date:   Mon, 20 May 2019 14:06:20 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Phil Sutter <phil@nwl.cc>, Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, fw@strlen.de
-Subject: Re: [PATCH iptables 4/4] nft: keep old cache around until batch is
- refreshed in case of ERESTART
-Message-ID: <20190520120620.nxxl65syr2b7eal7@breakpoint.cc>
-References: <20190519115121.32490-1-pablo@netfilter.org>
- <20190519115121.32490-4-pablo@netfilter.org>
- <20190519164508.GL4851@orbyte.nwl.cc>
- <20190520120018.GA31548@orbyte.nwl.cc>
+        Mon, 20 May 2019 14:32:21 -0400
+To:     netfilter-devel@vger.kernel.org
+Subject: Print your logo
+Message-ID: <0969d35c356f6774ba3efaa56f895688@esquire.com>
+Date:   Mon, 20 May 2019 14:22:48 +0200
+From:   "Heather" <heather@usblogo.space>
+Reply-To: flashdrive@aliyun.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190520120018.GA31548@orbyte.nwl.cc>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; format=flowed; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Phil Sutter <phil@nwl.cc> wrote:
-> On Sun, May 19, 2019 at 06:45:08PM +0200, Phil Sutter wrote:
-> [...]
-> > The only way to make the above work is by keeping the original cache
-> > copy around until mnl_batch_talk has finally succeeded or failed with
-> > something else than ERESTART.
-> 
-> How about a completely different approach:
-> 
-> If memory serves right (and from reading the related Red Hat ticket),
-> the actual problem we're trying to solve is that iptables-nft-restore
-> creates NFT_MSG_DELTABLE only if that table exists already at the point
-> of parsing but another client might create it in the mean time before
-> committing.
-> 
-> My idea for solving this was to unconditionally create NFT_MSG_NEWTABLE
-> followed by NFT_MSG_DELTABLE - in case the table exists, the first one
-> is a noop; in case the table doesn't exist, the second one won't provoke
-> an error message from kernel space.
+Hi,
 
-Does that work even work?
-new table x
-del table x
-add rule to x // table was deleted?
+I didn’t know if you had received my email from last week?
 
-Or are you talking about a new/del/new sequence?
+We manufacture ALL custom LOGO and branded products – over 300,000 to
+choose from.
 
-If it works, ok/fine, but it seems ugly.
+The most asked about product that we make, is the custom printed USB flash
+drives!
+We can print your logo on them and load your digital images, videos and
+files!
 
-> Since NFT_MSG_DELTABLE removes the table recursively, we don't need to
-> care about any content added by the other client.
+Here is what we include:
+-Any size memory you need: 64MB up to 128GB
+-We will print your logo on both sides, just ask!
+-Very Low Order Minimums
+-Need them quickly?  Not a problem, we offer Rush Service
 
-Yes, we can't do this in the --noflush case though.
+Email over a copy of your logo and we will create a design mock up for you
+at no cost!
 
-> Or is this about a generic solution for all commands not just
-> iptables-nft-restore (without --noflush)?
+Our higher memory sizes are a really good option right now!
 
-Its for ipt-nft-restore, including --noflush.
+Pricing is low right now, so let us know what you need and we will get you
+a quick quote.
 
-It would be good though to also speed up 'iptables-nft -A' later on
-by eliding cache completely.
+We always offer great rates for schools and nonprofits as well.
+
+Let us know what you would like quoted?
+
+Regards,
+
+Heather Millons
+Custom USB Account Manager
+
