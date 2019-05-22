@@ -2,65 +2,55 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 367802693C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 May 2019 19:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7303726DC3
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 May 2019 21:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728958AbfEVRjJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 May 2019 13:39:09 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:48122 "EHLO mx1.redhat.com"
+        id S1730081AbfEVTo0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 May 2019 15:44:26 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:44738 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727499AbfEVRjI (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 May 2019 13:39:08 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id A96D9285B4;
-        Wed, 22 May 2019 17:39:08 +0000 (UTC)
-Received: from egarver.localdomain (ovpn-123-106.rdu2.redhat.com [10.10.123.106])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 09D371001F41;
-        Wed, 22 May 2019 17:39:07 +0000 (UTC)
-Date:   Wed, 22 May 2019 13:39:07 -0400
-From:   Eric Garver <eric@garver.life>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-Subject: Re: [nft PATCH v3 2/2] tests/py: Support JSON validation
-Message-ID: <20190522173907.sezc2rq7efpoccxj@egarver.localdomain>
-Mail-Followup-To: Eric Garver <eric@garver.life>, Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-References: <20190522161453.23096-1-phil@nwl.cc>
- <20190522161453.23096-3-phil@nwl.cc>
+        id S1730513AbfEVToH (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 22 May 2019 15:44:07 -0400
+Received: from localhost ([::1]:57826 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1hTX9h-0003SM-Fk; Wed, 22 May 2019 21:44:05 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, Eric Garver <eric@garver.life>
+Subject: [nft PATCH v2 0/3] Resolve cache update woes
+Date:   Wed, 22 May 2019 21:44:03 +0200
+Message-Id: <20190522194406.16827-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190522161453.23096-3-phil@nwl.cc>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.30]); Wed, 22 May 2019 17:39:08 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, May 22, 2019 at 06:14:53PM +0200, Phil Sutter wrote:
-> Introduce a new flag -s/--schema to nft-test.py which enables validation
-> of any JSON input and output against our schema.
-> 
-> Make use of traceback module to get more details if validation fails.
-> 
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
-> ---
-> Changes since v2:
-> - Complain if --schema was given but not --json.
-> 
-> Changes since v1:
-> - Adjust commit message to changes from RFC.
-> 
-> Changes since RFC:
-> - Import builtin traceback module unconditionally
-> ---
+This series implements a fix for situations where a cache update removes
+local (still uncommitted) items from cache leading to spurious errors
+afterwards.
 
-Acked-by: Eric Garver <eric@garver.life>
+Changes since v1:
+- As suggested by Eric, I took his patch and folded my enhancement
+  (former patch 1) into his one.
+- Changed patch 3 to include Eric's fix.
+
+Eric Garver (1):
+  src: update cache if cmd is more specific
+
+Phil Sutter (2):
+  libnftables: Keep list of commands in nft context
+  src: Restore local entries after cache update
+
+ include/nftables.h                            |  2 +
+ src/libnftables.c                             | 21 ++---
+ src/rule.c                                    | 93 +++++++++++++++++++
+ .../shell/testcases/cache/0003_cache_update_0 | 14 +++
+ 4 files changed, 119 insertions(+), 11 deletions(-)
+
+-- 
+2.21.0
+
