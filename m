@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E5026DB4
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 May 2019 21:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BDB26DBE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 May 2019 21:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731460AbfEVToD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 May 2019 15:44:03 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:44728 "EHLO orbyte.nwl.cc"
+        id S1732628AbfEVToR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 May 2019 15:44:17 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:44754 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732423AbfEVToD (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 May 2019 15:44:03 -0400
-Received: from localhost ([::1]:57818 helo=tatos)
+        id S1731773AbfEVToR (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 22 May 2019 15:44:17 -0400
+Received: from localhost ([::1]:57842 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1hTX9c-0003S0-5K; Wed, 22 May 2019 21:44:00 +0200
+        id 1hTX9s-0003To-3S; Wed, 22 May 2019 21:44:16 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org, Eric Garver <eric@garver.life>
-Subject: [nft PATCH v2 2/3] libnftables: Keep list of commands in nft context
-Date:   Wed, 22 May 2019 21:44:05 +0200
-Message-Id: <20190522194406.16827-3-phil@nwl.cc>
+Subject: [nft PATCH v2 3/3] src: Restore local entries after cache update
+Date:   Wed, 22 May 2019 21:44:06 +0200
+Message-Id: <20190522194406.16827-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190522194406.16827-1-phil@nwl.cc>
 References: <20190522194406.16827-1-phil@nwl.cc>
@@ -31,111 +31,117 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-To fix the pending issues with cache updates, the list of commands needs
-to be accessible from within cache_update(). In theory, there is a path
-via nft->state->cmds but that struct parser_state is used (and
-initialized) by bison parser only so that does not work with JSON
-parser.
+When batching up multiple commands, one may run into a situation where
+the current command requires a cache update while the previous ones
+didn't and that causes objects added by previous commands to be removed
+from cache. If the current or any following command references any of
+these objects, the command is rejected.
+
+Resolve this by copying Florian's solution from iptables-nft: After
+droping the whole cache and populating it again with entries fetched
+from kernel, use the current list of commands to restore local entries
+again.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- include/nftables.h |  1 +
- src/libnftables.c  | 21 ++++++++++-----------
- 2 files changed, 11 insertions(+), 11 deletions(-)
+Changes since v1:
+- Don't add anonymous sets to cache when restoring, as suggested by Eric
+  Garver.
+---
+ src/rule.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
 
-diff --git a/include/nftables.h b/include/nftables.h
-index bb9bb2091716d..faacf26509104 100644
---- a/include/nftables.h
-+++ b/include/nftables.h
-@@ -102,6 +102,7 @@ struct nft_ctx {
- 	struct parser_state	*state;
- 	void			*scanner;
- 	void			*json_root;
-+	struct list_head	cmds;
- 	FILE			*f[MAX_INCLUDE_DEPTH];
- };
+diff --git a/src/rule.c b/src/rule.c
+index 17bf5bbbe680c..d1a86ea9fadd6 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -220,6 +220,78 @@ static int cache_init(struct netlink_ctx *ctx, enum cmd_ops cmd)
+ 	return 0;
+ }
  
-diff --git a/src/libnftables.c b/src/libnftables.c
-index 199dbc97b801c..f6ea668f6770a 100644
---- a/src/libnftables.c
-+++ b/src/libnftables.c
-@@ -143,6 +143,7 @@ struct nft_ctx *nft_ctx_new(uint32_t flags)
- 	nft_ctx_add_include_path(ctx, DEFAULT_INCLUDE_PATH);
- 	ctx->parser_max_errors	= 10;
- 	init_list_head(&ctx->cache.list);
-+	init_list_head(&ctx->cmds);
- 	ctx->flags = flags;
- 	ctx->output.output_fp = stdout;
- 	ctx->output.error_fp = stderr;
-@@ -342,7 +343,7 @@ static int nft_parse_bison_buffer(struct nft_ctx *nft, const char *buf,
- 	struct cmd *cmd;
- 	int ret;
- 
--	parser_init(nft, nft->state, msgs, cmds);
-+	parser_init(nft, nft->state, msgs, &nft->cmds);
- 	nft->scanner = scanner_init(nft->state);
- 	scanner_push_buffer(nft->scanner, &indesc_cmdline, buf);
- 
-@@ -381,7 +382,6 @@ int nft_run_cmd_from_buffer(struct nft_ctx *nft, const char *buf)
- {
- 	struct cmd *cmd, *next;
- 	LIST_HEAD(msgs);
--	LIST_HEAD(cmds);
- 	char *nlbuf;
- 	int rc = -EINVAL;
- 
-@@ -389,17 +389,17 @@ int nft_run_cmd_from_buffer(struct nft_ctx *nft, const char *buf)
- 	sprintf(nlbuf, "%s\n", buf);
- 
- 	if (nft_output_json(&nft->output))
--		rc = nft_parse_json_buffer(nft, nlbuf, &msgs, &cmds);
-+		rc = nft_parse_json_buffer(nft, nlbuf, &msgs, &nft->cmds);
- 	if (rc == -EINVAL)
--		rc = nft_parse_bison_buffer(nft, nlbuf, &msgs, &cmds);
-+		rc = nft_parse_bison_buffer(nft, nlbuf, &msgs, &nft->cmds);
- 	if (rc)
- 		goto err;
- 
--	if (nft_netlink(nft, &cmds, &msgs, nft->nf_sock) != 0)
-+	if (nft_netlink(nft, &nft->cmds, &msgs, nft->nf_sock) != 0)
- 		rc = -1;
- err:
- 	erec_print_list(&nft->output, &msgs, nft->debug_mask);
--	list_for_each_entry_safe(cmd, next, &cmds, list) {
-+	list_for_each_entry_safe(cmd, next, &nft->cmds, list) {
- 		list_del(&cmd->list);
- 		cmd_free(cmd);
++static void cache_add_set_cmd(struct nft_ctx *nft, struct cmd *cmd)
++{
++	struct table *table;
++
++	table = table_lookup(&cmd->handle, &nft->cache);
++	if (table == NULL)
++		return;
++
++	if (set_lookup(table, cmd->set->handle.set.name) == NULL)
++		set_add_hash(set_get(cmd->set), table);
++}
++
++static void cache_add_chain_cmd(struct nft_ctx *nft, struct cmd *cmd)
++{
++	struct table *table;
++	struct chain *chain;
++
++	table = table_lookup(&cmd->handle, &nft->cache);
++	if (table == NULL)
++		return;
++
++	if (cmd->chain == NULL) {
++		if (chain_lookup(table, &cmd->handle) == NULL) {
++			chain = chain_alloc(NULL);
++			handle_merge(&chain->handle, &cmd->handle);
++			chain_add_hash(chain, table);
++		}
++		return;
++	}
++	if (chain_lookup(table, &cmd->chain->handle) == NULL)
++		chain_add_hash(chain_get(cmd->chain), table);
++}
++
++static void cache_add_table_cmd(struct nft_ctx *nft, struct cmd *cmd)
++{
++	struct table *table;
++
++	if (table_lookup(&cmd->handle, &nft->cache))
++		return;
++
++	if (cmd->table == NULL) {
++		table = table_alloc();
++		handle_merge(&table->handle, &cmd->handle);
++		table_add_hash(table, &nft->cache);
++	} else {
++		table_add_hash(table_get(cmd->table), &nft->cache);
++	}
++}
++
++static void cache_add_commands(struct nft_ctx *nft)
++{
++	struct cmd *cmd;
++
++	list_for_each_entry(cmd, &nft->cmds, list) {
++		switch (cmd->obj) {
++		case CMD_OBJ_SET:
++			if (cmd->set->flags & NFT_SET_ANONYMOUS)
++				continue;
++			cache_add_set_cmd(nft, cmd);
++			break;
++		case CMD_OBJ_CHAIN:
++			cache_add_chain_cmd(nft, cmd);
++			break;
++		case CMD_OBJ_TABLE:
++			cache_add_table_cmd(nft, cmd);
++			break;
++		default:
++			break;
++		}
++	}
++}
++
+ /* Return a "score" of how complete local cache will be if
+  * cache_init_objects() ran for given cmd. Higher value
+  * means more complete. */
+@@ -270,6 +342,7 @@ replay:
  	}
-@@ -421,7 +421,6 @@ int nft_run_cmd_from_filename(struct nft_ctx *nft, const char *filename)
- {
- 	struct cmd *cmd, *next;
- 	LIST_HEAD(msgs);
--	LIST_HEAD(cmds);
- 	int rc;
+ 	cache->genid = genid;
+ 	cache->cmd = cmd;
++	cache_add_commands(nft);
+ 	return 0;
+ }
  
- 	rc = cache_update(nft, CMD_INVALID, &msgs);
-@@ -433,17 +432,17 @@ int nft_run_cmd_from_filename(struct nft_ctx *nft, const char *filename)
- 
- 	rc = -EINVAL;
- 	if (nft_output_json(&nft->output))
--		rc = nft_parse_json_filename(nft, filename, &msgs, &cmds);
-+		rc = nft_parse_json_filename(nft, filename, &msgs, &nft->cmds);
- 	if (rc == -EINVAL)
--		rc = nft_parse_bison_filename(nft, filename, &msgs, &cmds);
-+		rc = nft_parse_bison_filename(nft, filename, &msgs, &nft->cmds);
- 	if (rc)
- 		goto err;
- 
--	if (nft_netlink(nft, &cmds, &msgs, nft->nf_sock) != 0)
-+	if (nft_netlink(nft, &nft->cmds, &msgs, nft->nf_sock) != 0)
- 		rc = -1;
- err:
- 	erec_print_list(&nft->output, &msgs, nft->debug_mask);
--	list_for_each_entry_safe(cmd, next, &cmds, list) {
-+	list_for_each_entry_safe(cmd, next, &nft->cmds, list) {
- 		list_del(&cmd->list);
- 		cmd_free(cmd);
- 	}
 -- 
 2.21.0
 
