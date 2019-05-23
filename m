@@ -2,50 +2,84 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7952627D20
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2019 14:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA6627E69
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2019 15:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729962AbfEWMtL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 23 May 2019 08:49:11 -0400
-Received: from enkargame.com ([185.76.77.74]:26975 "EHLO s5.topes.top"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729966AbfEWMtK (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 23 May 2019 08:49:10 -0400
-X-Greylist: delayed 14597 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 May 2019 08:49:10 EDT
-To:     netfilter-devel@vger.kernel.org
-From:   Oliver Klemens <info@s5.topes.top>
-Subject: FW: AW: Kontakt.
-Date:   Thu, 23 May 2019 14:49:10 +0200
-Message-ID: <20190523_124910_089876.info@s5.topes.top>
-X-Mailer: WEBMAIL
+        id S1729902AbfEWNnY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 23 May 2019 09:43:24 -0400
+Received: from Chamillionaire.breakpoint.cc ([146.0.238.67]:48814 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729698AbfEWNnX (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 23 May 2019 09:43:23 -0400
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1hTo09-0007ij-OL; Thu, 23 May 2019 15:43:21 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Subject: [PATCH nf-next 0/8] netfilter: remove skb_make_writable helper
+Date:   Thu, 23 May 2019 15:44:04 +0200
+Message-Id: <20190523134412.3295-1-fw@strlen.de>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Mime-Version: 1.0
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Sehr geehrte Damen und Herren,
+This series removes skb_make_writable.  All users are converted
+to skb_ensure_writable.
 
-nach unserem Besuch Ihrer Homepage möchten wir Ihnen ein Angebot von Produkten vorstellen, das Ihnen ermöglichen wird, den Verkauf Ihrer Produkte sowie Dienstleistungen deutlich zu erhöhen.
+In Hindsight, skb_ensure_writable() should never have been added to
+the tree, and instead we should have moved skb_make_writable to the core.
 
-Die Datenbanken der Firmen sind in für Sie interessante und relevante Zielgruppen untergliedert.
+What happened instead that skb_ensure_writable was added to OVS, then
+moved to core, then extended in functionality until the point it has the
+same effect and same pre and post-conditions as skb_make_writable.
 
-Die Firmenangaben beinhalten: Name der Firma, Ansprechpartner, E-mail Adresse, Tel. + Fax-Nr., PLZ, Ort, Straße etc.
+So, remove skb_make_writable and use the new function everywhere.
+Patch 1 has a more detailed explanation/walkthrough of the two functions
+and their pre and post-conditions.
 
-1. Gesamtpaket 2019 DE - 1,4 Mio. Firmenadressen ( 1 457 620 ) - 190 € ( bis zum 23.05.2019 )
-2. Gesamtpaket 2019 DE,AT,CH - 1,7 Mio. Firmenadressen ( 1 747 921 ) - 240 € ( bis zum 23.05.2019 )
-3. Schweiz 2019 ( 187 911 ) - 149 € ( bis zum 23.05.2019 )
-4. Österreich 2019 ( 104 000 ) - 149 € ( bis zum 23.05.2019 )
+Florian Westphal (8):
+      netfilter: bridge: convert skb_make_writable to skb_ensure_writable
+      netfilter: ipvs: prefer skb_ensure_writable
+      netfilter: conntrack, nat: prefer skb_ensure_writable
+      netfilter: ipv4: prefer skb_ensure_writable
+      netfilter: nf_tables: prefer skb_ensure_writable
+      netfilter: xt_HL: prefer skb_ensure_writable
+      netfilter: tcpmss, optstrip: prefer skb_ensure_writable
+      netfilter: replace skb_make_writable with skb_ensure_writable
 
-Die Verwendungsmöglichkeiten der Datenbanken sind praktisch unbegrenzt und Sie können durch Verwendung der von uns entwickelten
-Programme des personalisierten Versendens von Angeboten u.ä. mittels E-mailing bzw. Fax effektive und sichere Werbekampagnen damit durchführen.
-
-Bitte informieren Sie sich über die weiteren Details einmal unverbindlich auf unseren Webseiten:
-
-http://www.dbc-kontakt.net/?page=catalog
-
-Mit freundlichen Grüßen
-Oliver Klemens
+ include/linux/netfilter.h                   |    5 -----
+ net/bridge/netfilter/ebt_dnat.c             |    2 +-
+ net/bridge/netfilter/ebt_redirect.c         |    2 +-
+ net/bridge/netfilter/ebt_snat.c             |    2 +-
+ net/ipv4/netfilter/arpt_mangle.c            |    2 +-
+ net/ipv4/netfilter/ipt_ECN.c                |    4 ++--
+ net/ipv4/netfilter/nf_nat_h323.c            |    2 +-
+ net/ipv4/netfilter/nf_nat_snmp_basic_main.c |    2 +-
+ net/netfilter/core.c                        |   22 ----------------------
+ net/netfilter/ipvs/ip_vs_app.c              |    4 ++--
+ net/netfilter/ipvs/ip_vs_core.c             |    4 ++--
+ net/netfilter/ipvs/ip_vs_ftp.c              |    4 ++--
+ net/netfilter/ipvs/ip_vs_proto_sctp.c       |    4 ++--
+ net/netfilter/ipvs/ip_vs_proto_tcp.c        |    4 ++--
+ net/netfilter/ipvs/ip_vs_proto_udp.c        |    4 ++--
+ net/netfilter/ipvs/ip_vs_xmit.c             |   12 ++++++------
+ net/netfilter/nf_conntrack_proto_sctp.c     |    2 +-
+ net/netfilter/nf_conntrack_seqadj.c         |    4 ++--
+ net/netfilter/nf_nat_helper.c               |    4 ++--
+ net/netfilter/nf_nat_proto.c                |   24 ++++++++++++------------
+ net/netfilter/nf_nat_sip.c                  |    2 +-
+ net/netfilter/nf_synproxy_core.c            |    2 +-
+ net/netfilter/nfnetlink_queue.c             |    2 +-
+ net/netfilter/nft_exthdr.c                  |    3 ++-
+ net/netfilter/nft_payload.c                 |    6 +++---
+ net/netfilter/xt_DSCP.c                     |    8 ++++----
+ net/netfilter/xt_HL.c                       |    4 ++--
+ net/netfilter/xt_TCPMSS.c                   |    2 +-
+ net/netfilter/xt_TCPOPTSTRIP.c              |   28 +++++++++++++---------------
+ 29 files changed, 71 insertions(+), 99 deletions(-)
 
