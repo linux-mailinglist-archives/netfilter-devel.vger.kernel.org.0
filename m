@@ -2,119 +2,139 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B7328985
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2019 21:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D88A28C63
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2019 23:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390008AbfEWTjY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 23 May 2019 15:39:24 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:46423 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390559AbfEWTjY (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 23 May 2019 15:39:24 -0400
-Received: by mail-pl1-f196.google.com with SMTP id r18so3135048pls.13
-        for <netfilter-devel@vger.kernel.org>; Thu, 23 May 2019 12:39:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ODtJZkOMIQXDJ07If6u5vVfYLS8HO4jW6BccBOZirE4=;
-        b=QJn3d5d6d4KHKVjgIQOwrSiF+klknzTVaiKc4O/4hGsHVB6BL43pYerBsOEWXSN9VX
-         I2+Qe78lCW/q72UW8muxZLBP6Z9JWfr+BSKxZXDgoqOcOd5qJ+UpCU6nKGnCpTPlZTFd
-         L/AwWr1mQUxze/ZBSlo9jL1H05uTsoafQUyOGUpiaKLkh3cCepBACzuthJP3/1n0d4mZ
-         +mWjJFX/EjNA/RxAE+q3+z5pgzTKv/EV9wnl6NNGUKZrnAXYLqZL8vtrGcnq7gQzvcM7
-         XwNFFFulnaeqHMM6ymCrud0zKIa3sSpkECHkh8xjQr4YXap4QUAdFIU1vHDPbN58QKMv
-         eX+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ODtJZkOMIQXDJ07If6u5vVfYLS8HO4jW6BccBOZirE4=;
-        b=pNToLI+ATUrggj0IthAMP+3oc50yrIhYq5uEMqe2E5YENqhDL3FKnXqv08y9CyPM+q
-         krUBh7nLseyAfX6xDa+J2CeJ7kASeXy6I/8RwKY/1kbQ1TAHTAHKj5sq/xdrVJOUAAce
-         SEbS0meMV6VDXO3lw+H8V9rH9kVYnwt+GM6Kgy9cJT1abVQQLLVXClxzMOSrwsgi5Xjz
-         0DFphApBFdzhIFVz/P/R8omQEhLJ1NXI0kvYeCPrAgj8nWbTkvElwiID6TTYFZXN9n3K
-         mHCBK/KHeQhCfRrCTMGiq20+4OYDZysMpT8XdyusEVZy0zGqab578n6z8/kGSAA/tkBR
-         s8lg==
-X-Gm-Message-State: APjAAAU6U2l6xchcQEwvqjeF+M9GhJk33cYC5kIXE4msYzsf897JVeEn
-        YW2nujfi6Ro4NIg+lGKncOC8QsIsOCo=
-X-Google-Smtp-Source: APXvYqylDBQuiJjror+I1ac7XVmzetVLPDmcUVYftLGFS6v08PRnIP2JI7sFMpa5MQcNg1FMDprimA==
-X-Received: by 2002:a17:902:21:: with SMTP id 30mr84239411pla.302.1558640363250;
-        Thu, 23 May 2019 12:39:23 -0700 (PDT)
-Received: from localhost.localdomain ([2405:204:e08c:113f:3445:8a22:76d:1471])
-        by smtp.gmail.com with ESMTPSA id z4sm217711pfa.142.2019.05.23.12.39.20
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 May 2019 12:39:22 -0700 (PDT)
-From:   Shekhar Sharma <shekhar250198@gmail.com>
+        id S2388220AbfEWVf4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 23 May 2019 17:35:56 -0400
+Received: from mail.us.es ([193.147.175.20]:46928 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388229AbfEWVf4 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 23 May 2019 17:35:56 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 7684DDA707
+        for <netfilter-devel@vger.kernel.org>; Thu, 23 May 2019 23:35:53 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 66A52DA709
+        for <netfilter-devel@vger.kernel.org>; Thu, 23 May 2019 23:35:53 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 5C4E0DA706; Thu, 23 May 2019 23:35:53 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 49F8ADA707;
+        Thu, 23 May 2019 23:35:51 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Thu, 23 May 2019 23:35:51 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (sys.soleta.eu [212.170.55.40])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 1D66E4265A32;
+        Thu, 23 May 2019 23:35:51 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Cc:     Shekhar Sharma <shekhar250198@gmail.com>,
-        Eric Garver <eric@garver.life>
-Subject: Re: [PATCH nft v3]tests: py: fix python3.
-Date:   Fri, 24 May 2019 01:09:08 +0530
-Message-Id: <20190523193908.405176-1-shekhar250198@gmail.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     davem@davemloft.net, netdev@vger.kernel.org
+Subject: [PATCH 00/11] Netfilter/IPVS fixes for net
+Date:   Thu, 23 May 2019 23:35:36 +0200
+Message-Id: <20190523213547.15523-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Yes, the '\' can be removed, will remove it if I make any other changes in the future.
+Hi David,
 
-Thanks Eric, Pablo and Shivani for all your hints :-).
+The following patchset contains Netfilter/IPVS fixes for your net tree:
 
-Shekhar
+1) Fix crash when dumping rules after conversion to RCU,
+   from Florian Westphal.
 
-On Fri, May 24, 2019, 12:45 AM shekhar sharma <shekhar250198@gmail.com> wrote:
-Yes, the '\' can be removed, will remove it if I make any other changes in the future.
+2) Fix incorrect hook reinjection from nf_queue in case NF_REPEAT,
+   from Jagdish Motwani.
 
-Thanks Eric, Pablo and Shivani for all your hints :-). 
+3) Fix check for route existence in fib extension, from Phil Sutter.
 
-Shekhar 
+4) Fix use after free in ip_vs_in() hook, from YueHaibing.
 
-On Fri, May 24, 2019, 12:41 AM Eric Garver <eric@garver.life> wrote:
-On Thu, May 23, 2019 at 11:56:22PM +0530, Shekhar Sharma wrote:
-> This version of the patch converts the file into python3 and also uses
-> .format() method to make the print statments cleaner.
-> 
-> The version history of this topic is:
-> 
-> v1: conversion to py3 by changing print statements.
-> v2: adds the '__future__' package for compatibility with py2 and py3.
-> v3: solves the 'version' problem in argparse by adding a new argument.
-> v4: uses .format() method to make the print statements cleaner.
-> 
-> 
-> Signed-off-by: Shekhar Sharma <shekhar250198@gmail.com>
-> ---
+5) Check for veth existence from netfilter selftests,
+   from Jeffrin Jose T.
 
-Acked-by: Eric Garver <eric@garver.life>
+6) Checksum corruption in UDP NAT helpers due to typo,
+   from Florian Westphal.
 
->  tests/py/nft-test.py | 47 ++++++++++++++++++++++++--------------------
->  1 file changed, 26 insertions(+), 21 deletions(-)
-> 
-> diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
-> index 1c0afd0e..ab26d08d 100755
-> --- a/tests/py/nft-test.py
-> +++ b/tests/py/nft-test.py
-[..]
-> @@ -1353,15 +1358,15 @@ def main():
->      signal.signal(signal.SIGTERM, signal_handler)
->  
->      if os.getuid() != 0:
-> -        print "You need to be root to run this, sorry"
-> +        print("You need to be root to run this, sorry")
->          return
->  
->      # Change working directory to repository root
->      os.chdir(TESTS_PATH + "/../..")
->  
->      if not os.path.exists('src/.libs/libnftables.so'):
-> -        print "The nftables library does not exist. " \
-> -              "You need to build the project."
-> +        print("The nftables library does not exist. " \
-> +              "You need to build the project.")
+7) Pass up packets to classic forwarding path regardless of
+   IPv4 DF bit, patch for the flowtable infrastructure from Florian.
 
-nit: The trailing '\' can be removed now that the strings are inside
-parenthesis. I don't think it's worth rerolling the patch though.
+8) Set liberal TCP tracking for flows that are placed in the
+   flowtable, in case they need to go back to classic forwarding path,
+   also from Florian.
+
+9) Don't add flow with sequence adjustment to flowtable, from Florian.
+
+10) Skip IPv4 options from IPv6 datapath in flowtable, from Florian.
+
+11) Add selftest for the flowtable infrastructure, from Florian.
+
+You can pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit ee8a2b95b737d5989efeb477d5a1ef5e6955b830:
+
+  Merge branch 'mlxsw-Two-port-module-fixes' (2019-05-18 13:13:40 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git HEAD
+
+for you to fetch changes up to 2de03b45236f3af1800755614fd434d347adf046:
+
+  selftests: netfilter: add flowtable test script (2019-05-22 10:56:11 +0200)
+
+----------------------------------------------------------------
+Florian Westphal (7):
+      netfilter: nf_tables: fix oops during rule dump
+      netfilter: nat: fix udp checksum corruption
+      netfilter: nf_flow_table: ignore DF bit setting
+      netfilter: nft_flow_offload: set liberal tracking mode for tcp
+      netfilter: nft_flow_offload: don't offload when sequence numbers need adjustment
+      netfilter: nft_flow_offload: IPCB is only valid for ipv4 family
+      selftests: netfilter: add flowtable test script
+
+Jagdish Motwani (1):
+      netfilter: nf_queue: fix reinject verdict handling
+
+Jeffrin Jose T (1):
+      selftests: netfilter: missing error check when setting up veth interface
+
+Phil Sutter (1):
+      netfilter: nft_fib: Fix existence check support
+
+YueHaibing (1):
+      ipvs: Fix use-after-free in ip_vs_in
+
+ include/net/netfilter/nft_fib.h                    |   2 +-
+ net/ipv4/netfilter/nft_fib_ipv4.c                  |  23 +-
+ net/ipv6/netfilter/nft_fib_ipv6.c                  |  16 +-
+ net/netfilter/ipvs/ip_vs_core.c                    |   2 +-
+ net/netfilter/nf_flow_table_ip.c                   |   3 +-
+ net/netfilter/nf_nat_helper.c                      |   2 +-
+ net/netfilter/nf_queue.c                           |   1 +
+ net/netfilter/nf_tables_api.c                      |  20 +-
+ net/netfilter/nft_fib.c                            |   6 +-
+ net/netfilter/nft_flow_offload.c                   |  31 +-
+ tools/testing/selftests/netfilter/Makefile         |   2 +-
+ tools/testing/selftests/netfilter/nft_flowtable.sh | 324 +++++++++++++++++++++
+ tools/testing/selftests/netfilter/nft_nat.sh       |   6 +-
+ 13 files changed, 375 insertions(+), 63 deletions(-)
+ create mode 100755 tools/testing/selftests/netfilter/nft_flowtable.sh
