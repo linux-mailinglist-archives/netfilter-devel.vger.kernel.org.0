@@ -2,86 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C742869F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2019 21:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC1128972
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 May 2019 21:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388065AbfEWTLE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 23 May 2019 15:11:04 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:54344 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388061AbfEWTLD (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 23 May 2019 15:11:03 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E060A300502A;
-        Thu, 23 May 2019 19:11:02 +0000 (UTC)
-Received: from egarver.localdomain (ovpn-122-215.rdu2.redhat.com [10.10.122.215])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0110A19735;
-        Thu, 23 May 2019 19:11:00 +0000 (UTC)
-Date:   Thu, 23 May 2019 15:10:59 -0400
-From:   Eric Garver <eric@garver.life>
-To:     Shekhar Sharma <shekhar250198@gmail.com>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft v4] tests: py: fix python3
-Message-ID: <20190523191059.cgvbmg32bo533cpv@egarver.localdomain>
-Mail-Followup-To: Eric Garver <eric@garver.life>,
-        Shekhar Sharma <shekhar250198@gmail.com>,
-        netfilter-devel@vger.kernel.org
-References: <20190523182622.386876-1-shekhar250198@gmail.com>
+        id S2390073AbfEWTh1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 23 May 2019 15:37:27 -0400
+Received: from mail-wr1-f46.google.com ([209.85.221.46]:46949 "EHLO
+        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390940AbfEWTYi (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 23 May 2019 15:24:38 -0400
+Received: by mail-wr1-f46.google.com with SMTP id r7so7468774wrr.13
+        for <netfilter-devel@vger.kernel.org>; Thu, 23 May 2019 12:24:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fpq8fqriernE9axW0XtYVRi98MiE0xbAOb/sSkXoc1g=;
+        b=lvVHede5b423hMj2zFGTDdG8r5dfQQpwB9YxA0ELG4Ql4yZ3tJqIOEDumgaIYjoNoE
+         jYeF2BwBeh7+UFCoQE4GZS2Hl0RKpuys2shellcm25+yC5HvDRob/Xa7aziUY2+hTnXM
+         AxMH68hwCPcwzVpHpt4H0YCb8dBj221bu7JkXf35HZ+0akrT8cVfaKrt6rqXnH9+3P9d
+         hOHwEcxEjG1UQ9hKCyDSQ05Dom2pzRwdXnYwnZY7VtEYSVphUJRS12XgWXSMwnB4vHIo
+         B1+hSSS4z3T44ZvfUD4PvadAvXY0W/tDXxIilDb9KWa3xIy5gdkGANpdO7NSBZGIQZUf
+         WKEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fpq8fqriernE9axW0XtYVRi98MiE0xbAOb/sSkXoc1g=;
+        b=ELfNBut7Ff5uHmW8glpkYHLlOwuAg2zkZj8VFtP76uGrfoG9nuLNAvxiVml45AxCaI
+         gHu9SBHUCzoHIPpoQJcMh0LW09wBa9HtZdmEvMhEH6EgcTvZJQb965ipfYzuZYJUU1I5
+         N5XLlvQ+2A4HGwKtK9ordDdnEDXJiPQ/GBf3kSFmC4u0dztceuIwXuYilsxmmyH5E+de
+         gPF40+aPv4pqYPij6usDr589OUNcZnP9Z5RXJBZtMiN5YZT5URdcN3qWySLxJF85cbzD
+         VBEL+O9yyzXvqx5A8NwJo+v75FylaMyfeLgEk34lGjGANYnt1GSDOENtBymxlL3Uws28
+         D1aw==
+X-Gm-Message-State: APjAAAXZplzwlcF1wcioUuxnw+j5TULK6TsNScaw0NeATr4GXH7geldZ
+        aO4sCvySx3w4TMjAlJIbCd/1jfSJ
+X-Google-Smtp-Source: APXvYqzEICO6jrP6dHXZfXA6SihERQHaq7zEmwHaLOYvZchcAeYLVdlcI9VB9K//Pl+IY6jIraxXCA==
+X-Received: by 2002:adf:f704:: with SMTP id r4mr3870602wrp.27.1558639477045;
+        Thu, 23 May 2019 12:24:37 -0700 (PDT)
+Received: from VGer.neptura.lan (neptura.org. [88.174.209.153])
+        by smtp.gmail.com with ESMTPSA id j28sm245649wrd.64.2019.05.23.12.24.36
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 May 2019 12:24:36 -0700 (PDT)
+From:   =?UTF-8?q?St=C3=A9phane=20Veyret?= <sveyret@gmail.com>
+To:     netfilter-devel@vger.kernel.org
+Cc:     =?UTF-8?q?St=C3=A9phane=20Veyret?= <sveyret@gmail.com>
+Subject: [PATCH nf-next v4 0/1] add ct expectation support
+Date:   Thu, 23 May 2019 21:22:10 +0200
+Message-Id: <20190523192211.25402-1-sveyret@gmail.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190523182622.386876-1-shekhar250198@gmail.com>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Thu, 23 May 2019 19:11:03 +0000 (UTC)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, May 23, 2019 at 11:56:22PM +0530, Shekhar Sharma wrote:
-> This version of the patch converts the file into python3 and also uses
-> .format() method to make the print statments cleaner.
-> 
-> The version history of this topic is:
-> 
-> v1: conversion to py3 by changing print statements.
-> v2: adds the '__future__' package for compatibility with py2 and py3.
-> v3: solves the 'version' problem in argparse by adding a new argument.
-> v4: uses .format() method to make the print statements cleaner.
-> 
-> 
-> Signed-off-by: Shekhar Sharma <shekhar250198@gmail.com>
-> ---
+Please find the patch for kernel including suggested modifications.
+I will send library and nft modifications when code review will be finished for kernel part.
+Thank you.
 
-Acked-by: Eric Garver <eric@garver.life>
+Stéphane Veyret (1):
+  netfilter: nft_ct: add ct expectations support
 
->  tests/py/nft-test.py | 47 ++++++++++++++++++++++++--------------------
->  1 file changed, 26 insertions(+), 21 deletions(-)
-> 
-> diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
-> index 1c0afd0e..ab26d08d 100755
-> --- a/tests/py/nft-test.py
-> +++ b/tests/py/nft-test.py
-[..]
-> @@ -1353,15 +1358,15 @@ def main():
->      signal.signal(signal.SIGTERM, signal_handler)
->  
->      if os.getuid() != 0:
-> -        print "You need to be root to run this, sorry"
-> +        print("You need to be root to run this, sorry")
->          return
->  
->      # Change working directory to repository root
->      os.chdir(TESTS_PATH + "/../..")
->  
->      if not os.path.exists('src/.libs/libnftables.so'):
-> -        print "The nftables library does not exist. " \
-> -              "You need to build the project."
-> +        print("The nftables library does not exist. " \
-> +              "You need to build the project.")
+ include/uapi/linux/netfilter/nf_tables.h |  14 ++-
+ net/netfilter/nft_ct.c                   | 145 ++++++++++++++++++++++-
+ 2 files changed, 156 insertions(+), 3 deletions(-)
 
-nit: The trailing '\' can be removed now that the strings are inside
-parenthesis. I don't think it's worth rerolling the patch though.
+-- 
+2.21.0
+
