@@ -2,85 +2,56 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6825129FD5
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 May 2019 22:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270E129FE5
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 May 2019 22:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403762AbfEXU0m (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 May 2019 16:26:42 -0400
-Received: from mail.us.es ([193.147.175.20]:37532 "EHLO mail.us.es"
+        id S2404156AbfEXUaL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 24 May 2019 16:30:11 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:57554 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404009AbfEXU0l (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 May 2019 16:26:41 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id E55AEF2808
-        for <netfilter-devel@vger.kernel.org>; Fri, 24 May 2019 22:26:39 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id D9D71DA704
-        for <netfilter-devel@vger.kernel.org>; Fri, 24 May 2019 22:26:39 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id CF526DA703; Fri, 24 May 2019 22:26:39 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id A3DBBDA701;
-        Fri, 24 May 2019 22:26:37 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 24 May 2019 22:26:37 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [31.4.219.201])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 617444265A32;
-        Fri, 24 May 2019 22:26:37 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     fw@strlen.de
-Subject: [PATCH nf] netfilter: nf_tables: fix module autoload with inet family
-Date:   Fri, 24 May 2019 22:26:34 +0200
-Message-Id: <20190524202634.24814-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2403762AbfEXUaK (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 24 May 2019 16:30:10 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 135313082B07;
+        Fri, 24 May 2019 20:30:10 +0000 (UTC)
+Received: from egarver.localdomain (ovpn-122-200.rdu2.redhat.com [10.10.122.200])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EC32A5D9D3;
+        Fri, 24 May 2019 20:30:04 +0000 (UTC)
+Date:   Fri, 24 May 2019 16:30:03 -0400
+From:   Eric Garver <eric@garver.life>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [nft PATCH v2 2/3] libnftables: Keep list of commands in nft
+ context
+Message-ID: <20190524203003.csgrjweqksna3bzw@egarver.localdomain>
+Mail-Followup-To: Eric Garver <eric@garver.life>, Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+References: <20190522194406.16827-1-phil@nwl.cc>
+ <20190522194406.16827-3-phil@nwl.cc>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190522194406.16827-3-phil@nwl.cc>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Fri, 24 May 2019 20:30:10 +0000 (UTC)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Use MODULE_ALIAS_NFT_EXPR() to make happy the inet family with nat.
+On Wed, May 22, 2019 at 09:44:05PM +0200, Phil Sutter wrote:
+> To fix the pending issues with cache updates, the list of commands needs
+> to be accessible from within cache_update(). In theory, there is a path
+> via nft->state->cmds but that struct parser_state is used (and
+> initialized) by bison parser only so that does not work with JSON
+> parser.
+> 
+> Signed-off-by: Phil Sutter <phil@nwl.cc>
+> ---
 
-Fixes: 63ce3940f3ab ("netfilter: nft_redir: add inet support")
-Fixes: 071657d2c38c ("netfilter: nft_masq: add inet support")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_masq.c  | 3 +--
- net/netfilter/nft_redir.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/net/netfilter/nft_masq.c b/net/netfilter/nft_masq.c
-index 86fd90085eaf..8c1612d6bc2c 100644
---- a/net/netfilter/nft_masq.c
-+++ b/net/netfilter/nft_masq.c
-@@ -307,5 +307,4 @@ module_exit(nft_masq_module_exit);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Arturo Borrero Gonzalez <arturo@debian.org>");
--MODULE_ALIAS_NFT_AF_EXPR(AF_INET6, "masq");
--MODULE_ALIAS_NFT_AF_EXPR(AF_INET, "masq");
-+MODULE_ALIAS_NFT_EXPR("masq");
-diff --git a/net/netfilter/nft_redir.c b/net/netfilter/nft_redir.c
-index da74fdc4a684..8787e9f8ed71 100644
---- a/net/netfilter/nft_redir.c
-+++ b/net/netfilter/nft_redir.c
-@@ -294,5 +294,4 @@ module_exit(nft_redir_module_exit);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Arturo Borrero Gonzalez <arturo@debian.org>");
--MODULE_ALIAS_NFT_AF_EXPR(AF_INET, "redir");
--MODULE_ALIAS_NFT_AF_EXPR(AF_INET6, "redir");
-+MODULE_ALIAS_NFT_EXPR("nat");
--- 
-2.11.0
-
-
+Acked-by: Eric Garver <eric@garver.life>
