@@ -2,116 +2,248 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1869E29EC5
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 May 2019 21:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAE229E45
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 May 2019 20:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391131AbfEXTEo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 May 2019 15:04:44 -0400
-Received: from ganesha.gnumonks.org ([213.95.27.120]:56329 "EHLO
-        ganesha.gnumonks.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727115AbfEXTEo (ORCPT
+        id S1728920AbfEXSoY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 24 May 2019 14:44:24 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:37412 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728594AbfEXSoY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 May 2019 15:04:44 -0400
-X-Greylist: delayed 1456 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 May 2019 15:04:43 EDT
-Received: from [31.4.219.201] (helo=gnumonks.org)
-        by ganesha.gnumonks.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.84_2)
-        (envelope-from <pablo@gnumonks.org>)
-        id 1hUF7A-0000nb-HC; Fri, 24 May 2019 20:40:26 +0200
-Date:   Fri, 24 May 2019 20:40:22 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     Eric Garver <e@erig.me>, netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH 3/3] src: Support intra-transaction rule references
-Message-ID: <20190524183934.uzqg6ps5kw36ucxp@salvia>
-References: <20190522153035.19806-1-phil@nwl.cc>
- <20190522153035.19806-4-phil@nwl.cc>
+        Fri, 24 May 2019 14:44:24 -0400
+Received: by mail-pf1-f193.google.com with SMTP id a23so5827706pff.4
+        for <netfilter-devel@vger.kernel.org>; Fri, 24 May 2019 11:44:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hfvd20yKR8tUQycpK5AX6Z9nuR65uyqNJ0Z2WxNdz9c=;
+        b=tMSM6z90tPapZXkBjTlO2CGbFkvgc58BbcEHz0Tr38+max7WQK+bS3jtFHA1VQFzc9
+         sKjZLHs4aciG3091jFD9I7ZxlZLiNRbLYuFj6TdfWaySkJjZjGg7ZV727u5XZ1T0663l
+         Fy6Q2k3dxffMliUk/FUsrmjykaFtZYT8cURtmdXZ8fLLqpaWQsiy90VL+Uw/UXMIDrBM
+         GCJJ/gNFxrQ3Z7KCvBQFmd6OEsdfSiZhbzRRQcUT0yIevQjSuNgIspA5rjeuVzMhxJPa
+         yopUSPl3RI7RSRSwyxftui/8AO2Fx07UcWs/TILBn/G7MpYYxcPnDjgxP6dgSVCv4Dmc
+         rt3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hfvd20yKR8tUQycpK5AX6Z9nuR65uyqNJ0Z2WxNdz9c=;
+        b=dlbkzdJm0JVbx3fKSR7CvOWKeRQXhteGhAuwtAa/bDKkW5djlHVWty/JPO//ZdiIuA
+         f7Dv8zaPLP14RLHT3R0NI5cuy8bzifGgoGpJG5IACUDIZdHd7r9msUHNBWFlCkeq10hy
+         XR2ssKdCCFHtaRN7OaRCdzrmA9XA/gOAyW7JVcr2qstoj7SUc3w8ybu9fd0xdw6DfxYJ
+         Gj1J+vSiMk2Php/NbJzHsGNVvRBTT6C6KA2W97TIq2ourhajmygtYyVZjSUEQNqaiG7p
+         1vuH2UeX9jFiS+GTplnCdK3jlqK1DDCz53foYlADZHowEoGJBUn27JTsqNcCaMWuKhHK
+         V6sw==
+X-Gm-Message-State: APjAAAXR2TMMR756Y+ikII0dQBGRiXBB4rrNOQliA51p3Av18Yvhz3TZ
+        UFNJZBzd6mOLkznsvXrAzO64LVR9XGA=
+X-Google-Smtp-Source: APXvYqxYPW1W2RAnW4nABdlhqEJ/FLhFCcOpwQQ5yPTLqIEdJpRZ+ZLjkjBY7RapGeYemZ7N3q2ogA==
+X-Received: by 2002:a63:c508:: with SMTP id f8mr22217036pgd.48.1558723462934;
+        Fri, 24 May 2019 11:44:22 -0700 (PDT)
+Received: from localhost.localdomain ([2405:204:e08c:113f:983f:2b22:f507:ea96])
+        by smtp.gmail.com with ESMTPSA id a26sm4544189pfl.177.2019.05.24.11.44.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 May 2019 11:44:22 -0700 (PDT)
+From:   Shekhar Sharma <shekhar250198@gmail.com>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Shekhar Sharma <shekhar250198@gmail.com>
+Subject: [PATCH nft v1] tests: json_echo: fix python3
+Date:   Sat, 25 May 2019 00:14:09 +0530
+Message-Id: <20190524184409.466036-1-shekhar250198@gmail.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190522153035.19806-4-phil@nwl.cc>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Spam-Score: -2.7 (--)
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-One comment see below.
 
-On Wed, May 22, 2019 at 05:30:35PM +0200, Phil Sutter wrote:
-> @@ -3237,10 +3222,62 @@ static int rule_evaluate(struct eval_ctx *ctx, struct rule *rule)
->  		return -1;
->  	}
->  
-> -	if (rule->handle.index.id &&
-> -	    rule_translate_index(ctx, rule))
-> -		return -1;
-> +	table = table_lookup(&rule->handle, &ctx->nft->cache);
-> +	if (!table)
-> +		return table_not_found(ctx);
-> +
-> +	chain = chain_lookup(table, &rule->handle);
-> +	if (!chain)
-> +		return chain_not_found(ctx);
->  
-> +	if (rule->handle.index.id) {
-> +		ref = rule_lookup_by_index(chain, rule->handle.index.id);
-> +		if (!ref)
-> +			return cmd_error(ctx, &rule->handle.index.location,
-> +					 "Could not process rule: %s",
-> +					 strerror(ENOENT));
-> +
-> +		link_rules(rule, ref);
-> +	} else if (rule->handle.handle.id) {
-> +		ref = rule_lookup(chain, rule->handle.handle.id);
-> +		if (!ref)
-> +			return cmd_error(ctx, &rule->handle.handle.location,
-> +					 "Could not process rule: %s",
-> +					 strerror(ENOENT));
-> +	} else if (rule->handle.position.id) {
-> +		ref = rule_lookup(chain, rule->handle.position.id);
-> +		if (!ref)
-> +			return cmd_error(ctx, &rule->handle.position.location,
-> +					 "Could not process rule: %s",
-> +					 strerror(ENOENT));
-> +	}
-> +
+This patch converts the 'run-test.py' file to run on both python2 and python3.
 
-Nitpick: Probably move this code below into a function, something
-like rule_cache_update().
+Signed-off-by: Shekhar Sharma <shekhar250198@gmail.com>
+---
+ tests/json_echo/run-test.py | 45 +++++++++++++++++++------------------
+ 1 file changed, 23 insertions(+), 22 deletions(-)
 
-> +	switch (op) {
-> +	case CMD_INSERT:
-> +		rule_get(rule);
-> +		if (ref)
-> +			list_add_tail(&rule->list, &ref->list);
-> +		else
-> +			list_add(&rule->list, &chain->rules);
-> +		break;
-> +	case CMD_ADD:
-> +		rule_get(rule);
-> +		if (ref)
-> +			list_add(&rule->list, &ref->list);
-> +		else
-> +			list_add_tail(&rule->list, &chain->rules);
-> +		break;
-> +	case CMD_REPLACE:
-> +		rule_get(rule);
-> +		list_add(&rule->list, &ref->list);
-> +		/* fall through */
-> +	case CMD_DELETE:
-> +		list_del(&ref->list);
-> +		rule_free(ref);
-> +		break;
-> +	default:
-> +		break;
-> +	}
->  	return 0;
->  }
+diff --git a/tests/json_echo/run-test.py b/tests/json_echo/run-test.py
+index 0132b139..f5c81b7d 100755
+--- a/tests/json_echo/run-test.py
++++ b/tests/json_echo/run-test.py
+@@ -1,5 +1,7 @@
+ #!/usr/bin/python2
+ 
++from nftables import Nftables
++from __future__ import print_function
+ import sys
+ import os
+ import json
+@@ -7,14 +9,13 @@ import json
+ TESTS_PATH = os.path.dirname(os.path.abspath(__file__))
+ sys.path.insert(0, os.path.join(TESTS_PATH, '../../py/'))
+ 
+-from nftables import Nftables
+ 
+ # Change working directory to repository root
+ os.chdir(TESTS_PATH + "/../..")
+ 
+ if not os.path.exists('src/.libs/libnftables.so'):
+-    print "The nftables library does not exist. " \
+-          "You need to build the project."
++    print("The nftables library does not exist. " \
++          "You need to build the project.")
+     sys.exit(1)
+ 
+ nftables = Nftables(sofile = 'src/.libs/libnftables.so')
+@@ -79,26 +80,26 @@ add_quota = { "add": {
+ # helper functions
+ 
+ def exit_err(msg):
+-    print "Error: %s" % msg
++    print("Error: {}".format(msg))
+     sys.exit(1)
+ 
+ def exit_dump(e, obj):
+-    print "FAIL: %s" % e
+-    print "Output was:"
++    print("FAIL: {}".format(e))
++    print("Output was:")
+     json.dumps(out, sort_keys = True, indent = 4, separators = (',', ': '))
+     sys.exit(1)
+ 
+ def do_flush():
+     rc, out, err = nftables.json_cmd({ "nftables": [flush_ruleset] })
+     if not rc is 0:
+-        exit_err("flush ruleset failed: %s" % err)
++        exit_err("flush ruleset failed: {}".format(err))
+ 
+ def do_command(cmd):
+     if not type(cmd) is list:
+         cmd = [cmd]
+     rc, out, err = nftables.json_cmd({ "nftables": cmd })
+     if not rc is 0:
+-        exit_err("command failed: %s" % err)
++        exit_err("command failed: {}".format(err))
+     return out
+ 
+ def do_list_ruleset():
+@@ -123,7 +124,7 @@ def get_handle(output, search):
+             if not k in data:
+                 continue
+             found = True
+-            for key in search[k].keys():
++            for key in list(search[k].keys()):
+                 if key == "handle":
+                     continue
+                 if not key in data[k] or search[k][key] != data[k][key]:
+@@ -140,7 +141,7 @@ def get_handle(output, search):
+ 
+ do_flush()
+ 
+-print "Adding table t"
++print("Adding table t")
+ out = do_command(add_table)
+ handle = get_handle(out, add_table["add"])
+ 
+@@ -152,7 +153,7 @@ if handle != handle_cmp:
+ 
+ add_table["add"]["table"]["handle"] = handle
+ 
+-print "Adding chain c"
++print("Adding chain c")
+ out = do_command(add_chain)
+ handle = get_handle(out, add_chain["add"])
+ 
+@@ -164,7 +165,7 @@ if handle != handle_cmp:
+ 
+ add_chain["add"]["chain"]["handle"] = handle
+ 
+-print "Adding set s"
++print("Adding set s")
+ out = do_command(add_set)
+ handle = get_handle(out, add_set["add"])
+ 
+@@ -176,7 +177,7 @@ if handle != handle_cmp:
+ 
+ add_set["add"]["set"]["handle"] = handle
+ 
+-print "Adding rule"
++print("Adding rule")
+ out = do_command(add_rule)
+ handle = get_handle(out, add_rule["add"])
+ 
+@@ -188,7 +189,7 @@ if handle != handle_cmp:
+ 
+ add_rule["add"]["rule"]["handle"] = handle
+ 
+-print "Adding counter"
++print("Adding counter")
+ out = do_command(add_counter)
+ handle = get_handle(out, add_counter["add"])
+ 
+@@ -200,7 +201,7 @@ if handle != handle_cmp:
+ 
+ add_counter["add"]["counter"]["handle"] = handle
+ 
+-print "Adding quota"
++print("Adding quota")
+ out = do_command(add_quota)
+ handle = get_handle(out, add_quota["add"])
+ 
+@@ -222,37 +223,37 @@ add_set["add"]["set"]["name"] = "s2"
+ add_counter["add"]["counter"]["name"] = "c2"
+ add_quota["add"]["quota"]["name"] = "q2"
+ 
+-print "Adding table t2"
++print("Adding table t2")
+ out = do_command(add_table)
+ handle = get_handle(out, add_table["add"])
+ if handle == add_table["add"]["table"]["handle"]:
+    exit_err("handle not changed in re-added table!")
+ 
+-print "Adding chain c2"
++print("Adding chain c2")
+ out = do_command(add_chain)
+ handle = get_handle(out, add_chain["add"])
+ if handle == add_chain["add"]["chain"]["handle"]:
+    exit_err("handle not changed in re-added chain!")
+ 
+-print "Adding set s2"
++print("Adding set s2")
+ out = do_command(add_set)
+ handle = get_handle(out, add_set["add"])
+ if handle == add_set["add"]["set"]["handle"]:
+    exit_err("handle not changed in re-added set!")
+ 
+-print "Adding rule again"
++print("Adding rule again")
+ out = do_command(add_rule)
+ handle = get_handle(out, add_rule["add"])
+ if handle == add_rule["add"]["rule"]["handle"]:
+    exit_err("handle not changed in re-added rule!")
+ 
+-print "Adding counter c2"
++print("Adding counter c2")
+ out = do_command(add_counter)
+ handle = get_handle(out, add_counter["add"])
+ if handle == add_counter["add"]["counter"]["handle"]:
+    exit_err("handle not changed in re-added counter!")
+ 
+-print "Adding quota q2"
++print("Adding quota q2")
+ out = do_command(add_quota)
+ handle = get_handle(out, add_quota["add"])
+ if handle == add_quota["add"]["quota"]["handle"]:
+@@ -269,7 +270,7 @@ add_quota["add"]["quota"]["name"] = "q"
+ 
+ do_flush()
+ 
+-print "doing multi add"
++print("doing multi add")
+ # XXX: Add table separately, otherwise this triggers cache bug
+ out = do_command(add_table)
+ thandle = get_handle(out, add_table["add"])
+-- 
+2.21.0.windows.1
 
-Not related to this patch, but now that we have the cache completeness
-logic, I think we need a flag to specify that cache has been modified.
-
-If that is a problem, I can just apply this patch and we fix that
-use-case I'm refering to later on.
