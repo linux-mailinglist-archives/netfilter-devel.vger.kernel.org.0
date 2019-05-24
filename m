@@ -2,106 +2,116 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B0C29CA4
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 May 2019 19:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1869E29EC5
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 May 2019 21:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390881AbfEXRCN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 May 2019 13:02:13 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:42594 "EHLO mx1.riseup.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390532AbfEXRCN (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 May 2019 13:02:13 -0400
-Received: from bell.riseup.net (bell-pn.riseup.net [10.0.1.178])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (verified OK))
-        by mx1.riseup.net (Postfix) with ESMTPS id C5C341A2FA7
-        for <netfilter-devel@vger.kernel.org>; Fri, 24 May 2019 10:02:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1558717332; bh=rnGL9ddmcKAFn1l4I/Qb1AeS61mJKTuLqE5+pRByl6M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eCn9fomfoVYPuUu6hj25uXAEY25+DIhVcFgnxTtJ5xFmD6T7nqEprpEyt17MHjcYz
-         GDlCK8a/aYY5w0LzWmdWyytF8zRM25SjTmdocePadm6QnaOY/T1E6fGyDX51OdNyde
-         7Oe4M3i2kdybTZsoJ8rkNd57sC2W/7kkJzVK4Jbw=
-X-Riseup-User-ID: D0EB6807C4F8F2C87B5D8FF313FBD9873355349F35065F45005368892A6FDB2C
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by bell.riseup.net (Postfix) with ESMTPSA id 0391C222DE9;
-        Fri, 24 May 2019 10:02:11 -0700 (PDT)
-From:   Fernando Fernandez Mancera <ffmancera@riseup.net>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Fernando Fernandez Mancera <ffmancera@riseup.net>
-Subject: [PATCH nf-next v3 4/4] netfilter: add NF_SYNPROXY symbol
-Date:   Fri, 24 May 2019 19:01:10 +0200
-Message-Id: <20190524170106.2686-5-ffmancera@riseup.net>
-In-Reply-To: <20190524170106.2686-1-ffmancera@riseup.net>
-References: <20190524170106.2686-1-ffmancera@riseup.net>
+        id S2391131AbfEXTEo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 24 May 2019 15:04:44 -0400
+Received: from ganesha.gnumonks.org ([213.95.27.120]:56329 "EHLO
+        ganesha.gnumonks.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727115AbfEXTEo (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 24 May 2019 15:04:44 -0400
+X-Greylist: delayed 1456 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 May 2019 15:04:43 EDT
+Received: from [31.4.219.201] (helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.84_2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1hUF7A-0000nb-HC; Fri, 24 May 2019 20:40:26 +0200
+Date:   Fri, 24 May 2019 20:40:22 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     Eric Garver <e@erig.me>, netfilter-devel@vger.kernel.org
+Subject: Re: [nft PATCH 3/3] src: Support intra-transaction rule references
+Message-ID: <20190524183934.uzqg6ps5kw36ucxp@salvia>
+References: <20190522153035.19806-1-phil@nwl.cc>
+ <20190522153035.19806-4-phil@nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190522153035.19806-4-phil@nwl.cc>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Spam-Score: -2.7 (--)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
----
- net/ipv4/netfilter/Kconfig | 2 +-
- net/ipv6/netfilter/Kconfig | 2 +-
- net/netfilter/Kconfig      | 4 ++++
- net/netfilter/Makefile     | 1 +
- 4 files changed, 7 insertions(+), 2 deletions(-)
+One comment see below.
 
-diff --git a/net/ipv4/netfilter/Kconfig b/net/ipv4/netfilter/Kconfig
-index 1412b029f37f..87f6ec800e54 100644
---- a/net/ipv4/netfilter/Kconfig
-+++ b/net/ipv4/netfilter/Kconfig
-@@ -197,7 +197,7 @@ config IP_NF_TARGET_SYNPROXY
- 	tristate "SYNPROXY target support"
- 	depends on NF_CONNTRACK && NETFILTER_ADVANCED
- 	select NETFILTER_SYNPROXY
--	select SYN_COOKIES
-+	select NF_SYNPROXY
- 	help
- 	  The SYNPROXY target allows you to intercept TCP connections and
- 	  establish them using syncookies before they are passed on to the
-diff --git a/net/ipv6/netfilter/Kconfig b/net/ipv6/netfilter/Kconfig
-index 086fc669279e..f71879f875e1 100644
---- a/net/ipv6/netfilter/Kconfig
-+++ b/net/ipv6/netfilter/Kconfig
-@@ -213,7 +213,7 @@ config IP6_NF_TARGET_SYNPROXY
- 	tristate "SYNPROXY target support"
- 	depends on NF_CONNTRACK && NETFILTER_ADVANCED
- 	select NETFILTER_SYNPROXY
--	select SYN_COOKIES
-+	select NF_SYNPROXY
- 	help
- 	  The SYNPROXY target allows you to intercept TCP connections and
- 	  establish them using syncookies before they are passed on to the
-diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
-index 02b281d3c167..ae65fca0d509 100644
---- a/net/netfilter/Kconfig
-+++ b/net/netfilter/Kconfig
-@@ -435,6 +435,10 @@ config NF_NAT_REDIRECT
- config NF_NAT_MASQUERADE
- 	bool
- 
-+config NF_SYNPROXY
-+	tristate
-+	depends on NF_CONNTRACK && NETFILTER_ADVANCED
-+
- config NETFILTER_SYNPROXY
- 	tristate
- 
-diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
-index 72cca6b48960..7a6067513eee 100644
---- a/net/netfilter/Makefile
-+++ b/net/netfilter/Makefile
-@@ -67,6 +67,7 @@ obj-$(CONFIG_NF_NAT_TFTP) += nf_nat_tftp.o
- 
- # SYNPROXY
- obj-$(CONFIG_NETFILTER_SYNPROXY) += nf_synproxy_core.o
-+obj-$(CONFIG_NF_SYNPROXY) += nf_synproxy.o
- 
- obj-$(CONFIG_NETFILTER_CONNCOUNT) += nf_conncount.o
- 
--- 
-2.20.1
+On Wed, May 22, 2019 at 05:30:35PM +0200, Phil Sutter wrote:
+> @@ -3237,10 +3222,62 @@ static int rule_evaluate(struct eval_ctx *ctx, struct rule *rule)
+>  		return -1;
+>  	}
+>  
+> -	if (rule->handle.index.id &&
+> -	    rule_translate_index(ctx, rule))
+> -		return -1;
+> +	table = table_lookup(&rule->handle, &ctx->nft->cache);
+> +	if (!table)
+> +		return table_not_found(ctx);
+> +
+> +	chain = chain_lookup(table, &rule->handle);
+> +	if (!chain)
+> +		return chain_not_found(ctx);
+>  
+> +	if (rule->handle.index.id) {
+> +		ref = rule_lookup_by_index(chain, rule->handle.index.id);
+> +		if (!ref)
+> +			return cmd_error(ctx, &rule->handle.index.location,
+> +					 "Could not process rule: %s",
+> +					 strerror(ENOENT));
+> +
+> +		link_rules(rule, ref);
+> +	} else if (rule->handle.handle.id) {
+> +		ref = rule_lookup(chain, rule->handle.handle.id);
+> +		if (!ref)
+> +			return cmd_error(ctx, &rule->handle.handle.location,
+> +					 "Could not process rule: %s",
+> +					 strerror(ENOENT));
+> +	} else if (rule->handle.position.id) {
+> +		ref = rule_lookup(chain, rule->handle.position.id);
+> +		if (!ref)
+> +			return cmd_error(ctx, &rule->handle.position.location,
+> +					 "Could not process rule: %s",
+> +					 strerror(ENOENT));
+> +	}
+> +
 
+Nitpick: Probably move this code below into a function, something
+like rule_cache_update().
+
+> +	switch (op) {
+> +	case CMD_INSERT:
+> +		rule_get(rule);
+> +		if (ref)
+> +			list_add_tail(&rule->list, &ref->list);
+> +		else
+> +			list_add(&rule->list, &chain->rules);
+> +		break;
+> +	case CMD_ADD:
+> +		rule_get(rule);
+> +		if (ref)
+> +			list_add(&rule->list, &ref->list);
+> +		else
+> +			list_add_tail(&rule->list, &chain->rules);
+> +		break;
+> +	case CMD_REPLACE:
+> +		rule_get(rule);
+> +		list_add(&rule->list, &ref->list);
+> +		/* fall through */
+> +	case CMD_DELETE:
+> +		list_del(&ref->list);
+> +		rule_free(ref);
+> +		break;
+> +	default:
+> +		break;
+> +	}
+>  	return 0;
+>  }
+
+Not related to this patch, but now that we have the cache completeness
+logic, I think we need a flag to specify that cache has been modified.
+
+If that is a problem, I can just apply this patch and we fix that
+use-case I'm refering to later on.
