@@ -2,29 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9292B34B
-	for <lists+netfilter-devel@lfdr.de>; Mon, 27 May 2019 13:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97602B350
+	for <lists+netfilter-devel@lfdr.de>; Mon, 27 May 2019 13:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbfE0Lgv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 27 May 2019 07:36:51 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:34802 "EHLO orbyte.nwl.cc"
+        id S1726165AbfE0LhI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 27 May 2019 07:37:08 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:34828 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725991AbfE0Lgv (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 27 May 2019 07:36:51 -0400
-Received: from localhost ([::1]:47888 helo=tatos)
+        id S1725991AbfE0LhI (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 27 May 2019 07:37:08 -0400
+Received: from localhost ([::1]:47918 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1hVDvs-0005oH-L2; Mon, 27 May 2019 13:36:48 +0200
+        id 1hVDwA-0005pR-Ma; Mon, 27 May 2019 13:37:06 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, Eric Garver <e@erig.me>,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-Subject: [nft PATCH v4 2/2] tests/py: Support JSON validation
-Date:   Mon, 27 May 2019 13:36:42 +0200
-Message-Id: <20190527113642.8434-3-phil@nwl.cc>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nft PATCH] parser_json: Fix and simplify verdict expression parsing
+Date:   Mon, 27 May 2019 13:37:00 +0200
+Message-Id: <20190527113700.8541-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190527113642.8434-1-phil@nwl.cc>
-References: <20190527113642.8434-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -32,101 +29,77 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Introduce a new flag -s/--schema to nft-test.py which enables validation
-of any JSON input and output against our schema.
+Parsing of the "target" property was flawed in two ways:
 
-Make use of traceback module to get more details if validation fails.
+* The value was extracted twice. Drop the first unconditional one.
+* Expression allocation required since commit f1e8a129ee428 was broken,
+  The expression was allocated only if the property was not present.
 
+Fixes: f1e8a129ee428 ("src: Introduce chain_expr in jump and goto statements")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
-Changes since v2:
-- Complain if --schema was given but not --json.
+ src/parser_json.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-Changes since v1:
-- Adjust commit message to changes from RFC.
-
-Changes since RFC:
-- Import builtin traceback module unconditionally
----
- tests/py/nft-test.py | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
-index 1c0afd0ec0eb3..09d00dba1510a 100755
---- a/tests/py/nft-test.py
-+++ b/tests/py/nft-test.py
-@@ -18,6 +18,7 @@ import os
- import argparse
- import signal
- import json
-+import traceback
+diff --git a/src/parser_json.c b/src/parser_json.c
+index 19cdefd392014..4c7ee9911c42f 100644
+--- a/src/parser_json.c
++++ b/src/parser_json.c
+@@ -1053,13 +1053,22 @@ static struct expr *json_parse_range_expr(struct json_ctx *ctx,
+ 	return range_expr_alloc(int_loc, expr_low, expr_high);
+ }
  
- TESTS_PATH = os.path.dirname(os.path.abspath(__file__))
- sys.path.insert(0, os.path.join(TESTS_PATH, '../../py/'))
-@@ -687,6 +688,13 @@ def json_dump_normalize(json_string, human_readable = False):
-     else:
-         return json.dumps(json_obj, sort_keys = True)
- 
-+def json_validate(json_string):
-+    json_obj = json.loads(json_string)
-+    try:
-+        nftables.json_validate(json_obj)
-+    except Exception:
-+        print_error("schema validation failed for input '%s'" % json_string)
-+        print_error(traceback.format_exc())
- 
- def rule_add(rule, filename, lineno, force_all_family_option, filename_path):
-     '''
-@@ -912,6 +920,9 @@ def rule_add(rule, filename, lineno, force_all_family_option, filename_path):
-                     "expr": json.loads(json_input),
-             }}}]})
- 
-+            if enable_json_schema:
-+                json_validate(cmd)
++static struct expr *json_alloc_chain_expr(const char *chain)
++{
++	if (!chain)
++		return NULL;
 +
-             json_old = nftables.set_json_output(True)
-             ret = execute_cmd(cmd, filename, lineno, payload_log, debug="netlink")
-             nftables.set_json_output(json_old)
-@@ -945,6 +956,9 @@ def rule_add(rule, filename, lineno, force_all_family_option, filename_path):
-             nftables.set_numeric_proto_output(numeric_proto_old)
-             nftables.set_stateless_output(stateless_old)
- 
-+            if enable_json_schema:
-+                json_validate(json_output)
++	return constant_expr_alloc(int_loc, &string_type, BYTEORDER_HOST_ENDIAN,
++				   NFT_CHAIN_MAXNAMELEN * BITS_PER_BYTE, chain);
++}
 +
-             json_output = json.loads(json_output)
-             for item in json_output["nftables"]:
-                 if "rule" in item:
-@@ -1341,12 +1355,17 @@ def main():
-                         dest='enable_json',
-                         help='test JSON functionality as well')
+ static struct expr *json_parse_verdict_expr(struct json_ctx *ctx,
+ 					    const char *type, json_t *root)
+ {
+ 	const struct {
+ 		int verdict;
+ 		const char *name;
+-		bool chain;
++		bool need_chain;
+ 	} verdict_tbl[] = {
+ 		{ NFT_CONTINUE, "continue", false },
+ 		{ NFT_JUMP, "jump", true },
+@@ -1068,27 +1077,19 @@ static struct expr *json_parse_verdict_expr(struct json_ctx *ctx,
+ 		{ NF_ACCEPT, "accept", false },
+ 		{ NF_DROP, "drop", false },
+ 	};
+-	struct expr *chain_expr = NULL;
+ 	const char *chain = NULL;
+ 	unsigned int i;
  
-+    parser.add_argument('-s', '--schema', action='store_true',
-+                        dest='enable_schema',
-+                        help='verify json input/output against schema')
-+
-     args = parser.parse_args()
--    global debug_option, need_fix_option, enable_json_option
-+    global debug_option, need_fix_option, enable_json_option, enable_json_schema
-     debug_option = args.debug
-     need_fix_option = args.need_fix_line
-     force_all_family_option = args.force_all_family
-     enable_json_option = args.enable_json
-+    enable_json_schema = args.enable_schema
-     specific_file = False
+-	json_unpack(root, "{s:s}", "target", &chain);
+-	if (!chain)
+-		chain_expr = constant_expr_alloc(int_loc, &string_type,
+-						 BYTEORDER_HOST_ENDIAN,
+-						 NFT_CHAIN_MAXNAMELEN *
+-						 BITS_PER_BYTE, chain);
+-
+ 	for (i = 0; i < array_size(verdict_tbl); i++) {
+ 		if (strcmp(type, verdict_tbl[i].name))
+ 			continue;
  
-     signal.signal(signal.SIGINT, signal_handler)
-@@ -1364,6 +1383,10 @@ def main():
-               "You need to build the project."
-         return
+-		if (verdict_tbl[i].chain &&
++		if (verdict_tbl[i].need_chain &&
+ 		    json_unpack_err(ctx, root, "{s:s}", "target", &chain))
+ 			return NULL;
  
-+    if args.enable_schema and not args.enable_json:
-+        print_error("Option --schema requires option --json")
-+        return
-+
-     global nftables
-     nftables = Nftables(sofile = 'src/.libs/libnftables.so')
- 
+-		return verdict_expr_alloc(int_loc,
+-					  verdict_tbl[i].verdict, chain_expr);
++		return verdict_expr_alloc(int_loc, verdict_tbl[i].verdict,
++					  json_alloc_chain_expr(chain));
+ 	}
+ 	json_error(ctx, "Unknown verdict '%s'.", type);
+ 	return NULL;
 -- 
 2.21.0
 
