@@ -2,31 +2,33 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F432C234
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2019 11:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFFA2C2F0
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2019 11:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727321AbfE1JEE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 May 2019 05:04:04 -0400
-Received: from a3.inai.de ([88.198.85.195]:37804 "EHLO a3.inai.de"
+        id S1726921AbfE1JSm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 May 2019 05:18:42 -0400
+Received: from a3.inai.de ([88.198.85.195]:38790 "EHLO a3.inai.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726591AbfE1JEE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 May 2019 05:04:04 -0400
+        id S1726912AbfE1JSm (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 28 May 2019 05:18:42 -0400
 Received: by a3.inai.de (Postfix, from userid 65534)
-        id 0E48B3BB8A9D; Tue, 28 May 2019 11:04:02 +0200 (CEST)
+        id D88E83BB8A9D; Tue, 28 May 2019 11:18:39 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on a3.inai.de
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,URIBL_BLOCKED
+X-Spam-Status: No, score=-2.0 required=5.0 tests=AWL,BAYES_00,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.1
 Received: from a4.inai.de (a4.inai.de [IPv6:2a01:4f8:222:6c9::f8])
-        by a3.inai.de (Postfix) with ESMTP id A030C3BB6EEF;
-        Tue, 28 May 2019 11:03:54 +0200 (CEST)
+        by a3.inai.de (Postfix) with ESMTP id 099BE3BB6EEF;
+        Tue, 28 May 2019 11:18:32 +0200 (CEST)
 From:   Jan Engelhardt <jengelh@inai.de>
 To:     fw@strlen.de
 Cc:     netfilter-devel@vger.kernel.org
 Subject: [PATCH] build: remove -Wl,--no-as-needed and libiptc.so
-Date:   Tue, 28 May 2019 11:03:54 +0200
-Message-Id: <20190528090354.10663-1-jengelh@inai.de>
+Date:   Tue, 28 May 2019 11:18:32 +0200
+Message-Id: <20190528091832.32164-1-jengelh@inai.de>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190528090354.10663-1-jengelh@inai.de>
+References: <20190528090354.10663-1-jengelh@inai.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -51,9 +53,13 @@ related to the -Wl,--no-as-needed flag.
 
 Signed-off-by: Jan Engelhardt <jengelh@inai.de>
 ---
- configure.ac        | 5 -----
- libiptc/Makefile.am | 4 ++--
- 2 files changed, 2 insertions(+), 7 deletions(-)
+It really helps if I added all changes.. ;-)
+
+ configure.ac                |  5 ---
+ libiptc/Makefile.am         |  7 +---
+ m4/ax_check_linker_flags.m4 | 78 -------------------------------------
+ 3 files changed, 2 insertions(+), 88 deletions(-)
+ delete mode 100644 m4/ax_check_linker_flags.m4
 
 diff --git a/configure.ac b/configure.ac
 index b94512d7..0a2802ff 100644
@@ -72,20 +78,107 @@ index b94512d7..0a2802ff 100644
  saved_LDFLAGS="$LDFLAGS";
  LDFLAGS="-Wl,--no-undefined";
 diff --git a/libiptc/Makefile.am b/libiptc/Makefile.am
-index 638295db..b4a22001 100644
+index 638295db..464a0696 100644
 --- a/libiptc/Makefile.am
 +++ b/libiptc/Makefile.am
-@@ -8,8 +8,8 @@ pkgconfig_DATA      = libiptc.pc libip4tc.pc libip6tc.pc
- lib_LTLIBRARIES     = libip4tc.la libip6tc.la libiptc.la
- libiptc_la_SOURCES  =
- libiptc_la_LIBADD   = libip4tc.la libip6tc.la
+@@ -5,11 +5,8 @@ AM_CPPFLAGS      = ${regular_CPPFLAGS} -I${top_builddir}/include -I${top_srcdir}
+ 
+ pkgconfig_DATA      = libiptc.pc libip4tc.pc libip6tc.pc
+ 
+-lib_LTLIBRARIES     = libip4tc.la libip6tc.la libiptc.la
+-libiptc_la_SOURCES  =
+-libiptc_la_LIBADD   = libip4tc.la libip6tc.la
 -libiptc_la_LDFLAGS  = -version-info 0:0:0 ${libiptc_LDFLAGS2}
-+libiptc_la_LDFLAGS  = -version-info 0:0:0
++lib_LTLIBRARIES     = libip4tc.la libip6tc.la
  libip4tc_la_SOURCES = libip4tc.c
  libip4tc_la_LDFLAGS = -version-info 2:0:0
  libip6tc_la_SOURCES = libip6tc.c
 -libip6tc_la_LDFLAGS = -version-info 2:0:0 ${libiptc_LDFLAGS2}
 +libip6tc_la_LDFLAGS = -version-info 2:0:0
+diff --git a/m4/ax_check_linker_flags.m4 b/m4/ax_check_linker_flags.m4
+deleted file mode 100644
+index ba7bf3cf..00000000
+--- a/m4/ax_check_linker_flags.m4
++++ /dev/null
+@@ -1,78 +0,0 @@
+-#http://git.savannah.gnu.org/gitweb/?p=autoconf-archive.git;a=blob_plain;f=m4/ax_check_linker_flags.m4
+-# ===========================================================================
+-#   http://www.gnu.org/software/autoconf-archive/ax_check_linker_flags.html
+-# ===========================================================================
+-#
+-# SYNOPSIS
+-#
+-#   AX_CHECK_LINKER_FLAGS(FLAGS, [ACTION-SUCCESS], [ACTION-FAILURE])
+-#
+-# DESCRIPTION
+-#
+-#   Check whether the given linker FLAGS work with the current language's
+-#   linker, or whether they give an error.
+-#
+-#   ACTION-SUCCESS/ACTION-FAILURE are shell commands to execute on
+-#   success/failure.
+-#
+-#   NOTE: Based on AX_CHECK_COMPILER_FLAGS.
+-#
+-# LICENSE
+-#
+-#   Copyright (c) 2009 Mike Frysinger <vapier@gentoo.org>
+-#   Copyright (c) 2009 Steven G. Johnson <stevenj@alum.mit.edu>
+-#   Copyright (c) 2009 Matteo Frigo
+-#
+-#   This program is free software: you can redistribute it and/or modify it
+-#   under the terms of the GNU General Public License as published by the
+-#   Free Software Foundation, either version 3 of the License, or (at your
+-#   option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful, but
+-#   WITHOUT ANY WARRANTY; without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+-#   Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License along
+-#   with this program. If not, see <http://www.gnu.org/licenses/>.
+-#
+-#   As a special exception, the respective Autoconf Macro's copyright owner
+-#   gives unlimited permission to copy, distribute and modify the configure
+-#   scripts that are the output of Autoconf when processing the Macro. You
+-#   need not follow the terms of the GNU General Public License when using
+-#   or distributing such scripts, even though portions of the text of the
+-#   Macro appear in them. The GNU General Public License (GPL) does govern
+-#   all other use of the material that constitutes the Autoconf Macro.
+-#
+-#   This special exception to the GPL applies to versions of the Autoconf
+-#   Macro released by the Autoconf Archive. When you make and distribute a
+-#   modified version of the Autoconf Macro, you may extend this special
+-#   exception to the GPL to apply to your modified version as well.
+-
+-#serial 6
+-
+-AC_DEFUN([AX_CHECK_LINKER_FLAGS],
+-[AC_MSG_CHECKING([whether the linker accepts $1])
+-dnl Some hackery here since AC_CACHE_VAL can't handle a non-literal varname:
+-AS_LITERAL_IF([$1],
+-  [AC_CACHE_VAL(AS_TR_SH(ax_cv_linker_flags_[$1]), [
+-      ax_save_FLAGS=$LDFLAGS
+-      LDFLAGS="$1"
+-      AC_LINK_IFELSE([AC_LANG_PROGRAM()],
+-        AS_TR_SH(ax_cv_linker_flags_[$1])=yes,
+-        AS_TR_SH(ax_cv_linker_flags_[$1])=no)
+-      LDFLAGS=$ax_save_FLAGS])],
+-  [ax_save_FLAGS=$LDFLAGS
+-   LDFLAGS="$1"
+-   AC_LINK_IFELSE([AC_LANG_PROGRAM()],
+-     eval AS_TR_SH(ax_cv_linker_flags_[$1])=yes,
+-     eval AS_TR_SH(ax_cv_linker_flags_[$1])=no)
+-   LDFLAGS=$ax_save_FLAGS])
+-eval ax_check_linker_flags=$AS_TR_SH(ax_cv_linker_flags_[$1])
+-AC_MSG_RESULT($ax_check_linker_flags)
+-if test "x$ax_check_linker_flags" = xyes; then
+-	m4_default([$2], :)
+-else
+-	m4_default([$3], :)
+-fi
+-])dnl AX_CHECK_LINKER_FLAGS
 -- 
 2.21.0
 
