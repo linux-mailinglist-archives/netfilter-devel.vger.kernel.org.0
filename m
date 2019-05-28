@@ -2,26 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D5A2D0D5
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2019 23:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D422D0CE
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2019 23:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbfE1VEJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 May 2019 17:04:09 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:38502 "EHLO orbyte.nwl.cc"
+        id S1727552AbfE1VDm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 May 2019 17:03:42 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:38462 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727273AbfE1VEJ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 May 2019 17:04:09 -0400
-Received: from localhost ([::1]:51590 helo=tatos)
+        id S1726683AbfE1VDm (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 28 May 2019 17:03:42 -0400
+Received: from localhost ([::1]:51550 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1hVjGR-0002Lz-RB; Tue, 28 May 2019 23:04:07 +0200
+        id 1hVjG1-0002Jx-24; Tue, 28 May 2019 23:03:41 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org, Eric Garver <e@erig.me>
-Subject: [nft PATCH v4 0/7] Cache update fix && intra-transaction rule references
-Date:   Tue, 28 May 2019 23:03:16 +0200
-Message-Id: <20190528210323.14605-1-phil@nwl.cc>
+Subject: [nft PATCH v4 1/7] src: Fix cache_flush() in cache_needs_more() logic
+Date:   Tue, 28 May 2019 23:03:17 +0200
+Message-Id: <20190528210323.14605-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190528210323.14605-1-phil@nwl.cc>
+References: <20190528210323.14605-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -29,54 +31,44 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This series combines the two series submitted earlier since they became
-closely related in this iteration.
+Commit 34a20645d54fa enabled cache updates depending on command causing
+it. As a side-effect, this disabled measures in cache_flush() preventing
+a later cache update. Re-establish this by setting cache->cmd in
+addition to cache->genid after dropping cache entries.
 
-Patch 1 fixes a basic problem with cache_flush() after Eric's
-cache_needs_more() change.
+While being at it, set cache->cmd in cache_release() as well. This
+shouldn't be necessary since zeroing cache->genid should suffice for
+cache_update(), but better be consistent (and future-proof) here.
 
-Patches 2, 3, 5 and 6 are requirements for patches 4 and 7 which are the
-interesting ones: Patch 4 restores needed cache entries from command
-list after a cache update. Patch 7 enables referencing a rule added by
-the same transaction from another new rule by further exploiting the
-logic added by patch 4.
+Fixes: 34a20645d54fa ("src: update cache if cmd is more specific")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+Changes since v1:
+- Adjust cache_release() as well, just to make sure.
+---
+ src/rule.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Changes since v2 of "Resolve cache update woes" and v1 of "Support
-intra-transaction rule references":
-
-- Adjust cache_release() just like cache_flush().
-- Split preparation work into separate patches.
-- Adjust cache_add_commands() for later reuse by rule reference code,
-  also add error handling in case kernel ruleset changes incompatibly.
-- Finally drop that workaround in tests/json_echo.
-- Introduce rule_cache_update() as requested.
-- Avoid fetching a full cache if the new rule does not contain any
-  reference.
-
-Phil Sutter (7):
-  src: Fix cache_flush() in cache_needs_more() logic
-  libnftables: Keep list of commands in nft context
-  src: Make {table,chain}_not_found() public
-  src: Restore local entries after cache update
-  rule: Introduce rule_lookup_by_index()
-  src: Make cache_is_complete() public
-  src: Support intra-transaction rule references
-
- include/nftables.h                            |   1 +
- include/rule.h                                |  12 ++
- src/evaluate.c                                | 107 +++++++-----
- src/libnftables.c                             |  21 ++-
- src/mnl.c                                     |   4 +
- src/rule.c                                    | 152 +++++++++++++++++-
- tests/json_echo/run-test.py                   |   6 +-
- .../shell/testcases/cache/0003_cache_update_0 |   7 +
- .../shell/testcases/nft-f/0006action_object_0 |   2 +-
- tests/shell/testcases/transactions/0024rule_0 |  17 ++
- .../transactions/dumps/0024rule_0.nft         |   8 +
- 11 files changed, 280 insertions(+), 57 deletions(-)
- create mode 100755 tests/shell/testcases/transactions/0024rule_0
- create mode 100644 tests/shell/testcases/transactions/dumps/0024rule_0.nft
-
+diff --git a/src/rule.c b/src/rule.c
+index 326edb5dd459a..966948cd7ae90 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -299,12 +299,15 @@ void cache_flush(struct nft_ctx *nft, enum cmd_ops cmd, struct list_head *msgs)
+ 
+ 	__cache_flush(&cache->list);
+ 	cache->genid = mnl_genid_get(&ctx);
++	cache->cmd = CMD_LIST;
+ }
+ 
+ void cache_release(struct nft_cache *cache)
+ {
+ 	__cache_flush(&cache->list);
+ 	cache->genid = 0;
++	cache->cmd = CMD_INVALID;
++
+ }
+ 
+ /* internal ID to uniquely identify a set in the batch */
 -- 
 2.21.0
 
