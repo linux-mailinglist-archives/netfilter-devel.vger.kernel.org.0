@@ -2,93 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBC82CFA7
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2019 21:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D5A2D0D5
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 May 2019 23:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbfE1TkZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 May 2019 15:40:25 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:45672 "EHLO mx1.redhat.com"
+        id S1727799AbfE1VEJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 May 2019 17:04:09 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:38502 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727003AbfE1TkZ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 May 2019 15:40:25 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E80A83082E6A;
-        Tue, 28 May 2019 19:40:23 +0000 (UTC)
-Received: from egarver.localdomain (ovpn-122-200.rdu2.redhat.com [10.10.122.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E24E82F284;
-        Tue, 28 May 2019 19:40:22 +0000 (UTC)
-Date:   Tue, 28 May 2019 15:40:16 -0400
-From:   Eric Garver <eric@garver.life>
-To:     Shivani Bhardwaj <shivanib134@gmail.com>
-Cc:     Shekhar Sharma <shekhar250198@gmail.com>,
-        Netfilter Development Mailing list 
-        <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH nft v5] tests: py: fix python3
-Message-ID: <20190528194016.aomjxggmcsrav4v4@egarver.localdomain>
-Mail-Followup-To: Eric Garver <eric@garver.life>,
-        Shivani Bhardwaj <shivanib134@gmail.com>,
-        Shekhar Sharma <shekhar250198@gmail.com>,
-        Netfilter Development Mailing list <netfilter-devel@vger.kernel.org>
-References: <20190527235021.6874-1-shekhar250198@gmail.com>
- <CAKHNQQFzECQLWRBmraZozQsMr7fAOdTV=j7FpvAasNaXo0Dhag@mail.gmail.com>
+        id S1727273AbfE1VEJ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 28 May 2019 17:04:09 -0400
+Received: from localhost ([::1]:51590 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1hVjGR-0002Lz-RB; Tue, 28 May 2019 23:04:07 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, Eric Garver <e@erig.me>
+Subject: [nft PATCH v4 0/7] Cache update fix && intra-transaction rule references
+Date:   Tue, 28 May 2019 23:03:16 +0200
+Message-Id: <20190528210323.14605-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKHNQQFzECQLWRBmraZozQsMr7fAOdTV=j7FpvAasNaXo0Dhag@mail.gmail.com>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Tue, 28 May 2019 19:40:24 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, May 28, 2019 at 09:57:37PM +0530, Shivani Bhardwaj wrote:
-> On Tue, May 28, 2019 at 5:21 AM Shekhar Sharma <shekhar250198@gmail.com> wrote:
-> >
-> > This patch converts the 'nft-test.py' file to run on both python 2 and python3.
-> >
-> > The version hystory of this patch is:
-> > v1:conversion to py3 by changing the print statements.
-> > v2:add the '__future__' package for compatibility with py2 and py3.
-> > v3:solves the 'version' problem in argparse by adding a new argument.
-> > v4:uses .format() method to make print statements clearer.
-> > v5: updated the shebang and corrected the sequence of import statements.
-> >
-> >
-> > Signed-off-by: Shekhar Sharma <shekhar250198@gmail.com>
-> > ---
-> >  tests/py/nft-test.py | 44 +++++++++++++++++++++++---------------------
-> >  1 file changed, 23 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
-> > index 1c0afd0e..fe56340c 100755
-> > --- a/tests/py/nft-test.py
-> > +++ b/tests/py/nft-test.py
-> > @@ -1,4 +1,4 @@
-> > -#!/usr/bin/python2
-> > +#!/usr/bin/python
-> >  #
-> >  # (C) 2014 by Ana Rey Botello <anarey@gmail.com>
-> >  #
-> > @@ -13,6 +13,7 @@
-> >  # Thanks to the Outreach Program for Women (OPW) for sponsoring this test
-> >  # infrastructure.
-> >
-> > +from __future__ import print_function
-> >  import sys
-> >  import os
-> >  import argparse
-> > @@ -436,7 +437,7 @@ def set_delete(table, filename=None, lineno=None):
-> >      '''
-> >      Deletes set and its content.
-> >      '''
-> > -    for set_name in all_set.keys():
-> > +    for set_name in list(all_set.keys()):
-> What exactly is this list() for? This is not a generator expression.
+This series combines the two series submitted earlier since they became
+closely related in this iteration.
 
-I think it's a generic python2 to python3 porting idiom to cover the
-case in which the set you're iterating over is being modified inside the
-for loop. However, that does not appear to the be the case here.
+Patch 1 fixes a basic problem with cache_flush() after Eric's
+cache_needs_more() change.
+
+Patches 2, 3, 5 and 6 are requirements for patches 4 and 7 which are the
+interesting ones: Patch 4 restores needed cache entries from command
+list after a cache update. Patch 7 enables referencing a rule added by
+the same transaction from another new rule by further exploiting the
+logic added by patch 4.
+
+Changes since v2 of "Resolve cache update woes" and v1 of "Support
+intra-transaction rule references":
+
+- Adjust cache_release() just like cache_flush().
+- Split preparation work into separate patches.
+- Adjust cache_add_commands() for later reuse by rule reference code,
+  also add error handling in case kernel ruleset changes incompatibly.
+- Finally drop that workaround in tests/json_echo.
+- Introduce rule_cache_update() as requested.
+- Avoid fetching a full cache if the new rule does not contain any
+  reference.
+
+Phil Sutter (7):
+  src: Fix cache_flush() in cache_needs_more() logic
+  libnftables: Keep list of commands in nft context
+  src: Make {table,chain}_not_found() public
+  src: Restore local entries after cache update
+  rule: Introduce rule_lookup_by_index()
+  src: Make cache_is_complete() public
+  src: Support intra-transaction rule references
+
+ include/nftables.h                            |   1 +
+ include/rule.h                                |  12 ++
+ src/evaluate.c                                | 107 +++++++-----
+ src/libnftables.c                             |  21 ++-
+ src/mnl.c                                     |   4 +
+ src/rule.c                                    | 152 +++++++++++++++++-
+ tests/json_echo/run-test.py                   |   6 +-
+ .../shell/testcases/cache/0003_cache_update_0 |   7 +
+ .../shell/testcases/nft-f/0006action_object_0 |   2 +-
+ tests/shell/testcases/transactions/0024rule_0 |  17 ++
+ .../transactions/dumps/0024rule_0.nft         |   8 +
+ 11 files changed, 280 insertions(+), 57 deletions(-)
+ create mode 100755 tests/shell/testcases/transactions/0024rule_0
+ create mode 100644 tests/shell/testcases/transactions/dumps/0024rule_0.nft
+
+-- 
+2.21.0
+
