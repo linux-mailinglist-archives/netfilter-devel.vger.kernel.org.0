@@ -2,65 +2,103 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8139F2DDD0
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 May 2019 15:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA162DDDA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 May 2019 15:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbfE2NOK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 29 May 2019 09:14:10 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:40282 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726029AbfE2NOK (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 29 May 2019 09:14:10 -0400
-Received: from localhost ([::1]:53370 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1hVyPB-0006xG-7G; Wed, 29 May 2019 15:14:09 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, Eric Garver <e@erig.me>
-Subject: [nft PATCH 4/4] tests/shell: Test large transaction with echo output
-Date:   Wed, 29 May 2019 15:13:46 +0200
-Message-Id: <20190529131346.23659-5-phil@nwl.cc>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190529131346.23659-1-phil@nwl.cc>
-References: <20190529131346.23659-1-phil@nwl.cc>
+        id S1727141AbfE2NPA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 29 May 2019 09:15:00 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:33414 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727086AbfE2NO5 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 29 May 2019 09:14:57 -0400
+Received: by mail-lf1-f66.google.com with SMTP id y17so2056019lfe.0
+        for <netfilter-devel@vger.kernel.org>; Wed, 29 May 2019 06:14:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zo8/tL88lhYZ8ZmjXhe5I0ivQ63AMHIIXfJiG0SngrI=;
+        b=WcqJPV36GoYCJyCKWssunS/8jjCOcm7506dwRBLhvYgsNR0UdI2bR6S+PaChd3NF+e
+         P+/GUrP8I1gxdIuXwHh6CxrPM6FsQK897PtueXW2sc688u6UEVtahdPaDHpbLdURczG/
+         exuh5TP/Fn7NuWWJubwb5BOU06YIqB0/o8baMnCRHH/ihY5uaT1si7LXcC8p9MWXL18d
+         oOzuzN3xy5AjXeHWyQmqeSM1pM2ZeR9RQEvA5xn86EDD7CpzITSwgBRLK8NSiZHIhZG2
+         4dGKz3NjhIgq/QlLySTSs2ZLnXWGPjQaDD2AF5PW0kac6rHkp3GF9xtJmzZ2Gi7XnFzZ
+         e6Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zo8/tL88lhYZ8ZmjXhe5I0ivQ63AMHIIXfJiG0SngrI=;
+        b=LFCVSotQbciwbfpagd0N/GJlSPDTnKpTXwFdLepggEV+DIZiM45KgSEi18rK8T06uK
+         EhMA5wWf6k3GZfAw3+cgmwC3klzIvSOZtMW7cUU60wDhY20N+7yR56mwG6RJTyZCd5Na
+         zRNFoOkft+sq0k6N3o/D6akoyZZ8iM5pMVQzpO9SXEVy48XTeVfW+45WUCI0timNQFrN
+         ZjY/iqCTft8Q01VoeOswBUH7QAwufcWp30xewTuGJVw9aGrkg9Lk5kFKXnF2/Bk5vw69
+         d0y7fSkH5NaY9fVFrtghtZ4bCEQ6IGlJEXqIRDPgXAXZ+5h6sZ5fbN0qsuINZiSsMX+7
+         2h7A==
+X-Gm-Message-State: APjAAAU10Gg4vFRthkwIccA2M6ryNfNSEVYOZjCaIU/1GCEOlKxx3kox
+        kRZbKdJXhjPOJRFRLzaRZn9LzstjkjOlbpLlU1ah
+X-Google-Smtp-Source: APXvYqw1iYjVpziXjswrmlU2rI862bFdoZ/LKvGEmuAIzGxOxKMlkrc2fuaVbN9QOa1jFVN2h6hTKGffJR8WNirL26o=
+X-Received: by 2002:ac2:4358:: with SMTP id o24mr5608001lfl.13.1559135695377;
+ Wed, 29 May 2019 06:14:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1554732921.git.rgb@redhat.com> <509ea6b0-1ac8-b809-98c2-37c34dd98ca3@redhat.com>
+ <CAHC9VhRW9f6GbhvvfifbOzd9p=PgdB2gq1E7tACcaqvfb85Y8A@mail.gmail.com>
+ <3299293.RYyUlNkVNy@x2> <20190529004352.vvicec7nnk6pvkwt@madcap2.tricolour.ca>
+In-Reply-To: <20190529004352.vvicec7nnk6pvkwt@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 29 May 2019 09:14:44 -0400
+Message-ID: <CAHC9VhScO5yfnM2tn=_6OKtuU5P_LukPfmnE06E0hVE-2e++uw@mail.gmail.com>
+Subject: Re: [PATCH ghak90 V6 00/10] audit: implement container identifier
+To:     Richard Guy Briggs <rgb@redhat.com>,
+        Steve Grubb <sgrubb@redhat.com>
+Cc:     Dan Walsh <dwalsh@redhat.com>, Neil Horman <nhorman@tuxdriver.com>,
+        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        omosnace@redhat.com, dhowells@redhat.com, simo@redhat.com,
+        Eric Paris <eparis@parisplace.org>,
+        Serge Hallyn <serge@hallyn.com>, ebiederm@xmission.com,
+        Mrunal Patel <mpatel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This reliably triggered ENOBUFS condition in mnl_batch_talk(). With the
-past changes, it passes even after increasing the number of rules to
-300k.
+On Tue, May 28, 2019 at 8:44 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> On 2019-05-28 19:00, Steve Grubb wrote:
+> > On Tuesday, May 28, 2019 6:26:47 PM EDT Paul Moore wrote:
+> > > On Tue, May 28, 2019 at 5:54 PM Daniel Walsh <dwalsh@redhat.com> wrote:
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- tests/shell/testcases/transactions/0049huge_0 | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
- create mode 100755 tests/shell/testcases/transactions/0049huge_0
+...
 
-diff --git a/tests/shell/testcases/transactions/0049huge_0 b/tests/shell/testcases/transactions/0049huge_0
-new file mode 100755
-index 0000000000000..12338087c63e0
---- /dev/null
-+++ b/tests/shell/testcases/transactions/0049huge_0
-@@ -0,0 +1,14 @@
-+#!/bin/bash
-+
-+# let's try to exceed transaction buffer space
-+
-+$NFT flush ruleset
-+$NFT add table inet test
-+$NFT add chain inet test c
-+
-+RULESET=$(
-+for ((i = 0; i < 3000; i++)); do
-+	echo "add rule inet test c accept comment rule$i"
-+done
-+)
-+$NFT -e -f - <<< "$RULESET" >/dev/null
+> > > > Mrunal Patel (maintainer of CRI-O) and I have reviewed the API, and
+> > > > believe this is something we can work on in the container runtimes team
+> > > > to implement the container auditing code in CRI-O and Podman.
+> > >
+> > > Thanks Dan.  If I pulled this into a branch and built you some test
+> > > kernels to play with, any idea how long it might take to get a proof
+> > > of concept working on the cri-o side?
+> >
+> > We'd need to merge user space patches and let them use that instead of the
+> > raw interface. I'm not going to merge user space until we are pretty sure the
+> > patch is going into the kernel.
+>
+> I have an f29 test rpm of the userspace bits if that helps for testing:
+>         http://people.redhat.com/~rbriggs/ghak90/git-1db7e21/
+>
+> Here's what it contains (minus the last patch):
+>         https://github.com/linux-audit/audit-userspace/compare/master...rgbriggs:ghau40-containerid-filter.v7.0
+
+Yes, exactly.  Just as I plan to start making some test kernels for
+people to play with (assuming v6 looks okay), I think it would be good
+if Steve could make a test build of the latest audit userspace with
+the audit container ID patches.  It really shouldn't be that hard, and
+the benefits should far outweigh any time spent generating the
+tree/builds.
+
 -- 
-2.21.0
-
+paul moore
+www.paul-moore.com
