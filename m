@@ -2,125 +2,134 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B494A2D6EF
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 May 2019 09:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8EB2D956
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 May 2019 11:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbfE2HtY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 29 May 2019 03:49:24 -0400
-Received: from mail.us.es ([193.147.175.20]:42854 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725895AbfE2HtY (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 29 May 2019 03:49:24 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id BC985FB38E
-        for <netfilter-devel@vger.kernel.org>; Wed, 29 May 2019 09:49:11 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id AA787DA70A
-        for <netfilter-devel@vger.kernel.org>; Wed, 29 May 2019 09:49:11 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id A011EDA710; Wed, 29 May 2019 09:49:11 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id AFC60DA707;
-        Wed, 29 May 2019 09:49:09 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 29 May 2019 09:49:09 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (sys.soleta.eu [212.170.55.40])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 8D05C4265A32;
-        Wed, 29 May 2019 09:49:09 +0200 (CEST)
-Date:   Wed, 29 May 2019 09:49:09 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Shekhar Sharma <shekhar250198@gmail.com>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft v2]tests: json_echo: convert to py3
-Message-ID: <20190529074909.uf5jujqvz26nuswi@salvia>
-References: <20190528003653.7565-1-shekhar250198@gmail.com>
- <20190529074851.sjmnulacdufhhlmx@salvia>
+        id S1725894AbfE2JqI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 29 May 2019 05:46:08 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:35194 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbfE2JqI (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 29 May 2019 05:46:08 -0400
+Received: by mail-oi1-f193.google.com with SMTP id a132so1510509oib.2
+        for <netfilter-devel@vger.kernel.org>; Wed, 29 May 2019 02:46:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jbloYh7E0k2aBQLv+hMcQbeVcmezkGFqiKyZUGTZBeo=;
+        b=carDbDQk9UV4viR+AgYKKtSwSFzTKCkleJeoVM0/dk++RxvwEOnTdM042rmdwk97tX
+         JIfNMZpPccEP5Qi6Sey2cFVlIZlVNpjgy41upLBuSGW3J92i4omiu0BkfG17GnLq03KW
+         6ynyYbWuIe+yRaZVT/bmR4v/d7NBALC2l3La3Zl5a3POrHswV1CUsZLW0GkStPSC84mW
+         wnPGFzmCSjbwmyo7/v+nSUSX+1EC9E+LmB8nhtBJnoTkizBUvUDU1zQpM0qRif4+ttqu
+         UzAzKfaRmfcnAY+KnyxTpqk86KnnnJqEU6pxk9FFFv/0WmvgdBsWzOyQ20El9pS7jZgn
+         I52w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jbloYh7E0k2aBQLv+hMcQbeVcmezkGFqiKyZUGTZBeo=;
+        b=es6ZDtpSP+Z8q9iQRFxxcA+VL35DckCY39Ph/60a+dY/DIsjJEKrA+1twOtKpgniW8
+         NnGTNmplyaKRD4lxC+CmW7yqiFkFvH8U4lo+AjgwLPHY7/jemGejeS25kfk3MWU1t1Is
+         Z0bZW5LLFQfu1O2P8qD9vu9agmhlIu54AjGoyd6pWgQkk0w6MMOi4KaF4GWa+xPGX6fF
+         gUGFV+uEXheQIxz/XjrMGC4LUeIPWhT5IHSOgoeZxSx+6J4CYR4NWR9yrGQWZVOSyhJK
+         ABW86+opSkOrNCRE7/8k2RVVgxdsnZWCSshPKvGG+kO9tZUwfcvFtIOdXD2jcHZ0p9eR
+         jvig==
+X-Gm-Message-State: APjAAAXVo/s7B+vTm+pyenEpyQY9eJY9KUUdizfBFNILWDtOH6GzviF8
+        ovJNjHhUjlqn32fVqKFI5BeYP8uuGTTS85J/d+G9kA==
+X-Google-Smtp-Source: APXvYqylElASpm+4tdlZsnS/HvCpIjxlE0zizHshkoElnb9tFcgrrO22bBAux8kq7aAF21z/X9iWIe0gsPnOlsYUGJs=
+X-Received: by 2002:aca:4202:: with SMTP id p2mr5744755oia.85.1559123167692;
+ Wed, 29 May 2019 02:46:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190529074851.sjmnulacdufhhlmx@salvia>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+References: <20190528003653.7565-1-shekhar250198@gmail.com>
+ <20190529074851.sjmnulacdufhhlmx@salvia> <20190529074909.uf5jujqvz26nuswi@salvia>
+In-Reply-To: <20190529074909.uf5jujqvz26nuswi@salvia>
+From:   shekhar sharma <shekhar250198@gmail.com>
+Date:   Wed, 29 May 2019 15:15:55 +0530
+Message-ID: <CAN9XX2rjzqmEGrWdtVppq7e1ekiKCk7_=5bHbGbZpKkUGb+Vdg@mail.gmail.com>
+Subject: Re: [PATCH nft v2]tests: json_echo: convert to py3
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Netfilter Development Mailing list 
+        <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, May 28, 2019 at 06:06:53AM +0530, Shekhar Sharma wrote:
-> diff --git a/tests/json_echo/run-test.py b/tests/json_echo/run-test.py
-> index 0132b139..dd7797fb 100755
-> --- a/tests/json_echo/run-test.py
-> +++ b/tests/json_echo/run-test.py
-> @@ -1,5 +1,6 @@
-> -#!/usr/bin/python2
-> +#!/usr/bin/python
->  
-> +from __future__ import print_function
->  import sys
->  import os
->  import json
-> @@ -13,8 +14,8 @@ from nftables import Nftables
->  os.chdir(TESTS_PATH + "/../..")
->  
->  if not os.path.exists('src/.libs/libnftables.so'):
-> -    print "The nftables library does not exist. " \
-> -          "You need to build the project."
-> +    print("The nftables library does not exist. "
-> +          "You need to build the project.")
->      sys.exit(1)
->  
->  nftables = Nftables(sofile = 'src/.libs/libnftables.so')
-> @@ -79,26 +80,26 @@ add_quota = { "add": {
->  # helper functions
->  
->  def exit_err(msg):
-> -    print "Error: %s" % msg
-> +    print("Error: %s" %msg)
->      sys.exit(1)
->  
->  def exit_dump(e, obj):
-> -    print "FAIL: %s" % e
-> -    print "Output was:"
-> +    print("FAIL: {}".format(e))
-> +    print("Output was:")
->      json.dumps(out, sort_keys = True, indent = 4, separators = (',', ': '))
->      sys.exit(1)
->  
->  def do_flush():
->      rc, out, err = nftables.json_cmd({ "nftables": [flush_ruleset] })
->      if not rc is 0:
-> -        exit_err("flush ruleset failed: %s" % err)
-> +        exit_err("flush ruleset failed: {}".format(err))
->  
->  def do_command(cmd):
->      if not type(cmd) is list:
->          cmd = [cmd]
->      rc, out, err = nftables.json_cmd({ "nftables": cmd })
->      if not rc is 0:
-> -        exit_err("command failed: %s" % err)
-> +        exit_err("command failed: {}".format(err))
->      return out
->  
->  def do_list_ruleset():
-> @@ -123,7 +124,7 @@ def get_handle(output, search):
->              if not k in data:
->                  continue
->              found = True
-> -            for key in search[k].keys():
-> +            for key in list(search[k].keys()):
+On Wed, May 29, 2019 at 1:19 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>
+> On Tue, May 28, 2019 at 06:06:53AM +0530, Shekhar Sharma wrote:
+> > diff --git a/tests/json_echo/run-test.py b/tests/json_echo/run-test.py
+> > index 0132b139..dd7797fb 100755
+> > --- a/tests/json_echo/run-test.py
+> > +++ b/tests/json_echo/run-test.py
+> > @@ -1,5 +1,6 @@
+> > -#!/usr/bin/python2
+> > +#!/usr/bin/python
+> >
+> > +from __future__ import print_function
+> >  import sys
+> >  import os
+> >  import json
+> > @@ -13,8 +14,8 @@ from nftables import Nftables
+> >  os.chdir(TESTS_PATH + "/../..")
+> >
+> >  if not os.path.exists('src/.libs/libnftables.so'):
+> > -    print "The nftables library does not exist. " \
+> > -          "You need to build the project."
+> > +    print("The nftables library does not exist. "
+> > +          "You need to build the project.")
+> >      sys.exit(1)
+> >
+> >  nftables = Nftables(sofile = 'src/.libs/libnftables.so')
+> > @@ -79,26 +80,26 @@ add_quota = { "add": {
+> >  # helper functions
+> >
+> >  def exit_err(msg):
+> > -    print "Error: %s" % msg
+> > +    print("Error: %s" %msg)
+> >      sys.exit(1)
+> >
+> >  def exit_dump(e, obj):
+> > -    print "FAIL: %s" % e
+> > -    print "Output was:"
+> > +    print("FAIL: {}".format(e))
+> > +    print("Output was:")
+> >      json.dumps(out, sort_keys = True, indent = 4, separators = (',', ': '))
+> >      sys.exit(1)
+> >
+> >  def do_flush():
+> >      rc, out, err = nftables.json_cmd({ "nftables": [flush_ruleset] })
+> >      if not rc is 0:
+> > -        exit_err("flush ruleset failed: %s" % err)
+> > +        exit_err("flush ruleset failed: {}".format(err))
+> >
+> >  def do_command(cmd):
+> >      if not type(cmd) is list:
+> >          cmd = [cmd]
+> >      rc, out, err = nftables.json_cmd({ "nftables": cmd })
+> >      if not rc is 0:
+> > -        exit_err("command failed: %s" % err)
+> > +        exit_err("command failed: {}".format(err))
+> >      return out
+> >
+> >  def do_list_ruleset():
+> > @@ -123,7 +124,7 @@ def get_handle(output, search):
+> >              if not k in data:
+> >                  continue
+> >              found = True
+> > -            for key in search[k].keys():
+> > +            for key in list(search[k].keys()):
+>
+> list() is not necessary, as Eric already mentioned, right?
+>
+> Your patch is already in git.netfilter.org, so I have already pushed
+> it out BTW. If this is the case, just avoid this in your follow up
+> patches for other existing scripts. Thanks.
 
-list() is not necessary, as Eric already mentioned, right?
+Sure, I will change it in the follow up patches.
 
-Your patch is already in git.netfilter.org, so I have already pushed
-it out BTW. If this is the case, just avoid this in your follow up
-patches for other existing scripts. Thanks.
+Thanks!
+Shekhar
