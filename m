@@ -2,49 +2,154 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 022092FB62
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 May 2019 14:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CFE2FB03
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 May 2019 13:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbfE3MCv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 30 May 2019 08:02:51 -0400
-Received: from ns317680.ip-94-23-251.eu ([94.23.251.149]:52506 "EHLO gcdb.top"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726994AbfE3MCv (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 30 May 2019 08:02:51 -0400
-X-Greylist: delayed 19551 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 May 2019 08:02:51 EDT
+        id S1726798AbfE3Ljx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 30 May 2019 07:39:53 -0400
+Received: from mail.us.es ([193.147.175.20]:39540 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726065AbfE3Ljx (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 30 May 2019 07:39:53 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 114D5BAEAB
+        for <netfilter-devel@vger.kernel.org>; Thu, 30 May 2019 13:39:51 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id E39AEDA79D
+        for <netfilter-devel@vger.kernel.org>; Thu, 30 May 2019 13:39:50 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 0515DDA71A; Thu, 30 May 2019 13:39:39 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 3E3D4DA71A;
+        Thu, 30 May 2019 13:39:37 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Thu, 30 May 2019 13:39:37 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (sys.soleta.eu [212.170.55.40])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 0B0794265A32;
+        Thu, 30 May 2019 13:39:37 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-From:   info <info@gcdb.top>
-Subject: FW: AW: Kontakt.
-Date:   Thu, 30 May 2019 13:24:21 +0200
-Message-ID: <20190530_112421_070612.info@gcdb.top>
-X-Mailer: WEBMAIL
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Mime-Version: 1.0
+Cc:     phil@nwl.cc
+Subject: [PATCH nft,v4 5/7] mnl: estimate receiver buffer size
+Date:   Thu, 30 May 2019 13:39:34 +0200
+Message-Id: <20190530113934.7810-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Sehr geehrte Damen und Herren,
+Set a receiver buffer size based on the number of commands and the
+average message size, this is useful for the --echo option in order to
+avoid ENOBUFS errors.
 
-ich wende mich an Sie, da ich der Meinung bin, dass sich die von Ihnen auf der Webseite angebotenen Produkte ausgezeichnet dazu eignen, im Internet gefördert zu werden.
-Deshalb möchte ich Ihnen die Tools anbieten, die es erlauben, den Verkauf von Ihren Produkten und Dienstleistungen beinahe mit sofortiger Wirkung und auch mehrfach zu erhöhen.
+On the kernel side, each skbuff consumes truesize from the socket queue,
+which is approximately four times the estimated size per message that we
+get in turn for each echo message to ensure enough receiver buffer space.
 
-Die Firmenangaben beinhalten: Name der Firma, Ansprechpartner, E-mail Adresse, Tel. + Fax-Nr., PLZ, Ort, Straße etc. 
+Reported-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v4: makes happy the new testcase from Phil.
 
-1. Gesamtpaket 2019 DE - 1,4 Mio. Firmenadressen ( 1 457 620 ) - 190 € ( bis zum 30.05.2019 ) 
-2. Gesamtpaket 2019 DE,AT,CH - 1,7 Mio. Firmenadressen ( 1 747 921 ) - 240 € ( bis zum 30.05.2019 )
-3. Schweiz 2019 ( 187 911 ) - 149 € ( bis zum 30.05.2019 )
-4. Österreich 2019 ( 104 000 ) - 149 € ( bis zum 30.05.2019 )
+ include/mnl.h     |  3 ++-
+ src/libnftables.c |  5 +++--
+ src/mnl.c         | 11 ++++++++---
+ 3 files changed, 13 insertions(+), 6 deletions(-)
 
-Die Verwendungsmöglichkeiten der Datenbanken sind praktisch unbegrenzt und Sie können durch Verwendung der von uns entwickelten 
-Programme des personalisierten Versendens von Angeboten u.ä. mittels E-mailing bzw. Fax effektive und sichere Werbekampagnen damit durchführen. 
-
-Bitte informieren Sie sich über die weiteren Details einmal unverbindlich auf unseren Webseiten: 
-
-http://www.gmcmarketing.top/?page=catalog
-
-Mit freundlichen Grüßen
-GMTeam
+diff --git a/include/mnl.h b/include/mnl.h
+index c63a7e7fd73a..9f50c3da0f3a 100644
+--- a/include/mnl.h
++++ b/include/mnl.h
+@@ -25,7 +25,8 @@ bool mnl_batch_ready(struct nftnl_batch *batch);
+ void mnl_batch_reset(struct nftnl_batch *batch);
+ uint32_t mnl_batch_begin(struct nftnl_batch *batch, uint32_t seqnum);
+ void mnl_batch_end(struct nftnl_batch *batch, uint32_t seqnum);
+-int mnl_batch_talk(struct netlink_ctx *ctx, struct list_head *err_list);
++int mnl_batch_talk(struct netlink_ctx *ctx, struct list_head *err_list,
++		   uint32_t num_cmds);
+ 
+ int mnl_nft_rule_add(struct netlink_ctx *ctx, const struct cmd *cmd,
+ 		     unsigned int flags);
+diff --git a/src/libnftables.c b/src/libnftables.c
+index 199dbc97b801..a58b8ca9dcf6 100644
+--- a/src/libnftables.c
++++ b/src/libnftables.c
+@@ -21,7 +21,7 @@ static int nft_netlink(struct nft_ctx *nft,
+ 		       struct list_head *cmds, struct list_head *msgs,
+ 		       struct mnl_socket *nf_sock)
+ {
+-	uint32_t batch_seqnum, seqnum = 0;
++	uint32_t batch_seqnum, seqnum = 0, num_cmds = 0;
+ 	struct nftnl_batch *batch;
+ 	struct netlink_ctx ctx;
+ 	struct cmd *cmd;
+@@ -49,6 +49,7 @@ static int nft_netlink(struct nft_ctx *nft,
+ 					 strerror(errno));
+ 			goto out;
+ 		}
++		num_cmds++;
+ 	}
+ 	if (!nft->check)
+ 		mnl_batch_end(batch, mnl_seqnum_alloc(&seqnum));
+@@ -56,7 +57,7 @@ static int nft_netlink(struct nft_ctx *nft,
+ 	if (!mnl_batch_ready(batch))
+ 		goto out;
+ 
+-	ret = mnl_batch_talk(&ctx, &err_list);
++	ret = mnl_batch_talk(&ctx, &err_list, num_cmds);
+ 
+ 	list_for_each_entry_safe(err, tmp, &err_list, head) {
+ 		list_for_each_entry(cmd, cmds, list) {
+diff --git a/src/mnl.c b/src/mnl.c
+index cea3c11d22a9..c9da6bbcd17a 100644
+--- a/src/mnl.c
++++ b/src/mnl.c
+@@ -295,12 +295,14 @@ static ssize_t mnl_nft_socket_sendmsg(struct netlink_ctx *ctx,
+ 	return sendmsg(mnl_socket_get_fd(ctx->nft->nf_sock), msg, 0);
+ }
+ 
+-int mnl_batch_talk(struct netlink_ctx *ctx, struct list_head *err_list)
++int mnl_batch_talk(struct netlink_ctx *ctx, struct list_head *err_list,
++		   uint32_t num_cmds)
+ {
+ 	struct mnl_socket *nl = ctx->nft->nf_sock;
+ 	int ret, fd = mnl_socket_get_fd(nl), portid = mnl_socket_get_portid(nl);
+ 	uint32_t iov_len = nftnl_batch_iovec_len(ctx->batch);
+ 	char rcv_buf[MNL_SOCKET_BUFFER_SIZE];
++	size_t avg_msg_size, batch_size;
+ 	const struct sockaddr_nl snl = {
+ 		.nl_family = AF_NETLINK
+ 	};
+@@ -308,14 +310,17 @@ int mnl_batch_talk(struct netlink_ctx *ctx, struct list_head *err_list)
+ 		.tv_sec		= 0,
+ 		.tv_usec	= 0
+ 	};
+-	fd_set readfds;
+ 	struct iovec iov[iov_len];
+ 	struct msghdr msg = {};
++	fd_set readfds;
+ 	int err = 0;
+ 
+ 	mnl_set_sndbuffer(ctx->nft->nf_sock, ctx->batch);
+ 
+-	mnl_nft_batch_to_msg(ctx, &msg, &snl, iov, iov_len);
++	batch_size = mnl_nft_batch_to_msg(ctx, &msg, &snl, iov, iov_len);
++	avg_msg_size = div_round_up(batch_size, num_cmds);
++
++	mnl_set_rcvbuffer(ctx->nft->nf_sock, num_cmds * avg_msg_size * 4);
+ 
+ 	ret = mnl_nft_socket_sendmsg(ctx, &msg);
+ 	if (ret == -1)
+-- 
+2.11.0
 
