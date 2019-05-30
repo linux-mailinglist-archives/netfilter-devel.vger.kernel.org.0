@@ -2,43 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CF93040D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 May 2019 23:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2EC3046A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 May 2019 23:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbfE3VQa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 30 May 2019 17:16:30 -0400
-Received: from Chamillionaire.breakpoint.cc ([146.0.238.67]:57658 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726794AbfE3VQa (ORCPT
+        id S1726893AbfE3V6u (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 30 May 2019 17:58:50 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:60930 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726857AbfE3V6u (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 30 May 2019 17:16:30 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
-        (envelope-from <fw@strlen.de>)
-        id 1hWSPU-0008Fu-7u; Thu, 30 May 2019 23:16:28 +0200
-Date:   Thu, 30 May 2019 23:16:28 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>
-Subject: Re: nftables release
-Message-ID: <20190530211628.lxufmb3gqizywkxe@breakpoint.cc>
-References: <65ec483a-b8d7-530b-373f-6dcdd5f668c6@6wind.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65ec483a-b8d7-530b-373f-6dcdd5f668c6@6wind.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+        Thu, 30 May 2019 17:58:50 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id B22EA14DB032C;
+        Thu, 30 May 2019 14:21:39 -0700 (PDT)
+Date:   Thu, 30 May 2019 14:21:35 -0700 (PDT)
+Message-Id: <20190530.142135.2140457379658447198.davem@davemloft.net>
+To:     pablo@netfilter.org
+Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
+        nikolay@cumulusnetworks.com, roopa@cumulusnetworks.com
+Subject: Re: [PATCH net-next,v3 0/9] connection tracking support for bridge
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20190529112539.2126-1-pablo@netfilter.org>
+References: <20190529112539.2126-1-pablo@netfilter.org>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 30 May 2019 14:21:39 -0700 (PDT)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Nicolas Dichtel <nicolas.dichtel@6wind.com> wrote:
-> Hi,
-> 
-> is there any plan to release an official version of the nftables user-space utility?
-> The last one (v0.9.0) is now one year old ;-)
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Date: Wed, 29 May 2019 13:25:30 +0200
 
-There are a few bugs that are sorted out right now,
-a new release should happen soon once that is resolved.
+> This patchset adds native connection tracking support for the bridge.
+
+Series applied.
