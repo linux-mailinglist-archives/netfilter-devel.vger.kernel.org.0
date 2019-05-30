@@ -2,82 +2,49 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A88022FAB7
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 May 2019 13:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022092FB62
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 May 2019 14:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbfE3LMy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 30 May 2019 07:12:54 -0400
-Received: from mail.us.es ([193.147.175.20]:49206 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725440AbfE3LMy (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 30 May 2019 07:12:54 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 49DEDC04A4
-        for <netfilter-devel@vger.kernel.org>; Thu, 30 May 2019 13:12:52 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 3B2E4DA706
-        for <netfilter-devel@vger.kernel.org>; Thu, 30 May 2019 13:12:52 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 3A710DA704; Thu, 30 May 2019 13:12:52 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 20B5FDA704;
-        Thu, 30 May 2019 13:12:50 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 30 May 2019 13:12:50 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (sys.soleta.eu [212.170.55.40])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id ECC0C4265A31;
-        Thu, 30 May 2019 13:12:49 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
+        id S1727029AbfE3MCv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 30 May 2019 08:02:51 -0400
+Received: from ns317680.ip-94-23-251.eu ([94.23.251.149]:52506 "EHLO gcdb.top"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726994AbfE3MCv (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 30 May 2019 08:02:51 -0400
+X-Greylist: delayed 19551 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 May 2019 08:02:51 EDT
 To:     netfilter-devel@vger.kernel.org
-Cc:     phil@nwl.cc
-Subject: [PATCH nft,v3 2/7] mnl: mnl_set_rcvbuffer() skips buffer size update if it is too small
-Date:   Thu, 30 May 2019 13:12:46 +0200
-Message-Id: <20190530111246.14550-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+From:   info <info@gcdb.top>
+Subject: FW: AW: Kontakt.
+Date:   Thu, 30 May 2019 13:24:21 +0200
+Message-ID: <20190530_112421_070612.info@gcdb.top>
+X-Mailer: WEBMAIL
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Mime-Version: 1.0
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Check for existing buffer size, if this is larger than the newer buffer
-size, skip this size update.
+Sehr geehrte Damen und Herren,
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-v3: 'len' variable was not properly set.
+ich wende mich an Sie, da ich der Meinung bin, dass sich die von Ihnen auf der Webseite angebotenen Produkte ausgezeichnet dazu eignen, im Internet gefördert zu werden.
+Deshalb möchte ich Ihnen die Tools anbieten, die es erlauben, den Verkauf von Ihren Produkten und Dienstleistungen beinahe mit sofortiger Wirkung und auch mehrfach zu erhöhen.
 
- src/mnl.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Die Firmenangaben beinhalten: Name der Firma, Ansprechpartner, E-mail Adresse, Tel. + Fax-Nr., PLZ, Ort, Straße etc. 
 
-diff --git a/src/mnl.c b/src/mnl.c
-index 288a887df097..2270a084ad29 100644
---- a/src/mnl.c
-+++ b/src/mnl.c
-@@ -235,8 +235,15 @@ static void mnl_set_sndbuffer(const struct mnl_socket *nl,
- 
- static int mnl_set_rcvbuffer(const struct mnl_socket *nl, size_t bufsiz)
- {
-+	unsigned int cur_bufsiz;
-+	socklen_t len = sizeof(cur_bufsiz);
- 	int ret;
- 
-+	ret = getsockopt(mnl_socket_get_fd(nl), SOL_SOCKET, SO_RCVBUF,
-+			 &cur_bufsiz, &len);
-+	if (cur_bufsiz > bufsiz)
-+		return 0;
-+
- 	ret = setsockopt(mnl_socket_get_fd(nl), SOL_SOCKET, SO_RCVBUFFORCE,
- 			 &bufsiz, sizeof(socklen_t));
- 	if (ret < 0) {
--- 
-2.11.0
+1. Gesamtpaket 2019 DE - 1,4 Mio. Firmenadressen ( 1 457 620 ) - 190 € ( bis zum 30.05.2019 ) 
+2. Gesamtpaket 2019 DE,AT,CH - 1,7 Mio. Firmenadressen ( 1 747 921 ) - 240 € ( bis zum 30.05.2019 )
+3. Schweiz 2019 ( 187 911 ) - 149 € ( bis zum 30.05.2019 )
+4. Österreich 2019 ( 104 000 ) - 149 € ( bis zum 30.05.2019 )
+
+Die Verwendungsmöglichkeiten der Datenbanken sind praktisch unbegrenzt und Sie können durch Verwendung der von uns entwickelten 
+Programme des personalisierten Versendens von Angeboten u.ä. mittels E-mailing bzw. Fax effektive und sichere Werbekampagnen damit durchführen. 
+
+Bitte informieren Sie sich über die weiteren Details einmal unverbindlich auf unseren Webseiten: 
+
+http://www.gmcmarketing.top/?page=catalog
+
+Mit freundlichen Grüßen
+GMTeam
 
