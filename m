@@ -2,55 +2,66 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65069327D1
-	for <lists+netfilter-devel@lfdr.de>; Mon,  3 Jun 2019 06:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81845306B8
+	for <lists+netfilter-devel@lfdr.de>; Fri, 31 May 2019 04:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbfFCEtu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 3 Jun 2019 00:49:50 -0400
-Received: from mail.palitramed.ru ([84.53.237.5]:42091 "EHLO
-        mail.palitramed.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726257AbfFCEtu (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 3 Jun 2019 00:49:50 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.palitramed.ru (Postfix) with ESMTP id B48261E0CDFD
-        for <netfilter-devel@vger.kernel.org>; Mon,  3 Jun 2019 05:45:19 +0300 (MSK)
-Received: from mail.palitramed.ru ([127.0.0.1])
-        by localhost (mail.palitramed.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id u3wTNXJEwe6E for <netfilter-devel@vger.kernel.org>;
-        Mon,  3 Jun 2019 05:45:19 +0300 (MSK)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.palitramed.ru (Postfix) with ESMTP id 79EE82065032
-        for <netfilter-devel@vger.kernel.org>; Mon,  3 Jun 2019 05:25:19 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at palitramed.ru
-Received: from mail.palitramed.ru ([127.0.0.1])
-        by localhost (mail.palitramed.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id dpofY08Nc8G8 for <netfilter-devel@vger.kernel.org>;
-        Mon,  3 Jun 2019 05:25:19 +0300 (MSK)
-Received: from [185.234.218.135] (unknown [185.234.218.135])
-        by mail.palitramed.ru (Postfix) with ESMTPA id 53F531FA9B32
-        for <netfilter-devel@vger.kernel.org>; Fri, 31 May 2019 03:31:23 +0300 (MSK)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726531AbfEaCr6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 30 May 2019 22:47:58 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:45926 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726512AbfEaCr6 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 30 May 2019 22:47:58 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 682805B63DFC80789401;
+        Fri, 31 May 2019 10:47:55 +0800 (CST)
+Received: from localhost (10.133.213.239) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Fri, 31 May 2019
+ 10:47:46 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <pablo@netfilter.org>, <kadlec@blackhole.kfki.hu>, <fw@strlen.de>
+CC:     <linux-kernel@vger.kernel.org>, <coreteam@netfilter.org>,
+        <netfilter-devel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] netfilter: nf_conntrack_bridge: Fix build error without IPV6
+Date:   Fri, 31 May 2019 10:46:43 +0800
+Message-ID: <20190531024643.3840-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: In A Nutshell
-To:     netfilter-devel@vger.kernel.org
-From:   "Emissary" <info@hikari-international.com>
-Date:   Thu, 30 May 2019 17:31:22 -0700
-Reply-To: "Emissary" <dannuar4@gmail.com>
-Message-Id: <20190531003124.53F531FA9B32@mail.palitramed.ru>
+Content-Type: text/plain
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello, 
+Fix gcc build error while CONFIG_IPV6 is not set
 
-We have a private business proposition for you,contact me for more details. 
+In file included from net/netfilter/core.c:19:0:
+./include/linux/netfilter_ipv6.h: In function 'nf_ipv6_br_defrag':
+./include/linux/netfilter_ipv6.h:110:9: error: implicit declaration of function 'nf_ct_frag6_gather' [-Werror=implicit-function-declaration]
 
-Thank you,     
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 764dd163ac92 ("netfilter: nf_conntrack_bridge: add support for IPv6")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ include/linux/netfilter_ipv6.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Datuk.
-5.30.19/135p/28wwe.5
+diff --git a/include/linux/netfilter_ipv6.h b/include/linux/netfilter_ipv6.h
+index a21b8c9..4ea97fd 100644
+--- a/include/linux/netfilter_ipv6.h
++++ b/include/linux/netfilter_ipv6.h
+@@ -96,6 +96,8 @@ static inline int nf_ip6_route(struct net *net, struct dst_entry **dst,
+ #endif
+ }
+ 
++int nf_ct_frag6_gather(struct net *net, struct sk_buff *skb, u32 user);
++
+ static inline int nf_ipv6_br_defrag(struct net *net, struct sk_buff *skb,
+ 				    u32 user)
+ {
+-- 
+2.7.4
+
+
