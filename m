@@ -2,69 +2,66 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E026030A71
-	for <lists+netfilter-devel@lfdr.de>; Fri, 31 May 2019 10:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF64930B24
+	for <lists+netfilter-devel@lfdr.de>; Fri, 31 May 2019 11:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbfEaIhr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 31 May 2019 04:37:47 -0400
-Received: from kirsty.vergenet.net ([202.4.237.240]:41224 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726002AbfEaIhq (ORCPT
+        id S1726934AbfEaJKp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 31 May 2019 05:10:45 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:36170 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbfEaJKp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 31 May 2019 04:37:46 -0400
-Received: from reginn.horms.nl (watermunt.horms.nl [80.127.179.77])
-        by kirsty.vergenet.net (Postfix) with ESMTPA id D0BED25AE77;
-        Fri, 31 May 2019 18:37:43 +1000 (AEST)
-Received: by reginn.horms.nl (Postfix, from userid 7100)
-        id C0941940461; Fri, 31 May 2019 10:37:41 +0200 (CEST)
-Date:   Fri, 31 May 2019 10:37:41 +0200
-From:   Simon Horman <horms@verge.net.au>
-To:     Julian Anastasov <ja@ssi.bg>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Jacky Hu <hengqing.hu@gmail.com>, jacky.hu@walmart.com,
-        jason.niesz@walmart.com, Wensong Zhang <wensong@linux-vs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
-        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [PATCH v4] ipvs: add checksum support for gue encapsulation
-Message-ID: <20190531083741.dxsat27bnsy72wdv@verge.net.au>
-References: <20190530001641.504-1-hengqing.hu@gmail.com>
- <alpine.LFD.2.21.1905301008470.4257@ja.home.ssi.bg>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.21.1905301008470.4257@ja.home.ssi.bg>
-Organisation: Horms Solutions BV
-User-Agent: NeoMutt/20170113 (1.7.2)
+        Fri, 31 May 2019 05:10:45 -0400
+X-Greylist: delayed 461 seconds by postgrey-1.27 at vger.kernel.org; Fri, 31 May 2019 05:10:43 EDT
+Received: from 10-19-61-167.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 1706941B73;
+        Fri, 31 May 2019 17:02:59 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org, netfilter-devel@vger.kernel.org
+Cc:     netdev@vger.kernel.org
+Subject: [PATCH net-next] netfilter: ipv6: fix compile err unknown field br_defrag and br_fragment
+Date:   Fri, 31 May 2019 17:02:55 +0800
+Message-Id: <1559293375-14385-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kIGBQJHllBWUlVSUNJQkJCQkJJSExLTUpZV1koWUFJQjdXWS1ZQUlXWQ
+        kOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PBg6Qio*Mjg#DCIJNjdODQ4P
+        H00aCitVSlVKTk5CSUJISExCSUhMVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUpMSEo3Bg++
+X-HM-Tid: 0a6b0d20c2612086kuqy1706941b73
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, May 30, 2019 at 10:10:15AM +0300, Julian Anastasov wrote:
-> 
-> 	Hello,
-> 
-> On Thu, 30 May 2019, Jacky Hu wrote:
-> 
-> > Add checksum support for gue encapsulation with the tun_flags parameter,
-> > which could be one of the values below:
-> > IP_VS_TUNNEL_ENCAP_FLAG_NOCSUM
-> > IP_VS_TUNNEL_ENCAP_FLAG_CSUM
-> > IP_VS_TUNNEL_ENCAP_FLAG_REMCSUM
-> > 
-> > Signed-off-by: Jacky Hu <hengqing.hu@gmail.com>
-> 
-> 	Looks good to me, thanks!
-> 
-> Signed-off-by: Julian Anastasov <ja@ssi.bg>
+From: wenxu <wenxu@ucloud.cn>
 
-Likewise, thanks.
+When CONFIG_IPV6 is not build with modules and CONIFG_NF_CONNTRACK_BRIDGE=m
+There will compile err:
+net/ipv6/netfilter.c:242:2: error: unknown field 'br_defrag' specified in initializer
+  .br_defrag  = nf_ct_frag6_gather,
+net/ipv6/netfilter.c:243:2: error: unknown field 'br_fragment' specified in initializer
+  .br_fragment  = br_ip6_fragment,
 
-Pablo, pleas consider applying this to nf-next.
+Fixes: 764dd163ac92 ("netfilter: nf_conntrack_bridge: add support for IPv6")
+Signed-off-by: wenxu <wenxu@ucloud.cn>
+---
+ net/ipv6/netfilter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Simon Horman <horms@verge.net.au>
+diff --git a/net/ipv6/netfilter.c b/net/ipv6/netfilter.c
+index c666538..9530cc2 100644
+--- a/net/ipv6/netfilter.c
++++ b/net/ipv6/netfilter.c
+@@ -238,7 +238,7 @@ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+ 	.route_input		= ip6_route_input,
+ 	.fragment		= ip6_fragment,
+ 	.reroute		= nf_ip6_reroute,
+-#if IS_MODULE(CONFIG_NF_CONNTRACK_BRIDGE)
++#if IS_MODULE(CONFIG_IPV6)
+ 	.br_defrag		= nf_ct_frag6_gather,
+ 	.br_fragment		= br_ip6_fragment,
+ #endif
+-- 
+1.8.3.1
+
