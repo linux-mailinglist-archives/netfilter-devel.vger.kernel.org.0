@@ -2,40 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C94431E97
-	for <lists+netfilter-devel@lfdr.de>; Sat,  1 Jun 2019 15:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD54131E2D
+	for <lists+netfilter-devel@lfdr.de>; Sat,  1 Jun 2019 15:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728556AbfFANhY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 1 Jun 2019 09:37:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49364 "EHLO mail.kernel.org"
+        id S1727672AbfFANeg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 1 Jun 2019 09:34:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727941AbfFANVy (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 1 Jun 2019 09:21:54 -0400
+        id S1728470AbfFANXg (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 1 Jun 2019 09:23:36 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2124327301;
-        Sat,  1 Jun 2019 13:21:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7651C264BE;
+        Sat,  1 Jun 2019 13:23:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559395313;
-        bh=n+m6o8ArLQiT2h5XaaZBVCSiyu9AaupKRXP6MB3ZETo=;
+        s=default; t=1559395416;
+        bh=vx53/cn0piw5/Nd49Mujb3RPDQN5VCsCot01OzuqToI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h66ZtpBjx9hkWw2zQoi/R7PnMLJp8rTgQBwAZ4qyS7RAft6soSTlTzsIS99WkMMSy
-         M3r49pPgPW5XOH9ABiwKHgldUdAtMdJaAsYykDWKDa8tX5A2OVFMKANFW7143jCalL
-         3LF+70o82iqwR5N5+qiTWelSDvIdnnLfjNHemz+c=
+        b=OoRQVnHRYTwjNf4BdrffianhOuohGmdTyCsDu3veeVcHqjvqcXK951kuVYUUL8I//
+         izA5O3U7IytKGA72TW26SKgLj+Bik9YEqJTv+AwPDGmIcu9POHipQaMka8SNjqwctJ
+         I6ol6DrpbjYd1VCa0a0xPdsm2qyEE5uWhC+iNnvQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Florian Westphal <fw@strlen.de>,
+Cc:     Taehee Yoo <ap420073@gmail.com>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.0 067/173] netfilter: nf_tables: fix base chain stat rcu_dereference usage
-Date:   Sat,  1 Jun 2019 09:17:39 -0400
-Message-Id: <20190601131934.25053-67-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 051/141] netfilter: nf_flow_table: fix missing error check for rhashtable_insert_fast
+Date:   Sat,  1 Jun 2019 09:20:27 -0400
+Message-Id: <20190601132158.25821-51-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190601131934.25053-1-sashal@kernel.org>
-References: <20190601131934.25053-1-sashal@kernel.org>
+In-Reply-To: <20190601132158.25821-1-sashal@kernel.org>
+References: <20190601132158.25821-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,77 +45,59 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Taehee Yoo <ap420073@gmail.com>
 
-[ Upstream commit edbd82c5fba009f68d20b5db585be1e667c605f6 ]
+[ Upstream commit 43c8f131184faf20c07221f3e09724611c6525d8 ]
 
-Following splat gets triggered when nfnetlink monitor is running while
-xtables-nft selftests are running:
+rhashtable_insert_fast() may return an error value when memory
+allocation fails, but flow_offload_add() does not check for errors.
+This patch just adds missing error checking.
 
-net/netfilter/nf_tables_api.c:1272 suspicious rcu_dereference_check() usage!
-other info that might help us debug this:
-
-1 lock held by xtables-nft-mul/27006:
- #0: 00000000e0f85be9 (&net->nft.commit_mutex){+.+.}, at: nf_tables_valid_genid+0x1a/0x50
-Call Trace:
- nf_tables_fill_chain_info.isra.45+0x6cc/0x6e0
- nf_tables_chain_notify+0xf8/0x1a0
- nf_tables_commit+0x165c/0x1740
-
-nf_tables_fill_chain_info() can be called both from dumps (rcu read locked)
-or from the transaction path if a userspace process subscribed to nftables
-notifications.
-
-In the 'table dump' case, rcu_access_pointer() cannot be used: We do not
-hold transaction mutex so the pointer can be NULLed right after the check.
-Just unconditionally fetch the value, then have the helper return
-immediately if its NULL.
-
-In the notification case we don't hold the rcu read lock, but updates are
-prevented due to transaction mutex. Use rcu_dereference_check() to make lockdep
-aware of this.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Fixes: ac2a66665e23 ("netfilter: add generic flow table infrastructure")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_tables_api.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ net/netfilter/nf_flow_table_core.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 25c2b98b9a960..eb3915b76ff47 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -1147,6 +1147,9 @@ static int nft_dump_stats(struct sk_buff *skb, struct nft_stats __percpu *stats)
- 	u64 pkts, bytes;
- 	int cpu;
+diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
+index e1537ace2b90c..5df7486bb4164 100644
+--- a/net/netfilter/nf_flow_table_core.c
++++ b/net/netfilter/nf_flow_table_core.c
+@@ -185,14 +185,25 @@ static const struct rhashtable_params nf_flow_offload_rhash_params = {
  
-+	if (!stats)
-+		return 0;
+ int flow_offload_add(struct nf_flowtable *flow_table, struct flow_offload *flow)
+ {
+-	flow->timeout = (u32)jiffies;
++	int err;
+ 
+-	rhashtable_insert_fast(&flow_table->rhashtable,
+-			       &flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].node,
+-			       nf_flow_offload_rhash_params);
+-	rhashtable_insert_fast(&flow_table->rhashtable,
+-			       &flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].node,
+-			       nf_flow_offload_rhash_params);
++	err = rhashtable_insert_fast(&flow_table->rhashtable,
++				     &flow->tuplehash[0].node,
++				     nf_flow_offload_rhash_params);
++	if (err < 0)
++		return err;
 +
- 	memset(&total, 0, sizeof(total));
- 	for_each_possible_cpu(cpu) {
- 		cpu_stats = per_cpu_ptr(stats, cpu);
-@@ -1204,6 +1207,7 @@ static int nf_tables_fill_chain_info(struct sk_buff *skb, struct net *net,
- 	if (nft_is_base_chain(chain)) {
- 		const struct nft_base_chain *basechain = nft_base_chain(chain);
- 		const struct nf_hook_ops *ops = &basechain->ops;
-+		struct nft_stats __percpu *stats;
- 		struct nlattr *nest;
- 
- 		nest = nla_nest_start(skb, NFTA_CHAIN_HOOK);
-@@ -1225,8 +1229,9 @@ static int nf_tables_fill_chain_info(struct sk_buff *skb, struct net *net,
- 		if (nla_put_string(skb, NFTA_CHAIN_TYPE, basechain->type->name))
- 			goto nla_put_failure;
- 
--		if (rcu_access_pointer(basechain->stats) &&
--		    nft_dump_stats(skb, rcu_dereference(basechain->stats)))
-+		stats = rcu_dereference_check(basechain->stats,
-+					      lockdep_commit_lock_is_held(net));
-+		if (nft_dump_stats(skb, stats))
- 			goto nla_put_failure;
- 	}
- 
++	err = rhashtable_insert_fast(&flow_table->rhashtable,
++				     &flow->tuplehash[1].node,
++				     nf_flow_offload_rhash_params);
++	if (err < 0) {
++		rhashtable_remove_fast(&flow_table->rhashtable,
++				       &flow->tuplehash[0].node,
++				       nf_flow_offload_rhash_params);
++		return err;
++	}
++
++	flow->timeout = (u32)jiffies;
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(flow_offload_add);
 -- 
 2.20.1
 
