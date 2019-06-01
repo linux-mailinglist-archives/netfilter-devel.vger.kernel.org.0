@@ -2,40 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2F931C24
-	for <lists+netfilter-devel@lfdr.de>; Sat,  1 Jun 2019 15:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CF631E9E
+	for <lists+netfilter-devel@lfdr.de>; Sat,  1 Jun 2019 15:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728207AbfFANTW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 1 Jun 2019 09:19:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46520 "EHLO mail.kernel.org"
+        id S1728824AbfFANht (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 1 Jun 2019 09:37:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728196AbfFANTV (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 1 Jun 2019 09:19:21 -0400
+        id S1728581AbfFANVm (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 1 Jun 2019 09:21:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC5F7272B3;
-        Sat,  1 Jun 2019 13:19:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B858C27308;
+        Sat,  1 Jun 2019 13:21:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559395160;
-        bh=el4UumI+dWZf9QEDr98NW9WMPFeWsO8jktub8fr2lCg=;
+        s=default; t=1559395301;
+        bh=8wPyq/bRunq62drSXXF46S3ny3rqGcFrVdccoxLpWbA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QcGxe4M+8DiBfPv77lKVhTxhyGyHy67VdLZsSEY65pFiriXs0FeNqFEWHyAB01kX0
-         mL/mJ899ZOuDEmIAi28py7HhIsPPkSiFv7eKlNs//ucZ2EMLeBkjQVJXuIAqSNCddv
-         ahIiqMPHiO//C0cI2LBtM2pvfNr5FxXljzAVN2XI=
+        b=zXf4QxeXMvReOhnO9CpyLhRFHSExFK0rhBTt3ND/clT+HAcwJK/1Bzlqj+XlAL/T/
+         d/H7XkjPYYxRWAj4WznB9GMaZu/IP2oX535HHhKb6Cojd5+E0sObPPMQL7uaSmG45K
+         TDaYWYw2qZ0ONpgf//RqkBIMWbUKCghIyaWejrw4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Florian Westphal <fw@strlen.de>,
+Cc:     Kristian Evensen <kristian.evensen@gmail.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 072/186] netfilter: nf_tables: fix base chain stat rcu_dereference usage
-Date:   Sat,  1 Jun 2019 09:14:48 -0400
-Message-Id: <20190601131653.24205-72-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.0 061/173] netfilter: ctnetlink: Resolve conntrack L3-protocol flush regression
+Date:   Sat,  1 Jun 2019 09:17:33 -0400
+Message-Id: <20190601131934.25053-61-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190601131653.24205-1-sashal@kernel.org>
-References: <20190601131653.24205-1-sashal@kernel.org>
+In-Reply-To: <20190601131934.25053-1-sashal@kernel.org>
+References: <20190601131934.25053-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,76 +46,51 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Kristian Evensen <kristian.evensen@gmail.com>
 
-[ Upstream commit edbd82c5fba009f68d20b5db585be1e667c605f6 ]
+[ Upstream commit f8e608982022fad035160870f5b06086d3cba54d ]
 
-Following splat gets triggered when nfnetlink monitor is running while
-xtables-nft selftests are running:
+Commit 59c08c69c278 ("netfilter: ctnetlink: Support L3 protocol-filter
+on flush") introduced a user-space regression when flushing connection
+track entries. Before this commit, the nfgen_family field was not used
+by the kernel and all entries were removed. Since this commit,
+nfgen_family is used to filter out entries that should not be removed.
+One example a broken tool is conntrack. conntrack always sets
+nfgen_family to AF_INET, so after 59c08c69c278 only IPv4 entries were
+removed with the -F parameter.
 
-net/netfilter/nf_tables_api.c:1272 suspicious rcu_dereference_check() usage!
-other info that might help us debug this:
+Pablo Neira Ayuso suggested using nfgenmsg->version to resolve the
+regression, and this commit implements his suggestion. nfgenmsg->version
+is so far set to zero, so it is well-suited to be used as a flag for
+selecting old or new flush behavior. If version is 0, nfgen_family is
+ignored and all entries are used. If user-space sets the version to one
+(or any other value than 0), then the new behavior is used. As version
+only can have two valid values, I chose not to add a new
+NFNETLINK_VERSION-constant.
 
-1 lock held by xtables-nft-mul/27006:
- #0: 00000000e0f85be9 (&net->nft.commit_mutex){+.+.}, at: nf_tables_valid_genid+0x1a/0x50
-Call Trace:
- nf_tables_fill_chain_info.isra.45+0x6cc/0x6e0
- nf_tables_chain_notify+0xf8/0x1a0
- nf_tables_commit+0x165c/0x1740
-
-nf_tables_fill_chain_info() can be called both from dumps (rcu read locked)
-or from the transaction path if a userspace process subscribed to nftables
-notifications.
-
-In the 'table dump' case, rcu_access_pointer() cannot be used: We do not
-hold transaction mutex so the pointer can be NULLed right after the check.
-Just unconditionally fetch the value, then have the helper return
-immediately if its NULL.
-
-In the notification case we don't hold the rcu read lock, but updates are
-prevented due to transaction mutex. Use rcu_dereference_check() to make lockdep
-aware of this.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Fixes: 59c08c69c278 ("netfilter: ctnetlink: Support L3 protocol-filter on flush")
+Reported-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Suggested-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Kristian Evensen <kristian.evensen@gmail.com>
+Tested-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_tables_api.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ net/netfilter/nf_conntrack_netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 1606eaa5ae0da..aa5e7b00a581f 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -1190,6 +1190,9 @@ static int nft_dump_stats(struct sk_buff *skb, struct nft_stats __percpu *stats)
- 	u64 pkts, bytes;
- 	int cpu;
- 
-+	if (!stats)
-+		return 0;
-+
- 	memset(&total, 0, sizeof(total));
- 	for_each_possible_cpu(cpu) {
- 		cpu_stats = per_cpu_ptr(stats, cpu);
-@@ -1247,6 +1250,7 @@ static int nf_tables_fill_chain_info(struct sk_buff *skb, struct net *net,
- 	if (nft_is_base_chain(chain)) {
- 		const struct nft_base_chain *basechain = nft_base_chain(chain);
- 		const struct nf_hook_ops *ops = &basechain->ops;
-+		struct nft_stats __percpu *stats;
- 		struct nlattr *nest;
- 
- 		nest = nla_nest_start(skb, NFTA_CHAIN_HOOK);
-@@ -1268,8 +1272,9 @@ static int nf_tables_fill_chain_info(struct sk_buff *skb, struct net *net,
- 		if (nla_put_string(skb, NFTA_CHAIN_TYPE, basechain->type->name))
- 			goto nla_put_failure;
- 
--		if (rcu_access_pointer(basechain->stats) &&
--		    nft_dump_stats(skb, rcu_dereference(basechain->stats)))
-+		stats = rcu_dereference_check(basechain->stats,
-+					      lockdep_commit_lock_is_held(net));
-+		if (nft_dump_stats(skb, stats))
- 			goto nla_put_failure;
- 	}
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index 36619ad8ab8c2..8233dfafb339d 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -1254,7 +1254,7 @@ static int ctnetlink_del_conntrack(struct net *net, struct sock *ctnl,
+ 	struct nf_conntrack_tuple tuple;
+ 	struct nf_conn *ct;
+ 	struct nfgenmsg *nfmsg = nlmsg_data(nlh);
+-	u_int8_t u3 = nfmsg->nfgen_family;
++	u_int8_t u3 = nfmsg->version ? nfmsg->nfgen_family : AF_UNSPEC;
+ 	struct nf_conntrack_zone zone;
+ 	int err;
  
 -- 
 2.20.1
