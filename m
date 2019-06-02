@@ -2,32 +2,32 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E384D32361
-	for <lists+netfilter-devel@lfdr.de>; Sun,  2 Jun 2019 15:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA6032371
+	for <lists+netfilter-devel@lfdr.de>; Sun,  2 Jun 2019 15:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726084AbfFBNWa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 2 Jun 2019 09:22:30 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:2029 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbfFBNWa (ORCPT
+        id S1726170AbfFBNtk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 2 Jun 2019 09:49:40 -0400
+Received: from m9785.mail.qiye.163.com ([220.181.97.85]:55194 "EHLO
+        m9785.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725977AbfFBNtk (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 2 Jun 2019 09:22:30 -0400
+        Sun, 2 Jun 2019 09:49:40 -0400
 Received: from 10-19-61-167.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 363C8410AF;
-        Sun,  2 Jun 2019 21:22:26 +0800 (CST)
+        by m9785.mail.qiye.163.com (Hmail) with ESMTPA id 7BF405C187A;
+        Sun,  2 Jun 2019 21:49:30 +0800 (CST)
 From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org
+To:     pablo@netfilter.org, davem@davemloft.net
 Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH] netfilter: ipv6: Fix undefined symbol nf_ct_frag6_gather
-Date:   Sun,  2 Jun 2019 21:22:21 +0800
-Message-Id: <1559481741-9604-1-git-send-email-wenxu@ucloud.cn>
+Subject: [PATCH net-next v2] netfilter: ipv6: Fix undefined symbol nf_ct_frag6_gather
+Date:   Sun,  2 Jun 2019 21:49:26 +0800
+Message-Id: <1559483366-12371-1-git-send-email-wenxu@ucloud.cn>
 X-Mailer: git-send-email 1.8.3.1
-X-HM-Spam-Status: e1kIGBQJHllBWUlVT0lDQkJCQktLQ0pMQ0xZV1koWUFJQjdXWS1ZQUlXWQ
+X-HM-Spam-Status: e1kIGBQJHllBWUlVT0hPS0tLS0pOSU5DTEJZV1koWUFJQjdXWS1ZQUlXWQ
         kOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KyI6PBw*ETg6KiFPDTY3NgFW
-        PgIKFE9VSlVKTk5CT0NKTE9NSUJDVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUpOTUs3Bg++
-X-HM-Tid: 0a6b185b03392086kuqy363c8410af
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MTI6MBw*FTg3HCERKyNCKk0X
+        PC4KCwpVSlVKTk5CT0NISExLTkNNVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUpNTU03Bg++
+X-HM-Tid: 0a6b1873cc1c2087kuqy7bf405c187a
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
@@ -43,6 +43,8 @@ Fixes: c9bb6165a16e ("netfilter: nf_conntrack_bridge: fix CONFIG_IPV6=y")
 Reported-by: kbuild test robot <lkp@intel.com>
 Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
+v2: Forgot to include "net-next"
+
  net/ipv6/netfilter.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
