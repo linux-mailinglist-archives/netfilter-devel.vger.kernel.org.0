@@ -2,109 +2,84 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CDD33A00
-	for <lists+netfilter-devel@lfdr.de>; Mon,  3 Jun 2019 23:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F130E33D1B
+	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Jun 2019 04:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbfFCVn1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 3 Jun 2019 17:43:27 -0400
-Received: from ja.ssi.bg ([178.16.129.10]:55560 "EHLO ja.ssi.bg"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726102AbfFCVn1 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 3 Jun 2019 17:43:27 -0400
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id x53LWMvZ008943;
-        Tue, 4 Jun 2019 00:32:22 +0300
-Date:   Tue, 4 Jun 2019 00:32:22 +0300 (EEST)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     syzbot <syzbot+722da59ccb264bc19910@syzkaller.appspotmail.com>
-cc:     coreteam@netfilter.org, "David S. Miller" <davem@davemloft.net>,
-        fw@strlen.de, kadlec@blackhole.kfki.hu,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        lvs-devel@vger.kernel.org
-Subject: Re: memory leak in nf_hook_entries_grow
-In-Reply-To: <0000000000002b2262058a70001d@google.com>
-Message-ID: <alpine.LFD.2.21.1906040021510.3876@ja.home.ssi.bg>
-References: <0000000000002b2262058a70001d@google.com>
-User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
+        id S1726521AbfFDCYE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 3 Jun 2019 22:24:04 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:32795 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726486AbfFDCYD (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 3 Jun 2019 22:24:03 -0400
+Received: by mail-oi1-f195.google.com with SMTP id q186so14456777oia.0
+        for <netfilter-devel@vger.kernel.org>; Mon, 03 Jun 2019 19:24:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=sBuZQgLGgSQ7kvRAL03aIr/Wcvjnnb3lyTs/Aaqfbwk=;
+        b=uXxcaXLwANyRa3+NmViVADczyp+SQWIRrz4yHcKYqPorLi6YwOdY8iIZ9ZeOzNsByH
+         uSKqOXNkrAGVc2uaUPT2Pq1rTY5R0T8nCJ1qz8TlDpZuBhYhCUwlqVYPfhdH/XHq4Vqe
+         TKm/Q48MGRe4lutSLUGeeIWvZJPabCG7pcTnCFNUo3y6sAwiSOHkl0NzAG3BrDCVhbnL
+         iFVLbyk897P+wM6kWFFvHguyVDulSsyFhemJ3l3nLhoN36baybFzgNuQCsPs/mDm9H/k
+         F76p3dKGxFkL2LMWByAZHtm7SltVMkuvkzvsIlKkxwO4xV1twh93IQFsle1zWkwb2FLE
+         tuKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=sBuZQgLGgSQ7kvRAL03aIr/Wcvjnnb3lyTs/Aaqfbwk=;
+        b=ee+jRYGAPbhvF/FROhMlb+h4lq0LhFZrAkdWIgSFerTR6RidXxljtAyNBoyQdnF4V7
+         4LfSTH/zz6Hxdmq6lpzxtWy7ctHD+qiV3ksMl0VQvVjsUvPFZn5jMFidyIpuyKZT76H+
+         9kQ2I8XgzGF5snMjkfWNB9/00z7s8HrZ8l6SlpWGiZ7Vvr+5VISNLIricmz2bfQto1lU
+         PajhbEX4kgQ2F3XGOostfni5VVUxCn3z1cf5mMSJGfjQIkXLlb7uKv6fQjeklHrIzxDR
+         8QNyKWJu7KnCT3ynhcbWg2Uq1Z/ou13iDqgDOuBOPXtldxEbHexiTEl0ZHNcX0HwVl6l
+         +3JA==
+X-Gm-Message-State: APjAAAUr4UARo7PksM9HPc6FT6YaPeraetl1tcoj1QZ+r1OCPjueWBzO
+        li3P3+JHhQ0GSgMlt3cGhmzVgVIQvLDqNbQLQhA=
+X-Google-Smtp-Source: APXvYqw8jQ23yIAIP/ibRuqFL1purvdmWMRxLGuNqw3GaUnIhJ/DwQ0i+JQBtbdCTF6YlsnIUUgb7XQDZ0shWMuWKFQ=
+X-Received: by 2002:aca:3545:: with SMTP id c66mr2444017oia.129.1559615042928;
+ Mon, 03 Jun 2019 19:24:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: by 2002:a4a:97e3:0:0:0:0:0 with HTTP; Mon, 3 Jun 2019 19:24:02 -0700 (PDT)
+Reply-To: officeinfo1089@gmail.com
+From:   "Mr.Adams Bello" <monicabentley645@gmail.com>
+Date:   Tue, 4 Jun 2019 03:24:02 +0100
+Message-ID: <CAEB4qVbgxyVe3vMODZzObUezvJKriw-Td0OA7V78mUdYVu2GVw@mail.gmail.com>
+Subject: ATTENTION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+-- 
+Dear Beneficiary,
 
-	Hello,
+The is to bring to your notice that the Department of Treasury Office
+in Nigeria in affiliation with the Federal Government of Nigeria,and
+the Office of Foreign Assets Control here in Nigeria has been
+authorized in their sanction programs to compensate 1,000 scam victims
+who has being a victim of internet scam. The Federal Government of
+Nigeria in collaboration with the Department of the Treasury Office
+has decided to pay $1,000.000.00 USD(One Million United States
+Dollars) each in order to restore the global economy to the enviable
+standard of respectable persons that was scammed. Your names and
+particulars was mentioned by one of the syndicates who was arrested as
+one of the victims of their operations. Although to issue payments to
+the right persons we need you to reconfirm your information's to
+compare with what was given to us. Most importantly you are hereby
+warned not to communicate or duplicate this message to anyone or
+whatsoever as investigations are still ongoing in trace of the other
+criminals so therefore this information's should remain confidential
+to you alone and the agencies involved in the exercise.
 
-On Mon, 3 Jun 2019, syzbot wrote:
+Finally all payments are done by AUTOMATED TELLER MACHINE(ATM), loaded
+with $1,000.000.00 with your names on the ATM CARD waiting to be sent
+to you reconfirmation of your information's on our desk.
 
-> Hello,
-> 
-> syzbot found the following crash on:
-> 
-> HEAD commit:    3ab4436f Merge tag 'nfsd-5.2-1' of git://linux-nfs.org/~bf..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15feaf82a00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=50393f7bfe444ff6
-> dashboard link: https://syzkaller.appspot.com/bug?extid=722da59ccb264bc19910
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f02772a00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1657b80ea00000
-> 
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+722da59ccb264bc19910@syzkaller.appspotmail.com
-> 
-> 035][ T7273] IPVS: ftp: loaded support on port[0] = 21
-> BUG: memory leak
-> unreferenced object 0xffff88810acd8a80 (size 96):
->  comm "syz-executor073", pid 7254, jiffies 4294950560 (age 22.250s)
->  hex dump (first 32 bytes):
->    02 00 00 00 00 00 00 00 50 8b bb 82 ff ff ff ff  ........P.......
->    00 00 00 00 00 00 00 00 00 77 bb 82 ff ff ff ff  .........w......
->  backtrace:
->    [<0000000013db61f1>] kmemleak_alloc_recursive include/linux/kmemleak.h:55
->    [inline]
->    [<0000000013db61f1>] slab_post_alloc_hook mm/slab.h:439 [inline]
->    [<0000000013db61f1>] slab_alloc_node mm/slab.c:3269 [inline]
->    [<0000000013db61f1>] kmem_cache_alloc_node_trace+0x15b/0x2a0 mm/slab.c:3597
->    [<000000001a27307d>] __do_kmalloc_node mm/slab.c:3619 [inline]
->    [<000000001a27307d>] __kmalloc_node+0x38/0x50 mm/slab.c:3627
->    [<0000000025054add>] kmalloc_node include/linux/slab.h:590 [inline]
->    [<0000000025054add>] kvmalloc_node+0x4a/0xd0 mm/util.c:431
->    [<0000000050d1bc00>] kvmalloc include/linux/mm.h:637 [inline]
->    [<0000000050d1bc00>] kvzalloc include/linux/mm.h:645 [inline]
->    [<0000000050d1bc00>] allocate_hook_entries_size+0x3b/0x60
->    net/netfilter/core.c:61
->    [<00000000e8abe142>] nf_hook_entries_grow+0xae/0x270
->    net/netfilter/core.c:128
->    [<000000004b94797c>] __nf_register_net_hook+0x9a/0x170
->    net/netfilter/core.c:337
->    [<00000000d1545cbc>] nf_register_net_hook+0x34/0xc0
->    net/netfilter/core.c:464
->    [<00000000876c9b55>] nf_register_net_hooks+0x53/0xc0
->    net/netfilter/core.c:480
->    [<000000002ea868e0>] __ip_vs_init+0xe8/0x170
->    net/netfilter/ipvs/ip_vs_core.c:2280
-
-	After commit "ipvs: Fix use-after-free in ip_vs_in" we planned
-to call nf_register_net_hooks() only when rule is created but this
-is net-next material and we should not leave leak in the error path.
-I'll post a patch that adds .init handler for ipvs_core_dev_ops, so
-that nf_register_net_hooks() is called there.
-
-> ---
-> This bug is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this bug report. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this bug, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
+Best Regards
+Mr. Adams Bello
+Secretary's Desk
+E-mail: officeinfo1089@gmail.com
