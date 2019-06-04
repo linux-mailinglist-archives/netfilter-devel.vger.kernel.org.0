@@ -2,84 +2,68 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F130E33D1B
-	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Jun 2019 04:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E18E33FD0
+	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Jun 2019 09:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbfFDCYE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 3 Jun 2019 22:24:04 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:32795 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726486AbfFDCYD (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 3 Jun 2019 22:24:03 -0400
-Received: by mail-oi1-f195.google.com with SMTP id q186so14456777oia.0
-        for <netfilter-devel@vger.kernel.org>; Mon, 03 Jun 2019 19:24:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=sBuZQgLGgSQ7kvRAL03aIr/Wcvjnnb3lyTs/Aaqfbwk=;
-        b=uXxcaXLwANyRa3+NmViVADczyp+SQWIRrz4yHcKYqPorLi6YwOdY8iIZ9ZeOzNsByH
-         uSKqOXNkrAGVc2uaUPT2Pq1rTY5R0T8nCJ1qz8TlDpZuBhYhCUwlqVYPfhdH/XHq4Vqe
-         TKm/Q48MGRe4lutSLUGeeIWvZJPabCG7pcTnCFNUo3y6sAwiSOHkl0NzAG3BrDCVhbnL
-         iFVLbyk897P+wM6kWFFvHguyVDulSsyFhemJ3l3nLhoN36baybFzgNuQCsPs/mDm9H/k
-         F76p3dKGxFkL2LMWByAZHtm7SltVMkuvkzvsIlKkxwO4xV1twh93IQFsle1zWkwb2FLE
-         tuKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=sBuZQgLGgSQ7kvRAL03aIr/Wcvjnnb3lyTs/Aaqfbwk=;
-        b=ee+jRYGAPbhvF/FROhMlb+h4lq0LhFZrAkdWIgSFerTR6RidXxljtAyNBoyQdnF4V7
-         4LfSTH/zz6Hxdmq6lpzxtWy7ctHD+qiV3ksMl0VQvVjsUvPFZn5jMFidyIpuyKZT76H+
-         9kQ2I8XgzGF5snMjkfWNB9/00z7s8HrZ8l6SlpWGiZ7Vvr+5VISNLIricmz2bfQto1lU
-         PajhbEX4kgQ2F3XGOostfni5VVUxCn3z1cf5mMSJGfjQIkXLlb7uKv6fQjeklHrIzxDR
-         8QNyKWJu7KnCT3ynhcbWg2Uq1Z/ou13iDqgDOuBOPXtldxEbHexiTEl0ZHNcX0HwVl6l
-         +3JA==
-X-Gm-Message-State: APjAAAUr4UARo7PksM9HPc6FT6YaPeraetl1tcoj1QZ+r1OCPjueWBzO
-        li3P3+JHhQ0GSgMlt3cGhmzVgVIQvLDqNbQLQhA=
-X-Google-Smtp-Source: APXvYqw8jQ23yIAIP/ibRuqFL1purvdmWMRxLGuNqw3GaUnIhJ/DwQ0i+JQBtbdCTF6YlsnIUUgb7XQDZ0shWMuWKFQ=
-X-Received: by 2002:aca:3545:: with SMTP id c66mr2444017oia.129.1559615042928;
- Mon, 03 Jun 2019 19:24:02 -0700 (PDT)
+        id S1726653AbfFDHR6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 4 Jun 2019 03:17:58 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:55330 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726589AbfFDHR6 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 4 Jun 2019 03:17:58 -0400
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1hY3hi-0008Mc-V2; Tue, 04 Jun 2019 09:17:54 +0200
+Date:   Tue, 4 Jun 2019 09:17:54 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Eric Garver <eric@garver.life>, netfilter-devel@vger.kernel.org
+Subject: Re: [nft PATCH v4 7/7] src: Support intra-transaction rule references
+Message-ID: <20190604071754.GO31548@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Eric Garver <eric@garver.life>, netfilter-devel@vger.kernel.org
+References: <20190528210323.14605-1-phil@nwl.cc>
+ <20190528210323.14605-8-phil@nwl.cc>
+ <20190531165625.nxtgnokrxzgol2nk@egarver.localdomain>
+ <20190603165917.pnub5grz3eaixdwt@salvia>
 MIME-Version: 1.0
-Received: by 2002:a4a:97e3:0:0:0:0:0 with HTTP; Mon, 3 Jun 2019 19:24:02 -0700 (PDT)
-Reply-To: officeinfo1089@gmail.com
-From:   "Mr.Adams Bello" <monicabentley645@gmail.com>
-Date:   Tue, 4 Jun 2019 03:24:02 +0100
-Message-ID: <CAEB4qVbgxyVe3vMODZzObUezvJKriw-Td0OA7V78mUdYVu2GVw@mail.gmail.com>
-Subject: ATTENTION
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190603165917.pnub5grz3eaixdwt@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
--- 
-Dear Beneficiary,
+Hi,
 
-The is to bring to your notice that the Department of Treasury Office
-in Nigeria in affiliation with the Federal Government of Nigeria,and
-the Office of Foreign Assets Control here in Nigeria has been
-authorized in their sanction programs to compensate 1,000 scam victims
-who has being a victim of internet scam. The Federal Government of
-Nigeria in collaboration with the Department of the Treasury Office
-has decided to pay $1,000.000.00 USD(One Million United States
-Dollars) each in order to restore the global economy to the enviable
-standard of respectable persons that was scammed. Your names and
-particulars was mentioned by one of the syndicates who was arrested as
-one of the victims of their operations. Although to issue payments to
-the right persons we need you to reconfirm your information's to
-compare with what was given to us. Most importantly you are hereby
-warned not to communicate or duplicate this message to anyone or
-whatsoever as investigations are still ongoing in trace of the other
-criminals so therefore this information's should remain confidential
-to you alone and the agencies involved in the exercise.
+On Mon, Jun 03, 2019 at 06:59:17PM +0200, Pablo Neira Ayuso wrote:
+> On Fri, May 31, 2019 at 12:56:25PM -0400, Eric Garver wrote:
+[...]
+> > I'm seeing a NULL pointer dereferenced here. It occurs when we delete a rule
+> > and add a new rule using the "index" keyword in the same transaction/batch.
 
-Finally all payments are done by AUTOMATED TELLER MACHINE(ATM), loaded
-with $1,000.000.00 with your names on the ATM CARD waiting to be sent
-to you reconfirmation of your information's on our desk.
+Yes, cache population for rule delete command was completely broken. I
+missed that cmd->rule is NULL in that case, sorry for the mess.
 
-Best Regards
-Mr. Adams Bello
-Secretary's Desk
-E-mail: officeinfo1089@gmail.com
+> I think we need two new things here:
+> 
+> #1 We need a new initial step, before evalution, to calculate the cache
+>    completeness level. This means, we interate over the batch to see what
+>    kind of completeness is needed. Then, cache is fetched only once, at
+>    the beginning of the batch processing. Ensure that cache is
+>    consistent from that step.
+> 
+> #2 Update the cache incrementally: Add new objects from the evaluation
+>    phase. If RESTART is hit, then release the cache, and restart the
+>    evaluation. Probably we don't need to restart the evaluation, just
+>    a function to refresh the batch, ie. check if several objects are
+>    there.
+
+I don't understand this but please wait a day or two before jumping in.
+I'm currently working on fixing the problem above and some more I found
+along the way.
+
+Cheers, Phil
