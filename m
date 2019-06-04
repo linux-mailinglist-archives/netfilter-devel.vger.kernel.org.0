@@ -2,76 +2,79 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F39534CCB
-	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Jun 2019 18:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7EA34EE0
+	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Jun 2019 19:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbfFDQDL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 4 Jun 2019 12:03:11 -0400
-Received: from mail.us.es ([193.147.175.20]:52008 "EHLO mail.us.es"
+        id S1726613AbfFDRci (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 4 Jun 2019 13:32:38 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:56488 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727422AbfFDQDL (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 4 Jun 2019 12:03:11 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 7415B6D004
-        for <netfilter-devel@vger.kernel.org>; Tue,  4 Jun 2019 18:03:08 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 65906DA70D
-        for <netfilter-devel@vger.kernel.org>; Tue,  4 Jun 2019 18:03:08 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 5A6EBDA708; Tue,  4 Jun 2019 18:03:08 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 59188DA706;
-        Tue,  4 Jun 2019 18:03:06 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 04 Jun 2019 18:03:06 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (barqueta.lsi.us.es [150.214.188.150])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 4775F4265A2F;
-        Tue,  4 Jun 2019 18:03:06 +0200 (CEST)
-Date:   Tue, 4 Jun 2019 18:03:05 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Guillaume Nault <gnault@redhat.com>
-Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Peter Oskolkov <posk@google.com>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net] netfilter: ipv6: nf_defrag: fix leakage of unqueued
- fragments
-Message-ID: <20190604160305.7bpwsjsjoosj2szt@salvia>
-References: <51d82a9bd6312e51a56ccae54e00452a0ef957dd.1559480671.git.gnault@redhat.com>
- <20190604132605.jlhxljrzaqkw4f2j@salvia>
- <20190604150218.GA12962@linux.home>
+        id S1726312AbfFDRci (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 4 Jun 2019 13:32:38 -0400
+Received: from localhost ([::1]:41344 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1hYDIb-0000n4-09; Tue, 04 Jun 2019 19:32:37 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, Eric Garver <e@erig.me>
+Subject: [nft PATCH v5 00/10] Cache update fix && intra-transaction rule references
+Date:   Tue,  4 Jun 2019 19:31:48 +0200
+Message-Id: <20190604173158.1184-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190604150218.GA12962@linux.home>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Jun 04, 2019 at 05:02:21PM +0200, Guillaume Nault wrote:
-> On Tue, Jun 04, 2019 at 03:26:05PM +0200, Pablo Neira Ayuso wrote:
-> > On Sun, Jun 02, 2019 at 03:13:47PM +0200, Guillaume Nault wrote:
-> > > With commit 997dd9647164 ("net: IP6 defrag: use rbtrees in
-> > > nf_conntrack_reasm.c"), nf_ct_frag6_reasm() is now called from
-> > > nf_ct_frag6_queue(). With this change, nf_ct_frag6_queue() can fail
-> > > after the skb has been added to the fragment queue and
-> > > nf_ct_frag6_gather() was adapted to handle this case.
-> > 
-> > Applied, thanks.
-> 
-> Thanks. Can you also please queue it for -stable?
+Next round of combined cache update fix and intra-transaction rule
+reference support.
 
-As soon as this hits Linus tree, yes.
+Patch 2 is new, it avoids accidential cache updates when committing a
+transaction containing flush ruleset command and kernel ruleset has
+changed meanwhile.
+
+Patch 3 is also new: If a transaction fails in kernel, local cache is
+incorrect - drop it.
+
+Patch 9 is a new requirement for patch 10 due to relocation of new
+functions.
+
+Patch 10 was changed, changelog included.
+
+Phil Sutter (10):
+  src: Fix cache_flush() in cache_needs_more() logic
+  src: Utilize CMD_FLUSH for cache->cmd
+  libnftables: Drop cache in error case
+  libnftables: Keep list of commands in nft context
+  src: Make {table,chain}_not_found() public
+  src: Restore local entries after cache update
+  rule: Introduce rule_lookup_by_index()
+  src: Make cache_is_complete() public
+  include: Collect __stmt_binary_error() wrapper macros
+  src: Support intra-transaction rule references
+
+ include/erec.h                                |   6 +
+ include/nftables.h                            |   1 +
+ include/rule.h                                |  10 +
+ src/evaluate.c                                |  71 ++----
+ src/libnftables.c                             |  25 ++-
+ src/mnl.c                                     |   4 +
+ src/rule.c                                    | 202 +++++++++++++++++-
+ tests/json_echo/run-test.py                   |   6 +-
+ .../shell/testcases/cache/0003_cache_update_0 |   7 +
+ tests/shell/testcases/transactions/0024rule_0 |  17 ++
+ tests/shell/testcases/transactions/0025rule_0 |  21 ++
+ .../transactions/dumps/0024rule_0.nft         |   8 +
+ .../transactions/dumps/0025rule_0.nft         |   6 +
+ 13 files changed, 314 insertions(+), 70 deletions(-)
+ create mode 100755 tests/shell/testcases/transactions/0024rule_0
+ create mode 100755 tests/shell/testcases/transactions/0025rule_0
+ create mode 100644 tests/shell/testcases/transactions/dumps/0024rule_0.nft
+ create mode 100644 tests/shell/testcases/transactions/dumps/0025rule_0.nft
+
+-- 
+2.21.0
+
