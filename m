@@ -2,46 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E428636193
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Jun 2019 18:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FB03619E
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Jun 2019 18:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728667AbfFEQrC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 5 Jun 2019 12:47:02 -0400
-Received: from mail.us.es ([193.147.175.20]:58388 "EHLO mail.us.es"
+        id S1728790AbfFEQrN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 5 Jun 2019 12:47:13 -0400
+Received: from mail.us.es ([193.147.175.20]:58404 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728693AbfFEQrC (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 5 Jun 2019 12:47:02 -0400
+        id S1728263AbfFEQrD (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 5 Jun 2019 12:47:03 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 36BBCFB450
+        by mail.us.es (Postfix) with ESMTP id C4EA5FB44F
         for <netfilter-devel@vger.kernel.org>; Wed,  5 Jun 2019 18:47:00 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 25815DA711
+        by antivirus1-rhel7.int (Postfix) with ESMTP id B58C2DA711
         for <netfilter-devel@vger.kernel.org>; Wed,  5 Jun 2019 18:47:00 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 1B3ABDA70D; Wed,  5 Jun 2019 18:47:00 +0200 (CEST)
+        id AB3E3DA70F; Wed,  5 Jun 2019 18:47:00 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,T_FILL_THIS_FORM_SHORT,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id F4103DA704;
-        Wed,  5 Jun 2019 18:46:57 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 8D1CDDA707;
+        Wed,  5 Jun 2019 18:46:58 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 05 Jun 2019 18:46:57 +0200 (CEST)
+ Wed, 05 Jun 2019 18:46:58 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (sys.soleta.eu [212.170.55.40])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id C94104265A31;
-        Wed,  5 Jun 2019 18:46:57 +0200 (CEST)
+        by entrada.int (Postfix) with ESMTPA id 5F9494265A31;
+        Wed,  5 Jun 2019 18:46:58 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     phil@nwl.cc, fw@strlen.de
-Subject: [PATCH nft 2/4] src: perform evaluation after parsing
-Date:   Wed,  5 Jun 2019 18:46:50 +0200
-Message-Id: <20190605164652.20199-3-pablo@netfilter.org>
+Subject: [PATCH nft 3/4] src: Display parser and evaluate errors in one shot
+Date:   Wed,  5 Jun 2019 18:46:51 +0200
+Message-Id: <20190605164652.20199-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20190605164652.20199-1-pablo@netfilter.org>
 References: <20190605164652.20199-1-pablo@netfilter.org>
@@ -51,169 +50,135 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Since 61236968b7a1 ("parser: evaluate commands immediately after
-parsing"), evaluation is invoked from the parsing phase in order to
-improve error reporting.
+This patch restores 61236968b7a1 ("parser: evaluate commands immediately
+after parsing") following a different approach.
 
-However, this approach is problematic from the cache perspective since
-we don't know if a full or partial netlink dump from the kernel is
-needed. If the number of objects in the kernel is significant, the
-netlink dump operation to build the cache may significantly slow down
-commands.
+In this patch, the evaluation phase is done if the parsing phase fails,
+hence the user gets parsing and evaluation errors in one shot, which is
+the purpose of 61236968b7a1.
 
-This patch moves the evaluation phase after the parsing phase as a
-preparation update to allow for a better strategy to build the cache.
+Note that evaluation errors are now shown after parser errors, the example
+available in 61236968b7a1 displays with this patch the following error:
+
+ # nft -f /tmp/bad.nft
+ /tmp/bad.nft:3:32-32: Error: syntax error, unexpected newline
+ add rule filter input tcp dport
+                                ^
+ /tmp/bad.nft:5:37-41: Error: syntax error, unexpected dport, expecting end of file or newline or semicolon
+ add rule filter input tcp dport tcp dport
+                                     ^^^^^
+ /tmp/bad.nft:4:33-35: Error: datatype mismatch, expected internet network service, expression has type Internet protocol
+ add rule filter input tcp dport tcp
+                       ~~~~~~~~~ ^^^
+
+So evaluation pointing to line 4 happens after line error reporting
+generated by the parser that points to line 3, while 61236968b7a1 was
+showing errors per line in order. As a future work, we can sort the
+error reporting list to restore exactly the same behaviour.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/parser.h   |  1 -
- src/libnftables.c  | 30 +++++++++++++++++++++++++-----
- src/parser_bison.y | 27 ++-------------------------
- 3 files changed, 27 insertions(+), 31 deletions(-)
+ src/libnftables.c | 22 ++++++++++++++++------
+ src/parser_json.c |  9 ---------
+ 2 files changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/include/parser.h b/include/parser.h
-index a5ae802b288a..39a752121a6b 100644
---- a/include/parser.h
-+++ b/include/parser.h
-@@ -27,7 +27,6 @@ struct parser_state {
- 	unsigned int			scope;
- 
- 	struct list_head		*cmds;
--	struct eval_ctx			ectx;
- };
- 
- struct mnl_socket;
 diff --git a/src/libnftables.c b/src/libnftables.c
-index d8de89ca509c..8720fe2bebaf 100644
+index 8720fe2bebaf..f459ecd50e45 100644
 --- a/src/libnftables.c
 +++ b/src/libnftables.c
-@@ -348,7 +348,6 @@ static const struct input_descriptor indesc_cmdline = {
- static int nft_parse_bison_buffer(struct nft_ctx *nft, const char *buf,
- 				  struct list_head *msgs, struct list_head *cmds)
+@@ -400,11 +400,11 @@ static int nft_evaluate(struct nft_ctx *nft, struct list_head *msgs,
+ 
+ int nft_run_cmd_from_buffer(struct nft_ctx *nft, const char *buf)
  {
--	struct cmd *cmd;
- 	int ret;
++	int rc = -EINVAL, parser_rc;
+ 	struct cmd *cmd, *next;
+ 	LIST_HEAD(msgs);
+ 	LIST_HEAD(cmds);
+ 	char *nlbuf;
+-	int rc = -EINVAL;
  
- 	parser_init(nft, nft->state, msgs, cmds);
-@@ -359,16 +358,12 @@ static int nft_parse_bison_buffer(struct nft_ctx *nft, const char *buf,
- 	if (ret != 0 || nft->state->nerrs > 0)
- 		return -1;
- 
--	list_for_each_entry(cmd, cmds, list)
--		nft_cmd_expand(cmd);
--
- 	return 0;
- }
- 
- static int nft_parse_bison_filename(struct nft_ctx *nft, const char *filename,
- 				    struct list_head *msgs, struct list_head *cmds)
- {
--	struct cmd *cmd;
- 	int ret;
- 
- 	parser_init(nft, nft->state, msgs, cmds);
-@@ -380,6 +375,23 @@ static int nft_parse_bison_filename(struct nft_ctx *nft, const char *filename,
- 	if (ret != 0 || nft->state->nerrs > 0)
- 		return -1;
- 
-+	return 0;
-+}
+ 	nlbuf = xzalloc(strlen(buf) + 2);
+ 	sprintf(nlbuf, "%s\n", buf);
+@@ -413,13 +413,18 @@ int nft_run_cmd_from_buffer(struct nft_ctx *nft, const char *buf)
+ 		rc = nft_parse_json_buffer(nft, nlbuf, &msgs, &cmds);
+ 	if (rc == -EINVAL)
+ 		rc = nft_parse_bison_buffer(nft, nlbuf, &msgs, &cmds);
+-	if (rc)
+-		goto err;
 +
-+static int nft_evaluate(struct nft_ctx *nft, struct list_head *msgs,
-+			struct list_head *cmds)
-+{
-+	struct cmd *cmd;
-+
-+	list_for_each_entry(cmd, cmds, list) {
-+		struct eval_ctx ectx = {
-+			.nft	= nft,
-+			.msgs	= msgs,
-+		};
-+		if (cmd_evaluate(&ectx, cmd) < 0)
-+			return -1;
++	parser_rc = rc;
+ 
+ 	rc = nft_evaluate(nft, &msgs, &cmds);
+ 	if (rc < 0)
+ 		goto err;
+ 
++	if (parser_rc) {
++		rc = parser_rc;
++		goto err;
 +	}
 +
- 	list_for_each_entry(cmd, cmds, list)
- 		nft_cmd_expand(cmd);
+ 	if (nft_netlink(nft, &cmds, &msgs, nft->nf_sock) != 0)
+ 		rc = -1;
+ err:
+@@ -445,9 +450,9 @@ err:
+ int nft_run_cmd_from_filename(struct nft_ctx *nft, const char *filename)
+ {
+ 	struct cmd *cmd, *next;
++	int rc, parser_rc;
+ 	LIST_HEAD(msgs);
+ 	LIST_HEAD(cmds);
+-	int rc;
  
-@@ -404,6 +416,10 @@ int nft_run_cmd_from_buffer(struct nft_ctx *nft, const char *buf)
- 	if (rc)
+ 	rc = cache_update(nft, CMD_INVALID, &msgs);
+ 	if (rc < 0)
+@@ -461,13 +466,18 @@ int nft_run_cmd_from_filename(struct nft_ctx *nft, const char *filename)
+ 		rc = nft_parse_json_filename(nft, filename, &msgs, &cmds);
+ 	if (rc == -EINVAL)
+ 		rc = nft_parse_bison_filename(nft, filename, &msgs, &cmds);
+-	if (rc)
+-		goto err;
++
++	parser_rc = rc;
+ 
+ 	rc = nft_evaluate(nft, &msgs, &cmds);
+ 	if (rc < 0)
  		goto err;
  
-+	rc = nft_evaluate(nft, &msgs, &cmds);
-+	if (rc < 0)
++	if (parser_rc) {
++		rc = parser_rc;
 +		goto err;
++	}
 +
  	if (nft_netlink(nft, &cmds, &msgs, nft->nf_sock) != 0)
  		rc = -1;
  err:
-@@ -448,6 +464,10 @@ int nft_run_cmd_from_filename(struct nft_ctx *nft, const char *filename)
- 	if (rc)
- 		goto err;
+diff --git a/src/parser_json.c b/src/parser_json.c
+index 5532ead36c6a..081cf5da7f39 100644
+--- a/src/parser_json.c
++++ b/src/parser_json.c
+@@ -3390,10 +3390,6 @@ static json_t *seqnum_to_json(const uint32_t seqnum)
  
-+	rc = nft_evaluate(nft, &msgs, &cmds);
-+	if (rc < 0)
-+		goto err;
-+
- 	if (nft_netlink(nft, &cmds, &msgs, nft->nf_sock) != 0)
- 		rc = -1;
- err:
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 2a39db3148ef..8026708ed859 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -48,8 +48,6 @@ void parser_init(struct nft_ctx *nft, struct parser_state *state,
- 	state->msgs = msgs;
- 	state->cmds = cmds;
- 	state->scopes[0] = scope_init(&state->top_scope, NULL);
--	state->ectx.nft = nft;
--	state->ectx.msgs = msgs;
- 	init_list_head(&state->indesc_list);
- }
+ static int __json_parse(struct json_ctx *ctx)
+ {
+-	struct eval_ctx ectx = {
+-		.nft = ctx->nft,
+-		.msgs = ctx->msgs,
+-	};
+ 	json_t *tmp, *value;
+ 	size_t index;
  
-@@ -792,17 +790,8 @@ input			:	/* empty */
- 			|	input		line
- 			{
- 				if ($2 != NULL) {
--					LIST_HEAD(list);
--
- 					$2->location = @2;
--
--					list_add_tail(&$2->list, &list);
--					if (cmd_evaluate(&state->ectx, $2) < 0) {
--						cmd_free($2);
--						if (++state->nerrs == nft->parser_max_errors)
--							YYABORT;
--					} else
--						list_splice_tail(&list, state->cmds);
-+					list_add_tail(&$2->list, state->cmds);
- 				}
- 			}
- 			;
-@@ -878,22 +867,10 @@ line			:	common_block			{ $$ = NULL; }
- 				 * work.
- 				 */
- 				if ($1 != NULL) {
--					LIST_HEAD(list);
--
- 					$1->location = @1;
--
--					list_add_tail(&$1->list, &list);
--					if (cmd_evaluate(&state->ectx, $1) < 0) {
--						cmd_free($1);
--						if (++state->nerrs == nft->parser_max_errors)
--							YYABORT;
--					} else
--						list_splice_tail(&list, state->cmds);
-+					list_add_tail(&$1->list, state->cmds);
- 				}
--				if (state->nerrs)
--					YYABORT;
- 				$$ = NULL;
--
- 				YYACCEPT;
- 			}
- 			;
+@@ -3435,11 +3431,6 @@ static int __json_parse(struct json_ctx *ctx)
+ 
+ 		list_add_tail(&cmd->list, &list);
+ 
+-		if (cmd_evaluate(&ectx, cmd) < 0) {
+-			cmd_free(cmd);
+-			json_error(ctx, "Evaluating command at index %zd failed.", index);
+-			return -1;
+-		}
+ 		list_splice_tail(&list, ctx->cmds);
+ 
+ 		if (nft_output_echo(&ctx->nft->output))
 -- 
 2.11.0
 
