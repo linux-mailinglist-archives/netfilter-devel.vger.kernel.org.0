@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B37BA392F9
-	for <lists+netfilter-devel@lfdr.de>; Fri,  7 Jun 2019 19:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CAF392F8
+	for <lists+netfilter-devel@lfdr.de>; Fri,  7 Jun 2019 19:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729235AbfFGRVw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 7 Jun 2019 13:21:52 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:35954 "EHLO orbyte.nwl.cc"
+        id S1731172AbfFGRVr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 7 Jun 2019 13:21:47 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:35946 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728998AbfFGRVw (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 7 Jun 2019 13:21:52 -0400
-Received: from localhost ([::1]:49044 helo=tatos)
+        id S1730394AbfFGRVr (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 7 Jun 2019 13:21:47 -0400
+Received: from localhost ([::1]:49036 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1hZIYo-0006ub-Vt; Fri, 07 Jun 2019 19:21:51 +0200
+        id 1hZIYj-0006uE-Lk; Fri, 07 Jun 2019 19:21:45 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Eric Garver <e@erig.me>, netfilter-devel@vger.kernel.org
-Subject: [nft PATCH v6 2/5] tests/json_echo: Drop needless workaround
-Date:   Fri,  7 Jun 2019 19:21:18 +0200
-Message-Id: <20190607172121.21752-3-phil@nwl.cc>
+Subject: [nft PATCH v6 3/5] rule: Introduce rule_lookup_by_index()
+Date:   Fri,  7 Jun 2019 19:21:19 +0200
+Message-Id: <20190607172121.21752-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190607172121.21752-1-phil@nwl.cc>
 References: <20190607172121.21752-1-phil@nwl.cc>
@@ -31,33 +31,50 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-With cache issues now resolved, there is no need for the multi add test
-workaround anymore.
+In contrast to rule_lookup(), this function returns a chain's rule at a
+given index instead of by handle.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/json_echo/run-test.py | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ include/rule.h |  2 ++
+ src/rule.c     | 11 +++++++++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/tests/json_echo/run-test.py b/tests/json_echo/run-test.py
-index dd7797fb6f041..a636d5f247702 100755
---- a/tests/json_echo/run-test.py
-+++ b/tests/json_echo/run-test.py
-@@ -271,12 +271,10 @@ add_quota["add"]["quota"]["name"] = "q"
- do_flush()
+diff --git a/include/rule.h b/include/rule.h
+index bf3f39636efb5..87b440b63ba5c 100644
+--- a/include/rule.h
++++ b/include/rule.h
+@@ -260,6 +260,8 @@ extern struct rule *rule_get(struct rule *rule);
+ extern void rule_free(struct rule *rule);
+ extern void rule_print(const struct rule *rule, struct output_ctx *octx);
+ extern struct rule *rule_lookup(const struct chain *chain, uint64_t handle);
++extern struct rule *rule_lookup_by_index(const struct chain *chain,
++					 uint64_t index);
  
- print("doing multi add")
--# XXX: Add table separately, otherwise this triggers cache bug
--out = do_command(add_table)
--thandle = get_handle(out, add_table["add"])
--add_multi = [ add_chain, add_set, add_rule ]
-+add_multi = [ add_table, add_chain, add_set, add_rule ]
- out = do_command(add_multi)
+ /**
+  * struct set - nftables set
+diff --git a/src/rule.c b/src/rule.c
+index e570238a40f5b..20fe6f3758cbc 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -641,6 +641,17 @@ struct rule *rule_lookup(const struct chain *chain, uint64_t handle)
+ 	return NULL;
+ }
  
-+thandle = get_handle(out, add_table["add"])
- chandle = get_handle(out, add_chain["add"])
- shandle = get_handle(out, add_set["add"])
- rhandle = get_handle(out, add_rule["add"])
++struct rule *rule_lookup_by_index(const struct chain *chain, uint64_t index)
++{
++	struct rule *rule;
++
++	list_for_each_entry(rule, &chain->rules, list) {
++		if (!--index)
++			return rule;
++	}
++	return NULL;
++}
++
+ struct scope *scope_init(struct scope *scope, const struct scope *parent)
+ {
+ 	scope->parent = parent;
 -- 
 2.21.0
 
