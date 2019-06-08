@@ -2,66 +2,152 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 554413982F
-	for <lists+netfilter-devel@lfdr.de>; Sat,  8 Jun 2019 00:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B837139F50
+	for <lists+netfilter-devel@lfdr.de>; Sat,  8 Jun 2019 13:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727415AbfFGWGQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 7 Jun 2019 18:06:16 -0400
-Received: from mail.us.es ([193.147.175.20]:36710 "EHLO mail.us.es"
+        id S1727901AbfFHLz0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 8 Jun 2019 07:55:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726754AbfFGWGQ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 7 Jun 2019 18:06:16 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id D623980764
-        for <netfilter-devel@vger.kernel.org>; Sat,  8 Jun 2019 00:06:13 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id B7778DA701
-        for <netfilter-devel@vger.kernel.org>; Sat,  8 Jun 2019 00:06:13 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id ACEB6DA704; Sat,  8 Jun 2019 00:06:13 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id BEA2EDA701;
-        Sat,  8 Jun 2019 00:06:11 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sat, 08 Jun 2019 00:06:11 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (sys.soleta.eu [212.170.55.40])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727243AbfFHLkD (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 8 Jun 2019 07:40:03 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 9E9CD4265A2F;
-        Sat,  8 Jun 2019 00:06:11 +0200 (CEST)
-Date:   Sat, 8 Jun 2019 00:06:11 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH 0/4] Some fixes and minor improvements in tests/
-Message-ID: <20190607220611.nvqsyz4njxdc2j5j@salvia>
-References: <20190607172527.22177-1-phil@nwl.cc>
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B1AE214C6;
+        Sat,  8 Jun 2019 11:40:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1559994002;
+        bh=Anl24wVRwQz/64PnpnLUW8+rHvTzsBxXk1v9M9lAXgQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=eyTqEfRTZJS8+Vy407O46uKdqO/Xl6xz2WPeM/XhiPSwRX6L/DQS3ciAtMFCpbbfI
+         XiUbdhux9TJCTSWdVbs/ZC/VeohO0dIaHaQv8w8N2N0idNrqIeaOFefYw2B0gfVDiu
+         PCHdLUtYlVVnUSGglJ5OnbuM42TBxwZjI52oDUOM=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.1 09/70] netfilter: nf_tables: fix oops during rule dump
+Date:   Sat,  8 Jun 2019 07:38:48 -0400
+Message-Id: <20190608113950.8033-9-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190608113950.8033-1-sashal@kernel.org>
+References: <20190608113950.8033-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190607172527.22177-1-phil@nwl.cc>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-i
-On Fri, Jun 07, 2019 at 07:25:23PM +0200, Phil Sutter wrote:
-> This series mostly adds missing bits and changes to JSON equivalents in
-> tests/py to avoid errors when running the suite with -j flag.
-> 
-> In addition to that, patch 3 fixes awk syntax in 0028delete_handle_0
-> test of tests/shell suite. Patch 4 improves the diff output upon dump
-> errors in same suite by printing unified diffs instead of normal ones.
+From: Florian Westphal <fw@strlen.de>
 
-Applied, thanks Phil.
+[ Upstream commit 2c82c7e724ff51cab78e1afd5c2aaa31994fe41e ]
+
+We can oops in nf_tables_fill_rule_info().
+
+Its not possible to fetch previous element in rcu-protected lists
+when deletions are not prevented somehow: list_del_rcu poisons
+the ->prev pointer value.
+
+Before rcu-conversion this was safe as dump operations did hold
+nfnetlink mutex.
+
+Pass previous rule as argument, obtained by keeping a pointer to
+the previous rule during traversal.
+
+Fixes: d9adf22a291883 ("netfilter: nf_tables: use call_rcu in netlink dumps")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/netfilter/nf_tables_api.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 1606eaa5ae0d..041a81185c6a 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -2256,13 +2256,13 @@ static int nf_tables_fill_rule_info(struct sk_buff *skb, struct net *net,
+ 				    u32 flags, int family,
+ 				    const struct nft_table *table,
+ 				    const struct nft_chain *chain,
+-				    const struct nft_rule *rule)
++				    const struct nft_rule *rule,
++				    const struct nft_rule *prule)
+ {
+ 	struct nlmsghdr *nlh;
+ 	struct nfgenmsg *nfmsg;
+ 	const struct nft_expr *expr, *next;
+ 	struct nlattr *list;
+-	const struct nft_rule *prule;
+ 	u16 type = nfnl_msg_type(NFNL_SUBSYS_NFTABLES, event);
+ 
+ 	nlh = nlmsg_put(skb, portid, seq, type, sizeof(struct nfgenmsg), flags);
+@@ -2282,8 +2282,7 @@ static int nf_tables_fill_rule_info(struct sk_buff *skb, struct net *net,
+ 			 NFTA_RULE_PAD))
+ 		goto nla_put_failure;
+ 
+-	if ((event != NFT_MSG_DELRULE) && (rule->list.prev != &chain->rules)) {
+-		prule = list_prev_entry(rule, list);
++	if (event != NFT_MSG_DELRULE && prule) {
+ 		if (nla_put_be64(skb, NFTA_RULE_POSITION,
+ 				 cpu_to_be64(prule->handle),
+ 				 NFTA_RULE_PAD))
+@@ -2330,7 +2329,7 @@ static void nf_tables_rule_notify(const struct nft_ctx *ctx,
+ 
+ 	err = nf_tables_fill_rule_info(skb, ctx->net, ctx->portid, ctx->seq,
+ 				       event, 0, ctx->family, ctx->table,
+-				       ctx->chain, rule);
++				       ctx->chain, rule, NULL);
+ 	if (err < 0) {
+ 		kfree_skb(skb);
+ 		goto err;
+@@ -2355,12 +2354,13 @@ static int __nf_tables_dump_rules(struct sk_buff *skb,
+ 				  const struct nft_chain *chain)
+ {
+ 	struct net *net = sock_net(skb->sk);
++	const struct nft_rule *rule, *prule;
+ 	unsigned int s_idx = cb->args[0];
+-	const struct nft_rule *rule;
+ 
++	prule = NULL;
+ 	list_for_each_entry_rcu(rule, &chain->rules, list) {
+ 		if (!nft_is_active(net, rule))
+-			goto cont;
++			goto cont_skip;
+ 		if (*idx < s_idx)
+ 			goto cont;
+ 		if (*idx > s_idx) {
+@@ -2372,11 +2372,13 @@ static int __nf_tables_dump_rules(struct sk_buff *skb,
+ 					NFT_MSG_NEWRULE,
+ 					NLM_F_MULTI | NLM_F_APPEND,
+ 					table->family,
+-					table, chain, rule) < 0)
++					table, chain, rule, prule) < 0)
+ 			return 1;
+ 
+ 		nl_dump_check_consistent(cb, nlmsg_hdr(skb));
+ cont:
++		prule = rule;
++cont_skip:
+ 		(*idx)++;
+ 	}
+ 	return 0;
+@@ -2532,7 +2534,7 @@ static int nf_tables_getrule(struct net *net, struct sock *nlsk,
+ 
+ 	err = nf_tables_fill_rule_info(skb2, net, NETLINK_CB(skb).portid,
+ 				       nlh->nlmsg_seq, NFT_MSG_NEWRULE, 0,
+-				       family, table, chain, rule);
++				       family, table, chain, rule, NULL);
+ 	if (err < 0)
+ 		goto err;
+ 
+-- 
+2.20.1
+
