@@ -2,178 +2,103 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F59A39E2C
-	for <lists+netfilter-devel@lfdr.de>; Sat,  8 Jun 2019 13:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716183A0E2
+	for <lists+netfilter-devel@lfdr.de>; Sat,  8 Jun 2019 19:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728778AbfFHLqy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 8 Jun 2019 07:46:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35580 "EHLO mail.kernel.org"
+        id S1727203AbfFHReW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 8 Jun 2019 13:34:22 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:38586 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728728AbfFHLqx (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 8 Jun 2019 07:46:53 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79786216FD;
-        Sat,  8 Jun 2019 11:46:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559994412;
-        bh=Z7uhBh0Wb9NnA8EX92lFbl7JWfZGdTbu64NvuQKqewE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gvHgKqAKvugwQGzs0tbUYsD+QX/Qs3pTZ0o++rbxjAoEPzxjVz6amucClnxUIS99v
-         FJD7IBh+dyjbtp74vxlOSGYxbcmbMlKU7mVvOO9RwRr0d0tXRKNaXLNZ3s82zAyz0N
-         2GtgD266QOW+HzeUU/v4KzWnkT+UlABaa009g/rQ=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     YueHaibing <yuehaibing@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        Julian Anastasov <ja@ssi.bg>,
-        Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org
-Subject: [PATCH AUTOSEL 4.14 04/31] ipvs: Fix use-after-free in ip_vs_in
-Date:   Sat,  8 Jun 2019 07:46:15 -0400
-Message-Id: <20190608114646.9415-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190608114646.9415-1-sashal@kernel.org>
-References: <20190608114646.9415-1-sashal@kernel.org>
+        id S1727202AbfFHReW (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 8 Jun 2019 13:34:22 -0400
+Received: from localhost ([::1]:51676 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1hZfER-0003n6-Mn; Sat, 08 Jun 2019 19:34:19 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH] xtables-restore: Fix program names in help texts
+Date:   Sat,  8 Jun 2019 19:34:13 +0200
+Message-Id: <20190608173413.25509-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+Avoid referring to wrong or even non-existent commands:
 
-[ Upstream commit 719c7d563c17b150877cee03a4b812a424989dfa ]
+* When calling xtables_restore_main(), pass the actual program name
+  taken from argv[0].
+* Use 'prog_name' in unknown parameter and help output instead of
+  'xtables-restore' which probably doesn't exist.
+* While being at it, fix false whitespace in help text.
 
-BUG: KASAN: use-after-free in ip_vs_in.part.29+0xe8/0xd20 [ip_vs]
-Read of size 4 at addr ffff8881e9b26e2c by task sshd/5603
-
-CPU: 0 PID: 5603 Comm: sshd Not tainted 4.19.39+ #30
-Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
-Call Trace:
- dump_stack+0x71/0xab
- print_address_description+0x6a/0x270
- kasan_report+0x179/0x2c0
- ip_vs_in.part.29+0xe8/0xd20 [ip_vs]
- ip_vs_in+0xd8/0x170 [ip_vs]
- nf_hook_slow+0x5f/0xe0
- __ip_local_out+0x1d5/0x250
- ip_local_out+0x19/0x60
- __tcp_transmit_skb+0xba1/0x14f0
- tcp_write_xmit+0x41f/0x1ed0
- ? _copy_from_iter_full+0xca/0x340
- __tcp_push_pending_frames+0x52/0x140
- tcp_sendmsg_locked+0x787/0x1600
- ? tcp_sendpage+0x60/0x60
- ? inet_sk_set_state+0xb0/0xb0
- tcp_sendmsg+0x27/0x40
- sock_sendmsg+0x6d/0x80
- sock_write_iter+0x121/0x1c0
- ? sock_sendmsg+0x80/0x80
- __vfs_write+0x23e/0x370
- vfs_write+0xe7/0x230
- ksys_write+0xa1/0x120
- ? __ia32_sys_read+0x50/0x50
- ? __audit_syscall_exit+0x3ce/0x450
- do_syscall_64+0x73/0x200
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7ff6f6147c60
-Code: 73 01 c3 48 8b 0d 28 12 2d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 5d 73 2d 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83
-RSP: 002b:00007ffd772ead18 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000034 RCX: 00007ff6f6147c60
-RDX: 0000000000000034 RSI: 000055df30a31270 RDI: 0000000000000003
-RBP: 000055df30a31270 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007ffd772ead70 R11: 0000000000000246 R12: 00007ffd772ead74
-R13: 00007ffd772eae20 R14: 00007ffd772eae24 R15: 000055df2f12ddc0
-
-Allocated by task 6052:
- kasan_kmalloc+0xa0/0xd0
- __kmalloc+0x10a/0x220
- ops_init+0x97/0x190
- register_pernet_operations+0x1ac/0x360
- register_pernet_subsys+0x24/0x40
- 0xffffffffc0ea016d
- do_one_initcall+0x8b/0x253
- do_init_module+0xe3/0x335
- load_module+0x2fc0/0x3890
- __do_sys_finit_module+0x192/0x1c0
- do_syscall_64+0x73/0x200
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 6067:
- __kasan_slab_free+0x130/0x180
- kfree+0x90/0x1a0
- ops_free_list.part.7+0xa6/0xc0
- unregister_pernet_operations+0x18b/0x1f0
- unregister_pernet_subsys+0x1d/0x30
- ip_vs_cleanup+0x1d/0xd2f [ip_vs]
- __x64_sys_delete_module+0x20c/0x300
- do_syscall_64+0x73/0x200
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff8881e9b26600 which belongs to the cache kmalloc-4096 of size 4096
-The buggy address is located 2092 bytes inside of 4096-byte region [ffff8881e9b26600, ffff8881e9b27600)
-The buggy address belongs to the page:
-page:ffffea0007a6c800 count:1 mapcount:0 mapping:ffff888107c0e600 index:0x0 compound_mapcount: 0
-flags: 0x17ffffc0008100(slab|head)
-raw: 0017ffffc0008100 dead000000000100 dead000000000200 ffff888107c0e600
-raw: 0000000000000000 0000000080070007 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-while unregistering ipvs module, ops_free_list calls
-__ip_vs_cleanup, then nf_unregister_net_hooks be called to
-do remove nf hook entries. It need a RCU period to finish,
-however net->ipvs is set to NULL immediately, which will
-trigger NULL pointer dereference when a packet is hooked
-and handled by ip_vs_in where net->ipvs is dereferenced.
-
-Another scene is ops_free_list call ops_free to free the
-net_generic directly while __ip_vs_cleanup finished, then
-calling ip_vs_in will triggers use-after-free.
-
-This patch moves nf_unregister_net_hooks from __ip_vs_cleanup()
-to __ip_vs_dev_cleanup(),  where rcu_barrier() is called by
-unregister_pernet_device -> unregister_pernet_operations,
-that will do the needed grace period.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: efe41606184e ("ipvs: convert to use pernet nf_hook api")
-Suggested-by: Julian Anastasov <ja@ssi.bg>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Julian Anastasov <ja@ssi.bg>
-Signed-off-by: Simon Horman <horms@verge.net.au>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- net/netfilter/ipvs/ip_vs_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ iptables/xtables-restore.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index d1c0378144f3..ee97ce176b9a 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -2268,7 +2268,6 @@ static void __net_exit __ip_vs_cleanup(struct net *net)
- {
- 	struct netns_ipvs *ipvs = net_ipvs(net);
+diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
+index 86f6a3af971f0..2ef42fabc6f45 100644
+--- a/iptables/xtables-restore.c
++++ b/iptables/xtables-restore.c
+@@ -7,6 +7,7 @@
+ #include "config.h"
+ #include <getopt.h>
+ #include <errno.h>
++#include <libgen.h>
+ #include <stdbool.h>
+ #include <string.h>
+ #include <stdio.h>
+@@ -51,7 +52,7 @@ static void print_usage(const char *name, const char *version)
+ 			"	   [ --help ]\n"
+ 			"	   [ --noflush ]\n"
+ 			"	   [ --table=<TABLE> ]\n"
+-			"          [ --modprobe=<command> ]\n"
++			"	   [ --modprobe=<command> ]\n"
+ 			"	   [ --ipv4 ]\n"
+ 			"	   [ --ipv6 ]\n", name);
+ }
+@@ -361,8 +362,7 @@ xtables_restore_main(int family, const char *progname, int argc, char *argv[])
+ 				p.testing = 1;
+ 				break;
+ 			case 'h':
+-				print_usage("xtables-restore",
+-					    PACKAGE_VERSION);
++				print_usage(prog_name, PACKAGE_VERSION);
+ 				exit(0);
+ 			case 'n':
+ 				h.noflush = 1;
+@@ -387,7 +387,8 @@ xtables_restore_main(int family, const char *progname, int argc, char *argv[])
+ 				break;
+ 			default:
+ 				fprintf(stderr,
+-					"Try `xtables-restore -h' for more information.\n");
++					"Try `%s -h' for more information.\n",
++					prog_name);
+ 				exit(1);
+ 		}
+ 	}
+@@ -443,13 +444,13 @@ xtables_restore_main(int family, const char *progname, int argc, char *argv[])
  
--	nf_unregister_net_hooks(net, ip_vs_ops, ARRAY_SIZE(ip_vs_ops));
- 	ip_vs_service_net_cleanup(ipvs);	/* ip_vs_flush() with locks */
- 	ip_vs_conn_net_cleanup(ipvs);
- 	ip_vs_app_net_cleanup(ipvs);
-@@ -2283,6 +2282,7 @@ static void __net_exit __ip_vs_dev_cleanup(struct net *net)
+ int xtables_ip4_restore_main(int argc, char *argv[])
  {
- 	struct netns_ipvs *ipvs = net_ipvs(net);
- 	EnterFunction(2);
-+	nf_unregister_net_hooks(net, ip_vs_ops, ARRAY_SIZE(ip_vs_ops));
- 	ipvs->enable = 0;	/* Disable packet reception */
- 	smp_wmb();
- 	ip_vs_sync_net_cleanup(ipvs);
+-	return xtables_restore_main(NFPROTO_IPV4, "iptables-restore",
++	return xtables_restore_main(NFPROTO_IPV4, basename(*argv),
+ 				    argc, argv);
+ }
+ 
+ int xtables_ip6_restore_main(int argc, char *argv[])
+ {
+-	return xtables_restore_main(NFPROTO_IPV6, "ip6tables-restore",
++	return xtables_restore_main(NFPROTO_IPV6, basename(*argv),
+ 				    argc, argv);
+ }
+ 
 -- 
-2.20.1
+2.21.0
 
