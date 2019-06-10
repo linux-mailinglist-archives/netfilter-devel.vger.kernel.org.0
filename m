@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BE73B4D9
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jun 2019 14:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214A83B4DB
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jun 2019 14:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389823AbfFJMYV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 10 Jun 2019 08:24:21 -0400
-Received: from smtp-out.kfki.hu ([148.6.0.45]:44195 "EHLO smtp-out.kfki.hu"
+        id S2389902AbfFJMYX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 10 Jun 2019 08:24:23 -0400
+Received: from smtp-out.kfki.hu ([148.6.0.46]:54165 "EHLO smtp-out.kfki.hu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389705AbfFJMYV (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 10 Jun 2019 08:24:21 -0400
+        id S2389573AbfFJMYX (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 10 Jun 2019 08:24:23 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by smtp0.kfki.hu (Postfix) with ESMTP id 5166E67400E5;
-        Mon, 10 Jun 2019 14:24:19 +0200 (CEST)
+        by smtp1.kfki.hu (Postfix) with ESMTP id 6EA703C800FD;
+        Mon, 10 Jun 2019 14:24:21 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         blackhole.kfki.hu; h=mime-version:references:in-reply-to
         :x-mailer:message-id:date:date:from:from:received:received
-        :received; s=20151130; t=1560169457; x=1561983858; bh=UVfKbobsE5
-        y0Zi2kx9hqw6JohIEoE/VNYFPUlxYdVDs=; b=nUnTSEDOO7kmdTaRTOGzrf504x
-        nIEB8Y80KYRqMuMnlmBr+tDcoRXcrDX2Cx7LKa3q6md3dpx/19YKDDatX3nglqBu
-        wRaCXgpE+1kE3rtH/p+060qu0JptaBEIU2Fz3EvQQZFjjgu95PZmHxVz1TR5VeWy
-        TJV5tcADt7p3AAlDc=
-X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
-        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Mon, 10 Jun 2019 14:24:17 +0200 (CEST)
+        :received; s=20151130; t=1560169459; x=1561983860; bh=n9xlYtPBiV
+        yD5+w46fGZ2Zl+gqxMgKFDoutMiil6Ez8=; b=O0LCx1CUTGkUVeQr3xG+pHdF9X
+        PUe7lD8sy09djU/fqVpRyYmmouc1D/JNGvNF2Ww6KJn1kqET7/rwSILW3lW2pYKJ
+        Aq1MCswfdN5QlRE6FdPe8SmOS7qrrS+jWH4Ub8jTb7uf5VG2sCNElOy+pE0QoAav
+        WkYhqsrZNyLcZZ7h0=
+X-Virus-Scanned: Debian amavisd-new at smtp1.kfki.hu
+Received: from smtp1.kfki.hu ([127.0.0.1])
+        by localhost (smtp1.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Mon, 10 Jun 2019 14:24:19 +0200 (CEST)
 Received: from blackhole.kfki.hu (blackhole.kfki.hu [148.6.240.2])
-        by smtp0.kfki.hu (Postfix) with ESMTP id EE6E867400D9;
+        by smtp1.kfki.hu (Postfix) with ESMTP id 001253C800FB;
         Mon, 10 Jun 2019 14:24:16 +0200 (CEST)
 Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id D420022FDF; Mon, 10 Jun 2019 14:24:16 +0200 (CEST)
+        id E75F220B3E; Mon, 10 Jun 2019 14:24:16 +0200 (CEST)
 From:   Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 2/7] netfilter: ipset: merge uadd and udel functions
-Date:   Mon, 10 Jun 2019 14:24:11 +0200
-Message-Id: <20190610122416.22708-3-kadlec@blackhole.kfki.hu>
+Subject: [PATCH 3/7] netfilter: ipset: fix a missing check of nla_parse
+Date:   Mon, 10 Jun 2019 14:24:12 +0200
+Message-Id: <20190610122416.22708-4-kadlec@blackhole.kfki.hu>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190610122416.22708-1-kadlec@blackhole.kfki.hu>
 References: <20190610122416.22708-1-kadlec@blackhole.kfki.hu>
@@ -47,136 +47,42 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Florent Fourcot <florent.fourcot@wifirst.fr>
+From: Aditya Pakki <pakki001@umn.edu>
 
-Both functions are using exactly the same code, except the command value
-passed to call_ad function.
+When nla_parse fails, we should not use the results (the first
+argument). The fix checks if it fails, and if so, returns its error code
+upstream.
 
-Signed-off-by: Florent Fourcot <florent.fourcot@wifirst.fr>
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
 Signed-off-by: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 ---
- net/netfilter/ipset/ip_set_core.c | 71 +++++++++----------------------
- 1 file changed, 20 insertions(+), 51 deletions(-)
+ net/netfilter/ipset/ip_set_core.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_s=
 et_core.c
-index faddcf398b73..2ad609900b22 100644
+index 2ad609900b22..d0f4c627ff91 100644
 --- a/net/netfilter/ipset/ip_set_core.c
 +++ b/net/netfilter/ipset/ip_set_core.c
-@@ -1561,10 +1561,12 @@ call_ad(struct sock *ctnl, struct sk_buff *skb, s=
+@@ -1544,10 +1544,14 @@ call_ad(struct sock *ctnl, struct sk_buff *skb, s=
 truct ip_set *set,
- 	return ret;
- }
+ 		memcpy(&errmsg->msg, nlh, nlh->nlmsg_len);
+ 		cmdattr =3D (void *)&errmsg->msg + min_len;
 =20
--static int ip_set_uadd(struct net *net, struct sock *ctnl, struct sk_buf=
-f *skb,
--		       const struct nlmsghdr *nlh,
--		       const struct nlattr * const attr[],
--		       struct netlink_ext_ack *extack)
-+static int ip_set_ad(struct net *net, struct sock *ctnl,
-+		     struct sk_buff *skb,
-+		     enum ipset_adt adt,
-+		     const struct nlmsghdr *nlh,
-+		     const struct nlattr * const attr[],
-+		     struct netlink_ext_ack *extack)
- {
- 	struct ip_set_net *inst =3D ip_set_pernet(net);
- 	struct ip_set *set;
-@@ -1593,7 +1595,7 @@ static int ip_set_uadd(struct net *net, struct sock=
- *ctnl, struct sk_buff *skb,
- 	if (attr[IPSET_ATTR_DATA]) {
- 		if (nla_parse_nested_deprecated(tb, IPSET_ATTR_ADT_MAX, attr[IPSET_ATT=
-R_DATA], set->type->adt_policy, NULL))
- 			return -IPSET_ERR_PROTOCOL;
--		ret =3D call_ad(ctnl, skb, set, tb, IPSET_ADD, flags,
-+		ret =3D call_ad(ctnl, skb, set, tb, adt, flags,
- 			      use_lineno);
- 	} else {
- 		int nla_rem;
-@@ -1603,7 +1605,7 @@ static int ip_set_uadd(struct net *net, struct sock=
- *ctnl, struct sk_buff *skb,
- 			    !flag_nested(nla) ||
- 			    nla_parse_nested_deprecated(tb, IPSET_ATTR_ADT_MAX, nla, set->typ=
-e->adt_policy, NULL))
- 				return -IPSET_ERR_PROTOCOL;
--			ret =3D call_ad(ctnl, skb, set, tb, IPSET_ADD,
-+			ret =3D call_ad(ctnl, skb, set, tb, adt,
- 				      flags, use_lineno);
- 			if (ret < 0)
- 				return ret;
-@@ -1612,55 +1614,22 @@ static int ip_set_uadd(struct net *net, struct so=
-ck *ctnl, struct sk_buff *skb,
- 	return ret;
- }
+-		nla_parse_deprecated(cda, IPSET_ATTR_CMD_MAX, cmdattr,
+-				     nlh->nlmsg_len - min_len,
+-				     ip_set_adt_policy, NULL);
++		ret =3D nla_parse_deprecated(cda, IPSET_ATTR_CMD_MAX, cmdattr,
++					   nlh->nlmsg_len - min_len,
++					   ip_set_adt_policy, NULL);
 =20
--static int ip_set_udel(struct net *net, struct sock *ctnl, struct sk_buf=
-f *skb,
--		       const struct nlmsghdr *nlh,
-+static int ip_set_uadd(struct net *net, struct sock *ctnl,
-+		       struct sk_buff *skb, const struct nlmsghdr *nlh,
- 		       const struct nlattr * const attr[],
- 		       struct netlink_ext_ack *extack)
- {
--	struct ip_set_net *inst =3D ip_set_pernet(net);
--	struct ip_set *set;
--	struct nlattr *tb[IPSET_ATTR_ADT_MAX + 1] =3D {};
--	const struct nlattr *nla;
--	u32 flags =3D flag_exist(nlh);
--	bool use_lineno;
--	int ret =3D 0;
--
--	if (unlikely(protocol_min_failed(attr) ||
--		     !attr[IPSET_ATTR_SETNAME] ||
--		     !((attr[IPSET_ATTR_DATA] !=3D NULL) ^
--		       (attr[IPSET_ATTR_ADT] !=3D NULL)) ||
--		     (attr[IPSET_ATTR_DATA] &&
--		      !flag_nested(attr[IPSET_ATTR_DATA])) ||
--		     (attr[IPSET_ATTR_ADT] &&
--		      (!flag_nested(attr[IPSET_ATTR_ADT]) ||
--		       !attr[IPSET_ATTR_LINENO]))))
--		return -IPSET_ERR_PROTOCOL;
--
--	set =3D find_set(inst, nla_data(attr[IPSET_ATTR_SETNAME]));
--	if (!set)
--		return -ENOENT;
--
--	use_lineno =3D !!attr[IPSET_ATTR_LINENO];
--	if (attr[IPSET_ATTR_DATA]) {
--		if (nla_parse_nested_deprecated(tb, IPSET_ATTR_ADT_MAX, attr[IPSET_ATT=
-R_DATA], set->type->adt_policy, NULL))
--			return -IPSET_ERR_PROTOCOL;
--		ret =3D call_ad(ctnl, skb, set, tb, IPSET_DEL, flags,
--			      use_lineno);
--	} else {
--		int nla_rem;
-+	return ip_set_ad(net, ctnl, skb,
-+			 IPSET_ADD, nlh, attr, extack);
-+}
++		if (ret) {
++			nlmsg_free(skb2);
++			return ret;
++		}
+ 		errline =3D nla_data(cda[IPSET_ATTR_LINENO]);
 =20
--		nla_for_each_nested(nla, attr[IPSET_ATTR_ADT], nla_rem) {
--			if (nla_type(nla) !=3D IPSET_ATTR_DATA ||
--			    !flag_nested(nla) ||
--			    nla_parse_nested_deprecated(tb, IPSET_ATTR_ADT_MAX, nla, set->typ=
-e->adt_policy, NULL))
--				return -IPSET_ERR_PROTOCOL;
--			ret =3D call_ad(ctnl, skb, set, tb, IPSET_DEL,
--				      flags, use_lineno);
--			if (ret < 0)
--				return ret;
--		}
--	}
--	return ret;
-+static int ip_set_udel(struct net *net, struct sock *ctnl,
-+		       struct sk_buff *skb, const struct nlmsghdr *nlh,
-+		       const struct nlattr * const attr[],
-+		       struct netlink_ext_ack *extack)
-+{
-+	return ip_set_ad(net, ctnl, skb,
-+			 IPSET_DEL, nlh, attr, extack);
- }
-=20
- static int ip_set_utest(struct net *net, struct sock *ctnl, struct sk_bu=
-ff *skb,
+ 		*errline =3D lineno;
 --=20
 2.20.1
 
