@@ -2,100 +2,142 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A89023BDCF
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jun 2019 22:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474313BEA2
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jun 2019 23:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728614AbfFJUvl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 10 Jun 2019 16:51:41 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:42257 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728608AbfFJUvk (ORCPT
+        id S2390135AbfFJV0a (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 10 Jun 2019 17:26:30 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:46453 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389785AbfFJV0M (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 10 Jun 2019 16:51:40 -0400
-Received: by mail-ed1-f66.google.com with SMTP id z25so16415121edq.9
-        for <netfilter-devel@vger.kernel.org>; Mon, 10 Jun 2019 13:51:39 -0700 (PDT)
+        Mon, 10 Jun 2019 17:26:12 -0400
+Received: by mail-ed1-f68.google.com with SMTP id h10so16481531edi.13
+        for <netfilter-devel@vger.kernel.org>; Mon, 10 Jun 2019 14:26:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=brauner.io; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LwPRrFIFVpFh7windfuH8fQym2aENAjRfJxjWELiSBU=;
-        b=Zb5w8rP85WrEmAp+Zr/D+9qTV1RoeJ9+bGxf6ZGFaz//eje5o8iDyuC629FdHNoZHM
-         M6NOkiKW5X94YWAH/0ShGapQoZma0hlhSk6PpQEgi915CF1Dv1mhkO/conE2CVt3RObX
-         ksdmzpJiEaaT8Yjo9vuQP3/LNVzAO7x6LBf7L7PR+g89d/pcyU9i67wPGHBkQEiC2ISG
-         qdF9toeA0vtNzb1Fd88YeDnqmdHXoZrEQoob4+rUi/sJyLbrlfMfj4RPQBeM7Zhz4UQr
-         Rps++y3zxLadol/OIc8Cv+L+LUVb9gstJIM2XJOSfG/oNJXv+6ypGOgTjXRr43Utd7px
-         oGWw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z42gzvzY13YDIHa7rgtca7+PN9nIaqwGu45YWYJL0ZE=;
+        b=AMqJUE9Q4r0Jka3/fomU/aSIQ75ZwQbfS3VT3qSbOphlsrZTStHYrpmMq1/ZTUE3fQ
+         +1sNc/XVUjn9IlXWZpIiCy34EqXAP2FNpGlGgo8tn4PBmjO9MdWPJFOYN968XyQjTZj+
+         DzXjUyNIxN1N2QwEAjnd0wOp/BsiroKnG3x6hdsLSEPem1+GFKuMGkBKsfTMQ8ujVBsa
+         +7Qjy/sAOjFpnT6t+7zKOmTkypECm1CJeTlnHBnaE4gYPQPanvGpsN0SxUu/HG7RmpGi
+         14QrTKqvTAHeGc8qwsC/mb/n0B+OqwlMackr0zAkB4aztO5jrfqlGRoehhQ9NISLzHcX
+         akLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LwPRrFIFVpFh7windfuH8fQym2aENAjRfJxjWELiSBU=;
-        b=BxZ5VzouZ6SQZmFlERct4hrxSgJKCfCNa4eMBR9iLxmemMiQJXQ1ffZ3m9BeRTWV/2
-         hKdHhboSJuxPvkfQyjXoyAjKt0TuUwT7MYunnazGapN+HiQD2IOFUVo5l7x4xxd6ita0
-         tbDAF3CEu+2PJiVPsDi2aOKCWBAyZx3tjWQePn4fNawS7zjx4FzVQnan4q9Sn6PLnfHO
-         LJISzMRmq5b5I7FWLBudjEu7xCyeusre9ENhlEzywnLm+LIiV1ojeZH0luqDYAIx0fP3
-         /JaYWnlYFrBz54RLzeoY54Ge0BybutNpBL7kKuVwEj35wB3OJSFLkAdC3V3fNzvSnVk1
-         i2hQ==
-X-Gm-Message-State: APjAAAXsBvZ6TMh/W09D4w9PVMyI+/w2hrrgLHtkM+kYWJ2etpjZjZ4n
-        QMM3U/CkZEJXHZ8drH/HugVn0w==
-X-Google-Smtp-Source: APXvYqwi/4K4O7p3F5fWVp5YvhiOxBsgwx+PVV7Ojw/tfOBJ/2puw1O0OPD6xnMpmS+Mb4sPcC1x7Q==
-X-Received: by 2002:a17:906:d7aa:: with SMTP id pk10mr1184294ejb.125.1560199899038;
-        Mon, 10 Jun 2019 13:51:39 -0700 (PDT)
-Received: from brauner.io ([2a02:8109:9cc0:6dac:cd8f:f6e9:1b84:bbb1])
-        by smtp.gmail.com with ESMTPSA id k9sm1976063eja.72.2019.06.10.13.51.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z42gzvzY13YDIHa7rgtca7+PN9nIaqwGu45YWYJL0ZE=;
+        b=mWK9X8E/t8QOFcwydg9by+LVFMvrAPBoRpunixyIat9Tpfx+AY7ABjJ2HAfWFuEXrc
+         ADrpxpbNkRC0x9HrSP1mE6JPI3QYEK4jEbf3mjgA8owwojs/1/sXUYO2smVW/FVC0Yqo
+         qYCw1znIyRORs5vvOCgoUT9RFlymFzK2DIitvpakMT9UCNjgQ2J/LI6moGCzDHjzMeWE
+         IGUp9SM//tv2eML+ych91mfgOEu5ANv5JO0Bh2Rdv8CBzTcFagXVMxE0JiU+NebHTH22
+         LfWFyQeenI/rfdfVyNZi/B1p9r/9wbuE6jDmZP16tYIVSnyd7zg+w6IbAqLPjF2aFdPh
+         8WbQ==
+X-Gm-Message-State: APjAAAXLz/vkjugdDWsgy1Cn9lYVRy91A5IT7+VbedNbtlNdgGTQCmsT
+        30ykbpDBBDho/zBpt5VOK/EIeg==
+X-Google-Smtp-Source: APXvYqwCEBHElm6355I+1+Ng6diMwVnfbMqxpbWxvEsZlyN3UMPMo9ttQMSDbYnJv6Ezi7DAWpEnBw==
+X-Received: by 2002:a50:a485:: with SMTP id w5mr76216796edb.78.1560201970561;
+        Mon, 10 Jun 2019 14:26:10 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8109:9cc0:6dac:cd8f:f6e9:1b84:bbb1])
+        by smtp.gmail.com with ESMTPSA id d28sm1092256edn.31.2019.06.10.14.26.09
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 10 Jun 2019 13:51:38 -0700 (PDT)
-Date:   Mon, 10 Jun 2019 22:51:36 +0200
+        Mon, 10 Jun 2019 14:26:09 -0700 (PDT)
 From:   Christian Brauner <christian@brauner.io>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+To:     davem@davemloft.net, netdev@vger.kernel.org,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        bridge@lists.linux-foundation.org, tyhicks@canonical.com,
+        bridge@lists.linux-foundation.org
+Cc:     tyhicks@canonical.com, pablo@netfilter.org,
         kadlec@blackhole.kfki.hu, fw@strlen.de, roopa@cumulusnetworks.com,
         nikolay@cumulusnetworks.com, linux-kernel@vger.kernel.org,
         richardrose@google.com, vapier@chromium.org, bhthompson@google.com,
         smbarber@chromium.org, joelhockey@chromium.org,
-        ueberall@themenzentrisch.de
-Subject: Re: [PATCH net-next v1 1/1] br_netfilter: namespace bridge netfilter
- sysctls
-Message-ID: <20190610205134.6wqparmtsdzbiutv@brauner.io>
-References: <20190609162304.3388-1-christian@brauner.io>
- <20190609162304.3388-2-christian@brauner.io>
- <20190610174136.p3fbcbn33en5bb7f@salvia>
+        ueberall@themenzentrisch.de,
+        Christian Brauner <christian@brauner.io>
+Subject: [PATCH net-next v2 0/2] br_netfilter: enable in non-initial netns
+Date:   Mon, 10 Jun 2019 23:26:04 +0200
+Message-Id: <20190610212606.29743-1-christian@brauner.io>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20190610174136.p3fbcbn33en5bb7f@salvia>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 07:41:36PM +0200, Pablo Neira Ayuso wrote:
-> Thanks for updating this patch to use struct brnf_net.
-> 
-> A few comments below.
-> 
-> On Sun, Jun 09, 2019 at 06:23:04PM +0200, Christian Brauner wrote:
-> [...]
-> > diff --git a/include/net/netfilter/br_netfilter.h b/include/net/netfilter/br_netfilter.h
-> > index 89808ce293c4..302fcd3aade2 100644
-> > --- a/include/net/netfilter/br_netfilter.h
-> > +++ b/include/net/netfilter/br_netfilter.h
-> > @@ -85,17 +82,42 @@ static inline __be16 vlan_proto(const struct sk_buff *skb)
-> >  		return 0;
-> >  }
-> >  
-> > -#define IS_VLAN_IP(skb) \
-> > -	(vlan_proto(skb) == htons(ETH_P_IP) && \
-> > -	 brnf_filter_vlan_tagged)
-> > +static inline bool is_vlan_ip(const struct sk_buff *skb, const struct net *net)
-> > +{
-> 
-> I like this conversion from macro to static inline a lot.
-> 
-> But if you let me ask for one more change, would you split this in two
-> patches? One to replace #defines by static inline.
+Hey everyone,
 
-Sure.
+/* v2 */
+Split into two patches (cf. [4]):
+1/2: replace #define with static inline helpers
+2/2: namespace syscals
+
+/* v1 */
+This is a rework of the patch to not touch struct net at all and instead
+rely on the pernet infrastructure directly to namespace the sysctls.
+
+/* v0 */
+This is another resend of the same patch series. I have received so many
+requests, pings, and questions that I would really like to push for this
+again.
+
+Over time I have seen multiple reports by users who want to run applications
+(Kubernetes e.g. via [1]) that require the br_netfilter module in
+non-initial network namespaces. There are *a lot* of issues for this. A
+shortlist including ChromeOS and other big users is found below under
+[2]! Even non-devs already tried to get more traction on this by
+commenting on the patchset (cf. [3]).
+
+Currently, the /proc/sys/net/bridge folder is only created in the
+initial network namespace. This patch series ensures that the
+/proc/sys/net/bridge folder is available in each network namespace if
+the module is loaded and disappears from all network namespaces when the
+module is unloaded.
+The patch series also makes the sysctls:
+
+bridge-nf-call-arptables
+bridge-nf-call-ip6tables
+bridge-nf-call-iptables
+bridge-nf-filter-pppoe-tagged
+bridge-nf-filter-vlan-tagged
+bridge-nf-pass-vlan-input-dev
+
+apply per network namespace. This unblocks some use-cases where users
+would like to e.g. not do bridge filtering for bridges in a specific
+network namespace while doing so for bridges located in another network
+namespace.
+The netfilter rules are afaict already per network namespace so it
+should be safe for users to specify whether a bridge device inside their
+network namespace is supposed to go through iptables et al. or not.
+Also, this can already be done by setting an option for each individual
+bridge via Netlink. It should also be possible to do this for all
+bridges in a network namespace via sysctls.
+
+Thanks!
+Christian
+
+[1]: https://github.com/zimmertr/Bootstrap-Kubernetes-with-Ansible
+[2]: https://bugs.chromium.org/p/chromium/issues/detail?id=878034 
+     https://github.com/lxc/lxd/issues/5193
+     https://discuss.linuxcontainers.org/t/bridge-nf-call-iptables-and-swap-error-on-lxd-with-kubeadm/2204
+     https://github.com/lxc/lxd/issues/3306
+     https://gitlab.com/gitlab-org/gitlab-runner/issues/3705
+     https://ubuntuforums.org/showthread.php?t=2415032
+     https://medium.com/@thomaszimmerman93/hi-im-unable-to-get-kubeadm-init-to-run-due-to-br-netfilter-not-being-loaded-within-the-5642a4ccfece
+[3]: https://lkml.org/lkml/2019/3/7/365
+[4]: https://lore.kernel.org/lkml/20190610174136.p3fbcbn33en5bb7f@salvia/
+
+Christian Brauner (2):
+  br_netfilter: port sysctls to use brnf_net
+  br_netfilter: namespace bridge netfilter sysctls
+
+ include/net/netfilter/br_netfilter.h |   3 +-
+ net/bridge/br_netfilter_hooks.c      | 245 +++++++++++++++++----------
+ net/bridge/br_netfilter_ipv6.c       |   2 +-
+ 3 files changed, 162 insertions(+), 88 deletions(-)
+
+-- 
+2.21.0
+
