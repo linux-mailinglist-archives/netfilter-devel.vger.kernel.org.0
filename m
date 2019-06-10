@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A029B3B4DC
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jun 2019 14:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305B93B4D7
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jun 2019 14:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389435AbfFJMYY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 10 Jun 2019 08:24:24 -0400
-Received: from smtp-out.kfki.hu ([148.6.0.46]:42637 "EHLO smtp-out.kfki.hu"
+        id S2389703AbfFJMYV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 10 Jun 2019 08:24:21 -0400
+Received: from smtp-out.kfki.hu ([148.6.0.48]:45151 "EHLO smtp-out.kfki.hu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389831AbfFJMYY (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 10 Jun 2019 08:24:24 -0400
+        id S2389823AbfFJMYV (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 10 Jun 2019 08:24:21 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by smtp1.kfki.hu (Postfix) with ESMTP id 007603C800F3;
-        Mon, 10 Jun 2019 14:24:22 +0200 (CEST)
+        by smtp2.kfki.hu (Postfix) with ESMTP id 8B656CC00F3;
+        Mon, 10 Jun 2019 14:24:19 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         blackhole.kfki.hu; h=mime-version:references:in-reply-to
         :x-mailer:message-id:date:date:from:from:received:received
-        :received; s=20151130; t=1560169459; x=1561983860; bh=nikNajFSii
-        SMLs2kuzbkuMZnKGaGN66ElKU5qUVM4XU=; b=G4irCj+hyPIfnzSkBaP4ogtHiC
-        leEIc+7eTG0kemEjE7FAYd2lqIKX2YQLGg9g9XB2GfL6UU+omLoliBBESnGZUO6w
-        SRxN+bvvGIrtwPCYjSUpaEOlqL+dHZQby70BGHZrAdiFIKA7ixPve5PuAcuqKLD8
-        fRpS1OkdcccRyY9C8=
-X-Virus-Scanned: Debian amavisd-new at smtp1.kfki.hu
-Received: from smtp1.kfki.hu ([127.0.0.1])
-        by localhost (smtp1.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Mon, 10 Jun 2019 14:24:19 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.kfki.hu [148.6.240.2])
-        by smtp1.kfki.hu (Postfix) with ESMTP id 2358A3C800FC;
+        :received; s=20151130; t=1560169457; x=1561983858; bh=VVrZAlSB0B
+        svuZwSTCrGk3lgxoE6urp3djsHwJB4wd4=; b=ZTrYmGKDlPo0FR3NSBIbIBOSeo
+        bk8grK1p3lYk9uvlT8dWHJTASAxu+mi0TLbs1dkzVgA7JR4gADK72vcMqTTsCvbB
+        6+xJGlGbJ/26F7iKMNX6BBQeeSJlyvt77zFmPDgFUss2AHSgDwPGCFT38nDgtzfQ
+        TjZgry17Gh68uggmk=
+X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Mon, 10 Jun 2019 14:24:17 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [IPv6:2001:738:5001:1::240:2])
+        by smtp2.kfki.hu (Postfix) with ESMTP id 3B646CC00EE;
         Mon, 10 Jun 2019 14:24:17 +0200 (CEST)
 Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id 170F920B3E; Mon, 10 Jun 2019 14:24:17 +0200 (CEST)
+        id 1F6D222577; Mon, 10 Jun 2019 14:24:17 +0200 (CEST)
 From:   Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5/7] netfilter: ipset: Fix error path in set_target_v3_checkentry()
-Date:   Mon, 10 Jun 2019 14:24:14 +0200
-Message-Id: <20190610122416.22708-6-kadlec@blackhole.kfki.hu>
+Subject: [PATCH 6/7] ipset: Fix memory accounting for hash types on resize
+Date:   Mon, 10 Jun 2019 14:24:15 +0200
+Message-Id: <20190610122416.22708-7-kadlec@blackhole.kfki.hu>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190610122416.22708-1-kadlec@blackhole.kfki.hu>
 References: <20190610122416.22708-1-kadlec@blackhole.kfki.hu>
@@ -47,106 +47,85 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Fix error path and release the references properly.
+From: Stefano Brivio <sbrivio@redhat.com>
 
+If a fresh array block is allocated during resize, the current in-memory
+set size should be increased by the size of the block, not replaced by it=
+.
+
+Before the fix, adding entries to a hash set type, leading to a table
+resize, caused an inconsistent memory size to be reported. This becomes
+more obvious when swapping sets with similar sizes:
+
+  # cat hash_ip_size.sh
+  #!/bin/sh
+  FAIL_RETRIES=3D10
+
+  tries=3D0
+  while [ ${tries} -lt ${FAIL_RETRIES} ]; do
+  	ipset create t1 hash:ip
+  	for i in `seq 1 4345`; do
+  		ipset add t1 1.2.$((i / 255)).$((i % 255))
+  	done
+  	t1_init=3D"$(ipset list t1|sed -n 's/Size in memory: \(.*\)/\1/p')"
+
+  	ipset create t2 hash:ip
+  	for i in `seq 1 4360`; do
+  		ipset add t2 1.2.$((i / 255)).$((i % 255))
+  	done
+  	t2_init=3D"$(ipset list t2|sed -n 's/Size in memory: \(.*\)/\1/p')"
+
+  	ipset swap t1 t2
+  	t1_swap=3D"$(ipset list t1|sed -n 's/Size in memory: \(.*\)/\1/p')"
+  	t2_swap=3D"$(ipset list t2|sed -n 's/Size in memory: \(.*\)/\1/p')"
+
+  	ipset destroy t1
+  	ipset destroy t2
+  	tries=3D$((tries + 1))
+
+  	if [ ${t1_init} -lt 10000 ] || [ ${t2_init} -lt 10000 ]; then
+  		echo "FAIL after ${tries} tries:"
+  		echo "T1 size ${t1_init}, after swap ${t1_swap}"
+  		echo "T2 size ${t2_init}, after swap ${t2_swap}"
+  		exit 1
+  	fi
+  done
+  echo "PASS"
+  # echo -n 'func hash_ip4_resize +p' > /sys/kernel/debug/dynamic_debug/c=
+ontrol
+  # ./hash_ip_size.sh
+  [ 2035.018673] attempt to resize set t1 from 10 to 11, t 00000000fe6551=
+fa
+  [ 2035.078583] set t1 resized from 10 (00000000fe6551fa) to 11 (0000000=
+0172a0163)
+  [ 2035.080353] Table destroy by resize 00000000fe6551fa
+  FAIL after 4 tries:
+  T1 size 9064, after swap 71128
+  T2 size 71128, after swap 9064
+
+Reported-by: NOYB <JunkYardMail1@Frontier.com>
+Fixes: 9e41f26a505c ("netfilter: ipset: Count non-static extension memory=
+ for userspace")
+Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
 Signed-off-by: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 ---
- net/netfilter/xt_set.c | 41 +++++++++++++++++++++--------------------
- 1 file changed, 21 insertions(+), 20 deletions(-)
+ net/netfilter/ipset/ip_set_hash_gen.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/xt_set.c b/net/netfilter/xt_set.c
-index bf2890b13212..cf67bbe07dc2 100644
---- a/net/netfilter/xt_set.c
-+++ b/net/netfilter/xt_set.c
-@@ -439,6 +439,7 @@ set_target_v3_checkentry(const struct xt_tgchk_param =
-*par)
- {
- 	const struct xt_set_info_target_v3 *info =3D par->targinfo;
- 	ip_set_id_t index;
-+	int ret =3D 0;
-=20
- 	if (info->add_set.index !=3D IPSET_INVALID_ID) {
- 		index =3D ip_set_nfnl_get_byindex(par->net,
-@@ -456,17 +457,16 @@ set_target_v3_checkentry(const struct xt_tgchk_para=
-m *par)
- 		if (index =3D=3D IPSET_INVALID_ID) {
- 			pr_info_ratelimited("Cannot find del_set index %u as target\n",
- 					    info->del_set.index);
--			if (info->add_set.index !=3D IPSET_INVALID_ID)
--				ip_set_nfnl_put(par->net,
--						info->add_set.index);
--			return -ENOENT;
-+			ret =3D -ENOENT;
-+			goto cleanup_add;
- 		}
- 	}
-=20
- 	if (info->map_set.index !=3D IPSET_INVALID_ID) {
- 		if (strncmp(par->table, "mangle", 7)) {
- 			pr_info_ratelimited("--map-set only usable from mangle table\n");
--			return -EINVAL;
-+			ret =3D -EINVAL;
-+			goto cleanup_del;
- 		}
- 		if (((info->flags & IPSET_FLAG_MAP_SKBPRIO) |
- 		     (info->flags & IPSET_FLAG_MAP_SKBQUEUE)) &&
-@@ -474,20 +474,16 @@ set_target_v3_checkentry(const struct xt_tgchk_para=
-m *par)
- 					 1 << NF_INET_LOCAL_OUT |
- 					 1 << NF_INET_POST_ROUTING))) {
- 			pr_info_ratelimited("mapping of prio or/and queue is allowed only fro=
-m OUTPUT/FORWARD/POSTROUTING chains\n");
--			return -EINVAL;
-+			ret =3D -EINVAL;
-+			goto cleanup_del;
- 		}
- 		index =3D ip_set_nfnl_get_byindex(par->net,
- 						info->map_set.index);
- 		if (index =3D=3D IPSET_INVALID_ID) {
- 			pr_info_ratelimited("Cannot find map_set index %u as target\n",
- 					    info->map_set.index);
--			if (info->add_set.index !=3D IPSET_INVALID_ID)
--				ip_set_nfnl_put(par->net,
--						info->add_set.index);
--			if (info->del_set.index !=3D IPSET_INVALID_ID)
--				ip_set_nfnl_put(par->net,
--						info->del_set.index);
--			return -ENOENT;
-+			ret =3D -ENOENT;
-+			goto cleanup_del;
- 		}
- 	}
-=20
-@@ -495,16 +491,21 @@ set_target_v3_checkentry(const struct xt_tgchk_para=
-m *par)
- 	    info->del_set.dim > IPSET_DIM_MAX ||
- 	    info->map_set.dim > IPSET_DIM_MAX) {
- 		pr_info_ratelimited("SET target dimension over the limit!\n");
--		if (info->add_set.index !=3D IPSET_INVALID_ID)
--			ip_set_nfnl_put(par->net, info->add_set.index);
--		if (info->del_set.index !=3D IPSET_INVALID_ID)
--			ip_set_nfnl_put(par->net, info->del_set.index);
--		if (info->map_set.index !=3D IPSET_INVALID_ID)
--			ip_set_nfnl_put(par->net, info->map_set.index);
--		return -ERANGE;
-+		ret =3D -ERANGE;
-+		goto cleanup_mark;
- 	}
-=20
- 	return 0;
-+cleanup_mark:
-+	if (info->map_set.index !=3D IPSET_INVALID_ID)
-+		ip_set_nfnl_put(par->net, info->map_set.index);
-+cleanup_del:
-+	if (info->del_set.index !=3D IPSET_INVALID_ID)
-+		ip_set_nfnl_put(par->net, info->del_set.index);
-+cleanup_add:
-+	if (info->add_set.index !=3D IPSET_INVALID_ID)
-+		ip_set_nfnl_put(par->net, info->add_set.index);
-+	return ret;
- }
-=20
- static void
+diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/=
+ip_set_hash_gen.h
+index 01d51f775f12..623e0d675725 100644
+--- a/net/netfilter/ipset/ip_set_hash_gen.h
++++ b/net/netfilter/ipset/ip_set_hash_gen.h
+@@ -625,7 +625,7 @@ mtype_resize(struct ip_set *set, bool retried)
+ 					goto cleanup;
+ 				}
+ 				m->size =3D AHASH_INIT_SIZE;
+-				extsize =3D ext_size(AHASH_INIT_SIZE, dsize);
++				extsize +=3D ext_size(AHASH_INIT_SIZE, dsize);
+ 				RCU_INIT_POINTER(hbucket(t, key), m);
+ 			} else if (m->pos >=3D m->size) {
+ 				struct hbucket *ht;
 --=20
 2.20.1
 
