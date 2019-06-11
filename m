@@ -2,50 +2,100 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F82A3CFED
-	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Jun 2019 16:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3DA3D11A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Jun 2019 17:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728283AbfFKO5M (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 11 Jun 2019 10:57:12 -0400
-Received: from ps440452.dreamhost.com ([205.196.210.232]:60185 "EHLO
-        dbcdata.top" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727225AbfFKO5M (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 11 Jun 2019 10:57:12 -0400
-To:     netfilter-devel@vger.kernel.org
-From:   Martin Winkler <info@dbcdata.top>
-Subject: AW: Antwort
-Date:   Tue, 11 Jun 2019 07:57:12 -0700
-Message-ID: <20190611_145712_023002.info@dbcdata.top>
-X-Mailer: WEBMAIL
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Mime-Version: 1.0
+        id S2405251AbfFKPjr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 11 Jun 2019 11:39:47 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:60580 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405025AbfFKPjr (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 11 Jun 2019 11:39:47 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 6C259309174E;
+        Tue, 11 Jun 2019 15:39:38 +0000 (UTC)
+Received: from egarver.localdomain (ovpn-124-94.rdu2.redhat.com [10.10.124.94])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7A1EE5D705;
+        Tue, 11 Jun 2019 15:39:36 +0000 (UTC)
+Date:   Tue, 11 Jun 2019 11:39:35 -0400
+From:   Eric Garver <eric@garver.life>
+To:     Shekhar Sharma <shekhar250198@gmail.com>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft v6 1/2]tests: py: conversion to python3
+Message-ID: <20190611153935.kwyfchvpngrdfng4@egarver.localdomain>
+Mail-Followup-To: Eric Garver <eric@garver.life>,
+        Shekhar Sharma <shekhar250198@gmail.com>,
+        netfilter-devel@vger.kernel.org
+References: <20190609181738.10074-1-shekhar250198@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190609181738.10074-1-shekhar250198@gmail.com>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Tue, 11 Jun 2019 15:39:46 +0000 (UTC)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Sehr geehrte Damen und Herren,
+On Sun, Jun 09, 2019 at 11:47:38PM +0530, Shekhar Sharma wrote:
+> This patch converts the 'nft-test.py' file to run on both python 2 and python3.
+> 
+> Signed-off-by: Shekhar Sharma <shekhar250198@gmail.com>
+> ---
 
-nach unserem Besuch Ihrer Homepage möchten wir Ihnen ein Angebot von Produkten vorstellen, das Ihnen ermöglichen wird, den Verkauf Ihrer Produkte sowie 
-Dienstleistungen deutlich zu erhöhen. 
+A couple nits below, but otherwise
 
-Die Datenbanken der Firmen sind in für Sie interessante und relevante Zielgruppen untergliedert. 
+Acked-by: Eric Garver <eric@garver.life>
 
-Die Firmenangaben beinhalten: Name der Firma, Ansprechpartner, E-mail Adresse, Tel. + Fax-Nr., PLZ, Ort, Straße etc. 
+> The version hystory of this patch is:
+> v1:conversion to py3 by changing the print statements.
+> v2:add the '__future__' package for compatibility with py2 and py3.
+> v3:solves the 'version' problem in argparse by adding a new argument.
+> v4:uses .format() method to make print statements clearer.
+> v5:updated the shebang and corrected the sequence of import statements.
+> v6:resent the same with small changes
+> 
+>  tests/py/nft-test.py | 42 ++++++++++++++++++++++--------------------
+>  1 file changed, 22 insertions(+), 20 deletions(-)
+> 
+> diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
+> index 09d00dba..4e18ae54 100755
+> --- a/tests/py/nft-test.py
+> +++ b/tests/py/nft-test.py
+> @@ -1,4 +1,4 @@
+> -#!/usr/bin/python2
+> +#!/usr/bin/python
 
---
-1. Gesamtpaket 2019 DE 1 Mio. Firmenadressen ( 1 457 620 ) - 190 EUR ( bis zum 11.06.2019 ) 
-2. Gesamtpaket 2019 DE,AT,CH ( 1 747 921 ) - 240 EUR ( bis zum 11.06.2019 ) 
---
+nit: I think this shebang is more correct as it allows virtualenvs
 
-Die Verwendungsmöglichkeiten der Datenbanken sind praktisch unbegrenzt und Sie können durch Verwendung der von uns entwickelten 
-Programme des personalisierten Versendens von Angeboten u.ä. mittels E-mailing bzw. Fax effektive und sichere Werbekampagnen damit durchführen. 
+  #!/usr/bin/env python
 
-Bitte informieren Sie sich über die weiteren Details einmal unverbindlich auf unseren Webseiten: 
+But we can always call the tests with an explicit interpreter
 
-http://www.acdbmarketing.net/?p=1
+  # .../my/bin/python ./nft-test.py
 
-Mit freundlichen Grüßen
-Martin Winkler
+>  #
+>  # (C) 2014 by Ana Rey Botello <anarey@gmail.com>
+>  #
+[..]
+> @@ -1358,6 +1359,10 @@ def main():
+>      parser.add_argument('-s', '--schema', action='store_true',
+>                          dest='enable_schema',
+>                          help='verify json input/output against schema')
+> +	
 
+nit: This adds a line with a tab, which both git-am and flake8 complain
+about.
+
+> +    parser.add_argument('-v', '--version', action='version',
+> +                        version='1.0',
+> +                        help='print the version information')
+>  
+>      args = parser.parse_args()
+>      global debug_option, need_fix_option, enable_json_option, enable_json_schema
+> @@ -1372,15 +1377,15 @@ def main():
+[..]
