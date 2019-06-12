@@ -2,73 +2,89 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D94D942584
-	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Jun 2019 14:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9149342D72
+	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Jun 2019 19:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730260AbfFLMXg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 12 Jun 2019 08:23:36 -0400
-Received: from mail.us.es ([193.147.175.20]:42442 "EHLO mail.us.es"
+        id S2407920AbfFLR1l (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 12 Jun 2019 13:27:41 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:48792 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730295AbfFLMXg (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 12 Jun 2019 08:23:36 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 3BA8F154E8B
-        for <netfilter-devel@vger.kernel.org>; Wed, 12 Jun 2019 14:23:34 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 2BDA0DA702
-        for <netfilter-devel@vger.kernel.org>; Wed, 12 Jun 2019 14:23:34 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 21763DA701; Wed, 12 Jun 2019 14:23:34 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 340E9DA709
-        for <netfilter-devel@vger.kernel.org>; Wed, 12 Jun 2019 14:23:32 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 12 Jun 2019 14:23:32 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (sys.soleta.eu [212.170.55.40])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 1671F4265A2F
-        for <netfilter-devel@vger.kernel.org>; Wed, 12 Jun 2019 14:23:32 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 3/3] datatype: dtype_clone() should clone flags too
-Date:   Wed, 12 Jun 2019 14:23:28 +0200
-Message-Id: <20190612122328.3889-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20190612122328.3889-1-pablo@netfilter.org>
-References: <20190612122328.3889-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2407690AbfFLR1l (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 12 Jun 2019 13:27:41 -0400
+Received: from localhost ([::1]:33650 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1hb72C-0003dl-9O; Wed, 12 Jun 2019 19:27:40 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nft PATCH] monitor: Accept -j flag
+Date:   Wed, 12 Jun 2019 19:27:37 +0200
+Message-Id: <20190612172737.26214-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Clone original flags too.
+Make 'nft -j monitor' equal to 'nft monitor json' and change
+documentation to use only the first variant since that is more intuitive
+and also consistent with other commands.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+While being at it, drop references to XML from monitor section - it was
+never supported.
+
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/datatype.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ doc/nft.txt | 9 ++-------
+ src/rule.c  | 3 +++
+ 2 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/src/datatype.c b/src/datatype.c
-index 74df89c3219f..d57e9a581df9 100644
---- a/src/datatype.c
-+++ b/src/datatype.c
-@@ -1103,7 +1103,7 @@ static struct datatype *dtype_clone(const struct datatype *orig_dtype)
- 	*dtype = *orig_dtype;
- 	dtype->name = xstrdup(orig_dtype->name);
- 	dtype->desc = xstrdup(orig_dtype->desc);
--	dtype->flags = DTYPE_F_ALLOC;
-+	dtype->flags = DTYPE_F_ALLOC | orig_dtype->flags;
- 	dtype->refcnt = 1;
+diff --git a/doc/nft.txt b/doc/nft.txt
+index 4fca5c918b747..3f1074b8c36e9 100644
+--- a/doc/nft.txt
++++ b/doc/nft.txt
+@@ -713,7 +713,7 @@ MONITOR
+ ~~~~~~~~
+ The monitor command allows you to listen to Netlink events produced by the
+ nf_tables subsystem, related to creation and deletion of objects. When they
+-occur, nft will print to stdout the monitored events in either XML, JSON or
++occur, nft will print to stdout the monitored events in either JSON or
+ native nft format. +
  
- 	return dtype;
+ To filter events related to a concrete object, use one of the keywords 'tables', 'chains', 'sets', 'rules', 'elements', 'ruleset'. +
+@@ -727,14 +727,9 @@ Hit ^C to finish the monitor operation.
+ % nft monitor
+ --------------------------------------------------
+ 
+-.Listen to added tables, report in XML format
+---------------------------------------------
+-% nft monitor new tables xml
+---------------------------------------------
+-
+ .Listen to deleted rules, report in JSON format
+ -----------------------------------------------
+-% nft monitor destroy rules json
++% nft -j monitor destroy rules
+ -----------------------------------------------
+ 
+ .Listen to both new and destroyed chains, in native nft format
+diff --git a/src/rule.c b/src/rule.c
+index ad549b1eee8ac..69a120347afb2 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -2435,6 +2435,9 @@ static int do_command_monitor(struct netlink_ctx *ctx, struct cmd *cmd)
+ 		.debug_mask	= ctx->nft->debug_mask,
+ 	};
+ 
++	if (nft_output_json(&ctx->nft->output))
++		monhandler.format = NFTNL_OUTPUT_JSON;
++
+ 	monhandler.cache_needed = need_cache(cmd);
+ 	if (monhandler.cache_needed) {
+ 		struct rule *rule, *nrule;
 -- 
-2.11.0
+2.21.0
 
