@@ -2,45 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CE945C84
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jun 2019 14:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE02745CF0
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jun 2019 14:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727602AbfFNMRH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Jun 2019 08:17:07 -0400
-Received: from mail.us.es ([193.147.175.20]:40602 "EHLO mail.us.es"
+        id S1727688AbfFNMgi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 14 Jun 2019 08:36:38 -0400
+Received: from mail.us.es ([193.147.175.20]:50806 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727378AbfFNMRH (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Jun 2019 08:17:07 -0400
+        id S1727544AbfFNMgi (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 14 Jun 2019 08:36:38 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id CF77D120825
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Jun 2019 14:17:04 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 3CEEE81A07
+        for <netfilter-devel@vger.kernel.org>; Fri, 14 Jun 2019 14:36:36 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id C2EC0DA703
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Jun 2019 14:17:04 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 31781DA703
+        for <netfilter-devel@vger.kernel.org>; Fri, 14 Jun 2019 14:36:36 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id B866CDA714; Fri, 14 Jun 2019 14:17:04 +0200 (CEST)
+        id 26CDCDA710; Fri, 14 Jun 2019 14:36:36 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 9F6F8DA70F;
-        Fri, 14 Jun 2019 14:17:02 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 24F0BDA703;
+        Fri, 14 Jun 2019 14:36:34 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 14 Jun 2019 14:17:02 +0200 (CEST)
+ Fri, 14 Jun 2019 14:36:34 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (sys.soleta.eu [212.170.55.40])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 7498940705C3;
-        Fri, 14 Jun 2019 14:17:02 +0200 (CEST)
+        by entrada.int (Postfix) with ESMTPA id EC0344265A31;
+        Fri, 14 Jun 2019 14:36:33 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Cc:     phil@nwl.cc, fw@strlen.de
-Subject: [PATCH nft] cache: do not populate the cache in case of flush ruleset command
-Date:   Fri, 14 Jun 2019 14:16:59 +0200
-Message-Id: <20190614121659.29041-1-pablo@netfilter.org>
+Cc:     fw@strlen.de, phil@nwl.cc
+Subject: [PATCH nft,v2] cache: do not populate the cache in case of flush ruleset command
+Date:   Fri, 14 Jun 2019 14:36:30 +0200
+Message-Id: <20190614123630.17341-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -54,6 +54,8 @@ better infrastructure to track the state of the cache objects.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
+v2: check for __CMD_FLUSH_RULESET before dumping tables via netlink.
+
  include/rule.h | 1 +
  src/cache.c    | 3 +++
  src/rule.c     | 3 +++
@@ -86,19 +88,19 @@ index 532ef425906a..d7153f6f6b8f 100644
  	case CMD_OBJ_MAP:
  	case CMD_OBJ_METER:
 diff --git a/src/rule.c b/src/rule.c
-index 8de5aa62b94f..3dba8b991e12 100644
+index 8de5aa62b94f..0c0fd07ec70c 100644
 --- a/src/rule.c
 +++ b/src/rule.c
-@@ -155,6 +155,9 @@ static int cache_init_objects(struct netlink_ctx *ctx, enum cmd_ops cmd)
- 	struct set *set;
+@@ -210,6 +210,9 @@ static int cache_init(struct netlink_ctx *ctx, enum cmd_ops cmd)
+ 	};
  	int ret;
  
 +	if (cmd == __CMD_FLUSH_RULESET)
 +		return 0;
 +
- 	list_for_each_entry(table, &ctx->nft->cache.list, list) {
- 		ret = netlink_list_sets(ctx, &table->handle);
- 		list_splice_tail_init(&ctx->list, &table->sets);
+ 	ret = cache_init_tables(ctx, &handle, &ctx->nft->cache);
+ 	if (ret < 0)
+ 		return ret;
 -- 
 2.11.0
 
