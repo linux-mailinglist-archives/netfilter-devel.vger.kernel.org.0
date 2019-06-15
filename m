@@ -2,208 +2,158 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFEF94655B
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jun 2019 19:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508E046FE1
+	for <lists+netfilter-devel@lfdr.de>; Sat, 15 Jun 2019 14:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726150AbfFNRHq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Jun 2019 13:07:46 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:34392 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbfFNRHp (ORCPT
+        id S1726512AbfFOMO3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 15 Jun 2019 08:14:29 -0400
+Received: from m97179.mail.qiye.163.com ([220.181.97.179]:42625 "EHLO
+        m97179.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbfFOMO2 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Jun 2019 13:07:45 -0400
-Received: by mail-pl1-f196.google.com with SMTP id i2so1277962plt.1
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Jun 2019 10:07:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=5mut3VHzc++C89VlR82Fhk54RhCT7KtndHaimCD8j3U=;
-        b=KM72gDLwxkYQm0NCimzopMLxB/eJ7RAbmZfr2TV8wxeqm3A4jb2kyeBnsAvHuOy/Z9
-         rL5tV6IUDqeZawyPNW5K5AfLG3znBTX2c7rNuoN3RNkHQ88nmN/lla1VYDEAWrpQ/7et
-         VhDr/VdJvEY2kRV5x8jhU4hkeTGEgQ7YVJL6TJ6AsDmRi9lkjouIsBRt2KeJIubSoCxm
-         IVK5jWxBSCGroGU6A+skwyDpM5NMn/k8mZL0j7RFQFHCymewa0pCcXXC3CISJkXDrtJu
-         nKiBEWCI2Pw1X5hznU2UNF7hoX2kLYQTe+bojh3gHAW/H5RyWzSOPlFvVDTWcXPJgc17
-         l9VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5mut3VHzc++C89VlR82Fhk54RhCT7KtndHaimCD8j3U=;
-        b=b/5fqQrrGYMXUkje+vfqFcjlDMNgVoS79eynaPvOEuXzgyu2jZfXMjSe9Ihnwy+ndi
-         uJlzJChUjfAV1jVuwCBNIA5yp5KxrIk25OTVDwUxqFfAjwAda7HdwPnc+OV771fVvo0q
-         i34Y1J3UqXmvKAHE7walmXq9lOXu+nZVb9Gdvx+liLjBGSRQjw3aEEZHZbSm5UTdL88G
-         spU/hI0roDRFAD10elGnSKo6Byo+nYQzzNC+PqpK8TtIdWeZiOVgckPKRB0z7toicqco
-         6UHF8a3RUeOiHRU4Oh8C6BzFlTJ8V6Qmhm3elw2g4XHfSk14JgC5nfRBZgpRaqZijBro
-         tzjA==
-X-Gm-Message-State: APjAAAV1Ap4/8RIlpAbM9UI6dyxtdp31T6EyD9I4poTdLex8/+5hgAAf
-        z7ICxhw1jSDhHeZy7kO8NI0zVP3udMo=
-X-Google-Smtp-Source: APXvYqy6vfjTdOTR2vhyq0PaOgbMbRuEYNHf5hxpx/Qb7zmRmxd/+QVVBm26rbubgqN9VH+ZRVpoBg==
-X-Received: by 2002:a17:902:e281:: with SMTP id cf1mr14359618plb.271.1560532064665;
-        Fri, 14 Jun 2019 10:07:44 -0700 (PDT)
-Received: from shekhar.domain.name ([59.91.149.38])
-        by smtp.gmail.com with ESMTPSA id c26sm1044503pfr.71.2019.06.14.10.07.42
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 14 Jun 2019 10:07:44 -0700 (PDT)
-From:   Shekhar Sharma <shekhar250198@gmail.com>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Shekhar Sharma <shekhar250198@gmail.com>
-Subject: [PATCH WIP v1]tests: Makefile.am (Work in Progress)
-Date:   Fri, 14 Jun 2019 22:37:33 +0530
-Message-Id: <20190614170733.4164-1-shekhar250198@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 15 Jun 2019 08:14:28 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m97179.mail.qiye.163.com (Hmail) with ESMTPA id D34E2E00D7F;
+        Sat, 15 Jun 2019 20:14:22 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH net-next] netfilter: bridge: add nft_bridge_pvid to tag the default pvid for non-tagged packet
+Date:   Sat, 15 Jun 2019 20:14:21 +0800
+Message-Id: <1560600861-8848-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVJQ0hCQkJCSkJDQkpITVlXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mk06Hjo4Czg*MhI3SzoMOAJD
+        DwoKCy1VSlVKTk1LTUtLQ01JQk1LVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQU9NTk83Bg++
+X-HM-Tid: 0a6b5b0f60a320bdkuqyd34e2e00d7f
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-I have been trying to make a Makefile.am for the tests in nftables
-so that all of them run when 'make check' is used.To do this, i have
-done the following changes:
-1. add AM_PATH_PYTHON statement to configure.ac
-2. add tests in the SUBDIRS in Makefile.am
-3. add a Makefile.am file in the tests directory
+From: wenxu <wenxu@ucloud.cn>
 
-For now this is just for the two python tests, other tests will be added later.
+bridge vlan add dev veth1 vid 200 pvid untagged
+bridge vlan add dev veth2 vid 200 pvid untagged
 
-Whenever i copy the .py test files from tests/json_echo and tests/py and paste them in the tests/ directory,
-the Makefile.am runs and generates a report. But if the .py files remain where they are and 
-are not copied, the Makefile.am fails to run.
+nft add table bridge firewall
+nft add chain bridge firewall zones { type filter hook prerouting priority - 300 \; }
+nft add rule bridge firewall zones counter ct zone set vlan id map { 100 : 1, 200 : 2 }
 
-I am not sure why. I have already specified there correct location in the Makefile.am.
+As above set the bridge port with pvid, the received packet don't contain
+the vlan tag which means the packet should belong to vlan 200 through pvid.
+With this pacth user can set the pvid in the prerouting hook before set zone id and
+conntrack. So the conntrack can only base on vlan id and map the vlan id to zone id
+in the prerouting hook.
 
-Result when the two files are copied in tests directory:
-
-Making check in tests
-make[1]: Entering directory '/home/shekhar/at1_nftables/tests'
-make  check-TESTS
-make[2]: Entering directory '/home/shekhar/at1_nftables/tests'
-make[3]: Entering directory '/home/shekhar/at1_nftables/tests'
-FAIL: run-test.py
-PASS: nft-test.py
-============================================================================
-Testsuite summary for nftables 0.9.0
-============================================================================
-# TOTAL: 2
-# PASS:  1
-# SKIP:  0
-# XFAIL: 0
-# FAIL:  1
-# XPASS: 0
-# ERROR: 0
-============================================================================
-See tests/test-suite.log
-Please report to netfilter-devel@vger.kernel.org
-============================================================================
-Makefile:592: recipe for target 'test-suite.log' failed
-make[3]: *** [test-suite.log] Error 1
-make[3]: Leaving directory '/home/shekhar/at1_nftables/tests'
-Makefile:698: recipe for target 'check-TESTS' failed
-make[2]: *** [check-TESTS] Error 2
-make[2]: Leaving directory '/home/shekhar/at1_nftables/tests'
-Makefile:778: recipe for target 'check-am' failed
-make[1]: *** [check-am] Error 2
-make[1]: Leaving directory '/home/shekhar/at1_nftables/tests'
-Makefile:494: recipe for target 'check-recursive' failed
-make: *** [check-recursive] Error 1
-
-=============================================================================
-
-Result when they remain where they are:
-
-Making check in tests
-make[1]: Entering directory '/home/shekhar/at1_nftables/tests'
-make  check-TESTS
-make[2]: Entering directory '/home/shekhar/at1_nftables/tests'
-make[3]: Entering directory '/home/shekhar/at1_nftables/tests'
-/usr/bin/python json_echo/run-test.py
-Error: flush ruleset failed: Error: syntax error, unexpected '{'
-{"nftables": [{"flush": {"ruleset": null}}]}
-^
-
-Makefile:903: recipe for target 'run-test.py' failed
-make[3]: *** [run-test.py] Error 1
-make[3]: Leaving directory '/home/shekhar/at1_nftables/tests'
-Makefile:698: recipe for target 'check-TESTS' failed
-make[2]: *** [check-TESTS] Error 2
-make[2]: Leaving directory '/home/shekhar/at1_nftables/tests'
-Makefile:778: recipe for target 'check-am' failed
-make[1]: *** [check-am] Error 2
-make[1]: Leaving directory '/home/shekhar/at1_nftables/tests'
-Makefile:494: recipe for target 'check-recursive' failed
-make: *** [check-recursive] Error 1
-
-
-Signed-off-by: Shekhar Sharma <shekhar250198@gmail.com>
+Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
- Makefile.am       |  4 +++-
- configure.ac      |  3 +++
- tests/Makefile.am | 19 +++++++++++++++++++
- 3 files changed, 25 insertions(+), 1 deletion(-)
- create mode 100644 tests/Makefile.am
+ net/bridge/netfilter/Kconfig           |  6 ++++
+ net/bridge/netfilter/Makefile          |  1 +
+ net/bridge/netfilter/nft_bridge_pvid.c | 63 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 70 insertions(+)
+ create mode 100644 net/bridge/netfilter/nft_bridge_pvid.c
 
-diff --git a/Makefile.am b/Makefile.am
-index e567d32d..adccf7ff 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -4,10 +4,12 @@ SUBDIRS = 	src	\
- 		include	\
- 		files	\
- 		doc		\
--		py
-+		py	\
-+		tests
+diff --git a/net/bridge/netfilter/Kconfig b/net/bridge/netfilter/Kconfig
+index f4fb0b9..61f2a31 100644
+--- a/net/bridge/netfilter/Kconfig
++++ b/net/bridge/netfilter/Kconfig
+@@ -33,6 +33,12 @@ config NF_CONNTRACK_BRIDGE
  
- EXTRA_DIST =	tests	\
- 		files
+ 	  To compile it as a module, choose M here.  If unsure, say N.
  
++config NFT_BRIDGE_PVID
++	tristate "Netfilter nf_tables bridge pvid support"
++	depends on BRIDGE_VLAN_FILTERING
++	help
++	  Add support to add vlan-pvid tag for non-tagged packets.
 +
- pkgconfigdir = $(libdir)/pkgconfig
- pkgconfig_DATA = libnftables.pc
-diff --git a/configure.ac b/configure.ac
-index e3c0be2b..04ad1180 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -21,6 +21,8 @@ AC_ARG_ENABLE([man-doc],
- 	      [], [enable_man_doc=yes])
- AM_CONDITIONAL([BUILD_MAN], [test "x$enable_man_doc" = "xyes" ])
+ endif # NF_TABLES_BRIDGE
  
-+AM_PATH_PYTHON([1.0])
-+
- # Checks for programs.
- AC_PROG_CC
- AC_PROG_MKDIR_P
-@@ -126,6 +128,7 @@ AC_CONFIG_FILES([					\
- 		files/osf/Makefile			\
- 		doc/Makefile				\
- 		py/Makefile				\
-+		tests/Makefile				\
- 		])
- AC_OUTPUT
+ menuconfig BRIDGE_NF_EBTABLES
+diff --git a/net/bridge/netfilter/Makefile b/net/bridge/netfilter/Makefile
+index 9d77673..e0d6c59 100644
+--- a/net/bridge/netfilter/Makefile
++++ b/net/bridge/netfilter/Makefile
+@@ -4,6 +4,7 @@
+ #
  
-diff --git a/tests/Makefile.am b/tests/Makefile.am
+ obj-$(CONFIG_NFT_BRIDGE_REJECT)  += nft_reject_bridge.o
++obj-$(CONFIG_NFT_BRIDGE_PVID)  += nft_bridge_pvid.o
+ 
+ # connection tracking
+ obj-$(CONFIG_NF_CONNTRACK_BRIDGE) += nf_conntrack_bridge.o
+diff --git a/net/bridge/netfilter/nft_bridge_pvid.c b/net/bridge/netfilter/nft_bridge_pvid.c
 new file mode 100644
-index 00000000..6b87af9e
+index 0000000..93a4d38
 --- /dev/null
-+++ b/tests/Makefile.am
-@@ -0,0 +1,19 @@
++++ b/net/bridge/netfilter/nft_bridge_pvid.c
+@@ -0,0 +1,63 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/netfilter_bridge.h>
++#include <net/netfilter/nf_tables.h>
++#include "../br_private.h"
 +
-+checkdir=tests 
++static void nft_bridge_pvid_eval(const struct nft_expr *expr,
++				 struct nft_regs *regs,
++				 const struct nft_pktinfo *pkt)
++{
++	struct sk_buff *skb = pkt->skb;
++	struct net_bridge_port *p;
 +
-+python_PYTHON= run-test.py nft-test.py
++	p = br_port_get_rtnl_rcu(skb->dev);
 +
++	if (p && br_opt_get(p->br, BROPT_VLAN_ENABLED) &&
++	    !skb_vlan_tag_present(skb)) {
++		u16 pvid = br_get_pvid(nbp_vlan_group_rcu(p));
 +
-+run-test.py: 
-+	$(PYTHON) json_echo/run-test.py
++		if (pvid)
++			__vlan_hwaccel_put_tag(skb, p->br->vlan_proto, pvid);
++	}
++}
 +
-+nft-test.py: 
-+	$(PYTHON) py/nft-test.py
-+	
++static int nft_bridge_pvid_validate(const struct nft_ctx *ctx,
++				    const struct nft_expr *expr,
++				    const struct nft_data **data)
++{
++	return nft_chain_validate_hooks(ctx->chain, 1 << NF_BR_PRE_ROUTING);
++}
 +
-+##run_test_py_SOURCES=json_echo/run-test.py
++static struct nft_expr_type nft_bridge_pvid_type;
++static const struct nft_expr_ops nft_bridge_pvid_ops = {
++	.type		= &nft_bridge_pvid_type,
++	.size		= NFT_EXPR_SIZE(0),
++	.eval		= nft_bridge_pvid_eval,
++	.validate	= nft_bridge_pvid_validate,
++};
 +
-+##nft_test_py_SOURCES=py/nft-test.py
++static struct nft_expr_type nft_bridge_pvid_type __read_mostly = {
++	.family		= NFPROTO_BRIDGE,
++	.name		= "pvid",
++	.ops		= &nft_bridge_pvid_ops,
++	.owner		= THIS_MODULE,
++};
 +
-+TESTS= $(python_PYTHON)
-+ 
++static int __init nft_bridge_pvid_module_init(void)
++{
++	return nft_register_expr(&nft_bridge_pvid_type);
++}
++
++static void __exit nft_bridge_pvid_module_exit(void)
++{
++	nft_unregister_expr(&nft_bridge_pvid_type);
++}
++
++module_init(nft_bridge_pvid_module_init);
++module_exit(nft_bridge_pvid_module_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_ALIAS_NFT_AF_EXPR(AF_BRIDGE, "pvid");
 -- 
-2.17.1
+1.8.3.1
 
