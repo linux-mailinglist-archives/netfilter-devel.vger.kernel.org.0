@@ -2,45 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E19481EE
-	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Jun 2019 14:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C468E481F0
+	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Jun 2019 14:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbfFQMZ2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 17 Jun 2019 08:25:28 -0400
-Received: from mail.us.es ([193.147.175.20]:46386 "EHLO mail.us.es"
+        id S1725962AbfFQMZa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 17 Jun 2019 08:25:30 -0400
+Received: from mail.us.es ([193.147.175.20]:46404 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726614AbfFQMZ2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 17 Jun 2019 08:25:28 -0400
+        id S1726668AbfFQMZ3 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 17 Jun 2019 08:25:29 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id CC383C1B7B
-        for <netfilter-devel@vger.kernel.org>; Mon, 17 Jun 2019 14:25:26 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 1E4C9C1B81
+        for <netfilter-devel@vger.kernel.org>; Mon, 17 Jun 2019 14:25:27 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id BF4DADA701
-        for <netfilter-devel@vger.kernel.org>; Mon, 17 Jun 2019 14:25:26 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 103C6DA70A
+        for <netfilter-devel@vger.kernel.org>; Mon, 17 Jun 2019 14:25:27 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id B4EFADA71A; Mon, 17 Jun 2019 14:25:26 +0200 (CEST)
+        id 050C7DA704; Mon, 17 Jun 2019 14:25:27 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 75B19DA701;
-        Mon, 17 Jun 2019 14:25:24 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 05343DA706;
+        Mon, 17 Jun 2019 14:25:25 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 17 Jun 2019 14:25:24 +0200 (CEST)
+ Mon, 17 Jun 2019 14:25:25 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (sys.soleta.eu [212.170.55.40])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 45E394265A2F;
+        by entrada.int (Postfix) with ESMTPA id D13064265A2F;
         Mon, 17 Jun 2019 14:25:24 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     phil@nwl.cc, fw@strlen.de
-Subject: [PATCH nft 4/5] rule: skip cache population from do_command_monitor()
-Date:   Mon, 17 Jun 2019 14:25:17 +0200
-Message-Id: <20190617122518.10486-4-pablo@netfilter.org>
+Subject: [PATCH nft 5/5] netlink: remove netlink_list_table()
+Date:   Mon, 17 Jun 2019 14:25:18 +0200
+Message-Id: <20190617122518.10486-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20190617122518.10486-1-pablo@netfilter.org>
 References: <20190617122518.10486-1-pablo@netfilter.org>
@@ -50,65 +50,73 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-nft_evaluate() already populates the cache before running the monitor
-command. Remove this code.
+Remove this wrapper, call netlink_list_rules() instead.
 
-Fixes: 7df42800cf89 ("src: single cache_update() call to build cache before evaluation")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/rule.c | 32 --------------------------------
- 1 file changed, 32 deletions(-)
+ include/netlink.h | 2 +-
+ src/netlink.c     | 7 +------
+ src/rule.c        | 2 +-
+ 3 files changed, 3 insertions(+), 8 deletions(-)
 
+diff --git a/include/netlink.h b/include/netlink.h
+index 0c08b1abbf6a..279723f33d31 100644
+--- a/include/netlink.h
++++ b/include/netlink.h
+@@ -104,6 +104,7 @@ extern struct expr *netlink_alloc_data(const struct location *loc,
+ 				       const struct nft_data_delinearize *nld,
+ 				       enum nft_registers dreg);
+ 
++extern int netlink_list_rules(struct netlink_ctx *ctx, const struct handle *h);
+ extern void netlink_linearize_rule(struct netlink_ctx *ctx,
+ 				   struct nftnl_rule *nlr,
+ 				   const struct rule *rule);
+@@ -115,7 +116,6 @@ extern struct chain *netlink_delinearize_chain(struct netlink_ctx *ctx,
+ 					       const struct nftnl_chain *nlc);
+ 
+ extern int netlink_list_tables(struct netlink_ctx *ctx, const struct handle *h);
+-extern int netlink_list_table(struct netlink_ctx *ctx, const struct handle *h);
+ extern struct table *netlink_delinearize_table(struct netlink_ctx *ctx,
+ 					       const struct nftnl_table *nlt);
+ 
+diff --git a/src/netlink.c b/src/netlink.c
+index a6d81b4f6424..24d8f03ae4be 100644
+--- a/src/netlink.c
++++ b/src/netlink.c
+@@ -333,7 +333,7 @@ static int list_rule_cb(struct nftnl_rule *nlr, void *arg)
+ 	return 0;
+ }
+ 
+-static int netlink_list_rules(struct netlink_ctx *ctx, const struct handle *h)
++int netlink_list_rules(struct netlink_ctx *ctx, const struct handle *h)
+ {
+ 	struct nftnl_rule_list *rule_cache;
+ 
+@@ -485,11 +485,6 @@ int netlink_list_tables(struct netlink_ctx *ctx, const struct handle *h)
+ 	return 0;
+ }
+ 
+-int netlink_list_table(struct netlink_ctx *ctx, const struct handle *h)
+-{
+-	return netlink_list_rules(ctx, h);
+-}
+-
+ enum nft_data_types dtype_map_to_kernel(const struct datatype *dtype)
+ {
+ 	switch (dtype->type) {
 diff --git a/src/rule.c b/src/rule.c
-index 782253b81589..732de2874877 100644
+index 732de2874877..2d42a0328b66 100644
 --- a/src/rule.c
 +++ b/src/rule.c
-@@ -2414,8 +2414,6 @@ static bool need_cache(const struct cmd *cmd)
- 
- static int do_command_monitor(struct netlink_ctx *ctx, struct cmd *cmd)
- {
--	struct table *t;
--	struct set *s;
- 	struct netlink_mon_handler monhandler = {
- 		.monitor_flags	= cmd->monitor->flags,
- 		.format		= cmd->monitor->format,
-@@ -2429,36 +2427,6 @@ static int do_command_monitor(struct netlink_ctx *ctx, struct cmd *cmd)
- 		monhandler.format = NFTNL_OUTPUT_JSON;
- 
- 	monhandler.cache_needed = need_cache(cmd);
--	if (monhandler.cache_needed) {
--		struct rule *rule, *nrule;
--		struct chain *chain;
--		int ret;
--
--		list_for_each_entry(t, &ctx->nft->cache.list, list) {
--			list_for_each_entry(s, &t->sets, list)
--				s->init = set_expr_alloc(&cmd->location, s);
--
--			if (!(cmd->monitor->flags & (1 << NFT_MSG_TRACE)))
--				continue;
--
--			/* When tracing we'd like to translate the rule handle
--			 * we receive in the trace messages to the actual rule
--			 * struct to print that out.  Populate rule cache now.
--			 */
--			ret = netlink_list_table(ctx, &t->handle);
--
--			if (ret != 0)
--				/* Shouldn't happen and doesn't break things
--				 * too badly
--				 */
--				continue;
--
--			list_for_each_entry_safe(rule, nrule, &ctx->list, list) {
--				chain = chain_lookup(t, &rule->handle);
--				list_move_tail(&rule->list, &chain->rules);
--			}
--		}
--	}
- 
- 	return netlink_monitor(&monhandler, ctx->nft->nf_sock);
- }
+@@ -190,7 +190,7 @@ static int cache_init_objects(struct netlink_ctx *ctx, unsigned int flags)
+ 			list_splice_tail_init(&ctx->list, &table->objs);
+ 		}
+ 		if (flags & NFT_CACHE_RULE) {
+-			ret = netlink_list_table(ctx, &table->handle);
++			ret = netlink_list_rules(ctx, &table->handle);
+ 			list_for_each_entry_safe(rule, nrule, &ctx->list, list) {
+ 				chain = chain_lookup(table, &rule->handle);
+ 				list_move_tail(&rule->list, &chain->rules);
 -- 
 2.11.0
 
