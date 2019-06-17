@@ -2,52 +2,52 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A39BB494CA
-	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Jun 2019 00:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B4A49521
+	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Jun 2019 00:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728547AbfFQWJb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 17 Jun 2019 18:09:31 -0400
-Received: from mail.us.es ([193.147.175.20]:55430 "EHLO mail.us.es"
+        id S1726797AbfFQWZM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 17 Jun 2019 18:25:12 -0400
+Received: from mail.us.es ([193.147.175.20]:59726 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727479AbfFQWJa (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 17 Jun 2019 18:09:30 -0400
+        id S1726593AbfFQWZM (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 17 Jun 2019 18:25:12 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id C4248C04E0
-        for <netfilter-devel@vger.kernel.org>; Tue, 18 Jun 2019 00:09:28 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 003A5BEBA3
+        for <netfilter-devel@vger.kernel.org>; Tue, 18 Jun 2019 00:25:10 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id B35ECDA702
-        for <netfilter-devel@vger.kernel.org>; Tue, 18 Jun 2019 00:09:28 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id E51D8DA708
+        for <netfilter-devel@vger.kernel.org>; Tue, 18 Jun 2019 00:25:09 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id A8D86DA701; Tue, 18 Jun 2019 00:09:28 +0200 (CEST)
+        id DAAD0DA703; Tue, 18 Jun 2019 00:25:09 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id B9440DA702;
-        Tue, 18 Jun 2019 00:09:26 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id CDD22DA703;
+        Tue, 18 Jun 2019 00:25:07 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 18 Jun 2019 00:09:26 +0200 (CEST)
+ Tue, 18 Jun 2019 00:25:07 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from us.es (sys.soleta.eu [212.170.55.40])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 978424265A2F;
-        Tue, 18 Jun 2019 00:09:26 +0200 (CEST)
-Date:   Tue, 18 Jun 2019 00:09:26 +0200
+        by entrada.int (Postfix) with ESMTPSA id AC2F54265A2F;
+        Tue, 18 Jun 2019 00:25:07 +0200 (CEST)
+Date:   Tue, 18 Jun 2019 00:25:07 +0200
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Laura Garcia Liebana <nevola@gmail.com>
+To:     Igor Ryzhov <iryzhov@nfware.com>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf-next] src: enable set expiration date for set elements
-Message-ID: <20190617220926.rgt5x5gsrzcxsa7l@salvia>
-References: <20190617161424.gc46x7z5nv24m6pz@nevthink>
+Subject: Re: [PATCH] netfilter: nf_conntrack_sip: fix ct_sip_walk_headers
+Message-ID: <20190617222507.tzizsd6dfxm6zozs@salvia>
+References: <20190605093240.23212-1-iryzhov@nfware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190617161424.gc46x7z5nv24m6pz@nevthink>
+In-Reply-To: <20190605093240.23212-1-iryzhov@nfware.com>
 User-Agent: NeoMutt/20170113 (1.7.2)
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -55,42 +55,44 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Laura,
+On Wed, Jun 05, 2019 at 12:32:40PM +0300, Igor Ryzhov wrote:
+> ct_sip_next_header and ct_sip_get_header return an absolute
+> value of matchoff, not a shift from current dataoff.
+> So dataoff should be assigned matchoff, not incremented by it.
 
-On Mon, Jun 17, 2019 at 06:14:24PM +0200, Laura Garcia Liebana wrote:
-[...]
-> diff --git a/net/netfilter/nft_dynset.c b/net/netfilter/nft_dynset.c
-> index 8394560aa695..df19844e994f 100644
-> --- a/net/netfilter/nft_dynset.c
-> +++ b/net/netfilter/nft_dynset.c
-> @@ -24,6 +24,7 @@ struct nft_dynset {
->  	enum nft_registers		sreg_data:8;
->  	bool				invert;
->  	u64				timeout;
-> +	u64				expiration;
->  	struct nft_expr			*expr;
->  	struct nft_set_binding		binding;
->  };
-> @@ -51,16 +52,18 @@ static void *nft_dynset_new(struct nft_set *set, const struct nft_expr *expr,
->  	const struct nft_dynset *priv = nft_expr_priv(expr);
->  	struct nft_set_ext *ext;
->  	u64 timeout;
-> +	u64 expiration;
->  	void *elem;
+Could we get a more detailed description of this bug? A description of
+the simplified scenario / situation that help you found it would help
+here.
+
+Thanks.
+
+> Signed-off-by: Igor Ryzhov <iryzhov@nfware.com>
+> ---
+>  net/netfilter/nf_conntrack_sip.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
+> index c30c883c370b..966c5948f926 100644
+> --- a/net/netfilter/nf_conntrack_sip.c
+> +++ b/net/netfilter/nf_conntrack_sip.c
+> @@ -480,7 +480,7 @@ static int ct_sip_walk_headers(const struct nf_conn *ct, const char *dptr,
+>  				return ret;
+>  			if (ret == 0)
+>  				break;
+> -			dataoff += *matchoff;
+> +			dataoff = *matchoff;
+>  		}
+>  		*in_header = 0;
+>  	}
+> @@ -492,7 +492,7 @@ static int ct_sip_walk_headers(const struct nf_conn *ct, const char *dptr,
+>  			break;
+>  		if (ret == 0)
+>  			return ret;
+> -		dataoff += *matchoff;
+> +		dataoff = *matchoff;
+>  	}
 >  
->  	if (!atomic_add_unless(&set->nelems, 1, set->size))
->  		return NULL;
->  
->  	timeout = priv->timeout ? : set->timeout;
-> +	expiration = priv->expiration;
->  	elem = nft_set_elem_init(set, &priv->tmpl,
->  				 &regs->data[priv->sreg_key],
->  				 &regs->data[priv->sreg_data],
-> -				 timeout, GFP_ATOMIC);
-> +				 timeout, expiration, GFP_ATOMIC);
-                                          ^^^^^^^^^^
-
-Probably better to replace 'expiration' by 0? priv->expiration is
-never used / always set to zero, right?
-
-Thanks!
+>  	if (in_header)
+> -- 
+> 2.21.0
+> 
