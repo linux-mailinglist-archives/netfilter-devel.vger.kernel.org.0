@@ -2,99 +2,73 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 18FED47765
-	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Jun 2019 01:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B0147AD8
+	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Jun 2019 09:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbfFPXsT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 16 Jun 2019 19:48:19 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:41388 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726038AbfFPXsT (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 16 Jun 2019 19:48:19 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
-        (envelope-from <fw@strlen.de>)
-        id 1hcesj-0001FC-D6; Mon, 17 Jun 2019 01:48:17 +0200
-Date:   Mon, 17 Jun 2019 01:48:17 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft] datatype: fix print of raw numerical symbol values
-Message-ID: <20190616234817.ipy4hwxzhukwgjlw@breakpoint.cc>
-References: <20190616085549.1087-1-fw@strlen.de>
- <20190616233356.a3yu333bn4evktn4@salvia>
+        id S1726420AbfFQH2j (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 17 Jun 2019 03:28:39 -0400
+Received: from slot0.nejknio.cf ([89.32.41.233]:56319 "EHLO slot0.nejknio.cf"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726405AbfFQH2i (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 17 Jun 2019 03:28:38 -0400
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=nejknio.cf;
+ h=Content-Type:MIME-Version:Content-Transfer-Encoding:Content-Description:Subject:To:From:Date:Reply-To:Message-ID; i=trade1@nejknio.cf;
+ bh=73Xs4LxjK+lP+h5mKCyFyWTpkoQ=;
+ b=D8vQ5DqQKvGmHIIiwBnrcCWZR5rSHFEvKau63LCQDrIYm263xHdQUrYYVyO9vbqMiWkCmc1rS3OD
+   6Y6jvZVims5FVdm5/1ct53fyKVcwN2VBuiFjIvCjcrggmUKHB6WncpzGLZj6hFM6XOYIXZ9IlMNl
+   V4E4rYbf1KyShdCU73IVptjXJ26Pn+ALavyZ1B9DUMg62lYUYtgARcbIQbRdsx06sPqSsRkZr33l
+   K1G/YRXCa5e+bvbKhReosOwi6CkD1Zjxx6qDotbnvlrsiAss2x9tL77EeS/G8sUGVvGCYZQN1hUV
+   X0LeKdXt25HbUDKy37OIfguhj6fbEl94Co8Yig==
+DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=nejknio.cf;
+ b=XdFZlo5oRMyVjJNXLMOJwNf2xHvrYf59YJTndlO0kdMCjsit5/TTSZ7nBIYVsEsST3zMwgmxGOPs
+   hDDct6Dmo0EVbpZw2HPXDynQVm/MAKbAboe98y34J7rteNxMORmCfQIyTBfDsqj5RG8ABqr5i+cF
+   ylJYXi0jLS+QYLnal7VaotSQiXX6+bjgQtsN6UulL3lQE8YWz8tWWP6zv3mTHaoFHucZhB6ASNbR
+   sd+RBia0Pm1ey7q4JOIH6hQR3KJ2X/KppOUJtQmws+GQhT/FaxdndchW8Y2NnqKm3l+51Zn+Ge9Q
+   hGcsZNpTkGK4bJ/I4XWRcgnSCXze6R1ByWh+Bw==;
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190616233356.a3yu333bn4evktn4@salvia>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: PRODUCT INQUIRY FOR EXPORT SHIPMENT
+To:     Recipients <trade1@nejknio.cf>
+From:   "Mark Maths" <trade1@nejknio.cf>
+Date:   Mon, 17 Jun 2019 10:08:50 +0300
+Reply-To: purchase_m.maths@aol.com
+Message-ID: <0.0.1.D86.1D524DB78A1DD7C.0@slot0.nejknio.cf>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > This means we now respect format specifier as well:
-> > 	chain in_public {
-> >                 arp operation 1-2 accept
-> >                 arp operation 256-512 accept
-> >                 meta mark "0x00000001"
-> 
-> Hm, why is "1" turned into "0x00000001"?
+Dear Sales team,
+ =
 
-Because it will now respect basefmt, and that is:
+In furtherance to our market research, we have reviewed all your products t=
+ypes and we have finally interested in your product for our market here in =
 
-const struct datatype mark_type = {
-	...
-        .basefmt        = "0x%.8Zx",
 
-> >   Note there is a discrepancy between output when we have a symbol and
-> >   when we do not.
-> > 
-> >   Example, add rule:
-> >   meta mark "foo"
-> > 
-> >   (with '1 "foo"' in rt_marks), nft will print quotes when symbol
-> >   printing is inhibited via -n, but elides them in case the symbol
-> >   is not available.
-> 
-> Then, we also need a patch to regard NFT_CTX_OUTPUT_NUMERIC_ALL, right?
+United State for your production. We introduce ourselves as Emilxa Tram SRL=
+, A general group of company located in the United State. =
 
-Not sure what you mean.
 
-symbolic_constant_print()
+We are sourcing for new suppliers from your location =
 
-does:
 
- if (no_symbol_found)
-	return print_raw();
- if (quotes)
-	 nft_print(octx, "\"");
- if (nft_output_numeric_symbol(octx))
-	 expr_basetype(expr)->print(expr, octx);
- else
-	  nft_print(octx, "%s", s->identifier);
-  ...
+Kindly advice us if you accept new purchase orders, I will forward our PO f=
+or urgent order.
 
- maybe either do:
+Waiting for your response to send order. Reply to ( purchase_m.maths@aol.co=
+m)
 
- if (no_symbol_found) {
-	 if (quotes)
-		 ....
-	print_raw();
-    ...
-    return;
- }
-
-(i.e., print quotes if no symbol found), or
-
-if (nft_output_numeric_symbol(octx)) {
-   expr_basetype(expr)->print(expr, octx);
-} else {
-   if (quotes) ..
-	  nft_print(octx, "\"%s\"", s->identifier);
-   else
-	   nft_print(octx, "%s", s->identifier);
-}
-
-i.e., only print the "" if we found a symbol translation.
+Best regards.
+Mark Maths
+Company Address:
+Emilxa Tram SRL Company Limited
+P.O. Box 978
+Road Town
+Tortola
+British Virgin Islands
+Contact information:
+Tel: +1 (284) 493 7235
+Email: purchase_m.maths@aol.com
+https://meridianbvi.com/contact-us/
