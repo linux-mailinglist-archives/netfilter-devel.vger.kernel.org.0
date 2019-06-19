@@ -2,92 +2,108 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 238F44B28F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2019 09:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283DC4B2F0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2019 09:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730826AbfFSHDT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 19 Jun 2019 03:03:19 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:43041 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbfFSHDT (ORCPT
+        id S1725946AbfFSHQe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 19 Jun 2019 03:16:34 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:28124 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730999AbfFSHQe (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 19 Jun 2019 03:03:19 -0400
-Received: by mail-wr1-f67.google.com with SMTP id p13so2033291wru.10
-        for <netfilter-devel@vger.kernel.org>; Wed, 19 Jun 2019 00:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+eq5K0xBfEPyGpRmxdOphLLXyrEdsH7neGMEfo0cLd8=;
-        b=aaUigfkLo/6GItDE0N3efW9WH+B9akIcyE5TDb+5qz60odDxMqWAdPiE16iZpihc5g
-         XGb3k81jlatshgyahIl/gxpYOpoBeqCQhnW2PtCyO//1N+2XTACsAs65y1i2kjhj92vK
-         6teRYJJPv9FG31sXSaBb54kd7zknTj2wOd74AyAY3JgGG/ugxU0hLog8V64xI4rq1dEg
-         j5IiWXIdZn9pj37WwipjGH1UnTmpdIgeiQQ2dAHOyWHbViAUArT7aECuDFzH9jfkH936
-         dsmM6wBIuJItUXUNiN2+4RHJNkz/fqly/jxrCSa2oDWJBWLwMctgby3nSuN0AU1NcYGx
-         nQ+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+eq5K0xBfEPyGpRmxdOphLLXyrEdsH7neGMEfo0cLd8=;
-        b=IOVdPai8JPTopokTXiX7c7c/9L+0hVLeEKwkVKcZbKYExPNKgBjMTcOe3QF30l0SN6
-         kPTb4PoLW+qsuGCywYjyt4395iNoTe/4WEIqUbBypJRT5j2x8JmDyCYT13t9DgLPjQhf
-         9OE169TuQWV5Vrc9SxGtW6S21K/lYr8Ykqa5rQ2JSE3cgjRnX5YobeuIuBQcYd3y0vtz
-         wjnDcWfQncoZpNJWbYqGxghoAKcEPToZv3xrv1uFoGFCsALP9B0fGzdoEKyaEBbqInoA
-         Z6HhZzayvPLDnUxgCFObVSbvSsCx5xRtgjCnC3TeFl/nGX8i9eJBsSyklnLvqdQP0eEk
-         byOw==
-X-Gm-Message-State: APjAAAW7OoNHqHCt3QM4Y01FQ//HnvTyPu1sZElNImKr5pnbtLJOnD6p
-        5HaGlilRr7jaxKSJ/ttkdykfy6Mv
-X-Google-Smtp-Source: APXvYqyGtXVrJSmwQjB3kopZfHc6OgUakfJuS3fmDqhLWreIn/LsPOpLitqKS7MRvIXToABClSl4SA==
-X-Received: by 2002:a5d:4843:: with SMTP id n3mr33257846wrs.77.1560927797473;
-        Wed, 19 Jun 2019 00:03:17 -0700 (PDT)
-Received: from VGer.neptura.lan ([2a01:e35:8aed:1991::ab91:6451])
-        by smtp.gmail.com with ESMTPSA id r2sm606422wma.26.2019.06.19.00.03.16
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 19 Jun 2019 00:03:17 -0700 (PDT)
-From:   =?UTF-8?q?St=C3=A9phane=20Veyret?= <sveyret@gmail.com>
-To:     netfilter-devel@vger.kernel.org
-Cc:     =?UTF-8?q?St=C3=A9phane=20Veyret?= <sveyret@gmail.com>
-Subject: [PATCH nf-next v1] netfilter: nft_ct: fix null pointer in ct expectations support
-Date:   Wed, 19 Jun 2019 09:03:14 +0200
-Message-Id: <20190619070314.12839-1-sveyret@gmail.com>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 19 Jun 2019 03:16:34 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 011D541A51;
+        Wed, 19 Jun 2019 15:16:25 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 1/2 nf-next] netfilter: nft_meta: add NFT_META_BRI_PVID support
+Date:   Wed, 19 Jun 2019 15:16:24 +0800
+Message-Id: <1560928585-18352-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVNTElCQkJDTkNDTk1JWVdZKFlBSU
+        I3V1ktWUFJV1kJDhceCFlBWTU0KTY6NyQpLjc#WQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oio6Tio6Fjg3HBALNB4WDhQj
+        GVEaCzdVSlVKTk1LQklDTkNNS0xIVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUhLTkI3Bg++
+X-HM-Tid: 0a6b6e9809352086kuqy011d541a51
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-As discovered by Coverity, nf_ct_helper_ext_add may return null, which must then be checked.
----
- net/netfilter/nft_ct.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+From: wenxu <wenxu@ucloud.cn>
 
-diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
-index 06b52c894573..dd731d5d9fb5 100644
---- a/net/netfilter/nft_ct.c
-+++ b/net/netfilter/nft_ct.c
-@@ -1232,6 +1232,10 @@ static void nft_ct_expect_obj_eval(struct nft_object *obj,
- 	help = nfct_help(ct);
- 	if (!help)
- 		help = nf_ct_helper_ext_add(ct, GFP_ATOMIC);
-+	if (!help) {
-+		regs->verdict.code = NF_DROP;
-+		return;
-+	}
+nft add table bridge firewall
+nft add chain bridge firewall zones { type filter hook prerouting priority - 300 \; }
+nft add rule bridge firewall zones counter ct zone set vlan id map { 100 : 1, 200 : 2 }
+
+As above set the bridge port with pvid, the received packet don't contain
+the vlan tag which means the packet should belong to vlan 200 through pvid.
+With this pacth user can get the pvid of bridge ports: "meta brpvid"
+
+Signed-off-by: wenxu <wenxu@ucloud.cn>
+---
+ include/uapi/linux/netfilter/nf_tables.h |  2 ++
+ net/netfilter/nft_meta.c                 | 17 +++++++++++++++++
+ 2 files changed, 19 insertions(+)
+
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index 31a6b8f..4a16124 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -793,6 +793,7 @@ enum nft_exthdr_attributes {
+  * @NFT_META_SECPATH: boolean, secpath_exists (!!skb->sp)
+  * @NFT_META_IIFKIND: packet input interface kind name (dev->rtnl_link_ops->kind)
+  * @NFT_META_OIFKIND: packet output interface kind name (dev->rtnl_link_ops->kind)
++ * @NFT_META_BRI_PVID: packet input bridge port pvid
+  */
+ enum nft_meta_keys {
+ 	NFT_META_LEN,
+@@ -823,6 +824,7 @@ enum nft_meta_keys {
+ 	NFT_META_SECPATH,
+ 	NFT_META_IIFKIND,
+ 	NFT_META_OIFKIND,
++	NFT_META_BRI_PVID,
+ };
  
- 	if (help->expecting[NF_CT_EXPECT_CLASS_DEFAULT] >= priv->size) {
- 		regs->verdict.code = NFT_BREAK;
-@@ -1241,7 +1245,7 @@ static void nft_ct_expect_obj_eval(struct nft_object *obj,
- 		l3num = nf_ct_l3num(ct);
- 
- 	exp = nf_ct_expect_alloc(ct);
--	if (exp == NULL) {
-+	if (!exp) {
- 		regs->verdict.code = NF_DROP;
+ /**
+diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
+index 987d2d6..1fdb565 100644
+--- a/net/netfilter/nft_meta.c
++++ b/net/netfilter/nft_meta.c
+@@ -243,6 +243,18 @@ void nft_meta_get_eval(const struct nft_expr *expr,
+ 			goto err;
+ 		strncpy((char *)dest, p->br->dev->name, IFNAMSIZ);
  		return;
- 	}
++	case NFT_META_BRI_PVID:
++		if (in == NULL || (p = br_port_get_rtnl_rcu(in)) == NULL)
++			goto err;
++		if (br_opt_get(p->br, BROPT_VLAN_ENABLED)) {
++			u16 pvid = br_get_pvid(nbp_vlan_group_rcu(p));
++
++			if (pvid) {
++				nft_reg_store16(dest, pvid);
++				return;
++			}
++		}
++		goto err;
+ #endif
+ 	case NFT_META_IIFKIND:
+ 		if (in == NULL || in->rtnl_link_ops == NULL)
+@@ -370,6 +382,11 @@ static int nft_meta_get_init(const struct nft_ctx *ctx,
+ 			return -EOPNOTSUPP;
+ 		len = IFNAMSIZ;
+ 		break;
++	case NFT_META_BRI_PVID:
++		if (ctx->family != NFPROTO_BRIDGE)
++			return -EOPNOTSUPP;
++		len = sizeof(u16);
++		break;
+ #endif
+ 	default:
+ 		return -EOPNOTSUPP;
 -- 
-2.21.0
+1.8.3.1
 
