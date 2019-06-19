@@ -2,94 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B71184BA24
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2019 15:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552F54BBBD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2019 16:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730333AbfFSNjF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 19 Jun 2019 09:39:05 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:55638 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726143AbfFSNjF (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 19 Jun 2019 09:39:05 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id DFFCA8831C;
-        Wed, 19 Jun 2019 13:39:04 +0000 (UTC)
-Received: from egarver.remote.csb (ovpn-121-240.rdu2.redhat.com [10.10.121.240])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 69AD7619B0;
-        Wed, 19 Jun 2019 13:39:04 +0000 (UTC)
-From:   Eric Garver <eric@garver.life>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        shekhar sharma <shekhar250198@gmail.com>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] tests: py: replace calls to cmp()
-Date:   Wed, 19 Jun 2019 09:38:52 -0400
-Message-Id: <20190619133852.8660-1-eric@garver.life>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.28]); Wed, 19 Jun 2019 13:39:04 +0000 (UTC)
+        id S1727124AbfFSOfM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 19 Jun 2019 10:35:12 -0400
+Received: from m9785.mail.qiye.163.com ([220.181.97.85]:21298 "EHLO
+        m9785.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbfFSOfM (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 19 Jun 2019 10:35:12 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9785.mail.qiye.163.com (Hmail) with ESMTPA id CF80C5C1319;
+        Wed, 19 Jun 2019 22:35:07 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH nf-next] netfilter: bridge: Fix non-untagged fragment packet
+Date:   Wed, 19 Jun 2019 22:35:07 +0800
+Message-Id: <1560954907-20071-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVPSkpCQkJCT0tDTElKQllXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ODY6MSo*CDgwIhcOEhoYCigX
+        TzkaCQlVSlVKTk1LQk5PQktMQklCVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUlJTEk3Bg++
+X-HM-Tid: 0a6b7029acd92087kuqycf80c5c1319
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-cmp() is not in python3.
+From: wenxu <wenxu@ucloud.cn>
 
-Signed-off-by: Eric Garver <eric@garver.life>
+ip netns exec ns1 ip a a dev eth0 10.0.0.7/24
+ip netns exec ns2 ip link a link eth0 name vlan type vlan id 200
+ip netns exec ns2 ip a a dev vlan 10.0.0.8/24
+
+ip l add dev br0 type bridge vlan_filtering 1
+brctl addif br0 veth1
+brctl addif br0 veth2
+
+bridge vlan add dev veth1 vid 200 pvid untagged
+bridge vlan add dev veth2 vid 200
+
+A two fragment packets send from ns2 contained with vlan tag 200.
+In the bridge conntrack, packet will defrag to one skb with fraglist.
+When the packet forward to ns1 through veth1, the first skb vlan tag
+will be cleared for "untagged" flags. But the vlan tag in the second
+skb still tagged, which lead the second fragment send with tag 200 to
+ns1.
+So if the first fragment packet don't contain vlan tag, all of the
+remain should not contain vlan tag..
+
+Fixes: 3c171f496ef5 ("netfilter: bridge: add connection tracking system")
+Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
- tests/py/nft-test.py | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ net/bridge/netfilter/nf_conntrack_bridge.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
-index 4da6fa650f6d..c712c1d9ebef 100755
---- a/tests/py/nft-test.py
-+++ b/tests/py/nft-test.py
-@@ -488,12 +488,11 @@ def set_check_element(rule1, rule2):
-     '''
-     Check if element exists in anonymous sets.
-     '''
--    ret = -1
-     pos1 = rule1.find("{")
-     pos2 = rule2.find("{")
+diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
+index b675cd7..4f5444d 100644
+--- a/net/bridge/netfilter/nf_conntrack_bridge.c
++++ b/net/bridge/netfilter/nf_conntrack_bridge.c
+@@ -331,6 +331,8 @@ static int nf_ct_bridge_frag_restore(struct sk_buff *skb,
+ 	}
+ 	if (data->vlan_present)
+ 		__vlan_hwaccel_put_tag(skb, data->vlan_proto, data->vlan_tci);
++	else if (skb_vlan_tag_present(skb))
++		__vlan_hwaccel_clear_tag(skb);
  
--    if (cmp(rule1[:pos1], rule2[:pos2]) != 0):
--        return ret;
-+    if (rule1[:pos1] != rule2[:pos2]):
-+        return False
- 
-     end1 = rule1.find("}")
-     end2 = rule2.find("}")
-@@ -503,13 +502,12 @@ def set_check_element(rule1, rule2):
-         list2 = (rule2[pos2 + 1:end2].replace(" ", "")).split(",")
-         list1.sort()
-         list2.sort()
--        if cmp(list1, list2) == 0:
--            ret = 0
-+        if list1 != list2:
-+            return False
- 
--    if ret != 0:
--        return ret
-+        return rule1[end1:] == rule2[end2:]
- 
--    return cmp(rule1[end1:], rule2[end2:])
-+    return False
- 
- 
- def obj_add(o, test_result, filename, lineno):
-@@ -842,8 +840,8 @@ def rule_add(rule, filename, lineno, force_all_family_option, filename_path):
- 
-             if rule_output.rstrip() != teoric_exit.rstrip():
-                 if rule[0].find("{") != -1:  # anonymous sets
--                    if set_check_element(teoric_exit.rstrip(),
--                                         rule_output.rstrip()) != 0:
-+                    if not set_check_element(teoric_exit.rstrip(),
-+                                             rule_output.rstrip()):
-                         warning += 1
-                         retest_output = True
-                         print_differences_warning(filename, lineno,
+ 	skb_copy_to_linear_data_offset(skb, -ETH_HLEN, data->mac, ETH_HLEN);
+ 	skb_reset_mac_header(skb);
 -- 
-2.20.1
+1.8.3.1
 
