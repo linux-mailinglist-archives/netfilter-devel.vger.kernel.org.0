@@ -2,78 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC894B924
+	by mail.lfdr.de (Postfix) with ESMTP id A39004B925
 	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2019 14:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbfFSMxK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 19 Jun 2019 08:53:10 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:15238 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727002AbfFSMxK (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 19 Jun 2019 08:53:10 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E8BB930860A5;
-        Wed, 19 Jun 2019 12:52:57 +0000 (UTC)
-Received: from egarver.localdomain (ovpn-121-240.rdu2.redhat.com [10.10.121.240])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 308A31001925;
-        Wed, 19 Jun 2019 12:52:54 +0000 (UTC)
-Date:   Wed, 19 Jun 2019 08:52:54 -0400
-From:   Eric Garver <eric@garver.life>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     shekhar sharma <shekhar250198@gmail.com>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft] nft-test.py: use tempfile module
-Message-ID: <20190619125254.atenkuzvn4xzar5q@egarver.localdomain>
-Mail-Followup-To: Eric Garver <eric@garver.life>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        shekhar sharma <shekhar250198@gmail.com>,
-        netfilter-devel@vger.kernel.org
-References: <CAN9XX2pWQY0Rz2cGv7V=v8+g0mUTNGWS4pf0FJwScmrNpC5Kjg@mail.gmail.com>
- <20190618182127.21110-1-eric@garver.life>
- <20190619103944.acxr3rw7cbj4eylh@salvia>
+        id S1731588AbfFSMxc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 19 Jun 2019 08:53:32 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:52193 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731576AbfFSMxc (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 19 Jun 2019 08:53:32 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MKKpV-1httFS3L4R-00LmVZ; Wed, 19 Jun 2019 14:53:17 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Fernando Fernandez Mancera <ffmancera@riseup.net>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] netfilter: synproxy: fix nf_synproxy_ipv{4,6}_init() return code
+Date:   Wed, 19 Jun 2019 14:53:07 +0200
+Message-Id: <20190619125314.1005993-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190619103944.acxr3rw7cbj4eylh@salvia>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Wed, 19 Jun 2019 12:53:10 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:sHRKPJxI1zML8tYdc1cfhcMo3aUXVxAOGIhwNfIQjjwRunCOAsx
+ NHm/ktqi20sgAtTRnoNS3E45QBQpIjaZVx0+5T9JDOd12yuSjTMfuKf3I2WxHLaP7fgMW6m
+ OwZXXHliGncpKNm0YIe9lofpzzzFwQEKcW4afzoDhJsMbevSna3JBee75coK4Xtf9M6zYDI
+ ksMK9hUacXQ2WZJ8dL5kw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SCWUrpyWP2Q=:ut0cProTqarHG0QCVTfh9D
+ MjpFumB3sMKmB4UQDW90OwoYEvXD6fN2P5u7C9ipmz67bnCj2+fgixTlHZWi50c5YEvc+Ar0s
+ 8ss2WW2QFYbWSNP3i72/7XdPkBZGA4mprtHQO4vNyu0B5D1bLM+NUG8E2vzfgaBZxN/Aa0oNd
+ 4JAmSW2hwHbQanQfSE0rZv990u2wg4KrBD/3M+bpjhkORv74ThiMRcHAWYB2L/VsCykY46tc8
+ Zd5FJH/nERhpZZnfoTb74nmUKip5BRjbqoZwsColXihClt81pbpfyG2jB1Wi+sVI1w7b51JKb
+ tpKvqT5+L1JlVoCBMtsmPp+RJu5SDDxgW6lBl4e+iesBvqIdQYtqkMTLgREf575P2cTLZewQ2
+ QFCXR+ikN+dfMGC9EWSwj266DhSLi09CMgXLyOgB51LsCpBoDGP6qvf3teeRebZydq6Ae0V26
+ zqmoMIBUch19Sy+HzSrh8dQDx+4T2X17Hky8gaAP1tYnhsCBzMLr+4+MX4P+YzxpNcXKFDIWB
+ pnCqDkDwWHX2ydF47Bw/dsS2NsggITOpih1wQXbijgiINj2u1n6xV/kBFRFhqk844L7d0CEL5
+ JQA+koiuVWPxlhVuCcjFXIpdUxzZzYA3vRY1xYK22sEaeS7MX4JORqyTpM3UkbZno0sYQtjZR
+ Fy1kLg9kgrx1ImoDpIc+WgpKE7sy+xLDdc0v2h+sfb60PtXAdFKYePZHNTIe2j3XO3WctYQ4l
+ nny3uTmIzSdnSB1+favdUtgwez9Lxjyv7snIvA==
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 12:39:44PM +0200, Pablo Neira Ayuso wrote:
-> On Tue, Jun 18, 2019 at 02:21:27PM -0400, Eric Garver wrote:
-> > os.tmpfile() is not in python3.
-> 
-> If I apply:
-> 
-> https://patchwork.ozlabs.org/patch/1116034/
-> 
-> and this patch, it's getting better, but still I hit one problem:
-> 
-> # python3 nft-test.py
-> INFO: Log will be available at /tmp/nftables-test.log
-> any/fwd.t: OK
-> any/rt.t: OK
-> any/queue.t: OK
-> any/dup.t: OK
-> any/log.t: OK
-> Traceback (most recent call last):
->   File "nft-test.py", line 1455, in <module>
->     main()
->   File "nft-test.py", line 1423, in main
->     result = run_test_file(filename, force_all_family_option,
-> specific_file)
->   File "nft-test.py", line 1291, in run_test_file
->     filename_path)
->   File "nft-test.py", line 846, in rule_add
->     rule_output.rstrip()) != 0:
->   File "nft-test.py", line 495, in set_check_element
->     if (cmp(rule1[:pos1], rule2[:pos2]) != 0):
-> NameError: name 'cmp' is not defined
+We return an uninitialized variable on success:
 
-I will post a short series today to address this as well.
+net/netfilter/nf_synproxy_core.c:793:6: error: variable 'err' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+        if (snet->hook_ref4 == 0) {
+            ^~~~~~~~~~~~~~~~~~~~
+
+Initialize the return code to zero first.
+
+Fixes: d7f9b2f18eae ("netfilter: synproxy: extract SYNPROXY infrastructure from {ipt, ip6t}_SYNPROXY")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ net/netfilter/nf_synproxy_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netfilter/nf_synproxy_core.c b/net/netfilter/nf_synproxy_core.c
+index 50677285f82e..283686e972a0 100644
+--- a/net/netfilter/nf_synproxy_core.c
++++ b/net/netfilter/nf_synproxy_core.c
+@@ -788,7 +788,7 @@ static const struct nf_hook_ops ipv4_synproxy_ops[] = {
+ 
+ int nf_synproxy_ipv4_init(struct synproxy_net *snet, struct net *net)
+ {
+-	int err;
++	int err = 0;
+ 
+ 	if (snet->hook_ref4 == 0) {
+ 		err = nf_register_net_hooks(net, ipv4_synproxy_ops,
+@@ -1213,7 +1213,7 @@ static const struct nf_hook_ops ipv6_synproxy_ops[] = {
+ int
+ nf_synproxy_ipv6_init(struct synproxy_net *snet, struct net *net)
+ {
+-	int err;
++	int err = 0;
+ 
+ 	if (snet->hook_ref6 == 0) {
+ 		err = nf_register_net_hooks(net, ipv6_synproxy_ops,
+-- 
+2.20.0
+
