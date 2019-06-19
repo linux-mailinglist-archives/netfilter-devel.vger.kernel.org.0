@@ -2,51 +2,87 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D26C4BB64
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2019 16:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87BCE4B653
+	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Jun 2019 12:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbfFSOZA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 19 Jun 2019 10:25:00 -0400
-Received: from mail.excellent-customer-service.com ([185.216.140.110]:53251
-        "EHLO chulaseafood.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726238AbfFSOZA (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 19 Jun 2019 10:25:00 -0400
-X-Greylist: delayed 1278 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 Jun 2019 10:24:58 EDT
-To:     netfilter-devel@vger.kernel.org
-Subject: =?UTF-8?B?wrcgICAgICAgICBjYW4geW91IGFzc2lzdCBtZT8=?=
-Message-ID: <33495b1e2ca528270b14e3717f54b4f3@airkinglimited.com>
-Date:   Wed, 19 Jun 2019 12:21:23 +0200
-From:   "Laura" <ansitaksi@verizon.net>
-Reply-To: turisnig@sina.com
+        id S1727002AbfFSKju (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 19 Jun 2019 06:39:50 -0400
+Received: from mail.us.es ([193.147.175.20]:60848 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726826AbfFSKju (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 19 Jun 2019 06:39:50 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 9D6D68168B
+        for <netfilter-devel@vger.kernel.org>; Wed, 19 Jun 2019 12:39:47 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 8D4ABDA711
+        for <netfilter-devel@vger.kernel.org>; Wed, 19 Jun 2019 12:39:47 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 82AAADA70E; Wed, 19 Jun 2019 12:39:47 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id EBA3CDA710;
+        Wed, 19 Jun 2019 12:39:44 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Wed, 19 Jun 2019 12:39:44 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id C9BCB40705C4;
+        Wed, 19 Jun 2019 12:39:44 +0200 (CEST)
+Date:   Wed, 19 Jun 2019 12:39:44 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Eric Garver <eric@garver.life>
+Cc:     shekhar sharma <shekhar250198@gmail.com>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft] nft-test.py: use tempfile module
+Message-ID: <20190619103944.acxr3rw7cbj4eylh@salvia>
+References: <CAN9XX2pWQY0Rz2cGv7V=v8+g0mUTNGWS4pf0FJwScmrNpC5Kjg@mail.gmail.com>
+ <20190618182127.21110-1-eric@garver.life>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190618182127.21110-1-eric@garver.life>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+On Tue, Jun 18, 2019 at 02:21:27PM -0400, Eric Garver wrote:
+> os.tmpfile() is not in python3.
 
-Can you direct me to the owner/decision maker?   We’d like to send you
-more clients to help you grow your business.
+If I apply:
 
+https://patchwork.ozlabs.org/patch/1116034/
 
+and this patch, it's getting better, but still I hit one problem:
 
-We can deliver to you real time, exclusive and consistent leads of people
-looking for your business.
-
-
-
-Who would be the right person to call, and what is the best number to reach
-them on?
-
-
-
-Thank you!
-
-
-
-Laura Gevins
-
+# python3 nft-test.py
+INFO: Log will be available at /tmp/nftables-test.log
+any/fwd.t: OK
+any/rt.t: OK
+any/queue.t: OK
+any/dup.t: OK
+any/log.t: OK
+Traceback (most recent call last):
+  File "nft-test.py", line 1455, in <module>
+    main()
+  File "nft-test.py", line 1423, in main
+    result = run_test_file(filename, force_all_family_option,
+specific_file)
+  File "nft-test.py", line 1291, in run_test_file
+    filename_path)
+  File "nft-test.py", line 846, in rule_add
+    rule_output.rstrip()) != 0:
+  File "nft-test.py", line 495, in set_check_element
+    if (cmp(rule1[:pos1], rule2[:pos2]) != 0):
+NameError: name 'cmp' is not defined
