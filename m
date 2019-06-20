@@ -2,118 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 157804C8D2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Jun 2019 10:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A25C4CBA5
+	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Jun 2019 12:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbfFTIBh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 20 Jun 2019 04:01:37 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:9232 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbfFTIBg (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 20 Jun 2019 04:01:36 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 50A5841B53;
-        Thu, 20 Jun 2019 16:01:31 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 2/2] meta: add brvlan support
-Date:   Thu, 20 Jun 2019 16:01:29 +0800
-Message-Id: <1561017689-27603-2-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1561017689-27603-1-git-send-email-wenxu@ucloud.cn>
-References: <1561017689-27603-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSkJDS0tLS0xIT0hJQklZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NlE6Fww5DDg3MhcVGTNPKD1J
-        EUowCTZVSlVKTk1KS0pMTUJKT09IVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUhMTE03Bg++
-X-HM-Tid: 0a6b73e7acd62086kuqy50a5841b53
+        id S1726279AbfFTKUW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 20 Jun 2019 06:20:22 -0400
+Received: from mail.us.es ([193.147.175.20]:38800 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726081AbfFTKUW (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 20 Jun 2019 06:20:22 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id A0FE2EA47A
+        for <netfilter-devel@vger.kernel.org>; Thu, 20 Jun 2019 12:20:18 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 8B98EDA713
+        for <netfilter-devel@vger.kernel.org>; Thu, 20 Jun 2019 12:20:18 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 6F096DA710; Thu, 20 Jun 2019 12:20:18 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 3E125DA704;
+        Thu, 20 Jun 2019 12:20:16 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Thu, 20 Jun 2019 12:20:16 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 12DDD4265A2F;
+        Thu, 20 Jun 2019 12:20:16 +0200 (CEST)
+Date:   Thu, 20 Jun 2019 12:20:15 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Fernando Fernandez Mancera <ffmancera@riseup.net>,
+        wenxu <wenxu@ucloud.cn>, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] netfilter: synproxy: fix building syncookie calls
+Message-ID: <20190620102015.gzanaci6aztfhv76@salvia>
+References: <20190619125500.1054426-1-arnd@arndb.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190619125500.1054426-1-arnd@arndb.de>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+On Wed, Jun 19, 2019 at 02:54:36PM +0200, Arnd Bergmann wrote:
+> When either CONFIG_IPV6 or CONFIG_SYN_COOKIES are disabled, the kernel
+> fails to build:
+> 
+> include/linux/netfilter_ipv6.h:180:9: error: implicit declaration of function '__cookie_v6_init_sequence'
+>       [-Werror,-Wimplicit-function-declaration]
+>         return __cookie_v6_init_sequence(iph, th, mssp);
+> include/linux/netfilter_ipv6.h:194:9: error: implicit declaration of function '__cookie_v6_check'
+>       [-Werror,-Wimplicit-function-declaration]
+>         return __cookie_v6_check(iph, th, cookie);
+> net/ipv6/netfilter.c:237:26: error: use of undeclared identifier '__cookie_v6_init_sequence'; did you mean 'cookie_init_sequence'?
+> net/ipv6/netfilter.c:238:21: error: use of undeclared identifier '__cookie_v6_check'; did you mean '__cookie_v4_check'?
+> 
+> Fix the IS_ENABLED() checks to match the function declaration
+> and definitions for these.
 
-meta brvlan can be used to the packet vlan tags
-
-nft add rule bridge firewall zones counter meta brvlan set meta brpvid
-
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- doc/primary-expression.txt          | 7 ++++++-
- include/linux/netfilter/nf_tables.h | 2 ++
- src/meta.c                          | 3 +++
- 3 files changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/doc/primary-expression.txt b/doc/primary-expression.txt
-index e33ea26..6bcfa5e 100644
---- a/doc/primary-expression.txt
-+++ b/doc/primary-expression.txt
-@@ -2,7 +2,7 @@ META EXPRESSIONS
- ~~~~~~~~~~~~~~~~
- [verse]
- *meta* {*length* | *nfproto* | *l4proto* | *protocol* | *priority*}
--[*meta*] {*mark* | *iif* | *iifname* | *iiftype* | *oif* | *oifname* | *oiftype* | *skuid* | *skgid* | *nftrace* | *rtclassid* | *ibrname* | *obrname* | *pkttype* | *cpu* | *iifgroup* | *oifgroup* | *cgroup* | *random* | *ipsec* | *iifkind* | *oifkind* | *brpvid*}
-+[*meta*] {*mark* | *iif* | *iifname* | *iiftype* | *oif* | *oifname* | *oiftype* | *skuid* | *skgid* | *nftrace* | *rtclassid* | *ibrname* | *obrname* | *pkttype* | *cpu* | *iifgroup* | *oifgroup* | *cgroup* | *random* | *ipsec* | *iifkind* | *oifkind* | *brpvid* | *brvlan*}
- 
- A meta expression refers to meta data associated with a packet.
- 
-@@ -119,6 +119,9 @@ Output interface kind|
- |brpvid|
- bridge port pvid|
- integer (16 bit)
-+|brvlan|
-+set packet vlan tag|
-+integer (16 bit)
- |====================
- 
- .Meta expression specific types
-@@ -146,6 +149,8 @@ Packet type: *host* (addressed to local host), *broadcast* (to all),
- Interface kind (16 byte string). Does not have to exist.
- |brpvid|
- Bridge port pvid (16 bit number).
-+|brpvlan|
-+Set packet vlan tag (16 bit number).
- |=============================
- 
- .Using meta expressions
-diff --git a/include/linux/netfilter/nf_tables.h b/include/linux/netfilter/nf_tables.h
-index 0715b6a..7afac26 100644
---- a/include/linux/netfilter/nf_tables.h
-+++ b/include/linux/netfilter/nf_tables.h
-@@ -794,6 +794,7 @@ enum nft_exthdr_attributes {
-  * @NFT_META_IIFKIND: packet input interface kind name (dev->rtnl_link_ops->kind)
-  * @NFT_META_OIFKIND: packet output interface kind name (dev->rtnl_link_ops->kind)
-  * @NFT_META_BRI_PVID: packet input bridge port pvid
-+ * @NFT_META_BRI_VLAN: set vlan tag on packet
-  */
- enum nft_meta_keys {
- 	NFT_META_LEN,
-@@ -825,6 +826,7 @@ enum nft_meta_keys {
- 	NFT_META_IIFKIND,
- 	NFT_META_OIFKIND,
- 	NFT_META_BRI_PVID,
-+	NFT_META_BRI_VLAN,
- };
- 
- /**
-diff --git a/src/meta.c b/src/meta.c
-index cef7b02..63b66dc 100644
---- a/src/meta.c
-+++ b/src/meta.c
-@@ -453,6 +453,9 @@ const struct meta_template meta_templates[] = {
- 	[NFT_META_BRI_PVID]	= META_TEMPLATE("brpvid",   &integer_type,
- 						2 * BITS_PER_BYTE,
- 						BYTEORDER_HOST_ENDIAN),
-+	[NFT_META_BRI_VLAN]	= META_TEMPLATE("brvlan",   &integer_type,
-+						2 * BITS_PER_BYTE,
-+						BYTEORDER_HOST_ENDIAN),
- };
- 
- static bool meta_key_is_unqualified(enum nft_meta_keys key)
--- 
-1.8.3.1
-
+Applied, thanks Arnd.
