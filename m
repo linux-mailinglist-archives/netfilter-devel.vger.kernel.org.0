@@ -2,100 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E1150060
-	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Jun 2019 05:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B54550403
+	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Jun 2019 09:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbfFXDw6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 23 Jun 2019 23:52:58 -0400
-Received: from mail.fetzig.org ([54.39.219.108]:55016 "EHLO mail.fetzig.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726476AbfFXDw6 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 23 Jun 2019 23:52:58 -0400
-X-Greylist: delayed 527 seconds by postgrey-1.27 at vger.kernel.org; Sun, 23 Jun 2019 23:52:57 EDT
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: felix@fetzig.org)
-        by mail.fetzig.org (Postfix) with ESMTPSA id B7598804C7;
-        Sun, 23 Jun 2019 23:44:09 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kaechele.ca;
-        s=kaechele.ca-201608; t=1561347849;
-        bh=JBumEzucJwLjxOLCFOKdRPvpUpfocNNuY8epnKOYUes=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=SngurjsH1aHBs/nWLX8xwaxUNcX1dSe2PUYjddWymKztfkhUDttDE+W1UP/22fGPR
-         oJrhDCK1uwOAXhIfnTJgWNvAo3uTs0DoZcc0OrnOV9yWC6Jm5NWW2x0evOGPpSbBW9
-         yocYYBkoV1qbFSuT0n/lSo0u1eZpp+DPqAdcvG7D49SNP6GL62IuZS+Xb1O/LouMzW
-         WAR3dC/Fuur7bIurLRL9gXGvFk7hMLcq7N0MoN0sfapoipDOONuZWxKHfCM7si6/WX
-         4siGkJsVYOFW5G1KxiXIQsILSHnq0LSW8Xge6xXvKetsPgMfnkbRPrPpDQHFSJsyVQ
-         QLUeMoAzd6WLg==
-Subject: Re: [PATCH 08/13] netfilter: ctnetlink: Resolve conntrack L3-protocol
- flush regression
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-References: <20190513095630.32443-1-pablo@netfilter.org>
- <20190513095630.32443-9-pablo@netfilter.org>
-From:   Felix Kaechele <felix@kaechele.ca>
-Message-ID: <0a4e3cd2-82f7-8ad6-2403-9852e34c8ac3@kaechele.ca>
-Date:   Sun, 23 Jun 2019 23:44:09 -0400
+        id S1726700AbfFXHzU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 24 Jun 2019 03:55:20 -0400
+Received: from mail-io1-f47.google.com ([209.85.166.47]:47012 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726558AbfFXHzU (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 24 Jun 2019 03:55:20 -0400
+Received: by mail-io1-f47.google.com with SMTP id i10so209375iol.13;
+        Mon, 24 Jun 2019 00:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NcGPD7WGZob7Z0F2AuiL/J621nCYUfaj4RNcnY6DcZk=;
+        b=ZPbHMvhH0oARpHV0CzpTxecXKPbYZ0DtWqryzHW+zzV6Pw66eikTWYh5wWLDmjMpUD
+         bNyFJjoUmM6z15Y+g0beeW29tew/KCe7aG36n/EB+2AOlIyxVzhs45lUh5NqHNHHOmuE
+         zl4sGJ1qTsQPtq+3AFhgFBNkmRHfqSDuilhXmdWKL4fMbJJVHpCQIIfXXrcSTwLdTotY
+         kDMbVvw73Mjp9hgDuGiqeZMsHnTtDxHuQJLTwSTc8OLpauqxVDl5Q/K54DUx61satVyU
+         4K1ZQVe8mVXVAMeTKoYeVVB43ppVz9xUGRCCW5sw4KunyYMYmjpfL6jchZmBNGN4j0nX
+         Aq3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NcGPD7WGZob7Z0F2AuiL/J621nCYUfaj4RNcnY6DcZk=;
+        b=i3zrHf13OCCGvn68tIvPwTOZJ/mS40XbGIq7MACf+CWNRLqmpTAeHmENuQx15957b5
+         7H9fkAaK/7vnjoHAwjhZuOPxmvDZxKEcD5TEzSpomvyQg8aCSIzuYqx9dA1tp2LEDnCM
+         830tp6RxISvif4AZhT38DxiFvX4GYYWTh5dXhGe+pAZgh+ZHtZqJGLQDokZSL3I66zsL
+         g+HhLcEwgDMWI58eiasgkBl4TNDenxrIFr3g9rDNEhhT1DAm/Pr3iIYEHozmuVV6WY1Z
+         NHMCLefojey7E9xOWTr3WMwu77HeUMOsFl6PO5midYBMwGkV5oYZRA7e2zoJuKkM2Xc1
+         tRBw==
+X-Gm-Message-State: APjAAAWtYHShNwGEUs38CBp7kOrfUvIzPIynfvBKNX4dRS+f6P0071gM
+        HqvKGdMDn8e+oCo76c++CrKvFhMr0DyGmDHKb4LqydzE
+X-Google-Smtp-Source: APXvYqzRGXiEbeg73p64ubto9GUV0xwbBhGFevo1WCEwWVKgxVVWcDjFReLKqXviaeDhrc+7//jJf3bBtCKEle5fX6g=
+X-Received: by 2002:a6b:9257:: with SMTP id u84mr35640246iod.278.1561362919069;
+ Mon, 24 Jun 2019 00:55:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190513095630.32443-9-pablo@netfilter.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.101.2 at pandora.fk.cx
-X-Virus-Status: Clean
+References: <CAK6Qs9mam2U6JdeBnkzX9sfdeWWkLx_+ZgHOTmYjSC2wKfg0cQ@mail.gmail.com>
+ <20190618104041.unuonhmuvgnlty3l@breakpoint.cc> <CAK6Qs9kmxqOaCjgcBefPR-NKEdGKTcfKUL_tu09CQYp3OT5krA@mail.gmail.com>
+ <20190618115905.6kd2hqg2hlbs5frc@breakpoint.cc> <CAK6Qs9mTkAaH9+RqzmtrbNps1=NtW4c8wtJy7Kjay=r7VSJwsQ@mail.gmail.com>
+ <20190618124026.4kvpdkbstdgaluij@breakpoint.cc> <CAK6Qs9nak4Aes9BXGsHC8SGGXmWGGrhPwAPQY5brFXtUzLkd-A@mail.gmail.com>
+ <CAK6Qs9=E9r_hPB6QX+P5Dx+fGetM5pcgxBsrDt+XJBeZhUcimQ@mail.gmail.com> <20190621111021.2nqtvdq3qq2gbfqy@breakpoint.cc>
+In-Reply-To: <20190621111021.2nqtvdq3qq2gbfqy@breakpoint.cc>
+From:   =?UTF-8?Q?=C4=B0brahim_Ercan?= <ibrahim.metu@gmail.com>
+Date:   Mon, 24 Jun 2019 10:55:07 +0300
+Message-ID: <CAK6Qs9m88cgpFPaVp2qfQsepgtoa02vap1wzkdkgaSuTMm_ELw@mail.gmail.com>
+Subject: Re: Is this possible SYN Proxy bug?
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi there,
+On Fri, Jun 21, 2019 at 2:10 PM Florian Westphal <fw@strlen.de> wrote:
+>
+> Yes, something like this is needed, i.e. we need to pass two
+> mss values -- one from info->mss ("server") that we need to
+> place in the tcp options sent to client and one containing
+> the clients mss that we should encode into the cookie.
+>
+> I think you can pass "u16 client_mssinfo" instead of u16* pointer.
 
-this patch is giving me some trouble as it breaks deletion of conntrack 
-entries in software that doesn't set the version flag to anything else 
-but 0.
+Hi Florian.
 
-I'm not entirely sure what is going on here but a piece of software I am 
-using is now unable to delete conntrack entries and is therefor not 
-functioning.
-Specifically this piece of code seems to fail:
-https://github.com/wlanslovenija/tunneldigger/blob/master/broker/src/tunneldigger_broker/conntrack.py#L112
+We tested fixed code on real environment and we are still getting some
+errors. We have a customer using syn proxy in front of a point of sale
+(POS) application and they reported that about %0.4 of connections are
+erroneous.
+When I examine traffic from pcap file, I saw connections opens
+successfully but somehow something goes wrong after then.
+If we deactivates syn proxy, problem goes away. So we are sure it is
+caused by syn proxy.
+How can I debug syn proxy further? Do you have any suggestion?
 
-That software relies heavily on libnetfilter_conntrack, which itself, 
-with this patch, seems to be broken as well:
-
-   [felix@x1 utils]$ sudo ./conntrack_create
-
-   TEST: create conntrack (OK)
-
-   [felix@x1 utils]$ sudo ./conntrack_delete
-
-   TEST: delete conntrack (-1)(No such file or directory)
-
-
-If in libnetfilter_conntrack I edit utils/conntrack_delete.c and change 
-the line
-
-   nfct_set_attr_u8(ct, ATTR_L3PROTO, AF_INET);
-
-
-to read
-
-   nfct_set_attr_u8(ct, ATTR_L3PROTO, AF_UNSPEC);
-
-
-it starts working again.
-
-As I said, I haven't entirely figured out why this patch breaks 
-previously working software and what I need to do on my end to unbreak 
-my software that is using libnetfilter_conntrack. I haven't found a way 
-to make libnetfilter_conntrack set any other version than NFNETLINK_V0 
-for the messages it sends, which I presume would fix my problem.
-
-Any hints would be greatly appreciated.
-
-Regards,
-   Felix
-
-
+Regards.
