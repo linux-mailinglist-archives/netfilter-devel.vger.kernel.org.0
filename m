@@ -2,46 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37700518FE
-	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Jun 2019 18:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C00551955
+	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Jun 2019 19:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732220AbfFXQto (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 24 Jun 2019 12:49:44 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:55624 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728651AbfFXQtn (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 24 Jun 2019 12:49:43 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
-        (envelope-from <fw@strlen.de>)
-        id 1hfSA1-0002yR-Gf; Mon, 24 Jun 2019 18:49:41 +0200
-Date:   Mon, 24 Jun 2019 18:49:41 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] files: Move netdev-ingress.nft to /etc/nftables as
- well
-Message-ID: <20190624164941.dhcm57r35km3azbg@breakpoint.cc>
-References: <20190624151238.4869-1-phil@nwl.cc>
- <20190624151446.2umdf4bzem4h7yqj@breakpoint.cc>
- <20190624162406.GB9218@orbyte.nwl.cc>
+        id S1732327AbfFXRKp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 24 Jun 2019 13:10:45 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:51480 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732326AbfFXRKo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 24 Jun 2019 13:10:44 -0400
+Received: from localhost ([::1]:36338 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1hfSUN-0003ZP-PM; Mon, 24 Jun 2019 19:10:43 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nft PATCH 0/2] Improve a few minor JSON glitches
+Date:   Mon, 24 Jun 2019 19:10:36 +0200
+Message-Id: <20190624171038.24672-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190624162406.GB9218@orbyte.nwl.cc>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Phil Sutter <phil@nwl.cc> wrote:
-> > Right.  Do you think we should also add in inet-nat.nft example,
-> > or even replace the ipvX- ones?
-> 
-> Having an inet family nat example would be wonderful! Can inet NAT
-> replace IPvX-ones completely or are there any limitations as to what is
-> possible in rules?
+As suggested offline, print newline at end of JSON output (patch 1) and
+don't ignore -j flag if JSON support is not compiled-in - bail instead
+(patch 2).
 
-I'm not aware of any limitations.
+Phil Sutter (2):
+  json: Print newline at end of list output
+  main: Bail if non-available JSON was requested
+
+ src/json.c | 2 ++
+ src/main.c | 3 +++
+ 2 files changed, 5 insertions(+)
+
+-- 
+2.21.0
+
