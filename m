@@ -2,57 +2,106 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C118A51E11
-	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Jun 2019 00:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F5451F64
+	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Jun 2019 01:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbfFXWQv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 24 Jun 2019 18:16:51 -0400
-Received: from a3.inai.de ([88.198.85.195]:53238 "EHLO a3.inai.de"
+        id S1728743AbfFXX6V (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 24 Jun 2019 19:58:21 -0400
+Received: from mail.us.es ([193.147.175.20]:35578 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727240AbfFXWQu (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 24 Jun 2019 18:16:50 -0400
-Received: by a3.inai.de (Postfix, from userid 65534)
-        id 35B261624BFC; Tue, 25 Jun 2019 00:16:49 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on a3.inai.de
+        id S1726631AbfFXX6V (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 24 Jun 2019 19:58:21 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 26D54C04A8
+        for <netfilter-devel@vger.kernel.org>; Tue, 25 Jun 2019 01:58:19 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 15DA9DA702
+        for <netfilter-devel@vger.kernel.org>; Tue, 25 Jun 2019 01:58:19 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 0BA87DA701; Tue, 25 Jun 2019 01:58:19 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=5.0 tests=AWL,BAYES_00,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.1
-Received: from a4.inai.de (a4.inai.de [IPv6:2a01:4f8:222:6c9::f8])
-        by a3.inai.de (Postfix) with ESMTP id EAD842AFD3F6;
-        Tue, 25 Jun 2019 00:16:45 +0200 (CEST)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     pablo@netfilter.org
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id E6162DA702;
+        Tue, 25 Jun 2019 01:58:16 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 25 Jun 2019 01:58:16 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id C3BED4265A2F;
+        Tue, 25 Jun 2019 01:58:16 +0200 (CEST)
+Date:   Tue, 25 Jun 2019 01:58:16 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Felix Kaechele <felix@kaechele.ca>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH 3/3] build: avoid unnecessary call to xargs
-Date:   Tue, 25 Jun 2019 00:16:45 +0200
-Message-Id: <20190624221645.28591-3-jengelh@inai.de>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190624221645.28591-1-jengelh@inai.de>
-References: <20190624221645.28591-1-jengelh@inai.de>
+Subject: Re: [PATCH 08/13] netfilter: ctnetlink: Resolve conntrack
+ L3-protocol flush regression
+Message-ID: <20190624235816.vw6ahepdgvxhvdej@salvia>
+References: <20190513095630.32443-1-pablo@netfilter.org>
+ <20190513095630.32443-9-pablo@netfilter.org>
+ <0a4e3cd2-82f7-8ad6-2403-9852e34c8ac3@kaechele.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="a2jbvqhtsq3qujcl"
+Content-Disposition: inline
+In-Reply-To: <0a4e3cd2-82f7-8ad6-2403-9852e34c8ac3@kaechele.ca>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
----
- py/Makefile.am | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/py/Makefile.am b/py/Makefile.am
-index 5f4e1f6..215ecd9 100644
---- a/py/Makefile.am
-+++ b/py/Makefile.am
-@@ -22,7 +22,7 @@ clean-local:
- 		$(PYTHON_BIN) setup.py clean \
- 		--build-base $(abs_builddir)
- 	rm -rf scripts-* lib* build dist bdist.* nftables.egg-info
--	find . -name \*.pyc -print0 | xargs -0 rm -f
-+	find . -name \*.pyc -delete
+--a2jbvqhtsq3qujcl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Jun 23, 2019 at 11:44:09PM -0400, Felix Kaechele wrote:
+[...]
+>   [felix@x1 utils]$ sudo ./conntrack_delete
+> 
+>   TEST: delete conntrack (-1)(No such file or directory)
+
+Could you give a try to this patch?
+
+--a2jbvqhtsq3qujcl
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="x.patch"
+
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index 7db79c1b8084..4886b1599014 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -1256,7 +1256,6 @@ static int ctnetlink_del_conntrack(struct net *net, struct sock *ctnl,
+ 	struct nf_conntrack_tuple tuple;
+ 	struct nf_conn *ct;
+ 	struct nfgenmsg *nfmsg = nlmsg_data(nlh);
+-	u_int8_t u3 = nfmsg->version ? nfmsg->nfgen_family : AF_UNSPEC;
+ 	struct nf_conntrack_zone zone;
+ 	int err;
  
- distclean-local:
- 	rm -f version
--- 
-2.21.0
+@@ -1266,11 +1265,13 @@ static int ctnetlink_del_conntrack(struct net *net, struct sock *ctnl,
+ 
+ 	if (cda[CTA_TUPLE_ORIG])
+ 		err = ctnetlink_parse_tuple(cda, &tuple, CTA_TUPLE_ORIG,
+-					    u3, &zone);
++					    nfmsg->version, &zone);
+ 	else if (cda[CTA_TUPLE_REPLY])
+ 		err = ctnetlink_parse_tuple(cda, &tuple, CTA_TUPLE_REPLY,
+-					    u3, &zone);
++					    nfmsg->version, &zone);
+ 	else {
++		u_int8_t u3 = nfmsg->version ? nfmsg->nfgen_family : AF_UNSPEC;
++
+ 		return ctnetlink_flush_conntrack(net, cda,
+ 						 NETLINK_CB(skb).portid,
+ 						 nlmsg_report(nlh), u3);
 
+--a2jbvqhtsq3qujcl--
