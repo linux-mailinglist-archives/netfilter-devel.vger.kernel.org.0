@@ -2,46 +2,101 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE20F56768
-	for <lists+netfilter-devel@lfdr.de>; Wed, 26 Jun 2019 13:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74F25685C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 26 Jun 2019 14:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbfFZLNY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 26 Jun 2019 07:13:24 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:40158 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725930AbfFZLNY (ORCPT
+        id S1726131AbfFZMNA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 26 Jun 2019 08:13:00 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:50373 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbfFZMNA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 26 Jun 2019 07:13:24 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
-        (envelope-from <fw@strlen.de>)
-        id 1hg5re-0001V2-G3; Wed, 26 Jun 2019 13:13:22 +0200
-Date:   Wed, 26 Jun 2019 13:13:22 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Naruto Nguyen <narutonguyen2018@gmail.com>
-Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter@vger.kernel.org
-Subject: Re: Question about nf_conntrack_proto for IPsec
-Message-ID: <20190626111322.gks5qptax3iqrjao@breakpoint.cc>
-References: <CANpxKHHXzrEpJPSj3x83+WE23G1W0KPz9XbG=fCVzS21+-BpfQ@mail.gmail.com>
+        Wed, 26 Jun 2019 08:13:00 -0400
+Received: by mail-wm1-f66.google.com with SMTP id c66so1867973wmf.0
+        for <netfilter-devel@vger.kernel.org>; Wed, 26 Jun 2019 05:12:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PEDhys7CAUKD9hBn6WdutR3jPjNvRJyuNsHNr3HtJgA=;
+        b=rpsrZKV/4Yev7UhytrBsIU3tvYrodbpLXOLfgVVrqBdWD030AtEk9yb7rpXrZvt2w9
+         KlD7LeXtBab3nTbMoOlnuC6PRv2irMqF/4z5XoFS1yhAYb/oEU1tPIngxMhG8NL9qHQY
+         Q306XvnS1TpdvEuuy72O7e3+Rn9CVzYlzRLvK/vFJZK1CdgaYHh//EpxmJRDN6hskrfr
+         XYuIPwSdD0rltJcgr8K3QREG+C3fcYqklqqERgoia4salcxU6G10CWl7RHDxr6JT6j80
+         rY3/RNbRPxN02YgsksBVSwPZOUpj40JLXE2BR5PqajQXgiti6dGtpcD+Nj/7YReYjQ7F
+         WH7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PEDhys7CAUKD9hBn6WdutR3jPjNvRJyuNsHNr3HtJgA=;
+        b=X0IxzlcyTjI5jFhCGIsk48mMiQWlbnsgLdZnKJMl0wdn0xAZvniAevVLDNr2lc++zT
+         wYUIyfYDEUjAU8ASenRGlQmnwMhdKwVpRCBS/K2+KqhZoQ/tpG7ZYxdjaW17FbDJVfNg
+         8RSYiHRuVjaW3C3faihwWRXi1RaQH8Btc8CyeVDgjyHZkkwQ2cO99Mq/BC0QUWRLykc0
+         A6PCxPmGc9YiKxfHhBVxov1AGKOZCXOynnTDJ0q7bikgnNkiKDwPb+d/1s2AS88C7p4F
+         DsEQgkG/WaeBw+wLdhCIlSZ8N/gDf+WOCFDcfCS9MHQAyVCSDFnJl/YjuH7Uqo+ERnZ9
+         HjcQ==
+X-Gm-Message-State: APjAAAVP0arfbyJCFYFVjh+ysLHHvJXKhTVTaTPYooirF/hx4udYFByp
+        635xZRH+I+ILYKdVTY7RBcjnVA==
+X-Google-Smtp-Source: APXvYqzgG862uFPcB4NCvIYRGovidIBSWkA4r+ZzURG+kE4pXtik3lOmP9Mys8kvjv98nV+xtC7oAw==
+X-Received: by 2002:a05:600c:212:: with SMTP id 18mr2509286wmi.88.1561551178297;
+        Wed, 26 Jun 2019 05:12:58 -0700 (PDT)
+Received: from localhost (ip-89-176-222-26.net.upcbroadband.cz. [89.176.222.26])
+        by smtp.gmail.com with ESMTPSA id u6sm2068595wml.9.2019.06.26.05.12.56
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 26 Jun 2019 05:12:56 -0700 (PDT)
+Date:   Wed, 26 Jun 2019 14:12:56 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        davem@davemloft.net, thomas.lendacky@amd.com, f.fainelli@gmail.com,
+        ariel.elior@cavium.com, michael.chan@broadcom.com,
+        santosh@chelsio.com, madalin.bucur@nxp.com,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        jeffrey.t.kirsher@intel.com, tariqt@mellanox.com,
+        saeedm@mellanox.com, jiri@mellanox.com, idosch@mellanox.com,
+        jakub.kicinski@netronome.com, peppe.cavallaro@st.com,
+        grygorii.strashko@ti.com, andrew@lunn.ch,
+        vivien.didelot@savoirfairelinux.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, linux-net-drivers@solarflare.com,
+        ganeshgr@chelsio.com, ogerlitz@mellanox.com,
+        Manish.Chopra@cavium.com, marcelo.leitner@gmail.com,
+        mkubecek@suse.cz, venkatkumar.duvvuru@broadcom.com,
+        cphealy@gmail.com
+Subject: Re: [PATCH net-next 04/12] net: sched: add tcf_block_setup()
+Message-ID: <20190626121256.GA2424@nanopsycho>
+References: <20190620194917.2298-1-pablo@netfilter.org>
+ <20190620194917.2298-5-pablo@netfilter.org>
+ <20190621171603.GF2414@nanopsycho.orion>
+ <20190625083154.jfzhh22zsl3fu2ik@salvia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpxKHHXzrEpJPSj3x83+WE23G1W0KPz9XbG=fCVzS21+-BpfQ@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20190625083154.jfzhh22zsl3fu2ik@salvia>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Naruto Nguyen <narutonguyen2018@gmail.com> wrote:
-> In linux/latest/source/net/netfilter/ folder, I only see we have
-> nf_conntrack_proto_tcp.c, nf_conntrack_proto_udp.c and some other
-> conntrack implementations for other protocols but I do not see
-> nf_conntrack_proto for IPsec, so does it mean connection tracking
-> cannot track ESP or AH protocol as a connection. I mean when I use
-> "conntrack -L" command, I will not see ESP or AH  connection is saved
-> in conntrack list. Could you please help me to understand if conntrack
-> supports that and any reasons if it does not support?
+Tue, Jun 25, 2019 at 10:31:54AM CEST, pablo@netfilter.org wrote:
+>On Fri, Jun 21, 2019 at 07:16:03PM +0200, Jiri Pirko wrote:
+>> Thu, Jun 20, 2019 at 09:49:09PM CEST, pablo@netfilter.org wrote:
+>> 
+>> [...]
+>> 
+>> > 
+>> >+static LIST_HEAD(tcf_block_cb_list);
+>> 
+>> I still don't like the global list. Have to go throught the code more
+>> carefully, but why you can't pass the priv/ctx from tc/netfilter. From
+>> tc it would be tcf_block as it is now, from netfilter something else.
+>
+>This tcf_block_cb_list should go away at some point, once drivers know
+>how to deal with multiple subsystems using the setup block
+>infrastructure. As I said in my previous email, only one can set up
+>the block at this stage, the ones coming later will hit busy.
 
-ESP/AH etc. use the generic tracker, i.e. only one ESP connection
-is tracked between each endpoint.
+The driver should know if it can bind or is busy. Also, the bind cmd
+should contain type of binder (tc/nft/whatever) or perhaps rather binder
+priority (according to the hook order in rx/tx).
