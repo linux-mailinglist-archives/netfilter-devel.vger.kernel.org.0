@@ -2,102 +2,96 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4F7576EA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2019 02:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4582A57948
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jun 2019 04:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbfF0Alz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 26 Jun 2019 20:41:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729594AbfF0Alx (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 26 Jun 2019 20:41:53 -0400
-Received: from sasha-vm.mshome.net (unknown [107.242.116.147])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBFD721852;
-        Thu, 27 Jun 2019 00:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561596113;
-        bh=6Z3cj53GSfYzAfPAXGYhyrX0O/+vCJfobNxE5a6Ybk8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z7f4WBvEvBSAV/nNdMoQnTbocTBIpNqtMz4cLA/JDoVEqfl1r/cO9Twjdi3bUbugc
-         aDun5ziXmLUYvx+OrIe5wLbfdWkPujyKLPNyjZvEXs4K1Bp/Tg9F8/7JHDHnvFpHIH
-         T2hLMgK4UHSFvjocRanX2R40ZqhM+Uvz0oWm0Vk0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Guillaume Nault <gnault@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 09/21] netfilter: ipv6: nf_defrag: accept duplicate fragments again
-Date:   Wed, 26 Jun 2019 20:41:09 -0400
-Message-Id: <20190627004122.21671-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190627004122.21671-1-sashal@kernel.org>
-References: <20190627004122.21671-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1726807AbfF0CJV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 26 Jun 2019 22:09:21 -0400
+Received: from m97188.mail.qiye.163.com ([220.181.97.188]:47009 "EHLO
+        m97188.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726669AbfF0CJV (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 26 Jun 2019 22:09:21 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m97188.mail.qiye.163.com (Hmail) with ESMTPA id 153D79668C3;
+        Thu, 27 Jun 2019 10:09:18 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 1/2 nf-next] netfilter: nft_meta: add NFT_META_BRI_VLAN_PROTO support
+Date:   Thu, 27 Jun 2019 10:09:16 +0800
+Message-Id: <1561601357-20486-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVIQ0NLS0tLSkpPT09LQllXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NEk6PBw*NjgrIgswOR0hHx8t
+        FjwwC0JVSlVKTk1KTUtKSE5DSUxKVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUlNS0w3Bg++
+X-HM-Tid: 0a6b96b1b96420bckuqy153d79668c3
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Guillaume Nault <gnault@redhat.com>
+From: wenxu <wenxu@ucloud.cn>
 
-[ Upstream commit 8a3dca632538c550930ce8bafa8c906b130d35cf ]
+This patch provide a meta to get the bridge vlan proto
 
-When fixing the skb leak introduced by the conversion to rbtree, I
-forgot about the special case of duplicate fragments. The condition
-under the 'insert_error' label isn't effective anymore as
-nf_ct_frg6_gather() doesn't override the returned value anymore. So
-duplicate fragments now get NF_DROP verdict.
+nft add rule bridge firewall zones counter meta br_vlan_proto 0x8100
 
-To accept duplicate fragments again, handle them specially as soon as
-inet_frag_queue_insert() reports them. Return -EINPROGRESS which will
-translate to NF_STOLEN verdict, like any accepted fragment. However,
-such packets don't carry any new information and aren't queued, so we
-just drop them immediately.
-
-Fixes: a0d56cb911ca ("netfilter: ipv6: nf_defrag: fix leakage of unqueued fragments")
-Signed-off-by: Guillaume Nault <gnault@redhat.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
- net/ipv6/netfilter/nf_conntrack_reasm.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ include/uapi/linux/netfilter/nf_tables.h | 2 ++
+ net/netfilter/nft_meta.c                 | 9 +++++++++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/net/ipv6/netfilter/nf_conntrack_reasm.c b/net/ipv6/netfilter/nf_conntrack_reasm.c
-index e6114a6710e0..0b53d1907e4a 100644
---- a/net/ipv6/netfilter/nf_conntrack_reasm.c
-+++ b/net/ipv6/netfilter/nf_conntrack_reasm.c
-@@ -264,8 +264,14 @@ static int nf_ct_frag6_queue(struct frag_queue *fq, struct sk_buff *skb,
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index 8859535..0b18646 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -796,6 +796,7 @@ enum nft_exthdr_attributes {
+  * @NFT_META_IIFKIND: packet input interface kind name (dev->rtnl_link_ops->kind)
+  * @NFT_META_OIFKIND: packet output interface kind name (dev->rtnl_link_ops->kind)
+  * @NFT_META_BRI_PVID: packet input bridge port pvid
++ * @NFT_META_BRI_VLAN_PROTO: packet input bridge vlan proto
+  */
+ enum nft_meta_keys {
+ 	NFT_META_LEN,
+@@ -827,6 +828,7 @@ enum nft_meta_keys {
+ 	NFT_META_IIFKIND,
+ 	NFT_META_OIFKIND,
+ 	NFT_META_BRI_PVID,
++	NFT_META_BRI_VLAN_PROTO,
+ };
  
- 	prev = fq->q.fragments_tail;
- 	err = inet_frag_queue_insert(&fq->q, skb, offset, end);
--	if (err)
-+	if (err) {
-+		if (err == IPFRAG_DUP) {
-+			/* No error for duplicates, pretend they got queued. */
-+			kfree_skb(skb);
-+			return -EINPROGRESS;
+ /**
+diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
+index 4f8116d..e3adf6a 100644
+--- a/net/netfilter/nft_meta.c
++++ b/net/netfilter/nft_meta.c
+@@ -248,6 +248,14 @@ void nft_meta_get_eval(const struct nft_expr *expr,
+ 			return;
+ 		}
+ 		goto err;
++	case NFT_META_BRI_VLAN_PROTO:
++		if (in == NULL || (p = br_port_get_rtnl_rcu(in)) == NULL)
++			goto err;
++		if (br_opt_get(p->br, BROPT_VLAN_ENABLED)) {
++			nft_reg_store16(dest, p->br->vlan_proto);
++			return;
 +		}
- 		goto insert_error;
-+	}
- 
- 	if (dev)
- 		fq->iif = dev->ifindex;
-@@ -303,8 +309,6 @@ static int nf_ct_frag6_queue(struct frag_queue *fq, struct sk_buff *skb,
- 	return -EINPROGRESS;
- 
- insert_error:
--	if (err == IPFRAG_DUP)
--		goto err;
- 	inet_frag_kill(&fq->q);
- err:
- 	skb_dst_drop(skb);
++		goto err;
+ #endif
+ 	case NFT_META_IIFKIND:
+ 		if (in == NULL || in->rtnl_link_ops == NULL)
+@@ -376,6 +384,7 @@ static int nft_meta_get_init(const struct nft_ctx *ctx,
+ 		len = IFNAMSIZ;
+ 		break;
+ 	case NFT_META_BRI_PVID:
++	case NFT_META_BRI_VLAN_PROTO:
+ 		if (ctx->family != NFPROTO_BRIDGE)
+ 			return -EOPNOTSUPP;
+ 		len = sizeof(u16);
 -- 
-2.20.1
+1.8.3.1
 
