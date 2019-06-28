@@ -2,81 +2,153 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3FA5A4EC
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jun 2019 21:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C115A584
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jun 2019 21:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbfF1TMN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 28 Jun 2019 15:12:13 -0400
-Received: from smtp-out.kfki.hu ([148.6.0.48]:57753 "EHLO smtp-out.kfki.hu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726565AbfF1TMN (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 28 Jun 2019 15:12:13 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.kfki.hu (Postfix) with ESMTP id 028F5CC00FA;
-        Fri, 28 Jun 2019 21:12:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:user-agent:references
-        :message-id:in-reply-to:from:from:date:date:received:received
-        :received; s=20151130; t=1561749126; x=1563563527; bh=PYw/VKHLk2
-        YKkn9vKpXsKg+6NQ8EB5iCN0C4nF3A8N0=; b=i42UUsJtUawy0DyIZorBIpMsp2
-        iu0NjnETH02nl1Axf0s73ZeIMV5yMZbnetrD7Mk0vrQRWRkJnNMUE9FnpBvxmp0J
-        bHuFeQlfJ7dsK9+/t/UipPF0V92fd9BMCZObjXfdHMNZASTaRHi+NLy8Rac0ehvR
-        NqdxhwUUsaWl/cHHE=
-X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
-        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Fri, 28 Jun 2019 21:12:06 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-        by smtp2.kfki.hu (Postfix) with ESMTP id CDFB4CC00F9;
-        Fri, 28 Jun 2019 21:12:05 +0200 (CEST)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id A67602062A; Fri, 28 Jun 2019 21:12:05 +0200 (CEST)
-Date:   Fri, 28 Jun 2019 21:12:05 +0200 (CEST)
-From:   Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-To:     Stefano Brivio <sbrivio@redhat.com>
-cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Chen Yi <yiche@redhat.com>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH 0/2] ipset: Two fixes for destination MAC address matches
- in ip,mac types
-In-Reply-To: <cover.1561381646.git.sbrivio@redhat.com>
-Message-ID: <alpine.DEB.2.20.1906282109420.21094@blackhole.kfki.hu>
-References: <cover.1561381646.git.sbrivio@redhat.com>
-User-Agent: Alpine 2.20 (DEB 67 2015-01-07)
+        id S1726819AbfF1T6E (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 28 Jun 2019 15:58:04 -0400
+Received: from mail-yw1-f65.google.com ([209.85.161.65]:39922 "EHLO
+        mail-yw1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726762AbfF1T6D (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 28 Jun 2019 15:58:03 -0400
+Received: by mail-yw1-f65.google.com with SMTP id u134so4663295ywf.6
+        for <netfilter-devel@vger.kernel.org>; Fri, 28 Jun 2019 12:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JnkachwQP0cyQ9JdMbTUnW5qndJ/fTXRxpRomw9WY6k=;
+        b=vVLyvukrpuQtbZdzKfeFDmHdS8rq0f9WdO6YO1eZI6sLIUF996To1rdL8/7+axITIy
+         85yp8tjhuqeC8aQG5v6WRyAA6OCt/OvXJzXuB3erg1B1/6I/VhC97S1snroCo/cGfDMP
+         uVp7k4O91vtcWDPfd0EgxARsjrcpaEz0vxiRw/U3zJGyqOMaKnEbJrlYwP0YHPX11owd
+         ydc6SDTxO8stFGHPET1XRyuFJtUOZ/g0botEElyakKaPs0TwZwUnhxua9Brg/C7XrXzK
+         Tzz95CL2xg4AohWS6sDOA/H16jSdpmsb38czV9xkwcdD72qnaCznSjjlKboOu3AVh9Qv
+         0LPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JnkachwQP0cyQ9JdMbTUnW5qndJ/fTXRxpRomw9WY6k=;
+        b=NE9J3FoR8a/dRWw8FYYYFtTHFpWwU2HIFQ1sMDVNVgTXDVq5Cu6yHmIDJiXQkFAd7o
+         5FH7L18u6YrxMPRYSsqU56uZ4tpMqlCm0VRpcMa9iQbYetoqGkAu+kSCAiJihNLKwoQM
+         8dph81tkBrNJJBMPQoiHWNz7KS7wcqY0A16jAUjk1UEKak1h9KKrJ65W8ygJ0DNC5Wla
+         nU0MlPF6CjeLDDUU1xgFCt+p3mELKv/tqbaJW2NbtooYt8AXGo+LKIsfPLEDf1b4xt9L
+         P9SWpOBDpsLRIVyQ/mS2Xg7G9zsB/p/1V92hsRu2377FDYAxu0H5W0qlAkIDoZxsXQqO
+         rltQ==
+X-Gm-Message-State: APjAAAWWId1ciKTZZY6KYZ8fpuBo3nNoiSovLvkrc1y446tGgwOabo4u
+        w1UUY9JFK5QHbGXqezVQJr/lUsjZijQ=
+X-Google-Smtp-Source: APXvYqxAkwc4Ve4zO1Le8ow+GIFyqjbEKmANIBNx9jsthvKpc2e9FaG9rs21GLmXeHF5DgKNZVnmhw==
+X-Received: by 2002:a81:de09:: with SMTP id k9mr7659851ywj.58.1561751882473;
+        Fri, 28 Jun 2019 12:58:02 -0700 (PDT)
+Received: from mail-yw1-f44.google.com (mail-yw1-f44.google.com. [209.85.161.44])
+        by smtp.gmail.com with ESMTPSA id p64sm697271ywh.34.2019.06.28.12.58.02
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Fri, 28 Jun 2019 12:58:02 -0700 (PDT)
+Received: by mail-yw1-f44.google.com with SMTP id j190so3812895ywb.0
+        for <netfilter-devel@vger.kernel.org>; Fri, 28 Jun 2019 12:58:02 -0700 (PDT)
+X-Received: by 2002:a81:4807:: with SMTP id v7mr6063772ywa.494.1561751494211;
+ Fri, 28 Jun 2019 12:51:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20190628123819.2785504-1-arnd@arndb.de> <20190628123819.2785504-4-arnd@arndb.de>
+In-Reply-To: <20190628123819.2785504-4-arnd@arndb.de>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 28 Jun 2019 15:50:57 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSexLuu8e1XHaY0ObGi46CgZnBpELecBr+kMgCU29Fa_gw@mail.gmail.com>
+Message-ID: <CA+FuTSexLuu8e1XHaY0ObGi46CgZnBpELecBr+kMgCU29Fa_gw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] ipvs: reduce kernel stack usage
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Wensong Zhang <wensong@linux-vs.org>,
+        Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        James Morris <jmorris@namei.org>, linux-scsi@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devel@driverdev.osuosl.org,
+        Network Development <netdev@vger.kernel.org>,
+        lvs-devel@vger.kernel.org,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org, Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Stefano,
+On Fri, Jun 28, 2019 at 8:40 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> With the new CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL option, the stack
+> usage in the ipvs debug output grows because each instance of
+> IP_VS_DBG_BUF() now has its own buffer of 160 bytes that add up
+> rather than reusing the stack slots:
+>
+> net/netfilter/ipvs/ip_vs_core.c: In function 'ip_vs_sched_persist':
+> net/netfilter/ipvs/ip_vs_core.c:427:1: error: the frame size of 1052 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+> net/netfilter/ipvs/ip_vs_core.c: In function 'ip_vs_new_conn_out':
+> net/netfilter/ipvs/ip_vs_core.c:1231:1: error: the frame size of 1048 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+> net/netfilter/ipvs/ip_vs_ftp.c: In function 'ip_vs_ftp_out':
+> net/netfilter/ipvs/ip_vs_ftp.c:397:1: error: the frame size of 1104 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+> net/netfilter/ipvs/ip_vs_ftp.c: In function 'ip_vs_ftp_in':
+> net/netfilter/ipvs/ip_vs_ftp.c:555:1: error: the frame size of 1200 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+>
+> Since printk() already has a way to print IPv4/IPv6 addresses using
+> the %pIS format string, use that instead,
 
-On Mon, 24 Jun 2019, Stefano Brivio wrote:
+since these are sockaddr_in and sockaddr_in6, should that have the 'n'
+specifier to denote network byteorder?
 
-> Commit 8cc4ccf58379 ("ipset: Allow matching on destination MAC address for
-> mac and ipmac sets"), ipset.git commit 1543514c46a7, properly allows
-> destination matching for hash:mac set types, but missed to remove the
-> previous restriction for type hash:ip,mac and introduced an obvious mistake
-> in both bitmap:ip,mac and hash:ip,mac.
-> 
-> Drop the left-over check and correct the mistake, to fix the issue reported
-> by Chen Yi.
-> 
-> Stefano Brivio (2):
->   ipset: Actually allow destination MAC address for hash:ip,mac sets too
->   ipset: Copy the right MAC address in bitmap:ip,mac and hash:ip,mac
->     sets
-> 
->  kernel/net/netfilter/ipset/ip_set_bitmap_ipmac.c | 2 +-
->  kernel/net/netfilter/ipset/ip_set_hash_ipmac.c   | 6 +-----
->  2 files changed, 2 insertions(+), 6 deletions(-)
+> combined with a macro that
+> creates a local sockaddr structure on the stack. These will still
+> add up, but the stack frames are now under 200 bytes.
 
-Both patches are applied, thanks!
+would it make sense to just define a helper function that takes const
+char * level and msg strings and up to three struct nf_inet_addr* and
+do the conversion in there? No need for macros and no state on the
+stack outside error paths at all.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> I'm not sure this actually does what I think it does. Someone
+> needs to verify that we correctly print the addresses here.
+> I've also only added three files that caused the warning messages
+> to be reported. There are still a lot of other instances of
+> IP_VS_DBG_BUF() that could be converted the same way after the
+> basic idea is confirmed.
+> ---
+>  include/net/ip_vs.h             | 71 +++++++++++++++++++--------------
+>  net/netfilter/ipvs/ip_vs_core.c | 44 ++++++++++----------
+>  net/netfilter/ipvs/ip_vs_ftp.c  | 20 +++++-----
+>  3 files changed, 72 insertions(+), 63 deletions(-)
+>
+> diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+> index 3759167f91f5..3dfbeef67be6 100644
+> --- a/include/net/ip_vs.h
+> +++ b/include/net/ip_vs.h
+> @@ -227,6 +227,16 @@ static inline const char *ip_vs_dbg_addr(int af, char *buf, size_t buf_len,
+>                        sizeof(ip_vs_dbg_buf), addr,                     \
+>                        &ip_vs_dbg_idx)
+>
+> +#define IP_VS_DBG_SOCKADDR4(fam, addr, port)                           \
+> +       (struct sockaddr*)&(struct sockaddr_in)                         \
+> +       { .sin_family = (fam), .sin_addr = (addr)->in, .sin_port = (port) }
+
+might as well set .sin_family = AF_INET here and AF_INET6 below?
+
+> +#define IP_VS_DBG_SOCKADDR6(fam, addr, port)                           \
+> +       (struct sockaddr*)&(struct sockaddr_in6) \
+> +       { .sin6_family = (fam), .sin6_addr = (addr)->in6, .sin6_port = (port) }
