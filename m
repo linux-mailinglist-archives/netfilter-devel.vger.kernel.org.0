@@ -2,74 +2,93 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D3B59471
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jun 2019 08:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCAF59483
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jun 2019 08:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727296AbfF1Gx2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 28 Jun 2019 02:53:28 -0400
-Received: from fnsib-smtp05.srv.cat ([46.16.61.54]:56494 "EHLO
-        fnsib-smtp05.srv.cat" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727298AbfF1Gx0 (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 28 Jun 2019 02:53:26 -0400
-Received: from bubu.das-nano.com (242.red-83-48-67.staticip.rima-tde.net [83.48.67.242])
-        by fnsib-smtp05.srv.cat (Postfix) with ESMTPSA id 0BE931EF1BF
-        for <netfilter-devel@vger.kernel.org>; Fri, 28 Jun 2019 08:53:23 +0200 (CEST)
-From:   Ander Juaristi <a@juaristi.eus>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH v3 4/4] tests/py: More tests for day and hour
-Date:   Fri, 28 Jun 2019 08:53:19 +0200
-Message-Id: <20190628065319.15834-4-a@juaristi.eus>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190628065319.15834-1-a@juaristi.eus>
-References: <20190628065319.15834-1-a@juaristi.eus>
+        id S1727217AbfF1G7v (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 28 Jun 2019 02:59:51 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:51076 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726574AbfF1G7v (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 28 Jun 2019 02:59:51 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 54038D01547FC815F27D;
+        Fri, 28 Jun 2019 14:59:48 +0800 (CST)
+Received: from huawei.com (10.175.100.202) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Fri, 28 Jun 2019
+ 14:59:41 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <pablo@netfilter.org>, <kadlec@blackhole.kfki.hu>, <fw@strlen.de>,
+        <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
+        <yoshfuji@linux-ipv6.org>, <netfilter-devel@vger.kernel.org>,
+        <coreteam@netfilter.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linmiaohe@huawei.com>, <mingfangsen@huawei.com>
+Subject: [PATCH v4] net: netfilter: Fix rpfilter dropping vrf packets by mistake
+Date:   Fri, 28 Jun 2019 09:06:43 +0000
+Message-ID: <1561712803-195184-1-git-send-email-linmiaohe@huawei.com>
+X-Mailer: git-send-email 1.8.3.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.100.202]
+X-CFilter-Loop: Reflected
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Ander Juaristi <a@juaristi.eus>
----
- tests/py/ip/meta.t         |  2 ++
- tests/py/ip/meta.t.payload | 12 ++++++++++++
- 2 files changed, 14 insertions(+)
+When firewalld is enabled with ipv4/ipv6 rpfilter, vrf
+ipv4/ipv6 packets will be dropped. Vrf device will pass
+through netfilter hook twice. One with enslaved device
+and another one with l3 master device. So in device may
+dismatch witch out device because out device is always
+enslaved device.So failed with the check of the rpfilter
+and drop the packets by mistake.
 
-diff --git a/tests/py/ip/meta.t b/tests/py/ip/meta.t
-index 02ba11d..dbcff48 100644
---- a/tests/py/ip/meta.t
-+++ b/tests/py/ip/meta.t
-@@ -5,6 +5,8 @@
- icmp type echo-request;ok
- meta day "Saturday" drop;ok;meta day "Saturday" drop
- meta hour "17:00" drop;ok;meta hour "17:00" drop
-+meta hour "00:00" drop;ok
-+meta hour "00:01" drop;ok
- meta l4proto icmp icmp type echo-request;ok;icmp type echo-request
- meta l4proto ipv6-icmp icmpv6 type nd-router-advert;ok;icmpv6 type nd-router-advert
- meta l4proto 58 icmpv6 type nd-router-advert;ok;icmpv6 type nd-router-advert
-diff --git a/tests/py/ip/meta.t.payload b/tests/py/ip/meta.t.payload
-index ad00a1a..be162cf 100644
---- a/tests/py/ip/meta.t.payload
-+++ b/tests/py/ip/meta.t.payload
-@@ -10,6 +10,18 @@ ip test-ip4 input
-   [ cmp eq reg 1 0x0000d2f0 0x00000000 ]
-   [ immediate reg 0 drop ]
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ net/ipv4/netfilter/ipt_rpfilter.c  | 1 +
+ net/ipv6/netfilter/ip6t_rpfilter.c | 8 +++++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/net/ipv4/netfilter/ipt_rpfilter.c b/net/ipv4/netfilter/ipt_rpfilter.c
+index 59031670b16a..cc23f1ce239c 100644
+--- a/net/ipv4/netfilter/ipt_rpfilter.c
++++ b/net/ipv4/netfilter/ipt_rpfilter.c
+@@ -78,6 +78,7 @@ static bool rpfilter_mt(const struct sk_buff *skb, struct xt_action_param *par)
+ 	flow.flowi4_mark = info->flags & XT_RPFILTER_VALID_MARK ? skb->mark : 0;
+ 	flow.flowi4_tos = RT_TOS(iph->tos);
+ 	flow.flowi4_scope = RT_SCOPE_UNIVERSE;
++	flow.flowi4_oif = l3mdev_master_ifindex_rcu(xt_in(par));
  
-+# meta hour "00:00" drop
-+ip meta-test input
-+  [ meta load unknown => reg 1 ]
-+  [ cmp eq reg 1 0x00013560 0x00000000 ]
-+  [ immediate reg 0 drop ]
-+
-+# meta hour "00:01" drop
-+ip meta-test input
-+  [ meta load unknown => reg 1 ]
-+  [ cmp eq reg 1 0x0001359c 0x00000000 ]
-+  [ immediate reg 0 drop ]
-+
- # icmp type echo-request
- ip test-ip4 input
-   [ meta load l4proto => reg 1 ]
+ 	return rpfilter_lookup_reverse(xt_net(par), &flow, xt_in(par), info->flags) ^ invert;
+ }
+diff --git a/net/ipv6/netfilter/ip6t_rpfilter.c b/net/ipv6/netfilter/ip6t_rpfilter.c
+index 6bcaf7357183..3c4a1772c15f 100644
+--- a/net/ipv6/netfilter/ip6t_rpfilter.c
++++ b/net/ipv6/netfilter/ip6t_rpfilter.c
+@@ -55,6 +55,10 @@ static bool rpfilter_lookup_reverse6(struct net *net, const struct sk_buff *skb,
+ 	if (rpfilter_addr_linklocal(&iph->saddr)) {
+ 		lookup_flags |= RT6_LOOKUP_F_IFACE;
+ 		fl6.flowi6_oif = dev->ifindex;
++	/* Set flowi6_oif for vrf devices to lookup route in l3mdev domain. */
++	} else if (netif_is_l3_master(dev) || netif_is_l3_slave(dev)) {
++		lookup_flags |= FLOWI_FLAG_SKIP_NH_OIF;
++		fl6.flowi6_oif = dev->ifindex;
+ 	} else if ((flags & XT_RPFILTER_LOOSE) == 0)
+ 		fl6.flowi6_oif = dev->ifindex;
+ 
+@@ -70,7 +74,9 @@ static bool rpfilter_lookup_reverse6(struct net *net, const struct sk_buff *skb,
+ 		goto out;
+ 	}
+ 
+-	if (rt->rt6i_idev->dev == dev || (flags & XT_RPFILTER_LOOSE))
++	if (rt->rt6i_idev->dev == dev ||
++	    l3mdev_master_ifindex_rcu(rt->rt6i_idev->dev) == dev->ifindex ||
++	    (flags & XT_RPFILTER_LOOSE))
+ 		ret = true;
+  out:
+ 	ip6_rt_put(rt);
 -- 
-2.17.1
+2.21.GIT
 
