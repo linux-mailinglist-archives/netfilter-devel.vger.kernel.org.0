@@ -2,119 +2,565 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 061155C3AF
-	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Jul 2019 21:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C4D5C436
+	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Jul 2019 22:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbfGATeb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 1 Jul 2019 15:34:31 -0400
-Received: from ja.ssi.bg ([178.16.129.10]:36606 "EHLO ja.ssi.bg"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726442AbfGATeb (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 1 Jul 2019 15:34:31 -0400
-Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id x61JYNWm005403;
-        Mon, 1 Jul 2019 22:34:23 +0300
-Received: (from root@localhost)
-        by ja.home.ssi.bg (8.15.2/8.15.2/Submit) id x61JYN3b005402;
-        Mon, 1 Jul 2019 22:34:23 +0300
-From:   Julian Anastasov <ja@ssi.bg>
-To:     Simon Horman <horms@verge.net.au>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org,
-        Vadim Fedorenko <vfedorenko@yandex-team.ru>
-Subject: [PATCH net-next] ipvs: strip gre tunnel headers from icmp errors
-Date:   Mon,  1 Jul 2019 22:34:15 +0300
-Message-Id: <20190701193415.5366-1-ja@ssi.bg>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726642AbfGAUQ6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 1 Jul 2019 16:16:58 -0400
+Received: from fnsib-smtp06.srv.cat ([46.16.61.61]:57128 "EHLO
+        fnsib-smtp06.srv.cat" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726586AbfGAUQ6 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 1 Jul 2019 16:16:58 -0400
+Received: from localhost.localdomain (unknown [47.62.206.189])
+        by fnsib-smtp06.srv.cat (Postfix) with ESMTPSA id C762ED9B11
+        for <netfilter-devel@vger.kernel.org>; Mon,  1 Jul 2019 22:16:51 +0200 (CEST)
+From:   Ander Juaristi <a@juaristi.eus>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH v4 1/4] meta: Introduce new conditions 'time', 'day' and 'hour'
+Date:   Mon,  1 Jul 2019 22:16:43 +0200
+Message-Id: <20190701201646.7040-1-a@juaristi.eus>
+X-Mailer: git-send-email 2.17.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Recognize GRE tunnels in received ICMP errors and
-properly strip the tunnel headers.
+These keywords introduce new checks for a timestamp, an absolute date (which is converted to a timestamp),
+an hour in the day (which is converted to the number of seconds since midnight) and a day of week.
 
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
+When converting an ISO date (eg. 2019-06-06 17:00) to a timestamp,
+we need to substract it the GMT difference in seconds, that is, the value
+of the 'tm_gmtoff' field in the tm structure. This is because the kernel
+doesn't know about time zones. And hence the kernel manages different timestamps
+than those that are advertised in userspace when running, for instance, date +%s.
+
+The same conversion needs to be done when converting hours (e.g 17:00) to seconds since midnight
+as well.
+
+The result needs to be computed module 86400 in case GMT offset (difference in seconds from UTC)
+is negative.
+
+We also introduce a new command line option (-t, --seconds) to show the actual
+timestamps when printing the values, rather than the ISO dates, or the hour.
+
+Some usage examples:
+
+	time < "2019-06-06 17:00" drop;
+	time < "2019-06-06 17:20:20" drop;
+	time < 12341234 drop;
+	day "Sat" drop;
+	day 6 drop;
+	hour >= 17:00 drop;
+	hour >= "17:00:01" drop;
+	hour >= 63000 drop;
+
+Signed-off-by: Ander Juaristi <a@juaristi.eus>
 ---
- net/netfilter/ipvs/ip_vs_core.c | 45 ++++++++++++++++++++++++++++++---
- 1 file changed, 41 insertions(+), 4 deletions(-)
+ include/datatype.h                  |   3 +
+ include/linux/netfilter/nf_tables.h |   6 +
+ include/meta.h                      |   3 +
+ include/nftables.h                  |   5 +
+ include/nftables/libnftables.h      |   1 +
+ src/datatype.c                      |   3 +
+ src/main.c                          |  11 +-
+ src/meta.c                          | 292 ++++++++++++++++++++++++++++
+ src/parser_bison.y                  |   4 +
+ src/scanner.l                       |   4 +-
+ 10 files changed, 330 insertions(+), 2 deletions(-)
 
- This patch is based on:
- "[PATCH v3] ipvs: allow tunneling with gre encapsulation"
-
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index e8651fd621ef..c2c51bdb889d 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -1610,6 +1610,38 @@ static int ipvs_udp_decap(struct netns_ipvs *ipvs, struct sk_buff *skb,
- 	return 0;
+diff --git a/include/datatype.h b/include/datatype.h
+index 63617eb..1f46eb0 100644
+--- a/include/datatype.h
++++ b/include/datatype.h
+@@ -90,6 +90,9 @@ enum datatypes {
+ 	TYPE_CT_EVENTBIT,
+ 	TYPE_IFNAME,
+ 	TYPE_IGMP_TYPE,
++	TYPE_TIME_DATE,
++	TYPE_TIME_HOUR,
++	TYPE_TIME_DAY,
+ 	__TYPE_MAX
+ };
+ #define TYPE_MAX		(__TYPE_MAX - 1)
+diff --git a/include/linux/netfilter/nf_tables.h b/include/linux/netfilter/nf_tables.h
+index 7bdb234..ce621ed 100644
+--- a/include/linux/netfilter/nf_tables.h
++++ b/include/linux/netfilter/nf_tables.h
+@@ -793,6 +793,9 @@ enum nft_exthdr_attributes {
+  * @NFT_META_SECPATH: boolean, secpath_exists (!!skb->sp)
+  * @NFT_META_IIFKIND: packet input interface kind name (dev->rtnl_link_ops->kind)
+  * @NFT_META_OIFKIND: packet output interface kind name (dev->rtnl_link_ops->kind)
++ * @NFT_META_TIME: a UNIX timestamp
++ * @NFT_META_TIME_DAY: day of week
++ * @NFT_META_TIME_HOUR: hour of day
+  */
+ enum nft_meta_keys {
+ 	NFT_META_LEN,
+@@ -823,6 +826,9 @@ enum nft_meta_keys {
+ 	NFT_META_SECPATH,
+ 	NFT_META_IIFKIND,
+ 	NFT_META_OIFKIND,
++	NFT_META_TIME,
++	NFT_META_TIME_DAY,
++	NFT_META_TIME_HOUR,
+ };
+ 
+ /**
+diff --git a/include/meta.h b/include/meta.h
+index a49b4ff..a62a130 100644
+--- a/include/meta.h
++++ b/include/meta.h
+@@ -41,6 +41,9 @@ extern const struct datatype uid_type;
+ extern const struct datatype devgroup_type;
+ extern const struct datatype pkttype_type;
+ extern const struct datatype ifname_type;
++extern const struct datatype date_type;
++extern const struct datatype hour_type;
++extern const struct datatype day_type;
+ 
+ extern struct symbol_table *devgroup_tbl;
+ 
+diff --git a/include/nftables.h b/include/nftables.h
+index ed446e2..52aff12 100644
+--- a/include/nftables.h
++++ b/include/nftables.h
+@@ -62,6 +62,11 @@ static inline bool nft_output_guid(const struct output_ctx *octx)
+ 	return octx->flags & NFT_CTX_OUTPUT_GUID;
  }
  
-+/* Check the GRE tunnel and return its header length */
-+static int ipvs_gre_decap(struct netns_ipvs *ipvs, struct sk_buff *skb,
-+			  unsigned int offset, __u16 af,
-+			  const union nf_inet_addr *daddr, __u8 *proto)
++static inline bool nft_output_seconds(const struct output_ctx *octx)
 +{
-+	struct gre_base_hdr _greh, *greh;
-+	struct ip_vs_dest *dest;
-+
-+	greh = skb_header_pointer(skb, offset, sizeof(_greh), &_greh);
-+	if (!greh)
-+		goto unk;
-+	dest = ip_vs_find_tunnel(ipvs, af, daddr, 0);
-+	if (!dest)
-+		goto unk;
-+	if (dest->tun_type == IP_VS_CONN_F_TUNNEL_TYPE_GRE) {
-+		__be16 type;
-+
-+		/* Only support version 0 and C (csum) */
-+		if ((greh->flags & ~GRE_CSUM) != 0)
-+			goto unk;
-+		type = greh->protocol;
-+		/* Later we can support also IPPROTO_IPV6 */
-+		if (type != htons(ETH_P_IP))
-+			goto unk;
-+		*proto = IPPROTO_IPIP;
-+		return gre_calc_hlen(gre_flags_to_tnl_flags(greh->flags));
-+	}
-+
-+unk:
-+	return 0;
++	return octx->flags & NFT_CTX_OUTPUT_SECONDS;
 +}
 +
- /*
-  *	Handle ICMP messages in the outside-to-inside direction (incoming).
-  *	Find any that might be relevant, check against existing connections,
-@@ -1689,7 +1721,8 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
- 		if (cih == NULL)
- 			return NF_ACCEPT; /* The packet looks wrong, ignore */
- 		ipip = true;
--	} else if (cih->protocol == IPPROTO_UDP &&	/* Can be UDP encap */
-+	} else if ((cih->protocol == IPPROTO_UDP ||	/* Can be UDP encap */
-+		    cih->protocol == IPPROTO_GRE) &&	/* Can be GRE encap */
- 		   /* Error for our tunnel must arrive at LOCAL_IN */
- 		   (skb_rtable(skb)->rt_flags & RTCF_LOCAL)) {
- 		__u8 iproto;
-@@ -1699,10 +1732,14 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
- 		if (unlikely(cih->frag_off & htons(IP_OFFSET)))
- 			return NF_ACCEPT;
- 		offset2 = offset + cih->ihl * 4;
--		ulen = ipvs_udp_decap(ipvs, skb, offset2, AF_INET, raddr,
--				      &iproto);
-+		if (cih->protocol == IPPROTO_UDP)
-+			ulen = ipvs_udp_decap(ipvs, skb, offset2, AF_INET,
-+					      raddr, &iproto);
+ static inline bool nft_output_numeric_proto(const struct output_ctx *octx)
+ {
+ 	return octx->flags & NFT_CTX_OUTPUT_NUMERIC_PROTO;
+diff --git a/include/nftables/libnftables.h b/include/nftables/libnftables.h
+index e39c588..87d4ff5 100644
+--- a/include/nftables/libnftables.h
++++ b/include/nftables/libnftables.h
+@@ -52,6 +52,7 @@ enum {
+ 	NFT_CTX_OUTPUT_NUMERIC_PROTO	= (1 << 7),
+ 	NFT_CTX_OUTPUT_NUMERIC_PRIO     = (1 << 8),
+ 	NFT_CTX_OUTPUT_NUMERIC_SYMBOL	= (1 << 9),
++	NFT_CTX_OUTPUT_SECONDS          = (1 << 10),
+ 	NFT_CTX_OUTPUT_NUMERIC_ALL	= (NFT_CTX_OUTPUT_NUMERIC_PROTO |
+ 					   NFT_CTX_OUTPUT_NUMERIC_PRIO |
+ 					   NFT_CTX_OUTPUT_NUMERIC_SYMBOL),
+diff --git a/src/datatype.c b/src/datatype.c
+index 6d6826e..0a00535 100644
+--- a/src/datatype.c
++++ b/src/datatype.c
+@@ -71,6 +71,9 @@ static const struct datatype *datatypes[TYPE_MAX + 1] = {
+ 	[TYPE_BOOLEAN]		= &boolean_type,
+ 	[TYPE_IFNAME]		= &ifname_type,
+ 	[TYPE_IGMP_TYPE]	= &igmp_type_type,
++	[TYPE_TIME_DATE]	= &date_type,
++	[TYPE_TIME_HOUR]	= &hour_type,
++	[TYPE_TIME_DAY]		= &day_type,
+ };
+ 
+ const struct datatype *datatype_lookup(enum datatypes type)
+diff --git a/src/main.c b/src/main.c
+index 9a50f30..dc8ad91 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -43,8 +43,9 @@ enum opt_vals {
+ 	OPT_NUMERIC_PRIO	= 'y',
+ 	OPT_NUMERIC_PROTO	= 'p',
+ 	OPT_INVALID		= '?',
++	OPT_SECONDS		= 't',
+ };
+-#define OPTSTRING	"hvcf:iI:jvnsNaeSupyp"
++#define OPTSTRING	"hvcf:iI:jvnsNaeSupypt"
+ 
+ static const struct option options[] = {
+ 	{
+@@ -114,6 +115,10 @@ static const struct option options[] = {
+ 		.name		= "numeric-priority",
+ 		.val		= OPT_NUMERIC_PRIO,
+ 	},
++	{
++		.name		= "seconds",
++		.val		= OPT_SECONDS,
++	},
+ 	{
+ 		.name		= NULL
+ 	}
+@@ -143,6 +148,7 @@ static void show_help(const char *name)
+ "  -a, --handle			Output rule handle.\n"
+ "  -e, --echo			Echo what has been added, inserted or replaced.\n"
+ "  -I, --includepath <directory>	Add <directory> to the paths searched for include files. Default is: %s\n"
++"  -t, --seconds                Show hour values in seconds since midnight.\n"
+ "  --debug <level [,level...]>	Specify debugging level (scanner, parser, eval, netlink, mnl, proto-ctx, segtree, all)\n"
+ "\n",
+ 	name, DEFAULT_INCLUDE_PATH);
+@@ -282,6 +288,9 @@ int main(int argc, char * const *argv)
+ 		case OPT_GUID:
+ 			output_flags |= NFT_CTX_OUTPUT_GUID;
+ 			break;
++		case OPT_SECONDS:
++			output_flags |= NFT_CTX_OUTPUT_SECONDS;
++			break;
+ 		case OPT_NUMERIC_PRIO:
+ 			output_flags |= NFT_CTX_OUTPUT_NUMERIC_PRIO;
+ 			break;
+diff --git a/src/meta.c b/src/meta.c
+index 1e8964e..41405f1 100644
+--- a/src/meta.c
++++ b/src/meta.c
+@@ -37,6 +37,10 @@
+ #include <iface.h>
+ #include <json.h>
+ 
++#define _XOPEN_SOURCE
++#define __USE_XOPEN
++#include <time.h>
++
+ static struct symbol_table *realm_tbl;
+ void realm_table_meta_init(void)
+ {
+@@ -383,6 +387,285 @@ const struct datatype ifname_type = {
+ 	.basetype	= &string_type,
+ };
+ 
++static void date_type_print(const struct expr *expr, struct output_ctx *octx)
++{
++	char timestr[21];
++	struct tm *tm;
++	uint64_t tstamp = mpz_get_uint64(expr->value);
++
++	if (!nft_output_seconds(octx)) {
++		if ((tm = localtime((time_t *) &tstamp)) == NULL ||
++			!strftime(timestr, sizeof(timestr) - 1, "%F %T", tm))
++			nft_print(octx, "Error converting timestamp to printed time");
++
++		nft_print(octx, "\"%s\"", timestr);
++		return;
++	}
++
++	expr_basetype(expr)->print(expr, octx);
++}
++
++static time_t parse_iso_date(const char *sym)
++{
++	time_t ts = time(NULL);
++	long int gmtoff;
++	struct tm tm, *cur_tm;
++
++	memset(&tm, 0, sizeof(struct tm));
++
++	/* Obtain current tm as well, so that we can substract tm_gmtoff */
++	cur_tm = localtime(&ts);
++
++	if (strptime(sym, "%F %T", &tm))
++		goto success;
++	if (strptime(sym, "%F %R", &tm))
++		goto success;
++	if (strptime(sym, "%F", &tm))
++		goto success;
++
++	return -1;
++
++success:
++	setenv("TZ", "UTC", true);
++	tzset();
++
++	ts = mktime(&tm);
++	if (ts == (time_t) -1 || cur_tm == NULL)
++		return ts;
++
++	/* Substract tm_gmtoff to get the current time */
++	gmtoff = cur_tm->tm_gmtoff;
++	if (cur_tm->tm_isdst == 1)
++		gmtoff -= 3600;
++	return ts - gmtoff;
++}
++
++static struct error_record *date_type_parse(const struct expr *sym,
++					    struct expr **res)
++{
++	time_t tstamp;
++	const char *endptr = sym->identifier;
++
++	if ((tstamp = parse_iso_date(sym->identifier)) != -1)
++		goto success;
++
++	tstamp = strtoul(sym->identifier, (char **) &endptr, 10);
++	if (*endptr == '\0' && endptr != sym->identifier)
++		goto success;
++
++	return error(&sym->location, "Cannot parse date");
++
++success:
++	*res = constant_expr_alloc(&sym->location, sym->dtype,
++				   BYTEORDER_HOST_ENDIAN,
++				   8 * BITS_PER_BYTE,
++				   &tstamp);
++	return NULL;
++}
++
++static void day_type_print(const struct expr *expr, struct output_ctx *octx)
++{
++	const char *days[] = {
++		"Sunday",
++		"Monday",
++		"Tuesday",
++		"Wednesday",
++		"Thursday",
++		"Friday",
++		"Saturday"
++	};
++	uint8_t daynum = mpz_get_uint8(expr->value),
++		 numdays = array_size(days);
++
++	if (daynum >= 0 && daynum < numdays)
++		nft_print(octx, "\"%s\"", days[daynum]);
++	else
++		nft_print(octx, "Unknown day");
++}
++
++static int parse_day_type_numeric(const char *sym)
++{
++	char c = *sym;
++	return (c >= '0' && c <= '6') ?
++		(c - '0') :
++		-1;
++}
++
++static struct error_record *day_type_parse(const struct expr *sym,
++					   struct expr **res)
++{
++	const char *days[] = {
++		"Sunday",
++		"Monday",
++		"Tuesday",
++		"Wednesday",
++		"Thursday",
++		"Friday",
++		"Saturday"
++	};
++	int daynum = -1, numdays = array_size(days);
++	int symlen = strlen(sym->identifier), daylen;
++
++	if (symlen < 3) {
++		if (symlen == 1)
++			daynum = parse_day_type_numeric(sym->identifier);
++
++		if (daynum >= 0)
++			goto success;
++
++		return error(&sym->location, "Day name must be at least three characters long");
++	}
++
++	for (int i = 0; i < numdays && daynum == -1; i++) {
++		daylen = strlen(days[i]);
++
++		if (strncasecmp(sym->identifier,
++				days[i],
++				min(symlen, daylen)) == 0)
++			daynum = i;
++	}
++
++	if (daynum == -1)
++		return error(&sym->location, "Cannot parse day");
++
++success:
++	*res = constant_expr_alloc(&sym->location, sym->dtype,
++				   BYTEORDER_HOST_ENDIAN,
++				   1 * BITS_PER_BYTE,
++				   &daynum);
++	return NULL;
++}
++
++static void __hour_type_print_r(int hours, int minutes, int seconds, char *out, size_t buflen)
++{
++	if (minutes == 60)
++		return __hour_type_print_r(++hours, 0, seconds, out, buflen);
++	else if (minutes > 60)
++		return __hour_type_print_r((int) (minutes / 60), minutes % 60, seconds, out, buflen);
++
++	if (seconds == 60)
++		return __hour_type_print_r(hours, ++minutes, 0, out, buflen);
++	else if (seconds > 60)
++		return __hour_type_print_r(hours, (int) (seconds / 60), seconds % 60, out, buflen);
++
++	if (seconds == 0)
++		snprintf(out, buflen, "%02d:%02d", hours, minutes);
++	else
++		snprintf(out, buflen, "%02d:%02d:%02d", hours, minutes, seconds);
++}
++
++static void hour_type_print(const struct expr *expr, struct output_ctx *octx)
++{
++	char out[9];
++	time_t ts;
++	struct tm *cur_tm;
++	uint64_t seconds = mpz_get_uint64(expr->value);
++
++	if (!nft_output_seconds(octx)) {
++		/* Obtain current tm, so that we can add tm_gmtoff */
++		ts = time(NULL);
++		cur_tm = localtime(&ts);
++
++		if (cur_tm)
++			seconds = (seconds + cur_tm->tm_gmtoff) % 86400;
++
++		__hour_type_print_r(0, 0, seconds, out, sizeof(out));
++		nft_print(octx, "\"%s\"", out);
++
++		return;
++	}
++
++	expr_basetype(expr)->print(expr, octx);
++}
++
++static struct error_record *hour_type_parse(const struct expr *sym,
++					    struct expr **res)
++{
++	time_t ts;
++	char *endptr;
++	struct tm tm, *cur_tm;
++	uint64_t result = 0;
++	struct error_record *er;
++
++	memset(&tm, 0, sizeof(struct tm));
++
++	/* First, try to parse it as a number */
++	result = strtoul(sym->identifier, (char **) &endptr, 10);
++	if (*endptr == '\0' && endptr != sym->identifier)
++		goto success;
++
++	result = 0;
++
++	/* Obtain current tm, so that we can substract tm_gmtoff */
++	ts = time(NULL);
++	cur_tm = localtime(&ts);
++
++	if (strptime(sym->identifier, "%T", &tm))
++		goto convert;
++	if (strptime(sym->identifier, "%R", &tm))
++		goto convert;
++
++	if ((er = time_parse(&sym->location, sym->identifier, &result)) == NULL) {
++		result /= 1000;
++		goto convert;
++	}
++
++	return er;
++
++convert:
++	/* Convert the hour to the number of seconds since midnight */
++	if (result == 0)
++		result = tm.tm_hour * 3600 + tm.tm_min * 60 + tm.tm_sec;
++
++	/* Substract tm_gmtoff to get the current time */
++	if (cur_tm) {
++		if ((long int) result >= cur_tm->tm_gmtoff)
++			result = (result - cur_tm->tm_gmtoff) % 86400;
 +		else
-+			ulen = ipvs_gre_decap(ipvs, skb, offset2, AF_INET,
-+					      raddr, &iproto);
- 		if (ulen > 0) {
--			/* Skip IP and UDP tunnel headers */
-+			/* Skip IP and UDP/GRE tunnel headers */
- 			offset = offset2 + ulen;
- 			/* Now we should be at the original IP header */
- 			cih = skb_header_pointer(skb, offset, sizeof(_ciph),
++			result = 86400 - cur_tm->tm_gmtoff + result;
++	}
++
++success:
++	*res = constant_expr_alloc(&sym->location, sym->dtype,
++				   BYTEORDER_HOST_ENDIAN,
++				   8 * BITS_PER_BYTE,
++				   &result);
++	return NULL;
++}
++
++const struct datatype date_type = {
++	.type = TYPE_TIME_DATE,
++	.name = "time",
++	.desc = "Relative time of packet reception",
++	.byteorder = BYTEORDER_HOST_ENDIAN,
++	.size = sizeof(uint64_t) * BITS_PER_BYTE,
++	.basetype = &integer_type,
++	.print = date_type_print,
++	.parse = date_type_parse,
++};
++
++const struct datatype day_type = {
++	.type = TYPE_TIME_DAY,
++	.name = "day",
++	.desc = "Day of week of packet reception",
++	.byteorder = BYTEORDER_HOST_ENDIAN,
++	.size = 1 * BITS_PER_BYTE,
++	.basetype = &integer_type,
++	.print = day_type_print,
++	.parse = day_type_parse,
++};
++
++const struct datatype hour_type = {
++	.type = TYPE_TIME_HOUR,
++	.name = "hour",
++	.desc = "Hour of day of packet reception",
++	.byteorder = BYTEORDER_HOST_ENDIAN,
++	.size = sizeof(uint64_t) * BITS_PER_BYTE,
++	.basetype = &integer_type,
++	.print = hour_type_print,
++	.parse = hour_type_parse,
++};
++
+ const struct meta_template meta_templates[] = {
+ 	[NFT_META_LEN]		= META_TEMPLATE("length",    &integer_type,
+ 						4 * 8, BYTEORDER_HOST_ENDIAN),
+@@ -450,6 +733,15 @@ const struct meta_template meta_templates[] = {
+ 	[NFT_META_OIFKIND]	= META_TEMPLATE("oifkind",   &ifname_type,
+ 						IFNAMSIZ * BITS_PER_BYTE,
+ 						BYTEORDER_HOST_ENDIAN),
++	[NFT_META_TIME]		= META_TEMPLATE("time",   &date_type,
++						8 * BITS_PER_BYTE,
++						BYTEORDER_HOST_ENDIAN),
++	[NFT_META_TIME_DAY]	= META_TEMPLATE("day", &day_type,
++						1 * BITS_PER_BYTE,
++						BYTEORDER_HOST_ENDIAN),
++	[NFT_META_TIME_HOUR]	= META_TEMPLATE("hour", &hour_type,
++						8 * BITS_PER_BYTE,
++						BYTEORDER_HOST_ENDIAN),
+ };
+ 
+ static bool meta_key_is_unqualified(enum nft_meta_keys key)
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index 670e91f..26b64da 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -415,6 +415,7 @@ int nft_lex(void *, void *, void *);
+ %token IIFGROUP			"iifgroup"
+ %token OIFGROUP			"oifgroup"
+ %token CGROUP			"cgroup"
++%token TIME			"time"
+ 
+ %token CLASSID			"classid"
+ %token NEXTHOP			"nexthop"
+@@ -3886,6 +3887,9 @@ meta_key_unqualified	:	MARK		{ $$ = NFT_META_MARK; }
+ 			|       OIFGROUP	{ $$ = NFT_META_OIFGROUP; }
+ 			|       CGROUP		{ $$ = NFT_META_CGROUP; }
+ 			|       IPSEC		{ $$ = NFT_META_SECPATH; }
++			|       TIME		{ $$ = NFT_META_TIME; }
++			|       DAY		{ $$ = NFT_META_TIME_DAY; }
++			|       HOUR		{ $$ = NFT_META_TIME_HOUR; }
+ 			;
+ 
+ meta_stmt		:	META	meta_key	SET	stmt_expr
+diff --git a/src/scanner.l b/src/scanner.l
+index d1f6e87..bd28141 100644
+--- a/src/scanner.l
++++ b/src/scanner.l
+@@ -411,7 +411,9 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "sack2"			{ return SACK2; }
+ "sack3"			{ return SACK3; }
+ "sack-permitted"	{ return SACK_PERMITTED; }
+-"timestamp"		{ return TIMESTAMP; }
++"time"			{ return TIME; }
++"day"			{ return DAY; }
++"hour"			{ return HOUR; }
+ 
+ "kind"			{ return KIND; }
+ "count"			{ return COUNT; }
 -- 
-2.21.0
+2.17.1
 
