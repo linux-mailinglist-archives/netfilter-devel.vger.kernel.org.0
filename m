@@ -2,116 +2,134 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47AAF5DEF6
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jul 2019 09:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B4B5E248
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jul 2019 12:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbfGCHgc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 Jul 2019 03:36:32 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45452 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726327AbfGCHgc (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 Jul 2019 03:36:32 -0400
-Received: from localhost ([::1]:58542 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1hiZob-0003Os-Nr; Wed, 03 Jul 2019 09:36:29 +0200
-From:   Phil Sutter <phil@nwl.cc>
+        id S1726486AbfGCKnm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Jul 2019 06:43:42 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:51152 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726434AbfGCKnl (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 3 Jul 2019 06:43:41 -0400
+Received: by mail-wm1-f65.google.com with SMTP id n9so1694832wmi.0
+        for <netfilter-devel@vger.kernel.org>; Wed, 03 Jul 2019 03:43:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UsJdfQ3kFOEpjq3npj0/cKJVQ/CAeYwFwNGHz+UuQEE=;
+        b=Mo7L+Un5qawi0Ud2xyzwa+vtDRNMAl2JlQnhTgT+jKVPdep728lSG1VOlDolRBR32z
+         o9CIihoj0ORs/0mlGJYg/eBM84SjBA5/FrNSdCsz0OUnqF6LjNVE6pi6Wp6uZGMYfGfN
+         kSSvZZxKVdNenN48LGfCgScJ3VzwuB3PcUGxCbUcCIjmv9B3I0yPJ7USlI1awB/+V6LQ
+         GDB3TN01fDA9cI4fmdidUm4LK3wmfhv6/fyIMcEpHGSdoSk9TnGAotu+eR36P1QOA6BG
+         J6vpj7PsTmBeGmrcJ2esm4S1fpF0KZ74ZGMNhEsGIfsP8pBQfZCvcLi26E2TEyFtwNP6
+         6tlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UsJdfQ3kFOEpjq3npj0/cKJVQ/CAeYwFwNGHz+UuQEE=;
+        b=E55ldzZkb3Lppw2GfCRrPy0ustVpSfwbS2ddJs2i/gcKdm9yjgDjxtcKEtJSC+ijFf
+         kgeFOCrtqG3eae24kO6UZLjs+fvGTQcM7z6DnrviZwFSwX8AFxXVPgdMDMZ7pTgyk8Wq
+         ilBpxEF/vKm+/entEZfvHwM50aR3a0N5oq6Bp6g2jsQtfYQW+jmObCZ/VL0MfxNAsIcD
+         wIo/RY+pvy6HTuucoRSnndrsBxuFA2+/RSLIiYFONdCsViWuBmludABB6C7M8+UoEnjN
+         gEE/dY8pCwyrdR0LAhubkvGSTiwrpwonFooCo27P7g0LqpJhhvP12uWPaINw1Z4od9vA
+         DWmg==
+X-Gm-Message-State: APjAAAVh3iTpdIuDFgJa8lrvdwnoqRiNMYZ7qyQNlWE9hqkX9hq3yT7J
+        f4qy32KWQvVa1J7mp0WqB3yqbw==
+X-Google-Smtp-Source: APXvYqyKM5q4kA/2N5Nl1bUVzdA5jHOFGeHjEnp+NM9nCJ5f+TRg/STP5PpMxj7IEA1K54O+G3CXGA==
+X-Received: by 2002:a1c:e356:: with SMTP id a83mr7928808wmh.38.1562150619486;
+        Wed, 03 Jul 2019 03:43:39 -0700 (PDT)
+Received: from localhost (ip-213-220-235-213.net.upcbroadband.cz. [213.220.235.213])
+        by smtp.gmail.com with ESMTPSA id l11sm1647582wrw.97.2019.07.03.03.43.38
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 03 Jul 2019 03:43:39 -0700 (PDT)
+Date:   Wed, 3 Jul 2019 12:43:38 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] nft: Move send/receive buffer sizes into nft_handle
-Date:   Wed,  3 Jul 2019 09:36:26 +0200
-Message-Id: <20190703073626.18915-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190703073626.18915-1-phil@nwl.cc>
-References: <20190703073626.18915-1-phil@nwl.cc>
+Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        davem@davemloft.net, thomas.lendacky@amd.com, f.fainelli@gmail.com,
+        ariel.elior@cavium.com, michael.chan@broadcom.com,
+        santosh@chelsio.com, madalin.bucur@nxp.com,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        jeffrey.t.kirsher@intel.com, tariqt@mellanox.com,
+        saeedm@mellanox.com, jiri@mellanox.com, idosch@mellanox.com,
+        jakub.kicinski@netronome.com, peppe.cavallaro@st.com,
+        grygorii.strashko@ti.com, andrew@lunn.ch,
+        vivien.didelot@savoirfairelinux.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, linux-net-drivers@solarflare.com,
+        ganeshgr@chelsio.com, ogerlitz@mellanox.com,
+        Manish.Chopra@cavium.com, marcelo.leitner@gmail.com,
+        mkubecek@suse.cz, venkatkumar.duvvuru@broadcom.com,
+        cphealy@gmail.com
+Subject: Re: [PATCH net-next 04/12] net: sched: add tcf_block_setup()
+Message-ID: <20190703104338.GV2250@nanopsycho>
+References: <20190620194917.2298-1-pablo@netfilter.org>
+ <20190620194917.2298-5-pablo@netfilter.org>
+ <20190621171603.GF2414@nanopsycho.orion>
+ <20190625083154.jfzhh22zsl3fu2ik@salvia>
+ <20190626121256.GA2424@nanopsycho>
+ <20190626131626.ihkjqvs2iciski2o@salvia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190626131626.ihkjqvs2iciski2o@salvia>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Store them next to the mnl_socket pointer. While being at it, add a
-comment to mnl_set_rcvbuffer() explaining why the buffer size is
-changed.
+Wed, Jun 26, 2019 at 03:16:26PM CEST, pablo@netfilter.org wrote:
+>On Wed, Jun 26, 2019 at 02:12:56PM +0200, Jiri Pirko wrote:
+>> Tue, Jun 25, 2019 at 10:31:54AM CEST, pablo@netfilter.org wrote:
+>> >On Fri, Jun 21, 2019 at 07:16:03PM +0200, Jiri Pirko wrote:
+>> >> Thu, Jun 20, 2019 at 09:49:09PM CEST, pablo@netfilter.org wrote:
+>> >> 
+>> >> [...]
+>> >> 
+>> >> > 
+>> >> >+static LIST_HEAD(tcf_block_cb_list);
+>> >> 
+>> >> I still don't like the global list. Have to go throught the code more
+>> >> carefully, but why you can't pass the priv/ctx from tc/netfilter. From
+>> >> tc it would be tcf_block as it is now, from netfilter something else.
+>> >
+>> >This tcf_block_cb_list should go away at some point, once drivers know
+>> >how to deal with multiple subsystems using the setup block
+>> >infrastructure. As I said in my previous email, only one can set up
+>> >the block at this stage, the ones coming later will hit busy.
+>> 
+>> The driver should know if it can bind or is busy. Also, the bind cmd
+>> should contain type of binder (tc/nft/whatever) or perhaps rather binder
+>> priority (according to the hook order in rx/tx).
+>
+>OK, so I see two possible paths then:
+>
+>#1 Add global list and allow one single subsystem to bind by now. Then
+>   later, in a follow up patchset. Add binder type and priority once
+>   there is a driver that can handle the three subsystems, remove
+>   this global list and each driver deals/knows what to do from the
+>   binder path.
+>
+>#2 Remove the global list now, each driver maintains a list of flow blocks
+>   internally, allow one single flow block by now. This will need a bit more
+>   code, since there will be code in the driver to maintain the list of
+>   existing flow blocks, per driver, instead of global. So it will be
+>   a per-driver global local to check if there is a flow block with
+>   this [ cb, cb_ident ] already in place.
+>
+>#1 is almost ready - it's this batch :-) -  then #2 may need more code -
+>this batch is slightly large.
+>
+>I understand though that path #2 may make it easier for the first
+>driver client allowing for the three subsystems to bind.
+>
+>Let me know what path your prefer.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/nft.c | 17 +++++++----------
- iptables/nft.h |  2 ++
- 2 files changed, 9 insertions(+), 10 deletions(-)
+I definitelly prefer #2. Thanks!
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 4a5280916e3b1..e927d1db2b426 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -186,13 +186,11 @@ static void mnl_err_list_free(struct mnl_err *err)
- 	free(err);
- }
- 
--static int nlbuffsiz;
--
- static void mnl_set_sndbuffer(struct nft_handle *h)
- {
- 	int newbuffsiz = nftnl_batch_iovec_len(h->batch) * BATCH_PAGE_SIZE;
- 
--	if (newbuffsiz <= nlbuffsiz)
-+	if (newbuffsiz <= h->nlsndbuffsiz)
- 		return;
- 
- 	/* Rise sender buffer length to avoid hitting -EMSGSIZE */
-@@ -200,23 +198,22 @@ static void mnl_set_sndbuffer(struct nft_handle *h)
- 		       &newbuffsiz, sizeof(socklen_t)) < 0)
- 		return;
- 
--	nlbuffsiz = newbuffsiz;
-+	h->nlsndbuffsiz = newbuffsiz;
- }
- 
--static int nlrcvbuffsiz;
--
- static void mnl_set_rcvbuffer(struct nft_handle *h, int numcmds)
- {
- 	int newbuffsiz = getpagesize() * numcmds;
- 
--	if (newbuffsiz <= nlrcvbuffsiz)
-+	if (newbuffsiz <= h->nlrcvbuffsiz)
- 		return;
- 
-+	/* Rise receiver buffer length to avoid hitting -ENOBUFS */
- 	if (setsockopt(mnl_socket_get_fd(h->nl), SOL_SOCKET, SO_RCVBUFFORCE,
- 		       &newbuffsiz, sizeof(socklen_t)) < 0)
- 		return;
- 
--	nlrcvbuffsiz = newbuffsiz;
-+	h->nlrcvbuffsiz = newbuffsiz;
- }
- 
- static ssize_t mnl_nft_socket_sendmsg(struct nft_handle *h, int numcmds)
-@@ -807,8 +804,8 @@ static int nft_restart(struct nft_handle *h)
- 		return -1;
- 
- 	h->portid = mnl_socket_get_portid(h->nl);
--	nlbuffsiz = 0;
--	nlrcvbuffsiz = 0;
-+	h->nlsndbuffsiz = 0;
-+	h->nlrcvbuffsiz = 0;
- 
- 	return 0;
- }
-diff --git a/iptables/nft.h b/iptables/nft.h
-index 43eb8a39dd9c1..dc1161840a38c 100644
---- a/iptables/nft.h
-+++ b/iptables/nft.h
-@@ -38,6 +38,8 @@ struct nft_cache {
- struct nft_handle {
- 	int			family;
- 	struct mnl_socket	*nl;
-+	int			nlsndbuffsiz;
-+	int			nlrcvbuffsiz;
- 	uint32_t		portid;
- 	uint32_t		seq;
- 	uint32_t		nft_genid;
--- 
-2.21.0
 
+>
+>Thanks for reviewing.
