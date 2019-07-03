@@ -2,53 +2,56 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E79F5E2EC
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jul 2019 13:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7A15E2FE
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jul 2019 13:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbfGCLjW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 Jul 2019 07:39:22 -0400
-Received: from mail.us.es ([193.147.175.20]:40090 "EHLO mail.us.es"
+        id S1725820AbfGCLlo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Jul 2019 07:41:44 -0400
+Received: from mail.us.es ([193.147.175.20]:41306 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727028AbfGCLjW (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 Jul 2019 07:39:22 -0400
+        id S1726628AbfGCLlo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 3 Jul 2019 07:41:44 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id A99FE81A08
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 Jul 2019 13:39:20 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 01DDE81A23
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 Jul 2019 13:41:42 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 9B5364CA35
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 Jul 2019 13:39:20 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id E768FCE158
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 Jul 2019 13:41:41 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 90BC4FB37C; Wed,  3 Jul 2019 13:39:20 +0200 (CEST)
+        id DB477DA4D0; Wed,  3 Jul 2019 13:41:41 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id A833E1021A9;
-        Wed,  3 Jul 2019 13:39:18 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id B4265DA704;
+        Wed,  3 Jul 2019 13:41:39 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 03 Jul 2019 13:39:18 +0200 (CEST)
+ Wed, 03 Jul 2019 13:41:39 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from us.es (sys.soleta.eu [212.170.55.40])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 7E0054265A2F;
-        Wed,  3 Jul 2019 13:39:18 +0200 (CEST)
-Date:   Wed, 3 Jul 2019 13:39:18 +0200
+        by entrada.int (Postfix) with ESMTPSA id 92F8F4265A2F;
+        Wed,  3 Jul 2019 13:41:39 +0200 (CEST)
+Date:   Wed, 3 Jul 2019 13:41:39 +0200
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf-next] netfilter: nf_queue: remove unused hook entries
- pointer
-Message-ID: <20190703113918.njz3vi7pos5cpg7k@salvia>
-References: <20190702184114.11670-1-fw@strlen.de>
+To:     wenxu@ucloud.cn
+Cc:     fw@strlen.de, netfilter-devel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 1/2 nf-next v3] netfilter: nft_meta: Add
+ NFT_META_BRI_IIFVPROTO support
+Message-ID: <20190703114139.53zy322d3pkcvjbv@salvia>
+References: <1561682975-21790-1-git-send-email-wenxu@ucloud.cn>
+ <20190702234629.zgjpu664dr6jgawc@salvia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190702184114.11670-1-fw@strlen.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190702234629.zgjpu664dr6jgawc@salvia>
 User-Agent: NeoMutt/20170113 (1.7.2)
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -56,7 +59,21 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Jul 02, 2019 at 08:41:14PM +0200, Florian Westphal wrote:
-> Its not used anywhere, so remove this.
+On Wed, Jul 03, 2019 at 01:46:29AM +0200, Pablo Neira Ayuso wrote:
+> On Fri, Jun 28, 2019 at 08:49:34AM +0800, wenxu@ucloud.cn wrote:
+> > From: wenxu <wenxu@ucloud.cn>
+> > 
+> > This patch provide a meta to get the bridge vlan proto
+> > 
+> > nft add rule bridge firewall zones counter meta br_vlan_proto 0x8100
+> 
+> Applied, thanks.
 
-Applied, thanks.
+Tossing this:
+
+net/netfilter/nft_meta.c: In function ‘nft_meta_get_eval’:
+net/netfilter/nft_meta.c:255:31: error: ‘struct net_bridge’ has no
+member named ‘vlan_proto’
+    nft_reg_store16(dest, p->br->vlan_proto);
+                               ^~
+
