@@ -2,34 +2,34 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C2E5F366
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2019 09:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B032F5F364
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2019 09:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727428AbfGDHWu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 4 Jul 2019 03:22:50 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:35177 "EHLO
+        id S1727436AbfGDHWo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 4 Jul 2019 03:22:44 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:35473 "EHLO
         m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbfGDHWt (ORCPT
+        with ESMTP id S1727445AbfGDHWn (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 4 Jul 2019 03:22:49 -0400
+        Thu, 4 Jul 2019 03:22:43 -0400
 Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 2B87341AED;
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 5B22441B1E;
         Thu,  4 Jul 2019 15:22:38 +0800 (CST)
 From:   wenxu@ucloud.cn
 To:     pablo@netfilter.org, nikolay@cumulusnetworks.com
 Cc:     netfilter-devel@vger.kernel.org, bridge@lists.linux-foundation.org
-Subject: [PATCH 5/7 nf-next] bridge: add br_vlan_get_proto()
-Date:   Thu,  4 Jul 2019 15:22:33 +0800
-Message-Id: <1562224955-3979-5-git-send-email-wenxu@ucloud.cn>
+Subject: [PATCH 6/7 nf-next] netfilter: nft_meta_bridge: Add NFT_META_BRI_IIFVPROTO support
+Date:   Thu,  4 Jul 2019 15:22:34 +0800
+Message-Id: <1562224955-3979-6-git-send-email-wenxu@ucloud.cn>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1562224955-3979-1-git-send-email-wenxu@ucloud.cn>
 References: <1562224955-3979-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSk1NQkJCQkhNSktIQ0lZV1koWU
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSElLQkJCQkxCQkxJQ09ZV1koWU
         FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NzI6CBw5KDg5Igk8QhMNPyJJ
-        Pg4aCwJVSlVKTk1JSUlPQk5DSE9NVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUlNQ0g3Bg++
-X-HM-Tid: 0a6bbbdd1b202086kuqy2b87341aed
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ODo6USo*Szg2NgkQHRMVPxku
+        PSIwCy9VSlVKTk1JSUlPQk5DT05OVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUlCSkg3Bg++
+X-HM-Tid: 0a6bbbdd1bbb2086kuqy5b22441b1e
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
@@ -37,59 +37,66 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: wenxu <wenxu@ucloud.cn>
 
-This new function allows you to fetch bridge vlan proto.
+This patch provide a meta to get the bridge vlan proto
+
+nft add rule bridge firewall zones counter meta br_vlan_proto 0x8100
 
 Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
- include/linux/if_bridge.h |  6 ++++++
- net/bridge/br_vlan.c      | 10 ++++++++++
- 2 files changed, 16 insertions(+)
+ include/uapi/linux/netfilter/nf_tables.h |  2 ++
+ net/bridge/netfilter/nft_meta_bridge.c   | 12 ++++++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/include/linux/if_bridge.h b/include/linux/if_bridge.h
-index 950db1d..9e57c44 100644
---- a/include/linux/if_bridge.h
-+++ b/include/linux/if_bridge.h
-@@ -89,6 +89,7 @@ static inline bool br_multicast_router(const struct net_device *dev)
- bool br_vlan_enabled(const struct net_device *dev);
- int br_vlan_get_pvid(const struct net_device *dev, u16 *p_pvid);
- int br_vlan_get_pvid_rcu(const struct net_device *dev, u16 *p_pvid);
-+int br_vlan_get_proto(const struct net_device *dev, u16 *p_proto);
- int br_vlan_get_info(const struct net_device *dev, u16 vid,
- 		     struct bridge_vlan_info *p_vinfo);
- #else
-@@ -102,6 +103,11 @@ static inline int br_vlan_get_pvid(const struct net_device *dev, u16 *p_pvid)
- 	return -EINVAL;
- }
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index 8a1bd0b..a0d1dbd 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -796,6 +796,7 @@ enum nft_exthdr_attributes {
+  * @NFT_META_IIFKIND: packet input interface kind name (dev->rtnl_link_ops->kind)
+  * @NFT_META_OIFKIND: packet output interface kind name (dev->rtnl_link_ops->kind)
+  * @NFT_META_BRI_IIFPVID: packet input bridge port pvid
++ * @NFT_META_BRI_IIFVPROTO: packet input bridge vlan proto
+  */
+ enum nft_meta_keys {
+ 	NFT_META_LEN,
+@@ -827,6 +828,7 @@ enum nft_meta_keys {
+ 	NFT_META_IIFKIND,
+ 	NFT_META_OIFKIND,
+ 	NFT_META_BRI_IIFPVID,
++	NFT_META_BRI_IIFVPROTO,
+ };
  
-+static inline int br_vlan_get_proto(const struct net_device *dev, u16 *p_proto)
-+{
-+	return -EINVAL;
-+}
+ /**
+diff --git a/net/bridge/netfilter/nft_meta_bridge.c b/net/bridge/netfilter/nft_meta_bridge.c
+index 9487d42..2cd145a 100644
+--- a/net/bridge/netfilter/nft_meta_bridge.c
++++ b/net/bridge/netfilter/nft_meta_bridge.c
+@@ -49,6 +49,17 @@ static void nft_meta_bridge_get_eval(const struct nft_expr *expr,
+ 		nft_reg_store16(dest, p_pvid);
+ 		return;
+ 	}
++	case NFT_META_BRI_IIFVPROTO: {
++		u16 p_proto;
 +
- static inline int br_vlan_get_pvid_rcu(const struct net_device *dev, u16 *p_pvid)
- {
- 	return -EINVAL;
-diff --git a/net/bridge/br_vlan.c b/net/bridge/br_vlan.c
-index 8d97b91..021cc9f66 100644
---- a/net/bridge/br_vlan.c
-+++ b/net/bridge/br_vlan.c
-@@ -797,6 +797,16 @@ bool br_vlan_enabled(const struct net_device *dev)
- }
- EXPORT_SYMBOL_GPL(br_vlan_enabled);
- 
-+int br_vlan_get_proto(const struct net_device *dev, u16 *p_proto)
-+{
-+	struct net_bridge *br = netdev_priv(dev);
++		br_dev = nft_meta_get_bridge(in);
++		if (!br_dev || !br_vlan_enabled(br_dev))
++			goto err;
 +
-+	*p_proto = ntohs(br->vlan_proto);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(br_vlan_get_proto);
-+
- int __br_vlan_set_proto(struct net_bridge *br, __be16 proto)
- {
- 	int err = 0;
++		br_vlan_get_proto(in, &p_proto);
++		nft_reg_store16(dest, p_proto);
++		return;
++	}
+ 	default:
+ 		goto out;
+ 	}
+@@ -75,6 +86,7 @@ static int nft_meta_bridge_get_init(const struct nft_ctx *ctx,
+ 		len = IFNAMSIZ;
+ 		break;
+ 	case NFT_META_BRI_IIFPVID:
++	case NFT_META_BRI_IIFVPROTO:
+ 		len = sizeof(u16);
+ 		break;
+ 	default:
 -- 
 1.8.3.1
 
