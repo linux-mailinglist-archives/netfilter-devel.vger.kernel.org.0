@@ -2,704 +2,470 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 115E75F1D3
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2019 05:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8279E5F368
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Jul 2019 09:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbfGDDb2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 Jul 2019 23:31:28 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:39760 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726964AbfGDDb1 (ORCPT
+        id S1727451AbfGDHWx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 4 Jul 2019 03:22:53 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:35119 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727279AbfGDHWx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 Jul 2019 23:31:27 -0400
-Received: by mail-pf1-f193.google.com with SMTP id j2so2242219pfe.6
-        for <netfilter-devel@vger.kernel.org>; Wed, 03 Jul 2019 20:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Ur5tx30dubg/A8J+8prQ4QCE9DqqEMDsECAJyxPOhF4=;
-        b=mBchtTH13sR7eD4bXhKIl/YdNTaN6ez8dZSGMvWWu+AIUh+Aw4Ib2h/unCtXPf5oWM
-         k2uWX0mFbKcejsERZ8mvujPrmc6USRgDFnqPqGq+R3sw+fpKlJSZ7cWYUrtE2iVmb7gq
-         d6OmVBn4m9RavzXrTrtQ1fXS8gxVGbS8hG78DWdG2wi1WJE9FhzKfSr6cFQhVwh2C2ba
-         yHpOvAaWVaR4uhRr/AnQlVCiaRvgFJkwT0DlUkPooRRMqp+G27FFHyCmdL1JnRPfQ03+
-         nQy286C9sI/g41BJ5V3PRCLvggwQ8iRd7yjbVMYM1CAvePxWlvaFHIdZ1RllI+t/Sn0a
-         DRUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Ur5tx30dubg/A8J+8prQ4QCE9DqqEMDsECAJyxPOhF4=;
-        b=l1zhWPnA8PIcyrLtfL5cz1uEqVkgQPQtCR7CtjGnyFNaof/myae5R6VP2Kh9sjzzVv
-         TSDDgSV5EWypbNUdvcRkXphGW+leNBPrN3aoD1qiJfp2SoU2r9tX/Gop0Piw6Xx2NCb+
-         9fcLS+Sw3R4m3HB7pPzMCQYXK7cLoghZsbDLicwTFaykXJD9zCC6pimJYTsjL/HgltC2
-         je5a/DwH8ouZB+71AetiepWLdKxca1Uija6ryEEf8N7+8tCbnzwxzylgzvbOs8d8KBYP
-         8ylc0T2+xlJ9m5HvB2C8duHjWpHhPiqE9NeAmd2lCVzi4vMsKVrfM1LHRf6kC7UGYskh
-         Oaog==
-X-Gm-Message-State: APjAAAWQ+NKTv61VF/5ahtV7xyEI5bqvdJzA/xG0p+J6sEz4gBDscWYJ
-        PRKN6sf7ZpkX89IN9TyebNg=
-X-Google-Smtp-Source: APXvYqzbcPhTAuLvNsGB+Ddn9ytXDlqkLEgTVkCXWrGCGKnk/pUP5pUZ/5dIBmdYx3NpaPbj5EOUgw==
-X-Received: by 2002:a17:90b:f0f:: with SMTP id br15mr17025072pjb.101.1562211085420;
-        Wed, 03 Jul 2019 20:31:25 -0700 (PDT)
-Received: from localhost ([124.206.234.166])
-        by smtp.gmail.com with ESMTPSA id v184sm3890643pgd.34.2019.07.03.20.31.23
-        (version=TLS1_2 cipher=AES128-SHA bits=128/128);
-        Wed, 03 Jul 2019 20:31:24 -0700 (PDT)
-From:   xiao ruizhu <katrina.xiaorz@gmail.com>
-To:     pablo@netfilter.org, kadlec@blackhole.kfki.hu, fw@strlen.de,
-        davem@davemloft.net, alin.nastac@gmail.com,
-        netfilter-devel@vger.kernel.org
-Cc:     xiao ruizhu <katrina.xiaorz@gmail.com>
-Subject: [PATCH v8] netfilter: nf_conntrack_sip: fix expectation clash
-Date:   Thu,  4 Jul 2019 11:31:13 +0800
-Message-Id: <1562211073-26506-1-git-send-email-katrina.xiaorz@gmail.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <20190702235136.shigmd7wxmhwaky4@salvia>
-References: <20190702235136.shigmd7wxmhwaky4@salvia>
+        Thu, 4 Jul 2019 03:22:53 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 6ED4F41AD9;
+        Thu,  4 Jul 2019 15:22:37 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org, nikolay@cumulusnetworks.com
+Cc:     netfilter-devel@vger.kernel.org, bridge@lists.linux-foundation.org
+Subject: [PATCH 1/7 nf-next] netfilter: separate bridge meta key from nft_meta into meta_bridge
+Date:   Thu,  4 Jul 2019 15:22:29 +0800
+Message-Id: <1562224955-3979-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVIT0lLS0tLS0xNSUJIQllXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MCI6DSo6Lzg1KgktQhIMPzVO
+        USoKCQFVSlVKTk1JSUlPQk5MTkNMVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUpPSE9PNwY+
+X-HM-Tid: 0a6bbbdd18222086kuqy6ed4f41ad9
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
+From: wenxu <wenxu@ucloud.cn>
 
-NF_CT_EXP_F_CHECK_MASTER was renamed to NF_CT_EXP_F_SKIP_MASTER.
-Please find the patch updated below. Thanks.
+Separate bridge meta key from nft_meta to meta_bridge for other key
+support. So there is n dependency between nft_meta and the bridge
+module
 
-
-When conntracks change during a dialog, SDP messages may be sent from
-different conntracks to establish expects with identical tuples. In this
-case expects conflict may be detected for the 2nd SDP message and end up
-with a process failure.
-
-The fixing here is to reuse an existing expect who has the same tuple for a
-different conntrack if any.
-
-Here are two scenarios for the case.
-
-1)
-         SERVER                   CPE
-
-           |      INVITE SDP       |
-      5060 |<----------------------|5060
-           |      100 Trying       |
-      5060 |---------------------->|5060
-           |      183 SDP          |
-      5060 |---------------------->|5060    ===> Conntrack 1
-           |       PRACK           |
-     50601 |<----------------------|5060
-           |    200 OK (PRACK)     |
-     50601 |---------------------->|5060
-           |    200 OK (INVITE)    |
-      5060 |---------------------->|5060
-           |        ACK            |
-     50601 |<----------------------|5060
-           |                       |
-           |<--- RTP stream ------>|
-           |                       |
-           |    INVITE SDP (t38)   |
-     50601 |---------------------->|5060    ===> Conntrack 2
-
-With a certain configuration in the CPE, SIP messages "183 with SDP" and
-"re-INVITE with SDP t38" will go through the sip helper to create
-expects for RTP and RTCP.
-
-It is okay to create RTP and RTCP expects for "183", whose master
-connection source port is 5060, and destination port is 5060.
-
-In the "183" message, port in Contact header changes to 50601 (from the
-original 5060). So the following requests e.g. PRACK and ACK are sent to
-port 50601. It is a different conntrack (let call Conntrack 2) from the
-original INVITE (let call Conntrack 1) due to the port difference.
-
-In this example, after the call is established, there is RTP stream but no
-RTCP stream for Conntrack 1, so the RTP expect created upon "183" is
-cleared, and RTCP expect created for Conntrack 1 retains.
-
-When "re-INVITE with SDP t38" arrives to create RTP&RTCP expects, current
-ALG implementation will call nf_ct_expect_related() for RTP and RTCP. The
-expects tuples are identical to those for Conntrack 1. RTP expect for
-Conntrack 2 succeeds in creation as the one for Conntrack 1 has been
-removed. RTCP expect for Conntrack 2 fails in creation because it has
-idential tuples and 'conflict' with the one retained for Conntrack 1. And
-then result in a failure in processing of the re-INVITE.
-
-2)
-
-    SERVER A                 CPE
-
-       |      REGISTER     |
-  5060 |<------------------| 5060  ==> CT1
-       |       200         |
-  5060 |------------------>| 5060
-       |                   |
-       |   INVITE SDP(1)   |
-  5060 |<------------------| 5060
-       | 300(multi choice) |
-  5060 |------------------>| 5060                    SERVER B
-       |       ACK         |
-  5060 |<------------------| 5060
-                                  |    INVITE SDP(2)    |
-                             5060 |-------------------->| 5060  ==> CT2
-                                  |       100           |
-                             5060 |<--------------------| 5060
-                                  | 200(contact changes)|
-                             5060 |<--------------------| 5060
-                                  |       ACK           |
-                             5060 |-------------------->| 50601 ==> CT3
-                                  |                     |
-                                  |<--- RTP stream ---->|
-                                  |                     |
-                                  |       BYE           |
-                             5060 |<--------------------| 50601
-                                  |       200           |
-                             5060 |-------------------->| 50601
-       |   INVITE SDP(3)   |
-  5060 |<------------------| 5060  ==> CT1
-
-CPE sends an INVITE request(1) to Server A, and creates a RTP&RTCP expect
-pair for this Conntrack 1 (CT1). Server A responds 300 to redirect to
-Server B. The RTP&RTCP expect pairs created on CT1 are removed upon 300
-response.
-
-CPE sends the INVITE request(2) to Server B, and creates an expect pair
-for the new conntrack (due to destination address difference), let call
-CT2. Server B changes the port to 50601 in 200 OK response, and the
-following requests ACK and BYE from CPE are sent to 50601. The call is
-established. There is RTP stream and no RTCP stream. So RTP expect is
-removed and RTCP expect for CT2 retains.
-
-As BYE request is sent from port 50601, it is another conntrack, let call
-CT3, different from CT2 due to the port difference. So the BYE request will
-not remove the RTCP expect for CT2.
-
-Then another outgoing call is made, with the same RTP port being used (not
-definitely but possibly). CPE firstly sends the INVITE request(3) to Server
-A, and tries to create a RTP&RTCP expect pairs for this CT1. In current ALG
-implementation, the RTCP expect for CT1 fails in creation because it
-'conflicts' with the residual one for CT2. As a result the INVITE request
-fails to send.
-
-Signed-off-by: xiao ruizhu <katrina.xiaorz@gmail.com>
+Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
-Changes in v8:
-- change NF_CT_EXP_F_CHECK_MASTER to NF_CT_EXP_F_SKIP_MASTER for better
-  semantics match.
-Changes in v7:
-- take Pablo's proposal to add a function master_matches().
-Changes in v6:
-- add the modification of expect_matches().
-Changes in v5:
-- take Pablo's proposal to use a flag in order not to change behavior of
-  the other existing helpers.
-Changes in v4:
-- take Pablo's proposal to handle checking in __nf_ct_expect_check().
-Changes in v3:
-- take Pablo's advice about the comments, nf_conntrack_expect_lock and
-  nf_ct_sip_expect_exists()
-- change the policy to reuse the exising expect(s) instead of removal then
-  recreation, to avoid CPU cycle waste
-Changes in v2:
-- add a comment on release_conflicting_expect functionality
-- move local variable errp to the beginning of the block
-v1:
-- original patch
----
- include/net/netfilter/nf_conntrack_expect.h | 12 +++++++++---
- net/ipv4/netfilter/nf_nat_h323.c            | 12 ++++++------
- net/netfilter/ipvs/ip_vs_nfct.c             |  2 +-
- net/netfilter/nf_conntrack_amanda.c         |  2 +-
- net/netfilter/nf_conntrack_broadcast.c      |  2 +-
- net/netfilter/nf_conntrack_expect.c         | 26 +++++++++++++++++++-------
- net/netfilter/nf_conntrack_ftp.c            |  2 +-
- net/netfilter/nf_conntrack_h323_main.c      | 18 +++++++++---------
- net/netfilter/nf_conntrack_irc.c            |  2 +-
- net/netfilter/nf_conntrack_netlink.c        |  4 ++--
- net/netfilter/nf_conntrack_pptp.c           |  4 ++--
- net/netfilter/nf_conntrack_sane.c           |  2 +-
- net/netfilter/nf_conntrack_sip.c            | 10 +++++++---
- net/netfilter/nf_conntrack_tftp.c           |  2 +-
- net/netfilter/nf_nat_amanda.c               |  2 +-
- net/netfilter/nf_nat_ftp.c                  |  2 +-
- net/netfilter/nf_nat_irc.c                  |  2 +-
- net/netfilter/nf_nat_sip.c                  |  8 +++++---
- net/netfilter/nf_nat_tftp.c                 |  2 +-
- 19 files changed, 70 insertions(+), 46 deletions(-)
+ include/net/netfilter/nft_meta.h       |  44 ++++++++++++
+ net/bridge/netfilter/Kconfig           |   6 ++
+ net/bridge/netfilter/Makefile          |   1 +
+ net/bridge/netfilter/nft_meta_bridge.c | 127 +++++++++++++++++++++++++++++++++
+ net/netfilter/nf_tables_core.c         |   1 +
+ net/netfilter/nft_meta.c               |  81 ++++++++-------------
+ 6 files changed, 207 insertions(+), 53 deletions(-)
+ create mode 100644 include/net/netfilter/nft_meta.h
+ create mode 100644 net/bridge/netfilter/nft_meta_bridge.c
 
-diff --git a/include/net/netfilter/nf_conntrack_expect.h b/include/net/netfilter/nf_conntrack_expect.h
-index 93ce6b0..573429b 100644
---- a/include/net/netfilter/nf_conntrack_expect.h
-+++ b/include/net/netfilter/nf_conntrack_expect.h
-@@ -76,6 +76,11 @@ struct nf_conntrack_expect_policy {
- #define NF_CT_EXPECT_CLASS_DEFAULT	0
- #define NF_CT_EXPECT_MAX_CNT		255
- 
-+/* Allow to reuse expectations with the same tuples from different master
-+ * conntracks.
-+ */
-+#define NF_CT_EXP_F_SKIP_MASTER	0x1
+diff --git a/include/net/netfilter/nft_meta.h b/include/net/netfilter/nft_meta.h
+new file mode 100644
+index 0000000..5c69e9b
+--- /dev/null
++++ b/include/net/netfilter/nft_meta.h
+@@ -0,0 +1,44 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _NFT_META_H_
++#define _NFT_META_H_
 +
- int nf_conntrack_expect_pernet_init(struct net *net);
- void nf_conntrack_expect_pernet_fini(struct net *net);
++struct nft_meta {
++	enum nft_meta_keys	key:8;
++	union {
++		enum nft_registers	dreg:8;
++		enum nft_registers	sreg:8;
++	};
++};
++
++extern const struct nla_policy nft_meta_policy[];
++
++int nft_meta_get_init(const struct nft_ctx *ctx,
++		      const struct nft_expr *expr,
++		      const struct nlattr * const tb[]);
++
++int nft_meta_set_init(const struct nft_ctx *ctx,
++		      const struct nft_expr *expr,
++		      const struct nlattr * const tb[]);
++
++int nft_meta_get_dump(struct sk_buff *skb,
++		      const struct nft_expr *expr);
++
++int nft_meta_set_dump(struct sk_buff *skb,
++		      const struct nft_expr *expr);
++
++void nft_meta_get_eval(const struct nft_expr *expr,
++		       struct nft_regs *regs,
++		       const struct nft_pktinfo *pkt);
++
++void nft_meta_set_eval(const struct nft_expr *expr,
++		       struct nft_regs *regs,
++		       const struct nft_pktinfo *pkt);
++
++void nft_meta_set_destroy(const struct nft_ctx *ctx,
++			  const struct nft_expr *expr);
++
++int nft_meta_set_validate(const struct nft_ctx *ctx,
++			  const struct nft_expr *expr,
++			  const struct nft_data **data);
++
++#endif
+diff --git a/net/bridge/netfilter/Kconfig b/net/bridge/netfilter/Kconfig
+index f4fb0b9..fbc7085 100644
+--- a/net/bridge/netfilter/Kconfig
++++ b/net/bridge/netfilter/Kconfig
+@@ -9,6 +9,12 @@ menuconfig NF_TABLES_BRIDGE
+ 	bool "Ethernet Bridge nf_tables support"
  
-@@ -122,10 +127,11 @@ void nf_ct_expect_init(struct nf_conntrack_expect *, unsigned int, u_int8_t,
- 		       u_int8_t, const __be16 *, const __be16 *);
- void nf_ct_expect_put(struct nf_conntrack_expect *exp);
- int nf_ct_expect_related_report(struct nf_conntrack_expect *expect, 
--				u32 portid, int report);
--static inline int nf_ct_expect_related(struct nf_conntrack_expect *expect)
-+				u32 portid, int report, unsigned int flags);
-+static inline int nf_ct_expect_related(struct nf_conntrack_expect *expect,
-+				       unsigned int flags)
- {
--	return nf_ct_expect_related_report(expect, 0, 0);
-+	return nf_ct_expect_related_report(expect, 0, 0, flags);
- }
+ if NF_TABLES_BRIDGE
++
++config NFT_BRIDGE_META
++	tristate "Netfilter nf_table bridge meta support"
++	help
++	  Add support for bridge dedicated meta key.
++
+ config NFT_BRIDGE_REJECT
+ 	tristate "Netfilter nf_tables bridge reject support"
+ 	depends on NFT_REJECT && NFT_REJECT_IPV4 && NFT_REJECT_IPV6
+diff --git a/net/bridge/netfilter/Makefile b/net/bridge/netfilter/Makefile
+index 9d77673..8e2c575 100644
+--- a/net/bridge/netfilter/Makefile
++++ b/net/bridge/netfilter/Makefile
+@@ -3,6 +3,7 @@
+ # Makefile for the netfilter modules for Link Layer filtering on a bridge.
+ #
  
- #endif /*_NF_CONNTRACK_EXPECT_H*/
-diff --git a/net/ipv4/netfilter/nf_nat_h323.c b/net/ipv4/netfilter/nf_nat_h323.c
-index 7875c98..f06709a 100644
---- a/net/ipv4/netfilter/nf_nat_h323.c
-+++ b/net/ipv4/netfilter/nf_nat_h323.c
-@@ -222,11 +222,11 @@ static int nat_rtp_rtcp(struct sk_buff *skb, struct nf_conn *ct,
- 		int ret;
++obj-$(CONFIG_NFT_BRIDGE_META)  += nft_meta_bridge.o
+ obj-$(CONFIG_NFT_BRIDGE_REJECT)  += nft_reject_bridge.o
  
- 		rtp_exp->tuple.dst.u.udp.port = htons(nated_port);
--		ret = nf_ct_expect_related(rtp_exp);
-+		ret = nf_ct_expect_related(rtp_exp, 0);
- 		if (ret == 0) {
- 			rtcp_exp->tuple.dst.u.udp.port =
- 			    htons(nated_port + 1);
--			ret = nf_ct_expect_related(rtcp_exp);
-+			ret = nf_ct_expect_related(rtcp_exp, 0);
- 			if (ret == 0)
- 				break;
- 			else if (ret == -EBUSY) {
-@@ -297,7 +297,7 @@ static int nat_t120(struct sk_buff *skb, struct nf_conn *ct,
- 		int ret;
- 
- 		exp->tuple.dst.u.tcp.port = htons(nated_port);
--		ret = nf_ct_expect_related(exp);
-+		ret = nf_ct_expect_related(exp, 0);
- 		if (ret == 0)
- 			break;
- 		else if (ret != -EBUSY) {
-@@ -353,7 +353,7 @@ static int nat_h245(struct sk_buff *skb, struct nf_conn *ct,
- 		int ret;
- 
- 		exp->tuple.dst.u.tcp.port = htons(nated_port);
--		ret = nf_ct_expect_related(exp);
-+		ret = nf_ct_expect_related(exp, 0);
- 		if (ret == 0)
- 			break;
- 		else if (ret != -EBUSY) {
-@@ -445,7 +445,7 @@ static int nat_q931(struct sk_buff *skb, struct nf_conn *ct,
- 		int ret;
- 
- 		exp->tuple.dst.u.tcp.port = htons(nated_port);
--		ret = nf_ct_expect_related(exp);
-+		ret = nf_ct_expect_related(exp, 0);
- 		if (ret == 0)
- 			break;
- 		else if (ret != -EBUSY) {
-@@ -538,7 +538,7 @@ static int nat_callforwarding(struct sk_buff *skb, struct nf_conn *ct,
- 		int ret;
- 
- 		exp->tuple.dst.u.tcp.port = htons(nated_port);
--		ret = nf_ct_expect_related(exp);
-+		ret = nf_ct_expect_related(exp, 0);
- 		if (ret == 0)
- 			break;
- 		else if (ret != -EBUSY) {
-diff --git a/net/netfilter/ipvs/ip_vs_nfct.c b/net/netfilter/ipvs/ip_vs_nfct.c
-index eb8b9c8..45bb5a3 100644
---- a/net/netfilter/ipvs/ip_vs_nfct.c
-+++ b/net/netfilter/ipvs/ip_vs_nfct.c
-@@ -247,7 +247,7 @@ void ip_vs_nfct_expect_related(struct sk_buff *skb, struct nf_conn *ct,
- 
- 	IP_VS_DBG_BUF(7, "%s: ct=%p, expect tuple=" FMT_TUPLE "\n",
- 		      __func__, ct, ARG_TUPLE(&exp->tuple));
--	nf_ct_expect_related(exp);
-+	nf_ct_expect_related(exp, 0);
- 	nf_ct_expect_put(exp);
- }
- EXPORT_SYMBOL(ip_vs_nfct_expect_related);
-diff --git a/net/netfilter/nf_conntrack_amanda.c b/net/netfilter/nf_conntrack_amanda.c
-index dbec6fc..5d2f72b 100644
---- a/net/netfilter/nf_conntrack_amanda.c
-+++ b/net/netfilter/nf_conntrack_amanda.c
-@@ -163,7 +163,7 @@ static int amanda_help(struct sk_buff *skb,
- 		if (nf_nat_amanda && ct->status & IPS_NAT_MASK)
- 			ret = nf_nat_amanda(skb, ctinfo, protoff,
- 					    off - dataoff, len, exp);
--		else if (nf_ct_expect_related(exp) != 0) {
-+		else if (nf_ct_expect_related(exp, 0) != 0) {
- 			nf_ct_helper_log(skb, ct, "cannot add expectation");
- 			ret = NF_DROP;
- 		}
-diff --git a/net/netfilter/nf_conntrack_broadcast.c b/net/netfilter/nf_conntrack_broadcast.c
-index 5423b19..1563c86 100644
---- a/net/netfilter/nf_conntrack_broadcast.c
-+++ b/net/netfilter/nf_conntrack_broadcast.c
-@@ -67,7 +67,7 @@ int nf_conntrack_broadcast_help(struct sk_buff *skb,
- 	exp->class		  = NF_CT_EXPECT_CLASS_DEFAULT;
- 	exp->helper               = NULL;
- 
--	nf_ct_expect_related(exp);
-+	nf_ct_expect_related(exp, 0);
- 	nf_ct_expect_put(exp);
- 
- 	nf_ct_refresh(ct, skb, timeout * HZ);
-diff --git a/net/netfilter/nf_conntrack_expect.c b/net/netfilter/nf_conntrack_expect.c
-index 59c1880..2cb935b 100644
---- a/net/netfilter/nf_conntrack_expect.c
-+++ b/net/netfilter/nf_conntrack_expect.c
-@@ -252,13 +252,22 @@ static inline int expect_clash(const struct nf_conntrack_expect *a,
- static inline int expect_matches(const struct nf_conntrack_expect *a,
- 				 const struct nf_conntrack_expect *b)
- {
--	return a->master == b->master &&
--	       nf_ct_tuple_equal(&a->tuple, &b->tuple) &&
-+	return nf_ct_tuple_equal(&a->tuple, &b->tuple) &&
- 	       nf_ct_tuple_mask_equal(&a->mask, &b->mask) &&
- 	       net_eq(nf_ct_net(a->master), nf_ct_net(b->master)) &&
- 	       nf_ct_zone_equal_any(a->master, nf_ct_zone(b->master));
- }
- 
-+static bool master_matches(const struct nf_conntrack_expect *a,
-+			   const struct nf_conntrack_expect *b,
-+			   unsigned int flags)
+ # connection tracking
+diff --git a/net/bridge/netfilter/nft_meta_bridge.c b/net/bridge/netfilter/nft_meta_bridge.c
+new file mode 100644
+index 0000000..dde8651
+--- /dev/null
++++ b/net/bridge/netfilter/nft_meta_bridge.c
+@@ -0,0 +1,127 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/netlink.h>
++#include <linux/netfilter.h>
++#include <linux/netfilter/nf_tables.h>
++#include <net/netfilter/nf_tables.h>
++#include <net/netfilter/nft_meta.h>
++
++#include "../br_private.h"
++
++static void nft_meta_bridge_get_eval(const struct nft_expr *expr,
++				     struct nft_regs *regs,
++				     const struct nft_pktinfo *pkt)
 +{
-+	if (flags & NF_CT_EXP_F_SKIP_MASTER)
-+		return true;
++	const struct nft_meta *priv = nft_expr_priv(expr);
++	const struct net_device *in = nft_in(pkt), *out = nft_out(pkt);
++	u32 *dest = &regs->data[priv->dreg];
++	const struct net_bridge_port *p;
 +
-+	return a->master == b->master;
++	switch (priv->key) {
++	case NFT_META_BRI_IIFNAME:
++		if (in == NULL || (p = br_port_get_rcu(in)) == NULL)
++			goto err;
++		break;
++	case NFT_META_BRI_OIFNAME:
++		if (out == NULL || (p = br_port_get_rcu(out)) == NULL)
++			goto err;
++		break;
++	default:
++		goto out;
++	}
++
++	strncpy((char *)dest, p->br->dev->name, IFNAMSIZ);
++	return;
++out:
++	return nft_meta_get_eval(expr, regs, pkt);
++err:
++	regs->verdict.code = NFT_BREAK;
 +}
 +
- /* Generally a bad idea to call this: could have matched already. */
- void nf_ct_unexpect_related(struct nf_conntrack_expect *exp)
++static int nft_meta_bridge_get_init(const struct nft_ctx *ctx,
++				    const struct nft_expr *expr,
++				    const struct nlattr * const tb[])
++{
++	struct nft_meta *priv = nft_expr_priv(expr);
++	unsigned int len;
++
++	priv->key = ntohl(nla_get_be32(tb[NFTA_META_KEY]));
++	switch (priv->key) {
++	case NFT_META_BRI_IIFNAME:
++	case NFT_META_BRI_OIFNAME:
++		len = IFNAMSIZ;
++		break;
++	default:
++		return nft_meta_get_init(ctx, expr, tb);
++	}
++
++	priv->dreg = nft_parse_register(tb[NFTA_META_DREG]);
++	return nft_validate_register_store(ctx, priv->dreg, NULL,
++					   NFT_DATA_VALUE, len);
++}
++
++static struct nft_expr_type nft_meta_bridge_type;
++static const struct nft_expr_ops nft_meta_bridge_get_ops = {
++	.type		= &nft_meta_bridge_type,
++	.size		= NFT_EXPR_SIZE(sizeof(struct nft_meta)),
++	.eval		= nft_meta_bridge_get_eval,
++	.init		= nft_meta_bridge_get_init,
++	.dump		= nft_meta_get_dump,
++};
++
++static const struct nft_expr_ops nft_meta_bridge_set_ops = {
++	.type		= &nft_meta_bridge_type,
++	.size		= NFT_EXPR_SIZE(sizeof(struct nft_meta)),
++	.eval		= nft_meta_set_eval,
++	.init		= nft_meta_set_init,
++	.destroy	= nft_meta_set_destroy,
++	.dump		= nft_meta_set_dump,
++	.validate	= nft_meta_set_validate,
++};
++
++static const struct nft_expr_ops *
++nft_meta_bridge_select_ops(const struct nft_ctx *ctx,
++			   const struct nlattr * const tb[])
++{
++	if (tb[NFTA_META_KEY] == NULL)
++		return ERR_PTR(-EINVAL);
++
++	if (tb[NFTA_META_DREG] && tb[NFTA_META_SREG])
++		return ERR_PTR(-EINVAL);
++
++	if (tb[NFTA_META_DREG])
++		return &nft_meta_bridge_get_ops;
++
++	if (tb[NFTA_META_SREG])
++		return &nft_meta_bridge_set_ops;
++
++	return ERR_PTR(-EINVAL);
++}
++
++static struct nft_expr_type nft_meta_bridge_type __read_mostly = {
++	.family         = NFPROTO_BRIDGE,
++	.name           = "meta",
++	.select_ops     = nft_meta_bridge_select_ops,
++	.policy         = nft_meta_policy,
++	.maxattr        = NFTA_META_MAX,
++	.owner          = THIS_MODULE,
++};
++
++static int __init nft_meta_bridge_module_init(void)
++{
++	return nft_register_expr(&nft_meta_bridge_type);
++}
++
++static void __exit nft_meta_bridge_module_exit(void)
++{
++	nft_unregister_expr(&nft_meta_bridge_type);
++}
++
++module_init(nft_meta_bridge_module_init);
++module_exit(nft_meta_bridge_module_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("wenxu <wenxu@ucloud.cn>");
++MODULE_ALIAS_NFT_AF_EXPR(AF_BRIDGE, "meta");
+diff --git a/net/netfilter/nf_tables_core.c b/net/netfilter/nf_tables_core.c
+index b950cd3..96c74c4 100644
+--- a/net/netfilter/nf_tables_core.c
++++ b/net/netfilter/nf_tables_core.c
+@@ -19,6 +19,7 @@
+ #include <net/netfilter/nf_tables_core.h>
+ #include <net/netfilter/nf_tables.h>
+ #include <net/netfilter/nf_log.h>
++#include <net/netfilter/nft_meta.h>
+ 
+ static noinline void __nft_trace_packet(struct nft_traceinfo *info,
+ 					const struct nft_chain *chain,
+diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
+index a54329b863..18a848b 100644
+--- a/net/netfilter/nft_meta.c
++++ b/net/netfilter/nft_meta.c
+@@ -21,23 +21,12 @@
+ #include <net/tcp_states.h> /* for TCP_TIME_WAIT */
+ #include <net/netfilter/nf_tables.h>
+ #include <net/netfilter/nf_tables_core.h>
++#include <net/netfilter/nft_meta.h>
+ 
+ #include <uapi/linux/netfilter_bridge.h> /* NF_BR_PRE_ROUTING */
+ 
+-struct nft_meta {
+-	enum nft_meta_keys	key:8;
+-	union {
+-		enum nft_registers	dreg:8;
+-		enum nft_registers	sreg:8;
+-	};
+-};
+-
+ static DEFINE_PER_CPU(struct rnd_state, nft_prandom_state);
+ 
+-#ifdef CONFIG_NF_TABLES_BRIDGE
+-#include "../bridge/br_private.h"
+-#endif
+-
+ void nft_meta_get_eval(const struct nft_expr *expr,
+ 		       struct nft_regs *regs,
+ 		       const struct nft_pktinfo *pkt)
+@@ -47,9 +36,6 @@ void nft_meta_get_eval(const struct nft_expr *expr,
+ 	const struct net_device *in = nft_in(pkt), *out = nft_out(pkt);
+ 	struct sock *sk;
+ 	u32 *dest = &regs->data[priv->dreg];
+-#ifdef CONFIG_NF_TABLES_BRIDGE
+-	const struct net_bridge_port *p;
+-#endif
+ 
+ 	switch (priv->key) {
+ 	case NFT_META_LEN:
+@@ -229,18 +215,6 @@ void nft_meta_get_eval(const struct nft_expr *expr,
+ 		nft_reg_store8(dest, secpath_exists(skb));
+ 		break;
+ #endif
+-#ifdef CONFIG_NF_TABLES_BRIDGE
+-	case NFT_META_BRI_IIFNAME:
+-		if (in == NULL || (p = br_port_get_rcu(in)) == NULL)
+-			goto err;
+-		strncpy((char *)dest, p->br->dev->name, IFNAMSIZ);
+-		return;
+-	case NFT_META_BRI_OIFNAME:
+-		if (out == NULL || (p = br_port_get_rcu(out)) == NULL)
+-			goto err;
+-		strncpy((char *)dest, p->br->dev->name, IFNAMSIZ);
+-		return;
+-#endif
+ 	case NFT_META_IIFKIND:
+ 		if (in == NULL || in->rtnl_link_ops == NULL)
+ 			goto err;
+@@ -260,10 +234,11 @@ void nft_meta_get_eval(const struct nft_expr *expr,
+ err:
+ 	regs->verdict.code = NFT_BREAK;
+ }
++EXPORT_SYMBOL_GPL(nft_meta_get_eval);
+ 
+-static void nft_meta_set_eval(const struct nft_expr *expr,
+-			      struct nft_regs *regs,
+-			       const struct nft_pktinfo *pkt)
++void nft_meta_set_eval(const struct nft_expr *expr,
++		       struct nft_regs *regs,
++		       const struct nft_pktinfo *pkt)
  {
-@@ -402,7 +411,8 @@ static void evict_oldest_expect(struct nf_conn *master,
- 		nf_ct_remove_expect(last);
+ 	const struct nft_meta *meta = nft_expr_priv(expr);
+ 	struct sk_buff *skb = pkt->skb;
+@@ -300,16 +275,18 @@ static void nft_meta_set_eval(const struct nft_expr *expr,
+ 		WARN_ON(1);
+ 	}
+ }
++EXPORT_SYMBOL_GPL(nft_meta_set_eval);
+ 
+-static const struct nla_policy nft_meta_policy[NFTA_META_MAX + 1] = {
++const struct nla_policy nft_meta_policy[NFTA_META_MAX + 1] = {
+ 	[NFTA_META_DREG]	= { .type = NLA_U32 },
+ 	[NFTA_META_KEY]		= { .type = NLA_U32 },
+ 	[NFTA_META_SREG]	= { .type = NLA_U32 },
+ };
++EXPORT_SYMBOL_GPL(nft_meta_policy);
+ 
+-static int nft_meta_get_init(const struct nft_ctx *ctx,
+-			     const struct nft_expr *expr,
+-			     const struct nlattr * const tb[])
++int nft_meta_get_init(const struct nft_ctx *ctx,
++		      const struct nft_expr *expr,
++		      const struct nlattr * const tb[])
+ {
+ 	struct nft_meta *priv = nft_expr_priv(expr);
+ 	unsigned int len;
+@@ -360,14 +337,6 @@ static int nft_meta_get_init(const struct nft_ctx *ctx,
+ 		len = sizeof(u8);
+ 		break;
+ #endif
+-#ifdef CONFIG_NF_TABLES_BRIDGE
+-	case NFT_META_BRI_IIFNAME:
+-	case NFT_META_BRI_OIFNAME:
+-		if (ctx->family != NFPROTO_BRIDGE)
+-			return -EOPNOTSUPP;
+-		len = IFNAMSIZ;
+-		break;
+-#endif
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+@@ -376,6 +345,7 @@ static int nft_meta_get_init(const struct nft_ctx *ctx,
+ 	return nft_validate_register_store(ctx, priv->dreg, NULL,
+ 					   NFT_DATA_VALUE, len);
+ }
++EXPORT_SYMBOL_GPL(nft_meta_get_init);
+ 
+ static int nft_meta_get_validate(const struct nft_ctx *ctx,
+ 				 const struct nft_expr *expr,
+@@ -409,9 +379,9 @@ static int nft_meta_get_validate(const struct nft_ctx *ctx,
+ #endif
  }
  
--static inline int __nf_ct_expect_check(struct nf_conntrack_expect *expect)
-+static inline int __nf_ct_expect_check(struct nf_conntrack_expect *expect,
-+				       unsigned int flags)
+-static int nft_meta_set_validate(const struct nft_ctx *ctx,
+-				 const struct nft_expr *expr,
+-				 const struct nft_data **data)
++int nft_meta_set_validate(const struct nft_ctx *ctx,
++			  const struct nft_expr *expr,
++			  const struct nft_data **data)
  {
- 	const struct nf_conntrack_expect_policy *p;
- 	struct nf_conntrack_expect *i;
-@@ -420,8 +430,10 @@ static inline int __nf_ct_expect_check(struct nf_conntrack_expect *expect)
- 	}
- 	h = nf_ct_expect_dst_hash(net, &expect->tuple);
- 	hlist_for_each_entry_safe(i, next, &nf_ct_expect_hash[h], hnode) {
--		if (expect_matches(i, expect)) {
--			if (i->class != expect->class)
-+		if (master_matches(i, expect, flags) &&
-+		    expect_matches(i, expect)) {
-+			if (i->class != expect->class ||
-+			    i->master != expect->master)
- 				return -EALREADY;
+ 	struct nft_meta *priv = nft_expr_priv(expr);
+ 	unsigned int hooks;
+@@ -437,10 +407,11 @@ static int nft_meta_set_validate(const struct nft_ctx *ctx,
  
- 			if (nf_ct_remove_expect(i))
-@@ -456,12 +468,12 @@ static inline int __nf_ct_expect_check(struct nf_conntrack_expect *expect)
+ 	return nft_chain_validate_hooks(ctx->chain, hooks);
  }
++EXPORT_SYMBOL_GPL(nft_meta_set_validate);
  
- int nf_ct_expect_related_report(struct nf_conntrack_expect *expect,
--				u32 portid, int report)
-+				u32 portid, int report, unsigned int flags)
+-static int nft_meta_set_init(const struct nft_ctx *ctx,
+-			     const struct nft_expr *expr,
+-			     const struct nlattr * const tb[])
++int nft_meta_set_init(const struct nft_ctx *ctx,
++		      const struct nft_expr *expr,
++		      const struct nlattr * const tb[])
  {
- 	int ret;
+ 	struct nft_meta *priv = nft_expr_priv(expr);
+ 	unsigned int len;
+@@ -475,9 +446,10 @@ static int nft_meta_set_init(const struct nft_ctx *ctx,
  
- 	spin_lock_bh(&nf_conntrack_expect_lock);
--	ret = __nf_ct_expect_check(expect);
-+	ret = __nf_ct_expect_check(expect, flags);
- 	if (ret < 0)
- 		goto out;
- 
-diff --git a/net/netfilter/nf_conntrack_ftp.c b/net/netfilter/nf_conntrack_ftp.c
-index 32aeac1..1578bfa 100644
---- a/net/netfilter/nf_conntrack_ftp.c
-+++ b/net/netfilter/nf_conntrack_ftp.c
-@@ -528,7 +528,7 @@ static int help(struct sk_buff *skb,
- 				 protoff, matchoff, matchlen, exp);
- 	else {
- 		/* Can't expect this?  Best to drop packet now. */
--		if (nf_ct_expect_related(exp) != 0) {
-+		if (nf_ct_expect_related(exp, 0) != 0) {
- 			nf_ct_helper_log(skb, ct, "cannot add expectation");
- 			ret = NF_DROP;
- 		} else
-diff --git a/net/netfilter/nf_conntrack_h323_main.c b/net/netfilter/nf_conntrack_h323_main.c
-index 12de403..207024c 100644
---- a/net/netfilter/nf_conntrack_h323_main.c
-+++ b/net/netfilter/nf_conntrack_h323_main.c
-@@ -306,8 +306,8 @@ static int expect_rtp_rtcp(struct sk_buff *skb, struct nf_conn *ct,
- 		ret = nat_rtp_rtcp(skb, ct, ctinfo, protoff, data, dataoff,
- 				   taddr, port, rtp_port, rtp_exp, rtcp_exp);
- 	} else {		/* Conntrack only */
--		if (nf_ct_expect_related(rtp_exp) == 0) {
--			if (nf_ct_expect_related(rtcp_exp) == 0) {
-+		if (nf_ct_expect_related(rtp_exp, 0) == 0) {
-+			if (nf_ct_expect_related(rtcp_exp, 0) == 0) {
- 				pr_debug("nf_ct_h323: expect RTP ");
- 				nf_ct_dump_tuple(&rtp_exp->tuple);
- 				pr_debug("nf_ct_h323: expect RTCP ");
-@@ -365,7 +365,7 @@ static int expect_t120(struct sk_buff *skb,
- 		ret = nat_t120(skb, ct, ctinfo, protoff, data, dataoff, taddr,
- 			       port, exp);
- 	} else {		/* Conntrack only */
--		if (nf_ct_expect_related(exp) == 0) {
-+		if (nf_ct_expect_related(exp, 0) == 0) {
- 			pr_debug("nf_ct_h323: expect T.120 ");
- 			nf_ct_dump_tuple(&exp->tuple);
- 		} else
-@@ -702,7 +702,7 @@ static int expect_h245(struct sk_buff *skb, struct nf_conn *ct,
- 		ret = nat_h245(skb, ct, ctinfo, protoff, data, dataoff, taddr,
- 			       port, exp);
- 	} else {		/* Conntrack only */
--		if (nf_ct_expect_related(exp) == 0) {
-+		if (nf_ct_expect_related(exp, 0) == 0) {
- 			pr_debug("nf_ct_q931: expect H.245 ");
- 			nf_ct_dump_tuple(&exp->tuple);
- 		} else
-@@ -826,7 +826,7 @@ static int expect_callforwarding(struct sk_buff *skb,
- 					 protoff, data, dataoff,
- 					 taddr, port, exp);
- 	} else {		/* Conntrack only */
--		if (nf_ct_expect_related(exp) == 0) {
-+		if (nf_ct_expect_related(exp, 0) == 0) {
- 			pr_debug("nf_ct_q931: expect Call Forwarding ");
- 			nf_ct_dump_tuple(&exp->tuple);
- 		} else
-@@ -1285,7 +1285,7 @@ static int expect_q931(struct sk_buff *skb, struct nf_conn *ct,
- 		ret = nat_q931(skb, ct, ctinfo, protoff, data,
- 			       taddr, i, port, exp);
- 	} else {		/* Conntrack only */
--		if (nf_ct_expect_related(exp) == 0) {
-+		if (nf_ct_expect_related(exp, 0) == 0) {
- 			pr_debug("nf_ct_ras: expect Q.931 ");
- 			nf_ct_dump_tuple(&exp->tuple);
- 
-@@ -1350,7 +1350,7 @@ static int process_gcf(struct sk_buff *skb, struct nf_conn *ct,
- 			  IPPROTO_UDP, NULL, &port);
- 	exp->helper = nf_conntrack_helper_ras;
- 
--	if (nf_ct_expect_related(exp) == 0) {
-+	if (nf_ct_expect_related(exp, 0) == 0) {
- 		pr_debug("nf_ct_ras: expect RAS ");
- 		nf_ct_dump_tuple(&exp->tuple);
- 	} else
-@@ -1562,7 +1562,7 @@ static int process_acf(struct sk_buff *skb, struct nf_conn *ct,
- 	exp->flags = NF_CT_EXPECT_PERMANENT;
- 	exp->helper = nf_conntrack_helper_q931;
- 
--	if (nf_ct_expect_related(exp) == 0) {
-+	if (nf_ct_expect_related(exp, 0) == 0) {
- 		pr_debug("nf_ct_ras: expect Q.931 ");
- 		nf_ct_dump_tuple(&exp->tuple);
- 	} else
-@@ -1616,7 +1616,7 @@ static int process_lcf(struct sk_buff *skb, struct nf_conn *ct,
- 	exp->flags = NF_CT_EXPECT_PERMANENT;
- 	exp->helper = nf_conntrack_helper_q931;
- 
--	if (nf_ct_expect_related(exp) == 0) {
-+	if (nf_ct_expect_related(exp, 0) == 0) {
- 		pr_debug("nf_ct_ras: expect Q.931 ");
- 		nf_ct_dump_tuple(&exp->tuple);
- 	} else
-diff --git a/net/netfilter/nf_conntrack_irc.c b/net/netfilter/nf_conntrack_irc.c
-index 79e5014..92a118f 100644
---- a/net/netfilter/nf_conntrack_irc.c
-+++ b/net/netfilter/nf_conntrack_irc.c
-@@ -217,7 +217,7 @@ static int help(struct sk_buff *skb, unsigned int protoff,
- 						 addr_beg_p - ib_ptr,
- 						 addr_end_p - addr_beg_p,
- 						 exp);
--			else if (nf_ct_expect_related(exp) != 0) {
-+			else if (nf_ct_expect_related(exp, 0) != 0) {
- 				nf_ct_helper_log(skb, ct,
- 						 "cannot add expectation");
- 				ret = NF_DROP;
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 7db79c1..56d3ca1 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -2615,7 +2615,7 @@ ctnetlink_glue_attach_expect(const struct nlattr *attr, struct nf_conn *ct,
- 	if (IS_ERR(exp))
- 		return PTR_ERR(exp);
- 
--	err = nf_ct_expect_related_report(exp, portid, report);
-+	err = nf_ct_expect_related_report(exp, portid, report, 0);
- 	nf_ct_expect_put(exp);
- 	return err;
+ 	return 0;
  }
-@@ -3366,7 +3366,7 @@ ctnetlink_create_expect(struct net *net,
- 		goto err_rcu;
- 	}
++EXPORT_SYMBOL_GPL(nft_meta_set_init);
  
--	err = nf_ct_expect_related_report(exp, portid, report);
-+	err = nf_ct_expect_related_report(exp, portid, report, 0);
- 	nf_ct_expect_put(exp);
- err_rcu:
- 	rcu_read_unlock();
-diff --git a/net/netfilter/nf_conntrack_pptp.c b/net/netfilter/nf_conntrack_pptp.c
-index 976f1dc..0d44a03 100644
---- a/net/netfilter/nf_conntrack_pptp.c
-+++ b/net/netfilter/nf_conntrack_pptp.c
-@@ -233,9 +233,9 @@ static int exp_gre(struct nf_conn *ct, __be16 callid, __be16 peer_callid)
- 	nf_nat_pptp_exp_gre = rcu_dereference(nf_nat_pptp_hook_exp_gre);
- 	if (nf_nat_pptp_exp_gre && ct->status & IPS_NAT_MASK)
- 		nf_nat_pptp_exp_gre(exp_orig, exp_reply);
--	if (nf_ct_expect_related(exp_orig) != 0)
-+	if (nf_ct_expect_related(exp_orig, 0) != 0)
- 		goto out_put_both;
--	if (nf_ct_expect_related(exp_reply) != 0)
-+	if (nf_ct_expect_related(exp_reply, 0) != 0)
- 		goto out_unexpect_orig;
+-static int nft_meta_get_dump(struct sk_buff *skb,
+-			     const struct nft_expr *expr)
++int nft_meta_get_dump(struct sk_buff *skb,
++		      const struct nft_expr *expr)
+ {
+ 	const struct nft_meta *priv = nft_expr_priv(expr);
  
- 	/* Add GRE keymap entries */
-diff --git a/net/netfilter/nf_conntrack_sane.c b/net/netfilter/nf_conntrack_sane.c
-index 8330664..90fade9 100644
---- a/net/netfilter/nf_conntrack_sane.c
-+++ b/net/netfilter/nf_conntrack_sane.c
-@@ -156,7 +156,7 @@ static int help(struct sk_buff *skb,
- 	nf_ct_dump_tuple(&exp->tuple);
+@@ -490,8 +462,9 @@ static int nft_meta_get_dump(struct sk_buff *skb,
+ nla_put_failure:
+ 	return -1;
+ }
++EXPORT_SYMBOL_GPL(nft_meta_get_dump);
  
- 	/* Can't expect this?  Best to drop packet now. */
--	if (nf_ct_expect_related(exp) != 0) {
-+	if (nf_ct_expect_related(exp, 0) != 0) {
- 		nf_ct_helper_log(skb, ct, "cannot add expectation");
- 		ret = NF_DROP;
- 	}
-diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
-index c30c883..04efe1e 100644
---- a/net/netfilter/nf_conntrack_sip.c
-+++ b/net/netfilter/nf_conntrack_sip.c
-@@ -980,11 +980,15 @@ static int set_expected_rtp_rtcp(struct sk_buff *skb, unsigned int protoff,
- 		/* -EALREADY handling works around end-points that send
- 		 * SDP messages with identical port but different media type,
- 		 * we pretend expectation was set up.
-+		 * It also works in the case that SDP messages are sent with
-+		 * identical expect tuples but for different master conntracks.
- 		 */
--		int errp = nf_ct_expect_related(rtp_exp);
-+		int errp = nf_ct_expect_related(rtp_exp,
-+						NF_CT_EXP_F_SKIP_MASTER);
+-static int nft_meta_set_dump(struct sk_buff *skb, const struct nft_expr *expr)
++int nft_meta_set_dump(struct sk_buff *skb, const struct nft_expr *expr)
+ {
+ 	const struct nft_meta *priv = nft_expr_priv(expr);
  
- 		if (errp == 0 || errp == -EALREADY) {
--			int errcp = nf_ct_expect_related(rtcp_exp);
-+			int errcp = nf_ct_expect_related(rtcp_exp,
-+						NF_CT_EXP_F_SKIP_MASTER);
+@@ -505,15 +478,17 @@ static int nft_meta_set_dump(struct sk_buff *skb, const struct nft_expr *expr)
+ nla_put_failure:
+ 	return -1;
+ }
++EXPORT_SYMBOL_GPL(nft_meta_set_dump);
  
- 			if (errcp == 0 || errcp == -EALREADY)
- 				ret = NF_ACCEPT;
-@@ -1299,7 +1303,7 @@ static int process_register_request(struct sk_buff *skb, unsigned int protoff,
- 		ret = hooks->expect(skb, protoff, dataoff, dptr, datalen,
- 				    exp, matchoff, matchlen);
- 	else {
--		if (nf_ct_expect_related(exp) != 0) {
-+		if (nf_ct_expect_related(exp, 0) != 0) {
- 			nf_ct_helper_log(skb, ct, "cannot add expectation");
- 			ret = NF_DROP;
- 		} else
-diff --git a/net/netfilter/nf_conntrack_tftp.c b/net/netfilter/nf_conntrack_tftp.c
-index 6977cb9..2a5931d 100644
---- a/net/netfilter/nf_conntrack_tftp.c
-+++ b/net/netfilter/nf_conntrack_tftp.c
-@@ -80,7 +80,7 @@ static int tftp_help(struct sk_buff *skb,
- 		nf_nat_tftp = rcu_dereference(nf_nat_tftp_hook);
- 		if (nf_nat_tftp && ct->status & IPS_NAT_MASK)
- 			ret = nf_nat_tftp(skb, ctinfo, exp);
--		else if (nf_ct_expect_related(exp) != 0) {
-+		else if (nf_ct_expect_related(exp, 0) != 0) {
- 			nf_ct_helper_log(skb, ct, "cannot add expectation");
- 			ret = NF_DROP;
- 		}
-diff --git a/net/netfilter/nf_nat_amanda.c b/net/netfilter/nf_nat_amanda.c
-index 4e59416..63a8d0e 100644
---- a/net/netfilter/nf_nat_amanda.c
-+++ b/net/netfilter/nf_nat_amanda.c
-@@ -52,7 +52,7 @@ static unsigned int help(struct sk_buff *skb,
- 		int res;
+-static void nft_meta_set_destroy(const struct nft_ctx *ctx,
+-				 const struct nft_expr *expr)
++void nft_meta_set_destroy(const struct nft_ctx *ctx,
++			  const struct nft_expr *expr)
+ {
+ 	const struct nft_meta *priv = nft_expr_priv(expr);
  
- 		exp->tuple.dst.u.tcp.port = htons(port);
--		res = nf_ct_expect_related(exp);
-+		res = nf_ct_expect_related(exp, 0);
- 		if (res == 0)
- 			break;
- 		else if (res != -EBUSY) {
-diff --git a/net/netfilter/nf_nat_ftp.c b/net/netfilter/nf_nat_ftp.c
-index 0ea6b1b..620fad9e4 100644
---- a/net/netfilter/nf_nat_ftp.c
-+++ b/net/netfilter/nf_nat_ftp.c
-@@ -94,7 +94,7 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
- 		int ret;
+ 	if (priv->key == NFT_META_NFTRACE)
+ 		static_branch_dec(&nft_trace_enabled);
+ }
++EXPORT_SYMBOL_GPL(nft_meta_set_destroy);
  
- 		exp->tuple.dst.u.tcp.port = htons(port);
--		ret = nf_ct_expect_related(exp);
-+		ret = nf_ct_expect_related(exp, 0);
- 		if (ret == 0)
- 			break;
- 		else if (ret != -EBUSY) {
-diff --git a/net/netfilter/nf_nat_irc.c b/net/netfilter/nf_nat_irc.c
-index d87cbe5..0d83eed 100644
---- a/net/netfilter/nf_nat_irc.c
-+++ b/net/netfilter/nf_nat_irc.c
-@@ -57,7 +57,7 @@ static unsigned int help(struct sk_buff *skb,
- 		int ret;
- 
- 		exp->tuple.dst.u.tcp.port = htons(port);
--		ret = nf_ct_expect_related(exp);
-+		ret = nf_ct_expect_related(exp, 0);
- 		if (ret == 0)
- 			break;
- 		else if (ret != -EBUSY) {
-diff --git a/net/netfilter/nf_nat_sip.c b/net/netfilter/nf_nat_sip.c
-index 464387b..7381bcc 100644
---- a/net/netfilter/nf_nat_sip.c
-+++ b/net/netfilter/nf_nat_sip.c
-@@ -417,7 +417,7 @@ static unsigned int nf_nat_sip_expect(struct sk_buff *skb, unsigned int protoff,
- 		int ret;
- 
- 		exp->tuple.dst.u.udp.port = htons(port);
--		ret = nf_ct_expect_related(exp);
-+		ret = nf_ct_expect_related(exp, NF_CT_EXP_F_SKIP_MASTER);
- 		if (ret == 0)
- 			break;
- 		else if (ret != -EBUSY) {
-@@ -610,7 +610,8 @@ static unsigned int nf_nat_sdp_media(struct sk_buff *skb, unsigned int protoff,
- 		int ret;
- 
- 		rtp_exp->tuple.dst.u.udp.port = htons(port);
--		ret = nf_ct_expect_related(rtp_exp);
-+		ret = nf_ct_expect_related(rtp_exp,
-+					   NF_CT_EXP_F_SKIP_MASTER);
- 		if (ret == -EBUSY)
- 			continue;
- 		else if (ret < 0) {
-@@ -618,7 +619,8 @@ static unsigned int nf_nat_sdp_media(struct sk_buff *skb, unsigned int protoff,
- 			break;
- 		}
- 		rtcp_exp->tuple.dst.u.udp.port = htons(port + 1);
--		ret = nf_ct_expect_related(rtcp_exp);
-+		ret = nf_ct_expect_related(rtcp_exp,
-+					   NF_CT_EXP_F_SKIP_MASTER);
- 		if (ret == 0)
- 			break;
- 		else if (ret == -EBUSY) {
-diff --git a/net/netfilter/nf_nat_tftp.c b/net/netfilter/nf_nat_tftp.c
-index e633b38..2218890 100644
---- a/net/netfilter/nf_nat_tftp.c
-+++ b/net/netfilter/nf_nat_tftp.c
-@@ -33,7 +33,7 @@ static unsigned int help(struct sk_buff *skb,
- 		= ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u.udp.port;
- 	exp->dir = IP_CT_DIR_REPLY;
- 	exp->expectfn = nf_nat_follow_master;
--	if (nf_ct_expect_related(exp) != 0) {
-+	if (nf_ct_expect_related(exp, 0) != 0) {
- 		nf_ct_helper_log(skb, exp->master, "cannot add expectation");
- 		return NF_DROP;
- 	}
+ static const struct nft_expr_ops nft_meta_get_ops = {
+ 	.type		= &nft_meta_type,
 -- 
-2.7.4
+1.8.3.1
 
