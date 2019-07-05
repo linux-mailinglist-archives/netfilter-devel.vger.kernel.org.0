@@ -2,63 +2,93 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBAD60D85
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Jul 2019 00:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D8D60D62
+	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Jul 2019 23:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728141AbfGEWAC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 5 Jul 2019 18:00:02 -0400
-Received: from out176.e-adjacentdigital.co.uk ([178.156.202.12]:54163 "EHLO
-        slot0.mathewsons.ga" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1728159AbfGEWAC (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 5 Jul 2019 18:00:02 -0400
-X-Greylist: delayed 634 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Jul 2019 18:00:00 EDT
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=mathewsons.ga;
- h=Content-Type:MIME-Version:Content-Transfer-Encoding:Content-Description:Subject:To:From:Date:Reply-To:Message-ID; i=purchase@mathewsons.ga;
- bh=onxYcir3NvpNjk2I/gjm/O+ljxo=;
- b=X4lk8768p+TwSenPltzy/LC3CGL3iJpGZHgXj01NtI5HEeXBO6GpOWSYLwi18HJdgQC7/cbsWMKJ
-   urQWx7L+H7VgRSs96FqAPvm50kTZVIHpak0/VyMHua0MAfao+BWU8LNqANapnG10hU7HB/jyoEQ5
-   yXIfMhEiMvommFjvaooJb8dKbdo7RTvFsOtqAuioZEOMIl5WGnrDOW3+00Jtoa4gumwmsMQuOL6g
-   AZQwdITLhRQOvIDgM1Bnm0MQNrnFkB70TvHW5fSdde6DSydLIsoqBp1NfSjzklpltoIrMrAJQh4w
-   q6dPRxjqGb2gz5AkW0XND5mvb8Y24ChrQYZvFA==
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=mathewsons.ga;
- b=LqZxtDaOTDIVC0s9hUXzRj3Zr5kVFr034/AYLCuAOxHXGiGBhOPM0O9GFbPXGqIKpLUDDCqxPlPY
-   pzFD3I9JJ3jbt/om44QtgmiHrjrCHUJN2RMvUWKNSvH0+zqOBtUuHixRCygwA5JAWC4TfZwI/t9S
-   y0WZ4lsfBpiNq+zAwM5dsFcVqCmtRVzFP9ztGWthjw1bmcYV2Z3ATq69++9XTL9eOpQb50eKjj01
-   buzYB8Dl9MTle9kCcvlqpNdFPH9ZMptAlqrCDyYp5x07uR9hOGdUtiG9PbrqgTsA/WNM7UMCKvxe
-   sKi8Yskvyno/+m7HRyEa72dO7wpVaDdwBh2Xmw==;
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Quotes needed For July Shipments
-To:     Recipients <purchase@mathewsons.ga>
-From:   "Sales -Jpexcc." <purchase@mathewsons.ga>
-Date:   Sat, 06 Jul 2019 00:39:26 +0300
-Reply-To: jpexcc@aol.com
-Message-ID: <0.0.4D.157.1D53379EC20FD58.0@slot0.mathewsons.ga>
+        id S1727876AbfGEV41 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 5 Jul 2019 17:56:27 -0400
+Received: from mail.us.es ([193.147.175.20]:51264 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727390AbfGEV41 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 5 Jul 2019 17:56:27 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 134B9FC524
+        for <netfilter-devel@vger.kernel.org>; Fri,  5 Jul 2019 23:56:25 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 0536EDA3F4
+        for <netfilter-devel@vger.kernel.org>; Fri,  5 Jul 2019 23:56:25 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id EEE4CDA708; Fri,  5 Jul 2019 23:56:24 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id BFE37DA801
+        for <netfilter-devel@vger.kernel.org>; Fri,  5 Jul 2019 23:56:22 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Fri, 05 Jul 2019 23:56:22 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (sys.soleta.eu [212.170.55.40])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id A63464265A31
+        for <netfilter-devel@vger.kernel.org>; Fri,  5 Jul 2019 23:56:22 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next 1/3] netfilter: nf_tables: add nft_expr_type_request_module()
+Date:   Fri,  5 Jul 2019 23:56:17 +0200
+Message-Id: <20190705215619.26558-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello dear,
- =
+This helper function makes sure the family specific extension is loaded.
 
-We are in the market for your products after meeting at your stand during l=
-ast expo.
- =
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_tables_api.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-Please kindly send us your latest catalog and price list so as to start a n=
-ew project/order as promised during the exhibition. =
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index cae5c46e2dd4..582f4e475d67 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -2019,6 +2019,19 @@ static const struct nft_expr_type *__nft_expr_type_get(u8 family,
+ 	return NULL;
+ }
+ 
++#ifdef CONFIG_MODULES
++static int nft_expr_type_request_module(struct net *net, u8 family,
++					struct nlattr *nla)
++{
++	nft_request_module(net, "nft-expr-%u-%.*s", family,
++			   nla_len(nla), (char *)nla_data(nla));
++	if (__nft_expr_type_get(family, nla))
++		return -EAGAIN;
++
++	return 0;
++}
++#endif
++
+ static const struct nft_expr_type *nft_expr_type_get(struct net *net,
+ 						     u8 family,
+ 						     struct nlattr *nla)
+@@ -2035,9 +2048,7 @@ static const struct nft_expr_type *nft_expr_type_get(struct net *net,
+ 	lockdep_nfnl_nft_mutex_not_held();
+ #ifdef CONFIG_MODULES
+ 	if (type == NULL) {
+-		nft_request_module(net, "nft-expr-%u-%.*s", family,
+-				   nla_len(nla), (char *)nla_data(nla));
+-		if (__nft_expr_type_get(family, nla))
++		if (nft_expr_type_request_module(net, family, nla) == -EAGAIN)
+ 			return ERR_PTR(-EAGAIN);
+ 
+ 		nft_request_module(net, "nft-expr-%.*s",
+-- 
+2.11.0
 
- =
-
-I would appreciate your response about the above details required so we can=
- revert back to you asap.
- =
-
-Kind regards
- =
-
-Rhema Zoeh
