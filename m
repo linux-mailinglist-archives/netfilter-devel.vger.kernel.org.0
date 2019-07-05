@@ -2,135 +2,114 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1E860DA1
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Jul 2019 00:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE0C60DDA
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Jul 2019 00:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725372AbfGEWJP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 5 Jul 2019 18:09:15 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:27777 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727008AbfGEWJO (ORCPT
+        id S1725887AbfGEWcG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 5 Jul 2019 18:32:06 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:45385 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbfGEWcG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 5 Jul 2019 18:09:14 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 9519D415E8;
-        Sat,  6 Jul 2019 06:09:11 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org, nikolay@cumulusnetworks.com, fw@strlen.de
-Cc:     netfilter-devel@vger.kernel.org, bridge@lists.linux-foundation.org
-Subject: [PATCH 5/5 nf-next v3] netfilter: Flow table support the bridge family for ipv4
-Date:   Sat,  6 Jul 2019 06:09:10 +0800
-Message-Id: <1562364550-16974-5-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1562364550-16974-1-git-send-email-wenxu@ucloud.cn>
-References: <1562364550-16974-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVklVSk1JS0tLSkxCSUJLTExZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MTY6Ngw5TTgxUQgyTE1IC00q
-        NAwKCVZVSlVKTk1JSE1PTk5KTU1IVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUhCQ0o3Bg++
-X-HM-Tid: 0a6bc42f21cd2086kuqy9519d415e8
+        Fri, 5 Jul 2019 18:32:06 -0400
+Received: by mail-qt1-f196.google.com with SMTP id j19so12588409qtr.12
+        for <netfilter-devel@vger.kernel.org>; Fri, 05 Jul 2019 15:32:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=QDzJAMlc1egGCnAxpTgp9BwHtWQa4Okwh7ZN5p0YX5w=;
+        b=cZU9DAtUTj+jYjD83zqZqWf2kkPfu3DiY4YGI5kba9cvXCAAUDiTXEFngeRCOhJtoQ
+         PhapfFZlL+pqWmUrr0wChNWB8gci/9Rwt01lmmJphU6PxNyUiX752ltIkMnZwxaPn/7B
+         ut2SM822MgJ7yTs83dkW8gGdprTJS8A489R5DDRz8XIbeRh0zjMF948eauk162C20KVq
+         MIkGGHslI94th4aGFQ5RIYyUsoYxtu3vLCCC6nymIiUQx7rlZMbN8cCoQNursXqkMn/S
+         5JocL9lnmvZiquXHQOO0vcMfsqh5PwoLvPTGh7i0Y+qZNsbWUBhMyX31dSL7FdwzFlnP
+         ndIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=QDzJAMlc1egGCnAxpTgp9BwHtWQa4Okwh7ZN5p0YX5w=;
+        b=ktBzlAm598JUHScX06Gg/OJolJaUv1pT64OVLs7eJes3cQ4PjNCIDKgv2sWnMAcKr0
+         rkhAZ1QvZr+zgY+7GT83D3CaBOKE5P22QO3qp1Fcw/O2BDSttDxHO7QNP9xft1c7WBgN
+         7SRAox5HD4XlQ6ibZVIH4HQ3PInlgJPsT+shsKhc/oPGXCVjADVfWoGwMUdn/UkxK98S
+         c1Zyx3xKTiXtMIkPR4f/UuT85MWAbP5kAtS3FVUWdOU3G2xePDKRW9+EABvfAwxUsSjj
+         vdpaXHCwTMU9bGI/O2BCZQnjBz9OptchMSZzv8tpsm3ax0qiGPgQ0Jw+4rBJu/+idY/O
+         okgg==
+X-Gm-Message-State: APjAAAX8ZR0dpHEg6HGxvRdNRfmWjNuvT3O07cN7TgH9IQeWQr2eOGqN
+        fu0z2mbzXdTJSmvMWk4oPH6Nqg==
+X-Google-Smtp-Source: APXvYqzexEGcTA0xuEKg6KjOL6wus6BDN9vOxwg3C5u1oUb+CPffkzX2b8pg7DNBSk56atQAi6biVg==
+X-Received: by 2002:ac8:6601:: with SMTP id c1mr4259778qtp.93.1562365925634;
+        Fri, 05 Jul 2019 15:32:05 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id g54sm4908791qtc.61.2019.07.05.15.32.02
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 05 Jul 2019 15:32:05 -0700 (PDT)
+Date:   Fri, 5 Jul 2019 15:31:59 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        davem@davemloft.net, thomas.lendacky@amd.com, f.fainelli@gmail.com,
+        ariel.elior@cavium.com, michael.chan@broadcom.com,
+        madalin.bucur@nxp.com, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, jeffrey.t.kirsher@intel.com,
+        tariqt@mellanox.com, saeedm@mellanox.com, jiri@mellanox.com,
+        idosch@mellanox.com, peppe.cavallaro@st.com,
+        grygorii.strashko@ti.com, andrew@lunn.ch, vivien.didelot@gmail.com,
+        alexandre.torgue@st.com, joabreu@synopsys.com,
+        linux-net-drivers@solarflare.com, ogerlitz@mellanox.com,
+        Manish.Chopra@cavium.com, marcelo.leitner@gmail.com,
+        mkubecek@suse.cz, venkatkumar.duvvuru@broadcom.com,
+        maxime.chevallier@bootlin.com, cphealy@gmail.com
+Subject: Re: [PATCH 04/15 net-next,v2] net: sched: add tcf_block_setup()
+Message-ID: <20190705153159.6b9a8297@cakuba.netronome.com>
+In-Reply-To: <20190704234843.6601-5-pablo@netfilter.org>
+References: <20190704234843.6601-1-pablo@netfilter.org>
+        <20190704234843.6601-5-pablo@netfilter.org>
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+On Fri,  5 Jul 2019 01:48:32 +0200, Pablo Neira Ayuso wrote:
+> +static int tcf_block_bind(struct tcf_block *block, struct tc_block_offload *bo)
+> +{
+> +	struct tcf_block_cb *block_cb, *next;
+> +	int err, i = 0;
+> +
+> +	list_for_each_entry(block_cb, &bo->cb_list, global_list) {
+> +		err = tcf_block_playback_offloads(block, block_cb->cb,
+> +						  block_cb->cb_priv, true,
+> +						  tcf_block_offload_in_use(block),
+> +						  bo->extack);
+> +		if (err)
+> +			goto err_unroll;
+> +
+> +		list_add(&block_cb->list, &block->cb_list);
+> +		i++;
+> +	}
+> +	list_splice(&bo->cb_list, &tcf_block_cb_list);
+> +
+> +	return 0;
+> +
+> +err_unroll:
+> +	list_for_each_entry_safe(block_cb, next, &bo->cb_list, global_list) {
+> +		if (i-- > 0) {
+> +			list_del(&block_cb->list);
+> +			tcf_block_playback_offloads(block, block_cb->cb,
+> +						    block_cb->cb_priv, false,
+> +						    tcf_block_offload_in_use(block),
+> +						    NULL);
+> +		}
+> +		kfree(block_cb);
 
-This patch adds the bridge flow table type, that implements the datapath
-flow table to forward IPv4 traffic through bridge.
+Is this not a tcf_block_cb_free() on purpose?
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- net/bridge/netfilter/Kconfig                |  8 +++++
- net/bridge/netfilter/Makefile               |  1 +
- net/bridge/netfilter/nf_flow_table_bridge.c | 46 +++++++++++++++++++++++++++++
- 3 files changed, 55 insertions(+)
- create mode 100644 net/bridge/netfilter/nf_flow_table_bridge.c
-
-diff --git a/net/bridge/netfilter/Kconfig b/net/bridge/netfilter/Kconfig
-index f4fb0b9..cba5f71 100644
---- a/net/bridge/netfilter/Kconfig
-+++ b/net/bridge/netfilter/Kconfig
-@@ -33,6 +33,14 @@ config NF_CONNTRACK_BRIDGE
- 
- 	  To compile it as a module, choose M here.  If unsure, say N.
- 
-+config NF_FLOW_TABLE_BRIDGE
-+	tristate "Netfilter flow table bridge module"
-+	depends on NF_FLOW_TABLE && NF_CONNTRACK_BRIDGE
-+	help
-+          This option adds the flow table bridge support.
-+
-+	  To compile it as a module, choose M here.
-+
- endif # NF_TABLES_BRIDGE
- 
- menuconfig BRIDGE_NF_EBTABLES
-diff --git a/net/bridge/netfilter/Makefile b/net/bridge/netfilter/Makefile
-index 9d77673..deb81e6 100644
---- a/net/bridge/netfilter/Makefile
-+++ b/net/bridge/netfilter/Makefile
-@@ -7,6 +7,7 @@ obj-$(CONFIG_NFT_BRIDGE_REJECT)  += nft_reject_bridge.o
- 
- # connection tracking
- obj-$(CONFIG_NF_CONNTRACK_BRIDGE) += nf_conntrack_bridge.o
-+obj-$(CONFIG_NF_FLOW_TABLE_BRIDGE) += nf_flow_table_bridge.o
- 
- # packet logging
- obj-$(CONFIG_NF_LOG_BRIDGE) += nf_log_bridge.o
-diff --git a/net/bridge/netfilter/nf_flow_table_bridge.c b/net/bridge/netfilter/nf_flow_table_bridge.c
-new file mode 100644
-index 0000000..3a65b44
---- /dev/null
-+++ b/net/bridge/netfilter/nf_flow_table_bridge.c
-@@ -0,0 +1,46 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/netfilter.h>
-+#include <net/netfilter/nf_flow_table.h>
-+#include <net/netfilter/nf_tables.h>
-+
-+static unsigned int
-+nf_flow_offload_bridge_hook(void *priv, struct sk_buff *skb,
-+			    const struct nf_hook_state *state)
-+{
-+	switch (skb->protocol) {
-+	case htons(ETH_P_IP):
-+		return nf_flow_offload_ip_hook(priv, skb, state);
-+	}
-+
-+	return NF_ACCEPT;
-+}
-+
-+static struct nf_flowtable_type flowtable_bridge = {
-+	.family		= NFPROTO_BRIDGE,
-+	.init		= nf_flow_table_init,
-+	.free		= nf_flow_table_free,
-+	.hook		= nf_flow_offload_bridge_hook,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static int __init nf_flow_bridge_module_init(void)
-+{
-+	nft_register_flowtable_type(&flowtable_bridge);
-+
-+	return 0;
-+}
-+
-+static void __exit nf_flow_bridge_module_exit(void)
-+{
-+	nft_unregister_flowtable_type(&flowtable_bridge);
-+}
-+
-+module_init(nf_flow_bridge_module_init);
-+module_exit(nf_flow_bridge_module_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("wenxu <wenxu@ucloud.cn>");
-+MODULE_ALIAS_NF_FLOWTABLE(AF_BRIDGE);
--- 
-1.8.3.1
-
+> +	}
+> +
+> +	return err;
+> +}
