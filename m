@@ -2,164 +2,106 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBE060671
-	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Jul 2019 15:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B7660B51
+	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Jul 2019 20:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727483AbfGENQs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 5 Jul 2019 09:16:48 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:49122 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727261AbfGENQs (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 5 Jul 2019 09:16:48 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 06533419F2;
-        Fri,  5 Jul 2019 21:16:40 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     nikolay@cumulusnetworks.com, pablo@netfilter.org
-Cc:     netfilter-devel@vger.kernel.org, bridge@lists.linux-foundation.org
-Subject: [PATCH nf-next v2] netfilter:nft_meta: add NFT_META_VLAN support
-Date:   Fri,  5 Jul 2019 21:16:38 +0800
-Message-Id: <1562332598-17415-7-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1562332598-17415-1-git-send-email-wenxu@ucloud.cn>
-References: <1562332598-17415-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSUhPS0tLS0NNTENPSE1ZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MhQ6Vio4PDg1FAg6TjINVisS
-        Tz0wCUlVSlVKTk1JSEhJTUtLSklIVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQU9MSkI3Bg++
-X-HM-Tid: 0a6bc24796ef2086kuqy06533419f2
+        id S1727263AbfGESHy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 5 Jul 2019 14:07:54 -0400
+Received: from mail.us.es ([193.147.175.20]:46482 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbfGESHy (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 5 Jul 2019 14:07:54 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 26239BAE86
+        for <netfilter-devel@vger.kernel.org>; Fri,  5 Jul 2019 20:07:52 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 1604EDA4D0
+        for <netfilter-devel@vger.kernel.org>; Fri,  5 Jul 2019 20:07:52 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 0B7F7DA732; Fri,  5 Jul 2019 20:07:52 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id B235DDA7B6;
+        Fri,  5 Jul 2019 20:07:49 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Fri, 05 Jul 2019 20:07:49 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 8F8AF4265A31;
+        Fri,  5 Jul 2019 20:07:49 +0200 (CEST)
+Date:   Fri, 5 Jul 2019 20:07:49 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     =?iso-8859-1?Q?St=E9phane?= Veyret <sveyret@gmail.com>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nftables v4 1/1] add ct expectations support
+Message-ID: <20190705180749.fku5r3tnt4jzskpp@salvia>
+References: <20190605092818.13844-1-sveyret@gmail.com>
+ <20190605092818.13844-2-sveyret@gmail.com>
+ <20190702231247.qoqcq5lynsb4xs5h@salvia>
+ <CAFs+hh6TcVM1HbK=iZF5vfSnnGYdtpSTTy=DR3LizSgkuYQghA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFs+hh6TcVM1HbK=iZF5vfSnnGYdtpSTTy=DR3LizSgkuYQghA@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+Hi Stéphane,
 
-This patch provide a meta vlan to set the vlan tag of the packet.
+On Thu, Jul 04, 2019 at 08:48:50PM +0200, Stéphane Veyret wrote:
+> Le mer. 3 juil. 2019 à 01:12, Pablo Neira Ayuso <pablo@netfilter.org> a écrit :
+> > Please, make sure you run ./configure with --with-json.
+> 
+> I'm sorry, but I don't manage to compile it anymore.
+> 
+> I took latest versions of kernel/lib/nft and merged my modifications
+> to nft. But when I try to compile nft, even if the configure goes
+> well, the make fails. The message is that it needs libnftnl > 1.1.3
+> whereas configure only requires version 1.1.1, and the lib creates a
+> package with version 1.1.2.
 
-for q-in-q outer vlan id 20:
-meta vlan set 0x88a8:20
+Make sure you install a fresh libnftnl from git.netfilter.org.
 
-set the default 0x8100 vlan type with vlan id 20
-meta vlan set 20
+> If I cheat (and update the libnftnl.pc
+> file by hand), then make fails later, when compiling libnftables.c
+> with the following messages :
+> libnftables.c:112:14: warning: data definition has no type or storage class
+>  EXPORT_SYMBOL(nft_ctx_add_include_path);
+>               ^
+> libnftables.c:112:15: warning: type defaults to ‘int’ in declaration
+> of « nft_ctx_add_include_path » [-Wimplicit-int]
+>  EXPORT_SYMBOL(nft_ctx_add_include_path);
+>                ^~~~~~~~~~~~~~~~~~~~~~~~
+> libnftables.c:112:15: error: « nft_ctx_add_include_path » redeclared
+> as different kind of symbol
+> In file included from libnftables.c:9:
+> ../include/nftables/libnftables.h:76:5: note: previous definition of «
+> nft_ctx_add_include_path » was here
+>  int nft_ctx_add_include_path(struct nft_ctx *ctx, const char *path);
+>      ^~~~~~~~~~~~~~~~~~~~~~~~
+> libnftables.c:113:5: warning: no previous prototype for function «
+> nft_ctx_add_include_path » [-Wmissing-prototypes]
+>  int nft_ctx_add_include_path(struct nft_ctx *ctx, const char *path)
+>      ^~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Does someone have a clue ?
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- include/net/netfilter/nft_meta.h         |  5 ++++-
- include/uapi/linux/netfilter/nf_tables.h |  4 ++++
- net/netfilter/nft_meta.c                 | 25 +++++++++++++++++++++++++
- 3 files changed, 33 insertions(+), 1 deletion(-)
+From the nftables tree, after pulling latest changes from
+git.netfilter.org, run:
 
-diff --git a/include/net/netfilter/nft_meta.h b/include/net/netfilter/nft_meta.h
-index 5c69e9b..cb0f1e8 100644
---- a/include/net/netfilter/nft_meta.h
-+++ b/include/net/netfilter/nft_meta.h
-@@ -6,7 +6,10 @@ struct nft_meta {
- 	enum nft_meta_keys	key:8;
- 	union {
- 		enum nft_registers	dreg:8;
--		enum nft_registers	sreg:8;
-+		struct {
-+			enum nft_registers	sreg:8;
-+			enum nft_registers	sreg2:8;
-+		};
- 	};
- };
- 
-diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
-index a0d1dbd..699524a 100644
---- a/include/uapi/linux/netfilter/nf_tables.h
-+++ b/include/uapi/linux/netfilter/nf_tables.h
-@@ -797,6 +797,7 @@ enum nft_exthdr_attributes {
-  * @NFT_META_OIFKIND: packet output interface kind name (dev->rtnl_link_ops->kind)
-  * @NFT_META_BRI_IIFPVID: packet input bridge port pvid
-  * @NFT_META_BRI_IIFVPROTO: packet input bridge vlan proto
-+ * @NFT_META_VLAN: packet vlan metadata
-  */
- enum nft_meta_keys {
- 	NFT_META_LEN,
-@@ -829,6 +830,7 @@ enum nft_meta_keys {
- 	NFT_META_OIFKIND,
- 	NFT_META_BRI_IIFPVID,
- 	NFT_META_BRI_IIFVPROTO,
-+	NFT_META_VLAN,
- };
- 
- /**
-@@ -895,12 +897,14 @@ enum nft_hash_attributes {
-  * @NFTA_META_DREG: destination register (NLA_U32)
-  * @NFTA_META_KEY: meta data item to load (NLA_U32: nft_meta_keys)
-  * @NFTA_META_SREG: source register (NLA_U32)
-+ * @NFTA_META_SREG2: source register (NLA_U32)
-  */
- enum nft_meta_attributes {
- 	NFTA_META_UNSPEC,
- 	NFTA_META_DREG,
- 	NFTA_META_KEY,
- 	NFTA_META_SREG,
-+	NFTA_META_SREG2,
- 	__NFTA_META_MAX
- };
- #define NFTA_META_MAX		(__NFTA_META_MAX - 1)
-diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
-index 18a848b..fb3d12e 100644
---- a/net/netfilter/nft_meta.c
-+++ b/net/netfilter/nft_meta.c
-@@ -271,6 +271,20 @@ void nft_meta_set_eval(const struct nft_expr *expr,
- 		skb->secmark = value;
- 		break;
- #endif
-+	case NFT_META_VLAN: {
-+		u32 *sreg2 = &regs->data[meta->sreg2];
-+		u16 vlan_proto;
-+		u16 vlan_tci;
-+
-+		vlan_tci = nft_reg_load16(sreg);
-+		vlan_proto = nft_reg_load16(sreg2);
-+
-+		if (vlan_proto != ETH_P_8021Q && vlan_proto != ETH_P_8021AD)
-+			return;
-+
-+		__vlan_hwaccel_put_tag(skb, htons(vlan_proto), vlan_tci & VLAN_VID_MASK);
-+		break;
-+	}
- 	default:
- 		WARN_ON(1);
- 	}
-@@ -281,6 +295,7 @@ void nft_meta_set_eval(const struct nft_expr *expr,
- 	[NFTA_META_DREG]	= { .type = NLA_U32 },
- 	[NFTA_META_KEY]		= { .type = NLA_U32 },
- 	[NFTA_META_SREG]	= { .type = NLA_U32 },
-+	[NFTA_META_SREG2]	= { .type = NLA_U32 },
- };
- EXPORT_SYMBOL_GPL(nft_meta_policy);
- 
-@@ -432,6 +447,13 @@ int nft_meta_set_init(const struct nft_ctx *ctx,
- 	case NFT_META_PKTTYPE:
- 		len = sizeof(u8);
- 		break;
-+	case NFT_META_VLAN:
-+		len = sizeof(u16);
-+		priv->sreg2 = nft_parse_register(tb[NFTA_META_SREG2]);
-+		err = nft_validate_register_load(priv->sreg2, len);
-+		if (err < 0)
-+			return err;
-+		break;
- 	default:
- 		return -EOPNOTSUPP;
- 	}
-@@ -457,6 +479,9 @@ int nft_meta_get_dump(struct sk_buff *skb,
- 		goto nla_put_failure;
- 	if (nft_dump_register(skb, NFTA_META_DREG, priv->dreg))
- 		goto nla_put_failure;
-+	if (priv->key == NFT_META_VLAN &&
-+	    nft_dump_register(skb, NFTA_META_SREG2, priv->sreg2))
-+		goto nla_put_failure;
- 	return 0;
- 
- nla_put_failure:
--- 
-1.8.3.1
+        autoreconf -fi
 
+before ./configure.
