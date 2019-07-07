@@ -2,129 +2,127 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7036177C
-	for <lists+netfilter-devel@lfdr.de>; Sun,  7 Jul 2019 22:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6866177F
+	for <lists+netfilter-devel@lfdr.de>; Sun,  7 Jul 2019 22:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727479AbfGGUzn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 7 Jul 2019 16:55:43 -0400
-Received: from fnsib-smtp07.srv.cat ([46.16.61.64]:53754 "EHLO
-        fnsib-smtp07.srv.cat" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727286AbfGGUzn (ORCPT
+        id S1727484AbfGGU5O (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 7 Jul 2019 16:57:14 -0400
+Received: from fnsib-smtp06.srv.cat ([46.16.61.63]:34759 "EHLO
+        fnsib-smtp06.srv.cat" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727073AbfGGU5O (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 7 Jul 2019 16:55:43 -0400
+        Sun, 7 Jul 2019 16:57:14 -0400
 Received: from localhost.localdomain (unknown [47.62.206.189])
-        by fnsib-smtp07.srv.cat (Postfix) with ESMTPSA id 0DCAE811B;
-        Sun,  7 Jul 2019 22:55:38 +0200 (CEST)
+        by fnsib-smtp06.srv.cat (Postfix) with ESMTPSA id 89B2AD9A64;
+        Sun,  7 Jul 2019 22:57:11 +0200 (CEST)
 From:   Ander Juaristi <a@juaristi.eus>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Ander Juaristi <a@juaristi.eus>
-Subject: [PATCH v5 3/3] nft: Update documentation
-Date:   Sun,  7 Jul 2019 22:55:31 +0200
-Message-Id: <20190707205531.6628-3-a@juaristi.eus>
+Subject: [PATCH v2] netfilter: nft_meta: support for time matching
+Date:   Sun,  7 Jul 2019 22:57:07 +0200
+Message-Id: <20190707205707.6728-1-a@juaristi.eus>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190707205531.6628-1-a@juaristi.eus>
-References: <20190707205531.6628-1-a@juaristi.eus>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+This patch introduces meta matches in the kernel for time (a UNIX timestamp),
+day (a day of week, represented as an integer between 0-6), and
+hour (an hour in the current day, or: number of seconds since midnight).
+
+All values are taken as unsigned 64-bit integers.
+
+The 'time' keyword is internally converted to nanoseconds by nft in
+userspace, and hence the timestamp is taken in nanoseconds as well.
+
 Signed-off-by: Ander Juaristi <a@juaristi.eus>
 ---
- doc/nft.txt                |  6 +++++-
- doc/primary-expression.txt | 27 +++++++++++++++++++++++++--
- src/main.c                 |  2 +-
- 3 files changed, 31 insertions(+), 4 deletions(-)
+ include/uapi/linux/netfilter/nf_tables.h |  6 +++++
+ net/netfilter/nft_meta.c                 | 32 ++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
-diff --git a/doc/nft.txt b/doc/nft.txt
-index 3f1074b..b7a8ee8 100644
---- a/doc/nft.txt
-+++ b/doc/nft.txt
-@@ -9,7 +9,7 @@ nft - Administration tool of the nftables framework for packet filtering and cla
- SYNOPSIS
- --------
- [verse]
--*nft* [ *-nNscaeSupyj* ] [ *-I* 'directory' ] [ *-f* 'filename' | *-i* | 'cmd' ...]
-+*nft* [ *-nNscaeSupyjt* ] [ *-I* 'directory' ] [ *-f* 'filename' | *-i* | 'cmd' ...]
- *nft* *-h*
- *nft* *-v*
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index c6c8ec5c7c00..92c78813bc7d 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -795,6 +795,9 @@ enum nft_exthdr_attributes {
+  * @NFT_META_SECPATH: boolean, secpath_exists (!!skb->sp)
+  * @NFT_META_IIFKIND: packet input interface kind name (dev->rtnl_link_ops->kind)
+  * @NFT_META_OIFKIND: packet output interface kind name (dev->rtnl_link_ops->kind)
++ * @NFT_META_TIME: a UNIX timestamp
++ * @NFT_META_TIME_DAY: day of week
++ * @NFT_META_TIME_HOUR: hour of day
+  */
+ enum nft_meta_keys {
+ 	NFT_META_LEN,
+@@ -825,6 +828,9 @@ enum nft_meta_keys {
+ 	NFT_META_SECPATH,
+ 	NFT_META_IIFKIND,
+ 	NFT_META_OIFKIND,
++	NFT_META_TIME,
++	NFT_META_TIME_DAY,
++	NFT_META_TIME_HOUR,
+ };
  
-@@ -93,6 +93,10 @@ For a full summary of options, run *nft --help*.
- 	Read input from an interactive readline CLI. You can use quit to exit, or use the EOF marker,
- 	normally this is CTRL-D.
- 
-+*-t*::
-+*--seconds*::
-+	Show time, day and hour values in seconds.
+ /**
+diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
+index 987d2d6ce624..ed907b1f97cd 100644
+--- a/net/netfilter/nft_meta.c
++++ b/net/netfilter/nft_meta.c
+@@ -50,6 +50,7 @@ void nft_meta_get_eval(const struct nft_expr *expr,
+ 	const struct net_device *in = nft_in(pkt), *out = nft_out(pkt);
+ 	struct sock *sk;
+ 	u32 *dest = &regs->data[priv->dreg];
++	u64 *d64;
+ #ifdef CONFIG_NF_TABLES_BRIDGE
+ 	const struct net_bridge_port *p;
+ #endif
+@@ -254,6 +255,28 @@ void nft_meta_get_eval(const struct nft_expr *expr,
+ 			goto err;
+ 		strncpy((char *)dest, out->rtnl_link_ops->kind, IFNAMSIZ);
+ 		break;
++	case NFT_META_TIME:
++		d64 = (u64 *) dest;
++		*d64 = ktime_get_real_ns();
++		break;
++	case NFT_META_TIME_DAY:
++	case NFT_META_TIME_HOUR:
++	{
++		s64 secs;
++		struct tm tm;
 +
- INPUT FILE FORMATS
- ------------------
- LEXICAL CONVENTIONS
-diff --git a/doc/primary-expression.txt b/doc/primary-expression.txt
-index 6eb9583..cef2afc 100644
---- a/doc/primary-expression.txt
-+++ b/doc/primary-expression.txt
-@@ -2,7 +2,7 @@ META EXPRESSIONS
- ~~~~~~~~~~~~~~~~
- [verse]
- *meta* {*length* | *nfproto* | *l4proto* | *protocol* | *priority*}
--[*meta*] {*mark* | *iif* | *iifname* | *iiftype* | *oif* | *oifname* | *oiftype* | *skuid* | *skgid* | *nftrace* | *rtclassid* | *ibrname* | *obrname* | *pkttype* | *cpu* | *iifgroup* | *oifgroup* | *cgroup* | *random* | *ipsec* | *iifkind* | *oifkind*}
-+[*meta*] {*mark* | *iif* | *iifname* | *iiftype* | *oif* | *oifname* | *oiftype* | *skuid* | *skgid* | *nftrace* | *rtclassid* | *ibrname* | *obrname* | *pkttype* | *cpu* | *iifgroup* | *oifgroup* | *cgroup* | *random* | *ipsec* | *iifkind* | *oifkind* | *time* | *hour* | *day* }
- 
- A meta expression refers to meta data associated with a packet.
- 
-@@ -115,7 +115,16 @@ boolean (1 bit)
- |iifkind|
- Input interface kind |
- |oifkind|
--Output interface kind
-+Output interface kind|
-+|time|
-+Absolute time of packet reception|
-+Integer (32 bit) or string
-+|day|
-+Day of week|
-+Integer (8 bit) or string
-+|hour|
-+Hour of day|
-+String
- |====================
- 
- .Meta expression specific types
-@@ -141,6 +150,20 @@ Packet type: *host* (addressed to local host), *broadcast* (to all),
- *multicast* (to group), *other* (addressed to another host).
- |ifkind|
- Interface kind (16 byte string). Does not have to exist.
-+|time|
-+Either an integer or a date in ISO format. For example: "2019-06-06 17:00".
-+Hour and seconds are optional and can be omitted if desired. If omitted,
-+midnight will be assumed.
-+The following three would be equivalent: "2019-06-06", "2019-06-06 00:00"
-+and "2019-06-06 00:00:00".
-+When an integer is given, it is assumed to be a UNIX timestamp.
-+|day|
-+Either a day of week ("Monday", "Tuesday", etc.), or an integer between 0 and 6.
-+Strings are matched case-insensitively, and a full match is not expected (e.g. "Mon" would match "Monday").
-+When an integer is given, 0 is Sunday and 6 is Saturday.
-+|hour|
-+A string representing an hour in 24-hour format. Seconds can optionally be specified.
-+For example, 17:00 and 17:00:00 would be equivalent.
- |=============================
- 
- .Using meta expressions
-diff --git a/src/main.c b/src/main.c
-index 73036a9..ab0d4e2 100644
---- a/src/main.c
-+++ b/src/main.c
-@@ -148,7 +148,7 @@ static void show_help(const char *name)
- "  -a, --handle			Output rule handle.\n"
- "  -e, --echo			Echo what has been added, inserted or replaced.\n"
- "  -I, --includepath <directory>	Add <directory> to the paths searched for include files. Default is: %s\n"
--"  -t, --seconds                Show hour values in seconds since midnight.\n"
-+"  -t, --seconds                Show time, day and hour values in seconds.\n"
- "  --debug <level [,level...]>	Specify debugging level (scanner, parser, eval, netlink, mnl, proto-ctx, segtree, all)\n"
- "\n",
- 	name, DEFAULT_INCLUDE_PATH);
++		d64 = (u64 *) dest;
++
++		/* get timestamp in seconds, and convert to tm structure */
++		secs = get_seconds();
++		time64_to_tm(secs, 0, &tm);
++
++		if (priv->key == NFT_META_TIME_HOUR)
++			*d64 = (u64) (tm.tm_hour * 3600 + tm.tm_min * 60 + tm.tm_sec);
++		else
++			nft_reg_store8(dest, (u8) tm.tm_wday);
++	}
++		break;
+ 	default:
+ 		WARN_ON(1);
+ 		goto err;
+@@ -371,6 +394,15 @@ static int nft_meta_get_init(const struct nft_ctx *ctx,
+ 		len = IFNAMSIZ;
+ 		break;
+ #endif
++	case NFT_META_TIME:
++		len = sizeof(u64);
++		break;
++	case NFT_META_TIME_DAY:
++		len = sizeof(u8);
++		break;
++	case NFT_META_TIME_HOUR:
++		len = sizeof(u64);
++		break;
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
 -- 
 2.17.1
 
