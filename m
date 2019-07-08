@@ -2,34 +2,59 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB45862A3E
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Jul 2019 22:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130306204E
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Jul 2019 16:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728764AbfGHUQf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 8 Jul 2019 16:16:35 -0400
-Received: from [81.144.230.116] ([81.144.230.116]:44984 "EHLO nrm.chariot"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725869AbfGHUQe (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 8 Jul 2019 16:16:34 -0400
-X-Greylist: delayed 24082 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Jul 2019 16:16:34 EDT
-Received: from localhost (localhost [IPv6:::1])
-        by nrm.chariot (Postfix) with SMTP id 35D7061FB12
-        for <netfilter-devel@vger.kernel.org>; Mon,  8 Jul 2019 14:14:15 +0100 (BST)
-From:   netfilter-devel@vger.kernel.org
-Reply-To: prodawez@armyspy.com
-To:     lSGnetfilter-devel@vger.kernel.org
-Subject: =?utf-8?B?0JfQtNGA0LDQstGB0YLQstGD0LnRgtC1ISDQktCw0YEg?=
-        =?utf-8?B?0LjQvdGC0LXRgNC10YHRg9GO0YIg0LrQu9C40LXQvdGC?=
-        =?utf-8?B?0YHQutC40LUg0LHQsNC30Ysg0LTQsNC90L3Ri9GFPw==?=
+        id S1729772AbfGHORg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 Jul 2019 10:17:36 -0400
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:39830 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728596AbfGHORf (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 8 Jul 2019 10:17:35 -0400
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
+        (envelope-from <fw@strlen.de>)
+        id 1hkUSQ-0001FR-U2; Mon, 08 Jul 2019 16:17:30 +0200
+Date:   Mon, 8 Jul 2019 16:17:30 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     wenxu@ucloud.cn
+Cc:     pablo@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH nf-next 1/3] netfilter: nf_nat_proto: add
+ nf_nat_bridge_ops support
+Message-ID: <20190708141730.ozycgmtrub7ok2qs@breakpoint.cc>
+References: <1562574567-8293-1-git-send-email-wenxu@ucloud.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8";
-Content-Transfer-Encoding: base64
-Message-Id: <20190708131415.35D7061FB12@nrm.chariot>
-Date:   Mon,  8 Jul 2019 14:14:15 +0100 (BST)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1562574567-8293-1-git-send-email-wenxu@ucloud.cn>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-0JfQtNGA0LDQstGB0YLQstGD0LnRgtC1ISDQktCw0YEg0LjQvdGC0LXRgNC10YHRg9GO0YIg0LrQ
-u9C40LXQvdGC0YHQutC40LUg0LHQsNC30Ysg0LTQsNC90L3Ri9GFPw0K
+wenxu@ucloud.cn <wenxu@ucloud.cn> wrote:
+> From: wenxu <wenxu@ucloud.cn>
+> 
+> Add nf_nat_bridge_ops to do nat in the bridge family
+
+Whats the use case for this?
+
+The reason I'm asking is that a bridge doesn't know about IP,
+Bridge netfilter (the call-iptables thing) has a lot of glue code
+to detect dnat rewrites and updates target mac address, including
+support for redirect (suddently packet has to be pushed up the stack)
+or changes in the oif to non-bridge ports (it even checks forward sysctl
+state ..) and so on.
+
+Thats something that I don't want to support in nftables.
+
+For NAT on bridge, it should be possible already to push such packets
+up the stack by
+
+bridge input meta iif eth0 ip saddr 192.168.0.0/16 \
+       meta pkttype set unicast ether daddr set 00:11:22:33:44:55
+
+then normal ip processing handles this and nat should "just work".
+If above doesn't work for you I'd like to understand why.
