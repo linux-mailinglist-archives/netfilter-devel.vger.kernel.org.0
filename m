@@ -2,38 +2,38 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 962E863D00
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jul 2019 22:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6574C63D04
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jul 2019 23:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729054AbfGIU4q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 9 Jul 2019 16:56:46 -0400
-Received: from mail.us.es ([193.147.175.20]:37402 "EHLO mail.us.es"
+        id S1729023AbfGIVBC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 9 Jul 2019 17:01:02 -0400
+Received: from mail.us.es ([193.147.175.20]:37670 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729886AbfGIU4o (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 9 Jul 2019 16:56:44 -0400
+        id S1728981AbfGIVBC (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 9 Jul 2019 17:01:02 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 626FE28804B5
-        for <netfilter-devel@vger.kernel.org>; Tue,  9 Jul 2019 22:56:38 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 5F2AD29D4DE7
+        for <netfilter-devel@vger.kernel.org>; Tue,  9 Jul 2019 23:00:57 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 4E3A2A0ADB
-        for <netfilter-devel@vger.kernel.org>; Tue,  9 Jul 2019 22:56:38 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 4EA0E1021A4
+        for <netfilter-devel@vger.kernel.org>; Tue,  9 Jul 2019 23:00:57 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 4C64EA0AC7; Tue,  9 Jul 2019 22:56:38 +0200 (CEST)
+        id 43E2B10219C; Tue,  9 Jul 2019 23:00:57 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 9FE06DA4D0;
-        Tue,  9 Jul 2019 22:56:30 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 04A12DA704;
+        Tue,  9 Jul 2019 23:00:53 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 09 Jul 2019 22:56:30 +0200 (CEST)
+ Tue, 09 Jul 2019 23:00:53 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (unknown [31.4.194.134])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 70E4A4265A31;
-        Tue,  9 Jul 2019 22:56:28 +0200 (CEST)
+        by entrada.int (Postfix) with ESMTPA id C445E4265A32;
+        Tue,  9 Jul 2019 23:00:50 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netdev@vger.kernel.org
@@ -50,12 +50,10 @@ Cc:     davem@davemloft.net, thomas.lendacky@amd.com, f.fainelli@gmail.com,
         marcelo.leitner@gmail.com, mkubecek@suse.cz,
         venkatkumar.duvvuru@broadcom.com, maxime.chevallier@bootlin.com,
         cphealy@gmail.com, phil@nwl.cc, netfilter-devel@vger.kernel.org
-Subject: [PATCH net-next,v4 12/12] netfilter: nf_tables: add hardware offload support
-Date:   Tue,  9 Jul 2019 22:55:50 +0200
-Message-Id: <20190709205550.3160-13-pablo@netfilter.org>
+Subject: [PATCH net-next 12/12,v5] netfilter: nf_tables: add hardware offload support
+Date:   Tue,  9 Jul 2019 23:00:43 +0200
+Message-Id: <20190709210043.3924-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20190709205550.3160-1-pablo@netfilter.org>
-References: <20190709205550.3160-1-pablo@netfilter.org>
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
@@ -80,9 +78,7 @@ basechain hardware offload only.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v4: "we want the per-device offload enable flags" - Jakub Kicinski.
-    This patch enables offload flag per base chain (ie. per-device),
-    see example in cover letter, no need for ethtool -k knob.
+v5: fix minor conflict with net-next, git am will complain when applying this.
 
  include/net/netfilter/nf_tables.h         |  14 ++
  include/net/netfilter/nf_tables_offload.h |  76 +++++++++
@@ -253,7 +249,7 @@ index 000000000000..3196663a10e3
 +
 +#endif
 diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
-index c6c8ec5c7c00..10007fe38eb1 100644
+index 0e3462dfb182..82abaa183fc3 100644
 --- a/include/uapi/linux/netfilter/nf_tables.h
 +++ b/include/uapi/linux/netfilter/nf_tables.h
 @@ -192,6 +192,7 @@ enum nft_table_attributes {
@@ -273,7 +269,7 @@ index c6c8ec5c7c00..10007fe38eb1 100644
  };
  #define NFTA_CHAIN_MAX		(__NFTA_CHAIN_MAX - 1)
 diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
-index 72cca6b48960..46cb1d34e750 100644
+index deada20975ff..9270a7fae484 100644
 --- a/net/netfilter/Makefile
 +++ b/net/netfilter/Makefile
 @@ -78,7 +78,7 @@ nf_tables-objs := nf_tables_core.o nf_tables_api.o nft_chain_filter.o \
@@ -286,7 +282,7 @@ index 72cca6b48960..46cb1d34e750 100644
  nf_tables_set-objs := nf_tables_set_core.o \
  		      nft_set_hash.o nft_set_bitmap.o nft_set_rbtree.o
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index cae5c46e2dd4..b4270567b14a 100644
+index d22d00ca78c1..ed17a7c29b86 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
 @@ -18,6 +18,7 @@
@@ -384,7 +380,7 @@ index cae5c46e2dd4..b4270567b14a 100644
  }
  
  static int nf_tables_delchain(struct net *net, struct sock *nlsk,
-@@ -2638,6 +2650,7 @@ static int nf_tables_newrule(struct net *net, struct sock *nlsk,
+@@ -2658,6 +2670,7 @@ static int nf_tables_newrule(struct net *net, struct sock *nlsk,
  	u8 genmask = nft_genmask_next(net);
  	struct nft_expr_info *info = NULL;
  	int family = nfmsg->nfgen_family;
@@ -392,7 +388,7 @@ index cae5c46e2dd4..b4270567b14a 100644
  	struct nft_table *table;
  	struct nft_chain *chain;
  	struct nft_rule *rule, *old_rule = NULL;
-@@ -2784,7 +2797,8 @@ static int nf_tables_newrule(struct net *net, struct sock *nlsk,
+@@ -2804,7 +2817,8 @@ static int nf_tables_newrule(struct net *net, struct sock *nlsk,
  
  		list_add_tail_rcu(&rule->list, &old_rule->list);
  	} else {
@@ -402,7 +398,7 @@ index cae5c46e2dd4..b4270567b14a 100644
  			err = -ENOMEM;
  			goto err2;
  		}
-@@ -2807,6 +2821,14 @@ static int nf_tables_newrule(struct net *net, struct sock *nlsk,
+@@ -2827,6 +2841,14 @@ static int nf_tables_newrule(struct net *net, struct sock *nlsk,
  	if (net->nft.validate_state == NFT_VALIDATE_DO)
  		return nft_table_validate(net, table);
  
@@ -417,7 +413,7 @@ index cae5c46e2dd4..b4270567b14a 100644
  	return 0;
  err2:
  	nf_tables_rule_release(&ctx, rule);
-@@ -6604,6 +6626,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+@@ -6624,6 +6646,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
  	struct nft_trans_elem *te;
  	struct nft_chain *chain;
  	struct nft_table *table;
@@ -425,7 +421,7 @@ index cae5c46e2dd4..b4270567b14a 100644
  
  	if (list_empty(&net->nft.commit_list)) {
  		mutex_unlock(&net->nft.commit_mutex);
-@@ -6614,6 +6637,10 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+@@ -6634,6 +6657,10 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
  	if (nf_tables_validate(net) < 0)
  		return -EAGAIN;
  
@@ -857,20 +853,20 @@ index cb8547f97220..ca2ae4b95a8d 100644
  
  struct nft_expr_type nft_imm_type __read_mostly = {
 diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
-index a54329b8634a..e92f365aca35 100644
+index 417f8d32e9a3..76866f77e343 100644
 --- a/net/netfilter/nft_meta.c
 +++ b/net/netfilter/nft_meta.c
-@@ -21,6 +21,7 @@
- #include <net/tcp_states.h> /* for TCP_TIME_WAIT */
+@@ -22,6 +22,7 @@
  #include <net/netfilter/nf_tables.h>
  #include <net/netfilter/nf_tables_core.h>
+ #include <net/netfilter/nft_meta.h>
 +#include <net/netfilter/nf_tables_offload.h>
  
  #include <uapi/linux/netfilter_bridge.h> /* NF_BR_PRE_ROUTING */
  
-@@ -515,6 +516,31 @@ static void nft_meta_set_destroy(const struct nft_ctx *ctx,
- 		static_branch_dec(&nft_trace_enabled);
+@@ -490,6 +491,31 @@ void nft_meta_set_destroy(const struct nft_ctx *ctx,
  }
+ EXPORT_SYMBOL_GPL(nft_meta_set_destroy);
  
 +static int nft_meta_get_offload(struct nft_offload_ctx *ctx,
 +				struct nft_flow_rule *flow,
@@ -900,7 +896,7 @@ index a54329b8634a..e92f365aca35 100644
  static const struct nft_expr_ops nft_meta_get_ops = {
  	.type		= &nft_meta_type,
  	.size		= NFT_EXPR_SIZE(sizeof(struct nft_meta)),
-@@ -522,6 +548,7 @@ static const struct nft_expr_ops nft_meta_get_ops = {
+@@ -497,6 +523,7 @@ static const struct nft_expr_ops nft_meta_get_ops = {
  	.init		= nft_meta_get_init,
  	.dump		= nft_meta_get_dump,
  	.validate	= nft_meta_get_validate,
