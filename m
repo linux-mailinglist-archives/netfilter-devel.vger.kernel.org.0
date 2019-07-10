@@ -2,182 +2,49 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C7B64586
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jul 2019 13:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D4264E6C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Jul 2019 00:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbfGJLBA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 10 Jul 2019 07:01:00 -0400
-Received: from kich.slackware.pl ([193.218.152.244]:34108 "EHLO
-        kich.slackware.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbfGJLA7 (ORCPT
+        id S1727995AbfGJWEe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 10 Jul 2019 18:04:34 -0400
+Received: from 50-244-196-250-static.hfc.comcastbusiness.net ([50.244.196.250]:56929
+        "EHLO hometime.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727978AbfGJWEc (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 10 Jul 2019 07:00:59 -0400
-X-Greylist: delayed 381 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Jul 2019 07:00:58 EDT
-Received: from kich.toxcorp.com (kich.toxcorp.com [193.218.152.244])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: shasta@toxcorp.com)
-        by kich.slackware.pl (Postfix) with ESMTPSA id 3B00CC0;
-        Wed, 10 Jul 2019 12:54:36 +0200 (CEST)
-Date:   Wed, 10 Jul 2019 12:54:36 +0200 (CEST)
-From:   Jakub Jankowski <shasta@toxcorp.com>
-To:     Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-cc:     Jakub Jankowski <shasta@toxcorp.com>, netfilter@vger.kernel.org,
-        mhemsley@open-systems.com, netfilter-devel@vger.kernel.org
-Subject: Re: 3-way handshake sets conntrack timeout to max_retrans
-In-Reply-To: <alpine.DEB.2.20.1907101242560.17522@blackhole.kfki.hu>
-Message-ID: <alpine.LNX.2.21.1907101251090.26040@kich.toxcorp.com>
-References: <alpine.LNX.2.21.1907100147540.26040@kich.toxcorp.com> <alpine.DEB.2.20.1907101242560.17522@blackhole.kfki.hu>
-User-Agent: Alpine 2.21 (LNX 202 2017-01-01)
+        Wed, 10 Jul 2019 18:04:32 -0400
+X-Greylist: delayed 18198 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Jul 2019 18:04:22 EDT
+Received: from [100.120.45.199] ([195.181.172.132]) by hometime.com with Microsoft SMTPSVC(6.0.3790.4675);
+         Wed, 10 Jul 2019 00:38:49 -0500
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Greetings!
+To:     Recipients <fuqingzheng@asia.com>
+From:   fuqingzheng@asia.com
+Date:   Wed, 10 Jul 2019 07:38:11 +0200
+Reply-To: zhengfuqing@yandex.com
+X-Antivirus: Avast (VPS 190709-4, 09-07-2019), Outbound message
+X-Antivirus-Status: Clean
+Message-ID: <SBSnOvXwoIzjwakzNFf0000920b@hometime.com>
+X-OriginalArrivalTime: 10 Jul 2019 05:38:49.0475 (UTC) FILETIME=[C00A7530:01D536E1]
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 2019-07-10, Jozsef Kadlecsik wrote:
+Good day,
 
-> Hi,
->
-> On Wed, 10 Jul 2019, Jakub Jankowski wrote:
->
->> We're debugging a weird issue. tl;dr: I have a .pcap file of connection
->> setup that makes conntrack apply TCP_CONNTRACK_RETRANS timeout (300s by
->> default) instead of TCP_CONNTRACK_ESTABLISHED (5d by default). The .pcap
->> is a recording of some app traffic running on Windows (SAP, I believe).
->>
->> To reproduce it, I set up a testbed consisting of three Debian (Buster)
->> VMs, running their default kernel (4.19.0-5-amd64, based on 4.19.37),
->> but I get the same results on vanilla 4.19.57.
->>
->>
->>              10.88.15.142        10.88.15.1
->>    ------------- enp0s3        enp0s3 -------------
->>    |           | -------------------- |           |
->>    | testhost1 |                      | testhost0 |
->>    |           | -------------------- |    (DUT)  |
->>    ------------- enp0s4        enp0s4 -------------
->>              10.88.1.2           10.88.1.1
->>
->>
->> Replaying "bad" pcap using tcpreplay from testhost1:
->>
->> root@testhost1:~# tcpreplay --cachefile=replay.cache --intf1=enp0s4
->> --intf2=enp0s3 -L 3 replay-timeadjusted.pcap
->>
->> and capturing what is seen on Device Under Test (testhost0)
->>
->> root@testhost0:~# tcpdump -s 0 -w replay-timeadjusted.pcap -i enp0s3 -nn
->>
->>
->> To pinpoint which timeout is getting set, we slightly moved these two sysctls
->> apart, because by default they're both 300s:
->>
->> # sysctl -w net.netfilter.nf_conntrack_tcp_timeout_max_retrans=313
->> # sysctl -w net.netfilter.nf_conntrack_tcp_timeout_unacknowledged=338
->>
->>
->> Firewall setup is the simplest thing we could come up with for conntrack to
->> handle this connection (and only this, to avoide pr_debug() noise):
->>
->> root@testhost0:~# iptables-save
->> # Generated by xtables-save v1.8.2 on Wed Jul 10 00:23:12 2019
->> *filter
->> :INPUT ACCEPT [0:0]
->> :FORWARD ACCEPT [0:0]
->> :OUTPUT ACCEPT [0:0]
->> :fwd - [0:0]
->> -A FORWARD -p tcp -m tcp --dport 3230 -j fwd
->> -A FORWARD -p tcp -m tcp --sport 3230 -j fwd
->> -A fwd -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
->> -A fwd -p tcp -m conntrack --ctstate NEW -m tcp --dport 3230 -j ACCEPT
->> COMMIT
->> # Completed on Wed Jul 10 00:23:12 2019
->> root@testhost0:~#
->>
->>
->> The offending handshake is:
->>
->> root@testhost0:~# tcpdump -v -nn --absolute-tcp-sequence-numbers -r
->> replayed-traffic.pcap
->> reading from file replayed-traffic.pcap, link-type EN10MB (Ethernet)
->> 01:13:25.070622 IP (tos 0x0, ttl 128, id 35410, offset 0, flags [DF], proto
->> TCP (6), length 52)
->>     10.88.15.142.51451 > 10.88.1.2.3230: Flags [S], cksum 0x1473 (correct),
->> seq 962079611, win 64240, options [mss 1460,nop,wscale 8,nop,nop,sackOK],
->> length 0
->> 01:13:26.070462 IP (tos 0x0, ttl 53, id 29815, offset 0, flags [DF], proto TCP
->> (6), length 48)
->>     10.88.1.2.3230 > 10.88.15.142.51451: Flags [S.], cksum 0x70cf (correct),
->> seq 1148284782, ack 962079612, win 65535, options [mss 1380,nop,wscale 3],
->> length 0
->> 01:13:27.070449 IP (tos 0x0, ttl 128, id 35411, offset 0, flags [DF], proto
->> TCP (6), length 40)
->>     10.88.15.142.51451 > 10.88.1.2.3230: Flags [.], cksum 0x9a46 (correct),
->> ack 1148284783, win 512, length 0
->>
->> This conversation results in the following conntrack events:
->>
->> root@testhost0:~# conntrack -E --orig-src 10.88.15.142
->>     [NEW] tcp      6 120 SYN_SENT src=10.88.15.142 dst=10.88.1.2 sport=51451
->> dport=3230 [UNREPLIED] src=10.88.1.2 dst=10.88.15.142 sport=3230 dport=51451
->>  [UPDATE] tcp      6 60 SYN_RECV src=10.88.15.142 dst=10.88.1.2 sport=51451
->> dport=3230 src=10.88.1.2 dst=10.88.15.142 sport=3230 dport=51451
->>  [UPDATE] tcp      6 312 ESTABLISHED src=10.88.15.142 dst=10.88.1.2
->> sport=51451 dport=3230 src=10.88.1.2 dst=10.88.15.142 sport=3230 dport=51451
->> [ASSURED]
->>
->>
->> After enabling all pr_debug()s in nf_conntrack_proto_tcp.c, the above
->> handshake results in this:
->>
->
-> Thanks for the thorough report, but the kernel debug log above does not
-> correspond to the packet replay: the TCP parameters do not match. Please
-> send the proper debug log, so we can look into it.
+  I have a mutual business proposal, which refers to the transfer of a large amount of money to an account abroad, with your help as a foreign partner as a beneficiary of the funds. Everything about this transaction will be legal without any bridge of financial authority both in my country and yours. If you are interested and I will give you more information about the project as soon as I receive your positive response.
 
-Argh. My bad, wrong copy&paste, sorry. Here goes the correct debug 
-snippet:
+Best regards,
 
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026592] tcp_new: sender end=962079612 maxend=962079612 maxwin=64240 scale=8 receiver end=0 maxend=0 maxwin=0 scale=0
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026632] tcp_in_window: START
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026640] tcp_in_window:
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026652] seq=962079611 ack=0+(0) sack=0+(0) win=64240 end=962079612
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026663] tcp_in_window: sender end=962079612 maxend=962079612 maxwin=64240 scale=8 receiver end=0 maxend=0 maxwin=0 scale=0
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026671] tcp_in_window:
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026680] seq=962079611 ack=0+(0) sack=0+(0) win=64240 end=962079612
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026690] tcp_in_window: sender end=962079612 maxend=962079612 maxwin=64240 scale=8 receiver end=0 maxend=0 maxwin=0 scale=0
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026698] tcp_in_window: I=1 II=1 III=1 IV=1
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026708] tcp_in_window: res=1 sender end=962079612 maxend=962079612 maxwin=64240 receiver end=0 maxend=64240 maxwin=0
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026715] tcp_conntracks:
-Jul 10 01:13:25 testhost0 kernel: [ 2250.026725] syn=1 ack=0 fin=0 rst=0 old=0 new=1
-Jul 10 01:13:26 testhost0 kernel: [ 2251.026365] tcp_in_window: START
-Jul 10 01:13:26 testhost0 kernel: [ 2251.026373] tcp_in_window:
-Jul 10 01:13:26 testhost0 kernel: [ 2251.026376] seq=1148284782 ack=962079612+(0) sack=962079612+(0) win=65535 end=1148284783
-Jul 10 01:13:26 testhost0 kernel: [ 2251.026379] tcp_in_window: sender end=0 maxend=64240 maxwin=0 scale=0 receiver end=962079612 maxend=962079612 maxwin=64240 scale=8
-Jul 10 01:13:26 testhost0 kernel: [ 2251.026380] tcp_in_window:
-Jul 10 01:13:26 testhost0 kernel: [ 2251.026382] seq=1148284782 ack=962079612+(0) sack=962079612+(0) win=65535 end=1148284783
-Jul 10 01:13:26 testhost0 kernel: [ 2251.026384] tcp_in_window: sender end=1148284783 maxend=1148284783 maxwin=65535 scale=3 receiver end=962079612 maxend=962079612 maxwin=64240 scale=8
-Jul 10 01:13:26 testhost0 kernel: [ 2251.026386] tcp_in_window: I=1 II=1 III=1 IV=1
-Jul 10 01:13:26 testhost0 kernel: [ 2251.026387] tcp_in_window: res=1 sender end=1148284783 maxend=1148284783 maxwin=65535 receiver end=962079612 maxend=962145147 maxwin=64240
-Jul 10 01:13:26 testhost0 kernel: [ 2251.026389] tcp_conntracks:
-Jul 10 01:13:26 testhost0 kernel: [ 2251.026391] syn=1 ack=1 fin=0 rst=0 old=1 new=2
-Jul 10 01:13:27 testhost0 kernel: [ 2252.026425] tcp_in_window: START
-Jul 10 01:13:27 testhost0 kernel: [ 2252.026435] tcp_in_window:
-Jul 10 01:13:27 testhost0 kernel: [ 2252.026438] seq=962079612 ack=1148284783+(0) sack=1148284783+(0) win=512 end=962079612
-Jul 10 01:13:27 testhost0 kernel: [ 2252.026440] tcp_in_window: sender end=962079612 maxend=962145147 maxwin=64240 scale=8 receiver end=1148284783 maxend=1148284783 maxwin=65535 scale=3
-Jul 10 01:13:27 testhost0 kernel: [ 2252.026442] tcp_in_window:
-Jul 10 01:13:27 testhost0 kernel: [ 2252.026444] seq=962079612 ack=1148284783+(0) sack=1148284783+(0) win=512 end=962079612
-Jul 10 01:13:27 testhost0 kernel: [ 2252.026446] tcp_in_window: sender end=962079612 maxend=962145147 maxwin=64240 scale=8 receiver end=1148284783 maxend=1148284783 maxwin=65535 scale=3
-Jul 10 01:13:27 testhost0 kernel: [ 2252.026447] tcp_in_window: I=1 II=1 III=1 IV=1
-Jul 10 01:13:27 testhost0 kernel: [ 2252.026449] tcp_in_window: res=1 sender end=962079612 maxend=962145147 maxwin=131072 receiver end=1148284783 maxend=1148415855 maxwin=65535
-Jul 10 01:13:27 testhost0 kernel: [ 2252.026451] tcp_conntracks:
-Jul 10 01:13:27 testhost0 kernel: [ 2252.026452] syn=0 ack=1 fin=0 rst=0 old=2 new=3
+Executive Director.
+ 
+ICBC. China
 
+---
+Dit e-mailbericht is gecontroleerd op virussen met Avast antivirussoftware.
+https://www.avast.com/antivirus
 
-J.
-
--- 
-Jakub Jankowski|shasta@toxcorp.com|https://toxcorp.com/
