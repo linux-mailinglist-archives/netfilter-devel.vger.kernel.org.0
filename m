@@ -2,90 +2,88 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 630D464F91
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Jul 2019 02:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3258D650A7
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Jul 2019 05:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbfGKAar (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 10 Jul 2019 20:30:47 -0400
-Received: from smtprelay0030.hostedemail.com ([216.40.44.30]:45094 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726627AbfGKAar (ORCPT
+        id S1727800AbfGKDkT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 10 Jul 2019 23:40:19 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:34891 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725977AbfGKDkT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 10 Jul 2019 20:30:47 -0400
-X-Greylist: delayed 505 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Jul 2019 20:30:46 EDT
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave08.hostedemail.com (Postfix) with ESMTP id 9A74E182D48C4;
-        Thu, 11 Jul 2019 00:22:22 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id F2F3B4833;
-        Thu, 11 Jul 2019 00:22:20 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::::::::::::::::,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:4321:5007:7514:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12555:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21451:21627:30054:30090:30091,0,RBL:23.242.196.136:@perches.com:.lbl8.mailshell.net-62.8.0.180 64.201.201.201,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:neutral,Custom_rules:0:0:0,LFtime:25,LUA_SUMMARY:none
-X-HE-Tag: need74_4e415a63a7511
-X-Filterd-Recvd-Size: 2210
-Received: from XPS-9350.home (cpe-23-242-196-136.socal.res.rr.com [23.242.196.136])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 11 Jul 2019 00:22:17 +0000 (UTC)
-Message-ID: <80a4e132f3be48899904eccdc023f5c53229840b.camel@perches.com>
-Subject: Re: [PATCH] ipvs: remove unnecessary space
-From:   Joe Perches <joe@perches.com>
-To:     Simon Horman <horms@verge.net.au>,
-        yangxingwu <xingwu.yang@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     wensong@linux-vs.org, ja@ssi.bg, kadlec@blackhole.kfki.hu,
-        fw@strlen.de, davem@davemloft.net, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-kernel@vger.kernel.org
-Date:   Wed, 10 Jul 2019 17:22:16 -0700
-In-Reply-To: <20190710080609.smxjqe2d5jyro4hv@verge.net.au>
-References: <20190710074552.74394-1-xingwu.yang@gmail.com>
-         <20190710080609.smxjqe2d5jyro4hv@verge.net.au>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.30.5-0ubuntu0.18.10.1 
+        Wed, 10 Jul 2019 23:40:19 -0400
+Received: by mail-pg1-f193.google.com with SMTP id s27so2226249pgl.2;
+        Wed, 10 Jul 2019 20:40:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M8wX1u1AyY8aIZh85CrgBQrNgkI4YoDiE4Y/ARBtWTI=;
+        b=MQSWRWsAWJYvODOaMa5S5WYGn5WyApLDP13/bq1J3buPbjvqYJk04y5+eL1GBCPaEY
+         VxMNOWWX/W8DqqO0Cycuruwb36aIFFnuV+tscB1DRqRuS9BkZh1rUkwn2yyJgDkC+pDu
+         kx7fMeiWEn4hBGCAR+IMyee/am4cZRsk4uXbhxS7Yj6ONNrCqsd2KD+JtV7wkWRtueJj
+         lwzKDnD6v1FnSawOO7c0h3P3kxy554wDZGoIiFrnWjoayKHK/WHfy5j+97z+IXEwhlO6
+         HsYmw+95wRiHg6gkWWwdZL9X+7cHT6pmJwCjust5djfhvzIufdEyFICSR8cnVqESD0cd
+         NgAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M8wX1u1AyY8aIZh85CrgBQrNgkI4YoDiE4Y/ARBtWTI=;
+        b=S3tfGs3UlbGzzDeXlaVJbweFYPahR6qjEcods5F+0kf9giTjCvCZazVsjKlGUtjaqc
+         PIbPfoWT2Sw6h/6QOmeYUTWXS1IX/Ct2CvgkmW7g36VDoYBpryoU6yhVo3QNHBRM4v/G
+         1N/0htJaWT8/ANLZfvc1x59x3V5pB0tcWop9w4EPIYwFlzYNkbDmZDbSi5FlvWt57O7K
+         7ulFI3pUpl/n9o8kyAW7jtBCOpQZ+GTfe7bXZC5kHVhvJlTopSIB4DEatVOjFvciGJvE
+         bQ55wkfmEAw3+RKMPtELe4zCvh9vr1ZdJCkD9B978z/tGcn5vbbN8C82fpj85CpSYMGq
+         b/5g==
+X-Gm-Message-State: APjAAAXaWvmCPRaklGe7HEUYm6cUDPBTK++kUb8IbJZT54BnPDcfOiWZ
+        OVj4H0vjym0tOSA0XTsaEHA=
+X-Google-Smtp-Source: APXvYqxYR5XW+F/7S+4Zmn+naLYm4I1R/JfSfk5RrKN/ZLUBN1s5HNPr3vy1j6yMf97NWWQce/VQvA==
+X-Received: by 2002:a65:6152:: with SMTP id o18mr1869115pgv.279.1562816418283;
+        Wed, 10 Jul 2019 20:40:18 -0700 (PDT)
+Received: from localhost.localdomain ([116.66.213.65])
+        by smtp.gmail.com with ESMTPSA id c130sm3543777pfc.184.2019.07.10.20.40.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Wed, 10 Jul 2019 20:40:17 -0700 (PDT)
+From:   yangxingwu <xingwu.yang@gmail.com>
+To:     wensong@linux-vs.org
+Cc:     horms@verge.net.au, ja@ssi.bg, pablo@netfilter.org,
+        kadlec@blackhole.kfki.hu, fw@strlen.de, davem@davemloft.net,
+        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org, yangxingwu <xingwu.yang@gmail.com>
+Subject: [PATCH] ipvs: remove unnecessary space
+Date:   Thu, 11 Jul 2019 11:39:59 +0800
+Message-Id: <20190711033959.1593-1-xingwu.yang@gmail.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, 2019-07-10 at 10:06 +0200, Simon Horman wrote:
-> On Wed, Jul 10, 2019 at 03:45:52PM +0800, yangxingwu wrote:
-> > this patch removes the extra space.
-> > 
-> > Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
-> 
-> Thanks, this looks good to me.
-> 
-> Acked-by: Simon Horman <horms@verge.net.au>
-> 
-> Pablo, please consider including this in nf-next.
-> 
-> 
-> > ---
-> >  net/netfilter/ipvs/ip_vs_mh.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/net/netfilter/ipvs/ip_vs_mh.c b/net/netfilter/ipvs/ip_vs_mh.c
-> > index 94d9d34..98e358e 100644
-> > --- a/net/netfilter/ipvs/ip_vs_mh.c
-> > +++ b/net/netfilter/ipvs/ip_vs_mh.c
-> > @@ -174,8 +174,8 @@ static int ip_vs_mh_populate(struct ip_vs_mh_state *s,
-> >  		return 0;
-> >  	}
-> >  
-> > -	table =  kcalloc(BITS_TO_LONGS(IP_VS_MH_TAB_SIZE),
-> > -			 sizeof(unsigned long), GFP_KERNEL);
-> > +	table =	kcalloc(BITS_TO_LONGS(IP_VS_MH_TAB_SIZE),
-> > +			sizeof(unsigned long), GFP_KERNEL);
+this patch removes the extra space and use bitmap_zalloc instead
 
-bitmap_alloc?
+Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
+---
+ net/netfilter/ipvs/ip_vs_mh.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> >  	if (!table)
-> >  		return -ENOMEM;
-> >  
-> > -- 
-> > 1.8.3.1
-> > 
+diff --git a/net/netfilter/ipvs/ip_vs_mh.c b/net/netfilter/ipvs/ip_vs_mh.c
+index 94d9d34..3229867 100644
+--- a/net/netfilter/ipvs/ip_vs_mh.c
++++ b/net/netfilter/ipvs/ip_vs_mh.c
+@@ -174,8 +174,7 @@ static int ip_vs_mh_populate(struct ip_vs_mh_state *s,
+ 		return 0;
+ 	}
+ 
+-	table =  kcalloc(BITS_TO_LONGS(IP_VS_MH_TAB_SIZE),
+-			 sizeof(unsigned long), GFP_KERNEL);
++	table = bitmap_zalloc(IP_VS_MH_TAB_SIZE, GFP_KERNEL);
+ 	if (!table)
+ 		return -ENOMEM;
+ 
+-- 
+1.8.3.1
 
