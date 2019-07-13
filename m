@@ -2,63 +2,54 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 556986775C
-	for <lists+netfilter-devel@lfdr.de>; Sat, 13 Jul 2019 02:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FE567B05
+	for <lists+netfilter-devel@lfdr.de>; Sat, 13 Jul 2019 17:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbfGMAwL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 12 Jul 2019 20:52:11 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:35404 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727236AbfGMAwL (ORCPT
+        id S1727656AbfGMPio (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 13 Jul 2019 11:38:44 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:2107 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727626AbfGMPio (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 12 Jul 2019 20:52:11 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::d71])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 5857814E325A4;
-        Fri, 12 Jul 2019 17:52:10 -0700 (PDT)
-Date:   Fri, 12 Jul 2019 17:52:09 -0700 (PDT)
-Message-Id: <20190712.175209.1898099026580912284.davem@davemloft.net>
-To:     netdev@vger.kernel.org, daniel@iogearbox.net
-CC:     linux-wireless@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, lwn@lwn.net
-Subject: LPC 2019 Networking Track CFP (reminder)
-From:   David Miller <davem@davemloft.net>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 12 Jul 2019 17:52:10 -0700 (PDT)
+        Sat, 13 Jul 2019 11:38:44 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.19]) by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee35d29f763725-3a85a; Sat, 13 Jul 2019 23:23:16 +0800 (CST)
+X-RM-TRANSID: 2ee35d29f763725-3a85a
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost (unknown[223.105.0.241])
+        by rmsmtp-syy-appsvr10-12010 (RichMail) with SMTP id 2eea5d29f7641cf-8262e;
+        Sat, 13 Jul 2019 23:23:16 +0800 (CST)
+X-RM-TRANSID: 2eea5d29f7641cf-8262e
+From:   Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Simon Horman <horms@verge.net.au>
+Cc:     netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+Subject: [net-next 0/2] ipvs: speedup ipvs netns dismantle
+Date:   Sat, 13 Jul 2019 23:19:44 +0800
+Message-Id: <1563031186-2101-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Implement exit_batch() method to dismantle more ipvs netns
+per round.
 
-This is a call for proposals for the 3 day networking track at the
-Linux Plumbers Conference in Lisbon, which will be happening on
-September 9th-11th, 2019.
+Haishuang Yan (2):
+  ipvs: batch __ip_vs_cleanup
+  ipvs: batch __ip_vs_dev_cleanup
 
-We are seeking talks of 40 minutes in length (including Q & A),
-optionally accompanied by papers of 2 to 10 pages in length.  The
-papers, while not required, are very strongly encouraged by the
-committee.  The submitters intention to provide a paper will be taken
-into consideration as a criteria when deciding which proposals to
-accept.
+ include/net/ip_vs.h             |  2 +-
+ net/netfilter/ipvs/ip_vs_core.c | 49 +++++++++++++++++++++++++----------------
+ net/netfilter/ipvs/ip_vs_ctl.c  | 13 ++++++++---
+ 3 files changed, 41 insertions(+), 23 deletions(-)
 
-Any kind of advanced networking-related topic will be considered.
+-- 
+1.8.3.1
 
-Please submit your proposals on the LPC website at:
 
-	https://www.linuxplumbersconf.org/event/4/abstracts/#submit-abstract
 
-And be sure to select "Networking Summit Track" in the Track pulldown
-menu.
-
-Proposals must be submitted by August 2nd, and submitters will be
-notified of acceptance by August 9th.
-
-Final slides and papers (as PDF) are due on September 2nd.
-
-Looking forward to seeing you all in Lisbon in September!
