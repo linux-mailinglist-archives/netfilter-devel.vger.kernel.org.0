@@ -2,92 +2,188 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E98D67B01
-	for <lists+netfilter-devel@lfdr.de>; Sat, 13 Jul 2019 17:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E6767B26
+	for <lists+netfilter-devel@lfdr.de>; Sat, 13 Jul 2019 18:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727751AbfGMPia (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 13 Jul 2019 11:38:30 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:2141 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727656AbfGMPia (ORCPT
+        id S1727879AbfGMQDM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 13 Jul 2019 12:03:12 -0400
+Received: from fnsib-smtp07.srv.cat ([46.16.61.67]:45293 "EHLO
+        fnsib-smtp07.srv.cat" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727638AbfGMQDL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 13 Jul 2019 11:38:30 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee85d29f77052c-3a621; Sat, 13 Jul 2019 23:23:28 +0800 (CST)
-X-RM-TRANSID: 2ee85d29f77052c-3a621
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost (unknown[223.105.0.241])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35d29f76f5a8-83a47;
-        Sat, 13 Jul 2019 23:23:28 +0800 (CST)
-X-RM-TRANSID: 2ee35d29f76f5a8-83a47
-From:   Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Simon Horman <horms@verge.net.au>
-Cc:     netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-Subject: [net-next 2/2] ipvs: batch __ip_vs_dev_cleanup
-Date:   Sat, 13 Jul 2019 23:19:46 +0800
-Message-Id: <1563031186-2101-3-git-send-email-yanhaishuang@cmss.chinamobile.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1563031186-2101-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
-References: <1563031186-2101-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
+        Sat, 13 Jul 2019 12:03:11 -0400
+Received: from localhost.localdomain (unknown [47.62.206.189])
+        by fnsib-smtp07.srv.cat (Postfix) with ESMTPSA id C0F2881DE;
+        Sat, 13 Jul 2019 18:03:06 +0200 (CEST)
+From:   Ander Juaristi <a@juaristi.eus>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Ander Juaristi <a@juaristi.eus>
+Subject: [PATCH] netfilter: nft_dynset: support for element deletion
+Date:   Sat, 13 Jul 2019 18:03:02 +0200
+Message-Id: <20190713160302.31308-1-a@juaristi.eus>
+X-Mailer: git-send-email 2.17.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-It's better to batch __ip_vs_cleanup to speedup ipvs
-devices dismantle.
+This patch implements the delete operation from the ruleset.
 
-Signed-off-by: Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+It implements a new delete() function in nft_set_rhash. It is simpler
+to use than the already existing remove(), because it only takes the set
+and the key as arguments, whereas remove() expects a full
+nft_set_elem structure.
+
+Signed-off-by: Ander Juaristi <a@juaristi.eus>
 ---
- net/netfilter/ipvs/ip_vs_core.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ include/net/netfilter/nf_tables.h        |  2 ++
+ include/uapi/linux/netfilter/nf_tables.h |  1 +
+ net/netfilter/nft_dynset.c               | 43 +++++++++++++++++-------
+ net/netfilter/nft_set_hash.c             | 20 +++++++++++
+ 4 files changed, 53 insertions(+), 13 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index b4d79b7..58af24a 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -2434,14 +2434,20 @@ static int __net_init __ip_vs_dev_init(struct net *net)
- 	return ret;
- }
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 9e8493aad49d..b24a3c8ec0a4 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -312,6 +312,8 @@ struct nft_set_ops {
+ 						  const struct nft_expr *expr,
+ 						  struct nft_regs *regs,
+ 						  const struct nft_set_ext **ext);
++	bool				(*delete)(const struct nft_set *set,
++						  const u32 *key);
  
--static void __net_exit __ip_vs_dev_cleanup(struct net *net)
-+static void __net_exit __ip_vs_dev_cleanup_batch(struct list_head *net_list)
- {
--	struct netns_ipvs *ipvs = net_ipvs(net);
-+	struct netns_ipvs *ipvs;
-+	struct net *net;
-+	LIST_HEAD(list);
-+
- 	EnterFunction(2);
--	nf_unregister_net_hooks(net, ip_vs_ops, ARRAY_SIZE(ip_vs_ops));
--	ipvs->enable = 0;	/* Disable packet reception */
--	smp_wmb();
--	ip_vs_sync_net_cleanup(ipvs);
-+	list_for_each_entry(net, net_list, exit_list) {
-+		ipvs = net_ipvs(net);
-+		nf_unregister_net_hooks(net, ip_vs_ops, ARRAY_SIZE(ip_vs_ops));
-+		ipvs->enable = 0;	/* Disable packet reception */
-+		smp_wmb();
-+		ip_vs_sync_net_cleanup(ipvs);
-+	}
- 	LeaveFunction(2);
- }
- 
-@@ -2454,7 +2460,7 @@ static void __net_exit __ip_vs_dev_cleanup(struct net *net)
- 
- static struct pernet_operations ipvs_core_dev_ops = {
- 	.init = __ip_vs_dev_init,
--	.exit = __ip_vs_dev_cleanup,
-+	.exit_batch = __ip_vs_dev_cleanup_batch,
+ 	int				(*insert)(const struct net *net,
+ 						  const struct nft_set *set,
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index c6c8ec5c7c00..e8483e1e7146 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -634,6 +634,7 @@ enum nft_lookup_attributes {
+ enum nft_dynset_ops {
+ 	NFT_DYNSET_OP_ADD,
+ 	NFT_DYNSET_OP_UPDATE,
++	NFT_DYNSET_OP_DELETE,
  };
  
- /*
+ enum nft_dynset_flags {
+diff --git a/net/netfilter/nft_dynset.c b/net/netfilter/nft_dynset.c
+index bfb9f7463b03..83b88ca656d4 100644
+--- a/net/netfilter/nft_dynset.c
++++ b/net/netfilter/nft_dynset.c
+@@ -79,37 +79,53 @@ static void *nft_dynset_new(struct nft_set *set, const struct nft_expr *expr,
+ 	return NULL;
+ }
+ 
+-void nft_dynset_eval(const struct nft_expr *expr,
+-		     struct nft_regs *regs, const struct nft_pktinfo *pkt)
++static bool nft_dynset_update(uint8_t sreg_key, int op, u64 timeout,
++			      const struct nft_expr *expr,
++			      const struct nft_pktinfo *pkt,
++			      struct nft_regs *regs, struct nft_set *set)
+ {
+-	const struct nft_dynset *priv = nft_expr_priv(expr);
+-	struct nft_set *set = priv->set;
+ 	const struct nft_set_ext *ext;
+ 	const struct nft_expr *sexpr;
+-	u64 timeout;
+ 
+-	if (set->ops->update(set, &regs->data[priv->sreg_key], nft_dynset_new,
++	if (set->ops->update(set, &regs->data[sreg_key], nft_dynset_new,
+ 			     expr, regs, &ext)) {
+ 		sexpr = NULL;
+ 		if (nft_set_ext_exists(ext, NFT_SET_EXT_EXPR))
+ 			sexpr = nft_set_ext_expr(ext);
+ 
+-		if (priv->op == NFT_DYNSET_OP_UPDATE &&
++		if (op == NFT_DYNSET_OP_UPDATE &&
+ 		    nft_set_ext_exists(ext, NFT_SET_EXT_EXPIRATION)) {
+-			timeout = priv->timeout ? : set->timeout;
++			timeout = timeout ? : set->timeout;
+ 			*nft_set_ext_expiration(ext) = get_jiffies_64() + timeout;
+ 		}
+ 
+ 		if (sexpr != NULL)
+ 			sexpr->ops->eval(sexpr, regs, pkt);
+ 
+-		if (priv->invert)
+-			regs->verdict.code = NFT_BREAK;
+-		return;
++		return true;
+ 	}
+ 
+-	if (!priv->invert)
+-		regs->verdict.code = NFT_BREAK;
++	return false;
++}
++
++void nft_dynset_eval(const struct nft_expr *expr,
++		     struct nft_regs *regs, const struct nft_pktinfo *pkt)
++{
++	const struct nft_dynset *priv = nft_expr_priv(expr);
++	struct nft_set *set = priv->set;
++
++	if (priv->op == NFT_DYNSET_OP_DELETE) {
++		set->ops->delete(set, &regs->data[priv->sreg_key])
++	} else {
++		if (nft_dynset_update(priv->sreg_key, priv->op, priv->timeout, expr, pkt, regs, set)) {
++			if (priv->invert)
++				regs->verdict.code = NFT_BREAK;
++			return;
++		}
++
++		if (!priv->invert)
++			regs->verdict.code = NFT_BREAK;
++	}
+ }
+ 
+ static const struct nla_policy nft_dynset_policy[NFTA_DYNSET_MAX + 1] = {
+@@ -165,6 +181,7 @@ static int nft_dynset_init(const struct nft_ctx *ctx,
+ 	priv->op = ntohl(nla_get_be32(tb[NFTA_DYNSET_OP]));
+ 	switch (priv->op) {
+ 	case NFT_DYNSET_OP_ADD:
++	case NFT_DYNSET_OP_DELETE:
+ 		break;
+ 	case NFT_DYNSET_OP_UPDATE:
+ 		if (!(set->flags & NFT_SET_TIMEOUT))
+diff --git a/net/netfilter/nft_set_hash.c b/net/netfilter/nft_set_hash.c
+index 03df08801e28..aeb83dfa9583 100644
+--- a/net/netfilter/nft_set_hash.c
++++ b/net/netfilter/nft_set_hash.c
+@@ -237,6 +237,25 @@ static void nft_rhash_remove(const struct net *net,
+ 	rhashtable_remove_fast(&priv->ht, &he->node, nft_rhash_params);
+ }
+ 
++static bool nft_rhash_delete(const struct nft_set *set,
++			     const u32 *key)
++{
++	struct nft_rhash *priv = nft_set_priv(set);
++	struct nft_rhash_elem *he;
++	struct nft_rhash_cmp_arg arg = {
++		.genmask = NFT_GENMASK_ANY,
++		.set = set,
++		.key = key,
++	};
++
++	he = rhashtable_lookup(&priv->ht, &arg, nft_rhash_params);
++	if (he == NULL)
++		return false;
++
++	rhashtable_remove_fast(&priv->ht, &he->node, nft_rhash_params);
++	return true;
++}
++
+ static void nft_rhash_walk(const struct nft_ctx *ctx, struct nft_set *set,
+ 			   struct nft_set_iter *iter)
+ {
+@@ -665,6 +684,7 @@ struct nft_set_type nft_set_rhash_type __read_mostly = {
+ 		.remove		= nft_rhash_remove,
+ 		.lookup		= nft_rhash_lookup,
+ 		.update		= nft_rhash_update,
++		.delete		= nft_rhash_delete,
+ 		.walk		= nft_rhash_walk,
+ 		.get		= nft_rhash_get,
+ 	},
 -- 
-1.8.3.1
-
-
+2.17.1
 
