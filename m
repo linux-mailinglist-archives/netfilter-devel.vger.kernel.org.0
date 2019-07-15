@@ -2,91 +2,68 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 739A96881E
-	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jul 2019 13:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99A668827
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jul 2019 13:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729725AbfGOLXn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 15 Jul 2019 07:23:43 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:45695 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729814AbfGOLXn (ORCPT
+        id S1729847AbfGOL0f (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 15 Jul 2019 07:26:35 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:33445 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729781AbfGOL0f (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 15 Jul 2019 07:23:43 -0400
-Received: by mail-wr1-f68.google.com with SMTP id f9so16620794wre.12
-        for <netfilter-devel@vger.kernel.org>; Mon, 15 Jul 2019 04:23:41 -0700 (PDT)
+        Mon, 15 Jul 2019 07:26:35 -0400
+Received: by mail-pg1-f196.google.com with SMTP id m4so7578097pgk.0
+        for <netfilter-devel@vger.kernel.org>; Mon, 15 Jul 2019 04:26:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=kc0S3mFcbtM9X2cItKfZZV6mfNwHU1lebr4GxLX2rI4=;
-        b=lAntxpbeksTcYXsbX1bYAGQ9M6xlyDcCw5j7/Ap/uDxdimdwrlREGNF91WgJH9NtOD
-         SplpiBFt79kYNcUIxZvQ8SYJAkD8pIanGJ5LkWfFP57gfOSQikK1vZzAALFayzvf0ks1
-         cMm3LSENy6oi3ckfgpA2BLfh2GZuaqkyHj2JA1zcvHGsY4BQY6uVaGAmRDEqsCVcFcrf
-         Dc3bgv4W/96lxQGqD+X/zEZn9XFzUCtQWXw5F74doc+orRm+MZIQtAaihcv11PWyL09m
-         NcPc/IihrqrNq5+qFl1FJG+COHQxQ3w6w9JFFARnGuJaqorR+5tIhoihXXcboLw8MuVw
-         Ir3g==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=R/z9C++HzdZHJokF8YQvAcRfrfxDb5Hvo0pKZKIfP9w=;
+        b=DZYtSP9up/zrTjgazKls2iqXpeQdzKwgPDAakUNd6lH6FbZR5yGwVlJib4dq/9mc9v
+         bu8hmiF98dN+hTbbXbJ3X4Xi2SLOyOcbTYrfuFGKHWuw88phQm+JG/qZdKhbhJB533JF
+         wSha8TE9AGAIgZBoy+0gj04KNFKGrDgCaHjBMX620ooH+CI0OQHIyqgEk59lwDPXIsse
+         nMO8t2Fxmm/I9eHZsyzrvnrAA8CLrIKiQn8HUbPjrsAnz73LQv1BMnL39fGtWiKSvx6B
+         ETr16NQIBZ1Y7xy9W2D85mtkVy2FWAmh3YapTaXaN64xZOK0wxyeWGwXB71QlxiMNOiq
+         AzYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=kc0S3mFcbtM9X2cItKfZZV6mfNwHU1lebr4GxLX2rI4=;
-        b=h5zZDNGRc074ckod1WExorQaBCVgiYZvDM7dE2N+x4dgo0P2RNoosx+b1qLoT+LsJa
-         E6rzsUL2rk19V5j8CTb06L8dANZscDc74VouwvTANMaRiX4ZnfxW2r7wltT21cVoUWoi
-         xMAJwMuKD4Di3lGOMBsuZDbIcDdfDKuJo2b7/OHPj+uKsCU3RUk5FRTVNrZBJsQEWhuu
-         SJ1QJhPKA9GZqf643bXBVys2FDA1ZTr1AG1Jr+OmO1T1wLbv4w3jWqEZJMFDgW7VUDZ/
-         3G/dx1/6x5HTtZz0eUSP1RuTC0RXL8LQNM/2DrzO/+DEYxF/aDnXuIy6z4OWnofsi6uQ
-         10Yg==
-X-Gm-Message-State: APjAAAUAM+YGQ+s9L+NaqmeQPT7Zkix0Bu4JVNKHCNwzLKTx1Bo1Sjh3
-        +t7w7HLGOr2W1n8RkIzuhnULo0Eq
-X-Google-Smtp-Source: APXvYqwsB9EnopvvFfV5XQ0Pfp1PoPmoOLnJubTQXEQAQf/NJ6PH7LGLytM5SfgyY7qOJrrvcf+zcA==
-X-Received: by 2002:a5d:5348:: with SMTP id t8mr27854464wrv.159.1563189820910;
-        Mon, 15 Jul 2019 04:23:40 -0700 (PDT)
-Received: from nevthink ([185.79.20.147])
-        by smtp.gmail.com with ESMTPSA id l25sm12691115wme.13.2019.07.15.04.23.39
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 15 Jul 2019 04:23:40 -0700 (PDT)
-Date:   Mon, 15 Jul 2019 13:23:37 +0200
-From:   Laura Garcia Liebana <nevola@gmail.com>
-To:     netfilter-devel@vger.kernel.org
-Cc:     pablo@netfilter.org
-Subject: [PATCH nf] netfilter: fix symhash with modulus one
-Message-ID: <20190715112337.gobsm3ljlmgtarnf@nevthink>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=R/z9C++HzdZHJokF8YQvAcRfrfxDb5Hvo0pKZKIfP9w=;
+        b=JmYUWN4Zx8JKSx2tJtlVQMckA2seO1m4xdQn+Kfcmm+rxP3xQYNPTR4MU5/p/UAYuS
+         l0ZXEqMiWV54+bw7rKW5RXmtV7uiICVIqzYfbfWct+bypdzw99I0crww2VtoWDPxsbIS
+         3vZQKPC9chHYfdTgZQYUDEgMMFe/RLNRmYtXfREJ9R8UaRE2JROtjsh92lBj18ssK4tC
+         Pd8rR/zeR/fUzczxy3o9GzJEizduKJ7Jt1EJeedlPtKND0dPG847XdxxpgYoPnO4BGPM
+         n1CUsDCpqSB6MoCqdTSJiFWQ6LHSDmcYfRr89vtUalfnNzHfOrx8cZYUaY1UahSpOgvx
+         oa2w==
+X-Gm-Message-State: APjAAAXc8RF7fK4OG7PMBvEBnvC0VY6FXsVoV2YVs6oBlfRs6Zh4P0EK
+        ZbW+7A7TJjLH/xtCexCSXOCjA9RXnwvQ9MaclL0=
+X-Google-Smtp-Source: APXvYqy/NZzH6VDdeF9YLHJUdslhZPpzERu7eT5C2U0Jc9mPYJaLpUvUutK/FAAIj/Ml32jjVTLWKRDgLHRzfQ0KsDs=
+X-Received: by 2002:a17:90a:30aa:: with SMTP id h39mr28896724pjb.32.1563189994504;
+ Mon, 15 Jul 2019 04:26:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20170113 (1.7.2)
+Received: by 2002:a17:90a:8c14:0:0:0:0 with HTTP; Mon, 15 Jul 2019 04:26:33
+ -0700 (PDT)
+From:   John Jacob <jjacobvsusa@gmail.com>
+Date:   Mon, 15 Jul 2019 04:26:33 -0700
+Message-ID: <CAKZDKkDge2J_qQiwtYYxvA=OTyk=bkqOhd7+sjwPTYOT1i58Kg@mail.gmail.com>
+Subject: Kindly Respond
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The rule below doesn't work as the kernel raises -ERANGE.
+Hello Sir,
 
-nft add rule netdev nftlb lb01 ip daddr set \
-	symhash mod 1 map { 0 : 192.168.0.10 } fwd to "eth0"
+I am Barr Fredrick Mbogo a business consultant i have a lucrative
+business to discuss with you from the Eastern part of Africa Uganda
+aimed at agreed percentage upon your acceptance of my hand in business
+and friendship. Kindly respond to me if you are interested to partner
+with me for an update. Very important.
 
-This patch allows to use the symhash modulus with one
-element, in the same way that the other types of hashes and
-algorithms that uses the modulus parameter.
-
-Signed-off-by: Laura Garcia Liebana <nevola@gmail.com>
----
- net/netfilter/nft_hash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/netfilter/nft_hash.c b/net/netfilter/nft_hash.c
-index fe93e731dc7f..b836d550b919 100644
---- a/net/netfilter/nft_hash.c
-+++ b/net/netfilter/nft_hash.c
-@@ -129,7 +129,7 @@ static int nft_symhash_init(const struct nft_ctx *ctx,
- 	priv->dreg = nft_parse_register(tb[NFTA_HASH_DREG]);
- 
- 	priv->modulus = ntohl(nla_get_be32(tb[NFTA_HASH_MODULUS]));
--	if (priv->modulus <= 1)
-+	if (priv->modulus < 1)
- 		return -ERANGE;
- 
- 	if (priv->offset + priv->modulus - 1 < priv->offset)
--- 
-2.11.0
-
+Yours Sincerely,
+John Jacob,
+For,
+Barr Frederick Mbogo
+Business Consultant.
+Reply to: barrfredmbogo@consultant.com
