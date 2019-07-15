@@ -2,42 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7730A695D7
-	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jul 2019 17:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99FF697A1
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jul 2019 17:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388924AbfGOOPB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 15 Jul 2019 10:15:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58234 "EHLO mail.kernel.org"
+        id S1731691AbfGONvT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 15 Jul 2019 09:51:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388820AbfGOOO5 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:14:57 -0400
+        id S1730952AbfGONvP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 15 Jul 2019 09:51:15 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD747206B8;
-        Mon, 15 Jul 2019 14:14:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EDD52086C;
+        Mon, 15 Jul 2019 13:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563200096;
-        bh=6ZfNFaNDbZXLhczr3NiuI23GxalUYqmEAJnecquVb6E=;
+        s=default; t=1563198674;
+        bh=ilvjH9Ml4srFA9CkBFZD0/rLV1KQFMEQowPN1l6GCaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H5GpSTStz3FcOBtN6T7+HBc2bOnpHcVXbJ6g+pu8BxNdsZamV/lXvD0uw7ldl8w/Q
-         zOxJqePe5bqG4PGzBl3qDh3LjqbsCN7ZW8mJ7rH7eo6Of6wWqgKD4+F+yDk5fdJdRn
-         CMayuHnHS3+g+JBk7Tnpggy8OqgPDp9Sm85vI28I=
+        b=Hbvow764W+LP0FqsCYes0yMiFQVylspND4zHtunIwv5nQEMHWrA5+s5zvXRUZmvUM
+         fIp7tVkCWhPQ6swOpE43VmelZru+Bgk91tfyE8gxyz0/irFHdwGStyxK+juJh82Jqb
+         9gpBEV+vFf0MupvkHXKBesGpeF8+4t9R3Pxx3pYQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     He Zhe <zhe.he@windriver.com>, Yi Zhao <yi.zhao@windriver.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+Cc:     Aditya Pakki <pakki001@umn.edu>,
+        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 183/219] netfilter: Fix remainder of pseudo-header protocol 0
-Date:   Mon, 15 Jul 2019 10:03:04 -0400
-Message-Id: <20190715140341.6443-183-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 080/249] netfilter: ipset: fix a missing check of nla_parse
+Date:   Mon, 15 Jul 2019 09:44:05 -0400
+Message-Id: <20190715134655.4076-80-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
-References: <20190715140341.6443-1-sashal@kernel.org>
+In-Reply-To: <20190715134655.4076-1-sashal@kernel.org>
+References: <20190715134655.4076-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -46,92 +45,43 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: He Zhe <zhe.he@windriver.com>
+From: Aditya Pakki <pakki001@umn.edu>
 
-[ Upstream commit 5d1549847c76b1ffcf8e388ef4d0f229bdd1d7e8 ]
+[ Upstream commit f4f5748bfec94cf418e49bf05f0c81a1b9ebc950 ]
 
-Since v5.1-rc1, some types of packets do not get unreachable reply with the
-following iptables setting. Fox example,
+When nla_parse fails, we should not use the results (the first
+argument). The fix checks if it fails, and if so, returns its error code
+upstream.
 
-$ iptables -A INPUT -p icmp --icmp-type 8 -j REJECT
-$ ping 127.0.0.1 -c 1
-PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
-— 127.0.0.1 ping statistics —
-1 packets transmitted, 0 received, 100% packet loss, time 0ms
-
-We should have got the following reply from command line, but we did not.
-From 127.0.0.1 icmp_seq=1 Destination Port Unreachable
-
-Yi Zhao reported it and narrowed it down to:
-7fc38225363d ("netfilter: reject: skip csum verification for protocols that don't support it"),
-
-This is because nf_ip_checksum still expects pseudo-header protocol type 0 for
-packets that are of neither TCP or UDP, and thus ICMP packets are mistakenly
-treated as TCP/UDP.
-
-This patch corrects the conditions in nf_ip_checksum and all other places that
-still call it with protocol 0.
-
-Fixes: 7fc38225363d ("netfilter: reject: skip csum verification for protocols that don't support it")
-Reported-by: Yi Zhao <yi.zhao@windriver.com>
-Signed-off-by: He Zhe <zhe.he@windriver.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+Signed-off-by: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_proto_icmp.c | 2 +-
- net/netfilter/nf_nat_proto.c            | 2 +-
- net/netfilter/utils.c                   | 5 +++--
- 3 files changed, 5 insertions(+), 4 deletions(-)
+ net/netfilter/ipset/ip_set_core.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_proto_icmp.c b/net/netfilter/nf_conntrack_proto_icmp.c
-index 9becac953587..71a84a0517f3 100644
---- a/net/netfilter/nf_conntrack_proto_icmp.c
-+++ b/net/netfilter/nf_conntrack_proto_icmp.c
-@@ -221,7 +221,7 @@ int nf_conntrack_icmpv4_error(struct nf_conn *tmpl,
- 	/* See ip_conntrack_proto_tcp.c */
- 	if (state->net->ct.sysctl_checksum &&
- 	    state->hook == NF_INET_PRE_ROUTING &&
--	    nf_ip_checksum(skb, state->hook, dataoff, 0)) {
-+	    nf_ip_checksum(skb, state->hook, dataoff, IPPROTO_ICMP)) {
- 		icmp_error_log(skb, state, "bad hw icmp checksum");
- 		return -NF_ACCEPT;
- 	}
-diff --git a/net/netfilter/nf_nat_proto.c b/net/netfilter/nf_nat_proto.c
-index 62743da3004f..0b0efbb953bf 100644
---- a/net/netfilter/nf_nat_proto.c
-+++ b/net/netfilter/nf_nat_proto.c
-@@ -567,7 +567,7 @@ int nf_nat_icmp_reply_translation(struct sk_buff *skb,
+diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
+index 3cdf171cd468..16afa0df4004 100644
+--- a/net/netfilter/ipset/ip_set_core.c
++++ b/net/netfilter/ipset/ip_set_core.c
+@@ -1541,10 +1541,14 @@ call_ad(struct sock *ctnl, struct sk_buff *skb, struct ip_set *set,
+ 		memcpy(&errmsg->msg, nlh, nlh->nlmsg_len);
+ 		cmdattr = (void *)&errmsg->msg + min_len;
  
- 	if (!skb_make_writable(skb, hdrlen + sizeof(*inside)))
- 		return 0;
--	if (nf_ip_checksum(skb, hooknum, hdrlen, 0))
-+	if (nf_ip_checksum(skb, hooknum, hdrlen, IPPROTO_ICMP))
- 		return 0;
+-		nla_parse_deprecated(cda, IPSET_ATTR_CMD_MAX, cmdattr,
+-				     nlh->nlmsg_len - min_len,
+-				     ip_set_adt_policy, NULL);
++		ret = nla_parse_deprecated(cda, IPSET_ATTR_CMD_MAX, cmdattr,
++					   nlh->nlmsg_len - min_len,
++					   ip_set_adt_policy, NULL);
  
- 	inside = (void *)skb->data + hdrlen;
-diff --git a/net/netfilter/utils.c b/net/netfilter/utils.c
-index 06dc55590441..51b454d8fa9c 100644
---- a/net/netfilter/utils.c
-+++ b/net/netfilter/utils.c
-@@ -17,7 +17,8 @@ __sum16 nf_ip_checksum(struct sk_buff *skb, unsigned int hook,
- 	case CHECKSUM_COMPLETE:
- 		if (hook != NF_INET_PRE_ROUTING && hook != NF_INET_LOCAL_IN)
- 			break;
--		if ((protocol == 0 && !csum_fold(skb->csum)) ||
-+		if ((protocol != IPPROTO_TCP && protocol != IPPROTO_UDP &&
-+		    !csum_fold(skb->csum)) ||
- 		    !csum_tcpudp_magic(iph->saddr, iph->daddr,
- 				       skb->len - dataoff, protocol,
- 				       skb->csum)) {
-@@ -26,7 +27,7 @@ __sum16 nf_ip_checksum(struct sk_buff *skb, unsigned int hook,
- 		}
- 		/* fall through */
- 	case CHECKSUM_NONE:
--		if (protocol == 0)
-+		if (protocol != IPPROTO_TCP && protocol != IPPROTO_UDP)
- 			skb->csum = 0;
- 		else
- 			skb->csum = csum_tcpudp_nofold(iph->saddr, iph->daddr,
++		if (ret) {
++			nlmsg_free(skb2);
++			return ret;
++		}
+ 		errline = nla_data(cda[IPSET_ATTR_LINENO]);
+ 
+ 		*errline = lineno;
 -- 
 2.20.1
 
