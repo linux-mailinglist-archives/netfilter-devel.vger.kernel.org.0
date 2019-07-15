@@ -2,38 +2,37 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FB16966B
-	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jul 2019 17:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F82369600
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jul 2019 17:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388432AbfGOOIA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 15 Jul 2019 10:08:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57564 "EHLO mail.kernel.org"
+        id S2388454AbfGOONF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 15 Jul 2019 10:13:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387959AbfGOOH7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:07:59 -0400
+        id S1733247AbfGOONE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:13:04 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 549AA2081C;
-        Mon, 15 Jul 2019 14:07:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17207212F5;
+        Mon, 15 Jul 2019 14:12:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563199678;
-        bh=SDK7DDVuU3mOtv8N6aG4HbVnQmnzmFibyibAj+n1nGU=;
+        s=default; t=1563199983;
+        bh=B1v2OsN6L9EDm2etO6b8CYhfs0qfQYsntn++nNCFePs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dcs+zos8+ofkbhgAJqEfgxUewBUZ/GL0iCt7Mh7jih7/YUkgLrItdAt3M6XCUWp9D
-         EeNoW9BON/xRGtJzEm278C2DApZ8LL02RDBs7p53jewvTjYlcKtmmSx0ehOXStTOWA
-         Fqdx7OPTCpB1tfMWAcd8msKAEmpcFvoco/R+KJJo=
+        b=CZBxCDPLvqg4UqHgXg9rskMui6op3kXhHjlRZoePq5pAvxjBfCReQ0YHhrpMQ4Jmj
+         dx7nbmUKgeHk3ojrhpJTUiyZP0dCsqVijG346vY0dv9flFHaat7WRLPkPRrHLxOzny
+         2e4kCGHAzIfiVgPhO5ns//jYLw89volgEzbmc49U=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stefano Brivio <sbrivio@redhat.com>,
-        NOYB <JunkYardMail1@Frontier.com>,
-        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
+Cc:     Felix Kaechele <felix@kaechele.ca>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 070/219] ipset: Fix memory accounting for hash types on resize
-Date:   Mon, 15 Jul 2019 10:01:11 -0400
-Message-Id: <20190715140341.6443-70-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 153/219] netfilter: ctnetlink: Fix regression in conntrack entry deletion
+Date:   Mon, 15 Jul 2019 10:02:34 -0400
+Message-Id: <20190715140341.6443-153-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
 References: <20190715140341.6443-1-sashal@kernel.org>
@@ -46,82 +45,64 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Stefano Brivio <sbrivio@redhat.com>
+From: Felix Kaechele <felix@kaechele.ca>
 
-[ Upstream commit 11921796f4799ca9c61c4b22cc54d84aa69f8a35 ]
+[ Upstream commit e7600865db32b69deb0109b8254244dca592adcf ]
 
-If a fresh array block is allocated during resize, the current in-memory
-set size should be increased by the size of the block, not replaced by it.
+Commit f8e608982022 ("netfilter: ctnetlink: Resolve conntrack
+L3-protocol flush regression") introduced a regression in which deletion
+of conntrack entries would fail because the L3 protocol information
+is replaced by AF_UNSPEC. As a result the search for the entry to be
+deleted would turn up empty due to the tuple used to perform the search
+is now different from the tuple used to initially set up the entry.
 
-Before the fix, adding entries to a hash set type, leading to a table
-resize, caused an inconsistent memory size to be reported. This becomes
-more obvious when swapping sets with similar sizes:
+For flushing the conntrack table we do however want to keep the option
+for nfgenmsg->version to have a non-zero value to allow for newer
+user-space tools to request treatment under the new behavior. With that
+it is possible to independently flush tables for a defined L3 protocol.
+This was introduced with the enhancements in in commit 59c08c69c278
+("netfilter: ctnetlink: Support L3 protocol-filter on flush").
 
-  # cat hash_ip_size.sh
-  #!/bin/sh
-  FAIL_RETRIES=10
+Older user-space tools will retain the behavior of flushing all tables
+regardless of defined L3 protocol.
 
-  tries=0
-  while [ ${tries} -lt ${FAIL_RETRIES} ]; do
-  	ipset create t1 hash:ip
-  	for i in `seq 1 4345`; do
-  		ipset add t1 1.2.$((i / 255)).$((i % 255))
-  	done
-  	t1_init="$(ipset list t1|sed -n 's/Size in memory: \(.*\)/\1/p')"
-
-  	ipset create t2 hash:ip
-  	for i in `seq 1 4360`; do
-  		ipset add t2 1.2.$((i / 255)).$((i % 255))
-  	done
-  	t2_init="$(ipset list t2|sed -n 's/Size in memory: \(.*\)/\1/p')"
-
-  	ipset swap t1 t2
-  	t1_swap="$(ipset list t1|sed -n 's/Size in memory: \(.*\)/\1/p')"
-  	t2_swap="$(ipset list t2|sed -n 's/Size in memory: \(.*\)/\1/p')"
-
-  	ipset destroy t1
-  	ipset destroy t2
-  	tries=$((tries + 1))
-
-  	if [ ${t1_init} -lt 10000 ] || [ ${t2_init} -lt 10000 ]; then
-  		echo "FAIL after ${tries} tries:"
-  		echo "T1 size ${t1_init}, after swap ${t1_swap}"
-  		echo "T2 size ${t2_init}, after swap ${t2_swap}"
-  		exit 1
-  	fi
-  done
-  echo "PASS"
-  # echo -n 'func hash_ip4_resize +p' > /sys/kernel/debug/dynamic_debug/control
-  # ./hash_ip_size.sh
-  [ 2035.018673] attempt to resize set t1 from 10 to 11, t 00000000fe6551fa
-  [ 2035.078583] set t1 resized from 10 (00000000fe6551fa) to 11 (00000000172a0163)
-  [ 2035.080353] Table destroy by resize 00000000fe6551fa
-  FAIL after 4 tries:
-  T1 size 9064, after swap 71128
-  T2 size 71128, after swap 9064
-
-Reported-by: NOYB <JunkYardMail1@Frontier.com>
-Fixes: 9e41f26a505c ("netfilter: ipset: Count non-static extension memory for userspace")
-Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
-Signed-off-by: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Fixes: f8e608982022 ("netfilter: ctnetlink: Resolve conntrack L3-protocol flush regression")
+Suggested-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Felix Kaechele <felix@kaechele.ca>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/ipset/ip_set_hash_gen.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_conntrack_netlink.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/ip_set_hash_gen.h
-index 2c9609929c71..455804456008 100644
---- a/net/netfilter/ipset/ip_set_hash_gen.h
-+++ b/net/netfilter/ipset/ip_set_hash_gen.h
-@@ -625,7 +625,7 @@ mtype_resize(struct ip_set *set, bool retried)
- 					goto cleanup;
- 				}
- 				m->size = AHASH_INIT_SIZE;
--				extsize = ext_size(AHASH_INIT_SIZE, dsize);
-+				extsize += ext_size(AHASH_INIT_SIZE, dsize);
- 				RCU_INIT_POINTER(hbucket(t, key), m);
- 			} else if (m->pos >= m->size) {
- 				struct hbucket *ht;
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index d2715b4d2e72..061bdab37b1a 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -1254,7 +1254,6 @@ static int ctnetlink_del_conntrack(struct net *net, struct sock *ctnl,
+ 	struct nf_conntrack_tuple tuple;
+ 	struct nf_conn *ct;
+ 	struct nfgenmsg *nfmsg = nlmsg_data(nlh);
+-	u_int8_t u3 = nfmsg->version ? nfmsg->nfgen_family : AF_UNSPEC;
+ 	struct nf_conntrack_zone zone;
+ 	int err;
+ 
+@@ -1264,11 +1263,13 @@ static int ctnetlink_del_conntrack(struct net *net, struct sock *ctnl,
+ 
+ 	if (cda[CTA_TUPLE_ORIG])
+ 		err = ctnetlink_parse_tuple(cda, &tuple, CTA_TUPLE_ORIG,
+-					    u3, &zone);
++					    nfmsg->nfgen_family, &zone);
+ 	else if (cda[CTA_TUPLE_REPLY])
+ 		err = ctnetlink_parse_tuple(cda, &tuple, CTA_TUPLE_REPLY,
+-					    u3, &zone);
++					    nfmsg->nfgen_family, &zone);
+ 	else {
++		u_int8_t u3 = nfmsg->version ? nfmsg->nfgen_family : AF_UNSPEC;
++
+ 		return ctnetlink_flush_conntrack(net, cda,
+ 						 NETLINK_CB(skb).portid,
+ 						 nlmsg_report(nlh), u3);
 -- 
 2.20.1
 
