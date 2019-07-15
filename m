@@ -2,41 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F82369600
-	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jul 2019 17:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7730A695D7
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jul 2019 17:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388454AbfGOONF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 15 Jul 2019 10:13:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53156 "EHLO mail.kernel.org"
+        id S2388924AbfGOOPB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 15 Jul 2019 10:15:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733247AbfGOONE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:13:04 -0400
+        id S2388820AbfGOOO5 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:14:57 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17207212F5;
-        Mon, 15 Jul 2019 14:12:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD747206B8;
+        Mon, 15 Jul 2019 14:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563199983;
-        bh=B1v2OsN6L9EDm2etO6b8CYhfs0qfQYsntn++nNCFePs=;
+        s=default; t=1563200096;
+        bh=6ZfNFaNDbZXLhczr3NiuI23GxalUYqmEAJnecquVb6E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CZBxCDPLvqg4UqHgXg9rskMui6op3kXhHjlRZoePq5pAvxjBfCReQ0YHhrpMQ4Jmj
-         dx7nbmUKgeHk3ojrhpJTUiyZP0dCsqVijG346vY0dv9flFHaat7WRLPkPRrHLxOzny
-         2e4kCGHAzIfiVgPhO5ns//jYLw89volgEzbmc49U=
+        b=H5GpSTStz3FcOBtN6T7+HBc2bOnpHcVXbJ6g+pu8BxNdsZamV/lXvD0uw7ldl8w/Q
+         zOxJqePe5bqG4PGzBl3qDh3LjqbsCN7ZW8mJ7rH7eo6Of6wWqgKD4+F+yDk5fdJdRn
+         CMayuHnHS3+g+JBk7Tnpggy8OqgPDp9Sm85vI28I=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Felix Kaechele <felix@kaechele.ca>,
+Cc:     He Zhe <zhe.he@windriver.com>, Yi Zhao <yi.zhao@windriver.com>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 153/219] netfilter: ctnetlink: Fix regression in conntrack entry deletion
-Date:   Mon, 15 Jul 2019 10:02:34 -0400
-Message-Id: <20190715140341.6443-153-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 183/219] netfilter: Fix remainder of pseudo-header protocol 0
+Date:   Mon, 15 Jul 2019 10:03:04 -0400
+Message-Id: <20190715140341.6443-183-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
 References: <20190715140341.6443-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,64 +46,92 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Felix Kaechele <felix@kaechele.ca>
+From: He Zhe <zhe.he@windriver.com>
 
-[ Upstream commit e7600865db32b69deb0109b8254244dca592adcf ]
+[ Upstream commit 5d1549847c76b1ffcf8e388ef4d0f229bdd1d7e8 ]
 
-Commit f8e608982022 ("netfilter: ctnetlink: Resolve conntrack
-L3-protocol flush regression") introduced a regression in which deletion
-of conntrack entries would fail because the L3 protocol information
-is replaced by AF_UNSPEC. As a result the search for the entry to be
-deleted would turn up empty due to the tuple used to perform the search
-is now different from the tuple used to initially set up the entry.
+Since v5.1-rc1, some types of packets do not get unreachable reply with the
+following iptables setting. Fox example,
 
-For flushing the conntrack table we do however want to keep the option
-for nfgenmsg->version to have a non-zero value to allow for newer
-user-space tools to request treatment under the new behavior. With that
-it is possible to independently flush tables for a defined L3 protocol.
-This was introduced with the enhancements in in commit 59c08c69c278
-("netfilter: ctnetlink: Support L3 protocol-filter on flush").
+$ iptables -A INPUT -p icmp --icmp-type 8 -j REJECT
+$ ping 127.0.0.1 -c 1
+PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+— 127.0.0.1 ping statistics —
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
 
-Older user-space tools will retain the behavior of flushing all tables
-regardless of defined L3 protocol.
+We should have got the following reply from command line, but we did not.
+From 127.0.0.1 icmp_seq=1 Destination Port Unreachable
 
-Fixes: f8e608982022 ("netfilter: ctnetlink: Resolve conntrack L3-protocol flush regression")
-Suggested-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Felix Kaechele <felix@kaechele.ca>
+Yi Zhao reported it and narrowed it down to:
+7fc38225363d ("netfilter: reject: skip csum verification for protocols that don't support it"),
+
+This is because nf_ip_checksum still expects pseudo-header protocol type 0 for
+packets that are of neither TCP or UDP, and thus ICMP packets are mistakenly
+treated as TCP/UDP.
+
+This patch corrects the conditions in nf_ip_checksum and all other places that
+still call it with protocol 0.
+
+Fixes: 7fc38225363d ("netfilter: reject: skip csum verification for protocols that don't support it")
+Reported-by: Yi Zhao <yi.zhao@windriver.com>
+Signed-off-by: He Zhe <zhe.he@windriver.com>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_netlink.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ net/netfilter/nf_conntrack_proto_icmp.c | 2 +-
+ net/netfilter/nf_nat_proto.c            | 2 +-
+ net/netfilter/utils.c                   | 5 +++--
+ 3 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index d2715b4d2e72..061bdab37b1a 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -1254,7 +1254,6 @@ static int ctnetlink_del_conntrack(struct net *net, struct sock *ctnl,
- 	struct nf_conntrack_tuple tuple;
- 	struct nf_conn *ct;
- 	struct nfgenmsg *nfmsg = nlmsg_data(nlh);
--	u_int8_t u3 = nfmsg->version ? nfmsg->nfgen_family : AF_UNSPEC;
- 	struct nf_conntrack_zone zone;
- 	int err;
+diff --git a/net/netfilter/nf_conntrack_proto_icmp.c b/net/netfilter/nf_conntrack_proto_icmp.c
+index 9becac953587..71a84a0517f3 100644
+--- a/net/netfilter/nf_conntrack_proto_icmp.c
++++ b/net/netfilter/nf_conntrack_proto_icmp.c
+@@ -221,7 +221,7 @@ int nf_conntrack_icmpv4_error(struct nf_conn *tmpl,
+ 	/* See ip_conntrack_proto_tcp.c */
+ 	if (state->net->ct.sysctl_checksum &&
+ 	    state->hook == NF_INET_PRE_ROUTING &&
+-	    nf_ip_checksum(skb, state->hook, dataoff, 0)) {
++	    nf_ip_checksum(skb, state->hook, dataoff, IPPROTO_ICMP)) {
+ 		icmp_error_log(skb, state, "bad hw icmp checksum");
+ 		return -NF_ACCEPT;
+ 	}
+diff --git a/net/netfilter/nf_nat_proto.c b/net/netfilter/nf_nat_proto.c
+index 62743da3004f..0b0efbb953bf 100644
+--- a/net/netfilter/nf_nat_proto.c
++++ b/net/netfilter/nf_nat_proto.c
+@@ -567,7 +567,7 @@ int nf_nat_icmp_reply_translation(struct sk_buff *skb,
  
-@@ -1264,11 +1263,13 @@ static int ctnetlink_del_conntrack(struct net *net, struct sock *ctnl,
+ 	if (!skb_make_writable(skb, hdrlen + sizeof(*inside)))
+ 		return 0;
+-	if (nf_ip_checksum(skb, hooknum, hdrlen, 0))
++	if (nf_ip_checksum(skb, hooknum, hdrlen, IPPROTO_ICMP))
+ 		return 0;
  
- 	if (cda[CTA_TUPLE_ORIG])
- 		err = ctnetlink_parse_tuple(cda, &tuple, CTA_TUPLE_ORIG,
--					    u3, &zone);
-+					    nfmsg->nfgen_family, &zone);
- 	else if (cda[CTA_TUPLE_REPLY])
- 		err = ctnetlink_parse_tuple(cda, &tuple, CTA_TUPLE_REPLY,
--					    u3, &zone);
-+					    nfmsg->nfgen_family, &zone);
- 	else {
-+		u_int8_t u3 = nfmsg->version ? nfmsg->nfgen_family : AF_UNSPEC;
-+
- 		return ctnetlink_flush_conntrack(net, cda,
- 						 NETLINK_CB(skb).portid,
- 						 nlmsg_report(nlh), u3);
+ 	inside = (void *)skb->data + hdrlen;
+diff --git a/net/netfilter/utils.c b/net/netfilter/utils.c
+index 06dc55590441..51b454d8fa9c 100644
+--- a/net/netfilter/utils.c
++++ b/net/netfilter/utils.c
+@@ -17,7 +17,8 @@ __sum16 nf_ip_checksum(struct sk_buff *skb, unsigned int hook,
+ 	case CHECKSUM_COMPLETE:
+ 		if (hook != NF_INET_PRE_ROUTING && hook != NF_INET_LOCAL_IN)
+ 			break;
+-		if ((protocol == 0 && !csum_fold(skb->csum)) ||
++		if ((protocol != IPPROTO_TCP && protocol != IPPROTO_UDP &&
++		    !csum_fold(skb->csum)) ||
+ 		    !csum_tcpudp_magic(iph->saddr, iph->daddr,
+ 				       skb->len - dataoff, protocol,
+ 				       skb->csum)) {
+@@ -26,7 +27,7 @@ __sum16 nf_ip_checksum(struct sk_buff *skb, unsigned int hook,
+ 		}
+ 		/* fall through */
+ 	case CHECKSUM_NONE:
+-		if (protocol == 0)
++		if (protocol != IPPROTO_TCP && protocol != IPPROTO_UDP)
+ 			skb->csum = 0;
+ 		else
+ 			skb->csum = csum_tcpudp_nofold(iph->saddr, iph->daddr,
 -- 
 2.20.1
 
