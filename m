@@ -2,137 +2,103 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1527A6A00F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2019 02:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063026A036
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Jul 2019 03:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733022AbfGPArx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 15 Jul 2019 20:47:53 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:24416 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730690AbfGPArx (ORCPT
+        id S1730690AbfGPB06 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 15 Jul 2019 21:26:58 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:39860 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730607AbfGPB06 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 15 Jul 2019 20:47:53 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id E9E9741649;
-        Tue, 16 Jul 2019 08:47:47 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org, fw@strlen.de
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next v5 8/8] netfilter: Support the bridge family in flow table
-Date:   Tue, 16 Jul 2019 08:47:46 +0800
-Message-Id: <1563238066-3105-9-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1563238066-3105-1-git-send-email-wenxu@ucloud.cn>
-References: <1563238066-3105-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVS0tIQkJCTkJLQ0xITElZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PSI6MQw4Ojg3FAMJGEhMQwIX
-        MjpPCk1VSlVKTk1ISUhDS01DS0tMVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUhCSE83Bg++
-X-HM-Tid: 0a6bf83fef042086kuqye9e9741649
+        Mon, 15 Jul 2019 21:26:58 -0400
+Received: by mail-wr1-f66.google.com with SMTP id x4so19009050wrt.6;
+        Mon, 15 Jul 2019 18:26:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OJKGfm4zPYEeDJ64R4ToC+PbXLnEzfGrEQo6pdlpNP8=;
+        b=Z+iDl3zbbSqm+cZ1DbJoZQ4JVZrZS+3NgT6IUkEHLJYLGXYwGLpulc8+qBb5BZMFMx
+         xPbMTzvoEFGE5/p+TG1HXN9HNt5MMfiecWwVQrpA0q8VAssMLnAX/1lr0xHHdr+NxpBg
+         Av/GC8PPSRpyiUDPwNs3PKrgquTN7eSZcc5tMJmyENceBnEonRJZAstLHmsUS3huTSvy
+         +9gAVtOHgCKcHVpyHFXDIem/J5FR+Hos5iDX33J7ejTKL4cHat6reDmk8g3kWxSoUk+q
+         O1dLwAoE2HUNQG9N4PgtU8r6gN6fgdfjWccc4AKPBuzdgEThe5+wpafY1Mr0H3ZfCQlY
+         jP2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OJKGfm4zPYEeDJ64R4ToC+PbXLnEzfGrEQo6pdlpNP8=;
+        b=iYw/L/exr+4nf0PcMknar1gI/R8UJAIqYrwSJV2wbw3eRJeF9QSEIKrMRm8EaMiulg
+         L4pWPPFEDHvmpEACEwaK2ESSyNfSarMOCQIewgZ78ZgdMFk61lQMbxoTnNo0cRi7lEei
+         dqbBR9v5ZLBe9iRLa3lsJ7U8gm0HTIrC/yk1Asaq2AWjqxbORlCcPenCnKGqjdY22No3
+         cwepusymDSQrW7JJd8QXmYkgzmBx6VqncxpTECyVgZTomhLRAa8hvhu0krGqN86EBJxz
+         Kz9axBLn4guQ6zC9uGUSJkES3O7rf0fdyOh52Nps+OBpVIG5R7Xo6WECXTT1Ghs0/yio
+         bFoA==
+X-Gm-Message-State: APjAAAUEvgSim3jmV45piuwZ5WS0k+C2OqjpJs5szU4f151sbubObXbJ
+        gI+7Ut5hEs2+KkB08Yame1acO7hl4JUZP3uP0ng=
+X-Google-Smtp-Source: APXvYqxiCotRSbNaIj7YIiRueXmmYF/HgKhYYs5qxUmBp/UJ2YY1WlBJJqvTEjy9YMhV82itYVDWY0KlsOJ+T9qD5Kw=
+X-Received: by 2002:a5d:43c9:: with SMTP id v9mr30984868wrr.70.1563240415647;
+ Mon, 15 Jul 2019 18:26:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190710074552.74394-1-xingwu.yang@gmail.com> <20190710080609.smxjqe2d5jyro4hv@verge.net.au>
+ <20190715082747.fdlpvekbqyhwx724@salvia>
+In-Reply-To: <20190715082747.fdlpvekbqyhwx724@salvia>
+From:   yangxingwu <xingwu.yang@gmail.com>
+Date:   Tue, 16 Jul 2019 09:26:44 +0800
+Message-ID: <CA+7U5JvJMTjCuxo8Mf7tiXZADe-q4covYxX7NsG8EMCcJh5mtA@mail.gmail.com>
+Subject: Re: [PATCH] ipvs: remove unnecessary space
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Simon Horman <horms@verge.net.au>, wensong@linux-vs.org, ja@ssi.bg,
+        kadlec@blackhole.kfki.hu, fw@strlen.de, davem@davemloft.net,
+        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+ok
 
-This patch add the bridge flow table type. Implement the datapath
-flow table to forward both IPV4 and IPV6 traffic through bridge.
+I will remove all unnecessary spaces and send the v2 patch
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- net/bridge/netfilter/Kconfig                |  8 +++++
- net/bridge/netfilter/Makefile               |  1 +
- net/bridge/netfilter/nf_flow_table_bridge.c | 48 +++++++++++++++++++++++++++++
- 3 files changed, 57 insertions(+)
- create mode 100644 net/bridge/netfilter/nf_flow_table_bridge.c
+Thansk Pablo
 
-diff --git a/net/bridge/netfilter/Kconfig b/net/bridge/netfilter/Kconfig
-index 154fa55..8b3f52b 100644
---- a/net/bridge/netfilter/Kconfig
-+++ b/net/bridge/netfilter/Kconfig
-@@ -39,6 +39,14 @@ config NF_CONNTRACK_BRIDGE
- 
- 	  To compile it as a module, choose M here.  If unsure, say N.
- 
-+config NF_FLOW_TABLE_BRIDGE
-+	tristate "Netfilter flow table bridge module"
-+	depends on NF_FLOW_TABLE && NF_CONNTRACK_BRIDGE
-+	help
-+          This option adds the flow table bridge support.
-+
-+	  To compile it as a module, choose M here.
-+
- endif # NF_TABLES_BRIDGE
- 
- menuconfig BRIDGE_NF_EBTABLES
-diff --git a/net/bridge/netfilter/Makefile b/net/bridge/netfilter/Makefile
-index 8e2c575..627b269 100644
---- a/net/bridge/netfilter/Makefile
-+++ b/net/bridge/netfilter/Makefile
-@@ -8,6 +8,7 @@ obj-$(CONFIG_NFT_BRIDGE_REJECT)  += nft_reject_bridge.o
- 
- # connection tracking
- obj-$(CONFIG_NF_CONNTRACK_BRIDGE) += nf_conntrack_bridge.o
-+obj-$(CONFIG_NF_FLOW_TABLE_BRIDGE) += nf_flow_table_bridge.o
- 
- # packet logging
- obj-$(CONFIG_NF_LOG_BRIDGE) += nf_log_bridge.o
-diff --git a/net/bridge/netfilter/nf_flow_table_bridge.c b/net/bridge/netfilter/nf_flow_table_bridge.c
-new file mode 100644
-index 0000000..c4fdd4a
---- /dev/null
-+++ b/net/bridge/netfilter/nf_flow_table_bridge.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/netfilter.h>
-+#include <net/netfilter/nf_flow_table.h>
-+#include <net/netfilter/nf_tables.h>
-+
-+static unsigned int
-+nf_flow_offload_bridge_hook(void *priv, struct sk_buff *skb,
-+			    const struct nf_hook_state *state)
-+{
-+	switch (skb->protocol) {
-+	case htons(ETH_P_IP):
-+		return nf_flow_offload_ip_hook(priv, skb, state);
-+	case htons(ETH_P_IPV6):
-+		return nf_flow_offload_ipv6_hook(priv, skb, state);
-+	}
-+
-+	return NF_ACCEPT;
-+}
-+
-+static struct nf_flowtable_type flowtable_bridge = {
-+	.family		= NFPROTO_BRIDGE,
-+	.init		= nf_flow_table_init,
-+	.free		= nf_flow_table_free,
-+	.hook		= nf_flow_offload_bridge_hook,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static int __init nf_flow_bridge_module_init(void)
-+{
-+	nft_register_flowtable_type(&flowtable_bridge);
-+
-+	return 0;
-+}
-+
-+static void __exit nf_flow_bridge_module_exit(void)
-+{
-+	nft_unregister_flowtable_type(&flowtable_bridge);
-+}
-+
-+module_init(nf_flow_bridge_module_init);
-+module_exit(nf_flow_bridge_module_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("wenxu <wenxu@ucloud.cn>");
-+MODULE_ALIAS_NF_FLOWTABLE(7); /* NFPROTO_BRIDGE */
--- 
-1.8.3.1
-
+Pablo Neira Ayuso <pablo@netfilter.org> =E4=BA=8E2019=E5=B9=B47=E6=9C=8815=
+=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=884:27=E5=86=99=E9=81=93=EF=BC=
+=9A
+>
+> On Wed, Jul 10, 2019 at 10:06:09AM +0200, Simon Horman wrote:
+> > On Wed, Jul 10, 2019 at 03:45:52PM +0800, yangxingwu wrote:
+> > > ---
+> > >  net/netfilter/ipvs/ip_vs_mh.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/net/netfilter/ipvs/ip_vs_mh.c b/net/netfilter/ipvs/ip_vs=
+_mh.c
+> > > index 94d9d34..98e358e 100644
+> > > --- a/net/netfilter/ipvs/ip_vs_mh.c
+> > > +++ b/net/netfilter/ipvs/ip_vs_mh.c
+> > > @@ -174,8 +174,8 @@ static int ip_vs_mh_populate(struct ip_vs_mh_stat=
+e *s,
+> > >             return 0;
+> > >     }
+> > >
+> > > -   table =3D  kcalloc(BITS_TO_LONGS(IP_VS_MH_TAB_SIZE),
+> > > -                    sizeof(unsigned long), GFP_KERNEL);
+> > > +   table =3D kcalloc(BITS_TO_LONGS(IP_VS_MH_TAB_SIZE),
+> > > +                   sizeof(unsigned long), GFP_KERNEL);
+>
+> May I ask one thing? :-)
+>
+> Please, remove all unnecessary spaces in one go, search for:
+>
+>         git grep "=3D  "
+>
+> in the netfilter tree, and send a v2 for this one.
+>
+> Thanks.
