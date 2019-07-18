@@ -2,63 +2,144 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDE86C409
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jul 2019 03:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2856C806
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Jul 2019 05:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727676AbfGRBPb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 17 Jul 2019 21:15:31 -0400
-Received: from mail.colonizacion.com.uy ([201.217.141.18]:44273 "EHLO
-        colonizaciontest.com.uy" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727541AbfGRBPb (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 17 Jul 2019 21:15:31 -0400
-X-Greylist: delayed 4918 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jul 2019 21:15:31 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by colonizaciontest.com.uy (Postfix) with ESMTP id 07A33AC6346;
-        Wed, 17 Jul 2019 20:25:54 -0300 (GMT+3)
-Received: from colonizaciontest.com.uy ([127.0.0.1])
-        by localhost (colonizaciontest.com.uy [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id guxGefXkOB3H; Wed, 17 Jul 2019 20:25:53 -0300 (GMT+3)
-Received: from localhost (localhost [127.0.0.1])
-        by colonizaciontest.com.uy (Postfix) with ESMTP id A8AC8AC63A7;
-        Wed, 17 Jul 2019 20:25:53 -0300 (GMT+3)
-X-Virus-Scanned: amavisd-new at colonizaciontest.com.uy
-Received: from colonizaciontest.com.uy ([127.0.0.1])
-        by localhost (colonizaciontest.com.uy [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id fb6QGgW_xd79; Wed, 17 Jul 2019 20:25:53 -0300 (GMT+3)
-Received: from [10.53.219.149] (unknown [105.4.1.176])
-        by colonizaciontest.com.uy (Postfix) with ESMTPSA id 357ADAC62C2;
-        Wed, 17 Jul 2019 20:25:42 -0300 (GMT+3)
-Content-Type: text/plain; charset="utf-8"
+        id S2389084AbfGRDhf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 17 Jul 2019 23:37:35 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:33874 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732510AbfGRDhf (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 17 Jul 2019 23:37:35 -0400
+Received: from localhost ([::1]:46964 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1hnxEb-0008PD-NM; Thu, 18 Jul 2019 05:37:33 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fwestpha@redhat.com>,
+        netfilter-devel@vger.kernel.org
+Subject: [nf PATCH] net: nf_tables: Make nft_meta expression more robust
+Date:   Thu, 18 Jul 2019 05:37:29 +0200
+Message-Id: <20190718033729.12438-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
-To:     Recipients <rbarboza@colonizaciontest.com.uy>
-From:   ''Michael Weirsky'' <rbarboza@colonizaciontest.com.uy>
-Date:   Thu, 18 Jul 2019 01:25:39 +0200
-Reply-To: mikeweirskyspende@gmail.com
-Message-Id: <20190717232543.357ADAC62C2@colonizaciontest.com.uy>
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+nft_meta_get_eval()'s tendency to bail out setting NFT_BREAK verdict in
+situations where required data is missing breaks inverted checks
+like e.g.:
 
+| meta iifname != eth0 accept
 
+This rule will never match if there is no input interface (or it is not
+known) which is not intuitive and, what's worse, breaks consistency of
+iptables-nft with iptables-legacy.
 
+Fix this by falling back to placing a value in dreg which never matches
+(avoiding accidental matches):
 
-Lieber Freund,
+{I,O}IF:
+	Use invalid ifindex value zero.
 
-Ich bin Herr Mike Weirsky, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 273million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen.
-Das ist dein Spendencode: [MW530342019]
+{I,O}IFNAME, {I,O}IFKIND:
+	Use an empty string which is neither a valid interface name nor
+	kind.
 
-www.youtube.com/watch?v=un8yRTmrYMY
+{I,O}IFTYPE:
+	Use ARPHRD_VOID (0xFFFF).
 
-Antworten Sie mit dem SPENDE-CODE an diese E-Mail:mikeweirskyspende@gmail.com
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ net/netfilter/nft_meta.c | 45 +++++++++++++++++-----------------------
+ 1 file changed, 19 insertions(+), 26 deletions(-)
 
-Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
+index 76866f77e3435..ee3b54692cc7e 100644
+--- a/net/netfilter/nft_meta.c
++++ b/net/netfilter/nft_meta.c
+@@ -11,6 +11,7 @@
+ #include <linux/netlink.h>
+ #include <linux/netfilter.h>
+ #include <linux/netfilter/nf_tables.h>
++#include <linux/if_arp.h>
+ #include <linux/in.h>
+ #include <linux/ip.h>
+ #include <linux/ipv6.h>
+@@ -60,34 +61,22 @@ void nft_meta_get_eval(const struct nft_expr *expr,
+ 		*dest = skb->mark;
+ 		break;
+ 	case NFT_META_IIF:
+-		if (in == NULL)
+-			goto err;
+-		*dest = in->ifindex;
++		*dest = in ? in->ifindex : 0;
+ 		break;
+ 	case NFT_META_OIF:
+-		if (out == NULL)
+-			goto err;
+-		*dest = out->ifindex;
++		*dest = out ? out->ifindex : 0;
+ 		break;
+ 	case NFT_META_IIFNAME:
+-		if (in == NULL)
+-			goto err;
+-		strncpy((char *)dest, in->name, IFNAMSIZ);
++		strncpy((char *)dest, in ? in->name : "", IFNAMSIZ);
+ 		break;
+ 	case NFT_META_OIFNAME:
+-		if (out == NULL)
+-			goto err;
+-		strncpy((char *)dest, out->name, IFNAMSIZ);
++		strncpy((char *)dest, out ? out->name : "", IFNAMSIZ);
+ 		break;
+ 	case NFT_META_IIFTYPE:
+-		if (in == NULL)
+-			goto err;
+-		nft_reg_store16(dest, in->type);
++		nft_reg_store16(dest, in ? in->type : ARPHRD_VOID);
+ 		break;
+ 	case NFT_META_OIFTYPE:
+-		if (out == NULL)
+-			goto err;
+-		nft_reg_store16(dest, out->type);
++		nft_reg_store16(dest, out ? out->type : ARPHRD_VOID);
+ 		break;
+ 	case NFT_META_SKUID:
+ 		sk = skb_to_full_sk(skb);
+@@ -216,16 +205,20 @@ void nft_meta_get_eval(const struct nft_expr *expr,
+ 		nft_reg_store8(dest, secpath_exists(skb));
+ 		break;
+ #endif
+-	case NFT_META_IIFKIND:
+-		if (in == NULL || in->rtnl_link_ops == NULL)
+-			goto err;
+-		strncpy((char *)dest, in->rtnl_link_ops->kind, IFNAMSIZ);
++	case NFT_META_IIFKIND: {
++		const struct rtnl_link_ops *rl_ops =
++			in ? in->rtnl_link_ops : NULL;
++
++		strncpy((char *)dest, rl_ops ? rl_ops->kind : "", IFNAMSIZ);
+ 		break;
+-	case NFT_META_OIFKIND:
+-		if (out == NULL || out->rtnl_link_ops == NULL)
+-			goto err;
+-		strncpy((char *)dest, out->rtnl_link_ops->kind, IFNAMSIZ);
++	}
++	case NFT_META_OIFKIND: {
++		const struct rtnl_link_ops *rl_ops =
++			out ? out->rtnl_link_ops : NULL;
++
++		strncpy((char *)dest, rl_ops ? rl_ops->kind : "", IFNAMSIZ);
+ 		break;
++	}
+ 	default:
+ 		WARN_ON(1);
+ 		goto err;
+-- 
+2.22.0
 
-Grüße
-Herr Mike Weirsky
