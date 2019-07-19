@@ -2,438 +2,121 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F596E7C2
-	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jul 2019 17:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386B46E7FC
+	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jul 2019 17:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727528AbfGSPGZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 19 Jul 2019 11:06:25 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:47254 "EHLO mx1.riseup.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726072AbfGSPGZ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 19 Jul 2019 11:06:25 -0400
-Received: from bell.riseup.net (bell-pn.riseup.net [10.0.1.178])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (verified OK))
-        by mx1.riseup.net (Postfix) with ESMTPS id A686F1B93FB
-        for <netfilter-devel@vger.kernel.org>; Fri, 19 Jul 2019 08:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1563548784; bh=n3qyXNcetqSxMijqV9K/rM9fPtIq13YLSb0NU/r9NS8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RKxS2yLjmzltUzlf2Vko73BrbsIFyLKA9ZWF2LO5BC8RmQB1WnKJC8A0yocPP81bY
-         hLfsps+PtnL5pjdlQzdUfXRQR9txVvWq8G6Pkg46TAhzLweETsnbyLKBujT7dkw8xb
-         T2d1b2noLW3RS4qDMAJDejQGDTs6y6u9IZ6ef8ko=
-X-Riseup-User-ID: 2920423A2F983CD2AEC8EAF4DE41F714D68DB087732060B31F29FFC45BB70ED7
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by bell.riseup.net (Postfix) with ESMTPSA id 723B32207E2;
-        Fri, 19 Jul 2019 08:06:23 -0700 (PDT)
-From:   Fernando Fernandez Mancera <ffmancera@riseup.net>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Fernando Fernandez Mancera <ffmancera@riseup.net>
-Subject: [PATCH nft] src: allow variables in the chain priority specification
-Date:   Fri, 19 Jul 2019 17:06:10 +0200
-Message-Id: <20190719150610.1254-1-ffmancera@riseup.net>
+        id S1728328AbfGSPcc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 19 Jul 2019 11:32:32 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:48180 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726072AbfGSPcc (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 19 Jul 2019 11:32:32 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1hoUs1-0002I0-Fb; Fri, 19 Jul 2019 09:32:29 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1hoUs0-0005zu-CO; Fri, 19 Jul 2019 09:32:29 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Tycho Andersen <tycho@tycho.ws>,
+        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        sgrubb@redhat.com, omosnace@redhat.com, dhowells@redhat.com,
+        simo@redhat.com, Eric Paris <eparis@parisplace.org>,
+        nhorman@tuxdriver.com
+References: <20190529153427.GB8959@cisco>
+        <CAHC9VhSF3AjErX37+eeusJ7+XRw8yuPsmqBTRwc9EVoRBh_3Tw@mail.gmail.com>
+        <20190529222835.GD8959@cisco>
+        <CAHC9VhRS66VGtug3fq3RTGHDvfGmBJG6yRJ+iMxm3cxnNF-zJw@mail.gmail.com>
+        <20190530170913.GA16722@mail.hallyn.com>
+        <CAHC9VhThLiQzGYRUWmSuVfOC6QCDmA75BDB7Eg7V8HX4x7ymQg@mail.gmail.com>
+        <20190708180558.5bar6ripag3sdadl@madcap2.tricolour.ca>
+        <CAHC9VhRTT7JWqNnynvK04wKerjc-3UJ6R1uPtjCAPVr_tW-7MA@mail.gmail.com>
+        <20190716220320.sotbfqplgdructg7@madcap2.tricolour.ca>
+        <CAHC9VhScHizB2r5q3T5s0P3jkYdvzBPPudDksosYFp_TO7W9-Q@mail.gmail.com>
+        <20190718005145.eshekqfr3navqqiy@madcap2.tricolour.ca>
+Date:   Fri, 19 Jul 2019 10:32:13 -0500
+In-Reply-To: <20190718005145.eshekqfr3navqqiy@madcap2.tricolour.ca> (Richard
+        Guy Briggs's message of "Wed, 17 Jul 2019 20:51:45 -0400")
+Message-ID: <874l3ighvm.fsf@xmission.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1hoUs0-0005zu-CO;;;mid=<874l3ighvm.fsf@xmission.com>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+51FYWsW8BRSUlMyR1nWn6IFnz4uCKOTQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Richard Guy Briggs <rgb@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 656 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 2.9 (0.4%), b_tie_ro: 1.94 (0.3%), parse: 0.88
+        (0.1%), extract_message_metadata: 3.3 (0.5%), get_uri_detail_list:
+        1.18 (0.2%), tests_pri_-1000: 7 (1.0%), tests_pri_-950: 1.56 (0.2%),
+        tests_pri_-900: 1.50 (0.2%), tests_pri_-90: 23 (3.6%), check_bayes: 22
+        (3.3%), b_tokenize: 7 (1.1%), b_tok_get_all: 6 (0.9%), b_comp_prob:
+        1.93 (0.3%), b_tok_touch_all: 4.5 (0.7%), b_finish: 0.60 (0.1%),
+        tests_pri_0: 598 (91.1%), check_dkim_signature: 0.56 (0.1%),
+        check_dkim_adsp: 2.2 (0.3%), poll_dns_idle: 0.60 (0.1%), tests_pri_10:
+        2.2 (0.3%), tests_pri_500: 6 (0.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH ghak90 V6 02/10] audit: add container id
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch introduces the use of nft input files variables in chain priority
-specification. e.g.
+Richard Guy Briggs <rgb@redhat.com> writes:
 
-define pri = filter
-define prinum = 10
+> On 2019-07-16 19:30, Paul Moore wrote:
+>> On Tue, Jul 16, 2019 at 6:03 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+>> > On 2019-07-15 17:04, Paul Moore wrote:
+>> > > On Mon, Jul 8, 2019 at 2:06 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+>> 
+>> > > > At this point I would say we are at an impasse unless we trust
+>> > > > ns_capable() or we implement audit namespaces.
+>> > >
+>> > > I'm not sure how we can trust ns_capable(), but if you can think of a
+>> > > way I would love to hear it.  I'm also not sure how namespacing audit
+>> > > is helpful (see my above comments), but if you think it is please
+>> > > explain.
+>> >
+>> > So if we are not namespacing, why do we not trust capabilities?
+>> 
+>> We can trust capable(CAP_AUDIT_CONTROL) for enforcing audit container
+>> ID policy, we can not trust ns_capable(CAP_AUDIT_CONTROL).
+>
+> Ok.  So does a process in a non-init user namespace have two (or more)
+> sets of capabilities stored in creds, one in the init_user_ns, and one
+> in current_user_ns?  Or does it get stripped of all its capabilities in
+> init_user_ns once it has its own set in current_user_ns?  If the former,
+> then we can use capable().  If the latter, we need another mechanism, as
+> you have suggested might be needed.
 
-add table ip foo
-add chain ip foo bar {type filter hook input priority $pri;}
-add chain ip foo ber {type filter hook input priority $prinum;}
-add chain ip foo bor {type filter hook input priority $pri + 10;}
+The latter.  There is only one set of capabilities and it is in the
+processes current user namespace.
 
-table ip foo {
-	chain bar {
-		type filter hook input priority filter; policy accept;
-	}
-
-	chain ber {
-		type filter hook input priority filter + 10; policy accept;
-	}
-
-	chain bor {
-		type filter hook input priority filter + 10; policy accept;
-	}
-}
-
-Signed-off-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
----
- include/datatype.h                            |  1 +
- include/rule.h                                |  8 ++--
- src/datatype.c                                | 25 +++++++++++
- src/evaluate.c                                | 41 ++++++++++++++-----
- src/parser_bison.y                            | 30 ++++++++++----
- src/rule.c                                    |  4 +-
- .../testcases/nft-f/0021priority_variable_0   | 17 ++++++++
- .../testcases/nft-f/0022priority_variable_0   | 17 ++++++++
- .../testcases/nft-f/0023priority_variable_1   | 18 ++++++++
- .../testcases/nft-f/0024priority_variable_1   | 18 ++++++++
- .../nft-f/dumps/0021priority_variable_0.nft   |  5 +++
- .../nft-f/dumps/0022priority_variable_0.nft   |  5 +++
- 12 files changed, 165 insertions(+), 24 deletions(-)
- mode change 100644 => 100755 src/evaluate.c
- create mode 100755 tests/shell/testcases/nft-f/0021priority_variable_0
- create mode 100755 tests/shell/testcases/nft-f/0022priority_variable_0
- create mode 100755 tests/shell/testcases/nft-f/0023priority_variable_1
- create mode 100755 tests/shell/testcases/nft-f/0024priority_variable_1
- create mode 100644 tests/shell/testcases/nft-f/dumps/0021priority_variable_0.nft
- create mode 100644 tests/shell/testcases/nft-f/dumps/0022priority_variable_0.nft
-
-diff --git a/include/datatype.h b/include/datatype.h
-index 63617eb..1b012d5 100644
---- a/include/datatype.h
-+++ b/include/datatype.h
-@@ -256,6 +256,7 @@ extern const struct datatype icmpx_code_type;
- extern const struct datatype igmp_type_type;
- extern const struct datatype time_type;
- extern const struct datatype boolean_type;
-+extern const struct datatype priority_type;
- 
- void inet_service_type_print(const struct expr *expr, struct output_ctx *octx);
- 
-diff --git a/include/rule.h b/include/rule.h
-index 67c3d33..c6e8716 100644
---- a/include/rule.h
-+++ b/include/rule.h
-@@ -174,13 +174,13 @@ enum chain_flags {
-  * struct prio_spec - extendend priority specification for mixed
-  *                    textual/numerical parsing.
-  *
-- * @str:  name of the standard priority value
-- * @num:  Numerical value. This MUST contain the parsed value of str after
-+ * @expr:  expr of the standard priority value
-+ * @num:  Numerical value. This MUST contain the parsed value of expr after
-  *        evaluation.
-  */
- struct prio_spec {
--	const char  *str;
--	int          num;
-+	struct expr	*expr;
-+	int		num;
- 	struct location loc;
- };
- 
-diff --git a/src/datatype.c b/src/datatype.c
-index 6d6826e..54edc70 100644
---- a/src/datatype.c
-+++ b/src/datatype.c
-@@ -1246,3 +1246,28 @@ const struct datatype boolean_type = {
- 	.sym_tbl	= &boolean_tbl,
- 	.json		= boolean_type_json,
- };
-+
-+static struct error_record *priority_type_parse(const struct expr *sym,
-+						struct expr **res)
-+{
-+	int num;
-+
-+	if (isdigit(sym->identifier[0])) {
-+		num = atoi(sym->identifier);
-+		*res = constant_expr_alloc(&sym->location, &integer_type,
-+					   BYTEORDER_HOST_ENDIAN,
-+					   32, &num);
-+	} else
-+		*res = constant_expr_alloc(&sym->location, &string_type,
-+					   BYTEORDER_HOST_ENDIAN,
-+					   strlen(sym->identifier) *
-+					   BITS_PER_BYTE, sym->identifier);
-+	return NULL;
-+}
-+
-+const struct datatype priority_type = {
-+	.type		= TYPE_STRING,
-+	.name		= "priority",
-+	.desc		= "priority type",
-+	.parse		= priority_type_parse,
-+};
-diff --git a/src/evaluate.c b/src/evaluate.c
-old mode 100644
-new mode 100755
-index 69b853f..ca6a451
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -3193,15 +3193,36 @@ static int set_evaluate(struct eval_ctx *ctx, struct set *set)
- 	return 0;
- }
- 
--static bool evaluate_priority(struct prio_spec *prio, int family, int hook)
-+static bool evaluate_priority(struct eval_ctx *ctx, struct prio_spec *prio,
-+			      int family, int hook)
- {
- 	int priority;
-+	char prio_str[NFT_NAME_MAXLEN];
- 
- 	/* A numeric value has been used to specify priority. */
--	if (prio->str == NULL)
-+	if (prio->expr == NULL)
- 		return true;
- 
--	priority = std_prio_lookup(prio->str, family, hook);
-+	ctx->ectx.dtype = &priority_type;
-+	ctx->ectx.len = NFT_NAME_MAXLEN * BITS_PER_BYTE;
-+	if (expr_evaluate(ctx, &prio->expr) < 0)
-+		return false;
-+	if (prio->expr->etype != EXPR_VALUE) {
-+		expr_error(ctx->msgs, prio->expr, "%s is not a valid "
-+			   "priority expression", expr_name(prio->expr));
-+		return false;
-+	}
-+
-+	if (prio->expr->dtype->type == TYPE_INTEGER) {
-+		mpz_export_data(&prio->num, prio->expr->value,
-+				BYTEORDER_HOST_ENDIAN, 4);
-+		return true;
-+	}
-+	mpz_export_data(prio_str, prio->expr->value,
-+			BYTEORDER_HOST_ENDIAN,
-+			NFT_NAME_MAXLEN);
-+
-+	priority = std_prio_lookup(prio_str, family, hook);
- 	if (priority == NF_IP_PRI_LAST)
- 		return false;
- 	prio->num += priority;
-@@ -3223,10 +3244,10 @@ static int flowtable_evaluate(struct eval_ctx *ctx, struct flowtable *ft)
- 	if (ft->hooknum == NF_INET_NUMHOOKS)
- 		return chain_error(ctx, ft, "invalid hook %s", ft->hookstr);
- 
--	if (!evaluate_priority(&ft->priority, NFPROTO_NETDEV, ft->hooknum))
-+	if (!evaluate_priority(ctx, &ft->priority, NFPROTO_NETDEV, ft->hooknum))
- 		return __stmt_binary_error(ctx, &ft->priority.loc, NULL,
--					   "'%s' is invalid priority.",
--					   ft->priority.str);
-+					   "invalid priority expression %s.",
-+					   expr_name(ft->priority.expr));
- 
- 	if (!ft->dev_expr)
- 		return chain_error(ctx, ft, "Unbound flowtable not allowed (must specify devices)");
-@@ -3422,11 +3443,11 @@ static int chain_evaluate(struct eval_ctx *ctx, struct chain *chain)
- 			return chain_error(ctx, chain, "invalid hook %s",
- 					   chain->hookstr);
- 
--		if (!evaluate_priority(&chain->priority, chain->handle.family,
--				       chain->hooknum))
-+		if (!evaluate_priority(ctx, &chain->priority,
-+				       chain->handle.family, chain->hooknum))
- 			return __stmt_binary_error(ctx, &chain->priority.loc, NULL,
--						   "'%s' is invalid priority in this context.",
--						   chain->priority.str);
-+						   "invalid priority expression %s in this context.",
-+						   expr_name(chain->priority.expr));
- 	}
- 
- 	list_for_each_entry(rule, &chain->rules, list) {
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 53e6695..ed7bd89 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -636,8 +636,8 @@ int nft_lex(void *, void *, void *);
- %type <stmt>			meter_stmt meter_stmt_alloc flow_stmt_legacy_alloc
- %destructor { stmt_free($$); }	meter_stmt meter_stmt_alloc flow_stmt_legacy_alloc
- 
--%type <expr>			symbol_expr verdict_expr integer_expr variable_expr chain_expr
--%destructor { expr_free($$); }	symbol_expr verdict_expr integer_expr variable_expr chain_expr
-+%type <expr>			symbol_expr verdict_expr integer_expr variable_expr chain_expr prio_expr
-+%destructor { expr_free($$); }	symbol_expr verdict_expr integer_expr variable_expr chain_expr prio_expr
- %type <expr>			primary_expr shift_expr and_expr
- %destructor { expr_free($$); }	primary_expr shift_expr and_expr
- %type <expr>			exclusive_or_expr inclusive_or_expr
-@@ -1969,30 +1969,44 @@ extended_prio_name	:	OUT
- 			|	STRING
- 			;
- 
-+prio_expr		:	variable_expr
-+			{
-+				datatype_set($1->sym->expr, &priority_type);
-+				$$ = $1;
-+			}
-+			|	extended_prio_name
-+			{
-+				$$ = constant_expr_alloc(&@$, &string_type,
-+							 BYTEORDER_HOST_ENDIAN,
-+							 strlen($1) *
-+							 BITS_PER_BYTE, $1);
-+			}
-+			;
-+
- extended_prio_spec	:	int_num
- 			{
- 				struct prio_spec spec = {0};
- 				spec.num = $1;
- 				$$ = spec;
- 			}
--			|	extended_prio_name
-+			|	prio_expr
- 			{
- 				struct prio_spec spec = {0};
--				spec.str = $1;
-+				spec.expr = $1;
- 				$$ = spec;
- 			}
--			|	extended_prio_name PLUS NUM
-+			|	prio_expr PLUS NUM
- 			{
- 				struct prio_spec spec = {0};
- 				spec.num = $3;
--				spec.str = $1;
-+				spec.expr = $1;
- 				$$ = spec;
- 			}
--			|	extended_prio_name DASH NUM
-+			|	prio_expr DASH NUM
- 			{
- 				struct prio_spec spec = {0};
- 				spec.num = -$3;
--				spec.str = $1;
-+				spec.expr = $1;
- 				$$ = spec;
- 			}
- 			;
-diff --git a/src/rule.c b/src/rule.c
-index b957b45..23011d9 100644
---- a/src/rule.c
-+++ b/src/rule.c
-@@ -823,7 +823,7 @@ void chain_free(struct chain *chain)
- 	xfree(chain->type);
- 	if (chain->dev != NULL)
- 		xfree(chain->dev);
--	xfree(chain->priority.str);
-+	expr_free(chain->priority.expr);
- 	xfree(chain);
- }
- 
-@@ -2049,7 +2049,7 @@ void flowtable_free(struct flowtable *flowtable)
- 	if (--flowtable->refcnt > 0)
- 		return;
- 	handle_free(&flowtable->handle);
--	xfree(flowtable->priority.str);
-+	expr_free(flowtable->priority.expr);
- 	xfree(flowtable);
- }
- 
-diff --git a/tests/shell/testcases/nft-f/0021priority_variable_0 b/tests/shell/testcases/nft-f/0021priority_variable_0
-new file mode 100755
-index 0000000..2b143db
---- /dev/null
-+++ b/tests/shell/testcases/nft-f/0021priority_variable_0
-@@ -0,0 +1,17 @@
-+#!/bin/bash
-+
-+# Tests use of variables in priority specification
-+
-+set -e
-+
-+RULESET="
-+define pri = filter
-+
-+table inet global {
-+    chain prerouting {
-+        type filter hook prerouting priority \$pri
-+        policy accept
-+    }
-+}"
-+
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/nft-f/0022priority_variable_0 b/tests/shell/testcases/nft-f/0022priority_variable_0
-new file mode 100755
-index 0000000..51bc5eb
---- /dev/null
-+++ b/tests/shell/testcases/nft-f/0022priority_variable_0
-@@ -0,0 +1,17 @@
-+#!/bin/bash
-+
-+# Tests use of variables in priority specification
-+
-+set -e
-+
-+RULESET="
-+define pri = 10
-+
-+table inet global {
-+    chain prerouting {
-+        type filter hook prerouting priority \$pri
-+        policy accept
-+    }
-+}"
-+
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/nft-f/0023priority_variable_1 b/tests/shell/testcases/nft-f/0023priority_variable_1
-new file mode 100755
-index 0000000..eddaf5b
---- /dev/null
-+++ b/tests/shell/testcases/nft-f/0023priority_variable_1
-@@ -0,0 +1,18 @@
-+#!/bin/bash
-+
-+# Tests use of variables in priority specification
-+
-+set -e
-+
-+RULESET="
-+define pri = *
-+
-+table inet global {
-+    chain prerouting {
-+        type filter hook prerouting priority \$pri
-+        policy accept
-+    }
-+}"
-+
-+$NFT -f - <<< "$RULESET" && exit 1
-+exit 0
-diff --git a/tests/shell/testcases/nft-f/0024priority_variable_1 b/tests/shell/testcases/nft-f/0024priority_variable_1
-new file mode 100755
-index 0000000..592cb56
---- /dev/null
-+++ b/tests/shell/testcases/nft-f/0024priority_variable_1
-@@ -0,0 +1,18 @@
-+#!/bin/bash
-+
-+# Tests use of variables in priority specification
-+
-+set -e
-+
-+RULESET="
-+define pri = { 127.0.0.1 }
-+
-+table inet global {
-+    chain prerouting {
-+        type filter hook prerouting priority \$pri
-+        policy accept
-+    }
-+}"
-+
-+$NFT -f - <<< "$RULESET" && exit 1
-+exit 0
-diff --git a/tests/shell/testcases/nft-f/dumps/0021priority_variable_0.nft b/tests/shell/testcases/nft-f/dumps/0021priority_variable_0.nft
-new file mode 100644
-index 0000000..f409309
---- /dev/null
-+++ b/tests/shell/testcases/nft-f/dumps/0021priority_variable_0.nft
-@@ -0,0 +1,5 @@
-+table inet global {
-+	chain prerouting {
-+		type filter hook prerouting priority filter; policy accept;
-+	}
-+}
-diff --git a/tests/shell/testcases/nft-f/dumps/0022priority_variable_0.nft b/tests/shell/testcases/nft-f/dumps/0022priority_variable_0.nft
-new file mode 100644
-index 0000000..2e94459
---- /dev/null
-+++ b/tests/shell/testcases/nft-f/dumps/0022priority_variable_0.nft
-@@ -0,0 +1,5 @@
-+table inet global {
-+	chain prerouting {
-+		type filter hook prerouting priority filter + 10; policy accept;
-+	}
-+}
--- 
-2.20.1
-
+Eric
