@@ -2,86 +2,87 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE276EFC9
-	for <lists+netfilter-devel@lfdr.de>; Sat, 20 Jul 2019 17:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B986F00D
+	for <lists+netfilter-devel@lfdr.de>; Sat, 20 Jul 2019 18:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbfGTPPG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 20 Jul 2019 11:15:06 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:40742 "EHLO orbyte.nwl.cc"
+        id S1726692AbfGTQbk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 20 Jul 2019 12:31:40 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:40946 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726056AbfGTPPG (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 20 Jul 2019 11:15:06 -0400
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1hor4g-0004pz-QU; Sat, 20 Jul 2019 17:15:02 +0200
-Date:   Sat, 20 Jul 2019 17:15:02 +0200
+        id S1726300AbfGTQbk (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 20 Jul 2019 12:31:40 -0400
+Received: from localhost ([::1]:54036 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1hosGo-0005VH-Kt; Sat, 20 Jul 2019 18:31:38 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Florian Westphal <fwestpha@redhat.com>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [nf PATCH v2 1/2] net: nf_tables: Make nft_meta expression more
- robust
-Message-ID: <20190720151502.GD32501@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fwestpha@redhat.com>,
-        netfilter-devel@vger.kernel.org
-References: <20190719123921.1249-1-phil@nwl.cc>
- <20190719163521.oozthobj33ejswrx@salvia>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 00/12] Larger xtables-save review
+Date:   Sat, 20 Jul 2019 18:30:14 +0200
+Message-Id: <20190720163026.15410-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190719163521.oozthobj33ejswrx@salvia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+This series started as a fix to program names mentioned in *-save
+outputs and ended in merging ebtables-save and arptables-save code into
+xtables_save_main used by ip{6,}tables-nft-save.
 
-On Fri, Jul 19, 2019 at 06:35:21PM +0200, Pablo Neira Ayuso wrote:
-> On Fri, Jul 19, 2019 at 02:39:20PM +0200, Phil Sutter wrote:
-> > nft_meta_get_eval()'s tendency to bail out setting NFT_BREAK verdict in
-> > situations where required data is missing breaks inverted checks
-> > like e.g.:
-> > 
-> > | meta iifname != eth0 accept
-> > 
-> > This rule will never match if there is no input interface (or it is not
-> > known) which is not intuitive and, what's worse, breaks consistency of
-> > iptables-nft with iptables-legacy.
-> > 
-> > Fix this by falling back to placing a value in dreg which never matches
-> > (avoiding accidental matches):
-> > 
-> > {I,O}IF:
-> > 	Use invalid ifindex value zero.
-> > 
-> > {BRI_,}{I,O}IFNAME, {I,O}IFKIND:
-> > 	Use an empty string which is neither a valid interface name nor
-> > 	kind.
-> > 
-> > {I,O}IFTYPE:
-> > 	Use ARPHRD_VOID (0xFFFF).
-> 
-> What could it be done with?
-> 
-> NFT_META_BRI_IIFPVID
-> NFT_META_BRI_IIFPVPROTO
-> 
-> Those will still not work for
-> 
->         meta ibrpvid != 40
-> 
-> if interface is not available.
-> 
-> For VPROTO probably it's possible. I don't have a solution for
-> IIFPVID.
+The first patch is actually unrelated but was discovered when testing
+counter output - depending on environment, ebtables-nft might segfault.
 
-VLAN IDs 0 and 4095 are reserved, we could use those. I refrained from
-changing bridge VLAN matches because of IIFPVPROTO, no idea if there's
-an illegal value we could use for that. If you have an idea, I'm all for
-it. :)
+The second patch fixes option '-c' of ebtables-nft-save which enables
+counter prefixes in dumped rules but failed to disable the classical
+ebtables-style counters.
 
-Thanks, Phil
+Patch three sorts program names quoted in output of any of the *-save
+programs, patch four unifies the header/footer comments in the same. The
+latter also drops the extra newline printed in ebtables- and
+arptables-save output, so test scripts need adjustments beyond dropping
+the new comment lines from output.
+
+Patch five fixes the table compatibility check in ip{6,}tables-nft-save.
+
+Patches six and eight to ten prepare for integrating arptables- and
+ebtables-save into the xtables-save code.
+
+Patch seven merely fixes a minor coding-style issue.
+
+Patches eleven and twelve finally perform the actual merge.
+
+Phil Sutter (12):
+  ebtables: Fix error message for invalid parameters
+  ebtables-save: Fix counter formatting
+  xtables-save: Use argv[0] as program name
+  xtables-save: Unify *-save header/footer comments
+  xtables-save: Fix table compatibility check
+  nft: Make nft_for_each_table() more versatile
+  xtables-save: Avoid mixed code and declarations
+  xtables-save: Pass optstring/longopts to xtables_save_main()
+  xtables-save: Make COMMIT line optional
+  xtables-save: Pass format flags to do_output()
+  arptables-save: Merge into xtables_save_main()
+  ebtables-save: Merge into xtables_save_main()
+
+ iptables/nft-bridge.c                         |  39 +--
+ iptables/nft.c                                |   6 +-
+ iptables/nft.h                                |   2 +-
+ .../arptables/0001-arptables-save-restore_0   |   7 +-
+ .../0002-arptables-restore-defaults_0         |   6 +-
+ .../arptables/0003-arptables-verbose-output_0 |   5 +-
+ .../ebtables/0002-ebtables-save-restore_0     |   4 +-
+ .../ebtables/0003-ebtables-restore-defaults_0 |   6 +-
+ .../testcases/ebtables/0004-save-counters_0   |  64 +++++
+ iptables/xtables-eb.c                         |   4 +-
+ iptables/xtables-save.c                       | 242 ++++--------------
+ 11 files changed, 146 insertions(+), 239 deletions(-)
+ create mode 100755 iptables/tests/shell/testcases/ebtables/0004-save-counters_0
+
+-- 
+2.22.0
+
