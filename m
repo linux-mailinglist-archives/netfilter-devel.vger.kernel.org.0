@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BCC36F28A
-	for <lists+netfilter-devel@lfdr.de>; Sun, 21 Jul 2019 12:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1956F2AB
+	for <lists+netfilter-devel@lfdr.de>; Sun, 21 Jul 2019 12:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbfGUKWd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 21 Jul 2019 06:22:33 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:49262 "EHLO
+        id S1726188AbfGUKrG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 21 Jul 2019 06:47:06 -0400
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:49300 "EHLO
         Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726020AbfGUKWc (ORCPT
+        by vger.kernel.org with ESMTP id S1726047AbfGUKrG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 21 Jul 2019 06:22:32 -0400
+        Sun, 21 Jul 2019 06:47:06 -0400
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
         (envelope-from <fw@breakpoint.cc>)
-        id 1hp8z9-0004aj-9y; Sun, 21 Jul 2019 12:22:31 +0200
+        id 1hp9Mv-0004fO-62; Sun, 21 Jul 2019 12:47:05 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft] scanner: don't rely on fseek for input stream repositioning
-Date:   Sun, 21 Jul 2019 12:18:31 +0200
-Message-Id: <20190721101831.28089-1-fw@strlen.de>
+Subject: [PATCH nft] doc: fib: explain example in more detail
+Date:   Sun, 21 Jul 2019 12:43:05 +0200
+Message-Id: <20190721104305.29594-1-fw@strlen.de>
 X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -29,63 +29,31 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-It doesn't work when reading from a pipe, leading to parser
-errors in case of 'cat foo | nft -f -', whereas 'nft -f < foo'
-works fine.
+As noted by Felix Dreissig, fib documentation is quite terse, so explain
+the 'saddr . iif' example with a few more words.
 
-Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1354
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1220
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- src/scanner.l | 35 ++++++++++++++++++++---------------
- 1 file changed, 20 insertions(+), 15 deletions(-)
+ doc/primary-expression.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/src/scanner.l b/src/scanner.l
-index 4ed5f9241381..c1adcbddbd73 100644
---- a/src/scanner.l
-+++ b/src/scanner.l
-@@ -36,23 +36,28 @@
-  */
- #define YY_INPUT(buf,result,max_size)						\
- {										\
--	long n = 0;								\
-+	result = 0;								\
- 	errno = 0;								\
--	while ((result = fread(buf, 1, max_size, yyin)) == 0 &&			\
--		ferror(yyin)) {							\
--		if (errno != EINTR) {						\
--			YY_FATAL_ERROR("input in flex scanner failed");		\
--			break;							\
-+										\
-+	while (result < max_size) {						\
-+		int chr = fgetc(yyin);						\
-+										\
-+		if (chr != EOF) {						\
-+			buf[result++] = chr;					\
-+			if (chr == '\n' || chr == ' ')				\
-+				break;						\
-+			continue;						\
- 		}								\
--		errno = 0;							\
--		clearerr(yyin);							\
--	}									\
--	if (result > 1 && !feof(yyin)) {					\
--		while (result > 1 && 						\
--		       (buf[result - 1] != '\n' &&  buf[result - 1] != ' '))	\
--			result--, n++;						\
--		result--, n++;							\
--		fseek(yyin, -n, SEEK_CUR);					\
-+										\
-+		if (ferror(yyin)) {						\
-+			if (errno != EINTR) {					\
-+				YY_FATAL_ERROR("input in flex scanner failed");	\
-+				break;						\
-+			}							\
-+			errno = 0;						\
-+			clearerr(yyin);						\
-+		}								\
-+		break;								\
- 	}									\
- }
+diff --git a/doc/primary-expression.txt b/doc/primary-expression.txt
+index 6eb9583ac9e9..124193626aa7 100644
+--- a/doc/primary-expression.txt
++++ b/doc/primary-expression.txt
+@@ -274,6 +274,12 @@ fib_addrtype
+ # drop packets without a reverse path
+ filter prerouting fib saddr . iif oif missing drop
+ 
++In this example, 'saddr . iif' lookups up routing information based on the source address and the input interface.
++oif picks the output interface index from the routing information.
++If no route was found for the source address/input interface combination, the output interface index is zero.
++In case the input interface is specified as part of the input key, the output interface index is always the same as the input interface index or zero.
++If only 'saddr oif' is given, then oif can be any interface index or zero.
++
+ # drop packets to address not configured on ininterface
+ filter prerouting fib daddr . iif type != { local, broadcast, multicast } drop
  
 -- 
 2.21.0
