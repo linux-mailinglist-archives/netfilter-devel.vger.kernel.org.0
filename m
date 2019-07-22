@@ -2,26 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 808B66FD89
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 12:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D016FD85
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 12:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729021AbfGVKQ7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 22 Jul 2019 06:16:59 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45468 "EHLO orbyte.nwl.cc"
+        id S1728455AbfGVKQt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 22 Jul 2019 06:16:49 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:45456 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726846AbfGVKQ7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 22 Jul 2019 06:16:59 -0400
-Received: from localhost ([::1]:58558 helo=tatos)
+        id S1726846AbfGVKQs (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 22 Jul 2019 06:16:48 -0400
+Received: from localhost ([::1]:58546 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1hpVNK-0000d3-1N; Mon, 22 Jul 2019 12:16:58 +0200
+        id 1hpVN9-0000bi-EA; Mon, 22 Jul 2019 12:16:47 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Florian Westphal <fw@strlen.de>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 00/11] Larger xtables-save review
-Date:   Mon, 22 Jul 2019 12:16:17 +0200
-Message-Id: <20190722101628.21195-1-phil@nwl.cc>
+Subject: [iptables PATCH v2 01/11] ebtables: Fix error message for invalid parameters
+Date:   Mon, 22 Jul 2019 12:16:18 +0200
+Message-Id: <20190722101628.21195-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20190722101628.21195-1-phil@nwl.cc>
+References: <20190722101628.21195-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -29,62 +31,37 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This series started as a fix to program names mentioned in *-save
-outputs and ended in merging ebtables-save and arptables-save code into
-xtables_save_main used by ip{6,}tables-nft-save.
+With empty ruleset, ebtables-nft would report the wrong argv:
 
-The first patch is actually unrelated but was discovered when testing
-counter output - depending on environment, ebtables-nft might segfault.
+| % sudo ./install/sbin/ebtables-nft -vnL
+| ebtables v1.8.3 (nf_tables): Unknown argument: './install/sbin/ebtables-nft'
+| Try `ebtables -h' or 'ebtables --help' for more information.
 
-The second patch fixes option '-c' of ebtables-nft-save which enables
-counter prefixes in dumped rules but failed to disable the classical
-ebtables-style counters.
+After a (successful) call to 'ebtables-nft -L', this would even
+segfault:
 
-Patch three unifies the header/footer comments in all the *-save tools
-and also drops the extra newline printed in ebtables- and arptables-save
-output, so test scripts need adjustments beyond dropping the new comment
-lines from output.
+| % sudo ./install/sbin/ebtables-nft -vnL
+| zsh: segmentation fault  sudo ./install/sbin/ebtables-nft -vnL
 
-Patch four fixes the table compatibility check in ip{6,}tables-nft-save.
+Fixes: acde6be32036f ("ebtables-translate: Fix segfault while parsing extension options")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/xtables-eb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Patches five and seven to nine prepare for integrating arptables- and
-ebtables-save into the xtables-save code.
-
-Patch six merely fixes a minor coding-style issue.
-
-Patches ten and eleven finally perform the actual merge.
-
-Changes since v1:
-- Rebased onto current master branch.
-- Improved commit message in patch eight.
-
-Phil Sutter (11):
-  ebtables: Fix error message for invalid parameters
-  ebtables-save: Fix counter formatting
-  xtables-save: Unify *-save header/footer comments
-  xtables-save: Fix table compatibility check
-  nft: Make nft_for_each_table() more versatile
-  xtables-save: Avoid mixed code and declarations
-  xtables-save: Pass optstring/longopts to xtables_save_main()
-  xtables-save: Make COMMIT line optional
-  xtables-save: Pass format flags to do_output()
-  arptables-save: Merge into xtables_save_main()
-  ebtables-save: Merge into xtables_save_main()
-
- iptables/nft-bridge.c                         |  39 +--
- iptables/nft.c                                |   6 +-
- iptables/nft.h                                |   2 +-
- .../arptables/0001-arptables-save-restore_0   |   7 +-
- .../0002-arptables-restore-defaults_0         |   6 +-
- .../arptables/0003-arptables-verbose-output_0 |   5 +-
- .../ebtables/0002-ebtables-save-restore_0     |   4 +-
- .../ebtables/0003-ebtables-restore-defaults_0 |   6 +-
- .../testcases/ebtables/0004-save-counters_0   |  64 +++++
- iptables/xtables-eb.c                         |   4 +-
- iptables/xtables-save.c                       | 237 ++++--------------
- 11 files changed, 143 insertions(+), 237 deletions(-)
- create mode 100755 iptables/tests/shell/testcases/ebtables/0004-save-counters_0
-
+diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
+index 171f41b0f616e..b8d89ad974a42 100644
+--- a/iptables/xtables-eb.c
++++ b/iptables/xtables-eb.c
+@@ -1180,7 +1180,7 @@ print_zero:
+ 			if (ebt_command_default(&cs))
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					      "Unknown argument: '%s'",
+-					      argv[optind - 1]);
++					      argv[optind]);
+ 
+ 			if (command != 'A' && command != 'I' &&
+ 			    command != 'D' && command != 'C')
 -- 
 2.22.0
 
