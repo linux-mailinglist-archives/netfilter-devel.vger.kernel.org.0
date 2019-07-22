@@ -2,54 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B56707063A
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 18:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0537F70649
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 18:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbfGVQ4C (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 22 Jul 2019 12:56:02 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:38042 "EHLO mx1.riseup.net"
+        id S1728428AbfGVQ6t (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 22 Jul 2019 12:58:49 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:46236 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727805AbfGVQ4C (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 22 Jul 2019 12:56:02 -0400
-Received: from bell.riseup.net (bell-pn.riseup.net [10.0.1.178])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (verified OK))
-        by mx1.riseup.net (Postfix) with ESMTPS id 49EF41A4BDD;
-        Mon, 22 Jul 2019 09:55:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1563814562; bh=dBW319YZLP824ARjlEpRMgpzcfu1moQcY06xWhkbf40=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=sj3cZraBy+gzxVEr7ibgHjpOQ1T7hySn02VlhEW8ek/qSWab9NJUIkj91zDlekRGQ
-         PPmS+VJ4WelAvir1J0BrN/fTKIdsKI3RwviYqVUipNte/7DUmVr5nhv+YDPCnlVsAQ
-         DQB1EH80sfUVul+S4g6yD2869WyiQofl/GpCGX/k=
-X-Riseup-User-ID: 276D0351996F59704C86BA5D1064499A4CE6A2B6508285376888B368FAB6CE48
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by bell.riseup.net (Postfix) with ESMTPSA id 95A6322220C;
-        Mon, 22 Jul 2019 09:55:42 -0700 (PDT)
+        id S1727805AbfGVQ6t (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 22 Jul 2019 12:58:49 -0400
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1hpbeB-0005V2-81; Mon, 22 Jul 2019 18:58:47 +0200
+Date:   Mon, 22 Jul 2019 18:58:47 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Fernando Fernandez Mancera <ffmancera@riseup.net>
+Cc:     netfilter-devel@vger.kernel.org
 Subject: Re: memleak when using "nft -f"
-From:   Fernando Fernandez Mancera <ffmancera@riseup.net>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Phil Sutter <phil@nwl.cc>
+Message-ID: <20190722165847.GM22661@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Fernando Fernandez Mancera <ffmancera@riseup.net>,
+        netfilter-devel@vger.kernel.org
 References: <8d5745ef-5199-4754-55ee-22c6c5994341@riseup.net>
-Openpgp: preference=signencrypt
-Message-ID: <d41b858e-64a9-d8ae-275a-2b82b77fb7b8@riseup.net>
-Date:   Mon, 22 Jul 2019 18:55:56 +0200
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <8d5745ef-5199-4754-55ee-22c6c5994341@riseup.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US-large
-Content-Transfer-Encoding: 7bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Never mind, I found the problem. It was a patch on my local branch.
-Sorry for the inconveniences.
+Hi Fernando,
 
-On 7/22/19 6:16 PM, Fernando Fernandez Mancera wrote:
-> Hi,
-> 
+On Mon, Jul 22, 2019 at 06:16:14PM +0200, Fernando Fernandez Mancera wrote:
 > I have found a memleak when using "nft -f".
 > 
 > Example file (test-memleak):
@@ -91,4 +78,9 @@ On 7/22/19 6:16 PM, Fernando Fernandez Mancera wrote:
 > 
 > I have been trying to debug this but I was not able to find where is the
 > problem.
-> 
+
+The trace indicates memory allocated for a STRING is lost (overwritten).
+Maybe the defined destructor in src/parser_bison.y is not called? Note
+that I don't see that memleak on my testing VM.
+
+Cheers, Phil
