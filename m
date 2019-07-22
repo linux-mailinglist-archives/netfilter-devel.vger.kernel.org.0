@@ -2,26 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F6E6FC67
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 11:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808B66FD89
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 12:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728265AbfGVJm3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 22 Jul 2019 05:42:29 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:52242 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728021AbfGVJm3 (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 22 Jul 2019 05:42:29 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1hpUpu-0001Qc-P9; Mon, 22 Jul 2019 11:42:27 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft v2] src: evaluate: support prefix expression in statements
-Date:   Mon, 22 Jul 2019 11:37:40 +0200
-Message-Id: <20190722093740.5176-1-fw@strlen.de>
-X-Mailer: git-send-email 2.21.0
+        id S1729021AbfGVKQ7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 22 Jul 2019 06:16:59 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:45468 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726846AbfGVKQ7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 22 Jul 2019 06:16:59 -0400
+Received: from localhost ([::1]:58558 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1hpVNK-0000d3-1N; Mon, 22 Jul 2019 12:16:58 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH v2 00/11] Larger xtables-save review
+Date:   Mon, 22 Jul 2019 12:16:17 +0200
+Message-Id: <20190722101628.21195-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -29,164 +29,62 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Currently nft dumps core when it encounters a prefix expression as
-part of a statement, e.g.
-iifname ens3 snat to 10.0.0.0/28
+This series started as a fix to program names mentioned in *-save
+outputs and ended in merging ebtables-save and arptables-save code into
+xtables_save_main used by ip{6,}tables-nft-save.
 
-yields:
-BUG: unknown expression type prefix
-nft: netlink_linearize.c:688: netlink_gen_expr: Assertion `0' failed.
+The first patch is actually unrelated but was discovered when testing
+counter output - depending on environment, ebtables-nft might segfault.
 
-This assertion is correct -- we can't linearize a prefix because
-kernel doesn't know what that is.
+The second patch fixes option '-c' of ebtables-nft-save which enables
+counter prefixes in dumped rules but failed to disable the classical
+ebtables-style counters.
 
-For LHS prefixes, they get converted to a binary 'and' such as
-'10.0.0.0 & 255.255.255.240'.  For RHS, we can do something similar
-and convert them into a range.
+Patch three unifies the header/footer comments in all the *-save tools
+and also drops the extra newline printed in ebtables- and arptables-save
+output, so test scripts need adjustments beyond dropping the new comment
+lines from output.
 
-snat to 10.0.0.0/28 will be converted into:
-iifname "ens3" snat to 10.0.0.0-10.0.0.15
+Patch four fixes the table compatibility check in ip{6,}tables-nft-save.
 
-Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1187
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- src/evaluate.c                  | 48 +++++++++++++++++++++++++++++++++
- tests/py/ip6/dnat.t             |  2 ++
- tests/py/ip6/dnat.t.json        | 27 +++++++++++++++++++
- tests/py/ip6/dnat.t.payload.ip6 | 12 +++++++++
- 4 files changed, 89 insertions(+)
+Patches five and seven to nine prepare for integrating arptables- and
+ebtables-save into the xtables-save code.
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 8c1c82abed4e..4219ff721e50 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -1933,6 +1933,52 @@ static int stmt_evaluate_expr(struct eval_ctx *ctx, struct stmt *stmt)
- 	return expr_evaluate(ctx, &stmt->expr);
- }
- 
-+static int stmt_prefix_conversion(struct eval_ctx *ctx, struct expr **expr,
-+				  enum byteorder byteorder)
-+{
-+	struct expr *mask, *and, *or, *prefix, *base, *range;
-+	int ret;
-+
-+	prefix = *expr;
-+	base = prefix->prefix;
-+
-+	if (base->etype != EXPR_VALUE)
-+		return expr_error(ctx->msgs, prefix,
-+				  "you cannot specify a prefix here, "
-+				  "unknown type %s", base->dtype->name);
-+
-+	if (!expr_is_constant(base))
-+		return expr_error(ctx->msgs, prefix,
-+				  "Prefix expression is undefined for "
-+				  "non-constant expressions");
-+
-+	if (expr_basetype(base)->type != TYPE_INTEGER)
-+		return expr_error(ctx->msgs, prefix,
-+				  "Prefix expression expected integer value");
-+
-+	mask = constant_expr_alloc(&prefix->location, expr_basetype(base),
-+				   BYTEORDER_HOST_ENDIAN, base->len, NULL);
-+
-+	mpz_prefixmask(mask->value, base->len, prefix->prefix_len);
-+	and = binop_expr_alloc(&prefix->location, OP_AND, expr_get(base), mask);
-+
-+	mask = constant_expr_alloc(&prefix->location, expr_basetype(base),
-+				   BYTEORDER_HOST_ENDIAN, base->len, NULL);
-+	mpz_bitmask(mask->value, prefix->len - prefix->prefix_len);
-+	or = binop_expr_alloc(&prefix->location, OP_OR, expr_get(base), mask);
-+
-+	range = range_expr_alloc(&prefix->location, and, or);
-+	ret = expr_evaluate(ctx, &range);
-+	if (ret < 0) {
-+		expr_free(range);
-+		return ret;
-+	}
-+
-+	expr_free(*expr);
-+	*expr = range;
-+	return 0;
-+}
-+
- static int stmt_evaluate_arg(struct eval_ctx *ctx, struct stmt *stmt,
- 			     const struct datatype *dtype, unsigned int len,
- 			     enum byteorder byteorder, struct expr **expr)
-@@ -1969,6 +2015,8 @@ static int stmt_evaluate_arg(struct eval_ctx *ctx, struct stmt *stmt,
- 					 "unknown value to use");
- 	case EXPR_RT:
- 		return byteorder_conversion(ctx, expr, byteorder);
-+	case EXPR_PREFIX:
-+		return stmt_prefix_conversion(ctx, expr, byteorder);
- 	default:
- 		break;
- 	}
-diff --git a/tests/py/ip6/dnat.t b/tests/py/ip6/dnat.t
-index 78d6d0ad382d..db5fde58e606 100644
---- a/tests/py/ip6/dnat.t
-+++ b/tests/py/ip6/dnat.t
-@@ -5,3 +5,5 @@
- tcp dport 80-90 dnat to [2001:838:35f:1::]-[2001:838:35f:2::]:80-100;ok
- tcp dport 80-90 dnat to [2001:838:35f:1::]-[2001:838:35f:2::]:100;ok;tcp dport 80-90 dnat to [2001:838:35f:1::]-[2001:838:35f:2::]:100
- tcp dport 80-90 dnat to [2001:838:35f:1::]:80;ok
-+dnat to [2001:838:35f:1::]/64;ok;dnat to 2001:838:35f:1::-2001:838:35f:1:ffff:ffff:ffff:ffff
-+dnat to 2001:838:35f:1::-2001:838:35f:1:ffff:ffff:ffff:ffff;ok
-diff --git a/tests/py/ip6/dnat.t.json b/tests/py/ip6/dnat.t.json
-index a5c01fd2d7a1..3419b60f5dd1 100644
---- a/tests/py/ip6/dnat.t.json
-+++ b/tests/py/ip6/dnat.t.json
-@@ -76,3 +76,30 @@
-     }
- ]
- 
-+# dnat to [2001:838:35f:1::]/64
-+[
-+    {
-+        "dnat": {
-+            "addr": {
-+                "range": [
-+                    "2001:838:35f:1::",
-+                    "2001:838:35f:1:ffff:ffff:ffff:ffff"
-+                ]
-+            }
-+        }
-+    }
-+]
-+
-+# dnat to 2001:838:35f:1::-2001:838:35f:1:ffff:ffff:ffff:ffff
-+[
-+    {
-+        "dnat": {
-+            "addr": {
-+                "range": [
-+                    "2001:838:35f:1::",
-+                    "2001:838:35f:1:ffff:ffff:ffff:ffff"
-+                ]
-+            }
-+        }
-+    }
-+]
-diff --git a/tests/py/ip6/dnat.t.payload.ip6 b/tests/py/ip6/dnat.t.payload.ip6
-index 4d3fafe2bf02..985159e209c6 100644
---- a/tests/py/ip6/dnat.t.payload.ip6
-+++ b/tests/py/ip6/dnat.t.payload.ip6
-@@ -33,3 +33,15 @@ ip6 test-ip6 prerouting
-   [ immediate reg 1 0x38080120 0x01005f03 0x00000000 0x00000000 ]
-   [ immediate reg 2 0x00005000 ]
-   [ nat dnat ip6 addr_min reg 1 addr_max reg 0 proto_min reg 2 proto_max reg 0 ]
-+
-+# dnat to [2001:838:35f:1::]/64
-+ip6 test-ip6 prerouting
-+  [ immediate reg 1 0x38080120 0x01005f03 0x00000000 0x00000000 ]
-+  [ immediate reg 2 0x38080120 0x01005f03 0xffffffff 0xffffffff ]
-+  [ nat dnat ip6 addr_min reg 1 addr_max reg 2 ]
-+
-+# dnat to 2001:838:35f:1::-2001:838:35f:1:ffff:ffff:ffff:ffff
-+ip6 test-ip6 prerouting
-+  [ immediate reg 1 0x38080120 0x01005f03 0x00000000 0x00000000 ]
-+  [ immediate reg 2 0x38080120 0x01005f03 0xffffffff 0xffffffff ]
-+  [ nat dnat ip6 addr_min reg 1 addr_max reg 2 ]
+Patch six merely fixes a minor coding-style issue.
+
+Patches ten and eleven finally perform the actual merge.
+
+Changes since v1:
+- Rebased onto current master branch.
+- Improved commit message in patch eight.
+
+Phil Sutter (11):
+  ebtables: Fix error message for invalid parameters
+  ebtables-save: Fix counter formatting
+  xtables-save: Unify *-save header/footer comments
+  xtables-save: Fix table compatibility check
+  nft: Make nft_for_each_table() more versatile
+  xtables-save: Avoid mixed code and declarations
+  xtables-save: Pass optstring/longopts to xtables_save_main()
+  xtables-save: Make COMMIT line optional
+  xtables-save: Pass format flags to do_output()
+  arptables-save: Merge into xtables_save_main()
+  ebtables-save: Merge into xtables_save_main()
+
+ iptables/nft-bridge.c                         |  39 +--
+ iptables/nft.c                                |   6 +-
+ iptables/nft.h                                |   2 +-
+ .../arptables/0001-arptables-save-restore_0   |   7 +-
+ .../0002-arptables-restore-defaults_0         |   6 +-
+ .../arptables/0003-arptables-verbose-output_0 |   5 +-
+ .../ebtables/0002-ebtables-save-restore_0     |   4 +-
+ .../ebtables/0003-ebtables-restore-defaults_0 |   6 +-
+ .../testcases/ebtables/0004-save-counters_0   |  64 +++++
+ iptables/xtables-eb.c                         |   4 +-
+ iptables/xtables-save.c                       | 237 ++++--------------
+ 11 files changed, 143 insertions(+), 237 deletions(-)
+ create mode 100755 iptables/tests/shell/testcases/ebtables/0004-save-counters_0
+
 -- 
-2.21.0
+2.22.0
 
