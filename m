@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D016FD85
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 12:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AB46FD8B
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 12:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728455AbfGVKQt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 22 Jul 2019 06:16:49 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45456 "EHLO orbyte.nwl.cc"
+        id S1726846AbfGVKRE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 22 Jul 2019 06:17:04 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:45474 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726846AbfGVKQs (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 22 Jul 2019 06:16:48 -0400
-Received: from localhost ([::1]:58546 helo=tatos)
+        id S1729239AbfGVKRE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 22 Jul 2019 06:17:04 -0400
+Received: from localhost ([::1]:58564 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1hpVN9-0000bi-EA; Mon, 22 Jul 2019 12:16:47 +0200
+        id 1hpVNP-0000dO-Bx; Mon, 22 Jul 2019 12:17:03 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Florian Westphal <fw@strlen.de>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 01/11] ebtables: Fix error message for invalid parameters
-Date:   Mon, 22 Jul 2019 12:16:18 +0200
-Message-Id: <20190722101628.21195-2-phil@nwl.cc>
+Subject: [iptables PATCH v2 02/11] ebtables-save: Fix counter formatting
+Date:   Mon, 22 Jul 2019 12:16:19 +0200
+Message-Id: <20190722101628.21195-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190722101628.21195-1-phil@nwl.cc>
 References: <20190722101628.21195-1-phil@nwl.cc>
@@ -31,37 +31,213 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-With empty ruleset, ebtables-nft would report the wrong argv:
+The initial problem was 'ebtables-save -c' printing iptables-style
+counters but at the same time not disabling ebtables-style counter
+output (which was even printed in wrong format for ebtables-save).
 
-| % sudo ./install/sbin/ebtables-nft -vnL
-| ebtables v1.8.3 (nf_tables): Unknown argument: './install/sbin/ebtables-nft'
-| Try `ebtables -h' or 'ebtables --help' for more information.
+The code around counter output was complicated enough to motivate a
+larger rework:
 
-After a (successful) call to 'ebtables-nft -L', this would even
-segfault:
+* Make FMT_C_COUNTS indicate the appended counter style for ebtables.
 
-| % sudo ./install/sbin/ebtables-nft -vnL
-| zsh: segmentation fault  sudo ./install/sbin/ebtables-nft -vnL
+* Use FMT_EBT_SAVE to distinguish between '-c' style counters and the
+  legacy pcnt/bcnt ones.
 
-Fixes: acde6be32036f ("ebtables-translate: Fix segfault while parsing extension options")
+Consequently, ebtables-save sets format to:
+
+FMT_NOCOUNTS			- for no counters
+FMT_EBT_SAVE			- for iptables-style counters
+FMT_EBT_SAVE | FMT_C_COUNTS	- for '-c' style counters
+
+For regular ebtables, list_rules() always sets FMT_C_COUNTS
+(iptables-style counters are never used there) and FMT_NOCOUNTS if no
+counters are requested.
+
+The big plus is if neither FMT_NOCOUNTS nor FMT_C_COUNTS is set,
+iptables-style counters are to be printed - both in iptables and
+ebtables. This allows to drop the ebtables-specific 'save_counters'
+callback.
+
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-eb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ iptables/nft-bridge.c                         | 39 +++--------
+ .../testcases/ebtables/0004-save-counters_0   | 67 +++++++++++++++++++
+ iptables/xtables-eb.c                         |  2 +-
+ iptables/xtables-save.c                       |  3 +-
+ 4 files changed, 81 insertions(+), 30 deletions(-)
+ create mode 100755 iptables/tests/shell/testcases/ebtables/0004-save-counters_0
 
+diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
+index ddfbee165da93..2e4b309b86135 100644
+--- a/iptables/nft-bridge.c
++++ b/iptables/nft-bridge.c
+@@ -21,8 +21,6 @@
+ #include "nft-bridge.h"
+ #include "nft.h"
+ 
+-static bool ebt_legacy_counter_fmt;
+-
+ void ebt_cs_clean(struct iptables_command_state *cs)
+ {
+ 	struct ebt_match *m, *nm;
+@@ -422,22 +420,6 @@ static void print_protocol(uint16_t ethproto, bool invert, unsigned int bitmask)
+ 		printf("%s ", ent->e_name);
+ }
+ 
+-static void nft_bridge_save_counters(const void *data)
+-{
+-	const char *ctr;
+-
+-	if (ebt_legacy_counter_fmt)
+-		return;
+-
+-	ctr = getenv("EBTABLES_SAVE_COUNTER");
+-	if (ctr) {
+-		ebt_legacy_counter_fmt = true;
+-		return;
+-	}
+-
+-	save_counters(data);
+-}
+-
+ static void nft_bridge_save_rule(const void *data, unsigned int format)
+ {
+ 	const struct iptables_command_state *cs = data;
+@@ -474,15 +456,16 @@ static void nft_bridge_save_rule(const void *data, unsigned int format)
+ 		cs->target->print(&cs->fw, cs->target->t, format & FMT_NUMERIC);
+ 	}
+ 
+-	if (format & FMT_EBT_SAVE)
+-		printf(" -c %"PRIu64" %"PRIu64"",
+-		       (uint64_t)cs->counters.pcnt,
+-		       (uint64_t)cs->counters.bcnt);
+-
+-	if (!(format & FMT_NOCOUNTS))
+-		printf(" , pcnt = %"PRIu64" -- bcnt = %"PRIu64"",
+-		       (uint64_t)cs->counters.pcnt,
+-		       (uint64_t)cs->counters.bcnt);
++	if ((format & (FMT_NOCOUNTS | FMT_C_COUNTS)) == FMT_C_COUNTS) {
++		if (format & FMT_EBT_SAVE)
++			printf(" -c %"PRIu64" %"PRIu64"",
++			       (uint64_t)cs->counters.pcnt,
++			       (uint64_t)cs->counters.bcnt);
++		else
++			printf(" , pcnt = %"PRIu64" -- bcnt = %"PRIu64"",
++			       (uint64_t)cs->counters.pcnt,
++			       (uint64_t)cs->counters.bcnt);
++	}
+ 
+ 	if (!(format & FMT_NONEWLINE))
+ 		fputc('\n', stdout);
+@@ -763,7 +746,7 @@ struct nft_family_ops nft_family_ops_bridge = {
+ 	.print_header		= nft_bridge_print_header,
+ 	.print_rule		= nft_bridge_print_rule,
+ 	.save_rule		= nft_bridge_save_rule,
+-	.save_counters		= nft_bridge_save_counters,
++	.save_counters		= save_counters,
+ 	.save_chain		= nft_bridge_save_chain,
+ 	.post_parse		= NULL,
+ 	.rule_to_cs		= nft_rule_to_ebtables_command_state,
+diff --git a/iptables/tests/shell/testcases/ebtables/0004-save-counters_0 b/iptables/tests/shell/testcases/ebtables/0004-save-counters_0
+new file mode 100755
+index 0000000000000..8348dc7ee231f
+--- /dev/null
++++ b/iptables/tests/shell/testcases/ebtables/0004-save-counters_0
+@@ -0,0 +1,67 @@
++#!/bin/bash
++
++set -e
++
++# there is no legacy backend to test
++[[ $XT_MULTI == */xtables-nft-multi ]] || { echo "skip $XT_MULTI"; exit 0; }
++
++$XT_MULTI ebtables --init-table
++$XT_MULTI ebtables -A FORWARD -i nodev123 -o nodev432 -j ACCEPT
++$XT_MULTI ebtables -A FORWARD -i nodev432 -o nodev123 -j ACCEPT
++
++EXPECT='Bridge table: filter
++
++Bridge chain: FORWARD, entries: 2, policy: ACCEPT
++-i nodev123 -o nodev432 -j ACCEPT
++-i nodev432 -o nodev123 -j ACCEPT'
++
++echo "ebtables -L FORWARD"
++diff -u <(echo -e "$EXPECT") <($XT_MULTI ebtables -L FORWARD)
++
++EXPECT='Bridge table: filter
++
++Bridge chain: FORWARD, entries: 2, policy: ACCEPT
++-i nodev123 -o nodev432 -j ACCEPT , pcnt = 0 -- bcnt = 0
++-i nodev432 -o nodev123 -j ACCEPT , pcnt = 0 -- bcnt = 0'
++
++echo "ebtables -L FORWARD --Lc"
++diff -u <(echo -e "$EXPECT") <($XT_MULTI ebtables -L FORWARD --Lc)
++
++EXPECT='*filter
++:INPUT ACCEPT
++:FORWARD ACCEPT
++:OUTPUT ACCEPT
++-A FORWARD -i nodev123 -o nodev432 -j ACCEPT
++-A FORWARD -i nodev432 -o nodev123 -j ACCEPT
++'
++
++echo "ebtables-save"
++diff -u <(echo -e "$EXPECT") <($XT_MULTI ebtables-save | grep -v '^#')
++
++EXPECT='*filter
++:INPUT ACCEPT
++:FORWARD ACCEPT
++:OUTPUT ACCEPT
++[0:0] -A FORWARD -i nodev123 -o nodev432 -j ACCEPT
++[0:0] -A FORWARD -i nodev432 -o nodev123 -j ACCEPT
++'
++
++echo "ebtables-save -c"
++diff -u <(echo -e "$EXPECT") <($XT_MULTI ebtables-save -c | grep -v '^#')
++
++export EBTABLES_SAVE_COUNTER=yes
++
++# -c flag overrides EBTABLES_SAVE_COUNTER variable
++echo "EBTABLES_SAVE_COUNTER=yes ebtables-save -c"
++diff -u <(echo -e "$EXPECT") <($XT_MULTI ebtables-save -c | grep -v '^#')
++
++EXPECT='*filter
++:INPUT ACCEPT
++:FORWARD ACCEPT
++:OUTPUT ACCEPT
++-A FORWARD -i nodev123 -o nodev432 -j ACCEPT -c 0 0
++-A FORWARD -i nodev432 -o nodev123 -j ACCEPT -c 0 0
++'
++
++echo "EBTABLES_SAVE_COUNTER=yes ebtables-save"
++diff -u <(echo -e "$EXPECT") <($XT_MULTI ebtables-save | grep -v '^#')
 diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index 171f41b0f616e..b8d89ad974a42 100644
+index b8d89ad974a42..121ecbecd0b64 100644
 --- a/iptables/xtables-eb.c
 +++ b/iptables/xtables-eb.c
-@@ -1180,7 +1180,7 @@ print_zero:
- 			if (ebt_command_default(&cs))
- 				xtables_error(PARAMETER_PROBLEM,
- 					      "Unknown argument: '%s'",
--					      argv[optind - 1]);
-+					      argv[optind]);
+@@ -410,7 +410,7 @@ static int list_rules(struct nft_handle *h, const char *chain, const char *table
+ {
+ 	unsigned int format;
  
- 			if (command != 'A' && command != 'I' &&
- 			    command != 'D' && command != 'C')
+-	format = FMT_OPTIONS;
++	format = FMT_OPTIONS | FMT_C_COUNTS;
+ 	if (verbose)
+ 		format |= FMT_VIA;
+ 
+diff --git a/iptables/xtables-save.c b/iptables/xtables-save.c
+index b8d19705771ed..491122f39bbb0 100644
+--- a/iptables/xtables-save.c
++++ b/iptables/xtables-save.c
+@@ -274,7 +274,8 @@ static int __ebt_save(struct nft_handle *h, const char *tablename, bool counters
+ 	printf("*%s\n", tablename);
+ 
+ 	if (counters)
+-		format = ebt_legacy_counter_format ? FMT_EBT_SAVE : 0;
++		format = FMT_EBT_SAVE |
++			(ebt_legacy_counter_format ? FMT_C_COUNTS : 0);
+ 
+ 	/* Dump out chain names first,
+ 	 * thereby preventing dependency conflicts */
 -- 
 2.22.0
 
