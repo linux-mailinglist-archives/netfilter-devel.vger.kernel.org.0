@@ -2,46 +2,47 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6C36FD8C
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 12:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706706FDCB
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 12:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbfGVKRJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 22 Jul 2019 06:17:09 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:45490 "EHLO
+        id S1728390AbfGVK3R (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 22 Jul 2019 06:29:17 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:37606 "EHLO
         mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728569AbfGVKRJ (ORCPT
+        with ESMTP id S1726944AbfGVK3R (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 22 Jul 2019 06:17:09 -0400
-Received: by mail-qk1-f195.google.com with SMTP id s22so28165276qkj.12;
-        Mon, 22 Jul 2019 03:17:08 -0700 (PDT)
+        Mon, 22 Jul 2019 06:29:17 -0400
+Received: by mail-qk1-f195.google.com with SMTP id d15so28154034qkl.4;
+        Mon, 22 Jul 2019 03:29:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7CJkKA7SZFRonSxwlZKyw8W6pgs5EdX5dwdC50uPvBs=;
-        b=IfyEGn1teOvseGqamLGm6eYMrp4kEADYmxLmuf3lwn47e7irJLZzzSadD5rA/AIBI9
-         goH41xTw+8mHRl1BZvXsR//j0Bkx/qgpjDwxg+U0Sgv/xiZjg8KtvmyTZALR9IWcaIXV
-         CkKHYuQh8zqpoaziifRWNQJj6IFlA4GCuNLjekCgFw/JORcJrYdvAW9z1V4W6KoM1wwm
-         VULx2b8vVGz68sAMPswtsad+XUrTWq6NgpiZCM1ZVw4TMgy/CGbdJbHgWLP86SU1dGvd
-         Z5pyX3CkxJbOlpaYN+NcMGuBrk11hsJl17wOl6wns3nwJxlMqgXlSlT1u12RZg1yhaEA
-         FtQA==
-X-Gm-Message-State: APjAAAXq6SoJbRtNpNdtsju6Iqd40f0IQCjpznLrKw1xRcgd1JB/roKO
-        6vLan+lWSBG81Y9PJP7R6HGzDTE7JDS31A46Yqg=
-X-Google-Smtp-Source: APXvYqy7ISax661sJxUrp3WbLhv5BC0kus4uGgZKznelHiJHcAGScOZIvY+BAP14dw/qwJzgUC+dnqfk8j1fG+ylzm4=
-X-Received: by 2002:a37:4ac3:: with SMTP id x186mr44360140qka.138.1563790627957;
- Mon, 22 Jul 2019 03:17:07 -0700 (PDT)
+        bh=0NOGeJyfbedSFMqRuTXzJhGJqhWVTfys7Td6+TiU9cU=;
+        b=K9uw9O5KERcJQL7dKmdtVhuZ5e+o96+Y/S4EABKI+CBZOfQIqgBp7xWcl0Lj/Oib/W
+         GcmWRhPF+Q5Uomtr95zpT9Od9UfXi12fSG6l+AA1209kNZezzO1B1a0pGYCS7L2UovzD
+         Sa+A7OZuDvzIUtpaNvTWwKHovS71pZPj6y/wEHH46rJFUOgRu8n8nbuGVltJTnFvXZ21
+         KpQ/nPHxsVm10rW1/YqqcuF9nrfqc6EZ6IkyYO1Gk+wkrn+owzEgP7BzzAX9cqeeCkvt
+         TUxjhyUJCFAanXYukj6jXuPfCsAhCUN9+6F5LoMniozVZ/G5yye0liv6G8PSULg4CEZI
+         wBMQ==
+X-Gm-Message-State: APjAAAX0t54w8cC5J7EMC/rHgrbjZdQbjAhN+HcwsR1w3Rl5UrwyGul0
+        Puj6Xtk7LnOySnh29PnpKdcdCZH4evj/AyQbwz4=
+X-Google-Smtp-Source: APXvYqzk3DuGvaGAEaTy+ImxITuZDO3qbOIA7saZZgJD0ZGnPw+qsE85yHCiUF55BTu2T15XmHYund5FGCRBFNzC2pc=
+X-Received: by 2002:a37:4ac3:: with SMTP id x186mr44393855qka.138.1563791355964;
+ Mon, 22 Jul 2019 03:29:15 -0700 (PDT)
 MIME-Version: 1.0
 References: <20190628123819.2785504-1-arnd@arndb.de> <20190628123819.2785504-4-arnd@arndb.de>
- <alpine.LFD.2.21.1906302308280.3788@ja.home.ssi.bg>
-In-Reply-To: <alpine.LFD.2.21.1906302308280.3788@ja.home.ssi.bg>
+ <CA+FuTSexLuu8e1XHaY0ObGi46CgZnBpELecBr+kMgCU29Fa_gw@mail.gmail.com>
+In-Reply-To: <CA+FuTSexLuu8e1XHaY0ObGi46CgZnBpELecBr+kMgCU29Fa_gw@mail.gmail.com>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 22 Jul 2019 12:16:51 +0200
-Message-ID: <CAK8P3a03wShPgL85K-0W3UUc3QJWLbbs+ZVAnkKLkqg00vVehw@mail.gmail.com>
+Date:   Mon, 22 Jul 2019 12:28:59 +0200
+Message-ID: <CAK8P3a0xPDmNDbxRkN6ssobFLu1-JLvMG3MSai844hinj2Bs8A@mail.gmail.com>
 Subject: Re: [PATCH 4/4] ipvs: reduce kernel stack usage
-To:     Julian Anastasov <ja@ssi.bg>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 Cc:     Kees Cook <keescook@chromium.org>,
         Wensong Zhang <wensong@linux-vs.org>,
         Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>,
         "David S. Miller" <davem@davemloft.net>,
         Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
@@ -57,9 +58,10 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         James Morris <jmorris@namei.org>,
         linux-scsi <linux-scsi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
         driverdevel <devel@driverdev.osuosl.org>,
-        Networking <netdev@vger.kernel.org>, lvs-devel@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        lvs-devel@vger.kernel.org,
         netfilter-devel <netfilter-devel@vger.kernel.org>,
         coreteam@netfilter.org, Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -68,48 +70,55 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sun, Jun 30, 2019 at 10:37 PM Julian Anastasov <ja@ssi.bg> wrote:
-> On Fri, 28 Jun 2019, Arnd Bergmann wrote:
-
-> >       struct ip_vs_conn *ctl_cp = cp->control;
-> >       if (!ctl_cp) {
-> > -             IP_VS_ERR_BUF("request control DEL for uncontrolled: "
-> > -                           "%s:%d to %s:%d\n",
-> > -                           IP_VS_DBG_ADDR(cp->af, &cp->caddr),
-> > -                           ntohs(cp->cport),
-> > -                           IP_VS_DBG_ADDR(cp->af, &cp->vaddr),
-> > -                           ntohs(cp->vport));
-> > +             pr_err("request control DEL for uncontrolled: "
-> > +                    "%pISp to %pISp\n",
-
-(replying a bit late)
-
->         ip_vs_dbg_addr() used compact form (%pI6c), so it would be
-> better to use %pISc and %pISpc everywhere in IPVS...
-
-done
-
->         Also, note that before now port was printed with %d and
-> ntohs() was used, now port should be in network order, so:
+On Fri, Jun 28, 2019 at 9:59 PM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+> On Fri, Jun 28, 2019 at 8:40 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > With the new CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL option, the stack
+> > usage in the ipvs debug output grows because each instance of
+> > IP_VS_DBG_BUF() now has its own buffer of 160 bytes that add up
+> > rather than reusing the stack slots:
+> >
+> > net/netfilter/ipvs/ip_vs_core.c: In function 'ip_vs_sched_persist':
+> > net/netfilter/ipvs/ip_vs_core.c:427:1: error: the frame size of 1052 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+> > net/netfilter/ipvs/ip_vs_core.c: In function 'ip_vs_new_conn_out':
+> > net/netfilter/ipvs/ip_vs_core.c:1231:1: error: the frame size of 1048 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+> > net/netfilter/ipvs/ip_vs_ftp.c: In function 'ip_vs_ftp_out':
+> > net/netfilter/ipvs/ip_vs_ftp.c:397:1: error: the frame size of 1104 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+> > net/netfilter/ipvs/ip_vs_ftp.c: In function 'ip_vs_ftp_in':
+> > net/netfilter/ipvs/ip_vs_ftp.c:555:1: error: the frame size of 1200 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+> >
+> > Since printk() already has a way to print IPv4/IPv6 addresses using
+> > the %pIS format string, use that instead,
 >
-> - ntohs() should be removed
+> since these are sockaddr_in and sockaddr_in6, should that have the 'n'
+> specifier to denote network byteorder?
 
-done
+I double-checked the implementation, and don't see that make any difference,
+as 'n' is the default.
 
-> - htons() should be added, if missing. At first look, this case
-> is not present in IPVS, we have only ntohs() usage
+> >  include/net/ip_vs.h             | 71 +++++++++++++++++++--------------
+> >  net/netfilter/ipvs/ip_vs_core.c | 44 ++++++++++----------
+> >  net/netfilter/ipvs/ip_vs_ftp.c  | 20 +++++-----
+> >  3 files changed, 72 insertions(+), 63 deletions(-)
+> >
+> > diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+> > index 3759167f91f5..3dfbeef67be6 100644
+> > --- a/include/net/ip_vs.h
+> > +++ b/include/net/ip_vs.h
+> > @@ -227,6 +227,16 @@ static inline const char *ip_vs_dbg_addr(int af, char *buf, size_t buf_len,
+> >                        sizeof(ip_vs_dbg_buf), addr,                     \
+> >                        &ip_vs_dbg_idx)
+> >
+> > +#define IP_VS_DBG_SOCKADDR4(fam, addr, port)                           \
+> > +       (struct sockaddr*)&(struct sockaddr_in)                         \
+> > +       { .sin_family = (fam), .sin_addr = (addr)->in, .sin_port = (port) }
+>
+> might as well set .sin_family = AF_INET here and AF_INET6 below?
 
-I found one case in ip_vs_ftp_in() that needs it in order to subtract one:
-
-                IP_VS_DBG(7, "protocol %s %pISpc %pISpc\n",
-                          ip_vs_proto_name(ipvsh->protocol),
--                         IP_VS_DBG_SOCKADDR(cp->af, &to, ntohs(port)),
-+                         IP_VS_DBG_SOCKADDR(cp->af, &to, port),
-                          IP_VS_DBG_SOCKADDR(cp->af, &cp->vaddr,
--                                             ntohs(cp->vport)-1));
-+                                            htons(ntohs(cp->vport)-1)));
-
-Thanks for the review, I'll send a new patch after some more
-build testing on the new version.
+That would work just same, but I don't see any advantage. As the family
+and port members are the same between sockaddr_in and sockaddr_in6,
+the compiler can decide to set these regardless to the argument values
+regardless of the condition.
 
        Arnd
