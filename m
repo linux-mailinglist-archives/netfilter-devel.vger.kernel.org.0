@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8996FD84
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 12:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE1E6FD97
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jul 2019 12:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbfGVKQn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 22 Jul 2019 06:16:43 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45450 "EHLO orbyte.nwl.cc"
+        id S1729502AbfGVKRb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 22 Jul 2019 06:17:31 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:45504 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726846AbfGVKQn (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 22 Jul 2019 06:16:43 -0400
-Received: from localhost ([::1]:58540 helo=tatos)
+        id S1728569AbfGVKRb (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 22 Jul 2019 06:17:31 -0400
+Received: from localhost ([::1]:58594 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1hpVN4-0000bN-3H; Mon, 22 Jul 2019 12:16:42 +0200
+        id 1hpVNq-0000ff-A6; Mon, 22 Jul 2019 12:17:30 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Florian Westphal <fw@strlen.de>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 08/11] xtables-save: Make COMMIT line optional
-Date:   Mon, 22 Jul 2019 12:16:25 +0200
-Message-Id: <20190722101628.21195-9-phil@nwl.cc>
+Subject: [iptables PATCH v2 09/11] xtables-save: Pass format flags to do_output()
+Date:   Mon, 22 Jul 2019 12:16:26 +0200
+Message-Id: <20190722101628.21195-10-phil@nwl.cc>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190722101628.21195-1-phil@nwl.cc>
 References: <20190722101628.21195-1-phil@nwl.cc>
@@ -31,46 +31,56 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Explicit commits are not used by either arp- nor ebtables-save. In order
-to share code between all the different *-save tools without inducing
-changes to ruleset dump contents, allow for callers of do_output() to
-turn COMMIT lines on or off.
+Let callers define the flags to pass to nft_rule_save() instead of just
+setting the counters boolean.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-save.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ iptables/xtables-save.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/iptables/xtables-save.c b/iptables/xtables-save.c
-index b4d14b5bcd016..249b396091af4 100644
+index 249b396091af4..980a80ff06f96 100644
 --- a/iptables/xtables-save.c
 +++ b/iptables/xtables-save.c
-@@ -67,6 +67,7 @@ static bool ebt_legacy_counter_format;
+@@ -66,7 +66,7 @@ static const struct option ebt_save_options[] = {
+ static bool ebt_legacy_counter_format;
  
  struct do_output_data {
- 	bool counters;
-+	bool commit;
+-	bool counters;
++	unsigned int format;
+ 	bool commit;
  };
  
- static int
-@@ -98,7 +99,8 @@ __do_output(struct nft_handle *h, const char *tablename, void *data)
+@@ -98,7 +98,7 @@ __do_output(struct nft_handle *h, const char *tablename, void *data)
+ 	/* Dump out chain names first,
  	 * thereby preventing dependency conflicts */
  	nft_chain_save(h, chain_list);
- 	nft_rule_save(h, tablename, d->counters ? 0 : FMT_NOCOUNTS);
--	printf("COMMIT\n");
-+	if (d->commit)
-+		printf("COMMIT\n");
+-	nft_rule_save(h, tablename, d->counters ? 0 : FMT_NOCOUNTS);
++	nft_rule_save(h, tablename, d->format);
+ 	if (d->commit)
+ 		printf("COMMIT\n");
  
- 	now = time(NULL);
- 	printf("# Completed on %s", ctime(&now));
-@@ -219,6 +221,7 @@ xtables_save_main(int family, int argc, char *argv[],
- 		init_extensions4();
- #endif
- 		tables = xtables_ipv4;
-+		d.commit = true;
- 		break;
- 	case NFPROTO_ARP:
- 		tables = xtables_arp;
+@@ -139,7 +139,9 @@ xtables_save_main(int family, int argc, char *argv[],
+ {
+ 	const struct builtin_table *tables;
+ 	const char *tablename = NULL;
+-	struct do_output_data d = {};
++	struct do_output_data d = {
++		.format = FMT_NOCOUNTS,
++	};
+ 	bool dump = false;
+ 	struct nft_handle h = {
+ 		.family	= family,
+@@ -162,7 +164,7 @@ xtables_save_main(int family, int argc, char *argv[],
+ 			fprintf(stderr, "-b/--binary option is not implemented\n");
+ 			break;
+ 		case 'c':
+-			d.counters = true;
++			d.format &= ~FMT_NOCOUNTS;
+ 			break;
+ 
+ 		case 't':
 -- 
 2.22.0
 
