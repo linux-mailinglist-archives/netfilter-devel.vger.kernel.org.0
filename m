@@ -2,26 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1594A7191A
-	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Jul 2019 15:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273197191C
+	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Jul 2019 15:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732261AbfGWNXY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 23 Jul 2019 09:23:24 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:48422 "EHLO orbyte.nwl.cc"
+        id S1732451AbfGWNXe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 23 Jul 2019 09:23:34 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:48434 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725778AbfGWNXX (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 23 Jul 2019 09:23:23 -0400
-Received: from localhost ([::1]:33280 helo=tatos)
+        id S1725778AbfGWNXd (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 23 Jul 2019 09:23:33 -0400
+Received: from localhost ([::1]:33292 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1hpulG-0007vL-Be; Tue, 23 Jul 2019 15:23:22 +0200
+        id 1hpulQ-0007w3-U6; Tue, 23 Jul 2019 15:23:32 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH v2 0/2] parser_bison: Get rid of (most) bison compiler warnings
-Date:   Tue, 23 Jul 2019 15:23:11 +0200
-Message-Id: <20190723132313.13238-1-phil@nwl.cc>
+Subject: [nft PATCH v2 1/2] parser_bison: Fix for deprecated statements
+Date:   Tue, 23 Jul 2019 15:23:12 +0200
+Message-Id: <20190723132313.13238-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20190723132313.13238-1-phil@nwl.cc>
+References: <20190723132313.13238-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -30,27 +32,46 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Eliminate as many bison warnings emitted since bison-3.3 as possible.
-Sadly getting bison, flex and automake right is full of pitfalls so on
-one hand this series does not fix for deprecated %name-prefix statement
-and on the other passes -Wno-yacc to bison to not complain about POSIX
-incompatibilities although automake causes to run bison in POSIX compat
-mode in the first place. Fixing either of those turned out to be
-non-trivial.
+Bison-3.3 started to warn about:
 
-Changes since v1:
-- Drop nfnl_osf patch, Fernando took care of that already.
-- Split remaining patch in two.
-- Document which warnings are being silenced.
+/home/n0-1/git/nftables/src/parser_bison.y:117.1-19: warning: deprecated directive, use ‘%define api.prefix {nft_}’ [-Wdeprecated]
+    117 | %name-prefix "nft_"
+        | ^~~~~~~~~~~~~~~~~~~
+/home/n0-1/git/nftables/src/parser_bison.y:119.1-12: warning: deprecated directive, use ‘%define api.pure’ [-Wdeprecated]
+  119 | %pure-parser
+      | ^~~~~~~~~~~~
+/home/n0-1/git/nftables/src/parser_bison.y:124.1-14: warning: deprecated directive, use ‘%define parse.error verbose’ [-Wdeprecated]
+  124 | %error-verbose
+      | ^~~~~~~~~~~~~~
 
-Phil Sutter (2):
-  parser_bison: Fix for deprecated statements
-  src: Call bison with -Wno-yacc to silence warnings
+Replace the last two as suggested but leave the first one in place as
+that causes compilation errors in scanner.l - flex seems not to pick up
+the changed internal symbol names.
 
- src/Makefile.am    | 2 +-
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
  src/parser_bison.y | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index 53e669521efa0..b463a140d31ff 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -116,12 +116,12 @@ int nft_lex(void *, void *, void *);
+ 
+ %name-prefix "nft_"
+ %debug
+-%pure-parser
++%define api.pure
+ %parse-param		{ struct nft_ctx *nft }
+ %parse-param		{ void *scanner }
+ %parse-param		{ struct parser_state *state }
+ %lex-param		{ scanner }
+-%error-verbose
++%define parse.error verbose
+ %locations
+ 
+ %initial-action {
 -- 
 2.22.0
 
