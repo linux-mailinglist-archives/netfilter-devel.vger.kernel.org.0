@@ -2,26 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D737192B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Jul 2019 15:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CD47192D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Jul 2019 15:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731429AbfGWN2D (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 23 Jul 2019 09:28:03 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:48448 "EHLO orbyte.nwl.cc"
+        id S1731428AbfGWN2J (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 23 Jul 2019 09:28:09 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:48456 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731095AbfGWN2D (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 23 Jul 2019 09:28:03 -0400
-Received: from localhost ([::1]:33306 helo=tatos)
+        id S1731095AbfGWN2J (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 23 Jul 2019 09:28:09 -0400
+Received: from localhost ([::1]:33314 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1hpupm-000886-E5; Tue, 23 Jul 2019 15:28:02 +0200
+        id 1hpupr-00088V-O7; Tue, 23 Jul 2019 15:28:07 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: [PATCH v3 1/2] net: nf_tables: Make nft_meta expression more robust
-Date:   Tue, 23 Jul 2019 15:27:52 +0200
-Message-Id: <20190723132753.13781-1-phil@nwl.cc>
+Subject: [PATCH v3 2/2] net: netfilter: nft_meta_bridge: Eliminate 'out' label
+Date:   Tue, 23 Jul 2019 15:27:53 +0200
+Message-Id: <20190723132753.13781-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20190723132753.13781-1-phil@nwl.cc>
+References: <20190723132753.13781-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -29,95 +31,33 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-nft_meta_get_eval()'s tendency to bail out setting NFT_BREAK verdict in
-situations where required data is missing leads to unexpected behaviour
-with inverted checks like so:
-
-| meta iifname != eth0 accept
-
-This rule will never match if there is no input interface (or it is not
-known) which is not intuitive and, what's worse, breaks consistency of
-iptables-nft with iptables-legacy.
-
-Fix this by falling back to placing a value in dreg which never matches
-(avoiding accidental matches), i.e. zero for interface index and an
-empty string for interface name.
----
-Changes since v1:
-- Apply same fix to net/bridge/netfilter/nft_meta_bridge.c as well.
-
-Changes since v2:
-- Limit this fix to address only expressions returning an interface
-  index or name. As Florian correctly criticized, these changes may be
-  problematic as they tend to change nftables' behaviour. Hence fix only
-  the cases needed to establish iptables-nft compatibility.
+The label is used just once and the code it points at is not reused, no
+point in keeping it.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- net/bridge/netfilter/nft_meta_bridge.c |  6 +-----
- net/netfilter/nft_meta.c               | 16 ++++------------
- 2 files changed, 5 insertions(+), 17 deletions(-)
+ net/bridge/netfilter/nft_meta_bridge.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/net/bridge/netfilter/nft_meta_bridge.c b/net/bridge/netfilter/nft_meta_bridge.c
-index bed66f536b345..a98dec2cf0cfd 100644
+index a98dec2cf0cfd..1804e867f7151 100644
 --- a/net/bridge/netfilter/nft_meta_bridge.c
 +++ b/net/bridge/netfilter/nft_meta_bridge.c
-@@ -30,13 +30,9 @@ static void nft_meta_bridge_get_eval(const struct nft_expr *expr,
- 	switch (priv->key) {
- 	case NFT_META_BRI_IIFNAME:
- 		br_dev = nft_meta_get_bridge(in);
--		if (!br_dev)
--			goto err;
- 		break;
- 	case NFT_META_BRI_OIFNAME:
- 		br_dev = nft_meta_get_bridge(out);
--		if (!br_dev)
--			goto err;
- 		break;
- 	case NFT_META_BRI_IIFPVID: {
- 		u16 p_pvid;
-@@ -64,7 +60,7 @@ static void nft_meta_bridge_get_eval(const struct nft_expr *expr,
- 		goto out;
+@@ -57,13 +57,11 @@ static void nft_meta_bridge_get_eval(const struct nft_expr *expr,
+ 		return;
+ 	}
+ 	default:
+-		goto out;
++		return nft_meta_get_eval(expr, regs, pkt);
  	}
  
--	strncpy((char *)dest, br_dev->name, IFNAMSIZ);
-+	strncpy((char *)dest, br_dev ? br_dev->name : "", IFNAMSIZ);
+ 	strncpy((char *)dest, br_dev ? br_dev->name : "", IFNAMSIZ);
  	return;
- out:
- 	return nft_meta_get_eval(expr, regs, pkt);
-diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
-index f1b1d948c07b4..f69afb9ff3cbe 100644
---- a/net/netfilter/nft_meta.c
-+++ b/net/netfilter/nft_meta.c
-@@ -60,24 +60,16 @@ void nft_meta_get_eval(const struct nft_expr *expr,
- 		*dest = skb->mark;
- 		break;
- 	case NFT_META_IIF:
--		if (in == NULL)
--			goto err;
--		*dest = in->ifindex;
-+		*dest = in ? in->ifindex : 0;
- 		break;
- 	case NFT_META_OIF:
--		if (out == NULL)
--			goto err;
--		*dest = out->ifindex;
-+		*dest = out ? out->ifindex : 0;
- 		break;
- 	case NFT_META_IIFNAME:
--		if (in == NULL)
--			goto err;
--		strncpy((char *)dest, in->name, IFNAMSIZ);
-+		strncpy((char *)dest, in ? in->name : "", IFNAMSIZ);
- 		break;
- 	case NFT_META_OIFNAME:
--		if (out == NULL)
--			goto err;
--		strncpy((char *)dest, out->name, IFNAMSIZ);
-+		strncpy((char *)dest, out ? out->name : "", IFNAMSIZ);
- 		break;
- 	case NFT_META_IIFTYPE:
- 		if (in == NULL)
+-out:
+-	return nft_meta_get_eval(expr, regs, pkt);
+ err:
+ 	regs->verdict.code = NFT_BREAK;
+ }
 -- 
 2.22.0
 
