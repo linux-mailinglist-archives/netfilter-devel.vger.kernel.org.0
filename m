@@ -2,34 +2,34 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F211374F8E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jul 2019 15:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BBE74F93
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jul 2019 15:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388201AbfGYNeH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 25 Jul 2019 09:34:07 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:52410 "EHLO
+        id S2388332AbfGYNeL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 25 Jul 2019 09:34:11 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:52490 "EHLO
         m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388197AbfGYNeH (ORCPT
+        with ESMTP id S2388220AbfGYNeK (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 25 Jul 2019 09:34:07 -0400
+        Thu, 25 Jul 2019 09:34:10 -0400
 Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 6ACAF417C3;
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 8342841D11;
         Thu, 25 Jul 2019 21:34:06 +0800 (CST)
 From:   wenxu@ucloud.cn
 To:     pablo@netfilter.org, fw@strlen.de
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next v2 04/11] netfilter: nft_immediate: add offload support for actions
-Date:   Thu, 25 Jul 2019 21:33:59 +0800
-Message-Id: <1564061644-31189-5-git-send-email-wenxu@ucloud.cn>
+Subject: [PATCH nf-next v2 05/11] netfilter: nft_fwd_netdev: add fw_netdev action support
+Date:   Thu, 25 Jul 2019 21:34:00 +0800
+Message-Id: <1564061644-31189-6-git-send-email-wenxu@ucloud.cn>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1564061644-31189-1-git-send-email-wenxu@ucloud.cn>
 References: <1564061644-31189-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVklVS0lJS0tLSEpJQ0tOSkNZV1koWU
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVklVSkxNS0tLSE5NTUxPSkJZV1koWU
         FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nkk6Sxw6Qjg#KksBDBEjNFE9
-        LCNPCQJVSlVKTk1PS01KTU9NTkpMVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUhKQ0I3Bg++
-X-HM-Tid: 0a6c2956be702086kuqy6acaf417c3
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MSo6ORw4UTgxEEsUKhwJNE4p
+        IwpPFC9VSlVKTk1PS01KTU9NTUpNVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUlDSUI3Bg++
+X-HM-Tid: 0a6c2956bed42086kuqy8342841d11
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
@@ -37,85 +37,69 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: wenxu <wenxu@ucloud.cn>
 
-Immediate offload support for other action to handle the offload_reg
+fwd_netdev action offload:
+nft --debug=netlink add rule netdev firewall aclout ip daddr 10.0.1.7 fwd to eth0
 
 Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
- net/netfilter/nft_immediate.c | 47 +++++++++++++++++++++++++++----------------
- 1 file changed, 30 insertions(+), 17 deletions(-)
+ net/netfilter/nft_fwd_netdev.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/net/netfilter/nft_immediate.c b/net/netfilter/nft_immediate.c
-index 391f699..34facc3 100644
---- a/net/netfilter/nft_immediate.c
-+++ b/net/netfilter/nft_immediate.c
-@@ -130,29 +130,42 @@ static int nft_immediate_offload(struct nft_offload_ctx *ctx,
- 				 const struct nft_expr *expr)
- {
- 	const struct nft_immediate_expr *priv = nft_expr_priv(expr);
-+	const struct nft_data *data = &priv->data;
- 	struct flow_action_entry *entry;
--	const struct nft_data *data;
--
--	if (priv->dreg != NFT_REG_VERDICT)
--		return -EOPNOTSUPP;
--
--	entry = &flow->rule->action.entries[ctx->num_actions++];
+diff --git a/net/netfilter/nft_fwd_netdev.c b/net/netfilter/nft_fwd_netdev.c
+index 61b7f93..06dbd98 100644
+--- a/net/netfilter/nft_fwd_netdev.c
++++ b/net/netfilter/nft_fwd_netdev.c
+@@ -15,6 +15,7 @@
+ #include <net/netfilter/nf_dup_netdev.h>
+ #include <net/neighbour.h>
+ #include <net/ip.h>
++#include <net/netfilter/nf_tables_offload.h>
  
--	data = &priv->data;
--	switch (data->verdict.code) {
--	case NF_ACCEPT:
--		entry->id = FLOW_ACTION_ACCEPT;
--		break;
--	case NF_DROP:
--		entry->id = FLOW_ACTION_DROP;
--		break;
--	default:
--		return -EOPNOTSUPP;
-+	if (priv->dreg == NFT_REG_VERDICT) {
-+		entry = &flow->rule->action.entries[ctx->num_actions++];
-+
-+		switch (data->verdict.code) {
-+		case NF_ACCEPT:
-+			entry->id = FLOW_ACTION_ACCEPT;
-+			break;
-+		case NF_DROP:
-+			entry->id = FLOW_ACTION_DROP;
-+			break;
-+		default:
-+			return -EOPNOTSUPP;
-+		}
-+	} else {
-+		struct nft_offload_reg *reg = &ctx->regs[priv->dreg];
-+
-+		reg->type = NFT_OFFLOAD_REG_ACTION;
-+		memcpy(&reg->action.data, data, sizeof(*data));
- 	}
- 
- 	return 0;
+ struct nft_fwd_netdev {
+ 	enum nft_registers	sreg_dev:8;
+@@ -63,6 +64,33 @@ static int nft_fwd_netdev_dump(struct sk_buff *skb, const struct nft_expr *expr)
+ 	return -1;
  }
  
-+static int nft_immediate_offload_actions(const struct nft_expr *expr)
++static int nft_fwd_netdev_offload(struct nft_offload_ctx *ctx,
++				  struct nft_flow_rule *flow,
++				  const struct nft_expr *expr)
 +{
-+	const struct nft_immediate_expr *priv = nft_expr_priv(expr);
++	const struct nft_fwd_netdev *priv = nft_expr_priv(expr);
++	struct nft_offload_reg *reg = &ctx->regs[priv->sreg_dev];
++	const struct nft_data *data = &reg->action.data;
++	struct flow_action_entry *entry;
++	struct net_device *dev;
++	int oif = -1;
 +
-+	if (priv->dreg == NFT_REG_VERDICT)
-+		return 1;
-+	else
-+		return 0;
++	if (reg->type != NFT_OFFLOAD_REG_ACTION)
++		return -EOPNOTSUPP;
++
++	entry = &flow->rule->action.entries[ctx->num_actions++];
++
++	memcpy(&oif, data->data, sizeof(oif));
++	dev = __dev_get_by_index(ctx->net, oif);
++	if (!dev)
++		return -EOPNOTSUPP;
++
++	entry->id = FLOW_ACTION_REDIRECT;
++	entry->dev = dev;
++
++	return 0;
 +}
 +
- static const struct nft_expr_ops nft_imm_ops = {
- 	.type		= &nft_imm_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_immediate_expr)),
-@@ -163,7 +176,7 @@ static int nft_immediate_offload(struct nft_offload_ctx *ctx,
- 	.dump		= nft_immediate_dump,
- 	.validate	= nft_immediate_validate,
- 	.offload	= nft_immediate_offload,
--	.offload_actions = nft_offload_action,
-+	.offload_actions = nft_immediate_offload_actions,
+ struct nft_fwd_neigh {
+ 	enum nft_registers	sreg_dev:8;
+ 	enum nft_registers	sreg_addr:8;
+@@ -194,6 +222,8 @@ static int nft_fwd_neigh_dump(struct sk_buff *skb, const struct nft_expr *expr)
+ 	.eval		= nft_fwd_netdev_eval,
+ 	.init		= nft_fwd_netdev_init,
+ 	.dump		= nft_fwd_netdev_dump,
++	.offload	= nft_fwd_netdev_offload,
++	.offload_actions = nft_offload_action,
  };
  
- struct nft_expr_type nft_imm_type __read_mostly = {
+ static const struct nft_expr_ops *
 -- 
 1.8.3.1
 
