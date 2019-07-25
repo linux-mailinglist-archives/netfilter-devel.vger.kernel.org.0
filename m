@@ -2,99 +2,112 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B5C74E17
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jul 2019 14:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49BC74F90
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jul 2019 15:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbfGYMYz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 25 Jul 2019 08:24:55 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:33329 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726001AbfGYMYz (ORCPT
+        id S2388200AbfGYNeI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 25 Jul 2019 09:34:08 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:52366 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388009AbfGYNeI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 25 Jul 2019 08:24:55 -0400
-Received: by mail-ot1-f49.google.com with SMTP id q20so51353333otl.0
-        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jul 2019 05:24:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZhZc1k6o/1c6J0SshxHfuvnZje0v/zVbfAkPxQoSBOU=;
-        b=i9qdM+Afx6+bjvFD1Gbr7orWRT+bC6+X4jJNekYb+1oXp5P/xwjPBFfF8OnpeVxj/Q
-         asd8lZnzL8i903aGPymXhNb0gSrVrDoHhdJUtY/snKmJyDSLtZkQmF2ktA+Ver1VV20Y
-         g+NxZCN2ETM/8bsh/1XXLXec99hITbhwA+hHl0BlHmPp2ROpdw5rp2s+5o8+cYUEX9Mi
-         3/5oU7ZICFAYbMhlYEzulDas9AxFg+j+O66uvBJsdQcaA1nPYbJ57PSYnUxq+99CN5Xj
-         s4scuK+kOpPsS+JFhzVHNDcvDibJgfSrkQud3tySa10UVu+ULHXgJ1PHROkslPlSOR9y
-         gASQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZhZc1k6o/1c6J0SshxHfuvnZje0v/zVbfAkPxQoSBOU=;
-        b=sLcCWBydOpBjkC+QD4PBzwZ3KPNhIhXCy2DGx98QnebED4wOAhup5eqxp6wcjO1Chi
-         AwIfOchu1+XnPG2KiXmKnGYcoQ5kMQvkaTbOfbxCvOLap+UC9fqs+FtsSgOa6ad9oe+n
-         G+Ps6PzlgHLAagcFAUXahYbXCuCmhC+Oofhfzx4JCxOkRhRZtZ41bXlF4jm/Li/OSIMO
-         5GIMH8N4C7/q8XHtG+ZgtCsBXuICbSDBv1JHoeoKnR3A9Hkg9Ybj1c1Z9RLjXtvibzba
-         Zo3AsEvziydo4WY9n38e3Ejw6YyTlzJ5eCYoIhe4Rb0olichoTJCDfcQi6SoViyP5SeR
-         /URw==
-X-Gm-Message-State: APjAAAUSQktPbHiX+12k73y/S3wR4M4po1JgTCUpFX+VZAT47SHknQif
-        IFLDZzO+k+8Q/4ht/dEBpC8hhXJvzIIpaQGV9JxgvXqU
-X-Google-Smtp-Source: APXvYqw4ULMJlN+fIEUpt+7MeDK2hDyZrosKD7Q1LRjcotLx+ARp30JoxHAD2Xjti5cqVExKf0BPO3feagbp6U4TvzY=
-X-Received: by 2002:a9d:61d8:: with SMTP id h24mr4495117otk.53.1564057494474;
- Thu, 25 Jul 2019 05:24:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <CALOK-OeZcoZZCbuCBzp+1c5iXoqVx33UW_+G3_5aUjw=iRMxHw@mail.gmail.com>
-In-Reply-To: <CALOK-OeZcoZZCbuCBzp+1c5iXoqVx33UW_+G3_5aUjw=iRMxHw@mail.gmail.com>
-From:   Laura Garcia <nevola@gmail.com>
-Date:   Thu, 25 Jul 2019 14:24:42 +0200
-Message-ID: <CAF90-WiSA88hMQSsvDP=vJK=DhLQPzUN4JzX=OR88oFowqJ8gQ@mail.gmail.com>
-Subject: Re: nftables feature request: modify set element timeout
-To:     Fran Fitzpatrick <francis.x.fitzpatrick@gmail.com>
-Cc:     Netfilter Development Mailing list 
-        <netfilter-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 25 Jul 2019 09:34:08 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id F222541BD2;
+        Thu, 25 Jul 2019 21:34:05 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next v2 00/11] netfilter: nf_tables_offload: support more expr and obj offload
+Date:   Thu, 25 Jul 2019 21:33:55 +0800
+Message-Id: <1564061644-31189-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VITElCQkJNTUNKSUpIT1lXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OTo6NSo6Mzg5OksWHBIJNEIT
+        NRcKFC1VSlVKTk1PS01KTU9NS0NKVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQU9PS0s3Bg++
+X-HM-Tid: 0a6c2956bcb62086kuqyf222541bd2
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 1:10 AM Fran Fitzpatrick
-<francis.x.fitzpatrick@gmail.com> wrote:
->
-> This morning I was using the `timeout` feature of nftables, but came
-> across an apparent limitation where I was not able to update an
-> element in a set's timeout value unless I removed the element from the
-> set.
->
-> Can it be possible to handle the element timeout value without needed
-> to remove it from a set?
->
-> [root@fedora29 vagrant]# nft add element inet filter myset {10.0.0.1
-> timeout 1m }
-> [root@fedora29 vagrant]# nft add element inet filter myset {10.0.0.1
-> timeout 10m }
-> [root@fedora29 vagrant]# nft list ruleset
-> table inet filter {
->         set myset {
->                 type ipv4_addr
->                 flags timeout
->                 elements = { 10.0.0.1 timeout 1m expires 59s542ms }
->         }
-> }
+From: wenxu <wenxu@ucloud.cn>
 
-Hi,
+This series patch support more expr and obj offload: 
+fw_nedev, set payload, tunnel encap/decap action,
+tunnel meta match, objref offload
+Keep the action data in reg through immedidate offload
 
-The timeout attribute per element is designed to be created as a
-constant value where the expiration is calculated and reseted to the
-timeout value during an element update. I don't know exactly your use
-case but what you're able to do is something like:
+The follwing is the test sample:
 
-nft add element inet filter myset {10.0.0.1 timeout 10m }
+# nft add table netdev firewall
+# nft add tunnel netdev firewall encap tunid 1000 tundst 0xf198a8ac tunsrc 0x4b98a8ac tunrelease 0
+# nft add tunnel netdev firewall decap tunid 0 tundst 0 tunsrc 0  tunrelease 1
+# nft add chain netdev firewall aclout { type filter hook ingress device mlx_pf0vf0 priority - 300 \; }
+# nft --debug=netlink add rule netdev firewall aclout ip daddr 10.0.1.7  @ll,0,48 set 0x00002e9ca06e2596 @ll,48,48 set 0xfaffffffffff tunnel name encap fwd to gretap
+  [ meta load protocol => reg 1 ]
+  [ cmp eq reg 1 0x00000008 ]
+  [ payload load 4b @ network header + 16 => reg 1 ]
+  [ cmp eq reg 1 0x0701000a ]
+  [ immediate reg 1 0x6ea09c2e 0x00009625 ]
+  [ payload write reg 1 => 6b @ link header + 0 csum_type 0 csum_off 0 csum_flags 0x0 ]
+  [ immediate reg 1 0xfffffffa 0x0000ffff ]
+  [ payload write reg 1 => 6b @ link header + 6 csum_type 0 csum_off 0 csum_flags 0x0 ]
+  [ objref type 6 name encap ]
+  [ immediate reg 1 0x00000019 ]
+  [ fwd sreg_dev 1 ]
 
-Where the timeout would be the max reachable value, and then update
-the expiration date:
 
-nft add element inet filter myset {10.0.0.1 expires 1m }
+# nft add chain netdev firewall aclin { type filter hook ingress device gretap priority - 300 \; }
+# nft --debug=netlink add rule netdev firewall aclin ip daddr 10.0.0.7 tunnel tunid 1000 tunnel tundst 172.168.152.75 tunnel tunsrc 172.168.152.241 tunnel name decap @ll,0,48 set 0x0000525400001275 @ll,48,48 set 0xfaffffffffff fwd to mlx_pf0vf0
+  [ meta load protocol => reg 1 ]
+  [ cmp eq reg 1 0x00000008 ]
+  [ payload load 4b @ network header + 16 => reg 1 ]
+  [ cmp eq reg 1 0x0700000a ]
+  [ tunnel load id => reg 1 ]
+  [ cmp eq reg 1 0x000003e8 ]
+  [ tunnel load tun_dst => reg 1 ]
+  [ cmp eq reg 1 0xaca8984b ]
+  [ tunnel load tun_src => reg 1 ]
+  [ cmp eq reg 1 0xaca898f1 ]
+  [ objref type 6 name decap ]
+  [ immediate reg 1 0x00005452 0x00007512 ]
+  [ payload write reg 1 => 6b @ link header + 0 csum_type 0 csum_off 0 csum_flags 0x0 ]
+  [ immediate reg 1 0xfffffffa 0x0000ffff ]
+  [ payload write reg 1 => 6b @ link header + 6 csum_type 0 csum_off 0 csum_flags 0x0 ]
+  [ immediate reg 1 0x0000000f ]
+  [ fwd sreg_dev 1 ]
 
-For this, you would need an upstream kernel and nftables.
+wenxu (11):
+  netfilter: nf_flow_offload: add net in offload_ctx
+  netfilter: nf_tables_offload: add offload_actions callback
+  netfilter: nf_tables_offload: split nft_offload_reg to match and
+    action type
+  netfilter: nft_immediate: add offload support for actions
+  netfilter: nft_fwd_netdev: add fw_netdev action support
+  netfilter: nft_payload: add nft_set_payload offload support
+  netfilter: nft_tunnel: support NFT_TUNNEL_SRC/DST_IP match
+  netfilter: nft_tunnel: support tunnel meta match offload
+  netfilter: nft_tunnel: add NFTA_TUNNEL_KEY_RELEASE action
+  netfilter: nft_objref: add nft_objref_type offload
+  netfilter: nft_tunnel: support nft_tunnel_obj offload
 
-Cheers!
+ include/net/netfilter/nf_tables.h         |  10 ++-
+ include/net/netfilter/nf_tables_offload.h |  27 ++++++-
+ include/uapi/linux/netfilter/nf_tables.h  |   3 +
+ net/netfilter/nf_tables_api.c             |   2 +-
+ net/netfilter/nf_tables_offload.c         |   7 +-
+ net/netfilter/nft_cmp.c                   |  10 +--
+ net/netfilter/nft_fwd_netdev.c            |  30 ++++++++
+ net/netfilter/nft_immediate.c             |  47 +++++++-----
+ net/netfilter/nft_meta.c                  |   6 +-
+ net/netfilter/nft_objref.c                |  15 ++++
+ net/netfilter/nft_payload.c               |  90 +++++++++++++++++++---
+ net/netfilter/nft_tunnel.c                | 123 ++++++++++++++++++++++++++----
+ 12 files changed, 312 insertions(+), 58 deletions(-)
+
+-- 
+1.8.3.1
+
