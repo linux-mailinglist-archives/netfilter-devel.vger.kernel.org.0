@@ -2,86 +2,65 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCED574C5A
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jul 2019 13:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB19F74C9F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jul 2019 13:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391433AbfGYLAA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 25 Jul 2019 07:00:00 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:3520 "EHLO
+        id S2391652AbfGYLNA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 25 Jul 2019 07:13:00 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:19846 "EHLO
         m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388173AbfGYLAA (ORCPT
+        with ESMTP id S2391607AbfGYLNA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 25 Jul 2019 07:00:00 -0400
-Received: from [192.168.188.14] (unknown [120.132.1.226])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 8BDC241CAA;
-        Thu, 25 Jul 2019 18:59:53 +0800 (CST)
-Subject: Re: [PATCH net-next 2/3] flow_offload: Support get tcf block
- immediately
-To:     Florian Westphal <fw@strlen.de>
-Cc:     pablo@netfilter.org, netfilter-devel@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <1564048533-27283-1-git-send-email-wenxu@ucloud.cn>
- <1564048533-27283-2-git-send-email-wenxu@ucloud.cn>
- <20190725102434.c72m32tpsjwf7nff@breakpoint.cc>
-From:   wenxu <wenxu@ucloud.cn>
-Message-ID: <28d218f1-39b3-57ab-086e-f153ddc8f749@ucloud.cn>
-Date:   Thu, 25 Jul 2019 18:59:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190725102434.c72m32tpsjwf7nff@breakpoint.cc>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVT0JOS0tLSklIQkxMTU1ZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MCo6Pzo5Hzg2OlYCHRceK0k6
-        MDkaCyNVSlVKTk1PS05JSEJITE1DVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJS1VK
-        SElVSlVJSU1ZV1kIAVlBSU1JSTcG
-X-HM-Tid: 0a6c28c98eee2086kuqy8bdc241caa
+        Thu, 25 Jul 2019 07:13:00 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id E22F941C9E;
+        Thu, 25 Jul 2019 19:12:56 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next v6 0/8] netfilter: nf_flow_offload: support bridge family offload for both ipv4 and ipv6
+Date:   Thu, 25 Jul 2019 19:12:48 +0800
+Message-Id: <1564053176-28605-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVLT0NLS0tLQkxJTE9MQ1lXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KxA6Txw5ITg4TVYzHQgzPxYX
+        Ak4aCQxVSlVKTk1PS05ISkxNQk1IVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUlLSEs3Bg++
+X-HM-Tid: 0a6c28d582692086kuqye22f941c9e
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+From: wenxu <wenxu@ucloud.cn>
 
-@tc_indr_block_dev_get funcion,
+This series only rebase to matser for the last patch 
+netfilter: Support the bridge family in flow table
 
-static struct tc_indr_block_dev *tc_indr_block_dev_get(struct net_device *dev)
-{
-    struct tc_indr_block_dev *indr_dev;
+wenxu (8):
+  netfilter:nf_flow_table: Refactor flow_offload_tuple to destination
+  netfilter:nf_flow_table_core: Separate inet operation to single
+    function
+  netfilter:nf_flow_table_ip: Separate inet operation to single function
+  bridge: add br_vlan_get_info_rcu()
+  netfilter:nf_flow_table_core: Support bridge family flow offload
+  netfilter:nf_flow_table_ip: Support bridge family flow offload
+  netfilter:nft_flow_offload: Support bridge family flow offload
+  netfilter: Support the bridge family in flow table
 
-    indr_dev = tc_indr_block_dev_lookup(dev);
-    if (indr_dev)
-        goto inc_ref;
+ include/linux/if_bridge.h                   |   7 ++
+ include/net/netfilter/nf_flow_table.h       |  39 +++++++-
+ net/bridge/br_vlan.c                        |  25 +++++
+ net/bridge/netfilter/Kconfig                |   8 ++
+ net/bridge/netfilter/Makefile               |   1 +
+ net/bridge/netfilter/nf_flow_table_bridge.c |  48 ++++++++++
+ net/netfilter/nf_flow_table_core.c          | 102 ++++++++++++++++----
+ net/netfilter/nf_flow_table_ip.c            | 127 +++++++++++++++++++------
+ net/netfilter/nft_flow_offload.c            | 142 ++++++++++++++++++++++++++--
+ 9 files changed, 440 insertions(+), 59 deletions(-)
+ create mode 100644 net/bridge/netfilter/nf_flow_table_bridge.c
 
-    indr_dev = kzalloc(sizeof(*indr_dev), GFP_KERNEL);
-    if (!indr_dev)
-        return NULL;
+-- 
+1.8.3.1
 
-    INIT_LIST_HEAD(&indr_dev->cb_list);
-    indr_dev->dev = dev;
-    indr_dev->block = tc_dev_ingress_block(dev);
-
-when the indr device register. It will call __tc_indr_block_cb_register-->tc_indr_block_dev_get,
-
-It can get the indr_dev->block immediately through tc_dev_ingress_block,
-
-But when the indr_block_dev_get put in the common flow_offload.  It can not direct access 
-
-tc_dev_ingress_block.
-
-
-
-On 7/25/2019 6:24 PM, Florian Westphal wrote:
-> wenxu@ucloud.cn <wenxu@ucloud.cn> wrote:
->> From: wenxu <wenxu@ucloud.cn>
->>
->> It provide a callback to find the tcf block in
->> the flow_indr_block_dev_get
-> Can you explain why you're making this change?
-> This will help us understand the concept/idea of your series.
->
-> The above describes what the patch does, but it should
-> explain why this is callback is added.
->
