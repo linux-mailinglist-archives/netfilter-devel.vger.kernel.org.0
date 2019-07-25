@@ -2,54 +2,52 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E50BE74C39
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jul 2019 12:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6D374C3E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jul 2019 12:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728994AbfGYKxL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 25 Jul 2019 06:53:11 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:59691 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728726AbfGYKxL (ORCPT
+        id S1729072AbfGYKyj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 25 Jul 2019 06:54:39 -0400
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:44064 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728726AbfGYKyi (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 25 Jul 2019 06:53:11 -0400
-Received: from [192.168.188.14] (unknown [120.132.1.226])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id CA74F41C05;
-        Thu, 25 Jul 2019 18:53:07 +0800 (CST)
-Subject: Re: [PATCH net-next 1/3] flow_offload: move tc indirect block to flow
- offload
-To:     Florian Westphal <fw@strlen.de>
-Cc:     pablo@netfilter.org, netfilter-devel@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <1564048533-27283-1-git-send-email-wenxu@ucloud.cn>
- <20190725102217.zmkpmsnyt7xnz2vu@breakpoint.cc>
-From:   wenxu <wenxu@ucloud.cn>
-Message-ID: <fd918ad6-5dbd-d225-b21a-326bde5782ca@ucloud.cn>
-Date:   Thu, 25 Jul 2019 18:53:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 25 Jul 2019 06:54:38 -0400
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
+        (envelope-from <fw@strlen.de>)
+        id 1hqbOO-0001Xk-Qt; Thu, 25 Jul 2019 12:54:36 +0200
+Date:   Thu, 25 Jul 2019 12:54:36 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Phil Sutter <phil@nwl.cc>, Adel Belhouane <bugs.a.b@free.fr>,
+        netfilter-devel@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH iptables]: restore legacy behaviour of iptables-restore
+ when rules start with -4/-6
+Message-ID: <20190725105436.pozi3leyyur6h6nr@breakpoint.cc>
+References: <f056f1bb-2a73-5042-740c-f2a16958deb0@free.fr>
+ <20190725104035.GP22661@orbyte.nwl.cc>
 MIME-Version: 1.0
-In-Reply-To: <20190725102217.zmkpmsnyt7xnz2vu@breakpoint.cc>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVS01IS0tLS0NJQk1CTUxZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pjo6MCo*KDg8MlZWKxEyISIS
-        LzhPCxxVSlVKTk1PS05KQkNDS09MVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJS1VK
-        SElVSlVJSU1ZV1kIAVlBSkxKTTcG
-X-HM-Tid: 0a6c28c35df72086kuqyca74f41c05
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190725104035.GP22661@orbyte.nwl.cc>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Phil Sutter <phil@nwl.cc> wrote:
+> Thanks for catching this. Seems like at some point the intention was to
+> have a common 'xtables' command and pass -4/-6 parameters to toggle
+> between iptables and ip6tables operation. Pablo, is this still relevant,
+> or can we just get rid of it altogether?
 
-On 7/25/2019 6:22 PM, Florian Westphal wrote:
-> wenxu@ucloud.cn <wenxu@ucloud.cn> wrote:
->> From: wenxu <wenxu@ucloud.cn>
->>
->> move tc indirect block to flow_offload.c. The nf_tables
->> can use the indr block architecture.
-> ... to do what?  Can you please illustrate how this is going to be
-> used/useful?
-This is used to offload the tunnel packet. The decap rule is set on the tunnel device, but not the hardware device.
+Evidently this is behaviour that is relied on by some, so we need to
+cope with this in -nft version too.
+
+> > % iptables -6 -A INPUT -p tcp -j ACCEPT
+> 
+> On my testing VM this rule ends up in table ip filter, so this seems to
+> not even work as intended.
+
+$ iptables-legacy -6 -A INPUT -p tcp -j ACCEPT
+This is the IPv4 version of iptables.
