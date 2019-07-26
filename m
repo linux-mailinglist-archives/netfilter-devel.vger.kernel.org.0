@@ -2,217 +2,101 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5B576796
-	for <lists+netfilter-devel@lfdr.de>; Fri, 26 Jul 2019 15:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA3076F4A
+	for <lists+netfilter-devel@lfdr.de>; Fri, 26 Jul 2019 18:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbfGZNeT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 26 Jul 2019 09:34:19 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:41613 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbfGZNeT (ORCPT
+        id S1728959AbfGZQqR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 26 Jul 2019 12:46:17 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:37572 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728930AbfGZQqR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 26 Jul 2019 09:34:19 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 477C84171B;
-        Fri, 26 Jul 2019 21:34:08 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org, fw@strlen.de
-Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH net-next v3 3/3] netfilter: nf_tables_offload: support indr block call
-Date:   Fri, 26 Jul 2019 21:34:07 +0800
-Message-Id: <1564148047-6428-4-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1564148047-6428-1-git-send-email-wenxu@ucloud.cn>
-References: <1564148047-6428-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVklVSU5MS0tLSUtMQktKWVdZKFlBSU
-        I3V1ktWUFJV1kJDhceCFlBWTU0KTY6NyQpLjc#WQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PDY6NSo6AjgyOksQTk4iCz0c
-        DR4KFDxVSlVKTk1PSk9DS09DTUlLVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQU1KSE03Bg++
-X-HM-Tid: 0a6c2e7d21b92086kuqy477c84171b
+        Fri, 26 Jul 2019 12:46:17 -0400
+Received: by mail-qt1-f196.google.com with SMTP id y26so53219614qto.4
+        for <netfilter-devel@vger.kernel.org>; Fri, 26 Jul 2019 09:46:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=qaOWGs23G49TWwws7WjjdoCv06+sXW9upizbWmsREGM=;
+        b=FRtrPJMrudd3gqqnrWqwCGRpHfpn0CUJzm/0myIGxnWnHVVQkSnM4yJtieInAoCvdM
+         SK54suig8hvLqsqkxgmU2XUhH1szG5ZIrzrY2KCb5ugS6sVKCFEWLeRrdZBIuQ/a/7J5
+         V1kwOLmuPW7vSdNnUVlLD55G9cEKATKKRt2ifWbrsY4qUmu/ABYxCy3IyDNcn5+iTcsX
+         +w6lBhx+pHX/tv5aqP9YlXLBe8PckvvCcNz1YMJHWVyAtzpsV3NAmexeVtSpjRUixNSS
+         7Dx2fCdL4FVAfAqBjKvWaI27HnsrcEmjdgFSM1gCxXqme05Y/KhJXHBnWkvXSOxX+t4H
+         0sKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=qaOWGs23G49TWwws7WjjdoCv06+sXW9upizbWmsREGM=;
+        b=VOJi1XkuXDr7Zzk/ZNhlDkEv0wIc/OWtm1EGFEAmCbhNUAntp1Xy+7lJdBIi4qRs6s
+         aFsxbIc9kN50lNdBfVie1nbaPwOOk9i+Sam3S1Xwto3kRCZRWdT5SfqsxxZCiTUso0IM
+         NKc6TXLvIueLthIDKydIuWn/daoCJ5z+96GqzhBk52V1eGemfJLg80/5xtLYsj/4UzwB
+         x7Wa59+ZsQsbYfw5XpGNu/5K8SRFhibCeiIDxzCnpci1N9+lLeYOJSj5WdJUNYuJpYyb
+         9hfqgGOEn2b6J4L0PVpygA/hhDU+NSRFa8+1slGqRVEkrxtD4ziU/BQFS18KlxtR/2MY
+         8OOg==
+X-Gm-Message-State: APjAAAWcioHJltaOFvw7WkpD5BW4wpkZVPq2Si6bN/8aPbuonBsWHXja
+        YyqZplw07M7clx+D87CrD2zfaIHlFQESOls1j2g=
+X-Google-Smtp-Source: APXvYqwm04nbTIZqsrpeK9yxYhxYaMR5mbTSJtZ/DTngLqMyoS5AiRPhMSNVISJqT4t1h3Zulep6YN5rKgwQNmP33ME=
+X-Received: by 2002:ac8:1418:: with SMTP id k24mr63527108qtj.54.1564159575969;
+ Fri, 26 Jul 2019 09:46:15 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:aed:3544:0:0:0:0:0 with HTTP; Fri, 26 Jul 2019 09:46:15
+ -0700 (PDT)
+Reply-To: dhl.benin2019@outlook.com
+From:   "DR, MOHAMMED BUHARI, PRESIDENT OF NIGERIA" 
+        <westernunion.benin982@gmail.com>
+Date:   Fri, 26 Jul 2019 17:46:15 +0100
+Message-ID: <CAP=nHBKFAZrJ-8cY3xBZdg3Le09wHk6Go15e1FJb5E-pF71SZg@mail.gmail.com>
+Subject: Attn Dear Atm Card beneficiary. GOOD NEWS,Shipment number:
+ 4Z69536197319960 Content Packages: ATM Visa Card, amount of $18.5Million
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+Attn Dear Atm Card beneficiary.
 
-nftable support indr-block call. It makes nftable an offload vlan
-and tunnel device.
+GOOD NEWS,
+This is to inform you that i have paid the delivery fees for your ATM
+Master Card
+I paid it because our bank director stated that before, they
+So contact Dr. William Roberts, Director DHL Courier
+Company Benin to receive your delivery ATM Visa Card amount of $18.5m US Dollars
+It is shipment was registered to your addres.
+Contact the office now to know when they will delivery arrive to your country
 
-nft add table netdev firewall
-nft add chain netdev firewall aclout { type filter hook ingress offload device mlx_pf0vf0 priority - 300 \; }
-nft add rule netdev firewall aclout ip daddr 10.0.0.1 fwd to vlan0
-nft add chain netdev firewall aclin { type filter hook ingress device vlan0 priority - 300 \; }
-nft add rule netdev firewall aclin ip daddr 10.0.0.7 fwd to mlx_pf0vf0
+Email id: dhl.benin2019@outlook.com
+Tel/mobile, +229 99652699
+Contact the office now to know when they will delivery arrive to your
+country today
+Shipment Details
+-----------------------------------------------------
+Shipment number: 4Z69536197319960
+Content Packages: ATM Visa Card amount of $18.5Million
+Scheduled Delivery
+Remember I have paid the insurance and Security Keeping fees for you
+But the only money you are required to send to this company is $125.00
+been your accurate ATM Visa Card clearance Fee before they will effect
+the delivery to you.
+Send the required delivery fee $125.00 only to the DHL Office on this
+information
+Payment is to be made via Western Union or Money Gram transfer for
+security purposes.
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
-v3: subsys_initcall for init_flow_indr_rhashtable
+Receive's Name---------------------Alan Ude
+Country-------------------------------------Benin
+City-----------------------------------Cotonou
+Quest-------------------------------Honest
+Answer----------------------------------Trust
+Amount---------------------------$125.00 only
+Let me know once you send the fee today okay.
 
- net/netfilter/nf_tables_offload.c | 128 +++++++++++++++++++++++++++++++-------
- 1 file changed, 104 insertions(+), 24 deletions(-)
+Blessing upon, blessing upon, blessing upon blessing upon,God has
+chosen you for testimony time,
+I wait for your urgent reply
 
-diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
-index 64f5fd5..09a5efe 100644
---- a/net/netfilter/nf_tables_offload.c
-+++ b/net/netfilter/nf_tables_offload.c
-@@ -171,24 +171,120 @@ static int nft_flow_offload_unbind(struct flow_block_offload *bo,
- 	return 0;
- }
- 
-+static int nft_block_setup(struct nft_base_chain *basechain,
-+			   struct flow_block_offload *bo,
-+			   enum flow_block_command cmd)
-+{
-+	int err;
-+
-+	switch (cmd) {
-+	case FLOW_BLOCK_BIND:
-+		err = nft_flow_offload_bind(bo, basechain);
-+		break;
-+	case FLOW_BLOCK_UNBIND:
-+		err = nft_flow_offload_unbind(bo, basechain);
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		err = -EOPNOTSUPP;
-+	}
-+
-+	return err;
-+}
-+
-+static int nft_block_offload_cmd(struct nft_base_chain *chain,
-+				 struct net_device *dev,
-+				 enum flow_block_command cmd)
-+{
-+	struct netlink_ext_ack extack = {};
-+	struct flow_block_offload bo = {};
-+	int err;
-+
-+	bo.net = dev_net(dev);
-+	bo.block = &chain->flow_block;
-+	bo.command = cmd;
-+	bo.binder_type = FLOW_BLOCK_BINDER_TYPE_CLSACT_INGRESS;
-+	bo.extack = &extack;
-+	INIT_LIST_HEAD(&bo.cb_list);
-+
-+	err = dev->netdev_ops->ndo_setup_tc(dev, TC_SETUP_BLOCK, &bo);
-+	if (err < 0)
-+		return err;
-+
-+	return nft_block_setup(chain, &bo, cmd);
-+}
-+
-+static void nft_indr_block_ing_cmd(struct net_device *dev,
-+				   struct flow_block *flow_block,
-+				   struct flow_indr_block_cb *indr_block_cb,
-+				   enum flow_block_command cmd)
-+{
-+	struct netlink_ext_ack extack = {};
-+	struct flow_block_offload bo = {};
-+	struct nft_base_chain *chain;
-+
-+	if (flow_block)
-+		return;
-+
-+	chain = container_of(flow_block, struct nft_base_chain, flow_block);
-+
-+	bo.net = dev_net(dev);
-+	bo.block = flow_block;
-+	bo.command = cmd;
-+	bo.binder_type = FLOW_BLOCK_BINDER_TYPE_CLSACT_INGRESS;
-+	bo.extack = &extack;
-+	INIT_LIST_HEAD(&bo.cb_list);
-+
-+	indr_block_cb->cb(dev, indr_block_cb->cb_priv, TC_SETUP_BLOCK, &bo);
-+
-+	nft_block_setup(chain, &bo, cmd);
-+}
-+
-+static int nft_indr_block_offload_cmd(struct nft_base_chain *chain,
-+				      struct net_device *dev,
-+				      enum flow_block_command cmd)
-+{
-+	struct flow_indr_block_cb *indr_block_cb;
-+	struct flow_indr_block_dev *indr_dev;
-+	struct flow_block_offload bo = {};
-+	struct netlink_ext_ack extack = {};
-+
-+	bo.net = dev_net(dev);
-+	bo.block = &chain->flow_block;
-+	bo.command = cmd;
-+	bo.binder_type = FLOW_BLOCK_BINDER_TYPE_CLSACT_INGRESS;
-+	bo.extack = &extack;
-+	INIT_LIST_HEAD(&bo.cb_list);
-+
-+	indr_dev = flow_indr_block_dev_lookup(dev);
-+	if (!indr_dev)
-+		return -EOPNOTSUPP;
-+
-+	indr_dev->flow_block = cmd == FLOW_BLOCK_BIND ? &chain->flow_block : NULL;
-+	indr_dev->ing_cmd_cb = cmd == FLOW_BLOCK_BIND ? nft_indr_block_ing_cmd : NULL;
-+
-+	list_for_each_entry(indr_block_cb, &indr_dev->cb_list, list)
-+		indr_block_cb->cb(dev, indr_block_cb->cb_priv, TC_SETUP_BLOCK,
-+				  &bo);
-+
-+	return nft_block_setup(chain, &bo, cmd);
-+}
-+
- #define FLOW_SETUP_BLOCK TC_SETUP_BLOCK
- 
- static int nft_flow_offload_chain(struct nft_trans *trans,
- 				  enum flow_block_command cmd)
- {
- 	struct nft_chain *chain = trans->ctx.chain;
--	struct netlink_ext_ack extack = {};
--	struct flow_block_offload bo = {};
- 	struct nft_base_chain *basechain;
- 	struct net_device *dev;
--	int err;
- 
- 	if (!nft_is_base_chain(chain))
- 		return -EOPNOTSUPP;
- 
- 	basechain = nft_base_chain(chain);
- 	dev = basechain->ops.dev;
--	if (!dev || !dev->netdev_ops->ndo_setup_tc)
-+	if (!dev)
- 		return -EOPNOTSUPP;
- 
- 	/* Only default policy to accept is supported for now. */
-@@ -197,26 +293,10 @@ static int nft_flow_offload_chain(struct nft_trans *trans,
- 	    nft_trans_chain_policy(trans) != NF_ACCEPT)
- 		return -EOPNOTSUPP;
- 
--	bo.command = cmd;
--	bo.block = &basechain->flow_block;
--	bo.binder_type = FLOW_BLOCK_BINDER_TYPE_CLSACT_INGRESS;
--	bo.extack = &extack;
--	INIT_LIST_HEAD(&bo.cb_list);
--
--	err = dev->netdev_ops->ndo_setup_tc(dev, FLOW_SETUP_BLOCK, &bo);
--	if (err < 0)
--		return err;
--
--	switch (cmd) {
--	case FLOW_BLOCK_BIND:
--		err = nft_flow_offload_bind(&bo, basechain);
--		break;
--	case FLOW_BLOCK_UNBIND:
--		err = nft_flow_offload_unbind(&bo, basechain);
--		break;
--	}
--
--	return err;
-+	if (dev->netdev_ops->ndo_setup_tc)
-+		return nft_block_offload_cmd(basechain, dev, cmd);
-+	else
-+		return nft_indr_block_offload_cmd(basechain, dev, cmd);
- }
- 
- int nft_flow_rule_offload_commit(struct net *net)
--- 
-1.8.3.1
-
+Sincerely
+DR, MOHAMMED BUHARI, PRESIDENT OF NIGERIA
