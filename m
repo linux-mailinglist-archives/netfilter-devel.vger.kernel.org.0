@@ -2,41 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D26E798D7
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jul 2019 22:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5212A798CA
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jul 2019 22:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730435AbfG2UKv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 29 Jul 2019 16:10:51 -0400
-Received: from smtp-out.kfki.hu ([148.6.0.45]:46809 "EHLO smtp-out.kfki.hu"
+        id S2388133AbfG2TeA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 29 Jul 2019 15:34:00 -0400
+Received: from smtp-out.kfki.hu ([148.6.0.48]:43343 "EHLO smtp-out.kfki.hu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388044AbfG2Td7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        id S2388048AbfG2Td7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 29 Jul 2019 15:33:59 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by smtp0.kfki.hu (Postfix) with ESMTP id E8D7067400D9;
+        by smtp2.kfki.hu (Postfix) with ESMTP id DA7ADCC0104;
         Mon, 29 Jul 2019 21:33:56 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:x-mailer:message-id:date:date
-        :from:from:received:received:received; s=20151130; t=1564428834;
-         x=1566243235; bh=sd5tNlFa1w6cfClRlchaiZRGeeYY5qOAK1qmCvHsu2A=; b=
-        eI1cwV0NQKENpACAAXn2hRfrqaeU0MW+ghPlD1oE2ZSZsmK9OMcviP77tKTvhlvw
-        LUj5Rtloojzbie7aeHPSWF0V/7SfMH9bWY1c2S3OwZtMO67dJSbQseW5m7+KRX2w
-        dPFEcPfft+si0UOyXMpcnEHYS8Ze8AwCgqZDO+HbBj4=
-X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
-        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        blackhole.kfki.hu; h=mime-version:references:in-reply-to
+        :x-mailer:message-id:date:date:from:from:received:received
+        :received; s=20151130; t=1564428834; x=1566243235; bh=bp59LHP0eE
+        iFa3K26GxorPUVWVezu2C4uUOX+XbORf4=; b=MLs+ai41oDSA0hzr7r3gyCfdk8
+        qGXFM03So/xqRBpig2912/RrfoGa6y5qjnhkTtLhhLTOc7jGRUhcshHuScg18vv0
+        X5+c6bEBdRdsTJEL4b3jgMYs11xBlcd+Q/6Lr1qrwB5kzl/f2kWxLJhfVmDAXmv3
+        /WIvkzHQEko1EabvA=
+X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
         with ESMTP; Mon, 29 Jul 2019 21:33:54 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.kfki.hu [148.6.240.2])
-        by smtp0.kfki.hu (Postfix) with ESMTP id BD70C67400BD;
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [IPv6:2001:738:5001:1::240:2])
+        by smtp2.kfki.hu (Postfix) with ESMTP id D1060CC00F4;
         Mon, 29 Jul 2019 21:33:54 +0200 (CEST)
 Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id A160A21B3B; Mon, 29 Jul 2019 21:33:54 +0200 (CEST)
+        id B766D207E9; Mon, 29 Jul 2019 21:33:54 +0200 (CEST)
 From:   Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 0/3] ipset patches for the nf tree
-Date:   Mon, 29 Jul 2019 21:33:51 +0200
-Message-Id: <20190729193354.26559-1-kadlec@blackhole.kfki.hu>
+Subject: [PATCH 1/3] netfilter: ipset: Actually allow destination MAC address for hash:ip,mac sets too
+Date:   Mon, 29 Jul 2019 21:33:52 +0200
+Message-Id: <20190729193354.26559-2-kadlec@blackhole.kfki.hu>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190729193354.26559-1-kadlec@blackhole.kfki.hu>
+References: <20190729193354.26559-1-kadlec@blackhole.kfki.hu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -44,52 +47,43 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
+From: Stefano Brivio <sbrivio@redhat.com>
 
-Please consider to apply the next patches to the nf tree:
+In commit 8cc4ccf58379 ("ipset: Allow matching on destination MAC address
+for mac and ipmac sets"), ipset.git commit 1543514c46a7, I removed the
+KADT check that prevents matching on destination MAC addresses for
+hash:mac sets, but forgot to remove the same check for hash:ip,mac set.
 
-- When the support of destination MAC addresses for hash:mac sets was
-  introduced, it was forgotten to add the same functionality to hash:ip,m=
-ac
-  types of sets. The patch from Stefano Brivio adds the missing part.
-- When the support of destination MAC addresses for hash:mac sets was
-  introduced, a copy&paste error was made in the code of the hash:ip,mac
-  and bitmap:ip,mac types: the MAC address in these set types is in
-  the second position and not in the first one. Stefano Brivio's patch
-  fixes the issue.
-- There was still a not properly handled concurrency handling issue
-  between renaming and listing sets at the same time, reported by
-  Shijie Luo.
+Drop this check: functionality is now commented in man pages and there's
+no reason to restrict to source MAC address matching anymore.
 
-Best regards,
-Jozsef
+Reported-by: Chen Yi <yiche@redhat.com>
+Fixes: 8cc4ccf58379 ("ipset: Allow matching on destination MAC address fo=
+r mac and ipmac sets")
+Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
+Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+---
+ net/netfilter/ipset/ip_set_hash_ipmac.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-The following changes since commit 91826ba13855f73e252fef68369b3b0e1ed252=
-53:
+diff --git a/net/netfilter/ipset/ip_set_hash_ipmac.c b/net/netfilter/ipse=
+t/ip_set_hash_ipmac.c
+index faf59b6a998f..eb1443408320 100644
+--- a/net/netfilter/ipset/ip_set_hash_ipmac.c
++++ b/net/netfilter/ipset/ip_set_hash_ipmac.c
+@@ -89,10 +89,6 @@ hash_ipmac4_kadt(struct ip_set *set, const struct sk_b=
+uff *skb,
+ 	struct hash_ipmac4_elem e =3D { .ip =3D 0, { .foo[0] =3D 0, .foo[1] =3D=
+ 0 } };
+ 	struct ip_set_ext ext =3D IP_SET_INIT_KEXT(skb, opt, set);
+=20
+-	 /* MAC can be src only */
+-	if (!(opt->flags & IPSET_DIM_TWO_SRC))
+-		return 0;
+-
+ 	if (skb_mac_header(skb) < skb->head ||
+ 	    (skb_mac_header(skb) + ETH_HLEN) > skb->data)
+ 		return -EINVAL;
+--=20
+2.20.1
 
-  netfilter: add include guard to xt_connlabel.h (2019-07-29 15:13:41 +02=
-00)
-
-are available in the Git repository at:
-
-  git://blackhole.kfki.hu/nf 6c1f7e2c1b96ab9b
-
-for you to fetch changes up to 6c1f7e2c1b96ab9b09ac97c4df2bd9dc327206f6:
-
-  netfilter: ipset: Fix rename concurrency with listing (2019-07-29 21:18=
-:07 +0200)
-
-----------------------------------------------------------------
-Jozsef Kadlecsik (1):
-      netfilter: ipset: Fix rename concurrency with listing
-
-Stefano Brivio (2):
-      netfilter: ipset: Actually allow destination MAC address for hash:i=
-p,mac sets too
-      netfilter: ipset: Copy the right MAC address in bitmap:ip,mac and h=
-ash:ip,mac sets
-
- net/netfilter/ipset/ip_set_bitmap_ipmac.c | 2 +-
- net/netfilter/ipset/ip_set_core.c         | 2 +-
- net/netfilter/ipset/ip_set_hash_ipmac.c   | 6 +-----
- 3 files changed, 3 insertions(+), 7 deletions(-)
