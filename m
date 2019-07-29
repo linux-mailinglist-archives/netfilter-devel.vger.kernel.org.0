@@ -2,40 +2,31 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2450B798B0
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jul 2019 22:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9077B799C9
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jul 2019 22:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388629AbfG2Tg5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 29 Jul 2019 15:36:57 -0400
-Received: from smtp-out.kfki.hu ([148.6.0.48]:56627 "EHLO smtp-out.kfki.hu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387811AbfG2Tg4 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 29 Jul 2019 15:36:56 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.kfki.hu (Postfix) with ESMTP id 90602CC010E;
-        Mon, 29 Jul 2019 21:36:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:user-agent:message-id:from
-        :from:date:date:received:received:received; s=20151130; t=
-        1564429011; x=1566243412; bh=8YdbWiEb4tfmH4XUZZ4tIdIHNlFaCMACRGi
-        hpYfxBY8=; b=KaGnW8b+c+ZQQTiuKTuNsWEL2L6dgj2H4+pX0gkjs3u1A74emwy
-        y+au4hZlJSkpgxajkk9q2xVZeWL7Bgz9FU6Rnp9+v/cvCMueSe3Awx+QUT0p+eYt
-        UWspzbBWEUTSLHOwnCJ5Aim9EF6YCehYLA8L/7jl+wcVz2fLDN94kNak=
-X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
-        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Mon, 29 Jul 2019 21:36:51 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.kfki.hu [148.6.240.2])
-        by smtp2.kfki.hu (Postfix) with ESMTP id 44A9BCC0110;
-        Mon, 29 Jul 2019 21:36:51 +0200 (CEST)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id 1D57B21B3B; Mon, 29 Jul 2019 21:36:51 +0200 (CEST)
-Date:   Mon, 29 Jul 2019 21:36:51 +0200 (CEST)
-From:   Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-To:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: [ANNOUNCE] ipset 7.3 released
-Message-ID: <alpine.DEB.2.20.1907292134050.26619@blackhole.kfki.hu>
-User-Agent: Alpine 2.20 (DEB 67 2015-01-07)
+        id S1729195AbfG2UUg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 29 Jul 2019 16:20:36 -0400
+Received: from ja.ssi.bg ([178.16.129.10]:52836 "EHLO ja.ssi.bg"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729250AbfG2UUg (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 29 Jul 2019 16:20:36 -0400
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id x6TKK6AN006015;
+        Mon, 29 Jul 2019 23:20:06 +0300
+Date:   Mon, 29 Jul 2019 23:20:06 +0300 (EEST)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Florian Westphal <fw@strlen.de>
+cc:     hujunwei <hujunwei4@huawei.com>, wensong@linux-vs.org,
+        horms@verge.net.au, pablo@netfilter.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org,
+        Mingfangsen <mingfangsen@huawei.com>, wangxiaogang3@huawei.com,
+        xuhanbing@huawei.com
+Subject: Re: [PATCH net] ipvs: Improve robustness to the ipvs sysctl
+In-Reply-To: <20190729004958.GA19226@strlen.de>
+Message-ID: <alpine.LFD.2.21.1907292305200.2909@ja.home.ssi.bg>
+References: <1997375e-815d-137f-20c9-0829a8587ee9@huawei.com> <20190729004958.GA19226@strlen.de>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -43,29 +34,37 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
 
-I'm happy to announce ipset 7.3 which brings a few fixes and corrections:
+	Hello,
 
-Userspace changes:
-  - ipset: fix spelling error in libipset.3 manpage (Neutron Soutmun)
-Kernel part changes:
-  - Fix rename concurrency with listing, which can result broken
-    list/save results.
-  - ipset: Copy the right MAC address in bitmap:ip,mac and
-    hash:ip,mac sets (Stefano Brivio)
-  - ipset: Actually allow destination MAC address for hash:ip,mac
-    sets too (Stefano Brivio)
+On Mon, 29 Jul 2019, Florian Westphal wrote:
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+> > diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+> > index 741d91aa4a8d..e78fd05f108b 100644
+> > --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> > +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+> > @@ -1680,12 +1680,18 @@ proc_do_defense_mode(struct ctl_table *table, int write,
+> >  	int val = *valp;
+> >  	int rc;
+> > 
+> > -	rc = proc_dointvec(table, write, buffer, lenp, ppos);
+> > +	struct ctl_table tmp = {
+> > +		.data = &val,
+> > +		.maxlen = sizeof(int),
+> > +		.mode = table->mode,
+> > +	};
+> > +
+> > +	rc = proc_dointvec(&tmp, write, buffer, lenp, ppos);
+> 
+> Wouldn't it be better do use proc_dointvec_minmax and set the
+> constraints via .extra1,2 in the sysctl knob definition?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+	We store the 'ipvs' back-ptr in extra2, so may be we
+can not use it in the table for proc_do_defense_mode, only for
+tmp. proc_do_sync_mode may use extra1/2 in table for the
+proc_dointvec_minmax call.
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
