@@ -2,87 +2,94 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCA9797E8
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jul 2019 22:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D26E798D7
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jul 2019 22:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729922AbfG2UDz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 29 Jul 2019 16:03:55 -0400
-Received: from ja.ssi.bg ([178.16.129.10]:52746 "EHLO ja.ssi.bg"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729843AbfG2UDz (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 29 Jul 2019 16:03:55 -0400
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id x6TK3VOW005690;
-        Mon, 29 Jul 2019 23:03:32 +0300
-Date:   Mon, 29 Jul 2019 23:03:31 +0300 (EEST)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-cc:     "David S. Miller" <davem@davemloft.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Simon Horman <horms@verge.net.au>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [net-next 1/2] ipvs: batch __ip_vs_cleanup
-In-Reply-To: <8441EA26-E197-4F40-A6D7-5B7D59AA7F7F@cmss.chinamobile.com>
-Message-ID: <alpine.LFD.2.21.1907292300580.2909@ja.home.ssi.bg>
-References: <1563031186-2101-1-git-send-email-yanhaishuang@cmss.chinamobile.com> <1563031186-2101-2-git-send-email-yanhaishuang@cmss.chinamobile.com> <alpine.LFD.2.21.1907152333300.5700@ja.home.ssi.bg>
- <8441EA26-E197-4F40-A6D7-5B7D59AA7F7F@cmss.chinamobile.com>
-User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
+        id S1730435AbfG2UKv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 29 Jul 2019 16:10:51 -0400
+Received: from smtp-out.kfki.hu ([148.6.0.45]:46809 "EHLO smtp-out.kfki.hu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388044AbfG2Td7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 29 Jul 2019 15:33:59 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by smtp0.kfki.hu (Postfix) with ESMTP id E8D7067400D9;
+        Mon, 29 Jul 2019 21:33:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        blackhole.kfki.hu; h=mime-version:x-mailer:message-id:date:date
+        :from:from:received:received:received; s=20151130; t=1564428834;
+         x=1566243235; bh=sd5tNlFa1w6cfClRlchaiZRGeeYY5qOAK1qmCvHsu2A=; b=
+        eI1cwV0NQKENpACAAXn2hRfrqaeU0MW+ghPlD1oE2ZSZsmK9OMcviP77tKTvhlvw
+        LUj5Rtloojzbie7aeHPSWF0V/7SfMH9bWY1c2S3OwZtMO67dJSbQseW5m7+KRX2w
+        dPFEcPfft+si0UOyXMpcnEHYS8Ze8AwCgqZDO+HbBj4=
+X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
+Received: from smtp0.kfki.hu ([127.0.0.1])
+        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Mon, 29 Jul 2019 21:33:54 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.kfki.hu [148.6.240.2])
+        by smtp0.kfki.hu (Postfix) with ESMTP id BD70C67400BD;
+        Mon, 29 Jul 2019 21:33:54 +0200 (CEST)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+        id A160A21B3B; Mon, 29 Jul 2019 21:33:54 +0200 (CEST)
+From:   Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 0/3] ipset patches for the nf tree
+Date:   Mon, 29 Jul 2019 21:33:51 +0200
+Message-Id: <20190729193354.26559-1-kadlec@blackhole.kfki.hu>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Hi Pablo,
 
-	Hello,
+Please consider to apply the next patches to the nf tree:
 
-On Thu, 18 Jul 2019, Haishuang Yan wrote:
+- When the support of destination MAC addresses for hash:mac sets was
+  introduced, it was forgotten to add the same functionality to hash:ip,m=
+ac
+  types of sets. The patch from Stefano Brivio adds the missing part.
+- When the support of destination MAC addresses for hash:mac sets was
+  introduced, a copy&paste error was made in the code of the hash:ip,mac
+  and bitmap:ip,mac types: the MAC address in these set types is in
+  the second position and not in the first one. Stefano Brivio's patch
+  fixes the issue.
+- There was still a not properly handled concurrency handling issue
+  between renaming and listing sets at the same time, reported by
+  Shijie Luo.
 
-> As the following benchmark testing results show, there is a little performance improvement:
+Best regards,
+Jozsef
 
-	OK, can you send v2 after removing the LIST_HEAD(list) from
-both patches, I guess, it is not needed. If you prefer, you can
-include these benchmark results too.
+The following changes since commit 91826ba13855f73e252fef68369b3b0e1ed252=
+53:
 
-> $  cat add_del_unshare.sh
-> #!/bin/bash
-> 
-> for i in `seq 1 100`
->     do
->      (for j in `seq 1 40` ; do  unshare -n ipvsadm -A -t 172.16.$i.$j:80 >/dev/null ; done) &
->     done
-> wait; grep net_namespace /proc/slabinfo
-> 
-> Befor patch:
-> $  time sh add_del_unshare.sh
-> net_namespace       4020   4020   4736    6    8 : tunables    0    0    0 : slabdata    670    670      0
-> 
-> real    0m8.086s
-> user    0m2.025s
-> sys     0m36.956s
-> 
-> After patch:
-> $  time sh add_del_unshare.sh
-> net_namespace       4020   4020   4736    6    8 : tunables    0    0    0 : slabdata    670    670      0
-> 
-> real    0m7.623s
-> user    0m2.003s
-> sys     0m32.935s
-> 
-> 
-> > 
-> >> +		ipvs = net_ipvs(net);
-> >> +		ip_vs_conn_net_cleanup(ipvs);
-> >> +		ip_vs_app_net_cleanup(ipvs);
-> >> +		ip_vs_protocol_net_cleanup(ipvs);
-> >> +		ip_vs_control_net_cleanup(ipvs);
-> >> +		ip_vs_estimator_net_cleanup(ipvs);
-> >> +		IP_VS_DBG(2, "ipvs netns %d released\n", ipvs->gen);
-> >> +		net->ipvs = NULL;
+  netfilter: add include guard to xt_connlabel.h (2019-07-29 15:13:41 +02=
+00)
 
-Regards
+are available in the Git repository at:
 
---
-Julian Anastasov <ja@ssi.bg>
+  git://blackhole.kfki.hu/nf 6c1f7e2c1b96ab9b
+
+for you to fetch changes up to 6c1f7e2c1b96ab9b09ac97c4df2bd9dc327206f6:
+
+  netfilter: ipset: Fix rename concurrency with listing (2019-07-29 21:18=
+:07 +0200)
+
+----------------------------------------------------------------
+Jozsef Kadlecsik (1):
+      netfilter: ipset: Fix rename concurrency with listing
+
+Stefano Brivio (2):
+      netfilter: ipset: Actually allow destination MAC address for hash:i=
+p,mac sets too
+      netfilter: ipset: Copy the right MAC address in bitmap:ip,mac and h=
+ash:ip,mac sets
+
+ net/netfilter/ipset/ip_set_bitmap_ipmac.c | 2 +-
+ net/netfilter/ipset/ip_set_core.c         | 2 +-
+ net/netfilter/ipset/ip_set_hash_ipmac.c   | 6 +-----
+ 3 files changed, 3 insertions(+), 7 deletions(-)
