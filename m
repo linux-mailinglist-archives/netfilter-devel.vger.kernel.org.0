@@ -2,113 +2,87 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D65227918B
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jul 2019 18:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCA9797E8
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Jul 2019 22:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387518AbfG2Qzh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 29 Jul 2019 12:55:37 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:43963 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727165AbfG2Qzh (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 29 Jul 2019 12:55:37 -0400
-Received: by mail-pg1-f195.google.com with SMTP id r22so953497pgk.10
-        for <netfilter-devel@vger.kernel.org>; Mon, 29 Jul 2019 09:55:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=VCrgU88KkMCvWVoIPrZGlh3p115cO9rxPu95giiojSo=;
-        b=f3bMHMCebuKfdXiogzFAjHwa2nvD4c8UFEoKLrQZupRU29fHVVc/OPS8zj9yQkoX+r
-         lXLNqfqRHY8xphwre9/+yVbf/u0zuQFkygnXx81vNqyRwz/KRNgnWVNhLxPPIEroCCt3
-         e8zYj1gKTBfLqgWk0RqvTymVV4duxgPVpJRVwwCwbcGMv9KryhgqFkBeesgWGhTy0Itz
-         ZRX1sO/sAYdqa788HLD33wmgsbfEP+zuZ9JDN7xFHRJsgkcMVKczWiGi4Y7SNuJYR/oE
-         MK8uZ4kgZoAmtnrNi0LWNulMaQsHNkzwlGePQxwrxf/JtawHbqZO+WcGu1pBlhmoBad/
-         z0Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=VCrgU88KkMCvWVoIPrZGlh3p115cO9rxPu95giiojSo=;
-        b=k2FWcSqoGGchIBKysHwgqVmJJAh/Js8QAsrDl3+RtOH72yKBCMSyyzaVU2eYESVene
-         0Kxi7HS+5+nf04MzdHgTfHvepuZ9FXWvpoL+fYNtYYF8FKlHqu4GmzrCIe3qlqO6Wlae
-         1jnyuBGvwLxn2eNnbYHSrPtR7WcnyyefqHP0aWwqH8uNZMyPM7btgdp7PeHjKglQ92Z3
-         MojyVltj/eqlXquMBRuioWphjD586Rsc+vwcVON2/zjxjiI5Z7HTQGqotXVk+RufRaRo
-         36Nv3Dj1JZBL5PbPYpOLRmznw+O9koayn7lKLUoWeIdZMMaf/GprCB80yPCwW0kesFvs
-         /0ew==
-X-Gm-Message-State: APjAAAU1FEO24bCvkmN0ATqHOuek1x/XfuRt7wPXyMwHNIhUe08TnsI1
-        2J+f2+fPpRdsra2b6qYN0sVrTQ==
-X-Google-Smtp-Source: APXvYqy4wVBZFW0RYGWkFo9QNdQThI6p5AIOevfYSFs+kP8gszKvYgxytXbtWwzMT64za+MUQsR61w==
-X-Received: by 2002:a63:5c7:: with SMTP id 190mr103117049pgf.67.1564419336162;
-        Mon, 29 Jul 2019 09:55:36 -0700 (PDT)
-Received: from cakuba.netronome.com (c-71-204-185-212.hsd1.ca.comcast.net. [71.204.185.212])
-        by smtp.gmail.com with ESMTPSA id y11sm64902766pfb.119.2019.07.29.09.55.35
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 29 Jul 2019 09:55:35 -0700 (PDT)
-Date:   Mon, 29 Jul 2019 09:55:26 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     wenxu <wenxu@ucloud.cn>
-Cc:     pablo@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v4 2/3] flow_offload: Support get default block
- from tc immediately
-Message-ID: <20190729095526.17214c4d@cakuba.netronome.com>
-In-Reply-To: <449a5603-80e9-ad7d-5c02-bf57558f9603@ucloud.cn>
-References: <1564296769-32294-1-git-send-email-wenxu@ucloud.cn>
-        <1564296769-32294-3-git-send-email-wenxu@ucloud.cn>
-        <20190728131653.6af72a87@cakuba.netronome.com>
-        <5eed91c1-20ed-c08c-4700-979392bc5f33@ucloud.cn>
-        <20190728214237.2c0687db@cakuba.netronome.com>
-        <449a5603-80e9-ad7d-5c02-bf57558f9603@ucloud.cn>
-Organization: Netronome Systems, Ltd.
+        id S1729922AbfG2UDz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 29 Jul 2019 16:03:55 -0400
+Received: from ja.ssi.bg ([178.16.129.10]:52746 "EHLO ja.ssi.bg"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729843AbfG2UDz (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 29 Jul 2019 16:03:55 -0400
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id x6TK3VOW005690;
+        Mon, 29 Jul 2019 23:03:32 +0300
+Date:   Mon, 29 Jul 2019 23:03:31 +0300 (EEST)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+cc:     "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Simon Horman <horms@verge.net.au>, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [net-next 1/2] ipvs: batch __ip_vs_cleanup
+In-Reply-To: <8441EA26-E197-4F40-A6D7-5B7D59AA7F7F@cmss.chinamobile.com>
+Message-ID: <alpine.LFD.2.21.1907292300580.2909@ja.home.ssi.bg>
+References: <1563031186-2101-1-git-send-email-yanhaishuang@cmss.chinamobile.com> <1563031186-2101-2-git-send-email-yanhaishuang@cmss.chinamobile.com> <alpine.LFD.2.21.1907152333300.5700@ja.home.ssi.bg>
+ <8441EA26-E197-4F40-A6D7-5B7D59AA7F7F@cmss.chinamobile.com>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, 29 Jul 2019 15:18:03 +0800, wenxu wrote:
-> On 7/29/2019 12:42 PM, Jakub Kicinski wrote:
-> > On Mon, 29 Jul 2019 10:43:56 +0800, wenxu wrote: =20
-> >> On 7/29/2019 4:16 AM, Jakub Kicinski wrote: =20
-> >>> I don't know the nft code, but it seems unlikely it wouldn't have the
-> >>> same problem/need..   =20
-> >> nft don't have the same problem.=C2=A0 The offload rule can only attac=
-hed
-> >> to offload base chain.
-> >>
-> >> Th=C2=A0 offload base chain is created after the device driver loaded =
-(the
-> >> device exist). =20
-> > For indirect blocks the block is on the tunnel device and the offload
-> > target is another device. E.g. you offload rules from a VXLAN device
-> > onto the ASIC. The ASICs driver does not have to be loaded when VXLAN
-> > device is created.
-> >
-> > So I feel like either the chain somehow directly references the offload
-> > target (in which case the indirect infrastructure with hash lookup etc
-> > is not needed for nft), or indirect infra is needed, and we need to take
-> > care of replays. =20
->=20
-> I think the nft is different with tc.=C2=A0
->=20
-> In tc case we can create vxlan device add a ingress qdisc with a block su=
-ccess
->=20
-> Then the ASIC driver loaded,=C2=A0 then register the vxlan indr-dev and g=
-et the block
-> adn replay it to hardware
->=20
-> But in the nft case,=C2=A0 The base chain flags with offload. Create an o=
-ffload netdev
-> base chain on vxlan device will fail if there is no indr-device to offloa=
-d.
 
-Can you show us the offload chain spec? Does it specify offload to the
-vxlan device or the ASIC device?
+	Hello,
 
-Indir-devs can come and go, how do you handle a situation where offload
-chain was installed with indir listener present, but then the ASIC
-driver got removed?
+On Thu, 18 Jul 2019, Haishuang Yan wrote:
+
+> As the following benchmark testing results show, there is a little performance improvement:
+
+	OK, can you send v2 after removing the LIST_HEAD(list) from
+both patches, I guess, it is not needed. If you prefer, you can
+include these benchmark results too.
+
+> $  cat add_del_unshare.sh
+> #!/bin/bash
+> 
+> for i in `seq 1 100`
+>     do
+>      (for j in `seq 1 40` ; do  unshare -n ipvsadm -A -t 172.16.$i.$j:80 >/dev/null ; done) &
+>     done
+> wait; grep net_namespace /proc/slabinfo
+> 
+> Befor patch:
+> $  time sh add_del_unshare.sh
+> net_namespace       4020   4020   4736    6    8 : tunables    0    0    0 : slabdata    670    670      0
+> 
+> real    0m8.086s
+> user    0m2.025s
+> sys     0m36.956s
+> 
+> After patch:
+> $  time sh add_del_unshare.sh
+> net_namespace       4020   4020   4736    6    8 : tunables    0    0    0 : slabdata    670    670      0
+> 
+> real    0m7.623s
+> user    0m2.003s
+> sys     0m32.935s
+> 
+> 
+> > 
+> >> +		ipvs = net_ipvs(net);
+> >> +		ip_vs_conn_net_cleanup(ipvs);
+> >> +		ip_vs_app_net_cleanup(ipvs);
+> >> +		ip_vs_protocol_net_cleanup(ipvs);
+> >> +		ip_vs_control_net_cleanup(ipvs);
+> >> +		ip_vs_estimator_net_cleanup(ipvs);
+> >> +		IP_VS_DBG(2, "ipvs netns %d released\n", ipvs->gen);
+> >> +		net->ipvs = NULL;
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
