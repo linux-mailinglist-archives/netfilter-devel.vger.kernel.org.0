@@ -2,26 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9117C8DC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2019 18:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19FA7C8E0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Jul 2019 18:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbfGaQja (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 31 Jul 2019 12:39:30 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:40904 "EHLO orbyte.nwl.cc"
+        id S1729730AbfGaQjr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 31 Jul 2019 12:39:47 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:40922 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726231AbfGaQja (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 31 Jul 2019 12:39:30 -0400
-Received: from localhost ([::1]:53994 helo=tatos)
+        id S1729461AbfGaQjr (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 31 Jul 2019 12:39:47 -0400
+Received: from localhost ([::1]:54012 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1hsrdR-0005jC-5d; Wed, 31 Jul 2019 18:39:29 +0200
+        id 1hsrdh-0005kJ-D0; Wed, 31 Jul 2019 18:39:45 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 0/5] xtables-monitor enhancements
-Date:   Wed, 31 Jul 2019 18:39:10 +0200
-Message-Id: <20190731163915.22232-1-phil@nwl.cc>
+Subject: [iptables PATCH 1/5] doc: Clean generated *-restore-translate man pages
+Date:   Wed, 31 Jul 2019 18:39:11 +0200
+Message-Id: <20190731163915.22232-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20190731163915.22232-1-phil@nwl.cc>
+References: <20190731163915.22232-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -29,26 +31,56 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This series introduces family-specific xtables-monitor aliases as
-suggested during NFWS, the relevant code is in patches four and five.
+Since they are generated, one has to specify them in CLEANFILES. While
+being at it, introduce a variable holding them to improve readability a
+bit.
 
-The first three patches are fallout from the above, mostly minor fixes
-found along the way.
+Fixes: 3dfb01cf14d72 ("doc: Install ip{6,}tables-restore-translate.8 man pages")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/Makefile.am | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Phil Sutter (5):
-  doc: Clean generated *-restore-translate man pages
-  doc: Fix xtables-monitor man page
-  xtables-monitor: Improve error messages
-  xtables-monitor: Support ARP and bridge families
-  xtables-monitor: Add family-specific aliases
-
- iptables/Makefile.am          |  21 ++++--
- iptables/xtables-monitor.8.in |  32 +++++++--
- iptables/xtables-monitor.c    | 124 ++++++++++++++++++++++++++++------
- iptables/xtables-multi.h      |   4 ++
- iptables/xtables-nft-multi.c  |   4 ++
- 5 files changed, 154 insertions(+), 31 deletions(-)
-
+diff --git a/iptables/Makefile.am b/iptables/Makefile.am
+index 21ac7f08b7c1f..da07b9a4b5a2f 100644
+--- a/iptables/Makefile.am
++++ b/iptables/Makefile.am
+@@ -47,6 +47,9 @@ xtables_nft_multi_SOURCES += xshared.c
+ xtables_nft_multi_LDADD   += ../libxtables/libxtables.la -lm
+ endif
+ 
++XTABLES_XLATE_8_LINKS = iptables-translate.8 ip6tables-translate.8 \
++			iptables-restore-translate.8 ip6tables-restore-translate.8
++
+ sbin_PROGRAMS    = xtables-legacy-multi
+ if ENABLE_NFTABLES
+ sbin_PROGRAMS	+= xtables-nft-multi
+@@ -56,14 +59,13 @@ man_MANS         = iptables.8 iptables-restore.8 iptables-save.8 \
+                    ip6tables-save.8 iptables-extensions.8
+ if ENABLE_NFTABLES
+ man_MANS	+= xtables-nft.8 xtables-translate.8 xtables-legacy.8 \
+-                   iptables-translate.8 ip6tables-translate.8 \
+-		   iptables-restore-translate.8 ip6tables-restore-translate.8 \
++                   ${XTABLES_XLATE_8_LINKS} \
+                    xtables-monitor.8 \
+                    arptables-nft.8 arptables-nft-restore.8 arptables-nft-save.8 \
+                    ebtables-nft.8
+ endif
+ CLEANFILES       = iptables.8 xtables-monitor.8 \
+-		   iptables-translate.8 ip6tables-translate.8
++		   ${XTABLES_XLATE_8_LINKS}
+ 
+ vx_bin_links   = iptables-xml
+ if ENABLE_IPV4
+@@ -93,7 +95,7 @@ iptables-extensions.8: iptables-extensions.8.tmpl ../extensions/matches.man ../e
+ 		-e '/@MATCH@/ r ../extensions/matches.man' \
+ 		-e '/@TARGET@/ r ../extensions/targets.man' $< >$@;
+ 
+-iptables-translate.8 ip6tables-translate.8 iptables-restore-translate.8 ip6tables-restore-translate.8:
++${XTABLES_XLATE_8_LINKS}:
+ 	${AM_VERBOSE_GEN} echo '.so man8/xtables-translate.8' >$@
+ 
+ pkgconfig_DATA = xtables.pc
 -- 
 2.22.0
 
