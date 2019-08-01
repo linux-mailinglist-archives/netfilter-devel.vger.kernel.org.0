@@ -2,32 +2,34 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 887F27DD31
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2019 16:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90F37DD2C
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Aug 2019 16:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731051AbfHAOCG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Aug 2019 10:02:06 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:22705 "EHLO
+        id S1731471AbfHAOBk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Aug 2019 10:01:40 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:22709 "EHLO
         m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730800AbfHAOCG (ORCPT
+        with ESMTP id S1731335AbfHAOBk (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Aug 2019 10:02:06 -0400
+        Thu, 1 Aug 2019 10:01:40 -0400
 Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 86B7141129;
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id A18ED41623;
         Thu,  1 Aug 2019 22:01:27 +0800 (CST)
 From:   wenxu@ucloud.cn
 To:     pablo@netfilter.org, fw@strlen.de
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next v3 0/9] netfilter: nf_tables_offload: support more expr and obj offload
-Date:   Thu,  1 Aug 2019 22:01:17 +0800
-Message-Id: <1564668086-16260-1-git-send-email-wenxu@ucloud.cn>
+Subject: [PATCH nf-next v3 1/9] netfilter: nf_flow_offload: add net in offload_ctx
+Date:   Thu,  1 Aug 2019 22:01:18 +0800
+Message-Id: <1564668086-16260-2-git-send-email-wenxu@ucloud.cn>
 X-Mailer: git-send-email 1.8.3.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVNQk5CQkJDTUtMTUhOTllXWShZQU
-        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PD46MQw5HDg*DE8QPSofI08o
-        EVZPCyJVSlVKTk1PTU1DS0NMTU9KVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQU9LTUk3Bg++
-X-HM-Tid: 0a6c4d7c4d0c2086kuqy86b7141129
+In-Reply-To: <1564668086-16260-1-git-send-email-wenxu@ucloud.cn>
+References: <1564668086-16260-1-git-send-email-wenxu@ucloud.cn>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVS01MS0tLS0hKT0xKSU5ZV1koWU
+        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MxA6HTo*Czg#Nk8aFy89I0I0
+        EDUaCQhVSlVKTk1PTU1DS0NMTE9PVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUhKTEw3Bg++
+X-HM-Tid: 0a6c4d7c4d7a2086kuqya18ed41623
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
@@ -35,73 +37,71 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: wenxu <wenxu@ucloud.cn>
 
-This series patch support more expr and obj offload: 
-fw_nedev, set payload, tunnel encap/decap action,
-tunnel meta match, objref offload
+In the offload_ctx, the net can be used for other actions
+such as fwd netdev
 
-The follwing is the test sample:
+Signed-off-by: wenxu <wenxu@ucloud.cn>
+---
+v3: no change
 
-# nft add table netdev firewall
-# nft add tunnel netdev firewall encap tunid 1000 tundst 0xf198a8ac tunsrc 0x4b98a8ac tunrelease 0
-# nft add tunnel netdev firewall decap tunid 0 tundst 0 tunsrc 0  tunrelease 1
-# nft add chain netdev firewall aclout { type filter hook ingress device mlx_pf0vf0 priority - 300 \; }
-# nft --debug=netlink add rule netdev firewall aclout ip daddr 10.0.1.7  @ll,0,48 set 0x00002e9ca06e2596 @ll,48,48 set 0xfaffffffffff tunnel name encap fwd to gretap
-  [ meta load protocol => reg 1 ]
-  [ cmp eq reg 1 0x00000008 ]
-  [ payload load 4b @ network header + 16 => reg 1 ]
-  [ cmp eq reg 1 0x0701000a ]
-  [ immediate reg 1 0x6ea09c2e 0x00009625 ]
-  [ payload write reg 1 => 6b @ link header + 0 csum_type 0 csum_off 0 csum_flags 0x0 ]
-  [ immediate reg 1 0xfffffffa 0x0000ffff ]
-  [ payload write reg 1 => 6b @ link header + 6 csum_type 0 csum_off 0 csum_flags 0x0 ]
-  [ objref type 6 name encap ]
-  [ immediate reg 1 0x00000019 ]
-  [ fwd sreg_dev 1 ]
+ include/net/netfilter/nf_tables_offload.h | 3 ++-
+ net/netfilter/nf_tables_api.c             | 2 +-
+ net/netfilter/nf_tables_offload.c         | 3 ++-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
-
-# nft add chain netdev firewall aclin { type filter hook ingress device gretap priority - 300 \; }
-# nft --debug=netlink add rule netdev firewall aclin ip daddr 10.0.0.7 tunnel tunid 1000 tunnel tundst 172.168.152.75 tunnel tunsrc 172.168.152.241 tunnel name decap @ll,0,48 set 0x0000525400001275 @ll,48,48 set 0xfaffffffffff fwd to mlx_pf0vf0
-  [ meta load protocol => reg 1 ]
-  [ cmp eq reg 1 0x00000008 ]
-  [ payload load 4b @ network header + 16 => reg 1 ]
-  [ cmp eq reg 1 0x0700000a ]
-  [ tunnel load id => reg 1 ]
-  [ cmp eq reg 1 0x000003e8 ]
-  [ tunnel load tun_dst => reg 1 ]
-  [ cmp eq reg 1 0xaca8984b ]
-  [ tunnel load tun_src => reg 1 ]
-  [ cmp eq reg 1 0xaca898f1 ]
-  [ objref type 6 name decap ]
-  [ immediate reg 1 0x00005452 0x00007512 ]
-  [ payload write reg 1 => 6b @ link header + 0 csum_type 0 csum_off 0 csum_flags 0x0 ]
-  [ immediate reg 1 0xfffffffa 0x0000ffff ]
-  [ payload write reg 1 => 6b @ link header + 6 csum_type 0 csum_off 0 csum_flags 0x0 ]
-  [ immediate reg 1 0x0000000f ]
-  [ fwd sreg_dev 1 ]
-
-wenxu (9):
-  netfilter: nf_flow_offload: add net in offload_ctx
-  netfilter: nf_tables_offload: add offload_actions callback
-  netfilter: nft_fwd_netdev: add fw_netdev action support
-  netfilter: nft_payload: add nft_set_payload offload support
-  netfilter: nft_tunnel: support NFT_TUNNEL_SRC/DST_IP match
-  netfilter: nft_tunnel: support tunnel meta match offload
-  netfilter: nft_tunnel: add NFTA_TUNNEL_KEY_RELEASE action
-  netfilter: nft_objref: add nft_objref_type offload
-  netfilter: nft_tunnel: support nft_tunnel_obj offload
-
- include/net/netfilter/nf_tables.h         |  10 ++-
- include/net/netfilter/nf_tables_offload.h |   7 +-
- include/uapi/linux/netfilter/nf_tables.h  |   3 +
- net/netfilter/nf_tables_api.c             |   2 +-
- net/netfilter/nf_tables_offload.c         |   7 +-
- net/netfilter/nft_fwd_netdev.c            |  27 +++++++
- net/netfilter/nft_immediate.c             |   2 +-
- net/netfilter/nft_objref.c                |  15 ++++
- net/netfilter/nft_payload.c               |  56 ++++++++++++++
- net/netfilter/nft_tunnel.c                | 123 ++++++++++++++++++++++++++----
- 10 files changed, 230 insertions(+), 22 deletions(-)
-
+diff --git a/include/net/netfilter/nf_tables_offload.h b/include/net/netfilter/nf_tables_offload.h
+index 3196663..ad61958 100644
+--- a/include/net/netfilter/nf_tables_offload.h
++++ b/include/net/netfilter/nf_tables_offload.h
+@@ -24,6 +24,7 @@ struct nft_offload_ctx {
+ 		__be16				l3num;
+ 		u8				protonum;
+ 	} dep;
++	struct net *net;
+ 	unsigned int				num_actions;
+ 	struct nft_offload_reg			regs[NFT_REG32_15 + 1];
+ };
+@@ -60,7 +61,7 @@ struct nft_flow_rule {
+ #define NFT_OFFLOAD_F_ACTION	(1 << 0)
+ 
+ struct nft_rule;
+-struct nft_flow_rule *nft_flow_rule_create(const struct nft_rule *rule);
++struct nft_flow_rule *nft_flow_rule_create(struct net *net, const struct nft_rule *rule);
+ void nft_flow_rule_destroy(struct nft_flow_rule *flow);
+ int nft_flow_rule_offload_commit(struct net *net);
+ 
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 605a7cf..c6dc173 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -2844,7 +2844,7 @@ static int nf_tables_newrule(struct net *net, struct sock *nlsk,
+ 		return nft_table_validate(net, table);
+ 
+ 	if (chain->flags & NFT_CHAIN_HW_OFFLOAD) {
+-		flow = nft_flow_rule_create(rule);
++		flow = nft_flow_rule_create(net, rule);
+ 		if (IS_ERR(flow))
+ 			return PTR_ERR(flow);
+ 
+diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
+index 64f5fd5..5c1fef7 100644
+--- a/net/netfilter/nf_tables_offload.c
++++ b/net/netfilter/nf_tables_offload.c
+@@ -28,12 +28,13 @@ static struct nft_flow_rule *nft_flow_rule_alloc(int num_actions)
+ 	return flow;
+ }
+ 
+-struct nft_flow_rule *nft_flow_rule_create(const struct nft_rule *rule)
++struct nft_flow_rule *nft_flow_rule_create(struct net *net, const struct nft_rule *rule)
+ {
+ 	struct nft_offload_ctx ctx = {
+ 		.dep	= {
+ 			.type	= NFT_OFFLOAD_DEP_UNSPEC,
+ 		},
++		.net = net,
+ 	};
+ 	struct nft_flow_rule *flow;
+ 	int num_actions = 0, err;
 -- 
 1.8.3.1
 
