@@ -2,82 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6E87F9D6
-	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Aug 2019 15:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B457F9C8
+	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Aug 2019 15:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403912AbfHBNaI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 2 Aug 2019 09:30:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35218 "EHLO mail.kernel.org"
+        id S2391881AbfHBN3k (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 2 Aug 2019 09:29:40 -0400
+Received: from correo.us.es ([193.147.175.20]:41446 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389224AbfHBNY2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 2 Aug 2019 09:24:28 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BAC3217D4;
-        Fri,  2 Aug 2019 13:24:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564752268;
-        bh=a5PkzckWTg221NMOOt/P5PkDXBIYIDBB3qKCU7mMVE4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=icileZ3pokQibgDsVZBneKXiYQ64K6L2KXtohOFNKJPaiTclHLRuct5+88D70+3ab
-         oDOB+bcMrZ9Tn+gUDPQh9ylG3cABUw/Wx3VRYPaUQ10yjy5/IOs0RrKKZgOmQTr+f4
-         +SNHUWVsuA+LExrRzn0WJAJTnAVUMwnLzUe8Xymo=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Laura Garcia Liebana <nevola@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 04/30] netfilter: nft_hash: fix symhash with modulus one
-Date:   Fri,  2 Aug 2019 09:23:56 -0400
-Message-Id: <20190802132422.13963-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190802132422.13963-1-sashal@kernel.org>
-References: <20190802132422.13963-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S2390402AbfHBN33 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 2 Aug 2019 09:29:29 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id E0A67FB451
+        for <netfilter-devel@vger.kernel.org>; Fri,  2 Aug 2019 15:29:26 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id D13D71150B9
+        for <netfilter-devel@vger.kernel.org>; Fri,  2 Aug 2019 15:29:26 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id B83C17E063; Fri,  2 Aug 2019 15:29:26 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id B2F1F6E7A0;
+        Fri,  2 Aug 2019 15:29:24 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Fri, 02 Aug 2019 15:29:24 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (unknown [31.4.181.192])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 0C9944265A31;
+        Fri,  2 Aug 2019 15:29:22 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        jakub.kicinski@netronome.com, jiri@resnulli.us,
+        marcelo.leitner@gmail.com, saeedm@mellanox.com, wenxu@ucloud.cn,
+        gerlitz.or@gmail.com, paulb@mellanox.com
+Subject: [PATCH net-next 0/3,v2] flow_offload hardware priority fixes
+Date:   Fri,  2 Aug 2019 15:28:43 +0200
+Message-Id: <20190802132846.3067-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Laura Garcia Liebana <nevola@gmail.com>
+Hi,
 
-[ Upstream commit 28b1d6ef53e3303b90ca8924bb78f31fa527cafb ]
+This patchset contains three updates for the flow_offload users:
 
-The rule below doesn't work as the kernel raises -ERANGE.
+1) Pass major tc priority to drivers so they do not have to
+   lshift it. This is a preparation patch for the fix coming in
+   patch 3/3.
 
-nft add rule netdev nftlb lb01 ip daddr set \
-	symhash mod 1 map { 0 : 192.168.0.10 } fwd to "eth0"
+2) Add a new structure to basechain objects to wrap the offload
+   data. This is another preparation patch for the fix coming in
+   patch 3/3.
 
-This patch allows to use the symhash modulus with one
-element, in the same way that the other types of hashes and
-algorithms that uses the modulus parameter.
+3) Allocate priority field per rule from the commit path and
+   pass it on to drivers. Currently this is set to zero and
+   some drivers bail out with it, start by priority number 1
+   and allocate new priority from there on. The priority field
+   is limited to 8-bits at this stage for simplicity.
 
-Signed-off-by: Laura Garcia Liebana <nevola@gmail.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/netfilter/nft_hash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2: address Jakub comments to not use the netfilter basechain
+    priority for this mapping.
 
-diff --git a/net/netfilter/nft_hash.c b/net/netfilter/nft_hash.c
-index 24f2f7567ddb7..010a565b40001 100644
---- a/net/netfilter/nft_hash.c
-+++ b/net/netfilter/nft_hash.c
-@@ -131,7 +131,7 @@ static int nft_symhash_init(const struct nft_ctx *ctx,
- 	priv->dreg = nft_parse_register(tb[NFTA_HASH_DREG]);
- 
- 	priv->modulus = ntohl(nla_get_be32(tb[NFTA_HASH_MODULUS]));
--	if (priv->modulus <= 1)
-+	if (priv->modulus < 1)
- 		return -ERANGE;
- 
- 	if (priv->offset + priv->modulus - 1 < priv->offset)
+Please, apply, thank you.
+
+Pablo Neira Ayuso (3):
+  net: sched: use major priority number as hardware priority
+  netfilter: nf_tables_offload: add offload field to basechain
+  filter: nf_tables_offload: set priority field for rules
+
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |  2 +-
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_acl.c |  2 +-
+ drivers/net/ethernet/mscc/ocelot_flower.c          | 12 ++------
+ .../net/ethernet/netronome/nfp/flower/qos_conf.c   |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c    |  2 +-
+ include/net/netfilter/nf_tables.h                  | 14 ++++++---
+ include/net/netfilter/nf_tables_offload.h          |  6 ++++
+ include/net/pkt_cls.h                              |  2 +-
+ net/netfilter/nf_tables_api.c                      |  2 +-
+ net/netfilter/nf_tables_offload.c                  | 34 +++++++++++++++++-----
+ 10 files changed, 51 insertions(+), 27 deletions(-)
+
 -- 
-2.20.1
+2.11.0
 
