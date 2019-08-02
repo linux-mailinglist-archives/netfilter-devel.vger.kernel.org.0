@@ -2,39 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A79577FB0D
-	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Aug 2019 15:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D41F57FA78
+	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Aug 2019 15:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405503AbfHBNgk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 2 Aug 2019 09:36:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58486 "EHLO mail.kernel.org"
+        id S2393250AbfHBNXG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 2 Aug 2019 09:23:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393288AbfHBNUK (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 2 Aug 2019 09:20:10 -0400
+        id S1731794AbfHBNXF (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 2 Aug 2019 09:23:05 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C771F216C8;
-        Fri,  2 Aug 2019 13:20:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A298217D4;
+        Fri,  2 Aug 2019 13:23:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564752009;
-        bh=phiVujId+WFxGQoYspshRxrrMTJTXAXY6Se9fQv9PWA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dpu63Biasha1DELDgtmR78oQ2nIVAQbuzgPbAljy+rhj4nMyBm5cHW3Dq2PCwr0+E
-         TjBxiv7erOGN3sXydD2qg7GCfrCtGEtqB0Ry6rIgziO9+8sfS47G/C7EYcreLNpl8Q
-         Igow+9k55EckjpNlSK8cRLJGydLz+aq4BrRRIGBg=
+        s=default; t=1564752184;
+        bh=FiM5YvIzCSvxAqFNHP7gBJ+hf6uOa38n0rEzatyP9WI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=O60CUC+rGeSXycwlOIzIfEtsq8EJghQYe5ThkaUm0sndCwzdBYt6W3nXNLZsiJtj0
+         7n5V5MoTq76P7VrHmvVQsck5NyR+w9Fp/famuHasOXaZm3/SzahWnNxXRSVYNXzmuC
+         LUKi+ie88VG8ZjuL6I+Wxjue0H7Lvpaoqu6i0HwQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Phil Sutter <phil@nwl.cc>, Pablo Neira Ayuso <pablo@netfilter.org>,
+Cc:     Florian Westphal <fw@strlen.de>,
+        Thomas Jarosch <thomas.jarosch@intra2net.com>,
+        Juliana Rodrigueiro <juliana.rodrigueiro@intra2net.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 15/76] netfilter: nf_tables: Support auto-loading for inet nat
-Date:   Fri,  2 Aug 2019 09:18:49 -0400
-Message-Id: <20190802131951.11600-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 01/42] netfilter: nfnetlink: avoid deadlock due to synchronous request_module
+Date:   Fri,  2 Aug 2019 09:22:21 -0400
+Message-Id: <20190802132302.13537-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190802131951.11600-1-sashal@kernel.org>
-References: <20190802131951.11600-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,34 +45,74 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Phil Sutter <phil@nwl.cc>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit b4f1483cbfa5fafca4874e90063f75603edbc210 ]
+[ Upstream commit 1b0890cd60829bd51455dc5ad689ed58c4408227 ]
 
-Trying to create an inet family nat chain would not cause
-nft_chain_nat.ko module to auto-load due to missing module alias. Add a
-proper one with hard-coded family value 1 for the pseudo-family
-NFPROTO_INET.
+Thomas and Juliana report a deadlock when running:
 
-Fixes: d164385ec572 ("netfilter: nat: add inet family nat support")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+(rmmod nf_conntrack_netlink/xfrm_user)
+
+  conntrack -e NEW -E &
+  modprobe -v xfrm_user
+
+They provided following analysis:
+
+conntrack -e NEW -E
+    netlink_bind()
+        netlink_lock_table() -> increases "nl_table_users"
+            nfnetlink_bind()
+            # does not unlock the table as it's locked by netlink_bind()
+                __request_module()
+                    call_usermodehelper_exec()
+
+This triggers "modprobe nf_conntrack_netlink" from kernel, netlink_bind()
+won't return until modprobe process is done.
+
+"modprobe xfrm_user":
+    xfrm_user_init()
+        register_pernet_subsys()
+            -> grab pernet_ops_rwsem
+                ..
+                netlink_table_grab()
+                    calls schedule() as "nl_table_users" is non-zero
+
+so modprobe is blocked because netlink_bind() increased
+nl_table_users while also holding pernet_ops_rwsem.
+
+"modprobe nf_conntrack_netlink" runs and inits nf_conntrack_netlink:
+    ctnetlink_init()
+        register_pernet_subsys()
+            -> blocks on "pernet_ops_rwsem" thanks to xfrm_user module
+
+both modprobe processes wait on one another -- neither can make
+progress.
+
+Switch netlink_bind() to "nowait" modprobe -- this releases the netlink
+table lock, which then allows both modprobe instances to complete.
+
+Reported-by: Thomas Jarosch <thomas.jarosch@intra2net.com>
+Reported-by: Juliana Rodrigueiro <juliana.rodrigueiro@intra2net.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nft_chain_nat.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/netfilter/nfnetlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nft_chain_nat.c b/net/netfilter/nft_chain_nat.c
-index 2f89bde3c61cb..ff9ac8ae0031f 100644
---- a/net/netfilter/nft_chain_nat.c
-+++ b/net/netfilter/nft_chain_nat.c
-@@ -142,3 +142,6 @@ MODULE_ALIAS_NFT_CHAIN(AF_INET, "nat");
- #ifdef CONFIG_NF_TABLES_IPV6
- MODULE_ALIAS_NFT_CHAIN(AF_INET6, "nat");
+diff --git a/net/netfilter/nfnetlink.c b/net/netfilter/nfnetlink.c
+index 916913454624f..7f2c1915763f8 100644
+--- a/net/netfilter/nfnetlink.c
++++ b/net/netfilter/nfnetlink.c
+@@ -575,7 +575,7 @@ static int nfnetlink_bind(struct net *net, int group)
+ 	ss = nfnetlink_get_subsys(type << 8);
+ 	rcu_read_unlock();
+ 	if (!ss)
+-		request_module("nfnetlink-subsys-%d", type);
++		request_module_nowait("nfnetlink-subsys-%d", type);
+ 	return 0;
+ }
  #endif
-+#ifdef CONFIG_NF_TABLES_INET
-+MODULE_ALIAS_NFT_CHAIN(1, "nat");	/* NFPROTO_INET */
-+#endif
 -- 
 2.20.1
 
