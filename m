@@ -2,290 +2,67 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 041F680B25
-	for <lists+netfilter-devel@lfdr.de>; Sun,  4 Aug 2019 15:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D156A8120E
+	for <lists+netfilter-devel@lfdr.de>; Mon,  5 Aug 2019 08:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726142AbfHDNYT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 4 Aug 2019 09:24:19 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:8303 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbfHDNYS (ORCPT
+        id S1727266AbfHEGCl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 5 Aug 2019 02:02:41 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:56279 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727225AbfHEGCl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 4 Aug 2019 09:24:18 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id B329F41629;
-        Sun,  4 Aug 2019 21:24:02 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     jakub.kicinski@netronome.com, jiri@resnulli.us
-Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH net-next v6 6/6] netfilter: nf_tables_offload: support indr block call
-Date:   Sun,  4 Aug 2019 21:24:01 +0800
-Message-Id: <1564925041-23530-7-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1564925041-23530-1-git-send-email-wenxu@ucloud.cn>
-References: <1564925041-23530-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSUhJS0tLSUhKTE9JQ01ZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PxQ6FTo*Tzg5SU4wLiFNKy8t
-        MTQwFCFVSlVKTk1PQklOS09IS05IVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUNPTko3Bg++
-X-HM-Tid: 0a6c5ccd20472086kuqyb329f41629
+        Mon, 5 Aug 2019 02:02:41 -0400
+Received: by mail-wm1-f65.google.com with SMTP id a15so73458592wmj.5
+        for <netfilter-devel@vger.kernel.org>; Sun, 04 Aug 2019 23:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rYbLHeGEkazMYqZpHw+axOUdiO9DJFjeR3HG13iSHYE=;
+        b=nGb8EYn0j+RQBxVSCa1n1EyFmtdIfEuLUCX2KAp9y0Ioe/1pjs+rjP2GGOIpvBpzMY
+         n/D1x6IGmixX2PpCZiPmcONWrwWI2udkFDZ8R5Z3zdrd5yR9DKwu7bR1PJgyxIXOfhQF
+         od4We0x8lMkeEZov/thQXa6mbbBlKudqU86TQ3drDCtTZj/tWyA1O+YmjN7xpvojdifk
+         iVHCBCpjUz7Z+x0mGaD5LxGTSJwMJtqBMc09oq8shNPs5JWdHCWpX2EPTsMwVjGs03Tn
+         4H5gKNhaLlrjL2lsOE4zwU1i3VVGrxPHWp1wqstYEEVwNDkvY5OswQr+bbFZcEhCzcF9
+         DhFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rYbLHeGEkazMYqZpHw+axOUdiO9DJFjeR3HG13iSHYE=;
+        b=pzfNTNCW5SKePIyfSE2uDX+yzEMaV+9oQxLMdxtZwHC8dIwi9DpmNA+VkVtcH/iMdW
+         6RKkC0JaBFPkWm5/Wws1tx1iw4q/neGcsYrk4e9iZZThsy4LQVW8ac5OBBebceLRM2s/
+         J4A3A1KSSOvlDWRPYJc1Xpm7N8U7tJofGsjB8CeBs5bcZ0A/TeXjLXYDww9yac+atvDx
+         J/MkpTEXzz463Yqvo474pkX7HLMj5i7oEW7XAhQdCA3BIA02ktPGPzAyKc4uBXw7hjHm
+         qRArKfsGwgq5rkWDWEuAjvDUmDLZvCUCOA67qYLEyyU2R4EK59xjkuPn+PxmakpRzrxQ
+         o5tw==
+X-Gm-Message-State: APjAAAX0vDWw8lNrvOfWlHaZ5eat/38j9L4ZD8iv+S1Qgje4AVZji7PH
+        3H8q99xX6Ba/qIPOkihwqTh/ig==
+X-Google-Smtp-Source: APXvYqwsDzjnqn7kQhQNISPjmml7diURISWzFQnEUhyPflTbdqCa8FD5Jm797JM/YiXzUIO52ZD5wQ==
+X-Received: by 2002:a7b:c651:: with SMTP id q17mr15334256wmk.136.1564984959650;
+        Sun, 04 Aug 2019 23:02:39 -0700 (PDT)
+Received: from localhost (jirka.pirko.cz. [84.16.102.26])
+        by smtp.gmail.com with ESMTPSA id g8sm85255642wmf.17.2019.08.04.23.02.39
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sun, 04 Aug 2019 23:02:39 -0700 (PDT)
+Date:   Mon, 5 Aug 2019 08:02:38 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     wenxu@ucloud.cn
+Cc:     pablo@netfilter.org, fw@strlen.de, jakub.kicinski@netronome.com,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next 3/6] cls_api: add flow_indr_block_call function
+Message-ID: <20190805060238.GB2349@nanopsycho.orion>
+References: <1564628627-10021-1-git-send-email-wenxu@ucloud.cn>
+ <1564628627-10021-4-git-send-email-wenxu@ucloud.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1564628627-10021-4-git-send-email-wenxu@ucloud.cn>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
-
-nftable support indr-block call. It makes nftable an offload vlan
-and tunnel device.
-
-nft add table netdev firewall
-nft add chain netdev firewall aclout { type filter hook ingress offload device mlx_pf0vf0 priority - 300 \; }
-nft add rule netdev firewall aclout ip daddr 10.0.0.1 fwd to vlan0
-nft add chain netdev firewall aclin { type filter hook ingress device vlan0 priority - 300 \; }
-nft add rule netdev firewall aclin ip daddr 10.0.0.7 fwd to mlx_pf0vf0
-
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
-v6: support the new callback list
-
- include/net/netfilter/nf_tables_offload.h |   4 +
- net/netfilter/nf_tables_api.c             |   7 ++
- net/netfilter/nf_tables_offload.c         | 148 +++++++++++++++++++++++++-----
- 3 files changed, 135 insertions(+), 24 deletions(-)
-
-diff --git a/include/net/netfilter/nf_tables_offload.h b/include/net/netfilter/nf_tables_offload.h
-index 3196663..bffd51a 100644
---- a/include/net/netfilter/nf_tables_offload.h
-+++ b/include/net/netfilter/nf_tables_offload.h
-@@ -63,6 +63,10 @@ struct nft_flow_rule {
- struct nft_flow_rule *nft_flow_rule_create(const struct nft_rule *rule);
- void nft_flow_rule_destroy(struct nft_flow_rule *flow);
- int nft_flow_rule_offload_commit(struct net *net);
-+void nft_indr_block_get_and_ing_cmd(struct net_device *dev,
-+				    flow_indr_block_bind_cb_t *cb,
-+				    void *cb_priv,
-+				    enum flow_block_command command);
- 
- #define NFT_OFFLOAD_MATCH(__key, __base, __field, __len, __reg)		\
- 	(__reg)->base_offset	=					\
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 605a7cf..fe3b7b0 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -7593,6 +7593,11 @@ static void __net_exit nf_tables_exit_net(struct net *net)
- 	.exit	= nf_tables_exit_net,
- };
- 
-+static struct flow_indr_block_ing_entry block_ing_entry = {
-+	.cb = nft_indr_block_get_and_ing_cmd,
-+	.list = LIST_HEAD_INIT(block_ing_entry.list),
-+};
-+
- static int __init nf_tables_module_init(void)
- {
- 	int err;
-@@ -7624,6 +7629,7 @@ static int __init nf_tables_module_init(void)
- 		goto err5;
- 
- 	nft_chain_route_init();
-+	flow_indr_add_block_ing_cb(&block_ing_entry);
- 	return err;
- err5:
- 	rhltable_destroy(&nft_objname_ht);
-@@ -7640,6 +7646,7 @@ static int __init nf_tables_module_init(void)
- 
- static void __exit nf_tables_module_exit(void)
- {
-+	flow_indr_del_block_ing_cb(&block_ing_entry);
- 	nfnetlink_subsys_unregister(&nf_tables_subsys);
- 	unregister_netdevice_notifier(&nf_tables_flowtable_notifier);
- 	nft_chain_filter_fini();
-diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
-index 64f5fd5..d3c4c9c 100644
---- a/net/netfilter/nf_tables_offload.c
-+++ b/net/netfilter/nf_tables_offload.c
-@@ -171,24 +171,110 @@ static int nft_flow_offload_unbind(struct flow_block_offload *bo,
- 	return 0;
- }
- 
-+static int nft_block_setup(struct nft_base_chain *basechain,
-+			   struct flow_block_offload *bo,
-+			   enum flow_block_command cmd)
-+{
-+	int err;
-+
-+	switch (cmd) {
-+	case FLOW_BLOCK_BIND:
-+		err = nft_flow_offload_bind(bo, basechain);
-+		break;
-+	case FLOW_BLOCK_UNBIND:
-+		err = nft_flow_offload_unbind(bo, basechain);
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		err = -EOPNOTSUPP;
-+	}
-+
-+	return err;
-+}
-+
-+static int nft_block_offload_cmd(struct nft_base_chain *chain,
-+				 struct net_device *dev,
-+				 enum flow_block_command cmd)
-+{
-+	struct netlink_ext_ack extack = {};
-+	struct flow_block_offload bo = {};
-+	int err;
-+
-+	bo.net = dev_net(dev);
-+	bo.block = &chain->flow_block;
-+	bo.command = cmd;
-+	bo.binder_type = FLOW_BLOCK_BINDER_TYPE_CLSACT_INGRESS;
-+	bo.extack = &extack;
-+	INIT_LIST_HEAD(&bo.cb_list);
-+
-+	err = dev->netdev_ops->ndo_setup_tc(dev, TC_SETUP_BLOCK, &bo);
-+	if (err < 0)
-+		return err;
-+
-+	return nft_block_setup(chain, &bo, cmd);
-+}
-+
-+static void nft_indr_block_ing_cmd(struct net_device *dev,
-+				   struct nft_base_chain *chain,
-+				   flow_indr_block_bind_cb_t *cb,
-+				   void *cb_priv,
-+				   enum flow_block_command cmd)
-+{
-+	struct netlink_ext_ack extack = {};
-+	struct flow_block_offload bo = {};
-+
-+	if (!chain)
-+		return;
-+
-+	bo.net = dev_net(dev);
-+	bo.block = &chain->flow_block;
-+	bo.command = cmd;
-+	bo.binder_type = FLOW_BLOCK_BINDER_TYPE_CLSACT_INGRESS;
-+	bo.extack = &extack;
-+	INIT_LIST_HEAD(&bo.cb_list);
-+
-+	cb(dev, cb_priv, TC_SETUP_BLOCK, &bo);
-+
-+	nft_block_setup(chain, &bo, cmd);
-+}
-+
-+static int nft_indr_block_offload_cmd(struct nft_base_chain *chain,
-+				      struct net_device *dev,
-+				      enum flow_block_command cmd)
-+{
-+	struct flow_block_offload bo = {};
-+	struct netlink_ext_ack extack = {};
-+
-+	bo.net = dev_net(dev);
-+	bo.block = &chain->flow_block;
-+	bo.command = cmd;
-+	bo.binder_type = FLOW_BLOCK_BINDER_TYPE_CLSACT_INGRESS;
-+	bo.extack = &extack;
-+	INIT_LIST_HEAD(&bo.cb_list);
-+
-+	flow_indr_block_call(dev, &bo, cmd);
-+
-+	if (list_empty(&bo.cb_list))
-+		return -EOPNOTSUPP;
-+
-+	return nft_block_setup(chain, &bo, cmd);
-+}
-+
- #define FLOW_SETUP_BLOCK TC_SETUP_BLOCK
- 
- static int nft_flow_offload_chain(struct nft_trans *trans,
- 				  enum flow_block_command cmd)
- {
- 	struct nft_chain *chain = trans->ctx.chain;
--	struct netlink_ext_ack extack = {};
--	struct flow_block_offload bo = {};
- 	struct nft_base_chain *basechain;
- 	struct net_device *dev;
--	int err;
- 
- 	if (!nft_is_base_chain(chain))
- 		return -EOPNOTSUPP;
- 
- 	basechain = nft_base_chain(chain);
- 	dev = basechain->ops.dev;
--	if (!dev || !dev->netdev_ops->ndo_setup_tc)
-+	if (!dev)
- 		return -EOPNOTSUPP;
- 
- 	/* Only default policy to accept is supported for now. */
-@@ -197,26 +283,10 @@ static int nft_flow_offload_chain(struct nft_trans *trans,
- 	    nft_trans_chain_policy(trans) != NF_ACCEPT)
- 		return -EOPNOTSUPP;
- 
--	bo.command = cmd;
--	bo.block = &basechain->flow_block;
--	bo.binder_type = FLOW_BLOCK_BINDER_TYPE_CLSACT_INGRESS;
--	bo.extack = &extack;
--	INIT_LIST_HEAD(&bo.cb_list);
--
--	err = dev->netdev_ops->ndo_setup_tc(dev, FLOW_SETUP_BLOCK, &bo);
--	if (err < 0)
--		return err;
--
--	switch (cmd) {
--	case FLOW_BLOCK_BIND:
--		err = nft_flow_offload_bind(&bo, basechain);
--		break;
--	case FLOW_BLOCK_UNBIND:
--		err = nft_flow_offload_unbind(&bo, basechain);
--		break;
--	}
--
--	return err;
-+	if (dev->netdev_ops->ndo_setup_tc)
-+		return nft_block_offload_cmd(basechain, dev, cmd);
-+	else
-+		return nft_indr_block_offload_cmd(basechain, dev, cmd);
- }
- 
- int nft_flow_rule_offload_commit(struct net *net)
-@@ -266,3 +336,33 @@ int nft_flow_rule_offload_commit(struct net *net)
- 
- 	return err;
- }
-+
-+void nft_indr_block_get_and_ing_cmd(struct net_device *dev,
-+				    flow_indr_block_bind_cb_t *cb,
-+				    void *cb_priv,
-+				    enum flow_block_command command)
-+{
-+	struct net *net = dev_net(dev);
-+	const struct nft_table *table;
-+	const struct nft_chain *chain;
-+
-+	list_for_each_entry_rcu(table, &net->nft.tables, list) {
-+		if (table->family != NFPROTO_NETDEV)
-+			continue;
-+
-+		list_for_each_entry_rcu(chain, &table->chains, list) {
-+			if (nft_is_base_chain(chain)) {
-+				struct nft_base_chain *basechain;
-+
-+				basechain = nft_base_chain(chain);
-+				if (!strncmp(basechain->dev_name, dev->name,
-+					     IFNAMSIZ)) {
-+					nft_indr_block_ing_cmd(dev, basechain,
-+							       cb, cb_priv,
-+							       command);
-+					return;
-+				}
-+			}
-+		}
-+	}
-+}
--- 
-1.8.3.1
-
+Re subject. You don't have "v5" in this patch. I don't understand how
+that happened. Do you use --subject-prefix in git-format-patch?
