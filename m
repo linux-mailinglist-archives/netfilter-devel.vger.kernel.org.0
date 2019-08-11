@@ -2,52 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD46891BB
-	for <lists+netfilter-devel@lfdr.de>; Sun, 11 Aug 2019 15:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B9B891C9
+	for <lists+netfilter-devel@lfdr.de>; Sun, 11 Aug 2019 15:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbfHKNAn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 11 Aug 2019 09:00:43 -0400
-Received: from clark.ferree-clark.org ([74.95.126.33]:50305 "EHLO
-        clark.ferree-clark.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbfHKNAm (ORCPT
+        id S1726267AbfHKNQT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 11 Aug 2019 09:16:19 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:55494 "EHLO
+        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbfHKNQT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 11 Aug 2019 09:00:42 -0400
-X-Greylist: delayed 504 seconds by postgrey-1.27 at vger.kernel.org; Sun, 11 Aug 2019 09:00:42 EDT
-Received: from tcthink.ferree-clark.org (thinkpadw550s-wireless.ferree-clark.org [10.1.10.10])
-        (authenticated bits=0)
-        by clark.ferree-clark.org (8.15.2/8.15.2) with ESMTPSA id x7BCqGMa020097
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT)
-        for <netfilter-devel@vger.kernel.org>; Sun, 11 Aug 2019 05:52:16 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 clark.ferree-clark.org x7BCqGMa020097
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=clark.bz;
-        s=clark2016; t=1565527936;
-        bh=5YQ+nvwNh//utTPw7x/d1IjUXWvywVXs2HdNsiSoG28=;
-        h=To:From:Subject:Date:From;
-        b=if4A0U9NMa9FWWUFBc63pjWgdJorq6gE4gFr3Jl9enG0hKTWdlOzc6Y1QohWeEdPR
-         Yjb/E7JahM33gxuDIgvOFNO6Ipfd181xCkjc1n87OCBCX0I0qnV4+8chBBulr28ITU
-         IbseAsy9giJoKrT8QZqlxTnCjw2HgDvIQMexBNAc=
-To:     netfilter-devel@vger.kernel.org
-From:   "Thomas B. Clark" <kernel@clark.bz>
-Subject: geoip doesn't work with ipv6
-Message-ID: <3971b408-51e6-d90e-f291-7a43e46e84c1@ferree-clark.org>
-Date:   Sun, 11 Aug 2019 05:52:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sun, 11 Aug 2019 09:16:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=HNb1J9wbH5bMeFa6u2LvOTfXcDb7HGJNKPTOEOKC5TA=; b=qaitRhRIEmIH/ePZTMM1XTGpH1
+        h2X3XGid3/ijHbeWBCwP/JRjXjCV9gJiNi0fzuNqHOBgJLXIqjMz6y93zOJRhYw90Zw8YcJVMOTFi
+        OLwoD7O3fbe2crjjuSBAN8c42PfN0FMZ+3FQNXB9oUKrANu4wjSt5breLJDw6wiAJP2jgCd1to/Iy
+        E6X55oekc0jzJFJtkbE9AgPIVF1pgIOAVhJt5GvKJ5bZgFwvWSdVOgaUmJyxbCEMQ/15aWQMgf9/R
+        YSs0SWrWoKFggyTAJPuC8O42helHGnmvTIEYSQsIr0hzFdJgT2HMgLwaZ44OCjQkWDgMZzqK4wQ9l
+        oBuwHAqA==;
+Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1hwnhp-0002CN-Hl; Sun, 11 Aug 2019 14:16:17 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Cc:     =?UTF-8?q?Franta=20Hanzl=C3=ADk?= <franta@hanzlici.cz>
+Subject: [PATCH xtables-addons 1/2] xt_pknock, xt_SYSRQ: don't set shash_desc::flags.
+Date:   Sun, 11 Aug 2019 14:16:16 +0100
+Message-Id: <20190811131617.10365-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190811113826.5e594d8f@franta.hanzlici.cz>
+References: <20190811113826.5e594d8f@franta.hanzlici.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.1.10.2
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-I have tried exhaustively to get xt_geoip to match ipv6 addresses, and 
-it doesn't.
+shash_desc::flags was removed from the kernel in 5.1.
 
-I believe my configuration is correct, and that the geoip databases are 
-set up correctly.  Matching correctly works on ipv4 with an equivalent 
-iptables.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ extensions/pknock/xt_pknock.c | 1 -
+ extensions/xt_SYSRQ.c         | 1 -
+ 2 files changed, 2 deletions(-)
 
+diff --git a/extensions/pknock/xt_pknock.c b/extensions/pknock/xt_pknock.c
+index c76901ac4c1a..8021ea07e1b9 100644
+--- a/extensions/pknock/xt_pknock.c
++++ b/extensions/pknock/xt_pknock.c
+@@ -1125,7 +1125,6 @@ static int __init xt_pknock_mt_init(void)
+ 
+ 	crypto.size = crypto_shash_digestsize(crypto.tfm);
+ 	crypto.desc.tfm = crypto.tfm;
+-	crypto.desc.flags = 0;
+ 
+ 	pde = proc_mkdir("xt_pknock", init_net.proc_net);
+ 	if (pde == NULL) {
+diff --git a/extensions/xt_SYSRQ.c b/extensions/xt_SYSRQ.c
+index c386c7e2db5d..183692f49489 100644
+--- a/extensions/xt_SYSRQ.c
++++ b/extensions/xt_SYSRQ.c
+@@ -114,7 +114,6 @@ static unsigned int sysrq_tg(const void *pdata, uint16_t len)
+ 	}
+ 
+ 	desc.tfm   = sysrq_tfm;
+-	desc.flags = 0;
+ 	ret = crypto_shash_init(&desc);
+ 	if (ret != 0)
+ 		goto hash_fail;
+-- 
+2.20.1
 
