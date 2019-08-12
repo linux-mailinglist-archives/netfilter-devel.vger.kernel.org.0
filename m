@@ -2,60 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FDA89326
-	for <lists+netfilter-devel@lfdr.de>; Sun, 11 Aug 2019 20:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F3D8986D
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Aug 2019 10:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbfHKSmU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 11 Aug 2019 14:42:20 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:42914 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725939AbfHKSmU (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 11 Aug 2019 14:42:20 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
-        (envelope-from <fw@strlen.de>)
-        id 1hwsnJ-0004m2-IM; Sun, 11 Aug 2019 20:42:17 +0200
-Date:   Sun, 11 Aug 2019 20:42:17 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Jeremy Sowden <jeremy@azazel.net>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
-        Franta =?iso-8859-15?Q?Hanzl=EDk?= <franta@hanzlici.cz>
-Subject: Re: [PATCH xtables-addons 2/2] xt_DHCPMAC: replaced
- skb_make_writable with skb_ensure_writable.
-Message-ID: <20190811184217.yse5h3diubi7uvas@breakpoint.cc>
-References: <20190811113826.5e594d8f@franta.hanzlici.cz>
- <20190811131617.10365-1-jeremy@azazel.net>
- <20190811131617.10365-2-jeremy@azazel.net>
+        id S1726528AbfHLIGQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 12 Aug 2019 04:06:16 -0400
+Received: from correo.us.es ([193.147.175.20]:50918 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726405AbfHLIGP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 12 Aug 2019 04:06:15 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 8FD36C4145
+        for <netfilter-devel@vger.kernel.org>; Mon, 12 Aug 2019 10:06:12 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 7F41C1150B9
+        for <netfilter-devel@vger.kernel.org>; Mon, 12 Aug 2019 10:06:12 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 74CFA7E064; Mon, 12 Aug 2019 10:06:12 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 2D134DA730;
+        Mon, 12 Aug 2019 10:06:10 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 12 Aug 2019 10:06:10 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [31.4.218.116])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 0754C4265A2F;
+        Mon, 12 Aug 2019 10:06:09 +0200 (CEST)
+Date:   Mon, 12 Aug 2019 10:06:09 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     michael-dev@fami-braun.de
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH] tests: add json test for vlan rule fix
+Message-ID: <20190812080609.fmexmxoepjqzi6gp@salvia>
+References: <20190811101603.2892-1-michael-dev@fami-braun.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190811131617.10365-2-jeremy@azazel.net>
+In-Reply-To: <20190811101603.2892-1-michael-dev@fami-braun.de>
 User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Jeremy Sowden <jeremy@azazel.net> wrote:
-> skb_make_writable was removed from the kernel in 5.2 and its callers
-> converted to use skb_ensure_writable.
+On Sun, Aug 11, 2019 at 12:16:03PM +0200, michael-dev@fami-braun.de wrote:
+> From: "M. Braun" <michael-dev@fami-braun.de>
 > 
-> Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
-> ---
->  extensions/xt_DHCPMAC.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> This fixes
 > 
-> diff --git a/extensions/xt_DHCPMAC.c b/extensions/xt_DHCPMAC.c
-> index 47f9534f74c7..412f8984d326 100644
-> --- a/extensions/xt_DHCPMAC.c
-> +++ b/extensions/xt_DHCPMAC.c
-> @@ -96,7 +96,7 @@ dhcpmac_tg(struct sk_buff *skb, const struct xt_action_param *par)
->  	struct udphdr udpbuf, *udph;
->  	unsigned int i;
->  
-> -	if (!skb_make_writable(skb, 0))
-> +	if (!skb_ensure_writable(skb, 0))
->  		return NF_DROP;
+> ERROR: did not find JSON equivalent for rule 'ether type vlan ip
+> protocol 1 accept'
+> 
+> when running
+> 
+> ./nft-test.py -j bridge/vlan.t
 
-You need to drop the "!".  The "0" argument is suspicious as well, i
-guess this needs to be "skb->len".
+Applied, thanks.
