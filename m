@@ -2,105 +2,80 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 574AF8CF55
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2019 11:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605A58CFD0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2019 11:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727184AbfHNJY6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 14 Aug 2019 05:24:58 -0400
-Received: from correo.us.es ([193.147.175.20]:42602 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727039AbfHNJY5 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 14 Aug 2019 05:24:57 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 001D7C40EB
-        for <netfilter-devel@vger.kernel.org>; Wed, 14 Aug 2019 11:24:54 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id E50071150D8
-        for <netfilter-devel@vger.kernel.org>; Wed, 14 Aug 2019 11:24:54 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id DAC257E065; Wed, 14 Aug 2019 11:24:54 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id D97D345F;
-        Wed, 14 Aug 2019 11:24:52 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 14 Aug 2019 11:24:52 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [31.4.218.116])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 967A44265A2F;
-        Wed, 14 Aug 2019 11:24:52 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 7/7] netfilter: nft_flow_offload: skip tcp rst and fin packets
-Date:   Wed, 14 Aug 2019 11:24:40 +0200
-Message-Id: <20190814092440.20087-8-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20190814092440.20087-1-pablo@netfilter.org>
-References: <20190814092440.20087-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726619AbfHNJje (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 14 Aug 2019 05:39:34 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:36701 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726481AbfHNJje (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 14 Aug 2019 05:39:34 -0400
+Received: from [192.168.188.14] (unknown [120.132.1.226])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id C803141BAE;
+        Wed, 14 Aug 2019 17:39:30 +0800 (CST)
+Subject: Re: [PATCH nf-next v6 0/8] netfilter: nf_flow_offload: support bridge
+ family offload for both ipv4 and ipv6
+From:   wenxu <wenxu@ucloud.cn>
+To:     pablo@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org
+References: <1564053176-28605-1-git-send-email-wenxu@ucloud.cn>
+Message-ID: <37240542-1827-0693-9d63-a9252a02d229@ucloud.cn>
+Date:   Wed, 14 Aug 2019 17:39:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <1564053176-28605-1-git-send-email-wenxu@ucloud.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVS0NLQkJCTEhJS0pMTklZV1koWU
+        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ODY6DAw4OTg1PTlDA0JMNlEu
+        DRQaCT5VSlVKTk1OTExOTkxKS0pOVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJS1VK
+        SElVSlVJSU1ZV1kIAVlBSUxPTTcG
+X-HM-Tid: 0a6c8f7f28042086kuqyc803141bae
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-TCP rst and fin packets do not qualify to place a flow into the
-flowtable. Most likely there will be no more packets after connection
-closure. Without this patch, this flow entry expires and connection
-tracking picks up the entry in ESTABLISHED state using the fixup
-timeout, which makes this look inconsistent to the user for a connection
-that is actually already closed.
+Hi pablo,
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_flow_offload.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
-index aa5f571d4361..060a4ed46d5e 100644
---- a/net/netfilter/nft_flow_offload.c
-+++ b/net/netfilter/nft_flow_offload.c
-@@ -72,11 +72,11 @@ static void nft_flow_offload_eval(const struct nft_expr *expr,
- {
- 	struct nft_flow_offload *priv = nft_expr_priv(expr);
- 	struct nf_flowtable *flowtable = &priv->flowtable->data;
-+	struct tcphdr _tcph, *tcph = NULL;
- 	enum ip_conntrack_info ctinfo;
- 	struct nf_flow_route route;
- 	struct flow_offload *flow;
- 	enum ip_conntrack_dir dir;
--	bool is_tcp = false;
- 	struct nf_conn *ct;
- 	int ret;
- 
-@@ -89,7 +89,10 @@ static void nft_flow_offload_eval(const struct nft_expr *expr,
- 
- 	switch (ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.dst.protonum) {
- 	case IPPROTO_TCP:
--		is_tcp = true;
-+		tcph = skb_header_pointer(pkt->skb, pkt->xt.thoff,
-+					  sizeof(_tcph), &_tcph);
-+		if (unlikely(!tcph || tcph->fin || tcph->rst))
-+			goto out;
- 		break;
- 	case IPPROTO_UDP:
- 		break;
-@@ -115,7 +118,7 @@ static void nft_flow_offload_eval(const struct nft_expr *expr,
- 	if (!flow)
- 		goto err_flow_alloc;
- 
--	if (is_tcp) {
-+	if (tcph) {
- 		ct->proto.tcp.seen[0].flags |= IP_CT_TCP_FLAG_BE_LIBERAL;
- 		ct->proto.tcp.seen[1].flags |= IP_CT_TCP_FLAG_BE_LIBERAL;
- 	}
--- 
-2.11.0
+How about this series patches ? There are anything need for me to do for this?
 
 
+BR
+
+wenxu
+
+On 7/25/2019 7:12 PM, wenxu@ucloud.cn wrote:
+> From: wenxu <wenxu@ucloud.cn>
+>
+> This series only rebase to matser for the last patch 
+> netfilter: Support the bridge family in flow table
+>
+> wenxu (8):
+>   netfilter:nf_flow_table: Refactor flow_offload_tuple to destination
+>   netfilter:nf_flow_table_core: Separate inet operation to single
+>     function
+>   netfilter:nf_flow_table_ip: Separate inet operation to single function
+>   bridge: add br_vlan_get_info_rcu()
+>   netfilter:nf_flow_table_core: Support bridge family flow offload
+>   netfilter:nf_flow_table_ip: Support bridge family flow offload
+>   netfilter:nft_flow_offload: Support bridge family flow offload
+>   netfilter: Support the bridge family in flow table
+>
+>  include/linux/if_bridge.h                   |   7 ++
+>  include/net/netfilter/nf_flow_table.h       |  39 +++++++-
+>  net/bridge/br_vlan.c                        |  25 +++++
+>  net/bridge/netfilter/Kconfig                |   8 ++
+>  net/bridge/netfilter/Makefile               |   1 +
+>  net/bridge/netfilter/nf_flow_table_bridge.c |  48 ++++++++++
+>  net/netfilter/nf_flow_table_core.c          | 102 ++++++++++++++++----
+>  net/netfilter/nf_flow_table_ip.c            | 127 +++++++++++++++++++------
+>  net/netfilter/nft_flow_offload.c            | 142 ++++++++++++++++++++++++++--
+>  9 files changed, 440 insertions(+), 59 deletions(-)
+>  create mode 100644 net/bridge/netfilter/nf_flow_table_bridge.c
+>
