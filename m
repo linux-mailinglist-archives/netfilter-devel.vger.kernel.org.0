@@ -2,37 +2,37 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 463ED8C97C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2019 04:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A5D8C936
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2019 04:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727452AbfHNCL1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 13 Aug 2019 22:11:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43658 "EHLO mail.kernel.org"
+        id S1729043AbfHNChb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 13 Aug 2019 22:37:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727427AbfHNCL0 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 13 Aug 2019 22:11:26 -0400
+        id S1728002AbfHNCMo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 13 Aug 2019 22:12:44 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 687BF20843;
-        Wed, 14 Aug 2019 02:11:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9194620842;
+        Wed, 14 Aug 2019 02:12:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565748685;
-        bh=6FhRZtXSpJc/zn/HxIqcub7tqXgLzqXCTfx7VUmNxXY=;
+        s=default; t=1565748763;
+        bh=A4y1ARP/e8BbnlPNPU2pwntKCCChXAtXGo+CGADsbV0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kOWSjBC/R11qW8zhxb2ckepapAfjrf3KtTNXU8fewQS9zTVNNvQ8zMo+yMuTMdNeT
-         NKbtgsY3ODbTbsppbb338gtKY9YXCe/XK8DGybqFA4j7Y38vE6i4x6zU6skzkGG6rn
-         SiPgIyO1bWo8AXb3WSKcdXgcILeH1SY+eIRCQf30=
+        b=hdovAA/itkTWZxWQCPYFDuXETfTU6cPhdCVX4O5DidU6rrIB1e2C7HHg+jIww5827
+         7aaYJK9uRrC52w0LZW0JRiwaoYHrL7pwwDmo102UCpvMFEvMBSUgCWQFt4U3LSSqPL
+         OznNCav7okOeQXqrqCCZ6WCrWohOXi//z7HOi77k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wenwen Wang <wenwen@cs.uga.edu>, Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+Cc:     Stefano Brivio <sbrivio@redhat.com>, Chen Yi <yiche@redhat.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 021/123] netfilter: ebtables: fix a memory leak bug in compat
-Date:   Tue, 13 Aug 2019 22:09:05 -0400
-Message-Id: <20190814021047.14828-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 055/123] netfilter: ipset: Actually allow destination MAC address for hash:ip,mac sets too
+Date:   Tue, 13 Aug 2019 22:09:39 -0400
+Message-Id: <20190814021047.14828-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190814021047.14828-1-sashal@kernel.org>
 References: <20190814021047.14828-1-sashal@kernel.org>
@@ -45,44 +45,42 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Wenwen Wang <wenwen@cs.uga.edu>
+From: Stefano Brivio <sbrivio@redhat.com>
 
-[ Upstream commit 15a78ba1844a8e052c1226f930133de4cef4e7ad ]
+[ Upstream commit b89d15480d0cacacae1a0fe0b3da01b529f2914f ]
 
-In compat_do_replace(), a temporary buffer is allocated through vmalloc()
-to hold entries copied from the user space. The buffer address is firstly
-saved to 'newinfo->entries', and later on assigned to 'entries_tmp'. Then
-the entries in this temporary buffer is copied to the internal kernel
-structure through compat_copy_entries(). If this copy process fails,
-compat_do_replace() should be terminated. However, the allocated temporary
-buffer is not freed on this path, leading to a memory leak.
+In commit 8cc4ccf58379 ("ipset: Allow matching on destination MAC address
+for mac and ipmac sets"), ipset.git commit 1543514c46a7, I removed the
+KADT check that prevents matching on destination MAC addresses for
+hash:mac sets, but forgot to remove the same check for hash:ip,mac set.
 
-To fix the bug, free the buffer before returning from compat_do_replace().
+Drop this check: functionality is now commented in man pages and there's
+no reason to restrict to source MAC address matching anymore.
 
-Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Reported-by: Chen Yi <yiche@redhat.com>
+Fixes: 8cc4ccf58379 ("ipset: Allow matching on destination MAC address for mac and ipmac sets")
+Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
+Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/netfilter/ebtables.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/netfilter/ipset/ip_set_hash_ipmac.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index 963dfdc148272..fd84b48e48b57 100644
---- a/net/bridge/netfilter/ebtables.c
-+++ b/net/bridge/netfilter/ebtables.c
-@@ -2261,8 +2261,10 @@ static int compat_do_replace(struct net *net, void __user *user,
- 	state.buf_kern_len = size64;
+diff --git a/net/netfilter/ipset/ip_set_hash_ipmac.c b/net/netfilter/ipset/ip_set_hash_ipmac.c
+index faf59b6a998fe..eb14434083203 100644
+--- a/net/netfilter/ipset/ip_set_hash_ipmac.c
++++ b/net/netfilter/ipset/ip_set_hash_ipmac.c
+@@ -89,10 +89,6 @@ hash_ipmac4_kadt(struct ip_set *set, const struct sk_buff *skb,
+ 	struct hash_ipmac4_elem e = { .ip = 0, { .foo[0] = 0, .foo[1] = 0 } };
+ 	struct ip_set_ext ext = IP_SET_INIT_KEXT(skb, opt, set);
  
- 	ret = compat_copy_entries(entries_tmp, tmp.entries_size, &state);
--	if (WARN_ON(ret < 0))
-+	if (WARN_ON(ret < 0)) {
-+		vfree(entries_tmp);
- 		goto out_unlock;
-+	}
- 
- 	vfree(entries_tmp);
- 	tmp.entries_size = size64;
+-	 /* MAC can be src only */
+-	if (!(opt->flags & IPSET_DIM_TWO_SRC))
+-		return 0;
+-
+ 	if (skb_mac_header(skb) < skb->head ||
+ 	    (skb_mac_header(skb) + ETH_HLEN) > skb->data)
+ 		return -EINVAL;
 -- 
 2.20.1
 
