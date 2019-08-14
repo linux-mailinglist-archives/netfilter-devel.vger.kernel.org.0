@@ -2,88 +2,125 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A218D080
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2019 12:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8CF8D08D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2019 12:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbfHNKQ5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 14 Aug 2019 06:16:57 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:55634 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbfHNKQz (ORCPT
+        id S1726019AbfHNKTN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 14 Aug 2019 06:19:13 -0400
+Received: from mail.thelounge.net ([91.118.73.15]:25791 "EHLO
+        mail.thelounge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbfHNKTN (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 14 Aug 2019 06:16:55 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id C651341BC4;
-        Wed, 14 Aug 2019 18:16:50 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org, fw@strlen.de
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next v4 12/12] netfilter: nft_tunnel: support nft_tunnel_obj offload
-Date:   Wed, 14 Aug 2019 18:16:48 +0800
-Message-Id: <1565777808-28735-13-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1565777808-28735-1-git-send-email-wenxu@ucloud.cn>
-References: <1565777808-28735-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSUhCQkJCQ0JLSElMT05ZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Okk6Oio6FTg4AzkwKDIcCD9L
-        OjkKCi1VSlVKTk1OTExMQ0pLQ0JPVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUlISUI3Bg++
-X-HM-Tid: 0a6c8fa155892086kuqyc651341bc4
+        Wed, 14 Aug 2019 06:19:13 -0400
+Received: from srv-rhsoft.rhsoft.net  (Authenticated sender: h.reindl@thelounge.net) by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 467ltL60M1zXMk;
+        Wed, 14 Aug 2019 12:19:06 +0200 (CEST)
+Subject: Re: [PATCH AUTOSEL 4.19 04/42] netfilter: conntrack: always store
+ window size un-scaled
+To:     Thomas Jarosch <thomas.jarosch@intra2net.com>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Florian Westphal <fw@strlen.de>,
+        Jakub Jankowski <shasta@toxcorp.com>,
+        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+References: <20190802132302.13537-1-sashal@kernel.org>
+ <20190802132302.13537-4-sashal@kernel.org>
+ <20190808090209.wb63n6ibii4ivvba@intra2net.com>
+From:   Reindl Harald <h.reindl@thelounge.net>
+Openpgp: id=9D2B46CDBC140A36753AE4D733174D5A5892B7B8;
+ url=https://arrakis-tls.thelounge.net/gpg/h.reindl_thelounge.net.pub.txt
+Organization: the lounge interactive design
+Message-ID: <41ce587d-dfaa-fe6b-66a8-58ba1a3a2872@thelounge.net>
+Date:   Wed, 14 Aug 2019 12:19:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20190808090209.wb63n6ibii4ivvba@intra2net.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-CH
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+that's still not in 5.2.8
 
-Add nft_tunnel_obj offload for both encap and decap actions
+without the exception and "nf_conntrack_tcp_timeout_max_retrans = 60" a
+vnc-over-ssh session having the VNC view in the background freezes
+within 60 secods
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
-v4: no change
+-----------------------------------------------------------------------------------------------
+IPV4 TABLE MANGLE (STATEFUL PRE-NAT/FILTER)
+-----------------------------------------------------------------------------------------------
+Chain PREROUTING (policy ACCEPT 100 packets, 9437 bytes)
+num   pkts bytes target     prot opt in     out     source
+ destination
+1     6526 3892K ACCEPT     all  --  *      *       0.0.0.0/0
+ 0.0.0.0/0            ctstate RELATED,ESTABLISHED
+2      125  6264 ACCEPT     all  --  lo     *       0.0.0.0/0
+ 0.0.0.0/0
+3       64  4952 ACCEPT     all  --  vmnet8 *       0.0.0.0/0
+ 0.0.0.0/0
+4        1    40 DROP       all  --  *      *       0.0.0.0/0
+ 0.0.0.0/0            ctstate INVALID
 
- net/netfilter/nft_tunnel.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+-------- Weitergeleitete Nachricht --------
+Betreff: [PATCH AUTOSEL 5.2 07/76] netfilter: conntrack: always store
+window size un-scaled
 
-diff --git a/net/netfilter/nft_tunnel.c b/net/netfilter/nft_tunnel.c
-index aa3dc52..b47838d 100644
---- a/net/netfilter/nft_tunnel.c
-+++ b/net/netfilter/nft_tunnel.c
-@@ -669,6 +669,25 @@ static void nft_tunnel_obj_destroy(const struct nft_ctx *ctx,
- 		metadata_dst_free(priv->md);
- }
- 
-+static int nft_tunnel_obj_offload(struct nft_offload_ctx *ctx,
-+				  struct nft_flow_rule *flow,
-+				  struct nft_object *obj)
-+{
-+	struct nft_tunnel_obj *priv = nft_obj_data(obj);
-+	struct flow_action_entry *entry;
-+
-+	entry = &flow->rule->action.entries[ctx->num_actions++];
-+
-+	if (!priv->tunnel_key_release) {
-+		entry->id = FLOW_ACTION_TUNNEL_ENCAP;
-+		entry->tunnel = &priv->md->u.tun_info;
-+	} else {
-+		entry->id = FLOW_ACTION_TUNNEL_DECAP;
-+	}
-+
-+	return 0;
-+}
-+
- static struct nft_object_type nft_tunnel_obj_type;
- static const struct nft_object_ops nft_tunnel_obj_ops = {
- 	.type		= &nft_tunnel_obj_type,
-@@ -677,6 +696,7 @@ static void nft_tunnel_obj_destroy(const struct nft_ctx *ctx,
- 	.init		= nft_tunnel_obj_init,
- 	.destroy	= nft_tunnel_obj_destroy,
- 	.dump		= nft_tunnel_obj_dump,
-+	.offload	= nft_tunnel_obj_offload,
- };
- 
- static struct nft_object_type nft_tunnel_obj_type __read_mostly = {
--- 
-1.8.3.1
-
+Am 08.08.19 um 11:02 schrieb Thomas Jarosch:
+> Hello together,
+> 
+> You wrote on Fri, Aug 02, 2019 at 09:22:24AM -0400:
+>> From: Florian Westphal <fw@strlen.de>
+>>
+>> [ Upstream commit 959b69ef57db00cb33e9c4777400ae7183ebddd3 ]
+>>
+>> Jakub Jankowski reported following oddity:
+>>
+>> After 3 way handshake completes, timeout of new connection is set to
+>> max_retrans (300s) instead of established (5 days).
+>>
+>> shortened excerpt from pcap provided:
+>> 25.070622 IP (flags [DF], proto TCP (6), length 52)
+>> 10.8.5.4.1025 > 10.8.1.2.80: Flags [S], seq 11, win 64240, [wscale 8]
+>> 26.070462 IP (flags [DF], proto TCP (6), length 48)
+>> 10.8.1.2.80 > 10.8.5.4.1025: Flags [S.], seq 82, ack 12, win 65535, [wscale 3]
+>> 27.070449 IP (flags [DF], proto TCP (6), length 40)
+>> 10.8.5.4.1025 > 10.8.1.2.80: Flags [.], ack 83, win 512, length 0
+>>
+>> Turns out the last_win is of u16 type, but we store the scaled value:
+>> 512 << 8 (== 0x20000) becomes 0 window.
+>>
+>> The Fixes tag is not correct, as the bug has existed forever, but
+>> without that change all that this causes might cause is to mistake a
+>> window update (to-nonzero-from-zero) for a retransmit.
+>>
+>> Fixes: fbcd253d2448b8 ("netfilter: conntrack: lower timeout to RETRANS seconds if window is 0")
+>> Reported-by: Jakub Jankowski <shasta@toxcorp.com>
+>> Tested-by: Jakub Jankowski <shasta@toxcorp.com>
+>> Signed-off-by: Florian Westphal <fw@strlen.de>
+>> Acked-by: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+>> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> 
+> Also:
+> Tested-by: Thomas Jarosch <thomas.jarosch@intra2net.com>
+> 
+> ;)
+> 
+> We've hit the issue with the wrong conntrack timeout at two different sites,
+> long-lived connections to a SAP server over IPSec VPN were constantly dropping.
+> 
+> For us this was a regression after updating from kernel 3.14 to 4.19.
+> Yesterday I've applied the patch to kernel 4.19.57 and the problem is fixed.
+> 
+> The issue was extra hard to debug as we could just boot the new kernel
+> for twenty minutes in the evening on these productive systems.
+> 
+> The stable kernel patch from last Friday came right on time. I was just
+> about the replay the TCP connection with tcpreplay, so this saved
+> me from another week of debugging. Thanks everyone!
