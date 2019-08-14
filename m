@@ -2,41 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 588198C71B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2019 04:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1468C801
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2019 04:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729625AbfHNCTD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 13 Aug 2019 22:19:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49946 "EHLO mail.kernel.org"
+        id S1729736AbfHNCZ5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 13 Aug 2019 22:25:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729203AbfHNCTC (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 13 Aug 2019 22:19:02 -0400
+        id S1729681AbfHNCZ4 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 13 Aug 2019 22:25:56 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83DC42084D;
-        Wed, 14 Aug 2019 02:19:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1827E2085A;
+        Wed, 14 Aug 2019 02:25:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565749142;
-        bh=G73h3hyn60e8WBVTxkyp0DOlyih+PHC/HzJC/EH1UJM=;
+        s=default; t=1565749556;
+        bh=h3Bcr7D81pV0AzkJuvbhQdFv4ti2+P7JLnY34hAaaxs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xsr/SkPVBxw+VixXgnnzL5yFvTHTLtrZ3gXCwdfOyYYdVZl1r6RdiX1LSPSo2RWNl
-         Z2aFBScPbqIYDrAspvhSW/DNuJ8oBGuY2vwlq49avxVpoEBjp5Fv74kd1ZU59je+3t
-         azrwjcAq0iwue9cnxbUy1fg59ugPDGy7XpkGRjg4=
+        b=L6TZlrtAeK0hGjgXboURbXvWMW/WGd0glOY2phtki3u2Whb4nvbm11UOGxB8m96IB
+         NXKsCAl7ZlG1GZAalBA2G1FhDj3OJbO0x9HTSb04HtMLrFWBy/CX3+SY6QEC6uSC+p
+         x9urtUgCoqCYNm0vMzmgIH7rKxcehxTR+UseFHBg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Florian Westphal <fw@strlen.de>,
-        syzbot+276ddebab3382bbf72db@syzkaller.appspotmail.com,
+Cc:     Wenwen Wang <wenwen@cs.uga.edu>, Florian Westphal <fw@strlen.de>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 17/44] netfilter: ebtables: also count base chain policies
-Date:   Tue, 13 Aug 2019 22:18:06 -0400
-Message-Id: <20190814021834.16662-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 03/28] netfilter: ebtables: fix a memory leak bug in compat
+Date:   Tue, 13 Aug 2019 22:25:25 -0400
+Message-Id: <20190814022550.17463-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190814021834.16662-1-sashal@kernel.org>
-References: <20190814021834.16662-1-sashal@kernel.org>
+In-Reply-To: <20190814022550.17463-1-sashal@kernel.org>
+References: <20190814022550.17463-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -46,81 +45,44 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Wenwen Wang <wenwen@cs.uga.edu>
 
-[ Upstream commit 3b48300d5cc7c7bed63fddb006c4046549ed4aec ]
+[ Upstream commit 15a78ba1844a8e052c1226f930133de4cef4e7ad ]
 
-ebtables doesn't include the base chain policies in the rule count,
-so we need to add them manually when we call into the x_tables core
-to allocate space for the comapt offset table.
+In compat_do_replace(), a temporary buffer is allocated through vmalloc()
+to hold entries copied from the user space. The buffer address is firstly
+saved to 'newinfo->entries', and later on assigned to 'entries_tmp'. Then
+the entries in this temporary buffer is copied to the internal kernel
+structure through compat_copy_entries(). If this copy process fails,
+compat_do_replace() should be terminated. However, the allocated temporary
+buffer is not freed on this path, leading to a memory leak.
 
-This lead syzbot to trigger:
-WARNING: CPU: 1 PID: 9012 at net/netfilter/x_tables.c:649
-xt_compat_add_offset.cold+0x11/0x36 net/netfilter/x_tables.c:649
+To fix the bug, free the buffer before returning from compat_do_replace().
 
-Reported-by: syzbot+276ddebab3382bbf72db@syzkaller.appspotmail.com
-Fixes: 2035f3ff8eaa ("netfilter: ebtables: compat: un-break 32bit setsockopt when no rules are present")
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+Reviewed-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/netfilter/ebtables.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ net/bridge/netfilter/ebtables.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index 48e364b11e067..100b4f88179a2 100644
+index 1a87cf78fadc4..d9471e3ef2161 100644
 --- a/net/bridge/netfilter/ebtables.c
 +++ b/net/bridge/netfilter/ebtables.c
-@@ -1779,20 +1779,28 @@ static int compat_calc_entry(const struct ebt_entry *e,
- 	return 0;
- }
- 
-+static int ebt_compat_init_offsets(unsigned int number)
-+{
-+	if (number > INT_MAX)
-+		return -EINVAL;
-+
-+	/* also count the base chain policies */
-+	number += NF_BR_NUMHOOKS;
-+
-+	return xt_compat_init_offsets(NFPROTO_BRIDGE, number);
-+}
- 
- static int compat_table_info(const struct ebt_table_info *info,
- 			     struct compat_ebt_replace *newinfo)
- {
- 	unsigned int size = info->entries_size;
- 	const void *entries = info->entries;
-+	int ret;
- 
- 	newinfo->entries_size = size;
--	if (info->nentries) {
--		int ret = xt_compat_init_offsets(NFPROTO_BRIDGE,
--						 info->nentries);
--		if (ret)
--			return ret;
--	}
-+	ret = ebt_compat_init_offsets(info->nentries);
-+	if (ret)
-+		return ret;
- 
- 	return EBT_ENTRY_ITERATE(entries, size, compat_calc_entry, info,
- 							entries, newinfo);
-@@ -2240,11 +2248,9 @@ static int compat_do_replace(struct net *net, void __user *user,
- 
- 	xt_compat_lock(NFPROTO_BRIDGE);
- 
--	if (tmp.nentries) {
--		ret = xt_compat_init_offsets(NFPROTO_BRIDGE, tmp.nentries);
--		if (ret < 0)
--			goto out_unlock;
--	}
-+	ret = ebt_compat_init_offsets(tmp.nentries);
-+	if (ret < 0)
-+		goto out_unlock;
+@@ -2280,8 +2280,10 @@ static int compat_do_replace(struct net *net, void __user *user,
+ 	state.buf_kern_len = size64;
  
  	ret = compat_copy_entries(entries_tmp, tmp.entries_size, &state);
- 	if (ret < 0)
+-	if (WARN_ON(ret < 0))
++	if (WARN_ON(ret < 0)) {
++		vfree(entries_tmp);
+ 		goto out_unlock;
++	}
+ 
+ 	vfree(entries_tmp);
+ 	tmp.entries_size = size64;
 -- 
 2.20.1
 
