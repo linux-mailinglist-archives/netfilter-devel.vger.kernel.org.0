@@ -2,91 +2,87 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6D48C5BE
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2019 04:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559FE8C746
+	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Aug 2019 04:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbfHNCBV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 13 Aug 2019 22:01:21 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:40639 "EHLO ozlabs.org"
+        id S1726889AbfHNCWf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 13 Aug 2019 22:22:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726007AbfHNCBV (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 13 Aug 2019 22:01:21 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1727502AbfHNCSo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 13 Aug 2019 22:18:44 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 467Xqx58cyz9sP8;
-        Wed, 14 Aug 2019 12:01:17 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1565748078;
-        bh=e2nkYYq6Zq5d2uClkqO0wjWirioLnmBJr/FHSnA5vBU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ivJ+lZc4dP8lOWFiI4tGLU9KOJ2WXKizgsTMGEf5D/xHYobrJ7V8Fkf4uYOAFAIzR
-         kiaZ5EdDUTqpRNTb9pahWg2DEZLgNz/QydvuvLHvOhmu1M9waR/M0vJhuLyGsOfe7B
-         ObYbMNAWQeowyWdqhZetaPH+QEF1YSscOGTljcYVzQZCC3YKsizRKc+r568Wybpwo7
-         k91U/mIlppiyC8nJLgTxwu8o+Y9Bav/afjq6CqDd9E92DDaRA2KFyDxrvCgXS26xV2
-         SjNDomdWZclP5KaKMGmheVerNDL6Y3wsqo5DjLDVS1GQ5xaAPlBHqqRiO5FfxbJeo+
-         27RUB9t+A7AUw==
-Date:   Wed, 14 Aug 2019 12:01:10 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jeremy Sowden <jeremy@azazel.net>
-Subject: linux-next: build warnings after merge of the netfilter-next tree
-Message-ID: <20190814120110.3c17ddec@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 541BD2085A;
+        Wed, 14 Aug 2019 02:18:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565749123;
+        bh=234ZHydERtazHOtGzAM7E9t5ZSzd/PLvBnGrxyMvjnU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WW0YFKgqfMETVoN3mocbbuKs3U1oVtDUaSi28+TOrws4KovulPMHr7L19eVknJ5t7
+         gnmi1bMp92yKQrvn8oCChWjLHcEMOoNz9xfXYisHPVvM5AaMklnMtO8DG+gfPZzxE5
+         kmyMkkOV4E/CQAwHszRpULSKFXvQx0XbQiBcRAZs=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Wenwen Wang <wenwen@cs.uga.edu>, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 05/44] netfilter: ebtables: fix a memory leak bug in compat
+Date:   Tue, 13 Aug 2019 22:17:54 -0400
+Message-Id: <20190814021834.16662-5-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190814021834.16662-1-sashal@kernel.org>
+References: <20190814021834.16662-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//VAFaF+b02F0AzB+9QlMd5h";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
---Sig_//VAFaF+b02F0AzB+9QlMd5h
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Wenwen Wang <wenwen@cs.uga.edu>
 
-Hi all,
+[ Upstream commit 15a78ba1844a8e052c1226f930133de4cef4e7ad ]
 
-After merging the netfilter-next tree, today's linux-next build (x86_64
-allmodconfig) produced these warnings:
+In compat_do_replace(), a temporary buffer is allocated through vmalloc()
+to hold entries copied from the user space. The buffer address is firstly
+saved to 'newinfo->entries', and later on assigned to 'entries_tmp'. Then
+the entries in this temporary buffer is copied to the internal kernel
+structure through compat_copy_entries(). If this copy process fails,
+compat_do_replace() should be terminated. However, the allocated temporary
+buffer is not freed on this path, leading to a memory leak.
 
-In file included from <command-line>:
-include/uapi/linux/netfilter_ipv6/ip6t_LOG.h:5:2: warning: #warning "Please=
- update iptables, this file will be removed soon!" [-Wcpp]
- #warning "Please update iptables, this file will be removed soon!"
-  ^~~~~~~
-In file included from <command-line>:
-include/uapi/linux/netfilter_ipv4/ipt_LOG.h:5:2: warning: #warning "Please =
-update iptables, this file will be removed soon!" [-Wcpp]
- #warning "Please update iptables, this file will be removed soon!"
-  ^~~~~~~
+To fix the bug, free the buffer before returning from compat_do_replace().
 
-Introduced by commit
+Signed-off-by: Wenwen Wang <wenwen@cs.uga.edu>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/bridge/netfilter/ebtables.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-  2a475c409fe8 ("kbuild: remove all netfilter headers from header-test blac=
-klist.")
+diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
+index b967bd51bf1f9..48e364b11e067 100644
+--- a/net/bridge/netfilter/ebtables.c
++++ b/net/bridge/netfilter/ebtables.c
+@@ -2267,8 +2267,10 @@ static int compat_do_replace(struct net *net, void __user *user,
+ 	state.buf_kern_len = size64;
+ 
+ 	ret = compat_copy_entries(entries_tmp, tmp.entries_size, &state);
+-	if (WARN_ON(ret < 0))
++	if (WARN_ON(ret < 0)) {
++		vfree(entries_tmp);
+ 		goto out_unlock;
++	}
+ 
+ 	vfree(entries_tmp);
+ 	tmp.entries_size = size64;
+-- 
+2.20.1
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_//VAFaF+b02F0AzB+9QlMd5h
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl1Ta2YACgkQAVBC80lX
-0GxcTgf/adyYODk8/1pjyxD0WSdoSVJWS9BkQ2vM9cIgzCgCgxOAWvPXDUY5Ca6V
-WBBWPTy26zVMT9I5LUarGRTymeeMOY84lvkol5l9CWKe/k34yNTVwvrH/4j1XoC+
-UOKUqHrFNG4ENIz2ZYMfe7Ej6AErg7G4vvSL4ALX0GhmO8tuz4HER9JrHKkaOgCZ
-TF7/rIjq18CsV0hECH+zkfYQM9k376CKYyVQe4kG5jav0Hn1F6Xe6DkzDqG5Jyq/
-q0oE08tqBxOiDgUFX78Wgk+F675+zAfJSMio6x4l507zIDZsE0JDlXedHPQNTsjs
-D2n2ZeMROzmDvKWuAqvG9svN9lb6pA==
-=fckG
------END PGP SIGNATURE-----
-
---Sig_//VAFaF+b02F0AzB+9QlMd5h--
