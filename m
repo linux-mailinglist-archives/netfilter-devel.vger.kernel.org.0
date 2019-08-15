@@ -2,113 +2,104 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 548478E330
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2019 05:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522C38E52D
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Aug 2019 09:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728758AbfHODdV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 14 Aug 2019 23:33:21 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:47476 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728381AbfHODdV (ORCPT
+        id S1730024AbfHOHDC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 15 Aug 2019 03:03:02 -0400
+Received: from smtprelay0251.hostedemail.com ([216.40.44.251]:45285 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725911AbfHOHDC (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 14 Aug 2019 23:33:21 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 7DE7E41633;
-        Thu, 15 Aug 2019 11:33:17 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org, fw@strlen.de
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft v2] meta: add ibrpvid and ibrvproto support
-Date:   Thu, 15 Aug 2019 11:33:16 +0800
-Message-Id: <1565839996-4057-1-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVIS0hCQkJCS0tDSkxDTFlXWShZQU
-        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NTo6Tzo*GDg3DzkvVkkzOhpJ
-        CyMwCglVSlVKTk1OQ0hCQkJMTUhPVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUlOTEs3Bg++
-X-HM-Tid: 0a6c93563a5e2086kuqy7de7e41633
+        Thu, 15 Aug 2019 03:03:02 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Aug 2019 03:03:01 EDT
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave02.hostedemail.com (Postfix) with ESMTP id 1F38418019A2E
+        for <netfilter-devel@vger.kernel.org>; Thu, 15 Aug 2019 06:56:22 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 381FB8368EFC;
+        Thu, 15 Aug 2019 06:56:20 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::::::::::::,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2393:2525:2559:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4605:5007:7514:8603:8660:8957:9025:9149:10004:10400:10848:11026:11232:11658:11914:12043:12048:12296:12297:12740:12760:12895:13018:13019:13148:13230:13255:13439:14181:14659:14721:21080:21451:21627:21939:30012:30034:30054:30064:30091,0,RBL:error,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:neutral,Custom_rules:0:0:0,LFtime:27,LUA_SUMMARY:none
+X-HE-Tag: shirt04_19e6b128f1714
+X-Filterd-Recvd-Size: 3207
+Received: from XPS-9350.home (cpe-23-242-196-136.socal.res.rr.com [23.242.196.136])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 15 Aug 2019 06:56:17 +0000 (UTC)
+Message-ID: <9973b4a89e54296a6a033c790fc0837397a14a5d.camel@perches.com>
+Subject: Re: [PATCH] netfilter: nft_bitwise: Adjust parentheses to fix
+ memcmp size argument
+From:   Joe Perches <joe@perches.com>
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        kbuild test robot <lkp@intel.com>
+Date:   Wed, 14 Aug 2019 23:56:16 -0700
+In-Reply-To: <20190814165809.46421-1-natechancellor@gmail.com>
+References: <20190814165809.46421-1-natechancellor@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.30.5-0ubuntu0.18.10.1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+On Wed, 2019-08-14 at 09:58 -0700, Nathan Chancellor wrote:
+> clang warns:
+> 
+> net/netfilter/nft_bitwise.c:138:50: error: size argument in 'memcmp'
+> call is a comparison [-Werror,-Wmemsize-comparison]
+>         if (memcmp(&priv->xor, &zero, sizeof(priv->xor) ||
+>                                       ~~~~~~~~~~~~~~~~~~^~
+> net/netfilter/nft_bitwise.c:138:6: note: did you mean to compare the
+> result of 'memcmp' instead?
+>         if (memcmp(&priv->xor, &zero, sizeof(priv->xor) ||
+>             ^
+>                                                        )
+> net/netfilter/nft_bitwise.c:138:32: note: explicitly cast the argument
+> to size_t to silence this warning
+>         if (memcmp(&priv->xor, &zero, sizeof(priv->xor) ||
+>                                       ^
+>                                       (size_t)(
+> 1 error generated.
+> 
+> Adjust the parentheses so that the result of the sizeof is used for the
+> size argument in memcmp, rather than the result of the comparison (which
+> would always be true because sizeof is a non-zero number).
+> 
+> Fixes: bd8699e9e292 ("netfilter: nft_bitwise: add offload support")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/638
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>  net/netfilter/nft_bitwise.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/netfilter/nft_bitwise.c b/net/netfilter/nft_bitwise.c
+[]
+> @@ -135,8 +135,8 @@ static int nft_bitwise_offload(struct nft_offload_ctx *ctx,
+>  {
+>  	const struct nft_bitwise *priv = nft_expr_priv(expr);
+>  
+> -	if (memcmp(&priv->xor, &zero, sizeof(priv->xor) ||
+> -	    priv->sreg != priv->dreg))
+> +	if (memcmp(&priv->xor, &zero, sizeof(priv->xor)) ||
+> +	    priv->sreg != priv->dreg)
 
-This allows you to match the bridge pvid and vlan protocol, for
-instance:
+This code should use memchr_inv and not compare against a
+static uninitialized struct.
 
-nft add rule bridge firewall zones meta ibrvproto 0x8100
-nft add rule bridge firewall zones meta ibrpvid 100
+Perhaps linux should introduce and use memcchr like bsd. 
+or just add something like #define memcchr memchr_inv
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- src/meta.c                  |  6 ++++++
- tests/py/bridge/meta.t      |  2 ++
- tests/py/bridge/meta.t.json | 26 ++++++++++++++++++++++++++
- 3 files changed, 34 insertions(+)
 
-diff --git a/src/meta.c b/src/meta.c
-index 5901c99..d45d757 100644
---- a/src/meta.c
-+++ b/src/meta.c
-@@ -442,6 +442,12 @@ const struct meta_template meta_templates[] = {
- 	[NFT_META_OIFKIND]	= META_TEMPLATE("oifkind",   &ifname_type,
- 						IFNAMSIZ * BITS_PER_BYTE,
- 						BYTEORDER_HOST_ENDIAN),
-+	[NFT_META_BRI_IIFPVID]	= META_TEMPLATE("ibrpvid",   &integer_type,
-+						2 * BITS_PER_BYTE,
-+						BYTEORDER_HOST_ENDIAN),
-+	[NFT_META_BRI_IIFVPROTO] = META_TEMPLATE("ibrvproto",   &integer_type,
-+						2 * BITS_PER_BYTE,
-+						BYTEORDER_HOST_ENDIAN),
- };
- 
- static bool meta_key_is_unqualified(enum nft_meta_keys key)
-diff --git a/tests/py/bridge/meta.t b/tests/py/bridge/meta.t
-index 88e819f..d9fb681 100644
---- a/tests/py/bridge/meta.t
-+++ b/tests/py/bridge/meta.t
-@@ -4,3 +4,5 @@
- 
- meta obrname "br0";ok
- meta ibrname "br0";ok
-+meta ibrvproto 0x8100;ok
-+meta ibrpvid 100;ok
-diff --git a/tests/py/bridge/meta.t.json b/tests/py/bridge/meta.t.json
-index 5df4773..0a5e64a 100644
---- a/tests/py/bridge/meta.t.json
-+++ b/tests/py/bridge/meta.t.json
-@@ -23,3 +23,29 @@
-         }
-     }
- ]
-+
-+# meta ibrvproto 0x8100
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": { "key": "ibrvproto" }
-+            },
-+	    "op": "==",
-+            "right": 0x8100
-+        }
-+    }
-+]
-+
-+# meta ibrpvid 100
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": { "key": "ibrpvid" }
-+            },
-+	    "op": "==",
-+            "right": 100
-+        }
-+    }
-+]
--- 
-2.15.1
+
 
