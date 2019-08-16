@@ -2,146 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2F48F871
-	for <lists+netfilter-devel@lfdr.de>; Fri, 16 Aug 2019 03:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84ED48FED8
+	for <lists+netfilter-devel@lfdr.de>; Fri, 16 Aug 2019 11:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbfHPBYV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 15 Aug 2019 21:24:21 -0400
-Received: from correo.us.es ([193.147.175.20]:42250 "EHLO mail.us.es"
+        id S1726948AbfHPJYH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 16 Aug 2019 05:24:07 -0400
+Received: from correo.us.es ([193.147.175.20]:37342 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726239AbfHPBYV (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 15 Aug 2019 21:24:21 -0400
+        id S1726864AbfHPJYG (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 16 Aug 2019 05:24:06 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 74FF5DA7F0
-        for <netfilter-devel@vger.kernel.org>; Fri, 16 Aug 2019 03:24:18 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id E7C04C4242
+        for <netfilter-devel@vger.kernel.org>; Fri, 16 Aug 2019 11:24:03 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 655AAD2CBD
-        for <netfilter-devel@vger.kernel.org>; Fri, 16 Aug 2019 03:24:18 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id DA335A7E16
+        for <netfilter-devel@vger.kernel.org>; Fri, 16 Aug 2019 11:24:03 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 593E0DA4D0; Fri, 16 Aug 2019 03:24:18 +0200 (CEST)
+        id D97F2A7E1A; Fri, 16 Aug 2019 11:24:03 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 40354DA72F;
-        Fri, 16 Aug 2019 03:24:16 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id C9E3AA7E16
+        for <netfilter-devel@vger.kernel.org>; Fri, 16 Aug 2019 11:24:01 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 16 Aug 2019 03:24:16 +0200 (CEST)
+ Fri, 16 Aug 2019 11:24:01 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (sys.soleta.eu [212.170.55.40])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id BAE754265A2F;
-        Fri, 16 Aug 2019 03:24:15 +0200 (CEST)
+        by entrada.int (Postfix) with ESMTPA id A8DFB4265A2F
+        for <netfilter-devel@vger.kernel.org>; Fri, 16 Aug 2019 11:24:01 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        marcelo.leitner@gmail.com, jiri@resnulli.us, wenxu@ucloud.cn,
-        saeedm@mellanox.com, paulb@mellanox.com, gerlitz.or@gmail.com,
-        jakub.kicinski@netronome.com
-Subject: [PATCH net,v5 2/2] netfilter: nf_tables: map basechain priority to hardware priority
-Date:   Fri, 16 Aug 2019 03:24:10 +0200
-Message-Id: <20190816012410.31844-3-pablo@netfilter.org>
+Subject: [PATCH nf] netfilter: nft_flow_offload: missing netlink attribute policy
+Date:   Fri, 16 Aug 2019 11:23:58 +0200
+Message-Id: <20190816092358.5594-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20190816012410.31844-1-pablo@netfilter.org>
-References: <20190816012410.31844-1-pablo@netfilter.org>
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch adds initial support for offloading basechains using the
-priority range from 1 to 65535. This is restricting the netfilter
-priority range to 16-bit integer since this is what most drivers assume
-so far from tc. It should be possible to extend this range of supported
-priorities later on once drivers are updated to support for 32-bit
-integer priorities.
+The netlink attribute policy for NFTA_FLOW_TABLE_NAME is missing.
 
+Fixes: a3c90f7a2323 ("netfilter: nf_tables: flow offload expression")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v5: fix clang warning by simplifying the mapping of hardware priorities
-    to basechain priority in the range of 1-65535. Zero is left behind
-    since some drivers do not support this, no negative basechain
-    priorities are used at this stage.
+ net/netfilter/nft_flow_offload.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
- include/net/netfilter/nf_tables_offload.h |  2 ++
- net/netfilter/nf_tables_api.c             |  4 ++++
- net/netfilter/nf_tables_offload.c         | 17 ++++++++++++++---
- 3 files changed, 20 insertions(+), 3 deletions(-)
-
-diff --git a/include/net/netfilter/nf_tables_offload.h b/include/net/netfilter/nf_tables_offload.h
-index 3196663a10e3..c8b9dec376f5 100644
---- a/include/net/netfilter/nf_tables_offload.h
-+++ b/include/net/netfilter/nf_tables_offload.h
-@@ -73,4 +73,6 @@ int nft_flow_rule_offload_commit(struct net *net);
- 	(__reg)->key		= __key;				\
- 	memset(&(__reg)->mask, 0xff, (__reg)->len);
- 
-+int nft_chain_offload_priority(struct nft_base_chain *basechain);
-+
- #endif
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 605a7cfe7ca7..b65caf4974e1 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -1662,6 +1662,10 @@ static int nf_tables_addchain(struct nft_ctx *ctx, u8 family, u8 genmask,
- 
- 		chain->flags |= NFT_BASE_CHAIN | flags;
- 		basechain->policy = NF_ACCEPT;
-+		if (chain->flags & NFT_CHAIN_HW_OFFLOAD &&
-+		    nft_chain_offload_priority(basechain) < 0)
-+			return -EOPNOTSUPP;
-+
- 		flow_block_init(&basechain->flow_block);
- 	} else {
- 		chain = kzalloc(sizeof(*chain), GFP_KERNEL);
-diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
-index 64f5fd5f240e..c0d18c1d77ac 100644
---- a/net/netfilter/nf_tables_offload.c
-+++ b/net/netfilter/nf_tables_offload.c
-@@ -103,10 +103,11 @@ void nft_offload_update_dependency(struct nft_offload_ctx *ctx,
+diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
+index 060a4ed46d5e..01705ad74a9a 100644
+--- a/net/netfilter/nft_flow_offload.c
++++ b/net/netfilter/nft_flow_offload.c
+@@ -149,6 +149,11 @@ static int nft_flow_offload_validate(const struct nft_ctx *ctx,
+ 	return nft_chain_validate_hooks(ctx->chain, hook_mask);
  }
  
- static void nft_flow_offload_common_init(struct flow_cls_common_offload *common,
--					 __be16 proto,
--					struct netlink_ext_ack *extack)
-+					 __be16 proto, int priority,
-+					 struct netlink_ext_ack *extack)
- {
- 	common->protocol = proto;
-+	common->prio = priority;
- 	common->extack = extack;
- }
- 
-@@ -124,6 +125,15 @@ static int nft_setup_cb_call(struct nft_base_chain *basechain,
- 	return 0;
- }
- 
-+int nft_chain_offload_priority(struct nft_base_chain *basechain)
-+{
-+	if (basechain->ops.priority <= 0 ||
-+	    basechain->ops.priority > USHRT_MAX)
-+		return -1;
++static const struct nla_policy nft_flow_offload_policy[NFTA_FLOW_MAX + 1] = {
++	[NFTA_FLOW_TABLE_NAME]	= { .type = NLA_STRING,
++				    .len = NFT_NAME_MAXLEN - 1 },
++};
 +
-+	return 0;
-+}
-+
- static int nft_flow_offload_rule(struct nft_trans *trans,
- 				 enum flow_cls_command command)
- {
-@@ -142,7 +152,8 @@ static int nft_flow_offload_rule(struct nft_trans *trans,
- 	if (flow)
- 		proto = flow->proto;
- 
--	nft_flow_offload_common_init(&cls_flow.common, proto, &extack);
-+	nft_flow_offload_common_init(&cls_flow.common, proto,
-+				     basechain->ops.priority, &extack);
- 	cls_flow.command = command;
- 	cls_flow.cookie = (unsigned long) rule;
- 	if (flow)
+ static int nft_flow_offload_init(const struct nft_ctx *ctx,
+ 				 const struct nft_expr *expr,
+ 				 const struct nlattr * const tb[])
+@@ -207,6 +212,7 @@ static const struct nft_expr_ops nft_flow_offload_ops = {
+ static struct nft_expr_type nft_flow_offload_type __read_mostly = {
+ 	.name		= "flow_offload",
+ 	.ops		= &nft_flow_offload_ops,
++	.policy		= nft_flow_offload_policy,
+ 	.maxattr	= NFTA_FLOW_MAX,
+ 	.owner		= THIS_MODULE,
+ };
 -- 
 2.11.0
 
