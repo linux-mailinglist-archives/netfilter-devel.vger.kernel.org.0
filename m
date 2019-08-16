@@ -2,84 +2,72 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D65AC908DB
-	for <lists+netfilter-devel@lfdr.de>; Fri, 16 Aug 2019 21:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA56090B0E
+	for <lists+netfilter-devel@lfdr.de>; Sat, 17 Aug 2019 00:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727624AbfHPTo5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 16 Aug 2019 15:44:57 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:46206 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727602AbfHPTo5 (ORCPT
+        id S1727791AbfHPWgn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 16 Aug 2019 18:36:43 -0400
+Received: from webmail.unifal-mg.edu.br ([200.131.224.99]:43912 "EHLO
+        webmail.unifal-mg.edu.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727676AbfHPWgn (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 16 Aug 2019 15:44:57 -0400
-Received: by mail-qt1-f196.google.com with SMTP id j15so7287635qtl.13
-        for <netfilter-devel@vger.kernel.org>; Fri, 16 Aug 2019 12:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=8oUD8uoK0U6eFOyqa1XdhinrbHHTjvt4vpE48z+ZU84=;
-        b=inuomRVSW6pUNWICL/LbsTDKMo3RFuU0MwjtDwAmZ/ul11E1NZ00LJ9DyRk41zY7lH
-         PQ5mS8WIPGJ29Idzv+lEjxBYaVGUxS9PuoKSanjPK2Poegc5eDbP7ikPdo1Tiy+MJjXu
-         eZ8l20Gl0bj5tazFxsSjC6tyIlmsk7WiKl92eX/F3xrnwknxfylLwY3aLo5tMaI0pq8D
-         cVzR/9gp/hTp1UMuo90lvfHQKlvMhIMIATbq9g+j69oPL6NkS9Hd0qYCy95O6wlEvUXj
-         iXQWU+RXsym8ifNA4Z3SbfEy6DoQK8hsnrkJvTgiLqUJS5DSaSaJk7lhdBIHbBZsXGd6
-         j6Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=8oUD8uoK0U6eFOyqa1XdhinrbHHTjvt4vpE48z+ZU84=;
-        b=a5v8I2GdrmIeN0Ct6AncMm6SfQZ2NvD+1hsqXB/+oJ2BTZ6wctNc11QBBOudsT22PC
-         Y5MVy03s06enp/B5sSzDD5+bgg/A9PFX3qXDui7m860e8QPjgy3HneOZ4M+UdkXmjd3p
-         Ysi9myy104n+XHpKHMzkugt9qY7qSlIwmQYaEp1+CIIhGkn9cmGKt0Ylxk193poELUmX
-         KUy9R1HXNYZZsv/c922elDvgKOnzZTT44R2ty1qGrPAT6CMJ1WtpbwDHa6xStb94lnvD
-         2cdpv5A1yu9ZUjfiTngZrquwqOHR5k0GOFeShpXg+ESAmAai4BWi6/ieL6f3ZBvleHs0
-         icAA==
-X-Gm-Message-State: APjAAAXWgMu7D4zE2fR1GestQ/ABTfO9rxs18uYlqnlTsLkEH42Nrs/Z
-        aTCng1bXgNoX626EPOhKmTPzMA==
-X-Google-Smtp-Source: APXvYqyThjW/BK3sV6h6FsEOIUaTM8wHYUa/3RM+1cvkwCZoYYzkocQGFjDKyvknq7JuMpiGF8phpg==
-X-Received: by 2002:ac8:376c:: with SMTP id p41mr10458702qtb.306.1565984696577;
-        Fri, 16 Aug 2019 12:44:56 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id m8sm3812416qti.97.2019.08.16.12.44.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2019 12:44:56 -0700 (PDT)
-Date:   Fri, 16 Aug 2019 12:44:39 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, marcelo.leitner@gmail.com,
-        jiri@resnulli.us, wenxu@ucloud.cn, saeedm@mellanox.com,
-        paulb@mellanox.com, gerlitz.or@gmail.com
-Subject: Re: [PATCH net,v5 2/2] netfilter: nf_tables: map basechain priority
- to hardware priority
-Message-ID: <20190816124439.7cc166c1@cakuba.netronome.com>
-In-Reply-To: <20190816012410.31844-3-pablo@netfilter.org>
-References: <20190816012410.31844-1-pablo@netfilter.org>
-        <20190816012410.31844-3-pablo@netfilter.org>
-Organization: Netronome Systems, Ltd.
+        Fri, 16 Aug 2019 18:36:43 -0400
+X-Greylist: delayed 504 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Aug 2019 18:36:41 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by webmail.unifal-mg.edu.br (Postfix) with ESMTP id 72F3B6C836D9;
+        Fri, 16 Aug 2019 19:27:54 -0300 (-03)
+Received: from webmail.unifal-mg.edu.br ([127.0.0.1])
+        by localhost (webmail.unifal-mg.edu.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 9PrY6ZPx2N5S; Fri, 16 Aug 2019 19:27:52 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by webmail.unifal-mg.edu.br (Postfix) with ESMTP id 8F7F26C836D7;
+        Fri, 16 Aug 2019 19:27:52 -0300 (-03)
+DKIM-Filter: OpenDKIM Filter v2.9.2 webmail.unifal-mg.edu.br 8F7F26C836D7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=unifal-mg.edu.br;
+        s=3E24E22C-159E-11E8-8E99-E8D4215091E1; t=1565994472;
+        bh=TzmFkAp7+ghhGpS8/qAeGSHF+M4N/WdaHxpHqUsnw7k=;
+        h=Date:From:Reply-To:Message-ID:Subject:MIME-Version:Content-Type:
+         Content-Transfer-Encoding;
+        b=sQZvrEtylmsl1RBYmp0vXO2UuPiD9MT31VdUnSoCP87Ts8XHLUA8t2uG5WB964OJY
+         GEEE40DFyIkZ88s7JpZPGFANRsvuGKgdjoylU0FVY0sG9cqGIbw7B8TYK2GTJD5Hzy
+         Inh8lzw1JDXbbaMuH1O087Wwo1zwiNj6NVTvypvs=
+X-Virus-Scanned: amavisd-new at unifal-mg.edu.br
+Received: from webmail.unifal-mg.edu.br ([127.0.0.1])
+        by localhost (webmail.unifal-mg.edu.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id t3ztih8VfHcl; Fri, 16 Aug 2019 19:27:52 -0300 (-03)
+Received: from webmail.unifal-mg.edu.br (webmail.unifal-mg.edu.br [10.254.254.99])
+        by webmail.unifal-mg.edu.br (Postfix) with ESMTP id C32096C836A3;
+        Fri, 16 Aug 2019 19:27:50 -0300 (-03)
+Date:   Fri, 16 Aug 2019 19:27:50 -0300 (BRT)
+From:   Mrs Ann Johnson <grad@unifal-mg.edu.br>
+Reply-To: Mrs Ann Johnson <ann.sn1960@gmail.com>
+Message-ID: <652234346.784467.1565994470779.JavaMail.zimbra@unifal-mg.edu.br>
+Subject: NEED YOUR ASSIST PLEASE
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [197.234.221.131]
+X-Mailer: Zimbra 8.6.0_GA_1242 (zclient/8.6.0_GA_1242)
+Thread-Topic: NEED YOUR ASSIST PLEASE
+Thread-Index: PojqaBCkppx2GL7nnbajaXU282V77A==
+To:     unlisted-recipients:; (no To-header on input)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, 16 Aug 2019 03:24:10 +0200, Pablo Neira Ayuso wrote:
-> This patch adds initial support for offloading basechains using the
-> priority range from 1 to 65535. This is restricting the netfilter
-> priority range to 16-bit integer since this is what most drivers assume
-> so far from tc. It should be possible to extend this range of supported
-> priorities later on once drivers are updated to support for 32-bit
-> integer priorities.
-> 
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> ---
-> v5: fix clang warning by simplifying the mapping of hardware priorities
->     to basechain priority in the range of 1-65535. Zero is left behind
->     since some drivers do not support this, no negative basechain
->     priorities are used at this stage.
+Hello
+   My name Mrs. Ann Johnson from UK,I am a dying woman who had decided to d=
+onate what I have left to you. I am 59 years old and was diagnosed of ovari=
+an cancer about 2 years ago immediately after the death of my husband, who =
+had left me with everything he worked for. I have decided to donate/will =
+=C2=A39,500,000.00 pounds to you to help the motherless, less privileged an=
+d also for the assistance of the widows ,rather than allow my relatives to =
+use my husband hard earned funds ungodly as i will be going in for an opera=
+tion do not know if i will survived it. Upon receipt of your positive respo=
+nse along with your full contact details will notify my bank to presenting =
+you as my next of kin/beneficiary to facilitate the funds disbursement to y=
+ou.
 
-LGTM.
+God Bless you
+Mrs. Ann Johnson
