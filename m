@@ -2,184 +2,146 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF9F9041F
-	for <lists+netfilter-devel@lfdr.de>; Fri, 16 Aug 2019 16:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D3B9045C
+	for <lists+netfilter-devel@lfdr.de>; Fri, 16 Aug 2019 17:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727307AbfHPOpV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 16 Aug 2019 10:45:21 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:46196 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727291AbfHPOpU (ORCPT
+        id S1727347AbfHPPHm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 16 Aug 2019 11:07:42 -0400
+Received: from rp02.intra2net.com ([62.75.181.28]:59704 "EHLO
+        rp02.intra2net.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727324AbfHPPHm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 16 Aug 2019 10:45:20 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1hydTi-0002pA-Ks; Fri, 16 Aug 2019 16:45:18 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nftables 8/8] tests: add typeof test cases
-Date:   Fri, 16 Aug 2019 16:42:41 +0200
-Message-Id: <20190816144241.11469-9-fw@strlen.de>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190816144241.11469-1-fw@strlen.de>
-References: <20190816144241.11469-1-fw@strlen.de>
+        Fri, 16 Aug 2019 11:07:42 -0400
+X-Greylist: delayed 314 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Aug 2019 11:07:40 EDT
+Received: from mail.m.i2n (unknown [172.17.128.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by rp02.intra2net.com (Postfix) with ESMTPS id 373FB100137;
+        Fri, 16 Aug 2019 17:02:25 +0200 (CEST)
+Received: from localhost (mail.m.i2n [127.0.0.1])
+        by localhost (Postfix) with ESMTP id 0D4132FE;
+        Fri, 16 Aug 2019 17:02:25 +0200 (CEST)
+X-Virus-Scanned: by Intra2net Mail Security (AVE=8.3.54.70,VDF=8.16.21.30)
+X-Spam-Status: 
+X-Spam-Level: 0
+Received: from rocinante.m.i2n (rocinante.m.i2n [172.16.1.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: smtp-auth-user)
+        by mail.m.i2n (Postfix) with ESMTPSA id 256602DF;
+        Fri, 16 Aug 2019 17:02:23 +0200 (CEST)
+From:   Juliana Rodrigueiro <juliana.rodrigueiro@intra2net.com>
+To:     netfilter-devel@vger.kernel.org
+Cc:     fw@strlen.de, pablo@netfilter.org
+Subject: [PATCH v2] netfilter: nfacct: Fix alignment mismatch in xt_nfacct_match_info
+Date:   Fri, 16 Aug 2019 17:02:22 +0200
+Message-ID: <7899070.tJGA48rBTd@rocinante.m.i2n>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- .../testcases/maps/dumps/typeof_maps_0.nft    | 16 ++++++++
- tests/shell/testcases/maps/typeof_maps_0      | 26 ++++++++++++
- .../testcases/sets/dumps/typeof_sets_0.nft    | 31 ++++++++++++++
- tests/shell/testcases/sets/typeof_sets_0      | 40 +++++++++++++++++++
- 4 files changed, 113 insertions(+)
- create mode 100644 tests/shell/testcases/maps/dumps/typeof_maps_0.nft
- create mode 100755 tests/shell/testcases/maps/typeof_maps_0
- create mode 100644 tests/shell/testcases/sets/dumps/typeof_sets_0.nft
- create mode 100755 tests/shell/testcases/sets/typeof_sets_0
+When running a 64-bit kernel with a 32-bit iptables binary, the size of
+the xt_nfacct_match_info struct diverges.
 
-diff --git a/tests/shell/testcases/maps/dumps/typeof_maps_0.nft b/tests/shell/testcases/maps/dumps/typeof_maps_0.nft
-new file mode 100644
-index 000000000000..d691f406047f
---- /dev/null
-+++ b/tests/shell/testcases/maps/dumps/typeof_maps_0.nft
-@@ -0,0 +1,16 @@
-+table inet t {
-+	map m1 {
-+		type typeof(osf name) : mark
-+		elements = { "Linux" : 0x00000001 }
-+	}
+    kernel: sizeof(struct xt_nfacct_match_info) : 40
+    iptables: sizeof(struct xt_nfacct_match_info)) : 36
+
+Trying to append nfacct related rules results in an unhelpful message.
+Although it is suggested to look for more information in dmesg, nothing
+can be found there.
+
+    # iptables -A <chain> -m nfacct --nfacct-name <acct-object>
+    iptables: Invalid argument. Run `dmesg' for more information.
+
+This patch fixes the memory misalignment by enforcing 8-byte alignment
+within the struct's first revision. This solution is often used in many
+other uapi netfilter headers.
+
+Signed-off-by: Juliana Rodrigueiro <juliana.rodrigueiro@intra2net.com>
+---
+Changes in v2:
+    - Keep ABI by creating a v1 of the match struct.
+
+ include/uapi/linux/netfilter/xt_nfacct.h |  5 ++++
+ net/netfilter/xt_nfacct.c                | 36 ++++++++++++++++--------
+ 2 files changed, 30 insertions(+), 11 deletions(-)
+
+diff --git a/include/uapi/linux/netfilter/xt_nfacct.h b/include/uapi/linux/netfilter/xt_nfacct.h
+index 5c8a4d760ee3..b5123ab8d54a 100644
+--- a/include/uapi/linux/netfilter/xt_nfacct.h
++++ b/include/uapi/linux/netfilter/xt_nfacct.h
+@@ -11,4 +11,9 @@ struct xt_nfacct_match_info {
+ 	struct nf_acct	*nfacct;
+ };
+ 
++struct xt_nfacct_match_info_v1 {
++	char		name[NFACCT_NAME_MAX];
++	struct nf_acct	*nfacct __attribute__((aligned(8)));
++};
 +
-+	map m2 {
-+		type string,128 : mark
-+		elements = { "Linux" : 0x00000001 }
-+	}
-+
-+	chain c {
-+		ct mark set osf name map @m1
-+		ct mark set osf name map @m2
-+	}
-+}
-diff --git a/tests/shell/testcases/maps/typeof_maps_0 b/tests/shell/testcases/maps/typeof_maps_0
-new file mode 100755
-index 000000000000..59112c11e224
---- /dev/null
-+++ b/tests/shell/testcases/maps/typeof_maps_0
-@@ -0,0 +1,26 @@
-+#!/bin/bash
-+
-+# support for strings/typeof in named maps.
-+# m1 and m2 are identical, they just use different
-+# ways for declaration.
-+
-+EXPECTED="table inet t {
-+	map m1 {
-+		type typeof(osf name) : typeof(ct mark)
-+		elements = { \"Linux\" : 0x1 }
-+	}
-+
-+	map m2 {
-+		type string, 128 : mark
-+		elements = { \"Linux\" : 0x1 }
-+	}
-+
-+	chain c {
-+		ct mark set osf name map @m1
-+		ct mark set osf name map @m2
-+	}
-+}"
-+
-+set -e
-+$NFT -f - <<< $EXPECTED
-+
-diff --git a/tests/shell/testcases/sets/dumps/typeof_sets_0.nft b/tests/shell/testcases/sets/dumps/typeof_sets_0.nft
-new file mode 100644
-index 000000000000..7f588fc89ab7
---- /dev/null
-+++ b/tests/shell/testcases/sets/dumps/typeof_sets_0.nft
-@@ -0,0 +1,31 @@
-+table inet t {
-+	set s1 {
-+		type typeof(osf name)
-+		elements = { "Linux" }
-+	}
-+
-+	set s2 {
-+		type string,128
-+		elements = { "Linux" }
-+	}
-+
-+	set s3 {
-+		type typeof(vlan id)
-+		elements = { 2, 3, 103 }
-+	}
-+
-+	set s4 {
-+		type integer,16
-+		elements = { 2, 3, 103, 2003 }
-+	}
-+
-+	chain c1 {
-+		osf name @s1 accept
-+		osf name @s2 accept
-+	}
-+
-+	chain c2 {
-+		vlan id @s3 accept
-+		vlan id @s4 accept
-+	}
-+}
-diff --git a/tests/shell/testcases/sets/typeof_sets_0 b/tests/shell/testcases/sets/typeof_sets_0
-new file mode 100755
-index 000000000000..6ffa10107727
---- /dev/null
-+++ b/tests/shell/testcases/sets/typeof_sets_0
-@@ -0,0 +1,40 @@
-+#!/bin/bash
-+
-+# support for strings/typeof in named sets.
-+# s1 and s2 are identical, they just use different
-+# ways for declaration.
-+
-+EXPECTED="table inet t {
-+	set s1 {
-+		type typeof(osf name)
-+		elements = { \"Linux\" }
-+	}
-+
-+	set s2 {
-+		type string, 128
-+		elements = { \"Linux\" }
-+	}
-+
-+	set s3 {
-+		type typeof(vlan id)
-+		elements = { 2, 3, 103 }
-+	}
-+
-+	set s4 {
-+		type integer,16
-+		elements = { 2, 3, 103, 2003 }
-+	}
-+	chain c1 {
-+		osf name @s1 accept
-+		osf name @s2 accept
-+	}
-+
-+	chain c2 {
-+		ether type vlan vlan id @s3 accept
-+		ether type vlan vlan id @s4 accept
-+	}
-+}"
-+
-+set -e
-+$NFT -f - <<< $EXPECTED
-+
+ #endif /* _XT_NFACCT_MATCH_H */
+diff --git a/net/netfilter/xt_nfacct.c b/net/netfilter/xt_nfacct.c
+index 6b56f4170860..3241fee9f2a1 100644
+--- a/net/netfilter/xt_nfacct.c
++++ b/net/netfilter/xt_nfacct.c
+@@ -57,25 +57,39 @@ nfacct_mt_destroy(const struct xt_mtdtor_param *par)
+ 	nfnl_acct_put(info->nfacct);
+ }
+ 
+-static struct xt_match nfacct_mt_reg __read_mostly = {
+-	.name       = "nfacct",
+-	.family     = NFPROTO_UNSPEC,
+-	.checkentry = nfacct_mt_checkentry,
+-	.match      = nfacct_mt,
+-	.destroy    = nfacct_mt_destroy,
+-	.matchsize  = sizeof(struct xt_nfacct_match_info),
+-	.usersize   = offsetof(struct xt_nfacct_match_info, nfacct),
+-	.me         = THIS_MODULE,
++static struct xt_match nfacct_mt_reg[] __read_mostly = {
++	{
++		.name       = "nfacct",
++		.revision   = 0,
++		.family     = NFPROTO_UNSPEC,
++		.checkentry = nfacct_mt_checkentry,
++		.match      = nfacct_mt,
++		.destroy    = nfacct_mt_destroy,
++		.matchsize  = sizeof(struct xt_nfacct_match_info),
++		.usersize   = offsetof(struct xt_nfacct_match_info, nfacct),
++		.me         = THIS_MODULE,
++	},
++	{
++		.name       = "nfacct",
++		.revision   = 1,
++		.family     = NFPROTO_UNSPEC,
++		.checkentry = nfacct_mt_checkentry,
++		.match      = nfacct_mt,
++		.destroy    = nfacct_mt_destroy,
++		.matchsize  = sizeof(struct xt_nfacct_match_info_v1),
++		.usersize   = offsetof(struct xt_nfacct_match_info_v1, nfacct),
++		.me         = THIS_MODULE,
++	},
+ };
+ 
+ static int __init nfacct_mt_init(void)
+ {
+-	return xt_register_match(&nfacct_mt_reg);
++	return xt_register_matches(nfacct_mt_reg, ARRAY_SIZE(nfacct_mt_reg));
+ }
+ 
+ static void __exit nfacct_mt_exit(void)
+ {
+-	xt_unregister_match(&nfacct_mt_reg);
++	xt_unregister_matches(nfacct_mt_reg, ARRAY_SIZE(nfacct_mt_reg));
+ }
+ 
+ module_init(nfacct_mt_init);
 -- 
-2.21.0
+2.20.1
+
+
+
 
