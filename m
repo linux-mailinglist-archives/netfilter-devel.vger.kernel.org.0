@@ -2,68 +2,132 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4A291003
-	for <lists+netfilter-devel@lfdr.de>; Sat, 17 Aug 2019 12:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F7091033
+	for <lists+netfilter-devel@lfdr.de>; Sat, 17 Aug 2019 13:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbfHQKdm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 17 Aug 2019 06:33:42 -0400
-Received: from correo.us.es ([193.147.175.20]:41426 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbfHQKdm (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 17 Aug 2019 06:33:42 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 81AD3EA467
-        for <netfilter-devel@vger.kernel.org>; Sat, 17 Aug 2019 12:33:39 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 73CB4DA4CA
-        for <netfilter-devel@vger.kernel.org>; Sat, 17 Aug 2019 12:33:39 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 696E3DA8E8; Sat, 17 Aug 2019 12:33:39 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 78CBBDA72F;
-        Sat, 17 Aug 2019 12:33:37 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sat, 17 Aug 2019 12:33:37 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (sys.soleta.eu [212.170.55.40])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 577F34265A2F;
-        Sat, 17 Aug 2019 12:33:37 +0200 (CEST)
-Date:   Sat, 17 Aug 2019 12:33:37 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nftables 0/8] add typeof keyword
-Message-ID: <20190817103337.omvl2bfjlxr6mb3p@salvia>
-References: <20190816144241.11469-1-fw@strlen.de>
- <20190817102351.x2s2vj5hgvsi5vak@salvia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190817102351.x2s2vj5hgvsi5vak@salvia>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725889AbfHQLSE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 17 Aug 2019 07:18:04 -0400
+Received: from vxsys-smtpclusterma-05.srv.cat ([46.16.61.54]:60317 "EHLO
+        vxsys-smtpclusterma-05.srv.cat" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725784AbfHQLSE (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 17 Aug 2019 07:18:04 -0400
+Received: from localhost.localdomain (static-79-171-230-77.ipcom.comunitel.net [77.230.171.79])
+        by vxsys-smtpclusterma-05.srv.cat (Postfix) with ESMTPA id 7078424283
+        for <netfilter-devel@vger.kernel.org>; Sat, 17 Aug 2019 13:18:00 +0200 (CEST)
+From:   Ander Juaristi <a@juaristi.eus>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH v5 1/2] netfilter: Introduce new 64-bit helper functions
+Date:   Sat, 17 Aug 2019 13:17:52 +0200
+Message-Id: <20190817111753.8756-1-a@juaristi.eus>
+X-Mailer: git-send-email 2.17.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sat, Aug 17, 2019 at 12:23:51PM +0200, Pablo Neira Ayuso wrote:
-[...]
-> On Fri, Aug 16, 2019 at 04:42:33PM +0200, Florian Westphal wrote:
-[..]
-> P.S: patch 1/8 and 2/8 are related to this patchset? After quick
-> glance, not obvious to me or if they are again related to multiple
-> nft_ctx_new() calls.
+Introduce new helper functions to load/store 64-bit values
+onto/from registers:
 
-I found it, it is in patch 6/8, it making a call to set_make_key to
-get the datatype to translate the selector to datatype using the
-parser API.
+ - nft_reg_store64
+ - nft_reg_load64
+
+This commit also re-orders all these helpers from smallest
+to largest target bit size.
+
+Signed-off-by: Ander Juaristi <a@juaristi.eus>
+---
+ include/net/netfilter/nf_tables.h | 25 ++++++++++++++++++-------
+ net/netfilter/nft_byteorder.c     |  9 +++++----
+ 2 files changed, 23 insertions(+), 11 deletions(-)
+
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 9b624566b82d..298cf4528635 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -2,6 +2,7 @@
+ #ifndef _NET_NF_TABLES_H
+ #define _NET_NF_TABLES_H
+ 
++#include <asm/unaligned.h>
+ #include <linux/list.h>
+ #include <linux/netfilter.h>
+ #include <linux/netfilter/nfnetlink.h>
+@@ -100,23 +101,28 @@ struct nft_regs {
+ 	};
+ };
+ 
+-/* Store/load an u16 or u8 integer to/from the u32 data register.
++/* Store/load an u8, u16 or u64 integer to/from the u32 data register.
+  *
+  * Note, when using concatenations, register allocation happens at 32-bit
+  * level. So for store instruction, pad the rest part with zero to avoid
+  * garbage values.
+  */
+ 
+-static inline void nft_reg_store16(u32 *dreg, u16 val)
++static inline void nft_reg_store8(u32 *dreg, u8 val)
+ {
+ 	*dreg = 0;
+-	*(u16 *)dreg = val;
++	*(u8 *)dreg = val;
+ }
+ 
+-static inline void nft_reg_store8(u32 *dreg, u8 val)
++static inline u8 nft_reg_load8(u32 *sreg)
++{
++	return *(u8 *)sreg;
++}
++
++static inline void nft_reg_store16(u32 *dreg, u16 val)
+ {
+ 	*dreg = 0;
+-	*(u8 *)dreg = val;
++	*(u16 *)dreg = val;
+ }
+ 
+ static inline u16 nft_reg_load16(u32 *sreg)
+@@ -124,9 +130,14 @@ static inline u16 nft_reg_load16(u32 *sreg)
+ 	return *(u16 *)sreg;
+ }
+ 
+-static inline u8 nft_reg_load8(u32 *sreg)
++static inline void nft_reg_store64(u32 *dreg, u64 val)
+ {
+-	return *(u8 *)sreg;
++	put_unaligned(val, (u64 *)dreg);
++}
++
++static inline u64 nft_reg_load64(u32 *sreg)
++{
++	return get_unaligned((u64 *)sreg);
+ }
+ 
+ static inline void nft_data_copy(u32 *dst, const struct nft_data *src,
+diff --git a/net/netfilter/nft_byteorder.c b/net/netfilter/nft_byteorder.c
+index e06318428ea0..12bed3f7bbc6 100644
+--- a/net/netfilter/nft_byteorder.c
++++ b/net/netfilter/nft_byteorder.c
+@@ -43,14 +43,15 @@ void nft_byteorder_eval(const struct nft_expr *expr,
+ 		switch (priv->op) {
+ 		case NFT_BYTEORDER_NTOH:
+ 			for (i = 0; i < priv->len / 8; i++) {
+-				src64 = get_unaligned((u64 *)&src[i]);
+-				put_unaligned_be64(src64, &dst[i]);
++				src64 = nft_reg_load64(&src[i]);
++				nft_reg_store64(&dst[i], be64_to_cpu(src64));
+ 			}
+ 			break;
+ 		case NFT_BYTEORDER_HTON:
+ 			for (i = 0; i < priv->len / 8; i++) {
+-				src64 = get_unaligned_be64(&src[i]);
+-				put_unaligned(src64, (u64 *)&dst[i]);
++				src64 = (__force __u64)
++					cpu_to_be64(nft_reg_load64(&src[i]));
++				nft_reg_store64(&dst[i], src64);
+ 			}
+ 			break;
+ 		}
+-- 
+2.17.1
+
