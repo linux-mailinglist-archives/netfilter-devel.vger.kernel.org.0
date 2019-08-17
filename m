@@ -2,72 +2,204 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA56090B0E
-	for <lists+netfilter-devel@lfdr.de>; Sat, 17 Aug 2019 00:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8BE90BE6
+	for <lists+netfilter-devel@lfdr.de>; Sat, 17 Aug 2019 03:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbfHPWgn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 16 Aug 2019 18:36:43 -0400
-Received: from webmail.unifal-mg.edu.br ([200.131.224.99]:43912 "EHLO
-        webmail.unifal-mg.edu.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727676AbfHPWgn (ORCPT
+        id S1725925AbfHQB1i (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 16 Aug 2019 21:27:38 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:40719 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725829AbfHQB1i (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 16 Aug 2019 18:36:43 -0400
-X-Greylist: delayed 504 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Aug 2019 18:36:41 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by webmail.unifal-mg.edu.br (Postfix) with ESMTP id 72F3B6C836D9;
-        Fri, 16 Aug 2019 19:27:54 -0300 (-03)
-Received: from webmail.unifal-mg.edu.br ([127.0.0.1])
-        by localhost (webmail.unifal-mg.edu.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 9PrY6ZPx2N5S; Fri, 16 Aug 2019 19:27:52 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by webmail.unifal-mg.edu.br (Postfix) with ESMTP id 8F7F26C836D7;
-        Fri, 16 Aug 2019 19:27:52 -0300 (-03)
-DKIM-Filter: OpenDKIM Filter v2.9.2 webmail.unifal-mg.edu.br 8F7F26C836D7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=unifal-mg.edu.br;
-        s=3E24E22C-159E-11E8-8E99-E8D4215091E1; t=1565994472;
-        bh=TzmFkAp7+ghhGpS8/qAeGSHF+M4N/WdaHxpHqUsnw7k=;
-        h=Date:From:Reply-To:Message-ID:Subject:MIME-Version:Content-Type:
-         Content-Transfer-Encoding;
-        b=sQZvrEtylmsl1RBYmp0vXO2UuPiD9MT31VdUnSoCP87Ts8XHLUA8t2uG5WB964OJY
-         GEEE40DFyIkZ88s7JpZPGFANRsvuGKgdjoylU0FVY0sG9cqGIbw7B8TYK2GTJD5Hzy
-         Inh8lzw1JDXbbaMuH1O087Wwo1zwiNj6NVTvypvs=
-X-Virus-Scanned: amavisd-new at unifal-mg.edu.br
-Received: from webmail.unifal-mg.edu.br ([127.0.0.1])
-        by localhost (webmail.unifal-mg.edu.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id t3ztih8VfHcl; Fri, 16 Aug 2019 19:27:52 -0300 (-03)
-Received: from webmail.unifal-mg.edu.br (webmail.unifal-mg.edu.br [10.254.254.99])
-        by webmail.unifal-mg.edu.br (Postfix) with ESMTP id C32096C836A3;
-        Fri, 16 Aug 2019 19:27:50 -0300 (-03)
-Date:   Fri, 16 Aug 2019 19:27:50 -0300 (BRT)
-From:   Mrs Ann Johnson <grad@unifal-mg.edu.br>
-Reply-To: Mrs Ann Johnson <ann.sn1960@gmail.com>
-Message-ID: <652234346.784467.1565994470779.JavaMail.zimbra@unifal-mg.edu.br>
-Subject: NEED YOUR ASSIST PLEASE
+        Fri, 16 Aug 2019 21:27:38 -0400
+X-Greylist: delayed 1347 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Aug 2019 21:27:35 EDT
+Received: from dimstar.local.net (unknown [114.72.91.7])
+        by mail105.syd.optusnet.com.au (Postfix) with SMTP id B7B60361C5E
+        for <netfilter-devel@vger.kernel.org>; Sat, 17 Aug 2019 11:04:56 +1000 (AEST)
+Received: (qmail 26837 invoked by uid 501); 17 Aug 2019 01:04:51 -0000
+Date:   Sat, 17 Aug 2019 11:04:51 +1000
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH conntrack-tools] src: fix strncpy -Wstringop-truncation
+ warnings
+Message-ID: <20190817010451.GA4911@dimstar.local.net>
+Mail-Followup-To: netfilter-devel@vger.kernel.org
+References: <20190816092511.830-1-guigom@riseup.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [197.234.221.131]
-X-Mailer: Zimbra 8.6.0_GA_1242 (zclient/8.6.0_GA_1242)
-Thread-Topic: NEED YOUR ASSIST PLEASE
-Thread-Index: PojqaBCkppx2GL7nnbajaXU282V77A==
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190816092511.830-1-guigom@riseup.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
+        a=j7Z9DUGHOYSlcI8coM27+w==:117 a=j7Z9DUGHOYSlcI8coM27+w==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=bBqXziUQAAAA:8 a=higmGc5uha10EgAAnhcA:9 a=BE1EReVqkM0DrJgs:21
+        a=iLd4QAoMwaXBxHLJ:21 a=CjuIK1q_8ugA:10 a=BjKv_IHbNJvPKzgot4uq:22
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello
-   My name Mrs. Ann Johnson from UK,I am a dying woman who had decided to d=
-onate what I have left to you. I am 59 years old and was diagnosed of ovari=
-an cancer about 2 years ago immediately after the death of my husband, who =
-had left me with everything he worked for. I have decided to donate/will =
-=C2=A39,500,000.00 pounds to you to help the motherless, less privileged an=
-d also for the assistance of the widows ,rather than allow my relatives to =
-use my husband hard earned funds ungodly as i will be going in for an opera=
-tion do not know if i will survived it. Upon receipt of your positive respo=
-nse along with your full contact details will notify my bank to presenting =
-you as my next of kin/beneficiary to facilitate the funds disbursement to y=
-ou.
+Hi Jose,
 
-God Bless you
-Mrs. Ann Johnson
+PLEASE DO NOT DO THIS! See at end
+
+On Fri, Aug 16, 2019 at 11:25:11AM +0200, Jose M. Guisado Gomez wrote:
+> -Wstringop-truncation warning was introduced in GCC-8 as truncation
+> checker for strncpy and strncat.
+>
+> Systems using gcc version >= 8 would receive the following warnings:
+>
+> read_config_yy.c: In function ???yyparse???:
+> read_config_yy.y:1594:2: warning: ???strncpy??? specified bound 16 equals destination size [-Wstringop-truncation]
+>  1594 |  strncpy(policy->name, $2, CTD_HELPER_NAME_LEN);
+>       |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> read_config_yy.y:1384:2: warning: ???strncpy??? specified bound 256 equals destination size [-Wstringop-truncation]
+>  1384 |  strncpy(conf.stats.logfile, $2, FILENAME_MAXLEN);
+>       |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> read_config_yy.y:692:2: warning: ???strncpy??? specified bound 108 equals destination size [-Wstringop-truncation]
+>   692 |  strncpy(conf.local.path, $2, UNIX_PATH_MAX);
+>       |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> read_config_yy.y:169:2: warning: ???strncpy??? specified bound 256 equals destination size [-Wstringop-truncation]
+>   169 |  strncpy(conf.lockfile, $2, FILENAME_MAXLEN);
+>       |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> read_config_yy.y:119:2: warning: ???strncpy??? specified bound 256 equals destination size [-Wstringop-truncation]
+>   119 |  strncpy(conf.logfile, $2, FILENAME_MAXLEN);
+>       |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> main.c: In function ???main???:
+> main.c:168:5: warning: ???strncpy??? specified bound 4096 equals destination size [-Wstringop-truncation]
+>   168 |     strncpy(config_file, argv[i], PATH_MAX);
+>       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Fix the issue by checking for string length first. Also using
+> snprintf instead.
+>
+> In addition, correct an off-by-one when warning about maximum config
+> file path length.
+>
+> Signed-off-by: Jose M. Guisado Gomez <guigom@riseup.net>
+> ---
+>  src/main.c           |  4 ++--
+>  src/read_config_yy.y | 35 +++++++++++++++++++++++++++--------
+>  2 files changed, 29 insertions(+), 10 deletions(-)
+>
+> diff --git a/src/main.c b/src/main.c
+> index 7062e12..d4fbbfa 100644
+> --- a/src/main.c
+> +++ b/src/main.c
+> @@ -165,13 +165,13 @@ int main(int argc, char *argv[])
+>  			break;
+>  		case 'C':
+>  			if (++i < argc) {
+> -				strncpy(config_file, argv[i], PATH_MAX);
+>  				if (strlen(argv[i]) >= PATH_MAX){
+>  					config_file[PATH_MAX-1]='\0';
+>  					dlog(LOG_WARNING, "Path to config file"
+>  					     " to long. Cutting it down to %d"
+> -					     " characters", PATH_MAX);
+> +					     " characters", PATH_MAX - 1);
+>  				}
+> +				snprintf(config_file, PATH_MAX, "%.*s", PATH_MAX - 1, argv[i]);
+>  				break;
+>  			}
+>  			show_usage(argv[0]);
+> diff --git a/src/read_config_yy.y b/src/read_config_yy.y
+> index 4311cd6..696a86d 100644
+> --- a/src/read_config_yy.y
+> +++ b/src/read_config_yy.y
+> @@ -116,7 +116,12 @@ logfile_bool : T_LOG T_OFF
+>
+>  logfile_path : T_LOG T_PATH_VAL
+>  {
+> -	strncpy(conf.logfile, $2, FILENAME_MAXLEN);
+> +	if (strlen($2) >= FILENAME_MAXLEN) {
+> +		dlog(LOG_ERR, "Filename is longer than %u characters",
+> +		     FILENAME_MAXLEN - 1);
+> +		exit(EXIT_FAILURE);
+> +	}
+> +	snprintf(conf.logfile, FILENAME_MAXLEN, "%.*s", FILENAME_MAXLEN - 1, $2);
+>  	free($2);
+>  };
+>
+> @@ -166,7 +171,12 @@ syslog_facility : T_SYSLOG T_STRING
+>
+>  lock : T_LOCK T_PATH_VAL
+>  {
+> -	strncpy(conf.lockfile, $2, FILENAME_MAXLEN);
+> +	if (strlen($2) >= FILENAME_MAXLEN) {
+> +		dlog(LOG_ERR, "Filename is longer than %u characters",
+> +		     FILENAME_MAXLEN - 1);
+> +		exit(EXIT_FAILURE);
+> +	}
+> +	snprintf(conf.lockfile, FILENAME_MAXLEN, "%.*s", FILENAME_MAXLEN - 1, $2);
+>  	free($2);
+>  };
+>
+> @@ -689,13 +699,13 @@ unix_options:
+>
+>  unix_option : T_PATH T_PATH_VAL
+>  {
+> -	strncpy(conf.local.path, $2, UNIX_PATH_MAX);
+> -	free($2);
+> -	if (conf.local.path[UNIX_PATH_MAX - 1]) {
+> +	if (strlen($2) >= UNIX_PATH_MAX) {
+>  		dlog(LOG_ERR, "UNIX Path is longer than %u characters",
+>  		     UNIX_PATH_MAX - 1);
+>  		exit(EXIT_FAILURE);
+>  	}
+> +	snprintf(conf.local.path, UNIX_PATH_MAX, "%.*s", UNIX_PATH_MAX - 1, $2);
+> +	free($2);
+>  };
+>
+>  unix_option : T_BACKLOG T_NUMBER
+> @@ -1381,7 +1391,12 @@ stat_logfile_bool : T_LOG T_OFF
+>
+>  stat_logfile_path : T_LOG T_PATH_VAL
+>  {
+> -	strncpy(conf.stats.logfile, $2, FILENAME_MAXLEN);
+> +	if (strlen($2) >= FILENAME_MAXLEN) {
+> +		dlog(LOG_ERR, "Log file path is longer than %u characters",
+> +		     FILENAME_MAXLEN - 1);
+> +		exit(EXIT_FAILURE);
+> +	}
+> +	snprintf(conf.stats.logfile, FILENAME_MAXLEN, "%.*s", FILENAME_MAXLEN - 1, $2);
+>  	free($2);
+>  };
+>
+> @@ -1589,11 +1604,15 @@ helper_type: T_HELPER_POLICY T_STRING '{' helper_policy_list '}'
+>  		exit(EXIT_FAILURE);
+>  		break;
+>  	}
+> +	if (strlen($2) >= CTD_HELPER_NAME_LEN) {
+> +		dlog(LOG_ERR, "CTD helper name is longer than %u characters",
+> +		     CTD_HELPER_NAME_LEN - 1);
+> +		exit(EXIT_FAILURE);
+> +	}
+>
+>  	policy = (struct ctd_helper_policy *) &e->data;
+> -	strncpy(policy->name, $2, CTD_HELPER_NAME_LEN);
+> +	snprintf(policy->name, CTD_HELPER_NAME_LEN, "%.*s", CTD_HELPER_NAME_LEN - 1, $2);
+>  	free($2);
+> -	policy->name[CTD_HELPER_NAME_LEN-1] = '\0';
+>  	/* Now object is complete. */
+>  	e->type = SYMBOL_HELPER_POLICY_EXPECT_ROOT;
+>  	stack_item_push(&symbol_stack, e);
+> --
+> 2.23.0.rc1
+>
+There is absolutely no need to change code to eliminate GCC warnings.
+
+If you are satisfied that the code is good, put these lines near the start, e.g.
+before any #include lines:
+
+> #pragma GCC diagnostic ignored "-Wpragmas"
+> #pragma GCC diagnostic ignored "-Wstringop-truncation"
+
+The first pragma stops old GCC compilers warning about the unrecognised second
+pragma
+
+The second pragma suppresses the new warning.
+
+Cheers ... Duncan.
