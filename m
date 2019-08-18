@@ -2,50 +2,72 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C320991784
-	for <lists+netfilter-devel@lfdr.de>; Sun, 18 Aug 2019 17:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E67918B4
+	for <lists+netfilter-devel@lfdr.de>; Sun, 18 Aug 2019 20:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726097AbfHRPms (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 18 Aug 2019 11:42:48 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:57997 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726089AbfHRPms (ORCPT
+        id S1726247AbfHRSU1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 18 Aug 2019 14:20:27 -0400
+Received: from vxsys-smtpclusterma-01.srv.cat ([46.16.61.57]:39853 "EHLO
+        vxsys-smtpclusterma-01.srv.cat" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726089AbfHRSU1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 18 Aug 2019 11:42:48 -0400
-Received: from dimstar.local.net (unknown [114.72.91.7])
-        by mail105.syd.optusnet.com.au (Postfix) with SMTP id A3AA1362264
-        for <netfilter-devel@vger.kernel.org>; Mon, 19 Aug 2019 01:42:30 +1000 (AEST)
-Received: (qmail 24150 invoked by uid 501); 18 Aug 2019 15:42:28 -0000
-Date:   Mon, 19 Aug 2019 01:42:28 +1000
-From:   Duncan Roe <duncan_roe@optusnet.com.au>
-To:     Netfilter Development <netfilter-devel@vger.kernel.org>
-Subject: git pull has stopped working
-Message-ID: <20190818154228.GA10803@dimstar.local.net>
-Mail-Followup-To: Netfilter Development <netfilter-devel@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
-        a=j7Z9DUGHOYSlcI8coM27+w==:117 a=j7Z9DUGHOYSlcI8coM27+w==:17
-        a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10 a=B4J5G_FS9iL-zi4UCdUA:9
-        a=CjuIK1q_8ugA:10
+        Sun, 18 Aug 2019 14:20:27 -0400
+Received: from localhost.localdomain (static-79-171-230-77.ipcom.comunitel.net [77.230.171.79])
+        by vxsys-smtpclusterma-01.srv.cat (Postfix) with ESMTPA id A281E2426B
+        for <netfilter-devel@vger.kernel.org>; Sun, 18 Aug 2019 20:20:21 +0200 (CEST)
+From:   Ander Juaristi <a@juaristi.eus>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft v7 1/2] evaluate: New internal helper __expr_evaluate_range
+Date:   Sun, 18 Aug 2019 20:20:12 +0200
+Message-Id: <20190818182013.6765-1-a@juaristi.eus>
+X-Mailer: git-send-email 2.17.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+Signed-off-by: Ander Juaristi <a@juaristi.eus>
+---
+ src/evaluate.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-As of tonight, whenever I try to do a git oull, this happens:
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 831eb7c..a707f5e 100755
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -941,16 +941,28 @@ static int expr_evaluate_range_expr(struct eval_ctx *ctx,
+ 	return 0;
+ }
+ 
+-static int expr_evaluate_range(struct eval_ctx *ctx, struct expr **expr)
++static int __expr_evaluate_range(struct eval_ctx *ctx, struct expr **expr)
+ {
+-	struct expr *range = *expr, *left, *right;
++	struct expr *range = *expr;
+ 
+ 	if (expr_evaluate_range_expr(ctx, range, &range->left) < 0)
+ 		return -1;
+-	left = range->left;
+-
+ 	if (expr_evaluate_range_expr(ctx, range, &range->right) < 0)
+ 		return -1;
++
++	return 0;
++}
++
++static int expr_evaluate_range(struct eval_ctx *ctx, struct expr **expr)
++{
++	struct expr *range = *expr, *left, *right;
++	int rc;
++
++	rc = __expr_evaluate_range(ctx, expr);
++	if (rc)
++		return rc;
++
++	left = range->left;
+ 	right = range->right;
+ 
+ 	if (mpz_cmp(left->value, right->value) >= 0)
+-- 
+2.17.1
 
-> 01:38:00$ git pull
-> fatal: read error: Connection reset by peer
-> 01:39:12$
-
-Tried ebtables, iptables, libmnl, libnftnl & nftables.
-
-It was working the day before yesterday,
-
-Cheers ... Duncan.
