@@ -2,77 +2,123 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B6D91E39
-	for <lists+netfilter-devel@lfdr.de>; Mon, 19 Aug 2019 09:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BAF9209E
+	for <lists+netfilter-devel@lfdr.de>; Mon, 19 Aug 2019 11:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725958AbfHSHon (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 19 Aug 2019 03:44:43 -0400
-Received: from condef-08.nifty.com ([202.248.20.73]:38864 "EHLO
-        condef-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbfHSHon (ORCPT
+        id S1726343AbfHSJpO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 19 Aug 2019 05:45:14 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:34536 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726373AbfHSJpO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 19 Aug 2019 03:44:43 -0400
-Received: from conuserg-08.nifty.com ([10.126.8.71])by condef-08.nifty.com with ESMTP id x7J7eBZ6016229
-        for <netfilter-devel@vger.kernel.org>; Mon, 19 Aug 2019 16:40:11 +0900
-Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp [153.142.97.92]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id x7J7dc7c023792;
-        Mon, 19 Aug 2019 16:39:38 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com x7J7dc7c023792
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1566200379;
-        bh=c+9Vkcft9Ze779qh4taIS5mX7dhxMYtBPJmqfP71LWo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KUbmCRN2q9VVAJddqck0kPQln6Ux8KdEBZ1xaDe/X/Nz2YdsiAboPveH1hS/X6KKC
-         WtX/Qu90IypYmNBChAI/RGLvaiabPSAvqa6LWZndzOeFcTkPtDXn+0cxfm/4FvCnMs
-         fo4S+PKpC09bQ5YhYQkNXWyZXtas3xP9NE/TwL6xWef62Zn0B9sVow88uKiQcvlNum
-         929oqAw9lIYEdjNyyDyh/rgc5chT971U8ftCUI8wleGWCfU32ufzlbQi+bEiKJ959X
-         vmSglsnjJLCUaghJXIn4wmlbpwnWafnsVMTJ0hnjcOYvvNYPoJKXCJsmQW5O8HYRny
-         Dign3vmd6vtjg==
-X-Nifty-SrcIP: [153.142.97.92]
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Florian Westphal <fw@strlen.de>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>, coreteam@netfilter.org
-Subject: [PATCH] netfilter: add include guard to nf_conntrack_h323_types.h
-Date:   Mon, 19 Aug 2019 16:39:27 +0900
-Message-Id: <20190819073927.12296-1-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 19 Aug 2019 05:45:14 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id D846141B81;
+        Mon, 19 Aug 2019 17:45:06 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next 1/3] netfilter: nf_offload: Make nft_flow_offload_chain public
+Date:   Mon, 19 Aug 2019 17:45:03 +0800
+Message-Id: <1566207905-22203-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVJQ0lCQkJCQklITEtNSllXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NAg6Kio4Nzg0SDhMMCwIAjpN
+        SA0wCzFVSlVKTk1NSUtMQktMS0tLVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUhMSEw3Bg++
+X-HM-Tid: 0a6ca94414602086kuqyd846141b81
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add a header include guard just in case.
+From: wenxu <wenxu@ucloud.cn>
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Refactor nft_flow_offload_chain and make it public in header
+
+Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
+ include/net/netfilter/nf_tables_offload.h |  3 +++
+ net/netfilter/nf_tables_offload.c         | 25 ++++++++++++++++---------
+ 2 files changed, 19 insertions(+), 9 deletions(-)
 
- include/linux/netfilter/nf_conntrack_h323_types.h | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/include/linux/netfilter/nf_conntrack_h323_types.h b/include/linux/netfilter/nf_conntrack_h323_types.h
-index 7a6871ac8784..74c6f9241944 100644
---- a/include/linux/netfilter/nf_conntrack_h323_types.h
-+++ b/include/linux/netfilter/nf_conntrack_h323_types.h
-@@ -4,6 +4,9 @@
-  * Copyright (c) 2006 Jing Min Zhao <zhaojingmin@users.sourceforge.net>
-  */
+diff --git a/include/net/netfilter/nf_tables_offload.h b/include/net/netfilter/nf_tables_offload.h
+index 8a5969d9..a13aab1 100644
+--- a/include/net/netfilter/nf_tables_offload.h
++++ b/include/net/netfilter/nf_tables_offload.h
+@@ -69,6 +69,9 @@ void nft_indr_block_get_and_ing_cmd(struct net_device *dev,
+ 				    void *cb_priv,
+ 				    enum flow_block_command command);
  
-+#ifndef _NF_CONNTRACK_H323_TYPES_H
-+#define _NF_CONNTRACK_H323_TYPES_H
++int nft_flow_offload_chain(struct nft_chain *chain,
++			   enum flow_block_command cmd);
 +
- typedef struct TransportAddress_ipAddress {	/* SEQUENCE */
- 	int options;		/* No use */
- 	unsigned int ip;
-@@ -931,3 +934,5 @@ typedef struct RasMessage {	/* CHOICE */
- 		InfoRequestResponse infoRequestResponse;
- 	};
- } RasMessage;
+ #define NFT_OFFLOAD_MATCH(__key, __base, __field, __len, __reg)		\
+ 	(__reg)->base_offset	=					\
+ 		offsetof(struct nft_flow_key, __base);			\
+diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
+index fd8d3ab..3ffe4bb 100644
+--- a/net/netfilter/nf_tables_offload.c
++++ b/net/netfilter/nf_tables_offload.c
+@@ -262,10 +262,9 @@ static int nft_indr_block_offload_cmd(struct nft_base_chain *chain,
+ 
+ #define FLOW_SETUP_BLOCK TC_SETUP_BLOCK
+ 
+-static int nft_flow_offload_chain(struct nft_trans *trans,
+-				  enum flow_block_command cmd)
++int nft_flow_offload_chain(struct nft_chain *chain,
++			   enum flow_block_command cmd)
+ {
+-	struct nft_chain *chain = trans->ctx.chain;
+ 	struct nft_base_chain *basechain;
+ 	struct net_device *dev;
+ 
+@@ -277,16 +276,24 @@ static int nft_flow_offload_chain(struct nft_trans *trans,
+ 	if (!dev)
+ 		return -EOPNOTSUPP;
+ 
++	if (dev->netdev_ops->ndo_setup_tc)
++		return nft_block_offload_cmd(basechain, dev, cmd);
++	else
++		return nft_indr_block_offload_cmd(basechain, dev, cmd);
++}
 +
-+#endif /* _NF_CONNTRACK_H323_TYPES_H */
++static int __nft_flow_offload_chain(struct nft_trans *trans,
++				    enum flow_block_command cmd)
++{
++	struct nft_chain *chain = trans->ctx.chain;
++
+ 	/* Only default policy to accept is supported for now. */
+ 	if (cmd == FLOW_BLOCK_BIND &&
+ 	    nft_trans_chain_policy(trans) != -1 &&
+ 	    nft_trans_chain_policy(trans) != NF_ACCEPT)
+ 		return -EOPNOTSUPP;
+ 
+-	if (dev->netdev_ops->ndo_setup_tc)
+-		return nft_block_offload_cmd(basechain, dev, cmd);
+-	else
+-		return nft_indr_block_offload_cmd(basechain, dev, cmd);
++	return nft_flow_offload_chain(chain, cmd);
+ }
+ 
+ int nft_flow_rule_offload_commit(struct net *net)
+@@ -303,13 +310,13 @@ int nft_flow_rule_offload_commit(struct net *net)
+ 			if (!(trans->ctx.chain->flags & NFT_CHAIN_HW_OFFLOAD))
+ 				continue;
+ 
+-			err = nft_flow_offload_chain(trans, FLOW_BLOCK_BIND);
++			err = __nft_flow_offload_chain(trans, FLOW_BLOCK_BIND);
+ 			break;
+ 		case NFT_MSG_DELCHAIN:
+ 			if (!(trans->ctx.chain->flags & NFT_CHAIN_HW_OFFLOAD))
+ 				continue;
+ 
+-			err = nft_flow_offload_chain(trans, FLOW_BLOCK_UNBIND);
++			err = __nft_flow_offload_chain(trans, FLOW_BLOCK_UNBIND);
+ 			break;
+ 		case NFT_MSG_NEWRULE:
+ 			if (!(trans->ctx.chain->flags & NFT_CHAIN_HW_OFFLOAD))
 -- 
-2.17.1
+1.8.3.1
 
