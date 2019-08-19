@@ -2,34 +2,32 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE229209B
-	for <lists+netfilter-devel@lfdr.de>; Mon, 19 Aug 2019 11:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A850D920A1
+	for <lists+netfilter-devel@lfdr.de>; Mon, 19 Aug 2019 11:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbfHSJpM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 19 Aug 2019 05:45:12 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:34538 "EHLO
+        id S1726477AbfHSJqx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 19 Aug 2019 05:46:53 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:38462 "EHLO
         m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726314AbfHSJpM (ORCPT
+        with ESMTP id S1726373AbfHSJqw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 19 Aug 2019 05:45:12 -0400
+        Mon, 19 Aug 2019 05:46:52 -0400
 Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 24AAD41B84;
-        Mon, 19 Aug 2019 17:45:07 +0800 (CST)
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 480A641BE7;
+        Mon, 19 Aug 2019 17:46:48 +0800 (CST)
 From:   wenxu@ucloud.cn
 To:     pablo@netfilter.org, fw@strlen.de
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next 3/3] netfilter: nf_offload: clear offload things in __nft_release_basechain
-Date:   Mon, 19 Aug 2019 17:45:05 +0800
-Message-Id: <1566207905-22203-3-git-send-email-wenxu@ucloud.cn>
+Subject: [PATCH nf-next] netfilter: nf_table_offload: Fix the incorrect rcu usage in nft_indr_block_get_and_ing_cmd
+Date:   Mon, 19 Aug 2019 17:46:47 +0800
+Message-Id: <1566208007-22513-1-git-send-email-wenxu@ucloud.cn>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1566207905-22203-1-git-send-email-wenxu@ucloud.cn>
-References: <1566207905-22203-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVklVSk9KS0tLS0hJT0lPQkhZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MBg6FDo6Szg5KTghTyxOAjZR
-        TBYwCgFVSlVKTk1NSUtMQktMSUtDVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUlJSE83Bg++
-X-HM-Tid: 0a6ca944155d2086kuqy24aad41b84
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVNQ0JLS0tKSUJNQkJMSllXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Py46Nzo5STg#DzhCTyJCKzw0
+        HCwKFAJVSlVKTk1NSUtDS0tDSE1DVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUlJSks3Bg++
+X-HM-Tid: 0a6ca945a0762086kuqy480a641be7
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
@@ -37,45 +35,49 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: wenxu <wenxu@ucloud.cn>
 
-When the net_device unregister, the netdevice_notifier will release
-the related netdev basedchain and rules in this chains. So it is also
-need to clear the offload things
+The nft_indr_block_get_and_ing_cmd is called in netdevice notify
+It is the incorrect rcu case, To fix it just traverse the list under
+the commit mutex.
 
+Fixes: 9a32669fecfb ("netfilter: nf_tables_offload: support indr block call")
 Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
- net/netfilter/nf_tables_api.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ net/netfilter/nf_tables_offload.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index fe3b7b0..345df36 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -7495,16 +7495,25 @@ int nft_data_dump(struct sk_buff *skb, int attr, const struct nft_data *data,
- int __nft_release_basechain(struct nft_ctx *ctx)
+diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
+index b95e27b..bcaafc8 100644
+--- a/net/netfilter/nf_tables_offload.c
++++ b/net/netfilter/nf_tables_offload.c
+@@ -359,15 +359,18 @@ void nft_indr_block_get_and_ing_cmd(struct net_device *dev,
+ 				    void *cb_priv,
+ 				    enum flow_block_command command)
  {
- 	struct nft_rule *rule, *nr;
-+	bool offloaded = false;
+-	struct net *net = dev_net(dev);
++	const struct nft_chain *chain, *nr;
+ 	const struct nft_table *table;
+-	const struct nft_chain *chain;
++	struct nft_ctx ctx = {
++		.net	= dev_net(dev),
++	};
  
- 	if (WARN_ON(!nft_is_base_chain(ctx->chain)))
- 		return 0;
+-	list_for_each_entry_rcu(table, &net->nft.tables, list) {
++	mutex_lock(&ctx.net->nft.commit_mutex);
++	list_for_each_entry(table, &ctx.net->nft.tables, list) {
+ 		if (table->family != NFPROTO_NETDEV)
+ 			continue;
  
-+	if (ctx->chain->flags & NFT_CHAIN_HW_OFFLOAD)
-+		offloaded = true;
-+
- 	nf_tables_unregister_hook(ctx->net, ctx->chain->table, ctx->chain);
- 	list_for_each_entry_safe(rule, nr, &ctx->chain->rules, list) {
-+		if (offloaded)
-+			nft_flow_offload_rule(ctx->chain, rule,
-+					      NULL, FLOW_CLS_DESTROY);
- 		list_del(&rule->list);
- 		ctx->chain->use--;
- 		nf_tables_rule_release(ctx, rule);
+-		list_for_each_entry_rcu(chain, &table->chains, list) {
++		list_for_each_entry_safe(chain, nr, &table->chains, list) {
+ 			if (nft_is_base_chain(chain)) {
+ 				struct nft_base_chain *basechain;
+ 
+@@ -382,4 +385,5 @@ void nft_indr_block_get_and_ing_cmd(struct net_device *dev,
+ 			}
+ 		}
  	}
-+	if (offloaded)
-+		nft_flow_offload_chain(ctx->chain, FLOW_BLOCK_UNBIND);
- 	nft_chain_del(ctx->chain);
- 	ctx->table->use--;
- 	nf_tables_chain_destroy(ctx);
++	mutex_unlock(&ctx.net->nft.commit_mutex);
+ }
 -- 
 1.8.3.1
 
