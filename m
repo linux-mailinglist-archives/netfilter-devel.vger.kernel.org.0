@@ -2,85 +2,106 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 749D494D63
-	for <lists+netfilter-devel@lfdr.de>; Mon, 19 Aug 2019 20:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4188394E5A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 19 Aug 2019 21:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728308AbfHSS7h (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 19 Aug 2019 14:59:37 -0400
-Received: from correo.us.es ([193.147.175.20]:37886 "EHLO mail.us.es"
+        id S1728574AbfHSTeP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 19 Aug 2019 15:34:15 -0400
+Received: from fajn.hanzlici.cz ([46.13.76.95]:36406 "EHLO mail.hanzlici.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728353AbfHSS7h (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 19 Aug 2019 14:59:37 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 3DBFDF2630
-        for <netfilter-devel@vger.kernel.org>; Mon, 19 Aug 2019 20:50:16 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 30492B8001
-        for <netfilter-devel@vger.kernel.org>; Mon, 19 Aug 2019 20:50:16 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 24BF4B7FF9; Mon, 19 Aug 2019 20:50:16 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id F0D8CFB362;
-        Mon, 19 Aug 2019 20:50:13 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 19 Aug 2019 20:50:13 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [31.4.209.241])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 752EF4265A32;
-        Mon, 19 Aug 2019 20:50:13 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 5/5] netfilter: add include guard to nf_conntrack_h323_types.h
-Date:   Mon, 19 Aug 2019 20:49:11 +0200
-Message-Id: <20190819184911.15263-6-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20190819184911.15263-1-pablo@netfilter.org>
-References: <20190819184911.15263-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728375AbfHSTeP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 19 Aug 2019 15:34:15 -0400
+Received: from franta.hanzlici.cz (franta.hanzlici.cz [192.168.1.22])
+        (Authenticated sender: franta@hanzlici.cz)
+        by mail.hanzlici.cz (Postfix) with ESMTPSA id 49DF71909C0;
+        Mon, 19 Aug 2019 21:34:13 +0200 (CEST)
+Date:   Mon, 19 Aug 2019 21:34:11 +0200
+From:   Franta =?UTF-8?B?SGFuemzDrWs=?= <franta@hanzlici.cz>
+To:     Jeremy Sowden <jeremy@azazel.net>
+Cc:     Jan Engelhardt <jengelh@inai.de>,
+        Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH xtables-addons v2 1/2] xt_pknock, xt_SYSRQ: don't set
+ shash_desc::flags.
+Message-ID: <20190819213411.6aaabd42@franta.hanzlici.cz>
+In-Reply-To: <20190812165731.GC5190@azazel.net>
+References: <20190811113826.5e594d8f@franta.hanzlici.cz>
+        <20190812115742.21770-1-jeremy@azazel.net>
+        <20190812115742.21770-2-jeremy@azazel.net>
+        <nycvar.YFH.7.76.1908122317330.19510@n3.vanv.qr>
+        <20190812165731.GC5190@azazel.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
+On Mon, 12 Aug 2019 17:57:31 +0100
+Jeremy Sowden <jeremy@azazel.net> wrote:
 
-Add a header include guard just in case.
+> On 2019-08-12, at 23:17:52 +0800, Jan Engelhardt wrote:
+> > On Monday 2019-08-12 19:57, Jeremy Sowden wrote:  
+> > >shash_desc::flags was removed from the kernel in 5.1.
+> > >
+> > >Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+> > >---
+> > > extensions/pknock/xt_pknock.c | 1 -
+> > > extensions/xt_SYSRQ.c         | 1 -
+> > > 2 files changed, 2 deletions(-)
+> > >
+> > >diff --git a/extensions/pknock/xt_pknock.c b/extensions/pknock/xt_pknock.c
+> > >index c76901ac4c1a..8021ea07e1b9 100644
+> > >--- a/extensions/pknock/xt_pknock.c
+> > >+++ b/extensions/pknock/xt_pknock.c
+> > >@@ -1125,7 +1125,6 @@ static int __init xt_pknock_mt_init(void)
+> > >
+> > > 	crypto.size = crypto_shash_digestsize(crypto.tfm);
+> > > 	crypto.desc.tfm = crypto.tfm;
+> > >-	crypto.desc.flags = 0;  
+> >
+> > But this will still be needed for 5.0 I guess, so it cannot just be
+> > unconditionally removed.  
+> 
+> That assignment was actually superfluous anyway, because crypto.desc is
+> zero-initialized when crypto is initialized (xt_pknock.c, ll. 110ff.):
+> 
+>   static struct {
+>           const char *algo;
+>           struct crypto_shash *tfm;
+>           unsigned int size;
+>           struct shash_desc desc;
+>   } crypto = {
+>           .algo	= "hmac(sha256)",
+>           .tfm	= NULL,
+>           .size	= 0
+>   };
+> 
+> In fact the explicit zero-initialization of .tfm and .size is also
+> superfluous and can be removed:
+> 
+>   static struct {
+>           const char *algo;
+>           struct crypto_shash *tfm;
+>           unsigned int size;
+>           struct shash_desc desc;
+>   } crypto = {
+>           .algo	= "hmac(sha256)",
+>   };
+> 
+> Adding an initializer to the variable declaration in xt_SYSRQ.c will do
+> the same thing.  Patch attached.
+> 
+> J.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- include/linux/netfilter/nf_conntrack_h323_types.h | 5 +++++
- 1 file changed, 5 insertions(+)
+Hi Jeremy, thanks for Your patches!
+Please, they are only here in mail list, or also in any repo?
+Or will be some new package release and I should wait?
 
-diff --git a/include/linux/netfilter/nf_conntrack_h323_types.h b/include/linux/netfilter/nf_conntrack_h323_types.h
-index 7a6871ac8784..74c6f9241944 100644
---- a/include/linux/netfilter/nf_conntrack_h323_types.h
-+++ b/include/linux/netfilter/nf_conntrack_h323_types.h
-@@ -4,6 +4,9 @@
-  * Copyright (c) 2006 Jing Min Zhao <zhaojingmin@users.sourceforge.net>
-  */
- 
-+#ifndef _NF_CONNTRACK_H323_TYPES_H
-+#define _NF_CONNTRACK_H323_TYPES_H
-+
- typedef struct TransportAddress_ipAddress {	/* SEQUENCE */
- 	int options;		/* No use */
- 	unsigned int ip;
-@@ -931,3 +934,5 @@ typedef struct RasMessage {	/* CHOICE */
- 		InfoRequestResponse infoRequestResponse;
- 	};
- } RasMessage;
-+
-+#endif /* _NF_CONNTRACK_H323_TYPES_H */
+My xtables-addons v3.3 package list SourceForge as project home site,
+but I can't find there nothing newer than stuff from March 2019:
+https://sourceforge.net/p/xtables-addons/xtables-addons/ci/master/tree/
+Or am I wrong?
 -- 
-2.11.0
-
-
+Thanks, Franta Hanzlik
