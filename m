@@ -2,163 +2,164 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1992295C9F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Aug 2019 12:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE2795D52
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Aug 2019 13:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729428AbfHTKwi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 20 Aug 2019 06:52:38 -0400
-Received: from correo.us.es ([193.147.175.20]:39268 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728842AbfHTKwi (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 20 Aug 2019 06:52:38 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 4B016F278A
-        for <netfilter-devel@vger.kernel.org>; Tue, 20 Aug 2019 12:52:35 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 3B24BB7FFB
-        for <netfilter-devel@vger.kernel.org>; Tue, 20 Aug 2019 12:52:35 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 30017461; Tue, 20 Aug 2019 12:52:35 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 219D1D1DBB;
-        Tue, 20 Aug 2019 12:52:33 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 20 Aug 2019 12:52:33 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [47.60.43.0])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 488874265A2F;
-        Tue, 20 Aug 2019 12:52:31 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
+        id S1729541AbfHTL2d (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 20 Aug 2019 07:28:33 -0400
+Received: from mail.fem.tu-ilmenau.de ([141.24.220.54]:32787 "EHLO
+        mail.fem.tu-ilmenau.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729426AbfHTL2d (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 20 Aug 2019 07:28:33 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.fem.tu-ilmenau.de (Postfix) with ESMTP id 4503D64DC;
+        Tue, 20 Aug 2019 13:28:29 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at fem.tu-ilmenau.de
+Received: from mail.fem.tu-ilmenau.de ([127.0.0.1])
+        by localhost (mail.fem.tu-ilmenau.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HktjCg8DRHmX; Tue, 20 Aug 2019 13:28:02 +0200 (CEST)
+Received: from mail-backup.fem.tu-ilmenau.de (mail-backup.net.fem.tu-ilmenau.de [10.42.40.22])
+        (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mail.fem.tu-ilmenau.de (Postfix) with ESMTPS;
+        Tue, 20 Aug 2019 13:26:23 +0200 (CEST)
+Received: from a234.fem.tu-ilmenau.de (ray-controller.net.fem.tu-ilmenau.de [10.42.51.234])
+        by mail-backup.fem.tu-ilmenau.de (Postfix) with ESMTP id ABCC85612A;
+        Tue, 20 Aug 2019 13:26:23 +0200 (CEST)
+Received: by a234.fem.tu-ilmenau.de (Postfix, from userid 1000)
+        id 8E15F300183D; Tue, 20 Aug 2019 13:26:23 +0200 (CEST)
+From:   Michael Braun <michael-dev@fami-braun.de>
 To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        jakub.kicinski@netronome.com, jiri@resnulli.us, vladbu@mellanox.com
-Subject: [PATCH net-next 2/2] netfilter: nft_payload: packet mangling offload support
-Date:   Tue, 20 Aug 2019 12:52:25 +0200
-Message-Id: <20190820105225.13943-2-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20190820105225.13943-1-pablo@netfilter.org>
-References: <20190820105225.13943-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+Cc:     Michael Braun <michael-dev@fami-braun.de>
+Subject: [PATCHv2] netfilter: nfnetlink_log:add support for VLAN information
+Date:   Tue, 20 Aug 2019 13:26:17 +0200
+Message-Id: <20190820112617.18095-1-michael-dev@fami-braun.de>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch allows for mangling packet fields using hardware offload
-infrastructure.
+Currently, there is no vlan information (e.g. when used with a vlan aware
+bridge) passed to userspache, HWHEADER will contain an 08 00 (ip) suffix
+even for tagged ip packets.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Therefore, add an extra netlink attribute that passes the vlan information
+to userspace similarly to 15824ab29f for nfqueue.
+
+Signed-off-by: Michael Braun <michael-dev@fami-braun.de>
+
+--
+v2: mirror nfqueue behaviour
 ---
- net/netfilter/nft_payload.c | 82 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
+ include/uapi/linux/netfilter/nfnetlink_log.h | 11 ++++++
+ net/netfilter/nf_log_common.c                |  2 +
+ net/netfilter/nfnetlink_log.c                | 40 ++++++++++++++++++++
+ 3 files changed, 53 insertions(+)
 
-diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
-index 22a80eb60222..d758c8900835 100644
---- a/net/netfilter/nft_payload.c
-+++ b/net/netfilter/nft_payload.c
-@@ -562,12 +562,94 @@ static int nft_payload_set_dump(struct sk_buff *skb, const struct nft_expr *expr
- 	return -1;
- }
- 
-+static int nft_payload_offload_set_nh(struct nft_offload_ctx *ctx,
-+				      struct nft_flow_rule *flow,
-+				      const struct nft_payload_set *priv)
-+{
-+	int type = FLOW_ACT_MANGLE_UNSPEC;
-+
-+	switch (ctx->dep.l3num) {
-+	case htons(ETH_P_IP):
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_IP4;
-+		break;
-+	case htons(ETH_P_IPV6):
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_IP6;
-+		break;
-+	}
-+
-+	return type;
-+}
-+
-+static int nft_payload_offload_set_th(struct nft_offload_ctx *ctx,
-+				      struct nft_flow_rule *flow,
-+				      const struct nft_payload_set *priv)
-+{
-+	int type = FLOW_ACT_MANGLE_UNSPEC;
-+
-+	switch (ctx->dep.protonum) {
-+	case IPPROTO_TCP:
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_TCP;
-+		break;
-+	case IPPROTO_UDP:
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_UDP;
-+		break;
-+	}
-+
-+	return type;
-+}
-+
-+static inline u32 nft_payload_mask(int len)
-+{
-+	return (1 << (len * BITS_PER_BYTE)) - 1;
-+}
-+
-+static int nft_payload_set_offload(struct nft_offload_ctx *ctx,
-+				   struct nft_flow_rule *flow,
-+				   const struct nft_expr *expr)
-+{
-+	const struct nft_payload_set *priv = nft_expr_priv(expr);
-+	struct nft_offload_reg *sreg = &ctx->regs[priv->sreg];
-+	int type = FLOW_ACT_MANGLE_UNSPEC;
-+	struct flow_action_entry *entry;
-+	u32 words;
-+	int i;
-+
-+	switch (priv->base) {
-+	case NFT_PAYLOAD_LL_HEADER:
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_ETH;
-+		break;
-+	case NFT_PAYLOAD_NETWORK_HEADER:
-+		type = nft_payload_offload_set_nh(ctx, flow, priv);
-+		break;
-+	case NFT_PAYLOAD_TRANSPORT_HEADER:
-+		type = nft_payload_offload_set_th(ctx, flow, priv);
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		break;
-+	}
-+	words = round_up(priv->len, sizeof(u32)) / sizeof(u32);
-+
-+	entry = &flow->rule->action.entries[ctx->num_actions++];
-+	entry->mangle.htype	= type;
-+	entry->mangle.offset	= priv->offset;
-+	for (i = 0; i < words; i++) {
-+		entry->mangle.data[i].mask =
-+			~htonl(nft_payload_mask(priv->len));
-+		entry->mangle.data[i].val = sreg->data.data[i];
-+	}
-+	entry->mangle.words	= words;
-+
-+	return type != FLOW_ACT_MANGLE_UNSPEC ? 0 : -EOPNOTSUPP;
-+}
-+
- static const struct nft_expr_ops nft_payload_set_ops = {
- 	.type		= &nft_payload_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_payload_set)),
- 	.eval		= nft_payload_set_eval,
- 	.init		= nft_payload_set_init,
- 	.dump		= nft_payload_set_dump,
-+	.offload	= nft_payload_set_offload,
+diff --git a/include/uapi/linux/netfilter/nfnetlink_log.h b/include/uapi/linux/netfilter/nfnetlink_log.h
+index 20983cb195a0..45c8d3b027e0 100644
+--- a/include/uapi/linux/netfilter/nfnetlink_log.h
++++ b/include/uapi/linux/netfilter/nfnetlink_log.h
+@@ -33,6 +33,15 @@ struct nfulnl_msg_packet_timestamp {
+ 	__aligned_be64	usec;
  };
  
- static const struct nft_expr_ops *
++enum nfulnl_vlan_attr {
++	NFULA_VLAN_UNSPEC,
++	NFULA_VLAN_PROTO,		/* __be16 skb vlan_proto */
++	NFULA_VLAN_TCI,			/* __be16 skb htons(vlan_tci) */
++	__NFULA_VLAN_MAX,
++};
++
++#define NFULA_VLAN_MAX (__NFULA_VLAN_MAX + 1)
++
+ enum nfulnl_attr_type {
+ 	NFULA_UNSPEC,
+ 	NFULA_PACKET_HDR,
+@@ -54,6 +63,8 @@ enum nfulnl_attr_type {
+ 	NFULA_HWLEN,			/* hardware header length */
+ 	NFULA_CT,                       /* nf_conntrack_netlink.h */
+ 	NFULA_CT_INFO,                  /* enum ip_conntrack_info */
++	NFULA_VLAN,			/* nested attribute: packet vlan info */
++	NFULA_L2HDR,			/* full L2 header */
+ 
+ 	__NFULA_MAX
+ };
+diff --git a/net/netfilter/nf_log_common.c b/net/netfilter/nf_log_common.c
+index ae5628ddbe6d..c127bcc119d8 100644
+--- a/net/netfilter/nf_log_common.c
++++ b/net/netfilter/nf_log_common.c
+@@ -167,6 +167,8 @@ nf_log_dump_packet_common(struct nf_log_buf *m, u_int8_t pf,
+ 	physoutdev = nf_bridge_get_physoutdev(skb);
+ 	if (physoutdev && out != physoutdev)
+ 		nf_log_buf_add(m, "PHYSOUT=%s ", physoutdev->name);
++	if (skb_vlan_tag_present(skb))
++		nf_log_buf_add(m, "VLAN=%d ", skb_vlan_tag_get_id(skb));
+ #endif
+ }
+ EXPORT_SYMBOL_GPL(nf_log_dump_packet_common);
+diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
+index 6dee4f9a944c..dd5b63205d31 100644
+--- a/net/netfilter/nfnetlink_log.c
++++ b/net/netfilter/nfnetlink_log.c
+@@ -385,6 +385,40 @@ nfulnl_timer(struct timer_list *t)
+ 	instance_put(inst);
+ }
+ 
++#if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
++static int nfulnl_put_bridge(struct nfulnl_instance *inst, struct sk_buff *skb)
++{
++	if (!skb_mac_header_was_set(skb))
++		return 0;
++
++	if (skb_vlan_tag_present(skb)) {
++		struct nlattr *nest;
++
++		nest = nla_nest_start(inst->skb, NFULA_VLAN);
++		if (!nest)
++			goto nla_put_failure;
++
++		if (nla_put_be16(inst->skb, NFULA_VLAN_TCI, htons(skb->vlan_tci)) ||
++		    nla_put_be16(inst->skb, NFULA_VLAN_PROTO, skb->vlan_proto))
++			goto nla_put_failure;
++
++		nla_nest_end(inst->skb, nest);
++	}
++
++	if (skb->mac_header < skb->network_header) {
++		int len = (int)(skb->network_header - skb->mac_header);
++
++		if (nla_put(inst->skb, NFULA_L2HDR, len, skb_mac_header(skb)))
++			goto nla_put_failure;
++	}
++
++	return 0;
++
++nla_put_failure:
++	return -1;
++}
++#endif /* IS_ENABLED(CONFIG_BRIDGE_NETFILTER) */
++
+ /* This is an inline function, we don't really care about a long
+  * list of arguments */
+ static inline int
+@@ -580,6 +614,12 @@ __build_packet_message(struct nfnl_log_net *log,
+ 				 NFULA_CT, NFULA_CT_INFO) < 0)
+ 		goto nla_put_failure;
+ 
++#if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
++	if (pf == PF_BRIDGE &&
++	    nfulnl_put_bridge(inst, skb) < 0)
++		goto nla_put_failure;
++#endif
++
+ 	if (data_len) {
+ 		struct nlattr *nla;
+ 		int size = nla_attr_size(data_len);
 -- 
-2.11.0
-
+2.20.1
 
