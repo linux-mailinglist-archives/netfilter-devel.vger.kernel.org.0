@@ -2,127 +2,88 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C0D97C4A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 16:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3B397E0D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 17:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728923AbfHUOQS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 21 Aug 2019 10:16:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24730 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728943AbfHUOQR (ORCPT
+        id S1729404AbfHUPF5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 21 Aug 2019 11:05:57 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:60534 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729424AbfHUPF5 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 21 Aug 2019 10:16:17 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7LEDBGo096836
-        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 10:16:16 -0400
-Received: from e16.ny.us.ibm.com (e16.ny.us.ibm.com [129.33.205.206])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2uh6p2jx8n-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 10:16:16 -0400
-Received: from localhost
-        by e16.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <netfilter-devel@vger.kernel.org> from <leonardo@linux.ibm.com>;
-        Wed, 21 Aug 2019 15:16:14 +0100
-Received: from b01cxnp23034.gho.pok.ibm.com (9.57.198.29)
-        by e16.ny.us.ibm.com (146.89.104.203) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 21 Aug 2019 15:16:11 +0100
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7LEGAlr39977240
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 14:16:10 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BFEC4AC064;
-        Wed, 21 Aug 2019 14:16:10 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 724A6AC05F;
-        Wed, 21 Aug 2019 14:16:07 +0000 (GMT)
-Received: from LeoBras.ibmuc.com (unknown [9.85.171.79])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Aug 2019 14:16:07 +0000 (GMT)
-From:   Leonardo Bras <leonardo@linux.ibm.com>
-To:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Leonardo Bras <leonardo@linux.ibm.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Subject: [PATCH v2 1/1] netfilter: nf_tables: fib: Drop IPV6 packages if IPv6 is disabled on boot
-Date:   Wed, 21 Aug 2019 11:15:06 -0300
-X-Mailer: git-send-email 2.20.1
+        Wed, 21 Aug 2019 11:05:57 -0400
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from webmail.solarflare.com (webmail.solarflare.com [12.187.104.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us5.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 9B4DA180092;
+        Wed, 21 Aug 2019 15:05:54 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ocex03.SolarFlarecom.com
+ (10.20.40.36) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 21 Aug
+ 2019 08:05:50 -0700
+Subject: Re: [PATCH net-next 1/2] net: flow_offload: mangle 128-bit packet
+ field with one action
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+CC:     <netfilter-devel@vger.kernel.org>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <jakub.kicinski@netronome.com>,
+        <jiri@resnulli.us>, <vladbu@mellanox.com>
+References: <20190820105225.13943-1-pablo@netfilter.org>
+ <f18d8369-f87d-5b9a-6c9d-daf48a3b95f1@solarflare.com>
+ <20190820144453.ckme6oj2c4hmofhu@salvia>
+ <c8a00a98-74eb-9f8d-660f-c2ea159dec91@solarflare.com>
+ <20190820173344.3nrzfjboyztz3lji@salvia>
+ <f4cf8a97-3322-d982-6068-d4c0ce997b1c@solarflare.com>
+ <20190820183533.ykh7mnurpmegxb27@salvia>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <5f7f561d-36b5-2611-e051-4a1549e35f09@solarflare.com>
+Date:   Wed, 21 Aug 2019 16:05:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <20190820183533.ykh7mnurpmegxb27@salvia>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19082114-0072-0000-0000-000004541531
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011629; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01250020; UDB=6.00659932; IPR=6.01031574;
- MB=3.00028261; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-21 14:16:14
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19082114-0073-0000-0000-00004CC5379D
-Message-Id: <20190821141505.2394-1-leonardo@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-21_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908210156
+Content-Language: en-GB
+X-Originating-IP: [10.17.20.203]
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-24860.005
+X-TM-AS-Result: No-7.468400-4.000000-10
+X-TMASE-MatchedRID: QW5G6BKkLTobF9xF7zzuNfZvT2zYoYOwC/ExpXrHizz0nlq8x3d7MEI7
+        9pzeweHtg07k8t5CAJP9FDOEyDIuTFoAjvFQR6XL9FQh3flUIh40AJe3B5qfBkl/J9Ro+MABD3b
+        LdMpm5wQ6aYiWdCFc9Dq+dNqcVismNRmfUxjO48g2Uxn7RTIiMcnlJe2gk8vIs2A0jYj1s4DTfl
+        TvFEeDIRgmCYbQRfj7CSP2yg+Ty9PvnOSC+jk4Dh/R5SKe31ARwdaE5TU9NVgk1SrS1we7Rezn6
+        eE2grwnGzVk6wnvigU+PHq8e3nI3r9ZdlL8eonaC24oEZ6SpSlsZUSYh+N/e/q5f1QpZOPRRUu0
+        Vzgx+BEpw8RyyTGkcQJ6n92yYrqggf1QCej4QZA=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--7.468400-4.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-24860.005
+X-MDID: 1566399956-4gMPXNvFJNuD
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If IPv6 is disabled on boot (ipv6.disable=1), but nft_fib_inet ends up
-dealing with a IPv6 package, it causes a kernel panic in
-fib6_node_lookup_1(), crashing in bad_page_fault.
+On 20/08/2019 19:35, Pablo Neira Ayuso wrote:
+> With one action that says "mangle an IPv6 at offset ip6 daddr field"
+> the driver has more global view on what is going on, rather than
+> having four actions to mangle four 32-bit words at some offset.
+But the action doesn't say that, it still says "mangle four 32-bit
+ words", it's just that they're now contiguous.  The driver doesn't
+ know whether that's an IPv6 address or just a bunch of fields that
+ happened to be next to one another.
+(Besides, the driver can't rely on that 'global view', because if
+ the actions did come from the TC uAPI, they're still going to be
+ single u32 mangles.)
 
-The panic is caused by trying to deference a very low address (0x38
-in ppc64le), due to ipv6.fib6_main_tbl = NULL.
-BUG: Kernel NULL pointer dereference at 0x00000038
+> If this patch adds some loops here is because I did not want to make
+> too smart changes on the drivers.
+The thing is, the drivers are already looping over TC actions, so they
+ already naturally support multiple pedits.  You don't gain any
+ expressiveness by combining them into batches of four, meanwhile you
+ make the API less orthogonal and more laborious to implement.
 
-Fix this behavior by dropping IPv6 packages if !ipv6_mod_enabled().
-
-Signed-off-by: Leonardo Bras <leonardo@linux.ibm.com>
----
-Changes from v1:
-- Move drop logic from nft_fib_inet_eval() to nft_fib6_eval{,_type}
-so it can affect other usages of these functions. 
-
- net/ipv6/netfilter/nft_fib_ipv6.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/net/ipv6/netfilter/nft_fib_ipv6.c b/net/ipv6/netfilter/nft_fib_ipv6.c
-index 7ece86afd079..75acc417e2ff 100644
---- a/net/ipv6/netfilter/nft_fib_ipv6.c
-+++ b/net/ipv6/netfilter/nft_fib_ipv6.c
-@@ -125,6 +125,11 @@ void nft_fib6_eval_type(const struct nft_expr *expr, struct nft_regs *regs,
- 	u32 *dest = &regs->data[priv->dreg];
- 	struct ipv6hdr *iph, _iph;
- 
-+	if (!ipv6_mod_enabled()) {
-+		regs->verdict.code = NF_DROP;
-+		return;
-+	}
-+
- 	iph = skb_header_pointer(pkt->skb, noff, sizeof(_iph), &_iph);
- 	if (!iph) {
- 		regs->verdict.code = NFT_BREAK;
-@@ -150,6 +155,11 @@ void nft_fib6_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 	struct rt6_info *rt;
- 	int lookup_flags;
- 
-+	if (!ipv6_mod_enabled()) {
-+		regs->verdict.code = NF_DROP;
-+		return;
-+	}
-+
- 	if (priv->flags & NFTA_FIB_F_IIF)
- 		oif = nft_in(pkt);
- 	else if (priv->flags & NFTA_FIB_F_OIF)
--- 
-2.20.1
-
+> Please, allow for incremental updates on the flow_offload API to get
+> it better now. Later we'll have way more drivers it will become harder
+> to update this.
+I'm not opposed to making the API better.  I just don't believe that
+ this patch series achieves that.
