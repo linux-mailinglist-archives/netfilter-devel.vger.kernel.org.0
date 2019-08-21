@@ -2,87 +2,131 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E508F976AF
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 12:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA83D976B8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 12:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726677AbfHUKJI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 21 Aug 2019 06:09:08 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:39624 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726389AbfHUKJI (ORCPT
+        id S1726447AbfHUKKo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 21 Aug 2019 06:10:44 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:57597 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726217AbfHUKKo (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 21 Aug 2019 06:09:08 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1i0NY9-0003CD-Gu; Wed, 21 Aug 2019 12:09:05 +0200
-Date:   Wed, 21 Aug 2019 12:09:05 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Fernando Fernandez Mancera <ffmancera@riseup.net>
+        Wed, 21 Aug 2019 06:10:44 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 8688941701;
+        Wed, 21 Aug 2019 18:10:39 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH 1/2 nf-next] netfilter: nf_tables: Introduce stateful
- object update operation
-Message-ID: <20190821100905.GX2588@breakpoint.cc>
-References: <20190821094420.866-1-ffmancera@riseup.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190821094420.866-1-ffmancera@riseup.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Subject: [PATCH nft v4] meta: add ibrpvid and ibrvproto support
+Date:   Wed, 21 Aug 2019 18:10:38 +0800
+Message-Id: <1566382238-5286-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVJTEJCQkJCTEpIQ0JMTFlXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PSo6HRw*LzgrTD46Ew4cKUIS
+        GBBPCU5VSlVKTk1NSENJSUhCTUhIVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUhKTE03Bg++
+X-HM-Tid: 0a6cb3a82f482086kuqy8688941701
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Fernando Fernandez Mancera <ffmancera@riseup.net> wrote:
-> This patch adds the infrastructure needed for the stateful object update
-> support.
-> 
-> Signed-off-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
-> ---
->  include/net/netfilter/nf_tables.h |  6 +++
->  net/netfilter/nf_tables_api.c     | 71 ++++++++++++++++++++++++++++---
->  2 files changed, 70 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-> index dc301e3d6739..dc4e32040ea9 100644
-> --- a/include/net/netfilter/nf_tables.h
-> +++ b/include/net/netfilter/nf_tables.h
-> @@ -1123,6 +1123,9 @@ struct nft_object_ops {
->  	int				(*dump)(struct sk_buff *skb,
->  						struct nft_object *obj,
->  						bool reset);
-> +	int				(*update)(const struct nft_ctx *ctx,
-> +						  const struct nlattr *const tb[],
-> +						  struct nft_object *obj);
+From: wenxu <wenxu@ucloud.cn>
 
-maybe adda 'bool commit' argument here.
+This allows you to match the bridge pvid and vlan protocol, for
+instance:
 
-> +	err = obj->ops->update(ctx, (const struct nlattr * const *)tb, obj);
+nft add rule bridge firewall zones meta ibrvproto 0x8100
+nft add rule bridge firewall zones meta ibrpvid 100
 
-Then, set it to 'false' here.
-You would have to keep 'tb' allocated and place it on the 'trans'
-object.
+Signed-off-by: wenxu <wenxu@ucloud.cn>
+---
+ src/meta.c                     |  6 ++++++
+ tests/py/bridge/meta.t         |  2 ++
+ tests/py/bridge/meta.t.json    | 26 ++++++++++++++++++++++++++
+ tests/py/bridge/meta.t.payload |  9 +++++++++
+ 4 files changed, 43 insertions(+)
 
-> +	nft_trans_obj_update(trans) = true;
+diff --git a/src/meta.c b/src/meta.c
+index 5901c99..d45d757 100644
+--- a/src/meta.c
++++ b/src/meta.c
+@@ -442,6 +442,12 @@ const struct meta_template meta_templates[] = {
+ 	[NFT_META_OIFKIND]	= META_TEMPLATE("oifkind",   &ifname_type,
+ 						IFNAMSIZ * BITS_PER_BYTE,
+ 						BYTEORDER_HOST_ENDIAN),
++	[NFT_META_BRI_IIFPVID]	= META_TEMPLATE("ibrpvid",   &integer_type,
++						2 * BITS_PER_BYTE,
++						BYTEORDER_HOST_ENDIAN),
++	[NFT_META_BRI_IIFVPROTO] = META_TEMPLATE("ibrvproto",   &integer_type,
++						2 * BITS_PER_BYTE,
++						BYTEORDER_HOST_ENDIAN),
+ };
+ 
+ static bool meta_key_is_unqualified(enum nft_meta_keys key)
+diff --git a/tests/py/bridge/meta.t b/tests/py/bridge/meta.t
+index 88e819f..d9fb681 100644
+--- a/tests/py/bridge/meta.t
++++ b/tests/py/bridge/meta.t
+@@ -4,3 +4,5 @@
+ 
+ meta obrname "br0";ok
+ meta ibrname "br0";ok
++meta ibrvproto 33024;ok
++meta ibrpvid 100;ok
+diff --git a/tests/py/bridge/meta.t.json b/tests/py/bridge/meta.t.json
+index 5df4773..0a5e64a 100644
+--- a/tests/py/bridge/meta.t.json
++++ b/tests/py/bridge/meta.t.json
+@@ -23,3 +23,29 @@
+         }
+     }
+ ]
++
++# meta ibrvproto 33024
++[
++    {
++        "match": {
++            "left": {
++                "meta": { "key": "ibrvproto" }
++            },
++	    "op": "==",
++            "right": 33024
++        }
++    }
++]
++
++# meta ibrpvid 100
++[
++    {
++        "match": {
++            "left": {
++                "meta": { "key": "ibrpvid" }
++            },
++	    "op": "==",
++            "right": 100
++        }
++    }
++]
+diff --git a/tests/py/bridge/meta.t.payload b/tests/py/bridge/meta.t.payload
+index 0f0d101..e5793a9 100644
+--- a/tests/py/bridge/meta.t.payload
++++ b/tests/py/bridge/meta.t.payload
+@@ -8,3 +8,12 @@ bridge test-bridge input
+   [ meta load bri_iifname => reg 1 ]
+   [ cmp eq reg 1 0x00307262 0x00000000 0x00000000 0x00000000 ]
+ 
++# meta ibrvproto 33024
++bridge test-bridge input
++  [ meta load bri_iifvproto => reg 1 ]
++  [ cmp eq reg 1 0x00008100 ]
++
++# meta ibrpvid 100
++bridge test-bridge input
++  [ meta load bri_iifpvid => reg 1 ]
++  [ cmp eq reg 1 0x00000064 ]
+-- 
+2.15.1
 
-	nft_trans_obj_update_tb(trans) = tb;
-
-> -			nft_clear(net, nft_trans_obj(trans));
-> -			nf_tables_obj_notify(&trans->ctx, nft_trans_obj(trans),
-> -					     NFT_MSG_NEWOBJ);
-> -			nft_trans_destroy(trans);
-> +			if (nft_trans_obj_update(trans)) {
-
-				nft_trans_obj(trans)->ops->update(&trans->ctx,
-					      nft_trans_obj_update_tb(trans),
-					      nft_trans_obj(trans),
-					      true);
-
-				kfree(nft_trans_obj_update_tb(trans));
-
-
-Because otherwise we will update objects while we're not yet sure that
-we can process/handle the entire batch.
-
-I think we should, if possible, only update once we've made it to
-the commit phase.
