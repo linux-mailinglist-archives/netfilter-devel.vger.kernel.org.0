@@ -2,93 +2,79 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE0897A0A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 14:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973F797C65
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 16:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728254AbfHUM5Z (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 21 Aug 2019 08:57:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54816 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726371AbfHUM5Z (ORCPT
+        id S1729204AbfHUOTz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 21 Aug 2019 10:19:55 -0400
+Received: from rs07.intra2net.com ([85.214.138.66]:47122 "EHLO
+        rs07.intra2net.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728964AbfHUOTz (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 21 Aug 2019 08:57:25 -0400
-Received: from mail-vs1-f72.google.com ([209.85.217.72])
-        by youngberry.canonical.com with esmtps (TLS1.0:RSA_AES_128_CBC_SHA1:16)
-        (Exim 4.76)
-        (envelope-from <christian.ehrhardt@canonical.com>)
-        id 1i0QB2-0003lA-DN
-        for netfilter-devel@vger.kernel.org; Wed, 21 Aug 2019 12:57:24 +0000
-Received: by mail-vs1-f72.google.com with SMTP id b129so685538vsd.13
-        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 05:57:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5t+IxVcsIhIvd1QaURdISZudJo3Orj234Bg3GeJk364=;
-        b=iawYQ93xPg1pbmwfAKh7IKbYlj6CE4MQfx0KaSnW+sAOBTyp+/gZLUVCSU07mKK1as
-         xRQ+QpIhlpNEDeDjgy+DUdljQVl+vwWJgMF9YT9eZ39AypXthnk9jABPUXJUFvmq79bc
-         xJfWJL1rx19zoQjBaGvMIzrBk6AdXRfrJEiI3YoQRlcUalN0vva72erX9ALy8MqJs6JW
-         bOTQP9+98PZsxbR+rMbLnc1bGR8VRxSMjr0rXQhyTsqrPqGiybtNW3nIvUS8vaW8lULo
-         zu632JoObcghSSKMFkivyKBea3lgKCJmTvgwGnMInqxYsDxzW/vF/18BXBAPTkxI+M9f
-         bhOg==
-X-Gm-Message-State: APjAAAUlwDAJsg35cqTpWI2Sm1ExMZKhVnB5q9YGYOMsOR30Cjz+Z/mr
-        9wJl+eXB/HbRy6ummq11rmZE2V9aZXtt8Ui1rcvsUUdCoFAoRo3Q8o6bjOb6CSZjHFm/k0fXx/2
-        b8kVP1MQmO4wGRDvPiTyr6EqquDARMWTb340sbREHLGIgos20vFXW+IIoA7zjNA==
-X-Received: by 2002:a1f:18d8:: with SMTP id 207mr8534678vky.88.1566392243382;
-        Wed, 21 Aug 2019 05:57:23 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqy/6GvrFT79TiDQ4wdDy1yhrECB2DyqAm6IT0BeWupHoDuCT6aDLRMRHxABOH5sHLeAaOi0Vc4hJZBpanItZJc=
-X-Received: by 2002:a1f:18d8:: with SMTP id 207mr8534670vky.88.1566392243094;
- Wed, 21 Aug 2019 05:57:23 -0700 (PDT)
+        Wed, 21 Aug 2019 10:19:55 -0400
+X-Greylist: delayed 324 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Aug 2019 10:19:54 EDT
+Received: from mail.m.i2n (unknown [172.17.128.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by rs07.intra2net.com (Postfix) with ESMTPS id 098DA1500138
+        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 16:14:30 +0200 (CEST)
+Received: from localhost (mail.m.i2n [127.0.0.1])
+        by localhost (Postfix) with ESMTP id BF7456A5
+        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 16:14:29 +0200 (CEST)
+X-Virus-Scanned: by Intra2net Mail Security (AVE=8.3.54.80,VDF=8.16.21.142)
+X-Spam-Status: 
+X-Spam-Level: 0
+Received: from localhost (storm.m.i2n [172.16.1.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.m.i2n (Postfix) with ESMTPS id 3574861D
+        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 16:14:28 +0200 (CEST)
+Date:   Wed, 21 Aug 2019 16:14:28 +0200
+From:   Thomas Jarosch <thomas.jarosch@intra2net.com>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH] netfilter: nf_conntrack_ftp: Fix debug output
+Message-ID: <20190821141428.cjb535xrhpgry5zd@intra2net.com>
 MIME-Version: 1.0
-References: <20190821075611.30918-1-christian.ehrhardt@canonical.com>
- <20190821075611.30918-2-christian.ehrhardt@canonical.com> <20190821111358.GB13057@breakpoint.cc>
-In-Reply-To: <20190821111358.GB13057@breakpoint.cc>
-From:   Christian Ehrhardt <christian.ehrhardt@canonical.com>
-Date:   Wed, 21 Aug 2019 14:56:57 +0200
-Message-ID: <CAATJJ0+1=ju1=LP3uXMX6drPYvvU-9R-i7ft8cy_GUFyKB4e_A@mail.gmail.com>
-Subject: Re: [RFC 1/1] nft: abort cache creation if mnl_genid_get fails
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20180716
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 1:13 PM Florian Westphal <fw@strlen.de> wrote:
->
-> Christian Ehrhardt <christian.ehrhardt@canonical.com> wrote:
-> > mnl_genid_get can fail and in this case not update the genid which leads
-> > to a busy loop that never recovers.
-> >
-> > To avoid that check the return value and abort __nft_build_cache
-> > if mnl_genid_get fails.
->
-> mnl_genid_get() aborts in case there is an error from mnl_talk in
-> iptables.git master branch.
->
-> See
-> commit e5cab728c40be88c541f68e4601d39178c36111f
-> nft: exit in case we can't fetch current genid
->
-> So I don't think this change is needed.
+The find_pattern() debug output was printing the 'skip' character.
+This can be a NULL-byte and messes up further pr_debug() output.
 
-Thanks Florian for pointing me in the right direction.
-I have applied this fix on top of 1.8.3 and it makes my -N calls work again.
+Output without the fix:
+kernel: nf_conntrack_ftp: Pattern matches!
+kernel: nf_conntrack_ftp: Skipped up to `<7>nf_conntrack_ftp: find_pattern `PORT': dlen = 8
+kernel: nf_conntrack_ftp: find_pattern `EPRT': dlen = 8
 
-iptables -L calls once a system is in the bad state behave as you
-outlined in your patch.
+Output with the fix:
+kernel: nf_conntrack_ftp: Pattern matches!
+kernel: nf_conntrack_ftp: Skipped up to 0x0 delimiter!
+kernel: nf_conntrack_ftp: Match succeeded!
+kernel: nf_conntrack_ftp: conntrack_ftp: match `172,17,0,100,200,207' (20 bytes at 4150681645)
+kernel: nf_conntrack_ftp: find_pattern `PORT': dlen = 8
 
-ubuntu@autopkgtest:~/iptables-1.8.3$ iptables -L
-iptables v1.8.3 (nf_tables): Could not fetch rule set generation id:
-Permission denied (you must be root)
-ubuntu@autopkgtest:~/iptables-1.8.3$ sudo iptables -L
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+Signed-off-by: Thomas Jarosch <thomas.jarosch@intra2net.com>
+---
+ net/netfilter/nf_conntrack_ftp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you so much Florian!
-Adding that to the soon to be released Ubuntu version of iptables 1.8.3.
+diff --git a/net/netfilter/nf_conntrack_ftp.c b/net/netfilter/nf_conntrack_ftp.c
+index 0ecb3e289ef2..8d96738b7dfd 100644
+--- a/net/netfilter/nf_conntrack_ftp.c
++++ b/net/netfilter/nf_conntrack_ftp.c
+@@ -322,7 +322,7 @@ static int find_pattern(const char *data, size_t dlen,
+ 		i++;
+ 	}
+ 
+-	pr_debug("Skipped up to `%c'!\n", skip);
++	pr_debug("Skipped up to 0x%hhx delimiter!\n", skip);
+ 
+ 	*numoff = i;
+ 	*numlen = getnum(data + i, dlen - i, cmd, term, numoff);
+-- 
+2.17.2
