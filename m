@@ -2,28 +2,36 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E62A297623
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 11:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1FF9765D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 11:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbfHUJ1K (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 21 Aug 2019 05:27:10 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:43802 "EHLO orbyte.nwl.cc"
+        id S1726370AbfHUJoZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 21 Aug 2019 05:44:25 -0400
+Received: from mx1.riseup.net ([198.252.153.129]:57124 "EHLO mx1.riseup.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbfHUJ1K (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 21 Aug 2019 05:27:10 -0400
-Received: from localhost ([::1]:56892 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1i0MtX-00057I-QY; Wed, 21 Aug 2019 11:27:08 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 14/14] nft: bridge: Rudimental among extension support
-Date:   Wed, 21 Aug 2019 11:26:02 +0200
-Message-Id: <20190821092602.16292-15-phil@nwl.cc>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190821092602.16292-1-phil@nwl.cc>
-References: <20190821092602.16292-1-phil@nwl.cc>
+        id S1726330AbfHUJoZ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 21 Aug 2019 05:44:25 -0400
+Received: from bell.riseup.net (bell-pn.riseup.net [10.0.1.178])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (verified OK))
+        by mx1.riseup.net (Postfix) with ESMTPS id DBA691A3ADA
+        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 02:44:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1566380664; bh=BrGWKhZxtViZJwh66qxXQw2AHd5KPy3c37cIGpu5mUQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TIUEKmnGIIpV0Nfdcb3SU8k18CI41xyK9MVVo8R1vrpDhGh2iw+BRw0EFxdx8TC/O
+         JMVYSiIttneuZIsBDO9Y7bGmTOjxX3FKsQFTTqu+9VgzYiuCi295tOrb51VhNUPGaJ
+         e2WnucP3r4u35gWuUkoJ01TIy1InGP4tE5qxz04U=
+X-Riseup-User-ID: AA1C74DEDC54CC342764E7415845A0C8F237FB133957577F7E2E436312A1836C
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by bell.riseup.net (Postfix) with ESMTPSA id 1B7E0222AE7;
+        Wed, 21 Aug 2019 02:44:23 -0700 (PDT)
+From:   Fernando Fernandez Mancera <ffmancera@riseup.net>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Fernando Fernandez Mancera <ffmancera@riseup.net>
+Subject: [PATCH 1/2 nf-next] netfilter: nf_tables: Introduce stateful object update operation
+Date:   Wed, 21 Aug 2019 11:44:19 +0200
+Message-Id: <20190821094420.866-1-ffmancera@riseup.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -31,857 +39,146 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Support among match as far as possible given the limitations of nftables
-sets, namely limited to homogeneous MAC address only or MAC and IP
-address only matches.
+This patch adds the infrastructure needed for the stateful object update
+support.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
 ---
- extensions/libebt_among.c | 278 ++++++++++++++++++++++++++++++++++++++
- extensions/libebt_among.t |  16 +++
- iptables/ebtables-nft.8   |  66 ++++-----
- iptables/nft-bridge.c     | 238 ++++++++++++++++++++++++++++++++
- iptables/nft-bridge.h     |  21 +++
- iptables/nft.c            | 128 ++++++++++++++++++
- iptables/xtables-eb.c     |   1 +
- 7 files changed, 717 insertions(+), 31 deletions(-)
- create mode 100644 extensions/libebt_among.c
- create mode 100644 extensions/libebt_among.t
+ include/net/netfilter/nf_tables.h |  6 +++
+ net/netfilter/nf_tables_api.c     | 71 ++++++++++++++++++++++++++++---
+ 2 files changed, 70 insertions(+), 7 deletions(-)
 
-diff --git a/extensions/libebt_among.c b/extensions/libebt_among.c
-new file mode 100644
-index 0000000000000..81875fa02f3c4
---- /dev/null
-+++ b/extensions/libebt_among.c
-@@ -0,0 +1,278 @@
-+/* ebt_among
-+ *
-+ * Authors:
-+ * Grzegorz Borowiak <grzes@gnu.univ.gda.pl>
-+ *
-+ * August, 2003
-+ */
-+
-+#include <stdio.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <getopt.h>
-+#include <ctype.h>
-+#include <unistd.h>
-+#include <netinet/ether.h>
-+#include <linux/if_ether.h>
-+#include <linux/netfilter_bridge/ebt_among.h>
-+#include <sys/mman.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <xtables.h>
-+#include "iptables/nft.h"
-+#include "iptables/nft-bridge.h"
-+
-+#define AMONG_DST '1'
-+#define AMONG_SRC '2'
-+#define AMONG_DST_F '3'
-+#define AMONG_SRC_F '4'
-+
-+static const struct option bramong_opts[] = {
-+	{"among-dst", required_argument, 0, AMONG_DST},
-+	{"among-src", required_argument, 0, AMONG_SRC},
-+	{"among-dst-file", required_argument, 0, AMONG_DST_F},
-+	{"among-src-file", required_argument, 0, AMONG_SRC_F},
-+	{0}
-+};
-+
-+static void bramong_print_help(void)
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index dc301e3d6739..dc4e32040ea9 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -1123,6 +1123,9 @@ struct nft_object_ops {
+ 	int				(*dump)(struct sk_buff *skb,
+ 						struct nft_object *obj,
+ 						bool reset);
++	int				(*update)(const struct nft_ctx *ctx,
++						  const struct nlattr *const tb[],
++						  struct nft_object *obj);
+ 	const struct nft_object_type	*type;
+ };
+ 
+@@ -1405,10 +1408,13 @@ struct nft_trans_elem {
+ 
+ struct nft_trans_obj {
+ 	struct nft_object		*obj;
++	bool				update;
+ };
+ 
+ #define nft_trans_obj(trans)	\
+ 	(((struct nft_trans_obj *)trans->data)->obj)
++#define nft_trans_obj_update(trans)	\
++	(((struct nft_trans_obj *)trans->data)->update)
+ 
+ struct nft_trans_flowtable {
+ 	struct nft_flowtable		*flowtable;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index fe3b7b0c6c66..5ab4b0636213 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -5122,6 +5122,46 @@ nft_obj_type_get(struct net *net, u32 objtype)
+ 	return ERR_PTR(-ENOENT);
+ }
+ 
++static int nf_tables_updobj(const struct nft_ctx *ctx,
++			    const struct nft_object_type *type,
++			    const struct nlattr *attr,
++			    struct nft_object *obj)
 +{
-+	printf(
-+"`among' options:\n"
-+"--among-dst      [!] list      : matches if ether dst is in list\n"
-+"--among-src      [!] list      : matches if ether src is in list\n"
-+"--among-dst-file [!] file      : obtain dst list from file\n"
-+"--among-src-file [!] file      : obtain src list from file\n"
-+"list has form:\n"
-+" xx:xx:xx:xx:xx:xx[=ip.ip.ip.ip],yy:yy:yy:yy:yy:yy[=ip.ip.ip.ip]"
-+",...,zz:zz:zz:zz:zz:zz[=ip.ip.ip.ip][,]\n"
-+"Things in brackets are optional.\n"
-+"If you want to allow two (or more) IP addresses to one MAC address, you\n"
-+"can specify two (or more) pairs with the same MAC, e.g.\n"
-+" 00:00:00:fa:eb:fe=153.19.120.250,00:00:00:fa:eb:fe=192.168.0.1\n"
-+	);
++	struct nft_trans *trans;
++	struct nlattr **tb;
++	int err = -ENOMEM;
++
++	trans = nft_trans_alloc(ctx, NFT_MSG_NEWOBJ,
++				sizeof(struct nft_trans_obj));
++	if (!trans)
++		return -ENOMEM;
++
++	tb = kcalloc(type->maxattr + 1, sizeof(*tb), GFP_KERNEL);
++	if (!tb)
++		goto err;
++
++	if (attr) {
++		err = nla_parse_nested_deprecated(tb, type->maxattr, attr,
++						  type->policy, NULL);
++		if (err < 0)
++			goto err;	
++	}
++
++	err = obj->ops->update(ctx, (const struct nlattr * const *)tb, obj);
++	if (err < 0)
++		goto err;
++
++	nft_trans_obj_update(trans) = true;
++	list_add_tail(&trans->list, &ctx->net->nft.commit_list);
++
++	kfree(tb);
++	return 0;
++
++err:
++	nft_trans_destroy(trans);
++	return err;
 +}
 +
-+static int
-+parse_nft_among_pairs(char *buf, struct nft_among_pair **pairsp,
-+		      int *cntp, bool *ipp)
-+{
-+	struct nft_among_pair *pairs;
-+	int cnt = 0, i, idx = 0;
-+	bool ip = false;
-+	char *p;
+ static int nf_tables_newobj(struct net *net, struct sock *nlsk,
+ 			    struct sk_buff *skb, const struct nlmsghdr *nlh,
+ 			    const struct nlattr * const nla[],
+@@ -5161,7 +5201,13 @@ static int nf_tables_newobj(struct net *net, struct sock *nlsk,
+ 			NL_SET_BAD_ATTR(extack, nla[NFTA_OBJ_NAME]);
+ 			return -EEXIST;
+ 		}
+-		return 0;
++		if (nlh->nlmsg_flags & NLM_F_REPLACE)
++			return -EOPNOTSUPP;
 +
-+	if (*buf)
-+		cnt++;
-+	for (p = buf; *p; p++) {
-+		if (*p == ',')
-+			cnt++;
-+	}
-+	if (!cnt)
-+		return -1;
++		type = nft_obj_type_get(net, objtype);
++		nft_ctx_init(&ctx, net, skb, nlh, family, table, NULL, nla);
 +
-+	pairs = xtables_calloc(cnt, sizeof(*pairs));
-+	p = strtok(buf, ",");
-+	while (p) {
-+		struct nft_among_pair tmpair = {};
-+		unsigned int tmp[ETH_ALEN] = {};
-+		char *sep = index(p, '=');
-+
-+		if (sep) {
-+			if (idx > 0 && !ip)
-+				xtables_error(PARAMETER_PROBLEM,
-+					      "among: Mixed MAC and MAC=IP not allowed.");
-+			ip = true;
-+			*sep = '\0';
-+			if (sscanf(sep + 1, "%d.%d.%d.%d",
-+				   &tmp[0], &tmp[1], &tmp[2], &tmp[3]) != 4)
-+					xtables_error(PARAMETER_PROBLEM,
-+						      "Invalid IP address '%s'\n",
-+						      sep + 1);
-+			for (i = 0; i < 4; i++) {
-+				if (tmp[i] > 255)
-+					xtables_error(PARAMETER_PROBLEM,
-+						      "Invalid IP address '%s'\n",
-+						      sep + 1);
-+				tmpair.ip[i] = tmp[i];
++		return nf_tables_updobj(&ctx, type, nla[NFTA_OBJ_DATA], obj);
+ 	}
+ 
+ 	nft_ctx_init(&ctx, net, skb, nlh, family, table, NULL, nla);
+@@ -6786,10 +6832,17 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 			te->set->ndeact--;
+ 			break;
+ 		case NFT_MSG_NEWOBJ:
+-			nft_clear(net, nft_trans_obj(trans));
+-			nf_tables_obj_notify(&trans->ctx, nft_trans_obj(trans),
+-					     NFT_MSG_NEWOBJ);
+-			nft_trans_destroy(trans);
++			if (nft_trans_obj_update(trans)) {
++				nf_tables_obj_notify(&trans->ctx,
++						     nft_trans_obj(trans),
++						     NFT_MSG_NEWOBJ);
++			} else {
++				nft_clear(net, nft_trans_obj(trans));
++				nf_tables_obj_notify(&trans->ctx,
++						     nft_trans_obj(trans),
++						     NFT_MSG_NEWOBJ);
++				nft_trans_destroy(trans);
 +			}
-+		} else if (idx > 0 && ip) {
-+				xtables_error(PARAMETER_PROBLEM,
-+					      "among: Mixed MAC and MAC=IP not allowed.");
-+		}
-+		if (sscanf(p, "%x:%x:%x:%x:%x:%x",
-+			   &tmp[0], &tmp[1], &tmp[2],
-+			   &tmp[3], &tmp[4], &tmp[5]) != 6)
-+				xtables_error(PARAMETER_PROBLEM,
-+					      "Invalid MAC address '%s'\n", p);
-+		for (i = 0; i < ETH_ALEN; i++) {
-+			if (tmp[i] > 255)
-+				xtables_error(PARAMETER_PROBLEM,
-+					      "Invalid MAC address '%s'\n", p);
-+			tmpair.mac[i] = tmp[i];
-+		}
-+		for (i = 0; i < idx; i++) {
-+			if (memcmp(tmpair.buf, pairs[i].buf,
-+				   sizeof(tmpair.buf)) < 0)
-+				break;
-+		}
-+		memmove(pairs + i + 1, pairs + i, sizeof(*pairs) * (idx - i));
-+		memcpy(pairs + i, &tmpair, sizeof(tmpair));
-+		idx++;
-+		p = strtok(NULL, ",");
-+	}
-+
-+	if (pairsp)
-+		*pairsp = pairs;
-+	if (cntp)
-+		*cntp = cnt;
-+	if (ipp)
-+		*ipp = ip;
-+	return 0;
-+}
-+
-+static int bramong_parse(int c, char **argv, int invert,
-+		 unsigned int *flags, const void *entry,
-+		 struct xt_entry_match **match)
-+{
-+	struct nft_among_data *data = (struct nft_among_data *)(*match)->data;
-+	struct xt_entry_match *new_match;
-+	struct nft_among_pair *pairs;
-+	struct stat stats;
-+	bool dst = false;
-+	int fd = -1, cnt;
-+	size_t new_size;
-+	long flen = 0;
-+	int poff;
-+	bool ip;
-+	int ret;
-+
-+	switch (c) {
-+	case AMONG_DST_F:
-+		dst = true;
-+		/* fall through */
-+	case AMONG_SRC_F:
-+		if ((fd = open(optarg, O_RDONLY)) == -1)
-+			xtables_error(PARAMETER_PROBLEM,
-+				      "Couldn't open file '%s'", optarg);
-+		fstat(fd, &stats);
-+		flen = stats.st_size;
-+		/* use mmap because the file will probably be big */
-+		optarg = mmap(0, flen, PROT_READ | PROT_WRITE,
-+			      MAP_PRIVATE, fd, 0);
-+		if (optarg == MAP_FAILED)
-+			xtables_error(PARAMETER_PROBLEM,
-+				      "Couldn't map file to memory");
-+		if (optarg[flen-1] != '\n')
-+			xtables_error(PARAMETER_PROBLEM,
-+				      "File should end with a newline");
-+		if (strchr(optarg, '\n') != optarg+flen-1)
-+			xtables_error(PARAMETER_PROBLEM,
-+				      "File should only contain one line");
-+		optarg[flen-1] = '\0';
-+		/* fall through */
-+	case AMONG_DST:
-+		if (c == AMONG_DST)
-+			dst = true;
-+		/* fall through */
-+	case AMONG_SRC:
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	ret = parse_nft_among_pairs(optarg, &pairs, &cnt, &ip);
-+	if (ret)
-+		return 0;
-+	new_size = data->src.cnt + data->dst.cnt + cnt;
-+	new_size *= sizeof(struct nft_among_pair);
-+	new_size += XT_ALIGN(sizeof(struct xt_entry_match)) +
-+			sizeof(struct nft_among_data);
-+	new_match = xtables_calloc(1, new_size);
-+	memcpy(new_match, *match, (*match)->u.match_size);
-+	new_match->u.match_size = new_size;
-+
-+	data = (struct nft_among_data *)new_match->data;
-+	if (dst) {
-+		data->dst.cnt = cnt;
-+		data->dst.inv = invert;
-+		data->dst.ip = ip;
-+		poff = data->src.cnt;
-+	} else {
-+		data->src.cnt = cnt;
-+		data->src.inv = invert;
-+		data->src.ip = ip;
-+		poff = 0;
-+		memmove(data->pairs + cnt, data->pairs,
-+			data->dst.cnt * sizeof(struct nft_among_pair));
-+	}
-+	memcpy(data->pairs + poff, pairs, cnt * sizeof(struct nft_among_pair));
-+	free(pairs);
-+	free(*match);
-+	*match = new_match;
-+
-+	if (c == AMONG_DST_F || c == AMONG_SRC_F) {
-+		munmap(argv, flen);
-+		close(fd);
-+	}
-+	return 1;
-+}
-+
-+static void __bramong_print(struct nft_among_pair *pairs,
-+			    int cnt, bool inv, bool ip)
-+{
-+	const char *isep = "", *sep;
-+	int i, j;
-+
-+	if (inv)
-+		printf("! ");
-+
-+	for (i = 0; i < cnt; i++) {
-+		printf("%s", isep);
-+		isep = ",";
-+
-+		for (sep = "", j = 0; j < ETH_ALEN; sep = ":", j++)
-+			printf("%s%02x", sep, pairs[i].mac[j]);
-+
-+		if (!ip)
-+			continue;
-+		for (sep = "=", j = 0; j < 4; sep = ".", j++)
-+			printf("%s%u", sep, pairs[i].ip[j]);
-+	}
-+	printf(" ");
-+}
-+
-+static void bramong_print(const void *ip, const struct xt_entry_match *match,
-+			  int numeric)
-+{
-+	struct nft_among_data *data = (struct nft_among_data *)match->data;
-+
-+	if (data->src.cnt) {
-+		printf("--among-src ");
-+		__bramong_print(data->pairs,
-+				data->src.cnt, data->src.inv, data->src.ip);
-+	}
-+	if (data->dst.cnt) {
-+		printf("--among-dst ");
-+		__bramong_print(data->pairs + data->src.cnt,
-+				data->dst.cnt, data->dst.inv, data->dst.ip);
-+	}
-+}
-+
-+static struct xtables_match bramong_match = {
-+	.name		= "among",
-+	.revision	= 0,
-+	.version	= XTABLES_VERSION,
-+	.family		= NFPROTO_BRIDGE,
-+	.size		= XT_ALIGN(sizeof(struct nft_among_data)),
-+	.userspacesize	= XT_ALIGN(sizeof(struct nft_among_data)),
-+	.help		= bramong_print_help,
-+	.parse		= bramong_parse,
-+	.print		= bramong_print,
-+	.extra_opts	= bramong_opts,
-+};
-+
-+void _init(void)
-+{
-+	xtables_register_match(&bramong_match);
-+}
-diff --git a/extensions/libebt_among.t b/extensions/libebt_among.t
-new file mode 100644
-index 0000000000000..cfdbbcaf3555d
---- /dev/null
-+++ b/extensions/libebt_among.t
-@@ -0,0 +1,16 @@
-+:INPUT,FORWARD,OUTPUT
-+--among-dst de:ad:00:be:ee:ff,c0:ff:ee:00:ba:be;--among-dst c0:ff:ee:00:ba:be,de:ad:00:be:ee:ff;OK
-+--among-dst ! c0:ff:ee:00:ba:be,de:ad:00:be:ee:ff;=;OK
-+--among-src be:ef:00:c0:ff:ee,c0:ff:ee:00:ba:be,de:ad:00:be:ee:ff;=;OK
-+--among-src de:ad:00:be:ee:ff=10.0.0.1,c0:ff:ee:00:ba:be=192.168.1.1;--among-src c0:ff:ee:00:ba:be=192.168.1.1,de:ad:00:be:ee:ff=10.0.0.1;OK
-+--among-src ! c0:ff:ee:00:ba:be=192.168.1.1,de:ad:00:be:ee:ff=10.0.0.1;=;OK
-+--among-src de:ad:00:be:ee:ff --among-dst c0:ff:ee:00:ba:be;=;OK
-+--among-src de:ad:00:be:ee:ff=10.0.0.1 --among-dst c0:ff:ee:00:ba:be=192.168.1.1;=;OK
-+--among-src ! de:ad:00:be:ee:ff --among-dst c0:ff:ee:00:ba:be;=;OK
-+--among-src de:ad:00:be:ee:ff=10.0.0.1 --among-dst ! c0:ff:ee:00:ba:be=192.168.1.1;=;OK
-+--among-src ! de:ad:00:be:ee:ff --among-dst c0:ff:ee:00:ba:be=192.168.1.1;=;OK
-+--among-src de:ad:00:be:ee:ff=10.0.0.1 --among-dst ! c0:ff:ee:00:ba:be=192.168.1.1;=;OK
-+--among-src;=;FAIL
-+--among-src 00:11=10.0.0.1;=;FAIL
-+--among-src de:ad:00:be:ee:ff=10.256.0.1;=;FAIL
-+--among-src de:ad:00:be:ee:ff,c0:ff:ee:00:ba:be=192.168.1.1;=;FAIL
-diff --git a/iptables/ebtables-nft.8 b/iptables/ebtables-nft.8
-index db8b2ab28cca5..a91f0c1aacb0f 100644
---- a/iptables/ebtables-nft.8
-+++ b/iptables/ebtables-nft.8
-@@ -522,35 +522,39 @@ If the 802.3 DSAP and SSAP values are 0xaa then the SNAP type field must
- be consulted to determine the payload protocol.  This is a two byte
- (hexadecimal) argument.  Only 802.3 frames with DSAP/SSAP 0xaa are
- checked for type.
--.\" .SS among
--.\" Match a MAC address or MAC/IP address pair versus a list of MAC addresses
--.\" and MAC/IP address pairs.
--.\" A list entry has the following format:
--.\" .IR xx:xx:xx:xx:xx:xx[=ip.ip.ip.ip][,] ". Multiple"
--.\" list entries are separated by a comma, specifying an IP address corresponding to
--.\" the MAC address is optional. Multiple MAC/IP address pairs with the same MAC address
--.\" but different IP address (and vice versa) can be specified. If the MAC address doesn't
--.\" match any entry from the list, the frame doesn't match the rule (unless "!" was used).
--.\" .TP
--.\" .BR "--among-dst " "[!] \fIlist\fP"
--.\" Compare the MAC destination to the given list. If the Ethernet frame has type
--.\" .IR IPv4 " or " ARP ,
--.\" then comparison with MAC/IP destination address pairs from the
--.\" list is possible.
--.\" .TP
--.\" .BR "--among-src " "[!] \fIlist\fP"
--.\" Compare the MAC source to the given list. If the Ethernet frame has type
--.\" .IR IPv4 " or " ARP ,
--.\" then comparison with MAC/IP source address pairs from the list
--.\" is possible.
--.\" .TP
--.\" .BR "--among-dst-file " "[!] \fIfile\fP"
--.\" Same as
--.\" .BR --among-dst " but the list is read in from the specified file."
--.\" .TP
--.\" .BR "--among-src-file " "[!] \fIfile\fP"
--.\" Same as
--.\" .BR --among-src " but the list is read in from the specified file."
-+.SS among
-+Match a MAC address or MAC/IP address pair versus a list of MAC addresses
-+and MAC/IP address pairs.
-+A list entry has the following format:
-+.IR xx:xx:xx:xx:xx:xx[=ip.ip.ip.ip][,] ". Multiple"
-+list entries are separated by a comma, specifying an IP address corresponding to
-+the MAC address is optional. Multiple MAC/IP address pairs with the same MAC address
-+but different IP address (and vice versa) can be specified. If the MAC address doesn't
-+match any entry from the list, the frame doesn't match the rule (unless "!" was used).
-+.TP
-+.BR "--among-dst " "[!] \fIlist\fP"
-+Compare the MAC destination to the given list. If the Ethernet frame has type
-+.IR IPv4 " or " ARP ,
-+then comparison with MAC/IP destination address pairs from the
-+list is possible.
-+.TP
-+.BR "--among-src " "[!] \fIlist\fP"
-+Compare the MAC source to the given list. If the Ethernet frame has type
-+.IR IPv4 " or " ARP ,
-+then comparison with MAC/IP source address pairs from the list
-+is possible.
-+.TP
-+.BR "--among-dst-file " "[!] \fIfile\fP"
-+Same as
-+.BR --among-dst " but the list is read in from the specified file."
-+.TP
-+.BR "--among-src-file " "[!] \fIfile\fP"
-+Same as
-+.BR --among-src " but the list is read in from the specified file."
-+.PP
-+Note that in this implementation of ebtables, among lists uses must be
-+internally homogeneous regarding whether IP addresses are present or not. Mixed
-+use of MAC addresses and MAC/IP address pairs is not supported yet.
- .SS arp
- Specify (R)ARP fields. The protocol must be specified as
- .IR ARP " or " RARP .
-@@ -1108,8 +1112,8 @@ arp message and the hardware address length in the arp header is 6 bytes.
- The version of ebtables this man page ships with does not support the
- .B broute
- table. Also there is no support for
--.BR among " and " string
--matches. And finally, this list is probably not complete.
-+.B string
-+match. And finally, this list is probably not complete.
- .SH SEE ALSO
- .BR xtables-nft "(8), " iptables "(8), " ip (8)
- .PP
-diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
-index 20ce92a6d5242..7e5425c43c3d5 100644
---- a/iptables/nft-bridge.c
-+++ b/iptables/nft-bridge.c
-@@ -17,6 +17,8 @@
- #include <libiptc/libxtc.h>
- #include <linux/netfilter/nf_tables.h>
- 
-+#include <libnftnl/set.h>
-+
- #include "nft-shared.h"
- #include "nft-bridge.h"
- #include "nft.h"
-@@ -291,6 +293,241 @@ static void nft_bridge_parse_immediate(const char *jumpto, bool nft_goto,
- 	cs->jumpto = jumpto;
- }
- 
-+/* return 0 if saddr, 1 if daddr, -1 on error */
-+static int lookup_check_ether_payload(uint32_t base, uint32_t offset, uint32_t len)
-+{
-+	if (base != 0 || len != ETH_ALEN)
-+		return -1;
-+
-+	switch (offset) {
-+	case offsetof(struct ether_header, ether_dhost):
-+		return 1;
-+	case offsetof(struct ether_header, ether_shost):
-+		return 0;
-+	default:
-+		return -1;
-+	}
-+}
-+
-+/* return 0 if saddr, 1 if daddr, -1 on error */
-+static int lookup_check_iphdr_payload(uint32_t base, uint32_t offset, uint32_t len)
-+{
-+	if (base != 1 || len != 4)
-+		return -1;
-+
-+	switch (offset) {
-+	case offsetof(struct iphdr, daddr):
-+		return 1;
-+	case offsetof(struct iphdr, saddr):
-+		return 0;
-+	default:
-+		return -1;
-+	}
-+}
-+
-+/* XXX: move this into libnftnl, replacing nftnl_set_lookup() */
-+static struct nftnl_set *nft_set_byname(struct nft_handle *h,
-+					const char *table, const char *set)
-+{
-+	struct nftnl_set_list_iter *iter;
-+	struct nftnl_set_list *slist;
-+	struct nftnl_set *s;
-+
-+	slist = nft_set_list_get(h, table);
-+	if (!slist)
-+		return NULL;
-+
-+	iter = nftnl_set_list_iter_create(slist);
-+	if (!iter)
-+		return NULL;
-+
-+	s = nftnl_set_list_iter_cur(iter);
-+	while (s && strcmp(nftnl_set_get_str(s, NFTNL_SET_NAME), set))
-+		s = nftnl_set_list_iter_next(iter);
-+	nftnl_set_list_iter_destroy(iter);
-+
-+	return s;
-+}
-+
-+/* Make sure previous payload expression(s) is/are consistent and extract if
-+ * matching on source or destination address and if matching on MAC and IP or
-+ * only MAC address. */
-+static int lookup_analyze_payloads(const struct nft_xt_ctx *ctx,
-+				   bool *dst, bool *ip)
-+{
-+	int val, val2 = -1;
-+
-+	if (ctx->flags & NFT_XT_CTX_PREV_PAYLOAD) {
-+		val = lookup_check_ether_payload(ctx->prev_payload.base,
-+						 ctx->prev_payload.offset,
-+						 ctx->prev_payload.len);
-+		if (val < 0) {
-+			DEBUGP("unknown payload base/offset/len %d/%d/%d\n",
-+			       ctx->prev_payload.base, ctx->prev_payload.offset,
-+			       ctx->prev_payload.len);
-+			return -1;
-+		}
-+		if (!(ctx->flags & NFT_XT_CTX_PAYLOAD)) {
-+			DEBUGP("Previous but no current payload?\n");
-+			return -1;
-+		}
-+		val2 = lookup_check_iphdr_payload(ctx->payload.base,
-+						  ctx->payload.offset,
-+						  ctx->payload.len);
-+		if (val2 < 0) {
-+			DEBUGP("unknown payload base/offset/len %d/%d/%d\n",
-+			       ctx->payload.base, ctx->payload.offset,
-+			       ctx->payload.len);
-+			return -1;
-+		} else if (val != val2) {
-+			DEBUGP("mismatching payload match offsets\n");
-+			return -1;
-+		}
-+	} else if (ctx->flags & NFT_XT_CTX_PAYLOAD) {
-+		val = lookup_check_ether_payload(ctx->payload.base,
-+						 ctx->payload.offset,
-+						 ctx->payload.len);
-+		if (val < 0) {
-+			DEBUGP("unknown payload base/offset/len %d/%d/%d\n",
-+			       ctx->payload.base, ctx->payload.offset,
-+			       ctx->payload.len);
-+			return -1;
-+		}
-+	} else {
-+		DEBUGP("unknown LHS of lookup expression\n");
-+		return -1;
-+	}
-+
-+	if (dst)
-+		*dst = (val == 1);
-+	if (ip)
-+		*ip = (val2 != -1);
-+	return 0;
-+}
-+
-+static struct nft_among_pair *
-+set_elems_to_among_pairs(const struct nftnl_set *s, int cnt)
-+{
-+	struct nftnl_set_elems_iter *iter = nftnl_set_elems_iter_create(s);
-+	struct nft_among_pair *pairs;
-+	struct nftnl_set_elem *elem;
-+	int idx, tmpcnt = 0;
-+	const char *buf;
-+	uint32_t buflen;
-+
-+	if (!iter) {
-+		fprintf(stderr, "BUG: set elems iter allocation failed\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	pairs = xtables_calloc(cnt, sizeof(*pairs));
-+
-+	while ((elem = nftnl_set_elems_iter_next(iter))) {
-+		buf = nftnl_set_elem_get(elem, NFTNL_SET_ELEM_KEY, &buflen);
-+		if (!buf) {
-+			fprintf(stderr, "BUG: set elem without key\n");
-+			exit(EXIT_FAILURE);
-+		}
-+		for (idx = 0; idx < tmpcnt; idx++) {
-+			if (memcmp(buf, pairs[idx].buf, buflen) < 0)
-+				break;
-+		}
-+		memmove(pairs + idx + 1, pairs + idx,
-+			sizeof(*pairs) * (tmpcnt - idx));
-+		memcpy(pairs[idx].buf, buf, buflen);
-+		tmpcnt++;
-+	}
-+	nftnl_set_elems_iter_destroy(iter);
-+
-+	return pairs;
-+}
-+
-+static void nft_bridge_parse_lookup(struct nft_xt_ctx *ctx, struct nftnl_expr *e,
-+				    void *data)
-+{
-+	struct xtables_match *match = NULL;
-+	struct nft_among_data *among_data;
-+	struct nft_among_pair *pairs;
-+	bool is_dst, have_ip, inv;
-+	struct ebt_match *ematch;
-+	const char *set_name;
-+	struct nftnl_set *s;
-+	int poff, cnt;
-+	size_t size;
-+
-+	if (lookup_analyze_payloads(ctx, &is_dst, &have_ip))
-+		return;
-+
-+	set_name = nftnl_expr_get_str(e, NFTNL_EXPR_LOOKUP_SET);
-+	s = nft_set_byname(ctx->h, ctx->table, set_name);
-+	if (!s) {
-+		fprintf(stderr,
-+			"BUG: set '%s' in lookup expression not found\n",
-+			set_name);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	cnt = nftnl_set_get_u32(s, NFTNL_SET_DESC_SIZE);
-+
-+	for (ematch = ctx->cs->match_list; ematch; ematch = ematch->next) {
-+		if (!ematch->ismatch || strcmp(ematch->u.match->name, "among"))
-+			continue;
-+
-+		match = ematch->u.match;
-+		among_data = (struct nft_among_data *)match->m->data;
-+
-+		size = cnt + among_data->src.cnt + among_data->dst.cnt;
-+		size *= sizeof(struct nft_among_pair);
-+		size += XT_ALIGN(sizeof(struct xt_entry_match)) +
-+			sizeof(struct nft_among_data);
-+
-+		match->m = xtables_realloc(match->m, size);
-+		break;
-+	}
-+	if (!match) {
-+		match = xtables_find_match("among", XTF_TRY_LOAD,
-+					   &ctx->cs->matches);
-+		size = XT_ALIGN(sizeof(struct xt_entry_match)) +
-+			sizeof(struct nft_among_data) +
-+			cnt * sizeof(struct nft_among_pair);
-+		match->m = xtables_calloc(1, size);
-+		strcpy(match->m->u.user.name, match->name);
-+		match->m->u.user.revision = match->revision;
-+		xs_init_match(match);
-+
-+		if (ctx->h->ops->parse_match != NULL)
-+			ctx->h->ops->parse_match(match, ctx->cs);
-+	}
-+	if (match == NULL)
-+		return;
-+
-+	match->m->u.match_size = size;
-+
-+	inv = !!(nftnl_expr_get_u32(e, NFTNL_EXPR_LOOKUP_FLAGS) &
-+				    NFT_LOOKUP_F_INV);
-+
-+	among_data = (struct nft_among_data *)match->m->data;
-+	if (is_dst) {
-+		among_data->dst.cnt = cnt;
-+		among_data->dst.inv = inv;
-+		among_data->dst.ip = have_ip;
-+		poff = among_data->src.cnt;
-+	} else {
-+		among_data->src.cnt = cnt;
-+		among_data->src.inv = inv;
-+		among_data->src.ip = have_ip;
-+		poff = 0;
-+		memmove(among_data->pairs + cnt, among_data->pairs,
-+			among_data->dst.cnt * sizeof(struct nft_among_pair));
-+	}
-+
-+	pairs = set_elems_to_among_pairs(s, cnt);
-+	memcpy(among_data->pairs + poff, pairs, cnt * sizeof(*pairs));
-+	free(pairs);
-+
-+	ctx->flags &= ~(NFT_XT_CTX_PAYLOAD | NFT_XT_CTX_PREV_PAYLOAD);
-+}
-+
- static void parse_watcher(void *object, struct ebt_match **match_list,
- 			  bool ismatch)
- {
-@@ -742,6 +979,7 @@ struct nft_family_ops nft_family_ops_bridge = {
- 	.parse_meta		= nft_bridge_parse_meta,
- 	.parse_payload		= nft_bridge_parse_payload,
- 	.parse_immediate	= nft_bridge_parse_immediate,
-+	.parse_lookup		= nft_bridge_parse_lookup,
- 	.parse_match		= nft_bridge_parse_match,
- 	.parse_target		= nft_bridge_parse_target,
- 	.print_table_header	= nft_bridge_print_table_header,
-diff --git a/iptables/nft-bridge.h b/iptables/nft-bridge.h
-index d90066f1030a2..15a437574988a 100644
---- a/iptables/nft-bridge.h
-+++ b/iptables/nft-bridge.h
-@@ -122,4 +122,25 @@ void ebt_add_watcher(struct xtables_target *watcher,
-                      struct iptables_command_state *cs);
- int ebt_command_default(struct iptables_command_state *cs);
- 
-+struct nft_among_pair {
-+	union {
-+		struct {
-+			unsigned char mac[ETH_ALEN];
-+			unsigned char pad[2];
-+			unsigned char ip[4];
-+		};
-+		unsigned char buf[ETH_ALEN + 2 + 4];
-+	} __attribute__((packed));
-+};
-+
-+struct nft_among_data {
-+	struct {
-+		int cnt;
-+		bool inv;
-+		bool ip;
-+	} src, dst;
-+	/* first source, then dest pairs */
-+	struct nft_among_pair pairs[0];
-+};
-+
- #endif
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 4cc4b1798d979..540e057c47b75 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -1057,6 +1057,134 @@ static int add_nft_limit(struct nftnl_rule *r, struct xt_entry_match *m)
- 	return 0;
- }
- 
-+static struct nftnl_set *add_anon_set(struct nft_handle *h, const char *table,
-+				      uint32_t flags, uint32_t key_type,
-+				      uint32_t key_len, uint32_t size)
-+{
-+	static uint32_t set_id = 0;
-+	struct nftnl_set *s;
-+
-+	s = nftnl_set_alloc();
-+	if (!s)
-+		return NULL;
-+
-+	nftnl_set_set_u32(s, NFTNL_SET_FAMILY, h->family);
-+	nftnl_set_set_str(s, NFTNL_SET_TABLE, table);
-+	nftnl_set_set_str(s, NFTNL_SET_NAME, "__set%d");
-+	nftnl_set_set_u32(s, NFTNL_SET_ID, ++set_id);
-+	nftnl_set_set_u32(s, NFTNL_SET_FLAGS,
-+			  NFT_SET_ANONYMOUS | NFT_SET_CONSTANT | flags);
-+	nftnl_set_set_u32(s, NFTNL_SET_KEY_TYPE, key_type);
-+	nftnl_set_set_u32(s, NFTNL_SET_KEY_LEN, key_len);
-+	nftnl_set_set_u32(s, NFTNL_SET_DESC_SIZE, size);
-+
-+	return batch_set_add(h, NFT_COMPAT_SET_ADD, s) ? s : NULL;
-+}
-+
-+static struct nftnl_expr *
-+gen_payload(uint32_t base, uint32_t offset, uint32_t len, uint32_t dreg)
-+{
-+	struct nftnl_expr *e = nftnl_expr_alloc("payload");
-+
-+	if (!e)
-+		return NULL;
-+	nftnl_expr_set_u32(e, NFTNL_EXPR_PAYLOAD_BASE, base);
-+	nftnl_expr_set_u32(e, NFTNL_EXPR_PAYLOAD_OFFSET, offset);
-+	nftnl_expr_set_u32(e, NFTNL_EXPR_PAYLOAD_LEN, len);
-+	nftnl_expr_set_u32(e, NFTNL_EXPR_PAYLOAD_DREG, dreg);
-+	return e;
-+}
-+
-+static struct nftnl_expr *
-+gen_lookup(uint32_t sreg, const char *set_name, uint32_t set_id, uint32_t flags)
-+{
-+	struct nftnl_expr *e = nftnl_expr_alloc("lookup");
-+
-+	if (!e)
-+		return NULL;
-+	nftnl_expr_set_u32(e, NFTNL_EXPR_LOOKUP_SREG, sreg);
-+	nftnl_expr_set_str(e, NFTNL_EXPR_LOOKUP_SET, set_name);
-+	nftnl_expr_set_u32(e, NFTNL_EXPR_LOOKUP_SET_ID, set_id);
-+	nftnl_expr_set_u32(e, NFTNL_EXPR_LOOKUP_FLAGS, flags);
-+	return e;
-+}
-+
-+static int __add_nft_among(struct nft_handle *h, const char *table,
-+			   struct nftnl_rule *r, struct nft_among_pair *pairs,
-+			   int cnt, bool dst, bool inv, bool ip)
-+{
-+	uint32_t set_id, type = 9, len = 6;
-+	/*			!dst, dst */
-+	int eth_addr_off[] = { 6, 0 };
-+	int ip_addr_off[] = { 12, 16 };
-+	struct nftnl_expr *e;
-+	struct nftnl_set *s;
-+	int idx = 0;
-+
-+	if (ip) {
-+		type = type << 6 | 7;
-+		len += 4 + 2;
-+	}
-+
-+	s = add_anon_set(h, table, 0, type, len, cnt);
-+	if (!s)
-+		return -ENOMEM;
-+	set_id = nftnl_set_get_u32(s, NFTNL_SET_ID);
-+
-+	for (idx = 0; idx < cnt; idx++) {
-+		struct nftnl_set_elem *elem = nftnl_set_elem_alloc();
-+
-+		if (!elem)
-+			return -ENOMEM;
-+		nftnl_set_elem_set(elem, NFTNL_SET_ELEM_KEY,
-+				   pairs[idx].buf, len);
-+		nftnl_set_elem_add(s, elem);
-+	}
-+
-+	e = gen_payload(0, eth_addr_off[dst], ETH_ALEN, NFT_REG_1);
-+	if (!e)
-+		return -ENOMEM;
-+	nftnl_rule_add_expr(r, e);
-+
-+	if (ip) {
-+		e = gen_payload(1, ip_addr_off[dst], 4, NFT_REG32_02);
-+		if (!e)
-+			return -ENOMEM;
-+		nftnl_rule_add_expr(r, e);
-+	}
-+
-+	e = gen_lookup(NFT_REG_1, "__set%d", set_id, inv);
-+	if (!e)
-+		return -ENOMEM;
-+	nftnl_rule_add_expr(r, e);
-+
-+	return 0;
-+}
-+
-+static int add_nft_among(struct nft_handle *h,
-+			 struct nftnl_rule *r, struct xt_entry_match *m)
-+{
-+	struct nft_among_data *data = (struct nft_among_data *)m->data;
-+	const char *table = nftnl_rule_get(r, NFTNL_RULE_TABLE);
-+
-+	if ((data->src.cnt && data->src.ip) ||
-+	    (data->dst.cnt && data->dst.ip)) {
-+		uint16_t eth_p_ip = htons(ETH_P_IP);
-+
-+		add_meta(r, NFT_META_PROTOCOL);
-+		add_cmp_ptr(r, NFT_CMP_EQ, &eth_p_ip, 2);
-+	}
-+
-+	if (data->src.cnt)
-+		__add_nft_among(h, table, r, data->pairs, data->src.cnt,
-+				false, data->src.inv, data->src.ip);
-+	if (data->dst.cnt)
-+		__add_nft_among(h, table, r, data->pairs + data->src.cnt,
-+				data->dst.cnt, true, data->dst.inv,
-+				data->dst.ip);
-+	return 0;
-+}
-+
- int add_match(struct nft_handle *h,
- 	      struct nftnl_rule *r, struct xt_entry_match *m)
- {
-diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index 121ecbecd0b64..7c572b80aadf9 100644
---- a/iptables/xtables-eb.c
-+++ b/iptables/xtables-eb.c
-@@ -593,6 +593,7 @@ void ebt_load_match_extensions(void)
- 	ebt_load_match("pkttype");
- 	ebt_load_match("vlan");
- 	ebt_load_match("stp");
-+	ebt_load_match("among");
- 
- 	ebt_load_watcher("log");
- 	ebt_load_watcher("nflog");
+ 			break;
+ 		case NFT_MSG_DELOBJ:
+ 			nft_obj_del(nft_trans_obj(trans));
+@@ -6936,8 +6989,12 @@ static int __nf_tables_abort(struct net *net)
+ 			nft_trans_destroy(trans);
+ 			break;
+ 		case NFT_MSG_NEWOBJ:
+-			trans->ctx.table->use--;
+-			nft_obj_del(nft_trans_obj(trans));
++			if (nft_trans_obj_update(trans)) {
++				nft_trans_destroy(trans);
++			} else {
++				trans->ctx.table->use--;
++				nft_obj_del(nft_trans_obj(trans));
++			}
+ 			break;
+ 		case NFT_MSG_DELOBJ:
+ 			trans->ctx.table->use++;
 -- 
-2.22.0
+2.20.1
 
