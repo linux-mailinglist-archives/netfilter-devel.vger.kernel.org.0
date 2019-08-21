@@ -2,79 +2,131 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 973F797C65
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 16:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B6B97C3F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 16:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729204AbfHUOTz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 21 Aug 2019 10:19:55 -0400
-Received: from rs07.intra2net.com ([85.214.138.66]:47122 "EHLO
-        rs07.intra2net.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728964AbfHUOTz (ORCPT
+        id S1728464AbfHUOOu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 21 Aug 2019 10:14:50 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27084 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726484AbfHUOOu (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 21 Aug 2019 10:19:55 -0400
-X-Greylist: delayed 324 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Aug 2019 10:19:54 EDT
-Received: from mail.m.i2n (unknown [172.17.128.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by rs07.intra2net.com (Postfix) with ESMTPS id 098DA1500138
-        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 16:14:30 +0200 (CEST)
-Received: from localhost (mail.m.i2n [127.0.0.1])
-        by localhost (Postfix) with ESMTP id BF7456A5
-        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 16:14:29 +0200 (CEST)
-X-Virus-Scanned: by Intra2net Mail Security (AVE=8.3.54.80,VDF=8.16.21.142)
-X-Spam-Status: 
-X-Spam-Level: 0
-Received: from localhost (storm.m.i2n [172.16.1.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.m.i2n (Postfix) with ESMTPS id 3574861D
-        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 16:14:28 +0200 (CEST)
-Date:   Wed, 21 Aug 2019 16:14:28 +0200
-From:   Thomas Jarosch <thomas.jarosch@intra2net.com>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH] netfilter: nf_conntrack_ftp: Fix debug output
-Message-ID: <20190821141428.cjb535xrhpgry5zd@intra2net.com>
+        Wed, 21 Aug 2019 10:14:50 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7LECoba131355;
+        Wed, 21 Aug 2019 10:14:40 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2uh7fr08cg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Aug 2019 10:14:40 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x7LEAVX1007263;
+        Wed, 21 Aug 2019 14:14:39 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma02dal.us.ibm.com with ESMTP id 2ue976fabx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Aug 2019 14:14:39 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7LEEcG050725356
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Aug 2019 14:14:38 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B2627112066;
+        Wed, 21 Aug 2019 14:14:38 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 37353112061;
+        Wed, 21 Aug 2019 14:14:36 +0000 (GMT)
+Received: from LeoBras (unknown [9.85.171.79])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Aug 2019 14:14:35 +0000 (GMT)
+Message-ID: <31b9320ccad0df9119cd9a14dbc8a4ad53e5a255.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/1] netfilter: nf_tables: fib: Drop IPV6 packages if
+ IPv6 is disabled on boot
+From:   Leonardo Bras <leonardo@linux.ibm.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        "David S. Miller" <davem@davemloft.net>
+Date:   Wed, 21 Aug 2019 11:14:31 -0300
+In-Reply-To: <20190821095844.me6kscvnfruinseu@salvia>
+References: <20190820005821.2644-1-leonardo@linux.ibm.com>
+         <20190820053607.GL2588@breakpoint.cc>
+         <793ce2e9b6200a033d44716749acc837aaf5e4e7.camel@linux.ibm.com>
+         <20190821095844.me6kscvnfruinseu@salvia>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-bdwFVMrF2Fdp/po9EBbe"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20180716
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-21_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908210156
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The find_pattern() debug output was printing the 'skip' character.
-This can be a NULL-byte and messes up further pr_debug() output.
 
-Output without the fix:
-kernel: nf_conntrack_ftp: Pattern matches!
-kernel: nf_conntrack_ftp: Skipped up to `<7>nf_conntrack_ftp: find_pattern `PORT': dlen = 8
-kernel: nf_conntrack_ftp: find_pattern `EPRT': dlen = 8
+--=-bdwFVMrF2Fdp/po9EBbe
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Output with the fix:
-kernel: nf_conntrack_ftp: Pattern matches!
-kernel: nf_conntrack_ftp: Skipped up to 0x0 delimiter!
-kernel: nf_conntrack_ftp: Match succeeded!
-kernel: nf_conntrack_ftp: conntrack_ftp: match `172,17,0,100,200,207' (20 bytes at 4150681645)
-kernel: nf_conntrack_ftp: find_pattern `PORT': dlen = 8
+On Wed, 2019-08-21 at 11:58 +0200, Pablo Neira Ayuso wrote:
+> On Tue, Aug 20, 2019 at 01:15:58PM -0300, Leonardo Bras wrote:
+> > On Tue, 2019-08-20 at 07:36 +0200, Florian Westphal wrote:
+> > > Wouldn't fib_netdev.c have the same problem?
+> > Probably, but I haven't hit this issue yet.
+> >=20
+> > > If so, might be better to place this test in both
+> > > nft_fib6_eval_type and nft_fib6_eval.
+> >=20
+> > I think that is possible, and not very hard to do.
+> >=20
+> > But in my humble viewpoint, it looks like it's nft_fib_inet_eval() and
+> > nft_fib_netdev_eval() have the responsibility to choose a valid
+> > protocol or drop the package.=20
+> > I am not sure if it would be a good move to transfer this
+> > responsibility to nft_fib6_eval_type() and nft_fib6_eval(), so I would
+> > rather add the same test to nft_fib_netdev_eval().
+> >=20
+> > Does it make sense?
+>=20
+> Please, update common code to netdev and ip6 extensions as Florian
+> suggests.
+>=20
+> Thanks.
 
-Signed-off-by: Thomas Jarosch <thomas.jarosch@intra2net.com>
----
- net/netfilter/nf_conntrack_ftp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ok then, I will send a v2 with that change.
 
-diff --git a/net/netfilter/nf_conntrack_ftp.c b/net/netfilter/nf_conntrack_ftp.c
-index 0ecb3e289ef2..8d96738b7dfd 100644
---- a/net/netfilter/nf_conntrack_ftp.c
-+++ b/net/netfilter/nf_conntrack_ftp.c
-@@ -322,7 +322,7 @@ static int find_pattern(const char *data, size_t dlen,
- 		i++;
- 	}
- 
--	pr_debug("Skipped up to `%c'!\n", skip);
-+	pr_debug("Skipped up to 0x%hhx delimiter!\n", skip);
- 
- 	*numoff = i;
- 	*numlen = getnum(data + i, dlen - i, cmd, term, numoff);
--- 
-2.17.2
+Thanks,
+
+--=-bdwFVMrF2Fdp/po9EBbe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEMdeUgIzgjf6YmUyOlQYWtz9SttQFAl1dUccACgkQlQYWtz9S
+ttTvbxAAuqtgCz71kpVB4SpD7Z6y7shLthssFi4Ilnhr3fsG3CsvZ6PwjTWih8r6
+fHcBXT+vu5Xydu+U/Ped9nJi6Ans7qslneoEf/yGINNwcfaK+SoOIE8AvXWXkNmp
+TY41CZ+n2on93yo0lFt2daPaEssuXtvjY2H2hTdHdEaU+Cwaiji2ecxf5P1uTxRM
+kW6rXl4vYWumQ9xjwn8Dg1ilHU86ipRwGnkU8V2fgOMOhdt3p/BfxxeEoYwhHY6Q
+nmteFoZ6lhHtTGblz9bGrM4hbx9Q/9Lmup2hsBZA/YVeWtPVDd04ZhOpcbh4VFXg
+a8H4a+VPh5y9+GUD5EyhnwkTfQMmmL+E+vU40m3Mw9w7cnPbfUlsgN7lHcckpy/r
+5Wjcc/s4ESJxKDFu0gV8tJ7vlOfxo+z5tJj2+WtPn8g8X+Tktew/MSfSsM7X6gi3
+3L7iH+XAchrvoVns8E4Q8V0dg+oIhPW118HuNgHFyfVoBaKhgIvEnQDf2H9s2j/k
+Ng86g8LSWbUEQBXmq8THSEZagY2Q8Ec2q/B3TF4B8tGk6yNsOMM1rjSAeqDGkqIZ
+bZGj4FhVePOvtMNpU8ACzWVWSaUSoJFiWrVQGprm0aAJukWH7m0QqKZEideDYf8h
+nfmAmwVOTn1QUN1CsNSAGcq3X8UZbQPcRy1W/0h1y7z2HbZxkss=
+=Jo9A
+-----END PGP SIGNATURE-----
+
+--=-bdwFVMrF2Fdp/po9EBbe--
+
