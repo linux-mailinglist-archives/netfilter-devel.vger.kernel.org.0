@@ -2,34 +2,32 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7F89714C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 06:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8ED597164
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 07:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbfHUE4r (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 21 Aug 2019 00:56:47 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:18879 "EHLO
+        id S1727754AbfHUFKA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 21 Aug 2019 01:10:00 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:31723 "EHLO
         m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727022AbfHUE4r (ORCPT
+        with ESMTP id S1727348AbfHUFKA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 21 Aug 2019 00:56:47 -0400
+        Wed, 21 Aug 2019 01:10:00 -0400
 Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 1352C410B2;
-        Wed, 21 Aug 2019 12:56:42 +0800 (CST)
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 1F3F0415FE;
+        Wed, 21 Aug 2019 13:09:54 +0800 (CST)
 From:   wenxu@ucloud.cn
 To:     pablo@netfilter.org, fw@strlen.de
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next v5 2/2] netfilter: nft_fwd_netdev: add fw_netdev action support
-Date:   Wed, 21 Aug 2019 12:56:39 +0800
-Message-Id: <1566363399-30976-3-git-send-email-wenxu@ucloud.cn>
+Subject: [PATCH nf-next v5 0/8]  netfilter: nf_tables_offload: support tunnel offload
+Date:   Wed, 21 Aug 2019 13:09:45 +0800
+Message-Id: <1566364193-31330-1-git-send-email-wenxu@ucloud.cn>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1566363399-30976-1-git-send-email-wenxu@ucloud.cn>
-References: <1566363399-30976-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVklVSk9KS0tLSUxLQ09ITkpZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PzY6HBw4Azg0Fz88Qx4iPgo#
-        DS8aCjhVSlVKTk1NSE1IT0tJSkxNVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUlMSE03Bg++
-X-HM-Tid: 0a6cb288bf732086kuqy1352c410b2
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVOSE5LS0tLQ05DSEtNQllXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mwg6Sjo6ITg1OT8LHhwMIzke
+        MD4wFApVSlVKTk1NSE1PSkJPSkxKVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUpMSU03Bg++
+X-HM-Tid: 0a6cb294d5602086kuqy1f3f0415fe
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
@@ -37,67 +35,29 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: wenxu <wenxu@ucloud.cn>
 
-fwd_netdev action offload:
-nft --debug=netlink add rule netdev firewall aclout ip daddr 10.0.1.7 fwd to eth0
+This series add NFT_TUNNEL_IP/6_SRC/DST match and tunnel expr offload.
+Also add NFTA_TUNNEL_KEY_RELEASE actions adn objref, tunnel obj offload
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
-v5: no offload_actions callback
+This version just split from the orignal big seriese without dependency
+with each other
 
- net/netfilter/nft_fwd_netdev.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+wenxu (8):
+  netfilter: nft_tunnel: add nft_tunnel_mode_validate function
+  netfilter: nft_tunnel: support NFT_TUNNEL_IP_SRC/DST match
+  netfilter: nft_tunnel: add ipv6 check in nft_tunnel_mode_validate
+  netfilter: nft_tunnel: support NFT_TUNNEL_IP6_SRC/DST match
+  netfilter: nft_tunnel: support tunnel meta match offload
+  netfilter: nft_tunnel: add NFTA_TUNNEL_KEY_RELEASE action
+  netfilter: nft_objref: add nft_objref_type offload
+  netfilter: nft_tunnel: support nft_tunnel_obj offload
 
-diff --git a/net/netfilter/nft_fwd_netdev.c b/net/netfilter/nft_fwd_netdev.c
-index 61b7f93..8c52765 100644
---- a/net/netfilter/nft_fwd_netdev.c
-+++ b/net/netfilter/nft_fwd_netdev.c
-@@ -15,6 +15,7 @@
- #include <net/netfilter/nf_dup_netdev.h>
- #include <net/neighbour.h>
- #include <net/ip.h>
-+#include <net/netfilter/nf_tables_offload.h>
- 
- struct nft_fwd_netdev {
- 	enum nft_registers	sreg_dev:8;
-@@ -63,6 +64,30 @@ static int nft_fwd_netdev_dump(struct sk_buff *skb, const struct nft_expr *expr)
- 	return -1;
- }
- 
-+static int nft_fwd_netdev_offload(struct nft_offload_ctx *ctx,
-+				  struct nft_flow_rule *flow,
-+				  const struct nft_expr *expr)
-+{
-+	const struct nft_fwd_netdev *priv = nft_expr_priv(expr);
-+	struct nft_offload_reg *reg = &ctx->regs[priv->sreg_dev];
-+	const struct nft_data *data = &reg->data;
-+	struct flow_action_entry *entry;
-+	struct net_device *dev;
-+	int oif = -1;
-+
-+	entry = &flow->rule->action.entries[ctx->num_actions++];
-+
-+	memcpy(&oif, data->data, sizeof(oif));
-+	dev = __dev_get_by_index(ctx->net, oif);
-+	if (!dev)
-+		return -EOPNOTSUPP;
-+
-+	entry->id = FLOW_ACTION_REDIRECT;
-+	entry->dev = dev;
-+
-+	return 0;
-+}
-+
- struct nft_fwd_neigh {
- 	enum nft_registers	sreg_dev:8;
- 	enum nft_registers	sreg_addr:8;
-@@ -194,6 +219,7 @@ static int nft_fwd_neigh_dump(struct sk_buff *skb, const struct nft_expr *expr)
- 	.eval		= nft_fwd_netdev_eval,
- 	.init		= nft_fwd_netdev_init,
- 	.dump		= nft_fwd_netdev_dump,
-+	.offload	= nft_fwd_netdev_offload,
- };
- 
- static const struct nft_expr_ops *
+ include/net/netfilter/nf_tables.h         |   3 +
+ include/net/netfilter/nf_tables_offload.h |   5 +
+ include/uapi/linux/netfilter/nf_tables.h  |   5 +
+ net/netfilter/nft_objref.c                |  14 +++
+ net/netfilter/nft_tunnel.c                | 159 +++++++++++++++++++++++++++---
+ 5 files changed, 173 insertions(+), 13 deletions(-)
+
 -- 
 1.8.3.1
 
