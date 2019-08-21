@@ -2,72 +2,88 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD41975C4
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 11:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A2797619
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Aug 2019 11:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725283AbfHUJOz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 21 Aug 2019 05:14:55 -0400
-Received: from correo.us.es ([193.147.175.20]:59952 "EHLO mail.us.es"
+        id S1727314AbfHUJ0f (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 21 Aug 2019 05:26:35 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:43766 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726227AbfHUJOz (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 21 Aug 2019 05:14:55 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 389DEC32C7
-        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 11:14:52 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 2A54DDA840
-        for <netfilter-devel@vger.kernel.org>; Wed, 21 Aug 2019 11:14:52 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 1FA25DA7B6; Wed, 21 Aug 2019 11:14:52 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id E3B61DA8E8;
-        Wed, 21 Aug 2019 11:14:49 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 21 Aug 2019 11:14:49 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [47.60.43.0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id B080A4265A2F;
-        Wed, 21 Aug 2019 11:14:49 +0200 (CEST)
-Date:   Wed, 21 Aug 2019 11:14:49 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     wenxu@ucloud.cn
+        id S1727307AbfHUJ0f (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 21 Aug 2019 05:26:35 -0400
+Received: from localhost ([::1]:56856 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1i0Mt0-000553-0q; Wed, 21 Aug 2019 11:26:34 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft v3] meta: add ibrpvid and ibrvproto support
-Message-ID: <20190821091449.qzf4nnprg7fkhx53@salvia>
-References: <1565961026-27741-1-git-send-email-wenxu@ucloud.cn>
+Subject: [iptables PATCH 00/14] Implement among match support
+Date:   Wed, 21 Aug 2019 11:25:48 +0200
+Message-Id: <20190821092602.16292-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1565961026-27741-1-git-send-email-wenxu@ucloud.cn>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Aug 16, 2019 at 09:10:26PM +0800, wenxu@ucloud.cn wrote:
-> From: wenxu <wenxu@ucloud.cn>
-> 
-> This allows you to match the bridge pvid and vlan protocol, for
-> instance:
-> 
-> nft add rule bridge firewall zones meta ibrvproto 0x8100
-> nft add rule bridge firewall zones meta ibrpvid 100
+This series ultimately adds among match support to ebtables-nft. This
+implementation merely shares the user interface with legacy one,
+internally the code is distinct: libebt_among.c does not make use of the
+wormhash data structure but a much simpler one for "temporary" storage
+of data until being converted into an anonymous set and associated
+lookup expression.
 
-Still one more nitpick when running tests/py:
+Patches 1 to 4 are basically unrelated fallout with misc fixes or minor
+code improvements.
 
-bridge/meta.t: WARNING: line 7: 'add rule bridge test-bridge input
-meta ibrvproto 0x8100': 'meta ibrvproto 0x8100' mismatches 'meta
-ibrvproto 33024'
+Patches 5 and 6 add core infrastructure to cache existing sets and
+create new ones.
 
-Please amend and send v4.
+Patches 7 to 10 deal with the need for nft_handle access in all places
+converting extension to expression and vice-versa, split to improve
+readability as far as possible.
+
+The remaining patches add some more (glue-) code and finally the actual
+among match implementation.
+
+Phil Sutter (14):
+  nft: Fix typo in nft_parse_limit() error message
+  nft: Get rid of NFT_COMPAT_EXPR_MAX define
+  nft: Keep nft_handle pointer in nft_xt_ctx
+  nft: Eliminate pointless calls to nft_family_ops_lookup()
+  nft: Fetch sets when updating rule cache
+  nft: Support NFT_COMPAT_SET_ADD
+  nft: family_ops: Pass nft_handle to 'add' callback
+  nft: family_ops: Pass nft_handle to 'rule_find' callback
+  nft: family_ops: Pass nft_handle to 'print_rule' callback
+  nft: family_ops: Pass nft_handle to 'rule_to_cs' callback
+  nft: Bore up nft_parse_payload()
+  nft: Embed rule's table name in nft_xt_ctx
+  nft: Support parsing lookup expression
+  nft: bridge: Rudimental among extension support
+
+ extensions/libebt_among.c  | 278 ++++++++++++++++++++++++++
+ extensions/libebt_among.t  |  16 ++
+ iptables/ebtables-nft.8    |  66 ++++---
+ iptables/nft-arp.c         |  14 +-
+ iptables/nft-bridge.c      | 260 ++++++++++++++++++++++++-
+ iptables/nft-bridge.h      |  21 ++
+ iptables/nft-ipv4.c        |  10 +-
+ iptables/nft-ipv6.c        |  10 +-
+ iptables/nft-shared.c      |  72 +++----
+ iptables/nft-shared.h      |  26 ++-
+ iptables/nft.c             | 390 ++++++++++++++++++++++++++++++++-----
+ iptables/nft.h             |  13 +-
+ iptables/xtables-eb.c      |   1 +
+ iptables/xtables-monitor.c |  17 +-
+ iptables/xtables-save.c    |   3 +
+ 15 files changed, 1039 insertions(+), 158 deletions(-)
+ create mode 100644 extensions/libebt_among.c
+ create mode 100644 extensions/libebt_among.t
+
+-- 
+2.22.0
+
