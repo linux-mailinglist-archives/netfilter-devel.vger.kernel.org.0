@@ -2,88 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEC8991E2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2019 13:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A144299390
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2019 14:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731572AbfHVLOx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 22 Aug 2019 07:14:53 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:45004 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726844AbfHVLOx (ORCPT
+        id S1732877AbfHVMa2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 22 Aug 2019 08:30:28 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:34168 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732862AbfHVMa2 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 22 Aug 2019 07:14:53 -0400
-Received: by mail-ot1-f49.google.com with SMTP id w4so5046922ote.11;
-        Thu, 22 Aug 2019 04:14:52 -0700 (PDT)
+        Thu, 22 Aug 2019 08:30:28 -0400
+Received: by mail-lj1-f195.google.com with SMTP id x18so5396138ljh.1
+        for <netfilter-devel@vger.kernel.org>; Thu, 22 Aug 2019 05:30:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=Cq7ZUCbmYeAgyJFVs4vUQGwvTqOF2k2OwKjIXe/c/vE=;
-        b=JrjSXx0xcktvgrVq4OGOQPmdPRGyo2vwpdrCtpkU+KkJ8wBPgGGu3r/48y7qu4s0qn
-         D40tPPIjhz/A+4jIuw10Ea7ZQW/qkmJoSJ0RVw0PrPa+JRKQ/bQbGqEV/S4B8xyRGag0
-         ZSprCcUK6uygx2E9j7XzZq9/JnL9tCDf8f4GzAiXr3HAAZkUjfBJ3pF7WAW8bRm1x5Nd
-         lPFyeGJrjPwaSCU5JeutQyBhcsD9gOEWbG2Z3B36XR2GBI35zM1fMLmapXE8/2EjS8Fp
-         nu0/LBDC5Pv5WFsMfoVQ2wnf74Vn1kU6MP0mmL0rYJGIKnbjnBQ+2OosRpcPxCJNrccv
-         0tmw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=aWwEGZ7IKPwlD1SyN53LweuoS+rG8j2WBRgPDxMagPA=;
+        b=Aup3/HeRe1A8c3M11ogk2frrKgdfcyl1LF7VIRKHU4wdfedW4K7Cb0x2GRdcAz52Rp
+         mjFST2KsmCK3tzzyd0EAiXoHM3SJHaG3uzQqhJ7wDoigDFx0FU8hAR/24cV8aMBXLRqJ
+         tqwpiyYj//P7ylZvua8LLwk/NmQ2++IK2BmFzlqTVP1OBkL1JbLTiQdfDfwi6jwnVZ3E
+         JGrHdzFdGTeLSCSk9eF0t1MpdpyQGjgt3sep8ioCKbaKkUlzE/uioaamClMoV6MkXTf9
+         OmAO3bmIQnaToEMTAt2IKoEM7Qeqt1zkkoKO/whqH+IgKgd0tg83efND+kaQtlumBUBs
+         xVTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=Cq7ZUCbmYeAgyJFVs4vUQGwvTqOF2k2OwKjIXe/c/vE=;
-        b=WnI9j7i3qej8xQyhhCkIi2Cnh0SGzm1sJ1JDZddc95nYdKbqKQl8oJhBlw0CpLj/ck
-         d44/Au/xRrIK3F7CIl0Q58/wdFPbJDztj3q3hyrJr6uk+eG/fZUVR3vW9i2sKh7R7wld
-         n2k9RrdL1FDj3a0vUhYIg0p8wVZnqn0vKLN0n5U5mmigiC/mCdAqzLcOOF6ASMWXeN1r
-         dWyXScgePaZvSAsUp7aoZLe6ZIJJ6WErRjzarnJcdhAlkI+7wV2AQA1IKZ0tCRxqHPFY
-         W5wUlmUFkZnIIN313rPplj5jh+DOpJPnK9fvcCfiaPUz7V016410YOoMpM0mQgbEf7nq
-         30kg==
-X-Gm-Message-State: APjAAAVnCGwFVZ7fdvgs1SU7vOXDvC/7TpLQQnHrxyLI3g4Wbtd4Ge5w
-        fVobWxeHQ0RCRzrsQqFntpmUv2bS4dGTz3kH0z/BeA==
-X-Google-Smtp-Source: APXvYqx1HWibX5BAVQ66rXONckh7+H3uxQ44ilofyrLsy15wSFbFfDz4HfY/scdX9AUf9DDUkI7Je2TKtJprdLngUZA=
-X-Received: by 2002:a05:6830:2055:: with SMTP id f21mr3863210otp.53.1566472492205;
- Thu, 22 Aug 2019 04:14:52 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=aWwEGZ7IKPwlD1SyN53LweuoS+rG8j2WBRgPDxMagPA=;
+        b=DvsXEDsjZB+EYRvispuUUCmU9hYFO1b5Qy53mBaTIgqskU6pGxfomymmNmc1viOqdL
+         ryVsXmwMy7TeQUUhiNw1sZKMMQDutyg1OKVrAYgHBU1NBT9MNq3idUr0ptam9++shLZw
+         a8vcWzlzbX60msB1Nvaj22sV8GlHltsI1596qfhUZGYfFwvIXyTEAnw55PX12+qCT0Os
+         Uq4pX1J4+YSIESK75iCtSh8ZATXlOXl1ozb493taiAAOIvHa1NuLlprwM7ODmM67yYAh
+         1wpBbyfHW42EpWgA/nzUa4oAfjDCFYSGTdc+wotXGEd6yhn+K8dj68DH23bgpVz7M6op
+         3x2A==
+X-Gm-Message-State: APjAAAWikrvXQshUZGW1n2+TvWO1MvViSdRX1RHifni8hdMpDpF9q9tJ
+        aqBlclOYnfqU7TDw7O7XyDbnAsL2h3ngCPq89tc=
+X-Google-Smtp-Source: APXvYqyRITC2fvUqBp19t/1VS+ZVtoTKEYkfX9eEUp7/OtNDhWjL9xEtti8YoC5/b0Na3pg5TPvI89gtgLtnKq7OszU=
+X-Received: by 2002:a05:651c:95:: with SMTP id 21mr22171089ljq.128.1566477026397;
+ Thu, 22 Aug 2019 05:30:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <877e7qzhgh.fsf@goll.lan> <CAF90-WiPQgD7wftDxz6sT+nfH=bSRZiUJPKqBeUJRXhfPOkYsg@mail.gmail.com>
- <20190806173745.GA6175@dimstar.local.net> <CAF90-WiOo9wYWxJwAFcyjdU7OB1vgU9e=-QvDZ-vNJ1tcgmraQ@mail.gmail.com>
- <20190819040944.GB10803@dimstar.local.net>
-In-Reply-To: <20190819040944.GB10803@dimstar.local.net>
-From:   Laura Garcia <nevola@gmail.com>
-Date:   Thu, 22 Aug 2019 13:14:40 +0200
-Message-ID: <CAF90-Wgt9zBSi_as1vOsisegVFYSBHWSQwv5n_cMyEcFx3wcYw@mail.gmail.com>
-Subject: Re: meter in 0.9.1 (nft noob question)
-To:     Mail List - Netfilter <netfilter@vger.kernel.org>,
-        Netfilter Development <netfilter-devel@vger.kernel.org>
+Received: by 2002:a19:dc4f:0:0:0:0:0 with HTTP; Thu, 22 Aug 2019 05:30:25
+ -0700 (PDT)
+Reply-To: eku.lawfirm@gmail.com
+From:   "Law firm(Eku and Associates)" <elenabaltach66@gmail.com>
+Date:   Thu, 22 Aug 2019 12:30:25 +0000
+Message-ID: <CAOGpsp7CyMvDU7hRJw4n5yauXZ41ij7yEj5aAqmTnoB1+HZ-MQ@mail.gmail.com>
+Subject: MY $25,000,000.00 INVESTMENT PROPOSAL WITH YOU AND IN YOUR COUNTRY.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Duncan,
+--=20
+Dear,
+With due respect this is not spam or Scam mail, because I have
+contacted you before and there was no response from you,I apologise if
+the contents of this mail are contrary to your moral ethics, which I
+feel may be of great disturbance to your person, but please treat this
+with absolute confidentiality, believing that this email reaches you
+in good faith. My contacting you is not a mistake or a coincidence
+because God can use any person known or unknown to accomplish great
+things.
+I am a lawyer and I have an investment business proposal to offer you.
+It is not official but should be considered as legal and confidential
+business. I have a customer's deposit of $US25 million dollars ready
+to be moved for investment if you can partner with us. We are ready to
+offer you 10% of this total amount as your compensation for supporting
+the transaction to completion. If you are interested to help me please
+reply me with your full details as stated below:
+(1) Your full names:
+(2) Your address:
+(3) Your occupation:
+(4) Your mobile telephone number:
+(5) Your nationality:
+(6) Your present location:
+(7) Your age:
+So that I will provide you more details on what to do and what is
+required for successful completion.
+Note: DO NOT REPLY ME IF YOU ARE NOT INTERESTED AND WITHOUT THE ABOVE
+MENTIONED DETAILS
 
-On Mon, Aug 19, 2019 at 6:11 AM Duncan Roe <duncan_roe@optusnet.com.au> wrote:
->
-
-[...]
-
->
-> *** I had expected or at least hoped that an element's expiry would revert to
-> *** the timeout interval if it was re-added, but this doesn't happen.
->
-
-You'd have to use "element update" instead of "element add", but it's
-not supported yet for this case.
-
-> Was that possibility discussed on the list previously? Not having it leads to at
-> least 2 undesirable consequences when watching:
->
-> 1. Frequently-accessed sites drop off the bottom and re-appear at the top.
->    The lower part of the display would be more stable if expiry times reverted:
->    frequently-accessed sites would stay near the top while others would
->    percolate through.
->
-> 2. Counters reset when these elements are destroyed and re-created.
->
-
-As a workaround you can set the expiration time manually until the
-"element update" solution is in place.
-
-Cheers.
+Sinc=C3=A8rement v=C3=B4tre,
+Avocat Etienne Eku Esq.(Lawfirm)
+Procureur principal. De Cabinet d=E2=80=99avocats de l=E2=80=99Afrique de l=
+=E2=80=99ouest.
+Skype:westafricalawfirm
