@@ -2,56 +2,87 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C3499627
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2019 16:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD8699757
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Aug 2019 16:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387689AbfHVOQs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 22 Aug 2019 10:16:48 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:46990 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387673AbfHVOQr (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 22 Aug 2019 10:16:47 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1i0ntN-00049I-5Q; Thu, 22 Aug 2019 16:16:45 +0200
-Date:   Thu, 22 Aug 2019 16:16:45 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     "Serguei Bezverkhi (sbezverk)" <sbezverk@cisco.com>
-Cc:     "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+        id S1727553AbfHVOtg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 22 Aug 2019 10:49:36 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:50284 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725886AbfHVOtg (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 22 Aug 2019 10:49:36 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 61826300DA2C;
+        Thu, 22 Aug 2019 14:49:36 +0000 (UTC)
+Received: from ovpn-112-65.rdu2.redhat.com (ovpn-112-65.rdu2.redhat.com [10.10.112.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A8BE25DE5C;
+        Thu, 22 Aug 2019 14:49:35 +0000 (UTC)
+Message-ID: <b258d831a555293816d520eeace318e1e6a159bb.camel@redhat.com>
 Subject: Re: nft equivalent of iptables command
-Message-ID: <20190822141645.GH20113@breakpoint.cc>
+From:   Dan Williams <dcbw@redhat.com>
+To:     Florian Westphal <fw@strlen.de>,
+        "Serguei Bezverkhi (sbezverk)" <sbezverk@cisco.com>
+Cc:     "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Date:   Thu, 22 Aug 2019 09:49:34 -0500
+In-Reply-To: <20190822141645.GH20113@breakpoint.cc>
 References: <69AAC254-AF78-4918-82B5-14B3EDB10EDB@cisco.com>
+         <20190822141645.GH20113@breakpoint.cc>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <69AAC254-AF78-4918-82B5-14B3EDB10EDB@cisco.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.47]); Thu, 22 Aug 2019 14:49:36 +0000 (UTC)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Serguei Bezverkhi (sbezverk) <sbezverk@cisco.com> wrote:
-> Hello,
+On Thu, 2019-08-22 at 16:16 +0200, Florian Westphal wrote:
+> Serguei Bezverkhi (sbezverk) <sbezverk@cisco.com> wrote:
+> > Hello,
+> > 
+> > I am trying to find an equivalent nft command for the following
+> > iptables command.  Specifically "physdev" and "addrtype", I could
+> > not find so far, some help would be very appreciated.
+> > -m physdev ! --physdev-is-in            
 > 
-> I am trying to find an equivalent nft command for the following iptables command.  Specifically "physdev" and "addrtype", I could not find so far, some help would be very appreciated.
+> This has no equivalent.  The rule above matches when 'call-iptables'
+> sysctl
+> is enabled and the packet did not enter via a bridge interface.
+> So, its only false when it did enter via a bridge interface.
 
-> -m physdev ! --physdev-is-in            
+Also note that the rule in kube-proxy that adds physdev/physdev-is-in
+has the comment:
 
-This has no equivalent.  The rule above matches when 'call-iptables' sysctl
-is enabled and the packet did not enter via a bridge interface.
-So, its only false when it did enter via a bridge interface.
+// This is imperfect in the face of network plugins that might not use
+a bridge, but we can revisit that later.
 
-In case the sysctl is off, the rule always matches and can be omitted.
+and it clearly doesn't work when the network plugin doesn't use a
+bridge interface for containers, which is a lot of them. In fact, that
+rule should instead be rewritten upstream to use "-s !<ClusterCIDR>" or
+something rather than rules about a network interface that may/may not
+exist.
 
-nftables currently assumes that call-iptables is off, and that
-bridges have their own filter rules in the netdev and/or
-bridge families.
+IMHO this is really an issue in kube-proxy (code was added in 2015)
+that hasn't been cleaned up since Kubernetes started supporting more
+diverse network plugins.
 
-inet/ip/ip6 are assumed to only see packets that are routed by the ip
-stack.
+Dan
 
-> -m addrtype ! --src-type LOCAL 
+> In case the sysctl is off, the rule always matches and can be
+> omitted.
+> 
+> nftables currently assumes that call-iptables is off, and that
+> bridges have their own filter rules in the netdev and/or
+> bridge families.
+> 
+> inet/ip/ip6 are assumed to only see packets that are routed by the ip
+> stack.
+> 
+> > -m addrtype ! --src-type LOCAL 
+> 
+> fib saddr type != local
 
-fib saddr type != local
