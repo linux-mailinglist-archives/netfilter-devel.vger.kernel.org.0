@@ -2,70 +2,57 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D2F9A928
-	for <lists+netfilter-devel@lfdr.de>; Fri, 23 Aug 2019 09:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1029AF8E
+	for <lists+netfilter-devel@lfdr.de>; Fri, 23 Aug 2019 14:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388386AbfHWHvV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 23 Aug 2019 03:51:21 -0400
-Received: from mx58.baidu.com ([61.135.168.58]:13195 "EHLO
-        tc-sys-mailedm05.tc.baidu.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732838AbfHWHvU (ORCPT
+        id S1731461AbfHWMew (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 23 Aug 2019 08:34:52 -0400
+Received: from ganesha.gnumonks.org ([213.95.27.120]:43515 "EHLO
+        ganesha.gnumonks.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727894AbfHWMew (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 23 Aug 2019 03:51:20 -0400
-X-Greylist: delayed 500 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Aug 2019 03:51:20 EDT
-Received: from localhost (cp01-cos-dev01.cp01.baidu.com [10.92.119.46])
-        by tc-sys-mailedm05.tc.baidu.com (Postfix) with ESMTP id 477621EBA002
-        for <netfilter-devel@vger.kernel.org>; Fri, 23 Aug 2019 15:42:48 +0800 (CST)
-From:   Li RongQing <lirongqing@baidu.com>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH] netfilter: not mark a spinlock as __read_mostly
-Date:   Fri, 23 Aug 2019 15:42:48 +0800
-Message-Id: <1566546168-5544-1-git-send-email-lirongqing@baidu.com>
-X-Mailer: git-send-email 1.7.1
+        Fri, 23 Aug 2019 08:34:52 -0400
+Received: from [31.4.212.198] (helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1i18mD-0006om-6W; Fri, 23 Aug 2019 14:34:51 +0200
+Date:   Fri, 23 Aug 2019 14:34:42 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Thomas Jarosch <thomas.jarosch@intra2net.com>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH] netfilter: nf_conntrack_ftp: Fix debug output
+Message-ID: <20190823123442.366wk6yoyct4b35m@salvia>
+References: <20190821141428.cjb535xrhpgry5zd@intra2net.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190821141428.cjb535xrhpgry5zd@intra2net.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Spam-Score: -2.7 (--)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-when spinlock is locked/unlocked, its elements will be changed,
-so marking it as __read_mostly is not suitable
+Hi Thomas,
 
-and remove a duplicate definition of nf_conntrack_locks_all_lock
-strange that compiler does not complain
+On Wed, Aug 21, 2019 at 04:14:28PM +0200, Thomas Jarosch wrote:
+> The find_pattern() debug output was printing the 'skip' character.
+> This can be a NULL-byte and messes up further pr_debug() output.
+> 
+> Output without the fix:
+> kernel: nf_conntrack_ftp: Pattern matches!
+> kernel: nf_conntrack_ftp: Skipped up to `<7>nf_conntrack_ftp: find_pattern `PORT': dlen = 8
+> kernel: nf_conntrack_ftp: find_pattern `EPRT': dlen = 8
+> 
+> Output with the fix:
+> kernel: nf_conntrack_ftp: Pattern matches!
+> kernel: nf_conntrack_ftp: Skipped up to 0x0 delimiter!
+> kernel: nf_conntrack_ftp: Match succeeded!
+> kernel: nf_conntrack_ftp: conntrack_ftp: match `172,17,0,100,200,207' (20 bytes at 4150681645)
+> kernel: nf_conntrack_ftp: find_pattern `PORT': dlen = 8
 
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
----
- net/netfilter/nf_conntrack_core.c   | 3 +--
- net/netfilter/nf_conntrack_labels.c | 2 +-
- 2 files changed, 2 insertions(+), 3 deletions(-)
+Do you use this debugging? I haven't use it for years.
 
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 81a8ef42b88d..0c63120b2db2 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -73,8 +73,7 @@ struct conntrack_gc_work {
- };
- 
- static __read_mostly struct kmem_cache *nf_conntrack_cachep;
--static __read_mostly spinlock_t nf_conntrack_locks_all_lock;
--static __read_mostly DEFINE_SPINLOCK(nf_conntrack_locks_all_lock);
-+static DEFINE_SPINLOCK(nf_conntrack_locks_all_lock);
- static __read_mostly bool nf_conntrack_locks_all;
- 
- /* every gc cycle scans at most 1/GC_MAX_BUCKETS_DIV part of table */
-diff --git a/net/netfilter/nf_conntrack_labels.c b/net/netfilter/nf_conntrack_labels.c
-index d1c6b2a2e7bd..522792556632 100644
---- a/net/netfilter/nf_conntrack_labels.c
-+++ b/net/netfilter/nf_conntrack_labels.c
-@@ -11,7 +11,7 @@
- #include <net/netfilter/nf_conntrack_ecache.h>
- #include <net/netfilter/nf_conntrack_labels.h>
- 
--static __read_mostly DEFINE_SPINLOCK(nf_connlabels_lock);
-+static DEFINE_SPINLOCK(nf_connlabels_lock);
- 
- static int replace_u32(u32 *address, u32 mask, u32 new)
- {
--- 
-2.16.2
-
+Asking because an alternative patch would be to remove this.
