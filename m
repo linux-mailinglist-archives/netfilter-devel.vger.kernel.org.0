@@ -2,62 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 282FDA0163
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2019 14:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2586A0582
+	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2019 17:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbfH1MNU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 28 Aug 2019 08:13:20 -0400
-Received: from rs07.intra2net.com ([85.214.138.66]:37238 "EHLO
-        rs07.intra2net.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbfH1MNT (ORCPT
+        id S1726474AbfH1PCu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 28 Aug 2019 11:02:50 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:26450 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbfH1PCu (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 28 Aug 2019 08:13:19 -0400
-Received: from mail.m.i2n (unknown [172.17.128.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by rs07.intra2net.com (Postfix) with ESMTPS id CD3E815001B0;
-        Wed, 28 Aug 2019 14:13:17 +0200 (CEST)
-Received: from localhost (mail.m.i2n [127.0.0.1])
-        by localhost (Postfix) with ESMTP id 8F48C438;
-        Wed, 28 Aug 2019 14:13:17 +0200 (CEST)
-X-Virus-Scanned: by Intra2net Mail Security (AVE=8.3.54.84,VDF=8.16.22.22)
-X-Spam-Status: 
-X-Spam-Level: 0
-Received: from localhost (storm.m.i2n [172.16.1.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.m.i2n (Postfix) with ESMTPS id 1858F2C4;
-        Wed, 28 Aug 2019 14:13:15 +0200 (CEST)
-Date:   Wed, 28 Aug 2019 14:13:15 +0200
-From:   Thomas Jarosch <thomas.jarosch@intra2net.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
+        Wed, 28 Aug 2019 11:02:50 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 9C0AC411AB;
+        Wed, 28 Aug 2019 23:02:37 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH] netfilter: nf_conntrack_ftp: Fix debug output
-Message-ID: <20190828121315.tbrrkl6567xwkmkx@intra2net.com>
-References: <20190821141428.cjb535xrhpgry5zd@intra2net.com>
- <20190823123442.366wk6yoyct4b35m@salvia>
- <20190823125047.2yq5quu4mcwgh5b3@intra2net.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190823125047.2yq5quu4mcwgh5b3@intra2net.com>
-User-Agent: NeoMutt/20180716
+Subject: [PATCH nf] netfilter: nft_meta_bridge: Fix get NFT_META_BRI_IIFVPROTO in network byteorder
+Date:   Wed, 28 Aug 2019 23:02:33 +0800
+Message-Id: <1567004553-15231-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVNS0hCQkJDTkhKSE9KTVlXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oio6MRw6Czg*AzNLPDk#NzY8
+        DD0aCRZVSlVKTk1MS0tPTk5MTEtDVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUpIQk03Bg++
+X-HM-Tid: 0a6cd8c0014f2086kuqy9c0ac411ab
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
+From: wenxu <wenxu@ucloud.cn>
 
-> One customer site is having FTP NAT problems after migrating from 3.14 to 4.19.
-> The tcpdump traces look normal to me. Still IP addresses for passive FTP
-> don't get rewritten with 4.19, it instantly works with 3.14.
-> It works fine with 4.19 for me using test VMs.
+Get the vlan_proto of ingress bridge in network byteorder
 
-quick follow up: Everything is working out of the box in the kernel. I finally 
-had access to the machine and the FTP conntrack helper was not set up correctly.
+Fixes: 2a3a93ef0ba5 ("netfilter: nft_meta_bridge: Add NFT_META_BRI_IIFVPROTO support")
+Signed-off-by: wenxu <wenxu@ucloud.cn>
+---
+ net/bridge/netfilter/nft_meta_bridge.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Still it's good to have working debug code now.
+diff --git a/net/bridge/netfilter/nft_meta_bridge.c b/net/bridge/netfilter/nft_meta_bridge.c
+index 1804e86..7c9e92b2 100644
+--- a/net/bridge/netfilter/nft_meta_bridge.c
++++ b/net/bridge/netfilter/nft_meta_bridge.c
+@@ -53,7 +53,7 @@ static void nft_meta_bridge_get_eval(const struct nft_expr *expr,
+ 			goto err;
+ 
+ 		br_vlan_get_proto(br_dev, &p_proto);
+-		nft_reg_store16(dest, p_proto);
++		nft_reg_store16(dest, htons(p_proto));
+ 		return;
+ 	}
+ 	default:
+-- 
+1.8.3.1
 
-Cheers,
-Thomas
