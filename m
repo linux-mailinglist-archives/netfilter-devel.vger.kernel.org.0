@@ -2,60 +2,145 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2586A0582
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Aug 2019 17:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0D9A151A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Aug 2019 11:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbfH1PCu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 28 Aug 2019 11:02:50 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:26450 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbfH1PCu (ORCPT
+        id S1726254AbfH2JoE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 29 Aug 2019 05:44:04 -0400
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:49354 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726038AbfH2JoE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 28 Aug 2019 11:02:50 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 9C0AC411AB;
-        Wed, 28 Aug 2019 23:02:37 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf] netfilter: nft_meta_bridge: Fix get NFT_META_BRI_IIFVPROTO in network byteorder
-Date:   Wed, 28 Aug 2019 23:02:33 +0800
-Message-Id: <1567004553-15231-1-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVNS0hCQkJDTkhKSE9KTVlXWShZQU
-        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oio6MRw6Czg*AzNLPDk#NzY8
-        DD0aCRZVSlVKTk1MS0tPTk5MTEtDVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUpIQk03Bg++
-X-HM-Tid: 0a6cd8c0014f2086kuqy9c0ac411ab
+        Thu, 29 Aug 2019 05:44:04 -0400
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1i3GyH-0002NZ-Rp; Thu, 29 Aug 2019 11:44:01 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nft] src: json: add support for element deletion
+Date:   Thu, 29 Aug 2019 11:36:20 +0200
+Message-Id: <20190829093620.3594-1-fw@strlen.de>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+also add a test case.
 
-Get the vlan_proto of ingress bridge in network byteorder
-
-Fixes: 2a3a93ef0ba5 ("netfilter: nft_meta_bridge: Add NFT_META_BRI_IIFVPROTO support")
-Signed-off-by: wenxu <wenxu@ucloud.cn>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/bridge/netfilter/nft_meta_bridge.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/parser_json.c                  |  2 ++
+ tests/py/ip6/sets.t                |  1 +
+ tests/py/ip6/sets.t.json           | 25 +++++++++++++++++++++++++
+ tests/py/ip6/sets.t.payload.inet   |  7 +++++++
+ tests/py/ip6/sets.t.payload.ip6    |  6 ++++++
+ tests/py/ip6/sets.t.payload.netdev |  8 ++++++++
+ 6 files changed, 49 insertions(+)
 
-diff --git a/net/bridge/netfilter/nft_meta_bridge.c b/net/bridge/netfilter/nft_meta_bridge.c
-index 1804e86..7c9e92b2 100644
---- a/net/bridge/netfilter/nft_meta_bridge.c
-+++ b/net/bridge/netfilter/nft_meta_bridge.c
-@@ -53,7 +53,7 @@ static void nft_meta_bridge_get_eval(const struct nft_expr *expr,
- 			goto err;
+diff --git a/src/parser_json.c b/src/parser_json.c
+index a969bd4c3676..8ca07d717b13 100644
+--- a/src/parser_json.c
++++ b/src/parser_json.c
+@@ -2055,6 +2055,8 @@ static struct stmt *json_parse_set_stmt(struct json_ctx *ctx,
+ 		op = NFT_DYNSET_OP_ADD;
+ 	} else if (!strcmp(opstr, "update")) {
+ 		op = NFT_DYNSET_OP_UPDATE;
++	} else if (!strcmp(opstr, "delete")) {
++		op = NFT_DYNSET_OP_DELETE;
+ 	} else {
+ 		json_error(ctx, "Unknown set statement op '%s'.", opstr);
+ 		return NULL;
+diff --git a/tests/py/ip6/sets.t b/tests/py/ip6/sets.t
+index 5adec53f56ce..add82eb8feb8 100644
+--- a/tests/py/ip6/sets.t
++++ b/tests/py/ip6/sets.t
+@@ -40,3 +40,4 @@ ip6 saddr != @set33 drop;fail
+ !set5 type ipv6_addr . ipv6_addr;ok
+ ip6 saddr . ip6 daddr @set5 drop;ok
+ add @set5 { ip6 saddr . ip6 daddr };ok
++delete @set5 { ip6 saddr . ip6 daddr };ok
+diff --git a/tests/py/ip6/sets.t.json b/tests/py/ip6/sets.t.json
+index 9a75dd6fa210..948c1f168d0f 100644
+--- a/tests/py/ip6/sets.t.json
++++ b/tests/py/ip6/sets.t.json
+@@ -91,3 +91,28 @@
+     }
+ ]
  
- 		br_vlan_get_proto(br_dev, &p_proto);
--		nft_reg_store16(dest, p_proto);
-+		nft_reg_store16(dest, htons(p_proto));
- 		return;
- 	}
- 	default:
++# delete @set5 { ip6 saddr . ip6 daddr }
++[
++    {
++        "set": {
++            "elem": {
++                "concat": [
++                    {
++                        "payload": {
++                            "field": "saddr",
++                            "protocol": "ip6"
++                        }
++                    },
++                    {
++                        "payload": {
++                            "field": "daddr",
++                            "protocol": "ip6"
++                        }
++                    }
++                ]
++            },
++            "op": "delete",
++            "set": "@set5"
++        }
++    }
++]
+diff --git a/tests/py/ip6/sets.t.payload.inet b/tests/py/ip6/sets.t.payload.inet
+index 3886db67526c..47ad86a20864 100644
+--- a/tests/py/ip6/sets.t.payload.inet
++++ b/tests/py/ip6/sets.t.payload.inet
+@@ -31,3 +31,10 @@ inet test-inet input
+   [ payload load 16b @ network header + 24 => reg 2 ]
+   [ dynset add reg_key 1 set set5 ]
+ 
++# delete @set5 { ip6 saddr . ip6 daddr }
++inet test-inet input
++  [ meta load nfproto => reg 1 ]
++  [ cmp eq reg 1 0x0000000a ]
++  [ payload load 16b @ network header + 8 => reg 1 ]
++  [ payload load 16b @ network header + 24 => reg 2 ]
++  [ dynset delete reg_key 1 set set5 ]
+diff --git a/tests/py/ip6/sets.t.payload.ip6 b/tests/py/ip6/sets.t.payload.ip6
+index 0b318f8de97f..a5febb9fe591 100644
+--- a/tests/py/ip6/sets.t.payload.ip6
++++ b/tests/py/ip6/sets.t.payload.ip6
+@@ -23,3 +23,9 @@ ip6 test-ip6 input
+   [ payload load 16b @ network header + 24 => reg 2 ]
+   [ dynset add reg_key 1 set set5 ]
+ 
++# delete @set5 { ip6 saddr . ip6 daddr }
++ip6 test-ip6 input
++  [ payload load 16b @ network header + 8 => reg 1 ]
++  [ payload load 16b @ network header + 24 => reg 2 ]
++  [ dynset delete reg_key 1 set set5 ]
++
+diff --git a/tests/py/ip6/sets.t.payload.netdev b/tests/py/ip6/sets.t.payload.netdev
+index 0dfabb778a0c..dab74159a098 100644
+--- a/tests/py/ip6/sets.t.payload.netdev
++++ b/tests/py/ip6/sets.t.payload.netdev
+@@ -31,3 +31,11 @@ netdev test-netdev ingress
+   [ payload load 16b @ network header + 24 => reg 2 ]
+   [ dynset add reg_key 1 set set5 ]
+ 
++# delete @set5 { ip6 saddr . ip6 daddr }
++netdev test-netdev ingress
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ payload load 16b @ network header + 8 => reg 1 ]
++  [ payload load 16b @ network header + 24 => reg 2 ]
++  [ dynset delete reg_key 1 set set5 ]
++
 -- 
-1.8.3.1
+2.21.0
 
