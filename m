@@ -2,34 +2,34 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0443A2E0A
-	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Aug 2019 06:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DEEA2E0E
+	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Aug 2019 06:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbfH3ER2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 30 Aug 2019 00:17:28 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:42669 "EHLO
+        id S1726480AbfH3ERc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 30 Aug 2019 00:17:32 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:42697 "EHLO
         m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725819AbfH3ER2 (ORCPT
+        with ESMTP id S1726200AbfH3ERb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 30 Aug 2019 00:17:28 -0400
+        Fri, 30 Aug 2019 00:17:31 -0400
 Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id C25FD4166E;
-        Fri, 30 Aug 2019 12:17:22 +0800 (CST)
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 0337341766;
+        Fri, 30 Aug 2019 12:17:23 +0800 (CST)
 From:   wenxu@ucloud.cn
 To:     pablo@netfilter.org, fw@strlen.de
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next v7 2/8] netfilter:nf_flow_table_core: Separate inet operation to single function
-Date:   Fri, 30 Aug 2019 12:17:16 +0800
-Message-Id: <1567138642-11446-3-git-send-email-wenxu@ucloud.cn>
+Subject: [PATCH nf-next v7 3/8] netfilter:nf_flow_table_ip: Separate inet operation to single function
+Date:   Fri, 30 Aug 2019 12:17:17 +0800
+Message-Id: <1567138642-11446-4-git-send-email-wenxu@ucloud.cn>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1567138642-11446-1-git-send-email-wenxu@ucloud.cn>
 References: <1567138642-11446-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVklVSk9IS0tLSklOQ0NOS0pZV1koWU
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVS0NNQkJCTExIQkxCSkJZV1koWU
         FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OhQ6Kio4PTg5HzIRMiwZLzYO
-        Ik4aCx5VSlVKTk1MSkhDTU9JQkxIVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQU9OSE03Bg++
-X-HM-Tid: 0a6ce0bdfb772086kuqyc25fd4166e
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6K006DDo5VjgrSDIfFC4sLz1P
+        IUsaC0lVSlVKTk1MSkhDTU9ISk9LVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUxNSEg3Bg++
+X-HM-Tid: 0a6ce0bdfc562086kuqy0337341766
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
@@ -37,120 +37,220 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: wenxu <wenxu@ucloud.cn>
 
-This patch separate the inet family operation in nf_flow_table_core to
-single function. Prepare for support the bridge family.
+This patch separate the inet family operation in nf_flow_table_ip to single
+function. Prepare for support the bridge family.
 
 Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
 v7: rebase with upstream fix
 
- net/netfilter/nf_flow_table_core.c | 52 ++++++++++++++++++++++++++++----------
- 1 file changed, 38 insertions(+), 14 deletions(-)
+ net/netfilter/nf_flow_table_ip.c | 128 ++++++++++++++++++++++-----------------
+ 1 file changed, 73 insertions(+), 55 deletions(-)
 
-diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-index e9bc756..9492c97 100644
---- a/net/netfilter/nf_flow_table_core.c
-+++ b/net/netfilter/nf_flow_table_core.c
-@@ -22,6 +22,20 @@ struct flow_offload_entry {
- static DEFINE_MUTEX(flowtable_lock);
- static LIST_HEAD(flowtables);
+diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
+index 3ff7b04..1c598af 100644
+--- a/net/netfilter/nf_flow_table_ip.c
++++ b/net/netfilter/nf_flow_table_ip.c
+@@ -233,6 +233,40 @@ static unsigned int nf_flow_xmit_xfrm(struct sk_buff *skb,
+ 	return NF_STOLEN;
+ }
  
-+static struct dst_entry *
-+flow_offload_fill_inet_dst(struct flow_offload_tuple *ft,
-+			   struct nf_flow_route *route,
-+			   enum flow_offload_tuple_dir dir)
++static int nf_flow_ipv4_xmit(struct flow_offload *flow, struct sk_buff *skb,
++			     const struct nf_hook_state *state,
++			     enum flow_offload_tuple_dir dir)
 +{
-+	struct dst_entry *other_dst = route->tuple[!dir].dst;
-+	struct dst_entry *dst = route->tuple[dir].dst;
++	struct net_device *outdev;
++	struct rtable *rt;
++	struct iphdr *iph;
++	__be32 nexthop;
 +
-+	ft->iifidx = other_dst->dev->ifindex;
-+	ft->dst.dst_cache = dst;
-+
-+	return dst;
-+}
-+
- static void
- flow_offload_fill_dir(struct flow_offload *flow, struct nf_conn *ct,
- 		      struct nf_flow_dst *flow_dst,
-@@ -29,9 +43,9 @@ struct flow_offload_entry {
- {
- 	struct flow_offload_tuple *ft = &flow->tuplehash[dir].tuple;
- 	struct nf_conntrack_tuple *ctt = &ct->tuplehash[dir].tuple;
--	struct dst_entry *other_dst = flow_dst->route.tuple[!dir].dst;
--	struct dst_entry *dst = flow_dst->route.tuple[dir].dst;
-+	struct dst_entry *dst;
- 
-+	dst = flow_offload_fill_inet_dst(ft, &flow_dst->route, dir);
- 	ft->dir = dir;
- 
- 	switch (ctt->src.l3num) {
-@@ -51,9 +65,19 @@ struct flow_offload_entry {
- 	ft->l4proto = ctt->dst.protonum;
- 	ft->src_port = ctt->src.u.tcp.port;
- 	ft->dst_port = ctt->dst.u.tcp.port;
-+}
- 
--	ft->iifidx = other_dst->dev->ifindex;
--	ft->dst.dst_cache = dst;
-+static int flow_offload_dst_hold(struct nf_flow_dst *flow_dst)
-+{
-+	if (!dst_hold_safe(flow_dst->route.tuple[FLOW_OFFLOAD_DIR_ORIGINAL].dst))
-+		return -1;
-+
-+	if (!dst_hold_safe(flow_dst->route.tuple[FLOW_OFFLOAD_DIR_REPLY].dst)) {
-+		dst_release(flow_dst->route.tuple[FLOW_OFFLOAD_DIR_ORIGINAL].dst);
-+		return -1;
++	rt = (struct rtable *)flow->tuplehash[dir].tuple.dst.dst_cache;
++	if (nf_flow_offload_dst_check(&rt->dst)) {
++		flow_offload_teardown(flow);
++		return NF_ACCEPT;
 +	}
 +
-+	return 0;
- }
- 
- struct flow_offload *
-@@ -72,11 +96,8 @@ struct flow_offload *
- 
- 	flow = &entry->flow;
- 
--	if (!dst_hold_safe(flow_dst->route.tuple[FLOW_OFFLOAD_DIR_ORIGINAL].dst))
--		goto err_dst_cache_original;
--
--	if (!dst_hold_safe(flow_dst->route.tuple[FLOW_OFFLOAD_DIR_REPLY].dst))
--		goto err_dst_cache_reply;
-+	if (flow_offload_dst_hold(flow_dst))
-+		goto err_dst_cache;
- 
- 	entry->ct = ct;
- 
-@@ -90,9 +111,7 @@ struct flow_offload *
- 
- 	return flow;
- 
--err_dst_cache_reply:
--	dst_release(flow_dst->route.tuple[FLOW_OFFLOAD_DIR_ORIGINAL].dst);
--err_dst_cache_original:
-+err_dst_cache:
- 	kfree(entry);
- err_ct_refcnt:
- 	nf_ct_put(ct);
-@@ -149,12 +168,17 @@ static void flow_offload_fixup_ct(struct nf_conn *ct)
- 	flow_offload_fixup_ct_timeout(ct);
- }
- 
-+static void flow_offload_dst_release(struct flow_offload *flow)
-+{
-+	dst_release(flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.dst.dst_cache);
-+	dst_release(flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.dst.dst_cache);
++	outdev = rt->dst.dev;
++	iph = ip_hdr(skb);
++	ip_decrease_ttl(iph);
++
++	if (unlikely(dst_xfrm(&rt->dst))) {
++		memset(skb->cb, 0, sizeof(struct inet_skb_parm));
++		IPCB(skb)->iif = skb->dev->ifindex;
++		IPCB(skb)->flags = IPSKB_FORWARDED;
++		return nf_flow_xmit_xfrm(skb, state, &rt->dst);
++	}
++
++	skb->dev = outdev;
++	nexthop = rt_nexthop(rt, flow->tuplehash[!dir].tuple.src_v4.s_addr);
++	skb_dst_set_noref(skb, &rt->dst);
++	neigh_xmit(NEIGH_ARP_TABLE, outdev, &nexthop, skb);
++
++	return NF_STOLEN;
 +}
 +
- void flow_offload_free(struct flow_offload *flow)
- {
- 	struct flow_offload_entry *e;
+ unsigned int
+ nf_flow_offload_ip_hook(void *priv, struct sk_buff *skb,
+ 			const struct nf_hook_state *state)
+@@ -242,11 +276,7 @@ static unsigned int nf_flow_xmit_xfrm(struct sk_buff *skb,
+ 	struct flow_offload_tuple tuple = {};
+ 	enum flow_offload_tuple_dir dir;
+ 	struct flow_offload *flow;
+-	struct net_device *outdev;
+-	struct rtable *rt;
+ 	unsigned int thoff;
+-	struct iphdr *iph;
+-	__be32 nexthop;
  
--	dst_release(flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.dst.dst_cache);
--	dst_release(flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.dst.dst_cache);
-+	flow_offload_dst_release(flow);
- 	e = container_of(flow, struct flow_offload_entry, flow);
- 	if (flow->flags & FLOW_OFFLOAD_DYING)
- 		nf_ct_delete(e->ct, 0, 0);
+ 	if (skb->protocol != htons(ETH_P_IP))
+ 		return NF_ACCEPT;
+@@ -260,44 +290,23 @@ static unsigned int nf_flow_xmit_xfrm(struct sk_buff *skb,
+ 
+ 	dir = tuplehash->tuple.dir;
+ 	flow = container_of(tuplehash, struct flow_offload, tuplehash[dir]);
+-	rt = (struct rtable *)flow->tuplehash[dir].tuple.dst.dst_cache;
+-	outdev = rt->dst.dev;
+ 
+ 	if (unlikely(nf_flow_exceeds_mtu(skb, flow->tuplehash[dir].tuple.mtu)))
+ 		return NF_ACCEPT;
+ 
+-	if (skb_try_make_writable(skb, sizeof(*iph)))
++	if (skb_try_make_writable(skb, sizeof(struct iphdr)))
+ 		return NF_DROP;
+ 
+ 	thoff = ip_hdr(skb)->ihl * 4;
+ 	if (nf_flow_state_check(flow, ip_hdr(skb)->protocol, skb, thoff))
+ 		return NF_ACCEPT;
+ 
+-	if (nf_flow_offload_dst_check(&rt->dst)) {
+-		flow_offload_teardown(flow);
+-		return NF_ACCEPT;
+-	}
+-
+ 	if (nf_flow_nat_ip(flow, skb, thoff, dir) < 0)
+ 		return NF_DROP;
+ 
+ 	flow->timeout = (u32)jiffies + NF_FLOW_TIMEOUT;
+-	iph = ip_hdr(skb);
+-	ip_decrease_ttl(iph);
+-
+-	if (unlikely(dst_xfrm(&rt->dst))) {
+-		memset(skb->cb, 0, sizeof(struct inet_skb_parm));
+-		IPCB(skb)->iif = skb->dev->ifindex;
+-		IPCB(skb)->flags = IPSKB_FORWARDED;
+-		return nf_flow_xmit_xfrm(skb, state, &rt->dst);
+-	}
+ 
+-	skb->dev = outdev;
+-	nexthop = rt_nexthop(rt, flow->tuplehash[!dir].tuple.src_v4.s_addr);
+-	skb_dst_set_noref(skb, &rt->dst);
+-	neigh_xmit(NEIGH_ARP_TABLE, outdev, &nexthop, skb);
+-
+-	return NF_STOLEN;
++	return nf_flow_ipv4_xmit(flow, skb, state, dir);
+ }
+ EXPORT_SYMBOL_GPL(nf_flow_offload_ip_hook);
+ 
+@@ -462,6 +471,40 @@ static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
+ 	return 0;
+ }
+ 
++static int nf_flow_ipv6_xmit(struct flow_offload *flow, struct sk_buff *skb,
++			     const struct nf_hook_state *state,
++			     enum flow_offload_tuple_dir dir)
++{
++	const struct in6_addr *nexthop;
++	struct net_device *outdev;
++	struct ipv6hdr *ip6h;
++	struct rt6_info *rt;
++
++	rt = (struct rt6_info *)flow->tuplehash[dir].tuple.dst.dst_cache;
++	if (nf_flow_offload_dst_check(&rt->dst)) {
++		flow_offload_teardown(flow);
++		return NF_ACCEPT;
++	}
++
++	outdev = rt->dst.dev;
++	ip6h = ipv6_hdr(skb);
++	ip6h->hop_limit--;
++
++	if (unlikely(dst_xfrm(&rt->dst))) {
++		memset(skb->cb, 0, sizeof(struct inet6_skb_parm));
++		IP6CB(skb)->iif = skb->dev->ifindex;
++		IP6CB(skb)->flags = IP6SKB_FORWARDED;
++		return nf_flow_xmit_xfrm(skb, state, &rt->dst);
++	}
++
++	skb->dev = outdev;
++	nexthop = rt6_nexthop(rt, &flow->tuplehash[!dir].tuple.src_v6);
++	skb_dst_set_noref(skb, &rt->dst);
++	neigh_xmit(NEIGH_ND_TABLE, outdev, nexthop, skb);
++
++	return NF_STOLEN;
++}
++
+ unsigned int
+ nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
+ 			  const struct nf_hook_state *state)
+@@ -470,11 +513,7 @@ static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
+ 	struct nf_flowtable *flow_table = priv;
+ 	struct flow_offload_tuple tuple = {};
+ 	enum flow_offload_tuple_dir dir;
+-	const struct in6_addr *nexthop;
+ 	struct flow_offload *flow;
+-	struct net_device *outdev;
+-	struct ipv6hdr *ip6h;
+-	struct rt6_info *rt;
+ 
+ 	if (skb->protocol != htons(ETH_P_IPV6))
+ 		return NF_ACCEPT;
+@@ -488,43 +527,22 @@ static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
+ 
+ 	dir = tuplehash->tuple.dir;
+ 	flow = container_of(tuplehash, struct flow_offload, tuplehash[dir]);
+-	rt = (struct rt6_info *)flow->tuplehash[dir].tuple.dst.dst_cache;
+-	outdev = rt->dst.dev;
+ 
+ 	if (unlikely(nf_flow_exceeds_mtu(skb, flow->tuplehash[dir].tuple.mtu)))
+ 		return NF_ACCEPT;
+ 
+ 	if (nf_flow_state_check(flow, ipv6_hdr(skb)->nexthdr, skb,
+-				sizeof(*ip6h)))
++				sizeof(struct ipv6hdr)))
+ 		return NF_ACCEPT;
+ 
+-	if (nf_flow_offload_dst_check(&rt->dst)) {
+-		flow_offload_teardown(flow);
+-		return NF_ACCEPT;
+-	}
+-
+-	if (skb_try_make_writable(skb, sizeof(*ip6h)))
++	if (skb_try_make_writable(skb, sizeof(struct ipv6hdr)))
+ 		return NF_DROP;
+ 
+ 	if (nf_flow_nat_ipv6(flow, skb, dir) < 0)
+ 		return NF_DROP;
+ 
+ 	flow->timeout = (u32)jiffies + NF_FLOW_TIMEOUT;
+-	ip6h = ipv6_hdr(skb);
+-	ip6h->hop_limit--;
+-
+-	if (unlikely(dst_xfrm(&rt->dst))) {
+-		memset(skb->cb, 0, sizeof(struct inet6_skb_parm));
+-		IP6CB(skb)->iif = skb->dev->ifindex;
+-		IP6CB(skb)->flags = IP6SKB_FORWARDED;
+-		return nf_flow_xmit_xfrm(skb, state, &rt->dst);
+-	}
+ 
+-	skb->dev = outdev;
+-	nexthop = rt6_nexthop(rt, &flow->tuplehash[!dir].tuple.src_v6);
+-	skb_dst_set_noref(skb, &rt->dst);
+-	neigh_xmit(NEIGH_ND_TABLE, outdev, nexthop, skb);
+-
+-	return NF_STOLEN;
++	return nf_flow_ipv6_xmit(flow, skb, state, dir);
+ }
+ EXPORT_SYMBOL_GPL(nf_flow_offload_ipv6_hook);
 -- 
 1.8.3.1
 
