@@ -2,152 +2,87 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 295EEA2BF3
-	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Aug 2019 02:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6573CA2C83
+	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Aug 2019 03:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbfH3Ax7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 29 Aug 2019 20:53:59 -0400
-Received: from correo.us.es ([193.147.175.20]:55034 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727320AbfH3Ax7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 29 Aug 2019 20:53:59 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 6C93C27F8C2
-        for <netfilter-devel@vger.kernel.org>; Fri, 30 Aug 2019 02:53:54 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 5DC56B8004
-        for <netfilter-devel@vger.kernel.org>; Fri, 30 Aug 2019 02:53:54 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 5CAC6B8001; Fri, 30 Aug 2019 02:53:54 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 2F174DA72F;
-        Fri, 30 Aug 2019 02:53:52 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 30 Aug 2019 02:53:52 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (sys.soleta.eu [212.170.55.40])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id CCEF84265A5A;
-        Fri, 30 Aug 2019 02:53:51 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, vishal@chelsio.com,
-        jakub.kicinski@netronome.com, saeedm@mellanox.com, jiri@resnulli.us
-Subject: [PATCH net-next 4/4] netfilter: nft_payload: packet mangling offload support
-Date:   Fri, 30 Aug 2019 02:53:36 +0200
-Message-Id: <20190830005336.23604-5-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
+        id S1727398AbfH3BzL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 29 Aug 2019 21:55:11 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:34730 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727216AbfH3BzL (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 29 Aug 2019 21:55:11 -0400
+Received: by mail-pf1-f196.google.com with SMTP id b24so3486742pfp.1
+        for <netfilter-devel@vger.kernel.org>; Thu, 29 Aug 2019 18:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=C/rIPqRnCxjehMrRZykfN2Pikoku80prbn4PQ3WrWxc=;
+        b=aBDiwEUf9orIecXXiHqnS7IC8pUBV0Etw6SQZV7DJzHPGg/pt8PswixOFjaa8bwf8T
+         1cqIbuwWE/5UbPNsKmOBBdYJDQrbxPrhDwmHO132AbwE2Hm47s92ieQari9fqdJWNCJs
+         5NvA6+rcdwkYqNVchSiDh7CFtwkiLQHvlIuGqrpB7QJ/bZRA5iyjFEI6HWxvBzdzQkQ6
+         qZm9vdfZtAoY7sW/NSHzPurEI6axHfFc4igBIMIl6cqHmIcIQ/VPGpPgn79Rz/uWZw+X
+         mWaySGkxk1n/ki1fSZ4xQNp8F9pSkP7SpKIlbFAArvHyYvxDxSsbHHm7vmjmu/ISgFeL
+         mfpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=C/rIPqRnCxjehMrRZykfN2Pikoku80prbn4PQ3WrWxc=;
+        b=JPPQ9/P/p4kV0DR6vBtqbZjRI1Yxglf+yn26OOkRD3P4K00Oc1npYeqKJ5Uot7INKk
+         AiO7o5TskjjQ1JUbW4aGV2Y+Yz4w3kt83txb2XusdZXZEcYM9YepSEzxOrgLZcpDm4bt
+         PKmlsh73kujc4XhGzzC/uJKDxgenLLzW19LFM7M8fkOGSTljSS1oStOj1P3uA/WYly/Y
+         QML/EOvJcwQ8iJ4aad02ahinvLwqpbd0MjSHDFsb8cJ/UG32c1xG69IR/eIeoLy51nSG
+         y4/cWehJKNDBfalVVJcBgKWV3ClarKxbKyiSb/CQhSAofwMT8CCax6hjJ7T05DYynq2o
+         fLfQ==
+X-Gm-Message-State: APjAAAVcwfPAlmN3k0RvT1ww4q9/2s1p958SPcEA8e1cPVYE6yog4T1R
+        bHOITkHkxhfoWOOTIxDnI6Qe4Q==
+X-Google-Smtp-Source: APXvYqzUwCj01UDS+jNdtjarJp+Kqp1GKBmtVGAiF/Zp1EKlVuDOItf6c+d4TR6XBsictPqKO9GjWA==
+X-Received: by 2002:a63:6c4:: with SMTP id 187mr10155470pgg.401.1567130110117;
+        Thu, 29 Aug 2019 18:55:10 -0700 (PDT)
+Received: from cakuba.netronome.com (c-71-204-185-212.hsd1.ca.comcast.net. [71.204.185.212])
+        by smtp.gmail.com with ESMTPSA id v18sm7116927pgl.87.2019.08.29.18.55.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Aug 2019 18:55:09 -0700 (PDT)
+Date:   Thu, 29 Aug 2019 18:54:48 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, vishal@chelsio.com, saeedm@mellanox.com,
+        jiri@resnulli.us
+Subject: Re: [PATCH 0/4 net-next] flow_offload: update mangle action
+ representation
+Message-ID: <20190829185448.0b502af8@cakuba.netronome.com>
 In-Reply-To: <20190830005336.23604-1-pablo@netfilter.org>
 References: <20190830005336.23604-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch allows for mangling packet fields using hardware offload
-infrastructure.
+On Fri, 30 Aug 2019 02:53:32 +0200, Pablo Neira Ayuso wrote:
+> * Offsets do not need to be on the 32-bits boundaries anymore. This
+>   patchset adds front-end code to adjust the offset and length coming
+>   from the tc pedit representation, so drivers get an exact header field
+>   offset and length.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_payload.c | 72 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+But drivers use offsetof(start of field) to match headers, and I don't
+see you changing that. So how does this work then?
 
-diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
-index 22a80eb60222..39882f81ca8d 100644
---- a/net/netfilter/nft_payload.c
-+++ b/net/netfilter/nft_payload.c
-@@ -562,12 +562,84 @@ static int nft_payload_set_dump(struct sk_buff *skb, const struct nft_expr *expr
- 	return -1;
- }
- 
-+static int nft_payload_offload_set_nh(struct nft_offload_ctx *ctx,
-+				      struct nft_flow_rule *flow,
-+				      const struct nft_payload_set *priv)
-+{
-+	int type = FLOW_ACT_MANGLE_UNSPEC;
-+
-+	switch (ctx->dep.l3num) {
-+	case htons(ETH_P_IP):
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_IP4;
-+		break;
-+	case htons(ETH_P_IPV6):
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_IP6;
-+		break;
-+	}
-+
-+	return type;
-+}
-+
-+static int nft_payload_offload_set_th(struct nft_offload_ctx *ctx,
-+				      struct nft_flow_rule *flow,
-+				      const struct nft_payload_set *priv)
-+{
-+	int type = FLOW_ACT_MANGLE_UNSPEC;
-+
-+	switch (ctx->dep.protonum) {
-+	case IPPROTO_TCP:
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_TCP;
-+		break;
-+	case IPPROTO_UDP:
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_UDP;
-+		break;
-+	}
-+
-+	return type;
-+}
-+
-+static int nft_payload_set_offload(struct nft_offload_ctx *ctx,
-+				   struct nft_flow_rule *flow,
-+				   const struct nft_expr *expr)
-+{
-+	const struct nft_payload_set *priv = nft_expr_priv(expr);
-+	struct nft_offload_reg *sreg = &ctx->regs[priv->sreg];
-+	int type = FLOW_ACT_MANGLE_UNSPEC;
-+	struct flow_action_entry *entry;
-+
-+	switch (priv->base) {
-+	case NFT_PAYLOAD_LL_HEADER:
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_ETH;
-+		break;
-+	case NFT_PAYLOAD_NETWORK_HEADER:
-+		type = nft_payload_offload_set_nh(ctx, flow, priv);
-+		break;
-+	case NFT_PAYLOAD_TRANSPORT_HEADER:
-+		type = nft_payload_offload_set_th(ctx, flow, priv);
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		break;
-+	}
-+
-+	entry = &flow->rule->action.entries[ctx->num_actions++];
-+	entry->mangle.htype	= type;
-+	entry->mangle.offset	= priv->offset;
-+	entry->mangle.len	= priv->len;
-+
-+	memcpy(entry->mangle.val, sreg->data.data, priv->len);
-+	memset(entry->mangle.mask, 0xff, priv->len);
-+
-+	return type != FLOW_ACT_MANGLE_UNSPEC ? 0 : -EOPNOTSUPP;
-+}
-+
- static const struct nft_expr_ops nft_payload_set_ops = {
- 	.type		= &nft_payload_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_payload_set)),
- 	.eval		= nft_payload_set_eval,
- 	.init		= nft_payload_set_init,
- 	.dump		= nft_payload_set_dump,
-+	.offload	= nft_payload_set_offload,
- };
- 
- static const struct nft_expr_ops *
--- 
-2.11.0
+Say - I want to change the second byte of an IPv4 address.
 
+> * The front-end coalesces consecutive pedit actions into one single
+>   word, so drivers can mangle IPv6 and ethernet address fields in one
+>   single go.
+
+You still only coalesce up to 16 bytes, no?
+
+As I said previously drivers will continue to implement mangle action
+merge code if that's the case. It'd be nice if core did the coalescing,
+and mark down first and last action, in case there is a setup cost for
+rewrite group.
