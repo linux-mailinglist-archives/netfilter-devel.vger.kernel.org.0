@@ -2,139 +2,106 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBF2A2E0F
-	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Aug 2019 06:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02A5A335C
+	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Aug 2019 11:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725774AbfH3ERd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 30 Aug 2019 00:17:33 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:42817 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbfH3ERd (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 30 Aug 2019 00:17:33 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 95BEA417DC;
-        Fri, 30 Aug 2019 12:17:23 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org, fw@strlen.de
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next v7 8/8] netfilter: Support the bridge family in flow table
-Date:   Fri, 30 Aug 2019 12:17:22 +0800
-Message-Id: <1567138642-11446-9-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1567138642-11446-1-git-send-email-wenxu@ucloud.cn>
-References: <1567138642-11446-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSENJS0tLS0NDTUJKTEpZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MAg6LSo6TDg#EzIzMi1PLzEe
-        EgJPCklVSlVKTk1MSkhDTU9ITUxNVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQU9LSEM3Bg++
-X-HM-Tid: 0a6ce0bdfead2086kuqy95bea417dc
+        id S1727420AbfH3JHR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 30 Aug 2019 05:07:17 -0400
+Received: from correo.us.es ([193.147.175.20]:50468 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726480AbfH3JHR (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 30 Aug 2019 05:07:17 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 94076E8626
+        for <netfilter-devel@vger.kernel.org>; Fri, 30 Aug 2019 11:07:11 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 8283EFF2C8
+        for <netfilter-devel@vger.kernel.org>; Fri, 30 Aug 2019 11:07:11 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 7606CB8007; Fri, 30 Aug 2019 11:07:11 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 46DFADA72F;
+        Fri, 30 Aug 2019 11:07:09 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Fri, 30 Aug 2019 11:07:09 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 241F64265A5A;
+        Fri, 30 Aug 2019 11:07:09 +0200 (CEST)
+Date:   Fri, 30 Aug 2019 11:07:10 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, vishal@chelsio.com, saeedm@mellanox.com,
+        jiri@resnulli.us
+Subject: Re: [PATCH 0/4 net-next] flow_offload: update mangle action
+ representation
+Message-ID: <20190830090710.g7q2chf3qulfs5e4@salvia>
+References: <20190830005336.23604-1-pablo@netfilter.org>
+ <20190829185448.0b502af8@cakuba.netronome.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190829185448.0b502af8@cakuba.netronome.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+On Thu, Aug 29, 2019 at 06:54:48PM -0700, Jakub Kicinski wrote:
+> On Fri, 30 Aug 2019 02:53:32 +0200, Pablo Neira Ayuso wrote:
+> > * Offsets do not need to be on the 32-bits boundaries anymore. This
+> >   patchset adds front-end code to adjust the offset and length coming
+> >   from the tc pedit representation, so drivers get an exact header field
+> >   offset and length.
+> 
+> But drivers use offsetof(start of field) to match headers, and I don't
+> see you changing that. So how does this work then?
 
-This patch add the bridge flow table type. Implement the datapath
-flow table to forward both IPV4 and IPV6 traffic through bridge.
+Drivers can only use offsetof() for fields that are on the 32-bits
+boundary.
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
-v7: no change
+Before this patchset, if you want to mangle the destination port, then
+the driver needs to refer to the source port offset and the length is
+4 bytes, so the mask is telling what needs to be mangled.
 
- net/bridge/netfilter/Kconfig                |  8 +++++
- net/bridge/netfilter/Makefile               |  1 +
- net/bridge/netfilter/nf_flow_table_bridge.c | 48 +++++++++++++++++++++++++++++
- 3 files changed, 57 insertions(+)
- create mode 100644 net/bridge/netfilter/nf_flow_table_bridge.c
+After this patchset, the offset is set to the destination port, the
+length is set to 2-bytes, and the mask is telling what bytes of the
+destination port field you specifically want to update.
 
-diff --git a/net/bridge/netfilter/Kconfig b/net/bridge/netfilter/Kconfig
-index 5040fe4..ad100cb 100644
---- a/net/bridge/netfilter/Kconfig
-+++ b/net/bridge/netfilter/Kconfig
-@@ -41,6 +41,14 @@ config NF_CONNTRACK_BRIDGE
- 
- 	  To compile it as a module, choose M here.  If unsure, say N.
- 
-+config NF_FLOW_TABLE_BRIDGE
-+	tristate "Netfilter flow table bridge module"
-+	depends on NF_FLOW_TABLE && NF_CONNTRACK_BRIDGE
-+	help
-+          This option adds the flow table bridge support.
-+
-+	  To compile it as a module, choose M here.
-+
- menuconfig BRIDGE_NF_EBTABLES
- 	tristate "Ethernet Bridge tables (ebtables) support"
- 	depends on BRIDGE && NETFILTER && NETFILTER_XTABLES
-diff --git a/net/bridge/netfilter/Makefile b/net/bridge/netfilter/Makefile
-index 8e2c575..627b269 100644
---- a/net/bridge/netfilter/Makefile
-+++ b/net/bridge/netfilter/Makefile
-@@ -8,6 +8,7 @@ obj-$(CONFIG_NFT_BRIDGE_REJECT)  += nft_reject_bridge.o
- 
- # connection tracking
- obj-$(CONFIG_NF_CONNTRACK_BRIDGE) += nf_conntrack_bridge.o
-+obj-$(CONFIG_NF_FLOW_TABLE_BRIDGE) += nf_flow_table_bridge.o
- 
- # packet logging
- obj-$(CONFIG_NF_LOG_BRIDGE) += nf_log_bridge.o
-diff --git a/net/bridge/netfilter/nf_flow_table_bridge.c b/net/bridge/netfilter/nf_flow_table_bridge.c
-new file mode 100644
-index 0000000..c4fdd4a
---- /dev/null
-+++ b/net/bridge/netfilter/nf_flow_table_bridge.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/netfilter.h>
-+#include <net/netfilter/nf_flow_table.h>
-+#include <net/netfilter/nf_tables.h>
-+
-+static unsigned int
-+nf_flow_offload_bridge_hook(void *priv, struct sk_buff *skb,
-+			    const struct nf_hook_state *state)
-+{
-+	switch (skb->protocol) {
-+	case htons(ETH_P_IP):
-+		return nf_flow_offload_ip_hook(priv, skb, state);
-+	case htons(ETH_P_IPV6):
-+		return nf_flow_offload_ipv6_hook(priv, skb, state);
-+	}
-+
-+	return NF_ACCEPT;
-+}
-+
-+static struct nf_flowtable_type flowtable_bridge = {
-+	.family		= NFPROTO_BRIDGE,
-+	.init		= nf_flow_table_init,
-+	.free		= nf_flow_table_free,
-+	.hook		= nf_flow_offload_bridge_hook,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static int __init nf_flow_bridge_module_init(void)
-+{
-+	nft_register_flowtable_type(&flowtable_bridge);
-+
-+	return 0;
-+}
-+
-+static void __exit nf_flow_bridge_module_exit(void)
-+{
-+	nft_unregister_flowtable_type(&flowtable_bridge);
-+}
-+
-+module_init(nf_flow_bridge_module_init);
-+module_exit(nf_flow_bridge_module_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("wenxu <wenxu@ucloud.cn>");
-+MODULE_ALIAS_NF_FLOWTABLE(7); /* NFPROTO_BRIDGE */
--- 
-1.8.3.1
+It's just 100 LOC of preprocessing that is simplifying driver
+codebase.
 
+> Say - I want to change the second byte of an IPv4 address.
+
+Then, the front-end sets the offset to IPv4 address header field, and
+the mask tells what to update.
+
+> > * The front-end coalesces consecutive pedit actions into one single
+> >   word, so drivers can mangle IPv6 and ethernet address fields in one
+> >   single go.
+> 
+> You still only coalesce up to 16 bytes, no?
+
+You only have to rise FLOW_ACTION_MANGLE_MAXLEN coming in this patch
+if you need more. I don't know of any packet field larger than 16
+bytes. If there is a use-case for this, it should be easy to rise that
+definition.
+
+> As I said previously drivers will continue to implement mangle action
+> merge code if that's the case. It'd be nice if core did the coalescing,
+> and mark down first and last action, in case there is a setup cost for
+> rewrite group.
+
+In this patchset, the core front-end is doing the coalescing.
