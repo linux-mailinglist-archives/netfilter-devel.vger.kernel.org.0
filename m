@@ -2,45 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D84D0A3648
-	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Aug 2019 14:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE1CA364D
+	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Aug 2019 14:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728067AbfH3MHQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 30 Aug 2019 08:07:16 -0400
-Received: from correo.us.es ([193.147.175.20]:36296 "EHLO mail.us.es"
+        id S1728164AbfH3MHV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 30 Aug 2019 08:07:21 -0400
+Received: from correo.us.es ([193.147.175.20]:36304 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727635AbfH3MHP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 30 Aug 2019 08:07:15 -0400
+        id S1728152AbfH3MHQ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 30 Aug 2019 08:07:16 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 2F7ACD2BA3
+        by mail.us.es (Postfix) with ESMTP id EC134D2AE8
         for <netfilter-devel@vger.kernel.org>; Fri, 30 Aug 2019 14:07:12 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1FAAADA4CA
+        by antivirus1-rhel7.int (Postfix) with ESMTP id DF0B9B7FF6
         for <netfilter-devel@vger.kernel.org>; Fri, 30 Aug 2019 14:07:12 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 1550ADA840; Fri, 30 Aug 2019 14:07:12 +0200 (CEST)
+        id D4B15B7FFE; Fri, 30 Aug 2019 14:07:12 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id EFF7CDA4CA;
-        Fri, 30 Aug 2019 14:07:09 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id BBCD0D2B1E;
+        Fri, 30 Aug 2019 14:07:10 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 30 Aug 2019 14:07:09 +0200 (CEST)
+ Fri, 30 Aug 2019 14:07:10 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (sys.soleta.eu [212.170.55.40])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id C5DE24251481;
-        Fri, 30 Aug 2019 14:07:09 +0200 (CEST)
+        by entrada.int (Postfix) with ESMTPA id 8945F4251481;
+        Fri, 30 Aug 2019 14:07:10 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 3/5] netfilter: conntrack: make sysctls per-namespace again
-Date:   Fri, 30 Aug 2019 14:07:02 +0200
-Message-Id: <20190830120704.6147-4-pablo@netfilter.org>
+Subject: [PATCH 4/5] netfilter: nf_flow_table: clear skb tstamp before xmit
+Date:   Fri, 30 Aug 2019 14:07:03 +0200
+Message-Id: <20190830120704.6147-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20190830120704.6147-1-pablo@netfilter.org>
 References: <20190830120704.6147-1-pablo@netfilter.org>
@@ -52,37 +52,44 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: Florian Westphal <fw@strlen.de>
 
-When I merged the extension sysctl tables with the main one I forgot to
-reset them on netns creation.  They currently read/write init_net settings.
+If 'fq' qdisc is used and a program has requested timestamps,
+skb->tstamp needs to be cleared, else fq will treat these as
+'transmit time'.
 
-Fixes: d912dec12428 ("netfilter: conntrack: merge acct and helper sysctl table with main one")
-Fixes: cb2833ed0044 ("netfilter: conntrack: merge ecache and timestamp sysctl tables with main one")
-Reported-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_conntrack_standalone.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ net/netfilter/nf_flow_table_ip.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
-index e0d392cb3075..0006503d2da9 100644
---- a/net/netfilter/nf_conntrack_standalone.c
-+++ b/net/netfilter/nf_conntrack_standalone.c
-@@ -1037,9 +1037,14 @@ static int nf_conntrack_standalone_init_sysctl(struct net *net)
- 	table[NF_SYSCTL_CT_COUNT].data = &net->ct.count;
- 	table[NF_SYSCTL_CT_CHECKSUM].data = &net->ct.sysctl_checksum;
- 	table[NF_SYSCTL_CT_LOG_INVALID].data = &net->ct.sysctl_log_invalid;
-+	table[NF_SYSCTL_CT_ACCT].data = &net->ct.sysctl_acct;
-+	table[NF_SYSCTL_CT_HELPER].data = &net->ct.sysctl_auto_assign_helper;
- #ifdef CONFIG_NF_CONNTRACK_EVENTS
- 	table[NF_SYSCTL_CT_EVENTS].data = &net->ct.sysctl_events;
- #endif
-+#ifdef CONFIG_NF_CONNTRACK_TIMESTAMP
-+	table[NF_SYSCTL_CT_TIMESTAMP].data = &net->ct.sysctl_tstamp;
-+#endif
- 	table[NF_SYSCTL_CT_PROTO_TIMEOUT_GENERIC].data = &nf_generic_pernet(net)->timeout;
- 	table[NF_SYSCTL_CT_PROTO_TIMEOUT_ICMP].data = &nf_icmp_pernet(net)->timeout;
- 	table[NF_SYSCTL_CT_PROTO_TIMEOUT_ICMPV6].data = &nf_icmpv6_pernet(net)->timeout;
+diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
+index d68c801dd614..b9e7dd6e60ce 100644
+--- a/net/netfilter/nf_flow_table_ip.c
++++ b/net/netfilter/nf_flow_table_ip.c
+@@ -228,7 +228,6 @@ static unsigned int nf_flow_xmit_xfrm(struct sk_buff *skb,
+ {
+ 	skb_orphan(skb);
+ 	skb_dst_set_noref(skb, dst);
+-	skb->tstamp = 0;
+ 	dst_output(state->net, state->sk, skb);
+ 	return NF_STOLEN;
+ }
+@@ -284,6 +283,7 @@ nf_flow_offload_ip_hook(void *priv, struct sk_buff *skb,
+ 	flow->timeout = (u32)jiffies + NF_FLOW_TIMEOUT;
+ 	iph = ip_hdr(skb);
+ 	ip_decrease_ttl(iph);
++	skb->tstamp = 0;
+ 
+ 	if (unlikely(dst_xfrm(&rt->dst))) {
+ 		memset(skb->cb, 0, sizeof(struct inet_skb_parm));
+@@ -512,6 +512,7 @@ nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
+ 	flow->timeout = (u32)jiffies + NF_FLOW_TIMEOUT;
+ 	ip6h = ipv6_hdr(skb);
+ 	ip6h->hop_limit--;
++	skb->tstamp = 0;
+ 
+ 	if (unlikely(dst_xfrm(&rt->dst))) {
+ 		memset(skb->cb, 0, sizeof(struct inet6_skb_parm));
 -- 
 2.11.0
 
