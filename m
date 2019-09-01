@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6E3A4C08
-	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 22:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B155A4C07
+	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 22:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729066AbfIAUvb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1728958AbfIAUvb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Sun, 1 Sep 2019 16:51:31 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:53362 "EHLO
+Received: from kadath.azazel.net ([81.187.231.250]:53356 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729059AbfIAUva (ORCPT
+        with ESMTP id S1729066AbfIAUva (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 1 Sep 2019 16:51:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,24 +18,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=H12Ygv/ZWHIPzG5kSXpja+K4C0xnU27gilCQPRe/jTY=; b=RNcPT+ZUZU9Tz7LinAUUxCneAr
-        z0z+xsR8e2sI0RI4ukC8/KjxSZkSxExIOdgVMO5Alk1t7EZ6zVvagXdQVJXd/4YuhDcDsyIvdfHom
-        kg5P1jnZLHGcFYdBkrqai9y1CYlDqOLEtrmWbwYVsmCfApGNsxgF/UKk9AkjigfeqZb+JBqis6+fr
-        jiPSOKagKheoaCjGbzLC9gb/0PMNuGBqyWh2Ga2X/M4NbJm2sbmT5vQvVbWJYdg5/xvyH813rhlHv
-        fnnTBeZ1P6BCnYI8TnB1ROx/7eFb39ZF/Vtown3Ukq6Ztpz4LxtP1faiumaLUxzFoy00H1E6Za11b
-        UOgNhe3Q==;
+        bh=bxVsTvPhTtdf0UxIqpFlRJcg2jHNab4wz0vLxDYsWek=; b=RQHUXZ2twRhdXPHdP5rmVkQM7x
+        khzLUKxBdP3rCz+zxUeGO9+O6Sa91uJFHEcLW+h9FHZ68SLBk5nWIBpzuPZs3MSZfFfdghBKv7dvG
+        lWMivTSa9fumzBLfw9FChmR3YI7U/ELUUcC5YeE6q/leDnYkK/omPnaFYs2cwEcelzHwfecvtw0oV
+        g6tf2dV+ilWQ2Wx1HiAxKWeFF14YIiQIMkYbscXClEE0M9sAwLBXeMjZbKikjuQX7T5LuKXaAU3EQ
+        gULsFFJZAwflKhkMwT1gN5nA32MfFGzO/dWIIaZcMTy/q0jLL0nZxnR1QOvN8yF0uBgd7rA776lmI
+        9XGV1VbQ==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1i4Wop-0002Uf-75; Sun, 01 Sep 2019 21:51:27 +0100
+        id 1i4Wop-0002Uf-CD; Sun, 01 Sep 2019 21:51:27 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 07/29] netfilter: remove stray semicolons.
-Date:   Sun,  1 Sep 2019 21:51:03 +0100
-Message-Id: <20190901205126.6935-8-jeremy@azazel.net>
+Subject: [PATCH nf-next 08/29] netfilter: remove unused function declarations.
+Date:   Sun,  1 Sep 2019 21:51:04 +0100
+Message-Id: <20190901205126.6935-9-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0.rc1
 In-Reply-To: <20190901205126.6935-1-jeremy@azazel.net>
 References: <20190901205126.6935-1-jeremy@azazel.net>
@@ -49,41 +49,43 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-There are a couple of semicolons at the end of function definitions.
+Two headers include declarations of functions which are never defined.
 Remove them.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/net/netfilter/nf_conntrack_acct.h   | 2 +-
- include/net/netfilter/nf_conntrack_ecache.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/linux/netfilter_ipv4/ip_tables.h  | 2 --
+ include/linux/netfilter_ipv6/ip6_tables.h | 3 +--
+ 2 files changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/include/net/netfilter/nf_conntrack_acct.h b/include/net/netfilter/nf_conntrack_acct.h
-index ad9f2172dee1..5b5287bb49db 100644
---- a/include/net/netfilter/nf_conntrack_acct.h
-+++ b/include/net/netfilter/nf_conntrack_acct.h
-@@ -45,7 +45,7 @@ struct nf_conn_acct *nf_ct_acct_ext_add(struct nf_conn *ct, gfp_t gfp)
- #else
- 	return NULL;
- #endif
--};
-+}
+diff --git a/include/linux/netfilter_ipv4/ip_tables.h b/include/linux/netfilter_ipv4/ip_tables.h
+index f40a65481df4..0b0d43ad9ed9 100644
+--- a/include/linux/netfilter_ipv4/ip_tables.h
++++ b/include/linux/netfilter_ipv4/ip_tables.h
+@@ -23,8 +23,6 @@
+ #include <linux/init.h>
+ #include <uapi/linux/netfilter_ipv4/ip_tables.h>
  
- /* Check if connection tracking accounting is enabled */
- static inline bool nf_ct_acct_enabled(struct net *net)
-diff --git a/include/net/netfilter/nf_conntrack_ecache.h b/include/net/netfilter/nf_conntrack_ecache.h
-index 52b44192b43f..0815bfadfefe 100644
---- a/include/net/netfilter/nf_conntrack_ecache.h
-+++ b/include/net/netfilter/nf_conntrack_ecache.h
-@@ -61,7 +61,7 @@ nf_ct_ecache_ext_add(struct nf_conn *ct, u16 ctmask, u16 expmask, gfp_t gfp)
- #else
- 	return NULL;
- #endif
--};
-+}
+-extern void ipt_init(void) __init;
+-
+ #if IS_ENABLED(CONFIG_NETFILTER)
+ int ipt_register_table(struct net *net, const struct xt_table *table,
+ 		       const struct ipt_replace *repl,
+diff --git a/include/linux/netfilter_ipv6/ip6_tables.h b/include/linux/netfilter_ipv6/ip6_tables.h
+index 53b7309613bf..666450c117bf 100644
+--- a/include/linux/netfilter_ipv6/ip6_tables.h
++++ b/include/linux/netfilter_ipv6/ip6_tables.h
+@@ -23,9 +23,8 @@
+ #include <linux/init.h>
+ #include <uapi/linux/netfilter_ipv6/ip6_tables.h>
  
- #ifdef CONFIG_NF_CONNTRACK_EVENTS
- /* This structure is passed to event handler */
+-extern void ip6t_init(void) __init;
+-
+ extern void *ip6t_alloc_initial_table(const struct xt_table *);
++
+ #if IS_ENABLED(CONFIG_NETFILTER)
+ int ip6t_register_table(struct net *net, const struct xt_table *table,
+ 			const struct ip6t_replace *repl,
 -- 
 2.23.0.rc1
 
