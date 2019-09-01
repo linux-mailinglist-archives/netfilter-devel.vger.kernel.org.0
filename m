@@ -2,40 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F1DA4C1C
-	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 23:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E35BA4C23
+	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 23:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729012AbfIAVCI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 1 Sep 2019 17:02:08 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:53660 "EHLO
+        id S1729031AbfIAVCV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 1 Sep 2019 17:02:21 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:53742 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729085AbfIAVCH (ORCPT
+        with ESMTP id S1729059AbfIAVCV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 1 Sep 2019 17:02:07 -0400
+        Sun, 1 Sep 2019 17:02:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=FR0MpU4KHXBrP1ahQl7aUyUN4zyTKtmhmQWrFZL+4IU=; b=pGBUYxPA6DF747FzsYvHnqI7lG
-        ERnx7waQU3/ouyWjnwIHlC2lKsuIg9/RXnPjkcfBkesdBiqc06YISuifyzAVkdHsnPDZ8XuTCqQKB
-        kCDQwGb8dhMsDUqiK1KuKuWukbItP37ln95BxKZLx/Fqvrv/Hv+AKS+DvTbBJ/Dgm1XhYtBO8Vwi5
-        il8vyGDdk88NQyyMu4KrXNXaCZrj4CdnDxOEf36KiWVMWOSIekd3CeecP/48A/KaqdRQbQIus8MRt
-        QYK7L55iwVm8S4z0vRoKk/sqYDfKtY3M6dWmnao+ILMLA2im8GiWH/COo59vD3CLxc4fLegbT/mrI
-        VC249G6w==;
+        bh=9JQ+mOxBFBwK0COzvyCNej2ZoTWLKofYvp3dBheUR58=; b=N+w/RyK8KsDK4nmHR6uKX5X/IO
+        MFslhyp6bqAInnh/k4rjir6wfC9VAMemwbmPAV7wHq9r53yk1M9tY3zIa6GUBZmJ6GtRRRgOgFd4U
+        Rn/OAhg9bfMw/Yod35mkEja9GRSeXnZhYcvINiVy8DfT2BQWwlkjFuBFTR0uQZ21nO4gcOMu+M9cg
+        VQRke4bzdasbvBwxMb0eyFKROgpScMpvqLNYw+T6N3RG+lwMoWps47rSeGzOd9jfjQdyqbIZAwSzy
+        STmE7HjJzcVk3VSyCJ5t9IJUisvqEtTwcxaW8PvY3+AVXZoQaY/Ntya3yI9+r+uqHNfHdlRmMyCew
+        zhjdVtlg==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1i4Wor-0002Uf-1X; Sun, 01 Sep 2019 21:51:29 +0100
+        id 1i4Wor-0002Uf-8l; Sun, 01 Sep 2019 21:51:29 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 19/29] netfilter: wrap union nf_conntrack_proto members in CONFIG_NF_CT_PROTO_* check.
-Date:   Sun,  1 Sep 2019 21:51:15 +0100
-Message-Id: <20190901205126.6935-20-jeremy@azazel.net>
+Subject: [PATCH nf-next 20/29] netfilter: wrap inline synproxy function in CONFIG_NETFILTER_SYNPROXY check.
+Date:   Sun,  1 Sep 2019 21:51:16 +0100
+Message-Id: <20190901205126.6935-21-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0.rc1
 In-Reply-To: <20190901205126.6935-1-jeremy@azazel.net>
 References: <20190901205126.6935-1-jeremy@azazel.net>
@@ -49,37 +49,36 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-dccp, sctp and gre are only used in code enabled by particular
-CONFIG_NF_CT_PROTO_* options.  Wrap them in the checks for those
-options.
+nf_conntrack_synproxy.h contains three inline functions.  The contents
+of two of them are wrapped in CONFIG_NETFILTER_SYNPROXY checks and just
+return NULL if it is not enabled.  The third does nothing if they return
+NULL, so wrap its contents as well.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/net/netfilter/nf_conntrack.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/net/netfilter/nf_conntrack_synproxy.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
-index 22275f42f0bb..0673cf685741 100644
---- a/include/net/netfilter/nf_conntrack.h
-+++ b/include/net/netfilter/nf_conntrack.h
-@@ -33,11 +33,17 @@ struct nf_ct_udp {
- /* per conntrack: protocol private data */
- union nf_conntrack_proto {
- 	/* insert conntrack proto private data here */
-+#ifdef CONFIG_NF_CT_PROTO_DCCP
- 	struct nf_ct_dccp dccp;
+diff --git a/include/net/netfilter/nf_conntrack_synproxy.h b/include/net/netfilter/nf_conntrack_synproxy.h
+index c22f0c11cc82..6a3ab081e4bf 100644
+--- a/include/net/netfilter/nf_conntrack_synproxy.h
++++ b/include/net/netfilter/nf_conntrack_synproxy.h
+@@ -32,6 +32,7 @@ static inline struct nf_conn_synproxy *nfct_synproxy_ext_add(struct nf_conn *ct)
+ static inline bool nf_ct_add_synproxy(struct nf_conn *ct,
+ 				      const struct nf_conn *tmpl)
+ {
++#if IS_ENABLED(CONFIG_NETFILTER_SYNPROXY)
+ 	if (tmpl && nfct_synproxy(tmpl)) {
+ 		if (!nfct_seqadj_ext_add(ct))
+ 			return false;
+@@ -39,6 +40,7 @@ static inline bool nf_ct_add_synproxy(struct nf_conn *ct,
+ 		if (!nfct_synproxy_ext_add(ct))
+ 			return false;
+ 	}
 +#endif
-+#ifdef CONFIG_NF_CT_PROTO_SCTP
- 	struct ip_ct_sctp sctp;
-+#endif
- 	struct ip_ct_tcp tcp;
- 	struct nf_ct_udp udp;
-+#ifdef CONFIG_NF_CT_PROTO_GRE
- 	struct nf_ct_gre gre;
-+#endif
- 	unsigned int tmpl_padto;
- };
  
+ 	return true;
+ }
 -- 
 2.23.0.rc1
 
