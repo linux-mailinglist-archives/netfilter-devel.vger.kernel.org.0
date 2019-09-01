@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E2BA4C0B
-	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 22:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A50A4C09
+	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 22:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729013AbfIAUvd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 1 Sep 2019 16:51:33 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:53348 "EHLO
+        id S1729012AbfIAUvb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 1 Sep 2019 16:51:31 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:53350 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728941AbfIAUva (ORCPT
+        with ESMTP id S1728958AbfIAUva (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 1 Sep 2019 16:51:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,24 +18,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=vkPaDJ+vcHYrLElIERRFK6fNfCzlCuV5J23B8YJ6RZk=; b=VIFWjFEqwdJxdHQZn5kUTQEE/v
-        ULvVyfLzQO3sirgoam/3Y+3NwMop35lf0IVaWT4TKip415izv5W/oitlU/9oxJ7KUMUa4qotReOgG
-        0FBTOvkZLVm/VOWbvDbDkkQY0qVwCYBecyoy979r8qKMQ/cUPZZfWn9L57GPKj8M10SwGRpMwyKjV
-        POBX1qiHpgdZ9eK/C8pJ9EQtJTJC4gkUS5I/IqQbLH6Y64wLzH1FHH5eDx/C4yiZNwGH+ce+BZpwK
-        Wkby6spBhG7il1NNtbJ4YGleFjdYd+XEA11sK2UfdQ3OQpKR1renFdzEJNnhrX6U5VMLznnHcvU8f
-        X5FkTrAA==;
+        bh=ow0VQ3Qxeba+a5FlDO/JYMJvhbDHmTWeUsr4FoqzOiQ=; b=TH/xUEusvAeijnXhDXycp3KJ+j
+        F7foWj9HmdRl7T8RBhMmZMbeXWO7BkPTwfbvhx5eYeAESzZrvahGY/dYPmISpYem5W3LySguw2Iox
+        ow/h2V48GRvc0UCq9jvWxnjCR6+7Rf0+0QeL9cjc8y+zUVKNCwo3PnrBDtJPosC39JvtpE3Cd0RPo
+        qCC3UTNqRSal55vJRvk132E4Og2Xm8RjLgSV8TC0uJp/ny51oa9GjJjDVtVQd8HQeWpig1YvZuwS4
+        EeBw6GLROpgH1JMz7lk4ivVvn0mWMthxGBoY/qXF/ze4A7X1Ejat0ddVHqnEzljOc82bkaInFCvBP
+        NlzXHOhA==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1i4Woo-0002Uf-EO; Sun, 01 Sep 2019 21:51:26 +0100
+        id 1i4Woo-0002Uf-JK; Sun, 01 Sep 2019 21:51:26 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 02/29] netfilter: add include guard to nf_conntrack_labels.h.
-Date:   Sun,  1 Sep 2019 21:50:58 +0100
-Message-Id: <20190901205126.6935-3-jeremy@azazel.net>
+Subject: [PATCH nf-next 03/29] netfilter: fix include guard comment.
+Date:   Sun,  1 Sep 2019 21:50:59 +0100
+Message-Id: <20190901205126.6935-4-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0.rc1
 In-Reply-To: <20190901205126.6935-1-jeremy@azazel.net>
 References: <20190901205126.6935-1-jeremy@azazel.net>
@@ -49,41 +49,24 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-nf_conntrack_labels.h has no include guard.  Add it.
+The comment following the #endif in the nf_flow_table.h include guard
+referred to the wrong macro.  Fix it.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/net/netfilter/nf_conntrack_labels.h | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ include/net/netfilter/nf_flow_table.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/net/netfilter/nf_conntrack_labels.h b/include/net/netfilter/nf_conntrack_labels.h
-index 4eacce6f3bcc..ba916411c4e1 100644
---- a/include/net/netfilter/nf_conntrack_labels.h
-+++ b/include/net/netfilter/nf_conntrack_labels.h
-@@ -1,11 +1,14 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#include <linux/types.h>
--#include <net/net_namespace.h>
-+
-+#ifndef _NF_CONNTRACK_LABELS_H
-+#define _NF_CONNTRACK_LABELS_H
-+
- #include <linux/netfilter/nf_conntrack_common.h>
- #include <linux/netfilter/nf_conntrack_tuple_common.h>
-+#include <linux/types.h>
-+#include <net/net_namespace.h>
- #include <net/netfilter/nf_conntrack.h>
- #include <net/netfilter/nf_conntrack_extend.h>
--
- #include <uapi/linux/netfilter/xt_connlabel.h>
+diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
+index 609df33b1209..d875be62cdf0 100644
+--- a/include/net/netfilter/nf_flow_table.h
++++ b/include/net/netfilter/nf_flow_table.h
+@@ -127,4 +127,4 @@ unsigned int nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
+ #define MODULE_ALIAS_NF_FLOWTABLE(family)	\
+ 	MODULE_ALIAS("nf-flowtable-" __stringify(family))
  
- #define NF_CT_LABELS_MAX_SIZE ((XT_CONNLABEL_MAXBIT + 1) / BITS_PER_BYTE)
-@@ -51,3 +54,5 @@ static inline void nf_conntrack_labels_fini(void) {}
- static inline int nf_connlabels_get(struct net *net, unsigned int bit) { return 0; }
- static inline void nf_connlabels_put(struct net *net) {}
- #endif
-+
-+#endif /* _NF_CONNTRACK_LABELS_H */
+-#endif /* _FLOW_OFFLOAD_H */
++#endif /* _NF_FLOW_TABLE_H */
 -- 
 2.23.0.rc1
 
