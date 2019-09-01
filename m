@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B155A4C07
-	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 22:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9015A4C02
+	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 22:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728958AbfIAUvb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 1 Sep 2019 16:51:31 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:53356 "EHLO
+        id S1729072AbfIAUva (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 1 Sep 2019 16:51:30 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:53360 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729066AbfIAUva (ORCPT
+        with ESMTP id S1729064AbfIAUva (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 1 Sep 2019 16:51:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,24 +18,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=bxVsTvPhTtdf0UxIqpFlRJcg2jHNab4wz0vLxDYsWek=; b=RQHUXZ2twRhdXPHdP5rmVkQM7x
-        khzLUKxBdP3rCz+zxUeGO9+O6Sa91uJFHEcLW+h9FHZ68SLBk5nWIBpzuPZs3MSZfFfdghBKv7dvG
-        lWMivTSa9fumzBLfw9FChmR3YI7U/ELUUcC5YeE6q/leDnYkK/omPnaFYs2cwEcelzHwfecvtw0oV
-        g6tf2dV+ilWQ2Wx1HiAxKWeFF14YIiQIMkYbscXClEE0M9sAwLBXeMjZbKikjuQX7T5LuKXaAU3EQ
-        gULsFFJZAwflKhkMwT1gN5nA32MfFGzO/dWIIaZcMTy/q0jLL0nZxnR1QOvN8yF0uBgd7rA776lmI
-        9XGV1VbQ==;
+        bh=OMdPVB4nABAr2ckXqWNbKVCrMuC48xAXSNmo3Xnba3s=; b=Mvfm/LE2vLE/WO7EKybRrPw6RT
+        uoPMbihyxchfiNGr6WUc/qsYnzkqbcMRbREUf8jZClwxbUBHp9bRmHysni3zFuCoSioadzAh5iouM
+        U4S+HHfy+ejUPH6yUFnkADUmDSQ+ao46N0vInaVV53DcUhKDRyKYPnWRVkeR9a9JqfNIQYSBPcVRu
+        h+fj0N50jHdP4bWLXGd3cvtWeAxq0uy83EfQ9dtdawN+193s2soBAdtBiYe4GI8CQTSVhruDcinf4
+        Vg9rWW/q7Dov0i/IpGHxXy+9XtnT7oTcvbnebf3QvD3sRwO0fgV8BWTeN5I9tPOQwWJ6suoIUTErz
+        F+bJMtrw==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1i4Wop-0002Uf-CD; Sun, 01 Sep 2019 21:51:27 +0100
+        id 1i4Wop-0002Uf-Fg; Sun, 01 Sep 2019 21:51:27 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 08/29] netfilter: remove unused function declarations.
-Date:   Sun,  1 Sep 2019 21:51:04 +0100
-Message-Id: <20190901205126.6935-9-jeremy@azazel.net>
+Subject: [PATCH nf-next 09/29] netfilter: remove unused includes.
+Date:   Sun,  1 Sep 2019 21:51:05 +0100
+Message-Id: <20190901205126.6935-10-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0.rc1
 In-Reply-To: <20190901205126.6935-1-jeremy@azazel.net>
 References: <20190901205126.6935-1-jeremy@azazel.net>
@@ -49,43 +49,52 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Two headers include declarations of functions which are never defined.
+Some header-files are included in places where they are not needed.
 Remove them.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/linux/netfilter_ipv4/ip_tables.h  | 2 --
- include/linux/netfilter_ipv6/ip6_tables.h | 3 +--
- 2 files changed, 1 insertion(+), 4 deletions(-)
+ net/bridge/netfilter/nf_conntrack_bridge.c | 1 -
+ net/ipv6/netfilter/nf_socket_ipv6.c        | 1 -
+ net/netfilter/xt_physdev.c                 | 1 -
+ 3 files changed, 3 deletions(-)
 
-diff --git a/include/linux/netfilter_ipv4/ip_tables.h b/include/linux/netfilter_ipv4/ip_tables.h
-index f40a65481df4..0b0d43ad9ed9 100644
---- a/include/linux/netfilter_ipv4/ip_tables.h
-+++ b/include/linux/netfilter_ipv4/ip_tables.h
-@@ -23,8 +23,6 @@
- #include <linux/init.h>
- #include <uapi/linux/netfilter_ipv4/ip_tables.h>
+diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
+index 4f5444d2a526..c9ce321fcac1 100644
+--- a/net/bridge/netfilter/nf_conntrack_bridge.c
++++ b/net/bridge/netfilter/nf_conntrack_bridge.c
+@@ -17,7 +17,6 @@
+ #include <net/netfilter/nf_conntrack_bridge.h>
  
--extern void ipt_init(void) __init;
--
- #if IS_ENABLED(CONFIG_NETFILTER)
- int ipt_register_table(struct net *net, const struct xt_table *table,
- 		       const struct ipt_replace *repl,
-diff --git a/include/linux/netfilter_ipv6/ip6_tables.h b/include/linux/netfilter_ipv6/ip6_tables.h
-index 53b7309613bf..666450c117bf 100644
---- a/include/linux/netfilter_ipv6/ip6_tables.h
-+++ b/include/linux/netfilter_ipv6/ip6_tables.h
-@@ -23,9 +23,8 @@
- #include <linux/init.h>
- #include <uapi/linux/netfilter_ipv6/ip6_tables.h>
+ #include <linux/netfilter/nf_tables.h>
+-#include <net/netfilter/ipv6/nf_defrag_ipv6.h>
+ #include <net/netfilter/nf_tables.h>
  
--extern void ip6t_init(void) __init;
--
- extern void *ip6t_alloc_initial_table(const struct xt_table *);
-+
- #if IS_ENABLED(CONFIG_NETFILTER)
- int ip6t_register_table(struct net *net, const struct xt_table *table,
- 			const struct ip6t_replace *repl,
+ #include "../br_private.h"
+diff --git a/net/ipv6/netfilter/nf_socket_ipv6.c b/net/ipv6/netfilter/nf_socket_ipv6.c
+index 437d95545c31..b9df879c48d3 100644
+--- a/net/ipv6/netfilter/nf_socket_ipv6.c
++++ b/net/ipv6/netfilter/nf_socket_ipv6.c
+@@ -12,7 +12,6 @@
+ #include <net/sock.h>
+ #include <net/inet_sock.h>
+ #include <net/inet6_hashtables.h>
+-#include <net/netfilter/ipv6/nf_defrag_ipv6.h>
+ #include <net/netfilter/nf_socket.h>
+ #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+ #include <net/netfilter/nf_conntrack.h>
+diff --git a/net/netfilter/xt_physdev.c b/net/netfilter/xt_physdev.c
+index ead7c6022208..4f311e5703e8 100644
+--- a/net/netfilter/xt_physdev.c
++++ b/net/netfilter/xt_physdev.c
+@@ -10,7 +10,6 @@
+ #include <linux/netfilter_bridge.h>
+ #include <linux/netfilter/xt_physdev.h>
+ #include <linux/netfilter/x_tables.h>
+-#include <net/netfilter/br_netfilter.h>
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Bart De Schuymer <bdschuym@pandora.be>");
 -- 
 2.23.0.rc1
 
