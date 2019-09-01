@@ -2,117 +2,293 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C30BFA4C01
-	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 22:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAADA4C05
+	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 22:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729025AbfIAUsW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 1 Sep 2019 16:48:22 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:41423 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729010AbfIAUsW (ORCPT
+        id S1729029AbfIAUva (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 1 Sep 2019 16:51:30 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:53346 "EHLO
+        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728972AbfIAUva (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 1 Sep 2019 16:48:22 -0400
-Received: by mail-pf1-f196.google.com with SMTP id b13so1059552pfo.8
-        for <netfilter-devel@vger.kernel.org>; Sun, 01 Sep 2019 13:48:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=bS2bI3ruDfFVimUY7Z4bScUDQ/vtCRQvHkIcBmhtyz0=;
-        b=GZtaKC+8wRBAk8HqwrJs7L/Y5jxf3w+jauly6obhgAiG0lnJgqd9YmdW4TPlR7ROUe
-         ZwA24RI/+tzvXmfYPBXYZZA9I0EdPtGHEB9L+GYV9hRWGXE2pvizh4Tjr8YKERe7iuSO
-         up7VQ6vR6MTxiUw4NdK2PwY4QiUlo2ILDJyBHyCJxqeqMTWAEj1/KwYdZooMQ1tS0Jwz
-         Zy8bxJZBH9IRoLKNnap1BtN9QID/ZmBssjl09RRH44y4wqvaM2ENn4bv9og3y54wgd3F
-         DxRax926EfVG3bdJ0NW5AgZdVvJZxTqB5Qio7wJuosKW04lYU3lrTn4XWhJeSCHB9sLD
-         4t5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=bS2bI3ruDfFVimUY7Z4bScUDQ/vtCRQvHkIcBmhtyz0=;
-        b=Xtre6dCRqCdlkuWQJgg8Qrx/+SYKjtxioFI9EcUEIlB+iV+UFXo3Ky6c93l66MlnMS
-         vj88qbxaRA1cW5kxsd1juGclMRu/GZY3Jz6UvXCEfoowJJV/xPE8NuJX/2Zry74NYQev
-         geG8MdVZBkUGmIGCPfTYJmBCSMcR7joW/9WLkKuTgOWbMu06XN/V/G5PP6IBNMVbSV57
-         HHm/f+R6t3ghhPxRHpZsD+Lr8klqXEx2So0UGcimk3+CIUsH9MxIdKYB9SEIs1t6w4nr
-         7BakZxVGGI/8iF+loYSBVsP/eAAs4yTCuhxXDc0UJi2yxxbZp9cTlMt+d6YzQAeGr4Mm
-         ruYA==
-X-Gm-Message-State: APjAAAUgkyqZtDeEAokQuPEomQdG28ReMpQnyNYJmGsoxOgSE3r4pix6
-        uTDZZM488l8umcm+NASA2CkymA==
-X-Google-Smtp-Source: APXvYqyME8OnFGwbDYlrJTWfTh1RyiwrZU29eECFiC0c6tq1sDPu6H+EDrAXbhi3mTyxrD1H3yFz8g==
-X-Received: by 2002:a17:90a:1b0a:: with SMTP id q10mr9739584pjq.91.1567370901211;
-        Sun, 01 Sep 2019 13:48:21 -0700 (PDT)
-Received: from cakuba.netronome.com (c-71-204-185-212.hsd1.ca.comcast.net. [71.204.185.212])
-        by smtp.gmail.com with ESMTPSA id g18sm11189073pgm.9.2019.09.01.13.48.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Sep 2019 13:48:21 -0700 (PDT)
-Date:   Sun, 1 Sep 2019 13:47:54 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, vishal@chelsio.com, saeedm@mellanox.com,
-        jiri@resnulli.us
-Subject: Re: [PATCH 0/4 net-next] flow_offload: update mangle action
- representation
-Message-ID: <20190901134754.1bcd72d4@cakuba.netronome.com>
-In-Reply-To: <20190831142217.bvxx3vc6wpsmnxpe@salvia>
-References: <20190830005336.23604-1-pablo@netfilter.org>
-        <20190829185448.0b502af8@cakuba.netronome.com>
-        <20190830090710.g7q2chf3qulfs5e4@salvia>
-        <20190830153351.5d5330fa@cakuba.netronome.com>
-        <20190831142217.bvxx3vc6wpsmnxpe@salvia>
-Organization: Netronome Systems, Ltd.
+        Sun, 1 Sep 2019 16:51:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=qFzisWZIN83rrq7oETLW5jkmWGvWAUR7N2iHNu2BPMU=; b=JEy6HibrSfU4D35lGu1coiO10G
+        fAO4JwuwBJZdDmcNRzqMoy6dC2H9ajMJ1Ji1zJ7masRijYzrTyXIDPThxfzL5aE+tPy6HFmjgI54c
+        x/Wa0wJDkpuHVLx+WoNdHlPTF3rwA4GuJBOl9xfZchglwMRR8qiVMb4zODioHFOzp5DVcxJo70l/s
+        /8+G9HtS52Xf9xb3gAFV/BwR+cA9HtIdsBIMjJeP2dHlR8L70y1P7FWzRlz/fJWyInx2v9ddyS16e
+        Onx2XZBE2izBp9N2rLHLRikDJr3zR1Ztnj8NBCN3PTSwDn8hsE97y2y+G3iMbE7+HZPIdFm4hKbZA
+        NRNWWfKw==;
+Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1i4Woo-0002Uf-4J; Sun, 01 Sep 2019 21:51:26 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH nf-next 00/29] Add config option checks to netfilter headers.
+Date:   Sun,  1 Sep 2019 21:50:56 +0100
+Message-Id: <20190901205126.6935-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.23.0.rc1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sat, 31 Aug 2019 16:22:17 +0200, Pablo Neira Ayuso wrote:
-> On Fri, Aug 30, 2019 at 03:33:51PM -0700, Jakub Kicinski wrote:
-> > On Fri, 30 Aug 2019 11:07:10 +0200, Pablo Neira Ayuso wrote:  
-> > > > > * The front-end coalesces consecutive pedit actions into one single
-> > > > >   word, so drivers can mangle IPv6 and ethernet address fields in one
-> > > > >   single go.    
-> > > > 
-> > > > You still only coalesce up to 16 bytes, no?    
-> > > 
-> > > You only have to rise FLOW_ACTION_MANGLE_MAXLEN coming in this patch
-> > > if you need more. I don't know of any packet field larger than 16
-> > > bytes. If there is a use-case for this, it should be easy to rise that
-> > > definition.  
-> > 
-> > Please see the definitions of:
-> > 
-> > struct nfp_fl_set_eth
-> > struct nfp_fl_set_ip4_addrs
-> > struct nfp_fl_set_ip4_ttl_tos
-> > struct nfp_fl_set_ipv6_tc_hl_fl
-> > struct nfp_fl_set_ipv6_addr
-> > struct nfp_fl_set_tport
-> > 
-> > These are the programming primitives for header rewrites in the NFP.
-> > Since each of those contains more than just one field, we'll have to
-> > keep all the field coalescing logic in the driver, even if you coalesce
-> > while fields (i.e. IPv6 addresses).  
-> 
-> nfp has been updated in this patch series to deal with the new mangle
-> representation.
+In a previous patch-series [0], I removed all netfilter headers from the
+blacklist of headers which could not be compiled standalone.  I did so
+by fixing the specific compilation failures of the headers in the list,
+usually by adding a preprocessor conditional to check whether a particu-
+lar config option was enabled and disable some function definition or
+struct member which depended on that option.  While this was effective,
+it was not wholly satisfactory since it left a scattering of seemingly
+random ifdefs throughout the headers.
 
-It has been updated to handle the trivial coalescing.
+0 - https://lore.kernel.org/netfilter-devel/20190813113657.GB4840@azazel.net/T/
 
-> > Perhaps it's not a serious blocker for the series, but it'd be nice if
-> > rewrite action grouping was handled in the core. Since you're already
-> > poking at that code..  
-> 
-> Rewrite action grouping is already handled from the core front-end in
-> this patch series.
+The reason why these ad-hoc conditionals were necessary is that there
+were inconsistencies in how existing checks were used to disable code
+when particular options were turned off.  For example, a header A.h
+might define a struct S which was only available if a particular config
+option C was enabled, but A.h might be included by header B.h, which
+defined a struct T with a struct S member without checking for C.  If
+A.h and B.h were included in X.c, which was only compiled if C was
+enabled, everything worked as expected; however, trying to compile B.h
+standalone when C was disabled would result in a compilation failure.
 
-If you did what I'm asking the functions nfp_fl_check_mangle_start()
-and nfp_fl_check_mangle_end() would no longer exist. They were not
-really needed before you "common flow API" changes.
+This patch-series represents an attempt to provide a more comprehensive
+solution by identifying the config options relevant to each header and
+adding the appropriate conditionals to it where they do not already
+exist.  In the majority of cases, a particular header is only included
+by files tied to a particular config option, whether CONFIG_NETFILTER or
+something more specific, and the whole of it can be wrapped in one
+conditional.
 
-Your reply makes limited amount of sense to me. Pleas read the code and
-what I wrote, if you think I'm asking for too much just say that, I'd
-accept that.
+For historical reasons, there are some headers which include their uapi
+siblings and are themselves included elsewhere only for stuff in the
+uapi headers.  Rather than change all those include directives, I have
+chosen to leave the uapi include directives outside the conditionals.
+
+The patch series is structured as follows.
+
+  1-2)
+
+    Addition of header guards.  The first of these, by Masahiro Yamada,
+    is already in the nf tree; I've put it here to ensure that all the
+    later changes apply cleanly on top of it.
+
+  3-8)
+
+    Some miscellaneous fixes.
+
+  9-11)
+
+    Addition and removal of include directives.
+
+  12-13)
+
+    Removal of some headers.
+
+  14-16)
+
+    Moving code between headers.
+
+  17)
+
+    Refactoring of some inline functions.
+
+  18)
+
+    Replacement of some `if defined(...)` instances with `if IS_ENABLED(...)`.
+
+  19-25)
+
+    Addition of conditionals to sections of code, mostly in headers.
+
+  26-28)
+
+    Addition of new config options for use in later conditionals.
+
+  29)
+
+    Wrapping of entire headers in one conditional each, removing
+    existing ones wrapping smaller sections of code.
+
+    I wasn't quite sure how to present this last change-set.  In the
+    branch I've been using for development, I have the headers grouped
+    into a commit per config-option, but that would have meant an addi-
+    tional 44 patches, so I squashed them all before sending the series,
+    although it has resulted in a 2,000-line patch that touches 78
+    files.
+
+Jeremy Sowden (28):
+  netfilter: add include guard to nf_conntrack_labels.h.
+  netfilter: fix include guard comment.
+  netfilter: add GPL-2.0 SPDX ID's to a couple of headers.
+  netfilter: remove trailing white-space.
+  netfilter: fix Kconfig formatting error.
+  netfilter: remove stray semicolons.
+  netfilter: remove unused function declarations.
+  netfilter: remove unused includes.
+  netfilter: include the right header in nf_conntrack_zones.h.
+  netfilter: added missing includes.
+  netfilter: inline three headers.
+  netfilter: remove superfluous header.
+  netfilter: move inline function to a more appropriate header.
+  netfilter: move code between synproxy headers.
+  netfilter: move struct definition function to a more appropriate
+    header.
+  netfilter: use consistent style when defining inline functions in
+    nf_conntrack_ecache.h.
+  netfilter: replace defined(CONFIG...) || defined(CONFIG...MODULE) with
+    IS_ENABLED(CONFIG...).
+  netfilter: wrap union nf_conntrack_proto members in
+    CONFIG_NF_CT_PROTO_* check.
+  netfilter: wrap inline synproxy function in CONFIG_NETFILTER_SYNPROXY
+    check.
+  netfilter: wrap inline timeout function in CONFIG_NETFILTER_TIMEOUT
+    check.
+  netfilter: wrap some nat-related conntrack code in a CONFIG_NF_NAT
+    check.
+  netfilter: wrap some ipv6 tables code in a CONFIG_NF_TABLES_IPV6
+    check.
+  netfilter: wrap some conntrack code in a CONFIG_NF_CONNTRACK check.
+  netfilter: add CONFIG_NETFILTER check to linux/netfilter.h.
+  netfilter: add NF_TPROXY config option.
+  netfilter: add IP_SET_BITMAP config option.
+  netfilter: add IP_SET_HASH config option.
+  netfilter: wrap headers in CONFIG checks.
+
+Masahiro Yamada (1):
+  netfilter: add include guard to nf_conntrack_h323_types.h
+
+ include/linux/netfilter.h                     | 16 +++-
+ include/linux/netfilter/ipset/ip_set.h        |  7 +-
+ include/linux/netfilter/ipset/ip_set_bitmap.h |  4 +
+ .../linux/netfilter/ipset/ip_set_getport.h    |  6 +-
+ include/linux/netfilter/ipset/ip_set_hash.h   |  3 +
+ include/linux/netfilter/ipset/ip_set_list.h   |  3 +
+ include/linux/netfilter/ipset/pfxlen.h        |  4 +
+ include/linux/netfilter/nf_conntrack_amanda.h |  6 ++
+ include/linux/netfilter/nf_conntrack_common.h |  4 +
+ include/linux/netfilter/nf_conntrack_dccp.h   |  4 +
+ include/linux/netfilter/nf_conntrack_ftp.h    |  8 +-
+ include/linux/netfilter/nf_conntrack_h323.h   |  4 +
+ .../linux/netfilter/nf_conntrack_h323_asn1.h  |  4 +
+ .../linux/netfilter/nf_conntrack_h323_types.h |  9 ++
+ include/linux/netfilter/nf_conntrack_irc.h    |  4 +
+ include/linux/netfilter/nf_conntrack_pptp.h   |  4 +
+ .../linux/netfilter/nf_conntrack_proto_gre.h  |  6 ++
+ include/linux/netfilter/nf_conntrack_sane.h   |  5 +
+ include/linux/netfilter/nf_conntrack_sctp.h   |  5 +
+ include/linux/netfilter/nf_conntrack_sip.h    |  4 +
+ include/linux/netfilter/nf_conntrack_snmp.h   |  4 +
+ include/linux/netfilter/nf_conntrack_tcp.h    |  3 +
+ include/linux/netfilter/nf_conntrack_tftp.h   |  4 +
+ .../netfilter/nf_conntrack_zones_common.h     |  8 ++
+ include/linux/netfilter/nfnetlink.h           |  7 +-
+ include/linux/netfilter/nfnetlink_acct.h      |  6 ++
+ include/linux/netfilter/nfnetlink_osf.h       |  4 +
+ include/linux/netfilter/x_tables.h            | 15 ++-
+ include/linux/netfilter/xt_hashlimit.h        | 11 ---
+ include/linux/netfilter/xt_physdev.h          |  8 --
+ include/linux/netfilter_arp/arp_tables.h      |  8 +-
+ include/linux/netfilter_bridge/ebt_802_3.h    | 12 ---
+ include/linux/netfilter_bridge/ebtables.h     | 10 +-
+ include/linux/netfilter_ipv4.h                |  7 +-
+ include/linux/netfilter_ipv4/ip_tables.h      | 17 ++--
+ include/linux/netfilter_ipv6.h                | 31 ++++--
+ include/linux/netfilter_ipv6/ip6_tables.h     | 28 ++----
+ include/net/netfilter/br_netfilter.h          | 14 +--
+ .../net/netfilter/ipv4/nf_conntrack_ipv4.h    |  4 +
+ include/net/netfilter/ipv4/nf_defrag_ipv4.h   |  4 +
+ include/net/netfilter/ipv4/nf_dup_ipv4.h      |  4 +
+ include/net/netfilter/ipv4/nf_reject.h        |  4 +
+ .../net/netfilter/ipv6/nf_conntrack_icmpv6.h  | 21 -----
+ .../net/netfilter/ipv6/nf_conntrack_ipv6.h    |  4 +
+ include/net/netfilter/ipv6/nf_defrag_ipv6.h   |  4 +
+ include/net/netfilter/ipv6/nf_dup_ipv6.h      |  4 +
+ include/net/netfilter/ipv6/nf_reject.h        |  4 +
+ include/net/netfilter/nf_conntrack.h          | 21 ++---
+ include/net/netfilter/nf_conntrack_acct.h     | 19 ++--
+ include/net/netfilter/nf_conntrack_bridge.h   | 11 +--
+ include/net/netfilter/nf_conntrack_core.h     | 22 +++--
+ include/net/netfilter/nf_conntrack_count.h    |  4 +
+ include/net/netfilter/nf_conntrack_ecache.h   | 94 ++++++++++++-------
+ include/net/netfilter/nf_conntrack_expect.h   |  8 +-
+ include/net/netfilter/nf_conntrack_extend.h   |  8 +-
+ include/net/netfilter/nf_conntrack_helper.h   |  6 ++
+ include/net/netfilter/nf_conntrack_l4proto.h  |  7 +-
+ include/net/netfilter/nf_conntrack_labels.h   | 15 ++-
+ include/net/netfilter/nf_conntrack_seqadj.h   |  4 +
+ include/net/netfilter/nf_conntrack_synproxy.h | 43 +--------
+ include/net/netfilter/nf_conntrack_timeout.h  |  8 ++
+ .../net/netfilter/nf_conntrack_timestamp.h    |  6 +-
+ include/net/netfilter/nf_conntrack_tuple.h    |  8 +-
+ include/net/netfilter/nf_conntrack_zones.h    |  3 +-
+ include/net/netfilter/nf_dup_netdev.h         |  4 +
+ include/net/netfilter/nf_flow_table.h         | 10 +-
+ include/net/netfilter/nf_log.h                |  4 +
+ include/net/netfilter/nf_nat.h                | 21 ++---
+ include/net/netfilter/nf_nat_helper.h         |  5 +
+ include/net/netfilter/nf_nat_masquerade.h     |  5 +
+ include/net/netfilter/nf_nat_redirect.h       |  4 +
+ include/net/netfilter/nf_queue.h              |  8 +-
+ include/net/netfilter/nf_reject.h             |  4 +
+ include/net/netfilter/nf_socket.h             |  4 +
+ include/net/netfilter/nf_synproxy.h           | 46 ++++++++-
+ include/net/netfilter/nf_tables.h             | 17 +---
+ include/net/netfilter/nf_tables_core.h        |  5 +
+ include/net/netfilter/nf_tables_ipv4.h        |  4 +
+ include/net/netfilter/nf_tables_ipv6.h        | 10 +-
+ include/net/netfilter/nf_tables_offload.h     |  4 +
+ include/net/netfilter/nf_tproxy.h             |  4 +
+ include/net/netfilter/nft_fib.h               |  5 +
+ include/net/netfilter/nft_meta.h              |  4 +
+ include/net/netfilter/nft_reject.h            |  4 +
+ include/net/netfilter/xt_rateest.h            |  4 +
+ net/bridge/netfilter/ebt_802_3.c              |  8 +-
+ net/bridge/netfilter/nf_conntrack_bridge.c    | 15 ++-
+ net/ipv4/netfilter/Kconfig                    |  9 +-
+ net/ipv4/netfilter/Makefile                   |  2 +-
+ net/ipv6/netfilter.c                          |  4 +-
+ net/ipv6/netfilter/Kconfig                    |  1 +
+ net/ipv6/netfilter/ip6t_ipv6header.c          |  4 +-
+ net/ipv6/netfilter/nf_log_ipv6.c              |  4 +-
+ net/ipv6/netfilter/nf_socket_ipv6.c           |  1 -
+ net/netfilter/Kconfig                         | 11 ++-
+ net/netfilter/Makefile                        |  2 +-
+ net/netfilter/ipset/Kconfig                   | 21 +++++
+ net/netfilter/nf_conntrack_core.c             |  4 +
+ net/netfilter/nf_conntrack_ecache.c           |  1 +
+ net/netfilter/nf_conntrack_expect.c           |  2 +
+ net/netfilter/nf_conntrack_helper.c           |  5 +-
+ net/netfilter/nf_conntrack_proto_icmpv6.c     |  1 -
+ net/netfilter/nf_conntrack_timeout.c          |  1 +
+ net/netfilter/nf_flow_table_core.c            |  1 +
+ net/netfilter/nft_chain_filter.c              |  4 +
+ net/netfilter/nft_flow_offload.c              |  3 +-
+ net/netfilter/xt_connlimit.c                  |  2 +
+ net/netfilter/xt_hashlimit.c                  |  7 +-
+ net/netfilter/xt_physdev.c                    |  6 +-
+ 109 files changed, 620 insertions(+), 322 deletions(-)
+ delete mode 100644 include/linux/netfilter/xt_hashlimit.h
+ delete mode 100644 include/linux/netfilter/xt_physdev.h
+ delete mode 100644 include/linux/netfilter_bridge/ebt_802_3.h
+ delete mode 100644 include/net/netfilter/ipv6/nf_conntrack_icmpv6.h
+
+-- 
+2.23.0.rc1
+
