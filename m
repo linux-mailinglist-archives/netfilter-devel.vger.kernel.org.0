@@ -2,40 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E35BA4C23
-	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 23:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE13BA4C1D
+	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Sep 2019 23:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729031AbfIAVCV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 1 Sep 2019 17:02:21 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:53742 "EHLO
+        id S1729085AbfIAVCJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 1 Sep 2019 17:02:09 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:53672 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729059AbfIAVCV (ORCPT
+        with ESMTP id S1729106AbfIAVCJ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 1 Sep 2019 17:02:21 -0400
+        Sun, 1 Sep 2019 17:02:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=9JQ+mOxBFBwK0COzvyCNej2ZoTWLKofYvp3dBheUR58=; b=N+w/RyK8KsDK4nmHR6uKX5X/IO
-        MFslhyp6bqAInnh/k4rjir6wfC9VAMemwbmPAV7wHq9r53yk1M9tY3zIa6GUBZmJ6GtRRRgOgFd4U
-        Rn/OAhg9bfMw/Yod35mkEja9GRSeXnZhYcvINiVy8DfT2BQWwlkjFuBFTR0uQZ21nO4gcOMu+M9cg
-        VQRke4bzdasbvBwxMb0eyFKROgpScMpvqLNYw+T6N3RG+lwMoWps47rSeGzOd9jfjQdyqbIZAwSzy
-        STmE7HjJzcVk3VSyCJ5t9IJUisvqEtTwcxaW8PvY3+AVXZoQaY/Ntya3yI9+r+uqHNfHdlRmMyCew
-        zhjdVtlg==;
+        bh=Pm9MZTEpDGxE5vADyK9rgG4UEEBLW9mSX/Spnmv1vTc=; b=OnDYYKYoNkKFR0O2fM1g3aIKvF
+        +ACODsGc68tz6GnYeFFcK8iYDdLayk03oy9olIQ6Cp0TQ2o2yAPlJOevWZF3cP6/nCVIa+yqSfwsT
+        ZEKbKg4Wnted++jpALgbNa2cQGmOFYXQc5J+Y74wgATYSPDPeK0Z+VmKkbYtCrhWvGSrwfx92y21C
+        uj6mqAIS4YuHH6kyGjOrezJlgpgaUnTfXa+IrDkWNaFeh14sspzd7u1yOZ2o2FQ4qv257swZmWYbu
+        gz4fM3FpOGr1rjxaY4VLbvaT3bF5tS0KOUz1WB6P+R78dA5lbCum1tXvMKt7grKHDzX7ZyEWhgOoF
+        HcU80wSQ==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1i4Wor-0002Uf-8l; Sun, 01 Sep 2019 21:51:29 +0100
+        id 1i4Wor-0002Uf-De; Sun, 01 Sep 2019 21:51:29 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 20/29] netfilter: wrap inline synproxy function in CONFIG_NETFILTER_SYNPROXY check.
-Date:   Sun,  1 Sep 2019 21:51:16 +0100
-Message-Id: <20190901205126.6935-21-jeremy@azazel.net>
+Subject: [PATCH nf-next 21/29] netfilter: wrap inline timeout function in CONFIG_NETFILTER_TIMEOUT check.
+Date:   Sun,  1 Sep 2019 21:51:17 +0100
+Message-Id: <20190901205126.6935-22-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0.rc1
 In-Reply-To: <20190901205126.6935-1-jeremy@azazel.net>
 References: <20190901205126.6935-1-jeremy@azazel.net>
@@ -49,36 +49,37 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-nf_conntrack_synproxy.h contains three inline functions.  The contents
-of two of them are wrapped in CONFIG_NETFILTER_SYNPROXY checks and just
-return NULL if it is not enabled.  The third does nothing if they return
-NULL, so wrap its contents as well.
+nf_ct_timeout_data is only called if CONFIG_NETFILTER_TIMEOUT is
+enabled.  Wrap its contents in a CONFIG_NETFILTER_TIMEOUT check like the
+other inline functions in nf_conntrack_timeout.h.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/net/netfilter/nf_conntrack_synproxy.h | 2 ++
- 1 file changed, 2 insertions(+)
+ include/net/netfilter/nf_conntrack_timeout.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/net/netfilter/nf_conntrack_synproxy.h b/include/net/netfilter/nf_conntrack_synproxy.h
-index c22f0c11cc82..6a3ab081e4bf 100644
---- a/include/net/netfilter/nf_conntrack_synproxy.h
-+++ b/include/net/netfilter/nf_conntrack_synproxy.h
-@@ -32,6 +32,7 @@ static inline struct nf_conn_synproxy *nfct_synproxy_ext_add(struct nf_conn *ct)
- static inline bool nf_ct_add_synproxy(struct nf_conn *ct,
- 				      const struct nf_conn *tmpl)
+diff --git a/include/net/netfilter/nf_conntrack_timeout.h b/include/net/netfilter/nf_conntrack_timeout.h
+index 00a8fbb2d735..6dd72396f534 100644
+--- a/include/net/netfilter/nf_conntrack_timeout.h
++++ b/include/net/netfilter/nf_conntrack_timeout.h
+@@ -32,6 +32,7 @@ struct nf_conn_timeout {
+ static inline unsigned int *
+ nf_ct_timeout_data(const struct nf_conn_timeout *t)
  {
-+#if IS_ENABLED(CONFIG_NETFILTER_SYNPROXY)
- 	if (tmpl && nfct_synproxy(tmpl)) {
- 		if (!nfct_seqadj_ext_add(ct))
- 			return false;
-@@ -39,6 +40,7 @@ static inline bool nf_ct_add_synproxy(struct nf_conn *ct,
- 		if (!nfct_synproxy_ext_add(ct))
- 			return false;
- 	}
-+#endif
++#ifdef CONFIG_NF_CONNTRACK_TIMEOUT
+ 	struct nf_ct_timeout *timeout;
  
- 	return true;
+ 	timeout = rcu_dereference(t->timeout);
+@@ -39,6 +40,9 @@ nf_ct_timeout_data(const struct nf_conn_timeout *t)
+ 		return NULL;
+ 
+ 	return (unsigned int *)timeout->data;
++#else
++	return NULL;
++#endif
  }
+ 
+ static inline
 -- 
 2.23.0.rc1
 
