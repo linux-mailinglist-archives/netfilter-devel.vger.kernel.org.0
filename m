@@ -2,40 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E19B8A5E1C
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Sep 2019 01:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE535A5E2B
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Sep 2019 01:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726872AbfIBXcE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 2 Sep 2019 19:32:04 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:43914 "EHLO
+        id S1726845AbfIBXcb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 2 Sep 2019 19:32:31 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:44094 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726623AbfIBXcE (ORCPT
+        with ESMTP id S1726623AbfIBXcb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 2 Sep 2019 19:32:04 -0400
+        Mon, 2 Sep 2019 19:32:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=ZmvKMdx1Yja1CfdPxcR6lw1Mp1wLQW+OmLCcmt4PitM=; b=twVPcts4t2nNSlNfPHP/DNwWSf
-        tGULVKMya7Eie6OKPX8jz2+HhIyO+THe90HTsE21PmvWIHe1svg3qDg6n+CLDdCiU27NWpiGq9rse
-        qRd/RXFRt4Jg+dQ9jEvSEr7ghr3eh5rJyMueLwKI44TnjE/YQgHBzHTF/mV3KoGtaYvyfY6yIstVQ
-        vHTW8ZgJ4MKqTBUKTogOUmth3s5V2jqPojfJx3+HzXUUcrfQ8qkUoGROPU9H9PMMHtl2sBnxgZOtB
-        nJ7++WSf1ElDbfkclxChKvuga6UQo6qRjH5TZSWee0o5lutLyOFeM7b9BQiSPS/cA7Gmc3t4iOvBi
-        8nJvmD3g==;
+        bh=mSISNai2GqNQP2gJLIEvO2gb5mq+2VH1PXpfQQTziiM=; b=KWh1eP/NIzlJB6wcGWtuZRGJjy
+        1lj5M8PKq4IGUehzScL+IKamwmLVmSxNfDqqJzv/0+NVpqLXKRHdykLFD+LvZ2V6+3jvlmFa0d98r
+        r9HYMeBmTcJVxAG7uCDbqqfYYDq+KNGBSY31MA7q4nqsrqgKOT8JO3xP+fI4ViJosvG8ABNQWWjzQ
+        7Bu7+i6bDpmIWYY1Bu5QxGz394NDG1qciy1nLdm+SFMsb8hkPJfx+skIc0/rN75GzvB7zH8JRexL8
+        CQUUVphUANEnpTDf1+6xvA3sj7/f4AdDHO/HYooiUap2lAdJUYX4mE7i+uIK2lNEgezHXNlK5LC5c
+        ChpxTmIQ==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1i4vPS-0004la-Oo; Tue, 03 Sep 2019 00:06:54 +0100
+        id 1i4vPS-0004la-Uw; Tue, 03 Sep 2019 00:06:55 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next v2 26/30] netfilter: add CONFIG_NETFILTER check to linux/netfilter.h.
-Date:   Tue,  3 Sep 2019 00:06:46 +0100
-Message-Id: <20190902230650.14621-27-jeremy@azazel.net>
+Subject: [PATCH nf-next v2 27/30] netfilter: add NF_TPROXY config option.
+Date:   Tue,  3 Sep 2019 00:06:47 +0100
+Message-Id: <20190902230650.14621-28-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0.rc1
 In-Reply-To: <20190902230650.14621-1-jeremy@azazel.net>
 References: <20190902230650.14621-1-jeremy@azazel.net>
@@ -49,58 +49,54 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The bulk of this header is already wrapped in CONFIG_NETFILTER or
-CONFIG_NF_CONNTRACK checks.  The last few definitions are also only
-required if CONFIG_NETFILTER is enabled.  Add another conditional for
-that remainder.
+Add a hidden tristate option which is select by NF_TPROXY_IPV4 and
+NF_TPROXY_IPV6.  It will be used to wrap nf_tproxy.h.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/linux/netfilter.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ net/ipv4/netfilter/Kconfig | 1 +
+ net/ipv6/netfilter/Kconfig | 1 +
+ net/netfilter/Kconfig      | 3 +++
+ 3 files changed, 5 insertions(+)
 
-diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
-index 3bed59528fed..075d48ef6a48 100644
---- a/include/linux/netfilter.h
-+++ b/include/linux/netfilter.h
-@@ -16,6 +16,7 @@
- #include <net/net_namespace.h>
+diff --git a/net/ipv4/netfilter/Kconfig b/net/ipv4/netfilter/Kconfig
+index f17b402111ce..50c02bd80ca7 100644
+--- a/net/ipv4/netfilter/Kconfig
++++ b/net/ipv4/netfilter/Kconfig
+@@ -18,6 +18,7 @@ config NF_SOCKET_IPV4
  
- #ifdef CONFIG_NETFILTER
-+
- static inline int NF_DROP_GETERR(int verdict)
- {
- 	return -(verdict >> NF_VERDICT_QBITS);
-@@ -415,11 +416,13 @@ static inline int nf_hook(u_int8_t pf, unsigned int hook, struct net *net,
- {
- 	return 1;
- }
-+
- struct flowi;
- static inline void
- nf_nat_decode_session(struct sk_buff *skb, struct flowi *fl, u_int8_t family)
- {
- }
-+
- #endif /*CONFIG_NETFILTER*/
+ config NF_TPROXY_IPV4
+ 	tristate "IPv4 tproxy support"
++        select NF_TPROXY
  
- #if IS_ENABLED(CONFIG_NF_CONNTRACK)
-@@ -440,6 +443,8 @@ static inline bool nf_ct_get_tuple_skb(struct nf_conntrack_tuple *dst_tuple,
- }
- #endif
+ if NF_TABLES
  
-+#ifdef CONFIG_NETFILTER
+diff --git a/net/ipv6/netfilter/Kconfig b/net/ipv6/netfilter/Kconfig
+index 6120a7800975..273803f008f9 100644
+--- a/net/ipv6/netfilter/Kconfig
++++ b/net/ipv6/netfilter/Kconfig
+@@ -14,6 +14,7 @@ config NF_SOCKET_IPV6
+ 
+ config NF_TPROXY_IPV6
+ 	tristate "IPv6 tproxy support"
++        select NF_TPROXY
+ 
+ if NF_TABLES
+ 
+diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
+index 34ec7afec116..7118352c78c4 100644
+--- a/net/netfilter/Kconfig
++++ b/net/netfilter/Kconfig
+@@ -439,6 +439,9 @@ config NETFILTER_SYNPROXY
+ 
+ endif # NF_CONNTRACK
+ 
++config NF_TPROXY
++        tristate
 +
- struct nf_conn;
- enum ip_conntrack_info;
- 
-@@ -486,4 +491,6 @@ struct nf_bridge_frag_data {
- 	__be16  vlan_proto;
- };
- 
-+#endif /* CONFIG_NETFILTER */
-+
- #endif /*__LINUX_NETFILTER_H*/
+ config NF_TABLES
+ 	select NETFILTER_NETLINK
+ 	tristate "Netfilter nf_tables support"
 -- 
 2.23.0.rc1
 
