@@ -2,40 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51ABAA5E25
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Sep 2019 01:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD80A5E2C
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Sep 2019 01:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727758AbfIBXcV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 2 Sep 2019 19:32:21 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:44022 "EHLO
+        id S1727868AbfIBXcd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 2 Sep 2019 19:32:33 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:44104 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727733AbfIBXcU (ORCPT
+        with ESMTP id S1726623AbfIBXcd (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 2 Sep 2019 19:32:20 -0400
+        Mon, 2 Sep 2019 19:32:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=rF510F0tws7FAC75hk7hpC9Uyktc9J5TM7qtE5Te2HU=; b=VJWml40YNwW8n/aUH5s6wfaCWc
-        Ckqq12naW+WX5onF5SnTtifTZJrJ9lIGdL1b4uabACuXYPLMOrkEjGu+3pRvpKcWo3G/iGtIsWGZM
-        i9GGNP0W5NRlxp/ztUvoTBIFvfMeyW1R4EJLIDuLVlFoMIwosIcY7q2/qGXuy1+XmBXZlVIay/kAj
-        OulnyN72gfQOn8NnEtwiWrI/b67+2DlXOALRY1GfacbC/IHLVeGnbV2f1DiZabByu+/reLq2kKZdn
-        KR+AaY6kxuVRIM7toLVR0pFyHBMQIWjfjrreLPg37+GR9/VbCC/oI/qqgqvwDCCN4G1/FL0Qm9O1F
-        53wkt3pw==;
+        bh=MPYpBrgQsBCiU2yjfTCQqeEnAnfS7m8K5/K+/Nd4rAw=; b=d4kkBsIVIXLTiclqcwUYJZyeA/
+        b0JSvYH2Zr09mAVbkNYwL9LkGGrtTC09wdy/59wNejMsGcIurNroz8VDutrW5m6Tt2X+UW3ntSj9V
+        AlU3zfLylRuZ0fW2olwe8JUOtz8cKis35qT9kE6Uw33m4tkahyS6wguCFbnSGGe0BALfaMGw6bXHH
+        c0nNj7ykOfHGoAo5en3qtJOFq02j7p5Bicg3johZJYq4YTBNoipXRQzGpSdnx5L+yQAfMmm2Q1QOV
+        DXS4sZu+Xqy3S1SXp6f2BRyLS54GfeK5GNCbY7/q6EZO2suxvsSERh7kEctMQ4y8gLC0AyERtz8w9
+        jVJ/OiFA==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1i4vPR-0004la-5t; Tue, 03 Sep 2019 00:06:53 +0100
+        id 1i4vPR-0004la-Et; Tue, 03 Sep 2019 00:06:53 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next v2 17/30] netfilter: move struct definition function to a more appropriate header.
-Date:   Tue,  3 Sep 2019 00:06:37 +0100
-Message-Id: <20190902230650.14621-18-jeremy@azazel.net>
+Subject: [PATCH nf-next v2 18/30] netfilter: use consistent style when defining inline functions in nf_conntrack_ecache.h.
+Date:   Tue,  3 Sep 2019 00:06:38 +0100
+Message-Id: <20190902230650.14621-19-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0.rc1
 In-Reply-To: <20190902230650.14621-1-jeremy@azazel.net>
 References: <20190902230650.14621-1-jeremy@azazel.net>
@@ -49,169 +49,198 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-There is a struct definition function in nf_conntrack_bridge.h which is
-not specific to conntrack and is used elswhere in netfilter.  Move it
-into netfilter.h.
+The header contains some inline functions defined as:
+
+  static inline f (...)
+  {
+  #ifdef CONFIG_NF_CONNTRACK_EVENTS
+    ...
+  #else
+    ...
+  #endif
+  }
+
+and a few others as:
+
+  #ifdef CONFIG_NF_CONNTRACK_EVENTS
+  static inline f (...)
+  {
+    ...
+  }
+  #else
+  static inline f (...)
+  {
+    ...
+  }
+  #endif
+
+Prefer the former style, which is more numerous.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/linux/netfilter.h                   |  7 +++++++
- include/linux/netfilter_ipv6.h              | 14 +++++++-------
- include/net/netfilter/nf_conntrack_bridge.h |  7 -------
- net/bridge/netfilter/nf_conntrack_bridge.c  | 14 +++++++-------
- net/ipv6/netfilter.c                        |  4 ++--
- 5 files changed, 23 insertions(+), 23 deletions(-)
+ include/net/netfilter/nf_conntrack_ecache.h | 82 +++++++++++++--------
+ 1 file changed, 50 insertions(+), 32 deletions(-)
 
-diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
-index 049aeb40fa35..4c94dd4cc8d0 100644
---- a/include/linux/netfilter.h
-+++ b/include/linux/netfilter.h
-@@ -479,4 +479,11 @@ extern struct nfnl_ct_hook __rcu *nfnl_ct_hook;
-  */
- DECLARE_PER_CPU(bool, nf_skb_duplicated);
+diff --git a/include/net/netfilter/nf_conntrack_ecache.h b/include/net/netfilter/nf_conntrack_ecache.h
+index 0815bfadfefe..eb81f9195e28 100644
+--- a/include/net/netfilter/nf_conntrack_ecache.h
++++ b/include/net/netfilter/nf_conntrack_ecache.h
+@@ -64,6 +64,7 @@ nf_ct_ecache_ext_add(struct nf_conn *ct, u16 ctmask, u16 expmask, gfp_t gfp)
+ }
  
-+struct nf_bridge_frag_data {
-+	char    mac[ETH_HLEN];
-+	bool    vlan_present;
-+	u16     vlan_tci;
-+	__be16  vlan_proto;
-+};
+ #ifdef CONFIG_NF_CONNTRACK_EVENTS
 +
- #endif /*__LINUX_NETFILTER_H*/
-diff --git a/include/linux/netfilter_ipv6.h b/include/linux/netfilter_ipv6.h
-index b8f872844ba3..cec3253e736d 100644
---- a/include/linux/netfilter_ipv6.h
-+++ b/include/linux/netfilter_ipv6.h
-@@ -33,7 +33,7 @@ struct ip6_rt_info {
- };
+ /* This structure is passed to event handler */
+ struct nf_ct_event {
+ 	struct nf_conn *ct;
+@@ -84,9 +85,26 @@ void nf_ct_deliver_cached_events(struct nf_conn *ct);
+ int nf_conntrack_eventmask_report(unsigned int eventmask, struct nf_conn *ct,
+ 				  u32 portid, int report);
  
- struct nf_queue_entry;
--struct nf_ct_bridge_frag_data;
-+struct nf_bridge_frag_data;
++#else
++
++static inline void nf_ct_deliver_cached_events(const struct nf_conn *ct)
++{
++}
++
++static inline int nf_conntrack_eventmask_report(unsigned int eventmask,
++						struct nf_conn *ct,
++						u32 portid,
++						int report)
++{
++	return 0;
++}
++
++#endif
++
+ static inline void
+ nf_conntrack_event_cache(enum ip_conntrack_events event, struct nf_conn *ct)
+ {
++#ifdef CONFIG_NF_CONNTRACK_EVENTS
+ 	struct net *net = nf_ct_net(ct);
+ 	struct nf_conntrack_ecache *e;
  
- /*
-  * Hook functions for ipv6 to allow xt_* modules to be built-in even
-@@ -62,9 +62,9 @@ struct nf_ipv6_ops {
- 	int (*br_defrag)(struct net *net, struct sk_buff *skb, u32 user);
- 	int (*br_fragment)(struct net *net, struct sock *sk,
- 			   struct sk_buff *skb,
--			   struct nf_ct_bridge_frag_data *data,
-+			   struct nf_bridge_frag_data *data,
- 			   int (*output)(struct net *, struct sock *sk,
--					 const struct nf_ct_bridge_frag_data *data,
-+					 const struct nf_bridge_frag_data *data,
- 					 struct sk_buff *));
- #endif
- };
-@@ -136,16 +136,16 @@ static inline int nf_ipv6_br_defrag(struct net *net, struct sk_buff *skb,
+@@ -98,31 +116,42 @@ nf_conntrack_event_cache(enum ip_conntrack_events event, struct nf_conn *ct)
+ 		return;
+ 
+ 	set_bit(event, &e->cache);
++#endif
  }
  
- int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
--		    struct nf_ct_bridge_frag_data *data,
-+		    struct nf_bridge_frag_data *data,
- 		    int (*output)(struct net *, struct sock *sk,
--				  const struct nf_ct_bridge_frag_data *data,
-+				  const struct nf_bridge_frag_data *data,
- 				  struct sk_buff *));
- 
- static inline int nf_br_ip6_fragment(struct net *net, struct sock *sk,
- 				     struct sk_buff *skb,
--				     struct nf_ct_bridge_frag_data *data,
-+				     struct nf_bridge_frag_data *data,
- 				     int (*output)(struct net *, struct sock *sk,
--						   const struct nf_ct_bridge_frag_data *data,
-+						   const struct nf_bridge_frag_data *data,
- 						   struct sk_buff *))
+ static inline int
+ nf_conntrack_event_report(enum ip_conntrack_events event, struct nf_conn *ct,
+ 			  u32 portid, int report)
  {
- #if IS_MODULE(CONFIG_IPV6)
-diff --git a/include/net/netfilter/nf_conntrack_bridge.h b/include/net/netfilter/nf_conntrack_bridge.h
-index 34c28f248b18..01b62fd5efa2 100644
---- a/include/net/netfilter/nf_conntrack_bridge.h
-+++ b/include/net/netfilter/nf_conntrack_bridge.h
-@@ -16,11 +16,4 @@ struct nf_ct_bridge_info {
- void nf_ct_bridge_register(struct nf_ct_bridge_info *info);
- void nf_ct_bridge_unregister(struct nf_ct_bridge_info *info);
++#ifdef CONFIG_NF_CONNTRACK_EVENTS
+ 	const struct net *net = nf_ct_net(ct);
  
--struct nf_ct_bridge_frag_data {
--	char	mac[ETH_HLEN];
--	bool	vlan_present;
--	u16	vlan_tci;
--	__be16	vlan_proto;
--};
+ 	if (!rcu_access_pointer(net->ct.nf_conntrack_event_cb))
+ 		return 0;
+ 
+ 	return nf_conntrack_eventmask_report(1 << event, ct, portid, report);
++#else
++	return 0;
++#endif
+ }
+ 
+ static inline int
+ nf_conntrack_event(enum ip_conntrack_events event, struct nf_conn *ct)
+ {
++#ifdef CONFIG_NF_CONNTRACK_EVENTS
+ 	const struct net *net = nf_ct_net(ct);
+ 
+ 	if (!rcu_access_pointer(net->ct.nf_conntrack_event_cb))
+ 		return 0;
+ 
+ 	return nf_conntrack_eventmask_report(1 << event, ct, 0, 0);
++#else
++	return 0;
++#endif
+ }
+ 
++#ifdef CONFIG_NF_CONNTRACK_EVENTS
++
+ struct nf_exp_event {
+ 	struct nf_conntrack_expect *exp;
+ 	u32 portid;
+@@ -148,41 +177,18 @@ void nf_conntrack_ecache_pernet_fini(struct net *net);
+ int nf_conntrack_ecache_init(void);
+ void nf_conntrack_ecache_fini(void);
+ 
+-static inline void nf_conntrack_ecache_delayed_work(struct net *net)
++#else /* CONFIG_NF_CONNTRACK_EVENTS */
++
++static inline void nf_ct_expect_event_report(enum ip_conntrack_expect_events e,
++					     struct nf_conntrack_expect *exp,
++					     u32 portid,
++					     int report)
+ {
+-	if (!delayed_work_pending(&net->ct.ecache_dwork)) {
+-		schedule_delayed_work(&net->ct.ecache_dwork, HZ);
+-		net->ct.ecache_dwork_pending = true;
+-	}
+ }
+ 
+-static inline void nf_conntrack_ecache_work(struct net *net)
++static inline void nf_conntrack_ecache_pernet_init(struct net *net)
+ {
+-	if (net->ct.ecache_dwork_pending) {
+-		net->ct.ecache_dwork_pending = false;
+-		mod_delayed_work(system_wq, &net->ct.ecache_dwork, 0);
+-	}
+ }
+-#else /* CONFIG_NF_CONNTRACK_EVENTS */
+-static inline void nf_conntrack_event_cache(enum ip_conntrack_events event,
+-					    struct nf_conn *ct) {}
+-static inline int nf_conntrack_eventmask_report(unsigned int eventmask,
+-						struct nf_conn *ct,
+-						u32 portid,
+-						int report) { return 0; }
+-static inline int nf_conntrack_event(enum ip_conntrack_events event,
+-				     struct nf_conn *ct) { return 0; }
+-static inline int nf_conntrack_event_report(enum ip_conntrack_events event,
+-					    struct nf_conn *ct,
+-					    u32 portid,
+-					    int report) { return 0; }
+-static inline void nf_ct_deliver_cached_events(const struct nf_conn *ct) {}
+-static inline void nf_ct_expect_event_report(enum ip_conntrack_expect_events e,
+-					     struct nf_conntrack_expect *exp,
+- 					     u32 portid,
+- 					     int report) {}
 -
- #endif
-diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
-index c9ce321fcac1..8842798c29e6 100644
---- a/net/bridge/netfilter/nf_conntrack_bridge.c
-+++ b/net/bridge/netfilter/nf_conntrack_bridge.c
-@@ -26,9 +26,9 @@
-  */
- static int nf_br_ip_fragment(struct net *net, struct sock *sk,
- 			     struct sk_buff *skb,
--			     struct nf_ct_bridge_frag_data *data,
-+			     struct nf_bridge_frag_data *data,
- 			     int (*output)(struct net *, struct sock *sk,
--					   const struct nf_ct_bridge_frag_data *data,
-+					   const struct nf_bridge_frag_data *data,
- 					   struct sk_buff *))
+-static inline void nf_conntrack_ecache_pernet_init(struct net *net) {}
+ 
+ static inline void nf_conntrack_ecache_pernet_fini(struct net *net)
  {
- 	int frag_max_size = BR_INPUT_SKB_CB(skb)->frag_max_size;
-@@ -278,7 +278,7 @@ static unsigned int nf_ct_bridge_pre(void *priv, struct sk_buff *skb,
+@@ -197,14 +203,26 @@ static inline void nf_conntrack_ecache_fini(void)
+ {
  }
  
- static void nf_ct_bridge_frag_save(struct sk_buff *skb,
--				   struct nf_ct_bridge_frag_data *data)
-+				   struct nf_bridge_frag_data *data)
++#endif /* CONFIG_NF_CONNTRACK_EVENTS */
++
+ static inline void nf_conntrack_ecache_delayed_work(struct net *net)
  {
- 	if (skb_vlan_tag_present(skb)) {
- 		data->vlan_present = true;
-@@ -293,10 +293,10 @@ static void nf_ct_bridge_frag_save(struct sk_buff *skb,
- static unsigned int
- nf_ct_bridge_refrag(struct sk_buff *skb, const struct nf_hook_state *state,
- 		    int (*output)(struct net *, struct sock *sk,
--				  const struct nf_ct_bridge_frag_data *data,
-+				  const struct nf_bridge_frag_data *data,
- 				  struct sk_buff *))
- {
--	struct nf_ct_bridge_frag_data data;
-+	struct nf_bridge_frag_data data;
- 
- 	if (!BR_INPUT_SKB_CB(skb)->frag_max_size)
- 		return NF_ACCEPT;
-@@ -319,7 +319,7 @@ nf_ct_bridge_refrag(struct sk_buff *skb, const struct nf_hook_state *state,
- 
- /* Actually only slow path refragmentation needs this. */
- static int nf_ct_bridge_frag_restore(struct sk_buff *skb,
--				     const struct nf_ct_bridge_frag_data *data)
-+				     const struct nf_bridge_frag_data *data)
- {
- 	int err;
- 
-@@ -340,7 +340,7 @@ static int nf_ct_bridge_frag_restore(struct sk_buff *skb,
++#ifdef CONFIG_NF_CONNTRACK_EVENTS
++	if (!delayed_work_pending(&net->ct.ecache_dwork)) {
++		schedule_delayed_work(&net->ct.ecache_dwork, HZ);
++		net->ct.ecache_dwork_pending = true;
++	}
++#endif
  }
  
- static int nf_ct_bridge_refrag_post(struct net *net, struct sock *sk,
--				    const struct nf_ct_bridge_frag_data *data,
-+				    const struct nf_bridge_frag_data *data,
- 				    struct sk_buff *skb)
+ static inline void nf_conntrack_ecache_work(struct net *net)
  {
- 	int err;
-diff --git a/net/ipv6/netfilter.c b/net/ipv6/netfilter.c
-index 61819ed858b1..a9bff556d3b2 100644
---- a/net/ipv6/netfilter.c
-+++ b/net/ipv6/netfilter.c
-@@ -113,9 +113,9 @@ int __nf_ip6_route(struct net *net, struct dst_entry **dst,
- EXPORT_SYMBOL_GPL(__nf_ip6_route);
++#ifdef CONFIG_NF_CONNTRACK_EVENTS
++	if (net->ct.ecache_dwork_pending) {
++		net->ct.ecache_dwork_pending = false;
++		mod_delayed_work(system_wq, &net->ct.ecache_dwork, 0);
++	}
++#endif
+ }
+-#endif /* CONFIG_NF_CONNTRACK_EVENTS */
  
- int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
--		    struct nf_ct_bridge_frag_data *data,
-+		    struct nf_bridge_frag_data *data,
- 		    int (*output)(struct net *, struct sock *sk,
--				  const struct nf_ct_bridge_frag_data *data,
-+				  const struct nf_bridge_frag_data *data,
- 				  struct sk_buff *))
- {
- 	int frag_max_size = BR_INPUT_SKB_CB(skb)->frag_max_size;
+ #endif /*_NF_CONNTRACK_ECACHE_H*/
+-
 -- 
 2.23.0.rc1
 
