@@ -2,40 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2B6A5DF7
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Sep 2019 01:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F4BA5E2D
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Sep 2019 01:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbfIBXG4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 2 Sep 2019 19:06:56 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:43564 "EHLO
+        id S1727887AbfIBXcf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 2 Sep 2019 19:32:35 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:44116 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726816AbfIBXGy (ORCPT
+        with ESMTP id S1726623AbfIBXce (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 2 Sep 2019 19:06:54 -0400
+        Mon, 2 Sep 2019 19:32:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=OMdPVB4nABAr2ckXqWNbKVCrMuC48xAXSNmo3Xnba3s=; b=nTksOkJprPf8Zugyc3vy5mgd1c
-        hjeJmOo9x9Pding4172MK4pqiB3VZ97ucOLylUSIwmdUnW2qIe9ls00j1DzWCTWEP9ypBef//M8J2
-        3gWW3J/3/VfE1v3CMHdCfC5MMMrCfdqBgQLklcUd0dL4CMGYF5Iqur3l+CvGmCe+rtJgXVwDxfwBZ
-        9VKn9fsTlg9np06k/UprbzqIwPKfiBsjz3q7W1r5AOK5SUR5yrIjVqEnUcmsWkjeAdW211cBTpfFZ
-        YVq+ddPQeA0ELTJhoXCnnneGYszcJfQosCtFNcnky9zrV+xUTR1LkWsCGQ1i7sqbxfgQVZu29nqIp
-        0QEJEKxw==;
+        bh=ZbZaMQnoNxxHgm9dHsr8ESnx4TWpMqblRb8xgiEABtE=; b=ofWwPTRnsviauIN1Iew/8JglaH
+        8LCyx3UM/QsShn/Wa4H4UF+JIAGz1QLfMMLrf3528NKwQd9kr3Gm0dOJEuSGoCzgAzPyv5Z4Yphiu
+        Y6rPtfX1mj6tShVZnMx0njkz4o5S/huBRcK2S9pRPfTb2IL5Q81fStEUcilfTOJ3BA1QlbbxpSixl
+        0otQbnD1O3gJsicOMx6bSSELkcClvrnXk2FF3exAlNMxWveJlS8td4C0y88MYYs/B7S3oaIr05U3Z
+        2KY9aXa9KyqaIEKDf3jXvdIQ9jQmsSx0xa/f8GFQxvN93evJ8Tku95u53lqo/TNk9KBdaeab05uMB
+        ZMNNFBxw==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1i4vPP-0004la-Si; Tue, 03 Sep 2019 00:06:51 +0100
+        id 1i4vPQ-0004la-1w; Tue, 03 Sep 2019 00:06:52 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next v2 09/30] netfilter: remove unused includes.
-Date:   Tue,  3 Sep 2019 00:06:29 +0100
-Message-Id: <20190902230650.14621-10-jeremy@azazel.net>
+Subject: [PATCH nf-next v2 10/30] netfilter: include the right header in nf_conntrack_zones.h.
+Date:   Tue,  3 Sep 2019 00:06:30 +0100
+Message-Id: <20190902230650.14621-11-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0.rc1
 In-Reply-To: <20190902230650.14621-1-jeremy@azazel.net>
 References: <20190902230650.14621-1-jeremy@azazel.net>
@@ -49,52 +49,30 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Some header-files are included in places where they are not needed.
-Remove them.
+nf_conntrack_zones.h includes nf_conntrack_extend.h, but it doesn't
+actually use anything from it.  It does, however, require stuff from
+nf_conntrack.h which it includes transitively.  Include nf_conntrack.h
+directly instead.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- net/bridge/netfilter/nf_conntrack_bridge.c | 1 -
- net/ipv6/netfilter/nf_socket_ipv6.c        | 1 -
- net/netfilter/xt_physdev.c                 | 1 -
- 3 files changed, 3 deletions(-)
+ include/net/netfilter/nf_conntrack_zones.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
-index 4f5444d2a526..c9ce321fcac1 100644
---- a/net/bridge/netfilter/nf_conntrack_bridge.c
-+++ b/net/bridge/netfilter/nf_conntrack_bridge.c
-@@ -17,7 +17,6 @@
- #include <net/netfilter/nf_conntrack_bridge.h>
+diff --git a/include/net/netfilter/nf_conntrack_zones.h b/include/net/netfilter/nf_conntrack_zones.h
+index 52950baa3ab5..33b91d19cb7d 100644
+--- a/include/net/netfilter/nf_conntrack_zones.h
++++ b/include/net/netfilter/nf_conntrack_zones.h
+@@ -5,7 +5,8 @@
+ #include <linux/netfilter/nf_conntrack_zones_common.h>
  
- #include <linux/netfilter/nf_tables.h>
--#include <net/netfilter/ipv6/nf_defrag_ipv6.h>
- #include <net/netfilter/nf_tables.h>
- 
- #include "../br_private.h"
-diff --git a/net/ipv6/netfilter/nf_socket_ipv6.c b/net/ipv6/netfilter/nf_socket_ipv6.c
-index 437d95545c31..b9df879c48d3 100644
---- a/net/ipv6/netfilter/nf_socket_ipv6.c
-+++ b/net/ipv6/netfilter/nf_socket_ipv6.c
-@@ -12,7 +12,6 @@
- #include <net/sock.h>
- #include <net/inet_sock.h>
- #include <net/inet6_hashtables.h>
--#include <net/netfilter/ipv6/nf_defrag_ipv6.h>
- #include <net/netfilter/nf_socket.h>
  #if IS_ENABLED(CONFIG_NF_CONNTRACK)
- #include <net/netfilter/nf_conntrack.h>
-diff --git a/net/netfilter/xt_physdev.c b/net/netfilter/xt_physdev.c
-index ead7c6022208..4f311e5703e8 100644
---- a/net/netfilter/xt_physdev.c
-+++ b/net/netfilter/xt_physdev.c
-@@ -10,7 +10,6 @@
- #include <linux/netfilter_bridge.h>
- #include <linux/netfilter/xt_physdev.h>
- #include <linux/netfilter/x_tables.h>
--#include <net/netfilter/br_netfilter.h>
+-#include <net/netfilter/nf_conntrack_extend.h>
++
++#include <net/netfilter/nf_conntrack.h>
  
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Bart De Schuymer <bdschuym@pandora.be>");
+ static inline const struct nf_conntrack_zone *
+ nf_ct_zone(const struct nf_conn *ct)
 -- 
 2.23.0.rc1
 
