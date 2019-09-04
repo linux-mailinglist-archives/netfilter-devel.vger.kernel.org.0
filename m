@@ -2,62 +2,89 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BA0A7791
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Sep 2019 01:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D211BA7C12
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Sep 2019 08:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbfICXaE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 3 Sep 2019 19:30:04 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:37227 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726441AbfICXaE (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 3 Sep 2019 19:30:04 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id E7D3E4116A;
-        Wed,  4 Sep 2019 07:30:01 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org, fw@strlen.de
+        id S1728515AbfIDGx6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 4 Sep 2019 02:53:58 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:49912 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725938AbfIDGx5 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 4 Sep 2019 02:53:57 -0400
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1i5PAy-0004bn-Do; Wed, 04 Sep 2019 08:53:56 +0200
+Date:   Wed, 4 Sep 2019 08:53:56 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next] netfilter: nf_table_offload: Fix check the offload flags in nft_indr_block_cb
-Date:   Wed,  4 Sep 2019 07:30:01 +0800
-Message-Id: <1567553401-8840-1-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVNTU9CQkJCTUpDTkhLSFlXWShZQU
-        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KzI6OTo4HTgxFzA9SixRETIU
-        KSkaFDxVSlVKTk1MTk5IT0tJS0hKVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUpOSks3Bg++
-X-HM-Tid: 0a6cf976b46d2086kuqye7d3e4116a
+Subject: Re: [conntrack-tools PATCH] conntrack: Fix CIDR to mask conversion
+ on Big Endian
+Message-ID: <20190904065356.GF25650@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+References: <20190902164431.18398-1-phil@nwl.cc>
+ <20190903203447.saqplkgbbxlajkqr@salvia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190903203447.saqplkgbbxlajkqr@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+On Tue, Sep 03, 2019 at 10:34:47PM +0200, Pablo Neira Ayuso wrote:
+> On Mon, Sep 02, 2019 at 06:44:31PM +0200, Phil Sutter wrote:
+> > Code assumed host architecture to be Little Endian. Instead produce a
+> > proper mask by pushing the set bits into most significant position and
+> > apply htonl() on the result.
+> > 
+> > Fixes: 3f6a2e90936bb ("conntrack: add support for CIDR notation")
+> > Signed-off-by: Phil Sutter <phil@nwl.cc>
+> > ---
+> >  src/conntrack.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/src/conntrack.c b/src/conntrack.c
+> > index c980a13f33d2c..baafcbd869c12 100644
+> > --- a/src/conntrack.c
+> > +++ b/src/conntrack.c
+> > @@ -2210,7 +2210,7 @@ nfct_build_netmask(uint32_t *dst, int b, int n)
+> >  			dst[i] = 0xffffffff;
+> >  			b -= 32;
+> >  		} else if (b > 0) {
+> > -			dst[i] = (1 << b) - 1;
+> > +			dst[i] = htonl(((1 << b) - 1) << (32 - b));
+> 
+> Simply this instead?
+> 
+>                         dst[i] = htonl(((1 << b) - 1);
 
-In the nft_indr_block_cb handle offload chain should check the offload flags
-for the chain.
+You got me confused, so I played with different options. To see the
+results, I used:
 
-Fixes: 9a32669fecfb ("netfilter: nf_tables_offload: support indr block call")
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- net/netfilter/nf_tables_offload.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+| union {
+|         uint32_t i;
+|         char b[4];
+| } u;
 
-diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
-index ca9e0cb..3f49fe8 100644
---- a/net/netfilter/nf_tables_offload.c
-+++ b/net/netfilter/nf_tables_offload.c
-@@ -363,7 +363,8 @@ static void nft_indr_block_cb(struct net_device *dev,
- 			continue;
- 
- 		list_for_each_entry(chain, &table->chains, list) {
--			if (!nft_is_base_chain(chain))
-+			if (!nft_is_base_chain(chain) ||
-+			    !(chain->flags & NFT_CHAIN_HW_OFFLOAD))
- 				continue;
- 
- 			basechain = nft_base_chain(chain);
--- 
-1.8.3.1
+What we need in b is 'ff ff ff 00' for a prefix length of 24. Your
+suggested alternative does not compile, so I tried both options for the
+closing brace:
 
+| htonl((1 << 24) - 1)
+
+This turns into '00 ff ff ff' for both LE and BE, the opposite of what
+we need.
+
+| htonl((1 << 24)) - 1
+
+This turns into '00 00 00 00' on LE and '00 ff ff ff' on BE.
+
+My code leads to correct result on either architecture and I don't see a
+simpler way of doing it.
+
+Cheers, Phil
