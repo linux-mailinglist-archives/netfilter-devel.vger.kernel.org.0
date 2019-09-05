@@ -2,106 +2,118 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B1CAA7BC
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Sep 2019 17:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24ACEAA7E4
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Sep 2019 18:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387404AbfIEPyZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 5 Sep 2019 11:54:25 -0400
-Received: from correo.us.es ([193.147.175.20]:48326 "EHLO mail.us.es"
+        id S2389620AbfIEQEJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 5 Sep 2019 12:04:09 -0400
+Received: from correo.us.es ([193.147.175.20]:53016 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731552AbfIEPyY (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 5 Sep 2019 11:54:24 -0400
+        id S1730518AbfIEQEI (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 5 Sep 2019 12:04:08 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 12A92117726
-        for <netfilter-devel@vger.kernel.org>; Thu,  5 Sep 2019 17:54:20 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id D2E501228C6
+        for <netfilter-devel@vger.kernel.org>; Thu,  5 Sep 2019 18:04:03 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 057E7A6AC
-        for <netfilter-devel@vger.kernel.org>; Thu,  5 Sep 2019 17:54:20 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id C3F0BB8004
+        for <netfilter-devel@vger.kernel.org>; Thu,  5 Sep 2019 18:04:03 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id EF501DA8E8; Thu,  5 Sep 2019 17:54:19 +0200 (CEST)
+        id B8392FB362; Thu,  5 Sep 2019 18:04:03 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 9A5A9DA4D0;
-        Thu,  5 Sep 2019 17:54:17 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id AD266B7FF2;
+        Thu,  5 Sep 2019 18:04:01 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 05 Sep 2019 17:54:17 +0200 (CEST)
+ Thu, 05 Sep 2019 18:04:01 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (sys.soleta.eu [212.170.55.40])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 7A0064265A5A;
-        Thu,  5 Sep 2019 17:54:17 +0200 (CEST)
-Date:   Thu, 5 Sep 2019 17:54:18 +0200
+Received: from salvia.here (sys.soleta.eu [212.170.55.40])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 81EC742EE38E;
+        Thu,  5 Sep 2019 18:04:01 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Eric Garver <eric@garver.life>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft] tests: shell: check that rule add with index works
- with echo
-Message-ID: <20190905155418.z2lpiet466ceixjy@salvia>
-References: <20190903232713.14394-1-eric@garver.life>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190903232713.14394-1-eric@garver.life>
-User-Agent: NeoMutt/20170113 (1.7.2)
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org
+Subject: [PATCH 0/8] Netfilter updates for net-next
+Date:   Thu,  5 Sep 2019 18:03:52 +0200
+Message-Id: <20190905160400.25399-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Sep 03, 2019 at 07:27:13PM -0400, Eric Garver wrote:
-> If --echo is used the rule cache will not be populated. This causes
-> rules added using the "index" keyword to be simply appended to the
-> chain. The bug was introduced in commit 3ab02db5f836 ("cache: add
-> NFT_CACHE_UPDATE and NFT_CACHE_FLUSHED flags").
-> 
-> Signed-off-by: Eric Garver <eric@garver.life>
-> ---
-> I think the issue is in cache_evaluate(). It sets the flags to
-> NFT_CACHE_FULL and then bails early, but I'm not sure of the best way to
-> fix it. So I'll start by submitting a test case. :)
-> ---
->  tests/shell/testcases/cache/0007_echo_cache_init_0 | 14 ++++++++++++++
->  .../cache/dumps/0007_echo_cache_init_0.nft         |  7 +++++++
->  2 files changed, 21 insertions(+)
->  create mode 100755 tests/shell/testcases/cache/0007_echo_cache_init_0
->  create mode 100644 tests/shell/testcases/cache/dumps/0007_echo_cache_init_0.nft
-> 
-> diff --git a/tests/shell/testcases/cache/0007_echo_cache_init_0 b/tests/shell/testcases/cache/0007_echo_cache_init_0
-> new file mode 100755
-> index 000000000000..280a0d06bdc3
-> --- /dev/null
-> +++ b/tests/shell/testcases/cache/0007_echo_cache_init_0
-> @@ -0,0 +1,14 @@
-> +#!/bin/bash
-> +
-> +set -e
-> +
-> +$NFT -i >/dev/null <<EOF
-> +add table inet t
-> +add chain inet t c
-> +add rule inet t c accept comment "first"
-> +add rule inet t c accept comment "third"
-> +EOF
-> +
-> +# make sure the rule cache gets initialized when using echo option
-> +#
-> +$NFT --echo add rule inet t c index 0 accept comment '"second"' >/dev/null
+Hi,
 
-Looks like the problem is index == 0?
+The following patchset contains Netfilter updates for net-next:
 
-                if (cmd->handle.index.id ||
-                    cmd->handle.position.id)
-                        flags |= NFT_CACHE_RULE | NFT_CACHE_UPDATE;
+1) Add nft_reg_store64() and nft_reg_load64() helpers, from Ander Juaristi.
 
-We might need to set up a flag, eg. cmd->handle.flags &
-NFT_HANDLE_INDEX, similarly with position, given that index.id can be
-zero. Alternatively, initialize index id to -1, assuming we'll never
-get to ~0U index.
+2) Time matching support, also from Ander Juaristi.
+
+3) VLAN support for nfnetlink_log, from Michael Braun.
+
+4) Support for set element deletions from the packet path, also from Ander.
+
+5) Remove __read_mostly from conntrack spinlock, from Li RongQing.
+
+6) Support for updating stateful objects, this also includes the initial
+   client for this infrastructure: the quota extension. A follow up fix
+   for the control plane also comes in this batch. Patches from
+   Fernando Fernandez Mancera.
+
+You can pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 0846e1616f0f3365cea732e82e2383932fe644e5:
+
+  cirrus: cs89x0: remove set but not used variable 'lp' (2019-08-25 19:48:59 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git HEAD
+
+for you to fetch changes up to aa4095a156b56b00ca202d482b40d191ef5c54e8:
+
+  netfilter: nf_tables: fix possible null-pointer dereference in object update (2019-09-05 13:40:27 +0200)
+
+----------------------------------------------------------------
+Ander Juaristi (3):
+      netfilter: nf_tables: Introduce new 64-bit helper register functions
+      netfilter: nft_meta: support for time matching
+      netfilter: nft_dynset: support for element deletion
+
+Fernando Fernandez Mancera (3):
+      netfilter: nf_tables: Introduce stateful object update operation
+      netfilter: nft_quota: add quota object update support
+      netfilter: nf_tables: fix possible null-pointer dereference in object update
+
+Li RongQing (1):
+      netfilter: not mark a spinlock as __read_mostly
+
+Michael Braun (1):
+      netfilter: nfnetlink_log: add support for VLAN information
+
+ include/net/netfilter/nf_tables.h            | 44 ++++++++++++---
+ include/uapi/linux/netfilter/nf_tables.h     |  7 +++
+ include/uapi/linux/netfilter/nfnetlink_log.h | 11 ++++
+ net/netfilter/nf_conntrack_core.c            |  3 +-
+ net/netfilter/nf_conntrack_labels.c          |  2 +-
+ net/netfilter/nf_tables_api.c                | 81 +++++++++++++++++++++++++---
+ net/netfilter/nfnetlink_log.c                | 57 ++++++++++++++++++++
+ net/netfilter/nft_byteorder.c                |  9 ++--
+ net/netfilter/nft_dynset.c                   |  6 +++
+ net/netfilter/nft_meta.c                     | 46 ++++++++++++++++
+ net/netfilter/nft_quota.c                    | 29 +++++++---
+ net/netfilter/nft_set_hash.c                 | 19 +++++++
+ 12 files changed, 285 insertions(+), 29 deletions(-)
