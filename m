@@ -2,91 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C82AB41B
-	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Sep 2019 10:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F57AB422
+	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Sep 2019 10:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388284AbfIFIgn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 6 Sep 2019 04:36:43 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:57618 "EHLO mx1.riseup.net"
+        id S2387580AbfIFIik (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 6 Sep 2019 04:38:40 -0400
+Received: from a3.inai.de ([88.198.85.195]:49796 "EHLO a3.inai.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731558AbfIFIgm (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 6 Sep 2019 04:36:42 -0400
-Received: from bell.riseup.net (bell-pn.riseup.net [10.0.1.178])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (verified OK))
-        by mx1.riseup.net (Postfix) with ESMTPS id BAF271B907E;
-        Fri,  6 Sep 2019 01:36:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1567759002; bh=t2FNPIm7ART7GYpOXq8+Fiq6Qxz4MxImK4pOdQlNSk0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Go6qhkBYDYS5NS6YQH/3ezUzrU7ics+MBhu8UJ+yRmGzJHV3EeZlp3bZUMIXK+xS/
-         2lAMpWK9TckHrreBksac/lMKZzroSQEgxAc2tE8y14hT8jLFfNSRzmPPb2f/2wfqxF
-         PYwzX7QAGRGT5oFtWMfxBAvXvV49CxANrnRd/XDk=
-X-Riseup-User-ID: 472C8FB7E389D6F309DD4195B318043043BED3C6AD0CB0F48E7975FBE1A38AE7
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by bell.riseup.net (Postfix) with ESMTPSA id B670A222CF0;
-        Fri,  6 Sep 2019 01:36:39 -0700 (PDT)
-Subject: Re: [PATCH] netfilter: nf_tables: Fix an Oops in nf_tables_updobj()
- error handling
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        kernel-janitors@vger.kernel.org
-References: <20190906081808.GA8281@mwanda>
-From:   Fernando Fernandez Mancera <ffmancera@riseup.net>
-Openpgp: preference=signencrypt
-Message-ID: <efae8f44-224e-9337-64cf-47fd67ba2950@riseup.net>
-Date:   Fri, 6 Sep 2019 10:36:49 +0200
+        id S1732683AbfIFIik (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 6 Sep 2019 04:38:40 -0400
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 7D3BD3B72D4E; Fri,  6 Sep 2019 10:38:39 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id 788673BACCAB;
+        Fri,  6 Sep 2019 10:38:39 +0200 (CEST)
+Date:   Fri, 6 Sep 2019 10:38:39 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Jeremy Sowden <jeremy@azazel.net>
+cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
+        =?UTF-8?Q?Franta_Hanzl=C3=ADk?= <franta@hanzlici.cz>
+Subject: Re: [PATCH xtables-addons v2 1/2] xt_pknock, xt_SYSRQ: don't set
+ shash_desc::flags.
+In-Reply-To: <20190812115742.21770-2-jeremy@azazel.net>
+Message-ID: <nycvar.YFH.7.76.1909061038240.16078@n3.vanv.qr>
+References: <20190811113826.5e594d8f@franta.hanzlici.cz> <20190812115742.21770-1-jeremy@azazel.net> <20190812115742.21770-2-jeremy@azazel.net>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20190906081808.GA8281@mwanda>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US-large
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Oh sorry, I missed that. Thanks!
+On Monday 2019-08-12 13:57, Jeremy Sowden wrote:
 
-Acked-by: Fernando Fernandez Mancera <ffmancera@riseup.net>
+>shash_desc::flags was removed from the kernel in 5.1.
 
-On 9/6/19 10:18 AM, Dan Carpenter wrote:
-> The "newobj" is an error pointer so we can't pass it to kfree().  It
-> doesn't need to be freed so we can remove that and I also renamed the
-> error label.
-> 
-> Fixes: d62d0ba97b58 ("netfilter: nf_tables: Introduce stateful object update operation")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  net/netfilter/nf_tables_api.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-> index cf767bc58e18..6f66898d63b4 100644
-> --- a/net/netfilter/nf_tables_api.c
-> +++ b/net/netfilter/nf_tables_api.c
-> @@ -5148,7 +5148,7 @@ static int nf_tables_updobj(const struct nft_ctx *ctx,
->  	newobj = nft_obj_init(ctx, type, attr);
->  	if (IS_ERR(newobj)) {
->  		err = PTR_ERR(newobj);
-> -		goto err1;
-> +		goto err_free_trans;
->  	}
->  
->  	nft_trans_obj(trans) = obj;
-> @@ -5157,9 +5157,9 @@ static int nf_tables_updobj(const struct nft_ctx *ctx,
->  	list_add_tail(&trans->list, &ctx->net->nft.commit_list);
->  
->  	return 0;
-> -err1:
-> +
-> +err_free_trans:
->  	kfree(trans);
-> -	kfree(newobj);
->  	return err;
->  }
->  
-> 
+Applied this. The DHCPMAC update I happened to take from SF.
