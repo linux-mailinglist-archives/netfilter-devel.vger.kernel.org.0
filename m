@@ -2,88 +2,87 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F32C0ACF45
-	for <lists+netfilter-devel@lfdr.de>; Sun,  8 Sep 2019 16:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5582ACF97
+	for <lists+netfilter-devel@lfdr.de>; Sun,  8 Sep 2019 18:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728892AbfIHOW1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 8 Sep 2019 10:22:27 -0400
-Received: from m9785.mail.qiye.163.com ([220.181.97.85]:4205 "EHLO
-        m9785.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727866AbfIHOW0 (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 8 Sep 2019 10:22:26 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9785.mail.qiye.163.com (Hmail) with ESMTPA id 5D3B65C16E1;
-        Sun,  8 Sep 2019 22:22:09 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org
+        id S1729207AbfIHQBo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 8 Sep 2019 12:01:44 -0400
+Received: from correo.us.es ([193.147.175.20]:49790 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726443AbfIHQBo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 8 Sep 2019 12:01:44 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 212AEDA72B
+        for <netfilter-devel@vger.kernel.org>; Sun,  8 Sep 2019 18:01:40 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 117B8DA4D0
+        for <netfilter-devel@vger.kernel.org>; Sun,  8 Sep 2019 18:01:40 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 07207DA4CA; Sun,  8 Sep 2019 18:01:40 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id CA082DA72F;
+        Sun,  8 Sep 2019 18:01:37 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Sun, 08 Sep 2019 18:01:37 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id A9D184265A5A;
+        Sun,  8 Sep 2019 18:01:37 +0200 (CEST)
+Date:   Sun, 8 Sep 2019 18:01:39 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     wenxu@ucloud.cn
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next v6 8/8] netfilter: nft_tunnel: support nft_tunnel_obj offload
-Date:   Sun,  8 Sep 2019 22:22:08 +0800
-Message-Id: <1567952528-24421-9-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1567952528-24421-1-git-send-email-wenxu@ucloud.cn>
+Subject: Re: [PATCH nf-next v6 0/8]  netfilter: nf_tables_offload: support
+ tunnel offload
+Message-ID: <20190908160139.punl4v3bgdza6dyl@salvia>
 References: <1567952528-24421-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSktOQkJCQ0lMSENPQk5ZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kyo6FCo5STg1SDVLORMPOSka
-        DEJPCSlVSlVKTk1MQk5JTklCT0pNVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUlJQkg3Bg++
-X-HM-Tid: 0a6d1140e7ee2087kuqy5d3b65c16e1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1567952528-24421-1-git-send-email-wenxu@ucloud.cn>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+Only one series at a time, sorry.
 
-Add nft_tunnel_obj offload for both encap and decap actions
-
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
-v6: no change
-
- net/netfilter/nft_tunnel.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/net/netfilter/nft_tunnel.c b/net/netfilter/nft_tunnel.c
-index aa3dc52..b47838d 100644
---- a/net/netfilter/nft_tunnel.c
-+++ b/net/netfilter/nft_tunnel.c
-@@ -669,6 +669,25 @@ static void nft_tunnel_obj_destroy(const struct nft_ctx *ctx,
- 		metadata_dst_free(priv->md);
- }
- 
-+static int nft_tunnel_obj_offload(struct nft_offload_ctx *ctx,
-+				  struct nft_flow_rule *flow,
-+				  struct nft_object *obj)
-+{
-+	struct nft_tunnel_obj *priv = nft_obj_data(obj);
-+	struct flow_action_entry *entry;
-+
-+	entry = &flow->rule->action.entries[ctx->num_actions++];
-+
-+	if (!priv->tunnel_key_release) {
-+		entry->id = FLOW_ACTION_TUNNEL_ENCAP;
-+		entry->tunnel = &priv->md->u.tun_info;
-+	} else {
-+		entry->id = FLOW_ACTION_TUNNEL_DECAP;
-+	}
-+
-+	return 0;
-+}
-+
- static struct nft_object_type nft_tunnel_obj_type;
- static const struct nft_object_ops nft_tunnel_obj_ops = {
- 	.type		= &nft_tunnel_obj_type,
-@@ -677,6 +696,7 @@ static void nft_tunnel_obj_destroy(const struct nft_ctx *ctx,
- 	.init		= nft_tunnel_obj_init,
- 	.destroy	= nft_tunnel_obj_destroy,
- 	.dump		= nft_tunnel_obj_dump,
-+	.offload	= nft_tunnel_obj_offload,
- };
- 
- static struct nft_object_type nft_tunnel_obj_type __read_mostly = {
--- 
-1.8.3.1
-
+On Sun, Sep 08, 2019 at 10:22:00PM +0800, wenxu@ucloud.cn wrote:
+> From: wenxu <wenxu@ucloud.cn>
+> 
+> This series add NFT_TUNNEL_IP/6_SRC/DST match and tunnel expr offload.
+> Also add NFTA_TUNNEL_KEY_RELEASE actions adn objref, tunnel obj offload
+> 
+> This version just rebase to master for patch 7
+> 
+> wenxu (8):
+>   netfilter: nft_tunnel: add nft_tunnel_mode_validate function
+>   netfilter: nft_tunnel: support NFT_TUNNEL_IP_SRC/DST match
+>   netfilter: nft_tunnel: add ipv6 check in nft_tunnel_mode_validate
+>   netfilter: nft_tunnel: support NFT_TUNNEL_IP6_SRC/DST match
+>   netfilter: nft_tunnel: support tunnel meta match offload
+>   netfilter: nft_tunnel: add NFTA_TUNNEL_KEY_RELEASE action
+>   netfilter: nft_objref: add nft_objref_type offload
+>   netfilter: nft_tunnel: support nft_tunnel_obj offload
+> 
+>  include/net/netfilter/nf_tables.h         |   4 +
+>  include/net/netfilter/nf_tables_offload.h |   5 +
+>  include/uapi/linux/netfilter/nf_tables.h  |   5 +
+>  net/netfilter/nft_objref.c                |  14 +++
+>  net/netfilter/nft_tunnel.c                | 159 +++++++++++++++++++++++++++---
+>  5 files changed, 174 insertions(+), 13 deletions(-)
+> 
+> -- 
+> 1.8.3.1
+> 
