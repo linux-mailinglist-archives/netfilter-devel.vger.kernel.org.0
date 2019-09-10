@@ -2,58 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0491FAE9FB
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Sep 2019 14:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E48F0AEB21
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Sep 2019 15:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbfIJMGk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 10 Sep 2019 08:06:40 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:36428 "EHLO orbyte.nwl.cc"
+        id S1726089AbfIJNIP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 10 Sep 2019 09:08:15 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:53080 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726720AbfIJMGk (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 10 Sep 2019 08:06:40 -0400
-Received: from localhost ([::1]:49518 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1i7eus-0003mB-DH; Tue, 10 Sep 2019 14:06:38 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [conntrack-tools PATCH] nfct: helper: Fix NFCTH_ATTR_PROTO_L4NUM size
-Date:   Tue, 10 Sep 2019 14:06:31 +0200
-Message-Id: <20190910120631.20817-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.22.0
+        id S1726032AbfIJNIP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 10 Sep 2019 09:08:15 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 95F5C60AD7;
+        Tue, 10 Sep 2019 13:08:14 +0000 (UTC)
+Received: from egarver.localdomain (ovpn-123-28.rdu2.redhat.com [10.10.123.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8BFB0100EBA2;
+        Tue, 10 Sep 2019 13:08:13 +0000 (UTC)
+Date:   Tue, 10 Sep 2019 09:08:12 -0400
+From:   Eric Garver <eric@garver.life>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft] src: mnl: fix --echo buffer size -- again
+Message-ID: <20190910130812.5evglcak7tlkdugt@egarver.localdomain>
+Mail-Followup-To: Eric Garver <eric@garver.life>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+References: <20190909221918.28473-1-fw@strlen.de>
+ <20190910085056.bfbgsgvhraatmsuc@salvia>
+ <20190910105242.GC2066@breakpoint.cc>
+ <20190910112254.isfbdqjfg6aokcm7@salvia>
+ <20190910114412.GA22704@breakpoint.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190910114412.GA22704@breakpoint.cc>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.30]); Tue, 10 Sep 2019 13:08:15 +0000 (UTC)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Kernel defines NFCTH_TUPLE_L4PROTONUM as of type NLA_U8. When adding a
-helper, NFCTH_ATTR_PROTO_L4NUM attribute is correctly set using
-nfct_helper_attr_set_u8(), though when deleting
-nfct_helper_attr_set_u32() was incorrectly used. Due to alignment, this
-causes trouble only on Big Endian.
+On Tue, Sep 10, 2019 at 01:44:12PM +0200, Florian Westphal wrote:
+> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> > I'd still like to keep setting the receive buffer for the non-echo
+> > case, a ruleset with lots of acknowledments (lots of errors) might hit
+> > ENOBUFS, I remember that was reproducible.
+> > 
+> > Probably this? it's based on your patch.
+> 
+> LGTM, feel free to apply this.
 
-Fixes: 5e8f64f46cb1d ("conntrackd: add cthelper infrastructure (+ example FTP helper)")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- src/nfct-extensions/helper.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Pablo's version passes all my tests. But so does Florian's version.
+Feel free to add my tested-by tag.
 
-diff --git a/src/nfct-extensions/helper.c b/src/nfct-extensions/helper.c
-index 0569827612f06..e5d8d0a905df0 100644
---- a/src/nfct-extensions/helper.c
-+++ b/src/nfct-extensions/helper.c
-@@ -284,7 +284,7 @@ nfct_cmd_helper_delete(struct mnl_socket *nl, int argc, char *argv[])
- 			nfct_perror("unsupported layer 4 protocol");
- 			return -1;
- 		}
--		nfct_helper_attr_set_u32(t, NFCTH_ATTR_PROTO_L4NUM, l4proto);
-+		nfct_helper_attr_set_u8(t, NFCTH_ATTR_PROTO_L4NUM, l4proto);
- 	}
- 
- 	seq = time(NULL);
--- 
-2.22.0
-
+Tested-by: Eric Garver <eric@garver.life>
