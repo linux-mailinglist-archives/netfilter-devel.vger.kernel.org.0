@@ -2,76 +2,57 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C3CAF261
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Sep 2019 22:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A614DAF27B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Sep 2019 23:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725832AbfIJUt5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 10 Sep 2019 16:49:57 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:41416 "EHLO mx1.riseup.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725770AbfIJUt5 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 10 Sep 2019 16:49:57 -0400
-Received: from capuchin.riseup.net (capuchin-pn.riseup.net [10.0.1.176])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (verified OK))
-        by mx1.riseup.net (Postfix) with ESMTPS id F1BA11A2934;
-        Tue, 10 Sep 2019 13:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1568148597; bh=bqcef9wN5c0ju6tikTCtvDmLljOccVkcf23Oh/CPlm4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=XaRBsRJJ7aEYRPgp7nDBvZEGIaayW8QrPqUM6uXvQ773kTbsRBcRvjzTXGq/8cZ2k
-         f4WkzwkmVGXZkmBCUfncCzUdjsyL8nuRJjz1E95Vut3BtRYz7fNcnBBTDp5Z3t6OM7
-         i1wfvxP3dXRJLT6fvNqB/XPIY9Zq/YaL4fOzMXCE=
-X-Riseup-User-ID: 5DFD2CC50CBB8174D03535C676C258A10F58F3892809B75767F3DCB7F5D9827A
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by capuchin.riseup.net (Postfix) with ESMTPSA id 414941209E2;
-        Tue, 10 Sep 2019 13:49:56 -0700 (PDT)
-Subject: Re: [PATCH nft v3] src: add synproxy stateful object support
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-References: <20190908193720.26163-1-ffmancera@riseup.net>
- <20190910204914.gimmpiuie74ouftg@salvia>
-From:   Fernando Fernandez Mancera <ffmancera@riseup.net>
-Message-ID: <02871f53-d3f6-6aff-5a1a-063f19c4a32e@riseup.net>
-Date:   Tue, 10 Sep 2019 22:50:08 +0200
+        id S1725965AbfIJVKb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 10 Sep 2019 17:10:31 -0400
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:44982 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725942AbfIJVKb (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 10 Sep 2019 17:10:31 -0400
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1i7nPA-0000WV-Jw; Tue, 10 Sep 2019 23:10:28 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Duncan Roe <duncan_roe@optusnet.com.au>,
+        Florian Westphal <fw@strlen.de>
+Subject: [PATCH iptables] netfilter: hashlimit: prefer PRIu64 to avoid warnings on 32bit platforms
+Date:   Tue, 10 Sep 2019 23:08:20 +0200
+Message-Id: <20190910210820.9742-1-fw@strlen.de>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20190910204914.gimmpiuie74ouftg@salvia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US-large
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+From: Duncan Roe <duncan_roe@optusnet.com.au>
 
-On 9/10/19 10:49 PM, Pablo Neira Ayuso wrote:
-> On Sun, Sep 08, 2019 at 09:37:21PM +0200, Fernando Fernandez Mancera wrote:
->> Add support for "synproxy" stateful object. For example (for TCP port 80 and
->> using maps with saddr):
->>
->> table ip foo {
->> 	synproxy https-synproxy {
->> 		mss 1460
->> 		wscale 7
->> 		timestamp sack-perm
->> 	}
->>
->> 	synproxy other-synproxy {
->> 		mss 1460
->> 		wscale 5
->> 	}
->>
->> 	chain bar {
->> 		tcp dport 80 synproxy name "https-synproxy"
->> 		synproxy name ip saddr map { 192.168.1.0/24 : "https-synproxy", 192.168.2.0/24 : "other-synproxy" }
->> 	}
->> }
-> 
-> Nice. Could you also add some tests for tests/py?
-> 
-> Thanks.
-> 
+I found this patch attached to an older BZ, apply this finally...
 
-Sure, thanks Pablo.
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1107
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ extensions/libxt_hashlimit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/extensions/libxt_hashlimit.c b/extensions/libxt_hashlimit.c
+index f3b6e04309bd..7f1d2a402c4f 100644
+--- a/extensions/libxt_hashlimit.c
++++ b/extensions/libxt_hashlimit.c
+@@ -772,7 +772,7 @@ static void hashlimit_mt_check(struct xt_fcheck_call *cb)
+ 		if (cb->xflags & F_BURST) {
+ 			if (info->cfg.burst < cost_to_bytes(info->cfg.avg))
+ 				xtables_error(PARAMETER_PROBLEM,
+-					"burst cannot be smaller than %lub", cost_to_bytes(info->cfg.avg));
++					"burst cannot be smaller than %"PRIu64"b", cost_to_bytes(info->cfg.avg));
+ 
+ 			burst = info->cfg.burst;
+ 			burst /= cost_to_bytes(info->cfg.avg);
+-- 
+2.21.0
+
