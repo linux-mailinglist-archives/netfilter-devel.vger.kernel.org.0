@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B12DCB1967
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Sep 2019 10:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDF9B195F
+	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Sep 2019 10:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387400AbfIMINZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1729267AbfIMINZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Fri, 13 Sep 2019 04:13:25 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:60580 "EHLO
+Received: from kadath.azazel.net ([81.187.231.250]:60588 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729319AbfIMINY (ORCPT
+        with ESMTP id S1729027AbfIMINY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Fri, 13 Sep 2019 04:13:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,22 +18,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=WhFsvcCkrWXW17Ryfg4AMgw6oZLzX5618quq+j+VBHE=; b=hmberjjIDOknQDlfL1+W3Nb82X
-        6nN5d7XBT1Y8G0MvcP4sI4+rAnSsyulUO9/rhbBneiIfpa6BMQn24nF7/02FrlgQ3YVDkoH8s1QHR
-        80nubH4floxKJdoekqWEmTGdy4EF6H8JuT6HUf85RurAhdAqZd/+Osi4Xyncbj+oGQD3bD5lkENsX
-        LZwOEy3p3+MeP1h6daRRwaka3vFaZFt0GsU+3N3xzoK4IPWJ4qXoQMQKlPn87HBjvDqUscAsDVU7N
-        afPAHX8n//ffhfiCUC/LVXfx1RNvhoxx0oyLIZVboVeR1FWgWvn4WFemsK7glvjhJ/hdzKEvHWGn/
-        lGyQNvoA==;
+        bh=/9JvYqYyIwMll0yfey+Lg0i0d7oiUAO3jABHIF4p1kQ=; b=ZtHsRjntssxV48NUTCGyuhvOr6
+        NUPmLd37CxoPIb8FsqatZ8OyWFo7FhdzcuKnGLdAboGkM5J+YTO7bZuSGDrvQBwNeWgJ7apyYQXTR
+        wathfNBrU7FRyvWREaOt652/9b3i7ihzxcYMxcdY4t/uMwuO9wWnnGfQoJZ5wFynSKuUe1gB/Gx96
+        oYPYL/rPpSRYj1KeBRF1KFZSND/lFo0xsrjhMPvTdc8LJLR5LKYiC0oXaUGIs2/zGYVbtIsa948Fg
+        N+hJhGf57WhDjxENIvQjlmUNwElG8M8NYmTtriW5Dmbf9bu65X2HzXgEN6nFhn10Umv5biBtLvoEt
+        pb+4atzw==;
 Received: from ulthar.dreamlands ([192.168.96.2])
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1i8ghk-0005yL-AC; Fri, 13 Sep 2019 09:13:20 +0100
+        id 1i8ghk-0005yL-Gi; Fri, 13 Sep 2019 09:13:20 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next v3 04/18] netfilter: inline three headers.
-Date:   Fri, 13 Sep 2019 09:13:04 +0100
-Message-Id: <20190913081318.16071-5-jeremy@azazel.net>
+Subject: [PATCH nf-next v3 05/18] netfilter: update include directives.
+Date:   Fri, 13 Sep 2019 09:13:05 +0100
+Message-Id: <20190913081318.16071-6-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190913081318.16071-1-jeremy@azazel.net>
 References: <20190913081318.16071-1-jeremy@azazel.net>
@@ -47,130 +47,272 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Three netfilter headers are only included once.  Inline their contents
-at those sites and remove them.
+Include some headers in files which require them, and remove others
+which are not required.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/linux/netfilter/xt_hashlimit.h     | 11 -----------
- include/linux/netfilter/xt_physdev.h       |  8 --------
- include/linux/netfilter_bridge/ebt_802_3.h | 12 ------------
- net/bridge/netfilter/ebt_802_3.c           |  8 +++++++-
- net/netfilter/xt_hashlimit.c               |  7 ++++++-
- net/netfilter/xt_physdev.c                 |  5 +++--
- 6 files changed, 16 insertions(+), 35 deletions(-)
- delete mode 100644 include/linux/netfilter/xt_hashlimit.h
- delete mode 100644 include/linux/netfilter/xt_physdev.h
- delete mode 100644 include/linux/netfilter_bridge/ebt_802_3.h
+ include/net/netfilter/nf_conntrack_core.h  |  3 ++-
+ include/net/netfilter/nf_conntrack_zones.h |  3 ++-
+ include/net/netfilter/nf_nat.h             | 13 ++++++-------
+ include/net/netfilter/nf_nat_masquerade.h  |  1 +
+ net/bridge/netfilter/nf_conntrack_bridge.c |  1 -
+ net/ipv6/netfilter/nf_socket_ipv6.c        |  1 -
+ net/netfilter/nf_conntrack_ecache.c        |  1 +
+ net/netfilter/nf_conntrack_expect.c        |  2 ++
+ net/netfilter/nf_conntrack_helper.c        |  5 +++--
+ net/netfilter/nf_conntrack_timeout.c       |  1 +
+ net/netfilter/nf_flow_table_core.c         |  1 +
+ net/netfilter/nf_nat_core.c                |  6 +++---
+ net/netfilter/nft_flow_offload.c           |  3 ++-
+ net/netfilter/xt_connlimit.c               |  2 ++
+ net/sched/act_ct.c                         |  2 +-
+ 15 files changed, 27 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/netfilter/xt_hashlimit.h b/include/linux/netfilter/xt_hashlimit.h
-deleted file mode 100644
-index 169d03983589..000000000000
---- a/include/linux/netfilter/xt_hashlimit.h
-+++ /dev/null
-@@ -1,11 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _XT_HASHLIMIT_H
--#define _XT_HASHLIMIT_H
+diff --git a/include/net/netfilter/nf_conntrack_core.h b/include/net/netfilter/nf_conntrack_core.h
+index 71a2d9cb64ea..d340886e012d 100644
+--- a/include/net/netfilter/nf_conntrack_core.h
++++ b/include/net/netfilter/nf_conntrack_core.h
+@@ -14,8 +14,9 @@
+ #define _NF_CONNTRACK_CORE_H
+ 
+ #include <linux/netfilter.h>
+-#include <net/netfilter/nf_conntrack_l4proto.h>
++#include <net/netfilter/nf_conntrack.h>
+ #include <net/netfilter/nf_conntrack_ecache.h>
++#include <net/netfilter/nf_conntrack_l4proto.h>
+ 
+ /* This header is used to share core functionality between the
+    standalone connection tracking module, and the compatibility layer's use
+diff --git a/include/net/netfilter/nf_conntrack_zones.h b/include/net/netfilter/nf_conntrack_zones.h
+index 52950baa3ab5..33b91d19cb7d 100644
+--- a/include/net/netfilter/nf_conntrack_zones.h
++++ b/include/net/netfilter/nf_conntrack_zones.h
+@@ -5,7 +5,8 @@
+ #include <linux/netfilter/nf_conntrack_zones_common.h>
+ 
+ #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+-#include <net/netfilter/nf_conntrack_extend.h>
++
++#include <net/netfilter/nf_conntrack.h>
+ 
+ static inline const struct nf_conntrack_zone *
+ nf_ct_zone(const struct nf_conn *ct)
+diff --git a/include/net/netfilter/nf_nat.h b/include/net/netfilter/nf_nat.h
+index eec208fb9c23..eeb336809679 100644
+--- a/include/net/netfilter/nf_nat.h
++++ b/include/net/netfilter/nf_nat.h
+@@ -1,9 +1,14 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #ifndef _NF_NAT_H
+ #define _NF_NAT_H
++
++#include <linux/list.h>
+ #include <linux/netfilter_ipv4.h>
+-#include <linux/netfilter/nf_nat.h>
++#include <linux/netfilter/nf_conntrack_pptp.h>
++#include <net/netfilter/nf_conntrack.h>
++#include <net/netfilter/nf_conntrack_extend.h>
+ #include <net/netfilter/nf_conntrack_tuple.h>
++#include <uapi/linux/netfilter/nf_nat.h>
+ 
+ enum nf_nat_manip_type {
+ 	NF_NAT_MANIP_SRC,
+@@ -14,10 +19,6 @@ enum nf_nat_manip_type {
+ #define HOOK2MANIP(hooknum) ((hooknum) != NF_INET_POST_ROUTING && \
+ 			     (hooknum) != NF_INET_LOCAL_IN)
+ 
+-#include <linux/list.h>
+-#include <linux/netfilter/nf_conntrack_pptp.h>
+-#include <net/netfilter/nf_conntrack_extend.h>
 -
--#include <uapi/linux/netfilter/xt_hashlimit.h>
+ /* per conntrack: nat application helper private data */
+ union nf_conntrack_nat_help {
+ 	/* insert nat helper private data here */
+@@ -26,8 +27,6 @@ union nf_conntrack_nat_help {
+ #endif
+ };
+ 
+-struct nf_conn;
 -
--#define XT_HASHLIMIT_ALL (XT_HASHLIMIT_HASH_DIP | XT_HASHLIMIT_HASH_DPT | \
--			  XT_HASHLIMIT_HASH_SIP | XT_HASHLIMIT_HASH_SPT | \
--			  XT_HASHLIMIT_INVERT | XT_HASHLIMIT_BYTES |\
--			  XT_HASHLIMIT_RATE_MATCH)
--#endif /*_XT_HASHLIMIT_H*/
-diff --git a/include/linux/netfilter/xt_physdev.h b/include/linux/netfilter/xt_physdev.h
-deleted file mode 100644
-index 4ca0593949cd..000000000000
---- a/include/linux/netfilter/xt_physdev.h
-+++ /dev/null
-@@ -1,8 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _XT_PHYSDEV_H
--#define _XT_PHYSDEV_H
--
--#include <linux/if.h>
--#include <uapi/linux/netfilter/xt_physdev.h>
--
--#endif /*_XT_PHYSDEV_H*/
-diff --git a/include/linux/netfilter_bridge/ebt_802_3.h b/include/linux/netfilter_bridge/ebt_802_3.h
-deleted file mode 100644
-index c6147f9c0d80..000000000000
---- a/include/linux/netfilter_bridge/ebt_802_3.h
-+++ /dev/null
-@@ -1,12 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __LINUX_BRIDGE_EBT_802_3_H
--#define __LINUX_BRIDGE_EBT_802_3_H
--
--#include <linux/skbuff.h>
--#include <uapi/linux/netfilter_bridge/ebt_802_3.h>
--
--static inline struct ebt_802_3_hdr *ebt_802_3_hdr(const struct sk_buff *skb)
--{
--	return (struct ebt_802_3_hdr *)skb_mac_header(skb);
--}
--#endif
-diff --git a/net/bridge/netfilter/ebt_802_3.c b/net/bridge/netfilter/ebt_802_3.c
-index 2c8fe24400e5..68c2519bdc52 100644
---- a/net/bridge/netfilter/ebt_802_3.c
-+++ b/net/bridge/netfilter/ebt_802_3.c
-@@ -11,7 +11,13 @@
- #include <linux/module.h>
- #include <linux/netfilter/x_tables.h>
- #include <linux/netfilter_bridge/ebtables.h>
--#include <linux/netfilter_bridge/ebt_802_3.h>
+ /* The structure embedded in the conntrack structure. */
+ struct nf_conn_nat {
+ 	union nf_conntrack_nat_help help;
+diff --git a/include/net/netfilter/nf_nat_masquerade.h b/include/net/netfilter/nf_nat_masquerade.h
+index 54a14d643c34..be7abc9d5f22 100644
+--- a/include/net/netfilter/nf_nat_masquerade.h
++++ b/include/net/netfilter/nf_nat_masquerade.h
+@@ -2,6 +2,7 @@
+ #ifndef _NF_NAT_MASQUERADE_H_
+ #define _NF_NAT_MASQUERADE_H_
+ 
 +#include <linux/skbuff.h>
-+#include <uapi/linux/netfilter_bridge/ebt_802_3.h>
-+
-+static struct ebt_802_3_hdr *ebt_802_3_hdr(const struct sk_buff *skb)
-+{
-+	return (struct ebt_802_3_hdr *)skb_mac_header(skb);
-+}
+ #include <net/netfilter/nf_nat.h>
  
- static bool
- ebt_802_3_mt(const struct sk_buff *skb, struct xt_action_param *par)
-diff --git a/net/netfilter/xt_hashlimit.c b/net/netfilter/xt_hashlimit.c
-index 2d2691dd51e0..ced3fc8fad7c 100644
---- a/net/netfilter/xt_hashlimit.c
-+++ b/net/netfilter/xt_hashlimit.c
-@@ -34,9 +34,14 @@
- #include <linux/netfilter/x_tables.h>
- #include <linux/netfilter_ipv4/ip_tables.h>
- #include <linux/netfilter_ipv6/ip6_tables.h>
--#include <linux/netfilter/xt_hashlimit.h>
- #include <linux/mutex.h>
- #include <linux/kernel.h>
-+#include <uapi/linux/netfilter/xt_hashlimit.h>
-+
-+#define XT_HASHLIMIT_ALL (XT_HASHLIMIT_HASH_DIP | XT_HASHLIMIT_HASH_DPT | \
-+			  XT_HASHLIMIT_HASH_SIP | XT_HASHLIMIT_HASH_SPT | \
-+			  XT_HASHLIMIT_INVERT | XT_HASHLIMIT_BYTES |\
-+			  XT_HASHLIMIT_RATE_MATCH)
+ unsigned int
+diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
+index 4f5444d2a526..c9ce321fcac1 100644
+--- a/net/bridge/netfilter/nf_conntrack_bridge.c
++++ b/net/bridge/netfilter/nf_conntrack_bridge.c
+@@ -17,7 +17,6 @@
+ #include <net/netfilter/nf_conntrack_bridge.h>
  
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Harald Welte <laforge@netfilter.org>");
-diff --git a/net/netfilter/xt_physdev.c b/net/netfilter/xt_physdev.c
-index b92b22ce8abd..ec6ed6fda96c 100644
---- a/net/netfilter/xt_physdev.c
-+++ b/net/netfilter/xt_physdev.c
-@@ -5,12 +5,13 @@
- /* (C) 2001-2003 Bart De Schuymer <bdschuym@pandora.be>
+ #include <linux/netfilter/nf_tables.h>
+-#include <net/netfilter/ipv6/nf_defrag_ipv6.h>
+ #include <net/netfilter/nf_tables.h>
+ 
+ #include "../br_private.h"
+diff --git a/net/ipv6/netfilter/nf_socket_ipv6.c b/net/ipv6/netfilter/nf_socket_ipv6.c
+index 437d95545c31..b9df879c48d3 100644
+--- a/net/ipv6/netfilter/nf_socket_ipv6.c
++++ b/net/ipv6/netfilter/nf_socket_ipv6.c
+@@ -12,7 +12,6 @@
+ #include <net/sock.h>
+ #include <net/inet_sock.h>
+ #include <net/inet6_hashtables.h>
+-#include <net/netfilter/ipv6/nf_defrag_ipv6.h>
+ #include <net/netfilter/nf_socket.h>
+ #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+ #include <net/netfilter/nf_conntrack.h>
+diff --git a/net/netfilter/nf_conntrack_ecache.c b/net/netfilter/nf_conntrack_ecache.c
+index 5e2812ee2149..6fba74b5aaf7 100644
+--- a/net/netfilter/nf_conntrack_ecache.c
++++ b/net/netfilter/nf_conntrack_ecache.c
+@@ -24,6 +24,7 @@
+ 
+ #include <net/netfilter/nf_conntrack.h>
+ #include <net/netfilter/nf_conntrack_core.h>
++#include <net/netfilter/nf_conntrack_ecache.h>
+ #include <net/netfilter/nf_conntrack_extend.h>
+ 
+ static DEFINE_MUTEX(nf_ct_ecache_mutex);
+diff --git a/net/netfilter/nf_conntrack_expect.c b/net/netfilter/nf_conntrack_expect.c
+index 65364de915d1..42557d2b6a90 100644
+--- a/net/netfilter/nf_conntrack_expect.c
++++ b/net/netfilter/nf_conntrack_expect.c
+@@ -25,8 +25,10 @@
+ 
+ #include <net/netfilter/nf_conntrack.h>
+ #include <net/netfilter/nf_conntrack_core.h>
++#include <net/netfilter/nf_conntrack_ecache.h>
+ #include <net/netfilter/nf_conntrack_expect.h>
+ #include <net/netfilter/nf_conntrack_helper.h>
++#include <net/netfilter/nf_conntrack_l4proto.h>
+ #include <net/netfilter/nf_conntrack_tuple.h>
+ #include <net/netfilter/nf_conntrack_zones.h>
+ 
+diff --git a/net/netfilter/nf_conntrack_helper.c b/net/netfilter/nf_conntrack_helper.c
+index 8d729e7c36ff..118f415928ae 100644
+--- a/net/netfilter/nf_conntrack_helper.c
++++ b/net/netfilter/nf_conntrack_helper.c
+@@ -21,10 +21,11 @@
+ #include <linux/rtnetlink.h>
+ 
+ #include <net/netfilter/nf_conntrack.h>
+-#include <net/netfilter/nf_conntrack_l4proto.h>
+-#include <net/netfilter/nf_conntrack_helper.h>
+ #include <net/netfilter/nf_conntrack_core.h>
++#include <net/netfilter/nf_conntrack_ecache.h>
+ #include <net/netfilter/nf_conntrack_extend.h>
++#include <net/netfilter/nf_conntrack_helper.h>
++#include <net/netfilter/nf_conntrack_l4proto.h>
+ #include <net/netfilter/nf_log.h>
+ 
+ static DEFINE_MUTEX(nf_ct_helper_mutex);
+diff --git a/net/netfilter/nf_conntrack_timeout.c b/net/netfilter/nf_conntrack_timeout.c
+index 13d0f4a92647..14387e0b8008 100644
+--- a/net/netfilter/nf_conntrack_timeout.c
++++ b/net/netfilter/nf_conntrack_timeout.c
+@@ -19,6 +19,7 @@
+ #include <net/netfilter/nf_conntrack.h>
+ #include <net/netfilter/nf_conntrack_core.h>
+ #include <net/netfilter/nf_conntrack_extend.h>
++#include <net/netfilter/nf_conntrack_l4proto.h>
+ #include <net/netfilter/nf_conntrack_timeout.h>
+ 
+ struct nf_ct_timeout *
+diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
+index 80a8f9ae4c93..09310a1bd91f 100644
+--- a/net/netfilter/nf_flow_table_core.c
++++ b/net/netfilter/nf_flow_table_core.c
+@@ -11,6 +11,7 @@
+ #include <net/netfilter/nf_flow_table.h>
+ #include <net/netfilter/nf_conntrack.h>
+ #include <net/netfilter/nf_conntrack_core.h>
++#include <net/netfilter/nf_conntrack_l4proto.h>
+ #include <net/netfilter/nf_conntrack_tuple.h>
+ 
+ struct flow_offload_entry {
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index 3f6023ed4966..bfc555fcbc72 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -18,12 +18,12 @@
+ 
+ #include <net/netfilter/nf_conntrack.h>
+ #include <net/netfilter/nf_conntrack_core.h>
+-#include <net/netfilter/nf_nat.h>
+-#include <net/netfilter/nf_nat_helper.h>
+ #include <net/netfilter/nf_conntrack_helper.h>
+ #include <net/netfilter/nf_conntrack_seqadj.h>
+ #include <net/netfilter/nf_conntrack_zones.h>
+-#include <linux/netfilter/nf_nat.h>
++#include <net/netfilter/nf_nat.h>
++#include <net/netfilter/nf_nat_helper.h>
++#include <uapi/linux/netfilter/nf_nat.h>
+ 
+ #include "nf_internals.h"
+ 
+diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
+index 01705ad74a9a..22cf236eb5d5 100644
+--- a/net/netfilter/nft_flow_offload.c
++++ b/net/netfilter/nft_flow_offload.c
+@@ -6,12 +6,13 @@
+ #include <linux/netfilter.h>
+ #include <linux/workqueue.h>
+ #include <linux/spinlock.h>
++#include <linux/netfilter/nf_conntrack_common.h>
+ #include <linux/netfilter/nf_tables.h>
+ #include <net/ip.h> /* for ipv4 options. */
+ #include <net/netfilter/nf_tables.h>
+ #include <net/netfilter/nf_tables_core.h>
+ #include <net/netfilter/nf_conntrack_core.h>
+-#include <linux/netfilter/nf_conntrack_common.h>
++#include <net/netfilter/nf_conntrack_extend.h>
+ #include <net/netfilter/nf_flow_table.h>
+ 
+ struct nft_flow_offload {
+diff --git a/net/netfilter/xt_connlimit.c b/net/netfilter/xt_connlimit.c
+index bc6c8ab0fa62..46fcac75f726 100644
+--- a/net/netfilter/xt_connlimit.c
++++ b/net/netfilter/xt_connlimit.c
+@@ -13,6 +13,8 @@
   */
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/if.h>
+ 
++#include <linux/ip.h>
++#include <linux/ipv6.h>
  #include <linux/module.h>
  #include <linux/skbuff.h>
- #include <linux/netfilter_bridge.h>
--#include <linux/netfilter/xt_physdev.h>
  #include <linux/netfilter/x_tables.h>
--#include <net/netfilter/br_netfilter.h>
-+#include <uapi/linux/netfilter/xt_physdev.h>
+diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
+index cdd6f3818097..fcc46025e790 100644
+--- a/net/sched/act_ct.c
++++ b/net/sched/act_ct.c
+@@ -24,12 +24,12 @@
+ #include <uapi/linux/tc_act/tc_ct.h>
+ #include <net/tc_act/tc_ct.h>
  
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Bart De Schuymer <bdschuym@pandora.be>");
+-#include <linux/netfilter/nf_nat.h>
+ #include <net/netfilter/nf_conntrack.h>
+ #include <net/netfilter/nf_conntrack_core.h>
+ #include <net/netfilter/nf_conntrack_zones.h>
+ #include <net/netfilter/nf_conntrack_helper.h>
+ #include <net/netfilter/ipv6/nf_defrag_ipv6.h>
++#include <uapi/linux/netfilter/nf_nat.h>
+ 
+ static struct tc_action_ops act_ct_ops;
+ static unsigned int ct_net_id;
 -- 
 2.23.0
 
