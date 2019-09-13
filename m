@@ -2,84 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C01BB2149
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Sep 2019 15:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A2DB22D8
+	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Sep 2019 17:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388387AbfIMNoA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 13 Sep 2019 09:44:00 -0400
-Received: from mail-vs1-f65.google.com ([209.85.217.65]:45488 "EHLO
-        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388331AbfIMNn7 (ORCPT
+        id S2390524AbfIMPDY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 13 Sep 2019 11:03:24 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:47439 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390374AbfIMPDX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 13 Sep 2019 09:43:59 -0400
-Received: by mail-vs1-f65.google.com with SMTP id s3so18612488vsi.12;
-        Fri, 13 Sep 2019 06:43:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=RXJnZ+nPgE9agHywMSnWPQ7t9VoBgm2R0CEtC5otomY=;
-        b=CUOYo1guETjrYNQEhNyJG1uIGxnJ1ZmaQsuceauYUPtMTJiqGbiT/kWdtVH5EcwVkB
-         E4B4NaFUxLu/m+BmxEWXWZ7trw1d0IaJxvUrKqN+y9udk4PLYwSbSXaznaIeMOHlrjQG
-         n3ZDK5IhR3Yu0gdc1xMw3rqnkfdEcp/5e0F6zmiHz9pj724sVjzahRh/cSA0oMvQS61S
-         OsJOh/4CkzqZ63Klvrz6Nqw1IQaFyFqfNOQhj33sjtuyt6DTImJoEE1EZMw8jC9I8is6
-         WYYZZh8X1r42SENsaTQMDfXvGc0DBYfg86kkkHUJcpVAMwnMVWUtVKjNpDVaZVx/bHUB
-         gcLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=RXJnZ+nPgE9agHywMSnWPQ7t9VoBgm2R0CEtC5otomY=;
-        b=TxOB4ctLA2BjYN4fjIlHRq3PSMGGFU5WyOMhk7f2MqltkThH8u4mxRrLaonmEdzTRn
-         OXJdmoTeLc5QA/MwTdpKTFBkYLUiKs72CAilrgT8KO3OThilGKEK4eK3Ujo4V0ayMz+M
-         nkHcOaPsJZS/ysV2NbbqJwQ/7EItq9uaE57bSpY5VhJeKNfQiQ1AVaCU6u923p/7zHBz
-         YB/KY1AEAd/r9V4HP7mFxAoIjHmwSIzI6i+C4418FtiIqrxBXA4Narj27Bt9xamxIXW6
-         uk01PNgXwIj4cRguZ1V6QCJRjIyZQPffw3hICgXsfz33EJcMN5oMtYrjJSbyVHx92Rl4
-         rlZg==
-X-Gm-Message-State: APjAAAX902rIcGg46DbNM2y6D4G2g+cahcfMclSekCRhDHBHGSGL2SAm
-        UH1KcuPULfcwGjJ7AxUrkI7y3S3RG8IkWjOA5qwk
-X-Google-Smtp-Source: APXvYqw9PNt4u6KSrpSVrBXM2L7xr6JaasI+kZg3SKmYAITPc2ir9OYfofSEVx6LRX7xFiHf6Yn19MCoEVskqy8b7jM=
-X-Received: by 2002:a67:6187:: with SMTP id v129mr5104474vsb.230.1568382238685;
- Fri, 13 Sep 2019 06:43:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190724143733.17433-1-rsalvaterra@gmail.com>
-In-Reply-To: <20190724143733.17433-1-rsalvaterra@gmail.com>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Fri, 13 Sep 2019 14:43:47 +0100
-Message-ID: <CALjTZvYi+3VdYJ4Od4Epx08VTFg0TReo_-NkqYxFonR_-=GN6A@mail.gmail.com>
-Subject: Re: [PATCH] netfilter: trivial: remove extraneous space from message
-To:     pablo@netfilter.org, davem@davemloft.net,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 13 Sep 2019 11:03:23 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 881E141170;
+        Fri, 13 Sep 2019 23:03:11 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next v6 0/8]  netfilter: nf_tables_offload: support tunnel offload
+Date:   Fri, 13 Sep 2019 23:03:02 +0800
+Message-Id: <1568386990-29660-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVNS0hCQkJDTkhKSE9KTVlXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NRQ6Tgw4MDg2KSsxPzECDyIP
+        CglPCzFVSlVKTk1DSENNQkJKTkJPVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUpMSEo3Bg++
+X-HM-Tid: 0a6d2b2645ce2086kuqy881e141170
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Friendly ping.
+From: wenxu <wenxu@ucloud.cn>
 
-On Wed, 24 Jul 2019 at 15:37, Rui Salvaterra <rsalvaterra@gmail.com> wrote:
->
-> Pure ocd, but this one has been bugging me for a while.
->
-> Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
-> ---
->  net/netfilter/nf_conntrack_helper.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/netfilter/nf_conntrack_helper.c b/net/netfilter/nf_conntrack_helper.c
-> index 8d729e7c36ff..209123f35b4a 100644
-> --- a/net/netfilter/nf_conntrack_helper.c
-> +++ b/net/netfilter/nf_conntrack_helper.c
-> @@ -218,7 +218,7 @@ nf_ct_lookup_helper(struct nf_conn *ct, struct net *net)
->                         return NULL;
->                 pr_info("nf_conntrack: default automatic helper assignment "
->                         "has been turned off for security reasons and CT-based "
-> -                       " firewall rule not found. Use the iptables CT target "
-> +                       "firewall rule not found. Use the iptables CT target "
->                         "to attach helpers instead.\n");
->                 net->ct.auto_assign_helper_warned = 1;
->                 return NULL;
-> --
-> 2.22.0
->
+This series add NFT_TUNNEL_IP/6_SRC/DST match and tunnel expr offload.
+Also add NFTA_TUNNEL_KEY_RELEASE actions adn objref, tunnel obj offload
+
+This version just rebase to master for patch 7 and make sure
+the new code doesn't go over the 80-chars per column boundary
+
+wenxu (8):
+  netfilter: nft_tunnel: add nft_tunnel_mode_validate function
+  netfilter: nft_tunnel: support NFT_TUNNEL_IP_SRC/DST match
+  netfilter: nft_tunnel: add ipv6 check in nft_tunnel_mode_validate
+  netfilter: nft_tunnel: support NFT_TUNNEL_IP6_SRC/DST match
+  netfilter: nft_tunnel: support tunnel meta match offload
+  netfilter: nft_tunnel: add NFTA_TUNNEL_KEY_RELEASE action
+  netfilter: nft_objref: add nft_objref_type offload
+  netfilter: nft_tunnel: support nft_tunnel_obj offload
+
+ include/net/netfilter/nf_tables.h         |   4 +
+ include/net/netfilter/nf_tables_offload.h |   5 +
+ include/uapi/linux/netfilter/nf_tables.h  |   5 +
+ net/netfilter/nft_objref.c                |  14 +++
+ net/netfilter/nft_tunnel.c                | 159 +++++++++++++++++++++++++++---
+ 5 files changed, 174 insertions(+), 13 deletions(-)
+
+-- 
+1.8.3.1
+
