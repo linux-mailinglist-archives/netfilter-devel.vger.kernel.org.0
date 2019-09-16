@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2726B3F49
-	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Sep 2019 18:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6529BB3F46
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Sep 2019 18:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390204AbfIPQu6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 16 Sep 2019 12:50:58 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:51202 "EHLO orbyte.nwl.cc"
+        id S2390207AbfIPQum (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 16 Sep 2019 12:50:42 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:51184 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729084AbfIPQu6 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 16 Sep 2019 12:50:58 -0400
-Received: from localhost ([::1]:36060 helo=tatos)
+        id S1729084AbfIPQum (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 16 Sep 2019 12:50:42 -0400
+Received: from localhost ([::1]:36042 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1i9uDI-0003pq-TR; Mon, 16 Sep 2019 18:50:56 +0200
+        id 1i9uD2-0003ol-U5; Mon, 16 Sep 2019 18:50:40 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 05/14] nft: Introduce nft_bridge_commit()
-Date:   Mon, 16 Sep 2019 18:49:51 +0200
-Message-Id: <20190916165000.18217-6-phil@nwl.cc>
+Subject: [iptables PATCH 06/14] nft: Fix for add and delete of same rule in single batch
+Date:   Mon, 16 Sep 2019 18:49:52 +0200
+Message-Id: <20190916165000.18217-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190916165000.18217-1-phil@nwl.cc>
 References: <20190916165000.18217-1-phil@nwl.cc>
@@ -31,77 +31,97 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-No need to check family value from nft_commit() if we can have a
-dedicated callback for bridge family.
+Another corner-case found when extending restore ordering test: If a
+delete command in a dump referenced a rule added earlier within the same
+dump, kernel would reject the resulting NFT_MSG_DELRULE command.
+
+Catch this by assigning the rule to delete a RULE_ID value if it doesn't
+have a handle yet. Since __nft_rule_del() does not duplicate the
+nftnl_rule object when creating the NFT_COMPAT_RULE_DELETE command, this
+RULE_ID value is added to both NEWRULE and DELRULE commands - exactly
+what is needed to establish the reference.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c                   | 8 ++++++--
- iptables/nft.h                   | 1 +
- iptables/xtables-eb-standalone.c | 2 +-
- iptables/xtables-restore.c       | 2 +-
- 4 files changed, 9 insertions(+), 4 deletions(-)
+ iptables/nft.c                                 |  3 +++
+ .../ipt-restore/0003-restore-ordering_0        | 18 +++++++++++++-----
+ 2 files changed, 16 insertions(+), 5 deletions(-)
 
 diff --git a/iptables/nft.c b/iptables/nft.c
-index 81d01310c7f8c..77ebc4f651e15 100644
+index 77ebc4f651e15..6248b9eb10a85 100644
 --- a/iptables/nft.c
 +++ b/iptables/nft.c
-@@ -3069,11 +3069,15 @@ static void nft_bridge_commit_prepare(struct nft_handle *h)
+@@ -2199,6 +2199,9 @@ static int __nft_rule_del(struct nft_handle *h, struct nftnl_rule *r)
  
- int nft_commit(struct nft_handle *h)
- {
--	if (h->family == NFPROTO_BRIDGE)
--		nft_bridge_commit_prepare(h);
- 	return nft_action(h, NFT_COMPAT_COMMIT);
- }
+ 	nftnl_rule_list_del(r);
  
-+int nft_bridge_commit(struct nft_handle *h)
-+{
-+	nft_bridge_commit_prepare(h);
-+	return nft_commit(h);
-+}
++	if (!nftnl_rule_get_u64(r, NFTNL_RULE_HANDLE))
++		nftnl_rule_set_u32(r, NFTNL_RULE_ID, ++h->rule_id);
 +
- int nft_abort(struct nft_handle *h)
- {
- 	return nft_action(h, NFT_COMPAT_ABORT);
-diff --git a/iptables/nft.h b/iptables/nft.h
-index 5e5e765b0d043..43463d7f262e8 100644
---- a/iptables/nft.h
-+++ b/iptables/nft.h
-@@ -147,6 +147,7 @@ uint32_t nft_invflags2cmp(uint32_t invflags, uint32_t flag);
-  * global commit and abort
-  */
- int nft_commit(struct nft_handle *h);
-+int nft_bridge_commit(struct nft_handle *h);
- int nft_abort(struct nft_handle *h);
- int nft_abort_policy_rule(struct nft_handle *h, const char *table);
+ 	obj = batch_rule_add(h, NFT_COMPAT_RULE_DELETE, r);
+ 	if (!obj) {
+ 		nftnl_rule_free(r);
+diff --git a/iptables/tests/shell/testcases/ipt-restore/0003-restore-ordering_0 b/iptables/tests/shell/testcases/ipt-restore/0003-restore-ordering_0
+index 51f2422e15259..3f1d229e915ff 100755
+--- a/iptables/tests/shell/testcases/ipt-restore/0003-restore-ordering_0
++++ b/iptables/tests/shell/testcases/ipt-restore/0003-restore-ordering_0
+@@ -14,7 +14,7 @@ ipt_show() {
  
-diff --git a/iptables/xtables-eb-standalone.c b/iptables/xtables-eb-standalone.c
-index fb3daba0bd604..a9081c78c3bc3 100644
---- a/iptables/xtables-eb-standalone.c
-+++ b/iptables/xtables-eb-standalone.c
-@@ -51,7 +51,7 @@ int xtables_eb_main(int argc, char *argv[])
+ $XT_MULTI iptables-restore <<EOF
+ *filter
+--A FORWARD -m comment --comment "appended rule" -j ACCEPT
++-A FORWARD -m comment --comment "rule 4" -j ACCEPT
+ -I FORWARD 1 -m comment --comment "rule 1" -j ACCEPT
+ -I FORWARD 2 -m comment --comment "rule 2" -j ACCEPT
+ -I FORWARD 3 -m comment --comment "rule 3" -j ACCEPT
+@@ -24,7 +24,7 @@ EOF
+ EXPECT='-A FORWARD -m comment --comment "rule 1" -j ACCEPT
+ -A FORWARD -m comment --comment "rule 2" -j ACCEPT
+ -A FORWARD -m comment --comment "rule 3" -j ACCEPT
+--A FORWARD -m comment --comment "appended rule" -j ACCEPT'
++-A FORWARD -m comment --comment "rule 4" -j ACCEPT'
  
- 	ret = do_commandeb(&h, argc, argv, &table, false);
- 	if (ret)
--		ret = nft_commit(&h);
-+		ret = nft_bridge_commit(&h);
+ diff -u -Z <(echo -e "$EXPECT") <(ipt_show)
  
- 	if (!ret)
- 		fprintf(stderr, "ebtables: %s\n", nft_strerror(errno));
-diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index 601c842feab38..f930f5ba2d167 100644
---- a/iptables/xtables-restore.c
-+++ b/iptables/xtables-restore.c
-@@ -463,7 +463,7 @@ static int ebt_table_flush(struct nft_handle *h, const char *table)
+@@ -32,11 +32,14 @@ diff -u -Z <(echo -e "$EXPECT") <(ipt_show)
  
- struct nft_xt_restore_cb ebt_restore_cb = {
- 	.chain_list	= get_chain_list,
--	.commit		= nft_commit,
-+	.commit		= nft_bridge_commit,
- 	.table_new	= nft_table_new,
- 	.table_flush	= ebt_table_flush,
- 	.do_command	= do_commandeb,
+ $XT_MULTI iptables-restore --noflush <<EOF
+ *filter
++-A FORWARD -m comment --comment "rule 5" -j ACCEPT
+ -I FORWARD 1 -m comment --comment "rule 0.5" -j ACCEPT
+ -I FORWARD 3 -m comment --comment "rule 1.5" -j ACCEPT
+ -I FORWARD 5 -m comment --comment "rule 2.5" -j ACCEPT
+ -I FORWARD 7 -m comment --comment "rule 3.5" -j ACCEPT
+--I FORWARD 9 -m comment --comment "appended rule 2" -j ACCEPT
++-I FORWARD 9 -m comment --comment "rule 4.5" -j ACCEPT
++-I FORWARD 11 -m comment --comment "rule 5.5" -j ACCEPT
++-A FORWARD -m comment --comment "rule 6" -j ACCEPT
+ COMMIT
+ EOF
+ 
+@@ -47,8 +50,11 @@ EXPECT='-A FORWARD -m comment --comment "rule 0.5" -j ACCEPT
+ -A FORWARD -m comment --comment "rule 2.5" -j ACCEPT
+ -A FORWARD -m comment --comment "rule 3" -j ACCEPT
+ -A FORWARD -m comment --comment "rule 3.5" -j ACCEPT
+--A FORWARD -m comment --comment "appended rule" -j ACCEPT
+--A FORWARD -m comment --comment "appended rule 2" -j ACCEPT'
++-A FORWARD -m comment --comment "rule 4" -j ACCEPT
++-A FORWARD -m comment --comment "rule 4.5" -j ACCEPT
++-A FORWARD -m comment --comment "rule 5" -j ACCEPT
++-A FORWARD -m comment --comment "rule 5.5" -j ACCEPT
++-A FORWARD -m comment --comment "rule 6" -j ACCEPT'
+ 
+ diff -u -Z <(echo -e "$EXPECT") <(ipt_show)
+ 
+@@ -78,6 +84,8 @@ diff -u -Z <(echo -e "$EXPECT") <(ipt_show)
+ 
+ $XT_MULTI iptables-restore --noflush <<EOF
+ *filter
++-A FORWARD -m comment --comment "appended rule 4" -j ACCEPT
++-D FORWARD 7
+ -D FORWARD -m comment --comment "appended rule 1" -j ACCEPT
+ -D FORWARD 3
+ -I FORWARD 3 -m comment --comment "manually replaced rule 2" -j ACCEPT
 -- 
 2.23.0
 
