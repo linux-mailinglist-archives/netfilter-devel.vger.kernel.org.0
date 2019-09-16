@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 867B3B3F44
-	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Sep 2019 18:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F1CB3F4D
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Sep 2019 18:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390201AbfIPQub (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 16 Sep 2019 12:50:31 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:51172 "EHLO orbyte.nwl.cc"
+        id S1731835AbfIPQvU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 16 Sep 2019 12:51:20 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:51226 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729084AbfIPQub (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 16 Sep 2019 12:50:31 -0400
-Received: from localhost ([::1]:36030 helo=tatos)
+        id S1729084AbfIPQvU (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 16 Sep 2019 12:51:20 -0400
+Received: from localhost ([::1]:36084 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1i9uCs-0003nn-9B; Mon, 16 Sep 2019 18:50:30 +0200
+        id 1i9uDe-0003rY-TP; Mon, 16 Sep 2019 18:51:18 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 13/14] nft: Optimize flushing all chains of a table
-Date:   Mon, 16 Sep 2019 18:49:59 +0200
-Message-Id: <20190916165000.18217-14-phil@nwl.cc>
+Subject: [iptables PATCH 14/14] nft: Reduce impact of nft_chain_builtin_init()
+Date:   Mon, 16 Sep 2019 18:50:00 +0200
+Message-Id: <20190916165000.18217-15-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190916165000.18217-1-phil@nwl.cc>
 References: <20190916165000.18217-1-phil@nwl.cc>
@@ -31,152 +31,102 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Leverage nftables' support for flushing all chains of a table by
-omitting NFTNL_RULE_CHAIN attribute in NFT_MSG_DELRULE payload.
+When initializing builtin chains, fetch only the chain to add from
+kernel to reduce overhead in case kernel ruleset contains many chains.
 
-The only caveat is with verbose output, as that still requires to have a
-list of (existing) chains to iterate over. Apart from that, implementing
-this shortcut is pretty straightforward: Don't retrieve a chain list and
-just call __nft_rule_flush() directly which doesn't set above attribute
-if chain name pointer is NULL.
-
-A bigger deal is keeping rule cache consistent: Instead of just clearing
-rule list for each flushed chain, flush_rule_cache() is updated to
-iterate over all cached chains of the given table and clears their rule
-lists if not called for a specific chain.
-
-While being at it, sort local variable declarations in nft_rule_flush()
-from longest to shortest and drop the loop-local 'chain_name' variable
-(but instead use 'chain' function parameter which is not used at that
-point).
-
-Note that this change by itself only marginally improves 'iptables-nft
--F' performance for a ruleset with many chains because
-nft_xt_builtin_init() still fetches all chains from kernel. A follow-up
-patch takes care of that, finally establishing O(1) complexity.
+Given the flexibility of nft_chain_list_get() this is not a problem, but
+care has to be taken when updating the table's chain list: Since a
+command like 'iptables-nft -F INPUT' causes two invocations of
+nft_chain_list_get() with same arguments, the same chain will be fetched
+from kernel twice. To handle this, simply clearing chain list from
+fetch_chain_cache() is not an option as list elements might be
+referenced by pending batch jobs. Instead abort in nftnl_chain_list_cb()
+if a chain with same name already exists in the list. Also, the call to
+fetch_table_cache() must happen conditionally to avoid leaking existing
+table list.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c | 54 ++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 37 insertions(+), 17 deletions(-)
+ iptables/nft.c | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
 diff --git a/iptables/nft.c b/iptables/nft.c
-index 294cb306700d0..5eb129461dab2 100644
+index 5eb129461dab2..66011a8066ed9 100644
 --- a/iptables/nft.c
 +++ b/iptables/nft.c
-@@ -836,7 +836,7 @@ int nft_init(struct nft_handle *h, const struct builtin_table *t)
- 	return 0;
- }
- 
--static int __flush_rule_cache(struct nftnl_rule *r, void *data)
-+static int ____flush_rule_cache(struct nftnl_rule *r, void *data)
+@@ -750,15 +750,15 @@ nft_chain_builtin_find(const struct builtin_table *t, const char *chain)
+ static void nft_chain_builtin_init(struct nft_handle *h,
+ 				   const struct builtin_table *table)
  {
- 	nftnl_rule_list_del(r);
- 	nftnl_rule_free(r);
-@@ -844,9 +844,25 @@ static int __flush_rule_cache(struct nftnl_rule *r, void *data)
- 	return 0;
- }
- 
--static void flush_rule_cache(struct nftnl_chain *c)
-+static int __flush_rule_cache(struct nftnl_chain *c, void *data)
- {
--	nftnl_rule_foreach(c, __flush_rule_cache, NULL);
-+	return nftnl_rule_foreach(c, ____flush_rule_cache, NULL);
-+}
-+
-+static int flush_rule_cache(struct nft_handle *h, const char *table,
-+			    struct nftnl_chain *c)
-+{
-+	const struct builtin_table *t;
-+
-+	if (c)
-+		return __flush_rule_cache(c, NULL);
-+
-+	t = nft_table_builtin_find(h, table);
-+	if (!t|| !h->cache->table[t->type].chains)
-+		return 0;
-+
-+	return nftnl_chain_list_foreach(h->cache->table[t->type].chains,
-+					__flush_rule_cache, NULL);
- }
- 
- static int __flush_chain_cache(struct nftnl_chain *c, void *data)
-@@ -1860,7 +1876,7 @@ __nft_rule_flush(struct nft_handle *h, const char *table,
- 	struct obj_update *obj;
- 	struct nftnl_rule *r;
- 
--	if (verbose)
-+	if (verbose && chain)
- 		fprintf(stdout, "Flushing chain `%s'\n", chain);
- 
- 	r = nftnl_rule_alloc();
-@@ -1868,7 +1884,8 @@ __nft_rule_flush(struct nft_handle *h, const char *table,
- 		return;
- 
- 	nftnl_rule_set_str(r, NFTNL_RULE_TABLE, table);
--	nftnl_rule_set_str(r, NFTNL_RULE_CHAIN, chain);
-+	if (chain)
-+		nftnl_rule_set_str(r, NFTNL_RULE_CHAIN, chain);
- 
- 	obj = batch_rule_add(h, NFT_COMPAT_RULE_FLUSH, r);
- 	if (!obj) {
-@@ -1882,19 +1899,21 @@ __nft_rule_flush(struct nft_handle *h, const char *table,
- int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
- 		   bool verbose)
- {
--	int ret = 0;
--	struct nftnl_chain_list *list;
- 	struct nftnl_chain_list_iter *iter;
--	struct nftnl_chain *c;
+-	struct nftnl_chain_list *list = nft_chain_list_get(h, table->name, NULL);
 +	struct nftnl_chain_list *list;
-+	struct nftnl_chain *c = NULL;
-+	int ret = 0;
+ 	struct nftnl_chain *c;
+ 	int i;
  
- 	nft_xt_builtin_init(h, table);
+-	if (!list)
+-		return;
+-
+ 	/* Initialize built-in chains if they don't exist yet */
+ 	for (i=0; i < NF_INET_NUMHOOKS && table->chains[i].name != NULL; i++) {
++		list = nft_chain_list_get(h, table->name, table->chains[i].name);
++		if (!list)
++			continue;
  
- 	nft_fn = nft_rule_flush;
+ 		c = nftnl_chain_list_lookup_byname(list, table->chains[i].name);
+ 		if (c != NULL)
+@@ -1374,7 +1374,8 @@ static int nftnl_chain_list_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct nft_handle *h = data;
+ 	const struct builtin_table *t;
+-	struct nftnl_chain *c;
++	struct nftnl_chain *c, *c2;
++	const char *tname, *cname;
  
--	list = nft_chain_list_get(h, table, chain);
--	if (list == NULL) {
--		ret = 1;
--		goto err;
-+	if (chain || verbose) {
-+		list = nft_chain_list_get(h, table, chain);
-+		if (list == NULL) {
-+			ret = 1;
-+			goto err;
-+		}
+ 	c = nftnl_chain_alloc();
+ 	if (c == NULL)
+@@ -1383,11 +1384,17 @@ static int nftnl_chain_list_cb(const struct nlmsghdr *nlh, void *data)
+ 	if (nftnl_chain_nlmsg_parse(nlh, c) < 0)
+ 		goto out;
+ 
+-	t = nft_table_builtin_find(h,
+-			nftnl_chain_get_str(c, NFTNL_CHAIN_TABLE));
++	tname = nftnl_chain_get_str(c, NFTNL_CHAIN_TABLE);
++	t = nft_table_builtin_find(h, tname);
+ 	if (!t)
+ 		goto out;
+ 
++	cname = nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
++	c2 = nftnl_chain_list_lookup_byname(h->cache->table[t->type].chains,
++					    cname);
++	if (c2)
++		goto out;
++
+ 	nftnl_chain_list_add_tail(c, h->cache->table[t->type].chains);
+ 
+ 	return MNL_CB_OK;
+@@ -1447,7 +1454,8 @@ static int fetch_chain_cache(struct nft_handle *h, const char *table, const char
+ 	struct nlmsghdr *nlh;
+ 	int i, ret;
+ 
+-	fetch_table_cache(h);
++	if (!h->cache->tables)
++		fetch_table_cache(h);
+ 
+ 	for (i = 0; i < NFT_TABLE_MAX; i++) {
+ 		enum nft_table_type type = h->tables[i].type;
+@@ -1462,10 +1470,9 @@ static int fetch_chain_cache(struct nft_handle *h, const char *table, const char
+ 		if (chain && table && strcmp(table, h->tables[i].name))
+ 			continue;
+ 
+-		if (h->cache->table[type].chains)
+-			nftnl_chain_list_free(h->cache->table[type].chains);
++		if (!h->cache->table[type].chains)
++			h->cache->table[type].chains = nftnl_chain_list_alloc();
+ 
+-		h->cache->table[type].chains = nftnl_chain_list_alloc();
+ 		if (!h->cache->table[type].chains)
+ 			return -1;
  	}
- 
- 	if (chain) {
-@@ -1903,9 +1922,11 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
- 			errno = ENOENT;
- 			return 0;
- 		}
-+	}
- 
-+	if (chain || !verbose) {
- 		__nft_rule_flush(h, table, chain, verbose, false);
--		flush_rule_cache(c);
-+		flush_rule_cache(h, table, c);
- 		return 1;
- 	}
- 
-@@ -1917,11 +1938,10 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
- 
- 	c = nftnl_chain_list_iter_next(iter);
- 	while (c != NULL) {
--		const char *chain_name =
--			nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
-+		chain = nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
- 
--		__nft_rule_flush(h, table, chain_name, verbose, false);
--		flush_rule_cache(c);
-+		__nft_rule_flush(h, table, chain, verbose, false);
-+		flush_rule_cache(h, table, c);
- 		c = nftnl_chain_list_iter_next(iter);
- 	}
- 	nftnl_chain_list_iter_destroy(iter);
 -- 
 2.23.0
 
