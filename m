@@ -2,98 +2,110 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86928B380D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Sep 2019 12:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C7AB3A82
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Sep 2019 14:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbfIPKYs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 16 Sep 2019 06:24:48 -0400
-Received: from 195-154-211-226.rev.poneytelecom.eu ([195.154.211.226]:42274
-        "EHLO flash.glorub.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725850AbfIPKYs (ORCPT
+        id S1727927AbfIPMmJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 16 Sep 2019 08:42:09 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:44742 "EHLO
+        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727770AbfIPMmI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 16 Sep 2019 06:24:48 -0400
-Received: from eric by flash.glorub.net with local (Exim 4.89)
-        (envelope-from <ejallot@gmail.com>)
-        id 1i9oBa-0009qg-Kq; Mon, 16 Sep 2019 12:24:46 +0200
-From:   Eric Jallot <ejallot@gmail.com>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Eric Jallot <ejallot@gmail.com>
-Subject: [PATCH nft v2] src: parser_json: fix crash while restoring secmark object
-Date:   Mon, 16 Sep 2019 12:24:44 +0200
-Message-Id: <20190916102444.37776-1-ejallot@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Mon, 16 Sep 2019 08:42:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=FFvujvdKKrRnbFjvR9KsXR46UOQKWyZbQ/0rtbhwILk=; b=OPOY6RfTQoml3TaxGqKyYM3cBZ
+        MYAY0W9iElqn3KLHwHFMP7svEX7tnUOB/3qCMAeMUUbPimjw6XpB2v4ldDWVydbv4AaxgaRbHLQgc
+        aAvmSL7Bq7sFEXNS4YzwmNTAsy7UsYrfvkPXlmxWXJjIjSnVNOvt+ksZAlohSb7vU59yo9s8ZR/4e
+        e9P57EBVoABCFK0ET0FMiIQqMfdNFE04CEa1dK64qVch/6xYO3mEFqSGrRppCC7fXBJmC1FnBtA3J
+        +1G/E4rFOLQcGZ+WwzQokUvgAdWULaip7cEdIIWGZRMerbFIp4t7aPllCCVb5Sh+OY+J3B0G1mILI
+        SKJmynnw==;
+Received: from ulthar.dreamlands ([192.168.96.2])
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1i9qKS-0005OR-5T; Mon, 16 Sep 2019 13:42:04 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Cc:     Sebastian Priebe <sebastian.priebe@de.sii.group>
+Subject: [PATCH RFC nftables 0/4] Add Linenoise support to the CLI.
+Date:   Mon, 16 Sep 2019 13:41:59 +0100
+Message-Id: <20190916124203.31380-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <4df20614cd10434b9f91080d0862dd0c@de.sii.group>
+References: <4df20614cd10434b9f91080d0862dd0c@de.sii.group>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 192.168.96.2
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Before patch:
- # nft -j list ruleset | tee rules.json | jq '.'
- {
-   "nftables": [
-     {
-       "metainfo": {
-         "version": "0.9.2",
-         "release_name": "Scram",
-         "json_schema_version": 1
-       }
-     },
-     {
-       "table": {
-         "family": "inet",
-         "name": "t",
-         "handle": 11
-       }
-     },
-     {
-       "secmark": {
-         "family": "inet",
-         "name": "s",
-         "table": "t",
-         "handle": 1,
-         "context": "system_u:object_r:ssh_server_packet_t:s0"
-       }
-     }
-   ]
- }
+Sebastian Priebe [0] requested Linenoise support for the CLI as an
+alternative to Readline, so I thought I'd have a go at providing it.
+Linenoise is a minimal, zero-config, BSD licensed, Readline replacement
+used in Redis, MongoDB, and Android [1].
 
- # nft flush ruleset
- # nft -j -f rules.json
- Segmentation fault
+ 0 - https://lore.kernel.org/netfilter-devel/4df20614cd10434b9f91080d0862dd0c@de.sii.group/
+ 1 - https://github.com/antirez/linenoise/
 
-Use "&tmp" instead of "tmp" in json_unpack() while translating "context" keyword.
+The upstream repo doesn't contain the infrastructure for building or
+installing libraries.  I've taken a look at how Redis and MongoDB handle
+this, and they both include the upstream sources in their trees (MongoDB
+actually uses a C++ fork, Linenoise NG [2]), so I've done the same.
 
-After patch:
- # nft -j -f rules.json
- # nft list ruleset
- table inet t {
-         secmark s {
-                 "system_u:object_r:ssh_server_packet_t:s0"
-         }
- }
+ 2 - https://github.com/arangodb/linenoise-ng
 
-Fixes: 3bc84e5c1fdd1 ("src: add support for setting secmark")
-Signed-off-by: Eric Jallot <ejallot@gmail.com>
----
-v1: Initial patch.
-v2: Missing table creation. Use 'ruleset' instead of 'secmarks' to dump rules.
+Initially, I added the Linenoise header to include/ and the source to
+src/, but the compiler warning flags used by upstream differ from those
+used by nftables, which meant that the compiler emitted warnings when
+compiling the Linenoise source and I had to edit it to fix them.  Since
+they were benign and editing the source would make it more complicated
+to update from upstream in the future, I have, instead, chosen to put
+everything in a separate linenoise/ directory with its own Makefile.am
+and the same warning flags as upstream.
 
- src/parser_json.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+By default, the CLI continues to be build using Readline, but passing
+`with-cli=linenoise` instead causes Linenoise to be used instead.
 
-diff --git a/src/parser_json.c b/src/parser_json.c
-index 5dd410af4b07..bc29dedf5b4c 100644
---- a/src/parser_json.c
-+++ b/src/parser_json.c
-@@ -3093,7 +3093,7 @@ static struct cmd *json_parse_cmd_add_object(struct json_ctx *ctx,
- 		break;
- 	case CMD_OBJ_SECMARK:
- 		obj->type = NFT_OBJECT_SECMARK;
--		if (!json_unpack(root, "{s:s}", "context", tmp)) {
-+		if (!json_unpack(root, "{s:s}", "context", &tmp)) {
- 			int ret;
- 			ret = snprintf(obj->secmark.ctx, sizeof(obj->secmark.ctx), "%s", tmp);
- 			if (ret < 0 || ret >= (int)sizeof(obj->secmark.ctx)) {
+The first two patches do a bit of tidying; the third patch adds the
+Linenoise sources; the last adds Linenoise support to the CLI.
+
+Jeremy Sowden (4):
+  configure: remove unused AC_SUBST macros.
+  cli: remove unused declaration.
+  cli: add upstream linenoise source.
+  cli: add linenoise CLI implementation.
+
+ Makefile.am                 |    7 +-
+ configure.ac                |   20 +-
+ include/cli.h               |    3 +-
+ linenoise/.gitignore        |    6 +
+ linenoise/LICENSE           |   25 +
+ linenoise/Makefile.am       |   13 +
+ linenoise/Makefile.upstream |    7 +
+ linenoise/README.markdown   |  229 +++++++
+ linenoise/example.c         |   74 +++
+ linenoise/linenoise.c       | 1201 +++++++++++++++++++++++++++++++++++
+ linenoise/linenoise.h       |   73 +++
+ src/Makefile.am             |    6 +
+ src/cli.c                   |   64 +-
+ 13 files changed, 1710 insertions(+), 18 deletions(-)
+ create mode 100644 linenoise/.gitignore
+ create mode 100644 linenoise/LICENSE
+ create mode 100644 linenoise/Makefile.am
+ create mode 100644 linenoise/Makefile.upstream
+ create mode 100644 linenoise/README.markdown
+ create mode 100644 linenoise/example.c
+ create mode 100644 linenoise/linenoise.c
+ create mode 100644 linenoise/linenoise.h
+
 -- 
-2.11.0
+2.23.0
 
