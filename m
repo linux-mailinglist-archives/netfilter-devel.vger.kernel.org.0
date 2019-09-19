@@ -2,126 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4287DB7D80
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Sep 2019 17:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6046B8398
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Sep 2019 23:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390773AbfISPFB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 19 Sep 2019 11:05:01 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:47890 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389382AbfISPFB (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 19 Sep 2019 11:05:01 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1iAxzP-0005nO-1c; Thu, 19 Sep 2019 17:04:59 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf] netfilter: nf_tables: allow lookups in dynamic sets
-Date:   Thu, 19 Sep 2019 16:56:44 +0200
-Message-Id: <20190919145644.32119-1-fw@strlen.de>
-X-Mailer: git-send-email 2.21.0
+        id S2393066AbfISVn6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 19 Sep 2019 17:43:58 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:42640 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393063AbfISVn6 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 19 Sep 2019 17:43:58 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 94139C057F20
+        for <netfilter-devel@vger.kernel.org>; Thu, 19 Sep 2019 21:43:58 +0000 (UTC)
+Received: from ovpn-112-60.rdu2.redhat.com (ovpn-112-60.rdu2.redhat.com [10.10.112.60])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1DDA519C68
+        for <netfilter-devel@vger.kernel.org>; Thu, 19 Sep 2019 21:43:57 +0000 (UTC)
+Message-ID: <56cbe55d401f89d632278f3aad79f26402d1837f.camel@redhat.com>
+Subject: netfilter.org HTTPS certificate expired today (Sept 19)
+From:   Dan Williams <dcbw@redhat.com>
+To:     netfilter-devel@vger.kernel.org
+Date:   Thu, 19 Sep 2019 16:43:57 -0500
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.32]); Thu, 19 Sep 2019 21:43:58 +0000 (UTC)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This un-breaks lookups in sets that have the 'dynamic' flag set.
-Given this active example configuration:
+Hi,
 
-table filter {
-  set set1 {
-    type ipv4_addr
-    size 64
-    flags dynamic,timeout
-    timeout 1m
-  }
+Just a heads-up to whoever controls the certs on netfilter.org.
 
-  chain input {
-     type filter hook input priority 0; policy accept;
-  }
-}
-
-... this works:
-nft add rule ip filter input add @set1 { ip saddr }
-
--> whenever rule is triggered, the source ip address is inserted
-into the set (if it did not exist).
-
-This won't work:
-nft add rule ip filter input ip saddr @set1 counter
-Error: Could not process rule: Operation not supported
-
-In other words, we can add entries to the set, but then can't make
-matching decision based on that set.
-
-That is just wrong -- all set backends support lookups (else they would
-not be very useful).
-The failure comes from an explicit rejection in nft_lookup.c.
-
-Looking at the history, it seems like NFT_SET_EVAL used to mean
-'set contains expressions' (aka. "is a meter"), for instance something like
-
- nft add rule ip filter input meter example { ip saddr limit rate 10/second }
- or
- nft add rule ip filter input meter example { ip saddr counter }
-
-The actual meaning of NFT_SET_EVAL however, is
-'set can be updated from the packet path'.
-
-'meters' and packet-path insertions into sets, such as
-'add @set { ip saddr }' use exactly the same kernel code (nft_dynset.c)
-and thus require a set backend that provides the ->update() function.
-
-The only set that provides this also is the only one that has the
-NFT_SET_EVAL feature flag.
-
-Removing the wrong check makes the above example work.
-While at it, also fix the flag check during set instantiation to
-allow supported combinations only.
-
-Fixes: 8aeff920dcc9b3f ("netfilter: nf_tables: add stateful object reference to set elements")
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/netfilter/nf_tables_api.c | 7 +++++--
- net/netfilter/nft_lookup.c    | 3 ---
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index e4a68dc42694..bbaa8bac2c2d 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -3562,8 +3562,11 @@ static int nf_tables_newset(struct net *net, struct sock *nlsk,
- 			      NFT_SET_OBJECT))
- 			return -EINVAL;
- 		/* Only one of these operations is supported */
--		if ((flags & (NFT_SET_MAP | NFT_SET_EVAL | NFT_SET_OBJECT)) ==
--			     (NFT_SET_MAP | NFT_SET_EVAL | NFT_SET_OBJECT))
-+		if ((flags & (NFT_SET_MAP | NFT_SET_OBJECT)) ==
-+			     (NFT_SET_MAP | NFT_SET_OBJECT))
-+			return -EOPNOTSUPP;
-+		if ((flags & (NFT_SET_EVAL | NFT_SET_OBJECT)) ==
-+			     (NFT_SET_EVAL | NFT_SET_OBJECT))
- 			return -EOPNOTSUPP;
- 	}
- 
-diff --git a/net/netfilter/nft_lookup.c b/net/netfilter/nft_lookup.c
-index c0560bf3c31b..660bad688e2b 100644
---- a/net/netfilter/nft_lookup.c
-+++ b/net/netfilter/nft_lookup.c
-@@ -73,9 +73,6 @@ static int nft_lookup_init(const struct nft_ctx *ctx,
- 	if (IS_ERR(set))
- 		return PTR_ERR(set);
- 
--	if (set->flags & NFT_SET_EVAL)
--		return -EOPNOTSUPP;
--
- 	priv->sreg = nft_parse_register(tb[NFTA_LOOKUP_SREG]);
- 	err = nft_validate_register_load(priv->sreg, set->klen);
- 	if (err < 0)
--- 
-2.21.0
+Dan
 
