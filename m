@@ -2,126 +2,128 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6916CB9DCD
-	for <lists+netfilter-devel@lfdr.de>; Sat, 21 Sep 2019 14:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A01DAB9E21
+	for <lists+netfilter-devel@lfdr.de>; Sat, 21 Sep 2019 15:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437848AbfIUMVC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 21 Sep 2019 08:21:02 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:33112 "EHLO
-        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437852AbfIUMVC (ORCPT
+        id S2437932AbfIUNu0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 21 Sep 2019 09:50:26 -0400
+Received: from condef-03.nifty.com ([202.248.20.68]:52649 "EHLO
+        condef-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437919AbfIUNu0 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 21 Sep 2019 08:21:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=gdRzOZfspBFi3ANtm5ZgTrZWrWCSFu7gx9e8XOa752Q=; b=UXXaCXGpwGgMYc3yAPDGeHsHhF
-        YLvzVT2M9oMIavvk9/IzSP7UcFqLm1vo/uyaPVhWtPoZM2iOtBEIKjnHCJZQMR1CKYmH357/vmcrw
-        ATp1C2GQOpnOICaZyAO7mmXRSqnZbJKFowE+SlpO1AakYNaqcBZNGCKWQYTJeC3bhXWOidTWEU7jO
-        8hVbQB5Ic20cM+CCl+yJMmkeKOmFxrBSAY1//NLal3kY2et6r/7l/1GMH5gv3ftqtjr08wvKlUyMX
-        x6fZ7dAsyTvieRi0a5+XwpBzKfQfCJ2p8pFY6BP9KjOt2YLK5eC0c37yKWYa3gUZWyni8pafw8WxM
-        KJTypQzw==;
-Received: from ulthar.dreamlands ([192.168.96.2])
-        by kadath.azazel.net with esmtp (Exim 4.92)
-        (envelope-from <jeremy@azazel.net>)
-        id 1iBeNp-0000qr-G9; Sat, 21 Sep 2019 13:21:01 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
-        Sebastian Priebe <sebastian.priebe@de.sii.group>
-Subject: [PATCH nftables 3/3] main: add more information to `nft -v`.
-Date:   Sat, 21 Sep 2019 13:21:00 +0100
-Message-Id: <20190921122100.3740-4-jeremy@azazel.net>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20190921122100.3740-1-jeremy@azazel.net>
-References: <20190921122100.3740-1-jeremy@azazel.net>
+        Sat, 21 Sep 2019 09:50:26 -0400
+Received: from conuserg-08.nifty.com ([10.126.8.71])by condef-03.nifty.com with ESMTP id x8LDlRT5028242
+        for <netfilter-devel@vger.kernel.org>; Sat, 21 Sep 2019 22:47:28 +0900
+Received: from grover.flets-west.jp (softbank126021098169.bbtec.net [126.21.98.169]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id x8LDktRD010507;
+        Sat, 21 Sep 2019 22:46:56 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com x8LDktRD010507
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1569073616;
+        bh=5xK4mZcFYP3ny+MZeQAf2c3rhdo7t2J/7fDHiLRieNc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SJas1X8NoFJ85mQNC+VMMlxMm5DsBKgz8PlYbi6nAJDoG2rLDF5DUGpVb2bPKhy20
+         CPzJm5+9qLjI4jnYr07t1tRGcEGPQ7mFaPMK4ETqhQZoUmGq5r9gvbTKjD/FLDi5G1
+         q2Ltzb4oCvWMSXwYyxBWAiXyzfAeDlWTVTuoFUyr/92k5DXBPLFfsAfrtWMT+dYPMP
+         UrKwUxoL22NbdPgPULzQ2MrHluPT01kiYVNFCI18zjK9O3SL1SDFUvQfL21wDcdhj3
+         tRRgWg+ii5G5yYPnnnIKRqPREONhriO6Zu7WSAPod7Vvo+hmY5NEvR3gAZ30tYs3CS
+         +c70FVcZya/dw==
+X-Nifty-SrcIP: [126.21.98.169]
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] netfilter: use __u8 instead of uint8_t in uapi header
+Date:   Sat, 21 Sep 2019 22:46:48 +0900
+Message-Id: <20190921134648.1259-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 192.168.96.2
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In addition to the package-version and release-name, output the CLI
-implementation (if any) and whether mini-gmp was used, e.g.:
+When CONFIG_UAPI_HEADER_TEST=y, exported headers are compile-tested to
+make sure they can be included from user-space.
 
-    $ ./src/nft -v
-    nftables v0.9.2 (Scram)
-      cli:          linenoise
-      minigmp:      no
+Currently, linux/netfilter_bridge/ebtables.h is excluded from the test
+coverage. To make it join the compile-test, we need to fix the build
+errors attached below.
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+For a case like this, we decided to use __u{8,16,32,64} variable types
+in this discussion:
+
+  https://lkml.org/lkml/2019/6/5/18
+
+Build log:
+
+  CC      usr/include/linux/netfilter_bridge/ebtables.h.s
+In file included from <command-line>:32:0:
+./usr/include/linux/netfilter_bridge/ebtables.h:126:4: error: unknown type name ‘uint8_t’
+    uint8_t revision;
+    ^~~~~~~
+./usr/include/linux/netfilter_bridge/ebtables.h:139:4: error: unknown type name ‘uint8_t’
+    uint8_t revision;
+    ^~~~~~~
+./usr/include/linux/netfilter_bridge/ebtables.h:152:4: error: unknown type name ‘uint8_t’
+    uint8_t revision;
+    ^~~~~~~
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
- src/Makefile.am |  3 +++
- src/main.c      | 28 ++++++++++++++++++++++++++--
- 2 files changed, 29 insertions(+), 2 deletions(-)
 
-diff --git a/src/Makefile.am b/src/Makefile.am
-index 5c2ecbd87288..780f8c6b2b0b 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -16,6 +16,9 @@ endif
- if BUILD_CLI_LINENOISE
- AM_CPPFLAGS += -DHAVE_LINENOISE
- endif
-+if BUILD_MINIGMP
-+AM_CPPFLAGS += -DHAVE_MINIGMP
-+endif
- 
- AM_CFLAGS = -Wall								\
- 	    -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations	\
-diff --git a/src/main.c b/src/main.c
-index f77d8a820a02..866f66e288e2 100644
---- a/src/main.c
-+++ b/src/main.c
-@@ -154,6 +154,31 @@ static void show_help(const char *name)
- 	name, DEFAULT_INCLUDE_PATH);
- }
- 
-+static void show_version(void)
-+{
-+	const char *cli, *minigmp;
-+
-+#if defined(HAVE_LIBREADLINE)
-+	cli = "readline";
-+#elif defined(HAVE_LINENOISE)
-+	cli = "linenoise";
-+#else
-+	cli = "no";
-+#endif
-+
-+#if defined(HAVE_MINIGMP)
-+	minigmp = "yes";
-+#else
-+	minigmp = "no";
-+#endif
-+
-+	printf("%s v%s (%s)\n"
-+	       "  cli:		%s\n"
-+	       "  minigmp:	%s\n",
-+	       PACKAGE_NAME, PACKAGE_VERSION, RELEASE_NAME,
-+	       cli, minigmp);
-+}
-+
- static const struct {
- 	const char		*name;
- 	enum nft_debug_level	level;
-@@ -213,8 +238,7 @@ int main(int argc, char * const *argv)
- 			show_help(argv[0]);
- 			exit(EXIT_SUCCESS);
- 		case OPT_VERSION:
--			printf("%s v%s (%s)\n",
--			       PACKAGE_NAME, PACKAGE_VERSION, RELEASE_NAME);
-+			show_version();
- 			exit(EXIT_SUCCESS);
- 		case OPT_CHECK:
- 			nft_ctx_set_dry_run(nft, true);
+ include/uapi/linux/netfilter_bridge/ebtables.h | 6 +++---
+ usr/include/Makefile                           | 1 -
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/include/uapi/linux/netfilter_bridge/ebtables.h b/include/uapi/linux/netfilter_bridge/ebtables.h
+index 3b86c14ea49d..8076c940ffeb 100644
+--- a/include/uapi/linux/netfilter_bridge/ebtables.h
++++ b/include/uapi/linux/netfilter_bridge/ebtables.h
+@@ -123,7 +123,7 @@ struct ebt_entry_match {
+ 	union {
+ 		struct {
+ 			char name[EBT_EXTENSION_MAXNAMELEN];
+-			uint8_t revision;
++			__u8 revision;
+ 		};
+ 		struct xt_match *match;
+ 	} u;
+@@ -136,7 +136,7 @@ struct ebt_entry_watcher {
+ 	union {
+ 		struct {
+ 			char name[EBT_EXTENSION_MAXNAMELEN];
+-			uint8_t revision;
++			__u8 revision;
+ 		};
+ 		struct xt_target *watcher;
+ 	} u;
+@@ -149,7 +149,7 @@ struct ebt_entry_target {
+ 	union {
+ 		struct {
+ 			char name[EBT_EXTENSION_MAXNAMELEN];
+-			uint8_t revision;
++			__u8 revision;
+ 		};
+ 		struct xt_target *target;
+ 	} u;
+diff --git a/usr/include/Makefile b/usr/include/Makefile
+index 77e0a0cd972a..faba1e5c3873 100644
+--- a/usr/include/Makefile
++++ b/usr/include/Makefile
+@@ -37,7 +37,6 @@ header-test- += linux/hdlc/ioctl.h
+ header-test- += linux/ivtv.h
+ header-test- += linux/kexec.h
+ header-test- += linux/matroxfb.h
+-header-test- += linux/netfilter_bridge/ebtables.h
+ header-test- += linux/netfilter_ipv4/ipt_LOG.h
+ header-test- += linux/netfilter_ipv6/ip6t_LOG.h
+ header-test- += linux/nfc.h
 -- 
-2.23.0
+2.17.1
 
