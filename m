@@ -2,105 +2,72 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65054B9D79
-	for <lists+netfilter-devel@lfdr.de>; Sat, 21 Sep 2019 12:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834CAB9D85
+	for <lists+netfilter-devel@lfdr.de>; Sat, 21 Sep 2019 13:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437751AbfIUKzi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 21 Sep 2019 06:55:38 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:41292 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2437750AbfIUKzh (ORCPT
+        id S2407508AbfIULFb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 21 Sep 2019 07:05:31 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:59680 "EHLO
+        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407497AbfIULFa (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 21 Sep 2019 06:55:37 -0400
-Received: from dimstar.local.net (n122-110-44-45.sun2.vic.optusnet.com.au [122.110.44.45])
-        by mail105.syd.optusnet.com.au (Postfix) with SMTP id CB7B93628A4
-        for <netfilter-devel@vger.kernel.org>; Sat, 21 Sep 2019 20:55:24 +1000 (AEST)
-Received: (qmail 29712 invoked by uid 501); 21 Sep 2019 10:55:23 -0000
-Date:   Sat, 21 Sep 2019 20:55:23 +1000
-From:   Duncan Roe <duncan_roe@optusnet.com.au>
-To:     Netfilter Development <netfilter-devel@vger.kernel.org>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH] src: Enable doxygen to generate Function Documentation
-Message-ID: <20190921105523.GB29627@dimstar.local.net>
-Mail-Followup-To: Netfilter Development <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-References: <20190908082505.3320-1-duncan_roe@optusnet.com.au>
- <20190914032556.GA14997@dimstar.local.net>
- <20190920000006.GA23488@dimstar.local.net>
- <20190920090509.2izzplgcgeepe4bh@salvia>
+        Sat, 21 Sep 2019 07:05:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=2XCk3uvQkSBolkvcTLUwG7isIl94JNrVpriYmHDNPb8=; b=d/ArAaEIkyTP14IFxBZO9MPy53
+        COxpakkj+HGSC71oxrJ6hbn0wyt4K+kQuYj2GJuXAG5+6l3I4QspN1P/O6HEGk9BcAFeFlSuaQgLY
+        jqO40LEz+L5hmR5zO1al36IB5yWTGKb+D88HcW+y/EFvO8kUyrnAPhyz/cLbOQLMjEnYGiUCsEi0G
+        00kVOI94Evdcxz22IMigvowk0wZhzsbBTFaBOKmFS97oI/Fp8Z8SRBrPOqf5TBjuKaVzLlkLS4KuS
+        6geiKc1F5HIYn4/a8wmShyuNxvaQ8JIsTVKDBs6UxT7JslvJ4rduVmiBGYWdW8hme9+v7/IJwJTbx
+        PKwLO41A==;
+Received: from ulthar.dreamlands ([192.168.96.2])
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1iBdCd-0007fj-6P; Sat, 21 Sep 2019 12:05:23 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     stable@vger.kernel.org
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH 0/1] netfilter: bridge: build fix for 5.3
+Date:   Sat, 21 Sep 2019 12:05:22 +0100
+Message-Id: <20190921110523.15085-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190920090509.2izzplgcgeepe4bh@salvia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
-        a=4DzML1vCOQ6Odsy8BUtSXQ==:117 a=4DzML1vCOQ6Odsy8BUtSXQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=J70Eh1EUuV4A:10
-        a=PO7r1zJSAAAA:8 a=NicSApd2x7r0FlQviCEA:9 a=CjuIK1q_8ugA:10
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 192.168.96.2
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
+Adam Borowski reported a build-failure in 5.3 when
+CONFIG_NF_CONNTRACK_BRIDGE is set but CONFIG_NF_TABLES is not.  It was
+introduced into the mainline by:
 
-On Fri, Sep 20, 2019 at 11:05:09AM +0200, Pablo Neira Ayuso wrote:
-> On Fri, Sep 20, 2019 at 10:00:06AM +1000, Duncan Roe wrote:
-> > (cc'ing list - already sent to Pablo)
-> >
-> > Hi Pablo,
-> >
-> > On Sat, Sep 14, 2019 at 01:25:56PM +1000, Duncan Roe wrote:
-> > > Hi Pablo,
-> > >
-> > > On Sun, Sep 08, 2019 at 06:25:05PM +1000, Duncan Roe wrote:
-> > > > The C source files all contain doxygen documentation for each defined function
-> > > > but this was not appearing in the generated HTML.
-> > > > Fix is to move all EXPORT_SYMBOL macro calls to after the function definition.
-> > > > Doxygen seems to otherwise forget the documentation on encountering
-> > > > EXPORT_SYMBOL which is flagged in the EXCLUDE_SYMBOLS tag in doxygen.cfg.in.
-> > > > I encountered this "feature" in doxygen 1.8.9.1 but it still appears to be
-> > > > present in 1.8.16
-> > > >
-> > > > Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
-> > > > ---
-> > > >  src/attr.c     | 70 +++++++++++++++++++++++++++++-----------------------------
-> > > >  src/callback.c |  4 ++--
-> > > >  src/nlmsg.c    | 40 ++++++++++++++++-----------------
-> > > >  src/socket.c   | 22 +++++++++---------
-> > > >  4 files changed, 68 insertions(+), 68 deletions(-)
-> > > >
-> > > > diff --git a/src/attr.c b/src/attr.c
-> > > > index 0359ba9..ca42d3e 100644
-> > > > --- a/src/attr.c
-> > > > +++ b/src/attr.c
-> > > > @@ -35,11 +35,11 @@
-> > > >   *
-> > > >   * This function returns the attribute type.
-> > > >   */
-> > > > -EXPORT_SYMBOL(mnl_attr_get_type);
-> > > >  uint16_t mnl_attr_get_type(const struct nlattr *attr)
-> > > >  {
-> > > >  	return attr->nla_type & NLA_TYPE_MASK;
-> > > >  }
-> > > > +EXPORT_SYMBOL(mnl_attr_get_type);
-> > > >
-> > > [...]
-> > >
-> > > Oops! I forgot to say: this is a patch for libmnl.
-> > >
-> > > Cheers ... Duncan.
-> >
-> > Any feedback re this patch?
->
-> Your patch breaks clang compilation, we need to find a different
-> solution for this bug.
->
-> Thank you.
+  3c171f496ef5 ("netfilter: bridge: add connection tracking system")
 
-I submitted a v3 (v2 lost its commit message somehow)
+There is also a fix in the mainline:
 
-libnetfilter_queue fails with clang as_is - will send a patch.
+  47e640af2e49 ("netfilter: add missing IS_ENABLED(CONFIG_NF_TABLES) check to header-file.")
 
-Cheers ... Duncan.
+I've cherry-picked it, and added the "Fixes:", "Reported-by:", "Link:"
+and "Cc:" tags.
+
+Please consider applying it to 5-3-y.
+
+Jeremy Sowden (1):
+  netfilter: add missing IS_ENABLED(CONFIG_NF_TABLES) check to
+    header-file.
+
+ include/net/netfilter/nf_tables.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+-- 
+2.23.0
+
