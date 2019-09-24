@@ -2,42 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC91BC2D0
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Sep 2019 09:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D92BC2D4
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Sep 2019 09:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438384AbfIXHkg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 24 Sep 2019 03:40:36 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:33506 "EHLO
+        id S2394650AbfIXHk5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 24 Sep 2019 03:40:57 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:33542 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394667AbfIXHkg (ORCPT
+        with ESMTP id S2388489AbfIXHk4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 24 Sep 2019 03:40:36 -0400
+        Tue, 24 Sep 2019 03:40:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=gdRzOZfspBFi3ANtm5ZgTrZWrWCSFu7gx9e8XOa752Q=; b=OaUWOoP1s+hWOJmD3J7crEKq6q
-        RYZQW5IsoMV5eckVjSrLJeRdxOZWtATQsk4M77vqq/tQt4N2Ld/Y/bXF89Mvv12XVFTkQsvuaNc3b
-        qffAYJTUlX2IukSvTS2jTOi49UHqbsv1kqGudS+1zx13sehYgVBF7QsMgXdaxfEMe3Bc7WkcjCHWa
-        a08qlKlfY4HzKooqHBM16CD7uG5QTDzpFt/6ICP7zVblVhbH2gz/+gRZEGAzoL/McRNNm7tJAOumj
-        RNF03ebpHe42yYk6wrOjMNxoDFAiesHxpF82/W22jvucI/Za/bJMtJ6lfSVg0YlY3QnyVQYnFc0BF
-        wWnbpfTQ==;
+        bh=fg8hcdx1r2hpd2cmmcHh0uGm7/4xrHU71ZLz/tTK5Vo=; b=Gl+bF/mq9yoAAoTtwqFJbKCcpK
+        jScbyRMcZuZPPL9CqDd11LyODKI5BGuXfFj2mWZrpkzuuw0XfHViLlPMQKnzvNxxFqq4TRz9oeNmN
+        SBBFpHzJuCPBxbj42zj1t88z0YGf1ikqKptiBYn9j7lwDKZlAInfwf2lvcW9ZaBT38be72QuKavGo
+        9sEMU1dPmaqe1Remwdrl+Awat8FaVd3RoEm15i0bOaLoYCpGExy+/fQP/0DGcAUVGDJD/wKBzQVXs
+        +G9IZHnlJv5T0GHEXQv5Y2PMt78wJY8VD5jrUPp8TG7eM4hB/RlbBwcdfTvFN6zRDF83grCK1llFP
+        /61+SI1Q==;
 Received: from ulthar.dreamlands ([192.168.96.2])
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1iCfR5-0001Re-1t; Tue, 24 Sep 2019 08:40:35 +0100
+        id 1iCfRP-0001Sh-S1; Tue, 24 Sep 2019 08:40:55 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
         Sebastian Priebe <sebastian.priebe@de.sii.group>
-Subject: [PATCH nftables 3/3] main: add more information to `nft -v`.
-Date:   Tue, 24 Sep 2019 08:40:34 +0100
-Message-Id: <20190924074034.4099-4-jeremy@azazel.net>
+Subject: [PATCH nftables v2 0/2] Add Linenoise support to the CLI.
+Date:   Tue, 24 Sep 2019 08:40:53 +0100
+Message-Id: <20190924074055.4146-1-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20190924074034.4099-1-jeremy@azazel.net>
-References: <20190924074034.4099-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 192.168.96.2
@@ -48,80 +46,44 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In addition to the package-version and release-name, output the CLI
-implementation (if any) and whether mini-gmp was used, e.g.:
+Sebastian Priebe [0] requested Linenoise support for the CLI as an
+alternative to Readline, so I thought I'd have a go at providing it.
+Linenoise is a minimal, zero-config, BSD licensed, Readline replacement
+used in Redis, MongoDB, and Android [1].
 
-    $ ./src/nft -v
-    nftables v0.9.2 (Scram)
-      cli:          linenoise
-      minigmp:      no
+ 0 - https://lore.kernel.org/netfilter-devel/4df20614cd10434b9f91080d0862dd0c@de.sii.group/
+ 1 - https://github.com/antirez/linenoise/
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- src/Makefile.am |  3 +++
- src/main.c      | 28 ++++++++++++++++++++++++++--
- 2 files changed, 29 insertions(+), 2 deletions(-)
+By default, the CLI continues to be build using Readline, but passing
+`--with-cli=linenoise` instead causes Linenoise to be used instead.
 
-diff --git a/src/Makefile.am b/src/Makefile.am
-index 5c2ecbd87288..780f8c6b2b0b 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -16,6 +16,9 @@ endif
- if BUILD_CLI_LINENOISE
- AM_CPPFLAGS += -DHAVE_LINENOISE
- endif
-+if BUILD_MINIGMP
-+AM_CPPFLAGS += -DHAVE_MINIGMP
-+endif
- 
- AM_CFLAGS = -Wall								\
- 	    -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations	\
-diff --git a/src/main.c b/src/main.c
-index f77d8a820a02..866f66e288e2 100644
---- a/src/main.c
-+++ b/src/main.c
-@@ -154,6 +154,31 @@ static void show_help(const char *name)
- 	name, DEFAULT_INCLUDE_PATH);
- }
- 
-+static void show_version(void)
-+{
-+	const char *cli, *minigmp;
-+
-+#if defined(HAVE_LIBREADLINE)
-+	cli = "readline";
-+#elif defined(HAVE_LINENOISE)
-+	cli = "linenoise";
-+#else
-+	cli = "no";
-+#endif
-+
-+#if defined(HAVE_MINIGMP)
-+	minigmp = "yes";
-+#else
-+	minigmp = "no";
-+#endif
-+
-+	printf("%s v%s (%s)\n"
-+	       "  cli:		%s\n"
-+	       "  minigmp:	%s\n",
-+	       PACKAGE_NAME, PACKAGE_VERSION, RELEASE_NAME,
-+	       cli, minigmp);
-+}
-+
- static const struct {
- 	const char		*name;
- 	enum nft_debug_level	level;
-@@ -213,8 +238,7 @@ int main(int argc, char * const *argv)
- 			show_help(argv[0]);
- 			exit(EXIT_SUCCESS);
- 		case OPT_VERSION:
--			printf("%s v%s (%s)\n",
--			       PACKAGE_NAME, PACKAGE_VERSION, RELEASE_NAME);
-+			show_version();
- 			exit(EXIT_SUCCESS);
- 		case OPT_CHECK:
- 			nft_ctx_set_dry_run(nft, true);
+`nft -v` has been extended to display what CLI implementation was built
+and whether mini-gmp was used.
+
+Changes since v1:
+
+ * dropped the linenoise source from the nftables tree and added an
+   `AC_CHECK_LIB` check instead.
+
+Changes since RFC:
+
+ * two tidy-up patches dropped because they have already been applied;
+ * source now added to include/ and src/;
+ * tests/build/run-tests.sh updated to test `--with-cli=linenoise`;
+ * `nft -v` extended.
+
+Jeremy Sowden (2):
+  cli: add linenoise CLI implementation.
+  main: add more information to `nft -v`.
+
+ configure.ac             | 17 ++++++++---
+ include/cli.h            |  2 +-
+ src/Makefile.am          |  3 ++
+ src/cli.c                | 64 ++++++++++++++++++++++++++++++++++------
+ src/main.c               | 28 ++++++++++++++++--
+ tests/build/run-tests.sh |  4 +--
+ 6 files changed, 100 insertions(+), 18 deletions(-)
+
 -- 
 2.23.0
 
