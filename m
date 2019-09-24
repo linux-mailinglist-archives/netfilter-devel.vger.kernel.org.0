@@ -2,72 +2,96 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE12FBC235
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Sep 2019 09:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24693BC2CF
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Sep 2019 09:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409170AbfIXHDJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 24 Sep 2019 03:03:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409158AbfIXHDJ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 24 Sep 2019 03:03:09 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D8F720673;
-        Tue, 24 Sep 2019 07:03:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569308588;
-        bh=AlEW8CxXuFn8P/oDpAqEk3frXBsRLiuf+egkL9mACt8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NgPhsXprAhfXfXBMPmhNi6zDCC8P+Lv1t1OJaBYYq/OuXI2l+wTr48atArBd4iujI
-         pEiGSyKx2TzTQHYLZDzoFRzF7eIxparEi1i+IHrr5h2FzyssV4vjBmgrl3X4i81jMA
-         Gpzm0UZN6E6YR5znnHJXZueTNcgVSqzF9xZTqB1c=
-Date:   Tue, 24 Sep 2019 10:03:05 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jiri Kosina <trivial@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
-        b.a.t.m.a.n@lists.open-mesh.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com
-Subject: Re: [PATCH trivial 2/2] drivers: net: Fix Kconfig indentation
-Message-ID: <20190924070305.GP14368@unreal>
-References: <20190923155243.6997-1-krzk@kernel.org>
- <20190923155243.6997-2-krzk@kernel.org>
+        id S2405067AbfIXHkg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 24 Sep 2019 03:40:36 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:33494 "EHLO
+        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394650AbfIXHkf (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 24 Sep 2019 03:40:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=6NaNsrxU16SDh6FjDULaOTwcyGZuPsObHyGIX8x3b00=; b=uElfJ8rt/eVvHgL/Gh8G3Ozm8n
+        gi2+bD3OaHyNdkHDKvkUNGLrUXr9CA1Fc9C7FKBSSSZ9oQadePX3wLQ8tzZvP4yg6e2k7Owjv7naX
+        T425pjnZNK3pDJUafWKgtmKQZ51PU0PCsJXeQI0bQaDItVb8dMaBWTV5k/glyMLnkTaRnkUmhsAMe
+        Jy5BKJN7wM+bT+Lg4REtlA6txHb949kc6R0lsQw6i0dcQpA2DucmLiMYjjATXg9DyL7kMQjwvz6l/
+        XFO9uwglOx37C6QmeMGIEDoEnxhExoq/+VC5eC9Egn89JhADKDh/sB4dp+leAkcyfRlq9yeCaywtC
+        gf7cWI/w==;
+Received: from ulthar.dreamlands ([192.168.96.2])
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1iCfR4-0001Re-Ge; Tue, 24 Sep 2019 08:40:34 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
+        Sebastian Priebe <sebastian.priebe@de.sii.group>
+Subject: [PATCH nftables 0/3] Add Linenoise support to the CLI.
+Date:   Tue, 24 Sep 2019 08:40:31 +0100
+Message-Id: <20190924074034.4099-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190923155243.6997-2-krzk@kernel.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 192.168.96.2
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Sep 23, 2019 at 05:52:43PM +0200, Krzysztof Kozlowski wrote:
-> Adjust indentation from spaces to tab (+optional two spaces) as in
-> coding style with command like:
->     $ sed -e 's/^        /\t/' -i */Kconfig
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Sebastian Priebe [0] requested Linenoise support for the CLI as an
+alternative to Readline, so I thought I'd have a go at providing it.
+Linenoise is a minimal, zero-config, BSD licensed, Readline replacement
+used in Redis, MongoDB, and Android [1].
 
-<--->
+ 0 - https://lore.kernel.org/netfilter-devel/4df20614cd10434b9f91080d0862dd0c@de.sii.group/
+ 1 - https://github.com/antirez/linenoise/
 
->  .../net/ethernet/mellanox/mlx5/core/Kconfig   |  36 +++---
+The upstream repo doesn't contain the infrastructure for building or
+installing libraries.  I've taken a look at how Redis and MongoDB handle
+this, and they both include the upstream sources in their trees (MongoDB
+actually uses a C++ fork, Linenoise NG [2]), so I've done the same.
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+ 2 - https://github.com/arangodb/linenoise-ng
+
+By default, the CLI continues to be build using Readline, but passing
+`--with-cli=linenoise` instead causes Linenoise to be used instead.
+
+`nft -v` has been extended to display what CLI implementation was built
+and whether mini-gmp was used.
+
+Changes since RFC:
+
+ * two tidy-up patches dropped because they have already been applied;
+ * source now added to include/ and src/;
+ * tests/build/run-tests.sh updated to test `--with-cli=linenoise`;
+ * `nft -v` extended.
+
+Jeremy Sowden (3):
+  src, include: add upstream linenoise source.
+  cli: add linenoise CLI implementation.
+  main: add more information to `nft -v`.
+
+ configure.ac             |   14 +-
+ include/Makefile.am      |    1 +
+ include/cli.h            |    2 +-
+ include/linenoise.h      |   73 +++
+ src/Makefile.am          |   12 +
+ src/cli.c                |   64 +-
+ src/linenoise.c          | 1201 ++++++++++++++++++++++++++++++++++++++
+ src/main.c               |   28 +-
+ tests/build/run-tests.sh |    4 +-
+ 9 files changed, 1381 insertions(+), 18 deletions(-)
+ create mode 100644 include/linenoise.h
+ create mode 100644 src/linenoise.c
+
+-- 
+2.23.0
+
