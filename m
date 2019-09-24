@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2BDBC2D5
+	by mail.lfdr.de (Postfix) with ESMTP id 08D5EBC2D3
 	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Sep 2019 09:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394558AbfIXHk5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S2388489AbfIXHk5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Tue, 24 Sep 2019 03:40:57 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:33546 "EHLO
+Received: from kadath.azazel.net ([81.187.231.250]:33550 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389597AbfIXHk5 (ORCPT
+        with ESMTP id S2394558AbfIXHk5 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 24 Sep 2019 03:40:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,23 +18,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Nfb2ILmhL/ZAR823BMR/bjDZBOvBwfXxYZ8Urm8VG4U=; b=jo+DE/qLh1Q3Lsvt9Mza2VC8+6
-        cc4qsHGvVXk10lkZKoyDEjWhDklngEGs/UINbhxh/1juPGrtXl1Xc28Uc5DQ1EDtYs/XwT2AJa5Os
-        VWhJyztGZKpwdc4SozKZTE4B/OuU7J4ADPmMwUsoA7gplV+hh3ravlxraw8ziURY8jW8HB9X9wxyr
-        pldPUa3N3Yg83o79Ld9cI0umjxJgIHLUiSF41zgyHr2xboAqDs7fVAbfURZ2SdEVYJsCxM+nK4N3T
-        DqTzIRuqwFrmo5ULzL33+W6gLJkg3v2Bw5/493dz3WomA2pnEuCGynBgVCjcfTXHDc7oC2UDAuoT1
-        rX39dHeA==;
+        bh=S/KL/231+7CvMrm8uRlnOcXBAHyLPJbxQ1FFUA0OMBM=; b=i8VMbBZdaP8avomoUpkBZwi6KF
+        qH/QDuJyIMyc1Ija8IVXserr/eMhyiZNp6UHvsBnStJ7+cjKhFabybTx+8siJL9ac2qEn4ndWVFbg
+        6QFAKJTwVNfPSGV0qJ+jZ44mbNj4ilBjTny1nLael6NEF/N1BP2Wn+hUNG5Wcadop316aQyPyLvrM
+        X13byCj7c7DPhwxxSPWg6ZDkQm9N3iOBOTGtvJw0ODZ90J/4evQ+XNIDakcObkvXkygKe4iJ466eR
+        DvhPjXldhei0d9LKkrt8MSpPGwOO6EpTESZs5R5RTK7bG+sjVqG2xzuA1FNEqVEwb9jUpZgTg9uo0
+        zZd5ulgQ==;
 Received: from ulthar.dreamlands ([192.168.96.2])
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1iCfRP-0001Sh-W4; Tue, 24 Sep 2019 08:40:56 +0100
+        id 1iCfRQ-0001Sh-5U; Tue, 24 Sep 2019 08:40:56 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
         Sebastian Priebe <sebastian.priebe@de.sii.group>
-Subject: [PATCH nftables v2 1/2] cli: add linenoise CLI implementation.
-Date:   Tue, 24 Sep 2019 08:40:54 +0100
-Message-Id: <20190924074055.4146-2-jeremy@azazel.net>
+Subject: [PATCH nftables v2 2/2] main: add more information to `nft -v`.
+Date:   Tue, 24 Sep 2019 08:40:55 +0100
+Message-Id: <20190924074055.4146-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190924074055.4146-1-jeremy@azazel.net>
 References: <20190924074055.4146-1-jeremy@azazel.net>
@@ -48,184 +48,80 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-By default, continue to use libreadline, but if `--with-cli=linenoise`
-is passed to configure, build the linenoise implementation instead.
+In addition to the package-version and release-name, output the CLI
+implementation (if any) and whether mini-gmp was used, e.g.:
+
+    $ ./src/nft -v
+    nftables v0.9.2 (Scram)
+      cli:          linenoise
+      minigmp:      no
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- configure.ac             | 17 ++++++++---
- include/cli.h            |  2 +-
- src/cli.c                | 64 ++++++++++++++++++++++++++++++++++------
- tests/build/run-tests.sh |  4 +--
- 4 files changed, 71 insertions(+), 16 deletions(-)
+ src/Makefile.am |  3 +++
+ src/main.c      | 28 ++++++++++++++++++++++++++--
+ 2 files changed, 29 insertions(+), 2 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 68f97f090535..73654b005cd2 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -68,12 +68,21 @@ AC_CHECK_LIB([gmp],[__gmpz_init], , AC_MSG_ERROR([No suitable version of libgmp
- AM_CONDITIONAL([BUILD_MINIGMP], [test "x$with_mini_gmp" = xyes])
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 740c21f2cac8..54aed5efb7bb 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -13,6 +13,9 @@ endif
+ if BUILD_XTABLES
+ AM_CPPFLAGS += ${XTABLES_CFLAGS}
+ endif
++if BUILD_MINIGMP
++AM_CPPFLAGS += -DHAVE_MINIGMP
++endif
  
- AC_ARG_WITH([cli], [AS_HELP_STRING([--without-cli],
--            [disable interactive CLI (libreadline support)])],
--            [], [with_cli=yes])
--AS_IF([test "x$with_cli" != xno], [
-+            [disable interactive CLI (libreadline or linenoise support)])],
-+            [], [with_cli=readline])
-+
-+AS_IF([test "x$with_cli" = xreadline], [
- AC_CHECK_LIB([readline], [readline], ,
--	     AC_MSG_ERROR([No suitable version of libreadline found]))
-+        AC_MSG_ERROR([No suitable version of libreadline found]))
- AC_DEFINE([HAVE_LIBREADLINE], [1], [])
-+],
-+      [test "x$with_cli" = xlinenoise], [
-+AC_CHECK_LIB([linenoise], [linenoise], ,
-+        AC_MSG_ERROR([No suitable version of linenoise found]))
-+AC_DEFINE([HAVE_LIBLINENOISE], [1], [])
-+],
-+      [test "x$with_cli" != xno], [
-+AC_MSG_ERROR([unexpected CLI value: $with_cli])
- ])
- AM_CONDITIONAL([BUILD_CLI], [test "x$with_cli" != xno])
- 
-diff --git a/include/cli.h b/include/cli.h
-index 023f004b8dab..d82517750abc 100644
---- a/include/cli.h
-+++ b/include/cli.h
-@@ -4,7 +4,7 @@
- #include <nftables/libnftables.h>
- #include <config.h>
- 
--#ifdef HAVE_LIBREADLINE
-+#if defined(HAVE_LIBREADLINE) || defined(HAVE_LIBLINENOISE)
- extern int cli_init(struct nft_ctx *nft);
- #else
- static inline int cli_init(struct nft_ctx *nft)
-diff --git a/src/cli.c b/src/cli.c
-index f1e89926f2bc..4c0c3e9d67c6 100644
---- a/src/cli.c
-+++ b/src/cli.c
-@@ -21,16 +21,36 @@
- #include <string.h>
- #include <ctype.h>
- #include <limits.h>
-+#ifdef HAVE_LIBREADLINE
- #include <readline/readline.h>
- #include <readline/history.h>
-+#else
-+#include <linenoise.h>
-+#endif
- 
- #include <cli.h>
- #include <list.h>
- 
- #define CMDLINE_HISTFILE	".nft.history"
-+#define CMDLINE_PROMPT		"nft> "
-+#define CMDLINE_QUIT		"quit"
- 
--static struct nft_ctx *cli_nft;
- static char histfile[PATH_MAX];
-+
-+static void
-+init_histfile(void)
-+{
-+	const char *home;
-+
-+	home = getenv("HOME");
-+	if (home == NULL)
-+		home = "";
-+	snprintf(histfile, sizeof(histfile), "%s/%s", home, CMDLINE_HISTFILE);
-+}
-+
-+#ifdef HAVE_LIBREADLINE
-+
-+static struct nft_ctx *cli_nft;
- static char *multiline;
- 
- static char *cli_append_multiline(char *line)
-@@ -100,7 +120,7 @@ static void cli_complete(char *line)
- 	if (*c == '\0')
- 		return;
- 
--	if (!strcmp(line, "quit")) {
-+	if (!strcmp(line, CMDLINE_QUIT)) {
- 		cli_exit();
- 		exit(0);
- 	}
-@@ -121,20 +141,15 @@ static char **cli_completion(const char *text, int start, int end)
- 
- int cli_init(struct nft_ctx *nft)
- {
--	const char *home;
--
- 	cli_nft = nft;
- 	rl_readline_name = "nft";
- 	rl_instream  = stdin;
- 	rl_outstream = stdout;
- 
--	rl_callback_handler_install("nft> ", cli_complete);
-+	rl_callback_handler_install(CMDLINE_PROMPT, cli_complete);
- 	rl_attempted_completion_function = cli_completion;
- 
--	home = getenv("HOME");
--	if (home == NULL)
--		home = "";
--	snprintf(histfile, sizeof(histfile), "%s/%s", home, CMDLINE_HISTFILE);
-+	init_histfile();
- 
- 	read_history(histfile);
- 	history_set_pos(history_length);
-@@ -150,3 +165,34 @@ void cli_exit(void)
- 	rl_deprep_terminal();
- 	write_history(histfile);
+ AM_CFLAGS = -Wall								\
+ 	    -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations	\
+diff --git a/src/main.c b/src/main.c
+index f77d8a820a02..3334141eab35 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -154,6 +154,31 @@ static void show_help(const char *name)
+ 	name, DEFAULT_INCLUDE_PATH);
  }
-+
-+#else /* !HAVE_LIBREADLINE */
-+
-+int cli_init(struct nft_ctx *nft)
+ 
++static void show_version(void)
 +{
-+	int quit = 0;
-+	char *line;
++	const char *cli, *minigmp;
 +
-+	init_histfile();
-+	linenoiseHistoryLoad(histfile);
-+	linenoiseSetMultiLine(1);
++#if defined(HAVE_LIBREADLINE)
++	cli = "readline";
++#elif defined(HAVE_LIBLINENOISE)
++	cli = "linenoise";
++#else
++	cli = "no";
++#endif
 +
-+	while (!quit && (line = linenoise(CMDLINE_PROMPT)) != NULL) {
-+		if (strcmp(line, CMDLINE_QUIT) == 0) {
-+			quit = 1;
-+		} else if (line[0] != '\0') {
-+			linenoiseHistoryAdd(line);
-+			nft_run_cmd_from_buffer(nft, line);
-+		}
-+		linenoiseFree(line);
-+	}
-+	cli_exit();
-+	exit(0);
++#if defined(HAVE_MINIGMP)
++	minigmp = "yes";
++#else
++	minigmp = "no";
++#endif
++
++	printf("%s v%s (%s)\n"
++	       "  cli:		%s\n"
++	       "  minigmp:	%s\n",
++	       PACKAGE_NAME, PACKAGE_VERSION, RELEASE_NAME,
++	       cli, minigmp);
 +}
 +
-+void cli_exit(void)
-+{
-+	linenoiseHistorySave(histfile);
-+}
-+
-+#endif /* HAVE_LIBREADLINE */
-diff --git a/tests/build/run-tests.sh b/tests/build/run-tests.sh
-index b0560da61398..ccb62af3d8dd 100755
---- a/tests/build/run-tests.sh
-+++ b/tests/build/run-tests.sh
-@@ -2,8 +2,8 @@
- 
- log_file="`pwd`/tests.log"
- dir=../..
--argument=( --without-cli --enable-debug --with-mini-gmp --enable-man-doc
--	    --with-xtables --with-json)
-+argument=( --without-cli --with-cli=linenoise --enable-debug --with-mini-gmp
-+	   --enable-man-doc --with-xtables --with-json)
- ok=0
- failed=0
- 
+ static const struct {
+ 	const char		*name;
+ 	enum nft_debug_level	level;
+@@ -213,8 +238,7 @@ int main(int argc, char * const *argv)
+ 			show_help(argv[0]);
+ 			exit(EXIT_SUCCESS);
+ 		case OPT_VERSION:
+-			printf("%s v%s (%s)\n",
+-			       PACKAGE_NAME, PACKAGE_VERSION, RELEASE_NAME);
++			show_version();
+ 			exit(EXIT_SUCCESS);
+ 		case OPT_CHECK:
+ 			nft_ctx_set_dry_run(nft, true);
 -- 
 2.23.0
 
