@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E51BE709
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34A2BE71E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbfIYV0V (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 25 Sep 2019 17:26:21 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45794 "EHLO orbyte.nwl.cc"
+        id S1726372AbfIYV1s (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 25 Sep 2019 17:27:48 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:45890 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725806AbfIYV0U (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 25 Sep 2019 17:26:20 -0400
-Received: from localhost ([::1]:58884 helo=tatos)
+        id S1726139AbfIYV1s (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 25 Sep 2019 17:27:48 -0400
+Received: from localhost ([::1]:58980 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iDEnj-0005CH-Li; Wed, 25 Sep 2019 23:26:19 +0200
+        id 1iDEp9-0005Hr-E0; Wed, 25 Sep 2019 23:27:47 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 15/24] nft: Optimize flushing all chains of a table
-Date:   Wed, 25 Sep 2019 23:25:56 +0200
-Message-Id: <20190925212605.1005-16-phil@nwl.cc>
+Subject: [iptables PATCH v2 16/24] xtables-restore: Introduce rule counter tokenizer function
+Date:   Wed, 25 Sep 2019 23:25:57 +0200
+Message-Id: <20190925212605.1005-17-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190925212605.1005-1-phil@nwl.cc>
 References: <20190925212605.1005-1-phil@nwl.cc>
@@ -31,147 +31,273 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Leverage nftables' support for flushing all chains of a table by
-omitting NFTNL_RULE_CHAIN attribute in NFT_MSG_DELRULE payload.
+The same piece of code appears three times, introduce a function to take
+care of tokenizing and error reporting.
 
-The only caveat is with verbose output, as that still requires to have a
-list of (existing) chains to iterate over. Apart from that, implementing
-this shortcut is pretty straightforward: Don't retrieve a chain list and
-just call __nft_rule_flush() directly which doesn't set above attribute
-if chain name pointer is NULL.
+Pass buffer pointer via reference so it can be updated to point to after
+the counters (if found).
 
-A bigger deal is keeping rule cache consistent: Instead of just clearing
-rule list for each flushed chain, flush_rule_cache() is updated to
-iterate over all cached chains of the given table, clearing their rule
-lists if not called for a specific chain.
-
-While being at it, sort local variable declarations in nft_rule_flush()
-from longest to shortest and drop the loop-local 'chain_name' variable
-(but instead use 'chain' function parameter which is not used at that
-point).
+While being at it, drop pointless casting when passing pcnt/bcnt to
+add_argv().
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c | 54 ++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 37 insertions(+), 17 deletions(-)
+ iptables/iptables-restore.c                   | 35 ++---------------
+ iptables/iptables-xml.c                       | 31 +--------------
+ .../ipt-restore/0008-restore-counters_0       | 22 +++++++++++
+ iptables/xshared.c                            | 38 +++++++++++++++++++
+ iptables/xshared.h                            |  1 +
+ iptables/xtables-restore.c                    | 35 ++---------------
+ 6 files changed, 71 insertions(+), 91 deletions(-)
+ create mode 100755 iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index b2b15f08c1637..b50ec12ae9d42 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -837,7 +837,7 @@ int nft_init(struct nft_handle *h, const struct builtin_table *t)
- 	return 0;
+diff --git a/iptables/iptables-restore.c b/iptables/iptables-restore.c
+index 6bc182bfae4a2..3655b3e84637e 100644
+--- a/iptables/iptables-restore.c
++++ b/iptables/iptables-restore.c
+@@ -313,44 +313,17 @@ ip46tables_restore_main(struct iptables_restore_cb *cb, int argc, char *argv[])
+ 			int a;
+ 			char *pcnt = NULL;
+ 			char *bcnt = NULL;
+-			char *parsestart;
+-
+-			if (buffer[0] == '[') {
+-				/* we have counters in our input */
+-				char *ptr = strchr(buffer, ']');
+-
+-				if (!ptr)
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "Bad line %u: need ]\n",
+-						   line);
+-
+-				pcnt = strtok(buffer+1, ":");
+-				if (!pcnt)
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "Bad line %u: need :\n",
+-						   line);
+-
+-				bcnt = strtok(NULL, "]");
+-				if (!bcnt)
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "Bad line %u: need ]\n",
+-						   line);
+-
+-				/* start command parsing after counter */
+-				parsestart = ptr + 1;
+-			} else {
+-				/* start command parsing at start of line */
+-				parsestart = buffer;
+-			}
++			char *parsestart = buffer;
+ 
+ 			add_argv(argv[0], 0);
+ 			add_argv("-t", 0);
+ 			add_argv(curtable, 0);
+ 
++			tokenize_rule_counters(&parsestart, &pcnt, &bcnt, line);
+ 			if (counters && pcnt && bcnt) {
+ 				add_argv("--set-counters", 0);
+-				add_argv((char *) pcnt, 0);
+-				add_argv((char *) bcnt, 0);
++				add_argv(pcnt, 0);
++				add_argv(bcnt, 0);
+ 			}
+ 
+ 			add_param_to_argv(parsestart, line);
+diff --git a/iptables/iptables-xml.c b/iptables/iptables-xml.c
+index 36ad78450b1ef..5255e097eba88 100644
+--- a/iptables/iptables-xml.c
++++ b/iptables/iptables-xml.c
+@@ -644,7 +644,7 @@ iptables_xml_main(int argc, char *argv[])
+ 			unsigned int a;
+ 			char *pcnt = NULL;
+ 			char *bcnt = NULL;
+-			char *parsestart;
++			char *parsestart = buffer;
+ 			char *chain = NULL;
+ 
+ 			/* the parser */
+@@ -652,34 +652,7 @@ iptables_xml_main(int argc, char *argv[])
+ 			int quote_open, quoted;
+ 			char param_buffer[1024];
+ 
+-			if (buffer[0] == '[') {
+-				/* we have counters in our input */
+-				char *ptr = strchr(buffer, ']');
+-
+-				if (!ptr)
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "Bad line %u: need ]\n",
+-						   line);
+-
+-				pcnt = strtok(buffer + 1, ":");
+-				if (!pcnt)
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "Bad line %u: need :\n",
+-						   line);
+-
+-				bcnt = strtok(NULL, "]");
+-				if (!bcnt)
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "Bad line %u: need ]\n",
+-						   line);
+-
+-				/* start command parsing after counter */
+-				parsestart = ptr + 1;
+-			} else {
+-				/* start command parsing at start of line */
+-				parsestart = buffer;
+-			}
+-
++			tokenize_rule_counters(&parsestart, &pcnt, &bcnt, line);
+ 
+ 			/* This is a 'real' parser crafted in artist mode
+ 			 * not hacker mode. If the author can live with that
+diff --git a/iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0 b/iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0
+new file mode 100755
+index 0000000000000..5ac70682b76bf
+--- /dev/null
++++ b/iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0
+@@ -0,0 +1,22 @@
++#!/bin/bash
++
++set -e
++
++DUMP="*filter
++:foo - [23:42]
++[13:37] -A foo -j ACCEPT
++COMMIT
++"
++
++EXPECT=":foo - [0:0]
++[0:0] -A foo -j ACCEPT"
++
++$XT_MULTI iptables-restore <<< "$DUMP"
++diff -u -Z <(echo -e "$EXPECT") <($XT_MULTI iptables-save --counters | grep foo)
++
++# iptables-*-restore ignores custom chain counters :(
++EXPECT=":foo - [0:0]
++[13:37] -A foo -j ACCEPT"
++
++$XT_MULTI iptables-restore --counters <<< "$DUMP"
++diff -u -Z <(echo -e "$EXPECT") <($XT_MULTI iptables-save --counters | grep foo)
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 5e6cd4ae7c908..52730d8a6d526 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -373,6 +373,44 @@ int parse_counters(const char *string, struct xt_counters *ctr)
+ 	return ret == 2;
  }
  
--static int __flush_rule_cache(struct nftnl_rule *r, void *data)
-+static int ____flush_rule_cache(struct nftnl_rule *r, void *data)
- {
- 	nftnl_rule_list_del(r);
- 	nftnl_rule_free(r);
-@@ -845,9 +845,25 @@ static int __flush_rule_cache(struct nftnl_rule *r, void *data)
- 	return 0;
- }
- 
--static void flush_rule_cache(struct nftnl_chain *c)
-+static int __flush_rule_cache(struct nftnl_chain *c, void *data)
- {
--	nftnl_rule_foreach(c, __flush_rule_cache, NULL);
-+	return nftnl_rule_foreach(c, ____flush_rule_cache, NULL);
++/* Tokenize counters argument of typical iptables-restore format rule.
++ *
++ * If *bufferp contains counters, update *pcntp and *bcntp to point at them,
++ * change bytes after counters in *bufferp to nul-bytes, update *bufferp to
++ * point to after the counters and return true.
++ * If *bufferp does not contain counters, return false.
++ * If syntax is wrong in *bufferp, call xtables_error() and hence exit().
++ * */
++bool tokenize_rule_counters(char **bufferp, char **pcntp, char **bcntp, int line)
++{
++	char *ptr, *buffer = *bufferp, *pcnt, *bcnt;
++
++	if (buffer[0] != '[')
++		return false;
++
++	/* we have counters in our input */
++
++	ptr = strchr(buffer, ']');
++	if (!ptr)
++		xtables_error(PARAMETER_PROBLEM, "Bad line %u: need ]\n", line);
++
++	pcnt = strtok(buffer+1, ":");
++	if (!pcnt)
++		xtables_error(PARAMETER_PROBLEM, "Bad line %u: need :\n", line);
++
++	bcnt = strtok(NULL, "]");
++	if (!bcnt)
++		xtables_error(PARAMETER_PROBLEM, "Bad line %u: need ]\n", line);
++
++	*pcntp = pcnt;
++	*bcntp = bcnt;
++	/* start command parsing after counter */
++	*bufferp = ptr + 1;
++
++	return true;
 +}
 +
-+static int flush_rule_cache(struct nft_handle *h, const char *table,
-+			    struct nftnl_chain *c)
-+{
-+	const struct builtin_table *t;
 +
-+	if (c)
-+		return __flush_rule_cache(c, NULL);
-+
-+	t = nft_table_builtin_find(h, table);
-+	if (!t|| !h->cache->table[t->type].chains)
-+		return 0;
-+
-+	return nftnl_chain_list_foreach(h->cache->table[t->type].chains,
-+					__flush_rule_cache, NULL);
- }
- 
- static int __flush_chain_cache(struct nftnl_chain *c, void *data)
-@@ -1842,7 +1858,7 @@ __nft_rule_flush(struct nft_handle *h, const char *table,
- 	struct obj_update *obj;
- 	struct nftnl_rule *r;
- 
--	if (verbose)
-+	if (verbose && chain)
- 		fprintf(stdout, "Flushing chain `%s'\n", chain);
- 
- 	r = nftnl_rule_alloc();
-@@ -1850,7 +1866,8 @@ __nft_rule_flush(struct nft_handle *h, const char *table,
- 		return;
- 
- 	nftnl_rule_set_str(r, NFTNL_RULE_TABLE, table);
--	nftnl_rule_set_str(r, NFTNL_RULE_CHAIN, chain);
-+	if (chain)
-+		nftnl_rule_set_str(r, NFTNL_RULE_CHAIN, chain);
- 
- 	obj = batch_rule_add(h, NFT_COMPAT_RULE_FLUSH, r);
- 	if (!obj) {
-@@ -1864,19 +1881,21 @@ __nft_rule_flush(struct nft_handle *h, const char *table,
- int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
- 		   bool verbose)
+ inline bool xs_has_arg(int argc, char *argv[])
  {
--	int ret = 0;
--	struct nftnl_chain_list *list;
- 	struct nftnl_chain_list_iter *iter;
--	struct nftnl_chain *c;
-+	struct nftnl_chain_list *list;
-+	struct nftnl_chain *c = NULL;
-+	int ret = 0;
+ 	return optind < argc &&
+diff --git a/iptables/xshared.h b/iptables/xshared.h
+index b08c700e1d8b9..21f4e8fdee67c 100644
+--- a/iptables/xshared.h
++++ b/iptables/xshared.h
+@@ -151,6 +151,7 @@ extern int xtables_lock_or_exit(int wait, struct timeval *tv);
+ int parse_wait_time(int argc, char *argv[]);
+ void parse_wait_interval(int argc, char *argv[], struct timeval *wait_interval);
+ int parse_counters(const char *string, struct xt_counters *ctr);
++bool tokenize_rule_counters(char **bufferp, char **pcnt, char **bcnt, int line);
+ bool xs_has_arg(int argc, char *argv[]);
  
- 	nft_xt_builtin_init(h, table);
+ extern const struct xtables_afinfo *afinfo;
+diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
+index c04d7292e0045..3bb901913ed58 100644
+--- a/iptables/xtables-restore.c
++++ b/iptables/xtables-restore.c
+@@ -230,47 +230,20 @@ void xtables_restore_parse(struct nft_handle *h,
+ 			int a;
+ 			char *pcnt = NULL;
+ 			char *bcnt = NULL;
+-			char *parsestart;
++			char *parsestart = buffer;
  
- 	nft_fn = nft_rule_flush;
+ 			/* reset the newargv */
+ 			newargc = 0;
  
--	list = nft_chain_list_get(h, table, chain);
--	if (list == NULL) {
--		ret = 1;
--		goto err;
-+	if (chain || verbose) {
-+		list = nft_chain_list_get(h, table, chain);
-+		if (list == NULL) {
-+			ret = 1;
-+			goto err;
-+		}
- 	}
+-			if (buffer[0] == '[') {
+-				/* we have counters in our input */
+-				char *ptr = strchr(buffer, ']');
+-
+-				if (!ptr)
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "Bad line %u: need ]\n",
+-						   line);
+-
+-				pcnt = strtok(buffer+1, ":");
+-				if (!pcnt)
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "Bad line %u: need :\n",
+-						   line);
+-
+-				bcnt = strtok(NULL, "]");
+-				if (!bcnt)
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "Bad line %u: need ]\n",
+-						   line);
+-
+-				/* start command parsing after counter */
+-				parsestart = ptr + 1;
+-			} else {
+-				/* start command parsing at start of line */
+-				parsestart = buffer;
+-			}
+-
+ 			add_argv(argv[0], 0);
+ 			add_argv("-t", 0);
+ 			add_argv(curtable->name, 0);
  
- 	if (chain) {
-@@ -1885,9 +1904,11 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
- 			errno = ENOENT;
- 			return 0;
- 		}
-+	}
++			tokenize_rule_counters(&parsestart, &pcnt, &bcnt, line);
+ 			if (counters && pcnt && bcnt) {
+ 				add_argv("--set-counters", 0);
+-				add_argv((char *) pcnt, 0);
+-				add_argv((char *) bcnt, 0);
++				add_argv(pcnt, 0);
++				add_argv(bcnt, 0);
+ 			}
  
-+	if (chain || !verbose) {
- 		__nft_rule_flush(h, table, chain, verbose, false);
--		flush_rule_cache(c);
-+		flush_rule_cache(h, table, c);
- 		return 1;
- 	}
- 
-@@ -1899,11 +1920,10 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
- 
- 	c = nftnl_chain_list_iter_next(iter);
- 	while (c != NULL) {
--		const char *chain_name =
--			nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
-+		chain = nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
- 
--		__nft_rule_flush(h, table, chain_name, verbose, false);
--		flush_rule_cache(c);
-+		__nft_rule_flush(h, table, chain, verbose, false);
-+		flush_rule_cache(h, table, c);
- 		c = nftnl_chain_list_iter_next(iter);
- 	}
- 	nftnl_chain_list_iter_destroy(iter);
+ 			add_param_to_argv(parsestart, line);
 -- 
 2.23.0
 
