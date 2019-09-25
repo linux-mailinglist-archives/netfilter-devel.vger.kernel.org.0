@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F905BE717
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D1EBE712
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbfIYV1Q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 25 Sep 2019 17:27:16 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45854 "EHLO orbyte.nwl.cc"
+        id S1726319AbfIYV0s (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 25 Sep 2019 17:26:48 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:45824 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbfIYV1P (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 25 Sep 2019 17:27:15 -0400
-Received: from localhost ([::1]:58944 helo=tatos)
+        id S1726139AbfIYV0s (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 25 Sep 2019 17:26:48 -0400
+Received: from localhost ([::1]:58914 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iDEoc-0005Fk-BK; Wed, 25 Sep 2019 23:27:14 +0200
+        id 1iDEoB-0005E1-94; Wed, 25 Sep 2019 23:26:47 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 07/24] nft: Support fetch_rule_cache() per chain
-Date:   Wed, 25 Sep 2019 23:25:48 +0200
-Message-Id: <20190925212605.1005-8-phil@nwl.cc>
+Subject: [iptables PATCH v2 08/24] nft: Fetch only chains in nft_chain_list_get()
+Date:   Wed, 25 Sep 2019 23:25:49 +0200
+Message-Id: <20190925212605.1005-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190925212605.1005-1-phil@nwl.cc>
 References: <20190925212605.1005-1-phil@nwl.cc>
@@ -31,40 +31,127 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Support passing an nftnl_chain to fetch its rules from kernel.
+The function is used to return the given table's chains, so fetching
+chain cache is enough.
+
+This requires a bunch of manual rule cache updates in different places.
+To still support the fake cache logic from xtables-restore, make
+fetch_rule_cache() do nothing in case have_cache is set.
+
+Accidental double rule cache updates for the same chain need to be
+prevented. This is complicated by the fact that chain's rule list is
+managed by libnftnl. Hence the same logic as used for table list, namely
+checking list pointer value, can't be used. Instead, simply fetch rules
+only if the given chain's rule list is empty. If it isn't, rules have
+been fetched before; if it is, a second rule fetch won't hurt.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ iptables/nft.c | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
 
 diff --git a/iptables/nft.c b/iptables/nft.c
-index 02da53e60bc83..7c974af8b4141 100644
+index 7c974af8b4141..729b88d990f9f 100644
 --- a/iptables/nft.c
 +++ b/iptables/nft.c
-@@ -1575,10 +1575,13 @@ static int nft_rule_list_update(struct nftnl_chain *c, void *data)
- 	return 0;
- }
+@@ -1264,6 +1264,7 @@ err:
  
--static int fetch_rule_cache(struct nft_handle *h)
-+static int fetch_rule_cache(struct nft_handle *h, struct nftnl_chain *c)
+ static struct nftnl_chain *
+ nft_chain_find(struct nft_handle *h, const char *table, const char *chain);
++static int fetch_rule_cache(struct nft_handle *h, struct nftnl_chain *c);
+ 
+ int
+ nft_rule_append(struct nft_handle *h, const char *chain, const char *table,
+@@ -1275,6 +1276,14 @@ nft_rule_append(struct nft_handle *h, const char *chain, const char *table,
+ 
+ 	nft_xt_builtin_init(h, table);
+ 
++	/* Since ebtables user-defined chain policies are implemented as last
++	 * rule in nftables, rule cache is required here to treat them right. */
++	if (h->family == NFPROTO_BRIDGE) {
++		c = nft_chain_find(h, table, chain);
++		if (c && !nft_chain_builtin(c))
++			fetch_rule_cache(h, c);
++	}
++
+ 	nft_fn = nft_rule_append;
+ 
+ 	r = nft_rule_new(h, chain, table, data);
+@@ -1550,6 +1559,9 @@ static int nft_rule_list_update(struct nftnl_chain *c, void *data)
+ 	struct nftnl_rule *rule;
+ 	int ret;
+ 
++	if (nftnl_rule_lookup_byindex(c, 0))
++		return 0;
++
+ 	rule = nftnl_rule_alloc();
+ 	if (!rule)
+ 		return -1;
+@@ -1579,6 +1591,9 @@ static int fetch_rule_cache(struct nft_handle *h, struct nftnl_chain *c)
  {
  	int i;
  
-+	if (c)
-+		return nft_rule_list_update(c, h);
++	if (h->have_cache)
++		return 0;
 +
- 	for (i = 0; i < NFT_TABLE_MAX; i++) {
- 		enum nft_table_type type = h->tables[i].type;
+ 	if (c)
+ 		return nft_rule_list_update(c, h);
  
-@@ -1599,7 +1602,7 @@ static void __nft_build_cache(struct nft_handle *h)
- retry:
- 	mnl_genid_get(h, &genid_start);
- 	fetch_chain_cache(h);
--	fetch_rule_cache(h);
-+	fetch_rule_cache(h, NULL);
- 	h->have_cache = true;
- 	mnl_genid_get(h, &genid_stop);
+@@ -1670,7 +1685,8 @@ struct nftnl_chain_list *nft_chain_list_get(struct nft_handle *h,
+ 	if (!t)
+ 		return NULL;
+ 
+-	nft_build_cache(h);
++	if (!h->have_cache && !h->cache->table[t->type].chains)
++		fetch_chain_cache(h);
+ 
+ 	return h->cache->table[t->type].chains;
+ }
+@@ -1761,6 +1777,7 @@ int nft_rule_save(struct nft_handle *h, const char *table, unsigned int format)
+ 
+ 	c = nftnl_chain_list_iter_next(iter);
+ 	while (c) {
++		fetch_rule_cache(h, c);
+ 		ret = nft_chain_save_rules(h, c, format);
+ 		if (ret != 0)
+ 			break;
+@@ -1949,6 +1966,10 @@ static int __nft_chain_user_del(struct nftnl_chain *c, void *data)
+ 		fprintf(stdout, "Deleting chain `%s'\n",
+ 			nftnl_chain_get_str(c, NFTNL_CHAIN_NAME));
+ 
++	/* This triggers required policy rule deletion. */
++	if (h->family == NFPROTO_BRIDGE)
++		fetch_rule_cache(h, c);
++
+ 	/* XXX This triggers a fast lookup from the kernel. */
+ 	nftnl_chain_unset(c, NFTNL_CHAIN_HANDLE);
+ 	ret = batch_chain_add(h, NFT_COMPAT_CHAIN_USER_DEL, c);
+@@ -2238,6 +2259,8 @@ nft_rule_find(struct nft_handle *h, struct nftnl_chain *c, void *data, int rulen
+ 	struct nftnl_rule_iter *iter;
+ 	bool found = false;
+ 
++	fetch_rule_cache(h, c);
++
+ 	if (rulenum >= 0)
+ 		/* Delete by rule number case */
+ 		return nftnl_rule_lookup_byindex(c, rulenum);
+@@ -3063,6 +3086,8 @@ int ebt_set_user_chain_policy(struct nft_handle *h, const char *table,
+ 	else
+ 		return 0;
+ 
++	fetch_rule_cache(h, c);
++
+ 	nftnl_chain_set_u32(c, NFTNL_CHAIN_POLICY, pval);
+ 	return 1;
+ }
+@@ -3402,6 +3427,8 @@ static int nft_is_chain_compatible(struct nftnl_chain *c, void *data)
+ 	enum nf_inet_hooks hook;
+ 	int prio;
+ 
++	fetch_rule_cache(h, c);
++
+ 	if (nftnl_rule_foreach(c, nft_is_rule_compatible, NULL))
+ 		return -1;
  
 -- 
 2.23.0
