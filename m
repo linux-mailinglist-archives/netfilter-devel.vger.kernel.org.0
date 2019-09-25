@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D34A2BE71E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63284BE70B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726372AbfIYV1s (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 25 Sep 2019 17:27:48 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45890 "EHLO orbyte.nwl.cc"
+        id S1726181AbfIYV0b (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 25 Sep 2019 17:26:31 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:45806 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbfIYV1s (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 25 Sep 2019 17:27:48 -0400
-Received: from localhost ([::1]:58980 helo=tatos)
+        id S1726146AbfIYV0b (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 25 Sep 2019 17:26:31 -0400
+Received: from localhost ([::1]:58896 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iDEp9-0005Hr-E0; Wed, 25 Sep 2019 23:27:47 +0200
+        id 1iDEnu-0005Cz-Jd; Wed, 25 Sep 2019 23:26:30 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 16/24] xtables-restore: Introduce rule counter tokenizer function
-Date:   Wed, 25 Sep 2019 23:25:57 +0200
-Message-Id: <20190925212605.1005-17-phil@nwl.cc>
+Subject: [iptables PATCH v2 17/24] xtables-restore: Carry in_table in struct nft_xt_restore_parse
+Date:   Wed, 25 Sep 2019 23:25:58 +0200
+Message-Id: <20190925212605.1005-18-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190925212605.1005-1-phil@nwl.cc>
 References: <20190925212605.1005-1-phil@nwl.cc>
@@ -31,273 +31,98 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The same piece of code appears three times, introduce a function to take
-care of tokenizing and error reporting.
-
-Pass buffer pointer via reference so it can be updated to point to after
-the counters (if found).
-
-While being at it, drop pointless casting when passing pcnt/bcnt to
-add_argv().
+This is a requirement for outsourcing line parsing code into a dedicated
+function.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/iptables-restore.c                   | 35 ++---------------
- iptables/iptables-xml.c                       | 31 +--------------
- .../ipt-restore/0008-restore-counters_0       | 22 +++++++++++
- iptables/xshared.c                            | 38 +++++++++++++++++++
- iptables/xshared.h                            |  1 +
- iptables/xtables-restore.c                    | 35 ++---------------
- 6 files changed, 71 insertions(+), 91 deletions(-)
- create mode 100755 iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0
+ iptables/nft-shared.h      |  1 +
+ iptables/xtables-restore.c | 17 ++++++++---------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/iptables/iptables-restore.c b/iptables/iptables-restore.c
-index 6bc182bfae4a2..3655b3e84637e 100644
---- a/iptables/iptables-restore.c
-+++ b/iptables/iptables-restore.c
-@@ -313,44 +313,17 @@ ip46tables_restore_main(struct iptables_restore_cb *cb, int argc, char *argv[])
- 			int a;
- 			char *pcnt = NULL;
- 			char *bcnt = NULL;
--			char *parsestart;
--
--			if (buffer[0] == '[') {
--				/* we have counters in our input */
--				char *ptr = strchr(buffer, ']');
--
--				if (!ptr)
--					xtables_error(PARAMETER_PROBLEM,
--						   "Bad line %u: need ]\n",
--						   line);
--
--				pcnt = strtok(buffer+1, ":");
--				if (!pcnt)
--					xtables_error(PARAMETER_PROBLEM,
--						   "Bad line %u: need :\n",
--						   line);
--
--				bcnt = strtok(NULL, "]");
--				if (!bcnt)
--					xtables_error(PARAMETER_PROBLEM,
--						   "Bad line %u: need ]\n",
--						   line);
--
--				/* start command parsing after counter */
--				parsestart = ptr + 1;
--			} else {
--				/* start command parsing at start of line */
--				parsestart = buffer;
--			}
-+			char *parsestart = buffer;
+diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
+index 9d62913461fa4..facad6d02a7ec 100644
+--- a/iptables/nft-shared.h
++++ b/iptables/nft-shared.h
+@@ -237,6 +237,7 @@ struct nft_xt_restore_parse {
+ 	int		testing;
+ 	const char	*tablename;
+ 	bool		commit;
++	bool		in_table;
+ };
  
- 			add_argv(argv[0], 0);
- 			add_argv("-t", 0);
- 			add_argv(curtable, 0);
- 
-+			tokenize_rule_counters(&parsestart, &pcnt, &bcnt, line);
- 			if (counters && pcnt && bcnt) {
- 				add_argv("--set-counters", 0);
--				add_argv((char *) pcnt, 0);
--				add_argv((char *) bcnt, 0);
-+				add_argv(pcnt, 0);
-+				add_argv(bcnt, 0);
- 			}
- 
- 			add_param_to_argv(parsestart, line);
-diff --git a/iptables/iptables-xml.c b/iptables/iptables-xml.c
-index 36ad78450b1ef..5255e097eba88 100644
---- a/iptables/iptables-xml.c
-+++ b/iptables/iptables-xml.c
-@@ -644,7 +644,7 @@ iptables_xml_main(int argc, char *argv[])
- 			unsigned int a;
- 			char *pcnt = NULL;
- 			char *bcnt = NULL;
--			char *parsestart;
-+			char *parsestart = buffer;
- 			char *chain = NULL;
- 
- 			/* the parser */
-@@ -652,34 +652,7 @@ iptables_xml_main(int argc, char *argv[])
- 			int quote_open, quoted;
- 			char param_buffer[1024];
- 
--			if (buffer[0] == '[') {
--				/* we have counters in our input */
--				char *ptr = strchr(buffer, ']');
--
--				if (!ptr)
--					xtables_error(PARAMETER_PROBLEM,
--						   "Bad line %u: need ]\n",
--						   line);
--
--				pcnt = strtok(buffer + 1, ":");
--				if (!pcnt)
--					xtables_error(PARAMETER_PROBLEM,
--						   "Bad line %u: need :\n",
--						   line);
--
--				bcnt = strtok(NULL, "]");
--				if (!bcnt)
--					xtables_error(PARAMETER_PROBLEM,
--						   "Bad line %u: need ]\n",
--						   line);
--
--				/* start command parsing after counter */
--				parsestart = ptr + 1;
--			} else {
--				/* start command parsing at start of line */
--				parsestart = buffer;
--			}
--
-+			tokenize_rule_counters(&parsestart, &pcnt, &bcnt, line);
- 
- 			/* This is a 'real' parser crafted in artist mode
- 			 * not hacker mode. If the author can live with that
-diff --git a/iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0 b/iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0
-new file mode 100755
-index 0000000000000..5ac70682b76bf
---- /dev/null
-+++ b/iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0
-@@ -0,0 +1,22 @@
-+#!/bin/bash
-+
-+set -e
-+
-+DUMP="*filter
-+:foo - [23:42]
-+[13:37] -A foo -j ACCEPT
-+COMMIT
-+"
-+
-+EXPECT=":foo - [0:0]
-+[0:0] -A foo -j ACCEPT"
-+
-+$XT_MULTI iptables-restore <<< "$DUMP"
-+diff -u -Z <(echo -e "$EXPECT") <($XT_MULTI iptables-save --counters | grep foo)
-+
-+# iptables-*-restore ignores custom chain counters :(
-+EXPECT=":foo - [0:0]
-+[13:37] -A foo -j ACCEPT"
-+
-+$XT_MULTI iptables-restore --counters <<< "$DUMP"
-+diff -u -Z <(echo -e "$EXPECT") <($XT_MULTI iptables-save --counters | grep foo)
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 5e6cd4ae7c908..52730d8a6d526 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -373,6 +373,44 @@ int parse_counters(const char *string, struct xt_counters *ctr)
- 	return ret == 2;
- }
- 
-+/* Tokenize counters argument of typical iptables-restore format rule.
-+ *
-+ * If *bufferp contains counters, update *pcntp and *bcntp to point at them,
-+ * change bytes after counters in *bufferp to nul-bytes, update *bufferp to
-+ * point to after the counters and return true.
-+ * If *bufferp does not contain counters, return false.
-+ * If syntax is wrong in *bufferp, call xtables_error() and hence exit().
-+ * */
-+bool tokenize_rule_counters(char **bufferp, char **pcntp, char **bcntp, int line)
-+{
-+	char *ptr, *buffer = *bufferp, *pcnt, *bcnt;
-+
-+	if (buffer[0] != '[')
-+		return false;
-+
-+	/* we have counters in our input */
-+
-+	ptr = strchr(buffer, ']');
-+	if (!ptr)
-+		xtables_error(PARAMETER_PROBLEM, "Bad line %u: need ]\n", line);
-+
-+	pcnt = strtok(buffer+1, ":");
-+	if (!pcnt)
-+		xtables_error(PARAMETER_PROBLEM, "Bad line %u: need :\n", line);
-+
-+	bcnt = strtok(NULL, "]");
-+	if (!bcnt)
-+		xtables_error(PARAMETER_PROBLEM, "Bad line %u: need ]\n", line);
-+
-+	*pcntp = pcnt;
-+	*bcntp = bcnt;
-+	/* start command parsing after counter */
-+	*bufferp = ptr + 1;
-+
-+	return true;
-+}
-+
-+
- inline bool xs_has_arg(int argc, char *argv[])
- {
- 	return optind < argc &&
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index b08c700e1d8b9..21f4e8fdee67c 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -151,6 +151,7 @@ extern int xtables_lock_or_exit(int wait, struct timeval *tv);
- int parse_wait_time(int argc, char *argv[]);
- void parse_wait_interval(int argc, char *argv[], struct timeval *wait_interval);
- int parse_counters(const char *string, struct xt_counters *ctr);
-+bool tokenize_rule_counters(char **bufferp, char **pcnt, char **bcnt, int line);
- bool xs_has_arg(int argc, char *argv[]);
- 
- extern const struct xtables_afinfo *afinfo;
+ struct nftnl_chain_list;
 diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index c04d7292e0045..3bb901913ed58 100644
+index 3bb901913ed58..2519005590ff1 100644
 --- a/iptables/xtables-restore.c
 +++ b/iptables/xtables-restore.c
-@@ -230,47 +230,20 @@ void xtables_restore_parse(struct nft_handle *h,
+@@ -91,7 +91,6 @@ void xtables_restore_parse(struct nft_handle *h,
+ {
+ 	const struct builtin_table *curtable = NULL;
+ 	char buffer[10240];
+-	int in_table = 0;
+ 	const struct xtc_ops *ops = &xtc_ops;
+ 
+ 	line = 0;
+@@ -114,7 +113,7 @@ void xtables_restore_parse(struct nft_handle *h,
+ 			if (verbose)
+ 				fputs(buffer, stdout);
+ 			continue;
+-		} else if ((strcmp(buffer, "COMMIT\n") == 0) && (in_table)) {
++		} else if ((strcmp(buffer, "COMMIT\n") == 0) && (p->in_table)) {
+ 			if (!p->testing) {
+ 				/* Commit per table, although we support
+ 				 * global commit at once, stick by now to
+@@ -128,9 +127,9 @@ void xtables_restore_parse(struct nft_handle *h,
+ 				if (cb->abort)
+ 					ret = cb->abort(h);
+ 			}
+-			in_table = 0;
++			p->in_table = 0;
+ 
+-		} else if ((buffer[0] == '*') && (!in_table || !p->commit)) {
++		} else if ((buffer[0] == '*') && (!p->in_table || !p->commit)) {
+ 			/* New table */
+ 			char *table;
+ 
+@@ -158,12 +157,12 @@ void xtables_restore_parse(struct nft_handle *h,
+ 			}
+ 
+ 			ret = 1;
+-			in_table = 1;
++			p->in_table = 1;
+ 
+ 			if (cb->table_new)
+ 				cb->table_new(h, table);
+ 
+-		} else if ((buffer[0] == ':') && (in_table)) {
++		} else if ((buffer[0] == ':') && (p->in_table)) {
+ 			/* New chain. */
+ 			char *policy, *chain = NULL;
+ 			struct xt_counters count = {};
+@@ -226,7 +225,7 @@ void xtables_restore_parse(struct nft_handle *h,
+ 					      ops->strerror(errno));
+ 			}
+ 			ret = 1;
+-		} else if (in_table) {
++		} else if (p->in_table) {
  			int a;
  			char *pcnt = NULL;
  			char *bcnt = NULL;
--			char *parsestart;
-+			char *parsestart = buffer;
- 
- 			/* reset the newargv */
- 			newargc = 0;
- 
--			if (buffer[0] == '[') {
--				/* we have counters in our input */
--				char *ptr = strchr(buffer, ']');
--
--				if (!ptr)
--					xtables_error(PARAMETER_PROBLEM,
--						   "Bad line %u: need ]\n",
--						   line);
--
--				pcnt = strtok(buffer+1, ":");
--				if (!pcnt)
--					xtables_error(PARAMETER_PROBLEM,
--						   "Bad line %u: need :\n",
--						   line);
--
--				bcnt = strtok(NULL, "]");
--				if (!bcnt)
--					xtables_error(PARAMETER_PROBLEM,
--						   "Bad line %u: need ]\n",
--						   line);
--
--				/* start command parsing after counter */
--				parsestart = ptr + 1;
--			} else {
--				/* start command parsing at start of line */
--				parsestart = buffer;
--			}
--
- 			add_argv(argv[0], 0);
- 			add_argv("-t", 0);
- 			add_argv(curtable->name, 0);
- 
-+			tokenize_rule_counters(&parsestart, &pcnt, &bcnt, line);
- 			if (counters && pcnt && bcnt) {
- 				add_argv("--set-counters", 0);
--				add_argv((char *) pcnt, 0);
--				add_argv((char *) bcnt, 0);
-+				add_argv(pcnt, 0);
-+				add_argv(bcnt, 0);
- 			}
- 
- 			add_param_to_argv(parsestart, line);
+@@ -281,11 +280,11 @@ void xtables_restore_parse(struct nft_handle *h,
+ 			exit(1);
+ 		}
+ 	}
+-	if (in_table && p->commit) {
++	if (p->in_table && p->commit) {
+ 		fprintf(stderr, "%s: COMMIT expected at line %u\n",
+ 				xt_params->program_name, line + 1);
+ 		exit(1);
+-	} else if (in_table && cb->commit && !cb->commit(h)) {
++	} else if (p->in_table && cb->commit && !cb->commit(h)) {
+ 		xtables_error(OTHER_PROBLEM, "%s: final implicit COMMIT failed",
+ 			      xt_params->program_name);
+ 	}
 -- 
 2.23.0
 
