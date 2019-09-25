@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9AABE70C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA2FBE71D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbfIYV0h (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 25 Sep 2019 17:26:37 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45812 "EHLO orbyte.nwl.cc"
+        id S1726410AbfIYV1n (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 25 Sep 2019 17:27:43 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:45884 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726137AbfIYV0h (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 25 Sep 2019 17:26:37 -0400
-Received: from localhost ([::1]:58902 helo=tatos)
+        id S1726355AbfIYV1n (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 25 Sep 2019 17:27:43 -0400
+Received: from localhost ([::1]:58974 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iDEo0-0005DK-69; Wed, 25 Sep 2019 23:26:36 +0200
+        id 1iDEp4-0005HW-2m; Wed, 25 Sep 2019 23:27:42 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 22/24] xtables-restore: Remove some pointless linebreaks
-Date:   Wed, 25 Sep 2019 23:26:03 +0200
-Message-Id: <20190925212605.1005-23-phil@nwl.cc>
+Subject: [iptables PATCH v2 23/24] xtables-restore: Allow lines without trailing newline character
+Date:   Wed, 25 Sep 2019 23:26:04 +0200
+Message-Id: <20190925212605.1005-24-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190925212605.1005-1-phil@nwl.cc>
 References: <20190925212605.1005-1-phil@nwl.cc>
@@ -31,98 +31,52 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Due to reduced indenting level, some linebreaks are no longer needed.
-OTOH, strings should not be split to aid in grepping for error output.
+Old code in add_param_to_argv() assumed the input line would always end
+with a newline character. Without it, the last word of input wasn't
+recognized. Fix this by adding a final check for param.len (indicating
+leftover data in buffer).
+
+In line parsing code itself, only COMMIT line check required presence of
+trailing newline. The replaced conditional is not 100% accurate as it
+allows for characters after newline to be present, but since fgets() is
+used this shouldn't happen anyway.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-restore.c | 28 +++++++++++-----------------
- 1 file changed, 11 insertions(+), 17 deletions(-)
+ iptables/xshared.c         | 4 ++++
+ iptables/xtables-restore.c | 4 +++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 52730d8a6d526..01709288da5dc 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -549,6 +549,10 @@ void add_param_to_argv(char *parsestart, int line)
+ 		add_argv(param.buffer, 0);
+ 		param.len = 0;
+ 	}
++	if (param.len) {
++		param.buffer[param.len] = '\0';
++		add_argv(param.buffer, 0);
++	}
+ }
+ 
+ static const char *ipv4_addr_to_string(const struct in_addr *addr,
 diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index 1a3739b3350c8..e9cdf2093bfcb 100644
+index e9cdf2093bfcb..d065e1a921be7 100644
 --- a/iptables/xtables-restore.c
 +++ b/iptables/xtables-restore.c
-@@ -135,8 +135,7 @@ static void xtables_restore_parse_line(struct nft_handle *h,
- 			return;
- 
- 		if (h->noflush == 0) {
--			DEBUGP("Cleaning all chains of table '%s'\n",
--				table);
-+			DEBUGP("Cleaning all chains of table '%s'\n", table);
- 			if (cb->table_flush)
- 				cb->table_flush(h, table);
- 		}
-@@ -161,8 +160,7 @@ static void xtables_restore_parse_line(struct nft_handle *h,
- 
- 		if (strlen(chain) >= XT_EXTENSION_MAXNAMELEN)
- 			xtables_error(PARAMETER_PROBLEM,
--				   "Invalid chain name `%s' "
--				   "(%u chars max)",
-+				   "Invalid chain name `%s' (%u chars max)",
- 				   chain, XT_EXTENSION_MAXNAMELEN - 1);
- 
- 		policy = strtok(NULL, " \t\n");
-@@ -179,16 +177,15 @@ static void xtables_restore_parse_line(struct nft_handle *h,
- 
- 				if (!ctrs || !parse_counters(ctrs, &count))
- 					xtables_error(PARAMETER_PROBLEM,
--						   "invalid policy counters "
--						   "for chain '%s'\n", chain);
-+						   "invalid policy counters for chain '%s'\n",
-+						   chain);
- 
- 			}
- 			if (cb->chain_set &&
- 			    cb->chain_set(h, p->curtable->name,
- 					  chain, policy, &count) < 0) {
- 				xtables_error(OTHER_PROBLEM,
--					      "Can't set policy `%s'"
--					      " on `%s' line %u: %s\n",
-+					      "Can't set policy `%s' on `%s' line %u: %s\n",
- 					      policy, chain, line,
- 					      ops->strerror(errno));
- 			}
-@@ -197,15 +194,13 @@ static void xtables_restore_parse_line(struct nft_handle *h,
- 		} else if (cb->chain_restore(h, chain, p->curtable->name) < 0 &&
- 			   errno != EEXIST) {
- 			xtables_error(PARAMETER_PROBLEM,
--				      "cannot create chain "
--				      "'%s' (%s)\n", chain,
--				      strerror(errno));
-+				      "cannot create chain '%s' (%s)\n",
-+				      chain, strerror(errno));
- 		} else if (h->family == NFPROTO_BRIDGE &&
- 			   !ebt_set_user_chain_policy(h, p->curtable->name,
- 						      chain, policy)) {
- 			xtables_error(OTHER_PROBLEM,
--				      "Can't set policy `%s'"
--				      " on `%s' line %u: %s\n",
-+				      "Can't set policy `%s' on `%s' line %u: %s\n",
- 				      policy, chain, line,
- 				      ops->strerror(errno));
- 		}
-@@ -238,8 +233,7 @@ static void xtables_restore_parse_line(struct nft_handle *h,
- 		for (a = 0; a < newargc; a++)
- 			DEBUGP("argv[%u]: %s\n", a, newargv[a]);
- 
--		ret = cb->do_command(h, newargc, newargv,
--				    &newargv[2], true);
-+		ret = cb->do_command(h, newargc, newargv, &newargv[2], true);
- 		if (ret < 0) {
- 			if (cb->abort)
- 				ret = cb->abort(h);
-@@ -247,8 +241,8 @@ static void xtables_restore_parse_line(struct nft_handle *h,
- 				ret = 0;
- 
- 			if (ret < 0) {
--				fprintf(stderr, "failed to abort "
--						"commit operation\n");
-+				fprintf(stderr,
-+					"failed to abort commit operation\n");
- 			}
- 			exit(1);
- 		}
+@@ -98,7 +98,9 @@ static void xtables_restore_parse_line(struct nft_handle *h,
+ 		if (verbose)
+ 			fputs(buffer, stdout);
+ 		return;
+-	} else if ((strcmp(buffer, "COMMIT\n") == 0) && (p->in_table)) {
++	} else if (p->in_table &&
++		   (strncmp(buffer, "COMMIT", 6) == 0) &&
++		   (buffer[6] == '\0' || buffer[6] == '\n')) {
+ 		if (!p->testing) {
+ 			/* Commit per table, although we support
+ 			 * global commit at once, stick by now to
 -- 
 2.23.0
 
