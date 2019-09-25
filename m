@@ -2,79 +2,112 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7BCBE48A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 20:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5479FBE65C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 22:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407511AbfIYSW1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 25 Sep 2019 14:22:27 -0400
-Received: from smtp-out.kfki.hu ([148.6.0.45]:47461 "EHLO smtp-out.kfki.hu"
+        id S2388671AbfIYUaW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 25 Sep 2019 16:30:22 -0400
+Received: from correo.us.es ([193.147.175.20]:44556 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404557AbfIYSW1 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 25 Sep 2019 14:22:27 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by smtp0.kfki.hu (Postfix) with ESMTP id 44A576740110;
-        Wed, 25 Sep 2019 20:22:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:user-agent:references
-        :message-id:in-reply-to:from:from:date:date:received:received
-        :received; s=20151130; t=1569435742; x=1571250143; bh=Kc9W1T00Ri
-        idqTAIqbZCtIE+qyOAz1+HpqhhEjShJI4=; b=taz+4I4HD+WsFjJye26APACMh3
-        ZH34qX0EaLUHNeWOGXZnsMve7QVdWNCLOs9zhBsmcCzIIoD2jKD8ZtHNeMjPNsvb
-        hRcV2aCqNJ5HA7UqTcQyGnPHTi/J6GmWyBE5iUlKJI9kKzC+VGDKXXYp46gA/O6x
-        AUL+drXrNphbBZKOs=
-X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
-        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Wed, 25 Sep 2019 20:22:22 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.kfki.hu [IPv6:2001:738:5001:1::240:2])
-        by smtp0.kfki.hu (Postfix) with ESMTP id E7D3167400FF;
-        Wed, 25 Sep 2019 20:22:21 +0200 (CEST)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id C646B20C53; Wed, 25 Sep 2019 20:22:21 +0200 (CEST)
-Date:   Wed, 25 Sep 2019 20:22:21 +0200 (CEST)
-From:   =?UTF-8?Q?Kadlecsik_J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>
-To:     Kristian Evensen <kristian.evensen@gmail.com>
-cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [RFC] ipset: Add wildcard support to net,iface
-In-Reply-To: <20190924150342.16536-1-kristian.evensen@gmail.com>
-Message-ID: <alpine.DEB.2.20.1909252015320.16238@blackhole.kfki.hu>
-References: <20190924150342.16536-1-kristian.evensen@gmail.com>
-User-Agent: Alpine 2.20 (DEB 67 2015-01-07)
+        id S2388094AbfIYUaW (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 25 Sep 2019 16:30:22 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 924D7C5151
+        for <netfilter-devel@vger.kernel.org>; Wed, 25 Sep 2019 22:30:16 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 7F817DA801
+        for <netfilter-devel@vger.kernel.org>; Wed, 25 Sep 2019 22:30:16 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 764C2A7E32; Wed, 25 Sep 2019 22:30:12 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 61BA3A7E34;
+        Wed, 25 Sep 2019 22:30:10 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Wed, 25 Sep 2019 22:30:10 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (sys.soleta.eu [212.170.55.40])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 3707C4265A5A;
+        Wed, 25 Sep 2019 22:30:10 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org
+Subject: [PATCH 0/5] Netfilter fixes for net
+Date:   Wed, 25 Sep 2019 22:29:58 +0200
+Message-Id: <20190925203003.20112-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Kristian,
+Hi,
 
-On Tue, 24 Sep 2019, Kristian Evensen wrote:
+The following patchset contains Netfilter fixes for net:
 
-> The net,iface equal functions currently compares the full interface 
-> names. In several cases, wildcard (or prefix) matching is useful. For 
-> example, when converting a large iptables rule-set to make use of ipset, 
-> I was able to significantly reduce the number of set elements by making 
-> use of wildcard matching.
-> 
-> Wildcard matching is enabled by setting the 
-> IPSET_FLAG_IFACE_WILDCARD-flag when adding an element.  When this flag 
-> is set, only the initial part of the interface name of the set element 
-> is used for comparison.
-> 
-> I am submitting this change as an RFC, as I am not sure if my approach 
-> with using a flag (or wildcard matching at all) is OK. Please note that 
-> this patch is against kernel 4.14, as that is what my current devices 
-> are running. A final submission will be against net-next.
+1) Add NFT_CHAIN_POLICY_UNSET to replace hardcoded -1 to
+   specify that the chain policy is unset. The chain policy
+   field is actually defined as an 8-bit unsigned integer.
 
-I like your patch, it's a nice extension. Please submit it against the 
-ipset git tree, that's the easiest for me to handle the patches. I'll 
-arrange the submission to net-next.
+2) Remove always true condition reported by smatch in
+   chain policy check.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+3) Fix element lookup on dynamic sets, from Florian Westphal.
+
+4) Use __u8 in ebtables uapi header, from Masahiro Yamada.
+
+5) Bogus EBUSY when removing flowtable after chain flush,
+   from Laura Garcia Liebana.
+
+You can pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 864668bfc374dfbf4851ec828b9049e08f9057b1:
+
+  selftests: Add test cases for `ip nexthop flush proto XX` (2019-09-19 18:35:55 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git HEAD
+
+for you to fetch changes up to 9b05b6e11d5e93a3a517cadc12b9836e0470c255:
+
+  netfilter: nf_tables: bogus EBUSY when deleting flowtable after flush (2019-09-25 11:01:19 +0200)
+
+----------------------------------------------------------------
+Florian Westphal (1):
+      netfilter: nf_tables: allow lookups in dynamic sets
+
+Laura Garcia Liebana (1):
+      netfilter: nf_tables: bogus EBUSY when deleting flowtable after flush
+
+Masahiro Yamada (1):
+      netfilter: ebtables: use __u8 instead of uint8_t in uapi header
+
+Pablo Neira Ayuso (2):
+      netfilter: nf_tables: add NFT_CHAIN_POLICY_UNSET and use it
+      netfilter: nf_tables_offload: fix always true policy is unset check
+
+ include/net/netfilter/nf_tables.h              |  6 ++++++
+ include/uapi/linux/netfilter_bridge/ebtables.h |  6 +++---
+ net/netfilter/nf_tables_api.c                  | 25 ++++++++++++++++++++++---
+ net/netfilter/nf_tables_offload.c              |  2 +-
+ net/netfilter/nft_flow_offload.c               | 19 +++++++++++++++++++
+ net/netfilter/nft_lookup.c                     |  3 ---
+ usr/include/Makefile                           |  1 -
+ 7 files changed, 51 insertions(+), 11 deletions(-)
