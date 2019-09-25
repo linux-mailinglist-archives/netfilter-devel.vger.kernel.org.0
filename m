@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86514BE724
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F905BE717
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbfIYV2L (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 25 Sep 2019 17:28:11 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45914 "EHLO orbyte.nwl.cc"
+        id S1726340AbfIYV1Q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 25 Sep 2019 17:27:16 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:45854 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbfIYV2K (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 25 Sep 2019 17:28:10 -0400
-Received: from localhost ([::1]:59004 helo=tatos)
+        id S1726139AbfIYV1P (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 25 Sep 2019 17:27:15 -0400
+Received: from localhost ([::1]:58944 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iDEpV-0005JJ-2z; Wed, 25 Sep 2019 23:28:09 +0200
+        id 1iDEoc-0005Fk-BK; Wed, 25 Sep 2019 23:27:14 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 06/24] xtables-restore: Minimize caching when flushing
-Date:   Wed, 25 Sep 2019 23:25:47 +0200
-Message-Id: <20190925212605.1005-7-phil@nwl.cc>
+Subject: [iptables PATCH v2 07/24] nft: Support fetch_rule_cache() per chain
+Date:   Wed, 25 Sep 2019 23:25:48 +0200
+Message-Id: <20190925212605.1005-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190925212605.1005-1-phil@nwl.cc>
 References: <20190925212605.1005-1-phil@nwl.cc>
@@ -31,87 +31,41 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Unless --noflush was given, xtables-restore merely needs the list of
-tables to decide whether to delete it or not. Introduce nft_fake_cache()
-function which populates table list, initializes chain lists (so
-nft_chain_list_get() returns an empty list instead of NULL) and sets
-'have_cache' to turn any later calls to nft_build_cache() into nops.
-
-If --noflush was given, call nft_build_cache() just once instead of for
-each table line in input.
+Support passing an nftnl_chain to fetch its rules from kernel.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c             | 17 +++++++++++++++++
- iptables/nft.h             |  1 +
- iptables/xtables-restore.c |  7 +++++--
- 3 files changed, 23 insertions(+), 2 deletions(-)
+ iptables/nft.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/iptables/nft.c b/iptables/nft.c
-index 695758831047a..02da53e60bc83 100644
+index 02da53e60bc83..7c974af8b4141 100644
 --- a/iptables/nft.c
 +++ b/iptables/nft.c
-@@ -1611,6 +1611,23 @@ retry:
- 	h->nft_genid = genid_start;
+@@ -1575,10 +1575,13 @@ static int nft_rule_list_update(struct nftnl_chain *c, void *data)
+ 	return 0;
  }
  
-+void nft_fake_cache(struct nft_handle *h)
-+{
-+	int i;
-+
-+	fetch_table_cache(h);
-+	for (i = 0; i < NFT_TABLE_MAX; i++) {
-+		enum nft_table_type type = h->tables[i].type;
-+
-+		if (!h->tables[i].name)
-+			continue;
-+
-+		h->cache->table[type].chains = nftnl_chain_list_alloc();
-+	}
-+	h->have_cache = true;
-+	mnl_genid_get(h, &h->nft_genid);
-+}
-+
- void nft_build_cache(struct nft_handle *h)
+-static int fetch_rule_cache(struct nft_handle *h)
++static int fetch_rule_cache(struct nft_handle *h, struct nftnl_chain *c)
  {
- 	if (!h->have_cache)
-diff --git a/iptables/nft.h b/iptables/nft.h
-index 43463d7f262e8..bcac8e228c787 100644
---- a/iptables/nft.h
-+++ b/iptables/nft.h
-@@ -73,6 +73,7 @@ int mnl_talk(struct nft_handle *h, struct nlmsghdr *nlh,
- 	     void *data);
- int nft_init(struct nft_handle *h, const struct builtin_table *t);
- void nft_fini(struct nft_handle *h);
-+void nft_fake_cache(struct nft_handle *h);
- void nft_build_cache(struct nft_handle *h);
+ 	int i;
  
- /*
-diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index 27e65b971727e..7f28a05c68619 100644
---- a/iptables/xtables-restore.c
-+++ b/iptables/xtables-restore.c
-@@ -96,6 +96,11 @@ void xtables_restore_parse(struct nft_handle *h,
- 
- 	line = 0;
- 
-+	if (!h->noflush)
-+		nft_fake_cache(h);
-+	else
-+		nft_build_cache(h);
++	if (c)
++		return nft_rule_list_update(c, h);
 +
- 	/* Grab standard input. */
- 	while (fgets(buffer, sizeof(buffer), p->in)) {
- 		int ret = 0;
-@@ -145,8 +150,6 @@ void xtables_restore_parse(struct nft_handle *h,
- 			if (p->tablename && (strcmp(p->tablename, table) != 0))
- 				continue;
+ 	for (i = 0; i < NFT_TABLE_MAX; i++) {
+ 		enum nft_table_type type = h->tables[i].type;
  
--			nft_build_cache(h);
--
- 			if (h->noflush == 0) {
- 				DEBUGP("Cleaning all chains of table '%s'\n",
- 					table);
+@@ -1599,7 +1602,7 @@ static void __nft_build_cache(struct nft_handle *h)
+ retry:
+ 	mnl_genid_get(h, &genid_start);
+ 	fetch_chain_cache(h);
+-	fetch_rule_cache(h);
++	fetch_rule_cache(h, NULL);
+ 	h->have_cache = true;
+ 	mnl_genid_get(h, &genid_stop);
+ 
 -- 
 2.23.0
 
