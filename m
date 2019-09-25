@@ -2,26 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0802BE725
-	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EC7BE71A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 25 Sep 2019 23:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbfIYV2Q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 25 Sep 2019 17:28:16 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45920 "EHLO orbyte.nwl.cc"
+        id S1726320AbfIYV1d (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 25 Sep 2019 17:27:33 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:45872 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbfIYV2Q (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 25 Sep 2019 17:28:16 -0400
-Received: from localhost ([::1]:59010 helo=tatos)
+        id S1726139AbfIYV1c (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 25 Sep 2019 17:27:32 -0400
+Received: from localhost ([::1]:58962 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iDEpa-0005JR-VV; Wed, 25 Sep 2019 23:28:15 +0200
+        id 1iDEos-0005Gp-Mb; Wed, 25 Sep 2019 23:27:31 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 00/24] Improve iptables-nft performance with large rulesets
-Date:   Wed, 25 Sep 2019 23:25:41 +0200
-Message-Id: <20190925212605.1005-1-phil@nwl.cc>
+Subject: [iptables PATCH v2 01/24] xtables_error() does not return
+Date:   Wed, 25 Sep 2019 23:25:42 +0200
+Message-Id: <20190925212605.1005-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20190925212605.1005-1-phil@nwl.cc>
+References: <20190925212605.1005-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -29,117 +31,242 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This is a second approach at improving performance by reduced caching.
-In comparison to v1, it is much less complex, at least when having the
-general concept in mind:
+It's a define which resolves into a callback which in turn is declared
+with noreturn attribute. It will never return, therefore drop all
+explicit exit() calls or other dead code immediately following it.
 
-There are three caching strategies:
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/iptables-restore.c | 18 ++++++------------
+ iptables/iptables-xml.c     | 22 +++++++---------------
+ iptables/nft.c              |  8 ++------
+ iptables/xshared.c          |  1 -
+ iptables/xtables-restore.c  | 13 ++++---------
+ 5 files changed, 19 insertions(+), 43 deletions(-)
 
-1) No cache
-2) Minimal cache
-3) Full cache
-
-(1) and (3) are relevant only for xtables-restore: Either we flush and
-therefore don't need a cache (apart from the list of tables due to the
-conditional table deletion logic) or we don't flush and can't know how
-much caching is needed in input - the only feasible solution is to just
-give in and fetch the full ruleset from kernel.
-
-Assuming xtables-restore input is known, it can be checked for
-problematic commands, namely those requiring a rule cache. This is
-because otherwise, (2) applies, so cache only what's needed to do the
-job. A simple '-A' merely requires knowledge whether table and chain
-exist. Other rules in that chain are not interesting. Yet if followed by
-e.g. '-L', rule cache needs to have been present before, otherwise the
-appended rule might end in the wrong place in cache.
-
-If xtables-restore is called with --noflush and all input is known and
-unproblematic, it is treated like repeated calls to xtables, where (2)
-applies. Minimal caching means to fetch from kernel only what is needed
-in the given situation:
-
-- nftnl_table_list_get() needs just the list of tables,
-- nftnl_chain_list_get() needs just the list of chains in given table.
-
-In most cases, nftnl_chain_list_get() is called just to find a specific
-chain. By allowing to pass this chain name to the function, code can be
-further optimized to just fetch that specific chain from kernel, place
-it into the table's chain list and return the list. Calling code needs
-no further adjustment, it will just operate on the returned chain list.
-
-In fact, the above is beneficial for iptables: Many commands support
-operation on all chains ('-F') or on a specific one ('-F INPUT'). The
-corresponding function nft_rule_flush() is called with either a chain
-name or NULL as parameter. Passed on to nftnl_chain_list_get() makes it
-transparently return just what is needed.
-
-The only thing to be cautious about with these partial cache situations
-is to avoid duplicate cache entries:
-- fetch_table_cache() is called only if h->cache->tables is not set,
-  i.e. no table list exists yet (unless the call comes from a function
-  which is called just once anyway).
-- In nftnl_chain_list_cb() the retrieved chain from kernel is added to
-  cache only if it doesn't exist there yet.
-- nft_rule_list_update() does nothing if given chain's rule list is not
-  empty. If it is, fetching won't cause duplicates.
-
-Patches 1-4 are more or less fallout and unrelated to caching rework.
-
-Patches 5-15 implement the requirements to minimize caches and change
-users accordingly.
-
-Patches 16-23 prepare xtables-restore for input buffering.
-
-Patch 24 implements buffering input in xtables-restore when called with
---noflush for cache requirements prediction. The checker is a bit
-sloppy, but it covers a typical use-case of quickly appending/prepending
-a bunch of rules to an existing ruleset.
-
-Phil Sutter (24):
-  xtables_error() does not return
-  tests/shell: Speed up ipt-restore/0004-restore-race_0
-  tests: shell: Support running for legacy/nft only
-  nft: Fix for add and delete of same rule in single batch
-  nft: Make nftnl_table_list_get() fetch only tables
-  xtables-restore: Minimize caching when flushing
-  nft: Support fetch_rule_cache() per chain
-  nft: Fetch only chains in nft_chain_list_get()
-  nft: Support fetch_chain_cache() per table
-  nft: Support fetch_chain_cache() per chain
-  nft: Support nft_chain_list_get() per chain
-  nft: Reduce cache overhead of adding a custom chain
-  nft: Reduce cache overhead of nft_chain_builtin_init()
-  nft: Support nft_is_table_compatible() per chain
-  nft: Optimize flushing all chains of a table
-  xtables-restore: Introduce rule counter tokenizer function
-  xtables-restore: Carry in_table in struct nft_xt_restore_parse
-  xtables-restore: Use xt_params->program_name
-  xtables-restore: Carry curtable in struct nft_xt_restore_parse
-  xtables-restore: Introduce line parsing function
-  tests: shell: Add ipt-restore/0007-flush-noflush_0
-  xtables-restore: Remove some pointless linebreaks
-  xtables-restore: Allow lines without trailing newline character
-  xtables-restore: Improve performance of --noflush operation
-
- iptables/iptables-restore.c                   |  53 +-
- iptables/iptables-xml.c                       |  53 +-
- iptables/nft-shared.h                         |   5 +-
- iptables/nft.c                                | 255 +++++++---
- iptables/nft.h                                |   9 +-
- iptables/tests/shell/run-tests.sh             |  28 +-
- .../ipt-restore/0003-restore-ordering_0       |  18 +-
- .../testcases/ipt-restore/0004-restore-race_0 |   4 +-
- .../ipt-restore/0007-flush-noflush_0          |  42 ++
- .../ipt-restore/0008-restore-counters_0       |  22 +
- iptables/xshared.c                            |  43 +-
- iptables/xshared.h                            |   1 +
- iptables/xtables-restore.c                    | 451 ++++++++++--------
- iptables/xtables-save.c                       |   4 +-
- iptables/xtables-translate.c                  |   2 +-
- 15 files changed, 611 insertions(+), 379 deletions(-)
- create mode 100755 iptables/tests/shell/testcases/ipt-restore/0007-flush-noflush_0
- create mode 100755 iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0
-
+diff --git a/iptables/iptables-restore.c b/iptables/iptables-restore.c
+index 430be18b3c300..6bc182bfae4a2 100644
+--- a/iptables/iptables-restore.c
++++ b/iptables/iptables-restore.c
+@@ -82,11 +82,10 @@ create_handle(struct iptables_restore_cb *cb, const char *tablename)
+ 		handle = cb->ops->init(tablename);
+ 	}
+ 
+-	if (!handle) {
++	if (!handle)
+ 		xtables_error(PARAMETER_PROBLEM, "%s: unable to initialize "
+ 			"table '%s'\n", xt_params->program_name, tablename);
+-		exit(1);
+-	}
++
+ 	return handle;
+ }
+ 
+@@ -207,12 +206,11 @@ ip46tables_restore_main(struct iptables_restore_cb *cb, int argc, char *argv[])
+ 
+ 			table = strtok(buffer+1, " \t\n");
+ 			DEBUGP("line %u, table '%s'\n", line, table);
+-			if (!table) {
++			if (!table)
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					"%s: line %u table name invalid\n",
+ 					xt_params->program_name, line);
+-				exit(1);
+-			}
++
+ 			strncpy(curtable, table, XT_TABLE_MAXNAMELEN);
+ 			curtable[XT_TABLE_MAXNAMELEN] = '\0';
+ 
+@@ -248,12 +246,10 @@ ip46tables_restore_main(struct iptables_restore_cb *cb, int argc, char *argv[])
+ 
+ 			chain = strtok(buffer+1, " \t\n");
+ 			DEBUGP("line %u, chain '%s'\n", line, chain);
+-			if (!chain) {
++			if (!chain)
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					   "%s: line %u chain name invalid\n",
+ 					   xt_params->program_name, line);
+-				exit(1);
+-			}
+ 
+ 			if (strlen(chain) >= XT_EXTENSION_MAXNAMELEN)
+ 				xtables_error(PARAMETER_PROBLEM,
+@@ -281,12 +277,10 @@ ip46tables_restore_main(struct iptables_restore_cb *cb, int argc, char *argv[])
+ 
+ 			policy = strtok(NULL, " \t\n");
+ 			DEBUGP("line %u, policy '%s'\n", line, policy);
+-			if (!policy) {
++			if (!policy)
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					   "%s: line %u policy invalid\n",
+ 					   xt_params->program_name, line);
+-				exit(1);
+-			}
+ 
+ 			if (strcmp(policy, "-") != 0) {
+ 				struct xt_counters count = {};
+diff --git a/iptables/iptables-xml.c b/iptables/iptables-xml.c
+index 9d9ce6d4a13ee..36ad78450b1ef 100644
+--- a/iptables/iptables-xml.c
++++ b/iptables/iptables-xml.c
+@@ -208,12 +208,11 @@ needChain(char *chain)
+ static void
+ saveChain(char *chain, char *policy, struct xt_counters *ctr)
+ {
+-	if (nextChain >= maxChains) {
++	if (nextChain >= maxChains)
+ 		xtables_error(PARAMETER_PROBLEM,
+ 			   "%s: line %u chain name invalid\n",
+ 			   prog_name, line);
+-		exit(1);
+-	};
++
+ 	chains[nextChain].chain = strdup(chain);
+ 	chains[nextChain].policy = strdup(policy);
+ 	chains[nextChain].count = *ctr;
+@@ -606,12 +605,11 @@ iptables_xml_main(int argc, char *argv[])
+ 
+ 			table = strtok(buffer + 1, " \t\n");
+ 			DEBUGP("line %u, table '%s'\n", line, table);
+-			if (!table) {
++			if (!table)
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					   "%s: line %u table name invalid\n",
+ 					   prog_name, line);
+-				exit(1);
+-			}
++
+ 			openTable(table);
+ 
+ 			ret = 1;
+@@ -623,23 +621,19 @@ iptables_xml_main(int argc, char *argv[])
+ 
+ 			chain = strtok(buffer + 1, " \t\n");
+ 			DEBUGP("line %u, chain '%s'\n", line, chain);
+-			if (!chain) {
++			if (!chain)
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					   "%s: line %u chain name invalid\n",
+ 					   prog_name, line);
+-				exit(1);
+-			}
+ 
+ 			DEBUGP("Creating new chain '%s'\n", chain);
+ 
+ 			policy = strtok(NULL, " \t\n");
+ 			DEBUGP("line %u, policy '%s'\n", line, policy);
+-			if (!policy) {
++			if (!policy)
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					   "%s: line %u policy invalid\n",
+ 					   prog_name, line);
+-				exit(1);
+-			}
+ 
+ 			ctrs = strtok(NULL, " \t\n");
+ 			parse_counters(ctrs, &count);
+@@ -735,13 +729,11 @@ iptables_xml_main(int argc, char *argv[])
+ 					     param_buffer[1] != '-' &&
+ 					     strchr(param_buffer, 't')) ||
+ 					    (!strncmp(param_buffer, "--t", 3) &&
+-					     !strncmp(param_buffer, "--table", strlen(param_buffer)))) {
++					     !strncmp(param_buffer, "--table", strlen(param_buffer))))
+ 						xtables_error(PARAMETER_PROBLEM,
+ 							   "Line %u seems to have a "
+ 							   "-t table option.\n",
+ 							   line);
+-						exit(1);
+-					}
+ 
+ 					add_argv(param_buffer, quoted);
+ 					if (newargc >= 2
+diff --git a/iptables/nft.c b/iptables/nft.c
+index 8047a51f00493..90bb0c63c025a 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -2517,10 +2517,8 @@ int nft_rule_list(struct nft_handle *h, const char *chain, const char *table,
+ 
+ 	ops = nft_family_ops_lookup(h->family);
+ 
+-	if (!nft_is_table_compatible(h, table)) {
++	if (!nft_is_table_compatible(h, table))
+ 		xtables_error(OTHER_PROBLEM, "table `%s' is incompatible, use 'nft' tool.\n", table);
+-		return 0;
+-	}
+ 
+ 	list = nft_chain_list_get(h, table);
+ 	if (!list)
+@@ -2620,10 +2618,8 @@ int nft_rule_list_save(struct nft_handle *h, const char *chain,
+ 
+ 	nft_xt_builtin_init(h, table);
+ 
+-	if (!nft_is_table_compatible(h, table)) {
++	if (!nft_is_table_compatible(h, table))
+ 		xtables_error(OTHER_PROBLEM, "table `%s' is incompatible, use 'nft' tool.\n", table);
+-		return 0;
+-	}
+ 
+ 	list = nft_chain_list_get(h, table);
+ 	if (!list)
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 36a2ec5f193d3..5e6cd4ae7c908 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -181,7 +181,6 @@ int command_default(struct iptables_command_state *cs,
+ 		xtables_error(PARAMETER_PROBLEM, "unknown option "
+ 			      "\"%s\"", cs->argv[optind-1]);
+ 	xtables_error(PARAMETER_PROBLEM, "Unknown arg \"%s\"", optarg);
+-	return 0;
+ }
+ 
+ static mainfunc_t subcmd_get(const char *cmd, const struct subcommand *cb)
+diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
+index f930f5ba2d167..27e65b971727e 100644
+--- a/iptables/xtables-restore.c
++++ b/iptables/xtables-restore.c
+@@ -131,12 +131,11 @@ void xtables_restore_parse(struct nft_handle *h,
+ 
+ 			table = strtok(buffer+1, " \t\n");
+ 			DEBUGP("line %u, table '%s'\n", line, table);
+-			if (!table) {
++			if (!table)
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					"%s: line %u table name invalid\n",
+ 					xt_params->program_name, line);
+-				exit(1);
+-			}
++
+ 			curtable = nft_table_builtin_find(h, table);
+ 			if (!curtable)
+ 				xtables_error(PARAMETER_PROBLEM,
+@@ -168,12 +167,10 @@ void xtables_restore_parse(struct nft_handle *h,
+ 
+ 			chain = strtok(buffer+1, " \t\n");
+ 			DEBUGP("line %u, chain '%s'\n", line, chain);
+-			if (!chain) {
++			if (!chain)
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					   "%s: line %u chain name invalid\n",
+ 					   xt_params->program_name, line);
+-				exit(1);
+-			}
+ 
+ 			if (strlen(chain) >= XT_EXTENSION_MAXNAMELEN)
+ 				xtables_error(PARAMETER_PROBLEM,
+@@ -183,12 +180,10 @@ void xtables_restore_parse(struct nft_handle *h,
+ 
+ 			policy = strtok(NULL, " \t\n");
+ 			DEBUGP("line %u, policy '%s'\n", line, policy);
+-			if (!policy) {
++			if (!policy)
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					   "%s: line %u policy invalid\n",
+ 					   xt_params->program_name, line);
+-				exit(1);
+-			}
+ 
+ 			if (nft_chain_builtin_find(curtable, chain)) {
+ 				if (counters) {
 -- 
 2.23.0
 
