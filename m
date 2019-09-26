@@ -2,55 +2,57 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A89BEC3E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2019 08:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13F3BEC9C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Sep 2019 09:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727014AbfIZG4J (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 26 Sep 2019 02:56:09 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:44486 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725823AbfIZG4J (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 26 Sep 2019 02:56:09 -0400
-Received: from localhost (unknown [65.39.69.237])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id C396F1264DCC8;
-        Wed, 25 Sep 2019 23:56:03 -0700 (PDT)
-Date:   Thu, 26 Sep 2019 08:56:02 +0200 (CEST)
-Message-Id: <20190926.085602.2172736725970238315.davem@davemloft.net>
-To:     krzk@kernel.org
-Cc:     m.grzeschik@pengutronix.de, wg@grandegger.com, mkl@pengutronix.de,
-        andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, pablo@netfilter.org,
-        kadlec@netfilter.org, fw@strlen.de, trivial@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        lvs-devel@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: Re: [PATCH trivial 1/2] net: Fix Kconfig indentation
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20190923155243.6997-1-krzk@kernel.org>
-References: <20190923155243.6997-1-krzk@kernel.org>
-X-Mailer: Mew version 6.8 on Emacs 26.2
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 25 Sep 2019 23:56:08 -0700 (PDT)
+        id S1730128AbfIZHfm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 26 Sep 2019 03:35:42 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:46958 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728240AbfIZHfm (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 26 Sep 2019 03:35:42 -0400
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1iDOJN-0002CP-VA; Thu, 26 Sep 2019 09:35:37 +0200
+Date:   Thu, 26 Sep 2019 09:35:37 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Jeremy Sowden <jeremy@azazel.net>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Netfilter Devel <netfilter-devel@vger.kernel.org>,
+        Sebastian Priebe <sebastian.priebe@de.sii.group>
+Subject: Re: [PATCH nftables v2 0/2] Add Linenoise support to the CLI.
+Message-ID: <20190926073537.GF22129@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Jeremy Sowden <jeremy@azazel.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Netfilter Devel <netfilter-devel@vger.kernel.org>,
+        Sebastian Priebe <sebastian.priebe@de.sii.group>
+References: <20190924074055.4146-1-jeremy@azazel.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190924074055.4146-1-jeremy@azazel.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Mon, 23 Sep 2019 17:52:42 +0200
-
-> Adjust indentation from spaces to tab (+optional two spaces) as in
-> coding style with command like:
->     $ sed -e 's/^        /\t/' -i */Kconfig
+On Tue, Sep 24, 2019 at 08:40:53AM +0100, Jeremy Sowden wrote:
+> Sebastian Priebe [0] requested Linenoise support for the CLI as an
+> alternative to Readline, so I thought I'd have a go at providing it.
+> Linenoise is a minimal, zero-config, BSD licensed, Readline replacement
+> used in Redis, MongoDB, and Android [1].
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>  0 - https://lore.kernel.org/netfilter-devel/4df20614cd10434b9f91080d0862dd0c@de.sii.group/
+>  1 - https://github.com/antirez/linenoise/
+> 
+> By default, the CLI continues to be build using Readline, but passing
+> `--with-cli=linenoise` instead causes Linenoise to be used instead.
+> 
+> `nft -v` has been extended to display what CLI implementation was built
+> and whether mini-gmp was used.
 
-Ok, I'll apply these to 'net'.
+Series:
+
+Acked-by: Phil Sutter <phil@nwl.cc>
