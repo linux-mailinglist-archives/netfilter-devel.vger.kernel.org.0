@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A418DC05D8
-	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Sep 2019 14:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D07C06F3
+	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Sep 2019 16:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbfI0M50 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 27 Sep 2019 08:57:26 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:49858 "EHLO orbyte.nwl.cc"
+        id S1727384AbfI0OFo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 27 Sep 2019 10:05:44 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:50042 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727088AbfI0M50 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 27 Sep 2019 08:57:26 -0400
-Received: from localhost ([::1]:34716 helo=tatos)
+        id S1726163AbfI0OFo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 27 Sep 2019 10:05:44 -0400
+Received: from localhost ([::1]:34900 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iDpoL-0005i7-7Q; Fri, 27 Sep 2019 14:57:25 +0200
+        id 1iDqsQ-0006xy-TX; Fri, 27 Sep 2019 16:05:42 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH] iptables-test: Run tests in lexical order
-Date:   Fri, 27 Sep 2019 14:57:16 +0200
-Message-Id: <20190927125716.1769-1-phil@nwl.cc>
+Subject: [iptables PATCH v2 00/12] Implement among match support
+Date:   Fri, 27 Sep 2019 16:04:21 +0200
+Message-Id: <20190927140433.9504-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -29,35 +29,66 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-To quickly see if a given test was run or not, sort the file list. Also
-filter non-test files right when preparing the list.
+Changes since v1:
+- Rebased onto my performance improvements patch series.
+- Aligned set caching routines with changes in above series.
+- Fixed patch ordering so builds are not broken intermittently.
+- Replaced magic numbers by defines or offsetof() statements. Note that
+  I did not move any defines into libnftnl; the remaining ones are for
+  values in sets' key_type attribute which neither libnftnl nor kernel
+  care about. Setting that is merely for compatibility with nft tool.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables-test.py | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+This series ultimately adds among match support to ebtables-nft. The
+implementation merely shares the user interface with legacy one,
+internally the code is distinct: libebt_among.c does not make use of the
+wormhash data structure but a much simpler one for "temporary" storage
+of data until being converted into an anonymous set and associated
+lookup expression.
 
-diff --git a/iptables-test.py b/iptables-test.py
-index 2aac8ef2256dc..fdb4e6a3644e4 100755
---- a/iptables-test.py
-+++ b/iptables-test.py
-@@ -359,10 +359,14 @@ def main():
-         print("Couldn't open log file %s" % LOGFILE)
-         return
- 
--    file_list = [os.path.join(EXTENSIONS_PATH, i)
--                 for i in os.listdir(EXTENSIONS_PATH)]
-     if args.filename:
-         file_list = [args.filename]
-+    else:
-+        file_list = [os.path.join(EXTENSIONS_PATH, i)
-+                     for i in os.listdir(EXTENSIONS_PATH)
-+                     if i.endswith('.t')]
-+        file_list.sort()
-+
-     for filename in file_list:
-         file_tests, file_passed = run_test_file(filename, args.netns)
-         if file_tests:
+Patches 1 to 5 implement required changes and are rather boring by
+themselves: When converting an nftnl rule to iptables command state,
+cache access is required (to lookup set references).
+
+Patch 6 simplifies things a bit with the above in place.
+
+Patches 7 to 11 implement anonymous set support.
+
+Patch 12 then adds the actual among match implementation for
+ebtables-nft.
+
+Phil Sutter (12):
+  nft: family_ops: Pass nft_handle to 'add' callback
+  nft: family_ops: Pass nft_handle to 'rule_find' callback
+  nft: family_ops: Pass nft_handle to 'print_rule' callback
+  nft: family_ops: Pass nft_handle to 'rule_to_cs' callback
+  nft: Keep nft_handle pointer in nft_xt_ctx
+  nft: Eliminate pointless calls to nft_family_ops_lookup()
+  nft: Fetch sets when updating rule cache
+  nft: Support NFT_COMPAT_SET_ADD
+  nft: Bore up nft_parse_payload()
+  nft: Embed rule's table name in nft_xt_ctx
+  nft: Support parsing lookup expression
+  nft: bridge: Rudimental among extension support
+
+ extensions/libebt_among.c  | 278 ++++++++++++++++++++
+ extensions/libebt_among.t  |  16 ++
+ iptables/ebtables-nft.8    |  66 ++---
+ iptables/nft-arp.c         |  13 +-
+ iptables/nft-bridge.c      | 244 +++++++++++++++++-
+ iptables/nft-bridge.h      |  21 ++
+ iptables/nft-ipv4.c        |  10 +-
+ iptables/nft-ipv6.c        |  10 +-
+ iptables/nft-shared.c      |  70 +++---
+ iptables/nft-shared.h      |  26 +-
+ iptables/nft.c             | 502 +++++++++++++++++++++++++++++++++----
+ iptables/nft.h             |  14 +-
+ iptables/xtables-eb.c      |   1 +
+ iptables/xtables-monitor.c |  17 +-
+ iptables/xtables-save.c    |   3 +
+ 15 files changed, 1135 insertions(+), 156 deletions(-)
+ create mode 100644 extensions/libebt_among.c
+ create mode 100644 extensions/libebt_among.t
+
 -- 
 2.23.0
 
