@@ -2,72 +2,80 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C88E4BFC78
-	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Sep 2019 02:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D542BFE6E
+	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Sep 2019 07:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726014AbfI0Amj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 26 Sep 2019 20:42:39 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:41115 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725808AbfI0Amj (ORCPT
+        id S1727546AbfI0FEx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 27 Sep 2019 01:04:53 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:2637 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725996AbfI0FEx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 26 Sep 2019 20:42:39 -0400
-Received: from dimstar.local.net (n122-110-44-45.sun2.vic.optusnet.com.au [122.110.44.45])
-        by mail104.syd.optusnet.com.au (Postfix) with SMTP id 0BBCB43E165
-        for <netfilter-devel@vger.kernel.org>; Fri, 27 Sep 2019 10:42:36 +1000 (AEST)
-Received: (qmail 32297 invoked by uid 501); 27 Sep 2019 00:42:36 -0000
-Date:   Fri, 27 Sep 2019 10:42:36 +1000
-From:   Duncan Roe <duncan_roe@optusnet.com.au>
-To:     Jeremy Sowden <jeremy@azazel.net>
-Cc:     Netfilter Development <netfilter-devel@vger.kernel.org>,
+        Fri, 27 Sep 2019 01:04:53 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app12-12012 (RichMail) with SMTP id 2eec5d8d962fe12-3aa7a; Fri, 27 Sep 2019 12:55:13 +0800 (CST)
+X-RM-TRANSID: 2eec5d8d962fe12-3aa7a
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost (unknown[223.105.0.241])
+        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee25d8d963016f-a2662;
+        Fri, 27 Sep 2019 12:55:13 +0800 (CST)
+X-RM-TRANSID: 2ee25d8d963016f-a2662
+From:   Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+To:     Julian Anastasov <ja@ssi.bg>,
+        "David S. Miller" <davem@davemloft.net>,
         Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH libnetfilter_queue] src: Enable clang build
-Message-ID: <20190927004236.GB31954@dimstar.local.net>
-Mail-Followup-To: Jeremy Sowden <jeremy@azazel.net>,
-        Netfilter Development <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-References: <20190922001031.30848-1-duncan_roe@optusnet.com.au>
- <20190924121129.GA32094@azazel.net>
- <20190925022812.GA16766@dimstar.local.net>
- <20190927000032.GA31954@dimstar.local.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190927000032.GA31954@dimstar.local.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0
-        a=4DzML1vCOQ6Odsy8BUtSXQ==:117 a=4DzML1vCOQ6Odsy8BUtSXQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=J70Eh1EUuV4A:10
-        a=amA5tBAHi04z8VDdgLoA:9 a=CjuIK1q_8ugA:10
+Cc:     netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+Subject: [PATCH v2 0/2] ipvs: speedup ipvs netns dismantle
+Date:   Fri, 27 Sep 2019 12:54:49 +0800
+Message-Id: <1569560091-20553-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Sep 27, 2019 at 10:00:32AM +1000, Duncan Roe wrote:
-> On Wed, Sep 25, 2019 at 12:28:12PM +1000, Duncan Roe wrote:
-> > On Tue, Sep 24, 2019 at 01:11:29PM +0100, Jeremy Sowden wrote:
-> > > On 2019-09-22, at 10:10:31 +1000, Duncan Roe wrote:
-> > > > Unlike gcc, clang insists to have EXPORT_SYMBOL(x) come before the definition
-> > > > of x. So move all EXPORT_SYMBOL lines to just after the last #include line.
-> > > >
-> > > > pktbuff.c was missing its associated header, so correct that as well.
-> > > >
-> > > > gcc & clang produce different warnings. gcc warns that nfq_set_verdict_mark is
-> > > > deprecated while clang warns of invalid conversion specifier 'Z' at
-> > > > src/extra/ipv6.c:138 (should that be lower-case?)
-> > >
-> > > It should, yes.
-> > >
-> > > J.
-> >
-> > Will send a v2 then.
-> >
-> > Cheers ... Duncan.
->
-> On second thoughts, will send a separate 1-liner patch for 5z as time permits.
->
-> Cheers ... Duncan.
+Implement exit_batch() method to dismantle more ipvs netns
+per round.
 
-s/5/%/
+Tested:
+$  cat add_del_unshare.sh
+#!/bin/bash
+
+for i in `seq 1 100`
+    do
+     (for j in `seq 1 40` ; do  unshare -n ipvsadm -A -t 172.16.$i.$j:80 >/dev/null ; done) &
+    done
+wait; grep net_namespace /proc/slabinfo
+
+Befor patch:
+$  time sh add_del_unshare.sh
+net_namespace       4020   4020   4736    6    8 : tunables    0    0    0 : slabdata    670    670      0
+
+real    0m8.086s
+user    0m2.025s
+sys     0m36.956s
+
+After patch:
+$  time sh add_del_unshare.sh
+net_namespace       4020   4020   4736    6    8 : tunables    0    0    0 : slabdata    670    670      0
+
+real    0m7.623s
+user    0m2.003s
+sys     0m32.935s
+
+Haishuang Yan (2):
+  ipvs: batch __ip_vs_cleanup
+  ipvs: batch __ip_vs_dev_cleanup
+
+ include/net/ip_vs.h             |  2 +-
+ net/netfilter/ipvs/ip_vs_core.c | 47 ++++++++++++++++++++++++-----------------
+ net/netfilter/ipvs/ip_vs_ctl.c  | 12 ++++++++---
+ 3 files changed, 38 insertions(+), 23 deletions(-)
+
+-- 
+1.8.3.1
+
+
+
