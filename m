@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D25D0C3C3A
-	for <lists+netfilter-devel@lfdr.de>; Tue,  1 Oct 2019 18:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1818DC3DC9
+	for <lists+netfilter-devel@lfdr.de>; Tue,  1 Oct 2019 19:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729030AbfJAQuW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 1 Oct 2019 12:50:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56804 "EHLO mail.kernel.org"
+        id S1728459AbfJAQjs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 1 Oct 2019 12:39:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726860AbfJAQof (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 1 Oct 2019 12:44:35 -0400
+        id S1728397AbfJAQjs (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 1 Oct 2019 12:39:48 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4802721906;
-        Tue,  1 Oct 2019 16:44:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A35A21872;
+        Tue,  1 Oct 2019 16:39:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569948274;
-        bh=EeiAg+K/3A2Za8StxoLCNIy6rbE/vHV061xjoJvSjzU=;
+        s=default; t=1569947987;
+        bh=VS50HS4GAI4UbJUyzF+xJ0UN7GNEKsohNTeuNnlWgOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gKj9PfWFI6mF23wa536yj7WdqpJUNjPaB2laZuzkxXa1tYWNC8OKKECWs7E2wc7gp
-         +OlAIoEsgAsb3/6sUIF+oSHKSpzGCyM5iCTLiaU0Ov3ee+q0HwPM894FncfKXBO28j
-         5I4mp/FfeIoFuvxFYHZ1vutyKNAK34RxsJikgWvY=
+        b=GIkpckC8EjiyZvwC0G+RTSxgq62HBDPmI/zmdM+k97Z86ZUFDSmP5tLDmkcsj5Toh
+         fBisFNjVF+hTQtR3M+Y/h3U2kIguf2PnwDncVDxwmbweNzgBVcUnGMTi4muqOUfXsi
+         iksJHqcHUcg71xz85iNSZ7OxCPynjz7ypXiH/IUo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>,
@@ -30,12 +30,12 @@ Cc:     Florian Westphal <fw@strlen.de>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 09/29] netfilter: nf_tables: allow lookups in dynamic sets
-Date:   Tue,  1 Oct 2019 12:44:03 -0400
-Message-Id: <20191001164423.16406-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.3 18/71] netfilter: nf_tables: allow lookups in dynamic sets
+Date:   Tue,  1 Oct 2019 12:38:28 -0400
+Message-Id: <20191001163922.14735-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191001164423.16406-1-sashal@kernel.org>
-References: <20191001164423.16406-1-sashal@kernel.org>
+In-Reply-To: <20191001163922.14735-1-sashal@kernel.org>
+References: <20191001163922.14735-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -113,10 +113,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index b149a72190846..7ef126489d4ed 100644
+index d47469f824a10..3b81323fa0171 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -3131,8 +3131,11 @@ static int nf_tables_newset(struct net *net, struct sock *nlsk,
+@@ -3562,8 +3562,11 @@ static int nf_tables_newset(struct net *net, struct sock *nlsk,
  			      NFT_SET_OBJECT))
  			return -EINVAL;
  		/* Only one of these operations is supported */
@@ -131,10 +131,10 @@ index b149a72190846..7ef126489d4ed 100644
  	}
  
 diff --git a/net/netfilter/nft_lookup.c b/net/netfilter/nft_lookup.c
-index 475570e89ede7..44015a151ad69 100644
+index c0560bf3c31bd..660bad688e2bc 100644
 --- a/net/netfilter/nft_lookup.c
 +++ b/net/netfilter/nft_lookup.c
-@@ -76,9 +76,6 @@ static int nft_lookup_init(const struct nft_ctx *ctx,
+@@ -73,9 +73,6 @@ static int nft_lookup_init(const struct nft_ctx *ctx,
  	if (IS_ERR(set))
  		return PTR_ERR(set);
  
