@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3410CAFA3
-	for <lists+netfilter-devel@lfdr.de>; Thu,  3 Oct 2019 21:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E817CAFA4
+	for <lists+netfilter-devel@lfdr.de>; Thu,  3 Oct 2019 21:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732906AbfJCT4L (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1732353AbfJCT4L (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Thu, 3 Oct 2019 15:56:11 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:51192 "EHLO
+Received: from kadath.azazel.net ([81.187.231.250]:51196 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732669AbfJCT4L (ORCPT
+        with ESMTP id S1732906AbfJCT4L (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Thu, 3 Oct 2019 15:56:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,23 +18,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=mH4+kKkEN8FpOwhGtHEjCHyOb2jftV1FkP4UDzVEocc=; b=m4Smd7/g/ixQz4ofwblYYZWJho
-        iDyh47jLroap9codVfiCLM4iV5bU9lTF0bgwUfoo9k/+aXaAxpHEiflARXQ8KOmDSJRkGxXhkbym+
-        m3+WbVVk4Dm1iD2jmYDfKs8qChhbOU+Wq4ZgKz6Mf8MdFMvecRCvfaMaSEv/biSe9/RFYrEba28Fu
-        j5/F9Z3ikI3NUJWvZXgsWkpOBLoMXeE9iUjZ1qYJb7XGHVsq+nzXbS7NemlXvYPHjdIEJydb6/Vjh
-        G6y6j/Pwajz1xXEC5+wD6W443TCe+QFzSsf2w/uZfkqOmyn0NzKmpf4ZHMLNlYBeKadlIbbvArIiA
-        /mU1s5OQ==;
+        bh=25pxK9X5je3VtsrDflnLj9EVj9+9E0tmpimVSJWZrZ0=; b=LF3k2SCSGLSh1VjfsXX+59kuAX
+        VdTgOH1dqAUSMxCM4Vw0JweNtBhDrvypUctLMkRbEryQwLx6UUhAZRX0+xNBElFZFlClwqQU93/hm
+        IaUfdZ2B5qbs64hNenltwOMpbnuIxQvkZuqshCFVJm339lx/XKfvvX+UjtKF0hz4dufR4lhVCXSrN
+        V086jXDjpVB16XmWyXoz1ui0+kyXwruOJdysKJElxpImHQr3YkPcD0Q4flSCeWG05AqVl7YK2z9+k
+        qLBKyedsZ5a0/D19axVW1MJvuvJSj5SOephk6OvWMk88SU14H20LXlHhHtGABWHKq7SJYTBoUwtSt
+        LtIK/M5w==;
 Received: from ulthar.dreamlands ([192.168.96.2])
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1iG7Cq-0004KM-Dk; Thu, 03 Oct 2019 20:56:08 +0100
+        id 1iG7Cq-0004KM-Jf; Thu, 03 Oct 2019 20:56:08 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 4/7] netfilter: ipset: move functions to ip_set_core.c.
-Date:   Thu,  3 Oct 2019 20:56:04 +0100
-Message-Id: <20191003195607.13180-5-jeremy@azazel.net>
+Subject: [PATCH nf-next 5/7] netfilter: ipset: make ip_set_put_flags extern.
+Date:   Thu,  3 Oct 2019 20:56:05 +0100
+Message-Id: <20191003195607.13180-6-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191003195607.13180-1-jeremy@azazel.net>
 References: <20191003195607.13180-1-jeremy@azazel.net>
@@ -48,265 +48,84 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Several inline functions in ip_set.h are only called in ip_set_core.c:
-move them and remove inline function specifier.
+ip_set_put_flags is rather large for a static inline function in a
+header-file.  Move it to ip_set_core.c and export it.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/linux/netfilter/ipset/ip_set.h | 102 -------------------------
- net/netfilter/ipset/ip_set_core.c      | 102 +++++++++++++++++++++++++
- 2 files changed, 102 insertions(+), 102 deletions(-)
+ include/linux/netfilter/ipset/ip_set.h | 23 +----------------------
+ net/netfilter/ipset/ip_set_core.c      | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 22 deletions(-)
 
 diff --git a/include/linux/netfilter/ipset/ip_set.h b/include/linux/netfilter/ipset/ip_set.h
-index 985c9bb1ab65..44f6de8a1733 100644
+index 44f6de8a1733..4d8b1eaf7708 100644
 --- a/include/linux/netfilter/ipset/ip_set.h
 +++ b/include/linux/netfilter/ipset/ip_set.h
-@@ -508,86 +508,9 @@ ip_set_timeout_set(unsigned long *timeout, u32 value)
- 	*timeout = t;
+@@ -276,28 +276,7 @@ ip_set_ext_destroy(struct ip_set *set, void *data)
+ 	}
  }
  
--static inline u32
--ip_set_timeout_get(const unsigned long *timeout)
+-static inline int
+-ip_set_put_flags(struct sk_buff *skb, struct ip_set *set)
 -{
--	u32 t;
+-	u32 cadt_flags = 0;
 -
--	if (*timeout == IPSET_ELEM_PERMANENT)
+-	if (SET_WITH_TIMEOUT(set))
+-		if (unlikely(nla_put_net32(skb, IPSET_ATTR_TIMEOUT,
+-					   htonl(set->timeout))))
+-			return -EMSGSIZE;
+-	if (SET_WITH_COUNTER(set))
+-		cadt_flags |= IPSET_FLAG_WITH_COUNTERS;
+-	if (SET_WITH_COMMENT(set))
+-		cadt_flags |= IPSET_FLAG_WITH_COMMENT;
+-	if (SET_WITH_SKBINFO(set))
+-		cadt_flags |= IPSET_FLAG_WITH_SKBINFO;
+-	if (SET_WITH_FORCEADD(set))
+-		cadt_flags |= IPSET_FLAG_WITH_FORCEADD;
+-
+-	if (!cadt_flags)
 -		return 0;
--
--	t = jiffies_to_msecs(*timeout - jiffies)/MSEC_PER_SEC;
--	/* Zero value in userspace means no timeout */
--	return t == 0 ? 1 : t;
+-	return nla_put_net32(skb, IPSET_ATTR_CADT_FLAGS, htonl(cadt_flags));
 -}
--
- void ip_set_init_comment(struct ip_set *set, struct ip_set_comment *comment,
- 			 const struct ip_set_ext *ext);
++int ip_set_put_flags(struct sk_buff *skb, struct ip_set *set);
  
--static inline void
--ip_set_add_bytes(u64 bytes, struct ip_set_counter *counter)
--{
--	atomic64_add((long long)bytes, &(counter)->bytes);
--}
--
--static inline void
--ip_set_add_packets(u64 packets, struct ip_set_counter *counter)
--{
--	atomic64_add((long long)packets, &(counter)->packets);
--}
--
--static inline u64
--ip_set_get_bytes(const struct ip_set_counter *counter)
--{
--	return (u64)atomic64_read(&(counter)->bytes);
--}
--
--static inline u64
--ip_set_get_packets(const struct ip_set_counter *counter)
--{
--	return (u64)atomic64_read(&(counter)->packets);
--}
--
--static inline bool
--ip_set_match_counter(u64 counter, u64 match, u8 op)
--{
--	switch (op) {
--	case IPSET_COUNTER_NONE:
--		return true;
--	case IPSET_COUNTER_EQ:
--		return counter == match;
--	case IPSET_COUNTER_NE:
--		return counter != match;
--	case IPSET_COUNTER_LT:
--		return counter < match;
--	case IPSET_COUNTER_GT:
--		return counter > match;
--	}
--	return false;
--}
--
--static inline void
--ip_set_update_counter(struct ip_set_counter *counter,
--		      const struct ip_set_ext *ext, u32 flags)
--{
--	if (ext->packets != ULLONG_MAX &&
--	    !(flags & IPSET_FLAG_SKIP_COUNTER_UPDATE)) {
--		ip_set_add_bytes(ext->bytes, counter);
--		ip_set_add_packets(ext->packets, counter);
--	}
--}
--
--static inline bool
--ip_set_put_counter(struct sk_buff *skb, const struct ip_set_counter *counter)
--{
--	return nla_put_net64(skb, IPSET_ATTR_BYTES,
--			     cpu_to_be64(ip_set_get_bytes(counter)),
--			     IPSET_ATTR_PAD) ||
--	       nla_put_net64(skb, IPSET_ATTR_PACKETS,
--			     cpu_to_be64(ip_set_get_packets(counter)),
--			     IPSET_ATTR_PAD);
--}
--
- static inline void
- ip_set_init_counter(struct ip_set_counter *counter,
- 		    const struct ip_set_ext *ext)
-@@ -598,31 +521,6 @@ ip_set_init_counter(struct ip_set_counter *counter,
- 		atomic64_set(&(counter)->packets, (long long)(ext->packets));
- }
- 
--static inline void
--ip_set_get_skbinfo(struct ip_set_skbinfo *skbinfo,
--		   const struct ip_set_ext *ext,
--		   struct ip_set_ext *mext, u32 flags)
--{
--	mext->skbinfo = *skbinfo;
--}
--
--static inline bool
--ip_set_put_skbinfo(struct sk_buff *skb, const struct ip_set_skbinfo *skbinfo)
--{
--	/* Send nonzero parameters only */
--	return ((skbinfo->skbmark || skbinfo->skbmarkmask) &&
--		nla_put_net64(skb, IPSET_ATTR_SKBMARK,
--			      cpu_to_be64((u64)skbinfo->skbmark << 32 |
--					  skbinfo->skbmarkmask),
--			      IPSET_ATTR_PAD)) ||
--	       (skbinfo->skbprio &&
--		nla_put_net32(skb, IPSET_ATTR_SKBPRIO,
--			      cpu_to_be32(skbinfo->skbprio))) ||
--	       (skbinfo->skbqueue &&
--		nla_put_net16(skb, IPSET_ATTR_SKBQUEUE,
--			      cpu_to_be16(skbinfo->skbqueue)));
--}
--
- static inline void
- ip_set_init_skbinfo(struct ip_set_skbinfo *skbinfo,
- 		    const struct ip_set_ext *ext)
+ /* Netlink CB args */
+ enum {
 diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
-index 73daea6d4bd5..30bc7df2f4cf 100644
+index 30bc7df2f4cf..35cf59e4004b 100644
 --- a/net/netfilter/ipset/ip_set_core.c
 +++ b/net/netfilter/ipset/ip_set_core.c
-@@ -325,6 +325,19 @@ ip_set_get_ipaddr6(struct nlattr *nla, union nf_inet_addr *ipaddr)
- }
- EXPORT_SYMBOL_GPL(ip_set_get_ipaddr6);
+@@ -1418,6 +1418,30 @@ static int ip_set_swap(struct net *net, struct sock *ctnl, struct sk_buff *skb,
+ #define DUMP_TYPE(arg)		(((u32)(arg)) & 0x0000FFFF)
+ #define DUMP_FLAGS(arg)		(((u32)(arg)) >> 16)
  
-+static u32
-+ip_set_timeout_get(const unsigned long *timeout)
++int
++ip_set_put_flags(struct sk_buff *skb, struct ip_set *set)
 +{
-+	u32 t;
++	u32 cadt_flags = 0;
 +
-+	if (*timeout == IPSET_ELEM_PERMANENT)
++	if (SET_WITH_TIMEOUT(set))
++		if (unlikely(nla_put_net32(skb, IPSET_ATTR_TIMEOUT,
++					   htonl(set->timeout))))
++			return -EMSGSIZE;
++	if (SET_WITH_COUNTER(set))
++		cadt_flags |= IPSET_FLAG_WITH_COUNTERS;
++	if (SET_WITH_COMMENT(set))
++		cadt_flags |= IPSET_FLAG_WITH_COMMENT;
++	if (SET_WITH_SKBINFO(set))
++		cadt_flags |= IPSET_FLAG_WITH_SKBINFO;
++	if (SET_WITH_FORCEADD(set))
++		cadt_flags |= IPSET_FLAG_WITH_FORCEADD;
++
++	if (!cadt_flags)
 +		return 0;
-+
-+	t = jiffies_to_msecs(*timeout - jiffies) / MSEC_PER_SEC;
-+	/* Zero value in userspace means no timeout */
-+	return t == 0 ? 1 : t;
++	return nla_put_net32(skb, IPSET_ATTR_CADT_FLAGS, htonl(cadt_flags));
 +}
++EXPORT_SYMBOL_GPL(ip_set_put_flags);
 +
- static char *
- ip_set_comment_uget(struct nlattr *tb)
+ static int
+ ip_set_dump_done(struct netlink_callback *cb)
  {
-@@ -510,6 +523,46 @@ ip_set_get_extensions(struct ip_set *set, struct nlattr *tb[],
- }
- EXPORT_SYMBOL_GPL(ip_set_get_extensions);
- 
-+static u64
-+ip_set_get_bytes(const struct ip_set_counter *counter)
-+{
-+	return (u64)atomic64_read(&(counter)->bytes);
-+}
-+
-+static u64
-+ip_set_get_packets(const struct ip_set_counter *counter)
-+{
-+	return (u64)atomic64_read(&(counter)->packets);
-+}
-+
-+static bool
-+ip_set_put_counter(struct sk_buff *skb, const struct ip_set_counter *counter)
-+{
-+	return nla_put_net64(skb, IPSET_ATTR_BYTES,
-+			     cpu_to_be64(ip_set_get_bytes(counter)),
-+			     IPSET_ATTR_PAD) ||
-+	       nla_put_net64(skb, IPSET_ATTR_PACKETS,
-+			     cpu_to_be64(ip_set_get_packets(counter)),
-+			     IPSET_ATTR_PAD);
-+}
-+
-+static bool
-+ip_set_put_skbinfo(struct sk_buff *skb, const struct ip_set_skbinfo *skbinfo)
-+{
-+	/* Send nonzero parameters only */
-+	return ((skbinfo->skbmark || skbinfo->skbmarkmask) &&
-+		nla_put_net64(skb, IPSET_ATTR_SKBMARK,
-+			      cpu_to_be64((u64)skbinfo->skbmark << 32 |
-+					  skbinfo->skbmarkmask),
-+			      IPSET_ATTR_PAD)) ||
-+	       (skbinfo->skbprio &&
-+		nla_put_net32(skb, IPSET_ATTR_SKBPRIO,
-+			      cpu_to_be32(skbinfo->skbprio))) ||
-+	       (skbinfo->skbqueue &&
-+		nla_put_net16(skb, IPSET_ATTR_SKBQUEUE,
-+			      cpu_to_be16(skbinfo->skbqueue)));
-+}
-+
- int
- ip_set_put_extensions(struct sk_buff *skb, const struct ip_set *set,
- 		      const void *e, bool active)
-@@ -535,6 +588,55 @@ ip_set_put_extensions(struct sk_buff *skb, const struct ip_set *set,
- }
- EXPORT_SYMBOL_GPL(ip_set_put_extensions);
- 
-+static bool
-+ip_set_match_counter(u64 counter, u64 match, u8 op)
-+{
-+	switch (op) {
-+	case IPSET_COUNTER_NONE:
-+		return true;
-+	case IPSET_COUNTER_EQ:
-+		return counter == match;
-+	case IPSET_COUNTER_NE:
-+		return counter != match;
-+	case IPSET_COUNTER_LT:
-+		return counter < match;
-+	case IPSET_COUNTER_GT:
-+		return counter > match;
-+	}
-+	return false;
-+}
-+
-+static void
-+ip_set_add_bytes(u64 bytes, struct ip_set_counter *counter)
-+{
-+	atomic64_add((long long)bytes, &(counter)->bytes);
-+}
-+
-+static void
-+ip_set_add_packets(u64 packets, struct ip_set_counter *counter)
-+{
-+	atomic64_add((long long)packets, &(counter)->packets);
-+}
-+
-+static void
-+ip_set_update_counter(struct ip_set_counter *counter,
-+		      const struct ip_set_ext *ext, u32 flags)
-+{
-+	if (ext->packets != ULLONG_MAX &&
-+	    !(flags & IPSET_FLAG_SKIP_COUNTER_UPDATE)) {
-+		ip_set_add_bytes(ext->bytes, counter);
-+		ip_set_add_packets(ext->packets, counter);
-+	}
-+}
-+
-+static void
-+ip_set_get_skbinfo(struct ip_set_skbinfo *skbinfo,
-+		   const struct ip_set_ext *ext,
-+		   struct ip_set_ext *mext, u32 flags)
-+{
-+	mext->skbinfo = *skbinfo;
-+}
-+
- bool
- ip_set_match_extensions(struct ip_set *set, const struct ip_set_ext *ext,
- 			struct ip_set_ext *mext, u32 flags, void *data)
 -- 
 2.23.0
 
