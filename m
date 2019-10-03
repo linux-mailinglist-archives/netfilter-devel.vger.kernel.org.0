@@ -2,40 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0DFCAFA5
-	for <lists+netfilter-devel@lfdr.de>; Thu,  3 Oct 2019 21:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692FFCAFA2
+	for <lists+netfilter-devel@lfdr.de>; Thu,  3 Oct 2019 21:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731470AbfJCT4N (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 3 Oct 2019 15:56:13 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:51174 "EHLO
+        id S1732461AbfJCT4M (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 3 Oct 2019 15:56:12 -0400
+Received: from kadath.azazel.net ([81.187.231.250]:51180 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732358AbfJCT4L (ORCPT
+        with ESMTP id S1731470AbfJCT4L (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Thu, 3 Oct 2019 15:56:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=HOkc+OL7jjzZMQPc4SIE4Q97cZxU7vHFloZWkyrPhn8=; b=abiFCtJY0AfQ+9A5C6sKIt5EU9
-        y8eUI23U0KHbWG422Mbm5vIaZ74eRaNptySbLaxrVN3bwKIl35JI9gQG4TjPHOqwpNKQJkNz6Egb5
-        S9Px8205VKnNvur1DzR5/qfjZaKJXgwezsFiUSoFnaoNX5dqm+GRnXBpuyTWz52YbxBCoJ58PPawy
-        AcR5K7ueeU8iJGmswPHUluazGscfaZhFSl0kwk5kIkirCpiCWundfRqBAQRdeJPMHBlFzrRabhjZ2
-        ktlkq+hI+TpjKrRa3zQzzdKyHfCK+h1jjmrd773wKTc5CqAtxC/eZt5jYqXD6QqApx1heohysIT9H
-        AbPie2aw==;
+        bh=3s5NTl58+Qq29ATpP12AzzCUXRSippIv9m5DXxHMKx0=; b=VwHJFfIG9iPUQBL/Ux/vHPMiCh
+        5Rcp3I0g9qSqEVX7EQIntu2J+CQdH/UM2SjUD3OyBUwiDOEfuCtJun3d5D+hXQ0gZgyV7mSPs69M/
+        +NxK+jWwflo820/5qeYkf7gPrvIiY6c0EenrtjopgYr+HOO2tf3/WFCK2iQgVcyjmsMygJYsrr+Ct
+        82b27X00h0hAZOWleMNGW3SU+uV/XR110xa5rzOIOf6UA4gatS4eJuybansuw2Sziwgu9YwSg+ayt
+        CMZio69nX5pEr1Fd6BHlLMAiSFpyRxIKcefGy/VWfJXaKFHmNqxTMLoa6VikkuExPn1RyvLjBN8M8
+        ukpVd5QA==;
 Received: from ulthar.dreamlands ([192.168.96.2])
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1iG7Cp-0004KM-Nq; Thu, 03 Oct 2019 20:56:07 +0100
+        id 1iG7Cp-0004KM-Tb; Thu, 03 Oct 2019 20:56:08 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 0/7] ipset: remove static inline functions
-Date:   Thu,  3 Oct 2019 20:56:00 +0100
-Message-Id: <20191003195607.13180-1-jeremy@azazel.net>
+Subject: [PATCH nf-next 1/7] netfilter: ipset: add a coding-style fix to ip_set_ext_destroy.
+Date:   Thu,  3 Oct 2019 20:56:01 +0100
+Message-Id: <20191003195607.13180-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20191003195607.13180-1-jeremy@azazel.net>
+References: <20191003195607.13180-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 192.168.96.2
@@ -46,57 +48,33 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In his feedback on an earlier patch series [0], Pablo suggested reducing
-the number of ipset static inline functions.
+Use a local variable to hold comment in order to align the arguments of
+ip_set_comment_free properly.
 
-0 - https://lore.kernel.org/netfilter-devel/20190808112355.w3ax3twuf6b7pwc7@salvia/
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ include/linux/netfilter/ipset/ip_set.h | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-This series:
-
-  * removes inline from static functions in .c files;
-  * moves some static functions out of headers and removes inline from
-    them if they are only called from one .c file,
-  * moves some static functions out of headers, removes inline from them
-    and makes them extern if they are too big.
-
-The changes reduced the size of the ipset modules by c. 13kB, when
-compiled with GCC 9 on x86-64.
-
-Jeremy Sowden (7):
-  netfilter: ipset: add a coding-style fix to ip_set_ext_destroy.
-  netfilter: ipset: remove inline from static functions in .c files.
-  netfilter: ipset: move ip_set_comment functions from ip_set.h to
-    ip_set_core.c.
-  netfilter: ipset: move functions to ip_set_core.c.
-  netfilter: ipset: make ip_set_put_flags extern.
-  netfilter: ipset: move function to ip_set_bitmap_ip.c.
-  netfilter: ipset: move ip_set_get_ip_port() to ip_set_bitmap_port.c.
-
- include/linux/netfilter/ipset/ip_set.h        | 196 +---------------
- include/linux/netfilter/ipset/ip_set_bitmap.h |  14 --
- .../linux/netfilter/ipset/ip_set_getport.h    |   3 -
- net/netfilter/ipset/ip_set_bitmap_gen.h       |   2 +-
- net/netfilter/ipset/ip_set_bitmap_ip.c        |  26 ++-
- net/netfilter/ipset/ip_set_bitmap_ipmac.c     |  18 +-
- net/netfilter/ipset/ip_set_bitmap_port.c      |  41 +++-
- net/netfilter/ipset/ip_set_core.c             | 212 +++++++++++++++++-
- net/netfilter/ipset/ip_set_getport.c          |  28 ---
- net/netfilter/ipset/ip_set_hash_gen.h         |   4 +-
- net/netfilter/ipset/ip_set_hash_ip.c          |  10 +-
- net/netfilter/ipset/ip_set_hash_ipmac.c       |   8 +-
- net/netfilter/ipset/ip_set_hash_ipmark.c      |   8 +-
- net/netfilter/ipset/ip_set_hash_ipport.c      |   8 +-
- net/netfilter/ipset/ip_set_hash_ipportip.c    |   8 +-
- net/netfilter/ipset/ip_set_hash_ipportnet.c   |  24 +-
- net/netfilter/ipset/ip_set_hash_mac.c         |   6 +-
- net/netfilter/ipset/ip_set_hash_net.c         |  24 +-
- net/netfilter/ipset/ip_set_hash_netiface.c    |  24 +-
- net/netfilter/ipset/ip_set_hash_netnet.c      |  28 +--
- net/netfilter/ipset/ip_set_hash_netport.c     |  24 +-
- net/netfilter/ipset/ip_set_hash_netportnet.c  |  28 +--
- net/netfilter/ipset/ip_set_list_set.c         |   4 +-
- 23 files changed, 376 insertions(+), 372 deletions(-)
-
+diff --git a/include/linux/netfilter/ipset/ip_set.h b/include/linux/netfilter/ipset/ip_set.h
+index 9bc255a8461b..9fee4837d02c 100644
+--- a/include/linux/netfilter/ipset/ip_set.h
++++ b/include/linux/netfilter/ipset/ip_set.h
+@@ -269,9 +269,11 @@ ip_set_ext_destroy(struct ip_set *set, void *data)
+ 	/* Check that the extension is enabled for the set and
+ 	 * call it's destroy function for its extension part in data.
+ 	 */
+-	if (SET_WITH_COMMENT(set))
+-		ip_set_extensions[IPSET_EXT_ID_COMMENT].destroy(
+-			set, ext_comment(data, set));
++	if (SET_WITH_COMMENT(set)) {
++		struct ip_set_comment *c = ext_comment(data, set);
++
++		ip_set_extensions[IPSET_EXT_ID_COMMENT].destroy(set, c);
++	}
+ }
+ 
+ static inline int
 -- 
 2.23.0
 
