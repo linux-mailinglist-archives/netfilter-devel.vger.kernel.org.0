@@ -2,132 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3AACC717
-	for <lists+netfilter-devel@lfdr.de>; Sat,  5 Oct 2019 03:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C441FCCA86
+	for <lists+netfilter-devel@lfdr.de>; Sat,  5 Oct 2019 16:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbfJEBGB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 4 Oct 2019 21:06:01 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:3111 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbfJEBGB (ORCPT
+        id S1727242AbfJEOiU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 5 Oct 2019 10:38:20 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:5538 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbfJEOiU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 4 Oct 2019 21:06:01 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app12-12012 (RichMail) with SMTP id 2eec5d97ec641ed-bc085; Sat, 05 Oct 2019 09:05:40 +0800 (CST)
-X-RM-TRANSID: 2eec5d97ec641ed-bc085
+        Sat, 5 Oct 2019 10:38:20 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.17]) by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee35d98aabf48e-c327d; Sat, 05 Oct 2019 22:37:53 +0800 (CST)
+X-RM-TRANSID: 2ee35d98aabf48e-c327d
 X-RM-TagInfo: emlType=0                                       
 X-RM-SPAM-FLAG: 00000000
-Received: from [10.0.0.249] (unknown[112.0.144.232])
-        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65d97ec619ac-e007b;
-        Sat, 05 Oct 2019 09:05:40 +0800 (CST)
-X-RM-TRANSID: 2ee65d97ec619ac-e007b
-Content-Type: text/plain; charset=gb2312
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v3 0/3] selftests: netfilter: introduce test cases for
- ipvs
+Received: from localhost (unknown[223.105.0.241])
+        by rmsmtp-syy-appsvr09-12009 (RichMail) with SMTP id 2ee95d98aabf086-fd9ab;
+        Sat, 05 Oct 2019 22:37:52 +0800 (CST)
+X-RM-TRANSID: 2ee95d98aabf086-fd9ab
 From:   Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-In-Reply-To: <20191004114745.GB6803@dimstar.local.net>
-Date:   Sat, 5 Oct 2019 09:05:37 +0800
-Cc:     Julian Anastasov <ja@ssi.bg>, Shuah Khan <shuah@kernel.org>,
+To:     Shuah Khan <shuah@kernel.org>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Simon Horman <horms@verge.net.au>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <4C9C0C54-4CC6-49A4-A868-6F7604B1AB2B@cmss.chinamobile.com>
-References: <1569939599-1872-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
- <alpine.LFD.2.21.1910012133330.3887@ja.home.ssi.bg>
- <20191002012726.GB9810@dimstar.local.net>
- <8E2E81F3-8385-4397-9A22-F513E507507D@cmss.chinamobile.com>
- <20191004114745.GB6803@dimstar.local.net>
-To:     Duncan Roe <duncan_roe@optusnet.com.au>
-X-Mailer: Apple Mail (2.3273)
+        Simon Horman <horms@verge.net.au>
+Cc:     Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org,
+        Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+Subject: [PATCH v4 0/3] selftests: netfilter: introduce test cases for ipvs
+Date:   Sat,  5 Oct 2019 22:37:42 +0800
+Message-Id: <1570286265-15855-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+This series patch include test cases for ipvs.
 
-> On 2019年10月4日, at 下午7:47, Duncan Roe <duncan_roe@optusnet.com.au> wrote:
-> 
-> On Thu, Oct 03, 2019 at 10:41:06PM +0800, Haishuang Yan wrote:
->> 
->> 
->>> On 2019??10??2??, at ????9:27, Duncan Roe <duncan_roe@optusnet.com.au> wrote:
->>> 
->>> On Tue, Oct 01, 2019 at 09:34:13PM +0300, Julian Anastasov wrote:
->>>> 
->>>> 	Hello,
->>>> 
->>>> On Tue, 1 Oct 2019, Haishuang Yan wrote:
->>>> 
->>>>> This series patch include test cases for ipvs.
->>>>> 
->>>>> The test topology is who as below:
->>>>> +--------------------------------------------------------------+
->>>>> |                      |                                       |
->>>>> |         ns0          |         ns1                           |
->>>>> |      -----------     |     -----------    -----------        |
->>>>> |      | veth01  | --------- | veth10  |    | veth12  |        |
->>>>> |      -----------    peer   -----------    -----------        |
->>>>> |           |          |                        |              |
->>>>> |      -----------     |                        |              |
->>>>> |      |  br0    |     |-----------------  peer |--------------|
->>>>> |      -----------     |                        |              |
->>>>> |           |          |                        |              |
->>>>> |      ----------     peer   ----------      -----------       |
->>>>> |      |  veth02 | --------- |  veth20 |     | veth12  |       |
->>>>> |      ----------      |     ----------      -----------       |
->>>>> |                      |         ns2                           |
->>>>> |                      |                                       |
->>>>> +--------------------------------------------------------------+
->>>>> 
->>>>> Test results:
->>>>> # selftests: netfilter: ipvs.sh
->>>>> # Testing DR mode...
->>>>> # Testing NAT mode...
->>>>> # Testing Tunnel mode...
->>>>> # ipvs.sh: PASS
->>>>> ok 6 selftests: netfilter: ipvs.sh
->>>>> 
->>>>> Haishuang Yan (3):
->>>>> selftests: netfilter: add ipvs test script
->>>>> selftests: netfilter: add ipvs nat test case
->>>>> selftests: netfilter: add ipvs tunnel test case
->>>> 
->>>> Acked-by: Julian Anastasov <ja@ssi.bg>
->>>> 
->>>>> tools/testing/selftests/netfilter/Makefile |   2 +-
->>>>> tools/testing/selftests/netfilter/ipvs.sh  | 234 +++++++++++++++++++++++++++++
->>>>> 2 files changed, 235 insertions(+), 1 deletion(-)
->>>>> create mode 100755 tools/testing/selftests/netfilter/ipvs.sh
->>>> 
->>>> Regards
->>>> 
->>>> --
->>>> Julian Anastasov <ja@ssi.bg>
->>> 
->>> I still prefer #!/bin/sh in 1/3. You never know what's in someone's environment
->>> 
->>> Cheers ... Duncan.
->>> 
->> 
->> It??s also my preference too. "_"	
->> 
->> I have tested both #!/bin/bash and #!/bin/sh script, they all works properly.
-> 
-> Enter these 2 lines:
->> ip(){ return 0; }
->> export -f ip
-> 
-> Now try the #!/bin/bash script. If that now fails, try again with #!/bin/bash
-> changed to #!/bin/bash -p
-> 
-> Any better now?
-> 
-> Cheers ... Duncan.
-> 
-It’s better now, thanks for your explanation.
-In v3 commit I will use #!/bin/bash -p to prevent exporting function from environment variables.
+The test topology is who as below:
++--------------------------------------------------------------+
+|                      |                                       |
+|         ns0          |         ns1                           |
+|      -----------     |     -----------    -----------        |
+|      | veth01  | --------- | veth10  |    | veth12  |        |
+|      -----------    peer   -----------    -----------        |
+|           |          |                        |              |
+|      -----------     |                        |              |
+|      |  br0    |     |-----------------  peer |--------------|
+|      -----------     |                        |              |
+|           |          |                        |              |
+|      ----------     peer   ----------      -----------       |
+|      |  veth02 | --------- |  veth20 |     | veth12  |       |
+|      ----------      |     ----------      -----------       |
+|                      |         ns2                           |
+|                      |                                       |
++--------------------------------------------------------------+
+
+Test results:
+# selftests: netfilter: ipvs.sh
+# Testing DR mode...
+# Testing NAT mode...
+# Testing Tunnel mode...
+# ipvs.sh: PASS
+ok 6 selftests: netfilter: ipvs.sh
+
+Haishuang Yan (3):
+  selftests: netfilter: add ipvs test script
+  selftests: netfilter: add ipvs nat test case
+  selftests: netfilter: add ipvs tunnel test case
+
+ tools/testing/selftests/netfilter/Makefile |   2 +-
+ tools/testing/selftests/netfilter/ipvs.sh  | 234 +++++++++++++++++++++++++++++
+ 2 files changed, 235 insertions(+), 1 deletion(-)
+ create mode 100755 tools/testing/selftests/netfilter/ipvs.sh
+
+-- 
+1.8.3.1
+
+
 
