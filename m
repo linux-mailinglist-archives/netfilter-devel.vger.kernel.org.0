@@ -2,111 +2,94 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D16CCA8C
-	for <lists+netfilter-devel@lfdr.de>; Sat,  5 Oct 2019 16:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B620CCBC7
+	for <lists+netfilter-devel@lfdr.de>; Sat,  5 Oct 2019 19:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728666AbfJEOiW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 5 Oct 2019 10:38:22 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:2130 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbfJEOiW (ORCPT
+        id S1728245AbfJERsV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 5 Oct 2019 13:48:21 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:39130 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729450AbfJERsU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 5 Oct 2019 10:38:22 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app04-12004 (RichMail) with SMTP id 2ee45d98aad1471-c330e; Sat, 05 Oct 2019 22:38:11 +0800 (CST)
-X-RM-TRANSID: 2ee45d98aad1471-c330e
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost (unknown[223.105.0.241])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35d98aad14aa-fee6e;
-        Sat, 05 Oct 2019 22:38:11 +0800 (CST)
-X-RM-TRANSID: 2ee35d98aad14aa-fee6e
-From:   Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-To:     Shuah Khan <shuah@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Simon Horman <horms@verge.net.au>
-Cc:     Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org,
-        Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-Subject: [PATCH v4 3/3] selftests: netfilter: add ipvs tunnel test case
-Date:   Sat,  5 Oct 2019 22:37:45 +0800
-Message-Id: <1570286265-15855-4-git-send-email-yanhaishuang@cmss.chinamobile.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1570286265-15855-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
-References: <1570286265-15855-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
+        Sat, 5 Oct 2019 13:48:20 -0400
+Received: by mail-ed1-f66.google.com with SMTP id a15so8815311edt.6
+        for <netfilter-devel@vger.kernel.org>; Sat, 05 Oct 2019 10:48:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=JdxTjZHOYunTMtiHW4RMA9FUy7l6bYMn8x9aB5OphDw=;
+        b=gR0eUTpmG5aDrcWOFuLxo8IbEW9hgOFZwmsxjBwlY7J3+S45wS0s//kKnlx7IsOc6d
+         3f3vDC60GOsqyqZxTEtIdLrq67+grveeFXH2GbMqHuRz7lvpjwXjPcbv0hsmbLWMEi6A
+         QbgQfL6WnGIjnGtO6wpu9Cqq04URMavYuTV3rxazTMZfNh0yDMlMNUYekDOcbY5Daiq+
+         ilHE5k9kB5jYxCqfCt1pVyOfNFy61AK+dUxuloXrKihnciBq/f6RqLuEY9PHOoXoF+Nv
+         FS8x+zxTWEYTCAQasrCNE9gQMPm61O66YAIVdiKdZ3D72mqODnRQLQj0zCCfaOsyouig
+         La5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=JdxTjZHOYunTMtiHW4RMA9FUy7l6bYMn8x9aB5OphDw=;
+        b=D5Kq3UxJ4Q3i6xvLQb1hdQKsL46ohn8QfV87CKiT4Z7DjRu9TKKkDfFHYUv2EUi3Pk
+         CmuVhtcpSKkCefnA6qiGEfdEyMml8WTvK35Ta3wVT41D1lXIjUaB+dcQQlY+a8Tu6dZE
+         HM7BVIapkvR27OZoHZuOkO9NVRPcG6hyPxCiCN/q+7eWtzvBG0We7UMr71qy6Difq1jH
+         N2YKLNE29FOM86gDducUMSWaEjxBFXwdFKXpI/zY9kUbfXNMq5+J52JLL3nsL2wa6Npm
+         bC+RsxENgY/LzQjf12S7n/fz39FQ6b/SEdfwLYnJHgi//0/WLa8uApL+JAyHnePsuPaw
+         G3Zw==
+X-Gm-Message-State: APjAAAX1d6+y0tW7MfV3VH+oh5bojvLc3OPatDlnx6r2bWnr6qVgW0dT
+        LVHL0zjt7q2RmxrX3L9dgrjoWerg29tG/mGeBcY=
+X-Google-Smtp-Source: APXvYqyitYt2T0iWE0B05tguFYEyOQ3JthAV9BScISjd7jw+WHBqYbLIot90w3YxUFOhnAphs+XX0mxBumxfKppGk9U=
+X-Received: by 2002:a17:906:3108:: with SMTP id 8mr17614511ejx.11.1570297697820;
+ Sat, 05 Oct 2019 10:48:17 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a50:b850:0:0:0:0:0 with HTTP; Sat, 5 Oct 2019 10:48:17 -0700 (PDT)
+Reply-To: walmart.b100263@gmail.com
+From:   "DR.Mike Benz" <eco.bank1204@gmail.com>
+Date:   Sat, 5 Oct 2019 18:48:17 +0100
+Message-ID: <CAOE+jAA6OM_JmMQsh1Nig8Ud=fcRg5d_hHsL9viCquJ70DhaiQ@mail.gmail.com>
+Subject: Happy to inform you, CONTACT WALMART TRANSFER To pick up $8000.00
+ sent to you this morning.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Test virtual server via ipip tunnel.
+Attn Dear Beneficiary.
+Happy to inform you, CONTACT WALMART TRANSFER To pick up $8000.00 sent
+to you this morning.
 
-Tested:
-# selftests: netfilter: ipvs.sh
-# Testing DR mode...
-# Testing NAT mode...
-# Testing Tunnel mode...
-# ipvs.sh: PASS
-ok 6 selftests: netfilter: ipvs.sh
+I have deposited your payment funds $2.500,000MillionUS Dollars
+With Walmart international money transfers.
+Receive the Money with Walmart | MoneyGram service.
+Walmart partners with MoneyGram to allow customers
+easily receive money transfers abroad,
+Contact Walmart international money transfers office -Benin
+Receive your approval payment funds $10.500,000MillionUS Dollars
+HERE IS WALMART CONTACT INFORMATIONS.
+Contact person. Mrs. Mary Anderson,Dir. Walmart transfers-Benin
+Email: walmart.b100263@gmail.com
+Telephone. +229 68823234
+Text Her on this international phone line. (256) 284-4886
 
-Signed-off-by: Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
----
-v2: optimize test script
----
- tools/testing/selftests/netfilter/ipvs.sh | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/tools/testing/selftests/netfilter/ipvs.sh b/tools/testing/selftests/netfilter/ipvs.sh
-index 2601a7c..48647ae 100755
---- a/tools/testing/selftests/netfilter/ipvs.sh
-+++ b/tools/testing/selftests/netfilter/ipvs.sh
-@@ -174,6 +174,30 @@ test_nat() {
-     test_service
- }
- 
-+test_tun() {
-+    ip netns exec ns0 ip route add ${vip_v4} via ${gip_v4} dev br0
-+
-+    ip netns exec ns1 modprobe ipip
-+    ip netns exec ns1 ip link set tunl0 up
-+    ip netns exec ns1 sysctl -qw net.ipv4.ip_forward=0
-+    ip netns exec ns1 sysctl -qw net.ipv4.conf.all.send_redirects=0
-+    ip netns exec ns1 sysctl -qw net.ipv4.conf.default.send_redirects=0
-+    ip netns exec ns1 ipvsadm -A -t ${vip_v4}:${port} -s rr
-+    ip netns exec ns1 ipvsadm -a -i -t ${vip_v4}:${port} -r ${rip_v4}:${port}
-+    ip netns exec ns1 ip addr add ${vip_v4}/32 dev lo:1
-+
-+    ip netns exec ns2 modprobe ipip
-+    ip netns exec ns2 ip link set tunl0 up
-+    ip netns exec ns2 sysctl -qw net.ipv4.conf.all.arp_ignore=1
-+    ip netns exec ns2 sysctl -qw net.ipv4.conf.all.arp_announce=2
-+    ip netns exec ns2 sysctl -qw net.ipv4.conf.all.rp_filter=0
-+    ip netns exec ns2 sysctl -qw net.ipv4.conf.tunl0.rp_filter=0
-+    ip netns exec ns2 sysctl -qw net.ipv4.conf.veth21.rp_filter=0
-+    ip netns exec ns2 ip addr add ${vip_v4}/32 dev lo:1
-+
-+    test_service
-+}
-+
- run_tests() {
- 	local errors=
- 
-@@ -189,6 +213,12 @@ run_tests() {
- 	test_nat
- 	errors=$(( $errors + $? ))
- 
-+	echo "Testing Tunnel mode..."
-+	cleanup
-+	setup
-+	test_tun
-+	errors=$(( $errors + $? ))
-+
- 	return $errors
- }
- 
--- 
-1.8.3.1
-
-
-
+Ask Mrs. Mary Anderson,Dir. Walmart transfers-Benin to send the transfer
+as i instructed.
+we agreed to keep sending the transfer to you $8000.00 daily.
+Until you received your total payment $10.500,000 from the office
+Once again,
+make sure you contact Mrs. Mary Anderson,Dir. Walmart transfers-Benin
+today including your infos.
+(1) Your  Full Name==============
+(2) house address=============
+(3) Your Phone Numbers=============
+Urgent to receive your transfer now without any further delay.
+Finally, Send your first payment transfer fees to Walmart office on
+below address
+Receiver's Name====== ALAN UDE
+Country=====BENIN
+City=======COTONOU
+AMOUNT =====$58.00 only. Your first payment $8000.00 transfer fee.
+Question======God
+Answer=========Creator
+Thanks
+DR.Mike Benz
