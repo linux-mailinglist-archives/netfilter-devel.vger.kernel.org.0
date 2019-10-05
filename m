@@ -2,94 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B620CCBC7
-	for <lists+netfilter-devel@lfdr.de>; Sat,  5 Oct 2019 19:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AFA7CCD3C
+	for <lists+netfilter-devel@lfdr.de>; Sun,  6 Oct 2019 01:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbfJERsV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 5 Oct 2019 13:48:21 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:39130 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729450AbfJERsU (ORCPT
+        id S1726180AbfJEXCm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 5 Oct 2019 19:02:42 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:33321 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726107AbfJEXCm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 5 Oct 2019 13:48:20 -0400
-Received: by mail-ed1-f66.google.com with SMTP id a15so8815311edt.6
-        for <netfilter-devel@vger.kernel.org>; Sat, 05 Oct 2019 10:48:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=JdxTjZHOYunTMtiHW4RMA9FUy7l6bYMn8x9aB5OphDw=;
-        b=gR0eUTpmG5aDrcWOFuLxo8IbEW9hgOFZwmsxjBwlY7J3+S45wS0s//kKnlx7IsOc6d
-         3f3vDC60GOsqyqZxTEtIdLrq67+grveeFXH2GbMqHuRz7lvpjwXjPcbv0hsmbLWMEi6A
-         QbgQfL6WnGIjnGtO6wpu9Cqq04URMavYuTV3rxazTMZfNh0yDMlMNUYekDOcbY5Daiq+
-         ilHE5k9kB5jYxCqfCt1pVyOfNFy61AK+dUxuloXrKihnciBq/f6RqLuEY9PHOoXoF+Nv
-         FS8x+zxTWEYTCAQasrCNE9gQMPm61O66YAIVdiKdZ3D72mqODnRQLQj0zCCfaOsyouig
-         La5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=JdxTjZHOYunTMtiHW4RMA9FUy7l6bYMn8x9aB5OphDw=;
-        b=D5Kq3UxJ4Q3i6xvLQb1hdQKsL46ohn8QfV87CKiT4Z7DjRu9TKKkDfFHYUv2EUi3Pk
-         CmuVhtcpSKkCefnA6qiGEfdEyMml8WTvK35Ta3wVT41D1lXIjUaB+dcQQlY+a8Tu6dZE
-         HM7BVIapkvR27OZoHZuOkO9NVRPcG6hyPxCiCN/q+7eWtzvBG0We7UMr71qy6Difq1jH
-         N2YKLNE29FOM86gDducUMSWaEjxBFXwdFKXpI/zY9kUbfXNMq5+J52JLL3nsL2wa6Npm
-         bC+RsxENgY/LzQjf12S7n/fz39FQ6b/SEdfwLYnJHgi//0/WLa8uApL+JAyHnePsuPaw
-         G3Zw==
-X-Gm-Message-State: APjAAAX1d6+y0tW7MfV3VH+oh5bojvLc3OPatDlnx6r2bWnr6qVgW0dT
-        LVHL0zjt7q2RmxrX3L9dgrjoWerg29tG/mGeBcY=
-X-Google-Smtp-Source: APXvYqyitYt2T0iWE0B05tguFYEyOQ3JthAV9BScISjd7jw+WHBqYbLIot90w3YxUFOhnAphs+XX0mxBumxfKppGk9U=
-X-Received: by 2002:a17:906:3108:: with SMTP id 8mr17614511ejx.11.1570297697820;
- Sat, 05 Oct 2019 10:48:17 -0700 (PDT)
+        Sat, 5 Oct 2019 19:02:42 -0400
+Received: from dimstar.local.net (n122-110-44-45.sun2.vic.optusnet.com.au [122.110.44.45])
+        by mail104.syd.optusnet.com.au (Postfix) with SMTP id 8E7F643E1B6
+        for <netfilter-devel@vger.kernel.org>; Sun,  6 Oct 2019 10:02:27 +1100 (AEDT)
+Received: (qmail 21499 invoked by uid 501); 5 Oct 2019 23:02:26 -0000
+Date:   Sun, 6 Oct 2019 10:02:26 +1100
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Netfilter Development <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH libnetfilter_queue] BUG: src: Update UDP header length
+ field after mangling
+Message-ID: <20191005230226.GA6119@dimstar.local.net>
+Mail-Followup-To: Pablo Neira Ayuso <pablo@netfilter.org>,
+        Netfilter Development <netfilter-devel@vger.kernel.org>
+References: <20190927125645.7869-1-duncan_roe@optusnet.com.au>
 MIME-Version: 1.0
-Received: by 2002:a50:b850:0:0:0:0:0 with HTTP; Sat, 5 Oct 2019 10:48:17 -0700 (PDT)
-Reply-To: walmart.b100263@gmail.com
-From:   "DR.Mike Benz" <eco.bank1204@gmail.com>
-Date:   Sat, 5 Oct 2019 18:48:17 +0100
-Message-ID: <CAOE+jAA6OM_JmMQsh1Nig8Ud=fcRg5d_hHsL9viCquJ70DhaiQ@mail.gmail.com>
-Subject: Happy to inform you, CONTACT WALMART TRANSFER To pick up $8000.00
- sent to you this morning.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190927125645.7869-1-duncan_roe@optusnet.com.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
+        a=4DzML1vCOQ6Odsy8BUtSXQ==:117 a=4DzML1vCOQ6Odsy8BUtSXQ==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=XobE76Q3jBoA:10
+        a=Pe8eT_EU7uL4CfIqDsEA:9 a=-ctxUYbndnHBRQ3X:21 a=PDfH-RZq3Bgc4uxa:21
+        a=CjuIK1q_8ugA:10
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Attn Dear Beneficiary.
-Happy to inform you, CONTACT WALMART TRANSFER To pick up $8000.00 sent
-to you this morning.
+Hi Pablo,
 
-I have deposited your payment funds $2.500,000MillionUS Dollars
-With Walmart international money transfers.
-Receive the Money with Walmart | MoneyGram service.
-Walmart partners with MoneyGram to allow customers
-easily receive money transfers abroad,
-Contact Walmart international money transfers office -Benin
-Receive your approval payment funds $10.500,000MillionUS Dollars
-HERE IS WALMART CONTACT INFORMATIONS.
-Contact person. Mrs. Mary Anderson,Dir. Walmart transfers-Benin
-Email: walmart.b100263@gmail.com
-Telephone. +229 68823234
-Text Her on this international phone line. (256) 284-4886
+On Fri, Sep 27, 2019 at 10:56:45PM +1000, Duncan Roe wrote:
+> One would expect nfq_udp_mangle_ipv4() to take care of the length field in
+> the UDP header but it did not.
+> With this patch, it does.
+> This patch is very unlikely to adversely affect any existing userspace
+> software (that did its own length adjustment),
+> because UDP checksumming was broken
+> ---
+>  src/extra/udp.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/src/extra/udp.c b/src/extra/udp.c
+> index 8c44a66..6836230 100644
+> --- a/src/extra/udp.c
+> +++ b/src/extra/udp.c
+> @@ -140,6 +140,8 @@ nfq_udp_mangle_ipv4(struct pkt_buff *pkt,
+>  	iph = (struct iphdr *)pkt->network_header;
+>  	udph = (struct udphdr *)(pkt->network_header + iph->ihl*4);
+>
+> +	udph->len = htons(ntohs(udph->len) + rep_len - match_len);
+> +
+>  	if (!nfq_ip_mangle(pkt, iph->ihl*4 + sizeof(struct udphdr),
+>  				match_offset, match_len, rep_buffer, rep_len))
+>  		return 0;
+> --
+> 2.14.5
+>
+Please consider applying this fix. I have other patches banking up behind it.
 
-Ask Mrs. Mary Anderson,Dir. Walmart transfers-Benin to send the transfer
-as i instructed.
-we agreed to keep sending the transfer to you $8000.00 daily.
-Until you received your total payment $10.500,000 from the office
-Once again,
-make sure you contact Mrs. Mary Anderson,Dir. Walmart transfers-Benin
-today including your infos.
-(1) Your  Full Name==============
-(2) house address=============
-(3) Your Phone Numbers=============
-Urgent to receive your transfer now without any further delay.
-Finally, Send your first payment transfer fees to Walmart office on
-below address
-Receiver's Name====== ALAN UDE
-Country=====BENIN
-City=======COTONOU
-AMOUNT =====$58.00 only. Your first payment $8000.00 transfer fee.
-Question======God
-Answer=========Creator
-Thanks
-DR.Mike Benz
+There is no need for a corresponding TCP fix because the TCP header does not
+contain a length field.
+
+And, there is no IP4 / IP6 concern: udp.c is used by both.
+
+(Also, git pull has stopped working for me: 80s delay then connection reset by
+peer).
+
+Cheers ... Duncan.
