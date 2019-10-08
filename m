@@ -2,72 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 377BBCF702
-	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Oct 2019 12:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CA5CF78A
+	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Oct 2019 12:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729958AbfJHK1y (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 8 Oct 2019 06:27:54 -0400
-Received: from correo.us.es ([193.147.175.20]:59458 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730026AbfJHK1x (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 8 Oct 2019 06:27:53 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id F3666E3EE4F
-        for <netfilter-devel@vger.kernel.org>; Tue,  8 Oct 2019 12:27:46 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id E2F07FB362
-        for <netfilter-devel@vger.kernel.org>; Tue,  8 Oct 2019 12:27:46 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id D82522DC7B; Tue,  8 Oct 2019 12:27:46 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id D62CEB7FF2;
-        Tue,  8 Oct 2019 12:27:44 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 08 Oct 2019 12:27:44 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (sys.soleta.eu [212.170.55.40])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id BC83E42EF4E1;
-        Tue,  8 Oct 2019 12:27:44 +0200 (CEST)
-Date:   Tue, 8 Oct 2019 12:27:46 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Duncan Roe <duncan_roe@optusnet.com.au>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH libnetfilter_queue 0/5] clang and documentation updates
-Message-ID: <20191008102746.h72le7hizrxqa4j5@salvia>
-References: <20191008004948.25632-1-duncan_roe@optusnet.com.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191008004948.25632-1-duncan_roe@optusnet.com.au>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1730214AbfJHKyS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 8 Oct 2019 06:54:18 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33811 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730118AbfJHKyS (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 8 Oct 2019 06:54:18 -0400
+Received: by mail-wr1-f67.google.com with SMTP id j11so13051972wrp.1
+        for <netfilter-devel@vger.kernel.org>; Tue, 08 Oct 2019 03:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=8PRMpFMEShUJD3hk0FhdJAdfxv7IH5PnkwKGnknPWEo=;
+        b=LIAbj6asGE0sHfxqpZGQnnjYlynVT1wjMaVa5mm8sr/fGbvB7dwS5ZaiV6Tsch+Whk
+         nxbrkuuzNeBNK7+5BLnyRKepNZa1NvymG0GaTwaqzyALWENnVM+c/MWCCiu7zx5lvOYX
+         7DNUyKeOTlGlkDe9AvqHp2px9P8Y9V6AmvIHRBfaohxjZxrvFZn1c278OUauptR/ViV0
+         2bLk+A1a2do9o+lNCmR1NP8dBaPCsuStgwW+DvYeFReaL1NOEuDwri3Zg/mp9IHdTMnS
+         M1UkffneFTPqLy3+zFafrkwYGrhe6CsHqfNAU0RZOb+UVLpafluZELbOzGxFa7CjD1om
+         d90g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=8PRMpFMEShUJD3hk0FhdJAdfxv7IH5PnkwKGnknPWEo=;
+        b=B96E2+vikDAmhrC7E8woh8Pp8SM0oyG43Qna/yhqFBTULfVM1VNnfdgZzMynFzIVs4
+         kXY2VeWgLmLONt7d5x4EjpzNYaGQv9INq7SwZFz0q5HGRXC7Go3XS7bGv2rmAClBTHTo
+         rfuMIDBJv6ksJPqKl8Ka/Ww2KPp/TV61ANhc9CJr+e7d5QboTWCb/ccP4q27fJZZNzso
+         0lQotUAKWRA7TPeXNoFSqp74rbqz1IQP1eaAJAIl9FqsDkgKrnxXszn++WmOCaRGCa/i
+         NU4zOg7ytrXGaomo1Lqb4AltCUYUpUje4/IaY0j2+2LFW0wJmlIok8O36C1UWK7oChsS
+         oGEA==
+X-Gm-Message-State: APjAAAVbhsSHStrxyvPIrMvfsDJWoA8lI5sMSzVx6GDNPljLJiT5rdJG
+        WXvxEW1CgvGCe1ywNPvQMgbl3Ucw
+X-Google-Smtp-Source: APXvYqxnD2M43PurcYFsrzJsHxsuUYsTX6uEyAMKtmufYMMrkUjq6/UrkTrvV3TZzIGrygcU4kg2fQ==
+X-Received: by 2002:a5d:46cc:: with SMTP id g12mr20177026wrs.101.1570532057100;
+        Tue, 08 Oct 2019 03:54:17 -0700 (PDT)
+Received: from cplx1037.edegem.eu.thmulti.com ([2001:4158:f013:0:2a10:7bff:fec5:6f08])
+        by smtp.gmail.com with ESMTPSA id f3sm20874630wrq.53.2019.10.08.03.54.16
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Tue, 08 Oct 2019 03:54:16 -0700 (PDT)
+From:   Alin Nastac <alin.nastac@gmail.com>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH] checksum: Fix TCP/UDP checksum computation on big endian arches
+Date:   Tue,  8 Oct 2019 12:54:11 +0200
+Message-Id: <1570532051-923-1-git-send-email-alin.nastac@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Oct 08, 2019 at 11:49:43AM +1100, Duncan Roe wrote:
-> This series is a mixture of patches to enable clang build and correct / insert
-> doxygen comments. It ended up that way after git merges of local branches where
-> they were originally developed.
-> 
-> Hopefully they are all uncontroversial so can just be applied.
+On big endian arches UDP/TCP checksum is incorrectly computed when
+payload length is odd.
 
-Series applied, thanks.
+Signed-off-by: Alin Nastac <alin.nastac@gmail.com>
+---
+ src/extra/checksum.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-I have just mangled "src: Enable clang build" not to split the
-function definition from its return value, it's a personal preference,
-I like to git grep for function definitions occasionally when
-searching for symbols. This is something in between your original
-proposal and what it's done in libmnl.
+diff --git a/src/extra/checksum.c b/src/extra/checksum.c
+index 4d52a99..42389aa 100644
+--- a/src/extra/checksum.c
++++ b/src/extra/checksum.c
+@@ -11,6 +11,7 @@
+ 
+ #include <stdio.h>
+ #include <stdbool.h>
++#include <endian.h>
+ #include <arpa/inet.h>
+ #include <netinet/ip.h>
+ #include <netinet/ip6.h>
+@@ -26,8 +27,13 @@ uint16_t nfq_checksum(uint32_t sum, uint16_t *buf, int size)
+ 		sum += *buf++;
+ 		size -= sizeof(uint16_t);
+ 	}
+-	if (size)
+-		sum += *(uint8_t *)buf;
++	if (size) {
++#if __BYTE_ORDER == __BIG_ENDIAN
++		sum += (uint16_t)*(uint8_t *)buf << 8;
++#else
++		sum += (uint16_t)*(uint8_t *)buf;
++#endif
++	}
+ 
+ 	sum = (sum >> 16) + (sum & 0xffff);
+ 	sum += (sum >>16);
+-- 
+2.7.4
 
-Thanks.
