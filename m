@@ -2,196 +2,249 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7DBCFEB9
-	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Oct 2019 18:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086D8D0092
+	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Oct 2019 20:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbfJHQPe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 8 Oct 2019 12:15:34 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:48514 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbfJHQPe (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 8 Oct 2019 12:15:34 -0400
-Received: from localhost ([::1]:33372 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1iHs97-0004X7-Fq; Tue, 08 Oct 2019 18:15:33 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v3 11/11] nft: Optimize flushing all chains of a table
-Date:   Tue,  8 Oct 2019 18:14:47 +0200
-Message-Id: <20191008161447.6595-12-phil@nwl.cc>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191008161447.6595-1-phil@nwl.cc>
-References: <20191008161447.6595-1-phil@nwl.cc>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726384AbfJHSPj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 8 Oct 2019 14:15:39 -0400
+Received: from 195-154-211-226.rev.poneytelecom.eu ([195.154.211.226]:49502
+        "EHLO flash.glorub.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726138AbfJHSPj (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 8 Oct 2019 14:15:39 -0400
+Received: from eric by flash.glorub.net with local (Exim 4.89)
+        (envelope-from <ejallot@gmail.com>)
+        id 1iHu1H-0007YP-UU; Tue, 08 Oct 2019 20:15:35 +0200
+From:   Eric Jallot <ejallot@gmail.com>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Eric Jallot <ejallot@gmail.com>
+Subject: [PATCH nft] tests: shell: fix failed tests due to missing quotes
+Date:   Tue,  8 Oct 2019 20:06:32 +0200
+Message-Id: <20191008180632.28583-1-ejallot@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Leverage nftables' support for flushing all chains of a table by
-omitting NFTNL_RULE_CHAIN attribute in NFT_MSG_DELRULE payload.
+Add double quotes to protect newlines when using <<< redirection.
 
-The only caveat is with verbose output, as that still requires to have a
-list of (existing) chains to iterate over. Apart from that, implementing
-this shortcut is pretty straightforward: Don't retrieve a chain list and
-just call __nft_rule_flush() directly which doesn't set above attribute
-if chain name pointer is NULL.
+See also commit b878cb7d83855.
 
-A bigger deal is keeping rule cache consistent: Instead of just clearing
-rule list for each flushed chain, flush_rule_cache() is updated to
-iterate over all cached chains of the given table, clearing their rule
-lists if not called for a specific chain.
-
-While being at it, sort local variable declarations in nft_rule_flush()
-from longest to shortest and drop the loop-local 'chain_name' variable
-(but instead use 'chain' function parameter which is not used at that
-point).
-
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Eric Jallot <ejallot@gmail.com>
 ---
- iptables/nft-cache.c | 22 +++++++++++++++++++---
- iptables/nft-cache.h |  3 ++-
- iptables/nft.c       | 32 ++++++++++++++++++--------------
- 3 files changed, 39 insertions(+), 18 deletions(-)
+ tests/shell/testcases/flowtable/0001flowtable_0      | 2 +-
+ tests/shell/testcases/listing/0015dynamic_0          | 2 +-
+ tests/shell/testcases/listing/0017objects_0          | 2 +-
+ tests/shell/testcases/listing/0018data_0             | 2 +-
+ tests/shell/testcases/listing/0019set_0              | 2 +-
+ tests/shell/testcases/maps/0007named_ifname_dtype_0  | 3 +--
+ tests/shell/testcases/nft-f/0002rollback_rule_0      | 4 ++--
+ tests/shell/testcases/nft-f/0003rollback_jump_0      | 4 ++--
+ tests/shell/testcases/nft-f/0004rollback_set_0       | 4 ++--
+ tests/shell/testcases/nft-f/0005rollback_map_0       | 4 ++--
+ tests/shell/testcases/nft-f/0006action_object_0      | 2 +-
+ tests/shell/testcases/nft-f/0017ct_timeout_obj_0     | 2 +-
+ tests/shell/testcases/nft-f/0018ct_expectation_obj_0 | 2 +-
+ tests/shell/testcases/sets/0029named_ifname_dtype_0  | 2 +-
+ 14 files changed, 18 insertions(+), 19 deletions(-)
 
-diff --git a/iptables/nft-cache.c b/iptables/nft-cache.c
-index 07406960030cf..8a33326a5bc24 100644
---- a/iptables/nft-cache.c
-+++ b/iptables/nft-cache.c
-@@ -381,7 +381,7 @@ static void __nft_flush_cache(struct nft_handle *h)
+diff --git a/tests/shell/testcases/flowtable/0001flowtable_0 b/tests/shell/testcases/flowtable/0001flowtable_0
+index 8336ec5a8f37..2e18099452a0 100755
+--- a/tests/shell/testcases/flowtable/0001flowtable_0
++++ b/tests/shell/testcases/flowtable/0001flowtable_0
+@@ -12,4 +12,4 @@ EXPECTED='table inet t {
+ }'
+ 
+ set -e
+-$NFT -f - <<< $EXPECTED
++$NFT -f - <<< "$EXPECTED"
+diff --git a/tests/shell/testcases/listing/0015dynamic_0 b/tests/shell/testcases/listing/0015dynamic_0
+index 5ddc4ad83a50..4ff74e321b8c 100755
+--- a/tests/shell/testcases/listing/0015dynamic_0
++++ b/tests/shell/testcases/listing/0015dynamic_0
+@@ -12,7 +12,7 @@ EXPECTED="table ip filter {
+ 
+ set -e
+ 
+-$NFT -f - <<< $EXPECTED
++$NFT -f - <<< "$EXPECTED"
+ 
+ GET="$($NFT list set ip filter test_set)"
+ if [ "$EXPECTED" != "$GET" ] ; then
+diff --git a/tests/shell/testcases/listing/0017objects_0 b/tests/shell/testcases/listing/0017objects_0
+index 14d614382e1b..8a586e8034f9 100755
+--- a/tests/shell/testcases/listing/0017objects_0
++++ b/tests/shell/testcases/listing/0017objects_0
+@@ -8,7 +8,7 @@ EXPECTED="table inet filter {
+ 
+ set -e
+ 
+-$NFT -f - <<< $EXPECTED
++$NFT -f - <<< "$EXPECTED"
+ $NFT flush map inet filter countermap
+ 
+ GET="$($NFT list map inet filter countermap)"
+diff --git a/tests/shell/testcases/listing/0018data_0 b/tests/shell/testcases/listing/0018data_0
+index 767fe13ae65a..544b6bf588e2 100755
+--- a/tests/shell/testcases/listing/0018data_0
++++ b/tests/shell/testcases/listing/0018data_0
+@@ -8,7 +8,7 @@ EXPECTED="table inet filter {
+ 
+ set -e
+ 
+-$NFT -f - <<< $EXPECTED
++$NFT -f - <<< "$EXPECTED"
+ $NFT flush map inet filter ipmap
+ 
+ GET="$($NFT list map inet filter ipmap)"
+diff --git a/tests/shell/testcases/listing/0019set_0 b/tests/shell/testcases/listing/0019set_0
+index 04eb0faf74af..54a8a0644079 100755
+--- a/tests/shell/testcases/listing/0019set_0
++++ b/tests/shell/testcases/listing/0019set_0
+@@ -8,7 +8,7 @@ EXPECTED="table inet filter {
+ 
+ set -e
+ 
+-$NFT -f - <<< $EXPECTED
++$NFT -f - <<< "$EXPECTED"
+ $NFT flush set inet filter ipset
+ 
+ GET="$($NFT list set inet filter ipset)"
+diff --git a/tests/shell/testcases/maps/0007named_ifname_dtype_0 b/tests/shell/testcases/maps/0007named_ifname_dtype_0
+index 4c7e7895a5ce..b5c5116b5660 100755
+--- a/tests/shell/testcases/maps/0007named_ifname_dtype_0
++++ b/tests/shell/testcases/maps/0007named_ifname_dtype_0
+@@ -15,5 +15,4 @@ EXPECTED="table inet t {
+ }"
+ 
+ set -e
+-$NFT -f - <<< $EXPECTED
+-
++$NFT -f - <<< "$EXPECTED"
+diff --git a/tests/shell/testcases/nft-f/0002rollback_rule_0 b/tests/shell/testcases/nft-f/0002rollback_rule_0
+index 33e1212d94fb..8a9ca84a54e0 100755
+--- a/tests/shell/testcases/nft-f/0002rollback_rule_0
++++ b/tests/shell/testcases/nft-f/0002rollback_rule_0
+@@ -27,13 +27,13 @@ table ip t2 {
  	}
- }
+ }"
  
--static int __flush_rule_cache(struct nftnl_rule *r, void *data)
-+static int ____flush_rule_cache(struct nftnl_rule *r, void *data)
- {
- 	nftnl_rule_list_del(r);
- 	nftnl_rule_free(r);
-@@ -389,9 +389,25 @@ static int __flush_rule_cache(struct nftnl_rule *r, void *data)
- 	return 0;
- }
+-$NFT -f - <<< $GOOD_RULESET
++$NFT -f - <<< "$GOOD_RULESET"
+ if [ $? -ne 0 ] ; then
+ 	echo "E: unable to load good ruleset" >&2
+ 	exit 1
+ fi
  
--void flush_rule_cache(struct nftnl_chain *c)
-+static int __flush_rule_cache(struct nftnl_chain *c, void *data)
- {
--	nftnl_rule_foreach(c, __flush_rule_cache, NULL);
-+	return nftnl_rule_foreach(c, ____flush_rule_cache, NULL);
-+}
-+
-+int flush_rule_cache(struct nft_handle *h, const char *table,
-+		     struct nftnl_chain *c)
-+{
-+	const struct builtin_table *t;
-+
-+	if (c)
-+		return __flush_rule_cache(c, NULL);
-+
-+	t = nft_table_builtin_find(h, table);
-+	if (!t || !h->cache->table[t->type].chains)
-+		return 0;
-+
-+	return nftnl_chain_list_foreach(h->cache->table[t->type].chains,
-+					__flush_rule_cache, NULL);
- }
- 
- static int __flush_chain_cache(struct nftnl_chain *c, void *data)
-diff --git a/iptables/nft-cache.h b/iptables/nft-cache.h
-index 793a85f453ffc..cb7a7688be37a 100644
---- a/iptables/nft-cache.h
-+++ b/iptables/nft-cache.h
-@@ -8,7 +8,8 @@ void nft_build_cache(struct nft_handle *h, struct nftnl_chain *c);
- void nft_rebuild_cache(struct nft_handle *h);
- void nft_release_cache(struct nft_handle *h);
- void flush_chain_cache(struct nft_handle *h, const char *tablename);
--void flush_rule_cache(struct nftnl_chain *c);
-+int flush_rule_cache(struct nft_handle *h, const char *table,
-+		     struct nftnl_chain *c);
- 
- struct nftnl_chain_list *
- nft_chain_list_get(struct nft_handle *h, const char *table, const char *chain);
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 12cc423c87bbb..89b1c7a808f57 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -1437,7 +1437,7 @@ __nft_rule_flush(struct nft_handle *h, const char *table,
- 	struct obj_update *obj;
- 	struct nftnl_rule *r;
- 
--	if (verbose)
-+	if (verbose && chain)
- 		fprintf(stdout, "Flushing chain `%s'\n", chain);
- 
- 	r = nftnl_rule_alloc();
-@@ -1445,7 +1445,8 @@ __nft_rule_flush(struct nft_handle *h, const char *table,
- 		return;
- 
- 	nftnl_rule_set_str(r, NFTNL_RULE_TABLE, table);
--	nftnl_rule_set_str(r, NFTNL_RULE_CHAIN, chain);
-+	if (chain)
-+		nftnl_rule_set_str(r, NFTNL_RULE_CHAIN, chain);
- 
- 	obj = batch_rule_add(h, NFT_COMPAT_RULE_FLUSH, r);
- 	if (!obj) {
-@@ -1459,19 +1460,21 @@ __nft_rule_flush(struct nft_handle *h, const char *table,
- int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
- 		   bool verbose)
- {
--	int ret = 0;
--	struct nftnl_chain_list *list;
- 	struct nftnl_chain_list_iter *iter;
--	struct nftnl_chain *c;
-+	struct nftnl_chain_list *list;
-+	struct nftnl_chain *c = NULL;
-+	int ret = 0;
- 
- 	nft_xt_builtin_init(h, table);
- 
- 	nft_fn = nft_rule_flush;
- 
--	list = nft_chain_list_get(h, table, chain);
--	if (list == NULL) {
--		ret = 1;
--		goto err;
-+	if (chain || verbose) {
-+		list = nft_chain_list_get(h, table, chain);
-+		if (list == NULL) {
-+			ret = 1;
-+			goto err;
-+		}
+-$NFT -f - <<< $BAD_RULESET 2>/dev/null
++$NFT -f - <<< "$BAD_RULESET" 2>/dev/null
+ if [ $? -eq 0 ]	; then
+ 	echo "E: bogus ruleset loaded?" >&2
+ 	exit 1
+diff --git a/tests/shell/testcases/nft-f/0003rollback_jump_0 b/tests/shell/testcases/nft-f/0003rollback_jump_0
+index 294a234eef97..6fb6f4e854b1 100755
+--- a/tests/shell/testcases/nft-f/0003rollback_jump_0
++++ b/tests/shell/testcases/nft-f/0003rollback_jump_0
+@@ -27,13 +27,13 @@ table ip t2 {
  	}
+ }"
  
- 	if (chain) {
-@@ -1480,9 +1483,11 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
- 			errno = ENOENT;
- 			return 0;
- 		}
-+	}
+-$NFT -f - <<< $GOOD_RULESET
++$NFT -f - <<< "$GOOD_RULESET"
+ if [ $? -ne 0 ] ; then
+ 	echo "E: unable to load good ruleset" >&2
+ 	exit 1
+ fi
  
-+	if (chain || !verbose) {
- 		__nft_rule_flush(h, table, chain, verbose, false);
--		flush_rule_cache(c);
-+		flush_rule_cache(h, table, c);
- 		return 1;
+-$NFT -f - <<< $BAD_RULESET 2>/dev/null
++$NFT -f - <<< "$BAD_RULESET" 2>/dev/null
+ if [ $? -eq 0 ]	; then
+ 	echo "E: bogus ruleset loaded?" >&2
+ 	exit 1
+diff --git a/tests/shell/testcases/nft-f/0004rollback_set_0 b/tests/shell/testcases/nft-f/0004rollback_set_0
+index 512840efb97b..bcc55df99061 100755
+--- a/tests/shell/testcases/nft-f/0004rollback_set_0
++++ b/tests/shell/testcases/nft-f/0004rollback_set_0
+@@ -27,13 +27,13 @@ table ip t2 {
  	}
+ }"
  
-@@ -1494,11 +1499,10 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
+-$NFT -f - <<< $GOOD_RULESET
++$NFT -f - <<< "$GOOD_RULESET"
+ if [ $? -ne 0 ] ; then
+ 	echo "E: unable to load good ruleset" >&2
+ 	exit 1
+ fi
  
- 	c = nftnl_chain_list_iter_next(iter);
- 	while (c != NULL) {
--		const char *chain_name =
--			nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
-+		chain = nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
- 
--		__nft_rule_flush(h, table, chain_name, verbose, false);
--		flush_rule_cache(c);
-+		__nft_rule_flush(h, table, chain, verbose, false);
-+		flush_rule_cache(h, table, c);
- 		c = nftnl_chain_list_iter_next(iter);
+-$NFT -f - <<< $BAD_RULESET 2>/dev/null
++$NFT -f - <<< "$BAD_RULESET" 2>/dev/null
+ if [ $? -eq 0 ]	; then
+ 	echo "E: bogus ruleset loaded?" >&2
+ 	exit 1
+diff --git a/tests/shell/testcases/nft-f/0005rollback_map_0 b/tests/shell/testcases/nft-f/0005rollback_map_0
+index b1eb3dd37471..913595d7cd98 100755
+--- a/tests/shell/testcases/nft-f/0005rollback_map_0
++++ b/tests/shell/testcases/nft-f/0005rollback_map_0
+@@ -30,13 +30,13 @@ table ip t2 {
  	}
- 	nftnl_chain_list_iter_destroy(iter);
+ }"
+ 
+-$NFT -f - <<< $GOOD_RULESET
++$NFT -f - <<< "$GOOD_RULESET"
+ if [ $? -ne 0 ] ; then
+ 	echo "E: unable to load good ruleset" >&2
+ 	exit 1
+ fi
+ 
+-$NFT -f - <<< $BAD_RULESET 2>/dev/null
++$NFT -f - <<< "$BAD_RULESET" 2>/dev/null
+ if [ $? -eq 0 ]	; then
+ 	echo "E: bogus ruleset loaded?" >&2
+ 	exit 1
+diff --git a/tests/shell/testcases/nft-f/0006action_object_0 b/tests/shell/testcases/nft-f/0006action_object_0
+index fab3070f493f..ddee661dd65c 100755
+--- a/tests/shell/testcases/nft-f/0006action_object_0
++++ b/tests/shell/testcases/nft-f/0006action_object_0
+@@ -40,7 +40,7 @@ RULESET=$(for family in $FAMILIES ; do
+ 	generate1 $family
+ done)
+ 
+-$NFT -f - <<< $RULESET
++$NFT -f - <<< "$RULESET"
+ if [ $? -ne 0 ] ; then
+ 	echo "E: unable to load ruleset 1" >&2
+ 	exit 1
+diff --git a/tests/shell/testcases/nft-f/0017ct_timeout_obj_0 b/tests/shell/testcases/nft-f/0017ct_timeout_obj_0
+index 1d6a0f7c84cf..4f407793b23b 100755
+--- a/tests/shell/testcases/nft-f/0017ct_timeout_obj_0
++++ b/tests/shell/testcases/nft-f/0017ct_timeout_obj_0
+@@ -13,4 +13,4 @@ EXPECTED='table ip filter {
+ }'
+ 
+ set -e
+-$NFT -f - <<< $EXPECTED
++$NFT -f - <<< "$EXPECTED"
+diff --git a/tests/shell/testcases/nft-f/0018ct_expectation_obj_0 b/tests/shell/testcases/nft-f/0018ct_expectation_obj_0
+index eb9df3ceb121..4f9872f63130 100755
+--- a/tests/shell/testcases/nft-f/0018ct_expectation_obj_0
++++ b/tests/shell/testcases/nft-f/0018ct_expectation_obj_0
+@@ -15,4 +15,4 @@ EXPECTED='table ip filter {
+ }'
+ 
+ set -e
+-$NFT -f - <<< $EXPECTED
++$NFT -f - <<< "$EXPECTED"
+diff --git a/tests/shell/testcases/sets/0029named_ifname_dtype_0 b/tests/shell/testcases/sets/0029named_ifname_dtype_0
+index 724f16676c2e..39b3c90cf8dc 100755
+--- a/tests/shell/testcases/sets/0029named_ifname_dtype_0
++++ b/tests/shell/testcases/sets/0029named_ifname_dtype_0
+@@ -21,4 +21,4 @@ EXPECTED="table inet t {
+ }"
+ 
+ set -e
+-$NFT -f - <<< $EXPECTED
++$NFT -f - <<< "$EXPECTED"
 -- 
-2.23.0
+2.11.0
 
