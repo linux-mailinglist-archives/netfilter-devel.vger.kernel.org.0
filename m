@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4EDCFEBD
-	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Oct 2019 18:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6548CFEAA
+	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Oct 2019 18:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbfJHQPp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 8 Oct 2019 12:15:45 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:48526 "EHLO orbyte.nwl.cc"
+        id S1725989AbfJHQO6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 8 Oct 2019 12:14:58 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:48464 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbfJHQPp (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 8 Oct 2019 12:15:45 -0400
-Received: from localhost ([::1]:33384 helo=tatos)
+        id S1725966AbfJHQO6 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 8 Oct 2019 12:14:58 -0400
+Received: from localhost ([::1]:33322 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iHs9I-0004Xx-33; Tue, 08 Oct 2019 18:15:44 +0200
+        id 1iHs8W-0004TS-DA; Tue, 08 Oct 2019 18:14:56 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v3 01/11] nft: Pass nft_handle to flush_cache()
-Date:   Tue,  8 Oct 2019 18:14:37 +0200
-Message-Id: <20191008161447.6595-2-phil@nwl.cc>
+Subject: [iptables PATCH v3 02/11] nft: Avoid nested cache fetching
+Date:   Tue,  8 Oct 2019 18:14:38 +0200
+Message-Id: <20191008161447.6595-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191008161447.6595-1-phil@nwl.cc>
 References: <20191008161447.6595-1-phil@nwl.cc>
@@ -31,101 +31,36 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This allows to call nft_table_builtin_find() and hence removes the only
-real user of __nft_table_builtin_find(). Consequently remove the latter
-by integrating it into its sole caller.
+Don't call fetch_table_cache() from within fetch_chain_cache() but
+instead from __nft_build_cache(). Since that is the only caller of
+fetch_chain_cache(), this change should not have any effect in practice.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c | 28 +++++++++++-----------------
- 1 file changed, 11 insertions(+), 17 deletions(-)
+ iptables/nft.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/iptables/nft.c b/iptables/nft.c
-index a2f36b7ee90d2..bdc9fbc37f110 100644
+index bdc9fbc37f110..3228842cd3c8b 100644
 --- a/iptables/nft.c
 +++ b/iptables/nft.c
-@@ -703,31 +703,25 @@ static void nft_chain_builtin_add(struct nft_handle *h,
- 	nftnl_chain_list_add_tail(c, h->cache->table[table->type].chains);
- }
+@@ -1414,8 +1414,6 @@ static int fetch_chain_cache(struct nft_handle *h)
+ 	struct nlmsghdr *nlh;
+ 	int i, ret;
  
--static const struct builtin_table *
--__nft_table_builtin_find(const struct builtin_table *tables, const char *table)
-+/* find if built-in table already exists */
-+const struct builtin_table *
-+nft_table_builtin_find(struct nft_handle *h, const char *table)
- {
- 	int i;
- 	bool found = false;
- 
- 	for (i = 0; i < NFT_TABLE_MAX; i++) {
--		if (tables[i].name == NULL)
-+		if (h->tables[i].name == NULL)
- 			continue;
- 
--		if (strcmp(tables[i].name, table) != 0)
-+		if (strcmp(h->tables[i].name, table) != 0)
- 			continue;
- 
- 		found = true;
- 		break;
- 	}
- 
--	return found ? &tables[i] : NULL;
--}
+-	fetch_table_cache(h);
 -
--/* find if built-in table already exists */
--const struct builtin_table *
--nft_table_builtin_find(struct nft_handle *h, const char *table)
--{
--	return __nft_table_builtin_find(h->tables, table);
-+	return found ? &h->tables[i] : NULL;
- }
- 
- /* find if built-in chain already exists */
-@@ -857,14 +851,14 @@ static int __flush_chain_cache(struct nftnl_chain *c, void *data)
- 	return 0;
- }
- 
--static int flush_cache(struct nft_cache *c, const struct builtin_table *tables,
-+static int flush_cache(struct nft_handle *h, struct nft_cache *c,
- 		       const char *tablename)
- {
- 	const struct builtin_table *table;
- 	int i;
- 
- 	if (tablename) {
--		table = __nft_table_builtin_find(tables, tablename);
-+		table = nft_table_builtin_find(h, tablename);
- 		if (!table || !c->table[table->type].chains)
- 			return 0;
- 		nftnl_chain_list_foreach(c->table[table->type].chains,
-@@ -873,7 +867,7 @@ static int flush_cache(struct nft_cache *c, const struct builtin_table *tables,
- 	}
- 
  	for (i = 0; i < NFT_TABLE_MAX; i++) {
--		if (tables[i].name == NULL)
-+		if (h->tables[i].name == NULL)
- 			continue;
+ 		enum nft_table_type type = h->tables[i].type;
  
- 		if (!c->table[i].chains)
-@@ -893,7 +887,7 @@ static void flush_chain_cache(struct nft_handle *h, const char *tablename)
- 	if (!h->have_cache)
- 		return;
+@@ -1592,6 +1590,7 @@ static void __nft_build_cache(struct nft_handle *h)
  
--	if (flush_cache(h->cache, h->tables, tablename))
-+	if (flush_cache(h, h->cache, tablename))
- 		h->have_cache = false;
- }
- 
-@@ -1655,7 +1649,7 @@ static void nft_rebuild_cache(struct nft_handle *h)
- static void nft_release_cache(struct nft_handle *h)
- {
- 	if (h->cache_index)
--		flush_cache(&h->__cache[0], h->tables, NULL);
-+		flush_cache(h, &h->__cache[0], NULL);
- }
- 
- struct nftnl_chain_list *nft_chain_list_get(struct nft_handle *h,
+ retry:
+ 	mnl_genid_get(h, &genid_start);
++	fetch_table_cache(h);
+ 	fetch_chain_cache(h);
+ 	fetch_rule_cache(h);
+ 	h->have_cache = true;
 -- 
 2.23.0
 
