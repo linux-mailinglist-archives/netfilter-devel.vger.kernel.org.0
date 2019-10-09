@@ -2,111 +2,142 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDDCD0D7F
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2019 13:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904EFD1157
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Oct 2019 16:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730765AbfJILRQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 9 Oct 2019 07:17:16 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:5553 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727228AbfJILRQ (ORCPT
+        id S1731254AbfJIOco (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 9 Oct 2019 10:32:44 -0400
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:45136 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730490AbfJIOco (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 9 Oct 2019 07:17:16 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee35d9dc1a5921-087f3; Wed, 09 Oct 2019 19:16:55 +0800 (CST)
-X-RM-TRANSID: 2ee35d9dc1a5921-087f3
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost (unknown[223.105.0.241])
-        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee75d9dc1a6c47-6ba43;
-        Wed, 09 Oct 2019 19:16:55 +0800 (CST)
-X-RM-TRANSID: 2ee75d9dc1a6c47-6ba43
-From:   Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-To:     Shuah Khan <shuah@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Simon Horman <horms@verge.net.au>
-Cc:     Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org,
-        Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-Subject: [PATCH v5 3/3] selftests: netfilter: add ipvs tunnel test case
-Date:   Wed,  9 Oct 2019 19:16:30 +0800
-Message-Id: <1570619790-6086-4-git-send-email-yanhaishuang@cmss.chinamobile.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1570619790-6086-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
-References: <1570619790-6086-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
+        Wed, 9 Oct 2019 10:32:44 -0400
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1iID18-0003aR-Ac; Wed, 09 Oct 2019 16:32:42 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>, Edward Cree <ecree@solarflare.com>
+Subject: [PATCH nf-next] netfilter: add and use nf_hook_slow_list()
+Date:   Wed,  9 Oct 2019 16:30:46 +0200
+Message-Id: <20191009143046.11070-1-fw@strlen.de>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Test virtual server via ipip tunnel.
+At this time, NF_HOOK_LIST() macro will iterate the list and then call
+nf_hook() for each skb.
 
-Tested:
-# selftests: netfilter: ipvs.sh
-# Testing DR mode...
-# Testing NAT mode...
-# Testing Tunnel mode...
-# ipvs.sh: PASS
-ok 6 selftests: netfilter: ipvs.sh
+This makes it so the entire list is passed into the netfilter core.
+The advantage is that we only need to fetch the rule blob once per list
+instead of per-skb.  If no rules are present, the list operations
+can be elided entirely.
 
-Signed-off-by: Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+NF_HOOK_LIST only supports ipv4 and ipv6, but those are the only
+callers.
+
+Cc: Edward Cree <ecree@solarflare.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
-v2: optimize test script
----
- tools/testing/selftests/netfilter/ipvs.sh | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ include/linux/netfilter.h | 41 +++++++++++++++++++++++++++++----------
+ net/netfilter/core.c      | 20 +++++++++++++++++++
+ 2 files changed, 51 insertions(+), 10 deletions(-)
 
-diff --git a/tools/testing/selftests/netfilter/ipvs.sh b/tools/testing/selftests/netfilter/ipvs.sh
-index 60250f7..edea729 100755
---- a/tools/testing/selftests/netfilter/ipvs.sh
-+++ b/tools/testing/selftests/netfilter/ipvs.sh
-@@ -168,6 +168,30 @@ test_nat() {
- 	test_service
+diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+index 77ebb61faf48..eb312e7ca36e 100644
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -199,6 +199,8 @@ extern struct static_key nf_hooks_needed[NFPROTO_NUMPROTO][NF_MAX_HOOKS];
+ int nf_hook_slow(struct sk_buff *skb, struct nf_hook_state *state,
+ 		 const struct nf_hook_entries *e, unsigned int i);
+ 
++void nf_hook_slow_list(struct list_head *head, struct nf_hook_state *state,
++		       const struct nf_hook_entries *e);
+ /**
+  *	nf_hook - call a netfilter hook
+  *
+@@ -311,17 +313,36 @@ NF_HOOK_LIST(uint8_t pf, unsigned int hook, struct net *net, struct sock *sk,
+ 	     struct list_head *head, struct net_device *in, struct net_device *out,
+ 	     int (*okfn)(struct net *, struct sock *, struct sk_buff *))
+ {
+-	struct sk_buff *skb, *next;
+-	struct list_head sublist;
+-
+-	INIT_LIST_HEAD(&sublist);
+-	list_for_each_entry_safe(skb, next, head, list) {
+-		list_del(&skb->list);
+-		if (nf_hook(pf, hook, net, sk, skb, in, out, okfn) == 1)
+-			list_add_tail(&skb->list, &sublist);
++	struct nf_hook_entries *hook_head = NULL;
++
++#ifdef CONFIG_JUMP_LABEL
++	if (__builtin_constant_p(pf) &&
++	    __builtin_constant_p(hook) &&
++	    !static_key_false(&nf_hooks_needed[pf][hook]))
++		return;
++#endif
++
++	rcu_read_lock();
++	switch (pf) {
++	case NFPROTO_IPV4:
++		hook_head = rcu_dereference(net->nf.hooks_ipv4[hook]);
++		break;
++	case NFPROTO_IPV6:
++		hook_head = rcu_dereference(net->nf.hooks_ipv6[hook]);
++		break;
++	default:
++		WARN_ON_ONCE(1);
++		break;
+ 	}
+-	/* Put passed packets back on main list */
+-	list_splice(&sublist, head);
++
++	if (hook_head) {
++		struct nf_hook_state state;
++
++		nf_hook_state_init(&state, hook, pf, in, out, sk, net, okfn);
++
++		nf_hook_slow_list(head, &state, hook_head);
++	}
++	rcu_read_unlock();
  }
  
-+test_tun() {
-+	ip netns exec ns0 ip route add ${vip_v4} via ${gip_v4} dev br0
+ /* Call setsockopt() */
+diff --git a/net/netfilter/core.c b/net/netfilter/core.c
+index 5d5bdf450091..306587b07a4f 100644
+--- a/net/netfilter/core.c
++++ b/net/netfilter/core.c
+@@ -536,6 +536,26 @@ int nf_hook_slow(struct sk_buff *skb, struct nf_hook_state *state,
+ }
+ EXPORT_SYMBOL(nf_hook_slow);
+ 
++void nf_hook_slow_list(struct list_head *head, struct nf_hook_state *state,
++		       const struct nf_hook_entries *e)
++{
++	struct sk_buff *skb, *next;
++	struct list_head sublist;
++	int ret;
 +
-+	ip netns exec ns1 modprobe ipip
-+	ip netns exec ns1 ip link set tunl0 up
-+	ip netns exec ns1 sysctl -qw net.ipv4.ip_forward=0
-+	ip netns exec ns1 sysctl -qw net.ipv4.conf.all.send_redirects=0
-+	ip netns exec ns1 sysctl -qw net.ipv4.conf.default.send_redirects=0
-+	ip netns exec ns1 ipvsadm -A -t ${vip_v4}:${port} -s rr
-+	ip netns exec ns1 ipvsadm -a -i -t ${vip_v4}:${port} -r ${rip_v4}:${port}
-+	ip netns exec ns1 ip addr add ${vip_v4}/32 dev lo:1
++	INIT_LIST_HEAD(&sublist);
 +
-+	ip netns exec ns2 modprobe ipip
-+	ip netns exec ns2 ip link set tunl0 up
-+	ip netns exec ns2 sysctl -qw net.ipv4.conf.all.arp_ignore=1
-+	ip netns exec ns2 sysctl -qw net.ipv4.conf.all.arp_announce=2
-+	ip netns exec ns2 sysctl -qw net.ipv4.conf.all.rp_filter=0
-+	ip netns exec ns2 sysctl -qw net.ipv4.conf.tunl0.rp_filter=0
-+	ip netns exec ns2 sysctl -qw net.ipv4.conf.veth21.rp_filter=0
-+	ip netns exec ns2 ip addr add ${vip_v4}/32 dev lo:1
-+
-+	test_service
++	list_for_each_entry_safe(skb, next, head, list) {
++		list_del(&skb->list);
++		ret = nf_hook_slow(skb, state, e, 0);
++		if (ret == 1)
++			list_add_tail(&skb->list, &sublist);
++	}
++	/* Put passed packets back on main list */
++	list_splice(&sublist, head);
 +}
++EXPORT_SYMBOL(nf_hook_slow_list);
 +
- run_tests() {
- 	local errors=
- 
-@@ -183,6 +207,12 @@ run_tests() {
- 	test_nat
- 	errors=$(( $errors + $? ))
- 
-+	echo "Testing Tunnel mode..."
-+	cleanup
-+	setup
-+	test_tun
-+	errors=$(( $errors + $? ))
-+
- 	return $errors
- }
- 
+ /* This needs to be compiled in any case to avoid dependencies between the
+  * nfnetlink_queue code and nf_conntrack.
+  */
 -- 
-1.8.3.1
-
-
+2.21.0
 
