@@ -2,63 +2,133 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC609D317C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Oct 2019 21:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D5DD33C3
+	for <lists+netfilter-devel@lfdr.de>; Fri, 11 Oct 2019 00:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbfJJTld (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 10 Oct 2019 15:41:33 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:52882 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725867AbfJJTld (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 10 Oct 2019 15:41:33 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1iIeJX-0005D7-5Z; Thu, 10 Oct 2019 21:41:31 +0200
-Date:   Thu, 10 Oct 2019 21:41:31 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Edward Cree <ecree@solarflare.com>
-Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf-next] netfilter: add and use nf_hook_slow_list()
-Message-ID: <20191010194131.GJ25052@breakpoint.cc>
-References: <20191009143046.11070-1-fw@strlen.de>
- <d4294ffa-db43-f9ad-2f7f-b33c0f241101@solarflare.com>
+        id S1726053AbfJJWJN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 10 Oct 2019 18:09:13 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:53940 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725978AbfJJWJN (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 10 Oct 2019 18:09:13 -0400
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1iIgcR-0004pF-Uz; Fri, 11 Oct 2019 00:09:11 +0200
+Date:   Fri, 11 Oct 2019 00:09:11 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH v3 04/11] nft-cache: Introduce cache levels
+Message-ID: <20191010220911.GM12661@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+References: <20191008161447.6595-1-phil@nwl.cc>
+ <20191008161447.6595-5-phil@nwl.cc>
+ <20191009093723.snbyd6xvtd5gpnto@salvia>
+ <20191009102901.6kel2u36u3yv4myu@salvia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d4294ffa-db43-f9ad-2f7f-b33c0f241101@solarflare.com>
+In-Reply-To: <20191009102901.6kel2u36u3yv4myu@salvia>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Edward Cree <ecree@solarflare.com> wrote:
-> On 09/10/2019 15:30, Florian Westphal wrote:
-> > At this time, NF_HOOK_LIST() macro will iterate the list and then call
-> > nf_hook() for each skb.
-> >
-> > This makes it so the entire list is passed into the netfilter core.
-> > The advantage is that we only need to fetch the rule blob once per list
-> > instead of per-skb.  If no rules are present, the list operations
-> > can be elided entirely.
-> >
-> > NF_HOOK_LIST only supports ipv4 and ipv6, but those are the only
-> > callers.
-> >
-> > Cc: Edward Cree <ecree@solarflare.com>
-> > Signed-off-by: Florian Westphal <fw@strlen.de>
-> > ---
-> LGTM (but see below).
-> Acked-by: Edward Cree <ecree@solarflare.com>
+Hi Pablo,
 
-[..]
+On Wed, Oct 09, 2019 at 12:29:01PM +0200, Pablo Neira Ayuso wrote:
+> On Wed, Oct 09, 2019 at 11:37:23AM +0200, Pablo Neira Ayuso wrote:
+> > Hi Phil,
+> > 
+> > On Tue, Oct 08, 2019 at 06:14:40PM +0200, Phil Sutter wrote:
+> > > Replace the simple have_cache boolean by a cache level indicator
+> > > defining how complete the cache is. Since have_cache indicated full
+> > > cache (including rules), make code depending on it check for cache level
+> > > NFT_CL_RULES.
+> > > 
+> > > Core cache fetching routine __nft_build_cache() accepts a new level via
+> > > parameter and raises cache completeness to that level.
+> > > 
+> > > Signed-off-by: Phil Sutter <phil@nwl.cc>
+> > > ---
+> > >  iptables/nft-cache.c | 51 +++++++++++++++++++++++++++++++-------------
+> > >  iptables/nft.h       |  9 +++++++-
+> > >  2 files changed, 44 insertions(+), 16 deletions(-)
+> > > 
+> > > diff --git a/iptables/nft-cache.c b/iptables/nft-cache.c
+> > > index 5444419a5cc3b..22a87e94efd76 100644
+> > > --- a/iptables/nft-cache.c
+> > > +++ b/iptables/nft-cache.c
+> > > @@ -224,30 +224,49 @@ static int fetch_rule_cache(struct nft_handle *h)
+> > >  	return 0;
+> > >  }
+> > >  
+> > > -static void __nft_build_cache(struct nft_handle *h)
+> > > +static void __nft_build_cache(struct nft_handle *h, enum nft_cache_level level)
+> > >  {
+> > >  	uint32_t genid_start, genid_stop;
+> > >  
+> > > +	if (level <= h->cache_level)
+> > > +		return;
+> > >  retry:
+> > >  	mnl_genid_get(h, &genid_start);
+> > > -	fetch_table_cache(h);
+> > > -	fetch_chain_cache(h);
+> > > -	fetch_rule_cache(h);
+> > > -	h->have_cache = true;
+> > > -	mnl_genid_get(h, &genid_stop);
+> > >  
+> > > +	switch (h->cache_level) {
+> > > +	case NFT_CL_NONE:
+> > > +		fetch_table_cache(h);
+> > > +		if (level == NFT_CL_TABLES)
+> > > +			break;
+> > > +		/* fall through */
+> > > +	case NFT_CL_TABLES:
+> > 
+> > If the existing level is TABLES and use wants chains, then you have to
+> > invalidate the existing table cache, then fetch the tables and chains
+> > to make sure cache is consistent. I mean, extending an existing cache
+> > might lead to inconsistencies.
+> > 
+> > Am I missing anything?
 
-> > +     list_for_each_entry_safe(skb, next, head, list) {
-> > +             list_del(&skb->list);
-> I know this was just copied from the existing code, but I've been getting
-> a lot more paranoid lately about skbs escaping with non-NULL ->next
-> pointers, since several bugs of that kind have turned up elsewhere.
-> So should this maybe be skb_list_del_init()?
+Hmm, this is a valid point indeed. At least one can't depend on stored
+genid to match the local cache's state which defeats its purpose.
 
-Ok, I can make that change and send a v2.
+> If I'm correct, I wonder if we should go for splitting the parsing
+> from the evaluation phase here. Probably generate the rule by pointing
+> to the table and chain as string, then evaluate the ruleset update
+> batch to obtain the cache level in one go. This is the approach that
+> I had in mind with nftables, so you might avoid dumping the ruleset
+> over and over in an environment where dynamic updates are frequent.
+> 
+> The idea is to avoid fetching a cache, then canceling it by the rule
+> coming afterwards just because the cache is incomplete. So the cache
+> that is required is calculated once, then you go to the kernel and
+> fetch it (making sure generation number tells you that your cache is
+> consistent).
+> 
+> Makes sense to you?
+
+Well, I understand your approach and it's a proper way to deal with the
+situation, but I fear this means quite some effort. I imagine we either
+extend the xtables-restore table delete logic to add and disable more
+dependency commands based on kernel ruleset contents or add these
+dependency commands when iterating over the command set and populating
+the cache.
+
+The thing is, we do this mostly just for xtables-restore --noflush
+logic, which in turn is probably not used often but popular among "power
+users" trying to speed up the bunch of iptables commands they have to
+enter at once.
+
+Maybe we could go with a simpler solution for now, which is to check
+kernel genid again and drop the local cache if it differs from what's
+stored. If it doesn't, the current cache is still up to date and we may
+just fetch what's missing. Or does that leave room for a race condition?
+
+Thanks, Phil
