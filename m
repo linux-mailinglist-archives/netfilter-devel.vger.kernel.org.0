@@ -2,111 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2709FD2CEF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Oct 2019 16:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3E3D2F71
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Oct 2019 19:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbfJJOwC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 10 Oct 2019 10:52:02 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:2391 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbfJJOwC (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 10 Oct 2019 10:52:02 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee25d9f4569809-229e5; Thu, 10 Oct 2019 22:51:21 +0800 (CST)
-X-RM-TRANSID: 2ee25d9f4569809-229e5
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost (unknown[223.105.0.241])
-        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee75d9f4566e8f-c4fb8;
-        Thu, 10 Oct 2019 22:51:20 +0800 (CST)
-X-RM-TRANSID: 2ee75d9f4566e8f-c4fb8
-From:   Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-To:     Shuah Khan <shuah@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Simon Horman <horms@verge.net.au>
-Cc:     Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org,
-        Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-Subject: [PATCH v6 3/3] selftests: netfilter: add ipvs tunnel test case
-Date:   Thu, 10 Oct 2019 22:50:55 +0800
-Message-Id: <1570719055-25110-4-git-send-email-yanhaishuang@cmss.chinamobile.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1570719055-25110-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
-References: <1570719055-25110-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
+        id S1726291AbfJJRTL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 10 Oct 2019 13:19:11 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:59930 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726131AbfJJRTK (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 10 Oct 2019 13:19:10 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 6E9DC30A922D;
+        Thu, 10 Oct 2019 17:19:10 +0000 (UTC)
+Received: from epycfail.redhat.com (ovpn-112-41.ams2.redhat.com [10.36.112.41])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2BEC210027C0;
+        Thu, 10 Oct 2019 17:19:07 +0000 (UTC)
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc:     Chen Yi <yiche@redhat.com>, netfilter-devel@vger.kernel.org
+Subject: [PATCH] ipset: Copy the right MAC address in hash:ip,mac IPv6 sets
+Date:   Thu, 10 Oct 2019 19:18:14 +0200
+Message-Id: <48b62bbfab1983504cde5521c35e5a6e712997ae.1570727741.git.sbrivio@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Thu, 10 Oct 2019 17:19:10 +0000 (UTC)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Test virtual server via ipip tunnel.
+Same as commit 1b4a75108d5b ("netfilter: ipset: Copy the right MAC
+address in bitmap:ip,mac and hash:ip,mac sets"), another copy and paste
+went wrong in commit 8cc4ccf58379 ("netfilter: ipset: Allow matching on
+destination MAC address for mac and ipmac sets").
 
-Tested:
-# selftests: netfilter: ipvs.sh
-# Testing DR mode...
-# Testing NAT mode...
-# Testing Tunnel mode...
-# ipvs.sh: PASS
-ok 6 selftests: netfilter: ipvs.sh
+When I fixed this for IPv4 in 1b4a75108d5b, I didn't realise that
+hash:ip,mac sets also support IPv6 as family, and this is covered by a
+separate function, hash_ipmac6_kadt().
 
-Signed-off-by: Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+In hash:ip,mac sets, the first dimension is the IP address, and the
+second dimension is the MAC address: check the IPSET_DIM_TWO_SRC flag
+in flags while deciding which MAC address to copy, destination or
+source.
+
+This way, mixing source and destination matches for the two dimensions
+of ip,mac hash type works as expected, also for IPv6. With this setup:
+
+  ip netns add A
+  ip link add veth1 type veth peer name veth2 netns A
+  ip addr add 2001:db8::1/64 dev veth1
+  ip -net A addr add 2001:db8::2/64 dev veth2
+  ip link set veth1 up
+  ip -net A link set veth2 up
+
+  dst=$(ip netns exec A cat /sys/class/net/veth2/address)
+
+  ip netns exec A ipset create test_hash hash:ip,mac family inet6
+  ip netns exec A ipset add test_hash 2001:db8::1,${dst}
+  ip netns exec A ip6tables -A INPUT -p icmpv6 --icmpv6-type 135 -j ACCEPT
+  ip netns exec A ip6tables -A INPUT -m set ! --match-set test_hash src,dst -j DROP
+
+ipset now correctly matches a test packet:
+
+  # ping -c1 2001:db8::2 >/dev/null
+  # echo $?
+  0
+
+Reported-by: Chen, Yi <yiche@redhat.com>
+Fixes: 8cc4ccf58379 ("netfilter: ipset: Allow matching on destination MAC address for mac and ipmac sets")
+Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
 ---
-v2: optimize test script
----
- tools/testing/selftests/netfilter/ipvs.sh | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ net/netfilter/ipset/ip_set_hash_ipmac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/netfilter/ipvs.sh b/tools/testing/selftests/netfilter/ipvs.sh
-index 8b2e618..c3b8f90 100755
---- a/tools/testing/selftests/netfilter/ipvs.sh
-+++ b/tools/testing/selftests/netfilter/ipvs.sh
-@@ -168,6 +168,30 @@ test_nat() {
- 	test_service
- }
+diff --git a/net/netfilter/ipset/ip_set_hash_ipmac.c b/net/netfilter/ipset/ip_set_hash_ipmac.c
+index 24d8f4df4230..4ce563eb927d 100644
+--- a/net/netfilter/ipset/ip_set_hash_ipmac.c
++++ b/net/netfilter/ipset/ip_set_hash_ipmac.c
+@@ -209,7 +209,7 @@ hash_ipmac6_kadt(struct ip_set *set, const struct sk_buff *skb,
+ 	    (skb_mac_header(skb) + ETH_HLEN) > skb->data)
+ 		return -EINVAL;
  
-+test_tun() {
-+	ip netns exec ns0 ip route add ${vip_v4} via ${gip_v4} dev br0
-+
-+	ip netns exec ns1 modprobe ipip
-+	ip netns exec ns1 ip link set tunl0 up
-+	ip netns exec ns1 sysctl -qw net.ipv4.ip_forward=0
-+	ip netns exec ns1 sysctl -qw net.ipv4.conf.all.send_redirects=0
-+	ip netns exec ns1 sysctl -qw net.ipv4.conf.default.send_redirects=0
-+	ip netns exec ns1 ipvsadm -A -t ${vip_v4}:${port} -s rr
-+	ip netns exec ns1 ipvsadm -a -i -t ${vip_v4}:${port} -r ${rip_v4}:${port}
-+	ip netns exec ns1 ip addr add ${vip_v4}/32 dev lo:1
-+
-+	ip netns exec ns2 modprobe ipip
-+	ip netns exec ns2 ip link set tunl0 up
-+	ip netns exec ns2 sysctl -qw net.ipv4.conf.all.arp_ignore=1
-+	ip netns exec ns2 sysctl -qw net.ipv4.conf.all.arp_announce=2
-+	ip netns exec ns2 sysctl -qw net.ipv4.conf.all.rp_filter=0
-+	ip netns exec ns2 sysctl -qw net.ipv4.conf.tunl0.rp_filter=0
-+	ip netns exec ns2 sysctl -qw net.ipv4.conf.veth21.rp_filter=0
-+	ip netns exec ns2 ip addr add ${vip_v4}/32 dev lo:1
-+
-+	test_service
-+}
-+
- run_tests() {
- 	local errors=
- 
-@@ -183,6 +207,12 @@ run_tests() {
- 	test_nat
- 	errors=$(( $errors + $? ))
- 
-+	echo "Testing Tunnel mode..."
-+	cleanup
-+	setup
-+	test_tun
-+	errors=$(( $errors + $? ))
-+
- 	return $errors
- }
- 
+-	if (opt->flags & IPSET_DIM_ONE_SRC)
++	if (opt->flags & IPSET_DIM_TWO_SRC)
+ 		ether_addr_copy(e.ether, eth_hdr(skb)->h_source);
+ 	else
+ 		ether_addr_copy(e.ether, eth_hdr(skb)->h_dest);
 -- 
-1.8.3.1
-
-
+2.20.1
 
