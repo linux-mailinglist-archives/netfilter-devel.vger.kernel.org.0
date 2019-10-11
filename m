@@ -2,75 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37681D3C9C
-	for <lists+netfilter-devel@lfdr.de>; Fri, 11 Oct 2019 11:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFA6D3D32
+	for <lists+netfilter-devel@lfdr.de>; Fri, 11 Oct 2019 12:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbfJKJpb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 11 Oct 2019 05:45:31 -0400
-Received: from kirsty.vergenet.net ([202.4.237.240]:45280 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726585AbfJKJpb (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 11 Oct 2019 05:45:31 -0400
-Received: from reginn.horms.nl (watermunt.horms.nl [80.127.179.77])
-        by kirsty.vergenet.net (Postfix) with ESMTPA id E7B3125AD5C;
-        Fri, 11 Oct 2019 20:45:28 +1100 (AEDT)
-Received: by reginn.horms.nl (Postfix, from userid 7100)
-        id ED00E940958; Fri, 11 Oct 2019 11:45:26 +0200 (CEST)
-Date:   Fri, 11 Oct 2019 11:45:26 +0200
-From:   Simon Horman <horms@verge.net.au>
-To:     Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH v6 0/3] selftests: netfilter: introduce test cases for
- ipvs
-Message-ID: <20191011094524.ruopnvvh6bedhhgl@verge.net.au>
-References: <1570719055-25110-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
+        id S1726458AbfJKKU4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 11 Oct 2019 06:20:56 -0400
+Received: from correo.us.es ([193.147.175.20]:45428 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726357AbfJKKU4 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 11 Oct 2019 06:20:56 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 7CE84A7E1A
+        for <netfilter-devel@vger.kernel.org>; Fri, 11 Oct 2019 12:20:52 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 6D3BAB7FF2
+        for <netfilter-devel@vger.kernel.org>; Fri, 11 Oct 2019 12:20:52 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 6C9A8FB362; Fri, 11 Oct 2019 12:20:52 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 5BEF5B8007;
+        Fri, 11 Oct 2019 12:20:50 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Fri, 11 Oct 2019 12:20:50 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 38BCF42EE38E;
+        Fri, 11 Oct 2019 12:20:50 +0200 (CEST)
+Date:   Fri, 11 Oct 2019 12:20:52 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH v3 04/11] nft-cache: Introduce cache levels
+Message-ID: <20191011102052.77s5ujrdb3ficddo@salvia>
+References: <20191008161447.6595-1-phil@nwl.cc>
+ <20191008161447.6595-5-phil@nwl.cc>
+ <20191009093723.snbyd6xvtd5gpnto@salvia>
+ <20191009102901.6kel2u36u3yv4myu@salvia>
+ <20191010220911.GM12661@orbyte.nwl.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1570719055-25110-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
-Organisation: Horms Solutions BV
+In-Reply-To: <20191010220911.GM12661@orbyte.nwl.cc>
 User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Oct 10, 2019 at 10:50:52PM +0800, Haishuang Yan wrote:
-> This series patch include test cases for ipvs.
-> 
-> The test topology is who as below:
-> +--------------------------------------------------------------+
-> |                      |                                       |
-> |         ns0          |         ns1                           |
-> |      -----------     |     -----------    -----------        |
-> |      | veth01  | --------- | veth10  |    | veth12  |        |
-> |      -----------    peer   -----------    -----------        |
-> |           |          |                        |              |
-> |      -----------     |                        |              |
-> |      |  br0    |     |-----------------  peer |--------------|
-> |      -----------     |                        |              |
-> |           |          |                        |              |
-> |      ----------     peer   ----------      -----------       |
-> |      |  veth02 | --------- |  veth20 |     | veth12  |       |
-> |      ----------      |     ----------      -----------       |
-> |                      |         ns2                           |
-> |                      |                                       |
-> +--------------------------------------------------------------+
-> 
-> Test results:
-> # selftests: netfilter: ipvs.sh
-> # Testing DR mode...
-> # Testing NAT mode...
-> # Testing Tunnel mode...
-> # ipvs.sh: PASS
-> ok 6 selftests: netfilter: ipvs.sh
-> 
-> Signed-off-by: Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+On Fri, Oct 11, 2019 at 12:09:11AM +0200, Phil Sutter wrote:
+[...]
+> Maybe we could go with a simpler solution for now, which is to check
+> kernel genid again and drop the local cache if it differs from what's
+> stored. If it doesn't, the current cache is still up to date and we may
+> just fetch what's missing. Or does that leave room for a race condition?
 
-Thanks, applied to ipvs-next.
+My concern with this approach is that, in the dynamic ruleset update
+scenarios, assuming very frequent updates, you might lose race when
+building the cache in stages. Hence, forcing you to restart from
+scratch in the middle of the transaction handling.
+
+I prefer to calculate the cache that is needed in one go by analyzing
+the batch, it's simpler. Note that we might lose race still since
+kernel might tell us we're working on an obsolete generation number ID
+cache, forcing us to restart.
