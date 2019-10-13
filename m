@@ -2,67 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD7BD5361
-	for <lists+netfilter-devel@lfdr.de>; Sun, 13 Oct 2019 02:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB0AD5755
+	for <lists+netfilter-devel@lfdr.de>; Sun, 13 Oct 2019 20:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbfJMANZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 12 Oct 2019 20:13:25 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:44470 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727606AbfJMANZ (ORCPT
+        id S1728159AbfJMSc6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 13 Oct 2019 14:32:58 -0400
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:34850 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727354AbfJMSc6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 12 Oct 2019 20:13:25 -0400
-Received: by mail-oi1-f196.google.com with SMTP id w6so10976367oie.11
-        for <netfilter-devel@vger.kernel.org>; Sat, 12 Oct 2019 17:13:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmussen.co.za; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=1+4b292GOM9/VOSFBCpcQKmQU9mq1jNxWAlIW22T1yM=;
-        b=rDWLr58DNM7II2IkVI47XVypNTJnU3fMmnzVuA35fN02X3hW5TaDa1Fx8oURTEcOzS
-         S+vu253q1tWaDCkKASSgxXShwltyXxN6Q/ScRRPdtQVfBpkhf8db+vRNnYH4NovXt9WK
-         trRAUlNDvW2WqpodO6tAu1djvFP1tKuL+zA7o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=1+4b292GOM9/VOSFBCpcQKmQU9mq1jNxWAlIW22T1yM=;
-        b=pyckWGPSQLlF+7DBAAgmqTiKAMlSkiKTKWscQmjHgT+7tm+Hl6QdxhNxDjxffMNVOf
-         qDH0xXktVh0ESJ6f8Ow7ZDVSXbGt56fptlVbgnl8/uQQiL2WSqbc7rv3dsrLK90Vyyhj
-         zOlAWA4bihM9gMTbtYIvBM7NetvtFIZeXcbglXewvNfKSB21FPkDu84Cd7dgA7S+NAJR
-         KeZCkYxIiowwZzRLLoWhyyjADp17yW7TVgGG2WbkhzA4znsMjM9kb4dT0D1eVGj9jcqF
-         1xNFduPTVLJ4KmVmjMCjfQNXd/1FKqcE4AqBEklyW5ISwAijmdDpq+B+EEnmtFOmWLcq
-         WLfg==
-X-Gm-Message-State: APjAAAVH1W5yQjnOVJ9rhDWQSGPrPJ7iQhejYneMgzHGbufQESozz6UP
-        SJTJokv51sPmG4iBrxEqbLQIJF3jzGeGPwxswUKCpzlnJ5M=
-X-Google-Smtp-Source: APXvYqxniF8KojrJq27jl7P0g/wzLNNAs7KCtuZks1xDri1M2P2d2RakuW/DrCayD5dxV1Zg8mZyy7HfnEqOAyMUdrE=
-X-Received: by 2002:aca:5714:: with SMTP id l20mr17897512oib.175.1570925604040;
- Sat, 12 Oct 2019 17:13:24 -0700 (PDT)
+        Sun, 13 Oct 2019 14:32:58 -0400
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1iJifo-0007KM-B8; Sun, 13 Oct 2019 20:32:56 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf-next] netfilter: ecache: document extension area access rules
+Date:   Sun, 13 Oct 2019 20:19:45 +0200
+Message-Id: <20191013181945.21578-1-fw@strlen.de>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-From:   Norman Rasmussen <norman@rasmussen.co.za>
-Date:   Sat, 12 Oct 2019 17:13:12 -0700
-Message-ID: <CAGF1phamt2yiip0XrRT7TWYb9hQFPgjzP7QHCdByHDCMpxDoyQ@mail.gmail.com>
-Subject: [PATCH trivial] netfilter: nft_tproxy: Fix typo in IPv6 module description.
-To:     netfilter-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Norman Rasmussen <norman@rasmussen.co.za>
+Once ct->ext gets free'd via kfree() rather than kfree_rcu we can't
+access the extension area anymore without owning the conntrack.
+
+This is a special case:
+
+The worker is walking the pcpu dying list while holding dying list lock:
+Neither ct nor ct->ext can be free'd until after the walk has completed.
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/ipv6/netfilter/nf_tproxy_ipv6.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_conntrack_ecache.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv6/netfilter/nf_tproxy_ipv6.c
-b/net/ipv6/netfilter/nf_tproxy_ipv6.c
-index 34d51cd42..6bac68fb2 100644
---- a/net/ipv6/netfilter/nf_tproxy_ipv6.c
-+++ b/net/ipv6/netfilter/nf_tproxy_ipv6.c
-@@ -150,4 +150,4 @@ EXPORT_SYMBOL_GPL(nf_tproxy_get_sock_v6);
-
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Balazs Scheidler, Krisztian Kovacs");
--MODULE_DESCRIPTION("Netfilter IPv4 transparent proxy support");
-+MODULE_DESCRIPTION("Netfilter IPv6 transparent proxy support");
+diff --git a/net/netfilter/nf_conntrack_ecache.c b/net/netfilter/nf_conntrack_ecache.c
+index 6fba74b5aaf7..0d83c159671c 100644
+--- a/net/netfilter/nf_conntrack_ecache.c
++++ b/net/netfilter/nf_conntrack_ecache.c
+@@ -30,6 +30,7 @@
+ static DEFINE_MUTEX(nf_ct_ecache_mutex);
+ 
+ #define ECACHE_RETRY_WAIT (HZ/10)
++#define ECACHE_STACK_ALLOC (256 / sizeof(void *))
+ 
+ enum retry_state {
+ 	STATE_CONGESTED,
+@@ -39,11 +40,11 @@ enum retry_state {
+ 
+ static enum retry_state ecache_work_evict_list(struct ct_pcpu *pcpu)
+ {
+-	struct nf_conn *refs[16];
++	struct nf_conn *refs[ECACHE_STACK_ALLOC];
++	enum retry_state ret = STATE_DONE;
+ 	struct nf_conntrack_tuple_hash *h;
+ 	struct hlist_nulls_node *n;
+ 	unsigned int evicted = 0;
+-	enum retry_state ret = STATE_DONE;
+ 
+ 	spin_lock(&pcpu->lock);
+ 
+@@ -54,10 +55,22 @@ static enum retry_state ecache_work_evict_list(struct ct_pcpu *pcpu)
+ 		if (!nf_ct_is_confirmed(ct))
+ 			continue;
+ 
++		/* This ecache access is safe because the ct is on the
++		 * pcpu dying list and we hold the spinlock -- the entry
++		 * cannot be free'd until after the lock is released.
++		 *
++		 * This is true even if ct has a refcount of 0: the
++		 * cpu that is about to free the entry must remove it
++		 * from the dying list and needs the lock to do so.
++		 */
+ 		e = nf_ct_ecache_find(ct);
+ 		if (!e || e->state != NFCT_ECACHE_DESTROY_FAIL)
+ 			continue;
+ 
++		/* ct is in NFCT_ECACHE_DESTROY_FAIL state, this means
++		 * the worker owns this entry: the ct will remain valid
++		 * until the worker puts its ct reference.
++		 */
+ 		if (nf_conntrack_event(IPCT_DESTROY, ct)) {
+ 			ret = STATE_CONGESTED;
+ 			break;
 -- 
-2.19.2
+2.21.0
+
