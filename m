@@ -2,95 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB0AD5755
-	for <lists+netfilter-devel@lfdr.de>; Sun, 13 Oct 2019 20:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10973D5974
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Oct 2019 04:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728159AbfJMSc6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 13 Oct 2019 14:32:58 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:34850 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727354AbfJMSc6 (ORCPT
+        id S1729544AbfJNCCi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 13 Oct 2019 22:02:38 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:34700 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729659AbfJNCCi (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 13 Oct 2019 14:32:58 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1iJifo-0007KM-B8; Sun, 13 Oct 2019 20:32:56 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next] netfilter: ecache: document extension area access rules
-Date:   Sun, 13 Oct 2019 20:19:45 +0200
-Message-Id: <20191013181945.21578-1-fw@strlen.de>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 13 Oct 2019 22:02:38 -0400
+Received: from dimstar.local.net (n122-110-44-45.sun2.vic.optusnet.com.au [122.110.44.45])
+        by mail104.syd.optusnet.com.au (Postfix) with SMTP id B889D43E184
+        for <netfilter-devel@vger.kernel.org>; Mon, 14 Oct 2019 13:02:23 +1100 (AEDT)
+Received: (qmail 21800 invoked by uid 501); 14 Oct 2019 02:02:23 -0000
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH libnfnetlink 0/1] Minimally resurrect doxygen documentation
+Date:   Mon, 14 Oct 2019 13:02:22 +1100
+Message-Id: <20191014020223.21757-1-duncan_roe@optusnet.com.au>
+X-Mailer: git-send-email 2.14.5
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0
+        a=4DzML1vCOQ6Odsy8BUtSXQ==:117 a=4DzML1vCOQ6Odsy8BUtSXQ==:17
+        a=XobE76Q3jBoA:10 a=879WbTlqtkdcoKvObpsA:9
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Once ct->ext gets free'd via kfree() rather than kfree_rcu we can't
-access the extension area anymore without owning the conntrack.
+libnfnetlink has good doxygen documentation but there was no output when
+doxygen was run.
 
-This is a special case:
+Patch 1/1 fixes that,
+but on rebuilding there were a number warnings of the form:
 
-The worker is walking the pcpu dying list while holding dying list lock:
-Neither ct nor ct->ext can be free'd until after the walk has completed.
+right-hand operand of comma expression has no effect [-Wunused-value]
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/netfilter/nf_conntrack_ecache.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+*This was not introduced by patch 1/1*
 
-diff --git a/net/netfilter/nf_conntrack_ecache.c b/net/netfilter/nf_conntrack_ecache.c
-index 6fba74b5aaf7..0d83c159671c 100644
---- a/net/netfilter/nf_conntrack_ecache.c
-+++ b/net/netfilter/nf_conntrack_ecache.c
-@@ -30,6 +30,7 @@
- static DEFINE_MUTEX(nf_ct_ecache_mutex);
- 
- #define ECACHE_RETRY_WAIT (HZ/10)
-+#define ECACHE_STACK_ALLOC (256 / sizeof(void *))
- 
- enum retry_state {
- 	STATE_CONGESTED,
-@@ -39,11 +40,11 @@ enum retry_state {
- 
- static enum retry_state ecache_work_evict_list(struct ct_pcpu *pcpu)
- {
--	struct nf_conn *refs[16];
-+	struct nf_conn *refs[ECACHE_STACK_ALLOC];
-+	enum retry_state ret = STATE_DONE;
- 	struct nf_conntrack_tuple_hash *h;
- 	struct hlist_nulls_node *n;
- 	unsigned int evicted = 0;
--	enum retry_state ret = STATE_DONE;
- 
- 	spin_lock(&pcpu->lock);
- 
-@@ -54,10 +55,22 @@ static enum retry_state ecache_work_evict_list(struct ct_pcpu *pcpu)
- 		if (!nf_ct_is_confirmed(ct))
- 			continue;
- 
-+		/* This ecache access is safe because the ct is on the
-+		 * pcpu dying list and we hold the spinlock -- the entry
-+		 * cannot be free'd until after the lock is released.
-+		 *
-+		 * This is true even if ct has a refcount of 0: the
-+		 * cpu that is about to free the entry must remove it
-+		 * from the dying list and needs the lock to do so.
-+		 */
- 		e = nf_ct_ecache_find(ct);
- 		if (!e || e->state != NFCT_ECACHE_DESTROY_FAIL)
- 			continue;
- 
-+		/* ct is in NFCT_ECACHE_DESTROY_FAIL state, this means
-+		 * the worker owns this entry: the ct will remain valid
-+		 * until the worker puts its ct reference.
-+		 */
- 		if (nf_conntrack_event(IPCT_DESTROY, ct)) {
- 			ret = STATE_CONGESTED;
- 			break;
+Instead, it is caused by the definition of "prefetch" in include/linux_list.h:
+
+ #define prefetch(x) 1
+
+the Linux kernel has:
+
+ #define prefetch(x) __builtin_prefetch(x)
+
+I see 3 ways to get back to a clean compile:
+
+1. Suppress the warnings with a pragma
+
+2. Reinstate the Linux definition of prefetch
+
+3. Expunge prefetch from the header file
+
+I have made all 3, please indicate which one you'd like.
+
+1. & 2. are 1-liners while 3. is multiline.
+
+3. allows of extra simplifications, such as defining a macro in a single
+line or fewer lines than before. In some places I could also delete the fragment
+"&& ({ 1;})".
+
+
+Duncan Roe (1):
+  src: Minimally resurrect doxygen documentation
+
+ configure.ac         |   2 +-
+ doxygen.cfg.in       | 180 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux_list.h |   9 +++
+ src/iftable.c        |   9 +++
+ src/libnfnetlink.c   |  17 ++++-
+ 5 files changed, 215 insertions(+), 2 deletions(-)
+ create mode 100644 doxygen.cfg.in
+
 -- 
-2.21.0
+2.14.5
 
