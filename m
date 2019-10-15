@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC6DD7836
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Oct 2019 16:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4200BD7833
+	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Oct 2019 16:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732479AbfJOOR3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 15 Oct 2019 10:17:29 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:36900 "EHLO orbyte.nwl.cc"
+        id S1732364AbfJOORN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 15 Oct 2019 10:17:13 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:36882 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731553AbfJOOR3 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 15 Oct 2019 10:17:29 -0400
-Received: from localhost ([::1]:49990 helo=tatos)
+        id S1731553AbfJOORN (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 15 Oct 2019 10:17:13 -0400
+Received: from localhost ([::1]:49972 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iKNdf-000393-V2; Tue, 15 Oct 2019 16:17:28 +0200
+        id 1iKNdQ-00037B-2X; Tue, 15 Oct 2019 16:17:12 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 4/6] set: Don't bypass checks in nftnl_set_set_u{32,64}()
-Date:   Tue, 15 Oct 2019 16:16:56 +0200
-Message-Id: <20191015141658.11325-5-phil@nwl.cc>
+Subject: [libnftnl PATCH 5/6] obj/ct_timeout: Avoid array overrun in timeout_parse_attr_data()
+Date:   Tue, 15 Oct 2019 16:16:57 +0200
+Message-Id: <20191015141658.11325-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191015141658.11325-1-phil@nwl.cc>
 References: <20191015141658.11325-1-phil@nwl.cc>
@@ -31,43 +31,49 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-By calling nftnl_set_set(), any data size checks are effectively
-bypassed. Better call nftnl_set_set_data() directly, passing the real
-size for validation.
+Array 'tb' has only 'attr_max' elements, the loop overstepped its
+boundary by one. Copy array_size() macro from include/utils.h in
+nftables.git to make sure code does the right thing.
 
+Fixes: 0adceeab1597a ("src: add ct timeout support")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/set.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ include/utils.h      | 8 ++++++++
+ src/obj/ct_timeout.c | 2 +-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/src/set.c b/src/set.c
-index e6db7258cc224..b1ffe7e6de975 100644
---- a/src/set.c
-+++ b/src/set.c
-@@ -195,6 +195,7 @@ int nftnl_set_set_data(struct nftnl_set *s, uint16_t attr, const void *data,
- 	return 0;
- }
+diff --git a/include/utils.h b/include/utils.h
+index 3cc659652fe2e..91fbebb1956fd 100644
+--- a/include/utils.h
++++ b/include/utils.h
+@@ -58,6 +58,14 @@ void __nftnl_assert_attr_exists(uint16_t attr, uint16_t attr_max,
+ 		ret = remain;				\
+ 	remain -= ret;					\
  
-+/* XXX: Deprecate this, it is simply unsafe */
- EXPORT_SYMBOL(nftnl_set_set);
- int nftnl_set_set(struct nftnl_set *s, uint16_t attr, const void *data)
- {
-@@ -204,13 +205,13 @@ int nftnl_set_set(struct nftnl_set *s, uint16_t attr, const void *data)
- EXPORT_SYMBOL(nftnl_set_set_u32);
- void nftnl_set_set_u32(struct nftnl_set *s, uint16_t attr, uint32_t val)
- {
--	nftnl_set_set(s, attr, &val);
-+	nftnl_set_set_data(s, attr, &val, sizeof(uint32_t));
- }
++
++#define BUILD_BUG_ON_ZERO(e)	(sizeof(char[1 - 2 * !!(e)]) - 1)
++
++#define __must_be_array(a) \
++	BUILD_BUG_ON_ZERO(__builtin_types_compatible_p(typeof(a), typeof(&a[0])))
++
++#define array_size(arr)		(sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
++
+ const char *nftnl_family2str(uint32_t family);
+ int nftnl_str2family(const char *family);
  
- EXPORT_SYMBOL(nftnl_set_set_u64);
- void nftnl_set_set_u64(struct nftnl_set *s, uint16_t attr, uint64_t val)
- {
--	nftnl_set_set(s, attr, &val);
-+	nftnl_set_set_data(s, attr, &val, sizeof(uint64_t));
- }
+diff --git a/src/obj/ct_timeout.c b/src/obj/ct_timeout.c
+index a439432deee18..a09e25ae5d44f 100644
+--- a/src/obj/ct_timeout.c
++++ b/src/obj/ct_timeout.c
+@@ -134,7 +134,7 @@ timeout_parse_attr_data(struct nftnl_obj *e,
+ 	if (mnl_attr_parse_nested(nest, parse_timeout_attr_policy_cb, &cnt) < 0)
+ 		return -1;
  
- EXPORT_SYMBOL(nftnl_set_set_str);
+-	for (i = 1; i <= attr_max; i++) {
++	for (i = 1; i < array_size(tb); i++) {
+ 		if (tb[i]) {
+ 			nftnl_timeout_policy_attr_set_u32(e, i-1,
+ 				ntohl(mnl_attr_get_u32(tb[i])));
 -- 
 2.23.0
 
