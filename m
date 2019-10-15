@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD9CD7834
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Oct 2019 16:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57EED7837
+	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Oct 2019 16:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732454AbfJOORS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 15 Oct 2019 10:17:18 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:36888 "EHLO orbyte.nwl.cc"
+        id S1732503AbfJOORe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 15 Oct 2019 10:17:34 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:36906 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731553AbfJOORS (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 15 Oct 2019 10:17:18 -0400
-Received: from localhost ([::1]:49978 helo=tatos)
+        id S1731553AbfJOORe (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 15 Oct 2019 10:17:34 -0400
+Received: from localhost ([::1]:49996 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iKNdV-00037j-Bi; Tue, 15 Oct 2019 16:17:17 +0200
+        id 1iKNdl-00039Y-7x; Tue, 15 Oct 2019 16:17:33 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 1/6] obj: ct_timeout: Check return code of mnl_attr_parse_nested()
-Date:   Tue, 15 Oct 2019 16:16:53 +0200
-Message-Id: <20191015141658.11325-2-phil@nwl.cc>
+Subject: [libnftnl PATCH 2/6] set_elem: Fix return code of nftnl_set_elem_set()
+Date:   Tue, 15 Oct 2019 16:16:54 +0200
+Message-Id: <20191015141658.11325-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191015141658.11325-1-phil@nwl.cc>
 References: <20191015141658.11325-1-phil@nwl.cc>
@@ -31,56 +31,26 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Don't ignore nested attribute parsing errors, this may hide bugs in
-users' code.
+The function returned -1 on success.
 
-Fixes: 0adceeab1597a ("src: add ct timeout support")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/obj/ct_timeout.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ src/set_elem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/obj/ct_timeout.c b/src/obj/ct_timeout.c
-index e2e99917de7ae..a439432deee18 100644
---- a/src/obj/ct_timeout.c
-+++ b/src/obj/ct_timeout.c
-@@ -116,7 +116,7 @@ parse_timeout_attr_policy_cb(const struct nlattr *attr, void *data)
- 	return MNL_CB_OK;
- }
- 
--static void
-+static int
- timeout_parse_attr_data(struct nftnl_obj *e,
- 			const struct nlattr *nest)
- {
-@@ -131,7 +131,8 @@ timeout_parse_attr_data(struct nftnl_obj *e,
- 
- 	memset(tb, 0, sizeof(struct nlattr *) * attr_max);
- 
--	mnl_attr_parse_nested(nest, parse_timeout_attr_policy_cb, &cnt);
-+	if (mnl_attr_parse_nested(nest, parse_timeout_attr_policy_cb, &cnt) < 0)
-+		return -1;
- 
- 	for (i = 1; i <= attr_max; i++) {
- 		if (tb[i]) {
-@@ -139,6 +140,7 @@ timeout_parse_attr_data(struct nftnl_obj *e,
- 				ntohl(mnl_attr_get_u32(tb[i])));
- 		}
+diff --git a/src/set_elem.c b/src/set_elem.c
+index 47965249691dd..3794f12594079 100644
+--- a/src/set_elem.c
++++ b/src/set_elem.c
+@@ -149,7 +149,7 @@ int nftnl_set_elem_set(struct nftnl_set_elem *s, uint16_t attr,
+ 		break;
  	}
+ 	s->flags |= (1 << attr);
+-	return -1;
 +	return 0;
  }
  
- static int nftnl_obj_ct_timeout_set(struct nftnl_obj *e, uint16_t type,
-@@ -248,7 +250,8 @@ nftnl_obj_ct_timeout_parse(struct nftnl_obj *e, struct nlattr *attr)
- 		e->flags |= (1 << NFTNL_OBJ_CT_TIMEOUT_L4PROTO);
- 	}
- 	if (tb[NFTA_CT_TIMEOUT_DATA]) {
--		timeout_parse_attr_data(e, tb[NFTA_CT_TIMEOUT_DATA]);
-+		if (timeout_parse_attr_data(e, tb[NFTA_CT_TIMEOUT_DATA]) < 0)
-+			return -1;
- 		e->flags |= (1 << NFTNL_OBJ_CT_TIMEOUT_ARRAY);
- 	}
- 	return 0;
+ EXPORT_SYMBOL(nftnl_set_elem_set_u32);
 -- 
 2.23.0
 
