@@ -2,112 +2,77 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A88D7014
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Oct 2019 09:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51FB1D702A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Oct 2019 09:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725802AbfJOHXJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 15 Oct 2019 03:23:09 -0400
-Received: from mail.cadcon.de ([62.153.172.90]:58643 "EHLO mail.cadcon.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725710AbfJOHXI (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 15 Oct 2019 03:23:08 -0400
-From:   "Priebe, Sebastian" <sebastian.priebe@de.sii.group>
-To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-CC:     Jeremy Sowden <jeremy@azazel.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: AW: [PATCH nftables v2 0/2] Add Linenoise support to the CLI.
-Thread-Topic: [PATCH nftables v2 0/2] Add Linenoise support to the CLI.
-Thread-Index: AQHVcrCNPSPJEaoIW0iz3RuqzQyz/adbbI0Q
-Date:   Tue, 15 Oct 2019 07:23:06 +0000
-Message-ID: <1017eacb750741c4b9836f3c8e082fec@de.sii.group>
-References: <20190924074055.4146-1-jeremy@azazel.net>
-In-Reply-To: <20190924074055.4146-1-jeremy@azazel.net>
-Accept-Language: de-DE, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [192.168.240.16]
-x-kse-serverinfo: SPMDEAGV001.CADCON.INTERN, 9
-x-kse-attachmentfiltering-interceptor-info: protection disabled
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: Clean, bases: 15.10.2019 05:33:00
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-x-pp-proceessed: 21f15ad8-196c-4557-8047-0cdd45d4777c
-MIME-Version: 1.0
-X-CompuMailGateway: Version: 6.00.4.19051.i686 COMPUMAIL Date: 20191015072306Z
-Content-Language: de-DE
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S1727774AbfJOHc7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 15 Oct 2019 03:32:59 -0400
+Received: from kirsty.vergenet.net ([202.4.237.240]:42146 "EHLO
+        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbfJOHc7 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 15 Oct 2019 03:32:59 -0400
+Received: from penelope.horms.nl (ip4dab7138.direct-adsl.nl [77.171.113.56])
+        by kirsty.vergenet.net (Postfix) with ESMTPA id 7423825B818;
+        Tue, 15 Oct 2019 18:32:54 +1100 (AEDT)
+Received: by penelope.horms.nl (Postfix, from userid 7100)
+        id 6BF3AE2046E; Tue, 15 Oct 2019 09:32:52 +0200 (CEST)
+From:   Simon Horman <horms@verge.net.au>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     lvs-devel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org,
+        Wensong Zhang <wensong@linux-vs.org>,
+        Julian Anastasov <ja@ssi.bg>, Simon Horman <horms@verge.net.au>
+Subject: [PATCH 0/6] [GIT PULL ipvs-next] IPVS updates for v5.5
+Date:   Tue, 15 Oct 2019 09:32:06 +0200
+Message-Id: <20191015073212.19394-1-horms@verge.net.au>
+X-Mailer: git-send-email 2.11.0
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
-I'd really would appreciate if this gets pulled soon.
-Are there any objections?
+Hi Pablo,
 
-Until now this series was acked-by Phil Sutter.
+Please consider these IPVS updates for v5.5.
 
-Greetings,
-Sebastian
+As there are a few more changes than usual I'm sending a pull request
+rather than asking you to apply the patches directly.
 
-> -----Ursprüngliche Nachricht-----
-> Von: Jeremy Sowden <jeremy@azazel.net>
-> Gesendet: Dienstag, 24. September 2019 09:41
-> An: Pablo Neira Ayuso <pablo@netfilter.org>
-> Cc: Netfilter Devel <netfilter-devel@vger.kernel.org>; Priebe, Sebastian
-> <sebastian.priebe@de.sii.group>
-> Betreff: [PATCH nftables v2 0/2] Add Linenoise support to the CLI.
->
-> Sebastian Priebe [0] requested Linenoise support for the CLI as an alternative
-> to Readline, so I thought I'd have a go at providing it.
-> Linenoise is a minimal, zero-config, BSD licensed, Readline replacement used
-> in Redis, MongoDB, and Android [1].
->
->  0 - https://lore.kernel.org/netfilter-
-> devel/4df20614cd10434b9f91080d0862dd0c@de.sii.group/
->  1 - https://github.com/antirez/linenoise/
->
-> By default, the CLI continues to be build using Readline, but passing `--with-
-> cli=linenoise` instead causes Linenoise to be used instead.
->
-> `nft -v` has been extended to display what CLI implementation was built and
-> whether mini-gmp was used.
->
-> Changes since v1:
->
->  * dropped the linenoise source from the nftables tree and added an
->    `AC_CHECK_LIB` check instead.
->
-> Changes since RFC:
->
->  * two tidy-up patches dropped because they have already been applied;
->  * source now added to include/ and src/;
->  * tests/build/run-tests.sh updated to test `--with-cli=linenoise`;
->  * `nft -v` extended.
->
-> Jeremy Sowden (2):
->   cli: add linenoise CLI implementation.
->   main: add more information to `nft -v`.
->
->  configure.ac             | 17 ++++++++---
->  include/cli.h            |  2 +-
->  src/Makefile.am          |  3 ++
->  src/cli.c                | 64 ++++++++++++++++++++++++++++++++++------
->  src/main.c               | 28 ++++++++++++++++--
->  tests/build/run-tests.sh |  4 +--
->  6 files changed, 100 insertions(+), 18 deletions(-)
->
-> --
-> 2.23.0
->
+This pull request is based on nf-next.
 
+The following changes since commit f8615bf8a3dabd84bf844c6f888929495039d389:
 
+  netfilter: ipset: move ip_set_get_ip_port() to ip_set_bitmap_port.c. (2019-10-07 23:59:02 +0200)
 
+are available in the git repository at:
 
-SII Technologies GmbH
-Geschäftsführer: Robert Bauer
-Sitz der Gesellschaft: 86167 Augsburg
-Registergericht: Amtsgericht Augsburg HRB 31802
+  https://git.kernel.org/pub/scm/linux/kernel/git/horms/ipvs-next.git tags/ipvs-next-for-v5.5
+
+for you to fetch changes up to 176a52043ab853f1db7581ed02e1096aba78b4d1:
+
+  selftests: netfilter: add ipvs tunnel test case (2019-10-11 10:05:27 +0200)
+
+----------------------------------------------------------------
+Haishuang Yan (5):
+      ipvs: batch __ip_vs_cleanup
+      ipvs: batch __ip_vs_dev_cleanup
+      selftests: netfilter: add ipvs test script
+      selftests: netfilter: add ipvs nat test case
+      selftests: netfilter: add ipvs tunnel test case
+
+zhang kai (1):
+      ipvs: no need to update skb route entry for local destination packets.
+
+ include/net/ip_vs.h                        |   2 +-
+ net/netfilter/ipvs/ip_vs_core.c            |  47 +++---
+ net/netfilter/ipvs/ip_vs_ctl.c             |  12 +-
+ net/netfilter/ipvs/ip_vs_xmit.c            |  18 +--
+ tools/testing/selftests/netfilter/Makefile |   2 +-
+ tools/testing/selftests/netfilter/ipvs.sh  | 228 +++++++++++++++++++++++++++++
+ 6 files changed, 273 insertions(+), 36 deletions(-)
+ create mode 100755 tools/testing/selftests/netfilter/ipvs.sh
+
+-- 
+2.11.0
 
