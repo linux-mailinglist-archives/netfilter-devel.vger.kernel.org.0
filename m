@@ -2,157 +2,105 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE8CD6B84
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Oct 2019 00:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96631D6D69
+	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Oct 2019 04:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731564AbfJNWLG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 14 Oct 2019 18:11:06 -0400
-Received: from correo.us.es ([193.147.175.20]:35606 "EHLO mail.us.es"
+        id S1727599AbfJOC7M (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 14 Oct 2019 22:59:12 -0400
+Received: from mga06.intel.com ([134.134.136.31]:43743 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731480AbfJNWLF (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 14 Oct 2019 18:11:05 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 873881694AA
-        for <netfilter-devel@vger.kernel.org>; Tue, 15 Oct 2019 00:11:01 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 7A718A7E1C
-        for <netfilter-devel@vger.kernel.org>; Tue, 15 Oct 2019 00:11:01 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 78B21A7E18; Tue, 15 Oct 2019 00:11:01 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 8B94CA7E1D;
-        Tue, 15 Oct 2019 00:10:58 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 15 Oct 2019 00:10:58 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (sys.soleta.eu [212.170.55.40])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 28D01426CCBA;
-        Tue, 15 Oct 2019 00:10:58 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        jakub.kicinski@netronome.com, jiri@resnulli.us,
-        saeedm@mellanox.com, vishal@chelsio.com, vladbu@mellanox.com,
-        ecree@solarflare.com
-Subject: [PATCH net-next,v5 4/4] netfilter: nft_payload: packet mangling offload support
-Date:   Tue, 15 Oct 2019 00:10:51 +0200
-Message-Id: <20191014221051.8084-5-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20191014221051.8084-1-pablo@netfilter.org>
-References: <20191014221051.8084-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727518AbfJOC7L (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 14 Oct 2019 22:59:11 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Oct 2019 19:59:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,297,1566889200"; 
+   d="scan'208";a="279052276"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 14 Oct 2019 19:59:10 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1iKD3F-000IMy-HF; Tue, 15 Oct 2019 10:59:09 +0800
+Date:   Tue, 15 Oct 2019 10:58:28 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     kbuild-all@lists.01.org, netfilter-devel@vger.kernel.org,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: [PATCH nf-next] netfilter: ctnetlink: don't dump ct extensions
+ of unconfirmed conntracks
+Message-ID: <201910151009.uhMi8FzL%lkp@intel.com>
+References: <20191014194141.17626-1-fw@strlen.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191014194141.17626-1-fw@strlen.de>
+X-Patchwork-Hint: ignore
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch allows for mangling packet fields using hardware offload
-infrastructure.
+Hi Florian,
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on nf-next/master]
+
+url:    https://github.com/0day-ci/linux/commits/Florian-Westphal/netfilter-ctnetlink-don-t-dump-ct-extensions-of-unconfirmed-conntracks/20191015-040005
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git master
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-rc1-43-g0ccb3b4-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> net/netfilter/nf_conntrack_netlink.c:520:44: sparse: sparse: incorrect type in argument 2 (different modifiers) @@    expected struct nf_conn *ct @@    got structstruct nf_conn *ct @@
+>> net/netfilter/nf_conntrack_netlink.c:520:44: sparse:    expected struct nf_conn *ct
+>> net/netfilter/nf_conntrack_netlink.c:520:44: sparse:    got struct nf_conn const *ct
+   net/netfilter/nf_conntrack_netlink.c:521:45: sparse: sparse: incorrect type in argument 2 (different modifiers) @@    expected struct nf_conn *ct @@    got structstruct nf_conn *ct @@
+   net/netfilter/nf_conntrack_netlink.c:521:45: sparse:    expected struct nf_conn *ct
+   net/netfilter/nf_conntrack_netlink.c:521:45: sparse:    got struct nf_conn const *ct
+   net/netfilter/nf_conntrack_netlink.c:1694:34: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   net/netfilter/nf_conntrack_netlink.c:1694:34: sparse:    struct nf_conntrack_helper [noderef] <asn:4> *
+   net/netfilter/nf_conntrack_netlink.c:1694:34: sparse:    struct nf_conntrack_helper *
+   net/netfilter/nf_conntrack_netlink.c:3146:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@    expected char const * @@    got char [noderechar const * @@
+   net/netfilter/nf_conntrack_netlink.c:3146:29: sparse:    expected char const *
+   net/netfilter/nf_conntrack_netlink.c:3146:29: sparse:    got char [noderef] <asn:4> *
+   net/netfilter/nf_conntrack_netlink.c:951:36: sparse: sparse: context imbalance in 'ctnetlink_dump_table' - unexpected unlock
+   include/linux/rcupdate.h:651:9: sparse: sparse: context imbalance in 'ctnetlink_parse_nat_setup' - unexpected unlock
+
+vim +520 net/netfilter/nf_conntrack_netlink.c
+
+   508	
+   509	/* all these functions access ct->ext. Caller must either hold a reference
+   510	 * on ct or prevent its deletion by holding either the bucket spinlock or
+   511	 * pcpu dying list lock.
+   512	 */
+   513	static int ctnetlink_dump_extinfo(struct sk_buff *skb,
+   514					  const struct nf_conn *ct, u32 type)
+   515	{
+   516		if (ctnetlink_dump_acct(skb, ct, type) < 0 ||
+   517		    ctnetlink_dump_timestamp(skb, ct) < 0 ||
+   518		    ctnetlink_dump_helpinfo(skb, ct) < 0 ||
+   519		    ctnetlink_dump_labels(skb, ct) < 0 ||
+ > 520		    ctnetlink_dump_ct_seq_adj(skb, ct) < 0 ||
+   521		    ctnetlink_dump_ct_synproxy(skb, ct) < 0)
+   522			return -1;
+   523	
+   524		return 0;
+   525	}
+   526	
+
 ---
-v5: no changes.
-
- net/netfilter/nft_payload.c | 73 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
-
-diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
-index 22a80eb60222..0efa8bfd2b51 100644
---- a/net/netfilter/nft_payload.c
-+++ b/net/netfilter/nft_payload.c
-@@ -562,12 +562,85 @@ static int nft_payload_set_dump(struct sk_buff *skb, const struct nft_expr *expr
- 	return -1;
- }
- 
-+static int nft_payload_offload_set_nh(struct nft_offload_ctx *ctx,
-+				      struct nft_flow_rule *flow,
-+				      const struct nft_payload_set *priv)
-+{
-+	int type = FLOW_ACT_MANGLE_UNSPEC;
-+
-+	switch (ctx->dep.l3num) {
-+	case htons(ETH_P_IP):
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_IP4;
-+		break;
-+	case htons(ETH_P_IPV6):
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_IP6;
-+		break;
-+	}
-+
-+	return type;
-+}
-+
-+static int nft_payload_offload_set_th(struct nft_offload_ctx *ctx,
-+				      struct nft_flow_rule *flow,
-+				      const struct nft_payload_set *priv)
-+{
-+	int type = FLOW_ACT_MANGLE_UNSPEC;
-+
-+	switch (ctx->dep.protonum) {
-+	case IPPROTO_TCP:
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_TCP;
-+		break;
-+	case IPPROTO_UDP:
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_UDP;
-+		break;
-+	}
-+
-+	return type;
-+}
-+
-+static int nft_payload_set_offload(struct nft_offload_ctx *ctx,
-+				   struct nft_flow_rule *flow,
-+				   const struct nft_expr *expr)
-+{
-+	const struct nft_payload_set *priv = nft_expr_priv(expr);
-+	struct nft_offload_reg *sreg = &ctx->regs[priv->sreg];
-+	int type = FLOW_ACT_MANGLE_UNSPEC;
-+	struct flow_action_entry *entry;
-+
-+	switch (priv->base) {
-+	case NFT_PAYLOAD_LL_HEADER:
-+		type = FLOW_ACT_MANGLE_HDR_TYPE_ETH;
-+		break;
-+	case NFT_PAYLOAD_NETWORK_HEADER:
-+		type = nft_payload_offload_set_nh(ctx, flow, priv);
-+		break;
-+	case NFT_PAYLOAD_TRANSPORT_HEADER:
-+		type = nft_payload_offload_set_th(ctx, flow, priv);
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		break;
-+	}
-+
-+	entry = &flow->rule->action.entries[ctx->num_actions++];
-+	entry->id		= FLOW_ACTION_MANGLE;
-+	entry->mangle.htype	= type;
-+	entry->mangle.offset	= priv->offset;
-+	entry->mangle.len	= priv->len;
-+
-+	memcpy(entry->mangle.val, sreg->data.data, priv->len);
-+	memset(entry->mangle.mask, 0xff, priv->len);
-+
-+	return type != FLOW_ACT_MANGLE_UNSPEC ? 0 : -EOPNOTSUPP;
-+}
-+
- static const struct nft_expr_ops nft_payload_set_ops = {
- 	.type		= &nft_payload_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_payload_set)),
- 	.eval		= nft_payload_set_eval,
- 	.init		= nft_payload_set_init,
- 	.dump		= nft_payload_set_dump,
-+	.offload	= nft_payload_set_offload,
- };
- 
- static const struct nft_expr_ops *
--- 
-2.11.0
-
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
