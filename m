@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F7BDB9D8
-	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Oct 2019 00:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 714AADB9DA
+	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Oct 2019 00:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438247AbfJQWtD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 17 Oct 2019 18:49:03 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:42618 "EHLO orbyte.nwl.cc"
+        id S2438287AbfJQWtN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 17 Oct 2019 18:49:13 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:42630 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732705AbfJQWtC (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 17 Oct 2019 18:49:02 -0400
-Received: from localhost ([::1]:55708 helo=tatos)
+        id S1732705AbfJQWtN (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 17 Oct 2019 18:49:13 -0400
+Received: from localhost ([::1]:55720 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iLEZp-00044P-PI; Fri, 18 Oct 2019 00:49:01 +0200
+        id 1iLEa0-00045B-Jh; Fri, 18 Oct 2019 00:49:12 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 4/8] xtables-restore: Constify struct nft_xt_restore_cb
-Date:   Fri, 18 Oct 2019 00:48:32 +0200
-Message-Id: <20191017224836.8261-5-phil@nwl.cc>
+Subject: [iptables PATCH 5/8] iptables-restore: Constify struct iptables_restore_cb
+Date:   Fri, 18 Oct 2019 00:48:33 +0200
+Message-Id: <20191017224836.8261-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191017224836.8261-1-phil@nwl.cc>
 References: <20191017224836.8261-1-phil@nwl.cc>
@@ -31,82 +31,55 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-There is no need for dynamic callback mangling, so make all instances
-static const.
+Just like with xtables-restore, these callbacks don't change at
+run-time.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-shared.h        | 2 +-
- iptables/xtables-restore.c   | 8 ++++----
- iptables/xtables-translate.c | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ iptables/iptables-restore.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
-index 5c6641505f3db..b062f3e5792e3 100644
---- a/iptables/nft-shared.h
-+++ b/iptables/nft-shared.h
-@@ -262,7 +262,7 @@ struct nft_xt_restore_cb {
+diff --git a/iptables/iptables-restore.c b/iptables/iptables-restore.c
+index 3655b3e84637e..50d0708eff1f3 100644
+--- a/iptables/iptables-restore.c
++++ b/iptables/iptables-restore.c
+@@ -70,7 +70,7 @@ struct iptables_restore_cb {
+ };
  
- void xtables_restore_parse(struct nft_handle *h,
- 			   const struct nft_xt_restore_parse *p,
--			   struct nft_xt_restore_cb *cb);
-+			   const struct nft_xt_restore_cb *cb);
- 
- void nft_check_xt_legacy(int family, bool is_ipt_save);
- #endif
-diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index 4652d631d2219..df8844208c273 100644
---- a/iptables/xtables-restore.c
-+++ b/iptables/xtables-restore.c
-@@ -70,7 +70,7 @@ static struct nftnl_chain_list *get_chain_list(struct nft_handle *h,
- 	return chain_list;
- }
- 
--struct nft_xt_restore_cb restore_cb = {
-+static const struct nft_xt_restore_cb restore_cb = {
- 	.chain_list	= get_chain_list,
- 	.commit		= nft_commit,
- 	.abort		= nft_abort,
-@@ -87,7 +87,7 @@ static const struct xtc_ops xtc_ops = {
- 
- void xtables_restore_parse(struct nft_handle *h,
- 			   const struct nft_xt_restore_parse *p,
--			   struct nft_xt_restore_cb *cb)
-+			   const struct nft_xt_restore_cb *cb)
+ static struct xtc_handle *
+-create_handle(struct iptables_restore_cb *cb, const char *tablename)
++create_handle(const struct iptables_restore_cb *cb, const char *tablename)
  {
- 	const struct builtin_table *curtable = NULL;
+ 	struct xtc_handle *handle;
+ 
+@@ -90,7 +90,8 @@ create_handle(struct iptables_restore_cb *cb, const char *tablename)
+ }
+ 
+ static int
+-ip46tables_restore_main(struct iptables_restore_cb *cb, int argc, char *argv[])
++ip46tables_restore_main(const struct iptables_restore_cb *cb,
++			int argc, char *argv[])
+ {
+ 	struct xtc_handle *handle = NULL;
  	char buffer[10240];
-@@ -432,7 +432,7 @@ static int ebt_table_flush(struct nft_handle *h, const char *table)
- 	return nft_table_flush(h, table);
- }
+@@ -360,7 +361,7 @@ ip46tables_restore_main(struct iptables_restore_cb *cb, int argc, char *argv[])
  
--struct nft_xt_restore_cb ebt_restore_cb = {
-+static const struct nft_xt_restore_cb ebt_restore_cb = {
- 	.chain_list	= get_chain_list,
- 	.commit		= nft_bridge_commit,
- 	.table_new	= nft_table_new,
-@@ -478,7 +478,7 @@ int xtables_eb_restore_main(int argc, char *argv[])
- 	return 0;
- }
  
--struct nft_xt_restore_cb arp_restore_cb = {
-+static const struct nft_xt_restore_cb arp_restore_cb = {
- 	.chain_list	= get_chain_list,
- 	.commit		= nft_commit,
- 	.table_new	= nft_table_new,
-diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
-index 64e7667a253e7..43607901fc62b 100644
---- a/iptables/xtables-translate.c
-+++ b/iptables/xtables-translate.c
-@@ -413,7 +413,7 @@ static int dummy_compat_rev(const char *name, uint8_t rev, int opt)
- 	return 1;
- }
+ #if defined ENABLE_IPV4
+-struct iptables_restore_cb ipt_restore_cb = {
++static const struct iptables_restore_cb ipt_restore_cb = {
+ 	.ops		= &iptc_ops,
+ 	.for_each_chain	= for_each_chain4,
+ 	.flush_entries	= flush_entries4,
+@@ -391,7 +392,7 @@ iptables_restore_main(int argc, char *argv[])
+ #endif
  
--static struct nft_xt_restore_cb cb_xlate = {
-+static const struct nft_xt_restore_cb cb_xlate = {
- 	.table_new	= xlate_table_new,
- 	.chain_set	= xlate_chain_set,
- 	.chain_restore	= xlate_chain_user_restore,
+ #if defined ENABLE_IPV6
+-struct iptables_restore_cb ip6t_restore_cb = {
++static const struct iptables_restore_cb ip6t_restore_cb = {
+ 	.ops		= &ip6tc_ops,
+ 	.for_each_chain	= for_each_chain6,
+ 	.flush_entries	= flush_entries6,
 -- 
 2.23.0
 
