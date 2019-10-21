@@ -2,210 +2,148 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA85DF7BD
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Oct 2019 23:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0064EDF8DB
+	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Oct 2019 01:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729869AbfJUVtZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 21 Oct 2019 17:49:25 -0400
-Received: from kadath.azazel.net ([81.187.231.250]:38482 "EHLO
-        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728943AbfJUVtY (ORCPT
+        id S1729718AbfJUX6F (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 21 Oct 2019 19:58:05 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22984 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730304AbfJUX6E (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 21 Oct 2019 17:49:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=qzThRLLU/oiqgpov/KHVowRWUWIR4HpHO7VAFAFwrdg=; b=iuzzaF/2hHQtjEjID6+FtnWoD0
-        Uj2BLNM8WlGlNmQ8ro0LCo9TnuVvO7I0RFIqCADNTd0f6TcjKDzyuEcY6bujWE7MYt35qaJ7/x4O+
-        rrD4xyAOd0UtsIMQOz8sle2w48nR83JhVn9xkbA3w4veIzjZ/NR7a8nPuYdbkC6plkfwLUmXDJ4Lb
-        4OJiAnurbyqd96AW7peeZQRvBX4uMgswhkUGizS2AeJkPAG6RRYX1dLc2NwMaEVJiW/MV4/f9SjbB
-        ZaIvCYIzp7GVfWOXJE7MUb+4In0kW/MF4fSDp8YO3oMM8Wb63cEObPZaxet4ldTpVip9OvtVNXcKk
-        O3uuEPEg==;
-Received: from ulthar.dreamlands ([192.168.96.2])
-        by kadath.azazel.net with esmtp (Exim 4.92)
-        (envelope-from <jeremy@azazel.net>)
-        id 1iMfYJ-00047s-2X; Mon, 21 Oct 2019 22:49:23 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v3 2/2] src: add --terse to suppress output of set elements.
-Date:   Mon, 21 Oct 2019 22:49:22 +0100
-Message-Id: <20191021214922.8943-3-jeremy@azazel.net>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191021214922.8943-1-jeremy@azazel.net>
-References: <20191021214922.8943-1-jeremy@azazel.net>
+        Mon, 21 Oct 2019 19:58:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571702282;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jFHpgQ9TLUmBzy0U/kWA3ZERfeuL0HrxiFj4Wubq64g=;
+        b=AWV3a9ByvoA21l8Ka8pLkf+tXrh0Jy6L84DwupFsctYruVXKXiMbdEeqF66fXnNkF3+pnF
+        1o02yJDVRe5tRLnl1EkXIUIon6HGWWn7LcN9+CrbJkw2EK3qZsv+4msHBu4a/fGKudkxbt
+        he+J9fy0hSgDxAne21Nf07i191UMF8I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-290-lF5_pNewONS87t0uNh9mpg-1; Mon, 21 Oct 2019 19:57:58 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4988C80183E;
+        Mon, 21 Oct 2019 23:57:53 +0000 (UTC)
+Received: from madcap2.tricolour.ca (ovpn-112-19.phx2.redhat.com [10.3.112.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DD1571001DD7;
+        Mon, 21 Oct 2019 23:57:37 +0000 (UTC)
+Date:   Mon, 21 Oct 2019 19:57:34 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        sgrubb@redhat.com, omosnace@redhat.com, dhowells@redhat.com,
+        simo@redhat.com, Eric Paris <eparis@parisplace.org>,
+        Serge Hallyn <serge@hallyn.com>, ebiederm@xmission.com,
+        nhorman@tuxdriver.com, Dan Walsh <dwalsh@redhat.com>,
+        mpatel@redhat.com
+Subject: Re: [PATCH ghak90 V7 20/21] audit: add capcontid to set contid
+ outside init_user_ns
+Message-ID: <20191021235734.mgcjotdqoe73e4ha@madcap2.tricolour.ca>
+References: <cover.1568834524.git.rgb@redhat.com>
+ <214163d11a75126f610bcedfad67a4d89575dc77.1568834525.git.rgb@redhat.com>
+ <20191019013904.uevmrzbmztsbhpnh@madcap2.tricolour.ca>
+ <CAHC9VhRPygA=LsHLUqv+K=ouAiPFJ6fb2_As=OT-_zB7kGc_aQ@mail.gmail.com>
+ <20191021213824.6zti5ndxu7sqs772@madcap2.tricolour.ca>
+ <CAHC9VhRdNXsY4neJpSoNyJoAVEoiEc2oW5kSscF99tjmoQAxFA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 192.168.96.2
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+In-Reply-To: <CAHC9VhRdNXsY4neJpSoNyJoAVEoiEc2oW5kSscF99tjmoQAxFA@mail.gmail.com>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-MC-Unique: lF5_pNewONS87t0uNh9mpg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Listing an entire ruleset or a table with `nft list` prints the elements
-of all set definitions within the ruleset or table.  Seeing the full set
-contents is not often necessary especially when requesting to see
-someone's ruleset for help and support purposes.  Add a new option '-t,
---terse' options to suppress the output of set contents.
+On 2019-10-21 17:43, Paul Moore wrote:
+> On Mon, Oct 21, 2019 at 5:38 PM Richard Guy Briggs <rgb@redhat.com> wrote=
+:
+> > On 2019-10-21 15:53, Paul Moore wrote:
+> > > On Fri, Oct 18, 2019 at 9:39 PM Richard Guy Briggs <rgb@redhat.com> w=
+rote:
+> > > > On 2019-09-18 21:22, Richard Guy Briggs wrote:
+> > > > > Provide a mechanism similar to CAP_AUDIT_CONTROL to explicitly gi=
+ve a
+> > > > > process in a non-init user namespace the capability to set audit
+> > > > > container identifiers.
+> > > > >
+> > > > > Use audit netlink message types AUDIT_GET_CAPCONTID 1027 and
+> > > > > AUDIT_SET_CAPCONTID 1028.  The message format includes the data
+> > > > > structure:
+> > > > > struct audit_capcontid_status {
+> > > > >         pid_t   pid;
+> > > > >         u32     enable;
+> > > > > };
+> > > >
+> > > > Paul, can I get a review of the general idea here to see if you're =
+ok
+> > > > with this way of effectively extending CAP_AUDIT_CONTROL for the sa=
+ke of
+> > > > setting contid from beyond the init user namespace where capable() =
+can't
+> > > > reach and ns_capable() is meaningless for these purposes?
+> > >
+> > > I think my previous comment about having both the procfs and netlink
+> > > interfaces apply here.  I don't see why we need two different APIs at
+> > > the start; explain to me why procfs isn't sufficient.  If the argumen=
+t
+> > > is simply the desire to avoid mounting procfs in the container, how
+> > > many container orchestrators can function today without a valid /proc=
+?
+> >
+> > Ok, sorry, I meant to address that question from a previous patch
+> > comment at the same time.
+> >
+> > It was raised by Eric Biederman that the proc filesystem interface for
+> > audit had its limitations and he had suggested an audit netlink
+> > interface made more sense.
+>=20
+> I'm sure you've got it handy, so I'm going to be lazy and ask: archive
+> pointer to Eric's comments?  Just a heads-up, I'm really *not* a fan
+> of using the netlink interface for this, so unless Eric presents a
+> super compelling reason for why we shouldn't use procfs I'm inclined
+> to stick with /proc.
 
-Link: https://bugzilla.netfilter.org/show_bug.cgi?id=1374
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- doc/libnftables.adoc           | 21 ++++++++++++---------
- doc/nft.txt                    |  4 ++++
- include/nftables.h             |  5 +++++
- include/nftables/libnftables.h |  1 +
- src/main.c                     | 11 ++++++++++-
- src/rule.c                     |  3 ++-
- 6 files changed, 34 insertions(+), 11 deletions(-)
+It was actually a video call with Eric and Steve where that was
+recommended, so I can't provide you with any first-hand communication
+about it.  I'll get more details...
 
-diff --git a/doc/libnftables.adoc b/doc/libnftables.adoc
-index ea9626afa101..8ce1196fd47e 100644
---- a/doc/libnftables.adoc
-+++ b/doc/libnftables.adoc
-@@ -80,16 +80,17 @@ The flags setting controls the output format.
- 
- ----
- enum {
--        NFT_CTX_OUTPUT_REVERSEDNS  = (1 << 0),
--        NFT_CTX_OUTPUT_SERVICE     = (1 << 1),
--        NFT_CTX_OUTPUT_STATELESS   = (1 << 2),
--        NFT_CTX_OUTPUT_HANDLE      = (1 << 3),
--        NFT_CTX_OUTPUT_JSON        = (1 << 4),
--        NFT_CTX_OUTPUT_ECHO        = (1 << 5),
--        NFT_CTX_OUTPUT_GUID        = (1 << 6),
--        NFT_CTX_OUTPUT_NUMERIC_PROTO = (1 << 7),
--        NFT_CTX_OUTPUT_NUMERIC_PRIO = (1 << 8),
-+        NFT_CTX_OUTPUT_REVERSEDNS     = (1 << 0),
-+        NFT_CTX_OUTPUT_SERVICE        = (1 << 1),
-+        NFT_CTX_OUTPUT_STATELESS      = (1 << 2),
-+        NFT_CTX_OUTPUT_HANDLE         = (1 << 3),
-+        NFT_CTX_OUTPUT_JSON           = (1 << 4),
-+        NFT_CTX_OUTPUT_ECHO           = (1 << 5),
-+        NFT_CTX_OUTPUT_GUID           = (1 << 6),
-+        NFT_CTX_OUTPUT_NUMERIC_PROTO  = (1 << 7),
-+        NFT_CTX_OUTPUT_NUMERIC_PRIO   = (1 << 8),
-         NFT_CTX_OUTPUT_NUMERIC_SYMBOL = (1 << 9),
-+        NFT_CTX_OUTPUT_TERSE          = (1 << 11),
- };
- ----
- 
-@@ -123,6 +124,8 @@ NFT_CTX_OUTPUT_NUMERIC_SYMBOL::
- 	Display expression datatype as numeric value.
- NFT_CTX_OUTPUT_NUMERIC_ALL::
- 	Display all numerically.
-+NFT_CTX_OUTPUT_TERSE::
-+	If terse output has been requested, then the contents of sets are not printed.
- 
- The *nft_ctx_output_get_flags*() function returns the output flags setting's value in 'ctx'.
- 
-diff --git a/doc/nft.txt b/doc/nft.txt
-index 616640a84c94..2c79009948a5 100644
---- a/doc/nft.txt
-+++ b/doc/nft.txt
-@@ -97,6 +97,10 @@ For a full summary of options, run *nft --help*.
- *--numeric-time*::
- 	Show time, day and hour values in numeric format.
- 
-+*-t*::
-+*--terse*::
-+	Omit contents of sets from output.
-+
- INPUT FILE FORMATS
- ------------------
- LEXICAL CONVENTIONS
-diff --git a/include/nftables.h b/include/nftables.h
-index 1ecf5ef5269c..21553c6bb3a5 100644
---- a/include/nftables.h
-+++ b/include/nftables.h
-@@ -90,6 +90,11 @@ static inline bool nft_output_numeric_symbol(const struct output_ctx *octx)
- 	return octx->flags & NFT_CTX_OUTPUT_NUMERIC_SYMBOL;
- }
- 
-+static inline bool nft_output_terse(const struct output_ctx *octx)
-+{
-+	return octx->flags & NFT_CTX_OUTPUT_TERSE;
-+}
-+
- struct nft_cache {
- 	uint32_t		genid;
- 	struct list_head	list;
-diff --git a/include/nftables/libnftables.h b/include/nftables/libnftables.h
-index 7a7a46f3358a..765b20dd71ee 100644
---- a/include/nftables/libnftables.h
-+++ b/include/nftables/libnftables.h
-@@ -56,6 +56,7 @@ enum {
- 	NFT_CTX_OUTPUT_NUMERIC_ALL	= (NFT_CTX_OUTPUT_NUMERIC_PROTO |
- 					   NFT_CTX_OUTPUT_NUMERIC_PRIO |
- 					   NFT_CTX_OUTPUT_NUMERIC_SYMBOL),
-+	NFT_CTX_OUTPUT_TERSE		= (1 << 11),
- };
- 
- unsigned int nft_ctx_output_get_flags(struct nft_ctx *ctx);
-diff --git a/src/main.c b/src/main.c
-index 238c5e0bf9ef..ebd6d7c322d7 100644
---- a/src/main.c
-+++ b/src/main.c
-@@ -43,9 +43,10 @@ enum opt_vals {
- 	OPT_NUMERIC_PRIO	= 'y',
- 	OPT_NUMERIC_PROTO	= 'p',
- 	OPT_NUMERIC_TIME	= 'T',
-+	OPT_TERSE		= 't',
- 	OPT_INVALID		= '?',
- };
--#define OPTSTRING	"+hvcf:iI:jvnsNaeSupypT"
-+#define OPTSTRING	"+hvcf:iI:jvnsNaeSupypTt"
- 
- static const struct option options[] = {
- 	{
-@@ -119,6 +120,10 @@ static const struct option options[] = {
- 		.name		= "numeric-time",
- 		.val		= OPT_NUMERIC_TIME,
- 	},
-+	{
-+		.name		= "terse",
-+		.val		= OPT_TERSE,
-+	},
- 	{
- 		.name		= NULL
- 	}
-@@ -140,6 +145,7 @@ static void show_help(const char *name)
- "  -j, --json			Format output in JSON\n"
- "  -n, --numeric			Print fully numerical output.\n"
- "  -s, --stateless		Omit stateful information of ruleset.\n"
-+"  -t, --terse			Omit contents of sets.\n"
- "  -u, --guid			Print UID/GID as defined in /etc/passwd and /etc/group.\n"
- "  -N				Translate IP addresses to names.\n"
- "  -S, --service			Translate ports to service names as described in /etc/services.\n"
-@@ -301,6 +307,9 @@ int main(int argc, char * const *argv)
- 		case OPT_NUMERIC_TIME:
- 			output_flags |= NFT_CTX_OUTPUT_NUMERIC_TIME;
- 			break;
-+		case OPT_TERSE:
-+			output_flags |= NFT_CTX_OUTPUT_TERSE;
-+			break;
- 		case OPT_INVALID:
- 			exit(EXIT_FAILURE);
- 		}
-diff --git a/src/rule.c b/src/rule.c
-index 55894cbdb766..64756bcee6b8 100644
---- a/src/rule.c
-+++ b/src/rule.c
-@@ -538,7 +538,8 @@ static void do_set_print(const struct set *set, struct print_fmt_options *opts,
- {
- 	set_print_declaration(set, opts, octx);
- 
--	if (set->flags & NFT_SET_EVAL && nft_output_stateless(octx)) {
-+	if ((set->flags & NFT_SET_EVAL && nft_output_stateless(octx)) ||
-+	    nft_output_terse(octx)) {
- 		nft_print(octx, "%s}%s", opts->tab, opts->nl);
- 		return;
- 	}
--- 
-2.23.0
+So, with that out of the way, could you please comment on the general
+idea of what was intended to be the central idea of this mechanism to be
+able to nest containers beyond the initial user namespace (knowing that
+a /proc interface is available and the audit netlink interface isn't
+necessary for it to work and the latter can be easily removed)?
+
+> > The intent was to switch to the audit netlink interface for contid,
+> > capcontid and to add the audit netlink interface for loginuid and
+> > sessionid while deprecating the proc interface for loginuid and
+> > sessionid.  This was alluded to in the cover letter, but not very clear=
+,
+> > I'm afraid.  I have patches to remove the contid and loginuid/sessionid
+> > interfaces in another tree which is why I had forgotten to outline that
+> > plan more explicitly in the cover letter.
+>=20
+> paul moore
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
