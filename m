@@ -2,26 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF3BE381E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2019 18:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E82E3812
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2019 18:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503485AbfJXQhx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 24 Oct 2019 12:37:53 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:58936 "EHLO orbyte.nwl.cc"
+        id S2503472AbfJXQhV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 24 Oct 2019 12:37:21 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:58900 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503426AbfJXQhx (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 24 Oct 2019 12:37:53 -0400
-Received: from localhost ([::1]:43794 helo=tatos)
+        id S2503471AbfJXQhV (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 24 Oct 2019 12:37:21 -0400
+Received: from localhost ([::1]:43758 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iNg7U-0005EY-Hn; Thu, 24 Oct 2019 18:37:52 +0200
+        id 1iNg6y-0005C4-Mm; Thu, 24 Oct 2019 18:37:20 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v3 0/7] Improve xtables-restore performance
-Date:   Thu, 24 Oct 2019 18:37:05 +0200
-Message-Id: <20191024163712.22405-1-phil@nwl.cc>
+Subject: [iptables PATCH v3 1/7] xtables-restore: Integrate restore callbacks into struct nft_xt_restore_parse
+Date:   Thu, 24 Oct 2019 18:37:06 +0200
+Message-Id: <20191024163712.22405-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20191024163712.22405-1-phil@nwl.cc>
+References: <20191024163712.22405-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -29,52 +31,142 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This series speeds up xtables-restore calls with --noflush (typically
-used to batch a few commands for faster execution) by preliminary input
-inspection.
+There's really no point in passing those as separate parameter. While
+being at it, make them static const everywhere.
 
-Before, setting --noflush flag would inevitably lead to full cache
-population. With this series in place, if input can be fully buffered
-and no commands requiring full cache is contained, no initial cache
-population happens and each rule parsed will cause fetching of cache
-bits as required.
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/nft-shared.h        | 18 +++++++++---------
+ iptables/xtables-restore.c   | 13 ++++++++-----
+ iptables/xtables-translate.c |  6 ++++--
+ 3 files changed, 21 insertions(+), 16 deletions(-)
 
-The input buffer size is arbitrarily chosen to be 64KB.
-
-Patches one and two prepare code for patch three which moves the loop
-content parsing each line of input into a separate function. The
-reduction of code indenting is used by patch four which deals with
-needless line breaks.
-
-Patch five deals with another requirement of input buffering, namely
-stripping newline characters from each line. This is not a problem by
-itself, but add_param_to_argv() replaces them by nul-chars and so
-strings stop being consistently terminated (some by a single, some by
-two nul-chars).
-
-Patch six then finally adds the buffering and caching decision code.
-
-Patch seven is pretty unrelated but tests a specific behaviour of
-*tables-restore I wasn't sure of at first.
-
-Phil Sutter (7):
-  xtables-restore: Integrate restore callbacks into struct
-    nft_xt_restore_parse
-  xtables-restore: Introduce struct nft_xt_restore_state
-  xtables-restore: Introduce line parsing function
-  xtables-restore: Remove some pointless linebreaks
-  xtables-restore: Allow lines without trailing newline character
-  xtables-restore: Improve performance of --noflush operation
-  tests: shell: Add ipt-restore/0007-flush-noflush_0
-
- iptables/nft-shared.h                         |  18 +-
- .../ipt-restore/0007-flush-noflush_0          |  42 ++
- iptables/xshared.c                            |   4 +
- iptables/xtables-restore.c                    | 443 +++++++++++-------
- iptables/xtables-translate.c                  |   6 +-
- 5 files changed, 323 insertions(+), 190 deletions(-)
- create mode 100755 iptables/tests/shell/testcases/ipt-restore/0007-flush-noflush_0
-
+diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
+index 8b073b18fb0d9..3ff7251f9f7ec 100644
+--- a/iptables/nft-shared.h
++++ b/iptables/nft-shared.h
+@@ -232,13 +232,6 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
+ 	      struct nft_xt_cmd_parse *p, struct iptables_command_state *cs,
+ 	      struct xtables_args *args);
+ 
+-struct nft_xt_restore_parse {
+-	FILE		*in;
+-	int		testing;
+-	const char	*tablename;
+-	bool		commit;
+-};
+-
+ struct nftnl_chain_list;
+ 
+ struct nft_xt_restore_cb {
+@@ -258,9 +251,16 @@ struct nft_xt_restore_cb {
+ 	int (*abort)(struct nft_handle *h);
+ };
+ 
++struct nft_xt_restore_parse {
++	FILE				*in;
++	int				testing;
++	const char			*tablename;
++	bool				commit;
++	const struct nft_xt_restore_cb	*cb;
++};
++
+ void xtables_restore_parse(struct nft_handle *h,
+-			   const struct nft_xt_restore_parse *p,
+-			   const struct nft_xt_restore_cb *cb);
++			   const struct nft_xt_restore_parse *p);
+ 
+ void nft_check_xt_legacy(int family, bool is_ipt_save);
+ #endif
+diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
+index 8d6cb7a97ea37..341579bd8d1c3 100644
+--- a/iptables/xtables-restore.c
++++ b/iptables/xtables-restore.c
+@@ -69,10 +69,10 @@ static const struct nft_xt_restore_cb restore_cb = {
+ };
+ 
+ void xtables_restore_parse(struct nft_handle *h,
+-			   const struct nft_xt_restore_parse *p,
+-			   const struct nft_xt_restore_cb *cb)
++			   const struct nft_xt_restore_parse *p)
+ {
+ 	const struct builtin_table *curtable = NULL;
++	const struct nft_xt_restore_cb *cb = p->cb;
+ 	struct argv_store av_store = {};
+ 	char buffer[10240];
+ 	int in_table = 0;
+@@ -279,6 +279,7 @@ xtables_restore_main(int family, const char *progname, int argc, char *argv[])
+ 	int c;
+ 	struct nft_xt_restore_parse p = {
+ 		.commit = true,
++		.cb = &restore_cb,
+ 	};
+ 
+ 	line = 0;
+@@ -383,7 +384,7 @@ xtables_restore_main(int family, const char *progname, int argc, char *argv[])
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
+-	xtables_restore_parse(&h, &p, &restore_cb);
++	xtables_restore_parse(&h, &p);
+ 
+ 	nft_fini(&h);
+ 	fclose(p.in);
+@@ -427,6 +428,7 @@ int xtables_eb_restore_main(int argc, char *argv[])
+ {
+ 	struct nft_xt_restore_parse p = {
+ 		.in = stdin,
++		.cb = &ebt_restore_cb,
+ 	};
+ 	bool noflush = false;
+ 	struct nft_handle h;
+@@ -448,7 +450,7 @@ int xtables_eb_restore_main(int argc, char *argv[])
+ 
+ 	nft_init_eb(&h, "ebtables-restore");
+ 	h.noflush = noflush;
+-	xtables_restore_parse(&h, &p, &ebt_restore_cb);
++	xtables_restore_parse(&h, &p);
+ 	nft_fini(&h);
+ 
+ 	return 0;
+@@ -467,11 +469,12 @@ int xtables_arp_restore_main(int argc, char *argv[])
+ {
+ 	struct nft_xt_restore_parse p = {
+ 		.in = stdin,
++		.cb = &arp_restore_cb,
+ 	};
+ 	struct nft_handle h;
+ 
+ 	nft_init_arp(&h, "arptables-restore");
+-	xtables_restore_parse(&h, &p, &arp_restore_cb);
++	xtables_restore_parse(&h, &p);
+ 	nft_fini(&h);
+ 
+ 	return 0;
+diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
+index 43607901fc62b..a42c60a3b64c6 100644
+--- a/iptables/xtables-translate.c
++++ b/iptables/xtables-translate.c
+@@ -498,7 +498,9 @@ static int xtables_restore_xlate_main(int family, const char *progname,
+ 		.family = family,
+ 	};
+ 	const char *file = NULL;
+-	struct nft_xt_restore_parse p = {};
++	struct nft_xt_restore_parse p = {
++		.cb = &cb_xlate,
++	};
+ 	time_t now = time(NULL);
+ 	int c;
+ 
+@@ -535,7 +537,7 @@ static int xtables_restore_xlate_main(int family, const char *progname,
+ 
+ 	printf("# Translated by %s v%s on %s",
+ 	       argv[0], PACKAGE_VERSION, ctime(&now));
+-	xtables_restore_parse(&h, &p, &cb_xlate);
++	xtables_restore_parse(&h, &p);
+ 	printf("# Completed on %s", ctime(&now));
+ 
+ 	nft_fini(&h);
 -- 
 2.23.0
 
