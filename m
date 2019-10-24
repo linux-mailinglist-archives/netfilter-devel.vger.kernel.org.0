@@ -2,88 +2,53 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF99E2E09
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2019 12:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCE2E2F2C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2019 12:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390289AbfJXKBP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 24 Oct 2019 06:01:15 -0400
-Received: from correo.us.es ([193.147.175.20]:53270 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732286AbfJXKBP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 24 Oct 2019 06:01:15 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 4AB684A2BA6
-        for <netfilter-devel@vger.kernel.org>; Thu, 24 Oct 2019 12:01:10 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 3A7FAB8004
-        for <netfilter-devel@vger.kernel.org>; Thu, 24 Oct 2019 12:01:10 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 2FF13B7FFB; Thu, 24 Oct 2019 12:01:10 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 446C3202B7;
-        Thu, 24 Oct 2019 12:01:08 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 24 Oct 2019 12:01:08 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (sys.soleta.eu [212.170.55.40])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 1E8E542EE38E;
-        Thu, 24 Oct 2019 12:01:08 +0200 (CEST)
-Date:   Thu, 24 Oct 2019 12:01:10 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: Re: [iptables PATCH] nft: Use ARRAY_SIZE() macro in nft_strerror()
-Message-ID: <20191024100110.hn65z2s66ktznymw@salvia>
-References: <20191018155114.7423-1-phil@nwl.cc>
- <20191023112024.gd4dqe6qqv46hufe@salvia>
- <20191023112311.qrglbzhqad4vfqvo@salvia>
- <20191023121627.GM26123@orbyte.nwl.cc>
- <20191023204149.vushra6ipmjqqd7c@salvia>
- <20191024084503.GF17858@orbyte.nwl.cc>
- <20191024092903.sqvoxwwuflk2h4cn@salvia>
- <20191024095101.GQ26123@orbyte.nwl.cc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191024095101.GQ26123@orbyte.nwl.cc>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2407954AbfJXKfi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 24 Oct 2019 06:35:38 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:44952 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405970AbfJXKfi (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 24 Oct 2019 06:35:38 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 2849441B15;
+        Thu, 24 Oct 2019 18:35:36 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next 0/5] netfilter: nft_tunnel: support tunnel match expr offload
+Date:   Thu, 24 Oct 2019 18:35:31 +0800
+Message-Id: <1571913336-13431-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVNSk1LS0tKTE5PTE1LTFlXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MBQ6Tzo4Mzg1IR48OUwpPxEd
+        EDRPChJVSlVKTkxKQkpISEhNSU9IVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUpJQk43Bg++
+X-HM-Tid: 0a6dfd5605732086kuqy2849441b15
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Oct 24, 2019 at 11:51:01AM +0200, Phil Sutter wrote:
-> Hey,
-> 
-> On Thu, Oct 24, 2019 at 11:29:03AM +0200, Pablo Neira Ayuso wrote:
-> [...]
-> > If gcc is already checking for this. Warning should be fine.
-> > 
-> > Regarding -Werror, we would at least need to keep the autogenerated C
-> > code by bison away from it.
-> 
-> In nftables there is libparser_la_CFLAGS which holds quite some
-> exclusions already and could be used to pass -Wno-error as well. (Maybe
-> a good idea to add this regardless of whether we set -Werror by default
-> or not.)
-> 
-> > IIRC I enabled this in conntrack-tools long time ago, and I started
-> > getting reports on it breaking compilation with new gcc versions that
-> > were actually spewing new warnings. That was stopping users to install
-> > latest, probably -Werror is too agressive?
-> 
-> Yes, I wasn't completely serious. Breaking users' builds for things they
-> may not be in control of is not the best idea. We could instead add a
-> configure option to enable strict mode, but checking for warnings is
-> something I usually do so probably not that important after all.
+From: wenxu <wenxu@ucloud.cn>
 
-Indeed. So let's leave things as is then.
+This series add NFT_TUNNEL_IPV4/6_SRC/DST match and tunnel expr offload.
+
+wenxu (5):
+  netfilter: nft_tunnel: add nft_tunnel_mode_validate function
+  netfilter: nft_tunnel: support NFT_TUNNEL_IPV4_SRC/DST match
+  netfilter: nft_tunnel: add inet type check in nft_tunnel_mode_validate
+  netfilter: nft_tunnel: support NFT_TUNNEL_IPV6_SRC/DST match
+  netfilter: nft_tunnel: add nft_tunnel_get_offload support
+
+ include/net/netfilter/nf_tables_offload.h |   5 ++
+ include/uapi/linux/netfilter/nf_tables.h  |   4 +
+ net/netfilter/nft_tunnel.c                | 130 +++++++++++++++++++++++++++---
+ 3 files changed, 129 insertions(+), 10 deletions(-)
+
+-- 
+1.8.3.1
+
