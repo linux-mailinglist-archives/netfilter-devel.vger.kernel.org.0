@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6CEE3813
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2019 18:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F76E3819
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2019 18:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503471AbfJXQh1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 24 Oct 2019 12:37:27 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:58906 "EHLO orbyte.nwl.cc"
+        id S2503439AbfJXQhn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 24 Oct 2019 12:37:43 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:58924 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503426AbfJXQh1 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 24 Oct 2019 12:37:27 -0400
-Received: from localhost ([::1]:43764 helo=tatos)
+        id S2503426AbfJXQhn (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 24 Oct 2019 12:37:43 -0400
+Received: from localhost ([::1]:43782 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iNg74-0005CU-0a; Thu, 24 Oct 2019 18:37:26 +0200
+        id 1iNg7J-0005DL-U5; Thu, 24 Oct 2019 18:37:41 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v3 5/7] xtables-restore: Allow lines without trailing newline character
-Date:   Thu, 24 Oct 2019 18:37:10 +0200
-Message-Id: <20191024163712.22405-6-phil@nwl.cc>
+Subject: [iptables PATCH v3 6/7] xtables-restore: Improve performance of --noflush operation
+Date:   Thu, 24 Oct 2019 18:37:11 +0200
+Message-Id: <20191024163712.22405-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191024163712.22405-1-phil@nwl.cc>
 References: <20191024163712.22405-1-phil@nwl.cc>
@@ -31,52 +31,141 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Old code in add_param_to_argv() assumed the input line would always end
-with a newline character. Without it, the last word of input wasn't
-recognized. Fix this by adding a final check for param.len (indicating
-leftover data in buffer).
+The reason for that full cache fetching when called with --noflush even
+before looking at any input data was that there might be a command
+requiring a rule cache following some rule add/insert ones which don't.
+At that point one needs to fetch rules from kernel and try to insert the
+local ones at the right spot which is non-trivial.
 
-In line parsing code itself, only COMMIT line check required presence of
-trailing newline. The replaced conditional is not 100% accurate as it
-allows for characters after newline to be present, but since fgets() is
-used this shouldn't happen anyway.
+At the same time there is a performance-critical use-case for --noflush,
+namely fast insertion of a bunch of rules in one go, avoiding the
+process spawn overhead.
+
+Optimize for this use-case by preloading input into a 64KB buffer to see
+if it fits. If so, search for commands requiring a rule cache. If there
+are none, skip initial full cache fetching.
+
+The above algorithm may abort at any point, so actual input parsing must
+happen in three stages:
+
+1) parse all preloaded lines from 64KB buffer
+2) parse any leftover line in line buffer (happens if input exceeds
+   the preload buffer size)
+3) parse remaining input from input file pointer
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xshared.c         | 4 ++++
- iptables/xtables-restore.c | 4 +++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ iptables/xtables-restore.c | 88 +++++++++++++++++++++++++++++++++++---
+ 1 file changed, 81 insertions(+), 7 deletions(-)
 
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 97f1b5d22fdbe..681a8fd314f86 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -530,6 +530,10 @@ void add_param_to_argv(struct argv_store *store, char *parsestart, int line)
- 		param.len = 0;
- 		quoted = 0;
- 	}
-+	if (param.len) {
-+		param.buffer[param.len] = '\0';
-+		add_argv(store, param.buffer, 0);
-+	}
- }
- 
- #ifdef DEBUG
 diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index 83e05102769a7..5a534ca227379 100644
+index 5a534ca227379..120b444f4b8a5 100644
 --- a/iptables/xtables-restore.c
 +++ b/iptables/xtables-restore.c
-@@ -88,7 +88,9 @@ static void xtables_restore_parse_line(struct nft_handle *h,
- 		if (verbose)
- 			fputs(buffer, stdout);
- 		return;
--	} else if ((strcmp(buffer, "COMMIT\n") == 0) && state->in_table) {
-+	} else if (state->in_table &&
-+		   (strncmp(buffer, "COMMIT", 6) == 0) &&
-+		   (buffer[6] == '\0' || buffer[6] == '\n')) {
- 		if (!p->testing) {
- 			/* Commit per table, although we support
- 			 * global commit at once, stick by now to
+@@ -248,22 +248,96 @@ static void xtables_restore_parse_line(struct nft_handle *h,
+ 	}
+ }
+ 
++/* Return true if given iptables-restore line will require a full cache.
++ * Typically these are commands referring to an existing rule
++ * (either by number or content) or commands listing the ruleset. */
++static bool cmd_needs_full_cache(char *cmd)
++{
++	char c, chain[32];
++	int rulenum, mcount;
++
++	mcount = sscanf(cmd, "-%c %31s %d", &c, chain, &rulenum);
++
++	if (mcount == 3)
++		return true;
++	if (mcount < 1)
++		return false;
++
++	switch (c) {
++	case 'D':
++	case 'C':
++	case 'S':
++	case 'L':
++		return true;
++	}
++
++	return false;
++}
++
++#define PREBUFSIZ	65536
++
+ void xtables_restore_parse(struct nft_handle *h,
+ 			   const struct nft_xt_restore_parse *p)
+ {
+ 	struct nft_xt_restore_state state = {};
+-	char buffer[10240];
++	char preload_buffer[PREBUFSIZ] = {}, buffer[10240], *ptr;
+ 
+-	line = 0;
+-
+-	if (!h->noflush)
++	if (!h->noflush) {
+ 		nft_fake_cache(h);
+-	else
+-		nft_build_cache(h, NULL);
++	} else {
++		ssize_t pblen = sizeof(preload_buffer);
++		bool do_cache = false;
++
++		ptr = preload_buffer;
++		while (fgets(buffer, sizeof(buffer), p->in)) {
++			size_t blen = strlen(buffer);
++
++			/* drop trailing newline; add_param_to_argv() changes
++			 * it into nul, causing unpredictable string delimiting
++			 * in preload_buffer */
++			if (buffer[blen - 1] == '\n')
++				buffer[blen - 1] = '\0';
++			else
++				blen++;
++
++			pblen -= blen;
++			if (pblen <= 0) {
++				/* buffer exhausted */
++				do_cache = true;
++				break;
++			}
+ 
+-	/* Grab standard input. */
++			if (cmd_needs_full_cache(buffer)) {
++				do_cache = true;
++				break;
++			}
++
++			/* copy string including terminating nul-char */
++			memcpy(ptr, buffer, blen);
++			ptr += blen;
++			buffer[0] = '\0';
++		}
++
++		if (do_cache)
++			nft_build_cache(h, NULL);
++	}
++
++	line = 0;
++	ptr = preload_buffer;
++	while (*ptr) {
++		h->error.lineno = ++line;
++		DEBUGP("%s: buffered line %d: '%s'\n", __func__, line, ptr);
++		xtables_restore_parse_line(h, p, &state, ptr);
++		ptr += strlen(ptr) + 1;
++	}
++	if (*buffer) {
++		h->error.lineno = ++line;
++		DEBUGP("%s: overrun line %d: '%s'\n", __func__, line, buffer);
++		xtables_restore_parse_line(h, p, &state, buffer);
++	}
+ 	while (fgets(buffer, sizeof(buffer), p->in)) {
+ 		h->error.lineno = ++line;
++		DEBUGP("%s: input line %d: '%s'\n", __func__, line, buffer);
+ 		xtables_restore_parse_line(h, p, &state, buffer);
+ 	}
+ 	if (state.in_table && p->commit) {
 -- 
 2.23.0
 
