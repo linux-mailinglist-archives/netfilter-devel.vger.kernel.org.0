@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E82E3812
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2019 18:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89548E3817
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Oct 2019 18:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503472AbfJXQhV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 24 Oct 2019 12:37:21 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:58900 "EHLO orbyte.nwl.cc"
+        id S2503480AbfJXQhi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 24 Oct 2019 12:37:38 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:58918 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503471AbfJXQhV (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 24 Oct 2019 12:37:21 -0400
-Received: from localhost ([::1]:43758 helo=tatos)
+        id S2503479AbfJXQhh (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 24 Oct 2019 12:37:37 -0400
+Received: from localhost ([::1]:43776 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iNg6y-0005C4-Mm; Thu, 24 Oct 2019 18:37:20 +0200
+        id 1iNg7E-0005DF-JQ; Thu, 24 Oct 2019 18:37:36 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v3 1/7] xtables-restore: Integrate restore callbacks into struct nft_xt_restore_parse
-Date:   Thu, 24 Oct 2019 18:37:06 +0200
-Message-Id: <20191024163712.22405-2-phil@nwl.cc>
+Subject: [iptables PATCH v3 2/7] xtables-restore: Introduce struct nft_xt_restore_state
+Date:   Thu, 24 Oct 2019 18:37:07 +0200
+Message-Id: <20191024163712.22405-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191024163712.22405-1-phil@nwl.cc>
 References: <20191024163712.22405-1-phil@nwl.cc>
@@ -31,142 +31,198 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-There's really no point in passing those as separate parameter. While
-being at it, make them static const everywhere.
+This data structure holds parser state information. A follow-up patch
+will extract line parsing code into a separate function which will need
+a place to persistently store this info in between calls.
+
+While being at it, make 'in_table' variable boolean and drop some extra
+braces in conditionals checking its value.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-shared.h        | 18 +++++++++---------
- iptables/xtables-restore.c   | 13 ++++++++-----
- iptables/xtables-translate.c |  6 ++++--
- 3 files changed, 21 insertions(+), 16 deletions(-)
+ iptables/xtables-restore.c | 66 ++++++++++++++++++++------------------
+ 1 file changed, 35 insertions(+), 31 deletions(-)
 
-diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
-index 8b073b18fb0d9..3ff7251f9f7ec 100644
---- a/iptables/nft-shared.h
-+++ b/iptables/nft-shared.h
-@@ -232,13 +232,6 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
- 	      struct nft_xt_cmd_parse *p, struct iptables_command_state *cs,
- 	      struct xtables_args *args);
- 
--struct nft_xt_restore_parse {
--	FILE		*in;
--	int		testing;
--	const char	*tablename;
--	bool		commit;
--};
--
- struct nftnl_chain_list;
- 
- struct nft_xt_restore_cb {
-@@ -258,9 +251,16 @@ struct nft_xt_restore_cb {
- 	int (*abort)(struct nft_handle *h);
+diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
+index 341579bd8d1c3..a9cb4ea55ab8f 100644
+--- a/iptables/xtables-restore.c
++++ b/iptables/xtables-restore.c
+@@ -68,14 +68,18 @@ static const struct nft_xt_restore_cb restore_cb = {
+ 	.chain_restore  = nft_chain_restore,
  };
  
-+struct nft_xt_restore_parse {
-+	FILE				*in;
-+	int				testing;
-+	const char			*tablename;
-+	bool				commit;
-+	const struct nft_xt_restore_cb	*cb;
++struct nft_xt_restore_state {
++	const struct builtin_table *curtable;
++	struct argv_store av_store;
++	bool in_table;
 +};
 +
  void xtables_restore_parse(struct nft_handle *h,
--			   const struct nft_xt_restore_parse *p,
--			   const struct nft_xt_restore_cb *cb);
-+			   const struct nft_xt_restore_parse *p);
- 
- void nft_check_xt_legacy(int family, bool is_ipt_save);
- #endif
-diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index 8d6cb7a97ea37..341579bd8d1c3 100644
---- a/iptables/xtables-restore.c
-+++ b/iptables/xtables-restore.c
-@@ -69,10 +69,10 @@ static const struct nft_xt_restore_cb restore_cb = {
- };
- 
- void xtables_restore_parse(struct nft_handle *h,
--			   const struct nft_xt_restore_parse *p,
--			   const struct nft_xt_restore_cb *cb)
-+			   const struct nft_xt_restore_parse *p)
+ 			   const struct nft_xt_restore_parse *p)
  {
- 	const struct builtin_table *curtable = NULL;
-+	const struct nft_xt_restore_cb *cb = p->cb;
- 	struct argv_store av_store = {};
+-	const struct builtin_table *curtable = NULL;
+ 	const struct nft_xt_restore_cb *cb = p->cb;
+-	struct argv_store av_store = {};
++	struct nft_xt_restore_state state = {};
  	char buffer[10240];
- 	int in_table = 0;
-@@ -279,6 +279,7 @@ xtables_restore_main(int family, const char *progname, int argc, char *argv[])
- 	int c;
- 	struct nft_xt_restore_parse p = {
- 		.commit = true,
-+		.cb = &restore_cb,
- 	};
+-	int in_table = 0;
  
  	line = 0;
-@@ -383,7 +384,7 @@ xtables_restore_main(int family, const char *progname, int argc, char *argv[])
- 		exit(EXIT_FAILURE);
+ 
+@@ -97,7 +101,7 @@ void xtables_restore_parse(struct nft_handle *h,
+ 			if (verbose)
+ 				fputs(buffer, stdout);
+ 			continue;
+-		} else if ((strcmp(buffer, "COMMIT\n") == 0) && (in_table)) {
++		} else if ((strcmp(buffer, "COMMIT\n") == 0) && state.in_table) {
+ 			if (!p->testing) {
+ 				/* Commit per table, although we support
+ 				 * global commit at once, stick by now to
+@@ -111,9 +115,9 @@ void xtables_restore_parse(struct nft_handle *h,
+ 				if (cb->abort)
+ 					ret = cb->abort(h);
+ 			}
+-			in_table = 0;
++			state.in_table = false;
+ 
+-		} else if ((buffer[0] == '*') && (!in_table || !p->commit)) {
++		} else if ((buffer[0] == '*') && (!state.in_table || !p->commit)) {
+ 			/* New table */
+ 			char *table;
+ 
+@@ -124,8 +128,8 @@ void xtables_restore_parse(struct nft_handle *h,
+ 					"%s: line %u table name invalid\n",
+ 					xt_params->program_name, line);
+ 
+-			curtable = nft_table_builtin_find(h, table);
+-			if (!curtable)
++			state.curtable = nft_table_builtin_find(h, table);
++			if (!state.curtable)
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					"%s: line %u table name '%s' invalid\n",
+ 					xt_params->program_name, line, table);
+@@ -141,12 +145,12 @@ void xtables_restore_parse(struct nft_handle *h,
+ 			}
+ 
+ 			ret = 1;
+-			in_table = 1;
++			state.in_table = true;
+ 
+ 			if (cb->table_new)
+ 				cb->table_new(h, table);
+ 
+-		} else if ((buffer[0] == ':') && (in_table)) {
++		} else if ((buffer[0] == ':') && state.in_table) {
+ 			/* New chain. */
+ 			char *policy, *chain = NULL;
+ 			struct xt_counters count = {};
+@@ -171,7 +175,7 @@ void xtables_restore_parse(struct nft_handle *h,
+ 					   "%s: line %u policy invalid\n",
+ 					   xt_params->program_name, line);
+ 
+-			if (nft_chain_builtin_find(curtable, chain)) {
++			if (nft_chain_builtin_find(state.curtable, chain)) {
+ 				if (counters) {
+ 					char *ctrs;
+ 					ctrs = strtok(NULL, " \t\n");
+@@ -183,7 +187,7 @@ void xtables_restore_parse(struct nft_handle *h,
+ 
+ 				}
+ 				if (cb->chain_set &&
+-				    cb->chain_set(h, curtable->name,
++				    cb->chain_set(h, state.curtable->name,
+ 					          chain, policy, &count) < 0) {
+ 					xtables_error(OTHER_PROBLEM,
+ 						      "Can't set policy `%s'"
+@@ -193,14 +197,14 @@ void xtables_restore_parse(struct nft_handle *h,
+ 				}
+ 				DEBUGP("Setting policy of chain %s to %s\n",
+ 				       chain, policy);
+-			} else if (cb->chain_restore(h, chain, curtable->name) < 0 &&
++			} else if (cb->chain_restore(h, chain, state.curtable->name) < 0 &&
+ 				   errno != EEXIST) {
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					      "cannot create chain "
+ 					      "'%s' (%s)\n", chain,
+ 					      strerror(errno));
+ 			} else if (h->family == NFPROTO_BRIDGE &&
+-				   !ebt_set_user_chain_policy(h, curtable->name,
++				   !ebt_set_user_chain_policy(h, state.curtable->name,
+ 							      chain, policy)) {
+ 				xtables_error(OTHER_PROBLEM,
+ 					      "Can't set policy `%s'"
+@@ -209,30 +213,30 @@ void xtables_restore_parse(struct nft_handle *h,
+ 					      strerror(errno));
+ 			}
+ 			ret = 1;
+-		} else if (in_table) {
++		} else if (state.in_table) {
+ 			char *pcnt = NULL;
+ 			char *bcnt = NULL;
+ 			char *parsestart = buffer;
+ 
+-			add_argv(&av_store, xt_params->program_name, 0);
+-			add_argv(&av_store, "-t", 0);
+-			add_argv(&av_store, curtable->name, 0);
++			add_argv(&state.av_store, xt_params->program_name, 0);
++			add_argv(&state.av_store, "-t", 0);
++			add_argv(&state.av_store, state.curtable->name, 0);
+ 
+ 			tokenize_rule_counters(&parsestart, &pcnt, &bcnt, line);
+ 			if (counters && pcnt && bcnt) {
+-				add_argv(&av_store, "--set-counters", 0);
+-				add_argv(&av_store, pcnt, 0);
+-				add_argv(&av_store, bcnt, 0);
++				add_argv(&state.av_store, "--set-counters", 0);
++				add_argv(&state.av_store, pcnt, 0);
++				add_argv(&state.av_store, bcnt, 0);
+ 			}
+ 
+-			add_param_to_argv(&av_store, parsestart, line);
++			add_param_to_argv(&state.av_store, parsestart, line);
+ 
+ 			DEBUGP("calling do_command4(%u, argv, &%s, handle):\n",
+-			       av_store.argc, curtable->name);
+-			debug_print_argv(&av_store);
++			       state.av_store.argc, state.curtable->name);
++			debug_print_argv(&state.av_store);
+ 
+-			ret = cb->do_command(h, av_store.argc, av_store.argv,
+-					    &av_store.argv[2], true);
++			ret = cb->do_command(h, state.av_store.argc, state.av_store.argv,
++					    &state.av_store.argv[2], true);
+ 			if (ret < 0) {
+ 				if (cb->abort)
+ 					ret = cb->abort(h);
+@@ -246,11 +250,11 @@ void xtables_restore_parse(struct nft_handle *h,
+ 				exit(1);
+ 			}
+ 
+-			free_argv(&av_store);
++			free_argv(&state.av_store);
+ 			fflush(stdout);
+ 		}
+-		if (p->tablename && curtable &&
+-		    (strcmp(p->tablename, curtable->name) != 0))
++		if (p->tablename && state.curtable &&
++		    (strcmp(p->tablename, state.curtable->name) != 0))
+ 			continue;
+ 		if (!ret) {
+ 			fprintf(stderr, "%s: line %u failed\n",
+@@ -258,11 +262,11 @@ void xtables_restore_parse(struct nft_handle *h,
+ 			exit(1);
+ 		}
  	}
- 
--	xtables_restore_parse(&h, &p, &restore_cb);
-+	xtables_restore_parse(&h, &p);
- 
- 	nft_fini(&h);
- 	fclose(p.in);
-@@ -427,6 +428,7 @@ int xtables_eb_restore_main(int argc, char *argv[])
- {
- 	struct nft_xt_restore_parse p = {
- 		.in = stdin,
-+		.cb = &ebt_restore_cb,
- 	};
- 	bool noflush = false;
- 	struct nft_handle h;
-@@ -448,7 +450,7 @@ int xtables_eb_restore_main(int argc, char *argv[])
- 
- 	nft_init_eb(&h, "ebtables-restore");
- 	h.noflush = noflush;
--	xtables_restore_parse(&h, &p, &ebt_restore_cb);
-+	xtables_restore_parse(&h, &p);
- 	nft_fini(&h);
- 
- 	return 0;
-@@ -467,11 +469,12 @@ int xtables_arp_restore_main(int argc, char *argv[])
- {
- 	struct nft_xt_restore_parse p = {
- 		.in = stdin,
-+		.cb = &arp_restore_cb,
- 	};
- 	struct nft_handle h;
- 
- 	nft_init_arp(&h, "arptables-restore");
--	xtables_restore_parse(&h, &p, &arp_restore_cb);
-+	xtables_restore_parse(&h, &p);
- 	nft_fini(&h);
- 
- 	return 0;
-diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
-index 43607901fc62b..a42c60a3b64c6 100644
---- a/iptables/xtables-translate.c
-+++ b/iptables/xtables-translate.c
-@@ -498,7 +498,9 @@ static int xtables_restore_xlate_main(int family, const char *progname,
- 		.family = family,
- 	};
- 	const char *file = NULL;
--	struct nft_xt_restore_parse p = {};
-+	struct nft_xt_restore_parse p = {
-+		.cb = &cb_xlate,
-+	};
- 	time_t now = time(NULL);
- 	int c;
- 
-@@ -535,7 +537,7 @@ static int xtables_restore_xlate_main(int family, const char *progname,
- 
- 	printf("# Translated by %s v%s on %s",
- 	       argv[0], PACKAGE_VERSION, ctime(&now));
--	xtables_restore_parse(&h, &p, &cb_xlate);
-+	xtables_restore_parse(&h, &p);
- 	printf("# Completed on %s", ctime(&now));
- 
- 	nft_fini(&h);
+-	if (in_table && p->commit) {
++	if (state.in_table && p->commit) {
+ 		fprintf(stderr, "%s: COMMIT expected at line %u\n",
+ 				xt_params->program_name, line + 1);
+ 		exit(1);
+-	} else if (in_table && cb->commit && !cb->commit(h)) {
++	} else if (state.in_table && cb->commit && !cb->commit(h)) {
+ 		xtables_error(OTHER_PROBLEM, "%s: final implicit COMMIT failed",
+ 			      xt_params->program_name);
+ 	}
 -- 
 2.23.0
 
