@@ -2,98 +2,67 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3EDE58E6
-	for <lists+netfilter-devel@lfdr.de>; Sat, 26 Oct 2019 08:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17785E590B
+	for <lists+netfilter-devel@lfdr.de>; Sat, 26 Oct 2019 09:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726086AbfJZG7t (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 26 Oct 2019 02:59:49 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:59217 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726010AbfJZG7s (ORCPT
+        id S1725996AbfJZHkR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 26 Oct 2019 03:40:17 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:39125 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725966AbfJZHkQ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 26 Oct 2019 02:59:48 -0400
+        Sat, 26 Oct 2019 03:40:16 -0400
 Received: from dimstar.local.net (n122-110-44-45.sun2.vic.optusnet.com.au [122.110.44.45])
-        by mail105.syd.optusnet.com.au (Postfix) with SMTP id 72B5D3A058C
-        for <netfilter-devel@vger.kernel.org>; Sat, 26 Oct 2019 17:59:33 +1100 (AEDT)
-Received: (qmail 18033 invoked by uid 501); 26 Oct 2019 06:59:32 -0000
+        by mail104.syd.optusnet.com.au (Postfix) with SMTP id DE0EC43F273
+        for <netfilter-devel@vger.kernel.org>; Sat, 26 Oct 2019 18:40:01 +1100 (AEDT)
+Received: (qmail 18180 invoked by uid 501); 26 Oct 2019 07:40:00 -0000
+Date:   Sat, 26 Oct 2019 18:40:00 +1100
 From:   Duncan Roe <duncan_roe@optusnet.com.au>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH libnfnetlink v2 2/2] Make it clear that this library is deprecated
-Date:   Sat, 26 Oct 2019 17:59:32 +1100
-Message-Id: <20191026065932.17985-3-duncan_roe@optusnet.com.au>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20191026065932.17985-1-duncan_roe@optusnet.com.au>
-References: <20191026065932.17985-1-duncan_roe@optusnet.com.au>
-In-Reply-To: <20191026051937.GA17407@dimstar.local.net>
-References: <20191026051937.GA17407@dimstar.local.net>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Netfilter Development <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH libnfnetlink 1/1] src: Minimally resurrect doxygen
+ documentation
+Message-ID: <20191026074000.GA17706@dimstar.local.net>
+Mail-Followup-To: Pablo Neira Ayuso <pablo@netfilter.org>,
+        Netfilter Development <netfilter-devel@vger.kernel.org>
+References: <20191014020223.21757-1-duncan_roe@optusnet.com.au>
+ <20191014020223.21757-2-duncan_roe@optusnet.com.au>
+ <20191023111346.4xoujsy6h2j7cv6y@salvia>
+ <20191023153142.GB5848@dimstar.local.net>
+ <20191023204836.ws4rv55f2dczhq2q@salvia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191023204836.ws4rv55f2dczhq2q@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=G6BsK5s5 c=1 sm=1 tr=0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0
         a=4DzML1vCOQ6Odsy8BUtSXQ==:117 a=4DzML1vCOQ6Odsy8BUtSXQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=XobE76Q3jBoA:10 a=3HDBlxybAAAA:8
-        a=2N_xtPVrLEw7wJbsGzEA:9 a=laEoCiVfU_Unz3mSdgXN:22
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=XobE76Q3jBoA:10
+        a=ZXZDk62DEMap8S-gwAAA:9 a=CjuIK1q_8ugA:10
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
- src/iftable.c: Update group description
+On Wed, Oct 23, 2019 at 10:48:36PM +0200, Pablo Neira Ayuso wrote:
+> On Thu, Oct 24, 2019 at 02:31:42AM +1100, Duncan Roe wrote:
+> > BTW, ldd of my app shows libnfnetlink.so although it doesn't use any deprecated
+> > functions. Is that expected?
+> 
+> Yes, there is still code in the libraries that refer to libnfnetlink.
+> Replacing some of that code should be feasible via libmnl, it is a
+> task that has been in my TODO list for long time. There's always
+> something with more priority in the queue.
 
- src/libnfnetlink.c: - Re-work main page (which was based on the misconception
-                       that this library always gets used)
-                     - Update group description
----
- src/iftable.c      |  6 +++++-
- src/libnfnetlink.c | 17 ++++++++++++++---
- 2 files changed, 19 insertions(+), 4 deletions(-)
+Using *nm -D* (dynamic symbols) I see
+ - libmnl.so: no U (undefined) symbols satisfied by libnfnetlink.so
+ - nfq (my app): no U symbols satisfied by libnfnetlink.so
+ - libnetfilter_queue.so: many U symbols satisfied by libnfnetlink.so
+Only way to tell whether the libnfnetlink.so references in libnetfilter_queue.so
+are confined to the deprecated functions would be to do a build without them.
+If that eliminates libnfnetlink references, then maybe we could think about a
+configure option to not build them (also excluding them from the doco).
+But that's for another day - I'll get back to libnetfilter_queue doco for now.
 
-diff --git a/src/iftable.c b/src/iftable.c
-index 6d1d135..aab59b3 100644
---- a/src/iftable.c
-+++ b/src/iftable.c
-@@ -25,7 +25,11 @@
- #include "linux_list.h"
- 
- /**
-- * \defgroup iftable Functions in iftable.c
-+ * \defgroup iftable Functions in iftable.c [DEPRECATED]
-+ * This documentation is provided for the benefit of maintainers of legacy code.
-+ *
-+ * New applications should use
-+ * [libmnl](https://netfilter.org/projects/libmnl/doxygen/html/).
-  * @{
-  */
- 
-diff --git a/src/libnfnetlink.c b/src/libnfnetlink.c
-index 3db21e0..1cb6a82 100644
---- a/src/libnfnetlink.c
-+++ b/src/libnfnetlink.c
-@@ -55,12 +55,23 @@
- /**
-  * \mainpage
-  *
-- * libnfnetlink is the bottom-level communication between the kernel and
-- * userspace
-+ * Deprecated
-+ * ---
-+ * New applications should use
-+ * [libmnl](https://netfilter.org/projects/libmnl/doxygen/html/).
-+ *
-+ * [libnetfilter_queue]
-+ * (https://netfilter.org/projects/libnetfilter_queue/doxygen/html/)
-+ * now provides a set of helpers for libmnl, in addition to those it provides
-+ * for libnfnetlink (which are now deprecated).
-  */
- 
- /**
-- * \defgroup libnfnetlink Functions in libnfnetlink.c
-+ * \defgroup libnfnetlink Functions in libnfnetlink.c [DEPRECATED]
-+ * This documentation is provided for the benefit of maintainers of legacy code.
-+ *
-+ * New applications should use
-+ * [libmnl](https://netfilter.org/projects/libmnl/doxygen/html/).
-  * @{
-  */
- 
--- 
-2.14.5
-
+Cheers ... Duncan.
