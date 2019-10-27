@@ -2,100 +2,148 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 622B9E61B0
-	for <lists+netfilter-devel@lfdr.de>; Sun, 27 Oct 2019 09:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25573E620B
+	for <lists+netfilter-devel@lfdr.de>; Sun, 27 Oct 2019 11:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726079AbfJ0ItW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 27 Oct 2019 04:49:22 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:33271 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726002AbfJ0ItW (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 27 Oct 2019 04:49:22 -0400
-Received: from dimstar.local.net (n122-110-44-45.sun2.vic.optusnet.com.au [122.110.44.45])
-        by mail105.syd.optusnet.com.au (Postfix) with SMTP id 581213A0440
-        for <netfilter-devel@vger.kernel.org>; Sun, 27 Oct 2019 19:49:07 +1100 (AEDT)
-Received: (qmail 24340 invoked by uid 501); 27 Oct 2019 08:49:07 -0000
-From:   Duncan Roe <duncan_roe@optusnet.com.au>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH libnfnetlink v3 2/2] Make it clear that this library is deprecated
-Date:   Sun, 27 Oct 2019 19:49:07 +1100
-Message-Id: <20191027084907.24291-3-duncan_roe@optusnet.com.au>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20191027084907.24291-1-duncan_roe@optusnet.com.au>
-References: <20191027084907.24291-1-duncan_roe@optusnet.com.au>
-In-Reply-To: <20191026051937.GA17407@dimstar.local.net>
-References: <20191026051937.GA17407@dimstar.local.net>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
-        a=4DzML1vCOQ6Odsy8BUtSXQ==:117 a=4DzML1vCOQ6Odsy8BUtSXQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=XobE76Q3jBoA:10 a=PO7r1zJSAAAA:8
-        a=3HDBlxybAAAA:8 a=2N_xtPVrLEw7wJbsGzEA:9 a=laEoCiVfU_Unz3mSdgXN:22
+        id S1726632AbfJ0KdP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 27 Oct 2019 06:33:15 -0400
+Received: from mga06.intel.com ([134.134.136.31]:61847 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726469AbfJ0KdO (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 27 Oct 2019 06:33:14 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Oct 2019 03:33:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,235,1569308400"; 
+   d="scan'208";a="211172605"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 27 Oct 2019 03:33:12 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1iOfrE-000If8-9w; Sun, 27 Oct 2019 18:33:12 +0800
+Date:   Sun, 27 Oct 2019 18:32:43 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     wenxu@ucloud.cn
+Cc:     kbuild-all@lists.01.org, pablo@netfilter.org, fw@strlen.de,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf-next 2/5] netfilter: nft_tunnel: support
+ NFT_TUNNEL_IPV4_SRC/DST match
+Message-ID: <201910271840.MV2CnqwN%lkp@intel.com>
+References: <1571913336-13431-3-git-send-email-wenxu@ucloud.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1571913336-13431-3-git-send-email-wenxu@ucloud.cn>
+X-Patchwork-Hint: ignore
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
- src/iftable.c: Update group description
+Hi,
 
- src/libnfnetlink.c: - Re-work main page (which was based on the misconception
-                       that this library always gets used)
-                     - Update group description
+Thank you for the patch! Perhaps something to improve:
 
-Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
+[auto build test WARNING on nf-next/master]
+
+url:    https://github.com/0day-ci/linux/commits/wenxu-ucloud-cn/netfilter-nft_tunnel-support-tunnel-match-expr-offload/20191027-152013
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git master
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> net/netfilter/nft_tunnel.c:71:31: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [usertype] @@    got restrunsigned int [usertype] @@
+>> net/netfilter/nft_tunnel.c:71:31: sparse:    expected unsigned int [usertype]
+>> net/netfilter/nft_tunnel.c:71:31: sparse:    got restricted __be32 [usertype] src
+   net/netfilter/nft_tunnel.c:81:31: sparse: sparse: incorrect type in assignment (different base types) @@    expected unsigned int [usertype] @@    got restrunsigned int [usertype] @@
+   net/netfilter/nft_tunnel.c:81:31: sparse:    expected unsigned int [usertype]
+>> net/netfilter/nft_tunnel.c:81:31: sparse:    got restricted __be32 [usertype] dst
+   net/netfilter/nft_tunnel.c:531:54: sparse: sparse: cast from restricted __be16
+   net/netfilter/nft_tunnel.c:531:54: sparse: sparse: incorrect type in argument 1 (different base types) @@    expected unsigned short [usertype] val @@    got resunsigned short [usertype] val @@
+   net/netfilter/nft_tunnel.c:531:54: sparse:    expected unsigned short [usertype] val
+   net/netfilter/nft_tunnel.c:531:54: sparse:    got restricted __be16 [usertype] tp_src
+   net/netfilter/nft_tunnel.c:531:54: sparse: sparse: cast from restricted __be16
+   net/netfilter/nft_tunnel.c:531:54: sparse: sparse: cast from restricted __be16
+   net/netfilter/nft_tunnel.c:532:54: sparse: sparse: cast from restricted __be16
+   net/netfilter/nft_tunnel.c:532:54: sparse: sparse: incorrect type in argument 1 (different base types) @@    expected unsigned short [usertype] val @@    got resunsigned short [usertype] val @@
+   net/netfilter/nft_tunnel.c:532:54: sparse:    expected unsigned short [usertype] val
+   net/netfilter/nft_tunnel.c:532:54: sparse:    got restricted __be16 [usertype] tp_dst
+   net/netfilter/nft_tunnel.c:532:54: sparse: sparse: cast from restricted __be16
+   net/netfilter/nft_tunnel.c:532:54: sparse: sparse: cast from restricted __be16
+
+vim +71 net/netfilter/nft_tunnel.c
+
+    33	
+    34	static void nft_tunnel_get_eval(const struct nft_expr *expr,
+    35					struct nft_regs *regs,
+    36					const struct nft_pktinfo *pkt)
+    37	{
+    38		const struct nft_tunnel *priv = nft_expr_priv(expr);
+    39		u32 *dest = &regs->data[priv->dreg];
+    40		struct ip_tunnel_info *tun_info;
+    41	
+    42		tun_info = skb_tunnel_info(pkt->skb);
+    43	
+    44		switch (priv->key) {
+    45		case NFT_TUNNEL_PATH:
+    46			if (!tun_info) {
+    47				nft_reg_store8(dest, false);
+    48				return;
+    49			}
+    50			if (nft_tunnel_mode_validate(priv->mode, tun_info->mode))
+    51				nft_reg_store8(dest, true);
+    52			else
+    53				nft_reg_store8(dest, false);
+    54			break;
+    55		case NFT_TUNNEL_ID:
+    56			if (!tun_info) {
+    57				regs->verdict.code = NFT_BREAK;
+    58				return;
+    59			}
+    60			if (nft_tunnel_mode_validate(priv->mode, tun_info->mode))
+    61				*dest = ntohl(tunnel_id_to_key32(tun_info->key.tun_id));
+    62			else
+    63				regs->verdict.code = NFT_BREAK;
+    64			break;
+    65		case NFT_TUNNEL_IPV4_SRC:
+    66			if (!tun_info) {
+    67				regs->verdict.code = NFT_BREAK;
+    68				return;
+    69			}
+    70			if (nft_tunnel_mode_validate(priv->mode, tun_info->mode))
+  > 71				*dest = tun_info->key.u.ipv4.src;
+    72			else
+    73				regs->verdict.code = NFT_BREAK;
+    74			break;
+    75		case NFT_TUNNEL_IPV4_DST:
+    76			if (!tun_info) {
+    77				regs->verdict.code = NFT_BREAK;
+    78				return;
+    79			}
+    80			if (nft_tunnel_mode_validate(priv->mode, tun_info->mode))
+  > 81				*dest = tun_info->key.u.ipv4.dst;
+    82			else
+    83				regs->verdict.code = NFT_BREAK;
+    84			break;
+    85		default:
+    86			WARN_ON(1);
+    87			regs->verdict.code = NFT_BREAK;
+    88		}
+    89	}
+    90	
+
 ---
- src/iftable.c      |  6 +++++-
- src/libnfnetlink.c | 17 ++++++++++++++---
- 2 files changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/src/iftable.c b/src/iftable.c
-index 6d1d135..aab59b3 100644
---- a/src/iftable.c
-+++ b/src/iftable.c
-@@ -25,7 +25,11 @@
- #include "linux_list.h"
- 
- /**
-- * \defgroup iftable Functions in iftable.c
-+ * \defgroup iftable Functions in iftable.c [DEPRECATED]
-+ * This documentation is provided for the benefit of maintainers of legacy code.
-+ *
-+ * New applications should use
-+ * [libmnl](https://netfilter.org/projects/libmnl/doxygen/html/).
-  * @{
-  */
- 
-diff --git a/src/libnfnetlink.c b/src/libnfnetlink.c
-index 3db21e0..1cb6a82 100644
---- a/src/libnfnetlink.c
-+++ b/src/libnfnetlink.c
-@@ -55,12 +55,23 @@
- /**
-  * \mainpage
-  *
-- * libnfnetlink is the bottom-level communication between the kernel and
-- * userspace
-+ * Deprecated
-+ * ---
-+ * New applications should use
-+ * [libmnl](https://netfilter.org/projects/libmnl/doxygen/html/).
-+ *
-+ * [libnetfilter_queue]
-+ * (https://netfilter.org/projects/libnetfilter_queue/doxygen/html/)
-+ * now provides a set of helpers for libmnl, in addition to those it provides
-+ * for libnfnetlink (which are now deprecated).
-  */
- 
- /**
-- * \defgroup libnfnetlink Functions in libnfnetlink.c
-+ * \defgroup libnfnetlink Functions in libnfnetlink.c [DEPRECATED]
-+ * This documentation is provided for the benefit of maintainers of legacy code.
-+ *
-+ * New applications should use
-+ * [libmnl](https://netfilter.org/projects/libmnl/doxygen/html/).
-  * @{
-  */
- 
--- 
-2.14.5
-
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
