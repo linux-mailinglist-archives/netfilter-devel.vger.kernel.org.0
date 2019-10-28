@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1980BE733D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 15:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9ADEE734C
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 15:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729020AbfJ1OEr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 28 Oct 2019 10:04:47 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:39860 "EHLO orbyte.nwl.cc"
+        id S1730030AbfJ1OF2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 28 Oct 2019 10:05:28 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:39916 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728887AbfJ1OEr (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 28 Oct 2019 10:04:47 -0400
-Received: from localhost ([::1]:52950 helo=tatos)
+        id S1729004AbfJ1OF2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 28 Oct 2019 10:05:28 -0400
+Received: from localhost ([::1]:53006 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iP5dV-0000qx-8d; Mon, 28 Oct 2019 15:04:45 +0100
+        id 1iP5eB-0000vE-Lr; Mon, 28 Oct 2019 15:05:27 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 05/10] xtables-arp: Drop generic_opt_check()
-Date:   Mon, 28 Oct 2019 15:04:26 +0100
-Message-Id: <20191028140431.13882-6-phil@nwl.cc>
+Subject: [iptables PATCH 06/10] Replace TRUE/FALSE with true/false
+Date:   Mon, 28 Oct 2019 15:04:27 +0100
+Message-Id: <20191028140431.13882-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191028140431.13882-1-phil@nwl.cc>
 References: <20191028140431.13882-1-phil@nwl.cc>
@@ -31,105 +31,189 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-With all fields in commands_v_options[][] being whitespace, the function
-is effectively a noop.
+And drop the conditional defines.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-arp.c | 66 ------------------------------------------
- 1 file changed, 66 deletions(-)
+ iptables/ip6tables.c   | 14 +++-----------
+ iptables/iptables.c    | 12 ++----------
+ iptables/xtables-arp.c | 17 +++++------------
+ iptables/xtables.c     | 11 ++---------
+ 4 files changed, 12 insertions(+), 42 deletions(-)
 
+diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
+index e48fdeb1248bd..576c2cf8b0d9f 100644
+--- a/iptables/ip6tables.c
++++ b/iptables/ip6tables.c
+@@ -45,14 +45,6 @@
+ #include "ip6tables-multi.h"
+ #include "xshared.h"
+ 
+-#ifndef TRUE
+-#define TRUE 1
+-#endif
+-#ifndef FALSE
+-#define FALSE 0
+-#endif
+-
+-
+ #define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
+ static const char optflags[]
+ = { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c'};
+@@ -1525,7 +1517,7 @@ int do_command6(int argc, char *argv[], char **table,
+ 					xtables_error(PARAMETER_PROBLEM,
+ 						   "multiple consecutive ! not"
+ 						   " allowed");
+-				cs.invert = TRUE;
++				cs.invert = true;
+ 				optarg[0] = '\0';
+ 				continue;
+ 			}
+@@ -1537,12 +1529,12 @@ int do_command6(int argc, char *argv[], char **table,
+ 				/*
+ 				 * If new options were loaded, we must retry
+ 				 * getopt immediately and not allow
+-				 * cs.invert=FALSE to be executed.
++				 * cs.invert=false to be executed.
+ 				 */
+ 				continue;
+ 			break;
+ 		}
+-		cs.invert = FALSE;
++		cs.invert = false;
+ 	}
+ 
+ 	if (!wait && wait_interval_set)
+diff --git a/iptables/iptables.c b/iptables/iptables.c
+index 255b61b11ec89..88ef6cf666d4b 100644
+--- a/iptables/iptables.c
++++ b/iptables/iptables.c
+@@ -41,14 +41,6 @@
+ #include <fcntl.h>
+ #include "xshared.h"
+ 
+-#ifndef TRUE
+-#define TRUE 1
+-#endif
+-#ifndef FALSE
+-#define FALSE 0
+-#endif
+-
+-
+ #define OPT_FRAGMENT    0x00800U
+ #define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
+ static const char optflags[]
+@@ -1518,7 +1510,7 @@ int do_command4(int argc, char *argv[], char **table,
+ 					xtables_error(PARAMETER_PROBLEM,
+ 						   "multiple consecutive ! not"
+ 						   " allowed");
+-				cs.invert = TRUE;
++				cs.invert = true;
+ 				optarg[0] = '\0';
+ 				continue;
+ 			}
+@@ -1531,7 +1523,7 @@ int do_command4(int argc, char *argv[], char **table,
+ 				continue;
+ 			break;
+ 		}
+-		cs.invert = FALSE;
++		cs.invert = false;
+ 	}
+ 
+ 	if (!wait && wait_interval_set)
 diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
-index 88a7d534da4f1..ae69baf2a9346 100644
+index ae69baf2a9346..4949ddd3d486c 100644
 --- a/iptables/xtables-arp.c
 +++ b/iptables/xtables-arp.c
-@@ -139,34 +139,6 @@ struct xtables_globals arptables_globals = {
- 	.compat_rev		= nft_compatible_revision,
- };
+@@ -55,13 +55,6 @@
  
--/* Table of legal combinations of commands and options.  If any of the
-- * given commands make an option legal, that option is legal (applies to
-- * CMD_LIST and CMD_ZERO only).
-- * Key:
-- *  +  compulsory
-- *  x  illegal
-- *     optional
-- */
+ typedef char arpt_chainlabel[32];
+ 
+-#ifndef TRUE
+-#define TRUE 1
+-#endif
+-#ifndef FALSE
+-#define FALSE 0
+-#endif
 -
--static char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
--/* Well, it's better than "Re: Linux vs FreeBSD" */
--{
--	/*     -n  -s  -d  -p  -j  -v  -x  -i  -o  -f  --line */
--/*INSERT*/    {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*DELETE*/    {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*DELETE_NUM*/{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*REPLACE*/   {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*APPEND*/    {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*LIST*/      {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*FLUSH*/     {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*ZERO*/      {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*NEW_CHAIN*/ {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*DEL_CHAIN*/ {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*SET_POLICY*/{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*CHECK*/     {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
--/*RENAME*/    {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
--};
--
- static int inverse_for_options[NUMBER_OF_OPT] =
- {
- /* -n */ 0,
-@@ -395,42 +367,6 @@ exit_printhelp(void)
- 	exit(0);
+ #define OPTION_OFFSET 256
+ 
+ #define OPT_NONE	0x00000U
+@@ -383,7 +376,7 @@ check_inverse(const char option[], int *invert, int *optidx, int argc)
+ 		if (*invert)
+ 			xtables_error(PARAMETER_PROBLEM,
+ 				      "Multiple `!' flags not allowed");
+-		*invert = TRUE;
++		*invert = true;
+ 		if (optidx) {
+ 			*optidx = *optidx+1;
+ 			if (argc && *optidx > argc)
+@@ -391,9 +384,9 @@ check_inverse(const char option[], int *invert, int *optidx, int argc)
+ 					      "no argument following `!'");
+ 		}
+ 
+-		return TRUE;
++		return true;
+ 	}
+-	return FALSE;
++	return false;
  }
  
--static void
--generic_opt_check(int command, int options)
--{
--	int i, j, legal = 0;
--
--	/* Check that commands are valid with options.  Complicated by the
--	 * fact that if an option is legal with *any* command given, it is
--	 * legal overall (ie. -z and -l).
--	 */
--	for (i = 0; i < NUMBER_OF_OPT; i++) {
--		legal = 0; /* -1 => illegal, 1 => legal, 0 => undecided. */
--
--		for (j = 0; j < NUMBER_OF_CMD; j++) {
--			if (!(command & (1<<j)))
--				continue;
--
--			if (!(options & (1<<i))) {
--				if (commands_v_options[j][i] == '+')
--					xtables_error(PARAMETER_PROBLEM,
--						      "You need to supply the `-%c' "
--						      "option for this command\n",
--						      optflags[i]);
--			} else {
--				if (commands_v_options[j][i] != 'x')
--					legal = 1;
--				else if (legal == 0)
--					legal = -1;
--			}
--		}
--		if (legal == -1)
--			xtables_error(PARAMETER_PROBLEM,
--				      "Illegal option `-%c' with this command\n",
--				      optflags[i]);
--	}
--}
--
- static char
- opt2char(int option)
- {
-@@ -1059,8 +995,6 @@ int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
- 		xtables_error(PARAMETER_PROBLEM, "Replacement rule does not "
- 						 "specify a unique address");
+ static void
+@@ -942,7 +935,7 @@ int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
+ 					xtables_error(PARAMETER_PROBLEM,
+ 						      "multiple consecutive ! not"
+ 						      " allowed");
+-				invert = TRUE;
++				invert = true;
+ 				optarg[0] = '\0';
+ 				continue;
+ 			}
+@@ -956,7 +949,7 @@ int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
+ 			}
+ 			break;
+ 		}
+-		invert = FALSE;
++		invert = false;
+ 	}
  
--	generic_opt_check(command, options);
+ 	if (cs.target)
+diff --git a/iptables/xtables.c b/iptables/xtables.c
+index 805bd801fb060..8f9dc628d0029 100644
+--- a/iptables/xtables.c
++++ b/iptables/xtables.c
+@@ -43,13 +43,6 @@
+ #include "nft-shared.h"
+ #include "nft.h"
+ 
+-#ifndef TRUE
+-#define TRUE 1
+-#endif
+-#ifndef FALSE
+-#define FALSE 0
+-#endif
 -
- 	if (chain && strlen(chain) > ARPT_FUNCTION_MAXNAMELEN)
- 		xtables_error(PARAMETER_PROBLEM,
- 				"chain name `%s' too long (must be under %i chars)",
+ #define OPT_FRAGMENT	0x00800U
+ #define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
+ static const char optflags[]
+@@ -952,7 +945,7 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
+ 					xtables_error(PARAMETER_PROBLEM,
+ 						   "multiple consecutive ! not"
+ 						   " allowed");
+-				cs->invert = TRUE;
++				cs->invert = true;
+ 				optarg[0] = '\0';
+ 				continue;
+ 			}
+@@ -965,7 +958,7 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
+ 				continue;
+ 			break;
+ 		}
+-		cs->invert = FALSE;
++		cs->invert = false;
+ 	}
+ 
+ 	if (strcmp(p->table, "nat") == 0 &&
 -- 
 2.23.0
 
