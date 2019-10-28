@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD15E7346
-	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 15:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 960FBE733C
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 15:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729627AbfJ1OFI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 28 Oct 2019 10:05:08 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:39892 "EHLO orbyte.nwl.cc"
+        id S1728934AbfJ1OEl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 28 Oct 2019 10:04:41 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:39854 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729004AbfJ1OFI (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 28 Oct 2019 10:05:08 -0400
-Received: from localhost ([::1]:52982 helo=tatos)
+        id S1728887AbfJ1OEl (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 28 Oct 2019 10:04:41 -0400
+Received: from localhost ([::1]:52944 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iP5dq-0000ud-ED; Mon, 28 Oct 2019 15:05:06 +0100
+        id 1iP5dP-0000qr-VX; Mon, 28 Oct 2019 15:04:40 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 08/10] xtables-arp: Drop some unused variables
-Date:   Mon, 28 Oct 2019 15:04:29 +0100
-Message-Id: <20191028140431.13882-9-phil@nwl.cc>
+Subject: [iptables PATCH 09/10] xtables-arp: Use xtables_parse_interface()
+Date:   Mon, 28 Oct 2019 15:04:30 +0100
+Message-Id: <20191028140431.13882-10-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191028140431.13882-1-phil@nwl.cc>
 References: <20191028140431.13882-1-phil@nwl.cc>
@@ -31,53 +31,89 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+The local implementation differs just slightly but libxtables version
+seems more correct (no needless memsetting of mask, more relevant
+illegal character checking) so use that one.
+
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-arp.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+ iptables/xtables-arp.c | 50 +++++-------------------------------------
+ 1 file changed, 6 insertions(+), 44 deletions(-)
 
 diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
-index e4614b57a437f..11ca7f869730e 100644
+index 11ca7f869730e..d6040e0c73f4b 100644
 --- a/iptables/xtables-arp.c
 +++ b/iptables/xtables-arp.c
-@@ -53,10 +53,6 @@
- #include "nft-arp.h"
- #include <linux/netfilter_arp/arp_tables.h>
+@@ -355,44 +355,6 @@ check_inverse(const char option[], int *invert, int *optidx, int argc)
+ 	return false;
+ }
  
--typedef char arpt_chainlabel[32];
+-static void
+-parse_interface(const char *arg, char *vianame, unsigned char *mask)
+-{
+-	int vialen = strlen(arg);
+-	unsigned int i;
 -
--#define OPTION_OFFSET 256
+-	memset(mask, 0, IFNAMSIZ);
+-	memset(vianame, 0, IFNAMSIZ);
 -
- #define NUMBER_OF_OPT	16
- static const char optflags[NUMBER_OF_OPT]
- = { 'n', 's', 'd', 2, 3, 7, 8, 4, 5, 6, 'j', 'v', 'i', 'o', '0', 'c'};
-@@ -102,8 +98,6 @@ static struct option original_opts[] = {
- 	{ 0 }
- };
+-	if (vialen + 1 > IFNAMSIZ)
+-		xtables_error(PARAMETER_PROBLEM,
+-			      "interface name `%s' must be shorter than IFNAMSIZ"
+-			      " (%i)", arg, IFNAMSIZ-1);
+-
+-	strcpy(vianame, arg);
+-	if (vialen == 0)
+-		memset(mask, 0, IFNAMSIZ);
+-	else if (vianame[vialen - 1] == '+') {
+-		memset(mask, 0xFF, vialen - 1);
+-		memset(mask + vialen - 1, 0, IFNAMSIZ - vialen + 1);
+-		/* Don't remove `+' here! -HW */
+-	} else {
+-		/* Include nul-terminator in match */
+-		memset(mask, 0xFF, vialen + 1);
+-		memset(mask + vialen + 1, 0, IFNAMSIZ - vialen - 1);
+-		for (i = 0; vianame[i]; i++) {
+-			if (!isalnum(vianame[i])
+-			    && vianame[i] != '_'
+-			    && vianame[i] != '.') {
+-				printf("Warning: weird character in interface"
+-				       " `%s' (No aliases, :, ! or *).\n",
+-				       vianame);
+-				break;
+-			}
+-		}
+-	}
+-}
+-
+ static void
+ set_option(unsigned int *options, unsigned int option, u_int16_t *invflg,
+ 	   int invert)
+@@ -814,18 +776,18 @@ int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
+ 			check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_VIANAMEIN, &cs.arp.arp.invflags,
+ 				   invert);
+-			parse_interface(argv[optind-1],
+-					cs.arp.arp.iniface,
+-					cs.arp.arp.iniface_mask);
++			xtables_parse_interface(argv[optind-1],
++						cs.arp.arp.iniface,
++						cs.arp.arp.iniface_mask);
+ 			break;
  
--int RUNTIME_NF_ARP_NUMHOOKS = 3;
--
- #define opts xt_params->opts
+ 		case 'o':
+ 			check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_VIANAMEOUT, &cs.arp.arp.invflags,
+ 				   invert);
+-			parse_interface(argv[optind-1],
+-					cs.arp.arp.outiface,
+-					cs.arp.arp.outiface_mask);
++			xtables_parse_interface(argv[optind-1],
++						cs.arp.arp.outiface,
++						cs.arp.arp.outiface_mask);
+ 			break;
  
- extern void xtables_exit_error(enum xtables_exittype status, const char *msg, ...) __attribute__((noreturn, format(printf,2,3)));
-@@ -135,17 +129,6 @@ static int inverse_for_options[NUMBER_OF_OPT] =
- /* -c */ 0,
- };
- 
--/* Primitive headers... */
--/* defined in netinet/in.h */
--#if 0
--#ifndef IPPROTO_ESP
--#define IPPROTO_ESP 50
--#endif
--#ifndef IPPROTO_AH
--#define IPPROTO_AH 51
--#endif
--#endif
--
- /***********************************************/
- /* ARPTABLES SPECIFIC NEW FUNCTIONS ADDED HERE */
- /***********************************************/
+ 		case 'v':
 -- 
 2.23.0
 
