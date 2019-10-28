@@ -2,73 +2,61 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5682FE72D9
-	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 14:48:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34992E734B
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 15:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbfJ1Nsx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 28 Oct 2019 09:48:53 -0400
-Received: from correo.us.es ([193.147.175.20]:36936 "EHLO mail.us.es"
+        id S1729993AbfJ1OFY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 28 Oct 2019 10:05:24 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:39910 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbfJ1Nsx (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 28 Oct 2019 09:48:53 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 2BE7C117735
-        for <netfilter-devel@vger.kernel.org>; Mon, 28 Oct 2019 14:48:48 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1D6B7DA8E8
-        for <netfilter-devel@vger.kernel.org>; Mon, 28 Oct 2019 14:48:48 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 13233DA801; Mon, 28 Oct 2019 14:48:48 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 34874B7FF2
-        for <netfilter-devel@vger.kernel.org>; Mon, 28 Oct 2019 14:48:46 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 28 Oct 2019 14:48:46 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (sys.soleta.eu [212.170.55.40])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 101F242EE39A
-        for <netfilter-devel@vger.kernel.org>; Mon, 28 Oct 2019 14:48:46 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf] netfilter: nft_cmp: check for register data length mismatches
-Date:   Mon, 28 Oct 2019 14:48:45 +0100
-Message-Id: <20191028134845.6389-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729004AbfJ1OFY (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 28 Oct 2019 10:05:24 -0400
+Received: from localhost ([::1]:53000 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1iP5e6-0000v8-Cg; Mon, 28 Oct 2019 15:05:22 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 00/10] Reduce code size around arptables-nft
+Date:   Mon, 28 Oct 2019 15:04:21 +0100
+Message-Id: <20191028140431.13882-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Make sure register data length does not mismatch data length in the
-comparison, otherwise hit EOPNOTSUPP.
+A review of xtables-arp.c exposed a significant amount of dead, needless
+or duplicated code. This series deals with some low hanging fruits. Most
+of the changes affect xtables-arp.c and nft-arp.c only, but where common
+issues existed or code was to be shared, other files are touched as
+well.
 
-Fixes: c9626a2cbdb2 ("netfilter: nf_tables: add hardware offload support")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_cmp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Phil Sutter (10):
+  ip6tables, xtables-arp: Drop unused struct pprot
+  xshared: Share a common add_command() implementation
+  xshared: Share a common implementation of parse_rulenumber()
+  Merge CMD_* defines
+  xtables-arp: Drop generic_opt_check()
+  Replace TRUE/FALSE with true/false
+  xtables-arp: Integrate OPT_* defines into xshared.h
+  xtables-arp: Drop some unused variables
+  xtables-arp: Use xtables_parse_interface()
+  nft-arp: Use xtables_print_mac_and_mask()
 
-diff --git a/net/netfilter/nft_cmp.c b/net/netfilter/nft_cmp.c
-index bd173b1824c6..0744b2bb46da 100644
---- a/net/netfilter/nft_cmp.c
-+++ b/net/netfilter/nft_cmp.c
-@@ -116,7 +116,7 @@ static int __nft_cmp_offload(struct nft_offload_ctx *ctx,
- 	u8 *mask = (u8 *)&flow->match.mask;
- 	u8 *key = (u8 *)&flow->match.key;
- 
--	if (priv->op != NFT_CMP_EQ)
-+	if (priv->op != NFT_CMP_EQ || reg->len != priv->len)
- 		return -EOPNOTSUPP;
- 
- 	memcpy(key + reg->offset, &priv->data, priv->len);
+ iptables/ip6tables.c   |  73 +------------
+ iptables/iptables.c    |  64 +----------
+ iptables/nft-arp.c     |  31 +-----
+ iptables/nft-shared.h  |  17 ---
+ iptables/xshared.c     |  39 +++++++
+ iptables/xshared.h     |  32 ++++++
+ iptables/xtables-arp.c | 237 +++--------------------------------------
+ iptables/xtables.c     |  48 +--------
+ 8 files changed, 97 insertions(+), 444 deletions(-)
+
 -- 
-2.11.0
+2.23.0
 
