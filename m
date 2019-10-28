@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4D6E734E
-	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 15:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1980BE733D
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 15:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730086AbfJ1OFe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 28 Oct 2019 10:05:34 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:39922 "EHLO orbyte.nwl.cc"
+        id S1729020AbfJ1OEr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 28 Oct 2019 10:04:47 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:39860 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729004AbfJ1OFe (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 28 Oct 2019 10:05:34 -0400
-Received: from localhost ([::1]:53012 helo=tatos)
+        id S1728887AbfJ1OEr (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 28 Oct 2019 10:04:47 -0400
+Received: from localhost ([::1]:52950 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iP5eH-0000wO-0m; Mon, 28 Oct 2019 15:05:33 +0100
+        id 1iP5dV-0000qx-8d; Mon, 28 Oct 2019 15:04:45 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 04/10] Merge CMD_* defines
-Date:   Mon, 28 Oct 2019 15:04:25 +0100
-Message-Id: <20191028140431.13882-5-phil@nwl.cc>
+Subject: [iptables PATCH 05/10] xtables-arp: Drop generic_opt_check()
+Date:   Mon, 28 Oct 2019 15:04:26 +0100
+Message-Id: <20191028140431.13882-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191028140431.13882-1-phil@nwl.cc>
 References: <20191028140431.13882-1-phil@nwl.cc>
@@ -31,179 +31,105 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-They are mostly identical, just xtables-arp ones differ slightly. Though
-since they are internal use only and their actual value doesn't matter
-(as long as it's a distinct bit), they can be merged anyway.
+With all fields in commands_v_options[][] being whitespace, the function
+is effectively a noop.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/ip6tables.c   | 17 -----------------
- iptables/iptables.c    | 17 -----------------
- iptables/nft-shared.h  | 17 -----------------
- iptables/xshared.h     | 20 ++++++++++++++++++++
- iptables/xtables-arp.c | 20 --------------------
- iptables/xtables.c     |  2 --
- 6 files changed, 20 insertions(+), 73 deletions(-)
+ iptables/xtables-arp.c | 66 ------------------------------------------
+ 1 file changed, 66 deletions(-)
 
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index f4ccfc60de953..e48fdeb1248bd 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -52,23 +52,6 @@
- #define FALSE 0
- #endif
- 
--#define CMD_NONE		0x0000U
--#define CMD_INSERT		0x0001U
--#define CMD_DELETE		0x0002U
--#define CMD_DELETE_NUM		0x0004U
--#define CMD_REPLACE		0x0008U
--#define CMD_APPEND		0x0010U
--#define CMD_LIST		0x0020U
--#define CMD_FLUSH		0x0040U
--#define CMD_ZERO		0x0080U
--#define CMD_NEW_CHAIN		0x0100U
--#define CMD_DELETE_CHAIN	0x0200U
--#define CMD_SET_POLICY		0x0400U
--#define CMD_RENAME_CHAIN	0x0800U
--#define CMD_LIST_RULES		0x1000U
--#define CMD_ZERO_NUM		0x2000U
--#define CMD_CHECK		0x4000U
--#define NUMBER_OF_CMD	16
- 
- #define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
- static const char optflags[]
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index df371f410a9c2..255b61b11ec89 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -48,23 +48,6 @@
- #define FALSE 0
- #endif
- 
--#define CMD_NONE		0x0000U
--#define CMD_INSERT		0x0001U
--#define CMD_DELETE		0x0002U
--#define CMD_DELETE_NUM		0x0004U
--#define CMD_REPLACE		0x0008U
--#define CMD_APPEND		0x0010U
--#define CMD_LIST		0x0020U
--#define CMD_FLUSH		0x0040U
--#define CMD_ZERO		0x0080U
--#define CMD_NEW_CHAIN		0x0100U
--#define CMD_DELETE_CHAIN	0x0200U
--#define CMD_SET_POLICY		0x0400U
--#define CMD_RENAME_CHAIN	0x0800U
--#define CMD_LIST_RULES		0x1000U
--#define CMD_ZERO_NUM		0x2000U
--#define CMD_CHECK		0x4000U
--#define NUMBER_OF_CMD	16
- 
- #define OPT_FRAGMENT    0x00800U
- #define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
-diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
-index 8b073b18fb0d9..e236a981119ac 100644
---- a/iptables/nft-shared.h
-+++ b/iptables/nft-shared.h
-@@ -199,23 +199,6 @@ struct xtables_args {
- 	unsigned long long pcnt_cnt, bcnt_cnt;
- };
- 
--#define CMD_NONE		0x0000U
--#define CMD_INSERT		0x0001U
--#define CMD_DELETE		0x0002U
--#define CMD_DELETE_NUM		0x0004U
--#define CMD_REPLACE		0x0008U
--#define CMD_APPEND		0x0010U
--#define CMD_LIST		0x0020U
--#define CMD_FLUSH		0x0040U
--#define CMD_ZERO		0x0080U
--#define CMD_NEW_CHAIN		0x0100U
--#define CMD_DELETE_CHAIN	0x0200U
--#define CMD_SET_POLICY		0x0400U
--#define CMD_RENAME_CHAIN	0x0800U
--#define CMD_LIST_RULES		0x1000U
--#define CMD_ZERO_NUM		0x2000U
--#define CMD_CHECK		0x4000U
--
- struct nft_xt_cmd_parse {
- 	unsigned int			command;
- 	unsigned int			rulenum;
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 85bbfa1250aa3..b0738b042e95a 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -31,6 +31,26 @@ enum {
- 	OPT_COUNTERS    = 1 << 10,
- };
- 
-+enum {
-+	CMD_NONE		= 0,
-+	CMD_INSERT		= 1 << 0,
-+	CMD_DELETE		= 1 << 1,
-+	CMD_DELETE_NUM		= 1 << 2,
-+	CMD_REPLACE		= 1 << 3,
-+	CMD_APPEND		= 1 << 4,
-+	CMD_LIST		= 1 << 5,
-+	CMD_FLUSH		= 1 << 6,
-+	CMD_ZERO		= 1 << 7,
-+	CMD_NEW_CHAIN		= 1 << 8,
-+	CMD_DELETE_CHAIN	= 1 << 9,
-+	CMD_SET_POLICY		= 1 << 10,
-+	CMD_RENAME_CHAIN	= 1 << 11,
-+	CMD_LIST_RULES		= 1 << 12,
-+	CMD_ZERO_NUM		= 1 << 13,
-+	CMD_CHECK		= 1 << 14,
-+};
-+#define NUMBER_OF_CMD		16
-+
- struct xtables_globals;
- struct xtables_rule_match;
- struct xtables_target;
 diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
-index 79cc83d354fc5..88a7d534da4f1 100644
+index 88a7d534da4f1..ae69baf2a9346 100644
 --- a/iptables/xtables-arp.c
 +++ b/iptables/xtables-arp.c
-@@ -62,26 +62,6 @@ typedef char arpt_chainlabel[32];
- #define FALSE 0
- #endif
+@@ -139,34 +139,6 @@ struct xtables_globals arptables_globals = {
+ 	.compat_rev		= nft_compatible_revision,
+ };
  
--/* XXX: command defined by nft-shared.h do not overlap with these two */
--#undef CMD_CHECK
--#undef CMD_RENAME_CHAIN
+-/* Table of legal combinations of commands and options.  If any of the
+- * given commands make an option legal, that option is legal (applies to
+- * CMD_LIST and CMD_ZERO only).
+- * Key:
+- *  +  compulsory
+- *  x  illegal
+- *     optional
+- */
 -
--#define CMD_NONE		0x0000U
--#define CMD_INSERT		0x0001U
--#define CMD_DELETE		0x0002U
--#define CMD_DELETE_NUM		0x0004U
--#define CMD_REPLACE		0x0008U
--#define CMD_APPEND		0x0010U
--#define CMD_LIST		0x0020U
--#define CMD_FLUSH		0x0040U
--#define CMD_ZERO		0x0080U
--#define CMD_NEW_CHAIN		0x0100U
--#define CMD_DELETE_CHAIN	0x0200U
--#define CMD_SET_POLICY		0x0400U
--#define CMD_CHECK		0x0800U
--#define CMD_RENAME_CHAIN	0x1000U
--#define NUMBER_OF_CMD	13
+-static char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
+-/* Well, it's better than "Re: Linux vs FreeBSD" */
+-{
+-	/*     -n  -s  -d  -p  -j  -v  -x  -i  -o  -f  --line */
+-/*INSERT*/    {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*DELETE*/    {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*DELETE_NUM*/{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*REPLACE*/   {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*APPEND*/    {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*LIST*/      {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*FLUSH*/     {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*ZERO*/      {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*NEW_CHAIN*/ {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*DEL_CHAIN*/ {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*SET_POLICY*/{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*CHECK*/     {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+-/*RENAME*/    {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
+-};
 -
- #define OPTION_OFFSET 256
+ static int inverse_for_options[NUMBER_OF_OPT] =
+ {
+ /* -n */ 0,
+@@ -395,42 +367,6 @@ exit_printhelp(void)
+ 	exit(0);
+ }
  
- #define OPT_NONE	0x00000U
-diff --git a/iptables/xtables.c b/iptables/xtables.c
-index bb76e6a7a1ce8..805bd801fb060 100644
---- a/iptables/xtables.c
-+++ b/iptables/xtables.c
-@@ -50,8 +50,6 @@
- #define FALSE 0
- #endif
- 
--#define NUMBER_OF_CMD	16
+-static void
+-generic_opt_check(int command, int options)
+-{
+-	int i, j, legal = 0;
 -
- #define OPT_FRAGMENT	0x00800U
- #define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
- static const char optflags[]
+-	/* Check that commands are valid with options.  Complicated by the
+-	 * fact that if an option is legal with *any* command given, it is
+-	 * legal overall (ie. -z and -l).
+-	 */
+-	for (i = 0; i < NUMBER_OF_OPT; i++) {
+-		legal = 0; /* -1 => illegal, 1 => legal, 0 => undecided. */
+-
+-		for (j = 0; j < NUMBER_OF_CMD; j++) {
+-			if (!(command & (1<<j)))
+-				continue;
+-
+-			if (!(options & (1<<i))) {
+-				if (commands_v_options[j][i] == '+')
+-					xtables_error(PARAMETER_PROBLEM,
+-						      "You need to supply the `-%c' "
+-						      "option for this command\n",
+-						      optflags[i]);
+-			} else {
+-				if (commands_v_options[j][i] != 'x')
+-					legal = 1;
+-				else if (legal == 0)
+-					legal = -1;
+-			}
+-		}
+-		if (legal == -1)
+-			xtables_error(PARAMETER_PROBLEM,
+-				      "Illegal option `-%c' with this command\n",
+-				      optflags[i]);
+-	}
+-}
+-
+ static char
+ opt2char(int option)
+ {
+@@ -1059,8 +995,6 @@ int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
+ 		xtables_error(PARAMETER_PROBLEM, "Replacement rule does not "
+ 						 "specify a unique address");
+ 
+-	generic_opt_check(command, options);
+-
+ 	if (chain && strlen(chain) > ARPT_FUNCTION_MAXNAMELEN)
+ 		xtables_error(PARAMETER_PROBLEM,
+ 				"chain name `%s' too long (must be under %i chars)",
 -- 
 2.23.0
 
