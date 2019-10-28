@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEC5E7572
-	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 16:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 720FFE7571
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 16:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731513AbfJ1Ps7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 28 Oct 2019 11:48:59 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:40134 "EHLO orbyte.nwl.cc"
+        id S1729988AbfJ1Psy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 28 Oct 2019 11:48:54 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:40128 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726097AbfJ1Ps7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 28 Oct 2019 11:48:59 -0400
-Received: from localhost ([::1]:53224 helo=tatos)
+        id S1726097AbfJ1Psy (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 28 Oct 2019 11:48:54 -0400
+Received: from localhost ([::1]:53218 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iP7GM-00026u-FZ; Mon, 28 Oct 2019 16:48:58 +0100
+        id 1iP7GH-00026Z-67; Mon, 28 Oct 2019 16:48:53 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 02/10] xshared: Share a common add_command() implementation
-Date:   Mon, 28 Oct 2019 16:48:10 +0100
-Message-Id: <20191028154818.31257-3-phil@nwl.cc>
+Subject: [iptables PATCH v2 03/10] xshared: Share a common implementation of parse_rulenumber()
+Date:   Mon, 28 Oct 2019 16:48:11 +0100
+Message-Id: <20191028154818.31257-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191028154818.31257-1-phil@nwl.cc>
 References: <20191028154818.31257-1-phil@nwl.cc>
@@ -31,233 +31,143 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The shared definition of cmdflags is a super set of the previous one in
-xtables-arp.c so while not being identical, they're compatible.
-
-Avoid accidental array overstep in cmd2char() by incrementing an index
-variable and checking its final value before using it as such.
+The function is really small, but still copied four times.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/ip6tables.c   | 23 -----------------------
- iptables/iptables.c    | 23 -----------------------
- iptables/xshared.c     | 27 +++++++++++++++++++++++++++
- iptables/xshared.h     |  4 ++++
- iptables/xtables-arp.c | 22 ----------------------
- iptables/xtables.c     | 23 -----------------------
- 6 files changed, 31 insertions(+), 91 deletions(-)
+ iptables/ip6tables.c   | 13 -------------
+ iptables/iptables.c    | 12 ------------
+ iptables/xshared.c     | 12 ++++++++++++
+ iptables/xshared.h     |  1 +
+ iptables/xtables-arp.c | 13 -------------
+ iptables/xtables.c     | 12 ------------
+ 6 files changed, 13 insertions(+), 50 deletions(-)
 
 diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index ee463c9586862..9a9d71f1cdadc 100644
+index 9a9d71f1cdadc..f4ccfc60de953 100644
 --- a/iptables/ip6tables.c
 +++ b/iptables/ip6tables.c
-@@ -69,8 +69,6 @@
- #define CMD_ZERO_NUM		0x2000U
- #define CMD_CHECK		0x4000U
- #define NUMBER_OF_CMD	16
--static const char cmdflags[] = { 'I', 'D', 'D', 'R', 'A', 'L', 'F', 'Z',
--				 'N', 'X', 'P', 'E', 'S', 'Z', 'C' };
- 
- #define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
- static const char optflags[]
-@@ -336,27 +334,6 @@ opt2char(int option)
- 	return *ptr;
+@@ -352,19 +352,6 @@ static int is_exthdr(uint16_t proto)
+ 		proto == IPPROTO_DSTOPTS);
  }
  
--static char
--cmd2char(int option)
+-/* Can't be zero. */
+-static int
+-parse_rulenumber(const char *rule)
 -{
--	const char *ptr;
--	for (ptr = cmdflags; option > 1; option >>= 1, ptr++);
+-	unsigned int rulenum;
 -
--	return *ptr;
+-	if (!xtables_strtoui(rule, NULL, &rulenum, 1, INT_MAX))
+-		xtables_error(PARAMETER_PROBLEM,
+-			   "Invalid rule number `%s'", rule);
+-
+-	return rulenum;
 -}
 -
--static void
--add_command(unsigned int *cmd, const int newcmd, const int othercmds,
--	    int invert)
--{
--	if (invert)
--		xtables_error(PARAMETER_PROBLEM, "unexpected '!' flag");
--	if (*cmd & (~othercmds))
--		xtables_error(PARAMETER_PROBLEM, "Cannot use -%c with -%c\n",
--			   cmd2char(newcmd), cmd2char(*cmd & (~othercmds)));
--	*cmd |= newcmd;
--}
--
- /*
-  *	All functions starting with "parse" should succeed, otherwise
-  *	the program fails.
+ static void
+ parse_chain(const char *chainname)
+ {
 diff --git a/iptables/iptables.c b/iptables/iptables.c
-index 544e87596e7e4..5fec25376c24f 100644
+index 5fec25376c24f..df371f410a9c2 100644
 --- a/iptables/iptables.c
 +++ b/iptables/iptables.c
-@@ -65,8 +65,6 @@
- #define CMD_ZERO_NUM		0x2000U
- #define CMD_CHECK		0x4000U
- #define NUMBER_OF_CMD	16
--static const char cmdflags[] = { 'I', 'D', 'D', 'R', 'A', 'L', 'F', 'Z',
--				 'N', 'X', 'P', 'E', 'S', 'Z', 'C' };
+@@ -343,18 +343,6 @@ opt2char(int option)
+ */
  
- #define OPT_FRAGMENT    0x00800U
- #define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
-@@ -335,27 +333,6 @@ opt2char(int option)
- 	return *ptr;
- }
+ /* Christophe Burki wants `-p 6' to imply `-m tcp'.  */
+-/* Can't be zero. */
+-static int
+-parse_rulenumber(const char *rule)
+-{
+-	unsigned int rulenum;
+-
+-	if (!xtables_strtoui(rule, NULL, &rulenum, 1, INT_MAX))
+-		xtables_error(PARAMETER_PROBLEM,
+-			   "Invalid rule number `%s'", rule);
+-
+-	return rulenum;
+-}
  
--static char
--cmd2char(int option)
--{
--	const char *ptr;
--	for (ptr = cmdflags; option > 1; option >>= 1, ptr++);
--
--	return *ptr;
--}
--
--static void
--add_command(unsigned int *cmd, const int newcmd, const int othercmds, 
--	    int invert)
--{
--	if (invert)
--		xtables_error(PARAMETER_PROBLEM, "unexpected ! flag");
--	if (*cmd & (~othercmds))
--		xtables_error(PARAMETER_PROBLEM, "Cannot use -%c with -%c\n",
--			   cmd2char(newcmd), cmd2char(*cmd & (~othercmds)));
--	*cmd |= newcmd;
--}
--
- /*
-  *	All functions starting with "parse" should succeed, otherwise
-  *	the program fails.
+ static void
+ parse_chain(const char *chainname)
 diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 97f1b5d22fdbe..3baa805c64e6d 100644
+index 3baa805c64e6d..2a0077d9da846 100644
 --- a/iptables/xshared.c
 +++ b/iptables/xshared.c
-@@ -732,3 +732,30 @@ void command_jump(struct iptables_command_state *cs, const char *jumpto)
- 		xtables_error(OTHER_PROBLEM, "can't alloc memory!");
- 	xt_params->opts = opts;
+@@ -759,3 +759,15 @@ void add_command(unsigned int *cmd, const int newcmd,
+ 			   cmd2char(newcmd), cmd2char(*cmd & (~othercmds)));
+ 	*cmd |= newcmd;
  }
 +
-+char cmd2char(int option)
++/* Can't be zero. */
++int parse_rulenumber(const char *rule)
 +{
-+	/* cmdflags index corresponds with position of bit in CMD_* values */
-+	static const char cmdflags[] = { 'I', 'D', 'D', 'R', 'A', 'L', 'F', 'Z',
-+					 'N', 'X', 'P', 'E', 'S', 'Z', 'C' };
-+	int i;
++	unsigned int rulenum;
 +
-+	for (i = 0; option > 1; option >>= 1, i++)
-+		;
-+	if (i >= ARRAY_SIZE(cmdflags))
-+		xtables_error(OTHER_PROBLEM,
-+			      "cmd2char(): Invalid command number %u.\n",
-+			      1 << i);
-+	return cmdflags[i];
-+}
++	if (!xtables_strtoui(rule, NULL, &rulenum, 1, INT_MAX))
++		xtables_error(PARAMETER_PROBLEM,
++			   "Invalid rule number `%s'", rule);
 +
-+void add_command(unsigned int *cmd, const int newcmd,
-+		 const int othercmds, int invert)
-+{
-+	if (invert)
-+		xtables_error(PARAMETER_PROBLEM, "unexpected '!' flag");
-+	if (*cmd & (~othercmds))
-+		xtables_error(PARAMETER_PROBLEM, "Cannot use -%c with -%c\n",
-+			   cmd2char(newcmd), cmd2char(*cmd & (~othercmds)));
-+	*cmd |= newcmd;
++	return rulenum;
 +}
 diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 64b7e8fc4b690..0b9b357c7bdaa 100644
+index 0b9b357c7bdaa..85bbfa1250aa3 100644
 --- a/iptables/xshared.h
 +++ b/iptables/xshared.h
-@@ -183,4 +183,8 @@ void command_match(struct iptables_command_state *cs);
- const char *xt_parse_target(const char *targetname);
- void command_jump(struct iptables_command_state *cs, const char *jumpto);
+@@ -186,5 +186,6 @@ void command_jump(struct iptables_command_state *cs, const char *jumpto);
+ char cmd2char(int option);
+ void add_command(unsigned int *cmd, const int newcmd,
+ 		 const int othercmds, int invert);
++int parse_rulenumber(const char *rule);
  
-+char cmd2char(int option);
-+void add_command(unsigned int *cmd, const int newcmd,
-+		 const int othercmds, int invert);
-+
  #endif /* IPTABLES_XSHARED_H */
 diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
-index 8503f47fe2afe..584b6f0646821 100644
+index 584b6f0646821..79cc83d354fc5 100644
 --- a/iptables/xtables-arp.c
 +++ b/iptables/xtables-arp.c
-@@ -81,8 +81,6 @@ typedef char arpt_chainlabel[32];
- #define CMD_CHECK		0x0800U
- #define CMD_RENAME_CHAIN	0x1000U
- #define NUMBER_OF_CMD	13
--static const char cmdflags[] = { 'I', 'D', 'D', 'R', 'A', 'L', 'F', 'Z',
--				 'N', 'X', 'P', 'E' };
- 
- #define OPTION_OFFSET 256
- 
-@@ -462,26 +460,6 @@ opt2char(int option)
- 	return *ptr;
+@@ -518,19 +518,6 @@ parse_interface(const char *arg, char *vianame, unsigned char *mask)
+ 	}
  }
  
--static char
--cmd2char(int option)
+-/* Can't be zero. */
+-static int
+-parse_rulenumber(const char *rule)
 -{
--	const char *ptr;
--	for (ptr = cmdflags; option > 1; option >>= 1, ptr++);
+-	unsigned int rulenum;
 -
--	return *ptr;
+-	if (!xtables_strtoui(rule, NULL, &rulenum, 1, INT_MAX))
+-		xtables_error(PARAMETER_PROBLEM,
+-			      "Invalid rule number `%s'", rule);
+-
+-	return rulenum;
 -}
 -
--static void
--add_command(unsigned int *cmd, const int newcmd, const unsigned int othercmds, int invert)
--{
--	if (invert)
--		xtables_error(PARAMETER_PROBLEM, "unexpected ! flag");
--	if (*cmd & (~othercmds))
--		xtables_error(PARAMETER_PROBLEM, "Can't use -%c with -%c\n",
--			      cmd2char(newcmd), cmd2char(*cmd & (~othercmds)));
--	*cmd |= newcmd;
--}
--
- static int
- check_inverse(const char option[], int *invert, int *optidx, int argc)
- {
+ static void
+ set_option(unsigned int *options, unsigned int option, u_int16_t *invflg,
+ 	   int invert)
 diff --git a/iptables/xtables.c b/iptables/xtables.c
-index 8a9e0edc3bea2..6dfa3f1171183 100644
+index 6dfa3f1171183..bb76e6a7a1ce8 100644
 --- a/iptables/xtables.c
 +++ b/iptables/xtables.c
-@@ -51,8 +51,6 @@
- #endif
+@@ -327,18 +327,6 @@ opt2char(int option)
+ */
  
- #define NUMBER_OF_CMD	16
--static const char cmdflags[] = { 'I', 'D', 'D', 'R', 'A', 'L', 'F', 'Z',
--				 'N', 'X', 'P', 'E', 'S', 'Z', 'C' };
- 
- #define OPT_FRAGMENT	0x00800U
- #define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
-@@ -319,27 +317,6 @@ opt2char(int option)
- 	return *ptr;
- }
- 
--static char
--cmd2char(int option)
+ /* Christophe Burki wants `-p 6' to imply `-m tcp'.  */
+-/* Can't be zero. */
+-static int
+-parse_rulenumber(const char *rule)
 -{
--	const char *ptr;
--	for (ptr = cmdflags; option > 1; option >>= 1, ptr++);
+-	unsigned int rulenum;
 -
--	return *ptr;
+-	if (!xtables_strtoui(rule, NULL, &rulenum, 1, INT_MAX))
+-		xtables_error(PARAMETER_PROBLEM,
+-			   "Invalid rule number `%s'", rule);
+-
+-	return rulenum;
 -}
--
--static void
--add_command(unsigned int *cmd, const int newcmd, const int othercmds,
--	    int invert)
--{
--	if (invert)
--		xtables_error(PARAMETER_PROBLEM, "unexpected ! flag");
--	if (*cmd & (~othercmds))
--		xtables_error(PARAMETER_PROBLEM, "Cannot use -%c with -%c\n",
--			   cmd2char(newcmd), cmd2char(*cmd & (~othercmds)));
--	*cmd |= newcmd;
--}
--
- /*
-  *	All functions starting with "parse" should succeed, otherwise
-  *	the program fails.
+ 
+ static void
+ set_option(unsigned int *options, unsigned int option, uint8_t *invflg,
 -- 
 2.23.0
 
