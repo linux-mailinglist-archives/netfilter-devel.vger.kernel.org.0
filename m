@@ -2,101 +2,52 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEBFE756D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 16:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF511E7A58
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 21:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbfJ1Psd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 28 Oct 2019 11:48:33 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:40104 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726097AbfJ1Psd (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 28 Oct 2019 11:48:33 -0400
-Received: from localhost ([::1]:53194 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1iP7Fv-00025C-VO; Mon, 28 Oct 2019 16:48:32 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 10/10] nft-arp: Use xtables_print_mac_and_mask()
-Date:   Mon, 28 Oct 2019 16:48:18 +0100
-Message-Id: <20191028154818.31257-11-phil@nwl.cc>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191028154818.31257-1-phil@nwl.cc>
-References: <20191028154818.31257-1-phil@nwl.cc>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729861AbfJ1Ums (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 28 Oct 2019 16:42:48 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:44752 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbfJ1Ums (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 28 Oct 2019 16:42:48 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f00:1e2::d71])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 24F791484EA67;
+        Mon, 28 Oct 2019 13:42:47 -0700 (PDT)
+Date:   Mon, 28 Oct 2019 13:42:46 -0700 (PDT)
+Message-Id: <20191028.134246.2282811510705892165.davem@davemloft.net>
+To:     geert+renesas@glider.be
+Cc:     pkshih@realtek.com, kvalo@codeaurora.org,
+        johannes@sipsolutions.net, wensong@linux-vs.org,
+        horms@verge.net.au, ja@ssi.bg, pablo@netfilter.org,
+        kadlec@netfilter.org, fw@strlen.de, trivial@kernel.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH trivial] net: Fix various misspellings of "connect"
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20191024152323.29987-1-geert+renesas@glider.be>
+References: <20191024152323.29987-1-geert+renesas@glider.be>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 28 Oct 2019 13:42:47 -0700 (PDT)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This libxtables function does exactly what the local implementation did.
-The only noteworthy difference is that it assumes MAC/mask lengths, but
-the local implementation was passed ETH_ALEN in each invocation, so no
-practical difference.
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Date: Thu, 24 Oct 2019 17:23:23 +0200
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/nft-arp.c | 31 ++++---------------------------
- 1 file changed, 4 insertions(+), 27 deletions(-)
+> Fix misspellings of "disconnect", "disconnecting", "connections", and
+> "disconnected".
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
-index 9805bbe0de87b..7068f82c5495a 100644
---- a/iptables/nft-arp.c
-+++ b/iptables/nft-arp.c
-@@ -114,29 +114,6 @@ mask_to_dotted(const struct in_addr *mask)
- 	return buf;
- }
- 
--static void print_mac(const unsigned char *mac, int l)
--{
--	int j;
--
--	for (j = 0; j < l; j++)
--		printf("%02x%s", mac[j],
--			(j==l-1) ? "" : ":");
--}
--
--static void print_mac_and_mask(const unsigned char *mac, const unsigned char *mask, int l)
--{
--	int i;
--
--	print_mac(mac, l);
--	for (i = 0; i < l ; i++)
--		if (mask[i] != 255)
--			break;
--	if (i == l)
--		return;
--	printf("/");
--	print_mac(mask, l);
--}
--
- static bool need_devaddr(struct arpt_devaddr_info *info)
- {
- 	int i;
-@@ -506,8 +483,8 @@ static void nft_arp_print_rule_details(const struct iptables_command_state *cs,
- 	printf("%s%s", sep, fw->arp.invflags & ARPT_INV_SRCDEVADDR
- 		? "! " : "");
- 	printf("--src-mac ");
--	print_mac_and_mask((unsigned char *)fw->arp.src_devaddr.addr,
--		(unsigned char *)fw->arp.src_devaddr.mask, ETH_ALEN);
-+	xtables_print_mac_and_mask((unsigned char *)fw->arp.src_devaddr.addr,
-+				   (unsigned char *)fw->arp.src_devaddr.mask);
- 	sep = " ";
- after_devsrc:
- 
-@@ -532,8 +509,8 @@ after_devsrc:
- 	printf("%s%s", sep, fw->arp.invflags & ARPT_INV_TGTDEVADDR
- 		? "! " : "");
- 	printf("--dst-mac ");
--	print_mac_and_mask((unsigned char *)fw->arp.tgt_devaddr.addr,
--		(unsigned char *)fw->arp.tgt_devaddr.mask, ETH_ALEN);
-+	xtables_print_mac_and_mask((unsigned char *)fw->arp.tgt_devaddr.addr,
-+				   (unsigned char *)fw->arp.tgt_devaddr.mask);
- 	sep = " ";
- 
- after_devdst:
--- 
-2.23.0
-
+Applied to net-next.
