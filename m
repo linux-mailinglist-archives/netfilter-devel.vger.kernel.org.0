@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5282E756F
-	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 16:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEBFE756D
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Oct 2019 16:48:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728953AbfJ1Psn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 28 Oct 2019 11:48:43 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:40116 "EHLO orbyte.nwl.cc"
+        id S1726890AbfJ1Psd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 28 Oct 2019 11:48:33 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:40104 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726097AbfJ1Psn (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 28 Oct 2019 11:48:43 -0400
-Received: from localhost ([::1]:53206 helo=tatos)
+        id S1726097AbfJ1Psd (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 28 Oct 2019 11:48:33 -0400
+Received: from localhost ([::1]:53194 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iP7G6-00025s-Hy; Mon, 28 Oct 2019 16:48:42 +0100
+        id 1iP7Fv-00025C-VO; Mon, 28 Oct 2019 16:48:32 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 09/10] xtables-arp: Use xtables_parse_interface()
-Date:   Mon, 28 Oct 2019 16:48:17 +0100
-Message-Id: <20191028154818.31257-10-phil@nwl.cc>
+Subject: [iptables PATCH v2 10/10] nft-arp: Use xtables_print_mac_and_mask()
+Date:   Mon, 28 Oct 2019 16:48:18 +0100
+Message-Id: <20191028154818.31257-11-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191028154818.31257-1-phil@nwl.cc>
 References: <20191028154818.31257-1-phil@nwl.cc>
@@ -31,89 +31,72 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The local implementation differs just slightly but libxtables version
-seems more correct (no needless memsetting of mask, more relevant
-illegal character checking) so use that one.
+This libxtables function does exactly what the local implementation did.
+The only noteworthy difference is that it assumes MAC/mask lengths, but
+the local implementation was passed ETH_ALEN in each invocation, so no
+practical difference.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-arp.c | 50 +++++-------------------------------------
- 1 file changed, 6 insertions(+), 44 deletions(-)
+ iptables/nft-arp.c | 31 ++++---------------------------
+ 1 file changed, 4 insertions(+), 27 deletions(-)
 
-diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
-index bbc1ceb6e8e38..9cfad76263d32 100644
---- a/iptables/xtables-arp.c
-+++ b/iptables/xtables-arp.c
-@@ -357,44 +357,6 @@ check_inverse(const char option[], int *invert, int *optidx, int argc)
- 	return false;
+diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
+index 9805bbe0de87b..7068f82c5495a 100644
+--- a/iptables/nft-arp.c
++++ b/iptables/nft-arp.c
+@@ -114,29 +114,6 @@ mask_to_dotted(const struct in_addr *mask)
+ 	return buf;
  }
  
--static void
--parse_interface(const char *arg, char *vianame, unsigned char *mask)
+-static void print_mac(const unsigned char *mac, int l)
 -{
--	int vialen = strlen(arg);
--	unsigned int i;
+-	int j;
 -
--	memset(mask, 0, IFNAMSIZ);
--	memset(vianame, 0, IFNAMSIZ);
--
--	if (vialen + 1 > IFNAMSIZ)
--		xtables_error(PARAMETER_PROBLEM,
--			      "interface name `%s' must be shorter than IFNAMSIZ"
--			      " (%i)", arg, IFNAMSIZ-1);
--
--	strcpy(vianame, arg);
--	if (vialen == 0)
--		memset(mask, 0, IFNAMSIZ);
--	else if (vianame[vialen - 1] == '+') {
--		memset(mask, 0xFF, vialen - 1);
--		memset(mask + vialen - 1, 0, IFNAMSIZ - vialen + 1);
--		/* Don't remove `+' here! -HW */
--	} else {
--		/* Include nul-terminator in match */
--		memset(mask, 0xFF, vialen + 1);
--		memset(mask + vialen + 1, 0, IFNAMSIZ - vialen - 1);
--		for (i = 0; vianame[i]; i++) {
--			if (!isalnum(vianame[i])
--			    && vianame[i] != '_'
--			    && vianame[i] != '.') {
--				printf("Warning: weird character in interface"
--				       " `%s' (No aliases, :, ! or *).\n",
--				       vianame);
--				break;
--			}
--		}
--	}
+-	for (j = 0; j < l; j++)
+-		printf("%02x%s", mac[j],
+-			(j==l-1) ? "" : ":");
 -}
 -
- static void
- set_option(unsigned int *options, unsigned int option, u_int16_t *invflg,
- 	   int invert)
-@@ -816,18 +778,18 @@ int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
- 			check_inverse(optarg, &invert, &optind, argc);
- 			set_option(&options, OPT_VIANAMEIN, &cs.arp.arp.invflags,
- 				   invert);
--			parse_interface(argv[optind-1],
--					cs.arp.arp.iniface,
--					cs.arp.arp.iniface_mask);
-+			xtables_parse_interface(argv[optind-1],
-+						cs.arp.arp.iniface,
-+						cs.arp.arp.iniface_mask);
- 			break;
+-static void print_mac_and_mask(const unsigned char *mac, const unsigned char *mask, int l)
+-{
+-	int i;
+-
+-	print_mac(mac, l);
+-	for (i = 0; i < l ; i++)
+-		if (mask[i] != 255)
+-			break;
+-	if (i == l)
+-		return;
+-	printf("/");
+-	print_mac(mask, l);
+-}
+-
+ static bool need_devaddr(struct arpt_devaddr_info *info)
+ {
+ 	int i;
+@@ -506,8 +483,8 @@ static void nft_arp_print_rule_details(const struct iptables_command_state *cs,
+ 	printf("%s%s", sep, fw->arp.invflags & ARPT_INV_SRCDEVADDR
+ 		? "! " : "");
+ 	printf("--src-mac ");
+-	print_mac_and_mask((unsigned char *)fw->arp.src_devaddr.addr,
+-		(unsigned char *)fw->arp.src_devaddr.mask, ETH_ALEN);
++	xtables_print_mac_and_mask((unsigned char *)fw->arp.src_devaddr.addr,
++				   (unsigned char *)fw->arp.src_devaddr.mask);
+ 	sep = " ";
+ after_devsrc:
  
- 		case 'o':
- 			check_inverse(optarg, &invert, &optind, argc);
- 			set_option(&options, OPT_VIANAMEOUT, &cs.arp.arp.invflags,
- 				   invert);
--			parse_interface(argv[optind-1],
--					cs.arp.arp.outiface,
--					cs.arp.arp.outiface_mask);
-+			xtables_parse_interface(argv[optind-1],
-+						cs.arp.arp.outiface,
-+						cs.arp.arp.outiface_mask);
- 			break;
+@@ -532,8 +509,8 @@ after_devsrc:
+ 	printf("%s%s", sep, fw->arp.invflags & ARPT_INV_TGTDEVADDR
+ 		? "! " : "");
+ 	printf("--dst-mac ");
+-	print_mac_and_mask((unsigned char *)fw->arp.tgt_devaddr.addr,
+-		(unsigned char *)fw->arp.tgt_devaddr.mask, ETH_ALEN);
++	xtables_print_mac_and_mask((unsigned char *)fw->arp.tgt_devaddr.addr,
++				   (unsigned char *)fw->arp.tgt_devaddr.mask);
+ 	sep = " ";
  
- 		case 'v':
+ after_devdst:
 -- 
 2.23.0
 
