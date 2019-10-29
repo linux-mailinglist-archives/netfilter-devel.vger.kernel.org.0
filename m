@@ -2,48 +2,68 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A54AE87CA
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Oct 2019 13:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A02E87B7
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Oct 2019 13:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727681AbfJ2MLr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Oct 2019 08:11:47 -0400
-Received: from s0090.ppsmtp.net ([91.90.154.91]:50370 "EHLO s0090.ppsmtp.net"
+        id S1727082AbfJ2MHr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Oct 2019 08:07:47 -0400
+Received: from correo.us.es ([193.147.175.20]:44614 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727525AbfJ2MLr (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Oct 2019 08:11:47 -0400
-X-Greylist: delayed 19009 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Oct 2019 08:11:46 EDT
-Received: from pps.filterd (s0090.ppsmtp.net [127.0.0.1])
-        by s0090.ppsmtp.net (8.16.0.27/8.16.0.27) with SMTP id x9T6h3j4016606;
-        Tue, 29 Oct 2019 07:54:23 +0100
-Received: from mail.schuetz.net ([212.185.169.233])
-        by s0090.ppsmtp.net with ESMTP id 2vx8bh8a0a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Oct 2019 07:54:23 +0100
-Received: from julia02 (localhost [127.0.0.1])
-        by mail.schuetz.net (Postfix) with ESMTP id 8952E20221C9;
-        Tue, 29 Oct 2019 07:53:30 +0100 (CET)
+        id S1725776AbfJ2MHr (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 29 Oct 2019 08:07:47 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id CCD7B1694B2
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Oct 2019 13:07:41 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id C0042CA0F3
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Oct 2019 13:07:41 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id B5817CA0F1; Tue, 29 Oct 2019 13:07:41 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id A32C6B8004;
+        Tue, 29 Oct 2019 13:07:39 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 29 Oct 2019 13:07:39 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 7E9CB42EE39D;
+        Tue, 29 Oct 2019 13:07:39 +0100 (CET)
+Date:   Tue, 29 Oct 2019 13:07:41 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [nft PATCH] tests/py: Fix test script for Python3 tempfile
+Message-ID: <20191029120741.kwx4w7droeqlhqj4@salvia>
+References: <20191029112508.16502-1-phil@nwl.cc>
 MIME-Version: 1.0
-Subject: Dear Friend,
-To:     Recipients <infocarfer1@aim.com>
-From:   "Mr.R.C" <infocarfer1@aim.com>
-Date:   Tue, 29 Oct 2019 06:53:14 +0000
-Reply-To: infocarfer@aim.com
-X-TNEFEvaluated: 1
-Message-ID: <OF238F7EA3.AF3BDFF7-ON882584A2.0025DB3F@schuetz.net>
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Description: Mail message body
-X-Proofpoint-ID: SID=2vx8bh8a0a QID=2vx8bh8a0a-1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-29_03:,,
- signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191029112508.16502-1-phil@nwl.cc>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dear Friend,
+On Tue, Oct 29, 2019 at 12:25:08PM +0100, Phil Sutter wrote:
+> When instantiating a temporary file using tempfile's TemporaryFile()
+> constructor, the resulting object's 'name' attribute is of type int.
+> This in turn makes print_msg() puke while trying to concatenate string
+> and int using '+' operator.
+> 
+> Fix this by using format strings consequently, thereby cleaning up code
+> a bit.
+> 
+> Signed-off-by: Phil Sutter <phil@nwl.cc>
 
-I am Vice Chairman of Hang Seng Bank, I have Important Matter to Discuss with you concerning my late client, Died without a NEXT OF KIN. Send me your private email for full details information. email me at (infocarfer@aim.com)
-Mail:
-Regards
+Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
