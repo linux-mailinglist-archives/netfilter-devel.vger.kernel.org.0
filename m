@@ -2,67 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E698AE86C1
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Oct 2019 12:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A54AE87CA
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Oct 2019 13:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725927AbfJ2LZT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Oct 2019 07:25:19 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:42114 "EHLO orbyte.nwl.cc"
+        id S1727681AbfJ2MLr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Oct 2019 08:11:47 -0400
+Received: from s0090.ppsmtp.net ([91.90.154.91]:50370 "EHLO s0090.ppsmtp.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725839AbfJ2LZT (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Oct 2019 07:25:19 -0400
-Received: from localhost ([::1]:55204 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1iPPcj-0004c7-BM; Tue, 29 Oct 2019 12:25:17 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH] tests/py: Fix test script for Python3 tempfile
-Date:   Tue, 29 Oct 2019 12:25:08 +0100
-Message-Id: <20191029112508.16502-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.23.0
+        id S1727525AbfJ2MLr (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 29 Oct 2019 08:11:47 -0400
+X-Greylist: delayed 19009 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Oct 2019 08:11:46 EDT
+Received: from pps.filterd (s0090.ppsmtp.net [127.0.0.1])
+        by s0090.ppsmtp.net (8.16.0.27/8.16.0.27) with SMTP id x9T6h3j4016606;
+        Tue, 29 Oct 2019 07:54:23 +0100
+Received: from mail.schuetz.net ([212.185.169.233])
+        by s0090.ppsmtp.net with ESMTP id 2vx8bh8a0a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Oct 2019 07:54:23 +0100
+Received: from julia02 (localhost [127.0.0.1])
+        by mail.schuetz.net (Postfix) with ESMTP id 8952E20221C9;
+        Tue, 29 Oct 2019 07:53:30 +0100 (CET)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Dear Friend,
+To:     Recipients <infocarfer1@aim.com>
+From:   "Mr.R.C" <infocarfer1@aim.com>
+Date:   Tue, 29 Oct 2019 06:53:14 +0000
+Reply-To: infocarfer@aim.com
+X-TNEFEvaluated: 1
+Message-ID: <OF238F7EA3.AF3BDFF7-ON882584A2.0025DB3F@schuetz.net>
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Description: Mail message body
+X-Proofpoint-ID: SID=2vx8bh8a0a QID=2vx8bh8a0a-1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-29_03:,,
+ signatures=0
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When instantiating a temporary file using tempfile's TemporaryFile()
-constructor, the resulting object's 'name' attribute is of type int.
-This in turn makes print_msg() puke while trying to concatenate string
-and int using '+' operator.
+Dear Friend,
 
-Fix this by using format strings consequently, thereby cleaning up code
-a bit.
-
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- tests/py/nft-test.py | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
-index bc0849e0410b5..ce42b5ddb1cca 100755
---- a/tests/py/nft-test.py
-+++ b/tests/py/nft-test.py
-@@ -115,12 +115,12 @@ def print_msg(reason, errstr, filename=None, lineno=None, color=None):
-     '''
-     Prints a message with nice colors, indicating file and line number.
-     '''
-+    color_errstr = "%s%s%s" % (color, errstr, Colors.ENDC)
-     if filename and lineno:
--        sys.stderr.write(filename + ": " + color + errstr + Colors.ENDC + \
--              " line %d: %s" % (lineno + 1, reason))
-+        sys.stderr.write("%s: %s line %d: %s\n" %
-+                         (filename, color_errstr, lineno + 1, reason))
-     else:
--        sys.stderr.write(color + errstr + Colors.ENDC + " %s" % reason)
--    sys.stderr.write("\n")
-+        sys.stderr.write("%s %s\n" % (color_errstr, reason))
-     sys.stderr.flush() # So that the message stay in the right place.
- 
- 
--- 
-2.23.0
-
+I am Vice Chairman of Hang Seng Bank, I have Important Matter to Discuss with you concerning my late client, Died without a NEXT OF KIN. Send me your private email for full details information. email me at (infocarfer@aim.com)
+Mail:
+Regards
