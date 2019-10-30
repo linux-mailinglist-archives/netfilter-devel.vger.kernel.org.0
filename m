@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C1BEA50F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Oct 2019 21:59:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCBAEA561
+	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Oct 2019 22:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726991AbfJ3U7Q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 30 Oct 2019 16:59:16 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45536 "EHLO orbyte.nwl.cc"
+        id S1727197AbfJ3V3G (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 30 Oct 2019 17:29:06 -0400
+Received: from orbyte.nwl.cc ([151.80.46.58]:45590 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726749AbfJ3U7P (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 30 Oct 2019 16:59:15 -0400
-Received: from localhost ([::1]:58626 helo=tatos)
+        id S1727045AbfJ3V3G (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 30 Oct 2019 17:29:06 -0400
+Received: from localhost ([::1]:58680 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iPv3i-0001n5-Am; Wed, 30 Oct 2019 21:59:14 +0100
+        id 1iPvWY-0002G7-Qt; Wed, 30 Oct 2019 22:29:02 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH] libnftables: Store top_scope in struct nft_ctx
-Date:   Wed, 30 Oct 2019 21:59:05 +0100
-Message-Id: <20191030205905.12779-1-phil@nwl.cc>
+Subject: [nft PATCH v2] libnftables: Store top_scope in struct nft_ctx
+Date:   Wed, 30 Oct 2019 22:28:54 +0100
+Message-Id: <20191030212854.19494-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -40,11 +40,17 @@ they are actually useful for stuff like:
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
+Changes since v1:
+- Add missing chunk in src/parser_bison.y. Apparently I managed to edit
+  src/parser_bison.c which works perfectly fine until one calls 'make
+  clean'.
+---
  include/nftables.h                       |  2 ++
  include/parser.h                         |  4 ++--
  src/libnftables.c                        |  8 ++++++--
+ src/parser_bison.y                       |  6 +++---
  tests/shell/testcases/nft-i/0001define_0 | 22 ++++++++++++++++++++++
- 4 files changed, 32 insertions(+), 4 deletions(-)
+ 5 files changed, 35 insertions(+), 7 deletions(-)
  create mode 100755 tests/shell/testcases/nft-i/0001define_0
 
 diff --git a/include/nftables.h b/include/nftables.h
@@ -129,6 +135,27 @@ index e20372438db62..7c35e898d87ab 100644
  	nft->scanner = scanner_init(nft->state);
  	if (scanner_read_file(nft, filename, &internal_location) < 0)
  		return -1;
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index 7f9b1752f41d4..b73cf3bcfb209 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -42,13 +42,13 @@
+ #include "parser_bison.h"
+ 
+ void parser_init(struct nft_ctx *nft, struct parser_state *state,
+-		 struct list_head *msgs, struct list_head *cmds)
++		 struct list_head *msgs, struct list_head *cmds,
++		 struct scope *top_scope)
+ {
+ 	memset(state, 0, sizeof(*state));
+-	init_list_head(&state->top_scope.symbols);
+ 	state->msgs = msgs;
+ 	state->cmds = cmds;
+-	state->scopes[0] = scope_init(&state->top_scope, NULL);
++	state->scopes[0] = scope_init(top_scope, NULL);
+ 	init_list_head(&state->indesc_list);
+ }
+ 
 diff --git a/tests/shell/testcases/nft-i/0001define_0 b/tests/shell/testcases/nft-i/0001define_0
 new file mode 100755
 index 0000000000000..62e1b6dede21d
