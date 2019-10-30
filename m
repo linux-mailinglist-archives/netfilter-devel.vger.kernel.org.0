@@ -2,243 +2,105 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F06AEA2C5
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Oct 2019 18:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AA4EA4B6
+	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Oct 2019 21:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727399AbfJ3RuE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 30 Oct 2019 13:50:04 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:45232 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726740AbfJ3RuE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 30 Oct 2019 13:50:04 -0400
-Received: from localhost ([::1]:58322 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1iPs6c-000828-Mk; Wed, 30 Oct 2019 18:50:02 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 2/2] Deprecate untyped data setters
-Date:   Wed, 30 Oct 2019 18:49:48 +0100
-Message-Id: <20191030174948.12493-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191030174948.12493-1-phil@nwl.cc>
-References: <20191030174948.12493-1-phil@nwl.cc>
+        id S1726825AbfJ3U1u (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 30 Oct 2019 16:27:50 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:35455 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726830AbfJ3U1u (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 30 Oct 2019 16:27:50 -0400
+Received: by mail-lj1-f196.google.com with SMTP id m7so4172959lji.2
+        for <netfilter-devel@vger.kernel.org>; Wed, 30 Oct 2019 13:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ThGwTwTp4bZorwdaVrJo5UrBBQpibM4/aFgMPeqwm5E=;
+        b=Gm26HZjBU2uuF0YwNHad3PnEOS9hPuQTAg5xL7kLdu1O0WluIGq1cH3+PRhpQA13vV
+         DzJcMXPCM9W8+4OJdqpUeo+8QRGh5ku4KjkX3UXlZwiY0DplbVDpIeYteu6gUojdVbs5
+         mUtDG6M08OxHZHB8ByhYFJU5gRby7guMdJOT5/rDe1UgpD+wozzw+ldkHqw2hOGWgSgX
+         z2TG+GeNvNZTeklnHV4TABaWX73PY1s8dd/WdZEldbqY0CI8zPzqKKtvWrYIMtCXgbL9
+         9QaZ/ySBZRyXq/rzWIbzVIdEiwfPLCVIKoMAl2zXvtZapKIHcEUdOj3jmaGDvAyziTnw
+         jT2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ThGwTwTp4bZorwdaVrJo5UrBBQpibM4/aFgMPeqwm5E=;
+        b=B1HT0SE+1och1qafAwDB2zzrJvG9/kzcZbexwirIXD046jGyioXelUmESKD1aLD3pe
+         XTdgi3t5H4Vtyj37Ktk5nfE134ZFDBVHJ6TBO3/rARTB3qT8vcfJEfGLwwd1NeL4frgx
+         LM/V3Hfjv0f4WTJmzJm41I1QSrv+FgEWGvAdmhUKM0o1Lg97RAUZP7kiV9b83+os9SYN
+         69clZy3l9XWZzb05IhSpQFooTJ+MArXpD9XfToJ/ug5AP40VaLN/I08Sl9xMQoZ5zy3K
+         oOSNbGJmP0Izz20F5/la4M7NOutm25HMs72oEdqJt/REXAsMJahXxjnoXwl7vR2E1x7L
+         oipQ==
+X-Gm-Message-State: APjAAAVTViP66N0YmRfFu44TRciQMgPJUGXz2zOs5JAySd8YrH+bM0I/
+        Hhud5JM2sXQoHrKX101XaZlPaHDUrH5JP1oE0VeJ
+X-Google-Smtp-Source: APXvYqwNJV+fESPPSy88I8V9SQJjpifZuNL/1FipNLKwD0hUFyI8ehvSjLCN+oZyru7R02+LN8E0BXtmTH/ZA5bgmuo=
+X-Received: by 2002:a2e:58d:: with SMTP id 135mr1059911ljf.57.1572467266987;
+ Wed, 30 Oct 2019 13:27:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1568834524.git.rgb@redhat.com> <214163d11a75126f610bcedfad67a4d89575dc77.1568834525.git.rgb@redhat.com>
+ <20191019013904.uevmrzbmztsbhpnh@madcap2.tricolour.ca> <CAHC9VhRPygA=LsHLUqv+K=ouAiPFJ6fb2_As=OT-_zB7kGc_aQ@mail.gmail.com>
+ <20191021213824.6zti5ndxu7sqs772@madcap2.tricolour.ca> <CAHC9VhRdNXsY4neJpSoNyJoAVEoiEc2oW5kSscF99tjmoQAxFA@mail.gmail.com>
+ <20191021235734.mgcjotdqoe73e4ha@madcap2.tricolour.ca> <CAHC9VhSiwnY-+2awxvGeO4a0NgfVkOPd8fzzBVujp=HtjskTuQ@mail.gmail.com>
+ <20191024210010.owwgc3bqbvtdsqws@madcap2.tricolour.ca>
+In-Reply-To: <20191024210010.owwgc3bqbvtdsqws@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 30 Oct 2019 16:27:35 -0400
+Message-ID: <CAHC9VhRDoX9du4XbCnBtBzsNPMGOsb-TKM1CC+sCL7HP=FuTRQ@mail.gmail.com>
+Subject: Re: [PATCH ghak90 V7 20/21] audit: add capcontid to set contid
+ outside init_user_ns
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        sgrubb@redhat.com, omosnace@redhat.com, dhowells@redhat.com,
+        simo@redhat.com, Eric Paris <eparis@parisplace.org>,
+        Serge Hallyn <serge@hallyn.com>, ebiederm@xmission.com,
+        nhorman@tuxdriver.com, Dan Walsh <dwalsh@redhat.com>,
+        mpatel@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-These functions make assumptions on size of passed data pointer and
-therefore tend to hide programming mistakes. Instead either one of the
-type-specific setters or the generic *_set_data() setter should be used.
+On Thu, Oct 24, 2019 at 5:00 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> Here's the note I had from that meeting:
+>
+> - Eric raised the issue that using /proc is likely to get more and more
+>   hoary due to mount namespaces and suggested that we use a netlink
+> audit message (or a new syscall) to set the audit container identifier
+> and since the loginuid is a similar type of operation, that it should be
+> migrated over to a similar mechanism to get it away from /proc.  Get
+> could be done with a netlink audit message that triggers an audit log
+> message to deliver the information.  I'm reluctant to further pollute
+> the syscall space if we can find another method.  The netlink audit
+> message makes sense since any audit-enabled service is likely to already
+> have an audit socket open.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- include/libnftnl/chain.h     | 2 +-
- include/libnftnl/flowtable.h | 2 +-
- include/libnftnl/gen.h       | 2 +-
- include/libnftnl/object.h    | 2 +-
- include/libnftnl/rule.h      | 2 +-
- include/libnftnl/set.h       | 2 +-
- include/libnftnl/table.h     | 2 +-
- src/chain.c                  | 2 +-
- src/flowtable.c              | 2 +-
- src/gen.c                    | 2 +-
- src/object.c                 | 2 +-
- src/rule.c                   | 2 +-
- src/set.c                    | 2 +-
- src/table.c                  | 2 +-
- 14 files changed, 14 insertions(+), 14 deletions(-)
+Thanks for the background info on the off-list meeting.  I would
+encourage you to have discussions like this on-list in the future; if
+that isn't possible, hosting a public call would okay-ish, but a
+distant second.
 
-diff --git a/include/libnftnl/chain.h b/include/libnftnl/chain.h
-index f84a2a3a20f2a..33d04e19b05fa 100644
---- a/include/libnftnl/chain.h
-+++ b/include/libnftnl/chain.h
-@@ -38,7 +38,7 @@ enum nftnl_chain_attr {
- 
- bool nftnl_chain_is_set(const struct nftnl_chain *c, uint16_t attr);
- void nftnl_chain_unset(struct nftnl_chain *c, uint16_t attr);
--void nftnl_chain_set(struct nftnl_chain *t, uint16_t attr, const void *data);
-+void nftnl_chain_set(struct nftnl_chain *t, uint16_t attr, const void *data) __attribute__((deprecated));
- int nftnl_chain_set_data(struct nftnl_chain *t, uint16_t attr,
- 			     const void *data, uint32_t data_len);
- void nftnl_chain_set_u8(struct nftnl_chain *t, uint16_t attr, uint8_t data);
-diff --git a/include/libnftnl/flowtable.h b/include/libnftnl/flowtable.h
-index 6f6801803ca52..028095ec106c5 100644
---- a/include/libnftnl/flowtable.h
-+++ b/include/libnftnl/flowtable.h
-@@ -33,7 +33,7 @@ enum nftnl_flowtable_attr {
- 
- bool nftnl_flowtable_is_set(const struct nftnl_flowtable *c, uint16_t attr);
- void nftnl_flowtable_unset(struct nftnl_flowtable *c, uint16_t attr);
--void nftnl_flowtable_set(struct nftnl_flowtable *t, uint16_t attr, const void *data);
-+void nftnl_flowtable_set(struct nftnl_flowtable *t, uint16_t attr, const void *data) __attribute__((deprecated));
- int nftnl_flowtable_set_data(struct nftnl_flowtable *t, uint16_t attr,
- 			     const void *data, uint32_t data_len);
- void nftnl_flowtable_set_u32(struct nftnl_flowtable *t, uint16_t attr, uint32_t data);
-diff --git a/include/libnftnl/gen.h b/include/libnftnl/gen.h
-index c56a63ca2508b..846b8e0bc5c4e 100644
---- a/include/libnftnl/gen.h
-+++ b/include/libnftnl/gen.h
-@@ -25,7 +25,7 @@ enum {
- 
- bool nftnl_gen_is_set(const struct nftnl_gen *gen, uint16_t attr);
- void nftnl_gen_unset(struct nftnl_gen *gen, uint16_t attr);
--int nftnl_gen_set(struct nftnl_gen *gen, uint16_t attr, const void *data);
-+int nftnl_gen_set(struct nftnl_gen *gen, uint16_t attr, const void *data) __attribute__((deprecated));
- int nftnl_gen_set_data(struct nftnl_gen *gen, uint16_t attr,
- 		       const void *data, uint32_t data_len);
- const void *nftnl_gen_get(const struct nftnl_gen *gen, uint16_t attr);
-diff --git a/include/libnftnl/object.h b/include/libnftnl/object.h
-index c5ea88e5c3a41..221b15c20988d 100644
---- a/include/libnftnl/object.h
-+++ b/include/libnftnl/object.h
-@@ -124,7 +124,7 @@ bool nftnl_obj_is_set(const struct nftnl_obj *ne, uint16_t attr);
- void nftnl_obj_unset(struct nftnl_obj *ne, uint16_t attr);
- void nftnl_obj_set_data(struct nftnl_obj *ne, uint16_t attr, const void *data,
- 			uint32_t data_len);
--void nftnl_obj_set(struct nftnl_obj *ne, uint16_t attr, const void *data);
-+void nftnl_obj_set(struct nftnl_obj *ne, uint16_t attr, const void *data) __attribute__((deprecated));
- void nftnl_obj_set_u8(struct nftnl_obj *ne, uint16_t attr, uint8_t val);
- void nftnl_obj_set_u16(struct nftnl_obj *ne, uint16_t attr, uint16_t val);
- void nftnl_obj_set_u32(struct nftnl_obj *ne, uint16_t attr, uint32_t val);
-diff --git a/include/libnftnl/rule.h b/include/libnftnl/rule.h
-index 78bfead132368..e5d1ca0534b7a 100644
---- a/include/libnftnl/rule.h
-+++ b/include/libnftnl/rule.h
-@@ -35,7 +35,7 @@ enum nftnl_rule_attr {
- 
- void nftnl_rule_unset(struct nftnl_rule *r, uint16_t attr);
- bool nftnl_rule_is_set(const struct nftnl_rule *r, uint16_t attr);
--int nftnl_rule_set(struct nftnl_rule *r, uint16_t attr, const void *data);
-+int nftnl_rule_set(struct nftnl_rule *r, uint16_t attr, const void *data) __attribute__((deprecated));
- int nftnl_rule_set_data(struct nftnl_rule *r, uint16_t attr,
- 			const void *data, uint32_t data_len);
- void nftnl_rule_set_u32(struct nftnl_rule *r, uint16_t attr, uint32_t val);
-diff --git a/include/libnftnl/set.h b/include/libnftnl/set.h
-index 2ea2e9a56ce4f..db3fa686d60a2 100644
---- a/include/libnftnl/set.h
-+++ b/include/libnftnl/set.h
-@@ -42,7 +42,7 @@ struct nftnl_set *nftnl_set_clone(const struct nftnl_set *set);
- 
- bool nftnl_set_is_set(const struct nftnl_set *s, uint16_t attr);
- void nftnl_set_unset(struct nftnl_set *s, uint16_t attr);
--int nftnl_set_set(struct nftnl_set *s, uint16_t attr, const void *data);
-+int nftnl_set_set(struct nftnl_set *s, uint16_t attr, const void *data) __attribute__((deprecated));
- int nftnl_set_set_data(struct nftnl_set *s, uint16_t attr, const void *data,
- 		       uint32_t data_len);
- void nftnl_set_set_u32(struct nftnl_set *s, uint16_t attr, uint32_t val);
-diff --git a/include/libnftnl/table.h b/include/libnftnl/table.h
-index 44017c6a9259f..5faec8164bf62 100644
---- a/include/libnftnl/table.h
-+++ b/include/libnftnl/table.h
-@@ -29,7 +29,7 @@ enum nftnl_table_attr {
- 
- bool nftnl_table_is_set(const struct nftnl_table *t, uint16_t attr);
- void nftnl_table_unset(struct nftnl_table *t, uint16_t attr);
--void nftnl_table_set(struct nftnl_table *t, uint16_t attr, const void *data);
-+void nftnl_table_set(struct nftnl_table *t, uint16_t attr, const void *data) __attribute__((deprecated));
- int nftnl_table_set_data(struct nftnl_table *t, uint16_t attr,
- 			 const void *data, uint32_t data_len);
- const void *nftnl_table_get(const struct nftnl_table *t, uint16_t attr);
-diff --git a/src/chain.c b/src/chain.c
-index 84e5414f0cee7..d4050d28e77d0 100644
---- a/src/chain.c
-+++ b/src/chain.c
-@@ -284,7 +284,7 @@ int nftnl_chain_set_data(struct nftnl_chain *c, uint16_t attr,
- 	return 0;
- }
- 
--EXPORT_SYMBOL(nftnl_chain_set);
-+void nftnl_chain_set(struct nftnl_chain *c, uint16_t attr, const void *data) __visible;
- void nftnl_chain_set(struct nftnl_chain *c, uint16_t attr, const void *data)
- {
- 	nftnl_chain_set_data(c, attr, data, nftnl_chain_validate[attr]);
-diff --git a/src/flowtable.c b/src/flowtable.c
-index 020f102896442..c6025c7b678a0 100644
---- a/src/flowtable.c
-+++ b/src/flowtable.c
-@@ -171,11 +171,11 @@ int nftnl_flowtable_set_data(struct nftnl_flowtable *c, uint16_t attr,
- }
- EXPORT_SYMBOL(nftnl_flowtable_set_data);
- 
-+void nftnl_flowtable_set(struct nftnl_flowtable *c, uint16_t attr, const void *data) __visible;
- void nftnl_flowtable_set(struct nftnl_flowtable *c, uint16_t attr, const void *data)
- {
- 	nftnl_flowtable_set_data(c, attr, data, nftnl_flowtable_validate[attr]);
- }
--EXPORT_SYMBOL(nftnl_flowtable_set);
- 
- void nftnl_flowtable_set_u32(struct nftnl_flowtable *c, uint16_t attr, uint32_t data)
- {
-diff --git a/src/gen.c b/src/gen.c
-index 1fc909930d869..f2ac2ba03b9a4 100644
---- a/src/gen.c
-+++ b/src/gen.c
-@@ -80,7 +80,7 @@ int nftnl_gen_set_data(struct nftnl_gen *gen, uint16_t attr,
- 	return 0;
- }
- 
--EXPORT_SYMBOL(nftnl_gen_set);
-+int nftnl_gen_set(struct nftnl_gen *gen, uint16_t attr, const void *data) __visible;
- int nftnl_gen_set(struct nftnl_gen *gen, uint16_t attr, const void *data)
- {
- 	return nftnl_gen_set_data(gen, attr, data, nftnl_gen_validate[attr]);
-diff --git a/src/object.c b/src/object.c
-index ed8e36df358da..c876addb6532f 100644
---- a/src/object.c
-+++ b/src/object.c
-@@ -112,7 +112,7 @@ void nftnl_obj_set_data(struct nftnl_obj *obj, uint16_t attr,
- 	obj->flags |= (1 << attr);
- }
- 
--EXPORT_SYMBOL(nftnl_obj_set);
-+void nftnl_obj_set(struct nftnl_obj *obj, uint16_t attr, const void *data) __visible;
- void nftnl_obj_set(struct nftnl_obj *obj, uint16_t attr, const void *data)
- {
- 	nftnl_obj_set_data(obj, attr, data, nftnl_obj_validate[attr]);
-diff --git a/src/rule.c b/src/rule.c
-index 8173fcdd863d9..252410b6e62cb 100644
---- a/src/rule.c
-+++ b/src/rule.c
-@@ -168,7 +168,7 @@ int nftnl_rule_set_data(struct nftnl_rule *r, uint16_t attr,
- 	return 0;
- }
- 
--EXPORT_SYMBOL(nftnl_rule_set);
-+int nftnl_rule_set(struct nftnl_rule *r, uint16_t attr, const void *data) __visible;
- int nftnl_rule_set(struct nftnl_rule *r, uint16_t attr, const void *data)
- {
- 	return nftnl_rule_set_data(r, attr, data, nftnl_rule_validate[attr]);
-diff --git a/src/set.c b/src/set.c
-index 5e49a6d04f2dc..78447c676f512 100644
---- a/src/set.c
-+++ b/src/set.c
-@@ -195,7 +195,7 @@ int nftnl_set_set_data(struct nftnl_set *s, uint16_t attr, const void *data,
- 	return 0;
- }
- 
--EXPORT_SYMBOL(nftnl_set_set);
-+int nftnl_set_set(struct nftnl_set *s, uint16_t attr, const void *data) __visible;
- int nftnl_set_set(struct nftnl_set *s, uint16_t attr, const void *data)
- {
- 	return nftnl_set_set_data(s, attr, data, nftnl_set_validate[attr]);
-diff --git a/src/table.c b/src/table.c
-index 54259eec7d067..adcfafe5ad576 100644
---- a/src/table.c
-+++ b/src/table.c
-@@ -117,7 +117,7 @@ int nftnl_table_set_data(struct nftnl_table *t, uint16_t attr,
- 	return 0;
- }
- 
--EXPORT_SYMBOL(nftnl_table_set);
-+void nftnl_table_set(struct nftnl_table *t, uint16_t attr, const void *data) __visible;
- void nftnl_table_set(struct nftnl_table *t, uint16_t attr, const void *data)
- {
- 	nftnl_table_set_data(t, attr, data, nftnl_table_validate[attr]);
+At this point in time I'm not overly concerned about /proc completely
+going away in namespaces/containers that are full featured enough to
+host a container orchestrator.  If/when reliance on procfs becomes an
+issue, we can look at alternate APIs, but given the importance of
+/proc to userspace (including to audit) I suspect we are going to see
+it persist for some time.  I would prefer to see you to drop the audit
+container ID netlink API portions of this patchset and focus on the
+procfs API.
+
+Also, for the record, removing the audit loginuid from procfs is not
+something to take lightly, if at all; like it or not, it's part of the
+kernel API.
+
 -- 
-2.23.0
-
+paul moore
+www.paul-moore.com
