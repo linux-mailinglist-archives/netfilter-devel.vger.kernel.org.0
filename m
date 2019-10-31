@@ -2,65 +2,82 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D9BEB6D4
-	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2019 19:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD574EB7A4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2019 19:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729027AbfJaSVf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 31 Oct 2019 14:21:35 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:47724 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726602AbfJaSVf (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 31 Oct 2019 14:21:35 -0400
-Received: from localhost ([::1]:60814 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1iQF4f-0008O7-Eu; Thu, 31 Oct 2019 19:21:33 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH] evaluate: Reject set references in mapping LHS
-Date:   Thu, 31 Oct 2019 19:21:24 +0100
-Message-Id: <20191031182124.11393-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.23.0
+        id S1729516AbfJaS6A (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 31 Oct 2019 14:58:00 -0400
+Received: from mail1.tootai.net ([213.239.227.108]:37718 "EHLO
+        mail1.tootai.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729351AbfJaS6A (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 31 Oct 2019 14:58:00 -0400
+X-Greylist: delayed 578 seconds by postgrey-1.27 at vger.kernel.org; Thu, 31 Oct 2019 14:57:59 EDT
+Received: from mail1.tootai.net (localhost [127.0.0.1])
+        by mail1.tootai.net (Postfix) with ESMTP id 48213603F26B
+        for <netfilter-devel@vger.kernel.org>; Thu, 31 Oct 2019 19:48:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1572547696; bh=eXOPXFG5LFARtIdeOnoZnlhxuSnWEFAv9Xq8dzp72cA=;
+        h=To:From:Subject:Date:From;
+        b=gU/F817jb2Z9VcKBbqFBSp2SUtcB1JmjtvPy7Rg2/ENPUrWVTBeMxfxPkel1zq2R2
+         Sl3DbsLT1GtILiEFgl5lYwSagH4VRQvDAkuRpd/CCDUyHrSymYdAM4jbGzTtd+2D5q
+         oY7cE5lw5r/gVot4oybfbiyqZ8fMapnbKa/VSJGc=
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on wwwmail9
+X-Spam-Level: 
+X-Spam-Status: No, score=-102.5 required=3.5 tests=ALL_TRUSTED,BAYES_00,
+        T_DKIM_INVALID,USER_IN_WHITELIST autolearn=ham autolearn_force=no
+        version=3.4.2
+Received: from [192.168.10.4] (unknown [192.168.10.4])
+        by mail1.tootai.net (Postfix) with ESMTPSA id 0F7D7603F11A
+        for <netfilter-devel@vger.kernel.org>; Thu, 31 Oct 2019 19:48:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1572547696; bh=eXOPXFG5LFARtIdeOnoZnlhxuSnWEFAv9Xq8dzp72cA=;
+        h=To:From:Subject:Date:From;
+        b=gU/F817jb2Z9VcKBbqFBSp2SUtcB1JmjtvPy7Rg2/ENPUrWVTBeMxfxPkel1zq2R2
+         Sl3DbsLT1GtILiEFgl5lYwSagH4VRQvDAkuRpd/CCDUyHrSymYdAM4jbGzTtd+2D5q
+         oY7cE5lw5r/gVot4oybfbiyqZ8fMapnbKa/VSJGc=
+To:     Netfilter list <netfilter-devel@vger.kernel.org>
+From:   Daniel Huhardeaux <tech@tootai.net>
+Subject: Nat redirect using map
+Message-ID: <6ea6ecb5-99c5-5519-b689-8e1291df69cc@tootai.net>
+Date:   Thu, 31 Oct 2019 19:48:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This wasn't explicitly caught before causing a program abort:
+Hi,
 
-| BUG: invalid range expression type set reference
-| nft: expression.c:1162: range_expr_value_low: Assertion `0' failed.
-| zsh: abort      sudo ./install/sbin/nft add rule t c meta mark set tcp dport map '{ @s : 23 }
+I have a map like this
 
-With this patch in place, the error message is way more descriptive:
+map redirect_tcp {
+                 type inet_service : inet_service
+                 flags interval
+                 elements = { 12345 : 12345, 36025 : smtp }
+         }
 
-| Error: Key can't be set reference
-| add rule t c meta mark set tcp dport map { @s : 23 }
-|                                            ^^
+and want to use nat redirect but it fail with unexpecting to, expecting 
+EOF or semicolon. Here is the rule
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- src/evaluate.c | 4 ++++
- 1 file changed, 4 insertions(+)
+nft add rule ip nat prerouting iif eth0 tcp dport map @redirect_tcp 
+redirect to @redirect_tcp
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 81230fc7f4be4..500780aeae243 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -1456,6 +1456,10 @@ static int expr_evaluate_mapping(struct eval_ctx *ctx, struct expr **expr)
- 	if (!expr_is_constant(mapping->left))
- 		return expr_error(ctx->msgs, mapping->left,
- 				  "Key must be a constant");
-+	if (mapping->left->etype == EXPR_SET_ELEM &&
-+	    mapping->left->key->etype == EXPR_SET_REF)
-+		return expr_error(ctx->msgs, mapping->left,
-+				  "Key can't be set reference");
- 	mapping->flags |= mapping->left->flags & EXPR_F_SINGLETON;
- 
- 	expr_set_context(&ctx->ectx, set->datatype, set->datalen);
+How can I get this working ?
+
+Other: when using dnat for forwarding, should I take care of forward rules ?
+
+Example for this kind of rule from wiki:
+
+nft add rule nat prerouting iif eth0 tcp dport { 80, 443 } dnat 
+192.168.1.120
+
+Thanks for any hint
 -- 
-2.23.0
-
+TOOTAi Networks
