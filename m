@@ -2,138 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0E9EB1DC
-	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2019 15:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05188EB20F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Oct 2019 15:04:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727905AbfJaOAD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 31 Oct 2019 10:00:03 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:38171 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727900AbfJaOAD (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 31 Oct 2019 10:00:03 -0400
-Received: by mail-lj1-f193.google.com with SMTP id y23so6360806ljc.5
-        for <netfilter-devel@vger.kernel.org>; Thu, 31 Oct 2019 07:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DuatfVoIRwFhp1fiwVqEQDhLv5NKcD5+eL4mURteBJw=;
-        b=T0WGQpXFDtrHJfxqFmxbHxIc4bAH6IQvZs0OTPR85eE1GuPEBycmk9QZ+dEad3gcBZ
-         111Tl8gHMDWobnSVm/oAzghXtZ67XKZeU7Iv1i1wit1eJeMjOr73oWKibGez8sYJXCg5
-         +cQOCUohhdbNghmuNdLDmn228db2gz+xBmkAIvJqZTSY4dHUXeEEkpIrb7ncIQmqboAt
-         Z/ov5p25AUY1THMKi1DviI/uX3DGy8zd/T97zX+udzdtsfjL4srz+5gXsM7b01LCQpzv
-         BX6g51anf+KwtwI58WA9i6Uh/aOtyToAeS5ZFqybf4ztcFcPzqIgUxpnTGSLbS4pEaEu
-         btAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DuatfVoIRwFhp1fiwVqEQDhLv5NKcD5+eL4mURteBJw=;
-        b=rqKCkSR2oUu2UmaNJa3TbHHklpfeI40sLlrumK4I0nFWS7Em4v6+AFfajscybJx3Oc
-         LaqUXWxdmauumPZD4OJ5DL1kE5hja4yGDiyx6fuJtakwvnOVK1G6G3qpeoM0HP424mTd
-         tHwQFQXgTbtWezggs0zejIR/hXImv+CGJAjlJ2qOQ/lpZU4BnwHm7I6w+clxOYFRMfL7
-         g2hXxNtHhEom4Vu2ty+78aYFqInvt8AOL1xySkIspvfUIl/jB62M5mtDPoQRIjhhK5VS
-         pkOjWsv/23Ay7vB6hTwHwpdQahiDPNcWVxUOJzdzCu9fXdjS8gohyJ46fVSkGdvkEer6
-         hfhg==
-X-Gm-Message-State: APjAAAWRJT5GoB8UbkWqVLC9WQuWsNSDhrUdDEILpLrXzObou5BUdCZk
-        tzqyg74GPQT51ZKlyvDYmHtLqXf+fqzmUE8Agh70
-X-Google-Smtp-Source: APXvYqwq2wNVb076m3Quvyq9PXqhSEvG470R+68J3/Y3Ahcr5xKs7JewCzfRlqwmRAqfj89jdi6yOS5N64nrB3PIo6A=
-X-Received: by 2002:a05:651c:1056:: with SMTP id x22mr1097948ljm.225.1572530400425;
- Thu, 31 Oct 2019 07:00:00 -0700 (PDT)
+        id S1727580AbfJaOEa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 31 Oct 2019 10:04:30 -0400
+Received: from correo.us.es ([193.147.175.20]:44226 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727579AbfJaOE3 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 31 Oct 2019 10:04:29 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 682BF117735
+        for <netfilter-devel@vger.kernel.org>; Thu, 31 Oct 2019 15:04:25 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 5A012B8001
+        for <netfilter-devel@vger.kernel.org>; Thu, 31 Oct 2019 15:04:25 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 4FA36B7FFE; Thu, 31 Oct 2019 15:04:25 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 7B997DA72F;
+        Thu, 31 Oct 2019 15:04:23 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Thu, 31 Oct 2019 15:04:23 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 5786B42EE38F;
+        Thu, 31 Oct 2019 15:04:23 +0100 (CET)
+Date:   Thu, 31 Oct 2019 15:04:25 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH v3 07/12] nft: Introduce NFT_CL_SETS cache level
+Message-ID: <20191031140425.rtvrbisf2az3gmks@salvia>
+References: <20191030172701.5892-1-phil@nwl.cc>
+ <20191030172701.5892-8-phil@nwl.cc>
 MIME-Version: 1.0
-References: <cover.1568834524.git.rgb@redhat.com> <214163d11a75126f610bcedfad67a4d89575dc77.1568834525.git.rgb@redhat.com>
- <20191019013904.uevmrzbmztsbhpnh@madcap2.tricolour.ca> <CAHC9VhRPygA=LsHLUqv+K=ouAiPFJ6fb2_As=OT-_zB7kGc_aQ@mail.gmail.com>
- <20191021213824.6zti5ndxu7sqs772@madcap2.tricolour.ca> <CAHC9VhRdNXsY4neJpSoNyJoAVEoiEc2oW5kSscF99tjmoQAxFA@mail.gmail.com>
- <20191021235734.mgcjotdqoe73e4ha@madcap2.tricolour.ca> <CAHC9VhSiwnY-+2awxvGeO4a0NgfVkOPd8fzzBVujp=HtjskTuQ@mail.gmail.com>
- <20191024210010.owwgc3bqbvtdsqws@madcap2.tricolour.ca> <CAHC9VhRDoX9du4XbCnBtBzsNPMGOsb-TKM1CC+sCL7HP=FuTRQ@mail.gmail.com>
- <20191030220320.tnwkaj5gbzchcn7j@madcap2.tricolour.ca>
-In-Reply-To: <20191030220320.tnwkaj5gbzchcn7j@madcap2.tricolour.ca>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 31 Oct 2019 09:59:48 -0400
-Message-ID: <CAHC9VhTKaBwFxEnY9vLRgtZ5ptQzF-WvwiAyVgtTNn6tt4bZqw@mail.gmail.com>
-Subject: Re: [PATCH ghak90 V7 20/21] audit: add capcontid to set contid
- outside init_user_ns
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        sgrubb@redhat.com, omosnace@redhat.com, dhowells@redhat.com,
-        simo@redhat.com, Eric Paris <eparis@parisplace.org>,
-        Serge Hallyn <serge@hallyn.com>, ebiederm@xmission.com,
-        nhorman@tuxdriver.com, Dan Walsh <dwalsh@redhat.com>,
-        mpatel@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191030172701.5892-8-phil@nwl.cc>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Oct 30, 2019 at 6:04 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> On 2019-10-30 16:27, Paul Moore wrote:
-> > On Thu, Oct 24, 2019 at 5:00 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > > Here's the note I had from that meeting:
-> > >
-> > > - Eric raised the issue that using /proc is likely to get more and more
-> > >   hoary due to mount namespaces and suggested that we use a netlink
-> > > audit message (or a new syscall) to set the audit container identifier
-> > > and since the loginuid is a similar type of operation, that it should be
-> > > migrated over to a similar mechanism to get it away from /proc.  Get
-> > > could be done with a netlink audit message that triggers an audit log
-> > > message to deliver the information.  I'm reluctant to further pollute
-> > > the syscall space if we can find another method.  The netlink audit
-> > > message makes sense since any audit-enabled service is likely to already
-> > > have an audit socket open.
-> >
-> > Thanks for the background info on the off-list meeting.  I would
-> > encourage you to have discussions like this on-list in the future; if
-> > that isn't possible, hosting a public call would okay-ish, but a
-> > distant second.
->
-> I'm still trying to get Eric's attention to get him to weigh in here and
-> provide a more eloquent representation of his ideas and concerns.  Some
-> of it was related to CRIU(sp?) issues which we've already of which we've
-> already seen similar concerns in namespace identifiers including the
-> device identity to qualify it.
+On Wed, Oct 30, 2019 at 06:26:56PM +0100, Phil Sutter wrote:
+> +static int set_fetch_elem_cb(struct nftnl_set *s, void *data)
+> +{
+> +        char buf[MNL_SOCKET_BUFFER_SIZE];
+> +	struct nft_handle *h = data;
+> +        struct nlmsghdr *nlh;
+> +
+> +	if (set_has_elements(s))
+> +		return 0;
+> +
+> +	nlh = nftnl_nlmsg_build_hdr(buf, NFT_MSG_GETSETELEM, h->family,
+> +				    NLM_F_DUMP, h->seq);
+> +        nftnl_set_elems_nlmsg_build_payload(nlh, s);
+> +
+> +	return mnl_talk(h, nlh, set_elem_cb, s);
+> +}
 
-Okay, let's leave this open until we hear from Eric to see if he has
-any additional information, but it's going to need to be pretty
-compelling.
-
-> > At this point in time I'm not overly concerned about /proc completely
-> > going away in namespaces/containers that are full featured enough to
-> > host a container orchestrator.  If/when reliance on procfs becomes an
-> > issue, we can look at alternate APIs, but given the importance of
-> > /proc to userspace (including to audit) I suspect we are going to see
-> > it persist for some time.  I would prefer to see you to drop the audit
-> > container ID netlink API portions of this patchset and focus on the
-> > procfs API.
->
-> I've already refactored the code to put the netlink bits at the end as
-> completely optional pieces for completeness so they won't get in the way
-> of the real substance of this patchset.  The nesting depth and total
-> number of containers checks have also been punted to the end of the
-> patchset to get them out of the way of discussion.
-
-That's fine, but if we do decide to drop the netlink API after hearing
-from Eric, please drop those from the patchset.  Keeping the patchset
-small and focused should be a goal, and including rejected/dead
-patches (even at the end) doesn't help move towards that goal.
-
-> > Also, for the record, removing the audit loginuid from procfs is not
-> > something to take lightly, if at all; like it or not, it's part of the
-> > kernel API.
->
-> Oh, I'm quite aware of how important this change is and it was discussed
-> with Steve Grubb who saw the concern and value of considering such a
-> disruptive change.  Removing proc support for auid/ses would be a
-> long-term deprecation if accepted.
-
-As I mentioned, that comment was more "for the record" than you in
-particular; I know we've talked a lot over the years about kernel API
-stability and I'm confident you are aware of the pitfalls there. :)
-
--- 
-paul moore
-www.paul-moore.com
+Please, mind coding style, irregular indentation.
