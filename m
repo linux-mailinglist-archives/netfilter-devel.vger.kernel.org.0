@@ -2,62 +2,76 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D27DFA926
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Nov 2019 05:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DB7FAB06
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Nov 2019 08:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727374AbfKMEqv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 12 Nov 2019 23:46:51 -0500
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:41550 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727178AbfKMEqu (ORCPT
+        id S1725908AbfKMHeO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 13 Nov 2019 02:34:14 -0500
+Received: from mx132-tc.baidu.com ([61.135.168.132]:51730 "EHLO
+        tc-sys-mailedm01.tc.baidu.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725858AbfKMHeO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 12 Nov 2019 23:46:50 -0500
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 219B74192B;
-        Wed, 13 Nov 2019 12:46:44 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org, davem@davemloft.net
-Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH net-next 4/4] netfilter: nf_tables_api: Fix UNBIND setup in the nft_flowtable_event
-Date:   Wed, 13 Nov 2019 12:46:42 +0800
-Message-Id: <1573620402-10318-5-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1573620402-10318-1-git-send-email-wenxu@ucloud.cn>
-References: <1573620402-10318-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSUlNS0tLSkNCTENKSkJZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nkk6CQw6Pjg4FxQiCE4yHRMY
-        MzMaFEhVSlVKTkxITUlLT0tPSUlPVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUpMSEM3Bg++
-X-HM-Tid: 0a6e6315cfbd2086kuqy219b74192b
+        Wed, 13 Nov 2019 02:34:14 -0500
+Received: from localhost (cp01-cos-dev01.cp01.baidu.com [10.92.119.46])
+        by tc-sys-mailedm01.tc.baidu.com (Postfix) with ESMTP id 78B97204005E
+        for <netfilter-devel@vger.kernel.org>; Wed, 13 Nov 2019 15:34:01 +0800 (CST)
+From:   Li RongQing <lirongqing@baidu.com>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH][v2] netfilter: only call csum_tcpudp_magic for TCP/UDP packets
+Date:   Wed, 13 Nov 2019 15:34:01 +0800
+Message-Id: <1573630441-13937-1-git-send-email-lirongqing@baidu.com>
+X-Mailer: git-send-email 1.7.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+csum_tcpudp_magic should not be called to compute checksum
+for non-TCP/UDP packets, like ICMP with wrong checksum
 
-It should do UNBIND setup in the nft_flowtable_event.
-
-Fixes: 8bb69f3b2918 ("netfilter: nf_tables: add flowtable offload control plane")
-Signed-off-by: wenxu <wenxu@ucloud.cn>
+Fixes: 5d1549847c76 ("netfilter: Fix remainder of pseudo-header protocol 0")
+Suggested-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Li RongQing <lirongqing@baidu.com>
 ---
- net/netfilter/nf_tables_api.c | 2 ++
- 1 file changed, 2 insertions(+)
+diff with v1:
+rewrite the code as suggested
+add fixes tag
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 0a00812..87e7b97 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -6470,6 +6470,8 @@ static void nft_flowtable_event(unsigned long event, struct net_device *dev,
- 			continue;
- 
- 		nf_unregister_net_hook(dev_net(dev), &hook->ops);
-+		flowtable->data.type->setup(&flowtable->data, hook->ops.dev,
-+					    FLOW_BLOCK_UNBIND);
- 		list_del_rcu(&hook->list);
- 		kfree_rcu(hook, rcu);
- 		break;
+ net/netfilter/utils.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/net/netfilter/utils.c b/net/netfilter/utils.c
+index 51b454d8fa9c..0f78416566fa 100644
+--- a/net/netfilter/utils.c
++++ b/net/netfilter/utils.c
+@@ -17,12 +17,21 @@ __sum16 nf_ip_checksum(struct sk_buff *skb, unsigned int hook,
+ 	case CHECKSUM_COMPLETE:
+ 		if (hook != NF_INET_PRE_ROUTING && hook != NF_INET_LOCAL_IN)
+ 			break;
+-		if ((protocol != IPPROTO_TCP && protocol != IPPROTO_UDP &&
+-		    !csum_fold(skb->csum)) ||
+-		    !csum_tcpudp_magic(iph->saddr, iph->daddr,
+-				       skb->len - dataoff, protocol,
+-				       skb->csum)) {
+-			skb->ip_summed = CHECKSUM_UNNECESSARY;
++		switch (protocol) {
++		case IPPROTO_TCP:
++		case IPPROTO_UDP:
++			if (!csum_tcpudp_magic(iph->saddr, iph->daddr,
++					    skb->len - dataoff,
++					    protocol, skb->csum)) {
++				skb->ip_summed = CHECKSUM_UNNECESSARY;
++				return 0;
++			}
++			break;
++		default:
++			if (!csum_fold(skb->csum)) {
++				skb->ip_summed = CHECKSUM_UNNECESSARY;
++				return 0;
++			}
+ 			break;
+ 		}
+ 		/* fall through */
 -- 
-1.8.3.1
+2.16.2
 
