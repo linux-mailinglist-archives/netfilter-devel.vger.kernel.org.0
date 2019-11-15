@@ -2,121 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF04FDCEA
-	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Nov 2019 13:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2AB4FE0C8
+	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Nov 2019 16:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727210AbfKOMDk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 15 Nov 2019 07:03:40 -0500
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:42959 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727343AbfKOMDk (ORCPT
+        id S1727487AbfKOPCm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 15 Nov 2019 10:02:42 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:50920 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727406AbfKOPCm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 15 Nov 2019 07:03:40 -0500
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 4243E41700;
-        Fri, 15 Nov 2019 20:03:32 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org
+        Fri, 15 Nov 2019 10:02:42 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-IVClPbq4MeepBmUjqiQiEg-1; Fri, 15 Nov 2019 10:02:38 -0500
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DDDC6DBB0;
+        Fri, 15 Nov 2019 15:02:36 +0000 (UTC)
+Received: from egarver (ovpn-121-25.rdu2.redhat.com [10.10.121.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A32BC891C;
+        Fri, 15 Nov 2019 15:02:35 +0000 (UTC)
+Date:   Fri, 15 Nov 2019 10:02:33 -0500
+From:   Eric Garver <eric@garver.life>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next 4/4] netfilter: nf_flow_table_offload: add tunnel encap/decap action offload support
-Date:   Fri, 15 Nov 2019 20:03:30 +0800
-Message-Id: <1573819410-3685-5-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1573819410-3685-1-git-send-email-wenxu@ucloud.cn>
-References: <1573819410-3685-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVklVSk9LS0tLSktPQktPSkxZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PiI6Aio5KTgrVgoiFQ46Ggwz
-        AksaCx5VSlVKTkxIQ0pCT0pJSE9MVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUhPSk43Bg++
-X-HM-Tid: 0a6e6ef26f362086kuqy4243e41700
+Subject: libnftnl: NFTA_FLOWTABLE_SIZE missing from kernel uapi headers
+Message-ID: <20191115150233.fnlhnlbn2k6qvqwi@egarver>
+Mail-Followup-To: Eric Garver <eric@garver.life>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+MIME-Version: 1.0
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MC-Unique: IVClPbq4MeepBmUjqiQiEg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+Hi Pablo,
 
-This patch add tunnel encap decap action offload in the flowtable
-offload.
+libnftnl commit cdaea7f1ced0 ("flowtable: allow to specify size") added
+the enum value NFTA_FLOWTABLE_SIZE, but this was not first added to the
+kernel. As such, libnftnl's header and the kernel are out of sync.
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- net/netfilter/nf_flow_table_offload.c | 47 +++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+Since then, NFTA_FLOWTABLE_FLAGS has been added to the kernel. This
+means NFTA_FLOWTABLE_SIZE in libnftnl and NFTA_FLOWTABLE_FLAGS in the
+kernel have the same enum value.
 
-diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-index 9b1de6a..c35e2a9 100644
---- a/net/netfilter/nf_flow_table_offload.c
-+++ b/net/netfilter/nf_flow_table_offload.c
-@@ -456,6 +456,45 @@ static void flow_offload_redirect(const struct flow_offload *flow,
- 	dev_hold(rt->dst.dev);
- }
- 
-+static void flow_offload_encap_tunnel(const struct flow_offload *flow,
-+				      enum flow_offload_tuple_dir dir,
-+				      struct nf_flow_rule *flow_rule)
-+{
-+	struct flow_action_entry *entry;
-+	struct dst_entry *dst;
-+
-+	dst = flow->tuplehash[dir].tuple.dst_cache;
-+	if (dst->lwtstate) {
-+		struct ip_tunnel_info *tun_info;
-+
-+		tun_info = lwt_tun_info(dst->lwtstate);
-+		if (tun_info && (tun_info->mode & IP_TUNNEL_INFO_TX)) {
-+			entry = flow_action_entry_next(flow_rule);
-+			entry->id = FLOW_ACTION_TUNNEL_ENCAP;
-+			entry->tunnel = tun_info;
-+		}
-+	}
-+}
-+
-+static void flow_offload_decap_tunnel(const struct flow_offload *flow,
-+				      enum flow_offload_tuple_dir dir,
-+				      struct nf_flow_rule *flow_rule)
-+{
-+	struct flow_action_entry *entry;
-+	struct dst_entry *dst;
-+
-+	dst = flow->tuplehash[!dir].tuple.dst_cache;
-+	if (dst->lwtstate) {
-+		struct ip_tunnel_info *tun_info;
-+
-+		tun_info = lwt_tun_info(dst->lwtstate);
-+		if (tun_info && (tun_info->mode & IP_TUNNEL_INFO_TX)) {
-+			entry = flow_action_entry_next(flow_rule);
-+			entry->id = FLOW_ACTION_TUNNEL_DECAP;
-+		}
-+	}
-+}
-+
- int nf_flow_rule_route_ipv4(struct net *net, const struct flow_offload *flow,
- 			    enum flow_offload_tuple_dir dir,
- 			    struct nf_flow_rule *flow_rule)
-@@ -478,6 +517,10 @@ int nf_flow_rule_route_ipv4(struct net *net, const struct flow_offload *flow,
- 
- 	flow_offload_redirect(flow, dir, flow_rule);
- 
-+	flow_offload_encap_tunnel(flow, dir, flow_rule);
-+
-+	flow_offload_decap_tunnel(flow, dir, flow_rule);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(nf_flow_rule_route_ipv4);
-@@ -501,6 +544,10 @@ int nf_flow_rule_route_ipv6(struct net *net, const struct flow_offload *flow,
- 
- 	flow_offload_redirect(flow, dir, flow_rule);
- 
-+	flow_offload_encap_tunnel(flow, dir, flow_rule);
-+
-+	flow_offload_decap_tunnel(flow, dir, flow_rule);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(nf_flow_rule_route_ipv6);
--- 
-1.8.3.1
+Luckily NFTA_FLOWTABLE_FLAGS was just recently added to -next, so we
+should be able to fix this without too much headache.
+
+Thanks.
+Eric.
 
