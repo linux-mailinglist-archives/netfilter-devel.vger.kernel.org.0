@@ -2,90 +2,80 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5EC102ED0
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2019 23:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFD2102EE1
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Nov 2019 23:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727399AbfKSWGJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 19 Nov 2019 17:06:09 -0500
-Received: from correo.us.es ([193.147.175.20]:35170 "EHLO mail.us.es"
+        id S1727007AbfKSWLi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 19 Nov 2019 17:11:38 -0500
+Received: from correo.us.es ([193.147.175.20]:37420 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727465AbfKSWGI (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 19 Nov 2019 17:06:08 -0500
+        id S1725923AbfKSWLi (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 19 Nov 2019 17:11:38 -0500
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 2300B8C3C6C
-        for <netfilter-devel@vger.kernel.org>; Tue, 19 Nov 2019 23:06:04 +0100 (CET)
+        by mail.us.es (Postfix) with ESMTP id 8E549E1519
+        for <netfilter-devel@vger.kernel.org>; Tue, 19 Nov 2019 23:11:34 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 155A0A8E5
-        for <netfilter-devel@vger.kernel.org>; Tue, 19 Nov 2019 23:06:04 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 7B72EFB362
+        for <netfilter-devel@vger.kernel.org>; Tue, 19 Nov 2019 23:11:34 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 0AFF6DA4CA; Tue, 19 Nov 2019 23:06:04 +0100 (CET)
+        id 6AB778012A; Tue, 19 Nov 2019 23:11:34 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 29445FB362;
-        Tue, 19 Nov 2019 23:06:02 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 77E36DA4D0;
+        Tue, 19 Nov 2019 23:11:32 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 19 Nov 2019 23:06:02 +0100 (CET)
+ Tue, 19 Nov 2019 23:11:32 +0100 (CET)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (sys.soleta.eu [212.170.55.40])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id E5B3142EE38E;
-        Tue, 19 Nov 2019 23:06:01 +0100 (CET)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 530E742EE38E;
+        Tue, 19 Nov 2019 23:11:32 +0100 (CET)
+Date:   Tue, 19 Nov 2019 23:11:33 +0100
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH net-next 4/4] netfilter: nft_payload: add C-VLAN offload support
-Date:   Tue, 19 Nov 2019 23:05:55 +0100
-Message-Id: <20191119220555.17391-5-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20191119220555.17391-1-pablo@netfilter.org>
-References: <20191119220555.17391-1-pablo@netfilter.org>
+To:     Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+Cc:     "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Subject: Re: Choosing best API-way to full dump/restore nftables
+Message-ID: <20191119221133.66nqmwivrid6y6pa@salvia>
+References: <20191119152120.85eaddcc5d6f76c6980bd68a@virtuozzo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191119152120.85eaddcc5d6f76c6980bd68a@virtuozzo.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Match on h_vlan_encapsulated_proto and set up protocol dependency. Check
-for protocol dependency before accessing the tci field. Allow to match
-on the encapsulated ethertype too.
+Hi,
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_payload.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+On Tue, Nov 19, 2019 at 12:21:21PM +0000, Alexander Mikhalitsyn wrote:
+> Dear colleagues,
+> 
+> In CRIU (Checkpoint/Restore In Userspace) we want to add support nft
+> dump/restore. Initial implementation directly uses `nft list ruleset
+> dumpfile`/`nft -f dumpfile` but it's not the best way because
+> fork/exec is needed. We want to use some API. But after diving
+> into libnftnl and nftables code I've realized that it's not so
+> simple: in libnftnl there is some partial code for JSON support in
+> nftables too. But as I see in libnftnl JSON doesn't fully
+> supported. In nftables I've found tests/json_echo/run-test.py test
+> that uses libnftables.so shared library that exports some
+> functions for dumping/restoring full ruleset as JSON. After some
+> googling, I've found that recently CLI and API interfaces related
+> to JSON/XML exporting functions of nft have changed significantly.
+> Question is: What API I could use to have confidence that in the
+> near future it will not be deprecated? (We need only make *full*
+> dump/restore nftables)
 
-diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
-index f17939fbf6c3..1993af3a2979 100644
---- a/net/netfilter/nft_payload.c
-+++ b/net/netfilter/nft_payload.c
-@@ -203,6 +203,22 @@ static int nft_payload_offload_ll(struct nft_offload_ctx *ctx,
- 
- 		NFT_OFFLOAD_MATCH(FLOW_DISSECTOR_KEY_VLAN, vlan,
- 				  vlan_tpid, sizeof(__be16), reg);
-+		nft_offload_set_dependency(ctx, NFT_OFFLOAD_DEP_NETWORK);
-+		break;
-+	case offsetof(struct vlan_ethhdr, h_vlan_TCI) + sizeof(struct vlan_hdr):
-+		if (priv->len != sizeof(__be16))
-+			return -EOPNOTSUPP;
-+
-+		NFT_OFFLOAD_MATCH(FLOW_DISSECTOR_KEY_CVLAN, vlan,
-+				  vlan_tci, sizeof(__be16), reg);
-+		break;
-+	case offsetof(struct vlan_ethhdr, h_vlan_encapsulated_proto) +
-+							sizeof(struct vlan_hdr):
-+		if (priv->len != sizeof(__be16))
-+			return -EOPNOTSUPP;
-+
-+		NFT_OFFLOAD_MATCH(FLOW_DISSECTOR_KEY_CVLAN, vlan,
-+				  vlan_tpid, sizeof(__be16), reg);
- 		break;
- 	default:
- 		return -EOPNOTSUPP;
--- 
-2.11.0
+Please, see:
 
+        man 3 libnftables
