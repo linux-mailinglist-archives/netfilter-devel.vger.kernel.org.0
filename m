@@ -2,31 +2,31 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E082B1038D0
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Nov 2019 12:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6263B1038CD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Nov 2019 12:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728578AbfKTLgS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 20 Nov 2019 06:36:18 -0500
-Received: from mailout1.hostsharing.net ([83.223.95.204]:53355 "EHLO
-        mailout1.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727586AbfKTLgS (ORCPT
+        id S1727975AbfKTLfg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 20 Nov 2019 06:35:36 -0500
+Received: from mailout3.hostsharing.net ([176.9.242.54]:34703 "EHLO
+        mailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727586AbfKTLfg (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 20 Nov 2019 06:36:18 -0500
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        Wed, 20 Nov 2019 06:35:36 -0500
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by mailout1.hostsharing.net (Postfix) with ESMTPS id ED415101933DF;
-        Wed, 20 Nov 2019 12:36:16 +0100 (CET)
+        by mailout3.hostsharing.net (Postfix) with ESMTPS id 8A9A6101E6ABA;
+        Wed, 20 Nov 2019 12:35:34 +0100 (CET)
 Received: from localhost (pd95be530.dip0.t-ipconnect.de [217.91.229.48])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by h08.hostsharing.net (Postfix) with ESMTPSA id A808660E00CD;
-        Wed, 20 Nov 2019 12:36:16 +0100 (CET)
-X-Mailbox-Line: From 348a3eb1c4348391e1836d858f24bd118934703f Mon Sep 17 00:00:00 2001
-Message-Id: <348a3eb1c4348391e1836d858f24bd118934703f.1574247360.git.lukas@wunner.de>
+        by h08.hostsharing.net (Postfix) with ESMTPSA id 2B95460E00CD;
+        Wed, 20 Nov 2019 12:35:34 +0100 (CET)
+X-Mailbox-Line: From 4362209712369ea47ac39b06a9fc93fc4ce3a25c Mon Sep 17 00:00:00 2001
+Message-Id: <4362209712369ea47ac39b06a9fc93fc4ce3a25c.1574247376.git.lukas@wunner.de>
 From:   Lukas Wunner <lukas@wunner.de>
 Date:   Wed, 20 Nov 2019 12:33:59 +0100
-Subject: [PATCH nf-next] netfilter: Document ingress hook
+Subject: [PATCH nf-next] netfilter: Clean up unnecessary #ifdef
 To:     "Pablo Neira Ayuso" <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>
@@ -37,11 +37,16 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Amend kerneldoc of struct net_device to fix a "make htmldocs" warning:
+If CONFIG_NETFILTER_INGRESS is not enabled, nf_ingress() becomes a no-op
+because it solely contains an if-clause calling nf_hook_ingress_active(),
+for which an empty inline stub exists in <linux/netfilter_ingress.h>.
 
-include/linux/netdevice.h:2045: warning: Function parameter or member 'nf_hooks_ingress' not described in 'net_device'
+All the symbols used in the if-clause's body are still available even if
+CONFIG_NETFILTER_INGRESS is not enabled.
 
-Reported-by: kbuild test robot <lkp@intel.com>
+The additional "#ifdef CONFIG_NETFILTER_INGRESS" in nf_ingress() is thus
+unnecessary, so drop it.
+
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
 Cc: Daniel Borkmann <daniel@iogearbox.net>
 ---
@@ -49,23 +54,31 @@ Resending this patch without RFC tag on Pablo's request since it's just
 an uncontroversial cleanup.
 
 Previous submission:
-https://lore.kernel.org/netfilter-devel/442372563baf1a33ff48f8993be069960a7aea52.1572528496.git.lukas@wunner.de/
+https://lore.kernel.org/netfilter-devel/ba3cc38580d4cb43aa5599524ec5e5205d6dfa77.1572528496.git.lukas@wunner.de/
 
- include/linux/netdevice.h | 1 +
- 1 file changed, 1 insertion(+)
+ net/core/dev.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 9e6fb8524d91..4b2f40f3a588 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -1703,6 +1703,7 @@ enum netdev_priv_flags {
-  *	@miniq_ingress:		ingress/clsact qdisc specific data for
-  *				ingress processing
-  *	@ingress_queue:		XXX: need comments on this one
-+ *	@nf_hooks_ingress:	netfilter hooks executed for ingress packets
-  *	@broadcast:		hw bcast address
-  *
-  *	@rx_cpu_rmap:	CPU reverse-mapping for RX completion interrupts,
+diff --git a/net/core/dev.c b/net/core/dev.c
+index da78a433c10c..330c6d21cc1c 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4932,7 +4932,6 @@ static bool skb_pfmemalloc_protocol(struct sk_buff *skb)
+ static inline int nf_ingress(struct sk_buff *skb, struct packet_type **pt_prev,
+ 			     int *ret, struct net_device *orig_dev)
+ {
+-#ifdef CONFIG_NETFILTER_INGRESS
+ 	if (nf_hook_ingress_active(skb)) {
+ 		int ingress_retval;
+ 
+@@ -4946,7 +4945,6 @@ static inline int nf_ingress(struct sk_buff *skb, struct packet_type **pt_prev,
+ 		rcu_read_unlock();
+ 		return ingress_retval;
+ 	}
+-#endif /* CONFIG_NETFILTER_INGRESS */
+ 	return 0;
+ }
+ 
 -- 
 2.24.0
 
