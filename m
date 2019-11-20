@@ -2,83 +2,111 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6263B1038CD
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Nov 2019 12:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5F9103905
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Nov 2019 12:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbfKTLfg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 20 Nov 2019 06:35:36 -0500
-Received: from mailout3.hostsharing.net ([176.9.242.54]:34703 "EHLO
-        mailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727586AbfKTLfg (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 20 Nov 2019 06:35:36 -0500
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by mailout3.hostsharing.net (Postfix) with ESMTPS id 8A9A6101E6ABA;
-        Wed, 20 Nov 2019 12:35:34 +0100 (CET)
-Received: from localhost (pd95be530.dip0.t-ipconnect.de [217.91.229.48])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h08.hostsharing.net (Postfix) with ESMTPSA id 2B95460E00CD;
-        Wed, 20 Nov 2019 12:35:34 +0100 (CET)
-X-Mailbox-Line: From 4362209712369ea47ac39b06a9fc93fc4ce3a25c Mon Sep 17 00:00:00 2001
-Message-Id: <4362209712369ea47ac39b06a9fc93fc4ce3a25c.1574247376.git.lukas@wunner.de>
-From:   Lukas Wunner <lukas@wunner.de>
-Date:   Wed, 20 Nov 2019 12:33:59 +0100
-Subject: [PATCH nf-next] netfilter: Clean up unnecessary #ifdef
-To:     "Pablo Neira Ayuso" <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>
+        id S1727645AbfKTLpt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 20 Nov 2019 06:45:49 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:38534 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728287AbfKTLps (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 20 Nov 2019 06:45:48 -0500
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1iXOQc-0007ke-C1; Wed, 20 Nov 2019 12:45:46 +0100
+Date:   Wed, 20 Nov 2019 12:45:46 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Ander Juaristi <a@juaristi.eus>, netfilter-devel@vger.kernel.org
+Subject: Re: [nft PATCH] tests/py: Set a fixed timezone in nft-test.py
+Message-ID: <20191120114546.GJ8016@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Ander Juaristi <a@juaristi.eus>, netfilter-devel@vger.kernel.org
+References: <20191116213218.14698-1-phil@nwl.cc>
+ <20191118183459.qkqztuc5pn4fezzn@salvia>
+ <db71e3276085bccce877215254bbfc21@juaristi.eus>
+ <20191119221236.jfedafspmixjnivw@salvia>
+ <20191119222023.GH8016@orbyte.nwl.cc>
+ <20191119223318.n7zgdsfmetltwobo@salvia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191119223318.n7zgdsfmetltwobo@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If CONFIG_NETFILTER_INGRESS is not enabled, nf_ingress() becomes a no-op
-because it solely contains an if-clause calling nf_hook_ingress_active(),
-for which an empty inline stub exists in <linux/netfilter_ingress.h>.
+Hi Pablo,
 
-All the symbols used in the if-clause's body are still available even if
-CONFIG_NETFILTER_INGRESS is not enabled.
+On Tue, Nov 19, 2019 at 11:33:18PM +0100, Pablo Neira Ayuso wrote:
+> On Tue, Nov 19, 2019 at 11:20:23PM +0100, Phil Sutter wrote:
+> > Hi,
+> > 
+> > On Tue, Nov 19, 2019 at 11:12:36PM +0100, Pablo Neira Ayuso wrote:
+> > > On Tue, Nov 19, 2019 at 12:06:23PM +0100, Ander Juaristi wrote:
+> > > > El 2019-11-18 19:34, Pablo Neira Ayuso escribió:
+> > > > > Hi Phil,
+> > > > > 
+> > > > > On Sat, Nov 16, 2019 at 10:32:18PM +0100, Phil Sutter wrote:
+> > > > > > Payload generated for 'meta time' matches depends on host's timezone
+> > > > > > and
+> > > > > > DST setting. To produce constant output, set a fixed timezone in
+> > > > > > nft-test.py. Choose UTC-2 since most payloads are correct then, adjust
+> > > > > > the remaining two tests.
+> > > > > 
+> > > > > This means that the ruleset listing for the user changes when daylight
+> > > > > saving occurs, right? Just like it happened to our tests.
+> > > > 
+> > > > It shouldn't, as the date is converted to a timestamp that doesn't take DST
+> > > > into account (using timegm(3), which is Linux-specific).
+> > > > 
+> > > > The problem is that payloads are hard-coded in the tests.
+> > > > 
+> > > > Correct me if I'm missing something.
+> > > 
+> > > I see, so it's just the _snprintf() function in the library. I
+> > > remember we found another problem with these on big endian, it would
+> > > be probably to move them to libnftables at some point.
+> > > 
+> > > Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> > 
+> > Ah, now that I reread your question, I finally got it. And you're right:
+> > If DST occurs, time values will change. This is clear from looking at
+> > hour_type_print(): Whatever the kernel returned gets cur_tm->tm_gmtoff
+> > added to it. Here, this is either 3600 or 7200 depending on whether DST
+> > is active or not.
+> > 
+> > The other alternative would be to make kernel DST-aware, I don't think
+> > that's the case.
+> 
+> Hm, so the ruleset listing changes after DST.
 
-The additional "#ifdef CONFIG_NETFILTER_INGRESS" in nf_ingress() is thus
-unnecessary, so drop it.
+Yes, but only because payload (and hence kernel data) remains the same.
 
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
----
-Resending this patch without RFC tag on Pablo's request since it's just
-an uncontroversial cleanup.
+> If the user specifies the time according to the userspace timezone,
+> then ruleset listing should not change?
+> 
+> I'm still trying to understand if this is a real problem.
 
-Previous submission:
-https://lore.kernel.org/netfilter-devel/ba3cc38580d4cb43aa5599524ec5e5205d6dfa77.1572528496.git.lukas@wunner.de/
+IMHO, it's a controversy of whether we want to make the time match
+respect DST changes or not:
 
- net/core/dev.c | 2 --
- 1 file changed, 2 deletions(-)
+It should, because when I restrict internet access to my kids after 8pm,
+I don't want to touch my firewall's ruleset twice a year.
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index da78a433c10c..330c6d21cc1c 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4932,7 +4932,6 @@ static bool skb_pfmemalloc_protocol(struct sk_buff *skb)
- static inline int nf_ingress(struct sk_buff *skb, struct packet_type **pt_prev,
- 			     int *ret, struct net_device *orig_dev)
- {
--#ifdef CONFIG_NETFILTER_INGRESS
- 	if (nf_hook_ingress_active(skb)) {
- 		int ingress_retval;
- 
-@@ -4946,7 +4945,6 @@ static inline int nf_ingress(struct sk_buff *skb, struct packet_type **pt_prev,
- 		rcu_read_unlock();
- 		return ingress_retval;
- 	}
--#endif /* CONFIG_NETFILTER_INGRESS */
- 	return 0;
- }
- 
--- 
-2.24.0
+It needs not, because upon the next reboot things are correct again,
+anyway.
 
+It should not because otherwise once a year there are two spooky hours in
+which things run twice that should never ever run more than once per
+night. Apart from that, description of --kerneltz in
+iptables-extensions(8) speaks for itself.
+
+So long story short, it is always a problem no matter how it is solved.
+:(
+
+Cheers, Phil
