@@ -2,81 +2,70 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2021038A7
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Nov 2019 12:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E082B1038D0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Nov 2019 12:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbfKTLYw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 20 Nov 2019 06:24:52 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:38482 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728376AbfKTLYw (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 20 Nov 2019 06:24:52 -0500
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1iXO6K-0007TB-TY; Wed, 20 Nov 2019 12:24:48 +0100
-Date:   Wed, 20 Nov 2019 12:24:48 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Stefano Brivio <sbrivio@redhat.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Kadlecsik =?utf-8?Q?J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>,
-        Eric Garver <eric@garver.life>
-Subject: Re: [PATCH libnftnl] set: Add support for NFTA_SET_SUBKEY attributes
-Message-ID: <20191120112448.GI8016@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Kadlecsik =?utf-8?Q?J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>,
-        Eric Garver <eric@garver.life>
-References: <20191119010723.39368-1-sbrivio@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191119010723.39368-1-sbrivio@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728578AbfKTLgS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 20 Nov 2019 06:36:18 -0500
+Received: from mailout1.hostsharing.net ([83.223.95.204]:53355 "EHLO
+        mailout1.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727586AbfKTLgS (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 20 Nov 2019 06:36:18 -0500
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by mailout1.hostsharing.net (Postfix) with ESMTPS id ED415101933DF;
+        Wed, 20 Nov 2019 12:36:16 +0100 (CET)
+Received: from localhost (pd95be530.dip0.t-ipconnect.de [217.91.229.48])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h08.hostsharing.net (Postfix) with ESMTPSA id A808660E00CD;
+        Wed, 20 Nov 2019 12:36:16 +0100 (CET)
+X-Mailbox-Line: From 348a3eb1c4348391e1836d858f24bd118934703f Mon Sep 17 00:00:00 2001
+Message-Id: <348a3eb1c4348391e1836d858f24bd118934703f.1574247360.git.lukas@wunner.de>
+From:   Lukas Wunner <lukas@wunner.de>
+Date:   Wed, 20 Nov 2019 12:33:59 +0100
+Subject: [PATCH nf-next] netfilter: Document ingress hook
+To:     "Pablo Neira Ayuso" <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+Amend kerneldoc of struct net_device to fix a "make htmldocs" warning:
 
-On Tue, Nov 19, 2019 at 02:07:23AM +0100, Stefano Brivio wrote:
-[...]
-> diff --git a/src/set.c b/src/set.c
-> index 78447c6..60a46d8 100644
-> --- a/src/set.c
-> +++ b/src/set.c
-[...]
-> @@ -361,6 +366,23 @@ nftnl_set_nlmsg_build_desc_payload(struct nlmsghdr *nlh, struct nftnl_set *s)
->  	mnl_attr_nest_end(nlh, nest);
->  }
->  
-> +static void
-> +nftnl_set_nlmsg_build_subkey_payload(struct nlmsghdr *nlh, struct nftnl_set *s)
-> +{
-> +	struct nlattr *nest;
-> +	uint32_t v;
-> +	uint8_t *l;
-> +
-> +	nest = mnl_attr_nest_start(nlh, NFTA_SET_SUBKEY);
-> +	for (l = s->subkey_len; l - s->subkey_len < NFT_REG32_COUNT; l++) {
+include/linux/netdevice.h:2045: warning: Function parameter or member 'nf_hooks_ingress' not described in 'net_device'
 
-While I like pointer arithmetics, too, I don't think it's much use here.
-Using good old index variable even allows to integrate the zero value
-check:
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+---
+Resending this patch without RFC tag on Pablo's request since it's just
+an uncontroversial cleanup.
 
-|	for (i = 0; i < NFT_REG32_COUNT && s->subkey_len[i]; i++)
+Previous submission:
+https://lore.kernel.org/netfilter-devel/442372563baf1a33ff48f8993be069960a7aea52.1572528496.git.lukas@wunner.de/
 
-> +		if (!*l)
-> +			break;
-> +		v = *l;
-> +		mnl_attr_put_u32(nlh, NFTA_SET_SUBKEY_LEN, htonl(v));
+ include/linux/netdevice.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-I guess you're copying the value here because how htonl() is declared,
-but may it change the input value non-temporarily? I mean, libnftnl is
-in control over the array so from my point of view it should be OK to
-directly pass it to htonl().
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 9e6fb8524d91..4b2f40f3a588 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1703,6 +1703,7 @@ enum netdev_priv_flags {
+  *	@miniq_ingress:		ingress/clsact qdisc specific data for
+  *				ingress processing
+  *	@ingress_queue:		XXX: need comments on this one
++ *	@nf_hooks_ingress:	netfilter hooks executed for ingress packets
+  *	@broadcast:		hw bcast address
+  *
+  *	@rx_cpu_rmap:	CPU reverse-mapping for RX completion interrupts,
+-- 
+2.24.0
 
-Cheers, Phil
