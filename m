@@ -2,81 +2,93 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9962B10404E
-	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Nov 2019 17:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464CB104258
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Nov 2019 18:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732234AbfKTQIK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 20 Nov 2019 11:08:10 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:39018 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731008AbfKTQIK (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 20 Nov 2019 11:08:10 -0500
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1iXSWO-0003op-Dl; Wed, 20 Nov 2019 17:08:00 +0100
-Date:   Wed, 20 Nov 2019 17:08:00 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Stefano Brivio <sbrivio@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org,
-        Kadlecsik =?utf-8?Q?J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>,
-        Eric Garver <eric@garver.life>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Jay Ligatti <ligatti@usf.edu>,
-        Ori Rottenstreich <or@cs.technion.ac.il>,
-        Kirill Kogan <kirill.kogan@gmail.com>
-Subject: Re: [PATCH nf-next 8/8] nft_set_pipapo: Introduce AVX2-based lookup
- implementation
-Message-ID: <20191120160800.GN8016@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Florian Westphal <fw@strlen.de>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org,
-        Kadlecsik =?utf-8?Q?J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>,
-        Eric Garver <eric@garver.life>,
-        Sabrina Dubroca <sd@queasysnail.net>, Jay Ligatti <ligatti@usf.edu>,
-        Ori Rottenstreich <or@cs.technion.ac.il>,
-        Kirill Kogan <kirill.kogan@gmail.com>
-References: <cover.1574119038.git.sbrivio@redhat.com>
- <367e77e2a0097a0c1b715919b8d21f7a51a10429.1574119038.git.sbrivio@redhat.com>
- <20191120151653.GD20235@breakpoint.cc>
+        id S1727784AbfKTRoN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 20 Nov 2019 12:44:13 -0500
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:33587 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726944AbfKTRoM (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 20 Nov 2019 12:44:12 -0500
+Received: by mail-wr1-f48.google.com with SMTP id w9so918578wrr.0
+        for <netfilter-devel@vger.kernel.org>; Wed, 20 Nov 2019 09:44:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3c6Ier7NrsUmDAwQr6FxsplGurRCfrDTFOmUr9Gk2PU=;
+        b=FxYJzy/QgC9JOfeC2qZUuH1cUytIwDjTlgooH6ZgvAwsEIBHLbPWV9P/F5MJvv2XWr
+         jlZdkXx2+mZbOwtS1J3jSdgG0gjdIGCiiFcCBCFQsg7392F9a7of4Ux8LDt00P/mkYuD
+         W/j8Tc6UEuNG1uGz2RwVAwqUOEHb6k4tkL0Hzx4DReS04foCxmtDmPl2tEqcyfYvX8Jz
+         jaB1ddl348hUc1a/7dmRA0t1ORugFdSkp7m2cvghXvUVQ3wIx33SxsTsgcckww+BHWbZ
+         iMvit3wTrHCWatfAnmKCgZLe069GFb/z+vx+7kfNOzavYw/EQ6g3gTNxKqlW4B8HUzhF
+         d31w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3c6Ier7NrsUmDAwQr6FxsplGurRCfrDTFOmUr9Gk2PU=;
+        b=IXc1WzUsF6lX66c6PBz3hjcOtSFBLO1Fav0dEFAJiLc2kFpAFAudMJLg3tjWj/Aw5b
+         RyB0IvEw+G8QIT97ZDXLJeX1Lp/QEa1l/vaN1hnmfba1OlVq4D9XKmlsktMqBzUO+wuG
+         Yzup8A5BA08yU6keMmyMJcfZmVbQzcc+wcQyLHlEuMzN0C9Kl/6ZisSR1b5dmN4MVM8L
+         B0341azu17KCvBoz/UaAd99KitZ0UtColYwNoxAafvcCqM1p9N77dV6PwXpe3EOXQCe7
+         XHs2FAtlGvxrPd4xKJSY46OKWpKMkJiaCsfOfKHMJWreqVMkxGDStj5uKwSD/3jFzh4e
+         9WkQ==
+X-Gm-Message-State: APjAAAUUSRafTxLhDqKsPSRicjvI173M3OBbIj+WUhkLPwmHENwWf/eE
+        qgzzNw+5XD+ktQ5bwM+x9RnviBF8
+X-Google-Smtp-Source: APXvYqzi+YqP5ENZM9Wmp0cx7ZVbiIL/VkUcyvwU6ZQJ0LIJVDVnlgd8Kh4xFHER/04l8qwxudkxgw==
+X-Received: by 2002:adf:f44a:: with SMTP id f10mr4994402wrp.63.1574271848041;
+        Wed, 20 Nov 2019 09:44:08 -0800 (PST)
+Received: from desktopdebian.localdomain (x4d06663e.dyn.telefonica.de. [77.6.102.62])
+        by smtp.gmail.com with ESMTPSA id m3sm34558580wrb.67.2019.11.20.09.44.07
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Nov 2019 09:44:07 -0800 (PST)
+From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To:     netfilter-devel@vger.kernel.org
+Subject: [RFC 1/4] statement: make secmark statements idempotent
+Date:   Wed, 20 Nov 2019 18:43:54 +0100
+Message-Id: <20191120174357.26112-1-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191120151653.GD20235@breakpoint.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 04:16:53PM +0100, Florian Westphal wrote:
-> Stefano Brivio <sbrivio@redhat.com> wrote:
-> > If the AVX2 set is available, we can exploit the repetitive
-> > characteristic of this algorithm to provide a fast, vectorised
-> > version by using 256-bit wide AVX2 operands for bucket loads and
-> > bitwise intersections.
-> > 
-> > In most cases, this implementation consistently outperforms rbtree
-> > set instances despite the fact they are configured to use a given,
-> > single, ranged data type out of the ones used for performance
-> > measurements by the nft_concat_range.sh kselftest.
-> 
-> I think in that case it makes sense to remove rbtree once this new
-> set type has had some upstream exposure and let pipapo handle the
-> range sets.
-> 
-> Stefano, if I understand this right then we could figure out which
-> implementation (C or AVX) is used via "grep avx2 /proc/cpuinfo".
-> 
-> If not, I think we might want to expose some additional debug info
-> on set dumps.
+Currently lines like
 
-I once submitted a patch introducing NFTA_SET_OPS, an attribute holding
-set type's name in dumps. Maybe we can reuse that? It is message ID
-20180403211540.23700-3-phil@nwl.cc (Subject: [PATCH v2 2/2] net:
-nftables: Export set backend name via netlink).
+    ct state new meta secmark set tcp dport map @secmapping_in
 
-Cheers, Phil
+become
+
+    ct state new secmark name tcp dport map @secmapping_in
+
+fixes: 3bc84e5c1fdd1ff011af9788fe174e0514c2c9ea
+
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+---
+ src/statement.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/statement.c b/src/statement.c
+index af84e06c..be35bcef 100644
+--- a/src/statement.c
++++ b/src/statement.c
+@@ -233,6 +233,9 @@ static void objref_stmt_print(const struct stmt *stmt, struct output_ctx *octx)
+ 	case NFT_OBJECT_CT_EXPECT:
+ 		nft_print(octx, "ct expectation set ");
+ 		break;
++	case NFT_OBJECT_SECMARK:
++		nft_print(octx, "meta secmark set ");
++		break;
+ 	default:
+ 		nft_print(octx, "%s name ",
+ 			  objref_type_name(stmt->objref.type));
+-- 
+2.24.0
+
