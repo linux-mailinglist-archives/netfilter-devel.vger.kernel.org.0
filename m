@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF581058B8
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Nov 2019 18:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6210A1058BA
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Nov 2019 18:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbfKURhe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 Nov 2019 12:37:34 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:41664 "EHLO orbyte.nwl.cc"
+        id S1727118AbfKURhp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 21 Nov 2019 12:37:45 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:41676 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726676AbfKURhe (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 Nov 2019 12:37:34 -0500
-Received: from localhost ([::1]:54754 helo=tatos)
+        id S1726623AbfKURhp (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 21 Nov 2019 12:37:45 -0500
+Received: from localhost ([::1]:54766 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iXqOZ-0006Lo-Pc; Thu, 21 Nov 2019 18:37:32 +0100
+        id 1iXqOl-0006Mt-EQ; Thu, 21 Nov 2019 18:37:43 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v4 04/12] nft: family_ops: Pass nft_handle to 'rule_to_cs' callback
-Date:   Thu, 21 Nov 2019 18:36:39 +0100
-Message-Id: <20191121173647.31488-5-phil@nwl.cc>
+Subject: [iptables PATCH v4 05/12] nft: Keep nft_handle pointer in nft_xt_ctx
+Date:   Thu, 21 Nov 2019 18:36:40 +0100
+Message-Id: <20191121173647.31488-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.24.0
 In-Reply-To: <20191121173647.31488-1-phil@nwl.cc>
 References: <20191121173647.31488-1-phil@nwl.cc>
@@ -31,303 +31,188 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This is the actual callback used to parse nftables rules. Pass
-nft_handle to it so it can access the cache (and possible sets therein).
-
-Having to pass nft_handle to nft_rule_print_save() allows to simplify it
-a bit since no family ops lookup has to be done anymore.
+Instead of carrying the family value, carry the handle (which contains
+the family value) and relieve expression parsers from having to call
+nft_family_ops_lookup().
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-arp.c         |  4 ++--
- iptables/nft-bridge.c      |  9 +++++----
- iptables/nft-ipv4.c        |  2 +-
- iptables/nft-ipv6.c        |  2 +-
- iptables/nft-shared.c      |  5 +++--
- iptables/nft-shared.h      |  5 +++--
- iptables/nft.c             | 18 ++++++++----------
- iptables/nft.h             |  4 ++--
- iptables/xtables-monitor.c | 17 +++++++++++++++--
- iptables/xtables-save.c    |  3 +++
- 10 files changed, 43 insertions(+), 26 deletions(-)
+ iptables/nft-shared.c | 40 ++++++++++++++--------------------------
+ iptables/nft-shared.h |  2 +-
+ 2 files changed, 15 insertions(+), 27 deletions(-)
 
-diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
-index da22c12d34a7b..d4a86610ec217 100644
---- a/iptables/nft-arp.c
-+++ b/iptables/nft-arp.c
-@@ -590,7 +590,7 @@ nft_arp_print_rule(struct nft_handle *h, struct nftnl_rule *r,
- 	if (format & FMT_LINENUMBERS)
- 		printf("%u ", num);
- 
--	nft_rule_to_iptables_command_state(r, &cs);
-+	nft_rule_to_iptables_command_state(h, r, &cs);
- 
- 	nft_arp_print_rule_details(&cs, format);
- 	print_matches_and_target(&cs, format);
-@@ -641,7 +641,7 @@ static bool nft_arp_rule_find(struct nft_handle *h, struct nftnl_rule *r,
- 	bool ret = false;
- 
- 	/* Delete by matching rule case */
--	nft_rule_to_iptables_command_state(r, &this);
-+	nft_rule_to_iptables_command_state(h, r, &this);
- 
- 	if (!nft_arp_is_same(&cs->arp, &this.arp))
- 		goto out;
-diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
-index b0c6c5a4db3cd..20ce92a6d5242 100644
---- a/iptables/nft-bridge.c
-+++ b/iptables/nft-bridge.c
-@@ -333,11 +333,12 @@ static void nft_bridge_parse_target(struct xtables_target *t, void *data)
- 	cs->target = t;
- }
- 
--static void nft_rule_to_ebtables_command_state(const struct nftnl_rule *r,
-+static void nft_rule_to_ebtables_command_state(struct nft_handle *h,
-+					       const struct nftnl_rule *r,
- 					       struct iptables_command_state *cs)
- {
- 	cs->eb.bitmask = EBT_NOPROTO;
--	nft_rule_to_iptables_command_state(r, cs);
-+	nft_rule_to_iptables_command_state(h, r, cs);
- }
- 
- static void print_iface(const char *option, const char *name, bool invert)
-@@ -480,7 +481,7 @@ static void nft_bridge_print_rule(struct nft_handle *h, struct nftnl_rule *r,
- 	if (format & FMT_LINENUMBERS)
- 		printf("%d ", num);
- 
--	nft_rule_to_ebtables_command_state(r, &cs);
-+	nft_rule_to_ebtables_command_state(h, r, &cs);
- 	nft_bridge_save_rule(&cs, format);
- 	ebt_cs_clean(&cs);
- }
-@@ -544,7 +545,7 @@ static bool nft_bridge_rule_find(struct nft_handle *h, struct nftnl_rule *r,
- 	struct iptables_command_state this = {};
- 	bool ret = false;
- 
--	nft_rule_to_ebtables_command_state(r, &this);
-+	nft_rule_to_ebtables_command_state(h, r, &this);
- 
- 	DEBUGP("comparing with... ");
- 
-diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
-index 98d7f966e3694..70634f8fad84d 100644
---- a/iptables/nft-ipv4.c
-+++ b/iptables/nft-ipv4.c
-@@ -266,7 +266,7 @@ static void nft_ipv4_print_rule(struct nft_handle *h, struct nftnl_rule *r,
- {
- 	struct iptables_command_state cs = {};
- 
--	nft_rule_to_iptables_command_state(r, &cs);
-+	nft_rule_to_iptables_command_state(h, r, &cs);
- 
- 	print_rule_details(&cs, cs.jumpto, cs.fw.ip.flags,
- 			   cs.fw.ip.invflags, cs.fw.ip.proto, num, format);
-diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
-index 56236bff03c2b..d01491bfdb689 100644
---- a/iptables/nft-ipv6.c
-+++ b/iptables/nft-ipv6.c
-@@ -192,7 +192,7 @@ static void nft_ipv6_print_rule(struct nft_handle *h, struct nftnl_rule *r,
- {
- 	struct iptables_command_state cs = {};
- 
--	nft_rule_to_iptables_command_state(r, &cs);
-+	nft_rule_to_iptables_command_state(h, r, &cs);
- 
- 	print_rule_details(&cs, cs.jumpto, cs.fw6.ipv6.flags,
- 			   cs.fw6.ipv6.invflags, cs.fw6.ipv6.proto,
 diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
-index b6d85f1af1da9..bdbd3238b2890 100644
+index bdbd3238b2890..80d4e1fcdcea1 100644
 --- a/iptables/nft-shared.c
 +++ b/iptables/nft-shared.c
-@@ -591,7 +591,8 @@ static void nft_parse_limit(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
- 		ops->parse_match(match, ctx->cs);
- }
- 
--void nft_rule_to_iptables_command_state(const struct nftnl_rule *r,
-+void nft_rule_to_iptables_command_state(struct nft_handle *h,
-+					const struct nftnl_rule *r,
- 					struct iptables_command_state *cs)
- {
- 	struct nftnl_expr_iter *iter;
-@@ -987,7 +988,7 @@ bool nft_ipv46_rule_find(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 	struct iptables_command_state *cs = data, this = {};
- 	bool ret = false;
- 
--	nft_rule_to_iptables_command_state(r, &this);
-+	nft_rule_to_iptables_command_state(h, r, &this);
- 
- 	DEBUGP("comparing with... ");
- #ifdef DEBUG_DEL
-diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
-index 4523dda9410bc..a85d5442c7107 100644
---- a/iptables/nft-shared.h
-+++ b/iptables/nft-shared.h
-@@ -101,7 +101,7 @@ struct nft_family_ops {
- 			   struct xtables_args *args);
- 	void (*parse_match)(struct xtables_match *m, void *data);
- 	void (*parse_target)(struct xtables_target *t, void *data);
--	void (*rule_to_cs)(const struct nftnl_rule *r,
-+	void (*rule_to_cs)(struct nft_handle *h, const struct nftnl_rule *r,
- 			   struct iptables_command_state *cs);
- 	void (*clear_cs)(struct iptables_command_state *cs);
- 	bool (*rule_find)(struct nft_handle *h, struct nftnl_rule *r,
-@@ -138,7 +138,8 @@ int parse_meta(struct nftnl_expr *e, uint8_t key, char *iniface,
- 		unsigned char *outiface_mask, uint8_t *invflags);
- void print_proto(uint16_t proto, int invert);
- void get_cmp_data(struct nftnl_expr *e, void *data, size_t dlen, bool *inv);
--void nft_rule_to_iptables_command_state(const struct nftnl_rule *r,
-+void nft_rule_to_iptables_command_state(struct nft_handle *h,
-+					const struct nftnl_rule *r,
- 					struct iptables_command_state *cs);
- void nft_clear_iptables_command_state(struct iptables_command_state *cs);
- void print_header(unsigned int format, const char *chain, const char *pol,
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 049c3cfa10098..36c3bc2d41764 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -351,7 +351,7 @@ static int mnl_append_error(const struct nft_handle *h,
- 			 nftnl_rule_get_str(o->rule, NFTNL_RULE_CHAIN));
- #if 0
- 		{
--			nft_rule_print_save(o->rule, NFT_RULE_APPEND, FMT_NOCOUNTS);
-+			nft_rule_print_save(h, o->rule, NFT_RULE_APPEND, FMT_NOCOUNTS);
- 		}
- #endif
- 		break;
-@@ -1220,16 +1220,14 @@ nft_rule_append(struct nft_handle *h, const char *chain, const char *table,
- }
- 
- void
--nft_rule_print_save(const struct nftnl_rule *r, enum nft_rule_print type,
--		    unsigned int format)
-+nft_rule_print_save(struct nft_handle *h, const struct nftnl_rule *r,
-+		    enum nft_rule_print type, unsigned int format)
- {
- 	const char *chain = nftnl_rule_get_str(r, NFTNL_RULE_CHAIN);
--	int family = nftnl_rule_get_u32(r, NFTNL_RULE_FAMILY);
- 	struct iptables_command_state cs = {};
+@@ -310,7 +310,6 @@ static void nft_parse_target(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 	struct xtables_target *target;
+ 	struct xt_entry_target *t;
+ 	size_t size;
 -	struct nft_family_ops *ops;
-+	struct nft_family_ops *ops = h->ops;
+ 	void *data = ctx->cs;
  
--	ops = nft_family_ops_lookup(family);
--	ops->rule_to_cs(r, &cs);
-+	ops->rule_to_cs(h, r, &cs);
+ 	target = xtables_find_target(targname, XTF_TRY_LOAD);
+@@ -327,8 +326,7 @@ static void nft_parse_target(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
  
- 	if (!(format & (FMT_NOCOUNTS | FMT_C_COUNTS)) && ops->save_counters)
- 		ops->save_counters(&cs);
-@@ -1392,7 +1390,7 @@ static int nft_chain_save_rules(struct nft_handle *h,
+ 	target->t = t;
  
- 	r = nftnl_rule_iter_next(iter);
- 	while (r != NULL) {
--		nft_rule_print_save(r, NFT_RULE_APPEND, format);
-+		nft_rule_print_save(h, r, NFT_RULE_APPEND, format);
- 		r = nftnl_rule_iter_next(iter);
- 	}
- 
-@@ -2245,7 +2243,7 @@ static void
- list_save(struct nft_handle *h, struct nftnl_rule *r,
- 	  unsigned int num, unsigned int format)
- {
--	nft_rule_print_save(r, NFT_RULE_APPEND, format);
-+	nft_rule_print_save(h, r, NFT_RULE_APPEND, format);
+-	ops = nft_family_ops_lookup(ctx->family);
+-	ops->parse_target(target, data);
++	ctx->h->ops->parse_target(target, data);
  }
  
- static int __nftnl_rule_list_chain_save(struct nftnl_chain *c, void *data)
-@@ -2357,7 +2355,7 @@ int nft_rule_zero_counters(struct nft_handle *h, const char *chain,
- 		goto error;
- 	}
+ static void nft_parse_match(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+@@ -339,9 +337,8 @@ static void nft_parse_match(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 	struct xtables_match *match;
+ 	struct xtables_rule_match **matches;
+ 	struct xt_entry_match *m;
+-	struct nft_family_ops *ops;
  
--	nft_rule_to_iptables_command_state(r, &cs);
-+	nft_rule_to_iptables_command_state(h, r, &cs);
- 
- 	cs.counters.pcnt = cs.counters.bcnt = 0;
- 
-diff --git a/iptables/nft.h b/iptables/nft.h
-index 94dc72d88b7db..e157b525cffdc 100644
---- a/iptables/nft.h
-+++ b/iptables/nft.h
-@@ -146,8 +146,8 @@ enum nft_rule_print {
- 	NFT_RULE_DEL,
- };
- 
--void nft_rule_print_save(const struct nftnl_rule *r, enum nft_rule_print type,
--			 unsigned int format);
-+void nft_rule_print_save(struct nft_handle *h, const struct nftnl_rule *r,
-+			 enum nft_rule_print type, unsigned int format);
- 
- uint32_t nft_invflags2cmp(uint32_t invflags, uint32_t flag);
- 
-diff --git a/iptables/xtables-monitor.c b/iptables/xtables-monitor.c
-index eb80bac81c645..a5245d1422af9 100644
---- a/iptables/xtables-monitor.c
-+++ b/iptables/xtables-monitor.c
-@@ -11,6 +11,7 @@
- 
- #define _GNU_SOURCE
- #include "config.h"
-+#include <errno.h>
- #include <stdlib.h>
- #include <time.h>
- #include <string.h>
-@@ -41,6 +42,7 @@
- struct cb_arg {
- 	uint32_t nfproto;
- 	bool is_event;
-+	struct nft_handle *h;
- };
- 
- static int table_cb(const struct nlmsghdr *nlh, void *data)
-@@ -106,7 +108,7 @@ static int rule_cb(const struct nlmsghdr *nlh, void *data)
- 	}
- 
- 	printf("-t %s ", nftnl_rule_get_str(r, NFTNL_RULE_TABLE));
--	nft_rule_print_save(r, type == NFT_MSG_NEWRULE ? NFT_RULE_APPEND :
-+	nft_rule_print_save(arg->h, r, type == NFT_MSG_NEWRULE ? NFT_RULE_APPEND :
- 							   NFT_RULE_DEL,
- 			    counters ? 0 : FMT_NOCOUNTS);
- err_free:
-@@ -593,7 +595,10 @@ int xtables_monitor_main(int argc, char *argv[])
- 	struct mnl_socket *nl;
- 	char buf[MNL_SOCKET_BUFFER_SIZE];
- 	uint32_t nfgroup = 0;
--	struct cb_arg cb_arg = {};
-+	struct nft_handle h = {};
-+	struct cb_arg cb_arg = {
-+		.h = &h,
-+	};
- 	int ret, c;
- 
- 	xtables_globals.program_name = "xtables-monitor";
-@@ -610,6 +615,14 @@ int xtables_monitor_main(int argc, char *argv[])
- 	init_extensions4();
- #endif
- 
-+	if (nft_init(&h, xtables_ipv4)) {
-+		fprintf(stderr, "%s/%s Failed to initialize nft: %s\n",
-+			xtables_globals.program_name,
-+			xtables_globals.program_version,
-+			strerror(errno));
-+		exit(EXIT_FAILURE);
-+	}
-+
- 	opterr = 0;
- 	while ((c = getopt_long(argc, argv, "ceht46V", options, NULL)) != -1) {
- 		switch (c) {
-diff --git a/iptables/xtables-save.c b/iptables/xtables-save.c
-index 44687f998c91a..3a52f8c3d8209 100644
---- a/iptables/xtables-save.c
-+++ b/iptables/xtables-save.c
-@@ -249,6 +249,9 @@ xtables_save_main(int family, int argc, char *argv[],
- 				strerror(errno));
+-	switch (ctx->family) {
++	switch (ctx->h->family) {
+ 	case NFPROTO_IPV4:
+ 	case NFPROTO_IPV6:
+ 	case NFPROTO_BRIDGE:
+@@ -349,7 +346,7 @@ static void nft_parse_match(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 		break;
+ 	default:
+ 		fprintf(stderr, "BUG: nft_parse_match() unknown family %d\n",
+-			ctx->family);
++			ctx->h->family);
  		exit(EXIT_FAILURE);
  	}
-+	h.ops = nft_family_ops_lookup(h.family);
-+	if (!h.ops)
-+		xtables_error(PARAMETER_PROBLEM, "Unknown family");
  
- 	ret = do_output(&h, tablename, &d);
- 	nft_fini(&h);
+@@ -365,9 +362,8 @@ static void nft_parse_match(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 
+ 	match->m = m;
+ 
+-	ops = nft_family_ops_lookup(ctx->family);
+-	if (ops->parse_match != NULL)
+-		ops->parse_match(match, ctx->cs);
++	if (ctx->h->ops->parse_match != NULL)
++		ctx->h->ops->parse_match(match, ctx->cs);
+ }
+ 
+ void print_proto(uint16_t proto, int invert)
+@@ -400,7 +396,6 @@ void get_cmp_data(struct nftnl_expr *e, void *data, size_t dlen, bool *inv)
+ 
+ static void nft_meta_set_to_target(struct nft_xt_ctx *ctx)
+ {
+-	const struct nft_family_ops *ops;
+ 	struct xtables_target *target;
+ 	struct xt_entry_target *t;
+ 	unsigned int size;
+@@ -429,8 +424,7 @@ static void nft_meta_set_to_target(struct nft_xt_ctx *ctx)
+ 
+ 	target->t = t;
+ 
+-	ops = nft_family_ops_lookup(ctx->family);
+-	ops->parse_target(target, ctx->cs);
++	ctx->h->ops->parse_target(target, ctx->cs);
+ }
+ 
+ static void nft_parse_meta(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+@@ -474,7 +468,6 @@ static void nft_parse_bitwise(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 
+ static void nft_parse_cmp(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ {
+-	struct nft_family_ops *ops = nft_family_ops_lookup(ctx->family);
+ 	void *data = ctx->cs;
+ 	uint32_t reg;
+ 
+@@ -483,12 +476,12 @@ static void nft_parse_cmp(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 		return;
+ 
+ 	if (ctx->flags & NFT_XT_CTX_META) {
+-		ops->parse_meta(ctx, e, data);
++		ctx->h->ops->parse_meta(ctx, e, data);
+ 		ctx->flags &= ~NFT_XT_CTX_META;
+ 	}
+ 	/* bitwise context is interpreted from payload */
+ 	if (ctx->flags & NFT_XT_CTX_PAYLOAD) {
+-		ops->parse_payload(ctx, e, data);
++		ctx->h->ops->parse_payload(ctx, e, data);
+ 		ctx->flags &= ~NFT_XT_CTX_PAYLOAD;
+ 	}
+ }
+@@ -502,7 +495,6 @@ static void nft_parse_counter(struct nftnl_expr *e, struct xt_counters *counters
+ static void nft_parse_immediate(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ {
+ 	const char *chain = nftnl_expr_get_str(e, NFTNL_EXPR_IMM_CHAIN);
+-	struct nft_family_ops *ops;
+ 	const char *jumpto = NULL;
+ 	bool nft_goto = false;
+ 	void *data = ctx->cs;
+@@ -544,8 +536,7 @@ static void nft_parse_immediate(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 		break;
+ 	}
+ 
+-	ops = nft_family_ops_lookup(ctx->family);
+-	ops->parse_immediate(jumpto, nft_goto, data);
++	ctx->h->ops->parse_immediate(jumpto, nft_goto, data);
+ }
+ 
+ static void nft_parse_limit(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+@@ -555,11 +546,10 @@ static void nft_parse_limit(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 	__u64 rate = nftnl_expr_get_u64(e, NFTNL_EXPR_LIMIT_RATE);
+ 	struct xtables_rule_match **matches;
+ 	struct xtables_match *match;
+-	struct nft_family_ops *ops;
+ 	struct xt_rateinfo *rinfo;
+ 	size_t size;
+ 
+-	switch (ctx->family) {
++	switch (ctx->h->family) {
+ 	case NFPROTO_IPV4:
+ 	case NFPROTO_IPV6:
+ 	case NFPROTO_BRIDGE:
+@@ -567,7 +557,7 @@ static void nft_parse_limit(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 		break;
+ 	default:
+ 		fprintf(stderr, "BUG: nft_parse_limit() unknown family %d\n",
+-			ctx->family);
++			ctx->h->family);
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
+@@ -586,9 +576,8 @@ static void nft_parse_limit(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 	rinfo->avg = XT_LIMIT_SCALE * unit / rate;
+ 	rinfo->burst = burst;
+ 
+-	ops = nft_family_ops_lookup(ctx->family);
+-	if (ops->parse_match != NULL)
+-		ops->parse_match(match, ctx->cs);
++	if (ctx->h->ops->parse_match != NULL)
++		ctx->h->ops->parse_match(match, ctx->cs);
+ }
+ 
+ void nft_rule_to_iptables_command_state(struct nft_handle *h,
+@@ -597,10 +586,9 @@ void nft_rule_to_iptables_command_state(struct nft_handle *h,
+ {
+ 	struct nftnl_expr_iter *iter;
+ 	struct nftnl_expr *expr;
+-	int family = nftnl_rule_get_u32(r, NFTNL_RULE_FAMILY);
+ 	struct nft_xt_ctx ctx = {
+ 		.cs = cs,
+-		.family = family,
++		.h = h,
+ 	};
+ 
+ 	iter = nftnl_expr_iter_create(r);
+diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
+index a85d5442c7107..e79323c882f4d 100644
+--- a/iptables/nft-shared.h
++++ b/iptables/nft-shared.h
+@@ -48,7 +48,7 @@ enum {
+ struct nft_xt_ctx {
+ 	struct iptables_command_state *cs;
+ 	struct nftnl_expr_iter *iter;
+-	int family;
++	struct nft_handle *h;
+ 	uint32_t flags;
+ 
+ 	uint32_t reg;
 -- 
 2.24.0
 
