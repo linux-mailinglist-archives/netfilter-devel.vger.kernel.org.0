@@ -2,123 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF9E104FC4
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Nov 2019 10:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78C91050BF
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Nov 2019 11:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbfKUJyV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 Nov 2019 04:54:21 -0500
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:49242 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726132AbfKUJyV (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 Nov 2019 04:54:21 -0500
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 25D4841D12;
-        Thu, 21 Nov 2019 17:54:18 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org
+        id S1726170AbfKUKle (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 21 Nov 2019 05:41:34 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:40876 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726165AbfKUKle (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 21 Nov 2019 05:41:34 -0500
+Received: from localhost ([::1]:53964 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1iXju0-0000hJ-2h; Thu, 21 Nov 2019 11:41:32 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next v2 4/4] netfilter: nf_flow_table_offload: add tunnel encap/decap action offload support
-Date:   Thu, 21 Nov 2019 17:54:16 +0800
-Message-Id: <1574330056-5377-5-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1574330056-5377-1-git-send-email-wenxu@ucloud.cn>
-References: <1574330056-5377-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVklVSk9KS0tLS0hJT0lPQkhZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OlE6Shw6STg*LQ8yFk44CTwX
-        IxhPFENVSlVKTkxPSEhLS05DSUhPVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUhOSUM3Bg++
-X-HM-Tid: 0a6e8d6245bb2086kuqy25d4841d12
+Subject: [nft PATCH] segtree: Fix add and delete of element in same batch
+Date:   Thu, 21 Nov 2019 11:41:24 +0100
+Message-Id: <20191121104124.23345-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.24.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+The commit this fixes accidentally broke a rather exotic use-case which
+is but used in set-simple.t of tests/monitor:
 
-This patch add tunnel encap decap action offload in the flowtable
-offload.
+| # nft 'add element t s { 22-25 }; delete element t s { 22-25 }'
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
+Since ranges are now checked for existence in userspace before delete
+command is submitted to kernel, the second command above was rejected
+because the range in question wasn't present in cache yet. Fix this by
+adding new interval set elements to cache after creating the batch job
+for them.
+
+Fixes; decc12ec2dc31 ("segtree: Check ranges when deleting elements")
+
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
-v2: put encap/decap action before redirect action
+ src/rule.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
- net/netfilter/nf_flow_table_offload.c | 47 +++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
-
-diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-index 656095c..36a5103 100644
---- a/net/netfilter/nf_flow_table_offload.c
-+++ b/net/netfilter/nf_flow_table_offload.c
-@@ -469,6 +469,45 @@ static void flow_offload_redirect(const struct flow_offload *flow,
- 	dev_hold(rt->dst.dev);
+diff --git a/src/rule.c b/src/rule.c
+index 4abc13c993b89..c7b58529a80da 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -1511,6 +1511,13 @@ static int __do_add_setelems(struct netlink_ctx *ctx, struct set *set,
+ 	if (mnl_nft_setelem_add(ctx, set, expr, flags) < 0)
+ 		return -1;
+ 
++	if (set->flags & NFT_SET_INTERVAL) {
++		interval_map_decompose(expr);
++		list_splice_tail_init(&expr->expressions, &set->init->expressions);
++		set->init->size += expr->size;
++		expr->size = 0;
++	}
++
+ 	return 0;
  }
  
-+static void flow_offload_encap_tunnel(const struct flow_offload *flow,
-+				      enum flow_offload_tuple_dir dir,
-+				      struct nf_flow_rule *flow_rule)
-+{
-+	struct flow_action_entry *entry;
-+	struct dst_entry *dst;
-+
-+	dst = flow->tuplehash[dir].tuple.dst_cache;
-+	if (dst->lwtstate) {
-+		struct ip_tunnel_info *tun_info;
-+
-+		tun_info = lwt_tun_info(dst->lwtstate);
-+		if (tun_info && (tun_info->mode & IP_TUNNEL_INFO_TX)) {
-+			entry = flow_action_entry_next(flow_rule);
-+			entry->id = FLOW_ACTION_TUNNEL_ENCAP;
-+			entry->tunnel = tun_info;
-+		}
-+	}
-+}
-+
-+static void flow_offload_decap_tunnel(const struct flow_offload *flow,
-+				      enum flow_offload_tuple_dir dir,
-+				      struct nf_flow_rule *flow_rule)
-+{
-+	struct flow_action_entry *entry;
-+	struct dst_entry *dst;
-+
-+	dst = flow->tuplehash[!dir].tuple.dst_cache;
-+	if (dst->lwtstate) {
-+		struct ip_tunnel_info *tun_info;
-+
-+		tun_info = lwt_tun_info(dst->lwtstate);
-+		if (tun_info && (tun_info->mode & IP_TUNNEL_INFO_TX)) {
-+			entry = flow_action_entry_next(flow_rule);
-+			entry->id = FLOW_ACTION_TUNNEL_DECAP;
-+		}
-+	}
-+}
-+
- int nf_flow_rule_route_ipv4(struct net *net, const struct flow_offload *flow,
- 			    enum flow_offload_tuple_dir dir,
- 			    struct nf_flow_rule *flow_rule)
-@@ -489,6 +528,10 @@ int nf_flow_rule_route_ipv4(struct net *net, const struct flow_offload *flow,
- 	    flow->flags & FLOW_OFFLOAD_DNAT)
- 		flow_offload_ipv4_checksum(net, flow, flow_rule);
- 
-+	flow_offload_encap_tunnel(flow, dir, flow_rule);
-+
-+	flow_offload_decap_tunnel(flow, dir, flow_rule);
-+
- 	flow_offload_redirect(flow, dir, flow_rule);
- 
- 	return 0;
-@@ -512,6 +555,10 @@ int nf_flow_rule_route_ipv6(struct net *net, const struct flow_offload *flow,
- 		flow_offload_port_dnat(net, flow, dir, flow_rule);
- 	}
- 
-+	flow_offload_encap_tunnel(flow, dir, flow_rule);
-+
-+	flow_offload_decap_tunnel(flow, dir, flow_rule);
-+
- 	flow_offload_redirect(flow, dir, flow_rule);
- 
- 	return 0;
 -- 
-1.8.3.1
+2.24.0
 
