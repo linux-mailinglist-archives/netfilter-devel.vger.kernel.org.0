@@ -2,28 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F98610513D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Nov 2019 12:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8222F105156
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Nov 2019 12:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbfKULQS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 Nov 2019 06:16:18 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:40948 "EHLO orbyte.nwl.cc"
+        id S1726197AbfKULZE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 21 Nov 2019 06:25:04 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:40976 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbfKULQS (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 Nov 2019 06:16:18 -0500
-Received: from localhost ([::1]:54038 helo=tatos)
+        id S1726165AbfKULZE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 21 Nov 2019 06:25:04 -0500
+Received: from localhost ([::1]:54066 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iXkRd-0001Dl-1Q; Thu, 21 Nov 2019 12:16:17 +0100
+        id 1iXka7-0001Lf-GK; Thu, 21 Nov 2019 12:25:03 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [arptables PATCH 3/3] libarptc: Simplify alloc_handle by using calloc()
-Date:   Thu, 21 Nov 2019 12:15:59 +0100
-Message-Id: <20191121111559.27066-4-phil@nwl.cc>
+Subject: [libnftnl PATCH] utils: Define __visible even if not supported by compiler
+Date:   Thu, 21 Nov 2019 12:24:56 +0100
+Message-Id: <20191121112456.28274-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191121111559.27066-1-phil@nwl.cc>
-References: <20191121111559.27066-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -31,42 +29,27 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-No need to explicitly set fields to zero when using calloc().
+Since __visible is now used directly, provide a fallback empty
+definition if HAVE_VISIBILITY_HIDDEN is not defined.
 
+Fixes: 7349a70634fa0 ("Deprecate untyped data setters")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- libarptc/libarptc_incl.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ include/utils.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/libarptc/libarptc_incl.c b/libarptc/libarptc_incl.c
-index ca23da6474990..c4d5de3f39a15 100644
---- a/libarptc/libarptc_incl.c
-+++ b/libarptc/libarptc_incl.c
-@@ -191,21 +191,16 @@ alloc_handle(const char *tablename, unsigned int size, unsigned int num_rules)
- 		+ size
- 		+ num_rules * sizeof(struct counter_map);
+diff --git a/include/utils.h b/include/utils.h
+index 91fbebb1956fd..8af5a8e973fa8 100644
+--- a/include/utils.h
++++ b/include/utils.h
+@@ -12,6 +12,7 @@
+ #	define __visible	__attribute__((visibility("default")))
+ #	define EXPORT_SYMBOL(x)	typeof(x) (x) __visible;
+ #else
++#	define __visible
+ #	define EXPORT_SYMBOL
+ #endif
  
--	if ((h = malloc(len)) == NULL) {
-+	if ((h = calloc(1, len)) == NULL) {
- 		errno = ENOMEM;
- 		return NULL;
- 	}
- 
--	h->changed = 0;
--	h->cache_num_chains = 0;
--	h->cache_chain_heads = NULL;
- 	h->counter_map = (void *)h
- 		+ sizeof(STRUCT_TC_HANDLE)
- 		+ size;
--	strncpy(h->info.name, tablename, sizeof(h->info.name));
--	h->info.name[sizeof(h->info.name)-1] = '\0';
--	strncpy(h->entries.name, tablename, sizeof(h->entries.name));
--	h->entries.name[sizeof(h->entries.name)-1] = '\0';
-+	strncpy(h->info.name, tablename, sizeof(h->info.name) - 1);
-+	strncpy(h->entries.name, tablename, sizeof(h->entries.name) - 1);
- 
- 	return h;
- }
 -- 
 2.24.0
 
