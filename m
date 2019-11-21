@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA35E1058BB
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Nov 2019 18:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC3D1058B4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Nov 2019 18:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbfKURhu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 Nov 2019 12:37:50 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:41682 "EHLO orbyte.nwl.cc"
+        id S1726922AbfKURhW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 21 Nov 2019 12:37:22 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:41652 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726623AbfKURht (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 Nov 2019 12:37:49 -0500
-Received: from localhost ([::1]:54772 helo=tatos)
+        id S1726333AbfKURhW (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 21 Nov 2019 12:37:22 -0500
+Received: from localhost ([::1]:54742 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iXqOq-0006NK-Nm; Thu, 21 Nov 2019 18:37:48 +0100
+        id 1iXqOP-0006Kd-6x; Thu, 21 Nov 2019 18:37:21 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v4 08/12] nft: Support NFT_COMPAT_SET_ADD
-Date:   Thu, 21 Nov 2019 18:36:43 +0100
-Message-Id: <20191121173647.31488-9-phil@nwl.cc>
+Subject: [iptables PATCH v4 09/12] nft: Bore up nft_parse_payload()
+Date:   Thu, 21 Nov 2019 18:36:44 +0100
+Message-Id: <20191121173647.31488-10-phil@nwl.cc>
 X-Mailer: git-send-email 2.24.0
 In-Reply-To: <20191121173647.31488-1-phil@nwl.cc>
 References: <20191121173647.31488-1-phil@nwl.cc>
@@ -31,139 +31,61 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Implement the required infrastructure to create sets as part of a batch
-job commit.
+Allow for closer inspection by storing payload expression's base and
+length values. Also facilitate for two consecutive payload expressions
+as LHS of a (cmp/lookup) statement as used with concatenations.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c | 58 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
+ iptables/nft-shared.c | 8 ++++++++
+ iptables/nft-shared.h | 4 +++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 22a4dc8904126..a8e7694f86781 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -271,6 +271,7 @@ enum obj_update_type {
- 	NFT_COMPAT_RULE_REPLACE,
- 	NFT_COMPAT_RULE_DELETE,
- 	NFT_COMPAT_RULE_FLUSH,
-+	NFT_COMPAT_SET_ADD,
+diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
+index 80d4e1fcdcea1..a67302ee621ae 100644
+--- a/iptables/nft-shared.c
++++ b/iptables/nft-shared.c
+@@ -445,8 +445,16 @@ static void nft_parse_meta(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 
+ static void nft_parse_payload(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ {
++	if (ctx->flags & NFT_XT_CTX_PAYLOAD) {
++		memcpy(&ctx->prev_payload, &ctx->payload,
++		       sizeof(ctx->prev_payload));
++		ctx->flags |= NFT_XT_CTX_PREV_PAYLOAD;
++	}
++
+ 	ctx->reg = nftnl_expr_get_u32(e, NFTNL_EXPR_META_DREG);
++	ctx->payload.base = nftnl_expr_get_u32(e, NFTNL_EXPR_PAYLOAD_BASE);
+ 	ctx->payload.offset = nftnl_expr_get_u32(e, NFTNL_EXPR_PAYLOAD_OFFSET);
++	ctx->payload.len = nftnl_expr_get_u32(e, NFTNL_EXPR_PAYLOAD_LEN);
+ 	ctx->flags |= NFT_XT_CTX_PAYLOAD;
+ }
+ 
+diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
+index e79323c882f4d..4dc44b8460f0d 100644
+--- a/iptables/nft-shared.h
++++ b/iptables/nft-shared.h
+@@ -43,6 +43,7 @@ enum {
+ 	NFT_XT_CTX_META		= (1 << 1),
+ 	NFT_XT_CTX_BITWISE	= (1 << 2),
+ 	NFT_XT_CTX_IMMEDIATE	= (1 << 3),
++	NFT_XT_CTX_PREV_PAYLOAD	= (1 << 4),
  };
  
- enum obj_action {
-@@ -288,6 +289,7 @@ struct obj_update {
- 		struct nftnl_table	*table;
- 		struct nftnl_chain	*chain;
- 		struct nftnl_rule	*rule;
-+		struct nftnl_set	*set;
- 		void			*ptr;
- 	};
+ struct nft_xt_ctx {
+@@ -53,9 +54,10 @@ struct nft_xt_ctx {
+ 
+ 	uint32_t reg;
  	struct {
-@@ -315,6 +317,7 @@ static int mnl_append_error(const struct nft_handle *h,
- 		[NFT_COMPAT_RULE_REPLACE] = "RULE_REPLACE",
- 		[NFT_COMPAT_RULE_DELETE] = "RULE_DELETE",
- 		[NFT_COMPAT_RULE_FLUSH] = "RULE_FLUSH",
-+		[NFT_COMPAT_SET_ADD] = "SET_ADD",
- 	};
- 	char errmsg[256];
- 	char tcr[128];
-@@ -355,6 +358,10 @@ static int mnl_append_error(const struct nft_handle *h,
- 		}
- #endif
- 		break;
-+	case NFT_COMPAT_SET_ADD:
-+		snprintf(tcr, sizeof(tcr), "set %s",
-+			 nftnl_set_get_str(o->set, NFTNL_SET_NAME));
-+		break;
- 	}
- 
- 	return snprintf(buf, len, "%s: %s", errmsg, tcr);
-@@ -384,6 +391,13 @@ batch_table_add(struct nft_handle *h, enum obj_update_type type,
- 	return batch_add(h, type, t);
- }
- 
-+static struct obj_update *
-+batch_set_add(struct nft_handle *h, enum obj_update_type type,
-+	      struct nftnl_set *s)
-+{
-+	return batch_add(h, type, s);
-+}
-+
- static int batch_chain_add(struct nft_handle *h, enum obj_update_type type,
- 			   struct nftnl_chain *c)
- {
-@@ -2371,6 +2385,39 @@ static void nft_compat_table_batch_add(struct nft_handle *h, uint16_t type,
- 	nftnl_table_nlmsg_build_payload(nlh, table);
- }
- 
-+static void nft_compat_set_batch_add(struct nft_handle *h, uint16_t type,
-+				     uint16_t flags, uint32_t seq,
-+				     struct nftnl_set *set)
-+{
-+	struct nlmsghdr *nlh;
-+
-+	nlh = nftnl_nlmsg_build_hdr(nftnl_batch_buffer(h->batch),
-+					type, h->family, flags, seq);
-+	nftnl_set_nlmsg_build_payload(nlh, set);
-+}
-+
-+static void nft_compat_setelem_batch_add(struct nft_handle *h, uint16_t type,
-+					 uint16_t flags, uint32_t *seq,
-+					 struct nftnl_set *set)
-+{
-+	struct nftnl_set_elems_iter *iter;
-+	struct nlmsghdr *nlh;
-+
-+	iter = nftnl_set_elems_iter_create(set);
-+	if (!iter)
-+		return;
-+
-+	while (nftnl_set_elems_iter_cur(iter)) {
-+		(*seq)++;
-+		mnl_nft_batch_continue(h->batch);
-+		nlh = nftnl_nlmsg_build_hdr(nftnl_batch_buffer(h->batch),
-+					    type, h->family, flags, *seq);
-+		if (nftnl_set_elems_nlmsg_build_payload_iter(nlh, iter) <= 0)
-+			break;
-+	}
-+	nftnl_set_elems_iter_destroy(iter);
-+}
-+
- static void nft_compat_chain_batch_add(struct nft_handle *h, uint16_t type,
- 				       uint16_t flags, uint32_t seq,
- 				       struct nftnl_chain *chain)
-@@ -2420,6 +2467,9 @@ static void batch_obj_del(struct nft_handle *h, struct obj_update *o)
- 	case NFT_COMPAT_RULE_FLUSH:
- 		nftnl_rule_free(o->rule);
- 		break;
-+	case NFT_COMPAT_SET_ADD:
-+		nftnl_set_free(o->set);
-+		break;
- 	}
- 	h->obj_list_num--;
- 	list_del(&o->head);
-@@ -2486,6 +2536,7 @@ static void nft_refresh_transaction(struct nft_handle *h)
- 		case NFT_COMPAT_RULE_REPLACE:
- 		case NFT_COMPAT_RULE_DELETE:
- 		case NFT_COMPAT_RULE_FLUSH:
-+		case NFT_COMPAT_SET_ADD:
- 			break;
- 		}
- 	}
-@@ -2576,6 +2627,13 @@ retry:
- 			nft_compat_rule_batch_add(h, NFT_MSG_DELRULE, 0,
- 						  n->seq, n->rule);
- 			break;
-+		case NFT_COMPAT_SET_ADD:
-+			nft_compat_set_batch_add(h, NFT_MSG_NEWSET,
-+						 NLM_F_CREATE, n->seq, n->set);
-+			nft_compat_setelem_batch_add(h, NFT_MSG_NEWSETELEM,
-+						     NLM_F_CREATE, &n->seq, n->set);
-+			seq = n->seq;
-+			break;
- 		}
- 
- 		mnl_nft_batch_continue(h->batch);
++		uint32_t base;
+ 		uint32_t offset;
+ 		uint32_t len;
+-	} payload;
++	} payload, prev_payload;
+ 	struct {
+ 		uint32_t key;
+ 	} meta;
 -- 
 2.24.0
 
