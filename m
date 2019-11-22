@@ -2,102 +2,150 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C35105B83
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Nov 2019 22:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F0C1065BD
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Nov 2019 07:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbfKUVBD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 Nov 2019 16:01:03 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:44902 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726293AbfKUVBD (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 Nov 2019 16:01:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574370062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U/bksgIdxjzliTEaCPFlyS2N8QgJ9Vzb9KAZE7CMSRs=;
-        b=b+fxFddQqougVd8DX0Awq5c2JT8g5cGED4orhstRGb3zaFiSnANxcaclTqZlFNm/TwyJXR
-        Ysxn87+NQdOWsSGQA+qzQUThi4X6K8JjVLcgGnwNMqIj2qc5zN3nCaWkI55SubGyUf5P/a
-        /widGsM72S1S6KMay7JUOEU0EWFFdhU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-64-DOpIxe8GN6iVHW1zc8Unng-1; Thu, 21 Nov 2019 16:00:59 -0500
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727904AbfKVG0X (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 22 Nov 2019 01:26:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727889AbfKVFuv (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 22 Nov 2019 00:50:51 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C0BA80268A;
-        Thu, 21 Nov 2019 21:00:55 +0000 (UTC)
-Received: from localhost (ovpn-112-24.ams2.redhat.com [10.36.112.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D58C26CE53;
-        Thu, 21 Nov 2019 21:00:51 +0000 (UTC)
-Date:   Thu, 21 Nov 2019 22:00:46 +0100
-From:   Stefano Brivio <sbrivio@redhat.com>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org,
-        Kadlecsik =?UTF-8?B?SsOzenNlZg==?= <kadlec@blackhole.kfki.hu>,
-        Eric Garver <eric@garver.life>, Phil Sutter <phil@nwl.cc>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Jay Ligatti <ligatti@usf.edu>,
-        Ori Rottenstreich <or@cs.technion.ac.il>,
-        Kirill Kogan <kirill.kogan@gmail.com>
-Subject: Re: [PATCH nf-next 3/8] nf_tables: Add set type for arbitrary
- concatenation of ranges
-Message-ID: <20191121220046.0517c87d@redhat.com>
-In-Reply-To: <20191121204113.GL20235@breakpoint.cc>
-References: <cover.1574119038.git.sbrivio@redhat.com>
-        <6da551247fd90666b0eca00fb4467151389bf1dc.1574119038.git.sbrivio@redhat.com>
-        <20191120150609.GB20235@breakpoint.cc>
-        <20191121205442.5eb3d113@redhat.com>
-        <20191121204113.GL20235@breakpoint.cc>
-Organization: Red Hat
+        by mail.kernel.org (Postfix) with ESMTPSA id EBE8F2075B;
+        Fri, 22 Nov 2019 05:50:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574401850;
+        bh=jKzR5jY6Q+nmrW1yULqWSQepuzyW0D8Ht4y9wTjw5e4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YcqR6vgSTEOA2kBZgcLCkqPkKlwT9wcm8gnus+T6XzIVZDFeurJfMegFqK5z2KAjK
+         UHVHMr6H0PJ4AcSSpPI+/1KO1T9vN44rJrL9cwqwYzzn2ros8og06CeQBKFQxhPK16
+         kvRhGelrc2IOi2rxoa0DmfYfmgRF5a9n1dLZ4/Ys=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Alin Nastac <alin.nastac@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 088/219] netfilter: nf_nat_sip: fix RTP/RTCP source port translations
+Date:   Fri, 22 Nov 2019 00:47:00 -0500
+Message-Id: <20191122054911.1750-81-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191122054911.1750-1-sashal@kernel.org>
+References: <20191122054911.1750-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-MC-Unique: DOpIxe8GN6iVHW1zc8Unng-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, 21 Nov 2019 21:41:13 +0100
-Florian Westphal <fw@strlen.de> wrote:
+From: Alin Nastac <alin.nastac@gmail.com>
 
-> Yes, exactly, we should only reject what either
-> 1. would crash kernel
-> 2. makes obviously no sense (missing or contradiction attributes).
->=20
-> anything more than that isn't needed.
->=20
-> > We could opt to be stricter indeed, by checking that a single netlink
-> > batch contains a corresponding number of start and end elements. This
-> > can't be done by the insert function though, we don't have enough
-> > context there. =20
->=20
-> Yes.  If such 'single element with no end interval' can't happen or
-> won't cause any problems then no action is needed.
+[ Upstream commit 8294059931448aa1ca112615bdffa3eab552c382 ]
 
-Yeah, I don't expect that to cause any problem. I don't have a
-kselftest or nft test for it, because that would require nft to send
-invalid elements, so I only tested those two cases manually. The
-nastiest thing I could come up with was start > end, and it's now
-covered by:
+Each media stream negotiation between 2 SIP peers will trigger creation
+of 4 different expectations (2 RTP and 2 RTCP):
+ - INVITE will create expectations for the media packets sent by the
+   called peer
+ - reply to the INVITE will create expectations for media packets sent
+   by the caller
 
-=09=09if (memcmp(start, end,
-=09=09=09   f->groups / NFT_PIPAPO_GROUPS_PER_BYTE) > 0)
-=09=09=09return -EINVAL;
+The dport used by these expectations usually match the ones selected
+by the SIP peers, but they might get translated due to conflicts with
+another expectation. When such event occur, it is important to do
+this translation in both directions, dport translation on the receiving
+path and sport translation on the sending path.
 
-while:
-- start =3D=3D end is allowed, explicitly handled below
-- end without any previous start (somewhat) correctly maps to < 0 > to
-  end
-- start without end won't trigger any insertion
+This commit fixes the sport translation when the peer requiring it is
+also the one that starts the media stream. In this scenario, first media
+stream packet is forwarded from LAN to WAN and will rely on
+nf_nat_sip_expected() to do the necessary sport translation. However, the
+expectation matched by this packet does not contain the necessary information
+for doing SNAT, this data being stored in the paired expectation created by
+the sender's SIP message (INVITE or reply to it).
 
---=20
-Stefano
+Signed-off-by: Alin Nastac <alin.nastac@gmail.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/netfilter/nf_nat_sip.c | 39 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 35 insertions(+), 4 deletions(-)
+
+diff --git a/net/netfilter/nf_nat_sip.c b/net/netfilter/nf_nat_sip.c
+index 1f30860749817..aa1be643d7a09 100644
+--- a/net/netfilter/nf_nat_sip.c
++++ b/net/netfilter/nf_nat_sip.c
+@@ -18,6 +18,7 @@
+ 
+ #include <net/netfilter/nf_nat.h>
+ #include <net/netfilter/nf_nat_helper.h>
++#include <net/netfilter/nf_conntrack_core.h>
+ #include <net/netfilter/nf_conntrack_helper.h>
+ #include <net/netfilter/nf_conntrack_expect.h>
+ #include <net/netfilter/nf_conntrack_seqadj.h>
+@@ -316,6 +317,9 @@ static void nf_nat_sip_seq_adjust(struct sk_buff *skb, unsigned int protoff,
+ static void nf_nat_sip_expected(struct nf_conn *ct,
+ 				struct nf_conntrack_expect *exp)
+ {
++	struct nf_conn_help *help = nfct_help(ct->master);
++	struct nf_conntrack_expect *pair_exp;
++	int range_set_for_snat = 0;
+ 	struct nf_nat_range2 range;
+ 
+ 	/* This must be a fresh one. */
+@@ -327,15 +331,42 @@ static void nf_nat_sip_expected(struct nf_conn *ct,
+ 	range.min_addr = range.max_addr = exp->saved_addr;
+ 	nf_nat_setup_info(ct, &range, NF_NAT_MANIP_DST);
+ 
+-	/* Change src to where master sends to, but only if the connection
+-	 * actually came from the same source. */
+-	if (nf_inet_addr_cmp(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u3,
++	/* Do media streams SRC manip according with the parameters
++	 * found in the paired expectation.
++	 */
++	if (exp->class != SIP_EXPECT_SIGNALLING) {
++		spin_lock_bh(&nf_conntrack_expect_lock);
++		hlist_for_each_entry(pair_exp, &help->expectations, lnode) {
++			if (pair_exp->tuple.src.l3num == nf_ct_l3num(ct) &&
++			    pair_exp->tuple.dst.protonum == ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.dst.protonum &&
++			    nf_inet_addr_cmp(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u3, &pair_exp->saved_addr) &&
++			    ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u.all == pair_exp->saved_proto.all) {
++				range.flags = (NF_NAT_RANGE_MAP_IPS | NF_NAT_RANGE_PROTO_SPECIFIED);
++				range.min_proto.all = range.max_proto.all = pair_exp->tuple.dst.u.all;
++				range.min_addr = range.max_addr = pair_exp->tuple.dst.u3;
++				range_set_for_snat = 1;
++				break;
++			}
++		}
++		spin_unlock_bh(&nf_conntrack_expect_lock);
++	}
++
++	/* When no paired expectation has been found, change src to
++	 * where master sends to, but only if the connection actually came
++	 * from the same source.
++	 */
++	if (!range_set_for_snat &&
++	    nf_inet_addr_cmp(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u3,
+ 			     &ct->master->tuplehash[exp->dir].tuple.src.u3)) {
+ 		range.flags = NF_NAT_RANGE_MAP_IPS;
+ 		range.min_addr = range.max_addr
+ 			= ct->master->tuplehash[!exp->dir].tuple.dst.u3;
+-		nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
++		range_set_for_snat = 1;
+ 	}
++
++	/* Perform SRC manip. */
++	if (range_set_for_snat)
++		nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
+ }
+ 
+ static unsigned int nf_nat_sip_expect(struct sk_buff *skb, unsigned int protoff,
+-- 
+2.20.1
 
