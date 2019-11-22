@@ -2,75 +2,70 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC49106521
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Nov 2019 07:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FF2107231
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Nov 2019 13:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbfKVGVo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 22 Nov 2019 01:21:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728442AbfKVFwN (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 22 Nov 2019 00:52:13 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89E892084B;
-        Fri, 22 Nov 2019 05:52:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574401932;
-        bh=MBxeDnP2vJ6YQSAW4kvOLr2ixbZPyUPv7eGEKXCsK1E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ejXSKt8lgPc8c3+6bJPLR1zllH7ErlFYereR1p0lfrqdRBG43An9XLdKqZ44JD+tl
-         rMoD3uvXsYT95LwPj3RNo40r0WzYFQjqmywq1ZKPb5d1b4Df6deF6H//pTDTiUwS7B
-         b64GM4prghzxpsEcIDMXxm+olrEg97zHMkp37C9A=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kangjie Lu <kjlu@umn.edu>, Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 158/219] netfilter: nf_tables: fix a missing check of nla_put_failure
-Date:   Fri, 22 Nov 2019 00:48:10 -0500
-Message-Id: <20191122054911.1750-151-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191122054911.1750-1-sashal@kernel.org>
-References: <20191122054911.1750-1-sashal@kernel.org>
+        id S1727102AbfKVMcf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 22 Nov 2019 07:32:35 -0500
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:34044 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726620AbfKVMcf (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 22 Nov 2019 07:32:35 -0500
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1iY86z-0005dP-G1; Fri, 22 Nov 2019 13:32:33 +0100
+Date:   Fri, 22 Nov 2019 13:32:33 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     =?utf-8?Q?=C4=B0brahim?= Ercan <ibrahim.metu@gmail.com>
+Cc:     netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Subject: Re: Mysql has problem with synproxy
+Message-ID: <20191122123233.GE2284@breakpoint.cc>
+References: <CAK6Qs9k0Z9US9u3OWhO4_DTjU1+zY5wXpARu6=cwgVOPx8jP2Q@mail.gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK6Qs9k0Z9US9u3OWhO4_DTjU1+zY5wXpARu6=cwgVOPx8jP2Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Kangjie Lu <kjlu@umn.edu>
+İbrahim Ercan <ibrahim.metu@gmail.com> wrote:
+> iptables -t raw -A PREROUTING -i enp12s0f0 -p tcp --syn -j CT --notrack
+> iptables -t filter -A FORWARD  -i enp12s0f0 -p tcp -m state --state
+> INVALID,UNTRACKED -j SYNPROXY --sack-perm --timestamp --mss 1460
+> --wscale 6
+> iptables -t filter -A FORWARD -i enp12s0f0 -p tcp -m state --state
+> INVALID -j DROP
 
-[ Upstream commit eb8950861c1bfd3eecc8f6faad213e3bca0dc395 ]
+Does it work when you omit --timestamp?
 
-If nla_nest_start() may fail. The fix checks its return value and goes
-to nla_put_failure if it fails.
+> Between firewall and server
+> 14:28:12.343459 IP 10.0.0.2.59586 > 10.0.0.1.3336: Flags [S], seq 1356993242, win 229, options [mss 1460,sackOK,TS val 1731042 ecr 1423321111,nop,wscale 7], length 0
 
-Signed-off-by: Kangjie Lu <kjlu@umn.edu>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/netfilter/nf_tables_api.c | 2 ++
- 1 file changed, 2 insertions(+)
+Oh, this is a bug, but I don't know if that is the reason for the
+failure.  ecr should be 0 reset to 0.
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 24fddf0322790..4c1a88b7ba285 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -5735,6 +5735,8 @@ static int nf_tables_fill_flowtable_info(struct sk_buff *skb, struct net *net,
- 		goto nla_put_failure;
+I susepct this patch would fix it:
+
+diff --git a/net/netfilter/nf_synproxy_core.c
+--- a/net/netfilter/nf_synproxy_core.c
++++ b/net/netfilter/nf_synproxy_core.c
+@@ -174,6 +174,7 @@ synproxy_check_timestamp_cookie(struct synproxy_options *opts)
+        opts->options |= opts->tsecr & (1 << 4) ?
+	NF_SYNPROXY_OPT_SACK_PERM : 0;
  
- 	nest = nla_nest_start(skb, NFTA_FLOWTABLE_HOOK);
-+	if (!nest)
-+		goto nla_put_failure;
- 	if (nla_put_be32(skb, NFTA_FLOWTABLE_HOOK_NUM, htonl(flowtable->hooknum)) ||
- 	    nla_put_be32(skb, NFTA_FLOWTABLE_HOOK_PRIORITY, htonl(flowtable->priority)))
- 		goto nla_put_failure;
--- 
-2.20.1
+        opts->options |= opts->tsecr & (1 << 5) ?
+	NF_SYNPROXY_OPT_ECN : 0;
++       opts->tsecr = 0;
+ }
+ 
+> 14:28:12.343583 IP 10.0.0.1.3336 > 10.0.0.2.59586: Flags [S.], seq 1666149016, ack 1356993243, win 65535, options [mss 1460,nop,wscale 6,sackOK,TS val 109930553 ecr 1731042], length 0
+> 14:28:12.343602 IP 10.0.0.2.59586 > 10.0.0.1.3336: Flags [.], ack 1, win 229, options [nop,nop,TS val 1731042 ecr 3091507291], length 0
+
+I assume the 'ack 1' is tcpdump being too helpful? (-S to disable).
+I can't see anything wrong here, sorry.
 
