@@ -2,129 +2,65 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C6E10DE2F
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Nov 2019 16:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55EA910DE58
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Nov 2019 18:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727101AbfK3Px0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Nov 2019 10:53:26 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36607 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726497AbfK3Px0 (ORCPT
+        id S1726981AbfK3RCV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Nov 2019 12:02:21 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:52152 "EHLO
+        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726497AbfK3RCV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Nov 2019 10:53:26 -0500
-Received: by mail-qt1-f193.google.com with SMTP id y10so36038074qto.3
-        for <netfilter-devel@vger.kernel.org>; Sat, 30 Nov 2019 07:53:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=jdRfuJtU8uqmsqgyTo2pn3PG7sCQI4AYvfljBHLyej8=;
-        b=h9Xa8Eyclllyo//fAfdA6VQ/NNyTP9f+uLFtD4bmksqFDq4S1bbFxwzDeEJttovLA+
-         mnwtZFGkAVHm2+wV2IzyZoYpsKsJ2mGHYOGv/vz+DTZx2bwuZsa1brlObLw2VA+4ZGN6
-         Nw9LyJRgKaSgaDal3R88V8Juyb61wmzvdJFLNs4LxfF7Zx10YTWNLoSBEOFLPEZwbjtM
-         htYm2/jz6i4wavsnGNSvO3yVXMGN0MBqufBY3UhFTkEhs20UhTH4m4c5ljTqY/e6b63v
-         /i5m96jPlK/2c5m63NicterXuUVD9gx3YQMVkaWwLLAtjOLkyi5NgBTXzvjoFEiz2GNl
-         tmXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=jdRfuJtU8uqmsqgyTo2pn3PG7sCQI4AYvfljBHLyej8=;
-        b=EKryiZ3/apoMsDcV3Cz8mETSloXeeB3jyEGiEeoB8z2+dGKIkEkwwKx9L6SwMSZzvR
-         d/Di1I5Yqu3b7tHFH4jb7D25yZvmg9Vojmo4PBPsdxVnUqEKcYhij0LMZoYnkoJuHcPv
-         3tiKTG5omKlgmdok8wdyFmnbudcwO2Il1Jg4eyMskUjW+09e8DdIza4ZDXRAkCoHW9Ib
-         EqFdoXCXNFiyQ0jg3Se2VWE7yYNRcZy57bhCvcXWJYBiPAXYMnZDwK7jBBum85/+TxGR
-         zeRQiLXv0oML8OkoWSr8HE7IfUChap/jBzb09HwDzwJ9bpZEsdoJ2XoJvESSuO4QwwY6
-         ShiA==
-X-Gm-Message-State: APjAAAW54V7RYFfptwUmh9hfwAZajKJZOYvPu4z3VrOExMFDLoXCCgHr
-        k/pV9fgTtwFdDe895E9KWaHqxPgBY4lcyjfbXBWSOA==
-X-Google-Smtp-Source: APXvYqwd50hiQXx0poflgh573lP3ofw793nvHMJ0u0cS4TDPRH9X6wxqaksQSt8m/TXYBMG15l5vLxsJFaq5/XgjMew=
-X-Received: by 2002:ac8:3905:: with SMTP id s5mr40808406qtb.158.1575129203287;
- Sat, 30 Nov 2019 07:53:23 -0800 (PST)
+        Sat, 30 Nov 2019 12:02:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=d+ZTK3PNVqcSsySVLbrJzjMK3lQMZyLkcIAqhYZK5aQ=; b=k2b8LKO+jAUivQpU/dsIJl3rD/
+        bQNPmHbSV5HDaWB/SEF9fJfw2w7mS1f2oHILgk7phAucL/weSxCq6zhxZiKKZoxQXEir7pM3ah95Q
+        7E5zHU9OkJpjG302nyBsFS9Fy96zhpNGW5Sp1q9fr7CW/EhpRHATaQz4QQPlFOexukGJ2ARGw6dGR
+        Be7RegZzKcYEyOz2Yd3RyKK8GY8KPNP3CcGMElZ4z5p09mkpAfw7OlZjG7ecKKfAn87sceaAhe2eD
+        IQJlAUedcotvFmRpwb2i9+rPNVQbz/30nXv+ufF+nYS9+A8+733ApDTqJERh3kun6eiTZkOljSwEz
+        AVc+93rA==;
+Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1ib68R-0001qd-Sp; Sat, 30 Nov 2019 17:02:19 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
+        "Thomas B . Clark" <kernel@clark.bz>
+Subject: [PATCH xtables-addons 0/3] xt_geoip: ipv6 fixes
+Date:   Sat, 30 Nov 2019 17:02:15 +0000
+Message-Id: <20191130170219.368867-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <3971b408-51e6-d90e-f291-7a43e46e84c1@ferree-clark.org>
+References: <3971b408-51e6-d90e-f291-7a43e46e84c1@ferree-clark.org>
 MIME-Version: 1.0
-References: <000000000000e59aab056e8873ae@google.com> <0000000000000beff305981c5ac6@google.com>
- <20191124193035.GA4203@ZenIV.linux.org.uk> <20191130110645.GA4405@dimstar.local.net>
-In-Reply-To: <20191130110645.GA4405@dimstar.local.net>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sat, 30 Nov 2019 16:53:12 +0100
-Message-ID: <CACT4Y+bg7bZOSg0P9VXq8yG2odAJMg6b6N2fXxbamOmKiz3ohw@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Read in blkdev_get
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Chris Metcalf <cmetcalf@ezchip.com>, coreteam@netfilter.org,
-        David Miller <davem@davemloft.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Chen Gang <gang.chen.5i5j@gmail.com>,
-        Patrick McHardy <kaber@trash.net>,
-        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sat, Nov 30, 2019 at 12:06 PM Duncan Roe <duncan_roe@optusnet.com.au> wrote:
-> > > syzbot has bisected this bug to:
-> > >
-> > > commit 77ef8f5177599efd0cedeb52c1950c1bd73fa5e3
-> > > Author: Chris Metcalf <cmetcalf@ezchip.com>
-> > > Date:   Mon Jan 25 20:05:34 2016 +0000
-> > >
-> > >     tile kgdb: fix bug in copy to gdb regs, and optimize memset
-> > >
-> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1131bc0ee00000
-> > > start commit:   f5b7769e Revert "debugfs: inode: debugfs_create_dir uses m..
-> > > git tree:       upstream
-> > > final crash:    https://syzkaller.appspot.com/x/report.txt?x=1331bc0ee00000
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1531bc0ee00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=709f8187af941e84
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=eaeb616d85c9a0afec7d
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=177f898f800000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147eb85f800000
-> > >
-> > > Reported-by: syzbot+eaeb616d85c9a0afec7d@syzkaller.appspotmail.com
-> > > Fixes: 77ef8f517759 ("tile kgdb: fix bug in copy to gdb regs, and optimize
-> > > memset")
-> > >
-> > > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> >
-> > Seriously?  How can the commit in question (limited to arch/tile/kernel/kgdb.c)
-> > possibly affect a bug that manages to produce a crash report with
-> > RSP: 0018:ffffffff82e03eb8  EFLAGS: 00000282
-> > RAX: 0000000000000000 RBX: ffffffff82e00000 RCX: 0000000000000000
-> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff81088779
-> > RBP: ffffffff82e03eb8 R08: 0000000000000000 R09: 0000000000000001
-> > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> > R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff82e00000
-> > FS:  0000000000000000(0000) GS:ffff88021fc00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 000000c420447ff8 CR3: 0000000213184000 CR4: 00000000001406f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > in it?  Unless something very odd has happened to tile, this crash has
-> > been observed on 64bit x86; the names of registers alone are enough
-> > to be certain of that.
-> >
-> > And the binaries produced by an x86 build should not be affected by any
-> > changes in arch/tile; not unless something is very wrong with the build
-> > system.  It's not even that this commit has fixed an earlier bug that
-> > used to mask the one manifested here - it really should have had zero
-> > impact on x86 builds, period.
-> >
-> > So I'm sorry, but I'm calling bullshit.  Something's quite wrong with
-> > the bot - either its build system or the bisection process.
->
-> The acid test would be: does reverting that commit make the problem go away?
->
-> See, for example, https://bugzilla.kernel.org/show_bug.cgi?id=203935
->
-> Cheers ... Duncan.
+Thomas Clark reported that geoip matching didn't work for ipv6.  This
+series fixes that and a couple of other minor issues.
 
-This is done as part of any bisection by definition, right? The test
-was done on the previous commit (effectively this one reverted) and no
-crash was observed. Otherwise bisection would have been pointed to a
-different commit.
+Jeremy Sowden (3):
+  configure: update max. supported kernel version.
+  xt_geoip: white-space fixes.
+  xt_geoip: fix in6_addr little-endian byte-swapping.
+
+ configure.ac             |  2 +-
+ extensions/libxt_geoip.c | 28 ++++++++--------------------
+ extensions/xt_geoip.c    |  6 +++---
+ 3 files changed, 12 insertions(+), 24 deletions(-)
+
+-- 
+2.24.0
+
