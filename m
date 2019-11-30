@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB4B10DE56
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Nov 2019 18:02:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E1210DE5A
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Nov 2019 18:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbfK3RCV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Nov 2019 12:02:21 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:52164 "EHLO
+        id S1727025AbfK3RCW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Nov 2019 12:02:22 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:52172 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727025AbfK3RCV (ORCPT
+        with ESMTP id S1727027AbfK3RCV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 30 Nov 2019 12:02:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,23 +18,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=FQTskD11BXu3Iey6eJM0Z5A7Uj/U1A9ELCxxZ7p5teU=; b=i5KOYTS2BPrCcQuDkt5e8eNf0K
-        zDHf2LTAXyeQoSkBZ/lM7nlyM+rILDCp22biFyQ+eTuGFGGWw6yosoVzC6vT/mUMkuUmF+AAh/dvR
-        zNn9joNJLoY/G7NB049aUcC1ASKSU7kAAdkNalQcNx8OHwGyvGSi/dkipYAsMpflYjFPyKWMSv0tc
-        tDggqdh9NdPIwla8/ll5zusPvMznP1Y3qLtQeZaY7ANxmZBBU10FY+L7meupMhTaGEg9kRnX3soqW
-        0lPiYDhpcYW/f6cIsP/zanpiejeYm/QaADkiDGgOBgnF24/XMM5YtGNIfVL5nEr5v1CtHI5xkqRHu
-        knN2iq4w==;
+        bh=d0TMecq856/VrrLDv7rtdrLeX4GlCwNuwB5C2FPChic=; b=OLe9esF3FN8xoVBbjQSDR+JKBW
+        kM4kh5CusPPLnrAWBLyQ+HgpDwmxzzBA+qEt/XsoXM5GSbaMlGHjZrM8nwSh1FEXO/dIj5EEMuxfG
+        upQfV/7O/R/IoxhxmTg17EQEnqv8hBsi2mF9vbD4fmkB47b/IDXiFcqqHj+2qHoKAld3wY9S2A52y
+        KFwqBHMpL/ubnEo4JSpxnAQY3RiS5Trjd1H+W6LaWv/Fk+v13vM7TQK9p3NJFlRfgtRZy+PTlvw2J
+        0cJwv8woU5GKMNvnrAf4UkPaGlPBS+BVY4X2ON1FMUk592o1N8H/rnSk0T1r6UdUM9veRldCZJF8D
+        fm8CKZrg==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1ib68S-0001qd-B9; Sat, 30 Nov 2019 17:02:20 +0000
+        id 1ib68S-0001qd-GI; Sat, 30 Nov 2019 17:02:20 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Jan Engelhardt <jengelh@inai.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
         "Thomas B . Clark" <kernel@clark.bz>
-Subject: [PATCH xtables-addons 2/3] xt_geoip: white-space fixes.
-Date:   Sat, 30 Nov 2019 17:02:18 +0000
-Message-Id: <20191130170219.368867-4-jeremy@azazel.net>
+Subject: [PATCH xtables-addons 3/3] xt_geoip: fix in6_addr little-endian byte-swapping.
+Date:   Sat, 30 Nov 2019 17:02:19 +0000
+Message-Id: <20191130170219.368867-5-jeremy@azazel.net>
 X-Mailer: git-send-email 2.24.0
 In-Reply-To: <20191130170219.368867-1-jeremy@azazel.net>
 References: <3971b408-51e6-d90e-f291-7a43e46e84c1@ferree-clark.org>
@@ -49,44 +49,75 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Fix the indentation of some xt_geoip module function parameters.
+libxt_geoip attempts to byte-swap IPv6 addresses on little-endian
+systems but it doesn't get it quite right.  Rather than doing ntohl on
+each 32-bit segment, it does ntohs on each 16-bit segment.
 
+This means that:
+
+  1234::cdef
+
+becomes:
+
+  2143::dcfe
+
+instead of:
+
+  4321::fedc
+
+Fixes: b91dbd03c717 ("geoip: store database in network byte order")
+Reported-by: "Thomas B. Clark" <kernel@clark.bz>
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- extensions/xt_geoip.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ extensions/libxt_geoip.c | 28 ++++++++--------------------
+ 1 file changed, 8 insertions(+), 20 deletions(-)
 
-diff --git a/extensions/xt_geoip.c b/extensions/xt_geoip.c
-index 27e60a4643b7..d64d951f19a9 100644
---- a/extensions/xt_geoip.c
-+++ b/extensions/xt_geoip.c
-@@ -140,7 +140,7 @@ static void geoip_try_remove_node(struct geoip_country_kernel *p)
- }
+diff --git a/extensions/libxt_geoip.c b/extensions/libxt_geoip.c
+index 116f5f86eb01..5b8697dc6161 100644
+--- a/extensions/libxt_geoip.c
++++ b/extensions/libxt_geoip.c
+@@ -50,26 +50,6 @@ static struct option geoip_opts[] = {
+ };
  
- static struct geoip_country_kernel *find_node(unsigned short cc,
--    enum geoip_proto proto)
-+					      enum geoip_proto proto)
+ #if __BYTE_ORDER == __LITTLE_ENDIAN
+-static void geoip_swap_le16(uint16_t *buf)
+-{
+-	unsigned char *p = (void *)buf;
+-	uint16_t n= p[0] + (p[1] << 8);
+-	p[0] = (n >> 8) & 0xff;
+-	p[1] = n & 0xff;
+-}
+-
+-static void geoip_swap_in6(struct in6_addr *in6)
+-{
+-	geoip_swap_le16(&in6->s6_addr16[0]);
+-	geoip_swap_le16(&in6->s6_addr16[1]);
+-	geoip_swap_le16(&in6->s6_addr16[2]);
+-	geoip_swap_le16(&in6->s6_addr16[3]);
+-	geoip_swap_le16(&in6->s6_addr16[4]);
+-	geoip_swap_le16(&in6->s6_addr16[5]);
+-	geoip_swap_le16(&in6->s6_addr16[6]);
+-	geoip_swap_le16(&in6->s6_addr16[7]);
+-}
+-
+ static void geoip_swap_le32(uint32_t *buf)
  {
- 	struct geoip_country_kernel *p;
- 	spin_lock(&geoip_lock);
-@@ -172,7 +172,7 @@ ipv6_cmp(const struct in6_addr *p, const struct in6_addr *q)
+ 	unsigned char *p = (void *)buf;
+@@ -79,6 +59,14 @@ static void geoip_swap_le32(uint32_t *buf)
+ 	p[2] = (n >> 8) & 0xff;
+ 	p[3] = n & 0xff;
  }
++
++static void geoip_swap_in6(struct in6_addr *in6)
++{
++	geoip_swap_le32(&in6->s6_addr32[0]);
++	geoip_swap_le32(&in6->s6_addr32[1]);
++	geoip_swap_le32(&in6->s6_addr32[2]);
++	geoip_swap_le32(&in6->s6_addr32[3]);
++}
+ #endif
  
- static bool geoip_bsearch6(const struct geoip_subnet6 *range,
--    const struct in6_addr *addr, int lo, int hi)
-+			   const struct in6_addr *addr, int lo, int hi)
- {
- 	int mid;
- 
-@@ -227,7 +227,7 @@ xt_geoip_mt6(const struct sk_buff *skb, struct xt_action_param *par)
- }
- 
- static bool geoip_bsearch4(const struct geoip_subnet4 *range,
--    uint32_t addr, int lo, int hi)
-+			   uint32_t addr, int lo, int hi)
- {
- 	int mid;
- 
+ static void *
 -- 
 2.24.0
 
