@@ -2,51 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E756910DE5F
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Nov 2019 18:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3979210DE79
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Nov 2019 18:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbfK3RLH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Nov 2019 12:11:07 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:52522 "EHLO
+        id S1726946AbfK3R6t (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Nov 2019 12:58:49 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:54252 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726497AbfK3RLH (ORCPT
+        with ESMTP id S1727101AbfK3R6s (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Nov 2019 12:11:07 -0500
+        Sat, 30 Nov 2019 12:58:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=vN73VLhrJjp/1HstTdgeoT52WPxVDKj+22zgtJSiSRc=; b=oprxcQbRj+g+aPk2qetkCEYoUr
-        tXkk7L82TfH6hJjtOrRSkXLDXfNF0OManB8nncvnv7b3jrpb960IHQfPneSKqUV8CM9PUL1jQfOps
-        WKq+RXGmmhGg7g04aQLnr8r32rBGX6Nk05mvvEV4Y/Q4ZBz7LlHyTf/Ck5owefmA8hkMfYNnuhc5I
-        synAcsRDh8wLTpovXbeodOu09kayqfBTeL5D5vlzAQUUIOyIvn3tbFX5zlDWuo2f6ogcoi1Y7BzbJ
-        RCo6IgTqQbI+e59kttH1GPoySFMN4sI1/Zf/Kn7nQfIOh3+LB41R1L4zNqKtz+SzukQwR5OUeUeyk
-        ximINwvQ==;
-Received: from celephais.dreamlands ([192.168.96.3] helo=azazel.net)
-        by kadath.azazel.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
+        bh=EfsxDPU1ZjmVmoJmG3gpJVLLX8CmNaimpeodxYRAe68=; b=JKT97m7Ml4BsFX03r4JR9lT9Jd
+        xSNzKMD1GBavUQiq4TJEz5HhNDc+dcFRgUtCeLtEAg2jhK8kzQa+9UTrIPcUiSAE38M2TPalrgpmH
+        sX+BeYW86tRqM7rzkW/AHf+9bUKQFVqp+m12+m6SLTUeEcox5ah5KqWu2f8V5k8O7VQnGBvsNLvpG
+        o/uhPwyPmclrpgDN1yO874qh58O7CGWbOcnxPZnnD8GH5+2l5iXCYIJTDzVU0yR1GiWArBQdP0enr
+        BlX7TmAUvf5z/M0DTPNBlYv/5XTp6513c/luhEpxKtC/WwWX7L/dJD3S+DpBI8HFXCMX1fqaK+97W
+        meTe9yhw==;
+Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
+        by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1ib6Gv-00020x-6T; Sat, 30 Nov 2019 17:11:05 +0000
-Date:   Sat, 30 Nov 2019 17:11:13 +0000
+        id 1ib714-0002eP-01; Sat, 30 Nov 2019 17:58:46 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Jan Engelhardt <jengelh@inai.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
         "Thomas B . Clark" <kernel@clark.bz>
-Subject: Re: [PATCH xtables-addons 3/3] xt_geoip: fix in6_addr little-endian
- byte-swapping.
-Message-ID: <20191130171113.GC133447@azazel.net>
+Subject: [PATCH xtables-addons v2 0/3] xt_geoip: ipv6 fixes
+Date:   Sat, 30 Nov 2019 17:58:42 +0000
+Message-Id: <20191130175845.369240-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <3971b408-51e6-d90e-f291-7a43e46e84c1@ferree-clark.org>
 References: <3971b408-51e6-d90e-f291-7a43e46e84c1@ferree-clark.org>
- <20191130170219.368867-1-jeremy@azazel.net>
- <20191130170219.368867-5-jeremy@azazel.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hOcCNbCCxyk/YU74"
-Content-Disposition: inline
-In-Reply-To: <20191130170219.368867-5-jeremy@azazel.net>
-User-Agent: Mutt/1.12.2 (2019-09-21)
-X-SA-Exim-Connect-IP: 192.168.96.3
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
 X-SA-Exim-Mail-From: jeremy@azazel.net
 X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -54,50 +48,23 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Thomas Clark reported that geoip matching didn't work for ipv6.  This
+series fixes that and a couple of other minor issues.
 
---hOcCNbCCxyk/YU74
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Since v1:
 
-On 2019-11-30, at 17:02:19 +0000, Jeremy Sowden wrote:
-> libxt_geoip attempts to byte-swap IPv6 addresses on little-endian
-> systems but it doesn't get it quite right.  Rather than doing ntohl on
-> each 32-bit segment, it does ntohs on each 16-bit segment.
->
-> This means that:
->
->   1234::cdef
->
-> becomes:
->
->   2143::dcfe
->
-> instead of:
->
->   4321::fedc
+  * fixed the commit-message in patch 03.
 
-I'm an idiot.  This commit message is wrong.  Will fix and resend.
+Jeremy Sowden (3):
+  configure: update max. supported kernel version.
+  xt_geoip: white-space fixes.
+  xt_geoip: fix in6_addr little-endian byte-swapping.
 
-J.
+ configure.ac             |  2 +-
+ extensions/libxt_geoip.c | 28 ++++++++--------------------
+ extensions/xt_geoip.c    |  6 +++---
+ 3 files changed, 12 insertions(+), 24 deletions(-)
 
---hOcCNbCCxyk/YU74
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.24.0
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEZ8d+2N/NBLDbUxIF0Z7UzfnX9sMFAl3iorAACgkQ0Z7UzfnX
-9sOR7g//S6NAxu5G1Cy0LnZX25xLZdro78wmtihhpe/t29LJkMnoqHUcQ8F0371W
-6I4xntLdBSE7g40HRASVgZYzTrCZ0azbS/tpRFOjcGgABdZf0GxIJnlPbhVJsVJ/
-u0DR9vg+c//WpqENOCRNHMBLdShyCHxjD/hoKNIvKKPLGdYlBw3V0llVTAqFdXcv
-YKMEsPOEAhJHAWo5w/37lZVaoZ+Km8eUbBzZUOamfi5wKwEq+bY8/WfS1Wx60yOx
-2qUbMSMTu4P6PfpOQIggDpLUC8BH868SQprR9gvb11ZWOpKTQnW4G9KkbTT4S8fR
-CwJeDWR/vs5c+xSyxiiRXU+MkHXWTWSxLMxUH6h0FbqK7yQ2pUXYSUywNwPHyUui
-BbO+hRS7o/EqnHVipzAASdpN2RGCrrhMvjGSwacdGBMxOSivrXkDX3JgSnFvf1JC
-IaVPCr3FbzuZG5+GCb0jV6FVi1elvfGamwmmlAiIBQ2aXMfYXIXcBEho+fDGB0ID
-pZs/sul/i689IvC6VSpZF4xoQcXByOrn0MoLQ30uFGzTKWDBos/TudyYemn4AnfN
-3DdDJH+vuceFADWHjbczMBtoMGHozk9tZWvCOYGb34PsWFJN9Eo3N7CU0SF7hzjs
-OnXoMMSLTxWRq25TUeMgbnYVTcodqLUbBNF2NHANAQUJKZOXRk0=
-=9iTc
------END PGP SIGNATURE-----
-
---hOcCNbCCxyk/YU74--
