@@ -2,89 +2,76 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A44610E2F6
-	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Dec 2019 19:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B5310E4D5
+	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Dec 2019 04:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727296AbfLASSq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 1 Dec 2019 13:18:46 -0500
-Received: from mtax.cdmx.gob.mx ([187.141.35.197]:8348 "EHLO mtax.cdmx.gob.mx"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727231AbfLASSq (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 1 Dec 2019 13:18:46 -0500
-X-Greylist: delayed 6509 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Dec 2019 13:18:45 EST
-X-NAI-Header: Modified by McAfee Email Gateway (4500)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cdmx.gob.mx; s=72359050-3965-11E6-920A-0192F7A2F08E;
-        t=1575217608; h=DKIM-Filter:X-Virus-Scanned:
-         Content-Type:MIME-Version:Content-Transfer-Encoding:
-         Content-Description:Subject:To:From:Date:Message-Id:
-         X-AnalysisOut:X-AnalysisOut:X-AnalysisOut:
-         X-AnalysisOut:X-AnalysisOut:X-SAAS-TrackingID:
-         X-NAI-Spam-Flag:X-NAI-Spam-Threshold:X-NAI-Spam-Score:
-         X-NAI-Spam-Rules:X-NAI-Spam-Version; bh=M
-        8rWdUYQ57RAYAgTWJQ4Rsch0kO0UXllaAVDzocOs4
-        8=; b=QnQk9sPlE8WZWNgococPXrLXLFB8OExWTTY8klMZ/7q9
-        U+5h4GhA+7SKKtJ9hhLBOykxpEeJ9c4z338YBl1h8Y/gZjGzcc
-        jLZrcRopjAMgjrq24gTzQdSQIl2XP74P411hkcFyGnHaaaUZTa
-        QAMqMpMIPlHZGKgw/2DCWzjGn40=
-Received: from cdmx.gob.mx (correo.cdmx.gob.mx [10.250.108.150]) by mtax.cdmx.gob.mx with smtp
-        (TLS: TLSv1/SSLv3,256bits,ECDHE-RSA-AES256-GCM-SHA384)
-         id 1dee_6374_98a7e1ae_fc48_4834_8541_f4c590a6c23a;
-        Sun, 01 Dec 2019 10:26:47 -0600
-Received: from localhost (localhost [127.0.0.1])
-        by cdmx.gob.mx (Postfix) with ESMTP id 329161E2716;
-        Sun,  1 Dec 2019 10:18:26 -0600 (CST)
-Received: from cdmx.gob.mx ([127.0.0.1])
-        by localhost (cdmx.gob.mx [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id aOHimLRADtmh; Sun,  1 Dec 2019 10:18:26 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by cdmx.gob.mx (Postfix) with ESMTP id 0358A1E1FEB;
-        Sun,  1 Dec 2019 10:13:11 -0600 (CST)
-DKIM-Filter: OpenDKIM Filter v2.9.2 cdmx.gob.mx 0358A1E1FEB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cdmx.gob.mx;
-        s=72359050-3965-11E6-920A-0192F7A2F08E; t=1575216791;
-        bh=M8rWdUYQ57RAYAgTWJQ4Rsch0kO0UXllaAVDzocOs48=;
-        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:To:
-         From:Date:Message-Id;
-        b=CcSo4A82TUUKuo3IEotco2nHKqX2uHCVEOebSOAsIW6hRWxgNIWZEJhLReibDmN/Q
-         UMHEEE4hi1ni/+MjRmnP3uBadJvAAMzY6CiFX+9gwZeZ951ybv71Q15lbbjbct0RBx
-         8+Ijgha2a3R8Xv78h6k+kDJOzwUbrOBu4ET1zwpM=
-X-Virus-Scanned: amavisd-new at cdmx.gob.mx
-Received: from cdmx.gob.mx ([127.0.0.1])
-        by localhost (cdmx.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id n7RcNhrM-eCp; Sun,  1 Dec 2019 10:13:10 -0600 (CST)
-Received: from [192.168.0.104] (unknown [188.125.168.160])
-        by cdmx.gob.mx (Postfix) with ESMTPSA id 037A51E306A;
-        Sun,  1 Dec 2019 10:04:40 -0600 (CST)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1727298AbfLBDRI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 1 Dec 2019 22:17:08 -0500
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:41786 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727285AbfLBDRI (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 1 Dec 2019 22:17:08 -0500
+Received: from [192.168.188.14] (unknown [120.132.1.226])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 43BF841CF1;
+        Mon,  2 Dec 2019 11:16:51 +0800 (CST)
+Subject: Re: [PATCH nf] netfilter: nf_tables_offload: Fix check the
+ NETDEV_UNREGISTER in netdev event
+From:   wenxu <wenxu@ucloud.cn>
+To:     netfilter-devel@vger.kernel.org, pablo@netfilter.org
+References: <1573618867-9755-1-git-send-email-wenxu@ucloud.cn>
+Message-ID: <a7a98d09-f030-7fe7-b97d-23c9ee1415d5@ucloud.cn>
+Date:   Mon, 2 Dec 2019 11:16:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Congratulations
-To:     Recipients <aac-styfe@cdmx.gob.mx>
-From:   "Bishop Johnr" <aac-styfe@cdmx.gob.mx>
-Date:   Sun, 01 Dec 2019 17:04:33 +0100
-Message-Id: <20191201160441.037A51E306A@cdmx.gob.mx>
-X-AnalysisOut: [v=2.2 cv=aPKAkf1m c=1 sm=1 tr=0 p=6K-Ig8iNAUou4E5wYCEA:9 p]
-X-AnalysisOut: [=zRI05YRXt28A:10 a=T6zFoIZ12MK39YzkfxrL7A==:117 a=9152RP8M]
-X-AnalysisOut: [6GQqDhC/mI/QXQ==:17 a=8nJEP1OIZ-IA:10 a=pxVhFHJ0LMsA:10 a=]
-X-AnalysisOut: [pGLkceISAAAA:8 a=wPNLvfGTeEIA:10 a=M8O0W8wq6qAA:10 a=Ygvjr]
-X-AnalysisOut: [iKHvHXA2FhpO6d-:22]
-X-SAAS-TrackingID: 6c9e3ed5.0.105116311.00-2294.176706157.s12p02m016.mxlogic.net
-X-NAI-Spam-Flag: NO
-X-NAI-Spam-Threshold: 3
-X-NAI-Spam-Score: -5000
-X-NAI-Spam-Rules: 1 Rules triggered
-        WHITELISTED=-5000
-X-NAI-Spam-Version: 2.3.0.9418 : core <6686> : inlines <7165> : streams
- <1840193> : uri <2949749>
+In-Reply-To: <1573618867-9755-1-git-send-email-wenxu@ucloud.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSEJKS0tLSk5KTUhPSUlZV1koWU
+        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oi46Ijo4PzgwAwEOGhpCMTEj
+        Dk8aCgJVSlVKTkxOSU5NTUpKT0hDVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJS1VK
+        SElVSlVJSU1ZV1kIAVlBSUtMTjcG
+X-HM-Tid: 0a6ec49c5a0c2086kuqy43bf841cf1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Money was donated to you by Mr and Mrs Allen and Violet Large, just contact=
- them with this email for more information =
+Hi pablo,
 
 
-EMail: allenandvioletlargeaward@gmail.com
+Any comments about this patch?
+
+
+BR
+
+wenxu
+
+On 11/13/2019 12:21 PM, wenxu@ucloud.cn wrote:
+> From: wenxu <wenxu@ucloud.cn>
+>
+> It should check the NETDEV_UNREGISTER in  nft_offload_netdev_event
+>
+> Fixes: 06d392cbe3db ("netfilter: nf_tables_offload: remove rules when the device unregisters")
+> Signed-off-by: wenxu <wenxu@ucloud.cn>
+> ---
+>  net/netfilter/nf_tables_offload.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
+> index e25dab8..b002832 100644
+> --- a/net/netfilter/nf_tables_offload.c
+> +++ b/net/netfilter/nf_tables_offload.c
+> @@ -446,6 +446,9 @@ static int nft_offload_netdev_event(struct notifier_block *this,
+>  	struct net *net = dev_net(dev);
+>  	struct nft_chain *chain;
+>  
+> +	if (event != NETDEV_UNREGISTER)
+> +		return 0;
+> +
+>  	mutex_lock(&net->nft.commit_mutex);
+>  	chain = __nft_offload_get_chain(dev);
+>  	if (chain)
