@@ -2,70 +2,57 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE58210F3CB
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Dec 2019 01:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A466710F517
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Dec 2019 03:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725834AbfLCAGH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 2 Dec 2019 19:06:07 -0500
-Received: from correo.us.es ([193.147.175.20]:50760 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725775AbfLCAGH (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 2 Dec 2019 19:06:07 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 8A755C04EC
-        for <netfilter-devel@vger.kernel.org>; Tue,  3 Dec 2019 01:06:04 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 7BDD0DA703
-        for <netfilter-devel@vger.kernel.org>; Tue,  3 Dec 2019 01:06:04 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 71663DA707; Tue,  3 Dec 2019 01:06:04 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 557A4DA703
-        for <netfilter-devel@vger.kernel.org>; Tue,  3 Dec 2019 01:06:02 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 03 Dec 2019 01:06:02 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (sys.soleta.eu [212.170.55.40])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 319454265A5A
-        for <netfilter-devel@vger.kernel.org>; Tue,  3 Dec 2019 01:06:02 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] include: include nf_tables_compat.h in tarball
-Date:   Tue,  3 Dec 2019 01:06:00 +0100
-Message-Id: <20191203000600.824483-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726066AbfLCCmp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 2 Dec 2019 21:42:45 -0500
+Received: from mx20.baidu.com ([111.202.115.85]:50460 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725957AbfLCCmo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 2 Dec 2019 21:42:44 -0500
+Received: from BJHW-Mail-Ex15.internal.baidu.com (unknown [10.127.64.38])
+        by Forcepoint Email with ESMTPS id 6B15CB251582F;
+        Tue,  3 Dec 2019 10:42:38 +0800 (CST)
+Received: from BJHW-Mail-Ex13.internal.baidu.com (10.127.64.36) by
+ BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1713.5; Tue, 3 Dec 2019 10:42:39 +0800
+Received: from BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) by
+ BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) with mapi id
+ 15.01.1713.004; Tue, 3 Dec 2019 10:42:39 +0800
+From:   "Li,Rongqing" <lirongqing@baidu.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+CC:     "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXVt2Ml0gbmV0ZmlsdGVyOiBvbmx5IGNhbGwgY3N1bV90?=
+ =?gb2312?Q?cpudp=5Fmagic_for_TCP/UDP_packets?=
+Thread-Topic: [PATCH][v2] netfilter: only call csum_tcpudp_magic for TCP/UDP
+ packets
+Thread-Index: AQHVpoxxHLXfJXfwnE60t8HgUdTDz6enuQpw
+Date:   Tue, 3 Dec 2019 02:42:39 +0000
+Message-ID: <3f31a6ab5eb945f68b12829aa39e8f47@baidu.com>
+References: <1573630441-13937-1-git-send-email-lirongqing@baidu.com>
+ <20191129081013.lhnjkft3sf7uyyhn@salvia>
+In-Reply-To: <20191129081013.lhnjkft3sf7uyyhn@salvia>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.198.12]
+x-baidu-bdmsfe-datecheck: 1_BJHW-Mail-Ex15_2019-12-03 10:42:40:145
+x-baidu-bdmsfe-viruscheck: BJHW-Mail-Ex15_GRAY_Inside_WithoutAtta_2019-12-03
+ 10:42:40:129
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add it to Makefile.am so make distcheck includes it in tarballs.
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- include/linux/netfilter/Makefile.am | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/include/linux/netfilter/Makefile.am b/include/linux/netfilter/Makefile.am
-index 3227d4e83d79..04c9ab80a77c 100644
---- a/include/linux/netfilter/Makefile.am
-+++ b/include/linux/netfilter/Makefile.am
-@@ -3,6 +3,7 @@ noinst_HEADERS = 	nf_conntrack_common.h		\
- 			nf_log.h			\
- 			nf_nat.h			\
- 			nf_tables.h			\
-+			nf_tables_compat.h		\
- 			nf_synproxy.h			\
- 			nfnetlink_osf.h			\
- 			nfnetlink.h
--- 
-2.11.0
-
+PiA+IC0JCQkJICAgICAgIHNrYi0+bGVuIC0gZGF0YW9mZiwgcHJvdG9jb2wsDQo+ID4gLQkJCQkg
+ICAgICAgc2tiLT5jc3VtKSkgew0KPiANCj4gQ291bGQgeW91IGRlc2NyaWJlIHdoYXQgeW91IG9i
+c2VydmUgdGhlcmUgdG8gdGFnIHRoaXMgcGF0Y2ggYXMgYSBGaXg/DQo+IA0KDQpub3RoaW5nLCAg
+dGhpcyBmaXggdGFnIGNhbiBiZSBkcm9wcGVkDQoNCkkgZmluZCB0aGlzIHVucmVhc29uYWJsZSBj
+b2RlcyB3aGVuIEkgcmVhZCwgaXQgc2hvdWxkIGhhdmUgbGl0dGxlIG5lZ2F0aXZlIGVmZmVjdC4N
+Cg0KdGhhbmtzDQoNCi1MaQ0KDQo=
