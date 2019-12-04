@@ -2,111 +2,54 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC0F112B68
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2019 13:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F55A112C53
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2019 14:09:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbfLDMYm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 4 Dec 2019 07:24:42 -0500
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:39102 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727445AbfLDMYm (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 4 Dec 2019 07:24:42 -0500
-Received: by mail-ed1-f66.google.com with SMTP id v16so6451262edy.6
-        for <netfilter-devel@vger.kernel.org>; Wed, 04 Dec 2019 04:24:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=SWzs3svZdfoJNhQZue5B0UPApGf3QNVhTsPQAsjB3v0=;
-        b=WUvr1HzZig4AtkFMxBXiACZC5Vx/mro8Z0D8z/xcVNMjsU0IHRxqG7f3LSJz7WWezc
-         a3f3oQ+y+nxCiveqkDRUwaLmPaozw37fDCkhvHbGyjAzwho8GhioT9L5ZgOi3XE7wtTf
-         hwsH167FFmA3AIukiltgKABIMAFdCKo43CSnc5hyXxmeNnvG71uu+H7a/6pMdFTr/ERs
-         vRlTJkB5VJBhFe1io2aiSAZ3CvJbsRwj9C2KTRmWPIgHOgsKPeVF3LgxQfFHEliiH6s+
-         vHBT1p5mx2sIF0hcj5eY9jhKhSUwgA2+dWn0XOPjDJF5SJrzX7EnlAsW3w0xXVD2W3HB
-         bRWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=SWzs3svZdfoJNhQZue5B0UPApGf3QNVhTsPQAsjB3v0=;
-        b=fXEyM5Jz5M40l8jBN1o7IcD9B2L6FgvpeznTPfygCcK26oKK2x4qsQVzyfTJU6qXMv
-         XkD6s6noSvtPhFdTaBCr75Znq/lR1wc/vkUEHvwzBGpNWu9q0fw2KDCwJf1GPry7UwPo
-         XSI+PqLpyqadsyBXe3E3d0ozkx3ElTUTMe2XAM8RfSUOxStKO0lFAPXFPsia58UICUCC
-         BQp/nZoQgKjnZSPH4RQSJy7MAoBd6HMabBv6KbkEqv1fLfF+8SXDvgEKNw3y0XahyibK
-         7Wp/eJrHIz3j2m6YU8dXo8Dl+f9kcoLMBGavK/T4nEwb8fl3rdXwv7/7AyPdK4eaNEgq
-         8v3g==
-X-Gm-Message-State: APjAAAWETtsdU6b54OsjwOVVx0b/y/EUWCMs/sLQC+9P2m0gZ/0ysjXH
-        WcXFLpDKqN/Q4cAlfvJVGPqn9qv8TGZzyXDYMOE=
-X-Google-Smtp-Source: APXvYqxlf6cjSlvI4JGfrnQjn6RcM0141lX1FS6mZWeqcpEFM4gV17gqbcH4qVxpZrv6jArmglFtFV0ZZqW33TBdSxc=
-X-Received: by 2002:a17:906:c9ce:: with SMTP id hk14mr2749191ejb.140.1575462280441;
- Wed, 04 Dec 2019 04:24:40 -0800 (PST)
+        id S1727446AbfLDNJc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 4 Dec 2019 08:09:32 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:58444 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726215AbfLDNJc (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 4 Dec 2019 08:09:32 -0500
+Received: from localhost ([::1]:43302 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1icUPK-0007nQ-8n; Wed, 04 Dec 2019 14:09:30 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH] extensions: CLUSTERIP: Mark as deprecated in man page
+Date:   Wed,  4 Dec 2019 14:09:21 +0100
+Message-Id: <20191204130921.2914-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Received: by 2002:a05:6402:22dc:0:0:0:0 with HTTP; Wed, 4 Dec 2019 04:24:40
- -0800 (PST)
-Reply-To: moneygram.1820@outlook.fr
-From:   "Rev.Dr Emmanuel Okoye CEO Ecobank-benin" <eco.bank1204@gmail.com>
-Date:   Wed, 4 Dec 2019 13:24:40 +0100
-Message-ID: <CAOE+jAD3aJt05rpROwT02gYhOPtmmMnew3SS6xGJSOjrTO2dmw@mail.gmail.com>
-Subject: God has remembered your prayers I have already sent you Money Gram
- payment of $5000.00 today, MG 1029-8096
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Attn, dear Beneficiary.
+Kernel even warns if being used, reflect its state in man page, too.
 
-God has remembered your prayers
-I have already sent you Money Gram payment of $5000.00 today, MG 1029-8096
-This is because we have finally concluded to effect your transfer
-funds of $4.8,000.000usd
-through MONEY GRAM International Fund transfer Service
-Each payment will be sending to you by $5000.00 daily until the
-($4.8,000.000usd) is completely transferred
-we have this morning sent  MONEY GRAM payment of $5,000.00 in your name today
-So contact the MONEY GRAM Agent to pick up this first payment of $5000 now
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ extensions/libipt_CLUSTERIP.man | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Contact person Mrs. Alan Ude
-Dir. MONEY GRAM Service,Benin
-Phone number: +229 98856728
-E-mail: moneygram.1820@outlook.fr
+diff --git a/extensions/libipt_CLUSTERIP.man b/extensions/libipt_CLUSTERIP.man
+index 8ec6d6b6e163d..768bb23e5a7ac 100644
+--- a/extensions/libipt_CLUSTERIP.man
++++ b/extensions/libipt_CLUSTERIP.man
+@@ -2,6 +2,9 @@ This module allows you to configure a simple cluster of nodes that share
+ a certain IP and MAC address without an explicit load balancer in front of
+ them.  Connections are statically distributed between the nodes in this
+ cluster.
++.PP
++Please note that CLUSTERIP target is considered deprecated in favour of cluster
++match which is more flexible and not limited to IPv4.
+ .TP
+ \fB\-\-new\fP
+ Create a new ClusterIP.  You always have to set this on the first rule
+-- 
+2.24.0
 
-Ask him to give you the complete mtcn, sender name, question and
-answer to enable you
-pick up the $5000.00 sent today,
-Also you are instructed to re-confirm your information's
-to Mrs.Alan Ude as listed below to avoid wrong transactions.
-
-(1Your Full name:............................................
-(2 Phone number.....................................................
-(3 Contact address:.....................................
-(4 Age:..................................................................
-(5 Country..............................................
-(6) Sex .................................................................
-(7) your occupation...........................................
-
-(8)Passport/By Attach or Drivers License Number:
-Contact Mrs. Alan Ude for your MONEY GRAM payment of $4.8,000.000usd
-Note please: I have paid service fees for you but the only money you
-are required
-to send to Mrs. Alan Ude is $90.00 only Transfer fee before you can
-pick up your transfer today.
-
-Send it to via Money Gram
-Receiver's Name-----Alan Ude
-Country----------Benin
-Address-----------Cotonou
-Quest--------Honest
-Ans-----------Trust
-
-I done all my best for you to receive your transfer now ok.
-We need your urgent reply
-Best Regards
-Rev.Dr Emmanuel Okoye
-CEO Ecobank-benin
-
-If we did not receive it urgent from you today,
-I will go ahead and release you funds to Mrs. Lyndia Ppaulson as your
-representative.
