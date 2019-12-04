@@ -2,64 +2,111 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE7311295C
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2019 11:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC0F112B68
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Dec 2019 13:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727620AbfLDKgs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 4 Dec 2019 05:36:48 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:58198 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727268AbfLDKgs (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 4 Dec 2019 05:36:48 -0500
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1icS1T-0006I3-Jq; Wed, 04 Dec 2019 11:36:43 +0100
-Date:   Wed, 4 Dec 2019 11:36:43 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     "Serguei Bezverkhi (sbezverk)" <sbezverk@cisco.com>
-Cc:     Arturo Borrero Gonzalez <arturo@netfilter.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
-        Laura Garcia <nevola@gmail.com>
-Subject: Re: Operation not supported when adding jump command
-Message-ID: <20191204103643.GO8016@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        "Serguei Bezverkhi (sbezverk)" <sbezverk@cisco.com>,
-        Arturo Borrero Gonzalez <arturo@netfilter.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
-        Laura Garcia <nevola@gmail.com>
-References: <20191127160646.GK8016@orbyte.nwl.cc>
- <7C2EF59A-57A3-4E55-92EB-7D64BC0A8417@cisco.com>
- <20191127172210.GM8016@orbyte.nwl.cc>
- <739A821F-2645-41B2-AADA-AA6C34A17335@cisco.com>
- <20191128130814.GQ8016@orbyte.nwl.cc>
- <00B4F260-EA79-4EC1-B7B4-8A9C9D2C96DE@cisco.com>
- <20191128151511.GU8016@orbyte.nwl.cc>
- <97A2D022-C314-4DC4-813D-C319AE9A8DB3@cisco.com>
- <20191130000416.GX8016@orbyte.nwl.cc>
- <9E56E734-8E3C-4BB5-AD31-1A8A703CEBCE@cisco.com>
+        id S1727530AbfLDMYm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 4 Dec 2019 07:24:42 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:39102 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727445AbfLDMYm (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 4 Dec 2019 07:24:42 -0500
+Received: by mail-ed1-f66.google.com with SMTP id v16so6451262edy.6
+        for <netfilter-devel@vger.kernel.org>; Wed, 04 Dec 2019 04:24:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=SWzs3svZdfoJNhQZue5B0UPApGf3QNVhTsPQAsjB3v0=;
+        b=WUvr1HzZig4AtkFMxBXiACZC5Vx/mro8Z0D8z/xcVNMjsU0IHRxqG7f3LSJz7WWezc
+         a3f3oQ+y+nxCiveqkDRUwaLmPaozw37fDCkhvHbGyjAzwho8GhioT9L5ZgOi3XE7wtTf
+         hwsH167FFmA3AIukiltgKABIMAFdCKo43CSnc5hyXxmeNnvG71uu+H7a/6pMdFTr/ERs
+         vRlTJkB5VJBhFe1io2aiSAZ3CvJbsRwj9C2KTRmWPIgHOgsKPeVF3LgxQfFHEliiH6s+
+         vHBT1p5mx2sIF0hcj5eY9jhKhSUwgA2+dWn0XOPjDJF5SJrzX7EnlAsW3w0xXVD2W3HB
+         bRWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=SWzs3svZdfoJNhQZue5B0UPApGf3QNVhTsPQAsjB3v0=;
+        b=fXEyM5Jz5M40l8jBN1o7IcD9B2L6FgvpeznTPfygCcK26oKK2x4qsQVzyfTJU6qXMv
+         XkD6s6noSvtPhFdTaBCr75Znq/lR1wc/vkUEHvwzBGpNWu9q0fw2KDCwJf1GPry7UwPo
+         XSI+PqLpyqadsyBXe3E3d0ozkx3ElTUTMe2XAM8RfSUOxStKO0lFAPXFPsia58UICUCC
+         BQp/nZoQgKjnZSPH4RQSJy7MAoBd6HMabBv6KbkEqv1fLfF+8SXDvgEKNw3y0XahyibK
+         7Wp/eJrHIz3j2m6YU8dXo8Dl+f9kcoLMBGavK/T4nEwb8fl3rdXwv7/7AyPdK4eaNEgq
+         8v3g==
+X-Gm-Message-State: APjAAAWETtsdU6b54OsjwOVVx0b/y/EUWCMs/sLQC+9P2m0gZ/0ysjXH
+        WcXFLpDKqN/Q4cAlfvJVGPqn9qv8TGZzyXDYMOE=
+X-Google-Smtp-Source: APXvYqxlf6cjSlvI4JGfrnQjn6RcM0141lX1FS6mZWeqcpEFM4gV17gqbcH4qVxpZrv6jArmglFtFV0ZZqW33TBdSxc=
+X-Received: by 2002:a17:906:c9ce:: with SMTP id hk14mr2749191ejb.140.1575462280441;
+ Wed, 04 Dec 2019 04:24:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9E56E734-8E3C-4BB5-AD31-1A8A703CEBCE@cisco.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a05:6402:22dc:0:0:0:0 with HTTP; Wed, 4 Dec 2019 04:24:40
+ -0800 (PST)
+Reply-To: moneygram.1820@outlook.fr
+From:   "Rev.Dr Emmanuel Okoye CEO Ecobank-benin" <eco.bank1204@gmail.com>
+Date:   Wed, 4 Dec 2019 13:24:40 +0100
+Message-ID: <CAOE+jAD3aJt05rpROwT02gYhOPtmmMnew3SS6xGJSOjrTO2dmw@mail.gmail.com>
+Subject: God has remembered your prayers I have already sent you Money Gram
+ payment of $5000.00 today, MG 1029-8096
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+Attn, dear Beneficiary.
 
-On Tue, Dec 03, 2019 at 06:43:19PM +0000, Serguei Bezverkhi (sbezverk) wrote:
-> Started working on nat portion and here is iptables rule which is a bit concerning.
-> 
-> -A KUBE-SERVICES -d 192.168.80.104/32 -p tcp -m comment --comment "default/portal:portal external IP" -m tcp --dport 8989 -m physdev ! --physdev-is-in -m addrtype ! --src-type LOCAL -j KUBE-SVC-MUPXPVK4XAZHSWAR
-> 
-> I can address " addrtype" with nftables "fib" and " iif type local" but I am not sure about "physdev", appreciate any suggestions.
+God has remembered your prayers
+I have already sent you Money Gram payment of $5000.00 today, MG 1029-8096
+This is because we have finally concluded to effect your transfer
+funds of $4.8,000.000usd
+through MONEY GRAM International Fund transfer Service
+Each payment will be sending to you by $5000.00 daily until the
+($4.8,000.000usd) is completely transferred
+we have this morning sent  MONEY GRAM payment of $5,000.00 in your name today
+So contact the MONEY GRAM Agent to pick up this first payment of $5000 now
 
-I think you can use 'meta iiftype != "bridge"' in this case.
+Contact person Mrs. Alan Ude
+Dir. MONEY GRAM Service,Benin
+Phone number: +229 98856728
+E-mail: moneygram.1820@outlook.fr
 
-Cheers, Phil
+Ask him to give you the complete mtcn, sender name, question and
+answer to enable you
+pick up the $5000.00 sent today,
+Also you are instructed to re-confirm your information's
+to Mrs.Alan Ude as listed below to avoid wrong transactions.
+
+(1Your Full name:............................................
+(2 Phone number.....................................................
+(3 Contact address:.....................................
+(4 Age:..................................................................
+(5 Country..............................................
+(6) Sex .................................................................
+(7) your occupation...........................................
+
+(8)Passport/By Attach or Drivers License Number:
+Contact Mrs. Alan Ude for your MONEY GRAM payment of $4.8,000.000usd
+Note please: I have paid service fees for you but the only money you
+are required
+to send to Mrs. Alan Ude is $90.00 only Transfer fee before you can
+pick up your transfer today.
+
+Send it to via Money Gram
+Receiver's Name-----Alan Ude
+Country----------Benin
+Address-----------Cotonou
+Quest--------Honest
+Ans-----------Trust
+
+I done all my best for you to receive your transfer now ok.
+We need your urgent reply
+Best Regards
+Rev.Dr Emmanuel Okoye
+CEO Ecobank-benin
+
+If we did not receive it urgent from you today,
+I will go ahead and release you funds to Mrs. Lyndia Ppaulson as your
+representative.
