@@ -2,67 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C25115001
-	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Dec 2019 12:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A60C3115578
+	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Dec 2019 17:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbfLFLr1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 6 Dec 2019 06:47:27 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:34894 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726213AbfLFLr1 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 6 Dec 2019 06:47:27 -0500
-Received: from localhost ([::1]:47984 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1idC4z-0002kY-Ra; Fri, 06 Dec 2019 12:47:25 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 6/6] extensions: among: Check call to fstat()
-Date:   Fri,  6 Dec 2019 12:47:11 +0100
-Message-Id: <20191206114711.6015-7-phil@nwl.cc>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191206114711.6015-1-phil@nwl.cc>
-References: <20191206114711.6015-1-phil@nwl.cc>
+        id S1726728AbfLFQeC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 6 Dec 2019 11:34:02 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:52134 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726720AbfLFQeB (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 6 Dec 2019 11:34:01 -0500
+Received: by mail-il1-f198.google.com with SMTP id x2so5595743ilk.18
+        for <netfilter-devel@vger.kernel.org>; Fri, 06 Dec 2019 08:34:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=eN4yK+b1Bwvylv7Nm0VpeOFgnJkXHsh0eveEUiwrQH8=;
+        b=UnIxmFNdrT0F0tM82mS3RtJYlJHzyYVZnuGShWqsnOiZ9f+9b/94S5UX3k6/QDSrSY
+         rRkayLuBr7NTdfQaNZ96xCCs0gMSs4vDCXqCYudDe4XtbG0d9viBpHck/e8Y8U1iJP8s
+         Felm8vSaUK0YBtIjGErbUsPcR6EkLNiLbBU8OYruNX2h9LqCSBfkS7RA5xmNrcvCsHF5
+         /jstzGpFqCCQwO1cgLPZMhUEtmHIKL378R/b9qEhqfywbgfSUo9OAXv05VSYG/6oGTro
+         Rc08DWU9KRD7UBTRMfU4POIy5buAJmfa06+7bhc2WDGhLkb9kgTt6t49FKI4bt03QKca
+         Envw==
+X-Gm-Message-State: APjAAAX3XYihSFLiNTZrKW4D5y/J1acPXyq+AATY8BKF03pvI5YrRHYv
+        tFg1xkaItBFu1IyWrJ/SDXnYWN+pz8+fRYvn2mhmxvYTpKYU
+X-Google-Smtp-Source: APXvYqzZYpNyvisihbt8EN3KnLhQ+QrZm3JeQEpbdA8h9nBmjE1AdDXOmVmenOawWmDOfOfWECCiqsoRsetDdfRKflEyZvm4mUC+
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:4891:: with SMTP id j17mr14417440ilg.33.1575650041118;
+ Fri, 06 Dec 2019 08:34:01 -0800 (PST)
+Date:   Fri, 06 Dec 2019 08:34:01 -0800
+In-Reply-To: <000000000000e1d639059908223b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fdd04105990b9c93@google.com>
+Subject: Re: KASAN: use-after-free Read in soft_cursor
+From:   syzbot <syzbot+cf43fb300aa142fb024b@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, coreteam@netfilter.org,
+        davem@davemloft.net, dri-devel@lists.freedesktop.org,
+        gwshan@linux.vnet.ibm.com, kaber@trash.net,
+        kadlec@blackhole.kfki.hu, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mpe@ellerman.id.au,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, ruscur@russell.cc, stewart@linux.vnet.ibm.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If this fails, a bogus length value may be passed to mmap().
+syzbot has bisected this bug to:
 
-Fixes: 26753888720d8 ("nft: bridge: Rudimental among extension support")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- extensions/libebt_among.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+commit 2de50e9674fc4ca3c6174b04477f69eb26b4ee31
+Author: Russell Currey <ruscur@russell.cc>
+Date:   Mon Feb 8 04:08:20 2016 +0000
 
-diff --git a/extensions/libebt_among.c b/extensions/libebt_among.c
-index 2e87db3bc06fa..715d559f432c2 100644
---- a/extensions/libebt_among.c
-+++ b/extensions/libebt_among.c
-@@ -6,6 +6,7 @@
-  * August, 2003
-  */
- 
-+#include <errno.h>
- #include <ctype.h>
- #include <fcntl.h>
- #include <getopt.h>
-@@ -137,7 +138,10 @@ static int bramong_parse(int c, char **argv, int invert,
- 		if ((fd = open(optarg, O_RDONLY)) == -1)
- 			xtables_error(PARAMETER_PROBLEM,
- 				      "Couldn't open file '%s'", optarg);
--		fstat(fd, &stats);
-+		if (fstat(fd, &stats) < 0)
-+			xtables_error(PARAMETER_PROBLEM,
-+				      "fstat(%s) failed: '%s'",
-+				      optarg, strerror(errno));
- 		flen = stats.st_size;
- 		/* use mmap because the file will probably be big */
- 		optarg = mmap(0, flen, PROT_READ | PROT_WRITE,
--- 
-2.24.0
+     powerpc/powernv: Remove support for p5ioc2
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1512d1bce00000
+start commit:   b0d4beaa Merge branch 'next.autofs' of git://git.kernel.or..
+git tree:       upstream
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=1712d1bce00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1312d1bce00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f07a23020fd7d21a
+dashboard link: https://syzkaller.appspot.com/bug?extid=cf43fb300aa142fb024b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1745a90ee00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1361042ae00000
+
+Reported-by: syzbot+cf43fb300aa142fb024b@syzkaller.appspotmail.com
+Fixes: 2de50e9674fc ("powerpc/powernv: Remove support for p5ioc2")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
