@@ -2,62 +2,76 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E48115A0A
-	for <lists+netfilter-devel@lfdr.de>; Sat,  7 Dec 2019 01:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1FF115A0D
+	for <lists+netfilter-devel@lfdr.de>; Sat,  7 Dec 2019 01:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726403AbfLGASD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 6 Dec 2019 19:18:03 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:45010 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbfLGASD (ORCPT
+        id S1726375AbfLGAX3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 6 Dec 2019 19:23:29 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:52828 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726374AbfLGAX3 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 6 Dec 2019 19:18:03 -0500
-Received: by mail-il1-f194.google.com with SMTP id z12so7760115iln.11
-        for <netfilter-devel@vger.kernel.org>; Fri, 06 Dec 2019 16:18:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=nAu81VhxpKC/WuxdqxIlxiQ9iCK/TER8zOxrBe3T3gA=;
-        b=dRtTjZXqkzDG2RGgVVoypDUoO2Yna7WPN5DF3O+uR6n9hX9WYBeWx6zgek4COXGa1w
-         HuydYB0OrI3EguR7I/pGTMlAchX15EHl8Ohd/GNqD+n6qLglKYWJT2rdK8j8kCeJGS2B
-         iEjt2H4OKxbTlYIHgT4OQxE2b9gkOVl9iu8ruGZHveK7P8YKO4wKCQJUeZaXWWhWf2Hs
-         d8awzLlQomZ/AMaQ0E6VqOccMLKRhd9TS+Xhqt0ZSbF7roIXXG2Y/pvfuU4K2Mm4vY+e
-         TcWhqwSt5jlR4ziU4gaY0q2Fve6KQ7ZYF1yblP3CTMrgzvBhsv4UML3Jp3tsnxj+n8oF
-         WJ2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=nAu81VhxpKC/WuxdqxIlxiQ9iCK/TER8zOxrBe3T3gA=;
-        b=mOBuxfjuebuUEJlcENgNzwSl1ldGOY9HKK0XBke42CvTXBbMGFElS2HeRqPG9LgjBv
-         uxAL+OSgXDFI7brNIGp4gSG5py0PeBsd+e9uGCmnuwnb0+Vgs88O5TpX9GFyxpGEcJG2
-         VAxlq5XwNhVknPYuxITt7gosfjJx/95AdYx/YHX7Ue/5AzL5kZ3QDOOz6MAGl/y6ksoS
-         uAzZIhDzEYJ2Ku7gr+RbcaDerK9m3uJkMi74NZf39vG97spa5FzXxHnQX8SAn/GPu4ul
-         UmJKjVPkKqQYxbIB3KfBsDo21k7CqSPpIxX1JThq9aQXmFDe8hz/hugy+i5Rs2Wr4ZJW
-         /afQ==
-X-Gm-Message-State: APjAAAUy5TOy6zsWMrmTQg/fWNpFOqfxOGBhN4anahF6pxzXS4//OI3A
-        T4URiKNICQseWkqz44mtg7mJ2mvnl0fWeew3MtI=
-X-Google-Smtp-Source: APXvYqxcGBRDqykzAQupp8ZP/nxZqIGRHJTVDtnfm4LnasScUG6hSi76dirE6TmyOXBLXryihIro+YrVXKB35yBcfFQ=
-X-Received: by 2002:a05:6e02:6ca:: with SMTP id p10mr16792844ils.66.1575677883006;
- Fri, 06 Dec 2019 16:18:03 -0800 (PST)
+        Fri, 6 Dec 2019 19:23:29 -0500
+Received: from dimstar.local.net (n122-110-44-45.sun2.vic.optusnet.com.au [122.110.44.45])
+        by mail105.syd.optusnet.com.au (Postfix) with SMTP id 5381A3A2415
+        for <netfilter-devel@vger.kernel.org>; Sat,  7 Dec 2019 11:23:12 +1100 (AEDT)
+Received: (qmail 9074 invoked by uid 501); 7 Dec 2019 00:23:11 -0000
+Date:   Sat, 7 Dec 2019 11:23:11 +1100
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Netfilter Development <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH libnetfilter_queue] src: Fix test for IPv6 header
+Message-ID: <20191207002311.GA5579@dimstar.local.net>
+Mail-Followup-To: Pablo Neira Ayuso <pablo@netfilter.org>,
+        Netfilter Development <netfilter-devel@vger.kernel.org>
+References: <20191124023310.18200-1-duncan_roe@optusnet.com.au>
 MIME-Version: 1.0
-Received: by 2002:a02:9f92:0:0:0:0:0 with HTTP; Fri, 6 Dec 2019 16:18:02 -0800 (PST)
-Reply-To: sharmamrssandhya011@gmail.com
-From:   " Mrs.Samira Hassim" <abdullah.ben.abdul2009@gmail.com>
-Date:   Sat, 7 Dec 2019 00:18:02 +0000
-Message-ID: <CAM9bPxBoOWR1pB2i+RypBYdwo_dYMS9G2SpXkGMnr2YNXJOSzg@mail.gmail.com>
-Subject: OK
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191124023310.18200-1-duncan_roe@optusnet.com.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=4DzML1vCOQ6Odsy8BUtSXQ==:117 a=4DzML1vCOQ6Odsy8BUtSXQ==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=pxVhFHJ0LMsA:10
+        a=RSmzAf-M6YYA:10 a=PO7r1zJSAAAA:8 a=cXhL2gqTqaYtY7s1JlIA:9
+        a=CjuIK1q_8ugA:10
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Greetings My Dearest One.
+Hi Pablo,
 
-My name is Mrs.Samira Hassim, i saw your profile and became interested
-in you, please contact me through my email address
-(sharmamrssandhya011@gmail.com) to know each other and i have
-something very important to tell you, i wait for your response to my
-email ID. (sharmamrssandhya011@gmail.com
+On Sun, Nov 24, 2019 at 01:33:10PM +1100, Duncan Roe wrote:
+> Updated:
+>
+>  src/extra/ipv6.c: Only test the first 4 bits of the putative IPv6 header to be
+>                    6, since all the other bits are up for grabs.
+>                    (I have seen nonzero Flow Control on the local interface and
+>                    RFC2474 & RFC3168 document Traffic Class use).
+>
+> Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
+> ---
+>  src/extra/ipv6.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/src/extra/ipv6.c b/src/extra/ipv6.c
+> index af307d6..f685b3b 100644
+> --- a/src/extra/ipv6.c
+> +++ b/src/extra/ipv6.c
+> @@ -45,7 +45,7 @@ struct ip6_hdr *nfq_ip6_get_hdr(struct pkt_buff *pktb)
+>  	ip6h = (struct ip6_hdr *)pktb->network_header;
+>
+>  	/* Not IPv6 packet. */
+> -	if (ip6h->ip6_flow != 0x60)
+> +	if ((*(uint8_t *)ip6h & 0xf0) != 0x60)
+>  		return NULL;
+>
+>  	return ip6h;
+> --
+> 2.14.5
+>
+This patch is uncontroversial surely?
+
+Cheers ... Duncan.
