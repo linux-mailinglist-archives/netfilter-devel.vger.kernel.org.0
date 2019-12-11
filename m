@@ -2,48 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 630D711B353
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Dec 2019 16:42:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD6211B7CD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Dec 2019 17:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388647AbfLKPl5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 11 Dec 2019 10:41:57 -0500
-Received: from mailout03.3bbmail.com ([110.164.252.196]:34482 "EHLO
-        mailout03.3bb.co.th" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387890AbfLKPlx (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 11 Dec 2019 10:41:53 -0500
-X-Greylist: delayed 1352 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Dec 2019 10:41:45 EST
-Authentication-Results: 3bb.co.th;
-        spf=fail smtp.mailfrom=infoccfoundation@amazon.com
-Received: from appserv (mx-ll-110.164.149-9.static.3bb.co.th [110.164.149.9] (may be forged))
-        by mailout03.3bb.co.th (8.16.0.27/8.16.0.27) with ESMTP id xBBFFIBO021534;
-        Wed, 11 Dec 2019 22:15:18 +0700
-Message-ID: <41452-220191231115152890@appserv>
-To:     "a" <skyteamsbiz@gmail.com>
-Reply-To: "CCULVERT FOUNDATION" <skyteamsbiz@gmail.com>
-From:   "CCULVERT FOUNDATION" <infoccfoundation@amazon.com>
-Subject: Mein letzter Wunsch.
-Date:   Wed, 11 Dec 2019 22:15:28 +0700
+        id S2388929AbfLKQKc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 11 Dec 2019 11:10:32 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:47028 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730822AbfLKQKa (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 11 Dec 2019 11:10:30 -0500
+Received: from localhost ([::1]:60118 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1if4ZI-0000lM-3Y; Wed, 11 Dec 2019 17:10:28 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nft PATCH] doc: nft.8: Add BUGS section about command line parsing
+Date:   Wed, 11 Dec 2019 17:10:20 +0100
+Message-Id: <20191211161020.1327-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-type: text/plain; charset=windows-874
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf1.amazon.com include:spf2.amazon.com
- include:amazonses.com -all
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-25_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=40 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=433
- adultscore=0 classifier=spam adjust=40 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1911260048
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Wenn Sie sich für die Finanzierung der STIFTUNG interessieren, schreiben Sie bitte heute über meinen Anwalt zurück
-Grüße,
-Mrs. Cindy Culvert.
-skyteamsbiz@gmail.com
+Illustrate potential pitfalls when entering nft commands on command
+line and list possible counter-measures.
+
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ doc/nft.txt | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/doc/nft.txt b/doc/nft.txt
+index abb9260d3f2f6..d69c2283f52db 100644
+--- a/doc/nft.txt
++++ b/doc/nft.txt
+@@ -802,6 +802,32 @@ On success, nft exits with a status of 0. Unspecified errors cause it to exit
+ with a status of 1, memory allocation errors with a status of 2, unable to open
+ Netlink socket with 3.
+ 
++BUGS
++-----
++COMMAND LINE PARSING
++~~~~~~~~~~~~~~~~~~~~
++The syntax used in nftables is prone to cause problems when given on command
++line. For instance, *semi-colon* is used in all relevant shells to delimit
++commands.
++
++In some places, *quoted strings* are expected. If not escaped, the shell will
++silently eat them away.
++
++There is also an internal problem regarding *negative priority values* (e.g.,
++when defining base-chains or flowtables): The leading dash catches getopt's
++attention which in turn assumes user specified an unknown option flag. Getopt
++allows to ignore any option-like parameter after the first non-option, but
++that would prevent typical commands like *nft list ruleset -a*.
++
++There are multiple ways to mitigate these issues: Shells can be prevented from
++interpreting special characters by prefixing them with the escape character
++(typically *backslash*), getopt won't recognize options following a parameter
++consisting of *two dashes* alone (which in turn is ignored as well). Probably
++the easiest way to avoid even unforseen issues is to enclose the whole
++nftables syntax in *single quotes*. This turns the multiple non-option words
++on command line into a single argument which is passed to the parser just like
++before but the shell as well as getopt will leave it alone.
++
+ SEE ALSO
+ --------
+ [verse]
+-- 
+2.24.0
 
