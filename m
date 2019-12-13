@@ -2,51 +2,129 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D061811D7EE
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Dec 2019 21:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CA111DB0F
+	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Dec 2019 01:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730825AbfLLUfv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 12 Dec 2019 15:35:51 -0500
-Received: from a3.inai.de ([88.198.85.195]:39958 "EHLO a3.inai.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730834AbfLLUfv (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 12 Dec 2019 15:35:51 -0500
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id D7FD658743FC0; Thu, 12 Dec 2019 21:35:49 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id D144E60C620DF;
-        Thu, 12 Dec 2019 21:35:49 +0100 (CET)
-Date:   Thu, 12 Dec 2019 21:35:49 +0100 (CET)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-cc:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft] main: allow for getopt parser from top-level scope
- only
-In-Reply-To: <20191212183309.ecfvftcw3rxwm6ni@salvia>
-Message-ID: <nycvar.YFH.7.76.1912122132300.29738@n3.vanv.qr>
-References: <20191212171455.83382-1-pablo@netfilter.org> <20191212174535.GI20005@orbyte.nwl.cc> <nycvar.YFH.7.76.1912121926350.25751@n3.vanv.qr> <20191212183309.ecfvftcw3rxwm6ni@salvia>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1731245AbfLMAUK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 12 Dec 2019 19:20:10 -0500
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:37620 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730882AbfLMAUK (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 12 Dec 2019 19:20:10 -0500
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1ifYgd-0008J4-29; Fri, 13 Dec 2019 01:20:04 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf] selftests: netfilter: extend flowtable test script with dnat rule
+Date:   Fri, 13 Dec 2019 01:19:58 +0100
+Message-Id: <20191213001958.31472-1-fw@strlen.de>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+NAT test currently covers snat (masquerade) only.
 
-On Thursday 2019-12-12 19:33, Pablo Neira Ayuso wrote:
->> 
->> Or simply stop taking options after the first-non option.
->> This is declared POSIX behavior, and, for glibc, it only needs the
->> POSIXLY_CORRECT environment variable, which can be set ahead of
->> getopt()/getopt_long() call and unset afterwards again.
->
->I think we tried that already, IIRC it breaks: nft list ruleset -a
->which is in the test scripts.
+Also add a dnat rule and then check that a connecting to the
+to-be-dnated address will work.
 
-Yes, it will need to be rewritten as `nft -a list ruleset`.
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ .../selftests/netfilter/nft_flowtable.sh      | 39 ++++++++++++++++---
+ 1 file changed, 34 insertions(+), 5 deletions(-)
 
-But.. you seem to be just fine with that, based on:
+diff --git a/tools/testing/selftests/netfilter/nft_flowtable.sh b/tools/testing/selftests/netfilter/nft_flowtable.sh
+index 16571ac1dab4..d3e0809ab368 100755
+--- a/tools/testing/selftests/netfilter/nft_flowtable.sh
++++ b/tools/testing/selftests/netfilter/nft_flowtable.sh
+@@ -226,17 +226,19 @@ check_transfer()
+ 	return 0
+ }
+ 
+-test_tcp_forwarding()
++test_tcp_forwarding_ip()
+ {
+ 	local nsa=$1
+ 	local nsb=$2
++	local dstip=$3
++	local dstport=$4
+ 	local lret=0
+ 
+ 	ip netns exec $nsb nc -w 5 -l -p 12345 < "$ns2in" > "$ns2out" &
+ 	lpid=$!
+ 
+ 	sleep 1
+-	ip netns exec $nsa nc -w 4 10.0.2.99 12345 < "$ns1in" > "$ns1out" &
++	ip netns exec $nsa nc -w 4 "$dstip" "$dstport" < "$ns1in" > "$ns1out" &
+ 	cpid=$!
+ 
+ 	sleep 3
+@@ -258,6 +260,28 @@ test_tcp_forwarding()
+ 	return $lret
+ }
+ 
++test_tcp_forwarding()
++{
++	test_tcp_forwarding_ip "$1" "$2" 10.0.2.99 12345
++
++	return $?
++}
++
++test_tcp_forwarding_nat()
++{
++	local lret
++
++	test_tcp_forwarding_ip "$1" "$2" 10.0.2.99 12345
++	lret=$?
++
++	if [ $lret -eq 0 ] ; then
++		test_tcp_forwarding_ip "$1" "$2" 10.6.6.6 1666
++		lret=$?
++	fi
++
++	return $lret
++}
++
+ make_file "$ns1in" "ns1"
+ make_file "$ns2in" "ns2"
+ 
+@@ -283,14 +307,19 @@ ip -net ns2 route add 192.168.10.1 via 10.0.2.1
+ # Same, but with NAT enabled.
+ ip netns exec nsr1 nft -f - <<EOF
+ table ip nat {
++   chain prerouting {
++      type nat hook prerouting priority 0; policy accept;
++      meta iif "veth0" ip daddr 10.6.6.6 tcp dport 1666 counter dnat ip to 10.0.2.99:12345
++   }
++
+    chain postrouting {
+       type nat hook postrouting priority 0; policy accept;
+-      meta oifname "veth1" masquerade
++      meta oifname "veth1" counter masquerade
+    }
+ }
+ EOF
+ 
+-test_tcp_forwarding ns1 ns2
++test_tcp_forwarding_nat ns1 ns2
+ 
+ if [ $? -eq 0 ] ;then
+ 	echo "PASS: flow offloaded for ns1/ns2 with NAT"
+@@ -313,7 +342,7 @@ fi
+ ip netns exec ns1 sysctl net.ipv4.ip_no_pmtu_disc=0 > /dev/null
+ ip netns exec ns2 sysctl net.ipv4.ip_no_pmtu_disc=0 > /dev/null
+ 
+-test_tcp_forwarding ns1 ns2
++test_tcp_forwarding_nat ns1 ns2
+ if [ $? -eq 0 ] ;then
+ 	echo "PASS: flow offloaded for ns1/ns2 with NAT and pmtu discovery"
+ else
+-- 
+2.23.0
 
->The most sane approach from programmer perspective is to force users
->to place options upfront.
