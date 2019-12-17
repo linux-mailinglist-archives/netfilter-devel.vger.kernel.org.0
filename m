@@ -2,32 +2,34 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23042122716
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2019 09:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD57122715
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2019 09:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbfLQIw5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1726743AbfLQIw5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Tue, 17 Dec 2019 03:52:57 -0500
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:20005 "EHLO
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:20025 "EHLO
         m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726743AbfLQIw5 (ORCPT
+        with ESMTP id S1726853AbfLQIw5 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 17 Dec 2019 03:52:57 -0500
 Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 0E41541A20;
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 3999641A69;
         Tue, 17 Dec 2019 16:52:48 +0800 (CST)
 From:   wenxu@ucloud.cn
 To:     pablo@netfilter.org
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf v2 0/3] netfilter: nf_flow_table_offload: something fixes
-Date:   Tue, 17 Dec 2019 16:52:44 +0800
-Message-Id: <1576572767-19779-1-git-send-email-wenxu@ucloud.cn>
+Subject: [PATCH nf v2 1/3] netfilter: nf_flow_table_offload: fix dst_neigh lookup
+Date:   Tue, 17 Dec 2019 16:52:45 +0800
+Message-Id: <1576572767-19779-2-git-send-email-wenxu@ucloud.cn>
 X-Mailer: git-send-email 1.8.3.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVOTkJCQkJCT0lMTEJOT1lXWShZQU
-        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OQw6DSo*QzgxH00#Lxg#PDgP
-        KzNPCh5VSlVKTkxNTkxJTE1DSkxJVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUJDQjcG
-X-HM-Tid: 0a6f130f4f472086kuqy0e41541a20
+In-Reply-To: <1576572767-19779-1-git-send-email-wenxu@ucloud.cn>
+References: <1576572767-19779-1-git-send-email-wenxu@ucloud.cn>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSkJNS0tLSUpDSEJKT0lZV1koWU
+        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NBA6Kgw4OTg1MU0rLx8QPDYp
+        KjMKCTRVSlVKTkxNTkxJTE1DT0lCVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUlKS0M3Bg++
+X-HM-Tid: 0a6f130f4ff92086kuqy3999641a69
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
@@ -35,16 +37,40 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: wenxu <wenxu@ucloud.cn>
 
-This version fix a release neigh problem in the v1 for patch2
+Get the dst_neigh through dst_ip, The dst_ip should get
+through peer tuple.src_v4 fix for dnat case.
 
-wenxu (3):
-  netfilter: nf_flow_table_offload: fix dst_neigh lookup
-  netfilter: nf_flow_table_offload: check the status of dst_neigh
-  netfilter: nf_flow_table_offload: fix the nat port mangle.
+Fixes: c29f74e0df7a ("netfilter: nf_flow_table: hardware offload support")
+Signed-off-by: wenxu <wenxu@ucloud.cn>
+---
+v2: no change
 
- net/netfilter/nf_flow_table_offload.c | 46 ++++++++++++++++++++++++++---------
- 1 file changed, 34 insertions(+), 12 deletions(-)
+ net/netfilter/nf_flow_table_offload.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
+diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
+index de7a0d1..91dd6eb 100644
+--- a/net/netfilter/nf_flow_table_offload.c
++++ b/net/netfilter/nf_flow_table_offload.c
+@@ -166,14 +166,16 @@ static int flow_offload_eth_dst(struct net *net,
+ 				enum flow_offload_tuple_dir dir,
+ 				struct nf_flow_rule *flow_rule)
+ {
+-	const struct flow_offload_tuple *tuple = &flow->tuplehash[dir].tuple;
+ 	struct flow_action_entry *entry0 = flow_action_entry_next(flow_rule);
+ 	struct flow_action_entry *entry1 = flow_action_entry_next(flow_rule);
++	const void *daddr = &flow->tuplehash[!dir].tuple.src_v4;
++	const struct dst_entry *dst_cache;
+ 	struct neighbour *n;
+ 	u32 mask, val;
+ 	u16 val16;
+ 
+-	n = dst_neigh_lookup(tuple->dst_cache, &tuple->dst_v4);
++	dst_cache = flow->tuplehash[dir].tuple.dst_cache;
++	n = dst_neigh_lookup(dst_cache, daddr);
+ 	if (!n)
+ 		return -ENOENT;
+ 
 -- 
 1.8.3.1
 
