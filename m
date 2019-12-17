@@ -2,71 +2,53 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3573F122B7E
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2019 13:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4507122DE9
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2019 15:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727700AbfLQM33 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 17 Dec 2019 07:29:29 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:60748 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727427AbfLQM32 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 17 Dec 2019 07:29:28 -0500
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1ihByf-0001mE-QF; Tue, 17 Dec 2019 13:29:25 +0100
-Date:   Tue, 17 Dec 2019 13:29:25 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     "Serguei Bezverkhi (sbezverk)" <sbezverk@cisco.com>
-Cc:     Arturo Borrero Gonzalez <arturo@netfilter.org>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
-Subject: Re: Numen with reference to vmap
-Message-ID: <20191217122925.GD8553@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        "Serguei Bezverkhi (sbezverk)" <sbezverk@cisco.com>,
-        Arturo Borrero Gonzalez <arturo@netfilter.org>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
-References: <EC8889A1-27E2-4DC9-B752-514689982085@cisco.com>
- <20191204101819.GN8016@orbyte.nwl.cc>
- <AFC93A41-C4DD-4336-9A62-6B9C6817D198@cisco.com>
- <20191204151738.GR14469@orbyte.nwl.cc>
- <5337E60B-E81D-46ED-912F-196E23C76701@cisco.com>
- <20191204155619.GU14469@orbyte.nwl.cc>
- <624cc1ac-126e-8ad3-3faa-f7869f7d2d5b@netfilter.org>
- <20191204223215.GX14469@orbyte.nwl.cc>
- <98A8233C-1A83-44A1-A122-6F80212D618F@cisco.com>
+        id S1728602AbfLQOEi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 17 Dec 2019 09:04:38 -0500
+Received: from sitav-80046.hsr.ch ([152.96.80.46]:60866 "EHLO
+        mail.strongswan.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728573AbfLQOEi (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 17 Dec 2019 09:04:38 -0500
+Received: from obook.wlp.is (unknown [185.12.128.225])
+        by mail.strongswan.org (Postfix) with ESMTPSA id ADAA840148;
+        Tue, 17 Dec 2019 14:56:22 +0100 (CET)
+From:   Martin Willi <martin@strongswan.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     netdev@vger.kernel.org
+Subject: [PATCH netfilter/iptables] Add new slavedev match extension
+Date:   Tue, 17 Dec 2019 14:56:14 +0100
+Message-Id: <20191217135616.25751-1-martin@strongswan.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98A8233C-1A83-44A1-A122-6F80212D618F@cisco.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Serguei,
+This patchset introduces a new Netfilter match extension to match input
+interfaces that are associated to a layer 3 master device. The first 
+patch adds the new match to the kernel, the other provides an extension 
+to userspace iptables to make use of the new match.
 
-On Tue, Dec 17, 2019 at 12:51:07AM +0000, Serguei Bezverkhi (sbezverk) wrote:
-> In this google doc, see link: https://docs.google.com/document/d/128gllbr_o-40pD2i0D14zMNdtCwRYR7YM49T4L2Eyac/edit?usp=sharing
+The motivation for a new match is that in INPUT/FORWARD, a base match
+for the input interface is done against the layer 3 master device if
+the real input device is associated to such a device. This makes
+filtering on input interfaces within VRFs difficult.
 
-I avoid Google-Doc as far as possible. ;)
+In output, the packet is passed to Netfilter with the real output
+interface as well, so output interface matching in slavedev is not
+required. Nonetheless are the arguments named explicitly for the input
+interface, as it makes the meaning of these options more intuitive
+and the match extensible.
 
-> There is a question about possible optimizations. I was wondering if you could comment/reply. Also I got one more question about updates of a set. Let's say there is a set with 10k entries, how costly would be the update of such set.
-
-Regarding Rob's question: With iptables, for N balanced servers there
-are N rules. With equal probabilities a package traverses N/2 rules on
-average (unless I'm mistaken). With nftables, there's a single rule
-which triggers the map lookup. In kernel, that's a lookup in rhashtable
-and therefore performs quite well.
-
-Another aspect to Rob's question is jitter: With iptables solution, a
-packet may traverse all N rules before it is dispatched. The nftables
-map lookup will happen in almost constant time.
-
-I can't give you performance numbers, but it should be easy to measure.
-Given that you won't need set content for insert or delete operations
-while iptables fetches the whole table for each rule insert or delete
-command, I guess you can imagine how the numbers will look like. But
-feel free to verify, it's fun! :)
-
-Cheers, Phil
+An alternative approach for better filtering within VRFs could be to pass
+the packet with the real interface to FORWARD/INPUT hooks, or even pass 
+it twice similar to the output path. This is very likely to break 
+existing rulesets, though, which should be no problem with a new match
+extension.
+--
+2.20.1
