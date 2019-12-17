@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8DD1229E6
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2019 12:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27511229EC
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2019 12:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbfLQL1u (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 17 Dec 2019 06:27:50 -0500
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:57354 "EHLO
+        id S1727420AbfLQL1z (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 17 Dec 2019 06:27:55 -0500
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:57360 "EHLO
         Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726383AbfLQL1u (ORCPT
+        by vger.kernel.org with ESMTP id S1726383AbfLQL1y (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 17 Dec 2019 06:27:50 -0500
+        Tue, 17 Dec 2019 06:27:54 -0500
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1ihB12-0006lr-Kl; Tue, 17 Dec 2019 12:27:48 +0100
+        id 1ihB17-0006mJ-3r; Tue, 17 Dec 2019 12:27:53 +0100
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft v3 07/10] mnl: round up the map data size too
-Date:   Tue, 17 Dec 2019 12:27:10 +0100
-Message-Id: <20191217112713.6017-8-fw@strlen.de>
+Subject: [PATCH nft v3 08/10] evaluate: print a hint about 'typeof' syntax on 0 keylen
+Date:   Tue, 17 Dec 2019 12:27:11 +0100
+Message-Id: <20191217112713.6017-9-fw@strlen.de>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191217112713.6017-1-fw@strlen.de>
 References: <20191217112713.6017-1-fw@strlen.de>
@@ -31,30 +31,65 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Same as key: if the size isn't divisible by BITS_PER_BYTE, we need to
-round up, not down.
+If user says
 
-Without this, you can't store vlan ids in a map, as they are truncated
-to 8 bit.
+'type integer; ...' in a set definition, don't just throw an error --
+provide a hint that the typeof keyword can be used to provide
+the needed size information.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- src/mnl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/evaluate.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/src/mnl.c b/src/mnl.c
-index 03afe79c23a8..d5bdff293c61 100644
---- a/src/mnl.c
-+++ b/src/mnl.c
-@@ -861,7 +861,7 @@ int mnl_nft_set_add(struct netlink_ctx *ctx, const struct cmd *cmd,
- 		nftnl_set_set_u32(nls, NFTNL_SET_DATA_TYPE,
- 				  dtype_map_to_kernel(set->data->dtype));
- 		nftnl_set_set_u32(nls, NFTNL_SET_DATA_LEN,
--				  set->data->len / BITS_PER_BYTE);
-+				  div_round_up(set->data->len, BITS_PER_BYTE));
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 91d6b254c659..817b23220bb9 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -3307,6 +3307,20 @@ static int setelem_evaluate(struct eval_ctx *ctx, struct expr **expr)
+ 	return 0;
+ }
+ 
++static int set_key_data_error(struct eval_ctx *ctx, const struct set *set,
++			      const struct datatype *dtype,
++			      const char *name)
++{
++	const char *hint = "";
++
++	if (dtype->size == 0)
++		hint = ". Try \"typeof expression\" instead of \"type datatype\".";
++
++	return set_error(ctx, set, "unqualified type %s "
++			 "specified in %s definition%s",
++			 dtype->name, name, hint);
++}
++
+ static int set_evaluate(struct eval_ctx *ctx, struct set *set)
+ {
+ 	struct table *table;
+@@ -3331,9 +3345,8 @@ static int set_evaluate(struct eval_ctx *ctx, struct set *set)
+ 			return -1;
+ 
+ 		if (set->key->len == 0)
+-			return set_error(ctx, set, "unqualified key type %s "
+-					 "specified in %s definition",
+-					 set->key->dtype->name, type);
++			return set_key_data_error(ctx, set,
++						  set->key->dtype, type);
  	}
- 	if (set_is_objmap(set->flags))
- 		nftnl_set_set_u32(nls, NFTNL_SET_OBJ_TYPE, set->objtype);
+ 	if (set->flags & NFT_SET_INTERVAL &&
+ 	    set->key->etype == EXPR_CONCAT)
+@@ -3345,8 +3358,8 @@ static int set_evaluate(struct eval_ctx *ctx, struct set *set)
+ 					 "specify mapping data type");
+ 
+ 		if (set->data->len == 0 && set->data->dtype->type != TYPE_VERDICT)
+-			return set_error(ctx, set, "unqualified mapping data "
+-					 "type specified in map definition");
++			return set_key_data_error(ctx, set,
++						  set->data->dtype, type);
+ 	} else if (set_is_objmap(set->flags)) {
+ 		if (set->data) {
+ 			assert(set->data->etype == EXPR_VALUE);
 -- 
 2.24.1
 
