@@ -2,34 +2,34 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5B6122714
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2019 09:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CAE122717
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Dec 2019 09:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbfLQIw4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 17 Dec 2019 03:52:56 -0500
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:20053 "EHLO
+        id S1726853AbfLQIw6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 17 Dec 2019 03:52:58 -0500
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:20055 "EHLO
         m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726831AbfLQIw4 (ORCPT
+        with ESMTP id S1725893AbfLQIw6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 17 Dec 2019 03:52:56 -0500
+        Tue, 17 Dec 2019 03:52:58 -0500
 Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 79560419D3;
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id AA12341A8E;
         Tue, 17 Dec 2019 16:52:48 +0800 (CST)
 From:   wenxu@ucloud.cn
 To:     pablo@netfilter.org
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf v2 2/3] netfilter: nf_flow_table_offload: check the status of dst_neigh
-Date:   Tue, 17 Dec 2019 16:52:46 +0800
-Message-Id: <1576572767-19779-3-git-send-email-wenxu@ucloud.cn>
+Subject: [PATCH nf v2 3/3] netfilter: nf_flow_table_offload: fix the nat port mangle.
+Date:   Tue, 17 Dec 2019 16:52:47 +0800
+Message-Id: <1576572767-19779-4-git-send-email-wenxu@ucloud.cn>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1576572767-19779-1-git-send-email-wenxu@ucloud.cn>
 References: <1576572767-19779-1-git-send-email-wenxu@ucloud.cn>
 X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSkJNS0tLSUpDSEJKT0lZV1koWU
         FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PQg6OBw5NDgwPU1IER0xPD8T
-        Lw5PFB5VSlVKTkxNTkxJTE1DTU5IVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUlOS0s3Bg++
-X-HM-Tid: 0a6f130f50ff2086kuqy79560419d3
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NBg6DCo5FDgwF01NPx4uPDZI
+        LQxPCj5VSlVKTkxNTkxJTE1DQ0lCVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUhNTUg3Bg++
+X-HM-Tid: 0a6f130f51c52086kuqyaa12341a8e
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
@@ -37,58 +37,88 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: wenxu <wenxu@ucloud.cn>
 
-It is better to get the dst_neigh with neigh->lock and check the
-nud_state is VALID
+For dnat:
+The original dir maybe modify the dst port to src port of reply dir
+The reply dir maybe modify the src port to dst port of origin dir
+
+For snat:
+The original dir maybe modify the src port to dst port of reply dir
+The reply dir maybe modify the dst port to src port of reply dir
 
 Fixes: c29f74e0df7a ("netfilter: nf_flow_table: hardware offload support")
 Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
-v2: neigh_release for non NUD_VALID neighbor
- 
- net/netfilter/nf_flow_table_offload.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+v2: no change
+
+ net/netfilter/nf_flow_table_offload.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
 diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-index 91dd6eb..acaa1ef 100644
+index acaa1ef..95f6dc4 100644
 --- a/net/netfilter/nf_flow_table_offload.c
 +++ b/net/netfilter/nf_flow_table_offload.c
-@@ -170,8 +170,10 @@ static int flow_offload_eth_dst(struct net *net,
- 	struct flow_action_entry *entry1 = flow_action_entry_next(flow_rule);
- 	const void *daddr = &flow->tuplehash[!dir].tuple.src_v4;
- 	const struct dst_entry *dst_cache;
-+	unsigned char ha[ETH_ALEN];
- 	struct neighbour *n;
- 	u32 mask, val;
-+	u8 nud_state;
- 	u16 val16;
+@@ -349,22 +349,26 @@ static void flow_offload_port_snat(struct net *net,
+ 				   struct nf_flow_rule *flow_rule)
+ {
+ 	struct flow_action_entry *entry = flow_action_entry_next(flow_rule);
+-	u32 mask = ~htonl(0xffff0000), port;
++	u32 mask, port;
+ 	u32 offset;
  
- 	dst_cache = flow->tuplehash[dir].tuple.dst_cache;
-@@ -179,13 +181,23 @@ static int flow_offload_eth_dst(struct net *net,
- 	if (!n)
- 		return -ENOENT;
- 
-+	read_lock_bh(&n->lock);
-+	nud_state = n->nud_state;
-+	ether_addr_copy(ha, n->ha);
-+	read_unlock_bh(&n->lock);
+ 	switch (dir) {
+ 	case FLOW_OFFLOAD_DIR_ORIGINAL:
+ 		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.dst_port);
+ 		offset = 0; /* offsetof(struct tcphdr, source); */
++		port = htonl(port << 16);
++		mask = ~htonl(0xffff0000);
+ 		break;
+ 	case FLOW_OFFLOAD_DIR_REPLY:
+ 		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.src_port);
+ 		offset = 0; /* offsetof(struct tcphdr, dest); */
++		port = htonl(port);
++		mask = ~htonl(0xffff);
+ 		break;
+ 	default:
+ 		return;
+ 	}
+-	port = htonl(port << 16);
 +
-+	if (!(nud_state & NUD_VALID)) {
-+		neigh_release(n);
-+		return -ENOENT;
-+	}
-+
- 	mask = ~0xffffffff;
--	memcpy(&val, n->ha, 4);
-+	memcpy(&val, ha, 4);
- 	flow_offload_mangle(entry0, FLOW_ACT_MANGLE_HDR_TYPE_ETH, 0,
- 			    &val, &mask);
+ 	flow_offload_mangle(entry, flow_offload_l4proto(flow), offset,
+ 			    &port, &mask);
+ }
+@@ -375,22 +379,26 @@ static void flow_offload_port_dnat(struct net *net,
+ 				   struct nf_flow_rule *flow_rule)
+ {
+ 	struct flow_action_entry *entry = flow_action_entry_next(flow_rule);
+-	u32 mask = ~htonl(0xffff), port;
++	u32 mask, port;
+ 	u32 offset;
  
- 	mask = ~0x0000ffff;
--	memcpy(&val16, n->ha + 4, 2);
-+	memcpy(&val16, ha + 4, 2);
- 	val = val16;
- 	flow_offload_mangle(entry1, FLOW_ACT_MANGLE_HDR_TYPE_ETH, 4,
- 			    &val, &mask);
+ 	switch (dir) {
+ 	case FLOW_OFFLOAD_DIR_ORIGINAL:
+-		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.dst_port);
+-		offset = 0; /* offsetof(struct tcphdr, source); */
++		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.src_port);
++		offset = 0; /* offsetof(struct tcphdr, dest); */
++		port = htonl(port);
++		mask = ~htonl(0xffff);
+ 		break;
+ 	case FLOW_OFFLOAD_DIR_REPLY:
+-		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.src_port);
+-		offset = 0; /* offsetof(struct tcphdr, dest); */
++		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.dst_port);
++		offset = 0; /* offsetof(struct tcphdr, source); */
++		port = htonl(port << 16);
++		mask = ~htonl(0xffff0000);
+ 		break;
+ 	default:
+ 		return;
+ 	}
+-	port = htonl(port);
++
+ 	flow_offload_mangle(entry, flow_offload_l4proto(flow), offset,
+ 			    &port, &mask);
+ }
 -- 
 1.8.3.1
 
