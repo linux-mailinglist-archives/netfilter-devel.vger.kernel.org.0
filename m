@@ -2,241 +2,208 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C587012756E
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Dec 2019 06:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B820E127607
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Dec 2019 08:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725874AbfLTFyF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 20 Dec 2019 00:54:05 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:45295 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725853AbfLTFyF (ORCPT
+        id S1726210AbfLTHAm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 20 Dec 2019 02:00:42 -0500
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:32120 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbfLTHAm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 20 Dec 2019 00:54:05 -0500
-Received: from dimstar.local.net (n122-110-44-45.sun2.vic.optusnet.com.au [122.110.44.45])
-        by mail104.syd.optusnet.com.au (Postfix) with SMTP id CE759820004
-        for <netfilter-devel@vger.kernel.org>; Fri, 20 Dec 2019 16:53:48 +1100 (AEDT)
-Received: (qmail 24163 invoked by uid 501); 20 Dec 2019 05:53:48 -0000
-From:   Duncan Roe <duncan_roe@optusnet.com.au>
+        Fri, 20 Dec 2019 02:00:42 -0500
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id AA00541949;
+        Fri, 20 Dec 2019 15:00:33 +0800 (CST)
+From:   wenxu@ucloud.cn
 To:     pablo@netfilter.org
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH libnetfilter_queue 2/2] src: add mangle functions for IPv6, IPv6/TCP and IPv6/UDP
-Date:   Fri, 20 Dec 2019 16:53:48 +1100
-Message-Id: <20191220055348.24113-3-duncan_roe@optusnet.com.au>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20191220055348.24113-1-duncan_roe@optusnet.com.au>
-References: <20191220055348.24113-1-duncan_roe@optusnet.com.au>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=4DzML1vCOQ6Odsy8BUtSXQ==:117 a=4DzML1vCOQ6Odsy8BUtSXQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=pxVhFHJ0LMsA:10 a=RSmzAf-M6YYA:10
-        a=PO7r1zJSAAAA:8 a=yqmiQjsSZ5ETotf7rwoA:9 a=yfWvxkdt8hjYQcGF:21
-        a=I6fXZnAS6tfgaCu6:21
+Subject: [PATCH nf-next] netfilter: nf_flow_table: clean up entries in hardware
+Date:   Fri, 20 Dec 2019 15:00:33 +0800
+Message-Id: <1576825233-3041-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVNTElCQkJDTkNDTk1JWVdZKFlBSU
+        I3V1ktWUFJV1kJDhceCFlBWTU0KTY6NyQpLjc#WQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MjI6Sjo*PjgzTEwIHgNDShVC
+        Hw0aCjpVSlVKTkxNQ0lOSUhIQ0tPVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQU1CSkk3Bg++
+X-HM-Tid: 0a6f221ba1272086kuqyaa00541949
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
----
- .../libnetfilter_queue/libnetfilter_queue_ipv6.h   |  1 +
- .../libnetfilter_queue/libnetfilter_queue_tcp.h    |  1 +
- .../libnetfilter_queue/libnetfilter_queue_udp.h    |  1 +
- src/extra/ipv6.c                                   | 29 ++++++++++++++++
- src/extra/tcp.c                                    | 40 ++++++++++++++++++++++
- src/extra/udp.c                                    | 39 +++++++++++++++++++++
- 6 files changed, 111 insertions(+)
+From: wenxu <wenxu@ucloud.cn>
 
-diff --git a/include/libnetfilter_queue/libnetfilter_queue_ipv6.h b/include/libnetfilter_queue/libnetfilter_queue_ipv6.h
-index 93452ce..c0a7d37 100644
---- a/include/libnetfilter_queue/libnetfilter_queue_ipv6.h
-+++ b/include/libnetfilter_queue/libnetfilter_queue_ipv6.h
-@@ -6,6 +6,7 @@ struct ip6_hdr;
+Flowtable delete will call the UNBIND setup before cleanup flows with
+nf_flow_table_free. First it make UNBIND call after the free operation
+
+But only UNBIND setup before flows cleanup can't guarantee the flows 
+delete in the hardware. The real delete in another  nf_flow_offload_work. 
+So This patch add a refcont for the flow_block to make sure the hardware
+flows clean before UNBIND setup.
+
+Signed-off-by: wenxu <wenxu@ucloud.cn>
+---
+
+Test this patch work with mlx driver.
+
+ include/net/netfilter/nf_flow_table.h |  1 +
+ net/netfilter/nf_flow_table_core.c    |  4 ++++
+ net/netfilter/nf_flow_table_offload.c |  3 +++
+ net/netfilter/nf_tables_api.c         | 28 +++++++++++++++++-----------
+ 4 files changed, 25 insertions(+), 11 deletions(-)
+
+diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
+index f0897b3..bb66f13 100644
+--- a/include/net/netfilter/nf_flow_table.h
++++ b/include/net/netfilter/nf_flow_table.h
+@@ -44,6 +44,7 @@ struct nf_flowtable {
+ 	struct delayed_work		gc_work;
+ 	unsigned int			flags;
+ 	struct flow_block		flow_block;
++	refcount_t			block_ref;
+ 	possible_net_t			net;
+ };
  
- struct ip6_hdr *nfq_ip6_get_hdr(struct pkt_buff *pktb);
- int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *iph, uint8_t target);
-+int nfq_ip6_mangle(struct pkt_buff *pktb, unsigned int dataoff,unsigned int match_offset, unsigned int match_len,const char *rep_buffer, unsigned int rep_len);
- int nfq_ip6_snprintf(char *buf, size_t size, const struct ip6_hdr *ip6h);
+diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
+index 9889d52..e5a92369 100644
+--- a/net/netfilter/nf_flow_table_core.c
++++ b/net/netfilter/nf_flow_table_core.c
+@@ -508,6 +508,8 @@ int nf_flow_table_init(struct nf_flowtable *flowtable)
  
- #endif
-diff --git a/include/libnetfilter_queue/libnetfilter_queue_tcp.h b/include/libnetfilter_queue/libnetfilter_queue_tcp.h
-index c66dfb6..997d997 100644
---- a/include/libnetfilter_queue/libnetfilter_queue_tcp.h
-+++ b/include/libnetfilter_queue/libnetfilter_queue_tcp.h
-@@ -14,6 +14,7 @@ void nfq_tcp_compute_checksum_ipv4(struct tcphdr *tcph, struct iphdr *iph);
- void nfq_tcp_compute_checksum_ipv6(struct tcphdr *tcph, struct ip6_hdr *ip6h);
+ 	queue_delayed_work(system_power_efficient_wq,
+ 			   &flowtable->gc_work, HZ);
++
++	refcount_set(&flowtable->block_ref, 1);
  
- int nfq_tcp_mangle_ipv4(struct pkt_buff *pkt, unsigned int match_offset, unsigned int match_len, const char *rep_buffer, unsigned int rep_len);
-+int nfq_tcp_mangle_ipv6(struct pkt_buff *pkt, unsigned int match_offset, unsigned int match_len, const char *rep_buffer, unsigned int rep_len);
+ 	mutex_lock(&flowtable_lock);
+ 	list_add(&flowtable->list, &flowtables);
+@@ -560,6 +562,8 @@ void nf_flow_table_free(struct nf_flowtable *flow_table)
+ 	nf_flow_table_iterate(flow_table, nf_flow_table_do_cleanup, NULL);
+ 	nf_flow_table_iterate(flow_table, nf_flow_offload_gc_step, flow_table);
+ 	rhashtable_destroy(&flow_table->rhashtable);
++	while (refcount_read(&flow_table->block_ref) > 1)
++		msleep(100);
+ }
+ EXPORT_SYMBOL_GPL(nf_flow_table_free);
  
- int nfq_tcp_snprintf(char *buf, size_t size, const struct tcphdr *tcp);
+diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
+index 949345f..4b9f81d 100644
+--- a/net/netfilter/nf_flow_table_offload.c
++++ b/net/netfilter/nf_flow_table_offload.c
+@@ -839,6 +839,7 @@ static void flow_offload_work_handler(struct work_struct *work)
+ 		default:
+ 			WARN_ON_ONCE(1);
+ 		}
++		refcount_dec(&offload->flowtable->block_ref);
+ 		list_del(&offload->list);
+ 		kfree(offload);
+ 	}
+@@ -846,6 +847,8 @@ static void flow_offload_work_handler(struct work_struct *work)
  
-diff --git a/include/libnetfilter_queue/libnetfilter_queue_udp.h b/include/libnetfilter_queue/libnetfilter_queue_udp.h
-index f4b6c49..f9fd609 100644
---- a/include/libnetfilter_queue/libnetfilter_queue_udp.h
-+++ b/include/libnetfilter_queue/libnetfilter_queue_udp.h
-@@ -11,6 +11,7 @@ void nfq_udp_compute_checksum_ipv4(struct udphdr *udph, struct iphdr *iph);
- void nfq_udp_compute_checksum_ipv6(struct udphdr *udph, struct ip6_hdr *ip6h);
+ static void flow_offload_queue_work(struct flow_offload_work *offload)
+ {
++	refcount_inc(&offload->flowtable->block_ref);
++
+ 	spin_lock_bh(&flow_offload_pending_list_lock);
+ 	list_add_tail(&offload->list, &flow_offload_pending_list);
+ 	spin_unlock_bh(&flow_offload_pending_list_lock);
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 944e454..b317e57 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -5978,20 +5978,23 @@ static const struct nf_flowtable_type *__nft_flowtable_type_get(u8 family)
  
- int nfq_udp_mangle_ipv4(struct pkt_buff *pkt, unsigned int match_offset, unsigned int match_len, const char *rep_buffer, unsigned int rep_len);
-+int nfq_udp_mangle_ipv6(struct pkt_buff *pktb, unsigned int match_offset, unsigned int match_len, const char *rep_buffer, unsigned int rep_len);
- 
- int nfq_udp_snprintf(char *buf, size_t size, const struct udphdr *udp);
- 
-diff --git a/src/extra/ipv6.c b/src/extra/ipv6.c
-index f685b3b..6e8820c 100644
---- a/src/extra/ipv6.c
-+++ b/src/extra/ipv6.c
-@@ -116,6 +116,35 @@ int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *ip6h,
- 	return cur ? 1 : 0;
+ static void nft_unregister_flowtable_hook(struct net *net,
+ 					  struct nft_flowtable *flowtable,
+-					  struct nft_hook *hook)
++					  struct nft_hook *hook,
++					  bool unbind)
+ {
+ 	nf_unregister_net_hook(net, &hook->ops);
+-	flowtable->data.type->setup(&flowtable->data, hook->ops.dev,
+-				    FLOW_BLOCK_UNBIND);
++	if (unbind)
++		flowtable->data.type->setup(&flowtable->data, hook->ops.dev,
++					    FLOW_BLOCK_UNBIND);
  }
  
-+/**
-+ * nfq_ip6_mangle - mangle IPv6 packet buffer
-+ * \param pktb: Pointer to user-space network packet buffer
-+ * \param dataoff: Offset to layer 4 header
-+ * \param match_offset: Offset to content that you want to mangle
-+ * \param match_len: Length of the existing content you want to mangle
-+ * \param rep_buffer: Pointer to data you want to use to replace current content
-+ * \param rep_len: Length of data you want to use to replace current content
-+ * \returns 1 for success and 0 for failure. See pktb_mangle() for failure case
-+ * \note This function updates the IPv6 length (if necessary)
-+ */
-+EXPORT_SYMBOL
-+int nfq_ip6_mangle(struct pkt_buff *pktb, unsigned int dataoff,
-+		   unsigned int match_offset, unsigned int match_len,
-+		   const char *rep_buffer, unsigned int rep_len)
-+{
-+	struct ip6_hdr *ip6h = (struct ip6_hdr *)pktb->network_header;
-+
-+	if (!pktb_mangle(pktb, dataoff, match_offset, match_len, rep_buffer,
-+			 rep_len))
-+		return 0;
-+
-+	/* Fix IPv6 hdr length information */
-+	ip6h->ip6_plen =
-+		htons(pktb->tail - pktb->network_header - sizeof *ip6h);
-+
-+	return 1;
-+}
-+
- /**
-  * nfq_ip6_snprintf - print IPv6 header into one buffer in iptables LOG format
-  * \param buf: Pointer to buffer that is used to print the object
-diff --git a/src/extra/tcp.c b/src/extra/tcp.c
-index 136d7ea..8119843 100644
---- a/src/extra/tcp.c
-+++ b/src/extra/tcp.c
-@@ -21,6 +21,7 @@
- #include <libnetfilter_queue/libnetfilter_queue.h>
- #include <libnetfilter_queue/libnetfilter_queue_tcp.h>
- #include <libnetfilter_queue/libnetfilter_queue_ipv4.h>
-+#include <libnetfilter_queue/libnetfilter_queue_ipv6.h>
- #include <libnetfilter_queue/pktbuff.h>
+ static void nft_unregister_flowtable_net_hooks(struct net *net,
+-					       struct nft_flowtable *flowtable)
++					       struct nft_flowtable *flowtable,
++					       bool unbind)
+ {
+ 	struct nft_hook *hook;
  
- #include "internal.h"
-@@ -206,6 +207,45 @@ int nfq_tcp_mangle_ipv4(struct pkt_buff *pkt,
- 	return 1;
+ 	list_for_each_entry(hook, &flowtable->hook_list, list)
+-		nft_unregister_flowtable_hook(net, flowtable, hook);
++		nft_unregister_flowtable_hook(net, flowtable, hook, unbind);
  }
  
-+/**
-+ * nfq_tcp_mangle_ipv6 - Mangle TCP/IPv6 packet buffer
-+ * \param pktb: Pointer to network packet buffer
-+ * \param match_offset: Offset from start of TCP data of content that you want
-+ * to mangle
-+ * \param match_len: Length of the existing content you want to mangle
-+ * \param rep_buffer: Pointer to data you want to use to replace current content
-+ * \param rep_len: Length of data you want to use to replace current content
-+ * \returns 1 for success and 0 for failure. See pktb_mangle() for failure case
-+ * \note This function updates the IPv6 length and recalculates the TCP
-+ * checksum for you.
-+ * \warning After changing the length of a TCP message, the application will
-+ * need to mangle sequence numbers in both directions until another change
-+ * puts them in sync again
-+ */
-+EXPORT_SYMBOL
-+int nfq_tcp_mangle_ipv6(struct pkt_buff *pktb,
-+			unsigned int match_offset, unsigned int match_len,
-+			const char *rep_buffer, unsigned int rep_len)
-+{
-+	struct ip6_hdr *ip6h;
-+	struct tcphdr *tcph;
-+
-+	ip6h = (struct ip6_hdr *)pktb->network_header;
-+	tcph = (struct tcphdr *)(pktb->transport_header);
-+	if (!tcph)
-+		return 0;
-+
-+	if (!nfq_ip6_mangle(pktb,
-+			   pktb->transport_header - pktb->network_header +
-+			   tcph->doff * 4,
-+			   match_offset, match_len, rep_buffer, rep_len))
-+		return 0;
-+
-+	nfq_tcp_compute_checksum_ipv6(tcph, ip6h);
-+
-+	return 1;
-+}
-+
- /**
-  * @}
-  */
-diff --git a/src/extra/udp.c b/src/extra/udp.c
-index 34dbf2a..9eee1c7 100644
---- a/src/extra/udp.c
-+++ b/src/extra/udp.c
-@@ -20,6 +20,7 @@
- #include <libnetfilter_queue/libnetfilter_queue.h>
- #include <libnetfilter_queue/libnetfilter_queue_udp.h>
- #include <libnetfilter_queue/libnetfilter_queue_ipv4.h>
-+#include <libnetfilter_queue/libnetfilter_queue_ipv6.h>
- #include <libnetfilter_queue/pktbuff.h>
+ static int nft_register_flowtable_net_hooks(struct net *net,
+@@ -6037,7 +6040,7 @@ static int nft_register_flowtable_net_hooks(struct net *net,
+ 		if (i-- <= 0)
+ 			break;
  
- #include "internal.h"
-@@ -159,6 +160,44 @@ int nfq_udp_mangle_ipv4(struct pkt_buff *pktb,
- 	return 1;
+-		nft_unregister_flowtable_hook(net, flowtable, hook);
++		nft_unregister_flowtable_hook(net, flowtable, hook, true);
+ 		list_del_rcu(&hook->list);
+ 		kfree_rcu(hook, rcu);
+ 	}
+@@ -6145,7 +6148,7 @@ static int nf_tables_newflowtable(struct net *net, struct sock *nlsk,
+ 	return 0;
+ err5:
+ 	list_for_each_entry_safe(hook, next, &flowtable->hook_list, list) {
+-		nft_unregister_flowtable_hook(net, flowtable, hook);
++		nft_unregister_flowtable_hook(net, flowtable, hook, true);
+ 		list_del_rcu(&hook->list);
+ 		kfree_rcu(hook, rcu);
+ 	}
+@@ -6441,12 +6444,14 @@ static void nf_tables_flowtable_destroy(struct nft_flowtable *flowtable)
+ {
+ 	struct nft_hook *hook, *next;
+ 
++	flowtable->data.type->free(&flowtable->data);
+ 	list_for_each_entry_safe(hook, next, &flowtable->hook_list, list) {
++		flowtable->data.type->setup(&flowtable->data, hook->ops.dev,
++					    FLOW_BLOCK_UNBIND);
+ 		list_del_rcu(&hook->list);
+ 		kfree(hook);
+ 	}
+ 	kfree(flowtable->name);
+-	flowtable->data.type->free(&flowtable->data);
+ 	module_put(flowtable->data.type->owner);
+ 	kfree(flowtable);
  }
+@@ -6490,7 +6495,8 @@ static void nft_flowtable_event(unsigned long event, struct net_device *dev,
+ 		if (hook->ops.dev != dev)
+ 			continue;
  
-+/**
-+ * nfq_udp_mangle_ipv6 - Mangle UDP/IPv6 packet buffer
-+ * \param pktb: Pointer to network packet buffer
-+ * \param match_offset: Offset from start of UDP data of content that you want
-+ * to mangle
-+ * \param match_len: Length of the existing content you want to mangle
-+ * \param rep_buffer: Pointer to data you want to use to replace current content
-+ * \param rep_len: Length of data you want to use to replace current content
-+ * \returns 1 for success and 0 for failure. See pktb_mangle() for failure case
-+ * \note This function updates the IPv6 and UDP lengths and recalculates the UDP
-+ * checksum for you.
-+ */
-+EXPORT_SYMBOL
-+int nfq_udp_mangle_ipv6(struct pkt_buff *pktb,
-+			unsigned int match_offset, unsigned int match_len,
-+			const char *rep_buffer, unsigned int rep_len)
-+{
-+	struct ip6_hdr *ip6h;
-+	struct udphdr *udph;
-+
-+	ip6h = (struct ip6_hdr *)pktb->network_header;
-+	udph = (struct udphdr *)(pktb->transport_header);
-+	if (!udph)
-+		return 0;
-+
-+	udph->len = htons(ntohs(udph->len) + rep_len - match_len);
-+
-+	if (!nfq_ip6_mangle(pktb,
-+			    pktb->transport_header - pktb->network_header +
-+			    sizeof(struct udphdr),
-+			    match_offset, match_len, rep_buffer, rep_len))
-+		return 0;
-+
-+	nfq_udp_compute_checksum_ipv6(udph, ip6h);
-+
-+	return 1;
-+}
-+
- /**
-  * nfq_pkt_snprintf_udp_hdr - print udp header into one buffer in a humnan
-  * readable way
+-		nft_unregister_flowtable_hook(dev_net(dev), flowtable, hook);
++		nft_unregister_flowtable_hook(dev_net(dev), flowtable, hook,
++					      true);
+ 		list_del_rcu(&hook->list);
+ 		kfree_rcu(hook, rcu);
+ 		break;
+@@ -7174,7 +7180,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 						   nft_trans_flowtable(trans),
+ 						   NFT_MSG_DELFLOWTABLE);
+ 			nft_unregister_flowtable_net_hooks(net,
+-					nft_trans_flowtable(trans));
++					nft_trans_flowtable(trans), false);
+ 			break;
+ 		}
+ 	}
+@@ -7318,7 +7324,7 @@ static int __nf_tables_abort(struct net *net)
+ 			trans->ctx.table->use--;
+ 			list_del_rcu(&nft_trans_flowtable(trans)->list);
+ 			nft_unregister_flowtable_net_hooks(net,
+-					nft_trans_flowtable(trans));
++					nft_trans_flowtable(trans), true);
+ 			break;
+ 		case NFT_MSG_DELFLOWTABLE:
+ 			trans->ctx.table->use++;
 -- 
-2.14.5
+1.8.3.1
 
