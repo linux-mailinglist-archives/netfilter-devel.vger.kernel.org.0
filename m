@@ -2,122 +2,58 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CB012747C
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Dec 2019 05:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215FF127570
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Dec 2019 06:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727140AbfLTEOm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 19 Dec 2019 23:14:42 -0500
-Received: from m9785.mail.qiye.163.com ([220.181.97.85]:27233 "EHLO
-        m9785.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727110AbfLTEOm (ORCPT
+        id S1726030AbfLTFyI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 20 Dec 2019 00:54:08 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:45285 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725825AbfLTFyH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 19 Dec 2019 23:14:42 -0500
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9785.mail.qiye.163.com (Hmail) with ESMTPA id 7579B5C1636;
-        Fri, 20 Dec 2019 12:14:39 +0800 (CST)
-From:   wenxu@ucloud.cn
+        Fri, 20 Dec 2019 00:54:07 -0500
+Received: from dimstar.local.net (n122-110-44-45.sun2.vic.optusnet.com.au [122.110.44.45])
+        by mail104.syd.optusnet.com.au (Postfix) with SMTP id A5AC2820003
+        for <netfilter-devel@vger.kernel.org>; Fri, 20 Dec 2019 16:53:48 +1100 (AEDT)
+Received: (qmail 24157 invoked by uid 501); 20 Dec 2019 05:53:48 -0000
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
 To:     pablo@netfilter.org
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf v3 3/3] netfilter: nf_flow_table_offload: fix the nat port mangle.
-Date:   Fri, 20 Dec 2019 12:14:38 +0800
-Message-Id: <1576815278-1283-4-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1576815278-1283-1-git-send-email-wenxu@ucloud.cn>
-References: <1576815278-1283-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVklVSk9IS0tLSklOQ0NOS0pZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mjo6Fio4HTg4C0wuTAIxI0s4
-        OR8KCz1VSlVKTkxNQ0pOSUxCTkxJVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUhNQkk3Bg++
-X-HM-Tid: 0a6f2183bd852087kuqy7579b5c1636
+Subject: [PATCH libnetfilter_queue 0/2] Add mangle functions for IPv6, IPv6/TCP and IPv6/UDP
+Date:   Fri, 20 Dec 2019 16:53:46 +1100
+Message-Id: <20191220055348.24113-1-duncan_roe@optusnet.com.au>
+X-Mailer: git-send-email 2.14.5
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=4DzML1vCOQ6Odsy8BUtSXQ==:117 a=4DzML1vCOQ6Odsy8BUtSXQ==:17
+        a=pxVhFHJ0LMsA:10 a=RSmzAf-M6YYA:10 a=uRtfhzloAAAA:20
+        a=Iuy8h-huI91oo4frHYsA:9 a=ubDO4clxTgye4MFiUn6k:22
+        a=pHzHmUro8NiASowvMSCR:22 a=n87TN5wuljxrRezIQYnT:22
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+As before, the nfq6 testbed program exercises the new functions. nfq6 is part of
+https://github.com/duncan-roe/nfq
 
-      SNAT         after mangling
-    original   A -> B   =>    _FW_ -> B
-     reply     B -> FW  =>       B -> _A_
+The TODO item in src/extra/checksum.c is because the pseudo-header used in
+udp & tcp checksums uses destination address from forwarding header if there
+is one. Not a big deal for now, I would say.
 
-      DNAT         after mangling
-    original   A -> FW  =>       A -> _B_
-     reply     B -> A   =>     _FW_-> A
+Duncan Roe (2):
+  src: more IPv6 checksum fixes
+  src: add mangle functions for IPv6, IPv6/TCP and IPv6/UDP
 
-Fixes: c29f74e0df7a ("netfilter: nf_flow_table: hardware offload support")
-Fixes: 7acd9378dc652 ("netfilter: nf_flow_table_offload: Correct memcpy size for flow_overload_mangle()")
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- net/netfilter/nf_flow_table_offload.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+ .../libnetfilter_queue/libnetfilter_queue_ipv6.h   |  1 +
+ .../libnetfilter_queue/libnetfilter_queue_tcp.h    |  1 +
+ .../libnetfilter_queue/libnetfilter_queue_udp.h    |  1 +
+ src/extra/checksum.c                               | 10 +++---
+ src/extra/ipv6.c                                   | 29 ++++++++++++++++
+ src/extra/tcp.c                                    | 40 ++++++++++++++++++++++
+ src/extra/udp.c                                    | 39 +++++++++++++++++++++
+ 7 files changed, 116 insertions(+), 5 deletions(-)
 
-diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-index 92b0bd2..6c162c9 100644
---- a/net/netfilter/nf_flow_table_offload.c
-+++ b/net/netfilter/nf_flow_table_offload.c
-@@ -349,22 +349,26 @@ static void flow_offload_port_snat(struct net *net,
- 				   struct nf_flow_rule *flow_rule)
- {
- 	struct flow_action_entry *entry = flow_action_entry_next(flow_rule);
--	u32 mask = ~htonl(0xffff0000), port;
-+	u32 mask, port;
- 	u32 offset;
- 
- 	switch (dir) {
- 	case FLOW_OFFLOAD_DIR_ORIGINAL:
- 		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.dst_port);
- 		offset = 0; /* offsetof(struct tcphdr, source); */
-+		port = htonl(port << 16);
-+		mask = ~htonl(0xffff0000);
- 		break;
- 	case FLOW_OFFLOAD_DIR_REPLY:
- 		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.src_port);
- 		offset = 0; /* offsetof(struct tcphdr, dest); */
-+		port = htonl(port);
-+		mask = ~htonl(0xffff);
- 		break;
- 	default:
- 		return;
- 	}
--	port = htonl(port << 16);
-+
- 	flow_offload_mangle(entry, flow_offload_l4proto(flow), offset,
- 			    &port, &mask);
- }
-@@ -375,22 +379,26 @@ static void flow_offload_port_dnat(struct net *net,
- 				   struct nf_flow_rule *flow_rule)
- {
- 	struct flow_action_entry *entry = flow_action_entry_next(flow_rule);
--	u32 mask = ~htonl(0xffff), port;
-+	u32 mask, port;
- 	u32 offset;
- 
- 	switch (dir) {
- 	case FLOW_OFFLOAD_DIR_ORIGINAL:
--		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.dst_port);
--		offset = 0; /* offsetof(struct tcphdr, source); */
-+		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.src_port);
-+		offset = 0; /* offsetof(struct tcphdr, dest); */
-+		port = htonl(port);
-+		mask = ~htonl(0xffff);
- 		break;
- 	case FLOW_OFFLOAD_DIR_REPLY:
--		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.src_port);
--		offset = 0; /* offsetof(struct tcphdr, dest); */
-+		port = ntohs(flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.dst_port);
-+		offset = 0; /* offsetof(struct tcphdr, source); */
-+		port = htonl(port << 16);
-+		mask = ~htonl(0xffff0000);
- 		break;
- 	default:
- 		return;
- 	}
--	port = htonl(port);
-+
- 	flow_offload_mangle(entry, flow_offload_l4proto(flow), offset,
- 			    &port, &mask);
- }
--- 
-1.8.3.1
+--
+2.14.5
 
