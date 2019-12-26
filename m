@@ -2,94 +2,79 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A5612AD87
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Dec 2019 17:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C41C212AD8F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Dec 2019 17:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbfLZQkO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 26 Dec 2019 11:40:14 -0500
-Received: from correo.us.es ([193.147.175.20]:54796 "EHLO mail.us.es"
+        id S1726669AbfLZQmV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 26 Dec 2019 11:42:21 -0500
+Received: from correo.us.es ([193.147.175.20]:55298 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726728AbfLZQkN (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 26 Dec 2019 11:40:13 -0500
+        id S1726653AbfLZQmV (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 26 Dec 2019 11:42:21 -0500
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 9DE16E34D9
-        for <netfilter-devel@vger.kernel.org>; Thu, 26 Dec 2019 17:40:11 +0100 (CET)
+        by mail.us.es (Postfix) with ESMTP id 1415BE34D8
+        for <netfilter-devel@vger.kernel.org>; Thu, 26 Dec 2019 17:42:19 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 8EDB9DA710
-        for <netfilter-devel@vger.kernel.org>; Thu, 26 Dec 2019 17:40:11 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 05757DA703
+        for <netfilter-devel@vger.kernel.org>; Thu, 26 Dec 2019 17:42:19 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 8463CDA701; Thu, 26 Dec 2019 17:40:11 +0100 (CET)
+        id EF19CDA702; Thu, 26 Dec 2019 17:42:18 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 5DBA7DA712;
-        Thu, 26 Dec 2019 17:40:09 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 0D74FDA703;
+        Thu, 26 Dec 2019 17:42:17 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 26 Dec 2019 17:40:09 +0100 (CET)
+ Thu, 26 Dec 2019 17:42:17 +0100 (CET)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (sys.soleta.eu [212.170.55.40])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 3390F4251481;
-        Thu, 26 Dec 2019 17:40:09 +0100 (CET)
+Received: from us.es (sys.soleta.eu [212.170.55.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id E4F334251480;
+        Thu, 26 Dec 2019 17:42:16 +0100 (CET)
+Date:   Thu, 26 Dec 2019 17:42:17 +0100
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 4/4] netfilter: nft_tproxy: Fix port selector on Big Endian
-Date:   Thu, 26 Dec 2019 17:39:56 +0100
-Message-Id: <20191226163956.672174-5-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20191226163956.672174-1-pablo@netfilter.org>
-References: <20191226163956.672174-1-pablo@netfilter.org>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf-next 0/9] netfilter: nft_meta: add support for slave
+ device matching
+Message-ID: <20191226164216.2ysrdyrsmynjenqp@salvia>
+References: <20191218110521.14048-1-fw@strlen.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191218110521.14048-1-fw@strlen.de>
+User-Agent: NeoMutt/20170113 (1.7.2)
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Phil Sutter <phil@nwl.cc>
+On Wed, Dec 18, 2019 at 12:05:12PM +0100, Florian Westphal wrote:
+> Martin Willi recently proposed addition of new xt_slavedev module to
+> allow matching the real interface within a VRF domain.
+> 
+> This adds an nft equivalent:
+> 
+> meta sdif "realdev" accept
+> meta sdifname "realdev" accept
+> 
+> In case packet had no vrf slave, sdif stores 0 or "" name, just
+> like 'oif/oifname' would on input.
+> 
+> sdif(name) is restricted to the ipv4/ipv6 input and forward hooks,
+> as it depends on ip(6) stack parsing/storing info in skb->cb[].
+> 
+> Because meta main eval function is now exceeding more than 200 LOC,
+> the first patches are diet work to debloat the function by using
+> helpers where appropriate.
+>
+> Last patch adds the sdif/sdifname functionality.
 
-On Big Endian architectures, u16 port value was extracted from the wrong
-parts of u32 sreg_port, just like commit 10596608c4d62 ("netfilter:
-nf_tables: fix mismatch in big-endian system") describes.
-
-Fixes: 4ed8eb6570a49 ("netfilter: nf_tables: Add native tproxy support")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
-Acked-by: Florian Westphal <fw@strlen.de>
-Acked-by: Máté Eckl <ecklm94@gmail.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_tproxy.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/netfilter/nft_tproxy.c b/net/netfilter/nft_tproxy.c
-index f92a82c73880..95980154ef02 100644
---- a/net/netfilter/nft_tproxy.c
-+++ b/net/netfilter/nft_tproxy.c
-@@ -50,7 +50,7 @@ static void nft_tproxy_eval_v4(const struct nft_expr *expr,
- 	taddr = nf_tproxy_laddr4(skb, taddr, iph->daddr);
- 
- 	if (priv->sreg_port)
--		tport = regs->data[priv->sreg_port];
-+		tport = nft_reg_load16(&regs->data[priv->sreg_port]);
- 	if (!tport)
- 		tport = hp->dest;
- 
-@@ -117,7 +117,7 @@ static void nft_tproxy_eval_v6(const struct nft_expr *expr,
- 	taddr = *nf_tproxy_laddr6(skb, &taddr, &iph->daddr);
- 
- 	if (priv->sreg_port)
--		tport = regs->data[priv->sreg_port];
-+		tport = nft_reg_load16(&regs->data[priv->sreg_port]);
- 	if (!tport)
- 		tport = hp->dest;
- 
--- 
-2.11.0
-
+Series applied, thanks Florian.
