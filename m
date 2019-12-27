@@ -2,100 +2,120 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E5412B0EF
-	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Dec 2019 05:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8817112B8EB
+	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Dec 2019 18:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbfL0ESE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 26 Dec 2019 23:18:04 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:39499 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727021AbfL0ESE (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 26 Dec 2019 23:18:04 -0500
-Received: by mail-ot1-f66.google.com with SMTP id 77so34763787oty.6;
-        Thu, 26 Dec 2019 20:18:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DfKg9SPkUvfybKMjL5YOx3Xk7Ze33G0ys6ahY8byY+s=;
-        b=rU+dNtJgARXnqPDmeFamfL2PeBiWwNJdd1b1/9gD5lxlIpbk3wM1M8i2DGLSpdyAn5
-         09hP+DZJH+kGodPhEGBuSTlLv8nrOITA69yGJ4u/7iAn8i4h00j53Fh2CF/tSVx6n/kv
-         PbRvsXxDcuWi7+t2OHet8bnC8E43P45XWHBMjGDBsXEPtlxColbJbmIJ7pYgmdrTSwGg
-         RAXLRy+b6d2Wnd2X45tYyGtLfho/PPSrdapJiCGwt/Q7eJfTCEbFIe+OL4DtHQxI/HzE
-         Lbtmi3nEDX01sZidPSyAap9LdXkfn6nguD5804uz5q8UJoYbAAQ0vvczr9tqyUMSssjr
-         b8DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DfKg9SPkUvfybKMjL5YOx3Xk7Ze33G0ys6ahY8byY+s=;
-        b=NrKK/X7IyhizCpsWXFgjvxPbGtIxdSOsnU6RCwznoDl5iUBghLHfpelnYoSMRk+Tap
-         vEwW7rS/CO1qVdUm9gHc3QrPJps4tw4VlvOOVxmdJMaiamksHueAGCW0Tj7KWQbeMPON
-         2xHk8orw1rE1ACqbA0BIFCXZ6VFpVgb0m+2boJsi5q2WkgG78E7NhLNZa4qQk+uErfIi
-         +Tr5S/RfS6SqwSCjNrmCgJ0iMJb3XZiMH09nb8pN0Ci9mCqF7rwqImwL9aTtba6g/xdT
-         dKR5cvwi7YMUk1gc2Z8zSIvPTetC+uA8A4j+kyIcE7V36RPwybc5/RSK088JmMgJx7kd
-         FH0Q==
-X-Gm-Message-State: APjAAAXULDk7XDgW+zwDLjSfHk7UrBkX04wPPPTJ3r/qBY3iB4W3txwm
-        2IinTEq62Nf1pF/EkDNzRYvdJNvWocH9EPSzG1+vbd4S
-X-Google-Smtp-Source: APXvYqzAOBWIHURe65cgyn+zIKkk1chLEZEJcKMdb9lioX2df362DLpSsRG620wwmEa5h58dQU+VlMASJZLGZe1hNl8=
-X-Received: by 2002:a9d:53c4:: with SMTP id i4mr42873422oth.48.1577420283259;
- Thu, 26 Dec 2019 20:18:03 -0800 (PST)
+        id S1727539AbfL0R6u (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 27 Dec 2019 12:58:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727313AbfL0RlO (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 27 Dec 2019 12:41:14 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1820222C4;
+        Fri, 27 Dec 2019 17:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577468473;
+        bh=oBkHsDvgkstaVNNnbYEpO4N/JGbrsZczsZ3CbOKCSQY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SD31pG16fBdh1CFG3pBljlrcIHfjA9U+jPMMTEa9SQVbEQNoRpFAhda17/9dUSGnh
+         Ktql4uHCdFE5A/6Sf76epxE6PBlL4972Dr/ikTFs+4T0wgAWOlIvxIGNi6i1/DxGvB
+         0M1gxGBCVHJzTpW4mgVArylwvty1fuZIY+gIShgc=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 014/187] netfilter: ctnetlink: netns exit must wait for callbacks
+Date:   Fri, 27 Dec 2019 12:38:02 -0500
+Message-Id: <20191227174055.4923-14-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191227174055.4923-1-sashal@kernel.org>
+References: <20191227174055.4923-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <00000000000057fd27059aa1dfca@google.com> <20191227003310.16061-1-fw@strlen.de>
-In-Reply-To: <20191227003310.16061-1-fw@strlen.de>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 26 Dec 2019 20:17:52 -0800
-Message-ID: <CAM_iQpW5stB_BshUJr0O3uDyaxDcqN-13ZqRr7dcmcJcBp-Tfg@mail.gmail.com>
-Subject: Re: [PATCH nf] netfilter: arp_tables: init netns pointer in
- xt_tgchk_param struct
-To:     Florian Westphal <fw@strlen.de>
-Cc:     NetFilter <netfilter-devel@vger.kernel.org>,
-        syzbot+d7358a458d8a81aee898@syzkaller.appspotmail.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Dec 26, 2019 at 4:37 PM Florian Westphal <fw@strlen.de> wrote:
->
-> We get crash when the targets checkentry function tries to make
-> use of the network namespace pointer for arptables.
->
-> When the net pointer got added back in 2010, only ip/ip6/ebtables were
-> changed to initialize it, so arptables has this set to NULL.
->
-> This isn't a problem for normal arptables because no existing
-> arptables target has a checkentry function that makes use of par->net.
->
-> However, direct users of the setsockopt interface can provide any
-> target they want as long as its registered for ARP or UNPSEC protocols.
->
-> syzkaller managed to send a semi-valid arptables rule for RATEEST target
-> which is enough to trigger NULL deref:
->
-> kasan: GPF could be caused by NULL-ptr deref or user memory access
-> general protection fault: 0000 [#1] PREEMPT SMP KASAN
-> RIP: xt_rateest_tg_checkentry+0x11d/0xb40 net/netfilter/xt_RATEEST.c:109
-> [..]
->  xt_check_target+0x283/0x690 net/netfilter/x_tables.c:1019
->  check_target net/ipv4/netfilter/arp_tables.c:399 [inline]
->  find_check_entry net/ipv4/netfilter/arp_tables.c:422 [inline]
->  translate_table+0x1005/0x1d70 net/ipv4/netfilter/arp_tables.c:572
->  do_replace net/ipv4/netfilter/arp_tables.c:977 [inline]
->  do_arpt_set_ctl+0x310/0x640 net/ipv4/netfilter/arp_tables.c:1456
->
-> Fixes: add67461240c1d ("netfilter: add struct net * to target parameters")
-> Reported-by: syzbot+d7358a458d8a81aee898@syzkaller.appspotmail.com
-> Signed-off-by: Florian Westphal <fw@strlen.de>
+From: Florian Westphal <fw@strlen.de>
 
-I was about to send out a same patch.
+[ Upstream commit 18a110b022a5c02e7dc9f6109d0bd93e58ac6ebb ]
 
-So:
-Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
+Curtis Taylor and Jon Maxwell reported and debugged a crash on 3.10
+based kernel.
 
-Thanks.
+Crash occurs in ctnetlink_conntrack_events because net->nfnl socket is
+NULL.  The nfnl socket was set to NULL by netns destruction running on
+another cpu.
+
+The exiting network namespace calls the relevant destructors in the
+following order:
+
+1. ctnetlink_net_exit_batch
+
+This nulls out the event callback pointer in struct netns.
+
+2. nfnetlink_net_exit_batch
+
+This nulls net->nfnl socket and frees it.
+
+3. nf_conntrack_cleanup_net_list
+
+This removes all remaining conntrack entries.
+
+This is order is correct. The only explanation for the crash so ar is:
+
+cpu1: conntrack is dying, eviction occurs:
+ -> nf_ct_delete()
+   -> nf_conntrack_event_report \
+     -> nf_conntrack_eventmask_report
+       -> notify->fcn() (== ctnetlink_conntrack_events).
+
+cpu1: a. fetches rcu protected pointer to obtain ctnetlink event callback.
+      b. gets interrupted.
+ cpu2: runs netns exit handlers:
+     a runs ctnetlink destructor, event cb pointer set to NULL.
+     b runs nfnetlink destructor, nfnl socket is closed and set to NULL.
+cpu1: c. resumes and trips over NULL net->nfnl.
+
+Problem appears to be that ctnetlink_net_exit_batch only prevents future
+callers of nf_conntrack_eventmask_report() from obtaining the callback.
+It doesn't wait of other cpus that might have already obtained the
+callbacks address.
+
+I don't see anything in upstream kernels that would prevent similar
+crash: We need to wait for all cpus to have exited the event callback.
+
+Fixes: 9592a5c01e79dbc59eb56fa ("netfilter: ctnetlink: netns support")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/netfilter/nf_conntrack_netlink.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index e2d13cd18875..aa8adf930b3c 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -3602,6 +3602,9 @@ static void __net_exit ctnetlink_net_exit_batch(struct list_head *net_exit_list)
+ 
+ 	list_for_each_entry(net, net_exit_list, exit_list)
+ 		ctnetlink_net_exit(net);
++
++	/* wait for other cpus until they are done with ctnl_notifiers */
++	synchronize_rcu();
+ }
+ 
+ static struct pernet_operations ctnetlink_net_ops = {
+-- 
+2.20.1
+
