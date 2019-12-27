@@ -2,174 +2,121 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 525E812AFEA
-	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Dec 2019 01:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6223E12B031
+	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Dec 2019 02:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbfL0AdU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 26 Dec 2019 19:33:20 -0500
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:35180 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726193AbfL0AdU (ORCPT
+        id S1727016AbfL0BZa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 26 Dec 2019 20:25:30 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:46874 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726193AbfL0BZa (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 26 Dec 2019 19:33:20 -0500
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1ikdZ7-0007YP-Up; Fri, 27 Dec 2019 01:33:18 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     syzbot+d7358a458d8a81aee898@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf] netfilter: arp_tables: init netns pointer in xt_tgchk_param struct
-Date:   Fri, 27 Dec 2019 01:33:10 +0100
-Message-Id: <20191227003310.16061-1-fw@strlen.de>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <00000000000057fd27059aa1dfca@google.com>
-References: <00000000000057fd27059aa1dfca@google.com>
+        Thu, 26 Dec 2019 20:25:30 -0500
+Received: by mail-ed1-f66.google.com with SMTP id m8so24060149edi.13;
+        Thu, 26 Dec 2019 17:25:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=jh37alzJ5pbjEn7tPzQbndRQZ16ga31e96pQwqXXDJI=;
+        b=VKFpiDhZrN/waJIXVgWgEz1fuNEAKh44Xf/q0/VMYsJ3Bi8H+0vaMiwDfAFwkQAlcB
+         rhiarc0KUds69t4WkWdHrJemZ8aZU2a6HIzHvppAHqpABdUk45MLIRCCaFqb0oHxzQZd
+         B+5AkgtZhCWlvdcjY6+vFOgEf5BijSrELM0aYtxccYeg4kshCesKtNCp/eQLTroN4jae
+         dl6+t1Rhdc7iuzwPVOPyTI6RED5B0CdTICcwMLnkqL9sp+7jztyjqb5hysQAUPdgXTZY
+         nEn0C7nDlaM2TewGaM2vcF5tMJB3JqkB4Zi/tcck0mtd9lzV7uT6/pHt9eotC21CQsKX
+         ojCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=jh37alzJ5pbjEn7tPzQbndRQZ16ga31e96pQwqXXDJI=;
+        b=akMJa7TjzoyLM74gMnMiIcPoBImODXhQRkiiNVRT3DaY9hy6ws/pIqswr2Kw3xqJsh
+         GE2nentrsdzoRwoi8Dw5oXyJnPcblysHx0axzFeTcsNOcuitvatzNTVNTcDiu75O2++R
+         q6rpdZEUyCfShCD6ilqnj3ANK1MjWYCdMelhSxV8UpgVp+aI636GfmX46/2LwdgpHx1O
+         qtHUKriK9EvD6BfIs6dOqWPtBts1Qo0+Dky2+0nB1p0Zk9O0ftd47Zx07k+splGujFJn
+         WXjCKXkQu7J+UIjed+V6yLp9ryL1fh3QTbee+ezZ0lWsa8fs/zgy9ZvZIEe6lpyVnIB2
+         v0Sw==
+X-Gm-Message-State: APjAAAUnDLnjiPjEdgItyDDhVGvsVmqqaDRgs0Hd8rrepV2JqrPxn2HC
+        tj7sag2lXiUnycY+Qk0plt8AmYTVsx1EBCtylTgnwA==
+X-Google-Smtp-Source: APXvYqwDdnyecjZtIkCufPDR9NS8LKZlinB4F5rv0pTS8W+tE+zstfQBi91aSNZkodlXtA2D+ipGxXRMJxg6HpFQgMk=
+X-Received: by 2002:a17:906:5a8a:: with SMTP id l10mr38491953ejq.18.1577409928493;
+ Thu, 26 Dec 2019 17:25:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAGnHSEkvf0zieVJtPyneZ6PfnzeANmfFxTb=0JpgVb1FXVk0-w@mail.gmail.com>
+ <20191226222923.GA32765@dimstar.local.net>
+In-Reply-To: <20191226222923.GA32765@dimstar.local.net>
+From:   Tom Yan <tom.ty89@gmail.com>
+Date:   Fri, 27 Dec 2019 09:25:17 +0800
+Message-ID: <CAGnHSEnnCbZwgm=vb2zV7duLPf=8RO8uX=tQTtm8K6OO6xV=fA@mail.gmail.com>
+Subject: Re: Weird/High CPU usage caused by LOG target
+To:     Tom Yan <tom.ty89@gmail.com>, netfilter-devel@vger.kernel.org,
+        netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We get crash when the targets checkentry function tries to make
-use of the network namespace pointer for arptables.
+Hi Duncan,
 
-When the net pointer got added back in 2010, only ip/ip6/ebtables were
-changed to initialize it, so arptables has this set to NULL.
+Not sure what default action you are referring to. If you are talking
+about ulogd (hence NFLOG), as I said, I don't experience similar issue
+with them. For the record, I tried to set `Storage=` in journald.conf
+to volatile / none when I was using LOG. It didn't help avoiding the
+high usage. (The usage doesn't reflect as systemd-journald's anyway.)
+And I don't have any syslog installed.
 
-This isn't a problem for normal arptables because no existing
-arptables target has a checkentry function that makes use of par->net.
+Also, the CPU problem seems to be specific to low-end devices. The
+"line" even seem to just draw between a raspberry pi 3 b+ and 4. So it
+wouldn't surprise me if one cannot reproduce/notice it easily on some
+"server server" or even just some old Nehalem desktop. By the way, I
+tested with both a mainline aarch64 kernel build (5.4.6) and a
+raspberrypi armv7 kernel build (4.19.88). The issue was reproducible
+with either of them. (The distro was Arch Liunx ARM, if that matters.)
 
-However, direct users of the setsockopt interface can provide any
-target they want as long as its registered for ARP or UNPSEC protocols.
+For the record, I am not writing because I "need to" use LOG and/or
+log everything. I am writing just because I noticed the issue and felt
+like I should report it. But thank you for you attention anyway.
 
-syzkaller managed to send a semi-valid arptables rule for RATEEST target
-which is enough to trigger NULL deref:
+Regards,
+Tom
 
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] PREEMPT SMP KASAN
-RIP: xt_rateest_tg_checkentry+0x11d/0xb40 net/netfilter/xt_RATEEST.c:109
-[..]
- xt_check_target+0x283/0x690 net/netfilter/x_tables.c:1019
- check_target net/ipv4/netfilter/arp_tables.c:399 [inline]
- find_check_entry net/ipv4/netfilter/arp_tables.c:422 [inline]
- translate_table+0x1005/0x1d70 net/ipv4/netfilter/arp_tables.c:572
- do_replace net/ipv4/netfilter/arp_tables.c:977 [inline]
- do_arpt_set_ctl+0x310/0x640 net/ipv4/netfilter/arp_tables.c:1456
-
-Fixes: add67461240c1d ("netfilter: add struct net * to target parameters")
-Reported-by: syzbot+d7358a458d8a81aee898@syzkaller.appspotmail.com
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/ipv4/netfilter/arp_tables.c | 27 ++++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
-
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index 214154b47d56..069f72edb264 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -384,10 +384,11 @@ next:		;
- 	return 1;
- }
- 
--static inline int check_target(struct arpt_entry *e, const char *name)
-+static int check_target(struct arpt_entry *e, struct net *net, const char *name)
- {
- 	struct xt_entry_target *t = arpt_get_target(e);
- 	struct xt_tgchk_param par = {
-+		.net       = net,
- 		.table     = name,
- 		.entryinfo = e,
- 		.target    = t->u.kernel.target,
-@@ -399,8 +400,9 @@ static inline int check_target(struct arpt_entry *e, const char *name)
- 	return xt_check_target(&par, t->u.target_size - sizeof(*t), 0, false);
- }
- 
--static inline int
--find_check_entry(struct arpt_entry *e, const char *name, unsigned int size,
-+static int
-+find_check_entry(struct arpt_entry *e, struct net *net, const char *name,
-+		 unsigned int size,
- 		 struct xt_percpu_counter_alloc_state *alloc_state)
- {
- 	struct xt_entry_target *t;
-@@ -419,7 +421,7 @@ find_check_entry(struct arpt_entry *e, const char *name, unsigned int size,
- 	}
- 	t->u.kernel.target = target;
- 
--	ret = check_target(e, name);
-+	ret = check_target(e, net, name);
- 	if (ret)
- 		goto err;
- 	return 0;
-@@ -512,7 +514,9 @@ static inline void cleanup_entry(struct arpt_entry *e)
- /* Checks and translates the user-supplied table segment (held in
-  * newinfo).
-  */
--static int translate_table(struct xt_table_info *newinfo, void *entry0,
-+static int translate_table(struct net *net,
-+			   struct xt_table_info *newinfo,
-+			   void *entry0,
- 			   const struct arpt_replace *repl)
- {
- 	struct xt_percpu_counter_alloc_state alloc_state = { 0 };
-@@ -569,7 +573,7 @@ static int translate_table(struct xt_table_info *newinfo, void *entry0,
- 	/* Finally, each sanity check must pass */
- 	i = 0;
- 	xt_entry_foreach(iter, entry0, newinfo->size) {
--		ret = find_check_entry(iter, repl->name, repl->size,
-+		ret = find_check_entry(iter, net, repl->name, repl->size,
- 				       &alloc_state);
- 		if (ret != 0)
- 			break;
-@@ -974,7 +978,7 @@ static int do_replace(struct net *net, const void __user *user,
- 		goto free_newinfo;
- 	}
- 
--	ret = translate_table(newinfo, loc_cpu_entry, &tmp);
-+	ret = translate_table(net, newinfo, loc_cpu_entry, &tmp);
- 	if (ret != 0)
- 		goto free_newinfo;
- 
-@@ -1149,7 +1153,8 @@ compat_copy_entry_from_user(struct compat_arpt_entry *e, void **dstptr,
- 	}
- }
- 
--static int translate_compat_table(struct xt_table_info **pinfo,
-+static int translate_compat_table(struct net *net,
-+				  struct xt_table_info **pinfo,
- 				  void **pentry0,
- 				  const struct compat_arpt_replace *compatr)
- {
-@@ -1217,7 +1222,7 @@ static int translate_compat_table(struct xt_table_info **pinfo,
- 	repl.num_counters = 0;
- 	repl.counters = NULL;
- 	repl.size = newinfo->size;
--	ret = translate_table(newinfo, entry1, &repl);
-+	ret = translate_table(net, newinfo, entry1, &repl);
- 	if (ret)
- 		goto free_newinfo;
- 
-@@ -1270,7 +1275,7 @@ static int compat_do_replace(struct net *net, void __user *user,
- 		goto free_newinfo;
- 	}
- 
--	ret = translate_compat_table(&newinfo, &loc_cpu_entry, &tmp);
-+	ret = translate_compat_table(net, &newinfo, &loc_cpu_entry, &tmp);
- 	if (ret != 0)
- 		goto free_newinfo;
- 
-@@ -1546,7 +1551,7 @@ int arpt_register_table(struct net *net,
- 	loc_cpu_entry = newinfo->entries;
- 	memcpy(loc_cpu_entry, repl->entries, repl->size);
- 
--	ret = translate_table(newinfo, loc_cpu_entry, repl);
-+	ret = translate_table(net, newinfo, loc_cpu_entry, repl);
- 	if (ret != 0)
- 		goto out_free;
- 
--- 
-2.24.1
-
+On Fri, 27 Dec 2019 at 06:51, Duncan Roe <duncan_roe@optusnet.com.au> wrote:
+>
+> On Thu, Dec 26, 2019 at 11:05:33AM +0800, Tom Yan wrote:
+> > Hi all,
+> >
+> > So I was trying to log all traffics in the FORWARD chain with the LOG
+> > target in iptables (while I say all, it's just some VPN server/client
+> > that is used by only me, and the tests were just opening some
+> > website).
+> >
+> > I notice that the logging causes high CPU usage (so it goes up only
+> > when there are traffics). In (h)top, the usage shows up as openvpn's
+> > if the forwarding involves their tuns. Say I am forwarding from one
+> > tun to another, each of the openvpn instance will max out one core on
+> > my raspberry pi 3 b+. (And that actually slows the whole system down,
+> > like ssh/bash responsiveness, and stalls the traffic flow.) If I do
+> > not log, or log with the NFLOG target instead, their CPU usage will be
+> > less than 1%.
+> >
+> > Interestingly, the problem seems to be way less obvious if I am using
+> > it on higher end devices (like my Haswell PC, or even a raspberry pi
+> > 4). There are still "spikes" as well, but it won't make me "notice"
+> > the problem, at least not when I am just doing some trivial web
+> > browsing.
+> >
+> > Let me know how I can further help debugging, if any of you are
+> > interested in fixing this.
+> >
+> > Regards,
+> > Tom
+> >
+> Hi Tom,
+>
+> Just in case you missed it, be sure that your logger is configured not to sync
+> the file system after every logging. That is the default action btw.
+>
+> I have used large-volume logging in the past and never encountered a CPU problem
+> (but had to run logrotate every minute to avoid filling the disk).
+>
+> Cheers ... Duncan.
