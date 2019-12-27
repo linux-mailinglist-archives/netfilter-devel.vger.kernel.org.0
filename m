@@ -2,39 +2,35 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB3212B643
-	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Dec 2019 18:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FD112B8C1
+	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Dec 2019 18:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727462AbfL0Rla (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 27 Dec 2019 12:41:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37738 "EHLO mail.kernel.org"
+        id S1727536AbfL0Rlk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 27 Dec 2019 12:41:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727447AbfL0Rl3 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 27 Dec 2019 12:41:29 -0500
+        id S1727528AbfL0Rli (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 27 Dec 2019 12:41:38 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5482B22522;
-        Fri, 27 Dec 2019 17:41:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1017222C2;
+        Fri, 27 Dec 2019 17:41:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577468488;
-        bh=48Y6c37aUYq+yUzjSc/A+yLe4EPeG/xv5hB18HSrYFI=;
+        s=default; t=1577468497;
+        bh=J0cPKhFxQCuZu+uLL9G/eNDy4tjEa8vlQ6PtGjaXh5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FLqiAxln2MgmfjkXNc4N7BwjXUthudTFwe9R80xlaqOTtOR3SoH0LuHwc3+yFijkp
-         3/nzz7XXTLQEiV8ekxDL1AYMuped9AsOZEV1jNeYXF/iGAivfRqpKpXFBMWcq9umIC
-         DLYXvws5WB+Or16WDKxZhkQSaZRq8C0Q2VXrPNfQ=
+        b=riuEwbA+La0oSejcZQfZ8yWQO1PIIfkUWNebBQsf5fNP7pfmseA117B45jFDv6vhy
+         +zJ2P2OKfFzBXEIqdcTCRxv7nvLU+Qhmf0whfeoJw5vFw6KDBEY2urV/XhUU0rsotC
+         tpZYmVUPs7GcoHrbehIc8hhmY/71aF03FX8ZBAwQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marco Oliverio <marco.oliverio@tanaza.com>,
-        Rocco Folino <rocco.folino@tanaza.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+Cc:     Phil Sutter <phil@nwl.cc>, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 025/187] netfilter: nf_queue: enqueue skbs with NULL dst
-Date:   Fri, 27 Dec 2019 12:38:13 -0500
-Message-Id: <20191227174055.4923-25-sashal@kernel.org>
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: [PATCH AUTOSEL 5.4 032/187] netfilter: uapi: Avoid undefined left-shift in xt_sctp.h
+Date:   Fri, 27 Dec 2019 12:38:20 -0500
+Message-Id: <20191227174055.4923-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191227174055.4923-1-sashal@kernel.org>
 References: <20191227174055.4923-1-sashal@kernel.org>
@@ -47,42 +43,48 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Marco Oliverio <marco.oliverio@tanaza.com>
+From: Phil Sutter <phil@nwl.cc>
 
-[ Upstream commit 0b9173f4688dfa7c5d723426be1d979c24ce3d51 ]
+[ Upstream commit 164166558aacea01b99c8c8ffb710d930405ba69 ]
 
-Bridge packets that are forwarded have skb->dst == NULL and get
-dropped by the check introduced by
-b60a77386b1d4868f72f6353d35dabe5fbe981f2 (net: make skb_dst_force
-return true when dst is refcounted).
+With 'bytes(__u32)' being 32, a left-shift of 31 may happen which is
+undefined for the signed 32-bit value 1. Avoid this by declaring 1 as
+unsigned.
 
-To fix this we check skb_dst() before skb_dst_force(), so we don't
-drop skb packet with dst == NULL. This holds also for skb at the
-PRE_ROUTING hook so we remove the second check.
-
-Fixes: b60a77386b1d ("net: make skb_dst_force return true when dst is refcounted")
-Signed-off-by: Marco Oliverio <marco.oliverio@tanaza.com>
-Signed-off-by: Rocco Folino <rocco.folino@tanaza.com>
-Acked-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/linux/netfilter/xt_sctp.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/netfilter/nf_queue.c b/net/netfilter/nf_queue.c
-index a2b58de82600..f8f52ff99cfb 100644
---- a/net/netfilter/nf_queue.c
-+++ b/net/netfilter/nf_queue.c
-@@ -189,7 +189,7 @@ static int __nf_queue(struct sk_buff *skb, const struct nf_hook_state *state,
- 		goto err;
- 	}
+diff --git a/include/uapi/linux/netfilter/xt_sctp.h b/include/uapi/linux/netfilter/xt_sctp.h
+index 4bc6d1a08781..b4d804a9fccb 100644
+--- a/include/uapi/linux/netfilter/xt_sctp.h
++++ b/include/uapi/linux/netfilter/xt_sctp.h
+@@ -41,19 +41,19 @@ struct xt_sctp_info {
+ #define SCTP_CHUNKMAP_SET(chunkmap, type) 		\
+ 	do { 						\
+ 		(chunkmap)[type / bytes(__u32)] |= 	\
+-			1 << (type % bytes(__u32));	\
++			1u << (type % bytes(__u32));	\
+ 	} while (0)
  
--	if (!skb_dst_force(skb) && state->hook != NF_INET_PRE_ROUTING) {
-+	if (skb_dst(skb) && !skb_dst_force(skb)) {
- 		status = -ENETDOWN;
- 		goto err;
- 	}
+ #define SCTP_CHUNKMAP_CLEAR(chunkmap, type)		 	\
+ 	do {							\
+ 		(chunkmap)[type / bytes(__u32)] &= 		\
+-			~(1 << (type % bytes(__u32)));	\
++			~(1u << (type % bytes(__u32)));	\
+ 	} while (0)
+ 
+ #define SCTP_CHUNKMAP_IS_SET(chunkmap, type) 			\
+ ({								\
+ 	((chunkmap)[type / bytes (__u32)] & 		\
+-		(1 << (type % bytes (__u32)))) ? 1: 0;	\
++		(1u << (type % bytes (__u32)))) ? 1: 0;	\
+ })
+ 
+ #define SCTP_CHUNKMAP_RESET(chunkmap) \
 -- 
 2.20.1
 
