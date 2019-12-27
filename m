@@ -2,79 +2,79 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D9A12AF3B
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Dec 2019 23:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E69412AFF0
+	for <lists+netfilter-devel@lfdr.de>; Fri, 27 Dec 2019 01:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbfLZW3j (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 26 Dec 2019 17:29:39 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:56727 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727028AbfLZW3j (ORCPT
+        id S1726550AbfL0Ajz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 26 Dec 2019 19:39:55 -0500
+Received: from mail.thelounge.net ([91.118.73.15]:48853 "EHLO
+        mail.thelounge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726193AbfL0Ajz (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 26 Dec 2019 17:29:39 -0500
-Received: from dimstar.local.net (n122-110-44-45.sun2.vic.optusnet.com.au [122.110.44.45])
-        by mail104.syd.optusnet.com.au (Postfix) with SMTP id A2E907EACD5
-        for <netfilter-devel@vger.kernel.org>; Fri, 27 Dec 2019 09:29:24 +1100 (AEDT)
-Received: (qmail 5185 invoked by uid 501); 26 Dec 2019 22:29:23 -0000
-Date:   Fri, 27 Dec 2019 09:29:23 +1100
-From:   Duncan Roe <duncan_roe@optusnet.com.au>
-To:     Tom Yan <tom.ty89@gmail.com>
-Cc:     netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+        Thu, 26 Dec 2019 19:39:55 -0500
+X-Greylist: delayed 958 seconds by postgrey-1.27 at vger.kernel.org; Thu, 26 Dec 2019 19:39:54 EST
+Received: from srv-rhsoft.rhsoft.net  (Authenticated sender: h.reindl@thelounge.net) by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 47kSHD6LmBzXSZ;
+        Fri, 27 Dec 2019 01:23:47 +0100 (CET)
 Subject: Re: Weird/High CPU usage caused by LOG target
-Message-ID: <20191226222923.GA32765@dimstar.local.net>
-Mail-Followup-To: Tom Yan <tom.ty89@gmail.com>,
-        netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To:     Tom Yan <tom.ty89@gmail.com>, netfilter-devel@vger.kernel.org,
+        netfilter@vger.kernel.org
 References: <CAGnHSEkvf0zieVJtPyneZ6PfnzeANmfFxTb=0JpgVb1FXVk0-w@mail.gmail.com>
+ <20191226222923.GA32765@dimstar.local.net>
+From:   Reindl Harald <h.reindl@thelounge.net>
+Organization: the lounge interactive design
+Message-ID: <24814d60-92c1-6c7e-8eb5-e977e1c7c1d0@thelounge.net>
+Date:   Fri, 27 Dec 2019 01:23:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGnHSEkvf0zieVJtPyneZ6PfnzeANmfFxTb=0JpgVb1FXVk0-w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=4DzML1vCOQ6Odsy8BUtSXQ==:117 a=4DzML1vCOQ6Odsy8BUtSXQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=pxVhFHJ0LMsA:10
-        a=RSmzAf-M6YYA:10 a=YN2swqTt7GDZSc3HkucA:9 a=CjuIK1q_8ugA:10
+In-Reply-To: <20191226222923.GA32765@dimstar.local.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Dec 26, 2019 at 11:05:33AM +0800, Tom Yan wrote:
-> Hi all,
->
-> So I was trying to log all traffics in the FORWARD chain with the LOG
-> target in iptables (while I say all, it's just some VPN server/client
-> that is used by only me, and the tests were just opening some
-> website).
->
-> I notice that the logging causes high CPU usage (so it goes up only
-> when there are traffics). In (h)top, the usage shows up as openvpn's
-> if the forwarding involves their tuns. Say I am forwarding from one
-> tun to another, each of the openvpn instance will max out one core on
-> my raspberry pi 3 b+. (And that actually slows the whole system down,
-> like ssh/bash responsiveness, and stalls the traffic flow.) If I do
-> not log, or log with the NFLOG target instead, their CPU usage will be
-> less than 1%.
->
-> Interestingly, the problem seems to be way less obvious if I am using
-> it on higher end devices (like my Haswell PC, or even a raspberry pi
-> 4). There are still "spikes" as well, but it won't make me "notice"
-> the problem, at least not when I am just doing some trivial web
-> browsing.
->
-> Let me know how I can further help debugging, if any of you are
-> interested in fixing this.
->
-> Regards,
-> Tom
->
-Hi Tom,
 
-Just in case you missed it, be sure that your logger is configured not to sync
-the file system after every logging. That is the default action btw.
 
-I have used large-volume logging in the past and never encountered a CPU problem
-(but had to run logrotate every minute to avoid filling the disk).
+Am 26.12.19 um 23:29 schrieb Duncan Roe:
+> On Thu, Dec 26, 2019 at 11:05:33AM +0800, Tom Yan wrote:
+>> Hi all,
+>>
+>> So I was trying to log all traffics in the FORWARD chain with the LOG
+>> target in iptables (while I say all, it's just some VPN server/client
+>> that is used by only me, and the tests were just opening some
+>> website).
+>>
+>> I notice that the logging causes high CPU usage (so it goes up only
+>> when there are traffics). In (h)top, the usage shows up as openvpn's
+>> if the forwarding involves their tuns. Say I am forwarding from one
+>> tun to another, each of the openvpn instance will max out one core on
+>> my raspberry pi 3 b+. (And that actually slows the whole system down,
+>> like ssh/bash responsiveness, and stalls the traffic flow.) If I do
+>> not log, or log with the NFLOG target instead, their CPU usage will be
+>> less than 1%.
+>>
+>> Interestingly, the problem seems to be way less obvious if I am using
+>> it on higher end devices (like my Haswell PC, or even a raspberry pi
+>> 4). There are still "spikes" as well, but it won't make me "notice"
+>> the problem, at least not when I am just doing some trivial web
+>> browsing.
+>>
+>> Let me know how I can further help debugging, if any of you are
+>> interested in fixing this.
+>>
+> Just in case you missed it, be sure that your logger is configured not to sync
+> the file system after every logging. That is the default action btw.
+> 
+> I have used large-volume logging in the past and never encountered a CPU problem
+> (but had to run logrotate every minute to avoid filling the disk)
 
-Cheers ... Duncan.
+the problem is "-j LOG" at it's own and not suprisingly after having
+enough of random crashes and kexec only spits the disk full of
+demsg-output from iptables "-j LOG" switching awy to NFLOG and ulogd and
+never ever faced antother crash
+
+"-j LOG" spits into kernel ring buffer and by it's own produces double
+load no matter what happns after the action
