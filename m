@@ -2,45 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C485212CF82
-	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Dec 2019 12:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6A112CF7C
+	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Dec 2019 12:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727470AbfL3LWD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 30 Dec 2019 06:22:03 -0500
-Received: from correo.us.es ([193.147.175.20]:59316 "EHLO mail.us.es"
+        id S1727386AbfL3LWU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 30 Dec 2019 06:22:20 -0500
+Received: from correo.us.es ([193.147.175.20]:59260 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727460AbfL3LWD (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 30 Dec 2019 06:22:03 -0500
+        id S1727478AbfL3LWF (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 30 Dec 2019 06:22:05 -0500
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 08B3E4DE747
-        for <netfilter-devel@vger.kernel.org>; Mon, 30 Dec 2019 12:22:02 +0100 (CET)
+        by mail.us.es (Postfix) with ESMTP id 911884DE724
+        for <netfilter-devel@vger.kernel.org>; Mon, 30 Dec 2019 12:22:03 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id EC468DA710
-        for <netfilter-devel@vger.kernel.org>; Mon, 30 Dec 2019 12:22:01 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 83241DA717
+        for <netfilter-devel@vger.kernel.org>; Mon, 30 Dec 2019 12:22:03 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id DA5A6DA720; Mon, 30 Dec 2019 12:22:01 +0100 (CET)
+        id 82A35DA709; Mon, 30 Dec 2019 12:22:03 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id C5930DA78D;
-        Mon, 30 Dec 2019 12:21:59 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id BB83FDA737;
+        Mon, 30 Dec 2019 12:22:00 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 30 Dec 2019 12:21:59 +0100 (CET)
+ Mon, 30 Dec 2019 12:22:00 +0100 (CET)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (unknown [185.124.28.61])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 43A7241E4800;
-        Mon, 30 Dec 2019 12:21:59 +0100 (CET)
+        by entrada.int (Postfix) with ESMTPA id 3BFA441E4800;
+        Mon, 30 Dec 2019 12:22:00 +0100 (CET)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 11/17] netfilter: nft_meta: move sk uid/git handling to helper
-Date:   Mon, 30 Dec 2019 12:21:37 +0100
-Message-Id: <20191230112143.121708-12-pablo@netfilter.org>
+Subject: [PATCH 12/17] netfilter: nft_meta: move cgroup handling to helper
+Date:   Mon, 30 Dec 2019 12:21:38 +0100
+Message-Id: <20191230112143.121708-13-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20191230112143.121708-1-pablo@netfilter.org>
 References: <20191230112143.121708-1-pablo@netfilter.org>
@@ -52,100 +52,60 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: Florian Westphal <fw@strlen.de>
 
-Not a hot path.  Also, both have copy&paste case statements,
-so use a common helper for both.
+Reduce size of main eval function.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_meta.c | 65 +++++++++++++++++++++++++++---------------------
- 1 file changed, 36 insertions(+), 29 deletions(-)
+ net/netfilter/nft_meta.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
 diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
-index fe49b27dfa87..1b32440ec2e6 100644
+index 1b32440ec2e6..3fca1c3ec361 100644
 --- a/net/netfilter/nft_meta.c
 +++ b/net/netfilter/nft_meta.c
-@@ -126,6 +126,41 @@ nft_meta_get_eval_pkttype_lo(const struct nft_pktinfo *pkt,
+@@ -161,6 +161,20 @@ nft_meta_get_eval_skugid(enum nft_meta_keys key,
  	return true;
  }
  
++#ifdef CONFIG_CGROUP_NET_CLASSID
 +static noinline bool
-+nft_meta_get_eval_skugid(enum nft_meta_keys key,
-+			 u32 *dest,
-+			 const struct nft_pktinfo *pkt)
++nft_meta_get_eval_cgroup(u32 *dest, const struct nft_pktinfo *pkt)
 +{
 +	struct sock *sk = skb_to_full_sk(pkt->skb);
-+	struct socket *sock;
 +
 +	if (!sk || !sk_fullsock(sk) || !net_eq(nft_net(pkt), sock_net(sk)))
 +		return false;
 +
-+	read_lock_bh(&sk->sk_callback_lock);
-+	sock = sk->sk_socket;
-+	if (!sock || !sock->file) {
-+		read_unlock_bh(&sk->sk_callback_lock);
-+		return false;
-+	}
-+
-+	switch (key) {
-+	case NFT_META_SKUID:
-+		*dest = from_kuid_munged(&init_user_ns,
-+					 sock->file->f_cred->fsuid);
-+		break;
-+	case NFT_META_SKGID:
-+		*dest =	from_kgid_munged(&init_user_ns,
-+					 sock->file->f_cred->fsgid);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	read_unlock_bh(&sk->sk_callback_lock);
++	*dest = sock_cgroup_classid(&sk->sk_cgrp_data);
 +	return true;
 +}
++#endif
 +
  void nft_meta_get_eval(const struct nft_expr *expr,
  		       struct nft_regs *regs,
  		       const struct nft_pktinfo *pkt)
-@@ -180,37 +215,9 @@ void nft_meta_get_eval(const struct nft_expr *expr,
- 		nft_reg_store16(dest, out->type);
+@@ -168,7 +182,6 @@ void nft_meta_get_eval(const struct nft_expr *expr,
+ 	const struct nft_meta *priv = nft_expr_priv(expr);
+ 	const struct sk_buff *skb = pkt->skb;
+ 	const struct net_device *in = nft_in(pkt), *out = nft_out(pkt);
+-	struct sock *sk;
+ 	u32 *dest = &regs->data[priv->dreg];
+ 
+ 	switch (priv->key) {
+@@ -258,11 +271,8 @@ void nft_meta_get_eval(const struct nft_expr *expr,
  		break;
- 	case NFT_META_SKUID:
+ #ifdef CONFIG_CGROUP_NET_CLASSID
+ 	case NFT_META_CGROUP:
 -		sk = skb_to_full_sk(skb);
 -		if (!sk || !sk_fullsock(sk) ||
 -		    !net_eq(nft_net(pkt), sock_net(sk)))
--			goto err;
--
--		read_lock_bh(&sk->sk_callback_lock);
--		if (sk->sk_socket == NULL ||
--		    sk->sk_socket->file == NULL) {
--			read_unlock_bh(&sk->sk_callback_lock);
--			goto err;
--		}
--
--		*dest =	from_kuid_munged(&init_user_ns,
--				sk->sk_socket->file->f_cred->fsuid);
--		read_unlock_bh(&sk->sk_callback_lock);
--		break;
- 	case NFT_META_SKGID:
--		sk = skb_to_full_sk(skb);
--		if (!sk || !sk_fullsock(sk) ||
--		    !net_eq(nft_net(pkt), sock_net(sk)))
-+		if (!nft_meta_get_eval_skugid(priv->key, dest, pkt))
++		if (!nft_meta_get_eval_cgroup(dest, pkt))
  			goto err;
--
--		read_lock_bh(&sk->sk_callback_lock);
--		if (sk->sk_socket == NULL ||
--		    sk->sk_socket->file == NULL) {
--			read_unlock_bh(&sk->sk_callback_lock);
--			goto err;
--		}
--		*dest =	from_kgid_munged(&init_user_ns,
--				 sk->sk_socket->file->f_cred->fsgid);
--		read_unlock_bh(&sk->sk_callback_lock);
+-		*dest = sock_cgroup_classid(&sk->sk_cgrp_data);
  		break;
- #ifdef CONFIG_IP_ROUTE_CLASSID
- 	case NFT_META_RTCLASSID: {
+ #endif
+ 	case NFT_META_PRANDOM: {
 -- 
 2.11.0
 
