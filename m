@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 932F8131210
-	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Jan 2020 13:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9787113120E
+	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Jan 2020 13:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgAFMUi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 6 Jan 2020 07:20:38 -0500
-Received: from correo.us.es ([193.147.175.20]:43686 "EHLO mail.us.es"
+        id S1726307AbgAFMUh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 6 Jan 2020 07:20:37 -0500
+Received: from correo.us.es ([193.147.175.20]:43694 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726294AbgAFMUh (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        id S1726303AbgAFMUh (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 6 Jan 2020 07:20:37 -0500
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 26B86F2DF6
+        by mail.us.es (Postfix) with ESMTP id 33140F2DFB
         for <netfilter-devel@vger.kernel.org>; Mon,  6 Jan 2020 13:20:35 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 18EA9DA703
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 1C16ADA70E
         for <netfilter-devel@vger.kernel.org>; Mon,  6 Jan 2020 13:20:35 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 6B2F2DA721; Mon,  6 Jan 2020 13:20:26 +0100 (CET)
+        id 2C0A2DA737; Mon,  6 Jan 2020 13:20:27 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 61235DA702;
+        by antivirus1-rhel7.int (Postfix) with ESMTP id E69B0DA709;
         Mon,  6 Jan 2020 13:20:24 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
@@ -32,15 +32,15 @@ Received: from 192.168.1.97 (192.168.1.97)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (unknown [90.77.255.23])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 4519F41E4800;
+        by entrada.int (Postfix) with ESMTPA id C235F41E4800;
         Mon,  6 Jan 2020 13:20:24 +0100 (CET)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     phil@nwl.cc
-Subject: [PATCH 5/7] nft: remove cache build calls
-Date:   Mon,  6 Jan 2020 13:20:16 +0100
-Message-Id: <20200106122018.14090-6-pablo@netfilter.org>
+Subject: [PATCH 6/7] nft: skip table list release if uninitialized
+Date:   Mon,  6 Jan 2020 13:20:17 +0100
+Message-Id: <20200106122018.14090-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200106122018.14090-1-pablo@netfilter.org>
 References: <20200106122018.14090-1-pablo@netfilter.org>
@@ -50,121 +50,32 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The cache requirements are now calculated once from the parsing phase.
-There is no need to call __nft_build_cache() from several spots in the
-codepath anymore.
+ # printf '%s\nCOMMIT\n' '*nat' '*raw' '*filter' | iptables-nft-restore --test && echo ok
+ Segmentation fault
 
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1391
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- iptables/nft-cache.c |  6 ------
- iptables/nft.c       | 21 ---------------------
- 2 files changed, 27 deletions(-)
+ iptables/nft-cache.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/iptables/nft-cache.c b/iptables/nft-cache.c
-index 82d6b7c2393a..1fb65892d898 100644
+index 1fb65892d898..ab20eb557f4d 100644
 --- a/iptables/nft-cache.c
 +++ b/iptables/nft-cache.c
-@@ -647,8 +647,6 @@ void nft_release_cache(struct nft_handle *h)
+@@ -610,8 +610,10 @@ static int flush_cache(struct nft_handle *h, struct nft_cache *c,
+ 			nftnl_set_list_free(c->table[i].sets);
+ 		c->table[i].sets = NULL;
+ 	}
+-	nftnl_table_list_free(c->tables);
+-	c->tables = NULL;
++	if (c->tables) {
++		nftnl_table_list_free(c->tables);
++		c->tables = NULL;
++	}
  
- struct nftnl_table_list *nftnl_table_list_get(struct nft_handle *h)
- {
--	__nft_build_cache(h, NFT_CL_TABLES, NULL, NULL, NULL);
--
- 	return h->cache->tables;
- }
- 
-@@ -661,8 +659,6 @@ nft_set_list_get(struct nft_handle *h, const char *table, const char *set)
- 	if (!t)
- 		return NULL;
- 
--	__nft_build_cache(h, NFT_CL_RULES, t, set, NULL);
--
- 	return h->cache->table[t->type].sets;
- }
- 
-@@ -675,8 +671,6 @@ nft_chain_list_get(struct nft_handle *h, const char *table, const char *chain)
- 	if (!t)
- 		return NULL;
- 
--	__nft_build_cache(h, NFT_CL_CHAINS, t, NULL, chain);
--
- 	return h->cache->table[t->type].chains;
- }
- 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index a1e38cbafcbe..e65ee028c979 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -1342,14 +1342,6 @@ nft_rule_append(struct nft_handle *h, const char *chain, const char *table,
- 
- 	nft_xt_builtin_init(h, table);
- 
--	/* Since ebtables user-defined chain policies are implemented as last
--	 * rule in nftables, rule cache is required here to treat them right. */
--	if (h->family == NFPROTO_BRIDGE) {
--		c = nft_chain_find(h, table, chain);
--		if (c && !nft_chain_builtin(c))
--			nft_build_cache(h, c);
--	}
--
- 	nft_fn = nft_rule_append;
- 
- 	if (ref) {
-@@ -1574,7 +1566,6 @@ int nft_rule_save(struct nft_handle *h, const char *table, unsigned int format)
- 
- 	c = nftnl_chain_list_iter_next(iter);
- 	while (c) {
--		nft_build_cache(h, c);
- 		ret = nft_chain_save_rules(h, c, format);
- 		if (ret != 0)
- 			break;
-@@ -1782,10 +1773,6 @@ static int __nft_chain_user_del(struct nftnl_chain *c, void *data)
- 		fprintf(stdout, "Deleting chain `%s'\n",
- 			nftnl_chain_get_str(c, NFTNL_CHAIN_NAME));
- 
--	/* This triggers required policy rule deletion. */
--	if (h->family == NFPROTO_BRIDGE)
--		nft_build_cache(h, c);
--
- 	/* XXX This triggers a fast lookup from the kernel. */
- 	nftnl_chain_unset(c, NFTNL_CHAIN_HANDLE);
- 	ret = batch_chain_add(h, NFT_COMPAT_CHAIN_USER_DEL, c);
-@@ -2068,8 +2055,6 @@ nft_rule_find(struct nft_handle *h, struct nftnl_chain *c,
- 	struct nftnl_rule_iter *iter;
- 	bool found = false;
- 
--	nft_build_cache(h, c);
--
- 	if (rulenum >= 0)
- 		/* Delete by rule number case */
- 		return nftnl_rule_lookup_byindex(c, rulenum);
-@@ -2955,8 +2940,6 @@ int ebt_set_user_chain_policy(struct nft_handle *h, const char *table,
- 	else
- 		return 0;
- 
--	nft_build_cache(h, c);
--
- 	nftnl_chain_set_u32(c, NFTNL_CHAIN_POLICY, pval);
  	return 1;
  }
-@@ -3317,8 +3300,6 @@ static int __nft_chain_zero_counters(struct nftnl_chain *c, void *data)
- 			return -1;
- 	}
- 
--	nft_build_cache(h, c);
--
- 	iter = nftnl_rule_iter_create(c);
- 	if (iter == NULL)
- 		return -1;
-@@ -3455,8 +3436,6 @@ static int nft_is_chain_compatible(struct nftnl_chain *c, void *data)
- 	enum nf_inet_hooks hook;
- 	int prio;
- 
--	nft_build_cache(h, c);
--
- 	if (nftnl_rule_foreach(c, nft_is_rule_compatible, NULL))
- 		return -1;
- 
 -- 
 2.11.0
 
