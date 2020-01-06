@@ -2,72 +2,128 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A0F13120F
-	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Jan 2020 13:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2722D1317CA
+	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Jan 2020 19:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgAFMUh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 6 Jan 2020 07:20:37 -0500
-Received: from correo.us.es ([193.147.175.20]:43696 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726300AbgAFMUh (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 6 Jan 2020 07:20:37 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 3377BF2DFC
-        for <netfilter-devel@vger.kernel.org>; Mon,  6 Jan 2020 13:20:35 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 2006ADA710
-        for <netfilter-devel@vger.kernel.org>; Mon,  6 Jan 2020 13:20:35 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 6D020DA738; Mon,  6 Jan 2020 13:20:27 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 717CBDA713;
-        Mon,  6 Jan 2020 13:20:25 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 06 Jan 2020 13:20:25 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 4B78A41E4800;
-        Mon,  6 Jan 2020 13:20:25 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     phil@nwl.cc
-Subject: [PATCH 7/7] nft: missing nft_fini() call in bridge family
-Date:   Mon,  6 Jan 2020 13:20:18 +0100
-Message-Id: <20200106122018.14090-8-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200106122018.14090-1-pablo@netfilter.org>
-References: <20200106122018.14090-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726683AbgAFSyz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 6 Jan 2020 13:54:55 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:48180 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726657AbgAFSyz (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 6 Jan 2020 13:54:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1578336893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=zUi4N5K5yW5gkKkEx9fAnGxorkBR0dJVBcurzQJwTuk=;
+        b=JwctZzldfn+z8TO/cf0bY+nkf46HiQe/Ug5SvOjb5mk0pYY2UaOTH8sTWbxJxvhGDy0eRN
+        oMipnJnesMaVwOzhhVJNAOVFGRi4A/PJ2gCL0tSx7YcrBYQhRCzCV+6sUejAzoVxAYEXG1
+        jcPYCXYAb9DwI2puyKv9VORD/qgOYws=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-tlzUX1MoMjOHblyFlKcliA-1; Mon, 06 Jan 2020 13:54:50 -0500
+X-MC-Unique: tlzUX1MoMjOHblyFlKcliA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 39AF5800D48;
+        Mon,  6 Jan 2020 18:54:49 +0000 (UTC)
+Received: from madcap2.tricolour.ca (ovpn-112-34.phx2.redhat.com [10.3.112.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 76E3A5D9E5;
+        Mon,  6 Jan 2020 18:54:40 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>, sgrubb@redhat.com,
+        omosnace@redhat.com, fw@strlen.de, twoerner@redhat.com,
+        eparis@parisplace.org, ebiederm@xmission.com, tgraf@infradead.org,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: [PATCH ghak25 v2 0/9] Address NETFILTER_CFG issues
+Date:   Mon,  6 Jan 2020 13:54:01 -0500
+Message-Id: <cover.1577830902.git.rgb@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- iptables/xtables-eb-standalone.c | 2 ++
- 1 file changed, 2 insertions(+)
+There were questions about the presence and cause of unsolicited syscall events
+in the logs containing NETFILTER_CFG records and sometimes unaccompanied
+NETFILTER_CFG records.
 
-diff --git a/iptables/xtables-eb-standalone.c b/iptables/xtables-eb-standalone.c
-index a9081c78c3bc..ff74ddbb3733 100644
---- a/iptables/xtables-eb-standalone.c
-+++ b/iptables/xtables-eb-standalone.c
-@@ -53,6 +53,8 @@ int xtables_eb_main(int argc, char *argv[])
- 	if (ret)
- 		ret = nft_bridge_commit(&h);
- 
-+	nft_fini(&h);
-+
- 	if (!ret)
- 		fprintf(stderr, "ebtables: %s\n", nft_strerror(errno));
- 
+During testing at least the following list of events trigger NETFILTER_CFG
+records and the syscalls related (There may be more events that will trigger
+this message type.):
+	init_module, finit_module: modprobe
+	setsockopt: iptables-restore, ip6tables-restore, ebtables-restore
+	unshare: (h?)ostnamed
+	clone: libvirtd
+
+The syscall events unsolicited by any audit rule were found to be caused by a
+missing !audit_dummy_context() check before creating a NETFILTER_CFG
+record and issuing the record immediately rather than saving the
+information to create the record at syscall exit.
+Check !audit_dummy_context() before creating the NETFILTER_CFG record.
+
+The vast majority of unaccompanied records are caused by the fedora default
+rule: "-a never,task" and the occasional early startup one is I believe caused
+by the iptables filter table module hard linked into the kernel rather than a
+loadable module. The !audit_dummy_context() check above should avoid them.
+
+A couple of other factors should help eliminate unaccompanied records
+which include commit cb74ed278f80 ("audit: always enable syscall
+auditing when supported and audit is enabled") which makes sure that
+when audit is enabled, so automatically is syscall auditing, and ghak66
+which addressed initializing audit before PID 1.
+
+Ebtables module initialization to register tables doesn't generate records
+because it was never hooked in to audit.  Recommend adding audit hooks to log
+this.
+
+Table unregistration was never logged, which is now covered.
+
+Seemingly duplicate records are not actually exact duplicates that are caused
+by netfilter table initialization in different network namespaces from the same
+syscall.  Recommend adding the network namespace ID (proc inode and dev)
+to the record to make this obvious (address later with ghak79 after nsid
+patches).
+
+See: https://github.com/linux-audit/audit-kernel/issues/25
+See: https://github.com/linux-audit/audit-kernel/issues/35
+See: https://github.com/linux-audit/audit-kernel/issues/43
+See: https://github.com/linux-audit/audit-kernel/issues/44
+
+Changelog:
+v2
+- Rebase (audit/next 5.5-rc1) to get audit_context access and ebt_register_table ret code
+- Split x_tables and ebtables updates
+- Check audit_dummy_context
+- Store struct audit_nfcfg params in audit_context, abstract to audit_nf_cfg() call
+- Restore back to "table, family, entries" from "family, table, entries"
+- Log unregistration of tables
+- Add "op=" at the end of the AUDIT_NETFILTER_CFG record
+- Defer nsid patch (ghak79) to once nsid patchset upstreamed (ghak32)
+- Add ghak refs
+- Ditch NETFILTER_CFGSOLO record
+
+Richard Guy Briggs (9):
+  netfilter: normalize x_table function declarations
+  netfilter: normalize ebtables function declarations
+  netfilter: normalize ebtables function declarations II
+  audit: record nfcfg params
+  netfilter: x_tables audit only on syscall rule
+  netfilter: ebtables audit only on syscall rule
+  netfilter: ebtables audit table registration
+  netfilter: add audit operation field
+  netfilter: audit table unregister actions
+
+ include/linux/audit.h           |  11 ++++
+ kernel/auditsc.c                |  18 +++++
+ net/bridge/netfilter/ebtables.c | 142 ++++++++++++++++++++--------------------
+ net/netfilter/x_tables.c        |  56 +++++++---------
+ 4 files changed, 124 insertions(+), 103 deletions(-)
+
 -- 
-2.11.0
+1.8.3.1
 
