@@ -2,99 +2,73 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5746A131CCB
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jan 2020 01:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BCD131D26
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jan 2020 02:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727250AbgAGAh2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 6 Jan 2020 19:37:28 -0500
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:45807 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727228AbgAGAh2 (ORCPT
+        id S1727348AbgAGB2C (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 6 Jan 2020 20:28:02 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:53365 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727295AbgAGB2B (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 6 Jan 2020 19:37:28 -0500
-Received: from [192.168.1.7] (unknown [101.86.134.13])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 4DD224116F;
-        Tue,  7 Jan 2020 08:37:25 +0800 (CST)
-Subject: Re: [PATCH nf] netfilter: flowtable: restrict flow dissector match on
- meta ingress device
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-References: <20200106114753.7765-1-pablo@netfilter.org>
-From:   wenxu <wenxu@ucloud.cn>
-Message-ID: <f0bee708-d351-382c-d260-740ad4cef591@ucloud.cn>
-Date:   Tue, 7 Jan 2020 08:36:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        Mon, 6 Jan 2020 20:28:01 -0500
+Received: by mail-io1-f71.google.com with SMTP id m5so25434887iol.20
+        for <netfilter-devel@vger.kernel.org>; Mon, 06 Jan 2020 17:28:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=75DRJK5klYoLUbzgyGRVpTRFYRrPHK+zNd4vNtL85ZQ=;
+        b=ktHX2aMZlBUdFi6URUnxymtPY/KDwk8zcx4WbyutU8RbHzGRo0+oKs1p0p5ndA70kg
+         2ZROUth2K0WHEHV8w5gZ038plFyuAd4rP+Lpj/bKgDaQO8DcSq7HsvRdMDkTVIXbnnNM
+         x5vQj6QIGJzswIGsGwQ6EVoHvzWTYkIGQls/N0KQLQ+i7lNxG/P7hpz6I1L3SuAZzuU5
+         JuFnwzM6iJrPqQxYE+maZPjXTejwuVdvFKtqLojFM8PYluP76hn6P4TkI5nTRMAq2qOe
+         q9QDwCz+dA+Uh7lwh4R8+4gdRqqiRyvMtPv/fgsWeE1i9KrPhY3aohuRLP/eZVWceybL
+         UpCg==
+X-Gm-Message-State: APjAAAVmjc+Y/2/G+zjMdStskokTRGkYgtEVR3ULapzsVPJE/Ou1wVub
+        NCMFtN0y69faRVQC4cSiqPwN128eZEBCxaXlAmBvko89BlbZ
+X-Google-Smtp-Source: APXvYqze6nKMW0nX6ASAFlo5hVUFSK6rrj7ZAUCJAj0dZPg3taWf89Wj800pPzrot4VgciXRshJGrcRY8N62dRXGw0WFccatqMpz
 MIME-Version: 1.0
-In-Reply-To: <20200106114753.7765-1-pablo@netfilter.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSE9IS0tLSkxITk1DTEhZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OBw6LTo4Qzg2Gj8zNxEQMA0p
-        LhhPFA9VSlVKTkxDSE5MT09OT01JVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpLSlVD
-        TVVKSE9VSkhZV1kIAVlBSE9MSTcG
-X-HM-Tid: 0a6f7d6f53092086kuqy4dd224116f
+X-Received: by 2002:a92:d151:: with SMTP id t17mr73212526ilg.175.1578360481266;
+ Mon, 06 Jan 2020 17:28:01 -0800 (PST)
+Date:   Mon, 06 Jan 2020 17:28:01 -0800
+In-Reply-To: <0000000000009cd5e0059b7eb836@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d04359059b82afd9@google.com>
+Subject: Re: general protection fault in dccp_timeout_nlattr_to_obj
+From:   syzbot <syzbot+46a4ad33f345d1dd346e@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@blackhole.kfki.hu, kadlec@netfilter.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Acked-by: wenxu <wenxu@ucloud.cn>
+syzbot has bisected this bug to:
 
+commit dd2934a95701576203b2f61e8ded4e4a2f9183ea
+Author: Florian Westphal <fw@strlen.de>
+Date:   Mon Sep 17 10:02:54 2018 +0000
 
-This can avoid the wrong flow install in hardware if there are more than two
+     netfilter: conntrack: remove l3->l4 mapping information
 
-forward devices in the flowtables. Because all the devices shared the same
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10957485e00000
+start commit:   d89091a4 macb: Don't unregister clks unconditionally
+git tree:       net
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=12957485e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14957485e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f2f3ef188b7e16cf
+dashboard link: https://syzkaller.appspot.com/bug?extid=46a4ad33f345d1dd346e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12ff2869e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16693751e00000
 
-block.
+Reported-by: syzbot+46a4ad33f345d1dd346e@syzkaller.appspotmail.com
+Fixes: dd2934a95701 ("netfilter: conntrack: remove l3->l4 mapping  
+information")
 
-ÔÚ 2020/1/6 19:47, Pablo Neira Ayuso Ð´µÀ:
-> Set on FLOW_DISSECTOR_KEY_META meta key using flow tuple ingress interface.
->
-> Fixes: c29f74e0df7a ("netfilter: nf_flow_table: hardware offload support")
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> ---
->   net/netfilter/nf_flow_table_offload.c | 8 +++++++-
->   1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-> index 4d1e81e2880f..b879e673953f 100644
-> --- a/net/netfilter/nf_flow_table_offload.c
-> +++ b/net/netfilter/nf_flow_table_offload.c
-> @@ -24,6 +24,7 @@ struct flow_offload_work {
->   };
->   
->   struct nf_flow_key {
-> +	struct flow_dissector_key_meta			meta;
->   	struct flow_dissector_key_control		control;
->   	struct flow_dissector_key_basic			basic;
->   	union {
-> @@ -55,6 +56,7 @@ static int nf_flow_rule_match(struct nf_flow_match *match,
->   	struct nf_flow_key *mask = &match->mask;
->   	struct nf_flow_key *key = &match->key;
->   
-> +	NF_FLOW_DISSECTOR(match, FLOW_DISSECTOR_KEY_META, meta);
->   	NF_FLOW_DISSECTOR(match, FLOW_DISSECTOR_KEY_CONTROL, control);
->   	NF_FLOW_DISSECTOR(match, FLOW_DISSECTOR_KEY_BASIC, basic);
->   	NF_FLOW_DISSECTOR(match, FLOW_DISSECTOR_KEY_IPV4_ADDRS, ipv4);
-> @@ -62,6 +64,9 @@ static int nf_flow_rule_match(struct nf_flow_match *match,
->   	NF_FLOW_DISSECTOR(match, FLOW_DISSECTOR_KEY_TCP, tcp);
->   	NF_FLOW_DISSECTOR(match, FLOW_DISSECTOR_KEY_PORTS, tp);
->   
-> +	key->meta.ingress_ifindex = tuple->iifidx;
-> +	mask->meta.ingress_ifindex = 0xffffffff;
-> +
->   	switch (tuple->l3proto) {
->   	case AF_INET:
->   		key->control.addr_type = FLOW_DISSECTOR_KEY_IPV4_ADDRS;
-> @@ -105,7 +110,8 @@ static int nf_flow_rule_match(struct nf_flow_match *match,
->   	key->tp.dst = tuple->dst_port;
->   	mask->tp.dst = 0xffff;
->   
-> -	match->dissector.used_keys |= BIT(FLOW_DISSECTOR_KEY_CONTROL) |
-> +	match->dissector.used_keys |= BIT(FLOW_DISSECTOR_KEY_META) |
-> +				      BIT(FLOW_DISSECTOR_KEY_CONTROL) |
->   				      BIT(FLOW_DISSECTOR_KEY_BASIC) |
->   				      BIT(FLOW_DISSECTOR_KEY_PORTS);
->   	return 0;
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
