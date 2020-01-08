@@ -2,143 +2,147 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8819C133E05
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jan 2020 10:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DFE133E4C
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jan 2020 10:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727627AbgAHJOO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 8 Jan 2020 04:14:14 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:51457 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727608AbgAHJON (ORCPT
+        id S1727324AbgAHJ0b (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 8 Jan 2020 04:26:31 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:34839 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727205AbgAHJ0b (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 8 Jan 2020 04:14:13 -0500
-Received: by mail-io1-f71.google.com with SMTP id t18so1613066iob.18
-        for <netfilter-devel@vger.kernel.org>; Wed, 08 Jan 2020 01:14:13 -0800 (PST)
+        Wed, 8 Jan 2020 04:26:31 -0500
+Received: by mail-wr1-f66.google.com with SMTP id g17so2584505wro.2
+        for <netfilter-devel@vger.kernel.org>; Wed, 08 Jan 2020 01:26:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tanaza-com.20150623.gappssmtp.com; s=20150623;
+        h=user-agent:from:to:subject:date:message-id:mime-version;
+        bh=fpZLj0FgCoNphUsBgVK4ekQ3yuUAJG0XvAUKmcuxHq8=;
+        b=VczCDC+nFb+I/zgNr8us7z233u2kLhkpc0ogyD3V3jMBx3wSI8eoHnKqdzoKvOfrNV
+         Zg6cE0EPNBg71cqyalFZUDZReI9u/UuCUJqYqK1vaA7bRp+YykU7JXJtqGUtstdXCNVV
+         mEI/tTs2/JDOj0bbzsdJHesRF4qMKKnNMMxP6jvq195/erZpFG9+7F80i9jQa+paRVvp
+         0gattfImj+Lz8dQo1j8kCpwFnsFvdh8XrwDsTKK0AcAjB2UKbf8v9OYZ58VFtZUsS819
+         L7Eh5YiW2CTCXWz/47TTHvRbzgHKACR5nUEBwBjriSBu12dlTeVOmPr6qkVElMjOL8Al
+         vNBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hSRS9RfwObBsbx/Nc6C6teGoTik7hL43psKyWtf/A/M=;
-        b=BuPy2ifD74qf3TeGclyyZnAd5wLNGwo7JSwmlUQTavUJXUW42QwM0aPDxuq35JFc8o
-         RF9BXL5frWdYyUf6aV0OB86s+SPSdTrbPXqjfuJgTvCm2CpxH0na0ju2rZKJVuNVkbpG
-         biPbOEGCu/2a5Ogh3eiMIm1vDDYcZwZLs00ifF+mFxHXe9ctmiLpI9OBNhEtlpdGVMiE
-         HnK92+RVLbu9SRco+00o8kxN3R5uZCSrBlF/tngN0xYMJJhmjenr3fHFXnxTy4UeFD4B
-         RZR79q7Xg9gfbIPW9v3jVNdzpo+E7sSzHIEg7fHPXMUtf3dZnq8OHh5VUxpGZSzL7gxH
-         +JCw==
-X-Gm-Message-State: APjAAAWBu0/8aPy6zIZe3U1KcXDsdQI2ZBXD6NR9Qv0Mi6yw5CxsyWuw
-        B9AeUTXPCAWrlNgnIg69iXJxaaPf8NxTMR7XKGRDWpIj6W+V
-X-Google-Smtp-Source: APXvYqziCKc8rF9f1jQoBPqDjlag/xvMb7rqSmht/vD5K9aTc2JbRGKk1AOPxskMXaJiwUbd45Er269r9UMu84zEjO43FCAQjDto
+        h=x-gm-message-state:user-agent:from:to:subject:date:message-id
+         :mime-version;
+        bh=fpZLj0FgCoNphUsBgVK4ekQ3yuUAJG0XvAUKmcuxHq8=;
+        b=sEBx8y3ArtR52KdQPLgPDhHJ0MEUhjGlR1tsrA0cEYkS9OC/z85Pt1o9IvfdmBoxJV
+         ysKPbKaouuCPkYWki+JRomOLH2cEF8I8IBaJp3ko9Co9D7TRWhLKvHok86ycTlv4g7LG
+         8aDhL2IUvzXEMMw+3Tb0LyTKq2NiSWWu0XOMi8Na6SEcy0M1RO/UMTy7icah/P5B4Ak+
+         HJ72zGt2bpRlJjTzkf+A6KlGBRQalRrPwAp9fBoGA7+2ZFeRU2Lkw9VGKpqpOiE9zZER
+         dkByv12GMwcSSSpEHLuROAgkJc5tOTSjybHITWKUUQvYERTID0k1msl9Ds38ZD2XcU09
+         Ez1g==
+X-Gm-Message-State: APjAAAUwn7aEweP8dRXlN0L9ns9kWeupyrYHXzJu672p1aEU2y+Pf7Bb
+        szqNdcXuDNKWg/n0Bg9+J7Ezun3aWB8=
+X-Google-Smtp-Source: APXvYqwHE7p0Z7/6QMVAcmUov/NfJzuMkgZb4OF+GtbuNdR70Wj7/pFEyqhqnbSA/fsCNcWnVDc6Sg==
+X-Received: by 2002:a5d:4f8e:: with SMTP id d14mr3510082wru.112.1578475589158;
+        Wed, 08 Jan 2020 01:26:29 -0800 (PST)
+Received: from sancho (net-2-32-63-83.cust.vodafonedsl.it. [2.32.63.83])
+        by smtp.gmail.com with ESMTPSA id s15sm3525283wrp.4.2020.01.08.01.26.28
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jan 2020 01:26:28 -0800 (PST)
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Marco Oliverio <marco.oliverio@tanaza.com>
+To:     netfilter-devel@vger.kernel.org
+Subject: WARN on nft_set_destroy (probably use-after-free)
+Date:   Wed, 08 Jan 2020 10:26:27 +0100
+Message-ID: <87h816s3i4.fsf@tanaza.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:860a:: with SMTP id g10mr2926695ild.280.1578474853067;
- Wed, 08 Jan 2020 01:14:13 -0800 (PST)
-Date:   Wed, 08 Jan 2020 01:14:13 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e77578059b9d5096@google.com>
-Subject: general protection fault in hash_ipport4_uadt
-From:   syzbot <syzbot+f35ea63f7eb0be42fa5d@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        gregkh@linuxfoundation.org, info@metux.net, jeremy@azazel.net,
-        kadlec@netfilter.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
+Hi, if nft_counter module is not loaded and I add a ruleset like
+this:
 
-syzbot found the following crash on:
+table ip t {
+	set set1 {
+		type ether_addr
+	}
 
-HEAD commit:    ae608821 Merge tag 'trace-v5.5-rc5' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11c8c29ee00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=18698c0c240ba616
-dashboard link: https://syzkaller.appspot.com/bug?extid=f35ea63f7eb0be42fa5d
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1195293ee00000
+	set set2 {
+		type ether_addr
+		size 65535
+		flags dynamic
+	}
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+f35ea63f7eb0be42fa5d@syzkaller.appspotmail.com
+	chain c {
+		ether daddr @set1 add @set2 { ether daddr counter }
+	}
+}
 
-kasan: CONFIG_KASAN_INLINE enabled
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 9567 Comm: syz-executor.0 Not tainted 5.5.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-RIP: 0010:hash_ipport4_uadt+0x1f6/0xc20  
-net/netfilter/ipset/ip_set_hash_ipport.c:116
-Code: 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 45 09 00 00 4c 89  
-ea 45 8b 76 04 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 4c  
-89 e8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 e7
-RSP: 0018:ffffc90002037170 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffc90002037320 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff867c0973 RDI: ffff8880978a4444
-RBP: ffffc900020372b8 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffed1015d0703c R11: ffff8880ae8381e3 R12: ffffc90002037220
-R13: 0000000000000000 R14: 0000000001040000 R15: ffff8880a01ed200
-FS:  00007fb62049b700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 00000000a219b000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-  ip_set_utest+0x55b/0x890 net/netfilter/ipset/ip_set_core.c:1867
-  nfnetlink_rcv_msg+0xcf2/0xfb0 net/netfilter/nfnetlink.c:229
-  netlink_rcv_skb+0x177/0x450 net/netlink/af_netlink.c:2477
-  nfnetlink_rcv+0x1ba/0x460 net/netfilter/nfnetlink.c:563
-  netlink_unicast_kernel net/netlink/af_netlink.c:1302 [inline]
-  netlink_unicast+0x58c/0x7d0 net/netlink/af_netlink.c:1328
-  netlink_sendmsg+0x91c/0xea0 net/netlink/af_netlink.c:1917
-  sock_sendmsg_nosec net/socket.c:639 [inline]
-  sock_sendmsg+0xd7/0x130 net/socket.c:659
-  ____sys_sendmsg+0x753/0x880 net/socket.c:2330
-  ___sys_sendmsg+0x100/0x170 net/socket.c:2384
-  __sys_sendmsg+0x105/0x1d0 net/socket.c:2417
-  __do_sys_sendmsg net/socket.c:2426 [inline]
-  __se_sys_sendmsg net/socket.c:2424 [inline]
-  __x64_sys_sendmsg+0x78/0xb0 net/socket.c:2424
-  do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x45af49
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fb62049ac78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045af49
-RDX: 0000000000000000 RSI: 0000000020000240 RDI: 000000000000000a
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fb62049b6d4
-R13: 00000000004c9e62 R14: 00000000004e2e98 R15: 00000000ffffffff
-Modules linked in:
----[ end trace 6310016b54e639bc ]---
-RIP: 0010:hash_ipport4_uadt+0x1f6/0xc20  
-net/netfilter/ipset/ip_set_hash_ipport.c:116
-Code: 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 45 09 00 00 4c 89  
-ea 45 8b 76 04 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 4c  
-89 e8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 e7
-RSP: 0018:ffffc90002037170 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffc90002037320 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff867c0973 RDI: ffff8880978a4444
-RBP: ffffc900020372b8 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffed1015d0703c R11: ffff8880ae8381e3 R12: ffffc90002037220
-R13: 0000000000000000 R14: 0000000001040000 R15: ffff8880a01ed200
-FS:  00007fb62049b700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 00000000a219b000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+the kernel WARNS about a set destroyed with set->use > 0 (trace below):
+
+AFAIU:
+
+the culprit rule is composed, beside others, by a lookup expression
+and a dynset expression with a nested counter expression.
+
+In nf_tables_newrule():
+
+Lookup expression is initalized (by nf_tables_newerxpr()) and
+nft_lookup_init() increments set1->use.
+
+When dynset expression is initalized, the transaction is aborted
+(because the counter nested expression requests an unloaded module and
+the transaction is aborted to release the lock (in
+nft_request_module()).
+
+In aborting the transaction the set is destroyed, but the lookup
+expression is not yet destroyed. It is eventually destroyed in the
+nf_tables_newrule():err2 label, but it still holds a reference to the
+destroyed set in priv->set and we have a use-after-free.
+
+Regards,
+Marco
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+ ------------[ cut here ]------------
+ WARNING: CPU: 3 PID: 3456 at net/netfilter/nf_tables_api.c:3740 nft_set_destroy+0x45/0x50 [nf_tables]
+ Modules linked in: nf_tables_set nf_tables nfnetlink fuse ccm intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel iwldvm mac80211 uvcvideo nls_iso8859_1 kvm libarc4 nls>
+  crc32c_intel ghash_clmulni_intel serio_raw atkbd libps2 sdhci_pci cqhci sdhci ata_piix aesni_intel libata crypto_simd mmc_core cryptd glue_helper scsi_mod xhci_pci ehci_pci xhci_hcd ehci_hcd i8042 serio i9>
+ CPU: 3 PID: 3456 Comm: nft Not tainted 5.4.6-arch3-1 #1
+ RIP: 0010:nft_set_destroy+0x45/0x50 [nf_tables]
+ Code: e8 30 eb 83 c6 48 8b 85 80 00 00 00 48 8b b8 90 00 00 00 e8 dd 6b d7 c5 48 8b 7d 30 e8 24 dd eb c5 48 89 ef 5d e9 6b c6 e5 c5 <0f> 0b c3 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 8b 7f 10 e9 52
+ RSP: 0018:ffffac4f43e53700 EFLAGS: 00010202
+ RAX: 0000000000000001 RBX: ffff99d63a154d80 RCX: 0000000001f88e03
+ RDX: 0000000001f88c03 RSI: ffff99d6560ef0c0 RDI: ffff99d63a101200
+ RBP: ffff99d617721de0 R08: 0000000000000000 R09: 0000000000000318
+ R10: 00000000f0000000 R11: 0000000000000001 R12: ffffffff880fabf0
+ R13: dead000000000122 R14: dead000000000100 R15: ffff99d63a154d80
+ FS:  00007ff3dbd5b740(0000) GS:ffff99d6560c0000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00001cb5de6a9000 CR3: 000000016eb6a004 CR4: 00000000001606e0
+ Call Trace:
+  __nf_tables_abort+0x3e3/0x6d0 [nf_tables]
+  nft_request_module+0x6f/0x110 [nf_tables]
+  nft_expr_type_request_module+0x28/0x50 [nf_tables]
+  nf_tables_expr_parse+0x198/0x1f0 [nf_tables]
+  nft_expr_init+0x3b/0xf0 [nf_tables]
+  nft_dynset_init+0x1e2/0x410 [nf_tables]
+  nf_tables_newrule+0x30a/0x930 [nf_tables]
+  nfnetlink_rcv_batch+0x2a0/0x640 [nfnetlink]
+  nfnetlink_rcv+0x125/0x171 [nfnetlink]
+  netlink_unicast+0x179/0x210
+  netlink_sendmsg+0x208/0x3d0
+  sock_sendmsg+0x5e/0x60
+  ____sys_sendmsg+0x21b/0x290
+  ___sys_sendmsg+0xa3/0xf0
+  __sys_sendmsg+0x81/0xd0
+  do_syscall_64+0x4e/0x140
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ RIP: 0033:0x7ff3dbfa97b7
+ Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 89 54 24 1c 48 89 74 24 10
+ RSP: 002b:00007ffeb7675098 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+ RAX: ffffffffffffffda RBX: 0000000000020000 RCX: 00007ff3dbfa97b7
+ RDX: 0000000000000000 RSI: 00007ffeb7676120 RDI: 0000000000000003
+ RBP: 00007ffeb7676220 R08: 00007ffeb7675074 R09: 0000000000000001
+ R10: 00007ff3dc165bac R11: 0000000000000246 R12: 0000000000000988
+ R13: 00007ffeb76750a0 R14: 00007ffeb7676270 R15: 00007ffeb76750b0
+ ---[ end trace 9f9b4db1487263a1 ]---
