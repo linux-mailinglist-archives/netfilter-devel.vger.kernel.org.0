@@ -2,39 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 306CD136D2F
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jan 2020 13:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A8F136D36
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jan 2020 13:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728208AbgAJMiI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1728010AbgAJMiI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Fri, 10 Jan 2020 07:38:08 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:39852 "EHLO
+Received: from kadath.azazel.net ([81.187.231.250]:39854 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728010AbgAJMiH (ORCPT
+        with ESMTP id S1728118AbgAJMiI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 10 Jan 2020 07:38:07 -0500
+        Fri, 10 Jan 2020 07:38:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=pwk1rhPnuX9ooq8oYJNQC6PkbwFRP7EPWSZa7jXT7q4=; b=sKWS6i8T+Q5rBC3WLjRGBYowpl
-        dDCrGK7Pt5LcXaVCfo/L4+liTLX71eOrNbvE23S2M55LOmTQUwWoj8ccYoBMz3WQzWmf3TDjXmZag
-        pXTX+iWL8t3PTeeCLYnp+bnB0vDe2HOg5TMHqtJvzL6JdigE/N8z8Qx2BFDg73GmCIwH9U++G+ooo
-        icpB3Inf5mUx3GR87TPo0hU0gz3wQuOWy8+zMSDFbJOaJmCBAsJBOT8tIADvfv9HV2QnYxOUv80FE
-        yKTXVEm6u6EV6GP5lEd2dcj1rwp8U2wbKy9r9AQew69T3syNwY3PB8mZr2KDE59cMm3zOGouWPOjX
-        ZrhBMRDQ==;
+        bh=g0qES8VIZMRmjQBNINWBdVXFNmpN4pEbN1niPnx98mk=; b=tTsciLMkTsBr9sZCbiEvjQpbeF
+        VMVSGpA9zM4jyVrJENIPV6fKFBjB692pM5aaASbxMFrWHfv7XIPoQRGZZhxibyzSVqR9rR+Sm0RDk
+        QkK95IRy2dBkptBzu83++cepNVMSVQYEkPLVNYCg/1kt/V3iKzsWkwgIAoyZyVC1lhGDFURCZLRsS
+        A0OCAvdO6qvicsm0Z+wmOkFy4orqACKv+xF3bY4bHSb/6bRqisBtP+7+VNANd8pcXXGA4Thur2DKy
+        SUh3XuxnLWhiVrHskWaEjQRCBUiANSTygNY7eRzrRW5X61YpPbqUEZjYtTVEF+aMc2ZTH3EcmjXW4
+        JfoTbGNA==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1iptYE-0003im-LI
+        id 1iptYE-0003im-O7
         for netfilter-devel@vger.kernel.org; Fri, 10 Jan 2020 12:38:06 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft 0/7] bitwise shift support
-Date:   Fri, 10 Jan 2020 12:37:59 +0000
-Message-Id: <20200110123806.106546-1-jeremy@azazel.net>
+Subject: [PATCH nft 1/7] Update gitignore.
+Date:   Fri, 10 Jan 2020 12:38:00 +0000
+Message-Id: <20200110123806.106546-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200110123806.106546-1-jeremy@azazel.net>
+References: <20200110123806.106546-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
@@ -45,34 +47,30 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch-set adds support for bitwise shift operations to nft.  There
-are a few preliminary patches containing miscellaneous fixes as well.
+Add ctags and etags tag files, and Emacs back-up files.
 
-Jeremy Sowden (7):
-  Update gitignore.
-  src: white-space fixes.
-  netlink_delinearize: fix typo.
-  netlink_delinearize: remove commented out pr_debug statement.
-  parser: add parenthesized statement expressions.
-  netlink: add support for handling shift expressions.
-  tests: shell: add bit-shift tests.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ .gitignore | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
- .gitignore                                    |  9 ++++
- include/linux/netfilter/nf_tables.h           |  4 ++
- src/evaluate.c                                | 11 +++--
- src/netlink_delinearize.c                     | 25 +++++++++--
- src/netlink_linearize.c                       | 44 +++++++++++++++++--
- src/parser_bison.y                            | 25 ++++++-----
- tests/shell/testcases/chains/0040mark_shift_0 | 11 +++++
- tests/shell/testcases/chains/0040mark_shift_1 | 11 +++++
- .../chains/dumps/0040mark_shift_0.nft         |  6 +++
- .../chains/dumps/0040mark_shift_1.nft         |  6 +++
- 10 files changed, 126 insertions(+), 26 deletions(-)
- create mode 100755 tests/shell/testcases/chains/0040mark_shift_0
- create mode 100755 tests/shell/testcases/chains/0040mark_shift_1
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_shift_0.nft
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_shift_1.nft
-
+diff --git a/.gitignore b/.gitignore
+index 2cb1e2afd45c..6b37b1237037 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -19,3 +19,12 @@ libtool
+ 
+ # Debian package build temporary files
+ build-stamp
++
++# Tag files for Vim and Emacs.
++TAGS
++tags
++
++# Emacs back-up files.
++*~
++\#*\#
++.\#*
 -- 
 2.24.1
 
