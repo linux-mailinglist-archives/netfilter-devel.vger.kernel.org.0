@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A8F136D36
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jan 2020 13:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A46E136D31
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jan 2020 13:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgAJMiI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1728118AbgAJMiI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Fri, 10 Jan 2020 07:38:08 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:39854 "EHLO
+Received: from kadath.azazel.net ([81.187.231.250]:39856 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728118AbgAJMiI (ORCPT
+        with ESMTP id S1728141AbgAJMiI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Fri, 10 Jan 2020 07:38:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,22 +18,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=g0qES8VIZMRmjQBNINWBdVXFNmpN4pEbN1niPnx98mk=; b=tTsciLMkTsBr9sZCbiEvjQpbeF
-        VMVSGpA9zM4jyVrJENIPV6fKFBjB692pM5aaASbxMFrWHfv7XIPoQRGZZhxibyzSVqR9rR+Sm0RDk
-        QkK95IRy2dBkptBzu83++cepNVMSVQYEkPLVNYCg/1kt/V3iKzsWkwgIAoyZyVC1lhGDFURCZLRsS
-        A0OCAvdO6qvicsm0Z+wmOkFy4orqACKv+xF3bY4bHSb/6bRqisBtP+7+VNANd8pcXXGA4Thur2DKy
-        SUh3XuxnLWhiVrHskWaEjQRCBUiANSTygNY7eRzrRW5X61YpPbqUEZjYtTVEF+aMc2ZTH3EcmjXW4
-        JfoTbGNA==;
+        bh=lv4X4kAVQOvzyLyhpubFOYibq+0CIwICTUNN7L+vzyw=; b=FX3W50E8kMmQvpwHGeftBKHjTd
+        Kj5+t9vPYvSvltHRzc73mdJeVLW8clzB0ddU8aMQABJhZcSjCK+KHwrK3ziQHk/O7k6NTPFANVSAq
+        W8MPxxRADEfLrbS9FKfr/B5UY028PeQaANz65Csg3CYsgJngGDNfdSQhkEc0c+NxAMY3evlxoIzii
+        BarFIrb0yVqsik02pCe/ZimB3VmW7JJJsF2H5+AA1fUhd9z/RWLX/lvcEzOeRZeQE0/GkgDNbbBgm
+        C3JPGbw0eNqSGZWXiG6VtkIUa0fFOUwOGdjha3N6dJB33Foajef2EOY8t6c9GJPQOJKTeErPyeg9V
+        Wn8ZkvAw==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1iptYE-0003im-O7
+        id 1iptYE-0003im-Sy
         for netfilter-devel@vger.kernel.org; Fri, 10 Jan 2020 12:38:06 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft 1/7] Update gitignore.
-Date:   Fri, 10 Jan 2020 12:38:00 +0000
-Message-Id: <20200110123806.106546-2-jeremy@azazel.net>
+Subject: [PATCH nft 2/7] src: white-space fixes.
+Date:   Fri, 10 Jan 2020 12:38:01 +0000
+Message-Id: <20200110123806.106546-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200110123806.106546-1-jeremy@azazel.net>
 References: <20200110123806.106546-1-jeremy@azazel.net>
@@ -47,30 +47,65 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add ctags and etags tag files, and Emacs back-up files.
+Remove some trailing white-space and fix some indentation.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- .gitignore | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ src/evaluate.c            | 11 +++++------
+ src/netlink_delinearize.c |  2 +-
+ src/netlink_linearize.c   |  2 +-
+ 3 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/.gitignore b/.gitignore
-index 2cb1e2afd45c..6b37b1237037 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -19,3 +19,12 @@ libtool
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 34e4473e4c9a..6af681f0f7a8 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -2343,14 +2343,13 @@ static int stmt_evaluate_meta(struct eval_ctx *ctx, struct stmt *stmt)
+ static int stmt_evaluate_ct(struct eval_ctx *ctx, struct stmt *stmt)
+ {
+ 	if (stmt_evaluate_arg(ctx, stmt,
+-				 stmt->ct.tmpl->dtype,
+-				 stmt->ct.tmpl->len,
+-				 stmt->ct.tmpl->byteorder,
+-				 &stmt->ct.expr) < 0)
++			      stmt->ct.tmpl->dtype,
++			      stmt->ct.tmpl->len,
++			      stmt->ct.tmpl->byteorder,
++			      &stmt->ct.expr) < 0)
+ 		return -1;
  
- # Debian package build temporary files
- build-stamp
-+
-+# Tag files for Vim and Emacs.
-+TAGS
-+tags
-+
-+# Emacs back-up files.
-+*~
-+\#*\#
-+.\#*
+-	if (stmt->ct.key == NFT_CT_SECMARK &&
+-	    expr_is_constant(stmt->ct.expr))
++	if (stmt->ct.key == NFT_CT_SECMARK && expr_is_constant(stmt->ct.expr))
+ 		return stmt_error(ctx, stmt,
+ 				  "ct secmark must not be set to constant value");
+ 
+diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
+index 154353b8161a..387e4b046c6b 100644
+--- a/src/netlink_delinearize.c
++++ b/src/netlink_delinearize.c
+@@ -171,7 +171,7 @@ static void netlink_parse_immediate(struct netlink_parse_ctx *ctx,
+ 	struct expr *expr;
+ 
+ 	if (nftnl_expr_is_set(nle, NFTNL_EXPR_IMM_VERDICT)) {
+-		nld.verdict = nftnl_expr_get_u32(nle, NFTNL_EXPR_IMM_VERDICT); 
++		nld.verdict = nftnl_expr_get_u32(nle, NFTNL_EXPR_IMM_VERDICT);
+ 		if  (nftnl_expr_is_set(nle, NFTNL_EXPR_IMM_CHAIN)) {
+ 			nld.chain = nftnl_expr_get(nle, NFTNL_EXPR_IMM_CHAIN,
+ 						   &nld.len);
+diff --git a/src/netlink_linearize.c b/src/netlink_linearize.c
+index 498326d0087a..d5e177d5e75c 100644
+--- a/src/netlink_linearize.c
++++ b/src/netlink_linearize.c
+@@ -1243,7 +1243,7 @@ static void netlink_gen_queue_stmt(struct netlink_linearize_ctx *ctx,
+ }
+ 
+ static void netlink_gen_ct_stmt(struct netlink_linearize_ctx *ctx,
+-				  const struct stmt *stmt)
++				const struct stmt *stmt)
+ {
+ 	struct nftnl_expr *nle;
+ 	enum nft_registers sreg;
 -- 
 2.24.1
 
