@@ -2,39 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BAA136D1B
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jan 2020 13:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14507136D1C
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jan 2020 13:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728175AbgAJMdO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1727753AbgAJMdO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Fri, 10 Jan 2020 07:33:14 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:39614 "EHLO
+Received: from kadath.azazel.net ([81.187.231.250]:39616 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727753AbgAJMdO (ORCPT
+        with ESMTP id S1728146AbgAJMdO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Fri, 10 Jan 2020 07:33:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=cBjhdH6avh6t4Ngu3erkX/Q9uvAPML/2OvJMUvN73t0=; b=gCWiATaOL5Ecn1UWilevWn7692
-        yMN/eKvjDUOk6sD6L8zedMZr9LqbmdD71W+p+Dnt8/1nZ/WGmpeLxBlecMQqKS1AVxbAbDcpz2SpZ
-        qVGupuccZ22ilAbi8IcVSEbTcY3kotT+DfHZQAPXKvkOrm3D5v8SHBJjD9/3iSp5aZTUJqybqZfEb
-        9TBCaOAYPbC7+IJkMD+KruooIh92/F3JyD47xII+/nbOpUY4G6E9uJdEDF7ozW+VDFYDm4MEbFhTu
-        zhHkUzTTcn8cZwWnJ3QW9Fi1ppZLL6iSPffZcmzx1TMI/0pAPUa1tgK2CDPUPnHbN458bSFT7rDNl
-        a/+7EKJQ==;
+        bh=UQY06JH4aBEgG6zv15PB3e7+5O8KmjXZauT/V4ts2+4=; b=ldkPFqNuhBNJrVvIo44DI+XsOx
+        7GMJ7ewtIPQukaOXzt8B8uLAp8i7pRVomcBZ5hdFF8lB6WzkFPtyDar54gx8x8XmH9la3uFU+Ojjy
+        kI1EimFk5vl7c294ZdrbFu+mALhKbddLwCuNeOwD8DJmN6gZfsO4JUl3oF1SCoRkXPgluCwMWXdhV
+        cH8UYMTxlcSWWe+pNW90T/8aeRwbS6Mzu0dRD8OEchEl9G7X1hfhBiStcSZsOz6DM+iVZk86Z9LHs
+        eR7VxAlmU74f3Q8u9YBYGy5WRBHCOvvOMKTlKBwxC6kYZjI2TVhjoT/GuoZf1waZBXlC0ZLVxlD0n
+        /VdNq47Q==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1iptTU-0003by-T7
-        for netfilter-devel@vger.kernel.org; Fri, 10 Jan 2020 12:33:12 +0000
+        id 1iptTV-0003by-0n
+        for netfilter-devel@vger.kernel.org; Fri, 10 Jan 2020 12:33:13 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 0/3] netfilter: nft_bitwise: shift support
-Date:   Fri, 10 Jan 2020 12:33:09 +0000
-Message-Id: <20200110123312.106438-1-jeremy@azazel.net>
+Subject: [PATCH nf-next 1/3] netfilter: nf_tables: white-space fixes.
+Date:   Fri, 10 Jan 2020 12:33:10 +0000
+Message-Id: <20200110123312.106438-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200110123312.106438-1-jeremy@azazel.net>
+References: <20200110123312.106438-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
@@ -45,25 +47,42 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The connmark xtables extension supports bit-shifts.  Add support for
-shifts to nft_bitwise in order to allow nftables to do likewise, e.g.:
+Indentation fixes for the parameters of a couple of nft set functions.
 
-  nft add rule t c oif lo ct mark set meta mark << 8 | 0xab
-  nft add rule t c iif lo meta mark & 0xff 0xab ct mark set meta mark >> 8
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ net/netfilter/nft_set_bitmap.c | 4 ++--
+ net/netfilter/nft_set_hash.c   | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-There are a couple of preliminary tidying-up patches first.
-
-Jeremy Sowden (3):
-  netfilter: nf_tables: white-space fixes.
-  netfilter: bitwise: replace gotos with returns.
-  netfilter: bitwise: add support for shifts.
-
- include/uapi/linux/netfilter/nf_tables.h |  9 ++-
- net/netfilter/nft_bitwise.c              | 97 ++++++++++++++++++++----
- net/netfilter/nft_set_bitmap.c           |  4 +-
- net/netfilter/nft_set_hash.c             |  2 +-
- 4 files changed, 94 insertions(+), 18 deletions(-)
-
+diff --git a/net/netfilter/nft_set_bitmap.c b/net/netfilter/nft_set_bitmap.c
+index 087a056e34d1..87e8d9ba0c9b 100644
+--- a/net/netfilter/nft_set_bitmap.c
++++ b/net/netfilter/nft_set_bitmap.c
+@@ -259,8 +259,8 @@ static u64 nft_bitmap_privsize(const struct nlattr * const nla[],
+ }
+ 
+ static int nft_bitmap_init(const struct nft_set *set,
+-			 const struct nft_set_desc *desc,
+-			 const struct nlattr * const nla[])
++			   const struct nft_set_desc *desc,
++			   const struct nlattr * const nla[])
+ {
+ 	struct nft_bitmap *priv = nft_set_priv(set);
+ 
+diff --git a/net/netfilter/nft_set_hash.c b/net/netfilter/nft_set_hash.c
+index b331a3c9a3a8..d350a7cd3af0 100644
+--- a/net/netfilter/nft_set_hash.c
++++ b/net/netfilter/nft_set_hash.c
+@@ -645,7 +645,7 @@ static bool nft_hash_estimate(const struct nft_set_desc *desc, u32 features,
+ }
+ 
+ static bool nft_hash_fast_estimate(const struct nft_set_desc *desc, u32 features,
+-			      struct nft_set_estimate *est)
++				   struct nft_set_estimate *est)
+ {
+ 	if (!desc->size)
+ 		return false;
 -- 
 2.24.1
 
