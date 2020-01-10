@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C586136D32
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jan 2020 13:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A81136D33
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jan 2020 13:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728159AbgAJMiI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 10 Jan 2020 07:38:08 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:39860 "EHLO
+        id S1728180AbgAJMiJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 10 Jan 2020 07:38:09 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:39862 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728180AbgAJMiI (ORCPT
+        with ESMTP id S1728185AbgAJMiI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Fri, 10 Jan 2020 07:38:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,22 +18,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=/3T9m6QEVfVUD/+aCjgdUGEDP5YZEMp2PxMcG7lIs9w=; b=TfB5s+DLasdSrnvy4SoPUr8Mzf
-        BdkO77BFR8zNKm1FRIpSJIrY0bJB1xlhDvksCP3YtSTN/C26EWAebA44vlWFIdg27LSliEbLH9QE0
-        Qpvt0i6COC5vWsAHByd7C9xckDquchmTikNhoW8jN7V/3ddKXtKk/qQes8kJtbRoj0MxnNO5Vd271
-        6fDYOrMxuvgEnifKJuQgmLi8O6415ESqS2qzAphGTRzwyv0f7/SByzjReZ/cIsrXyqWVYVHUP8WeM
-        63nl84rg03PBipElVGKd0JPgWux3kpNqyKi3s41uwPneItPja6z2nQV/7M5HzEKR6xwLsus3J+xAM
-        tv35npNA==;
+        bh=9J6vMRqXwsp855kEhNzUy8m+HTiK0YbTGvnaOBpsjMI=; b=oq6wdh6kgEdW38HewQSapeUbuZ
+        TRuiEKoIbCwJ9BPq7KYIYk4TshWyN0c5LL346Yud++5f08y0y453sxnOD4V2O2Z006RNx2buEa8Ov
+        VyY2l9opgnKkFw3QNiCHwzU7heDXyW0Io4mi4lHF7G3PEG9tIMGtir9XSzJ5fy0h21pqf1wzLKhBL
+        p6MxdRpaG8l4AxWA5BAXsgjIe9qYVoiC8rU463DUGCukYABpxZVcvDKeSEApPZ/28foiFeBbuPqTC
+        5F0qOgYbzlHBY0y2hzM1b2T6mvAzI4kj6SxQXLnZcBcdSoZIBWGjyn1Ceoamwj2cd45bwJoLlaR2H
+        QavP9nZg==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1iptYF-0003im-6F
+        id 1iptYF-0003im-Av
         for netfilter-devel@vger.kernel.org; Fri, 10 Jan 2020 12:38:07 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft 4/7] netlink_delinearize: remove commented out pr_debug statement.
-Date:   Fri, 10 Jan 2020 12:38:03 +0000
-Message-Id: <20200110123806.106546-5-jeremy@azazel.net>
+Subject: [PATCH nft 5/7] parser: add parenthesized statement expressions.
+Date:   Fri, 10 Jan 2020 12:38:04 +0000
+Message-Id: <20200110123806.106546-6-jeremy@azazel.net>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200110123806.106546-1-jeremy@azazel.net>
 References: <20200110123806.106546-1-jeremy@azazel.net>
@@ -47,26 +47,51 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The statement doesn't compile, so remove it.
+Primary and primary RHS expressions support parenthesized basic and
+basic RHS expressions.  However, primary statement expressions do not
+support parenthesized basic statement expressions.  Add them.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/netlink_delinearize.c | 2 --
- 1 file changed, 2 deletions(-)
+ src/parser_bison.y | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index 8b9b5c808384..8f2a5dfacd3e 100644
---- a/src/netlink_delinearize.c
-+++ b/src/netlink_delinearize.c
-@@ -2047,8 +2047,6 @@ static void expr_postprocess(struct rule_pp_ctx *ctx, struct expr **exprp)
- {
- 	struct expr *expr = *exprp, *i;
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index 799f7a308b07..45cc013cfe28 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -2992,18 +2992,19 @@ synproxy_sack		:	/* empty */	{ $$ = 0; }
+ 			}
+ 			;
  
--	//pr_debug("%s len %u\n", expr->ops->name, expr->len);
--
- 	switch (expr->etype) {
- 	case EXPR_MAP:
- 		switch (expr->map->etype) {
+-primary_stmt_expr	:	symbol_expr		{ $$ = $1; }
+-			|	integer_expr		{ $$ = $1; }
+-			|	boolean_expr		{ $$ = $1; }
+-			|	meta_expr		{ $$ = $1; }
+-			|	rt_expr			{ $$ = $1; }
+-			|	ct_expr			{ $$ = $1; }
+-			|	numgen_expr             { $$ = $1; }
+-			|	hash_expr               { $$ = $1; }
+-			|	payload_expr		{ $$ = $1; }
+-			|	keyword_expr		{ $$ = $1; }
+-			|	socket_expr		{ $$ = $1; }
+-			|	osf_expr		{ $$ = $1; }
++primary_stmt_expr	:	symbol_expr			{ $$ = $1; }
++			|	integer_expr			{ $$ = $1; }
++			|	boolean_expr			{ $$ = $1; }
++			|	meta_expr			{ $$ = $1; }
++			|	rt_expr				{ $$ = $1; }
++			|	ct_expr				{ $$ = $1; }
++			|	numgen_expr             	{ $$ = $1; }
++			|	hash_expr               	{ $$ = $1; }
++			|	payload_expr			{ $$ = $1; }
++			|	keyword_expr			{ $$ = $1; }
++			|	socket_expr			{ $$ = $1; }
++			|	osf_expr			{ $$ = $1; }
++			|	'('	basic_stmt_expr	')'	{ $$ = $2; }
+ 			;
+ 
+ shift_stmt_expr		:	primary_stmt_expr
 -- 
 2.24.1
 
