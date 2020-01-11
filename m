@@ -2,113 +2,144 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B84F5137C50
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jan 2020 09:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A561382CB
+	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jan 2020 19:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbgAKIUV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 11 Jan 2020 03:20:21 -0500
-Received: from sonic302-1.consmr.mail.bf2.yahoo.com ([74.6.135.40]:36690 "EHLO
-        sonic302-1.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728602AbgAKIUV (ORCPT
+        id S1730657AbgAKSEL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 11 Jan 2020 13:04:11 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:54415 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730647AbgAKSEL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 11 Jan 2020 03:20:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1578730819; bh=rLzamwWDU6w+ljUNz15IdfH92SpsSZVAbr+GO8Whobg=; h=Date:From:Reply-To:Subject:References:From:Subject; b=MSibc7UEw4VtfjkFP7qv/RR3WMEZ3TvB25lMVHCIJzX9P5HqGseue6SH15A+fiWjJhQrhG7KV2kCbIlZHzn/fR23LXgKL0TjOunxIaE3cZoxo2vweAq/1ta/oP395aHiKgCM4uJr4fC0Cz6d3xqhrCVZDwTkWHdKPcmTsCb9MLoHGL/j3H5tsa/OnK/XmOuJcaYPJ97neDCVzdroqk5jJAmkqcr+eoKodrcu2N2Pj+qBatPmuMBda4nR/5ChgGBTwr9ohfhtY+hDCz6/IAACWVvNZpDU7ztjfTuFFUvikOjQhhdMJQoJe7xWRYSb28QUafUvUEguC3phBL2GsqF1iw==
-X-YMail-OSG: 5bI1lR4VM1llky_6K6QRR6JF3FDN9OTxEaTITXhSrubm0PLq335JNBmVpE1at5x
- WTXS0yfYYJdMdAFeQlMTWhOHXftlpT0_Um._1l._l2fO63G05Bwcr_ITVHFBqYOF696EY4EkvE6d
- 9uQ1ekkhbUhf.UyOK4omp40k4qG0OZEq48CqcBlNrBLE9hN5.aCvgRdQYMkZHvogLGD7_n0swgBN
- 5mZjuYc6mPR2cEcdlu2.zbUpT7hNvTDrLtJpj8ySdrpLEbX.Dg1RHBJjeAA1iAdpoQrleZoA.YMh
- YqkZpHdv40u3ntVrtxhu5xe4IFTcTzdHMfx_Mxx1wgUVWkowyCOeYlhsdKtxQ_14NUBxgjvQrErb
- l2BFC3SRpcOCwlutBTRzFiAe8KjO0Qlr2QV1AwxhS9MCoU5KLdEIVvGAcNAgqDalIx0O4RpzNvlt
- 9uLyXX188x27DWWPqq3MR.SqGeRlJYiwvBI0Y3STC8uNbENvjBXpzzvkNpy8sCi1nAHF9r5aKkj5
- 4mcVhqLLOPdfqNYcpsmpNuAwPGbEDc6xha4JkHz8txreeoz7a20_8BHGNdND67YhT3Mi_Nigrq1Z
- OxCzi9P8dQyjeITVwg0MINLATURMQvglRnl5Cq_UECmxW7obOwYbHmtUDYi4jUYhuUVsNHIdqHAK
- fAdKIvHJA4dzHhtMbMxij94UH4.ug0Ehg.SL5t5TjNcFbkbOL0gFS6PwOKeENbeF.uLdFRJWBhtD
- Nk0UbTSivnrsM0iWDin.DMuBgMElb3gIWvXYkRreiuHWbciEWm8pw9L1bOkVyJbU.dF1OThFC63T
- nG67uGV.MB.Q5sdcvuTd__GWOIvbfteadjaIefg5bEq6wbodHVVR6uhtUch2gjAYRq1_NcHaejk8
- rFp7R1bibGOz11sC18T2UXi8oIUv5qd16wuSjc_nTRLdFvz8F4XshRh_1IKPQD0.awc9yq5k1_Kf
- C2vfwNVXRWiw0QNIjxFkj30h6HXipqko7aoDOJ8OL6kt_lwEfuMOBU.ip9KlXZf6leAi_SR2.Xmb
- 4WEPrw8dZdwsT7fiYV7iwoavzZwKH3WV7BZHCva1RyDFPLcW5loO7_XpgdrzkLvGm.SPPO4vXFio
- a6CbUaCDDScwVRp1WVjY7s1eQw7BrT9VYCjTgMt4fa.TP8ipUIzPo04XrzUZWicLZRmWv_VqfLK3
- rYG6KOVA0sVUKo6yQBh9w7ick3yMSFk_xJ6gTNeTe0sz3JgH16TDsloM66WRPFR9HNkpjAoUOce_
- _IweVJl9ElutKeAaPLr3TNiiCsHi58.zJV0.5ahPU2ZAkk8nzTWyT0wg4Hb7qPGJHnR4otGVg9XN
- Qmg--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.bf2.yahoo.com with HTTP; Sat, 11 Jan 2020 08:20:19 +0000
-Date:   Sat, 11 Jan 2020 08:20:15 +0000 (UTC)
-From:   "MR.Abderazack Zebdani" <zebdanimrabderazack@gmail.com>
-Reply-To: zebdanimrabderazack@gmail.com
-Message-ID: <2028710208.6539028.1578730815412@mail.yahoo.com>
-Subject: MY CONDOLENT GREETINGS TO YOUR FAMILY
+        Sat, 11 Jan 2020 13:04:11 -0500
+Received: by mail-il1-f198.google.com with SMTP id t4so4245398ili.21
+        for <netfilter-devel@vger.kernel.org>; Sat, 11 Jan 2020 10:04:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=IKJ0VvvA4NZ59sgPsM3f+KZQbWTNSpZt7HA/swbAD54=;
+        b=M6bTZrB60h6ZXd+BEYXz8/zy9vMUKSWCyEt10qWTuBTiW6+YKJPq7FHJOUbSHnGFof
+         g5Yy+fxtOgqAcgqk6mWN2lAna+NhUNqvoehD5oW6j9OtD+s8kF3ASeTkgQuCxyz3OhRL
+         yKl5/gLRJBLPq6uJMigUd2KN3FwsQNtLx5HieXmXSJEBxOd1jLicwPvVzB2ghOsrEpYi
+         Lfr4ZXmguTQZX1i9fCzQkEQu1MijnzehHDUqzKgbcIEVzCQWOMcTN+HJZMS3TasrZMr2
+         XtEaH+x9AxycBgaFCrA/7LcI+GOK3DbC31vlv6qtOQD0MuMDn18xF6PpN8Ia0Sc82bPX
+         lxOQ==
+X-Gm-Message-State: APjAAAUO2Ip942HVLN9C0eDkMcmH04IBi3XxF3M5XdrucOUn6Si7rShc
+        HotlOklUOUwb01YYpqLxLy2YCfn7rf9akQuqfoUlL9dBR4lm
+X-Google-Smtp-Source: APXvYqztfG7zgmLeBqeUW17cz6ghTeAyTxdKZTEWIbgdcZMgSWp7sNkTpHMtkBmU3JviC1ytmNIphRKqx2SrQn/VC10oZKjOOZ92
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <2028710208.6539028.1578730815412.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.14873 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+X-Received: by 2002:a92:9603:: with SMTP id g3mr8289386ilh.231.1578765850186;
+ Sat, 11 Jan 2020 10:04:10 -0800 (PST)
+Date:   Sat, 11 Jan 2020 10:04:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000af1c5b059be111e5@google.com>
+Subject: general protection fault in xt_rateest_put
+From:   syzbot <syzbot+91bdd8eece0f6629ec8b@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Hello,
+
+syzbot found the following crash on:
+
+HEAD commit:    e69ec487 Merge branch 'for-linus' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1239f876e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=18698c0c240ba616
+dashboard link: https://syzkaller.appspot.com/bug?extid=91bdd8eece0f6629ec8b
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13dbd58ee00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15eff9e1e00000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+91bdd8eece0f6629ec8b@syzkaller.appspotmail.com
+
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 10213 Comm: syz-executor519 Not tainted 5.5.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:__read_once_size include/linux/compiler.h:199 [inline]
+RIP: 0010:net_generic include/net/netns/generic.h:45 [inline]
+RIP: 0010:xt_rateest_put+0xa1/0x440 net/netfilter/xt_RATEEST.c:77
+Code: 85 87 01 fb 45 84 f6 0f 84 68 02 00 00 e8 37 86 01 fb 49 8d bd 68 13  
+00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f  
+85 6c 03 00 00 4d 8b b5 68 13 00 00 e8 29 bf ed fa
+RSP: 0018:ffffc90001cd7940 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff8880a779f700 RCX: ffffffff8673a332
+RDX: 000000000000026d RSI: ffffffff8673a0b9 RDI: 0000000000001368
+RBP: ffffc90001cd7970 R08: ffff8880a96b2240 R09: ffffed1015d0703d
+R10: ffffed1015d0703c R11: ffff8880ae8381e3 R12: 000000000000002d
+R13: 0000000000000000 R14: 0000000000000001 R15: ffffffff8673a470
+FS:  00000000016ce880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055cd48aff140 CR3: 0000000096982000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  xt_rateest_tg_destroy+0x72/0xa0 net/netfilter/xt_RATEEST.c:175
+  cleanup_entry net/ipv4/netfilter/arp_tables.c:509 [inline]
+  translate_table+0x11f4/0x1d80 net/ipv4/netfilter/arp_tables.c:587
+  do_replace net/ipv4/netfilter/arp_tables.c:981 [inline]
+  do_arpt_set_ctl+0x317/0x650 net/ipv4/netfilter/arp_tables.c:1461
+  nf_sockopt net/netfilter/nf_sockopt.c:106 [inline]
+  nf_setsockopt+0x77/0xd0 net/netfilter/nf_sockopt.c:115
+  ip_setsockopt net/ipv4/ip_sockglue.c:1260 [inline]
+  ip_setsockopt+0xdf/0x100 net/ipv4/ip_sockglue.c:1240
+  udp_setsockopt+0x68/0xb0 net/ipv4/udp.c:2639
+  sock_common_setsockopt+0x94/0xd0 net/core/sock.c:3149
+  __sys_setsockopt+0x261/0x4c0 net/socket.c:2117
+  __do_sys_setsockopt net/socket.c:2133 [inline]
+  __se_sys_setsockopt net/socket.c:2130 [inline]
+  __x64_sys_setsockopt+0xbe/0x150 net/socket.c:2130
+  do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x441699
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffc35157368 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000441699
+RDX: 0000000000000060 RSI: 0a02000000000000 RDI: 0000000000000003
+RBP: 00000000006cb018 R08: 0000000000000430 R09: 00000000004002c8
+R10: 00000000200008c0 R11: 0000000000000246 R12: 0000000000402f20
+R13: 0000000000402fb0 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace f2341320b9d5ba2d ]---
+RIP: 0010:__read_once_size include/linux/compiler.h:199 [inline]
+RIP: 0010:net_generic include/net/netns/generic.h:45 [inline]
+RIP: 0010:xt_rateest_put+0xa1/0x440 net/netfilter/xt_RATEEST.c:77
+Code: 85 87 01 fb 45 84 f6 0f 84 68 02 00 00 e8 37 86 01 fb 49 8d bd 68 13  
+00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f  
+85 6c 03 00 00 4d 8b b5 68 13 00 00 e8 29 bf ed fa
+RSP: 0018:ffffc90001cd7940 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff8880a779f700 RCX: ffffffff8673a332
+RDX: 000000000000026d RSI: ffffffff8673a0b9 RDI: 0000000000001368
+RBP: ffffc90001cd7970 R08: ffff8880a96b2240 R09: ffffed1015d0703d
+R10: ffffed1015d0703c R11: ffff8880ae8381e3 R12: 000000000000002d
+R13: 0000000000000000 R14: 0000000000000001 R15: ffffffff8673a470
+FS:  00000000016ce880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055cd48af04c0 CR3: 0000000096982000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-Greetings My Dear Friend,
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Before I introduce myself, I wish to inform you that this letter is not a h=
-oax mail and I urge you to treat it serious.This letter must come to you as=
- a big surprise, but I believe it is only a day that people meet and become=
- great friends and business partners. Please I want you to read this letter=
- very carefully and I must apologize for barging this message into your mai=
-l box without any formal introduction due to the urgency and confidentialit=
-y of this business. I make this contact with you as I believe that you can =
-be of great assistance to me. My name is Mr.Abderazack Zebdani, from Burkin=
-a Faso, West Africa. I work in Bank Of Africa (BOA) as telex manager, pleas=
-e see this as a confidential message and do not reveal it to another person=
- and let me know whether you can be of assistance regarding my proposal bel=
-ow because it is top secret.
-
-I am about to retire from active Banking service to start a new life but I =
-am skeptical to reveal this particular secret to a stranger. You must assur=
-e me that everything will be handled confidentially because we are not goin=
-g to suffer again in life. It has been 10 years now that most of the greedy=
- African Politicians used our bank to launder money overseas through the he=
-lp of their Political advisers. Most of the funds which they transferred ou=
-t of the shores of Africa were gold and oil money that was supposed to have=
- been used to develop the continent. Their Political advisers always inflat=
-ed the amounts before transferring to foreign accounts, so I also used the =
-opportunity to divert part of the funds hence I am aware that there is no o=
-fficial trace of how much was transferred as all the accounts used for such=
- transfers were being closed after transfer. I acted as the Bank Officer to=
- most of the politicians and when I discovered that they were using me to s=
-ucceed in their greedy act; I also cleaned some of their banking records fr=
-om the Bank files and no one cared to ask me because the money was too much=
- for them to control. They laundered over $5billion Dollars during the proc=
-ess.
-
-Before I send this message to you, I have already diverted ($10.5million Do=
-llars) to an escrow account belonging to no one in the bank. The bank is an=
-xious now to know who the beneficiary to the funds because they have made a=
- lot of profits with the funds. It is more than Eight years now and most of=
- the politicians are no longer using our bank to transfer funds overseas. T=
-he ($10.5million Dollars) has been laying waste in our bank and I don=E2=80=
-=99t want to retire from the bank without transferring the funds to a forei=
-gn account to enable me share the proceeds with the receiver (a foreigner).=
- The money will be shared 60% for me and 40% for you. There is no one comin=
-g to ask you about the funds because I secured everything. I only want you =
-to assist me by providing a reliable bank account where the funds can be tr=
-ansferred.
-
-You are not to face any difficulties or legal implications as I am going to=
- handle the transfer personally. If you are capable of receiving the funds,=
- do let me know immediately to enable me give you a detailed information on=
- what to do. For me, I have not stolen the money from anyone because the ot=
-her people that took the whole money did not face any problems. This is my =
-chance to grab my own life opportunity but you must keep the details of the=
- funds secret to avoid any leakages as no one in the bank knows about my pl=
-ans.Please get back to me if you are interested and capable to handle this =
-project, I am looking forward to hear from you immediately for further info=
-rmation.
-Thanks with my best regards.
-Mr.Abderazack Zebdani.
-Telex Manager
-Bank Of Africa (BOA)
-Burkina Faso.
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
