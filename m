@@ -2,72 +2,72 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE94138829
-	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Jan 2020 21:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E28138B7F
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jan 2020 06:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733284AbgALUNB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 12 Jan 2020 15:13:01 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:55278 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733283AbgALUNB (ORCPT
+        id S1726946AbgAMF5F (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 13 Jan 2020 00:57:05 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:40376 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726475AbgAMF5F (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 12 Jan 2020 15:13:01 -0500
-Received: by mail-il1-f198.google.com with SMTP id t4so6367073ili.21
-        for <netfilter-devel@vger.kernel.org>; Sun, 12 Jan 2020 12:13:01 -0800 (PST)
+        Mon, 13 Jan 2020 00:57:05 -0500
+Received: by mail-ot1-f67.google.com with SMTP id w21so7892056otj.7
+        for <netfilter-devel@vger.kernel.org>; Sun, 12 Jan 2020 21:57:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
+        b=FRvwJJuBXYka7vFxu6H6GK6Y0ajinjVQqY3fbo7J9CKLrfQbU0ZQRWLQqYrxogiFeG
+         Rf9FgzjBG1rKFhPq3PvIjSzB+7HG3E1PMjJRIH8OvOXWrk9xsWi6VjJoN97Ub9v3GPo4
+         M7PE2GyQx449OVPQf8I/rctoSEbRr4LFI0tgr3IO3L1m8Ttek/9k/vSBUU7KlT1wnrSJ
+         dEU4I5rQFYRdxm1mPHrLQAFUBe96jj+qw3OX0TuQ9/yU0zv2tF7gRbAmSJaCcZH4jDLx
+         bLQ0UltYNDNdC7PeafspGedLrfAAkDVcz1Z8pu/qFKBispLjFP+wJz6UJRThffoWmmZs
+         TX0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=wSZwdREHh/ntl8Mv5tdng+7hV3BjjjHVSK0hr94al3E=;
-        b=aWFkE3Hmxky9vzwz2v18onSjA62NMq/cuSJSEGNM7HD7ItOn7t6vqso96SYti8gDrq
-         4OMWfL35kzUI2fhZFVwWH1/bgaXMcBll9HW+poLK18Gq0C7Q2zbQeDYaTUFaK6zT8dGk
-         ag8cNN5KqkM+RZapHsZiAXmKBXy+m0PoB9ImZBco5GEnuPqW3DVkqYPknMah/ZqLQHSG
-         L/A3yjOXxkvpG0XGVsP4hp/EExWS4fQDUVd012SPLESNr/5lTyEUf4Qg0CEFq1z2LINt
-         rK+ZrLPvkJJN4gTuzkWK9hJoGupfx94TXR3uM67v0Y0OqCCBBWuwxJktNHJbspL3wt+G
-         AndQ==
-X-Gm-Message-State: APjAAAVzcG68pVcbKP3OKT7ux482qWelaLwiLLlq1cdwihrz3S5lRcin
-        oqzNUDNty3PR3gvosqKNEJBKxpaxjTjDfpzYh4us45Wd8gD9
-X-Google-Smtp-Source: APXvYqysv5E1t8WrfxtjWbC+uwQ/9OlRxhNSPyvPDsydc1sPB0QD741bCxjYAsJLKOy90RBDJm5/NfigIYFyDkKVs3CU0i6ItP1R
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
+        b=QwtOUozzEAkkm4xRJaqz+wJ1YXmOl3cTYdaII2a05/8nT17hHUbzvT7pwNmxkHzopy
+         PL8i2FZQGUVkyv3vEj+wKEmkeoJcvnWlEuytr0CewuauRxRGE/X3YeAAt764JYQX5qan
+         pRvRK2/CoLL1doqSYxSuK+/o+HhgPdoi+nye7MjcH1lJbKLPKyGWFfBcQSgmkPBjm/5P
+         rBxpTk1a9Rfy50miMzfS1G/fxI0LbxHy9vDcOSw5ksqQgukIw4TRrUm+WZoZy5DRc3KJ
+         rSkClw8+f2hhZJybe+WPQK7y/9wDYGKA7DqW/8ZsKF+2KjrBBP02OCpnifVithzZcXHR
+         iuoQ==
+X-Gm-Message-State: APjAAAVCGpZUV65e9wl5lK8nCtb/6LI/9kkTOpBpA1mCGw0z/LPi4xDT
+        RKk4wkmGgT51FVN3o7sUlDF0QTcchRhma9i2Jfs=
+X-Google-Smtp-Source: APXvYqxZEwh0xXxKr0fFmNcamu4ntSu4dqxRrzwHDGu3wiXrj1Cz3oaQz0DAi38v7ZuDecICtpPHkJJD2dPfc9GVE9M=
+X-Received: by 2002:a9d:7586:: with SMTP id s6mr11642426otk.342.1578895024303;
+ Sun, 12 Jan 2020 21:57:04 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:da44:: with SMTP id p4mr12562216ilq.168.1578859980942;
- Sun, 12 Jan 2020 12:13:00 -0800 (PST)
-Date:   Sun, 12 Jan 2020 12:13:00 -0800
-In-Reply-To: <000000000000af1c5b059be111e5@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005073ea059bf6fce1@google.com>
-Subject: Re: general protection fault in xt_rateest_put
-From:   syzbot <syzbot+91bdd8eece0f6629ec8b@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, edumazet@google.com,
-        fw@strlen.de, kadlec@blackhole.kfki.hu, kadlec@netfilter.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com, xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Received: by 2002:a8a:483:0:0:0:0:0 with HTTP; Sun, 12 Jan 2020 21:57:03 -0800 (PST)
+Reply-To: rickschaech@gmail.com
+From:   Rick Schaech <sarahmhl19@gmail.com>
+Date:   Mon, 13 Jan 2020 01:57:03 -0400
+Message-ID: <CADN4Niqf=yx61SVFXWVrzOHuPnpQDVsRSVAbx_x1v7VvgnN1gA@mail.gmail.com>
+Subject: I wait for your swift response,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-syzbot has bisected this bug to:
+Dear, I'm Mr Rick Schaech, I am the General Account Auditor, Though i
+know we have not meet each other before but sometimes in life God have
+a reason of bringing two people from two different countries together
+as business partners or life partners.
 
-commit 3427b2ab63faccafe774ea997fc2da7faf690c5a
-Author: Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Fri Mar 2 02:58:38 2018 +0000
+My dear friend, I have the sum of 15.7 Million USD i wish to put in
+your name due to the death of my late client who died several years
+ago as his next of kin column still remain blank. Though the internet
+medium is highly abuse these days but am assuring you that this
+transaction is legitimate and I am contacting you that we may have a
+deal, note for your cooperation and collaboration 40% of the sum will
+be for you while the other 60% will be for me as well. I wait for your
+swift response for more details. please forward your response to my
+personal E-mail: rickschaech@gmail.com
 
-     netfilter: make xt_rateest hash table per net
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=129b9c35e00000
-start commit:   e69ec487 Merge branch 'for-linus' of git://git.kernel.org/..
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=119b9c35e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=169b9c35e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=18698c0c240ba616
-dashboard link: https://syzkaller.appspot.com/bug?extid=91bdd8eece0f6629ec8b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13dbd58ee00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15eff9e1e00000
-
-Reported-by: syzbot+91bdd8eece0f6629ec8b@syzkaller.appspotmail.com
-Fixes: 3427b2ab63fa ("netfilter: make xt_rateest hash table per net")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Yours sincerely,
+Rick Schaech.
