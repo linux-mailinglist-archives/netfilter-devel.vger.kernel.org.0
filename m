@@ -2,72 +2,126 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E28138B7F
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jan 2020 06:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C506B138FBB
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jan 2020 12:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgAMF5F (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 13 Jan 2020 00:57:05 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:40376 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726475AbgAMF5F (ORCPT
+        id S1728346AbgAMLFe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 13 Jan 2020 06:05:34 -0500
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:43296 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726480AbgAMLFe (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 13 Jan 2020 00:57:05 -0500
-Received: by mail-ot1-f67.google.com with SMTP id w21so7892056otj.7
-        for <netfilter-devel@vger.kernel.org>; Sun, 12 Jan 2020 21:57:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
-        b=FRvwJJuBXYka7vFxu6H6GK6Y0ajinjVQqY3fbo7J9CKLrfQbU0ZQRWLQqYrxogiFeG
-         Rf9FgzjBG1rKFhPq3PvIjSzB+7HG3E1PMjJRIH8OvOXWrk9xsWi6VjJoN97Ub9v3GPo4
-         M7PE2GyQx449OVPQf8I/rctoSEbRr4LFI0tgr3IO3L1m8Ttek/9k/vSBUU7KlT1wnrSJ
-         dEU4I5rQFYRdxm1mPHrLQAFUBe96jj+qw3OX0TuQ9/yU0zv2tF7gRbAmSJaCcZH4jDLx
-         bLQ0UltYNDNdC7PeafspGedLrfAAkDVcz1Z8pu/qFKBispLjFP+wJz6UJRThffoWmmZs
-         TX0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
-        b=QwtOUozzEAkkm4xRJaqz+wJ1YXmOl3cTYdaII2a05/8nT17hHUbzvT7pwNmxkHzopy
-         PL8i2FZQGUVkyv3vEj+wKEmkeoJcvnWlEuytr0CewuauRxRGE/X3YeAAt764JYQX5qan
-         pRvRK2/CoLL1doqSYxSuK+/o+HhgPdoi+nye7MjcH1lJbKLPKyGWFfBcQSgmkPBjm/5P
-         rBxpTk1a9Rfy50miMzfS1G/fxI0LbxHy9vDcOSw5ksqQgukIw4TRrUm+WZoZy5DRc3KJ
-         rSkClw8+f2hhZJybe+WPQK7y/9wDYGKA7DqW/8ZsKF+2KjrBBP02OCpnifVithzZcXHR
-         iuoQ==
-X-Gm-Message-State: APjAAAVCGpZUV65e9wl5lK8nCtb/6LI/9kkTOpBpA1mCGw0z/LPi4xDT
-        RKk4wkmGgT51FVN3o7sUlDF0QTcchRhma9i2Jfs=
-X-Google-Smtp-Source: APXvYqxZEwh0xXxKr0fFmNcamu4ntSu4dqxRrzwHDGu3wiXrj1Cz3oaQz0DAi38v7ZuDecICtpPHkJJD2dPfc9GVE9M=
-X-Received: by 2002:a9d:7586:: with SMTP id s6mr11642426otk.342.1578895024303;
- Sun, 12 Jan 2020 21:57:04 -0800 (PST)
+        Mon, 13 Jan 2020 06:05:34 -0500
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1iqxXJ-0004cz-4u
+        for netfilter-devel@vger.kernel.org; Mon, 13 Jan 2020 12:05:33 +0100
+Date:   Mon, 13 Jan 2020 12:05:33 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     netfilter-devel@vger.kernel.org
+Subject: vmaps and default action
+Message-ID: <20200113110533.GH795@breakpoint.cc>
 MIME-Version: 1.0
-Received: by 2002:a8a:483:0:0:0:0:0 with HTTP; Sun, 12 Jan 2020 21:57:03 -0800 (PST)
-Reply-To: rickschaech@gmail.com
-From:   Rick Schaech <sarahmhl19@gmail.com>
-Date:   Mon, 13 Jan 2020 01:57:03 -0400
-Message-ID: <CADN4Niqf=yx61SVFXWVrzOHuPnpQDVsRSVAbx_x1v7VvgnN1gA@mail.gmail.com>
-Subject: I wait for your swift response,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dear, I'm Mr Rick Schaech, I am the General Account Auditor, Though i
-know we have not meet each other before but sometimes in life God have
-a reason of bringing two people from two different countries together
-as business partners or life partners.
+Hi,
 
-My dear friend, I have the sum of 15.7 Million USD i wish to put in
-your name due to the death of my late client who died several years
-ago as his next of kin column still remain blank. Though the internet
-medium is highly abuse these days but am assuring you that this
-transaction is legitimate and I am contacting you that we may have a
-deal, note for your cooperation and collaboration 40% of the sum will
-be for you while the other 60% will be for me as well. I wait for your
-swift response for more details. please forward your response to my
-personal E-mail: rickschaech@gmail.com
+currently a ruleset like this loads fine:
 
-Yours sincerely,
-Rick Schaech.
+table inet filter {
+        chain input {
+                type filter hook input priority filter; policy accept;
+                meta l4proto vmap { tcp : jump tcp_chain, udp : jump udp_chain } counter packets 0 bytes 0 jump other_chain
+        }
+
+        chain forward {
+                type filter hook forward priority filter; policy accept;
+        }
+
+        chain output {
+                type filter hook output priority filter; policy accept;
+        }
+
+        chain tcp_chain {
+                counter packets 18 bytes 1017
+        }
+
+        chain udp_chain {
+                counter packets 0 bytes 0
+        }
+
+        chain other_chain {
+                counter packets 0 bytes 0
+        }
+}
+
+but it doesn't do what would be expected, tcp or udp traffic will
+jump to the appropriate chain, but 'other' protocols will never
+make it to other_chain.
+
+Instead, users need a workaround like this:
+
+table inet filter {
+        chain input {
+                type filter hook input priority filter; policy accept;
+                jump test_proto_chain
+        }
+
+        chain test_proto_chain {
+                meta l4proto vmap { tcp : goto tcp_chain, udp : goto udp_chain }
+                counter packets 2 bytes 168 goto other_chain
+        }
+
+        chain forward {
+                type filter hook forward priority filter; policy accept;
+        }
+
+        chain output {
+                type filter hook output priority filter; policy accept;
+        }
+
+        chain tcp_chain {
+                counter packets 29 bytes 1966
+        }
+
+        chain udp_chain {
+                counter packets 4 bytes 774
+        }
+
+        chain other_chain {
+                counter packets 2 bytes 168
+        }
+}
+
+The intermediate chain (test_proto_chain) allows to then call the real chains
+via goto, so the remaining rules in test_proto_chain get omitted in case the
+goto label is found, and if not the next rule does the catchall/default handling.
+
+This isn't really nice, there should be a better way to do this.
+
+It would be possible to make ruleset A just work by resurrecting my old patch
+to not set NFT_BREAK in case no vmap entry is found, then the rule would
+continue evaluation and hit the '... jump other' expression.
+
+If thats unwanted, nft should at least complain/warn that the 'counter jump other_chain'
+part will never be run, i.e. similar to how nft handles constructs like this:
+
+inet-filter:7:25-31: Error: Statement after terminal statement has no effect
+jump test_proto_chain counter accept
+~~~~~~~~~~~~~~~~~~~~~ ^^^^^^^
+
+I can make a patch that adds this warning, are there any suggestions on how to handle/add
+default/catchall support?
+
+I still think making 'A' "just work" is the most sane option, it needs very little
+kernel changes, needs no extra keywords and it looks "natural" to me to make vmap a no-op
+if no jump/goto was executed.
+
+
+
