@@ -2,44 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D1713989D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jan 2020 19:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0CC1398A2
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Jan 2020 19:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728800AbgAMSQH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 13 Jan 2020 13:16:07 -0500
-Received: from correo.us.es ([193.147.175.20]:34744 "EHLO mail.us.es"
+        id S1728835AbgAMSQK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 13 Jan 2020 13:16:10 -0500
+Received: from correo.us.es ([193.147.175.20]:34748 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728835AbgAMSQG (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        id S1726934AbgAMSQG (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 13 Jan 2020 13:16:06 -0500
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 0E85615AEA9
+        by mail.us.es (Postfix) with ESMTP id 9E3B415AEA2
         for <netfilter-devel@vger.kernel.org>; Mon, 13 Jan 2020 19:16:04 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id F3248DA70F
-        for <netfilter-devel@vger.kernel.org>; Mon, 13 Jan 2020 19:16:03 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 8F6C8DA702
+        for <netfilter-devel@vger.kernel.org>; Mon, 13 Jan 2020 19:16:04 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id F2626DA710; Mon, 13 Jan 2020 19:16:03 +0100 (CET)
+        id 852ABDA705; Mon, 13 Jan 2020 19:16:04 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id BF211DA70F
-        for <netfilter-devel@vger.kernel.org>; Mon, 13 Jan 2020 19:16:01 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 4D06CDA702
+        for <netfilter-devel@vger.kernel.org>; Mon, 13 Jan 2020 19:16:02 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 13 Jan 2020 19:16:01 +0100 (CET)
+ Mon, 13 Jan 2020 19:16:02 +0100 (CET)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (50.pool85-54-104.dynamic.orange.es [85.54.104.50])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 9E85442EF52A
-        for <netfilter-devel@vger.kernel.org>; Mon, 13 Jan 2020 19:16:01 +0100 (CET)
+        by entrada.int (Postfix) with ESMTPA id 2DBFB42EF52A
+        for <netfilter-devel@vger.kernel.org>; Mon, 13 Jan 2020 19:16:02 +0100 (CET)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,v2 5/9] netfilter: flowtable: use atomic bitwise operations for flow flags
-Date:   Mon, 13 Jan 2020 19:15:50 +0100
-Message-Id: <20200113181554.52612-5-pablo@netfilter.org>
+Subject: [PATCH nf-next 6/9] netfilter: flowtable: add nf_flowtable_hw_offload() helper function
+Date:   Mon, 13 Jan 2020 19:15:51 +0100
+Message-Id: <20200113181554.52612-6-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200113181554.52612-1-pablo@netfilter.org>
 References: <20200113181554.52612-1-pablo@netfilter.org>
@@ -49,228 +49,67 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Originally, all flow flag bits were set on only from the workqueue. With
-the introduction of the flow teardown state and hardware offload this is
-no longer true. Let's be safe and use atomic bitwise operation to
-operation with flow flags.
+This function checks for the NF_FLOWTABLE_HW_OFFLOAD flag, meaning that
+the flowtable hardware offload is enabled.
 
-Fixes: 59c466dd68e7 ("netfilter: nf_flow_table: add a new flow state for tearing down offloading")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v2: rebase on top of nf-next.
-
- include/net/netfilter/nf_flow_table.h | 16 +++++++++-------
- net/netfilter/nf_flow_table_core.c    | 20 ++++++++++----------
- net/netfilter/nf_flow_table_ip.c      |  8 ++++----
- net/netfilter/nf_flow_table_offload.c | 20 ++++++++++----------
- 4 files changed, 33 insertions(+), 31 deletions(-)
+ include/net/netfilter/nf_flow_table.h | 5 +++++
+ net/netfilter/nf_flow_table_core.c    | 2 +-
+ net/netfilter/nf_flow_table_offload.c | 4 ++--
+ 3 files changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
-index 4ad924d5f983..5a10e28c3e40 100644
+index 5a10e28c3e40..9ee1eaeaab04 100644
 --- a/include/net/netfilter/nf_flow_table.h
 +++ b/include/net/netfilter/nf_flow_table.h
-@@ -83,12 +83,14 @@ struct flow_offload_tuple_rhash {
- 	struct flow_offload_tuple	tuple;
+@@ -47,6 +47,11 @@ struct nf_flowtable {
+ 	possible_net_t			net;
  };
  
--#define FLOW_OFFLOAD_SNAT	0x1
--#define FLOW_OFFLOAD_DNAT	0x2
--#define FLOW_OFFLOAD_TEARDOWN	0x8
--#define FLOW_OFFLOAD_HW		0x10
--#define FLOW_OFFLOAD_HW_DYING	0x20
--#define FLOW_OFFLOAD_HW_DEAD	0x40
-+enum nf_flow_flags {
-+	NF_FLOW_SNAT,
-+	NF_FLOW_DNAT,
-+	NF_FLOW_TEARDOWN,
-+	NF_FLOW_HW,
-+	NF_FLOW_HW_DYING,
-+	NF_FLOW_HW_DEAD,
-+};
- 
- enum flow_offload_type {
- 	NF_FLOW_OFFLOAD_UNSPEC	= 0,
-@@ -98,7 +100,7 @@ enum flow_offload_type {
- struct flow_offload {
- 	struct flow_offload_tuple_rhash		tuplehash[FLOW_OFFLOAD_DIR_MAX];
- 	struct nf_conn				*ct;
--	u16					flags;
-+	unsigned long				flags;
- 	u16					type;
- 	u32					timeout;
- 	struct rcu_head				rcu_head;
++static inline bool nf_flowtable_hw_offload(struct nf_flowtable *flowtable)
++{
++	return flowtable->flags & NF_FLOWTABLE_HW_OFFLOAD;
++}
++
+ enum flow_offload_tuple_dir {
+ 	FLOW_OFFLOAD_DIR_ORIGINAL = IP_CT_DIR_ORIGINAL,
+ 	FLOW_OFFLOAD_DIR_REPLY = IP_CT_DIR_REPLY,
 diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-index a9ed93a9e007..9f134f44d139 100644
+index 9f134f44d139..e919bafd68d1 100644
 --- a/net/netfilter/nf_flow_table_core.c
 +++ b/net/netfilter/nf_flow_table_core.c
-@@ -61,9 +61,9 @@ struct flow_offload *flow_offload_alloc(struct nf_conn *ct)
- 	flow_offload_fill_dir(flow, FLOW_OFFLOAD_DIR_REPLY);
- 
- 	if (ct->status & IPS_SRC_NAT)
--		flow->flags |= FLOW_OFFLOAD_SNAT;
-+		__set_bit(NF_FLOW_SNAT, &flow->flags);
- 	if (ct->status & IPS_DST_NAT)
--		flow->flags |= FLOW_OFFLOAD_DNAT;
-+		__set_bit(NF_FLOW_DNAT, &flow->flags);
- 
- 	return flow;
- 
-@@ -269,7 +269,7 @@ static void flow_offload_del(struct nf_flowtable *flow_table,
- 
- 	if (nf_flow_has_expired(flow))
- 		flow_offload_fixup_ct(flow->ct);
--	else if (flow->flags & FLOW_OFFLOAD_TEARDOWN)
-+	else if (test_bit(NF_FLOW_TEARDOWN, &flow->flags))
- 		flow_offload_fixup_ct_timeout(flow->ct);
- 
- 	flow_offload_free(flow);
-@@ -277,7 +277,7 @@ static void flow_offload_del(struct nf_flowtable *flow_table,
- 
- void flow_offload_teardown(struct flow_offload *flow)
- {
--	flow->flags |= FLOW_OFFLOAD_TEARDOWN;
-+	set_bit(NF_FLOW_TEARDOWN, &flow->flags);
- 
- 	flow_offload_fixup_ct_state(flow->ct);
- }
-@@ -298,7 +298,7 @@ flow_offload_lookup(struct nf_flowtable *flow_table,
- 
- 	dir = tuplehash->tuple.dir;
- 	flow = container_of(tuplehash, struct flow_offload, tuplehash[dir]);
--	if (flow->flags & FLOW_OFFLOAD_TEARDOWN)
-+	if (test_bit(NF_FLOW_TEARDOWN, &flow->flags))
- 		return NULL;
- 
- 	if (unlikely(nf_ct_is_dying(flow->ct)))
-@@ -347,16 +347,16 @@ static void nf_flow_offload_gc_step(struct flow_offload *flow, void *data)
- 	struct nf_flowtable *flow_table = data;
- 
- 	if (nf_flow_has_expired(flow) || nf_ct_is_dying(flow->ct) ||
--	    (flow->flags & FLOW_OFFLOAD_TEARDOWN)) {
--		if (flow->flags & FLOW_OFFLOAD_HW) {
--			if (!(flow->flags & FLOW_OFFLOAD_HW_DYING))
-+	    test_bit(NF_FLOW_TEARDOWN, &flow->flags)) {
-+		if (test_bit(NF_FLOW_HW, &flow->flags)) {
-+			if (!test_bit(NF_FLOW_HW_DYING, &flow->flags))
- 				nf_flow_offload_del(flow_table, flow);
--			else if (flow->flags & FLOW_OFFLOAD_HW_DEAD)
-+			else if (test_bit(NF_FLOW_HW_DEAD, &flow->flags))
- 				flow_offload_del(flow_table, flow);
- 		} else {
- 			flow_offload_del(flow_table, flow);
- 		}
--	} else if (flow->flags & FLOW_OFFLOAD_HW) {
-+	} else if (test_bit(NF_FLOW_HW, &flow->flags)) {
- 		nf_flow_offload_stats(flow_table, flow);
+@@ -243,7 +243,7 @@ int flow_offload_add(struct nf_flowtable *flow_table, struct flow_offload *flow)
+ 		return err;
  	}
- }
-diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-index 7ea2ddc2aa93..f4ccb5f5008b 100644
---- a/net/netfilter/nf_flow_table_ip.c
-+++ b/net/netfilter/nf_flow_table_ip.c
-@@ -144,11 +144,11 @@ static int nf_flow_nat_ip(const struct flow_offload *flow, struct sk_buff *skb,
- {
- 	struct iphdr *iph = ip_hdr(skb);
  
--	if (flow->flags & FLOW_OFFLOAD_SNAT &&
-+	if (test_bit(NF_FLOW_SNAT, &flow->flags) &&
- 	    (nf_flow_snat_port(flow, skb, thoff, iph->protocol, dir) < 0 ||
- 	     nf_flow_snat_ip(flow, skb, iph, thoff, dir) < 0))
- 		return -1;
--	if (flow->flags & FLOW_OFFLOAD_DNAT &&
-+	if (test_bit(NF_FLOW_DNAT, &flow->flags) &&
- 	    (nf_flow_dnat_port(flow, skb, thoff, iph->protocol, dir) < 0 ||
- 	     nf_flow_dnat_ip(flow, skb, iph, thoff, dir) < 0))
- 		return -1;
-@@ -414,11 +414,11 @@ static int nf_flow_nat_ipv6(const struct flow_offload *flow,
- 	struct ipv6hdr *ip6h = ipv6_hdr(skb);
- 	unsigned int thoff = sizeof(*ip6h);
+-	if (flow_table->flags & NF_FLOWTABLE_HW_OFFLOAD)
++	if (nf_flowtable_hw_offload(flow_table))
+ 		nf_flow_offload_add(flow_table, flow);
  
--	if (flow->flags & FLOW_OFFLOAD_SNAT &&
-+	if (test_bit(NF_FLOW_SNAT, &flow->flags) &&
- 	    (nf_flow_snat_port(flow, skb, thoff, ip6h->nexthdr, dir) < 0 ||
- 	     nf_flow_snat_ipv6(flow, skb, ip6h, thoff, dir) < 0))
- 		return -1;
--	if (flow->flags & FLOW_OFFLOAD_DNAT &&
-+	if (test_bit(NF_FLOW_DNAT, &flow->flags) &&
- 	    (nf_flow_dnat_port(flow, skb, thoff, ip6h->nexthdr, dir) < 0 ||
- 	     nf_flow_dnat_ipv6(flow, skb, ip6h, thoff, dir) < 0))
- 		return -1;
+ 	return 0;
 diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-index d161623107a1..8a1fe391666e 100644
+index 8a1fe391666e..b4c79fbb2d82 100644
 --- a/net/netfilter/nf_flow_table_offload.c
 +++ b/net/netfilter/nf_flow_table_offload.c
-@@ -450,16 +450,16 @@ int nf_flow_rule_route_ipv4(struct net *net, const struct flow_offload *flow,
- 	    flow_offload_eth_dst(net, flow, dir, flow_rule) < 0)
- 		return -1;
+@@ -812,7 +812,7 @@ void nf_flow_offload_stats(struct nf_flowtable *flowtable,
  
--	if (flow->flags & FLOW_OFFLOAD_SNAT) {
-+	if (test_bit(NF_FLOW_SNAT, &flow->flags)) {
- 		flow_offload_ipv4_snat(net, flow, dir, flow_rule);
- 		flow_offload_port_snat(net, flow, dir, flow_rule);
- 	}
--	if (flow->flags & FLOW_OFFLOAD_DNAT) {
-+	if (test_bit(NF_FLOW_DNAT, &flow->flags)) {
- 		flow_offload_ipv4_dnat(net, flow, dir, flow_rule);
- 		flow_offload_port_dnat(net, flow, dir, flow_rule);
- 	}
--	if (flow->flags & FLOW_OFFLOAD_SNAT ||
--	    flow->flags & FLOW_OFFLOAD_DNAT)
-+	if (test_bit(NF_FLOW_SNAT, &flow->flags) ||
-+	    test_bit(NF_FLOW_DNAT, &flow->flags))
- 		flow_offload_ipv4_checksum(net, flow, flow_rule);
- 
- 	flow_offload_redirect(flow, dir, flow_rule);
-@@ -476,11 +476,11 @@ int nf_flow_rule_route_ipv6(struct net *net, const struct flow_offload *flow,
- 	    flow_offload_eth_dst(net, flow, dir, flow_rule) < 0)
- 		return -1;
- 
--	if (flow->flags & FLOW_OFFLOAD_SNAT) {
-+	if (test_bit(NF_FLOW_SNAT, &flow->flags)) {
- 		flow_offload_ipv6_snat(net, flow, dir, flow_rule);
- 		flow_offload_port_snat(net, flow, dir, flow_rule);
- 	}
--	if (flow->flags & FLOW_OFFLOAD_DNAT) {
-+	if (test_bit(NF_FLOW_DNAT, &flow->flags)) {
- 		flow_offload_ipv6_dnat(net, flow, dir, flow_rule);
- 		flow_offload_port_dnat(net, flow, dir, flow_rule);
- 	}
-@@ -636,7 +636,7 @@ static void flow_offload_tuple_del(struct flow_offload_work *offload,
- 	list_for_each_entry(block_cb, &flowtable->flow_block.cb_list, list)
- 		block_cb->cb(TC_SETUP_CLSFLOWER, &cls_flow, block_cb->cb_priv);
- 
--	offload->flow->flags |= FLOW_OFFLOAD_HW_DEAD;
-+	set_bit(NF_FLOW_HW_DEAD, &offload->flow->flags);
+ void nf_flow_table_offload_flush(struct nf_flowtable *flowtable)
+ {
+-	if (flowtable->flags & NF_FLOWTABLE_HW_OFFLOAD)
++	if (nf_flowtable_hw_offload(flowtable))
+ 		flush_work(&nf_flow_offload_work);
  }
  
- static int flow_offload_rule_add(struct flow_offload_work *offload,
-@@ -723,7 +723,7 @@ static void flow_offload_work_handler(struct work_struct *work)
- 		case FLOW_CLS_REPLACE:
- 			ret = flow_offload_work_add(offload);
- 			if (ret < 0)
--				offload->flow->flags &= ~FLOW_OFFLOAD_HW;
-+				__clear_bit(NF_FLOW_HW, &offload->flow->flags);
- 			break;
- 		case FLOW_CLS_DESTROY:
- 			flow_offload_work_del(offload);
-@@ -776,7 +776,7 @@ void nf_flow_offload_add(struct nf_flowtable *flowtable,
- 	if (!offload)
- 		return;
+@@ -849,7 +849,7 @@ int nf_flow_table_offload_setup(struct nf_flowtable *flowtable,
+ 	struct flow_block_offload bo = {};
+ 	int err;
  
--	flow->flags |= FLOW_OFFLOAD_HW;
-+	__set_bit(NF_FLOW_HW, &flow->flags);
- 	flow_offload_queue_work(offload);
- }
+-	if (!(flowtable->flags & NF_FLOWTABLE_HW_OFFLOAD))
++	if (!nf_flowtable_hw_offload(flowtable))
+ 		return 0;
  
-@@ -789,7 +789,7 @@ void nf_flow_offload_del(struct nf_flowtable *flowtable,
- 	if (!offload)
- 		return;
- 
--	flow->flags |= FLOW_OFFLOAD_HW_DYING;
-+	set_bit(NF_FLOW_HW_DYING, &flow->flags);
- 	flow_offload_queue_work(offload);
- }
- 
+ 	if (!dev->netdev_ops->ndo_setup_tc)
 -- 
 2.11.0
 
