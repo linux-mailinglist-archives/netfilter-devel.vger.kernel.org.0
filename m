@@ -2,118 +2,89 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A25AC13A4C3
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jan 2020 11:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D410313A75A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jan 2020 11:26:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgANKAn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 14 Jan 2020 05:00:43 -0500
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:57047 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgANKAn (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 14 Jan 2020 05:00:43 -0500
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id F387D41939;
-        Tue, 14 Jan 2020 18:00:40 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next v4 4/4] netfilter: flowtable: add tunnel encap/decap action offload support
-Date:   Tue, 14 Jan 2020 18:00:40 +0800
-Message-Id: <1578996040-6413-5-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1578996040-6413-1-git-send-email-wenxu@ucloud.cn>
-References: <1578996040-6413-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSkJCS0tLS0tLQk5ITUxZV1koWU
-        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ny46Nio*OTg5AjIsLDdIGEkO
-        MAoaCjFVSlVKTkxDQkJNS09KS0NMVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUhPSUI3Bg++
-X-HM-Tid: 0a6fa37f85302086kuqyf387d41939
+        id S1728998AbgANKZT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 14 Jan 2020 05:25:19 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:44948 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726156AbgANKZT (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 14 Jan 2020 05:25:19 -0500
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1irJNs-0005RO-Hn; Tue, 14 Jan 2020 11:25:16 +0100
+Date:   Tue, 14 Jan 2020 11:25:16 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
+Subject: Re: [PATCH nft 1/3] libnftables: add nft_ctx_set_netns()
+Message-ID: <20200114102516.GD20229@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
+References: <20200109172115.229723-1-pablo@netfilter.org>
+ <20200109172115.229723-2-pablo@netfilter.org>
+ <20200110125311.GP20229@orbyte.nwl.cc>
+ <20200112102802.7bvwieqaza3zdbza@salvia>
+ <20200112104027.ijjcv34glvnkhnvc@salvia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200112104027.ijjcv34glvnkhnvc@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+Hi Pablo,
 
-This patch add tunnel encap decap action offload in the flowtable
-offload.
+On Sun, Jan 12, 2020 at 11:40:27AM +0100, Pablo Neira Ayuso wrote:
+> On Sun, Jan 12, 2020 at 11:28:02AM +0100, Pablo Neira Ayuso wrote:
+> > On Fri, Jan 10, 2020 at 01:53:11PM +0100, Phil Sutter wrote:
+> > > On Thu, Jan 09, 2020 at 06:21:13PM +0100, Pablo Neira Ayuso wrote:
+> > > [...]
+> > > > diff --git a/include/nftables/libnftables.h b/include/nftables/libnftables.h
+> > > > index 765b20dd71ee..887628959ac6 100644
+> > > > --- a/include/nftables/libnftables.h
+> > > > +++ b/include/nftables/libnftables.h
+> > > > @@ -34,10 +34,13 @@ enum nft_debug_level {
+> > > >   * Possible flags to pass to nft_ctx_new()
+> > > >   */
+> > > >  #define NFT_CTX_DEFAULT		0
+> > > > +#define NFT_CTX_NETNS		1
+> > > 
+> > > What is this needed for?
+> > 
+> > The socket is initialized from nft_ctx_init(), and such initialization
+> > needs to happen after the netns switch.
+> 
+> s/nft_ctx_init()/nft_ctx_new()
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- net/netfilter/nf_flow_table_offload.c | 47 +++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+Ah, I missed that socket init in nft_ctx_new() happens only if flags is
+zero.
 
-diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-index f38378a..76fbab3 100644
---- a/net/netfilter/nf_flow_table_offload.c
-+++ b/net/netfilter/nf_flow_table_offload.c
-@@ -504,10 +504,53 @@ static void flow_offload_redirect(const struct flow_offload *flow,
- 	dev_hold(rt->dst.dev);
- }
- 
-+static void flow_offload_encap_tunnel(const struct flow_offload *flow,
-+				      enum flow_offload_tuple_dir dir,
-+				      struct nf_flow_rule *flow_rule)
-+{
-+	struct flow_action_entry *entry;
-+	struct dst_entry *dst;
-+
-+	dst = flow->tuplehash[dir].tuple.dst_cache;
-+	if (dst->lwtstate) {
-+		struct ip_tunnel_info *tun_info;
-+
-+		tun_info = lwt_tun_info(dst->lwtstate);
-+		if (tun_info && (tun_info->mode & IP_TUNNEL_INFO_TX)) {
-+			entry = flow_action_entry_next(flow_rule);
-+			entry->id = FLOW_ACTION_TUNNEL_ENCAP;
-+			entry->tunnel = tun_info;
-+		}
-+	}
-+}
-+
-+static void flow_offload_decap_tunnel(const struct flow_offload *flow,
-+				      enum flow_offload_tuple_dir dir,
-+				      struct nf_flow_rule *flow_rule)
-+{
-+	struct flow_action_entry *entry;
-+	struct dst_entry *dst;
-+
-+	dst = flow->tuplehash[!dir].tuple.dst_cache;
-+	if (dst->lwtstate) {
-+		struct ip_tunnel_info *tun_info;
-+
-+		tun_info = lwt_tun_info(dst->lwtstate);
-+		if (tun_info && (tun_info->mode & IP_TUNNEL_INFO_TX)) {
-+			entry = flow_action_entry_next(flow_rule);
-+			entry->id = FLOW_ACTION_TUNNEL_DECAP;
-+		}
-+	}
-+}
-+
- int nf_flow_rule_route_ipv4(struct net *net, const struct flow_offload *flow,
- 			    enum flow_offload_tuple_dir dir,
- 			    struct nf_flow_rule *flow_rule)
- {
-+	flow_offload_decap_tunnel(flow, dir, flow_rule);
-+
-+	flow_offload_encap_tunnel(flow, dir, flow_rule);
-+
- 	if (flow_offload_eth_src(net, flow, dir, flow_rule) < 0 ||
- 	    flow_offload_eth_dst(net, flow, dir, flow_rule) < 0)
- 		return -1;
-@@ -534,6 +577,10 @@ int nf_flow_rule_route_ipv6(struct net *net, const struct flow_offload *flow,
- 			    enum flow_offload_tuple_dir dir,
- 			    struct nf_flow_rule *flow_rule)
- {
-+	flow_offload_decap_tunnel(flow, dir, flow_rule);
-+
-+	flow_offload_encap_tunnel(flow, dir, flow_rule);
-+
- 	if (flow_offload_eth_src(net, flow, dir, flow_rule) < 0 ||
- 	    flow_offload_eth_dst(net, flow, dir, flow_rule) < 0)
- 		return -1;
--- 
-1.8.3.1
+> > > >  struct nft_ctx *nft_ctx_new(uint32_t flags);
+> > > >  void nft_ctx_free(struct nft_ctx *ctx);
+> > > >  
+> > > > +int nft_ctx_set_netns(struct nft_ctx *ctx, const char *netns);
+> > > 
+> > > Is there a way to select init ns again?
+> > 
+> > AFAIK, setns() does not let you go back to init ns once set.
 
+I noticed something I find worse, namely that libnftables as a library
+changes the application's netns. Anything it does after changing the
+context's netns applies to that netns only, no matter if it's creating a
+new nft context with NFT_CtX_DEFAULT flag or call iproute via system().
+
+If we can't find a way to exit the netns again, one can safely assume
+that we are trapping a user's application in a netns with this feature.
+
+Maybe we should restrict per-netns operation to nft utility and perform
+the netns switch there? Maybe we could provide a "switch_netns()"
+routine in libnftables which is not bound to nft context so users may
+use it in their application?
+
+Cheers, Phil
