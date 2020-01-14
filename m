@@ -2,119 +2,68 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C96013B41F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jan 2020 22:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC04A13B44A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jan 2020 22:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728760AbgANVPE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 14 Jan 2020 16:15:04 -0500
-Received: from smtp-out.kfki.hu ([148.6.0.46]:49463 "EHLO smtp-out.kfki.hu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727285AbgANVPE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 14 Jan 2020 16:15:04 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by smtp1.kfki.hu (Postfix) with ESMTP id 74BF53C80127;
-        Tue, 14 Jan 2020 22:15:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:user-agent:references
-        :message-id:in-reply-to:from:from:date:date:received:received
-        :received; s=20151130; t=1579036499; x=1580850900; bh=T3rnTV9WMb
-        vW0zsYdqIpMfaaooTJQP0Ze2DVyLvu1fQ=; b=ZqXyHlfP5w/zIakAL2CrAqRr0H
-        FlV5upiQBt+bkyuS62qxdZlqzmMQXuudsdPB7OOmJbLWQav8vciMTBYG5bBQj1sX
-        2H2V53Ek5yVOZe7X3cIGXUkl7S16G5Td+xOZAOcOoOOSDzQB40ywRONcuU5GBabk
-        +/oF2iHKH0RSwpk6A=
-X-Virus-Scanned: Debian amavisd-new at smtp1.kfki.hu
-Received: from smtp1.kfki.hu ([127.0.0.1])
-        by localhost (smtp1.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Tue, 14 Jan 2020 22:14:59 +0100 (CET)
-Received: from blackhole.kfki.hu (blackhole.kfki.hu [148.6.240.2])
-        by smtp1.kfki.hu (Postfix) with ESMTP id A76F73C80123;
-        Tue, 14 Jan 2020 22:14:58 +0100 (CET)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id 91424222A3; Tue, 14 Jan 2020 22:14:58 +0100 (CET)
-Date:   Tue, 14 Jan 2020 22:14:58 +0100 (CET)
-From:   =?UTF-8?Q?Kadlecsik_J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>
-To:     Florian Westphal <fw@strlen.de>
-cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [RFC nf-next 0/4] netfilter: conntrack: allow insertion of
- clashing entries
-In-Reply-To: <20200113235309.GM795@breakpoint.cc>
-Message-ID: <alpine.DEB.2.20.2001142031060.17014@blackhole.kfki.hu>
-References: <20200108134500.31727-1-fw@strlen.de> <20200113235309.GM795@breakpoint.cc>
-User-Agent: Alpine 2.20 (DEB 67 2015-01-07)
+        id S1728757AbgANV3C (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 14 Jan 2020 16:29:02 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:55006 "EHLO
+        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728731AbgANV3C (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 14 Jan 2020 16:29:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=cBjhdH6avh6t4Ngu3erkX/Q9uvAPML/2OvJMUvN73t0=; b=ffX/kIO3elPmQLbrg+Y7DQ1roV
+        Y8Y4S9DgaD/zfJR35ozZ/eC2wsZdNntuFol5NPTPwJSqyR2rksU1vwEtxAGgAkktYbNbkmFm7PG0N
+        wdx/vLbsbppXPvy5zi9nn3LCzRRtCb1AkxoXbwY/K+O1Kwvxiz3hlEkgVZe8JwBS2JMq4g9i8fUOB
+        x5Avav9+VOr1AsKQXjwr1bUb2aMScTRsr29eAK8sdt56WBBeAFdG+HKIRLKHGShqlv40UA050WkfM
+        3TdyYiNHq/GOkCC4d+njL2JxQzJK5997AexR83mDfaOUeE5mkbGvBMnRUqGpjCeYR6ezfqlaV/yR7
+        97NTtwCA==;
+Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1irTkC-0001CO-HB; Tue, 14 Jan 2020 21:29:00 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH nf-next 0/3] netfilter: nft_bitwise: shift support
+Date:   Tue, 14 Jan 2020 21:28:57 +0000
+Message-Id: <20200114212900.134015-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Florian,
+The connmark xtables extension supports bit-shifts.  Add support for
+shifts to nft_bitwise in order to allow nftables to do likewise, e.g.:
 
-On Tue, 14 Jan 2020, Florian Westphal wrote:
+  nft add rule t c oif lo ct mark set meta mark << 8 | 0xab
+  nft add rule t c iif lo meta mark & 0xff 0xab ct mark set meta mark >> 8
 
-> Florian Westphal <fw@strlen.de> wrote:
-> > This entire series isn't nice but so far I did not find a better
-> > solution.
-> 
-> I did consider getting rid of the unconfirmed list, but this is also
-> problematic.
-> 
-> At allocation time we do not know what kind of NAT transformations
-> will be applied by the ruleset, i.e. we'd need another locking step to
-> move the entries to the right location in the hash table.
-> 
-> Same if the skb is dropped: we need to lock the conntrack table again to
-> delete the newly added entry -- this isn't needed right now because the
-> conntrack is only on the percpu unconfirmed list in this case.
-> 
-> This is also a problem because of conntrack events, we would have to
-> seperate insertion and notification, else we'd flood userspace for every
-> conntrack we create in case of a packet drop flood.
-> 
-> Other solutions are:
-> 1. use a ruleset that assigns the same nat mapping for both A and AAAA
->    requests, or,
-> 2. steer all packets that might have this problem (i.e. udp dport 53) to
->     the same cpu core.
-> 
-> Yet another solution would be a variation of this patch set:
-> 
-> 1. Only add the reply direction to the table (i.e. conntrack -L won't show
->    the duplicated entry).
-> 2. Add a new conntrack flag for the duplicate that guarantees the
->    conntrack is removed immediately when first reply packet comes in.
->    This would also have the effect that the conntrack can never be
->    assured, i.e. the "hidden duplicates" are always early-dropable if
->    conntrack table gets full.
-> 3. change event code to never report such duplicates to userspace.
+There are a couple of preliminary tidying-up patches first.
 
-Somehow my general feeling is that all proposed fixes in conntrack could 
-in some cases break other non single-request - single-response UDP 
-applications.
+Jeremy Sowden (3):
+  netfilter: nf_tables: white-space fixes.
+  netfilter: bitwise: replace gotos with returns.
+  netfilter: bitwise: add support for shifts.
 
-Reading about the kubernetes issue as far as I see
+ include/uapi/linux/netfilter/nf_tables.h |  9 ++-
+ net/netfilter/nft_bitwise.c              | 97 ++++++++++++++++++++----
+ net/netfilter/nft_set_bitmap.c           |  4 +-
+ net/netfilter/nft_set_hash.c             |  2 +-
+ 4 files changed, 94 insertions(+), 18 deletions(-)
 
-a. When the pods run glibc based systems, the issue could easily be
-   fixed by configuring the real DNS server IP addresses in the pods
-   resolv.conf files with "options single-request single-request-reopen" 
-   enabled. 
-b. When the pods run musl based systems, there's no such a solution
-   because the main musl developer refused to implement the required
-   RES_SNGLKUP and RES_SNGLKUPREOP options in musl.
+-- 
+2.24.1
 
-However, I think there's a general already available solution in iptables: 
-force the same DNAT mapping for the packets of the same socket by the 
-HMARK target. Something like this:
-
--t raw -p udp --dport 53 -j HMARK --hmark-tuple src,sport \
-	--hmark-mod 1 --hmark-offset 10 --hmark-rnd 0xdeafbeef
--t nat -p udp --dport 53 -m state --state NEW -m mark --mark 10 -j DNAT ..
--t nat -p udp --dport 53 -m state --state NEW -m mark --mark 11 -j DNAT ..
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
