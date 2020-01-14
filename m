@@ -2,102 +2,93 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2FD13AFC8
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jan 2020 17:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A447C13B041
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jan 2020 18:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728801AbgANQqd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 14 Jan 2020 11:46:33 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:45646 "EHLO orbyte.nwl.cc"
+        id S1728057AbgANREM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 14 Jan 2020 12:04:12 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:45684 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728753AbgANQqc (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 14 Jan 2020 11:46:32 -0500
-Received: from localhost ([::1]:58736 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1irPKo-0001eX-Qh; Tue, 14 Jan 2020 17:46:30 +0100
+        id S1726053AbgANREM (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 14 Jan 2020 12:04:12 -0500
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1irPbv-0001tq-5W; Tue, 14 Jan 2020 18:04:11 +0100
+Date:   Tue, 14 Jan 2020 18:04:11 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 2/2] cache: Fix for doubled output after reset command
-Date:   Tue, 14 Jan 2020 17:46:30 +0100
-Message-Id: <20200114164630.2492-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200114164630.2492-1-phil@nwl.cc>
-References: <20200114164630.2492-1-phil@nwl.cc>
+Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
+Subject: Re: [PATCH nft 1/3] libnftables: add nft_ctx_set_netns()
+Message-ID: <20200114170411.GA19873@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
+References: <20200109172115.229723-1-pablo@netfilter.org>
+ <20200109172115.229723-2-pablo@netfilter.org>
+ <20200110125311.GP20229@orbyte.nwl.cc>
+ <20200112102802.7bvwieqaza3zdbza@salvia>
+ <20200112104027.ijjcv34glvnkhnvc@salvia>
+ <20200114102516.GD20229@orbyte.nwl.cc>
+ <20200114103835.toksgmp6krbmh4ei@salvia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200114103835.toksgmp6krbmh4ei@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Reset command causes a dump of the objects to reset and adds those to
-cache. Yet it ignored if the object in question was already there and up
-to now CMD_RESET was flagged as NFT_CACHE_FULL.
+Hi Pablo,
 
-Tackle this from two angles: First, reduce cache requirements of reset
-command to the necessary bits which is table cache. This alone would
-suffice if there wasn't interactive mode (and other libnftables users):
-A cache containing the objects to reset might be in place already, so
-add dumped objects to cache only if they don't exist already.
+On Tue, Jan 14, 2020 at 11:38:35AM +0100, Pablo Neira Ayuso wrote:
+> On Tue, Jan 14, 2020 at 11:25:16AM +0100, Phil Sutter wrote:
+> > On Sun, Jan 12, 2020 at 11:40:27AM +0100, Pablo Neira Ayuso wrote:
+> > > On Sun, Jan 12, 2020 at 11:28:02AM +0100, Pablo Neira Ayuso wrote:
+> > > > On Fri, Jan 10, 2020 at 01:53:11PM +0100, Phil Sutter wrote:
+> > > > > On Thu, Jan 09, 2020 at 06:21:13PM +0100, Pablo Neira Ayuso wrote:
+[...]
+> > > > > >  struct nft_ctx *nft_ctx_new(uint32_t flags);
+> > > > > >  void nft_ctx_free(struct nft_ctx *ctx);
+> > > > > >  
+> > > > > > +int nft_ctx_set_netns(struct nft_ctx *ctx, const char *netns);
+> > > > > 
+> > > > > Is there a way to select init ns again?
+> > > > 
+> > > > AFAIK, setns() does not let you go back to init ns once set.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- src/cache.c                                    |  4 +++-
- src/rule.c                                     |  3 ++-
- tests/shell/testcases/sets/0024named_objects_0 | 12 +++++++++++-
- 3 files changed, 16 insertions(+), 3 deletions(-)
+FWIW, I found interesting Python code[1] dealing with that. The logic is
+to open /proc/$$/ns/net before switching netns and storing the fd for
+later. To exit the netns again, it is passed to setns() and then closed.
+Note that the code there is much simpler and doesn't deal with mounts or
+non-existing entries in /var/run/netns/. Maybe libnftables doesn't need
+to either and it is OK to just bail if given netns doesn't exist?
 
-diff --git a/src/cache.c b/src/cache.c
-index 0c28a28d3b554..05f0d68edf03a 100644
---- a/src/cache.c
-+++ b/src/cache.c
-@@ -138,8 +138,10 @@ unsigned int cache_evaluate(struct nft_ctx *nft, struct list_head *cmds)
- 		case CMD_GET:
- 			flags = evaluate_cache_get(cmd, flags);
- 			break;
--		case CMD_LIST:
- 		case CMD_RESET:
-+			flags |= NFT_CACHE_TABLE;
-+			break;
-+		case CMD_LIST:
- 		case CMD_EXPORT:
- 		case CMD_MONITOR:
- 			flags |= NFT_CACHE_FULL;
-diff --git a/src/rule.c b/src/rule.c
-index 57f1fc838399d..883b070720259 100644
---- a/src/rule.c
-+++ b/src/rule.c
-@@ -2582,7 +2582,8 @@ static int do_command_reset(struct netlink_ctx *ctx, struct cmd *cmd)
- 	ret = netlink_reset_objs(ctx, cmd, type, dump);
- 	list_for_each_entry_safe(obj, next, &ctx->list, list) {
- 		table = table_lookup(&obj->handle, &ctx->nft->cache);
--		list_move(&obj->list, &table->objs);
-+		if (!obj_lookup(table, obj->handle.obj.name, obj->type))
-+			list_move(&obj->list, &table->objs);
- 	}
- 	if (ret < 0)
- 		return ret;
-diff --git a/tests/shell/testcases/sets/0024named_objects_0 b/tests/shell/testcases/sets/0024named_objects_0
-index 3bd16f2fd028b..21200c3cca3cd 100755
---- a/tests/shell/testcases/sets/0024named_objects_0
-+++ b/tests/shell/testcases/sets/0024named_objects_0
-@@ -35,4 +35,14 @@ table inet x {
- set -e
- $NFT -f - <<< "$RULESET"
- 
--$NFT reset counter inet x user321
-+EXPECTED="table inet x {
-+	counter user321 {
-+		packets 12 bytes 1433
-+	}
-+}"
-+
-+GET="$($NFT reset counter inet x user321)"
-+if [ "$EXPECTED" != "$GET" ] ; then
-+	$DIFF -u <(echo "$EXPECTED") <(echo "$GET")
-+	exit 1
-+fi
--- 
-2.24.1
+> > I noticed something I find worse, namely that libnftables as a library
+> > changes the application's netns. Anything it does after changing the
+> > context's netns applies to that netns only, no matter if it's creating a
+> > new nft context with NFT_CtX_DEFAULT flag or call iproute via system().
+> > 
+> > If we can't find a way to exit the netns again, one can safely assume
+> > that we are trapping a user's application in a netns with this feature.
+> 
+> IIRC, you can fork(), then let the child enter the netns while parent
+> remain in the original netns.
 
+Yes, that's also the only way to operate in multiple netns in parallel.
+
+> > Maybe we should restrict per-netns operation to nft utility and perform
+> > the netns switch there? Maybe we could provide a "switch_netns()"
+> > routine in libnftables which is not bound to nft context so users may
+> > use it in their application?
+> 
+> That's another possibility, yes. In that case, there is no need for
+> NFT_CTX_NETNS, which is just there to skip the socket initialization.
+
+I just think that a routine which affects things outside of nft scope
+shouldn't be tied as closely with nft context.
+
+Cheers, Phil
+
+[1] https://github.com/larsks/python-netns/blob/master/netns.py
