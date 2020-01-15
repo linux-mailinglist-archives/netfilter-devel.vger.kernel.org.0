@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1005013CDB7
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Jan 2020 21:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C76C13CDB4
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Jan 2020 21:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729747AbgAOUGA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 15 Jan 2020 15:06:00 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:53236 "EHLO
+        id S1729378AbgAOUF7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 15 Jan 2020 15:05:59 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:53240 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729420AbgAOUF7 (ORCPT
+        with ESMTP id S1729451AbgAOUF7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Wed, 15 Jan 2020 15:05:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,22 +18,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=K0XVHq73UHlhQ/D84IiwnlA9Y6baVDh3zj2vjhXE6yI=; b=n4TBx7BmZxxoLac76IDQX2WGG0
-        Lz3ZnLcqMnrcPnvrGPcH1EilO4GSs5kNmceREFqkxRRQEHGvkMInnLoJecYoqbHtMvGBPm5C0th8n
-        tyNGNyJ8+RRPCCbWYK5gOU3LucCL+6rW0bkBjfDXvFzTHxdn64BOu1ePQYQD7LOTLZPHEHtYQT+RF
-        Wd56Zm780CjPrLtrf1iw+gTDgcnlqE7v3WCWIQYuW604Oyx3EtBqqI08wxBwxt/MeK7k87KDw79Ys
-        75r5qweUsGmzybkNMAUaMdGbNrZgHkhaHgDNkFA+lCb4KO4D+X934dkC9+rpcUmqi7BipsRQzprKR
-        L10yXZiA==;
+        bh=7tKDT29RaDdXak2Xt6L5xmJeUBMXdr2kwLfSeeZTFPU=; b=gkmnqLYcFTaP7fDkxQMpSpQXM/
+        ybzJ/14ES/GgdcL91BKsD1o0mOkfB/H1bS3PNuocgTeC7O1Ki+NA5alXd5aVnkrn8gJYAPRoFfyRC
+        B/vawHxjGNMlBsNSnKivJjv7L4ec8FDRza6oEYeKjdXjCq//ZCURFV3p7ky75aSBVaW+nBVnR8vGk
+        3BXjhwXdB1nF4NY7yjV3EmMgSDlVd+4GffxJ5kyURqkrYkk8bFX9pSd5RlgIlq/uOEWCzATYFVYvQ
+        fiVBPxjY/XUDeGZOqWlMkfQO5hHKTavh8Yl5H/sFSOnpiWE8svY+wzGizMi84qjP1JqyRUKUBz7Kj
+        jXbnV37g==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1irovN-00054b-UW; Wed, 15 Jan 2020 20:05:58 +0000
+        id 1irovO-00054b-4Z; Wed, 15 Jan 2020 20:05:58 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next v3 02/10] netfilter: bitwise: remove NULL comparisons from attribute checks.
-Date:   Wed, 15 Jan 2020 20:05:49 +0000
-Message-Id: <20200115200557.26202-3-jeremy@azazel.net>
+Subject: [PATCH nf-next v3 03/10] netfilter: bitwise: replace gotos with returns.
+Date:   Wed, 15 Jan 2020 20:05:50 +0000
+Message-Id: <20200115200557.26202-4-jeremy@azazel.net>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200115200557.26202-1-jeremy@azazel.net>
 References: <20200115200557.26202-1-jeremy@azazel.net>
@@ -47,36 +47,50 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In later patches, we will be adding more checks.  In order to be
-consistent and prevent complaints from checkpatch.pl, replace the
-existing comparisons with NULL with logical NOT operators.
+When dumping a bitwise expression, if any of the puts fails, we use goto
+to jump to a label.  However, no clean-up is required and the only
+statement at the label is a return.  Drop the goto's and return
+immediately instead.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- net/netfilter/nft_bitwise.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ net/netfilter/nft_bitwise.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/net/netfilter/nft_bitwise.c b/net/netfilter/nft_bitwise.c
-index e8ca1ec105f8..85605fb1e360 100644
+index 85605fb1e360..c15e9beb5243 100644
 --- a/net/netfilter/nft_bitwise.c
 +++ b/net/netfilter/nft_bitwise.c
-@@ -52,11 +52,11 @@ static int nft_bitwise_init(const struct nft_ctx *ctx,
- 	u32 len;
- 	int err;
+@@ -107,24 +107,21 @@ static int nft_bitwise_dump(struct sk_buff *skb, const struct nft_expr *expr)
+ 	const struct nft_bitwise *priv = nft_expr_priv(expr);
  
--	if (tb[NFTA_BITWISE_SREG] == NULL ||
--	    tb[NFTA_BITWISE_DREG] == NULL ||
--	    tb[NFTA_BITWISE_LEN] == NULL ||
--	    tb[NFTA_BITWISE_MASK] == NULL ||
--	    tb[NFTA_BITWISE_XOR] == NULL)
-+	if (!tb[NFTA_BITWISE_SREG] ||
-+	    !tb[NFTA_BITWISE_DREG] ||
-+	    !tb[NFTA_BITWISE_LEN]  ||
-+	    !tb[NFTA_BITWISE_MASK] ||
-+	    !tb[NFTA_BITWISE_XOR])
- 		return -EINVAL;
+ 	if (nft_dump_register(skb, NFTA_BITWISE_SREG, priv->sreg))
+-		goto nla_put_failure;
++		return -1;
+ 	if (nft_dump_register(skb, NFTA_BITWISE_DREG, priv->dreg))
+-		goto nla_put_failure;
++		return -1;
+ 	if (nla_put_be32(skb, NFTA_BITWISE_LEN, htonl(priv->len)))
+-		goto nla_put_failure;
++		return -1;
  
- 	err = nft_parse_u32_check(tb[NFTA_BITWISE_LEN], U8_MAX, &len);
+ 	if (nft_data_dump(skb, NFTA_BITWISE_MASK, &priv->mask,
+ 			  NFT_DATA_VALUE, priv->len) < 0)
+-		goto nla_put_failure;
++		return -1;
+ 
+ 	if (nft_data_dump(skb, NFTA_BITWISE_XOR, &priv->xor,
+ 			  NFT_DATA_VALUE, priv->len) < 0)
+-		goto nla_put_failure;
++		return -1;
+ 
+ 	return 0;
+-
+-nla_put_failure:
+-	return -1;
+ }
+ 
+ static struct nft_data zero;
 -- 
 2.24.1
 
