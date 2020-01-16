@@ -2,30 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6787F13D52B
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2020 08:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D756113D578
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2020 08:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbgAPHoT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 16 Jan 2020 02:44:19 -0500
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:33046 "EHLO
+        id S1726329AbgAPH6N (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 16 Jan 2020 02:58:13 -0500
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:33110 "EHLO
         Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726883AbgAPHoT (ORCPT
+        by vger.kernel.org with ESMTP id S1726369AbgAPH6N (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 16 Jan 2020 02:44:19 -0500
+        Thu, 16 Jan 2020 02:58:13 -0500
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1irzpA-0003GY-6p; Thu, 16 Jan 2020 08:44:16 +0100
+        id 1is02e-0003KP-8r; Thu, 16 Jan 2020 08:58:12 +0100
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
-Cc:     netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Florian Westphal <fw@strlen.de>,
-        syzbot+76d0b80493ac881ff77b@syzkaller.appspotmail.com
-Subject: [PATCH nf] netfilter: nft_tunnel: fix null-attribute check
-Date:   Thu, 16 Jan 2020 08:44:11 +0100
-Message-Id: <20200116074411.19511-1-fw@strlen.de>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf] netfilter: nft_tunnel: ERSPAN_VERSION must not be null
+Date:   Thu, 16 Jan 2020 08:58:05 +0100
+Message-Id: <20200116075805.28377-1-fw@strlen.de>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <000000000000b62bda059c36db7c@google.com>
-References: <000000000000b62bda059c36db7c@google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -33,29 +29,24 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-else we get null deref when one of the attributes is missing, both
-must be non-null.
-
-Reported-by: syzbot+76d0b80493ac881ff77b@syzkaller.appspotmail.com
-Fixes: aaecfdb5c5dd8ba ("netfilter: nf_tables: match on tunnel metadata")
+Fixes: af308b94a2a4a5 ("netfilter: nf_tables: add tunnel support")
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nft_tunnel.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/netfilter/nft_tunnel.c b/net/netfilter/nft_tunnel.c
-index 3d4c2ae605a8..d89c7c553030 100644
+index d89c7c553030..5284fcf16be7 100644
 --- a/net/netfilter/nft_tunnel.c
 +++ b/net/netfilter/nft_tunnel.c
-@@ -76,7 +76,7 @@ static int nft_tunnel_get_init(const struct nft_ctx *ctx,
- 	struct nft_tunnel *priv = nft_expr_priv(expr);
- 	u32 len;
+@@ -266,6 +266,9 @@ static int nft_tunnel_obj_erspan_init(const struct nlattr *attr,
+ 	if (err < 0)
+ 		return err;
  
--	if (!tb[NFTA_TUNNEL_KEY] &&
-+	if (!tb[NFTA_TUNNEL_KEY] ||
- 	    !tb[NFTA_TUNNEL_DREG])
- 		return -EINVAL;
- 
++	if (!tb[NFTA_TUNNEL_KEY_ERSPAN_VERSION])
++		 return -EINVAL;
++
+ 	version = ntohl(nla_get_be32(tb[NFTA_TUNNEL_KEY_ERSPAN_VERSION]));
+ 	switch (version) {
+ 	case ERSPAN_VERSION:
 -- 
 2.24.1
 
