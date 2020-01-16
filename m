@@ -2,137 +2,84 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44ED613ED84
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2020 19:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F40813F5DF
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2020 19:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405711AbgAPSDO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 16 Jan 2020 13:03:14 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:39655 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393572AbgAPSDO (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 16 Jan 2020 13:03:14 -0500
-Received: by mail-io1-f71.google.com with SMTP id w22so8460302ior.6
-        for <netfilter-devel@vger.kernel.org>; Thu, 16 Jan 2020 10:03:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=28w+TnfQPs2OAlAHKwypZqdlk2gBKd0vMI6H+yLAPI0=;
-        b=AiTlscBcU7oqSK+59zijabLrc4bNutWA2EU7Mzl9icISLX8x39zzk9NPpPt90CQzG4
-         BRVm1poCGFnkaqTb+OsTTyVk+NckNOg/EY7g9sicVBONyuU3U/3UQ6y2LywO1k1TAyNT
-         aeiVWuoAljvDchmyYklIgCbfbwEr6+xoZ8xb+DwCtNUuJCBB/fhKR841suRMcmHXl32x
-         qP2EIfeutQLE7itMPhQ++Jb+hWcXzJ9Efj1OSf6Q2yDrrpe6dmseKuKebH2kwL1CWnU0
-         inOwgxrNFfRR24qKs8sQmpRyBDVEPofVer0LRkb6Q3KFF4FDtW92N8HlzeBwLhrVfxrh
-         F6lA==
-X-Gm-Message-State: APjAAAUI1ROK3XoYe0HV1lIkDlvgOFNYOKLyIUaOQ47p0/e911NEwuKP
-        bYeSQ6Q/CIbq0eSI01hWfzPbo6ecmvCijw6NB9I0uH3SYxwM
-X-Google-Smtp-Source: APXvYqybWgtu4NPUk+UyS4Y5Wfio5iwok+mL2fZGLaLlhsUTF1Danv1Hrt5aE7S+K8IOFvuYNfvFLaq3HY6Bplk7v2ee+RfbLs+J
+        id S2388960AbgAPS7e (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 16 Jan 2020 13:59:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388948AbgAPRGd (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:06:33 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29629205F4;
+        Thu, 16 Jan 2020 17:06:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579194393;
+        bh=G7YqXyQm0ar1eD+NyLytqEqQFhGJI9U3ct2YhRdk67A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mlOxgtOQchq6Ck5In4Yq9t/ZEW406OCOCtdol7+eBqG6cWb7qTAuZhNqm8ZNtzEh3
+         D5N5mr2TeGjw20RLW/jv/HxYNoA0/s0ROc55wuzAAUJW++IV4u3K+g695w4sbSlQvz
+         OhIlt+le8ajGoDjrRipWCNwfd7aGpKG/NLytLIJw=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 320/671] netfilter: nft_flow_offload: add entry to flowtable after confirmation
+Date:   Thu, 16 Jan 2020 11:59:18 -0500
+Message-Id: <20200116170509.12787-57-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
+References: <20200116170509.12787-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:911b:: with SMTP id t27mr4584673ild.142.1579197793181;
- Thu, 16 Jan 2020 10:03:13 -0800 (PST)
-Date:   Thu, 16 Jan 2020 10:03:13 -0800
-In-Reply-To: <00000000000074ed27059c33dedc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007e27cd059c45a3b8@google.com>
-Subject: Re: general protection fault in nft_chain_parse_hook
-From:   syzbot <syzbot+156a04714799b1d480bc@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-syzbot has found a reproducer for the following crash on:
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-HEAD commit:    f5ae2ea6 Fix built-in early-load Intel microcode alignment
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=112c92d1e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d9290aeb7e6cf1c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=156a04714799b1d480bc
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-userspace arch: i386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110253aee00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=170d8159e00000
+[ Upstream commit 270a8a297f42ecff82060aaa53118361f09c1f7d ]
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+156a04714799b1d480bc@syzkaller.appspotmail.com
+This is fixing flow offload for UDP traffic where packets only follow
+one single direction.
 
-kasan: CONFIG_KASAN_INLINE enabled
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 9678 Comm: syz-executor546 Not tainted 5.5.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-RIP: 0010:nft_chain_parse_hook+0x386/0xa10  
-net/netfilter/nf_tables_api.c:1767
-Code: e8 5f 27 0e fb 41 83 fd 05 0f 87 62 05 00 00 e8 d0 25 0e fb 49 8d 7c  
-24 18 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84  
-c0 74 08 3c 03 0f 8e a6 05 00 00 44 89 e9 be 01 00
-RSP: 0018:ffffc900021370f0 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: ffffc900021372a0 RCX: ffffffff8666cfa1
-RDX: 0000000000000003 RSI: ffffffff8666cfb0 RDI: 0000000000000018
-RBP: ffffc900021371e0 R08: ffff88809c7ce380 R09: 0000000000000000
-R10: fffff52000426e2d R11: ffffc9000213716f R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: ffffc900021371b8
-FS:  0000000000000000(0000) GS:ffff8880ae800000(0063) knlGS:0000000009dfd840
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 0000000020000280 CR3: 00000000a29dd000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-  nf_tables_addchain.constprop.0+0x1c1/0x1520  
-net/netfilter/nf_tables_api.c:1888
-  nf_tables_newchain+0x1033/0x1820 net/netfilter/nf_tables_api.c:2196
-  nfnetlink_rcv_batch+0xf42/0x17a0 net/netfilter/nfnetlink.c:433
-  nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:543 [inline]
-  nfnetlink_rcv+0x3e7/0x460 net/netfilter/nfnetlink.c:561
-  netlink_unicast_kernel net/netlink/af_netlink.c:1302 [inline]
-  netlink_unicast+0x58c/0x7d0 net/netlink/af_netlink.c:1328
-  netlink_sendmsg+0x91c/0xea0 net/netlink/af_netlink.c:1917
-  sock_sendmsg_nosec net/socket.c:639 [inline]
-  sock_sendmsg+0xd7/0x130 net/socket.c:659
-  ____sys_sendmsg+0x753/0x880 net/socket.c:2330
-  ___sys_sendmsg+0x100/0x170 net/socket.c:2384
-  __sys_sendmsg+0x105/0x1d0 net/socket.c:2417
-  __compat_sys_sendmsg net/compat.c:642 [inline]
-  __do_compat_sys_sendmsg net/compat.c:649 [inline]
-  __se_compat_sys_sendmsg net/compat.c:646 [inline]
-  __ia32_compat_sys_sendmsg+0x7a/0xb0 net/compat.c:646
-  do_syscall_32_irqs_on arch/x86/entry/common.c:337 [inline]
-  do_fast_syscall_32+0x27b/0xe16 arch/x86/entry/common.c:408
-  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
-RIP: 0023:0xf7fafa39
-Code: 00 00 00 89 d3 5b 5e 5f 5d c3 b8 80 96 98 00 eb c4 8b 04 24 c3 8b 1c  
-24 c3 8b 34 24 c3 8b 3c 24 c3 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90  
-90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000ffc60f6c EFLAGS: 00000202 ORIG_RAX: 0000000000000172
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 000000002000d400
-RDX: 0000000004000000 RSI: 00000000080ea00c RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace ef2c8b24d08b7122 ]---
-RIP: 0010:nft_chain_parse_hook+0x386/0xa10  
-net/netfilter/nf_tables_api.c:1767
-Code: e8 5f 27 0e fb 41 83 fd 05 0f 87 62 05 00 00 e8 d0 25 0e fb 49 8d 7c  
-24 18 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84  
-c0 74 08 3c 03 0f 8e a6 05 00 00 44 89 e9 be 01 00
-RSP: 0018:ffffc900021370f0 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: ffffc900021372a0 RCX: ffffffff8666cfa1
-RDX: 0000000000000003 RSI: ffffffff8666cfb0 RDI: 0000000000000018
-RBP: ffffc900021371e0 R08: ffff88809c7ce380 R09: 0000000000000000
-R10: fffff52000426e2d R11: ffffc9000213716f R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: ffffc900021371b8
-FS:  0000000000000000(0000) GS:ffff8880ae800000(0063) knlGS:0000000009dfd840
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 0000000020000280 CR3: 00000000a29dd000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+The flow_offload_fixup_tcp() mechanism works fine in case that the
+offloaded entry remains in SYN_RECV state, given sequence tracking is
+reset and that conntrack handles syn+ack packets as a retransmission, ie.
+
+	sES + synack => sIG
+
+for reply traffic.
+
+Fixes: a3c90f7a2323 ("netfilter: nf_tables: flow offload expression")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/netfilter/nft_flow_offload.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
+index 1ef8cb789c41..166edea0e452 100644
+--- a/net/netfilter/nft_flow_offload.c
++++ b/net/netfilter/nft_flow_offload.c
+@@ -103,8 +103,7 @@ static void nft_flow_offload_eval(const struct nft_expr *expr,
+ 	    ct->status & IPS_SEQ_ADJUST)
+ 		goto out;
+ 
+-	if (ctinfo == IP_CT_NEW ||
+-	    ctinfo == IP_CT_RELATED)
++	if (!nf_ct_is_confirmed(ct))
+ 		goto out;
+ 
+ 	if (test_and_set_bit(IPS_OFFLOAD_BIT, &ct->status))
+-- 
+2.20.1
 
