@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C30513EA8B
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2020 18:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E1713F0EA
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2020 19:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406016AbgAPRo5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 16 Jan 2020 12:44:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36212 "EHLO mail.kernel.org"
+        id S2395556AbgAPSYs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 16 Jan 2020 13:24:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406006AbgAPRoz (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:44:55 -0500
+        id S2390515AbgAPR1J (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:27:09 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44BDD24783;
-        Thu, 16 Jan 2020 17:44:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BDE4246D4;
+        Thu, 16 Jan 2020 17:27:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579196695;
-        bh=DafYjLE3n3Q5W7KxpsvOtRj2irNzGbmQnj8g8RiiOkU=;
+        s=default; t=1579195628;
+        bh=SCZav1MnsOnCjFEQd3NWCg1EJOw2VKjn4gRXGwkDEDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YnVwU/svH2+E12PSz2+MhkFVKcARMZSlYq88QzWj8qLT88nNcTGi+d59qxqupYb5B
-         Cg1x22HZZwkZ1m5G71OdZ0IOkr43gH7b30ndx7+yfsJhbWSCRCtjaPbK1loLw+fwui
-         M7mRr+P2GwnqrwCmmUCyu0L44+dK0KU4tt2D0u2E=
+        b=ROP3Jt0F4x0Qqfuck0dK5r5PN9n7uUE8b/6CZW1DhJ05o2S4nuLGdzoIqTfo1QFo8
+         vOLcGKXtVqplz24xf4AIc4JVvB0UiNqoZwWfo3DZroRi1OCN7VfwHuC50oqPU0zKXc
+         RHAHYUT4CUvq14/YmQyybQdSTv+yTXDlWZ6Cbonc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>,
@@ -31,12 +31,12 @@ Cc:     Florian Westphal <fw@strlen.de>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         bridge@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 089/174] netfilter: ebtables: CONFIG_COMPAT: reject trailing data after last rule
-Date:   Thu, 16 Jan 2020 12:41:26 -0500
-Message-Id: <20200116174251.24326-89-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 197/371] netfilter: ebtables: CONFIG_COMPAT: reject trailing data after last rule
+Date:   Thu, 16 Jan 2020 12:21:09 -0500
+Message-Id: <20200116172403.18149-140-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116174251.24326-1-sashal@kernel.org>
-References: <20200116174251.24326-1-sashal@kernel.org>
+In-Reply-To: <20200116172403.18149-1-sashal@kernel.org>
+References: <20200116172403.18149-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -67,10 +67,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index fd1af7cb960d..e7c170949b21 100644
+index 35a670ec9077..a1834ad7422c 100644
 --- a/net/bridge/netfilter/ebtables.c
 +++ b/net/bridge/netfilter/ebtables.c
-@@ -2174,7 +2174,9 @@ static int compat_copy_entries(unsigned char *data, unsigned int size_user,
+@@ -2164,7 +2164,9 @@ static int compat_copy_entries(unsigned char *data, unsigned int size_user,
  	if (ret < 0)
  		return ret;
  
