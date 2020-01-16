@@ -2,118 +2,122 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2625E13F6D9
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2020 20:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BFE13F9E3
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jan 2020 20:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437309AbgAPTHk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 16 Jan 2020 14:07:40 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:36834 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406213AbgAPTHk (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 16 Jan 2020 14:07:40 -0500
-Received: by mail-lf1-f66.google.com with SMTP id n12so16401514lfe.3
-        for <netfilter-devel@vger.kernel.org>; Thu, 16 Jan 2020 11:07:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EmuC4PVZIAqszrVr1XV69xZ8ppUgqhM55b6dhWz3+uk=;
-        b=sq6rBxCBy/CCxrwdHmaue9zJzhbHLCVFuzGNGljHenlF/JLCURJo0cW7HCcIzob853
-         ad8iNOfF7LvsNp4yActpwaksvIR5rR1SdBfmQKDabEl3I/66emZXHFCqfHyOU+Udbi20
-         0tAWoeLngfq3NMIbyFzU+Ex99sYkrcGxIllnCdE+f2SBzpq4080pQlPAJlMoyjZpzPhZ
-         DGGoDvZ48oTt7anYYS1ei29KQbqdWUs3CASJU/SV9rM2iPjwRMmumUYKC1mkFyvnaEte
-         mMCLHi9tI/s+qcIUCXU5476/G0zj8H79xmCp+F5wrCflAzrvYOq2DBF6Ip3cme3OPkbD
-         /K0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EmuC4PVZIAqszrVr1XV69xZ8ppUgqhM55b6dhWz3+uk=;
-        b=EZ8DGoS8pEc3cQjAoppKk6jSbig9UH21WJ/wuOxSSXwO34GULAHRUbxz3EEvDFAyz2
-         A9R0KP01sii6yyAV3gQUpX+cek8bxrvJJGn6zdO6KGB3oOTo3+dcBlyRmkPFHH17iov3
-         8xuSnCQSp5HnyeH3MzwbX++mxfnb5SV2aXVUekSQZqQ+hfXoYJwVTjoC2GGxpmWIAnGZ
-         0DGX3o7D/0OAFlJmlQxDDsFOMRVY0wZI1/cUyKrqh9XyzIssEPZc+AUiKfizxh3wQ6D4
-         Wd/Rg/Z8XLYjxxj1wuk76PLM2vndtmE6KMEvGUhZQWXIioNBAIGXK4UdPVzPJSXRQZ3G
-         hWhw==
-X-Gm-Message-State: APjAAAUk6NNNr29s2X6wQhBbZ8J/AIwZRbdkHDKOQrTERB3w6LtePpu3
-        Up88/QhEGPqYoLcQsmEQmqKal9OcOlIYArYiwAus
-X-Google-Smtp-Source: APXvYqyjq8pmunQfve4JqN7h2RHW+MxQZLns1p+JMhm7APFS43fUdBdBp+Ertu9yeaZgxNoNEEToXqGpX1HrNrUdodI=
-X-Received: by 2002:a2e:870b:: with SMTP id m11mr3237458lji.93.1579201657915;
- Thu, 16 Jan 2020 11:07:37 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1577830902.git.rgb@redhat.com> <20200116150518.gfmzixoqagmk77rw@salvia>
-In-Reply-To: <20200116150518.gfmzixoqagmk77rw@salvia>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 16 Jan 2020 14:07:27 -0500
-Message-ID: <CAHC9VhSowSdhwaGNVfj-Paj7=38z1D-p+=EDQNUAwNJpO_tyXg@mail.gmail.com>
-Subject: Re: [PATCH ghak25 v2 0/9] Address NETFILTER_CFG issues
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Richard Guy Briggs <rgb@redhat.com>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, sgrubb@redhat.com,
-        omosnace@redhat.com, fw@strlen.de, twoerner@redhat.com,
-        Eric Paris <eparis@parisplace.org>, ebiederm@xmission.com,
-        tgraf@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1729475AbgAPTux (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 16 Jan 2020 14:50:53 -0500
+Received: from correo.us.es ([193.147.175.20]:56004 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729148AbgAPTux (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 16 Jan 2020 14:50:53 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 133A3DA72B
+        for <netfilter-devel@vger.kernel.org>; Thu, 16 Jan 2020 20:50:51 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 0449BDA714
+        for <netfilter-devel@vger.kernel.org>; Thu, 16 Jan 2020 20:50:51 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id EDA52DA703; Thu, 16 Jan 2020 20:50:50 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 997BDDA714;
+        Thu, 16 Jan 2020 20:50:48 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Thu, 16 Jan 2020 20:50:48 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (unknown [90.77.255.23])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 7A11E42EF9E1;
+        Thu, 16 Jan 2020 20:50:48 +0100 (CET)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org
+Subject: [PATCH 0/9] Netfilter updates for net
+Date:   Thu, 16 Jan 2020 20:50:35 +0100
+Message-Id: <20200116195044.326614-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 10:05 AM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> On Mon, Jan 06, 2020 at 01:54:01PM -0500, Richard Guy Briggs wrote:
-> > There were questions about the presence and cause of unsolicited syscall events
-> > in the logs containing NETFILTER_CFG records and sometimes unaccompanied
-> > NETFILTER_CFG records.
-> >
-> > During testing at least the following list of events trigger NETFILTER_CFG
-> > records and the syscalls related (There may be more events that will trigger
-> > this message type.):
-> >       init_module, finit_module: modprobe
-> >       setsockopt: iptables-restore, ip6tables-restore, ebtables-restore
-> >       unshare: (h?)ostnamed
-> >       clone: libvirtd
-> >
-> > The syscall events unsolicited by any audit rule were found to be caused by a
-> > missing !audit_dummy_context() check before creating a NETFILTER_CFG
-> > record and issuing the record immediately rather than saving the
-> > information to create the record at syscall exit.
-> > Check !audit_dummy_context() before creating the NETFILTER_CFG record.
-> >
-> > The vast majority of unaccompanied records are caused by the fedora default
-> > rule: "-a never,task" and the occasional early startup one is I believe caused
-> > by the iptables filter table module hard linked into the kernel rather than a
-> > loadable module. The !audit_dummy_context() check above should avoid them.
-> >
-> > A couple of other factors should help eliminate unaccompanied records
-> > which include commit cb74ed278f80 ("audit: always enable syscall
-> > auditing when supported and audit is enabled") which makes sure that
-> > when audit is enabled, so automatically is syscall auditing, and ghak66
-> > which addressed initializing audit before PID 1.
-> >
-> > Ebtables module initialization to register tables doesn't generate records
-> > because it was never hooked in to audit.  Recommend adding audit hooks to log
-> > this.
-> >
-> > Table unregistration was never logged, which is now covered.
-> >
-> > Seemingly duplicate records are not actually exact duplicates that are caused
-> > by netfilter table initialization in different network namespaces from the same
-> > syscall.  Recommend adding the network namespace ID (proc inode and dev)
-> > to the record to make this obvious (address later with ghak79 after nsid
-> > patches).
-> >
-> > See: https://github.com/linux-audit/audit-kernel/issues/25
-> > See: https://github.com/linux-audit/audit-kernel/issues/35
-> > See: https://github.com/linux-audit/audit-kernel/issues/43
-> > See: https://github.com/linux-audit/audit-kernel/issues/44
->
-> What tree is this batch targeted to?
+Hello,
 
-I believe Richard was targeting this for the audit tree.
+The following patchset contains Netfilter fixes for net:
 
--- 
-paul moore
-www.paul-moore.com
+1) Fix use-after-free in ipset bitmap destroy path, from Cong Wang.
+
+2) Missing init netns in entry cleanup path of arp_tables,
+   from Florian Westphal.
+
+3) Fix WARN_ON in set destroy path due to missing cleanup on
+   transaction error.
+
+4) Incorrect netlink sanity check in tunnel, from Florian Westphal.
+
+5) Missing sanity check for erspan version netlink attribute, also
+   from Florian.
+
+6) Remove WARN in nft_request_module() that can be triggered from
+   userspace, from Florian Westphal.
+
+7) Memleak in NFTA_HOOK_DEVS netlink parser, from Dan Carpenter.
+
+8) List poison from commit path for flowtables that are added and
+   deleted in the same batch, from Florian Westphal.
+
+9) Fix NAT ICMP packet corruption, from Eyal Birger.
+
+You can pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+
+Thank you.
+
+----------------------------------------------------------------
+
+The following changes since commit c9f53049d4a842db6bcd76f597759a0ef5f65c86:
+
+  MAINTAINERS: update my email address (2020-01-11 14:33:39 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git HEAD
+
+for you to fetch changes up to 61177e911dad660df86a4553eb01c95ece2f6a82:
+
+  netfilter: nat: fix ICMP header corruption on ICMP errors (2020-01-16 15:08:25 +0100)
+
+----------------------------------------------------------------
+Cong Wang (1):
+      netfilter: fix a use-after-free in mtype_destroy()
+
+Dan Carpenter (1):
+      netfilter: nf_tables: fix memory leak in nf_tables_parse_netdev_hooks()
+
+Eyal Birger (1):
+      netfilter: nat: fix ICMP header corruption on ICMP errors
+
+Florian Westphal (5):
+      netfilter: arp_tables: init netns pointer in xt_tgdtor_param struct
+      netfilter: nft_tunnel: fix null-attribute check
+      netfilter: nft_tunnel: ERSPAN_VERSION must not be null
+      netfilter: nf_tables: remove WARN and add NLA_STRING upper limits
+      netfilter: nf_tables: fix flowtable list del corruption
+
+Pablo Neira Ayuso (1):
+      netfilter: nf_tables: store transaction list locally while requesting module
+
+ net/ipv4/netfilter/arp_tables.c         | 19 ++++++++--------
+ net/netfilter/ipset/ip_set_bitmap_gen.h |  2 +-
+ net/netfilter/nf_nat_proto.c            | 13 +++++++++++
+ net/netfilter/nf_tables_api.c           | 39 ++++++++++++++++++++++-----------
+ net/netfilter/nft_tunnel.c              |  5 ++++-
+ 5 files changed, 54 insertions(+), 24 deletions(-)
