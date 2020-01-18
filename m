@@ -2,124 +2,74 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 222651419D2
-	for <lists+netfilter-devel@lfdr.de>; Sat, 18 Jan 2020 22:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E67141A0D
+	for <lists+netfilter-devel@lfdr.de>; Sat, 18 Jan 2020 23:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgARVXV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 18 Jan 2020 16:23:21 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:55198 "EHLO
-        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727051AbgARVXV (ORCPT
+        id S1727061AbgARWaB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 18 Jan 2020 17:30:01 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:55965 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726997AbgARWaB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 18 Jan 2020 16:23:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=g8sEkvB438QJnh8LEBsCrrA7uH/I53NAAK6yAXymHy0=; b=uSZK9xnC/Ao73KY+SQkJQUE51o
-        B7W0hHGgMCcLntf94Gw4EU86mDbW8EtBd5hT2w9RL1IrN5mIFeUnsueWCxbkHGmkvpsb+1xTsoy1e
-        awd0lp2kQdCI3uYnn6L8kXMgzu+BZ78GThWnGd8OzvAuXu1z7ui0fWSsUwJ27YXJarO1qM9hrEjgH
-        nFslKZ098V4dSMcvC3HImNaMq6ecoDFZfNnZ+vm6bjaFNTN37c9aEI0mYQigfcNZSS0v1G+SLYH9v
-        GUTW29XTpnKLLOi71Zl4HrZR8BzYx9aQNY+JOZfsM9xSiDtAyi5/Rf1CvzfUNPLQv0F1ixJ167wzo
-        YIp8WcGA==;
-Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
-        by kadath.azazel.net with esmtp (Exim 4.92)
-        (envelope-from <jeremy@azazel.net>)
-        id 1isvYu-0006Ji-Cz
-        for netfilter-devel@vger.kernel.org; Sat, 18 Jan 2020 21:23:20 +0000
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v2 9/9] tests: shell: add bit-shift tests.
-Date:   Sat, 18 Jan 2020 21:23:19 +0000
-Message-Id: <20200118212319.253112-10-jeremy@azazel.net>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200118212319.253112-1-jeremy@azazel.net>
-References: <20200118212319.253112-1-jeremy@azazel.net>
+        Sat, 18 Jan 2020 17:30:01 -0500
+Received: by mail-io1-f72.google.com with SMTP id z21so17480805iob.22
+        for <netfilter-devel@vger.kernel.org>; Sat, 18 Jan 2020 14:30:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=yYySPTzXjesI6rMbrrYCnEOoWQeyP6zwNDoBKllcD6s=;
+        b=f9yWFqnMjhaKvVOCLt9OtubYxQgvAAgES4/5EcgSN4x0WQvPh6LCVk1Tmw0nTUfQw0
+         xn9D2IltoaQCeClwLeBTzb4LIAc7pecXRazF7HZdVCDb/KcYd18t3pJ+hyiAJlIgJGWU
+         p5IpGSdD8admrRZJeM9rRgcImdR7d2s2doAiwMGaOdyr2Lj8S9VGIoRg0f23ktP1+YDH
+         zaaSgAeb36eKoteITJy0TjXJ1IWYsTHzF6yS0w2odlIvnfVRRvHLU4URw6oS1uytuWtw
+         lLUcFMuJoeEIMtQvvNyMKhb2HQcxPui2TQzQW8GcdT7qO4r19fe6SsWNSx3YO59X2IAD
+         asOA==
+X-Gm-Message-State: APjAAAWz6UzV4l0qSxoFVL1sJIGWXU30urW/B+6e4hYhzX0mwev3eBvv
+        2ZhgkI9TGsPEKM60hr98uTE4Yq3Ze+qg9KrNGMlGYBDZnfuM
+X-Google-Smtp-Source: APXvYqx1pd31epsuW/G1/6eX4XtJtvHwMaQ8qI1MCUim2ZtcFsWE4ZOYVf2vl7dBgVGnmVgzwNIdSp63LSgF0NEjWlUwyEVcpUX/
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+X-Received: by 2002:a6b:d214:: with SMTP id q20mr29420477iob.298.1579386600669;
+ Sat, 18 Jan 2020 14:30:00 -0800 (PST)
+Date:   Sat, 18 Jan 2020 14:30:00 -0800
+In-Reply-To: <0000000000006de432059c6cabb1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004bc94b059c71994f@google.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in bitmap_port_gc
+From:   syzbot <syzbot+53cdd0ec0bbabd53370a@syzkaller.appspotmail.com>
+To:     arvid.brodin@alten.se, coreteam@netfilter.org, davem@davemloft.net,
+        fw@strlen.de, gregkh@linuxfoundation.org, jeremy@azazel.net,
+        kadlec@netfilter.org, kstewart@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add a couple of tests for setting the CT mark to a bitwise expression
-derived from the packet mark and vice versa.
+syzbot has bisected this bug to:
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- tests/shell/testcases/chains/0040mark_shift_0         | 11 +++++++++++
- tests/shell/testcases/chains/0040mark_shift_1         | 11 +++++++++++
- .../shell/testcases/chains/dumps/0040mark_shift_0.nft |  6 ++++++
- .../shell/testcases/chains/dumps/0040mark_shift_1.nft |  6 ++++++
- 4 files changed, 34 insertions(+)
- create mode 100755 tests/shell/testcases/chains/0040mark_shift_0
- create mode 100755 tests/shell/testcases/chains/0040mark_shift_1
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_shift_0.nft
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_shift_1.nft
+commit b9a1e627405d68d475a3c1f35e685ccfb5bbe668
+Author: Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu Jul 4 00:21:13 2019 +0000
 
-diff --git a/tests/shell/testcases/chains/0040mark_shift_0 b/tests/shell/testcases/chains/0040mark_shift_0
-new file mode 100755
-index 000000000000..b40ee2dd5278
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_shift_0
-@@ -0,0 +1,11 @@
-+#!/bin/bash
-+
-+set -e
-+
-+RULESET="
-+  add table t
-+  add chain t c { type filter hook output priority mangle; }
-+  add rule t c oif lo ct mark set meta mark << 8 | 0x10
-+"
-+
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/0040mark_shift_1 b/tests/shell/testcases/chains/0040mark_shift_1
-new file mode 100755
-index 000000000000..b609f5ef10ad
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_shift_1
-@@ -0,0 +1,11 @@
-+#!/bin/bash
-+
-+set -e
-+
-+RULESET="
-+  add table t
-+  add chain t c { type filter hook input priority mangle; }
-+  add rule t c iif lo ct mark & 0xff 0x10 meta mark set ct mark >> 8
-+"
-+
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_shift_0.nft b/tests/shell/testcases/chains/dumps/0040mark_shift_0.nft
-new file mode 100644
-index 000000000000..4df4391111c5
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_shift_0.nft
-@@ -0,0 +1,6 @@
-+table ip t {
-+	chain c {
-+		type filter hook output priority mangle; policy accept;
-+		oif "lo" ct mark set meta mark << 0x00000008 | 0x00000010
-+	}
-+}
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_shift_1.nft b/tests/shell/testcases/chains/dumps/0040mark_shift_1.nft
-new file mode 100644
-index 000000000000..d4db9622387e
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_shift_1.nft
-@@ -0,0 +1,6 @@
-+table ip t {
-+	chain c {
-+		type filter hook input priority mangle; policy accept;
-+		iif "lo" ct mark & 0x000000ff == 0x00000010 meta mark set ct mark >> 0x00000008
-+	}
-+}
--- 
-2.24.1
+    hsr: implement dellink to clean up resources
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=170438d6e00000
+start commit:   25e73aad Merge tag 'io_uring-5.5-2020-01-16' of git://git...
+git tree:       upstream
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=148438d6e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=108438d6e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d9290aeb7e6cf1c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=53cdd0ec0bbabd53370a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17eb74c9e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14db11d1e00000
+
+Reported-by: syzbot+53cdd0ec0bbabd53370a@syzkaller.appspotmail.com
+Fixes: b9a1e627405d ("hsr: implement dellink to clean up resources")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
