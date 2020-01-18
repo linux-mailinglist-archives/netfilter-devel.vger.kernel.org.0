@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DED1419D7
-	for <lists+netfilter-devel@lfdr.de>; Sat, 18 Jan 2020 22:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE0B1419CF
+	for <lists+netfilter-devel@lfdr.de>; Sat, 18 Jan 2020 22:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgARVXY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 18 Jan 2020 16:23:24 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:55184 "EHLO
+        id S1727085AbgARVXU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 18 Jan 2020 16:23:20 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:55186 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726933AbgARVXU (ORCPT
+        with ESMTP id S1727051AbgARVXU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 18 Jan 2020 16:23:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,22 +18,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=PhJ8agEA+dj0IXAsvFn58gVyGRub+IHVzqrCJIayziY=; b=FChGYSLvYlbBO+8O/sTYA1N0hc
-        w0UghUh5PWGJVryjx2Z3FOObkRch3td+u2qV35JM6/MEd9v82qz5YJ77Dnii4ub+UmUwrTd/GsmZc
-        vTNckzLwYW4D/iFjf1T4ibxTgFiyCSUmdUcXq5YpXA5cOf92hIRIzVbxZHEypwE9T0yqywJB11k6/
-        Onl1qU4ekac7Ca5v+oWqeczz+RPFGb/RIUJcESBkW2BbMCwIh8P9gzuhhb/BFnzVk3wJkGCx1VhPc
-        fCMrVCDD1bl+JSooYhDnqoOTKgrc2E4bouJs0jKigrlKSZ42gUt0jiVCwsIVM4gmHgSKHsUm7g1Wa
-        3ymozW3Q==;
+        bh=4UgfGNOvAnEkVa1oYgfDMZ+bKSypTjVKKOInNkEErvs=; b=IaI8m1LqxKjevw3KMU9g5pTlyj
+        CKFVmkwDOA9GrHH4X/3mFeKx7lLxrVLWInu8UGn/m3nzsU4VtZK8QkJRUnfZnX0/IY5wDNXmR5erO
+        kRZhyVX2c9ZXZ2lz6e59kU7FgqalML/8EkX1k3Xaw+sDIGQzyzeIemyWkfhLQm7Fka4qsmFEG/Dcy
+        QCTMyhQxL6NRZlkXUg/w5sbXwE1HLe1X5JdwPBKWOrD6rGT4rBn6KD66/EUvk+b3M2xiwuWb/rv9s
+        vFia0fj8LMrctIsBVaJ6BJ0s9BSt9uDaGbRH8nt5zb8m/E5bTbB0jIApu74war5GlcR610I8N5noS
+        fVUuXs+Q==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1isvYt-0006Ji-Ds
+        id 1isvYt-0006Ji-I0
         for netfilter-devel@vger.kernel.org; Sat, 18 Jan 2020 21:23:19 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v2 2/9] src: white-space fixes.
-Date:   Sat, 18 Jan 2020 21:23:12 +0000
-Message-Id: <20200118212319.253112-3-jeremy@azazel.net>
+Subject: [PATCH nft v2 3/9] netlink_delinearize: fix typo.
+Date:   Sat, 18 Jan 2020 21:23:13 +0000
+Message-Id: <20200118212319.253112-4-jeremy@azazel.net>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200118212319.253112-1-jeremy@azazel.net>
 References: <20200118212319.253112-1-jeremy@azazel.net>
@@ -47,65 +47,26 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Remove some trailing white-space and fix some indentation.
+s/Of/If/ in comment describing function.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/evaluate.c            | 11 +++++------
- src/netlink_delinearize.c |  2 +-
- src/netlink_linearize.c   |  2 +-
- 3 files changed, 7 insertions(+), 8 deletions(-)
+ src/netlink_delinearize.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index e7881543d2de..09dd493f0757 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -2340,14 +2340,13 @@ static int stmt_evaluate_meta(struct eval_ctx *ctx, struct stmt *stmt)
- static int stmt_evaluate_ct(struct eval_ctx *ctx, struct stmt *stmt)
- {
- 	if (stmt_evaluate_arg(ctx, stmt,
--				 stmt->ct.tmpl->dtype,
--				 stmt->ct.tmpl->len,
--				 stmt->ct.tmpl->byteorder,
--				 &stmt->ct.expr) < 0)
-+			      stmt->ct.tmpl->dtype,
-+			      stmt->ct.tmpl->len,
-+			      stmt->ct.tmpl->byteorder,
-+			      &stmt->ct.expr) < 0)
- 		return -1;
- 
--	if (stmt->ct.key == NFT_CT_SECMARK &&
--	    expr_is_constant(stmt->ct.expr))
-+	if (stmt->ct.key == NFT_CT_SECMARK && expr_is_constant(stmt->ct.expr))
- 		return stmt_error(ctx, stmt,
- 				  "ct secmark must not be set to constant value");
- 
 diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index 154353b8161a..387e4b046c6b 100644
+index 387e4b046c6b..8b9b5c808384 100644
 --- a/src/netlink_delinearize.c
 +++ b/src/netlink_delinearize.c
-@@ -171,7 +171,7 @@ static void netlink_parse_immediate(struct netlink_parse_ctx *ctx,
- 	struct expr *expr;
- 
- 	if (nftnl_expr_is_set(nle, NFTNL_EXPR_IMM_VERDICT)) {
--		nld.verdict = nftnl_expr_get_u32(nle, NFTNL_EXPR_IMM_VERDICT); 
-+		nld.verdict = nftnl_expr_get_u32(nle, NFTNL_EXPR_IMM_VERDICT);
- 		if  (nftnl_expr_is_set(nle, NFTNL_EXPR_IMM_CHAIN)) {
- 			nld.chain = nftnl_expr_get(nle, NFTNL_EXPR_IMM_CHAIN,
- 						   &nld.len);
-diff --git a/src/netlink_linearize.c b/src/netlink_linearize.c
-index 498326d0087a..d5e177d5e75c 100644
---- a/src/netlink_linearize.c
-+++ b/src/netlink_linearize.c
-@@ -1243,7 +1243,7 @@ static void netlink_gen_queue_stmt(struct netlink_linearize_ctx *ctx,
- }
- 
- static void netlink_gen_ct_stmt(struct netlink_linearize_ctx *ctx,
--				  const struct stmt *stmt)
-+				const struct stmt *stmt)
- {
- 	struct nftnl_expr *nle;
- 	enum nft_registers sreg;
+@@ -2352,7 +2352,7 @@ static void stmt_payload_binop_pp(struct rule_pp_ctx *ctx, struct expr *binop)
+  * the original payload expression because it has an odd size or
+  * a non-byte divisible offset/length.
+  *
+- * Of that was the case, the 'value' expression is not a value but
++ * If that was the case, the 'value' expression is not a value but
+  * a binop expression with a munged payload expression on the left
+  * and a mask to clear the real payload offset/length.
+  *
 -- 
 2.24.1
 
