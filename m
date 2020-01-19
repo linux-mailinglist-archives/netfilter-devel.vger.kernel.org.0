@@ -2,47 +2,47 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EF2141E3B
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2020 14:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251B1141E3A
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2020 14:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgASNdv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1727092AbgASNdv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Sun, 19 Jan 2020 08:33:51 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:42967 "EHLO
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57629 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727011AbgASNdu (ORCPT
+        with ESMTP id S1727075AbgASNdu (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 19 Jan 2020 08:33:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579440825;
+        s=mimecast20190719; t=1579440829;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XqNjY/uWUePv6a3IRcxwA4lM9fAd316yuptCM2uxCA0=;
-        b=QARIIs14erDCPbGtI8QdldyhZeuhYhq2n317+G37GOEqSbu6latmE1mTAYmEBTHRhVxbNi
-        roLr38H93pzYbBE8mvhqig2XBGPSjCSQ5vXzOiRfkVY2ZDNGzWGDjIF/t3xvW2b6mbunON
-        MbQLmY51cSmjvYTXOIoWiYjdw7CV2Zs=
+        bh=NnCfQfszAy/iudHiMfGCgWW0MXmdmyyb5m3RbyMEQ6g=;
+        b=Yk4D95tiBoYeOo5tTEEqRA0ljvqRmQddBzBJmYl4XrWzo5AQuNlbnt75CjZyib2PQrSOkX
+        zZCYuVFXAT+bRF9OHGl6Ua/dZLNEVIxxFui798IrLgMm5WTfwEpqVSKDHUJi2dlH4pR2ZJ
+        pGtuVHjdzorqSndR9j3QR9us17OKfmo=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-346-Ml9AZ9-vMwyzOzUUByqrOw-1; Sun, 19 Jan 2020 08:33:41 -0500
-X-MC-Unique: Ml9AZ9-vMwyzOzUUByqrOw-1
+ us-mta-323-GJLUphaRPPy_fyv97Qs0Yg-1; Sun, 19 Jan 2020 08:33:45 -0500
+X-MC-Unique: GJLUphaRPPy_fyv97Qs0Yg-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A592107ACC7;
-        Sun, 19 Jan 2020 13:33:40 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D94FE100550E;
+        Sun, 19 Jan 2020 13:33:43 +0000 (UTC)
 Received: from epycfail.redhat.com (ovpn-112-51.ams2.redhat.com [10.36.112.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B0FF75D9CA;
-        Sun, 19 Jan 2020 13:33:37 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 74D315D9CA;
+        Sun, 19 Jan 2020 13:33:40 +0000 (UTC)
 From:   Stefano Brivio <sbrivio@redhat.com>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         netfilter-devel@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>,
         =?UTF-8?q?Kadlecsik=20J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>,
         Eric Garver <eric@garver.life>, Phil Sutter <phil@nwl.cc>
-Subject: [PATCH nf-next v3 5/9] nf_tables: Add set type for arbitrary concatenation of ranges
-Date:   Sun, 19 Jan 2020 14:33:17 +0100
-Message-Id: <b976610b93dc5ee3db62d956b3e1ae8af4583312.1579434906.git.sbrivio@redhat.com>
+Subject: [PATCH nf-next v3 6/9] selftests: netfilter: Introduce tests for sets with range concatenation
+Date:   Sun, 19 Jan 2020 14:33:18 +0100
+Message-Id: <ebb1bdb700cf8328531c77c0276af1fb45eec6d9.1579434906.git.sbrivio@redhat.com>
 In-Reply-To: <cover.1579434906.git.sbrivio@redhat.com>
 References: <cover.1579434906.git.sbrivio@redhat.com>
 MIME-Version: 1.0
@@ -53,2489 +53,1553 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This new set type allows for intervals in concatenated fields,
-which are expressed in the usual way, that is, simple byte
-concatenation with padding to 32 bits for single fields, and
-given as ranges by specifying start and end elements containing,
-each, the full concatenation of start and end values for the
-single fields.
+This test covers functionality and stability of the newly added
+nftables set implementation supporting concatenation of ranged
+fields.
 
-Ranges are expanded to composing netmasks, for each field: these
-are inserted as rules in per-field lookup tables. Bits to be
-classified are divided in 4-bit groups, and for each group, the
-lookup table contains 4^2 buckets, representing all the possible
-values of a bit group. This approach was inspired by the Grouper
-algorithm:
-	http://www.cse.usf.edu/~ligatti/projects/grouper/
+For some selected set expression types, test:
+- correctness, by checking that packets match or don't
+- concurrency, by attempting races between insertion, deletion, lookup
+- timeout feature, checking that packets don't match expired entries
 
-Matching is performed by a sequence of AND operations between
-bucket values, with buckets selected according to the value of
-packet bits, for each group. The result of this sequence tells
-us which rules matched for a given field.
+and (roughly) estimate matching rates, comparing to baselines for
+simple drop on netdev ingress hook and for hash and rbtrees sets.
 
-In order to concatenate several ranged fields, per-field rules
-are mapped using mapping arrays, one per field, that specify
-which rules should be considered while matching the next field.
-The mapping array for the last field contains a reference to
-the element originally inserted.
+In order to send packets, this needs one of sendip, netcat or bash.
+To flood with traffic, iperf3, iperf and netperf are supported. For
+performance measurements, this relies on the sample pktgen script
+pktgen_bench_xmit_mode_netif_receive.sh.
 
-The notes in nft_set_pipapo.c cover the algorithm in deeper
-detail.
-
-A pure hash-based approach is of no use here, as ranges need
-to be classified. An implementation based on "proxying" the
-existing red-black tree set type, creating a tree for each
-field, was considered, but deemed impractical due to the fact
-that elements would need to be shared between trees, at least
-as long as we want to keep UAPI changes to a minimum.
-
-A stand-alone implementation of this algorithm is available at:
-	https://pipapo.lameexcu.se
-together with notes about possible future optimisations
-(in pipapo.c).
-
-This algorithm was designed with data locality in mind, and can
-be highly optimised for SIMD instruction sets, as the bulk of
-the matching work is done with repetitive, simple bitwise
-operations.
-
-At this point, without further optimisations, nft_concat_range.sh
-reports, for one AMD Epyc 7351 thread (2.9GHz, 512 KiB L1D$, 8 MiB
-L2$):
-
-TEST: performance
-  net,port                                                      [ OK ]
-    baseline (drop from netdev hook):              10190076pps
-    baseline hash (non-ranged entries):             6179564pps
-    baseline rbtree (match on first field only):    2950341pps
-    set with  1000 full, ranged entries:            2304165pps
-  port,net                                                      [ OK ]
-    baseline (drop from netdev hook):              10143615pps
-    baseline hash (non-ranged entries):             6135776pps
-    baseline rbtree (match on first field only):    4311934pps
-    set with   100 full, ranged entries:            4131471pps
-  net6,port                                                     [ OK ]
-    baseline (drop from netdev hook):               9730404pps
-    baseline hash (non-ranged entries):             4809557pps
-    baseline rbtree (match on first field only):    1501699pps
-    set with  1000 full, ranged entries:            1092557pps
-  port,proto                                                    [ OK ]
-    baseline (drop from netdev hook):              10812426pps
-    baseline hash (non-ranged entries):             6929353pps
-    baseline rbtree (match on first field only):    3027105pps
-    set with 30000 full, ranged entries:             284147pps
-  net6,port,mac                                                 [ OK ]
-    baseline (drop from netdev hook):               9660114pps
-    baseline hash (non-ranged entries):             3778877pps
-    baseline rbtree (match on first field only):    3179379pps
-    set with    10 full, ranged entries:            2082880pps
-  net6,port,mac,proto                                           [ OK ]
-    baseline (drop from netdev hook):               9718324pps
-    baseline hash (non-ranged entries):             3799021pps
-    baseline rbtree (match on first field only):    1506689pps
-    set with  1000 full, ranged entries:             783810pps
-  net,mac                                                       [ OK ]
-    baseline (drop from netdev hook):              10190029pps
-    baseline hash (non-ranged entries):             5172218pps
-    baseline rbtree (match on first field only):    2946863pps
-    set with  1000 full, ranged entries:            1279122pps
-
-v3:
- - rework interface for field length specification,
-   NFT_SET_SUBKEY disappears and information is stored in
-   description
- - remove scratch area to store closing element of ranges,
-   as elements now come with an actual attribute to specify
-   the upper range limit (Pablo Neira Ayuso)
- - also remove pointer to 'start' element from mapping table,
-   closing key is now accessible via extension data
- - use bytes right away instead of bits for field lengths,
-   this way we can also double the inner loop of the lookup
-   function to take care of upper and lower bits in a single
-   iteration (minor performance improvement)
- - make it clearer that set operations are actually atomic
-   API-wise, but we can't e.g. implement flush() as one-shot
-   action
- - fix type for 'dup' in nft_pipapo_insert(), check for
-   duplicates only in the next generation, and in general take
-   care of differentiating generation mask cases depending on
-   the operation (Pablo Neira Ayuso)
- - report C implementation matching rate in commit message, so
-   that AVX2 implementation can be compared (Pablo Neira Ayuso)
-v2:
- - protect access to scratch maps in nft_pipapo_lookup() with
-   local_bh_disable/enable() (Florian Westphal)
- - drop rcu_read_lock/unlock() from nft_pipapo_lookup(), it's
-   already implied (Florian Westphal)
- - explain why partial allocation failures don't need handling
-   in pipapo_realloc_scratch(), rename 'm' to clone and update
-   related kerneldoc to make it clear we're not operating on
-   the live copy (Florian Westphal)
- - add expicit check for priv->start_elem in
-   nft_pipapo_insert() to avoid ending up in nft_pipapo_walk()
-   with a NULL start element, and also zero it out in every
-   operation that might make it invalid, so that insertion
-   doesn't proceed with an invalid element (Florian Westphal)
+If none of the tools suitable for a given test are available, specific
+tests will be skipped.
 
 Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
 ---
- include/net/netfilter/nf_tables_core.h |    1 +
- net/netfilter/Makefile                 |    3 +-
- net/netfilter/nf_tables_set_core.c     |    2 +
- net/netfilter/nft_set_pipapo.c         | 2102 ++++++++++++++++++++++++
- 4 files changed, 2107 insertions(+), 1 deletion(-)
- create mode 100644 net/netfilter/nft_set_pipapo.c
+v3: No changes
+v2: No changes
 
-diff --git a/include/net/netfilter/nf_tables_core.h b/include/net/netfilt=
-er/nf_tables_core.h
-index 2656155b4069..29e7e1021267 100644
---- a/include/net/netfilter/nf_tables_core.h
-+++ b/include/net/netfilter/nf_tables_core.h
-@@ -74,6 +74,7 @@ extern struct nft_set_type nft_set_hash_type;
- extern struct nft_set_type nft_set_hash_fast_type;
- extern struct nft_set_type nft_set_rbtree_type;
- extern struct nft_set_type nft_set_bitmap_type;
-+extern struct nft_set_type nft_set_pipapo_type;
+ tools/testing/selftests/netfilter/Makefile    |    3 +-
+ .../selftests/netfilter/nft_concat_range.sh   | 1481 +++++++++++++++++
+ 2 files changed, 1483 insertions(+), 1 deletion(-)
+ create mode 100755 tools/testing/selftests/netfilter/nft_concat_range.sh
+
+diff --git a/tools/testing/selftests/netfilter/Makefile b/tools/testing/s=
+elftests/netfilter/Makefile
+index de1032b5ddea..08194aa44006 100644
+--- a/tools/testing/selftests/netfilter/Makefile
++++ b/tools/testing/selftests/netfilter/Makefile
+@@ -2,6 +2,7 @@
+ # Makefile for netfilter selftests
 =20
- struct nft_expr;
- struct nft_regs;
-diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
-index 5e9b2eb24349..3f572e5a975e 100644
---- a/net/netfilter/Makefile
-+++ b/net/netfilter/Makefile
-@@ -81,7 +81,8 @@ nf_tables-objs :=3D nf_tables_core.o nf_tables_api.o nf=
-t_chain_filter.o \
- 		  nft_chain_route.o nf_tables_offload.o
+ TEST_PROGS :=3D nft_trans_stress.sh nft_nat.sh bridge_brouter.sh \
+-	conntrack_icmp_related.sh nft_flowtable.sh ipvs.sh
++	conntrack_icmp_related.sh nft_flowtable.sh ipvs.sh \
++	nft_concat_range.sh
 =20
- nf_tables_set-objs :=3D nf_tables_set_core.o \
--		      nft_set_hash.o nft_set_bitmap.o nft_set_rbtree.o
-+		      nft_set_hash.o nft_set_bitmap.o nft_set_rbtree.o \
-+		      nft_set_pipapo.o
-=20
- obj-$(CONFIG_NF_TABLES)		+=3D nf_tables.o
- obj-$(CONFIG_NF_TABLES_SET)	+=3D nf_tables_set.o
-diff --git a/net/netfilter/nf_tables_set_core.c b/net/netfilter/nf_tables=
-_set_core.c
-index a9fce8d10051..586b621007eb 100644
---- a/net/netfilter/nf_tables_set_core.c
-+++ b/net/netfilter/nf_tables_set_core.c
-@@ -9,12 +9,14 @@ static int __init nf_tables_set_module_init(void)
- 	nft_register_set(&nft_set_rhash_type);
- 	nft_register_set(&nft_set_bitmap_type);
- 	nft_register_set(&nft_set_rbtree_type);
-+	nft_register_set(&nft_set_pipapo_type);
-=20
- 	return 0;
- }
-=20
- static void __exit nf_tables_set_module_exit(void)
- {
-+	nft_unregister_set(&nft_set_pipapo_type);
- 	nft_unregister_set(&nft_set_rbtree_type);
- 	nft_unregister_set(&nft_set_bitmap_type);
- 	nft_unregister_set(&nft_set_rhash_type);
-diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipap=
-o.c
-new file mode 100644
-index 000000000000..5946fba8eb84
+ include ../lib.mk
+diff --git a/tools/testing/selftests/netfilter/nft_concat_range.sh b/tool=
+s/testing/selftests/netfilter/nft_concat_range.sh
+new file mode 100755
+index 000000000000..aca21dde102a
 --- /dev/null
-+++ b/net/netfilter/nft_set_pipapo.c
-@@ -0,0 +1,2102 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/* PIPAPO: PIle PAcket POlicies: set for arbitrary concatenations of ran=
-ges
-+ *
-+ * Copyright (c) 2019-2020 Red Hat GmbH
-+ *
-+ * Author: Stefano Brivio <sbrivio@redhat.com>
-+ */
-+
-+/**
-+ * DOC: Theory of Operation
-+ *
-+ *
-+ * Problem
-+ * -------
-+ *
-+ * Match packet bytes against entries composed of ranged or non-ranged p=
-acket
-+ * field specifiers, mapping them to arbitrary references. For example:
-+ *
-+ * ::
-+ *
-+ *               --- fields --->
-+ *      |    [net],[port],[net]... =3D> [reference]
-+ *   entries [net],[port],[net]... =3D> [reference]
-+ *      |    [net],[port],[net]... =3D> [reference]
-+ *      V    ...
-+ *
-+ * where [net] fields can be IP ranges or netmasks, and [port] fields ar=
-e port
-+ * ranges. Arbitrary packet fields can be matched.
-+ *
-+ *
-+ * Algorithm Overview
-+ * ------------------
-+ *
-+ * This algorithm is loosely inspired by [Ligatti 2010], and fundamental=
-ly
-+ * relies on the consideration that every contiguous range in a space of=
- b bits
-+ * can be converted into b * 2 netmasks, from Theorem 3 in [Rottenstreic=
-h 2010],
-+ * as also illustrated in Section 9 of [Kogan 2014].
-+ *
-+ * Classification against a number of entries, that require matching giv=
-en bits
-+ * of a packet field, is performed by grouping those bits in sets of arb=
-itrary
-+ * size, and classifying packet bits one group at a time.
-+ *
-+ * Example:
-+ *   to match the source port (16 bits) of a packet, we can divide those=
- 16 bits
-+ *   in 4 groups of 4 bits each. Given the entry:
-+ *      0000 0001 0101 1001
-+ *   and a packet with source port:
-+ *      0000 0001 1010 1001
-+ *   first and second groups match, but the third doesn't. We conclude t=
-hat the
-+ *   packet doesn't match the given entry.
-+ *
-+ * Translate the set to a sequence of lookup tables, one per field. Each=
- table
-+ * has two dimensions: bit groups to be matched for a single packet fiel=
-d, and
-+ * all the possible values of said groups (buckets). Input entries are
-+ * represented as one or more rules, depending on the number of composin=
-g
-+ * netmasks for the given field specifier, and a group match is indicate=
-d as a
-+ * set bit, with number corresponding to the rule index, in all the buck=
-ets
-+ * whose value matches the entry for a given group.
-+ *
-+ * Rules are mapped between fields through an array of x, n pairs, with =
-each
-+ * item mapping a matched rule to one or more rules. The position of the=
- pair in
-+ * the array indicates the matched rule to be mapped to the next field, =
-x
-+ * indicates the first rule index in the next field, and n the amount of
-+ * next-field rules the current rule maps to.
-+ *
-+ * The mapping array for the last field maps to the desired references.
-+ *
-+ * To match, we perform table lookups using the values of grouped packet=
- bits,
-+ * and use a sequence of bitwise operations to progressively evaluate ru=
-le
-+ * matching.
-+ *
-+ * A stand-alone, reference implementation, also including notes about p=
-ossible
-+ * future optimisations, is available at:
-+ *    https://pipapo.lameexcu.se/
-+ *
-+ * Insertion
-+ * ---------
-+ *
-+ * - For each packet field:
-+ *
-+ *   - divide the b packet bits we want to classify into groups of size =
-t,
-+ *     obtaining ceil(b / t) groups
-+ *
-+ *      Example: match on destination IP address, with t =3D 4: 32 bits,=
- 8 groups
-+ *      of 4 bits each
-+ *
-+ *   - allocate a lookup table with one column ("bucket") for each possi=
-ble
-+ *     value of a group, and with one row for each group
-+ *
-+ *      Example: 8 groups, 2^4 buckets:
-+ *
-+ * ::
-+ *
-+ *                     bucket
-+ *      group  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14=
-  15
-+ *        0
-+ *        1
-+ *        2
-+ *        3
-+ *        4
-+ *        5
-+ *        6
-+ *        7
-+ *
-+ *   - map the bits we want to classify for the current field, for a giv=
-en
-+ *     entry, to a single rule for non-ranged and netmask set items, and=
- to one
-+ *     or multiple rules for ranges. Ranges are expanded to composing ne=
-tmasks
-+ *     by pipapo_expand().
-+ *
-+ *      Example: 2 entries, 10.0.0.5:1024 and 192.168.1.0-192.168.2.1:20=
-48
-+ *      - rule #0: 10.0.0.5
-+ *      - rule #1: 192.168.1.0/24
-+ *      - rule #2: 192.168.2.0/31
-+ *
-+ *   - insert references to the rules in the lookup table, selecting buc=
-kets
-+ *     according to bit values of a rule in the given group. This is don=
-e by
-+ *     pipapo_insert().
-+ *
-+ *      Example: given:
-+ *      - rule #0: 10.0.0.5 mapping to buckets
-+ *        < 0 10  0 0   0 0  0 5 >
-+ *      - rule #1: 192.168.1.0/24 mapping to buckets
-+ *        < 12 0  10 8  0 1  < 0..15 > < 0..15 > >
-+ *      - rule #2: 192.168.2.0/31 mapping to buckets
-+ *        < 12 0  10 8  0 2  0 < 0..1 > >
-+ *
-+ *      these bits are set in the lookup table:
-+ *
-+ * ::
-+ *
-+ *                     bucket
-+ *      group  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14=
-  15
-+ *        0    0                                              1,2
-+ *        1   1,2                                      0
-+ *        2    0                                      1,2
-+ *        3    0                              1,2
-+ *        4  0,1,2
-+ *        5    0   1   2
-+ *        6  0,1,2 1   1   1   1   1   1   1   1   1   1   1   1   1   1=
-   1
-+ *        7   1,2 1,2  1   1   1  0,1  1   1   1   1   1   1   1   1   1=
-   1
-+ *
-+ *   - if this is not the last field in the set, fill a mapping array th=
-at maps
-+ *     rules from the lookup table to rules belonging to the same entry =
-in
-+ *     the next lookup table, done by pipapo_map().
-+ *
-+ *     Note that as rules map to contiguous ranges of rules, given how n=
-etmask
-+ *     expansion and insertion is performed, &union nft_pipapo_map_bucke=
-t stores
-+ *     this information as pairs of first rule index, rule count.
-+ *
-+ *      Example: 2 entries, 10.0.0.5:1024 and 192.168.1.0-192.168.2.1:20=
-48,
-+ *      given lookup table #0 for field 0 (see example above):
-+ *
-+ * ::
-+ *
-+ *                     bucket
-+ *      group  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14=
-  15
-+ *        0    0                                              1,2
-+ *        1   1,2                                      0
-+ *        2    0                                      1,2
-+ *        3    0                              1,2
-+ *        4  0,1,2
-+ *        5    0   1   2
-+ *        6  0,1,2 1   1   1   1   1   1   1   1   1   1   1   1   1   1=
-   1
-+ *        7   1,2 1,2  1   1   1  0,1  1   1   1   1   1   1   1   1   1=
-   1
-+ *
-+ *      and lookup table #1 for field 1 with:
-+ *      - rule #0: 1024 mapping to buckets
-+ *        < 0  0  4  0 >
-+ *      - rule #1: 2048 mapping to buckets
-+ *        < 0  0  5  0 >
-+ *
-+ * ::
-+ *
-+ *                     bucket
-+ *      group  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14=
-  15
-+ *        0   0,1
-+ *        1   0,1
-+ *        2                    0   1
-+ *        3   0,1
-+ *
-+ *      we need to map rules for 10.0.0.5 in lookup table #0 (rule #0) t=
-o 1024
-+ *      in lookup table #1 (rule #0) and rules for 192.168.1.0-192.168.2=
-.1
-+ *      (rules #1, #2) to 2048 in lookup table #2 (rule #1):
-+ *
-+ * ::
-+ *
-+ *       rule indices in current field: 0    1    2
-+ *       map to rules in next field:    0    1    1
-+ *
-+ *   - if this is the last field in the set, fill a mapping array that m=
-aps
-+ *     rules from the last lookup table to element pointers, also done b=
-y
-+ *     pipapo_map().
-+ *
-+ *     Note that, in this implementation, we have two elements (start, e=
-nd) for
-+ *     each entry. The pointer to the end element is stored in this arra=
-y, and
-+ *     the pointer to the start element is linked from it.
-+ *
-+ *      Example: entry 10.0.0.5:1024 has a corresponding &struct nft_pip=
-apo_elem
-+ *      pointer, 0x66, and element for 192.168.1.0-192.168.2.1:2048 is a=
-t 0x42.
-+ *      From the rules of lookup table #1 as mapped above:
-+ *
-+ * ::
-+ *
-+ *       rule indices in last field:    0    1
-+ *       map to elements:             0x42  0x66
-+ *
-+ *
-+ * Matching
-+ * --------
-+ *
-+ * We use a result bitmap, with the size of a single lookup table bucket=
-, to
-+ * represent the matching state that applies at every algorithm step. Th=
-is is
-+ * done by pipapo_lookup().
-+ *
-+ * - For each packet field:
-+ *
-+ *   - start with an all-ones result bitmap (res_map in pipapo_lookup())
-+ *
-+ *   - perform a lookup into the table corresponding to the current fiel=
-d,
-+ *     for each group, and at every group, AND the current result bitmap=
- with
-+ *     the value from the lookup table bucket
-+ *
-+ * ::
-+ *
-+ *      Example: 192.168.1.5 < 12 0  10 8  0 1  0 5 >, with lookup table=
- from
-+ *      insertion examples.
-+ *      Lookup table buckets are at least 3 bits wide, we'll assume 8 bi=
-ts for
-+ *      convenience in this example. Initial result bitmap is 0xff, the =
-steps
-+ *      below show the value of the result bitmap after each group is pr=
-ocessed:
-+ *
-+ *                     bucket
-+ *      group  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14=
-  15
-+ *        0    0                                              1,2
-+ *        result bitmap is now: 0xff & 0x6 [bucket 12] =3D 0x6
-+ *
-+ *        1   1,2                                      0
-+ *        result bitmap is now: 0x6 & 0x6 [bucket 0] =3D 0x6
-+ *
-+ *        2    0                                      1,2
-+ *        result bitmap is now: 0x6 & 0x6 [bucket 10] =3D 0x6
-+ *
-+ *        3    0                              1,2
-+ *        result bitmap is now: 0x6 & 0x6 [bucket 8] =3D 0x6
-+ *
-+ *        4  0,1,2
-+ *        result bitmap is now: 0x6 & 0x7 [bucket 0] =3D 0x6
-+ *
-+ *        5    0   1   2
-+ *        result bitmap is now: 0x6 & 0x2 [bucket 1] =3D 0x2
-+ *
-+ *        6  0,1,2 1   1   1   1   1   1   1   1   1   1   1   1   1   1=
-   1
-+ *        result bitmap is now: 0x2 & 0x7 [bucket 0] =3D 0x2
-+ *
-+ *        7   1,2 1,2  1   1   1  0,1  1   1   1   1   1   1   1   1   1=
-   1
-+ *        final result bitmap for this field is: 0x2 & 0x3 [bucket 5] =3D=
- 0x2
-+ *
-+ *   - at the next field, start with a new, all-zeroes result bitmap. Fo=
-r each
-+ *     bit set in the previous result bitmap, fill the new result bitmap
-+ *     (fill_map in pipapo_lookup()) with the rule indices from the
-+ *     corresponding buckets of the mapping field for this field, done b=
-y
-+ *     pipapo_refill()
-+ *
-+ *      Example: with mapping table from insertion examples, with the cu=
-rrent
-+ *      result bitmap from the previous example, 0x02:
-+ *
-+ * ::
-+ *
-+ *       rule indices in current field: 0    1    2
-+ *       map to rules in next field:    0    1    1
-+ *
-+ *      the new result bitmap will be 0x02: rule 1 was set, and rule 1 w=
-ill be
-+ *      set.
-+ *
-+ *      We can now extend this example to cover the second iteration of =
-the step
-+ *      above (lookup and AND bitmap): assuming the port field is
-+ *      2048 < 0  0  5  0 >, with starting result bitmap 0x2, and lookup=
- table
-+ *      for "port" field from pre-computation example:
-+ *
-+ * ::
-+ *
-+ *                     bucket
-+ *      group  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14=
-  15
-+ *        0   0,1
-+ *        1   0,1
-+ *        2                    0   1
-+ *        3   0,1
-+ *
-+ *       operations are: 0x2 & 0x3 [bucket 0] & 0x3 [bucket 0] & 0x2 [bu=
-cket 5]
-+ *       & 0x3 [bucket 0], resulting bitmap is 0x2.
-+ *
-+ *   - if this is the last field in the set, look up the value from the =
-mapping
-+ *     array corresponding to the final result bitmap
-+ *
-+ *      Example: 0x2 resulting bitmap from 192.168.1.5:2048, mapping arr=
-ay for
-+ *      last field from insertion example:
-+ *
-+ * ::
-+ *
-+ *       rule indices in last field:    0    1
-+ *       map to elements:             0x42  0x66
-+ *
-+ *      the matching element is at 0x42.
-+ *
-+ *
-+ * References
-+ * ----------
-+ *
-+ * [Ligatti 2010]
-+ *      A Packet-classification Algorithm for Arbitrary Bitmask Rules, w=
-ith
-+ *      Automatic Time-space Tradeoffs
-+ *      Jay Ligatti, Josh Kuhn, and Chris Gage.
-+ *      Proceedings of the IEEE International Conference on Computer
-+ *      Communication Networks (ICCCN), August 2010.
-+ *      http://www.cse.usf.edu/~ligatti/papers/grouper-conf.pdf
-+ *
-+ * [Rottenstreich 2010]
-+ *      Worst-Case TCAM Rule Expansion
-+ *      Ori Rottenstreich and Isaac Keslassy.
-+ *      2010 Proceedings IEEE INFOCOM, San Diego, CA, 2010.
-+ *      http://citeseerx.ist.psu.edu/viewdoc/download?doi=3D10.1.1.212.4=
-592&rep=3Drep1&type=3Dpdf
-+ *
-+ * [Kogan 2014]
-+ *      SAX-PAC (Scalable And eXpressive PAcket Classification)
-+ *      Kirill Kogan, Sergey Nikolenko, Ori Rottenstreich, William Culha=
-ne,
-+ *      and Patrick Eugster.
-+ *      Proceedings of the 2014 ACM conference on SIGCOMM, August 2014.
-+ *      http://www.sigcomm.org/sites/default/files/ccr/papers/2014/Augus=
-t/2619239-2626294.pdf
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/log2.h>
-+#include <linux/module.h>
-+#include <linux/netlink.h>
-+#include <linux/netfilter.h>
-+#include <linux/netfilter/nf_tables.h>
-+#include <net/netfilter/nf_tables_core.h>
-+#include <uapi/linux/netfilter/nf_tables.h>
-+#include <net/ipv6.h>			/* For the maximum length of a field */
-+#include <linux/bitmap.h>
-+#include <linux/bitops.h>
-+
-+/* Count of concatenated fields depends on count of 32-bit nftables regi=
-sters */
-+#define NFT_PIPAPO_MAX_FIELDS		NFT_REG32_COUNT
-+
-+/* Largest supported field size */
-+#define NFT_PIPAPO_MAX_BYTES		(sizeof(struct in6_addr))
-+#define NFT_PIPAPO_MAX_BITS		(NFT_PIPAPO_MAX_BYTES * BITS_PER_BYTE)
-+
-+/* Number of bits to be grouped together in lookup table buckets, arbitr=
-ary */
-+#define NFT_PIPAPO_GROUP_BITS		4
-+#define NFT_PIPAPO_GROUPS_PER_BYTE	(BITS_PER_BYTE / NFT_PIPAPO_GROUP_BIT=
-S)
-+
-+/* Fields are padded to 32 bits in input registers */
-+#define NFT_PIPAPO_GROUPS_PADDED_SIZE(x)				\
-+	(round_up((x) / NFT_PIPAPO_GROUPS_PER_BYTE, sizeof(u32)))
-+#define NFT_PIPAPO_GROUPS_PADDING(x)					\
-+	(NFT_PIPAPO_GROUPS_PADDED_SIZE((x)) - (x) / NFT_PIPAPO_GROUPS_PER_BYTE)
-+
-+/* Number of buckets, given by 2 ^ n, with n grouped bits */
-+#define NFT_PIPAPO_BUCKETS		(1 << NFT_PIPAPO_GROUP_BITS)
-+
-+/* Each n-bit range maps to up to n * 2 rules */
-+#define NFT_PIPAPO_MAP_NBITS		(const_ilog2(NFT_PIPAPO_MAX_BITS * 2))
-+
-+/* Use the rest of mapping table buckets for rule indices, but it makes =
-no sense
-+ * to exceed 32 bits
-+ */
-+#if BITS_PER_LONG =3D=3D 64
-+#define NFT_PIPAPO_MAP_TOBITS		32
-+#else
-+#define NFT_PIPAPO_MAP_TOBITS		(BITS_PER_LONG - NFT_PIPAPO_MAP_NBITS)
-+#endif
-+
-+/* ...which gives us the highest allowed index for a rule */
-+#define NFT_PIPAPO_RULE0_MAX		((1UL << (NFT_PIPAPO_MAP_TOBITS - 1)) \
-+					- (1UL << NFT_PIPAPO_MAP_NBITS))
-+
-+#define nft_pipapo_for_each_field(field, index, match)		\
-+	for ((field) =3D (match)->f, (index) =3D 0;			\
-+	     (index) < (match)->field_count;			\
-+	     (index)++, (field)++)
-+
-+/**
-+ * union nft_pipapo_map_bucket - Bucket of mapping table
-+ * @to:		First rule number (in next field) this rule maps to
-+ * @n:		Number of rules (in next field) this rule maps to
-+ * @e:		If there's no next field, pointer to element this rule maps to
-+ */
-+union nft_pipapo_map_bucket {
-+	struct {
-+#if BITS_PER_LONG =3D=3D 64
-+		static_assert(NFT_PIPAPO_MAP_TOBITS <=3D 32);
-+		u32 to;
-+
-+		static_assert(NFT_PIPAPO_MAP_NBITS <=3D 32);
-+		u32 n;
-+#else
-+		unsigned long to:NFT_PIPAPO_MAP_TOBITS;
-+		unsigned long  n:NFT_PIPAPO_MAP_NBITS;
-+#endif
-+	};
-+	struct nft_pipapo_elem *e;
-+};
-+
-+/**
-+ * struct nft_pipapo_field - Lookup, mapping tables and related data for=
- a field
-+ * @groups:	Amount of 4-bit groups
-+ * @rules:	Number of inserted rules
-+ * @bsize:	Size of each bucket in lookup table, in longs
-+ * @lt:		Lookup table: 'groups' rows of NFT_PIPAPO_BUCKETS buckets
-+ * @mt:		Mapping table: one bucket per rule
-+ */
-+struct nft_pipapo_field {
-+	int groups;
-+	unsigned long rules;
-+	size_t bsize;
-+	unsigned long *lt;
-+	union nft_pipapo_map_bucket *mt;
-+};
-+
-+/**
-+ * struct nft_pipapo_match - Data used for lookup and matching
-+ * @field_count		Amount of fields in set
-+ * @scratch:		Preallocated per-CPU maps for partial matching results
-+ * @bsize_max:		Maximum lookup table bucket size of all fields, in longs
-+ * @rcu			Matching data is swapped on commits
-+ * @f:			Fields, with lookup and mapping tables
-+ */
-+struct nft_pipapo_match {
-+	int field_count;
-+	unsigned long * __percpu *scratch;
-+	size_t bsize_max;
-+	struct rcu_head rcu;
-+	struct nft_pipapo_field f[0];
-+};
-+
-+/* Current working bitmap index, toggled between field matches */
-+static DEFINE_PER_CPU(bool, nft_pipapo_scratch_index);
-+
-+/**
-+ * struct nft_pipapo - Representation of a set
-+ * @match:	Currently in-use matching data
-+ * @clone:	Copy where pending insertions and deletions are kept
-+ * @groups:	Total amount of 4-bit groups for fields in this set
-+ * @width:	Total bytes to be matched for one packet, including padding
-+ * @dirty:	Working copy has pending insertions or deletions
-+ * @last_gc:	Timestamp of last garbage collection run, jiffies
-+ */
-+struct nft_pipapo {
-+	struct nft_pipapo_match __rcu *match;
-+	struct nft_pipapo_match *clone;
-+	int groups;
-+	int width;
-+	bool dirty;
-+	unsigned long last_gc;
-+};
-+
-+struct nft_pipapo_elem;
-+
-+/**
-+ * struct nft_pipapo_elem - API-facing representation of single set elem=
-ent
-+ * @ext:	nftables API extensions
-+ */
-+struct nft_pipapo_elem {
-+	struct nft_set_ext ext;
-+};
-+
-+/**
-+ * pipapo_refill() - For each set bit, set bits from selected mapping ta=
-ble item
-+ * @map:	Bitmap to be scanned for set bits
-+ * @len:	Length of bitmap in longs
-+ * @rules:	Number of rules in field
-+ * @dst:	Destination bitmap
-+ * @mt:		Mapping table containing bit set specifiers
-+ * @match_only:	Find a single bit and return, don't fill
-+ *
-+ * Iteration over set bits with __builtin_ctzl(): Daniel Lemire, public =
-domain.
-+ *
-+ * For each bit set in map, select the bucket from mapping table with in=
-dex
-+ * corresponding to the position of the bit set. Use start bit and amoun=
-t of
-+ * bits specified in bucket to fill region in dst.
-+ *
-+ * Return: -1 on no match, bit position on 'match_only', 0 otherwise.
-+ */
-+static int pipapo_refill(unsigned long *map, int len, int rules,
-+			 unsigned long *dst, union nft_pipapo_map_bucket *mt,
-+			 bool match_only)
-+{
-+	unsigned long bitset;
-+	int k, ret =3D -1;
-+
-+	for (k =3D 0; k < len; k++) {
-+		bitset =3D map[k];
-+		while (bitset) {
-+			unsigned long t =3D bitset & -bitset;
-+			int r =3D __builtin_ctzl(bitset);
-+			int i =3D k * BITS_PER_LONG + r;
-+
-+			if (unlikely(i >=3D rules)) {
-+				map[k] =3D 0;
-+				return -1;
-+			}
-+
-+			if (unlikely(match_only)) {
-+				bitmap_clear(map, i, 1);
-+				return i;
-+			}
-+
-+			ret =3D 0;
-+
-+			bitmap_set(dst, mt[i].to, mt[i].n);
-+
-+			bitset ^=3D t;
-+		}
-+		map[k] =3D 0;
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * nft_pipapo_lookup() - Lookup function
-+ * @net:	Network namespace
-+ * @set:	nftables API set representation
-+ * @elem:	nftables API element representation containing key data
-+ * @ext:	nftables API extension pointer, filled with matching reference
-+ *
-+ * For more details, see DOC: Theory of Operation.
-+ *
-+ * Return: true on match, false otherwise.
-+ */
-+static bool nft_pipapo_lookup(const struct net *net, const struct nft_se=
-t *set,
-+			      const u32 *key, const struct nft_set_ext **ext)
-+{
-+	struct nft_pipapo *priv =3D nft_set_priv(set);
-+	unsigned long *res_map, *fill_map;
-+	u8 genmask =3D nft_genmask_cur(net);
-+	const u8 *rp =3D (const u8 *)key;
-+	struct nft_pipapo_match *m;
-+	struct nft_pipapo_field *f;
-+	bool map_index;
-+	int i;
-+
-+	local_bh_disable();
-+
-+	map_index =3D raw_cpu_read(nft_pipapo_scratch_index);
-+
-+	m =3D rcu_dereference(priv->match);
-+
-+	if (unlikely(!m || !*raw_cpu_ptr(m->scratch)))
-+		goto out;
-+
-+	res_map  =3D *raw_cpu_ptr(m->scratch) + (map_index ? m->bsize_max : 0);
-+	fill_map =3D *raw_cpu_ptr(m->scratch) + (map_index ? 0 : m->bsize_max);
-+
-+	memset(res_map, 0xff, m->bsize_max * sizeof(*res_map));
-+
-+	nft_pipapo_for_each_field(f, i, m) {
-+		bool last =3D i =3D=3D m->field_count - 1;
-+		unsigned long *lt =3D f->lt;
-+		int b, group;
-+
-+		/* For each 4-bit group: select lookup table bucket depending on
-+		 * packet bytes value, then AND bucket value
-+		 */
-+		for (group =3D 0; group < f->groups; group +=3D 2) {
-+			u8 v;
-+
-+			v =3D *rp >> 4;
-+			__bitmap_and(res_map, res_map, lt + v * f->bsize,
-+				     f->bsize * BITS_PER_LONG);
-+			lt +=3D f->bsize * NFT_PIPAPO_BUCKETS;
-+
-+			v =3D *rp & 0x0f;
-+			rp++;
-+			__bitmap_and(res_map, res_map, lt + v * f->bsize,
-+				     f->bsize * BITS_PER_LONG);
-+			lt +=3D f->bsize * NFT_PIPAPO_BUCKETS;
-+		}
-+
-+		/* Now populate the bitmap for the next field, unless this is
-+		 * the last field, in which case return the matched 'ext'
-+		 * pointer if any.
-+		 *
-+		 * Now res_map contains the matching bitmap, and fill_map is the
-+		 * bitmap for the next field.
-+		 */
-+next_match:
-+		b =3D pipapo_refill(res_map, f->bsize, f->rules, fill_map, f->mt,
-+				  last);
-+		if (b < 0) {
-+			raw_cpu_write(nft_pipapo_scratch_index, map_index);
-+			local_bh_enable();
-+
-+			return false;
-+		}
-+
-+		if (last) {
-+			*ext =3D &f->mt[b].e->ext;
-+			if (unlikely(nft_set_elem_expired(*ext) ||
-+				     !nft_set_elem_active(*ext, genmask)))
-+				goto next_match;
-+
-+			/* Last field: we're just returning the key without
-+			 * filling the initial bitmap for the next field, so the
-+			 * current inactive bitmap is clean and can be reused as
-+			 * *next* bitmap (not initial) for the next packet.
-+			 */
-+			raw_cpu_write(nft_pipapo_scratch_index, map_index);
-+			local_bh_enable();
-+
-+			return true;
-+		}
-+
-+		/* Swap bitmap indices: res_map is the initial bitmap for the
-+		 * next field, and fill_map is guaranteed to be all-zeroes at
-+		 * this point.
-+		 */
-+		map_index =3D !map_index;
-+		swap(res_map, fill_map);
-+
-+		rp +=3D NFT_PIPAPO_GROUPS_PADDING(f->groups);
-+	}
-+
-+out:
-+	local_bh_enable();
-+	return false;
-+}
-+
-+/**
-+ * pipapo_get() - Get matching element reference given key data
-+ * @net:	Network namespace
-+ * @set:	nftables API set representation
-+ * @data:	Key data to be matched against existing elements
-+ * @genmask:	If set, check that element is active in given genmask
-+ *
-+ * This is essentially the same as the lookup function, except that it m=
-atches
-+ * key data against the uncommitted copy and doesn't use preallocated ma=
-ps for
-+ * bitmap results.
-+ *
-+ * Return: pointer to &struct nft_pipapo_elem on match, error pointer ot=
-herwise.
-+ */
-+static struct nft_pipapo_elem *pipapo_get(const struct net *net,
-+					  const struct nft_set *set,
-+					  const u8 *data, u8 genmask)
-+{
-+	struct nft_pipapo_elem *ret =3D ERR_PTR(-ENOENT);
-+	struct nft_pipapo *priv =3D nft_set_priv(set);
-+	struct nft_pipapo_match *m =3D priv->clone;
-+	unsigned long *res_map, *fill_map =3D NULL;
-+	struct nft_pipapo_field *f;
-+	int i;
-+
-+	res_map =3D kmalloc_array(m->bsize_max, sizeof(*res_map), GFP_ATOMIC);
-+	if (!res_map) {
-+		ret =3D ERR_PTR(-ENOMEM);
-+		goto out;
-+	}
-+
-+	fill_map =3D kcalloc(m->bsize_max, sizeof(*res_map), GFP_ATOMIC);
-+	if (!fill_map) {
-+		ret =3D ERR_PTR(-ENOMEM);
-+		goto out;
-+	}
-+
-+	memset(res_map, 0xff, m->bsize_max * sizeof(*res_map));
-+
-+	nft_pipapo_for_each_field(f, i, m) {
-+		bool last =3D i =3D=3D m->field_count - 1;
-+		unsigned long *lt =3D f->lt;
-+		int b, group;
-+
-+		/* For each 4-bit group: select lookup table bucket depending on
-+		 * packet bytes value, then AND bucket value
-+		 */
-+		for (group =3D 0; group < f->groups; group++) {
-+			u8 v;
-+
-+			if (group % 2) {
-+				v =3D *data & 0x0f;
-+				data++;
-+			} else {
-+				v =3D *data >> 4;
-+			}
-+			__bitmap_and(res_map, res_map, lt + v * f->bsize,
-+				     f->bsize * BITS_PER_LONG);
-+
-+			lt +=3D f->bsize * NFT_PIPAPO_BUCKETS;
-+		}
-+
-+		/* Now populate the bitmap for the next field, unless this is
-+		 * the last field, in which case return the matched 'ext'
-+		 * pointer if any.
-+		 *
-+		 * Now res_map contains the matching bitmap, and fill_map is the
-+		 * bitmap for the next field.
-+		 */
-+next_match:
-+		b =3D pipapo_refill(res_map, f->bsize, f->rules, fill_map, f->mt,
-+				  last);
-+		if (b < 0)
-+			goto out;
-+
-+		if (last) {
-+			if (nft_set_elem_expired(&f->mt[b].e->ext) ||
-+			    (genmask &&
-+			     !nft_set_elem_active(&f->mt[b].e->ext, genmask)))
-+				goto next_match;
-+
-+			ret =3D f->mt[b].e;
-+			goto out;
-+		}
-+
-+		data +=3D NFT_PIPAPO_GROUPS_PADDING(f->groups);
-+
-+		/* Swap bitmap indices: fill_map will be the initial bitmap for
-+		 * the next field (i.e. the new res_map), and res_map is
-+		 * guaranteed to be all-zeroes at this point, ready to be filled
-+		 * according to the next mapping table.
-+		 */
-+		swap(res_map, fill_map);
-+	}
-+
-+out:
-+	kfree(fill_map);
-+	kfree(res_map);
-+	return ret;
-+}
-+
-+/**
-+ * nft_pipapo_get() - Get matching element reference given key data
-+ * @net:	Network namespace
-+ * @set:	nftables API set representation
-+ * @elem:	nftables API element representation containing key data
-+ * @flags:	Unused
-+ */
-+void *nft_pipapo_get(const struct net *net, const struct nft_set *set,
-+		     const struct nft_set_elem *elem, unsigned int flags)
-+{
-+	return pipapo_get(net, set, (const u8 *)elem->key.val.data,
-+			  nft_genmask_cur(net));
-+}
-+
-+/**
-+ * pipapo_resize() - Resize lookup or mapping table, or both
-+ * @f:		Field containing lookup and mapping tables
-+ * @old_rules:	Previous amount of rules in field
-+ * @rules:	New amount of rules
-+ *
-+ * Increase, decrease or maintain tables size depending on new amount of=
- rules,
-+ * and copy data over. In case the new size is smaller, throw away data =
-for
-+ * highest-numbered rules.
-+ *
-+ * Return: 0 on success, -ENOMEM on allocation failure.
-+ */
-+static int pipapo_resize(struct nft_pipapo_field *f, int old_rules, int =
-rules)
-+{
-+	long *new_lt =3D NULL, *new_p, *old_lt =3D f->lt, *old_p;
-+	union nft_pipapo_map_bucket *new_mt, *old_mt =3D f->mt;
-+	size_t new_bucket_size, copy;
-+	int group, bucket;
-+
-+	new_bucket_size =3D DIV_ROUND_UP(rules, BITS_PER_LONG);
-+
-+	if (new_bucket_size =3D=3D f->bsize)
-+		goto mt;
-+
-+	if (new_bucket_size > f->bsize)
-+		copy =3D f->bsize;
-+	else
-+		copy =3D new_bucket_size;
-+
-+	new_lt =3D kvzalloc(f->groups * NFT_PIPAPO_BUCKETS * new_bucket_size *
-+			  sizeof(*new_lt), GFP_KERNEL);
-+	if (!new_lt)
-+		return -ENOMEM;
-+
-+	new_p =3D new_lt;
-+	old_p =3D old_lt;
-+	for (group =3D 0; group < f->groups; group++) {
-+		for (bucket =3D 0; bucket < NFT_PIPAPO_BUCKETS; bucket++) {
-+			memcpy(new_p, old_p, copy * sizeof(*new_p));
-+			new_p +=3D copy;
-+			old_p +=3D copy;
-+
-+			if (new_bucket_size > f->bsize)
-+				new_p +=3D new_bucket_size - f->bsize;
-+			else
-+				old_p +=3D f->bsize - new_bucket_size;
-+		}
-+	}
-+
-+mt:
-+	new_mt =3D kvmalloc(rules * sizeof(*new_mt), GFP_KERNEL);
-+	if (!new_mt) {
-+		kvfree(new_lt);
-+		return -ENOMEM;
-+	}
-+
-+	memcpy(new_mt, f->mt, min(old_rules, rules) * sizeof(*new_mt));
-+	if (rules > old_rules) {
-+		memset(new_mt + old_rules, 0,
-+		       (rules - old_rules) * sizeof(*new_mt));
-+	}
-+
-+	if (new_lt) {
-+		f->bsize =3D new_bucket_size;
-+		f->lt =3D new_lt;
-+		kvfree(old_lt);
-+	}
-+
-+	f->mt =3D new_mt;
-+	kvfree(old_mt);
-+
-+	return 0;
-+}
-+
-+/**
-+ * pipapo_bucket_set() - Set rule bit in bucket given group and group va=
-lue
-+ * @f:		Field containing lookup table
-+ * @rule:	Rule index
-+ * @group:	Group index
-+ * @v:		Value of bit group
-+ */
-+static void pipapo_bucket_set(struct nft_pipapo_field *f, int rule, int =
-group,
-+			      int v)
-+{
-+	unsigned long *pos;
-+
-+	pos =3D f->lt + f->bsize * NFT_PIPAPO_BUCKETS * group;
-+	pos +=3D f->bsize * v;
-+
-+	__set_bit(rule, pos);
-+}
-+
-+/**
-+ * pipapo_insert() - Insert new rule in field given input key and mask l=
-ength
-+ * @f:		Field containing lookup table
-+ * @k:		Input key for classification, without nftables padding
-+ * @mask_bits:	Length of mask; matches field length for non-ranged entry
-+ *
-+ * Insert a new rule reference in lookup buckets corresponding to k and
-+ * mask_bits.
-+ *
-+ * Return: 1 on success (one rule inserted), negative error code on fail=
-ure.
-+ */
-+static int pipapo_insert(struct nft_pipapo_field *f, const uint8_t *k,
-+			 int mask_bits)
-+{
-+	int rule =3D f->rules++, group, ret;
-+
-+	ret =3D pipapo_resize(f, f->rules - 1, f->rules);
-+	if (ret)
-+		return ret;
-+
-+	for (group =3D 0; group < f->groups; group++) {
-+		int i, v;
-+		u8 mask;
-+
-+		if (group % 2)
-+			v =3D k[group / 2] & 0x0f;
-+		else
-+			v =3D k[group / 2] >> 4;
-+
-+		if (mask_bits >=3D (group + 1) * 4) {
-+			/* Not masked */
-+			pipapo_bucket_set(f, rule, group, v);
-+		} else if (mask_bits <=3D group * 4) {
-+			/* Completely masked */
-+			for (i =3D 0; i < NFT_PIPAPO_BUCKETS; i++)
-+				pipapo_bucket_set(f, rule, group, i);
-+		} else {
-+			/* The mask limit falls on this group */
-+			mask =3D 0x0f >> (mask_bits - group * 4);
-+			for (i =3D 0; i < NFT_PIPAPO_BUCKETS; i++) {
-+				if ((i & ~mask) =3D=3D (v & ~mask))
-+					pipapo_bucket_set(f, rule, group, i);
-+			}
-+		}
-+	}
-+
-+	return 1;
-+}
-+
-+/**
-+ * pipapo_step_diff() - Check if setting @step bit in netmask would chan=
-ge it
-+ * @base:	Mask we are expanding
-+ * @step:	Step bit for given expansion step
-+ * @len:	Total length of mask space (set and unset bits), bytes
-+ *
-+ * Convenience function for mask expansion.
-+ *
-+ * Return: true if step bit changes mask (i.e. isn't set), false otherwi=
-se.
-+ */
-+static bool pipapo_step_diff(u8 *base, int step, int len)
-+{
-+	/* Network order, byte-addressed */
-+#ifdef __BIG_ENDIAN__
-+	return !(BIT(step % BITS_PER_BYTE) & base[step / BITS_PER_BYTE]);
-+#else
-+	return !(BIT(step % BITS_PER_BYTE) &
-+		 base[len - 1 - step / BITS_PER_BYTE]);
-+#endif
-+}
-+
-+/**
-+ * pipapo_step_after_end() - Check if mask exceeds range end with given =
-step
-+ * @base:	Mask we are expanding
-+ * @end:	End of range
-+ * @step:	Step bit for given expansion step, highest bit to be set
-+ * @len:	Total length of mask space (set and unset bits), bytes
-+ *
-+ * Convenience function for mask expansion.
-+ *
-+ * Return: true if mask exceeds range setting step bits, false otherwise=
-.
-+ */
-+static bool pipapo_step_after_end(const u8 *base, const u8 *end, int ste=
-p,
-+				  int len)
-+{
-+	u8 tmp[NFT_PIPAPO_MAX_BYTES];
-+	int i;
-+
-+	memcpy(tmp, base, len);
-+
-+	/* Network order, byte-addressed */
-+	for (i =3D 0; i <=3D step; i++)
-+#ifdef __BIG_ENDIAN__
-+		tmp[i / BITS_PER_BYTE] |=3D BIT(i % BITS_PER_BYTE);
-+#else
-+		tmp[len - 1 - i / BITS_PER_BYTE] |=3D BIT(i % BITS_PER_BYTE);
-+#endif
-+
-+	return memcmp(tmp, end, len) > 0;
-+}
-+
-+/**
-+ * pipapo_base_sum() - Sum step bit to given len-sized netmask base with=
- carry
-+ * @base:	Netmask base
-+ * @step:	Step bit to sum
-+ * @len:	Netmask length, bytes
-+ */
-+static void pipapo_base_sum(u8 *base, int step, int len)
-+{
-+	bool carry =3D false;
-+	int i;
-+
-+	/* Network order, byte-addressed */
-+#ifdef __BIG_ENDIAN__
-+	for (i =3D step / BITS_PER_BYTE; i < len; i++) {
-+#else
-+	for (i =3D len - 1 - step / BITS_PER_BYTE; i >=3D 0; i--) {
-+#endif
-+		if (carry)
-+			base[i]++;
-+		else
-+			base[i] +=3D 1 << (step % BITS_PER_BYTE);
-+
-+		if (base[i])
-+			break;
-+
-+		carry =3D true;
-+	}
-+}
-+
-+/**
-+ * pipapo_expand() - Expand to composing netmasks, insert into lookup ta=
-ble
-+ * @f:		Field containing lookup table
-+ * @start:	Start of range
-+ * @end:	End of range
-+ * @len:	Length of value in bits
-+ *
-+ * Expand range to composing netmasks and insert corresponding rule refe=
-rences
-+ * in lookup buckets.
-+ *
-+ * Return: number of inserted rules on success, negative error code on f=
-ailure.
-+ */
-+static int pipapo_expand(struct nft_pipapo_field *f,
-+			 const u8 *start, const u8 *end, int len)
-+{
-+	int step, masks =3D 0, bytes =3D DIV_ROUND_UP(len, BITS_PER_BYTE);
-+	u8 base[NFT_PIPAPO_MAX_BYTES];
-+
-+	memcpy(base, start, bytes);
-+	while (memcmp(base, end, bytes) <=3D 0) {
-+		int err;
-+
-+		step =3D 0;
-+		while (pipapo_step_diff(base, step, bytes)) {
-+			if (pipapo_step_after_end(base, end, step, bytes))
-+				break;
-+
-+			step++;
-+			if (step >=3D len) {
-+				if (!masks) {
-+					pipapo_insert(f, base, 0);
-+					masks =3D 1;
-+				}
-+				goto out;
-+			}
-+		}
-+
-+		err =3D pipapo_insert(f, base, len - step);
-+
-+		if (err < 0)
-+			return err;
-+
-+		masks++;
-+		pipapo_base_sum(base, step, bytes);
-+	}
-+out:
-+	return masks;
-+}
-+
-+/**
-+ * pipapo_map() - Insert rules in mapping tables, mapping them between f=
-ields
-+ * @m:		Matching data, including mapping table
-+ * @map:	Table of rule maps: array of first rule and amount of rules
-+ *		in next field a given rule maps to, for each field
-+ * @ext:	For last field, nft_set_ext pointer matching rules map to
-+ */
-+static void pipapo_map(struct nft_pipapo_match *m,
-+		       union nft_pipapo_map_bucket map[NFT_PIPAPO_MAX_FIELDS],
-+		       struct nft_pipapo_elem *e)
-+{
-+	struct nft_pipapo_field *f;
-+	int i, j;
-+
-+	for (i =3D 0, f =3D m->f; i < m->field_count - 1; i++, f++) {
-+		for (j =3D 0; j < map[i].n; j++) {
-+			f->mt[map[i].to + j].to =3D map[i + 1].to;
-+			f->mt[map[i].to + j].n =3D map[i + 1].n;
-+		}
-+	}
-+
-+	/* Last field: map to ext instead of mapping to next field */
-+	for (j =3D 0; j < map[i].n; j++)
-+		f->mt[map[i].to + j].e =3D e;
-+}
-+
-+/**
-+ * pipapo_realloc_scratch() - Reallocate scratch maps for partial match =
-results
-+ * @clone:	Copy of matching data with pending insertions and deletions
-+ * @bsize_max	Maximum bucket size, scratch maps cover two buckets
-+ *
-+ * Return: 0 on success, -ENOMEM on failure.
-+ */
-+static int pipapo_realloc_scratch(struct nft_pipapo_match *clone,
-+				  unsigned long bsize_max)
-+{
-+	int i;
-+
-+	for_each_possible_cpu(i) {
-+		unsigned long *scratch;
-+
-+		scratch =3D kzalloc_node(bsize_max * sizeof(*scratch) * 2,
-+				       GFP_KERNEL, cpu_to_node(i));
-+		if (!scratch) {
-+			/* On failure, there's no need to undo previous
-+			 * allocations: this means that some scratch maps have
-+			 * a bigger allocated size now (this is only called on
-+			 * insertion), but the extra space won't be used by any
-+			 * CPU as new elements are not inserted and m->bsize_max
-+			 * is not updated.
-+			 */
-+			return -ENOMEM;
-+		}
-+
-+		kfree(*per_cpu_ptr(clone->scratch, i));
-+
-+		*per_cpu_ptr(clone->scratch, i) =3D scratch;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * nft_pipapo_insert() - Validate and insert ranged elements
-+ * @net:	Network namespace
-+ * @set:	nftables API set representation
-+ * @elem:	nftables API element representation containing key data
-+ * @ext2:	Filled with pointer to &struct nft_set_ext in inserted element
-+ *
-+ * Return: 0 on success, error pointer on failure.
-+ */
-+static int nft_pipapo_insert(const struct net *net, const struct nft_set=
- *set,
-+			     const struct nft_set_elem *elem,
-+			     struct nft_set_ext **ext2)
-+{
-+	const struct nft_set_ext *ext =3D nft_set_elem_ext(set, elem->priv);
-+	union nft_pipapo_map_bucket rulemap[NFT_PIPAPO_MAX_FIELDS];
-+	const u8 *start =3D (const u8 *)elem->key.val.data, *end;
-+	struct nft_pipapo_elem *e =3D elem->priv, *dup;
-+	struct nft_pipapo *priv =3D nft_set_priv(set);
-+	struct nft_pipapo_match *m =3D priv->clone;
-+	u8 genmask =3D nft_genmask_next(net);
-+	struct nft_pipapo_field *f;
-+	int i, bsize_max, err =3D 0;
-+
-+	dup =3D pipapo_get(net, set, start, genmask);
-+	if (PTR_ERR(dup) =3D=3D -ENOENT) {
-+		if (nft_set_ext_exists(ext, NFT_SET_EXT_KEY_END)) {
-+			end =3D (const u8 *)nft_set_ext_key_end(ext)->data;
-+			dup =3D pipapo_get(net, set, end, nft_genmask_next(net));
-+		} else {
-+			end =3D start;
-+		}
-+	}
-+
-+	if (PTR_ERR(dup) !=3D -ENOENT) {
-+		if (IS_ERR(dup))
-+			return PTR_ERR(dup);
-+		*ext2 =3D &dup->ext;
-+		return -EEXIST;
-+	}
-+
-+	/* Validate */
-+	nft_pipapo_for_each_field(f, i, m) {
-+		const u8 *start_p =3D start, *end_p =3D end;
-+
-+		if (f->rules >=3D (unsigned long)NFT_PIPAPO_RULE0_MAX)
-+			return -ENOSPC;
-+
-+		if (memcmp(start_p, end_p,
-+			   f->groups / NFT_PIPAPO_GROUPS_PER_BYTE) > 0)
-+			return -EINVAL;
-+
-+		start_p +=3D NFT_PIPAPO_GROUPS_PADDED_SIZE(f->groups);
-+		end_p +=3D NFT_PIPAPO_GROUPS_PADDED_SIZE(f->groups);
-+	}
-+
-+	/* Insert */
-+	priv->dirty =3D true;
-+
-+	bsize_max =3D m->bsize_max;
-+
-+	nft_pipapo_for_each_field(f, i, m) {
-+		int ret;
-+
-+		rulemap[i].to =3D f->rules;
-+
-+		ret =3D memcmp(start, end,
-+			     f->groups / NFT_PIPAPO_GROUPS_PER_BYTE);
-+		if (!ret) {
-+			ret =3D pipapo_insert(f, start,
-+					    f->groups * NFT_PIPAPO_GROUP_BITS);
-+		} else {
-+			ret =3D pipapo_expand(f, start, end,
-+					    f->groups * NFT_PIPAPO_GROUP_BITS);
-+		}
-+
-+		if (f->bsize > bsize_max)
-+			bsize_max =3D f->bsize;
-+
-+		rulemap[i].n =3D ret;
-+
-+		start +=3D NFT_PIPAPO_GROUPS_PADDED_SIZE(f->groups);
-+		end +=3D NFT_PIPAPO_GROUPS_PADDED_SIZE(f->groups);
-+	}
-+
-+	if (!*this_cpu_ptr(m->scratch) || bsize_max > m->bsize_max) {
-+		err =3D pipapo_realloc_scratch(m, bsize_max);
-+		if (err)
-+			return err;
-+
-+		this_cpu_write(nft_pipapo_scratch_index, false);
-+
-+		m->bsize_max =3D bsize_max;
-+	}
-+
-+	*ext2 =3D &e->ext;
-+
-+	pipapo_map(m, rulemap, e);
-+
-+	return 0;
-+}
-+
-+/**
-+ * pipapo_clone() - Clone matching data to create new working copy
-+ * @old:	Existing matching data
-+ *
-+ * Return: copy of matching data passed as 'old', error pointer on failu=
-re
-+ */
-+static struct nft_pipapo_match *pipapo_clone(struct nft_pipapo_match *ol=
-d)
-+{
-+	struct nft_pipapo_field *dst, *src;
-+	struct nft_pipapo_match *new;
-+	int i;
-+
-+	new =3D kmalloc(sizeof(*new) + sizeof(*dst) * old->field_count,
-+		      GFP_KERNEL);
-+	if (!new)
-+		return ERR_PTR(-ENOMEM);
-+
-+	new->field_count =3D old->field_count;
-+	new->bsize_max =3D old->bsize_max;
-+
-+	new->scratch =3D alloc_percpu(*new->scratch);
-+	if (!new->scratch)
-+		goto out_scratch;
-+
-+	rcu_head_init(&new->rcu);
-+
-+	src =3D old->f;
-+	dst =3D new->f;
-+
-+	for (i =3D 0; i < old->field_count; i++) {
-+		memcpy(dst, src, offsetof(struct nft_pipapo_field, lt));
-+
-+		dst->lt =3D kvzalloc(src->groups * NFT_PIPAPO_BUCKETS *
-+				   src->bsize * sizeof(*dst->lt),
-+				   GFP_KERNEL);
-+		if (!dst->lt)
-+			goto out_lt;
-+
-+		memcpy(dst->lt, src->lt,
-+		       src->bsize * sizeof(*dst->lt) *
-+		       src->groups * NFT_PIPAPO_BUCKETS);
-+
-+		dst->mt =3D kvmalloc(src->rules * sizeof(*src->mt), GFP_KERNEL);
-+		if (!dst->mt)
-+			goto out_mt;
-+
-+		memcpy(dst->mt, src->mt, src->rules * sizeof(*src->mt));
-+		src++;
-+		dst++;
-+	}
-+
-+	return new;
-+
-+out_mt:
-+	kvfree(dst->lt);
-+out_lt:
-+	for (dst--; i > 0; i--) {
-+		kvfree(dst->mt);
-+		kvfree(dst->lt);
-+		dst--;
-+	}
-+	free_percpu(new->scratch);
-+out_scratch:
-+	kfree(new);
-+
-+	return ERR_PTR(-ENOMEM);
-+}
-+
-+/**
-+ * pipapo_rules_same_key() - Get number of rules originated from the sam=
-e entry
-+ * @f:		Field containing mapping table
-+ * @first:	Index of first rule in set of rules mapping to same entry
-+ *
-+ * Using the fact that all rules in a field that originated from the sam=
-e entry
-+ * will map to the same set of rules in the next field, or to the same e=
-lement
-+ * reference, return the cardinality of the set of rules that originated=
- from
-+ * the same entry as the rule with index @first, @first rule included.
-+ *
-+ * In pictures:
-+ *				rules
-+ *	field #0		0    1    2    3    4
-+ *		map to:		0    1   2-4  2-4  5-9
-+ *				.    .    .......   . ...
-+ *				|    |    |    | \   \
-+ *				|    |    |    |  \   \
-+ *				|    |    |    |   \   \
-+ *				'    '    '    '    '   \
-+ *	in field #1		0    1    2    3    4    5 ...
-+ *
-+ * if this is called for rule 2 on field #0, it will return 3, as also r=
-ules 2
-+ * and 3 in field 0 map to the same set of rules (2, 3, 4) in the next f=
-ield.
-+ *
-+ * For the last field in a set, we can rely on associated entries to map=
- to the
-+ * same element references.
-+ *
-+ * Return: Number of rules that originated from the same entry as @first=
-.
-+ */
-+static int pipapo_rules_same_key(struct nft_pipapo_field *f, int first)
-+{
-+	struct nft_pipapo_elem *e =3D NULL; /* Keep gcc happy */
-+	int r;
-+
-+	for (r =3D first; r < f->rules; r++) {
-+		if (r !=3D first && e !=3D f->mt[r].e)
-+			return r - first;
-+
-+		e =3D f->mt[r].e;
-+	}
-+
-+	if (r !=3D first)
-+		return r - first;
-+
-+	return 0;
-+}
-+
-+/**
-+ * pipapo_unmap() - Remove rules from mapping tables, renumber remaining=
- ones
-+ * @mt:		Mapping array
-+ * @rules:	Original amount of rules in mapping table
-+ * @start:	First rule index to be removed
-+ * @n:		Amount of rules to be removed
-+ * @to_offset:	First rule index, in next field, this group of rules maps=
- to
-+ * @is_last:	If this is the last field, delete reference from mapping ar=
-ray
-+ *
-+ * This is used to unmap rules from the mapping table for a single field=
-,
-+ * maintaining consistency and compactness for the existing ones.
-+ *
-+ * In pictures: let's assume that we want to delete rules 2 and 3 from t=
-he
-+ * following mapping array:
-+ *
-+ *                 rules
-+ *               0      1      2      3      4
-+ *      map to:  4-10   4-10   11-15  11-15  16-18
-+ *
-+ * the result will be:
-+ *
-+ *                 rules
-+ *               0      1      2
-+ *      map to:  4-10   4-10   11-13
-+ *
-+ * for fields before the last one. In case this is the mapping table for=
- the
-+ * last field in a set, and rules map to pointers to &struct nft_pipapo_=
-elem:
-+ *
-+ *                      rules
-+ *                        0      1      2      3      4
-+ *  element pointers:  0x42   0x42   0x33   0x33   0x44
-+ *
-+ * the result will be:
-+ *
-+ *                      rules
-+ *                        0      1      2
-+ *  element pointers:  0x42   0x42   0x44
-+ */
-+static void pipapo_unmap(union nft_pipapo_map_bucket *mt, int rules,
-+			 int start, int n, int to_offset, bool is_last)
-+{
-+	int i;
-+
-+	memmove(mt + start, mt + start + n, (rules - start - n) * sizeof(*mt));
-+	memset(mt + rules - n, 0, n * sizeof(*mt));
-+
-+	if (is_last)
-+		return;
-+
-+	for (i =3D start; i < rules - n; i++)
-+		mt[i].to -=3D to_offset;
-+}
-+
-+/**
-+ * pipapo_drop() - Delete entry from lookup and mapping tables, given ru=
-le map
-+ * @m:		Matching data
-+ * @rulemap	Table of rule maps, arrays of first rule and amount of rules
-+ *		in next field a given entry maps to, for each field
-+ *
-+ * For each rule in lookup table buckets mapping to this set of rules, d=
-rop
-+ * all bits set in lookup table mapping. In pictures, assuming we want t=
-o drop
-+ * rules 0 and 1 from this lookup table:
-+ *
-+ *                     bucket
-+ *      group  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14=
-  15
-+ *        0    0                                              1,2
-+ *        1   1,2                                      0
-+ *        2    0                                      1,2
-+ *        3    0                              1,2
-+ *        4  0,1,2
-+ *        5    0   1   2
-+ *        6  0,1,2 1   1   1   1   1   1   1   1   1   1   1   1   1   1=
-   1
-+ *        7   1,2 1,2  1   1   1  0,1  1   1   1   1   1   1   1   1   1=
-   1
-+ *
-+ * rule 2 becomes rule 0, and the result will be:
-+ *
-+ *                     bucket
-+ *      group  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14=
-  15
-+ *        0                                                    0
-+ *        1    0
-+ *        2                                            0
-+ *        3                                    0
-+ *        4    0
-+ *        5            0
-+ *        6    0
-+ *        7    0   0
-+ *
-+ * once this is done, call unmap() to drop all the corresponding rule re=
-ferences
-+ * from mapping tables.
-+ */
-+static void pipapo_drop(struct nft_pipapo_match *m,
-+			union nft_pipapo_map_bucket rulemap[])
-+{
-+	struct nft_pipapo_field *f;
-+	int i;
-+
-+	nft_pipapo_for_each_field(f, i, m) {
-+		int g;
-+
-+		for (g =3D 0; g < f->groups; g++) {
-+			unsigned long *pos;
-+			int b;
-+
-+			pos =3D f->lt + g * NFT_PIPAPO_BUCKETS * f->bsize;
-+
-+			for (b =3D 0; b < NFT_PIPAPO_BUCKETS; b++) {
-+				bitmap_cut(pos, pos, rulemap[i].to,
-+					   rulemap[i].n,
-+					   f->bsize * BITS_PER_LONG);
-+
-+				pos +=3D f->bsize;
-+			}
-+		}
-+
-+		pipapo_unmap(f->mt, f->rules, rulemap[i].to, rulemap[i].n,
-+			     rulemap[i + 1].n, i =3D=3D m->field_count - 1);
-+		if (pipapo_resize(f, f->rules, f->rules - rulemap[i].n)) {
-+			/* We can ignore this, a failure to shrink tables down
-+			 * doesn't make tables invalid.
-+			 */
-+			;
-+		}
-+		f->rules -=3D rulemap[i].n;
-+	}
-+}
-+
-+/**
-+ * pipapo_gc() - Drop expired entries from set, destroy start and end el=
-ements
-+ * @set:	nftables API set representation
-+ * @m:		Matching data
-+ */
-+static void pipapo_gc(const struct nft_set *set, struct nft_pipapo_match=
- *m)
-+{
-+	struct nft_pipapo *priv =3D nft_set_priv(set);
-+	int rules_f0, first_rule =3D 0;
-+
-+	while ((rules_f0 =3D pipapo_rules_same_key(m->f, first_rule))) {
-+		union nft_pipapo_map_bucket rulemap[NFT_PIPAPO_MAX_FIELDS];
-+		struct nft_pipapo_field *f;
-+		struct nft_pipapo_elem *e;
-+		int i, start, rules_fx;
-+
-+		start =3D first_rule;
-+		rules_fx =3D rules_f0;
-+
-+		nft_pipapo_for_each_field(f, i, m) {
-+			rulemap[i].to =3D start;
-+			rulemap[i].n =3D rules_fx;
-+
-+			if (i < m->field_count - 1) {
-+				rules_fx =3D f->mt[start].n;
-+				start =3D f->mt[start].to;
-+			}
-+		}
-+
-+		/* Pick the last field, and its last index */
-+		f--;
-+		i--;
-+		e =3D f->mt[rulemap[i].to].e;
-+		if (nft_set_elem_expired(&e->ext) &&
-+		    !nft_set_elem_mark_busy(&e->ext)) {
-+			priv->dirty =3D true;
-+			pipapo_drop(m, rulemap);
-+
-+			rcu_barrier();
-+			nft_set_elem_destroy(set, e, true);
-+
-+			/* And check again current first rule, which is now the
-+			 * first we haven't checked.
-+			 */
-+		} else {
-+			first_rule +=3D rules_f0;
-+		}
-+	}
-+
-+	priv->last_gc =3D jiffies;
-+}
-+
-+/**
-+ * pipapo_free_fields() - Free per-field tables contained in matching da=
-ta
-+ * @m:		Matching data
-+ */
-+static void pipapo_free_fields(struct nft_pipapo_match *m)
-+{
-+	struct nft_pipapo_field *f;
-+	int i;
-+
-+	nft_pipapo_for_each_field(f, i, m) {
-+		kvfree(f->lt);
-+		kvfree(f->mt);
-+	}
-+}
-+
-+/**
-+ * pipapo_reclaim_match - RCU callback to free fields from old matching =
-data
-+ * @rcu:	RCU head
-+ */
-+static void pipapo_reclaim_match(struct rcu_head *rcu)
-+{
-+	struct nft_pipapo_match *m;
-+	int i;
-+
-+	m =3D container_of(rcu, struct nft_pipapo_match, rcu);
-+
-+	for_each_possible_cpu(i)
-+		kfree(*per_cpu_ptr(m->scratch, i));
-+
-+	free_percpu(m->scratch);
-+
-+	pipapo_free_fields(m);
-+
-+	kfree(m);
-+}
-+
-+/**
-+ * pipapo_commit() - Replace lookup data with current working copy
-+ * @set:	nftables API set representation
-+ *
-+ * While at it, check if we should perform garbage collection on the wor=
-king
-+ * copy before committing it for lookup, and don't replace the table if =
-the
-+ * working copy doesn't have pending changes.
-+ *
-+ * We also need to create a new working copy for subsequent insertions a=
-nd
-+ * deletions.
-+ */
-+static void pipapo_commit(const struct nft_set *set)
-+{
-+	struct nft_pipapo *priv =3D nft_set_priv(set);
-+	struct nft_pipapo_match *new_clone, *old;
-+
-+	if (time_after_eq(jiffies, priv->last_gc + nft_set_gc_interval(set)))
-+		pipapo_gc(set, priv->clone);
-+
-+	if (!priv->dirty)
-+		return;
-+
-+	new_clone =3D pipapo_clone(priv->clone);
-+	if (IS_ERR(new_clone))
-+		return;
-+
-+	priv->dirty =3D false;
-+
-+	old =3D rcu_access_pointer(priv->match);
-+	rcu_assign_pointer(priv->match, priv->clone);
-+	if (old)
-+		call_rcu(&old->rcu, pipapo_reclaim_match);
-+
-+	priv->clone =3D new_clone;
-+}
-+
-+/**
-+ * nft_pipapo_activate() - Mark element reference as active given key, c=
-ommit
-+ * @net:	Network namespace
-+ * @set:	nftables API set representation
-+ * @elem:	nftables API element representation containing key data
-+ *
-+ * On insertion, elements are added to a copy of the matching data curre=
-ntly
-+ * in use for lookups, and not directly inserted into current lookup dat=
-a, so
-+ * we'll take care of that by calling pipapo_commit() here. Both
-+ * nft_pipapo_insert() and nft_pipapo_activate() are called once for eac=
-h
-+ * element, hence we can't purpose either one as a real commit operation=
-.
-+ */
-+static void nft_pipapo_activate(const struct net *net,
-+				const struct nft_set *set,
-+				const struct nft_set_elem *elem)
-+{
-+	struct nft_pipapo_elem *e;
-+
-+	e =3D pipapo_get(net, set, (const u8 *)elem->key.val.data, 0);
-+	if (IS_ERR(e))
-+		return;
-+
-+	nft_set_elem_change_active(net, set, &e->ext);
-+	nft_set_elem_clear_busy(&e->ext);
-+
-+	pipapo_commit(set);
-+}
-+
-+/**
-+ * pipapo_deactivate() - Check that element is in set, mark as inactive
-+ * @net:	Network namespace
-+ * @set:	nftables API set representation
-+ * @data:	Input key data
-+ * @ext:	nftables API extension pointer, used to check for end element
-+ *
-+ * This is a convenience function that can be called from both
-+ * nft_pipapo_deactivate() and nft_pipapo_flush(), as they are in fact t=
-he same
-+ * operation.
-+ *
-+ * Return: deactivated element if found, NULL otherwise.
-+ */
-+static void *pipapo_deactivate(const struct net *net, const struct nft_s=
-et *set,
-+			       const u8 *data, const struct nft_set_ext *ext)
-+{
-+	struct nft_pipapo_elem *e;
-+
-+	e =3D pipapo_get(net, set, data, nft_genmask_next(net));
-+	if (IS_ERR(e))
-+		return NULL;
-+
-+	nft_set_elem_change_active(net, set, &e->ext);
-+
-+	return e;
-+}
-+
-+/**
-+ * nft_pipapo_deactivate() - Call pipapo_deactivate() to make element in=
-active
-+ * @net:	Network namespace
-+ * @set:	nftables API set representation
-+ * @elem:	nftables API element representation containing key data
-+ *
-+ * Return: deactivated element if found, NULL otherwise.
-+ */
-+static void *nft_pipapo_deactivate(const struct net *net,
-+				   const struct nft_set *set,
-+				   const struct nft_set_elem *elem)
-+{
-+	const struct nft_set_ext *ext =3D nft_set_elem_ext(set, elem->priv);
-+
-+	return pipapo_deactivate(net, set, (const u8 *)elem->key.val.data, ext)=
-;
-+}
-+
-+/**
-+ * nft_pipapo_flush() - Call pipapo_deactivate() to make element inactiv=
-e
-+ * @net:	Network namespace
-+ * @set:	nftables API set representation
-+ * @elem:	nftables API element representation containing key data
-+ *
-+ * This is functionally the same as nft_pipapo_deactivate(), with a slig=
-htly
-+ * different interface, and it's also called once for each element in a =
-set
-+ * being flushed, so we can't implement, strictly speaking, a flush oper=
-ation,
-+ * which would otherwise be as simple as allocating an empty copy of the
-+ * matching data.
-+ *
-+ * Note that we could in theory do that, mark the set as flushed, and ig=
-nore
-+ * subsequent calls, but we would leak all the elements after the first =
-one,
-+ * because they wouldn't then be freed as result of API calls.
-+ *
-+ * Return: true if element was found and deactivated.
-+ */
-+static bool nft_pipapo_flush(const struct net *net, const struct nft_set=
- *set,
-+			     void *elem)
-+{
-+	struct nft_pipapo_elem *e =3D elem;
-+
-+	return pipapo_deactivate(net, set, (const u8 *)nft_set_ext_key(&e->ext)=
-,
-+				 &e->ext);
-+}
-+
-+/**
-+ * pipapo_get_boundaries() - Get byte interval for associated rules
-+ * @f:		Field including lookup table
-+ * @first_rule:	First rule (lowest index)
-+ * @rule_count:	Number of associated rules
-+ * @left:	Byte expression for left boundary (start of range)
-+ * @right:	Byte expression for right boundary (end of range)
-+ *
-+ * Given the first rule and amount of rules that originated from the sam=
-e entry,
-+ * build the original range associated with the entry, and calculate the=
- length
-+ * of the originating netmask.
-+ *
-+ * In pictures:
-+ *
-+ *                     bucket
-+ *      group  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14=
-  15
-+ *        0                                                   1,2
-+ *        1   1,2
-+ *        2                                           1,2
-+ *        3                                   1,2
-+ *        4   1,2
-+ *        5        1   2
-+ *        6   1,2  1   1   1   1   1   1   1   1   1   1   1   1   1   1=
-   1
-+ *        7   1,2 1,2  1   1   1   1   1   1   1   1   1   1   1   1   1=
-   1
-+ *
-+ * this is the lookup table corresponding to the IPv4 range
-+ * 192.168.1.0-192.168.2.1, which was expanded to the two composing netm=
-asks,
-+ * rule #1: 192.168.1.0/24, and rule #2: 192.168.2.0/31.
-+ *
-+ * This function fills @left and @right with the byte values of the left=
-most
-+ * and rightmost bucket indices for the lowest and highest rule indices,
-+ * respectively. If @first_rule is 1 and @rule_count is 2, we obtain, in
-+ * nibbles:
-+ *   left:  < 12, 0, 10, 8, 0, 1, 0, 0 >
-+ *   right: < 12, 0, 10, 8, 0, 2, 2, 1 >
-+ * corresponding to bytes:
-+ *   left:  < 192, 168, 1, 0 >
-+ *   right: < 192, 168, 2, 1 >
-+ * with mask length irrelevant here, unused on return, as the range is a=
-lready
-+ * defined by its start and end points. The mask length is relevant for =
-a single
-+ * ranged entry instead: if @first_rule is 1 and @rule_count is 1, we ig=
-nore
-+ * rule 2 above: @left becomes < 192, 168, 1, 0 >, @right becomes
-+ * < 192, 168, 1, 255 >, and the mask length, calculated from the distan=
-ces
-+ * between leftmost and rightmost bucket indices for each group, would b=
-e 24.
-+ *
-+ * Return: mask length, in bits.
-+ */
-+static int pipapo_get_boundaries(struct nft_pipapo_field *f, int first_r=
-ule,
-+				 int rule_count, u8 *left, u8 *right)
-+{
-+	u8 *l =3D left, *r =3D right;
-+	int g, mask_len =3D 0;
-+
-+	for (g =3D 0; g < f->groups; g++) {
-+		int b, x0, x1;
-+
-+		x0 =3D -1;
-+		x1 =3D -1;
-+		for (b =3D 0; b < NFT_PIPAPO_BUCKETS; b++) {
-+			unsigned long *pos;
-+
-+			pos =3D f->lt + (g * NFT_PIPAPO_BUCKETS + b) * f->bsize;
-+			if (test_bit(first_rule, pos) && x0 =3D=3D -1)
-+				x0 =3D b;
-+			if (test_bit(first_rule + rule_count - 1, pos))
-+				x1 =3D b;
-+		}
-+
-+		if (g % 2) {
-+			*(l++) |=3D x0 & 0x0f;
-+			*(r++) |=3D x1 & 0x0f;
-+		} else {
-+			*l |=3D x0 << 4;
-+			*r |=3D x1 << 4;
-+		}
-+
-+		if (x1 - x0 =3D=3D 0)
-+			mask_len +=3D 4;
-+		else if (x1 - x0 =3D=3D 1)
-+			mask_len +=3D 3;
-+		else if (x1 - x0 =3D=3D 3)
-+			mask_len +=3D 2;
-+		else if (x1 - x0 =3D=3D 7)
-+			mask_len +=3D 1;
-+	}
-+
-+	return mask_len;
-+}
-+
-+/**
-+ * pipapo_match_field() - Match rules against byte ranges
-+ * @f:		Field including the lookup table
-+ * @first_rule:	First of associated rules originating from same entry
-+ * @rule_count:	Amount of associated rules
-+ * @start:	Start of range to be matched
-+ * @end:	End of range to be matched
-+ *
-+ * Return: true on match, false otherwise.
-+ */
-+static bool pipapo_match_field(struct nft_pipapo_field *f,
-+			       int first_rule, int rule_count,
-+			       const u8 *start, const u8 *end)
-+{
-+	u8 right[NFT_PIPAPO_MAX_BYTES] =3D { 0 };
-+	u8 left[NFT_PIPAPO_MAX_BYTES] =3D { 0 };
-+
-+	pipapo_get_boundaries(f, first_rule, rule_count, left, right);
-+
-+	return !memcmp(start, left, f->groups / NFT_PIPAPO_GROUPS_PER_BYTE) &&
-+	       !memcmp(end, right, f->groups / NFT_PIPAPO_GROUPS_PER_BYTE);
-+}
-+
-+/**
-+ * nft_pipapo_remove() - Remove element given key, commit
-+ * @net:	Network namespace
-+ * @set:	nftables API set representation
-+ * @elem:	nftables API element representation containing key data
-+ *
-+ * Similarly to nft_pipapo_activate(), this is used as commit operation =
-by the
-+ * API, but it's called once per element in the pending transaction, so =
-we can't
-+ * implement this as a single commit operation. Closest we can get is to=
- remove
-+ * the matched element here, if any, and commit the updated matching dat=
-a.
-+ */
-+static void nft_pipapo_remove(const struct net *net, const struct nft_se=
-t *set,
-+			      const struct nft_set_elem *elem)
-+{
-+	const u8 *data =3D (const u8 *)elem->key.val.data;
-+	struct nft_pipapo *priv =3D nft_set_priv(set);
-+	struct nft_pipapo_match *m =3D priv->clone;
-+	int rules_f0, first_rule =3D 0;
-+	struct nft_pipapo_elem *e;
-+
-+	e =3D pipapo_get(net, set, data, 0);
-+	if (IS_ERR(e))
-+		return;
-+
-+	while ((rules_f0 =3D pipapo_rules_same_key(m->f, first_rule))) {
-+		union nft_pipapo_map_bucket rulemap[NFT_PIPAPO_MAX_FIELDS];
-+		const u8 *match_start, *match_end;
-+		struct nft_pipapo_field *f;
-+		int i, start, rules_fx;
-+
-+		match_start =3D data;
-+		match_end =3D (const u8 *)nft_set_ext_key_end(&e->ext)->data;
-+
-+		start =3D first_rule;
-+		rules_fx =3D rules_f0;
-+
-+		nft_pipapo_for_each_field(f, i, m) {
-+			if (!pipapo_match_field(f, start, rules_fx,
-+						match_start, match_end))
-+				break;
-+
-+			rulemap[i].to =3D start;
-+			rulemap[i].n =3D rules_fx;
-+
-+			rules_fx =3D f->mt[start].n;
-+			start =3D f->mt[start].to;
-+
-+			match_start +=3D NFT_PIPAPO_GROUPS_PADDED_SIZE(f->groups);
-+			match_end +=3D NFT_PIPAPO_GROUPS_PADDED_SIZE(f->groups);
-+		}
-+
-+		if (i =3D=3D m->field_count) {
-+			priv->dirty =3D true;
-+			pipapo_drop(m, rulemap);
-+			pipapo_commit(set);
-+			return;
-+		}
-+
-+		first_rule +=3D rules_f0;
-+	}
-+}
-+
-+/**
-+ * nft_pipapo_walk() - Walk over elements
-+ * @ctx:	nftables API context
-+ * @set:	nftables API set representation
-+ * @iter:	Iterator
-+ *
-+ * As elements are referenced in the mapping array for the last field, d=
-irectly
-+ * scan that array: there's no need to follow rule mappings from the fir=
++++ b/tools/testing/selftests/netfilter/nft_concat_range.sh
+@@ -0,0 +1,1481 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++#
++# nft_concat_range.sh - Tests for sets with concatenation of ranged fiel=
+ds
++#
++# Copyright (c) 2019 Red Hat GmbH
++#
++# Author: Stefano Brivio <sbrivio@redhat.com>
++#
++# shellcheck disable=3DSC2154,SC2034,SC2016,SC2030,SC2031
++# ^ Configuration and templates sourced with eval, counters reused in su=
+bshells
++
++KSELFTEST_SKIP=3D4
++
++# Available test groups:
++# - correctness: check that packets match given entries, and only those
++# - concurrency: attempt races between insertion, deletion and lookup
++# - timeout: check that packets match entries until they expire
++# - performance: estimate matching rate, compare with rbtree and hash ba=
+selines
++TESTS=3D"correctness concurrency timeout"
++[ "${quicktest}" !=3D "1" ] && TESTS=3D"${TESTS} performance"
++
++# Set types, defined by TYPE_ variables below
++TYPES=3D"net_port port_net net6_port port_proto net6_port_mac net6_port_=
+mac_proto
++       net_port_net net_mac net_mac_icmp net6_mac_icmp net6_port_net6_po=
+rt
++       net_port_mac_proto_net"
++
++# List of possible paths to pktgen script from kernel tree for performan=
+ce tests
++PKTGEN_SCRIPT_PATHS=3D"
++	../../../samples/pktgen/pktgen_bench_xmit_mode_netif_receive.sh
++	pktgen/pktgen_bench_xmit_mode_netif_receive.sh"
++
++# Definition of set types:
++# display	display text for test report
++# type_spec	nftables set type specifier
++# chain_spec	nftables type specifier for rules mapping to set
++# dst		call sequence of format_*() functions for destination fields
++# src		call sequence of format_*() functions for source fields
++# start		initial integer used to generate addresses and ports
++# count		count of entries to generate and match
++# src_delta	number summed to destination generator for source fields
++# tools		list of tools for correctness and timeout tests, any can be use=
+d
++# proto		L4 protocol of test packets
++#
++# race_repeat	race attempts per thread, 0 disables concurrency test for =
+type
++# flood_tools	list of tools for concurrency tests, any can be used
++# flood_proto	L4 protocol of test packets for concurrency tests
++# flood_spec	nftables type specifier for concurrency tests
++#
++# perf_duration	duration of single pktgen injection test
++# perf_spec	nftables type specifier for performance tests
++# perf_dst	format_*() functions for destination fields in performance te=
 st
-+ * field.
-+ */
-+static void nft_pipapo_walk(const struct nft_ctx *ctx, struct nft_set *s=
-et,
-+			    struct nft_set_iter *iter)
-+{
-+	struct nft_pipapo *priv =3D nft_set_priv(set);
-+	struct nft_pipapo_match *m;
-+	struct nft_pipapo_field *f;
-+	int i, r;
++# perf_src	format_*() functions for source fields in performance test
++# perf_entries	number of set entries for performance test
++# perf_proto	L3 protocol of test packets
++TYPE_net_port=3D"
++display		net,port
++type_spec	ipv4_addr . inet_service
++chain_spec	ip daddr . udp dport
++dst		addr4 port
++src		=20
++start		1
++count		5
++src_delta	2000
++tools		sendip nc bash
++proto		udp
 +
-+	rcu_read_lock();
-+	m =3D rcu_dereference(priv->match);
++race_repeat	3
++flood_tools	iperf3 iperf netperf
++flood_proto	udp
++flood_spec	ip daddr . udp dport
 +
-+	if (unlikely(!m))
-+		goto out;
++perf_duration	5
++perf_spec	ip daddr . udp dport
++perf_dst	addr4 port
++perf_src	=20
++perf_entries	1000
++perf_proto	ipv4
++"
 +
-+	for (i =3D 0, f =3D m->f; i < m->field_count - 1; i++, f++)
-+		;
++TYPE_port_net=3D"
++display		port,net
++type_spec	inet_service . ipv4_addr
++chain_spec	udp dport . ip daddr
++dst		port addr4
++src		=20
++start		1
++count		5
++src_delta	2000
++tools		sendip nc bash
++proto		udp
 +
-+	for (r =3D 0; r < f->rules; r++) {
-+		struct nft_pipapo_elem *e;
-+		struct nft_set_elem elem;
++race_repeat	3
++flood_tools	iperf3 iperf netperf
++flood_proto	udp
++flood_spec	udp dport . ip daddr
 +
-+		if (r < f->rules - 1 && f->mt[r + 1].e =3D=3D f->mt[r].e)
-+			continue;
++perf_duration	5
++perf_spec	udp dport . ip daddr
++perf_dst	port addr4
++perf_src	=20
++perf_entries	100
++perf_proto	ipv4
++"
 +
-+		if (iter->count < iter->skip)
-+			goto cont;
++TYPE_net6_port=3D"
++display		net6,port
++type_spec	ipv6_addr . inet_service
++chain_spec	ip6 daddr . udp dport
++dst		addr6 port
++src		=20
++start		10
++count		5
++src_delta	2000
++tools		sendip nc bash
++proto		udp6
 +
-+		e =3D f->mt[r].e;
-+		if (nft_set_elem_expired(&e->ext))
-+			goto cont;
++race_repeat	3
++flood_tools	iperf3 iperf netperf
++flood_proto	tcp6
++flood_spec	ip6 daddr . udp dport
 +
-+		elem.priv =3D e;
++perf_duration	5
++perf_spec	ip6 daddr . udp dport
++perf_dst	addr6 port
++perf_src	=20
++perf_entries	1000
++perf_proto	ipv6
++"
 +
-+		iter->err =3D iter->fn(ctx, set, iter, &elem);
-+		if (iter->err < 0)
-+			goto out;
++TYPE_port_proto=3D"
++display		port,proto
++type_spec	inet_service . inet_proto
++chain_spec	udp dport . meta l4proto
++dst		port proto
++src		=20
++start		1
++count		5
++src_delta	2000
++tools		sendip nc bash
++proto		udp
 +
-+cont:
-+		iter->count++;
++race_repeat	0
++
++perf_duration	5
++perf_spec	udp dport . meta l4proto
++perf_dst	port proto
++perf_src	=20
++perf_entries	30000
++perf_proto	ipv4
++"
++
++TYPE_net6_port_mac=3D"
++display		net6,port,mac
++type_spec	ipv6_addr . inet_service . ether_addr
++chain_spec	ip6 daddr . udp dport . ether saddr
++dst		addr6 port
++src		mac
++start		10
++count		5
++src_delta	2000
++tools		sendip nc bash
++proto		udp6
++
++race_repeat	0
++
++perf_duration	5
++perf_spec	ip6 daddr . udp dport . ether daddr
++perf_dst	addr6 port mac
++perf_src	=20
++perf_entries	10
++perf_proto	ipv6
++"
++
++TYPE_net6_port_mac_proto=3D"
++display		net6,port,mac,proto
++type_spec	ipv6_addr . inet_service . ether_addr . inet_proto
++chain_spec	ip6 daddr . udp dport . ether saddr . meta l4proto
++dst		addr6 port
++src		mac proto
++start		10
++count		5
++src_delta	2000
++tools		sendip nc bash
++proto		udp6
++
++race_repeat	0
++
++perf_duration	5
++perf_spec	ip6 daddr . udp dport . ether daddr . meta l4proto
++perf_dst	addr6 port mac proto
++perf_src	=20
++perf_entries	1000
++perf_proto	ipv6
++"
++
++TYPE_net_port_net=3D"
++display		net,port,net
++type_spec	ipv4_addr . inet_service . ipv4_addr
++chain_spec	ip daddr . udp dport . ip saddr
++dst		addr4 port
++src		addr4
++start		1
++count		5
++src_delta	2000
++tools		sendip nc bash
++proto		udp
++
++race_repeat	3
++flood_tools	iperf3 iperf netperf
++flood_proto	tcp
++flood_spec	ip daddr . udp dport . ip saddr
++
++perf_duration	0
++"
++
++TYPE_net6_port_net6_port=3D"
++display		net6,port,net6,port
++type_spec	ipv6_addr . inet_service . ipv6_addr . inet_service
++chain_spec	ip6 daddr . udp dport . ip6 saddr . udp sport
++dst		addr6 port
++src		addr6 port
++start		10
++count		5
++src_delta	2000
++tools		sendip nc
++proto		udp6
++
++race_repeat	3
++flood_tools	iperf3 iperf netperf
++flood_proto	tcp6
++flood_spec	ip6 daddr . tcp dport . ip6 saddr . tcp sport
++
++perf_duration	0
++"
++
++TYPE_net_port_mac_proto_net=3D"
++display		net,port,mac,proto,net
++type_spec	ipv4_addr . inet_service . ether_addr . inet_proto . ipv4_addr
++chain_spec	ip daddr . udp dport . ether saddr . meta l4proto . ip saddr
++dst		addr4 port
++src		mac proto addr4
++start		1
++count		5
++src_delta	2000
++tools		sendip nc bash
++proto		udp
++
++race_repeat	0
++
++perf_duration	0
++"
++
++TYPE_net_mac=3D"
++display		net,mac
++type_spec	ipv4_addr . ether_addr
++chain_spec	ip daddr . ether saddr
++dst		addr4
++src		mac
++start		1
++count		5
++src_delta	2000
++tools		sendip nc bash
++proto		udp
++
++race_repeat	0
++
++perf_duration	5
++perf_spec	ip daddr . ether daddr
++perf_dst	addr4 mac
++perf_src	=20
++perf_entries	1000
++perf_proto	ipv4
++"
++
++TYPE_net_mac_icmp=3D"
++display		net,mac - ICMP
++type_spec	ipv4_addr . ether_addr
++chain_spec	ip daddr . ether saddr
++dst		addr4
++src		mac
++start		1
++count		5
++src_delta	2000
++tools		ping
++proto		icmp
++
++race_repeat	0
++
++perf_duration	0
++"
++
++TYPE_net6_mac_icmp=3D"
++display		net6,mac - ICMPv6
++type_spec	ipv6_addr . ether_addr
++chain_spec	ip6 daddr . ether saddr
++dst		addr6
++src		mac
++start		10
++count		50
++src_delta	2000
++tools		ping
++proto		icmp6
++
++race_repeat	0
++
++perf_duration	0
++"
++
++TYPE_net_port_proto_net=3D"
++display		net,port,proto,net
++type_spec	ipv4_addr . inet_service . inet_proto . ipv4_addr
++chain_spec	ip daddr . udp dport . meta l4proto . ip saddr
++dst		addr4 port proto
++src		addr4
++start		1
++count		5
++src_delta	2000
++tools		sendip nc
++proto		udp
++
++race_repeat	3
++flood_tools	iperf3 iperf netperf
++flood_proto	tcp
++flood_spec	ip daddr . tcp dport . meta l4proto . ip saddr
++
++perf_duration	0
++"
++
++# Set template for all tests, types and rules are filled in depending on=
+ test
++set_template=3D'
++flush ruleset
++
++table inet filter {
++	counter test {
++		packets 0 bytes 0
 +	}
 +
-+out:
-+	rcu_read_unlock();
++	set test {
++		type ${type_spec}
++		flags interval,timeout
++	}
++
++	chain input {
++		type filter hook prerouting priority 0; policy accept;
++		${chain_spec} @test counter name \"test\"
++	}
 +}
 +
-+/**
-+ * nft_pipapo_privsize() - Return the size of private data for the set
-+ * @nla:	netlink attributes, ignored as size doesn't depend on them
-+ * @desc:	Set description, ignored as size doesn't depend on it
-+ *
-+ * Return: size of private data for this set implementation, in bytes
-+ */
-+static u64 nft_pipapo_privsize(const struct nlattr * const nla[],
-+			       const struct nft_set_desc *desc)
-+{
-+	return sizeof(struct nft_pipapo);
++table netdev perf {
++	counter test {
++		packets 0 bytes 0
++	}
++
++	counter match {
++		packets 0 bytes 0
++	}
++
++	set test {
++		type ${type_spec}
++		flags interval
++	}
++
++	set norange {
++		type ${type_spec}
++	}
++
++	set noconcat {
++		type ${type_spec%% *}
++		flags interval
++	}
++
++	chain test {
++		type filter hook ingress device veth_a priority 0;
++	}
++}
++'
++
++err_buf=3D
++info_buf=3D
++
++# Append string to error buffer
++err() {
++	err_buf=3D"${err_buf}${1}
++"
 +}
 +
-+/**
-+ * nft_pipapo_estimate() - Estimate set size, space and lookup complexit=
-y
-+ * @desc:	Set description, element count and field description used here
-+ * @features:	Flags: NFT_SET_INTERVAL needs to be there
-+ * @est:	Storage for estimation data
-+ *
-+ * The size for this set type can vary dramatically, as it depends on th=
-e number
-+ * of rules (composing netmasks) the entries expand to. We compute the w=
-orst
-+ * case here.
-+ *
-+ * In general, for a non-ranged entry or a single composing netmask, we =
-need
-+ * one bit in each of the sixteen NFT_PIPAPO_BUCKETS, for each 4-bit gro=
-up (that
-+ * is, each input bit needs four bits of matching data), plus a bucket i=
-n the
-+ * mapping table for each field.
-+ *
-+ * Return: true only for compatible range concatenations
-+ */
-+static bool nft_pipapo_estimate(const struct nft_set_desc *desc, u32 fea=
-tures,
-+				struct nft_set_estimate *est)
-+{
-+	unsigned long entry_size;
-+	int i;
-+
-+	if (!(features & NFT_SET_INTERVAL) || desc->field_count <=3D 1)
-+		return false;
-+
-+	for (i =3D 0, entry_size =3D 0; i < desc->field_count; i++) {
-+		unsigned long rules;
-+
-+		if (desc->field_len[i] > NFT_PIPAPO_MAX_BYTES)
-+			return false;
-+
-+		/* Worst-case ranges for each concatenated field: each n-bit
-+		 * field can expand to up to n * 2 rules in each bucket, and
-+		 * each rule also needs a mapping bucket.
-+		 */
-+		rules =3D ilog2(desc->field_len[i] * BITS_PER_BYTE) * 2;
-+		entry_size +=3D rules * NFT_PIPAPO_BUCKETS / BITS_PER_BYTE;
-+		entry_size +=3D rules * sizeof(union nft_pipapo_map_bucket);
-+	}
-+
-+	/* Rules in lookup and mapping tables are needed for each entry */
-+	est->size =3D desc->size * entry_size;
-+	if (est->size && est->size / desc->size !=3D entry_size)
-+		return false;
-+
-+	est->size +=3D sizeof(struct nft_pipapo) +
-+		     sizeof(struct nft_pipapo_match) * 2;
-+
-+	est->size +=3D sizeof(struct nft_pipapo_field) * desc->field_count;
-+
-+	est->lookup =3D NFT_SET_CLASS_O_LOG_N;
-+
-+	est->space =3D NFT_SET_CLASS_O_N;
-+
-+	return true;
++# Append string to information buffer
++info() {
++	info_buf=3D"${info_buf}${1}
++"
 +}
 +
-+/**
-+ * nft_pipapo_init() - Initialise data for a set instance
-+ * @set:	nftables API set representation
-+ * @desc:	Set description
-+ * @nla:	netlink attributes
-+ *
-+ * Validate number and size of fields passed as NFTA_SET_DESC_CONCAT net=
-link
-+ * attributes, initialise internal set parameters, current instance of m=
-atching
-+ * data and a copy for subsequent insertions.
-+ *
-+ * Return: 0 on success, negative error code on failure.
-+ */
-+static int nft_pipapo_init(const struct nft_set *set,
-+			   const struct nft_set_desc *desc,
-+			   const struct nlattr * const nla[])
-+{
-+	struct nft_pipapo *priv =3D nft_set_priv(set);
-+	struct nft_pipapo_match *m;
-+	struct nft_pipapo_field *f;
-+	int err, i;
-+
-+	if (desc->field_count > NFT_PIPAPO_MAX_FIELDS)
-+		return -EINVAL;
-+
-+	m =3D kmalloc(sizeof(*priv->match) + sizeof(*f) * desc->field_count,
-+		    GFP_KERNEL);
-+	if (!m)
-+		return -ENOMEM;
-+
-+	m->field_count =3D desc->field_count;
-+	m->bsize_max =3D 0;
-+
-+	m->scratch =3D alloc_percpu(unsigned long *);
-+	if (!m->scratch) {
-+		err =3D -ENOMEM;
-+		goto out_free;
-+	}
-+	for_each_possible_cpu(i)
-+		*per_cpu_ptr(m->scratch, i) =3D NULL;
-+
-+	rcu_head_init(&m->rcu);
-+
-+	nft_pipapo_for_each_field(f, i, m) {
-+		f->groups =3D desc->field_len[i] * NFT_PIPAPO_GROUPS_PER_BYTE;
-+		priv->groups +=3D f->groups;
-+
-+		priv->width +=3D round_up(desc->field_len[i], sizeof(u32));
-+
-+		f->bsize =3D 0;
-+		f->rules =3D 0;
-+		f->lt =3D NULL;
-+		f->mt =3D NULL;
-+	}
-+
-+	/* Create an initial clone of matching data for next insertion */
-+	priv->clone =3D pipapo_clone(m);
-+	if (IS_ERR(priv->clone)) {
-+		err =3D PTR_ERR(priv->clone);
-+		goto out_free;
-+	}
-+
-+	priv->dirty =3D false;
-+
-+	rcu_assign_pointer(priv->match, m);
-+
-+	return 0;
-+
-+out_free:
-+	free_percpu(m->scratch);
-+	kfree(m);
-+
-+	return err;
++# Flush error buffer to stdout
++err_flush() {
++	printf "%s" "${err_buf}"
++	err_buf=3D
 +}
 +
-+/**
-+ * nft_pipapo_destroy() - Free private data for set and all committed el=
-ements
-+ * @set:	nftables API set representation
-+ */
-+static void nft_pipapo_destroy(const struct nft_set *set)
-+{
-+	struct nft_pipapo *priv =3D nft_set_priv(set);
-+	struct nft_pipapo_match *m;
-+	struct nft_pipapo_field *f;
-+	int i, r, cpu;
++# Flush information buffer to stdout
++info_flush() {
++	printf "%s" "${info_buf}"
++	info_buf=3D
++}
 +
-+	m =3D rcu_dereference_protected(priv->match, true);
-+	if (m) {
-+		rcu_barrier();
++# Setup veth pair: this namespace receives traffic, B generates it
++setup_veth() {
++	ip netns add B
++	ip link add veth_a type veth peer name veth_b || return 1
 +
-+		for (i =3D 0, f =3D m->f; i < m->field_count - 1; i++, f++)
-+			;
++	ip link set veth_a up
++	ip link set veth_b netns B
 +
-+		for (r =3D 0; r < f->rules; r++) {
-+			struct nft_pipapo_elem *e;
++	ip -n B link set veth_b up
 +
-+			if (r < f->rules - 1 && f->mt[r + 1].e =3D=3D f->mt[r].e)
-+				continue;
++	ip addr add dev veth_a 10.0.0.1
++	ip route add default dev veth_a
 +
-+			e =3D f->mt[r].e;
++	ip -6 addr add fe80::1/64 dev veth_a nodad
++	ip -6 addr add 2001:db8::1/64 dev veth_a nodad
++	ip -6 route add default dev veth_a
 +
-+			nft_set_elem_destroy(set, e, true);
++	ip -n B route add default dev veth_b
++
++	ip -6 -n B addr add fe80::2/64 dev veth_b nodad
++	ip -6 -n B addr add 2001:db8::2/64 dev veth_b nodad
++	ip -6 -n B route add default dev veth_b
++
++	B() {
++		ip netns exec B "$@" >/dev/null 2>&1
++	}
++
++	sleep 2
++}
++
++# Fill in set template and initialise set
++setup_set() {
++	eval "echo \"${set_template}\"" | nft -f -
++}
++
++# Check that at least one of the needed tools is available
++check_tools() {
++	__tools=3D
++	for tool in ${tools}; do
++		if [ "${tool}" =3D "nc" ] && [ "${proto}" =3D "udp6" ] && \
++		   ! nc -u -w0 1.1.1.1 1 2>/dev/null; then
++			# Some GNU netcat builds might not support IPv6
++			__tools=3D"${__tools} netcat-openbsd"
++			continue
++		fi
++		__tools=3D"${__tools} ${tool}"
++
++		command -v "${tool}" >/dev/null && return 0
++	done
++	err "need one of:${__tools}, skipping" && return 1
++}
++
++# Set up function to send ICMP packets
++setup_send_icmp() {
++	send_icmp() {
++		B ping -c1 -W1 "${dst_addr4}" >/dev/null 2>&1
++	}
++}
++
++# Set up function to send ICMPv6 packets
++setup_send_icmp6() {
++	if command -v ping6 >/dev/null; then
++		send_icmp6() {
++			ip -6 addr add "${dst_addr6}" dev veth_a nodad \
++				2>/dev/null
++			B ping6 -q -c1 -W1 "${dst_addr6}"
 +		}
++	else
++		send_icmp6() {
++			ip -6 addr add "${dst_addr6}" dev veth_a nodad \
++				2>/dev/null
++			B ping -q -6 -c1 -W1 "${dst_addr6}"
++		}
++	fi
++}
 +
-+		for_each_possible_cpu(cpu)
-+			kfree(*per_cpu_ptr(m->scratch, cpu));
-+		free_percpu(m->scratch);
++# Set up function to send single UDP packets on IPv4
++setup_send_udp() {
++	if command -v sendip >/dev/null; then
++		send_udp() {
++			[ -n "${src_port}" ] && src_port=3D"-us ${src_port}"
++			[ -n "${dst_port}" ] && dst_port=3D"-ud ${dst_port}"
++			[ -n "${src_addr4}" ] && src_addr4=3D"-is ${src_addr4}"
 +
-+		pipapo_free_fields(m);
-+		kfree(m);
-+		priv->match =3D NULL;
++			# shellcheck disable=3DSC2086 # sendip needs split options
++			B sendip -p ipv4 -p udp ${src_addr4} ${src_port} \
++						${dst_port} "${dst_addr4}"
++
++			src_port=3D
++			dst_port=3D
++			src_addr4=3D
++		}
++	elif command -v nc >/dev/null; then
++		if nc -u -w0 1.1.1.1 1 2>/dev/null; then
++			# OpenBSD netcat
++			nc_opt=3D"-w0"
++		else
++			# GNU netcat
++			nc_opt=3D"-q0"
++		fi
++
++		send_udp() {
++			if [ -n "${src_addr4}" ]; then
++				B ip addr add "${src_addr4}" dev veth_b
++				__src_addr4=3D"-s ${src_addr4}"
++			fi
++			ip addr add "${dst_addr4}" dev veth_a 2>/dev/null
++			[ -n "${src_port}" ] && src_port=3D"-p ${src_port}"
++
++			echo "" | B nc -u "${nc_opt}" "${__src_addr4}" \
++				  "${src_port}" "${dst_addr4}" "${dst_port}"
++
++			src_addr4=3D
++			src_port=3D
++		}
++	elif [ -z "$(bash -c 'type -p')" ]; then
++		send_udp() {
++			ip addr add "${dst_addr4}" dev veth_a 2>/dev/null
++			if [ -n "${src_addr4}" ]; then
++				B ip addr add "${src_addr4}/16" dev veth_b
++				B ip route add default dev veth_b
++			fi
++
++			B bash -c "echo > /dev/udp/${dst_addr4}/${dst_port}"
++
++			if [ -n "${src_addr4}" ]; then
++				B ip addr del "${src_addr4}/16" dev veth_b
++			fi
++			src_addr4=3D
++		}
++	else
++		return 1
++	fi
++}
++
++# Set up function to send single UDP packets on IPv6
++setup_send_udp6() {
++	if command -v sendip >/dev/null; then
++		send_udp6() {
++			[ -n "${src_port}" ] && src_port=3D"-us ${src_port}"
++			[ -n "${dst_port}" ] && dst_port=3D"-ud ${dst_port}"
++			if [ -n "${src_addr6}" ]; then
++				src_addr6=3D"-6s ${src_addr6}"
++			else
++				src_addr6=3D"-6s 2001:db8::2"
++			fi
++			ip -6 addr add "${dst_addr6}" dev veth_a nodad \
++				2>/dev/null
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			B sendip -p ipv6 -p udp ${src_addr6} ${src_port} \
++						${dst_port} "${dst_addr6}"
++
++			src_port=3D
++			dst_port=3D
++			src_addr6=3D
++		}
++	elif command -v nc >/dev/null && nc -u -w0 1.1.1.1 1 2>/dev/null; then
++		# GNU netcat might not work with IPv6, try next tool
++		send_udp6() {
++			ip -6 addr add "${dst_addr6}" dev veth_a nodad \
++				2>/dev/null
++			if [ -n "${src_addr6}" ]; then
++				B ip addr add "${src_addr6}" dev veth_b nodad
++			else
++				src_addr6=3D"2001:db8::2"
++			fi
++			[ -n "${src_port}" ] && src_port=3D"-p ${src_port}"
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			echo "" | B nc -u w0 "-s${src_addr6}" ${src_port} \
++					       ${dst_addr6} ${dst_port}
++
++			src_addr6=3D
++			src_port=3D
++		}
++	elif [ -z "$(bash -c 'type -p')" ]; then
++		send_udp6() {
++			ip -6 addr add "${dst_addr6}" dev veth_a nodad \
++				2>/dev/null
++			B ip addr add "${src_addr6}" dev veth_b nodad
++			B bash -c "echo > /dev/udp/${dst_addr6}/${dst_port}"
++			ip -6 addr del "${dst_addr6}" dev veth_a 2>/dev/null
++		}
++	else
++		return 1
++	fi
++}
++
++# Set up function to send TCP traffic on IPv4
++setup_flood_tcp() {
++	if command -v iperf3 >/dev/null; then
++		flood_tcp() {
++			[ -n "${dst_port}" ] && dst_port=3D"-p ${dst_port}"
++			if [ -n "${src_addr4}" ]; then
++				B ip addr add "${src_addr4}/16" dev veth_b
++				src_addr4=3D"-B ${src_addr4}"
++			else
++				B ip addr add dev veth_b 10.0.0.2
++				src_addr4=3D"-B 10.0.0.2"
++			fi
++			if [ -n "${src_port}" ]; then
++				src_port=3D"--cport ${src_port}"
++			fi
++			B ip route add default dev veth_b 2>/dev/null
++			ip addr add "${dst_addr4}" dev veth_a 2>/dev/null
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			iperf3 -s -DB "${dst_addr4}" ${dst_port} >/dev/null 2>&1
++			sleep 2
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			B iperf3 -c "${dst_addr4}" ${dst_port} ${src_port} \
++				${src_addr4} -l16 -t 1000
++
++			src_addr4=3D
++			src_port=3D
++			dst_port=3D
++		}
++	elif command -v iperf >/dev/null; then
++		flood_tcp() {
++			[ -n "${dst_port}" ] && dst_port=3D"-p ${dst_port}"
++			if [ -n "${src_addr4}" ]; then
++				B ip addr add "${src_addr4}/16" dev veth_b
++				src_addr4=3D"-B ${src_addr4}"
++			else
++				B ip addr add dev veth_b 10.0.0.2 2>/dev/null
++				src_addr4=3D"-B 10.0.0.2"
++			fi
++			if [ -n "${src_port}" ]; then
++				src_addr4=3D"${src_addr4}:${src_port}"
++			fi
++			B ip route add default dev veth_b
++			ip addr add "${dst_addr4}" dev veth_a 2>/dev/null
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			iperf -s -DB "${dst_addr4}" ${dst_port} >/dev/null 2>&1
++			sleep 2
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			B iperf -c "${dst_addr4}" ${dst_port} ${src_addr4} \
++				-l20 -t 1000
++
++			src_addr4=3D
++			src_port=3D
++			dst_port=3D
++		}
++	elif command -v netperf >/dev/null; then
++		flood_tcp() {
++			[ -n "${dst_port}" ] && dst_port=3D"-p ${dst_port}"
++			if [ -n "${src_addr4}" ]; then
++				B ip addr add "${src_addr4}/16" dev veth_b
++			else
++				B ip addr add dev veth_b 10.0.0.2
++				src_addr4=3D"10.0.0.2"
++			fi
++			if [ -n "${src_port}" ]; then
++				dst_port=3D"${dst_port},${src_port}"
++			fi
++			B ip route add default dev veth_b
++			ip addr add "${dst_addr4}" dev veth_a 2>/dev/null
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			netserver -4 ${dst_port} -L "${dst_addr4}" \
++				>/dev/null 2>&1
++			sleep 2
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			B netperf -4 -H "${dst_addr4}" ${dst_port} \
++				-L "${src_addr4}" -l 1000 -t TCP_STREAM
++
++			src_addr4=3D
++			src_port=3D
++			dst_port=3D
++		}
++	else
++		return 1
++	fi
++}
++
++# Set up function to send TCP traffic on IPv6
++setup_flood_tcp6() {
++	if command -v iperf3 >/dev/null; then
++		flood_tcp6() {
++			[ -n "${dst_port}" ] && dst_port=3D"-p ${dst_port}"
++			if [ -n "${src_addr6}" ]; then
++				B ip addr add "${src_addr6}" dev veth_b nodad
++				src_addr6=3D"-B ${src_addr6}"
++			else
++				src_addr6=3D"-B 2001:db8::2"
++			fi
++			if [ -n "${src_port}" ]; then
++				src_port=3D"--cport ${src_port}"
++			fi
++			B ip route add default dev veth_b
++			ip -6 addr add "${dst_addr6}" dev veth_a nodad \
++				2>/dev/null
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			iperf3 -s -DB "${dst_addr6}" ${dst_port} >/dev/null 2>&1
++			sleep 2
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			B iperf3 -c "${dst_addr6}" ${dst_port} \
++				${src_port} ${src_addr6} -l16 -t 1000
++
++			src_addr6=3D
++			src_port=3D
++			dst_port=3D
++		}
++	elif command -v iperf >/dev/null; then
++		flood_tcp6() {
++			[ -n "${dst_port}" ] && dst_port=3D"-p ${dst_port}"
++			if [ -n "${src_addr6}" ]; then
++				B ip addr add "${src_addr6}" dev veth_b nodad
++				src_addr6=3D"-B ${src_addr6}"
++			else
++				src_addr6=3D"-B 2001:db8::2"
++			fi
++			if [ -n "${src_port}" ]; then
++				src_addr6=3D"${src_addr6}:${src_port}"
++			fi
++			B ip route add default dev veth_b
++			ip -6 addr add "${dst_addr6}" dev veth_a nodad \
++				2>/dev/null
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			iperf -s -VDB "${dst_addr6}" ${dst_port} >/dev/null 2>&1
++			sleep 2
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			B iperf -c "${dst_addr6}" -V ${dst_port} \
++				${src_addr6} -l1 -t 1000
++
++			src_addr6=3D
++			src_port=3D
++			dst_port=3D
++		}
++	elif command -v netperf >/dev/null; then
++		flood_tcp6() {
++			[ -n "${dst_port}" ] && dst_port=3D"-p ${dst_port}"
++			if [ -n "${src_addr6}" ]; then
++				B ip addr add "${src_addr6}" dev veth_b nodad
++			else
++				src_addr6=3D"2001:db8::2"
++			fi
++			if [ -n "${src_port}" ]; then
++				dst_port=3D"${dst_port},${src_port}"
++			fi
++			B ip route add default dev veth_b
++			ip -6 addr add "${dst_addr6}" dev veth_a nodad \
++				2>/dev/null
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			netserver -6 ${dst_port} -L "${dst_addr6}" \
++				>/dev/null 2>&1
++			sleep 2
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			B netperf -6 -H "${dst_addr6}" ${dst_port} \
++				-L "${src_addr6}" -l 1000 -t TCP_STREAM
++
++			src_addr6=3D
++			src_port=3D
++			dst_port=3D
++		}
++	else
++		return 1
++	fi
++}
++
++# Set up function to send UDP traffic on IPv4
++setup_flood_udp() {
++	if command -v iperf3 >/dev/null; then
++		flood_udp() {
++			[ -n "${dst_port}" ] && dst_port=3D"-p ${dst_port}"
++			if [ -n "${src_addr4}" ]; then
++				B ip addr add "${src_addr4}/16" dev veth_b
++				src_addr4=3D"-B ${src_addr4}"
++			else
++				B ip addr add dev veth_b 10.0.0.2 2>/dev/null
++				src_addr4=3D"-B 10.0.0.2"
++			fi
++			if [ -n "${src_port}" ]; then
++				src_port=3D"--cport ${src_port}"
++			fi
++			B ip route add default dev veth_b
++			ip addr add "${dst_addr4}" dev veth_a 2>/dev/null
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			iperf3 -s -DB "${dst_addr4}" ${dst_port}
++			sleep 2
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			B iperf3 -u -c "${dst_addr4}" -Z -b 100M -l16 -t1000 \
++				${dst_port} ${src_port} ${src_addr4}
++
++			src_addr4=3D
++			src_port=3D
++			dst_port=3D
++		}
++	elif command -v iperf >/dev/null; then
++		flood_udp() {
++			[ -n "${dst_port}" ] && dst_port=3D"-p ${dst_port}"
++			if [ -n "${src_addr4}" ]; then
++				B ip addr add "${src_addr4}/16" dev veth_b
++				src_addr4=3D"-B ${src_addr4}"
++			else
++				B ip addr add dev veth_b 10.0.0.2
++				src_addr4=3D"-B 10.0.0.2"
++			fi
++			if [ -n "${src_port}" ]; then
++				src_addr4=3D"${src_addr4}:${src_port}"
++			fi
++			B ip route add default dev veth_b
++			ip addr add "${dst_addr4}" dev veth_a 2>/dev/null
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			iperf -u -sDB "${dst_addr4}" ${dst_port} >/dev/null 2>&1
++			sleep 2
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			B iperf -u -c "${dst_addr4}" -b 100M -l1 -t1000 \
++				${dst_port} ${src_addr4}
++
++			src_addr4=3D
++			src_port=3D
++			dst_port=3D
++		}
++	elif command -v netperf >/dev/null; then
++		flood_udp() {
++			[ -n "${dst_port}" ] && dst_port=3D"-p ${dst_port}"
++			if [ -n "${src_addr4}" ]; then
++				B ip addr add "${src_addr4}/16" dev veth_b
++			else
++				B ip addr add dev veth_b 10.0.0.2
++				src_addr4=3D"10.0.0.2"
++			fi
++			if [ -n "${src_port}" ]; then
++				dst_port=3D"${dst_port},${src_port}"
++			fi
++			B ip route add default dev veth_b
++			ip addr add "${dst_addr4}" dev veth_a 2>/dev/null
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			netserver -4 ${dst_port} -L "${dst_addr4}" \
++				>/dev/null 2>&1
++			sleep 2
++
++			# shellcheck disable=3DSC2086 # this needs split options
++			B netperf -4 -H "${dst_addr4}" ${dst_port} \
++				-L "${src_addr4}" -l 1000 -t UDP_STREAM
++
++			src_addr4=3D
++			src_port=3D
++			dst_port=3D
++		}
++	else
++		return 1
++	fi
++}
++
++# Find pktgen script and set up function to start pktgen injection
++setup_perf() {
++	for pktgen_script_path in ${PKTGEN_SCRIPT_PATHS} __notfound; do
++		command -v "${pktgen_script_path}" >/dev/null && break
++	done
++	[ "${pktgen_script_path}" =3D "__notfound" ] && return 1
++
++	perf_ipv4() {
++		${pktgen_script_path} -s80 \
++			-i veth_a -d "${dst_addr4}" -p "${dst_port}" \
++			-m "${dst_mac}" \
++			-t $(($(nproc) / 5 + 1)) -b10000 -n0 2>/dev/null &
++		perf_pid=3D$!
 +	}
-+
-+	if (priv->clone) {
-+		for_each_possible_cpu(cpu)
-+			kfree(*per_cpu_ptr(priv->clone->scratch, cpu));
-+		free_percpu(priv->clone->scratch);
-+
-+		pipapo_free_fields(priv->clone);
-+		kfree(priv->clone);
-+		priv->clone =3D NULL;
++	perf_ipv6() {
++		IP6=3D6 ${pktgen_script_path} -s100 \
++			-i veth_a -d "${dst_addr6}" -p "${dst_port}" \
++			-m "${dst_mac}" \
++			-t $(($(nproc) / 5 + 1)) -b10000 -n0 2>/dev/null &
++		perf_pid=3D$!
 +	}
 +}
 +
-+/**
-+ * nft_pipapo_gc_init() - Initialise garbage collection
-+ * @set:	nftables API set representation
-+ *
-+ * Instead of actually setting up a periodic work for garbage collection=
-, as
-+ * this operation requires a swap of matching data with the working copy=
-, we'll
-+ * do that opportunistically with other commit operations if the interva=
-l is
-+ * elapsed, so we just need to set the current jiffies timestamp here.
-+ */
-+static void nft_pipapo_gc_init(const struct nft_set *set)
-+{
-+	struct nft_pipapo *priv =3D nft_set_priv(set);
-+
-+	priv->last_gc =3D jiffies;
++# Clean up before each test
++cleanup() {
++	nft reset counter inet filter test	>/dev/null 2>&1
++	nft flush ruleset			>/dev/null 2>&1
++	ip link del dummy0			2>/dev/null
++	ip route del default			2>/dev/null
++	ip -6 route del default			2>/dev/null
++	ip netns del B				2>/dev/null
++	ip link del veth_a			2>/dev/null
++	timeout=3D
++	killall iperf3				2>/dev/null
++	killall iperf				2>/dev/null
++	killall netperf				2>/dev/null
++	killall netserver			2>/dev/null
++	rm -f ${tmp}
++	sleep 2
 +}
 +
-+struct nft_set_type nft_set_pipapo_type __read_mostly =3D {
-+	.owner		=3D THIS_MODULE,
-+	.features	=3D NFT_SET_INTERVAL | NFT_SET_MAP | NFT_SET_OBJECT |
-+			  NFT_SET_TIMEOUT,
-+	.ops		=3D {
-+		.lookup		=3D nft_pipapo_lookup,
-+		.insert		=3D nft_pipapo_insert,
-+		.activate	=3D nft_pipapo_activate,
-+		.deactivate	=3D nft_pipapo_deactivate,
-+		.flush		=3D nft_pipapo_flush,
-+		.remove		=3D nft_pipapo_remove,
-+		.walk		=3D nft_pipapo_walk,
-+		.get		=3D nft_pipapo_get,
-+		.privsize	=3D nft_pipapo_privsize,
-+		.estimate	=3D nft_pipapo_estimate,
-+		.init		=3D nft_pipapo_init,
-+		.destroy	=3D nft_pipapo_destroy,
-+		.gc_init	=3D nft_pipapo_gc_init,
-+		.elemsize	=3D offsetof(struct nft_pipapo_elem, ext),
-+	},
-+};
++# Entry point for setup functions
++setup() {
++	if [ "$(id -u)" -ne 0 ]; then
++		echo "  need to run as root"
++		exit ${KSELFTEST_SKIP}
++	fi
++
++	cleanup
++	check_tools || return 1
++	for arg do
++		if ! eval setup_"${arg}"; then
++			err "  ${arg} not supported"
++			return 1
++		fi
++	done
++}
++
++# Format integer into IPv4 address, summing 10.0.0.5 (arbitrary) to it
++format_addr4() {
++	a=3D$((${1} + 16777216 * 10 + 5))
++	printf "%i.%i.%i.%i"						\
++	       "$((a / 16777216))" "$((a % 16777216 / 65536))"	\
++	       "$((a % 65536 / 256))" "$((a % 256))"
++}
++
++# Format integer into IPv6 address, summing 2001:db8:: to it
++format_addr6() {
++	printf "2001:db8::%04x:%04x" "$((${1} / 65536))" "$((${1} % 65536))"
++}
++
++# Format integer into EUI-48 address, summing 00:01:00:00:00:00 to it
++format_mac() {
++	printf "00:01:%02x:%02x:%02x:%02x" \
++	       "$((${1} / 16777216))" "$((${1} % 16777216 / 65536))"	\
++	       "$((${1} % 65536 / 256))" "$((${1} % 256))"
++}
++
++# Format integer into port, avoid 0 port
++format_port() {
++	printf "%i" "$((${1} % 65534 + 1))"
++}
++
++# Drop suffixed '6' from L4 protocol, if any
++format_proto() {
++	printf "%s" "${proto}" | tr -d 6
++}
++
++# Format destination and source fields into nft concatenated type
++format() {
++	__start=3D
++	__end=3D
++	__expr=3D"{ "
++
++	for f in ${dst}; do
++		[ "${__expr}" !=3D "{ " ] && __expr=3D"${__expr} . "
++
++		__start=3D"$(eval format_"${f}" "${start}")"
++		__end=3D"$(eval format_"${f}" "${end}")"
++
++		if [ "${f}" =3D "proto" ]; then
++			__expr=3D"${__expr}${__start}"
++		else
++			__expr=3D"${__expr}${__start}-${__end}"
++		fi
++	done
++	for f in ${src}; do
++		__expr=3D"${__expr} . "
++		__start=3D"$(eval format_"${f}" "${srcstart}")"
++		__end=3D"$(eval format_"${f}" "${srcend}")"
++
++		if [ "${f}" =3D "proto" ]; then
++			__expr=3D"${__expr}${__start}"
++		else
++			__expr=3D"${__expr}${__start}-${__end}"
++		fi
++	done
++
++	if [ -n "${timeout}" ]; then
++		echo "${__expr} timeout ${timeout}s }"
++	else
++		echo "${__expr} }"
++	fi
++}
++
++# Format destination and source fields into nft type, start element only
++format_norange() {
++	__expr=3D"{ "
++
++	for f in ${dst}; do
++		[ "${__expr}" !=3D "{ " ] && __expr=3D"${__expr} . "
++
++		__expr=3D"${__expr}$(eval format_"${f}" "${start}")"
++	done
++	for f in ${src}; do
++		__expr=3D"${__expr} . $(eval format_"${f}" "${start}")"
++	done
++
++	echo "${__expr} }"
++}
++
++# Format first destination field into nft type
++format_noconcat() {
++	for f in ${dst}; do
++		__start=3D"$(eval format_"${f}" "${start}")"
++		__end=3D"$(eval format_"${f}" "${end}")"
++
++		if [ "${f}" =3D "proto" ]; then
++			echo "{ ${__start} }"
++		else
++			echo "{ ${__start}-${__end} }"
++		fi
++		return
++	done
++}
++
++# Add single entry to 'test' set in 'inet filter' table
++add() {
++	if ! nft add element inet filter test "${1}"; then
++		err "Failed to add ${1} given ruleset:"
++		err "$(nft list ruleset -a)"
++		return 1
++	fi
++}
++
++# Format and output entries for sets in 'netdev perf' table
++add_perf() {
++	if [ "${1}" =3D "test" ]; then
++		echo "add element netdev perf test $(format)"
++	elif [ "${1}" =3D "norange" ]; then
++		echo "add element netdev perf norange $(format_norange)"
++	elif [ "${1}" =3D "noconcat" ]; then
++		echo "add element netdev perf noconcat $(format_noconcat)"
++	fi
++}
++
++# Add single entry to 'norange' set in 'netdev perf' table
++add_perf_norange() {
++	if ! nft add element netdev perf norange "${1}"; then
++		err "Failed to add ${1} given ruleset:"
++		err "$(nft list ruleset -a)"
++		return 1
++	fi
++}
++
++# Add single entry to 'noconcat' set in 'netdev perf' table
++add_perf_noconcat() {
++	if ! nft add element netdev perf noconcat "${1}"; then
++		err "Failed to add ${1} given ruleset:"
++		err "$(nft list ruleset -a)"
++		return 1
++	fi
++}
++
++# Delete single entry from set
++del() {
++	if ! nft delete element inet filter test "${1}"; then
++		err "Failed to delete ${1} given ruleset:"
++		err "$(nft list ruleset -a)"
++		return 1
++	fi
++}
++
++# Return packet count from 'test' counter in 'inet filter' table
++count_packets() {
++	found=3D0
++	for token in $(nft list counter inet filter test); do
++		[ ${found} -eq 1 ] && echo "${token}" && return
++		[ "${token}" =3D "packets" ] && found=3D1
++	done
++}
++
++# Return packet count from 'test' counter in 'netdev perf' table
++count_perf_packets() {
++	found=3D0
++	for token in $(nft list counter netdev perf test); do
++		[ ${found} -eq 1 ] && echo "${token}" && return
++		[ "${token}" =3D "packets" ] && found=3D1
++	done
++}
++
++# Set MAC addresses, send traffic according to specifier
++flood() {
++	ip link set veth_a address "$(format_mac "${1}")"
++	ip -n B link set veth_b address "$(format_mac "${2}")"
++
++	for f in ${dst}; do
++		eval dst_"$f"=3D\$\(format_\$f "${1}"\)
++	done
++	for f in ${src}; do
++		eval src_"$f"=3D\$\(format_\$f "${2}"\)
++	done
++	eval flood_\$proto
++}
++
++# Set MAC addresses, start pktgen injection
++perf() {
++	dst_mac=3D"$(format_mac "${1}")"
++	ip link set veth_a address "${dst_mac}"
++
++	for f in ${dst}; do
++		eval dst_"$f"=3D\$\(format_\$f "${1}"\)
++	done
++	for f in ${src}; do
++		eval src_"$f"=3D\$\(format_\$f "${2}"\)
++	done
++	eval perf_\$perf_proto
++}
++
++# Set MAC addresses, send single packet, check that it matches, reset co=
+unter
++send_match() {
++	ip link set veth_a address "$(format_mac "${1}")"
++	ip -n B link set veth_b address "$(format_mac "${2}")"
++
++	for f in ${dst}; do
++		eval dst_"$f"=3D\$\(format_\$f "${1}"\)
++	done
++	for f in ${src}; do
++		eval src_"$f"=3D\$\(format_\$f "${2}"\)
++	done
++	eval send_\$proto
++	if [ "$(count_packets)" !=3D "1" ]; then
++		err "${proto} packet to:"
++		err "  $(for f in ${dst}; do
++			 eval format_\$f "${1}"; printf ' '; done)"
++		err "from:"
++		err "  $(for f in ${src}; do
++			 eval format_\$f "${2}"; printf ' '; done)"
++		err "should have matched ruleset:"
++		err "$(nft list ruleset -a)"
++		return 1
++	fi
++	nft reset counter inet filter test >/dev/null
++}
++
++# Set MAC addresses, send single packet, check that it doesn't match
++send_nomatch() {
++	ip link set veth_a address "$(format_mac "${1}")"
++	ip -n B link set veth_b address "$(format_mac "${2}")"
++
++	for f in ${dst}; do
++		eval dst_"$f"=3D\$\(format_\$f "${1}"\)
++	done
++	for f in ${src}; do
++		eval src_"$f"=3D\$\(format_\$f "${2}"\)
++	done
++	eval send_\$proto
++	if [ "$(count_packets)" !=3D "0" ]; then
++		err "${proto} packet to:"
++		err "  $(for f in ${dst}; do
++			 eval format_\$f "${1}"; printf ' '; done)"
++		err "from:"
++		err "  $(for f in ${src}; do
++			 eval format_\$f "${2}"; printf ' '; done)"
++		err "should not have matched ruleset:"
++		err "$(nft list ruleset -a)"
++		return 1
++	fi
++}
++
++# Correctness test template:
++# - add ranged element, check that packets match it
++# - check that packets outside range don't match it
++# - remove some elements, check that packets don't match anymore
++test_correctness() {
++	setup veth send_"${proto}" set || return ${KSELFTEST_SKIP}
++
++	range_size=3D1
++	for i in $(seq "${start}" $((start + count))); do
++		end=3D$((start + range_size))
++
++		# Avoid negative or zero-sized port ranges
++		if [ $((end / 65534)) -gt $((start / 65534)) ]; then
++			start=3D${end}
++			end=3D$((end + 1))
++		fi
++		srcstart=3D$((start + src_delta))
++		srcend=3D$((end + src_delta))
++
++		add "$(format)" || return 1
++		for j in $(seq ${start} $((range_size / 2 + 1)) ${end}); do
++			send_match "${j}" $((j + src_delta)) || return 1
++		done
++		send_nomatch $((end + 1)) $((end + 1 + src_delta)) || return 1
++
++		# Delete elements now and then
++		if [ $((i % 3)) -eq 0 ]; then
++			del "$(format)" || return 1
++			for j in $(seq ${start} \
++				   $((range_size / 2 + 1)) ${end}); do
++				send_nomatch "${j}" $((j + src_delta)) \
++					|| return 1
++			done
++		fi
++
++		range_size=3D$((range_size + 1))
++		start=3D$((end + range_size))
++	done
++}
++
++# Concurrency test template:
++# - add all the elements
++# - start a thread for each physical thread that:
++#   - adds all the elements
++#   - flushes the set
++#   - adds all the elements
++#   - flushes the entire ruleset
++#   - adds the set back
++#   - adds all the elements
++#   - delete all the elements
++test_concurrency() {
++	proto=3D${flood_proto}
++	tools=3D${flood_tools}
++	chain_spec=3D${flood_spec}
++	setup veth flood_"${proto}" set || return ${KSELFTEST_SKIP}
++
++	range_size=3D1
++	cstart=3D${start}
++	flood_pids=3D
++	for i in $(seq ${start} $((start + count))); do
++		end=3D$((start + range_size))
++		srcstart=3D$((start + src_delta))
++		srcend=3D$((end + src_delta))
++
++		add "$(format)" || return 1
++
++		flood "${i}" $((i + src_delta)) & flood_pids=3D"${flood_pids} $!"
++
++		range_size=3D$((range_size + 1))
++		start=3D$((end + range_size))
++	done
++
++	sleep 10
++
++	pids=3D
++	for c in $(seq 1 "$(nproc)"); do (
++		for r in $(seq 1 "${race_repeat}"); do
++			range_size=3D1
++
++			# $start needs to be local to this subshell
++			# shellcheck disable=3DSC2030
++			start=3D${cstart}
++			for i in $(seq ${start} $((start + count))); do
++				end=3D$((start + range_size))
++				srcstart=3D$((start + src_delta))
++				srcend=3D$((end + src_delta))
++
++				add "$(format)" 2>/dev/null
++
++				range_size=3D$((range_size + 1))
++				start=3D$((end + range_size))
++			done
++
++			nft flush inet filter test 2>/dev/null
++
++			range_size=3D1
++			start=3D${cstart}
++			for i in $(seq ${start} $((start + count))); do
++				end=3D$((start + range_size))
++				srcstart=3D$((start + src_delta))
++				srcend=3D$((end + src_delta))
++
++				add "$(format)" 2>/dev/null
++
++				range_size=3D$((range_size + 1))
++				start=3D$((end + range_size))
++			done
++
++			nft flush ruleset
++			setup set 2>/dev/null
++
++			range_size=3D1
++			start=3D${cstart}
++			for i in $(seq ${start} $((start + count))); do
++				end=3D$((start + range_size))
++				srcstart=3D$((start + src_delta))
++				srcend=3D$((end + src_delta))
++
++				add "$(format)" 2>/dev/null
++
++				range_size=3D$((range_size + 1))
++				start=3D$((end + range_size))
++			done
++
++			range_size=3D1
++			start=3D${cstart}
++			for i in $(seq ${start} $((start + count))); do
++				end=3D$((start + range_size))
++				srcstart=3D$((start + src_delta))
++				srcend=3D$((end + src_delta))
++
++				del "$(format)" 2>/dev/null
++
++				range_size=3D$((range_size + 1))
++				start=3D$((end + range_size))
++			done
++		done
++	) & pids=3D"${pids} $!"
++	done
++
++	# shellcheck disable=3DSC2046,SC2086 # word splitting wanted here
++	wait $(for pid in ${pids}; do echo ${pid}; done)
++	# shellcheck disable=3DSC2046,SC2086
++	kill $(for pid in ${flood_pids}; do echo ${pid}; done) 2>/dev/null
++	# shellcheck disable=3DSC2046,SC2086
++	wait $(for pid in ${flood_pids}; do echo ${pid}; done) 2>/dev/null
++
++	return 0
++}
++
++# Timeout test template:
++# - add all the elements with 3s timeout while checking that packets mat=
+ch
++# - wait 3s after the last insertion, check that packets don't match any=
+ entry
++test_timeout() {
++	setup veth send_"${proto}" set || return ${KSELFTEST_SKIP}
++
++	timeout=3D3
++	range_size=3D1
++	for i in $(seq "${start}" $((start + count))); do
++		end=3D$((start + range_size))
++		srcstart=3D$((start + src_delta))
++		srcend=3D$((end + src_delta))
++
++		add "$(format)" || return 1
++
++		for j in $(seq ${start} $((range_size / 2 + 1)) ${end}); do
++			send_match "${j}" $((j + src_delta)) || return 1
++		done
++
++		range_size=3D$((range_size + 1))
++		start=3D$((end + range_size))
++	done
++	sleep 3
++	for i in $(seq ${start} $((start + count))); do
++		end=3D$((start + range_size))
++		srcstart=3D$((start + src_delta))
++		srcend=3D$((end + src_delta))
++
++		for j in $(seq ${start} $((range_size / 2 + 1)) ${end}); do
++			send_nomatch "${j}" $((j + src_delta)) || return 1
++		done
++
++		range_size=3D$((range_size + 1))
++		start=3D$((end + range_size))
++	done
++}
++
++# Performance test template:
++# - add concatenated ranged entries
++# - add non-ranged concatenated entries (for hash set matching rate base=
+line)
++# - add ranged entries with first field only (for rbhash baseline)
++# - start pktgen injection directly on device rx path of this namespace
++# - measure drop only rate, hash and rbtree baselines, then matching rat=
+e
++test_performance() {
++	chain_spec=3D${perf_spec}
++	dst=3D"${perf_dst}"
++	src=3D"${perf_src}"
++	setup veth perf set || return ${KSELFTEST_SKIP}
++
++	first=3D${start}
++	range_size=3D1
++	for set in test norange noconcat; do
++		start=3D${first}
++		for i in $(seq ${start} $((start + perf_entries))); do
++			end=3D$((start + range_size))
++			srcstart=3D$((start + src_delta))
++			srcend=3D$((end + src_delta))
++
++			if [ $((end / 65534)) -gt $((start / 65534)) ]; then
++				start=3D${end}
++				end=3D$((end + 1))
++			elif [ ${start} -eq ${end} ]; then
++				end=3D$((start + 1))
++			fi
++
++			add_perf ${set}
++
++			start=3D$((end + range_size))
++		done > "${tmp}"
++		nft -f "${tmp}"
++	done
++
++	perf $((end - 1)) ${srcstart}
++
++	sleep 2
++
++	nft add rule netdev perf test counter name \"test\" drop
++	nft reset counter netdev perf test >/dev/null 2>&1
++	sleep "${perf_duration}"
++	pps=3D"$(printf %10s $(($(count_perf_packets) / perf_duration)))"
++	info "    baseline (drop from netdev hook):            ${pps}pps"
++	handle=3D"$(nft -a list chain netdev perf test | grep counter)"
++	handle=3D"${handle##* }"
++	nft delete rule netdev perf test handle "${handle}"
++
++	nft add rule "netdev perf test ${chain_spec} @norange \
++		counter name \"test\" drop"
++	nft reset counter netdev perf test >/dev/null 2>&1
++	sleep "${perf_duration}"
++	pps=3D"$(printf %10s $(($(count_perf_packets) / perf_duration)))"
++	info "    baseline hash (non-ranged entries):          ${pps}pps"
++	handle=3D"$(nft -a list chain netdev perf test | grep counter)"
++	handle=3D"${handle##* }"
++	nft delete rule netdev perf test handle "${handle}"
++
++	nft add rule "netdev perf test ${chain_spec%%. *} @noconcat \
++		counter name \"test\" drop"
++	nft reset counter netdev perf test >/dev/null 2>&1
++	sleep "${perf_duration}"
++	pps=3D"$(printf %10s $(($(count_perf_packets) / perf_duration)))"
++	info "    baseline rbtree (match on first field only): ${pps}pps"
++	handle=3D"$(nft -a list chain netdev perf test | grep counter)"
++	handle=3D"${handle##* }"
++	nft delete rule netdev perf test handle "${handle}"
++
++	nft add rule "netdev perf test ${chain_spec} @test \
++		counter name \"test\" drop"
++	nft reset counter netdev perf test >/dev/null 2>&1
++	sleep "${perf_duration}"
++	pps=3D"$(printf %10s $(($(count_perf_packets) / perf_duration)))"
++	p5=3D"$(printf %5s "${perf_entries}")"
++	info "    set with ${p5} full, ranged entries:         ${pps}pps"
++	kill "${perf_pid}"
++}
++
++# Run everything in a separate network namespace
++[ "${1}" !=3D "run" ] && { unshare -n "${0}" run; exit $?; }
++tmp=3D"$(mktemp)"
++trap cleanup EXIT
++
++# Entry point for test runs
++passed=3D0
++for name in ${TESTS}; do
++	printf "TEST: %s\n" "${name}"
++	for type in ${TYPES}; do
++		eval desc=3D\$TYPE_"${type}"
++		IFS=3D'
++'
++		for __line in ${desc}; do
++			# shellcheck disable=3DSC2086
++			eval ${__line%%	*}=3D\"${__line##*	}\";
++		done
++		IFS=3D' =09
++'
++
++		if [ "${name}" =3D "concurrency" ] && \
++		   [ "${race_repeat}" =3D "0" ]; then
++			continue
++		fi
++		if [ "${name}" =3D "performance" ] && \
++		   [ "${perf_duration}" =3D "0" ]; then
++			continue
++		fi
++
++		printf "  %-60s  " "${display}"
++		eval test_"${name}"
++		ret=3D$?
++
++		if [ $ret -eq 0 ]; then
++			printf "[ OK ]\n"
++			info_flush
++			passed=3D$((passed + 1))
++		elif [ $ret -eq 1 ]; then
++			printf "[FAIL]\n"
++			err_flush
++			exit 1
++		elif [ $ret -eq ${KSELFTEST_SKIP} ]; then
++			printf "[SKIP]\n"
++			err_flush
++		fi
++	done
++done
++
++[ ${passed} -eq 0 ] && exit ${KSELFTEST_SKIP}
 --=20
 2.24.1
 
