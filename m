@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 013E7142099
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2020 23:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7877C14209D
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2020 23:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728894AbgASW5N (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 19 Jan 2020 17:57:13 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:56586 "EHLO
+        id S1728992AbgASW5P (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 19 Jan 2020 17:57:15 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:56588 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728913AbgASW5M (ORCPT
+        with ESMTP id S1728831AbgASW5M (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 19 Jan 2020 17:57:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,22 +18,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=4ffP/OLwVOxq8eHXa0FtGLsuHiJ0ANpb4pgERHNcUXw=; b=cptWjcoflStQGCc3yQG4TT4tKN
-        Zu/GszSlmGSTdWakQeEB0c1WNXJCoPkUri3FS8RoarBVw38GQQhKnSQFjoD6B1d0AN3vp/3J1kiwb
-        iVYjNayHtrPW6RWPtggsl9DrRTF6XtYKJbe+C9/M7JRAbZiouCJDoovuoB1M5juGrSmcuVOCkzfpg
-        mGfdfPwwRgM4R2kh8LpjXHf9P0/2lMcCnCVwBI/wSmmZB8FcSqFeFpG1+fhfSE7BbAo4kcEYwZ+gL
-        BoYxuEVwhhdRIsr/hN8HS/k+wZxerOZIXWPU5XPQqg+hRHc78owFmy3iWtTfnOeawT52yeFVm6zRB
-        GkpyMmeg==;
+        bh=I/9aln6VPeclFMdmeUBxtsAm2j9Sa/fJ2eCKpoqy/wA=; b=hThn4rYdh9MfslZb7z7HFjs4kw
+        TuV+pKlneYcygb6QOUiI/BeyU2hyixQOpUcFGOzw8t/l0P3gku5sGkbDVM8tmnts09Yw9IN3CXvlF
+        wdReVHcCyKGPLAL5Fqb/LWDQGsMBh/wH5UlzZvMdD2UOdn6zrhGa50bW0GGQH3sm50N8/tePhDgXS
+        aHLIT7DzFYXatkP8+5Y/fUaQ01OdvRI0NRLZJi9anvgpS6KtfGyRivx9lYxtCxi3d12nW0QO2hOR1
+        tKdsrq7ey5GeJO6jL3kchW+gOc0dIQG3YeF+HXulldf/0rOCG/9YEMe4CO8n690JQh7QyAAriy/sX
+        lnvxCjrw==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1itJVH-0006wh-8Q
+        id 1itJVH-0006wh-CX
         for netfilter-devel@vger.kernel.org; Sun, 19 Jan 2020 22:57:11 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v3 6/9] evaluate: change shift byte-order to host-endian.
-Date:   Sun, 19 Jan 2020 22:57:07 +0000
-Message-Id: <20200119225710.222976-7-jeremy@azazel.net>
+Subject: [PATCH nft v3 7/9] include: update nf_tables.h.
+Date:   Sun, 19 Jan 2020 22:57:08 +0000
+Message-Id: <20200119225710.222976-8-jeremy@azazel.net>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200119225710.222976-1-jeremy@azazel.net>
 References: <20200119225710.222976-1-jeremy@azazel.net>
@@ -47,28 +47,89 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The byte-order of the righthand operands of the right-shifts generated
-for payload and exthdr expressions is big-endian.  However, all right
-shift operands should be host-endian.
+The kernel UAPI header includes a couple of new bitwise netlink
+attributes and an enum.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/evaluate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/netfilter/nf_tables.h | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 5bd0858cbee1..52719f56abea 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -487,7 +487,7 @@ static void expr_evaluate_bits(struct eval_ctx *ctx, struct expr **exprp)
- 	if (shift) {
- 		off = constant_expr_alloc(&expr->location,
- 					  expr_basetype(expr),
--					  BYTEORDER_BIG_ENDIAN,
-+					  BYTEORDER_HOST_ENDIAN,
- 					  sizeof(shift), &shift);
+diff --git a/include/linux/netfilter/nf_tables.h b/include/linux/netfilter/nf_tables.h
+index 42ed5ca39477..261864736b26 100644
+--- a/include/linux/netfilter/nf_tables.h
++++ b/include/linux/netfilter/nf_tables.h
+@@ -144,12 +144,14 @@ enum nft_list_attributes {
+  * @NFTA_HOOK_HOOKNUM: netfilter hook number (NLA_U32)
+  * @NFTA_HOOK_PRIORITY: netfilter hook priority (NLA_U32)
+  * @NFTA_HOOK_DEV: netdevice name (NLA_STRING)
++ * @NFTA_HOOK_DEVS: list of netdevices (NLA_NESTED)
+  */
+ enum nft_hook_attributes {
+ 	NFTA_HOOK_UNSPEC,
+ 	NFTA_HOOK_HOOKNUM,
+ 	NFTA_HOOK_PRIORITY,
+ 	NFTA_HOOK_DEV,
++	NFTA_HOOK_DEVS,
+ 	__NFTA_HOOK_MAX
+ };
+ #define NFTA_HOOK_MAX		(__NFTA_HOOK_MAX - 1)
+@@ -482,6 +484,20 @@ enum nft_immediate_attributes {
+ };
+ #define NFTA_IMMEDIATE_MAX	(__NFTA_IMMEDIATE_MAX - 1)
  
- 		lshift = binop_expr_alloc(&expr->location, OP_RSHIFT, and, off);
++/**
++ * enum nft_bitwise_ops - nf_tables bitwise operations
++ *
++ * @NFT_BITWISE_BOOL: mask-and-xor operation used to implement NOT, AND, OR and
++ *                    XOR boolean operations
++ * @NFT_BITWISE_LSHIFT: left-shift operation
++ * @NFT_BITWISE_RSHIFT: right-shift operation
++ */
++enum nft_bitwise_ops {
++	NFT_BITWISE_BOOL,
++	NFT_BITWISE_LSHIFT,
++	NFT_BITWISE_RSHIFT,
++};
++
+ /**
+  * enum nft_bitwise_attributes - nf_tables bitwise expression netlink attributes
+  *
+@@ -490,6 +506,9 @@ enum nft_immediate_attributes {
+  * @NFTA_BITWISE_LEN: length of operands (NLA_U32)
+  * @NFTA_BITWISE_MASK: mask value (NLA_NESTED: nft_data_attributes)
+  * @NFTA_BITWISE_XOR: xor value (NLA_NESTED: nft_data_attributes)
++ * @NFTA_BITWISE_OP: type of operation (NLA_U32: nft_bitwise_ops)
++ * @NFTA_BITWISE_DATA: argument for non-boolean operations
++ *                     (NLA_NESTED: nft_data_attributes)
+  *
+  * The bitwise expression supports boolean and shift operations.  It implements
+  * the boolean operations by performing the following operation:
+@@ -511,6 +530,8 @@ enum nft_bitwise_attributes {
+ 	NFTA_BITWISE_LEN,
+ 	NFTA_BITWISE_MASK,
+ 	NFTA_BITWISE_XOR,
++	NFTA_BITWISE_OP,
++	NFTA_BITWISE_DATA,
+ 	__NFTA_BITWISE_MAX
+ };
+ #define NFTA_BITWISE_MAX	(__NFTA_BITWISE_MAX - 1)
+@@ -1521,6 +1542,7 @@ enum nft_object_attributes {
+  * @NFTA_FLOWTABLE_HOOK: netfilter hook configuration(NLA_U32)
+  * @NFTA_FLOWTABLE_USE: number of references to this flow table (NLA_U32)
+  * @NFTA_FLOWTABLE_HANDLE: object handle (NLA_U64)
++ * @NFTA_FLOWTABLE_FLAGS: flags (NLA_U32)
+  */
+ enum nft_flowtable_attributes {
+ 	NFTA_FLOWTABLE_UNSPEC,
+@@ -1530,6 +1552,7 @@ enum nft_flowtable_attributes {
+ 	NFTA_FLOWTABLE_USE,
+ 	NFTA_FLOWTABLE_HANDLE,
+ 	NFTA_FLOWTABLE_PAD,
++	NFTA_FLOWTABLE_FLAGS,
+ 	__NFTA_FLOWTABLE_MAX
+ };
+ #define NFTA_FLOWTABLE_MAX	(__NFTA_FLOWTABLE_MAX - 1)
 -- 
 2.24.1
 
