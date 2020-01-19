@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0040E14209E
-	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2020 23:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013E7142099
+	for <lists+netfilter-devel@lfdr.de>; Sun, 19 Jan 2020 23:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728831AbgASW5P (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 19 Jan 2020 17:57:15 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:56584 "EHLO
+        id S1728894AbgASW5N (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 19 Jan 2020 17:57:13 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:56586 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728895AbgASW5M (ORCPT
+        with ESMTP id S1728913AbgASW5M (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 19 Jan 2020 17:57:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,22 +18,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=9J6vMRqXwsp855kEhNzUy8m+HTiK0YbTGvnaOBpsjMI=; b=FTpiQCMf66LaWSq7OSHX+Lu2Ed
-        fr/mnGvJsO2F3QwXbD4yR2BAqBgaZaIqzlsKsfTOkwRCEl6aCbf8443YQydd/1EO+FVkttZyaOYTo
-        UaLwQEyO0oIla0c8PrxP/fe+H8zhssAI609nZnHCN3QK28KnqHe8Xxxp1g2yeMNvGz5lYkbx/ppEl
-        WYZso39GDmPkYqOOCkrBxz75Xwa9P9kMqzbt2hpxp2lSeUT0e+sy6mSZmcQLtkhrBdLcho+Zzfx5h
-        nGMWV7HdNzKO/0PZmzOoGfAEpjPKA1QztwQgZC1khVDFzRMWiPbMJjIbE23uh0w5trsofz5Sab8BT
-        R1/0IH6w==;
+        bh=4ffP/OLwVOxq8eHXa0FtGLsuHiJ0ANpb4pgERHNcUXw=; b=cptWjcoflStQGCc3yQG4TT4tKN
+        Zu/GszSlmGSTdWakQeEB0c1WNXJCoPkUri3FS8RoarBVw38GQQhKnSQFjoD6B1d0AN3vp/3J1kiwb
+        iVYjNayHtrPW6RWPtggsl9DrRTF6XtYKJbe+C9/M7JRAbZiouCJDoovuoB1M5juGrSmcuVOCkzfpg
+        mGfdfPwwRgM4R2kh8LpjXHf9P0/2lMcCnCVwBI/wSmmZB8FcSqFeFpG1+fhfSE7BbAo4kcEYwZ+gL
+        BoYxuEVwhhdRIsr/hN8HS/k+wZxerOZIXWPU5XPQqg+hRHc78owFmy3iWtTfnOeawT52yeFVm6zRB
+        GkpyMmeg==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1itJVH-0006wh-4J
+        id 1itJVH-0006wh-8Q
         for netfilter-devel@vger.kernel.org; Sun, 19 Jan 2020 22:57:11 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v3 5/9] parser: add parenthesized statement expressions.
-Date:   Sun, 19 Jan 2020 22:57:06 +0000
-Message-Id: <20200119225710.222976-6-jeremy@azazel.net>
+Subject: [PATCH nft v3 6/9] evaluate: change shift byte-order to host-endian.
+Date:   Sun, 19 Jan 2020 22:57:07 +0000
+Message-Id: <20200119225710.222976-7-jeremy@azazel.net>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200119225710.222976-1-jeremy@azazel.net>
 References: <20200119225710.222976-1-jeremy@azazel.net>
@@ -47,51 +47,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Primary and primary RHS expressions support parenthesized basic and
-basic RHS expressions.  However, primary statement expressions do not
-support parenthesized basic statement expressions.  Add them.
+The byte-order of the righthand operands of the right-shifts generated
+for payload and exthdr expressions is big-endian.  However, all right
+shift operands should be host-endian.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/parser_bison.y | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ src/evaluate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 799f7a308b07..45cc013cfe28 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -2992,18 +2992,19 @@ synproxy_sack		:	/* empty */	{ $$ = 0; }
- 			}
- 			;
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 5bd0858cbee1..52719f56abea 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -487,7 +487,7 @@ static void expr_evaluate_bits(struct eval_ctx *ctx, struct expr **exprp)
+ 	if (shift) {
+ 		off = constant_expr_alloc(&expr->location,
+ 					  expr_basetype(expr),
+-					  BYTEORDER_BIG_ENDIAN,
++					  BYTEORDER_HOST_ENDIAN,
+ 					  sizeof(shift), &shift);
  
--primary_stmt_expr	:	symbol_expr		{ $$ = $1; }
--			|	integer_expr		{ $$ = $1; }
--			|	boolean_expr		{ $$ = $1; }
--			|	meta_expr		{ $$ = $1; }
--			|	rt_expr			{ $$ = $1; }
--			|	ct_expr			{ $$ = $1; }
--			|	numgen_expr             { $$ = $1; }
--			|	hash_expr               { $$ = $1; }
--			|	payload_expr		{ $$ = $1; }
--			|	keyword_expr		{ $$ = $1; }
--			|	socket_expr		{ $$ = $1; }
--			|	osf_expr		{ $$ = $1; }
-+primary_stmt_expr	:	symbol_expr			{ $$ = $1; }
-+			|	integer_expr			{ $$ = $1; }
-+			|	boolean_expr			{ $$ = $1; }
-+			|	meta_expr			{ $$ = $1; }
-+			|	rt_expr				{ $$ = $1; }
-+			|	ct_expr				{ $$ = $1; }
-+			|	numgen_expr             	{ $$ = $1; }
-+			|	hash_expr               	{ $$ = $1; }
-+			|	payload_expr			{ $$ = $1; }
-+			|	keyword_expr			{ $$ = $1; }
-+			|	socket_expr			{ $$ = $1; }
-+			|	osf_expr			{ $$ = $1; }
-+			|	'('	basic_stmt_expr	')'	{ $$ = $2; }
- 			;
- 
- shift_stmt_expr		:	primary_stmt_expr
+ 		lshift = binop_expr_alloc(&expr->location, OP_RSHIFT, and, off);
 -- 
 2.24.1
 
