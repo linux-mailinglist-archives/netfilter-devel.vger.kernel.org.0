@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BDC6142F86
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jan 2020 17:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07069142F8B
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jan 2020 17:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729145AbgATQZt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Jan 2020 11:25:49 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:60796 "EHLO orbyte.nwl.cc"
+        id S1726982AbgATQ0H (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 Jan 2020 11:26:07 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:60814 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726988AbgATQZt (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 Jan 2020 11:25:49 -0500
-Received: from localhost ([::1]:45654 helo=tatos)
+        id S1726897AbgATQ0H (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 20 Jan 2020 11:26:07 -0500
+Received: from localhost ([::1]:45672 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1itZs4-00062L-6X; Mon, 20 Jan 2020 17:25:48 +0100
+        id 1itZsL-00063k-6C; Mon, 20 Jan 2020 17:26:05 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 2/4] netlink: Fix leaks in netlink_parse_cmp()
-Date:   Mon, 20 Jan 2020 17:25:38 +0100
-Message-Id: <20200120162540.9699-3-phil@nwl.cc>
+Subject: [nft PATCH 3/4] segtree: Fix for potential NULL-pointer deref in ei_insert()
+Date:   Mon, 20 Jan 2020 17:25:39 +0100
+Message-Id: <20200120162540.9699-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200120162540.9699-1-phil@nwl.cc>
 References: <20200120162540.9699-1-phil@nwl.cc>
@@ -31,63 +31,75 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This fixes several problems at once:
+Covscan complained about potential deref of NULL 'lei' pointer,
+Interestingly this can't happen as the relevant goto leading to that
+(in line 260) sits in code checking conflicts between new intervals and
+since those are sorted upon insertion, only the lower boundary may
+conflict (or both, but that's covered before).
 
-* Err path would leak expr 'right' in two places and 'left' in one.
-* Concat case would leak 'right' by overwriting the pointer. Introduce a
-  temporary variable to hold the new pointer.
+Given the needed investigation to proof covscan wrong and the actually
+wrong (but impossible) code, better fix this as if element ordering was
+arbitrary to avoid surprises if at some point it really becomes that.
 
-Fixes: 6377380bc265f ("netlink_delinearize: handle relational and lookup concat expressions")
+Fixes: 4d6ad0f310d6c ("segtree: check for overlapping elements at insertion")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/netlink_delinearize.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ src/segtree.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index 06a0312b9921a..88dbd5a8ecdf3 100644
---- a/src/netlink_delinearize.c
-+++ b/src/netlink_delinearize.c
-@@ -274,7 +274,7 @@ static void netlink_parse_cmp(struct netlink_parse_ctx *ctx,
- {
- 	struct nft_data_delinearize nld;
- 	enum nft_registers sreg;
--	struct expr *expr, *left, *right;
-+	struct expr *expr, *left, *right, *tmp;
- 	enum ops op;
+diff --git a/src/segtree.c b/src/segtree.c
+index e8e32412f3a41..04c0e915263b9 100644
+--- a/src/segtree.c
++++ b/src/segtree.c
+@@ -205,8 +205,11 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 		pr_gmp_debug("insert: [%Zx %Zx]\n", new->left, new->right);
  
- 	sreg = netlink_parse_register(nle, NFTNL_EXPR_CMP_SREG);
-@@ -291,19 +291,26 @@ static void netlink_parse_cmp(struct netlink_parse_ctx *ctx,
- 
- 	if (left->len > right->len &&
- 	    expr_basetype(left) != &string_type) {
--		return netlink_error(ctx, loc, "Relational expression size mismatch");
-+		netlink_error(ctx, loc, "Relational expression size mismatch");
-+		goto err_free;
- 	} else if (left->len > 0 && left->len < right->len) {
- 		expr_free(left);
- 		left = netlink_parse_concat_expr(ctx, loc, sreg, right->len);
- 		if (left == NULL)
--			return;
--		right = netlink_parse_concat_data(ctx, loc, sreg, right->len, right);
--		if (right == NULL)
--			return;
-+			goto err_free;
-+		tmp = netlink_parse_concat_data(ctx, loc, sreg, right->len, right);
-+		if (tmp == NULL)
-+			goto err_free;
-+		expr_free(right);
-+		right = tmp;
- 	}
- 
- 	expr = relational_expr_alloc(loc, op, left, right);
- 	ctx->stmt = expr_stmt_alloc(loc, expr);
-+	return;
-+err_free:
-+	expr_free(left);
-+	expr_free(right);
+ 	if (lei != NULL && rei != NULL && lei == rei) {
+-		if (!merge)
++		if (!merge) {
++			expr_binary_error(msgs, lei->expr, new->expr,
++					  "conflicting intervals specified");
+ 			goto err;
++		}
+ 		/*
+ 		 * The new interval is entirely contained in the same interval,
+ 		 * split it into two parts:
+@@ -228,8 +231,11 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 		ei_destroy(lei);
+ 	} else {
+ 		if (lei != NULL) {
+-			if (!merge)
++			if (!merge) {
++				expr_binary_error(msgs, lei->expr, new->expr,
++						  "conflicting intervals specified");
+ 				goto err;
++			}
+ 			/*
+ 			 * Left endpoint is within lei, adjust it so we have:
+ 			 *
+@@ -248,8 +254,11 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 			}
+ 		}
+ 		if (rei != NULL) {
+-			if (!merge)
++			if (!merge) {
++				expr_binary_error(msgs, rei->expr, new->expr,
++						  "conflicting intervals specified");
+ 				goto err;
++			}
+ 			/*
+ 			 * Right endpoint is within rei, adjust it so we have:
+ 			 *
+@@ -276,8 +285,7 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 	return 0;
+ err:
+ 	errno = EEXIST;
+-	return expr_binary_error(msgs, lei->expr, new->expr,
+-				 "conflicting intervals specified");
++	return -1;
  }
  
- static void netlink_parse_lookup(struct netlink_parse_ctx *ctx,
+ /*
 -- 
 2.24.1
 
