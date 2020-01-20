@@ -2,78 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7B7142BFE
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jan 2020 14:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7F1142C1D
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jan 2020 14:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgATNWH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Jan 2020 08:22:07 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:35445 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbgATNWH (ORCPT
+        id S1726860AbgATNcM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 Jan 2020 08:32:12 -0500
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:38154 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726619AbgATNcL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 Jan 2020 08:22:07 -0500
-Received: from [154.119.55.242] (helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1itWy2-0005zt-Dn; Mon, 20 Jan 2020 13:19:46 +0000
-Date:   Mon, 20 Jan 2020 14:19:31 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     syzbot <syzbot+6491ea8f6dddbf04930e@syzkaller.appspotmail.com>
-Cc:     a@unstable.cc, akpm@linux-foundation.org, allison@lohutok.net,
-        arnd@arndb.de, axboe@kernel.dk, b.a.t.m.a.n@lists.open-mesh.org,
-        bp@alien8.de, catalin.marinas@arm.com, chris@zankel.net,
-        christian@brauner.io, coreteam@netfilter.org, davem@davemloft.net,
-        elena.reshetova@intel.com, florent.fourcot@wifirst.fr,
-        fw@strlen.de, geert@linux-m68k.org, hare@suse.com,
-        heiko.carstens@de.ibm.com, hpa@zytor.com, info@metux.net,
-        jcmvbkbc@gmail.com, jeremy@azazel.net, johannes.berg@intel.com,
-        kadlec@netfilter.org, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux@armlinux.org.uk,
-        mareklindner@neomailbox.ch, mingo@redhat.com,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, peterz@infradead.org, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        viro@zeniv.linux.org.uk, will@kernel.org, x86@kernel.org
-Subject: Re: KASAN: slab-out-of-bounds Read in bitmap_ip_ext_cleanup
-Message-ID: <20200120131930.pbhbsrm4bk4lq3d7@wittgenstein>
-References: <000000000000bdb5b2059c865f5c@google.com>
- <000000000000c795fa059c884c21@google.com>
+        Mon, 20 Jan 2020 08:32:11 -0500
+Received: by mail-wr1-f42.google.com with SMTP id y17so29602146wrh.5
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jan 2020 05:32:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=qoYU9G5GnUft0Bhwtiyk0CMTN1t+3TmPkDgbVRXg1Ys=;
+        b=k/L4E5kctJ4oaYevtakL/XCMG/sJTUQzMQRcaQH0I19OpzbnedJT4rZryaKmgZkfVD
+         k/pPqLfO1vMSHQMgP6JRmTOVjeYsU6uoazp7C5QMRZ+T0dOqrIW30h/t+kyg5NB94Hhs
+         6yC82coW+ESz97SMYCz6UMT0kRBoLwACJIJ/+HVCtVG6e4adjVO4sgG9MAPHoLX3TaM2
+         yrDoK8E4wndr7myhs9FbaxQobs+5AMLrOPWTzxA4XB1OjZVddiCp/ARPdllOAN6G3O7+
+         uoS9g+0cPyRICNQBW7LaOjFjDPefSoqegze2fCBMMyib5qZlqIBiiYB+cV0vKx1HbwlE
+         IG4g==
+X-Gm-Message-State: APjAAAXQE2S9yBud5NAFYfQj9SiXSA54jda2bLDZblYMOr06a+ja5Yh7
+        PwesYOOhnv7Et2dHoShilTrXl1Lz
+X-Google-Smtp-Source: APXvYqw1AcxSna4znY/T1dhMhfHXIpZa3PTd7ZLp2dDEy9J9QYe+nuz/LkvZKUZexZZscMSs/eu2qA==
+X-Received: by 2002:adf:f052:: with SMTP id t18mr17507190wro.192.1579527129813;
+        Mon, 20 Jan 2020 05:32:09 -0800 (PST)
+Received: from localhost (static.68.138.194.213.ibercom.com. [213.194.138.68])
+        by smtp.gmail.com with ESMTPSA id a5sm22958979wmb.37.2020.01.20.05.32.08
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jan 2020 05:32:09 -0800 (PST)
+Subject: [iptables PATCH] .gitignore: add nano/vim swap file
+From:   Arturo Borrero Gonzalez <arturo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Date:   Mon, 20 Jan 2020 14:32:08 +0100
+Message-ID: <157952712805.68254.8601217027637177739.stgit@endurance>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <000000000000c795fa059c884c21@google.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sun, Jan 19, 2020 at 05:35:01PM -0800, syzbot wrote:
-> syzbot has bisected this bug to:
-> 
-> commit d68dbb0c9ac8b1ff52eb09aa58ce6358400fa939
-> Author: Christian Brauner <christian@brauner.io>
-> Date:   Thu Jun 20 23:26:35 2019 +0000
-> 
->     arch: handle arches who do not yet define clone3
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1456fed1e00000
-> start commit:   09d4f10a net: sched: act_ctinfo: fix memory leak
-> git tree:       net
-> final crash:    https://syzkaller.appspot.com/x/report.txt?x=1656fed1e00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1256fed1e00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7e89bd00623fe71e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=6491ea8f6dddbf04930e
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=141af959e00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1067fa85e00000
-> 
-> Reported-by: syzbot+6491ea8f6dddbf04930e@syzkaller.appspotmail.com
-> Fixes: d68dbb0c9ac8 ("arch: handle arches who do not yet define clone3")
-> 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Ignore swap/lock files for nano/vim. Not interested in git being aware of them.
 
-This bisect seems bogus.
+Signed-off-by: Arturo Borrero Gonzalez <arturo@netfilter.org>
+---
+ .gitignore |    3 +++
+ 1 file changed, 3 insertions(+)
 
-Christian
+diff --git a/.gitignore b/.gitignore
+index 92eb178a..e5595264 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,6 @@ Makefile.in
+ 
+ /iptables/xtables-multi
+ /iptables/xtables-compat-multi
++
++# vim/nano swap file
++*.swp
+
