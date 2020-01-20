@@ -2,78 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF556143163
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jan 2020 19:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F28143272
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jan 2020 20:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728205AbgATSWB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Jan 2020 13:22:01 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:39272 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726982AbgATSWB (ORCPT
+        id S1726642AbgATTdh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 Jan 2020 14:33:37 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:40377 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726876AbgATTdh (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 Jan 2020 13:22:01 -0500
-Received: by mail-il1-f199.google.com with SMTP id n6so313517ile.6
-        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jan 2020 10:22:01 -0800 (PST)
+        Mon, 20 Jan 2020 14:33:37 -0500
+Received: by mail-ed1-f67.google.com with SMTP id b8so591997edx.7
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jan 2020 11:33:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=z7I/Kq2V0EnXiuoACdRbnwoAql3KZ080nwyXVjlruyU=;
+        b=r3DrUTEYIkO/ZZmuG0bfjzej45ksHlbEkayh/cFJK2b5BPUDKRSQwjXDvsBjVSpEi7
+         4dYmZAl0ukzXCxSHF3PbK/lkAsTr3b20dR+l5/D/oM+k3+Df6/KvHDZlXbUwT9e8plRv
+         x4vv1yC/tRiqjHZfNDrJR5J95MCSkTNOGlU/qcLOxqORGYde4ECqAxGSH9D7RbX7JTh/
+         nopcSBXr917/+al+1ziE5ZGIpugvq5NsNNMKlTi8iThGepCQhuvGPGZ9Mnu1OZkSED8+
+         y6JQvn9lkQmXBUTnb5OeIePMpCznc7d4eMoxYnWE5h/EokXeedJfPWd5lzXuxFDKb8/z
+         YYiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=MqDXOoM9vvTcTH3u9+KklRDGAKW3hOgR3ZSR/h+boWo=;
-        b=uEgFRclT6XakumetGDthd9PWFaqPbmjCf7t97++FKqLvH1bdWpNZruNphSNqdNX+fo
-         jCQfh8t+23e9NZHxwInMDWEWjTjYW4P1MXb7JETP0Sp+Vik+6ssJj433N+FmGOJ6uwtG
-         PcBzv9yvQ7nsIvxhAcffdq7CoHs3/ZchKG2RvejVZXla7GsA9jGk+yzHayp+f6vorVZS
-         Xq67TBTwns/S3HUaviQj2sMf6i1VVDgUxaM6L8Oc+5Cb32gVuI8YqUXXEbsu67x2/o5M
-         /Cg4tWq6wXBkKtwpDxPdGBW0Kos4Pv2K5JpwSACBNUdUfnDbESkQVhz8B63mUsiIJNe2
-         VNsw==
-X-Gm-Message-State: APjAAAXLl2jLkGf8hha5WTMxrzTNxtMGEmQgJnIaxaqXFDtSSuNvzoQc
-        qb6MqaweTLkHAFYV3umy7+06hY1FD8FxHlB/WdemsWchD5Tp
-X-Google-Smtp-Source: APXvYqzfQyTnxVv2xv/HZdiNuXYYiHLNeNXNJ6hv0nTAZFxD/xXg/rkalEYxh8LA+d9fc9B6xIMLWxfmsZDaI5AWugpAqhqpGZ/4
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=z7I/Kq2V0EnXiuoACdRbnwoAql3KZ080nwyXVjlruyU=;
+        b=KCIsFqu0Ps8UL9qVZImkxErDKGkMuD0Fve29XWFWcdic5TH7DlrrNq7+fLOpi/7KLL
+         +GNZ1ZT/496pZFYsAa6I+qy0Eo+/3vWF/k0KnVwS4jTuExaxr3ghX+BrK3jbQ/nnOfBz
+         iuy5KO/wzeVRXQv59gQWyJEIv+ALM4sCd5cTzhe18BDhY9mOI1Tfve5VlR7LwiU2Mal9
+         g5MaEDaLbibzOi4kkd6eKL/hjo/7XJRv1HQAV7CTy6/ROX18nENcNxROS9HUGhbJcMvo
+         ygmTIExiuh0eYnu7TCWBJBtwV+cbYaALzF8aNUp9PFiWio5QZf+iMpcqk3MIgh0UmDcf
+         yAeQ==
+X-Gm-Message-State: APjAAAVDUTtR/z4kdszHeQjKMNPL5PdgMaxKXsq5Mwe94giUyZ+gl1Ix
+        RQzgKc+PoVruc1ylNoUVkhPEqsMGRdBYyHFlNfk=
+X-Google-Smtp-Source: APXvYqyJoeBwMjOUFVb4rRKaMb2Wo2trWQbHWq9LT6dE3AF2uY5SdssVia1mkWp/XjJP15g2SBdFIMhneNFN5hKKlhc=
+X-Received: by 2002:a50:cd11:: with SMTP id z17mr680749edi.178.1579548815817;
+ Mon, 20 Jan 2020 11:33:35 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:856a:: with SMTP id g97mr227401jai.97.1579544520986;
- Mon, 20 Jan 2020 10:22:00 -0800 (PST)
-Date:   Mon, 20 Jan 2020 10:22:00 -0800
-In-Reply-To: <00000000000043aa29059c91459e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000149402059c965e75@google.com>
-Subject: Re: KASAN: slab-out-of-bounds Read in bitmap_ipmac_gc
-From:   syzbot <syzbot+c1a1fb435465986efe35@syzkaller.appspotmail.com>
-To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        gregkh@linuxfoundation.org, info@metux.net, jeremy@azazel.net,
-        kadlec@netfilter.org, kstewart@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lipeng321@huawei.com,
-        liuyonglong@huawei.com, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, salil.mehta@huawei.com, sbrivio@redhat.com,
-        shuliubin@huawei.com, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        yisen.zhuang@huawei.com
+Received: by 2002:a05:6402:22dc:0:0:0:0 with HTTP; Mon, 20 Jan 2020 11:33:34
+ -0800 (PST)
+Reply-To: mcclainejohn.13@gmail.com
+From:   "Prof, William Roberts" <eco.bank1204@gmail.com>
+Date:   Mon, 20 Jan 2020 20:33:34 +0100
+Message-ID: <CAOE+jABMpScnNbVzJw187UfEGCbxUyLoDxZJuoy2jynswz9RFw@mail.gmail.com>
+Subject: Contact Diplomatic Agent, Mr. Mcclaine John to receive your ATM CARD
+ valued the sum of $12.8Million United States Dollars
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-syzbot has bisected this bug to:
+Attn: Dear Beneficiary,
 
-commit 0d581ba311a27762fe1a14e5db5f65d225b3d844
-Author: Yonglong Liu <liuyonglong@huawei.com>
-Date:   Wed Jul 3 11:12:30 2019 +0000
+I wish to inform you that the diplomatic agent conveying your ATM CARD
+valued the sum of $12.8Million United States Dollars has misplaced
+your address and he is currently stranded at (George Bush
+International Airport) Houston Texas USA now
+We required you to reconfirm the following information's below to him
+so that he can deliver your Payment CARD to you today or tomorrow
+morning as information provided with open communications via email and
+telephone for security reasons.
+HERE IS THE DETAILS  HE NEED FROM YOU URGENT
+YOUR FULL NAME:========
+ADDRESS:========
+MOBILE NO:========
+NAME OF YOUR NEAREST AIRPORT:========
+A COPY OF YOUR IDENTIFICATION :========
 
-    net: hns: add support for vlan TSO
+Note; do contact the diplomatic agent immediately through the
+information's listed below
+Contact Person: Diplomatic Agent, Mr. Mcclaine John
+EMAIL: mcclainejohn.13@gmail.com
+Tel:(223) 777-7518
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16d5dfaee00000
-start commit:   def9d278 Linux 5.5-rc7
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=15d5dfaee00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11d5dfaee00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cf8e288883e40aba
-dashboard link: https://syzkaller.appspot.com/bug?extid=c1a1fb435465986efe35
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153ac495e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=153471d1e00000
+Contact the diplomatic agent immediately
+because he is waiting to hear from you today with the needed information's.
 
-Reported-by: syzbot+c1a1fb435465986efe35@syzkaller.appspotmail.com
-Fixes: 0d581ba311a2 ("net: hns: add support for vlan TSO")
+NOTE: The Diplomatic agent does not know that the content of the
+consignment box is $12.800,000,00 Million United States Dollars and on
+no circumstances should you let him know the content. The consignment
+was moved from here as family treasures, so never allow him to open
+the box. Please I have paid delivery fees for you but the only money
+you must send to Mcclaine John is your ATM CARD delivery fee $25.00
+only. text Him as you contact Him Immediately
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Thanks,
+with Regards.
+Prof, William Roberts
+Director DHL COURIER SERVICES-Benin
