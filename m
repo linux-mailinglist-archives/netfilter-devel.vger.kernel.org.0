@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07069142F8B
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jan 2020 17:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D194142F88
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jan 2020 17:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgATQ0H (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Jan 2020 11:26:07 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:60814 "EHLO orbyte.nwl.cc"
+        id S1726988AbgATQZz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 Jan 2020 11:25:55 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:60802 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726897AbgATQ0H (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 Jan 2020 11:26:07 -0500
-Received: from localhost ([::1]:45672 helo=tatos)
+        id S1726897AbgATQZz (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 20 Jan 2020 11:25:55 -0500
+Received: from localhost ([::1]:45660 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1itZsL-00063k-6C; Mon, 20 Jan 2020 17:26:05 +0100
+        id 1itZs9-000633-RM; Mon, 20 Jan 2020 17:25:53 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 3/4] segtree: Fix for potential NULL-pointer deref in ei_insert()
-Date:   Mon, 20 Jan 2020 17:25:39 +0100
-Message-Id: <20200120162540.9699-4-phil@nwl.cc>
+Subject: [nft PATCH 4/4] netlink: Avoid potential NULL-pointer deref in netlink_gen_payload_stmt()
+Date:   Mon, 20 Jan 2020 17:25:40 +0100
+Message-Id: <20200120162540.9699-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200120162540.9699-1-phil@nwl.cc>
 References: <20200120162540.9699-1-phil@nwl.cc>
@@ -31,75 +31,29 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Covscan complained about potential deref of NULL 'lei' pointer,
-Interestingly this can't happen as the relevant goto leading to that
-(in line 260) sits in code checking conflicts between new intervals and
-since those are sorted upon insertion, only the lower boundary may
-conflict (or both, but that's covered before).
+With payload_needs_l4csum_update_pseudohdr() unconditionally
+dereferencing passed 'desc' parameter and a previous check for it to be
+non-NULL, make sure to call the function only if input is sane.
 
-Given the needed investigation to proof covscan wrong and the actually
-wrong (but impossible) code, better fix this as if element ordering was
-arbitrary to avoid surprises if at some point it really becomes that.
-
-Fixes: 4d6ad0f310d6c ("segtree: check for overlapping elements at insertion")
+Fixes: 68de70f2b3fc6 ("netlink_linearize: fix IPv6 layer 4 checksum mangling")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/segtree.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ src/netlink_linearize.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/segtree.c b/src/segtree.c
-index e8e32412f3a41..04c0e915263b9 100644
---- a/src/segtree.c
-+++ b/src/segtree.c
-@@ -205,8 +205,11 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
- 		pr_gmp_debug("insert: [%Zx %Zx]\n", new->left, new->right);
- 
- 	if (lei != NULL && rei != NULL && lei == rei) {
--		if (!merge)
-+		if (!merge) {
-+			expr_binary_error(msgs, lei->expr, new->expr,
-+					  "conflicting intervals specified");
- 			goto err;
-+		}
- 		/*
- 		 * The new interval is entirely contained in the same interval,
- 		 * split it into two parts:
-@@ -228,8 +231,11 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
- 		ei_destroy(lei);
- 	} else {
- 		if (lei != NULL) {
--			if (!merge)
-+			if (!merge) {
-+				expr_binary_error(msgs, lei->expr, new->expr,
-+						  "conflicting intervals specified");
- 				goto err;
-+			}
- 			/*
- 			 * Left endpoint is within lei, adjust it so we have:
- 			 *
-@@ -248,8 +254,11 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
- 			}
- 		}
- 		if (rei != NULL) {
--			if (!merge)
-+			if (!merge) {
-+				expr_binary_error(msgs, rei->expr, new->expr,
-+						  "conflicting intervals specified");
- 				goto err;
-+			}
- 			/*
- 			 * Right endpoint is within rei, adjust it so we have:
- 			 *
-@@ -276,8 +285,7 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
- 	return 0;
- err:
- 	errno = EEXIST;
--	return expr_binary_error(msgs, lei->expr, new->expr,
--				 "conflicting intervals specified");
-+	return -1;
- }
- 
- /*
+diff --git a/src/netlink_linearize.c b/src/netlink_linearize.c
+index 498326d0087a1..cb1b7fe1748b2 100644
+--- a/src/netlink_linearize.c
++++ b/src/netlink_linearize.c
+@@ -941,7 +941,7 @@ static void netlink_gen_payload_stmt(struct netlink_linearize_ctx *ctx,
+ 		nftnl_expr_set_u32(nle, NFTNL_EXPR_PAYLOAD_CSUM_OFFSET,
+ 				   csum_off / BITS_PER_BYTE);
+ 	}
+-	if (expr->payload.base == PROTO_BASE_NETWORK_HDR &&
++	if (expr->payload.base == PROTO_BASE_NETWORK_HDR && desc &&
+ 	    payload_needs_l4csum_update_pseudohdr(expr, desc))
+ 		nftnl_expr_set_u32(nle, NFTNL_EXPR_PAYLOAD_FLAGS,
+ 				   NFT_PAYLOAD_L4CSUM_PSEUDOHDR);
 -- 
 2.24.1
 
