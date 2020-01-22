@@ -2,52 +2,53 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1F6145DF9
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Jan 2020 22:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F816145DFE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Jan 2020 22:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgAVV3a (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Jan 2020 16:29:30 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:33464 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729387AbgAVV31 (ORCPT
+        id S1729433AbgAVV3j (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Jan 2020 16:29:39 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:33478 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729393AbgAVV3g (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 Jan 2020 16:29:27 -0500
-Received: by mail-lf1-f65.google.com with SMTP id n25so758283lfl.0
-        for <netfilter-devel@vger.kernel.org>; Wed, 22 Jan 2020 13:29:25 -0800 (PST)
+        Wed, 22 Jan 2020 16:29:36 -0500
+Received: by mail-lf1-f68.google.com with SMTP id n25so758526lfl.0
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Jan 2020 13:29:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f0IkEaXGVt8hUwF5uD44/2Lbilo5B8J7tUK5oD4D1tM=;
-        b=IMKvzt5hA/l/NbMQKPL+I7Jyo3nfkoDyZBLi5RRpV+j/tCfVTPajPZF/8GU6ionRxK
-         +mQvxp5xyCs/lbcj6fFzQN4Qx1QZwbZnFyqVJt1eXrhrtdv8R8zb6thx4q6gtOe7qdbv
-         5E93iQ92ILpO7fxqk7N35pyU4vQtv7jxP2GP0fuciK3ZgZYXrrSxeC+vto4ftrmoX6xE
-         BMLerP1Bzr4rimUoCrUubcW9bUpU+oy6tgpr2A1RG4zmzYvb7Ds2n6dNPujUpm52og8K
-         3daDlG3WlViN5WCY+t1+i4y8O4eenhXIrO7AMnatPzf7Iv6Jx0Do09fsis7ZX1cIrVTs
-         3HLQ==
+        bh=T8dyZsx/1G1o4Km+D3AEjaFYjcDXoKwu76FXwqPPMog=;
+        b=VJNm7ixVgyAguIeuR1pIXq0hv6ch7qgz5+W7axDIdGlhCNwpeyNJplyxY1npsTRa4q
+         3AvFO2bN5r9I/mbrHMKFriPmjMXEUWYzS+PN/eLwCoaJhzX3jbPQJyRrX+O6IifhmS4t
+         bAW5ztBvjxYTbpp9vIw4qcfvCMDSpuT8XuKqnlkWEusBikGN7eK6zxIwb+ANo0MusAUH
+         y+2kEafA7mRzCvr0s6iDXqOBMqy0gyMtoVIoPF3UpKq+lYrO5MoIoGFloRBeyZfAnJAY
+         cqsdx7KP8XS8YRJxgBSf+GmUDq5DSAoNnh1r2nnWw3k0ufdHWJw6q2xH0VYZhZTHi5df
+         rQRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f0IkEaXGVt8hUwF5uD44/2Lbilo5B8J7tUK5oD4D1tM=;
-        b=b9pq8oZ8h8nc+adVXTMwnfIcx63lVWMEjfgfPBdIyCeQ6WCGlsNqAdylO+h5JJOFFU
-         k8GlK9wW6P9Y94j5B7o6EORmD5VjD+vBCytXF6GhHXqJEQonDNfTiamcLtplrpP8MSKy
-         X/0k+4OPvmO2I/wjyUFp6yFyLPfh/nmOUc/bi8ShnJthHet5dX7SKuhdcohPAZU+RUvM
-         kZ1jDpZ+f+zydyCtytgHvmKQLlReAwklIRYVqyS/TYfpWN3ejB2Qul4OfpZ/YaU67inY
-         Oc4IgiqgIAWUJjRolcfuHIPH/Ak44W73FfjcY4wun3kXj1gSqACCYWgUM8bRmNWmgmd9
-         Qh5Q==
-X-Gm-Message-State: APjAAAW/Adxdh/VhW3BpLyeN7u0KviuopT0Uq0FVcNPxu7yl+R6tKqvO
-        pkM4PBOt7E53ipMWwzFBDVNnnXG0LZUiQv0MDww4
-X-Google-Smtp-Source: APXvYqx6r1SK4hKv8XLYG/rNPUwDn+V7yCGZtcjCRWbKMCH81fFEo/59FQtSCiTTXbrKb1kPr0DggWaePW+geWzK5tI=
-X-Received: by 2002:ac2:5f59:: with SMTP id 25mr2754662lfz.193.1579728564136;
- Wed, 22 Jan 2020 13:29:24 -0800 (PST)
+        bh=T8dyZsx/1G1o4Km+D3AEjaFYjcDXoKwu76FXwqPPMog=;
+        b=KsWiBnPvatP1ZVm+Bn/wfrgTHJgrx3UEEcAbUY85DBfirrVjn+01+I2yrfQ5sTAmDi
+         MCxD+0pEpLq0lqHTgS7sz9gMa4Xgv4YvF3yq+RziRTp0fcFI3AfnbRBOUrRxoSytbGR+
+         L5uAynWGi7U0KocqRk5jR1XaHTFCrFJzvPOVEFTDhhJURHE61QSTiKCwxmjyEu7kO7cv
+         5BLhiaV2OpRj7UhH772OD7B47dtovbP1CifLzcijAfzyZ6g+cI3QfSlzjNJNcWt5fFr7
+         bRp9lbdLNkGBrWFheA0//F6pJXWwBGcw9C0kLQem1KiXY3qLjiB7r8GoiM83UyccDZft
+         HEng==
+X-Gm-Message-State: APjAAAXEwLlyB/t/PSQ2Ui5GzqfalHSoCbmcFHcmjoCsBjK72ZVTQGqk
+        AnsqepyaNuXxak2VhEMj8dAqWB/sk1mqK6UBMBYH
+X-Google-Smtp-Source: APXvYqz71TZIg9MpEPSBX37Fh9pYf3NdlS4RNWJNnf5mBSZhvbWQtLxCouQ51G9Z/+VOzq252Xo+mwvfcQY+/hQ0B1U=
+X-Received: by 2002:ac2:4422:: with SMTP id w2mr2853088lfl.178.1579728573496;
+ Wed, 22 Jan 2020 13:29:33 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1577736799.git.rgb@redhat.com> <6452955c1e038227a5cd169f689f3fd3db27513f.1577736799.git.rgb@redhat.com>
-In-Reply-To: <6452955c1e038227a5cd169f689f3fd3db27513f.1577736799.git.rgb@redhat.com>
+References: <cover.1577736799.git.rgb@redhat.com> <28cf3e16f8440bcb852767d3ae13e1a56c19569c.1577736799.git.rgb@redhat.com>
+In-Reply-To: <28cf3e16f8440bcb852767d3ae13e1a56c19569c.1577736799.git.rgb@redhat.com>
 From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 22 Jan 2020 16:29:12 -0500
-Message-ID: <CAHC9VhRkH=YEjAY6dJJHSp934grHnf=O4RiqLu3U8DzdVQOZkg@mail.gmail.com>
-Subject: Re: [PATCH ghak90 V8 13/16] audit: track container nesting
+Date:   Wed, 22 Jan 2020 16:29:22 -0500
+Message-ID: <CAHC9VhS5snVdRJ95ymCb0oX7dhM_6A5rdtKSRm4fo1xi0hA4NQ@mail.gmail.com>
+Subject: Re: [PATCH ghak90 V8 14/16] audit: check contid depth and add limit
+ config param
 To:     Richard Guy Briggs <rgb@redhat.com>
 Cc:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
         Linux-Audit Mailing List <linux-audit@redhat.com>,
@@ -66,128 +67,29 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 On Tue, Dec 31, 2019 at 2:51 PM Richard Guy Briggs <rgb@redhat.com> wrote:
 >
-> Track the parent container of a container to be able to filter and
-> report nesting.
+> Clamp the depth of audit container identifier nesting to limit the
+> netlink and disk bandwidth used and to prevent losing information from
+> record text size overflow in the contid field.
 >
-> Now that we have a way to track and check the parent container of a
-> container, modify the contid field format to be able to report that
-> nesting using a carrat ("^") separator to indicate nesting.  The
-> original field format was "contid=<contid>" for task-associated records
-> and "contid=<contid>[,<contid>[...]]" for network-namespace-associated
-> records.  The new field format is
-> "contid=<contid>[^<contid>[...]][,<contid>[...]]".
-
-Let's make sure we always use a comma as a separator, even when
-recording the parent information, for example:
-"contid=<contid>[,^<contid>[...]][,<contid>[...]]"
-
+> Add a configuration parameter AUDIT_STATUS_CONTID_DEPTH_LIMIT (0x80) to
+> set the audit container identifier depth limit.  This can be used to
+> prevent overflow of the contid field in CONTAINER_OP and CONTAINER_ID
+> messages, losing information, and to limit bandwidth used by these
+> messages.
+>
 > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
 > ---
->  include/linux/audit.h |  1 +
->  kernel/audit.c        | 53 +++++++++++++++++++++++++++++++++++++++++++--------
->  kernel/audit.h        |  1 +
->  kernel/auditfilter.c  | 17 ++++++++++++++++-
->  kernel/auditsc.c      |  2 +-
->  5 files changed, 64 insertions(+), 10 deletions(-)
+>  include/uapi/linux/audit.h |  2 ++
+>  kernel/audit.c             | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+>  kernel/audit.h             |  2 ++
+>  3 files changed, 50 insertions(+)
 
-...
-
-> diff --git a/kernel/audit.c b/kernel/audit.c
-> index ef8e07524c46..68be59d1a89b 100644
-> --- a/kernel/audit.c
-> +++ b/kernel/audit.c
-
-> @@ -492,6 +493,7 @@ void audit_switch_task_namespaces(struct nsproxy *ns, struct task_struct *p)
->                 audit_netns_contid_add(new->net_ns, contid);
->  }
->
-> +void audit_log_contid(struct audit_buffer *ab, u64 contid);
-
-If we need a forward declaration, might as well just move it up near
-the top of the file with the rest of the declarations.
-
-> +void audit_log_contid(struct audit_buffer *ab, u64 contid)
-> +{
-> +       struct audit_contobj *cont = NULL, *prcont = NULL;
-> +       int h;
-
-It seems safer to pass the audit container ID object and not the u64.
-
-> +       if (!audit_contid_valid(contid)) {
-> +               audit_log_format(ab, "%llu", contid);
-
-Do we really want to print (u64)-1 here?  Since this is a known
-invalid number, would "?" be a better choice?
-
-> +               return;
-> +       }
-> +       h = audit_hash_contid(contid);
-> +       rcu_read_lock();
-> +       list_for_each_entry_rcu(cont, &audit_contid_hash[h], list)
-> +               if (cont->id == contid) {
-> +                       prcont = cont;
-
-Why not just pull the code below into the body of this if statement?
-It all needs to be done under the RCU read lock anyway and the code
-would read much better this way.
-
-> +                       break;
-> +               }
-> +       if (!prcont) {
-> +               audit_log_format(ab, "%llu", contid);
-> +               goto out;
-> +       }
-> +       while (prcont) {
-> +               audit_log_format(ab, "%llu", prcont->id);
-> +               prcont = prcont->parent;
-> +               if (prcont)
-> +                       audit_log_format(ab, "^");
-
-In the interest of limiting the number of calls to audit_log_format(),
-how about something like the following:
-
-  audit_log_format("%llu", cont);
-  iter = cont->parent;
-  while (iter) {
-    if (iter->parent)
-      audit_log_format("^%llu,", iter);
-    else
-      audit_log_format("^%llu", iter);
-    iter = iter->parent;
-  }
-
-> +       }
-> +out:
-> +       rcu_read_unlock();
-> +}
-> +
->  /*
->   * audit_log_container_id - report container info
->   * @context: task or local context for record
-
-...
-
-> @@ -2705,9 +2741,10 @@ int audit_set_contid(struct task_struct *task, u64 contid)
->         if (!ab)
->                 return rc;
->
-> -       audit_log_format(ab,
-> -                        "op=set opid=%d contid=%llu old-contid=%llu",
-> -                        task_tgid_nr(task), contid, oldcontid);
-> +       audit_log_format(ab, "op=set opid=%d contid=", task_tgid_nr(task));
-> +       audit_log_contid(ab, contid);
-> +       audit_log_format(ab, " old-contid=");
-> +       audit_log_contid(ab, oldcontid);
-
-This is an interesting case where contid and old-contid are going to
-be largely the same, only the first (current) ID is going to be
-different; do we want to duplicate all of those IDs?
-
-
->         audit_log_end(ab);
->         return rc;
->  }
-> @@ -2723,9 +2760,9 @@ void audit_log_container_drop(void)
+Since setting an audit container ID, and hence acting as an
+orchestrator and creating a new nested level of audit container IDs,
+is a privileged operation I think we can equate this to the infamous
+"shooting oneself in the foot" problem.  Let's leave this limitation
+out of the patchset for now, if it becomes a problem in the future we
+can consider restricting the nesting depth.
 
 --
 paul moore
