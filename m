@@ -2,45 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC29145BC4
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Jan 2020 19:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40541145D8D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Jan 2020 22:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726191AbgAVSwM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Jan 2020 13:52:12 -0500
-Received: from correo.us.es ([193.147.175.20]:49334 "EHLO mail.us.es"
+        id S1727590AbgAVVRR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Jan 2020 16:17:17 -0500
+Received: from correo.us.es ([193.147.175.20]:57612 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726026AbgAVSwL (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 Jan 2020 13:52:11 -0500
+        id S1725827AbgAVVRR (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 22 Jan 2020 16:17:17 -0500
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id B970212C1E9
-        for <netfilter-devel@vger.kernel.org>; Wed, 22 Jan 2020 19:52:07 +0100 (CET)
+        by mail.us.es (Postfix) with ESMTP id 37995DA70A
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Jan 2020 22:17:13 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id A915DDA714
-        for <netfilter-devel@vger.kernel.org>; Wed, 22 Jan 2020 19:52:07 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 26CE9DA712
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Jan 2020 22:17:13 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id A870DDA713; Wed, 22 Jan 2020 19:52:07 +0100 (CET)
+        id 1C4C4DA70E; Wed, 22 Jan 2020 22:17:13 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 42AFEDA701;
-        Wed, 22 Jan 2020 19:52:05 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id B3592DA710
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Jan 2020 22:17:10 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 22 Jan 2020 19:52:05 +0100 (CET)
+ Wed, 22 Jan 2020 22:17:10 +0100 (CET)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (unknown [90.77.255.23])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 2496342EF9E0;
-        Wed, 22 Jan 2020 19:52:05 +0100 (CET)
+        by entrada.int (Postfix) with ESMTPA id A299242EF9E1
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Jan 2020 22:17:10 +0100 (CET)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Cc:     fw@strlen.de
-Subject: [PATCH nf] netfilter: nf_tables: autoload modules from the abort path
-Date:   Wed, 22 Jan 2020 19:52:02 +0100
-Message-Id: <20200122185202.23891-1-pablo@netfilter.org>
+Subject: [PATCH nf,v2] netfilter: nf_tables: autoload modules from the abort path
+Date:   Wed, 22 Jan 2020 22:17:06 +0100
+Message-Id: <20200122211706.150042-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -60,22 +59,24 @@ This new module list is composed of nft_module_request objects that
 contain the module name and one status field that tells if the module
 has been already loaded (the 'done' field).
 
+The module list handling must be the very last thing, and the commit
+list must be already empty.
+
 This patch also updates nfnetlink to include the reason to enter the
 abort phase, which is required for this new autoload module rationale.
 
-Fixes: ec7470b834fe ("netfilter: nf_tables: store transaction list locally while requesting module")
 Fixes: 452238e8d5ff ("netfilter: nf_tables: add and use helper for module autoload")
 Reported-by: syzbot+29125d208b3dae9a7019@syzkaller.appspotmail.com
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-Just quickly runned tests here from userspace. Will make a second pass
-on reviewing later.
+v2: call nf_tables_module_autoload_cleanup() holding the mutex from
+    the nf_tables_commit_release() path. Only one Fixes: tag.
 
  include/linux/netfilter/nfnetlink.h |   2 +-
  include/net/netns/nftables.h        |   1 +
- net/netfilter/nf_tables_api.c       | 119 ++++++++++++++++++++++++------------
+ net/netfilter/nf_tables_api.c       | 121 ++++++++++++++++++++++++------------
  net/netfilter/nfnetlink.c           |   6 +-
- 4 files changed, 84 insertions(+), 44 deletions(-)
+ 4 files changed, 86 insertions(+), 44 deletions(-)
 
 diff --git a/include/linux/netfilter/nfnetlink.h b/include/linux/netfilter/nfnetlink.h
 index cf09ab37b45b..851425c3178f 100644
@@ -103,7 +104,7 @@ index 286fd960896f..a1a8d45adb42 100644
  	unsigned int		base_seq;
  	u8			gencursor;
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 4aa01c1253b1..740c904f642c 100644
+index 4aa01c1253b1..b61d3025e3f1 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
 @@ -578,35 +578,40 @@ __nf_tables_chain_type_lookup(const struct nlattr *nla, u8 family)
@@ -247,7 +248,7 @@ index 4aa01c1253b1..740c904f642c 100644
  			return ERR_PTR(-EAGAIN);
  	}
  #endif
-@@ -7005,6 +7006,17 @@ static void nft_chain_del(struct nft_chain *chain)
+@@ -7005,6 +7006,18 @@ static void nft_chain_del(struct nft_chain *chain)
  	list_del_rcu(&chain->list);
  }
  
@@ -255,6 +256,7 @@ index 4aa01c1253b1..740c904f642c 100644
 +{
 +	struct nft_module_request *req, *next;
 +
++	WARN_ON_ONCE(!list_empty(&net->nft.commit_list));
 +	list_for_each_entry_safe(req, next, &net->nft.module_list, list) {
 +		WARN_ON_ONCE(!req->done);
 +		list_del(&req->list);
@@ -265,12 +267,23 @@ index 4aa01c1253b1..740c904f642c 100644
  static void nf_tables_commit_release(struct net *net)
  {
  	struct nft_trans *trans;
-@@ -7218,10 +7230,31 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+@@ -7017,6 +7030,7 @@ static void nf_tables_commit_release(struct net *net)
+ 	 * to prevent expensive synchronize_rcu() in commit phase.
+ 	 */
+ 	if (list_empty(&net->nft.commit_list)) {
++		nf_tables_module_autoload_cleanup(net);
+ 		mutex_unlock(&net->nft.commit_mutex);
+ 		return;
+ 	}
+@@ -7031,6 +7045,7 @@ static void nf_tables_commit_release(struct net *net)
+ 	list_splice_tail_init(&net->nft.commit_list, &nf_tables_destroy_list);
+ 	spin_unlock(&nf_tables_destroy_list_lock);
  
- 	nf_tables_gen_notify(net, skb, NFT_MSG_NEWGEN);
- 	nf_tables_commit_release(net);
 +	nf_tables_module_autoload_cleanup(net);
+ 	mutex_unlock(&net->nft.commit_mutex);
  
+ 	schedule_work(&trans_destroy_work);
+@@ -7222,6 +7237,26 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
  	return 0;
  }
  
@@ -297,7 +310,7 @@ index 4aa01c1253b1..740c904f642c 100644
  static void nf_tables_abort_release(struct nft_trans *trans)
  {
  	switch (trans->msg_type) {
-@@ -7251,7 +7284,7 @@ static void nf_tables_abort_release(struct nft_trans *trans)
+@@ -7251,7 +7286,7 @@ static void nf_tables_abort_release(struct nft_trans *trans)
  	kfree(trans);
  }
  
@@ -306,7 +319,7 @@ index 4aa01c1253b1..740c904f642c 100644
  {
  	struct nft_trans *trans, *next;
  	struct nft_trans_elem *te;
-@@ -7373,6 +7406,11 @@ static int __nf_tables_abort(struct net *net)
+@@ -7373,6 +7408,11 @@ static int __nf_tables_abort(struct net *net)
  		nf_tables_abort_release(trans);
  	}
  
@@ -318,7 +331,7 @@ index 4aa01c1253b1..740c904f642c 100644
  	return 0;
  }
  
-@@ -7381,9 +7419,9 @@ static void nf_tables_cleanup(struct net *net)
+@@ -7381,9 +7421,9 @@ static void nf_tables_cleanup(struct net *net)
  	nft_validate_state_update(net, NFT_VALIDATE_SKIP);
  }
  
@@ -330,7 +343,7 @@ index 4aa01c1253b1..740c904f642c 100644
  
  	mutex_unlock(&net->nft.commit_mutex);
  
-@@ -7978,6 +8016,7 @@ static int __net_init nf_tables_init_net(struct net *net)
+@@ -7978,6 +8018,7 @@ static int __net_init nf_tables_init_net(struct net *net)
  {
  	INIT_LIST_HEAD(&net->nft.tables);
  	INIT_LIST_HEAD(&net->nft.commit_list);
@@ -338,7 +351,7 @@ index 4aa01c1253b1..740c904f642c 100644
  	mutex_init(&net->nft.commit_mutex);
  	net->nft.base_seq = 1;
  	net->nft.validate_state = NFT_VALIDATE_SKIP;
-@@ -7989,7 +8028,7 @@ static void __net_exit nf_tables_exit_net(struct net *net)
+@@ -7989,7 +8030,7 @@ static void __net_exit nf_tables_exit_net(struct net *net)
  {
  	mutex_lock(&net->nft.commit_mutex);
  	if (!list_empty(&net->nft.commit_list))
