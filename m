@@ -2,26 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA70A146B55
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Jan 2020 15:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE32146B57
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Jan 2020 15:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgAWOad (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 23 Jan 2020 09:30:33 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:39868 "EHLO orbyte.nwl.cc"
+        id S1728809AbgAWOan (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 23 Jan 2020 09:30:43 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:39884 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726231AbgAWOad (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 23 Jan 2020 09:30:33 -0500
-Received: from localhost ([::1]:52956 helo=tatos)
+        id S1726231AbgAWOan (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 23 Jan 2020 09:30:43 -0500
+Received: from localhost ([::1]:52972 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iudV9-0000mM-Ei; Thu, 23 Jan 2020 15:30:31 +0100
+        id 1iudVK-0000n9-Db; Thu, 23 Jan 2020 15:30:42 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
-Subject: [nft PATCH 0/4] Covscan-induced review of ei_insert()
-Date:   Thu, 23 Jan 2020 15:30:45 +0100
-Message-Id: <20200123143049.13888-1-phil@nwl.cc>
+Subject: [nft PATCH 1/4] segtree: Drop needless insertion in ei_insert()
+Date:   Thu, 23 Jan 2020 15:30:46 +0100
+Message-Id: <20200123143049.13888-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200123143049.13888-1-phil@nwl.cc>
+References: <20200123143049.13888-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -29,25 +31,69 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-False covscan report led to closer investigation ei_insert() which
-identified dead code and some opportunities for improvement due to the
-fact that the only caller sorts the new intervals prior to calling said
-function.
+Code checks whether for two new ranges one fully includes the other. If
+so, it would add the contained one only for segtree_linearize() to later
+omit the redundant items.
 
-Note that if we at some point want to support merging of new and old set
-elements, we will probably have to revert these patches since we can't
-be sure anymore that there aren't any items with bigger values in the
-set already.
+Instead just drop the contained item (which will always come last
+because caller orders the new elements in beforehand).
 
-Phil Sutter (4):
-  segtree: Drop needless insertion in ei_insert()
-  segtree: Drop dead code in ei_insert()
-  segtree: Simplify overlap case in ei_insert()
-  segtree: Refactor ei_insert()
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ src/segtree.c | 25 ++-----------------------
+ 1 file changed, 2 insertions(+), 23 deletions(-)
 
- src/segtree.c | 101 +++++++++++++-------------------------------------
- 1 file changed, 25 insertions(+), 76 deletions(-)
-
+diff --git a/src/segtree.c b/src/segtree.c
+index e8e32412f3a41..aa1f1c38d789c 100644
+--- a/src/segtree.c
++++ b/src/segtree.c
+@@ -191,9 +191,6 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 		     struct elementary_interval *new, bool merge)
+ {
+ 	struct elementary_interval *lei, *rei;
+-	mpz_t p;
+-
+-	mpz_init2(p, tree->keylen);
+ 
+ 	/*
+ 	 * Lookup the intervals containing the left and right endpoints.
+@@ -207,25 +204,9 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 	if (lei != NULL && rei != NULL && lei == rei) {
+ 		if (!merge)
+ 			goto err;
+-		/*
+-		 * The new interval is entirely contained in the same interval,
+-		 * split it into two parts:
+-		 *
+-		 * [lei_left, new_left) and (new_right, rei_right]
+-		 */
+-		if (segtree_debug(tree->debug_mask))
+-			pr_gmp_debug("split [%Zx %Zx]\n", lei->left, lei->right);
+ 
+-		ei_remove(tree, lei);
+-
+-		mpz_sub_ui(p, new->left, 1);
+-		if (mpz_cmp(lei->left, p) <= 0)
+-			__ei_insert(tree, ei_alloc(lei->left, p, lei->expr, 0));
+-
+-		mpz_add_ui(p, new->right, 1);
+-		if (mpz_cmp(p, rei->right) < 0)
+-			__ei_insert(tree, ei_alloc(p, rei->right, lei->expr, 0));
+-		ei_destroy(lei);
++		ei_destroy(new);
++		return 0;
+ 	} else {
+ 		if (lei != NULL) {
+ 			if (!merge)
+@@ -271,8 +252,6 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 
+ 	__ei_insert(tree, new);
+ 
+-	mpz_clear(p);
+-
+ 	return 0;
+ err:
+ 	errno = EEXIST;
 -- 
 2.24.1
 
