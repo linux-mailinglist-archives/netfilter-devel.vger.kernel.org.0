@@ -2,83 +2,87 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CAA146104
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Jan 2020 04:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52337146291
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Jan 2020 08:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgAWDpr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Jan 2020 22:45:47 -0500
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:42468 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725933AbgAWDpr (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 Jan 2020 22:45:47 -0500
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1iuTRB-000406-OE; Thu, 23 Jan 2020 04:45:45 +0100
-Date:   Thu, 23 Jan 2020 04:45:45 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf,v2] netfilter: nf_tables: autoload modules from the
- abort path
-Message-ID: <20200123034545.GS795@breakpoint.cc>
-References: <20200122211706.150042-1-pablo@netfilter.org>
- <20200122222808.GR795@breakpoint.cc>
- <20200122224947.iucrwyxmsrtm7ppe@salvia>
+        id S1726771AbgAWHZj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 23 Jan 2020 02:25:39 -0500
+Received: from relay.sw.ru ([185.231.240.75]:36706 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725777AbgAWHZj (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 23 Jan 2020 02:25:39 -0500
+Received: from vvs-ws.sw.ru ([172.16.24.21])
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1iuWrl-0005wk-AV; Thu, 23 Jan 2020 10:25:25 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH 0/4] netfilter: seq_file .next functions should increase
+ position index
+To:     coreteam@netfilter.org, netfilter-devel@vger.kernel.org
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Message-ID: <497a82c1-7b6a-adf4-a4ce-df46fe436aae@virtuozzo.com>
+Date:   Thu, 23 Jan 2020 10:25:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200122224947.iucrwyxmsrtm7ppe@salvia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> On Wed, Jan 22, 2020 at 11:28:08PM +0100, Florian Westphal wrote:
-> > Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > > +	list_for_each_entry(req, &net->nft.module_list, list) {
-> > > +		if (!strcmp(req->module, module_name) && req->done)
-> > > +			return 0;
-> > > +	}
-> > 
-> > If the module is already on this list, why does it need to be
-> > added a second time?
-> 
-> The first time this finds no module on the list, then the module is
-> added to the list and nft_request_module() returns -EAGAIN. This
-> triggers abort path with autoload parameter set to true from
-> nfnetlink, this sets the module done field to true.
+In Aug 2018 NeilBrown noticed 
+commit 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and interface")
+"Some ->next functions do not increment *pos when they return NULL...
+Note that such ->next functions are buggy and should be fixed. 
+A simple demonstration is
+   
+dd if=/proc/swaps bs=1000 skip=1
+    
+Choose any block size larger than the size of /proc/swaps.  This will
+always show the whole last line of /proc/swaps"
 
-I guess I was confused by the need for the "&& req->done" part.
+Described problem is still actual. If you make lseek into middle of last output line 
+following read will output end of last line and whole last line once again.
 
-AFAIU req->done is always true here.
+$ dd if=/proc/swaps bs=1  # usual output
+Filename				Type		Size	Used	Priority
+/dev/dm-0                               partition	4194812	97536	-2
+104+0 records in
+104+0 records out
+104 bytes copied
 
-> Now, on the second path, it will find that this already tried to load
-> the module, so it does not add it again, nft_request_module() returns 0.
+$ dd if=/proc/swaps bs=40 skip=1    # last line was generated twice
+dd: /proc/swaps: cannot skip to specified offset
+v/dm-0                               partition	4194812	97536	-2
+/dev/dm-0                               partition	4194812	97536	-2 
+3+1 records in
+3+1 records out
+131 bytes copied
 
-But the "I already tried this" is already implied by the presence of the
-module name?  Or did I misunderstand?
+There are lot of other affected files, I've found 30+ including
+/proc/net/ip_tables_matches and /proc/sysvipc/*
 
-> Then, there is a look up to find the object that was missing. If
-> module was successfully load, the object will be in place, otherwise
-> -ENOENT is reported to userspace.
+This patch-set fixes files related to netfilter@ 
 
-Good, that will prevent infite retries in case userspace requests
-non-existent module.
+https://bugzilla.kernel.org/show_bug.cgi?id=206283
 
-> I can include this logic in the patch description in a v3.
+Vasily Averin (4):
+  ct_cpu_seq_next should increase position index
+  synproxy_cpu_seq_next should increase position index
+  recent_seq_next should increase position index
+  xt_mttg_seq_next should increase position index
 
-That would be good, thanks!
+ net/netfilter/nf_conntrack_standalone.c | 2 +-
+ net/netfilter/nf_synproxy_core.c        | 2 +-
+ net/netfilter/x_tables.c                | 6 +++---
+ net/netfilter/xt_recent.c               | 2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-> I run the syzbot reproducer for 1 hour and no problems, not sure how
-> much I have to run it more. I guess the more time the better.
+-- 
+1.8.3.1
 
-It triggers instantly for me provided:
-1. CONFIG_MODULES=y (with MODULES=n the faulty code part isn't built...)
-2. set "sysctl kernel.modprobe=/root/sleep1.sh"
-   I found that with normal modprobe the race window is rather small and
-   the thread doing the request_module has a decent chance of re-locking
-   the mutex before another syzkaller thread has a chance to alter the
-   current generation.
