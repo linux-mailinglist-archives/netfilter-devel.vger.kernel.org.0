@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD1414876F
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Jan 2020 15:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FF3148994
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Jan 2020 15:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392391AbgAXOWb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 Jan 2020 09:22:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44586 "EHLO mail.kernel.org"
+        id S2391681AbgAXOT2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 24 Jan 2020 09:19:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405448AbgAXOW2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 Jan 2020 09:22:28 -0500
+        id S2391620AbgAXOT0 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 24 Jan 2020 09:19:26 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0047422527;
-        Fri, 24 Jan 2020 14:22:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA0C920838;
+        Fri, 24 Jan 2020 14:19:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579875748;
-        bh=BCF3DENsae70C9wEJ6TwFWjlWYssD7mrLzFYTpJrthg=;
+        s=default; t=1579875565;
+        bh=T9IqlH2GDcO96bbIxhZJVm4mjhUxT05VXehOGgsoU2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rg++z94EEKuyC74YADpC+DNMCWpdgQi9Xyp5KKFa5DkR3ufMRHzmYbU/q1L0iBe4t
-         XhcoYZ9hg3/DZ65PBNTEogBvBP1VSIhgkuNoK12WWGx8pAYr3Kmhh0m6+s+XvNIggv
-         c3TL7mCS4b1zq0WwujAErZFh+AJwfOeR49u3Mez4=
+        b=b7Z9qLJwe1x3RrpHU15wcvU/U8O9B9Iy/IvgqA1UUVrUV7g3zNaduB9eoKWThFi7e
+         ypc7LLxU+cvcTvRHd94Z0Z0z/smPM9lqn1ASSutEtcC9dT3HguxF8xBGhxpZBVagEL
+         AviO+YD9IC0cA1ph1zoHYatpAZIpwqjE2K0nsOXI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
@@ -32,12 +32,12 @@ Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 5/9] netfilter: fix a use-after-free in mtype_destroy()
-Date:   Fri, 24 Jan 2020 09:22:17 -0500
-Message-Id: <20200124142221.31201-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 059/107] netfilter: fix a use-after-free in mtype_destroy()
+Date:   Fri, 24 Jan 2020 09:17:29 -0500
+Message-Id: <20200124141817.28793-59-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200124142221.31201-1-sashal@kernel.org>
-References: <20200124142221.31201-1-sashal@kernel.org>
+In-Reply-To: <20200124141817.28793-1-sashal@kernel.org>
+References: <20200124141817.28793-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -65,10 +65,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/netfilter/ipset/ip_set_bitmap_gen.h b/net/netfilter/ipset/ip_set_bitmap_gen.h
-index b0bc475f641e3..adc703ccd68bd 100644
+index 063df74b46470..e1f271a1b2c14 100644
 --- a/net/netfilter/ipset/ip_set_bitmap_gen.h
 +++ b/net/netfilter/ipset/ip_set_bitmap_gen.h
-@@ -66,9 +66,9 @@ mtype_destroy(struct ip_set *set)
+@@ -60,9 +60,9 @@ mtype_destroy(struct ip_set *set)
  	if (SET_WITH_TIMEOUT(set))
  		del_timer_sync(&map->gc);
  
