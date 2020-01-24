@@ -2,103 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B440E1488FF
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Jan 2020 15:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A05B8148DFA
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Jan 2020 19:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392649AbgAXOcH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 Jan 2020 09:32:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40970 "EHLO mail.kernel.org"
+        id S2388041AbgAXStW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 24 Jan 2020 13:49:22 -0500
+Received: from correo.us.es ([193.147.175.20]:40620 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404519AbgAXOUJ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 Jan 2020 09:20:09 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2387843AbgAXStW (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 24 Jan 2020 13:49:22 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 9356EBAEF2
+        for <netfilter-devel@vger.kernel.org>; Fri, 24 Jan 2020 19:49:19 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 85D93DA716
+        for <netfilter-devel@vger.kernel.org>; Fri, 24 Jan 2020 19:49:19 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 79A1EDA710; Fri, 24 Jan 2020 19:49:19 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 5E3B8DA705;
+        Fri, 24 Jan 2020 19:49:17 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Fri, 24 Jan 2020 19:49:17 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89EA12087E;
-        Fri, 24 Jan 2020 14:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579875608;
-        bh=qr7owESt+Vz2/tX7+VYaDm15p8ZqK9HnMkAvEEwOEdE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pFeesanWnc5onbTFnqKIqonB25WbRplYlpvBNSxXFmJ794842z26N5nX9w1pRdW1F
-         aNnYd/u0X/tn5T6U2lBVXTz8Qha2N+1jAQ5sd4zVyEMSF4mMJ+83DDeao2m27k9j3L
-         D4lsonkUPqL+9sEIhIgW4+87Yz+NqdEouZbDDjSI=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eyal Birger <eyal.birger@gmail.com>,
-        Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 407C842EE38E;
+        Fri, 24 Jan 2020 19:49:17 +0100 (CET)
+Date:   Fri, 24 Jan 2020 19:49:16 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Jiri Wiesner <jwiesner@suse.com>
+Cc:     netfilter-devel@vger.kernel.org,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 095/107] netfilter: nat: fix ICMP header corruption on ICMP errors
-Date:   Fri, 24 Jan 2020 09:18:05 -0500
-Message-Id: <20200124141817.28793-95-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200124141817.28793-1-sashal@kernel.org>
-References: <20200124141817.28793-1-sashal@kernel.org>
+        "David S. Miller" <davem@davemloft.net>,
+        Michal Kubecek <mkubecek@suse.cz>
+Subject: Re: [PATCH nf] netfilter: conntrack: sctp: use distinct states for
+ new SCTP connections
+Message-ID: <20200124184916.axf6oy6jcduyhcfa@salvia>
+References: <20200118121050.GA22909@incl>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200118121050.GA22909@incl>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Eyal Birger <eyal.birger@gmail.com>
+On Sat, Jan 18, 2020 at 01:10:50PM +0100, Jiri Wiesner wrote:
+> The netlink notifications triggered by the INIT and INIT_ACK chunks
+> for a tracked SCTP association do not include protocol information
+> for the corresponding connection - SCTP state and verification tags
+> for the original and reply direction are missing. Since the connection
+> tracking implementation allows user space programs to receive
+> notifications about a connection and then create a new connection
+> based on the values received in a notification, it makes sense that
+> INIT and INIT_ACK notifications should contain the SCTP state
+> and verification tags available at the time when a notification
+> is sent. The missing verification tags cause a newly created
+> netfilter connection to fail to verify the tags of SCTP packets
+> when this connection has been created from the values previously
+> received in an INIT or INIT_ACK notification.
+> 
+> A PROTOINFO event is cached in sctp_packet() when the state
+> of a connection changes. The CLOSED and COOKIE_WAIT state will
+> be used for connections that have seen an INIT and INIT_ACK chunk,
+> respectively. The distinct states will cause a connection state
+> change in sctp_packet().
 
-[ Upstream commit 61177e911dad660df86a4553eb01c95ece2f6a82 ]
-
-Commit 8303b7e8f018 ("netfilter: nat: fix spurious connection timeouts")
-made nf_nat_icmp_reply_translation() use icmp_manip_pkt() as the l4
-manipulation function for the outer packet on ICMP errors.
-
-However, icmp_manip_pkt() assumes the packet has an 'id' field which
-is not correct for all types of ICMP messages.
-
-This is not correct for ICMP error packets, and leads to bogus bytes
-being written the ICMP header, which can be wrongfully regarded as
-'length' bytes by RFC 4884 compliant receivers.
-
-Fix by assigning the 'id' field only for ICMP messages that have this
-semantic.
-
-Reported-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Fixes: 8303b7e8f018 ("netfilter: nat: fix spurious connection timeouts")
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-Acked-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/netfilter/nf_nat_proto.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/net/netfilter/nf_nat_proto.c b/net/netfilter/nf_nat_proto.c
-index 0a59c14b51776..64eedc17037ad 100644
---- a/net/netfilter/nf_nat_proto.c
-+++ b/net/netfilter/nf_nat_proto.c
-@@ -233,6 +233,19 @@ icmp_manip_pkt(struct sk_buff *skb,
- 		return false;
- 
- 	hdr = (struct icmphdr *)(skb->data + hdroff);
-+	switch (hdr->type) {
-+	case ICMP_ECHO:
-+	case ICMP_ECHOREPLY:
-+	case ICMP_TIMESTAMP:
-+	case ICMP_TIMESTAMPREPLY:
-+	case ICMP_INFO_REQUEST:
-+	case ICMP_INFO_REPLY:
-+	case ICMP_ADDRESS:
-+	case ICMP_ADDRESSREPLY:
-+		break;
-+	default:
-+		return true;
-+	}
- 	inet_proto_csum_replace2(&hdr->checksum, skb,
- 				 hdr->un.echo.id, tuple->src.u.icmp.id, false);
- 	hdr->un.echo.id = tuple->src.u.icmp.id;
--- 
-2.20.1
-
+Applied, thanks for explaining.
