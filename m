@@ -2,159 +2,94 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF65714C02C
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Jan 2020 19:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5A114C0C6
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Jan 2020 20:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgA1StX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 Jan 2020 13:49:23 -0500
-Received: from correo.us.es ([193.147.175.20]:53034 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726234AbgA1StW (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 Jan 2020 13:49:22 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id A7EED120826
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jan 2020 19:49:21 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 9675EDA713
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jan 2020 19:49:21 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 8C0A2DA711; Tue, 28 Jan 2020 19:49:21 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 6631EDA707;
-        Tue, 28 Jan 2020 19:49:19 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 28 Jan 2020 19:49:19 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 4AF8142EF4E0;
-        Tue, 28 Jan 2020 19:49:19 +0100 (CET)
-Date:   Tue, 28 Jan 2020 19:49:18 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Jeremy Sowden <jeremy@azazel.net>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH nft] evaluate: don't eval unary arguments.
-Message-ID: <20200128184918.d663llqkrmaxyusl@salvia>
-References: <20200119181203.60884-1-jeremy@azazel.net>
- <20200127093304.pqqvrxgyzveemert@salvia>
- <20200127111343.GB377617@azazel.net>
+        id S1726141AbgA1TQa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 Jan 2020 14:16:30 -0500
+Received: from smtprelay0094.hostedemail.com ([216.40.44.94]:55440 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726002AbgA1TQ3 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 28 Jan 2020 14:16:29 -0500
+X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Jan 2020 14:16:29 EST
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave04.hostedemail.com (Postfix) with ESMTP id 6005B1801665A
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jan 2020 19:08:36 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 94DD918225DF9;
+        Tue, 28 Jan 2020 19:08:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::::::::,RULES_HIT:41:355:379:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3865:3866:3867:4321:4398:4605:5007:8603:10004:10400:11026:11473:11658:11914:12043:12296:12297:12438:12555:12760:12986:13069:13161:13229:13311:13357:13439:14096:14097:14181:14394:14659:14721:21080:21212:21433:21451:21627:21990:30034:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: brush21_4aa0e106f0634
+X-Filterd-Recvd-Size: 2518
+Received: from XPS-9350.home (unknown [47.151.135.224])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 28 Jan 2020 19:08:32 +0000 (UTC)
+Message-ID: <5a01f309d91c35fa10b8faa60f4b84a8cb7d13b0.camel@perches.com>
+Subject: [PATCH] netfilter: Use kvcalloc
+From:   Joe Perches <joe@perches.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Tue, 28 Jan 2020 11:07:27 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200127111343.GB377617@azazel.net>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Jeremy,
+Convert the uses of kvmalloc_array with __GFP_ZERO to
+the equivalent kvcalloc.
 
-On Mon, Jan 27, 2020 at 11:13:43AM +0000, Jeremy Sowden wrote:
-> On 2020-01-27, at 10:33:04 +0100, Pablo Neira Ayuso wrote:
-> > On Sun, Jan 19, 2020 at 06:12:03PM +0000, Jeremy Sowden wrote:
-> > > When a unary expression is inserted to implement a byte-order
-> > > conversion, the expression being converted has already been
-> > > evaluated and so expr_evaluate_unary doesn't need to do so.  For
-> > > most types of expression, the double evaluation doesn't matter since
-> > > evaluation is idempotent.  However, in the case of payload
-> > > expressions which are munged during evaluation, it can cause
-> > > unexpected errors:
-> > >
-> > >   # nft add table ip t
-> > >   # nft add chain ip t c '{ type filter hook input priority filter; }'
-> > >   # nft add rule ip t c ip dscp set 'ip dscp | 0x10'
-> > >   Error: Value 252 exceeds valid range 0-63
-> > >   add rule ip t c ip dscp set ip dscp | 0x10
-> > >                               ^^^^^^^
-> >
-> > I'm still hitting this after applying this patch.
-> >
-> > nft add rule ip t c ip dscp set ip dscp or 0x10
-> > Error: Value 252 exceeds valid range 0-63
-> > add rule ip t c ip dscp set ip dscp or 0x10
-> >                             ^^^^^^
-> > Probably problem is somewhere else? I'm not sure why we can assume
-> > here that the argument of the unary expression should not be
-> > evaluated.
-> 
-> I'll take another look.
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ net/netfilter/nf_conntrack_core.c | 3 +--
+ net/netfilter/x_tables.c          | 4 ++--
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-I think stmt_evaluate_payload() is incomplete, this function was not
-made to deal with non-constant expression as values.
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index f4c4b46..d13054 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -2248,8 +2248,7 @@ void *nf_ct_alloc_hashtable(unsigned int *sizep, int nulls)
+ 	BUILD_BUG_ON(sizeof(struct hlist_nulls_head) != sizeof(struct hlist_head));
+ 	nr_slots = *sizep = roundup(*sizep, PAGE_SIZE / sizeof(struct hlist_nulls_head));
+ 
+-	hash = kvmalloc_array(nr_slots, sizeof(struct hlist_nulls_head),
+-			      GFP_KERNEL | __GFP_ZERO);
++	hash = kvcalloc(nr_slots, sizeof(struct hlist_nulls_head), GFP_KERNEL);
+ 
+ 	if (hash && nulls)
+ 		for (i = 0; i < nr_slots; i++)
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index ce70c25..e27c6c5 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -939,14 +939,14 @@ EXPORT_SYMBOL(xt_check_entry_offsets);
+  *
+  * @size: number of entries
+  *
+- * Return: NULL or kmalloc'd or vmalloc'd array
++ * Return: NULL or zeroed kmalloc'd or vmalloc'd array
+  */
+ unsigned int *xt_alloc_entry_offsets(unsigned int size)
+ {
+ 	if (size > XT_MAX_TABLE_SIZE / sizeof(unsigned int))
+ 		return NULL;
+ 
+-	return kvmalloc_array(size, sizeof(unsigned int), GFP_KERNEL | __GFP_ZERO);
++	return kvcalloc(size, sizeof(unsigned int), GFP_KERNEL);
+ 
+ }
+ EXPORT_SYMBOL(xt_alloc_entry_offsets);
 
-Look:
-        tcp dport set tcp sport
 
-works because it follows the 'easy path', ie. no adjustment to make
-the checksum calculation happy (see payload_needs_adjustment() in
-stmt_evaluate_payload().
-
-However:
-
-        ip dscp set ip dscp
-
-bails out with:
-
-        nft add rule ip t c ip dscp set ip dscp
-        Error: Value 252 exceeds valid range 0-63
-        add rule ip t c ip dscp set ip dscp
-                                    ^^^^^^^
-
-because this follows the more complicated path. Looking at this code,
-this path assumes a constant value, ie. ip dscp set 10. A more complex
-thing such a non-constant expression (as in the example above) will
-need a bit of work.
-
-Probably you can start making a patchset make this work:
-
-        add rule ip t c tcp dport set tcp dport lshift 1
-
-which triggers:
-
-BUG: invalid binary operation 4
-nft: netlink_linearize.c:592: netlink_gen_binop: Assertion `0' failed.
-
-since it's missing the bytecode to generate the left-shift. Not very
-useful for users, but we can get something already merged upstream and
-you'll be half-way done. Merge also a few tests.
-
-Then, once the more fundamental rshift/lshift bits are merged, look at
-this 'harder' path. Just a proposal.
-
-For reference, the expression tree that stmt_evaluate_payload() to
-make the checksum adjustment looks like this:
-
-           xor
-          /   \
-        and   value
-        / \
-payload_   mask
- bytes
-
-payload_bytes extends the payload expression to get up to 16-bits.
-The left hand side is there to fetch bits that need to be left
-untouched. The right hand side represent the bits that need to be set.
-
-In the new non-constant scenario, the 'value' tree is actually a
-binary operation:
-
-         shift
-        /    \
-   payload   imm
-
-The unary should not really be there, it's likely related to some
-incorrect byteorder issue that kicks in with non-constant expression.
-
-So more work on stmt_evaluate_payload() is required.
