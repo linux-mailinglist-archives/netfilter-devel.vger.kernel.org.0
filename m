@@ -2,154 +2,56 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8145C14C869
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Jan 2020 10:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF5E14CB74
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Jan 2020 14:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgA2J41 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 29 Jan 2020 04:56:27 -0500
-Received: from fourcot.fr ([217.70.191.14]:49238 "EHLO olfflo.fourcot.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgA2J41 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 29 Jan 2020 04:56:27 -0500
-X-Greylist: delayed 574 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jan 2020 04:56:26 EST
-From:   Romain Bellan <romain.bellan@wifirst.fr>
+        id S1726184AbgA2N2z (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 29 Jan 2020 08:28:55 -0500
+Received: from rs07.intra2net.com ([85.214.138.66]:34272 "EHLO
+        rs07.intra2net.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726069AbgA2N2z (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 29 Jan 2020 08:28:55 -0500
+X-Greylist: delayed 551 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jan 2020 08:28:55 EST
+Received: from mail.m.i2n (unknown [172.17.128.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by rs07.intra2net.com (Postfix) with ESMTPS id BFE8A150016C
+        for <netfilter-devel@vger.kernel.org>; Wed, 29 Jan 2020 14:19:42 +0100 (CET)
+Received: from localhost (mail.m.i2n [127.0.0.1])
+        by localhost (Postfix) with ESMTP id 8EB02602
+        for <netfilter-devel@vger.kernel.org>; Wed, 29 Jan 2020 14:19:42 +0100 (CET)
+X-Virus-Scanned: by Intra2net Mail Security (AVE=8.3.54.164,VDF=8.16.35.170)
+X-Spam-Status: 
+X-Spam-Level: 0
+Received: from localhost (storm.m.i2n [172.16.1.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.m.i2n (Postfix) with ESMTPS id 25613576
+        for <netfilter-devel@vger.kernel.org>; Wed, 29 Jan 2020 14:19:41 +0100 (CET)
+Date:   Wed, 29 Jan 2020 14:19:41 +0100
+From:   Thomas Jarosch <thomas.jarosch@intra2net.com>
 To:     netfilter-devel@vger.kernel.org
-Cc:     Romain Bellan <romain.bellan@wifirst.fr>,
-        Florent Fourcot <florent.fourcot@wifirst.fr>
-Subject: [PATCH libnftnl 2/2] utils: add NFCT_FILTER_DUMP_TUPLE example
-Date:   Wed, 29 Jan 2020 10:47:19 +0100
-Message-Id: <20200129094719.670-2-romain.bellan@wifirst.fr>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200129094719.670-1-romain.bellan@wifirst.fr>
-References: <20200129094719.670-1-romain.bellan@wifirst.fr>
+Subject: use of netfilter-announce list
+Message-ID: <20200129131941.r7ep7jjhoam4fu7h@intra2net.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20180716
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Simple example to see conntrack kernel side filtering configuration.
-Callback is reading the kernel result, and user is notified when kernel
-does not support filtering (so filtering must be done in userspace)
+Hi Pablo,
 
-Signed-off-by: Romain Bellan <romain.bellan@wifirst.fr>
-Signed-off-by: Florent Fourcot <florent.fourcot@wifirst.fr>
----
- utils/.gitignore                    |  1 +
- utils/Makefile.am                   |  4 ++
- utils/conntrack_dump_filter_tuple.c | 70 +++++++++++++++++++++++++++++
- 3 files changed, 75 insertions(+)
- create mode 100644 utils/conntrack_dump_filter_tuple.c
+I've noticed the netfilter-announce mailinglist
+doesn't seem to be used in a consistent manner:
 
-diff --git a/utils/.gitignore b/utils/.gitignore
-index 63dfcb2..0de05c0 100644
---- a/utils/.gitignore
-+++ b/utils/.gitignore
-@@ -3,6 +3,7 @@
- /conntrack_delete
- /conntrack_dump
- /conntrack_dump_filter
-+/conntrack_dump_filter_tuple
- /conntrack_events
- /conntrack_filter
- /conntrack_flush
-diff --git a/utils/Makefile.am b/utils/Makefile.am
-index 69bafe6..438ca74 100644
---- a/utils/Makefile.am
-+++ b/utils/Makefile.am
-@@ -9,6 +9,7 @@ check_PROGRAMS = expect_dump expect_create expect_get expect_delete \
- 	       conntrack_master conntrack_filter \
- 	       conntrack_grp_create \
- 	       conntrack_dump_filter \
-+	       conntrack_dump_filter_tuple \
- 	       ctexp_events
- 
- conntrack_grp_create_SOURCES = conntrack_grp_create.c
-@@ -35,6 +36,9 @@ conntrack_dump_LDADD = ../src/libnetfilter_conntrack.la
- conntrack_dump_filter_SOURCES = conntrack_dump_filter.c
- conntrack_dump_filter_LDADD = ../src/libnetfilter_conntrack.la
- 
-+conntrack_dump_filter_tuple_SOURCES = conntrack_dump_filter_tuple.c
-+conntrack_dump_filter_tuple_LDADD = ../src/libnetfilter_conntrack.la
-+
- conntrack_flush_SOURCES = conntrack_flush.c
- conntrack_flush_LDADD = ../src/libnetfilter_conntrack.la
- 
-diff --git a/utils/conntrack_dump_filter_tuple.c b/utils/conntrack_dump_filter_tuple.c
-new file mode 100644
-index 0000000..44633da
---- /dev/null
-+++ b/utils/conntrack_dump_filter_tuple.c
-@@ -0,0 +1,70 @@
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <arpa/inet.h>
-+
-+#include <libnetfilter_conntrack/libnetfilter_conntrack.h>
-+
-+static int cb(const struct nlmsghdr *nlh,
-+	      enum nf_conntrack_msg_type type,
-+	      struct nf_conntrack *ct,
-+	      void *data)
-+{
-+	char buf[1024];
-+
-+	if (!(nlh->nlmsg_flags & NLM_F_DUMP_FILTERED))
-+	  {
-+	    fprintf(stderr, "No filtering in kernel, do filtering in userspace\n");
-+	    return NFCT_CB_FAILURE;
-+	  }
-+
-+	nfct_snprintf(buf, sizeof(buf), ct, NFCT_T_UNKNOWN, NFCT_O_DEFAULT, NFCT_OF_SHOW_LAYER3 | NFCT_OF_TIMESTAMP);
-+	printf("%s\n", buf);
-+
-+	return NFCT_CB_CONTINUE;
-+}
-+
-+int main(void)
-+{
-+	int ret;
-+	struct nfct_handle *h;
-+
-+	h = nfct_open(CONNTRACK, 0);
-+	if (!h) {
-+		perror("nfct_open");
-+		return -1;
-+	}
-+	struct nfct_filter_dump *filter_dump = nfct_filter_dump_create();
-+	if (filter_dump == NULL) {
-+		perror("nfct_filter_dump_alloc");
-+		return -1;
-+	}
-+
-+	struct nf_conntrack	*ct;
-+	ct = nfct_new();
-+	if (!ct) {
-+		perror("nfct_new");
-+		return 0;
-+	}
-+
-+	nfct_set_attr_u8(ct, ATTR_ORIG_L3PROTO, AF_INET);
-+	nfct_set_attr_u8(ct, ATTR_L4PROTO, IPPROTO_ICMP);
-+	nfct_set_attr_u32(ct, ATTR_ORIG_IPV4_DST, inet_addr("203.0.113.55"));
-+	nfct_filter_dump_set_attr(filter_dump, NFCT_FILTER_DUMP_TUPLE, ct);
-+
-+	nfct_callback_register2(h, NFCT_T_ALL, cb, NULL);
-+	ret = nfct_query(h, NFCT_Q_DUMP_FILTER, filter_dump);
-+
-+	nfct_filter_dump_destroy(filter_dump);
-+
-+	printf("TEST: get conntrack ");
-+	if (ret == -1)
-+		printf("(%d)(%s)\n", ret, strerror(errno));
-+	else
-+		printf("(OK)\n");
-+
-+	nfct_close(h);
-+
-+	ret == -1 ? exit(EXIT_FAILURE) : exit(EXIT_SUCCESS);
-+}
--- 
-2.20.1
+The release of iptables 1.8.3 was announced there, but other new releases
+like iptables 1.8.4 / nftables 0.9.3 didn't make it to this list.
 
+Is the netfilter-announce list deprecated?
+
+Cheers,
+Thomas
