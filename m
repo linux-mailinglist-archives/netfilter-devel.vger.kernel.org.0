@@ -2,65 +2,186 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF19B14CFC3
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Jan 2020 18:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9087514D36C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Jan 2020 00:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727339AbgA2RjX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 29 Jan 2020 12:39:23 -0500
-Received: from correo.us.es ([193.147.175.20]:52824 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726679AbgA2RjX (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 29 Jan 2020 12:39:23 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 29A9EBAEE9
-        for <netfilter-devel@vger.kernel.org>; Wed, 29 Jan 2020 18:39:22 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 17870DA709
-        for <netfilter-devel@vger.kernel.org>; Wed, 29 Jan 2020 18:39:22 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 0D135DA703; Wed, 29 Jan 2020 18:39:22 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 22317DA70F;
-        Wed, 29 Jan 2020 18:39:20 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 29 Jan 2020 18:39:20 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 0922242EFB80;
-        Wed, 29 Jan 2020 18:39:20 +0100 (CET)
-Date:   Wed, 29 Jan 2020 18:39:18 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Duncan Roe <duncan_roe@optusnet.com.au>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH libnetfilter_queue v2 1/1] Simplify struct pkt_buff:
- remove tail
-Message-ID: <20200129173918.seepq7zzez4bfn7k@salvia>
-References: <20200118204357.dg5b7qo5aqbesg4s@salvia>
- <20200126040202.11237-2-duncan_roe@optusnet.com.au>
+        id S1727078AbgA2XPT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 29 Jan 2020 18:15:19 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:52452 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727024AbgA2XPT (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 29 Jan 2020 18:15:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=YE5ymmg/Qoh5EFK9pVvYeClJYE682bbCQnrC66d+TOc=; b=hxaoehU77S1fZAy677mOd1sm1
+        JjfnFRlZxbzaUUX53Ti75TXmkGdG7ltwdyqeib0jlXtiXKYLAqubtBIyQh9RF9pmtRUuvMoQhx4ON
+        lZDuGYZNIdASkaBwDckHywVVyTOkSmI6rgb4VCbHm8cusVXnFx5zmAQFMMhbyrKyCXsZRMmlyhio5
+        yXOc5zcqDiGjp3VZJHkF0/1i9A5i9i61s+4oayNZRySecQKFeNMUiPRvQHpg2TJ6Zl7ssEpLFrLgD
+        wu3x2p4pbdKNN4Zi6AQRLwS5/IuCzWi5nCDhRX/Jk5hX/7YkSgCEnm0noXgupWgg91QCoQWp/d5R3
+        qPFjnIM/A==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iwwYH-0007Ig-Te; Wed, 29 Jan 2020 23:15:18 +0000
+To:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        Paul Mackerras <paulus@samba.org>, linux-ppp@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH v2] Documentation: changes.rst: update several outdated
+ project URLs
+Message-ID: <a9c3c509-8f30-fcc4-d9e0-b53aeaa89e4f@infradead.org>
+Date:   Wed, 29 Jan 2020 15:15:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200126040202.11237-2-duncan_roe@optusnet.com.au>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sun, Jan 26, 2020 at 03:02:02PM +1100, Duncan Roe wrote:
-> In struct pkt_buff, we only ever needed any 2 of len, data and tail.
-> This has caused bugs in the past, e.g. commit 8a4316f31.
-> Delete tail, and where the value of pktb->tail was required,
-> use new pktb_tail() function.
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Applied, thanks.
+Update projects URLs in the changes.rst file.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: Jan Kara <jack@suse.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>
+Cc: netfilter-devel@vger.kernel.org
+Cc: coreteam@netfilter.org
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: linux-ppp@vger.kernel.org
+Cc: reiserfs-devel@vger.kernel.org
+Cc: Darrick J. Wong <darrick.wong@oracle.com>
+Cc: linux-xfs@vger.kernel.org
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Acked-by: Theodore Ts'o <tytso@mit.edu>
+---
+v2 changes:
+. add Ack and Review tags;
+. update as requested by Darrick and Ted;
+
+ Documentation/process/changes.rst                    |   14 ++++++----
+ Documentation/translations/it_IT/process/changes.rst |   14 ++++++----
+ 2 files changed, 18 insertions(+), 10 deletions(-)
+
+--- linux-next-20200129.orig/Documentation/translations/it_IT/process/changes.rst
++++ linux-next-20200129/Documentation/translations/it_IT/process/changes.rst
+@@ -390,7 +390,8 @@ Mkinitrd
+ E2fsprogs
+ ---------
+ 
+-- <http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.29.tar.gz>
++- <https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/>
++- <https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/>
+ 
+ JFSutils
+ --------
+@@ -400,12 +401,13 @@ JFSutils
+ Reiserfsprogs
+ -------------
+ 
+-- <http://www.kernel.org/pub/linux/utils/fs/reiserfs/>
++- <https://git.kernel.org/pub/scm/linux/kernel/git/jeffm/reiserfsprogs.git/>
+ 
+ Xfsprogs
+ --------
+ 
+-- <ftp://oss.sgi.com/projects/xfs/>
++- <https://git.kernel.org/pub/scm/fs/xfs/xfsprogs-dev.git>
++- <https://www.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/>
+ 
+ Pcmciautils
+ -----------
+@@ -444,7 +446,9 @@ Rete
+ PPP
+ ---
+ 
+-- <ftp://ftp.samba.org/pub/ppp/>
++- <https://download.samba.org/pub/ppp/>
++- <https://git.ozlabs.org/?p=ppp.git>
++- <https://github.com/paulusmack/ppp/>
+ 
+ 
+ NFS-utils
+@@ -455,7 +459,7 @@ NFS-utils
+ Iptables
+ --------
+ 
+-- <http://www.iptables.org/downloads.html>
++- <https://netfilter.org/projects/iptables/index.html>
+ 
+ Ip-route2
+ ---------
+--- linux-next-20200129.orig/Documentation/process/changes.rst
++++ linux-next-20200129/Documentation/process/changes.rst
+@@ -383,7 +383,8 @@ Mkinitrd
+ E2fsprogs
+ ---------
+ 
+-- <http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.29.tar.gz>
++- <https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/>
++- <https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/>
+ 
+ JFSutils
+ --------
+@@ -393,12 +394,13 @@ JFSutils
+ Reiserfsprogs
+ -------------
+ 
+-- <http://www.kernel.org/pub/linux/utils/fs/reiserfs/>
++- <https://git.kernel.org/pub/scm/linux/kernel/git/jeffm/reiserfsprogs.git/>
+ 
+ Xfsprogs
+ --------
+ 
+-- <ftp://oss.sgi.com/projects/xfs/>
++- <https://git.kernel.org/pub/scm/fs/xfs/xfsprogs-dev.git>
++- <https://www.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/>
+ 
+ Pcmciautils
+ -----------
+@@ -437,7 +439,9 @@ Networking
+ PPP
+ ---
+ 
+-- <ftp://ftp.samba.org/pub/ppp/>
++- <https://download.samba.org/pub/ppp/>
++- <https://git.ozlabs.org/?p=ppp.git>
++- <https://github.com/paulusmack/ppp/>
+ 
+ NFS-utils
+ ---------
+@@ -447,7 +451,7 @@ NFS-utils
+ Iptables
+ --------
+ 
+-- <http://www.iptables.org/downloads.html>
++- <https://netfilter.org/projects/iptables/index.html>
+ 
+ Ip-route2
+ ---------
+
