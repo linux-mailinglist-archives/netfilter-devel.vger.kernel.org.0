@@ -2,117 +2,109 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B66914F370
-	for <lists+netfilter-devel@lfdr.de>; Fri, 31 Jan 2020 21:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F45814F380
+	for <lists+netfilter-devel@lfdr.de>; Fri, 31 Jan 2020 21:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726990AbgAaUxP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 31 Jan 2020 15:53:15 -0500
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:38125 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726718AbgAaUw5 (ORCPT
+        id S1726749AbgAaU5s (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 31 Jan 2020 15:57:48 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:37120 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgAaU5o (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 31 Jan 2020 15:52:57 -0500
-Received: by mail-pl1-f196.google.com with SMTP id t6so3212647plj.5;
-        Fri, 31 Jan 2020 12:52:56 -0800 (PST)
+        Fri, 31 Jan 2020 15:57:44 -0500
+Received: by mail-lf1-f68.google.com with SMTP id b15so5831680lfc.4
+        for <netfilter-devel@vger.kernel.org>; Fri, 31 Jan 2020 12:57:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OU7pCbPuM2E7mJI/H5ckjCXxPxlbQB9wqm/B7j0dW/4=;
-        b=Nphb9NXeamgOuoKh37H38HpKV+y/WJaeOnUbwII6g8CamLlsV4tOtcuVGMV0eihm1W
-         qIvxY24VpBIxz1xTb0BPmcS47tfTb+fa7T+C6LE1Gdnl58C7LxbHl9lxdhPuCGQh5HDX
-         R7Y5Sm7nSz9tYz1/TvFMRNHcvIjqk9A+9/2jJ7rBovbWE/TyWLzkPKKSZQVpbtYGWciR
-         5/r0VPSGtp3gf7pC79WFEF0SMRFP73GWn/LLpqDzg3GFZqjC87/Uj8l/ZGLRjWdRVdnV
-         Rf94jDNOYqPFbolW91a12vc6bC+xEETTQqXAm1HSTl1ngmAiahN3qO7e00cUece3U2pP
-         +mYg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yIy8jX/bIqNLPn135lJfh03fB0J5DTm/sQQubpuwpIc=;
+        b=T9YJkCW9JbP3I/VrV8Kj+Sqgh32TFui6J89dvvzFWNF4uNBBlwLYLIiloGbloeGdEn
+         +WhsCFna2qbBsj24mHwTYrLs7jNN597VW/cYfZ14T/ucXOrbAuhgBHDPx8ZibV3JpYUn
+         SIOsaSvx7SY3ycO1LVDx3/u1kmOYO3RuQI1m4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OU7pCbPuM2E7mJI/H5ckjCXxPxlbQB9wqm/B7j0dW/4=;
-        b=CPH9CAjf3wNPGLMSseJNaNbz5MMSJ53pM69oNsslyQDf0p68CsZ5sslV3D9QzbL98g
-         ufY4pSbjGys0q0V2utSAzEtAZ8+nPVaP8aWpjgfjiKBl71XD1+hP02D6sPkpqglXeTxC
-         NeQ119f7OM2C9jG+cRJY/3EUH6Vy1TObCAwkGDLLkzXwEsMN/R1zBqIDT7+jhrQ/CVJv
-         52O1we0OrwjvWY1ErsAvpHGBUopwnw0Ifbq2i9F3nKxMIWJ0SsL72Bx9xgTTRMO8nfjR
-         SoKvo0vWeh5B+PKUfnWjjjzSl4FwlVBfaYitJtF/aa8C+dfGPJlnasY+sfPY/kKaLiQU
-         PXvQ==
-X-Gm-Message-State: APjAAAUJRZjngrPe3bqddU3Iw9PNcM+7IMT1YpaS1OzntdlyJToFQ6sW
-        0+iZDhPS33o6GEp7Kiz/iwq/9OMV06I=
-X-Google-Smtp-Source: APXvYqyXzlJSRWytiAEImeyGlflJaG5k/1+DneHvRmmRD2bjxg77FVFMTGc8s25B/qoJvPeqlGZCtw==
-X-Received: by 2002:a17:90a:a48a:: with SMTP id z10mr7124931pjp.52.1580503976350;
-        Fri, 31 Jan 2020 12:52:56 -0800 (PST)
-Received: from tw-172-25-31-76.office.twttr.net ([8.25.197.24])
-        by smtp.gmail.com with ESMTPSA id m128sm11599169pfm.183.2020.01.31.12.52.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jan 2020 12:52:55 -0800 (PST)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     netfilter-devel@vger.kernel.org,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        syzbot+adf6c6c2be1c3a718121@syzkaller.appspotmail.com,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Subject: [Patch nf 3/3] xt_hashlimit: limit the max size of hashtable
-Date:   Fri, 31 Jan 2020 12:52:16 -0800
-Message-Id: <20200131205216.22213-4-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200131205216.22213-1-xiyou.wangcong@gmail.com>
-References: <20200131205216.22213-1-xiyou.wangcong@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yIy8jX/bIqNLPn135lJfh03fB0J5DTm/sQQubpuwpIc=;
+        b=SlSft/Li7rZix+Husw3azYZjo1JGOzYbeov4n6kAUAMsVJiBIDoqRwXyKt+dNQw9pe
+         ag5YkWfAjDU6Ze4oymlrbW9yZJXDvyOb37dweZU8x+1gtbrkTBKkhpQ0ZLwh7ca6pFhn
+         WxwlYDeTBVGyFpydz/gUIrAG79q9rCWq/fgNFHrkK9BZDCcMFXtf12TrxPwbMQtykMjg
+         g6hwDihKwceTs90neGPFa3+CJ0QeVOfVhMeM5jJaXTSr/VhsTSm8NdyYKf3WaWnaroP0
+         TuVYaMfGqXPfNzMPzyYklIIChGswsQk2v8uyNPglrQEL3o3LMQDSIZk6T4GMZTOZ7agW
+         Yzwg==
+X-Gm-Message-State: APjAAAUCMjnpz+6loDLQdLIEdIom24CtRCG43OCHfn0Lc9Jv+khYIoQh
+        qIioyBEimpCIgWXVBUcccL5r95kV4+Q=
+X-Google-Smtp-Source: APXvYqy6lcoZwBGnhR0RYBawuXVs8Z9+NxAtU0L7uEhnO2SJIQ+GR5uKowpV2hD72SoRIYjYqsCycQ==
+X-Received: by 2002:ac2:5626:: with SMTP id b6mr6469760lff.134.1580504260781;
+        Fri, 31 Jan 2020 12:57:40 -0800 (PST)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id z1sm5139382lfh.35.2020.01.31.12.57.39
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 31 Jan 2020 12:57:39 -0800 (PST)
+Received: by mail-lj1-f174.google.com with SMTP id o15so2958184ljg.6
+        for <netfilter-devel@vger.kernel.org>; Fri, 31 Jan 2020 12:57:39 -0800 (PST)
+X-Received: by 2002:a2e:88c5:: with SMTP id a5mr7089308ljk.201.1580504259100;
+ Fri, 31 Jan 2020 12:57:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <000000000000dd68d0059c74a1db@google.com> <000000000000ed3a48059d17277e@google.com>
+In-Reply-To: <000000000000ed3a48059d17277e@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 31 Jan 2020 12:57:23 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgNo-3FuNWSj+pRqJEG3phVnpcEi+NNq7f_VMWeTugFDA@mail.gmail.com>
+Message-ID: <CAHk-=wgNo-3FuNWSj+pRqJEG3phVnpcEi+NNq7f_VMWeTugFDA@mail.gmail.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in bitmap_ip_add
+To:     Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc:     coreteam@netfilter.org, David Miller <davem@davemloft.net>,
+        Marco Elver <elver@google.com>,
+        Florian Westphal <fw@strlen.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        jeremy@azazel.net, Kate Stewart <kstewart@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Netdev <netdev@vger.kernel.org>, netfilter-devel@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The user-specified hashtable size is unbound, this could
-easily lead to an OOM or a hung task as we hold the global
-mutex while allocating and initializing the new hashtable.
+On Sun, Jan 26, 2020 at 8:01 PM syzbot
+<syzbot+f3e96783d74ee8ea9aa3@syzkaller.appspotmail.com> wrote:
+>
+> syzbot has bisected this bug to:
 
-The max value is derived from the max value when chosen by
-the kernel.
+Ok, the bisection is obviously bogus - it just points to where the
+KASAN support was added to _notice_ the problem.
 
-Reported-and-tested-by: syzbot+adf6c6c2be1c3a718121@syzkaller.appspotmail.com
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
----
- net/netfilter/xt_hashlimit.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+But is somebody looking at the actual KASAN report itself?
 
-diff --git a/net/netfilter/xt_hashlimit.c b/net/netfilter/xt_hashlimit.c
-index 57a2639bcc22..6327134c5886 100644
---- a/net/netfilter/xt_hashlimit.c
-+++ b/net/netfilter/xt_hashlimit.c
-@@ -272,6 +272,8 @@ dsthash_free(struct xt_hashlimit_htable *ht, struct dsthash_ent *ent)
- }
- static void htable_gc(struct work_struct *work);
- 
-+#define HASHLIMIT_MAX_SIZE 8192
-+
- static int htable_create(struct net *net, struct hashlimit_cfg3 *cfg,
- 			 const char *name, u_int8_t family,
- 			 struct xt_hashlimit_htable **out_hinfo,
-@@ -290,7 +292,7 @@ static int htable_create(struct net *net, struct hashlimit_cfg3 *cfg,
- 		size = (nr_pages << PAGE_SHIFT) / 16384 /
- 		       sizeof(struct hlist_head);
- 		if (nr_pages > 1024 * 1024 * 1024 / PAGE_SIZE)
--			size = 8192;
-+			size = HASHLIMIT_MAX_SIZE;
- 		if (size < 16)
- 			size = 16;
- 	}
-@@ -848,6 +850,8 @@ static int hashlimit_mt_check_common(const struct xt_mtchk_param *par,
- 
- 	if (cfg->gc_interval == 0 || cfg->expire == 0)
- 		return -EINVAL;
-+	if (cfg->size > HASHLIMIT_MAX_SIZE)
-+		return -ENOMEM;
- 	if (par->family == NFPROTO_IPV4) {
- 		if (cfg->srcmask > 32 || cfg->dstmask > 32)
- 			return -EINVAL;
--- 
-2.21.1
+  https://syzkaller.appspot.com/bug?extid=f3e96783d74ee8ea9aa3
 
+It does look like nfnetlink_rcv_msg() ends up looking at a bit:
+
+ bitmap_ip_do_add net/netfilter/ipset/ip_set_bitmap_ip.c:83 [inline]
+ bitmap_ip_add+0xef/0xe60 net/netfilter/ipset/ip_set_bitmap_gen.h:136
+ bitmap_ip_uadt+0x73e/0xa10 net/netfilter/ipset/ip_set_bitmap_ip.c:186
+ call_ad+0x1a0/0x5a0 net/netfilter/ipset/ip_set_core.c:1716
+ ip_set_ad.isra.0+0x572/0xb20 net/netfilter/ipset/ip_set_core.c:1804
+ ip_set_uadd+0x37/0x50 net/netfilter/ipset/ip_set_core.c:1829
+ nfnetlink_rcv_msg+0xcf2/0xfb0 net/netfilter/nfnetlink.c:229
+
+that is past the allocation:
+
+ ip_set_alloc+0x38/0x5e net/netfilter/ipset/ip_set_core.c:255
+ init_map_ip net/netfilter/ipset/ip_set_bitmap_ip.c:223 [inline]
+ bitmap_ip_create+0x6ec/0xc20 net/netfilter/ipset/ip_set_bitmap_ip.c:327
+ ip_set_create+0x6f1/0x1500 net/netfilter/ipset/ip_set_core.c:1111
+ nfnetlink_rcv_msg+0xcf2/0xfb0 net/netfilter/nfnetlink.c:229
+
+Maybe this has already been fixed, but I'm just trying to follow-up on
+the syzbot report..
+
+           Linus
