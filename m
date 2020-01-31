@@ -2,86 +2,77 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5430214F2B6
-	for <lists+netfilter-devel@lfdr.de>; Fri, 31 Jan 2020 20:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C067314F360
+	for <lists+netfilter-devel@lfdr.de>; Fri, 31 Jan 2020 21:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgAaTYs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 31 Jan 2020 14:24:48 -0500
-Received: from correo.us.es ([193.147.175.20]:36848 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726505AbgAaTYj (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 31 Jan 2020 14:24:39 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id E7595FC5F9
-        for <netfilter-devel@vger.kernel.org>; Fri, 31 Jan 2020 20:24:38 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id D7998DA709
-        for <netfilter-devel@vger.kernel.org>; Fri, 31 Jan 2020 20:24:38 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id CCA37DA702; Fri, 31 Jan 2020 20:24:38 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id E1C02DA715;
-        Fri, 31 Jan 2020 20:24:36 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 31 Jan 2020 20:24:36 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id B50B942EFB80;
-        Fri, 31 Jan 2020 20:24:36 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 6/6] netfilter: nf_flowtable: fix documentation
-Date:   Fri, 31 Jan 2020 20:24:28 +0100
-Message-Id: <20200131192428.167274-7-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200131192428.167274-1-pablo@netfilter.org>
-References: <20200131192428.167274-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726174AbgAaUwy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 31 Jan 2020 15:52:54 -0500
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:33977 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgAaUwy (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 31 Jan 2020 15:52:54 -0500
+Received: by mail-pf1-f181.google.com with SMTP id i6so3961434pfc.1;
+        Fri, 31 Jan 2020 12:52:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WcImXaVJ5xFLxdQlO5pxg/sgsWml7hPwoVGgOSXa54E=;
+        b=WDQnFvZDfy2/68PjMYjoj5CQ99WMGu/FrNceTwCeg+RnM/ZZXdJcFJ/etzCH3G+K9r
+         tPy59x+RjefU1Xu85AMTeLTPXPjUEkX6v033jKVmD1FZLBCpbe0jbCvUB/mLMbTZib7u
+         LwEPwJjiGgJ6YaepZWKhvqx0uzJCXo2u6Nta575PYBje/7MeYHwfrtIxxx4QmkiYHIqG
+         5cI7IXnFqRdKYxmrb4CiUF2eHGpqv9wTILHRvCWTk7706mOrE2qWQTN0XHR2dcXYo5OA
+         jytmExABYZWnRAocmOw5eGQuvfJo8nyX5p4Hke+SqUu1YDWHlXlFi6vAClcI40fV1fqV
+         fuaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WcImXaVJ5xFLxdQlO5pxg/sgsWml7hPwoVGgOSXa54E=;
+        b=X20oT0vvAShmJlofTbdnJXOe7/A2BNX8MU9GJrvqy4HXYlCEGxw/bCbNoFlt5aVGh9
+         K36bfHdzGIv6o9ldJ7YsUnJeTTgvUTt8ddmPgKrSFRHvbeb37gCgp9I5kVOSYqOxj4KV
+         tqwASt5A3aOewaYIQxsJOnz/bOy56UvaCayvDOOZBMa4yCpJk3qj+grXqWOindTuVTEL
+         VnMDBqqoN31gJOqz6K2n9JL/KhmVbn0Pi8mCTJ1ZGxjaBlkNAU/BBOuOIvgcQDIKOfOx
+         /oNsQxUc6YVvw4p5aGMrSB7NBw3KNQQJbrcejwQLAlq9X/GkKuDwaUtHu1LeAwyJ3elB
+         FTJA==
+X-Gm-Message-State: APjAAAVyswzW5XoFBDc6V+sIX3vjtcYYmcH2DlmhFKJtxsUC3q8etBZs
+        i4wOyPnvGiztdeujMVCZfvYEb5kBvew=
+X-Google-Smtp-Source: APXvYqxHUey9/YOsqpgaM3L4MdLEhz3u9ODuF/3lT9Ia7gsboTJ175OSI/76JbuQLF3j2NIcMiD3cQ==
+X-Received: by 2002:a05:6a00:45:: with SMTP id i5mr12189501pfk.252.1580503973481;
+        Fri, 31 Jan 2020 12:52:53 -0800 (PST)
+Received: from tw-172-25-31-76.office.twttr.net ([8.25.197.24])
+        by smtp.gmail.com with ESMTPSA id m128sm11599169pfm.183.2020.01.31.12.52.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jan 2020 12:52:53 -0800 (PST)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     netfilter-devel@vger.kernel.org,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Subject: [Patch nf 0/3] netfilter: xt_hashlimit: a few improvements
+Date:   Fri, 31 Jan 2020 12:52:13 -0800
+Message-Id: <20200131205216.22213-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.21.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Matteo Croce <mcroce@redhat.com>
+This patchset improves vmalloc allocation handling and
+hashlimit_mutex usage for xt_hashlimit.
 
-In the flowtable documentation there is a missing semicolon, the command
-as is would give this error:
-
-    nftables.conf:5:27-33: Error: syntax error, unexpected devices, expecting newline or semicolon
-                    hook ingress priority 0 devices = { br0, pppoe-data };
-                                            ^^^^^^^
-    nftables.conf:4:12-13: Error: invalid hook (null)
-            flowtable ft {
-                      ^^
-
-Fixes: 19b351f16fd9 ("netfilter: add flowtable documentation")
-Signed-off-by: Matteo Croce <mcroce@redhat.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- Documentation/networking/nf_flowtable.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/networking/nf_flowtable.txt b/Documentation/networking/nf_flowtable.txt
-index ca2136c76042..0bf32d1121be 100644
---- a/Documentation/networking/nf_flowtable.txt
-+++ b/Documentation/networking/nf_flowtable.txt
-@@ -76,7 +76,7 @@ flowtable and add one rule to your forward chain.
- 
-         table inet x {
- 		flowtable f {
--			hook ingress priority 0 devices = { eth0, eth1 };
-+			hook ingress priority 0; devices = { eth0, eth1 };
- 		}
-                 chain y {
-                         type filter hook forward priority 0; policy accept;
+Cong Wang (3):
+  xt_hashlimit: avoid OOM for user-controlled vmalloc
+  xt_hashlimit: reduce hashlimit_mutex scope for htable_put()
+  xt_hashlimit: limit the max size of hashtable
+
+ net/netfilter/xt_hashlimit.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
+
 -- 
-2.11.0
+2.21.1
 
