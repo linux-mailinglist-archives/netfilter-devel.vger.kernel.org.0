@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F52D150522
+	by mail.lfdr.de (Postfix) with ESMTP id 08D6F150521
 	for <lists+netfilter-devel@lfdr.de>; Mon,  3 Feb 2020 12:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727321AbgBCLUZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1726994AbgBCLUZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Mon, 3 Feb 2020 06:20:25 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:33252 "EHLO
+Received: from kadath.azazel.net ([81.187.231.250]:33254 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727306AbgBCLUY (ORCPT
+        with ESMTP id S1727366AbgBCLUY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 3 Feb 2020 06:20:24 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,22 +18,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=wOFfEFTjWwR4/TuAekGEhiH7+o06UHfgBdSDi7+teSQ=; b=tMIlDQBeeqxqMBLwQd//B/6FNg
-        zoTrt+zfN1mUWFIyDID3RM/XidCyU+9G5MTOJiv8Zzt06VRak1fgahiW7e0M3Kb/6igObWxeDpNDc
-        ZhuC2cWtDYVWoIx0+zoRU6h+CayzoAubpmvGhAmEp8zyQjkdwQuj4bDBl6PhoutWgYzvYe3PIamsx
-        /T9b25ijxQTc1cvCV4vlCwbtQUfQ365E9yim3ljgekBUvia21buSm4hSDmm5/7czYNPLVckTNMtf4
-        BH4W6XCC5Npnotj5JWaQAZERdm0HEC6EGEVHHw7wU80foz+YpyyDV5KY/Em2j4Z0mm6YlBox10QYd
-        ZLMmLfGw==;
+        bh=s1M7Tq3zuK7LKJxiGhvzc5i0R3g7YNRg5FeTNQ5oKq8=; b=Kj4LFQbg9FyPv6AoU0mM1WzReX
+        32hB1E4qMockE7uSjjotbVw2Xw1HXaf2OsV5QubtvWz98FE7RfTCi4z1XDd7/cCr+uuEZbsvNaxMS
+        1puMw4g7xmyNBlYu2GFzYQyjmDiF6zOkdPsd03SK8W/Uf25oI5ErdOu3XUTzcRcwCx7vQ4vfW+gug
+        OrCKyRyXOeXxxBb3HgGBHBR/B28wQfoxSRI1wUlZ0SpBFt1q/lU7d8naovRvYVQir+jwlIu4508Uv
+        EfVAaNiug2JDZTHkvSbABnY1iljqpsPWM21q85OweJ3JpGwUzYdkl/QopqFk6n7BbJwWGkFKVhpv9
+        PbskOKew==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1iyZmB-0007Br-M5
+        id 1iyZmB-0007Br-QU
         for netfilter-devel@vger.kernel.org; Mon, 03 Feb 2020 11:20:23 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v4 4/6] tests: shell: add bit-shift tests.
-Date:   Mon,  3 Feb 2020 11:20:21 +0000
-Message-Id: <20200203112023.646840-5-jeremy@azazel.net>
+Subject: [PATCH nft v4 5/6] tests: py: add missing JSON output.
+Date:   Mon,  3 Feb 2020 11:20:22 +0000
+Message-Id: <20200203112023.646840-6-jeremy@azazel.net>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200203112023.646840-1-jeremy@azazel.net>
 References: <20200203112023.646840-1-jeremy@azazel.net>
@@ -47,79 +47,135 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add a couple of shell test-cases for setting the CT mark to a bitwise
-expression derived from the packet mark and vice versa.
+The JSON output was missing for some existing tests.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- tests/shell/testcases/chains/0040mark_shift_0         | 11 +++++++++++
- tests/shell/testcases/chains/0040mark_shift_1         | 11 +++++++++++
- .../shell/testcases/chains/dumps/0040mark_shift_0.nft |  6 ++++++
- .../shell/testcases/chains/dumps/0040mark_shift_1.nft |  6 ++++++
- 4 files changed, 34 insertions(+)
- create mode 100755 tests/shell/testcases/chains/0040mark_shift_0
- create mode 100755 tests/shell/testcases/chains/0040mark_shift_1
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_shift_0.nft
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_shift_1.nft
+ tests/py/any/ct.t.json   | 23 +++++++++++++++++++++++
+ tests/py/ip/meta.t.json  | 35 +++++++++++++++++++++++++++++++++++
+ tests/py/ip6/meta.t.json | 35 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 93 insertions(+)
 
-diff --git a/tests/shell/testcases/chains/0040mark_shift_0 b/tests/shell/testcases/chains/0040mark_shift_0
-new file mode 100755
-index 000000000000..55447f0b9737
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_shift_0
-@@ -0,0 +1,11 @@
-+#!/bin/bash
+diff --git a/tests/py/any/ct.t.json b/tests/py/any/ct.t.json
+index 7c16f9df2195..8d56db2aaedb 100644
+--- a/tests/py/any/ct.t.json
++++ b/tests/py/any/ct.t.json
+@@ -499,6 +499,29 @@
+     }
+ ]
+ 
++# ct mark set ct mark or 0x00000001
++[
++    {
++        "mangle": {
++            "key": {
++                "ct": {
++                    "key": "mark"
++                }
++            },
++            "value": {
++                "|": [
++                    {
++                        "ct": {
++                            "key": "mark"
++                        }
++                    },
++                    1
++                ]
++            }
++        }
++    }
++]
 +
-+set -e
+ # ct mark 0x00000032
+ [
+     {
+diff --git a/tests/py/ip/meta.t.json b/tests/py/ip/meta.t.json
+index f873aa88598b..f83864f672d5 100644
+--- a/tests/py/ip/meta.t.json
++++ b/tests/py/ip/meta.t.json
+@@ -105,3 +105,38 @@
+     }
+ ]
+ 
++# meta sdif "lo" accept
++[
++    {
++        "match": {
++            "left": {
++                "meta": {
++                    "key": "sdif"
++                }
++            },
++            "op": "==",
++            "right": "lo"
++        }
++    },
++    {
++        "accept": null
++    }
++]
 +
-+RULESET="
-+  add table t
-+  add chain t c { type filter hook output priority mangle; }
-+  add rule t c oif lo ct mark set (meta mark | 0x10) << 8
-+"
++# meta sdifname != "vrf1" accept
++[
++    {
++        "match": {
++            "left": {
++                "meta": {
++                    "key": "sdifname"
++                }
++            },
++            "op": "!=",
++            "right": "vrf1"
++        }
++    },
++    {
++        "accept": null
++    }
++]
+diff --git a/tests/py/ip6/meta.t.json b/tests/py/ip6/meta.t.json
+index 29cf9fd2d0cf..e72350f375e9 100644
+--- a/tests/py/ip6/meta.t.json
++++ b/tests/py/ip6/meta.t.json
+@@ -105,3 +105,38 @@
+     }
+ ]
+ 
++# meta sdif "lo" accept
++[
++    {
++        "match": {
++            "left": {
++                "meta": {
++                    "key": "sdif"
++                }
++            },
++            "op": "==",
++            "right": "lo"
++        }
++    },
++    {
++        "accept": null
++    }
++]
 +
-+$NFT --debug=eval -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/0040mark_shift_1 b/tests/shell/testcases/chains/0040mark_shift_1
-new file mode 100755
-index 000000000000..b609f5ef10ad
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_shift_1
-@@ -0,0 +1,11 @@
-+#!/bin/bash
-+
-+set -e
-+
-+RULESET="
-+  add table t
-+  add chain t c { type filter hook input priority mangle; }
-+  add rule t c iif lo ct mark & 0xff 0x10 meta mark set ct mark >> 8
-+"
-+
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_shift_0.nft b/tests/shell/testcases/chains/dumps/0040mark_shift_0.nft
-new file mode 100644
-index 000000000000..52d59d2c6da4
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_shift_0.nft
-@@ -0,0 +1,6 @@
-+table ip t {
-+	chain c {
-+		type filter hook output priority mangle; policy accept;
-+		oif "lo" ct mark set (meta mark | 0x00000010) << 8
-+	}
-+}
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_shift_1.nft b/tests/shell/testcases/chains/dumps/0040mark_shift_1.nft
-new file mode 100644
-index 000000000000..56ec8dc766ca
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_shift_1.nft
-@@ -0,0 +1,6 @@
-+table ip t {
-+	chain c {
-+		type filter hook input priority mangle; policy accept;
-+		iif "lo" ct mark & 0x000000ff == 0x00000010 meta mark set ct mark >> 8
-+	}
-+}
++# meta sdifname != "vrf1" accept
++[
++    {
++        "match": {
++            "left": {
++                "meta": {
++                    "key": "sdifname"
++                }
++            },
++            "op": "!=",
++            "right": "vrf1"
++        }
++    },
++    {
++        "accept": null
++    }
++]
 -- 
 2.24.1
 
