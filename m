@@ -2,84 +2,76 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF141507CF
-	for <lists+netfilter-devel@lfdr.de>; Mon,  3 Feb 2020 14:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE90150D68
+	for <lists+netfilter-devel@lfdr.de>; Mon,  3 Feb 2020 17:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgBCNyk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 3 Feb 2020 08:54:40 -0500
-Received: from mail-40130.protonmail.ch ([185.70.40.130]:38165 "EHLO
-        mail-40130.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727494AbgBCNyj (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 3 Feb 2020 08:54:39 -0500
-Date:   Mon, 03 Feb 2020 13:54:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=default; t=1580738076;
-        bh=OFdiTIMRr9CKLh8jUhcTeYLf9TN9FQ+Y21QjYyUQpyk=;
-        h=Date:To:From:Reply-To:Subject:Feedback-ID:From;
-        b=knNQWUdsRsk1NPWQCdT4w89mafF8FthJcmDWzMSBayvntwG37DtIXu9KXf4K4GLR0
-         O/qBd6qPyuh83D86LKLFfZM87x1zb1fA+bJYRHnMruYJBE0Y0UthfOmo/Q6Jv/FmA3
-         mgInlbITD6ARtSizMIXqKH60YFaS1Nve5J8K8/bs=
-To:     "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
-From:   dyslexicatheist <dyslexicatheist@protonmail.com>
-Reply-To: dyslexicatheist <dyslexicatheist@protonmail.com>
-Subject: invalid read in
-Message-ID: <gwRjoIGUgI5MEgxSob7CBSUwPbYkxILRc4_ZrYWYNI7d1-T5Ej95p3XkEY_f9hLqHK5nVun7dk6RqObi0c_4482IJ6s6U33PyS6Hrm4z46E=@protonmail.com>
-Feedback-ID: LnsYXauhtR_e9kgk2d-isThAhyxIsD2PcS0_jrp6ej-3I2WPS9tR2zudCE_YY9WCDyXkRWYo2nBz1g-cDBMDOQ==:Ext:ProtonMail
+        id S1728232AbgBCQoP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 3 Feb 2020 11:44:15 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:41800 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730315AbgBCQby (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 3 Feb 2020 11:31:54 -0500
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1iyedc-0008UT-Fs; Mon, 03 Feb 2020 17:31:52 +0100
+Date:   Mon, 3 Feb 2020 17:31:52 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     dyslexicatheist <dyslexicatheist@protonmail.com>
+Cc:     "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Subject: Re: invalid read in
+Message-ID: <20200203163152.GY19873@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        dyslexicatheist <dyslexicatheist@protonmail.com>,
+        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+References: <gwRjoIGUgI5MEgxSob7CBSUwPbYkxILRc4_ZrYWYNI7d1-T5Ej95p3XkEY_f9hLqHK5nVun7dk6RqObi0c_4482IJ6s6U33PyS6Hrm4z46E=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,BAYES_50,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM
-        shortcircuit=no autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <gwRjoIGUgI5MEgxSob7CBSUwPbYkxILRc4_ZrYWYNI7d1-T5Ej95p3XkEY_f9hLqHK5nVun7dk6RqObi0c_4482IJ6s6U33PyS6Hrm4z46E=@protonmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
+Hi,
 
-I've written a filter to parse out punicode from DNS payloads and rewrite t=
-he packet in case it contains any IDN (xn--) marker unless the IDN is on a =
-whitelist. Valgrind reports that nfq_create_queue() returns uninitialized
-bytes resulting in thiserror:
+On Mon, Feb 03, 2020 at 01:54:31PM +0000, dyslexicatheist wrote:
+> I've written a filter to parse out punicode from DNS payloads and rewrite the packet in case it contains any IDN (xn--) marker unless the IDN is on a whitelist. Valgrind reports that nfq_create_queue() returns uninitialized
+> bytes resulting in thiserror:
+> 
+> 
+> sudo valgrind --tool=memcheck --leak-check=yes --show-reachable=yes \
+>            --num-callers=20 --track-fds=yes --track-origins=yes -s \
+>             ./nfq --syslog --facility LOG_LOCAL0 --log-level info \
+>                   --port 53  --renice -20 --rewrite-answer
+>       ==714384==
+>       ==714384== Syscall param socketcall.sendto(msg) points to uninitialised byte(s)
+>       ==714384==    at 0x4B977C7: sendto (sendto.c:27)
+>       ==714384==    by 0x486BE02: nfnl_send (in /usr/lib/x86_64-linux-gnu/libnfnetlink.so.0.2.0)
+>       ==714384==    by 0x486DBD2: nfnl_query (in /usr/lib/x86_64-linux-gnu/libnfnetlink.so.0.2.0)
+>       ==714384==    by 0x4A73995: nfq_set_mode (libnetfilter_queue.c:639)
+>       ==714384==    by 0x10B247: start_nfqueue_processing (nfq.c:532)
+>       ==714384==    by 0x10C289: main (nfq.c:987)
+>       ==714384==  Address 0x1ffefefbfd is on thread 1's stack
+>       ==714384==  in frame #3, created by nfq_set_mode (libnetfilter_queue.c:623)
+>       ==714384==  Uninitialised value was created by a stack allocation
+>       ==714384==    at 0x10A1B0: ??? (in /src/nfq/src/nfq)
+> 
+> After searching on this list archive, I found 1 question but without a follow-up answer:
+> https://marc.info/?l=netfilter-devel&m=137132916826745&w=4
+> 
+> Having already spent over a day chasing this. Not having come across other cases on github except this person self reporting[1] made me think it must be indeed something in my code that I'm missing and that could have triggered this. Or is it really rare (harmless) bug in libnetfilter?
 
+I guess this is the typical "problem" situation in which userspace uses
+a non-zeroed buffer to feed into sendto() and due to padding not
+every byte was written to. So basically userspace "leaks" garbage to
+kernel, which is something I'd consider harmless and merely a minor
+inconvenience when analyzing with valgrind. I usually suffer from this
+as well since libmnl()'s allocation routines don't zero the buffer
+either.
 
-sudo valgrind --tool=3Dmemcheck --leak-check=3Dyes --show-reachable=3Dyes \
-           --num-callers=3D20 --track-fds=3Dyes --track-origins=3Dyes -s \
-            ./nfq --syslog --facility LOG_LOCAL0 --log-level info \
-                  --port 53  --renice -20 --rewrite-answer
-      =3D=3D714384=3D=3D
-      =3D=3D714384=3D=3D Syscall param socketcall.sendto(msg) points to uni=
-nitialised byte(s)
-      =3D=3D714384=3D=3D    at 0x4B977C7: sendto (sendto.c:27)
-      =3D=3D714384=3D=3D    by 0x486BE02: nfnl_send (in /usr/lib/x86_64-lin=
-ux-gnu/libnfnetlink.so.0.2.0)
-      =3D=3D714384=3D=3D    by 0x486DBD2: nfnl_query (in /usr/lib/x86_64-li=
-nux-gnu/libnfnetlink.so.0.2.0)
-      =3D=3D714384=3D=3D    by 0x4A73995: nfq_set_mode (libnetfilter_queue.=
-c:639)
-      =3D=3D714384=3D=3D    by 0x10B247: start_nfqueue_processing (nfq.c:53=
-2)
-      =3D=3D714384=3D=3D    by 0x10C289: main (nfq.c:987)
-      =3D=3D714384=3D=3D  Address 0x1ffefefbfd is on thread 1's stack
-      =3D=3D714384=3D=3D  in frame #3, created by nfq_set_mode (libnetfilte=
-r_queue.c:623)
-      =3D=3D714384=3D=3D  Uninitialised value was created by a stack alloca=
-tion
-      =3D=3D714384=3D=3D    at 0x10A1B0: ??? (in /src/nfq/src/nfq)
+In your case, I'd say the error message disappears if you add
+'memset(&u, 0, sizeof(u))' to the beginning of nfq_set_mode().
 
-After searching on this list archive, I found 1 question but without a foll=
-ow-up answer:
-https://marc.info/?l=3Dnetfilter-devel&m=3D137132916826745&w=3D4
-
-Having already spent over a day chasing this. Not having come across other =
-cases on github except this person self reporting[1] made me think it must =
-be indeed something in my code that I'm missing and that could have trigger=
-ed this. Or is it really rare (harmless) bug in libnetfilter?
-
-[1] https://github.com/misje/dhcpoptinj/issues/5
-
-thanks for any help,
-~DA
+Cheers, Phil
