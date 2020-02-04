@@ -2,131 +2,102 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A77151418
-	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Feb 2020 03:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D74A151546
+	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Feb 2020 06:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727004AbgBDCAS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 3 Feb 2020 21:00:18 -0500
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:58271 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726834AbgBDCAS (ORCPT
+        id S1726151AbgBDFTT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 4 Feb 2020 00:19:19 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:19421 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725813AbgBDFTT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 3 Feb 2020 21:00:18 -0500
-Received: from dimstar.local.net (n175-34-107-236.sun1.vic.optusnet.com.au [175.34.107.236])
-        by mail105.syd.optusnet.com.au (Postfix) with SMTP id 960B73A2F1C
-        for <netfilter-devel@vger.kernel.org>; Tue,  4 Feb 2020 13:00:04 +1100 (AEDT)
-Received: (qmail 6524 invoked by uid 501); 4 Feb 2020 02:00:03 -0000
-From:   Duncan Roe <duncan_roe@optusnet.com.au>
-To:     pablo@netfilter.org
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH libnetfilter_queue 1/1] src: move static nfq_hdr_put from examples/nf-queue.c into the library since everyone is going to want it.
-Date:   Tue,  4 Feb 2020 13:00:03 +1100
-Message-Id: <20200204020003.6478-2-duncan_roe@optusnet.com.au>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20200204020003.6478-1-duncan_roe@optusnet.com.au>
-References: <20200204020003.6478-1-duncan_roe@optusnet.com.au>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
-        a=HhxO2xtGR2hgo/TglJkeQA==:117 a=HhxO2xtGR2hgo/TglJkeQA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=l697ptgUJYAA:10 a=RSmzAf-M6YYA:10
-        a=PO7r1zJSAAAA:8 a=RAhjgGh_ZNwQOQctfxUA:9 a=A5nTlvcZHGX_js2M:21
-        a=LNlhHzlcMOFk2SI9:21
+        Tue, 4 Feb 2020 00:19:19 -0500
+Date:   Tue, 04 Feb 2020 05:19:12 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
+        s=default; t=1580793556;
+        bh=Zax6tKfFXaDReTKIEN/IKbiLjQfeJ87RgoDScaLjeCg=;
+        h=Date:To:From:Cc:Reply-To:Subject:Feedback-ID:From;
+        b=q+SvyvDoXPzT2Hu/cIGCQh1nEJ3rpqJSUfhDGcMcSAQN35XJsQZXdJXDrWrkPAz/y
+         jScTCCe9XAU3Ay9uI6TaChPTCiy8cntGXoailWfq5ZyjxdcoyJWzBiJ0xH28961CLn
+         EBUJUZZQr6MFqX3BtXrpjqVv4zXQgsRGSlSq3tI0=
+To:     netfilter-devel@vger.kernel.org
+From:   Laurent Fasnacht <fasnacht@protonmail.ch>
+Cc:     Laurent Fasnacht <fasnacht@protonmail.ch>
+Reply-To: Laurent Fasnacht <fasnacht@protonmail.ch>
+Subject: [PATCH nft] tests: shell: add test for glob includes
+Message-ID: <20200204051812.14851-1-fasnacht@protonmail.ch>
+Feedback-ID: 67Kw-YMwrBchoIMLcnFuA64ZnJub6AgnNvfJUjsgbTTSp4dmymKgGy_PLLqmOsJ9F58iClONCeGYaqp9YPx84w==:Ext:ProtonMail
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,BAYES_40,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM
+        shortcircuit=no autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.protonmail.ch
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
----
- examples/nf-queue.c                             | 15 -------------
- include/libnetfilter_queue/libnetfilter_queue.h |  1 +
- src/nlmsg.c                                     | 28 ++++++++++++++++++++++---
- 3 files changed, 26 insertions(+), 18 deletions(-)
+Including more than MAX_INCLUDE_DEPTH file in one statement should succeed.
 
-diff --git a/examples/nf-queue.c b/examples/nf-queue.c
-index 960e244..112c3bf 100644
---- a/examples/nf-queue.c
-+++ b/examples/nf-queue.c
-@@ -20,21 +20,6 @@
- 
- static struct mnl_socket *nl;
- 
--static struct nlmsghdr *
--nfq_hdr_put(char *buf, int type, uint32_t queue_num)
--{
--	struct nlmsghdr *nlh = mnl_nlmsg_put_header(buf);
--	nlh->nlmsg_type	= (NFNL_SUBSYS_QUEUE << 8) | type;
--	nlh->nlmsg_flags = NLM_F_REQUEST;
--
--	struct nfgenmsg *nfg = mnl_nlmsg_put_extra_header(nlh, sizeof(*nfg));
--	nfg->nfgen_family = AF_UNSPEC;
--	nfg->version = NFNETLINK_V0;
--	nfg->res_id = htons(queue_num);
--
--	return nlh;
--}
--
- static void
- nfq_send_verdict(int queue_num, uint32_t id)
- {
-diff --git a/include/libnetfilter_queue/libnetfilter_queue.h b/include/libnetfilter_queue/libnetfilter_queue.h
-index 092c57d..3372099 100644
---- a/include/libnetfilter_queue/libnetfilter_queue.h
-+++ b/include/libnetfilter_queue/libnetfilter_queue.h
-@@ -149,6 +149,7 @@ void nfq_nlmsg_verdict_put_mark(struct nlmsghdr *nlh, uint32_t mark);
- void nfq_nlmsg_verdict_put_pkt(struct nlmsghdr *nlh, const void *pkt, uint32_t pktlen);
- 
- int nfq_nlmsg_parse(const struct nlmsghdr *nlh, struct nlattr **attr);
-+struct nlmsghdr *nfq_hdr_put(char *buf, int type, uint32_t queue_num);
- 
- #ifdef __cplusplus
- } /* extern "C" */
-diff --git a/src/nlmsg.c b/src/nlmsg.c
-index 4f09bf6..f4123f3 100644
---- a/src/nlmsg.c
-+++ b/src/nlmsg.c
-@@ -261,9 +261,9 @@ static int nfq_pkt_parse_attr_cb(const struct nlattr *attr, void *data)
- 
- /**
-  * nfq_nlmsg_parse - set packet attributes from netlink message
-- * \param nlh netlink message that you want to read.
-- * \param attr pointer to array of attributes to set.
-- * \returns MNL_CB_OK on success or MNL_CB_ERROR if any error occurs.
-+ * \param nlh Pointer to netlink message
-+ * \param attr Pointer to array of attributes to set
-+ * \returns MNL_CB_OK on success or MNL_CB_ERROR if any error occurs
-  */
- EXPORT_SYMBOL
- int nfq_nlmsg_parse(const struct nlmsghdr *nlh, struct nlattr **attr)
-@@ -272,6 +272,28 @@ int nfq_nlmsg_parse(const struct nlmsghdr *nlh, struct nlattr **attr)
- 			      nfq_pkt_parse_attr_cb, attr);
- }
- 
-+/**
-+ * nfq_hdr_put - Convert memory buffer into a Netlink buffer
-+ * \param *buf Pointer to memory buffer
-+ * \param type Either NFQNL_MSG_CONFIG or NFQNL_MSG_VERDICT
-+ * \param queue_num Queue number
-+ * \returns Pointer to netlink message
-+ */
-+EXPORT_SYMBOL
-+struct nlmsghdr *nfq_hdr_put(char *buf, int type, uint32_t queue_num)
-+{
-+	struct nlmsghdr *nlh = mnl_nlmsg_put_header(buf);
-+	nlh->nlmsg_type = (NFNL_SUBSYS_QUEUE << 8) | type;
-+	nlh->nlmsg_flags = NLM_F_REQUEST;
+This reproduces bug #1243.
+
+Signed-off-by: Laurent Fasnacht <fasnacht@protonmail.ch>
+---
+ .../include/0017glob_more_than_maxdepth_1     | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100755 tests/shell/testcases/include/0017glob_more_than_maxdep=
+th_1
+
+diff --git a/tests/shell/testcases/include/0017glob_more_than_maxdepth_1 b/=
+tests/shell/testcases/include/0017glob_more_than_maxdepth_1
+new file mode 100755
+index 00000000..6499bcc8
+--- /dev/null
++++ b/tests/shell/testcases/include/0017glob_more_than_maxdepth_1
+@@ -0,0 +1,39 @@
++#!/bin/bash
 +
-+	struct nfgenmsg *nfg = mnl_nlmsg_put_extra_header(nlh, sizeof(*nfg));
-+	nfg->nfgen_family = AF_UNSPEC;
-+	nfg->version = NFNETLINK_V0;
-+	nfg->res_id = htons(queue_num);
++set -e
 +
-+	return nlh;
-+}
++tmpfile=3D$(mktemp)
++if [ ! -w $tmpfile ] ; then
++        echo "Failed to create tmp file" >&2
++        exit 0
++fi
 +
- /**
-  * @}
-  */
--- 
-2.14.5
++tmpdir1=3D$(mktemp -d)
++if [ ! -d $tmpdir1 ] ; then
++        echo "Failed to create tmp directory" >&2
++        exit 0
++fi
++
++tmpfiles=3D""
++for i in `seq -w 1 32`; do
++        tmpfile2=3D$(mktemp -p $tmpdir1)
++        if [ ! -w $tmpfile2 ] ; then
++                echo "Failed to create tmp file" >&2
++                exit 0
++        fi
++        tmpfiles=3D"$tmpfiles $tmpfile2"
++done
++
++trap "rm -rf $tmpfile $tmpfiles && rmdir $tmpdir1" EXIT # cleanup if abort=
+ed
++
++RULESET=3D" \
++include \"$tmpdir1/*\"
++"
++
++echo "$RULESET" > $tmpfile
++
++$NFT -f $tmpfile
++if [ $? -ne 0 ] ; then
++=09echo "E: unable to load good ruleset" >&2
++=09exit 1
++fi
+--=20
+2.20.1
+
 
