@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 245D915466D
-	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Feb 2020 15:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B1E1548BF
+	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Feb 2020 17:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727389AbgBFOq1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 6 Feb 2020 09:46:27 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:49184 "EHLO orbyte.nwl.cc"
+        id S1727138AbgBFQDm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 6 Feb 2020 11:03:42 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:49318 "EHLO orbyte.nwl.cc"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727007AbgBFOq0 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 6 Feb 2020 09:46:26 -0500
-Received: from localhost ([::1]:34042 helo=tatos)
+        id S1726925AbgBFQDm (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 6 Feb 2020 11:03:42 -0500
+Received: from localhost ([::1]:34176 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1iziQD-00085m-L6; Thu, 06 Feb 2020 15:46:25 +0100
+        id 1izjcz-0000iV-7x; Thu, 06 Feb 2020 17:03:41 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH] xtables-translate: Fix for interface name corner-cases
-Date:   Thu,  6 Feb 2020 15:46:25 +0100
-Message-Id: <20200206144625.27616-1-phil@nwl.cc>
+Subject: [nft PATCH] doc: nft.8: Describe element commands in their own section
+Date:   Thu,  6 Feb 2020 17:03:40 +0100
+Message-Id: <20200206160340.2472-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -29,89 +29,79 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-There are two special situations xlate_ifname() didn't cover for:
-
-* Interface name being '*': This went unchanged, creating a command nft
-  wouldn't accept. Instead translate into '\*' which doesn't change
-  semantics.
-
-* Interface name being '+': Can't translate into nft wildcard character
-  as nft doesn't accept asterisk-only interface names. Instead decide
-  what to do based on 'invert' value: Skip match creation if false,
-  match against an invalid interface name if true.
-
-Also add a test to make sure future changes to this behaviour are
-noticed.
+This unifies the redundant information in sets and maps sections and
+also covers 'get' command.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/generic.txlate    | 12 ++++++++++++
- iptables/xtables-translate.c | 27 +++++++++++++++++++++++----
- 2 files changed, 35 insertions(+), 4 deletions(-)
+ doc/nft.txt | 40 +++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 37 insertions(+), 3 deletions(-)
 
-diff --git a/extensions/generic.txlate b/extensions/generic.txlate
-index b38fbd1fe113b..aabe13b169718 100644
---- a/extensions/generic.txlate
-+++ b/extensions/generic.txlate
-@@ -18,3 +18,15 @@ nft add rule bridge filter FORWARD iifname != "iname" meta ibrname "ilogname" oi
+diff --git a/doc/nft.txt b/doc/nft.txt
+index 45350253ccbfe..ba0c8c0bef445 100644
+--- a/doc/nft.txt
++++ b/doc/nft.txt
+@@ -507,8 +507,6 @@ be tuned with the flags that can be specified at set creation time.
+ *delete*:: Delete the specified set.
+ *list*:: Display the elements in the specified set.
+ *flush*:: Remove all elements from the specified set.
+-*add element*:: Comma-separated list of elements to add into the specified set.
+-*delete element*:: Comma-separated list of elements to delete from the specified set.
  
- ebtables-translate -I INPUT -p ip -d 1:2:3:4:5:6/ff:ff:ff:ff:00:00
- nft insert rule bridge filter INPUT ether type 0x800 ether daddr 01:02:03:04:00:00 and ff:ff:ff:ff:00:00 == 01:02:03:04:00:00 counter
+ .Set specifications
+ [options="header"]
+@@ -550,7 +548,6 @@ MAPS
+ *add map* ['family'] 'table' 'map' *{ type* 'type' | *typeof* 'expression' [*flags* 'flags' *;*] [*elements = {* 'element'[*,* ...] *} ;*] [*size* 'size' *;*] [*policy* 'policy' *;*] *}*
+ {*delete* | *list* | *flush*} *map* ['family'] 'table' 'map'
+ *list maps* ['family']
+-{*add* | *delete*} *element* ['family'] 'table' 'map' *{ elements = {* 'element'[*,* ...] *} ; }*
+ 
+ Maps store data based on some specific key used as input. They are uniquely identified by a user-defined name and attached to tables.
+ 
+@@ -587,6 +584,43 @@ string: performance [default], memory
+ |=================
+ 
+ 
++ELEMENTS
++--------
++[verse]
++____
++{*add* | *create* | *delete* | *get* } *element* ['family'] 'table' 'set' *{* 'ELEMENT'[*,* ...] *}*
 +
-+# asterisk is not special in iptables and it is even a valid interface name
-+iptables-translate -A FORWARD -i '*'
-+nft add rule ip filter FORWARD iifname "\*" counter
++'ELEMENT' := 'key_expression' 'OPTIONS' [*:* 'value_expression']
++'OPTIONS' := [*timeout* 'TIMESPEC'] [*expires* 'TIMESPEC'] [*comment* 'string']
++'TIMESPEC' := ['num'*d*]['num'*h*]['num'*m*]['num'[*s*]]
++____
++Element-related commands allow to change contents of named sets and maps.
++'key_expression' is typically a value matching the set type.
++'value_expression' is not allowed in sets but mandatory when adding to maps, where it
++matches the data part in it's type definition. When deleting from maps, it may
++be specified but is optional as 'key_expression' uniquely identifies the
++element.
 +
-+# skip for always matching interface names
-+iptables-translate -A FORWARD -i '+'
-+nft add rule ip filter FORWARD counter
++*create* command is similar to *add* with the exception that none of the
++listed elements may already exist.
 +
-+# match against invalid interface name to simulate never matching rule
-+iptables-translate -A FORWARD ! -i '+'
-+nft add rule ip filter FORWARD iifname "INVAL/D" counter
-diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
-index 77a186b905d73..d2a62f4d53ee8 100644
---- a/iptables/xtables-translate.c
-+++ b/iptables/xtables-translate.c
-@@ -33,15 +33,34 @@ void xlate_ifname(struct xt_xlate *xl, const char *nftmeta, const char *ifname,
- 		  bool invert)
- {
- 	int ifaclen = strlen(ifname);
--	char iface[IFNAMSIZ];
-+	char iface[IFNAMSIZ + 1];
- 
- 	if (ifaclen < 1 || ifaclen >= IFNAMSIZ)
- 		return;
- 
- 	strcpy(iface, ifname);
--	if (iface[ifaclen - 1] == '+')
--		iface[ifaclen - 1] = '*';
--
-+	switch (iface[ifaclen - 1]) {
-+	case '+':
-+		if (ifaclen > 1) {
-+			iface[ifaclen - 1] = '*';
-+			break;
-+		}
-+		/* Nftables does not support wildcard only string. Workaround
-+		 * is easy, given that this will match always or never
-+		 * depending on 'invert' value. To match always, simply don't
-+		 * generate an expression. To match never, use an invalid
-+		 * interface name (kernel doesn't accept '/' in names) to match
-+		 * against. */
-+		if (!invert)
-+			return;
-+		strcpy(iface, "INVAL/D");
-+		invert = false;
-+		break;
-+	case '*':
-+		iface[ifaclen - 1] = '\\';
-+		strcat(iface, "*");
-+		break;
-+	}
- 	xt_xlate_add(xl, "%s %s\"%s\" ", nftmeta, invert ? "!= " : "", iface);
- }
- 
++*get* command is useful to check if an element is contained in a set which may
++be non-trivial in very large and/or interval sets. In the latter case, the
++containing interval is returned instead of just the element itself.
++
++.Element options
++[options="header"]
++|=================
++|Option | Description
++|timeout |
++timeout value for sets/maps with flag *timeout*
++|expires |
++the time until given element expires, useful for ruleset replication only
++|comment |
++per element comment field
++|=================
++
++
+ FLOWTABLES
+ -----------
+ [verse]
 -- 
 2.24.1
 
