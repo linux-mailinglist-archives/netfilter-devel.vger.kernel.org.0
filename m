@@ -2,65 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E911570E9
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Feb 2020 09:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 742FB1572B9
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Feb 2020 11:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbgBJIgg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 10 Feb 2020 03:36:36 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58722 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727079AbgBJIgf (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 10 Feb 2020 03:36:35 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E4AAAE82F780F6B7DEDF;
-        Mon, 10 Feb 2020 16:36:28 +0800 (CST)
-Received: from euler.huawei.com (10.175.104.193) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.439.0; Mon, 10 Feb 2020 16:36:22 +0800
-From:   Chen Wandun <chenwandun@huawei.com>
-To:     <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <sbrivio@redhat.com>,
-        <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <chenwandun@huawei.com>
-Subject: [PATCH next] nf_tables: make the symbol 'nft_pipapo_get' static
-Date:   Mon, 10 Feb 2020 16:51:09 +0800
-Message-ID: <20200210085109.13954-1-chenwandun@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727431AbgBJKR2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 10 Feb 2020 05:17:28 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:58622 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727436AbgBJKR2 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 10 Feb 2020 05:17:28 -0500
+Date:   Mon, 10 Feb 2020 10:17:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
+        s=default; t=1581329846;
+        bh=spG5NuHUL3mV+uXEILFWGQ78wgygMKywK1uLm8AjtQU=;
+        h=Date:To:From:Reply-To:Subject:Feedback-ID:From;
+        b=tByDYw27/JF//VDzWZcTxj7V89HMYfO4+g0KYQt2fVdljhtfU34FxfLKa/+Q/nkPA
+         Faqqjnyk5Fv+64dcSpOdxOiEmtzk2BBtCb/UIBHc9vSoYW+cwmllxApzh3lW70HiCW
+         t0phQ+ovu412e8VsbuU3WZhwtZtscXpCOk5Gtu/I=
+To:     netfilter-devel@vger.kernel.org
+From:   Laurent Fasnacht <fasnacht@protonmail.ch>
+Reply-To: Laurent Fasnacht <fasnacht@protonmail.ch>
+Subject: [PATCH nft include v2 0/7] Improve include behaviour
+Message-ID: <20200210101709.9182-1-fasnacht@protonmail.ch>
+Feedback-ID: 67Kw-YMwrBchoIMLcnFuA64ZnJub6AgnNvfJUjsgbTTSp4dmymKgGy_PLLqmOsJ9F58iClONCeGYaqp9YPx84w==:Ext:ProtonMail
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.104.193]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,BAYES_40,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM
+        shortcircuit=no autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.protonmail.ch
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Fix the following sparse warning:
+Hello,
 
-net/netfilter/nft_set_pipapo.c:739:6: warning: symbol 'nft_pipapo_get' was not declared. Should it be static?
+Following Pablo's comments (thanks!), here's a new version of the patch ser=
+ies that improves include behavior. It fixes bug #1243, and also errors wit=
+h bug reporting.
 
-Fixes: 3c4287f62044 ("nf_tables: Add set type for arbitrary concatenation of ranges")
-Signed-off-by: Chen Wandun <chenwandun@huawei.com>
----
- net/netfilter/nft_set_pipapo.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes from v1:
+- include the test in this patch series
+- split in more commits, to improve reviewability
+- clean code state after each commit
+- fixes an additional bug found while refactoring the patch, where the incl=
+ude chain wasn't displayed correctly while printing errors.
 
-diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
-index f0cb1e13af50..f5b9bb6bfcc3 100644
---- a/net/netfilter/nft_set_pipapo.c
-+++ b/net/netfilter/nft_set_pipapo.c
-@@ -736,8 +736,8 @@ static struct nft_pipapo_elem *pipapo_get(const struct net *net,
-  * @elem:	nftables API element representation containing key data
-  * @flags:	Unused
-  */
--void *nft_pipapo_get(const struct net *net, const struct nft_set *set,
--		     const struct nft_set_elem *elem, unsigned int flags)
-+static void *nft_pipapo_get(const struct net *net, const struct nft_set *set,
-+			    const struct nft_set_elem *elem, unsigned int flags)
- {
- 	return pipapo_get(net, set, (const u8 *)elem->key.val.data,
- 			  nft_genmask_cur(net));
--- 
-2.17.1
+Overall, definitely a lot of improvement, was definitely worth spending som=
+e time on it.
+
+Cheers,
+Laurent
+
+
 
