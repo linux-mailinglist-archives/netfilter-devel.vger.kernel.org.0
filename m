@@ -2,31 +2,31 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB2E1572B6
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Feb 2020 11:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F30A91572B8
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Feb 2020 11:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgBJKR0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 10 Feb 2020 05:17:26 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:64782 "EHLO
+        id S1727507AbgBJKR2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 10 Feb 2020 05:17:28 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:41724 "EHLO
         mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbgBJKRZ (ORCPT
+        with ESMTP id S1727431AbgBJKR2 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 10 Feb 2020 05:17:25 -0500
-Date:   Mon, 10 Feb 2020 10:17:21 +0000
+        Mon, 10 Feb 2020 05:17:28 -0500
+Date:   Mon, 10 Feb 2020 10:17:22 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
-        s=default; t=1581329842;
-        bh=DLhmtBnje8OsvZk21CsGsHd4FtAgFv1EJVLfkO9TU7c=;
+        s=default; t=1581329846;
+        bh=c7vUsjv2CY9Dl/s3ppU+etJ5V/3OglCeMHIj1CT/h4U=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:
          Feedback-ID:From;
-        b=eKoaFtl8umBPoWqA5YSLQZ7t8Y689016xVWL6xseYXbhdMtyTrA7MO/s5DAMOX5xY
-         Njatjz2bupF96tPYhYpI46ExX2qtk6ykf9RM09bQrlUy2pjLApu19YB9sszS7SrtKo
-         fVs086xeqER0SmDYya8K6iSkPodUO1KYG0u+kQUE=
+        b=tABcrlRu/8WT+D136Qsjmrq1xAKLw1HphUEpBAfEnGkN/YgZlY5IzI2JqIkBwZIU6
+         eFXqrK1yGqbF7WIDilABRZZvdGA0xjvLdqQ09pC9p0rTogMr/X7RvJs3QBwzrzmG+W
+         VCJX+W+gzzPIIxuELmPNGcSMeTX2vOSWPYTtJ9QY=
 To:     netfilter-devel@vger.kernel.org
 From:   Laurent Fasnacht <fasnacht@protonmail.ch>
 Cc:     Laurent Fasnacht <fasnacht@protonmail.ch>
 Reply-To: Laurent Fasnacht <fasnacht@protonmail.ch>
-Subject: [PATCH nft include v2 2/7] scanner: move the file descriptor to be in the input_descriptor structure
-Message-ID: <20200210101709.9182-3-fasnacht@protonmail.ch>
+Subject: [PATCH nft include v2 3/7] scanner: move indesc list append in scanner_push_indesc
+Message-ID: <20200210101709.9182-4-fasnacht@protonmail.ch>
 In-Reply-To: <20200210101709.9182-1-fasnacht@protonmail.ch>
 References: <20200210101709.9182-1-fasnacht@protonmail.ch>
 Feedback-ID: 67Kw-YMwrBchoIMLcnFuA64ZnJub6AgnNvfJUjsgbTTSp4dmymKgGy_PLLqmOsJ9F58iClONCeGYaqp9YPx84w==:Ext:ProtonMail
@@ -34,116 +34,67 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=ham autolearn_force=no version=3.4.2
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        T_FILL_THIS_FORM_SHORT shortcircuit=no autolearn=ham
+        autolearn_force=no version=3.4.2
 X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.protonmail.ch
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This prevents a static allocation of file descriptors array, thus allows
-more flexibility.
+Having a single point makes refactoring easier.
 
 Signed-off-by: Laurent Fasnacht <fasnacht@protonmail.ch>
 ---
- include/nftables.h |  3 ++-
- src/scanner.l      | 17 ++++++++---------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ src/scanner.l | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/include/nftables.h b/include/nftables.h
-index 90d33196..ca0fbcaf 100644
---- a/include/nftables.h
-+++ b/include/nftables.h
-@@ -122,7 +122,6 @@ struct nft_ctx {
- =09void=09=09=09*scanner;
- =09struct scope=09=09*top_scope;
- =09void=09=09=09*json_root;
--=09FILE=09=09=09*f[MAX_INCLUDE_DEPTH];
- };
-=20
- enum nftables_exit_codes {
-@@ -176,6 +175,7 @@ enum input_descriptor_types {
-  * struct input_descriptor
-  *
-  * @location:=09=09location, used for include statements
-+ * @f:          file descriptor
-  * @type:=09=09input descriptor type
-  * @name:=09=09name describing the input
-  * @union:=09=09buffer or file descriptor, depending on type
-@@ -186,6 +186,7 @@ enum input_descriptor_types {
-  */
- struct input_descriptor {
- =09struct list_head=09=09list;
-+=09FILE*                   f;
- =09struct location=09=09=09location;
- =09enum input_descriptor_types=09type;
- =09const char=09=09=09*name;
 diff --git a/src/scanner.l b/src/scanner.l
-index 99ee8355..2016acd5 100644
+index 2016acd5..37b01639 100644
 --- a/src/scanner.l
 +++ b/src/scanner.l
-@@ -691,13 +691,13 @@ static void scanner_pop_buffer(yyscan_t scanner)
+@@ -670,6 +670,7 @@ static void scanner_push_indesc(struct parser_state *st=
+ate,
+ {
+ =09state->indescs[state->indesc_idx] =3D indesc;
+ =09state->indesc =3D state->indescs[state->indesc_idx++];
++=09list_add_tail(&indesc->list, &state->indesc_list);
  }
 =20
- static void scanner_push_file(struct nft_ctx *nft, void *scanner,
--=09=09=09      const char *filename, const struct location *loc)
-+=09=09=09=09  FILE *f, const char *filename, const struct location *loc)
- {
- =09struct parser_state *state =3D yyget_extra(scanner);
- =09struct input_descriptor *indesc;
- =09YY_BUFFER_STATE b;
-=20
--=09b =3D yy_create_buffer(nft->f[state->indesc_idx], YY_BUF_SIZE, scanner)=
-;
-+=09b =3D yy_create_buffer(f, YY_BUF_SIZE, scanner);
- =09yypush_buffer_state(b, scanner);
-=20
- =09indesc =3D xzalloc(sizeof(struct input_descriptor));
-@@ -706,6 +706,7 @@ static void scanner_push_file(struct nft_ctx *nft, void=
+ static void scanner_pop_indesc(struct parser_state *state)
+@@ -710,7 +711,6 @@ static void scanner_push_file(struct nft_ctx *nft, void=
  *scanner,
- =09=09indesc->location =3D *loc;
- =09indesc->type=09=3D INDESC_FILE;
- =09indesc->name=09=3D xstrdup(filename);
-+=09indesc->f =3D f;
  =09init_pos(indesc);
 =20
  =09scanner_push_indesc(state, indesc);
-@@ -731,8 +732,7 @@ static int include_file(struct nft_ctx *nft, void *scan=
-ner,
- =09=09=09     filename, strerror(errno));
- =09=09goto err;
- =09}
--=09nft->f[state->indesc_idx] =3D f;
--=09scanner_push_file(nft, scanner, filename, loc);
-+=09scanner_push_file(nft, scanner, f, filename, loc);
- =09return 0;
- err:
- =09erec_queue(erec, state->msgs);
-@@ -944,6 +944,10 @@ static void input_descriptor_list_destroy(struct parse=
-r_state *state)
- =09struct input_descriptor *indesc, *next;
+-=09list_add_tail(&indesc->list, &state->indesc_list);
+ }
 =20
- =09list_for_each_entry_safe(indesc, next, &state->indesc_list, list) {
-+=09=09if (indesc->f) {
-+=09=09=09fclose(indesc->f);
-+=09=09=09indesc->f =3D NULL;
-+=09=09}
- =09=09list_del(&indesc->list);
- =09=09input_descriptor_destroy(indesc);
- =09}
-@@ -955,11 +959,6 @@ void scanner_destroy(struct nft_ctx *nft)
+ static int include_file(struct nft_ctx *nft, void *scanner,
+@@ -907,15 +907,14 @@ void scanner_push_buffer(void *scanner, const struct =
+input_descriptor *indesc,
+ {
+ =09struct parser_state *state =3D yyget_extra(scanner);
+ =09YY_BUFFER_STATE b;
++=09struct input_descriptor *new_indesc;
 =20
- =09do {
- =09=09yypop_buffer_state(nft->scanner);
--
--=09=09if (nft->f[state->indesc_idx]) {
--=09=09=09fclose(nft->f[state->indesc_idx]);
--=09=09=09nft->f[state->indesc_idx] =3D NULL;
--=09=09}
- =09} while (state->indesc_idx--);
+-=09state->indesc =3D xzalloc(sizeof(struct input_descriptor));
+-=09state->indescs[state->indesc_idx] =3D state->indesc;
+-=09state->indesc_idx++;
++=09new_indesc =3D xzalloc(sizeof(struct input_descriptor));
 =20
- =09input_descriptor_list_destroy(state);
+-=09memcpy(state->indesc, indesc, sizeof(*state->indesc));
+-=09state->indesc->data =3D buffer;
+-=09state->indesc->name =3D NULL;
+-=09list_add_tail(&state->indesc->list, &state->indesc_list);
++=09memcpy(new_indesc, indesc, sizeof(*new_indesc));
++=09new_indesc->data =3D buffer;
++=09new_indesc->name =3D NULL;
++=09scanner_push_indesc(state, new_indesc);
+=20
+ =09b =3D yy_scan_string(buffer, scanner);
+ =09assert(b !=3D NULL);
 --=20
 2.20.1
 
