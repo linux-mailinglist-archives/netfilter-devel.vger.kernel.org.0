@@ -2,81 +2,184 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F28B15F352
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Feb 2020 19:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA9C15F3F0
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Feb 2020 19:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393052AbgBNSKg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Feb 2020 13:10:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33038 "EHLO mail.kernel.org"
+        id S2404940AbgBNSQn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 14 Feb 2020 13:16:43 -0500
+Received: from correo.us.es ([193.147.175.20]:49964 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731310AbgBNPxl (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:53:41 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2392609AbgBNSQi (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 14 Feb 2020 13:16:38 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 2D2BC7B546
+        for <netfilter-devel@vger.kernel.org>; Fri, 14 Feb 2020 19:16:38 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 1F199DA712
+        for <netfilter-devel@vger.kernel.org>; Fri, 14 Feb 2020 19:16:38 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 1442ADA70E; Fri, 14 Feb 2020 19:16:38 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 0D427DA705;
+        Fri, 14 Feb 2020 19:16:36 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Fri, 14 Feb 2020 19:16:36 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1960924681;
-        Fri, 14 Feb 2020 15:53:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695621;
-        bh=sYHwINYDTcWh7EmWRxPDfsVNBX9NO+F8ciF4WJXac0s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nCDL2vIjCQVogsFEwXmXnaxtBn6/Vj/rvuZXdz6+i2Ls9EBBNhDzXqPVMc9nFpJ9W
-         nCaK+Cc4ufg2xOLo0hht+1wqoYG7+orVKHQfkPS2PXM+9aVr39ccgyYWBN7Qc9iTrV
-         iUuWDQOdOvh7U838wdEzczAZkfOkQo9NWkeWypq8=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xin Long <lucien.xin@gmail.com>,
-        Simon Horman <simon.horman@netronome.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 220/542] netfilter: nft_tunnel: add the missing ERSPAN_VERSION nla_policy
-Date:   Fri, 14 Feb 2020 10:43:32 -0500
-Message-Id: <20200214154854.6746-220-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
-References: <20200214154854.6746-1-sashal@kernel.org>
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id E3F4342EF4E0;
+        Fri, 14 Feb 2020 19:16:35 +0100 (CET)
+Date:   Fri, 14 Feb 2020 19:16:34 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Stefano Brivio <sbrivio@redhat.com>
+Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Kadlecsik =?iso-8859-1?Q?J=F3zsef?= <kadlec@blackhole.kfki.hu>,
+        Eric Garver <eric@garver.life>, Phil Sutter <phil@nwl.cc>
+Subject: Re: [PATCH nf-next v4 5/9] nf_tables: Add set type for arbitrary
+ concatenation of ranges
+Message-ID: <20200214181634.cacy3elfwnankvop@salvia>
+References: <cover.1579647351.git.sbrivio@redhat.com>
+ <4e78727d12d54ebd6a6f832585d15f116280dc42.1579647351.git.sbrivio@redhat.com>
+ <20200207112308.sqtlvbluujlftqz2@salvia>
+ <20200210161047.370582c5@redhat.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200210161047.370582c5@redhat.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+On Mon, Feb 10, 2020 at 04:10:47PM +0100, Stefano Brivio wrote:
+> On Fri, 7 Feb 2020 12:23:08 +0100
+> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+[...]
+> > Did you tests with 8-bits grouping instead of 4-bits?
+> 
+> Yes, at the very beginning, not with the final implementation. It was
+> somewhat faster (on x86_64, I don't remember how much) for small
+> numbers of rules, then I thought we would use too much memory, because:
+> 
+> > Assuming a concatenation of 12 bytes (each field 4 bytes, hence 3
+> > fields):
+> > 
+> > * Using 4-bits groups: the number of buckets is 2^4 = 16 multiplied
+> >   by the bucket word (assuming one long word, 8 bytes, 64 pipapo
+> >   rules) is 16 * 8 = 128 bytes per group-row in the looking table. Then,
+> >   the number of group-rows is 8 given that 32 bits, then 32 / 4 = 8
+> >   group-rows.
+> > 
+> >   8 * 128 bytes = 1024 bytes per lookup table.
+> > 
+> >   Assuming 3 fields, then this is 1024 * 3 = 3072 bytes.
+> > 
+> > * Using 8-bits groups: 2^8 = 256, then 256 * 8 = 2048 bytes per
+> >   group-row. Then, 32 / 8 = 4 group-rows in total.
+> > 
+> >   4 * 2048 bytes = 8192 bytes per lookup table.
+> > 
+> >   Therefore, 3 * 8192 = 24576 bytes. Still rather small.
+> > 
+> > This is missing the mapping table that links the lookup tables in the
+> > memory counting. And I'm assuming that the number of pipapo rules in
+> > the lookup table fits into 64-bits bucket long word.
+> 
+> ...the (reasonable?) worst case I wanted to cover was two IPv6
+> addresses, one port, one MAC address (in ipset terms
+> "net,net,port,mac"), with 2 ^ 16 unique, non-overlapping entries each
+> (or ranges expanding to that amount of rules), because that's what
+> (single, non-concatenated) ipset "bitmap" types can do.
 
-[ Upstream commit 0705f95c332081036d85f26691e9d3cd7d901c31 ]
+I see, so you were considering the worst case. You're assuming each
+element takes exactly one pipapo rule, so it's 2^16 elements, correct?
 
-ERSPAN_VERSION is an attribute parsed in kernel side, nla_policy
-type should be added for it, like other attributes.
+You refer to a property that says that you can split a range into a
+2*n netmasks IIRC. Do you know what is the worst case when splitting
+ranges?
 
-Fixes: af308b94a2a4 ("netfilter: nf_tables: add tunnel support")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Reviewed-by: Simon Horman <simon.horman@netronome.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/netfilter/nft_tunnel.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+There is no ipset set like this, but I agree usecase might happen.
 
-diff --git a/net/netfilter/nft_tunnel.c b/net/netfilter/nft_tunnel.c
-index 5284fcf16be73..f8d2919cf9fdc 100644
---- a/net/netfilter/nft_tunnel.c
-+++ b/net/netfilter/nft_tunnel.c
-@@ -248,8 +248,9 @@ static int nft_tunnel_obj_vxlan_init(const struct nlattr *attr,
- }
- 
- static const struct nla_policy nft_tunnel_opts_erspan_policy[NFTA_TUNNEL_KEY_ERSPAN_MAX + 1] = {
-+	[NFTA_TUNNEL_KEY_ERSPAN_VERSION]	= { .type = NLA_U32 },
- 	[NFTA_TUNNEL_KEY_ERSPAN_V1_INDEX]	= { .type = NLA_U32 },
--	[NFTA_TUNNEL_KEY_ERSPAN_V2_DIR]	= { .type = NLA_U8 },
-+	[NFTA_TUNNEL_KEY_ERSPAN_V2_DIR]		= { .type = NLA_U8 },
- 	[NFTA_TUNNEL_KEY_ERSPAN_V2_HWID]	= { .type = NLA_U8 },
- };
- 
--- 
-2.20.1
+> Also ignoring the mapping table (it's "small"), with 4-bit buckets:
+> 
+> - for the IPv6 addresses, we have 16 buckets, each 2 ^ 16
+>   bits wide, and 32 groups (128 bits / 4 bits), that is, 8MiB in
+>   total
+>
+> - for the MAC address, 16 buckets, each 2 ^ 16 bits wide, and 12
+>   groups, 1.5MiB
+>
+> - for the port, 16 buckets, each 2 ^ 12 bits wide, 2 groups, 0.25MiB
+>
+> that is, 9.75MiB.
+> 
+> With 8-bit buckets: we can just multiply everything by 8 (that is,
+> 2 ^ 8 / 2 ^ 4 / 2, because we have 2 ^ (8 - 4) times the buckets, with
+> half the groups), 78MiB.
 
+Yes, this is large. Compared to a hashtable with 2^16 entries, then
+it's 2^17 hashtable buckets and using struct hlist_head, this is 2
+MBytes. Then, each hlist_node is 16 bytes, so 2^16 * 16 ~= 1 MByte.
+That is 3 MBytes if my maths are fine.
+
+Just telling this to find what could be considered as reasonable
+amount of memory to be consumed. ~10 MBytes is slightly more than, but
+I agree you selected a reasonable worst through this "complex tuple".
+
+> And that started feeling like "a lot". However, I'm probably overdoing
+> with the worst case -- this was just to explain what brought me to the
+> 4-bit choice, now I start doubting about it.
+> 
+> > Anyway, my understanding is that the more bits you use for grouping,
+> > the larger the lookup table becomes.
+> > 
+> > Still, both look very small in terms of memory consumption for these
+> > days.
+> > 
+> > I'm just telling this because the C implementation can probably get
+> > better numbers at the cost of consuming more memory? Probably do this
+> > at some point?
+> 
+> Another topic is the additional amount of cachelines we would use. I
+> don't expect that effect to be visible, but I might be wrong.
+> 
+> So yes, I think it's definitely worth a try, thanks for the hint! I'll
+> try to look into this soon and test it on a few archs (something with
+> small cachelines, say MIPS r2k, would be worth checking, too).
+> 
+> We could even consider to dynamically adjust group size depending on
+> the set size, I don't know yet if that gets too convoluted.
+
+Yes, keeping this maintainable is a good idea.
+
+The per-cpu scratch index is only required if we cannot fit in the
+"result bitmap" into the stack, right?
+
+Probably up to 256 bytes result bitmap in the stack is reasonable?
+That makes 8192 pipapo rules. There will be no need to disable bh and
+make use of the percpu scratchpad area in that case.
+
+If adjusting the code to deal with variable length "pipapo word" size
+is not too convoluted, then you could just deal with the variable word
+size from the insert / delete / get (slow) path and register one
+lookup function for the version that is optimized for this pipapo word
+size.
+
+Probably adding helper function to deal with pipapo words would help
+to prepare for such update in the future. There is the ->estimate
+function that allows to calculate for the best word size depending on
+all the information this gets from the set definition.
+
+Just to keep this in the radar for future work.
+
+Thanks.
