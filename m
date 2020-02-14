@@ -2,76 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFD515EEAB
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Feb 2020 18:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9358315F2ED
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Feb 2020 19:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389792AbgBNRmF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Feb 2020 12:42:05 -0500
-Received: from correo.us.es ([193.147.175.20]:41258 "EHLO mail.us.es"
+        id S1730825AbgBNPvj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 14 Feb 2020 10:51:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729247AbgBNRmE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Feb 2020 12:42:04 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 20486DA717
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Feb 2020 18:42:04 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1174DDA707
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Feb 2020 18:42:04 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 0726CDA703; Fri, 14 Feb 2020 18:42:04 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id E906BDA710;
-        Fri, 14 Feb 2020 18:42:01 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 14 Feb 2020 18:42:01 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730817AbgBNPvi (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:51:38 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id CB58E42EF4E1;
-        Fri, 14 Feb 2020 18:42:01 +0100 (CET)
-Date:   Fri, 14 Feb 2020 18:42:00 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: Re: [libnftnl PATCH] src: Fix nftnl_assert() on data_len
-Message-ID: <20200214174200.4xrvnlb72qebtvnb@salvia>
-References: <20200214172417.11217-1-phil@nwl.cc>
- <20200214173247.2wbrvcqilqfmcqq5@salvia>
- <20200214173450.GR20005@orbyte.nwl.cc>
+        by mail.kernel.org (Postfix) with ESMTPSA id CF621222C4;
+        Fri, 14 Feb 2020 15:51:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581695497;
+        bh=6HEabNHqFEipAWICMy3lsoue89B8JCjd2vU/ihVA3RA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=AssHX7Pe37VnQ2Ri7G+1epC7594MSDUyl7vkEbI016arb3ckEjgU8Rm47XocAzTd6
+         mnEFJSNAs9GFJIC1WJfrlfreVAoh7cNDObCVW6Ag0drpIVpk/Wt3SFRNirbzJlnJVs
+         WNueAO7vLwae5THKZ0GRgZP32deDt7+LvJe0/A+w=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Paul Blakey <paulb@mellanox.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.5 125/542] netfilter: flowtable: Fix missing flush hardware on table free
+Date:   Fri, 14 Feb 2020 10:41:57 -0500
+Message-Id: <20200214154854.6746-125-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
+References: <20200214154854.6746-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200214173450.GR20005@orbyte.nwl.cc>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 06:34:50PM +0100, Phil Sutter wrote:
-> On Fri, Feb 14, 2020 at 06:32:47PM +0100, Pablo Neira Ayuso wrote:
-> > On Fri, Feb 14, 2020 at 06:24:17PM +0100, Phil Sutter wrote:
-> > > Typical idiom for *_get_u*() getters is to call *_get_data() and make
-> > > sure data_len matches what each of them is returning. Yet they shouldn't
-> > > trust *_get_data() to write into passed pointer to data_len since for
-> > > chains and NFTNL_CHAIN_DEVICES attribute, it does not. Make sure these
-> > > assert() calls trigger in those cases.
-> > 
-> > The intention to catch for unset attributes through the assertion,
-> > right?
-> 
-> No, this is about making sure that no wrong getter is called, e.g.
-> nftnl_chain_get_u64() with e.g. NFTNL_CHAIN_HOOKNUM attribute which is
-> only 32bits.
+From: Paul Blakey <paulb@mellanox.com>
 
-I think it will also catch the case I'm asking. If attribute is unset,
-then nftnl_chain_get_data() returns NULL and the assertion checks
-data_len, which has not been properly initialized.
+[ Upstream commit 0f34f30a1be80f3f59efeaab596396bc698e7337 ]
+
+If entries exist when freeing a hardware offload enabled table,
+we queue work for hardware while running the gc iteration.
+
+Execute it (flush) after queueing.
+
+Fixes: c29f74e0df7a ("netfilter: nf_flow_table: hardware offload support")
+Signed-off-by: Paul Blakey <paulb@mellanox.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/netfilter/nf_flow_table_core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
+index e33a73cb1f42e..640a46fd710d2 100644
+--- a/net/netfilter/nf_flow_table_core.c
++++ b/net/netfilter/nf_flow_table_core.c
+@@ -554,6 +554,7 @@ void nf_flow_table_free(struct nf_flowtable *flow_table)
+ 	cancel_delayed_work_sync(&flow_table->gc_work);
+ 	nf_flow_table_iterate(flow_table, nf_flow_table_do_cleanup, NULL);
+ 	nf_flow_table_iterate(flow_table, nf_flow_offload_gc_step, flow_table);
++	nf_flow_table_offload_flush(flow_table);
+ 	rhashtable_destroy(&flow_table->rhashtable);
+ }
+ EXPORT_SYMBOL_GPL(nf_flow_table_free);
+-- 
+2.20.1
+
