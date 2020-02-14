@@ -2,44 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B10BF15EA84
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Feb 2020 18:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAAB015EA89
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Feb 2020 18:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393967AbgBNROc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Feb 2020 12:14:32 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:58150 "EHLO
+        id S2403866AbgBNROj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 14 Feb 2020 12:14:39 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:60050 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390916AbgBNROb (ORCPT
+        by vger.kernel.org with ESMTP id S2403833AbgBNROi (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Feb 2020 12:14:31 -0500
+        Fri, 14 Feb 2020 12:14:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581700471;
+        s=mimecast20190719; t=1581700477;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3wwO+rW7P0ejMmgEWl/YEs1ldSEP2ahOQL5bWND7zYM=;
-        b=EjIv9+omWA6wviAYbHWLbhqFCmvOdK/LuFHrzIMfgrMIsjcR14tW/8EqrjIQr0DJnBa11+
-        FcgCYKQWVo+CcD2vtbpRKGkuLCLgiOuEt2E0N5VSIR0R3YQMCReYx1rojgWyiHtMpvClw+
-        ACqfBWkJ9K1QWcPUTDHWnMw2S2Pkp2M=
+        bh=HR1cXDBK2Iefu4y3SrHW/W6N9JttW8zay3uH6Q96KvM=;
+        b=EvtjqYiFKgQeQSFhP4RbAldaVxc9G2W0HQfaB15/bVBUn+Hdegv71lSMOH9Kx4ZjDbDNCS
+        Ou5ZhQdZEkCg2Nb/0N4aXil9no3w7yMHC0A4i35HUQP/NSfycnvrGshvYpFUs2pQYXzbeZ
+        GQNhGY4Y16VSvgVADZryw4+CnhwC9ic=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-vYkk8gK5OJuQuGvKhGG_aw-1; Fri, 14 Feb 2020 12:14:27 -0500
-X-MC-Unique: vYkk8gK5OJuQuGvKhGG_aw-1
+ us-mta-103-syXFmYayNMGUKsupW7Ni4A-1; Fri, 14 Feb 2020 12:14:28 -0500
+X-MC-Unique: syXFmYayNMGUKsupW7Ni4A-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37020800D4E;
-        Fri, 14 Feb 2020 17:14:26 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BEB0F8017CC;
+        Fri, 14 Feb 2020 17:14:27 +0000 (UTC)
 Received: from epycfail.redhat.com (ovpn-200-43.brq.redhat.com [10.40.200.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E42319C4F;
-        Fri, 14 Feb 2020 17:14:24 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B1FD219C4F;
+        Fri, 14 Feb 2020 17:14:26 +0000 (UTC)
 From:   Stefano Brivio <sbrivio@redhat.com>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next 1/2] netfilter: nft_set_pipapo: Fix mapping table example in comments
-Date:   Fri, 14 Feb 2020 18:14:13 +0100
-Message-Id: <c658f8e530aaf98fbdc4ad167e3d49fdad1db3de.1581699548.git.sbrivio@redhat.com>
+Subject: [PATCH nf-next 2/2] netfilter: nft_set_pipapo: Don't abuse unlikely() in pipapo_refill()
+Date:   Fri, 14 Feb 2020 18:14:14 +0100
+Message-Id: <5208393012d9aa0b312f503dbd1dad565e92e032.1581699548.git.sbrivio@redhat.com>
 In-Reply-To: <cover.1581699548.git.sbrivio@redhat.com>
 References: <cover.1581699548.git.sbrivio@redhat.com>
 MIME-Version: 1.0
@@ -50,40 +50,41 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In both insertion and lookup examples, the two element pointers
-of rule mapping tables were swapped. Fix that.
+I originally used unlikely() in the if (match_only) clause, which
+we hit on the mapping table for the last field in a set, to ensure
+we avoid branching to the rest of for loop body, which is executed
+more frequently.
+
+However, Pablo reports, this is confusing as it gives the impression
+that this is not a common case, and it's actually not the intended
+usage of unlikely().
+
+I couldn't observe any statistical difference in matching rates on
+x864_64 and aarch64 without it, so just drop it.
 
 Reported-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Fixes: 3c4287f62044 ("nf_tables: Add set type for arbitrary concatenation=
  of ranges")
 Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
 ---
- net/netfilter/nft_set_pipapo.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/netfilter/nft_set_pipapo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipap=
 o.c
-index f0cb1e13af50..579600b39f39 100644
+index 579600b39f39..feac8553f6d9 100644
 --- a/net/netfilter/nft_set_pipapo.c
 +++ b/net/netfilter/nft_set_pipapo.c
-@@ -203,7 +203,7 @@
-  * ::
-  *
-  *       rule indices in last field:    0    1
-- *       map to elements:             0x42  0x66
-+ *       map to elements:             0x66  0x42
-  *
-  *
-  * Matching
-@@ -298,7 +298,7 @@
-  * ::
-  *
-  *       rule indices in last field:    0    1
-- *       map to elements:             0x42  0x66
-+ *       map to elements:             0x66  0x42
-  *
-  *      the matching element is at 0x42.
-  *
+@@ -503,7 +503,7 @@ static int pipapo_refill(unsigned long *map, int len,=
+ int rules,
+ 				return -1;
+ 			}
+=20
+-			if (unlikely(match_only)) {
++			if (match_only) {
+ 				bitmap_clear(map, i, 1);
+ 				return i;
+ 			}
 --=20
 2.25.0
 
