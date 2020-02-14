@@ -2,69 +2,65 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 459A415EF49
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Feb 2020 18:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B902D15ED44
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Feb 2020 18:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389270AbgBNRqt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Feb 2020 12:46:49 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:40622 "EHLO orbyte.nwl.cc"
+        id S2390490AbgBNRcy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 14 Feb 2020 12:32:54 -0500
+Received: from correo.us.es ([193.147.175.20]:38950 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389254AbgBNQCJ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:02:09 -0500
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1j2dPq-0002xp-75; Fri, 14 Feb 2020 17:02:06 +0100
-Date:   Fri, 14 Feb 2020 17:02:06 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Stefano Brivio <sbrivio@redhat.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Kadlecsik =?utf-8?Q?J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>,
-        Eric Garver <eric@garver.life>
-Subject: Re: [PATCH nft v5] tests: Introduce test for set with concatenated
- ranges
-Message-ID: <20200214160206.GQ20005@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Kadlecsik =?utf-8?Q?J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>,
-        Eric Garver <eric@garver.life>
-References: <546dccfe97760ba910676b84799b15d38164e192.1581693171.git.sbrivio@redhat.com>
+        id S2390298AbgBNRcw (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 14 Feb 2020 12:32:52 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 16D54130E20
+        for <netfilter-devel@vger.kernel.org>; Fri, 14 Feb 2020 18:32:51 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 09737DA701
+        for <netfilter-devel@vger.kernel.org>; Fri, 14 Feb 2020 18:32:51 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id F3118DA709; Fri, 14 Feb 2020 18:32:50 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 1CD89DA701;
+        Fri, 14 Feb 2020 18:32:49 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Fri, 14 Feb 2020 18:32:49 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 0217642EF4E1;
+        Fri, 14 Feb 2020 18:32:48 +0100 (CET)
+Date:   Fri, 14 Feb 2020 18:32:47 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [libnftnl PATCH] src: Fix nftnl_assert() on data_len
+Message-ID: <20200214173247.2wbrvcqilqfmcqq5@salvia>
+References: <20200214172417.11217-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <546dccfe97760ba910676b84799b15d38164e192.1581693171.git.sbrivio@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200214172417.11217-1-phil@nwl.cc>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 04:27:25PM +0100, Stefano Brivio wrote:
-> This test checks that set elements can be added, deleted, that
-> addition and deletion are refused when appropriate, that entries
-> time out properly, and that they can be fetched by matching values
-> in the given ranges.
-> 
-> v5:
->  - speed this up by performing the timeout test for one single
->    permutation (Phil Sutter), by decreasing the number of
->    permutations from 96 to 12 if this is invoked by run-tests.sh
->    (Pablo Neira Ayuso) and by combining some commands into single
->    nft calls where possible: with dash 0.5.8 on AMD Epyc 7351 the
->    test now takes 1.8s instead of 82.5s
->  - renumber test to 0043, 0042 was added meanwhile
-> v4: No changes
-> v3:
->  - renumber test to 0042, 0041 was added meanwhile
-> v2:
->  - actually check an IPv6 prefix, instead of specifying everything
->    as explicit ranges in ELEMS_ipv6_addr
->  - renumber test to 0041, 0038 already exists
-> 
-> Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
+On Fri, Feb 14, 2020 at 06:24:17PM +0100, Phil Sutter wrote:
+> Typical idiom for *_get_u*() getters is to call *_get_data() and make
+> sure data_len matches what each of them is returning. Yet they shouldn't
+> trust *_get_data() to write into passed pointer to data_len since for
+> chains and NFTNL_CHAIN_DEVICES attribute, it does not. Make sure these
+> assert() calls trigger in those cases.
 
-Acked-by: Phil Sutter <phil@nwl.cc>
-
-Thanks!
+The intention to catch for unset attributes through the assertion,
+right?
