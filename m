@@ -2,73 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2C6164214
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Feb 2020 11:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3ED16471F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Feb 2020 15:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbgBSK2c (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 19 Feb 2020 05:28:32 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:51722 "EHLO orbyte.nwl.cc"
+        id S1726450AbgBSOge convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 19 Feb 2020 09:36:34 -0500
+Received: from scm.imp.edu.mx ([132.247.16.103]:13022 "EHLO scm.imp.edu.mx"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726270AbgBSK2c (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 19 Feb 2020 05:28:32 -0500
-Received: from localhost ([::1]:36580 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1j4Mak-0001mw-Vj; Wed, 19 Feb 2020 11:28:31 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH] src: Fix for reading garbage in nftnl_chain getters
-Date:   Wed, 19 Feb 2020 11:28:25 +0100
-Message-Id: <20200219102825.11519-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.24.1
+        id S1726210AbgBSOgd (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 19 Feb 2020 09:36:33 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by scm.imp.edu.mx (Postfix) with ESMTP id 573C2191A7F;
+        Wed, 19 Feb 2020 07:33:42 -0600 (CST)
+X-Virus-Scanned: by SpamTitan at imp.edu.mx
+Received: from scm.imp.edu.mx (localhost [127.0.0.1])
+        by scm.imp.edu.mx (Postfix) with ESMTP id 8C95818C6E2;
+        Wed, 19 Feb 2020 05:29:40 -0600 (CST)
+Authentication-Results: scm.imp.edu.mx; none
+Received: from imp.edu.mx (unknown [10.249.93.105])
+        by scm.imp.edu.mx (Postfix) with ESMTP id 029EA18E930;
+        Wed, 19 Feb 2020 05:19:33 -0600 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by imp.edu.mx (Postfix) with ESMTP id 9841F180629DCE;
+        Wed, 19 Feb 2020 05:19:34 -0600 (CST)
+Received: from imp.edu.mx ([127.0.0.1])
+        by localhost (imp.edu.mx [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ud0XUI9fAoUY; Wed, 19 Feb 2020 05:19:34 -0600 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by imp.edu.mx (Postfix) with ESMTP id 7741B18062F22C;
+        Wed, 19 Feb 2020 05:19:34 -0600 (CST)
+X-Virus-Scanned: amavisd-new at imp.edu.mx
+Received: from imp.edu.mx ([127.0.0.1])
+        by localhost (imp.edu.mx [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id bf9hxqj-xN3J; Wed, 19 Feb 2020 05:19:34 -0600 (CST)
+Received: from [45.147.4.119] (unknown [45.147.4.119])
+        by imp.edu.mx (Postfix) with ESMTPSA id 10CAE180629DCE;
+        Wed, 19 Feb 2020 05:19:33 -0600 (CST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: 19-02-2020
+To:     Recipients <mucios@imp.edu.mx>
+From:   "urs portmann" <mucios@imp.edu.mx>
+Date:   Wed, 19 Feb 2020 22:19:30 +1100
+Reply-To: onube@qq.com
+Message-Id: <20200219111933.10CAE180629DCE@imp.edu.mx>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In {s,u}{32,64} type getters nftnl_assert() is called to make sure
-returned data length matches expectations. Therefore all attributes must
-set data_len, which NFTNL_CHAIN_DEVICES didn't.
+Guten Morgen,
+                                          19-02-2020
+Wir haben versucht, Sie zu erreichen und haben noch nichts von Ihnen gehört. Haben Sie unsere letzte E-Mail über Ihre S.p.e.n.d.e erhalten? Wenn nicht, melden Sie sich bitte bei uns, um weitere Informationen zu erhalten.
 
-While being at it, do the same change for NFTNL_FLOWTABLE_DEVICES as
-well to make code a bit more consistent although the problem was fixed
-for flowtables with commit f8eed54150fd4 ("flowtable: Fix for reading
-garbage") already (but in the other direction).
+Wir warten darauf, von Ihnen zu hören, sobald Sie diese Nachricht erhalten, die Sie bei der weiteren Vorgehensweise unterstützt.
 
-Fixes: e3ac19b5ec162 ("chain: multi-device support")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- src/chain.c     | 1 +
- src/flowtable.c | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/src/chain.c b/src/chain.c
-index b4066e4d4e888..94a9e43a17548 100644
---- a/src/chain.c
-+++ b/src/chain.c
-@@ -364,6 +364,7 @@ const void *nftnl_chain_get_data(const struct nftnl_chain *c, uint16_t attr,
- 		*data_len = strlen(c->dev) + 1;
- 		return c->dev;
- 	case NFTNL_CHAIN_DEVICES:
-+		*data_len = 0;
- 		return &c->dev_array[0];
- 	}
- 	return NULL;
-diff --git a/src/flowtable.c b/src/flowtable.c
-index 1e235d0ba50fa..635322d7fa563 100644
---- a/src/flowtable.c
-+++ b/src/flowtable.c
-@@ -230,6 +230,7 @@ const void *nftnl_flowtable_get_data(const struct nftnl_flowtable *c,
- 		*data_len = sizeof(int32_t);
- 		return &c->family;
- 	case NFTNL_FLOWTABLE_DEVICES:
-+		*data_len = 0;
- 		return &c->dev_array[0];
- 	case NFTNL_FLOWTABLE_SIZE:
- 		*data_len = sizeof(int32_t);
--- 
-2.24.1
-
+Mfg
+urs portmann
