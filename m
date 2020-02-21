@@ -2,65 +2,180 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CB4166FEB
-	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Feb 2020 08:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB263167F84
+	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Feb 2020 15:03:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726325AbgBUHAn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 21 Feb 2020 02:00:43 -0500
-Received: from mxout013.mail.hostpoint.ch ([217.26.49.173]:49853 "EHLO
-        mxout013.mail.hostpoint.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726278AbgBUHAn (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 21 Feb 2020 02:00:43 -0500
-X-Greylist: delayed 1204 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 Feb 2020 02:00:42 EST
-Received: from [10.0.2.46] (helo=asmtp013.mail.hostpoint.ch)
-        by mxout013.mail.hostpoint.ch with esmtp (Exim 4.92.3 (FreeBSD))
-        (envelope-from <andreas.jaggi@waterwave.ch>)
-        id 1j51zJ-0007ez-0H
-        for netfilter-devel@vger.kernel.org; Fri, 21 Feb 2020 07:40:37 +0100
-Received: from xdsl-31-165-67-144.adslplus.ch ([31.165.67.144] helo=[192.168.9.20])
-        by asmtp013.mail.hostpoint.ch with esmtpa (Exim 4.92.3 (FreeBSD))
-        (envelope-from <andreas.jaggi@waterwave.ch>)
-        id 1j51zI-0007R6-Tz
-        for netfilter-devel@vger.kernel.org; Fri, 21 Feb 2020 07:40:36 +0100
-X-Authenticated-Sender-Id: andreas.jaggi@waterwave.ch
-From:   Andreas Jaggi <andreas.jaggi@waterwave.ch>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: [PATCH] ulogd: printpkt: always print IPv6 protocol
-Message-Id: <12B140AA-502D-488F-B6A2-9E9DCF1DFC71@waterwave.ch>
-Date:   Fri, 21 Feb 2020 07:40:36 +0100
-To:     Netfilter Development Mailing list 
-        <netfilter-devel@vger.kernel.org>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S1728816AbgBUODj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 21 Feb 2020 09:03:39 -0500
+Received: from orbyte.nwl.cc ([151.80.46.58]:57000 "EHLO orbyte.nwl.cc"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728755AbgBUODj (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 21 Feb 2020 09:03:39 -0500
+Received: from localhost ([::1]:41858 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1j58u2-0000gJ-5H; Fri, 21 Feb 2020 15:03:38 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 1/3] xtables: Align effect of -4/-6 options with legacy
+Date:   Fri, 21 Feb 2020 15:03:22 +0100
+Message-Id: <20200221140324.21082-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Print the protocol number for protocols not known by name.
+Legacy iptables doesn't accept -4 or -6 if they don't match the
+symlink's native family. The only exception to that is iptables-restore
+which simply ignores the lines introduced by non-matching options, which
+is useful to create combined dump files for feeding into both
+iptables-restore and ip6tables-restore.
 
-Signed-off-by: Andreas Jaggi <andreas.jaggi@waterwave.ch>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- util/printpkt.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../shell/testcases/iptables/0006-46-args_0   | 88 +++++++++++++++++++
+ iptables/xtables.c                            | 21 ++---
+ 2 files changed, 96 insertions(+), 13 deletions(-)
+ create mode 100755 iptables/tests/shell/testcases/iptables/0006-46-args_0
 
-diff --git a/util/printpkt.c b/util/printpkt.c
-index 69a47ca..2aacddb 100644
---- a/util/printpkt.c
-+++ b/util/printpkt.c
-@@ -355,6 +355,9 @@ static int printpkt_ipv6(struct ulogd_key *res, char *buf)
+diff --git a/iptables/tests/shell/testcases/iptables/0006-46-args_0 b/iptables/tests/shell/testcases/iptables/0006-46-args_0
+new file mode 100755
+index 0000000000000..17a0a01829df5
+--- /dev/null
++++ b/iptables/tests/shell/testcases/iptables/0006-46-args_0
+@@ -0,0 +1,88 @@
++#!/bin/bash
++
++RC=0
++
++$XT_MULTI iptables -6 -A FORWARD -j ACCEPT
++rc=$?
++if [[ $rc -ne 2 ]]; then
++	echo "'iptables -6' returned $rc instead of 2"
++	RC=1
++fi
++
++$XT_MULTI ip6tables -4 -A FORWARD -j ACCEPT
++rc=$?
++if [[ $rc -ne 2 ]]; then
++	echo "'ip6tables -4' returned $rc instead of 2"
++	RC=1
++fi
++
++RULESET='*filter
++-4 -A FORWARD -d 10.0.0.1 -j ACCEPT
++-6 -A FORWARD -d fec0:10::1 -j ACCEPT
++COMMIT
++'
++EXPECT4='-P FORWARD ACCEPT
++-A FORWARD -d 10.0.0.1/32 -j ACCEPT'
++EXPECT6='-P FORWARD ACCEPT
++-A FORWARD -d fec0:10::1/128 -j ACCEPT'
++EXPECT_EMPTY='-P FORWARD ACCEPT'
++
++echo "$RULESET" | $XT_MULTI iptables-restore || {
++	echo "iptables-restore failed!"
++	RC=1
++}
++diff -u -Z <(echo -e "$EXPECT4") <($XT_MULTI iptables -S FORWARD) || {
++	echo "unexpected iptables ruleset"
++	RC=1
++}
++diff -u -Z <(echo -e "$EXPECT_EMPTY") <($XT_MULTI ip6tables -S FORWARD) || {
++	echo "unexpected non-empty ip6tables ruleset"
++	RC=1
++}
++
++$XT_MULTI iptables -F FORWARD
++
++echo "$RULESET" | $XT_MULTI ip6tables-restore || {
++	echo "ip6tables-restore failed!"
++	RC=1
++}
++diff -u -Z <(echo -e "$EXPECT6") <($XT_MULTI ip6tables -S FORWARD) || {
++	echo "unexpected ip6tables ruleset"
++	RC=1
++}
++diff -u -Z <(echo -e "$EXPECT_EMPTY") <($XT_MULTI iptables -S FORWARD) || {
++	echo "unexpected non-empty iptables ruleset"
++	RC=1
++}
++
++$XT_MULTI ip6tables -F FORWARD
++
++$XT_MULTI iptables -4 -A FORWARD -d 10.0.0.1 -j ACCEPT || {
++	echo "iptables failed!"
++	RC=1
++}
++diff -u -Z <(echo -e "$EXPECT4") <($XT_MULTI iptables -S FORWARD) || {
++	echo "unexpected iptables ruleset"
++	RC=1
++}
++diff -u -Z <(echo -e "$EXPECT_EMPTY") <($XT_MULTI ip6tables -S FORWARD) || {
++	echo "unexpected non-empty ip6tables ruleset"
++	RC=1
++}
++
++$XT_MULTI iptables -F FORWARD
++
++$XT_MULTI ip6tables -6 -A FORWARD -d fec0:10::1 -j ACCEPT || {
++	echo "ip6tables failed!"
++	RC=1
++}
++diff -u -Z <(echo -e "$EXPECT6") <($XT_MULTI ip6tables -S FORWARD) || {
++	echo "unexpected ip6tables ruleset"
++	RC=1
++}
++diff -u -Z <(echo -e "$EXPECT_EMPTY") <($XT_MULTI iptables -S FORWARD) || {
++	echo "unexpected non-empty iptables ruleset"
++	RC=1
++}
++
++exit $RC
+diff --git a/iptables/xtables.c b/iptables/xtables.c
+index 8f9dc628d0029..3d75a1ddacae2 100644
+--- a/iptables/xtables.c
++++ b/iptables/xtables.c
+@@ -917,27 +917,22 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
  			break;
- 		}
- 		break;
-+	default:
-+		buf_cur += sprintf(buf_cur, "PROTO=%u ",
-+				   ikey_get_u8(&res[KEY_IP6_NEXTHDR]));
- 	}
  
- 	return buf_cur - buf;
+ 		case '4':
++			if (args->family == AF_INET)
++				break;
++
+ 			if (p->restore && args->family == AF_INET6)
+ 				return;
+ 
+-			if (args->family != AF_INET)
+-				exit_tryhelp(2);
+-
+-			h->ops = nft_family_ops_lookup(args->family);
+-			break;
++			exit_tryhelp(2);
+ 
+ 		case '6':
++			if (args->family == AF_INET6)
++				break;
++
+ 			if (p->restore && args->family == AF_INET)
+ 				return;
+ 
+-			args->family = AF_INET6;
+-			xtables_set_nfproto(AF_INET6);
+-
+-			h->ops = nft_family_ops_lookup(args->family);
+-			if (h->ops == NULL)
+-				xtables_error(PARAMETER_PROBLEM,
+-					      "Unknown family");
+-			break;
++			exit_tryhelp(2);
+ 
+ 		case 1: /* non option */
+ 			if (optarg[0] == '!' && optarg[1] == '\0') {
 -- 
-2.25.0
+2.25.1
+
