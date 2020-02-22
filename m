@@ -2,66 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A84C0168BFE
-	for <lists+netfilter-devel@lfdr.de>; Sat, 22 Feb 2020 03:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBE5168E7A
+	for <lists+netfilter-devel@lfdr.de>; Sat, 22 Feb 2020 12:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727734AbgBVCNa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 21 Feb 2020 21:13:30 -0500
-Received: from orbyte.nwl.cc ([151.80.46.58]:58240 "EHLO orbyte.nwl.cc"
+        id S1727215AbgBVLaK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 22 Feb 2020 06:30:10 -0500
+Received: from smtp-out.kfki.hu ([148.6.0.45]:57439 "EHLO smtp-out.kfki.hu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727614AbgBVCNa (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 21 Feb 2020 21:13:30 -0500
-Received: from localhost ([::1]:43098 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1j5KIK-0002C2-PY; Sat, 22 Feb 2020 03:13:28 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH] iptables-test.py: Fix --host mode
-Date:   Sat, 22 Feb 2020 03:13:20 +0100
-Message-Id: <20200222021320.19751-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.25.1
+        id S1726763AbgBVLaK (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 22 Feb 2020 06:30:10 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by smtp0.kfki.hu (Postfix) with ESMTP id CFCB3674010A;
+        Sat, 22 Feb 2020 12:30:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        blackhole.kfki.hu; h=mime-version:x-mailer:message-id:date:date
+        :from:from:received:received:received; s=20151130; t=1582371005;
+         x=1584185406; bh=lyxo71HyiQBUrDGn3qs7qaXdjwF5I91g+vZrDzWTFSw=; b=
+        jxRltRi2i2Izypa0hUh/GpqQLSZfhXSewVwblIgK8ZsxvsWmgdAWQLdzC8sfHIhP
+        nvlmQ98fD6DFufMNNFktgWw/EBlIgqj4YRAcYBR7e93++YzmRydbE0CQkoL/ZTP1
+        1Dp0CRF1bddWHvGEAJ5q6RFryVEf2OdnpagPuJdYXrc=
+X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
+Received: from smtp0.kfki.hu ([127.0.0.1])
+        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Sat, 22 Feb 2020 12:30:05 +0100 (CET)
+Received: from blackhole.kfki.hu (blackhole.kfki.hu [IPv6:2001:738:5001:1::240:2])
+        by smtp0.kfki.hu (Postfix) with ESMTP id BB09267400F8;
+        Sat, 22 Feb 2020 12:30:05 +0100 (CET)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+        id A38F021B3B; Sat, 22 Feb 2020 12:30:05 +0100 (CET)
+From:   Jozsef Kadlecsik <kadlec@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 0/2] ipset patches for nf
+Date:   Sat, 22 Feb 2020 12:30:03 +0100
+Message-Id: <20200222113005.5647-1-kadlec@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In some cases, the script still called repo binaries. Avoid this when in
---host mode to allow testing without the need to compile sources in
-beforehand.
+Hi Pablo,
 
-Fixes: 1b5d762c1865e ("iptables-test: Support testing host binaries")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables-test.py | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Please consider to apply the next two patches to the nf tree. The first o=
+ne
+is larger than usual, but the issue could not be solved simpler. Also, it=
+'s
+a resend of the patch I submitted a few days ago, with a one line fix on
+top of that: the size of the comment extensions was not taken into accoun=
+t
+at reporting the full size of the set.
 
-diff --git a/iptables-test.py b/iptables-test.py
-index fdb4e6a3644e4..e986d7a318218 100755
---- a/iptables-test.py
-+++ b/iptables-test.py
-@@ -119,8 +119,7 @@ def run_test(iptables, rule, rule_save, res, filename, lineno, netns):
-         elif splitted[0] == EBTABLES:
-             command = EBTABLES_SAVE
- 
--    path = os.path.abspath(os.path.curdir) + "/iptables/" + EXECUTEABLE
--    command = path + " " + command
-+    command = EXECUTEABLE + " " + command
- 
-     if netns:
-             command = "ip netns exec ____iptables-container-test " + command
-@@ -165,7 +164,7 @@ def execute_cmd(cmd, filename, lineno):
-     '''
-     global log_file
-     if cmd.startswith('iptables ') or cmd.startswith('ip6tables ') or cmd.startswith('ebtables ') or cmd.startswith('arptables '):
--        cmd = os.path.abspath(os.path.curdir) + "/iptables/" + EXECUTEABLE + " " + cmd
-+        cmd = EXECUTEABLE + " " + cmd
- 
-     print("command: {}".format(cmd), file=log_file)
-     ret = subprocess.call(cmd, shell=True, universal_newlines=True,
--- 
-2.25.1
+- Fix "INFO: rcu detected stall in hash_xxx" reports of syzbot
+  by introducing region locking and using workqueue instead of timer base=
+d
+  gc of timed out entries in hash types of sets in ipset.
+- Fix the forceadd evaluation path - the bug was also uncovered by the sy=
+zbot.
 
+Best regards,
+Jozsef
+
+The following changes since commit 83d0585f91da441a0b11bc5ff93f4cda56de67=
+03:
+
+  Merge branch 'Fix-reconnection-latency-caused-by-FIN-ACK-handling-race'=
+ (2020-02-02 13:45:05 -0800)
+
+are available in the Git repository at:
+
+  git://blackhole.kfki.hu/nf 8af1c6fbd923987799
+
+for you to fetch changes up to 8af1c6fbd9239877998c7f5a591cb2c88d41fb66:
+
+  netfilter: ipset: Fix forceadd evaluation path (2020-02-22 12:13:45 +01=
+00)
+
+----------------------------------------------------------------
+Jozsef Kadlecsik (2):
+      netfilter: ipset: Fix "INFO: rcu detected stall in hash_xxx" report=
+s
+      netfilter: ipset: Fix forceadd evaluation path
+
+ include/linux/netfilter/ipset/ip_set.h |  11 +-
+ net/netfilter/ipset/ip_set_core.c      |  34 +-
+ net/netfilter/ipset/ip_set_hash_gen.h  | 635 +++++++++++++++++++++++----=
+------
+ 3 files changed, 474 insertions(+), 206 deletions(-)
