@@ -2,44 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABF5169A37
-	for <lists+netfilter-devel@lfdr.de>; Sun, 23 Feb 2020 22:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 775BB169A39
+	for <lists+netfilter-devel@lfdr.de>; Sun, 23 Feb 2020 22:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgBWVXk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 23 Feb 2020 16:23:40 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24779 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727064AbgBWVXj (ORCPT
+        id S1727133AbgBWVXp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 23 Feb 2020 16:23:45 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25809 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727100AbgBWVXp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 23 Feb 2020 16:23:39 -0500
+        Sun, 23 Feb 2020 16:23:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582493017;
+        s=mimecast20190719; t=1582493021;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tInGgpunq6P2sjOI/OuhW3z6RMxf8LtznRrYOnUx8xs=;
-        b=NGIttYDCLa5RecOzXWUqoxBRPvLz+XijWq4VReM/2er8SxUB96kTo9ftnOv1HXqPkjBMjF
-        nXetjADn1zjIdiDTjcGRKOZ78t4Hg+51T5EwNTxWbwiqsi0qxByXPmUFUKPF3ff6GyFGB/
-        /OTbpVQp18gtB6g3o/7tj3h9aYBl8w8=
+        bh=rVXnW/kc3IaTOXuiQNqOOkDOSbobn4sdLfUaT4BenLo=;
+        b=aDDhl6Bl0ay1XCmlM5A66S47Pn3eFjM0YjLXPRa8ubJf/xlo5v4nEBJjcDwflowFVjL2/F
+        CwalwgZjwdr6i+3QA36d2Vkx+a+YX0nS3sylvAMCyLz2qmig9bb1XDW3YWGE+qOTlnO9iM
+        PoeA3zTv8WLmx02re1ef+7UNuFMkYO4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-W99v6_ZIPuiq39clupW2Eg-1; Sun, 23 Feb 2020 16:23:35 -0500
-X-MC-Unique: W99v6_ZIPuiq39clupW2Eg-1
+ us-mta-490-tMUo2WMkPx2zUcbr0lI34w-1; Sun, 23 Feb 2020 16:23:37 -0500
+X-MC-Unique: tMUo2WMkPx2zUcbr0lI34w-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE0BF800D50;
-        Sun, 23 Feb 2020 21:23:34 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B457477;
+        Sun, 23 Feb 2020 21:23:36 +0000 (UTC)
 Received: from epycfail.redhat.com (ovpn-200-29.brq.redhat.com [10.40.200.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DF97287B01;
-        Sun, 23 Feb 2020 21:23:33 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 59ADC87B01;
+        Sun, 23 Feb 2020 21:23:35 +0000 (UTC)
 From:   Stefano Brivio <sbrivio@redhat.com>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next 4/5] nft_set_pipapo: Prepare for vectorised implementation: helpers
-Date:   Sun, 23 Feb 2020 22:23:15 +0100
-Message-Id: <3927efdf278c2f188ad3386fd64e83cb2d9969f0.1582488826.git.sbrivio@redhat.com>
+Subject: [PATCH nf-next 5/5] nft_set_pipapo: Introduce AVX2-based lookup implementation
+Date:   Sun, 23 Feb 2020 22:23:16 +0100
+Message-Id: <02877a1cf5364db8f60a29a9a6aad705dea22dbd.1582488826.git.sbrivio@redhat.com>
 In-Reply-To: <cover.1582488826.git.sbrivio@redhat.com>
 References: <cover.1582488826.git.sbrivio@redhat.com>
 MIME-Version: 1.0
@@ -50,681 +50,1528 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Move most macros and helpers to a header file, so that they can be
-conveniently used by related implementations.
+If the AVX2 set is available, we can exploit the repetitive
+characteristic of this algorithm to provide a fast, vectorised
+version by using 256-bit wide AVX2 operations for bucket loads and
+bitwise intersections.
 
-No functional changes are intended here.
+In most cases, this implementation consistently outperforms rbtree
+set instances despite the fact they are configured to use a given,
+single, ranged data type out of the ones used for performance
+measurements by the nft_concat_range.sh kselftest.
+
+That script, injecting packets directly on the ingoing device path
+with pktgen, reports, averaged over five runs on a single AMD Epyc
+7402 thread (3.35GHz, 768 KiB L1D$, 12 MiB L2$), the figures below.
+CONFIG_RETPOLINE was not set here.
+
+Note that this is not a fair comparison over hash and rbtree set
+types: non-ranged entries (used to have a reference for hash types)
+would be matched faster than this, and matching on a single field
+only (which is the case for rbtree) is also significantly faster.
+
+However, it's not possible at the moment to choose this set type
+for non-ranged entries, and the current implementation also needs
+a few minor adjustments in order to match on less than two fields.
+
+ ---------------.-----------------------------------.------------.
+ AMD Epyc 7402  |          baselines, Mpps          | this patch |
+  1 thread      |___________________________________|____________|
+  3.35GHz       |        |        |        |        |            |
+  768KiB L1D$   | netdev |  hash  | rbtree |        |            |
+ ---------------|  hook  |   no   | single |        |   pipapo   |
+ type   entries |  drop  | ranges | field  | pipapo |    AVX2    |
+ ---------------|--------|--------|--------|--------|------------|
+ net,port       |        |        |        |        |            |
+          1000  |   19.0 |   10.4 |    3.8 |    4.0 | 7.5   +87% |
+ ---------------|--------|--------|--------|--------|------------|
+ port,net       |        |        |        |        |            |
+           100  |   18.8 |   10.3 |    5.8 |    6.3 | 8.1   +29% |
+ ---------------|--------|--------|--------|--------|------------|
+ net6,port      |        |        |        |        |            |
+          1000  |   16.4 |    7.6 |    1.8 |    2.1 | 4.8  +128% |
+ ---------------|--------|--------|--------|--------|------------|
+ port,proto     |        |        |        |        |            |
+         30000  |   19.6 |   11.6 |    3.9 |    0.5 | 2.6  +420% |
+ ---------------|--------|--------|--------|--------|------------|
+ net6,port,mac  |        |        |        |        |            |
+            10  |   16.5 |    5.4 |    4.3 |    3.4 | 4.7   +38% |
+ ---------------|--------|--------|--------|--------|------------|
+ net6,port,mac, |        |        |        |        |            |
+ proto    1000  |   16.5 |    5.7 |    1.9 |    1.4 | 3.6   +26% |
+ ---------------|--------|--------|--------|--------|------------|
+ net,mac        |        |        |        |        |            |
+          1000  |   19.0 |    8.4 |    3.9 |    2.5 | 6.4  +156% |
+ ---------------'--------'--------'--------'--------'------------'
+
+A similar strategy could be easily reused to implement specialised
+versions for other SIMD sets, and I plan to post at least a NEON
+version at a later time.
 
 Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
 ---
- net/netfilter/nft_set_pipapo.c | 269 +-------------------------------
- net/netfilter/nft_set_pipapo.h | 277 +++++++++++++++++++++++++++++++++
- 2 files changed, 285 insertions(+), 261 deletions(-)
- create mode 100644 net/netfilter/nft_set_pipapo.h
+This patch is going to have merge conflicts with the series:
+	"netfilter: nf_tables: make sets built-in"
+recently posted by Florian. The resolution should be straightforward,
+but I can post a version rebased on those patches if needed.
 
+ include/net/netfilter/nf_tables_core.h |    1 +
+ net/netfilter/Makefile                 |    5 +
+ net/netfilter/nf_tables_set_core.c     |    6 +
+ net/netfilter/nft_set_pipapo.c         |   25 +
+ net/netfilter/nft_set_pipapo_avx2.c    | 1222 ++++++++++++++++++++++++
+ net/netfilter/nft_set_pipapo_avx2.h    |   14 +
+ 6 files changed, 1273 insertions(+)
+ create mode 100644 net/netfilter/nft_set_pipapo_avx2.c
+ create mode 100644 net/netfilter/nft_set_pipapo_avx2.h
+
+diff --git a/include/net/netfilter/nf_tables_core.h b/include/net/netfilt=
+er/nf_tables_core.h
+index 29e7e1021267..549d5f9ea8c3 100644
+--- a/include/net/netfilter/nf_tables_core.h
++++ b/include/net/netfilter/nf_tables_core.h
+@@ -75,6 +75,7 @@ extern struct nft_set_type nft_set_hash_fast_type;
+ extern struct nft_set_type nft_set_rbtree_type;
+ extern struct nft_set_type nft_set_bitmap_type;
+ extern struct nft_set_type nft_set_pipapo_type;
++extern struct nft_set_type nft_set_pipapo_avx2_type;
+=20
+ struct nft_expr;
+ struct nft_regs;
+diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
+index 3f572e5a975e..1eee65e12920 100644
+--- a/net/netfilter/Makefile
++++ b/net/netfilter/Makefile
+@@ -83,6 +83,11 @@ nf_tables-objs :=3D nf_tables_core.o nf_tables_api.o n=
+ft_chain_filter.o \
+ nf_tables_set-objs :=3D nf_tables_set_core.o \
+ 		      nft_set_hash.o nft_set_bitmap.o nft_set_rbtree.o \
+ 		      nft_set_pipapo.o
++ifdef CONFIG_X86_64
++ifneq (,$(findstring -DCONFIG_AS_AVX2=3D1,$(KBUILD_CFLAGS)))
++nf_tables_set-objs +=3D nft_set_pipapo_avx2.o
++endif
++endif
+=20
+ obj-$(CONFIG_NF_TABLES)		+=3D nf_tables.o
+ obj-$(CONFIG_NF_TABLES_SET)	+=3D nf_tables_set.o
+diff --git a/net/netfilter/nf_tables_set_core.c b/net/netfilter/nf_tables=
+_set_core.c
+index 586b621007eb..c69ce31e38ff 100644
+--- a/net/netfilter/nf_tables_set_core.c
++++ b/net/netfilter/nf_tables_set_core.c
+@@ -9,6 +9,9 @@ static int __init nf_tables_set_module_init(void)
+ 	nft_register_set(&nft_set_rhash_type);
+ 	nft_register_set(&nft_set_bitmap_type);
+ 	nft_register_set(&nft_set_rbtree_type);
++#if defined(CONFIG_X86_64) && defined(CONFIG_AS_AVX2)
++	nft_register_set(&nft_set_pipapo_avx2_type);
++#endif
+ 	nft_register_set(&nft_set_pipapo_type);
+=20
+ 	return 0;
+@@ -17,6 +20,9 @@ static int __init nf_tables_set_module_init(void)
+ static void __exit nf_tables_set_module_exit(void)
+ {
+ 	nft_unregister_set(&nft_set_pipapo_type);
++#if defined(CONFIG_X86_64) && defined(CONFIG_AS_AVX2)
++	nft_unregister_set(&nft_set_pipapo_avx2_type);
++#endif
+ 	nft_unregister_set(&nft_set_rbtree_type);
+ 	nft_unregister_set(&nft_set_bitmap_type);
+ 	nft_unregister_set(&nft_set_rhash_type);
 diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipap=
 o.c
-index eb9a3cd8a811..0f474e00665d 100644
+index 0f474e00665d..e4e0656987d2 100644
 --- a/net/netfilter/nft_set_pipapo.c
 +++ b/net/netfilter/nft_set_pipapo.c
-@@ -330,188 +330,20 @@
-=20
- #include <linux/kernel.h>
- #include <linux/init.h>
--#include <linux/log2.h>
- #include <linux/module.h>
- #include <linux/netlink.h>
- #include <linux/netfilter.h>
- #include <linux/netfilter/nf_tables.h>
- #include <net/netfilter/nf_tables_core.h>
- #include <uapi/linux/netfilter/nf_tables.h>
--#include <net/ipv6.h>			/* For the maximum length of a field */
+@@ -339,6 +339,7 @@
  #include <linux/bitmap.h>
  #include <linux/bitops.h>
 =20
--/* Count of concatenated fields depends on count of 32-bit nftables regi=
-sters */
--#define NFT_PIPAPO_MAX_FIELDS		NFT_REG32_COUNT
--
--/* Largest supported field size */
--#define NFT_PIPAPO_MAX_BYTES		(sizeof(struct in6_addr))
--#define NFT_PIPAPO_MAX_BITS		(NFT_PIPAPO_MAX_BYTES * BITS_PER_BYTE)
--
--/* Bits to be grouped together in table buckets depending on set size */
--#define NFT_PIPAPO_GROUP_BITS_INIT	NFT_PIPAPO_GROUP_BITS_SMALL_SET
--#define NFT_PIPAPO_GROUP_BITS_SMALL_SET	8
--#define NFT_PIPAPO_GROUP_BITS_LARGE_SET	4
--#define NFT_PIPAPO_GROUP_BITS_ARE_8_OR_4				\
--	BUILD_BUG_ON((NFT_PIPAPO_GROUP_BITS_SMALL_SET !=3D 8) ||		\
--		     (NFT_PIPAPO_GROUP_BITS_LARGE_SET !=3D 4))
--#define NFT_PIPAPO_GROUPS_PER_BYTE(f)	(BITS_PER_BYTE / (f)->bb)
--
--/* If a lookup table gets bigger than NFT_PIPAPO_LT_SIZE_HIGH, switch to=
- the
-- * small group width, and switch to the big group width if the table get=
-s
-- * smaller than NFT_PIPAPO_LT_SIZE_LOW.
-- *
-- * Picking 2MiB as threshold (for a single table) avoids as much as poss=
-ible
-- * crossing page boundaries on most architectures (x86-64 and MIPS huge =
-pages,
-- * ARMv7 supersections, POWER "large" pages, SPARC Level 1 regions, etc.=
-), which
-- * keeps performance nice in case kvmalloc() gives us non-contiguous are=
-as.
-- */
--#define NFT_PIPAPO_LT_SIZE_THRESHOLD	(1 << 21)
--#define NFT_PIPAPO_LT_SIZE_HYSTERESIS	(1 << 16)
--#define NFT_PIPAPO_LT_SIZE_HIGH		NFT_PIPAPO_LT_SIZE_THRESHOLD
--#define NFT_PIPAPO_LT_SIZE_LOW		NFT_PIPAPO_LT_SIZE_THRESHOLD -	\
--					NFT_PIPAPO_LT_SIZE_HYSTERESIS
--
--/* Fields are padded to 32 bits in input registers */
--#define NFT_PIPAPO_GROUPS_PADDED_SIZE(f)				\
--	(round_up((f)->groups / NFT_PIPAPO_GROUPS_PER_BYTE(f), sizeof(u32)))
--#define NFT_PIPAPO_GROUPS_PADDING(f)					\
--	(NFT_PIPAPO_GROUPS_PADDED_SIZE(f) - (f)->groups /		\
--					    NFT_PIPAPO_GROUPS_PER_BYTE(f))
--
--/* Number of buckets given by 2 ^ n, with n bucket bits */
--#define NFT_PIPAPO_BUCKETS(bb)		(1 << (bb))
--
--/* Each n-bit range maps to up to n * 2 rules */
--#define NFT_PIPAPO_MAP_NBITS		(const_ilog2(NFT_PIPAPO_MAX_BITS * 2))
--
--/* Use the rest of mapping table buckets for rule indices, but it makes =
-no sense
-- * to exceed 32 bits
-- */
--#if BITS_PER_LONG =3D=3D 64
--#define NFT_PIPAPO_MAP_TOBITS		32
--#else
--#define NFT_PIPAPO_MAP_TOBITS		(BITS_PER_LONG - NFT_PIPAPO_MAP_NBITS)
--#endif
--
--/* ...which gives us the highest allowed index for a rule */
--#define NFT_PIPAPO_RULE0_MAX		((1UL << (NFT_PIPAPO_MAP_TOBITS - 1)) \
--					- (1UL << NFT_PIPAPO_MAP_NBITS))
--
--/* Definitions for vectorised implementations */
--#ifdef NFT_PIPAPO_ALIGN
--#define NFT_PIPAPO_ALIGN_HEADROOM					\
--	(NFT_PIPAPO_ALIGN - ARCH_KMALLOC_MINALIGN)
--#define NFT_PIPAPO_LT_ALIGN(lt)		(PTR_ALIGN((lt), NFT_PIPAPO_ALIGN))
--#define NFT_PIPAPO_LT_ASSIGN(field, x)					\
--	do {								\
--		(field)->lt_aligned =3D NFT_PIPAPO_LT_ALIGN(x);		\
--		(field)->lt =3D (x);					\
--	} while (0)
--#else
--#define NFT_PIPAPO_ALIGN_HEADROOM	0
--#define NFT_PIPAPO_LT_ALIGN(lt)		(lt)
--#define NFT_PIPAPO_LT_ASSIGN(field, x)	((field)->lt =3D (x))
--#endif /* NFT_PIPAPO_ALIGN */
--
--#define nft_pipapo_for_each_field(field, index, match)		\
--	for ((field) =3D (match)->f, (index) =3D 0;			\
--	     (index) < (match)->field_count;			\
--	     (index)++, (field)++)
--
--/**
-- * union nft_pipapo_map_bucket - Bucket of mapping table
-- * @to:		First rule number (in next field) this rule maps to
-- * @n:		Number of rules (in next field) this rule maps to
-- * @e:		If there's no next field, pointer to element this rule maps to
-- */
--union nft_pipapo_map_bucket {
--	struct {
--#if BITS_PER_LONG =3D=3D 64
--		static_assert(NFT_PIPAPO_MAP_TOBITS <=3D 32);
--		u32 to;
--
--		static_assert(NFT_PIPAPO_MAP_NBITS <=3D 32);
--		u32 n;
--#else
--		unsigned long to:NFT_PIPAPO_MAP_TOBITS;
--		unsigned long  n:NFT_PIPAPO_MAP_NBITS;
--#endif
--	};
--	struct nft_pipapo_elem *e;
--};
--
--/**
-- * struct nft_pipapo_field - Lookup, mapping tables and related data for=
- a field
-- * @groups:	Amount of bit groups
-- * @rules:	Number of inserted rules
-- * @bsize:	Size of each bucket in lookup table, in longs
-- * @bb:		Number of bits grouped together in lookup table buckets
-- * @lt:		Lookup table: 'groups' rows of buckets
-- * @lt_aligned:	Version of @lt aligned to NFT_PIPAPO_ALIGN bytes
-- * @mt:		Mapping table: one bucket per rule
-- */
--struct nft_pipapo_field {
--	int groups;
--	unsigned long rules;
--	size_t bsize;
--	int bb;
--#ifdef NFT_PIPAPO_ALIGN
--	unsigned long *lt_aligned;
--#endif
--	unsigned long *lt;
--	union nft_pipapo_map_bucket *mt;
--};
--
--/**
-- * struct nft_pipapo_match - Data used for lookup and matching
-- * @field_count		Amount of fields in set
-- * @scratch:		Preallocated per-CPU maps for partial matching results
-- * @scratch_aligned:	Version of @scratch aligned to NFT_PIPAPO_ALIGN byt=
-es
-- * @bsize_max:		Maximum lookup table bucket size of all fields, in longs
-- * @rcu			Matching data is swapped on commits
-- * @f:			Fields, with lookup and mapping tables
-- */
--struct nft_pipapo_match {
--	int field_count;
--#ifdef NFT_PIPAPO_ALIGN
--	unsigned long * __percpu *scratch_aligned;
--#endif
--	unsigned long * __percpu *scratch;
--	size_t bsize_max;
--	struct rcu_head rcu;
--	struct nft_pipapo_field f[0];
--};
-+#include "nft_set_pipapo.h"
++#include "nft_set_pipapo_avx2.h"
+ #include "nft_set_pipapo.h"
 =20
  /* Current working bitmap index, toggled between field matches */
- static DEFINE_PER_CPU(bool, nft_pipapo_scratch_index);
-=20
--/**
-- * struct nft_pipapo - Representation of a set
-- * @match:	Currently in-use matching data
-- * @clone:	Copy where pending insertions and deletions are kept
-- * @width:	Total bytes to be matched for one packet, including padding
-- * @dirty:	Working copy has pending insertions or deletions
-- * @last_gc:	Timestamp of last garbage collection run, jiffies
-- */
--struct nft_pipapo {
--	struct nft_pipapo_match __rcu *match;
--	struct nft_pipapo_match *clone;
--	int width;
--	bool dirty;
--	unsigned long last_gc;
--};
--
--struct nft_pipapo_elem;
--
--/**
-- * struct nft_pipapo_elem - API-facing representation of single set elem=
-ent
-- * @ext:	nftables API extensions
-- */
--struct nft_pipapo_elem {
--	struct nft_set_ext ext;
--};
--
- /**
-  * pipapo_refill() - For each set bit, set bits from selected mapping ta=
-ble item
-  * @map:	Bitmap to be scanned for set bits
-@@ -529,9 +361,8 @@ struct nft_pipapo_elem {
-  *
-  * Return: -1 on no match, bit position on 'match_only', 0 otherwise.
-  */
--static int pipapo_refill(unsigned long *map, int len, int rules,
--			 unsigned long *dst, union nft_pipapo_map_bucket *mt,
--			 bool match_only)
-+int pipapo_refill(unsigned long *map, int len, int rules, unsigned long =
-*dst,
-+		  union nft_pipapo_map_bucket *mt, bool match_only)
- {
- 	unsigned long bitset;
- 	int k, ret =3D -1;
-@@ -565,54 +396,6 @@ static int pipapo_refill(unsigned long *map, int len=
-, int rules,
- 	return ret;
- }
-=20
--/**
-- * pipapo_and_field_buckets_4bit() - Intersect buckets for 4-bit groups
-- * @f:		Field including lookup table
-- * @dst:	Area to store result
-- * @data:	Input data selecting table buckets
-- */
--static void pipapo_and_field_buckets_4bit(struct nft_pipapo_field *f,
--					  unsigned long *dst,
--					  const u8 *data)
--{
--	unsigned long *lt =3D f->lt;
--	int group;
--
--	for (group =3D 0; group < f->groups; group +=3D BITS_PER_BYTE / 4, data=
-++) {
--		u8 v;
--
--		v =3D *data >> 4;
--		__bitmap_and(dst, dst, lt + v * f->bsize,
--			     f->bsize * BITS_PER_LONG);
--		lt +=3D f->bsize * NFT_PIPAPO_BUCKETS(4);
--
--		v =3D *data & 0x0f;
--		__bitmap_and(dst, dst, lt + v * f->bsize,
--			     f->bsize * BITS_PER_LONG);
--		lt +=3D f->bsize * NFT_PIPAPO_BUCKETS(4);
--	}
--}
--
--/**
-- * pipapo_and_field_buckets_8bit() - Intersect buckets for 8-bit groups
-- * @f:		Field including lookup table
-- * @dst:	Area to store result
-- * @data:	Input data selecting table buckets
-- */
--static void pipapo_and_field_buckets_8bit(struct nft_pipapo_field *f,
--					  unsigned long *dst,
--					  const u8 *data)
--{
--	unsigned long *lt =3D f->lt;
--	int group;
--
--	for (group =3D 0; group < f->groups; group++, data++) {
--		__bitmap_and(dst, dst, lt + *data * f->bsize,
--			     f->bsize * BITS_PER_LONG);
--		lt +=3D f->bsize * NFT_PIPAPO_BUCKETS(8);
--	}
--}
--
- /**
-  * nft_pipapo_lookup() - Lookup function
-  * @net:	Network namespace
-@@ -753,7 +536,6 @@ static struct nft_pipapo_elem *pipapo_get(const struc=
-t net *net,
- 	memset(res_map, 0xff, m->bsize_max * sizeof(*res_map));
-=20
- 	nft_pipapo_for_each_field(f, i, m) {
--		unsigned long *lt =3D NFT_PIPAPO_LT_ALIGN(f->lt);
- 		bool last =3D i =3D=3D m->field_count - 1;
- 		int b;
-=20
-@@ -2190,58 +1972,23 @@ static u64 nft_pipapo_privsize(const struct nlatt=
-r * const nla[],
- }
-=20
- /**
-- * nft_pipapo_estimate() - Estimate set size, space and lookup complexit=
-y
-- * @desc:	Set description, element count and field description used here
-+ * nft_pipapo_estimate() - Set size, space and lookup complexity
-+ * @desc:	Set description, element count and field description used
-  * @features:	Flags: NFT_SET_INTERVAL needs to be there
-  * @est:	Storage for estimation data
-  *
-- * The size for this set type can vary dramatically, as it depends on th=
-e number
-- * of rules (composing netmasks) the entries expand to. We compute the w=
-orst
-- * case here.
-- *
-- * In general, for a non-ranged entry or a single composing netmask, we =
-need
-- * one bit in each of the sixteen buckets, for each 4-bit group (that is=
-, each
-- * input bit needs four bits of matching data), plus a bucket in the map=
-ping
-- * table for each field.
-- *
-- * Return: true only for compatible range concatenations
-+ * Return: true if set description is compatible, false otherwise
-  */
- static bool nft_pipapo_estimate(const struct nft_set_desc *desc, u32 fea=
-tures,
- 				struct nft_set_estimate *est)
- {
--	unsigned long entry_size;
--	int i;
--
- 	if (!(features & NFT_SET_INTERVAL) || desc->field_count <=3D 1)
- 		return false;
-=20
--	for (i =3D 0, entry_size =3D 0; i < desc->field_count; i++) {
--		unsigned long rules;
--
--		if (desc->field_len[i] > NFT_PIPAPO_MAX_BYTES)
--			return false;
--
--		/* Worst-case ranges for each concatenated field: each n-bit
--		 * field can expand to up to n * 2 rules in each bucket, and
--		 * each rule also needs a mapping bucket.
--		 */
--		rules =3D ilog2(desc->field_len[i] * BITS_PER_BYTE) * 2;
--		entry_size +=3D rules *
--			      NFT_PIPAPO_BUCKETS(NFT_PIPAPO_GROUP_BITS_INIT) /
--			      BITS_PER_BYTE;
--		entry_size +=3D rules * sizeof(union nft_pipapo_map_bucket);
--	}
--
--	/* Rules in lookup and mapping tables are needed for each entry */
--	est->size =3D desc->size * entry_size;
--	if (est->size && div_u64(est->size, desc->size) !=3D entry_size)
-+	est->size =3D pipapo_estimate_size(desc);
-+	if (!est->size)
- 		return false;
-=20
--	est->size +=3D sizeof(struct nft_pipapo) +
--		     sizeof(struct nft_pipapo_match) * 2;
--
--	est->size +=3D sizeof(struct nft_pipapo_field) * desc->field_count;
--
- 	est->lookup =3D NFT_SET_CLASS_O_LOG_N;
-=20
- 	est->space =3D NFT_SET_CLASS_O_N;
-diff --git a/net/netfilter/nft_set_pipapo.h b/net/netfilter/nft_set_pipap=
-o.h
+@@ -2175,3 +2176,27 @@ struct nft_set_type nft_set_pipapo_type __read_mos=
+tly =3D {
+ 		.elemsize	=3D offsetof(struct nft_pipapo_elem, ext),
+ 	},
+ };
++
++#if defined(CONFIG_X86_64) && defined(CONFIG_AS_AVX2)
++struct nft_set_type nft_set_pipapo_avx2_type __read_mostly =3D {
++	.owner		=3D THIS_MODULE,
++	.features	=3D NFT_SET_INTERVAL | NFT_SET_MAP | NFT_SET_OBJECT |
++			  NFT_SET_TIMEOUT,
++	.ops		=3D {
++		.lookup		=3D nft_pipapo_avx2_lookup,
++		.insert		=3D nft_pipapo_insert,
++		.activate	=3D nft_pipapo_activate,
++		.deactivate	=3D nft_pipapo_deactivate,
++		.flush		=3D nft_pipapo_flush,
++		.remove		=3D nft_pipapo_remove,
++		.walk		=3D nft_pipapo_walk,
++		.get		=3D nft_pipapo_get,
++		.privsize	=3D nft_pipapo_privsize,
++		.estimate	=3D nft_pipapo_avx2_estimate,
++		.init		=3D nft_pipapo_init,
++		.destroy	=3D nft_pipapo_destroy,
++		.gc_init	=3D nft_pipapo_gc_init,
++		.elemsize	=3D offsetof(struct nft_pipapo_elem, ext),
++	},
++};
++#endif
+diff --git a/net/netfilter/nft_set_pipapo_avx2.c b/net/netfilter/nft_set_=
+pipapo_avx2.c
 new file mode 100644
-index 000000000000..20e4851a60b0
+index 000000000000..f6e20154d2b7
 --- /dev/null
-+++ b/net/netfilter/nft_set_pipapo.h
-@@ -0,0 +1,277 @@
++++ b/net/netfilter/nft_set_pipapo_avx2.c
+@@ -0,0 +1,1222 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +
-+#ifndef _NFT_SET_PIPAPO_H
-+
-+#include <linux/log2.h>
-+#include <net/ipv6.h>			/* For the maximum length of a field */
-+
-+/* Count of concatenated fields depends on count of 32-bit nftables regi=
-sters */
-+#define NFT_PIPAPO_MAX_FIELDS		NFT_REG32_COUNT
-+
-+/* Largest supported field size */
-+#define NFT_PIPAPO_MAX_BYTES		(sizeof(struct in6_addr))
-+#define NFT_PIPAPO_MAX_BITS		(NFT_PIPAPO_MAX_BYTES * BITS_PER_BYTE)
-+
-+/* Bits to be grouped together in table buckets depending on set size */
-+#define NFT_PIPAPO_GROUP_BITS_INIT	NFT_PIPAPO_GROUP_BITS_SMALL_SET
-+#define NFT_PIPAPO_GROUP_BITS_SMALL_SET	8
-+#define NFT_PIPAPO_GROUP_BITS_LARGE_SET	4
-+#define NFT_PIPAPO_GROUP_BITS_ARE_8_OR_4				\
-+	BUILD_BUG_ON((NFT_PIPAPO_GROUP_BITS_SMALL_SET !=3D 8) ||		\
-+		     (NFT_PIPAPO_GROUP_BITS_LARGE_SET !=3D 4))
-+#define NFT_PIPAPO_GROUPS_PER_BYTE(f)	(BITS_PER_BYTE / (f)->bb)
-+
-+/* If a lookup table gets bigger than NFT_PIPAPO_LT_SIZE_HIGH, switch to=
- the
-+ * small group width, and switch to the big group width if the table get=
-s
-+ * smaller than NFT_PIPAPO_LT_SIZE_LOW.
++/* PIPAPO: PIle PAcket POlicies: AVX2 packet lookup routines
 + *
-+ * Picking 2MiB as threshold (for a single table) avoids as much as poss=
-ible
-+ * crossing page boundaries on most architectures (x86-64 and MIPS huge =
-pages,
-+ * ARMv7 supersections, POWER "large" pages, SPARC Level 1 regions, etc.=
-), which
-+ * keeps performance nice in case kvmalloc() gives us non-contiguous are=
-as.
++ * Copyright (c) 2019-2020 Red Hat GmbH
++ *
++ * Author: Stefano Brivio <sbrivio@redhat.com>
 + */
-+#define NFT_PIPAPO_LT_SIZE_THRESHOLD	(1 << 21)
-+#define NFT_PIPAPO_LT_SIZE_HYSTERESIS	(1 << 16)
-+#define NFT_PIPAPO_LT_SIZE_HIGH		NFT_PIPAPO_LT_SIZE_THRESHOLD
-+#define NFT_PIPAPO_LT_SIZE_LOW		NFT_PIPAPO_LT_SIZE_THRESHOLD -	\
-+					NFT_PIPAPO_LT_SIZE_HYSTERESIS
 +
-+/* Fields are padded to 32 bits in input registers */
-+#define NFT_PIPAPO_GROUPS_PADDED_SIZE(f)				\
-+	(round_up((f)->groups / NFT_PIPAPO_GROUPS_PER_BYTE(f), sizeof(u32)))
-+#define NFT_PIPAPO_GROUPS_PADDING(f)					\
-+	(NFT_PIPAPO_GROUPS_PADDED_SIZE(f) - (f)->groups /		\
-+					    NFT_PIPAPO_GROUPS_PER_BYTE(f))
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/netlink.h>
++#include <linux/netfilter.h>
++#include <linux/netfilter/nf_tables.h>
++#include <net/netfilter/nf_tables_core.h>
++#include <uapi/linux/netfilter/nf_tables.h>
++#include <linux/bitmap.h>
++#include <linux/bitops.h>
 +
-+/* Number of buckets given by 2 ^ n, with n bucket bits */
-+#define NFT_PIPAPO_BUCKETS(bb)		(1 << (bb))
++#include <linux/compiler.h>
++#include <asm/fpu/api.h>
 +
-+/* Each n-bit range maps to up to n * 2 rules */
-+#define NFT_PIPAPO_MAP_NBITS		(const_ilog2(NFT_PIPAPO_MAX_BITS * 2))
++#include "nft_set_pipapo_avx2.h"
++#include "nft_set_pipapo.h"
 +
-+/* Use the rest of mapping table buckets for rule indices, but it makes =
-no sense
-+ * to exceed 32 bits
++#define NFT_PIPAPO_LONGS_PER_M256	(XSAVE_YMM_SIZE / BITS_PER_LONG)
++
++/* Load from memory into YMM register with non-temporal hint ("stream lo=
+ad"),
++ * that is, don't fetch lines from memory into the cache. This avoids pu=
+shing
++ * precious packet data out of the cache hierarchy, and is appropriate w=
+hen:
++ *
++ * - loading buckets from lookup tables, as they are not going to be use=
+d
++ *   again before packets are entirely classified
++ *
++ * - loading the result bitmap from the previous field, as it's never us=
+ed
++ *   again
 + */
-+#if BITS_PER_LONG =3D=3D 64
-+#define NFT_PIPAPO_MAP_TOBITS		32
-+#else
-+#define NFT_PIPAPO_MAP_TOBITS		(BITS_PER_LONG - NFT_PIPAPO_MAP_NBITS)
-+#endif
++#define NFT_PIPAPO_AVX2_LOAD(reg, loc)					\
++	asm volatile("vmovntdqa %0, %%ymm" #reg : : "m" (loc))
 +
-+/* ...which gives us the highest allowed index for a rule */
-+#define NFT_PIPAPO_RULE0_MAX		((1UL << (NFT_PIPAPO_MAP_TOBITS - 1)) \
-+					- (1UL << NFT_PIPAPO_MAP_NBITS))
++/* Stream a single lookup table bucket into YMM register given lookup ta=
+ble,
++ * group index, value of packet bits, bucket size.
++ */
++#define NFT_PIPAPO_AVX2_BUCKET_LOAD4(reg, lt, group, v, bsize)		\
++	NFT_PIPAPO_AVX2_LOAD(reg,					\
++			     lt[((group) * NFT_PIPAPO_BUCKETS(4) +	\
++				 (v)) * (bsize)])
++#define NFT_PIPAPO_AVX2_BUCKET_LOAD8(reg, lt, group, v, bsize)		\
++	NFT_PIPAPO_AVX2_LOAD(reg,					\
++			     lt[((group) * NFT_PIPAPO_BUCKETS(8) +	\
++				 (v)) * (bsize)])
 +
-+/* Definitions for vectorised implementations */
-+#ifdef NFT_PIPAPO_ALIGN
-+#define NFT_PIPAPO_ALIGN_HEADROOM					\
-+	(NFT_PIPAPO_ALIGN - ARCH_KMALLOC_MINALIGN)
-+#define NFT_PIPAPO_LT_ALIGN(lt)		(PTR_ALIGN((lt), NFT_PIPAPO_ALIGN))
-+#define NFT_PIPAPO_LT_ASSIGN(field, x)					\
++/* Bitwise AND: the staple operation of this algorithm */
++#define NFT_PIPAPO_AVX2_AND(dst, a, b)					\
++	asm volatile("vpand %ymm" #a ", %ymm" #b ", %ymm" #dst)
++
++/* Jump to label if @reg is zero */
++#define NFT_PIPAPO_AVX2_NOMATCH_GOTO(reg, label)			\
++	asm_volatile_goto("vptest %%ymm" #reg ", %%ymm" #reg ";"	\
++			  "je %l[" #label "]" : : : : label)
++
++/* Store 256 bits from YMM register into memory. Contrary to bucket load
++ * operation, we don't bypass the cache here, as stored matching results
++ * are always used shortly after.
++ */
++#define NFT_PIPAPO_AVX2_STORE(loc, reg)					\
++	asm volatile("vmovdqa %%ymm" #reg ", %0" : "=3Dm" (loc))
++
++/* Zero out a complete YMM register, @reg */
++#define NFT_PIPAPO_AVX2_ZERO(reg)					\
++	asm volatile("vpxor %ymm" #reg ", %ymm" #reg ", %ymm" #reg)
++
++/* Current working bitmap index, toggled between field matches */
++static DEFINE_PER_CPU(bool, nft_pipapo_avx2_scratch_index);
++
++/**
++ * nft_pipapo_avx2_prepare() - Prepare before main algorithm body
++ *
++ * This zeroes out ymm15, which is later used whenever we need to clear =
+a
++ * memory location, by storing its content into memory.
++ */
++static void nft_pipapo_avx2_prepare(void)
++{
++	NFT_PIPAPO_AVX2_ZERO(15);
++}
++
++/**
++ * nft_pipapo_avx2_fill() - Fill a bitmap region with ones
++ * @data:	Base memory area
++ * @start:	First bit to set
++ * @len:	Count of bits to fill
++ *
++ * This is nothing else than a version of bitmap_set(), as used e.g. by
++ * pipapo_refill(), tailored for the microarchitectures using it and bet=
+ter
++ * suited for the specific usage: it's very likely that we'll set a smal=
+l number
++ * of bits, not crossing a word boundary, and correct branch prediction =
+is
++ * critical here.
++ *
++ * This function doesn't actually use any AVX2 instruction.
++ */
++static void nft_pipapo_avx2_fill(unsigned long *data, int start, int len=
+)
++{
++	int offset =3D start % BITS_PER_LONG;
++	unsigned long mask;
++
++	data +=3D start / BITS_PER_LONG;
++
++	if (likely(len =3D=3D 1)) {
++		*data |=3D BIT(offset);
++		return;
++	}
++
++	if (likely(len < BITS_PER_LONG || offset)) {
++		if (likely(len + offset <=3D BITS_PER_LONG)) {
++			*data |=3D GENMASK(len - 1 + offset, offset);
++			return;
++		}
++
++		*data |=3D ~0UL << offset;
++		len -=3D BITS_PER_LONG - offset;
++		data++;
++
++		if (len <=3D BITS_PER_LONG) {
++			mask =3D ~0UL >> (BITS_PER_LONG - len);
++			*data |=3D mask;
++			return;
++		}
++	}
++
++	memset(data, 0xff, len / BITS_PER_BYTE);
++	data +=3D len / BITS_PER_LONG;
++
++	len %=3D BITS_PER_LONG;
++	if (len)
++		*data |=3D ~0UL >> (BITS_PER_LONG - len);
++}
++
++/**
++ * nft_pipapo_avx2_refill() - Scan bitmap, select mapping table item, se=
+t bits
++ * @offset:	Start from given bitmap (equivalent to bucket) offset, in lo=
+ngs
++ * @map:	Bitmap to be scanned for set bits
++ * @dst:	Destination bitmap
++ * @mt:		Mapping table containing bit set specifiers
++ * @len:	Length of bitmap in longs
++ * @last:	Return index of first set bit, if this is the last field
++ *
++ * This is an alternative implementation of pipapo_refill() suitable for=
+ usage
++ * with AVX2 lookup routines: we know there are four words to be scanned=
+, at
++ * a given offset inside the map, for each matching iteration.
++ *
++ * This function doesn't actually use any AVX2 instruction.
++ *
++ * Return: first set bit index if @last, index of first filled word othe=
+rwise.
++ */
++static int nft_pipapo_avx2_refill(int offset, unsigned long *map,
++				  unsigned long *dst,
++				  union nft_pipapo_map_bucket *mt, bool last)
++{
++	int ret =3D -1;
++
++#define NFT_PIPAPO_AVX2_REFILL_ONE_WORD(x)				\
 +	do {								\
-+		(field)->lt_aligned =3D NFT_PIPAPO_LT_ALIGN(x);		\
-+		(field)->lt =3D (x);					\
++		while (map[(x)]) {					\
++			int r =3D __builtin_ctzl(map[(x)]);		\
++			int i =3D (offset + (x)) * BITS_PER_LONG + r;	\
++									\
++			if (last)					\
++				return i;				\
++									\
++			nft_pipapo_avx2_fill(dst, mt[i].to, mt[i].n);	\
++									\
++			if (ret =3D=3D -1)					\
++				ret =3D mt[i].to;				\
++									\
++			map[(x)] &=3D ~(1UL << r);			\
++		}							\
 +	} while (0)
-+#else
-+#define NFT_PIPAPO_ALIGN_HEADROOM	0
-+#define NFT_PIPAPO_LT_ALIGN(lt)		(lt)
-+#define NFT_PIPAPO_LT_ASSIGN(field, x)	((field)->lt =3D (x))
-+#endif /* NFT_PIPAPO_ALIGN */
 +
-+#define nft_pipapo_for_each_field(field, index, match)		\
-+	for ((field) =3D (match)->f, (index) =3D 0;			\
-+	     (index) < (match)->field_count;			\
-+	     (index)++, (field)++)
++	NFT_PIPAPO_AVX2_REFILL_ONE_WORD(0);
++	NFT_PIPAPO_AVX2_REFILL_ONE_WORD(1);
++	NFT_PIPAPO_AVX2_REFILL_ONE_WORD(2);
++	NFT_PIPAPO_AVX2_REFILL_ONE_WORD(3);
++#undef NFT_PIPAPO_AVX2_REFILL_ONE_WORD
 +
-+/**
-+ * union nft_pipapo_map_bucket - Bucket of mapping table
-+ * @to:		First rule number (in next field) this rule maps to
-+ * @n:		Number of rules (in next field) this rule maps to
-+ * @e:		If there's no next field, pointer to element this rule maps to
-+ */
-+union nft_pipapo_map_bucket {
-+	struct {
-+#if BITS_PER_LONG =3D=3D 64
-+		static_assert(NFT_PIPAPO_MAP_TOBITS <=3D 32);
-+		u32 to;
-+
-+		static_assert(NFT_PIPAPO_MAP_NBITS <=3D 32);
-+		u32 n;
-+#else
-+		unsigned long to:NFT_PIPAPO_MAP_TOBITS;
-+		unsigned long  n:NFT_PIPAPO_MAP_NBITS;
-+#endif
-+	};
-+	struct nft_pipapo_elem *e;
-+};
-+
-+/**
-+ * struct nft_pipapo_field - Lookup, mapping tables and related data for=
- a field
-+ * @groups:	Amount of bit groups
-+ * @rules:	Number of inserted rules
-+ * @bsize:	Size of each bucket in lookup table, in longs
-+ * @bb:		Number of bits grouped together in lookup table buckets
-+ * @lt:		Lookup table: 'groups' rows of buckets
-+ * @lt_aligned:	Version of @lt aligned to NFT_PIPAPO_ALIGN bytes
-+ * @mt:		Mapping table: one bucket per rule
-+ */
-+struct nft_pipapo_field {
-+	int groups;
-+	unsigned long rules;
-+	size_t bsize;
-+	int bb;
-+#ifdef NFT_PIPAPO_ALIGN
-+	unsigned long *lt_aligned;
-+#endif
-+	unsigned long *lt;
-+	union nft_pipapo_map_bucket *mt;
-+};
-+
-+/**
-+ * struct nft_pipapo_match - Data used for lookup and matching
-+ * @field_count		Amount of fields in set
-+ * @scratch:		Preallocated per-CPU maps for partial matching results
-+ * @scratch_aligned:	Version of @scratch aligned to NFT_PIPAPO_ALIGN byt=
-es
-+ * @bsize_max:		Maximum lookup table bucket size of all fields, in longs
-+ * @rcu			Matching data is swapped on commits
-+ * @f:			Fields, with lookup and mapping tables
-+ */
-+struct nft_pipapo_match {
-+	int field_count;
-+#ifdef NFT_PIPAPO_ALIGN
-+	unsigned long * __percpu *scratch_aligned;
-+#endif
-+	unsigned long * __percpu *scratch;
-+	size_t bsize_max;
-+	struct rcu_head rcu;
-+	struct nft_pipapo_field f[0];
-+};
-+
-+/**
-+ * struct nft_pipapo - Representation of a set
-+ * @match:	Currently in-use matching data
-+ * @clone:	Copy where pending insertions and deletions are kept
-+ * @width:	Total bytes to be matched for one packet, including padding
-+ * @dirty:	Working copy has pending insertions or deletions
-+ * @last_gc:	Timestamp of last garbage collection run, jiffies
-+ */
-+struct nft_pipapo {
-+	struct nft_pipapo_match __rcu *match;
-+	struct nft_pipapo_match *clone;
-+	int width;
-+	bool dirty;
-+	unsigned long last_gc;
-+};
-+
-+struct nft_pipapo_elem;
-+
-+/**
-+ * struct nft_pipapo_elem - API-facing representation of single set elem=
-ent
-+ * @ext:	nftables API extensions
-+ */
-+struct nft_pipapo_elem {
-+	struct nft_set_ext ext;
-+};
-+
-+int pipapo_refill(unsigned long *map, int len, int rules, unsigned long =
-*dst,
-+		  union nft_pipapo_map_bucket *mt, bool match_only);
-+
-+/**
-+ * pipapo_and_field_buckets_4bit() - Intersect 4-bit buckets
-+ * @f:		Field including lookup table
-+ * @dst:	Area to store result
-+ * @data:	Input data selecting table buckets
-+ */
-+static inline void pipapo_and_field_buckets_4bit(struct nft_pipapo_field=
- *f,
-+						 unsigned long *dst,
-+						 const u8 *data)
-+{
-+	unsigned long *lt =3D NFT_PIPAPO_LT_ALIGN(f->lt);
-+	int group;
-+
-+	for (group =3D 0; group < f->groups; group +=3D BITS_PER_BYTE / 4, data=
-++) {
-+		u8 v;
-+
-+		v =3D *data >> 4;
-+		__bitmap_and(dst, dst, lt + v * f->bsize,
-+			     f->bsize * BITS_PER_LONG);
-+		lt +=3D f->bsize * NFT_PIPAPO_BUCKETS(4);
-+
-+		v =3D *data & 0x0f;
-+		__bitmap_and(dst, dst, lt + v * f->bsize,
-+			     f->bsize * BITS_PER_LONG);
-+		lt +=3D f->bsize * NFT_PIPAPO_BUCKETS(4);
-+	}
++	return ret;
 +}
 +
 +/**
-+ * pipapo_and_field_buckets_8bit() - Intersect 8-bit buckets
-+ * @f:		Field including lookup table
-+ * @dst:	Area to store result
-+ * @data:	Input data selecting table buckets
++ * nft_pipapo_avx2_lookup_4b_2() - AVX2-based lookup for 2 four-bit grou=
+ps
++ * @map:	Previous match result, used as initial bitmap
++ * @fill:	Destination bitmap to be filled with current match result
++ * @f:		Field, containing lookup and mapping tables
++ * @offset:	Ignore buckets before the given index, no bits are filled th=
+ere
++ * @pkt:	Packet data, pointer to input nftables register
++ * @first:	If this is the first field, don't source previous result
++ * @last:	Last field: stop at the first match and return bit index
++ *
++ * Load buckets from lookup table corresponding to the values of each 4-=
+bit
++ * group of packet bytes, and perform a bitwise intersection between the=
+m. If
++ * this is the first field in the set, simply AND the buckets together
++ * (equivalent to using an all-ones starting bitmap), use the provided s=
+tarting
++ * bitmap otherwise. Then call nft_pipapo_avx2_refill() to generate the =
+next
++ * working bitmap, @fill.
++ *
++ * This is used for 8-bit fields (i.e. protocol numbers).
++ *
++ * Out-of-order (and superscalar) execution is vital here, so it's criti=
+cal to
++ * avoid false data dependencies. CPU and compiler could (mostly) take c=
+are of
++ * this on their own, but the operation ordering is explicitly given her=
+e with
++ * a likely execution order in mind, to highlight possible stalls. That'=
+s why
++ * a number of logically distinct operations (i.e. loading buckets, inte=
+rsecting
++ * buckets) are interleaved.
++ *
++ * Return: -1 on no match, rule index of match if @last, otherwise first=
+ long
++ * word index to be checked next (i.e. first filled word).
 + */
-+static inline void pipapo_and_field_buckets_8bit(struct nft_pipapo_field=
- *f,
-+						 unsigned long *dst,
-+						 const u8 *data)
++static int nft_pipapo_avx2_lookup_4b_2(unsigned long *map, unsigned long=
+ *fill,
++				       struct nft_pipapo_field *f, int offset,
++				       const u8 *pkt, bool first, bool last)
 +{
-+	unsigned long *lt =3D NFT_PIPAPO_LT_ALIGN(f->lt);
-+	int group;
++	int i, ret =3D -1, m256_size =3D f->bsize / NFT_PIPAPO_LONGS_PER_M256, =
+b;
++	u8 pg[2] =3D { pkt[0] >> 4, pkt[0] & 0xf };
++	unsigned long *lt =3D f->lt, bsize =3D f->bsize;
 +
-+	for (group =3D 0; group < f->groups; group++, data++) {
-+		__bitmap_and(dst, dst, lt + *data * f->bsize,
-+			     f->bsize * BITS_PER_LONG);
-+		lt +=3D f->bsize * NFT_PIPAPO_BUCKETS(8);
++	lt +=3D offset * NFT_PIPAPO_LONGS_PER_M256;
++	for (i =3D offset; i < m256_size; i++, lt +=3D NFT_PIPAPO_LONGS_PER_M25=
+6) {
++		int i_ul =3D i * NFT_PIPAPO_LONGS_PER_M256;
++
++		if (first) {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(0, lt, 0, pg[0], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(1, lt, 1, pg[1], bsize);
++			NFT_PIPAPO_AVX2_AND(4, 0, 1);
++		} else {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(0, lt, 0, pg[0], bsize);
++			NFT_PIPAPO_AVX2_LOAD(2, map[i_ul]);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(1, lt, 1, pg[1], bsize);
++			NFT_PIPAPO_AVX2_NOMATCH_GOTO(2, nothing);
++			NFT_PIPAPO_AVX2_AND(3, 0, 1);
++			NFT_PIPAPO_AVX2_AND(4, 2, 3);
++		}
++
++		NFT_PIPAPO_AVX2_NOMATCH_GOTO(4, nomatch);
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 4);
++
++		b =3D nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
++		if (last)
++			return b;
++
++		if (unlikely(ret =3D=3D -1))
++			ret =3D b / XSAVE_YMM_SIZE;
++
++		continue;
++nomatch:
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 15);
++nothing:
++		;
 +	}
++
++	return ret;
 +}
 +
 +/**
-+ * pipapo_estimate_size() - Estimate worst-case for set size
-+ * @desc:	Set description, element count and field description used here
++ * nft_pipapo_avx2_lookup_4b_4() - AVX2-based lookup for 4 four-bit grou=
+ps
++ * @map:	Previous match result, used as initial bitmap
++ * @fill:	Destination bitmap to be filled with current match result
++ * @f:		Field, containing lookup and mapping tables
++ * @offset:	Ignore buckets before the given index, no bits are filled th=
+ere
++ * @pkt:	Packet data, pointer to input nftables register
++ * @first:	If this is the first field, don't source previous result
++ * @last:	Last field: stop at the first match and return bit index
 + *
-+ * The size for this set type can vary dramatically, as it depends on th=
-e number
-+ * of rules (composing netmasks) the entries expand to. We compute the w=
-orst
-+ * case here.
++ * See nft_pipapo_avx2_lookup_4b_2().
 + *
-+ * In general, for a non-ranged entry or a single composing netmask, we =
-need
-+ * one bit in each of the sixteen NFT_PIPAPO_BUCKETS, for each 4-bit gro=
-up (that
-+ * is, each input bit needs four bits of matching data), plus a bucket i=
-n the
-+ * mapping table for each field.
++ * This is used for 16-bit fields (i.e. ports).
 + *
-+ * Return: worst-case set size in bytes, 0 on any overflow
++ * Return: -1 on no match, rule index of match if @last, otherwise first=
+ long
++ * word index to be checked next (i.e. first filled word).
 + */
-+static u64 pipapo_estimate_size(const struct nft_set_desc *desc)
++static int nft_pipapo_avx2_lookup_4b_4(unsigned long *map, unsigned long=
+ *fill,
++				       struct nft_pipapo_field *f, int offset,
++				       const u8 *pkt, bool first, bool last)
 +{
-+	unsigned long entry_size;
-+	u64 size;
-+	int i;
++	int i, ret =3D -1, m256_size =3D f->bsize / NFT_PIPAPO_LONGS_PER_M256, =
+b;
++	u8 pg[4] =3D { pkt[0] >> 4, pkt[0] & 0xf, pkt[1] >> 4, pkt[1] & 0xf };
++	unsigned long *lt =3D f->lt, bsize =3D f->bsize;
 +
-+	for (i =3D 0, entry_size =3D 0; i < desc->field_count; i++) {
-+		unsigned long rules;
++	lt +=3D offset * NFT_PIPAPO_LONGS_PER_M256;
++	for (i =3D offset; i < m256_size; i++, lt +=3D NFT_PIPAPO_LONGS_PER_M25=
+6) {
++		int i_ul =3D i * NFT_PIPAPO_LONGS_PER_M256;
 +
-+		if (desc->field_len[i] > NFT_PIPAPO_MAX_BYTES)
-+			return 0;
++		if (first) {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(0, lt, 0, pg[0], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(1, lt, 1, pg[1], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(2, lt, 2, pg[2], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(3, lt, 3, pg[3], bsize);
++			NFT_PIPAPO_AVX2_AND(4, 0, 1);
++			NFT_PIPAPO_AVX2_AND(5, 2, 3);
++			NFT_PIPAPO_AVX2_AND(7, 4, 5);
++		} else {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(0, lt, 0, pg[0], bsize);
 +
-+		/* Worst-case ranges for each concatenated field: each n-bit
-+		 * field can expand to up to n * 2 rules in each bucket, and
-+		 * each rule also needs a mapping bucket.
-+		 */
-+		rules =3D ilog2(desc->field_len[i] * BITS_PER_BYTE) * 2;
-+		entry_size +=3D rules *
-+			      NFT_PIPAPO_BUCKETS(NFT_PIPAPO_GROUP_BITS_INIT) /
-+			      BITS_PER_BYTE;
-+		entry_size +=3D rules * sizeof(union nft_pipapo_map_bucket);
++			NFT_PIPAPO_AVX2_LOAD(1, map[i_ul]);
++
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(2, lt, 1, pg[1], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(3, lt, 2, pg[2], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(4, lt, 3, pg[3], bsize);
++			NFT_PIPAPO_AVX2_AND(5, 0, 1);
++
++			NFT_PIPAPO_AVX2_NOMATCH_GOTO(1, nothing);
++
++			NFT_PIPAPO_AVX2_AND(6, 2, 3);
++			NFT_PIPAPO_AVX2_AND(7, 4, 5);
++			/* Stall */
++			NFT_PIPAPO_AVX2_AND(7, 6, 7);
++		}
++
++		/* Stall */
++		NFT_PIPAPO_AVX2_NOMATCH_GOTO(7, nomatch);
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 7);
++
++		b =3D nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
++		if (last)
++			return b;
++
++		if (unlikely(ret =3D=3D -1))
++			ret =3D b / XSAVE_YMM_SIZE;
++
++		continue;
++nomatch:
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 15);
++nothing:
++		;
 +	}
 +
-+	/* Rules in lookup and mapping tables are needed for each entry */
-+	size =3D desc->size * entry_size;
-+	if (size && div_u64(size, desc->size) !=3D entry_size)
-+		return 0;
-+
-+	size +=3D sizeof(struct nft_pipapo) + sizeof(struct nft_pipapo_match) *=
- 2;
-+
-+	size +=3D sizeof(struct nft_pipapo_field) * desc->field_count;
-+
-+	return size;
++	return ret;
 +}
 +
-+#endif /* _NFT_SET_PIPAPO_H */
++/**
++ * nft_pipapo_avx2_lookup_4b_8() - AVX2-based lookup for 8 four-bit grou=
+ps
++ * @map:	Previous match result, used as initial bitmap
++ * @fill:	Destination bitmap to be filled with current match result
++ * @f:		Field, containing lookup and mapping tables
++ * @offset:	Ignore buckets before the given index, no bits are filled th=
+ere
++ * @pkt:	Packet data, pointer to input nftables register
++ * @first:	If this is the first field, don't source previous result
++ * @last:	Last field: stop at the first match and return bit index
++ *
++ * See nft_pipapo_avx2_lookup_4b_2().
++ *
++ * This is used for 32-bit fields (i.e. IPv4 addresses).
++ *
++ * Return: -1 on no match, rule index of match if @last, otherwise first=
+ long
++ * word index to be checked next (i.e. first filled word).
++ */
++static int nft_pipapo_avx2_lookup_4b_8(unsigned long *map, unsigned long=
+ *fill,
++				       struct nft_pipapo_field *f, int offset,
++				       const u8 *pkt, bool first, bool last)
++{
++	u8 pg[8] =3D {  pkt[0] >> 4,  pkt[0] & 0xf,  pkt[1] >> 4,  pkt[1] & 0xf=
+,
++		      pkt[2] >> 4,  pkt[2] & 0xf,  pkt[3] >> 4,  pkt[3] & 0xf,
++		   };
++	int i, ret =3D -1, m256_size =3D f->bsize / NFT_PIPAPO_LONGS_PER_M256, =
+b;
++	unsigned long *lt =3D f->lt, bsize =3D f->bsize;
++
++	lt +=3D offset * NFT_PIPAPO_LONGS_PER_M256;
++	for (i =3D offset; i < m256_size; i++, lt +=3D NFT_PIPAPO_LONGS_PER_M25=
+6) {
++		int i_ul =3D i * NFT_PIPAPO_LONGS_PER_M256;
++
++		if (first) {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(0,  lt, 0, pg[0], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(1,  lt, 1, pg[1], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(2,  lt, 2, pg[2], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(3,  lt, 3, pg[3], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(4,  lt, 4, pg[4], bsize);
++			NFT_PIPAPO_AVX2_AND(5,   0,  1);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(6,  lt, 5, pg[5], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(7,  lt, 6, pg[6], bsize);
++			NFT_PIPAPO_AVX2_AND(8,   2,  3);
++			NFT_PIPAPO_AVX2_AND(9,   4,  5);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(10, lt, 7, pg[7], bsize);
++			NFT_PIPAPO_AVX2_AND(11,  6,  7);
++			NFT_PIPAPO_AVX2_AND(12,  8,  9);
++			NFT_PIPAPO_AVX2_AND(13, 10, 11);
++
++			/* Stall */
++			NFT_PIPAPO_AVX2_AND(1,  12, 13);
++		} else {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(0,  lt, 0, pg[0], bsize);
++			NFT_PIPAPO_AVX2_LOAD(1, map[i_ul]);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(2,  lt, 1, pg[1], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(3,  lt, 2, pg[2], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(4,  lt, 3, pg[3], bsize);
++
++			NFT_PIPAPO_AVX2_NOMATCH_GOTO(1, nothing);
++
++			NFT_PIPAPO_AVX2_AND(5,   0,  1);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(6,  lt, 4, pg[4], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(7,  lt, 5, pg[5], bsize);
++			NFT_PIPAPO_AVX2_AND(8,   2,  3);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(9,  lt, 6, pg[6], bsize);
++			NFT_PIPAPO_AVX2_AND(10,  4,  5);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD4(11, lt, 7, pg[7], bsize);
++			NFT_PIPAPO_AVX2_AND(12,  6,  7);
++			NFT_PIPAPO_AVX2_AND(13,  8,  9);
++			NFT_PIPAPO_AVX2_AND(14, 10, 11);
++
++			/* Stall */
++			NFT_PIPAPO_AVX2_AND(1,  12, 13);
++			NFT_PIPAPO_AVX2_AND(1,   1, 14);
++		}
++
++		NFT_PIPAPO_AVX2_NOMATCH_GOTO(1, nomatch);
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 1);
++
++		b =3D nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
++		if (last)
++			return b;
++
++		if (unlikely(ret =3D=3D -1))
++			ret =3D b / XSAVE_YMM_SIZE;
++
++		continue;
++
++nomatch:
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 15);
++nothing:
++		;
++	}
++
++	return ret;
++}
++
++/**
++ * nft_pipapo_avx2_lookup_4b_12() - AVX2-based lookup for 12 four-bit gr=
+oups
++ * @map:	Previous match result, used as initial bitmap
++ * @fill:	Destination bitmap to be filled with current match result
++ * @f:		Field, containing lookup and mapping tables
++ * @offset:	Ignore buckets before the given index, no bits are filled th=
+ere
++ * @pkt:	Packet data, pointer to input nftables register
++ * @first:	If this is the first field, don't source previous result
++ * @last:	Last field: stop at the first match and return bit index
++ *
++ * See nft_pipapo_avx2_lookup_4b_2().
++ *
++ * This is used for 48-bit fields (i.e. MAC addresses/EUI-48).
++ *
++ * Return: -1 on no match, rule index of match if @last, otherwise first=
+ long
++ * word index to be checked next (i.e. first filled word).
++ */
++static int nft_pipapo_avx2_lookup_4b_12(unsigned long *map, unsigned lon=
+g *fill,
++				        struct nft_pipapo_field *f, int offset,
++				        const u8 *pkt, bool first, bool last)
++{
++	u8 pg[12] =3D {  pkt[0] >> 4,  pkt[0] & 0xf,  pkt[1] >> 4,  pkt[1] & 0x=
+f,
++		       pkt[2] >> 4,  pkt[2] & 0xf,  pkt[3] >> 4,  pkt[3] & 0xf,
++		       pkt[4] >> 4,  pkt[4] & 0xf,  pkt[5] >> 4,  pkt[5] & 0xf,
++		    };
++	int i, ret =3D -1, m256_size =3D f->bsize / NFT_PIPAPO_LONGS_PER_M256, =
+b;
++	unsigned long *lt =3D f->lt, bsize =3D f->bsize;
++
++	lt +=3D offset * NFT_PIPAPO_LONGS_PER_M256;
++	for (i =3D offset; i < m256_size; i++, lt +=3D NFT_PIPAPO_LONGS_PER_M25=
+6) {
++		int i_ul =3D i * NFT_PIPAPO_LONGS_PER_M256;
++
++		if (!first)
++			NFT_PIPAPO_AVX2_LOAD(0, map[i_ul]);
++
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(1,  lt,  0,  pg[0], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(2,  lt,  1,  pg[1], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(3,  lt,  2,  pg[2], bsize);
++
++		if (!first) {
++			NFT_PIPAPO_AVX2_NOMATCH_GOTO(0, nothing);
++			NFT_PIPAPO_AVX2_AND(1, 1, 0);
++		}
++
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(4,  lt,  3,  pg[3], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(5,  lt,  4,  pg[4], bsize);
++		NFT_PIPAPO_AVX2_AND(6,   2,  3);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(7,  lt,  5,  pg[5], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(8,  lt,  6,  pg[6], bsize);
++		NFT_PIPAPO_AVX2_AND(9,   1,  4);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(10, lt,  7,  pg[7], bsize);
++		NFT_PIPAPO_AVX2_AND(11,  5,  6);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(12, lt,  8,  pg[8], bsize);
++		NFT_PIPAPO_AVX2_AND(13,  7,  8);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(14, lt,  9,  pg[9], bsize);
++
++		NFT_PIPAPO_AVX2_AND(0,   9, 10);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(1,  lt, 10,  pg[10], bsize);
++		NFT_PIPAPO_AVX2_AND(2,  11, 12);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(3,  lt, 11,  pg[11], bsize);
++		NFT_PIPAPO_AVX2_AND(4,  13, 14);
++		NFT_PIPAPO_AVX2_AND(5,   0,  1);
++
++		NFT_PIPAPO_AVX2_AND(6,   2,  3);
++
++		/* Stalls */
++		NFT_PIPAPO_AVX2_AND(7,   4,  5);
++		NFT_PIPAPO_AVX2_AND(8,   6,  7);
++
++		NFT_PIPAPO_AVX2_NOMATCH_GOTO(8, nomatch);
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 8);
++
++		b =3D nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
++		if (last)
++			return b;
++
++		if (unlikely(ret =3D=3D -1))
++			ret =3D b / XSAVE_YMM_SIZE;
++
++		continue;
++nomatch:
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 15);
++nothing:
++		;
++	}
++
++	return ret;
++}
++
++/**
++ * nft_pipapo_avx2_lookup_4b_32() - AVX2-based lookup for 32 four-bit gr=
+oups
++ * @map:	Previous match result, used as initial bitmap
++ * @fill:	Destination bitmap to be filled with current match result
++ * @f:		Field, containing lookup and mapping tables
++ * @offset:	Ignore buckets before the given index, no bits are filled th=
+ere
++ * @pkt:	Packet data, pointer to input nftables register
++ * @first:	If this is the first field, don't source previous result
++ * @last:	Last field: stop at the first match and return bit index
++ *
++ * See nft_pipapo_avx2_lookup_4b_2().
++ *
++ * This is used for 128-bit fields (i.e. IPv6 addresses).
++ *
++ * Return: -1 on no match, rule index of match if @last, otherwise first=
+ long
++ * word index to be checked next (i.e. first filled word).
++ */
++static int nft_pipapo_avx2_lookup_4b_32(unsigned long *map, unsigned lon=
+g *fill,
++					struct nft_pipapo_field *f, int offset,
++					const u8 *pkt, bool first, bool last)
++{
++	u8 pg[32] =3D {  pkt[0] >> 4,  pkt[0] & 0xf,  pkt[1] >> 4,  pkt[1] & 0x=
+f,
++		       pkt[2] >> 4,  pkt[2] & 0xf,  pkt[3] >> 4,  pkt[3] & 0xf,
++		       pkt[4] >> 4,  pkt[4] & 0xf,  pkt[5] >> 4,  pkt[5] & 0xf,
++		       pkt[6] >> 4,  pkt[6] & 0xf,  pkt[7] >> 4,  pkt[7] & 0xf,
++		       pkt[8] >> 4,  pkt[8] & 0xf,  pkt[9] >> 4,  pkt[9] & 0xf,
++		      pkt[10] >> 4, pkt[10] & 0xf, pkt[11] >> 4, pkt[11] & 0xf,
++		      pkt[12] >> 4, pkt[12] & 0xf, pkt[13] >> 4, pkt[13] & 0xf,
++		      pkt[14] >> 4, pkt[14] & 0xf, pkt[15] >> 4, pkt[15] & 0xf,
++		    };
++	int i, ret =3D -1, m256_size =3D f->bsize / NFT_PIPAPO_LONGS_PER_M256, =
+b;
++	unsigned long *lt =3D f->lt, bsize =3D f->bsize;
++
++	lt +=3D offset * NFT_PIPAPO_LONGS_PER_M256;
++	for (i =3D offset; i < m256_size; i++, lt +=3D NFT_PIPAPO_LONGS_PER_M25=
+6) {
++		int i_ul =3D i * NFT_PIPAPO_LONGS_PER_M256;
++
++		if (!first)
++			NFT_PIPAPO_AVX2_LOAD(0, map[i_ul]);
++
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(1,  lt,  0,  pg[0], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(2,  lt,  1,  pg[1], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(3,  lt,  2,  pg[2], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(4,  lt,  3,  pg[3], bsize);
++		if (!first) {
++			NFT_PIPAPO_AVX2_NOMATCH_GOTO(0, nothing);
++			NFT_PIPAPO_AVX2_AND(1, 1, 0);
++		}
++
++		NFT_PIPAPO_AVX2_AND(5,   2,  3);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(6,  lt,  4,  pg[4], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(7,  lt,  5,  pg[5], bsize);
++		NFT_PIPAPO_AVX2_AND(8,   1,  4);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(9,  lt,  6,  pg[6], bsize);
++		NFT_PIPAPO_AVX2_AND(10,  5,  6);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(11, lt,  7,  pg[7], bsize);
++		NFT_PIPAPO_AVX2_AND(12,  7,  8);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(13, lt,  8,  pg[8], bsize);
++		NFT_PIPAPO_AVX2_AND(14,  9, 10);
++
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(0,  lt,  9,  pg[9], bsize);
++		NFT_PIPAPO_AVX2_AND(1,  11, 12);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(2,  lt, 10, pg[10], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(3,  lt, 11, pg[11], bsize);
++		NFT_PIPAPO_AVX2_AND(4,  13, 14);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(5,  lt, 12, pg[12], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(6,  lt, 13, pg[13], bsize);
++		NFT_PIPAPO_AVX2_AND(7,   0,  1);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(8,  lt, 14, pg[14], bsize);
++		NFT_PIPAPO_AVX2_AND(9,   2,  3);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(10, lt, 15, pg[15], bsize);
++		NFT_PIPAPO_AVX2_AND(11,  4,  5);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(12, lt, 16, pg[16], bsize);
++		NFT_PIPAPO_AVX2_AND(13,  6,  7);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(14, lt, 17, pg[17], bsize);
++
++		NFT_PIPAPO_AVX2_AND(0,   8,  9);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(1,  lt, 18, pg[18], bsize);
++		NFT_PIPAPO_AVX2_AND(2,  10, 11);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(3,  lt, 19, pg[19], bsize);
++		NFT_PIPAPO_AVX2_AND(4,  12, 13);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(5,  lt, 20, pg[20], bsize);
++		NFT_PIPAPO_AVX2_AND(6,  14,  0);
++		NFT_PIPAPO_AVX2_AND(7,   1,  2);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(8,  lt, 21, pg[21], bsize);
++		NFT_PIPAPO_AVX2_AND(9,   3,  4);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(10, lt, 22, pg[22], bsize);
++		NFT_PIPAPO_AVX2_AND(11,  5,  6);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(12, lt, 23, pg[23], bsize);
++		NFT_PIPAPO_AVX2_AND(13,  7,  8);
++
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(14, lt, 24, pg[24], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(0,  lt, 25, pg[25], bsize);
++		NFT_PIPAPO_AVX2_AND(1,   9, 10);
++		NFT_PIPAPO_AVX2_AND(2,  11, 12);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(3,  lt, 26, pg[26], bsize);
++		NFT_PIPAPO_AVX2_AND(4,  13, 14);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(5,  lt, 27, pg[27], bsize);
++		NFT_PIPAPO_AVX2_AND(6,   0,  1);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(7,  lt, 28, pg[28], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(8,  lt, 29, pg[29], bsize);
++		NFT_PIPAPO_AVX2_AND(9,   2,  3);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(10, lt, 30, pg[30], bsize);
++		NFT_PIPAPO_AVX2_AND(11,  4,  5);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD4(12, lt, 31, pg[31], bsize);
++
++		NFT_PIPAPO_AVX2_AND(0,   6,  7);
++		NFT_PIPAPO_AVX2_AND(1,   8,  9);
++		NFT_PIPAPO_AVX2_AND(2,  10, 11);
++		NFT_PIPAPO_AVX2_AND(3,  12,  0);
++
++		/* Stalls */
++		NFT_PIPAPO_AVX2_AND(4,   1,  2);
++		NFT_PIPAPO_AVX2_AND(5,   3,  4);
++
++		NFT_PIPAPO_AVX2_NOMATCH_GOTO(5, nomatch);
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 5);
++
++		b =3D nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
++		if (last)
++			return b;
++
++		if (unlikely(ret =3D=3D -1))
++			ret =3D b / XSAVE_YMM_SIZE;
++
++		continue;
++nomatch:
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 15);
++nothing:
++		;
++	}
++
++	return ret;
++}
++
++/**
++ * nft_pipapo_avx2_lookup_8b_1() - AVX2-based lookup for one eight-bit g=
+roup
++ * @map:	Previous match result, used as initial bitmap
++ * @fill:	Destination bitmap to be filled with current match result
++ * @f:		Field, containing lookup and mapping tables
++ * @offset:	Ignore buckets before the given index, no bits are filled th=
+ere
++ * @pkt:	Packet data, pointer to input nftables register
++ * @first:	If this is the first field, don't source previous result
++ * @last:	Last field: stop at the first match and return bit index
++ *
++ * See nft_pipapo_avx2_lookup_4b_2().
++ *
++ * This is used for 8-bit fields (i.e. protocol numbers).
++ *
++ * Return: -1 on no match, rule index of match if @last, otherwise first=
+ long
++ * word index to be checked next (i.e. first filled word).
++ */
++static int nft_pipapo_avx2_lookup_8b_1(unsigned long *map, unsigned long=
+ *fill,
++				       struct nft_pipapo_field *f, int offset,
++				       const u8 *pkt, bool first, bool last)
++{
++	int i, ret =3D -1, m256_size =3D f->bsize / NFT_PIPAPO_LONGS_PER_M256, =
+b;
++	unsigned long *lt =3D f->lt, bsize =3D f->bsize;
++
++	lt +=3D offset * NFT_PIPAPO_LONGS_PER_M256;
++	for (i =3D offset; i < m256_size; i++, lt +=3D NFT_PIPAPO_LONGS_PER_M25=
+6) {
++		int i_ul =3D i * NFT_PIPAPO_LONGS_PER_M256;
++
++		if (first) {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(2, lt, 0, pkt[0], bsize);
++		} else {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(0, lt, 0, pkt[0], bsize);
++			NFT_PIPAPO_AVX2_LOAD(1, map[i_ul]);
++			NFT_PIPAPO_AVX2_AND(2, 0, 1);
++			NFT_PIPAPO_AVX2_NOMATCH_GOTO(1, nothing);
++		}
++
++		NFT_PIPAPO_AVX2_NOMATCH_GOTO(2, nomatch);
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 2);
++
++		b =3D nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
++		if (last)
++			return b;
++
++		if (unlikely(ret =3D=3D -1))
++			ret =3D b / XSAVE_YMM_SIZE;
++
++		continue;
++nomatch:
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 15);
++nothing:
++		;
++	}
++
++	return ret;
++}
++
++/**
++ * nft_pipapo_avx2_lookup_8b_2() - AVX2-based lookup for 2 eight-bit gro=
+ups
++ * @map:	Previous match result, used as initial bitmap
++ * @fill:	Destination bitmap to be filled with current match result
++ * @f:		Field, containing lookup and mapping tables
++ * @offset:	Ignore buckets before the given index, no bits are filled th=
+ere
++ * @pkt:	Packet data, pointer to input nftables register
++ * @first:	If this is the first field, don't source previous result
++ * @last:	Last field: stop at the first match and return bit index
++ *
++ * See nft_pipapo_avx2_lookup_4b_2().
++ *
++ * This is used for 16-bit fields (i.e. ports).
++ *
++ * Return: -1 on no match, rule index of match if @last, otherwise first=
+ long
++ * word index to be checked next (i.e. first filled word).
++ */
++static int nft_pipapo_avx2_lookup_8b_2(unsigned long *map, unsigned long=
+ *fill,
++				       struct nft_pipapo_field *f, int offset,
++				       const u8 *pkt, bool first, bool last)
++{
++	int i, ret =3D -1, m256_size =3D f->bsize / NFT_PIPAPO_LONGS_PER_M256, =
+b;
++	unsigned long *lt =3D f->lt, bsize =3D f->bsize;
++
++	lt +=3D offset * NFT_PIPAPO_LONGS_PER_M256;
++	for (i =3D offset; i < m256_size; i++, lt +=3D NFT_PIPAPO_LONGS_PER_M25=
+6) {
++		int i_ul =3D i * NFT_PIPAPO_LONGS_PER_M256;
++
++		if (first) {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(0, lt, 0, pkt[0], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(1, lt, 1, pkt[1], bsize);
++			NFT_PIPAPO_AVX2_AND(4, 0, 1);
++		} else {
++			NFT_PIPAPO_AVX2_LOAD(0, map[i_ul]);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(1, lt, 0, pkt[0], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(2, lt, 1, pkt[1], bsize);
++
++			/* Stall */
++			NFT_PIPAPO_AVX2_AND(3, 0, 1);
++			NFT_PIPAPO_AVX2_NOMATCH_GOTO(0, nothing);
++			NFT_PIPAPO_AVX2_AND(4, 3, 2);
++		}
++
++		/* Stall */
++		NFT_PIPAPO_AVX2_NOMATCH_GOTO(4, nomatch);
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 4);
++
++		b =3D nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
++		if (last)
++			return b;
++
++		if (unlikely(ret =3D=3D -1))
++			ret =3D b / XSAVE_YMM_SIZE;
++
++		continue;
++nomatch:
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 15);
++nothing:
++		;
++	}
++
++	return ret;
++}
++
++/**
++ * nft_pipapo_avx2_lookup_8b_4() - AVX2-based lookup for 4 eight-bit gro=
+ups
++ * @map:	Previous match result, used as initial bitmap
++ * @fill:	Destination bitmap to be filled with current match result
++ * @f:		Field, containing lookup and mapping tables
++ * @offset:	Ignore buckets before the given index, no bits are filled th=
+ere
++ * @pkt:	Packet data, pointer to input nftables register
++ * @first:	If this is the first field, don't source previous result
++ * @last:	Last field: stop at the first match and return bit index
++ *
++ * See nft_pipapo_avx2_lookup_4b_2().
++ *
++ * This is used for 32-bit fields (i.e. IPv4 addresses).
++ *
++ * Return: -1 on no match, rule index of match if @last, otherwise first=
+ long
++ * word index to be checked next (i.e. first filled word).
++ */
++static int nft_pipapo_avx2_lookup_8b_4(unsigned long *map, unsigned long=
+ *fill,
++				       struct nft_pipapo_field *f, int offset,
++				       const u8 *pkt, bool first, bool last)
++{
++	int i, ret =3D -1, m256_size =3D f->bsize / NFT_PIPAPO_LONGS_PER_M256, =
+b;
++	unsigned long *lt =3D f->lt, bsize =3D f->bsize;
++
++	lt +=3D offset * NFT_PIPAPO_LONGS_PER_M256;
++	for (i =3D offset; i < m256_size; i++, lt +=3D NFT_PIPAPO_LONGS_PER_M25=
+6) {
++		int i_ul =3D i * NFT_PIPAPO_LONGS_PER_M256;
++
++		if (first) {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(0,  lt, 0, pkt[0], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(1,  lt, 1, pkt[1], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(2,  lt, 2, pkt[2], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(3,  lt, 3, pkt[3], bsize);
++
++			/* Stall */
++			NFT_PIPAPO_AVX2_AND(4, 0, 1);
++			NFT_PIPAPO_AVX2_AND(5, 2, 3);
++			NFT_PIPAPO_AVX2_AND(0, 4, 5);
++		} else {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(0,  lt, 0, pkt[0], bsize);
++			NFT_PIPAPO_AVX2_LOAD(1, map[i_ul]);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(2,  lt, 1, pkt[1], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(3,  lt, 2, pkt[2], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(4,  lt, 3, pkt[3], bsize);
++
++			NFT_PIPAPO_AVX2_AND(5, 0, 1);
++			NFT_PIPAPO_AVX2_NOMATCH_GOTO(1, nothing);
++			NFT_PIPAPO_AVX2_AND(6, 2, 3);
++
++			/* Stall */
++			NFT_PIPAPO_AVX2_AND(7, 4, 5);
++			NFT_PIPAPO_AVX2_AND(0, 6, 7);
++		}
++
++		NFT_PIPAPO_AVX2_NOMATCH_GOTO(0, nomatch);
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 0);
++
++		b =3D nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
++		if (last)
++			return b;
++
++		if (unlikely(ret =3D=3D -1))
++			ret =3D b / XSAVE_YMM_SIZE;
++
++		continue;
++
++nomatch:
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 15);
++nothing:
++		;
++	}
++
++	return ret;
++}
++
++/**
++ * nft_pipapo_avx2_lookup_8b_6() - AVX2-based lookup for 6 eight-bit gro=
+ups
++ * @map:	Previous match result, used as initial bitmap
++ * @fill:	Destination bitmap to be filled with current match result
++ * @f:		Field, containing lookup and mapping tables
++ * @offset:	Ignore buckets before the given index, no bits are filled th=
+ere
++ * @pkt:	Packet data, pointer to input nftables register
++ * @first:	If this is the first field, don't source previous result
++ * @last:	Last field: stop at the first match and return bit index
++ *
++ * See nft_pipapo_avx2_lookup_4b_2().
++ *
++ * This is used for 48-bit fields (i.e. MAC addresses/EUI-48).
++ *
++ * Return: -1 on no match, rule index of match if @last, otherwise first=
+ long
++ * word index to be checked next (i.e. first filled word).
++ */
++static int nft_pipapo_avx2_lookup_8b_6(unsigned long *map, unsigned long=
+ *fill,
++				       struct nft_pipapo_field *f, int offset,
++				       const u8 *pkt, bool first, bool last)
++{
++	int i, ret =3D -1, m256_size =3D f->bsize / NFT_PIPAPO_LONGS_PER_M256, =
+b;
++	unsigned long *lt =3D f->lt, bsize =3D f->bsize;
++
++	lt +=3D offset * NFT_PIPAPO_LONGS_PER_M256;
++	for (i =3D offset; i < m256_size; i++, lt +=3D NFT_PIPAPO_LONGS_PER_M25=
+6) {
++		int i_ul =3D i * NFT_PIPAPO_LONGS_PER_M256;
++
++		if (first) {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(0,  lt, 0, pkt[0], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(1,  lt, 1, pkt[1], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(2,  lt, 2, pkt[2], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(3,  lt, 3, pkt[3], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(4,  lt, 4, pkt[4], bsize);
++
++			NFT_PIPAPO_AVX2_AND(5, 0, 1);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(6,  lt, 6, pkt[5], bsize);
++			NFT_PIPAPO_AVX2_AND(7, 2, 3);
++
++			/* Stall */
++			NFT_PIPAPO_AVX2_AND(0, 4, 5);
++			NFT_PIPAPO_AVX2_AND(1, 6, 7);
++			NFT_PIPAPO_AVX2_AND(4, 0, 1);
++		} else {
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(0,  lt, 0, pkt[0], bsize);
++			NFT_PIPAPO_AVX2_LOAD(1, map[i_ul]);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(2,  lt, 1, pkt[1], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(3,  lt, 2, pkt[2], bsize);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(4,  lt, 3, pkt[3], bsize);
++
++			NFT_PIPAPO_AVX2_AND(5, 0, 1);
++			NFT_PIPAPO_AVX2_NOMATCH_GOTO(1, nothing);
++
++			NFT_PIPAPO_AVX2_AND(6, 2, 3);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(7,  lt, 4, pkt[4], bsize);
++			NFT_PIPAPO_AVX2_AND(0, 4, 5);
++			NFT_PIPAPO_AVX2_BUCKET_LOAD8(1,  lt, 5, pkt[5], bsize);
++			NFT_PIPAPO_AVX2_AND(2, 6, 7);
++
++			/* Stall */
++			NFT_PIPAPO_AVX2_AND(3, 0, 1);
++			NFT_PIPAPO_AVX2_AND(4, 2, 3);
++		}
++
++		NFT_PIPAPO_AVX2_NOMATCH_GOTO(4, nomatch);
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 4);
++
++		b =3D nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
++		if (last)
++			return b;
++
++		if (unlikely(ret =3D=3D -1))
++			ret =3D b / XSAVE_YMM_SIZE;
++
++		continue;
++
++nomatch:
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 15);
++nothing:
++		;
++	}
++
++	return ret;
++}
++
++/**
++ * nft_pipapo_avx2_lookup_8b_16() - AVX2-based lookup for 16 eight-bit g=
+roups
++ * @map:	Previous match result, used as initial bitmap
++ * @fill:	Destination bitmap to be filled with current match result
++ * @f:		Field, containing lookup and mapping tables
++ * @offset:	Ignore buckets before the given index, no bits are filled th=
+ere
++ * @pkt:	Packet data, pointer to input nftables register
++ * @first:	If this is the first field, don't source previous result
++ * @last:	Last field: stop at the first match and return bit index
++ *
++ * See nft_pipapo_avx2_lookup_4b_2().
++ *
++ * This is used for 128-bit fields (i.e. IPv6 addresses).
++ *
++ * Return: -1 on no match, rule index of match if @last, otherwise first=
+ long
++ * word index to be checked next (i.e. first filled word).
++ */
++static int nft_pipapo_avx2_lookup_8b_16(unsigned long *map, unsigned lon=
+g *fill,
++					struct nft_pipapo_field *f, int offset,
++					const u8 *pkt, bool first, bool last)
++{
++	int i, ret =3D -1, m256_size =3D f->bsize / NFT_PIPAPO_LONGS_PER_M256, =
+b;
++	unsigned long *lt =3D f->lt, bsize =3D f->bsize;
++
++	lt +=3D offset * NFT_PIPAPO_LONGS_PER_M256;
++	for (i =3D offset; i < m256_size; i++, lt +=3D NFT_PIPAPO_LONGS_PER_M25=
+6) {
++		int i_ul =3D i * NFT_PIPAPO_LONGS_PER_M256;
++
++		if (!first)
++			NFT_PIPAPO_AVX2_LOAD(0, map[i_ul]);
++
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(1, lt,  0,  pkt[0], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(2, lt,  1,  pkt[1], bsize);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(3, lt,  2,  pkt[2], bsize);
++		if (!first) {
++			NFT_PIPAPO_AVX2_NOMATCH_GOTO(0, nothing);
++			NFT_PIPAPO_AVX2_AND(1, 1, 0);
++		}
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(4, lt,  3,  pkt[3], bsize);
++
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(5, lt,  4,  pkt[4], bsize);
++		NFT_PIPAPO_AVX2_AND(6, 1, 2);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(7, lt,  5,  pkt[5], bsize);
++		NFT_PIPAPO_AVX2_AND(0, 3, 4);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(1, lt,  6,  pkt[6], bsize);
++
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(2, lt,  7,  pkt[7], bsize);
++		NFT_PIPAPO_AVX2_AND(3, 5, 6);
++		NFT_PIPAPO_AVX2_AND(4, 0, 1);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(5, lt,  8,  pkt[8], bsize);
++
++		NFT_PIPAPO_AVX2_AND(6, 2, 3);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(7, lt,  9,  pkt[9], bsize);
++		NFT_PIPAPO_AVX2_AND(0, 4, 5);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(1, lt, 10, pkt[10], bsize);
++		NFT_PIPAPO_AVX2_AND(2, 6, 7);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(3, lt, 11, pkt[11], bsize);
++		NFT_PIPAPO_AVX2_AND(4, 0, 1);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(5, lt, 12, pkt[12], bsize);
++		NFT_PIPAPO_AVX2_AND(6, 2, 3);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(7, lt, 13, pkt[13], bsize);
++		NFT_PIPAPO_AVX2_AND(0, 4, 5);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(1, lt, 14, pkt[14], bsize);
++		NFT_PIPAPO_AVX2_AND(2, 6, 7);
++		NFT_PIPAPO_AVX2_BUCKET_LOAD8(3, lt, 15, pkt[15], bsize);
++		NFT_PIPAPO_AVX2_AND(4, 0, 1);
++
++		/* Stall */
++		NFT_PIPAPO_AVX2_AND(5, 2, 3);
++		NFT_PIPAPO_AVX2_AND(6, 4, 5);
++
++		NFT_PIPAPO_AVX2_NOMATCH_GOTO(6, nomatch);
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 6);
++
++		b =3D nft_pipapo_avx2_refill(i_ul, &map[i_ul], fill, f->mt, last);
++		if (last)
++			return b;
++
++		if (unlikely(ret =3D=3D -1))
++			ret =3D b / XSAVE_YMM_SIZE;
++
++		continue;
++
++nomatch:
++		NFT_PIPAPO_AVX2_STORE(map[i_ul], 15);
++nothing:
++		;
++	}
++
++	return ret;
++}
++
++/**
++ * nft_pipapo_avx2_lookup_slow() - Fallback function for uncommon field =
+sizes
++ * @map:	Previous match result, used as initial bitmap
++ * @fill:	Destination bitmap to be filled with current match result
++ * @f:		Field, containing lookup and mapping tables
++ * @offset:	Ignore buckets before the given index, no bits are filled th=
+ere
++ * @pkt:	Packet data, pointer to input nftables register
++ * @first:	If this is the first field, don't source previous result
++ * @last:	Last field: stop at the first match and return bit index
++ *
++ * This function should never be called, but is provided for the case th=
+e field
++ * size doesn't match any of the known data types. Matching rate is
++ * substantially lower than AVX2 routines.
++ *
++ * Return: -1 on no match, rule index of match if @last, otherwise first=
+ long
++ * word index to be checked next (i.e. first filled word).
++ */
++static int nft_pipapo_avx2_lookup_slow(unsigned long *map, unsigned long=
+ *fill,
++					struct nft_pipapo_field *f, int offset,
++					const u8 *pkt, bool first, bool last)
++{
++	unsigned long *lt =3D f->lt, bsize =3D f->bsize;
++	int i, ret =3D -1, b;
++
++	lt +=3D offset * NFT_PIPAPO_LONGS_PER_M256;
++
++	if (first)
++		memset(map, 0xff, bsize * sizeof(*map));
++
++	for (i =3D offset; i < bsize; i++) {
++		if (f->bb =3D=3D 8)
++			pipapo_and_field_buckets_8bit(f, map, pkt);
++		else
++			pipapo_and_field_buckets_4bit(f, map, pkt);
++		NFT_PIPAPO_GROUP_BITS_ARE_8_OR_4;
++
++		b =3D pipapo_refill(map, bsize, f->rules, fill, f->mt, last);
++
++		if (last)
++			return b;
++
++		if (ret =3D=3D -1)
++			ret =3D b / XSAVE_YMM_SIZE;
++	}
++
++	return ret;
++}
++
++/**
++ * nft_pipapo_avx2_estimate() - Set size, space and lookup complexity
++ * @desc:	Set description, element count and field description used
++ * @features:	Flags: NFT_SET_INTERVAL needs to be there
++ * @est:	Storage for estimation data
++ *
++ * Return: true if set is compatible and AVX2 available, false otherwise=
+.
++ */
++bool nft_pipapo_avx2_estimate(const struct nft_set_desc *desc, u32 featu=
+res,
++			      struct nft_set_estimate *est)
++{
++	if (!(features & NFT_SET_INTERVAL) || desc->field_count <=3D 1)
++		return false;
++
++	if (!boot_cpu_has(X86_FEATURE_AVX2) || !boot_cpu_has(X86_FEATURE_AVX))
++		return false;
++
++	est->size =3D pipapo_estimate_size(desc);
++	if (!est->size)
++		return false;
++
++	est->lookup =3D NFT_SET_CLASS_O_LOG_N;
++
++	est->space =3D NFT_SET_CLASS_O_N;
++
++	return true;
++}
++
++/**
++ * nft_pipapo_avx2_lookup() - Lookup function for AVX2 implementation
++ * @net:	Network namespace
++ * @set:	nftables API set representation
++ * @elem:	nftables API element representation containing key data
++ * @ext:	nftables API extension pointer, filled with matching reference
++ *
++ * For more details, see DOC: Theory of Operation in nft_set_pipapo.c.
++ *
++ * This implementation exploits the repetitive characteristic of the alg=
+orithm
++ * to provide a fast, vectorised version using the AVX2 SIMD instruction=
+ set.
++ *
++ * Return: true on match, false otherwise.
++ */
++bool nft_pipapo_avx2_lookup(const struct net *net, const struct nft_set =
+*set,
++			    const u32 *key, const struct nft_set_ext **ext)
++{
++	struct nft_pipapo *priv =3D nft_set_priv(set);
++	unsigned long *res, *fill, *scratch;
++	u8 genmask =3D nft_genmask_cur(net);
++	const u8 *rp =3D (const u8 *)key;
++	struct nft_pipapo_match *m;
++	struct nft_pipapo_field *f;
++	bool map_index;
++	int i, ret =3D 0;
++
++	m =3D rcu_dereference(priv->match);
++
++	/* This also protects access to all data related to scratch maps */
++	kernel_fpu_begin();
++
++	scratch =3D *raw_cpu_ptr(m->scratch_aligned);
++	if (unlikely(!scratch)) {
++		kernel_fpu_end();
++		return false;
++	}
++	map_index =3D raw_cpu_read(nft_pipapo_avx2_scratch_index);
++
++	res  =3D scratch + (map_index ? m->bsize_max : 0);
++	fill =3D scratch + (map_index ? 0 : m->bsize_max);
++
++	/* Starting map doesn't need to be set for this implementation */
++
++	nft_pipapo_avx2_prepare();
++
++next_match:
++	nft_pipapo_for_each_field(f, i, m) {
++		bool last =3D i =3D=3D m->field_count - 1, first =3D !i;
++
++#define NFT_SET_PIPAPO_AVX2_LOOKUP(b, n)				\
++		(ret =3D nft_pipapo_avx2_lookup_##b##b_##n(res, fill, f,	\
++							 ret, rp,	\
++							 first, last))
++
++		if (likely(f->bb =3D=3D 8)) {
++			if (f->groups =3D=3D 1) {
++				NFT_SET_PIPAPO_AVX2_LOOKUP(8, 1);
++			} else if (f->groups =3D=3D 2) {
++				NFT_SET_PIPAPO_AVX2_LOOKUP(8, 2);
++			} else if (f->groups =3D=3D 4) {
++				NFT_SET_PIPAPO_AVX2_LOOKUP(8, 4);
++			} else if (f->groups =3D=3D 6) {
++				NFT_SET_PIPAPO_AVX2_LOOKUP(8, 6);
++			} else if (f->groups =3D=3D 16) {
++				NFT_SET_PIPAPO_AVX2_LOOKUP(8, 16);
++			} else {
++				ret =3D nft_pipapo_avx2_lookup_slow(res, fill, f,
++								  ret, rp,
++								  first, last);
++			}
++		} else {
++			if (f->groups =3D=3D 2) {
++				NFT_SET_PIPAPO_AVX2_LOOKUP(4, 2);
++			} else if (f->groups =3D=3D 4) {
++				NFT_SET_PIPAPO_AVX2_LOOKUP(4, 4);
++			} else if (f->groups =3D=3D 8) {
++				NFT_SET_PIPAPO_AVX2_LOOKUP(4, 8);
++			} else if (f->groups =3D=3D 12) {
++				NFT_SET_PIPAPO_AVX2_LOOKUP(4, 12);
++			} else if (f->groups =3D=3D 32) {
++				NFT_SET_PIPAPO_AVX2_LOOKUP(4, 32);
++			} else {
++				ret =3D nft_pipapo_avx2_lookup_slow(res, fill, f,
++								  ret, rp,
++								  first, last);
++			}
++		}
++		NFT_PIPAPO_GROUP_BITS_ARE_8_OR_4;
++
++#undef NFT_SET_PIPAPO_AVX2_LOOKUP
++
++		if (ret < 0)
++			goto out;
++
++		if (last) {
++			*ext =3D &f->mt[ret].e->ext;
++			if (unlikely(nft_set_elem_expired(*ext) ||
++				     !nft_set_elem_active(*ext, genmask))) {
++				ret =3D 0;
++				goto next_match;
++			}
++
++			goto out;
++		}
++
++		swap(res, fill);
++		rp +=3D NFT_PIPAPO_GROUPS_PADDED_SIZE(f);
++	}
++
++out:
++	if (i % 2)
++		raw_cpu_write(nft_pipapo_avx2_scratch_index, !map_index);
++	kernel_fpu_end();
++
++	return ret >=3D 0;
++}
+diff --git a/net/netfilter/nft_set_pipapo_avx2.h b/net/netfilter/nft_set_=
+pipapo_avx2.h
+new file mode 100644
+index 000000000000..396caf7bfca8
+--- /dev/null
++++ b/net/netfilter/nft_set_pipapo_avx2.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _NFT_SET_PIPAPO_AVX2_H
++
++#ifdef CONFIG_AS_AVX2
++#include <asm/fpu/xstate.h>
++#define NFT_PIPAPO_ALIGN	(XSAVE_YMM_SIZE / BITS_PER_BYTE)
++
++bool nft_pipapo_avx2_lookup(const struct net *net, const struct nft_set =
+*set,
++			    const u32 *key, const struct nft_set_ext **ext);
++bool nft_pipapo_avx2_estimate(const struct nft_set_desc *desc, u32 featu=
+res,
++			      struct nft_set_estimate *est);
++#endif /* CONFIG_AS_AVX2 */
++
++#endif /* _NFT_SET_PIPAPO_AVX2_H */
 --=20
 2.25.0
 
