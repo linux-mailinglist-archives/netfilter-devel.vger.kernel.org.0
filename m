@@ -2,265 +2,165 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3C816A66C
-	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Feb 2020 13:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E571616A684
+	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Feb 2020 13:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727348AbgBXMte (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 24 Feb 2020 07:49:34 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:57310 "EHLO
-        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727290AbgBXMte (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 24 Feb 2020 07:49:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=sacfy0xBabJUrrCg0wNriP2/q9wC7A3SAWS3ChUk5w8=; b=qesjMnA9T6WaVn8AawDssAIFHm
-        jmJ/5UVQSe03PTFioFQwUqiJstNXBqVUZjtc7g4l4OUINYSHqKcwOb9+tZEUE4siSya8b3UajfBpR
-        MZZsNzHifl9QgBlPjzv1acZ/8PuN4L1L62efweGxgR/ybO6PYMMC5HS4hzrdqXkFvzptCLsiiXCWz
-        JeGoKmd+HcQhRdcdCLt6G0hPZlGcP5q0FzuqeYfZLo2XtKmDWctkfa31cThYA+kuKgpeXn2HbLDuJ
-        Ht13bn9pWFRc6cObYeRi7/44JL/sNR6R1CtvyDEOxyZDaUQTf8iE+X0SjWmU/23ZrqJesMxd71IUW
-        bWlUMCjg==;
-Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
-        by kadath.azazel.net with esmtp (Exim 4.92)
-        (envelope-from <jeremy@azazel.net>)
-        id 1j6DAy-0001eE-EG; Mon, 24 Feb 2020 12:49:32 +0000
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 2/2] netfilter: bitwise: add support for passing mask and xor values in registers.
-Date:   Mon, 24 Feb 2020 12:49:31 +0000
-Message-Id: <20200224124931.512416-3-jeremy@azazel.net>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200224124931.512416-1-jeremy@azazel.net>
-References: <20200224124931.512416-1-jeremy@azazel.net>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+        id S1727401AbgBXMzC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 24 Feb 2020 07:55:02 -0500
+Received: from correo.us.es ([193.147.175.20]:32996 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727378AbgBXMzC (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 24 Feb 2020 07:55:02 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 97FF6E862A
+        for <netfilter-devel@vger.kernel.org>; Mon, 24 Feb 2020 13:54:54 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 881F0DA3A1
+        for <netfilter-devel@vger.kernel.org>; Mon, 24 Feb 2020 13:54:54 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 7DAEBDA736; Mon, 24 Feb 2020 13:54:54 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 7F832DA736;
+        Mon, 24 Feb 2020 13:54:52 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 24 Feb 2020 13:54:52 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (unknown [90.77.255.23])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 6459842EF4E0;
+        Mon, 24 Feb 2020 13:54:52 +0100 (CET)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     fw@strlen.de
+Subject: [PATCH nft 7/6] src: nat concatenation support with anonymous maps
+Date:   Mon, 24 Feb 2020 13:54:55 +0100
+Message-Id: <20200224125455.237336-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Currently bitwise boolean operations can only have one variable operand
-because the mask and xor values have to be passed as immediate data.
-Support operations with two variable operands by allowing the mask and
-xor to be passed in registers.
+This patch extends the parser to define the mapping datatypes, eg.
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+  ... dnat ip addr . port to ip saddr map { 1.1.1.1 : 2.2.2.2 . 30 }
+  ... dnat ip addr . port to ip saddr map @y
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/uapi/linux/netfilter/nf_tables.h |   4 +
- net/netfilter/nft_bitwise.c              | 118 +++++++++++++++++------
- 2 files changed, 93 insertions(+), 29 deletions(-)
+Florian, this applies on top of you patchset.
 
-diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
-index 9c3d2d04d6a1..bd48b5358890 100644
---- a/include/uapi/linux/netfilter/nf_tables.h
-+++ b/include/uapi/linux/netfilter/nf_tables.h
-@@ -526,6 +526,8 @@ enum nft_bitwise_ops {
-  * @NFTA_BITWISE_OP: type of operation (NLA_U32: nft_bitwise_ops)
-  * @NFTA_BITWISE_DATA: argument for non-boolean operations
-  *                     (NLA_NESTED: nft_data_attributes)
-+ * @NFTA_BITWISE_MREG: mask register (NLA_U32: nft_registers)
-+ * @NFTA_BITWISE_XREG: xor register (NLA_U32: nft_registers)
-  *
-  * The bitwise expression supports boolean and shift operations.  It implements
-  * the boolean operations by performing the following operation:
-@@ -549,6 +551,8 @@ enum nft_bitwise_attributes {
- 	NFTA_BITWISE_XOR,
- 	NFTA_BITWISE_OP,
- 	NFTA_BITWISE_DATA,
-+	NFTA_BITWISE_MREG,
-+	NFTA_BITWISE_XREG,
- 	__NFTA_BITWISE_MAX
- };
- #define NFTA_BITWISE_MAX	(__NFTA_BITWISE_MAX - 1)
-diff --git a/net/netfilter/nft_bitwise.c b/net/netfilter/nft_bitwise.c
-index bc37d6c59db4..8877b50fed78 100644
---- a/net/netfilter/nft_bitwise.c
-+++ b/net/netfilter/nft_bitwise.c
-@@ -15,23 +15,47 @@
- #include <net/netfilter/nf_tables.h>
- #include <net/netfilter/nf_tables_offload.h>
+ src/evaluate.c            | 10 ++++++++--
+ src/netlink_delinearize.c |  1 +
+ src/parser_bison.y        |  7 +++++++
+ src/scanner.l             |  1 +
+ src/statement.c           |  3 +++
+ 5 files changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 0afd0403d3a4..ed72b8657a2a 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -2855,13 +2855,20 @@ static int stmt_evaluate_nat_map(struct eval_ctx *ctx, struct stmt *stmt)
+ 	const struct datatype *dtype;
+ 	int err;
  
-+enum nft_bitwise_flags {
-+	NFT_BITWISE_MASK_REG = 1,
-+	NFT_BITWISE_XOR_REG,
-+};
-+
- struct nft_bitwise {
- 	enum nft_registers	sreg:8;
- 	enum nft_registers	dreg:8;
- 	enum nft_bitwise_ops	op:8;
- 	u8			len;
--	struct nft_data		mask;
--	struct nft_data		xor;
-+	enum nft_bitwise_flags	flags;
- 	struct nft_data		data;
-+	union {
-+		struct nft_data         data;
-+		enum nft_registers      reg:8;
-+	} mask;
-+	union {
-+		struct nft_data         data;
-+		enum nft_registers      reg:8;
-+	} xor;
- };
- 
- static void nft_bitwise_eval_bool(u32 *dst, const u32 *src,
--				  const struct nft_bitwise *priv)
-+				  const struct nft_bitwise *priv,
-+				  struct nft_regs *regs)
- {
-+	const u32 *mask, *xor;
- 	unsigned int i;
- 
-+	if (priv->flags & NFT_BITWISE_MASK_REG)
-+		mask = &regs->data[priv->mask.reg];
-+	else
-+		mask = priv->mask.data.data;
-+
-+	if (priv->flags & NFT_BITWISE_XOR_REG)
-+		xor = &regs->data[priv->xor.reg];
-+	else
-+		xor = priv->xor.data.data;
-+
- 	for (i = 0; i < DIV_ROUND_UP(priv->len, 4); i++)
--		dst[i] = (src[i] & priv->mask.data[i]) ^ priv->xor.data[i];
-+		dst[i] = (src[i] & mask[i]) ^ xor[i];
- }
- 
- static void nft_bitwise_eval_lshift(u32 *dst, const u32 *src,
-@@ -69,7 +93,7 @@ void nft_bitwise_eval(const struct nft_expr *expr,
- 
- 	switch (priv->op) {
- 	case NFT_BITWISE_BOOL:
--		nft_bitwise_eval_bool(dst, src, priv);
-+		nft_bitwise_eval_bool(dst, src, priv, regs);
- 		break;
- 	case NFT_BITWISE_LSHIFT:
- 		nft_bitwise_eval_lshift(dst, src, priv);
-@@ -88,6 +112,8 @@ static const struct nla_policy nft_bitwise_policy[NFTA_BITWISE_MAX + 1] = {
- 	[NFTA_BITWISE_XOR]	= { .type = NLA_NESTED },
- 	[NFTA_BITWISE_OP]	= { .type = NLA_U32 },
- 	[NFTA_BITWISE_DATA]	= { .type = NLA_NESTED },
-+	[NFTA_BITWISE_MREG]	= { .type = NLA_U32 },
-+	[NFTA_BITWISE_XREG]	= { .type = NLA_U32 },
- };
- 
- static int nft_bitwise_init_bool(struct nft_bitwise *priv,
-@@ -99,33 +125,57 @@ static int nft_bitwise_init_bool(struct nft_bitwise *priv,
- 	if (tb[NFTA_BITWISE_DATA])
- 		return -EINVAL;
- 
--	if (!tb[NFTA_BITWISE_MASK] ||
--	    !tb[NFTA_BITWISE_XOR])
-+	if ((!tb[NFTA_BITWISE_MASK] && !tb[NFTA_BITWISE_MREG]) ||
-+	    (tb[NFTA_BITWISE_MASK] && tb[NFTA_BITWISE_MREG]))
- 		return -EINVAL;
- 
--	err = nft_data_init(NULL, &priv->mask, sizeof(priv->mask), &mask,
--			    tb[NFTA_BITWISE_MASK]);
--	if (err < 0)
--		return err;
--	if (mask.type != NFT_DATA_VALUE || mask.len != priv->len) {
--		err = -EINVAL;
--		goto err1;
-+	if ((!tb[NFTA_BITWISE_XOR] && !tb[NFTA_BITWISE_XREG]) ||
-+	    (tb[NFTA_BITWISE_XOR] && tb[NFTA_BITWISE_XREG]))
-+		return -EINVAL;
-+
-+	if (tb[NFTA_BITWISE_MASK]) {
-+		err = nft_data_init(NULL, &priv->mask.data,
-+				    sizeof(priv->mask.data), &mask,
-+				    tb[NFTA_BITWISE_MASK]);
-+		if (err < 0)
-+			return err;
-+		if (mask.type != NFT_DATA_VALUE || mask.len != priv->len) {
-+			err = -EINVAL;
-+			goto err1;
-+		}
+-	dtype = get_addr_dtype(stmt->nat.family);
++	if (stmt->nat.ipportmap) {
++		dtype = concat_type_alloc((TYPE_IPADDR << TYPE_BITS) |
++					   TYPE_INET_SERVICE);
 +	} else {
-+		priv->mask.reg = nft_parse_register(tb[NFTA_BITWISE_MREG]);
-+		err = nft_validate_register_load(priv->mask.reg, priv->len);
-+		if (err < 0)
-+			return err;
-+		priv->flags |= NFT_BITWISE_MASK_REG;
- 	}
++		dtype = get_addr_dtype(stmt->nat.family);
++	}
  
--	err = nft_data_init(NULL, &priv->xor, sizeof(priv->xor), &xor,
--			    tb[NFTA_BITWISE_XOR]);
--	if (err < 0)
--		goto err1;
--	if (xor.type != NFT_DATA_VALUE || xor.len != priv->len) {
--		err = -EINVAL;
--		goto err2;
-+	if (tb[NFTA_BITWISE_XOR]) {
-+		err = nft_data_init(NULL, &priv->xor.data,
-+				    sizeof(priv->xor.data), &xor,
-+				    tb[NFTA_BITWISE_XOR]);
-+		if (err < 0)
-+			goto err1;
-+		if (xor.type != NFT_DATA_VALUE || xor.len != priv->len) {
-+			err = -EINVAL;
-+			goto err2;
-+		}
-+	} else {
-+		priv->xor.reg = nft_parse_register(tb[NFTA_BITWISE_XREG]);
-+		err = nft_validate_register_load(priv->xor.reg, priv->len);
-+		if (err < 0)
-+			return err;
-+		priv->flags |= NFT_BITWISE_XOR_REG;
- 	}
+ 	expr_set_context(&ctx->ectx, dtype, dtype->size);
+ 	if (expr_evaluate(ctx, &stmt->nat.addr))
+ 		return -1;
  
- 	return 0;
- err2:
--	nft_data_release(&priv->xor, xor.type);
-+	if (tb[NFTA_BITWISE_XOR])
-+		nft_data_release(&priv->xor.data, xor.type);
- err1:
--	nft_data_release(&priv->mask, mask.type);
-+	if (tb[NFTA_BITWISE_MASK])
-+		nft_data_release(&priv->mask.data, mask.type);
+ 	data = stmt->nat.addr->mappings->set->data;
++	datatype_set(data, dtype);
++
+ 	if (expr_ops(data)->type != EXPR_CONCAT)
+ 		return __stmt_evaluate_arg(ctx, stmt, dtype, dtype->size,
+ 					   BYTEORDER_BIG_ENDIAN,
+@@ -2891,7 +2898,6 @@ static int stmt_evaluate_nat_map(struct eval_ctx *ctx, struct stmt *stmt)
+ 	if (tmp != two)
+ 		BUG("Internal error: Unexpected alteration of l4 expression");
+ 
+-	stmt->nat.ipportmap = true;
  	return err;
  }
  
-@@ -215,13 +265,23 @@ static int nft_bitwise_init(const struct nft_ctx *ctx,
- static int nft_bitwise_dump_bool(struct sk_buff *skb,
- 				 const struct nft_bitwise *priv)
- {
--	if (nft_data_dump(skb, NFTA_BITWISE_MASK, &priv->mask,
--			  NFT_DATA_VALUE, priv->len) < 0)
--		return -1;
-+	if (priv->flags & NFT_BITWISE_MASK_REG) {
-+		if (nft_dump_register(skb, NFTA_BITWISE_MREG, priv->mask.reg))
-+			return -1;
-+	} else {
-+		if (nft_data_dump(skb, NFTA_BITWISE_MASK, &priv->mask.data,
-+				  NFT_DATA_VALUE, priv->len) < 0)
-+			return -1;
-+	}
+diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
+index 6203a53c6154..0058e2cfe42a 100644
+--- a/src/netlink_delinearize.c
++++ b/src/netlink_delinearize.c
+@@ -1065,6 +1065,7 @@ static void netlink_parse_nat(struct netlink_parse_ctx *ctx,
+ 	}
  
--	if (nft_data_dump(skb, NFTA_BITWISE_XOR, &priv->xor,
--			  NFT_DATA_VALUE, priv->len) < 0)
--		return -1;
-+	if (priv->flags & NFT_BITWISE_XOR_REG) {
-+		if (nft_dump_register(skb, NFTA_BITWISE_XREG, priv->xor.reg))
-+			return -1;
-+	} else {
-+		if (nft_data_dump(skb, NFTA_BITWISE_XOR, &priv->xor.data,
-+				  NFT_DATA_VALUE, priv->len) < 0)
-+			return -1;
-+	}
+ 	if (is_nat_proto_map(addr, family)) {
++		stmt->nat.family = family;
+ 		stmt->nat.ipportmap = true;
+ 		ctx->stmt = stmt;
+ 		return;
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index fd00b40a104a..4c27fcc635dc 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -373,6 +373,7 @@ int nft_lex(void *, void *, void *);
+ %token FLAGS			"flags"
+ %token CPI			"cpi"
  
- 	return 0;
- }
++%token PORT			"port"
+ %token UDP			"udp"
+ %token SPORT			"sport"
+ %token DPORT			"dport"
+@@ -3141,6 +3142,12 @@ nat_stmt_args		:	stmt_expr
+ 			{
+ 				$<stmt>0->nat.flags = $2;
+ 			}
++			|	nf_key_proto ADDR DOT	PORT	TO	stmt_expr
++			{
++				$<stmt>0->nat.family = $1;
++				$<stmt>0->nat.addr = $6;
++				$<stmt>0->nat.ipportmap = true;
++			}
+ 			;
+ 
+ masq_stmt		:	masq_stmt_alloc		masq_stmt_args
+diff --git a/src/scanner.l b/src/scanner.l
+index 3932883b9ade..45699c85d7d0 100644
+--- a/src/scanner.l
++++ b/src/scanner.l
+@@ -471,6 +471,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "udplite"		{ return UDPLITE; }
+ "sport"			{ return SPORT; }
+ "dport"			{ return DPORT; }
++"port"			{ return PORT; }
+ 
+ "tcp"			{ return TCP; }
+ "ackseq"		{ return ACKSEQ; }
+diff --git a/src/statement.c b/src/statement.c
+index be35bceff19a..182edac8f2ec 100644
+--- a/src/statement.c
++++ b/src/statement.c
+@@ -607,6 +607,9 @@ static void nat_stmt_print(const struct stmt *stmt, struct output_ctx *octx)
+ 			break;
+ 		}
+ 
++		if (stmt->nat.ipportmap)
++			nft_print(octx, " addr . port");
++
+ 		nft_print(octx, " to");
+ 	}
+ 
 -- 
-2.25.0
+2.11.0
 
