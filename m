@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9B516A66B
-	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Feb 2020 13:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3C816A66C
+	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Feb 2020 13:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727357AbgBXMte (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1727348AbgBXMte (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Mon, 24 Feb 2020 07:49:34 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:57308 "EHLO
+Received: from kadath.azazel.net ([81.187.231.250]:57310 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727275AbgBXMte (ORCPT
+        with ESMTP id S1727290AbgBXMte (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 24 Feb 2020 07:49:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,23 +18,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=ec1eUAbhUyY93eQVJ54OSmsGPab44JlTEiIv2rjjGUA=; b=jhUdClErxiWPT/FdZJ83VYd/AS
-        4B/v/IZ8Mynso1oQQgMO0jTUYcpAsi4Dy/ycKzXgyir5XbKWm5PaN5V8ctK40G7S385FZTR91qvcS
-        1vNGietxwPLzGUCjzjIPUbRWwR3T7mAz3DvTEoLiqbPGSGZRhwhILjd6UUlByEOfwHpGzzDOR/ayb
-        pc8fKNJ5crV0/8daxK5R7fjlRTvkc2vazkYknnbvAvhElrykjRULqx8Br9A21SP08na+QdXYmfUzE
-        k/X7fEVY75WSfUkW544e9+QbVGZzS9DozCcX+OnWxk44M2mWajvNE4eulhvralrEb3TDpUuOgo30S
-        /Fp/KaKQ==;
+        bh=sacfy0xBabJUrrCg0wNriP2/q9wC7A3SAWS3ChUk5w8=; b=qesjMnA9T6WaVn8AawDssAIFHm
+        jmJ/5UVQSe03PTFioFQwUqiJstNXBqVUZjtc7g4l4OUINYSHqKcwOb9+tZEUE4siSya8b3UajfBpR
+        MZZsNzHifl9QgBlPjzv1acZ/8PuN4L1L62efweGxgR/ybO6PYMMC5HS4hzrdqXkFvzptCLsiiXCWz
+        JeGoKmd+HcQhRdcdCLt6G0hPZlGcP5q0FzuqeYfZLo2XtKmDWctkfa31cThYA+kuKgpeXn2HbLDuJ
+        Ht13bn9pWFRc6cObYeRi7/44JL/sNR6R1CtvyDEOxyZDaUQTf8iE+X0SjWmU/23ZrqJesMxd71IUW
+        bWlUMCjg==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1j6DAy-0001eE-7i; Mon, 24 Feb 2020 12:49:32 +0000
+        id 1j6DAy-0001eE-EG; Mon, 24 Feb 2020 12:49:32 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 1/2] netfilter: bitwise: use more descriptive variable-names.
-Date:   Mon, 24 Feb 2020 12:49:30 +0000
-Message-Id: <20200224124931.512416-2-jeremy@azazel.net>
+Subject: [PATCH nf-next 2/2] netfilter: bitwise: add support for passing mask and xor values in registers.
+Date:   Mon, 24 Feb 2020 12:49:31 +0000
+Message-Id: <20200224124931.512416-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200224124931.512416-1-jeremy@azazel.net>
 References: <20200224124931.512416-1-jeremy@azazel.net>
@@ -48,63 +48,219 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Name the mask and xor data variables, "mask" and "xor," instead of "d1"
-and "d2."
+Currently bitwise boolean operations can only have one variable operand
+because the mask and xor values have to be passed as immediate data.
+Support operations with two variable operands by allowing the mask and
+xor to be passed in registers.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- net/netfilter/nft_bitwise.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ include/uapi/linux/netfilter/nf_tables.h |   4 +
+ net/netfilter/nft_bitwise.c              | 118 +++++++++++++++++------
+ 2 files changed, 93 insertions(+), 29 deletions(-)
 
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index 9c3d2d04d6a1..bd48b5358890 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -526,6 +526,8 @@ enum nft_bitwise_ops {
+  * @NFTA_BITWISE_OP: type of operation (NLA_U32: nft_bitwise_ops)
+  * @NFTA_BITWISE_DATA: argument for non-boolean operations
+  *                     (NLA_NESTED: nft_data_attributes)
++ * @NFTA_BITWISE_MREG: mask register (NLA_U32: nft_registers)
++ * @NFTA_BITWISE_XREG: xor register (NLA_U32: nft_registers)
+  *
+  * The bitwise expression supports boolean and shift operations.  It implements
+  * the boolean operations by performing the following operation:
+@@ -549,6 +551,8 @@ enum nft_bitwise_attributes {
+ 	NFTA_BITWISE_XOR,
+ 	NFTA_BITWISE_OP,
+ 	NFTA_BITWISE_DATA,
++	NFTA_BITWISE_MREG,
++	NFTA_BITWISE_XREG,
+ 	__NFTA_BITWISE_MAX
+ };
+ #define NFTA_BITWISE_MAX	(__NFTA_BITWISE_MAX - 1)
 diff --git a/net/netfilter/nft_bitwise.c b/net/netfilter/nft_bitwise.c
-index 0ed2281f03be..bc37d6c59db4 100644
+index bc37d6c59db4..8877b50fed78 100644
 --- a/net/netfilter/nft_bitwise.c
 +++ b/net/netfilter/nft_bitwise.c
-@@ -93,7 +93,7 @@ static const struct nla_policy nft_bitwise_policy[NFTA_BITWISE_MAX + 1] = {
- static int nft_bitwise_init_bool(struct nft_bitwise *priv,
- 				 const struct nlattr *const tb[])
- {
--	struct nft_data_desc d1, d2;
-+	struct nft_data_desc mask, xor;
- 	int err;
+@@ -15,23 +15,47 @@
+ #include <net/netfilter/nf_tables.h>
+ #include <net/netfilter/nf_tables_offload.h>
  
++enum nft_bitwise_flags {
++	NFT_BITWISE_MASK_REG = 1,
++	NFT_BITWISE_XOR_REG,
++};
++
+ struct nft_bitwise {
+ 	enum nft_registers	sreg:8;
+ 	enum nft_registers	dreg:8;
+ 	enum nft_bitwise_ops	op:8;
+ 	u8			len;
+-	struct nft_data		mask;
+-	struct nft_data		xor;
++	enum nft_bitwise_flags	flags;
+ 	struct nft_data		data;
++	union {
++		struct nft_data         data;
++		enum nft_registers      reg:8;
++	} mask;
++	union {
++		struct nft_data         data;
++		enum nft_registers      reg:8;
++	} xor;
+ };
+ 
+ static void nft_bitwise_eval_bool(u32 *dst, const u32 *src,
+-				  const struct nft_bitwise *priv)
++				  const struct nft_bitwise *priv,
++				  struct nft_regs *regs)
+ {
++	const u32 *mask, *xor;
+ 	unsigned int i;
+ 
++	if (priv->flags & NFT_BITWISE_MASK_REG)
++		mask = &regs->data[priv->mask.reg];
++	else
++		mask = priv->mask.data.data;
++
++	if (priv->flags & NFT_BITWISE_XOR_REG)
++		xor = &regs->data[priv->xor.reg];
++	else
++		xor = priv->xor.data.data;
++
+ 	for (i = 0; i < DIV_ROUND_UP(priv->len, 4); i++)
+-		dst[i] = (src[i] & priv->mask.data[i]) ^ priv->xor.data[i];
++		dst[i] = (src[i] & mask[i]) ^ xor[i];
+ }
+ 
+ static void nft_bitwise_eval_lshift(u32 *dst, const u32 *src,
+@@ -69,7 +93,7 @@ void nft_bitwise_eval(const struct nft_expr *expr,
+ 
+ 	switch (priv->op) {
+ 	case NFT_BITWISE_BOOL:
+-		nft_bitwise_eval_bool(dst, src, priv);
++		nft_bitwise_eval_bool(dst, src, priv, regs);
+ 		break;
+ 	case NFT_BITWISE_LSHIFT:
+ 		nft_bitwise_eval_lshift(dst, src, priv);
+@@ -88,6 +112,8 @@ static const struct nla_policy nft_bitwise_policy[NFTA_BITWISE_MAX + 1] = {
+ 	[NFTA_BITWISE_XOR]	= { .type = NLA_NESTED },
+ 	[NFTA_BITWISE_OP]	= { .type = NLA_U32 },
+ 	[NFTA_BITWISE_DATA]	= { .type = NLA_NESTED },
++	[NFTA_BITWISE_MREG]	= { .type = NLA_U32 },
++	[NFTA_BITWISE_XREG]	= { .type = NLA_U32 },
+ };
+ 
+ static int nft_bitwise_init_bool(struct nft_bitwise *priv,
+@@ -99,33 +125,57 @@ static int nft_bitwise_init_bool(struct nft_bitwise *priv,
  	if (tb[NFTA_BITWISE_DATA])
-@@ -103,29 +103,29 @@ static int nft_bitwise_init_bool(struct nft_bitwise *priv,
- 	    !tb[NFTA_BITWISE_XOR])
  		return -EINVAL;
  
--	err = nft_data_init(NULL, &priv->mask, sizeof(priv->mask), &d1,
-+	err = nft_data_init(NULL, &priv->mask, sizeof(priv->mask), &mask,
- 			    tb[NFTA_BITWISE_MASK]);
- 	if (err < 0)
- 		return err;
--	if (d1.type != NFT_DATA_VALUE || d1.len != priv->len) {
-+	if (mask.type != NFT_DATA_VALUE || mask.len != priv->len) {
- 		err = -EINVAL;
- 		goto err1;
+-	if (!tb[NFTA_BITWISE_MASK] ||
+-	    !tb[NFTA_BITWISE_XOR])
++	if ((!tb[NFTA_BITWISE_MASK] && !tb[NFTA_BITWISE_MREG]) ||
++	    (tb[NFTA_BITWISE_MASK] && tb[NFTA_BITWISE_MREG]))
+ 		return -EINVAL;
+ 
+-	err = nft_data_init(NULL, &priv->mask, sizeof(priv->mask), &mask,
+-			    tb[NFTA_BITWISE_MASK]);
+-	if (err < 0)
+-		return err;
+-	if (mask.type != NFT_DATA_VALUE || mask.len != priv->len) {
+-		err = -EINVAL;
+-		goto err1;
++	if ((!tb[NFTA_BITWISE_XOR] && !tb[NFTA_BITWISE_XREG]) ||
++	    (tb[NFTA_BITWISE_XOR] && tb[NFTA_BITWISE_XREG]))
++		return -EINVAL;
++
++	if (tb[NFTA_BITWISE_MASK]) {
++		err = nft_data_init(NULL, &priv->mask.data,
++				    sizeof(priv->mask.data), &mask,
++				    tb[NFTA_BITWISE_MASK]);
++		if (err < 0)
++			return err;
++		if (mask.type != NFT_DATA_VALUE || mask.len != priv->len) {
++			err = -EINVAL;
++			goto err1;
++		}
++	} else {
++		priv->mask.reg = nft_parse_register(tb[NFTA_BITWISE_MREG]);
++		err = nft_validate_register_load(priv->mask.reg, priv->len);
++		if (err < 0)
++			return err;
++		priv->flags |= NFT_BITWISE_MASK_REG;
  	}
  
--	err = nft_data_init(NULL, &priv->xor, sizeof(priv->xor), &d2,
-+	err = nft_data_init(NULL, &priv->xor, sizeof(priv->xor), &xor,
- 			    tb[NFTA_BITWISE_XOR]);
- 	if (err < 0)
- 		goto err1;
--	if (d2.type != NFT_DATA_VALUE || d2.len != priv->len) {
-+	if (xor.type != NFT_DATA_VALUE || xor.len != priv->len) {
- 		err = -EINVAL;
- 		goto err2;
+-	err = nft_data_init(NULL, &priv->xor, sizeof(priv->xor), &xor,
+-			    tb[NFTA_BITWISE_XOR]);
+-	if (err < 0)
+-		goto err1;
+-	if (xor.type != NFT_DATA_VALUE || xor.len != priv->len) {
+-		err = -EINVAL;
+-		goto err2;
++	if (tb[NFTA_BITWISE_XOR]) {
++		err = nft_data_init(NULL, &priv->xor.data,
++				    sizeof(priv->xor.data), &xor,
++				    tb[NFTA_BITWISE_XOR]);
++		if (err < 0)
++			goto err1;
++		if (xor.type != NFT_DATA_VALUE || xor.len != priv->len) {
++			err = -EINVAL;
++			goto err2;
++		}
++	} else {
++		priv->xor.reg = nft_parse_register(tb[NFTA_BITWISE_XREG]);
++		err = nft_validate_register_load(priv->xor.reg, priv->len);
++		if (err < 0)
++			return err;
++		priv->flags |= NFT_BITWISE_XOR_REG;
  	}
  
  	return 0;
  err2:
--	nft_data_release(&priv->xor, d2.type);
-+	nft_data_release(&priv->xor, xor.type);
+-	nft_data_release(&priv->xor, xor.type);
++	if (tb[NFTA_BITWISE_XOR])
++		nft_data_release(&priv->xor.data, xor.type);
  err1:
--	nft_data_release(&priv->mask, d1.type);
-+	nft_data_release(&priv->mask, mask.type);
+-	nft_data_release(&priv->mask, mask.type);
++	if (tb[NFTA_BITWISE_MASK])
++		nft_data_release(&priv->mask.data, mask.type);
  	return err;
  }
  
+@@ -215,13 +265,23 @@ static int nft_bitwise_init(const struct nft_ctx *ctx,
+ static int nft_bitwise_dump_bool(struct sk_buff *skb,
+ 				 const struct nft_bitwise *priv)
+ {
+-	if (nft_data_dump(skb, NFTA_BITWISE_MASK, &priv->mask,
+-			  NFT_DATA_VALUE, priv->len) < 0)
+-		return -1;
++	if (priv->flags & NFT_BITWISE_MASK_REG) {
++		if (nft_dump_register(skb, NFTA_BITWISE_MREG, priv->mask.reg))
++			return -1;
++	} else {
++		if (nft_data_dump(skb, NFTA_BITWISE_MASK, &priv->mask.data,
++				  NFT_DATA_VALUE, priv->len) < 0)
++			return -1;
++	}
+ 
+-	if (nft_data_dump(skb, NFTA_BITWISE_XOR, &priv->xor,
+-			  NFT_DATA_VALUE, priv->len) < 0)
+-		return -1;
++	if (priv->flags & NFT_BITWISE_XOR_REG) {
++		if (nft_dump_register(skb, NFTA_BITWISE_XREG, priv->xor.reg))
++			return -1;
++	} else {
++		if (nft_data_dump(skb, NFTA_BITWISE_XOR, &priv->xor.data,
++				  NFT_DATA_VALUE, priv->len) < 0)
++			return -1;
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.25.0
 
