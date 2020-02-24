@@ -2,40 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FAA16A66A
+	by mail.lfdr.de (Postfix) with ESMTP id ED9B516A66B
 	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Feb 2020 13:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727275AbgBXMte (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1727357AbgBXMte (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Mon, 24 Feb 2020 07:49:34 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:57312 "EHLO
+Received: from kadath.azazel.net ([81.187.231.250]:57308 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727348AbgBXMte (ORCPT
+        with ESMTP id S1727275AbgBXMte (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 24 Feb 2020 07:49:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=DzYUbc0/8lUyzwGiAtpJRVDEinTyZyasFfvebKFtgBo=; b=UnPrK2Hmdu4gtFJgWcwzrMIQCH
-        NJcN9xqJ+htHRrMIY036OpqyjnMf4RjBBwJU+KgqoPJjfHdve1z+TzC8I9GTMYHZzf4+XuN9kPTDm
-        VijX8HKO4N8Aap9YaKRtGYU2AyS+pBWnyEcLpacheIl08KICXecl16VmXw7+xuFxYogIG5NwInw42
-        K78nU14zJUBaMa49rnc5XVWABn7PSik1pPof1plZaITlEycFR+5P0b9SuqZzbTXrz/8SNYggmOyMQ
-        pjnhsNhdGserL2nhDpGHJ/KwFb6VtipA9Bz/KDrfAnj17VWrbcWC2z8rZ84x5gvdnazLoTbHDCTKp
-        Rj9qjbcA==;
+        bh=ec1eUAbhUyY93eQVJ54OSmsGPab44JlTEiIv2rjjGUA=; b=jhUdClErxiWPT/FdZJ83VYd/AS
+        4B/v/IZ8Mynso1oQQgMO0jTUYcpAsi4Dy/ycKzXgyir5XbKWm5PaN5V8ctK40G7S385FZTR91qvcS
+        1vNGietxwPLzGUCjzjIPUbRWwR3T7mAz3DvTEoLiqbPGSGZRhwhILjd6UUlByEOfwHpGzzDOR/ayb
+        pc8fKNJ5crV0/8daxK5R7fjlRTvkc2vazkYknnbvAvhElrykjRULqx8Br9A21SP08na+QdXYmfUzE
+        k/X7fEVY75WSfUkW544e9+QbVGZzS9DozCcX+OnWxk44M2mWajvNE4eulhvralrEb3TDpUuOgo30S
+        /Fp/KaKQ==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1j6DAy-0001eE-2i; Mon, 24 Feb 2020 12:49:32 +0000
+        id 1j6DAy-0001eE-7i; Mon, 24 Feb 2020 12:49:32 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 0/2] netfilter: bitwise: support variable RHS operands
-Date:   Mon, 24 Feb 2020 12:49:29 +0000
-Message-Id: <20200224124931.512416-1-jeremy@azazel.net>
+Subject: [PATCH nf-next 1/2] netfilter: bitwise: use more descriptive variable-names.
+Date:   Mon, 24 Feb 2020 12:49:30 +0000
+Message-Id: <20200224124931.512416-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200224124931.512416-1-jeremy@azazel.net>
+References: <20200224124931.512416-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
@@ -46,22 +48,63 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Currently bitwise boolean operations can only have one variable operand
-because the mask and xor values have to be passed as immediate data.
-Support operations with two variable operands by allowing the mask and
-xor to be passed in registers.
+Name the mask and xor data variables, "mask" and "xor," instead of "d1"
+and "d2."
 
-There is a preliminary patch that renames a couple of variables.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ net/netfilter/nft_bitwise.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Jeremy Sowden (2):
-  netfilter: bitwise: use more descriptive variable-names.
-  netfilter: bitwise: add support for passing mask and xor values in
-    registers.
-
- include/uapi/linux/netfilter/nf_tables.h |   4 +
- net/netfilter/nft_bitwise.c              | 120 +++++++++++++++++------
- 2 files changed, 94 insertions(+), 30 deletions(-)
-
+diff --git a/net/netfilter/nft_bitwise.c b/net/netfilter/nft_bitwise.c
+index 0ed2281f03be..bc37d6c59db4 100644
+--- a/net/netfilter/nft_bitwise.c
++++ b/net/netfilter/nft_bitwise.c
+@@ -93,7 +93,7 @@ static const struct nla_policy nft_bitwise_policy[NFTA_BITWISE_MAX + 1] = {
+ static int nft_bitwise_init_bool(struct nft_bitwise *priv,
+ 				 const struct nlattr *const tb[])
+ {
+-	struct nft_data_desc d1, d2;
++	struct nft_data_desc mask, xor;
+ 	int err;
+ 
+ 	if (tb[NFTA_BITWISE_DATA])
+@@ -103,29 +103,29 @@ static int nft_bitwise_init_bool(struct nft_bitwise *priv,
+ 	    !tb[NFTA_BITWISE_XOR])
+ 		return -EINVAL;
+ 
+-	err = nft_data_init(NULL, &priv->mask, sizeof(priv->mask), &d1,
++	err = nft_data_init(NULL, &priv->mask, sizeof(priv->mask), &mask,
+ 			    tb[NFTA_BITWISE_MASK]);
+ 	if (err < 0)
+ 		return err;
+-	if (d1.type != NFT_DATA_VALUE || d1.len != priv->len) {
++	if (mask.type != NFT_DATA_VALUE || mask.len != priv->len) {
+ 		err = -EINVAL;
+ 		goto err1;
+ 	}
+ 
+-	err = nft_data_init(NULL, &priv->xor, sizeof(priv->xor), &d2,
++	err = nft_data_init(NULL, &priv->xor, sizeof(priv->xor), &xor,
+ 			    tb[NFTA_BITWISE_XOR]);
+ 	if (err < 0)
+ 		goto err1;
+-	if (d2.type != NFT_DATA_VALUE || d2.len != priv->len) {
++	if (xor.type != NFT_DATA_VALUE || xor.len != priv->len) {
+ 		err = -EINVAL;
+ 		goto err2;
+ 	}
+ 
+ 	return 0;
+ err2:
+-	nft_data_release(&priv->xor, d2.type);
++	nft_data_release(&priv->xor, xor.type);
+ err1:
+-	nft_data_release(&priv->mask, d1.type);
++	nft_data_release(&priv->mask, mask.type);
+ 	return err;
+ }
+ 
 -- 
 2.25.0
 
