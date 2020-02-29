@@ -2,39 +2,39 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D172C174690
-	for <lists+netfilter-devel@lfdr.de>; Sat, 29 Feb 2020 12:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5746C17468B
+	for <lists+netfilter-devel@lfdr.de>; Sat, 29 Feb 2020 12:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgB2Lod (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 29 Feb 2020 06:44:33 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:49518 "EHLO
+        id S1726928AbgB2LoY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 29 Feb 2020 06:44:24 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:49460 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726901AbgB2Lod (ORCPT
+        with ESMTP id S1726925AbgB2LoY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 29 Feb 2020 06:44:33 -0500
+        Sat, 29 Feb 2020 06:44:24 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=VF9PJtQVHttxupgh26QbmOWyOBY15GiFDyyUXLnv5t4=; b=skvT3o2qf1ammyRCwFRESsTCTY
-        ETVgvUEtqEzFwNAxsv42JPODKMC6lAzv4tA2WNEd2IvLK72Lmu9wVgjSat+q5OJDMsyw/XaT+PJIj
-        pVGHg3nc6BZlImLI0oUOnoabsqbyJNZP9AaLyIdC84PDS4cqW/xxX85o3SIAOKjMVgNbCiivqxno0
-        x4PuaqEZKLrxmoew4J3v8b7o1AeVOS6hiJwC7z3TseDCbmbbiqoCNGR8fa6UPaBnY0GvJPDwqVsKH
-        iLDp7CzBPN7SyeetXHxnle6X0u8e7FfFO1R+QSPLQP5Q4ScxVk2JZ4FAE/lyQzsDejeNKvfYGPiOs
-        U06aYr+g==;
+        bh=Zk2N9w2BDQeiCgNqbkHj06Jl9c+xbE9zj+LfO6V+Ur4=; b=lc76hcOZnf/he/yXOFVcwtYmMp
+        4zs9ucVLrwLE1ab39B+5k4Z68JKBfuUZyCAWolxiWdxOFQw1Dw0GNUVLI40WjJjX9Dq23Ku805SOs
+        0P/WwPecgNoiUALDNDIzZdFvzAWRSMuJC8sJgIzeIjQP0+SFllzR/Z1WS1/J0Fmu8x/CSrlyXDDzJ
+        61sFADtnBzt6W6qlD+7E7ixGXO3iXqNutmk/VNw2tx1/BImeKIsJFCBEmQbZCpzpPPG4IXClQdx9v
+        iIQeYO3ilcvSswxmNkXuZMgS8G5c73P+nzPuK6JrjfALCaG4uP5AAF+H1d8M8PTLd5R6fh0AnTM6x
+        63gL84ig==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1j80HN-0003Wm-7F; Sat, 29 Feb 2020 11:27:33 +0000
+        id 1j80HN-0003Wm-AT; Sat, 29 Feb 2020 11:27:33 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft 10/18] evaluate: allow boolean binop expressions with variable righthand arguments.
-Date:   Sat, 29 Feb 2020 11:27:23 +0000
-Message-Id: <20200229112731.796417-11-jeremy@azazel.net>
+Subject: [PATCH nft 11/18] netlink_linearize: round binop bitmask length up.
+Date:   Sat, 29 Feb 2020 11:27:24 +0000
+Message-Id: <20200229112731.796417-12-jeremy@azazel.net>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200229112731.796417-1-jeremy@azazel.net>
 References: <20200229112731.796417-1-jeremy@azazel.net>
@@ -48,64 +48,47 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hitherto, the kernel has required constant values for the xor and mask
-attributes of boolean bitwise expressions.  This has meant that the
-righthand argument of a boolean binop must be constant.  Now the kernel
-supports passing mask and xor via registers, we can relax this
-restriction.
+In this example:
+
+nft --debug=netlink add rule ip t c ip dscp set ip dscp
+ip t c
+  [ payload load 2b @ network header + 0 => reg 1 ]
+  [ bitwise reg 1 = (reg=1 & 0x000003ff ) ^ 0x00000000 ]
+  [ payload load 1b @ network header + 1 => reg 2 ]
+  [ bitwise reg 2 = (reg=2 & 0x0000003c ) ^ 0x00000000 ]
+  [ bitwise reg 2 = ( reg 2 >> 0x00000002 ) ]
+  [ bitwise reg 2 = ( reg 2 << 0x00000002 ) ]
+  [ bitwise reg 1 = (reg=1 & 0x0000ffff ) ^ reg 2 ]
+  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
+
+The mask at line 4 should be 0xfc, not 0x3c.
+
+Evaluation of the payload expression munges it from `ip dscp` to
+`(ip dscp & 0xfc) >> 2`.  When this AND expression is evaluated, its
+length is set to 6, the length of `ip dscp`.  When the bitwise netlink
+expression is generated, the length of the AND is used to generate the
+mask, 0x3f, used in combining the binop's.  The upshot of this is that
+the original mask gets mangled to 0x3c.  We can fix this by rounding the
+length of the mask to the nearest byte.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/evaluate.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ src/netlink_linearize.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 34b71d1312cb..b3735cd01c46 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -1135,7 +1135,7 @@ static int expr_evaluate_bitwise(struct eval_ctx *ctx, struct expr **expr)
- 	op->byteorder = left->byteorder;
- 	op->len	      = left->len;
+diff --git a/src/netlink_linearize.c b/src/netlink_linearize.c
+index b2987efbc49f..2e7ee5ae4de7 100644
+--- a/src/netlink_linearize.c
++++ b/src/netlink_linearize.c
+@@ -597,7 +597,7 @@ static void netlink_gen_bitwise_constant(struct netlink_linearize_ctx *ctx,
  
--	if (expr_is_constant(left))
-+	if (expr_is_constant(left) && expr_is_constant(op->right))
- 		return constant_binop_simplify(ctx, expr);
- 	return 0;
- }
-@@ -1179,23 +1179,22 @@ static int expr_evaluate_binop(struct eval_ctx *ctx, struct expr **expr)
- 					 "for %s expressions",
- 					 sym, expr_name(left));
+ 	netlink_gen_expr(ctx, binops[n--], dreg);
  
--	if (!expr_is_constant(right))
--		return expr_binary_error(ctx->msgs, right, op,
--					 "Right hand side of binary operation "
--					 "(%s) must be constant", sym);
--
--	if (!expr_is_singleton(right))
--		return expr_binary_error(ctx->msgs, left, op,
--					 "Binary operation (%s) is undefined "
--					 "for %s expressions",
--					 sym, expr_name(right));
--
- 	/* The grammar guarantees this */
- 	assert(expr_basetype(left) == expr_basetype(right));
- 
- 	switch (op->op) {
- 	case OP_LSHIFT:
- 	case OP_RSHIFT:
-+		if (!expr_is_constant(right))
-+			return expr_binary_error(ctx->msgs, right, op,
-+						 "Right hand side of binary operation "
-+						 "(%s) must be constant", sym);
-+
-+		if (!expr_is_singleton(right))
-+			return expr_binary_error(ctx->msgs, left, op,
-+						 "Binary operation (%s) is undefined "
-+						 "for %s expressions",
-+						 sym, expr_name(right));
- 		return expr_evaluate_shift(ctx, expr);
- 	case OP_AND:
- 	case OP_XOR:
+-	mpz_bitmask(mask, expr->len);
++	mpz_bitmask(mask, round_up(expr->len, BITS_PER_BYTE));
+ 	mpz_set_ui(xor, 0);
+ 	for (; n >= 0; n--) {
+ 		i = binops[n];
 -- 
 2.25.0
 
