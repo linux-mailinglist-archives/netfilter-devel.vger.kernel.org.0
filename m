@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1BF174677
+	by mail.lfdr.de (Postfix) with ESMTP id BD2A6174678
 	for <lists+netfilter-devel@lfdr.de>; Sat, 29 Feb 2020 12:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgB2L1f (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1726867AbgB2L1f (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Sat, 29 Feb 2020 06:27:35 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:48670 "EHLO
+Received: from kadath.azazel.net ([81.187.231.250]:48656 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726891AbgB2L1e (ORCPT
+        with ESMTP id S1726894AbgB2L1e (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 29 Feb 2020 06:27:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,23 +18,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=2iCqmnRgPGErXLmxNtW5gN/Rm8u8kUMTnC5afvLsAYU=; b=g95WzAkZ1Ov+ryGAsUZSPJMcCL
-        JKd8DaLFQrxuazgIESdgWr/tEBN+8htLoLqoLmOu52J7wLnI713dkxH1u8t0+x7emtDC3icz1lC3P
-        IfYMvdrhZIhMr6Ef29/PgRwPLmH6bdi12TAFQygo/T6qU99wjJvTF2Ierm7W3A8BoINS3PijotNB8
-        C2+OSFCxDT51m6rA62iO32VUAuVjTD2bMF483JbEwCW47va4S9kmzisw40fkoBpTidSBUR2cJPCej
-        7K4DSoEkErrjU3VuzqP2IczcBKfKJRe9zLpwVI3zaEdAO92lrWofMxm+VibdO1WrJHXRyV2kYEtqU
-        bB5TbSWw==;
+        bh=M9KtdBLmRU8rUHsjNOuiO+TtR+E/sJYKBj50GT82ilA=; b=UetdEBY2ipPkY0BFQNzngkyMpY
+        KZgCDxS4CY4BsEKZyYrjUdIxcNXLfHogxH3qV+eTe4Inzyc4p9t7gbw9FturJw4FNmUYM6N7b8Bbo
+        UloT+q5tgZL5Oe38q+tN8AVQYeoneQDcEYB3DbudRoNOfECb6hcmWp3W+ufvSWW1Yvlx0xGoOmhry
+        5t2874RlJf9td6M9UINoTR3qEGKDqce0XMHN8cy3MxmENp08agUlqWLdA4WYHqKdfv9FP0tI4FtVV
+        dnk+XbdFfOQbu3A2x85Im4aMFTNcy8jKN/Zt9xdSBLdsUinYMncO5FC/Y27VZ84buMX4UtFFfirEN
+        yhsDwjDg==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1j80HL-0003Wm-Pw; Sat, 29 Feb 2020 11:27:31 +0000
+        id 1j80HL-0003Wm-VP; Sat, 29 Feb 2020 11:27:32 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft 02/18] evaluate: simplify calculation of payload size.
-Date:   Sat, 29 Feb 2020 11:27:15 +0000
-Message-Id: <20200229112731.796417-3-jeremy@azazel.net>
+Subject: [PATCH nft 03/18] evaluate: don't evaluate payloads twice.
+Date:   Sat, 29 Feb 2020 11:27:16 +0000
+Message-Id: <20200229112731.796417-4-jeremy@azazel.net>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200229112731.796417-1-jeremy@azazel.net>
 References: <20200229112731.796417-1-jeremy@azazel.net>
@@ -48,28 +48,51 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Use div_round_up and one statement.
+Payload munging means that evaluation of payload expressions may not be
+idempotent.  Add a flag to prevent them from being evaluated more than
+once.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/evaluate.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/expression.h | 1 +
+ src/evaluate.c       | 5 +++++
+ 2 files changed, 6 insertions(+)
 
+diff --git a/include/expression.h b/include/expression.h
+index 62fbbbb5a737..87c39e5de08a 100644
+--- a/include/expression.h
++++ b/include/expression.h
+@@ -300,6 +300,7 @@ struct expr {
+ 			enum proto_bases		base;
+ 			unsigned int			offset;
+ 			bool				is_raw;
++			bool				evaluated;
+ 		} payload;
+ 		struct {
+ 			/* EXPR_EXTHDR */
 diff --git a/src/evaluate.c b/src/evaluate.c
-index fda30fd8001e..e2eff2353657 100644
+index e2eff2353657..a169e41bd833 100644
 --- a/src/evaluate.c
 +++ b/src/evaluate.c
-@@ -2236,8 +2236,8 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
+@@ -736,6 +736,9 @@ static int expr_evaluate_payload(struct eval_ctx *ctx, struct expr **exprp)
+ {
+ 	struct expr *expr = *exprp;
  
- 	shift_imm = expr_offset_shift(payload, payload->payload.offset,
- 				      &extra_len);
--	payload_byte_size = round_up(payload->len, BITS_PER_BYTE) / BITS_PER_BYTE;
--	payload_byte_size += (extra_len / BITS_PER_BYTE);
-+	payload_byte_size = div_round_up(payload->len + extra_len,
-+					 BITS_PER_BYTE);
++	if (expr->payload.evaluated)
++		return 0;
++
+ 	if (__expr_evaluate_payload(ctx, expr) < 0)
+ 		return -1;
  
- 	if (need_csum && payload_byte_size & 1) {
- 		payload_byte_size++;
+@@ -745,6 +748,8 @@ static int expr_evaluate_payload(struct eval_ctx *ctx, struct expr **exprp)
+ 	if (payload_needs_adjustment(expr))
+ 		expr_evaluate_bits(ctx, exprp);
+ 
++	expr->payload.evaluated = true;
++
+ 	return 0;
+ }
+ 
 -- 
 2.25.0
 
