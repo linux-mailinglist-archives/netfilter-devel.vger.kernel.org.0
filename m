@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 516F8174673
-	for <lists+netfilter-devel@lfdr.de>; Sat, 29 Feb 2020 12:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0321174672
+	for <lists+netfilter-devel@lfdr.de>; Sat, 29 Feb 2020 12:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgB2L1f (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 29 Feb 2020 06:27:35 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:48662 "EHLO
+        id S1726917AbgB2L1e (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 29 Feb 2020 06:27:34 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:48668 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726860AbgB2L1e (ORCPT
+        with ESMTP id S1726859AbgB2L1e (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 29 Feb 2020 06:27:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,23 +18,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=0srJ3nymNhV/Nr9XHAEFsOKXM5BDIO9KIz2p6tz2UJs=; b=DIWU4OD04OhzK84wdfX+Zkr3iY
-        LCj0HiN9OjPwJLdULOXB5UWA8KKbuz+8b6pB/Gu3hvKgpSRHKbE3uEdRp04EM5waBGx3AYdyKx801
-        LA9NCZ0xrNdrfcBJLC0FEdFNeqKMYv4td+s7MomoN50q0zlFDWwQz4my2IMGRC2uvKdr9sLUTL2AV
-        GaPSxlYnpA3efUwauSz2Ut82IzeEvByPCi4EHqIFXOOvsqnClwImyQu9Kj1OiIFD0SRSAqK7/0Ste
-        Q8u1lBZTpKZQmZ/3MVnDV1FQ/kjgb7bPycSGw0lNSwhMdw/7B/PjL3qkPZu/KJwEl4r+fJf/Mr5vR
-        ZbmNzG+Q==;
+        bh=u5Xj54wNsouiaQG2C3G1asAwvwl/5AJR12w34FQqm2E=; b=e93FrLSQMF5TjZ18cmzsIifFvG
+        b919le3oo/kELsu2AWUJsn/HWL4tQr5ys6QTORRSzm+m08dR8QcXG/kCxoQxAymAw28Y3YD6DnJp4
+        dSkAqOnb9tqKl4EBdNuBcf0WT1wdeMkTpsL0xtyOeuKUUNegDuFmXTms5t/t9o+SOXYZgM4pidruA
+        mL9I49dk/LzE0xR5fDVI/XMomfBArm+izs5PRpm/e1+WoAa3BJa4Ftw6jCwTc8wQ3XOqsaho74GG0
+        I2l2ohLISQTGZt/6YExLXol27LAM4t50OlSf3YhWwuo5Qq5YIqJl8NCOx1vqlL77fAuMME1lhM+0c
+        qxE3ySlw==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1j80HM-0003Wm-LY; Sat, 29 Feb 2020 11:27:32 +0000
+        id 1j80HM-0003Wm-QP; Sat, 29 Feb 2020 11:27:32 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft 07/18] src: fix leaks.
-Date:   Sat, 29 Feb 2020 11:27:20 +0000
-Message-Id: <20200229112731.796417-8-jeremy@azazel.net>
+Subject: [PATCH nft 08/18] include: update nf_tables.h.
+Date:   Sat, 29 Feb 2020 11:27:21 +0000
+Message-Id: <20200229112731.796417-9-jeremy@azazel.net>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200229112731.796417-1-jeremy@azazel.net>
 References: <20200229112731.796417-1-jeremy@azazel.net>
@@ -48,46 +48,35 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Some bitmask variables are not cleared.
+Pick up a couple of new bitwise netlink attributes.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/evaluate.c            | 2 ++
- src/netlink_delinearize.c | 1 +
- 2 files changed, 3 insertions(+)
+ include/linux/netfilter/nf_tables.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index d5cc386d9792..34b71d1312cb 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -483,6 +483,7 @@ static void expr_evaluate_bits(struct eval_ctx *ctx, struct expr **exprp)
- 	mask = constant_expr_alloc(&expr->location, expr_basetype(expr),
- 				   BYTEORDER_HOST_ENDIAN, masklen, NULL);
- 	mpz_set(mask->value, bitmask);
-+	mpz_clear(bitmask);
- 
- 	and = binop_expr_alloc(&expr->location, OP_AND, expr, mask);
- 	and->dtype	= expr->dtype;
-@@ -2290,6 +2291,7 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
- 	mpz_export_data(data, bitmask, BYTEORDER_HOST_ENDIAN, sizeof(data));
- 	mask = constant_expr_alloc(&payload->location, expr_basetype(payload),
- 				   BYTEORDER_HOST_ENDIAN, masklen, data);
-+	mpz_clear(bitmask);
- 
- 	payload_bytes = payload_expr_alloc(&payload->location, NULL, 0);
- 	payload_init_raw(payload_bytes, payload->payload.base,
-diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index 3c80895a43f9..79efda123c14 100644
---- a/src/netlink_delinearize.c
-+++ b/src/netlink_delinearize.c
-@@ -2558,6 +2558,7 @@ static void stmt_payload_binop_postprocess(struct rule_pp_ctx *ctx)
- 			mpz_init_bitmask(bitmask, payload->len);
- 			mpz_xor(bitmask, bitmask, value->value);
- 			mpz_set(value->value, bitmask);
-+			mpz_clear(bitmask);
- 			break;
- 		case OP_OR: /* IIb */
- 			break;
+diff --git a/include/linux/netfilter/nf_tables.h b/include/linux/netfilter/nf_tables.h
+index 065218a20bb7..57e83e152bf3 100644
+--- a/include/linux/netfilter/nf_tables.h
++++ b/include/linux/netfilter/nf_tables.h
+@@ -526,6 +526,8 @@ enum nft_bitwise_ops {
+  * @NFTA_BITWISE_OP: type of operation (NLA_U32: nft_bitwise_ops)
+  * @NFTA_BITWISE_DATA: argument for non-boolean operations
+  *                     (NLA_NESTED: nft_data_attributes)
++ * @NFTA_BITWISE_MREG: mask register (NLA_U32: nft_registers)
++ * @NFTA_BITWISE_XREG: xor register (NLA_U32: nft_registers)
+  *
+  * The bitwise expression supports boolean and shift operations.  It implements
+  * the boolean operations by performing the following operation:
+@@ -549,6 +551,8 @@ enum nft_bitwise_attributes {
+ 	NFTA_BITWISE_XOR,
+ 	NFTA_BITWISE_OP,
+ 	NFTA_BITWISE_DATA,
++	NFTA_BITWISE_MREG,
++	NFTA_BITWISE_XREG,
+ 	__NFTA_BITWISE_MAX
+ };
+ #define NFTA_BITWISE_MAX	(__NFTA_BITWISE_MAX - 1)
 -- 
 2.25.0
 
