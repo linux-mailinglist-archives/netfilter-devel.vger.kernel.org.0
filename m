@@ -2,555 +2,156 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87711176799
-	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Mar 2020 23:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFA51767AD
+	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Mar 2020 23:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbgCBWo3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 2 Mar 2020 17:44:29 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:42596 "EHLO
-        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726793AbgCBWo2 (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 2 Mar 2020 17:44:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=nUFUYWhSbq0A1irrHms+T1OEju7dUsFiHwuReUmWZkY=; b=guXgSB+/nx6uYJyNGXwHHzC74X
-        wWQoUD3hUMTgT+uZP8rWwRcWnInPYY0mSBb6x1DqauudbKHqKcoou1qRdZimyoqcGPhxoGWwu0jV0
-        01jCLHIpKmsuUnQ8JVqVffC1PK34P2mUY7uw+4kf63FsH156TlehrGQ4f223gOx2jtYSBykVOSbXv
-        gnVItBJQMPJ4jcNFT3Rq29w2khPoqPCOxXFfHKZs2QDWtIAAic3D8/r0DuRFXPFWvJDmycHmXOJ/E
-        hHqAidZEHS1osAn0KGBgD9i1AGzf7RnuwV45A8+nCpWmIhj/nZZlIZaozXoMlalHrbsspxETpKR4+
-        FjpFKl5A==;
-Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
-        by kadath.azazel.net with esmtp (Exim 4.92)
-        (envelope-from <jeremy@azazel.net>)
-        id 1j8tPD-0000Sg-1v; Mon, 02 Mar 2020 22:19:19 +0000
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v2 18/18] tests: py: add variable binop RHS tests.
-Date:   Mon,  2 Mar 2020 22:19:16 +0000
-Message-Id: <20200302221916.1005019-19-jeremy@azazel.net>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200302221916.1005019-1-jeremy@azazel.net>
-References: <20200302221916.1005019-1-jeremy@azazel.net>
+        id S1726773AbgCBWtc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 2 Mar 2020 17:49:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726728AbgCBWtc (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 2 Mar 2020 17:49:32 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.128])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6742C208C3;
+        Mon,  2 Mar 2020 22:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583189371;
+        bh=wmG7nx2gKT1ej2x9EGIjzDwZjQRIEbOxHvYx2O8/GNc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g4vnX1NnfAqIGFss7C95ORBUJ2Gyj7CxJVVwMf+erdB285lm4aKcaRKyb62bR7aLX
+         6IoEAS56a6QAmjug8KZ9S6mpZlbPwtfsccMjWh1lD+3RJ/5vFYS+tHN1Y9MVp/Gw3t
+         KQiBv8nuM/DQBhqnZeOS/DKMTTk6yBsT2MHHVTNI=
+Date:   Mon, 2 Mar 2020 14:49:28 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Edward Cree <ecree@solarflare.com>, Jiri Pirko <jiri@resnulli.us>,
+        netdev@vger.kernel.org, davem@davemloft.net, saeedm@mellanox.com,
+        leon@kernel.org, michael.chan@broadcom.com, vishal@chelsio.com,
+        jeffrey.t.kirsher@intel.com, idosch@mellanox.com,
+        aelior@marvell.com, peppe.cavallaro@st.com,
+        alexandre.torgue@st.com, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, mlxsw@mellanox.com,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [patch net-next v2 01/12] flow_offload: Introduce offload of HW
+ stats type
+Message-ID: <20200302144928.0aca19a0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200302214659.v4zm2whrv4qjz3pe@salvia>
+References: <20200228172505.14386-1-jiri@resnulli.us>
+        <20200228172505.14386-2-jiri@resnulli.us>
+        <20200229192947.oaclokcpn4fjbhzr@salvia>
+        <20200301084443.GQ26061@nanopsycho>
+        <20200302132016.trhysqfkojgx2snt@salvia>
+        <1da092c0-3018-7107-78d3-4496098825a3@solarflare.com>
+        <20200302192437.wtge3ze775thigzp@salvia>
+        <20200302121852.50a4fccc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20200302214659.v4zm2whrv4qjz3pe@salvia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add some tests to validate setting payload fields and marks with
-statement arguments that include binops with variable RHS operands.
+On Mon, 2 Mar 2020 22:46:59 +0100 Pablo Neira Ayuso wrote:
+> On Mon, Mar 02, 2020 at 12:18:52PM -0800, Jakub Kicinski wrote:
+> > On Mon, 2 Mar 2020 20:24:37 +0100 Pablo Neira Ayuso wrote: =20
+> > > On Mon, Mar 02, 2020 at 04:29:32PM +0000, Edward Cree wrote: =20
+> > > > On 02/03/2020 13:20, Pablo Neira Ayuso wrote:   =20
+> > > > > 2) explicit counter action, in this case the user specifies expli=
+citly
+> > > > >    that it needs a counter in a given position of the rule. This
+> > > > >    counter might come before or after the actual action.   =20
+> > > >
+> > > > But the existing API can already do this, with a gact pipe.=C2=A0 P=
+lus, Jiri's
+> > > > =C2=A0new API will allow specifying a counter on any action (rather=
+ than only,
+> > > > =C2=A0implicitly, those which have .stats_update()) should that pro=
+ve to be
+> > > > =C2=A0necessary.
+> > > >=20
+> > > > I really think the 'explicit counter action' is a solution in searc=
+h of a
+> > > > =C2=A0problem, let's not add random orthogonality violations.=C2=A0=
+ (Equally if the
+> > > > =C2=A0counter action had been there first, I'd be against adding co=
+unters to
+> > > > =C2=A0the other actions.)   =20
+> > >=20
+> > > It looks to me that you want to restrict the API to tc for no good
+> > > _technical_ reason. =20
+> >=20
+> > Undeniably part of the reason is that given how complex flow offloads
+> > got there may be some resistance to large re-factoring. IMHO well
+> > thought out refactoring of stats is needed.. but I'm not convinced=20
+> > this is the direction.
+> >
+> > Could you give us clearer understanding of what the use cases for the
+> > counter action is?
+> >=20
+> > AFAIK right now actions do the accounting on input. That seems like the
+> > only logical option. Either action takes the packet out of the action
+> > pipeline, in which case even the counter action after will not see it,
+> > or it doesn't and the input counter of the next action can be used.
+> >
+> > Given counters must be next to real actions and not other counter
+> > to have value, having them as a separate action seems to make no
+> > difference at all (if users are silly, we can use the pipe/no-op). =20
+>=20
+> This model that is proposed here is correct in the tc world, where
+> counters are tied to actions (as you describe above). However, the
+> flow_offload API already supports for ethtool and netfilter these
+> days.
+>=20
+> In Netfilter, counters are detached from actions. Obviously, a counter
+> must be placed before the action _if_ the action gets the packet out
+> of the pipeline, e.g.
+>=20
+>      ip saddr 1.1.1.1 counter drop
+>=20
+> In this case, the counter is placed before the 'drop' action. Users
+> that need no counters have to remove 'counter' from the rule syntax to
+> opt-out.
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- tests/py/any/ct.t               |  1 +
- tests/py/any/ct.t.json          | 37 ++++++++++++++++++
- tests/py/any/ct.t.payload       | 33 ++++++++++++++++
- tests/py/inet/tcp.t             |  2 +
- tests/py/inet/tcp.t.json        | 46 +++++++++++++++++++++-
- tests/py/inet/tcp.t.payload     | 68 +++++++++++++++++++++++++++++++++
- tests/py/ip/ip.t                |  3 ++
- tests/py/ip/ip.t.json           | 66 ++++++++++++++++++++++++++++++++
- tests/py/ip/ip.t.payload        | 26 +++++++++++++
- tests/py/ip/ip.t.payload.bridge | 30 +++++++++++++++
- tests/py/ip/ip.t.payload.inet   | 30 +++++++++++++++
- tests/py/ip/ip.t.payload.netdev | 30 +++++++++++++++
- 12 files changed, 371 insertions(+), 1 deletion(-)
+In Jiri's set if counter exists DROP should get the ANY flag, if
+counter is not there - DISABLED.
 
-diff --git a/tests/py/any/ct.t b/tests/py/any/ct.t
-index f65d275987cd..0581c6a4fd8f 100644
---- a/tests/py/any/ct.t
-+++ b/tests/py/any/ct.t
-@@ -59,6 +59,7 @@ ct mark set 0x11;ok;ct mark set 0x00000011
- ct mark set mark;ok;ct mark set meta mark
- ct mark set (meta mark | 0x10) << 8;ok;ct mark set (meta mark | 0x00000010) << 8
- ct mark set mark map { 1 : 10, 2 : 20, 3 : 30 };ok;ct mark set meta mark map { 0x00000003 : 0x0000001e, 0x00000002 : 0x00000014, 0x00000001 : 0x0000000a}
-+ct mark set ct mark and 0xffff0000 or meta mark and 0xffff;ok;ct mark set ct mark & 0xffff0000 | meta mark & 0x0000ffff
- 
- ct mark set {0x11333, 0x11};fail
- ct zone set {123, 127};fail
-diff --git a/tests/py/any/ct.t.json b/tests/py/any/ct.t.json
-index 59ac27c3055c..aca7c3243cc0 100644
---- a/tests/py/any/ct.t.json
-+++ b/tests/py/any/ct.t.json
-@@ -779,6 +779,43 @@
-     }
- ]
- 
-+# ct mark set ct mark and 0xffff0000 or meta mark and 0xffff
-+[
-+    {
-+        "mangle": {
-+            "key": {
-+                "ct": {
-+                    "key": "mark"
-+                }
-+            },
-+            "value": {
-+                "|": [
-+                    {
-+                        "&": [
-+                            {
-+                                "ct": {
-+                                    "key": "mark"
-+                                }
-+                            },
-+                            4294901760
-+                        ]
-+                    },
-+                    {
-+                        "&": [
-+                            {
-+                                "meta": {
-+                                    "key": "mark"
-+                                }
-+                            },
-+                            65535
-+                        ]
-+                    }
-+                ]
-+            }
-+        }
-+    }
-+]
-+
- # ct expiration 30s
- [
-     {
-diff --git a/tests/py/any/ct.t.payload b/tests/py/any/ct.t.payload
-index 661591257804..17a1c382ea65 100644
---- a/tests/py/any/ct.t.payload
-+++ b/tests/py/any/ct.t.payload
-@@ -359,6 +359,39 @@ ip test-ip4 output
-   [ lookup reg 1 set __map%d dreg 1 ]
-   [ ct set mark with reg 1 ]
- 
-+# ct mark set ct mark and 0xffff0000 or meta mark and 0xffff
-+ip
-+  [ ct load mark => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0xffff0000 ) ^ 0x00000000 ]
-+  [ meta load mark => reg 2 ]
-+  [ bitwise reg 2 = (reg=2 & 0x0000ffff ) ^ 0xffffffff ]
-+  [ meta load mark => reg 3 ]
-+  [ bitwise reg 3 = (reg=3 & 0x0000ffff ) ^ 0x00000000 ]
-+  [ bitwise reg 1 = (reg=1 & reg 2 ) ^ reg 3 ]
-+  [ ct set mark with reg 1 ]
-+
-+# ct mark set ct mark and 0xffff0000 or meta mark and 0xffff
-+ip6
-+  [ ct load mark => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0xffff0000 ) ^ 0x00000000 ]
-+  [ meta load mark => reg 2 ]
-+  [ bitwise reg 2 = (reg=2 & 0x0000ffff ) ^ 0xffffffff ]
-+  [ meta load mark => reg 3 ]
-+  [ bitwise reg 3 = (reg=3 & 0x0000ffff ) ^ 0x00000000 ]
-+  [ bitwise reg 1 = (reg=1 & reg 2 ) ^ reg 3 ]
-+  [ ct set mark with reg 1 ]
-+
-+# ct mark set ct mark and 0xffff0000 or meta mark and 0xffff
-+inet
-+  [ ct load mark => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0xffff0000 ) ^ 0x00000000 ]
-+  [ meta load mark => reg 2 ]
-+  [ bitwise reg 2 = (reg=2 & 0x0000ffff ) ^ 0xffffffff ]
-+  [ meta load mark => reg 3 ]
-+  [ bitwise reg 3 = (reg=3 & 0x0000ffff ) ^ 0x00000000 ]
-+  [ bitwise reg 1 = (reg=1 & reg 2 ) ^ reg 3 ]
-+  [ ct set mark with reg 1 ]
-+
- # ct original bytes > 100000
- ip test-ip4 output
-   [ ct load bytes => reg 1 , dir original ]
-diff --git a/tests/py/inet/tcp.t b/tests/py/inet/tcp.t
-index e0a83e2b4152..081248643981 100644
---- a/tests/py/inet/tcp.t
-+++ b/tests/py/inet/tcp.t
-@@ -7,6 +7,8 @@
- *netdev;test-netdev;ingress
- 
- tcp dport set {1, 2, 3};fail
-+tcp dport set tcp dport;ok
-+tcp dport set tcp dport lshift 1;ok;tcp dport set tcp dport << 1
- 
- tcp dport 22;ok
- tcp dport != 233;ok
-diff --git a/tests/py/inet/tcp.t.json b/tests/py/inet/tcp.t.json
-index babe59208925..d8375fbe1e85 100644
---- a/tests/py/inet/tcp.t.json
-+++ b/tests/py/inet/tcp.t.json
-@@ -1,3 +1,48 @@
-+# tcp dport set tcp dport
-+[
-+    {
-+        "mangle": {
-+            "key": {
-+                "payload": {
-+                    "field": "dport",
-+                    "protocol": "tcp"
-+                }
-+            },
-+            "value": {
-+                "payload": {
-+                    "field": "dport",
-+                    "protocol": "tcp"
-+                }
-+            }
-+        }
-+    }
-+]
-+
-+# tcp dport set tcp dport lshift 1
-+[
-+    {
-+        "mangle": {
-+            "key": {
-+                "payload": {
-+                    "field": "dport",
-+                    "protocol": "tcp"
-+                }
-+            },
-+            "value": {
-+                "<<": [
-+                    {
-+                        "payload": {
-+                            "field": "dport",
-+                            "protocol": "tcp"
-+                        }
-+                    },
-+                    1
-+                ]
-+            }
-+        }
-+    }
-+]
-+
- # tcp dport 22
- [
-     {
-@@ -1636,4 +1681,3 @@
-         }
-     }
- ]
--
-diff --git a/tests/py/inet/tcp.t.payload b/tests/py/inet/tcp.t.payload
-index 55f1bc2eff87..13de1ff80722 100644
---- a/tests/py/inet/tcp.t.payload
-+++ b/tests/py/inet/tcp.t.payload
-@@ -1,3 +1,71 @@
-+# tcp dport set tcp dport
-+ip
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 2b @ transport header + 2 => reg 1 ]
-+  [ payload write reg 1 => 2b @ transport header + 2 csum_type 1 csum_off 16 csum_flags 0x0 ]
-+
-+# tcp dport set tcp dport
-+ip6
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 2b @ transport header + 2 => reg 1 ]
-+  [ payload write reg 1 => 2b @ transport header + 2 csum_type 1 csum_off 16 csum_flags 0x0 ]
-+
-+# tcp dport set tcp dport
-+inet
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 2b @ transport header + 2 => reg 1 ]
-+  [ payload write reg 1 => 2b @ transport header + 2 csum_type 1 csum_off 16 csum_flags 0x0 ]
-+
-+# tcp dport set tcp dport
-+netdev
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 2b @ transport header + 2 => reg 1 ]
-+  [ payload write reg 1 => 2b @ transport header + 2 csum_type 1 csum_off 16 csum_flags 0x0 ]
-+
-+# tcp dport set tcp dport lshift 1
-+ip
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 2b @ transport header + 2 => reg 1 ]
-+  [ byteorder reg 1 = ntoh(reg 1, 2, 2) ]
-+  [ bitwise reg 1 = ( reg 1 << 0x00000001 ) ]
-+  [ byteorder reg 1 = hton(reg 1, 2, 2) ]
-+  [ payload write reg 1 => 2b @ transport header + 2 csum_type 1 csum_off 16 csum_flags 0x0 ]
-+
-+# tcp dport set tcp dport lshift 1
-+ip6
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 2b @ transport header + 2 => reg 1 ]
-+  [ byteorder reg 1 = ntoh(reg 1, 2, 2) ]
-+  [ bitwise reg 1 = ( reg 1 << 0x00000001 ) ]
-+  [ byteorder reg 1 = hton(reg 1, 2, 2) ]
-+  [ payload write reg 1 => 2b @ transport header + 2 csum_type 1 csum_off 16 csum_flags 0x0 ]
-+
-+# tcp dport set tcp dport lshift 1
-+inet
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 2b @ transport header + 2 => reg 1 ]
-+  [ byteorder reg 1 = ntoh(reg 1, 2, 2) ]
-+  [ bitwise reg 1 = ( reg 1 << 0x00000001 ) ]
-+  [ byteorder reg 1 = hton(reg 1, 2, 2) ]
-+  [ payload write reg 1 => 2b @ transport header + 2 csum_type 1 csum_off 16 csum_flags 0x0 ]
-+
-+# tcp dport set tcp dport lshift 1
-+netdev
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 2b @ transport header + 2 => reg 1 ]
-+  [ byteorder reg 1 = ntoh(reg 1, 2, 2) ]
-+  [ bitwise reg 1 = ( reg 1 << 0x00000001 ) ]
-+  [ byteorder reg 1 = hton(reg 1, 2, 2) ]
-+  [ payload write reg 1 => 2b @ transport header + 2 csum_type 1 csum_off 16 csum_flags 0x0 ]
-+
- # tcp dport 22
- inet test-inet input
-   [ meta load l4proto => reg 1 ]
-diff --git a/tests/py/ip/ip.t b/tests/py/ip/ip.t
-index 0421d01bf6e4..1a5fb5c0efb3 100644
---- a/tests/py/ip/ip.t
-+++ b/tests/py/ip/ip.t
-@@ -135,3 +135,6 @@ iif "lo" ip protocol set 1;ok
- 
- iif "lo" ip dscp set af23;ok
- iif "lo" ip dscp set cs0;ok
-+
-+iif "lo" ip dscp set ip dscp;ok
-+iif "lo" ip dscp set ip dscp or 0x3;ok;iif "lo" ip dscp set ip dscp | 0x03
-diff --git a/tests/py/ip/ip.t.json b/tests/py/ip/ip.t.json
-index 3131ab790c04..4e0cef9357c8 100644
---- a/tests/py/ip/ip.t.json
-+++ b/tests/py/ip/ip.t.json
-@@ -1836,3 +1836,69 @@
-     }
- ]
- 
-+# iif "lo" ip dscp set ip dscp
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "iif"
-+                }
-+            },
-+            "op": "==",
-+            "right": "lo"
-+        }
-+    },
-+    {
-+        "mangle": {
-+            "key": {
-+                "payload": {
-+                    "field": "dscp",
-+                    "protocol": "ip"
-+                }
-+            },
-+            "value": {
-+                "payload": {
-+                    "field": "dscp",
-+                    "protocol": "ip"
-+                }
-+            }
-+        }
-+    }
-+]
-+
-+# iif "lo" ip dscp set ip dscp or 0x3
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "meta": {
-+                    "key": "iif"
-+                }
-+            },
-+            "op": "==",
-+            "right": "lo"
-+        }
-+    },
-+    {
-+        "mangle": {
-+            "key": {
-+                "payload": {
-+                    "field": "dscp",
-+                    "protocol": "ip"
-+                }
-+            },
-+            "value": {
-+                "|": [
-+                    {
-+                        "payload": {
-+                            "field": "dscp",
-+                            "protocol": "ip"
-+                        }
-+                    },
-+                    3
-+                ]
-+            }
-+        }
-+    }
-+]
-diff --git a/tests/py/ip/ip.t.payload b/tests/py/ip/ip.t.payload
-index d627b22f2614..d6c5d14d52ac 100644
---- a/tests/py/ip/ip.t.payload
-+++ b/tests/py/ip/ip.t.payload
-@@ -614,3 +614,29 @@ ip test-ip4 input
-   [ bitwise reg 1 = (reg=1 & 0x000000ff ) ^ 0x00000100 ]
-   [ payload write reg 1 => 2b @ network header + 8 csum_type 1 csum_off 10 csum_flags 0x1 ]
- 
-+# iif "lo" ip dscp set ip dscp
-+ip
-+  [ meta load iif => reg 1 ]
-+  [ cmp eq reg 1 0x00000001 ]
-+  [ payload load 2b @ network header + 0 => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0x000003ff ) ^ 0x00000000 ]
-+  [ payload load 1b @ network header + 1 => reg 2 ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000000 ]
-+  [ bitwise reg 2 = ( reg 2 >> 0x00000002 ) ]
-+  [ bitwise reg 2 = ( reg 2 << 0x00000002 ) ]
-+  [ bitwise reg 1 = (reg=1 & 0x0000ffff ) ^ reg 2 ]
-+  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
-+
-+# iif "lo" ip dscp set ip dscp or 0x3
-+ip
-+  [ meta load iif => reg 1 ]
-+  [ cmp eq reg 1 0x00000001 ]
-+  [ payload load 2b @ network header + 0 => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0x000003ff ) ^ 0x00000000 ]
-+  [ payload load 1b @ network header + 1 => reg 2 ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000000 ]
-+  [ bitwise reg 2 = ( reg 2 >> 0x00000002 ) ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000003 ]
-+  [ bitwise reg 2 = ( reg 2 << 0x00000002 ) ]
-+  [ bitwise reg 1 = (reg=1 & 0x0000ffff ) ^ reg 2 ]
-+  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
-diff --git a/tests/py/ip/ip.t.payload.bridge b/tests/py/ip/ip.t.payload.bridge
-index 91a4fde382e6..5a99142a9704 100644
---- a/tests/py/ip/ip.t.payload.bridge
-+++ b/tests/py/ip/ip.t.payload.bridge
-@@ -784,3 +784,33 @@ bridge test-bridge input
-   [ bitwise reg 1 = (reg=1 & 0x000003ff ) ^ 0x00000000 ]
-   [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
- 
-+# iif "lo" ip dscp set ip dscp
-+bridge
-+  [ meta load iif => reg 1 ]
-+  [ cmp eq reg 1 0x00000001 ]
-+  [ meta load protocol => reg 1 ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ payload load 2b @ network header + 0 => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0x000003ff ) ^ 0x00000000 ]
-+  [ payload load 1b @ network header + 1 => reg 2 ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000000 ]
-+  [ bitwise reg 2 = ( reg 2 >> 0x00000002 ) ]
-+  [ bitwise reg 2 = ( reg 2 << 0x00000002 ) ]
-+  [ bitwise reg 1 = (reg=1 & 0x0000ffff ) ^ reg 2 ]
-+  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
-+
-+# iif "lo" ip dscp set ip dscp or 0x3
-+bridge
-+  [ meta load iif => reg 1 ]
-+  [ cmp eq reg 1 0x00000001 ]
-+  [ meta load protocol => reg 1 ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ payload load 2b @ network header + 0 => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0x000003ff ) ^ 0x00000000 ]
-+  [ payload load 1b @ network header + 1 => reg 2 ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000000 ]
-+  [ bitwise reg 2 = ( reg 2 >> 0x00000002 ) ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000003 ]
-+  [ bitwise reg 2 = ( reg 2 << 0x00000002 ) ]
-+  [ bitwise reg 1 = (reg=1 & 0x0000ffff ) ^ reg 2 ]
-+  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
-diff --git a/tests/py/ip/ip.t.payload.inet b/tests/py/ip/ip.t.payload.inet
-index b9cb28a22e7a..5440ceeb33f9 100644
---- a/tests/py/ip/ip.t.payload.inet
-+++ b/tests/py/ip/ip.t.payload.inet
-@@ -796,3 +796,33 @@ inet test-inet input
-   [ bitwise reg 1 = (reg=1 & 0x000000ff ) ^ 0x00000100 ]
-   [ payload write reg 1 => 2b @ network header + 8 csum_type 1 csum_off 10 csum_flags 0x1 ]
- 
-+# iif "lo" ip dscp set ip dscp
-+inet
-+  [ meta load iif => reg 1 ]
-+  [ cmp eq reg 1 0x00000001 ]
-+  [ meta load nfproto => reg 1 ]
-+  [ cmp eq reg 1 0x00000002 ]
-+  [ payload load 2b @ network header + 0 => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0x000003ff ) ^ 0x00000000 ]
-+  [ payload load 1b @ network header + 1 => reg 2 ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000000 ]
-+  [ bitwise reg 2 = ( reg 2 >> 0x00000002 ) ]
-+  [ bitwise reg 2 = ( reg 2 << 0x00000002 ) ]
-+  [ bitwise reg 1 = (reg=1 & 0x0000ffff ) ^ reg 2 ]
-+  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
-+
-+# iif "lo" ip dscp set ip dscp or 0x3
-+inet
-+  [ meta load iif => reg 1 ]
-+  [ cmp eq reg 1 0x00000001 ]
-+  [ meta load nfproto => reg 1 ]
-+  [ cmp eq reg 1 0x00000002 ]
-+  [ payload load 2b @ network header + 0 => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0x000003ff ) ^ 0x00000000 ]
-+  [ payload load 1b @ network header + 1 => reg 2 ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000000 ]
-+  [ bitwise reg 2 = ( reg 2 >> 0x00000002 ) ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000003 ]
-+  [ bitwise reg 2 = ( reg 2 << 0x00000002 ) ]
-+  [ bitwise reg 1 = (reg=1 & 0x0000ffff ) ^ reg 2 ]
-+  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
-diff --git a/tests/py/ip/ip.t.payload.netdev b/tests/py/ip/ip.t.payload.netdev
-index 588e5ca2a3e3..2e125158ee6e 100644
---- a/tests/py/ip/ip.t.payload.netdev
-+++ b/tests/py/ip/ip.t.payload.netdev
-@@ -896,3 +896,33 @@ netdev test-netdev ingress
-   [ bitwise reg 1 = (reg=1 & 0x000000ff ) ^ 0x00000100 ]
-   [ payload write reg 1 => 2b @ network header + 8 csum_type 1 csum_off 10 csum_flags 0x1 ]
- 
-+# iif "lo" ip dscp set ip dscp
-+netdev
-+  [ meta load iif => reg 1 ]
-+  [ cmp eq reg 1 0x00000001 ]
-+  [ meta load protocol => reg 1 ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ payload load 2b @ network header + 0 => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0x000003ff ) ^ 0x00000000 ]
-+  [ payload load 1b @ network header + 1 => reg 2 ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000000 ]
-+  [ bitwise reg 2 = ( reg 2 >> 0x00000002 ) ]
-+  [ bitwise reg 2 = ( reg 2 << 0x00000002 ) ]
-+  [ bitwise reg 1 = (reg=1 & 0x0000ffff ) ^ reg 2 ]
-+  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
-+
-+# iif "lo" ip dscp set ip dscp or 0x3
-+netdev
-+  [ meta load iif => reg 1 ]
-+  [ cmp eq reg 1 0x00000001 ]
-+  [ meta load protocol => reg 1 ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ payload load 2b @ network header + 0 => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0x000003ff ) ^ 0x00000000 ]
-+  [ payload load 1b @ network header + 1 => reg 2 ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000000 ]
-+  [ bitwise reg 2 = ( reg 2 >> 0x00000002 ) ]
-+  [ bitwise reg 2 = (reg=2 & 0x000000fc ) ^ 0x00000003 ]
-+  [ bitwise reg 2 = ( reg 2 << 0x00000002 ) ]
-+  [ bitwise reg 1 = (reg=1 & 0x0000ffff ) ^ reg 2 ]
-+  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
--- 
-2.25.1
+> > IOW modeling the stats as attribute of other actions or a separate
+> > action is entirely equivalent, and there's nothing to be gained from
+> > moving from the existing scheme to explicit actions... other than it'd
+> > make it look more like nft actions... :) =20
+>=20
+> I just wonder if a model that allows tc and netfilter to use this new
+> statistics infrastructure would make everyone happy. My understanding
+> is that it is not far away from what this patchset provides.
+>=20
+> The retorical question here probably is if you still want to allow the
+> Netfilter front-end to benefit from this new flow_action API
+> extension.
+>=20
+> The real question is: if you think this tc counter+action scheme can
+> be used by netfilter, then please explain how.
 
+In Jiri's latest patch set the counter type is per action, so just
+"merge right" the counter info into the next action and the models=20
+are converted.
+
+If user is silly and has multiple counter actions in a row - the
+pipe/no-op action comes into play (that isn't part of this set,=20
+as Jiri said).
+
+Can you give us examples of what wouldn't work? Can you for instance
+share the counter across rules?
+
+Also neither proposal addresses the problem of reporting _different_
+counter values at different stages in the pipeline, i.e. moving from
+stats per flow to per action. But nobody seems to be willing to work=20
+on that.
+
+AFAICT with Jiri's change we only need one check in the drivers to
+convert from old scheme to new, with explicit action we need two
+(additional one being ignoring the counter action). Not a big deal,
+but 1 is less than 2 =F0=9F=A4=B7=E2=80=8D=E2=99=82=EF=B8=8F
