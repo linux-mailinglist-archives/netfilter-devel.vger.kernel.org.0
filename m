@@ -2,140 +2,139 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D45176656
-	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Mar 2020 22:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 039B11766B3
+	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Mar 2020 23:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgCBVrG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 2 Mar 2020 16:47:06 -0500
-Received: from correo.us.es ([193.147.175.20]:47838 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726720AbgCBVrF (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 2 Mar 2020 16:47:05 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id D41DD396279
-        for <netfilter-devel@vger.kernel.org>; Mon,  2 Mar 2020 22:46:49 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id C55ACDA3AF
-        for <netfilter-devel@vger.kernel.org>; Mon,  2 Mar 2020 22:46:49 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id B7E49DA3A9; Mon,  2 Mar 2020 22:46:49 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 6A75EDA801;
-        Mon,  2 Mar 2020 22:46:47 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 02 Mar 2020 22:46:47 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 36033426CCBA;
-        Mon,  2 Mar 2020 22:46:47 +0100 (CET)
-Date:   Mon, 2 Mar 2020 22:46:59 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Edward Cree <ecree@solarflare.com>, Jiri Pirko <jiri@resnulli.us>,
-        netdev@vger.kernel.org, davem@davemloft.net, saeedm@mellanox.com,
-        leon@kernel.org, michael.chan@broadcom.com, vishal@chelsio.com,
-        jeffrey.t.kirsher@intel.com, idosch@mellanox.com,
-        aelior@marvell.com, peppe.cavallaro@st.com,
-        alexandre.torgue@st.com, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, mlxsw@mellanox.com,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [patch net-next v2 01/12] flow_offload: Introduce offload of HW
- stats type
-Message-ID: <20200302214659.v4zm2whrv4qjz3pe@salvia>
-References: <20200228172505.14386-1-jiri@resnulli.us>
- <20200228172505.14386-2-jiri@resnulli.us>
- <20200229192947.oaclokcpn4fjbhzr@salvia>
- <20200301084443.GQ26061@nanopsycho>
- <20200302132016.trhysqfkojgx2snt@salvia>
- <1da092c0-3018-7107-78d3-4496098825a3@solarflare.com>
- <20200302192437.wtge3ze775thigzp@salvia>
- <20200302121852.50a4fccc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1725781AbgCBWTS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 2 Mar 2020 17:19:18 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:41472 "EHLO
+        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726752AbgCBWTS (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 2 Mar 2020 17:19:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=k4SpSs+N+8fWPnE+IVvTHPJ3b2lqQVuKGw6cVa38LLI=; b=fKuZM1Bs1fK40EOAlJwUlO+b81
+        6Bx6QpwA6vvxzTqSSRM42QJbcsyV5keovjXY7TrIpfQQpfrkxfhx5LOmVyPsadLxI3jvIShZKGHtI
+        zF07CdYsw47ngGRsDHqQenVznrT+PIc3//clOCFXDHCnmHZotlmV5rZOYpQgZLlrEWUF7UVhHumw2
+        s3HbRlOb4ZSpbdqkESBSVTgMp8/VGVf9IKd0cVFHoqR0Y3lba/aEQduO4U8B4HWkT2cl2mQbvmWPy
+        0pxANnUCK5XmKDix6HqJ8xDNS21rs920ZlZpUPCNcCaLsd8eC7TXaJN02bpXAEp+MEStLrxZy9L68
+        Ixi5XgyQ==;
+Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1j8tPA-0000Sg-2p; Mon, 02 Mar 2020 22:19:16 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH nft v2 00/18] Support for boolean binops with variable RHS operands.
+Date:   Mon,  2 Mar 2020 22:18:58 +0000
+Message-Id: <20200302221916.1005019-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200302121852.50a4fccc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Mar 02, 2020 at 12:18:52PM -0800, Jakub Kicinski wrote:
-> On Mon, 2 Mar 2020 20:24:37 +0100 Pablo Neira Ayuso wrote:
-> > On Mon, Mar 02, 2020 at 04:29:32PM +0000, Edward Cree wrote:
-> > > On 02/03/2020 13:20, Pablo Neira Ayuso wrote:  
-> > > > 2) explicit counter action, in this case the user specifies explicitly
-> > > >    that it needs a counter in a given position of the rule. This
-> > > >    counter might come before or after the actual action.  
-> > >
-> > > But the existing API can already do this, with a gact pipe.  Plus, Jiri's
-> > >  new API will allow specifying a counter on any action (rather than only,
-> > >  implicitly, those which have .stats_update()) should that prove to be
-> > >  necessary.
-> > > 
-> > > I really think the 'explicit counter action' is a solution in search of a
-> > >  problem, let's not add random orthogonality violations.  (Equally if the
-> > >  counter action had been there first, I'd be against adding counters to
-> > >  the other actions.)  
-> > 
-> > It looks to me that you want to restrict the API to tc for no good
-> > _technical_ reason.
-> 
-> Undeniably part of the reason is that given how complex flow offloads
-> got there may be some resistance to large re-factoring. IMHO well
-> thought out refactoring of stats is needed.. but I'm not convinced 
-> this is the direction.
->
-> Could you give us clearer understanding of what the use cases for the
-> counter action is?
-> 
-> AFAIK right now actions do the accounting on input. That seems like the
-> only logical option. Either action takes the packet out of the action
-> pipeline, in which case even the counter action after will not see it,
-> or it doesn't and the input counter of the next action can be used.
->
-> Given counters must be next to real actions and not other counter
-> to have value, having them as a separate action seems to make no
-> difference at all (if users are silly, we can use the pipe/no-op).
+Kernel support for passing mask and xor values for bitwise boolean
+operations via registers allows us to support boolean binop's with
+variable RHS operands: XOR expressions pass the xor value in a register;
+AND expressions pass the mask value in a register; OR expressions pass
+both mask and xor values in registers.
 
-This model that is proposed here is correct in the tc world, where
-counters are tied to actions (as you describe above). However, the
-flow_offload API already supports for ethtool and netfilter these
-days.
+NB, OR expressions are converted to `(a & (b ^ 1)) ^ b` during
+linearization (in patch 9), because it makes both linearization and
+delinearization a lot simpler.  However, it involves rearranging and
+allocating expressions after the evaluation phase.  Since nothing else
+does this, AFAICS, I'm not sure whether it's the right thing to do.
 
-In Netfilter, counters are detached from actions. Obviously, a counter
-must be placed before the action _if_ the action gets the packet out
-of the pipeline, e.g.
+The patch-set comprises four parts:
 
-     ip saddr 1.1.1.1 counter drop
+   1 -  7: some tidying and bug-fixes;
+   8 - 10: support for variable RHS operands;
+  11 - 15: updates to linearization and delinearization of payload
+           expressions to work correctly with variable RHS operands;
+  16 - 18: some new shell and Python test-cases.
 
-In this case, the counter is placed before the 'drop' action. Users
-that need no counters have to remove 'counter' from the rule syntax to
-opt-out.
+Changes since v1:
 
-> IOW modeling the stats as attribute of other actions or a separate
-> action is entirely equivalent, and there's nothing to be gained from
-> moving from the existing scheme to explicit actions... other than it'd
-> make it look more like nft actions... :)
+  * patch 05 updated to treat short values as constant, rather than
+    doing nothing with them.
+  
+Jeremy Sowden (18):
+  evaluate: add separate variables for lshift and xor binops.
+  evaluate: simplify calculation of payload size.
+  evaluate: don't evaluate payloads twice.
+  evaluate: convert the byte-order of payload statement arguments.
+  evaluate: no need to swap byte-order for values of fewer than 16 bits.
+  netlink_delinearize: set shift RHS byte-order.
+  src: fix leaks.
+  include: update nf_tables.h.
+  src: support (de)linearization of bitwise op's with variable right
+    operands.
+  evaluate: allow boolean binop expressions with variable righthand
+    arguments.
+  netlink_linearize: round binop bitmask length up.
+  netlink_delinearize: fix typo.
+  netlink_delinearize: refactor stmt_payload_binop_postprocess.
+  netlink_delinearize: add support for processing variable payload
+    statement arguments.
+  netlink_delinearize: add postprocessing for payload binops.
+  tests: shell: remove stray debug flag.
+  tests: shell: add variable binop RHS tests.
+  tests: py: add variable binop RHS tests.
 
-I just wonder if a model that allows tc and netfilter to use this new
-statistics infrastructure would make everyone happy. My understanding
-is that it is not far away from what this patchset provides.
+ include/expression.h                          |   1 +
+ include/linux/netfilter/nf_tables.h           |   4 +
+ src/evaluate.c                                |  75 ++--
+ src/netlink_delinearize.c                     | 370 +++++++++++++-----
+ src/netlink_linearize.c                       |  97 ++++-
+ tests/py/any/ct.t                             |   1 +
+ tests/py/any/ct.t.json                        |  37 ++
+ tests/py/any/ct.t.payload                     |  33 ++
+ tests/py/any/meta.t.payload                   |   4 -
+ tests/py/inet/tcp.t                           |   2 +
+ tests/py/inet/tcp.t.json                      |  46 ++-
+ tests/py/inet/tcp.t.payload                   |  68 ++++
+ tests/py/ip/ip.t                              |   3 +
+ tests/py/ip/ip.t.json                         |  66 ++++
+ tests/py/ip/ip.t.payload                      |  26 ++
+ tests/py/ip/ip.t.payload.bridge               |  30 ++
+ tests/py/ip/ip.t.payload.inet                 |  30 ++
+ tests/py/ip/ip.t.payload.netdev               |  30 ++
+ tests/shell/testcases/chains/0040mark_shift_0 |   2 +-
+ tests/shell/testcases/chains/0040mark_shift_2 |  11 +
+ .../testcases/chains/0041payload_variable_0   |  11 +
+ .../testcases/chains/0041payload_variable_1   |  11 +
+ .../testcases/chains/0041payload_variable_2   |  11 +
+ .../testcases/chains/0041payload_variable_3   |  11 +
+ .../chains/dumps/0040mark_shift_2.nft         |   6 +
+ .../chains/dumps/0041payload_variable_0.nft   |   6 +
+ .../chains/dumps/0041payload_variable_1.nft   |   6 +
+ .../chains/dumps/0041payload_variable_2.nft   |   6 +
+ .../chains/dumps/0041payload_variable_3.nft   |   6 +
+ 29 files changed, 873 insertions(+), 137 deletions(-)
+ create mode 100755 tests/shell/testcases/chains/0040mark_shift_2
+ create mode 100755 tests/shell/testcases/chains/0041payload_variable_0
+ create mode 100755 tests/shell/testcases/chains/0041payload_variable_1
+ create mode 100755 tests/shell/testcases/chains/0041payload_variable_2
+ create mode 100755 tests/shell/testcases/chains/0041payload_variable_3
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_shift_2.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0041payload_variable_0.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0041payload_variable_1.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0041payload_variable_2.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0041payload_variable_3.nft
 
-The retorical question here probably is if you still want to allow the
-Netfilter front-end to benefit from this new flow_action API
-extension.
+-- 
+2.25.1
 
-The real question is: if you think this tc counter+action scheme can
-be used by netfilter, then please explain how.
