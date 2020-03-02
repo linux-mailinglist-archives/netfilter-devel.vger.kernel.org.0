@@ -2,39 +2,39 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2C41766BA
-	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Mar 2020 23:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029591766B7
+	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Mar 2020 23:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgCBWTV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 2 Mar 2020 17:19:21 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:41490 "EHLO
+        id S1726956AbgCBWTU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 2 Mar 2020 17:19:20 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:41496 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726857AbgCBWTS (ORCPT
+        with ESMTP id S1726785AbgCBWTT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 2 Mar 2020 17:19:18 -0500
+        Mon, 2 Mar 2020 17:19:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=N1zk6cahTgFooK8dCxqdymPg6AU8EeWJllvDrVRP0ig=; b=tNglipee2rfsq+Kj0lK52YkoPY
-        8tZSttsfNkNFlZu3eRK8tHSzVFcOSL0H4npFDqnfo1jqIvSqqQkGS65EfuTF3xqE2765Qu3xgQt0V
-        BYCAd+GS7ddKQI1XRhKgenp8C+WdHNatLoibPdwpWxZEkCudKOyKwGIDYUuQhFBt0ogVBGA+SCMYn
-        dhvGqQcDbJsGIDmRCC1x8wqx0DkiJ1Zd4gNwZojSX2KhK+4TY81BHJoQITSlRZn10i2pJ8gyaQ0PQ
-        1619shhbvXjER+ijthDJNCQdT/VZsSYo5ns6OD2SJK8IScNrf5+OOjDOPHEfD9OkHmRYfzvav5afQ
-        0o/N3P/g==;
+        bh=aJCaxnk5yr8w2LMhJBk36taEfKEfTYvApVy7O8oGFy8=; b=JrCm/O0hbivZFtP4heYaRC4XyQ
+        pn2YvAAvMtcwC1kfh4n0H4NMcvuNxxu+uzJG4oa6xsLyiPSy7Wm0jfdygQpsHfQpC7n4ChZJgg4OG
+        KB+A7jfEbbyb6tBvnoHOavZtLc/R1VVZ4an3YlG0JR385cNMXcWz2RMvM/UB4EMcObOWtlDr5Pfz/
+        h25WujKjjTjkFB4dYRqgM5wNc+Hhh2eFSobIedlUTxCdmSQDPsVgdGNLTxxuUMfUpQB6zrUaHW9HF
+        9pjYy6MeIFx3U6DE7ZE386t7SJsZGc3rQuuSOWB/zOtDrM/c8dCWniBMrZ38Oy0bFisFU8LZJKal+
+        cveaE8Mw==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1j8tPA-0000Sg-Me; Mon, 02 Mar 2020 22:19:16 +0000
+        id 1j8tPA-0000Sg-Ro; Mon, 02 Mar 2020 22:19:16 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v2 04/18] evaluate: convert the byte-order of payload statement arguments.
-Date:   Mon,  2 Mar 2020 22:19:02 +0000
-Message-Id: <20200302221916.1005019-5-jeremy@azazel.net>
+Subject: [PATCH nft v2 05/18] evaluate: no need to swap byte-order for values of fewer than 16 bits.
+Date:   Mon,  2 Mar 2020 22:19:03 +0000
+Message-Id: <20200302221916.1005019-6-jeremy@azazel.net>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200302221916.1005019-1-jeremy@azazel.net>
 References: <20200302221916.1005019-1-jeremy@azazel.net>
@@ -48,33 +48,64 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Since shift operations require host byte-order, we need to be able to
-convert the result of the shift back to network byte-order, in a rule
-like:
-
-  nft add rule ip t c tcp dport set tcp dport lshift 1
+Endianness is not meaningful for objects smaller than 2 bytes and the
+byte-order conversions are no-ops in the kernel, so just update the
+expression as if it were constant.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/evaluate.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ src/evaluate.c              | 2 +-
+ tests/py/any/meta.t.payload | 4 ----
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/src/evaluate.c b/src/evaluate.c
-index a169e41bd833..9b1a04f26f44 100644
+index 9b1a04f26f44..f4260436ae0f 100644
 --- a/src/evaluate.c
 +++ b/src/evaluate.c
-@@ -2225,6 +2225,11 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
- 			      payload->byteorder, &stmt->payload.val) < 0)
- 		return -1;
+@@ -147,7 +147,7 @@ static int byteorder_conversion(struct eval_ctx *ctx, struct expr **expr,
+ 				  byteorder_names[byteorder],
+ 				  byteorder_names[(*expr)->byteorder]);
  
-+	if (!expr_is_constant(stmt->payload.val) &&
-+	    byteorder_conversion(ctx, &stmt->payload.val,
-+				 payload->byteorder) < 0)
-+		return -1;
-+
- 	need_csum = stmt_evaluate_payload_need_csum(payload);
+-	if (expr_is_constant(*expr))
++	if (expr_is_constant(*expr) || (*expr)->len / BITS_PER_BYTE < 2)
+ 		(*expr)->byteorder = byteorder;
+ 	else {
+ 		op = byteorder_conversion_op(*expr, byteorder);
+diff --git a/tests/py/any/meta.t.payload b/tests/py/any/meta.t.payload
+index 486d7aa566ea..2af244a9e246 100644
+--- a/tests/py/any/meta.t.payload
++++ b/tests/py/any/meta.t.payload
+@@ -99,14 +99,12 @@ ip test-ip4 input
+ # meta l4proto 33-45
+ ip test-ip4 input
+   [ meta load l4proto => reg 1 ]
+-  [ byteorder reg 1 = hton(reg 1, 2, 1) ]
+   [ cmp gte reg 1 0x00000021 ]
+   [ cmp lte reg 1 0x0000002d ]
  
- 	if (!payload_needs_adjustment(payload)) {
+ # meta l4proto != 33-45
+ ip test-ip4 input
+   [ meta load l4proto => reg 1 ]
+-  [ byteorder reg 1 = hton(reg 1, 2, 1) ]
+   [ range neq reg 1 0x00000021 0x0000002d ]
+ 
+ # meta l4proto { 33, 55, 67, 88}
+@@ -865,7 +863,6 @@ __set%d test-ip4 0
+ 	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]	element 00000042  : 0 [end]	element 00000059  : 1 [end]
+ ip test-ip4 input 
+   [ meta load l4proto => reg 1 ]
+-  [ byteorder reg 1 = hton(reg 1, 2, 1) ]
+   [ lookup reg 1 set __set%d ]
+ 
+ # meta l4proto != { 33-55, 66-88}
+@@ -874,7 +871,6 @@ __set%d test-ip4 0
+ 	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]	element 00000042  : 0 [end]	element 00000059  : 1 [end]
+ ip test-ip4 input 
+   [ meta load l4proto => reg 1 ]
+-  [ byteorder reg 1 = hton(reg 1, 2, 1) ]
+   [ lookup reg 1 set __set%d 0x1 ]
+ 
+ # meta skuid { 2001-2005, 3001-3005} accept
 -- 
 2.25.1
 
