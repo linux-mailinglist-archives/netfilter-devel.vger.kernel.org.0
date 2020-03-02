@@ -2,39 +2,39 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F6C176796
-	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Mar 2020 23:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDFD17679A
+	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Mar 2020 23:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgCBWoX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 2 Mar 2020 17:44:23 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:42564 "EHLO
+        id S1726907AbgCBWob (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 2 Mar 2020 17:44:31 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:42610 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726728AbgCBWoX (ORCPT
+        with ESMTP id S1726793AbgCBWoa (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 2 Mar 2020 17:44:23 -0500
+        Mon, 2 Mar 2020 17:44:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=d3DE9n7HukkhlGkga5/z10hP5uDrQRKAur534w1xi64=; b=KhKxbfF2RE7XaMdm118+6IUFRh
-        CcJWO0RL/r5lqT0KlN5Rm16BKG4yGscFksiFLbcJGMhwvBlfYRuXbv68sBa++nOZrCiUMK5YbjXRH
-        m3Fx2BF3+jVHKJuRM71itDziILXtdpnq1HCqk6ta6j/9ptzq2hpJ5K8PH2tlQLjea+rzHUeqZTkFC
-        Mn1yixEhYGBykRwAg1PM5pY3w/cZ/zQi5zwTns+yujdexihCx9SPTUmESMo62WspG1g5xE1ukS83e
-        ffR32HVssVZq2KOs9e5KbjXOOZIxi3efSA7EkJ013nbnjwp8sedkWQq5XK4ORwwhojaXfsmYomIZe
-        SoV7/4yw==;
+        bh=CfIj8SjzYfP4YiB2+5RctARo6IJjv/WXWUaoUxy/BUc=; b=pHkfWmWAaVmDdk+vUInowcuu8G
+        LnZTBkyooybEs/6eAeW4UimdEWdkvsQFSQCwSL6ApkTdEewr0+2VM4nZ3qpsUur6oXEt/drotFZMX
+        mPZtDqnoPCwGSI/f13MWkbgphMnEE1ZjtzXSK1ABh9zqcXLwuycQWOekztv9jc7udUy9rTkyY+SvU
+        JDUNCuuybVgL3WkwQeo+7QXk672rPVn+Iffmd2s/wJjo2xOxJaMWkI442Y22Oea9neI64QPX3m6aF
+        jB7Rce8d9Ca3B0x0CfEckIIaNAS+DditDfEASRBEv5z1KjeHFxQVCto+kAKbDidZrpjVn0TsOgnc/
+        wbsfzw2A==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1j8tPC-0000Sg-Ev; Mon, 02 Mar 2020 22:19:18 +0000
+        id 1j8tPC-0000Sg-LM; Mon, 02 Mar 2020 22:19:18 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v2 15/18] netlink_delinearize: add postprocessing for payload binops.
-Date:   Mon,  2 Mar 2020 22:19:13 +0000
-Message-Id: <20200302221916.1005019-16-jeremy@azazel.net>
+Subject: [PATCH nft v2 16/18] tests: shell: remove stray debug flag.
+Date:   Mon,  2 Mar 2020 22:19:14 +0000
+Message-Id: <20200302221916.1005019-17-jeremy@azazel.net>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200302221916.1005019-1-jeremy@azazel.net>
 References: <20200302221916.1005019-1-jeremy@azazel.net>
@@ -48,59 +48,23 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If a user uses a variable payload expression in a payload statement, we
-need to undo any munging during delinearization.
+0040mark_shift_0 was passing --debug=eval to nft.  Remove it.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/netlink_delinearize.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ tests/shell/testcases/chains/0040mark_shift_0 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index 571cab1d932b..73faa93c862e 100644
---- a/src/netlink_delinearize.c
-+++ b/src/netlink_delinearize.c
-@@ -2125,6 +2125,30 @@ static void relational_binop_postprocess(struct rule_pp_ctx *ctx, struct expr *e
- 	}
- }
+diff --git a/tests/shell/testcases/chains/0040mark_shift_0 b/tests/shell/testcases/chains/0040mark_shift_0
+index 55447f0b9737..ef3dccfa049a 100755
+--- a/tests/shell/testcases/chains/0040mark_shift_0
++++ b/tests/shell/testcases/chains/0040mark_shift_0
+@@ -8,4 +8,4 @@ RULESET="
+   add rule t c oif lo ct mark set (meta mark | 0x10) << 8
+ "
  
-+static bool payload_binop_postprocess(struct rule_pp_ctx *ctx, struct expr **exprp)
-+{
-+	struct expr *expr = *exprp;
-+
-+	if (expr->op != OP_RSHIFT)
-+		return false;
-+
-+	if (expr->left->etype != EXPR_BINOP || expr->left->op != OP_AND)
-+		return false;
-+
-+	if (expr->left->left->etype != EXPR_PAYLOAD)
-+		return false;
-+
-+	expr_set_type(expr->right, &integer_type,
-+		      BYTEORDER_HOST_ENDIAN);
-+	expr_postprocess(ctx, &expr->right);
-+
-+	binop_postprocess(ctx, expr);
-+	*exprp = expr_get(expr->left);
-+	expr_free(expr);
-+
-+	return true;
-+}
-+
- static struct expr *string_wildcard_expr_alloc(struct location *loc,
- 					       const struct expr *mask,
- 					       const struct expr *expr)
-@@ -2258,6 +2282,9 @@ static void expr_postprocess(struct rule_pp_ctx *ctx, struct expr **exprp)
- 		expr_set_type(expr, expr->arg->dtype, !expr->arg->byteorder);
- 		break;
- 	case EXPR_BINOP:
-+		if (payload_binop_postprocess(ctx, exprp))
-+			break;
-+
- 		expr_postprocess(ctx, &expr->left);
- 		switch (expr->op) {
- 		case OP_LSHIFT:
+-$NFT --debug=eval -f - <<< "$RULESET"
++$NFT -f - <<< "$RULESET"
 -- 
 2.25.1
 
