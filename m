@@ -2,14 +2,14 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B49FF1772FA
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Mar 2020 10:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 405651772F3
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Mar 2020 10:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727946AbgCCJsu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 3 Mar 2020 04:48:50 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:40822 "EHLO
+        id S1728284AbgCCJsr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 3 Mar 2020 04:48:47 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:40828 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727412AbgCCJsr (ORCPT
+        with ESMTP id S1728256AbgCCJsr (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 3 Mar 2020 04:48:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
@@ -18,23 +18,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=aJCaxnk5yr8w2LMhJBk36taEfKEfTYvApVy7O8oGFy8=; b=eAhnOMcsGxWOFtwlr48hgY457H
-        NuYMDjU8vZaTy/5Y29J5eN5h/Q+msacGucK0UG+OzRAxcZNfmS5zQpDlGdB//KEEDffrAgggq8n/1
-        8Jfulmz3qgPzUkarB2bOpKuYu00F3LA+Nw+yLSMlYu/zjvnqSuUqnyIax0NJEJQaJiHON7gTX33Af
-        0+0phScGy9vUkAdnBSNXOOBf7NuawZLboDr5WNq81126ebfsq2PPcefZbd8ytV4pivGphFkC11ZnV
-        dkMKwRua5EqJjbdVZBAORKpBKkwmmtMvI7rl0kIE/onksG3GC3ocGyHYtUPZU7Y41l/vYpQXxsAyi
-        UlkJcpRA==;
+        bh=pqeDVg0Ewpsxb9JAmnAlmcKCzxTqlRlU+LINyC3QKIk=; b=sSrf1gHxo7BLemxdvCsSQ8T5ko
+        pa/md7QgCL741Ia8TTwanLr3zgiwZG36GqCH0BGo0H29Q0hJRqCX6GCTCyFWtnr940nz8CeUtCTRC
+        F8nEG5JYq67k2D0L6DwL96R141SZDReweUee0H0aoNRSWd5H0bd5L93FV9OcWNM1ywgfjyJYc4i0q
+        e+FZkp8BwkJ/3I1mvlcP6sjxnUeozBXkfwVCSkz2US3NI3pJZ4/o7wK1B1gcisL6hSnMt6ryOmxlv
+        G3Q87gfet8pUyyp7t7SLwOixQ3rUiAGx8rNDg1CcB677t8EfPRlocWA3j40rsHQKO3LBCx8ukFsq7
+        MOM7hmJw==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1j94AP-00081M-Gd; Tue, 03 Mar 2020 09:48:45 +0000
+        id 1j94AP-00081M-LL; Tue, 03 Mar 2020 09:48:45 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v3 05/18] evaluate: no need to swap byte-order for values of fewer than 16 bits.
-Date:   Tue,  3 Mar 2020 09:48:31 +0000
-Message-Id: <20200303094844.26694-6-jeremy@azazel.net>
+Subject: [PATCH nft v3 06/18] netlink_delinearize: set shift RHS byte-order.
+Date:   Tue,  3 Mar 2020 09:48:32 +0000
+Message-Id: <20200303094844.26694-7-jeremy@azazel.net>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200303094844.26694-1-jeremy@azazel.net>
 References: <20200303094844.26694-1-jeremy@azazel.net>
@@ -48,64 +48,25 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Endianness is not meaningful for objects smaller than 2 bytes and the
-byte-order conversions are no-ops in the kernel, so just update the
-expression as if it were constant.
+The RHS operand for bitwise shift is in HBO.  Set this explicitly.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/evaluate.c              | 2 +-
- tests/py/any/meta.t.payload | 4 ----
- 2 files changed, 1 insertion(+), 5 deletions(-)
+ src/netlink_delinearize.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 9b1a04f26f44..f4260436ae0f 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -147,7 +147,7 @@ static int byteorder_conversion(struct eval_ctx *ctx, struct expr **expr,
- 				  byteorder_names[byteorder],
- 				  byteorder_names[(*expr)->byteorder]);
+diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
+index 0058e2cfe42a..3c80895a43f9 100644
+--- a/src/netlink_delinearize.c
++++ b/src/netlink_delinearize.c
+@@ -440,6 +440,7 @@ static struct expr *netlink_parse_bitwise_shift(struct netlink_parse_ctx *ctx,
  
--	if (expr_is_constant(*expr))
-+	if (expr_is_constant(*expr) || (*expr)->len / BITS_PER_BYTE < 2)
- 		(*expr)->byteorder = byteorder;
- 	else {
- 		op = byteorder_conversion_op(*expr, byteorder);
-diff --git a/tests/py/any/meta.t.payload b/tests/py/any/meta.t.payload
-index 486d7aa566ea..2af244a9e246 100644
---- a/tests/py/any/meta.t.payload
-+++ b/tests/py/any/meta.t.payload
-@@ -99,14 +99,12 @@ ip test-ip4 input
- # meta l4proto 33-45
- ip test-ip4 input
-   [ meta load l4proto => reg 1 ]
--  [ byteorder reg 1 = hton(reg 1, 2, 1) ]
-   [ cmp gte reg 1 0x00000021 ]
-   [ cmp lte reg 1 0x0000002d ]
+ 	nld.value = nftnl_expr_get(nle, NFTNL_EXPR_BITWISE_DATA, &nld.len);
+ 	right = netlink_alloc_value(loc, &nld);
++	right->byteorder = BYTEORDER_HOST_ENDIAN;
  
- # meta l4proto != 33-45
- ip test-ip4 input
-   [ meta load l4proto => reg 1 ]
--  [ byteorder reg 1 = hton(reg 1, 2, 1) ]
-   [ range neq reg 1 0x00000021 0x0000002d ]
- 
- # meta l4proto { 33, 55, 67, 88}
-@@ -865,7 +863,6 @@ __set%d test-ip4 0
- 	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]	element 00000042  : 0 [end]	element 00000059  : 1 [end]
- ip test-ip4 input 
-   [ meta load l4proto => reg 1 ]
--  [ byteorder reg 1 = hton(reg 1, 2, 1) ]
-   [ lookup reg 1 set __set%d ]
- 
- # meta l4proto != { 33-55, 66-88}
-@@ -874,7 +871,6 @@ __set%d test-ip4 0
- 	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]	element 00000042  : 0 [end]	element 00000059  : 1 [end]
- ip test-ip4 input 
-   [ meta load l4proto => reg 1 ]
--  [ byteorder reg 1 = hton(reg 1, 2, 1) ]
-   [ lookup reg 1 set __set%d 0x1 ]
- 
- # meta skuid { 2001-2005, 3001-3005} accept
+ 	expr = binop_expr_alloc(loc, op, left, right);
+ 	expr->len = left->len;
 -- 
 2.25.1
 
