@@ -2,119 +2,67 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 295EE177D63
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Mar 2020 18:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 318741781A7
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Mar 2020 20:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730302AbgCCRZd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 3 Mar 2020 12:25:33 -0500
-Received: from correo.us.es ([193.147.175.20]:35872 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730299AbgCCRZc (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 3 Mar 2020 12:25:32 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 7F3806D003
-        for <netfilter-devel@vger.kernel.org>; Tue,  3 Mar 2020 18:25:15 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 6D156DA3A1
-        for <netfilter-devel@vger.kernel.org>; Tue,  3 Mar 2020 18:25:15 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 6BD77DA390; Tue,  3 Mar 2020 18:25:15 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 51199DA3C4;
-        Tue,  3 Mar 2020 18:25:12 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 03 Mar 2020 18:25:12 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (barqueta.lsi.us.es [150.214.188.150])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 228AA426CCBA;
-        Tue,  3 Mar 2020 18:25:12 +0100 (CET)
-Date:   Tue, 3 Mar 2020 18:25:25 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Edward Cree <ecree@solarflare.com>, Jiri Pirko <jiri@resnulli.us>,
-        netdev@vger.kernel.org, davem@davemloft.net, saeedm@mellanox.com,
-        leon@kernel.org, michael.chan@broadcom.com, vishal@chelsio.com,
-        jeffrey.t.kirsher@intel.com, idosch@mellanox.com,
-        aelior@marvell.com, peppe.cavallaro@st.com,
-        alexandre.torgue@st.com, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, mlxsw@mellanox.com,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [patch net-next v2 01/12] flow_offload: Introduce offload of HW
- stats type
-Message-ID: <20200303172525.2p6jwa6u7qx5onji@salvia>
-References: <20200228172505.14386-1-jiri@resnulli.us>
- <20200228172505.14386-2-jiri@resnulli.us>
- <20200229192947.oaclokcpn4fjbhzr@salvia>
- <20200301084443.GQ26061@nanopsycho>
- <20200302132016.trhysqfkojgx2snt@salvia>
- <1da092c0-3018-7107-78d3-4496098825a3@solarflare.com>
- <20200302192437.wtge3ze775thigzp@salvia>
- <20200302121852.50a4fccc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200302214659.v4zm2whrv4qjz3pe@salvia>
- <20200302144928.0aca19a0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S2387934AbgCCSEw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 3 Mar 2020 13:04:52 -0500
+Received: from mail-io1-f67.google.com ([209.85.166.67]:38793 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387858AbgCCSEw (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 3 Mar 2020 13:04:52 -0500
+Received: by mail-io1-f67.google.com with SMTP id s24so4626454iog.5
+        for <netfilter-devel@vger.kernel.org>; Tue, 03 Mar 2020 10:04:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
+        b=GPvB5JmBG6z+pe9bFE2CGNcC5x/6xLw5Qd7XSn1ySMNKEs7MCW9qI0byaT6yZeMjO1
+         abdqfj6hfSuoEadcnqDGawgUf7qVE7UyRd+zzL+/N1fQj7L8zpPk/epjEZ5e6apyMo8n
+         YwljgmTWVMnKbEM82OVnpEttSV0ml97qqPO3HYSGg1I3Kd5jgZTQPgc3StS96bsuF30n
+         b9qB0KRAO87x8Q/JUgUAa4TkmIlXfA7s6DvLkNkpHBjKpr5y0QhZdAxXsngTCFFInTQm
+         DPVW4KWdHeFisgBsfx9nAO7sdjvuuHl6RhiNXKKAT/H5d1oIyOuQED7dl99qe58JYB+g
+         uzew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
+        b=thRA7Xog2vg5xwOH6okIBkfahhVoUNTb6UnJfvGjyr6fDIeR8amvXodM8kJXjkNm7d
+         q3F47wK8Ukd2Gl7iwgUF+3of5ocojMouYtY4eFaN62J0tu+5kAEI7vEIvMxG1ySqSsoc
+         B5RnB3uo26mdAK1jzkL0+046n9J3SbsyNZ4ulwahCM1FZETZz/UMhyEA8tJ/TxFiqOON
+         N1Yuv60IEh6yzBpBmJxJFOcblPoMQdfYH7KD7Zqw/GcbIEwHS7RgmCLhtLRZfu6aUQVa
+         BnpAQ67t3SDcd34OQxCCCVUtRFHiQnBdkqtS5kDSu7TiHg0K+uBHlctcBZiM9MpRVBgc
+         bDNg==
+X-Gm-Message-State: ANhLgQ3ej0IovTDENL545dvbus2jmrfnNO3qANclWM5porl95SgCJ8ii
+        G26FIbjlNlhxNe+dKcMwKxZ5ZV6MwFbJf32oiis=
+X-Google-Smtp-Source: ADFU+vutdGkttcd/hJiYb4y4WaLsQb+Ssp4duakHuqrwHsgihD/STxYnXQ2eaP0HScY08dpIDqMuSQWRqagDw9j+73Q=
+X-Received: by 2002:a6b:bd04:: with SMTP id n4mr5037642iof.196.1583258691267;
+ Tue, 03 Mar 2020 10:04:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200302144928.0aca19a0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Received: by 2002:a02:9f04:0:0:0:0:0 with HTTP; Tue, 3 Mar 2020 10:04:50 -0800 (PST)
+Reply-To: dr.challynoah@gmail.com
+From:   DR CHALLY NOAH <mayorabrahamedge404@gmail.com>
+Date:   Tue, 3 Mar 2020 19:04:50 +0100
+Message-ID: <CALqVJWe4D9esyruFy8y2AdEPnwWEwx4zKUkPS8=sPcixGTNzGA@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Mar 02, 2020 at 02:49:28PM -0800, Jakub Kicinski wrote:
-> On Mon, 2 Mar 2020 22:46:59 +0100 Pablo Neira Ayuso wrote:
-[...]
-> > The real question is: if you think this tc counter+action scheme can
-> > be used by netfilter, then please explain how.
-> 
-> In Jiri's latest patch set the counter type is per action, so just
-> "merge right" the counter info into the next action and the models 
-> are converted.
-
-The input "merge right" approach might work.
-
-> If user is silly and has multiple counter actions in a row - the
-> pipe/no-op action comes into play (that isn't part of this set, 
-> as Jiri said).
-
-Probably gact pipe action with counters can be mapped to the counter
-action that netfilter needs. Is this a valid use-case you consider for
-the tc hardware offload?
-
-> Can you give us examples of what wouldn't work? Can you for instance
-> share the counter across rules?
-
-Yes, there might be counters that are shared accross rules, see
-nfacct. Two different rules might refer to the same counter, IIRC
-there is a way to do this in tc too.
-
-> Also neither proposal addresses the problem of reporting _different_
-> counter values at different stages in the pipeline, i.e. moving from
-> stats per flow to per action. But nobody seems to be willing to work 
-> on that.
-
-You mean, in case that different counter types are specified, eg. one
-action using delayed and another action using immediate?
-
-> AFAICT with Jiri's change we only need one check in the drivers to
-> convert from old scheme to new, with explicit action we need two
-> (additional one being ignoring the counter action). Not a big deal,
-> but 1 is less than 2 🤷‍♂️
-
-What changes are expected to retrieve counter stats?
-
-Will per-flow stats remain in place after this place?
-
-Thank you.
+Hello Dear,
+What Have Kept You Waiting To Claim Your $600,000.00 USD Compensation Award?
+This said fund was issued out by the UNITED NATIONS To compensate
+you.Please If You Have Not Claim Your Fund (Award),Kindly contact me
+at   DR.CHALLYNOAH@GMAIL.COM   for further details on how to proceed your
+fund (award)release to you or better still reply back Immediately You
+Receive This Information For An Urgent Confirmation And Release Of Your
+Fund To You Without Delays, as your email was listed among those to be
+compensated this year.Congratulations..
+Best Regards,
+Dr Chally Noah.
+Minister Of Finance On Foreign Remittance:
