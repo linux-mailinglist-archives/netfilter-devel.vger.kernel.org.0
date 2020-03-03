@@ -2,39 +2,39 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 161541773AE
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Mar 2020 11:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 670341773AC
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Mar 2020 11:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgCCKOh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 3 Mar 2020 05:14:37 -0500
-Received: from kadath.azazel.net ([81.187.231.250]:41974 "EHLO
+        id S1728517AbgCCKOd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 3 Mar 2020 05:14:33 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:41960 "EHLO
         kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728502AbgCCKOg (ORCPT
+        with ESMTP id S1728502AbgCCKOd (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 3 Mar 2020 05:14:36 -0500
+        Tue, 3 Mar 2020 05:14:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=0RdP4924XGG3BJ8Qkthw8QlieG/3V3rD6+tsXlB5G6k=; b=aYYMvUy29rvmrSe5Q/aHh8JnF3
-        AiIOyHdRVe0df03RKAUe9OnmeZ41OxoeYZ0pNT6HgGl1V5y2kN/EniVYWnwZwIqv+ylvFS26iXkMp
-        9od/PP5fuPsi+TR0KlJjSTIG8d+pqHuoJcwYnokstL9s2jzbAt+cdgoRSGlROXAMQdXfpyClWxmq+
-        4BNfMm2xsnQM7KdfZ05Gn4CcrOHX6P7Q5P/8TyUTlBizu5PUc1lqSNXdGUl0vaQBRHvKkUwBHs4OC
-        opGbzi6zeMxgW+ISw2FXUovGtOrYFAnK10rW8ztQs4Tv8j7e6fvaVIpHRsMRGL9KCNsApVvf4gMNJ
-        7U+RxFhA==;
+        bh=sf9tPesYUELOPs8gPU6gVDuk/m0tAWaYlU36WAUUhpE=; b=s2ZHTrct+GyiNwxHlnAvW8YeSf
+        uixP6T/h4l2maVvI2WtitWS27e5L/TuSSCNh217gO2lKsCECgqLg84hcv0wuc7BwsBxMVDF+9gJWJ
+        VOgE2fdA1PezbJvLNrBTCBoQ7kc03LkLSZ73GwHzcBoVVKKaSLkb88t6QEm2OebvNd1SxcSiUFarB
+        YtcV8zhVvm4VyVSdtOhjIa81O1MDRuoPxzW7X+zR7OXyEdIC1IWw+QqglFnvPNKoF1z/AzrQJw04R
+        ED7f5lyAgXMZ6L/c8e+vDp1th+75tdaBbP0BCkykasCdx9LmWS4knifUvOwmsPRZHyBrJ+9r5ehEl
+        9Di5/AKg==;
 Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1j94AQ-00081M-Hb; Tue, 03 Mar 2020 09:48:46 +0000
+        id 1j94AQ-00081M-Nj; Tue, 03 Mar 2020 09:48:46 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft v3 11/18] evaluate: don't clobber binop bitmask lengths.
-Date:   Tue,  3 Mar 2020 09:48:37 +0000
-Message-Id: <20200303094844.26694-12-jeremy@azazel.net>
+Subject: [PATCH nft v3 12/18] netlink_delinearize: fix typo.
+Date:   Tue,  3 Mar 2020 09:48:38 +0000
+Message-Id: <20200303094844.26694-13-jeremy@azazel.net>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200303094844.26694-1-jeremy@azazel.net>
 References: <20200303094844.26694-1-jeremy@azazel.net>
@@ -48,54 +48,24 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In this example:
-
-nft --debug=netlink add rule ip t c ip dscp set ip dscp
-ip t c
-  [ payload load 2b @ network header + 0 => reg 1 ]
-  [ bitwise reg 1 = (reg=1 & 0x000003ff ) ^ 0x00000000 ]
-  [ payload load 1b @ network header + 1 => reg 2 ]
-  [ bitwise reg 2 = (reg=2 & 0x0000003c ) ^ 0x00000000 ]
-  [ bitwise reg 2 = ( reg 2 >> 0x00000002 ) ]
-  [ bitwise reg 2 = ( reg 2 << 0x00000002 ) ]
-  [ bitwise reg 1 = (reg=1 & 0x0000ffff ) ^ reg 2 ]
-  [ payload write reg 1 => 2b @ network header + 0 csum_type 1 csum_off 10 csum_flags 0x0 ]
-
-The mask at line 4 should be 0xfc, not 0x3c.
-
-Evaluation of the payload expression munges it from `ip dscp` to
-`(ip dscp & 0xfc) >> 2`, because although `ip dscp` is only 6 bits long,
-those 6 bits are the top bits in a byte, and to make the arithmetic
-simpler when we perform comparisons and assignments, we mask and shift
-the field.  When the AND expression is allocated, its length is
-correctly set to 8.  However, when a binop is evaluated, it is assumed
-that the length has not been set and is length is always set to the
-length of the left operand, incorrectly to 6 in this case.  When the
-bitwise netlink expression is generated, the length of the AND is used
-to generate the mask, 0x3f, used in combining the binop's.  The upshot
-of this is that the original mask gets mangled to 0x3c.
-
-We can fix this by changing the evaluation of binops only to set the
-op's length if it is not already set.
-
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/evaluate.c | 2 +-
+ src/netlink_delinearize.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 1db175007c2d..ff168434cd8f 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -1133,7 +1133,7 @@ static int expr_evaluate_bitwise(struct eval_ctx *ctx, struct expr **expr)
- 
- 	op->dtype     = left->dtype;
- 	op->byteorder = left->byteorder;
--	op->len	      = left->len;
-+	op->len	      = op->len ? op->len : left->len;
- 
- 	if (expr_is_constant(left) && expr_is_constant(op->right))
- 		return constant_binop_simplify(ctx, expr);
+diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
+index 4fc7b764d7a9..4e5d64ede8bd 100644
+--- a/src/netlink_delinearize.c
++++ b/src/netlink_delinearize.c
+@@ -2530,7 +2530,7 @@ static void stmt_payload_binop_pp(struct rule_pp_ctx *ctx, struct expr *binop)
+  * a binop expression with a munged payload expression on the left
+  * and a mask to clear the real payload offset/length.
+  *
+- * So chech if we have one of the following binops:
++ * So check if we have one of the following binops:
+  * I)
+  *           binop (|)
+  *       binop(&)   value/set
 -- 
 2.25.1
 
