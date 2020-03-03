@@ -2,66 +2,90 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80949176E69
-	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Mar 2020 06:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA44176ED0
+	for <lists+netfilter-devel@lfdr.de>; Tue,  3 Mar 2020 06:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbgCCFIq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 3 Mar 2020 00:08:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40438 "EHLO mail.kernel.org"
+        id S1725830AbgCCFhZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 3 Mar 2020 00:37:25 -0500
+Received: from relay.sw.ru ([185.231.240.75]:49750 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725879AbgCCFIp (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 3 Mar 2020 00:08:45 -0500
-Received: from kicinski-fedora-PC1C0HJN.thefacebook.com (unknown [163.114.132.128])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F20E24671;
-        Tue,  3 Mar 2020 05:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583212125;
-        bh=NQSOVIl9XzNclxfGgTHbtUOwQQHboh4d4ds040VPqMI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=exhZDZEIwvjdwY9FAr1UvbaW27Mb1ZSiG/WEO7IX+WbeFj/hVUSyb1kebXdrQBdd8
-         zi+vztQ0OjIzQtVo2SKp5z7iLr/CXdNCMHuper5rrfYxE4/YokcDhdDxJ9y+b9fXQ4
-         fyuGkzcYbAAoJnyo9H6MSNrbjb2Ay5eUfGrlJYDE=
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     pablo@netfilter.org
-Cc:     netfilter-devel@vger.kernel.org, fw@strlen.de,
-        netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH netfilter 3/3] netfilter: nf_tables: add missing attribute validation for tunnels
-Date:   Mon,  2 Mar 2020 21:08:33 -0800
-Message-Id: <20200303050833.4089193-4-kuba@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200303050833.4089193-1-kuba@kernel.org>
-References: <20200303050833.4089193-1-kuba@kernel.org>
+        id S1725554AbgCCFhZ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 3 Mar 2020 00:37:25 -0500
+Received: from vvs-ws.sw.ru ([172.16.24.21])
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1j90Ek-0002FN-9n; Tue, 03 Mar 2020 08:36:58 +0300
+Subject: Re: + seq_read-info-message-about-buggy-next-functions.patch added to
+ -mm tree
+To:     Andrew Morton <akpm@linux-foundation.org>, Qian Cai <cai@lca.pw>
+Cc:     linux-kernel@vger.kernel.org, dave@stgolabs.net,
+        longman@redhat.com, manfred@colorfullife.com, mingo@redhat.com,
+        mm-commits@vger.kernel.org, neilb@suse.com, oberpar@linux.ibm.com,
+        rostedt@goodmis.org, viro@zeniv.linux.org.uk,
+        netfilter-devel@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+References: <20200226035621.4NlNn738T%akpm@linux-foundation.org>
+ <1583173259.7365.142.camel@lca.pw> <1583177508.7365.144.camel@lca.pw>
+ <20200302124219.eaf3d18422b76ff2196d9ce8@linux-foundation.org>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <90db01f0-e8b4-0acb-cd09-d79825f2c03d@virtuozzo.com>
+Date:   Tue, 3 Mar 2020 08:36:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200302124219.eaf3d18422b76ff2196d9ce8@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add missing attribute validation for tunnel source and
-destination ports to the netlink policy.
 
-Fixes: af308b94a2a4 ("netfilter: nf_tables: add tunnel support")
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
- net/netfilter/nft_tunnel.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/net/netfilter/nft_tunnel.c b/net/netfilter/nft_tunnel.c
-index 4c3f2e24c7cb..764e88682a81 100644
---- a/net/netfilter/nft_tunnel.c
-+++ b/net/netfilter/nft_tunnel.c
-@@ -339,6 +339,8 @@ static const struct nla_policy nft_tunnel_key_policy[NFTA_TUNNEL_KEY_MAX + 1] =
- 	[NFTA_TUNNEL_KEY_FLAGS]	= { .type = NLA_U32, },
- 	[NFTA_TUNNEL_KEY_TOS]	= { .type = NLA_U8, },
- 	[NFTA_TUNNEL_KEY_TTL]	= { .type = NLA_U8, },
-+	[NFTA_TUNNEL_KEY_SPORT]	= { .type = NLA_U16, },
-+	[NFTA_TUNNEL_KEY_DPORT]	= { .type = NLA_U16, },
- 	[NFTA_TUNNEL_KEY_OPTS]	= { .type = NLA_NESTED, },
- };
- 
--- 
-2.24.1
+On 3/2/20 11:42 PM, Andrew Morton wrote:
+> On Mon, 02 Mar 2020 14:31:48 -0500 Qian Cai <cai@lca.pw> wrote:
+> 
+>> On Mon, 2020-03-02 at 13:20 -0500, Qian Cai wrote:
+>>> This patch spams the console like crazy while reading sysfs,
+>>>
+>>> # dmesg | grep 'buggy seq_file' | wc -l
+>>> 4204
+>>>
+>>> [ 9505.321981] LTP: starting read_all_proc (read_all -d /proc -q -r 10)
+>>> [ 9508.222934] buggy seq_file .next function xt_match_seq_next [x_tables] did
+>>> not updated position index
+>>> [ 9508.223319] buggy seq_file .next function xt_match_seq_next [x_tables] did
+>>> not updated position index
+>>> [ 9508.223654] buggy seq_file .next function xt_match_seq_next [x_tables] did
+>>> not updated position index
+>>> [ 9508.223994] buggy seq_file .next function xt_match_seq_next [x_tables] did
+>>> not updated position index
+>>> [ 9508.224337] buggy seq_file .next function xt_match_seq_next [x_tables] did
+>>> not updated position index
 
+It should be fixed by following patch-set submitted to Netfilter-Devel mailing list
+[PATCH v2 0/4] netfilter: seq_file .next functions should increase position index
+https://lore.kernel.org/netfilter-devel/497a82c1-7b6a-adf4-a4ce-df46fe436aae@virtuozzo.com/T/
+
+>>>> --- a/fs/seq_file.c~seq_read-info-message-about-buggy-next-functions
+>>>> +++ a/fs/seq_file.c
+>>>> @@ -256,9 +256,12 @@ Fill:
+>>>>  		loff_t pos = m->index;
+>>>>  
+>>>>  		p = m->op->next(m, p, &m->index);
+>>>> -		if (pos == m->index)
+>>>> -			/* Buggy ->next function */
+>>>> +		if (pos == m->index) {
+>>>> +			pr_info("buggy seq_file .next function %ps "
+>>>> +				"did not updated position index\n",
+>>>> +				m->op->next);
+>>
+>> This?
+>>
+>> s/pr_info/pr_info_ratelimited/
+>>
+> 
+> Fair enough - I made that change.
+> 
