@@ -2,43 +2,46 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D7017AFC2
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Mar 2020 21:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 246A117AFC3
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Mar 2020 21:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726099AbgCEUdW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 5 Mar 2020 15:33:22 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32771 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726049AbgCEUdV (ORCPT
+        id S1726142AbgCEUdY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 5 Mar 2020 15:33:24 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24741 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726049AbgCEUdY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 5 Mar 2020 15:33:21 -0500
+        Thu, 5 Mar 2020 15:33:24 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1583440400;
+        s=mimecast20190719; t=1583440403;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ap8APHzMqa/4FzjsKtRvDSeIA6ly7l3mgfhOtezo7UM=;
-        b=NguiQ9txZCqCZvVqHryL8fCLlOoLRXL5LETUpHxnmDDRohaZhfVM6iVi9+I9wQHMz0LCGm
-        Vfo7LHdrvhNT9Syqaga0G2SnoeMGVPm8JW+qaW9qXFA7l2lFupd88EXP+oW3a1jkw9nTKF
-        l04eTXePpjNvb0zpTFuHn56ByT2BAJ4=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YI0GgENBxaJXyanO0Z8b03viVDhGdDXJzr67wbY29NQ=;
+        b=KYSEoMay74cJTT7wxRr4t0PVdZdyQyZ8aynSBui2eY4cUxJa7WSylNjDob0FAauRZYLCWq
+        OAV/ArVn2fWse1qrL309KEjBSdx0lbms6bvE06Nlf6q+Z8kUV/ZhAxnhdxJwqB+AqVzbEm
+        HEisMCr+Uj/aQHFm5mvIgKN93vd41K4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-IMnyDbUSPUW_kNt1_4y9Pw-1; Thu, 05 Mar 2020 15:33:19 -0500
-X-MC-Unique: IMnyDbUSPUW_kNt1_4y9Pw-1
+ us-mta-336-r6a21TPAMcKY2ceWtuqWuw-1; Thu, 05 Mar 2020 15:33:21 -0500
+X-MC-Unique: r6a21TPAMcKY2ceWtuqWuw-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC39318AB2C2;
-        Thu,  5 Mar 2020 20:33:17 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BCBB800D4E;
+        Thu,  5 Mar 2020 20:33:20 +0000 (UTC)
 Received: from epycfail.redhat.com (ovpn-200-16.brq.redhat.com [10.40.200.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7FB0C10016EB;
-        Thu,  5 Mar 2020 20:33:16 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5F5701001B2B;
+        Thu,  5 Mar 2020 20:33:18 +0000 (UTC)
 From:   Stefano Brivio <sbrivio@redhat.com>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: [PATCH nf 0/4] nftables: Consistently report partial and entire set overlaps
-Date:   Thu,  5 Mar 2020 21:33:01 +0100
-Message-Id: <cover.1583438771.git.sbrivio@redhat.com>
+Subject: [PATCH nf 1/4] nf_tables: Allow set back-ends to report partial overlaps on insertion
+Date:   Thu,  5 Mar 2020 21:33:02 +0100
+Message-Id: <1625b855afe7a5f5c9029fcf91f549fd3d8b4b3e.1583438771.git.sbrivio@redhat.com>
+In-Reply-To: <cover.1583438771.git.sbrivio@redhat.com>
+References: <cover.1583438771.git.sbrivio@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Content-Transfer-Encoding: quoted-printable
@@ -47,32 +50,53 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Phil reports that inserting an element, that includes a concatenated
-range colliding with an existing one, fails silently.
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-This is because so far set back-ends have no way to tell apart cases
-of identical elements being inserted from clashing elements. On
-insertion, the front-end would strip -EEXIST if NLM_F_EXCL is not
-passed, so we return success to userspace while an error in fact
-occurred.
+Currently, the -EEXIST return code of ->insert() callbacks is ambiguous: =
+it
+might indicate that a given element (including intervals) already exists =
+as
+such, or that the new element would clash with existing ones.
 
-As suggested by Pablo, allow back-ends to return -ENOTEMPTY in case
-of partial overlaps, with patch 1/4. Then, with patches 2/4 to 4/4,
-update nft_set_pipapo and nft_set_rbtree to report partial overlaps
-using the new error code.
+If identical elements already exist, the front-end is ignoring this witho=
+ut
+returning error, in case NLM_F_EXCL is not set. However, if the new eleme=
+nt
+can't be inserted due an overlap, we should report this to the user.
 
-Stefano Brivio (4):
-  nf_tables: Allow set back-ends to report partial overlaps on insertion
-  nft_set_pipapo: Separate partial and complete overlap cases on
-    insertion
-  nft_set_rbtree: Introduce and use nft_rbtree_interval_start()
-  nft_set_rbtree: Detect partial overlaps on insertion
+To this purpose, allow set back-ends to return -ENOTEMPTY on collision wi=
+th
+existing elements, translate that to -EEXIST, and return that to userspac=
+e,
+no matter if NLM_F_EXCL was set.
 
- net/netfilter/nf_tables_api.c  |  5 ++
- net/netfilter/nft_set_pipapo.c | 34 +++++++++++---
- net/netfilter/nft_set_rbtree.c | 85 ++++++++++++++++++++++++++++++----
- 3 files changed, 108 insertions(+), 16 deletions(-)
+Reported-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
+---
+Pablo, I added your From: here as the original patch came from you,
+but I'm not sure how to handle this. Please change it as you see fit.
 
+ net/netfilter/nf_tables_api.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.=
+c
+index d1318bdf49ca..51371efe8bf0 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -5077,6 +5077,11 @@ static int nft_add_set_elem(struct nft_ctx *ctx, s=
+truct nft_set *set,
+ 				err =3D -EBUSY;
+ 			else if (!(nlmsg_flags & NLM_F_EXCL))
+ 				err =3D 0;
++		} else if (err =3D=3D -ENOTEMPTY) {
++			/* ENOTEMPTY reports overlapping between this element
++			 * and an existing one.
++			 */
++			err =3D -EEXIST;
+ 		}
+ 		goto err_element_clash;
+ 	}
 --=20
 2.25.1
 
