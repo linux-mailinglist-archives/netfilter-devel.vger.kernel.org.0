@@ -2,87 +2,102 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F418B17A3A7
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Mar 2020 12:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5123717A454
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Mar 2020 12:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbgCELGv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 5 Mar 2020 06:06:51 -0500
-Received: from ulan.pagasa.dost.gov.ph ([202.90.128.205]:45338 "EHLO
-        mailgw.pagasa.dost.gov.ph" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725953AbgCELGv (ORCPT
+        id S1726049AbgCELge (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 5 Mar 2020 06:36:34 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:48098 "EHLO
+        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725816AbgCELgd (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 5 Mar 2020 06:06:51 -0500
-X-Greylist: delayed 1224 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Mar 2020 06:06:50 EST
-Received: from webmail.pagasa.dost.int ([10.10.11.8])
-        by mailgw.pagasa.dost.gov.ph  with ESMTP id 025Aig2M006237-025Aig2O006237
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 5 Mar 2020 18:44:42 +0800
-Received: from localhost (localhost [127.0.0.1])
-        by webmail.pagasa.dost.int (Postfix) with ESMTP id 8128A2981670;
-        Thu,  5 Mar 2020 18:35:17 +0800 (PST)
-Received: from webmail.pagasa.dost.int ([127.0.0.1])
-        by localhost (webmail.pagasa.dost.int [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 0MOUjDXd6_Qm; Thu,  5 Mar 2020 18:35:17 +0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by webmail.pagasa.dost.int (Postfix) with ESMTP id 78682298172F;
-        Thu,  5 Mar 2020 18:35:16 +0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 webmail.pagasa.dost.int 78682298172F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pagasa.dost.gov.ph;
-        s=96B9A03E-48B0-11EA-A7E8-92F42F537CE2; t=1583404516;
-        bh=RC75T5p3JPNk7JUNB+lH0UfaFQO1Ac584gPL3SIL6h8=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=QluOTNSzd9MxZ3z5lXtzgy3ErulKQfaKIVDpIg0OtI5bKQHL8j3sEaWb/Pt9ws9mZ
-         zTNyFJS78Fhk6rNB6CuPPDu1dQbe7H5qYUEx5S4ZV2DiOOEdf/PlbuJRihnRJ7is85
-         MxV5E6fUqirQYY0a3trUXQtGDi5BT8f+TBx8xPXc=
-X-Virus-Scanned: amavisd-new at pagasa.dost.int
-Received: from webmail.pagasa.dost.int ([127.0.0.1])
-        by localhost (webmail.pagasa.dost.int [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 03X5Z3ZNVI5Y; Thu,  5 Mar 2020 18:35:16 +0800 (PST)
-Received: from webmail.pagasa.dost.int (webmail.pagasa.dost.int [10.11.1.8])
-        by webmail.pagasa.dost.int (Postfix) with ESMTP id 848F42981681;
-        Thu,  5 Mar 2020 18:35:14 +0800 (PST)
-Date:   Thu, 5 Mar 2020 18:35:14 +0800 (PST)
-From:   "Juanito S. Galang" <juanito.galang@pagasa.dost.gov.ph>
-Message-ID: <1203625487.3574237.1583404514499.JavaMail.zimbra@pagasa.dost.gov.ph>
-Subject: 
+        Thu, 5 Mar 2020 06:36:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=W8y0IpQGEVT4kIakqsTrC4F5sYKWFlKdULXgs9SQQWQ=; b=juvl6+EerewXWMxLLADIQfTC7/
+        wrqu0v9vKfTI74FeelpvF5EPsdjaheoO67+4cY9BA3yzHWHoaIRBXcgG1SFWXfS7hgzs6uYbi87Zc
+        WxJADCphjPDLTyIvRppYKe/emG0rPu4VsYN2ylb4RIkKI7rpzXRjwlaFmmwV5Canaq9t2Ype055DZ
+        P4+gFwNDu/tCDzVuDBZo5zasNXhFhSV8n/7IleEVr7xZSDRCLKattFUksyC/d9+WtYcFDy6ASyRPk
+        Og1SRtd6v0HiTp9qjmzbd8MRCrDoGCbxORV6gHXa4A3WStOxceHKTNdDKlHSqMYaHguwUd89Xxlc1
+        YNwEawlA==;
+Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=azazel.net)
+        by kadath.azazel.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1j9onl-0002Ci-Vn; Thu, 05 Mar 2020 11:36:30 +0000
+Date:   Thu, 5 Mar 2020 11:36:28 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH nft v3 00/18] Support for boolean binops with variable
+ RHS operands.
+Message-ID: <20200305113628.GA49820@azazel.net>
+References: <20200303094844.26694-1-jeremy@azazel.net>
+ <20200305105340.GH979@breakpoint.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 8.8.15_GA_3899 (ZimbraWebClient - GC79 (Win)/8.8.15_GA_3895)
-Thread-Index: g8SfOi3PEuHY16jbfKrElO9m558F3g==
-Thread-Topic: 
-X-FEAS-DKIM: Valid
-Authentication-Results: mailgw.pagasa.dost.gov.ph;
-        dkim=pass header.i=@pagasa.dost.gov.ph
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
+Content-Disposition: inline
+In-Reply-To: <20200305105340.GH979@breakpoint.cc>
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
 
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Herzlichen Gl=C3=BCckwunsch Lieber Beg=C3=BCnstigter,Sie erhalten diese E-M=
-ail von der Robert Bailey Foundation. Ich bin ein pensionierter Regierungsa=
-ngestellter aus Harlem und ein Gewinner des Powerball Lottery Jackpot im We=
-rt von 343,8 Millionen US-Dollar. Ich bin der gr=C3=B6=C3=9Fte Jackpot-Gewi=
-nner in der Geschichte der New Yorker Lotterie im US-Bundesstaat Amerika. I=
-ch habe diese Lotterie am 27. Oktober 2018 gewonnen und m=C3=B6chte Sie dar=
-=C3=BCber informieren, dass Google in Zusammenarbeit mit Microsoft Ihre "E-=
-Mail-Adresse" auf meine Bitte, einen Spendenbetrag von 3.000.000,00 Million=
-en Euro zu erhalten, =C3=BCbermittelt hat. Ich spende diese 3 Millionen Eur=
-o an Sie, um den Wohlt=C3=A4tigkeitsheimen und armen Menschen in Ihrer Geme=
-inde zu helfen, damit wir die Welt f=C3=BCr alle verbessern k=C3=B6nnen.Wei=
-tere Informationen finden Sie auf der folgenden Website, damit Sie nicht sk=
-eptisch sind
-Diese Spende von 3 Mio. EUR.https://nypost.com/2018/11/14/meet-the-winner-o=
-f-the-biggest-lottery-jackpot-in-new-york-history/Sie k=C3=B6nnen auch mein=
- YouTube f=C3=BCr mehr Best=C3=A4tigung aufpassen:
-https://www.youtube.com/watch?v=3DH5vT18Ysavc
-Bitte beachten Sie, dass alle Antworten an (robertdonation7@gmail.com=C2=A0=
- ) gesendet werden, damit wir das k=C3=B6nnen
-Fahren Sie fort, um das gespendete Geld an Sie zu =C3=BCberweisen.E-Mail: r=
-obertdonation7@gmail.comFreundliche Gr=C3=BC=C3=9Fe,
-Robert Bailey
-* * * * * * * * * * * * * * * *
-Powerball Jackpot Gewinner
+On 2020-03-05, at 11:53:40 +0100, Florian Westphal wrote:
+> Jeremy Sowden <jeremy@azazel.net> wrote:
+> > Kernel support for passing mask and xor values for bitwise boolean
+> > operations via registers allows us to support boolean binop's with
+> > variable RHS operands: XOR expressions pass the xor value in a
+> > register; AND expressions pass the mask value in a register; OR
+> > expressions pass both mask and xor values in registers.
+> >
+> > NB, OR expressions are converted to `(a & (b ^ 1)) ^ b` during
+> > linearization (in patch 9), because it makes both linearization and
+> > delinearization a lot simpler.  However, it involves rearranging and
+> > allocating expressions after the evaluation phase.  Since nothing
+> > else does this, AFAICS, I'm not sure whether it's the right thing to
+> > do.
+> >
+> > The patch-set comprises four parts:
+> >
+> >    1 -  7: some tidying and bug-fixes;
+>
+> I've pushed these to master, thanks.
+
+Thanks, Florian.
+
+J.
+
+--NzB8fVQJ5HfG6fxh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEEd/6/sDFjb+OCRmRMonv1GCHZ79cFAl5g5DMACgkQonv1GCHZ
+79ebKAv+KUMr2m9zoHgH9z3XnFP/c/LGTYD9PeypaRQNCJdniCuRXP1Sxbjsmz4Y
+hALaS7pYgdJskkV2C71QoJE147Hw1dS6dsv34FtqB2syrsTtNTYoYymtoAeZpmQS
+EWZRveqU0SIQ53bbtpUAImxXBxZxIEzM+eM/CR9fmhMlL9QXj82yQbFxJrez6JAw
+L75jLNrRYYLjZaoyQeFCjXaBT9775T+X0rLYrYPXDLOLDT8RbVD3RTMItDNwZo58
+4FEqlP+w44zdoNskQgrMxNZUxz9eSYRqdiRuZ7/UkAK9HrxIJvHYysvVI5h30U8r
+2DWKe/98oGCyVu71UVk5mxDLJXG74Cl2WBChbaEowsU/WqKXROGMH8MRbR/bETFX
+Rwnn3lwz1UpqVpvVAjvp8Tcz27PPQBRrIoufcq4YP5fw2MqkW7/ElsvZAbVB9hPj
+7R2/LOEPeTsc0T6PHFQkRtNHuCVjBxreUj81S70LtqaPpv0Xa/Ek1JttoJvSGJ0o
+EmAKTrQP
+=K1zP
+-----END PGP SIGNATURE-----
+
+--NzB8fVQJ5HfG6fxh--
