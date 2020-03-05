@@ -2,110 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6483179633
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 Mar 2020 18:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D1717A256
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Mar 2020 10:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726275AbgCDRCn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 4 Mar 2020 12:02:43 -0500
-Received: from correo.us.es ([193.147.175.20]:51150 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727804AbgCDRCn (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 4 Mar 2020 12:02:43 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 2593E11ADC3
-        for <netfilter-devel@vger.kernel.org>; Wed,  4 Mar 2020 18:02:26 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 14F16DA3AB
-        for <netfilter-devel@vger.kernel.org>; Wed,  4 Mar 2020 18:02:26 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 14363DA3A9; Wed,  4 Mar 2020 18:02:26 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 97012DA7B2;
-        Wed,  4 Mar 2020 18:02:23 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 04 Mar 2020 18:02:23 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 78E4742EE38E;
-        Wed,  4 Mar 2020 18:02:23 +0100 (CET)
-Date:   Wed, 4 Mar 2020 18:02:37 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: Re: [iptables PATCH 1/4] nft: cache: Fix nft_release_cache() under
- stress
-Message-ID: <20200304170237.nkzhn24cyq7wuchk@salvia>
-References: <20200302175358.27796-1-phil@nwl.cc>
- <20200302175358.27796-2-phil@nwl.cc>
- <20200302191930.5evt74vfrqd7zura@salvia>
- <20200303010252.GB5627@orbyte.nwl.cc>
- <20200303205554.oc5dwigdvje6whed@salvia>
- <20200304021334.GH5627@orbyte.nwl.cc>
+        id S1726822AbgCEJit convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 5 Mar 2020 04:38:49 -0500
+Received: from mail.11d02.mspz7.gob.ec ([181.211.254.254]:47972 "EHLO
+        mail.11d02.mspz7.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725816AbgCEJit (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 5 Mar 2020 04:38:49 -0500
+X-Greylist: delayed 2488 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Mar 2020 04:38:48 EST
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.11d02.mspz7.gob.ec (Postfix) with ESMTP id B017D1441DD;
+        Thu,  5 Mar 2020 03:46:50 -0500 (-05)
+Received: from mail.11d02.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.11d02.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 7OM6_r0Z160O; Thu,  5 Mar 2020 03:46:50 -0500 (-05)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.11d02.mspz7.gob.ec (Postfix) with ESMTP id 9371F142B03;
+        Thu,  5 Mar 2020 03:44:39 -0500 (-05)
+X-Virus-Scanned: amavisd-new at 11d02.mspz7.gob.ec
+Received: from mail.11d02.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.11d02.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id jZi_NT8pKk7V; Thu,  5 Mar 2020 03:44:39 -0500 (-05)
+Received: from [10.22.221.193] (unknown [105.0.4.26])
+        by mail.11d02.mspz7.gob.ec (Postfix) with ESMTPSA id 21CBB143FFD;
+        Thu,  5 Mar 2020 03:42:41 -0500 (-05)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200304021334.GH5627@orbyte.nwl.cc>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
+To:     Recipients <alex.zari@11d02.mspz7.gob.ec>
+From:   ''Michael Weirsky'' <alex.zari@11d02.mspz7.gob.ec>
+Date:   Thu, 05 Mar 2020 10:34:15 +0200
+Reply-To: mikeweirskyspende@gmail.com
+Message-Id: <20200305084243.21CBB143FFD@mail.11d02.mspz7.gob.ec>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Phil,
+Lieber Freund,
 
-On Wed, Mar 04, 2020 at 03:13:34AM +0100, Phil Sutter wrote:
-> Hi Pablo,
-> 
-> On Tue, Mar 03, 2020 at 09:55:54PM +0100, Pablo Neira Ayuso wrote:
-> > On Tue, Mar 03, 2020 at 02:02:52AM +0100, Phil Sutter wrote:
-> > > Hi Pablo,
-> > > 
-> > > On Mon, Mar 02, 2020 at 08:19:30PM +0100, Pablo Neira Ayuso wrote:
-> > > > On Mon, Mar 02, 2020 at 06:53:55PM +0100, Phil Sutter wrote:
-> > > > > iptables-nft-restore calls nft_action(h, NFT_COMPAT_COMMIT) for each
-> > > > > COMMIT line in input. When restoring a dump containing multiple large
-> > > > > tables, chances are nft_rebuild_cache() has to run multiple times.
-> > 
-> > It is true that chances that this code runs multiple times since the
-> > new fine-grain caching logic is in place.
-> 
-> AFAICT, this is not related to granularity of caching logic. The crux is
-> that your fix of Florian's concurrency fix in commit f6ad231d698c7
-> ("nft: keep original cache in case of ERESTART") ignores the fact that
-> cache may have to be rebuilt multiple times. I wasn't aware of it
-> either, but knowing that each COMMIT line causes a COMMIT internally
-> makes it obvious. Your patch adds code to increment cache_index but none
-> to reset it to zero.
+Ich bin Herr Mike Weirsky, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 273million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen.
+Das ist dein Spendencode: [MW530342019]
+www.youtube.com/watch?v=un8yRTmrYMY
 
-Thanks for explaining.
+Antworten Sie mit dem SPENDE-CODE an diese 
 
-[...]
-> > Would this patch still work after this series are applied:
-> > 
-> > https://patchwork.ozlabs.org/project/netfilter-devel/list/?series=151404
-> > 
-> > That is working and passing tests. It is just missing the code to
-> > restore the fine grain dumping, that should be easy to add.
-> > 
-> > That logic will really reduce the chances to exercise all this cache
-> > dump / cache cancel. Bugs in this cache consistency code is usually
-> > not that easy to trigger and usually hard to fix.
-> > 
-> > I just think it would be a pity if that work ends up in the trash can.
-> 
-> I didn't review those patches yet, but from a quick glance it doesn't
-> seem to touch the problematic code around __nft_flush_cache(). Let's
-> make a deal: You accept my fix for the existing cache logic and I'll in
-> return fix your series if necessary and at least find out what needs to
-> be done so it doesn't cause a performance regression.
+E-Mail:mikeweirskyspende@gmail.com
 
-OK, deal :-)
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+
+Grüße
+Herr Mike Weirsky
