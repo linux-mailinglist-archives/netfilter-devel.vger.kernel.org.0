@@ -2,74 +2,64 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2356717A680
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Mar 2020 14:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 531F817A80A
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Mar 2020 15:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725963AbgCENh1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 5 Mar 2020 08:37:27 -0500
-Received: from correo.us.es ([193.147.175.20]:38386 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725880AbgCENh1 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 5 Mar 2020 08:37:27 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id CF10D20A530
-        for <netfilter-devel@vger.kernel.org>; Thu,  5 Mar 2020 14:37:09 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id BEB5ADA3C3
-        for <netfilter-devel@vger.kernel.org>; Thu,  5 Mar 2020 14:37:09 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id BAC62DA8E6; Thu,  5 Mar 2020 14:37:09 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CA117DA38D;
-        Thu,  5 Mar 2020 14:37:07 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 05 Mar 2020 14:37:07 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id AB31C42EF4E0;
-        Thu,  5 Mar 2020 14:37:07 +0100 (CET)
-Date:   Thu, 5 Mar 2020 14:37:22 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        netdev@vger.kernel.org,
-        syzbot+a2ff6fa45162a5ed4dd3@syzkaller.appspotmail.com
-Subject: Re: [PATCH nf] netfilter: nf_tables: free flowtable hooks on hook
- register error
-Message-ID: <20200305133722.ddjx7nefs6wbzhej@salvia>
-References: <20200302205850.29365-1-fw@strlen.de>
- <20200305120931.poeox6r3rapcbujb@salvia>
+        id S1726436AbgCEOsH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 5 Mar 2020 09:48:07 -0500
+Received: from kadath.azazel.net ([81.187.231.250]:55992 "EHLO
+        kadath.azazel.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgCEOsH (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 5 Mar 2020 09:48:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=fSCDfHvPxXFAAALRP47QopB5uT/5IH2M1/JDplI5fYU=; b=dYgTyuL3XzJ1GF3tL1WgUNEKja
+        VWFDYDt5N0cluNjAlNahBNfl9YjWJHGEBlx+icoZuoQSqJdTNBGf0gY1cW5UTDJEnqMbc7muHNuPz
+        TfB7m/oZZPyRKa1rqOJGgrjMMKs7rV4l48R7DTifs+LOiXbVJOWPkzpsgsKftvYQE4VDRFe58lw3z
+        6tmxAEsQ0Z5EdzbcljUsNBEgPQcrdSAKqOZxxVb9aXDn5sWksejz0WUAqDFmbmrlbdt/GL9EbBOXF
+        o+rYq0pLomZAvui8zuILKrNvA2F6vwSJh2UHHaN3H6u5c7AKLgu65bFMmP9KohSnrvOmPqgx3H/T7
+        MmFCCp+g==;
+Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1j9rnB-0006kU-A0; Thu, 05 Mar 2020 14:48:05 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH nft 0/4] Help and getopt improvements
+Date:   Thu,  5 Mar 2020 14:48:01 +0000
+Message-Id: <20200305144805.143783-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200305120931.poeox6r3rapcbujb@salvia>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Mar 05, 2020 at 01:10:12PM +0100, Pablo Neira Ayuso wrote:
-> On Mon, Mar 02, 2020 at 09:58:50PM +0100, Florian Westphal wrote:
-> > If hook registration fails, the hooks allocated via nft_netdev_hook_alloc
-> > need to be freed.
-> > 
-> > We can't change the goto label to 'goto 5' -- while it does fix the memleak
-> > it does cause a warning splat from the netfilter core (the hooks were not
-> > registered).
-> 
-> It seems test/shell crashes after this, looking. It works after
-> reverting.
+I spotted a couple more mistakes in the help.  The first two patches fix
+them.  The last patch generates the getopt_long(3) optstring and
+options, and the help from one data-structure in a bid to keep them all
+in sync.
 
-Actually, no problem problem is not related to this patch. Sorry for
-the noise.
+Jeremy Sowden (4):
+  main: include '-d' in help.
+  main: include '--reversedns' in help.
+  main: interpolate default include path into help format-string.
+  main: use one data-structure to initialize getopt_long(3) arguments
+    and help.
+
+ src/main.c | 251 +++++++++++++++++++++++++++++------------------------
+ 1 file changed, 138 insertions(+), 113 deletions(-)
+
+-- 
+2.25.1
+
