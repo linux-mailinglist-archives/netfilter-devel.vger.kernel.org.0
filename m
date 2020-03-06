@@ -2,45 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A697017C310
-	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Mar 2020 17:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16A517C344
+	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Mar 2020 17:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgCFQhg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 6 Mar 2020 11:37:36 -0500
-Received: from correo.us.es ([193.147.175.20]:41292 "EHLO mail.us.es"
+        id S1726162AbgCFQsZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 6 Mar 2020 11:48:25 -0500
+Received: from correo.us.es ([193.147.175.20]:44016 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726083AbgCFQhf (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 6 Mar 2020 11:37:35 -0500
+        id S1725922AbgCFQsZ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 6 Mar 2020 11:48:25 -0500
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id DD1EE6D00D
-        for <netfilter-devel@vger.kernel.org>; Fri,  6 Mar 2020 17:37:16 +0100 (CET)
+        by mail.us.es (Postfix) with ESMTP id B31146D010
+        for <netfilter-devel@vger.kernel.org>; Fri,  6 Mar 2020 17:48:05 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CF00FDA72F
-        for <netfilter-devel@vger.kernel.org>; Fri,  6 Mar 2020 17:37:16 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id A4822DA736
+        for <netfilter-devel@vger.kernel.org>; Fri,  6 Mar 2020 17:48:05 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id C4B54DA736; Fri,  6 Mar 2020 17:37:16 +0100 (CET)
+        id 9A352DA7B2; Fri,  6 Mar 2020 17:48:05 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CD6B7DA72F;
-        Fri,  6 Mar 2020 17:37:14 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 2FBD6DA736
+        for <netfilter-devel@vger.kernel.org>; Fri,  6 Mar 2020 17:48:03 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 06 Mar 2020 17:37:14 +0100 (CET)
+ Fri, 06 Mar 2020 17:48:03 +0100 (CET)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (unknown [90.77.255.23])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id B06044301DE0;
-        Fri,  6 Mar 2020 17:37:14 +0100 (CET)
+        by entrada.int (Postfix) with ESMTPA id 1AC624301DE0
+        for <netfilter-devel@vger.kernel.org>; Fri,  6 Mar 2020 17:48:03 +0100 (CET)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Cc:     fw@strlen.de
-Subject: [PATCH nf] netfilter: nft_chain_nat: inet family is missing module ownership
-Date:   Fri,  6 Mar 2020 17:37:28 +0100
-Message-Id: <20200306163728.76733-1-pablo@netfilter.org>
+Subject: [PATCH nf] netfilter: nf_tables: missing module ownership in chain type definitions
+Date:   Fri,  6 Mar 2020 17:48:16 +0100
+Message-Id: <20200306164816.139750-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -48,8 +47,9 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Set owner to THIS_MODULE, otherwise the nft_chain_nat module might be
-removed while there are still inet/nat chains in place.
+Set owner to THIS_MODULE, otherwise the nft_chain_{nat,route} modules
+might be removed while there are still inet/nat or route chains in
+place.
 
 [  117.942096] BUG: unable to handle page fault for address: ffffffffa0d5e040
 [  117.942101] #PF: supervisor read access in kernel mode
@@ -81,10 +81,15 @@ removed while there are still inet/nat chains in place.
 nf_tables_chain_destroy() crashes on module_put().
 
 Fixes: d164385ec572 ("netfilter: nat: add inet family nat support")
+Fixes: c1deb065cf3b ("netfilter: nf_tables: merge route type into core")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nft_chain_nat.c | 1 +
- 1 file changed, 1 insertion(+)
+v2: Fix route chain type too.
+    This supersedes https://patchwork.ozlabs.org/patch/1250406/
+
+ net/netfilter/nft_chain_nat.c   | 1 +
+ net/netfilter/nft_chain_route.c | 3 +++
+ 2 files changed, 4 insertions(+)
 
 diff --git a/net/netfilter/nft_chain_nat.c b/net/netfilter/nft_chain_nat.c
 index ff9ac8ae0031..eac4a901233f 100644
@@ -98,6 +103,34 @@ index ff9ac8ae0031..eac4a901233f 100644
  	.hook_mask	= (1 << NF_INET_PRE_ROUTING) |
  			  (1 << NF_INET_LOCAL_IN) |
  			  (1 << NF_INET_LOCAL_OUT) |
+diff --git a/net/netfilter/nft_chain_route.c b/net/netfilter/nft_chain_route.c
+index 8826bbe71136..dcece7be2869 100644
+--- a/net/netfilter/nft_chain_route.c
++++ b/net/netfilter/nft_chain_route.c
+@@ -54,6 +54,7 @@ static const struct nft_chain_type nft_chain_route_ipv4 = {
+ 	.name		= "route",
+ 	.type		= NFT_CHAIN_T_ROUTE,
+ 	.family		= NFPROTO_IPV4,
++	.owner		= THIS_MODULE,
+ 	.hook_mask	= (1 << NF_INET_LOCAL_OUT),
+ 	.hooks		= {
+ 		[NF_INET_LOCAL_OUT]	= nf_route_table_hook4,
+@@ -104,6 +105,7 @@ static const struct nft_chain_type nft_chain_route_ipv6 = {
+ 	.name		= "route",
+ 	.type		= NFT_CHAIN_T_ROUTE,
+ 	.family		= NFPROTO_IPV6,
++	.owner		= THIS_MODULE,
+ 	.hook_mask	= (1 << NF_INET_LOCAL_OUT),
+ 	.hooks		= {
+ 		[NF_INET_LOCAL_OUT]	= nf_route_table_hook6,
+@@ -135,6 +137,7 @@ static const struct nft_chain_type nft_chain_route_inet = {
+ 	.name		= "route",
+ 	.type		= NFT_CHAIN_T_ROUTE,
+ 	.family		= NFPROTO_INET,
++	.owner		= THIS_MODULE,
+ 	.hook_mask	= (1 << NF_INET_LOCAL_OUT),
+ 	.hooks		= {
+ 		[NF_INET_LOCAL_OUT]	= nf_route_table_inet,
 -- 
 2.11.0
 
