@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A14B4181ADF
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2020 15:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2161E181AE0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2020 15:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729646AbgCKON1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1729676AbgCKON1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Wed, 11 Mar 2020 10:13:27 -0400
-Received: from correo.us.es ([193.147.175.20]:59636 "EHLO mail.us.es"
+Received: from correo.us.es ([193.147.175.20]:59644 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729676AbgCKON0 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 11 Mar 2020 10:13:26 -0400
+        id S1729678AbgCKON1 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 11 Mar 2020 10:13:27 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id DF68BDA388
-        for <netfilter-devel@vger.kernel.org>; Wed, 11 Mar 2020 15:13:02 +0100 (CET)
+        by mail.us.es (Postfix) with ESMTP id 66C89DA399
+        for <netfilter-devel@vger.kernel.org>; Wed, 11 Mar 2020 15:13:03 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id D0ED7DA39F
-        for <netfilter-devel@vger.kernel.org>; Wed, 11 Mar 2020 15:13:02 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 575F4DA3C4
+        for <netfilter-devel@vger.kernel.org>; Wed, 11 Mar 2020 15:13:03 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id D05E1DA38F; Wed, 11 Mar 2020 15:13:02 +0100 (CET)
+        id 4CEC4DA8E6; Wed, 11 Mar 2020 15:13:03 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 155CEDA3A9
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 7BAA0DA3A5
         for <netfilter-devel@vger.kernel.org>; Wed, 11 Mar 2020 15:13:01 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
@@ -32,14 +32,14 @@ Received: from 192.168.1.97 (192.168.1.97)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (unknown [90.77.255.23])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id EC82142EF42A
-        for <netfilter-devel@vger.kernel.org>; Wed, 11 Mar 2020 15:13:00 +0100 (CET)
+        by entrada.int (Postfix) with ESMTPA id 67D5E42EF42A
+        for <netfilter-devel@vger.kernel.org>; Wed, 11 Mar 2020 15:13:01 +0100 (CET)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next 1/4] netfilter: nf_tables: remove EXPORT_SYMBOL_GPL for nft_expr_init()
-Date:   Wed, 11 Mar 2020 15:13:15 +0100
-Message-Id: <20200311141318.3633-2-pablo@netfilter.org>
+Subject: [PATCH nf-next 2/4] netfilter: nf_tables: add elements with stateful expressions
+Date:   Wed, 11 Mar 2020 15:13:16 +0100
+Message-Id: <20200311141318.3633-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200311141318.3633-1-pablo@netfilter.org>
 References: <20200311141318.3633-1-pablo@netfilter.org>
@@ -49,42 +49,78 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Not exposed anymore to modules, remove it.
+Update nft_add_set_elem() to handle the NFTA_SET_ELEM_EXPR netlink
+attribute. This patch allows users to to add elements with stateful
+expressions.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/net/netfilter/nf_tables.h | 2 --
- net/netfilter/nf_tables_api.c     | 4 ++--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ net/netfilter/nf_tables_api.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index da2b8ff9f066..13c257f7dd44 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -853,8 +853,6 @@ static inline void *nft_expr_priv(const struct nft_expr *expr)
- 	return (void *)expr->data;
- }
- 
--struct nft_expr *nft_expr_init(const struct nft_ctx *ctx,
--			       const struct nlattr *nla);
- void nft_expr_destroy(const struct nft_ctx *ctx, struct nft_expr *expr);
- int nft_expr_dump(struct sk_buff *skb, unsigned int attr,
- 		  const struct nft_expr *expr);
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index a9f4169c8610..0f670d13ae27 100644
+index 0f670d13ae27..a90bf8d0b9ea 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -2523,8 +2523,8 @@ static void nf_tables_expr_destroy(const struct nft_ctx *ctx,
- 	module_put(type->owner);
- }
+@@ -4913,6 +4913,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 	struct nft_set_elem elem;
+ 	struct nft_set_binding *binding;
+ 	struct nft_object *obj = NULL;
++	struct nft_expr *expr = NULL;
+ 	struct nft_userdata *udata;
+ 	struct nft_data_desc desc;
+ 	struct nft_data data;
+@@ -4980,10 +4981,17 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 			return err;
+ 	}
  
--struct nft_expr *nft_expr_init(const struct nft_ctx *ctx,
--			       const struct nlattr *nla)
-+static struct nft_expr *nft_expr_init(const struct nft_ctx *ctx,
-+				      const struct nlattr *nla)
- {
- 	struct nft_expr_info info;
- 	struct nft_expr *expr;
++	if (nla[NFTA_SET_ELEM_EXPR] != NULL) {
++		expr = nft_set_elem_expr_alloc(ctx, set,
++					       nla[NFTA_SET_ELEM_EXPR]);
++		if (IS_ERR(expr))
++			return PTR_ERR(expr);
++	}
++
+ 	err = nft_setelem_parse_key(ctx, set, &elem.key.val,
+ 				    nla[NFTA_SET_ELEM_KEY]);
+ 	if (err < 0)
+-		return err;
++		goto err_set_elem_expr;
+ 
+ 	nft_set_ext_add_length(&tmpl, NFT_SET_EXT_KEY, set->klen);
+ 
+@@ -5002,6 +5010,10 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 			nft_set_ext_add(&tmpl, NFT_SET_EXT_TIMEOUT);
+ 	}
+ 
++	if (expr)
++		nft_set_ext_add_length(&tmpl, NFT_SET_EXT_EXPR,
++				       expr->ops->size);
++
+ 	if (nla[NFTA_SET_ELEM_OBJREF] != NULL) {
+ 		if (!(set->flags & NFT_SET_OBJECT)) {
+ 			err = -EINVAL;
+@@ -5086,6 +5098,10 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 		*nft_set_ext_obj(ext) = obj;
+ 		obj->use++;
+ 	}
++	if (expr) {
++		memcpy(nft_set_ext_expr(ext), expr, expr->ops->size);
++		kfree(expr);
++	}
+ 
+ 	trans = nft_trans_elem_alloc(ctx, NFT_MSG_NEWSETELEM, set);
+ 	if (trans == NULL)
+@@ -5141,6 +5157,9 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 	nft_data_release(&elem.key_end.val, NFT_DATA_VALUE);
+ err_parse_key:
+ 	nft_data_release(&elem.key.val, NFT_DATA_VALUE);
++err_set_elem_expr:
++	if (expr != NULL)
++		nft_expr_destroy(ctx, expr);
+ 
+ 	return err;
+ }
 -- 
 2.11.0
 
