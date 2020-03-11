@@ -2,109 +2,80 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3CA180D36
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2020 02:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A14F318174B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2020 12:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbgCKBJf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 10 Mar 2020 21:09:35 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:51036 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727958AbgCKBJf (ORCPT
+        id S1729198AbgCKL7R (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 11 Mar 2020 07:59:17 -0400
+Received: from mailout2.hostsharing.net ([83.223.78.233]:58525 "EHLO
+        mailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728996AbgCKL7R (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 10 Mar 2020 21:09:35 -0400
-Received: by mail-wm1-f67.google.com with SMTP id a5so298749wmb.0;
-        Tue, 10 Mar 2020 18:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vVRR4OgupYaiYbHKhmSicBHQ95FN9+SKT9CQzo7pJnM=;
-        b=qvULlz99rWRiLqex5Lnn1QU1NhB/rQU7Wu8/SvYwZHZSifBTXvmU8WAGQIj8+/k9mT
-         aOVd9vPoRvUPnFcecDzQZJE/MygViKIMPSuwXoeS/2yWxorCxdJ46MTFNPSZTs1uI7QI
-         w9FvmdwQHbfNUuGOToq0xasCIJPmi6NZSf3ctusJjmrxW+GR938JEwGd5F0JFzDPivOO
-         szaaDIuuKlTSOVORMmp5nEd/i6JMrX/UdDYo/lAEO7Nyl/St7iCJdbRVgsBFcaQhCd/r
-         4SpKYdnrvHW9Qb3RxC9tj92GCqz2Q8MuSJ6BWtEmTsTRSfNyT9COuXCLgLD+Fawc7mun
-         n6wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vVRR4OgupYaiYbHKhmSicBHQ95FN9+SKT9CQzo7pJnM=;
-        b=UMmhJvxprM8hWggW5kjm/b3a+mfr9iQ0Nq0O41qahfl/oRAzROigefpOQosq1FWMsG
-         FiMjwgKIWRV0BvcDBmcRNADVhAEF97eo4ATzx+XAdz+GzHRptRfh2hzwiP+dn/mp1555
-         C/PqIduFrpmSrhNONQ/vCjeyMi/PY7tQqb5RQ2TJ9I458bdLpaTMYGLYIvWGg9TzBcwY
-         haD269S+Lw8Zjr2ktgbuT2XfrGft35NlMa0s+Gtpy6jmObdur3vVAjeRqksc4WLpTe6r
-         8DK9kuKORxc1V1ByxASNdZuoth/drsa62PDK99mHC04evH1zL7s5KcwInGLn5ZrIMqGp
-         B64w==
-X-Gm-Message-State: ANhLgQ3sbGhpFtwMXoG+sihjrdXkODJ0TDEOojpc5ZZmUAfqGZmcsCyN
-        zY4/PjbuuJWBycxVlpYCi+6IAIt0sLsZ
-X-Google-Smtp-Source: ADFU+vtXpCSp5JFuiBAC9PWH1R2+yQ8jDwpK5A9aOUQnqqdqMGMCmmBBcK5PstShOSvBnZVXdm1TtQ==
-X-Received: by 2002:a7b:c4cc:: with SMTP id g12mr379000wmk.104.1583888971399;
-        Tue, 10 Mar 2020 18:09:31 -0700 (PDT)
-Received: from ninjahost.lan (host-2-102-15-144.as13285.net. [2.102.15.144])
-        by smtp.googlemail.com with ESMTPSA id i6sm36658097wra.42.2020.03.10.18.09.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Mar 2020 18:09:31 -0700 (PDT)
-From:   Jules Irenge <jbi.octave@gmail.com>
-To:     boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Wed, 11 Mar 2020 07:59:17 -0400
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by mailout2.hostsharing.net (Postfix) with ESMTPS id F0F3E101684AD;
+        Wed, 11 Mar 2020 12:59:14 +0100 (CET)
+Received: from localhost (unknown [87.130.102.138])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h08.hostsharing.net (Postfix) with ESMTPSA id AE0476005A67;
+        Wed, 11 Mar 2020 12:59:14 +0100 (CET)
+X-Mailbox-Line: From 14ab7e5af20124a34a50426fd570da7d3b0369ce Mon Sep 17 00:00:00 2001
+Message-Id: <cover.1583927267.git.lukas@wunner.de>
+From:   Lukas Wunner <lukas@wunner.de>
+Date:   Wed, 11 Mar 2020 12:59:00 +0100
+Subject: [PATCH nf-next 0/3] Netfilter egress hook
+To:     "Pablo Neira Ayuso" <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netfilter-devel@vger.kernel.org (open list:NETFILTER),
-        coreteam@netfilter.org (open list:NETFILTER)
-Subject: [PATCH 5/8] netfilter: conntrack: Add missing annotations for nf_conntrack_all_lock() and nf_conntrack_all_unlock()
-Date:   Wed, 11 Mar 2020 01:09:05 +0000
-Message-Id: <20200311010908.42366-6-jbi.octave@gmail.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200311010908.42366-1-jbi.octave@gmail.com>
-References: <0/8>
- <20200311010908.42366-1-jbi.octave@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, Martin Mares <mj@ucw.cz>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Thomas Graf <tgraf@suug.ch>,
+        Alexei Starovoitov <ast@kernel.org>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Sparse reports warnings at nf_conntrack_all_lock()
-	and nf_conntrack_all_unlock()
+Introduce a netfilter egress hook to complement the existing ingress hook.
 
-warning: context imbalance in nf_conntrack_all_lock()
-	- wrong count at exit
-warning: context imbalance in nf_conntrack_all_unlock()
-	- unexpected unlock
+User space support for nft will be submitted separately in a minute.
 
-Add the missing __acquires(&nf_conntrack_locks_all_lock)
-Add missing __releases(&nf_conntrack_locks_all_lock)
+I'm re-submitting this as non-RFC per Pablo's request.  Compared to the
+RFC, I've changed the order in patch [3/3] to perform netfilter first,
+then tc (instead of the other way round).  The rationale is provided in
+the commit message.  I've also extended the commit message with performance
+measurements.
 
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
----
- net/netfilter/nf_conntrack_core.c | 2 ++
- 1 file changed, 2 insertions(+)
+To reproduce the performance measurements in patch [3/3], you'll need
+net-next commit 1e09e5818b3a ("pktgen: Allow on loopback device").
 
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index d1305423640f..a0bc122d5df1 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -143,6 +143,7 @@ static bool nf_conntrack_double_lock(struct net *net, unsigned int h1,
- }
- 
- static void nf_conntrack_all_lock(void)
-+	__acquires(&nf_conntrack_locks_all_lock)
- {
- 	int i;
- 
-@@ -162,6 +163,7 @@ static void nf_conntrack_all_lock(void)
- }
- 
- static void nf_conntrack_all_unlock(void)
-+	__releases(&nf_conntrack_locks_all_lock)
- {
- 	/* All prior stores must be complete before we clear
- 	 * 'nf_conntrack_locks_all'. Otherwise nf_conntrack_lock()
+Link to the RFC version:
+https://lore.kernel.org/netdev/cover.1572528496.git.lukas@wunner.de/
+
+Thanks!
+
+Lukas Wunner (3):
+  netfilter: Rename ingress hook include file
+  netfilter: Generalize ingress hook
+  netfilter: Introduce egress hook
+
+ include/linux/netdevice.h         |   4 ++
+ include/linux/netfilter_ingress.h |  58 -----------------
+ include/linux/netfilter_netdev.h  | 102 ++++++++++++++++++++++++++++++
+ include/uapi/linux/netfilter.h    |   1 +
+ net/core/dev.c                    |  27 ++++++--
+ net/netfilter/Kconfig             |   8 +++
+ net/netfilter/core.c              |  24 +++++--
+ net/netfilter/nft_chain_filter.c  |   4 +-
+ 8 files changed, 160 insertions(+), 68 deletions(-)
+ delete mode 100644 include/linux/netfilter_ingress.h
+ create mode 100644 include/linux/netfilter_netdev.h
+
 -- 
-2.24.1
+2.25.0
 
