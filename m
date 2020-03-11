@@ -2,38 +2,36 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 91679181783
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2020 13:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D46AB1817D4
+	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Mar 2020 13:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729236AbgCKMIy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 11 Mar 2020 08:08:54 -0400
-Received: from mailout3.hostsharing.net ([176.9.242.54]:55463 "EHLO
-        mailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729206AbgCKMIx (ORCPT
+        id S1729222AbgCKMUb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 11 Mar 2020 08:20:31 -0400
+Received: from mailout1.hostsharing.net ([83.223.95.204]:49459 "EHLO
+        mailout1.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729095AbgCKMUb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 11 Mar 2020 08:08:53 -0400
+        Wed, 11 Mar 2020 08:20:31 -0400
 Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by mailout3.hostsharing.net (Postfix) with ESMTPS id 56C52101E692E;
-        Wed, 11 Mar 2020 13:08:50 +0100 (CET)
+        by mailout1.hostsharing.net (Postfix) with ESMTPS id 22F5910040E31;
+        Wed, 11 Mar 2020 13:20:23 +0100 (CET)
 Received: from localhost (unknown [87.130.102.138])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by h08.hostsharing.net (Postfix) with ESMTPSA id 9AD9C6005A67;
-        Wed, 11 Mar 2020 13:08:49 +0100 (CET)
-X-Mailbox-Line: From 14ab7e5af20124a34a50426fd570da7d3b0369ce Mon Sep 17 00:00:00 2001
-Message-Id: <14ab7e5af20124a34a50426fd570da7d3b0369ce.1583927267.git.lukas@wunner.de>
-In-Reply-To: <cover.1583927267.git.lukas@wunner.de>
-References: <cover.1583927267.git.lukas@wunner.de>
+        by h08.hostsharing.net (Postfix) with ESMTPSA id D25D56113C8D;
+        Wed, 11 Mar 2020 13:20:22 +0100 (CET)
+X-Mailbox-Line: From d6b6896fdd8408e4ddbd66ab524709e5cf82ea32 Mon Sep 17 00:00:00 2001
+Message-Id: <d6b6896fdd8408e4ddbd66ab524709e5cf82ea32.1583929080.git.lukas@wunner.de>
 From:   Lukas Wunner <lukas@wunner.de>
-Date:   Wed, 11 Mar 2020 12:59:03 +0100
-Subject: [PATCH nf-next 3/3] netfilter: Introduce egress hook
+Date:   Wed, 11 Mar 2020 13:20:06 +0100
+Subject: [PATCH nft] src: Support netdev egress hook
 To:     "Pablo Neira Ayuso" <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>
 Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, Martin Mares <mj@ucw.cz>,
+        Martin Mares <mj@ucw.cz>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Graf <tgraf@suug.ch>,
@@ -43,156 +41,122 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Commit e687ad60af09 ("netfilter: add netfilter ingress hook after
-handle_ing() under unique static key") introduced the ability to
-classify packets on ingress.
-
-Allow the same on egress.  Position the hook immediately before a packet
-is handed to tc and then sent out on an interface, thereby mirroring the
-ingress order.  This order allows marking packets in the netfilter
-egress hook and subsequently using the mark in tc.  Another benefit of
-this order is consistency with a lot of existing documentation which
-says that egress tc is performed after netfilter hooks.
-
-Egress hooks already exist for the most common protocols, such as
-NF_INET_LOCAL_OUT or NF_ARP_OUT, and those are to be preferred because
-they are executed earlier during packet processing.  However for more
-exotic protocols, there is currently no provision to apply netfilter on
-egress.  A common workaround is to enslave the interface to a bridge and
-use ebtables, or to resort to tc.  But when the ingress hook was
-introduced, consensus was that users should be given the choice to use
-netfilter or tc, whichever tool suits their needs best:
-https://lore.kernel.org/netdev/20150430153317.GA3230@salvia/
-
-There have also been occasional user requests for a netfilter egress
-hook in the past, e.g.:
-https://www.spinics.net/lists/netfilter/msg50038.html
-
-Performance measurements with pktgen surprisingly show a speedup rather
-than a slowdown with this commit:
-
-* Without this commit:
-  Result: OK: 34240933(c34238375+d2558) usec, 100000000 (60byte,0frags)
-  2920481pps 1401Mb/sec (1401830880bps) errors: 0
-
-* With this commit:
-  Result: OK: 33997299(c33994193+d3106) usec, 100000000 (60byte,0frags)
-  2941410pps 1411Mb/sec (1411876800bps) errors: 0
-
-* Without this commit + tc egress:
-  Result: OK: 39022386(c39019547+d2839) usec, 100000000 (60byte,0frags)
-  2562631pps 1230Mb/sec (1230062880bps) errors: 0
-
-* With this commit + tc egress:
-  Result: OK: 37604447(c37601877+d2570) usec, 100000000 (60byte,0frags)
-  2659259pps 1276Mb/sec (1276444320bps) errors: 0
-
-* With this commit + nft egress:
-  Result: OK: 41436689(c41434088+d2600) usec, 100000000 (60byte,0frags)
-  2413320pps 1158Mb/sec (1158393600bps) errors: 0
-
-Tested on a bare-metal Core i7-3615QM, each measurement was performed
-three times to verify that the numbers are stable.
-
-Commands to perform a measurement:
-modprobe pktgen
-echo "add_device lo@3" > /proc/net/pktgen/kpktgend_3
-samples/pktgen/pktgen_bench_xmit_mode_queue_xmit.sh -i 'lo@3' -n 100000000
-
-Commands for testing tc egress:
-tc qdisc add dev lo clsact
-tc filter add dev lo egress protocol ip prio 1 u32 match ip dst 4.3.2.1/32
-
-Commands for testing nft egress:
-nft add table netdev t
-nft add chain netdev t co \{ type filter hook egress device lo priority 0 \; \}
-nft add rule netdev t co ip daddr 4.3.2.1/32 drop
-
-All testing was performed on the loopback interface to avoid distorting
-measurements by the packet handling in the low-level Ethernet driver.
+Add userspace support for the newly introduced netdev egress hook
+with documentation and tests.  Usage is identical to the ingress hook.
 
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
 ---
- include/linux/netdevice.h        |  4 ++++
- include/linux/netfilter_netdev.h | 27 +++++++++++++++++++++++++++
- include/uapi/linux/netfilter.h   |  1 +
- net/core/dev.c                   | 23 ++++++++++++++++++++---
- net/netfilter/Kconfig            |  8 ++++++++
- net/netfilter/core.c             | 24 ++++++++++++++++++++----
- net/netfilter/nft_chain_filter.c |  4 +++-
- 7 files changed, 83 insertions(+), 8 deletions(-)
+ doc/nft.txt                                   |   14 +-
+ doc/statements.txt                            |    4 +-
+ include/linux/netfilter.h                     |    1 +
+ src/evaluate.c                                |    2 +
+ src/rule.c                                    |    3 +
+ tests/py/any/dup.t                            |    3 +-
+ tests/py/any/fwd.t                            |    3 +-
+ tests/py/any/icmpX.t.netdev                   |    3 +-
+ tests/py/any/limit.t                          |    3 +-
+ tests/py/any/meta.t                           |    3 +-
+ tests/py/any/objects.t                        |    3 +-
+ tests/py/any/quota.t                          |    3 +-
+ tests/py/any/rawpayload.t                     |    3 +-
+ tests/py/arp/arp.t                            |    3 +-
+ tests/py/bridge/vlan.t                        |    3 +-
+ tests/py/inet/ah.t                            |    3 +-
+ tests/py/inet/comp.t                          |    3 +-
+ tests/py/inet/dccp.t                          |    3 +-
+ tests/py/inet/esp.t                           |    3 +-
+ tests/py/inet/ether-ip.t                      |    3 +-
+ tests/py/inet/ether.t                         |    3 +-
+ tests/py/inet/ip.t                            |    3 +-
+ tests/py/inet/ip.t.payload.netdev             |   14 +
+ tests/py/inet/ip_tcp.t                        |    3 +-
+ tests/py/inet/map.t                           |    3 +-
+ tests/py/inet/sctp.t                          |    3 +-
+ tests/py/inet/sets.t                          |    3 +-
+ tests/py/inet/tcp.t                           |    3 +-
+ tests/py/inet/udp.t                           |    3 +-
+ tests/py/inet/udplite.t                       |    3 +-
+ tests/py/ip/ip.t                              |    3 +-
+ tests/py/ip/ip_tcp.t                          |    2 +
+ tests/py/ip/ip_tcp.t.payload.netdev           |   93 ++
+ tests/py/ip/sets.t                            |    3 +-
+ tests/py/ip6/frag.t                           |    2 +
+ tests/py/ip6/frag.t.payload.netdev            | 1476 +++++++++++++++++
+ tests/py/ip6/sets.t                           |    3 +-
+ tests/py/ip6/vmap.t                           |    3 +-
+ tests/shell/testcases/chains/0021prio_0       |    1 +
+ .../shell/testcases/chains/0026prio_netdev_1  |    4 +-
+ .../testcases/chains/dumps/0021prio_0.nft     |   20 +
+ 41 files changed, 1684 insertions(+), 36 deletions(-)
+ create mode 100644 tests/py/ip/ip_tcp.t.payload.netdev
+ create mode 100644 tests/py/ip6/frag.t.payload.netdev
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 6c3f7032e8d9..2d2606d1b1b3 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -1750,6 +1750,7 @@ enum netdev_priv_flags {
-  *	@xps_maps:	XXX: need comments on this one
-  *	@miniq_egress:		clsact qdisc specific data for
-  *				egress processing
-+ *	@nf_hooks_egress:	netfilter hooks executed for egress packets
-  *	@qdisc_hash:		qdisc hash table
-  *	@watchdog_timeo:	Represents the timeout that is used by
-  *				the watchdog (see dev_watchdog())
-@@ -2025,6 +2026,9 @@ struct net_device {
- #ifdef CONFIG_NET_CLS_ACT
- 	struct mini_Qdisc __rcu	*miniq_egress;
- #endif
-+#ifdef CONFIG_NETFILTER_EGRESS
-+	struct nf_hook_entries __rcu *nf_hooks_egress;
-+#endif
+diff --git a/doc/nft.txt b/doc/nft.txt
+index ba0c8c0b..74e22c47 100644
+--- a/doc/nft.txt
++++ b/doc/nft.txt
+@@ -171,7 +171,7 @@ packet processing paths, which invoke nftables if rules for these hooks exist.
+ *inet*:: Internet (IPv4/IPv6) address family.
+ *arp*:: ARP address family, handling IPv4 ARP packets.
+ *bridge*:: Bridge address family, handling packets which traverse a bridge device.
+-*netdev*:: Netdev address family, handling packets from ingress.
++*netdev*:: Netdev address family, handling packets on ingress and egress.
  
- #ifdef CONFIG_NET_SCHED
- 	DECLARE_HASHTABLE	(qdisc_hash, 4);
-diff --git a/include/linux/netfilter_netdev.h b/include/linux/netfilter_netdev.h
-index 49e26479642e..92d3611a782e 100644
---- a/include/linux/netfilter_netdev.h
-+++ b/include/linux/netfilter_netdev.h
-@@ -47,6 +47,9 @@ static inline void nf_hook_netdev_init(struct net_device *dev)
- #ifdef CONFIG_NETFILTER_INGRESS
- 	RCU_INIT_POINTER(dev->nf_hooks_ingress, NULL);
- #endif
-+#ifdef CONFIG_NETFILTER_EGRESS
-+	RCU_INIT_POINTER(dev->nf_hooks_egress, NULL);
-+#endif
- }
+ All nftables objects exist in address family specific namespaces, therefore all
+ identifiers include an address family. If an identifier is specified without an
+@@ -224,7 +224,7 @@ The list of supported hooks is identical to IPv4/IPv6/Inet address families abov
  
- #ifdef CONFIG_NETFILTER_INGRESS
-@@ -72,4 +75,28 @@ static inline int nf_hook_ingress(struct sk_buff *skb)
- 	return 0;
- }
- #endif /* CONFIG_NETFILTER_INGRESS */
-+
-+#ifdef CONFIG_NETFILTER_EGRESS
-+static inline bool nf_hook_egress_active(const struct sk_buff *skb)
-+{
-+	return nf_hook_netdev_active(NF_NETDEV_EGRESS,
-+				     skb->dev->nf_hooks_egress);
-+}
-+
-+static inline int nf_hook_egress(struct sk_buff *skb)
-+{
-+	return nf_hook_netdev(skb, NF_NETDEV_EGRESS,
-+			      skb->dev->nf_hooks_egress);
-+}
-+#else /* CONFIG_NETFILTER_EGRESS */
-+static inline int nf_hook_egress_active(struct sk_buff *skb)
-+{
-+	return 0;
-+}
-+
-+static inline int nf_hook_egress(struct sk_buff *skb)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_NETFILTER_EGRESS */
- #endif /* _NETFILTER_INGRESS_H_ */
-diff --git a/include/uapi/linux/netfilter.h b/include/uapi/linux/netfilter.h
-index ca9e63d6e0e4..d1616574c54f 100644
---- a/include/uapi/linux/netfilter.h
-+++ b/include/uapi/linux/netfilter.h
-@@ -50,6 +50,7 @@ enum nf_inet_hooks {
+ NETDEV ADDRESS FAMILY
+ ~~~~~~~~~~~~~~~~~~~~
+-The Netdev address family handles packets from ingress.
++The Netdev address family handles packets on ingress and egress.
+ 
+ .Netdev address family hooks
+ [options="header"]
+@@ -233,6 +233,9 @@ The Netdev address family handles packets from ingress.
+ |ingress |
+ All packets entering the system are processed by this hook. It is invoked before
+ layer 3 protocol handlers and it can be used for early filtering and policing.
++|egress |
++All packets leaving the system are processed by this hook. It is invoked after
++layer 3 protocol handlers and can be used for late filtering and policing.
+ |=================
+ 
+ RULESET
+@@ -358,9 +361,10 @@ Apart from the special cases illustrated above (e.g. *nat* type not supporting
+ *forward* hook or *route* type only supporting *output* hook), there are two
+ further quirks worth noticing:
+ 
+-* The netdev family supports merely a single combination, namely *filter* type and
+-  *ingress* hook. Base chains in this family also require the *device* parameter
+-  to be present since they exist per incoming interface only.
++* The netdev family supports merely two combinations, namely *filter* type with
++  *ingress* hook and *filter* type with *egress* hook. Base chains in this
++  family also require the *device* parameter to be present since they exist per
++  interface only.
+ * The arp family supports only the *input* and *output* hooks, both in chains of type
+   *filter*.
+ 
+diff --git a/doc/statements.txt b/doc/statements.txt
+index ced311cb..3f5bcb4d 100644
+--- a/doc/statements.txt
++++ b/doc/statements.txt
+@@ -661,8 +661,8 @@ dup to ip daddr map { 192.168.7.1 : "eth0", 192.168.7.2 : "eth1" }
+ FWD STATEMENT
+ ~~~~~~~~~~~~~
+ The fwd statement is used to redirect a raw packet to another interface. It is
+-only available in the netdev family ingress hook. It is similar to the dup
+-statement except that no copy is made.
++only available in the netdev family ingress and egress hooks. It is similar to
++the dup statement except that no copy is made.
+ 
+ *fwd to* 'device'
+ 
+diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+index 18075f95..8ca15b43 100644
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -53,6 +53,7 @@ enum nf_inet_hooks {
  
  enum nf_dev_hooks {
  	NF_NETDEV_INGRESS,
@@ -200,156 +164,2194 @@ index ca9e63d6e0e4..d1616574c54f 100644
  	NF_NETDEV_NUMHOOKS
  };
  
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 2e55d4e41517..89724a9f1bbb 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3771,6 +3771,7 @@ EXPORT_SYMBOL(dev_loopback_xmit);
- static struct sk_buff *
- sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
- {
-+#ifdef CONFIG_NET_CLS_ACT
- 	struct mini_Qdisc *miniq = rcu_dereference_bh(dev->miniq_egress);
- 	struct tcf_result cl_res;
- 
-@@ -3804,11 +3805,24 @@ sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 4a23b231..93ec4e60 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -3714,6 +3714,8 @@ static uint32_t str2hooknum(uint32_t family, const char *hook)
+ 	case NFPROTO_NETDEV:
+ 		if (!strcmp(hook, "ingress"))
+ 			return NF_NETDEV_INGRESS;
++		else if (!strcmp(hook, "egress"))
++			return NF_NETDEV_EGRESS;
+ 		break;
  	default:
  		break;
- 	}
--
-+#endif /* CONFIG_NET_CLS_ACT */
- 	return skb;
- }
- #endif /* CONFIG_NET_EGRESS */
- 
-+static inline int nf_egress(struct sk_buff *skb)
-+{
-+	if (nf_hook_egress_active(skb)) {
-+		int ret;
-+
-+		rcu_read_lock();
-+		ret = nf_hook_egress(skb);
-+		rcu_read_unlock();
-+		return ret;
-+	}
-+	return 0;
-+}
-+
- #ifdef CONFIG_XPS
- static int __get_xps_queue_idx(struct net_device *dev, struct sk_buff *skb,
- 			       struct xps_dev_maps *dev_maps, unsigned int tci)
-@@ -3995,13 +4009,16 @@ static int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
- 	qdisc_pkt_len_init(skb);
- #ifdef CONFIG_NET_CLS_ACT
- 	skb->tc_at_ingress = 0;
--# ifdef CONFIG_NET_EGRESS
-+#endif
-+#ifdef CONFIG_NET_EGRESS
- 	if (static_branch_unlikely(&egress_needed_key)) {
-+		if (nf_egress(skb) < 0)
-+			goto out;
-+
- 		skb = sch_handle_egress(skb, &rc, dev);
- 		if (!skb)
- 			goto out;
- 	}
--# endif
- #endif
- 	/* If device/qdisc don't need skb->dst, release it right now while
- 	 * its hot in this cpu cache.
-diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
-index 468fea1aebba..f4c68f60f241 100644
---- a/net/netfilter/Kconfig
-+++ b/net/netfilter/Kconfig
-@@ -10,6 +10,14 @@ config NETFILTER_INGRESS
- 	  This allows you to classify packets from ingress using the Netfilter
- 	  infrastructure.
- 
-+config NETFILTER_EGRESS
-+	bool "Netfilter egress support"
-+	default y
-+	select NET_EGRESS
-+	help
-+	  This allows you to classify packets before transmission using the
-+	  Netfilter infrastructure.
-+
- config NETFILTER_NETLINK
- 	tristate
- 
-diff --git a/net/netfilter/core.c b/net/netfilter/core.c
-index 78f046ec506f..85e9c959aba7 100644
---- a/net/netfilter/core.c
-+++ b/net/netfilter/core.c
-@@ -306,6 +306,12 @@ nf_hook_entry_head(struct net *net, int pf, unsigned int hooknum,
- 		if (dev && dev_net(dev) == net)
- 			return &dev->nf_hooks_ingress;
- 	}
-+#endif
-+#ifdef CONFIG_NETFILTER_EGRESS
-+	if (hooknum == NF_NETDEV_EGRESS) {
-+		if (dev && dev_net(dev) == net)
-+			return &dev->nf_hooks_egress;
-+	}
- #endif
- 	WARN_ON_ONCE(1);
- 	return NULL;
-@@ -318,11 +324,13 @@ static int __nf_register_net_hook(struct net *net, int pf,
- 	struct nf_hook_entries __rcu **pp;
- 
- 	if (pf == NFPROTO_NETDEV) {
--#ifndef CONFIG_NETFILTER_INGRESS
--		if (reg->hooknum == NF_NETDEV_INGRESS)
-+		if ((!IS_ENABLED(CONFIG_NETFILTER_INGRESS) &&
-+		     reg->hooknum == NF_NETDEV_INGRESS) ||
-+		    (!IS_ENABLED(CONFIG_NETFILTER_EGRESS) &&
-+		     reg->hooknum == NF_NETDEV_EGRESS))
- 			return -EOPNOTSUPP;
--#endif
--		if (reg->hooknum != NF_NETDEV_INGRESS ||
-+		if ((reg->hooknum != NF_NETDEV_INGRESS &&
-+		     reg->hooknum != NF_NETDEV_EGRESS) ||
- 		    !reg->dev || dev_net(reg->dev) != net)
- 			return -EINVAL;
- 	}
-@@ -348,6 +356,10 @@ static int __nf_register_net_hook(struct net *net, int pf,
- 	if (pf == NFPROTO_NETDEV && reg->hooknum == NF_NETDEV_INGRESS)
- 		net_inc_ingress_queue();
- #endif
-+#ifdef CONFIG_NETFILTER_EGRESS
-+	if (pf == NFPROTO_NETDEV && reg->hooknum == NF_NETDEV_EGRESS)
-+		net_inc_egress_queue();
-+#endif
- #ifdef CONFIG_JUMP_LABEL
- 	static_key_slow_inc(&nf_hooks_needed[pf][reg->hooknum]);
- #endif
-@@ -406,6 +418,10 @@ static void __nf_unregister_net_hook(struct net *net, int pf,
- 		if (pf == NFPROTO_NETDEV && reg->hooknum == NF_NETDEV_INGRESS)
- 			net_dec_ingress_queue();
- #endif
-+#ifdef CONFIG_NETFILTER_EGRESS
-+		if (pf == NFPROTO_NETDEV && reg->hooknum == NF_NETDEV_EGRESS)
-+			net_dec_egress_queue();
-+#endif
- #ifdef CONFIG_JUMP_LABEL
- 		static_key_slow_dec(&nf_hooks_needed[pf][reg->hooknum]);
- #endif
-diff --git a/net/netfilter/nft_chain_filter.c b/net/netfilter/nft_chain_filter.c
-index c78d01bc02e9..67ce6dbb5496 100644
---- a/net/netfilter/nft_chain_filter.c
-+++ b/net/netfilter/nft_chain_filter.c
-@@ -277,9 +277,11 @@ static const struct nft_chain_type nft_chain_filter_netdev = {
- 	.name		= "filter",
- 	.type		= NFT_CHAIN_T_DEFAULT,
- 	.family		= NFPROTO_NETDEV,
--	.hook_mask	= (1 << NF_NETDEV_INGRESS),
-+	.hook_mask	= (1 << NF_NETDEV_INGRESS) |
-+			  (1 << NF_NETDEV_EGRESS),
- 	.hooks		= {
- 		[NF_NETDEV_INGRESS]	= nft_do_chain_netdev,
-+		[NF_NETDEV_EGRESS]	= nft_do_chain_netdev,
- 	},
+diff --git a/src/rule.c b/src/rule.c
+index 8e585268..b9930184 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -817,6 +817,7 @@ static const char * const chain_hookname_str_array[] = {
+ 	"postrouting",
+ 	"output",
+ 	"ingress",
++	"egress",
+ 	NULL,
  };
  
+@@ -973,6 +974,8 @@ const char *hooknum2str(unsigned int family, unsigned int hooknum)
+ 		switch (hooknum) {
+ 		case NF_NETDEV_INGRESS:
+ 			return "ingress";
++		case NF_NETDEV_EGRESS:
++			return "egress";
+ 		}
+ 		break;
+ 	default:
+diff --git a/tests/py/any/dup.t b/tests/py/any/dup.t
+index 181b4195..56328022 100644
+--- a/tests/py/any/dup.t
++++ b/tests/py/any/dup.t
+@@ -1,6 +1,7 @@
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ dup to "lo";ok
+ dup to meta mark map { 0x00000001 : "lo", 0x00000002 : "lo"};ok
+diff --git a/tests/py/any/fwd.t b/tests/py/any/fwd.t
+index 2e34d55a..6051560a 100644
+--- a/tests/py/any/fwd.t
++++ b/tests/py/any/fwd.t
+@@ -1,6 +1,7 @@
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ fwd to "lo";ok
+ fwd to meta mark map { 0x00000001 : "lo", 0x00000002 : "lo"};ok
+diff --git a/tests/py/any/icmpX.t.netdev b/tests/py/any/icmpX.t.netdev
+index a327ce6a..cf402428 100644
+--- a/tests/py/any/icmpX.t.netdev
++++ b/tests/py/any/icmpX.t.netdev
+@@ -1,6 +1,7 @@
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ ip protocol icmp icmp type echo-request;ok;icmp type echo-request
+ icmp type echo-request;ok
+diff --git a/tests/py/any/limit.t b/tests/py/any/limit.t
+index ef7f9313..0110e77f 100644
+--- a/tests/py/any/limit.t
++++ b/tests/py/any/limit.t
+@@ -1,12 +1,13 @@
+ :output;type filter hook output priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;output
+ *ip6;test-ip6;output
+ *inet;test-inet;output
+ *arp;test-arp;output
+ *bridge;test-bridge;output
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ limit rate 400/minute;ok
+ limit rate 20/second;ok
+diff --git a/tests/py/any/meta.t b/tests/py/any/meta.t
+index 327f973f..7884237d 100644
+--- a/tests/py/any/meta.t
++++ b/tests/py/any/meta.t
+@@ -1,12 +1,13 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+ *arp;test-arp;input
+ *bridge;test-bridge;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ meta length 1000;ok
+ meta length 22;ok
+diff --git a/tests/py/any/objects.t b/tests/py/any/objects.t
+index 89a9545f..7b51f918 100644
+--- a/tests/py/any/objects.t
++++ b/tests/py/any/objects.t
+@@ -1,12 +1,13 @@
+ :output;type filter hook output priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;output
+ *ip6;test-ip6;output
+ *inet;test-inet;output
+ *arp;test-arp;output
+ *bridge;test-bridge;output
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ %cnt1 type counter;ok
+ %qt1 type quota 25 mbytes;ok
+diff --git a/tests/py/any/quota.t b/tests/py/any/quota.t
+index 9a8db114..79dd7654 100644
+--- a/tests/py/any/quota.t
++++ b/tests/py/any/quota.t
+@@ -1,12 +1,13 @@
+ :output;type filter hook output priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;output
+ *ip6;test-ip6;output
+ *inet;test-inet;output
+ *arp;test-arp;output
+ *bridge;test-bridge;output
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ quota 1025 bytes;ok
+ quota 1 kbytes;ok
+diff --git a/tests/py/any/rawpayload.t b/tests/py/any/rawpayload.t
+index c3382a96..9687729d 100644
+--- a/tests/py/any/rawpayload.t
++++ b/tests/py/any/rawpayload.t
+@@ -1,8 +1,9 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ meta l4proto { tcp, udp, sctp} @th,16,16 { 22, 23, 80 };ok;meta l4proto { 6, 17, 132} th dport { 22, 23, 80}
+ meta l4proto tcp @th,16,16 { 22, 23, 80};ok;tcp dport { 22, 23, 80}
+diff --git a/tests/py/arp/arp.t b/tests/py/arp/arp.t
+index 2540c0a7..46449016 100644
+--- a/tests/py/arp/arp.t
++++ b/tests/py/arp/arp.t
+@@ -1,9 +1,10 @@
+ # filter chains available are: input, output, forward
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *arp;test-arp;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ arp htype 1;ok
+ arp htype != 1;ok
+diff --git a/tests/py/bridge/vlan.t b/tests/py/bridge/vlan.t
+index 7a52a502..d3aa27a7 100644
+--- a/tests/py/bridge/vlan.t
++++ b/tests/py/bridge/vlan.t
+@@ -1,8 +1,9 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *bridge;test-bridge;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ vlan id 4094;ok
+ vlan id 0;ok
+diff --git a/tests/py/inet/ah.t b/tests/py/inet/ah.t
+index 8544d9dd..878403ae 100644
+--- a/tests/py/inet/ah.t
++++ b/tests/py/inet/ah.t
+@@ -1,10 +1,11 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ # nexthdr Bug to list table.
+ 
+diff --git a/tests/py/inet/comp.t b/tests/py/inet/comp.t
+index 0df18139..082f5c16 100644
+--- a/tests/py/inet/comp.t
++++ b/tests/py/inet/comp.t
+@@ -1,10 +1,11 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ # BUG: nft: payload.c:88: payload_expr_pctx_update: Assertion `left->payload.base + 1 <= (__PROTO_BASE_MAX - 1)' failed.
+ - comp nexthdr esp;ok;comp nexthdr 50
+diff --git a/tests/py/inet/dccp.t b/tests/py/inet/dccp.t
+index f0dd788b..3b08f62f 100644
+--- a/tests/py/inet/dccp.t
++++ b/tests/py/inet/dccp.t
+@@ -1,10 +1,11 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ dccp sport 21-35;ok
+ dccp sport != 21-35;ok
+diff --git a/tests/py/inet/esp.t b/tests/py/inet/esp.t
+index e79eeada..65f5a5ec 100644
+--- a/tests/py/inet/esp.t
++++ b/tests/py/inet/esp.t
+@@ -1,10 +1,11 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ esp spi 100;ok
+ esp spi != 100;ok
+diff --git a/tests/py/inet/ether-ip.t b/tests/py/inet/ether-ip.t
+index 0c8c7f9d..759124de 100644
+--- a/tests/py/inet/ether-ip.t
++++ b/tests/py/inet/ether-ip.t
+@@ -1,8 +1,9 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ tcp dport 22 iiftype ether ip daddr 1.2.3.4 ether saddr 00:0f:54:0c:11:4 accept;ok;tcp dport 22 ether saddr 00:0f:54:0c:11:04 ip daddr 1.2.3.4 accept
+ tcp dport 22 ip daddr 1.2.3.4 ether saddr 00:0f:54:0c:11:04;ok
+diff --git a/tests/py/inet/ether.t b/tests/py/inet/ether.t
+index afdf8b89..c4b1ced7 100644
+--- a/tests/py/inet/ether.t
++++ b/tests/py/inet/ether.t
+@@ -1,11 +1,12 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+ *bridge;test-bridge;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ tcp dport 22 iiftype ether ether saddr 00:0f:54:0c:11:4 accept;ok;tcp dport 22 ether saddr 00:0f:54:0c:11:04 accept
+ tcp dport 22 ether saddr 00:0f:54:0c:11:04 accept;ok
+diff --git a/tests/py/inet/ip.t b/tests/py/inet/ip.t
+index 4eb69d73..3574a612 100644
+--- a/tests/py/inet/ip.t
++++ b/tests/py/inet/ip.t
+@@ -1,9 +1,10 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *inet;test-inet;input
+ *bridge;test-bridge;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ ip saddr . ip daddr . ether saddr { 1.1.1.1 . 2.2.2.2 . ca:fe:ca:fe:ca:fe };ok
+diff --git a/tests/py/inet/ip.t.payload.netdev b/tests/py/inet/ip.t.payload.netdev
+index 95be9194..38ed0ad3 100644
+--- a/tests/py/inet/ip.t.payload.netdev
++++ b/tests/py/inet/ip.t.payload.netdev
+@@ -12,3 +12,17 @@ netdev test-netdev ingress
+   [ payload load 6b @ link header + 6 => reg 10 ]
+   [ lookup reg 1 set __set%d ]
+ 
++# meta protocol ip ip saddr . ip daddr . ether saddr { 1.1.1.1 . 2.2.2.2 . ca:fe:ca:fe:ca:fe }
++__set%d test-netdev 3
++__set%d test-netdev 0
++	element 01010101 02020202 fecafeca 0000feca  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ meta load iiftype => reg 1 ]
++  [ cmp eq reg 1 0x00000001 ]
++  [ payload load 4b @ network header + 12 => reg 1 ]
++  [ payload load 4b @ network header + 16 => reg 9 ]
++  [ payload load 6b @ link header + 6 => reg 10 ]
++  [ lookup reg 1 set __set%d ]
++
+diff --git a/tests/py/inet/ip_tcp.t b/tests/py/inet/ip_tcp.t
+index f2a28ebd..ab76ffa9 100644
+--- a/tests/py/inet/ip_tcp.t
++++ b/tests/py/inet/ip_tcp.t
+@@ -1,9 +1,10 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *inet;test-inet;input
+ *bridge;test-bridge;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ # must not remove ip dependency -- ONLY ipv4 packets should be matched
+ ip protocol tcp tcp dport 22;ok;ip protocol 6 tcp dport 22
+diff --git a/tests/py/inet/map.t b/tests/py/inet/map.t
+index e83490a8..5a7161b7 100644
+--- a/tests/py/inet/map.t
++++ b/tests/py/inet/map.t
+@@ -1,9 +1,10 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ mark set ip saddr map { 10.2.3.2 : 0x0000002a, 10.2.3.1 : 0x00000017};ok;meta mark set ip saddr map { 10.2.3.1 : 0x00000017, 10.2.3.2 : 0x0000002a}
+ mark set ip hdrlength map { 5 : 0x00000017, 4 : 0x00000001};ok;meta mark set ip hdrlength map { 4 : 0x00000001, 5 : 0x00000017}
+diff --git a/tests/py/inet/sctp.t b/tests/py/inet/sctp.t
+index 5188b57e..02391b35 100644
+--- a/tests/py/inet/sctp.t
++++ b/tests/py/inet/sctp.t
+@@ -1,10 +1,11 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ sctp sport 23;ok
+ sctp sport != 23;ok
+diff --git a/tests/py/inet/sets.t b/tests/py/inet/sets.t
+index e0b0ee86..aa701b1b 100644
+--- a/tests/py/inet/sets.t
++++ b/tests/py/inet/sets.t
+@@ -1,9 +1,10 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *inet;test-inet;input
+ *bridge;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ !set1 type ipv4_addr timeout 60s;ok
+ ?set1 192.168.3.4 timeout 30s, 10.2.1.1;ok
+diff --git a/tests/py/inet/tcp.t b/tests/py/inet/tcp.t
+index e0a83e2b..88e0f562 100644
+--- a/tests/py/inet/tcp.t
++++ b/tests/py/inet/tcp.t
+@@ -1,10 +1,11 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ tcp dport set {1, 2, 3};fail
+ 
+diff --git a/tests/py/inet/udp.t b/tests/py/inet/udp.t
+index 4e3eaa51..f60e1c77 100644
+--- a/tests/py/inet/udp.t
++++ b/tests/py/inet/udp.t
+@@ -1,10 +1,11 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ udp sport 80 accept;ok
+ udp sport != 60 accept;ok
+diff --git a/tests/py/inet/udplite.t b/tests/py/inet/udplite.t
+index 7c22acb9..5d574121 100644
+--- a/tests/py/inet/udplite.t
++++ b/tests/py/inet/udplite.t
+@@ -1,10 +1,11 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ udplite sport 80 accept;ok
+ udplite sport != 60 accept;ok
+diff --git a/tests/py/ip/ip.t b/tests/py/ip/ip.t
+index 0421d01b..0092d422 100644
+--- a/tests/py/ip/ip.t
++++ b/tests/py/ip/ip.t
+@@ -1,10 +1,11 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *inet;test-inet;input
+ *bridge;test-bridge;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ - ip version 2;ok
+ 
+diff --git a/tests/py/ip/ip_tcp.t b/tests/py/ip/ip_tcp.t
+index 467da3ef..646b0ca5 100644
+--- a/tests/py/ip/ip_tcp.t
++++ b/tests/py/ip/ip_tcp.t
+@@ -1,7 +1,9 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip;input
++*netdev;test-netdev;ingress,egress
+ 
+ # can remove ip dependency -- its redundant in ip family
+ ip protocol tcp tcp dport 22;ok;tcp dport 22
+diff --git a/tests/py/ip/ip_tcp.t.payload.netdev b/tests/py/ip/ip_tcp.t.payload.netdev
+new file mode 100644
+index 00000000..74dc1195
+--- /dev/null
++++ b/tests/py/ip/ip_tcp.t.payload.netdev
+@@ -0,0 +1,93 @@
++# ip protocol tcp tcp dport 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ payload load 1b @ network header + 9 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++  [ payload load 2b @ transport header + 2 => reg 1 ]
++  [ cmp eq reg 1 0x00001600 ]
++
++# ip protocol tcp meta mark set 1 tcp dport 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ payload load 1b @ network header + 9 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++  [ immediate reg 1 0x00000001 ]
++  [ meta set mark with reg 1 ]
++  [ payload load 2b @ transport header + 2 => reg 1 ]
++  [ cmp eq reg 1 0x00001600 ]
++
++# ip protocol tcp meta mark set 1 tcp dport 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ payload load 1b @ network header + 9 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++  [ immediate reg 1 0x00000001 ]
++  [ meta set mark with reg 1 ]
++  [ payload load 2b @ transport header + 2 => reg 1 ]
++  [ cmp eq reg 1 0x00001600 ]
++
++# ip protocol tcp tcp dport 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ payload load 1b @ network header + 9 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++  [ payload load 2b @ transport header + 2 => reg 1 ]
++  [ cmp eq reg 1 0x00001600 ]
++
++# ip protocol tcp meta mark set 1 tcp dport 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ payload load 1b @ network header + 9 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++  [ immediate reg 1 0x00000001 ]
++  [ meta set mark with reg 1 ]
++  [ payload load 2b @ transport header + 2 => reg 1 ]
++  [ cmp eq reg 1 0x00001600 ]
++
++# ip protocol tcp meta mark set 1 tcp dport 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ payload load 1b @ network header + 9 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++  [ immediate reg 1 0x00000001 ]
++  [ meta set mark with reg 1 ]
++  [ payload load 2b @ transport header + 2 => reg 1 ]
++  [ cmp eq reg 1 0x00001600 ]
++
++# ip protocol tcp tcp dport 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ payload load 1b @ network header + 9 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++  [ payload load 2b @ transport header + 2 => reg 1 ]
++  [ cmp eq reg 1 0x00001600 ]
++
++# ip protocol tcp meta mark set 1 tcp dport 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ payload load 1b @ network header + 9 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++  [ immediate reg 1 0x00000001 ]
++  [ meta set mark with reg 1 ]
++  [ payload load 2b @ transport header + 2 => reg 1 ]
++  [ cmp eq reg 1 0x00001600 ]
++
++# ip protocol tcp meta mark set 1 tcp dport 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ payload load 1b @ network header + 9 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++  [ immediate reg 1 0x00000001 ]
++  [ meta set mark with reg 1 ]
++  [ payload load 2b @ transport header + 2 => reg 1 ]
++  [ cmp eq reg 1 0x00001600 ]
++
+diff --git a/tests/py/ip/sets.t b/tests/py/ip/sets.t
+index 7b7e0722..815a8473 100644
+--- a/tests/py/ip/sets.t
++++ b/tests/py/ip/sets.t
+@@ -1,9 +1,10 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip;test-ip4;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ !w type ipv4_addr;ok
+ !x type inet_proto;ok
+diff --git a/tests/py/ip6/frag.t b/tests/py/ip6/frag.t
+index e16529ad..3a433cdb 100644
+--- a/tests/py/ip6/frag.t
++++ b/tests/py/ip6/frag.t
+@@ -1,8 +1,10 @@
+ :output;type filter hook output priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip6;test-ip6;output
+ *inet;test-inet;output
++*netdev;test-netdev;ingress,egress
+ 
+ frag nexthdr tcp;ok;frag nexthdr 6
+ frag nexthdr != icmp;ok;frag nexthdr != 1
+diff --git a/tests/py/ip6/frag.t.payload.netdev b/tests/py/ip6/frag.t.payload.netdev
+new file mode 100644
+index 00000000..b8b193ba
+--- /dev/null
++++ b/tests/py/ip6/frag.t.payload.netdev
+@@ -0,0 +1,1476 @@
++# frag nexthdr tcp
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++
++# frag nexthdr tcp
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++
++# frag nexthdr != icmp
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp neq reg 1 0x00000001 ]
++
++# frag nexthdr != icmp
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp neq reg 1 0x00000001 ]
++
++# frag nexthdr esp
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000032 ]
++
++# frag nexthdr esp
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000032 ]
++
++# frag nexthdr ah
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000033 ]
++
++# frag nexthdr ah
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000033 ]
++
++# frag reserved 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp eq reg 1 0x00000016 ]
++
++# frag reserved 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp eq reg 1 0x00000016 ]
++
++# frag reserved != 233
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp neq reg 1 0x000000e9 ]
++
++# frag reserved != 233
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp neq reg 1 0x000000e9 ]
++
++# frag reserved 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp gte reg 1 0x00000021 ]
++  [ cmp lte reg 1 0x0000002d ]
++
++# frag reserved 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp gte reg 1 0x00000021 ]
++  [ cmp lte reg 1 0x0000002d ]
++
++# frag reserved != 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ range neq reg 1 0x00000021 0x0000002d ]
++
++# frag reserved != 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ range neq reg 1 0x00000021 0x0000002d ]
++
++# frag frag-off 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x0000b000 ]
++
++# frag frag-off 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x0000b000 ]
++
++# frag frag-off != 233
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp neq reg 1 0x00004807 ]
++
++# frag frag-off != 233
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp neq reg 1 0x00004807 ]
++
++# frag frag-off 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp gte reg 1 0x00000801 ]
++  [ cmp lte reg 1 0x00006801 ]
++
++# frag frag-off 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp gte reg 1 0x00000801 ]
++  [ cmp lte reg 1 0x00006801 ]
++
++# frag frag-off != 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ range neq reg 1 0x00000801 0x00006801 ]
++
++# frag frag-off != 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ range neq reg 1 0x00000801 0x00006801 ]
++
++# frag reserved2 1
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000006 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000002 ]
++
++# frag reserved2 1
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000006 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000002 ]
++
++# frag more-fragments 0
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000000 ]
++
++# frag more-fragments 0
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000000 ]
++
++# frag more-fragments 1
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000001 ]
++
++# frag more-fragments 1
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000001 ]
++
++# frag id 1
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x01000000 ]
++
++# frag id 1
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x01000000 ]
++
++# frag id 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x16000000 ]
++
++# frag id 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x16000000 ]
++
++# frag id != 33
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp neq reg 1 0x21000000 ]
++
++# frag id != 33
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp neq reg 1 0x21000000 ]
++
++# frag id 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp gte reg 1 0x21000000 ]
++  [ cmp lte reg 1 0x2d000000 ]
++
++# frag id 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp gte reg 1 0x21000000 ]
++  [ cmp lte reg 1 0x2d000000 ]
++
++# frag id != 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ range neq reg 1 0x21000000 0x2d000000 ]
++
++# frag id != 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ range neq reg 1 0x21000000 0x2d000000 ]
++
++# frag nexthdr tcp
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++
++# frag nexthdr tcp
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++
++# frag nexthdr != icmp
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp neq reg 1 0x00000001 ]
++
++# frag nexthdr != icmp
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp neq reg 1 0x00000001 ]
++
++# frag nexthdr {esp, ah, comp, udp, udplite, tcp, dccp, sctp}
++__set%d test-netdev 3 size 8
++__set%d test-netdev 0
++	element 00000032  : 0 [end]	element 00000033  : 0 [end]	element 0000006c  : 0 [end]	element 00000011  : 0 [end]	element 00000088  : 0 [end]	element 00000006  : 0 [end]	element 00000021  : 0 [end]	element 00000084  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag nexthdr {esp, ah, comp, udp, udplite, tcp, dccp, sctp}
++__set%d test-netdev 3 size 8
++__set%d test-netdev 0
++	element 00000032  : 0 [end]	element 00000033  : 0 [end]	element 0000006c  : 0 [end]	element 00000011  : 0 [end]	element 00000088  : 0 [end]	element 00000006  : 0 [end]	element 00000021  : 0 [end]	element 00000084  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag nexthdr != {esp, ah, comp, udp, udplite, tcp, dccp, sctp}
++__set%d test-netdev 3 size 8
++__set%d test-netdev 0
++	element 00000032  : 0 [end]	element 00000033  : 0 [end]	element 0000006c  : 0 [end]	element 00000011  : 0 [end]	element 00000088  : 0 [end]	element 00000006  : 0 [end]	element 00000021  : 0 [end]	element 00000084  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag nexthdr != {esp, ah, comp, udp, udplite, tcp, dccp, sctp}
++__set%d test-netdev 3 size 8
++__set%d test-netdev 0
++	element 00000032  : 0 [end]	element 00000033  : 0 [end]	element 0000006c  : 0 [end]	element 00000011  : 0 [end]	element 00000088  : 0 [end]	element 00000006  : 0 [end]	element 00000021  : 0 [end]	element 00000084  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag nexthdr esp
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000032 ]
++
++# frag nexthdr esp
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000032 ]
++
++# frag nexthdr ah
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000033 ]
++
++# frag nexthdr ah
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000033 ]
++
++# frag reserved 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp eq reg 1 0x00000016 ]
++
++# frag reserved 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp eq reg 1 0x00000016 ]
++
++# frag reserved != 233
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp neq reg 1 0x000000e9 ]
++
++# frag reserved != 233
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp neq reg 1 0x000000e9 ]
++
++# frag reserved 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp gte reg 1 0x00000021 ]
++  [ cmp lte reg 1 0x0000002d ]
++
++# frag reserved 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp gte reg 1 0x00000021 ]
++  [ cmp lte reg 1 0x0000002d ]
++
++# frag reserved != 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ range neq reg 1 0x00000021 0x0000002d ]
++
++# frag reserved != 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ range neq reg 1 0x00000021 0x0000002d ]
++
++# frag reserved { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000021  : 0 [end]	element 00000037  : 0 [end]	element 00000043  : 0 [end]	element 00000058  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag reserved { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000021  : 0 [end]	element 00000037  : 0 [end]	element 00000043  : 0 [end]	element 00000058  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag reserved != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000021  : 0 [end]	element 00000037  : 0 [end]	element 00000043  : 0 [end]	element 00000058  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag reserved != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000021  : 0 [end]	element 00000037  : 0 [end]	element 00000043  : 0 [end]	element 00000058  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag reserved { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag reserved { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag reserved != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag reserved != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag frag-off 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x0000b000 ]
++
++# frag frag-off 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x0000b000 ]
++
++# frag frag-off != 233
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp neq reg 1 0x00004807 ]
++
++# frag frag-off != 233
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp neq reg 1 0x00004807 ]
++
++# frag frag-off 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp gte reg 1 0x00000801 ]
++  [ cmp lte reg 1 0x00006801 ]
++
++# frag frag-off 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp gte reg 1 0x00000801 ]
++  [ cmp lte reg 1 0x00006801 ]
++
++# frag frag-off != 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ range neq reg 1 0x00000801 0x00006801 ]
++
++# frag frag-off != 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ range neq reg 1 0x00000801 0x00006801 ]
++
++# frag frag-off { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000801  : 0 [end]	element 0000b801  : 0 [end]	element 00001802  : 0 [end]	element 0000c002  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag frag-off { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000801  : 0 [end]	element 0000b801  : 0 [end]	element 00001802  : 0 [end]	element 0000c002  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag frag-off != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000801  : 0 [end]	element 0000b801  : 0 [end]	element 00001802  : 0 [end]	element 0000c002  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag frag-off != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000801  : 0 [end]	element 0000b801  : 0 [end]	element 00001802  : 0 [end]	element 0000c002  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag frag-off { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000801  : 0 [end]	element 0000b901  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag frag-off { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000801  : 0 [end]	element 0000b901  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag frag-off != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000801  : 0 [end]	element 0000b901  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag frag-off != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000801  : 0 [end]	element 0000b901  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag reserved2 1
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000006 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000002 ]
++
++# frag reserved2 1
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000006 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000002 ]
++
++# frag more-fragments 0
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000000 ]
++
++# frag more-fragments 0
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000000 ]
++
++# frag more-fragments 1
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000001 ]
++
++# frag more-fragments 1
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000001 ]
++
++# frag id 1
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x01000000 ]
++
++# frag id 1
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x01000000 ]
++
++# frag id 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x16000000 ]
++
++# frag id 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x16000000 ]
++
++# frag id != 33
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp neq reg 1 0x21000000 ]
++
++# frag id != 33
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp neq reg 1 0x21000000 ]
++
++# frag id 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp gte reg 1 0x21000000 ]
++  [ cmp lte reg 1 0x2d000000 ]
++
++# frag id 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp gte reg 1 0x21000000 ]
++  [ cmp lte reg 1 0x2d000000 ]
++
++# frag id != 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ range neq reg 1 0x21000000 0x2d000000 ]
++
++# frag id != 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ range neq reg 1 0x21000000 0x2d000000 ]
++
++# frag id { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 21000000  : 0 [end]	element 37000000  : 0 [end]	element 43000000  : 0 [end]	element 58000000  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag id { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 21000000  : 0 [end]	element 37000000  : 0 [end]	element 43000000  : 0 [end]	element 58000000  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag id != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 21000000  : 0 [end]	element 37000000  : 0 [end]	element 43000000  : 0 [end]	element 58000000  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag id != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 21000000  : 0 [end]	element 37000000  : 0 [end]	element 43000000  : 0 [end]	element 58000000  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag id { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 21000000  : 0 [end]	element 38000000  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag id { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 21000000  : 0 [end]	element 38000000  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag id != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 21000000  : 0 [end]	element 38000000  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag id != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 21000000  : 0 [end]	element 38000000  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag nexthdr tcp
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++
++# frag nexthdr tcp
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000006 ]
++
++# frag nexthdr != icmp
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp neq reg 1 0x00000001 ]
++
++# frag nexthdr != icmp
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp neq reg 1 0x00000001 ]
++
++# frag nexthdr {esp, ah, comp, udp, udplite, tcp, dccp, sctp}
++__set%d test-netdev 3 size 8
++__set%d test-netdev 0
++	element 00000032  : 0 [end]	element 00000033  : 0 [end]	element 0000006c  : 0 [end]	element 00000011  : 0 [end]	element 00000088  : 0 [end]	element 00000006  : 0 [end]	element 00000021  : 0 [end]	element 00000084  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag nexthdr {esp, ah, comp, udp, udplite, tcp, dccp, sctp}
++__set%d test-netdev 3 size 8
++__set%d test-netdev 0
++	element 00000032  : 0 [end]	element 00000033  : 0 [end]	element 0000006c  : 0 [end]	element 00000011  : 0 [end]	element 00000088  : 0 [end]	element 00000006  : 0 [end]	element 00000021  : 0 [end]	element 00000084  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag nexthdr != {esp, ah, comp, udp, udplite, tcp, dccp, sctp}
++__set%d test-netdev 3 size 8
++__set%d test-netdev 0
++	element 00000032  : 0 [end]	element 00000033  : 0 [end]	element 0000006c  : 0 [end]	element 00000011  : 0 [end]	element 00000088  : 0 [end]	element 00000006  : 0 [end]	element 00000021  : 0 [end]	element 00000084  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag nexthdr != {esp, ah, comp, udp, udplite, tcp, dccp, sctp}
++__set%d test-netdev 3 size 8
++__set%d test-netdev 0
++	element 00000032  : 0 [end]	element 00000033  : 0 [end]	element 0000006c  : 0 [end]	element 00000011  : 0 [end]	element 00000088  : 0 [end]	element 00000006  : 0 [end]	element 00000021  : 0 [end]	element 00000084  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag nexthdr esp
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000032 ]
++
++# frag nexthdr esp
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000032 ]
++
++# frag nexthdr ah
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000033 ]
++
++# frag nexthdr ah
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000033 ]
++
++# frag reserved 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp eq reg 1 0x00000016 ]
++
++# frag reserved 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp eq reg 1 0x00000016 ]
++
++# frag reserved != 233
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp neq reg 1 0x000000e9 ]
++
++# frag reserved != 233
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp neq reg 1 0x000000e9 ]
++
++# frag reserved 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp gte reg 1 0x00000021 ]
++  [ cmp lte reg 1 0x0000002d ]
++
++# frag reserved 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ cmp gte reg 1 0x00000021 ]
++  [ cmp lte reg 1 0x0000002d ]
++
++# frag reserved != 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ range neq reg 1 0x00000021 0x0000002d ]
++
++# frag reserved != 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ range neq reg 1 0x00000021 0x0000002d ]
++
++# frag reserved { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000021  : 0 [end]	element 00000037  : 0 [end]	element 00000043  : 0 [end]	element 00000058  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag reserved { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000021  : 0 [end]	element 00000037  : 0 [end]	element 00000043  : 0 [end]	element 00000058  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag reserved != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000021  : 0 [end]	element 00000037  : 0 [end]	element 00000043  : 0 [end]	element 00000058  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag reserved != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000021  : 0 [end]	element 00000037  : 0 [end]	element 00000043  : 0 [end]	element 00000058  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag reserved { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag reserved { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag reserved != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag reserved != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000021  : 0 [end]	element 00000038  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 1 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag frag-off 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x0000b000 ]
++
++# frag frag-off 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x0000b000 ]
++
++# frag frag-off != 233
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp neq reg 1 0x00004807 ]
++
++# frag frag-off != 233
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp neq reg 1 0x00004807 ]
++
++# frag frag-off 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp gte reg 1 0x00000801 ]
++  [ cmp lte reg 1 0x00006801 ]
++
++# frag frag-off 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ cmp gte reg 1 0x00000801 ]
++  [ cmp lte reg 1 0x00006801 ]
++
++# frag frag-off != 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ range neq reg 1 0x00000801 0x00006801 ]
++
++# frag frag-off != 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ range neq reg 1 0x00000801 0x00006801 ]
++
++# frag frag-off { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000801  : 0 [end]	element 0000b801  : 0 [end]	element 00001802  : 0 [end]	element 0000c002  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag frag-off { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000801  : 0 [end]	element 0000b801  : 0 [end]	element 00001802  : 0 [end]	element 0000c002  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag frag-off != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000801  : 0 [end]	element 0000b801  : 0 [end]	element 00001802  : 0 [end]	element 0000c002  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag frag-off != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 00000801  : 0 [end]	element 0000b801  : 0 [end]	element 00001802  : 0 [end]	element 0000c002  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag frag-off { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000801  : 0 [end]	element 0000b901  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag frag-off { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000801  : 0 [end]	element 0000b901  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag frag-off != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000801  : 0 [end]	element 0000b901  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag frag-off != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 00000801  : 0 [end]	element 0000b901  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 2b @ 44 + 2 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x0000f8ff ) ^ 0x00000000 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag reserved2 1
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000006 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000002 ]
++
++# frag reserved2 1
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000006 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000002 ]
++
++# frag more-fragments 0
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000000 ]
++
++# frag more-fragments 0
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000000 ]
++
++# frag more-fragments 1
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000001 ]
++
++# frag more-fragments 1
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 1b @ 44 + 3 => reg 1 ]
++  [ bitwise reg 1 = (reg=1 & 0x00000001 ) ^ 0x00000000 ]
++  [ cmp eq reg 1 0x00000001 ]
++
++# frag id 1
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x01000000 ]
++
++# frag id 1
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x01000000 ]
++
++# frag id 22
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x16000000 ]
++
++# frag id 22
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp eq reg 1 0x16000000 ]
++
++# frag id != 33
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp neq reg 1 0x21000000 ]
++
++# frag id != 33
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp neq reg 1 0x21000000 ]
++
++# frag id 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp gte reg 1 0x21000000 ]
++  [ cmp lte reg 1 0x2d000000 ]
++
++# frag id 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ cmp gte reg 1 0x21000000 ]
++  [ cmp lte reg 1 0x2d000000 ]
++
++# frag id != 33-45
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ range neq reg 1 0x21000000 0x2d000000 ]
++
++# frag id != 33-45
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ range neq reg 1 0x21000000 0x2d000000 ]
++
++# frag id { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 21000000  : 0 [end]	element 37000000  : 0 [end]	element 43000000  : 0 [end]	element 58000000  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag id { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 21000000  : 0 [end]	element 37000000  : 0 [end]	element 43000000  : 0 [end]	element 58000000  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag id != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 21000000  : 0 [end]	element 37000000  : 0 [end]	element 43000000  : 0 [end]	element 58000000  : 0 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag id != { 33, 55, 67, 88}
++__set%d test-netdev 3 size 4
++__set%d test-netdev 0
++	element 21000000  : 0 [end]	element 37000000  : 0 [end]	element 43000000  : 0 [end]	element 58000000  : 0 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag id { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 21000000  : 0 [end]	element 38000000  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag id { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 21000000  : 0 [end]	element 38000000  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++
++# frag id != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 21000000  : 0 [end]	element 38000000  : 1 [end]
++netdev test-netdev ingress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
++# frag id != { 33-55}
++__set%d test-netdev 7 size 3
++__set%d test-netdev 0
++	element 00000000  : 1 [end]	element 21000000  : 0 [end]	element 38000000  : 1 [end]
++netdev test-netdev egress 
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x0000dd86 ]
++  [ exthdr load ipv6 4b @ 44 + 4 => reg 1 ]
++  [ lookup reg 1 set __set%d 0x1 ]
++
+diff --git a/tests/py/ip6/sets.t b/tests/py/ip6/sets.t
+index add82eb8..3b99d661 100644
+--- a/tests/py/ip6/sets.t
++++ b/tests/py/ip6/sets.t
+@@ -1,9 +1,10 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ !w type ipv6_addr;ok
+ !x type inet_proto;ok
+diff --git a/tests/py/ip6/vmap.t b/tests/py/ip6/vmap.t
+index 434f5d92..2d54b822 100644
+--- a/tests/py/ip6/vmap.t
++++ b/tests/py/ip6/vmap.t
+@@ -1,9 +1,10 @@
+ :input;type filter hook input priority 0
+ :ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
+ 
+ *ip6;test-ip6;input
+ *inet;test-inet;input
+-*netdev;test-netdev;ingress
++*netdev;test-netdev;ingress,egress
+ 
+ ip6 saddr vmap { abcd::3 : accept };ok
+ ip6 saddr 1234:1234:1234:1234:1234:1234:1234:1234:1234;fail
+diff --git a/tests/shell/testcases/chains/0021prio_0 b/tests/shell/testcases/chains/0021prio_0
+index e7612974..d450dc0b 100755
+--- a/tests/shell/testcases/chains/0021prio_0
++++ b/tests/shell/testcases/chains/0021prio_0
+@@ -69,6 +69,7 @@ done
+ family=netdev
+ echo "add table $family x"
+ gen_chains $family ingress filter lo
++gen_chains $family egress filter lo
+ 
+ family=bridge
+ echo "add table $family x"
+diff --git a/tests/shell/testcases/chains/0026prio_netdev_1 b/tests/shell/testcases/chains/0026prio_netdev_1
+index aa902e9b..b6fa3db5 100755
+--- a/tests/shell/testcases/chains/0026prio_netdev_1
++++ b/tests/shell/testcases/chains/0026prio_netdev_1
+@@ -1,7 +1,8 @@
+ #!/bin/bash
+ 
+ family=netdev
+-	hook=ingress
++	for hook in ingress egress
++	do
+ 		for prioname in raw mangle dstnat security srcnat
+ 		do
+ 			$NFT add table $family x || exit 1
+@@ -12,4 +13,5 @@ family=netdev
+ 				exit 1
+ 			fi
+ 		done
++	done
+ exit 0
+diff --git a/tests/shell/testcases/chains/dumps/0021prio_0.nft b/tests/shell/testcases/chains/dumps/0021prio_0.nft
+index ca94d441..4297d246 100644
+--- a/tests/shell/testcases/chains/dumps/0021prio_0.nft
++++ b/tests/shell/testcases/chains/dumps/0021prio_0.nft
+@@ -1382,6 +1382,26 @@ table netdev x {
+ 	chain ingressfilterp11 {
+ 		type filter hook ingress device "lo" priority 11; policy accept;
+ 	}
++
++	chain egressfilterm11 {
++		type filter hook egress device "lo" priority -11; policy accept;
++	}
++
++	chain egressfilterm10 {
++		type filter hook egress device "lo" priority filter - 10; policy accept;
++	}
++
++	chain egressfilter {
++		type filter hook egress device "lo" priority filter; policy accept;
++	}
++
++	chain egressfilterp10 {
++		type filter hook egress device "lo" priority filter + 10; policy accept;
++	}
++
++	chain egressfilterp11 {
++		type filter hook egress device "lo" priority 11; policy accept;
++	}
+ }
+ table bridge x {
+ 	chain preroutingfilterm11 {
 -- 
 2.25.0
 
