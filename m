@@ -2,64 +2,117 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5694A1831DA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2020 14:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEF9183953
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Mar 2020 20:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgCLNoD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 12 Mar 2020 09:44:03 -0400
-Received: from correo.us.es ([193.147.175.20]:52700 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727007AbgCLNoD (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 12 Mar 2020 09:44:03 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 1748715AEA3
-        for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2020 14:43:38 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 095B1DA39F
-        for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2020 14:43:38 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 08B4DDA390; Thu, 12 Mar 2020 14:43:38 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 447D2DA8E6
-        for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2020 14:43:36 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 12 Mar 2020 14:43:36 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 1C59942EF42A
-        for <netfilter-devel@vger.kernel.org>; Thu, 12 Mar 2020 14:43:36 +0100 (CET)
-Date:   Thu, 12 Mar 2020 14:43:58 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: rebasing nf-next...
-Message-ID: <20200312134358.upfhkomfxyddpebd@salvia>
+        id S1726680AbgCLTTG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 12 Mar 2020 15:19:06 -0400
+Received: from smtprelay0078.hostedemail.com ([216.40.44.78]:55542 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726553AbgCLTTG (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 12 Mar 2020 15:19:06 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 2019A837F27B;
+        Thu, 12 Mar 2020 19:19:05 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:541:973:982:988:989:1260:1311:1314:1345:1437:1515:1534:1542:1711:1730:1747:1777:1792:1801:2393:2559:2562:3138:3139:3140:3141:3142:3353:3865:3866:3867:3870:3871:4605:5007:6119:6261:7903:10004:10848:11026:11658:11914:12043:12048:12296:12297:12679:12895:13161:13229:13255:13894:14096:14394:14721:21080:21433:21451:21627:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: iron54_6c49d87829722
+X-Filterd-Recvd-Size: 3313
+Received: from joe-laptop.perches.com (unknown [47.151.143.254])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 12 Mar 2020 19:19:04 +0000 (UTC)
+From:   Joe Perches <joe@perches.com>
+To:     dri-devel@lists.freedesktop.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] treewide: Convert unscriptable /* fallthrough */ comments to fallthrough;
+Date:   Thu, 12 Mar 2020 12:17:11 -0700
+Message-Id: <cover.1584040050.git.joe@perches.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+Several files in the kernel can not be perfectly scripted to convert
+/* fallthrough */ style comments to fallthrough; because the direct
+scripted conversion causes gcc to emit warnings because the fallthrough;
+marking is outside of an #ifdef/#endif block.
 
-I'm removing a patch from nf-next to extend nft_bitwise after
-discussing this with his author. This patch is not yet in net-next.
+e.g.:
+	switch (foo) {
+	#ifdef CONFIG_BAR
+	case BAR:
+	     ...
+	#endif
+	/* fallthrough */
+	case BAZ:
+	     ...
+	}
 
-I have rebased nf-next, while at it, there was also a small conflict
-with nf that is now solved.
+is converted via script to
 
-Please, refresh your nf-next clone before moving ahead.
+	switch (foo) {
+	#ifdef CONFIG_BAR
+	case BAR:
+	     ...
+	#endif
+	fallthrough;
+	case BAZ:
+	     ...
+	}
 
-I'm sorry for the inconvenience.
+gcc emits a warning for the bare fallthrough; before case BAZ: when
+CONFIG_BAR is not enabled.
+
+So moving the fallthrough; conversions inside the #ifdef/#endif block
+avoids this warning.
+
+These are the only warnings emitted on a treewide scripted conversion as
+found by the kernel-robot so applying these patches allows a treewide
+conversion, either as multiple discrete patches or a single large patch
+to eventually be done.
+
+Joe Perches (3):
+  drm: drm_vm: Use fallthrough;
+  net: [IPv4/IPv6]: Use fallthrough;
+  virt: vbox: Use fallthrough;
+
+ drivers/gpu/drm/drm_vm.c                 | 4 ++--
+ drivers/virt/vboxguest/vboxguest_core.c  | 2 +-
+ drivers/virt/vboxguest/vboxguest_utils.c | 2 +-
+ net/ipv4/af_inet.c                       | 4 ++--
+ net/ipv4/ah4.c                           | 2 +-
+ net/ipv4/arp.c                           | 2 +-
+ net/ipv4/devinet.c                       | 6 +++---
+ net/ipv4/fib_semantics.c                 | 4 ++--
+ net/ipv4/icmp.c                          | 2 +-
+ net/ipv4/ip_output.c                     | 2 +-
+ net/ipv4/ipmr.c                          | 2 +-
+ net/ipv4/netfilter/nf_log_ipv4.c         | 2 +-
+ net/ipv4/netfilter/nf_nat_pptp.c         | 4 ++--
+ net/ipv4/nexthop.c                       | 2 +-
+ net/ipv4/tcp.c                           | 2 +-
+ net/ipv4/tcp_input.c                     | 6 +++---
+ net/ipv4/tcp_ipv4.c                      | 4 ++--
+ net/ipv4/udp.c                           | 2 +-
+ net/ipv6/addrconf.c                      | 6 ++----
+ net/ipv6/ah6.c                           | 2 +-
+ net/ipv6/exthdrs.c                       | 2 +-
+ net/ipv6/icmp.c                          | 2 +-
+ net/ipv6/ip6_fib.c                       | 8 ++++----
+ net/ipv6/ip6mr.c                         | 2 +-
+ net/ipv6/ndisc.c                         | 2 +-
+ net/ipv6/netfilter/nf_log_ipv6.c         | 2 +-
+ net/ipv6/raw.c                           | 8 ++++----
+ net/ipv6/route.c                         | 2 +-
+ net/ipv6/tcp_ipv6.c                      | 2 +-
+ 29 files changed, 45 insertions(+), 47 deletions(-)
+
+-- 
+2.24.0
+
