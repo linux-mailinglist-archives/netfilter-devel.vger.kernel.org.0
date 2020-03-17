@@ -2,78 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB8D1877AB
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2020 03:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E09D918830F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 Mar 2020 13:09:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725851AbgCQCEp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 16 Mar 2020 22:04:45 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:3534 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgCQCEp (ORCPT
+        id S1726885AbgCQMJZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 17 Mar 2020 08:09:25 -0400
+Received: from sonic308-2.consmr.mail.ne1.yahoo.com ([66.163.187.121]:43251
+        "EHLO sonic308-2.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726898AbgCQMJY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 16 Mar 2020 22:04:45 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.1]) by rmmx-syy-dmz-app05-12005 (RichMail) with SMTP id 2ee55e702fde376-ec129; Tue, 17 Mar 2020 10:03:10 +0800 (CST)
-X-RM-TRANSID: 2ee55e702fde376-ec129
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost (unknown[223.105.0.241])
-        by rmsmtp-syy-appsvr01-12001 (RichMail) with SMTP id 2ee15e702fdd10e-ec706;
-        Tue, 17 Mar 2020 10:03:10 +0800 (CST)
-X-RM-TRANSID: 2ee15e702fdd10e-ec706
-From:   Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-Subject: [PATCH v2 2/2] netfilter: nf_flow_table: reload ip{v6}h in nf_flow_tuple_ip{v6}
-Date:   Tue, 17 Mar 2020 10:02:53 +0800
-Message-Id: <1584410573-6812-2-git-send-email-yanhaishuang@cmss.chinamobile.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1584410573-6812-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
-References: <1584410573-6812-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
+        Tue, 17 Mar 2020 08:09:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1584446963; bh=kcevCRoll2+Bsa3FDERpIV72LVcB1A4YV1b5N2AWYBk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=LKXOn4M0j5u4cAGJEZR3toF99ATt65AAiQHRzms7P5pK/dyyDOOemxRA/Td8nnTXIMJ0Dse9IdpOxwzhXHMp8WfA89ZmdV+f0yVxoovPh89GHsuRf9RQFmQiFyPQP5TkzbG6z45Ve6D+EfMulbIFkXkJhu9aj6oPSTYtDaHoZNP2hTNXsYceT6asMnOaSsujAVLbavn9AapWzLrR8/UnMyFA7MHgHtrpiyrkl0HidDiiMULKFZx3V76N/cw3N1J9gF49XKq68i0m9V6CbdmbggGDASkdMlrl610PYlrwcc+8zgJKHfDSovRHC2YCjNYY+5dLmammeCSsby9cScQmng==
+X-YMail-OSG: j32Ad0wVM1njmsdmxGTWnxZPSwUgi2gt4h6B_66IO_poOsdaw5QyOe0B.DC4iYT
+ SBZuw76ouWZfxotzBkaOiolzygojjZyxfO9tlLvC97.l7egvz88hSdoWwcVubU40dbb6p2K2QxNb
+ RqpiHcIlHfLubICX0Wx3Gc4020VCQL0ECBwfUCQNapgpzj1Wjkq4NWKlujBdevzipQYywoDnrUk9
+ SLvJKaakYCUvOEBpzc9wITe03ElvML3uF_0upUzEZIWr1dVo.GEFb1BeXcq1r5WIsESPis_HQnIS
+ c65QeJteoUih8_bDdVP05JAVv9Dyc2hc0QhQthz.CmPGag0pfknbfwmiQD59l9gRO3wvBlX4UKsB
+ bRZI2oEXIJ9WrXTOCfdkWa703kw.1BW1Q3oV465vmuTKVeNr4HgcCi7tr3HuNlm2qsDIFeVeJlJi
+ cUe.t6F31BDpLW9tO.ISNlTE9g9q16tSDzZJZaMZ0H3JTqNQ15_Ze5FCjnS9SwLvFnOJW5_lFUe2
+ .NiTBFls4mN1PZ1wzAOqb4vFsoSloN26K2yFM2ohiYc8h2YNtKrRpahA_chckQADTR47RiTlrYZN
+ sCFWV6YGULBJqCwg2IOrB4nCdZp0NhKNtqkSLvvEmS1bljOHmlJbpAU5317Wo7..lZNLPPj4bl8q
+ PCFvPYi1C58OjGBswVJQRz3nZ_7R4bwGOK5WbjFuEKDp_VKPmbQXhgMGTew7BHH8Ksi6UBaWKxAP
+ SzxdIqIGfLdU92cauX5wtbrbFuGUmx36_9fXla5tqoB2bWQhetD5Kk8hD2SMYdLweeh3xZajMWQ_
+ t1HcaaFXTpIx5q5oWb4RMtt_9eykgItvdOSaneASdFiF6ZCmlII_mZwrCsZuse1bAZMnmWjQuEoD
+ fTFp91f8EX15bMRmlj39wJvkNKHlLp02dw.arrQlUfKeYgfGt5NPW2SDZKFskV__bX58ErZsRY.2
+ 2jYm9d.k81jx0WlUQ5AgEqEm7UfoVj93Wz1VIMHlFd4__zdNYGMXn.xlrz31B08jw39QLUeTdQ7r
+ WSydyoMeWlkRyuZi.FzSKn7EUY5mHWRyTFgLEoNk_R9YFIMDawrDOHoFNpm.dLuodg4jZOmKrXwl
+ IFUmMWmWOD1QwQdWxRZ54u5V_iugkD0yw03ayEvtKbrv3l.QoRmsRlT_DoTqp43olJXb4Uby0okZ
+ 6pWA8BAMSs6yLqJkoad2nox6Vt4a7CdfT.vQchyP683op51t4CwEQtRYUxX6nfbdelCDKL._eB5v
+ 9GpzHgOIcw6o77Nw83FsmU7FBsu6BVqkGUxamoZ5tk0MoEd9V9U.G5eCpoyJS4yEfe6nMXHTjheM
+ 1tR5_cwCVlOLkvNZC06OtMmOqYXtZDus2
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Tue, 17 Mar 2020 12:09:23 +0000
+Date:   Tue, 17 Mar 2020 12:07:22 +0000 (UTC)
+From:   Stephen Li <stenn7@gabg.net>
+Reply-To: stephli947701@gmail.com
+Message-ID: <1992313604.1815720.1584446842907@mail.yahoo.com>
+Subject: REF
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1992313604.1815720.1584446842907.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15342 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Since pskb_may_pull may change skb->data, so we need to reload ip{v6}h at
-the right place.
-
-Fixes: a908fdec3dda ("netfilter: nf_flow_table: move ipv6 offload hook
-code to nf_flow_table")
-Fixes: 7d2086871762 ("netfilter: nf_flow_table: move ipv4 offload hook
-code to nf_flow_table")
-Signed-off-by: Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
----
-v2: collapse the patches
----
- net/netfilter/nf_flow_table_ip.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-index 942bda5..610c60a 100644
---- a/net/netfilter/nf_flow_table_ip.c
-+++ b/net/netfilter/nf_flow_table_ip.c
-@@ -190,6 +190,7 @@ static int nf_flow_tuple_ip(struct sk_buff *skb, const struct net_device *dev,
- 	if (!pskb_may_pull(skb, thoff + sizeof(*ports)))
- 		return -1;
- 
-+	iph = ip_hdr(skb);
- 	ports = (struct flow_ports *)(skb_network_header(skb) + thoff);
- 
- 	tuple->src_v4.s_addr	= iph->saddr;
-@@ -452,6 +453,7 @@ static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
- 	if (!pskb_may_pull(skb, thoff + sizeof(*ports)))
- 		return -1;
- 
-+	ip6h = ipv6_hdr(skb);
- 	ports = (struct flow_ports *)(skb_network_header(skb) + thoff);
- 
- 	tuple->src_v6		= ip6h->saddr;
--- 
-1.8.3.1
 
 
-
+Greetings,
+I was searching through a local business directory when I found your
+profile. I am Soliciting On-Behalf of my private client who is
+interested in having a serious business investment in your country. If
+you have a valid business, investment or project he can invest
+back to me for more details. Your swift response is highly needed.
+Sincerely
+Stephen Li
+Please response back to me with is my private email below for more details
+stephli947701@gmail.com
