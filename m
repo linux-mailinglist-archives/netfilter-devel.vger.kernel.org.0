@@ -2,125 +2,77 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E65C018A2AC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2020 19:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0746018A461
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2020 21:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgCRSzF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 18 Mar 2020 14:55:05 -0400
-Received: from correo.us.es ([193.147.175.20]:50856 "EHLO mail.us.es"
+        id S1727543AbgCRUyG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 18 Mar 2020 16:54:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726619AbgCRSzF (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 18 Mar 2020 14:55:05 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 37679E34CB
-        for <netfilter-devel@vger.kernel.org>; Wed, 18 Mar 2020 19:54:34 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 27D2FDA38F
-        for <netfilter-devel@vger.kernel.org>; Wed, 18 Mar 2020 19:54:34 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 1D772DA38D; Wed, 18 Mar 2020 19:54:34 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 2D518DA7B2
-        for <netfilter-devel@vger.kernel.org>; Wed, 18 Mar 2020 19:54:32 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 18 Mar 2020 19:54:32 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 17E6F4251480
-        for <netfilter-devel@vger.kernel.org>; Wed, 18 Mar 2020 19:54:32 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] evaluate: add range specified flag setting (missing NF_NAT_RANGE_PROTO_SPECIFIED)
-Date:   Wed, 18 Mar 2020 19:54:59 +0100
-Message-Id: <20200318185459.66678-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727536AbgCRUyE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 18 Mar 2020 16:54:04 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15FCE20724;
+        Wed, 18 Mar 2020 20:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584564843;
+        bh=MS6kx90JXGnbezXfqzpAbLVYZfERwq0YnoSrayV5A4Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nd0K2jW6ao1E0kXfAA9ufPNtT7sZCzLYBT38kMPwDEAYCtqpRfefJ8q8rWSBn8Eec
+         mBJNyVSVrAgOondL2Gc5GBAoZDjCSCxUerg+u8BxcUNH4DkUxQOWtDYR0XwuII9egM
+         hs2GX2CYS+jBdayyu3zX07zCq/Eg/T3Sh6ldETTM=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 22/73] netfilter: nft_tunnel: add missing attribute validation for tunnels
+Date:   Wed, 18 Mar 2020 16:52:46 -0400
+Message-Id: <20200318205337.16279-22-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200318205337.16279-1-sashal@kernel.org>
+References: <20200318205337.16279-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Sergey reports:
+From: Jakub Kicinski <kuba@kernel.org>
 
-With nf_tables it is not possible to use port range for masquerading.
-Masquerade statement has option "to [:port-port]" which give no effect
-to translation behavior. But it must change source port of packet to
-one from ":port-port" range.
+[ Upstream commit 88a637719a1570705c02cacb3297af164b1714e7 ]
 
-My network:
+Add missing attribute validation for tunnel source and
+destination ports to the netlink policy.
 
-        +-----------------------------+
-        |   ROUTER                    |
-        |                             |
-        |                   Masquerade|
-        | 10.0.0.1            1.1.1.1 |
-        | +------+           +------+ |
-        | | eth1 |           | eth2 | |
-        +-+--^---+-----------+---^--+-+
-             |                   |
-             |                   |
-        +----v------+     +------v----+
-        |           |     |           |
-        | 10.0.0.2  |     |  1.1.1.2  |
-        |           |     |           |
-        |PC1        |     |PC2        |
-        +-----------+     +-----------+
-
-For testing i used rule like this:
-
-        rule ip nat POSTROUTING oifname eth2 masquerade to :666
-
-Run netcat for 1.1.1.2 667(UDP) and get dump from PC2:
-
-        15:22:25.591567 a8:f9:4b:aa:08:44 > a8:f9:4b:ac:e7:8f, ethertype IPv4 (0x0800), length 60: 1.1.1.1.34466 > 1.1.1.2.667: UDP, length 1
-
-Address translation works fine, but source port are not belongs to
-specified range.
-
-I see in similar source code (i.e. nft_redir.c, nft_nat.c) that
-there is setting NF_NAT_RANGE_PROTO_SPECIFIED flag. After adding this,
-repeat test for kernel with this patch, and get dump:
-
-        16:16:22.324710 a8:f9:4b:aa:08:44 > a8:f9:4b:ac:e7:8f, ethertype IPv4 (0x0800), length 60: 1.1.1.1.666 > 1.1.1.2.667: UDP, length 1
-
-Now it is works fine.
-
-Reported-by: Sergey Marinkevich <s@marinkevich.ru>
+Fixes: af308b94a2a4 ("netfilter: nf_tables: add tunnel support")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-Sergey, could you try this userspace patch instead? Thanks.
+ net/netfilter/nft_tunnel.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
- src/evaluate.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 4a23b231c74d..d0e712dc02f0 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -18,6 +18,7 @@
- #include <linux/netfilter_arp.h>
- #include <linux/netfilter/nf_tables.h>
- #include <linux/netfilter/nf_synproxy.h>
-+#include <linux/netfilter/nf_nat.h>
- #include <linux/netfilter_ipv4.h>
- #include <netinet/ip_icmp.h>
- #include <netinet/icmp6.h>
-@@ -2950,6 +2951,8 @@ static int stmt_evaluate_nat(struct eval_ctx *ctx, struct stmt *stmt)
- 		err = nat_evaluate_transport(ctx, stmt, &stmt->nat.proto);
- 		if (err < 0)
- 			return err;
-+
-+		stmt->nat.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
- 	}
+diff --git a/net/netfilter/nft_tunnel.c b/net/netfilter/nft_tunnel.c
+index 037e8fce9b30e..1effd4878619f 100644
+--- a/net/netfilter/nft_tunnel.c
++++ b/net/netfilter/nft_tunnel.c
+@@ -339,6 +339,8 @@ static const struct nla_policy nft_tunnel_key_policy[NFTA_TUNNEL_KEY_MAX + 1] =
+ 	[NFTA_TUNNEL_KEY_FLAGS]	= { .type = NLA_U32, },
+ 	[NFTA_TUNNEL_KEY_TOS]	= { .type = NLA_U8, },
+ 	[NFTA_TUNNEL_KEY_TTL]	= { .type = NLA_U8, },
++	[NFTA_TUNNEL_KEY_SPORT]	= { .type = NLA_U16, },
++	[NFTA_TUNNEL_KEY_DPORT]	= { .type = NLA_U16, },
+ 	[NFTA_TUNNEL_KEY_OPTS]	= { .type = NLA_NESTED, },
+ };
  
- 	stmt->flags |= STMT_F_TERMINAL;
 -- 
-2.11.0
+2.20.1
 
