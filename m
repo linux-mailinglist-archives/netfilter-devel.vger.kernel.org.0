@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F10A918A540
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2020 22:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C7218A4EB
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2020 21:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728660AbgCRVAB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 18 Mar 2020 17:00:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57832 "EHLO mail.kernel.org"
+        id S1728729AbgCRU45 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 18 Mar 2020 16:56:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728651AbgCRU4j (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 18 Mar 2020 16:56:39 -0400
+        id S1727804AbgCRU44 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 18 Mar 2020 16:56:56 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EE0B20A8B;
-        Wed, 18 Mar 2020 20:56:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 556E521473;
+        Wed, 18 Mar 2020 20:56:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584564999;
-        bh=sxFsWE3R0iWc9nWX4mpat7KWKzln0bMMRRur2Jkaiv4=;
+        s=default; t=1584565016;
+        bh=e6ZbtL6uKzijKplzpSabQhYVd1hsxqGHDUAVZXO08oY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O1fgGsr6KuwMZoZmv7sO9gxK4f4tB8Zx3J3HOlYzgaUW1H9OG1qa7HJ53QtXE5iur
-         2mJEtE/HP5oi2VM8WLReffGcnk5HhbJ1JLoyeos3MfLkQ1motIFJ2/KkrnRZggkMil
-         rKQajsMkfyZsQN02i2wZuAPygQ1xJ1q1UVUkW0+I=
+        b=1wVvfpXXeMT5anA+o/BQHwm4b9/kMWTXbwyEbPXfWgWztx3O4xqQJNejMCUKOAEbU
+         QAbbhd/Pkja2OLvHo3jnMX0JsEvA+XPOyPwoh2wfg94N3UfsWU6GmF3Zo7abmBD3wj
+         OnLG5TdGMfN3/jyI6tRRxshIZ+adCshbz9aqMsl4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Jakub Kicinski <kuba@kernel.org>,
@@ -30,12 +30,12 @@ Cc:     Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 08/15] netfilter: cthelper: add missing attribute validation for cthelper
-Date:   Wed, 18 Mar 2020 16:56:22 -0400
-Message-Id: <20200318205629.17750-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 06/12] netfilter: cthelper: add missing attribute validation for cthelper
+Date:   Wed, 18 Mar 2020 16:56:42 -0400
+Message-Id: <20200318205648.17937-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200318205629.17750-1-sashal@kernel.org>
-References: <20200318205629.17750-1-sashal@kernel.org>
+In-Reply-To: <20200318205648.17937-1-sashal@kernel.org>
+References: <20200318205648.17937-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -61,7 +61,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/net/netfilter/nfnetlink_cthelper.c b/net/netfilter/nfnetlink_cthelper.c
-index 3f499126727c8..8396dc8ee2474 100644
+index ac143ae4f7b65..8c17338693432 100644
 --- a/net/netfilter/nfnetlink_cthelper.c
 +++ b/net/netfilter/nfnetlink_cthelper.c
 @@ -711,6 +711,8 @@ static const struct nla_policy nfnl_cthelper_policy[NFCTH_MAX+1] = {
