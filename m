@@ -2,37 +2,36 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BDE18A671
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2020 22:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F3818A666
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2020 22:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727702AbgCRVIR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 18 Mar 2020 17:08:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53360 "EHLO mail.kernel.org"
+        id S1727509AbgCRVH6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 18 Mar 2020 17:07:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727525AbgCRUyD (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 18 Mar 2020 16:54:03 -0400
+        id S1727536AbgCRUyJ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 18 Mar 2020 16:54:09 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0C71208D5;
-        Wed, 18 Mar 2020 20:54:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D27292098B;
+        Wed, 18 Mar 2020 20:54:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584564842;
-        bh=YISAl4STIRfh0lU8xT8j9z3QKHY1zJtpEpkCanQb0lw=;
+        s=default; t=1584564848;
+        bh=+3PT5ixSSczOWYJFYGUU1q4HgAMEEfKeUtxBoxFqb20=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K+OY45TA8tk10M7xh11yBzQk/zTpXKfDrUin5mxiV6K2wxWpTlFhQriFa+/6/KfSo
-         2p9Jnttn9f1jRMt2RhG2o1Omh8MGIHcZIYlLOWXoN5+Np/25/J9NpK6M61adrvFWyd
-         ZZXug15XjaC+fkw2+2wMFFc2oef1vWfTaSnpN6mY=
+        b=UknWaNHzdJBWeiPr8MQFiRXhbaHfEIerLhru2B1ZJvKAt5zNC9v13B7nqbJ5SiGvq
+         OUWCnMVudzpiOrOi9bP9r1B1gNG1u/VXq8Vhqq37+wGXmgj3DBeFEf/sCO+8OfyIMU
+         dGfFtMBAQpmY2M4UFLLeats0u5ZAHQVSKZwV73BY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 21/73] netfilter: nft_payload: add missing attribute validation for payload csum flags
-Date:   Wed, 18 Mar 2020 16:52:45 -0400
-Message-Id: <20200318205337.16279-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 26/73] netfilter: nf_tables: dump NFTA_CHAIN_FLAGS attribute
+Date:   Wed, 18 Mar 2020 16:52:50 -0400
+Message-Id: <20200318205337.16279-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200318205337.16279-1-sashal@kernel.org>
 References: <20200318205337.16279-1-sashal@kernel.org>
@@ -45,33 +44,36 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 9d6effb2f1523eb84516e44213c00f2fd9e6afff ]
+[ Upstream commit d78008de6103c708171baff9650a7862645d23b0 ]
 
-Add missing attribute validation for NFTA_PAYLOAD_CSUM_FLAGS
-to the netlink policy.
+Missing NFTA_CHAIN_FLAGS netlink attribute when dumping basechain
+definitions.
 
-Fixes: 1814096980bb ("netfilter: nft_payload: layer 4 checksum adjustment for pseudoheader fields")
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: c9626a2cbdb2 ("netfilter: nf_tables: add hardware offload support")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nft_payload.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/netfilter/nf_tables_api.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
-index 5cb2d8908d2a5..0e3bfbc26e790 100644
---- a/net/netfilter/nft_payload.c
-+++ b/net/netfilter/nft_payload.c
-@@ -121,6 +121,7 @@ static const struct nla_policy nft_payload_policy[NFTA_PAYLOAD_MAX + 1] = {
- 	[NFTA_PAYLOAD_LEN]		= { .type = NLA_U32 },
- 	[NFTA_PAYLOAD_CSUM_TYPE]	= { .type = NLA_U32 },
- 	[NFTA_PAYLOAD_CSUM_OFFSET]	= { .type = NLA_U32 },
-+	[NFTA_PAYLOAD_CSUM_FLAGS]	= { .type = NLA_U32 },
- };
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 23544842b6923..bd76ef77c03f5 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -1309,6 +1309,11 @@ static int nf_tables_fill_chain_info(struct sk_buff *skb, struct net *net,
+ 					      lockdep_commit_lock_is_held(net));
+ 		if (nft_dump_stats(skb, stats))
+ 			goto nla_put_failure;
++
++		if ((chain->flags & NFT_CHAIN_HW_OFFLOAD) &&
++		    nla_put_be32(skb, NFTA_CHAIN_FLAGS,
++				 htonl(NFT_CHAIN_HW_OFFLOAD)))
++			goto nla_put_failure;
+ 	}
  
- static int nft_payload_init(const struct nft_ctx *ctx,
+ 	if (nla_put_be32(skb, NFTA_CHAIN_USE, htonl(chain->use)))
 -- 
 2.20.1
 
