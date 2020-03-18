@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0746018A461
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2020 21:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F10A918A540
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2020 22:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727543AbgCRUyG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 18 Mar 2020 16:54:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53410 "EHLO mail.kernel.org"
+        id S1728660AbgCRVAB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 18 Mar 2020 17:00:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727536AbgCRUyE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 18 Mar 2020 16:54:04 -0400
+        id S1728651AbgCRU4j (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 18 Mar 2020 16:56:39 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15FCE20724;
-        Wed, 18 Mar 2020 20:54:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EE0B20A8B;
+        Wed, 18 Mar 2020 20:56:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584564843;
-        bh=MS6kx90JXGnbezXfqzpAbLVYZfERwq0YnoSrayV5A4Y=;
+        s=default; t=1584564999;
+        bh=sxFsWE3R0iWc9nWX4mpat7KWKzln0bMMRRur2Jkaiv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nd0K2jW6ao1E0kXfAA9ufPNtT7sZCzLYBT38kMPwDEAYCtqpRfefJ8q8rWSBn8Eec
-         mBJNyVSVrAgOondL2Gc5GBAoZDjCSCxUerg+u8BxcUNH4DkUxQOWtDYR0XwuII9egM
-         hs2GX2CYS+jBdayyu3zX07zCq/Eg/T3Sh6ldETTM=
+        b=O1fgGsr6KuwMZoZmv7sO9gxK4f4tB8Zx3J3HOlYzgaUW1H9OG1qa7HJ53QtXE5iur
+         2mJEtE/HP5oi2VM8WLReffGcnk5HhbJ1JLoyeos3MfLkQ1motIFJ2/KkrnRZggkMil
+         rKQajsMkfyZsQN02i2wZuAPygQ1xJ1q1UVUkW0+I=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Jakub Kicinski <kuba@kernel.org>,
@@ -30,12 +30,12 @@ Cc:     Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 22/73] netfilter: nft_tunnel: add missing attribute validation for tunnels
-Date:   Wed, 18 Mar 2020 16:52:46 -0400
-Message-Id: <20200318205337.16279-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 08/15] netfilter: cthelper: add missing attribute validation for cthelper
+Date:   Wed, 18 Mar 2020 16:56:22 -0400
+Message-Id: <20200318205629.17750-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200318205337.16279-1-sashal@kernel.org>
-References: <20200318205337.16279-1-sashal@kernel.org>
+In-Reply-To: <20200318205629.17750-1-sashal@kernel.org>
+References: <20200318205629.17750-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -47,32 +47,32 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit 88a637719a1570705c02cacb3297af164b1714e7 ]
+[ Upstream commit c049b3450072b8e3998053490e025839fecfef31 ]
 
-Add missing attribute validation for tunnel source and
-destination ports to the netlink policy.
+Add missing attribute validation for cthelper
+to the netlink policy.
 
-Fixes: af308b94a2a4 ("netfilter: nf_tables: add tunnel support")
+Fixes: 12f7a505331e ("netfilter: add user-space connection tracking helper infrastructure")
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nft_tunnel.c | 2 ++
+ net/netfilter/nfnetlink_cthelper.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/net/netfilter/nft_tunnel.c b/net/netfilter/nft_tunnel.c
-index 037e8fce9b30e..1effd4878619f 100644
---- a/net/netfilter/nft_tunnel.c
-+++ b/net/netfilter/nft_tunnel.c
-@@ -339,6 +339,8 @@ static const struct nla_policy nft_tunnel_key_policy[NFTA_TUNNEL_KEY_MAX + 1] =
- 	[NFTA_TUNNEL_KEY_FLAGS]	= { .type = NLA_U32, },
- 	[NFTA_TUNNEL_KEY_TOS]	= { .type = NLA_U8, },
- 	[NFTA_TUNNEL_KEY_TTL]	= { .type = NLA_U8, },
-+	[NFTA_TUNNEL_KEY_SPORT]	= { .type = NLA_U16, },
-+	[NFTA_TUNNEL_KEY_DPORT]	= { .type = NLA_U16, },
- 	[NFTA_TUNNEL_KEY_OPTS]	= { .type = NLA_NESTED, },
+diff --git a/net/netfilter/nfnetlink_cthelper.c b/net/netfilter/nfnetlink_cthelper.c
+index 3f499126727c8..8396dc8ee2474 100644
+--- a/net/netfilter/nfnetlink_cthelper.c
++++ b/net/netfilter/nfnetlink_cthelper.c
+@@ -711,6 +711,8 @@ static const struct nla_policy nfnl_cthelper_policy[NFCTH_MAX+1] = {
+ 	[NFCTH_NAME] = { .type = NLA_NUL_STRING,
+ 			 .len = NF_CT_HELPER_NAME_LEN-1 },
+ 	[NFCTH_QUEUE_NUM] = { .type = NLA_U32, },
++	[NFCTH_PRIV_DATA_LEN] = { .type = NLA_U32, },
++	[NFCTH_STATUS] = { .type = NLA_U32, },
  };
  
+ static const struct nfnl_callback nfnl_cthelper_cb[NFNL_MSG_CTHELPER_MAX] = {
 -- 
 2.20.1
 
