@@ -2,45 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0B0189301
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2020 01:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8C91892FC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Mar 2020 01:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727411AbgCRAkg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 17 Mar 2020 20:40:36 -0400
-Received: from correo.us.es ([193.147.175.20]:45596 "EHLO mail.us.es"
+        id S1727320AbgCRAke (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 17 Mar 2020 20:40:34 -0400
+Received: from correo.us.es ([193.147.175.20]:45618 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727351AbgCRAkZ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 17 Mar 2020 20:40:25 -0400
+        id S1727378AbgCRAk1 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 17 Mar 2020 20:40:27 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 5B73027F8A9
+        by mail.us.es (Postfix) with ESMTP id EDF6927F8AF
         for <netfilter-devel@vger.kernel.org>; Wed, 18 Mar 2020 01:39:55 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 430E6DA38D
+        by antivirus1-rhel7.int (Postfix) with ESMTP id DE968DA736
         for <netfilter-devel@vger.kernel.org>; Wed, 18 Mar 2020 01:39:55 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 38ABFDA390; Wed, 18 Mar 2020 01:39:55 +0100 (CET)
+        id D41F7DA390; Wed, 18 Mar 2020 01:39:55 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 79017DA38D;
-        Wed, 18 Mar 2020 01:39:53 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 0729DDA736;
+        Wed, 18 Mar 2020 01:39:54 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 18 Mar 2020 01:39:53 +0100 (CET)
+ Wed, 18 Mar 2020 01:39:54 +0100 (CET)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from salvia.here (unknown [90.77.255.23])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 49D8B426CCB9;
+        by entrada.int (Postfix) with ESMTPA id D4B77426CCB9;
         Wed, 18 Mar 2020 01:39:53 +0100 (CET)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 27/29] netfilter: Rename ingress hook include file
-Date:   Wed, 18 Mar 2020 01:39:54 +0100
-Message-Id: <20200318003956.73573-28-pablo@netfilter.org>
+Subject: [PATCH 28/29] netfilter: Generalize ingress hook
+Date:   Wed, 18 Mar 2020 01:39:55 +0100
+Message-Id: <20200318003956.73573-29-pablo@netfilter.org>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200318003956.73573-1-pablo@netfilter.org>
 References: <20200318003956.73573-1-pablo@netfilter.org>
@@ -52,11 +52,12 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: Lukas Wunner <lukas@wunner.de>
 
-Prepare for addition of a netfilter egress hook by renaming
-<linux/netfilter_ingress.h> to <linux/netfilter_netdev.h>.
+Prepare for addition of a netfilter egress hook by generalizing the
+ingress hook introduced by commit e687ad60af09 ("netfilter: add
+netfilter ingress hook after handle_ing() under unique static key").
 
-The egress hook also necessitates a refactoring of the include file,
-but that is done in a separate commit to ease reviewing.
+In particular, rename and refactor the ingress hook's static inlines
+such that they can be reused for an egress hook.
 
 No functional change intended.
 
@@ -64,28 +65,112 @@ Signed-off-by: Lukas Wunner <lukas@wunner.de>
 Cc: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/linux/{netfilter_ingress.h => netfilter_netdev.h} | 0
- net/core/dev.c                                            | 2 +-
- 2 files changed, 1 insertion(+), 1 deletion(-)
- rename include/linux/{netfilter_ingress.h => netfilter_netdev.h} (100%)
+ include/linux/netfilter_netdev.h | 45 +++++++++++++++++++++++++++-------------
+ net/core/dev.c                   |  2 +-
+ 2 files changed, 32 insertions(+), 15 deletions(-)
 
-diff --git a/include/linux/netfilter_ingress.h b/include/linux/netfilter_netdev.h
-similarity index 100%
-rename from include/linux/netfilter_ingress.h
-rename to include/linux/netfilter_netdev.h
+diff --git a/include/linux/netfilter_netdev.h b/include/linux/netfilter_netdev.h
+index a13774be2eb5..49e26479642e 100644
+--- a/include/linux/netfilter_netdev.h
++++ b/include/linux/netfilter_netdev.h
+@@ -1,34 +1,37 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _NETFILTER_INGRESS_H_
+-#define _NETFILTER_INGRESS_H_
++#ifndef _NETFILTER_NETDEV_H_
++#define _NETFILTER_NETDEV_H_
+ 
+ #include <linux/netfilter.h>
+ #include <linux/netdevice.h>
+ 
+-#ifdef CONFIG_NETFILTER_INGRESS
+-static inline bool nf_hook_ingress_active(const struct sk_buff *skb)
++#ifdef CONFIG_NETFILTER
++static __always_inline bool nf_hook_netdev_active(enum nf_dev_hooks hooknum,
++					  struct nf_hook_entries __rcu *hooks)
+ {
+ #ifdef CONFIG_JUMP_LABEL
+-	if (!static_key_false(&nf_hooks_needed[NFPROTO_NETDEV][NF_NETDEV_INGRESS]))
++	if (!static_key_false(&nf_hooks_needed[NFPROTO_NETDEV][hooknum]))
+ 		return false;
+ #endif
+-	return rcu_access_pointer(skb->dev->nf_hooks_ingress);
++	return rcu_access_pointer(hooks);
+ }
+ 
+ /* caller must hold rcu_read_lock */
+-static inline int nf_hook_ingress(struct sk_buff *skb)
++static __always_inline int nf_hook_netdev(struct sk_buff *skb,
++					  enum nf_dev_hooks hooknum,
++					  struct nf_hook_entries __rcu *hooks)
+ {
+-	struct nf_hook_entries *e = rcu_dereference(skb->dev->nf_hooks_ingress);
++	struct nf_hook_entries *e = rcu_dereference(hooks);
+ 	struct nf_hook_state state;
+ 	int ret;
+ 
+-	/* Must recheck the ingress hook head, in the event it became NULL
+-	 * after the check in nf_hook_ingress_active evaluated to true.
++	/* Must recheck the hook head, in the event it became NULL
++	 * after the check in nf_hook_netdev_active evaluated to true.
+ 	 */
+ 	if (unlikely(!e))
+ 		return 0;
+ 
+-	nf_hook_state_init(&state, NF_NETDEV_INGRESS,
++	nf_hook_state_init(&state, hooknum,
+ 			   NFPROTO_NETDEV, skb->dev, NULL, NULL,
+ 			   dev_net(skb->dev), NULL);
+ 	ret = nf_hook_slow(skb, &state, e, 0);
+@@ -37,10 +40,26 @@ static inline int nf_hook_ingress(struct sk_buff *skb)
+ 
+ 	return ret;
+ }
++#endif /* CONFIG_NETFILTER */
+ 
+-static inline void nf_hook_ingress_init(struct net_device *dev)
++static inline void nf_hook_netdev_init(struct net_device *dev)
+ {
++#ifdef CONFIG_NETFILTER_INGRESS
+ 	RCU_INIT_POINTER(dev->nf_hooks_ingress, NULL);
++#endif
++}
++
++#ifdef CONFIG_NETFILTER_INGRESS
++static inline bool nf_hook_ingress_active(const struct sk_buff *skb)
++{
++	return nf_hook_netdev_active(NF_NETDEV_INGRESS,
++				     skb->dev->nf_hooks_ingress);
++}
++
++static inline int nf_hook_ingress(struct sk_buff *skb)
++{
++	return nf_hook_netdev(skb, NF_NETDEV_INGRESS,
++			      skb->dev->nf_hooks_ingress);
+ }
+ #else /* CONFIG_NETFILTER_INGRESS */
+ static inline int nf_hook_ingress_active(struct sk_buff *skb)
+@@ -52,7 +71,5 @@ static inline int nf_hook_ingress(struct sk_buff *skb)
+ {
+ 	return 0;
+ }
+-
+-static inline void nf_hook_ingress_init(struct net_device *dev) {}
+ #endif /* CONFIG_NETFILTER_INGRESS */
+ #endif /* _NETFILTER_INGRESS_H_ */
 diff --git a/net/core/dev.c b/net/core/dev.c
-index d84541c24446..b1ce1c942b54 100644
+index b1ce1c942b54..13d562f67e9c 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
-@@ -135,7 +135,7 @@
- #include <linux/if_macvlan.h>
- #include <linux/errqueue.h>
- #include <linux/hrtimer.h>
--#include <linux/netfilter_ingress.h>
-+#include <linux/netfilter_netdev.h>
- #include <linux/crash_dump.h>
- #include <linux/sctp.h>
- #include <net/udp_tunnel.h>
+@@ -9846,7 +9846,7 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
+ 	if (!dev->ethtool_ops)
+ 		dev->ethtool_ops = &default_ethtool_ops;
+ 
+-	nf_hook_ingress_init(dev);
++	nf_hook_netdev_init(dev);
+ 
+ 	return dev;
+ 
 -- 
 2.11.0
 
