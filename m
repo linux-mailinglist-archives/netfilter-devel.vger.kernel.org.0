@@ -2,78 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1313518CF73
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Mar 2020 14:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3811318CF8F
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Mar 2020 14:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbgCTNvt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 20 Mar 2020 09:51:49 -0400
-Received: from correo.us.es ([193.147.175.20]:41540 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726851AbgCTNvo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 20 Mar 2020 09:51:44 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 7A617172C89
-        for <netfilter-devel@vger.kernel.org>; Fri, 20 Mar 2020 14:51:11 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 61CE0DA3A5
-        for <netfilter-devel@vger.kernel.org>; Fri, 20 Mar 2020 14:51:11 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 57457DA3A1; Fri, 20 Mar 2020 14:51:11 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 6EB6CDA736;
-        Fri, 20 Mar 2020 14:51:09 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 20 Mar 2020 14:51:09 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 3EAFA42EE38E;
-        Fri, 20 Mar 2020 14:51:09 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 4/4] netfilter: flowtable: populate addr_type mask
-Date:   Fri, 20 Mar 2020 14:51:34 +0100
-Message-Id: <20200320135134.436907-5-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200320135134.436907-1-pablo@netfilter.org>
-References: <20200320135134.436907-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726913AbgCTN4o (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 20 Mar 2020 09:56:44 -0400
+Received: from m9785.mail.qiye.163.com ([220.181.97.85]:34331 "EHLO
+        m9785.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726897AbgCTN4o (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 20 Mar 2020 09:56:44 -0400
+Received: from [192.168.1.6] (unknown [101.81.70.14])
+        by m9785.mail.qiye.163.com (Hmail) with ESMTPA id 9E5135C15FF;
+        Fri, 20 Mar 2020 21:56:35 +0800 (CST)
+Subject: Re: [PATCH nf-next v2] netfilter: nf_flow_table_offload: set
+ hw_stats_type of flow_action_entry to FLOW_ACTION_HW_STATS_ANY
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+References: <1584709029-20268-1-git-send-email-wenxu@ucloud.cn>
+ <20200320130459.fxpsaebyoq4c6em2@salvia>
+From:   wenxu <wenxu@ucloud.cn>
+Message-ID: <6644e52d-27d6-ec38-0435-def39ce6caf0@ucloud.cn>
+Date:   Fri, 20 Mar 2020 21:55:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200320130459.fxpsaebyoq4c6em2@salvia>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVQ01IS0tLSk5PT0JOSU9ZV1koWU
+        FJQjdXWS1ZQUlXWQkOFx4IWUFZNTQpNjo3JCkuNz5ZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KzY6FDo6Tzg0LBw3DTIaFA8p
+        CksaChBVSlVKTkNPTEpJTkJNS05DVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpLSlVD
+        SlVMS1VKT1lXWQgBWUFKQ0tPNwY+
+X-HM-Tid: 0a70f83b392a2087kuqy9e5135c15ff
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Edward Cree <ecree@solarflare.com>
 
-nf_flow_rule_match() sets control.addr_type in key, so needs to also set
- the corresponding mask.  An exact match is wanted, so mask is all ones.
+ÔÚ 2020/3/20 21:04, Pablo Neira Ayuso Ð´µÀ:
+> On Fri, Mar 20, 2020 at 08:57:09PM +0800, wenxu@ucloud.cn wrote:
+>> From: wenxu <wenxu@ucloud.cn>
+>>
+>> Set hw_stats_type of flow_action_entry to FLOW_ACTION_HW_STATS_ANY to
+>> follow the driver behavior.
+> Now you have to explain me how you are going to use this.
+>
+> There is no support for packet/bytes stats right now.
+>
+> Thank you.
 
-Fixes: c29f74e0df7a ("netfilter: nf_flow_table: hardware offload support")
-Signed-off-by: Edward Cree <ecree@solarflare.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_flow_table_offload.c | 1 +
- 1 file changed, 1 insertion(+)
+The FLOW_ACTION_HW_STATS_ANY flags is the default behavior and
 
-diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-index 06f00cdc3891..f2c22c682851 100644
---- a/net/netfilter/nf_flow_table_offload.c
-+++ b/net/netfilter/nf_flow_table_offload.c
-@@ -87,6 +87,7 @@ static int nf_flow_rule_match(struct nf_flow_match *match,
- 	default:
- 		return -EOPNOTSUPP;
- 	}
-+	mask->control.addr_type = 0xffff;
- 	match->dissector.used_keys |= BIT(key->control.addr_type);
- 	mask->basic.n_proto = 0xffff;
- 
--- 
-2.11.0
+can avoid the failure of flow inserting. We don't nedd to use this.
 
+>
