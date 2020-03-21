@@ -2,51 +2,54 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D301918DDA8
-	for <lists+netfilter-devel@lfdr.de>; Sat, 21 Mar 2020 03:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A28218DFD2
+	for <lists+netfilter-devel@lfdr.de>; Sat, 21 Mar 2020 12:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbgCUCei (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 20 Mar 2020 22:34:38 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:54198 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727046AbgCUCei (ORCPT
+        id S1728205AbgCUL30 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 21 Mar 2020 07:29:26 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:47564 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726834AbgCUL3Z (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 20 Mar 2020 22:34:38 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id A8230158C34B8;
-        Fri, 20 Mar 2020 19:34:37 -0700 (PDT)
-Date:   Fri, 20 Mar 2020 19:34:34 -0700 (PDT)
-Message-Id: <20200320.193434.1013418419753934109.davem@davemloft.net>
-To:     pablo@netfilter.org
+        Sat, 21 Mar 2020 07:29:25 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id DE3DE41037;
+        Sat, 21 Mar 2020 19:29:18 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org, paulb@mellanox.com
 Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 0/4] Netfilter fixes for net
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200320135134.436907-1-pablo@netfilter.org>
-References: <20200320135134.436907-1-pablo@netfilter.org>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 20 Mar 2020 19:34:37 -0700 (PDT)
+Subject: [PATCH nf-next 0/3] netfilter: nf_flow_table_offload: add nf_conn_acct for flowtable offload
+Date:   Sat, 21 Mar 2020 19:29:15 +0800
+Message-Id: <1584790158-9752-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSVVNSk9CQkJMTEpKSkNKTVlXWShZQU
+        lCN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OD46Nxw5Nzg0PBMwAxAPIQk#
+        MghPCVFVSlVKTkNPTEJLSk5DQkJLVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUpIQ0o3Bg++
+X-HM-Tid: 0a70fcdabe4e2086kuqyde3de41037
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Date: Fri, 20 Mar 2020 14:51:30 +0100
+From: wenxu <wenxu@ucloud.cn>
 
-> The following patchset contains Netfilter fixes for net:
-> 
-> 1) Refetch IP header pointer after pskb_may_pull() in flowtable,
->    from Haishuang Yan.
-> 
-> 2) Fix memleak in flowtable offload in nf_flow_table_free(),
->    from Paul Blakey.
-> 
-> 3) Set control.addr_type mask in flowtable offload, from Edward Cree.
+An offloaded conntrack in flowtable will never count the nf_conn_act
+counter after the flow is offloaded in SW or HW.
 
-Pulled, thanks Pablo.
+wenxu (3):
+  netfilter: nf_flow_table: add nf_conn_acct for SW flowtable offload
+  netfilter: nf_flow_table: add nf_conn_acct for HW flowtable offload
+  net/sched: act_ct: add nf_conn_acct for SW act_ct flowtable offload
+
+ include/net/netfilter/nf_flow_table.h |  4 ++++
+ net/netfilter/nf_flow_table_core.c    | 19 +++++++++++++++++++
+ net/netfilter/nf_flow_table_ip.c      |  4 ++++
+ net/netfilter/nf_flow_table_offload.c |  8 ++++++++
+ net/sched/act_ct.c                    |  1 +
+ 5 files changed, 36 insertions(+)
+
+-- 
+1.8.3.1
+
