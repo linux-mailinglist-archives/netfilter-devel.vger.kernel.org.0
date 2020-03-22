@@ -2,90 +2,80 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AE518E5F7
-	for <lists+netfilter-devel@lfdr.de>; Sun, 22 Mar 2020 03:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE68118E5F8
+	for <lists+netfilter-devel@lfdr.de>; Sun, 22 Mar 2020 03:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728247AbgCVCVQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 21 Mar 2020 22:21:16 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:45955 "EHLO
+        id S1726566AbgCVCWR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 21 Mar 2020 22:22:17 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:45435 "EHLO
         us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726409AbgCVCVQ (ORCPT
+        by vger.kernel.org with ESMTP id S1726409AbgCVCWR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 21 Mar 2020 22:21:16 -0400
+        Sat, 21 Mar 2020 22:22:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1584843675;
+        s=mimecast20190719; t=1584843737;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ANSxPJpyzR0GqL0xXpZHb0vYjDlbSP34HZWZmjrVhQs=;
-        b=EUZRAou2GOh54uok7qtJaIBqNZ9R+QEwAhIXcNUbL8XLq6HWsAP5SSbppKhXikYwgEREAN
-        BmqNB29BUQA5Dfp1hgFQ7Xb6Dm/flP0ZBH8yXbhipWgKy3hqB9N0ACa6u7vFxCqKJCqt/g
-        tTZ9fOFhfx16Tu7vMaha3WDrd5PcJ24=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HCQznCkaZF4kmaYSPL44GpmIL5TjiKsoIqzFyIUwFYQ=;
+        b=TAc4cXrPkqJOnM5mDKug4zdSPG9SuXheulQ9yGeLtfg315ZmT2oekDgd/OwHZC2R4bEca3
+        XP/IWA7BOA4egfJK1z0WB14GDQ/LQdJg/CYEUJOGQqdspc+WYofHOSn+T+LtlCqivjpXJi
+        BPXrHs1XUljQxhDXBebhdfRTIfZeofU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-95-n-046lH1NOKcE0x3MKkN2w-1; Sat, 21 Mar 2020 22:21:14 -0400
-X-MC-Unique: n-046lH1NOKcE0x3MKkN2w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-147-tIv9HSWUOR2oppVGo4QOYQ-1; Sat, 21 Mar 2020 22:22:15 -0400
+X-MC-Unique: tIv9HSWUOR2oppVGo4QOYQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D6A11005510;
-        Sun, 22 Mar 2020 02:21:13 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C82DF8017CC;
+        Sun, 22 Mar 2020 02:22:13 +0000 (UTC)
 Received: from epycfail.redhat.com (unknown [10.40.208.77])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DA2AC73863;
-        Sun, 22 Mar 2020 02:21:11 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C2A985C1B5;
+        Sun, 22 Mar 2020 02:22:11 +0000 (UTC)
 From:   Stefano Brivio <sbrivio@redhat.com>
-To:     =?UTF-8?q?Kadlecsik=20J=C3=B3zsef?= <kadlec@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, Mithil Mhatre <mmhatre@redhat.com>
-Subject: [PATCH NOMERGE iptables 2/2] man: xt_set: Describe --update-counters-first flag
-Date:   Sun, 22 Mar 2020 03:20:54 +0100
-Message-Id: <20200322022054.3447876-3-sbrivio@redhat.com>
-In-Reply-To: <20200322022054.3447876-1-sbrivio@redhat.com>
-References: <20200322022054.3447876-1-sbrivio@redhat.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
+Subject: [PATCH nf v2 0/4] nftables: Consistently report partial and entire set overlaps
+Date:   Sun, 22 Mar 2020 03:21:57 +0100
+Message-Id: <cover.1584841602.git.sbrivio@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Content-Transfer-Encoding: quoted-printable
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If this flag is set, counters are updated when elements (not
-necessarily rules) match, and before rule match is evaluated
-as a whole.
+Phil reports that inserting an element, that includes a concatenated
+range colliding with an existing one, fails silently.
 
-Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
----
- extensions/libxt_set.man | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+This is because so far set back-ends have no way to tell apart cases
+of identical elements being inserted from clashing elements. On
+insertion, the front-end would strip -EEXIST if NLM_F_EXCL is not
+passed, so we return success to userspace while an error in fact
+occurred.
 
-diff --git a/extensions/libxt_set.man b/extensions/libxt_set.man
-index 451400dc..fb5411be 100644
---- a/extensions/libxt_set.man
-+++ b/extensions/libxt_set.man
-@@ -27,9 +27,17 @@ byte counters of the matching element in the set won't=
- be updated. By
- default, packet and byte counters are updated if the \fIrule\fP
- matches.
- .IP
--Note that a rule might not match (hence, counters won't be updated)
--even if a set element matches, depending on further options described
--below.
-+Note that a rule might not match even if a set element matches,
-+depending on further options described below, hence counters won't be
-+updated unless the \fB\-\-update\-counters-first\fP option is given.
-+.TP
-+\fB\-\-update\-counters-first\fP
-+Update counters before evaluating options that might affect rule
-+matching: counters are updated whenever a set element matches, and
-+counter comparison options described below are evaluated against the
-+resulting counter values.
-+.IP
-+This is mutually exclusive with \fB!\fP \fB\-\-update\-counters\fP.
- .TP
- \fB!\fP \fB\-\-update\-subcounters\fP
- If the \fB\-\-update\-subcounters\fP flag is negated, then the packet an=
-d
+As suggested by Pablo, allow back-ends to return -ENOTEMPTY in case
+of partial overlaps, with patch 1/4. Then, with patches 2/4 to 4/4,
+update nft_set_pipapo and nft_set_rbtree to report partial overlaps
+using the new error code.
+
+v2: Only consider active elements for rbtree overlap detection in
+    patch 4/4 (Pablo Neira Ayuso)
+
+Stefano Brivio (4):
+  nf_tables: Allow set back-ends to report partial overlaps on insertion
+  nft_set_pipapo: Separate partial and complete overlap cases on
+    insertion
+  nft_set_rbtree: Introduce and use nft_rbtree_interval_start()
+  nft_set_rbtree: Detect partial overlaps on insertion
+
+ net/netfilter/nf_tables_api.c  |  5 ++
+ net/netfilter/nft_set_pipapo.c | 34 ++++++++++---
+ net/netfilter/nft_set_rbtree.c | 87 ++++++++++++++++++++++++++++++----
+ 3 files changed, 110 insertions(+), 16 deletions(-)
+
 --=20
-2.24.1
+2.25.1
 
