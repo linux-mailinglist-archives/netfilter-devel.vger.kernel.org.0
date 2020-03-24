@@ -2,119 +2,111 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8DA191B9B
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Mar 2020 22:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D92D191CD9
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Mar 2020 23:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgCXVCP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 24 Mar 2020 17:02:15 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:50009 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727747AbgCXVCP (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 24 Mar 2020 17:02:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585083734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ezORt9tWKqavsqost0+8jwF+irEVoobXTNyqmEmYnCY=;
-        b=JAa65QbtlGo9vHlvtafvPopAQ6x4otyEMGJ/ycLmejJmBnypEpWR/49ss1qjKojiAl/tgw
-        vHYgMR1u3Up/ncRo3Y0TEaLxZ/1cbjXZ9VwuPr96tpeVpeIUsnmuIaZhMKnvJUzmA2lKV5
-        uUaLdEWZJP+sKD7L/1r4oQH4RbZ9aKI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-qKNTB0YPNMSuZYrUnbJeZQ-1; Tue, 24 Mar 2020 17:02:10 -0400
-X-MC-Unique: qKNTB0YPNMSuZYrUnbJeZQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CEFF8189D6C0;
-        Tue, 24 Mar 2020 21:02:08 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4FADC19925;
-        Tue, 24 Mar 2020 21:01:54 +0000 (UTC)
-Date:   Tue, 24 Mar 2020 17:01:52 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     nhorman@tuxdriver.com, linux-api@vger.kernel.org,
-        containers@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
-        linux-audit@redhat.com, netfilter-devel@vger.kernel.org,
-        ebiederm@xmission.com, simo@redhat.com, netdev@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
-        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>
-Subject: Re: [PATCH ghak90 V8 07/16] audit: add contid support for signalling
- the audit daemon
-Message-ID: <20200324210152.5uydf3zqi3dwshfu@madcap2.tricolour.ca>
-References: <20200312193037.2tb5f53yeisfq4ta@madcap2.tricolour.ca>
- <CAHC9VhQoVOzy_b9W6h+kmizKr1rPkC4cy5aYoKT2i0ZgsceNDg@mail.gmail.com>
- <20200313185900.y44yvrfm4zxa5lfk@madcap2.tricolour.ca>
- <CAHC9VhR2zCCE5bjH75rSwfLC7TJGFj4RBnrtcOoUiqVp9q5TaA@mail.gmail.com>
- <20200318212630.mw2geg4ykhnbtr3k@madcap2.tricolour.ca>
- <CAHC9VhRYvGAru3aOMwWKCCWDktS+2pGr+=vV4SjHW_0yewD98A@mail.gmail.com>
- <20200318215550.es4stkjwnefrfen2@madcap2.tricolour.ca>
- <CAHC9VhSdDDP7Ec-w61NhGxZG5ZiekmrBCAg=Y=VJvEZcgQh46g@mail.gmail.com>
- <20200319220249.jyr6xmwvflya5mks@madcap2.tricolour.ca>
- <CAHC9VhR84aN72yNB_j61zZgrQV1y6yvrBLNY7jp7BqQiEDL+cw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhR84aN72yNB_j61zZgrQV1y6yvrBLNY7jp7BqQiEDL+cw@mail.gmail.com>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1728889AbgCXWd0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 24 Mar 2020 18:33:26 -0400
+Received: from correo.us.es ([193.147.175.20]:34596 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728589AbgCXWc2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 24 Mar 2020 18:32:28 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 866DFFB376
+        for <netfilter-devel@vger.kernel.org>; Tue, 24 Mar 2020 23:31:49 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 765D5DA840
+        for <netfilter-devel@vger.kernel.org>; Tue, 24 Mar 2020 23:31:49 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 6C06FDA7B2; Tue, 24 Mar 2020 23:31:49 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 7F7D3DA390;
+        Tue, 24 Mar 2020 23:31:47 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 24 Mar 2020 23:31:47 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (unknown [90.77.255.23])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 57D9042EF42C;
+        Tue, 24 Mar 2020 23:31:47 +0100 (CET)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org
+Subject: [PATCH 0/7] Netfilter fixes for net
+Date:   Tue, 24 Mar 2020 23:32:13 +0100
+Message-Id: <20200324223220.12119-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 2020-03-23 20:16, Paul Moore wrote:
-> On Thu, Mar 19, 2020 at 6:03 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > On 2020-03-18 18:06, Paul Moore wrote:
-> 
-> ...
-> 
-> > > I hope we can do better than string manipulations in the kernel.  I'd
-> > > much rather defer generating the ACID list (if possible), than
-> > > generating a list only to keep copying and editing it as the record is
-> > > sent.
-> >
-> > At the moment we are stuck with a string-only format.
-> 
-> Yes, we are.  That is another topic, and another set of changes I've
-> been deferring so as to not disrupt the audit container ID work.
-> 
-> I was thinking of what we do inside the kernel between when the record
-> triggering event happens and when we actually emit the record to
-> userspace.  Perhaps we collect the ACID information while the event is
-> occurring, but we defer generating the record until later when we have
-> a better understanding of what should be included in the ACID list.
-> It is somewhat similar (but obviously different) to what we do for
-> PATH records (we collect the pathname info when the path is being
-> resolved).
+Hi,
 
-Ok, now I understand your concern.
+The following patchset contains Netfilter fixes for net:
 
-In the case of NETFILTER_PKT records, the CONTAINER_ID record is the
-only other possible record and they are generated at the same time with
-a local context.
+1) A new selftest for nf_queue, from Florian Westphal. This test
+   covers two recent fixes: 07f8e4d0fddb ("tcp: also NULL skb->dev
+   when copy was needed") and b738a185beaa ("tcp: ensure skb->dev is
+   NULL before leaving TCP stack").
 
-In the case of any event involving a syscall, that CONTAINER_ID record
-is generated at the time of the rest of the event record generation at
-syscall exit.
+2) The fwd action breaks with ifb. For safety in next extensions,
+   make sure the fwd action only runs from ingress until it is extended
+   to be used from a different hook.
 
-The others are only generated when needed, such as the sig2 reply.
+3) The pipapo set type now reports EEXIST in case of subrange overlaps.
+   Update the rbtree set to validate range overlaps, so far this
+   validation is only done only from userspace. From Stefano Brivio.
 
-We generally just store the contobj pointer until we actually generate
-the CONTAINER_ID (or CONTAINER_OP) record.
+You can pull these changes from:
 
-> paul moore
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
 
-- RGB
+Thank you.
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+----------------------------------------------------------------
 
+The following changes since commit 749f6f6843115b424680f1aada3c0dd613ad807c:
+
+  net: phy: dp83867: w/a for fld detect threshold bootstrapping issue (2020-03-21 20:09:57 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git HEAD
+
+for you to fetch changes up to a64d558d8cf98424cc5eb9ae6631782cd8bf789c:
+
+  selftests: netfilter: add nfqueue test case (2020-03-24 20:00:12 +0100)
+
+----------------------------------------------------------------
+Florian Westphal (1):
+      selftests: netfilter: add nfqueue test case
+
+Pablo Neira Ayuso (3):
+      netfilter: nf_tables: Allow set back-ends to report partial overlaps on insertion
+      netfilter: nft_fwd_netdev: validate family and chain type
+      netfilter: nft_fwd_netdev: allow to redirect to ifb via ingress
+
+Stefano Brivio (3):
+      netfilter: nft_set_pipapo: Separate partial and complete overlap cases on insertion
+      netfilter: nft_set_rbtree: Introduce and use nft_rbtree_interval_start()
+      netfilter: nft_set_rbtree: Detect partial overlaps on insertion
+
+ net/netfilter/nf_tables_api.c                  |   5 +
+ net/netfilter/nft_fwd_netdev.c                 |  13 +
+ net/netfilter/nft_set_pipapo.c                 |  34 ++-
+ net/netfilter/nft_set_rbtree.c                 |  87 +++++-
+ tools/testing/selftests/netfilter/Makefile     |   6 +-
+ tools/testing/selftests/netfilter/config       |   6 +
+ tools/testing/selftests/netfilter/nf-queue.c   | 352 +++++++++++++++++++++++++
+ tools/testing/selftests/netfilter/nft_queue.sh | 332 +++++++++++++++++++++++
+ 8 files changed, 818 insertions(+), 17 deletions(-)
+ create mode 100644 tools/testing/selftests/netfilter/nf-queue.c
+ create mode 100755 tools/testing/selftests/netfilter/nft_queue.sh
