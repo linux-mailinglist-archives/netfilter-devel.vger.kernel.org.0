@@ -2,55 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B28194122
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Mar 2020 15:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 788D619412E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Mar 2020 15:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbgCZOT6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 26 Mar 2020 10:19:58 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:44802 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727652AbgCZOT6 (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 26 Mar 2020 10:19:58 -0400
-Received: by mail-lj1-f193.google.com with SMTP id p14so6543309lji.11;
-        Thu, 26 Mar 2020 07:19:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vi/3G4BkWmGkT3E57WouG+T2Aoil12b1B1ROkEwvQD4=;
-        b=aorns7ihJyGghdGNSWaw9hOtwf0GQT6viuhAiOE768Y1A4Q8lCm+oa/IkJDFxiN9Ld
-         VlEAl3P+rHxmNlRIOjImtkis8npHCFPIVTJLOAUD+4bmZig1fLnawyK4rQuUmNnYD4O4
-         BK+me/G62erO1gQalxB5cvfiR7exqqPIzh5P2edhMXaZ6OKN1pQamtRE6LlI4Oy1BzpB
-         gEIVuj4McbDmHA7cICzPOqII2hTOIOfiaLGi2HNCAjYLbc6eg84YGg6Qoj54FvrmS0zX
-         WioyKpo1A0a5qrdZj5HVP6qe2J4uufGUBYAM2INi0qITFPFVa8XdR9xEQ9VQJmLMEI89
-         ZMnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vi/3G4BkWmGkT3E57WouG+T2Aoil12b1B1ROkEwvQD4=;
-        b=KX/ojd1RBARlpD7wf2mObfoFNPrTZmbxMmDOxeGkp3Fld8wL7/eB2jt9tbSqPiQ49N
-         Al/nHvFxum+X2f5xBtJTQde8jhJOed4FgzUKb55NtQOulLzDUUyd9B2s35SufJ8qj9Mk
-         HNuuYthPKqmnGQiqWhgKbKmm8vkaYXjo5+oy6WG/b8CXN90r+rrSXicVl7ucOit4QlRK
-         LlIIG15ehGCFovyVQ9lEoz/NS+PqpZ3Pxt2ygajCHtWYM6pRpCNkPmJkM03Si4UchLmp
-         jqz/049+G+jzotBiamGeX6737vyvoiGOEkQ1fEXPMPCLmss2wj707HY7xDYgdsKdEucc
-         Eqmg==
-X-Gm-Message-State: ANhLgQ1AedNwt2+RCj4mD9KCiugruiCI1qsJhHhqI62PSluRP4oSsRvT
-        1fMZjUDuEG9G4xda8bAXTBdgYEbAjULeRmPPVJw=
-X-Google-Smtp-Source: ADFU+vsOY7wOtrWIwXZIC+ONOCDnjwwejmKylIX70OR0oCJim7hZQvEkhCwEnBwEfgRr9YOZBoi0q5E2pj/ynD7Sov8=
-X-Received: by 2002:a2e:9ad2:: with SMTP id p18mr5273631ljj.15.1585232394383;
- Thu, 26 Mar 2020 07:19:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200320030015.195806-1-zenczykowski@gmail.com>
- <20200326135959.tqy5i4qkxwcqgp5y@salvia> <CAHo-OoyGEPKdU5ZEuY29Zzi4NGzD-QMw7Pb-MTXjdKTj-Kj-Pw@mail.gmail.com>
- <CAHo-OozGK7ANfFDBnLv2tZVuhXUw1sCCRVTBc0YT7LvYVXH_ZQ@mail.gmail.com> <CAHo-Oow8otp4ruAUpvGYjXN_f3dsbprg_DKOGG6HNhe_Z8X8Vg@mail.gmail.com>
-In-Reply-To: <CAHo-Oow8otp4ruAUpvGYjXN_f3dsbprg_DKOGG6HNhe_Z8X8Vg@mail.gmail.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Date:   Thu, 26 Mar 2020 07:19:44 -0700
-Message-ID: <CAHo-OoxMNBTDZW_xqp1X3SGncM-twAySrdnc=ntS7_e2j0YEaA@mail.gmail.com>
-Subject: Re: [PATCH] iptables: open eBPF programs in read only mode
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
+        id S1727847AbgCZOWc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 26 Mar 2020 10:22:32 -0400
+Received: from correo.us.es ([193.147.175.20]:60404 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727695AbgCZOWc (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 26 Mar 2020 10:22:32 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id ECB1281413
+        for <netfilter-devel@vger.kernel.org>; Thu, 26 Mar 2020 15:22:29 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id DD5D7DA72F
+        for <netfilter-devel@vger.kernel.org>; Thu, 26 Mar 2020 15:22:29 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id D2BFAFC5E5; Thu, 26 Mar 2020 15:22:29 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 12A2CDA72F;
+        Thu, 26 Mar 2020 15:22:28 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Thu, 26 Mar 2020 15:22:28 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id E1D5742EF4E0;
+        Thu, 26 Mar 2020 15:22:27 +0100 (CET)
+Date:   Thu, 26 Mar 2020 15:22:27 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>
 Cc:     Florian Westphal <fw@strlen.de>,
         Linux Network Development Mailing List 
         <netdev@vger.kernel.org>,
@@ -58,13 +47,40 @@ Cc:     Florian Westphal <fw@strlen.de>,
         <netfilter-devel@vger.kernel.org>, Chenbo Feng <fengc@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] iptables: open eBPF programs in read only mode
+Message-ID: <20200326142227.fclwbiibfjym7l6m@salvia>
+References: <20200320030015.195806-1-zenczykowski@gmail.com>
+ <20200326135959.tqy5i4qkxwcqgp5y@salvia>
+ <CAHo-OoyGEPKdU5ZEuY29Zzi4NGzD-QMw7Pb-MTXjdKTj-Kj-Pw@mail.gmail.com>
+ <CAHo-OozGK7ANfFDBnLv2tZVuhXUw1sCCRVTBc0YT7LvYVXH_ZQ@mail.gmail.com>
+ <CAHo-Oow8otp4ruAUpvGYjXN_f3dsbprg_DKOGG6HNhe_Z8X8Vg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHo-Oow8otp4ruAUpvGYjXN_f3dsbprg_DKOGG6HNhe_Z8X8Vg@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Ugh, and I guess that on a pre-4.15 kernel it would cause failures due
-to unknown flag...
+On Thu, Mar 26, 2020 at 07:16:16AM -0700, Maciej Żenczykowski wrote:
+> I guess maybe we could wrap it in a
+> 
+> #ifdef BPF_F_RDONLY
+> attr.file_flags = BPF_F_RDONLY;
+> #endif
+> 
+> if we want to continue supporting building against pre-4.15 kernel headers...
 
-Maybe we need to try with flag and fallback to without...
+You can probably add a cached copy of this header file to the iptables
+tree via your patch like. This is done in other existing extensions to
+not rely on the available kernel headers.
+
+There is no parity between userspace iptables and kernel version, it
+is good if you make sure this compiles for older kernels are still
+supported.
+
+Thank you.
