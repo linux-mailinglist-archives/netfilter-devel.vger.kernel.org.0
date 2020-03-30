@@ -2,95 +2,79 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DA519714F
-	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Mar 2020 02:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6E41972C6
+	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Mar 2020 05:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgC3Ahc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 29 Mar 2020 20:37:32 -0400
-Received: from correo.us.es ([193.147.175.20]:57150 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728071AbgC3Ah2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 29 Mar 2020 20:37:28 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 0D91DEF445
-        for <netfilter-devel@vger.kernel.org>; Mon, 30 Mar 2020 02:37:27 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id F27DC100A52
-        for <netfilter-devel@vger.kernel.org>; Mon, 30 Mar 2020 02:37:26 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id E8344100A42; Mon, 30 Mar 2020 02:37:26 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 090F4100A55;
-        Mon, 30 Mar 2020 02:37:25 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 30 Mar 2020 02:37:25 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id D5C5442EF42B;
-        Mon, 30 Mar 2020 02:37:24 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 26/26] netfilter: flowtable: add counter support in HW offload
-Date:   Mon, 30 Mar 2020 02:37:08 +0200
-Message-Id: <20200330003708.54017-27-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200330003708.54017-1-pablo@netfilter.org>
-References: <20200330003708.54017-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729019AbgC3DVA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 29 Mar 2020 23:21:00 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:4016 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728987AbgC3DVA (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 29 Mar 2020 23:21:00 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee95e81658ecc9-03bf0; Mon, 30 Mar 2020 11:20:46 +0800 (CST)
+X-RM-TRANSID: 2ee95e81658ecc9-03bf0
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost (unknown[223.105.0.241])
+        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35e81658d0c3-a4187;
+        Mon, 30 Mar 2020 11:20:46 +0800 (CST)
+X-RM-TRANSID: 2ee35e81658d0c3-a4187
+From:   Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+To:     Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+Subject: [PATCH nf-next] ipvs: fix uninitialized variable warning
+Date:   Mon, 30 Mar 2020 11:20:15 +0800
+Message-Id: <1585538415-27583-1-git-send-email-yanhaishuang@cmss.chinamobile.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+If outer_proto is not set, GCC warning as following:
 
-Store the conntrack counters to the conntrack entry in the
-HW flowtable offload.
+In file included from net/netfilter/ipvs/ip_vs_core.c:52:
+net/netfilter/ipvs/ip_vs_core.c: In function 'ip_vs_in_icmp':
+include/net/ip_vs.h:233:4: warning: 'outer_proto' may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 233 |    printk(KERN_DEBUG pr_fmt(msg), ##__VA_ARGS__); \
+     |    ^~~~~~
+net/netfilter/ipvs/ip_vs_core.c:1666:8: note: 'outer_proto' was declared here
+1666 |  char *outer_proto;
+     |        ^~~~~~~~~~~
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 73348fed35d0 ("ipvs: optimize tunnel dumps for icmp errors")
+Signed-off-by: Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
 ---
- net/netfilter/nf_flow_table_offload.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ net/netfilter/ipvs/ip_vs_core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-index a9b3b88bd0f1..d9547c3d1b85 100644
---- a/net/netfilter/nf_flow_table_offload.c
-+++ b/net/netfilter/nf_flow_table_offload.c
-@@ -9,6 +9,7 @@
- #include <net/netfilter/nf_flow_table.h>
- #include <net/netfilter/nf_tables.h>
- #include <net/netfilter/nf_conntrack.h>
-+#include <net/netfilter/nf_conntrack_acct.h>
- #include <net/netfilter/nf_conntrack_core.h>
- #include <net/netfilter/nf_conntrack_tuple.h>
+diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+index d2ac530..aa6a603 100644
+--- a/net/netfilter/ipvs/ip_vs_core.c
++++ b/net/netfilter/ipvs/ip_vs_core.c
+@@ -1663,7 +1663,7 @@ static int ipvs_gre_decap(struct netns_ipvs *ipvs, struct sk_buff *skb,
+ 	unsigned int offset, offset2, ihl, verdict;
+ 	bool tunnel, new_cp = false;
+ 	union nf_inet_addr *raddr;
+-	char *outer_proto;
++	char *outer_proto = "IPIP";
  
-@@ -783,6 +784,17 @@ static void flow_offload_work_stats(struct flow_offload_work *offload)
- 	lastused = max_t(u64, stats[0].lastused, stats[1].lastused);
- 	offload->flow->timeout = max_t(u64, offload->flow->timeout,
- 				       lastused + NF_FLOW_TIMEOUT);
-+
-+	if (offload->flowtable->flags & NF_FLOWTABLE_COUNTER) {
-+		if (stats[0].pkts)
-+			nf_ct_acct_add(offload->flow->ct,
-+				       FLOW_OFFLOAD_DIR_ORIGINAL,
-+				       stats[0].pkts, stats[0].bytes);
-+		if (stats[1].pkts)
-+			nf_ct_acct_add(offload->flow->ct,
-+				       FLOW_OFFLOAD_DIR_REPLY,
-+				       stats[1].pkts, stats[1].bytes);
-+	}
- }
+ 	*related = 1;
  
- static void flow_offload_work_handler(struct work_struct *work)
+@@ -1723,7 +1723,6 @@ static int ipvs_gre_decap(struct netns_ipvs *ipvs, struct sk_buff *skb,
+ 		if (cih == NULL)
+ 			return NF_ACCEPT; /* The packet looks wrong, ignore */
+ 		tunnel = true;
+-		outer_proto = "IPIP";
+ 	} else if ((cih->protocol == IPPROTO_UDP ||	/* Can be UDP encap */
+ 		    cih->protocol == IPPROTO_GRE) &&	/* Can be GRE encap */
+ 		   /* Error for our tunnel must arrive at LOCAL_IN */
 -- 
-2.11.0
+1.8.3.1
+
+
 
