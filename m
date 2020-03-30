@@ -2,96 +2,139 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A69419843C
-	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Mar 2020 21:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6ED1984FA
+	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Mar 2020 21:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbgC3TWq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 30 Mar 2020 15:22:46 -0400
-Received: from correo.us.es ([193.147.175.20]:48516 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728386AbgC3TWE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 30 Mar 2020 15:22:04 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 2BD8DB4990
-        for <netfilter-devel@vger.kernel.org>; Mon, 30 Mar 2020 21:21:57 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 07F9B10078A
-        for <netfilter-devel@vger.kernel.org>; Mon, 30 Mar 2020 21:21:57 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id BFB2D12B67F; Mon, 30 Mar 2020 21:21:51 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id EC158100A59;
-        Mon, 30 Mar 2020 21:21:48 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 30 Mar 2020 21:21:48 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id C17B742EF4E0;
-        Mon, 30 Mar 2020 21:21:48 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 28/28] ipvs: fix uninitialized variable warning
-Date:   Mon, 30 Mar 2020 21:21:36 +0200
-Message-Id: <20200330192136.230459-29-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200330192136.230459-1-pablo@netfilter.org>
-References: <20200330192136.230459-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728471AbgC3Tzr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 30 Mar 2020 15:55:47 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:33791 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728393AbgC3Tzr (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 30 Mar 2020 15:55:47 -0400
+Received: by mail-ed1-f65.google.com with SMTP id z65so22340438ede.0
+        for <netfilter-devel@vger.kernel.org>; Mon, 30 Mar 2020 12:55:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dh9JcSi6kj0UWIbirpsquHk1PO2ZTJ6f6wAxTa4W5Zs=;
+        b=DZk2EcadSRy+jmjLIyyvOwCfhNdDlY3wMU3gTOTK1MOXJ9bZhFpym+h6ycl+idnIWn
+         SsmZQJKtl9iTffn/DdsGsPysGCoyWM9UFc0uMIYHqOT2z5sBnbcDqL176yFWOcNWpk/v
+         SL53a/gXGohE1DQca/J8rKY+wKFfgrlpBcJTWgpRRmqX4D4/lPWy9aotUaYsxCYmYiYK
+         OtSNHNlZDTpDF0dFONn3fKYVj/3RoQP8vPxJqI1/s4VGJN+h5iwuRg6I0xGMy9Xnyver
+         +2Vt0W54SbaK/bs9jzOVTjHv/eCoKKiYgbHkxhUe93AIoeTE2uwNruCrN5QeGM0qgjOo
+         zdAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dh9JcSi6kj0UWIbirpsquHk1PO2ZTJ6f6wAxTa4W5Zs=;
+        b=S8eubJME4yMN4Ce1c2M0c53o3IYw59szmvWIwLGco4GuRlpvLxfjzTe4beLiaSrsKn
+         0pONfiIfCJg5t3MGo5109Np8IbEjZMtgRe+BNB9hXYwU6AQR7qbv3RWL8n4p0MWRUqyV
+         MwBCSjOcjH84TVv+I/fpQegnTNIydQYMFz478NqFmvPWcHxg3CZOgw2qNHGFnim125px
+         kdA2p0eFJipF0QSOD7ytQZfmGcDYLuIZzP21iIyzgJ9w3JgVWqf98nSO56E03KOva17T
+         p1VIUtZZncYr79UtNwELHdz7TcDpDbHkJZdUZEMAyTrmYDLXWE8OywZxbhYy/gc9zzEy
+         PjCQ==
+X-Gm-Message-State: ANhLgQ1hz0Mza4RFGOvZjx6vhtJePoU884JEsP300s4c8njsbj/kwNty
+        UDvqs+ypY4B1lyidZD7dwRcHnFVsUgyiRqPm67G2
+X-Google-Smtp-Source: ADFU+vul3dd78FpyQ/P1xT0CAzUKDA49PHsMIvhi1CMzemU48YH7Min2sbynkoDLmBburfXlTyDJdiTLpwO7v8ADPZw=
+X-Received: by 2002:a50:f152:: with SMTP id z18mr12867397edl.31.1585598145722;
+ Mon, 30 Mar 2020 12:55:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200318215550.es4stkjwnefrfen2@madcap2.tricolour.ca>
+ <CAHC9VhSdDDP7Ec-w61NhGxZG5ZiekmrBCAg=Y=VJvEZcgQh46g@mail.gmail.com>
+ <20200319220249.jyr6xmwvflya5mks@madcap2.tricolour.ca> <CAHC9VhR84aN72yNB_j61zZgrQV1y6yvrBLNY7jp7BqQiEDL+cw@mail.gmail.com>
+ <20200324210152.5uydf3zqi3dwshfu@madcap2.tricolour.ca> <CAHC9VhTQUnVhoN3JXTAQ7ti+nNLfGNVXhT6D-GYJRSpJHCwDRg@mail.gmail.com>
+ <20200330134705.jlrkoiqpgjh3rvoh@madcap2.tricolour.ca> <CAHC9VhQTsEMcYAF1CSHrrVn07DR450W9j6sFVfKAQZ0VpheOfw@mail.gmail.com>
+ <20200330162156.mzh2tsnovngudlx2@madcap2.tricolour.ca> <CAHC9VhTRzZXJ6yUFL+xZWHNWZFTyiizBK12ntrcSwmgmySbkWw@mail.gmail.com>
+ <20200330174937.xalrsiev7q3yxsx2@madcap2.tricolour.ca>
+In-Reply-To: <20200330174937.xalrsiev7q3yxsx2@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 30 Mar 2020 15:55:36 -0400
+Message-ID: <CAHC9VhR_bKSHDn2WAUgkquu+COwZUanc0RV3GRjMDvpoJ5krjQ@mail.gmail.com>
+Subject: Re: [PATCH ghak90 V8 07/16] audit: add contid support for signalling
+ the audit daemon
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     nhorman@tuxdriver.com, linux-api@vger.kernel.org,
+        containers@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
+        linux-audit@redhat.com, netfilter-devel@vger.kernel.org,
+        ebiederm@xmission.com, simo@redhat.com, netdev@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
+On Mon, Mar 30, 2020 at 1:49 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> On 2020-03-30 13:34, Paul Moore wrote:
+> > On Mon, Mar 30, 2020 at 12:22 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > On 2020-03-30 10:26, Paul Moore wrote:
+> > > > On Mon, Mar 30, 2020 at 9:47 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > > > On 2020-03-28 23:11, Paul Moore wrote:
+> > > > > > On Tue, Mar 24, 2020 at 5:02 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > > > > > On 2020-03-23 20:16, Paul Moore wrote:
+> > > > > > > > On Thu, Mar 19, 2020 at 6:03 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > > > > > > > On 2020-03-18 18:06, Paul Moore wrote:
 
-If outer_proto is not set, GCC warning as following:
+...
 
-In file included from net/netfilter/ipvs/ip_vs_core.c:52:
-net/netfilter/ipvs/ip_vs_core.c: In function 'ip_vs_in_icmp':
-include/net/ip_vs.h:233:4: warning: 'outer_proto' may be used uninitialized in this function [-Wmaybe-uninitialized]
- 233 |    printk(KERN_DEBUG pr_fmt(msg), ##__VA_ARGS__); \
-     |    ^~~~~~
-net/netfilter/ipvs/ip_vs_core.c:1666:8: note: 'outer_proto' was declared here
-1666 |  char *outer_proto;
-     |        ^~~~~~~~~~~
+> > > Well, every time a record gets generated, *any* record gets generated,
+> > > we'll need to check for which audit daemons this record is in scope and
+> > > generate a different one for each depending on the content and whether
+> > > or not the content is influenced by the scope.
+> >
+> > That's the problem right there - we don't want to have to generate a
+> > unique record for *each* auditd on *every* record.  That is a recipe
+> > for disaster.
+>
+> I don't see how we can get around this.
+>
+> We will already have that problem for PIDs in different PID namespaces.
 
-Fixes: 73348fed35d0 ("ipvs: optimize tunnel dumps for icmp errors")
-Signed-off-by: Haishuang Yan <yanhaishuang@cmss.chinamobile.com>
-Acked-by: Julian Anastasov <ja@ssi.bg>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/ipvs/ip_vs_core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+As I said below, let's not worry about this for all of the
+known/current audit records, lets just think about how we solve this
+for the ACID related information.
 
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index d2ac530a9501..aa6a603a2425 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -1663,7 +1663,7 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
- 	unsigned int offset, offset2, ihl, verdict;
- 	bool tunnel, new_cp = false;
- 	union nf_inet_addr *raddr;
--	char *outer_proto;
-+	char *outer_proto = "IPIP";
- 
- 	*related = 1;
- 
-@@ -1723,7 +1723,6 @@ ip_vs_in_icmp(struct netns_ipvs *ipvs, struct sk_buff *skb, int *related,
- 		if (cih == NULL)
- 			return NF_ACCEPT; /* The packet looks wrong, ignore */
- 		tunnel = true;
--		outer_proto = "IPIP";
- 	} else if ((cih->protocol == IPPROTO_UDP ||	/* Can be UDP encap */
- 		    cih->protocol == IPPROTO_GRE) &&	/* Can be GRE encap */
- 		   /* Error for our tunnel must arrive at LOCAL_IN */
+One of the bigger problems with translating namespace info (e.g. PIDs)
+across ACIDs is that an ACID - by definition - has no understanding of
+namespaces (both the concept as well as any given instance).
+
+> We already need to use a different serial number in each auditd/queue,
+> or else we serialize *all* audit events on the machine and either leak
+> information to the nested daemons that there are other events happenning
+> on the machine, or confuse the host daemon because it now thinks that we
+> are losing events due to serial numbers missing because some nested
+> daemon issued an event that was not relevant to the host daemon,
+> consuming a globally serial audit message sequence number.
+
+This isn't really relevant to the ACID lists, but sure.
+
+> > Solving this for all of the known audit records is not something we
+> > need to worry about in depth at the moment (although giving it some
+> > casual thought is not a bad thing), but solving this for the audit
+> > container ID information *is* something we need to worry about right
+> > now.
+>
+> If you think that a different nested contid value string per daemon is
+> not acceptable, then we are back to issuing a record that has only *one*
+> contid listed without any nesting information.  This brings us back to
+> the original problem of keeping *all* audit log history since the boot
+> of the machine to be able to track the nesting of any particular contid.
+
+I'm not ruling anything out, except for the "let's just completely
+regenerate every record for each auditd instance".
+
+> What am I missing?  What do you suggest?
+
+I'm missing a solution in this thread, since you are the person
+driving this effort I'm asking you to get creative and present us with
+some solutions. :)
+
+
 -- 
-2.11.0
-
+paul moore
+www.paul-moore.com
