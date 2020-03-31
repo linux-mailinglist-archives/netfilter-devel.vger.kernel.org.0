@@ -2,97 +2,156 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA251996C1
-	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Mar 2020 14:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D596199AE7
+	for <lists+netfilter-devel@lfdr.de>; Tue, 31 Mar 2020 18:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730686AbgCaMqB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 31 Mar 2020 08:46:01 -0400
-Received: from correo.us.es ([193.147.175.20]:41222 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730469AbgCaMqA (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 31 Mar 2020 08:46:00 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 33D364FFE09
-        for <netfilter-devel@vger.kernel.org>; Tue, 31 Mar 2020 14:45:59 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 26AEF12395A
-        for <netfilter-devel@vger.kernel.org>; Tue, 31 Mar 2020 14:45:59 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 1C639DA736; Tue, 31 Mar 2020 14:45:59 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 479E5123958
-        for <netfilter-devel@vger.kernel.org>; Tue, 31 Mar 2020 14:45:57 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 31 Mar 2020 14:45:57 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 3299B4301DE0
-        for <netfilter-devel@vger.kernel.org>; Tue, 31 Mar 2020 14:45:57 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 3/3] evaluate: improve error reporting in netdev ingress chain
-Date:   Tue, 31 Mar 2020 14:45:51 +0200
-Message-Id: <20200331124551.403893-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200331124551.403893-1-pablo@netfilter.org>
-References: <20200331124551.403893-1-pablo@netfilter.org>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1730966AbgCaQHL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 31 Mar 2020 12:07:11 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:33139 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730366AbgCaQHL (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 31 Mar 2020 12:07:11 -0400
+Received: by mail-pg1-f194.google.com with SMTP id d17so10547622pgo.0;
+        Tue, 31 Mar 2020 09:07:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=b1X+kWvTaoc1/8sKIH9Urvg+efjSevl6Sn9xX+k+tdk=;
+        b=E7QP6+nEWaQ3piARVTGv7PrQ3KlmEtoVc+b+4iGu/u4TGouhnhdh2fRTlpC05P6KLf
+         XzoLMuQuFyazLq0QkvzB9raa7zRAwG/07oTtiVyAI7N/sz5tE0fjflijVUn7AYm9JTrl
+         hYR5t2Z0xpbccNY/FEuTZhhBDLY5794BTIB6/xn1Z6QbZsEjdKaoUPVfJq2v0XKRa5Lu
+         vE26toe7X0qGplsHI+/LjDEQwo5Xya0zPxAuiS4I2rjs4X3YPmcIQ8gziJLfVqLgk++J
+         cqLv3KL7+GxXzyTgowPgwQy2dx14TMeqLHJ4rj9auNpahVQMYBjrqaa9+L6wXGpx1kOK
+         LGPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=b1X+kWvTaoc1/8sKIH9Urvg+efjSevl6Sn9xX+k+tdk=;
+        b=pxba0ow81XxCgQIMwIITx8KmH86ojvakKFSx72HvMjvgxFkjiH4JOGwIsAF80vAQMA
+         JgHebxw6f/aH6fmN1EZ5SGR+wMbjeTNsVGRMQTltPfV0bznuuYKkm9kNUgzTEY3Hiihy
+         j/3OfJp3przgdWvCeNmAjUFcNYN0lTYO7KJ+4hl/5TQmO31eg1sJGqw6V1KwxJilTjrd
+         W9H6GS6M7Qmq1hk9ccgpMF8zwLD2uALMK91mWsusVDVKJntFffh1RGPc0mD20Sk7CRxH
+         RbCVd4pRY8+f0jpezXkYdN25OBwYoHoz8imZ4NBWd8s2hIeYCKJsfppQmQXxTnsdMwNf
+         KhQg==
+X-Gm-Message-State: AGi0PubKudS6thWZISpK+8oLDuVopEG1ey38rhqEO5JmZ09OAB5s+zco
+        SNwyM2UJrMhrJS0/xxu+Z4s=
+X-Google-Smtp-Source: APiQypJ/yTO4LiP72ogFNw4xPxdl9op8Gz7lBGkcJE/KhfT3rIhzZOPCqgd0mpZM/YN8hYlgbvbXWA==
+X-Received: by 2002:a63:7159:: with SMTP id b25mr4722166pgn.72.1585670829465;
+        Tue, 31 Mar 2020 09:07:09 -0700 (PDT)
+Received: from athina.mtv.corp.google.com ([2620:15c:211:0:c786:d9fd:ab91:6283])
+        by smtp.gmail.com with ESMTPSA id t63sm11887819pgc.85.2020.03.31.09.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Mar 2020 09:07:08 -0700 (PDT)
+From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
+To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        Netfilter Development Mailing List 
+        <netfilter-devel@vger.kernel.org>, Chenbo Feng <fengc@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Willem de Bruijn <willemb@google.com>
+Subject: [PATCH v3] iptables: open eBPF programs in read only mode
+Date:   Tue, 31 Mar 2020 09:07:03 -0700
+Message-Id: <20200331160703.56842-1-zenczykowski@gmail.com>
+X-Mailer: git-send-email 2.26.0.rc2.310.g2932bb562d-goog
+In-Reply-To: <20200320030015.195806-1-zenczykowski@gmail.com>
+References: <20200320030015.195806-1-zenczykowski@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
- # nft -f /tmp/x.nft
- /tmp/x.nft:3:20-24: Error: The netdev family does not support this hook
-                 type filter hook input device eth0 priority 0
-                                  ^^^^^
+From: Maciej Żenczykowski <maze@google.com>
 
- # nft -f /tmp/x.nft
- /tmp/x.nft:3:3-49: Error: Missing `device' in this chain definition
-                 type filter hook ingress device eth0 priority 0
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Adjust the mode eBPF programs are opened in so 0400 pinned bpf programs
+work without requiring CAP_DAC_OVERRIDE.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+This matches Linux 5.2's:
+  commit e547ff3f803e779a3898f1f48447b29f43c54085
+  Author: Chenbo Feng <fengc@google.com>
+  Date:   Tue May 14 19:42:57 2019 -0700
+
+    bpf: relax inode permission check for retrieving bpf program
+
+    For iptable module to load a bpf program from a pinned location, it
+    only retrieve a loaded program and cannot change the program content so
+    requiring a write permission for it might not be necessary.
+    Also when adding or removing an unrelated iptable rule, it might need to
+    flush and reload the xt_bpf related rules as well and triggers the inode
+    permission check. It might be better to remove the write premission
+    check for the inode so we won't need to grant write access to all the
+    processes that flush and restore iptables rules.
+
+  kernel/bpf/inode.c:
+  - int ret = inode_permission(inode, MAY_READ | MAY_WRITE);
+  + int ret = inode_permission(inode, MAY_READ);
+
+In practice, AFAICT, the xt_bpf match .fd field isn't even used by new
+kernels, but I believe it might be needed for compatibility with old ones
+(though I'm pretty sure table modifications on them will outright fail).
+
+Test: builds, passes Android test suite (albeit on an older iptables base),
+  git grep bpf_obj_get - finds no other users
+Cc: Chenbo Feng <fengc@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
 ---
- src/evaluate.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ extensions/libxt_bpf.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 759cdaafb0ea..84fe89eed657 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -3786,8 +3786,9 @@ static int chain_evaluate(struct eval_ctx *ctx, struct chain *chain)
- 		chain->hook.num = str2hooknum(chain->handle.family,
- 					      chain->hook.name);
- 		if (chain->hook.num == NF_INET_NUMHOOKS)
--			return chain_error(ctx, chain, "invalid hook %s",
--					   chain->hook.name);
-+			return __stmt_binary_error(ctx, &chain->hook.loc, NULL,
-+						   "The %s family does not support this hook",
-+						   family2str(chain->handle.family));
+diff --git a/extensions/libxt_bpf.c b/extensions/libxt_bpf.c
+index 92958247..4aea477a 100644
+--- a/extensions/libxt_bpf.c
++++ b/extensions/libxt_bpf.c
+@@ -61,14 +61,25 @@ static const struct xt_option_entry bpf_opts_v1[] = {
+ 	XTOPT_TABLEEND,
+ };
  
- 		if (!evaluate_priority(ctx, &chain->priority,
- 				       chain->handle.family, chain->hook.num))
-@@ -3799,6 +3800,12 @@ static int chain_evaluate(struct eval_ctx *ctx, struct chain *chain)
- 				return chain_error(ctx, chain, "invalid policy expression %s",
- 						   expr_name(chain->policy));
- 		}
+-static int bpf_obj_get(const char *filepath)
++static int bpf_obj_get_readonly(const char *filepath)
+ {
+ #if defined HAVE_LINUX_BPF_H && defined __NR_bpf && defined BPF_FS_MAGIC
+-	union bpf_attr attr;
+-
+-	memset(&attr, 0, sizeof(attr));
+-	attr.pathname = (__u64) filepath;
+-
++	// union bpf_attr includes this in an anonymous struct, but the
++	// file_flags field and the BPF_F_RDONLY constant are only present
++	// in Linux 4.15+ kernel headers (include/uapi/linux/bpf.h)
++	struct {   // this part of union bpf_attr is for BPF_OBJ_* commands
++		__aligned_u64	pathname;
++		__u32		bpf_fd;
++		__u32		file_flags;
++	} attr = {
++		.pathname = (__u64)filepath,
++		.file_flags = (1U << 3),   // BPF_F_RDONLY
++	};
++	int fd = syscall(__NR_bpf, BPF_OBJ_GET, &attr, sizeof(attr));
++	if (fd >= 0) return fd;
 +
-+		if (chain->handle.family == NFPROTO_NETDEV) {
-+			if (!chain->dev_expr)
-+				return __stmt_binary_error(ctx, &chain->loc, NULL,
-+							   "Missing `device' in this chain definition");
-+		}
- 	}
- 
- 	list_for_each_entry(rule, &chain->rules, list) {
++	// on any error fallback to default R/W access for pre-4.15-rc1 kernels
++	attr.file_flags = 0;
+ 	return syscall(__NR_bpf, BPF_OBJ_GET, &attr, sizeof(attr));
+ #else
+ 	xtables_error(OTHER_PROBLEM,
+@@ -125,7 +136,7 @@ static void bpf_parse_string(struct sock_filter *pc, __u16 *lenp, __u16 len_max,
+ static void bpf_parse_obj_pinned(struct xt_bpf_info_v1 *bi,
+ 				 const char *filepath)
+ {
+-	bi->fd = bpf_obj_get(filepath);
++	bi->fd = bpf_obj_get_readonly(filepath);
+ 	if (bi->fd < 0)
+ 		xtables_error(PARAMETER_PROBLEM,
+ 			      "bpf: failed to get bpf object");
 -- 
-2.11.0
+2.26.0.rc2.310.g2932bb562d-goog
 
