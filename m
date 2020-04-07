@@ -2,97 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D661A0F52
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Apr 2020 16:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FA91A104E
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Apr 2020 17:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbgDGOfB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Apr 2020 10:35:01 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:54934 "EHLO orbyte.nwl.cc"
+        id S1729332AbgDGPhA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 Apr 2020 11:37:00 -0400
+Received: from correo.us.es ([193.147.175.20]:58352 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728306AbgDGOfA (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:35:00 -0400
-Received: from localhost ([::1]:39792 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1jLpJb-0007e7-CG; Tue, 07 Apr 2020 16:34:59 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 3/3] nft: cache: Fetch sets per table
-Date:   Tue,  7 Apr 2020 16:34:45 +0200
-Message-Id: <20200407143445.26394-4-phil@nwl.cc>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200407143445.26394-1-phil@nwl.cc>
-References: <20200407143445.26394-1-phil@nwl.cc>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729426AbgDGPhA (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 7 Apr 2020 11:37:00 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 711D5E862B
+        for <netfilter-devel@vger.kernel.org>; Tue,  7 Apr 2020 17:36:58 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 633C6DA736
+        for <netfilter-devel@vger.kernel.org>; Tue,  7 Apr 2020 17:36:58 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 58F0D100A42; Tue,  7 Apr 2020 17:36:58 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 75B8E100A45
+        for <netfilter-devel@vger.kernel.org>; Tue,  7 Apr 2020 17:36:56 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 07 Apr 2020 17:36:56 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (unknown [90.77.255.23])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 58FC442EF42A
+        for <netfilter-devel@vger.kernel.org>; Tue,  7 Apr 2020 17:36:56 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf 1/2] netfilter: nf_tables: report EOPNOTSUPP on unsupported flags/object type
+Date:   Tue,  7 Apr 2020 17:36:52 +0200
+Message-Id: <20200407153653.137377-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Kernel accepts a table name when dumping sets, so make use of that in
-case a table was passed to fetch_set_cache() but no set name.
+EINVAL should be used for malformed netlink messages. New userspace and
+old kernels might easily result in EINVAL when exercising new set
+features, which is misleading.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Fixes: 8aeff920dcc9 ("netfilter: nf_tables: add stateful object reference to set elements")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- iptables/nft-cache.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+ net/netfilter/nf_tables_api.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/iptables/nft-cache.c b/iptables/nft-cache.c
-index e042bd83bebf5..51b371c51c3f4 100644
---- a/iptables/nft-cache.c
-+++ b/iptables/nft-cache.c
-@@ -254,25 +254,31 @@ static int fetch_set_cache(struct nft_handle *h,
- 		.h = h,
- 		.t = t,
- 	};
-+	uint16_t flags = NLM_F_DUMP;
-+	struct nftnl_set *s = NULL;
- 	struct nlmsghdr *nlh;
- 	char buf[16536];
- 	int i, ret;
- 
--	if (t && set) {
--		struct nftnl_set *s = nftnl_set_alloc();
--
-+	if (t) {
-+		s = nftnl_set_alloc();
- 		if (!s)
- 			return -1;
- 
--		nlh = nftnl_set_nlmsg_build_hdr(buf, NFT_MSG_GETSET, h->family,
--						NLM_F_ACK, h->seq);
- 		nftnl_set_set_str(s, NFTNL_SET_TABLE, t->name);
--		nftnl_set_set_str(s, NFTNL_SET_NAME, set);
-+
-+		if (set) {
-+			nftnl_set_set_str(s, NFTNL_SET_NAME, set);
-+			flags = NLM_F_ACK;
-+		}
-+	}
-+
-+	nlh = nftnl_set_nlmsg_build_hdr(buf, NFT_MSG_GETSET,
-+					h->family, flags, h->seq);
-+
-+	if (s) {
- 		nftnl_set_nlmsg_build_payload(nlh, s);
- 		nftnl_set_free(s);
--	} else {
--		nlh = nftnl_set_nlmsg_build_hdr(buf, NFT_MSG_GETSET, h->family,
--						NLM_F_DUMP, h->seq);
- 	}
- 
- 	ret = mnl_talk(h, nlh, nftnl_set_list_cb, &d);
-@@ -282,8 +288,6 @@ static int fetch_set_cache(struct nft_handle *h,
- 	}
- 
- 	if (t && set) {
--		struct nftnl_set *s;
--
- 		s = nftnl_set_list_lookup_byname(h->cache->table[t->type].sets,
- 						 set);
- 		set_fetch_elem_cb(s, h);
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index f91e96d8de05..21cbde6ecee3 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -3963,7 +3963,7 @@ static int nf_tables_newset(struct net *net, struct sock *nlsk,
+ 			      NFT_SET_INTERVAL | NFT_SET_TIMEOUT |
+ 			      NFT_SET_MAP | NFT_SET_EVAL |
+ 			      NFT_SET_OBJECT))
+-			return -EINVAL;
++			return -EOPNOTSUPP;
+ 		/* Only one of these operations is supported */
+ 		if ((flags & (NFT_SET_MAP | NFT_SET_OBJECT)) ==
+ 			     (NFT_SET_MAP | NFT_SET_OBJECT))
+@@ -4001,7 +4001,7 @@ static int nf_tables_newset(struct net *net, struct sock *nlsk,
+ 		objtype = ntohl(nla_get_be32(nla[NFTA_SET_OBJ_TYPE]));
+ 		if (objtype == NFT_OBJECT_UNSPEC ||
+ 		    objtype > NFT_OBJECT_MAX)
+-			return -EINVAL;
++			return -EOPNOTSUPP;
+ 	} else if (flags & NFT_SET_OBJECT)
+ 		return -EINVAL;
+ 	else
 -- 
-2.25.1
+2.11.0
 
