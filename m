@@ -2,91 +2,120 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0265F1A16B9
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Apr 2020 22:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6951A1820
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Apr 2020 00:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgDGUXn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Apr 2020 16:23:43 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:39113 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726277AbgDGUXn (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 Apr 2020 16:23:43 -0400
-Received: by mail-pg1-f194.google.com with SMTP id g32so2262163pgb.6
-        for <netfilter-devel@vger.kernel.org>; Tue, 07 Apr 2020 13:23:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NcmWB88u6DUQNSHUBnL+DPiBq7na3itwbE61s39wJgs=;
-        b=eUnv6kXNnSdOsJ8aO92blCpEzLL+27vYbKJjuBMCMqnPww7g+wBHLjn3pXzmiUUltt
-         KkR2JdNGFeIfNOOgISQOJgdoc2BRmHbuSmNOW5m8WU37gdjc2bkrIt+uWN6D9hNHLCQB
-         xCtXTb96gAhNCOc4bIR9zhzuDZSbcZlDcT2XjtLrqpfgW6c1R5oczOt0XvrjKvzU/lAf
-         MseAjLNksUZLl1mGKomDkjCerJ+EyHjkyeoFWtOUvpHJBgGKTexJw0lc4Tu26Iu+cV7s
-         1W0DCt6I4eRuJNiY8WY6BmgX2ly7lUCbo4Gflw8UnMqJXr+Q6KbEon2zP8ZkrVnUGdLD
-         urjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NcmWB88u6DUQNSHUBnL+DPiBq7na3itwbE61s39wJgs=;
-        b=L9IVtxatLNdfD28s/kOmDkUVuyqNiA0iJjvgkZPllCdKEnquP2wJj5JmghHMQx/SRO
-         QGu6jkhiTgBY/vz0voK0dibr5C/qrz1QhqMqsqQ1YHK2Mft4ISsyPnqVBQx0w0hfy1Z3
-         e+rkInG5IeVWa/8sZAFSsk2ld7/bEKViIIvopYXhZb6WX6jOn0CEJxtJneb5+Pg2OW5j
-         iuFtNvgVxxU3s66jHBea1o+azX/pagFQ9fCvUfMWwOXfpca7L7Ck/ZB7vY/LFtM4Txp1
-         D63gZm+Uz9z2mExg/LYpiVRWYlA8wOz6wn6gI56tGKF4XoMaZcFeM9R+1W3Y3zQnKtRl
-         8oGw==
-X-Gm-Message-State: AGi0PubDUzeGFwk91VKU6GVaFA2t82L8ZzlJMf0ZyqhV+ii19Gmjm67C
-        biJA93rcvFnfWLzWIcym+mzERbgG
-X-Google-Smtp-Source: APiQypJCkhH2XM1/ubVKAyDxWOfA3IngwHzom0h71tkIHqntDJ2mMvM8qR8AQp7vivYI0us7RPKyKg==
-X-Received: by 2002:a65:6704:: with SMTP id u4mr459587pgf.263.1586291022346;
-        Tue, 07 Apr 2020 13:23:42 -0700 (PDT)
-Received: from localhost ([134.134.137.77])
-        by smtp.gmail.com with ESMTPSA id u3sm15035874pfb.36.2020.04.07.13.23.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 13:23:41 -0700 (PDT)
-From:   Matt Turner <mattst88@gmail.com>
+        id S1726527AbgDGW3o (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 Apr 2020 18:29:44 -0400
+Received: from correo.us.es ([193.147.175.20]:53128 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726395AbgDGW3o (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 7 Apr 2020 18:29:44 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id BA286F2DE3
+        for <netfilter-devel@vger.kernel.org>; Wed,  8 Apr 2020 00:29:41 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id ABC42DA736
+        for <netfilter-devel@vger.kernel.org>; Wed,  8 Apr 2020 00:29:41 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 9F93BFA525; Wed,  8 Apr 2020 00:29:41 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id BECB7DA736;
+        Wed,  8 Apr 2020 00:29:39 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Wed, 08 Apr 2020 00:29:39 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (unknown [90.77.255.23])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 9A2ED4251480;
+        Wed,  8 Apr 2020 00:29:39 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Cc:     Matt Turner <mattst88@gmail.com>
-Subject: [PATCH nftables] build: Allow building from tarballs without yacc/lex
-Date:   Tue,  7 Apr 2020 13:23:37 -0700
-Message-Id: <20200407202337.63505-1-mattst88@gmail.com>
-X-Mailer: git-send-email 2.24.1
+Cc:     davem@davemloft.net, netdev@vger.kernel.org
+Subject: [PATCH 0/7] Netfilter fixes for net
+Date:   Wed,  8 Apr 2020 00:29:29 +0200
+Message-Id: <20200407222936.206295-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The generated files are included in the tarballs already, but
-configure.ac was coded to fail if yacc/lex were not found regardless.
+Hi David,
 
-Signed-off-by: Matt Turner <mattst88@gmail.com>
----
- configure.ac | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The following patchset contains Netfilter fixes for net, they are:
 
-diff --git a/configure.ac b/configure.ac
-index a04d94bc..3496e410 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -29,13 +29,13 @@ AC_PROG_SED
- AM_PROG_LEX
- AC_PROG_YACC
- 
--if test -z "$ac_cv_prog_YACC"
-+if test -z "$ac_cv_prog_YACC" -a ! -f "${srcdir}/src/parser_bison.c"
- then
-         echo "*** Error: No suitable bison/yacc found. ***"
-         echo "    Please install the 'bison' package."
-         exit 1
- fi
--if test -z "$ac_cv_prog_LEX"
-+if test -z "$ac_cv_prog_LEX" -a ! -f "${srcdir}/src/scanner.c"
- then
-         echo "*** Error: No suitable flex/lex found. ***"
-         echo "    Please install the 'flex' package."
--- 
-2.24.1
+1) Fix spurious overlap condition in the rbtree tree, from Stefano Brivio.
 
+2) Fix possible uninitialized pointer dereference in nft_lookup.
+
+3) IDLETIMER v1 target matches the Android layout, from
+   Maciej Zenczykowski.
+
+4) Dangling pointer in nf_tables_set_alloc_name, from Eric Dumazet.
+
+5) Fix RCU warning splat in ipset find_set_type(), from Amol Grover.
+
+6) Report EOPNOTSUPP on unsupported set flags and object types in sets.
+
+7) Add NFT_SET_CONCAT flag to provide consistent error reporting
+   when users defines set with ranges in concatenations in old kernels.
+
+You can pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+
+Thank you.
+
+----------------------------------------------------------------
+
+The following changes since commit 0452800f6db4ed0a42ffb15867c0acfd68829f6a:
+
+  net: dsa: mt7530: fix null pointer dereferencing in port5 setup (2020-04-03 16:10:32 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git HEAD
+
+for you to fetch changes up to ef516e8625ddea90b3a0313f3a0b0baa83db7ac2:
+
+  netfilter: nf_tables: reintroduce the NFT_SET_CONCAT flag (2020-04-07 18:23:04 +0200)
+
+----------------------------------------------------------------
+Amol Grover (1):
+      netfilter: ipset: Pass lockdep expression to RCU lists
+
+Eric Dumazet (1):
+      netfilter: nf_tables: do not leave dangling pointer in nf_tables_set_alloc_name
+
+Maciej Żenczykowski (1):
+      netfilter: xt_IDLETIMER: target v1 - match Android layout
+
+Pablo Neira Ayuso (3):
+      netfilter: nf_tables: do not update stateful expressions if lookup is inverted
+      netfilter: nf_tables: report EOPNOTSUPP on unsupported flags/object type
+      netfilter: nf_tables: reintroduce the NFT_SET_CONCAT flag
+
+Stefano Brivio (1):
+      netfilter: nft_set_rbtree: Drop spurious condition for overlap detection on insertion
+
+ include/net/netfilter/nf_tables.h           |  2 +-
+ include/uapi/linux/netfilter/nf_tables.h    |  2 ++
+ include/uapi/linux/netfilter/xt_IDLETIMER.h |  1 +
+ net/netfilter/ipset/ip_set_core.c           |  3 ++-
+ net/netfilter/nf_tables_api.c               |  7 ++++---
+ net/netfilter/nft_lookup.c                  | 12 +++++++-----
+ net/netfilter/nft_set_bitmap.c              |  1 -
+ net/netfilter/nft_set_rbtree.c              | 23 +++++++++++------------
+ net/netfilter/xt_IDLETIMER.c                |  3 +++
+ 9 files changed, 31 insertions(+), 23 deletions(-)
