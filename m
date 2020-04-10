@@ -2,100 +2,112 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 567A71A4456
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2020 11:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AEA1A4973
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Apr 2020 19:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgDJJOW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 10 Apr 2020 05:14:22 -0400
-Received: from nautica.notk.org ([91.121.71.147]:33521 "EHLO nautica.notk.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbgDJJOW (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 10 Apr 2020 05:14:22 -0400
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id E3F95C009; Fri, 10 Apr 2020 11:14:20 +0200 (CEST)
-Date:   Fri, 10 Apr 2020 11:14:05 +0200
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Andreas Jaggi <andreas.jaggi@waterwave.ch>
-Cc:     Netfilter Development Mailing list 
-        <netfilter-devel@vger.kernel.org>
-Subject: Re: ipv6 rpfilter and.. fw mark? problems with wireguard
-Message-ID: <20200410091405.GA5893@nautica>
-References: <20200409203843.GA6881@nautica>
- <CA65DC1B-209F-4C64-9497-38B98406DCFF@waterwave.ch>
+        id S1726142AbgDJRmG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 10 Apr 2020 13:42:06 -0400
+Received: from mail.thorsten-knabe.de ([212.60.139.226]:59592 "EHLO
+        mail.thorsten-knabe.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726740AbgDJRmG (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 10 Apr 2020 13:42:06 -0400
+X-Greylist: delayed 970 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Apr 2020 13:42:05 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=thorsten-knabe.de; s=dkim1; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:To:Cc:Subject:From:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Zy3juXgWrgKtjlx4xnzpN8pF4qrR4S/JHsd1FcHXEQY=; b=dqsJrIgu5esEGgNk3FurR+dAdH
+        DbliLWL5Y5tFlC5EarWbQqVFGmKoRA9ZF7GmABQIHhnsDV5i6qexuMdvqi4HqZUZWudsK42RHCq8d
+        PpDchcXWW87aSr20HvOXowH55fHn0/O6Ik2wWP5B8N8EF7esYJVNxZ3NECsFALDUxNZHGRQ5kozbD
+        kzC6A36J9NwxExrydTiATwQmLV+OKN484YJ4Yac/QqG8O3kyCYJmEIPcxkwiefaV3U7dSLPyNNlXB
+        Ntb8BZ15KJHcapycLSWMsgMcNgXeDO36ngymZ2NgjCk1fuC9ZmsPnsZ2VUaIeuWRZMgrMEuQBRuuc
+        cjotfVpw==;
+Received: from tek01.intern.thorsten-knabe.de ([2a01:170:101e:1::a00:101])
+        by mail.thorsten-knabe.de with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <linux@thorsten-knabe.de>)
+        id 1jMxPZ-0004lG-GG; Fri, 10 Apr 2020 19:25:51 +0200
+From:   Thorsten Knabe <linux@thorsten-knabe.de>
+Subject: BUG: Anonymous maps with adjacent intervals broken since Linux 5.6
+Cc:     sbrivio@redhat.com
+To:     netfilter-devel@vger.kernel.org
+Message-ID: <6d036215-e701-db81-d429-2c76856463ee@thorsten-knabe.de>
+Date:   Fri, 10 Apr 2020 19:25:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CA65DC1B-209F-4C64-9497-38B98406DCFF@waterwave.ch>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Spam-Report: Content analysis details:   (0.8 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 BAYES_40               BODY: Bayes spam probability is 20 to 40%
+                             [score: 0.3107]
+  0.0 SPF_HELO_NONE          SPF: HELO does not publish an SPF Record
+  0.0 SPF_NONE               SPF: sender does not publish an SPF Record
+  0.8 DKIM_ADSP_ALL          No valid author signature, domain signs all mail
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Hello.
 
-Thanks for the prompt reply!
+BUG: Anonymous maps with adjacent intervals are broken starting with
+Linux 5.6. Linux 5.5.16 is not affected.
 
-(I just noticed the netfilter@ list, sorry for having asked the question
-here instead)
+Environment:
+- Linux 5.6.3 (AMD64)
+- nftables 0.9.4
 
-Andreas Jaggi wrote on Fri, Apr 10, 2020:
-> > table inet test {
-> >    chain raw_PREROUTING {
-> >        type filter hook prerouting priority raw; policy accept;
-> >        meta nfproto ipv6 fib saddr . iif oif missing log prefix "rpfilter_DROP: " drop
-> >    }
-> > }
-> > 
-> > or
-> > 
-> > ip6tables -t raw -A PREROUTING -m rpfilter --invert -j LOG --log-prefix "rpfilter_DROP: "
-> > ip6tables -t raw -A PREROUTING -m rpfilter --invert -j DROP
-> 
-> This does not consider the fwmark for the reverse-routing lookup.
-> Using the --validmark option for the rpfilter match should get you the correct result.
-> 
-> And for nft the already suggested:
-> meta nfproto ipv6 fib saddr . iif . mark  oif missing log prefix "rpfilter_DROP: " drop
+Trying to apply the ruleset:
 
-Ok.
+flush ruleset
 
-> I suspect the main problem is the rpfilter check happening in the raw
-> table, but the fwmark only being written in the mangle table.
-> Thus the rpfilter lookup happens without the correct fwmark and fails
-> to return the correct result.
-> 
-> I would move the rpfilter check into the mangle table and place it
-> after the fwmark is written.
-
-Ok, firewalld rules are in a different table but they set priorities to
-mangle + 10 so I tested something similar and it does work:
-
-table inet test {
-    chain premangle {
-        type filter hook prerouting priority mangle + 10; policy accept;
-        meta nfproto ipv6 fib saddr . mark . iif oif missing log prefix "rpfilter_DROP: " drop
-    }
+table ip filter {
+  chain test {
+    ip daddr vmap {
+        10.255.1.0-10.255.1.255: accept,
+        10.255.2.0-10.255.2.255: drop
+    }
+  }
 }
 
-(I also confirmed moving the iptables, unsurprisingly it works and does
-require the --validmark switch suggested)
+using nft results in an error on Linux 5.6.3:
 
+# nft -f simple.nft
+simple.nft:7:19-5: Error: Could not process rule: File exists
+    ip daddr vmap {
 
+The same ruleset works flawlessly using Linux 5.5.16.
 
-I also found that adding --loose to the ip6tables rule also works, I've
-had a look at the man page[1] and can't say I understand how to make an
-equivalent 'loose' rule as nft, but I'll keep trying a while longer.
-(I'm asking because the ipv4 default seems to be loose on my setup, so
-I'm surprised ipv6 would be different; not decided on what to actually
-use)
+Changing the ruleset to:
 
-[1] https://www.netfilter.org/projects/nftables/manpage.html#lbBR
+flush ruleset
 
+table ip filter {
+  chain test {
+    ip daddr vmap {
+        10.255.1.0-10.255.1.254: accept,
+        10.255.2.0-10.255.2.255: drop
+    }
+  }
+}
 
+(non adjacent intervals) makes the ruleset work again on Linux 5.6.3.
 
-I'll get back to the firewalld developer to discuss what would be
-the preferred solution, thanks again for the help.
+Reverting commit 7c84d41416d836ef7e533bd4d64ccbdf40c5ac70 from Linux
+5.6.3 also fixes the problem.
 
-Cheers,
+Kind regards
+Thorsten
+
 -- 
-Dominique
+___              
+ |        | /                 E-Mail: linux@thorsten-knabe.de 
+ |horsten |/\nabe                WWW: http://linux.thorsten-knabe.de 
+
