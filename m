@@ -2,38 +2,37 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0101A5A27
-	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Apr 2020 01:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB01F1A5936
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Apr 2020 01:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728554AbgDKXlW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 11 Apr 2020 19:41:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42830 "EHLO mail.kernel.org"
+        id S1729351AbgDKXfR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 11 Apr 2020 19:35:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727411AbgDKXHJ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:07:09 -0400
+        id S1729092AbgDKXJD (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:09:03 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F7B6216FD;
-        Sat, 11 Apr 2020 23:07:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F0FA6216FD;
+        Sat, 11 Apr 2020 23:09:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646429;
-        bh=AteEPKEmTxb6IvEHpeF+RDvEo930PxsTukXeAY8tpqY=;
+        s=default; t=1586646543;
+        bh=xzf5hfC0BW3CdJWDOSiTK6rM7jvE5ABl6OUtU0wT4Qc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qF28fhDV4fxlNq4hMlQAPDvYda2xNBuWPxhGse6jaFRTghddWhrq94QYT6L+LMsYo
-         kGuJYwifBaOs6/OnHapkaw2zW7+oaFNCbKibq4Onfz1v3B8+qsud3CSwt8oEqP9Dgf
-         h5cJzhehDc3WuOnI5Rw2pUW2Vwj5Gyt5NY6PFf5M=
+        b=2DmzsZB5iyhn/RbI8CpEgw7XooZ1UDfdUNhd4NbYY2ci61INb7tvJzoJ66ojjdNPc
+         DlM/p/62o3BC7vbccjfo2jd8L4AIiC3tcO5at0HzFqmUFw8ootDpbSRkncqM6b2ddR
+         9SxEQRjcxeGUSdCh5y5btI/FBF62YNiNIxIRp2xc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Romain Bellan <romain.bellan@wifirst.fr>,
-        Florent Fourcot <florent.fourcot@wifirst.fr>,
+Cc:     Qian Cai <cai@lca.pw>, Florian Westphal <fw@strlen.de>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 002/121] netfilter: ctnetlink: be more strict when NF_CONNTRACK_MARK is not set
-Date:   Sat, 11 Apr 2020 19:05:07 -0400
-Message-Id: <20200411230706.23855-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 095/121] netfilter: nf_tables: silence a RCU-list warning in nft_table_lookup()
+Date:   Sat, 11 Apr 2020 19:06:40 -0400
+Message-Id: <20200411230706.23855-95-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200411230706.23855-1-sashal@kernel.org>
 References: <20200411230706.23855-1-sashal@kernel.org>
@@ -46,36 +45,61 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Romain Bellan <romain.bellan@wifirst.fr>
+From: Qian Cai <cai@lca.pw>
 
-[ Upstream commit 7c6b4121627aeaa79536fbb900feafec740410d3 ]
+[ Upstream commit 0a6a9515fe390976cd762c52d8d4f446d7a14285 ]
 
-When CONFIG_NF_CONNTRACK_MARK is not set, any CTA_MARK or CTA_MARK_MASK
-in netlink message are not supported. We should return an error when one
-of them is set, not both
+It is safe to traverse &net->nft.tables with &net->nft.commit_mutex
+held using list_for_each_entry_rcu(). Silence the PROVE_RCU_LIST false
+positive,
 
-Fixes: 9306425b70bf ("netfilter: ctnetlink: must check mark attributes vs NULL")
-Signed-off-by: Romain Bellan <romain.bellan@wifirst.fr>
-Signed-off-by: Florent Fourcot <florent.fourcot@wifirst.fr>
+WARNING: suspicious RCU usage
+net/netfilter/nf_tables_api.c:523 RCU-list traversed in non-reader section!!
+
+other info that might help us debug this:
+
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by iptables/1384:
+ #0: ffffffff9745c4a8 (&net->nft.commit_mutex){+.+.}, at: nf_tables_valid_genid+0x25/0x60 [nf_tables]
+
+Call Trace:
+ dump_stack+0xa1/0xea
+ lockdep_rcu_suspicious+0x103/0x10d
+ nft_table_lookup.part.0+0x116/0x120 [nf_tables]
+ nf_tables_newtable+0x12c/0x7d0 [nf_tables]
+ nfnetlink_rcv_batch+0x559/0x1190 [nfnetlink]
+ nfnetlink_rcv+0x1da/0x210 [nfnetlink]
+ netlink_unicast+0x306/0x460
+ netlink_sendmsg+0x44b/0x770
+ ____sys_sendmsg+0x46b/0x4a0
+ ___sys_sendmsg+0x138/0x1a0
+ __sys_sendmsg+0xb6/0x130
+ __x64_sys_sendmsg+0x48/0x50
+ do_syscall_64+0x69/0xf4
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+Signed-off-by: Qian Cai <cai@lca.pw>
+Acked-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_netlink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 6a1c8f1f61718..7f5258ae1218a 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -860,7 +860,7 @@ ctnetlink_alloc_filter(const struct nlattr * const cda[], u8 family)
- 	struct ctnetlink_filter *filter;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 11a2a7b5312ee..61c544801e534 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -520,7 +520,8 @@ static struct nft_table *nft_table_lookup(const struct net *net,
+ 	if (nla == NULL)
+ 		return ERR_PTR(-EINVAL);
  
- #ifndef CONFIG_NF_CONNTRACK_MARK
--	if (cda[CTA_MARK] && cda[CTA_MARK_MASK])
-+	if (cda[CTA_MARK] || cda[CTA_MARK_MASK])
- 		return ERR_PTR(-EOPNOTSUPP);
- #endif
- 
+-	list_for_each_entry_rcu(table, &net->nft.tables, list) {
++	list_for_each_entry_rcu(table, &net->nft.tables, list,
++				lockdep_is_held(&net->nft.commit_mutex)) {
+ 		if (!nla_strcmp(nla, table->name) &&
+ 		    table->family == family &&
+ 		    nft_active_genmask(table, genmask))
 -- 
 2.20.1
 
