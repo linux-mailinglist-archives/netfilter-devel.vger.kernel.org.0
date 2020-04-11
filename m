@@ -2,143 +2,80 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB6C1A538A
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Apr 2020 21:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D001D1A5B6F
+	for <lists+netfilter-devel@lfdr.de>; Sun, 12 Apr 2020 01:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgDKTcS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 11 Apr 2020 15:32:18 -0400
-Received: from correo.us.es ([193.147.175.20]:49150 "EHLO mail.us.es"
+        id S1726876AbgDKXDw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 11 Apr 2020 19:03:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726129AbgDKTcS (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 11 Apr 2020 15:32:18 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 0C3B2C04EA
-        for <netfilter-devel@vger.kernel.org>; Sat, 11 Apr 2020 21:32:16 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id F1602100A41
-        for <netfilter-devel@vger.kernel.org>; Sat, 11 Apr 2020 21:32:15 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id E7002DA736; Sat, 11 Apr 2020 21:32:15 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 92CB2100A47
-        for <netfilter-devel@vger.kernel.org>; Sat, 11 Apr 2020 21:32:13 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sat, 11 Apr 2020 21:32:13 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.here (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 7D1994251481
-        for <netfilter-devel@vger.kernel.org>; Sat, 11 Apr 2020 21:32:13 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] segtree: broken error reporting with mappings
-Date:   Sat, 11 Apr 2020 21:32:10 +0200
-Message-Id: <20200411193210.45274-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.11.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726155AbgDKXDw (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:03:52 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5062E215A4;
+        Sat, 11 Apr 2020 23:03:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586646232;
+        bh=AteEPKEmTxb6IvEHpeF+RDvEo930PxsTukXeAY8tpqY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Q8sqBX2PBOtlrEbDPkQHn4ko9WYNaxym7kDtgl1lC8Z+G+CsrmSksLWdu+tvs75rx
+         GJr1q866ugQed3ylHK4Iict3C3a8x1tUFK6wY2MlH7BM9sIAhnsPuRn+02gMiwbhUP
+         gBdlkqopJ/TUn5cxHBvyqud2ba0dkVZ6RNxaaGGo=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Romain Bellan <romain.bellan@wifirst.fr>,
+        Florent Fourcot <florent.fourcot@wifirst.fr>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 003/149] netfilter: ctnetlink: be more strict when NF_CONNTRACK_MARK is not set
+Date:   Sat, 11 Apr 2020 19:01:20 -0400
+Message-Id: <20200411230347.22371-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200411230347.22371-1-sashal@kernel.org>
+References: <20200411230347.22371-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Segfault on error reporting when intervals overlap.
+From: Romain Bellan <romain.bellan@wifirst.fr>
 
-ip saddr vmap {
-    10.0.1.0-10.0.1.255 : accept,
-    10.0.1.1-10.0.2.255 : drop
-}
+[ Upstream commit 7c6b4121627aeaa79536fbb900feafec740410d3 ]
 
-Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1415
-Fixes: 4d6ad0f310d6 ("segtree: check for overlapping elements at insertion")
+When CONFIG_NF_CONNTRACK_MARK is not set, any CTA_MARK or CTA_MARK_MASK
+in netlink message are not supported. We should return an error when one
+of them is set, not both
+
+Fixes: 9306425b70bf ("netfilter: ctnetlink: must check mark attributes vs NULL")
+Signed-off-by: Romain Bellan <romain.bellan@wifirst.fr>
+Signed-off-by: Florent Fourcot <florent.fourcot@wifirst.fr>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- src/segtree.c      | 25 ++++++++++++++++++++-----
- tests/py/inet/ip.t |  2 ++
- 2 files changed, 22 insertions(+), 5 deletions(-)
+ net/netfilter/nf_conntrack_netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/segtree.c b/src/segtree.c
-index 8d79332d8578..a9d6ecc89d7c 100644
---- a/src/segtree.c
-+++ b/src/segtree.c
-@@ -190,7 +190,8 @@ static bool segtree_debug(unsigned int debug_mask)
- static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
- 		     struct elementary_interval *new, bool merge)
- {
--	struct elementary_interval *lei, *rei;
-+	struct elementary_interval *lei, *rei, *ei;
-+	struct expr *new_expr, *expr;
- 	mpz_t p;
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index 6a1c8f1f61718..7f5258ae1218a 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -860,7 +860,7 @@ ctnetlink_alloc_filter(const struct nlattr * const cda[], u8 family)
+ 	struct ctnetlink_filter *filter;
  
- 	mpz_init2(p, tree->keylen);
-@@ -205,8 +206,10 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
- 		pr_gmp_debug("insert: [%Zx %Zx]\n", new->left, new->right);
+ #ifndef CONFIG_NF_CONNTRACK_MARK
+-	if (cda[CTA_MARK] && cda[CTA_MARK_MASK])
++	if (cda[CTA_MARK] || cda[CTA_MARK_MASK])
+ 		return ERR_PTR(-EOPNOTSUPP);
+ #endif
  
- 	if (lei != NULL && rei != NULL && lei == rei) {
--		if (!merge)
-+		if (!merge) {
-+			ei = lei;
- 			goto err;
-+		}
- 		/*
- 		 * The new interval is entirely contained in the same interval,
- 		 * split it into two parts:
-@@ -228,8 +231,10 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
- 		ei_destroy(lei);
- 	} else {
- 		if (lei != NULL) {
--			if (!merge)
-+			if (!merge) {
-+				ei = lei;
- 				goto err;
-+			}
- 			/*
- 			 * Left endpoint is within lei, adjust it so we have:
- 			 *
-@@ -248,8 +253,10 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
- 			}
- 		}
- 		if (rei != NULL) {
--			if (!merge)
-+			if (!merge) {
-+				ei = rei;
- 				goto err;
-+			}
- 			/*
- 			 * Right endpoint is within rei, adjust it so we have:
- 			 *
-@@ -276,7 +283,15 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
- 	return 0;
- err:
- 	errno = EEXIST;
--	return expr_binary_error(msgs, lei->expr, new->expr,
-+	if (new->expr->etype == EXPR_MAPPING) {
-+		new_expr = new->expr->left;
-+		expr = ei->expr->left;
-+	} else {
-+		new_expr = new->expr;
-+		expr = ei->expr;
-+	}
-+
-+	return expr_binary_error(msgs, new_expr, expr,
- 				 "conflicting intervals specified");
- }
- 
-diff --git a/tests/py/inet/ip.t b/tests/py/inet/ip.t
-index 4eb69d7362e3..86604a6363dd 100644
---- a/tests/py/inet/ip.t
-+++ b/tests/py/inet/ip.t
-@@ -7,3 +7,5 @@
- *netdev;test-netdev;ingress
- 
- ip saddr . ip daddr . ether saddr { 1.1.1.1 . 2.2.2.2 . ca:fe:ca:fe:ca:fe };ok
-+ip saddr vmap { 10.0.1.0-10.0.1.255 : accept, 10.0.1.1-10.0.2.255 : drop };fail
-+ip saddr vmap { 1.1.1.1-1.1.1.255 : accept, 1.1.1.0-1.1.2.1 : drop};fail
 -- 
-2.11.0
+2.20.1
 
