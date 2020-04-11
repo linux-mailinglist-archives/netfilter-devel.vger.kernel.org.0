@@ -2,102 +2,116 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED82F1A4E84
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Apr 2020 09:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343781A525F
+	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Apr 2020 15:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725923AbgDKHZG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 11 Apr 2020 03:25:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35569 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725869AbgDKHZG (ORCPT
+        id S1726124AbgDKNfm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 11 Apr 2020 09:35:42 -0400
+Received: from mail.thorsten-knabe.de ([212.60.139.226]:42302 "EHLO
+        mail.thorsten-knabe.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726107AbgDKNfm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 11 Apr 2020 03:25:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586589905;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=83q8+0q6/Bd67JIjEyGF9akq2N/0Xry6Mj5tSk/Wx8M=;
-        b=i8N6BvFNXhPN5+byeEINeEsEwZ840I4Wzv8X6DZZSA3tJvuqsU5JnShMOlG0H8KkLBMmOq
-        TviMeJ4t1h6IvC6mRitQhasXfs87GougC9LVM+KuEOxDNUhN58tR8nvqNlObbbfIzJEQp3
-        lPi2r7acSDVIJoqZM0ADHc/gQ3gG/C0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-LU9fNu_pP56RBa8IbeuJzg-1; Sat, 11 Apr 2020 03:25:04 -0400
-X-MC-Unique: LU9fNu_pP56RBa8IbeuJzg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 155C98018A2;
-        Sat, 11 Apr 2020 07:25:03 +0000 (UTC)
-Received: from elisabeth (unknown [10.36.110.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C476F9E0E4;
-        Sat, 11 Apr 2020 07:25:01 +0000 (UTC)
-Date:   Sat, 11 Apr 2020 09:24:56 +0200
-From:   Stefano Brivio <sbrivio@redhat.com>
-To:     Thorsten Knabe <linux@thorsten-knabe.de>
-Cc:     netfilter-devel@vger.kernel.org
+        Sat, 11 Apr 2020 09:35:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=thorsten-knabe.de; s=dkim1; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=LUnm7T2aKDusNEbafyv67eqERnXgL0QPtLK2k2dTdbY=; b=BQSFFA3kro0O9KzfFPq5/kiFcI
+        MMYts1ktG6FiW7AjJpFE1Mt5EUD154SZgGNBxHrorde10P0bZl37qD0gz5mamfx6NIUw9P4RTo3vE
+        /3JWhiXqjkqpa44s5wqbXAyXT9oPwzdkx8nKWQBZ8adRBhsVUVWjdDu9I171FRFFgoJ+8zFpdkSg3
+        mCDLldV1PXqZ62b+E9Cpgn+RUGNvwug+tsgLT1oKTTuK99QtCAdz6BuamRwi/Mw9jlbSUpkvsL+Gj
+        XGwKh3PHL0Lyd12rE7lLACYsCwklL9Sx6l6V8eualOURtBr54k8wq1iKLtr77FwOXmJBspK8H47pU
+        NX8hHyUg==;
+Received: from tek01.intern.thorsten-knabe.de ([2a01:170:101e:1::a00:101])
+        by mail.thorsten-knabe.de with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <linux@thorsten-knabe.de>)
+        id 1jNGIJ-0002D9-A1; Sat, 11 Apr 2020 15:35:37 +0200
 Subject: Re: BUG: Anonymous maps with adjacent intervals broken since Linux
  5.6
-Message-ID: <20200411092456.72e2ddd4@elisabeth>
-In-Reply-To: <6d036215-e701-db81-d429-2c76856463ee@thorsten-knabe.de>
+To:     Stefano Brivio <sbrivio@redhat.com>
+Cc:     netfilter-devel@vger.kernel.org
 References: <6d036215-e701-db81-d429-2c76856463ee@thorsten-knabe.de>
-Organization: Red Hat
+ <20200411092456.72e2ddd4@elisabeth>
+From:   Thorsten Knabe <linux@thorsten-knabe.de>
+Message-ID: <4f8bf97a-9fe2-1615-9095-c656a246849e@thorsten-knabe.de>
+Date:   Sat, 11 Apr 2020 15:35:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200411092456.72e2ddd4@elisabeth>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Spam-Report: Content analysis details:   (0.3 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.5 BAYES_05               BODY: Bayes spam probability is 1 to 5%
+                             [score: 0.0218]
+  0.0 SPF_HELO_NONE          SPF: HELO does not publish an SPF Record
+  0.0 SPF_NONE               SPF: sender does not publish an SPF Record
+  0.8 DKIM_ADSP_ALL          No valid author signature, domain signs all mail
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Thorsten,
+Hello Stefano.
 
-On Fri, 10 Apr 2020 19:25:49 +0200
-Thorsten Knabe <linux@thorsten-knabe.de> wrote:
+On 4/11/20 9:24 AM, Stefano Brivio wrote:
+> Hi Thorsten,
+> 
+> On Fri, 10 Apr 2020 19:25:49 +0200
+> Thorsten Knabe <linux@thorsten-knabe.de> wrote:
+> 
+>> Hello.
+>>
+>> BUG: Anonymous maps with adjacent intervals are broken starting with
+>> Linux 5.6. Linux 5.5.16 is not affected.
+>>
+>> Environment:
+>> - Linux 5.6.3 (AMD64)
+>> - nftables 0.9.4
+>>
+>> Trying to apply the ruleset:
+>>
+>> flush ruleset
+>>
+>> table ip filter {
+>>   chain test {
+>>     ip daddr vmap {
+>>         10.255.1.0-10.255.1.255: accept,
+>>         10.255.2.0-10.255.2.255: drop
+>>     }
+>>   }
+>> }
+>>
+>> using nft results in an error on Linux 5.6.3:
+>>
+>> # nft -f simple.nft
+>> simple.nft:7:19-5: Error: Could not process rule: File exists
+>>     ip daddr vmap {
+> 
+> Thanks for reporting this issue. I can't test it right now, but:
+> 
+> commit 72239f2795fab9a58633bd0399698ff7581534a3
+> Author: Stefano Brivio <sbrivio@redhat.com>
+> Date:   Wed Apr 1 17:14:38 2020 +0200
+> 
+>     netfilter: nft_set_rbtree: Drop spurious condition for overlap detection on insertion
+> 
+> should be the fix for this. Can you try with that?
 
-> Hello.
->=20
-> BUG: Anonymous maps with adjacent intervals are broken starting with
-> Linux 5.6. Linux 5.5.16 is not affected.
->=20
-> Environment:
-> - Linux 5.6.3 (AMD64)
-> - nftables 0.9.4
->=20
-> Trying to apply the ruleset:
->=20
-> flush ruleset
->=20
-> table ip filter {
-> =C2=A0 chain test {
-> =C2=A0=C2=A0=C2=A0 ip daddr vmap {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 10.255.1.0-10.255.1.255: accep=
-t,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 10.255.2.0-10.255.2.255: drop
-> =C2=A0=C2=A0=C2=A0 }
-> =C2=A0 }
-> }
->=20
-> using nft results in an error on Linux 5.6.3:
->=20
-> # nft -f simple.nft
-> simple.nft:7:19-5: Error: Could not process rule: File exists
-> =C2=A0=C2=A0=C2=A0 ip daddr vmap {
+I tried your patch 72239f2795fab9a58633bd0399698ff7581534a3 and it
+indeed fixes the problem. Thank you.
 
-Thanks for reporting this issue. I can't test it right now, but:
+Kind regards
+Thorsten
 
-commit 72239f2795fab9a58633bd0399698ff7581534a3
-Author: Stefano Brivio <sbrivio@redhat.com>
-Date:   Wed Apr 1 17:14:38 2020 +0200
 
-    netfilter: nft_set_rbtree: Drop spurious condition for overlap detectio=
-n on insertion
-
-should be the fix for this. Can you try with that?
-
---=20
-Stefano
-
+-- 
+___
+ |        | /                 E-Mail: linux@thorsten-knabe.de
+ |horsten |/\nabe                WWW: http://linux.thorsten-knabe.de
