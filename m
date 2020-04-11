@@ -2,116 +2,143 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 343781A525F
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Apr 2020 15:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB6C1A538A
+	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Apr 2020 21:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726124AbgDKNfm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 11 Apr 2020 09:35:42 -0400
-Received: from mail.thorsten-knabe.de ([212.60.139.226]:42302 "EHLO
-        mail.thorsten-knabe.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726107AbgDKNfm (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 11 Apr 2020 09:35:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=thorsten-knabe.de; s=dkim1; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LUnm7T2aKDusNEbafyv67eqERnXgL0QPtLK2k2dTdbY=; b=BQSFFA3kro0O9KzfFPq5/kiFcI
-        MMYts1ktG6FiW7AjJpFE1Mt5EUD154SZgGNBxHrorde10P0bZl37qD0gz5mamfx6NIUw9P4RTo3vE
-        /3JWhiXqjkqpa44s5wqbXAyXT9oPwzdkx8nKWQBZ8adRBhsVUVWjdDu9I171FRFFgoJ+8zFpdkSg3
-        mCDLldV1PXqZ62b+E9Cpgn+RUGNvwug+tsgLT1oKTTuK99QtCAdz6BuamRwi/Mw9jlbSUpkvsL+Gj
-        XGwKh3PHL0Lyd12rE7lLACYsCwklL9Sx6l6V8eualOURtBr54k8wq1iKLtr77FwOXmJBspK8H47pU
-        NX8hHyUg==;
-Received: from tek01.intern.thorsten-knabe.de ([2a01:170:101e:1::a00:101])
-        by mail.thorsten-knabe.de with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <linux@thorsten-knabe.de>)
-        id 1jNGIJ-0002D9-A1; Sat, 11 Apr 2020 15:35:37 +0200
-Subject: Re: BUG: Anonymous maps with adjacent intervals broken since Linux
- 5.6
-To:     Stefano Brivio <sbrivio@redhat.com>
-Cc:     netfilter-devel@vger.kernel.org
-References: <6d036215-e701-db81-d429-2c76856463ee@thorsten-knabe.de>
- <20200411092456.72e2ddd4@elisabeth>
-From:   Thorsten Knabe <linux@thorsten-knabe.de>
-Message-ID: <4f8bf97a-9fe2-1615-9095-c656a246849e@thorsten-knabe.de>
-Date:   Sat, 11 Apr 2020 15:35:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200411092456.72e2ddd4@elisabeth>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Spam-Report: Content analysis details:   (0.3 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.5 BAYES_05               BODY: Bayes spam probability is 1 to 5%
-                             [score: 0.0218]
-  0.0 SPF_HELO_NONE          SPF: HELO does not publish an SPF Record
-  0.0 SPF_NONE               SPF: sender does not publish an SPF Record
-  0.8 DKIM_ADSP_ALL          No valid author signature, domain signs all mail
+        id S1726167AbgDKTcS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 11 Apr 2020 15:32:18 -0400
+Received: from correo.us.es ([193.147.175.20]:49150 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbgDKTcS (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 11 Apr 2020 15:32:18 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 0C3B2C04EA
+        for <netfilter-devel@vger.kernel.org>; Sat, 11 Apr 2020 21:32:16 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id F1602100A41
+        for <netfilter-devel@vger.kernel.org>; Sat, 11 Apr 2020 21:32:15 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id E7002DA736; Sat, 11 Apr 2020 21:32:15 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 92CB2100A47
+        for <netfilter-devel@vger.kernel.org>; Sat, 11 Apr 2020 21:32:13 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Sat, 11 Apr 2020 21:32:13 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from salvia.here (unknown [90.77.255.23])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 7D1994251481
+        for <netfilter-devel@vger.kernel.org>; Sat, 11 Apr 2020 21:32:13 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft] segtree: broken error reporting with mappings
+Date:   Sat, 11 Apr 2020 21:32:10 +0200
+Message-Id: <20200411193210.45274-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.11.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello Stefano.
+Segfault on error reporting when intervals overlap.
 
-On 4/11/20 9:24 AM, Stefano Brivio wrote:
-> Hi Thorsten,
-> 
-> On Fri, 10 Apr 2020 19:25:49 +0200
-> Thorsten Knabe <linux@thorsten-knabe.de> wrote:
-> 
->> Hello.
->>
->> BUG: Anonymous maps with adjacent intervals are broken starting with
->> Linux 5.6. Linux 5.5.16 is not affected.
->>
->> Environment:
->> - Linux 5.6.3 (AMD64)
->> - nftables 0.9.4
->>
->> Trying to apply the ruleset:
->>
->> flush ruleset
->>
->> table ip filter {
->>   chain test {
->>     ip daddr vmap {
->>         10.255.1.0-10.255.1.255: accept,
->>         10.255.2.0-10.255.2.255: drop
->>     }
->>   }
->> }
->>
->> using nft results in an error on Linux 5.6.3:
->>
->> # nft -f simple.nft
->> simple.nft:7:19-5: Error: Could not process rule: File exists
->>     ip daddr vmap {
-> 
-> Thanks for reporting this issue. I can't test it right now, but:
-> 
-> commit 72239f2795fab9a58633bd0399698ff7581534a3
-> Author: Stefano Brivio <sbrivio@redhat.com>
-> Date:   Wed Apr 1 17:14:38 2020 +0200
-> 
->     netfilter: nft_set_rbtree: Drop spurious condition for overlap detection on insertion
-> 
-> should be the fix for this. Can you try with that?
+ip saddr vmap {
+    10.0.1.0-10.0.1.255 : accept,
+    10.0.1.1-10.0.2.255 : drop
+}
 
-I tried your patch 72239f2795fab9a58633bd0399698ff7581534a3 and it
-indeed fixes the problem. Thank you.
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1415
+Fixes: 4d6ad0f310d6 ("segtree: check for overlapping elements at insertion")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/segtree.c      | 25 ++++++++++++++++++++-----
+ tests/py/inet/ip.t |  2 ++
+ 2 files changed, 22 insertions(+), 5 deletions(-)
 
-Kind regards
-Thorsten
-
-
+diff --git a/src/segtree.c b/src/segtree.c
+index 8d79332d8578..a9d6ecc89d7c 100644
+--- a/src/segtree.c
++++ b/src/segtree.c
+@@ -190,7 +190,8 @@ static bool segtree_debug(unsigned int debug_mask)
+ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 		     struct elementary_interval *new, bool merge)
+ {
+-	struct elementary_interval *lei, *rei;
++	struct elementary_interval *lei, *rei, *ei;
++	struct expr *new_expr, *expr;
+ 	mpz_t p;
+ 
+ 	mpz_init2(p, tree->keylen);
+@@ -205,8 +206,10 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 		pr_gmp_debug("insert: [%Zx %Zx]\n", new->left, new->right);
+ 
+ 	if (lei != NULL && rei != NULL && lei == rei) {
+-		if (!merge)
++		if (!merge) {
++			ei = lei;
+ 			goto err;
++		}
+ 		/*
+ 		 * The new interval is entirely contained in the same interval,
+ 		 * split it into two parts:
+@@ -228,8 +231,10 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 		ei_destroy(lei);
+ 	} else {
+ 		if (lei != NULL) {
+-			if (!merge)
++			if (!merge) {
++				ei = lei;
+ 				goto err;
++			}
+ 			/*
+ 			 * Left endpoint is within lei, adjust it so we have:
+ 			 *
+@@ -248,8 +253,10 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 			}
+ 		}
+ 		if (rei != NULL) {
+-			if (!merge)
++			if (!merge) {
++				ei = rei;
+ 				goto err;
++			}
+ 			/*
+ 			 * Right endpoint is within rei, adjust it so we have:
+ 			 *
+@@ -276,7 +283,15 @@ static int ei_insert(struct list_head *msgs, struct seg_tree *tree,
+ 	return 0;
+ err:
+ 	errno = EEXIST;
+-	return expr_binary_error(msgs, lei->expr, new->expr,
++	if (new->expr->etype == EXPR_MAPPING) {
++		new_expr = new->expr->left;
++		expr = ei->expr->left;
++	} else {
++		new_expr = new->expr;
++		expr = ei->expr;
++	}
++
++	return expr_binary_error(msgs, new_expr, expr,
+ 				 "conflicting intervals specified");
+ }
+ 
+diff --git a/tests/py/inet/ip.t b/tests/py/inet/ip.t
+index 4eb69d7362e3..86604a6363dd 100644
+--- a/tests/py/inet/ip.t
++++ b/tests/py/inet/ip.t
+@@ -7,3 +7,5 @@
+ *netdev;test-netdev;ingress
+ 
+ ip saddr . ip daddr . ether saddr { 1.1.1.1 . 2.2.2.2 . ca:fe:ca:fe:ca:fe };ok
++ip saddr vmap { 10.0.1.0-10.0.1.255 : accept, 10.0.1.1-10.0.2.255 : drop };fail
++ip saddr vmap { 1.1.1.1-1.1.1.255 : accept, 1.1.1.0-1.1.2.1 : drop};fail
 -- 
-___
- |        | /                 E-Mail: linux@thorsten-knabe.de
- |horsten |/\nabe                WWW: http://linux.thorsten-knabe.de
+2.11.0
+
