@@ -2,77 +2,65 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCCD1A8196
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Apr 2020 17:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6420B1A8D79
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Apr 2020 23:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440307AbgDNPIy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 14 Apr 2020 11:08:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56926 "EHLO mail.kernel.org"
+        id S2391798AbgDNVQu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 14 Apr 2020 17:16:50 -0400
+Received: from correo.us.es ([193.147.175.20]:43720 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440299AbgDNPIn (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:08:43 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        id S1732367AbgDNVQs (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 14 Apr 2020 17:16:48 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 5D29CDA711
+        for <netfilter-devel@vger.kernel.org>; Tue, 14 Apr 2020 23:16:44 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 4EC21DA8E6
+        for <netfilter-devel@vger.kernel.org>; Tue, 14 Apr 2020 23:16:44 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 41EAEDA7B2; Tue, 14 Apr 2020 23:16:44 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 57DA1DA736;
+        Tue, 14 Apr 2020 23:16:42 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 14 Apr 2020 23:16:42 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5765A2076D;
-        Tue, 14 Apr 2020 15:08:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586876921;
-        bh=GLM7ITcjNGNqxFgguUrT1MtQmHq3TEbDWtKuGuJeo2w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UT9cWIzX59N5Dp/DAqfP+XZ9ucR8iFlnC1CvLDdSIp4fp9+3b+M5kKrb6OHu58a5k
-         ro20mPG3qeWc17ZkLZSq/fWkig8Y4RDmXLz7OPlVA2FwvSoddrfngn9nqbuD7N3I64
-         kfzwhd3jFwNLAUP6jq+NApr8mJRJnV98nhzlKozg=
-Date:   Tue, 14 Apr 2020 11:08:40 -0400
-From:   Sasha Levin <sashal@kernel.org>
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 372F44301DE1;
+        Tue, 14 Apr 2020 23:16:42 +0200 (CEST)
+Date:   Tue, 14 Apr 2020 23:16:41 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     Stefano Brivio <sbrivio@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.5 27/35] netfilter: nf_tables: Allow set
- back-ends to report partial overlaps on insertion
-Message-ID: <20200414150840.GD1068@sasha-vm>
-References: <20200407000058.16423-1-sashal@kernel.org>
- <20200407000058.16423-27-sashal@kernel.org>
- <20200407021848.626df832@redhat.com>
- <20200413163900.GO27528@sasha-vm>
- <20200413223858.17b0f487@redhat.com>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft 0/2] Prevent kernel from adding concatenated ranges
+ if they're not supported
+Message-ID: <20200414211641.nfn4ckoxxqvquqwq@salvia>
+References: <cover.1586806931.git.sbrivio@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200413223858.17b0f487@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <cover.1586806931.git.sbrivio@redhat.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 10:38:58PM +0200, Stefano Brivio wrote:
->On Mon, 13 Apr 2020 12:39:00 -0400
->Sasha Levin <sashal@kernel.org> wrote:
->
->> On Tue, Apr 07, 2020 at 02:18:48AM +0200, Stefano Brivio wrote:
->>
->> >I'm used to not Cc: stable on networking patches (Dave's net.git),
->> >but I guess I should instead if they go through nf.git (Pablo's tree),
->> >right?
->>
->> Yup, this confusion has caused for quite a few netfilter fixes to not
->> land in -stable. If it goes through Pablo's tree (and unless he intructs
->> otherwise), you should Cc stable.
->
->Hah, thanks for clarifying.
->
->What do you think I should do specifically with 72239f2795fa
->("netfilter: nft_set_rbtree: Drop spurious condition for overlap detection
->on insertion")?
->
->I haven't Cc'ed stable on that one. Can I expect AUTOSEL to pick it up
->anyway?
+On Mon, Apr 13, 2020 at 09:48:01PM +0200, Stefano Brivio wrote:
+> This series fixes the nft crash recently reported by Pablo with older
+> (< 5.6) kernels: use the NFT_SET_CONCAT flag whenever we send a set
+> including concatenated ranges, so that kernels not supporting them
+> will not add them altogether, and we won't crash while trying to list
+> the malformed sets that are added as a result.
 
-I'll make sure it gets queued up when it hits Linus's tree :)
-
--- 
-Thanks,
-Sasha
+Applied, thanks.
