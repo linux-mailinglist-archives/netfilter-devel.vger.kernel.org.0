@@ -2,27 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511711B021D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Apr 2020 09:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B471AFFDE
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Apr 2020 04:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726006AbgDTHCl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Apr 2020 03:02:41 -0400
-Received: from mail.redfish-solutions.com ([45.33.216.244]:53228 "EHLO
+        id S1725988AbgDTCax (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 19 Apr 2020 22:30:53 -0400
+Received: from mail.redfish-solutions.com ([45.33.216.244]:50894 "EHLO
         mail.redfish-solutions.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725896AbgDTHCl (ORCPT
+        by vger.kernel.org with ESMTP id S1725865AbgDTCax (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 Apr 2020 03:02:41 -0400
+        Sun, 19 Apr 2020 22:30:53 -0400
+X-Greylist: delayed 7975 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Apr 2020 22:30:53 EDT
 Received: from son-of-builder.redfish-solutions.com (son-of-builder.redfish-solutions.com [192.168.1.56])
         (authenticated bits=0)
-        by mail.redfish-solutions.com (8.15.2/8.15.2) with ESMTPSA id 03J9ok3X009663
+        by mail.redfish-solutions.com (8.15.2/8.15.2) with ESMTPSA id 03JC3d8S010087
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 19 Apr 2020 03:50:46 -0600
+        Sun, 19 Apr 2020 06:03:39 -0600
 From:   "Philip Prindeville" <philipp@redfish-solutions.com>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Philip Prindeville <philipp@redfish-solutions.com>
-Subject: [PATCH v1 1/1] Update download script for DBIP database
-Date:   Sun, 19 Apr 2020 18:11:47 -0600
-Message-Id: <20200420001147.10646-1-philipp@redfish-solutions.com>
+Subject: [PATCH v1 1/1] xtables-addons: geoip: Update download script for DBIP database
+Date:   Sun, 19 Apr 2020 20:24:41 -0600
+Message-Id: <20200420022441.10941-1-philipp@redfish-solutions.com>
 X-Mailer: git-send-email 2.17.2
 X-Scanned-By: MIMEDefang 2.84 on 192.168.1.3
 Sender: netfilter-devel-owner@vger.kernel.org
