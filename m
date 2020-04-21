@@ -2,96 +2,100 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B74A1B203F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Apr 2020 09:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A187B1B2131
+	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Apr 2020 10:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726403AbgDUHsP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 21 Apr 2020 03:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42994 "EHLO
+        id S1727891AbgDUIPZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 21 Apr 2020 04:15:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgDUHsO (ORCPT
+        with ESMTP id S1726013AbgDUIPY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 21 Apr 2020 03:48:14 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADBCBC061A0F
-        for <netfilter-devel@vger.kernel.org>; Tue, 21 Apr 2020 00:48:14 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id x10so11320810oie.1
-        for <netfilter-devel@vger.kernel.org>; Tue, 21 Apr 2020 00:48:14 -0700 (PDT)
+        Tue, 21 Apr 2020 04:15:24 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FCEC061A0F;
+        Tue, 21 Apr 2020 01:15:23 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id t9so1060338pjw.0;
+        Tue, 21 Apr 2020 01:15:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=f1JfsNRiU9CPiPWIvBjcsKVKQf1l0VHF1PLTYDvT8K8=;
-        b=bfJHDU2SMc7F/0z1WBZfojIMwc5cVAZHcfPuNRRzHemYESwEcLJpWZziIV5F9WZgMV
-         IlbhjLltzHgbc7KFA98VaDDu7L4TqFYzsuKdhQYIAJJFTlT9Jn6Wqq9pV1qn69osSgNI
-         mwVmco17L9PE/GSGV6hgRZdTPd486vEFCLlxs6BwUPXmtMBoxRc+ECVU8fFq9x4Zx9dN
-         jty/7qMurh+qBEL1bAAqDhPVfg3UZp+N2ymbj8rbpo3ajgXj1UvjwSkT3g/tOyoTrwzI
-         njf082d7BdLaeWoYCha+0aeCeW4rBKjORenuLp7ak2yYdShvqQ0/eHfDN8EJvCxDLmpY
-         LEpw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zVQPuvs+ga9V2QoaefAziadkD0funnQyJCSSfTN7M/w=;
+        b=UzJPXsdk7kQ/O0ZqsPEMG8XAzUTdYzy24rrQFvvOROb2WcE2WcfmqyGy8mB4iIsOsc
+         mpG16aYxWahFsQQLGBeSJ1Zk4I1ppqH14e8F+P5yE5KGPNpivo2mhyPORYC/Wdmg4NhD
+         b93hg6KsphNylEPRtxkLywO8Dgt8Zsq21YFgaYESBzUOPjZjA/iGTD4bUYuZ5/pTcXTp
+         cfLciu9h2MQrmM0OYBHCbfDTAWA8jUXkEuGLIVHN05EeqpWnSCxaiJfwE62TQke13UH1
+         Rt9fWBR70YA7CmHuvX4z0ggXEbF2Rm5UUWZkYf43QDrace5qCk8eX7Ly/N9gG54q449b
+         S+rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=f1JfsNRiU9CPiPWIvBjcsKVKQf1l0VHF1PLTYDvT8K8=;
-        b=Qldzg+k+Ap+abQEdNnl4LLthydGqirzc7DU3EQATiYAtOhJyUZwook/Oh9k80JawH9
-         imWTV8fIq8TG7K3jrOY1WrMIT/UVKWH5OeAgnyL4ldcepo/7HG41wxKhRS9GSyZfG3az
-         bt0JgK76TMqHY7u6HVcb4MhdE8dGr4PllHkC7Hx9rGwh2aGosyoMaYSH2mvsKZyJsb7W
-         1dGhzeezs76E1pG70qHbkBjeLo1NT0DTUpWsk12pUpe0WOLjPnRknahX2v7/GXy+SbSM
-         2orKU6E0x3UCmA1Y3/CLgoO/dprcBFmfRKcif0JyxiN0mZf2AP3OPg0NIlka0HvL5one
-         klZA==
-X-Gm-Message-State: AGi0PuaoDUENDfkQqNYNYAORLBijeJtKcmvGOCsS7htQyUDbRLMC6wFn
-        pZYUPglwxRNkm1hQ352sC9+Eh46GU5tPuA5zB6A=
-X-Google-Smtp-Source: APiQypJuqHx/6KV9h0zsrPwyt3nxB8W5DoNjbp6ZDnn+kG2ZbCslFULGS5ZUJwDdK5m1WS3ox82+vchHRp5U4mD/Ng8=
-X-Received: by 2002:aca:4a4c:: with SMTP id x73mr2339700oia.162.1587455294017;
- Tue, 21 Apr 2020 00:48:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zVQPuvs+ga9V2QoaefAziadkD0funnQyJCSSfTN7M/w=;
+        b=sVzw9WE9c219EuWqPu14Njv1hZ5ZWBRonh79aDt5Z5CZjz0nakMhdwOohFzMynjfrd
+         eD5DgF2LIVfRX+fnViqJb0oyZ91pKx3onMF86upkf7wypkMYM0osBWTdybWWUn5yG5mN
+         17e4kPKMpqt29L3FlK5Lc3NJR3hR+MlUrMnile39SzHJK5jnWtA+FFxnHXKtyWbJXnWt
+         EXb/wPMnjpE+FcqssTuZ5Wqf5zOgHgjgIBn25L8lbVJsgRHwpS6bIg6KWLw8BBpNiyYw
+         eDNrTH0qGsj7BBiV1iqPC3kcibkmSF704e6phaNpVLZJHBcN83o24LL/A5wt/guwR9um
+         0ieg==
+X-Gm-Message-State: AGi0PuY0qiHsDtCHuAJT2tlPvWwOztkJ8XtLf8hqrMDLVEMeZ8eAGVxH
+        wniLD3Ji7y3uPTwIz3ZtbYA=
+X-Google-Smtp-Source: APiQypKLrA+0AdFwZE5EJ//bVWYg18MOFdtsc+xTbqWSV5eP4qpA7Hec59TVcz/suj2HbSOaxU1NiQ==
+X-Received: by 2002:a17:90b:3018:: with SMTP id hg24mr4345861pjb.130.1587456922557;
+        Tue, 21 Apr 2020 01:15:22 -0700 (PDT)
+Received: from athina.mtv.corp.google.com ([2620:15c:211:0:c786:d9fd:ab91:6283])
+        by smtp.gmail.com with ESMTPSA id f99sm1731133pjg.22.2020.04.21.01.15.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 01:15:21 -0700 (PDT)
+From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
+To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        Netfilter Development Mailing List 
+        <netfilter-devel@vger.kernel.org>
+Subject: [PATCH] libipt_ULOG.c - include strings.h for the definition of ffs()
+Date:   Tue, 21 Apr 2020 01:15:07 -0700
+Message-Id: <20200421081507.108023-1-zenczykowski@gmail.com>
+X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
 MIME-Version: 1.0
-Received: by 2002:a9d:5b0:0:0:0:0:0 with HTTP; Tue, 21 Apr 2020 00:48:13 -0700 (PDT)
-Reply-To: sulembello879@gmail.com
-From:   Mr Suleman Bello <bmrsuleman@gmail.com>
-Date:   Tue, 21 Apr 2020 00:48:13 -0700
-Message-ID: <CAEXe_M6NcL7Hog=S38vymyuc7JeosNu90yG7=64m_X51pgPcFQ@mail.gmail.com>
-Subject: CAN I TRUST YOU?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dear Friend,
+From: Maciej Żenczykowski <maze@google.com>
 
-Please i want you to read this letter very carefully and i must
-apologize for berging this message into your mail box without any
-formal introduction due to the urgency and confidential of this issue
-and i know that this message will come to you as a surprise, Please
-this is not a joke and i will not like you to joke with it.I am
-Mr.Suleman Bello, a staff in African Development Bank (A.D.B)
-Ouagadougou, Burkina faso West Africa.I discovered existing dormant
-account for years. When I discovered that there had been neither
-continuation nor withdrawals from this account for this long period
-and according to the laws and constitution guiding this banking
-institution, any unserviceable account for more than (7) seven years,
-that fund will be transferred to national treasury as unclaimed fund.
+This resolves compiler warnings:
 
-I Hoped that you will not expose or betray this trust and confident
-that i am about to extablish with you for the mutual benefit of you
-and i.I need your urgent assistance in transferring the sum of $10.5
-)million usd into your account within 7 banking days. This money has
-been dormant for years in our Bank, and The request of foreigner in
-this transaction is necessary because our late customer was a
-foreigner and a burkinabe cannot stand as next of kin to a
-foreigner.Because of the static of this transaction I want you to
-stand as the next of kin so that our bank will accord you the
-recognition and have the fund transferred to your account.
+extensions/libext4_srcs/gen/gensrcs/external/iptables/extensions/libipt_ULOG.c:89:32: error: implicit declaration of function 'ffs' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+  printf(" --ulog-nlgroup %d", ffs(loginfo->nl_group));
+                               ^
+extensions/libext4_srcs/gen/gensrcs/external/iptables/extensions/libipt_ULOG.c:105:9: error: implicit declaration of function 'ffs' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+  ffs(loginfo->nl_group));
+  ^
 
-Upon your response, I shall then provide you with further information
-and more deities that will help you understand the transaction. I am
-expecting your urgent response to enable me inform you on how the
-business will be executed. Please I would like you to keep this
-transaction confidential and as a top secret or delete if you are not
-interested.
+Test: builds with less warnings
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+---
+ extensions/libipt_ULOG.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks
-Mr.Suleman Bello.
-N.B: PLEASE CONTACT ME THROUGH MY PRIVATE EMAIL
-( suleman_bello@yahoo.com ) SO WE CAN COMMENCE ALL ARRANGEMENTS AS
-SOON AS POSSIBLE.
+diff --git a/extensions/libipt_ULOG.c b/extensions/libipt_ULOG.c
+index fafb220b..5163eea3 100644
+--- a/extensions/libipt_ULOG.c
++++ b/extensions/libipt_ULOG.c
+@@ -11,6 +11,7 @@
+  */
+ #include <stdio.h>
+ #include <string.h>
++#include <strings.h>
+ #include <xtables.h>
+ /* For 64bit kernel / 32bit userspace */
+ #include <linux/netfilter_ipv4/ipt_ULOG.h>
+-- 
+2.26.1.301.g55bc3eb7cb9-goog
+
