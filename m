@@ -2,28 +2,31 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF0B1B25EB
-	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Apr 2020 14:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F79C1B2635
+	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Apr 2020 14:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgDUMZt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 21 Apr 2020 08:25:49 -0400
-Received: from orbyte.nwl.cc ([151.80.46.58]:44004 "EHLO orbyte.nwl.cc"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728576AbgDUMZt (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:25:49 -0400
-Received: from localhost ([::1]:47318 helo=tatos)
+        id S1726628AbgDUMfk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 21 Apr 2020 08:35:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726018AbgDUMfk (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 21 Apr 2020 08:35:40 -0400
+X-Greylist: delayed 596 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 21 Apr 2020 05:35:40 PDT
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690F7C061A10
+        for <netfilter-devel@vger.kernel.org>; Tue, 21 Apr 2020 05:35:40 -0700 (PDT)
+Received: from localhost ([::1]:47350 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1jQryF-0000Je-0l; Tue, 21 Apr 2020 14:25:47 +0200
+        id 1jQs7n-0000ax-8k; Tue, 21 Apr 2020 14:35:39 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 3/3] tests: shell: Test -F in dump files
-Date:   Tue, 21 Apr 2020 14:25:33 +0200
-Message-Id: <20200421122533.29169-3-phil@nwl.cc>
+Subject: [iptables PATCH] xshared: Drop pointless assignment in add_param_to_argv()
+Date:   Tue, 21 Apr 2020 14:35:30 +0200
+Message-Id: <20200421123530.31231-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200421122533.29169-1-phil@nwl.cc>
-References: <20200421122533.29169-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -31,33 +34,25 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-While not really useful, iptables-nft-restore shouldn't segfault either.
-This tests the problem described in nfbz#1407.
+This must be a leftover from a previous cleanup.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- .../tests/shell/testcases/ipt-restore/0012-dash-F_0  | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
- create mode 100755 iptables/tests/shell/testcases/ipt-restore/0012-dash-F_0
+ iptables/xshared.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/iptables/tests/shell/testcases/ipt-restore/0012-dash-F_0 b/iptables/tests/shell/testcases/ipt-restore/0012-dash-F_0
-new file mode 100755
-index 0000000000000..fd82afa1bc8ce
---- /dev/null
-+++ b/iptables/tests/shell/testcases/ipt-restore/0012-dash-F_0
-@@ -0,0 +1,12 @@
-+#!/bin/bash -e
-+
-+# make sure -F lines don't cause segfaults
-+
-+RULESET='*nat
-+-F PREROUTING
-+-A PREROUTING -j ACCEPT
-+-F PREROUTING
-+COMMIT'
-+
-+echo -e "$RULESET" | $XT_MULTI iptables-restore
-+echo -e "$RULESET" | $XT_MULTI iptables-restore -n
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 16c58914e59a5..c1d1371a6d54a 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -495,7 +495,6 @@ void add_param_to_argv(struct argv_store *store, char *parsestart, int line)
+ 				continue;
+ 			} else if (*curchar == '"') {
+ 				quote_open = 0;
+-				*curchar = '"';
+ 			} else {
+ 				add_param(&param, curchar);
+ 				continue;
 -- 
 2.25.1
 
