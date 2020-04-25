@@ -2,174 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3DA1B7F72
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Apr 2020 21:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71121B8A33
+	for <lists+netfilter-devel@lfdr.de>; Sun, 26 Apr 2020 01:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgDXT52 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 Apr 2020 15:57:28 -0400
-Received: from correo.us.es ([193.147.175.20]:46688 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727059AbgDXT52 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 Apr 2020 15:57:28 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id DF878D28C3
-        for <netfilter-devel@vger.kernel.org>; Fri, 24 Apr 2020 21:57:26 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id D095DBAAAF
-        for <netfilter-devel@vger.kernel.org>; Fri, 24 Apr 2020 21:57:26 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id C5E86DA736; Fri, 24 Apr 2020 21:57:26 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CA6D0BAAAF
-        for <netfilter-devel@vger.kernel.org>; Fri, 24 Apr 2020 21:57:24 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 24 Apr 2020 21:57:24 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id B91E942EF4E2
-        for <netfilter-devel@vger.kernel.org>; Fri, 24 Apr 2020 21:57:24 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [nft 3/3] src: add netmap support
-Date:   Fri, 24 Apr 2020 21:57:18 +0200
-Message-Id: <20200424195718.24099-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200424195718.24099-1-pablo@netfilter.org>
-References: <20200424195718.24099-1-pablo@netfilter.org>
+        id S1726087AbgDYX5E (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 25 Apr 2020 19:57:04 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:34526 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726070AbgDYX5E (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 25 Apr 2020 19:57:04 -0400
+Received: from dimstar.local.net (n175-34-64-112.sun1.vic.optusnet.com.au [175.34.64.112])
+        by mail104.syd.optusnet.com.au (Postfix) with SMTP id F0AFA820C7F
+        for <netfilter-devel@vger.kernel.org>; Sun, 26 Apr 2020 09:57:00 +1000 (AEST)
+Received: (qmail 13534 invoked by uid 501); 25 Apr 2020 23:56:59 -0000
+Date:   Sun, 26 Apr 2020 09:56:59 +1000
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     Netfilter Development <netfilter-devel@vger.kernel.org>
+Subject: FW: pktb_alloc2
+Message-ID: <20200425235659.GJ30155@dimstar.local.net>
+Mail-Followup-To: Netfilter Development <netfilter-devel@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=keeXcwCgVCrAuxOn72dlvA==:117 a=keeXcwCgVCrAuxOn72dlvA==:17
+        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=RSmzAf-M6YYA:10 a=PO7r1zJSAAAA:8
+        a=3HDBlxybAAAA:8 a=OLL_FvSJAAAA:8 a=H60_074oE17iYOvfmaUA:9
+        a=CjuIK1q_8ugA:10 a=OVJnjtlDKZIA:10 a=AH0NCSqBHYIA:10
+        a=laEoCiVfU_Unz3mSdgXN:22 a=oIrB72frpwYPwTMnlWqB:22
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch allows you to specify an interval of IP address in maps.
+oops! - meant to cc: the list
 
- table ip x {
-        chain y {
-                type nat hook postrouting priority srcnat; policy accept;
-                snat ip prefix to ip saddr map { 10.141.11.0/24 : 192.168.2.0/24 }
-        }
- }
+----- Forwarded message from Duncan Roe <duncan_roe@optusnet.com.au> -----
 
-The example above performs SNAT to packets that comes from
-10.141.11.0/24 using the prefix 192.168.2.0/24, e.g. 10.141.11.4 is
-mangled to 192.168.2.4.
+Date: Sat, 25 Apr 2020 17:15:55 +1000
+From: Duncan Roe <duncan_roe@optusnet.com.au>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: pktb_alloc2
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- include/linux/netfilter/nf_nat.h |  4 +++-
- include/statement.h              |  1 +
- src/netlink_delinearize.c        |  4 ++++
- src/parser_bison.y               | 17 +++++++++++++++++
- src/statement.c                  |  2 ++
- 5 files changed, 27 insertions(+), 1 deletion(-)
+Hi Pablo,
 
-diff --git a/include/linux/netfilter/nf_nat.h b/include/linux/netfilter/nf_nat.h
-index 4a95c0db14d4..a64586e77b24 100644
---- a/include/linux/netfilter/nf_nat.h
-+++ b/include/linux/netfilter/nf_nat.h
-@@ -11,6 +11,7 @@
- #define NF_NAT_RANGE_PERSISTENT			(1 << 3)
- #define NF_NAT_RANGE_PROTO_RANDOM_FULLY		(1 << 4)
- #define NF_NAT_RANGE_PROTO_OFFSET		(1 << 5)
-+#define NF_NAT_RANGE_NETMAP			(1 << 6)
- 
- #define NF_NAT_RANGE_PROTO_RANDOM_ALL		\
- 	(NF_NAT_RANGE_PROTO_RANDOM | NF_NAT_RANGE_PROTO_RANDOM_FULLY)
-@@ -18,7 +19,8 @@
- #define NF_NAT_RANGE_MASK					\
- 	(NF_NAT_RANGE_MAP_IPS | NF_NAT_RANGE_PROTO_SPECIFIED |	\
- 	 NF_NAT_RANGE_PROTO_RANDOM | NF_NAT_RANGE_PERSISTENT |	\
--	 NF_NAT_RANGE_PROTO_RANDOM_FULLY | NF_NAT_RANGE_PROTO_OFFSET)
-+	 NF_NAT_RANGE_PROTO_RANDOM_FULLY | NF_NAT_RANGE_PROTO_OFFSET | \
-+	 NF_NAT_RANGE_NETMAP)
- 
- struct nf_nat_ipv4_range {
- 	unsigned int			flags;
-diff --git a/include/statement.h b/include/statement.h
-index 29f6090ee25e..6c36619f8e8f 100644
---- a/include/statement.h
-+++ b/include/statement.h
-@@ -121,6 +121,7 @@ extern const char *nat_etype2str(enum nft_nat_etypes type);
- 
- enum {
- 	STMT_NAT_F_INTERVAL	= (1 << 0),
-+	STMT_NAT_F_PREFIX	= (1 << 1),
- };
- 
- struct nat_stmt {
-diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index bab059a2fee7..e050aeb28525 100644
---- a/src/netlink_delinearize.c
-+++ b/src/netlink_delinearize.c
-@@ -15,6 +15,7 @@
- #include <limits.h>
- #include <linux/netfilter/nf_tables.h>
- #include <arpa/inet.h>
-+#include <linux/netfilter/nf_nat.h>
- #include <linux/netfilter.h>
- #include <net/ethernet.h>
- #include <netlink.h>
-@@ -1060,6 +1061,9 @@ static void netlink_parse_nat(struct netlink_parse_ctx *ctx,
- 	if (nftnl_expr_is_set(nle, NFTNL_EXPR_NAT_FLAGS))
- 		stmt->nat.flags = nftnl_expr_get_u32(nle, NFTNL_EXPR_NAT_FLAGS);
- 
-+	if (stmt->nat.flags & NF_NAT_RANGE_NETMAP)
-+		stmt->nat.internal_flags |= STMT_NAT_F_PREFIX;
-+
- 	addr = NULL;
- 	reg1 = netlink_parse_register(nle, NFTNL_EXPR_NAT_REG_ADDR_MIN);
- 	if (reg1) {
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 18e3fcf578ce..b12c856b230e 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -3205,6 +3205,23 @@ nat_stmt_args		:	stmt_expr
- 				$<stmt>0->nat.addr = $3;
- 				$<stmt>0->nat.internal_flags = STMT_NAT_F_INTERVAL;
- 			}
-+			|	nf_key_proto PREFIX TO	stmt_expr
-+			{
-+				$<stmt>0->nat.family = $1;
-+				$<stmt>0->nat.addr = $4;
-+				$<stmt>0->nat.internal_flags =
-+						STMT_NAT_F_PREFIX |
-+						STMT_NAT_F_INTERVAL;
-+				$<stmt>0->nat.flags |= NF_NAT_RANGE_NETMAP;
-+			}
-+			|	PREFIX TO	stmt_expr
-+			{
-+				$<stmt>0->nat.addr = $3;
-+				$<stmt>0->nat.internal_flags =
-+						STMT_NAT_F_PREFIX |
-+						STMT_NAT_F_INTERVAL;
-+				$<stmt>0->nat.flags |= NF_NAT_RANGE_NETMAP;
-+			}
- 			;
- 
- masq_stmt		:	masq_stmt_alloc		masq_stmt_args
-diff --git a/src/statement.c b/src/statement.c
-index fcb69bd22581..98798f5223fd 100644
---- a/src/statement.c
-+++ b/src/statement.c
-@@ -609,6 +609,8 @@ static void nat_stmt_print(const struct stmt *stmt, struct output_ctx *octx)
- 
- 		if (stmt->nat.ipportmap)
- 			nft_print(octx, " addr . port");
-+		else if (stmt->nat.internal_flags & STMT_NAT_F_PREFIX)
-+			nft_print(octx, " prefix");
- 		else if (stmt->nat.internal_flags & STMT_NAT_F_INTERVAL)
- 			nft_print(octx, " interval");
- 
--- 
-2.20.1
+Did you notice my email
+https://www.spinics.net/lists/netfilter-devel/msg66710.html ?
 
+Is that the calling sequence you suggested? It did seem to me simpler to
+document that you need a packet copy buffer if mangling may increase packet
+size, rather than document pktb must be dimensioned differently (so can tack
+buffer onto end of it as in pktb_alloc). I can do a v2 if you'd rather have it
+that way, of course.
+
+Cheers ... Duncan.
+
+----- End forwarded message -----
