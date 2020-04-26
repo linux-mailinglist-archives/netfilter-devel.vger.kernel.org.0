@@ -2,46 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AADD1B9095
-	for <lists+netfilter-devel@lfdr.de>; Sun, 26 Apr 2020 15:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3B81B9093
+	for <lists+netfilter-devel@lfdr.de>; Sun, 26 Apr 2020 15:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgDZNYr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 26 Apr 2020 09:24:47 -0400
-Received: from correo.us.es ([193.147.175.20]:42930 "EHLO mail.us.es"
+        id S1726342AbgDZNYq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 26 Apr 2020 09:24:46 -0400
+Received: from correo.us.es ([193.147.175.20]:42932 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726343AbgDZNYQ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        id S1726338AbgDZNYQ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 26 Apr 2020 09:24:16 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 73C501BFA81
+        by mail.us.es (Postfix) with ESMTP id 9CD5F1BFA87
         for <netfilter-devel@vger.kernel.org>; Sun, 26 Apr 2020 15:24:13 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 570ECB7FF5
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 82D49B8015
         for <netfilter-devel@vger.kernel.org>; Sun, 26 Apr 2020 15:24:13 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 2B043B7FFD; Sun, 26 Apr 2020 15:24:02 +0200 (CEST)
+        id 2D57FB8006; Sun, 26 Apr 2020 15:24:03 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 72511DA788;
-        Sun, 26 Apr 2020 15:24:00 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 5487E50F3D;
+        Sun, 26 Apr 2020 15:24:01 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sun, 26 Apr 2020 15:24:00 +0200 (CEST)
+ Sun, 26 Apr 2020 15:24:01 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from localhost.localdomain (unknown [90.77.255.23])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 4F28942EF4E2;
-        Sun, 26 Apr 2020 15:24:00 +0200 (CEST)
+        by entrada.int (Postfix) with ESMTPA id 374FF42EF4E2;
+        Sun, 26 Apr 2020 15:24:01 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     duncan_roe@optusnet.com.au
-Subject: [PATCH libnetfilter_queue 0/3] pktbuff API updates
-Date:   Sun, 26 Apr 2020 15:23:53 +0200
-Message-Id: <20200426132356.8346-1-pablo@netfilter.org>
+Subject: [PATCH libnetfilter_queue 1/3] pktbuff: add pktb_alloc_head() and pktb_build_data()
+Date:   Sun, 26 Apr 2020 15:23:54 +0200
+Message-Id: <20200426132356.8346-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200426132356.8346-1-pablo@netfilter.org>
+References: <20200426132356.8346-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: ClamAV using ClamSMTP
@@ -50,42 +52,62 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Duncan,
+Add two new helper functions to skip memcpy()'ing the payload from the
+netlink message.
 
-This is another turn / incremental update to the pktbuff API based on
-your feedback:
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ include/libnetfilter_queue/pktbuff.h |  3 +++
+ src/extra/pktbuff.c                  | 20 ++++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-Patch #1 adds pktb_alloc_head() to allocate the pkt_buff structure.
-	 This patch also adds pktb_build_data() to set up the pktbuff
-	 data pointer.
-
-Patch #2 updates the existing example to use pktb_alloc_head() and
-         pktb_build_data().
-
-Patch #3 adds a few helper functions to set up the pointer to the
-         network header.
-
-Your goal is to avoid the memory allocation and the memcpy() in
-pktb_alloc(). With this scheme, users pre-allocate the pktbuff object
-from the configuration step, and then this object is recycled for each
-packet that is received from the kernel.
-
-Would this update fit for your usecase?
-
-Thanks.
-
-P.S: I'm sorry for the time being, it's been hectic here.
-
-Pablo Neira Ayuso (3):
-  pktbuff: add pktb_alloc_head() and pktb_build_data()
-  example: nf-queue: use pkt_buff
-  pktbuff: add pktb_reset_network_header() and pktb_set_network_header()
-
- examples/nf-queue.c                  | 25 +++++++++++++++++++--
- include/libnetfilter_queue/pktbuff.h |  6 +++++
- src/extra/pktbuff.c                  | 33 ++++++++++++++++++++++++++++
- 3 files changed, 62 insertions(+), 2 deletions(-)
-
---
+diff --git a/include/libnetfilter_queue/pktbuff.h b/include/libnetfilter_queue/pktbuff.h
+index 42bc153ec337..f9bddaf072fb 100644
+--- a/include/libnetfilter_queue/pktbuff.h
++++ b/include/libnetfilter_queue/pktbuff.h
+@@ -4,8 +4,11 @@
+ struct pkt_buff;
+ 
+ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra);
++struct pkt_buff *pktb_alloc_head(void);
+ void pktb_free(struct pkt_buff *pktb);
+ 
++void pktb_build_data(struct pkt_buff *pktb, uint8_t *payload, uint32_t len);
++
+ uint8_t *pktb_data(struct pkt_buff *pktb);
+ uint32_t pktb_len(struct pkt_buff *pktb);
+ 
+diff --git a/src/extra/pktbuff.c b/src/extra/pktbuff.c
+index 6dd0ca98aff2..a93e72ac7795 100644
+--- a/src/extra/pktbuff.c
++++ b/src/extra/pktbuff.c
+@@ -93,6 +93,26 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
+ 	return pktb;
+ }
+ 
++EXPORT_SYMBOL
++struct pkt_buff *pktb_alloc_head(void)
++{
++	struct pkt_buff *pktb;
++
++	pktb = calloc(1, sizeof(struct pkt_buff));
++	if (pktb == NULL)
++		return NULL;
++
++	return pktb;
++}
++
++EXPORT_SYMBOL
++void pktb_build_data(struct pkt_buff *pktb, uint8_t *payload, uint32_t len)
++{
++	pktb->len = len;
++	pktb->data_len = len;
++	pktb->data = payload;
++}
++
+ /**
+  * pktb_data - get pointer to network packet
+  * \param pktb Pointer to userspace packet buffer
+-- 
 2.20.1
 
