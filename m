@@ -2,100 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44DD1B9094
-	for <lists+netfilter-devel@lfdr.de>; Sun, 26 Apr 2020 15:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2151B943B
+	for <lists+netfilter-devel@lfdr.de>; Sun, 26 Apr 2020 23:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgDZNYr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 26 Apr 2020 09:24:47 -0400
-Received: from correo.us.es ([193.147.175.20]:42938 "EHLO mail.us.es"
+        id S1726336AbgDZVnp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 26 Apr 2020 17:43:45 -0400
+Received: from correo.us.es ([193.147.175.20]:52878 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726340AbgDZNYQ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 26 Apr 2020 09:24:16 -0400
+        id S1726184AbgDZVnn (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 26 Apr 2020 17:43:43 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id B535A1BFA8C
-        for <netfilter-devel@vger.kernel.org>; Sun, 26 Apr 2020 15:24:13 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id B01D9DA72F
+        for <netfilter-devel@vger.kernel.org>; Sun, 26 Apr 2020 23:43:40 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 9B161B8006
-        for <netfilter-devel@vger.kernel.org>; Sun, 26 Apr 2020 15:24:13 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id A184CBAAB5
+        for <netfilter-devel@vger.kernel.org>; Sun, 26 Apr 2020 23:43:40 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id C3D57B8010; Sun, 26 Apr 2020 15:24:05 +0200 (CEST)
+        id 9744BBAAB1; Sun, 26 Apr 2020 23:43:40 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id B4FF6B7FF4;
-        Sun, 26 Apr 2020 15:24:03 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id BA990DA736;
+        Sun, 26 Apr 2020 23:43:38 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sun, 26 Apr 2020 15:24:03 +0200 (CEST)
+ Sun, 26 Apr 2020 23:43:38 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 95BE642EF4E1;
-        Sun, 26 Apr 2020 15:24:03 +0200 (CEST)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 9CCFD42EF4E0;
+        Sun, 26 Apr 2020 23:43:38 +0200 (CEST)
+Date:   Sun, 26 Apr 2020 23:43:38 +0200
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     duncan_roe@optusnet.com.au
-Subject: [PATCH libnetfilter_queue 3/3] pktbuff: add pktb_reset_network_header() and pktb_set_network_header()
-Date:   Sun, 26 Apr 2020 15:23:56 +0200
-Message-Id: <20200426132356.8346-4-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200426132356.8346-1-pablo@netfilter.org>
-References: <20200426132356.8346-1-pablo@netfilter.org>
+To:     Romain Bellan <romain.bellan@wifirst.fr>
+Cc:     netfilter-devel@vger.kernel.org,
+        Florent Fourcot <florent.fourcot@wifirst.fr>
+Subject: Re: [PATCH nf-next v5 1/1] netfilter: ctnetlink: add kernel side
+ filtering for dump
+Message-ID: <20200426214338.GA2276@salvia>
+References: <20200330204637.11472-1-romain.bellan@wifirst.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200330204637.11472-1-romain.bellan@wifirst.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- include/libnetfilter_queue/pktbuff.h |  3 +++
- src/extra/pktbuff.c                  | 13 +++++++++++++
- 2 files changed, 16 insertions(+)
+Hi Florent, Romain,
 
-diff --git a/include/libnetfilter_queue/pktbuff.h b/include/libnetfilter_queue/pktbuff.h
-index f9bddaf072fb..875157922c81 100644
---- a/include/libnetfilter_queue/pktbuff.h
-+++ b/include/libnetfilter_queue/pktbuff.h
-@@ -9,6 +9,9 @@ void pktb_free(struct pkt_buff *pktb);
- 
- void pktb_build_data(struct pkt_buff *pktb, uint8_t *payload, uint32_t len);
- 
-+void pktb_reset_network_header(struct pkt_buff *pktb);
-+void pktb_set_network_header(struct pkt_buff *pktb, const int offset);
-+
- uint8_t *pktb_data(struct pkt_buff *pktb);
- uint32_t pktb_len(struct pkt_buff *pktb);
- 
-diff --git a/src/extra/pktbuff.c b/src/extra/pktbuff.c
-index a93e72ac7795..3ff287e57315 100644
---- a/src/extra/pktbuff.c
-+++ b/src/extra/pktbuff.c
-@@ -267,6 +267,19 @@ uint8_t *pktb_network_header(struct pkt_buff *pktb)
- 	return pktb->network_header;
- }
- 
-+EXPORT_SYMBOL
-+void pktb_reset_network_header(struct pkt_buff *pktb)
-+{
-+	pktb->network_header = pktb->data;
-+}
-+
-+EXPORT_SYMBOL
-+void pktb_set_network_header(struct pkt_buff *pktb, const int offset)
-+{
-+	pktb_reset_network_header(pktb);
-+	pktb->network_header += offset;
-+}
-+
- /**
-  * pktb_transport_header - get address of layer 4 header (if known)
-  * \param pktb Pointer to userspace packet buffer
--- 
-2.20.1
+On Mon, Mar 30, 2020 at 10:46:37PM +0200, Romain Bellan wrote:
+> Conntrack dump does not support kernel side filtering (only get exists,
+> but it returns only one entry. And user has to give a full valid tuple)
+> 
+> It means that userspace has to implement filtering after receiving many
+> irrelevant entries, consuming resources (conntrack table is sometimes
+> very huge, much more than a routing table for example).
+> 
+> This patch adds filtering in kernel side. To achieve this goal, we:
+> 
+>  * Add a new CTA_FILTER netlink attributes, actually a flag list to
+>    parametize filtering
+>  * Convert some *nlattr_to_tuple() functions, to allow a partial parsing
+>    of CTA_TUPLE_ORIG and CTA_TUPLE_REPLY (so nf_conntrack_tuple it not
+>    fully set)
 
+Still some issues here running conntrack-tools/tests/conntrack/test-conntrack.c
+with your patch v5 on top of nf-next, it reports:
+
+        OK: 84 BAD: 38
+
+it should say:
+
+        OK: 122 BAD: 0
+
+The test this needs to be compiled via:
+
+        gcc -lnetfilter_conntrack test-conntrack.c -o test
+
+I'm attaching the log for the run of your patch v5.
+
+Have a look at the "BAD" pattern which provides tells what conntrack
+command stopped working.
+
+Thanks for working on this.
