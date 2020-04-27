@@ -2,106 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E9F1BA1E7
-	for <lists+netfilter-devel@lfdr.de>; Mon, 27 Apr 2020 13:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE791BA2D6
+	for <lists+netfilter-devel@lfdr.de>; Mon, 27 Apr 2020 13:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgD0LGT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 27 Apr 2020 07:06:19 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:39612 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726485AbgD0LGT (ORCPT
+        id S1727807AbgD0Lmb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 27 Apr 2020 07:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727115AbgD0Lmb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 27 Apr 2020 07:06:19 -0400
-Received: from dimstar.local.net (n175-34-64-112.sun1.vic.optusnet.com.au [175.34.64.112])
-        by mail104.syd.optusnet.com.au (Postfix) with SMTP id 4EDE0821224
-        for <netfilter-devel@vger.kernel.org>; Mon, 27 Apr 2020 21:06:15 +1000 (AEST)
-Received: (qmail 22349 invoked by uid 501); 27 Apr 2020 11:06:14 -0000
-Date:   Mon, 27 Apr 2020 21:06:14 +1000
-From:   Duncan Roe <duncan_roe@optusnet.com.au>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH libnetfilter_queue 0/3] pktbuff API updates
-Message-ID: <20200427110614.GA15436@dimstar.local.net>
-Mail-Followup-To: netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-References: <20200426132356.8346-1-pablo@netfilter.org>
+        Mon, 27 Apr 2020 07:42:31 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FC6C09B050
+        for <netfilter-devel@vger.kernel.org>; Mon, 27 Apr 2020 04:42:30 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id o127so18452239iof.0
+        for <netfilter-devel@vger.kernel.org>; Mon, 27 Apr 2020 04:42:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=F+HbPvxQnRBlqBFKy/zn6110uxUPAWY6eSsMY6+ckPY=;
+        b=Z0/w2OpdO1ic7QGZwJJ/GSiwGu9O3rZCxF7ZG39LhJ4lnT6rSYKTl3ifdt4oEAK//P
+         WbHbKLih1ydoew5H6tmulYPuQ2zEa2v/HapGgIVGlqz7JQBMeaNUe8cjcDXYRGuykis6
+         zC+KgEAje3mKl1Uuvq4eRuXVVMH9n93xqYPv7IR/gfaLrvtyoKkDAHvr9n81rscrLBH8
+         HheXehYj2HaadmCKWbR6YXSjh1WY/KHabxK1PvAYHqP985szOBFsSEszNtBhuQw/B0s3
+         GAbafzftPkm8asu211bbOaxtvOwQ/guzUtIkXr1RVPnaKowiqMAi0v4tz7CtLCBVRYgJ
+         +wrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=F+HbPvxQnRBlqBFKy/zn6110uxUPAWY6eSsMY6+ckPY=;
+        b=XuNu/9NTGm7PEkBnzbG2/zh79ODvxfWFatQYNao2TCu3W6et6gOuo5WKbKxxykBFpE
+         hMZ54Wb2imE+spmIsENezazv40JRhpf4hPXmp5yd7UAfQeT/WlE/OymUpz1mdBtb+YXQ
+         pRFXJuFi+2ZhK6U3NIh3YbGlugsaBe0dz71rkzxVIfb+0z9jQ2mvE+3pyeBQa0vrRVVR
+         b//xTXLcH8vhUP8NKpdq34hZHmX26Uz+mGrP8fFzMF8/h3A+GxqtQmHgbkCFUWj/rKjD
+         9J318zPcmcfjlfxcMhzg67/CpFVCVQ7q62VERvUXbSg1Lrsk7gbNCg3zML9QBT30S1+Z
+         2Pgw==
+X-Gm-Message-State: AGi0PubPUkBf9IYcB7AO6cR7mtH9pymtmuaOZZjVDKX3KG+gx9Y4e4U8
+        i+eCGLDkPlY7mk3+5nFCKftnPHz4xVd18utcXeg=
+X-Google-Smtp-Source: APiQypJhljcjP/vIrB+jel/G0wq+AZhse3DH1Tak3IJ8XvXaBO/rBzBY+oTngeoErAcPyMrpUNZV7rlF9JyvvTWkIuU=
+X-Received: by 2002:a6b:7d4a:: with SMTP id d10mr4075434ioq.70.1587987750228;
+ Mon, 27 Apr 2020 04:42:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200426132356.8346-1-pablo@netfilter.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
-        a=keeXcwCgVCrAuxOn72dlvA==:117 a=keeXcwCgVCrAuxOn72dlvA==:17
-        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=RSmzAf-M6YYA:10 a=OLL_FvSJAAAA:8
-        a=K_pkYZjdYe5xUPkQLiYA:9 a=CjuIK1q_8ugA:10 a=SAszQ4RR6nkA:10
-        a=Z7RzNMET8NMA:10 a=oIrB72frpwYPwTMnlWqB:22
+Received: by 2002:a5d:8f89:0:0:0:0:0 with HTTP; Mon, 27 Apr 2020 04:42:29
+ -0700 (PDT)
+Reply-To: convy0090@gmail.com
+From:   Ruben CONVY <andrewboccc@gmail.com>
+Date:   Mon, 27 Apr 2020 12:42:29 +0100
+Message-ID: <CAHVC0+DhiNt=2kEi=ZA=1JYYKe=91Ov7wgqAPpLX0X3-emTJWw@mail.gmail.com>
+Subject: Why continued silence 2
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
-
-On Sun, Apr 26, 2020 at 03:23:53PM +0200, Pablo Neira Ayuso wrote:
-> Hi Duncan,
->
-> This is another turn / incremental update to the pktbuff API based on
-> your feedback:
->
-> Patch #1 adds pktb_alloc_head() to allocate the pkt_buff structure.
-> 	 This patch also adds pktb_build_data() to set up the pktbuff
-> 	 data pointer.
->
-> Patch #2 updates the existing example to use pktb_alloc_head() and
->          pktb_build_data().
->
-> Patch #3 adds a few helper functions to set up the pointer to the
->          network header.
->
-> Your goal is to avoid the memory allocation and the memcpy() in
-> pktb_alloc(). With this scheme, users pre-allocate the pktbuff object
-> from the configuration step, and then this object is recycled for each
-> packet that is received from the kernel.
->
-> Would this update fit for your usecase?
-
-No, sorry. The show-stopper is, no allowance for the "extra" arg, when you might
-want to mangle a packet tobe larger than it was.
-
-For "extra" support, you need something with the sophistication of pktb_malloc2.
-If extra == 0, pktb_malloc2 optimises by leaving the packet data where it was.
-Actually pktb_malloc2 doesn't need to make this decision. That can be deferred
-to pktb_mangle, which could do the copy if it has been told to expand a packet
-and the copy has not already been done (new "copy done" flag in the opaque
-struct pkt_buff).
-
-My nfq-based accidentally-written ad blocker would benefit from that deferment -
-I allow extra bytes in case I have to lengthen a domain name, but most of the
-time I'm shortening them.
->
-> Thanks.
->
-> P.S: I'm sorry for the time being, it's been hectic here.
->
-> Pablo Neira Ayuso (3):
->   pktbuff: add pktb_alloc_head() and pktb_build_data()
->   example: nf-queue: use pkt_buff
->   pktbuff: add pktb_reset_network_header() and pktb_set_network_header()
->
->  examples/nf-queue.c                  | 25 +++++++++++++++++++--
->  include/libnetfilter_queue/pktbuff.h |  6 +++++
->  src/extra/pktbuff.c                  | 33 ++++++++++++++++++++++++++++
->  3 files changed, 62 insertions(+), 2 deletions(-)
->
-> --
-> 2.20.1
->
-In https://www.spinics.net/lists/netfilter-devel/msg65830.html, you suggested a
-pair of functions: pktb_alloc2 & pktb_head_size.
-
-I really prefer that to your new suggestions.
-
-More later,
-
-Cheers ... Duncan.
+Did you receive my previous email regarding your family inheritance?
+Reply strictly through: convy0090@gmail.com
+Best Regards,
+Ruben CONVY
