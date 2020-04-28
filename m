@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB67E1BBD21
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2020 14:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E601BBD28
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2020 14:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgD1MKj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 Apr 2020 08:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40564 "EHLO
+        id S1726748AbgD1MLM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 Apr 2020 08:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726554AbgD1MKj (ORCPT
+        by vger.kernel.org with ESMTP id S1726554AbgD1MLM (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:10:39 -0400
+        Tue, 28 Apr 2020 08:11:12 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4179EC03C1A9
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2020 05:10:39 -0700 (PDT)
-Received: from localhost ([::1]:38626 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F246EC03C1A9
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2020 05:11:11 -0700 (PDT)
+Received: from localhost ([::1]:38662 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1jTP4Q-00085G-2t; Tue, 28 Apr 2020 14:10:38 +0200
+        id 1jTP4w-00087u-QK; Tue, 28 Apr 2020 14:11:10 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 17/18] nft: cache: Optimize caching for flush command
-Date:   Tue, 28 Apr 2020 14:10:12 +0200
-Message-Id: <20200428121013.24507-18-phil@nwl.cc>
+Subject: [iptables PATCH v2 18/18] nft: Fix for '-F' in iptables dumps
+Date:   Tue, 28 Apr 2020 14:10:13 +0200
+Message-Id: <20200428121013.24507-19-phil@nwl.cc>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200428121013.24507-1-phil@nwl.cc>
 References: <20200428121013.24507-1-phil@nwl.cc>
@@ -35,103 +35,77 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When flushing all chains and verbose mode is not enabled,
-nft_rule_flush() uses a shortcut: It doesn't specify a chain name for
-NFT_MSG_DELRULE, so the kernel will flush all existing chains without
-user space needing to know which they are.
+When restoring a dump which contains an explicit flush command,
+previously added rules are removed from cache and the following commit
+will try to create netlink messages based on freed memory.
 
-The above allows to avoid a chain cache, but there's a caveat:
-nft_xt_builtin_init() will create base chains as it assumes they are
-missing and thereby possibly overrides any non-default chain policies.
-
-Solve this by making nft_xt_builtin_init() cache-aware: If a command
-doesn't need a chain cache, there's no need to bother with creating any
-non-existing builtin chains, either. For the sake of completeness, also
-do nothing if cache is not initialized (although that shouldn't happen).
+Fix this by weeding any rule-based commands from obj_list if they
+address the same chain.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-cmd.c                            |  5 +++-
- iptables/nft.c                                |  6 ++++
- .../testcases/nft-only/0006-policy-override_0 | 29 +++++++++++++++++++
- 3 files changed, 39 insertions(+), 1 deletion(-)
- create mode 100755 iptables/tests/shell/testcases/nft-only/0006-policy-override_0
+ iptables/nft.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/iptables/nft-cmd.c b/iptables/nft-cmd.c
-index 64889f5eb6196..3c0c6a34515e4 100644
---- a/iptables/nft-cmd.c
-+++ b/iptables/nft-cmd.c
-@@ -159,7 +159,10 @@ int nft_cmd_rule_flush(struct nft_handle *h, const char *chain,
- 	if (!cmd)
- 		return 0;
- 
--	nft_cache_level_set(h, NFT_CL_CHAINS, cmd);
-+	if (chain || verbose)
-+		nft_cache_level_set(h, NFT_CL_CHAINS, cmd);
-+	else
-+		nft_cache_level_set(h, NFT_CL_TABLES, cmd);
- 
- 	return 1;
- }
 diff --git a/iptables/nft.c b/iptables/nft.c
-index 5b255477f27f7..67b8466b50692 100644
+index 67b8466b50692..d2796fcd8ad26 100644
 --- a/iptables/nft.c
 +++ b/iptables/nft.c
-@@ -737,6 +737,9 @@ static int nft_xt_builtin_init(struct nft_handle *h, const char *table)
- {
- 	const struct builtin_table *t;
+@@ -402,6 +402,38 @@ batch_rule_add(struct nft_handle *h, enum obj_update_type type,
+ 	return batch_add(h, type, r);
+ }
  
-+	if (!h->cache_init)
-+		return 0;
++static void batch_obj_del(struct nft_handle *h, struct obj_update *o);
 +
- 	t = nft_table_builtin_find(h, table);
- 	if (t == NULL)
- 		return -1;
-@@ -747,6 +750,9 @@ static int nft_xt_builtin_init(struct nft_handle *h, const char *table)
- 	if (nft_table_builtin_add(h, t) < 0)
- 		return -1;
- 
-+	if (h->cache_req.level < NFT_CL_CHAINS)
-+		return 0;
++static void batch_chain_flush(struct nft_handle *h,
++			      const char *table, const char *chain)
++{
++	struct obj_update *obj, *tmp;
 +
- 	nft_chain_builtin_init(h, t);
- 
- 	h->cache->table[t->type].initialized = true;
-diff --git a/iptables/tests/shell/testcases/nft-only/0006-policy-override_0 b/iptables/tests/shell/testcases/nft-only/0006-policy-override_0
-new file mode 100755
-index 0000000000000..68e2019b83119
---- /dev/null
-+++ b/iptables/tests/shell/testcases/nft-only/0006-policy-override_0
-@@ -0,0 +1,29 @@
-+#!/bin/bash
++	list_for_each_entry_safe(obj, tmp, &h->obj_list, head) {
++		struct nftnl_rule *r = obj->ptr;
 +
-+[[ $XT_MULTI == *xtables-nft-multi ]] || { echo "skip $XT_MULTI"; exit 0; }
++		switch (obj->type) {
++		case NFT_COMPAT_RULE_APPEND:
++		case NFT_COMPAT_RULE_INSERT:
++		case NFT_COMPAT_RULE_REPLACE:
++		case NFT_COMPAT_RULE_DELETE:
++			break;
++		default:
++			continue;
++		}
 +
-+# make sure none of the commands invoking nft_xt_builtin_init() override
-+# non-default chain policies via needless chain add.
++		if (table &&
++		    strcmp(table, nftnl_rule_get_str(r, NFTNL_RULE_TABLE)))
++			continue;
 +
-+RC=0
++		if (chain &&
++		    strcmp(chain, nftnl_rule_get_str(r, NFTNL_RULE_CHAIN)))
++			continue;
 +
-+do_test() {
-+	$XT_MULTI $@
-+	$XT_MULTI iptables -S | grep -q -- '-P FORWARD DROP' && return
-+
-+	echo "command '$@' kills chain policies"
-+	$XT_MULTI iptables -P FORWARD DROP
-+	RC=1
++		batch_obj_del(h, obj);
++	}
 +}
 +
-+$XT_MULTI iptables -P FORWARD DROP
-+
-+do_test iptables -A OUTPUT -j ACCEPT
-+do_test iptables -F
-+do_test iptables -N foo
-+do_test iptables -E foo foo2
-+do_test iptables -I OUTPUT -j ACCEPT
-+do_test iptables -nL
-+do_test iptables -S
-+
-+exit $RC
+ const struct builtin_table xtables_ipv4[NFT_TABLE_MAX] = {
+ 	[NFT_TABLE_RAW] = {
+ 		.name	= "raw",
+@@ -1681,6 +1713,7 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
+ 	}
+ 
+ 	if (chain || !verbose) {
++		batch_chain_flush(h, table, chain);
+ 		__nft_rule_flush(h, table, chain, verbose, false);
+ 		flush_rule_cache(h, table, c);
+ 		return 1;
+@@ -1696,6 +1729,7 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
+ 	while (c != NULL) {
+ 		chain = nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
+ 
++		batch_chain_flush(h, table, chain);
+ 		__nft_rule_flush(h, table, chain, verbose, false);
+ 		flush_rule_cache(h, table, c);
+ 		c = nftnl_chain_list_iter_next(iter);
 -- 
 2.25.1
 
