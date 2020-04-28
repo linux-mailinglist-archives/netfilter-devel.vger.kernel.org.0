@@ -2,30 +2,32 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8551BBD26
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2020 14:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C381BBD2F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2020 14:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgD1MLH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 Apr 2020 08:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
+        id S1726741AbgD1MLu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 Apr 2020 08:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726554AbgD1MLG (ORCPT
+        by vger.kernel.org with ESMTP id S1726554AbgD1MLt (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:11:06 -0400
+        Tue, 28 Apr 2020 08:11:49 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4314C03C1A9
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2020 05:11:06 -0700 (PDT)
-Received: from localhost ([::1]:38656 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A81EC03C1A9
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2020 05:11:49 -0700 (PDT)
+Received: from localhost ([::1]:38704 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1jTP4r-00087H-Du; Tue, 28 Apr 2020 14:11:05 +0200
+        id 1jTP5Y-0008AR-Ed; Tue, 28 Apr 2020 14:11:48 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 00/18] iptables: introduce cache evaluation phase
-Date:   Tue, 28 Apr 2020 14:09:55 +0200
-Message-Id: <20200428121013.24507-1-phil@nwl.cc>
+Subject: [iptables PATCH v2 01/18] ebtables-restore: Drop custom table flush routine
+Date:   Tue, 28 Apr 2020 14:09:56 +0200
+Message-Id: <20200428121013.24507-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200428121013.24507-1-phil@nwl.cc>
+References: <20200428121013.24507-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -33,92 +35,84 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
+At least since flushing xtables-restore doesn't fetch chains from kernel
+anymore, problems with pending policy rule delete jobs can't happen
+anymore.
 
-As promised, here's a revised version of your cache rework series from
-January. It restores performance according to my tests (which are yet to
-be published somewhere) and passes the testsuites.
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/nft.c             | 21 ---------------------
+ iptables/nft.h             |  1 -
+ iptables/xtables-restore.c |  9 +--------
+ 3 files changed, 1 insertion(+), 30 deletions(-)
 
-Patches 1-3 are code simplifications which are not directly related
-to the actual caching changes.
-
-Patch 4 enhances set fetching by adding support for passing a table name
-to kernel but no set name. Not a big deal for iptables but it aligns the
-code with chain fetching.
-
-Patch 5 is a respin of a patch submitted a few weeks ago, namely adding
-implicit commits to arptables- and ebtables-restore tools which don't
-support explicit COMMIT lines in input. Big benefit here is that we
-won't see consecutive commands for different tables anymore, so
-selective cache fetching doesn't have to deal with too many odd cases.
-
-Patches 6-10 are yours, I rebased and revisited them. Any changes are
-recorded in per-patch changelogs.
-
-Patch 11 simplifies fetch_set_cache() and fetch_rule_cache() functions
-as they no longer have to be aware of previous invocations.
-
-Patch 12 improves NFT_CL_FAKE integration considerably, easily possible
-now that there is nft_cache_level_set() function.
-
-Patch 13 introduces an embedded struct into struct nft_handle which
-holds cache requirements collected from parsed commands. At first there
-is just the desired cache level, further patches extend it.
-
-Patches 14-16 re-establish per table/chain cache.
-
-Patch 17 reduces cache requirements for flush command by making
-nft_xt_builtin_init() cache-aware.
-
-Patch 18 fixes the segfault reported in nfbz#1407.
-
-Pablo Neira Ayuso (5):
-  nft: split parsing from netlink commands
-  nft: calculate cache requirements from list of commands
-  nft: restore among support
-  nft: remove cache build calls
-  nft: missing nft_fini() call in bridge family
-
-Phil Sutter (13):
-  ebtables-restore: Drop custom table flush routine
-  nft: cache: Eliminate init_chain_cache()
-  nft: cache: Init per table set list along with chain list
-  nft: cache: Fetch sets per table
-  ebtables-restore: Table line to trigger implicit commit
-  nft: cache: Simplify rule and set fetchers
-  nft: cache: Improve fake cache integration
-  nft: cache: Introduce struct nft_cache_req
-  nft-cache: Fetch cache per table
-  nft-cache: Introduce __fetch_chain_cache()
-  nft: cache: Fetch cache for specific chains
-  nft: cache: Optimize caching for flush command
-  nft: Fix for '-F' in iptables dumps
-
- iptables/Makefile.am                          |   2 +-
- iptables/nft-arp.c                            |   5 +-
- iptables/nft-bridge.c                         |  18 +-
- iptables/nft-cache.c                          | 318 +++++++-------
- iptables/nft-cache.h                          |   6 +-
- iptables/nft-cmd.c                            | 387 ++++++++++++++++++
- iptables/nft-cmd.h                            |  79 ++++
- iptables/nft-shared.c                         |   6 +-
- iptables/nft-shared.h                         |   4 +-
- iptables/nft.c                                | 369 ++++++++++++-----
- iptables/nft.h                                |  62 ++-
- .../testcases/ip6tables/0004-return-codes_0   |   1 +
- .../testcases/iptables/0004-return-codes_0    |   6 +
- .../testcases/nft-only/0006-policy-override_0 |  29 ++
- iptables/xtables-arp.c                        |  26 +-
- iptables/xtables-eb-standalone.c              |   2 +
- iptables/xtables-eb.c                         |  26 +-
- iptables/xtables-restore.c                    | 126 +-----
- iptables/xtables-save.c                       |   3 +
- iptables/xtables.c                            |  57 ++-
- 20 files changed, 1100 insertions(+), 432 deletions(-)
- create mode 100644 iptables/nft-cmd.c
- create mode 100644 iptables/nft-cmd.h
- create mode 100755 iptables/tests/shell/testcases/nft-only/0006-policy-override_0
-
+diff --git a/iptables/nft.c b/iptables/nft.c
+index cf3ab9fe239aa..468c703a1d09f 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -2985,27 +2985,6 @@ int nft_abort(struct nft_handle *h)
+ 	return nft_action(h, NFT_COMPAT_ABORT);
+ }
+ 
+-int nft_abort_policy_rule(struct nft_handle *h, const char *table)
+-{
+-	struct obj_update *n, *tmp;
+-
+-	list_for_each_entry_safe(n, tmp, &h->obj_list, head) {
+-		if (n->type != NFT_COMPAT_RULE_APPEND &&
+-		    n->type != NFT_COMPAT_RULE_DELETE)
+-			continue;
+-
+-		if (strcmp(table,
+-			   nftnl_rule_get_str(n->rule, NFTNL_RULE_TABLE)))
+-			continue;
+-
+-		if (!nft_rule_is_policy_rule(n->rule))
+-			continue;
+-
+-		batch_obj_del(h, n);
+-	}
+-	return 0;
+-}
+-
+ int nft_compatible_revision(const char *name, uint8_t rev, int opt)
+ {
+ 	struct mnl_socket *nl;
+diff --git a/iptables/nft.h b/iptables/nft.h
+index 2094b01455194..ebb4044d1a453 100644
+--- a/iptables/nft.h
++++ b/iptables/nft.h
+@@ -160,7 +160,6 @@ uint32_t nft_invflags2cmp(uint32_t invflags, uint32_t flag);
+ int nft_commit(struct nft_handle *h);
+ int nft_bridge_commit(struct nft_handle *h);
+ int nft_abort(struct nft_handle *h);
+-int nft_abort_policy_rule(struct nft_handle *h, const char *table);
+ 
+ /*
+  * revision compatibility.
+diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
+index c472ac9bf651b..fe7148c9fcb3f 100644
+--- a/iptables/xtables-restore.c
++++ b/iptables/xtables-restore.c
+@@ -484,17 +484,10 @@ int xtables_ip6_restore_main(int argc, char *argv[])
+ 				    argc, argv);
+ }
+ 
+-static int ebt_table_flush(struct nft_handle *h, const char *table)
+-{
+-	/* drop any pending policy rule add/removal jobs */
+-	nft_abort_policy_rule(h, table);
+-	return nft_table_flush(h, table);
+-}
+-
+ static const struct nft_xt_restore_cb ebt_restore_cb = {
+ 	.commit		= nft_bridge_commit,
+ 	.table_new	= nft_table_new,
+-	.table_flush	= ebt_table_flush,
++	.table_flush	= nft_table_flush,
+ 	.do_command	= do_commandeb,
+ 	.chain_set	= nft_chain_set,
+ 	.chain_restore  = nft_chain_restore,
 -- 
 2.25.1
 
