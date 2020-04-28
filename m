@@ -2,144 +2,106 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E241B1BC3EC
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2020 17:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0B91BCD1A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2020 22:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgD1Pld (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 Apr 2020 11:41:33 -0400
-Received: from correo.us.es ([193.147.175.20]:49368 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728361AbgD1Plb (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 Apr 2020 11:41:31 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 1A2731F0CEA
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2020 17:41:30 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 0A959BAAB5
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2020 17:41:30 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 00230BAAB4; Tue, 28 Apr 2020 17:41:29 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id F33B9BAAB8
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2020 17:41:27 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 28 Apr 2020 17:41:27 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id E1BA842EF4E0
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2020 17:41:27 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft,v3 9/9] tests: shell: add NAT mappings tests
-Date:   Tue, 28 Apr 2020 17:41:20 +0200
-Message-Id: <20200428154120.20061-10-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200428154120.20061-1-pablo@netfilter.org>
-References: <20200428154120.20061-1-pablo@netfilter.org>
+        id S1726337AbgD1ULe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 Apr 2020 16:11:34 -0400
+Received: from www62.your-server.de ([213.133.104.62]:42914 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726180AbgD1ULd (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 28 Apr 2020 16:11:33 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jTWZd-0005iy-An; Tue, 28 Apr 2020 22:11:21 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jTWZc-000TWD-TC; Tue, 28 Apr 2020 22:11:20 +0200
+Subject: Re: [PATCH nf-next 3/3] netfilter: Introduce egress hook
+To:     Lukas Wunner <lukas@wunner.de>, Laura Garcia <nevola@gmail.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Netfilter Development Mailing list 
+        <netfilter-devel@vger.kernel.org>, coreteam@netfilter.org,
+        netdev@vger.kernel.org, Martin Mares <mj@ucw.cz>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Thomas Graf <tgraf@suug.ch>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>
+References: <cover.1583927267.git.lukas@wunner.de>
+ <14ab7e5af20124a34a50426fd570da7d3b0369ce.1583927267.git.lukas@wunner.de>
+ <a57687ae-2da6-ca2a-1c84-e4332a5e4556@iogearbox.net>
+ <20200313145526.ikovaalfuy7rnkdl@salvia>
+ <1bd50836-33c4-da44-5771-654bfb0348cc@iogearbox.net>
+ <20200315132836.cj36ape6rpw33iqb@salvia>
+ <CAF90-WgoteQXB9WQmeT1eOHA3GpPbwPCEvNzwKkN20WqpdHW-A@mail.gmail.com>
+ <20200423160542.d3f6yef4av2gqvur@wunner.de>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1a27351b-78a8-febc-45d7-6ee2e8ebda9e@iogearbox.net>
+Date:   Tue, 28 Apr 2020 22:11:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <20200423160542.d3f6yef4av2gqvur@wunner.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25796/Tue Apr 28 14:00:48 2020)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- tests/shell/testcases/sets/0046netmap_0       | 14 +++++++++++++
- tests/shell/testcases/sets/0047nat_0          | 20 +++++++++++++++++++
- .../testcases/sets/dumps/0046netmap_0.nft     |  6 ++++++
- .../shell/testcases/sets/dumps/0047nat_0.nft  | 13 ++++++++++++
- 4 files changed, 53 insertions(+)
- create mode 100755 tests/shell/testcases/sets/0046netmap_0
- create mode 100755 tests/shell/testcases/sets/0047nat_0
- create mode 100644 tests/shell/testcases/sets/dumps/0046netmap_0.nft
- create mode 100644 tests/shell/testcases/sets/dumps/0047nat_0.nft
+Hey Lukas,
 
-diff --git a/tests/shell/testcases/sets/0046netmap_0 b/tests/shell/testcases/sets/0046netmap_0
-new file mode 100755
-index 000000000000..2804a4a27ede
---- /dev/null
-+++ b/tests/shell/testcases/sets/0046netmap_0
-@@ -0,0 +1,14 @@
-+#!/bin/bash
-+
-+EXPECTED="table ip x {
-+            chain y {
-+                    type nat hook postrouting priority srcnat; policy accept;
-+                    snat ip prefix to ip saddr map { 10.141.11.0/24 : 192.168.2.0/24,
-+						     10.141.12.0/24 : 192.168.3.0/24,
-+						     10.141.13.0/24 : 192.168.4.0/24 }
-+            }
-+     }
-+"
-+
-+set -e
-+$NFT -f - <<< $EXPECTED
-diff --git a/tests/shell/testcases/sets/0047nat_0 b/tests/shell/testcases/sets/0047nat_0
-new file mode 100755
-index 000000000000..746a6b6d3450
---- /dev/null
-+++ b/tests/shell/testcases/sets/0047nat_0
-@@ -0,0 +1,20 @@
-+#!/bin/bash
-+
-+EXPECTED="table ip x {
-+            map y {
-+                    type ipv4_addr : interval ipv4_addr
-+                    flags interval
-+                    elements = { 10.141.10.0/24 : 192.168.2.2-192.168.2.4,
-+				 10.141.11.0/24 : 192.168.4.2-192.168.4.3 }
-+            }
-+
-+            chain y {
-+                    type nat hook postrouting priority srcnat; policy accept;
-+                    snat ip interval to ip saddr map @y
-+            }
-+     }
-+"
-+
-+set -e
-+$NFT -f - <<< $EXPECTED
-+$NFT add element x y { 10.141.12.0/24 : 192.168.5.10-192.168.5.20 }
-diff --git a/tests/shell/testcases/sets/dumps/0046netmap_0.nft b/tests/shell/testcases/sets/dumps/0046netmap_0.nft
-new file mode 100644
-index 000000000000..e14c33954313
---- /dev/null
-+++ b/tests/shell/testcases/sets/dumps/0046netmap_0.nft
-@@ -0,0 +1,6 @@
-+table ip x {
-+	chain y {
-+		type nat hook postrouting priority srcnat; policy accept;
-+		snat ip prefix to ip saddr map { 10.141.11.0/24 : 192.168.2.0/24, 10.141.12.0/24 : 192.168.3.0/24, 10.141.13.0/24 : 192.168.4.0/24 }
-+	}
-+}
-diff --git a/tests/shell/testcases/sets/dumps/0047nat_0.nft b/tests/shell/testcases/sets/dumps/0047nat_0.nft
-new file mode 100644
-index 000000000000..70730ef3c56f
---- /dev/null
-+++ b/tests/shell/testcases/sets/dumps/0047nat_0.nft
-@@ -0,0 +1,13 @@
-+table ip x {
-+	map y {
-+		type ipv4_addr : interval ipv4_addr
-+		flags interval
-+		elements = { 10.141.10.0/24 : 192.168.2.2-192.168.2.4, 10.141.11.0/24 : 192.168.4.2/31,
-+			     10.141.12.0/24 : 192.168.5.10-192.168.5.20 }
-+	}
-+
-+	chain y {
-+		type nat hook postrouting priority srcnat; policy accept;
-+		snat ip interval to ip saddr map @y
-+	}
-+}
--- 
-2.20.1
+On 4/23/20 6:05 PM, Lukas Wunner wrote:
+> On Thu, Apr 23, 2020 at 04:44:44PM +0200, Laura Garcia wrote:
+>> On Sun, Mar 15, 2020 at 2:29 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>>> On Sat, Mar 14, 2020 at 01:12:02AM +0100, Daniel Borkmann wrote:
+>>>> On 3/13/20 3:55 PM, Pablo Neira Ayuso wrote:
+>>>>> We have plans to support for NAT64 and NAT46, this is the right spot
+>>>>> to do this mangling. There is already support for the tunneling
+>>>>
+>>>> But why is existing local-out or post-routing hook _not_ sufficient for
+>>>> NAT64 given it being IP based?
+>>>
+>>> Those hooks are not coming at the end of the IP processing. There is
+>>> very relevant IP code after those hooks that cannot be bypassed such
+>>> as fragmentation, tunneling and neighbour output. Such transformation
+>>> needs to happen after the IP processing, exactly from where Lukas is
+>>> proposing.
+>>>
+>>> [...]
+>>>>> infrastructure in netfilter from ingress, this spot from egress will
+>>>>> allow us to perform the tunneling from here. There is also no way to
+>>>>> drop traffic generated by dhclient, this also allow for filtering such
+>>>>> locally generated traffic. And many more.
+>>
+>> Any chance to continue with this approach? I'm afraid outbound
+>> af_packets also could not be filtered without this hook.
+> 
+> Thanks Laura, good to hear there's interest in the functionality.
+> 
+> Daniel submitted a revert of this series but didn't cc me:
+> 
+> https://lore.kernel.org/netdev/bbdee6355234e730ef686f9321bd072bcf4bb232.1584523237.git.daniel@iogearbox.net/
+> 
+> In the ensuing discussion it turned out that the performance argument
+> may be addressed by a rearrangement of sch_handle_egress() and
+> nf_egress() invocations.  I could look into amending the series
+> accordingly and resubmitting, though I'm currently swamped with
+> other work.
 
+The rework of these hooks is still on my todo list, too swamped with
+other stuff as well right now, but I'll see to have a prototype this
+net-next development cycle.
+
+Thanks,
+Daniel
