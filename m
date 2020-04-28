@@ -2,110 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E601BBD28
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2020 14:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF951BBD36
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Apr 2020 14:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgD1MLM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 Apr 2020 08:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40658 "EHLO
+        id S1726448AbgD1MOW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 Apr 2020 08:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726554AbgD1MLM (ORCPT
+        by vger.kernel.org with ESMTP id S1726361AbgD1MOW (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:11:12 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F246EC03C1A9
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2020 05:11:11 -0700 (PDT)
-Received: from localhost ([::1]:38662 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1jTP4w-00087u-QK; Tue, 28 Apr 2020 14:11:10 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 18/18] nft: Fix for '-F' in iptables dumps
-Date:   Tue, 28 Apr 2020 14:10:13 +0200
-Message-Id: <20200428121013.24507-19-phil@nwl.cc>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200428121013.24507-1-phil@nwl.cc>
+        Tue, 28 Apr 2020 08:14:22 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF098C03C1A9
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Apr 2020 05:14:21 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1jTP7z-0004hj-MN; Tue, 28 Apr 2020 14:14:19 +0200
+Date:   Tue, 28 Apr 2020 14:14:19 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH v2 01/18] ebtables-restore: Drop custom table
+ flush routine
+Message-ID: <20200428121419.GH32392@breakpoint.cc>
 References: <20200428121013.24507-1-phil@nwl.cc>
+ <20200428121013.24507-2-phil@nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428121013.24507-2-phil@nwl.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When restoring a dump which contains an explicit flush command,
-previously added rules are removed from cache and the following commit
-will try to create netlink messages based on freed memory.
+Phil Sutter <phil@nwl.cc> wrote:
+> At least since flushing xtables-restore doesn't fetch chains from kernel
+> anymore, problems with pending policy rule delete jobs can't happen
+> anymore.
 
-Fix this by weeding any rule-based commands from obj_list if they
-address the same chain.
-
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/nft.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
-
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 67b8466b50692..d2796fcd8ad26 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -402,6 +402,38 @@ batch_rule_add(struct nft_handle *h, enum obj_update_type type,
- 	return batch_add(h, type, r);
- }
- 
-+static void batch_obj_del(struct nft_handle *h, struct obj_update *o);
-+
-+static void batch_chain_flush(struct nft_handle *h,
-+			      const char *table, const char *chain)
-+{
-+	struct obj_update *obj, *tmp;
-+
-+	list_for_each_entry_safe(obj, tmp, &h->obj_list, head) {
-+		struct nftnl_rule *r = obj->ptr;
-+
-+		switch (obj->type) {
-+		case NFT_COMPAT_RULE_APPEND:
-+		case NFT_COMPAT_RULE_INSERT:
-+		case NFT_COMPAT_RULE_REPLACE:
-+		case NFT_COMPAT_RULE_DELETE:
-+			break;
-+		default:
-+			continue;
-+		}
-+
-+		if (table &&
-+		    strcmp(table, nftnl_rule_get_str(r, NFTNL_RULE_TABLE)))
-+			continue;
-+
-+		if (chain &&
-+		    strcmp(chain, nftnl_rule_get_str(r, NFTNL_RULE_CHAIN)))
-+			continue;
-+
-+		batch_obj_del(h, obj);
-+	}
-+}
-+
- const struct builtin_table xtables_ipv4[NFT_TABLE_MAX] = {
- 	[NFT_TABLE_RAW] = {
- 		.name	= "raw",
-@@ -1681,6 +1713,7 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
- 	}
- 
- 	if (chain || !verbose) {
-+		batch_chain_flush(h, table, chain);
- 		__nft_rule_flush(h, table, chain, verbose, false);
- 		flush_rule_cache(h, table, c);
- 		return 1;
-@@ -1696,6 +1729,7 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
- 	while (c != NULL) {
- 		chain = nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
- 
-+		batch_chain_flush(h, table, chain);
- 		__nft_rule_flush(h, table, chain, verbose, false);
- 		flush_rule_cache(h, table, c);
- 		c = nftnl_chain_list_iter_next(iter);
--- 
-2.25.1
-
+Acked-by: Florian Westphal <fw@strlen.de>
