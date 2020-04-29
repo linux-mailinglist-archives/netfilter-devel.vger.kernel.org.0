@@ -2,156 +2,196 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024B61BE7B9
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2020 21:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D3C1BE7C6
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2020 21:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgD2Ts0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 29 Apr 2020 15:48:26 -0400
-Received: from correo.us.es ([193.147.175.20]:50014 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726775AbgD2TsJ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 29 Apr 2020 15:48:09 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 65C68E1717
-        for <netfilter-devel@vger.kernel.org>; Wed, 29 Apr 2020 21:42:53 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 5A738BAAB5
-        for <netfilter-devel@vger.kernel.org>; Wed, 29 Apr 2020 21:42:53 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 50094BAAB1; Wed, 29 Apr 2020 21:42:53 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 5A6FDDA736;
-        Wed, 29 Apr 2020 21:42:51 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 29 Apr 2020 21:42:51 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 36B2B42EF9E0;
-        Wed, 29 Apr 2020 21:42:51 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 6/6] netfilter: nft_nat: add netmap support
-Date:   Wed, 29 Apr 2020 21:42:43 +0200
-Message-Id: <20200429194243.22228-7-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200429194243.22228-1-pablo@netfilter.org>
-References: <20200429194243.22228-1-pablo@netfilter.org>
+        id S1726481AbgD2TyS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 29 Apr 2020 15:54:18 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:48896 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726456AbgD2TyR (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 29 Apr 2020 15:54:17 -0400
+Received: from dimstar.local.net (n175-34-64-112.sun1.vic.optusnet.com.au [175.34.64.112])
+        by mail104.syd.optusnet.com.au (Postfix) with SMTP id B3003820A65
+        for <netfilter-devel@vger.kernel.org>; Thu, 30 Apr 2020 05:54:14 +1000 (AEST)
+Received: (qmail 7526 invoked by uid 501); 29 Apr 2020 19:54:14 -0000
+Date:   Thu, 30 Apr 2020 05:54:14 +1000
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     Netfilter Development <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH libnetfilter_queue 0/3] pktbuff API updates
+Message-ID: <20200429195414.GC3833@dimstar.local.net>
+Mail-Followup-To: Netfilter Development <netfilter-devel@vger.kernel.org>
+References: <20200426132356.8346-1-pablo@netfilter.org>
+ <20200427110614.GA15436@dimstar.local.net>
+ <20200427170656.GA22296@salvia>
+ <20200428043302.GB15436@dimstar.local.net>
+ <20200428103407.GA1160@salvia>
+ <20200428211452.GF15436@dimstar.local.net>
+ <20200428225520.GA30421@salvia>
+ <20200429132840.GA3833@dimstar.local.net>
+ <20200429190020.GA16096@salvia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200429190020.GA16096@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
+        a=keeXcwCgVCrAuxOn72dlvA==:117 a=keeXcwCgVCrAuxOn72dlvA==:17
+        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=RSmzAf-M6YYA:10
+        a=3hXQTgT0DALnAf7DM8QA:9 a=JmEJIw0BOmCsy-di:21 a=iTuLv9zXbIsyl9dn:21
+        a=CjuIK1q_8ugA:10
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch allows you to NAT the network address prefix onto another
-network address prefix, a.k.a. netmapping.
+On Wed, Apr 29, 2020 at 09:00:20PM +0200, Pablo Neira Ayuso wrote:
+> On Wed, Apr 29, 2020 at 11:28:40PM +1000, Duncan Roe wrote:
+> > On Wed, Apr 29, 2020 at 12:55:20AM +0200, Pablo Neira Ayuso wrote:
+> > > On Wed, Apr 29, 2020 at 07:14:52AM +1000, Duncan Roe wrote:
+> > > > On Tue, Apr 28, 2020 at 12:34:07PM +0200, Pablo Neira Ayuso wrote:
+> > > [...]
+> > > > > pktb_alloc2() still has a memcpy which is not needed by people that do
+> > > > > not need to mangle the packet.
+> > > >
+> > > > No it does not. Please look again. There is only a memcpy if the caller
+> > > > specifies extra > 0, in which case she clearly intends to mangle it (perhaps
+> > > > depending on its contents).
+> > >
+> > > Right, it only happens if extra is specified.
+> > >
+> > > +       if (extra) {
+> > > +               pkt_data = buf;
+> > > +               memcpy(pkt_data, data, len);
+> > > +               memset((uint8_t *)pkt_data + len, 0, extra);
+> > > +       } else {
+> > > +               pkt_data = data;
+> > > +       }
+> > >
+> > > So buf is only used if extra is specified?
+> >
+> > Yes, that's right.
+>
+> OK. Then, the user must pass the buf only if extra is set on.
+>
+> > > > Yes it's more complex. No problem with the buffer - the user gave that to
+> > > > pktb_alloc2().
+> > >
+> > > I'm just hesitating about the new pktb_alloc2() approach because it
+> > > has many parameters, it's just looks a bit complicated to me (this
+> > > function takes 8 parameters).
+> >
+> > It has the original 4 from pktb_alloc() plus 2 {buffer, size} pairs. It could
+> > have been just one pair, with packet data appended to metadata as in
+> > pktb_alloc() but I thought it would be really awkward to document how to
+> > dimension it.
+>
+> I'm starting to think this function is hard to document, too many
+> parameters.
 
-Userspace must specify the NF_NAT_RANGE_NETMAP flag and the prefix
-address through the NFTA_NAT_REG_ADDR_MIN and NFTA_NAT_REG_ADDR_MAX
-netlink attributes.
+The documentation looks fine to me - I'm looking at it in a web browser right
+now. Have you tried that?
+>
+> > I think we should not be usurping the data pointer of mnl_cb_run().
+> > I can see people wanting to use it to pass a pointer to e.g. some
+> > kind of database that callbacks need to access. There's no
+> > performance gain to recycling the buffer: the CB doesn't need to
+> > call pktb_head_size() on every invocation, that can be done once by
+> > main() e.g.
+> >
+> >  static size_t sizeof_head;
+> >  ...
+> >  int main(int argc, char *argv[])
+> >  {
+> >  ...
+> >          sizeof_head = pktb_head_size(); /* Avoid multiple calls in CB */
+> >  ...
+> >  static int queue_cb(const struct nlmsghdr *nlh, void *data)
+> >  {
+> >          char head[sizeof_head];
+>
+> You might also declare the pre-allocated pkt_buff as a global if you
+> don't want to use the data pointer in mnl_cb_run().
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- include/uapi/linux/netfilter/nf_nat.h |  4 ++-
- net/netfilter/nft_nat.c               | 46 ++++++++++++++++++++++++++-
- 2 files changed, 48 insertions(+), 2 deletions(-)
+I'm uneasy about this. We're writing a library here. We shouldn't be dictating
+to the user that he must declare globals. "static" won't do in a multi-threaded
+program, but you could use "thread local" (malloc'd under the covers, (tiny)
+performance hit c/w stack (which is always thread local)).
 
-diff --git a/include/uapi/linux/netfilter/nf_nat.h b/include/uapi/linux/netfilter/nf_nat.h
-index 4a95c0db14d4..a64586e77b24 100644
---- a/include/uapi/linux/netfilter/nf_nat.h
-+++ b/include/uapi/linux/netfilter/nf_nat.h
-@@ -11,6 +11,7 @@
- #define NF_NAT_RANGE_PERSISTENT			(1 << 3)
- #define NF_NAT_RANGE_PROTO_RANDOM_FULLY		(1 << 4)
- #define NF_NAT_RANGE_PROTO_OFFSET		(1 << 5)
-+#define NF_NAT_RANGE_NETMAP			(1 << 6)
- 
- #define NF_NAT_RANGE_PROTO_RANDOM_ALL		\
- 	(NF_NAT_RANGE_PROTO_RANDOM | NF_NAT_RANGE_PROTO_RANDOM_FULLY)
-@@ -18,7 +19,8 @@
- #define NF_NAT_RANGE_MASK					\
- 	(NF_NAT_RANGE_MAP_IPS | NF_NAT_RANGE_PROTO_SPECIFIED |	\
- 	 NF_NAT_RANGE_PROTO_RANDOM | NF_NAT_RANGE_PERSISTENT |	\
--	 NF_NAT_RANGE_PROTO_RANDOM_FULLY | NF_NAT_RANGE_PROTO_OFFSET)
-+	 NF_NAT_RANGE_PROTO_RANDOM_FULLY | NF_NAT_RANGE_PROTO_OFFSET | \
-+	 NF_NAT_RANGE_NETMAP)
- 
- struct nf_nat_ipv4_range {
- 	unsigned int			flags;
-diff --git a/net/netfilter/nft_nat.c b/net/netfilter/nft_nat.c
-index 7442aa8b1555..23a7bfd10521 100644
---- a/net/netfilter/nft_nat.c
-+++ b/net/netfilter/nft_nat.c
-@@ -60,6 +60,46 @@ static void nft_nat_setup_proto(struct nf_nat_range2 *range,
- 		nft_reg_load16(&regs->data[priv->sreg_proto_max]);
- }
- 
-+static void nft_nat_setup_netmap(struct nf_nat_range2 *range,
-+				 const struct nft_pktinfo *pkt,
-+				 const struct nft_nat *priv)
-+{
-+	struct sk_buff *skb = pkt->skb;
-+	union nf_inet_addr new_addr;
-+	__be32 netmask;
-+	int i, len = 0;
-+
-+	switch (priv->type) {
-+	case NFT_NAT_SNAT:
-+		if (nft_pf(pkt) == NFPROTO_IPV4) {
-+			new_addr.ip = ip_hdr(skb)->saddr;
-+			len = sizeof(struct in_addr);
-+		} else {
-+			new_addr.in6 = ipv6_hdr(skb)->saddr;
-+			len = sizeof(struct in6_addr);
-+		}
-+		break;
-+	case NFT_NAT_DNAT:
-+		if (nft_pf(pkt) == NFPROTO_IPV4) {
-+			new_addr.ip = ip_hdr(skb)->daddr;
-+			len = sizeof(struct in_addr);
-+		} else {
-+			new_addr.in6 = ipv6_hdr(skb)->daddr;
-+			len = sizeof(struct in6_addr);
-+		}
-+		break;
-+	}
-+
-+	for (i = 0; i < len / sizeof(__be32); i++) {
-+		netmask = ~(range->min_addr.ip6[i] ^ range->max_addr.ip6[i]);
-+		new_addr.ip6[i] &= ~netmask;
-+		new_addr.ip6[i] |= range->min_addr.ip6[i] & netmask;
-+	}
-+
-+	range->min_addr = new_addr;
-+	range->max_addr = new_addr;
-+}
-+
- static void nft_nat_eval(const struct nft_expr *expr,
- 			 struct nft_regs *regs,
- 			 const struct nft_pktinfo *pkt)
-@@ -70,8 +110,12 @@ static void nft_nat_eval(const struct nft_expr *expr,
- 	struct nf_nat_range2 range;
- 
- 	memset(&range, 0, sizeof(range));
--	if (priv->sreg_addr_min)
-+
-+	if (priv->sreg_addr_min) {
- 		nft_nat_setup_addr(&range, regs, priv);
-+		if (priv->flags & NF_NAT_RANGE_NETMAP)
-+			nft_nat_setup_netmap(&range, pkt, priv);
-+	}
- 
- 	if (priv->sreg_proto_min)
- 		nft_nat_setup_proto(&range, regs, priv);
--- 
-2.20.1
+"The road to bloat is paved with tiny performance hits" [1]
 
+>
+> static struct pkt_buff *pkt;
+>
+> int main(int argc, char *argv[])
+> {
+>         ...
+>         pkt = pktb_head_alloc();
+>         ...
+> }
+>
+> Then, use it from queue_cb().
+>
+> Alternatively, you can also define a wrapper structure that you can
+> pass to mnl_cb_run(), e.g.
+>
+> struct my_data {
+>         struct pkt_buff *pktb;
+>         void            *something_ese;
+> };
+>
+> > > My understanding is that requirements are:
+> > >
+> > > * Users that do not want to mangle the packet, they use the buffer
+> > >   that was passed to recvmsg().
+> > > * Users that want to mangle the packet, they use the _mangle()
+> > >   function that might reallocate the data buffer (the one you would
+> > >   like to have). However, if this data buffer reallocation happens,
+> > >   then pkt_buff should annotate that this pkt_buff object needs to
+> > >   release this data buffer from pktb_free() otherwise.
+> >
+> > No, there is nothing to release. We told pktb_alloc2() where the buffer was,
+> > it's on the stack (usually).
+>
+> Then, I'm not sure I understand yet what extension you would like to
+> make to _mangle(), please, clarify.
+>
+> > > > Problem is that if mangler moves the packet, then any packet pointer the caller
+> > > > had is invalid (points to the un-mangled copy). This applies at all levels, e.g.
+> > > > nfq_udp_get_payload(). There is no way for the mangler functions to address
+> > > > this: it just has to be highlighted in the documentation.
+> > >
+> > > That's fine, this is exactly how the kernel works: if the function
+> > > might reallocate the data area, then you have to refetch pointers
+> > > after this. If you teach _mangle() to do reallocations, then
+> > > documenting this is fine.
+> > >
+> > > However, those reallocation need pktb_free() to release that new data
+> > > buffer, right?
+> >
+> > No way. There is no malloc() nor free() anywhere. The data buffer is
+> > (recommended to be) on the stack; for running under gdb it may be preferred to
+> > us a static buffer which has to be dimensioned hugely.
+>
+> If the user pre-allocates the heap or place it in the stack is
+> irrelevant, the save for the user is the memcpy() if it's only
+> inspecting the packet (no mangling) and the out-of-line pkt_buff
+> allocation / or place in the stack.
+>
+> If pktb_build_data() takes the extra parameter, I think the
+> showstopper you mentioned is gone. Otherwise, please tell me what you
+> cannot achieve with my patchset.
+
+My patchset comes with documentation and yours does not. I am not volunteering
+to document yours.
+
+Would you like me to post a detailed review of your patchset? It will not be
+pretty.
+>
+> Thanks.
+
+[1] I just amde that up. Good eh?
+
+Cheers ... Duncan.
