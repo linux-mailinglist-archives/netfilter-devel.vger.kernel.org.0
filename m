@@ -2,124 +2,112 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246E51BEA29
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Apr 2020 23:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0DDB1BEFE3
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2020 07:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgD2VsX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 29 Apr 2020 17:48:23 -0400
-Received: from correo.us.es ([193.147.175.20]:60676 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726961AbgD2VsX (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 29 Apr 2020 17:48:23 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 5EE8112BFF8
-        for <netfilter-devel@vger.kernel.org>; Wed, 29 Apr 2020 23:48:22 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 4DD91BAAA1
-        for <netfilter-devel@vger.kernel.org>; Wed, 29 Apr 2020 23:48:22 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 430FFBAAA3; Wed, 29 Apr 2020 23:48:22 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 49069BAAB1;
-        Wed, 29 Apr 2020 23:48:20 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 29 Apr 2020 23:48:20 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 2771142EF9E0;
-        Wed, 29 Apr 2020 23:48:20 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
+        id S1726489AbgD3Flr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 30 Apr 2020 01:41:47 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:58221 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726391AbgD3Flq (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 30 Apr 2020 01:41:46 -0400
+Received: from dimstar.local.net (n175-34-64-112.sun1.vic.optusnet.com.au [175.34.64.112])
+        by mail105.syd.optusnet.com.au (Postfix) with SMTP id 4109E3A3BCD
+        for <netfilter-devel@vger.kernel.org>; Thu, 30 Apr 2020 15:41:42 +1000 (AEST)
+Received: (qmail 11270 invoked by uid 501); 30 Apr 2020 05:41:41 -0000
+Date:   Thu, 30 Apr 2020 15:41:41 +1000
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
 To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 2/2] netfilter: nf_osf: avoid passing pointer to local var
-Date:   Wed, 29 Apr 2020 23:48:11 +0200
-Message-Id: <20200429214811.19941-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200429214811.19941-1-pablo@netfilter.org>
-References: <20200429214811.19941-1-pablo@netfilter.org>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH libnetfilter_queue 1/3] pktbuff: add pktb_alloc_head()
+ and pktb_build_data()
+Message-ID: <20200430054141.GE3833@dimstar.local.net>
+Mail-Followup-To: netfilter-devel@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+References: <20200426132356.8346-1-pablo@netfilter.org>
+ <20200426132356.8346-2-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200426132356.8346-2-pablo@netfilter.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=keeXcwCgVCrAuxOn72dlvA==:117 a=keeXcwCgVCrAuxOn72dlvA==:17
+        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=RSmzAf-M6YYA:10 a=3HDBlxybAAAA:8
+        a=zTG73k9i9ECIxAVFpFMA:9 a=CjuIK1q_8ugA:10 a=laEoCiVfU_Unz3mSdgXN:22
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Sun, Apr 26, 2020 at 03:23:54PM +0200, Pablo Neira Ayuso wrote:
+> Add two new helper functions to skip memcpy()'ing the payload from the
+> netlink message.
+>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> ---
+>  include/libnetfilter_queue/pktbuff.h |  3 +++
+>  src/extra/pktbuff.c                  | 20 ++++++++++++++++++++
+>  2 files changed, 23 insertions(+)
+>
+> diff --git a/include/libnetfilter_queue/pktbuff.h b/include/libnetfilter_queue/pktbuff.h
+> index 42bc153ec337..f9bddaf072fb 100644
+> --- a/include/libnetfilter_queue/pktbuff.h
+> +++ b/include/libnetfilter_queue/pktbuff.h
+> @@ -4,8 +4,11 @@
+>  struct pkt_buff;
+>
+>  struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra);
+> +struct pkt_buff *pktb_alloc_head(void);
+>  void pktb_free(struct pkt_buff *pktb);
+>
+> +void pktb_build_data(struct pkt_buff *pktb, uint8_t *payload, uint32_t len);
+> +
+>  uint8_t *pktb_data(struct pkt_buff *pktb);
+>  uint32_t pktb_len(struct pkt_buff *pktb);
+>
+> diff --git a/src/extra/pktbuff.c b/src/extra/pktbuff.c
+> index 6dd0ca98aff2..a93e72ac7795 100644
+> --- a/src/extra/pktbuff.c
+> +++ b/src/extra/pktbuff.c
+> @@ -93,6 +93,26 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
+>  	return pktb;
+>  }
+>
+> +EXPORT_SYMBOL
+> +struct pkt_buff *pktb_alloc_head(void)
 
-gcc-10 points out that a code path exists where a pointer to a stack
-variable may be passed back to the caller:
-
-net/netfilter/nfnetlink_osf.c: In function 'nf_osf_hdr_ctx_init':
-cc1: warning: function may return address of local variable [-Wreturn-local-addr]
-net/netfilter/nfnetlink_osf.c:171:16: note: declared here
-  171 |  struct tcphdr _tcph;
-      |                ^~~~~
-
-I am not sure whether this can happen in practice, but moving the
-variable declaration into the callers avoids the problem.
-
-Fixes: 31a9c29210e2 ("netfilter: nf_osf: add struct nf_osf_hdr_ctx")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nfnetlink_osf.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/net/netfilter/nfnetlink_osf.c b/net/netfilter/nfnetlink_osf.c
-index 9f5dea0064ea..916a3c7f9eaf 100644
---- a/net/netfilter/nfnetlink_osf.c
-+++ b/net/netfilter/nfnetlink_osf.c
-@@ -165,12 +165,12 @@ static bool nf_osf_match_one(const struct sk_buff *skb,
- static const struct tcphdr *nf_osf_hdr_ctx_init(struct nf_osf_hdr_ctx *ctx,
- 						const struct sk_buff *skb,
- 						const struct iphdr *ip,
--						unsigned char *opts)
-+						unsigned char *opts,
-+						struct tcphdr *_tcph)
- {
- 	const struct tcphdr *tcp;
--	struct tcphdr _tcph;
- 
--	tcp = skb_header_pointer(skb, ip_hdrlen(skb), sizeof(struct tcphdr), &_tcph);
-+	tcp = skb_header_pointer(skb, ip_hdrlen(skb), sizeof(struct tcphdr), _tcph);
- 	if (!tcp)
- 		return NULL;
- 
-@@ -205,10 +205,11 @@ nf_osf_match(const struct sk_buff *skb, u_int8_t family,
- 	int fmatch = FMATCH_WRONG;
- 	struct nf_osf_hdr_ctx ctx;
- 	const struct tcphdr *tcp;
-+	struct tcphdr _tcph;
- 
- 	memset(&ctx, 0, sizeof(ctx));
- 
--	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts);
-+	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts, &_tcph);
- 	if (!tcp)
- 		return false;
- 
-@@ -265,10 +266,11 @@ bool nf_osf_find(const struct sk_buff *skb,
- 	const struct nf_osf_finger *kf;
- 	struct nf_osf_hdr_ctx ctx;
- 	const struct tcphdr *tcp;
-+	struct tcphdr _tcph;
- 
- 	memset(&ctx, 0, sizeof(ctx));
- 
--	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts);
-+	tcp = nf_osf_hdr_ctx_init(&ctx, skb, ip, opts, &_tcph);
- 	if (!tcp)
- 		return false;
- 
--- 
-2.20.1
-
+I think we agreed to dispense with this function?
+> +{
+> +	struct pkt_buff *pktb;
+> +
+> +	pktb = calloc(1, sizeof(struct pkt_buff));
+The callback (CB) needs to zeroise head: calling calloc() here is ineffective.
+At least the *mangled* flag must be cleared, also the new *copy_done* flag.
+> +	if (pktb == NULL)
+> +		return NULL;
+The above 2 lines are unnecessary
+> +
+> +	return pktb;
+> +}
+> +
+> +EXPORT_SYMBOL
+> +void pktb_build_data(struct pkt_buff *pktb, uint8_t *payload, uint32_t len)
+> +{
+> +	pktb->len = len;
+> +	pktb->data_len = len;
+> +	pktb->data = payload;
+Also
++	mangled = false;
+Maybe nullify the other pointers?
+> +}
+> +
+>  /**
+>   * pktb_data - get pointer to network packet
+>   * \param pktb Pointer to userspace packet buffer
+> --
+> 2.20.1
+>
+-Duncan
