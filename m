@@ -2,77 +2,132 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBBA1BF8EA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2020 15:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA1E1BFD29
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2020 16:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgD3NIY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 30 Apr 2020 09:08:24 -0400
-Received: from correo.us.es ([193.147.175.20]:55656 "EHLO mail.us.es"
+        id S1728340AbgD3OKq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 30 Apr 2020 10:10:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726520AbgD3NIY (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:08:24 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 23643F258F
-        for <netfilter-devel@vger.kernel.org>; Thu, 30 Apr 2020 15:08:23 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 15FCDBAAA1
-        for <netfilter-devel@vger.kernel.org>; Thu, 30 Apr 2020 15:08:23 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 15588DA736; Thu, 30 Apr 2020 15:08:23 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1D599615CF;
-        Thu, 30 Apr 2020 15:08:21 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 30 Apr 2020 15:08:21 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728096AbgD3Nve (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:51:34 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 02E6242EFB80;
-        Thu, 30 Apr 2020 15:08:20 +0200 (CEST)
-Date:   Thu, 30 Apr 2020 15:08:20 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     phil@nwl.cc
-Subject: Re: [PATCH nft] rule: memleak in __do_add_setelems()
-Message-ID: <20200430130820.GA11056@salvia>
-References: <20200430121845.10388-1-pablo@netfilter.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 454DD24965;
+        Thu, 30 Apr 2020 13:51:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588254693;
+        bh=dCReHOxYxOTh3PI23Yj+n0lzVjU5bcXojq6bDVitLKg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mx7Az5uYb152ffy9c63bwFFrnQWF2zm7a5F5LKW53AoFMkQDBK/sX53SyJWnV/9wW
+         rNjuZ1lJ3yXnHSEVtwoNFLnK/U/j05clmmlY0HlQuDc99+Rq4yoAZomYuPKEG5eSJt
+         celbLtegTJPAnZGAJpjhRxU/Y/3CzgGw68vcsato=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+33e06702fd6cffc24c40@syzkaller.appspotmail.com>,
+        Florian Westphal <fw@strlen.de>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 43/79] netfilter: nat: fix error handling upon registering inet hook
+Date:   Thu, 30 Apr 2020 09:50:07 -0400
+Message-Id: <20200430135043.19851-43-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200430135043.19851-1-sashal@kernel.org>
+References: <20200430135043.19851-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430121845.10388-1-pablo@netfilter.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 02:18:45PM +0200, Pablo Neira Ayuso wrote:
-> This patch invokes interval_map_decompose() with named sets:
-> 
-> ==3402== 2,352 (128 direct, 2,224 indirect) bytes in 1 blocks are definitely lost in loss record 9 of 9
-> ==3402==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-> ==3402==    by 0x48996A8: xmalloc (utils.c:36)
-> ==3402==    by 0x4899778: xzalloc (utils.c:65)
-> ==3402==    by 0x487CB46: expr_alloc (expression.c:45)
-> ==3402==    by 0x487E2A0: mapping_expr_alloc (expression.c:1140)
-> ==3402==    by 0x4898AA8: interval_map_decompose (segtree.c:1095)
-> ==3402==    by 0x4872BDF: __do_add_setelems (rule.c:1569)
-> ==3402==    by 0x4872BDF: __do_add_setelems (rule.c:1559)
-> ==3402==    by 0x4877936: do_command (rule.c:2710)
-> ==3402==    by 0x489F1CB: nft_netlink.isra.5 (libnftables.c:42)
-> ==3402==    by 0x489FB07: nft_run_cmd_from_filename (libnftables.c:508)
-> ==3402==    by 0x10A9AA: main (main.c:455)
-> 
-> Fixes: dd44081d91ce ("segtree: Fix add and delete of element in same batch")
+From: Hillf Danton <hdanton@sina.com>
 
-This fixes the problem for anonymous sets, still named sets are
-showing a memleak.
+[ Upstream commit b4faef1739dd1f3b3981b8bf173a2266ea86b1eb ]
+
+A case of warning was reported by syzbot.
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 19934 at net/netfilter/nf_nat_core.c:1106
+nf_nat_unregister_fn+0x532/0x5c0 net/netfilter/nf_nat_core.c:1106
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 19934 Comm: syz-executor.5 Not tainted 5.6.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:221
+ __warn.cold+0x2f/0x35 kernel/panic.c:582
+ report_bug+0x27b/0x2f0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:175 [inline]
+ fixup_bug arch/x86/kernel/traps.c:170 [inline]
+ do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:nf_nat_unregister_fn+0x532/0x5c0 net/netfilter/nf_nat_core.c:1106
+Code: ff df 48 c1 ea 03 80 3c 02 00 75 75 48 8b 44 24 10 4c 89 ef 48 c7 00 00 00 00 00 e8 e8 f8 53 fb e9 4d fe ff ff e8 ee 9c 16 fb <0f> 0b e9 41 fe ff ff e8 e2 45 54 fb e9 b5 fd ff ff 48 8b 7c 24 20
+RSP: 0018:ffffc90005487208 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 0000000000000004 RCX: ffffc9001444a000
+RDX: 0000000000040000 RSI: ffffffff865c94a2 RDI: 0000000000000005
+RBP: ffff88808b5cf000 R08: ffff8880a2620140 R09: fffffbfff14bcd79
+R10: ffffc90005487208 R11: fffffbfff14bcd78 R12: 0000000000000000
+R13: 0000000000000001 R14: 0000000000000001 R15: 0000000000000000
+ nf_nat_ipv6_unregister_fn net/netfilter/nf_nat_proto.c:1017 [inline]
+ nf_nat_inet_register_fn net/netfilter/nf_nat_proto.c:1038 [inline]
+ nf_nat_inet_register_fn+0xfc/0x140 net/netfilter/nf_nat_proto.c:1023
+ nf_tables_register_hook net/netfilter/nf_tables_api.c:224 [inline]
+ nf_tables_addchain.constprop.0+0x82e/0x13c0 net/netfilter/nf_tables_api.c:1981
+ nf_tables_newchain+0xf68/0x16a0 net/netfilter/nf_tables_api.c:2235
+ nfnetlink_rcv_batch+0x83a/0x1610 net/netfilter/nfnetlink.c:433
+ nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:543 [inline]
+ nfnetlink_rcv+0x3af/0x420 net/netfilter/nfnetlink.c:561
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x537/0x740 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x882/0xe10 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6bf/0x7e0 net/socket.c:2362
+ ___sys_sendmsg+0x100/0x170 net/socket.c:2416
+ __sys_sendmsg+0xec/0x1b0 net/socket.c:2449
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+
+and to quiesce it, unregister NFPROTO_IPV6 hook instead of NFPROTO_INET
+in case of failing to register NFPROTO_IPV4 hook.
+
+Reported-by: syzbot <syzbot+33e06702fd6cffc24c40@syzkaller.appspotmail.com>
+Fixes: d164385ec572 ("netfilter: nat: add inet family nat support")
+Cc: Florian Westphal <fw@strlen.de>
+Cc: Stefano Brivio <sbrivio@redhat.com>
+Signed-off-by: Hillf Danton <hdanton@sina.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/netfilter/nf_nat_proto.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netfilter/nf_nat_proto.c b/net/netfilter/nf_nat_proto.c
+index 64eedc17037ad..3d816a1e5442e 100644
+--- a/net/netfilter/nf_nat_proto.c
++++ b/net/netfilter/nf_nat_proto.c
+@@ -1035,8 +1035,8 @@ int nf_nat_inet_register_fn(struct net *net, const struct nf_hook_ops *ops)
+ 	ret = nf_nat_register_fn(net, NFPROTO_IPV4, ops, nf_nat_ipv4_ops,
+ 				 ARRAY_SIZE(nf_nat_ipv4_ops));
+ 	if (ret)
+-		nf_nat_ipv6_unregister_fn(net, ops);
+-
++		nf_nat_unregister_fn(net, NFPROTO_IPV6, ops,
++					ARRAY_SIZE(nf_nat_ipv6_ops));
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(nf_nat_inet_register_fn);
+-- 
+2.20.1
+
