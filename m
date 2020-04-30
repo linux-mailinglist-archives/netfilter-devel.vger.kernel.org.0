@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85E31BFFD9
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2020 17:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBADE1BFFDC
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2020 17:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726892AbgD3POY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 30 Apr 2020 11:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
+        id S1726787AbgD3POk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 30 Apr 2020 11:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726661AbgD3POY (ORCPT
+        by vger.kernel.org with ESMTP id S1727108AbgD3POk (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:14:24 -0400
+        Thu, 30 Apr 2020 11:14:40 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0904C035494
-        for <netfilter-devel@vger.kernel.org>; Thu, 30 Apr 2020 08:14:23 -0700 (PDT)
-Received: from localhost ([::1]:43932 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA004C035495
+        for <netfilter-devel@vger.kernel.org>; Thu, 30 Apr 2020 08:14:39 -0700 (PDT)
+Received: from localhost ([::1]:43950 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1jUAtK-0008Af-Lp; Thu, 30 Apr 2020 17:14:22 +0200
+        id 1jUAta-0008Bi-J6; Thu, 30 Apr 2020 17:14:38 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 3/4] segtree: Merge get_set_interval_find() and get_set_interval_end()
-Date:   Thu, 30 Apr 2020 17:14:07 +0200
-Message-Id: <20200430151408.32283-4-phil@nwl.cc>
+Subject: [nft PATCH 4/4] segtree: Fix get element command with prefixes
+Date:   Thu, 30 Apr 2020 17:14:08 +0200
+Message-Id: <20200430151408.32283-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200430151408.32283-1-phil@nwl.cc>
 References: <20200430151408.32283-1-phil@nwl.cc>
@@ -35,119 +35,112 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Both functions were very similar already. Under the assumption that they
-will always either see a range (or start of) that matches exactly or not
-at all, reduce complexity and make get_set_interval_find() accept NULL
-(left or) right values. This way it becomes a full replacement for
-get_set_interval_end().
+Code wasn't aware of prefix elements in interval sets. With previous
+changes in place, they merely need to be accepted in
+get_set_interval_find() - value comparison and expression duplication is
+identical to ranges.
+
+Extend sets/0034get_element_0 test to cover prefixes as well.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/segtree.c | 63 +++++++++++++--------------------------------------
- 1 file changed, 16 insertions(+), 47 deletions(-)
+ src/segtree.c                                |  1 +
+ tests/shell/testcases/sets/0034get_element_0 | 51 +++++++++++++-------
+ 2 files changed, 34 insertions(+), 18 deletions(-)
 
 diff --git a/src/segtree.c b/src/segtree.c
-index f81a66e185990..6aa6f97a4ebfe 100644
+index 6aa6f97a4ebfe..2b5831f2d64b2 100644
 --- a/src/segtree.c
 +++ b/src/segtree.c
-@@ -694,63 +694,31 @@ static struct expr *get_set_interval_find(const struct table *table,
- {
- 	struct expr *range = NULL;
- 	struct set *set;
--	mpz_t low, high;
- 	struct expr *i;
-+	mpz_t val;
- 
- 	set = set_lookup(table, set_name);
--	mpz_init2(low, set->key->len);
--	mpz_init2(high, set->key->len);
-+	mpz_init2(val, set->key->len);
+@@ -702,6 +702,7 @@ static struct expr *get_set_interval_find(const struct table *table,
  
  	list_for_each_entry(i, &set->init->expressions, list) {
  		switch (i->key->etype) {
++		case EXPR_PREFIX:
  		case EXPR_RANGE:
--			range_expr_value_low(low, i);
--			range_expr_value_high(high, i);
--			if (mpz_cmp(left->key->value, low) >= 0 &&
--			    mpz_cmp(right->key->value, high) <= 0) {
--				range = expr_clone(i->key);
--				goto out;
--			}
--			break;
--		default:
--			break;
--		}
--	}
--out:
--	mpz_clear(low);
--	mpz_clear(high);
--
--	return range;
--}
--
--static struct expr *get_set_interval_end(const struct table *table,
--					 const char *set_name,
--					 struct expr *left)
--{
--	struct expr *i, *range = NULL;
--	struct set *set;
--	mpz_t low, high;
-+			range_expr_value_low(val, i);
-+			if (left && mpz_cmp(left->key->value, val))
-+				break;
+ 			range_expr_value_low(val, i);
+ 			if (left && mpz_cmp(left->key->value, val))
+diff --git a/tests/shell/testcases/sets/0034get_element_0 b/tests/shell/testcases/sets/0034get_element_0
+index e23dbda09b45c..f174bc37273ca 100755
+--- a/tests/shell/testcases/sets/0034get_element_0
++++ b/tests/shell/testcases/sets/0034get_element_0
+@@ -2,43 +2,58 @@
  
--	set = set_lookup(table, set_name);
--	mpz_init2(low, set->key->len);
--	mpz_init2(high, set->key->len);
-+			range_expr_value_high(val, i);
-+			if (right && mpz_cmp(right->key->value, val))
-+				break;
+ RC=0
  
--	list_for_each_entry(i, &set->init->expressions, list) {
--		switch (i->key->etype) {
--		case EXPR_RANGE:
--			range_expr_value_low(low, i);
--			if (mpz_cmp(low, left->key->value) == 0) {
--				range = expr_clone(i->key);
--				goto out;
--			}
--			break;
-+			range = expr_clone(i->key);
-+			goto out;
- 		default:
- 			break;
- 		}
- 	}
- out:
--	mpz_clear(low);
--	mpz_clear(high);
-+	mpz_clear(val);
- 
- 	return range;
+-check() { # (elems, expected)
+-	out=$($NFT get element ip t s "{ $1 }")
++check() { # (set, elems, expected)
++	out=$($NFT get element ip t $1 "{ $2 }")
+ 	out=$(grep "elements =" <<< "$out")
+ 	out="${out#* \{ }"
+ 	out="${out% \}}"
+-	[[ "$out" == "$2" ]] && return
+-	echo "ERROR: asked for '$1', expecting '$2' but got '$out'"
++	[[ "$out" == "$3" ]] && return
++	echo "ERROR: asked for '$2' in set $1, expecting '$3' but got '$out'"
+ 	((RC++))
  }
-@@ -780,9 +748,9 @@ int get_set_decompose(struct table *table, struct set *set)
- 			left = NULL;
- 		} else {
- 			if (left) {
--				range = get_set_interval_end(table,
--							     set->handle.set.name,
--							     left);
-+				range = get_set_interval_find(table,
-+							      set->handle.set.name,
-+							      left, NULL);
- 				if (range)
- 					compound_expr_add(new_init, range);
- 				else
-@@ -793,7 +761,8 @@ int get_set_decompose(struct table *table, struct set *set)
- 		}
- 	}
- 	if (left) {
--		range = get_set_interval_end(table, set->handle.set.name, left);
-+		range = get_set_interval_find(table, set->handle.set.name,
-+					      left, NULL);
- 		if (range)
- 			compound_expr_add(new_init, range);
- 		else
+ 
+ RULESET="add table ip t
+ add set ip t s { type inet_service; flags interval; }
+ add element ip t s { 10, 20-30, 40, 50-60 }
++add set ip t ips { type ipv4_addr; flags interval; }
++add element ip t ips { 10.0.0.1, 10.0.0.5-10.0.0.8 }
++add element ip t ips { 10.0.0.128/25, 10.0.1.0/24, 10.0.2.3-10.0.2.12 }
+ "
+ 
+ $NFT -f - <<< "$RULESET"
+ 
+ # simple cases, (non-)existing values and ranges
+-check 10 10
+-check 11 ""
+-check 20-30 20-30
+-check 15-18 ""
++check s 10 10
++check s 11 ""
++check s 20-30 20-30
++check s 15-18 ""
+ 
+ # multiple single elements, ranges smaller than present
+-check "10, 40" "10, 40"
+-check "22-24, 26-28" "20-30, 20-30"
+-check 21-29 20-30
++check s "10, 40" "10, 40"
++check s "22-24, 26-28" "20-30, 20-30"
++check s 21-29 20-30
+ 
+ # mixed single elements and ranges
+-check "10, 20" "10, 20-30"
+-check "10, 22" "10, 20-30"
+-check "10, 22-24" "10, 20-30"
++check s "10, 20" "10, 20-30"
++check s "10, 22" "10, 20-30"
++check s "10, 22-24" "10, 20-30"
+ 
+ # non-existing ranges matching elements
+-check 10-40 ""
+-check 10-20 ""
+-check 10-25 ""
+-check 25-55 ""
++check s 10-40 ""
++check s 10-20 ""
++check s 10-25 ""
++check s 25-55 ""
++
++# playing with IPs, ranges and prefixes
++check ips 10.0.0.1 10.0.0.1
++check ips 10.0.0.2 ""
++check ips 10.0.1.0/24 10.0.1.0/24
++check ips 10.0.1.2/31 10.0.1.0/24
++check ips 10.0.1.0 10.0.1.0/24
++check ips 10.0.1.3 10.0.1.0/24
++check ips 10.0.1.255 10.0.1.0/24
++check ips 10.0.2.3-10.0.2.12 10.0.2.3-10.0.2.12
++check ips 10.0.2.10 10.0.2.3-10.0.2.12
++check ips 10.0.2.12 10.0.2.3-10.0.2.12
+ 
+ exit $RC
 -- 
 2.25.1
 
