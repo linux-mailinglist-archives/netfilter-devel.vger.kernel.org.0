@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA1E1BFD29
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2020 16:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637DF1BFC80
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Apr 2020 16:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728340AbgD3OKq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 30 Apr 2020 10:10:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59960 "EHLO mail.kernel.org"
+        id S1728541AbgD3OGI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 30 Apr 2020 10:06:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728096AbgD3Nve (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:51:34 -0400
+        id S1728538AbgD3Nww (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:52:52 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 454DD24965;
-        Thu, 30 Apr 2020 13:51:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B961524955;
+        Thu, 30 Apr 2020 13:52:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588254693;
+        s=default; t=1588254771;
         bh=dCReHOxYxOTh3PI23Yj+n0lzVjU5bcXojq6bDVitLKg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mx7Az5uYb152ffy9c63bwFFrnQWF2zm7a5F5LKW53AoFMkQDBK/sX53SyJWnV/9wW
-         rNjuZ1lJ3yXnHSEVtwoNFLnK/U/j05clmmlY0HlQuDc99+Rq4yoAZomYuPKEG5eSJt
-         celbLtegTJPAnZGAJpjhRxU/Y/3CzgGw68vcsato=
+        b=xZ4QtVnOtyboYiqhw1V7e/D5iyXJCsmxf+bQ9WJN1orWosFAfDXyNPSbTNZ9QXLbK
+         yom3LgCsqXRBZBldv9PNw7Bywb3QVM2t7OHndMfv8zncrUHH5TicBJp/I1uoh3bqoI
+         MQx2/cLZf/MlvEHMPR+0FUMlamCRuoWogEPOOie8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Hillf Danton <hdanton@sina.com>,
@@ -33,12 +33,12 @@ Cc:     Hillf Danton <hdanton@sina.com>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 43/79] netfilter: nat: fix error handling upon registering inet hook
-Date:   Thu, 30 Apr 2020 09:50:07 -0400
-Message-Id: <20200430135043.19851-43-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 29/57] netfilter: nat: fix error handling upon registering inet hook
+Date:   Thu, 30 Apr 2020 09:51:50 -0400
+Message-Id: <20200430135218.20372-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200430135043.19851-1-sashal@kernel.org>
-References: <20200430135043.19851-1-sashal@kernel.org>
+In-Reply-To: <20200430135218.20372-1-sashal@kernel.org>
+References: <20200430135218.20372-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
