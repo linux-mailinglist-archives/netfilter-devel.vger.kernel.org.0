@@ -2,163 +2,119 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E631C1A2E
-	for <lists+netfilter-devel@lfdr.de>; Fri,  1 May 2020 17:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6E11C1A83
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 May 2020 18:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729858AbgEAP5W (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 1 May 2020 11:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
+        id S1729122AbgEAQX2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 1 May 2020 12:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729860AbgEAP5V (ORCPT
+        with ESMTP id S1728947AbgEAQX2 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 1 May 2020 11:57:21 -0400
-Received: from smail.fem.tu-ilmenau.de (smail.fem.tu-ilmenau.de [IPv6:2001:638:904:ffbf::41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1071C061A0E
-        for <netfilter-devel@vger.kernel.org>; Fri,  1 May 2020 08:57:21 -0700 (PDT)
-Received: from mail.fem.tu-ilmenau.de (mail-zuse.net.fem.tu-ilmenau.de [172.21.220.54])
-        (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by smail.fem.tu-ilmenau.de (Postfix) with ESMTPS id EB52E203F8;
-        Fri,  1 May 2020 17:48:28 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.fem.tu-ilmenau.de (Postfix) with ESMTP id B51FD6207;
-        Fri,  1 May 2020 17:48:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at fem.tu-ilmenau.de
-Received: from mail.fem.tu-ilmenau.de ([127.0.0.1])
-        by localhost (mail.fem.tu-ilmenau.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id F5wK7f9jpT6P; Fri,  1 May 2020 17:48:26 +0200 (CEST)
-Received: from a234.fem.tu-ilmenau.de (ray-controller.net.fem.tu-ilmenau.de [10.42.51.234])
-        by mail.fem.tu-ilmenau.de (Postfix) with ESMTP;
-        Fri,  1 May 2020 17:48:26 +0200 (CEST)
-Received: by a234.fem.tu-ilmenau.de (Postfix, from userid 1000)
-        id 95B2C306A96B; Fri,  1 May 2020 17:48:26 +0200 (CEST)
-From:   Michael Braun <michael-dev@fami-braun.de>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Michael Braun <michael-dev@fami-braun.de>
-Subject: [PATCH 3/3] datatype: fix double-free resulting in use-after-free in datatype_free
-Date:   Fri,  1 May 2020 17:48:18 +0200
-Message-Id: <20200501154819.2984-3-michael-dev@fami-braun.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200501154819.2984-1-michael-dev@fami-braun.de>
-References: <20200501154819.2984-1-michael-dev@fami-braun.de>
+        Fri, 1 May 2020 12:23:28 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29F4C061A0E
+        for <netfilter-devel@vger.kernel.org>; Fri,  1 May 2020 09:23:27 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id d16so7631246edq.7
+        for <netfilter-devel@vger.kernel.org>; Fri, 01 May 2020 09:23:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jfkQqP4P46nAK7oHXekeHfYjV+lTMmLOA7ipwLh/Dr8=;
+        b=Zvn4tyvfjCwJZ4OUXbaZPdeUosydRCUvEPtuDiMRQpLR4Lt1iBBN6upWwzblLJEBt7
+         DC8Kwix4abLHUDib+LHkkSs5i7qxPasdEY0sZRZw9fareW+qLioVXXvY7J90+WTOqSCr
+         KP3FzIgAp/z6w0Z2zvjoZCK4QVNc2k10LZFzL9i2qpc7qKX9lKA2mbhFHpYmEvgWAq/x
+         BttAwm4H7hbo9DPXsPKU1gbl2gNZA4FrIo8F05isaYZqNS+j/gOrY02+dblEz6//nwDe
+         wrOUKMMBmTF/VPdoL5ub21/7574RN3HHihWiPlLtpNk1F3ssOwvCRXE4ZnTNKz4wfMYo
+         GCqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jfkQqP4P46nAK7oHXekeHfYjV+lTMmLOA7ipwLh/Dr8=;
+        b=C5mkXfxV4cd8qNJSTd9fz7feeHJCApTt6AdInsv4squWUj3l4NFJ7VCZVXyP3y5dg5
+         WW6sFnkwlO1UAjCZQPeumhZ0hESNLisxSavHdPNyCq7nwTWCkR6Q4VSTRMxINJNJ1MYS
+         z3RQfMaSbADW3ZD80vBvUbAOU8JAHPOI48jPjPpowk+Ldc5OKX40Pc86Amw068hzeh1/
+         PPPq7VEEOVTheUU8mzgxbaqDR8YFrWeiG+4FTiynd+a0kBDgtP1cpMhCxbdSbB6ZXwYg
+         R29Y1xpWxEpMEwmlXvm59FDyKq2U0ypiKfc1N410zckEGcQAh7psscYLRjkSb9c1ftSO
+         QboA==
+X-Gm-Message-State: AGi0PubHiftWFm80K41+bAwKPvT3T9RopjvxozvOH8XEwsIyDDn+a4W8
+        rfleoVJEuh7g/RpLMcg0w9BSlkoDG8SYd3yJAqfg
+X-Google-Smtp-Source: APiQypK825QibI3Ui9tCm2G1lExv4S+wdR3Bg+ka7wXCBeYqlb2bim0M0WRbqiTf2qPAhN/AhIew2jU+IiK7WSk1z7A=
+X-Received: by 2002:aa7:cb0f:: with SMTP id s15mr4169202edt.164.1588350206362;
+ Fri, 01 May 2020 09:23:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1587500467.git.rgb@redhat.com> <CAHC9VhR9sNB58A8uQ4FNgAXOgVJ3RaWF4y5MAo=3mcTojaym0Q@mail.gmail.com>
+ <20200429143146.3vlcmwvljo74ydb4@madcap2.tricolour.ca> <3348737.k9gCtgYObn@x2>
+ <20200429213247.6ewxqf66i2apgyuz@madcap2.tricolour.ca>
+In-Reply-To: <20200429213247.6ewxqf66i2apgyuz@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 1 May 2020 12:23:15 -0400
+Message-ID: <CAHC9VhRv4GdaBm5ooi5D-j4CBvoOD5L9ab+QPgxhLudtwG=Nsw@mail.gmail.com>
+Subject: Re: [PATCH ghak25 v4 3/3] audit: add subj creds to NETFILTER_CFG
+ record to cover async unregister
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Steve Grubb <sgrubb@redhat.com>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, omosnace@redhat.com, fw@strlen.de,
+        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
+        ebiederm@xmission.com, tgraf@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-nft list table bridge t
-table bridge t {
-        set s4 {
-                typeof ip saddr . ip daddr
-                elements = { 1.0.0.1 . 2.0.0.2 }
-        }
-}
-=================================================================
-==24334==ERROR: AddressSanitizer: heap-use-after-free on address 0x6080000000a8 at pc 0x7fe0e67df0ad bp 0x7ffff83e88c0 sp 0x7ffff83e88b8
-READ of size 4 at 0x6080000000a8 thread T0
-    #0 0x7fe0e67df0ac in datatype_free nftables/src/datatype.c:1110
-    #1 0x7fe0e67e2092 in expr_free nftables/src/expression.c:89
-    #2 0x7fe0e67a855e in set_free nftables/src/rule.c:359
-    #3 0x7fe0e67b2f3e in table_free nftables/src/rule.c:1263
-    #4 0x7fe0e67a70ce in __cache_flush nftables/src/rule.c:299
-    #5 0x7fe0e67a71c7 in cache_release nftables/src/rule.c:305
-    #6 0x7fe0e68dbfa9 in nft_ctx_free nftables/src/libnftables.c:292
-    #7 0x55f00fbe0051 in main nftables/src/main.c:469
-    #8 0x7fe0e553309a in __libc_start_main ../csu/libc-start.c:308
-    #9 0x55f00fbdd429 in _start (nftables/src/.libs/nft+0x9429)
+On Wed, Apr 29, 2020 at 5:33 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> On 2020-04-29 14:47, Steve Grubb wrote:
+> > On Wednesday, April 29, 2020 10:31:46 AM EDT Richard Guy Briggs wrote:
+> > > On 2020-04-28 18:25, Paul Moore wrote:
+> > > > On Wed, Apr 22, 2020 at 5:40 PM Richard Guy Briggs <rgb@redhat.com>
+> > wrote:
+> > > > > Some table unregister actions seem to be initiated by the kernel to
+> > > > > garbage collect unused tables that are not initiated by any userspace
+> > > > > actions.  It was found to be necessary to add the subject credentials
+> > > > > to  cover this case to reveal the source of these actions.  A sample
+> > > > > record:
+> > > > >   type=NETFILTER_CFG msg=audit(2020-03-11 21:25:21.491:269) : table=nat
+> > > > >   family=bridge entries=0 op=unregister pid=153 uid=root auid=unset
+> > > > >   tty=(none) ses=unset subj=system_u:system_r:kernel_t:s0
+> > > > >   comm=kworker/u4:2 exe=(null)>
+> > > > [I'm going to comment up here instead of in the code because it is a
+> > > > bit easier for everyone to see what the actual impact might be on the
+> > > > records.]
+> > > >
+> > > > Steve wants subject info in this case, okay, but let's try to trim out
+> > > > some of the fields which simply don't make sense in this record; I'm
+> > > > thinking of fields that are unset/empty in the kernel case and are
+> > > > duplicates of other records in the userspace/syscall case.  I think
+> > > > that means we can drop "tty", "ses", "comm", and "exe" ... yes?
+> > >
+> > > From the ghak28 discussion, this list and order was selected due to
+> > > Steve's preference for the "kernel" record convention, so deviating from
+> > > this will create yet a new field list.  I'll defer to Steve on this.  It
+> > > also has to do with the searchability of fields if they are missing.
+> > >
+> > > I do agree that some fields will be superfluous in the kernel case.
+> > > The most important field would be "subj", but then "pid" and "comm", I
+> > > would think.  Based on this contents of the "subj" field, I'd think that
+> > > "uid", "auid", "tty", "ses" and "exe" are not needed.
+> >
+> > We can't be adding deleting fields based on how its triggered. If they are
+> > unset, that is fine. The main issue is they have to behave the same.
+>
+> I don't think the intent was to have fields swing in and out depending
+> on trigger.  The idea is to potentially permanently not include them in
+> this record type only.  The justification is that where they aren't
+> needed for the kernel trigger situation it made sense to delete them
+> because if it is a user context event it will be accompanied by a
+> syscall record that already has that information and there would be no
+> sense in duplicating it.
 
-0x6080000000a8 is located 8 bytes inside of 96-byte region [0x6080000000a0,0x608000000100)
-freed by thread T0 here:
-    #0 0x7fe0e6e70fb0 in __interceptor_free (/usr/lib/x86_64-linux-gnu/libasan.so.5+0xe8fb0)
-    #1 0x7fe0e68b8122 in xfree nftables/src/utils.c:29
-    #2 0x7fe0e67df2e5 in datatype_free nftables/src/datatype.c:1117
-    #3 0x7fe0e67e2092 in expr_free nftables/src/expression.c:89
-    #4 0x7fe0e67a83fe in set_free nftables/src/rule.c:356
-    #5 0x7fe0e67b2f3e in table_free nftables/src/rule.c:1263
-    #6 0x7fe0e67a70ce in __cache_flush nftables/src/rule.c:299
-    #7 0x7fe0e67a71c7 in cache_release nftables/src/rule.c:305
-    #8 0x7fe0e68dbfa9 in nft_ctx_free nftables/src/libnftables.c:292
-    #9 0x55f00fbe0051 in main nftables/src/main.c:469
-    #10 0x7fe0e553309a in __libc_start_main ../csu/libc-start.c:308
+Yes, exactly.
 
-previously allocated by thread T0 here:
-    #0 0x7fe0e6e71330 in __interceptor_malloc (/usr/lib/x86_64-linux-gnu/libasan.so.5+0xe9330)
-    #1 0x7fe0e68b813d in xmalloc nftables/src/utils.c:36
-    #2 0x7fe0e68b8296 in xzalloc nftables/src/utils.c:65
-    #3 0x7fe0e67de7d5 in dtype_alloc nftables/src/datatype.c:1065
-    #4 0x7fe0e67df862 in concat_type_alloc nftables/src/datatype.c:1146
-    #5 0x7fe0e67ea852 in concat_expr_parse_udata nftables/src/expression.c:954
-    #6 0x7fe0e685dc94 in set_make_key nftables/src/netlink.c:718
-    #7 0x7fe0e685e177 in netlink_delinearize_set nftables/src/netlink.c:770
-    #8 0x7fe0e685f667 in list_set_cb nftables/src/netlink.c:895
-    #9 0x7fe0e4f95a03 in nftnl_set_list_foreach src/set.c:904
-
-SUMMARY: AddressSanitizer: heap-use-after-free nftables/src/datatype.c:1110 in datatype_free
-Shadow bytes around the buggy address:
-  0x0c107fff7fc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x0c107fff7fd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x0c107fff7fe0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x0c107fff7ff0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x0c107fff8000: fa fa fa fa fd fd fd fd fd fd fd fd fd fd fd fd
-=>0x0c107fff8010: fa fa fa fa fd[fd]fd fd fd fd fd fd fd fd fd fd
-  0x0c107fff8020: fa fa fa fa fd fd fd fd fd fd fd fd fd fd fd fd
-  0x0c107fff8030: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
-  0x0c107fff8040: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
-  0x0c107fff8050: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
-  0x0c107fff8060: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
-Shadow byte legend (one shadow byte represents 8 application bytes):
-  Addressable:           00
-  Partially addressable: 01 02 03 04 05 06 07
-  Heap left redzone:       fa
-  Freed heap region:       fd
-  Stack left redzone:      f1
-  Stack mid redzone:       f2
-  Stack right redzone:     f3
-  Stack after return:      f5
-  Stack use after scope:   f8
-  Global redzone:          f9
-  Global init order:       f6
-  Poisoned by user:        f7
-  Container overflow:      fc
-  Array cookie:            ac
-  Intra object redzone:    bb
-  ASan internal:           fe
-  Left alloca redzone:     ca
-  Right alloca redzone:    cb
-==24334==ABORTING
----
- src/datatype.c   | 2 ++
- src/expression.c | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/src/datatype.c b/src/datatype.c
-index 095598d9..0110846f 100644
---- a/src/datatype.c
-+++ b/src/datatype.c
-@@ -1083,6 +1083,8 @@ struct datatype *datatype_get(const struct datatype *ptr)
- 
- void datatype_set(struct expr *expr, const struct datatype *dtype)
- {
-+	if (dtype == expr->dtype)
-+		return; // do not free dtype before incrementing refcnt again
- 	datatype_free(expr->dtype);
- 	expr->dtype = datatype_get(dtype);
- }
-diff --git a/src/expression.c b/src/expression.c
-index 6605beb3..a6bde70f 100644
---- a/src/expression.c
-+++ b/src/expression.c
-@@ -955,7 +955,7 @@ static struct expr *concat_expr_parse_udata(const struct nftnl_udata *attr)
- 	if (!dtype)
- 		goto err_free;
- 
--	concat_expr->dtype = dtype;
-+	concat_expr->dtype = datatype_get(dtype);
- 	concat_expr->len = dtype->size;
- 
- 	return concat_expr;
 -- 
-2.20.1
-
+paul moore
+www.paul-moore.com
