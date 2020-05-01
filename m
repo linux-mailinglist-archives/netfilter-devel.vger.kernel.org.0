@@ -2,69 +2,119 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6301C1A00
-	for <lists+netfilter-devel@lfdr.de>; Fri,  1 May 2020 17:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3AD1C1A2F
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 May 2020 17:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729008AbgEAPrt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 1 May 2020 11:47:49 -0400
-Received: from mail.thelounge.net ([91.118.73.15]:59957 "EHLO
-        mail.thelounge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728495AbgEAPrt (ORCPT
+        id S1729860AbgEAP5W (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 1 May 2020 11:57:22 -0400
+Received: from smail.fem.tu-ilmenau.de ([141.24.220.41]:40302 "EHLO
+        smail.fem.tu-ilmenau.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728495AbgEAP5W (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 1 May 2020 11:47:49 -0400
-Received: from srv-rhsoft.rhsoft.net (rh.vpn.thelounge.net [10.10.10.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256))
+        Fri, 1 May 2020 11:57:22 -0400
+X-Greylist: delayed 529 seconds by postgrey-1.27 at vger.kernel.org; Fri, 01 May 2020 11:57:21 EDT
+Received: from mail.fem.tu-ilmenau.de (mail-zuse.net.fem.tu-ilmenau.de [172.21.220.54])
+        (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: h.reindl@thelounge.net)
-        by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 49DGq71MrGzXQ5;
-        Fri,  1 May 2020 17:47:47 +0200 (CEST)
-Subject: Re: strage iptables counts of wireguard traffic
-To:     Jan Engelhardt <jengelh@inai.de>
-Cc:     netfilter-devel@vger.kernel.org
-References: <1aa3eccc-032c-118e-1a4f-c129508696c5@thelounge.net>
- <nycvar.YFH.7.76.2005011738430.19024@n3.vanv.qr>
-From:   Reindl Harald <h.reindl@thelounge.net>
-Organization: the lounge interactive design
-Message-ID: <e1f6d0b4-4aa1-7fad-b487-c4a1fe84f74b@thelounge.net>
-Date:   Fri, 1 May 2020 17:47:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        by smail.fem.tu-ilmenau.de (Postfix) with ESMTPS id 7945E201B9;
+        Fri,  1 May 2020 17:48:28 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.fem.tu-ilmenau.de (Postfix) with ESMTP id 4489E61DE;
+        Fri,  1 May 2020 17:48:28 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at fem.tu-ilmenau.de
+Received: from mail.fem.tu-ilmenau.de ([127.0.0.1])
+        by localhost (mail.fem.tu-ilmenau.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Agp53F2ETuRt; Fri,  1 May 2020 17:48:26 +0200 (CEST)
+Received: from a234.fem.tu-ilmenau.de (ray-controller.net.fem.tu-ilmenau.de [10.42.51.234])
+        by mail.fem.tu-ilmenau.de (Postfix) with ESMTP;
+        Fri,  1 May 2020 17:48:26 +0200 (CEST)
+Received: by a234.fem.tu-ilmenau.de (Postfix, from userid 1000)
+        id EE56B306A950; Fri,  1 May 2020 17:48:24 +0200 (CEST)
+From:   Michael Braun <michael-dev@fami-braun.de>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Michael Braun <michael-dev@fami-braun.de>
+Subject: [PATCH 1/3] main: fix ASAN -fsanizize=address error
+Date:   Fri,  1 May 2020 17:48:16 +0200
+Message-Id: <20200501154819.2984-1-michael-dev@fami-braun.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <nycvar.YFH.7.76.2005011738430.19024@n3.vanv.qr>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Signed-of-by: Michael Braun <michael-dev@fami-braun.de>
 
+nft list table bridge t
+=================================================================
+==28552==ERROR: AddressSanitizer: global-buffer-overflow on address 0x5579c662e816 at pc 0x7fc2803246aa bp 0x7fff495c86f0 sp 0x7fff495c7ea0
+WRITE of size 2 at 0x5579c662e816 thread T0
+    #0 0x7fc2803246a9 in vsprintf (/usr/lib/x86_64-linux-gnu/libasan.so.5+0x546a9)
+    #1 0x7fc2803249f6 in __interceptor_sprintf (/usr/lib/x86_64-linux-gnu/libasan.so.5+0x549f6)
+    #2 0x5579c661e7d2 in get_optstring nftables/src/main.c:128
+    #3 0x5579c66202af in main nftables/src/main.c:315
+    #4 0x7fc27ea7b09a in __libc_start_main ../csu/libc-start.c:308
+    #5 0x5579c661e439 in _start (nftables/src/.libs/nft+0x9439)
 
-Am 01.05.20 um 17:39 schrieb Jan Engelhardt:
-> On Friday 2020-05-01 17:09, Reindl Harald wrote:
-> 
->> how can it be that a single peer has 2.8 GB traffic and in the raw table
->> the whole udp traffic is only 417M?
-> 
->> iptables --verbose --list --table raw
->> Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
-> 
-> Uh that's the policy counter, not the entire-table counter.
+0x5579c662e816 is located 0 bytes to the right of global variable 'optstring' defined in 'main.c:121:14' (0x5579c662e800) of size 22
+0x5579c662e816 is located 42 bytes to the left of global variable 'options' defined in 'main.c:137:23' (0x5579c662e840) of size 672
+SUMMARY: AddressSanitizer: global-buffer-overflow (/usr/lib/x86_64-linux-gnu/libasan.so.5+0x546a9) in vsprintf
+Shadow bytes around the buggy address:
+  0x0aafb8cbdcb0: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0aafb8cbdcc0: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0aafb8cbdcd0: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+  0x0aafb8cbdce0: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0aafb8cbdcf0: 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9 f9 f9 f9
+=>0x0aafb8cbdd00: 00 00[06]f9 f9 f9 f9 f9 00 00 00 00 00 00 00 00
+  0x0aafb8cbdd10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0aafb8cbdd20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0aafb8cbdd30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0aafb8cbdd40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0aafb8cbdd50: 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==28552==ABORTING
+---
+ src/main.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-and why do do you strip the other lines when nobody cares about the
-policy line at all?
+diff --git a/src/main.c b/src/main.c
+index 3dc6b62c..d213c601 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -124,10 +124,10 @@ static const char *get_optstring(void)
+ 		size_t i, j;
+ 
+ 		optstring[0] = '+';
+-		for (i = 0, j = 1; i < NR_NFT_OPTIONS; i++)
+-			j += sprintf(optstring + j, "%c%s",
+-				     nft_options[i].val,
+-				     nft_options[i].arg ? ":" : "");
++		for (i = 0, j = 1; i < NR_NFT_OPTIONS && j < sizeof(optstring); i++)
++			j += snprintf(optstring + j, sizeof(optstring) - j, "%c%s",
++				      nft_options[i].val,
++				      nft_options[i].arg ? ":" : "");
+ 	}
+ 	return optstring;
+ }
+-- 
+2.20.1
 
-how did the 2.8 GB wireguard udp traffic magically pass the stateless
-raw table with only 417M bytes in the udp rule?
-
-iptables --verbose --list --table raw
-Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source
-destination
-  17M 4378M INBOUND    all  --  wan    any     anywhere             anywhere
-  22M   20G ACCEPT     tcp  --  any    any     anywhere             anywhere
-2802K  417M ACCEPT     udp  --  any    any     anywhere             anywhere
-3678K  299M ACCEPT     icmp --  any    any     anywhere             anywhere
-  256  131K DROP       all  --  any    any     anywhere             anywhere
