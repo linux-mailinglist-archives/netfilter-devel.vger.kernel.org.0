@@ -2,67 +2,68 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DA31C39F4
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 May 2020 14:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08961C498F
+	for <lists+netfilter-devel@lfdr.de>; Tue,  5 May 2020 00:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgEDMx4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 4 May 2020 08:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725941AbgEDMx4 (ORCPT
+        id S1728132AbgEDW2N convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 4 May 2020 18:28:13 -0400
+Received: from mail.palitramed.ru ([84.53.237.5]:42461 "EHLO
+        mail.palitramed.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgEDW2N (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 4 May 2020 08:53:56 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F129DC061A0E
-        for <netfilter-devel@vger.kernel.org>; Mon,  4 May 2020 05:53:55 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1jVabY-000797-FJ; Mon, 04 May 2020 14:53:52 +0200
-Date:   Mon, 4 May 2020 14:53:52 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH 3/4] segtree: Merge get_set_interval_find() and
- get_set_interval_end()
-Message-ID: <20200504125352.GA11061@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-References: <20200430151408.32283-1-phil@nwl.cc>
- <20200430151408.32283-4-phil@nwl.cc>
- <20200430153729.GA3602@salvia>
- <20200430154113.GB3602@salvia>
+        Mon, 4 May 2020 18:28:13 -0400
+X-Greylist: delayed 25938 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 May 2020 18:28:12 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.palitramed.ru (Postfix) with ESMTP id 025EF1DE6892;
+        Mon,  4 May 2020 16:10:34 +0300 (MSK)
+Received: from mail.palitramed.ru ([127.0.0.1])
+        by localhost (mail.palitramed.ru [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ekfIWR6wozIF; Mon,  4 May 2020 16:10:33 +0300 (MSK)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.palitramed.ru (Postfix) with ESMTP id 290C21DE85B6;
+        Mon,  4 May 2020 16:10:31 +0300 (MSK)
+X-Virus-Scanned: amavisd-new at palitramed.ru
+Received: from mail.palitramed.ru ([127.0.0.1])
+        by localhost (mail.palitramed.ru [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id UQcbOnX4PqDL; Mon,  4 May 2020 16:10:31 +0300 (MSK)
+Received: from [192.168.8.102] (unknown [154.120.80.216])
+        by mail.palitramed.ru (Postfix) with ESMTPA id 99E081DE66DF;
+        Mon,  4 May 2020 16:10:25 +0300 (MSK)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430154113.GB3602@salvia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: for your information and immediate action!!
+To:     Recipients <gigltd@gigltd.net>
+From:   "MT103" <gigltd@gigltd.net>
+Date:   Mon, 04 May 2020 06:10:19 -0700
+Reply-To: craiigdonaldson@indamail.hu
+X-Antivirus: Avast (VPS 200503-0, 05/03/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <20200504131025.99E081DE66DF@mail.palitramed.ru>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
+Attention
 
-On Thu, Apr 30, 2020 at 05:41:13PM +0200, Pablo Neira Ayuso wrote:
-> On Thu, Apr 30, 2020 at 05:37:29PM +0200, Pablo Neira Ayuso wrote:
-> > On Thu, Apr 30, 2020 at 05:14:07PM +0200, Phil Sutter wrote:
-> > > Both functions were very similar already. Under the assumption that they
-> > > will always either see a range (or start of) that matches exactly or not
-> > > at all, reduce complexity and make get_set_interval_find() accept NULL
-> > > (left or) right values. This way it becomes a full replacement for
-> > > get_set_interval_end().
-> > 
-> > I have to go back to the commit log of this patch, IIRC my intention
-> > here was to allow users to ask for a single element, then return the
-> > range that contains it.
+Kindly reconfirm if you are the one that authorized your outstanding payment to be transferred to the provided bank account details below:
 
-[...]
+Bank name: Nordea Bank
+Bank Branch : Vantaa-Finland,
+Swift BIC:NDEAFIHH,
+Account Name: Paivikki Riikonen
+IBAN: FI2112345600423078
 
-> BTW, are get commands to the pipapo set working like this too?
+Kindly notify us if there is any change of bank account before we proceed with the transfer. Please note , your fund balance valued at $10.5 Million United States Dollars shall be paid via telegraphic wired transfer (MT103) and all supportive documents sent to you for verification and authentication.
 
-Yes, indeed they do. I added some lines to cover concatenated ranges in
-sets/0034get_element_0 shell test, will push it out along with this
-series.
+kindly confirm receipt of this notification, failure to hearing from you, we shall not be held liable for any wrong payment posting.
 
-Thanks, Phil
+Yours faithfully,
+
+-- 
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
+
