@@ -2,143 +2,107 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828481C7809
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 May 2020 19:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC3E1C792B
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 May 2020 20:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbgEFRev (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 6 May 2020 13:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
+        id S1729757AbgEFSQ1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 6 May 2020 14:16:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbgEFRev (ORCPT
+        with ESMTP id S1728834AbgEFSQ1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 6 May 2020 13:34:51 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A2DC061A0F
-        for <netfilter-devel@vger.kernel.org>; Wed,  6 May 2020 10:34:51 -0700 (PDT)
-Received: from localhost ([::1]:58768 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1jWNwX-0002nZ-Uf; Wed, 06 May 2020 19:34:50 +0200
-From:   Phil Sutter <phil@nwl.cc>
+        Wed, 6 May 2020 14:16:27 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188CEC061A10
+        for <netfilter-devel@vger.kernel.org>; Wed,  6 May 2020 11:16:27 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id g12so3819287wmh.3
+        for <netfilter-devel@vger.kernel.org>; Wed, 06 May 2020 11:16:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gEsdkbpjSSud3rBKiZEKc6BAa94PnVJY+KjLicPdAok=;
+        b=p14/TxlHuHfyz77uSOpupAaWfxDx/OQ/URKaInfN6cjbSQCrdfCroZkEmtp6bjG0ea
+         htjmSRr9Fa9Zj3SAN+rEyevU3ugJTWWNIDQAjeTIgcWJTHZbjJCP2d1maclZDUR9pqNi
+         /hRCuPOmQFFXhIJqCDVCJ6zvpqPmpQY3pkhTHQsgJ3rgzunR/stdkohoTHfKB/F2bLwc
+         dmwshWE//QtgqRxn5Vjrp4syWcWKO+4ER7o7TuCf8NCVrOcwS+OdD+pd0MgqTG5FhzjS
+         FnCuv1R1xUG2pau/QSqJHcEGTjMy9+aMOnoIjgW3RmrZU3rk55d2cNlyhsuP8oYsqXTf
+         X3pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gEsdkbpjSSud3rBKiZEKc6BAa94PnVJY+KjLicPdAok=;
+        b=jdheeZ/Fu8BdQypTIysxC1SBzSrchv4QC0KvdGZKZDc6/VsZC4VXAgO8Zuv66UZvzL
+         lF5QSGsOmeeMebbnwMPv54u73ZT/tsCCFUxuiFSGGa+EPa9s5WTICsi7AWYdhUzki0wV
+         IdBb++DXHr12AdXMxFETcQ/5woqs2LHFrqxCrIWDFkUxh+/le9z/ZFhFMQu2S+njt/lw
+         QewZ0otEpg8wLXwxWzQf6x+1M+2u633uOrrsry3g2LD83h3FpzrWIseWcgvC/Cdh174/
+         7nQY1xdsYr8PYG1QyUEyJU6IgTRt+kgvW9mlBWZ1bcHGpsZjopjl2/zGyiXS2KMb88ny
+         Mcyg==
+X-Gm-Message-State: AGi0PuZ2A7ofNCy3DQcNjSNTwSRNBypTfhLm3QPh67ejxmmgfpdvVnRE
+        OD04PtepVdEBrQcEvxzXM9Fzzw==
+X-Google-Smtp-Source: APiQypLFsR+p/YR8vk2oyyPjQ3oflcDldNRNiRy/olMaH3pCQSBZNRnrs0Hh/emY5jFHAi28Itmpjw==
+X-Received: by 2002:a7b:c7d2:: with SMTP id z18mr6151593wmk.72.1588788985747;
+        Wed, 06 May 2020 11:16:25 -0700 (PDT)
+Received: from localhost (jirka.pirko.cz. [84.16.102.26])
+        by smtp.gmail.com with ESMTPSA id d5sm3953874wrp.44.2020.05.06.11.16.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 11:16:25 -0700 (PDT)
+Date:   Wed, 6 May 2020 20:16:24 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 15/15] nft: Don't exit early after printing help texts
-Date:   Wed,  6 May 2020 19:33:31 +0200
-Message-Id: <20200506173331.9347-16-phil@nwl.cc>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200506173331.9347-1-phil@nwl.cc>
-References: <20200506173331.9347-1-phil@nwl.cc>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, ecree@solarflare.com, kuba@kernel.org
+Subject: Re: [PATCH net,v3] net: flow_offload: skip hw stats check for
+ FLOW_ACTION_HW_STATS_DONT_CARE
+Message-ID: <20200506181624.GC2269@nanopsycho.orion>
+References: <20200506115539.21018-1-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506115539.21018-1-pablo@netfilter.org>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Follow regular code path after handling --help option to gracefully
-deinit and free stuff.
+Wed, May 06, 2020 at 01:55:39PM CEST, pablo@netfilter.org wrote:
+>This patch adds FLOW_ACTION_HW_STATS_DONT_CARE which tells the driver
+>that the frontend does not need counters, this hw stats type request
+>never fails. The FLOW_ACTION_HW_STATS_DISABLED type explicitly requests
+>the driver to disable the stats, however, if the driver cannot disable
+>counters, it bails out.
+>
+>TCA_ACT_HW_STATS_* maintains the 1:1 mapping with FLOW_ACTION_HW_STATS_*
+>except by disabled which is mapped to FLOW_ACTION_HW_STATS_DISABLED
+>(this is 0 in tc). Add tc_act_hw_stats() to perform the mapping between
+>TCA_ACT_HW_STATS_* and FLOW_ACTION_HW_STATS_*.
+>
+>Fixes: 319a1d19471e ("flow_offload: check for basic action hw stats type")
+>Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+>---
+>v3: update mlxsw to handle _DONT_CARE.
+>
+> .../net/ethernet/mellanox/mlxsw/spectrum_flower.c  |  2 +-
+> include/net/flow_offload.h                         |  9 ++++++++-
+> net/sched/cls_api.c                                | 14 ++++++++++++--
+> 3 files changed, 21 insertions(+), 4 deletions(-)
+>
+>diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_flower.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_flower.c
+>index 51117a5a6bbf..81d0b3481479 100644
+>--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_flower.c
+>+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_flower.c
+>@@ -36,7 +36,7 @@ static int mlxsw_sp_flower_parse_actions(struct mlxsw_sp *mlxsw_sp,
+> 		err = mlxsw_sp_acl_rulei_act_count(mlxsw_sp, rulei, extack);
+> 		if (err)
+> 			return err;
+>-	} else if (act->hw_stats != FLOW_ACTION_HW_STATS_DISABLED) {
+>+	} else if (act->hw_stats == FLOW_ACTION_HW_STATS_DELAYED) {
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/xtables-arp.c | 10 +++++-----
- iptables/xtables-eb.c  |  2 +-
- iptables/xtables.c     |  7 ++++---
- 3 files changed, 10 insertions(+), 9 deletions(-)
+I think that better is:
+	} else if (act->hw_stats != FLOW_ACTION_HW_STATS_DISABLED &&
+		   act->hw_stats != FLOW_ACTION_HW_STATS_DONT_CARE) {
 
-diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
-index e64938fbf5d36..8632774dfb705 100644
---- a/iptables/xtables-arp.c
-+++ b/iptables/xtables-arp.c
-@@ -235,7 +235,7 @@ exit_tryhelp(int status)
- }
- 
- static void
--exit_printhelp(void)
-+printhelp(void)
- {
- 	struct xtables_target *t = NULL;
- 	int i;
-@@ -325,7 +325,6 @@ exit_printhelp(void)
- 		printf("\n");
- 		t->help();
- 	}
--	exit(0);
- }
- 
- static char
-@@ -666,7 +665,8 @@ int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
- 			if (!optarg)
- 				optarg = argv[optind];
- 
--			exit_printhelp();
-+			printhelp();
-+			command = CMD_NONE;
- 			break;
- 		case 's':
- 			check_inverse(optarg, &invert, &optind, argc);
-@@ -881,8 +881,6 @@ int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
- 	if (optind < argc)
- 		xtables_error(PARAMETER_PROBLEM,
- 			      "unknown arguments found on commandline");
--	if (!command)
--		xtables_error(PARAMETER_PROBLEM, "no command specified");
- 	if (invert)
- 		xtables_error(PARAMETER_PROBLEM,
- 			      "nothing appropriate following !");
-@@ -1009,6 +1007,8 @@ int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
- 			xtables_error(PARAMETER_PROBLEM, "Wrong policy `%s'\n",
- 				      policy);
- 		break;
-+	case CMD_NONE:
-+		break;
- 	default:
- 		/* We should never reach this... */
- 		exit_tryhelp(2);
-diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index 5764d1803cba7..375a95d1d5c75 100644
---- a/iptables/xtables-eb.c
-+++ b/iptables/xtables-eb.c
-@@ -1218,7 +1218,7 @@ print_zero:
- 
- 	if (command == 'h' && !(flags & OPT_ZERO)) {
- 		print_help(cs.target, cs.matches, *table);
--		exit(0);
-+		ret = 1;
- 	}
- 
- 	/* Do the final checks */
-diff --git a/iptables/xtables.c b/iptables/xtables.c
-index 63a37ae867069..9d2e441e0b773 100644
---- a/iptables/xtables.c
-+++ b/iptables/xtables.c
-@@ -161,7 +161,7 @@ exit_tryhelp(int status)
- }
- 
- static void
--exit_printhelp(const struct xtables_rule_match *matches)
-+printhelp(const struct xtables_rule_match *matches)
- {
- 	printf("%s v%s\n\n"
- "Usage: %s -[ACD] chain rule-specification [options]\n"
-@@ -240,7 +240,6 @@ exit_printhelp(const struct xtables_rule_match *matches)
- "[!] --version	-V		print package version.\n");
- 
- 	print_extension_helps(xtables_targets, matches);
--	exit(0);
- }
- 
- void
-@@ -724,7 +723,9 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
- 				xtables_find_match(cs->protocol,
- 					XTF_TRY_LOAD, &cs->matches);
- 
--			exit_printhelp(cs->matches);
-+			printhelp(cs->matches);
-+			p->command = CMD_NONE;
-+			return;
- 
- 			/*
- 			 * Option selection
--- 
-2.25.1
-
+> 		NL_SET_ERR_MSG_MOD(extack, "Unsupported action HW stats type");
+> 		return -EOPNOTSUPP;
+> 	}
