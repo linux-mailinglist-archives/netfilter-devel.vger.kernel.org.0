@@ -2,113 +2,67 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DFC1C6F61
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 May 2020 13:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFEA1C6F91
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 May 2020 13:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgEFLdi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 6 May 2020 07:33:38 -0400
-Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:53606 "EHLO
-        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725887AbgEFLdi (ORCPT
+        id S1727812AbgEFLo0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 6 May 2020 07:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726843AbgEFLoY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 6 May 2020 07:33:38 -0400
-Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.60])
-        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 4784F6007C;
-        Wed,  6 May 2020 11:33:37 +0000 (UTC)
-Received: from us4-mdac16-58.ut7.mdlocal (unknown [10.7.66.29])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 45D762009A;
-        Wed,  6 May 2020 11:33:37 +0000 (UTC)
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from mx1-us1.ppe-hosted.com (unknown [10.7.66.35])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id C2C761C004F;
-        Wed,  6 May 2020 11:33:36 +0000 (UTC)
-Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id EA1EF480059;
-        Wed,  6 May 2020 11:33:35 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
- (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 6 May 2020
- 12:33:29 +0100
-Subject: Re: [PATCH net,v2] net: flow_offload: skip hw stats check for
- FLOW_ACTION_HW_STATS_DONT_CARE
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-CC:     <netfilter-devel@vger.kernel.org>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>, <jiri@resnulli.us>
-References: <20200505174736.29414-1-pablo@netfilter.org>
- <20200505114010.132abebd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200505193145.GA9789@salvia>
- <20200505124343.27897ad6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200505214321.GA13591@salvia>
- <20200505162942.393ed266@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <e8de6def-8232-598a-6724-e790296a251b@solarflare.com>
-Date:   Wed, 6 May 2020 12:33:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Wed, 6 May 2020 07:44:24 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68EADC061A0F
+        for <netfilter-devel@vger.kernel.org>; Wed,  6 May 2020 04:44:24 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id w4so1763140ioc.6
+        for <netfilter-devel@vger.kernel.org>; Wed, 06 May 2020 04:44:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=jtzU0sZOPdX5FbgdAAINvzrzWTLzUqccHXXnkXVokz0=;
+        b=FO9s2GNWdWCaTfPpJixFUWXlchdMP9aXU0gYV802rp6/UBiUibzsXmU4VP26rciezl
+         I0qsMjjAJs1tP+qvbZwQxEWByH6O9ZMsF+vgCAc7jgPDb1jzDC/APbLVF9/MULfjuLrV
+         z33mfGSD6Iue2rdzIA5b0CDvCVl/yLgUteamsLdBJji4w5Kg+pkRaP9imR7s3AJTVtx+
+         E3SmYxxQJlKC35sJuqBLSxJ1RndOQOTauBxBX3fzrk5VVbK0laYI7F49SOymTF4mUFWa
+         wqZsxT+3hm3mrybgXDWQOsnQuHRE8UsbWSeuj3BA39beZbpcxyCxhioIU0o7JPvRLQj/
+         O9cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=jtzU0sZOPdX5FbgdAAINvzrzWTLzUqccHXXnkXVokz0=;
+        b=in9jQgycxkBeoXZCTYZifQpN45lgPelJFirvlf0FcXuZq0lAFo4yw5CRNyR/tjo1oh
+         Y0tssyH0fi8OlWcpOuMlBsT9cp4fsKaTTwmXUE7dK6GlkYvBkGz1s7tFz4pwbP+JMwb7
+         eTmPZ82M8M+MWI/82GfHa5kSJUcLs8yO3T3XsEdlxGYI8GkvpY45n+GSqng6xC9VvApk
+         R76QG698e2WtWGz/hSrKpWLEtB6PxQNndp4g9OlYkLnKiP4rss5C6SmCTbsve676v0nJ
+         MlMnmnDLMTmM2M5+gApvKQreU25Sefe0OCiAQ5MS7hAY2mewJoATh2jgviAewKXMfMs7
+         U41g==
+X-Gm-Message-State: AGi0PuaGGe/Urlqo9yl63jBSNTD5u0h+ymJoDo2eejZXQ8TdgIVAYLiX
+        +BRc8JMWwrU4SHhayWXWm7Quc1cRfcNVIzx/5DGfOFfBJLs=
+X-Google-Smtp-Source: APiQypICQsoQ6Pe/nus5scKinpZPUYzigYeiudjUi/234G5wdSj/aP/Q7Mc4PdgjE8DfJQSl//D+O56rlEtdFRbAAEU=
+X-Received: by 2002:a05:6638:44f:: with SMTP id r15mr4401493jap.84.1588765463573;
+ Wed, 06 May 2020 04:44:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200505162942.393ed266@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.17.20.203]
-X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
- ukex01.SolarFlarecom.com (10.17.10.4)
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1020-25402.001
-X-TM-AS-Result: No-1.360000-8.000000-10
-X-TMASE-MatchedRID: xcONGPdDH5q8rRvefcjeTfZvT2zYoYOwC/ExpXrHizz6I9i0e8hghcfB
-        RYvA7Qimi2Vy1lps1qHlUb21iTHhT6ZY4PxfRMWEQ24lJ40XApgbAqzdFRyxuESbbPTiMagTgMp
-        BuJUGNe3B0ki7dmSgF3rBsLkzYdezjaYSACRQiDd3wUVuihU/jpAoP2KG7EfPAa6hrn8pQDCNBv
-        RmKMdxcCoLt8AP659Oeb3f20kKgFL4kBiMXhevoVD5LQ3Tl9H7AQ8mtiWx//qbuvvgpZZI+ZGE1
-        OovlhYFD6bYMz71y+Jy8eYYZSzHFUKPluOEKT3/GJADAbBHGUxUIaneDj+GO9EZrmyNM/Ru1gVf
-        qaZEz0Y93QAR2QK7TAdcruc0/YQGWAPmaH6lUzUcLuEDP+gqcn2K69afcnwqwCTIeJgMBBt2UK6
-        xU6n4PzxhqvlusG8LCn8TaV9gGVxNfs8n85Te8oMbH85DUZXy3QfwsVk0UbsIoUKaF27lxRLFe2
-        Pv+4fcApe+rkXSUUsw2YFU65oCoKvPjrTp1tjW26FBdjXvnBXnoooiiK1rxT14trqG5oXoSMDTC
-        Dmd7+xum14wZGJWfaKAQfLsnhLrKWSt4DmvbhpicKLmK2TeKmsPn5C6nWpTnqg/VrSZEiM=
-X-TM-AS-User-Approved-Sender: Yes
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--1.360000-8.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1020-25402.001
-X-MDID: 1588764817-23GW24dK6FNV
+From:   Etienne Champetier <champetier.etienne@gmail.com>
+Date:   Wed, 6 May 2020 07:44:12 -0400
+Message-ID: <CAOdf3gqGQQCFJ8O8KVM7fVBYcKLy=UCf+AOvEdaoArMAx98ezg@mail.gmail.com>
+Subject: iptables 1.8.5 ETA ?
+To:     pablo@netfilter.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 06/05/2020 00:29, Jakub Kicinski wrote:
-> IIRC we went from the pure bitfield implementation (which was my
-> preference) to one where 0 means disabled.
->
-> Unfortunately we ended up with a convoluted API where drivers have to
-> check for magic 0 or 'any' values.
-Yeah, I said something dumb a couple of threads ago and combined the
- good idea (a DISABLED bit) with the bad idea (0 as magic DONT_CARE
- value), sorry for leading Pablo on a bit of a wild goose chase there.
-(It has some slightly nice properties if you're trying to write out-of-
- tree drivers that work with multiple kernel versions, but that's never
- a good argument for anything, especially when it requires a bunch of
- extra code in the in-tree drivers to handle it.)
+Hi All,
 
-> On Tue, 5 May 2020 23:43:21 +0200 Pablo Neira Ayuso wrote:
->> And what is the semantic for 0 (no bit set) in the kernel in your
->> proposal?
-It's illegal, the kernel never does it, and if it ever does then the
- correct response from drivers is to say "None of the things I can
- support (including DISABLED) were in the bitmask, so -EOPNOTSUPP".
-Which is what drivers written in the natural way will do, for free.
+Pablo told me 3 weeks ago that "It might take a few weeks to make the
+new release."
+(https://bugzilla.netfilter.org/show_bug.cgi?id=1422#c13)
 
->> Jiri mentioned there will be more bits coming soon. How will you
->> extend this model (all bit set on for DONT_CARE) if new bits with
->> specific semantics are showing up?
-If those bits are additive (e.g. a new type like IMMEDIATE and
- DISABLED), then all-bits-on works fine.  If they're orthogonal flags,
- ideally there should be two bits, one for "flag OFF is acceptable"
- and one for "flag ON is acceptable", that way 0b11 still means don't
- care.  And 0b00 gets EOPNOTSUPP regardless of the rest of the bits.
+I'm sure it'll be release when it's ready :) but do you see an
+iptables release happening this month ? (to know if I should just wait
+or go ask maintainers for backports)
 
->> Combining ANY | DISABLED is non-sense, it should be rejected.
-It's not nonsense; it means what it says ("I accept any of the modes
- (which enable stats); I also accept disabled stats").
-
--ed
+Thanks
+Etienne
