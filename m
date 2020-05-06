@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9FE1C7803
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 May 2020 19:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0428B1C77FB
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 May 2020 19:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbgEFReY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 6 May 2020 13:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
+        id S1729334AbgEFRd6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 6 May 2020 13:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbgEFReY (ORCPT
+        with ESMTP id S1728047AbgEFRd5 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 6 May 2020 13:34:24 -0400
+        Wed, 6 May 2020 13:33:57 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18EFFC061A0F
-        for <netfilter-devel@vger.kernel.org>; Wed,  6 May 2020 10:34:24 -0700 (PDT)
-Received: from localhost ([::1]:58738 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C29C061A0F
+        for <netfilter-devel@vger.kernel.org>; Wed,  6 May 2020 10:33:57 -0700 (PDT)
+Received: from localhost ([::1]:58708 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1jWNw6-0002lh-U5; Wed, 06 May 2020 19:34:22 +0200
+        id 1jWNvg-0002jq-FE; Wed, 06 May 2020 19:33:56 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 03/15] nft: Avoid use-after-free when rebuilding cache
-Date:   Wed,  6 May 2020 19:33:19 +0200
-Message-Id: <20200506173331.9347-4-phil@nwl.cc>
+Subject: [iptables PATCH 04/15] nft: Call nft_release_cache() in nft_fini()
+Date:   Wed,  6 May 2020 19:33:20 +0200
+Message-Id: <20200506173331.9347-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200506173331.9347-1-phil@nwl.cc>
 References: <20200506173331.9347-1-phil@nwl.cc>
@@ -35,80 +35,26 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-By the time nft_action() decides to rebuild the cache, nft_cmd structs
-have been freed already and therefore table and chain names in
-nft_cache_req point to invalid memory.
-
-Fix this by duplicating the strings and freeing them when releasing the
-cache.
+In contrast to flush_chain_cache(), this will also clean up cache_req.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-cache.c | 14 ++++++++++----
- iptables/nft.h       |  4 ++--
- 2 files changed, 12 insertions(+), 6 deletions(-)
+ iptables/nft.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/iptables/nft-cache.c b/iptables/nft-cache.c
-index 83af9a2f689e1..84ea97d3e54a6 100644
---- a/iptables/nft-cache.c
-+++ b/iptables/nft-cache.c
-@@ -39,7 +39,7 @@ static void cache_chain_list_insert(struct list_head *list, const char *name)
- 	}
+diff --git a/iptables/nft.c b/iptables/nft.c
+index d2796fcd8ad26..6503259eb443e 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -855,7 +855,7 @@ void nft_fini(struct nft_handle *h)
+ 	list_for_each_entry_safe(cmd, next, &h->cmd_list, head)
+ 		nft_cmd_free(cmd);
  
- 	new = xtables_malloc(sizeof(*new));
--	new->name = name;
-+	new->name = strdup(name);
- 	list_add_tail(&new->head, pos ? &pos->head : list);
+-	flush_chain_cache(h, NULL);
++	nft_release_cache(h);
+ 	mnl_socket_close(h->nl);
  }
  
-@@ -54,7 +54,10 @@ void nft_cache_level_set(struct nft_handle *h, int level,
- 	if (!cmd || !cmd->table || req->all_chains)
- 		return;
- 
--	req->table = cmd->table;
-+	if (!req->table)
-+		req->table = strdup(cmd->table);
-+	else
-+		assert(!strcmp(req->table, cmd->table));
- 
- 	if (!cmd->chain) {
- 		req->all_chains = true;
-@@ -663,11 +666,14 @@ void nft_release_cache(struct nft_handle *h)
- 
- 	if (req->level != NFT_CL_FAKE)
- 		req->level = NFT_CL_TABLES;
--	req->table = NULL;
--
-+	if (req->table) {
-+		free(req->table);
-+		req->table = NULL;
-+	}
- 	req->all_chains = false;
- 	list_for_each_entry_safe(cc, cc_tmp, &req->chain_list, head) {
- 		list_del(&cc->head);
-+		free(cc->name);
- 		free(cc);
- 	}
- }
-diff --git a/iptables/nft.h b/iptables/nft.h
-index 045393da7c179..aeacc608fcb9f 100644
---- a/iptables/nft.h
-+++ b/iptables/nft.h
-@@ -73,12 +73,12 @@ enum obj_update_type {
- 
- struct cache_chain {
- 	struct list_head head;
--	const char *name;
-+	char *name;
- };
- 
- struct nft_cache_req {
- 	enum nft_cache_level	level;
--	const char		*table;
-+	char			*table;
- 	bool			all_chains;
- 	struct list_head	chain_list;
- };
 -- 
 2.25.1
 
