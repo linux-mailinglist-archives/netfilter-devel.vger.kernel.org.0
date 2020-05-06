@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156571C7808
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 May 2020 19:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0AC61C77FD
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 May 2020 19:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728619AbgEFReq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 6 May 2020 13:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51080 "EHLO
+        id S1729425AbgEFReI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 6 May 2020 13:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbgEFRep (ORCPT
+        with ESMTP id S1728047AbgEFReI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 6 May 2020 13:34:45 -0400
+        Wed, 6 May 2020 13:34:08 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC917C061A0F
-        for <netfilter-devel@vger.kernel.org>; Wed,  6 May 2020 10:34:45 -0700 (PDT)
-Received: from localhost ([::1]:58762 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A76C061A0F
+        for <netfilter-devel@vger.kernel.org>; Wed,  6 May 2020 10:34:08 -0700 (PDT)
+Received: from localhost ([::1]:58720 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1jWNwS-0002nC-L9; Wed, 06 May 2020 19:34:44 +0200
+        id 1jWNvr-0002ka-1v; Wed, 06 May 2020 19:34:07 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 07/15] nft: Clear all lists in nft_fini()
-Date:   Wed,  6 May 2020 19:33:23 +0200
-Message-Id: <20200506173331.9347-8-phil@nwl.cc>
+Subject: [iptables PATCH 08/15] nft: Fix leaks in ebt_add_policy_rule()
+Date:   Wed,  6 May 2020 19:33:24 +0200
+Message-Id: <20200506173331.9347-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200506173331.9347-1-phil@nwl.cc>
 References: <20200506173331.9347-1-phil@nwl.cc>
@@ -35,39 +35,69 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Remove and free any pending entries in obj_list and err_list as well. To
-get by without having to declare list-specific cursors, use generic
-list_head types and call list_entry() explicitly.
+The function leaked memory allocated in temporary struct
+iptables_command_state, clean it immediately after use.
 
+In any of the udata-related error cases, allocated nftnl_rule would
+leak, fix this by introducing a common error path to goto.
+
+In regular code path, the allocated nftnl_rule would still leak:
+batch_obj_del() does not free rules in NFT_COMPAT_RULE_APPEND jobs, as
+they typically sit in cache as well. Policy rules in turn weren't added
+to cache: They are created immediately before commit and never
+referenced from other rules. Add them now so they are freed just like
+regular rules.
+
+Fixes: aff1162b3e4b7 ("ebtables-nft: Support user-defined chain policies")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ iptables/nft.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/iptables/nft.c b/iptables/nft.c
-index 6503259eb443e..addde1b53f37e 100644
+index addde1b53f37e..c0b5e2fc524a7 100644
 --- a/iptables/nft.c
 +++ b/iptables/nft.c
-@@ -850,10 +850,16 @@ int nft_init(struct nft_handle *h, int family, const struct builtin_table *t)
+@@ -2970,27 +2970,33 @@ static int ebt_add_policy_rule(struct nftnl_chain *c, void *data)
  
- void nft_fini(struct nft_handle *h)
- {
--	struct nft_cmd *cmd, *next;
-+	struct list_head *pos, *n;
- 
--	list_for_each_entry_safe(cmd, next, &h->cmd_list, head)
--		nft_cmd_free(cmd);
-+	list_for_each_safe(pos, n, &h->cmd_list)
-+		nft_cmd_free(list_entry(pos, struct nft_cmd, head));
+ 	r = nft_rule_new(h, nftnl_chain_get_str(c, NFTNL_CHAIN_NAME),
+ 			 nftnl_chain_get_str(c, NFTNL_CHAIN_TABLE), &cs);
++	ebt_cs_clean(&cs);
 +
-+	list_for_each_safe(pos, n, &h->obj_list)
-+		batch_obj_del(h, list_entry(pos, struct obj_update, head));
-+
-+	list_for_each_safe(pos, n, &h->err_list)
-+		mnl_err_list_free(list_entry(pos, struct mnl_err, head));
+ 	if (!r)
+ 		return -1;
  
- 	nft_release_cache(h);
- 	mnl_socket_close(h->nl);
+ 	udata = nftnl_udata_buf_alloc(NFT_USERDATA_MAXLEN);
+ 	if (!udata)
+-		return -1;
++		goto err_free_rule;
+ 
+ 	if (!nftnl_udata_put_u32(udata, UDATA_TYPE_EBTABLES_POLICY, 1))
+-		return -1;
++		goto err_free_rule;
+ 
+ 	nftnl_rule_set_data(r, NFTNL_RULE_USERDATA,
+ 			    nftnl_udata_buf_data(udata),
+ 			    nftnl_udata_buf_len(udata));
+ 	nftnl_udata_buf_free(udata);
+ 
+-	if (!batch_rule_add(h, NFT_COMPAT_RULE_APPEND, r)) {
+-		nftnl_rule_free(r);
+-		return -1;
+-	}
++	if (!batch_rule_add(h, NFT_COMPAT_RULE_APPEND, r))
++		goto err_free_rule;
++
++	/* add the rule to chain so it is freed later */
++	nftnl_chain_rule_add_tail(r, c);
+ 
+ 	return 0;
++err_free_rule:
++	nftnl_rule_free(r);
++	return -1;
+ }
+ 
+ int ebt_set_user_chain_policy(struct nft_handle *h, const char *table,
 -- 
 2.25.1
 
