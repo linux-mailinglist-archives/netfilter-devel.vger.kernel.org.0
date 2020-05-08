@@ -2,44 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBE31CAE34
-	for <lists+netfilter-devel@lfdr.de>; Fri,  8 May 2020 15:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C0A1CB70D
+	for <lists+netfilter-devel@lfdr.de>; Fri,  8 May 2020 20:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729412AbgEHNHi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 8 May 2020 09:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729323AbgEHNHh (ORCPT
+        id S1726636AbgEHSXd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 8 May 2020 14:23:33 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40895 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726873AbgEHSXc (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 8 May 2020 09:07:37 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB0EC05BD43
-        for <netfilter-devel@vger.kernel.org>; Fri,  8 May 2020 06:07:37 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1jX2j0-0004Wd-UK; Fri, 08 May 2020 15:07:34 +0200
-Date:   Fri, 8 May 2020 15:07:34 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: ETA of libnetfilter_queue-1.0.4?
-Message-ID: <20200508130734.GE15009@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
+        Fri, 8 May 2020 14:23:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588962211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=myo8Tk8TgNvVtlGSwYNrPjsKmagFJfTNCigTo/58By4=;
+        b=JHmUe4o/ttXy79mccQj2N1FHS33sf2+BT6Tn092KVfBVCd3VNobFm0JYtg9Fj6NNl7V7Hu
+        bFYSLf+mvgFq07jKm/BK2c4VYtrm2QVI1Rffu+TCJYr9osFDfkeaudhwrLALXiIXlh/UQg
+        qXbhQQSWIE6cL3VWJ2WM82r1ujpxjUw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-5zrj16gVMhmfL_UvzKa_wg-1; Fri, 08 May 2020 14:23:27 -0400
+X-MC-Unique: 5zrj16gVMhmfL_UvzKa_wg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBDC0107ACF9;
+        Fri,  8 May 2020 18:23:25 +0000 (UTC)
+Received: from x2.localnet (ovpn-113-49.phx2.redhat.com [10.3.113.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 57FFA6AD1B;
+        Fri,  8 May 2020 18:23:18 +0000 (UTC)
+From:   Steve Grubb <sgrubb@redhat.com>
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, omosnace@redhat.com, fw@strlen.de,
+        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
+        ebiederm@xmission.com, tgraf@infradead.org
+Subject: Re: [PATCH ghak25 v4 3/3] audit: add subj creds to NETFILTER_CFG record to cover async unregister
+Date:   Fri, 08 May 2020 14:23:17 -0400
+Message-ID: <1894903.vQEQaK82eK@x2>
+Organization: Red Hat
+In-Reply-To: <20200506224233.najv6ltb5gzcicqb@madcap2.tricolour.ca>
+References: <cover.1587500467.git.rgb@redhat.com> <3250272.v6NOfJhyum@x2> <20200506224233.najv6ltb5gzcicqb@madcap2.tricolour.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
+On Wednesday, May 6, 2020 6:42:33 PM EDT Richard Guy Briggs wrote:
+> > > > We can't be adding deleting fields based on how its triggered. If
+> > > > they are unset, that is fine. The main issue is they have to behave
+> > > > the same.
+> > > 
+> > > I don't think the intent was to have fields swing in and out depending
+> > > on trigger.  The idea is to potentially permanently not include them in
+> > > this record type only.  The justification is that where they aren't
+> > > needed for the kernel trigger situation it made sense to delete them
+> > > because if it is a user context event it will be accompanied by a
+> > > syscall record that already has that information and there would be no
+> > > sense in duplicating it.
+> > 
+> > We should not be adding syscall records to anything that does not result
+> > from a syscall rule triggering the event. Its very wasteful. More
+> > wasteful than just adding the necessary fields.
+> 
+> So what you are saying is you want all the fields that are being
+> proposed to be added to this record?
 
-I was requested to rebase libnetfilter_queue in RHEL. 1.0.3 allegedly
-suffices, but it's 2.5 years old and there are quite a bunch of fixes in
-git. Are you planning to do another release soon?
+Yes.
 
-Cheers, Phil
+> If the records are all from one event, they all should all have the same
+> timestamp/serial number so that the records are kept together and not
+> mistaken for multiple events.
+
+But NETFILTER_CFG is a simple event known to have only 1 record.
+
+> One reason for having information in seperate records is to be able to
+> filter them either in kernel or in userspace if you don't need certain
+> records.
+
+We can't filter out SYSCALL.
+
+-Steve
+
+
