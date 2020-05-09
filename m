@@ -2,30 +2,32 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0925C1CC114
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 May 2020 13:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9511CC116
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 May 2020 13:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbgEILwK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 9 May 2020 07:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
+        id S1728365AbgEILwV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 9 May 2020 07:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726063AbgEILwK (ORCPT
+        by vger.kernel.org with ESMTP id S1726063AbgEILwU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 9 May 2020 07:52:10 -0400
+        Sat, 9 May 2020 07:52:20 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F04C061A0C
-        for <netfilter-devel@vger.kernel.org>; Sat,  9 May 2020 04:52:10 -0700 (PDT)
-Received: from localhost ([::1]:37184 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F5CC061A0C
+        for <netfilter-devel@vger.kernel.org>; Sat,  9 May 2020 04:52:20 -0700 (PDT)
+Received: from localhost ([::1]:37196 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1jXO1Y-0005fY-P3; Sat, 09 May 2020 13:52:08 +0200
+        id 1jXO1j-0005gH-Bv; Sat, 09 May 2020 13:52:19 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 0/2] Critical: Unbreak nfnl_osf tool
-Date:   Sat,  9 May 2020 13:51:58 +0200
-Message-Id: <20200509115200.19480-1-phil@nwl.cc>
+Subject: [iptables PATCH 1/2] nfnl_osf: Fix broken conversion to nfnl_query()
+Date:   Sat,  9 May 2020 13:51:59 +0200
+Message-Id: <20200509115200.19480-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200509115200.19480-1-phil@nwl.cc>
+References: <20200509115200.19480-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
@@ -33,17 +35,38 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-I managed to render nfnl_osf tool useless with my (obviously untested)
-conversion to nfnl_query(). Unbreak it and also fix delete functionality
-which was already broken before I started messing with it.
+Due to missing NLM_F_ACK flag in request, nfnetlink code in kernel
+didn't create an own ACK message but left it upon subsystem to ACK or
+not. Since nfnetlink_osf doesn't ACK by itself, nfnl_query() got stuck
+waiting for a reply.
 
-Phil Sutter (2):
-  nfnl_osf: Fix broken conversion to nfnl_query()
-  nfnl_osf: Improve error handling
+Whoever did the conversion from deprecated nfnl_talk() obviously didn't
+even test basic functionality of the tool.
 
- utils/nfnl_osf.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+Fixes: 52aa15098ebd6 ("nfnl_osf: Replace deprecated nfnl_talk() by nfnl_query()")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ utils/nfnl_osf.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
+diff --git a/utils/nfnl_osf.c b/utils/nfnl_osf.c
+index 15d531975e11d..922d90ac135b7 100644
+--- a/utils/nfnl_osf.c
++++ b/utils/nfnl_osf.c
+@@ -378,9 +378,11 @@ static int osf_load_line(char *buffer, int len, int del)
+ 	memset(buf, 0, sizeof(buf));
+ 
+ 	if (del)
+-		nfnl_fill_hdr(nfnlssh, nmh, 0, AF_UNSPEC, 0, OSF_MSG_REMOVE, NLM_F_REQUEST);
++		nfnl_fill_hdr(nfnlssh, nmh, 0, AF_UNSPEC, 0, OSF_MSG_REMOVE,
++			      NLM_F_ACK | NLM_F_REQUEST);
+ 	else
+-		nfnl_fill_hdr(nfnlssh, nmh, 0, AF_UNSPEC, 0, OSF_MSG_ADD, NLM_F_REQUEST | NLM_F_CREATE);
++		nfnl_fill_hdr(nfnlssh, nmh, 0, AF_UNSPEC, 0, OSF_MSG_ADD,
++			      NLM_F_ACK | NLM_F_REQUEST | NLM_F_CREATE);
+ 
+ 	nfnl_addattr_l(nmh, sizeof(buf), OSF_ATTR_FINGER, &f, sizeof(struct xt_osf_user_finger));
+ 
 -- 
 2.25.1
 
