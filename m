@@ -2,100 +2,116 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF091CC115
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 May 2020 13:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDFD1CC28C
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 May 2020 18:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728326AbgEILwP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 9 May 2020 07:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726063AbgEILwP (ORCPT
+        id S1728224AbgEIQJJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 9 May 2020 12:09:09 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:44441 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727863AbgEIQJJ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 9 May 2020 07:52:15 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E77C061A0C
-        for <netfilter-devel@vger.kernel.org>; Sat,  9 May 2020 04:52:15 -0700 (PDT)
-Received: from localhost ([::1]:37190 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.91)
-        (envelope-from <phil@nwl.cc>)
-        id 1jXO1e-0005fg-2G; Sat, 09 May 2020 13:52:14 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] nfnl_osf: Improve error handling
-Date:   Sat,  9 May 2020 13:52:00 +0200
-Message-Id: <20200509115200.19480-3-phil@nwl.cc>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200509115200.19480-1-phil@nwl.cc>
-References: <20200509115200.19480-1-phil@nwl.cc>
+        Sat, 9 May 2020 12:09:09 -0400
+Received: from dimstar.local.net (n175-34-64-112.sun1.vic.optusnet.com.au [175.34.64.112])
+        by mail105.syd.optusnet.com.au (Postfix) with SMTP id 09D223A3FF2
+        for <netfilter-devel@vger.kernel.org>; Sun, 10 May 2020 02:09:05 +1000 (AEST)
+Received: (qmail 30888 invoked by uid 501); 9 May 2020 16:09:03 -0000
+Date:   Sun, 10 May 2020 02:09:03 +1000
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH libnetfilter_queue 2/2] pktbuff: add pktb_head_alloc(),
+ pktb_setup() and pktb_head_size()
+Message-ID: <20200509160903.GF26529@dimstar.local.net>
+Mail-Followup-To: netfilter-devel@vger.kernel.org
+References: <20200509091141.10619-1-pablo@netfilter.org>
+ <20200509091141.10619-2-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200509091141.10619-2-pablo@netfilter.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
+        a=keeXcwCgVCrAuxOn72dlvA==:117 a=keeXcwCgVCrAuxOn72dlvA==:17
+        a=kj9zAlcOel0A:10 a=sTwFKg_x9MkA:10 a=RSmzAf-M6YYA:10 a=3HDBlxybAAAA:8
+        a=37rGoeeWIGCFrgcYRlgA:9 a=CjuIK1q_8ugA:10 a=laEoCiVfU_Unz3mSdgXN:22
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-For some error cases, no log message was created - hence apart from the
-return code there was no indication of failing execution.
+On Sat, May 09, 2020 at 11:11:41AM +0200, Pablo Neira Ayuso wrote:
+> Add two new helper functions, as alternative to pktb_alloc().
+>
+> * pktb_setup() allows you to skip memcpy()'ing the payload from the
+>   netlink message.
+>
+> * pktb_head_size() returns the size of the pkt_buff opaque object.
+>
+> * pktb_head_alloc() allows you to allocate the pkt_buff in the heap.
+>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> ---
+>  include/libnetfilter_queue/pktbuff.h |  7 +++++++
+>  src/extra/pktbuff.c                  | 20 ++++++++++++++++++++
+>  2 files changed, 27 insertions(+)
+>
+> diff --git a/include/libnetfilter_queue/pktbuff.h b/include/libnetfilter_queue/pktbuff.h
+> index 42bc153ec337..a27582b02840 100644
+> --- a/include/libnetfilter_queue/pktbuff.h
+> +++ b/include/libnetfilter_queue/pktbuff.h
+> @@ -6,6 +6,13 @@ struct pkt_buff;
+>  struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra);
+>  void pktb_free(struct pkt_buff *pktb);
+>
+> +#define NFQ_BUFFER_SIZE	(0xffff + (MNL_SOCKET_BUFFER_SIZE / 2)
+> +struct pkt_buff *pktb_setup(struct pkt_buff *pktb, int family, uint8_t *data,
+> +			    size_t len, size_t extra);
+> +size_t pktb_head_size(void);
+> +
+> +#define pktb_head_alloc()	(struct pkt_buff *)(malloc(pktb_head_size()))
+> +
+>  uint8_t *pktb_data(struct pkt_buff *pktb);
+>  uint32_t pktb_len(struct pkt_buff *pktb);
+>
+> diff --git a/src/extra/pktbuff.c b/src/extra/pktbuff.c
+> index 118ad898f63b..6acefbe72a9b 100644
+> --- a/src/extra/pktbuff.c
+> +++ b/src/extra/pktbuff.c
+> @@ -103,6 +103,26 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
+>  	return pktb;
+>  }
+>
+> +EXPORT_SYMBOL
+> +struct pkt_buff *pktb_setup(struct pkt_buff *pktb, int family, uint8_t *buf,
+> +			    size_t len, size_t extra)
+> +{
+> +	pktb->data_len = len + extra;
 
-When loading a line fails, don't abort but continue with the remaining
-file contents. The current pf.os file in this repository serves as
-proof-of-concept: Loading all entries succeeds, but when deleting, lines
-700, 701 and 704 return ENOENT. Not continuing means the remaining
-entries are not cleared.
+Are you proposing to be able to use extra space in the receive buffer?
+I think that is unsafe. mnl_cb_run() steps through that bufffer and needs a
+zero following the last message to know there are no more. At least, that's
+how it looks to me on stepping through with gdb.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- utils/nfnl_osf.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/utils/nfnl_osf.c b/utils/nfnl_osf.c
-index 922d90ac135b7..8a74423fc8428 100644
---- a/utils/nfnl_osf.c
-+++ b/utils/nfnl_osf.c
-@@ -392,7 +392,7 @@ static int osf_load_line(char *buffer, int len, int del)
- static int osf_load_entries(char *path, int del)
- {
- 	FILE *inf;
--	int err = 0;
-+	int err = 0, lineno = 0;
- 	char buf[1024];
- 
- 	inf = fopen(path, "r");
-@@ -402,7 +402,9 @@ static int osf_load_entries(char *path, int del)
- 	}
- 
- 	while(fgets(buf, sizeof(buf), inf)) {
--		int len;
-+		int len, rc;
-+
-+		lineno++;
- 
- 		if (buf[0] == '#' || buf[0] == '\n' || buf[0] == '\r')
- 			continue;
-@@ -414,9 +416,11 @@ static int osf_load_entries(char *path, int del)
- 
- 		buf[len] = '\0';
- 
--		err = osf_load_line(buf, len, del);
--		if (err)
--			break;
-+		rc = osf_load_line(buf, len, del);
-+		if (rc) {
-+			ulog_err("Failed to load line %d", lineno);
-+			err = rc;
-+		}
- 
- 		memset(buf, 0, sizeof(buf));
- 	}
-@@ -448,6 +452,7 @@ int main(int argc, char *argv[])
- 
- 	if (!fingerprints) {
- 		err = -ENOENT;
-+		ulog_err("Missing fingerprints file argument");
- 		goto err_out_exit;
- 	}
- 
--- 
-2.25.1
-
+> +	pktb->data = buf;
+> +	pktb->len = len;
+> +
+> +	if (__pktb_setup(family, pktb) < 0)
+> +		return NULL;
+> +
+> +	return pktb;
+> +}
+> +
+> +EXPORT_SYMBOL
+> +size_t pktb_head_size(void)
+> +{
+> +	return sizeof(struct pkt_buff);
+> +}
+> +
+>  /**
+>   * pktb_data - get pointer to network packet
+>   * \param pktb Pointer to userspace packet buffer
+> --
+> 2.20.1
+>
+Will post an alternative in the morning - D.
