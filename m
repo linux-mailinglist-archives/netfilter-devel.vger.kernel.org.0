@@ -2,66 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB12F1CFB55
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 May 2020 18:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8E31CFBAA
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 May 2020 19:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728780AbgELQvH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 12 May 2020 12:51:07 -0400
-Received: from mail.redfish-solutions.com ([45.33.216.244]:41976 "EHLO
-        mail.redfish-solutions.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728396AbgELQvG (ORCPT
+        id S1726324AbgELRKj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 12 May 2020 13:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgELRKj (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 12 May 2020 12:51:06 -0400
-Received: from macbook2.redfish-solutions.com (macbook2.redfish-solutions.com [192.168.1.39])
-        (authenticated bits=0)
-        by mail.redfish-solutions.com (8.15.2/8.15.2) with ESMTPSA id 04CGp2Eg030553
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 May 2020 10:51:02 -0600
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v1 1/1] xtables-addons: geoip: update scripts for DBIP
- names, etc.
-From:   Philip Prindeville <philipp_subx@redfish-solutions.com>
-In-Reply-To: <nycvar.YFH.7.77.849.2005121118260.6562@n3.vanv.qr>
-Date:   Tue, 12 May 2020 10:51:02 -0600
+        Tue, 12 May 2020 13:10:39 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6520CC061A0C
+        for <netfilter-devel@vger.kernel.org>; Tue, 12 May 2020 10:10:39 -0700 (PDT)
+Received: from localhost ([::1]:45486 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.91)
+        (envelope-from <phil@nwl.cc>)
+        id 1jYYQQ-00026h-8i; Tue, 12 May 2020 19:10:38 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <BC0C3307-DA4C-405E-8B3D-98A752B87EFC@redfish-solutions.com>
-References: <20200512002747.2108-1-philipp@redfish-solutions.com>
- <nycvar.YFH.7.77.849.2005121118260.6562@n3.vanv.qr>
-To:     Jan Engelhardt <jengelh@inai.de>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
-X-Scanned-By: MIMEDefang 2.84 on 192.168.1.3
+Subject: [iptables PATCH 0/3] Fix SECMARK target comparison
+Date:   Tue, 12 May 2020 19:10:15 +0200
+Message-Id: <20200512171018.16871-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+The kernel sets struct secmark_target_info->secid, so target comparison
+in user space failed every time. Given that target data comparison
+happens in libiptc, fixing this is a bit harder than just adding a cmp()
+callback to struct xtables_target. Instead, allow for targets to write
+the matchmask bits for their private data themselves and account for
+that in both legacy and nft code. Then make use of the new
+infrastructure to fix libxt_SECMARK.
 
+Phil Sutter (3):
+  xshared: Share make_delete_mask() between ip{,6}tables
+  libxtables: Introduce 'matchmask' target callback
+  libxt_SECMARK: Fix for failing target comparison
 
-> On May 12, 2020, at 3:30 AM, Jan Engelhardt <jengelh@inai.de> wrote:
-> 
-> 
-> On Tuesday 2020-05-12 02:27, Philip Prindeville wrote:
->> 
->> Also change the default destination directory to /usr/share/xt_geoip
->> as most distros use this now.  Update the documentation.
-> 
-> This would break the current expectation that an unprivileged user,
-> using an unmodified incantation of the command, can run the program
-> and not run into a permission error.
-> 
-> Maybe there are some "nicer" approaches? I'm calling for further inspirations.
+ configure.ac               |  4 ++--
+ extensions/libxt_SECMARK.c | 10 ++++++++++
+ extensions/libxt_SECMARK.t |  4 ++++
+ include/xtables.h          |  3 +++
+ iptables/ip6tables.c       | 38 ++------------------------------------
+ iptables/iptables.c        | 38 ++------------------------------------
+ iptables/nft-shared.c      | 15 ++++++++++++++-
+ iptables/xshared.c         | 38 ++++++++++++++++++++++++++++++++++++++
+ iptables/xshared.h         |  4 ++++
+ 9 files changed, 79 insertions(+), 75 deletions(-)
+ create mode 100644 extensions/libxt_SECMARK.t
 
-
-I’m open to suggestions.
-
-We could default it to a system path only when running as root, for instance.
-
-
-> 
->> -my $target_dir = ".";
->> +my $target_dir = "/usr/share/xt_geoip";
+-- 
+2.25.1
 
