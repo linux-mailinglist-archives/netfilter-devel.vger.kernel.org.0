@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E784E1CFBA8
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 May 2020 19:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CB41CFBAB
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 May 2020 19:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgELRK3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 12 May 2020 13:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35024 "EHLO
+        id S1726889AbgELRKp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 12 May 2020 13:10:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbgELRK3 (ORCPT
+        with ESMTP id S1725938AbgELRKo (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 12 May 2020 13:10:29 -0400
+        Tue, 12 May 2020 13:10:44 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE3DC061A0C
-        for <netfilter-devel@vger.kernel.org>; Tue, 12 May 2020 10:10:29 -0700 (PDT)
-Received: from localhost ([::1]:45474 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6CAC061A0C
+        for <netfilter-devel@vger.kernel.org>; Tue, 12 May 2020 10:10:44 -0700 (PDT)
+Received: from localhost ([::1]:45492 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.91)
         (envelope-from <phil@nwl.cc>)
-        id 1jYYQF-00025y-GI; Tue, 12 May 2020 19:10:27 +0200
+        id 1jYYQV-000273-I6; Tue, 12 May 2020 19:10:43 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 1/3] xshared: Share make_delete_mask() between ip{,6}tables
-Date:   Tue, 12 May 2020 19:10:16 +0200
-Message-Id: <20200512171018.16871-2-phil@nwl.cc>
+Subject: [iptables PATCH 2/3] libxtables: Introduce 'matchmask' target callback
+Date:   Tue, 12 May 2020 19:10:17 +0200
+Message-Id: <20200512171018.16871-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200512171018.16871-1-phil@nwl.cc>
 References: <20200512171018.16871-1-phil@nwl.cc>
@@ -35,199 +35,100 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Function bodies were mostly identical, the only difference being the use
-of struct ipt_entry or ip6t_entry for size calculation. Pass this value
-via parameter to make them fully identical.
+In order to support customized target data comparison, introduce a
+callback which sets the matchmask used by libiptc's target_same()
+function for the per-target part.
+
+If defined, use this function in both legacy and nft variants.
+
+Since this changes struct xtables_target, bump libxtables current and
+reset age to zero.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/ip6tables.c | 38 ++------------------------------------
- iptables/iptables.c  | 38 ++------------------------------------
- iptables/xshared.c   | 34 ++++++++++++++++++++++++++++++++++
- iptables/xshared.h   |  4 ++++
- 4 files changed, 42 insertions(+), 72 deletions(-)
+ configure.ac          |  4 ++--
+ include/xtables.h     |  3 +++
+ iptables/nft-shared.c | 15 ++++++++++++++-
+ iptables/xshared.c    | 10 +++++++---
+ 4 files changed, 26 insertions(+), 6 deletions(-)
 
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index 576c2cf8b0d9f..1a59d6f7a1542 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -622,40 +622,6 @@ insert_entry(const xt_chainlabel chain,
- 	return ret;
+diff --git a/configure.ac b/configure.ac
+index 02f6481ca52ed..5e330f3388de2 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -2,8 +2,8 @@
+ AC_INIT([iptables], [1.8.4])
+ 
+ # See libtool.info "Libtool's versioning system"
+-libxtables_vcurrent=15
+-libxtables_vage=3
++libxtables_vcurrent=16
++libxtables_vage=0
+ 
+ AC_CONFIG_AUX_DIR([build-aux])
+ AC_CONFIG_HEADERS([config.h])
+diff --git a/include/xtables.h b/include/xtables.h
+index 5044dd08e86d3..9483486bf7bae 100644
+--- a/include/xtables.h
++++ b/include/xtables.h
+@@ -356,6 +356,9 @@ struct xtables_target {
+ 	/* Print target name or alias */
+ 	const char *(*alias)(const struct xt_entry_target *target);
+ 
++	/* fill matchmask of size userspacesize */
++	void (*matchmask)(void *mask);
++
+ 	/* Pointer to list of extra command-line options */
+ 	const struct option *extra_opts;
+ 
+diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
+index c5a8f3fcc051d..d2c252a3081b0 100644
+--- a/iptables/nft-shared.c
++++ b/iptables/nft-shared.c
+@@ -968,8 +968,21 @@ bool compare_targets(struct xtables_target *tg1, struct xtables_target *tg2)
+ 	if (strcmp(tg1->t->u.user.name, tg2->t->u.user.name) != 0)
+ 		return false;
+ 
+-	if (memcmp(tg1->t->data, tg2->t->data, tg1->userspacesize) != 0)
++	if (tg1->matchmask) {
++		char *mask = xtables_malloc(tg1->userspacesize);
++		int i;
++
++		tg1->matchmask(mask);
++		for (i = 0; i < tg1->userspacesize; i++) {
++			if ((tg1->t->data[i] ^ tg2->t->data[i]) & mask[i]) {
++				free(mask);
++				return false;
++			}
++		}
++		free(mask);
++	} else if (memcmp(tg1->t->data, tg2->t->data, tg1->userspacesize)) {
+ 		return false;
++	}
+ 
+ 	return true;
  }
- 
--static unsigned char *
--make_delete_mask(const struct xtables_rule_match *matches,
--		 const struct xtables_target *target)
--{
--	/* Establish mask for comparison */
--	unsigned int size;
--	const struct xtables_rule_match *matchp;
--	unsigned char *mask, *mptr;
--
--	size = sizeof(struct ip6t_entry);
--	for (matchp = matches; matchp; matchp = matchp->next)
--		size += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
--
--	mask = xtables_calloc(1, size
--			 + XT_ALIGN(sizeof(struct xt_entry_target))
--			 + target->size);
--
--	memset(mask, 0xFF, sizeof(struct ip6t_entry));
--	mptr = mask + sizeof(struct ip6t_entry);
--
--	for (matchp = matches; matchp; matchp = matchp->next) {
--		memset(mptr, 0xFF,
--		       XT_ALIGN(sizeof(struct xt_entry_match))
--		       + matchp->match->userspacesize);
--		mptr += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
--	}
--
--	memset(mptr, 0xFF,
--	       XT_ALIGN(sizeof(struct xt_entry_target))
--	       + target->userspacesize);
--
--	return mask;
--}
--
- static int
- delete_entry(const xt_chainlabel chain,
- 	     struct ip6t_entry *fw,
-@@ -674,7 +640,7 @@ delete_entry(const xt_chainlabel chain,
- 	int ret = 1;
- 	unsigned char *mask;
- 
--	mask = make_delete_mask(matches, target);
-+	mask = make_delete_mask(matches, target, sizeof(*fw));
- 	for (i = 0; i < nsaddrs; i++) {
- 		fw->ipv6.src = saddrs[i];
- 		fw->ipv6.smsk = smasks[i];
-@@ -704,7 +670,7 @@ check_entry(const xt_chainlabel chain, struct ip6t_entry *fw,
- 	int ret = 1;
- 	unsigned char *mask;
- 
--	mask = make_delete_mask(matches, target);
-+	mask = make_delete_mask(matches, target, sizeof(fw));
- 	for (i = 0; i < nsaddrs; i++) {
- 		fw->ipv6.src = saddrs[i];
- 		fw->ipv6.smsk = smasks[i];
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index 88ef6cf666d4b..ead9c482a3ad1 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -614,40 +614,6 @@ insert_entry(const xt_chainlabel chain,
- 	return ret;
- }
- 
--static unsigned char *
--make_delete_mask(const struct xtables_rule_match *matches,
--		 const struct xtables_target *target)
--{
--	/* Establish mask for comparison */
--	unsigned int size;
--	const struct xtables_rule_match *matchp;
--	unsigned char *mask, *mptr;
--
--	size = sizeof(struct ipt_entry);
--	for (matchp = matches; matchp; matchp = matchp->next)
--		size += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
--
--	mask = xtables_calloc(1, size
--			 + XT_ALIGN(sizeof(struct xt_entry_target))
--			 + target->size);
--
--	memset(mask, 0xFF, sizeof(struct ipt_entry));
--	mptr = mask + sizeof(struct ipt_entry);
--
--	for (matchp = matches; matchp; matchp = matchp->next) {
--		memset(mptr, 0xFF,
--		       XT_ALIGN(sizeof(struct xt_entry_match))
--		       + matchp->match->userspacesize);
--		mptr += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
--	}
--
--	memset(mptr, 0xFF,
--	       XT_ALIGN(sizeof(struct xt_entry_target))
--	       + target->userspacesize);
--
--	return mask;
--}
--
- static int
- delete_entry(const xt_chainlabel chain,
- 	     struct ipt_entry *fw,
-@@ -666,7 +632,7 @@ delete_entry(const xt_chainlabel chain,
- 	int ret = 1;
- 	unsigned char *mask;
- 
--	mask = make_delete_mask(matches, target);
-+	mask = make_delete_mask(matches, target, sizeof(*fw));
- 	for (i = 0; i < nsaddrs; i++) {
- 		fw->ip.src.s_addr = saddrs[i].s_addr;
- 		fw->ip.smsk.s_addr = smasks[i].s_addr;
-@@ -696,7 +662,7 @@ check_entry(const xt_chainlabel chain, struct ipt_entry *fw,
- 	int ret = 1;
- 	unsigned char *mask;
- 
--	mask = make_delete_mask(matches, target);
-+	mask = make_delete_mask(matches, target, sizeof(*fw));
- 	for (i = 0; i < nsaddrs; i++) {
- 		fw->ip.src.s_addr = saddrs[i].s_addr;
- 		fw->ip.smsk.s_addr = smasks[i].s_addr;
 diff --git a/iptables/xshared.c b/iptables/xshared.c
-index c1d1371a6d54a..2438c4eeb5ff7 100644
+index 2438c4eeb5ff7..d938fc5d1f9e2 100644
 --- a/iptables/xshared.c
 +++ b/iptables/xshared.c
-@@ -774,3 +774,37 @@ int parse_rulenumber(const char *rule)
+@@ -802,9 +802,13 @@ make_delete_mask(const struct xtables_rule_match *matches,
+ 		mptr += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
+ 	}
  
- 	return rulenum;
+-	memset(mptr, 0xFF,
+-	       XT_ALIGN(sizeof(struct xt_entry_target))
+-	       + target->userspacesize);
++	memset(mptr, 0xFF, XT_ALIGN(sizeof(struct xt_entry_target)));
++	mptr += XT_ALIGN(sizeof(struct xt_entry_target));
++
++	if (target->matchmask)
++		target->matchmask(mptr);
++	else
++		memset(mptr, 0xFF, target->userspacesize);
+ 
+ 	return mask;
  }
-+
-+unsigned char *
-+make_delete_mask(const struct xtables_rule_match *matches,
-+		 const struct xtables_target *target,
-+		 size_t entry_size)
-+{
-+	/* Establish mask for comparison */
-+	unsigned int size = entry_size;
-+	const struct xtables_rule_match *matchp;
-+	unsigned char *mask, *mptr;
-+
-+	for (matchp = matches; matchp; matchp = matchp->next)
-+		size += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
-+
-+	mask = xtables_calloc(1, size
-+			 + XT_ALIGN(sizeof(struct xt_entry_target))
-+			 + target->size);
-+
-+	memset(mask, 0xFF, entry_size);
-+	mptr = mask + entry_size;
-+
-+	for (matchp = matches; matchp; matchp = matchp->next) {
-+		memset(mptr, 0xFF,
-+		       XT_ALIGN(sizeof(struct xt_entry_match))
-+		       + matchp->match->userspacesize);
-+		mptr += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
-+	}
-+
-+	memset(mptr, 0xFF,
-+	       XT_ALIGN(sizeof(struct xt_entry_target))
-+	       + target->userspacesize);
-+
-+	return mask;
-+}
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index c41bd054bf36f..eb908e484616e 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -216,4 +216,8 @@ void add_command(unsigned int *cmd, const int newcmd,
- 		 const int othercmds, int invert);
- int parse_rulenumber(const char *rule);
- 
-+unsigned char *make_delete_mask(const struct xtables_rule_match *matches,
-+				const struct xtables_target *target,
-+				size_t entry_size);
-+
- #endif /* IPTABLES_XSHARED_H */
 -- 
 2.25.1
 
