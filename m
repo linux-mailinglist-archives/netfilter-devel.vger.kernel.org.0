@@ -2,150 +2,168 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FE71D095F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2020 09:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4621D08ED
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2020 08:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730039AbgEMHAc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 13 May 2020 03:00:32 -0400
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:54977 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726020AbgEMHAc (ORCPT
+        id S1729189AbgEMGsV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 13 May 2020 02:48:21 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:54994 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728784AbgEMGsU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 13 May 2020 03:00:32 -0400
+        Wed, 13 May 2020 02:48:20 -0400
 Received: from dimstar.local.net (n175-34-64-112.sun1.vic.optusnet.com.au [175.34.64.112])
-        by mail110.syd.optusnet.com.au (Postfix) with SMTP id BC8701033ED
-        for <netfilter-devel@vger.kernel.org>; Wed, 13 May 2020 16:41:57 +1000 (AEST)
-Received: (qmail 28373 invoked by uid 501); 13 May 2020 06:41:56 -0000
-Date:   Wed, 13 May 2020 16:41:56 +1000
+        by mail105.syd.optusnet.com.au (Postfix) with SMTP id 1D18B3A3FF5
+        for <netfilter-devel@vger.kernel.org>; Wed, 13 May 2020 16:48:17 +1000 (AEST)
+Received: (qmail 28405 invoked by uid 501); 13 May 2020 06:48:16 -0000
+Date:   Wed, 13 May 2020 16:48:16 +1000
 From:   Duncan Roe <duncan_roe@optusnet.com.au>
 To:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH libnetfilter_queue 1/2] pktbuff: add __pktb_setup()
-Message-ID: <20200513064156.GA23132@dimstar.local.net>
+Subject: Re: [PATCH libnetfilter_queue 2/2] pktbuff: add pktb_head_alloc(),
+ pktb_setup() and pktb_head_size()
+Message-ID: <20200513064816.GB23132@dimstar.local.net>
 Mail-Followup-To: netfilter-devel@vger.kernel.org
 References: <20200509091141.10619-1-pablo@netfilter.org>
+ <20200509091141.10619-2-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200509091141.10619-1-pablo@netfilter.org>
+In-Reply-To: <20200509091141.10619-2-pablo@netfilter.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Optus-CM-Score: 0
 X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
         a=keeXcwCgVCrAuxOn72dlvA==:117 a=keeXcwCgVCrAuxOn72dlvA==:17
         a=kj9zAlcOel0A:10 a=sTwFKg_x9MkA:10 a=RSmzAf-M6YYA:10 a=3HDBlxybAAAA:8
-        a=OLL_FvSJAAAA:8 a=FP02F9W6yDWWtxF3HUgA:9 a=CjuIK1q_8ugA:10
-        a=OVJnjtlDKZIA:10 a=AH0NCSqBHYIA:10 a=laEoCiVfU_Unz3mSdgXN:22
-        a=oIrB72frpwYPwTMnlWqB:22
+        a=Lm8M50Lik8FVY7rSMqIA:9 a=TmVuaFoErMMYK7ql:21 a=UNV0kcJWMWx9M2Y3:21
+        a=CjuIK1q_8ugA:10 a=laEoCiVfU_Unz3mSdgXN:22
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sat, May 09, 2020 at 11:11:40AM +0200, Pablo Neira Ayuso wrote:
-> Add private helper function to set up the pkt_buff object.
+On Sat, May 09, 2020 at 11:11:41AM +0200, Pablo Neira Ayuso wrote:
+> Add two new helper functions, as alternative to pktb_alloc().
+>
+> * pktb_setup() allows you to skip memcpy()'ing the payload from the
+>   netlink message.
+>
+> * pktb_head_size() returns the size of the pkt_buff opaque object.
+>
+> * pktb_head_alloc() allows you to allocate the pkt_buff in the heap.
 >
 > Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 > ---
->  src/extra/pktbuff.c | 54 +++++++++++++++++++++++++++------------------
->  1 file changed, 32 insertions(+), 22 deletions(-)
+>  include/libnetfilter_queue/pktbuff.h |  7 +++++++
+>  src/extra/pktbuff.c                  | 20 ++++++++++++++++++++
+>  2 files changed, 27 insertions(+)
+>
+> diff --git a/include/libnetfilter_queue/pktbuff.h b/include/libnetfilter_queue/pktbuff.h
+> index 42bc153ec337..a27582b02840 100644
+> --- a/include/libnetfilter_queue/pktbuff.h
+> +++ b/include/libnetfilter_queue/pktbuff.h
+> @@ -6,6 +6,13 @@ struct pkt_buff;
+>  struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra);
+>  void pktb_free(struct pkt_buff *pktb);
+>
+> +#define NFQ_BUFFER_SIZE	(0xffff + (MNL_SOCKET_BUFFER_SIZE / 2)
+> +struct pkt_buff *pktb_setup(struct pkt_buff *pktb, int family, uint8_t *data,
+> +			    size_t len, size_t extra);
+
+Prototypes in headers are generally on 1 line - see pktb_mangle() below
+
+> +size_t pktb_head_size(void);
+> +
+> +#define pktb_head_alloc()	(struct pkt_buff *)(malloc(pktb_head_size()))
+
+Users will never know about this. doxygen is configured to only look in .c
+files, you wouldn't want it any other way.
+
+Anyway, users can figure this one out for themselves, surely?
+> +
+>  uint8_t *pktb_data(struct pkt_buff *pktb);
+>  uint32_t pktb_len(struct pkt_buff *pktb);
 >
 > diff --git a/src/extra/pktbuff.c b/src/extra/pktbuff.c
-> index 6dd0ca98aff2..118ad898f63b 100644
+> index 118ad898f63b..6acefbe72a9b 100644
 > --- a/src/extra/pktbuff.c
 > +++ b/src/extra/pktbuff.c
-> @@ -29,6 +29,34 @@
->   * @{
->   */
->
-> +static int __pktb_setup(int family, struct pkt_buff *pktb)
-
-Apart from breakage, this is pktb_setup_family() as I posted in
-https://www.spinics.net/lists/netfilter-devel/msg66710.html, with args reversed.
-
-I also added pktb_setup_metadata() to capture 3 other duplicate code lines,
-you may not think that worth doing: personal choice I guess.
-
-> +{
-> +	struct ethhdr *ethhdr;
-> +
-> +	switch (family) {
-> +	case AF_INET:
-> +	case AF_INET6:
-> +		pktb->network_header = pktb->data;
-> +		break;
-> +	case AF_BRIDGE:
-> +		ethhdr = (struct ethhdr *)pktb->data;
-> +		pktb->mac_header = pktb->data;
-> +
-> +		switch(ethhdr->h_proto) {
-> +		case ETH_P_IP:
-> +		case ETH_P_IPV6:
-> +			pktb->network_header = pktb->data + ETH_HLEN;
-> +			break;
-> +		default:
-> +			/* This protocol is unsupported. */
-
-Should have moved 'errno = EPROTONOSUPPORT;' here rather than leaving it in
-pktb_alloc(). As things stand, pktb_setup() will leave errno unaltered when
-this error occurs.
-
-> +			return -1;
-> +		}
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * pktb_alloc - allocate a new packet buffer
->   * \param family Indicate what family. Currently supported families are
-> @@ -52,7 +80,6 @@ EXPORT_SYMBOL
->  struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
->  {
->  	struct pkt_buff *pktb;
-> -	struct ethhdr *ethhdr;
->  	void *pkt_data;
->
->  	pktb = calloc(1, sizeof(struct pkt_buff) + len + extra);
-> @@ -68,28 +95,11 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
->
->  	pktb->data = pkt_data;
->
-> -	switch(family) {
-> -	case AF_INET:
-> -	case AF_INET6:
-> -		pktb->network_header = pktb->data;
-> -		break;
-> -	case AF_BRIDGE:
-> -		ethhdr = (struct ethhdr *)pktb->data;
-> -		pktb->mac_header = pktb->data;
-> -
-> -		switch(ethhdr->h_proto) {
-> -		case ETH_P_IP:
-> -		case ETH_P_IPV6:
-> -			pktb->network_header = pktb->data + ETH_HLEN;
-> -			break;
-> -		default:
-> -			/* This protocol is unsupported. */
-> -			errno = EPROTONOSUPPORT;
-> -			free(pktb);
-> -			return NULL;
-> -		}
-> -		break;
-> +	if (__pktb_setup(family, pktb) < 0) {
-> +		errno = EPROTONOSUPPORT;
-
-As before, above line belongs in __pktb_setup()
-
-> +		free(pktb);
-
-You need 'return NULL;' here, as in the original code.
-
->  	}
-> +
+> @@ -103,6 +103,26 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
 >  	return pktb;
 >  }
 >
+> +EXPORT_SYMBOL
+> +struct pkt_buff *pktb_setup(struct pkt_buff *pktb, int family, uint8_t *buf,
+> +			    size_t len, size_t extra)
+
+This calling sequence shuts out any possibility for pktb_mangle() to decide
+whether a memcpy is needed because the packet is being lenghened.
+
+Later in this thread, you write:
+
+> There are "two buffers":
+>
+> 1) The buffer that you use to receive the netlink message. This buffer
+>    is parsed via mnl_cb_run().
+>
+> 2) The buffer that stores the pkt_buff structure.
+
+pktb_alloc() can acess both of these. It gets 1 in its arguments and calloc()s
+the other. It could be enhanced to pass that information down to pktb_mangle()
+via extra elements in struct pktbuff the way pktb_alloc2 does (I'm not
+suggesting we should).
+
+BUT, there is no way to do that for pktb_setup() as it is now. You need packet
+data address & length, user buffer address & length, and family as a minimum. By
+going back to the 'sk_buff' model, you don't need a 'head' argument - packet
+data copy just follows the metadata immediately. 5 arguments, as the latest
+iteration of pktb_alloc2 has. Suggest something like:
+
+ struct pkt_buff *pktb_setup(int family, void *buf, size_t buflen,
+                             void *data, size_t len)
+
+I'm fine with renaming pktb_alloc2 to pktb_setup. Then, with the suggestions
+below, the code is pretty much the same.
+
+> +{
+
+Before doing anything, you really need to memset all of pktb to zero. Otherwise
+you get scenarios like this:
+
+> (gdb) p *pktb
+> $1 = {
+>   mac_header = 0xffffffffffffffff <error: Cannot access memory at address 0xffffffffffffffff>,
+>   network_header = 0x6052f8 <nlrxbuf+88> "`",
+>   transport_header = 0x25252525ffffffff <error: Cannot access memory at address 0x25252525ffffffff>,
+>   data = 0x6052f8 <nlrxbuf+88> "`",
+>   len = 52,
+>   data_len = 52,
+>   mangled = 255,
+> }
+
+To be fair, that buffer was on the stack. If you do a pktb_head_alloc() early
+on, you will likely fluke a bunch of zeroes. But, once a packet is mangled, the
+mangle flag will stay on so all subsequent verdicts will contain packet contents
+whether the packet was mangled or not.
+
+> +	pktb->data_len = len + extra;
+> +	pktb->data = buf;
+> +	pktb->len = len;
+> +
+> +	if (__pktb_setup(family, pktb) < 0)
+> +		return NULL;
+> +
+> +	return pktb;
+> +}
+> +
+> +EXPORT_SYMBOL
+> +size_t pktb_head_size(void)
+> +{
+> +	return sizeof(struct pkt_buff);
+> +}
+> +
+>  /**
+>   * pktb_data - get pointer to network packet
+>   * \param pktb Pointer to userspace packet buffer
 > --
 > 2.20.1
 >
