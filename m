@@ -2,97 +2,150 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5871D0618
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2020 06:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FE71D095F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2020 09:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725977AbgEMEjQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 13 May 2020 00:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725898AbgEMEjP (ORCPT
+        id S1730039AbgEMHAc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 13 May 2020 03:00:32 -0400
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:54977 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726020AbgEMHAc (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 13 May 2020 00:39:15 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C298FC061A0C;
-        Tue, 12 May 2020 21:39:15 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b12so4419448plz.13;
-        Tue, 12 May 2020 21:39:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nPz4T7IaudILeXQNatPbOTERFKwRTe6GpmSyU3VsITU=;
-        b=Qw7DCGV/EQa8OqlKZgpNyTLDwQa4cgMhICPeixm3o8oAQflAexa1nJfvYhpuBFVlXb
-         8TNxzEzCXc713hBfn7f3LJgpa8MewCOWMqScKsygwfIBf2aRilueGNIU2sFR5vuYM09w
-         lQ5Pj4c10Wbem57ca70RObkb8D2IRFGqUp8vPt8chlCa5SKwFaBaFm5NpUOjqu2mp9rd
-         0il3LBCqyuwkKsm/N+R0hHQjoKYgpYTbScUqfatFJVgGvLSifdmI3/eiZLavadE8J0Gj
-         ntWxP2E+qARJA67fR5W3dq7lrI6m2TnGfiubxOdvQrGxApNX1TMSTiriQa8g6x80nOI7
-         /eKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nPz4T7IaudILeXQNatPbOTERFKwRTe6GpmSyU3VsITU=;
-        b=eFFW0pnhQesHsBpnwMRz8zTdr8TPcQNlT8XxPaOMY0eyKjK9rvH7GEbUswK7YspvWB
-         9WbUTUk9HuEbQCa+xLP7zxkh89g4zDZ5b9RrnQ4yHmsVQ9MhNTzxO8PlzKJCkYdUNAcw
-         +REQCWp/z3bbDkDa7xlKyfl9RYlltOvy3hybo/p+65cVgcYeo3kptuLaV6Ecal82pVbu
-         V32ea6UpMZ8TJeZkRV93H0kYubgUOmInn/eo9G29FS+stbHfEAdGt68RdZiaVb3TSmOJ
-         uy4gdR5riqmegCENI707Vh5XPiKvrsFqDycOGfEzQ8F52cQAXhR2vUT2LLkfCLaNBE62
-         sm1g==
-X-Gm-Message-State: AGi0PuZsaJoB4qsiFZ0vUYtP9vd4k1QY3c7Wx/GpIsDwd7TI5WYf37Pv
-        giIavLWNS36emGMwqt9nShw=
-X-Google-Smtp-Source: APiQypKfhB6VsMblXsptA2c7dr6XLMJSvwYlkcivITW/bUquYwHEbbE06PT28xCkh9Abv4QIQetQcA==
-X-Received: by 2002:a17:902:7b92:: with SMTP id w18mr22115190pll.273.1589344755182;
-        Tue, 12 May 2020 21:39:15 -0700 (PDT)
-Received: from f3 (ae055068.dynamic.ppp.asahi-net.or.jp. [14.3.55.68])
-        by smtp.gmail.com with ESMTPSA id h193sm13425194pfe.30.2020.05.12.21.39.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 21:39:13 -0700 (PDT)
-Date:   Wed, 13 May 2020 13:39:08 +0900
-From:   Benjamin Poirier <benjamin.poirier@gmail.com>
-To:     Jan Engelhardt <jengelh@inai.de>
-Cc:     zenczykowski@gmail.com, maze@google.com, pablo@netfilter.org,
-        fw@strlen.de, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH v2] doc: document danger of applying REJECT to INVALID CTs
-Message-ID: <20200513043908.GA25216@f3>
-References: <CANP3RGe3fnCwj5NUxKu4VDcw=_95yNkCiC2Y4L9otJS1Hnyd-g@mail.gmail.com>
- <20200512210038.11447-1-jengelh@inai.de>
+        Wed, 13 May 2020 03:00:32 -0400
+Received: from dimstar.local.net (n175-34-64-112.sun1.vic.optusnet.com.au [175.34.64.112])
+        by mail110.syd.optusnet.com.au (Postfix) with SMTP id BC8701033ED
+        for <netfilter-devel@vger.kernel.org>; Wed, 13 May 2020 16:41:57 +1000 (AEST)
+Received: (qmail 28373 invoked by uid 501); 13 May 2020 06:41:56 -0000
+Date:   Wed, 13 May 2020 16:41:56 +1000
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH libnetfilter_queue 1/2] pktbuff: add __pktb_setup()
+Message-ID: <20200513064156.GA23132@dimstar.local.net>
+Mail-Followup-To: netfilter-devel@vger.kernel.org
+References: <20200509091141.10619-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200512210038.11447-1-jengelh@inai.de>
+In-Reply-To: <20200509091141.10619-1-pablo@netfilter.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
+        a=keeXcwCgVCrAuxOn72dlvA==:117 a=keeXcwCgVCrAuxOn72dlvA==:17
+        a=kj9zAlcOel0A:10 a=sTwFKg_x9MkA:10 a=RSmzAf-M6YYA:10 a=3HDBlxybAAAA:8
+        a=OLL_FvSJAAAA:8 a=FP02F9W6yDWWtxF3HUgA:9 a=CjuIK1q_8ugA:10
+        a=OVJnjtlDKZIA:10 a=AH0NCSqBHYIA:10 a=laEoCiVfU_Unz3mSdgXN:22
+        a=oIrB72frpwYPwTMnlWqB:22
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 2020-05-12 23:00 +0200, Jan Engelhardt wrote:
-> Signed-off-by: Jan Engelhardt <jengelh@inai.de>
+On Sat, May 09, 2020 at 11:11:40AM +0200, Pablo Neira Ayuso wrote:
+> Add private helper function to set up the pkt_buff object.
+>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 > ---
-> 
-> Simplify the trigger case by dropping mentions of P_3.
-> New -A commands as proposed.
-> 
->  extensions/libip6t_REJECT.man | 20 ++++++++++++++++++++
->  extensions/libipt_REJECT.man  | 20 ++++++++++++++++++++
->  2 files changed, 40 insertions(+)
-> 
-> diff --git a/extensions/libip6t_REJECT.man b/extensions/libip6t_REJECT.man
-> index 0030a51f..cc845e6f 100644
-> --- a/extensions/libip6t_REJECT.man
-> +++ b/extensions/libip6t_REJECT.man
-> @@ -30,3 +30,23 @@ TCP RST packet to be sent back.  This is mainly useful for blocking
->  hosts (which won't accept your mail otherwise).
->  \fBtcp\-reset\fP
->  can only be used with kernel versions 2.6.14 or later.
-> +.PP
-> +\fIWarning:\fP You should not indiscrimnately apply the REJECT target to
-                                          ^ typo
-> +packets whose connection state is classified as INVALID; instead, you should
-> +only DROP these.
-> +.PP
-> +Consider a source host transmitting a packet P, with P experiencing so much
-> +delay along its path that the source host issues a retransmission, P_2, with
-> +P_2 being succesful in reaching its destination and advancing the connection
-                   ^ typo
+>  src/extra/pktbuff.c | 54 +++++++++++++++++++++++++++------------------
+>  1 file changed, 32 insertions(+), 22 deletions(-)
+>
+> diff --git a/src/extra/pktbuff.c b/src/extra/pktbuff.c
+> index 6dd0ca98aff2..118ad898f63b 100644
+> --- a/src/extra/pktbuff.c
+> +++ b/src/extra/pktbuff.c
+> @@ -29,6 +29,34 @@
+>   * @{
+>   */
+>
+> +static int __pktb_setup(int family, struct pkt_buff *pktb)
+
+Apart from breakage, this is pktb_setup_family() as I posted in
+https://www.spinics.net/lists/netfilter-devel/msg66710.html, with args reversed.
+
+I also added pktb_setup_metadata() to capture 3 other duplicate code lines,
+you may not think that worth doing: personal choice I guess.
+
+> +{
+> +	struct ethhdr *ethhdr;
+> +
+> +	switch (family) {
+> +	case AF_INET:
+> +	case AF_INET6:
+> +		pktb->network_header = pktb->data;
+> +		break;
+> +	case AF_BRIDGE:
+> +		ethhdr = (struct ethhdr *)pktb->data;
+> +		pktb->mac_header = pktb->data;
+> +
+> +		switch(ethhdr->h_proto) {
+> +		case ETH_P_IP:
+> +		case ETH_P_IPV6:
+> +			pktb->network_header = pktb->data + ETH_HLEN;
+> +			break;
+> +		default:
+> +			/* This protocol is unsupported. */
+
+Should have moved 'errno = EPROTONOSUPPORT;' here rather than leaving it in
+pktb_alloc(). As things stand, pktb_setup() will leave errno unaltered when
+this error occurs.
+
+> +			return -1;
+> +		}
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * pktb_alloc - allocate a new packet buffer
+>   * \param family Indicate what family. Currently supported families are
+> @@ -52,7 +80,6 @@ EXPORT_SYMBOL
+>  struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
+>  {
+>  	struct pkt_buff *pktb;
+> -	struct ethhdr *ethhdr;
+>  	void *pkt_data;
+>
+>  	pktb = calloc(1, sizeof(struct pkt_buff) + len + extra);
+> @@ -68,28 +95,11 @@ struct pkt_buff *pktb_alloc(int family, void *data, size_t len, size_t extra)
+>
+>  	pktb->data = pkt_data;
+>
+> -	switch(family) {
+> -	case AF_INET:
+> -	case AF_INET6:
+> -		pktb->network_header = pktb->data;
+> -		break;
+> -	case AF_BRIDGE:
+> -		ethhdr = (struct ethhdr *)pktb->data;
+> -		pktb->mac_header = pktb->data;
+> -
+> -		switch(ethhdr->h_proto) {
+> -		case ETH_P_IP:
+> -		case ETH_P_IPV6:
+> -			pktb->network_header = pktb->data + ETH_HLEN;
+> -			break;
+> -		default:
+> -			/* This protocol is unsupported. */
+> -			errno = EPROTONOSUPPORT;
+> -			free(pktb);
+> -			return NULL;
+> -		}
+> -		break;
+> +	if (__pktb_setup(family, pktb) < 0) {
+> +		errno = EPROTONOSUPPORT;
+
+As before, above line belongs in __pktb_setup()
+
+> +		free(pktb);
+
+You need 'return NULL;' here, as in the original code.
+
+>  	}
+> +
+>  	return pktb;
+>  }
+>
+> --
+> 2.20.1
+>
