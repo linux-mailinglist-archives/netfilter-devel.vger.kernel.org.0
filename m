@@ -2,106 +2,110 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572CE1D0938
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2020 08:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7BD1D0BBA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 May 2020 11:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730712AbgEMG5j (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 13 May 2020 02:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
+        id S1731526AbgEMJR6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 13 May 2020 05:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729765AbgEMG5i (ORCPT
+        with ESMTP id S1730334AbgEMJR6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 13 May 2020 02:57:38 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E78BC061A0C;
-        Tue, 12 May 2020 23:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=5X3G8p2gpeq1mWhpOrbRnLoYssjgaGtuSsqN+ape3Fw=; b=XLxg3FNB06sgO+Mvcd5lDJKwjP
-        uoOZRG3bBXqQEfGfwdp3+GQhc7kJU+L1VQSJS73w0gINeO6zpXApIRVV0EWbU1LQloOBZnar/MIZi
-        7tWFQRfv7B2u6FBn6KjDeRtWL+y/cbliY7OwW2zuLl7wiEZyHy1y7rcoI79Kc5s6xSwYdF7wP3lih
-        KU9xne6mBOLIL0J7wvzvvLy2hs+ddTZKuTlgUnx0d2fUBK/ejvI0cov4NL/m0+nKPm7rceaYr1fKU
-        gTrfuSsmtdZLvSnMAUjZxbvyqDyQ113YAC7ee+WrNvftN0BuM5imo+ZBsl4pw6nK4ooBvoG9mD8Y1
-        y8rQkVdw==;
-Received: from [2001:4bb8:180:9d3f:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jYlKh-0003ch-MB; Wed, 13 May 2020 06:57:36 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Ian Kent <raven@themaw.net>, David Howells <dhowells@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: [PATCH 14/14] fs: don't change the address limit for ->read_iter in __kernel_read
-Date:   Wed, 13 May 2020 08:56:56 +0200
-Message-Id: <20200513065656.2110441-15-hch@lst.de>
+        Wed, 13 May 2020 05:17:58 -0400
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2D1C061A0C;
+        Wed, 13 May 2020 02:17:57 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 65534)
+        id B855F58728720; Wed, 13 May 2020 11:17:55 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on a3.inai.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.2
+Received: from a4.inai.de (a4.inai.de [IPv6:2a01:4f8:10b:45d8::f8])
+        by a3.inai.de (Postfix) with ESMTP id 574A958725880;
+        Wed, 13 May 2020 11:17:54 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     zenczykowski@gmail.com
+Cc:     maze@google.com, pablo@netfilter.org, fw@strlen.de,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: [PATCH v3] doc: document danger of applying REJECT to INVALID CTs
+Date:   Wed, 13 May 2020 11:17:54 +0200
+Message-Id: <20200513091754.32090-1-jengelh@inai.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200513065656.2110441-1-hch@lst.de>
-References: <20200513065656.2110441-1-hch@lst.de>
+In-Reply-To: <20200513043908.GA25216@f3>
+References: <20200513043908.GA25216@f3>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If we read to a file that implements ->read_iter there is no need
-to change the address limit if we send a kvec down.  Implement that
-case, and prefer it over using plain ->read with a changed address
-limit if available.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jan Engelhardt <jengelh@inai.de>
 ---
- fs/read_write.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 46ddfce17e839..c93acbd8bf5a3 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -421,7 +421,6 @@ static ssize_t new_sync_read(struct file *filp, char __user *buf, size_t len, lo
- 
- ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- {
--	mm_segment_t old_fs = get_fs();
- 	ssize_t ret;
- 
- 	if (!(file->f_mode & FMODE_CAN_READ))
-@@ -429,14 +428,25 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- 
- 	if (count > MAX_RW_COUNT)
- 		count =  MAX_RW_COUNT;
--	set_fs(KERNEL_DS);
--	if (file->f_op->read)
-+	if (file->f_op->read_iter) {
-+		struct kvec iov = { .iov_base = buf, .iov_len = count };
-+		struct kiocb kiocb;
-+		struct iov_iter iter;
-+
-+		init_sync_kiocb(&kiocb, file);
-+		kiocb.ki_pos = *pos;
-+		iov_iter_kvec(&iter, READ, &iov, 1, count);
-+		ret = file->f_op->read_iter(&kiocb, &iter);
-+		*pos = kiocb.ki_pos;
-+	} else if (file->f_op->read) {
-+		mm_segment_t old_fs = get_fs();
-+
-+		set_fs(KERNEL_DS);
- 		ret = file->f_op->read(file, (void __user *)buf, count, pos);
--	else if (file->f_op->read_iter)
--		ret = new_sync_read(file, (void __user *)buf, count, pos);
--	else
-+		set_fs(old_fs);
-+	} else {
- 		ret = -EINVAL;
--	set_fs(old_fs);
-+	}
- 	if (ret > 0) {
- 		fsnotify_access(file);
- 		add_rchar(current, ret);
+Spello fix near "indiscriminately".
+
+ extensions/libip6t_REJECT.man | 20 ++++++++++++++++++++
+ extensions/libipt_REJECT.man  | 20 ++++++++++++++++++++
+ 2 files changed, 40 insertions(+)
+
+diff --git a/extensions/libip6t_REJECT.man b/extensions/libip6t_REJECT.man
+index 0030a51f..7387436c 100644
+--- a/extensions/libip6t_REJECT.man
++++ b/extensions/libip6t_REJECT.man
+@@ -30,3 +30,23 @@ TCP RST packet to be sent back.  This is mainly useful for blocking
+ hosts (which won't accept your mail otherwise).
+ \fBtcp\-reset\fP
+ can only be used with kernel versions 2.6.14 or later.
++.PP
++\fIWarning:\fP You should not indiscriminately apply the REJECT target to
++packets whose connection state is classified as INVALID; instead, you should
++only DROP these.
++.PP
++Consider a source host transmitting a packet P, with P experiencing so much
++delay along its path that the source host issues a retransmission, P_2, with
++P_2 being succesful in reaching its destination and advancing the connection
++state normally. It is conceivable that the late-arriving P may be considered to
++be not associated with any connection tracking entry. Generating a reject
++packet for this packet would then terminate the healthy connection.
++.PP
++So, instead of:
++.PP
++-A INPUT ... -j REJECT
++.PP
++do consider using:
++.PP
++-A INPUT ... -m conntrack --ctstate INVALID -j DROP
++-A INPUT ... -j REJECT
+diff --git a/extensions/libipt_REJECT.man b/extensions/libipt_REJECT.man
+index 8a360ce7..618a766c 100644
+--- a/extensions/libipt_REJECT.man
++++ b/extensions/libipt_REJECT.man
+@@ -30,3 +30,23 @@ TCP RST packet to be sent back.  This is mainly useful for blocking
+ hosts (which won't accept your mail otherwise).
+ .IP
+ (*) Using icmp\-admin\-prohibited with kernels that do not support it will result in a plain DROP instead of REJECT
++.PP
++\fIWarning:\fP You should not indiscriminately apply the REJECT target to
++packets whose connection state is classified as INVALID; instead, you should
++only DROP these.
++.PP
++Consider a source host transmitting a packet P, with P experiencing so much
++delay along its path that the source host issues a retransmission, P_2, with
++P_2 being succesful in reaching its destination and advancing the connection
++state normally. It is conceivable that the late-arriving P may be considered to
++be not associated with any connection tracking entry. Generating a reject
++packet for this packet would then terminate the healthy connection.
++.PP
++So, instead of:
++.PP
++-A INPUT ... -j REJECT
++.PP
++do consider using:
++.PP
++-A INPUT ... -m conntrack --ctstate INVALID -j DROP
++-A INPUT ... -j REJECT
 -- 
 2.26.2
 
