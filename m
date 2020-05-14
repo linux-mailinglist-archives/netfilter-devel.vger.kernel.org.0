@@ -2,129 +2,106 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847CB1D25E6
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 May 2020 06:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CD31D2A01
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 May 2020 10:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725806AbgENEfx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 14 May 2020 00:35:53 -0400
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:58755 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725788AbgENEfw (ORCPT
+        id S1726102AbgENIZq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 14 May 2020 04:25:46 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:39501 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725935AbgENIZp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 14 May 2020 00:35:52 -0400
-Received: from dimstar.local.net (n175-34-64-112.sun1.vic.optusnet.com.au [175.34.64.112])
-        by mail109.syd.optusnet.com.au (Postfix) with SMTP id 20B12D792E9
-        for <netfilter-devel@vger.kernel.org>; Thu, 14 May 2020 14:35:47 +1000 (AEST)
-Received: (qmail 1309 invoked by uid 501); 14 May 2020 04:35:47 -0000
-From:   Duncan Roe <duncan_roe@optusnet.com.au>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH libnetfilter_queue 1/1] example: nf-queue: use pkt_buff (updated)
-Date:   Thu, 14 May 2020 14:35:47 +1000
-Message-Id: <20200514043547.1255-2-duncan_roe@optusnet.com.au>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20200514043547.1255-1-duncan_roe@optusnet.com.au>
-References: <20200514043547.1255-1-duncan_roe@optusnet.com.au>
-In-Reply-To: <20200426132356.8346-3-pablo@netfilter.org>
-References: <20200426132356.8346-3-pablo@netfilter.org>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=keeXcwCgVCrAuxOn72dlvA==:117 a=keeXcwCgVCrAuxOn72dlvA==:17
-        a=sTwFKg_x9MkA:10 a=RSmzAf-M6YYA:10 a=PO7r1zJSAAAA:8
-        a=Zop7vPSz-8r78q76v34A:9 a=_YyiWX3kw4eOLg-o:21 a=tEm59D-WalUOrs8p:21
+        Thu, 14 May 2020 04:25:45 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 435655C0221;
+        Thu, 14 May 2020 04:25:44 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 14 May 2020 04:25:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        /xysc5mZRRwSPhJfTdSoHNPvt4tx6ue/BYIZHaszruM=; b=vgKyk2WVbBTezi5J
+        KZZxhb5cZm9Y59EZs1jkDIEB3QN/51GbotXc56FPv7Xfcym56gv3O1qR+nljkg5u
+        9idmRjW8ePiEQlecNuBuJQMR4LbrOqBGXTBX0nE1nXFcEUdhaX57FmZCO4ejJA+J
+        Yhd88QhBv40BAsI1Uw7//IWhAdOnxk0Q1hU+xUGjlQRutLzOhGiVppZIn5WlmQyD
+        Wt0ryMujwkZVPejYBHC9M/ajKDJuwtJswUPv/MxVIas0AzIhh+strqXutV3caOqg
+        PBBB+ny9WUpKGb9ebSby/tJeHZOH3yKkcXhC0E4lF/15UEI2E3uNoEZMgFXPOQnU
+        RcxNuw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=/xysc5mZRRwSPhJfTdSoHNPvt4tx6ue/BYIZHaszr
+        uM=; b=vQ2dab9dHMuPMC/E2g2BRHkokaNfzXVMkruZHrf1jsACbLHGamb8VmNqE
+        P5ZMhljttd/zS6DTJl7pPkbGBq5pIdNs6F9L+H9NXWVaZBO/E5ezTCv5r4n8PfTn
+        vd6wIwoC+xrNjrmwgGSL04apsHcNpNL65tRPQsCT+TJUjv4g1hOkyGCcJZtzrS3H
+        GxdexL1hxNOW5HIFBTmpckbYeFUC/rVVBmsvfPKukng83zIWcsShNYxamcdefhnC
+        GOA11+klUWv8VNUT+ToY+DAEhUTixAU0HSzzWg+P0gDoXzDTQZ0lupWKqCnoPlvF
+        QS2xTtr/Z+jSUz7/eNmgrBk3ZPE8w==
+X-ME-Sender: <xms:hwC9Xo-am4RF6LNTv7m07mH48iDckWHKMZFJz4JNxG9SYk4P3qqlIA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrleeigddtudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
+    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepfe
+    efteetvdeguddvveefveeftedtffduudehueeihfeuvefgveehffeludeggfejnecukfhp
+    peduudekrddvtdekrddukeejrddvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomheprhgrvhgvnhesthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:hwC9Xgtl5wjK72rTScXd71Y-TFGpnL1_uTrxuWn3nX2w28PKsMdFiw>
+    <xmx:hwC9XuA_0lZdHSpSDYw85PV35YMnEkEQa8qWZUpt-wi_mJk0mXcCFg>
+    <xmx:hwC9XofeS0RrUpnYeV3V6IFkhOLUBIv4FGnrR_tWrcfFjyCZx6PQ4A>
+    <xmx:iAC9XmaibCZ2K5m1rscL-SbvJiOKKfft5rL7AmEL5B5DeSmZEnf0bg>
+Received: from mickey.themaw.net (unknown [118.208.187.250])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BEA023060A88;
+        Thu, 14 May 2020 04:25:40 -0400 (EDT)
+Message-ID: <a98e32eb5ad4486fc58e5ce79700a20abecbd69b.camel@themaw.net>
+Subject: Re: [PATCH 02/14] autofs: switch to kernel_write
+From:   Ian Kent <raven@themaw.net>
+To:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>
+Cc:     David Howells <dhowells@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Date:   Thu, 14 May 2020 16:25:36 +0800
+In-Reply-To: <20200513065656.2110441-3-hch@lst.de>
+References: <20200513065656.2110441-1-hch@lst.de>
+         <20200513065656.2110441-3-hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-- Use the 5-args pktb_setup() variant.
-- Demonstrate using pktb_head_size() once in main() to set size of array
-  in callback stack.
-- Output 2 hex digits per character.
+On Wed, 2020-05-13 at 08:56 +0200, Christoph Hellwig wrote:
+> While pipes don't really need sb_writers projection, __kernel_write
+> is an
+> interface better kept private, and the additional rw_verify_area does
+> not
+> hurt here.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
----
- examples/nf-queue.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+Right, should be fine AFAICS.
+Acked-by: Ian Kent <raven@themaw.net>
 
-diff --git a/examples/nf-queue.c b/examples/nf-queue.c
-index f0d4c2e..1d0cba4 100644
---- a/examples/nf-queue.c
-+++ b/examples/nf-queue.c
-@@ -20,6 +20,7 @@
- #include <linux/netfilter/nfnetlink_conntrack.h>
- 
- static struct mnl_socket *nl;
-+static size_t sizeof_pktbuff;
- 
- static void
- nfq_send_verdict(int queue_num, uint32_t id)
-@@ -51,7 +52,8 @@ static int queue_cb(const struct nlmsghdr *nlh, void *data)
- {
- 	struct nfqnl_msg_packet_hdr *ph = NULL;
- 	struct nlattr *attr[NFQA_MAX+1] = {};
--	struct pkt_buff *pktb = data;
-+	struct pkt_buff *pktb;
-+	uint8_t pktbuff[sizeof_pktbuff];
- 	uint32_t id = 0, skbinfo;
- 	struct nfgenmsg *nfg;
- 	uint8_t *payload;
-@@ -74,7 +76,8 @@ static int queue_cb(const struct nlmsghdr *nlh, void *data)
- 
- 	plen = mnl_attr_get_payload_len(attr[NFQA_PAYLOAD]);
- 
--	pktb_build_data(pktb, mnl_attr_get_payload(attr[NFQA_PAYLOAD]), plen);
-+	pktb = pktb_setup(AF_INET, pktbuff, sizeof pktbuff,
-+			  mnl_attr_get_payload(attr[NFQA_PAYLOAD]), plen);
- 
- 	skbinfo = attr[NFQA_SKB_INFO] ? ntohl(mnl_attr_get_u32(attr[NFQA_SKB_INFO])) : 0;
- 
-@@ -106,7 +109,7 @@ static int queue_cb(const struct nlmsghdr *nlh, void *data)
- 	payload = pktb_data(pktb);
- 
- 	for (i = 0; i < pktb_len(pktb); i++)
--		printf("%x", payload[i] & 0xff);
-+		printf("%02x", payload[i]);
- 
- 	printf("]\n");
- 
-@@ -120,7 +123,6 @@ int main(int argc, char *argv[])
- 	char *buf;
- 	/* largest possible packet payload, plus netlink data overhead: */
- 	size_t sizeof_buf = 0xffff + (MNL_SOCKET_BUFFER_SIZE/2);
--	struct pkt_buff *pktb;
- 	struct nlmsghdr *nlh;
- 	int ret;
- 	unsigned int portid, queue_num;
-@@ -174,12 +176,7 @@ int main(int argc, char *argv[])
- 	 */
- 	ret = 1;
- 	mnl_socket_setsockopt(nl, NETLINK_NO_ENOBUFS, &ret, sizeof(int));
--
--	pktb = pktb_alloc_head();
--	if (!pktb) {
--		perror("pktb_alloc");
--		exit(EXIT_FAILURE);
--	}
-+	sizeof_pktbuff = pktb_head_size(); /* Avoid multiple calls in CB */
- 
- 	for (;;) {
- 		ret = mnl_socket_recvfrom(nl, buf, sizeof_buf);
-@@ -188,14 +185,13 @@ int main(int argc, char *argv[])
- 			exit(EXIT_FAILURE);
- 		}
- 
--		ret = mnl_cb_run(buf, ret, 0, portid, queue_cb, pktb);
-+		ret = mnl_cb_run(buf, ret, 0, portid, queue_cb, NULL);
- 		if (ret < 0){
- 			perror("mnl_cb_run");
- 			exit(EXIT_FAILURE);
- 		}
- 	}
- 
--	pktb_free(pktb);
- 	mnl_socket_close(nl);
- 
- 	return 0;
--- 
-2.14.5
+> ---
+>  fs/autofs/waitq.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
+> index b04c528b19d34..74c886f7c51cb 100644
+> --- a/fs/autofs/waitq.c
+> +++ b/fs/autofs/waitq.c
+> @@ -53,7 +53,7 @@ static int autofs_write(struct autofs_sb_info *sbi,
+>  
+>  	mutex_lock(&sbi->pipe_mutex);
+>  	while (bytes) {
+> -		wr = __kernel_write(file, data, bytes, &file->f_pos);
+> +		wr = kernel_write(file, data, bytes, &file->f_pos);
+>  		if (wr <= 0)
+>  			break;
+>  		data += wr;
 
