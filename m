@@ -2,119 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5851D2F68
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 May 2020 14:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068EC1D2F92
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 May 2020 14:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgENMTZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 14 May 2020 08:19:25 -0400
-Received: from correo.us.es ([193.147.175.20]:54296 "EHLO mail.us.es"
+        id S1726128AbgENMXc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 14 May 2020 08:23:32 -0400
+Received: from correo.us.es ([193.147.175.20]:57122 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726294AbgENMTY (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 14 May 2020 08:19:24 -0400
+        id S1725955AbgENMXc (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 14 May 2020 08:23:32 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 40C6A15AEA7
-        for <netfilter-devel@vger.kernel.org>; Thu, 14 May 2020 14:19:22 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 2ABBD15C111
+        for <netfilter-devel@vger.kernel.org>; Thu, 14 May 2020 14:23:31 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 2FB39DA716
-        for <netfilter-devel@vger.kernel.org>; Thu, 14 May 2020 14:19:22 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 1CB76DA716
+        for <netfilter-devel@vger.kernel.org>; Thu, 14 May 2020 14:23:31 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 2EA37DA713; Thu, 14 May 2020 14:19:22 +0200 (CEST)
+        id 11E96DA709; Thu, 14 May 2020 14:23:31 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1B704DA709;
-        Thu, 14 May 2020 14:19:20 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 23B19DA717;
+        Thu, 14 May 2020 14:23:29 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 14 May 2020 14:19:20 +0200 (CEST)
+ Thu, 14 May 2020 14:23:29 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id EAE5042EF42A;
-        Thu, 14 May 2020 14:19:19 +0200 (CEST)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 026E642EF42B;
+        Thu, 14 May 2020 14:23:28 +0200 (CEST)
+Date:   Thu, 14 May 2020 14:23:28 +0200
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 6/6] netfilter: nft_set_rbtree: Add missing expired checks
-Date:   Thu, 14 May 2020 14:19:13 +0200
-Message-Id: <20200514121913.24519-7-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200514121913.24519-1-pablo@netfilter.org>
-References: <20200514121913.24519-1-pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH 0/3] Fix SECMARK target comparison
+Message-ID: <20200514122328.GA24661@salvia>
+References: <20200512171018.16871-1-phil@nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200512171018.16871-1-phil@nwl.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Phil Sutter <phil@nwl.cc>
+On Tue, May 12, 2020 at 07:10:15PM +0200, Phil Sutter wrote:
+> The kernel sets struct secmark_target_info->secid, so target comparison
+> in user space failed every time. Given that target data comparison
+> happens in libiptc, fixing this is a bit harder than just adding a cmp()
+> callback to struct xtables_target. Instead, allow for targets to write
+> the matchmask bits for their private data themselves and account for
+> that in both legacy and nft code. Then make use of the new
+> infrastructure to fix libxt_SECMARK.
 
-Expired intervals would still match and be dumped to user space until
-garbage collection wiped them out. Make sure they stop matching and
-disappear (from users' perspective) as soon as they expire.
+Hm, -D and -C with SECMARK are broken since the beginning.
 
-Fixes: 8d8540c4f5e03 ("netfilter: nft_set_rbtree: add timeout support")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_set_rbtree.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index 3ffef454d469..62f416bc0579 100644
---- a/net/netfilter/nft_set_rbtree.c
-+++ b/net/netfilter/nft_set_rbtree.c
-@@ -79,6 +79,10 @@ static bool __nft_rbtree_lookup(const struct net *net, const struct nft_set *set
- 				parent = rcu_dereference_raw(parent->rb_left);
- 				continue;
- 			}
-+
-+			if (nft_set_elem_expired(&rbe->ext))
-+				return false;
-+
- 			if (nft_rbtree_interval_end(rbe)) {
- 				if (nft_set_is_anonymous(set))
- 					return false;
-@@ -94,6 +98,7 @@ static bool __nft_rbtree_lookup(const struct net *net, const struct nft_set *set
- 
- 	if (set->flags & NFT_SET_INTERVAL && interval != NULL &&
- 	    nft_set_elem_active(&interval->ext, genmask) &&
-+	    !nft_set_elem_expired(&interval->ext) &&
- 	    nft_rbtree_interval_start(interval)) {
- 		*ext = &interval->ext;
- 		return true;
-@@ -154,6 +159,9 @@ static bool __nft_rbtree_get(const struct net *net, const struct nft_set *set,
- 				continue;
- 			}
- 
-+			if (nft_set_elem_expired(&rbe->ext))
-+				return false;
-+
- 			if (!nft_set_ext_exists(&rbe->ext, NFT_SET_EXT_FLAGS) ||
- 			    (*nft_set_ext_flags(&rbe->ext) & NFT_SET_ELEM_INTERVAL_END) ==
- 			    (flags & NFT_SET_ELEM_INTERVAL_END)) {
-@@ -170,6 +178,7 @@ static bool __nft_rbtree_get(const struct net *net, const struct nft_set *set,
- 
- 	if (set->flags & NFT_SET_INTERVAL && interval != NULL &&
- 	    nft_set_elem_active(&interval->ext, genmask) &&
-+	    !nft_set_elem_expired(&interval->ext) &&
- 	    ((!nft_rbtree_interval_end(interval) &&
- 	      !(flags & NFT_SET_ELEM_INTERVAL_END)) ||
- 	     (nft_rbtree_interval_end(interval) &&
-@@ -418,6 +427,8 @@ static void nft_rbtree_walk(const struct nft_ctx *ctx,
- 
- 		if (iter->count < iter->skip)
- 			goto cont;
-+		if (nft_set_elem_expired(&rbe->ext))
-+			goto cont;
- 		if (!nft_set_elem_active(&rbe->ext, iter->genmask))
- 			goto cont;
- 
--- 
-2.20.1
-
+Another possible would be to fix the kernel to update the layout, to
+get it aligned with other existing extensions.
