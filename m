@@ -2,75 +2,64 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C7A1DD9D9
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 May 2020 00:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34ED31DF276
+	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2020 00:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgEUWGK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 May 2020 18:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        id S1731235AbgEVWwW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 22 May 2020 18:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728327AbgEUWGK (ORCPT
+        with ESMTP id S1731029AbgEVWwV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 May 2020 18:06:10 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B31C061A0E
-        for <netfilter-devel@vger.kernel.org>; Thu, 21 May 2020 15:06:10 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id l15so9858630lje.9
-        for <netfilter-devel@vger.kernel.org>; Thu, 21 May 2020 15:06:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DZ/FA/udYLQhkcdjrjlCIMnUB3kRziPJ7IAgVq44WtE=;
-        b=Q/vBtEY6k4FEhxyLF2EY78LcfekP2UlKuR/T7f8dc1LOhSMnGHSjvE/Zzv6bJ4wkwc
-         ftSe80v37MH2+cxAn/nnxb2yVx7aqBmMRW79LEK7BG+fDnDkfbY/AE1CuZKFqXHL84Gh
-         WvkdNUaDAn7lqOs1p5N7Ukke9dk1a0F9BJ06p/SiCWdN17l+cN0YqNcyS2DK8CtoNUWw
-         9PXugL4QnjsK5+2p+whKrOasx/TTc7ty9wRzrhN52smEBjMqCdwx9OkdLZT52WeCN5pb
-         HOc/0k5FpOrjjRcqG0l64JxWtQp233sp2ttaBgY7ruScETzajKF5ZcSYBGcJOibta6QX
-         OwFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DZ/FA/udYLQhkcdjrjlCIMnUB3kRziPJ7IAgVq44WtE=;
-        b=p360MiSxKJ9uGaMt0fX9/YoTXkMVHPF+hfgwCbIFOzaLVQiVqg7xdGwtCoq5DJ2qDl
-         FPOCOWgzig/MkpzXlD6ihOop0BosQz5u5oZlPS92JUpO3niz1Gip77bZoPFzgAuSytUX
-         IRDBezX6+bxCSmXFZBOQg7uwZPlzkDAJu3z9vawxKe3hUOvafWz7FDDuDs5mDDIyMVWq
-         C35+BXyIdm/liG3+52Tyliz18SFCiNXDkXxScPBB6HJjIC/EF/mssGfb6xmmKc1Rtyld
-         UMPyQNqoAMz+60Gg/+7/VSUR4iD0LuqNr025K5xyGPvZlGzgixDFqUt0ByJL8WgxXN+G
-         EkgQ==
-X-Gm-Message-State: AOAM531K+C6mITRzmRiP/H+oP7LufG4O2Vg7TmGuNT1MjzlYjaMSQgFN
-        FJRHZ6oiR1HOW5NZY6YB9NaZ9zZefp7Zq/z0lrcaPMwF4nA=
-X-Google-Smtp-Source: ABdhPJwQn45ioPDG+HXg80ERHFq3dw1zm2G2YJkGnGNMWivrf/DzW2bWDfitsYLjRVvglk6IbOtmIp6yG5Xo+k1WRvQ=
-X-Received: by 2002:a2e:3309:: with SMTP id d9mr3535147ljc.401.1590098768680;
- Thu, 21 May 2020 15:06:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHOuc7OX=a0OjLpyJf3bU9sfmrd+_XbMBt+JN3w1QeKGPod0pw@mail.gmail.com>
- <nycvar.YFH.7.77.849.2005212305180.7617@n3.vanv.qr>
-In-Reply-To: <nycvar.YFH.7.77.849.2005212305180.7617@n3.vanv.qr>
-From:   Oskar Berggren <oskar.berggren@gmail.com>
-Date:   Fri, 22 May 2020 00:05:57 +0200
-Message-ID: <CAHOuc7O4P0kO64nH0sf+cuoXuJrOFD85bTZ0Xprqp9A2dWbt_g@mail.gmail.com>
-Subject: Re: ipset make modules_install fails to honor INSTALL_MOD_PATH
-To:     Jan Engelhardt <jengelh@inai.de>
-Cc:     netfilter-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 22 May 2020 18:52:21 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C201CC061A0E;
+        Fri, 22 May 2020 15:52:21 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 44D2212744669;
+        Fri, 22 May 2020 15:52:21 -0700 (PDT)
+Date:   Fri, 22 May 2020 15:52:20 -0700 (PDT)
+Message-Id: <20200522.155220.1541483265983849619.davem@davemloft.net>
+To:     ecree@solarflare.com
+Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        jiri@resnulli.us, kuba@kernel.org, pablo@netfilter.org
+Subject: Re: [PATCH v4 net-next] net: flow_offload: simplify hw stats check
+ handling
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <0f0e052c-fa79-2ac7-8cec-98d4908845d0@solarflare.com>
+References: <0f0e052c-fa79-2ac7-8cec-98d4908845d0@solarflare.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 22 May 2020 15:52:21 -0700 (PDT)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Den tors 21 maj 2020 kl 23:09 skrev Jan Engelhardt <jengelh@inai.de>:
->
->
-> On Thursday 2020-05-21 21:27, Oskar Berggren wrote:
->
-> >make
-> >make modules
-> >DESTDIR=3D... make install
-> >INSTALL_MOD_PATH=3D... make modules_install
->
-> =C2=BB make modules_install DESTDIR=3D/tmp/RT INSTALL_MOD_PATH=3D/tmp/RT2
+From: Edward Cree <ecree@solarflare.com>
+Date: Wed, 20 May 2020 19:18:10 +0100
 
-Ah, cool, thanks!
+> Make FLOW_ACTION_HW_STATS_DONT_CARE be all bits, rather than none, so that
+>  drivers and __flow_action_hw_stats_check can use simple bitwise checks.
+> 
+> Pre-fill all actions with DONT_CARE in flow_rule_alloc(), rather than
+>  relying on implicit semantics of zero from kzalloc, so that callers which
+>  don't configure action stats themselves (i.e. netfilter) get the correct
+>  behaviour by default.
+> 
+> Only the kernel's internal API semantics change; the TC uAPI is unaffected.
+> 
+> v4: move DONT_CARE setting to flow_rule_alloc() for robustness and simplicity.
+> 
+> v3: set DONT_CARE in nft and ct offload.
+> 
+> v2: rebased on net-next, removed RFC tags.
+> 
+> Signed-off-by: Edward Cree <ecree@solarflare.com>
+
+Applied, thanks Edward.
