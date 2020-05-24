@@ -2,91 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389521DFF03
-	for <lists+netfilter-devel@lfdr.de>; Sun, 24 May 2020 15:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E381E02A3
+	for <lists+netfilter-devel@lfdr.de>; Sun, 24 May 2020 21:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbgEXNAs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 24 May 2020 09:00:48 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36748 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725873AbgEXNAr (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 24 May 2020 09:00:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590325246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yCWbbSQdUSB34seiefqT+0h/Wh/XEyCYpwYHY597OdY=;
-        b=TS31JgV1wgVMOa5RRf8reejIYxsoa8wJS98xYVhWoGlp7wvk9f5lAaSvk6TfGLIIkVBbnA
-        8er6ZOaZyOKZrtcjL+K6dJ0OasjV0fNOLuzhdjOCeFZdNSJPVwHF/oTDtfW1yaTWBo3/Sy
-        gZ3rjwwM6gjOhT8Ofx4lnp7G3ecz6+w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-Zlxz1pTlPh-p4PLt8_R60A-1; Sun, 24 May 2020 09:00:44 -0400
-X-MC-Unique: Zlxz1pTlPh-p4PLt8_R60A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AEFB01855A00;
-        Sun, 24 May 2020 13:00:43 +0000 (UTC)
-Received: from epycfail.redhat.com (unknown [10.36.110.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A957797EB;
-        Sun, 24 May 2020 13:00:42 +0000 (UTC)
-From:   Stefano Brivio <sbrivio@redhat.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 2/2] tests: shell: Introduce test for concatenated ranges in anonymous sets
-Date:   Sun, 24 May 2020 15:00:27 +0200
-Message-Id: <5735155a0e98738cdc5507385d6225e05c225465.1590324033.git.sbrivio@redhat.com>
-In-Reply-To: <cover.1590324033.git.sbrivio@redhat.com>
-References: <cover.1590324033.git.sbrivio@redhat.com>
+        id S2388085AbgEXTyX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 24 May 2020 15:54:23 -0400
+Received: from correo.us.es ([193.147.175.20]:50344 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387992AbgEXTyX (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 24 May 2020 15:54:23 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 7898FA58AD
+        for <netfilter-devel@vger.kernel.org>; Sun, 24 May 2020 21:54:21 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 56514DA717
+        for <netfilter-devel@vger.kernel.org>; Sun, 24 May 2020 21:54:21 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 3D031DA714; Sun, 24 May 2020 21:54:21 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 2EFB8DA709;
+        Sun, 24 May 2020 21:54:19 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Sun, 24 May 2020 21:54:19 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id F257F42EF42A;
+        Sun, 24 May 2020 21:54:18 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     mkubecek@suse.cz, jacobraz@chromium.org, fw@strlen.de
+Subject: [PATCH nf 0/2] restore userspace helper support
+Date:   Sun, 24 May 2020 21:54:08 +0200
+Message-Id: <20200524195410.28502-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add a simple anonymous set including a concatenated range and check
-it's inserted correctly. This is roughly based on the existing
-0025_anonymous_set_0 test case.
+Hi,
 
-Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
----
- tests/shell/testcases/sets/0048anonymous_set_concat_0      | 7 +++++++
- .../testcases/sets/dumps/0048anonymous_set_concat_0.nft    | 6 ++++++
- 2 files changed, 13 insertions(+)
- create mode 100755 tests/shell/testcases/sets/0048anonymous_set_concat_0
- create mode 100644 tests/shell/testcases/sets/dumps/0048anonymous_set_concat_0.nft
+This patchset restores the userspace helper support:
 
-diff --git a/tests/shell/testcases/sets/0048anonymous_set_concat_0 b/tests/shell/testcases/sets/0048anonymous_set_concat_0
-new file mode 100755
-index 000000000000..fab61231d0c0
---- /dev/null
-+++ b/tests/shell/testcases/sets/0048anonymous_set_concat_0
-@@ -0,0 +1,7 @@
-+#!/bin/sh -e
-+#
-+# 0048anonymous_sets_concat_0 - Anonymous sets with concatenated ranges
-+
-+${NFT} add table t
-+${NFT} add chain t c '{ type filter hook forward priority 0 ; }'
-+${NFT} add rule t c 'ip daddr . tcp dport { 192.0.2.1 . 49152-65535 }'
-diff --git a/tests/shell/testcases/sets/dumps/0048anonymous_set_concat_0.nft b/tests/shell/testcases/sets/dumps/0048anonymous_set_concat_0.nft
-new file mode 100644
-index 000000000000..c54ffae9d6d2
---- /dev/null
-+++ b/tests/shell/testcases/sets/dumps/0048anonymous_set_concat_0.nft
-@@ -0,0 +1,6 @@
-+table ip t {
-+	chain c {
-+		type filter hook forward priority filter; policy accept;
-+		ip daddr . tcp dport { 192.0.2.1 . 49152-65535 }
-+	}
-+}
+1) Missing conntrack confirmation after packet reinjection.
+2) Missing data_len initialization and incorrect nla_memcpy().
+
+Pablo Neira Ayuso (2):
+  netfilter: conntrack: make conntrack userspace helpers work again
+  netfilter: nfnetlink_cthelper: unbreak userspace helper support
+
+ net/netfilter/nf_conntrack_core.c  | 79 +++++++++++++++++++++++++++---
+ net/netfilter/nfnetlink_cthelper.c |  3 +-
+ 2 files changed, 75 insertions(+), 7 deletions(-)
+
 -- 
-2.26.2
+2.20.1
 
