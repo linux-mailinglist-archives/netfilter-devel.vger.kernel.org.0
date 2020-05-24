@@ -2,176 +2,99 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CBA1DF6D5
-	for <lists+netfilter-devel@lfdr.de>; Sat, 23 May 2020 13:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63A41DFF00
+	for <lists+netfilter-devel@lfdr.de>; Sun, 24 May 2020 15:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728969AbgEWLZj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 23 May 2020 07:25:39 -0400
-Received: from mail-eopbgr00094.outbound.protection.outlook.com ([40.107.0.94]:45558
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728749AbgEWLZi (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 23 May 2020 07:25:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DsGgVISuB0wqmZwJ4uTpO+wwN6L7VO/PqvY0TdRiryLrV/dW2nrW0q0etTU7ayh3wR0HQYVnYOWGklsshCfWBbqwvWkMdcYIEl23Z1xNWLO0cxSZ80QlLUd6z4BOkIGv3ikk4TVdXVDyvjcAbPbDKMqZOy0er+fgekj9TkpuwCQYWQFZqeTbmmUGJ97UQtXAGXvcwJ1aPCkA8s/ACMPg/fXY/zEPasHscdUZgfTQgHqP+/DvxYcYKaeLOLWvrX358E52v0+VXU9xHEeKSvCeViwqnsoPzOm2Srh0PIEi7e9HFmaShOAWPck7lW/VwlNwcGFikKaLic73zj+XhVga6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eaagAqJfUSlEgkkXsHVYXoyVXzm6u4xAe23ojw+UUkY=;
- b=WptWMv2tQR7ExUxEFW9cSP9bCDqjwReHr8XTxHY1VOM7qFIlBCOEWNXfiMd+FD0VapA+1ZU4lnCU1MBVnWDsu81lOxtFw4T7Wo4uhf54z2r7UfYyv1cIIFZ6S41GTO9x7HHY44XVG8Krr4UUYqNhSg3UXDqI+gK8s1MY4Du1OBpHcBgjPdSHZwo4Pm+fifP1cQsygXP4WbahUojWZdLRRiA322jTphKT7SVAj+ct8UrN1LNc8Puke30TGCsIxcZNFTaHd7/BS/kFFndSHaIYQgcunGHMeC/E9o5eoWSn6q0txxV1rMo3f9RwzanRkTBlvMrSur+Z0P+5CTISwGaBqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=voleatech.de; dmarc=pass action=none header.from=voleatech.de;
- dkim=pass header.d=voleatech.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=voleatech.de;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eaagAqJfUSlEgkkXsHVYXoyVXzm6u4xAe23ojw+UUkY=;
- b=V+dkf8eR660xemXtRfTyrlm8gfvFdFGkWVuOkICDjLOwo8KeavJsRAIw+7NEVk/IyGONBS9TyGf6p4F1t/WE7dnpMZZBcqIJ/rRxNGJd8qafvHyTYDJERktACp2r9FiBX9GrE5NxT/70kevjpgpjEfUHwQOyE0RvQMpiJFW5wEw=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=voleatech.de;
-Received: from AM0PR05MB5156.eurprd05.prod.outlook.com (2603:10a6:208:f7::19)
- by AM0PR05MB6465.eurprd05.prod.outlook.com (2603:10a6:208:141::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.26; Sat, 23 May
- 2020 11:25:34 +0000
-Received: from AM0PR05MB5156.eurprd05.prod.outlook.com
- ([fe80::d991:635:a94b:687b]) by AM0PR05MB5156.eurprd05.prod.outlook.com
- ([fe80::d991:635:a94b:687b%4]) with mapi id 15.20.3000.033; Sat, 23 May 2020
- 11:25:34 +0000
-Date:   Sat, 23 May 2020 13:25:33 +0200
-From:   Sven Auhagen <sven.auhagen@voleatech.de>
-To:     netfilter-devel@vger.kernel.org
-Cc:     pablo@netfilter.org
-Subject: [PATCH 1/1] Remove flow offload when ct is removed from userspace
-Message-ID: <20200523112533.zocclvnhlx23qhph@SvensMacBookAir.sven.lan>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-ClientProxiedBy: AM4PR0701CA0008.eurprd07.prod.outlook.com
- (2603:10a6:200:42::18) To AM0PR05MB5156.eurprd05.prod.outlook.com
- (2603:10a6:208:f7::19)
+        id S1728879AbgEXNAJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 24 May 2020 09:00:09 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39876 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725873AbgEXNAJ (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 24 May 2020 09:00:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590325207;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mu7qzasRYqHLzllbvcZIbW5L4x8O2Zzv16NJf3e045s=;
+        b=IRcitDuBjNFDcNDEK/t/z6p1tixU1ch4guZk6tqqGYWdEL8pywjKphuuMJJKpG9LPIgEKB
+        l/bj0CiCPaBAwHySrKo9yoRLYML5Ht1SmRRI+fheO2O1KiHcJXEDLvzj1ZaKD6E3LgGqaH
+        4yHUca2o/cjIMfrFITs17gFQ36KPgJ0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-265-9r8kDHAFMe69jGtsMOA8jQ-1; Sun, 24 May 2020 08:59:52 -0400
+X-MC-Unique: 9r8kDHAFMe69jGtsMOA8jQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3475980183C;
+        Sun, 24 May 2020 12:59:51 +0000 (UTC)
+Received: from epycfail.redhat.com (unknown [10.36.110.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2382760BF3;
+        Sun, 24 May 2020 12:59:49 +0000 (UTC)
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Matt Turner <mattst88@gmail.com>, netfilter-devel@vger.kernel.org
+Subject: [PATCH nft] build: Fix doc build, restore A2X assignment for doc/Makefile
+Date:   Sun, 24 May 2020 14:59:36 +0200
+Message-Id: <8ef909eedea05cdd3072bea59d664e3a52e28dcd.1590320436.git.sbrivio@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from SvensMacBookAir.sven.lan (78.43.2.70) by AM4PR0701CA0008.eurprd07.prod.outlook.com (2603:10a6:200:42::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.8 via Frontend Transport; Sat, 23 May 2020 11:25:34 +0000
-X-Originating-IP: [78.43.2.70]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 98be5fe7-8b0a-4313-baac-08d7ff0c029b
-X-MS-TrafficTypeDiagnostic: AM0PR05MB6465:
-X-Microsoft-Antispam-PRVS: <AM0PR05MB646505DA5801F576E70D40E5EFB50@AM0PR05MB6465.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-Forefront-PRVS: 0412A98A59
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8ON9JiDYQy60gvmDvZqH/W7fBubKZ5H7OfppdLf/7BRskdAu342PstZi6VqMsez8jC/RhCW7+I+PsYke9/qNdOAs7k6c6JZ7RluI/Dv60KlOblihgh+WuO9x4miYrhzPZB8K4+g7hcezw0tpgLoW7PKbh4qGyFHJF7nPJuYLI9HIqBiCU/l7ssHy8/GK0ByVRt74h/IOAjKLRbI0DHKQUlY2Fe1gy5td/nRPDXnOtmM8cEYYJtNGeXG1sQLQ7PYyJj6qbZGmR/HpgctDcIsXjw2zrmVinGFt3ClPsdvQ7Sw0lzm9DtjCx2AnBTf6gF3j
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB5156.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(39830400003)(366004)(396003)(136003)(16526019)(44832011)(52116002)(66556008)(7696005)(5660300002)(6506007)(6916009)(26005)(8936002)(186003)(55016002)(66946007)(8676002)(9686003)(66476007)(1076003)(956004)(508600001)(86362001)(4326008)(316002)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: H+0Neyxv4lSrZJntbye9/nuL6jv0dHsfLaClwMgtgr+OjNPmvhUpvE+W1Z8cYviYKpTrVeEu+MIBzvQJjQidTIqbWJymEYd3COsSe7T7CAZQeETBzPZF5jI54S7SX8TqZgNP8VYIOpdgy3ztl4Me5xpYKfvOF/34/cMgqp1pDGZ2xBrNhhpIUdGaZMZddNeQmcIad6G++WH5gZoYw/tjcSGdNnOOKEp9eLHAkctb7tgNE2Wrvz0ON1DkkohlHSjLb9seLOfmKctd7y9vXXOD1WRHzOo/sDWYhbQNRdEFwqZ/L4ZDrn5LKyXq/qlrinsCmukMfq9axfg/zzIQZwN276ge2jWyK3UzpS9M8SPmGFv1vMhxMyYlbRaLPrmwsz/ofXzwgTjQY2ENrsDE14wVLms525T5u0ouJv6Y3Gk+NyaBFYknXzyg7mJxVwYriW0v88aZEg5quhvyEZzXDpvspgeox62H7vvhHFijcR23fLE=
-X-OriginatorOrg: voleatech.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98be5fe7-8b0a-4313-baac-08d7ff0c029b
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 May 2020 11:25:34.6983
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b82a99f6-7981-4a72-9534-4d35298f847b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KTlNWilbZMOEn1v+/k8GAUecNSBjSN0KoJXtAxrdbD1VLcPybObPRldDb2NvKLsCL3cGf1k1mLwPVgEpZoMcAAQnHAuoRB9oZ2jzuhfOpdM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6465
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When a ct is removed from user space through a netlink
-message it currently returns an error. This
-effectively makes a flow undeleteable from user space.
+Commit 4f2813a313ae ("build: Include generated man pages in dist
+tarball") skips AC_CHECK_PROG for A2X altogether if doc/nft.8 is
+already present.
 
-This causes issues when for example the interface IP changes
-when using DHCP since the flow has SNAT and DNAT information
-attached that are now not updated.
+Now, starting from a clean situation, we can have this sequence:
+  ./configure	# doc/nft.8 not there, A2X set in doc/Makefile
+  make		# builds doc/nft.8
+  ./configure	# doc/nft.8 is there, A2X left empty in doc/Makefile
+  make clean	# removes doc/nft.8
+  make
 
-Signed-off-by: Sven Auhagen <sven.auhagen@voleatech.de>
+resulting in:
+
+  [...]
+    GEN      nft.8
+  /bin/sh: -L: command not found
+  make[2]: *** [Makefile:639: nft.8] Error 127
+
+and the only way to get out of this is to issue ./configure again
+after make clean, which is rather unexpected.
+
+Instead of skipping AC_CHECK_PROG when doc/nft.8 is present, keep
+it and simply avoid returning failure if a2x(1) is not available but
+doc/nft.8 was built, so that A2X is properly set in doc/Makefile
+whenever needed.
+
+Fixes: 4f2813a313ae ("build: Include generated man pages in dist tarball")
+Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
 ---
- include/net/netfilter/nf_flow_table.h |  2 ++
- net/netfilter/nf_conntrack_netlink.c  | 10 ++++++++++
- net/netfilter/nf_flow_table_core.c    | 24 ++++++++++++++++++++++++
- 3 files changed, 36 insertions(+)
+ configure.ac | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
-index c54a7f707e50..51e300e30e62 100644
---- a/include/net/netfilter/nf_flow_table.h
-+++ b/include/net/netfilter/nf_flow_table.h
-@@ -177,6 +177,8 @@ struct flow_offload_tuple_rhash *flow_offload_lookup(struct nf_flowtable *flow_t
- 						     struct flow_offload_tuple *tuple);
- void nf_flow_table_cleanup(struct net_device *dev);
+diff --git a/configure.ac b/configure.ac
+index 3496e410dbbe..5a1f89a0104c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -50,9 +50,9 @@ AC_EXEEXT
+ AC_DISABLE_STATIC
+ CHECK_GCC_FVISIBILITY
  
-+void nf_flow_table_ct_remove(struct nf_conn *ct);
-+
- int nf_flow_table_init(struct nf_flowtable *flow_table);
- void nf_flow_table_free(struct nf_flowtable *flow_table);
+-AS_IF([test "x$enable_man_doc" = "xyes" -a ! -f "${srcdir}/doc/nft.8"], [
++AS_IF([test "x$enable_man_doc" = "xyes"], [
+        AC_CHECK_PROG(A2X, [a2x], [a2x], [no])
+-       AS_IF([test "$A2X" = "no"],
++       AS_IF([test "$A2X" = "no" -a ! -f "${srcdir}/doc/nft.8"],
+ 	     [AC_MSG_ERROR([a2x not found, please install asciidoc])])
+ ])
  
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 9ddfcd002d3b..0048a2b597a0 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -51,6 +51,10 @@
- #include <net/netfilter/nf_nat_helper.h>
- #endif
- 
-+#if IS_ENABLED(CONFIG_NF_FLOW_TABLE_INET)
-+#include <net/netfilter/nf_flow_table.h>
-+#endif
-+
- #include <linux/netfilter/nfnetlink.h>
- #include <linux/netfilter/nfnetlink_conntrack.h>
- 
-@@ -1310,8 +1314,14 @@ static int ctnetlink_del_conntrack(struct net *net, struct sock *ctnl,
- 	ct = nf_ct_tuplehash_to_ctrack(h);
- 
- 	if (test_bit(IPS_OFFLOAD_BIT, &ct->status)) {
-+#if IS_ENABLED(CONFIG_NF_FLOW_TABLE_INET)
-+		nf_flow_table_ct_remove(ct);
-+		nf_ct_put(ct);
-+		return 0;
-+#else
- 		nf_ct_put(ct);
- 		return -EBUSY;
-+#endif
- 	}
- 
- 	if (cda[CTA_ID]) {
-diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-index 42da6e337276..9660448ca2d3 100644
---- a/net/netfilter/nf_flow_table_core.c
-+++ b/net/netfilter/nf_flow_table_core.c
-@@ -607,6 +607,30 @@ void nf_flow_table_cleanup(struct net_device *dev)
- }
- EXPORT_SYMBOL_GPL(nf_flow_table_cleanup);
- 
-+static void nf_flow_offload_ct_remove_step(struct flow_offload *flow,
-+					   void *data)
-+{
-+	struct nf_conn *ct = data;
-+
-+	if (ct == flow->ct)
-+		set_bit(NF_FLOW_TEARDOWN, &flow->flags);
-+}
-+
-+void nf_flow_table_ct_remove(struct nf_conn *ct)
-+{
-+	struct nf_flowtable *flow_table;
-+
-+	if (!test_bit(IPS_OFFLOAD_BIT, &ct->status))
-+		return;
-+
-+	list_for_each_entry(flow_table, &flowtables, list) {
-+		nf_flow_table_iterate(flow_table,
-+				      nf_flow_offload_ct_remove_step,
-+				      ct);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(nf_flow_table_ct_remove);
-+
- void nf_flow_table_free(struct nf_flowtable *flow_table)
- {
- 	mutex_lock(&flowtable_lock);
 -- 
-2.20.1
+2.26.2
 
