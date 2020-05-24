@@ -2,108 +2,76 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C49D1DFEFF
-	for <lists+netfilter-devel@lfdr.de>; Sun, 24 May 2020 15:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AB31DFF01
+	for <lists+netfilter-devel@lfdr.de>; Sun, 24 May 2020 15:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgEXNAG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 24 May 2020 09:00:06 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:25250 "EHLO
+        id S1728984AbgEXNAV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 24 May 2020 09:00:21 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:49023 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725873AbgEXNAG (ORCPT
+        by vger.kernel.org with ESMTP id S1725873AbgEXNAU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 24 May 2020 09:00:06 -0400
+        Sun, 24 May 2020 09:00:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590325204;
+        s=mimecast20190719; t=1590325220;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=amIRaCQJsifw59sAdCoNsH1Xquev8M0L1J8U8PCCSkU=;
-        b=KX//J4UwAfpJsfF4+Evr/Qk56w3H0MTAmRIvmpQcBtlHNFtHkBOwaVeXGo2HpUYXG+MP+X
-        59ybKQC7BASBNL0W8QayHlaMkIygu9XOlRHlR1EdfVy5agsztvqwP2IsnPfFj5rDanIYRl
-        9ob3SWAf+MQRDu3OSaxh8FzYwqIduvU=
+        bh=HRGX3HCN6bxCPSIaDE/qylqAsNr56GDc3FbjWrQo9mg=;
+        b=KR307JbcfekUGgHJt8a5Zvn8K5Lr8343Smzhz2WRa2rMvHIDZCveWORXk5hhwvJSN5+OCo
+        rBVItg846OvfXls/l7VBBUPugsgeScGsF3C2thnU7ozLd0PMm2iqjS5oYDK9zbyf227dgr
+        E8r+fB1e9kjWDOj2WfUL0osrOSP/dYI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-55-LLkR7up6Nl2lskQjUC3OgA-1; Sun, 24 May 2020 09:00:02 -0400
-X-MC-Unique: LLkR7up6Nl2lskQjUC3OgA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+ us-mta-70-ZrB9ZQCvPWK4UMKZAHxFzw-1; Sun, 24 May 2020 09:00:16 -0400
+X-MC-Unique: ZrB9ZQCvPWK4UMKZAHxFzw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E15FB1800D42;
-        Sun, 24 May 2020 13:00:00 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28FB51800D42;
+        Sun, 24 May 2020 13:00:15 +0000 (UTC)
 Received: from epycfail.redhat.com (unknown [10.36.110.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C679E5C1B2;
-        Sun, 24 May 2020 12:59:59 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1722A10013D9;
+        Sun, 24 May 2020 13:00:13 +0000 (UTC)
 From:   Stefano Brivio <sbrivio@redhat.com>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] tests: shell: Avoid breaking basic connectivity when run
-Date:   Sun, 24 May 2020 14:59:57 +0200
-Message-Id: <9742365b595a791d4bd47abee6ad6271abe0950b.1590323912.git.sbrivio@redhat.com>
+Cc:     Ana Rey <anarey@gmail.com>, netfilter-devel@vger.kernel.org
+Subject: [PATCH nft] tests: py: Actually use all available hooks in bridge/chains.t
+Date:   Sun, 24 May 2020 15:00:07 +0200
+Message-Id: <2b98ba50fa537d10dfb535aff4ad34b00ec53cdd.1590323965.git.sbrivio@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-It might be convenient to run tests from a development branch that
-resides on another host, and if we break connectivity on the test
-host as tests are executed, we con't run them this way.
+Despite being explicitly mentioned as available, prerouting and
+postrouting hooks are not used, filter-pre and filter-post chains
+are both built to hook on input.
 
-To preserve connectivity, for shell tests, we can simply use the
-'forward' hook instead of 'input' in chains/0036_policy_variable_0
-and transactions/0011_chain_0, without affecting test coverage.
-
-For py tests, this is more complicated as some test cases install
-chains for all the available hooks, and we would probably need a
-more refined approach to avoid dropping relevant traffic, so I'm
-not covering that right now.
-
+Fixes: 25851df85e85 ("tests: regression: revisit chain tests")
 Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
 ---
- tests/shell/testcases/chains/0036policy_variable_0       | 2 +-
- tests/shell/testcases/transactions/0011chain_0           | 2 +-
- tests/shell/testcases/transactions/dumps/0011chain_0.nft | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ tests/py/bridge/chains.t | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tests/shell/testcases/chains/0036policy_variable_0 b/tests/shell/testcases/chains/0036policy_variable_0
-index d4d98ede0d8d..e9246dd9e974 100755
---- a/tests/shell/testcases/chains/0036policy_variable_0
-+++ b/tests/shell/testcases/chains/0036policy_variable_0
-@@ -9,7 +9,7 @@ define default_policy = \"drop\"
+diff --git a/tests/py/bridge/chains.t b/tests/py/bridge/chains.t
+index 85dde73e8520..e071d9a3c971 100644
+--- a/tests/py/bridge/chains.t
++++ b/tests/py/bridge/chains.t
+@@ -1,8 +1,8 @@
+ # filter chains available are: prerouting, input, output, forward, postrouting
+-:filter-pre;type filter hook input priority 0
++:filter-pre;type filter hook prerouting priority 0
+ :filter-output;type filter hook output priority 0
+ :filter-forward;type filter hook forward priority 0
+ :filter-input;type filter hook input priority 0
+-:filter-post;type filter hook input priority 0
++:filter-post;type filter hook postrouting priority 0
  
- table inet global {
-     chain prerouting {
--        type filter hook prerouting priority filter
-+        type filter hook forward priority filter
-         policy \$default_policy
-     }
- }"
-diff --git a/tests/shell/testcases/transactions/0011chain_0 b/tests/shell/testcases/transactions/0011chain_0
-index 3bed16dddf40..bdfa14975180 100755
---- a/tests/shell/testcases/transactions/0011chain_0
-+++ b/tests/shell/testcases/transactions/0011chain_0
-@@ -5,7 +5,7 @@ set -e
- RULESET="add table x
- add chain x y
- delete chain x y
--add chain x y { type filter hook input priority 0; }
-+add chain x y { type filter hook forward priority 0; }
- add chain x y { policy drop; }"
- 
- $NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/transactions/dumps/0011chain_0.nft b/tests/shell/testcases/transactions/dumps/0011chain_0.nft
-index df88ad47c5d9..a12726069efc 100644
---- a/tests/shell/testcases/transactions/dumps/0011chain_0.nft
-+++ b/tests/shell/testcases/transactions/dumps/0011chain_0.nft
-@@ -1,5 +1,5 @@
- table ip x {
- 	chain y {
--		type filter hook input priority filter; policy drop;
-+		type filter hook forward priority filter; policy drop;
- 	}
- }
+ *bridge;test-bridge;filter-pre,filter-output,filter-forward,filter-input,filter-post
 -- 
 2.26.2
 
