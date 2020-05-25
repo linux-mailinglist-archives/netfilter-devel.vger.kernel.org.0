@@ -2,87 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D951E1774
-	for <lists+netfilter-devel@lfdr.de>; Mon, 25 May 2020 23:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD801E1824
+	for <lists+netfilter-devel@lfdr.de>; Tue, 26 May 2020 01:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388613AbgEYVyc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 25 May 2020 17:54:32 -0400
-Received: from correo.us.es ([193.147.175.20]:47318 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389311AbgEYVyb (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 25 May 2020 17:54:31 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 074D0FB443
-        for <netfilter-devel@vger.kernel.org>; Mon, 25 May 2020 23:54:30 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id EDF7FDA709
-        for <netfilter-devel@vger.kernel.org>; Mon, 25 May 2020 23:54:29 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id EC641DA703; Mon, 25 May 2020 23:54:29 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 3BE3FDA711;
-        Mon, 25 May 2020 23:54:27 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 25 May 2020 23:54:27 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 03D4942EE38F;
-        Mon, 25 May 2020 23:54:26 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH 5/5] netfilter: nfnetlink_cthelper: unbreak userspace helper support
-Date:   Mon, 25 May 2020 23:54:20 +0200
-Message-Id: <20200525215420.2290-6-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200525215420.2290-1-pablo@netfilter.org>
-References: <20200525215420.2290-1-pablo@netfilter.org>
+        id S2388325AbgEYXMY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 25 May 2020 19:12:24 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:29163 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388013AbgEYXMY (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 25 May 2020 19:12:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590448342;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nXkpnoCuomfd/APVPagAUOQAmqnAQwAuSuA/tkkwLGA=;
+        b=EnUVz1CgTAOcHvKkRJ8l9bjtEPIYu/+3mcMRZjoV21ADhLuXnQ6SMNh2Zmko215He7pGBB
+        MenIJylWK0uoEk8Iv9JenTGbD/sFQXVWw+fCXHvdj5M4EpJN2svUTruDnuJ1iune2KINSG
+        clIivcXwsmQeQEr/KUaalF47egymg/0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-191-Ij_RodS2MzCkdYNhky4EPQ-1; Mon, 25 May 2020 19:12:19 -0400
+X-MC-Unique: Ij_RodS2MzCkdYNhky4EPQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1502E19057AD;
+        Mon, 25 May 2020 23:12:18 +0000 (UTC)
+Received: from localhost (unknown [10.36.110.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 37CF683861;
+        Mon, 25 May 2020 23:12:16 +0000 (UTC)
+Date:   Tue, 26 May 2020 01:12:13 +0200
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     Konstantin Khorenko <khorenko@virtuozzo.com>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: How to test the kernel netfilter logic?
+Message-ID: <20200526011213.37df67a1@redhat.com>
+In-Reply-To: <8499b3da-fef3-2e42-289a-c824837d8ca3@virtuozzo.com>
+References: <e925907a-475f-725e-a2b7-6b9d78b236d1@virtuozzo.com>
+        <20200525145031.42afc130@redhat.com>
+        <8499b3da-fef3-2e42-289a-c824837d8ca3@virtuozzo.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Restore helper data size initialization and fix memcopy of the helper
-data size.
+On Mon, 25 May 2020 17:00:24 +0300
+Konstantin Khorenko <khorenko@virtuozzo.com> wrote:
 
-Fixes: 157ffffeb5dc ("netfilter: nfnetlink_cthelper: reject too large userspace allocation requests")
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nfnetlink_cthelper.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> On 05/25/2020 03:50 PM, Stefano Brivio wrote:
+> > Hi Konstantin,
+> >
+> > On Mon, 25 May 2020 11:37:57 +0300
+> > Konstantin Khorenko <khorenko@virtuozzo.com> wrote:
+> >  
+> >> but did not find netfilter tests in kernel git repo as well.  
+> >
+> > Have a look at tools/testing/selftests/netfilter/, some of the tests
+> > there actually send traffic and check the outcome.  
+> 
+> Hi Stefano,
+> 
+> thank you very much for the answer!
+> 
+> Yes, you are right, i know about that place, i just thought it's just
+> for "smoke" testing:
 
-diff --git a/net/netfilter/nfnetlink_cthelper.c b/net/netfilter/nfnetlink_cthelper.c
-index a5f294aa8e4c..5b0d0a77379c 100644
---- a/net/netfilter/nfnetlink_cthelper.c
-+++ b/net/netfilter/nfnetlink_cthelper.c
-@@ -103,7 +103,7 @@ nfnl_cthelper_from_nlattr(struct nlattr *attr, struct nf_conn *ct)
- 	if (help->helper->data_len == 0)
- 		return -EINVAL;
- 
--	nla_memcpy(help->data, nla_data(attr), sizeof(help->data));
-+	nla_memcpy(help->data, attr, sizeof(help->data));
- 	return 0;
- }
- 
-@@ -240,6 +240,7 @@ nfnl_cthelper_create(const struct nlattr * const tb[],
- 		ret = -ENOMEM;
- 		goto err2;
- 	}
-+	helper->data_len = size;
- 
- 	helper->flags |= NF_CT_HELPER_F_USERSPACE;
- 	memcpy(&helper->tuple, tuple, sizeof(struct nf_conntrack_tuple));
+Well, I'd say it's a bit more than that, some tests there cover
+specific functionalities rather extensively. Still:
+
+> "iptables" and "nftables" repos have many more testcases (for add/del
+> rules), so i thought there is some additional place with similar very
+> detailed tests for kernel part.
+
+...I'm not aware of any (except for ipset cases that actually test both
+sides with packets, see http://git.netfilter.org/ipset/tree/tests).
+
+Sure, I think it would be great to have something with actual traffic
+at the same level of detail as nft tests, though.
+
 -- 
-2.20.1
+Stefano
 
