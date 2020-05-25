@@ -2,40 +2,39 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5B31E1215
-	for <lists+netfilter-devel@lfdr.de>; Mon, 25 May 2020 17:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7DD1E1239
+	for <lists+netfilter-devel@lfdr.de>; Mon, 25 May 2020 17:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391034AbgEYPwI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 25 May 2020 11:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59428 "EHLO
+        id S2388542AbgEYP7y (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 25 May 2020 11:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388739AbgEYPwI (ORCPT
+        with ESMTP id S2388211AbgEYP7y (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 25 May 2020 11:52:08 -0400
+        Mon, 25 May 2020 11:59:54 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E04C061A0E
-        for <netfilter-devel@vger.kernel.org>; Mon, 25 May 2020 08:52:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4829FC061A0E
+        for <netfilter-devel@vger.kernel.org>; Mon, 25 May 2020 08:59:54 -0700 (PDT)
 Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.91)
         (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1jdFOX-00065P-Ux; Mon, 25 May 2020 17:52:05 +0200
-Date:   Mon, 25 May 2020 17:52:05 +0200
+        id 1jdFW4-0006AQ-Pu; Mon, 25 May 2020 17:59:52 +0200
+Date:   Mon, 25 May 2020 17:59:52 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Stefano Brivio <sbrivio@redhat.com>
 Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Matt Turner <mattst88@gmail.com>,
         netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft] build: Fix doc build, restore A2X assignment for
- doc/Makefile
-Message-ID: <20200525155205.GV17795@orbyte.nwl.cc>
+Subject: Re: [PATCH nft] tests: shell: Avoid breaking basic connectivity when
+ run
+Message-ID: <20200525155952.GW17795@orbyte.nwl.cc>
 Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
         Stefano Brivio <sbrivio@redhat.com>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
-        Matt Turner <mattst88@gmail.com>, netfilter-devel@vger.kernel.org
-References: <8ef909eedea05cdd3072bea59d664e3a52e28dcd.1590320436.git.sbrivio@redhat.com>
+        netfilter-devel@vger.kernel.org
+References: <9742365b595a791d4bd47abee6ad6271abe0950b.1590323912.git.sbrivio@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8ef909eedea05cdd3072bea59d664e3a52e28dcd.1590320436.git.sbrivio@redhat.com>
+In-Reply-To: <9742365b595a791d4bd47abee6ad6271abe0950b.1590323912.git.sbrivio@redhat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
@@ -44,25 +43,29 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 Hi,
 
-On Sun, May 24, 2020 at 02:59:36PM +0200, Stefano Brivio wrote:
-> Commit 4f2813a313ae ("build: Include generated man pages in dist
-> tarball") skips AC_CHECK_PROG for A2X altogether if doc/nft.8 is
-> already present.
+On Sun, May 24, 2020 at 02:59:57PM +0200, Stefano Brivio wrote:
+> It might be convenient to run tests from a development branch that
+> resides on another host, and if we break connectivity on the test
+> host as tests are executed, we con't run them this way.
 > 
-> Now, starting from a clean situation, we can have this sequence:
->   ./configure	# doc/nft.8 not there, A2X set in doc/Makefile
->   make		# builds doc/nft.8
->   ./configure	# doc/nft.8 is there, A2X left empty in doc/Makefile
->   make clean	# removes doc/nft.8
->   make
-
-Thanks for your fix! I fell into that myself since my "build everything
-again" script did just that. My quick "fix" was to 'make clean' before
-configure, not after (which sucks, too).
-
-[...]
+> To preserve connectivity, for shell tests, we can simply use the
+> 'forward' hook instead of 'input' in chains/0036_policy_variable_0
+> and transactions/0011_chain_0, without affecting test coverage.
 > 
-> Fixes: 4f2813a313ae ("build: Include generated man pages in dist tarball")
-> Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
+> For py tests, this is more complicated as some test cases install
+> chains for all the available hooks, and we would probably need a
+> more refined approach to avoid dropping relevant traffic, so I'm
+> not covering that right now.
 
-Acked-by: Phil Sutter <phil@nwl.cc>
+This is a recurring issue, iptables testsuites suffer from this problem
+as well. There it was solved by running everything in a dedicated netns:
+
+iptables/tests/shell: Call testscripts via 'unshare -n <file>'.
+iptables-test.py: If called with --netns, 'ip netns exec <foo>' is
+added as prefix to any of the iptables commands.
+
+I considered doing the same in nftables testsuites several times but
+never managed to keep me motivated enough. Maybe you want to give it a
+try?
+
+Cheers, Phil
