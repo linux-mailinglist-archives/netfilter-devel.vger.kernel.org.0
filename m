@@ -2,107 +2,194 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEF21E08F1
-	for <lists+netfilter-devel@lfdr.de>; Mon, 25 May 2020 10:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CAD1E0DA8
+	for <lists+netfilter-devel@lfdr.de>; Mon, 25 May 2020 13:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731353AbgEYIiC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 25 May 2020 04:38:02 -0400
-Received: from mail-db8eur05on2122.outbound.protection.outlook.com ([40.107.20.122]:23201
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731246AbgEYIiB (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 25 May 2020 04:38:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O5bm4tj4/t+zR522K7KLob1LjznqfGdyhzSx9IXKkLP5psJUSOnzsAhTY7bSh4HYBOoDvg2gc0z2AfQZd4jc8tsPbXHCG5V0JUsqNdDDha4ioFkzIvCQv8mlyoU9T15dOotPo6ffRXOkXfChtz6y9jDKWEfphupU1wpt02L5zDMVSGV+bdEdu8MJT4EcELpC2fJzCdfG93VMrzmMlyQLaWwBndKlOugf/ihp+LDxs6ibb06EQC+LqzkRK/HhoRdtIduEr8YpTfUpfm1Rl2RHV2dGlbB/c9RCCKmHGWxVPM7LgBNI7wE1M7MkHbm2QLrvSvEqbZ9tmpDdfnvlPKo4Vw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tddABIH81Q3lSHh6F9lPFi74zzaH+IUHAVhQLrcJYM4=;
- b=DBfeWYolVUysPtF6DQ+6OfsiHMVClwXXo9ImN9pf5Xr2n/kJEAV9Cn2zZHJUzAiMgAmMJ0Xb3vhYDFhgCa+Lk7ZcBhO8G37k762Qw8ikCkvq7E7Nd+qWvl/CZaTGBj2eZdYhBp0CWE8efQL2fc9l0m/1U/QqRaPJvwJtIvAS2VpRgVWGiWwnG3wqMMtC4ogcEZxhm2+dwkzQzX38bxnadstIwFLMogwYeNNCGgxUaDi+D6iR5CRdnWWeSZNI4n1iyNmHLegBM77FOvY1H+6wBbgxeflO5KpW7o36A1w8i5mYVt8B04OwQ4MSdtkmMajkVw55P/hdSre+5rWfGpFddA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
- header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tddABIH81Q3lSHh6F9lPFi74zzaH+IUHAVhQLrcJYM4=;
- b=oaD2e0EbzMKan85c7X/A5qJ1o9kwjTbSx1I8pxZ2RSyZy6+B7n1phFfu5peCUIX71TumAR3mC6+iqG4nJAYaejl6x49GVoJuR8JZjltnEM2q1l79I0ddNHrGwI67YFSJkwuvOoXuKCZnaz+CrSkn+mdq3F06g54iR6C7Mi4QHmk=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=virtuozzo.com;
-Received: from HE1PR0802MB2218.eurprd08.prod.outlook.com (2603:10a6:3:c7::11)
- by HE1PR0802MB2345.eurprd08.prod.outlook.com (2603:10a6:3:ca::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Mon, 25 May
- 2020 08:37:58 +0000
-Received: from HE1PR0802MB2218.eurprd08.prod.outlook.com
- ([fe80::f4e4:ca6:29ff:b5b7]) by HE1PR0802MB2218.eurprd08.prod.outlook.com
- ([fe80::f4e4:ca6:29ff:b5b7%11]) with mapi id 15.20.3021.029; Mon, 25 May 2020
- 08:37:58 +0000
+        id S2390303AbgEYLrY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 25 May 2020 07:47:24 -0400
+Received: from correo.us.es ([193.147.175.20]:51150 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390165AbgEYLrY (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 25 May 2020 07:47:24 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 1D633F23B2
+        for <netfilter-devel@vger.kernel.org>; Mon, 25 May 2020 13:47:22 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 0E83ADA70E
+        for <netfilter-devel@vger.kernel.org>; Mon, 25 May 2020 13:47:22 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 09330DA703; Mon, 25 May 2020 13:47:22 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 96FBDDA781;
+        Mon, 25 May 2020 13:47:18 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 25 May 2020 13:47:18 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 5A55442EF42B;
+        Mon, 25 May 2020 13:47:18 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-From:   Konstantin Khorenko <khorenko@virtuozzo.com>
-Subject: How to test the kernel netfilter logic?
-Message-ID: <e925907a-475f-725e-a2b7-6b9d78b236d1@virtuozzo.com>
-Date:   Mon, 25 May 2020 11:37:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101
- Thunderbird/45.6.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM4PR07CA0020.eurprd07.prod.outlook.com
- (2603:10a6:205:1::33) To HE1PR0802MB2218.eurprd08.prod.outlook.com
- (2603:10a6:3:c7::11)
+Cc:     jacobraz@chromium.org, fw@strlen.de, mkubecek@suse.cz
+Subject: [PATCH nf,v2 1/2] netfilter: conntrack: make conntrack userspace helpers work again
+Date:   Mon, 25 May 2020 13:47:14 +0200
+Message-Id: <20200525114715.2301-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-e4ne.site (79.165.243.60) by AM4PR07CA0020.eurprd07.prod.outlook.com (2603:10a6:205:1::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.20.3045.13 via Frontend Transport; Mon, 25 May 2020 08:37:57 +0000
-X-Originating-IP: [79.165.243.60]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8d709b84-fe5b-4af8-b4b8-08d80086ed68
-X-MS-TrafficTypeDiagnostic: HE1PR0802MB2345:
-X-Microsoft-Antispam-PRVS: <HE1PR0802MB234590140C515E730A1EA75CC8B30@HE1PR0802MB2345.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 0414DF926F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H6g7t7E19JXvEjNGffDZVFwjEDbJiys287/oYvo1rkRGHlEDUwZuY/hRoc1LCxJzQ1hWbTRXWzB6su3f0ZfMtKYsz4zooqOI/42IoG03SF4ZMcraXS8ldyPdJgGgzg3nAwZFKtbBvjt2/dSHqj0fZzwOXiUURfF8UrED7qZ6pGB7H7tZrFnWW/ZTFgndwTHYZSk9x3XpQuHJXrHegdy1z2odBTkB2Bel+lsNVDl3I1UPlwbmciVhoxUrBmXDDqhdJriUO9EMIsj2VvMO4X28HaM4FlnTtl2hHYZNa/bJYTEoU+1toUjl8KeACoLyCKbLkhlmjfFL1y66ZW3HEDvdz0UXEQT0xxJ3G8o0sgrVokN8+iO+iYsTj1FI85X3YRzO
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0802MB2218.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39830400003)(396003)(346002)(376002)(366004)(136003)(66946007)(2906002)(66476007)(66556008)(6916009)(36756003)(8886007)(2616005)(8936002)(956004)(5660300002)(6512007)(16526019)(6506007)(186003)(4744005)(6486002)(26005)(478600001)(31696002)(86362001)(52116002)(31686004)(316002)(8676002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: KzgX+XRur6FGLuWqV6xmr365XmUxF0uxpP8cdKW0sqRx3OQotVcEtIGixKbHEDnYZWXSR0VlkkofqQc/M3KCY+KKQuUB5WainlgxfuqxkSW52TF7ZjYO8/E0eS9mUBtjwugLOvQUyzrufuXISXhmzfxnCZsPPTHgwZH7Vyv+Nm37IS0jkZJsDdOUPxNGGb0OQkSd91PSpMQyoiyJ7u4unfCf37eCXfM8Eiprh25QfumDgKzoAzC1M6T18WOpfh975Ei9k1534wTC3kaqZeFLNPsuvJn2K8zZ9VYY1DydGoWQkTULlsCc1yWOXP99WsWy+cCRqtwN4SrLq0LkJlNZ6dICftrQc/bCFaStKu6BuMAdZFb2ppiKdTjb/m5uXfZeEqhb9PXCOuS8QDiAfG9pLMnCvTSgfeshkJDuBFMNPRFU6ip9jQKX88wYe56Vs/+bZowAgyQFfDbKfYvIWQhKa3vW8SxVKn8PHoif2E8JFZw=
-X-OriginatorOrg: virtuozzo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d709b84-fe5b-4af8-b4b8-08d80086ed68
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2020 08:37:58.4623
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lGuoYGh49cw5k1Vxf0isNul8c3AGzk/OOv2umGdDDX/3h63TAXx2hQW+As5GnHM1JENVyMUOSCPnFJgMPuG4eQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0802MB2345
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
+Florian Westphal says:
 
-are there any tests for netfilter kernel logic?
+"Problem is that after the helper hook was merged back into the confirm
+one, the queueing itself occurs from the confirm hook, i.e. we queue
+from the last netfilter callback in the hook-list.
 
-i've taken a look at iptables and nftables repo,
-there are a lot of tests, but all of them (if i see correctly)
-are about loading/unloading rules, chains, etc,
-but not actually checking that those rules work properly.
+Therefore, on return, the packet bypasses the confirm action and the
+connection is never committed to the main conntrack table.
 
-i mean i did not find tests which configure some rules,
-then send traffic and check if the traffic is changed by the rule
-in the expected way.
+Therefore, on return, the packet bypasses the confirm action and the
+connection is never committed to the main conntrack table.
 
-i understand that this is not userspace's work to process the traffic,
-so i'd expect the tests somehow are bound to the kernel,
-but did not find netfilter tests in kernel git repo as well.
+To fix this there are several ways:
+1. revert the 'Fixes' commit and have a extra helper hook again.
+   Works, but has the drawback of adding another indirect call for
+   everyone.
 
-Can you please help me?
+2. Special case this: split the hooks only when userspace helper
+   gets added, so queueing occurs at a lower priority again,
+   and normal nqueue reinject would eventually call the last hook.
 
-Thank you in advance!
+3. Extend the existing nf_queue ct update hook to allow a forced
+   confirmation (plus run the seqadj code).
 
---
-Best regards,
+This goes for 3)."
 
-Konstantin Khorenko,
-Virtuozzo Linux Kernel Team
+Fixes: 827318feb69cb ("netfilter: conntrack: remove helper hook again")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v2: call __nf_conntrack_update() before ct helper confirmation.
+
+ net/netfilter/nf_conntrack_core.c | 78 ++++++++++++++++++++++++++++---
+ 1 file changed, 72 insertions(+), 6 deletions(-)
+
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index 1d57b95d3481..08e0c19f6b39 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -2016,22 +2016,18 @@ static void nf_conntrack_attach(struct sk_buff *nskb, const struct sk_buff *skb)
+ 	nf_conntrack_get(skb_nfct(nskb));
+ }
+ 
+-static int nf_conntrack_update(struct net *net, struct sk_buff *skb)
++static int __nf_conntrack_update(struct net *net, struct sk_buff *skb,
++				 struct nf_conn *ct)
+ {
+ 	struct nf_conntrack_tuple_hash *h;
+ 	struct nf_conntrack_tuple tuple;
+ 	enum ip_conntrack_info ctinfo;
+ 	struct nf_nat_hook *nat_hook;
+ 	unsigned int status;
+-	struct nf_conn *ct;
+ 	int dataoff;
+ 	u16 l3num;
+ 	u8 l4num;
+ 
+-	ct = nf_ct_get(skb, &ctinfo);
+-	if (!ct || nf_ct_is_confirmed(ct))
+-		return 0;
+-
+ 	l3num = nf_ct_l3num(ct);
+ 
+ 	dataoff = get_l4proto(skb, skb_network_offset(skb), l3num, &l4num);
+@@ -2088,6 +2084,76 @@ static int nf_conntrack_update(struct net *net, struct sk_buff *skb)
+ 	return 0;
+ }
+ 
++/* This packet is coming from userspace via nf_queue, complete the packet
++ * processing after the helper invocation in nf_confirm().
++ */
++static int nf_confirm_cthelper(struct sk_buff *skb, struct nf_conn *ct,
++			       enum ip_conntrack_info ctinfo)
++{
++	const struct nf_conntrack_helper *helper;
++	const struct nf_conn_help *help;
++	unsigned int protoff;
++
++	help = nfct_help(ct);
++	if (!help)
++		return 0;
++
++	helper = rcu_dereference(help->helper);
++	if (!(helper->flags & NF_CT_HELPER_F_USERSPACE))
++		return 0;
++
++	switch (nf_ct_l3num(ct)) {
++	case NFPROTO_IPV4:
++		protoff = skb_network_offset(skb) + ip_hdrlen(skb);
++		break;
++#if IS_ENABLED(CONFIG_IPV6)
++	case NFPROTO_IPV6: {
++		__be16 frag_off;
++		u8 pnum;
++
++		pnum = ipv6_hdr(skb)->nexthdr;
++		protoff = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &pnum,
++					   &frag_off);
++		if (protoff < 0 || (frag_off & htons(~0x7)) != 0)
++			return 0;
++		break;
++	}
++#endif
++	default:
++		return 0;
++	}
++
++	if (test_bit(IPS_SEQ_ADJUST_BIT, &ct->status) &&
++	    !nf_is_loopback_packet(skb)) {
++		if (!nf_ct_seq_adjust(skb, ct, ctinfo, protoff)) {
++			NF_CT_STAT_INC_ATOMIC(nf_ct_net(ct), drop);
++			return -1;
++		}
++	}
++
++	/* We've seen it coming out the other side: confirm it */
++	return nf_conntrack_confirm(skb) == NF_DROP ? - 1 : 0;
++}
++
++static int nf_conntrack_update(struct net *net, struct sk_buff *skb)
++{
++	enum ip_conntrack_info ctinfo;
++	struct nf_conn *ct;
++	int err;
++
++	ct = nf_ct_get(skb, &ctinfo);
++	if (!ct)
++		return 0;
++
++	if (!nf_ct_is_confirmed(ct)) {
++		err = __nf_conntrack_update(net, skb, ct);
++		if (err < 0)
++			return err;
++	}
++
++	return nf_confirm_cthelper(skb, ct, ctinfo);
++}
++
+ static bool nf_conntrack_get_tuple_skb(struct nf_conntrack_tuple *dst_tuple,
+ 				       const struct sk_buff *skb)
+ {
+-- 
+2.20.1
+
