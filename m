@@ -2,183 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A3A1E4F9B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 27 May 2020 22:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A181E5098
+	for <lists+netfilter-devel@lfdr.de>; Wed, 27 May 2020 23:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgE0Uvn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 27 May 2020 16:51:43 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:46112 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728571AbgE0Uvm (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 27 May 2020 16:51:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590612700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q8zH8SFS1b68Pe85NsoesUk0EGtyyf56k1MMHtVM0u0=;
-        b=X53PQWEvrrYxjnEtrgklWBaAwW9IxHslItc/EDSKL/N6SxZxqreW/DYQGvsMqJhAEXLVz5
-        RTnWjvlccwvt6DOUOFqrzwGr8eiiCl6S/TOWwRMaIXS2veuoi7azuupg8AaqiKrs+SZWlo
-        NBSVL6kgTau7tsldBaO+XT+gbV59XSc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-cy3WZeUfO7m10x7CmL0qPg-1; Wed, 27 May 2020 16:51:38 -0400
-X-MC-Unique: cy3WZeUfO7m10x7CmL0qPg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726129AbgE0Vjn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 27 May 2020 17:39:43 -0400
+Received: from correo.us.es ([193.147.175.20]:40426 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726114AbgE0Vjm (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 27 May 2020 17:39:42 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 216CF9F4C5
+        for <netfilter-devel@vger.kernel.org>; Wed, 27 May 2020 23:39:40 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 12D16DA710
+        for <netfilter-devel@vger.kernel.org>; Wed, 27 May 2020 23:39:40 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 08224DA703; Wed, 27 May 2020 23:39:40 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 227D2DA703;
+        Wed, 27 May 2020 23:39:38 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Wed, 27 May 2020 23:39:38 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 730651005510;
-        Wed, 27 May 2020 20:51:37 +0000 (UTC)
-Received: from epycfail.redhat.com (unknown [10.36.110.54])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 287C779C4D;
-        Wed, 27 May 2020 20:51:35 +0000 (UTC)
-From:   Stefano Brivio <sbrivio@redhat.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: [PATCH nft v2 2/2] tests: py: Enable anonymous set rule with concatenated ranges in inet/sets.t
-Date:   Wed, 27 May 2020 22:51:22 +0200
-Message-Id: <cc79c6979526343ba093815529434801b5c10fd6.1590612113.git.sbrivio@redhat.com>
-In-Reply-To: <cover.1590612113.git.sbrivio@redhat.com>
-References: <cover.1590612113.git.sbrivio@redhat.com>
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 05D3B42EF4E0;
+        Wed, 27 May 2020 23:39:37 +0200 (CEST)
+Date:   Wed, 27 May 2020 23:39:37 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Michael Braun <michael-dev@fami-braun.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Avoid gretap fragmentation with nftables on bridge
+Message-ID: <20200527213937.GA2714@salvia>
+References: <cover.1588758255.git.michael-dev@fami-braun.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1588758255.git.michael-dev@fami-braun.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Commit 64b9aa3803dd ("tests/py: Add tests involving concatenated
-ranges") introduced a rule, commented out, adding an anonymous set
-including concatenated ranges. Now that they are properly handled,
-we can enable it.
+On Wed, May 06, 2020 at 11:46:22AM +0200, Michael Braun wrote:
+> Hi,
+> 
+> I have a bridge with connects an gretap tunnel with some ethernet lan.
+> On the gretap device I use ignore-df to avoid packets being lost without
+> icmp reject to the sender of the bridged packet.
+> 
+> Still I want to avoid packet fragmentation with the gretap packets.
+> So I though about adding an nftables rule like this:
+> 
+> nft insert rule bridge filter FORWARD \
+>   ip protocol tcp \
+>   ip length > 1400 \
+>   ip frag-off & 0x4000 != 0 \
+>   reject with icmp type frag-needed
+> 
+> This would reject all tcp packets with ip dont-fragment bit set that are
+> bigger than some threshold (here 1400 bytes). The sender would then receive
+> ICMP unreachable - fragmentation needed and reduce its packet size (as
+> defined with PMTU).
 
-Note that this introduces a new warning. In the output below, '\'
-marks newlines I introduced to keep lines short:
+Patches 1 and 2 are applied, thanks.
 
-inet/sets.t: WARNING: line 24: \
-'add rule inet test-inet input ip daddr . tcp dport \
-{ 10.0.0.0/8 . 10-23, 192.168.1.1-192.168.3.8 . 80-443 } accept': \
-'ip daddr . tcp dport \
-{ 10.0.0.0/8 . 10-23, 192.168.1.1-192.168.3.8 . 80-443 } accept' \
-mismatches 'meta nfproto ipv4 ip daddr . tcp dport \
-{ 10.0.0.0/8 . 10-23, 192.168.1.1-192.168.3.8 . 80-443} accept'
-
-which is similar to the existing warning, also introduced by
-commit 64b9aa3803dd:
-
-inet/sets.t: WARNING: line 23: \
-'add rule inet test-inet input \
-ip saddr . ip daddr . tcp dport @set3 accept': \
-'ip saddr . ip daddr . tcp dport @set3 accept' mismatches \
-'meta nfproto ipv4 ip saddr . ip daddr . tcp dport @set3 accept'
-
-This is mentioned in the commit message for 64b9aa3803dd itself:
-
-    * Payload dependency killing ignores the concatenated IP header
-      expressions on LHS, so rule output is asymmetric.
-
-which means that for family inet, 'meta nfproto ipv4' is added to
-the output of the rule, on top of what was passed as input, but not
-for families bridge and netdev.
-
-For this reason, it's not possible in this case to specify a single
-expected output, differing from the input, and, also,
-'meta nfproto ipv4' can only be passed as input for family inet as
-it's not relevant for the other families.
-
-As an alternative, we could split the rules from this test into
-tests for the corresponding families, as this test case itself
-is under the 'inet' directory, but I consider this beyond the scope
-of this patchset.
-
-v2: Enable rule in py/inet/sets.t instead of adding a new test in
-    shell/sets (Phil Sutter)
-
-Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
----
- tests/py/inet/sets.t                |  2 +-
- tests/py/inet/sets.t.payload.bridge | 14 ++++++++++++++
- tests/py/inet/sets.t.payload.inet   | 13 +++++++++++++
- tests/py/inet/sets.t.payload.netdev | 13 +++++++++++++
- 4 files changed, 41 insertions(+), 1 deletion(-)
-
-diff --git a/tests/py/inet/sets.t b/tests/py/inet/sets.t
-index e0b0ee867f9b..1c6f32355acf 100644
---- a/tests/py/inet/sets.t
-+++ b/tests/py/inet/sets.t
-@@ -21,4 +21,4 @@ ip6 daddr @set1 drop;fail
- ?set3 10.0.0.0/8 . 192.168.1.3-192.168.1.9 . 1024-65535;ok
- 
- ip saddr . ip daddr . tcp dport @set3 accept;ok
---ip daddr . tcp dport { 10.0.0.0/8 . 10-23, 192.168.1.1-192.168.3.8 . 80-443 } accept;ok
-+ip daddr . tcp dport { 10.0.0.0/8 . 10-23, 192.168.1.1-192.168.3.8 . 80-443 } accept;ok
-diff --git a/tests/py/inet/sets.t.payload.bridge b/tests/py/inet/sets.t.payload.bridge
-index 089d9dd7a28d..92f5417c0bee 100644
---- a/tests/py/inet/sets.t.payload.bridge
-+++ b/tests/py/inet/sets.t.payload.bridge
-@@ -26,3 +26,17 @@ bridge
-   [ lookup reg 1 set set3 ]
-   [ immediate reg 0 accept ]
- 
-+# ip daddr . tcp dport { 10.0.0.0/8 . 10-23, 192.168.1.1-192.168.3.8 . 80-443 } accept
-+__set%d test-inet 87
-+__set%d test-inet 0
-+        element 0000000a 00000a00  : 0 [end]    element 0101a8c0 00005000  : 0 [end]
-+bridge 
-+  [ meta load protocol => reg 1 ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 4b @ network header + 16 => reg 1 ]
-+  [ payload load 2b @ transport header + 2 => reg 9 ]
-+  [ lookup reg 1 set __set%d ]
-+  [ immediate reg 0 accept ]
-+
-diff --git a/tests/py/inet/sets.t.payload.inet b/tests/py/inet/sets.t.payload.inet
-index c5acd6103a03..bd6e1b0fe19d 100644
---- a/tests/py/inet/sets.t.payload.inet
-+++ b/tests/py/inet/sets.t.payload.inet
-@@ -26,3 +26,16 @@ inet
-   [ lookup reg 1 set set3 ]
-   [ immediate reg 0 accept ]
- 
-+# ip daddr . tcp dport { 10.0.0.0/8 . 10-23, 192.168.1.1-192.168.3.8 . 80-443 } accept
-+__set%d test-inet 87
-+__set%d test-inet 0
-+        element 0000000a 00000a00  : 0 [end]    element 0101a8c0 00005000  : 0 [end]
-+inet 
-+  [ meta load nfproto => reg 1 ]
-+  [ cmp eq reg 1 0x00000002 ]
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 4b @ network header + 16 => reg 1 ]
-+  [ payload load 2b @ transport header + 2 => reg 9 ]
-+  [ lookup reg 1 set __set%d ]
-+  [ immediate reg 0 accept ]
-diff --git a/tests/py/inet/sets.t.payload.netdev b/tests/py/inet/sets.t.payload.netdev
-index 82994eabf48b..f3032d8ef4ab 100644
---- a/tests/py/inet/sets.t.payload.netdev
-+++ b/tests/py/inet/sets.t.payload.netdev
-@@ -26,3 +26,16 @@ inet
-   [ lookup reg 1 set set3 ]
-   [ immediate reg 0 accept ]
- 
-+# ip daddr . tcp dport { 10.0.0.0/8 . 10-23, 192.168.1.1-192.168.3.8 . 80-443 } accept
-+__set%d test-netdev 87
-+__set%d test-netdev 0
-+        element 0000000a 00000a00  : 0 [end]    element 0101a8c0 00005000  : 0 [end]
-+netdev 
-+  [ meta load protocol => reg 1 ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 4b @ network header + 16 => reg 1 ]
-+  [ payload load 2b @ transport header + 2 => reg 9 ]
-+  [ lookup reg 1 set __set%d ]
-+  [ immediate reg 0 accept ]
--- 
-2.26.2
-
+Patch 3 has been merged upstream as a bugfix since VLAN should be
+preversed in any reject case.
