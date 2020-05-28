@@ -2,108 +2,189 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E911E56BE
-	for <lists+netfilter-devel@lfdr.de>; Thu, 28 May 2020 07:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BED01E6870
+	for <lists+netfilter-devel@lfdr.de>; Thu, 28 May 2020 19:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgE1Flc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 28 May 2020 01:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
+        id S2405336AbgE1ROq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 28 May 2020 13:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727105AbgE1Fl1 (ORCPT
+        with ESMTP id S2405335AbgE1ROp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 28 May 2020 01:41:27 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17EFC05BD1E;
-        Wed, 27 May 2020 22:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=5X3G8p2gpeq1mWhpOrbRnLoYssjgaGtuSsqN+ape3Fw=; b=taesqRkSyAIu/2pRL+KOySjFhB
-        TtDF0spTbSsTcQcYEPzf2Xmk+u9SrWaeiUz7FKdnwI3eDaBkdhFATqSDy0i/tUSaWJbuVXaA81uFB
-        L5LMUM5VHRtiu+OmIVREgnc/f9BqnApHYE8W/M6wh296l/FsUV3pq5V7nkguM+uzMBgkvJ4+SDK4e
-        FX/KWuchAoMHUAePKpzWoNFOkusxGaycL3QI4w3QBVf4nAk5u7qZ4C58iQzb0UfuU4I5/aMKJ4TTu
-        qVqApMY1QvyibhhK6mE2aApD4C36fsXbEQbqFryR7NghXc/f2aowUTV0GCuZjZtOAWYlW02c+hGSK
-        q7BiKACg==;
-Received: from p4fdb1ad2.dip0.t-ipconnect.de ([79.219.26.210] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jeBIB-0002St-VR; Thu, 28 May 2020 05:41:24 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: [PATCH 14/14] fs: don't change the address limit for ->read_iter in __kernel_read
-Date:   Thu, 28 May 2020 07:40:43 +0200
-Message-Id: <20200528054043.621510-15-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200528054043.621510-1-hch@lst.de>
-References: <20200528054043.621510-1-hch@lst.de>
+        Thu, 28 May 2020 13:14:45 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018E8C08C5C6
+        for <netfilter-devel@vger.kernel.org>; Thu, 28 May 2020 10:14:44 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id m21so662157eds.13
+        for <netfilter-devel@vger.kernel.org>; Thu, 28 May 2020 10:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=Zf6fm9OIAD+PGWfxME0fRwRsAtlULjcGCcKodAbMm1Q=;
+        b=iGvKoeA25Ud6HIb+YbB/ek2LXQueJAJX0pi3ra0iNE0n7a2vuWExZjN5JIuz4KoG5L
+         N9L46pRpSboo2LpKVovulUJUdVJSClSiSp8O2UtaHcqXDcsy8f6aHD/AvI6ULK7bsedM
+         2SXV9faD7YnEHAUUeICG/JY0xSCWPUZnxy2t2Ka8ddS43Xgou/zy+ge4oBg7L+AjBV+q
+         QK2ZFzt8k57Cjgxr0jKyyUB1EiSrr+GOweykhLRMwFpyH0iUdx9wcRTDRfjIPOoZQoKI
+         /ZKHVpRJhsKV4sc8oTVhiIqaXX7BmnorFO6n4WstlQp8fMpyZ/yvIakah9+1uczxMNnz
+         g87Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=Zf6fm9OIAD+PGWfxME0fRwRsAtlULjcGCcKodAbMm1Q=;
+        b=Ye15WvIc1NwKobQJgCEfZPdpY5zRcmhs+vaXPxqWdQZyeQgEliCYiBCiZQc4VNFnTn
+         xsIBSjUvYFznSCw03goQPA33/SMVjJDU+B93BiUpRZmbsShMBJGBfadGENBdDC86Ndw4
+         edbSv7ln+g5tUOs/TFRJ+rry+w3H3/VckEoMsMjNQPdUmFqX6RB9YFKptmked5mV2h8W
+         8+RO4A+Bk9DTl5rn4oTgp2Uu9XPW4SGPzO1V2U2UysnHMaqVRbfGLXx/5sbiKt7ekl2x
+         ZMXYmGsZ4l5eEx3aHeraJ/tWRAFFQpHjysl98ASCr/Bsm9zwgAmdGr7YsiTFuzLX3zwK
+         /BCw==
+X-Gm-Message-State: AOAM5314hCIQQs7WYLciIbHhg3Y8UIDYxD5Bhnp7oH3yTK3o7KPBerZR
+        sh467FxoDmLRxwmeyJwKNMGlJBL2PWQ=
+X-Google-Smtp-Source: ABdhPJzLdaIsF8RE7pCFkiwzWfeJWQYAPzKVX4NGTUCKvA21k1Iw2Cg8S2r2u2WDiJ6SkwQpO3xFzA==
+X-Received: by 2002:a50:bb41:: with SMTP id y59mr4111517ede.311.1590686083286;
+        Thu, 28 May 2020 10:14:43 -0700 (PDT)
+Received: from nevthink ([91.126.71.247])
+        by smtp.gmail.com with ESMTPSA id o24sm5666691ejb.72.2020.05.28.10.14.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 May 2020 10:14:42 -0700 (PDT)
+Date:   Thu, 28 May 2020 19:14:38 +0200
+From:   Laura Garcia Liebana <nevola@gmail.com>
+To:     netfilter-devel@vger.kernel.org
+Cc:     pablo@netfilter.org, devel@zevenet.com
+Subject: [PATCH nf-next] netfilter: introduce support for reject at
+ prerouting stage
+Message-ID: <20200528171438.GA27622@nevthink>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If we read to a file that implements ->read_iter there is no need
-to change the address limit if we send a kvec down.  Implement that
-case, and prefer it over using plain ->read with a changed address
-limit if available.
+REJECT statement can be only used in INPUT, FORWARD and OUTPUT
+chains. This patch adds support of REJECT, both icmp and tcp
+reset, at PREROUTING stage.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+The need for this patch becomes from the requirement of some
+forwarding devices to reject traffic before the natting and
+routing decisions.
+
+It is supported ipv4, ipv6 and inet families for nft
+infrastructure.
+
+Signed-off-by: Laura Garcia Liebana <nevola@gmail.com>
 ---
- fs/read_write.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ net/ipv4/netfilter/nf_reject_ipv4.c | 18 ++++++++++++++++++
+ net/ipv6/netfilter/nf_reject_ipv6.c | 21 +++++++++++++++++++++
+ net/netfilter/nft_reject.c          |  3 ++-
+ 3 files changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 46ddfce17e839..c93acbd8bf5a3 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -421,7 +421,6 @@ static ssize_t new_sync_read(struct file *filp, char __user *buf, size_t len, lo
+diff --git a/net/ipv4/netfilter/nf_reject_ipv4.c b/net/ipv4/netfilter/nf_reject_ipv4.c
+index 2361fdac2c43..c6b46b7bca8b 100644
+--- a/net/ipv4/netfilter/nf_reject_ipv4.c
++++ b/net/ipv4/netfilter/nf_reject_ipv4.c
+@@ -96,6 +96,18 @@ void nf_reject_ip_tcphdr_put(struct sk_buff *nskb, const struct sk_buff *oldskb,
+ }
+ EXPORT_SYMBOL_GPL(nf_reject_ip_tcphdr_put);
  
- ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
++static void nf_reject_fill_skb_dst(struct sk_buff *skb_in)
++{
++	struct dst_entry *dst = NULL;
++	struct flowi fl;
++	struct flowi4 *fl4 = &fl.u.ip4;
++
++	memset(fl4, 0, sizeof(*fl4));
++	fl4->daddr = ip_hdr(skb_in)->saddr;
++	nf_route(dev_net(skb_in->dev), &dst, &fl, false, AF_INET);
++	skb_dst_set(skb_in, dst);
++}
++
+ /* Send RST reply */
+ void nf_send_reset(struct net *net, struct sk_buff *oldskb, int hook)
  {
--	mm_segment_t old_fs = get_fs();
- 	ssize_t ret;
+@@ -109,6 +121,9 @@ void nf_send_reset(struct net *net, struct sk_buff *oldskb, int hook)
+ 	if (!oth)
+ 		return;
  
- 	if (!(file->f_mode & FMODE_CAN_READ))
-@@ -429,14 +428,25 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
++	if (hook == NF_INET_PRE_ROUTING)
++		nf_reject_fill_skb_dst(oldskb);
++
+ 	if (skb_rtable(oldskb)->rt_flags & (RTCF_BROADCAST | RTCF_MULTICAST))
+ 		return;
  
- 	if (count > MAX_RW_COUNT)
- 		count =  MAX_RW_COUNT;
--	set_fs(KERNEL_DS);
--	if (file->f_op->read)
-+	if (file->f_op->read_iter) {
-+		struct kvec iov = { .iov_base = buf, .iov_len = count };
-+		struct kiocb kiocb;
-+		struct iov_iter iter;
+@@ -175,6 +190,9 @@ void nf_send_unreach(struct sk_buff *skb_in, int code, int hook)
+ 	if (iph->frag_off & htons(IP_OFFSET))
+ 		return;
+ 
++	if (hook == NF_INET_PRE_ROUTING)
++		nf_reject_fill_skb_dst(skb_in);
 +
-+		init_sync_kiocb(&kiocb, file);
-+		kiocb.ki_pos = *pos;
-+		iov_iter_kvec(&iter, READ, &iov, 1, count);
-+		ret = file->f_op->read_iter(&kiocb, &iter);
-+		*pos = kiocb.ki_pos;
-+	} else if (file->f_op->read) {
-+		mm_segment_t old_fs = get_fs();
+ 	if (skb_csum_unnecessary(skb_in) || !nf_reject_verify_csum(proto)) {
+ 		icmp_send(skb_in, ICMP_DEST_UNREACH, code, 0);
+ 		return;
+diff --git a/net/ipv6/netfilter/nf_reject_ipv6.c b/net/ipv6/netfilter/nf_reject_ipv6.c
+index 5fae66f66671..d59b38a16eaa 100644
+--- a/net/ipv6/netfilter/nf_reject_ipv6.c
++++ b/net/ipv6/netfilter/nf_reject_ipv6.c
+@@ -126,6 +126,18 @@ void nf_reject_ip6_tcphdr_put(struct sk_buff *nskb,
+ }
+ EXPORT_SYMBOL_GPL(nf_reject_ip6_tcphdr_put);
+ 
++static void nf_reject6_fill_skb_dst(struct sk_buff *skb_in)
++{
++	struct dst_entry *dst = NULL;
++	struct flowi fl;
++	struct flowi6 *fl6 = &fl.u.ip6;
 +
-+		set_fs(KERNEL_DS);
- 		ret = file->f_op->read(file, (void __user *)buf, count, pos);
--	else if (file->f_op->read_iter)
--		ret = new_sync_read(file, (void __user *)buf, count, pos);
--	else
-+		set_fs(old_fs);
-+	} else {
- 		ret = -EINVAL;
--	set_fs(old_fs);
++	memset(fl6, 0, sizeof(*fl6));
++	fl6->daddr = ipv6_hdr(skb_in)->saddr;
++	nf_route(dev_net(skb_in->dev), &dst, &fl, false, AF_INET6);
++	skb_dst_set(skb_in, dst);
++}
++
+ void nf_send_reset6(struct net *net, struct sk_buff *oldskb, int hook)
+ {
+ 	struct net_device *br_indev __maybe_unused;
+@@ -154,6 +166,12 @@ void nf_send_reset6(struct net *net, struct sk_buff *oldskb, int hook)
+ 	fl6.daddr = oip6h->saddr;
+ 	fl6.fl6_sport = otcph->dest;
+ 	fl6.fl6_dport = otcph->source;
++
++	if (hook == NF_INET_PRE_ROUTING) {
++		nf_route(dev_net(oldskb->dev), &dst, flowi6_to_flowi(&fl6), false, AF_INET6);
++		skb_dst_set(oldskb, dst);
 +	}
- 	if (ret > 0) {
- 		fsnotify_access(file);
- 		add_rchar(current, ret);
++
+ 	fl6.flowi6_oif = l3mdev_master_ifindex(skb_dst(oldskb)->dev);
+ 	fl6.flowi6_mark = IP6_REPLY_MARK(net, oldskb->mark);
+ 	security_skb_classify_flow(oldskb, flowi6_to_flowi(&fl6));
+@@ -245,6 +263,9 @@ void nf_send_unreach6(struct net *net, struct sk_buff *skb_in,
+ 	if (hooknum == NF_INET_LOCAL_OUT && skb_in->dev == NULL)
+ 		skb_in->dev = net->loopback_dev;
+ 
++	if (hooknum == NF_INET_PRE_ROUTING)
++		nf_reject6_fill_skb_dst(skb_in);
++
+ 	icmpv6_send(skb_in, ICMPV6_DEST_UNREACH, code, 0);
+ }
+ EXPORT_SYMBOL_GPL(nf_send_unreach6);
+diff --git a/net/netfilter/nft_reject.c b/net/netfilter/nft_reject.c
+index 00f865fb80ca..5eac28269bdb 100644
+--- a/net/netfilter/nft_reject.c
++++ b/net/netfilter/nft_reject.c
+@@ -30,7 +30,8 @@ int nft_reject_validate(const struct nft_ctx *ctx,
+ 	return nft_chain_validate_hooks(ctx->chain,
+ 					(1 << NF_INET_LOCAL_IN) |
+ 					(1 << NF_INET_FORWARD) |
+-					(1 << NF_INET_LOCAL_OUT));
++					(1 << NF_INET_LOCAL_OUT) |
++					(1 << NF_INET_PRE_ROUTING));
+ }
+ EXPORT_SYMBOL_GPL(nft_reject_validate);
+ 
 -- 
-2.26.2
+2.20.1
 
