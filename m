@@ -2,174 +2,88 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B161C1E85BA
-	for <lists+netfilter-devel@lfdr.de>; Fri, 29 May 2020 19:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6C31E862C
+	for <lists+netfilter-devel@lfdr.de>; Fri, 29 May 2020 20:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbgE2Rum (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 29 May 2020 13:50:42 -0400
-Received: from correo.us.es ([193.147.175.20]:58840 "EHLO mail.us.es"
+        id S1725821AbgE2SEa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 29 May 2020 14:04:30 -0400
+Received: from correo.us.es ([193.147.175.20]:36696 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727936AbgE2Ruj (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 29 May 2020 13:50:39 -0400
+        id S1725808AbgE2SE3 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 29 May 2020 14:04:29 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 0290081413
-        for <netfilter-devel@vger.kernel.org>; Fri, 29 May 2020 19:50:37 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 2469D7E4C4
+        for <netfilter-devel@vger.kernel.org>; Fri, 29 May 2020 20:04:28 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id EA092DA71A
-        for <netfilter-devel@vger.kernel.org>; Fri, 29 May 2020 19:50:36 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 17664DA712
+        for <netfilter-devel@vger.kernel.org>; Fri, 29 May 2020 20:04:28 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id DF673DA711; Fri, 29 May 2020 19:50:36 +0200 (CEST)
+        id 0CEA1DA707; Fri, 29 May 2020 20:04:28 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 9DA74DA716;
-        Fri, 29 May 2020 19:50:34 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 8A14ADA707;
+        Fri, 29 May 2020 20:04:25 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 29 May 2020 19:50:34 +0200 (CEST)
+ Fri, 29 May 2020 20:04:25 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 722C342EE38E;
-        Fri, 29 May 2020 19:50:34 +0200 (CEST)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 6B07E42EE38E;
+        Fri, 29 May 2020 20:04:25 +0200 (CEST)
+Date:   Fri, 29 May 2020 20:04:25 +0200
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH 9/9] netfilter: nf_tables: skip flowtable hooknum and priority on device updates
-Date:   Fri, 29 May 2020 19:50:26 +0200
-Message-Id: <20200529175026.30541-10-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200529175026.30541-1-pablo@netfilter.org>
-References: <20200529175026.30541-1-pablo@netfilter.org>
+To:     Florent Fourcot <florent.fourcot@wifirst.fr>
+Cc:     Romain Bellan <romain.bellan@wifirst.fr>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf-next v5 1/1] netfilter: ctnetlink: add kernel side
+ filtering for dump
+Message-ID: <20200529180425.GA30992@salvia>
+References: <20200330204637.11472-1-romain.bellan@wifirst.fr>
+ <20200426214338.GA2276@salvia>
+ <66100a4b-a879-a8f4-f684-2b098a89cdc8@wifirst.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66100a4b-a879-a8f4-f684-2b098a89cdc8@wifirst.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On device updates, the hooknum and priority attributes are not required.
-This patch makes optional these two netlink attributes.
+Hi,
 
-Moreover, bail out with EOPNOTSUPP if userspace tries to update the
-hooknum and priority for existing flowtables.
+Just a followed up after including your ctnetlink update in the last
+upstream pull request for net-next.
 
-While at this, turn EINVAL into EOPNOTSUPP in case the hooknum is not
-ingress. EINVAL is reserved for missing netlink attribute / malformed
-netlink messages.
+I think you already mentioned, but it should be possible to extend
+the conntrack utility to support for kernel side filtering seamlessly.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 53 +++++++++++++++++++++++------------
- 1 file changed, 35 insertions(+), 18 deletions(-)
+The idea is to keep the userspace filtering as a fallback, regardless
+the kernel supports for CTA_FILTER or not.
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 897ac5fbe079..073aa1051d43 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -6195,7 +6195,7 @@ static const struct nla_policy nft_flowtable_hook_policy[NFTA_FLOWTABLE_HOOK_MAX
- static int nft_flowtable_parse_hook(const struct nft_ctx *ctx,
- 				    const struct nlattr *attr,
- 				    struct nft_flowtable_hook *flowtable_hook,
--				    struct nf_flowtable *ft)
-+				    struct nft_flowtable *flowtable, bool add)
- {
- 	struct nlattr *tb[NFTA_FLOWTABLE_HOOK_MAX + 1];
- 	struct nft_hook *hook;
-@@ -6209,15 +6209,35 @@ static int nft_flowtable_parse_hook(const struct nft_ctx *ctx,
- 	if (err < 0)
- 		return err;
- 
--	if (!tb[NFTA_FLOWTABLE_HOOK_NUM] ||
--	    !tb[NFTA_FLOWTABLE_HOOK_PRIORITY])
--		return -EINVAL;
-+	if (add) {
-+		if (!tb[NFTA_FLOWTABLE_HOOK_NUM] ||
-+		    !tb[NFTA_FLOWTABLE_HOOK_PRIORITY])
-+			return -EINVAL;
- 
--	hooknum = ntohl(nla_get_be32(tb[NFTA_FLOWTABLE_HOOK_NUM]));
--	if (hooknum != NF_NETDEV_INGRESS)
--		return -EINVAL;
-+		hooknum = ntohl(nla_get_be32(tb[NFTA_FLOWTABLE_HOOK_NUM]));
-+		if (hooknum != NF_NETDEV_INGRESS)
-+			return -EOPNOTSUPP;
-+
-+		priority = ntohl(nla_get_be32(tb[NFTA_FLOWTABLE_HOOK_PRIORITY]));
-+
-+		flowtable_hook->priority	= priority;
-+		flowtable_hook->num		= hooknum;
-+	} else {
-+		if (tb[NFTA_FLOWTABLE_HOOK_NUM]) {
-+			hooknum = ntohl(nla_get_be32(tb[NFTA_FLOWTABLE_HOOK_NUM]));
-+			if (hooknum != flowtable->hooknum)
-+				return -EOPNOTSUPP;
-+		}
-+
-+		if (tb[NFTA_FLOWTABLE_HOOK_PRIORITY]) {
-+			priority = ntohl(nla_get_be32(tb[NFTA_FLOWTABLE_HOOK_PRIORITY]));
-+			if (priority != flowtable->data.priority)
-+				return -EOPNOTSUPP;
-+		}
- 
--	priority = ntohl(nla_get_be32(tb[NFTA_FLOWTABLE_HOOK_PRIORITY]));
-+		flowtable_hook->priority	= flowtable->data.priority;
-+		flowtable_hook->num		= flowtable->hooknum;
-+	}
- 
- 	if (tb[NFTA_FLOWTABLE_HOOK_DEVS]) {
- 		err = nf_tables_parse_netdev_hooks(ctx->net,
-@@ -6227,15 +6247,12 @@ static int nft_flowtable_parse_hook(const struct nft_ctx *ctx,
- 			return err;
- 	}
- 
--	flowtable_hook->priority	= priority;
--	flowtable_hook->num		= hooknum;
--
- 	list_for_each_entry(hook, &flowtable_hook->list, list) {
- 		hook->ops.pf		= NFPROTO_NETDEV;
--		hook->ops.hooknum	= hooknum;
--		hook->ops.priority	= priority;
--		hook->ops.priv		= ft;
--		hook->ops.hook		= ft->type->hook;
-+		hook->ops.hooknum	= flowtable_hook->num;
-+		hook->ops.priority	= flowtable_hook->priority;
-+		hook->ops.priv		= &flowtable->data;
-+		hook->ops.hook		= flowtable->data.type->hook;
- 	}
- 
- 	return err;
-@@ -6363,7 +6380,7 @@ static int nft_flowtable_update(struct nft_ctx *ctx, const struct nlmsghdr *nlh,
- 	int err;
- 
- 	err = nft_flowtable_parse_hook(ctx, nla[NFTA_FLOWTABLE_HOOK],
--				       &flowtable_hook, &flowtable->data);
-+				       &flowtable_hook, flowtable, false);
- 	if (err < 0)
- 		return err;
- 
-@@ -6492,7 +6509,7 @@ static int nf_tables_newflowtable(struct net *net, struct sock *nlsk,
- 		goto err3;
- 
- 	err = nft_flowtable_parse_hook(&ctx, nla[NFTA_FLOWTABLE_HOOK],
--				       &flowtable_hook, &flowtable->data);
-+				       &flowtable_hook, flowtable, true);
- 	if (err < 0)
- 		goto err4;
- 
-@@ -6543,7 +6560,7 @@ static int nft_delflowtable_hook(struct nft_ctx *ctx,
- 	int err;
- 
- 	err = nft_flowtable_parse_hook(ctx, nla[NFTA_FLOWTABLE_HOOK],
--				       &flowtable_hook, &flowtable->data);
-+				       &flowtable_hook, flowtable, false);
- 	if (err < 0)
- 		return err;
- 
--- 
-2.20.1
+I'm missing one feature in the CTA_FILTER, that is the netmask
+filtering for IP addresses. It would be also good to make this fit
+into libnetfilter_conntrack.
 
+Probably this patch can be extended to include two objects, the
+conntrack object that represents the exact matching (values) and
+another one that represent the mask:
+
+https://patchwork.ozlabs.org/project/netfilter-devel/patch/20200129094719.670-1-romain.bellan@wifirst.fr/
+
+The mask object would only work for the IP address and mark.
+
+Probably rename NFCT_FILTER_DUMP_TUPLE to NFCT_FILTER_DUMP, which
+would provide the most generic version to request kernel side
+filtering.
+
+Thanks.
