@@ -2,93 +2,120 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5CB1E92F9
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 May 2020 19:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE7B1E93B6
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 May 2020 22:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729026AbgE3R6u (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 May 2020 13:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
+        id S1729006AbgE3Uvc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 May 2020 16:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729264AbgE3R6u (ORCPT
+        with ESMTP id S1728741AbgE3Uvb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 May 2020 13:58:50 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA675C08C5CA
-        for <netfilter-devel@vger.kernel.org>; Sat, 30 May 2020 10:58:49 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c71so6836142wmd.5
-        for <netfilter-devel@vger.kernel.org>; Sat, 30 May 2020 10:58:49 -0700 (PDT)
+        Sat, 30 May 2020 16:51:31 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C52C03E969
+        for <netfilter-devel@vger.kernel.org>; Sat, 30 May 2020 13:51:30 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id y123so3517405vsb.6
+        for <netfilter-devel@vger.kernel.org>; Sat, 30 May 2020 13:51:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ppLQqHbEGT832IEry1Sqoqu+fhqmECts/wrWB6uWYrc=;
-        b=cimMm7mxn56r/ZgqfY3n4YHWpsOSDMEm2xIzDZbzqBVWG67k3rvGW4gMpvggLJ/0UF
-         n/vcULq3b6+yNvK0lXBQ1xFQYOMzuGg6oh9tVzcXvjRxlf0hSESj7gPMjoF1mq6Lu2WM
-         BjPi06k0Pa2Rkoj0O8o+q6GyxTx3xOzIy8w4ToOpxo5+A0UGqQG1SReSExt1TqQzA2Qk
-         EfciMBgZlzBL2EBSNSLd9y5FhDR+4DJycr6bjEXdFlo9IjF/BSLTYVb9FBgg2DETHORW
-         Hxro942uogAAzgU1+oQpZJkSBDKdKqzJpRSwqyCLnUX8wMEgR3X+PpV/E7CodtlycN+g
-         jJ7Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aCAh9z+bzLoX5PE/DwioZrO5UunT1sLC3wu9+rFnros=;
+        b=Sw7/zr0klzeqtvYrcuRx3g9BGYTN1oLzcImAylYu8rPUcxzEfZlI9JADsAQySWr/Te
+         kMZae8yacLpfpyhAUKCTTU3nPSUwtbWcznWy2g0aGmE7Hw+g3Z/+MdLAWof6Wd3WLr7W
+         i72xQf01u6mKa4WnxoLQX1LIwzjgchVFKGWf+Z+YBjRowQeQedXVIDcXw3S3Nc6u1xY9
+         kC0s5HVZTkZIPJPH1y/SOZy8dMIaXwOeQoRrw8cQ7b3dx8WwIMLxCniNxpguqJMfes8n
+         6uFyaSV3JPpYSP5htABXE87+Hk2yBDe+SXC6ebgIVxY4KUX2KyKq/z1j/jlPvgmYtRzZ
+         MEUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ppLQqHbEGT832IEry1Sqoqu+fhqmECts/wrWB6uWYrc=;
-        b=YOk+1aifvh6cJT4wxqe7O/0XZylMEjCihQGxqeKnLj6R/i6drkDK4a5TpcL3cm3sZ2
-         gKybp8Ki/S6gpCqe2PWm3Y/eDnLb6wmKMA2AIY0ukI0YGeb3tiuKCo8yRo6bYfGTg7pG
-         oJ9sY9D9LJO+zvntfZlskla5vpvNyaTFhLDCcef9BOdpN03i+NQ3TVY2mwe2LPF9AE8j
-         RGS6IZ5MoijVpMpl85bdpS0ed2mq9u5qRP74mB1YXgoNVXKKUTE7Npxt+336BL6/PiX2
-         xQpbtAe+AeKAzk3Jut/bW3smKhyyOCFUvgIsWI96t0woEGnHqcPBLaQddFD2QSfP4oyS
-         335Q==
-X-Gm-Message-State: AOAM530zfn826E5p70d4c8G6F74Hi10qvDeojQikhxVv+bB7+i9zFtUq
-        BoNtsqCrImCpoqsIWWdGOiJDAEHKOCaMccogY4o=
-X-Google-Smtp-Source: ABdhPJwNvIn//R3V8Gqyc1vXFKjFKrV9bQCd3TXsvdNyaVHU8b7JeyRe21zz4HsqgGufG9gpHMPr1FpLeooAbJT5A54=
-X-Received: by 2002:a1c:80d4:: with SMTP id b203mr14087936wmd.138.1590861528264;
- Sat, 30 May 2020 10:58:48 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aCAh9z+bzLoX5PE/DwioZrO5UunT1sLC3wu9+rFnros=;
+        b=U6O64cn73twusQtXlCu/at5zOK0Vv1yOiP/da5CiP9bnKkPPDmOHbN6F6PfzDw5baU
+         pjGfEUwQOAmfU7xQX8MzcX4v1D7xxfVVE7ImINtK8jLa0eMirk7w9USU/wS+ZLnWCrUn
+         hGBe41cjAPS9YGFOfDe2s+BNztYTb+B2GFzuJ3c8xlBr4PPQKPELu972gNNn5Gzo8UES
+         C9HL2BRhftzwMZCmMNK73StetS2oIqjSTuHTrMUpKz0HnTR1wNtZ7nI7F8uchj3bqJWp
+         5rSGfG5jm3QTsencGU5d0RSAQL5xAcCIliQHzRS6jamKnXcydlyz4Iq+F1l2pRnKv+bV
+         JoPQ==
+X-Gm-Message-State: AOAM531DgliF2aHjj0CiGIlKW0r4WmNzI7EjXXNMpWypEkZM+nJtO+Ip
+        M6niEQHjuh99lh6IOL2t3fdUMFYAAD7pI+8nEWXV6naW
+X-Google-Smtp-Source: ABdhPJxYq4JxAW4NtvH2mXGAmDSEJD9kFNfDrlT+N8sGNxid3Yw2OJUTAqCAh8ouxbEmtC7SSNs7qjg+LLo9TMvFpIw=
+X-Received: by 2002:a67:ff89:: with SMTP id v9mr10240622vsq.55.1590871889678;
+ Sat, 30 May 2020 13:51:29 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a5d:6cd0:0:0:0:0:0 with HTTP; Sat, 30 May 2020 10:58:47
- -0700 (PDT)
-Reply-To: billanesaleen93@yahoo.com
-From:   "Mrs.Aileen Billanes" <fred.jr.william@gmail.com>
-Date:   Sat, 30 May 2020 18:58:47 +0100
-Message-ID: <CAPnoEvWR1VYMZKsuEr0mF9Pu-EpbhZtRY0hLiMko66A1kcQ+nw@mail.gmail.com>
-Subject: From:Mrs.Aileen Billanes
-To:     undisclosed-recipients:;
+References: <20200529110328.GA20367@nevthink> <20200529191519.GA32761@salvia>
+In-Reply-To: <20200529191519.GA32761@salvia>
+From:   =?UTF-8?Q?Laura_Garc=C3=ADa_Li=C3=A9bana?= <nevola@gmail.com>
+Date:   Sat, 30 May 2020 22:51:18 +0200
+Message-ID: <CAF90-WgbH6iU_EZioCUOp4wBSz1SQzJy3N058JhGBbwy2MceXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 nf-next] netfilter: introduce support for reject at
+ prerouting stage
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Netfilter Development Mailing list 
+        <netfilter-devel@vger.kernel.org>, devel@zevenet.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dearest One,
+On Fri, May 29, 2020 at 9:15 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>
+> On Fri, May 29, 2020 at 01:03:28PM +0200, Laura Garcia Liebana wrote:
+> [...]
+> > diff --git a/net/ipv4/netfilter/nf_reject_ipv4.c b/net/ipv4/netfilter/nf_reject_ipv4.c
+> > index 2361fdac2c43..b5b7633d9433 100644
+> > --- a/net/ipv4/netfilter/nf_reject_ipv4.c
+> > +++ b/net/ipv4/netfilter/nf_reject_ipv4.c
+> > @@ -96,6 +96,22 @@ void nf_reject_ip_tcphdr_put(struct sk_buff *nskb, const struct sk_buff *oldskb,
+> >  }
+> >  EXPORT_SYMBOL_GPL(nf_reject_ip_tcphdr_put);
+> >
+> > +static int nf_reject_fill_skb_dst(struct sk_buff *skb_in)
+> > +{
+> > +     struct dst_entry *dst = NULL;
+> > +     struct flowi fl;
+> > +     struct flowi4 *fl4 = &fl.u.ip4;
+> > +
+> > +     memset(fl4, 0, sizeof(*fl4));
+> > +     fl4->daddr = ip_hdr(skb_in)->saddr;
+> > +     nf_route(dev_net(skb_in->dev), &dst, &fl, false, AF_INET);
+> > +     if (!dst)
+> > +             return -1;
+> > +
+> > +     skb_dst_set(skb_in, dst);
+> > +     return 0;
+> > +}
+>
+> Probably slightly simplify this? I'd suggest:
+>
+> * make calls to nf_ip_route() and nf_ip6_route() instead of the nf_route()
+>   wrapper.
+>
+> * use flowi structure, no need to add struct flowi4 ? Probably:
+>
+> static int nf_reject_fill_skb_dst(struct sk_buff *skb_in)
+> {
+>         struct dst_entry *dst = NULL;
+>         struct flowi fl;
+>
+>         memset(fl, 0, sizeof(*fl));
+>         fl.u.ip4 = ip_hdr(skb_in)->saddr;
+>         nf_ip_route(dev_net(skb_in->dev), &dst, &fl, false);
+>         if (!dst)
+>                 return -1;
+>
+>         skb_dst_set(skb_in, dst);
+>         return 0;
+> }
+>
+> Another possibility would be to use C99 structure initialization. But
+> I think the code above should be fine.
+>
+> Thanks.
 
-Compliment of the Season,Pardon me for Contacting You Through this media.
-But please I am in Desperate Need of your assistance: My Name is Mrs.AILEEN
-BILLANES the wife of Mr.Eleaza Billanes Mayor of Rizal in Yatagan Province.
-Who Was recently in the Philippine Killed by Gunmen on JUNE 12TH 2018. Well
-Threat During the late husband on my life , He gave me the total sum of
-U.S.($8.5USD Eight Million Five Hundred Thousand Us Dollars) this money is
-deposited with a firm in ABROAD in a metallic box .
+It looks better, I'll apply the changes.
 
-Then deposit it in a security and finance company abroad just in case
-anything ever Happen to him . I did deposit the total sum as He gave it to
-me under a secret arrangement as a family valuable. This Means That the
-security company does Not Know the content of this metallic box.Since the
-death of my late husband , the Philippine state government has blocked me
-and my late husband accounts Through the help of my late husband family.
-Also my late husband brothers succeeded in Collecting Have All Our
-properties from me That is under my control and They Are Still looking for
-more.Therefore I am Contacting you to help me secure the sum Which I
-Explain to you above , for the future of my kids.
-
-Since my late husband family made it impossible for me to move out of my
-late husband in Philippine house Please do tell me if I can trust you as
-Who Will Not sit on this money When You Claim it. I am willing to Give you
-20% of the total sum in box After That You Have successfully secured it.
-Reasons for safety so That I can come over to meet you there in your
-country for you to help me invest the money in a good business i will like
-to hear from you so that i will Immediately know if i can trust you with
-all my heart and if you are capable so that i Can send you my pictures and
-my international passport and all the documents so that you Will Better
-Understand and I will wait your message.
-
-Best Regards
-Mrs.Aileen Billanes
+Thanks.
