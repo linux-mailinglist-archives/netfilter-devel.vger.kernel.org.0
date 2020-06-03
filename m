@@ -2,70 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FB81ED53D
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jun 2020 19:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD631ED5DF
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Jun 2020 20:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726266AbgFCRq5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 Jun 2020 13:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
+        id S1726350AbgFCSKh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Jun 2020 14:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726071AbgFCRq5 (ORCPT
+        with ESMTP id S1726103AbgFCSKh (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 Jun 2020 13:46:57 -0400
-X-Greylist: delayed 1606 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 03 Jun 2020 10:46:56 PDT
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AA3C08C5C0;
-        Wed,  3 Jun 2020 10:46:56 -0700 (PDT)
-Received: from uucp by ganesha.gnumonks.org with local-bsmtp (Exim 4.89)
-        (envelope-from <laforge@gnumonks.org>)
-        id 1jgX3c-0008EW-Ky; Wed, 03 Jun 2020 19:20:04 +0200
-Received: from laforge by localhost.localdomain with local (Exim 4.93)
-        (envelope-from <laforge@gnumonks.org>)
-        id 1jgX01-0032HP-Qy; Wed, 03 Jun 2020 19:16:21 +0200
-Date:   Wed, 3 Jun 2020 19:16:21 +0200
-From:   Harald Welte <laforge@gnumonks.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+        Wed, 3 Jun 2020 14:10:37 -0400
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3B2C08C5C0
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 Jun 2020 11:10:36 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 3180D58781303; Wed,  3 Jun 2020 20:10:35 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id 2DA6E60E6E485;
+        Wed,  3 Jun 2020 20:10:35 +0200 (CEST)
+Date:   Wed, 3 Jun 2020 20:10:35 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Harald Welte <laforge@gnumonks.org>
+cc:     Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
 Subject: Re: [MAINTENANCE] Shutting down FTP services at netfilter.org
-Message-ID: <20200603171621.GC717800@nataraja>
-References: <20200603113712.GA24918@salvia>
+In-Reply-To: <20200603171621.GC717800@nataraja>
+Message-ID: <nycvar.YFH.7.77.849.2006032004220.24581@n3.vanv.qr>
+References: <20200603113712.GA24918@salvia> <20200603171621.GC717800@nataraja>
+User-Agent: Alpine 2.22 (LSU 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200603113712.GA24918@salvia>
+Content-Type: text/plain; charset=US-ASCII
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
 
-On Wed, Jun 03, 2020 at 01:37:12PM +0200, Pablo Neira Ayuso wrote:
-> So netfilter.org will also be shutting down FTP services by
-> June 12th 2020.
+On Wednesday 2020-06-03 19:16, Harald Welte wrote:
+>
+>On Wed, Jun 03, 2020 at 01:37:12PM +0200, Pablo Neira Ayuso wrote:
+>> So netfilter.org will also be shutting down FTP services by
+>> June 12th 2020.
+>
+>I always find that somewhat sad, as with HTTP there is no real convenient
+>way to get directory listings in a standardized / parseable format.
 
-I always find that somewhat sad, as with HTTP there is no real convenient
-way to get directory listings in a standardized / parseable format.  But
-of course I understand the rationale and I obviously respect your
-decision in that matter.
+There was convention, but no standard.
+Which is just like what the default directory index modules of the httpd
+implementations are.
 
-> As an alternative, you can still reach the entire netfilter.org
-> software repository through HTTP at this new location:
-> 
->         https://netfilter.org/pub/
+>I think the important part would be some way to conveniently obtain a
+>full clone, e.g. by rsync.  This way both public and private mirrors
+>can exist in an efficient way, without having to resort to 'wget -r'
+>or related hacks, which then only use file size as an indication if a
+>file might have changed, ...
 
-Maybe make http://ftp.netfilter.org/ an alias to it?
-
-I think the important part would be some way to conveniently obtain a
-full clone, e.g. by rsync.  This way both public and private mirrors
-can exist in an efficient way, without having to resort to 'wget -r'
-or related hacks, which then only use file size as an indication if a
-file might have changed, ...
-
-Regards,
-	Harald
--- 
-- Harald Welte <laforge@gnumonks.org>           http://laforge.gnumonks.org/
-============================================================================
-"Privacy in residential applications is a desirable marketing option."
-                                                  (ETSI EN 300 175-7 Ch. A6)
+For completeness though, there is the "Last-Modified" HTTP header (similar to
+what rsync bases its heuristic on). rsync is of course always preferable..
