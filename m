@@ -2,106 +2,164 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F171F4927
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jun 2020 23:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF161F4967
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2020 00:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgFIV6Y (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 9 Jun 2020 17:58:24 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:48578 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728146AbgFIV6N (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 9 Jun 2020 17:58:13 -0400
-Received: by mail-io1-f71.google.com with SMTP id z12so183925iow.15
-        for <netfilter-devel@vger.kernel.org>; Tue, 09 Jun 2020 14:58:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=pw0UgTHVe4ORi9w9G47RxZH+2R3g4C+RyCbV9ziJVuQ=;
-        b=NGha2cwbwXA74J6uJN0/HAtOLzqJ/jEy0Lq0GbwHla4QCkuN9UZJ/bvsLxL4R0mN8g
-         rQm0nus1IZv7MGtyxapIJuXXocrhSjq1bCQAWLi31B8FaJuyNzz+WE6AZm/vbj8Cp95v
-         YGUTR3UBHfHdMFTMyQohdxwVeykbHqKEsKMKQxoNV8SKaQb/6HCnErE/0M2UDx68mt18
-         /J2cK22mjeEaZbqhTEsGy99A+DrMx+5APXflthKpXLQhay3hdGM1C/xLIdMEeUQwVhHl
-         WNx97keao/uTi4aY01uFeJabavj1bg3E0mt13lVZQd0HeW02CHGqau7sfDVrYmquQBBJ
-         +rYg==
-X-Gm-Message-State: AOAM532lKYIk9EZK3RrONDv166xTGnZBMlUdGGfJtpNUH+yx9WYv41yD
-        u0KFZFuKlrXz4NSDxVkhwCHoW7E1iWUab4vwP6q+1MS5mepR
-X-Google-Smtp-Source: ABdhPJzLGtUrYFSaKZsCsFiJTeD8F6gQ2x4xdGfJQRk1G0TMrdZjwyUwp8nP0wCHl1E4+iAeiQQ3NndOOrF/LrO47sXaQuRjGCp1
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1616:: with SMTP id x22mr229920iow.70.1591739892592;
- Tue, 09 Jun 2020 14:58:12 -0700 (PDT)
-Date:   Tue, 09 Jun 2020 14:58:12 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000df74f605a7add28b@google.com>
-Subject: memory leak in ctnetlink_start
-From:   syzbot <syzbot+b005af2cfb0411e617de@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        id S1728135AbgFIWcR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 9 Jun 2020 18:32:17 -0400
+Received: from correo.us.es ([193.147.175.20]:33944 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728370AbgFIWcP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 9 Jun 2020 18:32:15 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 231C01B49B3
+        for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2020 00:32:14 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 12C85DA796
+        for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2020 00:32:14 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id B8897DA876; Wed, 10 Jun 2020 00:32:04 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 0E1A5DA856;
+        Wed, 10 Jun 2020 00:32:02 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Wed, 10 Jun 2020 00:32:02 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id D208D4251482;
+        Wed, 10 Jun 2020 00:32:01 +0200 (CEST)
+Date:   Wed, 10 Jun 2020 00:32:01 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     syzbot <syzbot+eb9d5924c51d6d59e094@syzkaller.appspotmail.com>
+Cc:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
         kadlec@netfilter.org, kuba@kernel.org,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        netfilter-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: memory leak in nf_tables_parse_netdev_hooks (3)
+Message-ID: <20200609223201.GA29165@salvia>
+References: <000000000000dbe05b05a7add269@google.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="ikeVEW9yuYc//A+q"
+Content-Disposition: inline
+In-Reply-To: <000000000000dbe05b05a7add269@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
 
-syzbot found the following crash on:
+--ikeVEW9yuYc//A+q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=128a9df2100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9a1aa05456dfd557
-dashboard link: https://syzkaller.appspot.com/bug?extid=b005af2cfb0411e617de
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17304a96100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=168a9df2100000
+On Tue, Jun 09, 2020 at 02:58:12PM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
+> 
+> HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1741f5f2100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=9a1aa05456dfd557
+> dashboard link: https://syzkaller.appspot.com/bug?extid=eb9d5924c51d6d59e094
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126f5446100000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=177f16fe100000
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+eb9d5924c51d6d59e094@syzkaller.appspotmail.com
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+b005af2cfb0411e617de@syzkaller.appspotmail.com
+Attaching a quick patch, I will have a closer look later.
 
-executing program
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff88811c797900 (size 128):
-  comm "syz-executor256", pid 6458, jiffies 4294947022 (age 13.050s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000004276332a>] kmalloc include/linux/slab.h:555 [inline]
-    [<000000004276332a>] kzalloc include/linux/slab.h:669 [inline]
-    [<000000004276332a>] ctnetlink_alloc_filter+0x3a/0x2a0 net/netfilter/nf_conntrack_netlink.c:924
-    [<000000000047e6fb>] ctnetlink_start+0x3a/0x80 net/netfilter/nf_conntrack_netlink.c:998
-    [<00000000a431a924>] __netlink_dump_start+0x1a3/0x2e0 net/netlink/af_netlink.c:2343
-    [<0000000016b073fa>] netlink_dump_start include/linux/netlink.h:246 [inline]
-    [<0000000016b073fa>] ctnetlink_get_conntrack+0x26d/0x2f0 net/netfilter/nf_conntrack_netlink.c:1611
-    [<00000000d311138b>] nfnetlink_rcv_msg+0x32f/0x370 net/netfilter/nfnetlink.c:229
-    [<0000000008feca87>] netlink_rcv_skb+0x5a/0x180 net/netlink/af_netlink.c:2469
-    [<0000000088caad78>] nfnetlink_rcv+0x83/0x1b0 net/netfilter/nfnetlink.c:563
-    [<0000000052160488>] netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
-    [<0000000052160488>] netlink_unicast+0x20a/0x2f0 net/netlink/af_netlink.c:1329
-    [<00000000ee36d991>] netlink_sendmsg+0x2b5/0x560 net/netlink/af_netlink.c:1918
-    [<00000000dee2cafe>] sock_sendmsg_nosec net/socket.c:652 [inline]
-    [<00000000dee2cafe>] sock_sendmsg+0x4c/0x60 net/socket.c:672
-    [<00000000b0b655cb>] ____sys_sendmsg+0x2c4/0x2f0 net/socket.c:2352
-    [<000000005bba2f8d>] ___sys_sendmsg+0x8a/0xd0 net/socket.c:2406
-    [<0000000060ac6563>] __sys_sendmsg+0x77/0xe0 net/socket.c:2439
-    [<000000002f7b34b0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<00000000941009bb>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+--ikeVEW9yuYc//A+q
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="x.patch"
 
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 073aa1051d43..5792e9dcd9bc 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -6550,12 +6550,22 @@ static int nf_tables_newflowtable(struct net *net, struct sock *nlsk,
+ 	return err;
+ }
+ 
++static void nft_flowtable_hook_release(struct nft_flowtable_hook *flowtable_hook)
++{
++	struct nft_hook *this, *next;
++
++	list_for_each_entry_safe(this, next, &flowtable_hook->list, list) {
++		list_del(&this->list);
++		kfree(this);
++	}
++}
++
+ static int nft_delflowtable_hook(struct nft_ctx *ctx,
+ 				 struct nft_flowtable *flowtable)
+ {
+ 	const struct nlattr * const *nla = ctx->nla;
+ 	struct nft_flowtable_hook flowtable_hook;
+-	struct nft_hook *this, *next, *hook;
++	struct nft_hook *this, *hook;
+ 	struct nft_trans *trans;
+ 	int err;
+ 
+@@ -6564,33 +6574,40 @@ static int nft_delflowtable_hook(struct nft_ctx *ctx,
+ 	if (err < 0)
+ 		return err;
+ 
+-	list_for_each_entry_safe(this, next, &flowtable_hook.list, list) {
++	list_for_each_entry(this, &flowtable_hook.list, list) {
+ 		hook = nft_hook_list_find(&flowtable->hook_list, this);
+ 		if (!hook) {
+ 			err = -ENOENT;
+ 			goto err_flowtable_del_hook;
+ 		}
+ 		hook->inactive = true;
+-		list_del(&this->list);
+-		kfree(this);
+ 	}
+ 
+ 	trans = nft_trans_alloc(ctx, NFT_MSG_DELFLOWTABLE,
+ 				sizeof(struct nft_trans_flowtable));
+-	if (!trans)
+-		return -ENOMEM;
++	if (!trans) {
++		err = -ENOMEM;
++		goto err_flowtable_del_hook;
++	}
+ 
+ 	nft_trans_flowtable(trans) = flowtable;
+ 	nft_trans_flowtable_update(trans) = true;
+ 	INIT_LIST_HEAD(&nft_trans_flowtable_hooks(trans));
++	nft_flowtable_hook_release(&flowtable_hook);
+ 
+ 	list_add_tail(&trans->list, &ctx->net->nft.commit_list);
+ 
+ 	return 0;
+ 
+ err_flowtable_del_hook:
+-	list_for_each_entry(hook, &flowtable_hook.list, list)
++	list_for_each_entry(this, &flowtable->hook_list, list) {
++		hook = nft_hook_list_find(&flowtable->hook_list, this);
++		if (!hook)
++			break;
++
+ 		hook->inactive = false;
++	}
++	nft_flowtable_hook_release(&flowtable_hook);
+ 
+ 	return err;
+ }
 
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--ikeVEW9yuYc//A+q--
