@@ -2,40 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D8C1F492B
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jun 2020 23:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F171F4927
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Jun 2020 23:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728299AbgFIV6X (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 9 Jun 2020 17:58:23 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:52770 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728163AbgFIV6O (ORCPT
+        id S1728076AbgFIV6Y (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 9 Jun 2020 17:58:24 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:48578 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728146AbgFIV6N (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 9 Jun 2020 17:58:14 -0400
-Received: by mail-io1-f70.google.com with SMTP id p8so177223ios.19
+        Tue, 9 Jun 2020 17:58:13 -0400
+Received: by mail-io1-f71.google.com with SMTP id z12so183925iow.15
         for <netfilter-devel@vger.kernel.org>; Tue, 09 Jun 2020 14:58:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=1mhEZ1q7Z91Rb4K4pPl+Kl2FQ4G6nw8z/eiDSC/Zszk=;
-        b=ewaPUA3SI8q/59BNEslkRYcMcLEQ5y/6OYBkyHZk73ptFHwwCRYaMC6rh9GCJTbWY3
-         0o0yl3+y8y/4wuaj6Q09jIERaZ0gMsmmLxoaHQqTM4aMltXxT8CWG69R65AZY353Yygp
-         ZeE2kiHwm5T8jxnQRelUm67Lf2Rn4MgB1b0Rqc92m1TfllBv15jg63RgrUuHtpIIl4vU
-         9jGi4Fr8rxFpT+QiYDC7xCwOEct0RWLgGX9zbHjvnzH1ceOH3bscARDXMLvO66Diuy0E
-         oI1UhryQVAUFku97YI449EQBvM0lVQMf8JNaCBcnv5rQHSgQtmKE5UmKE9qIuTl5N1RC
-         yUBQ==
-X-Gm-Message-State: AOAM5321fAC+5jJFU3WY7VYl8UhLePFoNhysls2kFj2Pj2bnZhJPUnW2
-        EoSGD6QmSXjqHKwi67MbXfBlXQ2CmBJ7A9SsmKN3dmQaOWK1
-X-Google-Smtp-Source: ABdhPJyVTV6l9HIonmvEbRWycVRVy99+9JoQavvsD0FwXdaQ5WzXVA2DaS4Y+g5qg1twFWhInnmvbiSkvNCuY/nPFYIb2hmmR2Ft
+        bh=pw0UgTHVe4ORi9w9G47RxZH+2R3g4C+RyCbV9ziJVuQ=;
+        b=NGha2cwbwXA74J6uJN0/HAtOLzqJ/jEy0Lq0GbwHla4QCkuN9UZJ/bvsLxL4R0mN8g
+         rQm0nus1IZv7MGtyxapIJuXXocrhSjq1bCQAWLi31B8FaJuyNzz+WE6AZm/vbj8Cp95v
+         YGUTR3UBHfHdMFTMyQohdxwVeykbHqKEsKMKQxoNV8SKaQb/6HCnErE/0M2UDx68mt18
+         /J2cK22mjeEaZbqhTEsGy99A+DrMx+5APXflthKpXLQhay3hdGM1C/xLIdMEeUQwVhHl
+         WNx97keao/uTi4aY01uFeJabavj1bg3E0mt13lVZQd0HeW02CHGqau7sfDVrYmquQBBJ
+         +rYg==
+X-Gm-Message-State: AOAM532lKYIk9EZK3RrONDv166xTGnZBMlUdGGfJtpNUH+yx9WYv41yD
+        u0KFZFuKlrXz4NSDxVkhwCHoW7E1iWUab4vwP6q+1MS5mepR
+X-Google-Smtp-Source: ABdhPJzLGtUrYFSaKZsCsFiJTeD8F6gQ2x4xdGfJQRk1G0TMrdZjwyUwp8nP0wCHl1E4+iAeiQQ3NndOOrF/LrO47sXaQuRjGCp1
 MIME-Version: 1.0
-X-Received: by 2002:a02:2c6:: with SMTP id 189mr245195jau.115.1591739892143;
+X-Received: by 2002:a05:6602:1616:: with SMTP id x22mr229920iow.70.1591739892592;
  Tue, 09 Jun 2020 14:58:12 -0700 (PDT)
 Date:   Tue, 09 Jun 2020 14:58:12 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d8a0ea05a7add2fd@google.com>
-Subject: memory leak in ctnetlink_del_conntrack
-From:   syzbot <syzbot+38b8b548a851a01793c5@syzkaller.appspotmail.com>
+Message-ID: <000000000000df74f605a7add28b@google.com>
+Subject: memory leak in ctnetlink_start
+From:   syzbot <syzbot+b005af2cfb0411e617de@syzkaller.appspotmail.com>
 To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
         kadlec@netfilter.org, kuba@kernel.org,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
@@ -53,70 +53,46 @@ syzbot found the following crash on:
 
 HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10fcd90e100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=128a9df2100000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=9a1aa05456dfd557
-dashboard link: https://syzkaller.appspot.com/bug?extid=38b8b548a851a01793c5
+dashboard link: https://syzkaller.appspot.com/bug?extid=b005af2cfb0411e617de
 compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=129c54c1100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11c0355a100000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17304a96100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=168a9df2100000
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+38b8b548a851a01793c5@syzkaller.appspotmail.com
+Reported-by: syzbot+b005af2cfb0411e617de@syzkaller.appspotmail.com
 
 executing program
 executing program
 executing program
 BUG: memory leak
-unreferenced object 0xffff88811c505300 (size 128):
-  comm "syz-executor470", pid 6431, jiffies 4294945909 (age 13.210s)
+unreferenced object 0xffff88811c797900 (size 128):
+  comm "syz-executor256", pid 6458, jiffies 4294947022 (age 13.050s)
   hex dump (first 32 bytes):
-    00 00 00 00 02 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
   backtrace:
-    [<00000000da2809df>] kmalloc include/linux/slab.h:555 [inline]
-    [<00000000da2809df>] kzalloc include/linux/slab.h:669 [inline]
-    [<00000000da2809df>] ctnetlink_alloc_filter+0x3a/0x2a0 net/netfilter/nf_conntrack_netlink.c:924
-    [<00000000745f0fc9>] ctnetlink_flush_conntrack net/netfilter/nf_conntrack_netlink.c:1516 [inline]
-    [<00000000745f0fc9>] ctnetlink_del_conntrack+0x20a/0x326 net/netfilter/nf_conntrack_netlink.c:1554
-    [<00000000385a38da>] nfnetlink_rcv_msg+0x32f/0x370 net/netfilter/nfnetlink.c:229
-    [<00000000bb3b1fc1>] netlink_rcv_skb+0x5a/0x180 net/netlink/af_netlink.c:2469
-    [<00000000b2799dbb>] nfnetlink_rcv+0x83/0x1b0 net/netfilter/nfnetlink.c:563
-    [<000000006021f56a>] netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
-    [<000000006021f56a>] netlink_unicast+0x20a/0x2f0 net/netlink/af_netlink.c:1329
-    [<000000003a4cd173>] netlink_sendmsg+0x2b5/0x560 net/netlink/af_netlink.c:1918
-    [<00000000ff287393>] sock_sendmsg_nosec net/socket.c:652 [inline]
-    [<00000000ff287393>] sock_sendmsg+0x4c/0x60 net/socket.c:672
-    [<000000008c32b330>] ____sys_sendmsg+0x2c4/0x2f0 net/socket.c:2352
-    [<00000000a8f57b1b>] ___sys_sendmsg+0x8a/0xd0 net/socket.c:2406
-    [<000000002c938bcf>] __sys_sendmsg+0x77/0xe0 net/socket.c:2439
-    [<00000000878f0bd0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<00000000dcd0e014>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88811ac32a00 (size 128):
-  comm "syz-executor470", pid 6432, jiffies 4294946459 (age 7.710s)
-  hex dump (first 32 bytes):
-    00 00 00 00 02 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000da2809df>] kmalloc include/linux/slab.h:555 [inline]
-    [<00000000da2809df>] kzalloc include/linux/slab.h:669 [inline]
-    [<00000000da2809df>] ctnetlink_alloc_filter+0x3a/0x2a0 net/netfilter/nf_conntrack_netlink.c:924
-    [<00000000745f0fc9>] ctnetlink_flush_conntrack net/netfilter/nf_conntrack_netlink.c:1516 [inline]
-    [<00000000745f0fc9>] ctnetlink_del_conntrack+0x20a/0x326 net/netfilter/nf_conntrack_netlink.c:1554
-    [<00000000385a38da>] nfnetlink_rcv_msg+0x32f/0x370 net/netfilter/nfnetlink.c:229
-    [<00000000bb3b1fc1>] netlink_rcv_skb+0x5a/0x180 net/netlink/af_netlink.c:2469
-    [<00000000b2799dbb>] nfnetlink_rcv+0x83/0x1b0 net/netfilter/nfnetlink.c:563
-    [<000000006021f56a>] netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
-    [<000000006021f56a>] netlink_unicast+0x20a/0x2f0 net/netlink/af_netlink.c:1329
-    [<000000003a4cd173>] netlink_sendmsg+0x2b5/0x560 net/netlink/af_netlink.c:1918
-    [<00000000ff287393>] sock_sendmsg_nosec net/socket.c:652 [inline]
-    [<00000000ff287393>] sock_sendmsg+0x4c/0x60 net/socket.c:672
-    [<000000008c32b330>] ____sys_sendmsg+0x2c4/0x2f0 net/socket.c:2352
-    [<00000000a8f57b1b>] ___sys_sendmsg+0x8a/0xd0 net/socket.c:2406
-    [<000000002c938bcf>] __sys_sendmsg+0x77/0xe0 net/socket.c:2439
-    [<00000000878f0bd0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
-    [<00000000dcd0e014>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    [<000000004276332a>] kmalloc include/linux/slab.h:555 [inline]
+    [<000000004276332a>] kzalloc include/linux/slab.h:669 [inline]
+    [<000000004276332a>] ctnetlink_alloc_filter+0x3a/0x2a0 net/netfilter/nf_conntrack_netlink.c:924
+    [<000000000047e6fb>] ctnetlink_start+0x3a/0x80 net/netfilter/nf_conntrack_netlink.c:998
+    [<00000000a431a924>] __netlink_dump_start+0x1a3/0x2e0 net/netlink/af_netlink.c:2343
+    [<0000000016b073fa>] netlink_dump_start include/linux/netlink.h:246 [inline]
+    [<0000000016b073fa>] ctnetlink_get_conntrack+0x26d/0x2f0 net/netfilter/nf_conntrack_netlink.c:1611
+    [<00000000d311138b>] nfnetlink_rcv_msg+0x32f/0x370 net/netfilter/nfnetlink.c:229
+    [<0000000008feca87>] netlink_rcv_skb+0x5a/0x180 net/netlink/af_netlink.c:2469
+    [<0000000088caad78>] nfnetlink_rcv+0x83/0x1b0 net/netfilter/nfnetlink.c:563
+    [<0000000052160488>] netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+    [<0000000052160488>] netlink_unicast+0x20a/0x2f0 net/netlink/af_netlink.c:1329
+    [<00000000ee36d991>] netlink_sendmsg+0x2b5/0x560 net/netlink/af_netlink.c:1918
+    [<00000000dee2cafe>] sock_sendmsg_nosec net/socket.c:652 [inline]
+    [<00000000dee2cafe>] sock_sendmsg+0x4c/0x60 net/socket.c:672
+    [<00000000b0b655cb>] ____sys_sendmsg+0x2c4/0x2f0 net/socket.c:2352
+    [<000000005bba2f8d>] ___sys_sendmsg+0x8a/0xd0 net/socket.c:2406
+    [<0000000060ac6563>] __sys_sendmsg+0x77/0xe0 net/socket.c:2439
+    [<000000002f7b34b0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<00000000941009bb>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
 
 
