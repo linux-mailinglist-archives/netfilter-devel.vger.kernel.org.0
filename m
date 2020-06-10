@@ -2,52 +2,56 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFC21F4A03
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2020 01:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E84A1F5521
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Jun 2020 14:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbgFIXKv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 9 Jun 2020 19:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34572 "EHLO
+        id S1728595AbgFJMrG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 10 Jun 2020 08:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgFIXKa (ORCPT
+        with ESMTP id S1727927AbgFJMrG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 9 Jun 2020 19:10:30 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984BBC05BD1E;
-        Tue,  9 Jun 2020 16:10:29 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 077D4120ED4A0;
-        Tue,  9 Jun 2020 16:10:25 -0700 (PDT)
-Date:   Tue, 09 Jun 2020 16:10:22 -0700 (PDT)
-Message-Id: <20200609.161022.775948518079033031.davem@davemloft.net>
-To:     pablo@netfilter.org
-Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        kuba@kernel.org, jacob.e.keller@intel.com
-Subject: Re: [PATCH] net: flow_offload: remove indirect flow_block
- declarations leftover
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200609214744.28412-1-pablo@netfilter.org>
-References: <20200609214744.28412-1-pablo@netfilter.org>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 09 Jun 2020 16:10:26 -0700 (PDT)
+        Wed, 10 Jun 2020 08:47:06 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F291C03E96B
+        for <netfilter-devel@vger.kernel.org>; Wed, 10 Jun 2020 05:47:06 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1jj08D-0006IT-Jp; Wed, 10 Jun 2020 14:47:01 +0200
+Date:   Wed, 10 Jun 2020 14:47:01 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
+Subject: Re: [PATCH v4.10] netfilter: nf_conntrack_h323: lost .data_len
+ definition for Q.931/ipv6
+Message-ID: <20200610124701.GB21317@breakpoint.cc>
+References: <c2385b5c-309c-cc64-2e10-a0ef62897502@virtuozzo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c2385b5c-309c-cc64-2e10-a0ef62897502@virtuozzo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Date: Tue,  9 Jun 2020 23:47:44 +0200
-
-> Remove function declarations that are not available in the tree anymore.
+Vasily Averin <vvs@virtuozzo.com> wrote:
+> Could you please push this patch into stable@?
+> it fixes memory corruption in kernels  v3.5 .. v4.10
 > 
-> Fixes: 709ffbe19b77 ("net: remove indirect block netdev event registration")
-> Reported-by: Jacob Keller <jacob.e.keller@intel.com>
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> Lost .data_len definition leads to write beyond end of
+> struct nf_ct_h323_master. Usually it corrupts following
+> struct nf_conn_nat, however if nat is not loaded it corrupts
+> following slab object.
+> 
+> In mainline this problem went away in v4.11,
+> after commit 9f0f3ebeda47 ("netfilter: helpers: remove data_len usage
+> for inkernel helpers") however many stable kernels are still affected.
+> 
+> cc: stable@vger.kernel.org
+> Fixes: 1afc56794e03 ("netfilter: nf_ct_helper: implement variable length helper private data") # v3.5
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 
-Applied, thank you.
+Reviewed-by: Florian Westphal <fw@strlen.de>
