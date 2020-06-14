@@ -2,142 +2,93 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945BD1F8AFA
-	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Jun 2020 23:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133271F8B09
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jun 2020 00:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbgFNVxP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 14 Jun 2020 17:53:15 -0400
-Received: from correo.us.es ([193.147.175.20]:59952 "EHLO mail.us.es"
+        id S1727936AbgFNWBH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 14 Jun 2020 18:01:07 -0400
+Received: from correo.us.es ([193.147.175.20]:33356 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727988AbgFNVxO (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 14 Jun 2020 17:53:14 -0400
+        id S1727924AbgFNWBG (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 14 Jun 2020 18:01:06 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id E6081B5701
-        for <netfilter-devel@vger.kernel.org>; Sun, 14 Jun 2020 23:53:12 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id F2BA7FF912
+        for <netfilter-devel@vger.kernel.org>; Mon, 15 Jun 2020 00:01:04 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id D54F7DA789
-        for <netfilter-devel@vger.kernel.org>; Sun, 14 Jun 2020 23:53:12 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id E5CEBDA78F
+        for <netfilter-devel@vger.kernel.org>; Mon, 15 Jun 2020 00:01:04 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id D4A35DA73D; Sun, 14 Jun 2020 23:53:12 +0200 (CEST)
+        id D37A9DA856; Mon, 15 Jun 2020 00:01:04 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id A966ADA78D;
-        Sun, 14 Jun 2020 23:53:10 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 79E35DA72F;
+        Mon, 15 Jun 2020 00:01:02 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sun, 14 Jun 2020 23:53:10 +0200 (CEST)
+ Mon, 15 Jun 2020 00:01:02 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 78535426CCBB;
-        Sun, 14 Jun 2020 23:53:10 +0200 (CEST)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 1FBD4426CCBA;
+        Mon, 15 Jun 2020 00:01:02 +0200 (CEST)
+Date:   Mon, 15 Jun 2020 00:01:01 +0200
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH 4/4] netfilter: nf_tables: hook list memleak in flowtable deletion
-Date:   Sun, 14 Jun 2020 23:53:01 +0200
-Message-Id: <20200614215301.9101-5-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200614215301.9101-1-pablo@netfilter.org>
-References: <20200614215301.9101-1-pablo@netfilter.org>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     David Howells <dhowells@redhat.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Good idea to rename files in include/uapi/ ?
+Message-ID: <20200614220101.GA9367@salvia>
+References: <9feded75-4b45-2821-287b-af00ec5f910f@al2klimov.de>
+ <174102.1592165965@warthog.procyon.org.uk>
+ <nycvar.YFH.7.77.849.2006142244200.30230@n3.vanv.qr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <nycvar.YFH.7.77.849.2006142244200.30230@n3.vanv.qr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-After looking up for the flowtable hooks that need to be removed,
-release the hook objects in the deletion list. The error path needs to
-released these hook objects too.
+On Sun, Jun 14, 2020 at 11:08:08PM +0200, Jan Engelhardt wrote:
+> 
+> On Sunday 2020-06-14 22:19, David Howells wrote:
+> >Alexander A. Klimov <grandmaster@al2klimov.de> wrote:
+> >
+> >> *Is it a good idea to rename files in include/uapi/ ?*
+> >
+> >Very likely not.  If programs out there are going to be built on a
+> >case-sensitive filesystem (which happens all the time), they're going to break
+> >if you rename the headers.  We're kind of stuck with them.
+> 
+> Netfilter has precedent for removing old headers, e.g.
+> 7200135bc1e61f1437dc326ae2ef2f310c50b4eb's ipt_ULOG.h.
 
-Fixes: abadb2f865d7 ("netfilter: nf_tables: delete devices from flowtable")
-Reported-by: syzbot+eb9d5924c51d6d59e094@syzkaller.appspotmail.com
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 31 ++++++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
-
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 073aa1051d43..7647ecfa0d40 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -6550,12 +6550,22 @@ static int nf_tables_newflowtable(struct net *net, struct sock *nlsk,
- 	return err;
- }
- 
-+static void nft_flowtable_hook_release(struct nft_flowtable_hook *flowtable_hook)
-+{
-+	struct nft_hook *this, *next;
-+
-+	list_for_each_entry_safe(this, next, &flowtable_hook->list, list) {
-+		list_del(&this->list);
-+		kfree(this);
-+	}
-+}
-+
- static int nft_delflowtable_hook(struct nft_ctx *ctx,
- 				 struct nft_flowtable *flowtable)
- {
- 	const struct nlattr * const *nla = ctx->nla;
- 	struct nft_flowtable_hook flowtable_hook;
--	struct nft_hook *this, *next, *hook;
-+	struct nft_hook *this, *hook;
- 	struct nft_trans *trans;
- 	int err;
- 
-@@ -6564,33 +6574,40 @@ static int nft_delflowtable_hook(struct nft_ctx *ctx,
- 	if (err < 0)
- 		return err;
- 
--	list_for_each_entry_safe(this, next, &flowtable_hook.list, list) {
-+	list_for_each_entry(this, &flowtable_hook.list, list) {
- 		hook = nft_hook_list_find(&flowtable->hook_list, this);
- 		if (!hook) {
- 			err = -ENOENT;
- 			goto err_flowtable_del_hook;
- 		}
- 		hook->inactive = true;
--		list_del(&this->list);
--		kfree(this);
- 	}
- 
- 	trans = nft_trans_alloc(ctx, NFT_MSG_DELFLOWTABLE,
- 				sizeof(struct nft_trans_flowtable));
--	if (!trans)
--		return -ENOMEM;
-+	if (!trans) {
-+		err = -ENOMEM;
-+		goto err_flowtable_del_hook;
-+	}
- 
- 	nft_trans_flowtable(trans) = flowtable;
- 	nft_trans_flowtable_update(trans) = true;
- 	INIT_LIST_HEAD(&nft_trans_flowtable_hooks(trans));
-+	nft_flowtable_hook_release(&flowtable_hook);
- 
- 	list_add_tail(&trans->list, &ctx->net->nft.commit_list);
- 
- 	return 0;
- 
- err_flowtable_del_hook:
--	list_for_each_entry(hook, &flowtable_hook.list, list)
-+	list_for_each_entry(this, &flowtable_hook.list, list) {
-+		hook = nft_hook_list_find(&flowtable->hook_list, this);
-+		if (!hook)
-+			break;
-+
- 		hook->inactive = false;
-+	}
-+	nft_flowtable_hook_release(&flowtable_hook);
- 
- 	return err;
- }
--- 
-2.20.1
-
+That's only because NFLOG has been there for ~10 years, so it was safe
+to remove ULOG support.
