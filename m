@@ -2,93 +2,131 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A0A1F8B0C
-	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jun 2020 00:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7101F8B39
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Jun 2020 00:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727939AbgFNWDO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 14 Jun 2020 18:03:14 -0400
-Received: from correo.us.es ([193.147.175.20]:34014 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727928AbgFNWDN (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 14 Jun 2020 18:03:13 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id EE2D3FF90C
-        for <netfilter-devel@vger.kernel.org>; Mon, 15 Jun 2020 00:03:11 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id E27A3DA78D
-        for <netfilter-devel@vger.kernel.org>; Mon, 15 Jun 2020 00:03:11 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id CCDD1DA797; Mon, 15 Jun 2020 00:03:11 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 8256CDA73D;
-        Mon, 15 Jun 2020 00:03:09 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 15 Jun 2020 00:03:09 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727946AbgFNWqo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 14 Jun 2020 18:46:44 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:57463 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727928AbgFNWqo (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 14 Jun 2020 18:46:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592174802;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VZ+xxFwO/qBmW1EfLSMuYMLQkglP30JZAbnMQ8/Ua1Y=;
+        b=VI8xu1lrqwhJD2a9gfAwXhHZ4ELnM6NAaFMPq+kAYLn/Q2jP8bZF22n3Y9GGd9HunCLI31
+        AyvrYcWEk7qfGWmb9ZIkpXRGaT4K6BFnrBkdhpM8X+IN5MrpEo04ycMrzTY7PgPiNlxgjM
+        bZPBLKRmJZRc951U067/FOgnbiz8Xww=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-424-aLMFDozpMgOZuaVuZth6cA-1; Sun, 14 Jun 2020 18:46:38 -0400
+X-MC-Unique: aLMFDozpMgOZuaVuZth6cA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 64563426CCB9;
-        Mon, 15 Jun 2020 00:03:09 +0200 (CEST)
-Date:   Mon, 15 Jun 2020 00:03:09 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Stefano Brivio <sbrivio@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9FDE21883609;
+        Sun, 14 Jun 2020 22:46:37 +0000 (UTC)
+Received: from localhost (unknown [10.36.110.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 62DFB7CAA4;
+        Sun, 14 Jun 2020 22:46:36 +0000 (UTC)
+Date:   Mon, 15 Jun 2020 00:46:30 +0200
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
 Subject: Re: [PATCH nft] tests: Run in separate network namespace, don't
  break connectivity
-Message-ID: <20200614220309.GA9310@salvia>
+Message-ID: <20200615004630.597c9752@redhat.com>
+In-Reply-To: <20200614220309.GA9310@salvia>
 References: <8efb5334f8b4df21b8833e576abd5721486c0182.1592170411.git.sbrivio@redhat.com>
+        <20200614220309.GA9310@salvia>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8efb5334f8b4df21b8833e576abd5721486c0182.1592170411.git.sbrivio@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sun, Jun 14, 2020 at 11:41:57PM +0200, Stefano Brivio wrote:
-> It might be convenient to run tests from a development branch that
-> resides on another host, and if we break connectivity on the test
-> host as tests are executed, we can't run them this way.
-> 
-> If kernel implementation (CONFIG_NET_NS), unshare(1), or Python
-> bindings for unshare() are not available, warn and continue.
-> 
-> Suggested-by: Phil Sutter <phil@nwl.cc>
-> Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
-> ---
->  tests/py/nft-test.py     | 6 ++++++
->  tests/shell/run-tests.sh | 9 +++++++++
->  2 files changed, 15 insertions(+)
-> 
-> diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
-> index 01ee6c980ad4..df97ed8eefb7 100755
-> --- a/tests/py/nft-test.py
-> +++ b/tests/py/nft-test.py
-> @@ -1394,6 +1394,12 @@ def main():
->      # Change working directory to repository root
->      os.chdir(TESTS_PATH + "/../..")
->  
-> +    try:
-> +        import unshare
-> +        unshare.unshare(unshare.CLONE_NEWNET)
-> +    except:
-> +        print_warning("cannot run in own namespace, connectivity might break")
-> +
+On Mon, 15 Jun 2020 00:03:09 +0200
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 
-In iptables-tests.py, there is an option for this:
+> On Sun, Jun 14, 2020 at 11:41:57PM +0200, Stefano Brivio wrote:
+> > It might be convenient to run tests from a development branch that
+> > resides on another host, and if we break connectivity on the test
+> > host as tests are executed, we can't run them this way.
+> > 
+> > If kernel implementation (CONFIG_NET_NS), unshare(1), or Python
+> > bindings for unshare() are not available, warn and continue.
+> > 
+> > Suggested-by: Phil Sutter <phil@nwl.cc>
+> > Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
+> > ---
+> >  tests/py/nft-test.py     | 6 ++++++
+> >  tests/shell/run-tests.sh | 9 +++++++++
+> >  2 files changed, 15 insertions(+)
+> > 
+> > diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
+> > index 01ee6c980ad4..df97ed8eefb7 100755
+> > --- a/tests/py/nft-test.py
+> > +++ b/tests/py/nft-test.py
+> > @@ -1394,6 +1394,12 @@ def main():
+> >      # Change working directory to repository root
+> >      os.chdir(TESTS_PATH + "/../..")
+> >  
+> > +    try:
+> > +        import unshare
+> > +        unshare.unshare(unshare.CLONE_NEWNET)
+> > +    except:
+> > +        print_warning("cannot run in own namespace, connectivity might break")
+> > +  
+> 
+> In iptables-tests.py, there is an option for this:
+> 
+>         parser.add_argument('-N', '--netns', action='store_true',
+>                             help='Test netnamespace path')
+> 
+> Is it worth keeping this in sync with it?
 
-        parser.add_argument('-N', '--netns', action='store_true',
-                            help='Test netnamespace path')
+I'm not sure: keeping it in sync would mean that's not the default,
+which might result in significant frustration. By the way,
+iptables/tests/shell/run-tests.sh just calls unshare -n, instead.
 
-Is it worth keeping this in sync with it?
+In the past, I guess the --netns flag led to noise and a number of new
+errors being found, but nowadays that part should be quite robust and I
+don't see the noise.
+
+I think that today the added benefit of an explicit option would come
+from the fact that one can check what happened, on failure, on a
+single test run, by checking rulesets in the init namespace afterwards.
+
+However, the clean-up strategy is a bit inconsistent right now,
+especially with the Python tests: after running some of them as single
+runs you might still have a number of chains while rules are deleted --
+so I think we should fix that before a flag becomes useful in this
+sense.
+
+That could also be achieved by running in a namespace with a known
+name, which would need either a patch in the Python bindings here:
+	https://github.com/shubham1172/unshare/blob/3e3cc4cd5128976a56601eb5764741fec9c242f8/unshare.c#L26
+
+or wrapping commands with 'ip netns exec' as iptables-tests.py does.
+
+If we do that, I guess we should also introduce a pause-on-fail
+mechanism, cf.:
+	https://lore.kernel.org/netfilter-devel/20191206101549.4b05f74a@elisabeth/
+
+All in all, from a functionality perspective, I don't think we're
+losing anything with this patch -- if you ask me, I'd rather keep this
+to avoid the current annoyance, make an explicit option usable in the
+future, and then implement the option.
+
+-- 
+Stefano
+
