@@ -2,50 +2,58 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD98200B0F
-	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2020 16:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC7E200B6A
+	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2020 16:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732728AbgFSOMC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 19 Jun 2020 10:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732611AbgFSOMB (ORCPT
+        id S1726511AbgFSO3a (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 19 Jun 2020 10:29:30 -0400
+Received: from dehost.average.org ([88.198.2.197]:49426 "EHLO
+        dehost.average.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726836AbgFSO3a (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:12:01 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB8BC06174E
-        for <netfilter-devel@vger.kernel.org>; Fri, 19 Jun 2020 07:12:01 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1jmHkL-0006cC-GC; Fri, 19 Jun 2020 16:11:57 +0200
-Date:   Fri, 19 Jun 2020 16:11:57 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: iptables user space performance benchmarks published
-Message-ID: <20200619141157.GU23632@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
+        Fri, 19 Jun 2020 10:29:30 -0400
+Received: from wscross.pb.local (unknown [IPv6:2001:1438:4010:2548:9a90:96ff:fea0:e2f])
+        by dehost.average.org (Postfix) with ESMTPSA id F2CD8354AD64
+        for <netfilter-devel@vger.kernel.org>; Fri, 19 Jun 2020 16:29:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
+        t=1592576969; bh=kVfLv6NonpIs7tLxfBkDBjBOnT9KFxnleql0feDkZr8=;
+        h=From:To:Subject:Date:From;
+        b=CdnOGIqKr2fbY7FgnRdixfzF7LB1TrrglsgX5+Wc5xg2zvtU5hNfuzhEFjB2gT+Se
+         hGovQk39MYJzUHIunkXKBHaV4tL9AQRZWxqUFz2F5Rkqnrpxs91gRMm00SevcXpG8h
+         PbxOHgI1NqAv02a51flljyd++kz8yh8jHYH/Nt7o=
+From:   Eugene Crosser <crosser@average.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: Allow dynamic loading of extentions in ebtables (-m option)
+Date:   Fri, 19 Jun 2020 16:29:11 +0200
+Message-Id: <20200619142912.19390-1-crosser@average.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
+`iptables` command allows to dynamically load an "extension" shared
+object by specifying the `-m` option, and thus new extensions can be
+added without recompiling the command. In contrast, `ebtables` does
+not have `-m` option. It still dynamically loads its extensions, but
+the list of extenstions is hardcoded.
 
-I remember you once asked for the benchmark scripts I used to compare
-performance of iptables-nft with -legacy in terms of command overhead
-and caching, as detailed in a blog[1] I wrote about it. I meanwhile
-managed to polish the scripts a bit and push them into a public repo,
-accessible here[2]. I'm not sure whether they are useful for regular
-runs (or even CI) as a single run takes a few hours and parallel use
-likely kills result precision.
+Proposed patch adds the option `-m` to `ebtables` command that works
+the same way as in `iptables`. Note that
 
-Cheers, Phil
+1. Hardcoded list of "standard" extentions is _not_ removed by this
+ patch. It is not strictly necessary after this patch, but removing
+it would break backwards compatibility, mandating addition of
+`-m ext-name` option to existing scripts.
 
-[1] https://developers.redhat.com/blog/2020/04/27/optimizing-iptables-nft-large-ruleset-performance-in-user-space/
-[2] http://nwl.cc/cgi-bin/git/gitweb.cgi?p=ipt-sbs-bench.git;a=summary
+2. Dynamic loading of _target_ extensions already works automatically,
+no change is needed.
+
+Please consider adding this.
+
+Thank you,
+
+Eugene
+
