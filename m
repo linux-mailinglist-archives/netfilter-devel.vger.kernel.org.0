@@ -2,117 +2,122 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C52201C52
-	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Jun 2020 22:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A28220227B
+	for <lists+netfilter-devel@lfdr.de>; Sat, 20 Jun 2020 09:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391201AbgFSUXg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 19 Jun 2020 16:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
+        id S1727010AbgFTH5h (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 20 Jun 2020 03:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390976AbgFSUXf (ORCPT
+        with ESMTP id S1725835AbgFTH5g (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 19 Jun 2020 16:23:35 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E068C0613EF
-        for <netfilter-devel@vger.kernel.org>; Fri, 19 Jun 2020 13:23:35 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id z47so3610401uad.5
-        for <netfilter-devel@vger.kernel.org>; Fri, 19 Jun 2020 13:23:35 -0700 (PDT)
+        Sat, 20 Jun 2020 03:57:36 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86579C06174E;
+        Sat, 20 Jun 2020 00:57:36 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id l10so11754937wrr.10;
+        Sat, 20 Jun 2020 00:57:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=ldZEk6GZkwUuy2Js9SWtf3nbeJAEXnm6tR2ZTKBqXvg=;
-        b=u0hkV4CWeQp7GmBuHG0hnBoqnYtFNgyUPMmoho5x0ZJWIVTiicOVQlZEFlHmribtGn
-         rABpKbDgd60ZsDHAGGRogeng9KmfSrZj9FWeQp3M75DZgAHeoFATLv11rUXKZoeqMLe9
-         6P1J9jo8a+yeXwKBFbfB+eJDFetLLdixXa0hzdWJavitLtsxP+OqRNd0XBLYyEmvSfUi
-         8N9WbSNCk70GAH0FtNrfYgBXkgfw99fzCGuQ6x9upGLSKFr82+Wl0nMZK6qzQ/7ibWX2
-         OAGfhHOZtUXFZ8VBL8Fo4csAYCkLP1cQh1SjRD0+pSCa5QbTDoQC+4rSJcAJlEIMDrwD
-         otyw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+ni8LF6DiZ7e+Sa1bH9I96UUmF2BBDFC3xDwZDcw058=;
+        b=NiF4Ek5JpVCT1lkixtJWNHFOi/+jzvu5yqUj3bVi28nBXxd1qGW6SwIjRWQsHVZvQ1
+         /sN9tsPubXkYpuqaIOe2WnxiwZqgQAakf0KNEk2oKNHTdNO+l1Oj0svHDl4FSnAMkWg0
+         sjQSuriza/6E772gnStLKc8Dd+ZP24hlrXp1pQFOacPEJCRv7X5MnaV2n105XjmEVS+c
+         7t4HeE/LZWVXKY6rYGMkUtcMqVNx8jBnpGXPoNYK8/OBSesF0B3kuXHEPqVIuQQhwKza
+         R6ye/M+q2rTGF6UJbvBK0WlWpo0wqfwIYsh4RMJFfuYb/4J3XwOTd1Pg3Q/A8JtMiS5J
+         KJRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=ldZEk6GZkwUuy2Js9SWtf3nbeJAEXnm6tR2ZTKBqXvg=;
-        b=LGteUPNHyMjgg1Rw7BSwWKfIAciOEsxINPmciN590EZgpTOx2r3x8pIU/DtQ4x5+g3
-         c1ZFRHj4yLqpBZIKgijxhafTjXglXQIEUajKmpqh4rRXVpjdiQTFk1pACzxN0ba/PVHD
-         TkGjyAgdzZ2YBtCU/XeIsOptZF3QgmIarDYagyY/8imZ1Co4E6g9iTvibGCIsdNDoJuL
-         ShWu9EhX/lhA7jhy1Yy4af2ijLG0Fr+xHj58PKflhMRbP4q3t8cJRfxCtwOf+K4wWUxe
-         T0MtDAUeSD9BR1V9JQHkiUHAWNtR2lp+ujq410B6bSiWISl3hKb9Sh57SY/9Z04xglK/
-         HQHg==
-X-Gm-Message-State: AOAM531dkqZCN+uZUBI19O1rpWWAAoxtZD2jlgdCitZpJNRE4IQhwsWd
-        SZMFzLvz80Nd49n55iXWUjYtw3UWGoNWoS3+knY=
-X-Google-Smtp-Source: ABdhPJzf/KOMW1mUVSwVkNOKgMjnp5+8izdyAuVT2BEVIRd2HC1TooMECwLfEpBQoN/UalLYvijjO3Aq1Dv7RnrdSG0=
-X-Received: by 2002:ab0:5b99:: with SMTP id y25mr4205324uae.47.1592598214386;
- Fri, 19 Jun 2020 13:23:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+ni8LF6DiZ7e+Sa1bH9I96UUmF2BBDFC3xDwZDcw058=;
+        b=effKCyDlDQeCPgiqd8WfGrAECWCVwvDTEwI3tOhp8P5FfsQ87uUT84LR+RHXjXNAlC
+         OUZieR9ZY6oWk1KKQ84PvTxmtGML20GOO4NWVcsFpMeN/lFKqy/yesRYyQ6wK38dzWQ9
+         HUPwtESq3r1zm+EmWXR4H2n/lDLIeM/L7zIEkjQsiauDPGcYSzv7fSSKZW4FYp3jC/wP
+         DLGqMbQs8AsmnR0CnV8lDqRymQCsGr4gnwe36vTcglZYSTvHSfcFUzJyd/i6GPlH0pAo
+         kJHdL+Vxk76i+jVSQkOrR/DpDTk1g1cfItD1fVa+KmVJyxocAHlwC60Zl1GcG0gmXEcp
+         Mfvw==
+X-Gm-Message-State: AOAM5301EQOHZmcA4V322O5uBJDtPlhv84AxgyNjEYoUF7qU5y51T2n4
+        FJ3QPIltlsEqHpAd+zdEJ2SkpGQ=
+X-Google-Smtp-Source: ABdhPJx2LzDP5vaEKmQra4DiB1bA7ic/ADuDUbl9U0GPCwzJ0K00W8lZUJcSkex4J9D5e32tWJ5TGQ==
+X-Received: by 2002:a05:6000:128e:: with SMTP id f14mr8750971wrx.276.1592639855172;
+        Sat, 20 Jun 2020 00:57:35 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.252.34])
+        by smtp.gmail.com with ESMTPSA id e25sm10429252wrc.69.2020.06.20.00.57.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Jun 2020 00:57:34 -0700 (PDT)
+Date:   Sat, 20 Jun 2020 10:57:32 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH] linux++, this: rename "struct notifier_block *this"
+Message-ID: <20200620075732.GA468070@localhost.localdomain>
+References: <20200618210645.GB2212102@localhost.localdomain>
+ <CAHk-=whz7xz1EBqfyS-C8zTx3_q54R1GuX9tDHdK1-TG91WH-Q@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a9f:3e97:0:0:0:0:0 with HTTP; Fri, 19 Jun 2020 13:23:33
- -0700 (PDT)
-From:   Ms Kim Hong Yeoh <mrs.kimhongyeoh055@gmail.com>
-Date:   Fri, 19 Jun 2020 20:23:33 +0000
-X-Google-Sender-Auth: -710GkxjQE6KOh9Ec74cS4F13zU
-Message-ID: <CAPGg-FG1KxpCxSxfZ_w_==ecRP+=juTq9hPA+8R6KWUqKiGzqg@mail.gmail.com>
-Subject: MAY THE PEACE OF GOD BE UPON YOU.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whz7xz1EBqfyS-C8zTx3_q54R1GuX9tDHdK1-TG91WH-Q@mail.gmail.com>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Greetings Beloved in Christ,
+On Fri, Jun 19, 2020 at 11:37:47AM -0700, Linus Torvalds wrote:
+> On Thu, Jun 18, 2020 at 2:06 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+> >
+> > Rename
+> >         struct notifier_block *this
+> > to
+> >         struct notifier_block *nb
+> >
+> > "nb" is arguably a better name for notifier block.
+> 
+> Maybe it's a better name. But it doesn't seem worth it.
+> 
+> Because C++ reserved words are entirely irrelevant.
+> 
+> We did this same dance almost three decades ago, and the fact is, C++
+> has other reserved words that make it all pointless.
 
-I had previously sent you an email with no feedback from you.I suppose
-it went to your junk folder.I anticipate that you read this mail
-quickly and let me know your opinion or willingness on this classified
-information that I will release to you.  therefore I would not want to
-jeopardize this opportunity to Save lives of Less Privileged ones and
-also change our financial status and give Less Privileged a secured
-future.
+The real problems are "class" and "new" indeed.
 
-I am Mrs. Kim Hong Yeoh, Working at MAYBANK (Malaysia) as the
-Non-Independent Non-Executive Director and Chairman of Maybank. During
-our last banking Audits we discovered an abandoned account belongs to
-one of our Foreign Deceased Customer, Late Mr. Wang Jian, The
-Co-founder and Co-chairman of HNA Group, a Chinese conglomerate with
-significant real estate ownerships across the U.S., died in an
-accident while on a business trip in France on Tuesday.
+> There is no way I will accept the renaming of various "new" variables.
 
-Please go through this link:
-https://observer.com/2018/07/wang-jian-hna-founder-dies-tragic-fall/
+I'm not sending "new".
 
-I am writing to request your assistance in transferring the sum of
-$17.000.000.00 (Seventeen Million United States Dollars) into your
-account as the Late Mr. Wang Jian Foreign Business Partner, which I am
-planning to use the fund to invest for public benefit as follows;
+> We did it, it was bad, we undid it, and we now have a _lot_ more uses
+> of 'new' and 'old', and no, we're not changing it for a braindead
+> language that isn't relevant to the kernel.
+> 
+> The fact is, C++ chose bad identifiers to make reserved words.
+> 
+> If you want to build the kernel with C++, you'd be a lot better off just doing
+> 
+>    /* C++ braindamage */
+>    #define this __this
+>    #define new __new
+> 
+> and deal with that instead.
 
-1. Establish An Orphanage Home To Help The Orphanages Children.
-2. Build A Hospital To Help The Poor.
-3. Build A Nursing Home For Elderly People Need Care & Meal.
+Can't do this because of placement new.
 
-Meanwhile, before I contacted you I have done personal investigation
-in locating any of Late Mr. Wang Jian relatives who knows about the
-account, but I came out unsuccessful. However, I took this decision to
-use this fund in supporting the Orphanages Children, Less Privileged
-and Elderly People Need Care & Meal Support, because i don't want this
-fund to be transfer into our Government Treasury Account as unclaimed
-fund as the law of my country abiding.
+> Because no, the 'new' renaming will never happen, and while 'this'
+> isn't nearly as common or relevant a name, once you have the same
+> issue with 'new', what's the point of trying to deal with 'this'?
 
-As an officer of the Bank I cannot be directly connected to this
-money, so this is why I have to contact you for us to work so that you
-can assist to claim/receive this money into your bank account for us
-start a charity project, Meanwhile you will have 40% of the total fund
-and 60% for charity project, Note there are practically no risk
-involved, it will be bank to bank transfer, all I need from you is to
-stand and claim $17. Million without any problem with the information
-am going to provide to you.
+I'm not sending "new".
 
+There is stuff which can be merge without breaking source compatibility
+and readability of C version:
 
-Please for the sake of god accept this offer to work with me and let
-us save lives of those Orphanages Children, Less Privileged and
-Elderly People Need Care, I will appreciate it very much. As soon as I
-receive your kind response, I will give you details on how we can
-achieve it successfully i will explain more on how the fund will be
-transfer to you.
+	private		=> priv
+	virtual		=> virt
+	this		=> self (in some contexts)
 
-Waiting for your urgent response now.
-best regards
-Mrs. Kim Hong Yeoh.
+and those which can not. I'm not sending the latter.
