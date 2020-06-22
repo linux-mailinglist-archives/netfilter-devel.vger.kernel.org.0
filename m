@@ -2,228 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57157203D88
-	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jun 2020 19:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E2F203EC0
+	for <lists+netfilter-devel@lfdr.de>; Mon, 22 Jun 2020 20:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730038AbgFVRKm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 22 Jun 2020 13:10:42 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52280 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730028AbgFVRKk (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 22 Jun 2020 13:10:40 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MH0pFS186495;
-        Mon, 22 Jun 2020 13:10:36 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31tyrxafp5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Jun 2020 13:10:36 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05MGjaCJ004076;
-        Mon, 22 Jun 2020 17:10:35 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma01dal.us.ibm.com with ESMTP id 31sa38nggc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Jun 2020 17:10:35 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05MHAXMV52036034
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Jun 2020 17:10:33 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D2FA36A054;
-        Mon, 22 Jun 2020 17:10:33 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4F9B16A04F;
-        Mon, 22 Jun 2020 17:10:32 +0000 (GMT)
-Received: from oc8377887825.ibm.com (unknown [9.160.23.249])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 22 Jun 2020 17:10:32 +0000 (GMT)
-From:   David Wilder <dwilder@us.ibm.com>
-To:     netdev@vger.kernel.org
-Cc:     netfilter-devel@vger.kernel.org, fw@strlen.de, wilder@us.ibm.com,
-        mkubecek@suse.com
-Subject: [PATCH v1 4/4] netfilter: Add a .pre_exit hook in all ip6table_foo.c.
-Date:   Mon, 22 Jun 2020 10:10:14 -0700
-Message-Id: <20200622171014.975-5-dwilder@us.ibm.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200622171014.975-1-dwilder@us.ibm.com>
-References: <20200622171014.975-1-dwilder@us.ibm.com>
+        id S1730241AbgFVSG3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 22 Jun 2020 14:06:29 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:56972 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730099AbgFVSG3 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 22 Jun 2020 14:06:29 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id D4F60467DC;
+        Mon, 22 Jun 2020 18:06:20 +0000 (UTC)
+Subject: Re: Good idea to rename files in include/uapi/ ?
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     David Howells <dhowells@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <9feded75-4b45-2821-287b-af00ec5f910f@al2klimov.de>
+ <174102.1592165965@warthog.procyon.org.uk>
+ <nycvar.YFH.7.77.849.2006142244200.30230@n3.vanv.qr>
+ <ab88e504-c139-231a-0294-953ffd1a9442@al2klimov.de>
+ <nycvar.YFH.7.77.849.2006221336180.26495@n3.vanv.qr>
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Message-ID: <482bbfe2-77c7-226c-98a9-d6505866123a@al2klimov.de>
+Date:   Mon, 22 Jun 2020 20:06:19 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-22_09:2020-06-22,2020-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 phishscore=0 spamscore=0 mlxscore=0 impostorscore=0
- cotscore=-2147483648 suspectscore=1 mlxlogscore=865 clxscore=1015
- priorityscore=1501 bulkscore=0 malwarescore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006220118
+In-Reply-To: <nycvar.YFH.7.77.849.2006221336180.26495@n3.vanv.qr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spamd-Bar: ++
+X-Spam-Level: **
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Using new helpers ip6t_unregister_table_pre_exit() and
-ip6t_unregister_table_exit().
 
-Signed-off-by: David Wilder <dwilder@us.ibm.com>
----
- net/ipv6/netfilter/ip6table_filter.c   | 10 +++++++++-
- net/ipv6/netfilter/ip6table_mangle.c   | 10 +++++++++-
- net/ipv6/netfilter/ip6table_nat.c      | 10 ++++++++--
- net/ipv6/netfilter/ip6table_raw.c      | 10 +++++++++-
- net/ipv6/netfilter/ip6table_security.c | 10 +++++++++-
- 5 files changed, 44 insertions(+), 6 deletions(-)
 
-diff --git a/net/ipv6/netfilter/ip6table_filter.c b/net/ipv6/netfilter/ip6table_filter.c
-index 32667f5..88337b5 100644
---- a/net/ipv6/netfilter/ip6table_filter.c
-+++ b/net/ipv6/netfilter/ip6table_filter.c
-@@ -73,16 +73,24 @@ static int __net_init ip6table_filter_net_init(struct net *net)
- 	return 0;
- }
- 
-+static void __net_exit ip6table_filter_net_pre_exit(struct net *net)
-+{
-+	if (net->ipv6.ip6table_filter)
-+		ip6t_unregister_table_pre_exit(net, net->ipv6.ip6table_filter,
-+					       filter_ops);
-+}
-+
- static void __net_exit ip6table_filter_net_exit(struct net *net)
- {
- 	if (!net->ipv6.ip6table_filter)
- 		return;
--	ip6t_unregister_table(net, net->ipv6.ip6table_filter, filter_ops);
-+	ip6t_unregister_table_exit(net, net->ipv6.ip6table_filter);
- 	net->ipv6.ip6table_filter = NULL;
- }
- 
- static struct pernet_operations ip6table_filter_net_ops = {
- 	.init = ip6table_filter_net_init,
-+	.pre_exit = ip6table_filter_net_pre_exit,
- 	.exit = ip6table_filter_net_exit,
- };
- 
-diff --git a/net/ipv6/netfilter/ip6table_mangle.c b/net/ipv6/netfilter/ip6table_mangle.c
-index 070afb9..1a27486 100644
---- a/net/ipv6/netfilter/ip6table_mangle.c
-+++ b/net/ipv6/netfilter/ip6table_mangle.c
-@@ -93,16 +93,24 @@ static int __net_init ip6table_mangle_table_init(struct net *net)
- 	return ret;
- }
- 
-+static void __net_exit ip6table_mangle_net_pre_exit(struct net *net)
-+{
-+	if (net->ipv6.ip6table_mangle)
-+		ip6t_unregister_table_pre_exit(net, net->ipv6.ip6table_mangle,
-+					       mangle_ops);
-+}
-+
- static void __net_exit ip6table_mangle_net_exit(struct net *net)
- {
- 	if (!net->ipv6.ip6table_mangle)
- 		return;
- 
--	ip6t_unregister_table(net, net->ipv6.ip6table_mangle, mangle_ops);
-+	ip6t_unregister_table_exit(net, net->ipv6.ip6table_mangle);
- 	net->ipv6.ip6table_mangle = NULL;
- }
- 
- static struct pernet_operations ip6table_mangle_net_ops = {
-+	.pre_exit = ip6table_mangle_net_pre_exit,
- 	.exit = ip6table_mangle_net_exit,
- };
- 
-diff --git a/net/ipv6/netfilter/ip6table_nat.c b/net/ipv6/netfilter/ip6table_nat.c
-index 0f48759..0a23265 100644
---- a/net/ipv6/netfilter/ip6table_nat.c
-+++ b/net/ipv6/netfilter/ip6table_nat.c
-@@ -114,16 +114,22 @@ static int __net_init ip6table_nat_table_init(struct net *net)
- 	return ret;
- }
- 
-+static void __net_exit ip6table_nat_net_pre_exit(struct net *net)
-+{
-+	if (net->ipv6.ip6table_nat)
-+		ip6t_nat_unregister_lookups(net);
-+}
-+
- static void __net_exit ip6table_nat_net_exit(struct net *net)
- {
- 	if (!net->ipv6.ip6table_nat)
- 		return;
--	ip6t_nat_unregister_lookups(net);
--	ip6t_unregister_table(net, net->ipv6.ip6table_nat, NULL);
-+	ip6t_unregister_table_exit(net, net->ipv6.ip6table_nat);
- 	net->ipv6.ip6table_nat = NULL;
- }
- 
- static struct pernet_operations ip6table_nat_net_ops = {
-+	.pre_exit = ip6table_nat_net_pre_exit,
- 	.exit	= ip6table_nat_net_exit,
- };
- 
-diff --git a/net/ipv6/netfilter/ip6table_raw.c b/net/ipv6/netfilter/ip6table_raw.c
-index a22100b..8f9e742 100644
---- a/net/ipv6/netfilter/ip6table_raw.c
-+++ b/net/ipv6/netfilter/ip6table_raw.c
-@@ -66,15 +66,23 @@ static int __net_init ip6table_raw_table_init(struct net *net)
- 	return ret;
- }
- 
-+static void __net_exit ip6table_raw_net_pre_exit(struct net *net)
-+{
-+	if (net->ipv6.ip6table_raw)
-+		ip6t_unregister_table_pre_exit(net, net->ipv6.ip6table_raw,
-+					       rawtable_ops);
-+}
-+
- static void __net_exit ip6table_raw_net_exit(struct net *net)
- {
- 	if (!net->ipv6.ip6table_raw)
- 		return;
--	ip6t_unregister_table(net, net->ipv6.ip6table_raw, rawtable_ops);
-+	ip6t_unregister_table_exit(net, net->ipv6.ip6table_raw);
- 	net->ipv6.ip6table_raw = NULL;
- }
- 
- static struct pernet_operations ip6table_raw_net_ops = {
-+	.pre_exit = ip6table_raw_net_pre_exit,
- 	.exit = ip6table_raw_net_exit,
- };
- 
-diff --git a/net/ipv6/netfilter/ip6table_security.c b/net/ipv6/netfilter/ip6table_security.c
-index a74335f..5e8c48f 100644
---- a/net/ipv6/netfilter/ip6table_security.c
-+++ b/net/ipv6/netfilter/ip6table_security.c
-@@ -61,15 +61,23 @@ static int __net_init ip6table_security_table_init(struct net *net)
- 	return ret;
- }
- 
-+static void __net_exit ip6table_security_net_pre_exit(struct net *net)
-+{
-+	if (net->ipv6.ip6table_security)
-+		ip6t_unregister_table_pre_exit(net, net->ipv6.ip6table_security,
-+					       sectbl_ops);
-+}
-+
- static void __net_exit ip6table_security_net_exit(struct net *net)
- {
- 	if (!net->ipv6.ip6table_security)
- 		return;
--	ip6t_unregister_table(net, net->ipv6.ip6table_security, sectbl_ops);
-+	ip6t_unregister_table_exit(net, net->ipv6.ip6table_security);
- 	net->ipv6.ip6table_security = NULL;
- }
- 
- static struct pernet_operations ip6table_security_net_ops = {
-+	.pre_exit = ip6table_security_net_pre_exit,
- 	.exit = ip6table_security_net_exit,
- };
- 
--- 
-1.8.3.1
-
+Am 22.06.20 um 13:37 schrieb Jan Engelhardt:
+> 
+> On Monday 2020-06-15 01:34, Alexander A. Klimov wrote:
+>>>
+>>> A header file rename is no problem. We even have dummy headers
+>> Hmm.. if I understand all of you correctly, David, Stefano, Pablo and Al say
+>> like no, not a good idea, but only you, Jan, say like should be no problem.
+>>
+>> Jan, do you have anything like commit messages in mainline or public emails
+>> from maintainers confirming your opinion?
+> 
+> I had already given the commit with the (email) message:
+> 
+>>> Just look at xt_MARK.h, all it does is include xt_mark.h. Cf.
+>>> 28b949885f80efb87d7cebdcf879c99db12c37bd .
+In that commit no .h file disappeared.
