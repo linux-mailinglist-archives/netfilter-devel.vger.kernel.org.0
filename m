@@ -2,109 +2,115 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A21F205294
-	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Jun 2020 14:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6D820680D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2020 01:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732605AbgFWMez (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 23 Jun 2020 08:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36846 "EHLO
+        id S2388526AbgFWXJQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 23 Jun 2020 19:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732574AbgFWMet (ORCPT
+        with ESMTP id S2388520AbgFWXJP (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 23 Jun 2020 08:34:49 -0400
-Received: from janet.servers.dxld.at (janet.servers.dxld.at [IPv6:2a01:4f8:201:89f4::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65163C061796
-        for <netfilter-devel@vger.kernel.org>; Tue, 23 Jun 2020 05:34:47 -0700 (PDT)
-Received: janet.servers.dxld.at; Tue, 23 Jun 2020 14:34:45 +0200
-From:   =?UTF-8?q?Daniel=20Gr=C3=B6ber?= <dxld@darkboxed.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     =?UTF-8?q?Daniel=20Gr=C3=B6ber?= <dxld@darkboxed.org>
-Subject: [libnf_ct resend PATCH 8/8] Fix buffer overflows in __snprintf_protoinfo* like in *2str fns
-Date:   Tue, 23 Jun 2020 14:34:03 +0200
-Message-Id: <20200623123403.31676-9-dxld@darkboxed.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200623123403.31676-1-dxld@darkboxed.org>
-References: <20200623123403.31676-1-dxld@darkboxed.org>
+        Tue, 23 Jun 2020 19:09:15 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55819C061573;
+        Tue, 23 Jun 2020 16:09:15 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id s10so348814pgm.0;
+        Tue, 23 Jun 2020 16:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=20cLEjzx+rqddBqdsTZakkVLqM0BUzMvNhrL2tJ+gII=;
+        b=KlPx64dLfhlELStyF076Q6a7CuZySJmGtp2w6ls7F7tR0bTGLhaanM9qTH4lMSMsaA
+         MVml2WAFUdZ8/048Z8CjVFkMo6giXT+YLA5rQCtw/P14U/lQF2CXcKQFox/QDS9Bl2a3
+         x5cap1MfS8YJrFaOdPZmCkgrVJZkdu/2ovXEMQyZH5KYFGxzAymmgIU1MY31U16Q9EY7
+         ltgkalC39ECUfvtOEfNntlPMWRD3X2ycTbsdv3lTiGhS8NwwVKvDg5L0Kr3qYE4nY4pt
+         U5eckWy+QJbsJlubFSWWZ48WzLuqWT7dXnDmKYcme8Kc9oDU5VFvPxWNZ3Pro/l3aI+I
+         nYtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=20cLEjzx+rqddBqdsTZakkVLqM0BUzMvNhrL2tJ+gII=;
+        b=so974Yczq1kuBgrLkBmNbsnj3l7t0J0Ob+9Qm4TNaFgvtEYrwlflWMUM/1ZFLT8r4u
+         r1DWmxFFgTEY78D222HRr0JuV0pb/qCu9Cwq3COn7psnGEctufIji7fPjNj1jbgN5sI0
+         8Z+E0B/qHwGVPHc+Nq/p1F7Lo928bn8Sl5XpTu1t+Z031BcnC0GwImnCrbwXEx9BNsz6
+         Z8SUGcJ9s6/3uiTjYBTltZ0DxZvHKkTt8RdKSQKd2tcrjovZXCSeuaNRd+Mj82C5hkcB
+         Q4j1fOffYkExvVjPLtlVWUCaHC+vWlA4s/2BA6IXGazXFeDpQBlvt6YAeHZh56bgphFP
+         TcAA==
+X-Gm-Message-State: AOAM533pfZmKe4zyNd9BpimVqXQoPhJ4BB6EgcbLbaM3yublNf1rv432
+        dTsqUY88VZEhPmP7fjiBtkA=
+X-Google-Smtp-Source: ABdhPJxp02Ebd++0Lqh7vNPh/2xotDYYeQSH0iCdYhHZ7H+serJckU6zESKYdpcDWw6FyAOYFxg13w==
+X-Received: by 2002:a63:8c4f:: with SMTP id q15mr17386899pgn.373.1592953754788;
+        Tue, 23 Jun 2020 16:09:14 -0700 (PDT)
+Received: from enonet.tok.corp.google.com ([2401:fa00:8f:2:8813:ed8e:96be:b3c7])
+        by smtp.gmail.com with ESMTPSA id ev20sm3322314pjb.8.2020.06.23.16.09.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 16:09:14 -0700 (PDT)
+From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
+To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        Netfilter Development Mailing List 
+        <netfilter-devel@vger.kernel.org>
+Subject: [PATCH iptables] libxtables/xtables.c - compiler warning fixes for NO_SHARED_LIBS
+Date:   Tue, 23 Jun 2020 16:09:02 -0700
+Message-Id: <20200623230902.236511-1-zenczykowski@gmail.com>
+X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-score: -0.0
-X-Spam-bar: /
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Daniel Gröber <dxld@darkboxed.org>
----
- src/conntrack/snprintf_default.c | 42 +++++++++++++++++++++++---------
- 1 file changed, 30 insertions(+), 12 deletions(-)
+From: Maciej Żenczykowski <maze@google.com>
 
-diff --git a/src/conntrack/snprintf_default.c b/src/conntrack/snprintf_default.c
-index 8e3d41c..89eee8f 100644
---- a/src/conntrack/snprintf_default.c
-+++ b/src/conntrack/snprintf_default.c
-@@ -36,30 +36,48 @@ static int __snprintf_protoinfo(char *buf,
- 				unsigned int len,
- 				const struct nf_conntrack *ct)
+Fixes two issues with NO_SHARED_LIBS:
+ - #include <dlfcn.h> is ifdef'ed out and thus dlclose()
+   triggers an undeclared function compiler warning
+ - dlreg_add() is unused and thus triggers an unused
+   function warning
+
+Test: builds without warnings
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+---
+ libxtables/xtables.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/libxtables/xtables.c b/libxtables/xtables.c
+index 7fe42580..8907ba20 100644
+--- a/libxtables/xtables.c
++++ b/libxtables/xtables.c
+@@ -206,6 +206,7 @@ struct xtables_target *xtables_targets;
+ static bool xtables_fully_register_pending_match(struct xtables_match *me);
+ static bool xtables_fully_register_pending_target(struct xtables_target *me);
+ 
++#ifndef NO_SHARED_LIBS
+ /* registry for loaded shared objects to close later */
+ struct dlreg {
+ 	struct dlreg *next;
+@@ -237,6 +238,7 @@ static void dlreg_free(void)
+ 		dlreg = next;
+ 	}
+ }
++#endif
+ 
+ void xtables_init(void)
  {
--	return snprintf(buf, len, "%s ",
--			ct->protoinfo.tcp.state < TCP_CONNTRACK_MAX ?
--			states[ct->protoinfo.tcp.state] :
--			states[TCP_CONNTRACK_NONE]);
-+        const char *str = NULL;
-+        uint8_t state = ct->protoinfo.tcp.state;
-+
-+        if(state < asizeof(states))
-+                str = states[state];
-+
-+        if(str == NULL)
-+                str = states[TCP_CONNTRACK_NONE];
-+
-+	return snprintf(buf, len, "%s ", str);
+@@ -267,7 +269,9 @@ void xtables_init(void)
+ 
+ void xtables_fini(void)
+ {
++#ifndef NO_SHARED_LIBS
+ 	dlreg_free();
++#endif
  }
  
- static int __snprintf_protoinfo_sctp(char *buf,
- 				     unsigned int len,
- 				     const struct nf_conntrack *ct)
- {
--	return snprintf(buf, len, "%s ",
--			ct->protoinfo.sctp.state < SCTP_CONNTRACK_MAX ?
--			sctp_states[ct->protoinfo.sctp.state] :
--			sctp_states[SCTP_CONNTRACK_NONE]);
-+        const char *str = NULL;
-+        uint8_t state = ct->protoinfo.sctp.state;
-+
-+        if(state < asizeof(sctp_states))
-+                str = sctp_states[state];
-+
-+        if(str == NULL)
-+                str = sctp_states[SCTP_CONNTRACK_NONE];
-+
-+	return snprintf(buf, len, "%s ", str);
- }
- 
- static int __snprintf_protoinfo_dccp(char *buf,
- 				     unsigned int len,
- 				     const struct nf_conntrack *ct)
- {
--	return snprintf(buf, len, "%s ",
--			ct->protoinfo.dccp.state < DCCP_CONNTRACK_MAX ?
--			sctp_states[ct->protoinfo.dccp.state] :
--			sctp_states[DCCP_CONNTRACK_NONE]);
-+        const char *str = NULL;
-+        uint8_t state = ct->protoinfo.dccp.state;
-+
-+        if(state < asizeof(dccp_states))
-+                str = dccp_states[state];
-+
-+        if(str == NULL)
-+                str = dccp_states[SCTP_CONNTRACK_NONE];
-+
-+	return snprintf(buf, len, "%s ", str);
- }
- 
- static int __snprintf_address_ipv4(char *buf,
+ void xtables_set_nfproto(uint8_t nfproto)
 -- 
-2.20.1
+2.27.0.111.gc72c7da667-goog
 
