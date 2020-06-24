@@ -2,155 +2,89 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C646E20748F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2020 15:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501CF207880
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2020 18:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390179AbgFXNaO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Jun 2020 09:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41248 "EHLO
+        id S2404699AbgFXQOC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Jun 2020 12:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389616AbgFXNaN (ORCPT
+        with ESMTP id S2404235AbgFXQOC (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Jun 2020 09:30:13 -0400
-Received: from janet.servers.dxld.at (janet.servers.dxld.at [IPv6:2a01:4f8:201:89f4::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69263C061573
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Jun 2020 06:30:13 -0700 (PDT)
-Received: janet.servers.dxld.at; Wed, 24 Jun 2020 15:30:11 +0200
-From:   =?UTF-8?q?Daniel=20Gr=C3=B6ber?= <dxld@darkboxed.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [libnf_ct PATCH v2 9/9] Fix buffer overflows in __snprintf_protoinfo* like in *2str fns
-Date:   Wed, 24 Jun 2020 15:30:05 +0200
-Message-Id: <20200624133005.22046-9-dxld@darkboxed.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200624133005.22046-1-dxld@darkboxed.org>
-References: <20200624133005.22046-1-dxld@darkboxed.org>
+        Wed, 24 Jun 2020 12:14:02 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55344C061573;
+        Wed, 24 Jun 2020 09:14:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=90OlxAKKJk4MpfGF1wAK+VcXxFJhMFQm3EERw9Z5SnM=; b=gY7cW0jyIntr1TMC49eyr8618s
+        pp7PTXnQGIfLOzJhZrUt7AKPtN7e5veG32FkbWOnsBdcKISt7caT3QrJqO3tXiLzLW8JrImMsZcpo
+        4Pv1tVxQ5hc0Dmk763ZRBduhuQC4nmmuM1MCjYAIisGws+cWSdZO4S4c8SpwJ2Aup5MKRG2xovdEf
+        lU+I6pL16Qw44QQ/sy10leiibrFdZRFXCwMyvqVymtLmW1WXuZC/dD8mz3KgIy+vowJ4+6qHsKEv1
+        tMLqzPy0Y8NscRvPZqg7+4Ng62bVC1ovT3Evc/wvkJoJexju596z3TJ2tEzxsFjGBrHi6MGracAqG
+        eS1my67g==;
+Received: from [2001:4bb8:180:a3:5c7c:8955:539d:955b] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jo81p-0005xR-56; Wed, 24 Jun 2020 16:13:37 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: clean up kernel_{read,write} & friends v5
+Date:   Wed, 24 Jun 2020 18:13:21 +0200
+Message-Id: <20200624161335.1810359-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-score: -0.0
-X-Spam-bar: /
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Daniel Gröber <dxld@darkboxed.org>
----
- src/conntrack/snprintf_default.c | 54 +++++++++++++++++++++++---------
- 1 file changed, 39 insertions(+), 15 deletions(-)
+Hi Al,
 
-diff --git a/src/conntrack/snprintf_default.c b/src/conntrack/snprintf_default.c
-index d18d2f2..467f4a8 100644
---- a/src/conntrack/snprintf_default.c
-+++ b/src/conntrack/snprintf_default.c
-@@ -15,6 +15,9 @@ static int __snprintf_l3protocol(char *buf,
- {
- 	uint8_t num = ct->head.orig.l3protonum;
- 
-+	if (!test_bit(ATTR_ORIG_L3PROTO, ct->head.set))
-+		return -1;
-+
- 	return snprintf(buf, len, "%-8s %u ", __l3proto2str(num), num);
- }
- 
-@@ -24,6 +27,9 @@ int __snprintf_protocol(char *buf,
- {
- 	uint8_t num = ct->head.orig.protonum;
- 
-+	if (!test_bit(ATTR_ORIG_L4PROTO, ct->head.set))
-+		return -1;
-+
- 	return snprintf(buf, len, "%-8s %u ", __proto2str(num), num);
- }
- 
-@@ -38,30 +44,48 @@ static int __snprintf_protoinfo(char *buf,
- 				unsigned int len,
- 				const struct nf_conntrack *ct)
- {
--	return snprintf(buf, len, "%s ",
--			ct->protoinfo.tcp.state < TCP_CONNTRACK_MAX ?
--			states[ct->protoinfo.tcp.state] :
--			states[TCP_CONNTRACK_NONE]);
-+	const char *str = NULL;
-+	uint8_t state = ct->protoinfo.tcp.state;
-+
-+	if (state < ARRAY_SIZE(states))
-+		str = states[state];
-+
-+	if (str == NULL)
-+		str = states[TCP_CONNTRACK_NONE];
-+
-+	return snprintf(buf, len, "%s ", str);
- }
- 
- static int __snprintf_protoinfo_sctp(char *buf,
- 				     unsigned int len,
- 				     const struct nf_conntrack *ct)
- {
--	return snprintf(buf, len, "%s ",
--			ct->protoinfo.sctp.state < SCTP_CONNTRACK_MAX ?
--			sctp_states[ct->protoinfo.sctp.state] :
--			sctp_states[SCTP_CONNTRACK_NONE]);
-+	const char *str = NULL;
-+	uint8_t state = ct->protoinfo.sctp.state;
-+
-+	if (state < ARRAY_SIZE(sctp_states))
-+		str = sctp_states[state];
-+
-+	if (str == NULL)
-+		str = sctp_states[SCTP_CONNTRACK_NONE];
-+
-+	return snprintf(buf, len, "%s ", str);
- }
- 
- static int __snprintf_protoinfo_dccp(char *buf,
- 				     unsigned int len,
- 				     const struct nf_conntrack *ct)
- {
--	return snprintf(buf, len, "%s ",
--			ct->protoinfo.dccp.state < DCCP_CONNTRACK_MAX ?
--			sctp_states[ct->protoinfo.dccp.state] :
--			sctp_states[DCCP_CONNTRACK_NONE]);
-+	const char *str = NULL;
-+	uint8_t state = ct->protoinfo.dccp.state;
-+
-+	if (state < ARRAY_SIZE(dccp_states))
-+		str = dccp_states[state];
-+
-+	if (str == NULL)
-+		str = dccp_states[SCTP_CONNTRACK_NONE];
-+
-+	return snprintf(buf, len, "%s ", str);
- }
- 
- static int __snprintf_address_ipv4(char *buf,
-@@ -134,7 +158,7 @@ int __snprintf_address(char *buf,
- 	return size;
- }
- 
--int __snprintf_proto(char *buf, 
-+int __snprintf_proto(char *buf,
- 		     unsigned int len,
- 		     const struct __nfct_tuple *tuple)
- {
-@@ -197,7 +221,7 @@ static int __snprintf_status_not_seen_reply(char *buf,
- 					    const struct nf_conntrack *ct)
- {
- 	int size = 0;
--	
-+
-         if (!(ct->status & IPS_SEEN_REPLY))
-                 size = snprintf(buf, len, "[UNREPLIED] ");
- 
-@@ -345,7 +369,7 @@ __snprintf_clabels(char *buf, unsigned int len,
- 	return size;
- }
- 
--int __snprintf_conntrack_default(char *buf, 
-+int __snprintf_conntrack_default(char *buf,
- 				 unsigned int len,
- 				 const struct nf_conntrack *ct,
- 				 unsigned int msg_type,
--- 
-2.20.1
+this series fixes a few issues and cleans up the helpers that read from
+or write to kernel space buffers, and ensures that we don't change the
+address limit if we are using the ->read_iter and ->write_iter methods
+that don't need the changed address limit.
 
+I did not add your suggested comments on the instances using
+uaccess_kernel as all of them already have comments.  If you have
+anything better in mind feel free to throw in additional comments.
+
+
+Changes since v4:
+ - warn on calling __kernel_write on files not open for write
+ - add a FMODE_READ check and warning in __kernel_read
+ - add a new patch to remove kernel_readv
+ - stop preferring the iter variants if normal read/write is
+   present
+
+Changes since v3:
+ - keep call_read_iter/call_write_iter for now
+ - don't modify an existing long line
+ - update a change log
+
+Changes since v2:
+ - picked up a few ACKs
+
+Changes since v1:
+ - __kernel_write must not take sb_writers
+ - unexport __kernel_write
+
+Diffstat:
+ fs/autofs/waitq.c            |    2 
+ fs/cachefiles/rdwr.c         |    2 
+ fs/read_write.c              |  171 ++++++++++++++++++++++++++-----------------
+ fs/splice.c                  |   53 +++----------
+ include/linux/fs.h           |    4 -
+ net/bpfilter/bpfilter_kern.c |    2 
+ security/integrity/iint.c    |   14 ---
+ 7 files changed, 125 insertions(+), 123 deletions(-)
