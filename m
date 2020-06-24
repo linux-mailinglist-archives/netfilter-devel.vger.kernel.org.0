@@ -2,75 +2,116 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7E3206816
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2020 01:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C92206916
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Jun 2020 02:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388570AbgFWXLt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 23 Jun 2020 19:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
+        id S2388169AbgFXAfL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 23 Jun 2020 20:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387603AbgFWXLs (ORCPT
+        with ESMTP id S2388165AbgFXAfJ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 23 Jun 2020 19:11:48 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51594C061573
-        for <netfilter-devel@vger.kernel.org>; Tue, 23 Jun 2020 16:11:48 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id k23so91278iom.10
-        for <netfilter-devel@vger.kernel.org>; Tue, 23 Jun 2020 16:11:48 -0700 (PDT)
+        Tue, 23 Jun 2020 20:35:09 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CC9C061755
+        for <netfilter-devel@vger.kernel.org>; Tue, 23 Jun 2020 17:35:08 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id cy7so173176edb.5
+        for <netfilter-devel@vger.kernel.org>; Tue, 23 Jun 2020 17:35:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wr7D9qr23jJoi0F0i5hYffC0PVGDdnNDhckq1mg1t2s=;
-        b=OSNwLeemY9rtEB1iTQWkQR68Anwn6/4GraoyNdS+hChQUBdhrOrB2Q+K3/x6FFs8Lr
-         bHYWu3UAtEa/gmj9j8DcTtaWQ4bbz/jNTZUWrfLVxZ7kbkj9LLvw6XpaJEx00K79asfu
-         x8C0qdmkWnNHdN23nIjkGQO5q55aRKaV+t3mXi5UnGhwbTAh4AlmuL03ShDBMM7itPXH
-         zUWaHKKKkaRZDNT2aADwPsqrSepK1KNFuuMf9pryMFr/t5KvSrofaH2+e+6C4vf84nYW
-         2+bFF+oWjejxa+v0X+O5fbcfjsgAtPLA/4NlW9ABOp6Zk/+9CTnkTp7RS8Vp5NlqKZkj
-         u8jw==
+        bh=+/TMyKbqoSzMGZ/AAiVOjNfJfvqMvVU1A+eHQRRA5RQ=;
+        b=Il6fK4QN3tYHRegbTX3T3xxgdNRK5bhnoaFX2nMUJ+Y1ejGKz2mICnpBctazU0eFYI
+         +6WYLhCDE5IutdeL6ipgrxuodVn0WCfWMCh+6ZjduvztoIRvdYwvs+tLmVdloyVBKiKd
+         Xd+vTYw8xNdYoCfPjbV2eezQeBcRSM44RaXGj8NkQxehNrlsHYyXRmkwpyHmy1siSgO6
+         ZFYlVPr2FiXxrnQJ36LJoAm40RFBS9bsdAG8NX38Q6o9LJ9GpiteFIUbzRViVzxjz2QG
+         dtjlJa9eIfNen/2eoSRu75VwCM/b6Rv/nw0czAWfLNCBBqW2ylJSvPSws70uAz6eaETU
+         GddA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wr7D9qr23jJoi0F0i5hYffC0PVGDdnNDhckq1mg1t2s=;
-        b=nsSWVI3amGnJIBi9ZPFvtDf1nE11HVEoOxsWZfhtb7jNS5t0Mvj5/TsT8Mx7HYeF0+
-         86SPRgqVvNK9uRD9yccJAhbuUtcEb74i0FKkOkZk5qm4fDJxdUWWNJsvrAWgknLzbgu5
-         vt+K3ODiRl+nudWfvm6zbJVnZH/ezZrA9ds4KEetV+dtkxKXD8J1zqY5USD/1yvWI0ym
-         GN3uo7r8T1MEw/iJWQJPTHtLhUDXbBGZpyXHJ00mQHZRO7TVDjz/dA75lYIW9Zm70S0q
-         vSxG7rT2LR2cuB62RFKjjv82CXZkFbarY8B6rp1uAbSumQn70Tm9jbkH3jJEyKkMAT/k
-         YR2w==
-X-Gm-Message-State: AOAM531RfDdiAQVErj/nLYThyRQwNYUvDKt6N0BPWsrBsWphW3XQEXT/
-        eZPx0lvTnyROWpMREWnvPXSReXlmqvY41vrgLBN5oQ==
-X-Google-Smtp-Source: ABdhPJweyGcVWHbG+ZRb3nEK/m//+hAK2CbPENKG+Ihf6r3tV2OVc+9EMa1MWUtSLCY9CJ5B/KcILeuy8o6m/scSKaE=
-X-Received: by 2002:a02:3c08:: with SMTP id m8mr1151969jaa.107.1592953907499;
- Tue, 23 Jun 2020 16:11:47 -0700 (PDT)
+        bh=+/TMyKbqoSzMGZ/AAiVOjNfJfvqMvVU1A+eHQRRA5RQ=;
+        b=dy/qFGhq5f7F2tdE3tOHEq0e+BIdni3GMyOcygpBeeG9O+LnKBMGbwe1sZ2g61splq
+         AbQQdQ6XYQzYs65vzyt9uh/1b6iB7NH+f3ru9l6og2AnDkECWjy1CXpQhpHtn4vFUtol
+         5Y6tqoTb7tqKX0/YgkHqzqxKDls7XijBRTUhnbtCS32VDOrWyGdt9SXJfzyefZbykTnf
+         Z+QLA+KV5bZ4JOQceY109KYCa1xZa8MeXzOlei20RdCa6brnpOCcTGcm5bh3B8ry80JY
+         CaV7hWFd6MWT6Q8WliX4wuQR21A/1223p7jePjT5TpP7Du1rjKjmIbfaRtOGT/gzw0c+
+         vn4A==
+X-Gm-Message-State: AOAM533noX+c6lMMB3WMYMPovc1zfh3uDnR4O5D1l5lhFdNAAzvFm9pS
+        PrHngdQWgu/rXbADUH68CLJal5JpFxLxI8Zi/i/Q
+X-Google-Smtp-Source: ABdhPJzCoP7TVvW+uzKj9SzidO2EBCvvtbfilZfpp8veq16/F/lTMvRYgUtkcV+HaRYoxjS+CxUYyH2LxC0Ele3/EA8=
+X-Received: by 2002:aa7:da46:: with SMTP id w6mr23979297eds.31.1592958906753;
+ Tue, 23 Jun 2020 17:35:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200623230902.236511-1-zenczykowski@gmail.com>
-In-Reply-To: <20200623230902.236511-1-zenczykowski@gmail.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Date:   Tue, 23 Jun 2020 16:11:36 -0700
-Message-ID: <CANP3RGfGE2PnaZUJ0Yz79sUf=zsQ1hjxHWhP8pEvQD+y2BWq5g@mail.gmail.com>
-Subject: Re: [PATCH iptables] libxtables/xtables.c - compiler warning fixes
- for NO_SHARED_LIBS
-To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Netfilter Development Mailing List 
-        <netfilter-devel@vger.kernel.org>
+References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
+In-Reply-To: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 23 Jun 2020 20:34:55 -0400
+Message-ID: <CAHC9VhT_dzkoOuoQF5-D9KFDiAUUjX2UJJbKPWAeXkf7fddKsA@mail.gmail.com>
+Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change events
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, sgrubb@redhat.com,
+        Ondrej Mosnacek <omosnace@redhat.com>, fw@strlen.de,
+        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
+        tgraf@infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
->  void xtables_fini(void)
->  {
-> +#ifndef NO_SHARED_LIBS
->         dlreg_free();
-> +#endif
->  }
+On Thu, Jun 4, 2020 at 9:21 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+>
+> iptables, ip6tables, arptables and ebtables table registration,
+> replacement and unregistration configuration events are logged for the
+> native (legacy) iptables setsockopt api, but not for the
+> nftables netlink api which is used by the nft-variant of iptables in
+> addition to nftables itself.
+>
+> Add calls to log the configuration actions in the nftables netlink api.
+>
+> This uses the same NETFILTER_CFG record format but overloads the table
+> field.
+>
+>   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.878:162) : table=?:0;?:0 family=unspecified entries=2 op=nft_register_gen pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+>   ...
+>   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.878:162) : table=firewalld:1;?:0 family=inet entries=0 op=nft_register_table pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+>   ...
+>   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;filter_FORWARD:85 family=inet entries=8 op=nft_register_chain pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+>   ...
+>   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;filter_FORWARD:85 family=inet entries=101 op=nft_register_rule pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+>   ...
+>   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;__set0:87 family=inet entries=87 op=nft_register_setelem pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+>   ...
+>   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;__set0:87 family=inet entries=0 op=nft_register_set pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+>
+> For further information please see issue
+> https://github.com/linux-audit/audit-kernel/issues/124
+>
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> ---
+> Changelog:
+> v3:
+> - inline message type rather than table
+>
+> v2:
+> - differentiate between xtables and nftables
+> - add set, setelem, obj, flowtable, gen
+> - use nentries field as appropriate per type
+> - overload the "tables" field with table handle and chain/set/flowtable
+>
+>  include/linux/audit.h         |  18 ++++++++
+>  kernel/auditsc.c              |  24 ++++++++--
+>  net/netfilter/nf_tables_api.c | 103 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 142 insertions(+), 3 deletions(-)
 
-Note: I also considered just adding an empty 'void dlreg_free(void)
-{}' function in the NO_SHARED_LIBS case, but that doesn't seem to be
-the prevalent style...
+I'm not seeing any additional comments from the netfilter folks so
+I've gone ahead and merged this into audit/next.  Thanks Richard.
+
+-- 
+paul moore
+www.paul-moore.com
