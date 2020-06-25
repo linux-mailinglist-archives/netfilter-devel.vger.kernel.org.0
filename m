@@ -2,269 +2,65 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CEF120A4EE
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2020 20:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623A320A4FC
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2020 20:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406199AbgFYS0v (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 25 Jun 2020 14:26:51 -0400
-Received: from correo.us.es ([193.147.175.20]:33602 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406219AbgFYS0u (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 25 Jun 2020 14:26:50 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 03361FC60C
-        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2020 20:26:48 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id E924DDA84D
-        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2020 20:26:47 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id DEF1EDA840; Thu, 25 Jun 2020 20:26:47 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-106.7 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        LOTS_OF_MONEY,SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 949F0DA78E;
-        Thu, 25 Jun 2020 20:26:45 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 25 Jun 2020 20:26:45 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 631AE42EE38F;
-        Thu, 25 Jun 2020 20:26:45 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH 7/7] selftests: netfilter: add test case for conntrack helper assignment
-Date:   Thu, 25 Jun 2020 20:26:35 +0200
-Message-Id: <20200625182635.1958-8-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200625182635.1958-1-pablo@netfilter.org>
-References: <20200625182635.1958-1-pablo@netfilter.org>
+        id S2404270AbgFYS2L (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 25 Jun 2020 14:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404154AbgFYS2L (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 25 Jun 2020 14:28:11 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAAEC08C5C1
+        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2020 11:28:11 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1joWbZ-0000dw-RF; Thu, 25 Jun 2020 20:28:09 +0200
+Date:   Thu, 25 Jun 2020 20:28:09 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf-next 0/5] support for anonymous non-base chains in
+ nftables
+Message-ID: <20200625182809.GZ26990@breakpoint.cc>
+References: <20200625181651.1481-1-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200625181651.1481-1-pablo@netfilter.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> This patchset extends the nftables netlink API to support for anonymous
+> non-base chains. Anonymous non-base chains have two properties:
+> 
+> 1) The kernel dynamically allocates the (internal) chain name.
+> 2) If the rule that refers to the anonymous chain is removed, then the
+>    anonymous chain and its content is also released.
+> 
+> This new infrastructure allows for the following syntax from userspace:
+> 
+>  table inet x {
+>         chain y {
+>                 type filter hook input priority 0;
+>                 tcp dport 22 chain {
+>                         ip saddr { 127.0.0.0/8, 172.23.0.0/16, 192.168.13.0/24 } accept
+>                         ip6 saddr ::1/128 accept;
+>                 }
+>         }
+>  }
 
-check that 'nft ... ct helper set <foo>' works:
- 1. configure ftp helper via nft and assign it to
-    connections on port 2121
- 2. check with 'conntrack -L' that the next connection
-    has the ftp helper attached to it.
+What about goto semantics?
 
-Also add a test for auto-assign (old behaviour).
+Would it make sense to change this to
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- tools/testing/selftests/netfilter/Makefile    |   2 +-
- .../netfilter/nft_conntrack_helper.sh         | 175 ++++++++++++++++++
- 2 files changed, 176 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/netfilter/nft_conntrack_helper.sh
+tcp dport 22 jump chain {
+	 ...
 
-diff --git a/tools/testing/selftests/netfilter/Makefile b/tools/testing/selftests/netfilter/Makefile
-index 9c0f758310fe..a179f0dca8ce 100644
---- a/tools/testing/selftests/netfilter/Makefile
-+++ b/tools/testing/selftests/netfilter/Makefile
-@@ -3,7 +3,7 @@
- 
- TEST_PROGS := nft_trans_stress.sh nft_nat.sh bridge_brouter.sh \
- 	conntrack_icmp_related.sh nft_flowtable.sh ipvs.sh \
--	nft_concat_range.sh \
-+	nft_concat_range.sh nft_conntrack_helper.sh \
- 	nft_queue.sh
- 
- LDLIBS = -lmnl
-diff --git a/tools/testing/selftests/netfilter/nft_conntrack_helper.sh b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
-new file mode 100755
-index 000000000000..edf0a48da6bf
---- /dev/null
-+++ b/tools/testing/selftests/netfilter/nft_conntrack_helper.sh
-@@ -0,0 +1,175 @@
-+#!/bin/bash
-+#
-+# This tests connection tracking helper assignment:
-+# 1. can attach ftp helper to a connection from nft ruleset.
-+# 2. auto-assign still works.
-+#
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+ret=0
-+
-+sfx=$(mktemp -u "XXXXXXXX")
-+ns1="ns1-$sfx"
-+ns2="ns2-$sfx"
-+testipv6=1
-+
-+cleanup()
-+{
-+	ip netns del ${ns1}
-+	ip netns del ${ns2}
-+}
-+
-+nft --version > /dev/null 2>&1
-+if [ $? -ne 0 ];then
-+	echo "SKIP: Could not run test without nft tool"
-+	exit $ksft_skip
-+fi
-+
-+ip -Version > /dev/null 2>&1
-+if [ $? -ne 0 ];then
-+	echo "SKIP: Could not run test without ip tool"
-+	exit $ksft_skip
-+fi
-+
-+conntrack -V > /dev/null 2>&1
-+if [ $? -ne 0 ];then
-+	echo "SKIP: Could not run test without conntrack tool"
-+	exit $ksft_skip
-+fi
-+
-+which nc >/dev/null 2>&1
-+if [ $? -ne 0 ];then
-+	echo "SKIP: Could not run test without netcat tool"
-+	exit $ksft_skip
-+fi
-+
-+trap cleanup EXIT
-+
-+ip netns add ${ns1}
-+ip netns add ${ns2}
-+
-+ip link add veth0 netns ${ns1} type veth peer name veth0 netns ${ns2} > /dev/null 2>&1
-+if [ $? -ne 0 ];then
-+    echo "SKIP: No virtual ethernet pair device support in kernel"
-+    exit $ksft_skip
-+fi
-+
-+ip -net ${ns1} link set lo up
-+ip -net ${ns1} link set veth0 up
-+
-+ip -net ${ns2} link set lo up
-+ip -net ${ns2} link set veth0 up
-+
-+ip -net ${ns1} addr add 10.0.1.1/24 dev veth0
-+ip -net ${ns1} addr add dead:1::1/64 dev veth0
-+
-+ip -net ${ns2} addr add 10.0.1.2/24 dev veth0
-+ip -net ${ns2} addr add dead:1::2/64 dev veth0
-+
-+load_ruleset_family() {
-+	local family=$1
-+	local ns=$2
-+
-+ip netns exec ${ns} nft -f - <<EOF
-+table $family raw {
-+	ct helper ftp {
-+             type "ftp" protocol tcp
-+        }
-+	chain pre {
-+		type filter hook prerouting priority 0; policy accept;
-+		tcp dport 2121 ct helper set "ftp"
-+	}
-+	chain output {
-+		type filter hook output priority 0; policy accept;
-+		tcp dport 2121 ct helper set "ftp"
-+	}
-+}
-+EOF
-+	return $?
-+}
-+
-+check_for_helper()
-+{
-+	local netns=$1
-+	local message=$2
-+	local port=$3
-+
-+	ip netns exec ${netns} conntrack -L -p tcp --dport $port 2> /dev/null |grep -q 'helper=ftp'
-+	if [ $? -ne 0 ] ; then
-+		echo "FAIL: ${netns} did not show attached helper $message" 1>&2
-+		ret=1
-+	fi
-+
-+	echo "PASS: ${netns} connection on port $port has ftp helper attached" 1>&2
-+	return 0
-+}
-+
-+test_helper()
-+{
-+	local port=$1
-+	local msg=$2
-+
-+	sleep 3 | ip netns exec ${ns2} nc -w 2 -l -p $port > /dev/null &
-+
-+	sleep 1
-+	sleep 1 | ip netns exec ${ns1} nc -w 2 10.0.1.2 $port > /dev/null &
-+
-+	check_for_helper "$ns1" "ip $msg" $port
-+	check_for_helper "$ns2" "ip $msg" $port
-+
-+	wait
-+
-+	if [ $testipv6 -eq 0 ] ;then
-+		return 0
-+	fi
-+
-+	ip netns exec ${ns1} conntrack -F 2> /dev/null
-+	ip netns exec ${ns2} conntrack -F 2> /dev/null
-+
-+	sleep 3 | ip netns exec ${ns2} nc -w 2 -6 -l -p $port > /dev/null &
-+
-+	sleep 1
-+	sleep 1 | ip netns exec ${ns1} nc -w 2 -6 dead:1::2 $port > /dev/null &
-+
-+	check_for_helper "$ns1" "ipv6 $msg" $port
-+	check_for_helper "$ns2" "ipv6 $msg" $port
-+
-+	wait
-+}
-+
-+load_ruleset_family ip ${ns1}
-+if [ $? -ne 0 ];then
-+	echo "FAIL: ${ns1} cannot load ip ruleset" 1>&2
-+	exit 1
-+fi
-+
-+load_ruleset_family ip6 ${ns1}
-+if [ $? -ne 0 ];then
-+	echo "SKIP: ${ns1} cannot load ip6 ruleset" 1>&2
-+	testipv6=0
-+fi
-+
-+load_ruleset_family inet ${ns2}
-+if [ $? -ne 0 ];then
-+	echo "SKIP: ${ns1} cannot load inet ruleset" 1>&2
-+	load_ruleset_family ip ${ns2}
-+	if [ $? -ne 0 ];then
-+		echo "FAIL: ${ns2} cannot load ip ruleset" 1>&2
-+		exit 1
-+	fi
-+
-+	if [ $testipv6 -eq 1 ] ;then
-+		load_ruleset_family ip6 ${ns2}
-+		if [ $? -ne 0 ];then
-+			echo "FAIL: ${ns2} cannot load ip6 ruleset" 1>&2
-+			exit 1
-+		fi
-+	fi
-+fi
-+
-+test_helper 2121 "set via ruleset"
-+ip netns exec ${ns1} sysctl -q 'net.netfilter.nf_conntrack_helper=1'
-+ip netns exec ${ns2} sysctl -q 'net.netfilter.nf_conntrack_helper=1'
-+test_helper 21 "auto-assign"
-+
-+exit $ret
--- 
-2.20.1
-
+so this could be changed to support 'tcp dport 22 goto chain {' as well?
