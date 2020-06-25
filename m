@@ -2,45 +2,47 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D71F20A49E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2020 20:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D7C20A4A0
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 Jun 2020 20:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389693AbgFYSQ7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 25 Jun 2020 14:16:59 -0400
-Received: from correo.us.es ([193.147.175.20]:58808 "EHLO mail.us.es"
+        id S2389860AbgFYSRA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 25 Jun 2020 14:17:00 -0400
+Received: from correo.us.es ([193.147.175.20]:58810 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727878AbgFYSQ7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        id S2389473AbgFYSQ7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
         Thu, 25 Jun 2020 14:16:59 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 2533FFC529
-        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2020 20:16:57 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 15C18FC54F
+        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2020 20:16:58 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 15FEADA78D
-        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2020 20:16:57 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 05E49DA789
+        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2020 20:16:58 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 15710DA72F; Thu, 25 Jun 2020 20:16:57 +0200 (CEST)
+        id EFC04DA78A; Thu, 25 Jun 2020 20:16:57 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id EEF95DA78D
-        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2020 20:16:54 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id BC2D2DA789
+        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2020 20:16:55 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 25 Jun 2020 20:16:54 +0200 (CEST)
+ Thu, 25 Jun 2020 20:16:55 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from localhost.localdomain (unknown [90.77.255.23])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id D894A42EE395
-        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2020 20:16:54 +0200 (CEST)
+        by entrada.int (Postfix) with ESMTPA id A837442EE393
+        for <netfilter-devel@vger.kernel.org>; Thu, 25 Jun 2020 20:16:55 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next 0/5] support for anonymous non-base chains in nftables
-Date:   Thu, 25 Jun 2020 20:16:46 +0200
-Message-Id: <20200625181651.1481-1-pablo@netfilter.org>
+Subject: [PATCH nf-next 1/5] netfilter: nf_tables: add NFTA_CHAIN_ID attribute
+Date:   Thu, 25 Jun 2020 20:16:47 +0200
+Message-Id: <20200625181651.1481-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200625181651.1481-1-pablo@netfilter.org>
+References: <20200625181651.1481-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: ClamAV using ClamSMTP
@@ -49,69 +51,116 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+This netlink attribute allows you to refer to chains inside a
+transaction as an alternative to the name and the handle. The anonymous
+chain support requires this new chain ID approach.
 
-This patchset extends the nftables netlink API to support for anonymous
-non-base chains. Anonymous non-base chains have two properties:
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ include/net/netfilter/nf_tables.h        |  3 +++
+ include/uapi/linux/netfilter/nf_tables.h |  2 ++
+ net/netfilter/nf_tables_api.c            | 15 ++++++++++++---
+ 3 files changed, 17 insertions(+), 3 deletions(-)
 
-1) The kernel dynamically allocates the (internal) chain name.
-2) If the rule that refers to the anonymous chain is removed, then the
-   anonymous chain and its content is also released.
-
-This new infrastructure allows for the following syntax from userspace:
-
- table inet x {
-        chain y {
-                type filter hook input priority 0;
-                tcp dport 22 chain {
-                        ip saddr { 127.0.0.0/8, 172.23.0.0/16, 192.168.13.0/24 } accept
-                        ip6 saddr ::1/128 accept;
-                }
-        }
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 6f0f6fca9ac3..3e5226684017 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -1433,6 +1433,7 @@ struct nft_trans_chain {
+ 	char				*name;
+ 	struct nft_stats __percpu	*stats;
+ 	u8				policy;
++	u32				chain_id;
+ };
+ 
+ #define nft_trans_chain_update(trans)	\
+@@ -1443,6 +1444,8 @@ struct nft_trans_chain {
+ 	(((struct nft_trans_chain *)trans->data)->stats)
+ #define nft_trans_chain_policy(trans)	\
+ 	(((struct nft_trans_chain *)trans->data)->policy)
++#define nft_trans_chain_id(trans)	\
++	(((struct nft_trans_chain *)trans->data)->chain_id)
+ 
+ struct nft_trans_table {
+ 	bool				update;
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index 4565456c0ef4..477779595b78 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -196,6 +196,7 @@ enum nft_table_attributes {
+  * @NFTA_CHAIN_TYPE: type name of the string (NLA_NUL_STRING)
+  * @NFTA_CHAIN_COUNTERS: counter specification of the chain (NLA_NESTED: nft_counter_attributes)
+  * @NFTA_CHAIN_FLAGS: chain flags
++ * @NFTA_CHAIN_ID: uniquely identifies a chain in a transaction (NLA_U32)
+  */
+ enum nft_chain_attributes {
+ 	NFTA_CHAIN_UNSPEC,
+@@ -209,6 +210,7 @@ enum nft_chain_attributes {
+ 	NFTA_CHAIN_COUNTERS,
+ 	NFTA_CHAIN_PAD,
+ 	NFTA_CHAIN_FLAGS,
++	NFTA_CHAIN_ID,
+ 	__NFTA_CHAIN_MAX
+ };
+ #define NFTA_CHAIN_MAX		(__NFTA_CHAIN_MAX - 1)
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 7647ecfa0d40..650ef0dd0773 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -280,9 +280,15 @@ static struct nft_trans *nft_trans_chain_add(struct nft_ctx *ctx, int msg_type)
+ 	if (trans == NULL)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	if (msg_type == NFT_MSG_NEWCHAIN)
++	if (msg_type == NFT_MSG_NEWCHAIN) {
+ 		nft_activate_next(ctx->net, ctx->chain);
+ 
++		if (ctx->nla[NFTA_CHAIN_ID]) {
++			nft_trans_chain_id(trans) =
++				ntohl(nla_get_be32(ctx->nla[NFTA_CHAIN_ID]));
++		}
++	}
++
+ 	list_add_tail(&trans->list, &ctx->net->nft.commit_list);
+ 	return trans;
  }
-
-The bytecode actually looks like this:
-
-tcp dport 22 chain { ...
-
-  [ meta load l4proto => reg 1 ]
-  [ cmp eq reg 1 0x00000006 ]
-  [ payload load 2b @ transport header + 2 => reg 1 ]
-  [ cmp eq reg 1 0x00001600 ]
-  [ immediate reg 0 jump __chain%llu ]
-
-where the anonymous chain block:
-
-  ip saddr { 127.0.0.0/8, 172.23.0.0/16, 192.168.13.0/24 } accept
-  ip6 saddr ::1/128 accept;
-
-is added to the __chain%llu chain.
-
-The %llu is replaced by a 64-bit identifier which is dynamically
-allocated from the kernel. This is actually an incremental 64-bit
-chain ID that is used to allocated the internal name.
-
-A few notes:
-
-* The existing approach assumes an implicit jump to chain action for
-  implicit chains.
-
-* Depending on the use-case, jumpto chain through dictionary (a.k.a. verdict
-  map) provides a more efficient ruleset evaluation.
-
-Pablo Neira Ayuso (5):
-  netfilter: nf_tables: add NFTA_CHAIN_ID attribute
-  netfilter: nf_tables: add NFTA_RULE_CHAIN_ID attribute
-  netfilter: nf_tables: add NFTA_VERDICT_CHAIN_ID attribute
-  netfilter: nf_tables: expose enum nft_chain_flags through UAPI
-  netfilter: nf_tables: add NFT_CHAIN_ANONYMOUS
-
- include/net/netfilter/nf_tables.h        |  23 +++--
- include/uapi/linux/netfilter/nf_tables.h |  11 +++
- net/netfilter/nf_tables_api.c            | 117 +++++++++++++++++++----
- net/netfilter/nft_immediate.c            |  54 +++++++++++
- 4 files changed, 178 insertions(+), 27 deletions(-)
-
---
+@@ -1274,6 +1280,7 @@ static const struct nla_policy nft_chain_policy[NFTA_CHAIN_MAX + 1] = {
+ 				    .len = NFT_MODULE_AUTOLOAD_LIMIT },
+ 	[NFTA_CHAIN_COUNTERS]	= { .type = NLA_NESTED },
+ 	[NFTA_CHAIN_FLAGS]	= { .type = NLA_U32 },
++	[NFTA_CHAIN_ID]		= { .type = NLA_U32 },
+ };
+ 
+ static const struct nla_policy nft_hook_policy[NFTA_HOOK_MAX + 1] = {
+@@ -2154,9 +2161,9 @@ static int nf_tables_newchain(struct net *net, struct sock *nlsk,
+ 	const struct nfgenmsg *nfmsg = nlmsg_data(nlh);
+ 	u8 genmask = nft_genmask_next(net);
+ 	int family = nfmsg->nfgen_family;
++	struct nft_chain *chain = NULL;
+ 	const struct nlattr *attr;
+ 	struct nft_table *table;
+-	struct nft_chain *chain;
+ 	u8 policy = NF_ACCEPT;
+ 	struct nft_ctx ctx;
+ 	u64 handle = 0;
+@@ -2181,7 +2188,7 @@ static int nf_tables_newchain(struct net *net, struct sock *nlsk,
+ 			return PTR_ERR(chain);
+ 		}
+ 		attr = nla[NFTA_CHAIN_HANDLE];
+-	} else {
++	} else if (nla[NFTA_CHAIN_NAME]) {
+ 		chain = nft_chain_lookup(net, table, attr, genmask);
+ 		if (IS_ERR(chain)) {
+ 			if (PTR_ERR(chain) != -ENOENT) {
+@@ -2190,6 +2197,8 @@ static int nf_tables_newchain(struct net *net, struct sock *nlsk,
+ 			}
+ 			chain = NULL;
+ 		}
++	} else if (!nla[NFTA_CHAIN_ID]) {
++		return -EINVAL;
+ 	}
+ 
+ 	if (nla[NFTA_CHAIN_POLICY]) {
+-- 
 2.20.1
 
