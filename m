@@ -2,298 +2,262 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDD920C1B7
-	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jun 2020 15:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9E720C299
+	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jun 2020 17:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726649AbgF0NYF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 27 Jun 2020 09:24:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58213 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726964AbgF0NX7 (ORCPT
+        id S1726107AbgF0PAQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 27 Jun 2020 11:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbgF0PAP (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 27 Jun 2020 09:23:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593264237;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:in-reply-to:
-         references:references:references;
-        bh=Vbsz74jx639O45NZJ//E5urMuCAJMJoLkV3YW2Jxk5M=;
-        b=QwkEoKOXI14Cyj4uSi8GimqBkq1i3GmtiInD1DVMVfk+Ult6ic9GeXidl5OGHOjuU/KgOh
-        W6IPWToESRCk8vNdYdMWf0WXo3iT8ZomQsj9zDk0ffTMzrFVp5eIMEXSUO0HM44P+1gHUs
-        LgYF6HEGay7ISkbmurYV05rhu+pb9vQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-300-C3L9deshP0OUCzQ5IpSj0Q-1; Sat, 27 Jun 2020 09:23:55 -0400
-X-MC-Unique: C3L9deshP0OUCzQ5IpSj0Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8D191A0BD7;
-        Sat, 27 Jun 2020 13:23:53 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A07D8205F;
-        Sat, 27 Jun 2020 13:23:43 +0000 (UTC)
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Cc:     Paul Moore <paul@paul-moore.com>, sgrubb@redhat.com,
-        omosnace@redhat.com, dhowells@redhat.com, simo@redhat.com,
-        eparis@parisplace.org, serge@hallyn.com, ebiederm@xmission.com,
-        nhorman@tuxdriver.com, dwalsh@redhat.com, mpatel@redhat.com,
-        Richard Guy Briggs <rgb@redhat.com>
-Subject: [PATCH ghak90 V9 13/13] audit: add capcontid to set contid outside init_user_ns
-Date:   Sat, 27 Jun 2020 09:20:46 -0400
-Message-Id: <b6cb5500cfd7e8686ac2a7758103688c2da7f4ce.1593198710.git.rgb@redhat.com>
-In-Reply-To: <cover.1593198710.git.rgb@redhat.com>
-References: <cover.1593198710.git.rgb@redhat.com>
-In-Reply-To: <cover.1593198710.git.rgb@redhat.com>
-References: <cover.1593198710.git.rgb@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Sat, 27 Jun 2020 11:00:15 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87348C061794
+        for <netfilter-devel@vger.kernel.org>; Sat, 27 Jun 2020 08:00:15 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id q7so63863ljm.1
+        for <netfilter-devel@vger.kernel.org>; Sat, 27 Jun 2020 08:00:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:autocrypt:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=1Sa2D+4f71d7ckewoRcoMugCBbN0bZvB/Tyyxu9ROUc=;
+        b=vXDgV6JIEEowpirnAaAV/8vvm/BakQLxvcFAskQ8g5W0k/qnRLaFNDaOz/K1qeGY0C
+         GyhLgn2P/xQ9iQhGBDHmbBqNPvYaEOOh60EATWwU3O7puCmtSXCMbmpdi2hDS7EZBkwH
+         g1txbqoBUXr/jIBIm3IpreX5I9K/5yUj7a6RnZj16ID5fcTLvrZgB560GJhOfc5GvBOL
+         +/6hzF69XRV2vxV0ba21v94hh2atOGJKFOovl9v7MUSNkAmujpOm3WvSvryXrHhuO8JA
+         2y8kBP7QBO9dPWZkTjbUcnmyHwolw7DA05RoPoPKRw1fWBIvwm7cKFmPD3n0pIIeycsf
+         2epQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:autocrypt:message-id:date
+         :user-agent:mime-version:content-language:content-transfer-encoding;
+        bh=1Sa2D+4f71d7ckewoRcoMugCBbN0bZvB/Tyyxu9ROUc=;
+        b=pJkjKYkVCy/V5LKueSHCX9Q09w2y0fhClyfrzVu5GOH0jN/NpqLjBlWglru60z/nlF
+         lVJk4abM/yLBmPmnqkKxjsKMnHwXj8dTSX1xk1NfUKyMN8Ire/pqZIyLJLeJVZD4yaP4
+         pa4nQIgyvFAXRIB3qA+NTn/SL36jDSoenmO1iHKBf2XAZoLCjQsGt1nfCxxSOBOXjdXA
+         IknmIfU5JoV/OH7UaNQfE05IBNMO2W3MKCGFfB2GO7H4W/jbG0bHDj76H1bs6AwTfeJ8
+         PkTDhuCSS66T4KEdPMrJDfYwQ8tSrRPjLB6YN2zfoBvtgmRWANY2DSyPGW8Rwa2YFFwM
+         Xk+Q==
+X-Gm-Message-State: AOAM530d9jOZerqiggeyyipdtFPg3EKMnGHevamOq3T3wt+BTMFhgcIh
+        VODO+80bW8575dsFZET38KS2ZqMm
+X-Google-Smtp-Source: ABdhPJxfAC9Lg+Lh7e6ODAuTh39jq5sdddY9CtRjp6MBphkkE5oB11DIQprhrBgSwGSr4L7zFJNkkw==
+X-Received: by 2002:a2e:b003:: with SMTP id y3mr4036984ljk.78.1593270013516;
+        Sat, 27 Jun 2020 08:00:13 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:812d:7752:3103:9df:768d:2252? ([2a00:1370:812d:7752:3103:9df:768d:2252])
+        by smtp.gmail.com with ESMTPSA id u19sm620591ljk.0.2020.06.27.08.00.12
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Jun 2020 08:00:12 -0700 (PDT)
+To:     netfilter-devel@vger.kernel.org
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Subject: mDNS helper fails to add expectations if host joined 224.0.0.251
+ multicast group
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUdpQkR4aVJ3d1JCQUMz
+ Q045d2R3cFZFcVVHbVNvcUY4dFdWSVQ0UC9iTENTWkxraW5TWjJkcnNibEtwZEc3CngrZ3V4
+ d3RzK0xnSThxamYvcTVMYWgxVHdPcXpEdmpIWUoxd2JCYXV4WjAzbkR6U0xVaEQ0TXMxSXNx
+ bEl3eVQKTHVtUXM0dmNRZHZMeGpGc0c3MGFEZ2xnVVNCb2d0YUlFc2lZWlhsNFgwajNMOWZW
+ c3R1ejQvd1h0d0NnMWNOLwp5di9lQkMwdGtjTTFuc0pYUXJDNUF5OEQvMWFBNXFQdGljTEJw
+ bUVCeHFrZjBFTUh1enlyRmxxVncxdFVqWitFCnAyTE1sZW04bWFsUHZmZFpLRVo3MVcxYS9Y
+ YlJuOEZFU09wMHRVYTVHd2RvRFhnRXAxQ0pVbitXTHVyUjBLUEQKZjAxRTRqL1BISEFvQUJn
+ cnFjT1RjSVZvTnB2MmdOaUJ5U1ZzTkd6RlhUZVkvWWQ2dlFjbGtxakJZT05HTjNyOQpSOGJX
+ QS8wWTFqNFhLNjFxam93UmszSXk4c0JnZ00zUG1tTlJVSllncm9lcnBjQXIyYnl6NndUc2Iz
+ VTdPelVaCjFMbGdpc2s1UXVtMFJONzdtM0kzN0ZYbEloQ21TRVk3S1pWekdOVzNibHVnTEhj
+ ZncvSHVDQjdSMXc1cWlMV0sKSzZlQ1FITCtCWndpVThoWDNkdFRxOWQ3V2hSVzVuc1ZQRWFQ
+ cXVkUWZNU2kvVXgxa2JRbVFXNWtjbVY1SUVKdgpjbnBsYm10dmRpQThZWEoyYVdScVlXRnlR
+ R2R0WVdsc0xtTnZiVDZJWUFRVEVRSUFJQVVDU1hzNk5RSWJBd1lMCkNRZ0hBd0lFRlFJSUF3
+ UVdBZ01CQWg0QkFoZUFBQW9KRUVlaXpMcmFYZmVNTE9ZQW5qNG92cGthK21YTnpJbWUKWUNk
+ NUxxVzV0bzhGQUo0dlA0SVcrSWM3ZVlYeENMTTcvem05WU1VVmJyUW5RVzVrY21WNUlFSnZj
+ bnBsYm10dgpkaUE4WVhKMmFXUnFZV0Z5UUc1bGQyMWhhV3d1Y25VK2lGNEVFeEVDQUI0RkFr
+ SXR5WkFDR3dNR0N3a0lCd01DCkF4VUNBd01XQWdFQ0hnRUNGNEFBQ2drUVI2TE11dHBkOTR4
+ ajhnQ2VJbThlK2U0cXhETWpRRXhGYlVMNXdNaWkKWUQwQW9LbUlCUzVIRW9wL1R5UUpkTmc2
+ U3Z6VmlQRGR0Q1JCYm1SeVpYa2dRbTl5ZW1WdWEyOTJJRHhoY25acApaR3BoWVhKQWJXRnBi
+ QzV5ZFQ2SVhBUVRFUUlBSEFVQ1Bxems4QUliQXdRTEJ3TUNBeFVDQXdNV0FnRUNIZ0VDCkY0
+ QUFDZ2tRUjZMTXV0cGQ5NHlEdFFDZ2k5NHJoQXdTMXFqK2ZhampiRE02QmlTN0Irc0FvSi9S
+ RG1hN0tyQTEKbkllc2JuS29MY1FMYkpZbHRDUkJibVJ5WldvZ1FtOXljMlZ1YTI5M0lEeGhj
+ blpwWkdwaFlYSkFiV0ZwYkM1eQpkVDZJVndRVEVRSUFGd1VDUEdKSERRVUxCd29EQkFNVkF3
+ SURGZ0lCQWhlQUFBb0pFRWVpekxyYVhmZU1pcFlBCm9MblllRUJmOGNvV2lud3hUZThEVjBS
+ T2J4N1NBS0RFamwzdFFxZEY3MGFQd0lPMmgvM0ZqczJjZnJRbVFXNWsKY21WcElFSnZjbnBs
+ Ym10dmRpQThZWEoyYVdScVlXRnlRR2R0WVdsc0xtTnZiVDZJWlFRVEVRSUFKUUliQXdZTApD
+ UWdIQXdJR0ZRZ0NDUW9MQkJZQ0F3RUNIZ0VDRjRBRkFsaVdBaVFDR1FFQUNna1FSNkxNdXRw
+ ZDk0d0ZHd0NlCk51UW5NRHh2ZS9GbzNFdllJa0FPbit6RTIxY0FuUkNRVFhkMWhUZ2NSSGZw
+ QXJFZC9SY2I1K1NjdVFFTkJEeGkKUnlRUUJBQ1F0TUUzM1VIZkZPQ0FwTGtpNGtMRnJJdzE1
+ QTVhc3VhMTBqbTVJdCtoeHpJOWpEUjkvYk5FS0RUSwpTY2lIbk03YVJVZ2dMd1R0KzZDWGtN
+ eThhbit0VnFHTC9NdkRjNC9SS0tsWnhqMzl4UDd3VlhkdDh5MWNpWTRaCnFxWmYzdG1tU045
+ RGxMY1pKSU9UODJEYUpadXZyN1VKN3JMekJGYkFVaDR5UkthTm53QURCd1FBak52TXIvS0IK
+ Y0dzVi9VdnhaU20vbWRwdlVQdGN3OXFtYnhDcnFGUW9CNlRtb1o3RjZ3cC9yTDNUa1E1VUVs
+ UFJnc0cxMitEawo5R2dSaG5ueFRIQ0ZnTjFxVGlaTlg0WUlGcE5yZDBhdTNXL1hrbzc5TDBj
+ NC80OXRlbjVPckZJL3BzeDUzZmhZCnZMWWZrSm5jNjJoOGhpTmVNNmtxWWEveDBCRWRkdTky
+ Wkc2SVJnUVlFUUlBQmdVQ1BHSkhKQUFLQ1JCSG9zeTYKMmwzM2pNaGRBSjQ4UDdXRHZLTFFR
+ NU1Lbm4yRC9USTMzN3VBL2dDZ241bW52bTRTQmN0YmhhU0JnY2tSbWdTeApmd1E9Cj1nWDEr
+ Ci0tLS0tRU5EIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS0K
+Message-ID: <155a851c-e800-cec2-5432-cc82d2f36a45@gmail.com>
+Date:   Sat, 27 Jun 2020 18:00:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Provide a mechanism similar to CAP_AUDIT_CONTROL to explicitly give a
-process in a non-init user namespace the capability to set audit
-container identifiers of individual children.
+Please Cc me on reply, I am not subscribed to this list.
 
-Provide the /proc/$PID/audit_capcontid interface to capcontid.
-Valid values are: 1==enabled, 0==disabled
+This is result of troubleshooting of user question "why my printer
+management application fails to discover printer via mDNS".
 
-Writing a "1" to this special file for the target process $PID will
-enable the target process to set audit container identifiers of its
-descendants.
+Let's start with no firewall to make sure mDNS works.
 
-A process must already have CAP_AUDIT_CONTROL in the initial user
-namespace or have had audit_capcontid enabled by a previous use of this
-feature by its parent on this process in order to be able to enable it
-for another process.  The target process must be a descendant of the
-calling process.
+bor@tw:~> dig -p 5353 @224.0.0.251 leap15.local +short
+169.254.1.76
+bor@tw:~>
 
-Report this action in new message type AUDIT_SET_CAPCONTID 1022 with
-fields opid= capcontid= old-capcontid=
+Start firewall and verify that mDNS stops working
 
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
----
- fs/proc/base.c             | 57 +++++++++++++++++++++++++++++++++++++++++++++-
- include/linux/audit.h      | 14 ++++++++++++
- include/uapi/linux/audit.h |  1 +
- kernel/audit.c             | 38 ++++++++++++++++++++++++++++++-
- 4 files changed, 108 insertions(+), 2 deletions(-)
+tw:/home/bor # systemctl start firewalld.service
+tw:/home/bor # dig -p 5353 @224.0.0.251 leap15.local +short
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 794474cd8f35..1083db2ce345 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -1329,7 +1329,7 @@ static ssize_t proc_contid_read(struct file *file, char __user *buf,
- 	if (!task)
- 		return -ESRCH;
- 	/* if we don't have caps, reject */
--	if (!capable(CAP_AUDIT_CONTROL))
-+	if (!capable(CAP_AUDIT_CONTROL) && !audit_get_capcontid(current))
- 		return -EPERM;
- 	length = scnprintf(tmpbuf, TMPBUFLEN, "%llu", audit_get_contid(task));
- 	put_task_struct(task);
-@@ -1370,6 +1370,59 @@ static ssize_t proc_contid_write(struct file *file, const char __user *buf,
- 	.write		= proc_contid_write,
- 	.llseek		= generic_file_llseek,
- };
-+
-+static ssize_t proc_capcontid_read(struct file *file, char __user *buf,
-+				  size_t count, loff_t *ppos)
-+{
-+	struct inode *inode = file_inode(file);
-+	struct task_struct *task = get_proc_task(inode);
-+	ssize_t length;
-+	char tmpbuf[TMPBUFLEN];
-+
-+	if (!task)
-+		return -ESRCH;
-+	/* if we don't have caps, reject */
-+	if (!capable(CAP_AUDIT_CONTROL) && !audit_get_capcontid(current))
-+		return -EPERM;
-+	length = scnprintf(tmpbuf, TMPBUFLEN, "%u", audit_get_capcontid(task));
-+	put_task_struct(task);
-+	return simple_read_from_buffer(buf, count, ppos, tmpbuf, length);
-+}
-+
-+static ssize_t proc_capcontid_write(struct file *file, const char __user *buf,
-+				   size_t count, loff_t *ppos)
-+{
-+	struct inode *inode = file_inode(file);
-+	u32 capcontid;
-+	int rv;
-+	struct task_struct *task = get_proc_task(inode);
-+
-+	if (!task)
-+		return -ESRCH;
-+	if (*ppos != 0) {
-+		/* No partial writes. */
-+		put_task_struct(task);
-+		return -EINVAL;
-+	}
-+
-+	rv = kstrtou32_from_user(buf, count, 10, &capcontid);
-+	if (rv < 0) {
-+		put_task_struct(task);
-+		return rv;
-+	}
-+
-+	rv = audit_set_capcontid(task, capcontid);
-+	put_task_struct(task);
-+	if (rv < 0)
-+		return rv;
-+	return count;
-+}
-+
-+static const struct file_operations proc_capcontid_operations = {
-+	.read		= proc_capcontid_read,
-+	.write		= proc_capcontid_write,
-+	.llseek		= generic_file_llseek,
-+};
- #endif
- 
- #ifdef CONFIG_FAULT_INJECTION
-@@ -3273,6 +3326,7 @@ static int proc_stack_depth(struct seq_file *m, struct pid_namespace *ns,
- 	REG("loginuid",   S_IWUSR|S_IRUGO, proc_loginuid_operations),
- 	REG("sessionid",  S_IRUGO, proc_sessionid_operations),
- 	REG("audit_containerid", S_IWUSR|S_IRUSR, proc_contid_operations),
-+	REG("audit_capcontainerid", S_IWUSR|S_IRUSR, proc_capcontid_operations),
- #endif
- #ifdef CONFIG_FAULT_INJECTION
- 	REG("make-it-fail", S_IRUGO|S_IWUSR, proc_fault_inject_operations),
-@@ -3613,6 +3667,7 @@ static int proc_tid_comm_permission(struct inode *inode, int mask)
- 	REG("loginuid",  S_IWUSR|S_IRUGO, proc_loginuid_operations),
- 	REG("sessionid",  S_IRUGO, proc_sessionid_operations),
- 	REG("audit_containerid", S_IWUSR|S_IRUSR, proc_contid_operations),
-+	REG("audit_capcontainerid", S_IWUSR|S_IRUSR, proc_capcontid_operations),
- #endif
- #ifdef CONFIG_FAULT_INJECTION
- 	REG("make-it-fail", S_IRUGO|S_IWUSR, proc_fault_inject_operations),
-diff --git a/include/linux/audit.h b/include/linux/audit.h
-index 025b52ae8422..2b3a2b6020ed 100644
---- a/include/linux/audit.h
-+++ b/include/linux/audit.h
-@@ -122,6 +122,7 @@ struct audit_task_info {
- 	kuid_t			loginuid;
- 	unsigned int		sessionid;
- 	struct audit_contobj	*cont;
-+	u32			capcontid;
- #ifdef CONFIG_AUDITSYSCALL
- 	struct audit_context	*ctx;
- #endif
-@@ -230,6 +231,14 @@ static inline unsigned int audit_get_sessionid(struct task_struct *tsk)
- 	return tsk->audit->sessionid;
- }
- 
-+static inline u32 audit_get_capcontid(struct task_struct *tsk)
-+{
-+	if (!tsk->audit)
-+		return 0;
-+	return tsk->audit->capcontid;
-+}
-+
-+extern int audit_set_capcontid(struct task_struct *tsk, u32 enable);
- extern int audit_set_contid(struct task_struct *tsk, u64 contid);
- 
- static inline u64 audit_get_contid(struct task_struct *tsk)
-@@ -311,6 +320,11 @@ static inline unsigned int audit_get_sessionid(struct task_struct *tsk)
- 	return AUDIT_SID_UNSET;
- }
- 
-+static inline u32 audit_get_capcontid(struct task_struct *tsk)
-+{
-+	return 0;
-+}
-+
- static inline u64 audit_get_contid(struct task_struct *tsk)
- {
- 	return AUDIT_CID_UNSET;
-diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-index 831c12bdd235..5e30f4c95dc2 100644
---- a/include/uapi/linux/audit.h
-+++ b/include/uapi/linux/audit.h
-@@ -73,6 +73,7 @@
- #define AUDIT_GET_FEATURE	1019	/* Get which features are enabled */
- #define AUDIT_CONTAINER_OP	1020	/* Define the container id and info */
- #define AUDIT_SIGNAL_INFO2	1021	/* Get info auditd signal sender */
-+#define AUDIT_SET_CAPCONTID	1022	/* Set cap_contid of a task */
- 
- #define AUDIT_FIRST_USER_MSG	1100	/* Userspace messages mostly uninteresting to kernel */
- #define AUDIT_USER_AVC		1107	/* We filter this differently */
-diff --git a/kernel/audit.c b/kernel/audit.c
-index aaf74702e993..454473f2e193 100644
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -307,6 +307,7 @@ int audit_alloc(struct task_struct *tsk)
- 	rcu_read_lock();
- 	info->cont = _audit_contobj_get(current);
- 	rcu_read_unlock();
-+	info->capcontid = 0;
- 	tsk->audit = info;
- 
- 	ret = audit_alloc_syscall(tsk);
-@@ -322,6 +323,7 @@ struct audit_task_info init_struct_audit = {
- 	.loginuid = INVALID_UID,
- 	.sessionid = AUDIT_SID_UNSET,
- 	.cont = NULL,
-+	.capcontid = 0,
- #ifdef CONFIG_AUDITSYSCALL
- 	.ctx = NULL,
- #endif
-@@ -2763,6 +2765,40 @@ static bool audit_contid_isnesting(struct task_struct *tsk)
- 	return !isowner && ownerisparent;
- }
- 
-+int audit_set_capcontid(struct task_struct *task, u32 enable)
-+{
-+	u32 oldcapcontid;
-+	int rc = 0;
-+	struct audit_buffer *ab;
-+
-+	if (!task->audit)
-+		return -ENOPROTOOPT;
-+	oldcapcontid = audit_get_capcontid(task);
-+	/* if task is not descendant, block */
-+	if (task == current || !task_is_descendant(current, task))
-+		rc = -EXDEV;
-+	else if (current_user_ns() == &init_user_ns) {
-+		if (!capable(CAP_AUDIT_CONTROL) &&
-+		    !audit_get_capcontid(current))
-+			rc = -EPERM;
-+	}
-+	if (!rc)
-+		task->audit->capcontid = enable;
-+
-+	if (!audit_enabled)
-+		return rc;
-+
-+	ab = audit_log_start(audit_context(), GFP_KERNEL, AUDIT_SET_CAPCONTID);
-+	if (!ab)
-+		return rc;
-+
-+	audit_log_format(ab,
-+			 "opid=%d capcontid=%u old-capcontid=%u",
-+			 task_tgid_nr(task), enable, oldcapcontid);
-+	audit_log_end(ab);
-+	return rc;
-+}
-+
- /*
-  * audit_set_contid - set current task's audit contid
-  * @task: target task
-@@ -2795,7 +2831,7 @@ int audit_set_contid(struct task_struct *task, u64 contid)
- 		goto unlock;
- 	}
- 	/* if we don't have caps, reject */
--	if (!capable(CAP_AUDIT_CONTROL)) {
-+	if (!capable(CAP_AUDIT_CONTROL) && !audit_get_capcontid(current)) {
- 		rc = -EPERM;
- 		goto unlock;
- 	}
--- 
-1.8.3.1
+; <<>> DiG 9.16.4 <<>> -p 5353 @224.0.0.251 leap15.local +short
+; (1 server found)
+;; global options: +cmd
+;; connection timed out; no servers could be reached
+tw:/home/bor #
 
+Configure mDNS helper (rules for related packets are already default in
+firewalld):
+
+w:/home/bor # nfct add helper mdns inet udp
+tw:/home/bor # systemctl start conntrackd.service
+tw:/home/bor # nfct list helper
+{
+	.name = mdns,
+	.queuenum = 6,
+	.l3protonum = 2,
+	.l4protonum = 17,
+	.priv_data_len = 0,
+	.status = enabled,
+};
+tw:/home/bor # iptables -t raw -A OUTPUT -m addrtype --dst-type
+MULTICAST -p udp --dport 5353 -j CT --helper mdns
+tw:/home/bor #
+
+Let's try resolving again
+
+bor@tw:~> dig -p 5353 @224.0.0.251 leap15.local +short
+169.254.1.76
+bor@tw:~>
+
+And expectations are correctly added
+
+tw:/home/bor # conntrack -E expect
+    [NEW] 30 proto=17 src=0.0.0.0 dst=169.254.33.186 sport=5353
+dport=38407 mask-src=0.0.0.0 mask-dst=0.0.0.0 sport=65535 dport=65535
+master-src=169.254.33.186 master-dst=224.0.0.251 sport=38407 dport=5353
+PERMANENT class=0 helper=mdns
+^Cconntrack v1.4.6 (conntrack-tools): 1 expectation events have been shown.
+tw:/home/bor #
+
+Now try registering interface for mDNS multicast group (exactly what
+Avahi does):
+
+tw:/home/bor # ip maddress show dev enp0s5
+3:	enp0s5
+	link  01:00:5e:00:00:01
+	link  33:33:00:00:00:01
+	link  33:33:ff:89:87:bc
+	inet  224.0.0.1
+	inet6 ff02::1:ff89:87bc
+	inet6 ff02::1
+	inet6 ff01::1
+tw:/home/bor #
+
+bor@tw:~> python
+Python 2.7.18 (default, Apr 23 2020, 09:27:04) [GCC] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import socket
+>>> import struct
+>>> s = socket.socket (socket.AF_INET, socket.SOCK_DGRAM)
+>>> s.bind (("0.0.0.0", 5353))
+>>> req = struct.pack ("=4sl", socket.inet_aton("224.0.0.251"),
+socket.INADDR_ANY)
+>>> s.setsockopt (socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, req)
+>>>
+
+tw:/home/bor # ss -4lunp
+State     Recv-Q    Send-Q        Local Address:Port       Peer
+Address:Port    Process
+UNCONN    0         0                   0.0.0.0:5353
+0.0.0.0:*        users:(("python",pid=8420,fd=3))
+tw:/home/bor # ip maddress show dev enp0s5
+3:	enp0s5
+	link  01:00:5e:00:00:01
+	link  33:33:00:00:00:01
+	link  33:33:ff:89:87:bc
+	link  01:00:5e:00:00:fb
+	inet  224.0.0.251
+	inet  224.0.0.1
+	inet6 ff02::1:ff89:87bc
+	inet6 ff02::1
+	inet6 ff01::1
+tw:/home/bor #
+
+Let's try to resolve again
+
+tw:/home/bor # dig -p 5353 @224.0.0.251 leap15.local +short
+
+; <<>> DiG 9.16.4 <<>> -p 5353 @224.0.0.251 leap15.local +short
+; (1 server found)
+;; global options: +cmd
+;; connection timed out; no servers could be reached
+tw:/home/bor #
+
+and checking what happens is expectations get deleted immediately
+
+tw:/home/bor # conntrack -E expect
+    [NEW] 30 proto=17 src=0.0.0.0 dst=169.254.33.186 sport=5353
+dport=56327 mask-src=0.0.0.0 mask-dst=0.0.0.0 sport=65535 dport=65535
+master-src=169.254.33.186 master-dst=224.0.0.251 sport=56327 dport=5353
+PERMANENT class=0 helper=mdns
+[DESTROY] 30 proto=17 src=0.0.0.0 dst=169.254.33.186 sport=5353
+dport=56327 mask-src=0.0.0.0 mask-dst=0.0.0.0 sport=65535 dport=65535
+master-src=169.254.33.186 master-dst=224.0.0.251 sport=56327 dport=5353
+PERMANENT class=0 helper=mdns
+    [NEW] 30 proto=17 src=0.0.0.0 dst=169.254.33.186 sport=5353
+dport=56327 mask-src=0.0.0.0 mask-dst=0.0.0.0 sport=65535 dport=65535
+master-src=169.254.33.186 master-dst=224.0.0.251 sport=56327 dport=5353
+PERMANENT class=0 helper=mdns
+[DESTROY] 30 proto=17 src=0.0.0.0 dst=169.254.33.186 sport=5353
+dport=56327 mask-src=0.0.0.0 mask-dst=0.0.0.0 sport=65535 dport=65535
+master-src=169.254.33.186 master-dst=224.0.0.251 sport=56327 dport=5353
+PERMANENT class=0 helper=mdns
+    [NEW] 30 proto=17 src=0.0.0.0 dst=169.254.33.186 sport=5353
+dport=56327 mask-src=0.0.0.0 mask-dst=0.0.0.0 sport=65535 dport=65535
+master-src=169.254.33.186 master-dst=224.0.0.251 sport=56327 dport=5353
+PERMANENT class=0 helper=mdns
+[DESTROY] 30 proto=17 src=0.0.0.0 dst=169.254.33.186 sport=5353
+dport=56327 mask-src=0.0.0.0 mask-dst=0.0.0.0 sport=65535 dport=65535
+master-src=169.254.33.186 master-dst=224.0.0.251 sport=56327 dport=5353
+PERMANENT class=0 helper=mdns
+    [NEW] 30 proto=17 src=0.0.0.0 dst=169.254.33.186 sport=5353
+dport=56327 mask-src=0.0.0.0 mask-dst=0.0.0.0 sport=65535 dport=65535
+master-src=169.254.33.186 master-dst=224.0.0.251 sport=56327 dport=5353
+PERMANENT class=0 helper=mdns
+[DESTROY] 30 proto=17 src=0.0.0.0 dst=169.254.33.186 sport=5353
+dport=56327 mask-src=0.0.0.0 mask-dst=0.0.0.0 sport=65535 dport=65535
+master-src=169.254.33.186 master-dst=224.0.0.251 sport=56327 dport=5353
+PERMANENT class=0 helper=mdns
+^Cconntrack v1.4.6 (conntrack-tools): 8 expectation events have been shown.
+tw:/home/bor #
+
+This is real life issue, as lot of distributions have Avahi enabled by
+default, Avahi registers multicast group as the first thing so discovery
+fails as long as Avahi daemon is running which is default.
+
+bor@tw:~> uname -a
+Linux tw.0.2.15 5.7.5-1-default #1 SMP Tue Jun 23 06:00:46 UTC 2020
+(a1775d0) x86_64 x86_64 x86_64 GNU/Linux
+bor@tw:~>
