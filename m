@@ -2,122 +2,90 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7345620C354
-	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Jun 2020 19:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA0A20C47A
+	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Jun 2020 00:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725930AbgF0RgA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 27 Jun 2020 13:36:00 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:40563 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725900AbgF0RgA (ORCPT
+        id S1726356AbgF0WA5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 27 Jun 2020 18:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726101AbgF0WA4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 27 Jun 2020 13:36:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593279358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mDDqDNrCYWn3A/GE763yXUtoyIO3ut/0qQZyVMGsIa8=;
-        b=TdUOFosKaI3eGJNg5bwL9NkV45EdOipfETH8TT6Jv8SJlFRWkT5iszQ23bQ9OvFFuUN1vP
-        Cgt7nwKkkTuq5chpCLNK/7v3CxZU8Eq01/c1vFeSjySI7rs4JFf6TtVlssdBPtlGuVK39M
-        ITO+jbZQcFQPWOOlOxD747hImfqlJ7I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-2fXGuuXTPSai4ys0eTT23g-1; Sat, 27 Jun 2020 13:35:45 -0400
-X-MC-Unique: 2fXGuuXTPSai4ys0eTT23g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 162D0DC25;
-        Sat, 27 Jun 2020 17:35:44 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 527BE60BF1;
-        Sat, 27 Jun 2020 17:35:36 +0000 (UTC)
-Date:   Sat, 27 Jun 2020 13:35:33 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     netfilter-devel@vger.kernel.org, linux-audit@redhat.com
-Subject: Re: [bug report] audit: log nftables configuration change events
-Message-ID: <20200627173533.aqh4p2nbr33ea3eu@madcap2.tricolour.ca>
-References: <20200626102242.GA313925@mwanda>
+        Sat, 27 Jun 2020 18:00:56 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7A2C061794
+        for <netfilter-devel@vger.kernel.org>; Sat, 27 Jun 2020 15:00:56 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id 5so10004969oty.11
+        for <netfilter-devel@vger.kernel.org>; Sat, 27 Jun 2020 15:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=hDm0J70xfMLbVvceQHwxPddZCp69UMTk2d0jtKg2a8s=;
+        b=uvaWEz0dd8Ac3CT35qBSqfznpY4sgxsz7Od3pFBzZIuQcY/8TViLhlHXQU9leeTEpY
+         AGovLfmyzd6U3Cq2lgZLwHP1J5YFMSD+Pyz17XxyLzQnjVOPPz8Ik+J+fYFM18bC4Fqc
+         JhO+jF294xtXRRnL3TKWvGE6eKydOzo9lI+qnLW3YVbUSLfu7Gq0pi7M8z5WpDddMN8M
+         WWaoRGs8g5M97omhRASDLgcJhl5wyTXcCK3cENHMncLoSakV7dWBQ+2v4jCXqV+88itT
+         y9KXfYDXgC/gw5+BqchOAKmUvgcqp5Y71+LwruoBL/ShzO8C2ON+xs5RLFzJg/awZL11
+         9lUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=hDm0J70xfMLbVvceQHwxPddZCp69UMTk2d0jtKg2a8s=;
+        b=H/pXN3/N3+T63OMYqXJJ17U4enXm6Yri4wnZ4vW1G8o7+DpmGakCwEG+Vab55BbpUo
+         aqmuK5jSJxFC/ay0uSl1LYwKxyOQO+NB7tIh7UfV+qVaK1aTUEiWSvOTfF0rsnNvpegH
+         /tMmjeLC6UnUgnWneM/qwUFzWAp/1BGqWTlUlQ26/HzCPZGVY2QXeVCxBSWjN77fIIWU
+         5/C+qyMZQEgQlwIXOrgJWDbAulfP/GNk1PaGoA/x4XXT2t68WIgQRlSh6iLPU56i0Ou0
+         w6p1wwtiLg3YjK5DjA/A8pJYnzI9IMLgLWlVtFDqPk2KhhQzRiNET8QNypBEq12SJrt2
+         /IPw==
+X-Gm-Message-State: AOAM530xRCFyu+rsQjqGkjbF2ziq5Kq5QtlDwA5jyGOPKeJsTyKQs/MM
+        ww0oY1tlTMv+VdjuZj8vMGxnwh8De1bNPPb0IpQjRYcnEMw=
+X-Google-Smtp-Source: ABdhPJynf4CV3u/z+wvqAxCFESu7ee7lLWI0u2+Rd2bRIf462RpI7Q5/OgPmYRkZuywkeS9iG1gTukKnSolbNLelkro=
+X-Received: by 2002:a05:6830:1dba:: with SMTP id z26mr8074641oti.180.1593294943879;
+ Sat, 27 Jun 2020 14:55:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626102242.GA313925@mwanda>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Received: by 2002:a9d:12d3:0:0:0:0:0 with HTTP; Sat, 27 Jun 2020 14:55:43
+ -0700 (PDT)
+Reply-To: un.org@i.ua
+From:   helen <taxofficebenin@gmail.com>
+Date:   Sat, 27 Jun 2020 22:55:43 +0100
+Message-ID: <CAK9MGy3D5UBf06OY16UW=c+Cybm67x+0kH_OWJkX7ywdQD9CNA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 2020-06-26 13:22, Dan Carpenter wrote:
-> Hello Richard Guy Briggs,
-> 
-> The patch 8e6cf365e1d5: "audit: log nftables configuration change
-> events" from Jun 4, 2020, leads to the following static checker
-> warning:
-> 
-> 	net/netfilter/nf_tables_api.c:6160 nft_obj_notify()
-> 	warn: use 'gfp' here instead of GFP_XXX?
-> 
-> net/netfilter/nf_tables_api.c
->   6153  void nft_obj_notify(struct net *net, const struct nft_table *table,
->   6154                      struct nft_object *obj, u32 portid, u32 seq, int event,
->   6155                      int family, int report, gfp_t gfp)
->                                                     ^^^^^^^^^
->   6156  {
->   6157          struct sk_buff *skb;
->   6158          int err;
->   6159          char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
->                                       ^^^^^^^^^^
-> This should probably be "gfp".
+MONEY-GRAM TRANSFERRED PAYMENT INFO:
 
-Agreed, nice catch.  Checking other similar uses from that patch
-leads me to another bug and the need to extend audit_log_nfcfg() to
-accept a GFP flag.  Patch coming...
+Below is the sender=E2=80=99s information
 
->   6160                                table->name, table->handle);
->   6161  
->   6162          audit_log_nfcfg(buf,
->   6163                          family,
->   6164                          obj->handle,
->   6165                          event == NFT_MSG_NEWOBJ ?
->   6166                                  AUDIT_NFT_OP_OBJ_REGISTER :
->   6167                                  AUDIT_NFT_OP_OBJ_UNREGISTER);
->   6168          kfree(buf);
->   6169  
->   6170          if (!report &&
->   6171              !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
->   6172                  return;
->   6173  
->   6174          skb = nlmsg_new(NLMSG_GOODSIZE, gfp);
->                                                 ^^^
-> 
->   6175          if (skb == NULL)
->   6176                  goto err;
->   6177  
->   6178          err = nf_tables_fill_obj_info(skb, net, portid, seq, event, 0, family,
->   6179                                        table, obj, false);
->   6180          if (err < 0) {
->   6181                  kfree_skb(skb);
->   6182                  goto err;
->   6183          }
->   6184  
->   6185          nfnetlink_send(skb, net, portid, NFNLGRP_NFTABLES, report, gfp);
->   6186          return;
->   6187  err:
->   6188          nfnetlink_set_err(net, portid, NFNLGRP_NFTABLES, -ENOBUFS);
->   6189  }
-> 
-> regards,
-> dan carpenter
 
-- RGB
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+1. MG. REFERENCE NO#: 36360857
 
+2. SENDER'S NAME: Johnson Williams
+
+3. AMOUNT TO PICKUP: US$10,000
+
+
+
+Go to any Money Gram office near you and pick up the payment Track the
+
+Reference Number by visiting and click the link below
+
+(https://secure.moneygram.com/embed/track) and enter the Reference
+
+Number: 36360857 and the Last Name: Williams, you will find the payment
+
+available for pickup instantly.
+
+Yours Sincerely,
+
+Mrs. Helen Marvis
+United Nations Liaison Office
+Directorate for International Payments
