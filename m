@@ -2,44 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6B120E249
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Jun 2020 00:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E439220E284
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Jun 2020 00:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731223AbgF2VD6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 29 Jun 2020 17:03:58 -0400
-Received: from correo.us.es ([193.147.175.20]:49634 "EHLO mail.us.es"
+        id S2390301AbgF2VGJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 29 Jun 2020 17:06:09 -0400
+Received: from correo.us.es ([193.147.175.20]:50142 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390235AbgF2VDr (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 29 Jun 2020 17:03:47 -0400
+        id S1730814AbgF2VGF (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 29 Jun 2020 17:06:05 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id DB608E34CE
-        for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2020 23:03:44 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 540A2E34C5
+        for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2020 23:06:03 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CE223DA72F
-        for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2020 23:03:44 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 461A0DA722
+        for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2020 23:06:03 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id C3CF8DA73F; Mon, 29 Jun 2020 23:03:44 +0200 (CEST)
+        id 3B9D6DA78C; Mon, 29 Jun 2020 23:06:03 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id AF808DA78A
-        for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2020 23:03:42 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 1ED49DA722
+        for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2020 23:06:01 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 29 Jun 2020 23:03:42 +0200 (CEST)
+ Mon, 29 Jun 2020 23:06:01 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from localhost.localdomain (unknown [90.77.255.23])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 9BFF642EF9E0
-        for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2020 23:03:42 +0200 (CEST)
+        by entrada.int (Postfix) with ESMTPA id 09B5542EF9E0
+        for <netfilter-devel@vger.kernel.org>; Mon, 29 Jun 2020 23:06:01 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next 2/5] netfilter: nf_tables: add NFTA_VERDICT_CHAIN_ID attribute
-Date:   Mon, 29 Jun 2020 23:03:34 +0200
-Message-Id: <20200629210337.30008-3-pablo@netfilter.org>
+Subject: [PATCH nf-next 3/5] netfilter: nf_tables: expose enum nft_chain_flags through UAPI
+Date:   Mon, 29 Jun 2020 23:03:35 +0200
+Message-Id: <20200629210337.30008-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200629210337.30008-1-pablo@netfilter.org>
 References: <20200629210337.30008-1-pablo@netfilter.org>
@@ -51,68 +51,79 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This netlink attribute allows you to identify the chain to jump/goto by
-means of the chain ID.
+This enum definition was never exposed through UAPI. Rename
+NFT_BASE_CHAIN to NFT_CHAIN_BASE for consistency.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/uapi/linux/netfilter/nf_tables.h |  2 ++
- net/netfilter/nf_tables_api.c            | 16 +++++++++++++---
- 2 files changed, 15 insertions(+), 3 deletions(-)
+ include/net/netfilter/nf_tables.h        | 7 +------
+ include/uapi/linux/netfilter/nf_tables.h | 5 +++++
+ net/netfilter/nf_tables_api.c            | 4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 3e5226684017..6d1e7da6e00a 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -921,11 +921,6 @@ static inline void nft_set_elem_update_expr(const struct nft_set_ext *ext,
+ 	     (expr) != (last); \
+ 	     (expr) = nft_expr_next(expr))
+ 
+-enum nft_chain_flags {
+-	NFT_BASE_CHAIN			= 0x1,
+-	NFT_CHAIN_HW_OFFLOAD		= 0x2,
+-};
+-
+ #define NFT_CHAIN_POLICY_UNSET		U8_MAX
+ 
+ /**
+@@ -1036,7 +1031,7 @@ static inline struct nft_base_chain *nft_base_chain(const struct nft_chain *chai
+ 
+ static inline bool nft_is_base_chain(const struct nft_chain *chain)
+ {
+-	return chain->flags & NFT_BASE_CHAIN;
++	return chain->flags & NFT_CHAIN_BASE;
+ }
+ 
+ int __nft_release_basechain(struct nft_ctx *ctx);
 diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
-index 2304d1b7ba5e..683e75126d68 100644
+index 683e75126d68..2cf7cc3b50c1 100644
 --- a/include/uapi/linux/netfilter/nf_tables.h
 +++ b/include/uapi/linux/netfilter/nf_tables.h
-@@ -471,11 +471,13 @@ enum nft_data_attributes {
-  *
-  * @NFTA_VERDICT_CODE: nf_tables verdict (NLA_U32: enum nft_verdicts)
-  * @NFTA_VERDICT_CHAIN: jump target chain name (NLA_STRING)
-+ * @NFTA_VERDICT_CHAIN_ID: jump target chain ID (NLA_U32)
-  */
- enum nft_verdict_attributes {
- 	NFTA_VERDICT_UNSPEC,
- 	NFTA_VERDICT_CODE,
- 	NFTA_VERDICT_CHAIN,
-+	NFTA_VERDICT_CHAIN_ID,
- 	__NFTA_VERDICT_MAX
+@@ -184,6 +184,11 @@ enum nft_table_attributes {
  };
- #define NFTA_VERDICT_MAX	(__NFTA_VERDICT_MAX - 1)
+ #define NFTA_TABLE_MAX		(__NFTA_TABLE_MAX - 1)
+ 
++enum nft_chain_flags {
++	NFT_CHAIN_BASE		= (1 << 0),
++	NFT_CHAIN_HW_OFFLOAD	= (1 << 1),
++};
++
+ /**
+  * enum nft_chain_attributes - nf_tables chain netlink attributes
+  *
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index fbe8f9209813..9be978788aef 100644
+index 9be978788aef..03fc2538e7c9 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -8242,6 +8242,7 @@ static const struct nla_policy nft_verdict_policy[NFTA_VERDICT_MAX + 1] = {
- 	[NFTA_VERDICT_CODE]	= { .type = NLA_U32 },
- 	[NFTA_VERDICT_CHAIN]	= { .type = NLA_STRING,
- 				    .len = NFT_CHAIN_MAXNAMELEN - 1 },
-+	[NFTA_VERDICT_CHAIN_ID]	= { .type = NLA_U32 },
- };
+@@ -1903,7 +1903,7 @@ static int nft_basechain_init(struct nft_base_chain *basechain, u8 family,
+ 		nft_basechain_hook_init(&basechain->ops, family, hook, chain);
+ 	}
  
- static int nft_verdict_init(const struct nft_ctx *ctx, struct nft_data *data,
-@@ -8278,10 +8279,19 @@ static int nft_verdict_init(const struct nft_ctx *ctx, struct nft_data *data,
- 		break;
- 	case NFT_JUMP:
- 	case NFT_GOTO:
--		if (!tb[NFTA_VERDICT_CHAIN])
-+		if (tb[NFTA_VERDICT_CHAIN]) {
-+			chain = nft_chain_lookup(ctx->net, ctx->table,
-+						 tb[NFTA_VERDICT_CHAIN],
-+						 genmask);
-+		} else if (tb[NFTA_VERDICT_CHAIN_ID]) {
-+			chain = nft_chain_lookup_byid(ctx->net,
-+						      tb[NFTA_VERDICT_CHAIN_ID]);
-+			if (chain->use != 0)
-+				return -EBUSY;
-+		} else {
- 			return -EINVAL;
--		chain = nft_chain_lookup(ctx->net, ctx->table,
--					 tb[NFTA_VERDICT_CHAIN], genmask);
-+		}
-+
- 		if (IS_ERR(chain))
- 			return PTR_ERR(chain);
- 		if (nft_is_base_chain(chain))
+-	chain->flags |= NFT_BASE_CHAIN | flags;
++	chain->flags |= NFT_CHAIN_BASE | flags;
+ 	basechain->policy = NF_ACCEPT;
+ 	if (chain->flags & NFT_CHAIN_HW_OFFLOAD &&
+ 	    nft_chain_offload_priority(basechain) < 0)
+@@ -2255,7 +2255,7 @@ static int nf_tables_newchain(struct net *net, struct sock *nlsk,
+ 		if (nlh->nlmsg_flags & NLM_F_REPLACE)
+ 			return -EOPNOTSUPP;
+ 
+-		flags |= chain->flags & NFT_BASE_CHAIN;
++		flags |= chain->flags & NFT_CHAIN_BASE;
+ 		return nf_tables_updchain(&ctx, genmask, policy, flags);
+ 	}
+ 
 -- 
 2.20.1
 
