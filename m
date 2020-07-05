@@ -2,35 +2,36 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3E6214D30
-	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Jul 2020 16:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81675214D2D
+	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Jul 2020 16:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgGEOnt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 5 Jul 2020 10:43:49 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:59383 "EHLO
+        id S1726942AbgGEOip (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 5 Jul 2020 10:38:45 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:57605 "EHLO
         m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726826AbgGEOnt (ORCPT
+        with ESMTP id S1726861AbgGEOio (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 5 Jul 2020 10:43:49 -0400
+        Sun, 5 Jul 2020 10:38:44 -0400
+X-Greylist: delayed 604 seconds by postgrey-1.27 at vger.kernel.org; Sun, 05 Jul 2020 10:38:41 EDT
 Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 4D10541169;
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 6C43841168;
         Sun,  5 Jul 2020 22:28:35 +0800 (CST)
 From:   wenxu@ucloud.cn
 To:     davem@davemloft.net, pablo@netfilter.org
 Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: [PATCH net-next 1/3] netfilter: nf_defrag_ipv4: Add nf_ct_frag_gather support
-Date:   Sun,  5 Jul 2020 22:28:30 +0800
-Message-Id: <1593959312-6135-2-git-send-email-wenxu@ucloud.cn>
+Subject: [PATCH net-next 2/3] netfilter: nf_conntrack_reasm: make nf_ct_frag6_gather elide the CB clear
+Date:   Sun,  5 Jul 2020 22:28:31 +0800
+Message-Id: <1593959312-6135-3-git-send-email-wenxu@ucloud.cn>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1593959312-6135-1-git-send-email-wenxu@ucloud.cn>
 References: <1593959312-6135-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVQ01DQkJCQk5DS0hDSEhZV1koWU
-        FJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkdIjULOBw5FTFQAi9PDD0dATYjNzocVlZVQk5CQyhJWVdZCQ
-        4XHghZQVk1NCk2OjckKS43PllXWRYaDxIVHRRZQVk0MFkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kwg6Phw5Qz5RLE1KLz81LTUD
-        KwEKFAhVSlVKTkJIQk5CSEpOT0lIVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUJMQ0s3Bg++
-X-HM-Tid: 0a731f60f7822086kuqy4d10541169
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVS0JPQkJCQktCT0tLQk9ZV1koWU
+        FJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkXMjULOBw*FSkRDi9PDD0dTTMrMjocVlZVTktJQkkoSVlXWQ
+        kOFx4IWUFZNTQpNjo3JCkuNz5ZV1kWGg8SFR0UWUFZNDBZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NE06CTo5PT5PCk0WETkILTEp
+        KgwwCQhVSlVKTkJIQk5CSEpOTk1OVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUpLTEpKNwY+
+X-HM-Tid: 0a731f60f8012086kuqy6c43841168
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
@@ -38,360 +39,252 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: wenxu <wenxu@ucloud.cn>
 
-Add nf_ct_frag_gather for conntrack defrag and it will
-elide the CB clear when packets are defragmented by
-connection tracking
+Make nf_ct_frag6_gather elide the CB clear when packets are defragmented
+by connection tracking. This can make each subsystem such as br_netfilter
+, openvswitch, act_ct do defrag without restore the CB. And avoid
+serious crashes and problems in ct subsystem. Because Some packet
+schedulers store pointers in the qdisc CB private area and Parallel
+accesses to the SKB.
 
+Fixes: b57dc7c13ea9 ("net/sched: Introduce action ct")
 Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
- include/net/netfilter/ipv4/nf_defrag_ipv4.h |   2 +
- net/ipv4/netfilter/nf_defrag_ipv4.c         | 314 ++++++++++++++++++++++++++++
- 2 files changed, 316 insertions(+)
+ include/linux/netfilter_ipv6.h              |  9 +++++----
+ include/net/netfilter/ipv6/nf_defrag_ipv6.h |  3 ++-
+ net/bridge/netfilter/nf_conntrack_bridge.c  |  7 ++-----
+ net/ipv6/netfilter/nf_conntrack_reasm.c     | 19 ++++++++++++-------
+ net/ipv6/netfilter/nf_defrag_ipv6_hooks.c   |  3 ++-
+ net/openvswitch/conntrack.c                 |  8 +++-----
+ net/sched/act_ct.c                          |  3 +--
+ 7 files changed, 27 insertions(+), 25 deletions(-)
 
-diff --git a/include/net/netfilter/ipv4/nf_defrag_ipv4.h b/include/net/netfilter/ipv4/nf_defrag_ipv4.h
-index bcbd724..b3ac92b 100644
---- a/include/net/netfilter/ipv4/nf_defrag_ipv4.h
-+++ b/include/net/netfilter/ipv4/nf_defrag_ipv4.h
-@@ -4,5 +4,7 @@
+diff --git a/include/linux/netfilter_ipv6.h b/include/linux/netfilter_ipv6.h
+index aac42c2..ef9fa28 100644
+--- a/include/linux/netfilter_ipv6.h
++++ b/include/linux/netfilter_ipv6.h
+@@ -58,7 +58,8 @@ struct nf_ipv6_ops {
+ 			int (*output)(struct net *, struct sock *, struct sk_buff *));
+ 	int (*reroute)(struct sk_buff *skb, const struct nf_queue_entry *entry);
+ #if IS_MODULE(CONFIG_IPV6)
+-	int (*br_defrag)(struct net *net, struct sk_buff *skb, u32 user);
++	int (*br_defrag)(struct net *net, struct sk_buff *skb, u32 user,
++			 u16 *frag_max_size);
+ 	int (*br_fragment)(struct net *net, struct sock *sk,
+ 			   struct sk_buff *skb,
+ 			   struct nf_bridge_frag_data *data,
+@@ -118,7 +119,7 @@ static inline int nf_ip6_route(struct net *net, struct dst_entry **dst,
+ #include <net/netfilter/ipv6/nf_defrag_ipv6.h>
  
- struct net;
- int nf_defrag_ipv4_enable(struct net *);
-+int nf_ct_frag_gather(struct net *net, struct sk_buff *skb,
-+		      u32 user, u16 *frag_max_size);
- 
- #endif /* _NF_DEFRAG_IPV4_H */
-diff --git a/net/ipv4/netfilter/nf_defrag_ipv4.c b/net/ipv4/netfilter/nf_defrag_ipv4.c
-index 8115611..a4ac207 100644
---- a/net/ipv4/netfilter/nf_defrag_ipv4.c
-+++ b/net/ipv4/netfilter/nf_defrag_ipv4.c
-@@ -11,6 +11,7 @@
- #include <net/netns/generic.h>
- #include <net/route.h>
- #include <net/ip.h>
-+#include <net/inet_frag.h>
- 
- #include <linux/netfilter_bridge.h>
- #include <linux/netfilter_ipv4.h>
-@@ -22,6 +23,319 @@
- 
- static DEFINE_MUTEX(defrag4_mutex);
- 
-+/* Describe an entry in the "incomplete datagrams" queue. */
-+struct ipq {
-+	struct inet_frag_queue q;
-+
-+	u8		ecn; /* RFC3168 support */
-+	u16		max_df_size; /* largest frag with DF set seen */
-+	int             iif;
-+	unsigned int    rid;
-+	struct inet_peer *peer;
-+};
-+
-+static void ipq_kill(struct ipq *ipq)
-+{
-+	inet_frag_kill(&ipq->q);
-+}
-+
-+static void ipq_put(struct ipq *ipq)
-+{
-+	inet_frag_put(&ipq->q);
-+}
-+
-+static bool nf_ct_frag_coalesce_ok(const struct ipq *qp)
-+{
-+	return qp->q.key.v4.user == IP_DEFRAG_LOCAL_DELIVER;
-+}
-+
-+static u8 nf_ct_frag_ecn(u8 tos)
-+{
-+	return 1 << (tos & INET_ECN_MASK);
-+}
-+
-+static int nf_ct_frag_too_far(struct ipq *qp)
-+{
-+	struct inet_peer *peer = qp->peer;
-+	unsigned int max = qp->q.fqdir->max_dist;
-+	unsigned int start, end;
-+
-+	int rc;
-+
-+	if (!peer || !max)
-+		return 0;
-+
-+	start = qp->rid;
-+	end = atomic_inc_return(&peer->rid);
-+	qp->rid = end;
-+
-+	rc = qp->q.fragments_tail && (end - start) > max;
-+
-+	return rc;
-+}
-+
-+static int nf_ct_frag_reinit(struct ipq *qp)
-+{
-+	unsigned int sum_truesize = 0;
-+
-+	if (!mod_timer(&qp->q.timer, jiffies + qp->q.fqdir->timeout)) {
-+		refcount_inc(&qp->q.refcnt);
-+		return -ETIMEDOUT;
-+	}
-+
-+	sum_truesize = inet_frag_rbtree_purge(&qp->q.rb_fragments);
-+	sub_frag_mem_limit(qp->q.fqdir, sum_truesize);
-+
-+	qp->q.flags = 0;
-+	qp->q.len = 0;
-+	qp->q.meat = 0;
-+	qp->q.rb_fragments = RB_ROOT;
-+	qp->q.fragments_tail = NULL;
-+	qp->q.last_run_head = NULL;
-+	qp->iif = 0;
-+	qp->ecn = 0;
-+
-+	return 0;
-+}
-+
-+static struct ipq *ip_find(struct net *net, struct iphdr *iph,
-+			   u32 user, int vif)
-+{
-+	struct frag_v4_compare_key key = {
-+		.saddr = iph->saddr,
-+		.daddr = iph->daddr,
-+		.user = user,
-+		.vif = vif,
-+		.id = iph->id,
-+		.protocol = iph->protocol,
-+	};
-+	struct inet_frag_queue *q;
-+
-+	q = inet_frag_find(net->ipv4.fqdir, &key);
-+	if (!q)
-+		return NULL;
-+
-+	return container_of(q, struct ipq, q);
-+}
-+
-+static int nf_ct_frag_reasm(struct ipq *qp, struct sk_buff *skb,
-+			    struct sk_buff *prev_tail, struct net_device *dev,
-+			    u16 *frag_max_size)
-+{
-+	struct iphdr *iph;
-+	void *reasm_data;
-+	int len, err;
-+	u8 ecn;
-+
-+	ipq_kill(qp);
-+
-+	ecn = ip_frag_ecn_table[qp->ecn];
-+	if (unlikely(ecn == 0xff)) {
-+		err = -EINVAL;
-+		goto out_fail;
-+	}
-+
-+	/* Make the one we just received the head. */
-+	reasm_data = inet_frag_reasm_prepare(&qp->q, skb, prev_tail);
-+	if (!reasm_data)
-+		goto out_nomem;
-+
-+	len = ip_hdrlen(skb) + qp->q.len;
-+	err = -E2BIG;
-+	if (len > 65535)
-+		goto out_oversize;
-+
-+	inet_frag_reasm_finish(&qp->q, skb, reasm_data,
-+			       nf_ct_frag_coalesce_ok(qp));
-+
-+	skb->dev = dev;
-+	if (frag_max_size)
-+		*frag_max_size = max(qp->max_df_size, qp->q.max_size);
-+
-+	iph = ip_hdr(skb);
-+	iph->tot_len = htons(len);
-+	iph->tos |= ecn;
-+
-+	/* When we set IP_DF on a refragmented skb we must also force a
-+	 * call to ip_fragment to avoid forwarding a DF-skb of size s while
-+	 * original sender only sent fragments of size f (where f < s).
-+	 *
-+	 * We only set DF/IPSKB_FRAG_PMTU if such DF fragment was the largest
-+	 * frag seen to avoid sending tiny DF-fragments in case skb was built
-+	 * from one very small df-fragment and one large non-df frag.
-+	 */
-+	if (qp->max_df_size == qp->q.max_size)
-+		iph->frag_off = htons(IP_DF);
-+	else
-+		iph->frag_off = 0;
-+
-+	ip_send_check(iph);
-+
-+	qp->q.rb_fragments = RB_ROOT;
-+	qp->q.fragments_tail = NULL;
-+	qp->q.last_run_head = NULL;
-+	return 0;
-+
-+out_nomem:
-+	net_dbg_ratelimited("queue_glue: no memory for gluing queue %p\n", qp);
-+	err = -ENOMEM;
-+	goto out_fail;
-+out_oversize:
-+	net_info_ratelimited("Oversized IP packet from %pI4\n", &qp->q.key.v4.saddr);
-+out_fail:
-+	return err;
-+}
-+
-+static int nf_ct_frag_queue(struct ipq *qp, struct sk_buff *skb, u16 *frag_max_size)
-+{
-+	int ihl, end, flags, offset;
-+	struct sk_buff *prev_tail;
-+	struct net_device *dev;
-+	unsigned int fragsize;
-+	int err = -ENOENT;
-+	u8 ecn;
-+
-+	if (qp->q.flags & INET_FRAG_COMPLETE)
-+		goto err;
-+
-+	if (unlikely(nf_ct_frag_too_far(qp))) {
-+		err = nf_ct_frag_reinit(qp);
-+		if (unlikely(err)) {
-+			ipq_kill(qp);
-+			goto err;
-+		}
-+	}
-+
-+	ecn = nf_ct_frag_ecn(ip_hdr(skb)->tos);
-+	offset = ntohs(ip_hdr(skb)->frag_off);
-+	flags = offset & ~IP_OFFSET;
-+	offset &= IP_OFFSET;
-+	offset <<= 3;		/* offset is in 8-byte chunks */
-+	ihl = ip_hdrlen(skb);
-+
-+	/* Determine the position of this fragment. */
-+	end = offset + skb->len - skb_network_offset(skb) - ihl;
-+	err = -EINVAL;
-+
-+	/* Is this the final fragment? */
-+	if ((flags & IP_MF) == 0) {
-+		/* If we already have some bits beyond end
-+		 * or have different end, the segment is corrupted.
-+		 */
-+		if (end < qp->q.len ||
-+		    ((qp->q.flags & INET_FRAG_LAST_IN) && end != qp->q.len))
-+			goto discard_qp;
-+		qp->q.flags |= INET_FRAG_LAST_IN;
-+		qp->q.len = end;
-+	} else {
-+		if (end & 7) {
-+			end &= ~7;
-+			if (skb->ip_summed != CHECKSUM_UNNECESSARY)
-+				skb->ip_summed = CHECKSUM_NONE;
-+		}
-+		if (end > qp->q.len) {
-+			/* Some bits beyond end -> corruption. */
-+			if (qp->q.flags & INET_FRAG_LAST_IN)
-+				goto discard_qp;
-+			qp->q.len = end;
-+		}
-+	}
-+	if (end == offset)
-+		goto discard_qp;
-+
-+	err = -ENOMEM;
-+	if (!pskb_pull(skb, skb_network_offset(skb) + ihl))
-+		goto discard_qp;
-+
-+	err = pskb_trim_rcsum(skb, end - offset);
-+	if (err)
-+		goto discard_qp;
-+
-+	/* Note : skb->rbnode and skb->dev share the same location. */
-+	dev = skb->dev;
-+	/* Makes sure compiler wont do silly aliasing games */
-+	barrier();
-+
-+	prev_tail = qp->q.fragments_tail;
-+	err = inet_frag_queue_insert(&qp->q, skb, offset, end);
-+	if (err)
-+		goto insert_error;
-+
-+	if (dev)
-+		qp->iif = dev->ifindex;
-+
-+	qp->q.stamp = skb->tstamp;
-+	qp->q.meat += skb->len;
-+	qp->ecn |= ecn;
-+	add_frag_mem_limit(qp->q.fqdir, skb->truesize);
-+	if (offset == 0)
-+		qp->q.flags |= INET_FRAG_FIRST_IN;
-+
-+	fragsize = skb->len + ihl;
-+
-+	if (fragsize > qp->q.max_size)
-+		qp->q.max_size = fragsize;
-+
-+	if (ip_hdr(skb)->frag_off & htons(IP_DF) &&
-+	    fragsize > qp->max_df_size)
-+		qp->max_df_size = fragsize;
-+
-+	if (qp->q.flags == (INET_FRAG_FIRST_IN | INET_FRAG_LAST_IN) &&
-+	    qp->q.meat == qp->q.len) {
-+		unsigned long orefdst = skb->_skb_refdst;
-+
-+		skb->_skb_refdst = 0UL;
-+		err = nf_ct_frag_reasm(qp, skb, prev_tail, dev, frag_max_size);
-+		skb->_skb_refdst = orefdst;
-+		if (err)
-+			inet_frag_kill(&qp->q);
-+		return err;
-+	}
-+
-+	skb_dst_drop(skb);
-+	return -EINPROGRESS;
-+
-+insert_error:
-+	if (err == IPFRAG_DUP) {
-+		kfree_skb(skb);
-+		return -EINVAL;
-+	}
-+	err = -EINVAL;
-+discard_qp:
-+	inet_frag_kill(&qp->q);
-+err:
-+	kfree_skb(skb);
-+	return err;
-+}
-+
-+int nf_ct_frag_gather(struct net *net, struct sk_buff *skb,
-+		      u32 user, u16 *frag_max_size)
-+{
-+	struct net_device *dev = skb->dev ? : skb_dst(skb)->dev;
-+	int vif = l3mdev_master_ifindex_rcu(dev);
-+	struct ipq *qp;
-+
-+	skb_orphan(skb);
-+
-+	/* Lookup (or create) queue header */
-+	qp = ip_find(net, ip_hdr(skb), user, vif);
-+	if (qp) {
-+		int ret;
-+
-+		spin_lock(&qp->q.lock);
-+
-+		ret = nf_ct_frag_queue(qp, skb, frag_max_size);
-+
-+		spin_unlock(&qp->q.lock);
-+		ipq_put(qp);
-+		return ret;
-+	}
-+
-+	kfree_skb(skb);
-+	return -ENOMEM;
-+}
-+EXPORT_SYMBOL_GPL(nf_ct_frag_gather);
-+
- static int nf_ct_ipv4_gather_frags(struct net *net, struct sk_buff *skb,
- 				   u_int32_t user)
+ static inline int nf_ipv6_br_defrag(struct net *net, struct sk_buff *skb,
+-				    u32 user)
++				    u32 user, u16 *frag_max_size)
  {
+ #if IS_MODULE(CONFIG_IPV6)
+ 	const struct nf_ipv6_ops *v6_ops = nf_get_ipv6_ops();
+@@ -126,9 +127,9 @@ static inline int nf_ipv6_br_defrag(struct net *net, struct sk_buff *skb,
+ 	if (!v6_ops)
+ 		return 1;
+ 
+-	return v6_ops->br_defrag(net, skb, user);
++	return v6_ops->br_defrag(net, skb, user, frag_max_size);
+ #elif IS_BUILTIN(CONFIG_IPV6)
+-	return nf_ct_frag6_gather(net, skb, user);
++	return nf_ct_frag6_gather(net, skb, user, frag_max_size);
+ #else
+ 	return 1;
+ #endif
+diff --git a/include/net/netfilter/ipv6/nf_defrag_ipv6.h b/include/net/netfilter/ipv6/nf_defrag_ipv6.h
+index 6d31cd0..d83add2 100644
+--- a/include/net/netfilter/ipv6/nf_defrag_ipv6.h
++++ b/include/net/netfilter/ipv6/nf_defrag_ipv6.h
+@@ -9,7 +9,8 @@
+ 
+ int nf_ct_frag6_init(void);
+ void nf_ct_frag6_cleanup(void);
+-int nf_ct_frag6_gather(struct net *net, struct sk_buff *skb, u32 user);
++int nf_ct_frag6_gather(struct net *net, struct sk_buff *skb,
++		       u32 user, u16 *frag_max_size);
+ 
+ struct inet_frags_ctl;
+ 
+diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
+index 8096732..a11927b 100644
+--- a/net/bridge/netfilter/nf_conntrack_bridge.c
++++ b/net/bridge/netfilter/nf_conntrack_bridge.c
+@@ -170,7 +170,6 @@ static unsigned int nf_ct_br_defrag6(struct sk_buff *skb,
+ {
+ 	u16 zone_id = NF_CT_DEFAULT_ZONE_ID;
+ 	enum ip_conntrack_info ctinfo;
+-	struct br_input_skb_cb cb;
+ 	const struct nf_conn *ct;
+ 	int err;
+ 
+@@ -178,15 +177,13 @@ static unsigned int nf_ct_br_defrag6(struct sk_buff *skb,
+ 	if (ct)
+ 		zone_id = nf_ct_zone_id(nf_ct_zone(ct), CTINFO2DIR(ctinfo));
+ 
+-	br_skb_cb_save(skb, &cb, sizeof(struct inet6_skb_parm));
+-
+ 	err = nf_ipv6_br_defrag(state->net, skb,
+-				IP_DEFRAG_CONNTRACK_BRIDGE_IN + zone_id);
++				IP_DEFRAG_CONNTRACK_BRIDGE_IN + zone_id,
++				&BR_INPUT_SKB_CB(skb)->frag_max_size);
+ 	/* queued */
+ 	if (err == -EINPROGRESS)
+ 		return NF_STOLEN;
+ 
+-	br_skb_cb_restore(skb, &cb, IP6CB(skb)->frag_max_size);
+ 	return err == 0 ? NF_ACCEPT : NF_DROP;
+ }
+ 
+diff --git a/net/ipv6/netfilter/nf_conntrack_reasm.c b/net/ipv6/netfilter/nf_conntrack_reasm.c
+index fed9666..ab28390 100644
+--- a/net/ipv6/netfilter/nf_conntrack_reasm.c
++++ b/net/ipv6/netfilter/nf_conntrack_reasm.c
+@@ -128,7 +128,8 @@ static void __net_exit nf_ct_frags6_sysctl_unregister(struct net *net)
+ #endif
+ 
+ static int nf_ct_frag6_reasm(struct frag_queue *fq, struct sk_buff *skb,
+-			     struct sk_buff *prev_tail, struct net_device *dev);
++			     struct sk_buff *prev_tail, struct net_device *dev,
++			     u16 *frag_max_size);
+ 
+ static inline u8 ip6_frag_ecn(const struct ipv6hdr *ipv6h)
+ {
+@@ -167,7 +168,8 @@ static struct frag_queue *fq_find(struct net *net, __be32 id, u32 user,
+ 
+ 
+ static int nf_ct_frag6_queue(struct frag_queue *fq, struct sk_buff *skb,
+-			     const struct frag_hdr *fhdr, int nhoff)
++			     const struct frag_hdr *fhdr, int nhoff,
++			     u16 *frag_max_size)
+ {
+ 	unsigned int payload_len;
+ 	struct net_device *dev;
+@@ -286,7 +288,7 @@ static int nf_ct_frag6_queue(struct frag_queue *fq, struct sk_buff *skb,
+ 		unsigned long orefdst = skb->_skb_refdst;
+ 
+ 		skb->_skb_refdst = 0UL;
+-		err = nf_ct_frag6_reasm(fq, skb, prev, dev);
++		err = nf_ct_frag6_reasm(fq, skb, prev, dev, frag_max_size);
+ 		skb->_skb_refdst = orefdst;
+ 
+ 		/* After queue has assumed skb ownership, only 0 or
+@@ -313,7 +315,8 @@ static int nf_ct_frag6_queue(struct frag_queue *fq, struct sk_buff *skb,
+  *	the last and the first frames arrived and all the bits are here.
+  */
+ static int nf_ct_frag6_reasm(struct frag_queue *fq, struct sk_buff *skb,
+-			     struct sk_buff *prev_tail, struct net_device *dev)
++			     struct sk_buff *prev_tail, struct net_device *dev,
++			     u16 *frag_max_size)
+ {
+ 	void *reasm_data;
+ 	int payload_len;
+@@ -354,7 +357,8 @@ static int nf_ct_frag6_reasm(struct frag_queue *fq, struct sk_buff *skb,
+ 	skb->dev = dev;
+ 	ipv6_hdr(skb)->payload_len = htons(payload_len);
+ 	ipv6_change_dsfield(ipv6_hdr(skb), 0xff, ecn);
+-	IP6CB(skb)->frag_max_size = sizeof(struct ipv6hdr) + fq->q.max_size;
++	if (frag_max_size)
++		*frag_max_size = sizeof(struct ipv6hdr) + fq->q.max_size;
+ 
+ 	/* Yes, and fold redundant checksum back. 8) */
+ 	if (skb->ip_summed == CHECKSUM_COMPLETE)
+@@ -436,7 +440,8 @@ static int nf_ct_frag6_reasm(struct frag_queue *fq, struct sk_buff *skb,
+ 	return 0;
+ }
+ 
+-int nf_ct_frag6_gather(struct net *net, struct sk_buff *skb, u32 user)
++int nf_ct_frag6_gather(struct net *net, struct sk_buff *skb,
++		       u32 user, u16 *frag_max_size)
+ {
+ 	u16 savethdr = skb->transport_header;
+ 	int fhoff, nhoff, ret;
+@@ -471,7 +476,7 @@ int nf_ct_frag6_gather(struct net *net, struct sk_buff *skb, u32 user)
+ 
+ 	spin_lock_bh(&fq->q.lock);
+ 
+-	ret = nf_ct_frag6_queue(fq, skb, fhdr, nhoff);
++	ret = nf_ct_frag6_queue(fq, skb, fhdr, nhoff, frag_max_size);
+ 	if (ret == -EPROTO) {
+ 		skb->transport_header = savethdr;
+ 		ret = 0;
+diff --git a/net/ipv6/netfilter/nf_defrag_ipv6_hooks.c b/net/ipv6/netfilter/nf_defrag_ipv6_hooks.c
+index 6646a87..7d532ed 100644
+--- a/net/ipv6/netfilter/nf_defrag_ipv6_hooks.c
++++ b/net/ipv6/netfilter/nf_defrag_ipv6_hooks.c
+@@ -64,7 +64,8 @@ static unsigned int ipv6_defrag(void *priv,
+ #endif
+ 
+ 	err = nf_ct_frag6_gather(state->net, skb,
+-				 nf_ct6_defrag_user(state->hook, skb));
++				 nf_ct6_defrag_user(state->hook, skb),
++				 &IP6CB(skb)->frag_max_size);
+ 	/* queued */
+ 	if (err == -EINPROGRESS)
+ 		return NF_STOLEN;
+diff --git a/net/openvswitch/conntrack.c b/net/openvswitch/conntrack.c
+index 4340f25..5984a84 100644
+--- a/net/openvswitch/conntrack.c
++++ b/net/openvswitch/conntrack.c
+@@ -493,11 +493,11 @@ static int ovs_ct_helper(struct sk_buff *skb, u16 proto)
+ static int handle_fragments(struct net *net, struct sw_flow_key *key,
+ 			    u16 zone, struct sk_buff *skb)
+ {
+-	struct ovs_skb_cb ovs_cb = *OVS_CB(skb);
+ 	int err;
+ 
+ 	if (key->eth.type == htons(ETH_P_IP)) {
+ 		enum ip_defrag_users user = IP_DEFRAG_CONNTRACK_IN + zone;
++		struct ovs_skb_cb ovs_cb = *OVS_CB(skb);
+ 
+ 		memset(IPCB(skb), 0, sizeof(struct inet_skb_parm));
+ 		err = ip_defrag(net, skb, user);
+@@ -505,12 +505,12 @@ static int handle_fragments(struct net *net, struct sw_flow_key *key,
+ 			return err;
+ 
+ 		ovs_cb.mru = IPCB(skb)->frag_max_size;
++		*OVS_CB(skb) = ovs_cb;
+ #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+ 	} else if (key->eth.type == htons(ETH_P_IPV6)) {
+ 		enum ip6_defrag_users user = IP6_DEFRAG_CONNTRACK_IN + zone;
+ 
+-		memset(IP6CB(skb), 0, sizeof(struct inet6_skb_parm));
+-		err = nf_ct_frag6_gather(net, skb, user);
++		err = nf_ct_frag6_gather(net, skb, user, &OVS_CB(skb)->mru);
+ 		if (err) {
+ 			if (err != -EINPROGRESS)
+ 				kfree_skb(skb);
+@@ -518,7 +518,6 @@ static int handle_fragments(struct net *net, struct sw_flow_key *key,
+ 		}
+ 
+ 		key->ip.proto = ipv6_hdr(skb)->nexthdr;
+-		ovs_cb.mru = IP6CB(skb)->frag_max_size;
+ #endif
+ 	} else {
+ 		kfree_skb(skb);
+@@ -533,7 +532,6 @@ static int handle_fragments(struct net *net, struct sw_flow_key *key,
+ 	key->ip.frag = OVS_FRAG_TYPE_NONE;
+ 	skb_clear_hash(skb);
+ 	skb->ignore_df = 1;
+-	*OVS_CB(skb) = ovs_cb;
+ 
+ 	return 0;
+ }
+diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
+index 1b9c6d4..20f3d11 100644
+--- a/net/sched/act_ct.c
++++ b/net/sched/act_ct.c
+@@ -707,8 +707,7 @@ static int tcf_ct_handle_fragments(struct net *net, struct sk_buff *skb,
+ #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+ 		enum ip6_defrag_users user = IP6_DEFRAG_CONNTRACK_IN + zone;
+ 
+-		memset(IP6CB(skb), 0, sizeof(struct inet6_skb_parm));
+-		err = nf_ct_frag6_gather(net, skb, user);
++		err = nf_ct_frag6_gather(net, skb, user, NULL);
+ 		if (err && err != -EINPROGRESS)
+ 			goto out_free;
+ #else
 -- 
 1.8.3.1
 
