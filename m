@@ -2,86 +2,309 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2ECA214D2E
-	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Jul 2020 16:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06D8214D51
+	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Jul 2020 17:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgGEOiw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 5 Jul 2020 10:38:52 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:57603 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726924AbgGEOiw (ORCPT
+        id S1727796AbgGEPJ5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 5 Jul 2020 11:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726996AbgGEPJ4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 5 Jul 2020 10:38:52 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 8EE75410AB;
-        Sun,  5 Jul 2020 22:28:35 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     davem@davemloft.net, pablo@netfilter.org
-Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: [PATCH net-next 3/3] net/sched: act_ct: fix clobber qdisc_skb_cb in defrag
-Date:   Sun,  5 Jul 2020 22:28:32 +0800
-Message-Id: <1593959312-6135-4-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1593959312-6135-1-git-send-email-wenxu@ucloud.cn>
-References: <1593959312-6135-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSU9CS0tLSkJKTUNDTk9ZV1koWU
-        FJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkXIjULOBw5SCsrGi9PDD0dTQ4zMjocVlZVQk9ITShJWVdZCQ
-        4XHghZQVk1NCk2OjckKS43PllXWRYaDxIVHRRZQVk0MFkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PDI6Hxw5Dj5CFk0QETgdLTRI
-        KRkaCjFVSlVKTkJIQk5CSEpOTU1OVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUlPQ0k3Bg++
-X-HM-Tid: 0a731f60f88f2086kuqy8ee75410ab
+        Sun, 5 Jul 2020 11:09:56 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEBCC08C5E0
+        for <netfilter-devel@vger.kernel.org>; Sun,  5 Jul 2020 08:09:56 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id w6so39779162ejq.6
+        for <netfilter-devel@vger.kernel.org>; Sun, 05 Jul 2020 08:09:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+a+NkZk/z82sUmwa8lAR9nOo6EtZay2vAebfwkhsk6k=;
+        b=UmdjKJ50jJWLthi/DT6Fs4iFmWFWyVC7Y7eZrOOgck5bWy1qD1rM0CMXNWKAJDlHVL
+         MAa2rwS/APF5ZIIu7ChRJtgEZ53i8mPF0SjaJsiJKKGawhM60E/UxhFkn1iaFCLKkDvX
+         ABjq8jVd+aSn/1mm8gcR3scWaSwN1qN6a3STwAf24/t6ZOCeOFxo9U4AkYeDjAYvwVle
+         q6JqxJ/OONYa7eHq//8Oh7lZaQDQjIrW4vcI+eC9CiyArhAChgft2Fyel1fL2i4bo0FM
+         6wrDxMJNUxIz0louWOYU4KpBGZlmriR+9XhHFy+lzf7hU5ECANHSv5nn2SFzJDJ0i7zK
+         Dr2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+a+NkZk/z82sUmwa8lAR9nOo6EtZay2vAebfwkhsk6k=;
+        b=mi8RaRrqErO74upGGRyS+00wnfX9u8bF2BR5EJH+YFdrpjFhpSum1sXGRqO4iWT7gY
+         HOO9XxFauOBr5xMLAnLdIT9igNu6l1GQxsxTk9qZh2OIu2xRFONqxck9dZZxeWlgxtwL
+         uf06NT7hwjg3+NtXH9BK5A8ww0En0hhZXciTH6OUZ9IB2S9QSp8cFIByilEZJWKAXoY/
+         FAngoY61onsb05k0DKNL998fWaGU5bLQL/l92b2qewl2Zs4Q8Qj/XMf5rOQKn3SWizOD
+         9LxlWaUz+6Oug+WZX2KEUnmfIHtZkeU3U/Xy2XqYgKuipzfJXNhswzrEeOXE/0J6IIDn
+         d+Sw==
+X-Gm-Message-State: AOAM533cVLF+hygs7odFCe4AQK70Cu62U3UrIAJI8rwrX7DXoVqgXJcN
+        bKGcjebMCyLoSBoce0sc94j5PDik8WI+I03ibrvO
+X-Google-Smtp-Source: ABdhPJzoaJJDK0x6hHKY5IxkG2I5cD4JeTPSKb1HFyRKKxTq3fNryDZXuEZTaO6XoOjUl+x6NLfxACNsUd1JYOUwikw=
+X-Received: by 2002:a17:906:7d86:: with SMTP id v6mr38973801ejo.542.1593961794741;
+ Sun, 05 Jul 2020 08:09:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1593198710.git.rgb@redhat.com> <6abeb26e64489fc29b00c86b60b501c8b7316424.1593198710.git.rgb@redhat.com>
+In-Reply-To: <6abeb26e64489fc29b00c86b60b501c8b7316424.1593198710.git.rgb@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sun, 5 Jul 2020 11:09:43 -0400
+Message-ID: <CAHC9VhTx=4879F1MSXg4=Xd1i5rhEtyam6CakQhy=_ZjGtTaMA@mail.gmail.com>
+Subject: Re: [PATCH ghak90 V9 01/13] audit: collect audit task parameters
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        sgrubb@redhat.com, Ondrej Mosnacek <omosnace@redhat.com>,
+        dhowells@redhat.com, simo@redhat.com,
+        Eric Paris <eparis@parisplace.org>,
+        Serge Hallyn <serge@hallyn.com>, ebiederm@xmission.com,
+        nhorman@tuxdriver.com, Dan Walsh <dwalsh@redhat.com>,
+        mpatel@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+On Sat, Jun 27, 2020 at 9:21 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+>
+> The audit-related parameters in struct task_struct should ideally be
+> collected together and accessed through a standard audit API.
+>
+> Collect the existing loginuid, sessionid and audit_context together in a
+> new struct audit_task_info called "audit" in struct task_struct.
+>
+> Use kmem_cache to manage this pool of memory.
+> Un-inline audit_free() to be able to always recover that memory.
+>
+> Please see the upstream github issue
+> https://github.com/linux-audit/audit-kernel/issues/81
+>
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> Acked-by: Neil Horman <nhorman@tuxdriver.com>
+> Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
+> ---
+>  include/linux/audit.h | 49 +++++++++++++++++++++++------------
+>  include/linux/sched.h |  7 +----
+>  init/init_task.c      |  3 +--
+>  init/main.c           |  2 ++
+>  kernel/audit.c        | 71 +++++++++++++++++++++++++++++++++++++++++++++++++--
+>  kernel/audit.h        |  5 ++++
+>  kernel/auditsc.c      | 26 ++++++++++---------
+>  kernel/fork.c         |  1 -
+>  8 files changed, 124 insertions(+), 40 deletions(-)
+>
+> diff --git a/include/linux/audit.h b/include/linux/audit.h
+> index 3fcd9ee49734..c2150415f9df 100644
+> --- a/include/linux/audit.h
+> +++ b/include/linux/audit.h
+> @@ -100,6 +100,16 @@ enum audit_nfcfgop {
+>         AUDIT_XT_OP_UNREGISTER,
+>  };
+>
+> +struct audit_task_info {
+> +       kuid_t                  loginuid;
+> +       unsigned int            sessionid;
+> +#ifdef CONFIG_AUDITSYSCALL
+> +       struct audit_context    *ctx;
+> +#endif
+> +};
+> +
+> +extern struct audit_task_info init_struct_audit;
+> +
+>  extern int is_audit_feature_set(int which);
+>
+>  extern int __init audit_register_class(int class, unsigned *list);
 
-using nf_ct_frag_gather to defrag in act_ct to elide CB clear.
-Avoid serious crashes and problems in ct subsystem. Because Some packet
-schedulers store pointers in the qdisc CB private area and Parallel
-accesses to the SKB.
+...
 
-Fixes: b57dc7c13ea9 ("net/sched: Introduce action ct")
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- net/sched/act_ct.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index b62e6aaf28f0..2213ac670386 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -34,7 +34,6 @@
+>  #include <linux/kcsan.h>
+>
+>  /* task_struct member predeclarations (sorted alphabetically): */
+> -struct audit_context;
+>  struct backing_dev_info;
+>  struct bio_list;
+>  struct blk_plug;
+> @@ -946,11 +945,7 @@ struct task_struct {
+>         struct callback_head            *task_works;
+>
+>  #ifdef CONFIG_AUDIT
+> -#ifdef CONFIG_AUDITSYSCALL
+> -       struct audit_context            *audit_context;
+> -#endif
+> -       kuid_t                          loginuid;
+> -       unsigned int                    sessionid;
+> +       struct audit_task_info          *audit;
+>  #endif
+>         struct seccomp                  seccomp;
 
-diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
-index 20f3d11..75562f4 100644
---- a/net/sched/act_ct.c
-+++ b/net/sched/act_ct.c
-@@ -31,6 +31,7 @@
- #include <net/netfilter/nf_conntrack_zones.h>
- #include <net/netfilter/nf_conntrack_helper.h>
- #include <net/netfilter/nf_conntrack_acct.h>
-+#include <net/netfilter/ipv4/nf_defrag_ipv4.h>
- #include <net/netfilter/ipv6/nf_defrag_ipv6.h>
- #include <uapi/linux/netfilter/nf_nat.h>
- 
-@@ -695,14 +696,18 @@ static int tcf_ct_handle_fragments(struct net *net, struct sk_buff *skb,
- 	skb_get(skb);
- 
- 	if (family == NFPROTO_IPV4) {
-+#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4)
- 		enum ip_defrag_users user = IP_DEFRAG_CONNTRACK_IN + zone;
- 
--		memset(IPCB(skb), 0, sizeof(struct inet_skb_parm));
- 		local_bh_disable();
--		err = ip_defrag(net, skb, user);
-+		err = nf_ct_frag_gather(net, skb, user, NULL);
- 		local_bh_enable();
- 		if (err && err != -EINPROGRESS)
- 			goto out_free;
-+#else
-+		err = -EOPNOTSUPP;
-+		goto out_free;
-+#endif
- 	} else { /* NFPROTO_IPV6 */
- #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
- 		enum ip6_defrag_users user = IP6_DEFRAG_CONNTRACK_IN + zone;
--- 
-1.8.3.1
+In the early days of this patchset we talked a lot about how to handle
+the task_struct and the changes that would be necessary, ultimately
+deciding that encapsulating all of the audit fields into an
+audit_task_info struct.  However, what is puzzling me a bit at this
+moment is why we are only including audit_task_info in task_info by
+reference *and* making it a build time conditional (via CONFIG_AUDIT).
 
+If audit is enabled at build time it would seem that we are always
+going to allocate an audit_task_info struct, so I have to wonder why
+we don't simply embed it inside the task_info struct (similar to the
+seccomp struct in the snippet above?  Of course the audit_context
+struct needs to remain as is, I'm talking only about the
+task_info/audit_task_info struct.
+
+Richard, I'm sure you can answer this off the top of your head, but
+I'd have to go digging through the archives to pull out the relevant
+discussions so I figured I would just ask you for a reminder ... ?  I
+imagine it's also possible things have changed a bit since those early
+discussions and the solution we arrived at then no longer makes as
+much sense as it did before.
+
+> diff --git a/init/init_task.c b/init/init_task.c
+> index 15089d15010a..92d34c4b7702 100644
+> --- a/init/init_task.c
+> +++ b/init/init_task.c
+> @@ -130,8 +130,7 @@ struct task_struct init_task
+>         .thread_group   = LIST_HEAD_INIT(init_task.thread_group),
+>         .thread_node    = LIST_HEAD_INIT(init_signals.thread_head),
+>  #ifdef CONFIG_AUDIT
+> -       .loginuid       = INVALID_UID,
+> -       .sessionid      = AUDIT_SID_UNSET,
+> +       .audit          = &init_struct_audit,
+>  #endif
+>  #ifdef CONFIG_PERF_EVENTS
+>         .perf_event_mutex = __MUTEX_INITIALIZER(init_task.perf_event_mutex),
+> diff --git a/init/main.c b/init/main.c
+> index 0ead83e86b5a..349470ad7458 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -96,6 +96,7 @@
+>  #include <linux/jump_label.h>
+>  #include <linux/mem_encrypt.h>
+>  #include <linux/kcsan.h>
+> +#include <linux/audit.h>
+>
+>  #include <asm/io.h>
+>  #include <asm/bugs.h>
+> @@ -1028,6 +1029,7 @@ asmlinkage __visible void __init start_kernel(void)
+>         nsfs_init();
+>         cpuset_init();
+>         cgroup_init();
+> +       audit_task_init();
+>         taskstats_init_early();
+>         delayacct_init();
+>
+> diff --git a/kernel/audit.c b/kernel/audit.c
+> index 8c201f414226..5d8147a29291 100644
+> --- a/kernel/audit.c
+> +++ b/kernel/audit.c
+> @@ -203,6 +203,73 @@ struct audit_reply {
+>         struct sk_buff *skb;
+>  };
+>
+> +static struct kmem_cache *audit_task_cache;
+> +
+> +void __init audit_task_init(void)
+> +{
+> +       audit_task_cache = kmem_cache_create("audit_task",
+> +                                            sizeof(struct audit_task_info),
+> +                                            0, SLAB_PANIC, NULL);
+> +}
+> +
+> +/**
+> + * audit_alloc - allocate an audit info block for a task
+> + * @tsk: task
+> + *
+> + * Call audit_alloc_syscall to filter on the task information and
+> + * allocate a per-task audit context if necessary.  This is called from
+> + * copy_process, so no lock is needed.
+> + */
+> +int audit_alloc(struct task_struct *tsk)
+> +{
+> +       int ret = 0;
+> +       struct audit_task_info *info;
+> +
+> +       info = kmem_cache_alloc(audit_task_cache, GFP_KERNEL);
+> +       if (!info) {
+> +               ret = -ENOMEM;
+> +               goto out;
+> +       }
+> +       info->loginuid = audit_get_loginuid(current);
+> +       info->sessionid = audit_get_sessionid(current);
+> +       tsk->audit = info;
+> +
+> +       ret = audit_alloc_syscall(tsk);
+> +       if (ret) {
+> +               tsk->audit = NULL;
+> +               kmem_cache_free(audit_task_cache, info);
+> +       }
+> +out:
+> +       return ret;
+> +}
+
+This is a big nitpick, and I'm only mentioning this in the case you
+need to respin this patchset: the "out" label is unnecessary in the
+function above.  Simply return the error code, there is no need to
+jump to "out" only to immediately return the error code there and
+nothing more.
+
+> +struct audit_task_info init_struct_audit = {
+> +       .loginuid = INVALID_UID,
+> +       .sessionid = AUDIT_SID_UNSET,
+> +#ifdef CONFIG_AUDITSYSCALL
+> +       .ctx = NULL,
+> +#endif
+> +};
+> +
+> +/**
+> + * audit_free - free per-task audit info
+> + * @tsk: task whose audit info block to free
+> + *
+> + * Called from copy_process and do_exit
+> + */
+> +void audit_free(struct task_struct *tsk)
+> +{
+> +       struct audit_task_info *info = tsk->audit;
+> +
+> +       audit_free_syscall(tsk);
+> +       /* Freeing the audit_task_info struct must be performed after
+> +        * audit_log_exit() due to need for loginuid and sessionid.
+> +        */
+> +       info = tsk->audit;
+> +       tsk->audit = NULL;
+> +       kmem_cache_free(audit_task_cache, info);
+
+Another nitpick, and this one may even become a moot point given the
+question posed above.  However, is there any reason we couldn't get
+rid of "info" and simplify this a bit?
+
+  audit_free_syscall(tsk);
+  kmem_cache_free(audit_task_cache, tsk->audit);
+  tsk->audit = NULL;
+
+> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> index 468a23390457..f00c1da587ea 100644
+> --- a/kernel/auditsc.c
+> +++ b/kernel/auditsc.c
+> @@ -1612,7 +1615,6 @@ void __audit_free(struct task_struct *tsk)
+>                 if (context->current_state == AUDIT_RECORD_CONTEXT)
+>                         audit_log_exit();
+>         }
+> -
+>         audit_set_context(tsk, NULL);
+>         audit_free_context(context);
+>  }
+
+This nitpick is barely worth the time it is taking me to write this,
+but the whitespace change above isn't strictly necessary.
+
+
+--
+paul moore
+www.paul-moore.com
