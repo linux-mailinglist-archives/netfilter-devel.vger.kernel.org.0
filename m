@@ -2,81 +2,72 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D536F214C72
-	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Jul 2020 14:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603D2214D2F
+	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Jul 2020 16:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726833AbgGEMi1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 5 Jul 2020 08:38:27 -0400
-Received: from mail.thelounge.net ([91.118.73.15]:34271 "EHLO
-        mail.thelounge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726819AbgGEMi0 (ORCPT
+        id S1726924AbgGEOjL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 5 Jul 2020 10:39:11 -0400
+Received: from m9784.mail.qiye.163.com ([220.181.97.84]:57601 "EHLO
+        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726939AbgGEOjL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 5 Jul 2020 08:38:26 -0400
-Received: from srv-rhsoft.rhsoft.net (rh.vpn.thelounge.net [10.10.10.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: h.reindl@thelounge.net)
-        by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4B07Xc55kQzXMK;
-        Sun,  5 Jul 2020 14:38:24 +0200 (CEST)
-Subject: Re: [PATCH 29/29] netfilter: nf_tables: merge ipv4 and ipv6 nat chain
- types
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-References: <20190302183720.3220-1-pablo@netfilter.org>
- <20190302183720.3220-10-pablo@netfilter.org>
-From:   Reindl Harald <h.reindl@thelounge.net>
-Organization: the lounge interactive design
-Message-ID: <0f286666-8736-80d2-9a72-22c91745a31b@thelounge.net>
-Date:   Sun, 5 Jul 2020 14:38:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20190302183720.3220-10-pablo@netfilter.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sun, 5 Jul 2020 10:39:11 -0400
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 7A79541114;
+        Sun,  5 Jul 2020 22:28:33 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     davem@davemloft.net, pablo@netfilter.org
+Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: [PATCH net-next 0/3] make nf_ct_frag/6_gather elide the skb CB clear
+Date:   Sun,  5 Jul 2020 22:28:29 +0800
+Message-Id: <1593959312-6135-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VKSUNCQkJMSktLQ0hLSllXWShZQU
+        lCN1dZLVlBSVdZDwkaFQgSH1lBWR0iNQs4HDkzPVACKU8MPR0CGCM3OhxWVlVCTEpCKElZV1kJDh
+        ceCFlBWTU0KTY6NyQpLjc#WVdZFhoPEhUdFFlBWTQwWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MBQ6ATo6Mj5JOE1MATg0LTop
+        NAEKCy5VSlVKTkJIQk5CSEpOSUJPVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUlKTEo3Bg++
+X-HM-Tid: 0a731f60f06c2086kuqy7a79541114
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+From: wenxu <wenxu@ucloud.cn>
 
+Add nf_ct_frag_gather and Make nf_ct_frag6_gather elide the CB clear 
+when packets are defragmented by connection tracking. This can make
+each subsystem such as br_netfilter, openvswitch, act_ct do defrag
+without restore the CB. 
+This also avoid serious crashes and problems in  ct subsystem.
+Because Some packet schedulers store pointers in the qdisc CB private
+area and parallel accesses to the SKB.
 
-Am 02.03.19 um 19:37 schrieb Pablo Neira Ayuso:
-> From: Florian Westphal <fw@strlen.de>
-> 
-> Merge the ipv4 and ipv6 nat chain type. This is the last
-> missing piece which allows to provide inet family support
-> for nat in a follow patch.
-> 
-> The kconfig knobs for ipv4/ipv6 nat chain are removed, the
-> nat chain type will be built unconditionally if NFT_NAT
-> expression is enabled.
-> 
-> Before:
->    text	   data	    bss	    dec	    hex	filename
->    1576     896       0    2472     9a8 nft_chain_nat_ipv4.ko
->    1697     896       0    2593     a21 nft_chain_nat_ipv6.ko
-> 
-> After:
->    text	   data	    bss	    dec	    hex	filename
->    1832     896       0    2728     aa8 nft_chain_nat.ko
+This series following up
+http://patchwork.ozlabs.org/project/netdev/patch/1593422178-26949-1-git-send-email-wenxu@ucloud.cn/
 
-there are similar *probably* low hanging fruits with 5.7
+patch1: add nf_ct_frag_gather elide the CB clear
+patch2: make nf_ct_frag6_gather elide the CB clear
+patch3: fix clobber qdisc_skb_cb in act_ct with defrag
 
-"ip6_udp_tunnel" and "nf_defrag_ipv6" are unconditionally loaded even on
-pure ipv4 setups and the two ipv6 sepcific rehect modules only when ipv6
-is in use
+wenxu (3):
+  netfilter: nf_defrag_ipv4: Add nf_ct_frag_gather support
+  netfilter: nf_conntrack_reasm: make nf_ct_frag6_gather elide the CB
+    clear
+  net/sched: act_ct: fix clobber qdisc_skb_cb in defrag
 
-3,5K udp_tunnel.ko.xz
-2,5K ip6_udp_tunnel.ko.xz
+ include/linux/netfilter_ipv6.h              |   9 +-
+ include/net/netfilter/ipv4/nf_defrag_ipv4.h |   2 +
+ include/net/netfilter/ipv6/nf_defrag_ipv6.h |   3 +-
+ net/bridge/netfilter/nf_conntrack_bridge.c  |   7 +-
+ net/ipv4/netfilter/nf_defrag_ipv4.c         | 314 ++++++++++++++++++++++++++++
+ net/ipv6/netfilter/nf_conntrack_reasm.c     |  19 +-
+ net/ipv6/netfilter/nf_defrag_ipv6_hooks.c   |   3 +-
+ net/openvswitch/conntrack.c                 |   8 +-
+ net/sched/act_ct.c                          |  12 +-
+ 9 files changed, 350 insertions(+), 27 deletions(-)
 
-2,4K nf_defrag_ipv4.ko.xz
-6,7K nf_defrag_ipv6.ko.xz
+-- 
+1.8.3.1
 
-2.3K ipt_REJECT.ko.xz
-2.3K ip6t_REJECT.ko.xz
-
-3.1K nf_reject_ipv4.ko.xz
-4.1K nf_reject_ipv6.ko.x
