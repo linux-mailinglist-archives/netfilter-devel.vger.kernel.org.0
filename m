@@ -2,69 +2,94 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF302165A5
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jul 2020 06:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC1C216E54
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jul 2020 16:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgGGEzQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Jul 2020 00:55:16 -0400
-Received: from m9784.mail.qiye.163.com ([220.181.97.84]:7556 "EHLO
-        m9784.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727789AbgGGEzP (ORCPT
+        id S1727064AbgGGODY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 Jul 2020 10:03:24 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:57471 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726900AbgGGODX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 Jul 2020 00:55:15 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m9784.mail.qiye.163.com (Hmail) with ESMTPA id 3509541AED;
-        Tue,  7 Jul 2020 12:55:13 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     netdev@vger.kernel.org
-Cc:     netfilter-devel@vger.kernel.org, fw@strlen.de
-Subject: [PATCH net-next v2 3/3] net/sched: act_ct: fix clobber qdisc_skb_cb in defrag
-Date:   Tue,  7 Jul 2020 12:55:11 +0800
-Message-Id: <1594097711-9365-4-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1594097711-9365-1-git-send-email-wenxu@ucloud.cn>
-References: <1594097711-9365-1-git-send-email-wenxu@ucloud.cn>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZVkpVSUlNS0tLSkNCTENKSkJZV1koWU
-        FJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkdIjULOBw6SBUDGAM6OikdOjABLzocVlZVSklPSShJWVdZCQ
-        4XHghZQVk1NCk2OjckKS43PllXWRYaDxIVHRRZQVk0MFkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NRA6MQw6TD4BFk0vNCJRAgo1
-        NElPCRdVSlVKTkJPS0JMTEpISUxCVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUpDQkw3Bg++
-X-HM-Tid: 0a7327a0c04c2086kuqy3509541aed
+        Tue, 7 Jul 2020 10:03:23 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id DE4245C0256;
+        Tue,  7 Jul 2020 10:03:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 07 Jul 2020 10:03:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=u5rnb+jxQXfXVkt90qBC8av3Y/q
+        g6Z3+WFIOWQDIuH8=; b=LRCv8jnIW2Rto88kdS1r1CoZfYWZChZ1e0Q8IMRl+6h
+        HA1Jnpdoqhh8qccVgsQi06emcJYKmGeoJuJt0mi5RHMJ5xXy1gV77WNuSNZ9VYQ4
+        jzhPcYFWEsB7lJFaP3eZ2PGvwRY0+QDbBoem400Gmrg5pr+XLLAEJwHFXv0EVZMU
+        fFN4dU9n/63xkz17XuC0jmMTjwTAgio/USNfJrGEv/v3H8wQF1aNDtDLoQlEw9P/
+        rOpuisqMdoGWVeI96ffzKl65eSIcpAns0A2YASwdLYhynIQCT3MAUtVqHA0EHPs9
+        iuqn3J5KvApz8qBEKVEeQd0i5mhaXXcWxsb2y1Zk1hg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=u5rnb+
+        jxQXfXVkt90qBC8av3Y/qg6Z3+WFIOWQDIuH8=; b=LnJciwxqxMpgk6/6VpvGMy
+        qVFlMssWIYngv9Jf9W7v2UtJGH8L/xI37q3GW3bFdyGS4fdUqqMFDi2Bus11fePZ
+        bQNecptoMP+68KZ4iOaT3gYK2svQx9a4vQG8QDAfqVcmknZ0TP9vg+de/aDmvmNz
+        HhEUJcuPLOGvS8vzliklju0OwEXag+60QzIMOyJC4JNIn3KQAxa65Pk62dvttntC
+        ZS+YaD5SG40XOwKaKXM3PVXsKeM6x97420Oel4ftoSTo/tpVRRaQpK5qWQ8Arl9q
+        Fm/DVSfaS+SJJ8Bqx76mgGc4Ibw7o7HnFgnrwJz1ReHhGKVtHFQDLfxG/uekrHOA
+        ==
+X-ME-Sender: <xms:qoAEXxtV6Ca0IjdEKKofKsrx8gD9EDp8Hky5y8OrJYl2UyFneOhdXA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehgdeiiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
+    keeirdekledruddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:qoAEX6eaPHTxJ2HCx8bH92Z4Rb1GaTsFozH6tqhF_XgwKzFpil5n1Q>
+    <xmx:qoAEX0w7FEzYmIimUwMnBVhBRHDjC154aac_ejQdjUUVAODI1x1jww>
+    <xmx:qoAEX4Pz1mj4yW7_tugtzHgUi_oBuZlewLi226WJXhwvGxyEf800HA>
+    <xmx:qoAEXznMOa_VK937hs9u0oeyH06Q1_tmGEh12gRakvneKY6O6ebgwA>
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A6A613060067;
+        Tue,  7 Jul 2020 10:03:21 -0400 (EDT)
+Date:   Tue, 7 Jul 2020 16:03:20 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Vasily Averin <vvs@virtuozzo.com>, netfilter-devel@vger.kernel.org,
+        Florian Westphal <fw@strlen.de>, stable@vger.kernel.org
+Subject: Re: [PATCH v4.10] netfilter: nf_conntrack_h323: lost .data_len
+ definition for Q.931/ipv6
+Message-ID: <20200707140320.GA4064836@kroah.com>
+References: <c2385b5c-309c-cc64-2e10-a0ef62897502@virtuozzo.com>
+ <20200624121232.GA28150@salvia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200624121232.GA28150@salvia>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
+On Wed, Jun 24, 2020 at 02:12:32PM +0200, Pablo Neira Ayuso wrote:
+> CC'ing stable@vger.kernel.org
+> 
+> On Tue, Jun 09, 2020 at 10:53:22AM +0300, Vasily Averin wrote:
+> > Could you please push this patch into stable@?
+> > it fixes memory corruption in kernels  v3.5 .. v4.10
+> > 
+> > Lost .data_len definition leads to write beyond end of
+> > struct nf_ct_h323_master. Usually it corrupts following
+> > struct nf_conn_nat, however if nat is not loaded it corrupts
+> > following slab object.
+> > 
+> > In mainline this problem went away in v4.11,
+> > after commit 9f0f3ebeda47 ("netfilter: helpers: remove data_len usage
+> > for inkernel helpers") however many stable kernels are still affected.
+> 
+> -stable maintainers of: 3.16, 4.4 and 4.9.
 
-using ip_defrag_ignore_cb to defrag in act_ct to elide CB clear.
-Avoid serious crashes and problems in ct subsystem. Because Some packet
-schedulers store pointers in the qdisc CB private area and Parallel
-accesses to the SKB.
+Now queued up to 4.4 and 4.9, thanks.  3.16 is end-of-life.
 
-Fixes: b57dc7c13ea9 ("net/sched: Introduce action ct")
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- net/sched/act_ct.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
-index 20f3d11..a8e9e62 100644
---- a/net/sched/act_ct.c
-+++ b/net/sched/act_ct.c
-@@ -697,10 +697,7 @@ static int tcf_ct_handle_fragments(struct net *net, struct sk_buff *skb,
- 	if (family == NFPROTO_IPV4) {
- 		enum ip_defrag_users user = IP_DEFRAG_CONNTRACK_IN + zone;
- 
--		memset(IPCB(skb), 0, sizeof(struct inet_skb_parm));
--		local_bh_disable();
--		err = ip_defrag(net, skb, user);
--		local_bh_enable();
-+		err = ip_defrag_ignore_cb(net, skb, user, NULL);
- 		if (err && err != -EINPROGRESS)
- 			goto out_free;
- 	} else { /* NFPROTO_IPV6 */
--- 
-1.8.3.1
-
+greg k-h
