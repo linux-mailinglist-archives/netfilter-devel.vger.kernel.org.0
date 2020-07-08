@@ -2,324 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAAA218388
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2020 11:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F2B218844
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jul 2020 15:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgGHJ1V (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 8 Jul 2020 05:27:21 -0400
-Received: from correo.us.es ([193.147.175.20]:42774 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726900AbgGHJ1V (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:27:21 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id D53FAEB463
-        for <netfilter-devel@vger.kernel.org>; Wed,  8 Jul 2020 11:27:17 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id C2B83DA3A3
-        for <netfilter-devel@vger.kernel.org>; Wed,  8 Jul 2020 11:27:17 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id B7B3FDA3AA; Wed,  8 Jul 2020 11:27:17 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 59E52DA3A9
-        for <netfilter-devel@vger.kernel.org>; Wed,  8 Jul 2020 11:27:15 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 08 Jul 2020 11:27:15 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 3739D42EF42A
-        for <netfilter-devel@vger.kernel.org>; Wed,  8 Jul 2020 11:27:15 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 2/2] src: allow for variables in the log prefix string
-Date:   Wed,  8 Jul 2020 11:27:07 +0200
-Message-Id: <20200708092707.21405-2-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200708092707.21405-1-pablo@netfilter.org>
-References: <20200708092707.21405-1-pablo@netfilter.org>
+        id S1729343AbgGHNAd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 8 Jul 2020 09:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728941AbgGHNAd (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 8 Jul 2020 09:00:33 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAA3C08E6DC
+        for <netfilter-devel@vger.kernel.org>; Wed,  8 Jul 2020 06:00:32 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id y18so26819331lfh.11
+        for <netfilter-devel@vger.kernel.org>; Wed, 08 Jul 2020 06:00:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=/vBVbAxvijag95IA6OM26aTa2bKDnUtimRlc1mZm/7M=;
+        b=qZY/CejuHtUVrdSD8dEPXeCXr7XBWtdpFsg709BcYDT1tXmmVUeY+Q/t3D9nLGNppB
+         wenxQJjU6KeiguNg8HFSnnjQFmvK7oCPwdposw5jEgjSNNCRP+aJBbc/rlNwYWPwN6Me
+         kNpvbU0RcYGj23tsFCQMrPti2XYEptHWq3fWxuonLKxg7T2OO2arFCl1Az3cvGTTMWRP
+         INoVzpSVA/7/YtygGrDoqCLUaV++F3UAJhU2PkvWP/ex7L8Z5iz95srzMZTjZSazRx3D
+         3IJAZqUomSsSSGooTapdW/+Kp8KwOplJqfMy9gvU4smxCO60jj3s1pEkj3A1WeW/gshr
+         uHUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=/vBVbAxvijag95IA6OM26aTa2bKDnUtimRlc1mZm/7M=;
+        b=V375ZNQJQMuMJp8t3YM6aHmnR++dTn2IaHYco6hQM5F2a1WYGC7TzxLzYRxW/DTgDU
+         YEKHCiUXhftC3w3ZKZeJdtN6aVVUNhq8XEaP6JlwiCh1MYJ13eUhwIj6CjVccZcpk0Mp
+         O8L6QtFeHPopS/3WpvsnRJ4BcsF6GYXmZpmb+AGfcpzyEV5Ricx4lowczTginOvOnt4t
+         /JEqmh0pT0yRdcYRRDKIEtAvpw5Q6rVf+OiSF81nJAa7TH9hwDHvxr1t99uPVjbL0Gml
+         BrSCkow82qeH5e+27tPwvbEzkNdAtYuT0NiWdHtjl4/I6CBCvR83fk5DmdHdK0jx5VYD
+         jQTg==
+X-Gm-Message-State: AOAM530c0w0kpGgpUv/l515TT6aEaKNFXS7vb0UDEEBSS4mHLetCjr+K
+        19O2PRtgdbe2qqRBb7+/oEcAfaeHulevjlkY+f8=
+X-Google-Smtp-Source: ABdhPJz2XL4+iBO0mh+Jg2iG2/WMcLCfalCtzIaBRJwioci0NUjdZHCVurcUi887cqzhZB0pAUxe95i5+vPkEEBUOR0=
+X-Received: by 2002:a19:c389:: with SMTP id t131mr23045869lff.130.1594213230257;
+ Wed, 08 Jul 2020 06:00:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Received: by 2002:ac2:5159:0:0:0:0:0 with HTTP; Wed, 8 Jul 2020 06:00:29 -0700 (PDT)
+Reply-To: mmsafiatou057@gmail.com
+From:   "Mrs. Safitaou Zoungrana" <norasaaid47@gmail.com>
+Date:   Wed, 8 Jul 2020 13:00:29 +0000
+Message-ID: <CAA_7d44Sn0byGAw3Mu3=UJa2dnjtT7ZTd28acTH_VkduuVm3iw@mail.gmail.com>
+Subject: My Dear Beloved One,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-For example:
+My Dear Beloved One,
 
- define test = "state"
- define foo = "match"
+I greet you in the name of God almighty the givers of all good things
+in life. Please kindly pardon me for any inconvenience this letter may
+cost you because I know it may come to you as a surprise as we have no
+previous correspondence.  I sent this mail praying for it to reach you
+in good health, since I myself are in a very critical health condition
+in which I sleep every night without knowing if I may be alive to see
+the next day.
 
- table x {
-        chain y {
-                ct state invalid log prefix "invalid $test $foo:"
-        }
- }
+I am Mrs. Safiatou Zoungrana,  the wife of late Engineer Ralph
+Alphonso Zoungrana from Paris France but based here in Burkina Faso
+West Africa since eight years ago as a business woman dealing with
+gold exportation and Sales. We have been married for years before his
+sudden death although we were childless. I have been diagnosed with
+ovarian cancer and I have been battling with the sickness when my late
+lovely husband of a blessed memory was alive. May his soul rest in
+peace, Amen.
 
-This patch scans for variables in the log prefix string. The log prefix
-expression is a list of constant and variable expression that are
-converted into a constant expression from the evaluation phase.
+My late Husband left the sum of =E2=82=AC7.900.000.00 Seven Million Nine
+Hundred Thousand Euros in a fix/suspense account in one of the prime
+bank here in Burkina Faso. Recently, my Doctor told me that I have few
+days to live due to the cancer problem. The one that disturbs me most
+is my blood pressure sickness.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- src/evaluate.c                                |  49 ++++++-
- src/parser_bison.y                            | 122 +++++++++++++++++-
- .../optionals/dumps/log_prefix_0.nft          |   5 +
- tests/shell/testcases/optionals/log_prefix_0  |  16 +++
- 4 files changed, 187 insertions(+), 5 deletions(-)
- create mode 100644 tests/shell/testcases/optionals/dumps/log_prefix_0.nft
- create mode 100755 tests/shell/testcases/optionals/log_prefix_0
+Having known my health condition I decided to seek for your kind
+assistance to transfer this fund into your account and you will use it
+to establish an orphanage home in my name. I will give you more
+details about the project as soon as I receive your reply in my
+private email (mmsafiatou057@gmail.com) to handle this project because
+I do not want to state all here until I see your reply, desire and
+commitment to handle this project.
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 640a7d465bae..d3368bacc6af 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -19,6 +19,7 @@
- #include <linux/netfilter/nf_tables.h>
- #include <linux/netfilter/nf_synproxy.h>
- #include <linux/netfilter/nf_nat.h>
-+#include <linux/netfilter/nf_log.h>
- #include <linux/netfilter_ipv4.h>
- #include <netinet/ip_icmp.h>
- #include <netinet/icmp6.h>
-@@ -3203,8 +3204,50 @@ static int stmt_evaluate_queue(struct eval_ctx *ctx, struct stmt *stmt)
- 	return 0;
- }
- 
-+static int stmt_evaluate_log_prefix(struct eval_ctx *ctx, struct stmt *stmt)
-+{
-+	char prefix[NF_LOG_PREFIXLEN] = {}, tmp[NF_LOG_PREFIXLEN] = {};
-+	int len = sizeof(prefix), offset = 0, ret;
-+	struct expr *expr;
-+	size_t size = 0;
-+
-+	if (stmt->log.prefix->etype != EXPR_LIST)
-+		return 0;
-+
-+	list_for_each_entry(expr, &stmt->log.prefix->expressions, list) {
-+		switch (expr->etype) {
-+		case EXPR_VALUE:
-+			expr_to_string(expr, tmp);
-+			ret = snprintf(prefix + offset, len, "%s", tmp);
-+			break;
-+		case EXPR_VARIABLE:
-+			ret = snprintf(prefix + offset, len, "%s",
-+				       expr->sym->expr->identifier);
-+			break;
-+		default:
-+			BUG("unknown expresion type %s\n", expr_name(expr));
-+			break;
-+		}
-+		SNPRINTF_BUFFER_SIZE(ret, size, len, offset);
-+	}
-+
-+	if (len == NF_LOG_PREFIXLEN)
-+		return stmt_error(ctx, stmt, "log prefix is too long");
-+
-+	expr_free(stmt->log.prefix);
-+
-+	stmt->log.prefix =
-+		constant_expr_alloc(&stmt->log.prefix->location, &string_type,
-+				    BYTEORDER_HOST_ENDIAN,
-+				    strlen(prefix) * BITS_PER_BYTE,
-+				    prefix);
-+	return 0;
-+}
-+
- static int stmt_evaluate_log(struct eval_ctx *ctx, struct stmt *stmt)
- {
-+	int ret = 0;
-+
- 	if (stmt->log.flags & (STMT_LOG_GROUP | STMT_LOG_SNAPLEN |
- 			       STMT_LOG_QTHRESHOLD)) {
- 		if (stmt->log.flags & STMT_LOG_LEVEL)
-@@ -3218,7 +3261,11 @@ static int stmt_evaluate_log(struct eval_ctx *ctx, struct stmt *stmt)
- 	    (stmt->log.flags & ~STMT_LOG_LEVEL || stmt->log.logflags))
- 		return stmt_error(ctx, stmt,
- 				  "log level audit doesn't support any further options");
--	return 0;
-+
-+	if (stmt->log.prefix)
-+		ret = stmt_evaluate_log_prefix(ctx, stmt);
-+
-+	return ret;
- }
- 
- static int stmt_evaluate_set(struct eval_ctx *ctx, struct stmt *stmt)
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 2fecc3472fba..face99507b82 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -2636,11 +2636,125 @@ log_args		:	log_arg
- 
- log_arg			:	PREFIX			string
- 			{
--				struct expr *expr;
-+				struct scope *scope = current_scope(state);
-+				bool done = false, another_var = false;
-+				char *start, *end, scratch = '\0';
-+				struct expr *expr, *item;
-+				struct symbol *sym;
-+				enum {
-+					PARSE_TEXT,
-+					PARSE_VAR,
-+				} prefix_state;
-+
-+				/* No variables in log prefix, skip. */
-+				if (!strchr($2, '$')) {
-+					expr = constant_expr_alloc(&@$, &string_type,
-+								   BYTEORDER_HOST_ENDIAN,
-+								   (strlen($2) + 1) * BITS_PER_BYTE, $2);
-+					$<stmt>0->log.prefix = expr;
-+					$<stmt>0->log.flags |= STMT_LOG_PREFIX;
-+					break;
-+				}
- 
--				expr = constant_expr_alloc(&@$, &string_type,
--							   BYTEORDER_HOST_ENDIAN,
--							   strlen($2) * BITS_PER_BYTE, $2);
-+				/* Parse variables in log prefix string using a
-+				 * state machine parser with two states. This
-+				 * parser creates list of expressions composed
-+				 * of constant and variable expressions.
-+				 */
-+				expr = compound_expr_alloc(&@$, EXPR_LIST);
-+
-+				start = (char *)$2;
-+
-+				if (*start != '$') {
-+					prefix_state = PARSE_TEXT;
-+				} else {
-+					prefix_state = PARSE_VAR;
-+					start++;
-+				}
-+				end = start;
-+
-+				/* Not nice, but works. */
-+				while (!done) {
-+					switch (prefix_state) {
-+					case PARSE_TEXT:
-+						while (*end != '\0' && *end != '$')
-+							end++;
-+
-+						if (*end == '\0')
-+							done = true;
-+
-+						*end = '\0';
-+						item = constant_expr_alloc(&@$, &string_type,
-+									   BYTEORDER_HOST_ENDIAN,
-+									   (strlen(start) + 1) * BITS_PER_BYTE,
-+									   start);
-+						compound_expr_add(expr, item);
-+
-+						if (done)
-+							break;
-+
-+						start = end + 1;
-+						end = start;
-+
-+						/* fall through */
-+					case PARSE_VAR:
-+						while (isalnum(*end) || *end == '_')
-+							end++;
-+
-+						if (*end == '\0')
-+							done = true;
-+						else if (*end == '$')
-+							another_var = true;
-+						else
-+							scratch = *end;
-+
-+						*end = '\0';
-+
-+						sym = symbol_get(scope, start);
-+						if (!sym) {
-+							sym = symbol_lookup_fuzzy(scope, start);
-+							if (sym) {
-+								erec_queue(error(&@2, "unknown identifier '%s'; "
-+										 "did you mean identifier ‘%s’?",
-+										 start, sym->identifier),
-+									   state->msgs);
-+							} else {
-+								erec_queue(error(&@2, "unknown identifier '%s'",
-+										 start),
-+									   state->msgs);
-+							}
-+							expr_free(expr);
-+							xfree($2);
-+							YYERROR;
-+						}
-+						item = variable_expr_alloc(&@$, scope, sym);
-+						compound_expr_add(expr, item);
-+
-+						if (done)
-+							break;
-+
-+						/* Restore original byte after
-+						 * symbol lookup.
-+						 */
-+						if (scratch) {
-+							*end = scratch;
-+							scratch = '\0';
-+						}
-+
-+						start = end;
-+						if (another_var) {
-+							another_var = false;
-+							start++;
-+							prefix_state = PARSE_VAR;
-+						} else {
-+							prefix_state = PARSE_TEXT;
-+						}
-+						end = start;
-+						break;
-+					}
-+				}
-+
-+				xfree($2);
- 				$<stmt>0->log.prefix	 = expr;
- 				$<stmt>0->log.flags 	|= STMT_LOG_PREFIX;
- 			}
-diff --git a/tests/shell/testcases/optionals/dumps/log_prefix_0.nft b/tests/shell/testcases/optionals/dumps/log_prefix_0.nft
-new file mode 100644
-index 000000000000..8c11d697f9f2
---- /dev/null
-+++ b/tests/shell/testcases/optionals/dumps/log_prefix_0.nft
-@@ -0,0 +1,5 @@
-+table ip x {
-+	chain y {
-+		ct state invalid log prefix "invalid state match, logging:"
-+	}
-+}
-diff --git a/tests/shell/testcases/optionals/log_prefix_0 b/tests/shell/testcases/optionals/log_prefix_0
-new file mode 100755
-index 000000000000..513a9e74b92e
---- /dev/null
-+++ b/tests/shell/testcases/optionals/log_prefix_0
-@@ -0,0 +1,16 @@
-+#!/bin/bash
-+
-+set -e
-+
-+TMP=$(mktemp)
-+
-+RULESET='define test = "state"
-+define foo = "match, logging"
-+
-+table x {
-+        chain y {
-+                ct state invalid log prefix "invalid $test $foo:"
-+        }
-+}'
-+
-+$NFT -f - <<< "$RULESET"
--- 
-2.20.1
-
+My Regards to your family.
+Mrs. Safiatou Zoungrana.
