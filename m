@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A340221C3A5
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jul 2020 12:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B187321C3AB
+	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jul 2020 12:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgGKKSx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 11 Jul 2020 06:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
+        id S1726510AbgGKKTZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 11 Jul 2020 06:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgGKKSx (ORCPT
+        with ESMTP id S1726208AbgGKKTZ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 11 Jul 2020 06:18:53 -0400
+        Sat, 11 Jul 2020 06:19:25 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7202C08C5DD
-        for <netfilter-devel@vger.kernel.org>; Sat, 11 Jul 2020 03:18:52 -0700 (PDT)
-Received: from localhost ([::1]:59418 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7560C08C5DD
+        for <netfilter-devel@vger.kernel.org>; Sat, 11 Jul 2020 03:19:24 -0700 (PDT)
+Received: from localhost ([::1]:59454 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.94)
         (envelope-from <phil@nwl.cc>)
-        id 1juCao-0007Dh-LW; Sat, 11 Jul 2020 12:18:51 +0200
+        id 1juCbL-0007GT-GL; Sat, 11 Jul 2020 12:19:23 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 07/18] nft: Reorder enum nft_table_type
-Date:   Sat, 11 Jul 2020 12:18:20 +0200
-Message-Id: <20200711101831.29506-8-phil@nwl.cc>
+Subject: [iptables PATCH 08/18] nft: cache: Fetch only interesting tables from kernel
+Date:   Sat, 11 Jul 2020 12:18:21 +0200
+Message-Id: <20200711101831.29506-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200711101831.29506-1-phil@nwl.cc>
 References: <20200711101831.29506-1-phil@nwl.cc>
@@ -35,34 +35,87 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This list of table types is used internally only, the actual values
-don't matter that much. Reorder them to match the order in which
-iptables-legacy-save prints them (if present). As a consequence, entries
-in builtin_table array 'xtables_ipv4' are correctly sorted as well.
+Use the builtin_table array nft_handle->tables points at to gather a
+list of table names the calling tool is interested in and fetch only
+those instead of requesting a dump of all tables. This increases caching
+overhead due to the individual sendmsg() calls but leads to a table list
+in defined ordering.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ iptables/nft-cache.c | 40 ++++++++++++++++++++++++++--------------
+ 1 file changed, 26 insertions(+), 14 deletions(-)
 
-diff --git a/iptables/nft.h b/iptables/nft.h
-index fd390e7f90765..247255ac9e3c5 100644
---- a/iptables/nft.h
-+++ b/iptables/nft.h
-@@ -8,10 +8,10 @@
- #include <libiptc/linux_list.h>
+diff --git a/iptables/nft-cache.c b/iptables/nft-cache.c
+index 059f0a7f7891e..f8bb2d09c6434 100644
+--- a/iptables/nft-cache.c
++++ b/iptables/nft-cache.c
+@@ -133,7 +133,8 @@ static int fetch_table_cache(struct nft_handle *h)
+ 	char buf[16536];
+ 	struct nlmsghdr *nlh;
+ 	struct nftnl_table_list *list;
+-	int i, ret;
++	struct nftnl_table *t;
++	int i, rc, ret = 1;
  
- enum nft_table_type {
--	NFT_TABLE_FILTER	= 0,
--	NFT_TABLE_MANGLE,
--	NFT_TABLE_RAW,
-+	NFT_TABLE_MANGLE	= 0,
- 	NFT_TABLE_SECURITY,
-+	NFT_TABLE_RAW,
-+	NFT_TABLE_FILTER,
- 	NFT_TABLE_NAT,
- };
- #define NFT_TABLE_MAX	(NFT_TABLE_NAT + 1)
+ 	if (h->cache->tables)
+ 		return 0;
+@@ -142,14 +143,9 @@ static int fetch_table_cache(struct nft_handle *h)
+ 	if (list == NULL)
+ 		return 0;
+ 
+-	nlh = nftnl_rule_nlmsg_build_hdr(buf, NFT_MSG_GETTABLE, h->family,
+-					NLM_F_DUMP, h->seq);
+-
+-	ret = mnl_talk(h, nlh, nftnl_table_list_cb, list);
+-	if (ret < 0 && errno == EINTR)
+-		assert(nft_restart(h) >= 0);
+-
+-	h->cache->tables = list;
++	t = nftnl_table_alloc();
++	if (t == NULL)
++		return 0;
+ 
+ 	for (i = 0; i < NFT_TABLE_MAX; i++) {
+ 		enum nft_table_type type = h->tables[i].type;
+@@ -157,16 +153,32 @@ static int fetch_table_cache(struct nft_handle *h)
+ 		if (!h->tables[i].name)
+ 			continue;
+ 
++		nlh = nftnl_rule_nlmsg_build_hdr(buf, NFT_MSG_GETTABLE,
++						 h->family, NLM_F_ACK, h->seq);
++		nftnl_table_set_str(t, NFTNL_TABLE_NAME, h->tables[i].name);
++		nftnl_table_nlmsg_build_payload(nlh, t);
++
++		rc = mnl_talk(h, nlh, nftnl_table_list_cb, list);
++		if (rc < 0 && errno == EINTR)
++			assert(nft_restart(h) >= 0);
++
+ 		h->cache->table[type].chains = nftnl_chain_list_alloc();
+-		if (!h->cache->table[type].chains)
+-			return 0;
++		if (!h->cache->table[type].chains) {
++			ret = 0;
++			break;
++		}
+ 
+ 		h->cache->table[type].sets = nftnl_set_list_alloc();
+-		if (!h->cache->table[type].sets)
+-			return 0;
++		if (!h->cache->table[type].sets) {
++			ret = 0;
++			break;
++		}
+ 	}
+ 
+-	return 1;
++	if (ret == 1)
++		h->cache->tables = list;
++	nftnl_table_free(t);
++	return ret;
+ }
+ 
+ struct nftnl_chain_list_cb_data {
 -- 
 2.27.0
 
