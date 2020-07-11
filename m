@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332D521C3A3
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jul 2020 12:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDF821C3B0
+	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jul 2020 12:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbgGKKSm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 11 Jul 2020 06:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57348 "EHLO
+        id S1727083AbgGKKTw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 11 Jul 2020 06:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgGKKSm (ORCPT
+        with ESMTP id S1726208AbgGKKTw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 11 Jul 2020 06:18:42 -0400
+        Sat, 11 Jul 2020 06:19:52 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13057C08C5DD
-        for <netfilter-devel@vger.kernel.org>; Sat, 11 Jul 2020 03:18:42 -0700 (PDT)
-Received: from localhost ([::1]:59406 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385B6C08C5DD
+        for <netfilter-devel@vger.kernel.org>; Sat, 11 Jul 2020 03:19:52 -0700 (PDT)
+Received: from localhost ([::1]:59484 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.94)
         (envelope-from <phil@nwl.cc>)
-        id 1juCae-0007Cu-2h; Sat, 11 Jul 2020 12:18:40 +0200
+        id 1juCbm-0007I0-OM; Sat, 11 Jul 2020 12:19:50 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 14/18] nft: cache: Introduce nft_cache_add_chain()
-Date:   Sat, 11 Jul 2020 12:18:27 +0200
-Message-Id: <20200711101831.29506-15-phil@nwl.cc>
+Subject: [iptables PATCH 15/18] nft: Introduce a dedicated base chain array
+Date:   Sat, 11 Jul 2020 12:18:28 +0200
+Message-Id: <20200711101831.29506-16-phil@nwl.cc>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200711101831.29506-1-phil@nwl.cc>
 References: <20200711101831.29506-1-phil@nwl.cc>
@@ -35,120 +35,166 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This is a convenience function for adding a chain to cache, for now just
-a simple wrapper around nftnl_chain_list_add_tail().
+Preparing for sorted chain output, introduce a per-table array holding
+base chains indexed by nf_inet_hooks value. Since the latter is ordered
+correctly, iterating over the array will return base chains in expected
+order.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-cache.c | 12 +++++++++---
- iptables/nft-cache.h |  3 +++
- iptables/nft.c       | 14 ++++++--------
- 3 files changed, 18 insertions(+), 11 deletions(-)
+ iptables/nft-cache.c | 27 ++++++++++++++++++++++++++-
+ iptables/nft.c       | 38 ++++++++++++++++++++++++++++----------
+ iptables/nft.h       |  1 +
+ 3 files changed, 55 insertions(+), 11 deletions(-)
 
 diff --git a/iptables/nft-cache.c b/iptables/nft-cache.c
-index b897dffb696c1..26771df63bcc2 100644
+index 26771df63bcc2..5853bdce82f88 100644
 --- a/iptables/nft-cache.c
 +++ b/iptables/nft-cache.c
-@@ -181,6 +181,13 @@ static int fetch_table_cache(struct nft_handle *h)
- 	return ret;
- }
- 
-+int nft_cache_add_chain(struct nft_handle *h, const struct builtin_table *t,
-+			struct nftnl_chain *c)
-+{
-+	nftnl_chain_list_add_tail(c, h->cache->table[t->type].chains);
-+	return 0;
-+}
-+
- struct nftnl_chain_list_cb_data {
- 	struct nft_handle *h;
- 	const struct builtin_table *t;
-@@ -190,7 +197,6 @@ static int nftnl_chain_list_cb(const struct nlmsghdr *nlh, void *data)
+@@ -184,6 +184,19 @@ static int fetch_table_cache(struct nft_handle *h)
+ int nft_cache_add_chain(struct nft_handle *h, const struct builtin_table *t,
+ 			struct nftnl_chain *c)
  {
- 	struct nftnl_chain_list_cb_data *d = data;
- 	const struct builtin_table *t = d->t;
--	struct nftnl_chain_list *list;
- 	struct nft_handle *h = d->h;
- 	struct nftnl_chain *c;
- 	const char *tname;
-@@ -212,8 +218,8 @@ static int nftnl_chain_list_cb(const struct nlmsghdr *nlh, void *data)
- 		goto out;
- 	}
++	if (nftnl_chain_is_set(c, NFTNL_CHAIN_HOOKNUM)) {
++		uint32_t hooknum = nftnl_chain_get_u32(c, NFTNL_CHAIN_HOOKNUM);
++
++		if (hooknum >= NF_INET_NUMHOOKS)
++			return -EINVAL;
++
++		if (h->cache->table[t->type].base_chains[hooknum])
++			return -EEXIST;
++
++		h->cache->table[t->type].base_chains[hooknum] = c;
++		return 0;
++	}
++
+ 	nftnl_chain_list_add_tail(c, h->cache->table[t->type].chains);
+ 	return 0;
+ }
+@@ -592,12 +605,18 @@ static int flush_cache(struct nft_handle *h, struct nft_cache *c,
+ 		       const char *tablename)
+ {
+ 	const struct builtin_table *table;
+-	int i;
++	int i, j;
  
--	list = h->cache->table[t->type].chains;
--	nftnl_chain_list_add_tail(c, list);
-+	if (nft_cache_add_chain(h, t, c))
-+		goto out;
+ 	if (tablename) {
+ 		table = nft_table_builtin_find(h, tablename);
+ 		if (!table)
+ 			return 0;
++		for (i = 0; i < NF_INET_NUMHOOKS; i++) {
++			if (!c->table[table->type].base_chains[i])
++				continue;
++			nftnl_chain_free(c->table[table->type].base_chains[i]);
++			c->table[table->type].base_chains[i] = NULL;
++		}
+ 		if (c->table[table->type].chains)
+ 			nftnl_chain_list_foreach(c->table[table->type].chains,
+ 						 __flush_chain_cache, NULL);
+@@ -611,6 +630,12 @@ static int flush_cache(struct nft_handle *h, struct nft_cache *c,
+ 		if (h->tables[i].name == NULL)
+ 			continue;
  
- 	return MNL_CB_OK;
- out:
-diff --git a/iptables/nft-cache.h b/iptables/nft-cache.h
-index f429118041be4..d47f7ab6095d9 100644
---- a/iptables/nft-cache.h
-+++ b/iptables/nft-cache.h
-@@ -3,6 +3,7 @@
- 
- struct nft_handle;
- struct nft_cmd;
-+struct builtin_table;
- 
- void nft_cache_level_set(struct nft_handle *h, int level,
- 			 const struct nft_cmd *cmd);
-@@ -12,6 +13,8 @@ void flush_chain_cache(struct nft_handle *h, const char *tablename);
- int flush_rule_cache(struct nft_handle *h, const char *table,
- 		     struct nftnl_chain *c);
- void nft_cache_build(struct nft_handle *h);
-+int nft_cache_add_chain(struct nft_handle *h, const struct builtin_table *t,
-+			struct nftnl_chain *c);
- 
- struct nftnl_chain_list *
- nft_chain_list_get(struct nft_handle *h, const char *table, const char *chain);
++		for (j = 0; j < NF_INET_NUMHOOKS; j++) {
++			if (!c->table[i].base_chains[j])
++				continue;
++			nftnl_chain_free(c->table[i].base_chains[j]);
++			c->table[i].base_chains[j] = NULL;
++		}
+ 		if (c->table[i].chains) {
+ 			nftnl_chain_list_free(c->table[i].chains);
+ 			c->table[i].chains = NULL;
 diff --git a/iptables/nft.c b/iptables/nft.c
-index b2fa3abee6d4a..be1275f3357a2 100644
+index be1275f3357a2..a83856f16596e 100644
 --- a/iptables/nft.c
 +++ b/iptables/nft.c
-@@ -1715,7 +1715,7 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
+@@ -701,7 +701,7 @@ static void nft_chain_builtin_add(struct nft_handle *h,
+ 		return;
  
- int nft_chain_user_add(struct nft_handle *h, const char *chain, const char *table)
+ 	batch_chain_add(h, NFT_COMPAT_CHAIN_ADD, c);
+-	nftnl_chain_list_add_tail(c, h->cache->table[table->type].chains);
++	h->cache->table[table->type].base_chains[chain->hook] = c;
+ }
+ 
+ /* find if built-in table already exists */
+@@ -745,19 +745,12 @@ nft_chain_builtin_find(const struct builtin_table *t, const char *chain)
+ static void nft_chain_builtin_init(struct nft_handle *h,
+ 				   const struct builtin_table *table)
  {
 -	struct nftnl_chain_list *list;
-+	const struct builtin_table *t;
- 	struct nftnl_chain *c;
- 	int ret;
+-	struct nftnl_chain *c;
++	struct nftnl_chain **bcp = h->cache->table[table->type].base_chains;
+ 	int i;
  
-@@ -1739,9 +1739,8 @@ int nft_chain_user_add(struct nft_handle *h, const char *chain, const char *tabl
+ 	/* Initialize built-in chains if they don't exist yet */
+ 	for (i=0; i < NF_INET_NUMHOOKS && table->chains[i].name != NULL; i++) {
+-		list = nft_chain_list_get(h, table->name,
+-					  table->chains[i].name);
+-		if (!list)
+-			continue;
+-
+-		c = nftnl_chain_list_lookup_byname(list, table->chains[i].name);
+-		if (c != NULL)
++		if (bcp[table->chains[i].hook])
+ 			continue;
  
- 	ret = batch_chain_add(h, NFT_COMPAT_CHAIN_USER_ADD, c);
- 
--	list = nft_chain_list_get(h, table, chain);
--	if (list)
--		nftnl_chain_list_add(c, list);
-+	t = nft_table_builtin_find(h, table);
-+	nft_cache_add_chain(h, t, c);
- 
- 	/* the core expects 1 for success and 0 for error */
- 	return ret == 0 ? 1 : 0;
-@@ -1749,7 +1748,7 @@ int nft_chain_user_add(struct nft_handle *h, const char *chain, const char *tabl
- 
- int nft_chain_restore(struct nft_handle *h, const char *chain, const char *table)
+ 		nft_chain_builtin_add(h, table, &table->chains[i]);
+@@ -1857,6 +1850,19 @@ static struct nftnl_chain *
+ nft_chain_find(struct nft_handle *h, const char *table, const char *chain)
  {
--	struct nftnl_chain_list *list;
+ 	struct nftnl_chain_list *list;
 +	const struct builtin_table *t;
- 	struct nftnl_chain *c;
- 	bool created = false;
- 	int ret;
-@@ -1781,9 +1780,8 @@ int nft_chain_restore(struct nft_handle *h, const char *chain, const char *table
- 
- 	ret = batch_chain_add(h, NFT_COMPAT_CHAIN_USER_ADD, c);
- 
--	list = nft_chain_list_get(h, table, chain);
--	if (list)
--		nftnl_chain_list_add(c, list);
++	int i;
++
 +	t = nft_table_builtin_find(h, table);
-+	nft_cache_add_chain(h, t, c);
++	if (!t)
++		return NULL;
++
++	for (i = 0; i < NF_INET_NUMHOOKS && t->chains[i].name; i++) {
++		if (strcmp(chain, t->chains[i].name))
++			continue;
++
++		return h->cache->table[t->type].base_chains[t->chains[i].hook];
++	}
  
- 	/* the core expects 1 for success and 0 for error */
- 	return ret == 0 ? 1 : 0;
+ 	list = nft_chain_list_get(h, table, chain);
+ 	if (list == NULL)
+@@ -2478,11 +2484,23 @@ int nft_chain_foreach(struct nft_handle *h, const char *table,
+ 		      void *data)
+ {
+ 	const struct builtin_table *t;
++	struct nftnl_chain *c;
++	int i, ret;
+ 
+ 	t = nft_table_builtin_find(h, table);
+ 	if (!t)
+ 		return -1;
+ 
++	for (i = 0; i < NF_INET_NUMHOOKS; i++) {
++		c = h->cache->table[t->type].base_chains[i];
++		if (!c) /* FIXME */
++			continue;
++
++		ret = cb(c, data);
++		if (ret < 0)
++			return ret;
++	}
++
+ 	if (!h->cache->table[t->type].chains)
+ 		return -1;
+ 
+diff --git a/iptables/nft.h b/iptables/nft.h
+index 2fe58e7f06d3f..23eebe31e7aa0 100644
+--- a/iptables/nft.h
++++ b/iptables/nft.h
+@@ -40,6 +40,7 @@ enum nft_cache_level {
+ struct nft_cache {
+ 	struct nftnl_table_list		*tables;
+ 	struct {
++		struct nftnl_chain	*base_chains[NF_INET_NUMHOOKS];
+ 		struct nftnl_chain_list *chains;
+ 		struct nftnl_set_list	*sets;
+ 		bool			initialized;
 -- 
 2.27.0
 
