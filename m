@@ -2,180 +2,89 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F7A21F7B1
-	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jul 2020 18:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD2821F7B3
+	for <lists+netfilter-devel@lfdr.de>; Tue, 14 Jul 2020 18:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgGNQvs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 14 Jul 2020 12:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727046AbgGNQvs (ORCPT
+        id S1727046AbgGNQwS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 14 Jul 2020 12:52:18 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42631 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726999AbgGNQwR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 14 Jul 2020 12:51:48 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD23C061755
-        for <netfilter-devel@vger.kernel.org>; Tue, 14 Jul 2020 09:51:48 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1jvO9i-0001Jl-7K; Tue, 14 Jul 2020 18:51:46 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     syzkaller-bugs@googlegroups.com,
-        syzbot+2570f2c036e3da5db176@syzkaller.appspotmail.com,
-        Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf] netfilter: nf_tables: fix nat hook table deletion
-Date:   Tue, 14 Jul 2020 18:51:39 +0200
-Message-Id: <20200714165139.14385-1-fw@strlen.de>
-X-Mailer: git-send-email 2.26.2
+        Tue, 14 Jul 2020 12:52:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594745536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XfXlOzzfBvdLOrA2aWRHbIZ/ghJ5fhhPi6bLI41G0Rk=;
+        b=IcND3iaftp12FpcRk8jbpgmI1bcLXZdpuSImnc7VERwcZQZsp5BoVvmk30fgf8Gk/Aa2Y2
+        17v1LHQfvwDNdXHSDidsb71A6Q79xEyu7shAoPstWFlNEVYztdd73bJRKx1jY3dI/lVJhb
+        b28vC8Muenq/CvVQvLT7eGk/jaYdMzQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-ToRlp6kNP46AIOx7xG4sYg-1; Tue, 14 Jul 2020 12:52:14 -0400
+X-MC-Unique: ToRlp6kNP46AIOx7xG4sYg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 772031DE0;
+        Tue, 14 Jul 2020 16:52:13 +0000 (UTC)
+Received: from lithium.redhat.com (ovpn-112-32.ams2.redhat.com [10.36.112.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E52417150;
+        Tue, 14 Jul 2020 16:52:12 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     netfilter-devel@vger.kernel.org
+Cc:     gscrivan@redhat.com, Florian Westphal <fw@strlen.de>
+Subject: [PATCH] iptables: accept lock file name at runtime
+Date:   Tue, 14 Jul 2020 18:52:06 +0200
+Message-Id: <20200714165206.4078549-1-gscrivan@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-sybot came up with following transaction:
- add table ip syz0
- add chain ip syz0 syz2 { type nat hook prerouting priority 0; policy accept; }
- add table ip syz0 { flags dormant; }
- delete chain ip syz0 syz2
- delete table ip syz0
+allow users to override at runtime the lock file to use through the
+XTABLES_LOCKFILE environment variable.
 
-which yields:
-hook not found, pf 2 num 0
-WARNING: CPU: 0 PID: 6775 at net/netfilter/core.c:413 __nf_unregister_net_hook+0x3e6/0x4a0 net/netfilter/core.c:413
-[..]
- nft_unregister_basechain_hooks net/netfilter/nf_tables_api.c:206 [inline]
- nft_table_disable net/netfilter/nf_tables_api.c:835 [inline]
- nf_tables_table_disable net/netfilter/nf_tables_api.c:868 [inline]
- nf_tables_commit+0x32d3/0x4d70 net/netfilter/nf_tables_api.c:7550
- nfnetlink_rcv_batch net/netfilter/nfnetlink.c:486 [inline]
- nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:544 [inline]
- nfnetlink_rcv+0x14a5/0x1e50 net/netfilter/nfnetlink.c:562
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+It allows using iptables from a network namespace owned by an user
+that has no write access to XT_LOCK_NAME (by default under /run), and
+without setting up a new mount namespace.
 
-Problem is that when I added ability to override base hook registration
-to make nat basechains register with the nat core instead of netfilter
-core, I forgot to update nft_table_disable() to use that instead of
-the 'raw' hook register interface.
+$ XTABLES_LOCKFILE=/tmp/xtables unshare -rn iptables ...
 
-In syzbot transaction, the basechain is of 'nat' type. Its registered
-with the nat core.  The switch to 'dormant mode' attempts to delete from
-netfilter core instead.
-
-After updating nft_table_disable/enable to use the correct helper,
-nft_(un)register_basechain_hooks can be folded into the only remaining
-caller.
-
-Because nft_trans_table_enable() won't do anything when the DORMANT flag
-is set, remove the flag first, then re-add it in case re-enablement
-fails, else this patch breaks sequence:
-
-add table ip x { flags dormant; }
-/* add base chains */
-add table ip x
-
-The last 'add' will remove the dormant flags, but won't have any other
-effect -- base chains are not registered.
-Then, next 'set dormant flag' will create another 'hook not found'
-splat.
-
-Reported-by: syzbot+2570f2c036e3da5db176@syzkaller.appspotmail.com
-Fixes: 4e25ceb80b58 ("netfilter: nf_tables: allow chain type to override hook register")
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
 ---
- net/netfilter/nf_tables_api.c | 41 ++++++++++++-----------------------
- 1 file changed, 14 insertions(+), 27 deletions(-)
+ iptables/xshared.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 7647ecfa0d40..88325b264737 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -188,24 +188,6 @@ static void nft_netdev_unregister_hooks(struct net *net,
- 		nf_unregister_net_hook(net, &hook->ops);
- }
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index c1d1371a..291f1c4b 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -248,13 +248,18 @@ void xs_init_match(struct xtables_match *match)
  
--static int nft_register_basechain_hooks(struct net *net, int family,
--					struct nft_base_chain *basechain)
--{
--	if (family == NFPROTO_NETDEV)
--		return nft_netdev_register_hooks(net, &basechain->hook_list);
--
--	return nf_register_net_hook(net, &basechain->ops);
--}
--
--static void nft_unregister_basechain_hooks(struct net *net, int family,
--					   struct nft_base_chain *basechain)
--{
--	if (family == NFPROTO_NETDEV)
--		nft_netdev_unregister_hooks(net, &basechain->hook_list);
--	else
--		nf_unregister_net_hook(net, &basechain->ops);
--}
--
- static int nf_tables_register_hook(struct net *net,
- 				   const struct nft_table *table,
- 				   struct nft_chain *chain)
-@@ -223,7 +205,10 @@ static int nf_tables_register_hook(struct net *net,
- 	if (basechain->type->ops_register)
- 		return basechain->type->ops_register(net, ops);
+ static int xtables_lock(int wait, struct timeval *wait_interval)
+ {
++	const *lock_file;
+ 	struct timeval time_left, wait_time;
+ 	int fd, i = 0;
  
--	return nft_register_basechain_hooks(net, table->family, basechain);
-+	if (table->family == NFPROTO_NETDEV)
-+		return nft_netdev_register_hooks(net, &basechain->hook_list);
+ 	time_left.tv_sec = wait;
+ 	time_left.tv_usec = 0;
+ 
+-	fd = open(XT_LOCK_NAME, O_CREAT, 0600);
++	lock_file = getenv("XTABLES_LOCKFILE");
++	if (lock_file == NULL || lock_file[0] == '\0')
++		lock_file = XT_LOCK_NAME;
 +
-+	return nf_register_net_hook(net, &basechain->ops);
- }
- 
- static void nf_tables_unregister_hook(struct net *net,
-@@ -242,7 +227,10 @@ static void nf_tables_unregister_hook(struct net *net,
- 	if (basechain->type->ops_unregister)
- 		return basechain->type->ops_unregister(net, ops);
- 
--	nft_unregister_basechain_hooks(net, table->family, basechain);
-+	if (table->family == NFPROTO_NETDEV)
-+		nft_netdev_unregister_hooks(net, &basechain->hook_list);
-+	else
-+		nf_unregister_net_hook(net, &basechain->ops);
- }
- 
- static int nft_trans_table_add(struct nft_ctx *ctx, int msg_type)
-@@ -832,8 +820,7 @@ static void nft_table_disable(struct net *net, struct nft_table *table, u32 cnt)
- 		if (cnt && i++ == cnt)
- 			break;
- 
--		nft_unregister_basechain_hooks(net, table->family,
--					       nft_base_chain(chain));
-+		nf_tables_unregister_hook(net, table, chain);
- 	}
- }
- 
-@@ -848,8 +835,7 @@ static int nf_tables_table_enable(struct net *net, struct nft_table *table)
- 		if (!nft_is_base_chain(chain))
- 			continue;
- 
--		err = nft_register_basechain_hooks(net, table->family,
--						   nft_base_chain(chain));
-+		err = nf_tables_register_hook(net, table, chain);
- 		if (err < 0)
- 			goto err_register_hooks;
- 
-@@ -894,11 +880,12 @@ static int nf_tables_updtable(struct nft_ctx *ctx)
- 		nft_trans_table_enable(trans) = false;
- 	} else if (!(flags & NFT_TABLE_F_DORMANT) &&
- 		   ctx->table->flags & NFT_TABLE_F_DORMANT) {
-+		ctx->table->flags &= ~NFT_TABLE_F_DORMANT;
- 		ret = nf_tables_table_enable(ctx->net, ctx->table);
--		if (ret >= 0) {
--			ctx->table->flags &= ~NFT_TABLE_F_DORMANT;
-+		if (ret >= 0)
- 			nft_trans_table_enable(trans) = true;
--		}
-+		else
-+			ctx->table->flags |= NFT_TABLE_F_DORMANT;
- 	}
- 	if (ret < 0)
- 		goto err;
++	fd = open(lock_file, O_CREAT, 0600);
+ 	if (fd < 0) {
+ 		fprintf(stderr, "Fatal: can't open lock file %s: %s\n",
+ 			XT_LOCK_NAME, strerror(errno));
 -- 
 2.26.2
 
