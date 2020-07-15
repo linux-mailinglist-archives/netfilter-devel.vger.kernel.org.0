@@ -2,68 +2,89 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C014220108
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Jul 2020 01:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF7F2204DC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Jul 2020 08:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726941AbgGNX1O (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 14 Jul 2020 19:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726892AbgGNX1O (ORCPT
+        id S1728445AbgGOGTi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 15 Jul 2020 02:19:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:45628 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728444AbgGOGTi (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 14 Jul 2020 19:27:14 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D8BC061755
-        for <netfilter-devel@vger.kernel.org>; Tue, 14 Jul 2020 16:27:13 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1jvUKL-0002O5-Qc; Wed, 15 Jul 2020 01:27:09 +0200
-Date:   Wed, 15 Jul 2020 01:27:09 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Giuseppe Scrivano <gscrivan@redhat.com>
+        Wed, 15 Jul 2020 02:19:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594793976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6NOtdHWceIhiBs/ucdbaxw/zo5Lrvs30csQL9Tq9S5w=;
+        b=iqd5/eyCSErx6a7MLuietNTz5sfypFfdgG3aeVc0Y7s2X1rTm0YgzFSTw3Oz2UUhs47Xqs
+        h3VSg31gLijX7qgzNJ5eiQLA1px17GLK/O8Yb8emqLzABjLWLuiVuZv81zvKgxUOcU5sNc
+        Dz4rdqaCTjc8RoWoKWv462jvb4t6cCw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-PqBO3s58M_mVeE0gJd6mOw-1; Wed, 15 Jul 2020 02:19:34 -0400
+X-MC-Unique: PqBO3s58M_mVeE0gJd6mOw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 679691080;
+        Wed, 15 Jul 2020 06:19:33 +0000 (UTC)
+Received: from localhost (ovpn-112-32.ams2.redhat.com [10.36.112.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0D7EF79CF3;
+        Wed, 15 Jul 2020 06:19:32 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     Phil Sutter <phil@nwl.cc>
 Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
 Subject: Re: [PATCH] iptables: accept lock file name at runtime
-Message-ID: <20200714232709.GC23632@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
 References: <20200714165206.4078549-1-gscrivan@redhat.com>
+        <20200714232709.GC23632@orbyte.nwl.cc>
+Date:   Wed, 15 Jul 2020 08:19:31 +0200
+In-Reply-To: <20200714232709.GC23632@orbyte.nwl.cc> (Phil Sutter's message of
+        "Wed, 15 Jul 2020 01:27:09 +0200")
+Message-ID: <87sgdtti4s.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714165206.4078549-1-gscrivan@redhat.com>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+Phil Sutter <phil@nwl.cc> writes:
 
-On Tue, Jul 14, 2020 at 06:52:06PM +0200, Giuseppe Scrivano wrote:
-> allow users to override at runtime the lock file to use through the
-> XTABLES_LOCKFILE environment variable.
-> 
-> It allows using iptables from a network namespace owned by an user
-> that has no write access to XT_LOCK_NAME (by default under /run), and
-> without setting up a new mount namespace.
-> 
-> $ XTABLES_LOCKFILE=/tmp/xtables unshare -rn iptables ...
-> 
-> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
-> ---
->  iptables/xshared.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/iptables/xshared.c b/iptables/xshared.c
-> index c1d1371a..291f1c4b 100644
-> --- a/iptables/xshared.c
-> +++ b/iptables/xshared.c
-> @@ -248,13 +248,18 @@ void xs_init_match(struct xtables_match *match)
->  
->  static int xtables_lock(int wait, struct timeval *wait_interval)
->  {
-> +	const *lock_file;
+> Hi,
+>
+> On Tue, Jul 14, 2020 at 06:52:06PM +0200, Giuseppe Scrivano wrote:
+>> allow users to override at runtime the lock file to use through the
+>> XTABLES_LOCKFILE environment variable.
+>> 
+>> It allows using iptables from a network namespace owned by an user
+>> that has no write access to XT_LOCK_NAME (by default under /run), and
+>> without setting up a new mount namespace.
+>> 
+>> $ XTABLES_LOCKFILE=/tmp/xtables unshare -rn iptables ...
+>> 
+>> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+>> ---
+>>  iptables/xshared.c | 7 ++++++-
+>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/iptables/xshared.c b/iptables/xshared.c
+>> index c1d1371a..291f1c4b 100644
+>> --- a/iptables/xshared.c
+>> +++ b/iptables/xshared.c
+>> @@ -248,13 +248,18 @@ void xs_init_match(struct xtables_match *match)
+>>  
+>>  static int xtables_lock(int wait, struct timeval *wait_interval)
+>>  {
+>> +	const *lock_file;
+>
+> This does not look right. Typo?
 
-This does not look right. Typo?
+yes sorry, I've messed it up.  I'll send a v2.
 
-Cheers, Phil
+Thanks,
+Giuseppe
+
