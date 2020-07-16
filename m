@@ -2,44 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84C7222A2E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jul 2020 19:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE833222A2C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jul 2020 19:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728975AbgGPRnR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 16 Jul 2020 13:43:17 -0400
-Received: from correo.us.es ([193.147.175.20]:39072 "EHLO mail.us.es"
+        id S1729201AbgGPRnP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 16 Jul 2020 13:43:15 -0400
+Received: from correo.us.es ([193.147.175.20]:39074 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728182AbgGPRnQ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 16 Jul 2020 13:43:16 -0400
+        id S1728947AbgGPRnP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 16 Jul 2020 13:43:15 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 4D05AEF420
+        by mail.us.es (Postfix) with ESMTP id 93F65EF425
         for <netfilter-devel@vger.kernel.org>; Thu, 16 Jul 2020 19:43:13 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 3CDA7DA73D
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 8269EDA73F
         for <netfilter-devel@vger.kernel.org>; Thu, 16 Jul 2020 19:43:13 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 3277BDA72F; Thu, 16 Jul 2020 19:43:13 +0200 (CEST)
+        id 77EA0DA72F; Thu, 16 Jul 2020 19:43:13 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CB580DA73D
-        for <netfilter-devel@vger.kernel.org>; Thu, 16 Jul 2020 19:43:10 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 52033DA789
+        for <netfilter-devel@vger.kernel.org>; Thu, 16 Jul 2020 19:43:11 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 16 Jul 2020 19:43:10 +0200 (CEST)
+ Thu, 16 Jul 2020 19:43:11 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from localhost.localdomain (unknown [90.77.255.23])
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id B64754265A2F
-        for <netfilter-devel@vger.kernel.org>; Thu, 16 Jul 2020 19:43:10 +0200 (CEST)
+        by entrada.int (Postfix) with ESMTPA id 3DB834265A2F
+        for <netfilter-devel@vger.kernel.org>; Thu, 16 Jul 2020 19:43:11 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 2/4] src: allow to use variables in flowtable and chain devices
-Date:   Thu, 16 Jul 2020 19:43:03 +0200
-Message-Id: <20200716174305.4114-2-pablo@netfilter.org>
+Subject: [PATCH nft 3/4] evaluate: use evaluate_expr_variable() for chain policy evaluation
+Date:   Thu, 16 Jul 2020 19:43:04 +0200
+Message-Id: <20200716174305.4114-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200716174305.4114-1-pablo@netfilter.org>
 References: <20200716174305.4114-1-pablo@netfilter.org>
@@ -51,285 +51,54 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch adds support for using variables for devices in the chain and
-flowtable definitions, eg.
-
- define if_main = lo
-
- table netdev filter1 {
-    chain Main_Ingress1 {
-        type filter hook ingress device $if_main priority -500; policy accept;
-    }
- }
+evaluate_policy() is very similar to evaluate_expr_variable(), replace it.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/evaluate.c                                | 69 +++++++++++++++++++
- src/parser_bison.y                            | 16 +++++
- .../testcases/chains/0042chain_variable_0     | 37 ++++++++++
- .../chains/dumps/0042chain_variable_0.nft     | 15 ++++
- .../flowtable/0012flowtable_variable_0        | 29 ++++++++
- .../dumps/0012flowtable_variable_0.nft        | 14 ++++
- 6 files changed, 180 insertions(+)
- create mode 100755 tests/shell/testcases/chains/0042chain_variable_0
- create mode 100644 tests/shell/testcases/chains/dumps/0042chain_variable_0.nft
- create mode 100755 tests/shell/testcases/flowtable/0012flowtable_variable_0
- create mode 100644 tests/shell/testcases/flowtable/dumps/0012flowtable_variable_0.nft
+ src/evaluate.c | 23 +++--------------------
+ 1 file changed, 3 insertions(+), 20 deletions(-)
 
 diff --git a/src/evaluate.c b/src/evaluate.c
-index 67eb5d6014fb..c9601f175cc4 100644
+index c9601f175cc4..4ec91a1ce771 100644
 --- a/src/evaluate.c
 +++ b/src/evaluate.c
-@@ -3719,6 +3719,69 @@ static bool evaluate_priority(struct eval_ctx *ctx, struct prio_spec *prio,
- 	return true;
+@@ -3968,25 +3968,6 @@ static uint32_t str2hooknum(uint32_t family, const char *hook)
+ 	return NF_INET_NUMHOOKS;
  }
  
-+static bool evaluate_expr_variable(struct eval_ctx *ctx, struct expr **exprp)
-+{
-+	struct expr *expr;
-+
-+	if (expr_evaluate(ctx, exprp) < 0)
-+		return false;
-+
-+	expr = *exprp;
-+	if (expr->etype != EXPR_VALUE &&
-+	    expr->etype != EXPR_SET) {
-+		expr_error(ctx->msgs, expr, "%s is not a valid "
-+			   "variable expression", expr_name(expr));
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
-+static bool evaluate_device_expr(struct eval_ctx *ctx, struct expr **dev_expr)
-+{
-+	struct expr *expr, *next, *key;
-+	LIST_HEAD(tmp);
-+
-+	if ((*dev_expr)->etype == EXPR_VARIABLE) {
-+		expr_set_context(&ctx->ectx, &ifname_type,
-+				 IFNAMSIZ * BITS_PER_BYTE);
-+		if (!evaluate_expr_variable(ctx, dev_expr))
-+			return false;
-+	}
-+
-+	if ((*dev_expr)->etype != EXPR_SET &&
-+	    (*dev_expr)->etype != EXPR_LIST)
-+		return true;
-+
-+	list_for_each_entry_safe(expr, next, &(*dev_expr)->expressions, list) {
-+		list_del(&expr->list);
-+
-+		switch (expr->etype) {
-+		case EXPR_VARIABLE:
-+			expr_set_context(&ctx->ectx, &ifname_type,
-+					 IFNAMSIZ * BITS_PER_BYTE);
-+			if (!evaluate_expr_variable(ctx, &expr))
-+				return false;
-+			break;
-+		case EXPR_SET_ELEM:
-+			key = expr_clone(expr->key);
-+			expr_free(expr);
-+			expr = key;
-+			break;
-+		case EXPR_VALUE:
-+			break;
-+		default:
-+			BUG("invalid expresion type %s\n", expr_name(expr));
-+			break;
-+		}
-+
-+		list_add(&expr->list, &tmp);
-+	}
-+	list_splice_init(&tmp, &(*dev_expr)->expressions);
-+
-+	return true;
-+}
-+
- static uint32_t str2hooknum(uint32_t family, const char *hook);
- 
- static int flowtable_evaluate(struct eval_ctx *ctx, struct flowtable *ft)
-@@ -3740,6 +3803,9 @@ static int flowtable_evaluate(struct eval_ctx *ctx, struct flowtable *ft)
- 						   expr_name(ft->priority.expr));
- 	}
- 
-+	if (ft->dev_expr && !evaluate_device_expr(ctx, &ft->dev_expr))
-+		return -1;
-+
- 	return 0;
- }
- 
-@@ -3965,6 +4031,9 @@ static int chain_evaluate(struct eval_ctx *ctx, struct chain *chain)
- 			if (!chain->dev_expr)
- 				return __stmt_binary_error(ctx, &chain->loc, NULL,
- 							   "Missing `device' in this chain definition");
-+
-+			if (!evaluate_device_expr(ctx, &chain->dev_expr))
-+				return -1;
- 		} else if (chain->dev_expr) {
- 			return __stmt_binary_error(ctx, &chain->dev_expr->location, NULL,
- 						   "This chain type cannot be bound to device");
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 572e584cfbe4..d2d7694ae170 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -1945,6 +1945,11 @@ flowtable_expr		:	'{'	flowtable_list_expr	'}'
- 				$2->location = @$;
- 				$$ = $2;
- 			}
-+			|	variable_expr
-+			{
-+				$1->location = @$;
-+				$$ = $1;
-+			}
- 			;
- 
- flowtable_list_expr	:	flowtable_expr_member
-@@ -1967,6 +1972,11 @@ flowtable_expr_member	:	STRING
- 							 strlen($1) * BITS_PER_BYTE, $1);
- 				xfree($1);
- 			}
-+			|	variable_expr
-+			{
-+				datatype_set($1->sym->expr, &ifname_type);
-+				$$ = $1;
-+			}
- 			;
- 
- data_type_atom_expr	:	type_identifier
-@@ -2206,6 +2216,12 @@ dev_spec		:	DEVICE	string
- 				compound_expr_add($$, expr);
- 
- 			}
-+			|	DEVICE	variable_expr
-+			{
-+				datatype_set($2->sym->expr, &ifname_type);
-+				$$ = compound_expr_alloc(&@$, EXPR_LIST);
-+				compound_expr_add($$, $2);
-+			}
- 			|	DEVICES		'='	flowtable_expr
- 			{
- 				$$ = $3;
-diff --git a/tests/shell/testcases/chains/0042chain_variable_0 b/tests/shell/testcases/chains/0042chain_variable_0
-new file mode 100755
-index 000000000000..58535f76cc32
---- /dev/null
-+++ b/tests/shell/testcases/chains/0042chain_variable_0
-@@ -0,0 +1,37 @@
-+#!/bin/bash
-+
-+set -e
-+
-+ip link add name dummy0 type dummy
-+
-+EXPECTED="define if_main = \"lo\"
-+
-+table netdev filter1 {
-+	chain Main_Ingress1 {
-+		type filter hook ingress device \$if_main priority -500; policy accept;
-+	}
-+}"
-+
-+$NFT -f - <<< $EXPECTED
-+
-+EXPECTED="define if_main = \"lo\"
-+
-+table netdev filter2 {
-+	chain Main_Ingress2 {
-+		type filter hook ingress devices = { \$if_main, dummy0 } priority -500; policy accept;
-+	}
-+}"
-+
-+$NFT -f - <<< $EXPECTED
-+
-+EXPECTED="define if_main = { lo, dummy0 }
-+
-+table netdev filter3 {
-+	chain Main_Ingress3 {
-+		type filter hook ingress devices = \$if_main priority -500; policy accept;
-+	}
-+}"
-+
-+$NFT -f - <<< $EXPECTED
-+
-+
-diff --git a/tests/shell/testcases/chains/dumps/0042chain_variable_0.nft b/tests/shell/testcases/chains/dumps/0042chain_variable_0.nft
-new file mode 100644
-index 000000000000..12931aadb39f
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0042chain_variable_0.nft
-@@ -0,0 +1,15 @@
-+table netdev filter1 {
-+	chain Main_Ingress1 {
-+		type filter hook ingress device "lo" priority -500; policy accept;
-+	}
-+}
-+table netdev filter2 {
-+	chain Main_Ingress2 {
-+		type filter hook ingress devices = { dummy0, lo } priority -500; policy accept;
-+	}
-+}
-+table netdev filter3 {
-+	chain Main_Ingress3 {
-+		type filter hook ingress devices = { dummy0, lo } priority -500; policy accept;
-+	}
-+}
-diff --git a/tests/shell/testcases/flowtable/0012flowtable_variable_0 b/tests/shell/testcases/flowtable/0012flowtable_variable_0
-new file mode 100755
-index 000000000000..8e334224ac66
---- /dev/null
-+++ b/tests/shell/testcases/flowtable/0012flowtable_variable_0
-@@ -0,0 +1,29 @@
-+#!/bin/bash
-+
-+set -e
-+
-+ip link add name dummy1 type dummy
-+
-+EXPECTED="define if_main = { lo, dummy1 }
-+
-+table filter1 {
-+	flowtable Main_ft1 {
-+		hook ingress priority filter
-+		counter
-+		devices = \$if_main
-+	}
-+}"
-+
-+$NFT -f - <<< $EXPECTED
-+
-+EXPECTED="define if_main = \"lo\"
-+
-+table filter2 {
-+	flowtable Main_ft2 {
-+		hook ingress priority filter
-+		counter
-+		devices = { \$if_main, dummy1 }
-+	}
-+}"
-+
-+$NFT -f - <<< $EXPECTED
-diff --git a/tests/shell/testcases/flowtable/dumps/0012flowtable_variable_0.nft b/tests/shell/testcases/flowtable/dumps/0012flowtable_variable_0.nft
-new file mode 100644
-index 000000000000..1cbb2f1103f0
---- /dev/null
-+++ b/tests/shell/testcases/flowtable/dumps/0012flowtable_variable_0.nft
-@@ -0,0 +1,14 @@
-+table ip filter1 {
-+	flowtable Main_ft1 {
-+		hook ingress priority filter
-+		devices = { dummy1, lo }
-+		counter
-+	}
-+}
-+table ip filter2 {
-+	flowtable Main_ft2 {
-+		hook ingress priority filter
-+		devices = { dummy1, lo }
-+		counter
-+	}
-+}
+-static bool evaluate_policy(struct eval_ctx *ctx, struct expr **exprp)
+-{
+-	struct expr *expr;
+-
+-	ctx->ectx.dtype = &policy_type;
+-	ctx->ectx.len = NFT_NAME_MAXLEN * BITS_PER_BYTE;
+-	if (expr_evaluate(ctx, exprp) < 0)
+-		return false;
+-
+-	expr = *exprp;
+-	if (expr->etype != EXPR_VALUE) {
+-		expr_error(ctx->msgs, expr, "%s is not a valid "
+-			   "policy expression", expr_name(expr));
+-		return false;
+-	}
+-
+-	return true;
+-}
+-
+ static int chain_evaluate(struct eval_ctx *ctx, struct chain *chain)
+ {
+ 	struct table *table;
+@@ -4022,7 +4003,9 @@ static int chain_evaluate(struct eval_ctx *ctx, struct chain *chain)
+ 						   "invalid priority expression %s in this context.",
+ 						   expr_name(chain->priority.expr));
+ 		if (chain->policy) {
+-			if (!evaluate_policy(ctx, &chain->policy))
++			expr_set_context(&ctx->ectx, &policy_type,
++					 NFT_NAME_MAXLEN * BITS_PER_BYTE);
++			if (!evaluate_expr_variable(ctx, &chain->policy))
+ 				return chain_error(ctx, chain, "invalid policy expression %s",
+ 						   expr_name(chain->policy));
+ 		}
 -- 
 2.20.1
 
