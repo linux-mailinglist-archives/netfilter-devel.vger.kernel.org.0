@@ -2,109 +2,151 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0EC6226A3C
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jul 2020 18:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C72B9226AF2
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jul 2020 18:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732385AbgGTQcM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Jul 2020 12:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731569AbgGTP4p (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 Jul 2020 11:56:45 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7F9C061794;
-        Mon, 20 Jul 2020 08:56:45 -0700 (PDT)
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595260604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4/ywCu1ddv/vjOuhHxWVQ4Une/Z767iKPljoFb/YuCo=;
-        b=1BzcJb5UXd9c4r6mNPmIM30L+gZYQxNQR0/b8PAyf1hjroGleHqyfcIg/GcGhtqzO3JuRw
-        iC6/myoxUzA7UUKI3oSXwesluhzC+hRLlB69BBrpMbPLlVhuY25AzQe1BT9YbsYyulIsgk
-        TMhI215XiZdwxT111e/mfm68LHqWS5XDSd1leoJLXm/PhzZpPn65TrInWZDEfF+VOydiGi
-        +KCmnea6qh1WEL/amO/GMRqBxcZeOqBX73KvYil15o1L0x2KPpLgVDYBOmXZV1YBBzf6tC
-        QblCTyNdPThEpNzzNwgB0SZV6QPPaqh37vMS2eikcEAOz+IIHn3Myu+7+3Uwew==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595260604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4/ywCu1ddv/vjOuhHxWVQ4Une/Z767iKPljoFb/YuCo=;
-        b=TZmK83GNtq3Vst9FIUeDTWJH2SozMZJcueFXszjMIJRTjrivYQVEcdDuytGUGcwEWTzQqT
-        LXEKHCzqIguBjgBg==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S2388972AbgGTQhx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 Jul 2020 12:37:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730889AbgGTQhv (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 20 Jul 2020 12:37:51 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9248320734;
+        Mon, 20 Jul 2020 16:37:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595263070;
+        bh=smDDaCk04kMr6EUzVkdVBl94CFmKvpleITLelmvA8+8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JJC8sbphJDydEPEmQ9bsAOdVV0pki83XX29vWiTOyf6AsmPXVOTyRrnnrci7D6Bhd
+         g+Lq7h/M7GIp2Q3yjvb33D7hXLYV7+QkF/cJUlgxrp5Jsp6dTPG3ALVp7AD8PFZTTR
+         fVVidPSEdf7dnCSggZDPP0jvSNjJIbQpG4SHFy4k=
+Date:   Mon, 20 Jul 2020 09:37:48 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v4 15/24] netfilter: nft_set_rbtree: Use sequence counter with associated rwlock
-Date:   Mon, 20 Jul 2020 17:55:21 +0200
-Message-Id: <20200720155530.1173732-16-a.darwish@linutronix.de>
-In-Reply-To: <20200720155530.1173732-1-a.darwish@linutronix.de>
-References: <20200519214547.352050-1-a.darwish@linutronix.de>
- <20200720155530.1173732-1-a.darwish@linutronix.de>
+        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
+        linux-can@vger.kernel.org, dccp@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
+        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
+Subject: Re: [PATCH 03/24] net: add a new sockptr_t type
+Message-ID: <20200720163748.GA1292162@gmail.com>
+References: <20200720124737.118617-1-hch@lst.de>
+ <20200720124737.118617-4-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200720124737.118617-4-hch@lst.de>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-A sequence counter write side critical section must be protected by some
-form of locking to serialize writers. A plain seqcount_t does not
-contain the information of which lock must be held when entering a write
-side critical section.
+On Mon, Jul 20, 2020 at 02:47:16PM +0200, Christoph Hellwig wrote:
+> Add a uptr_t type that can hold a pointer to either a user or kernel
+> memory region, and simply helpers to copy to and from it.  For
+> architectures like x86 that have non-overlapping user and kernel
+> address space it just is a union and uses a TASK_SIZE check to
+> select the proper copy routine.  For architectures with overlapping
+> address spaces a flag to indicate the address space is used instead.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  include/linux/sockptr.h | 121 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 121 insertions(+)
+>  create mode 100644 include/linux/sockptr.h
+> 
+> diff --git a/include/linux/sockptr.h b/include/linux/sockptr.h
+> new file mode 100644
+> index 00000000000000..e41dfa52555dec
+> --- /dev/null
+> +++ b/include/linux/sockptr.h
+> @@ -0,0 +1,121 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2020 Christoph Hellwig.
+> + *
+> + * Support for "universal" pointers that can point to either kernel or userspace
+> + * memory.
+> + */
+> +#ifndef _LINUX_SOCKPTR_H
+> +#define _LINUX_SOCKPTR_H
+> +
+> +#include <linux/slab.h>
+> +#include <linux/uaccess.h>
+> +
+> +#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> +typedef union {
+> +	void		*kernel;
+> +	void __user	*user;
+> +} sockptr_t;
+> +
+> +static inline bool sockptr_is_kernel(sockptr_t sockptr)
+> +{
+> +	return (unsigned long)sockptr.kernel >= TASK_SIZE;
+> +}
+> +
+> +static inline sockptr_t KERNEL_SOCKPTR(void *p)
+> +{
+> +	return (sockptr_t) { .kernel = p };
+> +}
+> +#else /* CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE */
+> +typedef struct {
+> +	union {
+> +		void		*kernel;
+> +		void __user	*user;
+> +	};
+> +	bool		is_kernel : 1;
+> +} sockptr_t;
+> +
+> +static inline bool sockptr_is_kernel(sockptr_t sockptr)
+> +{
+> +	return sockptr.is_kernel;
+> +}
+> +
+> +static inline sockptr_t KERNEL_SOCKPTR(void *p)
+> +{
+> +	return (sockptr_t) { .kernel = p, .is_kernel = true };
+> +}
+> +#endif /* CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE */
+> +
+> +static inline sockptr_t USER_SOCKPTR(void __user *p)
+> +{
+> +	return (sockptr_t) { .user = p };
+> +}
+> +
+> +static inline bool sockptr_is_null(sockptr_t sockptr)
+> +{
+> +	return !sockptr.user && !sockptr.kernel;
+> +}
+> +
+> +static inline int copy_from_sockptr(void *dst, sockptr_t src, size_t size)
+> +{
+> +	if (!sockptr_is_kernel(src))
+> +		return copy_from_user(dst, src.user, size);
+> +	memcpy(dst, src.kernel, size);
+> +	return 0;
+> +}
 
-Use the new seqcount_rwlock_t data type, which allows to associate a
-rwlock with the sequence counter. This enables lockdep to verify that
-the rwlock used for writer serialization is held when the write side
-critical section is entered.
+How does this not introduce a massive security hole when
+CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE?
 
-If lockdep is disabled this lock association is compiled out and has
-neither storage size nor runtime overhead.
+AFAICS, userspace can pass in a pointer >= TASK_SIZE,
+and this code makes it be treated as a kernel pointer.
 
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
----
- net/netfilter/nft_set_rbtree.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index b6aad3fc46c3..4b2834fd17b2 100644
---- a/net/netfilter/nft_set_rbtree.c
-+++ b/net/netfilter/nft_set_rbtree.c
-@@ -18,7 +18,7 @@
- struct nft_rbtree {
- 	struct rb_root		root;
- 	rwlock_t		lock;
--	seqcount_t		count;
-+	seqcount_rwlock_t	count;
- 	struct delayed_work	gc_work;
- };
- 
-@@ -523,7 +523,7 @@ static int nft_rbtree_init(const struct nft_set *set,
- 	struct nft_rbtree *priv = nft_set_priv(set);
- 
- 	rwlock_init(&priv->lock);
--	seqcount_init(&priv->count);
-+	seqcount_rwlock_init(&priv->count, &priv->lock);
- 	priv->root = RB_ROOT;
- 
- 	INIT_DEFERRABLE_WORK(&priv->gc_work, nft_rbtree_gc);
--- 
-2.20.1
-
+- Eric
