@@ -2,81 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0679228081
-	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Jul 2020 15:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D71C2286C6
+	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Jul 2020 19:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbgGUNDs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 21 Jul 2020 09:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726673AbgGUNDr (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 21 Jul 2020 09:03:47 -0400
-Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92957C061794
-        for <netfilter-devel@vger.kernel.org>; Tue, 21 Jul 2020 06:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=LQHkYT5vNkD4JkWE7hlOeP1wdduOYZE3ZPN0xDb/R+E=; b=tJEOcR+mvXZyRujn2Ld/y6bWO2
-        SSALDGlo5kYFqyL+xxpXizIp9gxGE7crhKcF1aAgRE8rBOq16d+nmHQhgbo03MvXvSNdDyqk8JGki
-        uCqmw76st/+taQ3wlUoZzZcaL3uI+wMpCp9sUfvwk1dDazNxJed6A/G3gFMI98Vhv+dMn+l2MoqQD
-        6X81w/mdCq/O5sYVi4mgmLN/6hF+EaVkH7JgenvL4Ps8/ZZd4EllUCZtD6JiCWxjQgXUv8lmB1LSf
-        AoT7Qwf/Yg3F3NIaXpWYP/ykjz91P4U4pW04ZEXYuNs2uhLhYu/d3c7yXBvF/GeMqmkey41H9Qurp
-        waXhUqAA==;
-Received: from [2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] (helo=ulthar.dreamlands)
-        by kadath.azazel.net with esmtp (Exim 4.92)
-        (envelope-from <jeremy@azazel.net>)
-        id 1jxrvu-0001Fx-4K; Tue, 21 Jul 2020 14:03:46 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Jan Engelhardt <jengelh@inai.de>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons v2] doc: fix quoted string in libxt_DNETMAP man-page.
-Date:   Tue, 21 Jul 2020 14:03:45 +0100
-Message-Id: <20200721130345.717735-1-jeremy@azazel.net>
-X-Mailer: git-send-email 2.27.0
+        id S1728827AbgGURFc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 21 Jul 2020 13:05:32 -0400
+Received: from correo.us.es ([193.147.175.20]:50736 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728268AbgGURFb (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 21 Jul 2020 13:05:31 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 407A8120821
+        for <netfilter-devel@vger.kernel.org>; Tue, 21 Jul 2020 19:05:30 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 32278DA72F
+        for <netfilter-devel@vger.kernel.org>; Tue, 21 Jul 2020 19:05:30 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 27D2ADA722; Tue, 21 Jul 2020 19:05:30 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id F06EBDA72F
+        for <netfilter-devel@vger.kernel.org>; Tue, 21 Jul 2020 19:05:27 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 21 Jul 2020 19:05:27 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id D52944265A32
+        for <netfilter-devel@vger.kernel.org>; Tue, 21 Jul 2020 19:05:27 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft 1/2] evaluate: replace variable expression by the value expression
+Date:   Tue, 21 Jul 2020 19:05:24 +0200
+Message-Id: <20200721170525.3982-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In roff, lines beginning with a single quote are control lines.  In the
-libxt_DNETMAP man-page there is a single-quoted string at the beginning
-of a line, which troff tries and fails to interpret as a macro:
+The variable expression provides the binding between the variable
+dereference and the value expression. Replace the variable expression by
+the real value expression after the evaluation.
 
-  troff: <standard input>:49: warning: macro 'S'' not defined
-
-This means that the line is not output.
-
-Replace the single quotes with the appropriate escape-sequences.
-
-Fixes: 2b38d081a50b ("doc: spelling and grammar corrections to DNETMAP")
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- extensions/libxt_DNETMAP.man | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/evaluate.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/extensions/libxt_DNETMAP.man b/extensions/libxt_DNETMAP.man
-index 7a8fe404435b..a59b6551fcbe 100644
---- a/extensions/libxt_DNETMAP.man
-+++ b/extensions/libxt_DNETMAP.man
-@@ -46,7 +46,7 @@ Contains the binding table for the given \fIsubnet/mask\fP. Each line contains
- \fBprenat address\fR, \fBpostnat address\fR, \fBttl\fR (seconds until the entry
- times out), \fBlasthit\fR (last hit to the entry in seconds relative to system
- boot time). Please note that the \fBttl\fR and \fBlasthit\fR entries contain an
--'\fBS\fR' in case of a static binding.
-+\(oq\fBS\fR\(cq in case of a static binding.
- .TP
- \fB/proc/net/xt_DNETMAP/\fR\fIsubnet\fR\fB_\fR\fImask\fR\fB_stat\fR
- Contains statistics for a given \fIsubnet/mask\fP. The line contains four
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 4ec91a1ce771..5111dce55eb6 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -2013,10 +2013,13 @@ static int expr_evaluate_variable(struct eval_ctx *ctx, struct expr **exprp)
+ {
+ 	struct expr *new = expr_clone((*exprp)->sym->expr);
+ 
++	if (expr_evaluate(ctx, &new) < 0)
++		return -1;
++
+ 	expr_free(*exprp);
+ 	*exprp = new;
+ 
+-	return expr_evaluate(ctx, exprp);
++	return 0;
+ }
+ 
+ static int expr_evaluate_xfrm(struct eval_ctx *ctx, struct expr **exprp)
 -- 
-2.27.0
+2.20.1
 
