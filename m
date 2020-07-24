@@ -2,52 +2,129 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C52622C297
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Jul 2020 11:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63FC22C377
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Jul 2020 12:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgGXJxr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 Jul 2020 05:53:47 -0400
-Received: from mx2.itam.mx ([148.205.229.36]:38882 "EHLO mx2.itam.mx"
+        id S1726455AbgGXKni (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 24 Jul 2020 06:43:38 -0400
+Received: from correo.us.es ([193.147.175.20]:48710 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726572AbgGXJxq (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 Jul 2020 05:53:46 -0400
-Received: from cronos2.itam.mx (cronos2.itam.mx [148.205.148.141])
-        by mx2.itam.mx  with ESMTP id 06O9rDhl000639-06O9rDho000639
-        (version=TLSv1.0 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Fri, 24 Jul 2020 04:53:13 -0500
-Received: from [10.28.175.153] (105.0.7.102) by cronos2.itam.mx
- (148.205.148.141) with Microsoft SMTP Server (TLS) id 14.3.468.0; Fri, 24 Jul
- 2020 04:53:12 -0500
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726301AbgGXKnh (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 24 Jul 2020 06:43:37 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 7001515C121
+        for <netfilter-devel@vger.kernel.org>; Fri, 24 Jul 2020 12:43:36 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 5D8D3DA84D
+        for <netfilter-devel@vger.kernel.org>; Fri, 24 Jul 2020 12:43:36 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 5BB98DA7B6; Fri, 24 Jul 2020 12:43:36 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id D2952DA78D;
+        Fri, 24 Jul 2020 12:43:33 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Fri, 24 Jul 2020 12:43:33 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id B065D4265A32;
+        Fri, 24 Jul 2020 12:43:33 +0200 (CEST)
+Date:   Fri, 24 Jul 2020 12:43:33 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Arturo Borrero Gonzalez <arturo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [nft PATCH] nft: rearrange help output to group related options
+ together
+Message-ID: <20200724104333.GA22517@salvia>
+References: <159550068914.41232.11789462187226358215.stgit@endurance>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
-To:     Recipients@vger.kernel.org
-From:   ''Tayeb@vger.kernel.org, Souami''@vger.kernel.org
-Date:   Fri, 24 Jul 2020 11:52:57 +0200
-Reply-To: <charlesjacksonjr001@gmail.com>
-Message-ID: <ea46a6f4-4b9f-46a4-8d8a-29d98a1a6949@CRONOS2.itam.mx>
-X-Originating-IP: [105.0.7.102]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159550068914.41232.11789462187226358215.stgit@endurance>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hallo
+Hi Arturo,
 
-Ich bin Charles W. Jackson aus North Carolina, Vereinigte Staaten von Amerika, und ich bin der Gewinner des Mega-Millionen-Jackpots von 344 Millionen US-Dollar. Ich spende die Summe von 2.000.000 Millionen Euro als Teil der Hilfsgelder für das Corona-Virus.
+On Thu, Jul 23, 2020 at 12:38:09PM +0200, Arturo Borrero Gonzalez wrote:
+[...]
+> After this patch, the help output is:
+> 
+> === 8< ===
+> % nft --help
+> Usage: nft [ options ] [ cmds... ]
+> 
+> Options (general):
+>   -h, help                      Show this help
+>   -v, version                   Show version information
+>   -V                            Show extended version information
+> 
+> Options (with operative meaning):
+>   -c, check                     Check commands validity without actually applying the changes.
+>   -f, file <filename>           Read input from <filename>
+>   -i, interactive               Read input from interactive CLI
+>   -I, includepath <directory>   Add <directory> to the paths searched for include files. Defaul[..]
+> 
+> Options (output text modifiers for data translation):
+>
+>   -N, reversedns                Translate IP addresses to names.
+>   -S, service                   Translate ports to service names as described in /etc/services.
+>   -u, guid                      Print UID/GID as defined in /etc/passwd and /etc/group.
+>   -n, numeric                   Print fully numerical output.
+>   -y, numeric-priority          Print chain priority numerically.
+>   -p, numeric-protocol          Print layer 4 protocols numerically.
+>   -T, numeric-time              Print time values numerically.
+> 
+> Options (output text modifiers for parsing and other operations):
+>   -d, debug <level [,level...]> Specify debugging level (scanner, parser, eval, netlink, mnl, p[..]
+>   -e, echo                      Echo what has been added, inserted or replaced.
+>   -s, stateless                 Omit stateful information of ruleset.
+>   -a, handle                    Output rule handle.
+>   -j, json                      Format output in JSON
+>   -t, terse                     Omit contents of sets.
+> === 8< ===
 
-Dies ist Ihr Spendencode: [CJ530342019]
+My proposal:
 
-www.youtube.com/watch?v=BSr8myiLPMQ
+% nft --help
+Usage: nft [ options ] [ cmds... ]
 
-Bitte antworten Sie auf diese E-Mail mit dem SPENDERCODE:
+Options (general):
+  -h, help                      Show this help
+  -v, version                   Show version information
+  -V                            Show extended version information
 
-charlesjacksonjr001@gmail.com
+Options (ruleset input handling):
+  -f, file <filename>           Read input from <filename>
+  -i, interactive               Read input from interactive CLI
+  -I, includepath <directory>   Add <directory> to the paths searched for include files. Defaul[..]
+  -c, check                     Check commands validity without actually applying the changes.
 
-Ich hoffe, dass Sie und Ihre Familie dies durchkommen
+Options (ruleset list formatting):
+  -a, handle                    Output rule handle.
+  -s, stateless                 Omit stateful information of ruleset.
+  -t, terse                     Omit contents of sets.
+  -S, service                   Translate ports to service names as described in /etc/services.
+  -N, reversedns                Translate IP addresses to names.
+  -u, guid                      Print UID/GID as defined in /etc/passwd and /etc/group.
+  -n, numeric                   Print fully numerical output.
+  -y, numeric-priority          Print chain priority numerically.
+  -p, numeric-protocol          Print layer 4 protocols numerically.
+  -T, numeric-time              Print time values numerically.
 
-
-Herr Charles Jackson
+Options (command output format):
+  -e, echo                      Echo what has been added, inserted or replaced.
+  -j, json                      Format output in JSON
+  -d, debug <level [,level...]> Specify debugging level (scanner, parser, eval, netlink, mnl, p[..]
