@@ -2,149 +2,55 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CFC2311BA
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Jul 2020 20:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295BA2315EA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Jul 2020 01:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgG1S3C (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 Jul 2020 14:29:02 -0400
-Received: from correo.us.es ([193.147.175.20]:44556 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732438AbgG1S3C (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 Jul 2020 14:29:02 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 9B56E15AEB2
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 20:29:00 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 8C717DA73F
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 20:29:00 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 820CEDA791; Tue, 28 Jul 2020 20:29:00 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 683E0DA73F
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 20:28:58 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 28 Jul 2020 20:28:58 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 5135A4265A2F
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 20:28:58 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
+        id S1729824AbgG1XCF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 Jul 2020 19:02:05 -0400
+Received: from mail.redfish-solutions.com ([45.33.216.244]:51160 "EHLO
+        mail.redfish-solutions.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729816AbgG1XCF (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 28 Jul 2020 19:02:05 -0400
+X-Greylist: delayed 376 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Jul 2020 19:02:03 EDT
+Received: from son-of-builder.redfish-solutions.com (son-of-builder.redfish-solutions.com [192.168.1.56])
+        (authenticated bits=0)
+        by mail.redfish-solutions.com (8.15.2/8.15.2) with ESMTPSA id 06SMtiRg101892
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Jul 2020 16:55:44 -0600
+From:   "Philip Prindeville" <philipp@redfish-solutions.com>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 3/3] evaluate: remove table from cache on delete table
-Date:   Tue, 28 Jul 2020 20:28:54 +0200
-Message-Id: <20200728182854.4473-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200728182854.4473-1-pablo@netfilter.org>
-References: <20200728182854.4473-1-pablo@netfilter.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Cc:     Jan Engelhardt <jengelh@inai.de>,
+        Philip Prindeville <philipp@redfish-solutions.com>
+Subject: [PATCH 1/1] Improve detecting the kernel version logic
+Date:   Tue, 28 Jul 2020 16:55:22 -0600
+Message-Id: <20200728225522.642-1-philipp@redfish-solutions.com>
+X-Mailer: git-send-email 2.17.2
+X-Scanned-By: MIMEDefang 2.84 on 192.168.1.3
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The following ruleset crashes nft if loaded twice, via nft -ef:
+From: Philip Prindeville <philipp@redfish-solutions.com>
 
- add table inet filter
- delete table inet filter
-
- table inet filter {
-        chain input {
-                type filter hook input priority filter; policy drop;
-                iifname { "eth0" } counter accept
-        }
- }
-
-If the table contains anonymous sets, such as __set0, then delete + add
-table might result in nft reusing the existing stale __set0 in the cache.
-The problem is that nft gets confused and it reuses the existing stale
-__set0 instead of the new anonymous set __set0 with the same name.
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/evaluate.c                                  | 15 +++++++++++++++
- tests/shell/testcases/sets/0053echo_0           | 16 ++++++++++++++++
- tests/shell/testcases/sets/dumps/0053echo_0.nft |  6 ++++++
- 3 files changed, 37 insertions(+)
- create mode 100755 tests/shell/testcases/sets/0053echo_0
- create mode 100644 tests/shell/testcases/sets/dumps/0053echo_0.nft
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 26d73959db58..a84e9609c1ff 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -4172,6 +4172,18 @@ static int cmd_evaluate_add(struct eval_ctx *ctx, struct cmd *cmd)
- 	}
- }
+diff --git a/configure.ac b/configure.ac
+index be62d7e7fb96269120c815ab7fcec9bf37955d43..b7a8f0cfda4cf8ab33b3947f9560e938d9f3e635 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -44,7 +44,7 @@ regular_CFLAGS="-Wall -Waggregate-return -Wmissing-declarations \
  
-+static void table_del_cache(struct eval_ctx *ctx, struct cmd *cmd)
-+{
-+	struct table *table;
-+
-+	table = table_lookup(&cmd->handle, &ctx->nft->cache);
-+	if (!table)
-+		return;
-+
-+	list_del(&table->list);
-+	table_free(table);
-+}
-+
- static int cmd_evaluate_delete(struct eval_ctx *ctx, struct cmd *cmd)
- {
- 	switch (cmd->obj) {
-@@ -4180,7 +4192,10 @@ static int cmd_evaluate_delete(struct eval_ctx *ctx, struct cmd *cmd)
- 	case CMD_OBJ_SET:
- 	case CMD_OBJ_RULE:
- 	case CMD_OBJ_CHAIN:
-+		return 0;
- 	case CMD_OBJ_TABLE:
-+		table_del_cache(ctx, cmd);
-+		return 0;
- 	case CMD_OBJ_FLOWTABLE:
- 	case CMD_OBJ_COUNTER:
- 	case CMD_OBJ_QUOTA:
-diff --git a/tests/shell/testcases/sets/0053echo_0 b/tests/shell/testcases/sets/0053echo_0
-new file mode 100755
-index 000000000000..6bb03c28b268
---- /dev/null
-+++ b/tests/shell/testcases/sets/0053echo_0
-@@ -0,0 +1,16 @@
-+#!/bin/bash
-+
-+set -e
-+
-+EXPECTED="add table inet filter
-+delete table inet filter
-+
-+table inet filter {
-+        chain input {
-+                type filter hook input priority filter; policy drop;
-+                iifname { lo } ip saddr { 10.0.0.0/8 } ip daddr { 192.168.100.62 } tcp dport { 2001 } counter accept
-+        }
-+}
-+"
-+
-+$NFT -ef - <<< "$EXPECTED"
-diff --git a/tests/shell/testcases/sets/dumps/0053echo_0.nft b/tests/shell/testcases/sets/dumps/0053echo_0.nft
-new file mode 100644
-index 000000000000..6a8166360ceb
---- /dev/null
-+++ b/tests/shell/testcases/sets/dumps/0053echo_0.nft
-@@ -0,0 +1,6 @@
-+table inet filter {
-+	chain input {
-+		type filter hook input priority filter; policy drop;
-+		iifname { "lo" } ip saddr { 10.0.0.0/8 } ip daddr { 192.168.100.62 } tcp dport { 2001 } counter packets 0 bytes 0 accept
-+	}
-+}
+ if test -n "$kbuilddir"; then
+ 	AC_MSG_CHECKING([kernel version that we will build against])
+-	krel="$(make -sC "$kbuilddir" M=$PWD kernelrelease | $AWK -v 'FS=[[^0-9.]]' '{print $1; exit}')"
++	krel="$(make -sC "$kbuilddir" M=$PWD kernelversion | $AWK -v 'FS=[[^0-9.]]' '{print $1; exit}')"
+ 	save_IFS="$IFS"
+ 	IFS='.'
+ 	set x $krel
 -- 
-2.20.1
+2.17.2
 
