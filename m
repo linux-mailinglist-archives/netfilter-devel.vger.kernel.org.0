@@ -2,55 +2,72 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4602D2310CC
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Jul 2020 19:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A808C23116A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Jul 2020 20:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731792AbgG1RYU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 Jul 2020 13:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731684AbgG1RYT (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 Jul 2020 13:24:19 -0400
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B35C061794
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 10:24:19 -0700 (PDT)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id 2EEBB58767971; Tue, 28 Jul 2020 14:01:25 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id D4FD660C4AEA0;
-        Tue, 28 Jul 2020 14:01:25 +0200 (CEST)
-Date:   Tue, 28 Jul 2020 14:01:25 +0200 (CEST)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     Philip Prindeville <philipp@redfish-solutions.com>
-cc:     netfilter-devel@vger.kernel.org
-Subject: Xtables-addons 3.10 (Re: [PATCH 1/1] geoip: add quiet flag to
- xt_geoip_build)
-In-Reply-To: <52068C27-7A75-4F28-8DE2-C13CF196E2B5@redfish-solutions.com>
-Message-ID: <nycvar.YFH.7.77.849.2007281355020.19722@n3.vanv.qr>
-References: <20200525200542.29000-1-philipp@redfish-solutions.com> <nycvar.YFH.7.77.849.2005261459250.6469@n3.vanv.qr> <52068C27-7A75-4F28-8DE2-C13CF196E2B5@redfish-solutions.com>
-User-Agent: Alpine 2.22 (LSU 394 2020-01-19)
+        id S1732259AbgG1SPx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 Jul 2020 14:15:53 -0400
+Received: from correo.us.es ([193.147.175.20]:41192 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728050AbgG1SPx (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 28 Jul 2020 14:15:53 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id DF62215AEAB
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 20:15:51 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id D143FDA72F
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 20:15:51 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id D0C11DA722; Tue, 28 Jul 2020 20:15:51 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id B6C33DA72F
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 20:15:49 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 28 Jul 2020 20:15:49 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 9983C4265A2F
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 20:15:49 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft 1/3] parser_bison: memleak symbol redefinition
+Date:   Tue, 28 Jul 2020 20:15:44 +0200
+Message-Id: <20200728181546.12663-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sunday 2020-07-26 19:32, Philip Prindeville wrote:
->> On May 26, 2020, at 6:59 AM, Jan Engelhardt <jengelh@inai.de> wrote:
->> On Monday 2020-05-25 22:05, Philip Prindeville wrote:
->
->>> Conceivably someone might want to run a refresh of the geoip database
->>> from within a script, particularly an unattended script such as a cron
->>> job.  Don't generate output in that case.
->
->BTW, when is 3.10 due out?
+Missing expr_free() from the error path.
 
-I have tagged 3.10 and produced the tarballs.
-Take note that the homepage etc. has moved to
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/parser_bison.y | 1 +
+ 1 file changed, 1 insertion(+)
 
-	https://inai.de/projects/xtables-addons/
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index f0cca64136ee..167c315810ed 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -862,6 +862,7 @@ common_block		:	INCLUDE		QUOTED_STRING	stmt_separator
+ 				if (symbol_lookup(scope, $2) != NULL) {
+ 					erec_queue(error(&@2, "redefinition of symbol '%s'", $2),
+ 						   state->msgs);
++					expr_free($4);
+ 					xfree($2);
+ 					YYERROR;
+ 				}
+-- 
+2.20.1
 
-Downloads, new git location, and redirects from sf.net
-should be all there.
