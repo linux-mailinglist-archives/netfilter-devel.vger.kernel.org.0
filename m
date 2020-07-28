@@ -2,85 +2,55 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A342308F3
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Jul 2020 13:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4602D2310CC
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Jul 2020 19:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729091AbgG1LiY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 Jul 2020 07:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
+        id S1731792AbgG1RYU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 Jul 2020 13:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729159AbgG1LiT (ORCPT
+        with ESMTP id S1731684AbgG1RYT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:38:19 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB680C08C5E2
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 04:38:16 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id q6so20741481ljp.4
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 04:38:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=z88eUg589kIPbwfcJkBbHKFa4QR0wOZWGk2diK1jFPM=;
-        b=b8/14qSmtpua6DExDbiZQujm3FVCJQWOEnGYc8m39CT4QhCFHb7H/8m/Mr+GJhki5y
-         D26KeL8e5wwIhpqswED7Iyj8LNXjLx29RYfhZ1pPRjvkmM3zHNDeTF1tCFcQE9cmRh/R
-         raunFxUrBwUmVbHiIcNmDsAsXlg0feXUzfnq5cUO9m3PCR65DPFX0ENqSsff92XlzdML
-         2lZ1DHEdMBJRJ7G/JmLQNbN9a0xCfCCdIavasCRbfc1GMLbxrWB9YQiD4Jx827i+wgQH
-         uvPy2fXgy98qEeiaY5zYJY4YAm1gQLhdwyYSQS3qfKNnqXIVHUgDrgxJy+XFocnlCNnt
-         WweQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=z88eUg589kIPbwfcJkBbHKFa4QR0wOZWGk2diK1jFPM=;
-        b=p3M0HPkE5GX9bZCC3QipLkwCsTv256SMXkedwA+FjcgULSrRgBJ+8gqv31hUnHUR1v
-         Iur9/8SQGPZgYJKnk1zc8lB5HyrI8MbNBbAH+IHscnXJLC0BxUlCULV5l+F8cIW9lOVB
-         87SvR5YEQM5cSh6pOkWT7QVW+FMaNrdo5u15xcFBP9PDzByKOYVXvhTzvTDLmEQP2dyf
-         fYry7xGkLCyVo6gEo3+JIJhRNf6keS6Nph8dQBvxyYryeYghcApO8V0z84qTb+KFThza
-         zxj30/8av5SMRmQqai2IDLzXO2H0AcYjr2A7o2dbd8lWCCylhcVZ0TFumZ26sdize5WL
-         Ipbg==
-X-Gm-Message-State: AOAM532tnqWx8OqF6YjJxbmF3DSQ4SgcK5Xsc0RASSSl5nHRciLhT3N6
-        wIFouRyUEiircRTX9xT3+nALNBhGrMvMaJ68HiIJhY8AudA=
-X-Google-Smtp-Source: ABdhPJxf3Z6j28ZJZ91yE+38HygJgiTtZMyB/VSeYng0agg0J+nv4s0qzz48SwEN7D8BizofBLS128ELYqeZWTC2zc4=
-X-Received: by 2002:a5d:5746:: with SMTP id q6mr24649773wrw.59.1595936294234;
- Tue, 28 Jul 2020 04:38:14 -0700 (PDT)
+        Tue, 28 Jul 2020 13:24:19 -0400
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B35C061794
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jul 2020 10:24:19 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 2EEBB58767971; Tue, 28 Jul 2020 14:01:25 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id D4FD660C4AEA0;
+        Tue, 28 Jul 2020 14:01:25 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 14:01:25 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Philip Prindeville <philipp@redfish-solutions.com>
+cc:     netfilter-devel@vger.kernel.org
+Subject: Xtables-addons 3.10 (Re: [PATCH 1/1] geoip: add quiet flag to
+ xt_geoip_build)
+In-Reply-To: <52068C27-7A75-4F28-8DE2-C13CF196E2B5@redfish-solutions.com>
+Message-ID: <nycvar.YFH.7.77.849.2007281355020.19722@n3.vanv.qr>
+References: <20200525200542.29000-1-philipp@redfish-solutions.com> <nycvar.YFH.7.77.849.2005261459250.6469@n3.vanv.qr> <52068C27-7A75-4F28-8DE2-C13CF196E2B5@redfish-solutions.com>
+User-Agent: Alpine 2.22 (LSU 394 2020-01-19)
 MIME-Version: 1.0
-Received: by 2002:a5d:65cb:0:0:0:0:0 with HTTP; Tue, 28 Jul 2020 04:38:13
- -0700 (PDT)
-From:   Rashid Al-Wahaibi <pdlarsen550@gmail.com>
-Date:   Tue, 28 Jul 2020 12:38:13 +0100
-Message-ID: <CAE00X2F5SUiQf0qCZYq3Yx353S0Esu1hA3RH4THqOM0WZMKHFQ@mail.gmail.com>
-Subject: Your Partnership
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
--- 
-Good day,
-My name is Rashid Al-Wahaibi, I am from Oman but base here in the UK
-and a Managing Partner of BP Partnership Ltd, a Financial Consultancy
-Firm with office in the United Kingdom. I am contacting you based on
-the request of Ms Rosmah Mansor Najib Razak, wife of Najib Razak, the
-immediate past Malaysian Prime Minister.
+On Sunday 2020-07-26 19:32, Philip Prindeville wrote:
+>> On May 26, 2020, at 6:59 AM, Jan Engelhardt <jengelh@inai.de> wrote:
+>> On Monday 2020-05-25 22:05, Philip Prindeville wrote:
+>
+>>> Conceivably someone might want to run a refresh of the geoip database
+>>> from within a script, particularly an unattended script such as a cron
+>>> job.  Don't generate output in that case.
+>
+>BTW, when is 3.10 due out?
 
-I found your profile satisfying and decided to contact you based on Ms
-Rosmah Mansor Najib Razak desire to invest in any viable project in
-your region.
+I have tagged 3.10 and produced the tarballs.
+Take note that the homepage etc. has moved to
 
-I need you to guide me on the type of investment that will be of best
-interest and provide good return on investment in your country and
-also act as her investment manager. She is ready to invest $25m to
-$50m USD
+	https://inai.de/projects/xtables-addons/
 
-I will explain further detail of this business proposal when you reply
-to this email indicating your interest.
-
-
-Regards,
-
-Rashid Al-Wahaibi,
-Bp Partnership Ltd
-60 Raglan Road
-Reigate, ENG RH2 0HN,
-United Kingdom
+Downloads, new git location, and redirects from sf.net
+should be all there.
