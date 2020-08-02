@@ -2,59 +2,74 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CFF2354C3
-	for <lists+netfilter-devel@lfdr.de>; Sun,  2 Aug 2020 03:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042102354C5
+	for <lists+netfilter-devel@lfdr.de>; Sun,  2 Aug 2020 03:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727907AbgHBB1N (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 1 Aug 2020 21:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgHBB1M (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 1 Aug 2020 21:27:12 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4221C06174A
-        for <netfilter-devel@vger.kernel.org>; Sat,  1 Aug 2020 18:27:12 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1k22mN-0000Pp-5S; Sun, 02 Aug 2020 03:27:11 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        "Demi M . Obenour" <demiobenour@gmail.com>
-Subject: [PATCH nf] netfilter: nft_meta: fix iifgroup matching
-Date:   Sun,  2 Aug 2020 03:27:03 +0200
-Message-Id: <20200802012703.15135-1-fw@strlen.de>
-X-Mailer: git-send-email 2.26.2
+        id S1727909AbgHBBaJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 1 Aug 2020 21:30:09 -0400
+Received: from correo.us.es ([193.147.175.20]:39346 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725883AbgHBBaJ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 1 Aug 2020 21:30:09 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 7287CE34C4
+        for <netfilter-devel@vger.kernel.org>; Sun,  2 Aug 2020 03:30:08 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 64A99DA73F
+        for <netfilter-devel@vger.kernel.org>; Sun,  2 Aug 2020 03:30:08 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 5A1A9DA73D; Sun,  2 Aug 2020 03:30:08 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 43976DA722
+        for <netfilter-devel@vger.kernel.org>; Sun,  2 Aug 2020 03:30:06 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Sun, 02 Aug 2020 03:30:06 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPA id 26FFB4265A2F
+        for <netfilter-devel@vger.kernel.org>; Sun,  2 Aug 2020 03:30:06 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next 0/2] improve error reporting
+Date:   Sun,  2 Aug 2020 03:30:00 +0200
+Message-Id: <20200802013002.14916-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-iifgroup matching errounously checks the output interface.
+Hi,
 
-Fixes: 8724e819cc9a ("netfilter: nft_meta: move all interface related keys to helper")
-Reported-by: Demi M. Obenour <demiobenour@gmail.com>
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/netfilter/nft_meta.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is a small batch to improve error reporting:
 
-diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
-index 951b6e87ed5d..7bc6537f3ccb 100644
---- a/net/netfilter/nft_meta.c
-+++ b/net/netfilter/nft_meta.c
-@@ -253,7 +253,7 @@ static bool nft_meta_get_eval_ifname(enum nft_meta_keys key, u32 *dest,
- 			return false;
- 		break;
- 	case NFT_META_IIFGROUP:
--		if (!nft_meta_store_ifgroup(dest, nft_out(pkt)))
-+		if (!nft_meta_store_ifgroup(dest, nft_in(pkt)))
- 			return false;
- 		break;
- 	case NFT_META_OIFGROUP:
+Patch #1 allows for location-based error reporting in expressions, eg.
+
+ # nft add rule x y jump z
+ Error: Could not process rule: No such file or directory
+ add rule x y jump z
+              ^^^^^^
+
+Patch #2 replaces EBUSY by EEXIST in several scenarios that are reported
+         to cause confusion among users.
+
+Pablo Neira Ayuso (2):
+  netfilter: nf_tables: extended netlink error reporting for expressions
+  netfilter: nf_tables: report EEXIST on overlaps
+
+ net/netfilter/nf_tables_api.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
+
 -- 
-2.26.2
+2.20.1
 
