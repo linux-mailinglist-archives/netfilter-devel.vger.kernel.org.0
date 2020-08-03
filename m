@@ -2,147 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CD12359E9
-	for <lists+netfilter-devel@lfdr.de>; Sun,  2 Aug 2020 20:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA49239D1C
+	for <lists+netfilter-devel@lfdr.de>; Mon,  3 Aug 2020 02:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727823AbgHBScM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 2 Aug 2020 14:32:12 -0400
-Received: from correo.us.es ([193.147.175.20]:45732 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727773AbgHBScL (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 2 Aug 2020 14:32:11 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id EC9D7E4B84
-        for <netfilter-devel@vger.kernel.org>; Sun,  2 Aug 2020 20:32:09 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id DDF80DA73F
-        for <netfilter-devel@vger.kernel.org>; Sun,  2 Aug 2020 20:32:09 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id D37E8DA791; Sun,  2 Aug 2020 20:32:09 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 5CF73DA789;
-        Sun,  2 Aug 2020 20:32:07 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sun, 02 Aug 2020 20:32:07 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (120.205.137.78.rev.vodafone.pt [78.137.205.120])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id 794964265A2F;
-        Sun,  2 Aug 2020 20:32:06 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 7/7] netfilter: nf_tables: report EEXIST on overlaps
-Date:   Sun,  2 Aug 2020 20:31:48 +0200
-Message-Id: <20200802183149.2808-8-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200802183149.2808-1-pablo@netfilter.org>
-References: <20200802183149.2808-1-pablo@netfilter.org>
+        id S1727923AbgHCAtG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 2 Aug 2020 20:49:06 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:42436 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726989AbgHCAtF (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 2 Aug 2020 20:49:05 -0400
+Received: by mail-il1-f200.google.com with SMTP id c12so12965862iln.9
+        for <netfilter-devel@vger.kernel.org>; Sun, 02 Aug 2020 17:49:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=zjMjCpZHpZC9oX4mSp6lGsDleX+rgZUM4Hc+zQq53tE=;
+        b=Bj5o6T6CcZgLbN41MomZ6KWImlQUIL9YFrKtBeM9ySLw5lUk70t13wmJAIXayjeDQx
+         YE9XsAsRlhfGJxFKLOtBzkxEJtckX0/Og2pX5NQEB5FDsubeZo3Myt4kp3Zybp4AAheQ
+         iBmQz81PLbXEthRAxzvi7mKdtuOo9GApx0AxVoywMGR6N4uEHsa+BU9+F3r8b9oOoXyd
+         jZbeWJ0xyzaEVqtCX72dALxGofuWFzfM1oJ4lRFcvmefAgDZPdVGI1FmfckdufPpjxdI
+         MzZU/uJLRZc0geWXP+02OhbZGGci3+63NZdEmX04aTXn/9PjqP8pkoedLkvC7rx6TFCH
+         GadQ==
+X-Gm-Message-State: AOAM531oZiVu881R8k0/7+E7idot5I1QL/f7Gd38n6o5kOKTGooSBt40
+        j5cfxXaVqRCu3OBfIjrXRHdDGv1jaW0FMxd2cXLOUzdQP8b/
+X-Google-Smtp-Source: ABdhPJx51fMhfJaafxHzZAN2jjWSIrSl/b5CFIul4+GGQOi4s1mKok/hTo4u9c3s4cBgSHZ/wcwXjrq3H3VFwrd210mpw03EVfqe
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-Received: by 2002:a05:6602:15d0:: with SMTP id f16mr168098iow.45.1596415744953;
+ Sun, 02 Aug 2020 17:49:04 -0700 (PDT)
+Date:   Sun, 02 Aug 2020 17:49:04 -0700
+In-Reply-To: <000000000000ab11c505abeb19f5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000064571305abee81ea@google.com>
+Subject: Re: KASAN: use-after-free Write in __sco_sock_close
+From:   syzbot <syzbot+077eca30d3cb7c02b273@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net,
+        devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        johan.hedberg@gmail.com, kaber@trash.net, kadlec@blackhole.kfki.hu,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        marcel@holtmann.org, mchehab@kernel.org, mchehab@s-opensource.com,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Replace EBUSY by EEXIST in the following cases:
+syzbot has bisected this issue to:
 
-- If the user adds a chain with a different configuration such as different
-  type, hook and priority.
+commit 43ea43b9d8b27b7acd443ec59319faa3cdb8a616
+Author: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date:   Wed Oct 12 11:21:43 2016 +0000
 
-- If the user adds a non-base chain that clashes with an existing basechain.
+    [media] radio-bcm2048: don't ignore errors
 
-- If the user adds a { key : value } mapping element and the key exists
-  but the value differs.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1036e6a4900000
+start commit:   ac3a0c84 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1236e6a4900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1436e6a4900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e59ee776d5aa8d55
+dashboard link: https://syzkaller.appspot.com/bug?extid=077eca30d3cb7c02b273
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12cf1904900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d52e14900000
 
-- If the device already belongs to an existing flowtable.
+Reported-by: syzbot+077eca30d3cb7c02b273@syzkaller.appspotmail.com
+Fixes: 43ea43b9d8b2 ("[media] radio-bcm2048: don't ignore errors")
 
-User describe that this error reporting is confusing:
-
-- https://bugzilla.netfilter.org/show_bug.cgi?id=1176
-- https://bugzilla.netfilter.org/show_bug.cgi?id=1413
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
-
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index fac552b0179f..6571789989bc 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -2097,7 +2097,7 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
- 
- 	if (nla[NFTA_CHAIN_HOOK]) {
- 		if (!nft_is_base_chain(chain))
--			return -EBUSY;
-+			return -EEXIST;
- 
- 		err = nft_chain_parse_hook(ctx->net, nla, &hook, ctx->family,
- 					   false);
-@@ -2107,21 +2107,21 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
- 		basechain = nft_base_chain(chain);
- 		if (basechain->type != hook.type) {
- 			nft_chain_release_hook(&hook);
--			return -EBUSY;
-+			return -EEXIST;
- 		}
- 
- 		if (ctx->family == NFPROTO_NETDEV) {
- 			if (!nft_hook_list_equal(&basechain->hook_list,
- 						 &hook.list)) {
- 				nft_chain_release_hook(&hook);
--				return -EBUSY;
-+				return -EEXIST;
- 			}
- 		} else {
- 			ops = &basechain->ops;
- 			if (ops->hooknum != hook.num ||
- 			    ops->priority != hook.priority) {
- 				nft_chain_release_hook(&hook);
--				return -EBUSY;
-+				return -EEXIST;
- 			}
- 		}
- 		nft_chain_release_hook(&hook);
-@@ -5262,10 +5262,8 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 			if (nft_set_ext_exists(ext, NFT_SET_EXT_DATA) ^
- 			    nft_set_ext_exists(ext2, NFT_SET_EXT_DATA) ||
- 			    nft_set_ext_exists(ext, NFT_SET_EXT_OBJREF) ^
--			    nft_set_ext_exists(ext2, NFT_SET_EXT_OBJREF)) {
--				err = -EBUSY;
-+			    nft_set_ext_exists(ext2, NFT_SET_EXT_OBJREF))
- 				goto err_element_clash;
--			}
- 			if ((nft_set_ext_exists(ext, NFT_SET_EXT_DATA) &&
- 			     nft_set_ext_exists(ext2, NFT_SET_EXT_DATA) &&
- 			     memcmp(nft_set_ext_data(ext),
-@@ -5273,7 +5271,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 			    (nft_set_ext_exists(ext, NFT_SET_EXT_OBJREF) &&
- 			     nft_set_ext_exists(ext2, NFT_SET_EXT_OBJREF) &&
- 			     *nft_set_ext_obj(ext) != *nft_set_ext_obj(ext2)))
--				err = -EBUSY;
-+				goto err_element_clash;
- 			else if (!(nlmsg_flags & NLM_F_EXCL))
- 				err = 0;
- 		} else if (err == -ENOTEMPTY) {
-@@ -6423,7 +6421,7 @@ static int nft_register_flowtable_net_hooks(struct net *net,
- 			list_for_each_entry(hook2, &ft->hook_list, list) {
- 				if (hook->ops.dev == hook2->ops.dev &&
- 				    hook->ops.pf == hook2->ops.pf) {
--					err = -EBUSY;
-+					err = -EEXIST;
- 					goto err_unregister_net_hooks;
- 				}
- 			}
--- 
-2.20.1
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
