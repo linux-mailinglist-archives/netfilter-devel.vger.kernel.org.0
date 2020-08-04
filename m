@@ -2,65 +2,94 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C22B23BA35
-	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Aug 2020 14:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A135823BA49
+	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Aug 2020 14:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbgHDMXa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 4 Aug 2020 08:23:30 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:34146 "EHLO mx1.riseup.net"
+        id S1725811AbgHDM04 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 4 Aug 2020 08:26:56 -0400
+Received: from correo.us.es ([193.147.175.20]:44942 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbgHDMWa (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 4 Aug 2020 08:22:30 -0400
-Received: from bell.riseup.net (bell-pn.riseup.net [10.0.1.178])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4BLYYX5W5nzDsXn;
-        Tue,  4 Aug 2020 05:13:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1596543184; bh=sxsdp8XKCFZ5TZ9GkzfagnS18JgDMEie/7kPOXSqsjs=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Gck++3QJAD3lxYgnkMvV0MzSpRHckbI9BzNgaZevYXgERFwo3lVOF2CvYrGO83qqE
-         f2AlwKnvjjCO5fDISP+E1kcvX0+uQel4Gni46TZblp5Yx6LZ1TVgaEstm65VNFaK4p
-         LDq6lEDDNJ4833UIRPLc59htDLkkwAsoQwVUwsNo=
-X-Riseup-User-ID: 4BC24CAE8B18062EBD038941945670BB7113963E2F14A63154A6BDEE54B48C57
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by bell.riseup.net (Postfix) with ESMTPSA id 4BLYYW5W8zzJmm0;
-        Tue,  4 Aug 2020 05:13:03 -0700 (PDT)
+        id S1725864AbgHDM0z (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 4 Aug 2020 08:26:55 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id A4A2FF2DE6
+        for <netfilter-devel@vger.kernel.org>; Tue,  4 Aug 2020 14:15:58 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 95F71DA78B
+        for <netfilter-devel@vger.kernel.org>; Tue,  4 Aug 2020 14:15:58 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 8B8DEDA72F; Tue,  4 Aug 2020 14:15:58 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 6E19FDA789;
+        Tue,  4 Aug 2020 14:15:56 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 04 Aug 2020 14:15:56 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [213.143.49.65])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id E95C64265A32;
+        Tue,  4 Aug 2020 14:15:55 +0200 (CEST)
+Date:   Tue, 4 Aug 2020 14:15:53 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     "Jose M. Guisado" <guigom@riseup.net>
+Cc:     netfilter-devel@vger.kernel.org, erig@erig.me, phil@nwl.cc
 Subject: Re: [PATCH nft v4] src: enable json echo output when reading native
  syntax
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, erig@erig.me, phil@nwl.cc
+Message-ID: <20200804121553.GA26896@salvia>
 References: <20200731104944.21384-1-guigom@riseup.net>
- <20200804103846.58872-1-guigom@riseup.net> <20200804110552.GA18345@salvia>
-From:   "Jose M. Guisado" <guigom@riseup.net>
-Message-ID: <12943ed7-2836-0201-73f4-7dc8ed0d91cb@riseup.net>
-Date:   Tue, 4 Aug 2020 14:13:01 +0200
+ <20200804103846.58872-1-guigom@riseup.net>
+ <20200804110552.GA18345@salvia>
+ <12943ed7-2836-0201-73f4-7dc8ed0d91cb@riseup.net>
 MIME-Version: 1.0
-In-Reply-To: <20200804110552.GA18345@salvia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <12943ed7-2836-0201-73f4-7dc8ed0d91cb@riseup.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo, sorry about the formatting issues.
+On Tue, Aug 04, 2020 at 02:13:01PM +0200, Jose M. Guisado wrote:
+> Hi Pablo, sorry about the formatting issues.
+> 
+> One thing about your suggestion:
+> 
+> On 4/8/20 13:05, Pablo Neira Ayuso wrote:
+> > if (!ctx->json_root)
+> >                  return;
+> 
+> Checking uniquely for the absence of json_root is not enough as
+> json_echo may have been initialized. In essence, the case the
+> patch is fixing is when json_root is null but json_echo is not,
+> to denote that we want json echo output but have not read json
+> from input.
 
-One thing about your suggestion:
+Ah, indeed, sorry. Then, probably:
 
-On 4/8/20 13:05, Pablo Neira Ayuso wrote:
-> if (!ctx->json_root)
->                  return;
+        if (!ctx->json_root) {
+               if (!ctx->json_echo)
+                        return;
 
-Checking uniquely for the absence of json_root is not enough as 
-json_echo may have been initialized. In essence, the case the patch is 
-fixing is when json_root is null but json_echo is not, to denote that we 
-want json echo output but have not read json from input.
-
-In addition, v5 will contain a check for json_echo initialization inside 
-monitor.c to avoid re-initializing nft->json_echo when the callback is 
-built again, this happens when reading multiple times from a mnl socket 
-(see mnl.c:433 inside mnl_batch_talk).
-
-Regards.
+                ctx->json_echo = json_pack("{s:o}", "nftables", ctx->json_echo);
+                json_dumpf(ctx->json_echo, ctx->output.output_fp, JSON_PRESERVE_ORDER);
+                json_decref(ctx->json_echo);
+                ctx->json_echo = NULL;
+                fprintf(ctx->output.output_fp, "\n");
+                fflush(ctx->output.output_fp);
+        } else {
+                json_dumpf(ctx->json_root, ctx->output.output_fp, JSON_PRESERVE_ORDER);
+                json_cmd_assoc_free();
+                json_decref(ctx->json_root);
+                ctx->json_root = NULL;
+        }
