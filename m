@@ -2,69 +2,85 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FAC23BACB
-	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Aug 2020 14:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C49923BADC
+	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Aug 2020 15:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbgHDM5s (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 4 Aug 2020 08:57:48 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:49442 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725856AbgHDM5s (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 4 Aug 2020 08:57:48 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-k88_szJdNpe3G8kI4aUz9A-1; Tue, 04 Aug 2020 08:57:40 -0400
-X-MC-Unique: k88_szJdNpe3G8kI4aUz9A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 047C51DE0;
-        Tue,  4 Aug 2020 12:57:39 +0000 (UTC)
-Received: from localhost (ovpn-115-201.rdu2.redhat.com [10.10.115.201])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C46137178B;
-        Tue,  4 Aug 2020 12:57:37 +0000 (UTC)
-Date:   Tue, 4 Aug 2020 08:57:36 -0400
-From:   Eric Garver <eric@garver.life>
-To:     "Jose M. Guisado Gomez" <guigom@riseup.net>
-Cc:     netfilter-devel@vger.kernel.org, pablo@netfilter.org, phil@nwl.cc
+        id S1726954AbgHDNF3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 4 Aug 2020 09:05:29 -0400
+Received: from mx1.riseup.net ([198.252.153.129]:51622 "EHLO mx1.riseup.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726282AbgHDNF3 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 4 Aug 2020 09:05:29 -0400
+Received: from bell.riseup.net (bell-pn.riseup.net [10.0.1.178])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4BLZk02SsTzDsZ7;
+        Tue,  4 Aug 2020 06:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1596546328; bh=poFMUTGMs2Ei/ek7K1VRJy//ylwhqh3kvYId1OaObW0=;
+        h=Subject:To:References:From:Cc:Date:In-Reply-To:From;
+        b=sOisWsUS4lRR7PM8XnNkd54M79K6AvMP/XMSI7UHRia3UCkGz0UZbWJHYMCnSrPTN
+         AkdWZuBGymDW0z27gZy+W6huZWTs+COsCv9SfQBZ2zXIeLmO/XyTi8NcSVQNOcGGO5
+         yf4GEeitbE3iZ9JJ2atrxrXpKKxnFExGQ3gRNWEk=
+X-Riseup-User-ID: 41ACDB8569040EE771857F083211B80CF0A614330470AE6D0282534DF4CA01AA
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by bell.riseup.net (Postfix) with ESMTPSA id 4BLZjz1zymzJmm0;
+        Tue,  4 Aug 2020 06:05:27 -0700 (PDT)
 Subject: Re: [PATCH nft v4] src: enable json echo output when reading native
  syntax
-Message-ID: <20200804125736.tsuz36h3wuycnjsf@egarver>
-Mail-Followup-To: Eric Garver <eric@garver.life>,
-        "Jose M. Guisado Gomez" <guigom@riseup.net>,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org, phil@nwl.cc
+To:     Phil Sutter <phil@nwl.cc>
 References: <20200731104944.21384-1-guigom@riseup.net>
  <20200804103846.58872-1-guigom@riseup.net>
+ <20200804123744.GV13697@orbyte.nwl.cc>
+From:   "Jose M. Guisado" <guigom@riseup.net>
+Cc:     netfilter-devel@vger.kernel.org, pablo@netfilter.org, erig@erig.me
+Message-ID: <87971ac3-ed9c-9923-ca3f-df6dfb8b94d9@riseup.net>
+Date:   Tue, 4 Aug 2020 15:05:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804103846.58872-1-guigom@riseup.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200804123744.GV13697@orbyte.nwl.cc>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 12:38:46PM +0200, Jose M. Guisado Gomez wrote:
-> This patch fixes a bug in which nft did not print any output when
-> specifying --echo and --json and reading nft native syntax.
+On 4/8/20 14:37, Phil Sutter wrote:
+> Why not just:
 > 
-> This patch respects behavior when input is json, in which the output
-> would be the identical input plus the handles.
+> --- a/src/monitor.c
+> +++ b/src/monitor.c
+> @@ -922,8 +922,11 @@ int netlink_echo_callback(const struct nlmsghdr *nlh, void *data)
+>          if (!nft_output_echo(&echo_monh.ctx->nft->output))
+>                  return MNL_CB_OK;
+>   
+> -       if (nft_output_json(&ctx->nft->output))
+> -               return json_events_cb(nlh, &echo_monh);
+> +       if (nft_output_json(&ctx->nft->output)) {
+> +               if (ctx->nft->json_root)
+> +                       return json_events_cb(nlh, &echo_monh);
+> +               echo_monh.format = NFTNL_OUTPUT_JSON;
+> +       }
+>   
+>          return netlink_events_cb(nlh, &echo_monh);
+>   }
 > 
-> Adds a json_echo member inside struct nft_ctx to build and store the json object
-> containing the json command objects, the object is built using a mock
-> monitor to reuse monitor json code. This json object is only used when
-> we are sure we have not read json from input.
+> At a first glance, this seems to work just fine.
 > 
-> Fixes: https://bugzilla.netfilter.org/show_bug.cgi?id=1446
-> 
-> Signed-off-by: Jose M. Guisado Gomez <guigom@riseup.net>
-> ---
-> v4 respects previous behavior for json echo when reading json input too
+> Cheers, Phil
 
-With this version all firewalld tests pass. Thanks!
+This does not output anything on my machine. This is because json_echo 
+is not initialized before netlink_echo_callback.
 
-Tested-by: Eric Garver <eric@garver.life>
+The mock monitor is responsible of appending the appropriate json cmd 
+object to nft->json_echo, so we need it initialized when the case is as 
+we have discussed before, native input and echo+json.
 
+In addition netlink_echo_callback is called each time we receive 
+something from the mnl socket. So checking if nft->json_echo is already 
+initialized is necessary too, if not checked only the last response is 
+shown, and for each past response that means a lost json_t reference to 
+an array of cmd objs for that given response.
+
+Regards.
