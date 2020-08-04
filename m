@@ -2,86 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4EB23C06B
-	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Aug 2020 22:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26C023C0C6
+	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Aug 2020 22:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgHDUCx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 4 Aug 2020 16:02:53 -0400
-Received: from correo.us.es ([193.147.175.20]:49474 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726489AbgHDUCs (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 4 Aug 2020 16:02:48 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 25E77DA802
-        for <netfilter-devel@vger.kernel.org>; Tue,  4 Aug 2020 22:02:47 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 19AE4DA8FD
-        for <netfilter-devel@vger.kernel.org>; Tue,  4 Aug 2020 22:02:47 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 0C712DA8EC; Tue,  4 Aug 2020 22:02:47 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CCEF1DA874;
-        Tue,  4 Aug 2020 22:02:44 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 04 Aug 2020 22:02:44 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (120.205.137.78.rev.vodafone.pt [78.137.205.120])
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPA id ECBAB4265A32;
-        Tue,  4 Aug 2020 22:02:43 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org
-Subject: [PATCH 5/5] netfilter: flowtable: Set offload timeout when adding flow
-Date:   Tue,  4 Aug 2020 22:02:08 +0200
-Message-Id: <20200804200208.18620-6-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
+        id S1726999AbgHDUc7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 4 Aug 2020 16:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726994AbgHDUc7 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 4 Aug 2020 16:32:59 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AD0C06174A;
+        Tue,  4 Aug 2020 13:32:58 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id B1F5E128824A2;
+        Tue,  4 Aug 2020 13:16:11 -0700 (PDT)
+Date:   Tue, 04 Aug 2020 13:32:56 -0700 (PDT)
+Message-Id: <20200804.133256.752889085723331557.davem@davemloft.net>
+To:     pablo@netfilter.org
+Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 0/5] Netfilter fixes for net
+From:   David Miller <davem@davemloft.net>
 In-Reply-To: <20200804200208.18620-1-pablo@netfilter.org>
 References: <20200804200208.18620-1-pablo@netfilter.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 04 Aug 2020 13:16:11 -0700 (PDT)
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Roi Dayan <roid@mellanox.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Date: Tue,  4 Aug 2020 22:02:03 +0200
 
-On heavily loaded systems the GC can take time to go over all existing
-conns and reset their timeout. At that time other calls like from
-nf_conntrack_in() can call of nf_ct_is_expired() and see the conn as
-expired. To fix this when we set the offload bit we should also reset
-the timeout instead of counting on GC to finish first iteration over
-all conns before the initial timeout.
+> The following patchset contains Netfilter fixes for net:
+> 
+> 1) Flush the cleanup xtables worker to make sure destructors
+>    have completed, from Florian Westphal.
+> 
+> 2) iifgroup is matching erroneously, also from Florian.
+> 
+> 3) Add selftest for meta interface matching, from Florian Westphal.
+> 
+> 4) Move nf_ct_offload_timeout() to header, from Roi Dayan.
+> 
+> 5) Call nf_ct_offload_timeout() from flow_offload_add() to
+>    make sure garbage collection does not evict offloaded flow,
+>    from Roi Dayan.
+> 
+> Please, pull these changes from:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
 
-Fixes: 90964016e5d3 ("netfilter: nf_conntrack: add IPS_OFFLOAD status bit")
-Signed-off-by: Roi Dayan <roid@mellanox.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_flow_table_core.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-index b1eb5272b379..4f7a567c536e 100644
---- a/net/netfilter/nf_flow_table_core.c
-+++ b/net/netfilter/nf_flow_table_core.c
-@@ -243,6 +243,8 @@ int flow_offload_add(struct nf_flowtable *flow_table, struct flow_offload *flow)
- 		return err;
- 	}
- 
-+	nf_ct_offload_timeout(flow->ct);
-+
- 	if (nf_flowtable_hw_offload(flow_table)) {
- 		__set_bit(NF_FLOW_HW, &flow->flags);
- 		nf_flow_offload_add(flow_table, flow);
--- 
-2.20.1
-
+Pulled, thanks Pablo.
