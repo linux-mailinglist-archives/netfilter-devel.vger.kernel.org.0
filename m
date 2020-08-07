@@ -2,59 +2,64 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6023423EFA0
-	for <lists+netfilter-devel@lfdr.de>; Fri,  7 Aug 2020 16:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6448123EF69
+	for <lists+netfilter-devel@lfdr.de>; Fri,  7 Aug 2020 16:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726550AbgHGOxB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 7 Aug 2020 10:53:01 -0400
-Received: from mail.furshetcrimea.ru ([193.27.243.220]:51882 "EHLO
-        furshetcrimea.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726644AbgHGOxA (ORCPT
+        id S1726386AbgHGOvU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 7 Aug 2020 10:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726900AbgHGOvK (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 7 Aug 2020 10:53:00 -0400
-X-Greylist: delayed 5015 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 10:51:24 EDT
-Received: from [154.118.61.214] (account info@furshetcrimea.ru HELO [192.168.8.100])
-  by furshetcrimea.ru (CommuniGate Pro SMTP 6.1.10)
-  with ESMTPA id 11132998; Fri, 07 Aug 2020 17:58:14 +0300
-Content-Type: text/plain; charset="iso-8859-1"
+        Fri, 7 Aug 2020 10:51:10 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82304C061756
+        for <netfilter-devel@vger.kernel.org>; Fri,  7 Aug 2020 07:51:08 -0700 (PDT)
+Received: from localhost ([::1]:60268 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.94)
+        (envelope-from <phil@nwl.cc>)
+        id 1k43i5-0007Cg-D7; Fri, 07 Aug 2020 16:51:05 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH] xtables-monitor: Fix ip6tables rule printing
+Date:   Fri,  7 Aug 2020 16:51:00 +0200
+Message-Id: <20200807145100.21340-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Bei Interesse antworten.
-To:     Recipients <info@furshetcrimea.ru>
-From:   info@furshetcrimea.ru
-Date:   Fri, 07 Aug 2020 15:45:37 +0100
-Reply-To: mattiassjoborg751@gmail.com
-X-Antivirus: Avast (VPS 200807-2, 08/07/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <auto-000011132998@furshetcrimea.ru>
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Schöne Grüße,
+When printing an ip6tables rule event, false family ops are used as they
+are initially looked up for AF_INET and reused no matter the current
+rule's family. In practice, this means that nft_rule_print_save() calls
+the wrong rule_to_cs, save_rule and clear_cs callbacks. Therefore, if a
+rule specifies a source or destination address, the address is not
+printed.
 
-Mein Name ist MATTIAS SJOBORG, ich bin Schweizer Staatsbürger und (Vorsitzender des Vergütungs- und Nominierungsausschusses) von Tethys Petroleum, einem multinationalen Ölkonzern mit Sitz in London-England, Großbritannien. Ich bitte Sie um Ihre Hilfe, um die Summe von vierzig Millionen Dollar abzurufen, die aus zwei Sendungsboxen besteht.
+Fix this by performing a family lookup each time rule_cb is called.
 
-Dieses Geld wurde von der Firma erworben und von einem Diplomaten begleitet und korrekt in einer Sicherheitsfirma in Amerika hinterlegt. Mein Grund dafür ist, dass ich von der Firma zu lange um meine Ansprüche betrogen wurde, nur weil ich kein bin Britisch. Die Kontaktdaten des Diplomaten erhalten Sie, wenn Sie Ihr Interesse bekunden, mir zu helfen.
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/xtables-monitor.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Jede der Schachteln enthält 20 Mio. USD. Für Ihre Hilfe bin ich bereit, 40% an Sie freizugeben. Aus Sicherheitsgründen wurde die Sendung als VERTRAULICHE DIPLOMATISCHE DOKUMENTE registriert, und ich kann erklären, warum dies so erklärt wurde. Denken Sie daran, dass der Diplomat den Inhalt der Sendung nicht kennt. Er ist seit einem Monat dort, während ich nach einem zuverlässigen Partner suchen möchte. Ich werde das Land verlassen, sobald die Sendung für Sie an Sie geliefert wird Private Investitionen und ich haben geschworen, niemals nach London zurückzukehren. Bitte, ich brauche Ihre dringende Antwort, bevor meine Pläne, das Unternehmen zu verlassen, entdeckt werden.
-
-www.tethyspetroleum.com/tethys/static/EN_US/au_seniormanagement.html
-
-Im Moment ist die sicherste Form der Korrespondenz meine eigene E-Mail-Adresse. Bitte antworten Sie im Interesse der Vertraulichkeit nur über meine direkte E-Mail-Adresse. Antworten Sie zusammen mit Ihrer direkten Telefon- und Faxnummer, unter der ich Sie alternativ erreichen kann.
-
-Bitte, wenn Sie nicht bereit und interessiert sind, mir zu helfen, löschen Sie bitte diese E-Mail aus Ihrer E-Mail und tun Sie so, als hätten Sie sie nie erhalten.
-
-Freundliche Grüße,
-Mr.Mattias Sjoborg
-(Vorsitzender des Vergütungs- und Nominierungsausschusses)
-Tethys Petroleum.
-London, England
-
+diff --git a/iptables/xtables-monitor.c b/iptables/xtables-monitor.c
+index 57def83e2eea0..4008cc00d4694 100644
+--- a/iptables/xtables-monitor.c
++++ b/iptables/xtables-monitor.c
+@@ -93,6 +93,8 @@ static int rule_cb(const struct nlmsghdr *nlh, void *data)
+ 	if (arg->nfproto && arg->nfproto != family)
+ 		goto err_free;
+ 
++	arg->h->ops = nft_family_ops_lookup(family);
++
+ 	if (arg->is_event)
+ 		printf(" EVENT: ");
+ 	switch (family) {
 -- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+2.27.0
 
