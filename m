@@ -2,240 +2,59 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272AF23ED0A
-	for <lists+netfilter-devel@lfdr.de>; Fri,  7 Aug 2020 14:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD0623EF62
+	for <lists+netfilter-devel@lfdr.de>; Fri,  7 Aug 2020 16:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbgHGMC3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 7 Aug 2020 08:02:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgHGMC2 (ORCPT
+        id S1726388AbgHGOux convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 7 Aug 2020 10:50:53 -0400
+Received: from mail.furshetcrimea.ru ([193.27.243.220]:51882 "EHLO
+        furshetcrimea.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726793AbgHGOux (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 7 Aug 2020 08:02:28 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66067C061574
-        for <netfilter-devel@vger.kernel.org>; Fri,  7 Aug 2020 05:02:27 -0700 (PDT)
-Received: from localhost ([::1]:59772 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.94)
-        (envelope-from <phil@nwl.cc>)
-        id 1k414k-0004ZR-Rf; Fri, 07 Aug 2020 14:02:18 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 2/2] tests: shell: Merge and extend return codes test
-Date:   Fri,  7 Aug 2020 14:02:14 +0200
-Message-Id: <20200807120214.3762-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200807120214.3762-1-phil@nwl.cc>
-References: <20200807120214.3762-1-phil@nwl.cc>
+        Fri, 7 Aug 2020 10:50:53 -0400
+X-Greylist: delayed 4994 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Aug 2020 10:50:49 EDT
+Received: from [154.118.61.214] (account info@furshetcrimea.ru HELO [192.168.8.100])
+  by furshetcrimea.ru (CommuniGate Pro SMTP 6.1.10)
+  with ESMTPA id 11097443; Fri, 07 Aug 2020 16:34:42 +0300
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Bei Interesse antworten.
+To:     Recipients <info@furshetcrimea.ru>
+From:   info@furshetcrimea.ru
+Date:   Fri, 07 Aug 2020 14:22:05 +0100
+Reply-To: mattiassjoborg751@gmail.com
+X-Antivirus: Avast (VPS 200807-0, 08/07/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-ID: <auto-000011097443@furshetcrimea.ru>
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Merge scripts for iptables and ip6tables, they were widely identical.
-Also extend the test by one check (removing a non-existent rule with
-valid chain and target) and quote the error messages where differences
-are deliberately ignored.
+Schöne Grüße,
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
-Changes since v1:
-- Check error prefix value also.
----
- .../testcases/ip6tables/0004-return-codes_0   |  39 ------
- .../testcases/iptables/0004-return-codes_0    | 113 ++++++++++--------
- 2 files changed, 61 insertions(+), 91 deletions(-)
- delete mode 100755 iptables/tests/shell/testcases/ip6tables/0004-return-codes_0
+Mein Name ist MATTIAS SJOBORG, ich bin Schweizer Staatsbürger und (Vorsitzender des Vergütungs- und Nominierungsausschusses) von Tethys Petroleum, einem multinationalen Ölkonzern mit Sitz in London-England, Großbritannien. Ich bitte Sie um Ihre Hilfe, um die Summe von vierzig Millionen Dollar abzurufen, die aus zwei Sendungsboxen besteht.
 
-diff --git a/iptables/tests/shell/testcases/ip6tables/0004-return-codes_0 b/iptables/tests/shell/testcases/ip6tables/0004-return-codes_0
-deleted file mode 100755
-index c583b0ebd97c3..0000000000000
---- a/iptables/tests/shell/testcases/ip6tables/0004-return-codes_0
-+++ /dev/null
-@@ -1,39 +0,0 @@
--#!/bin/sh
--
--# make sure error return codes are as expected useful cases
--# (e.g. commands to check ruleset state)
--
--global_rc=0
--
--cmd() { # (rc, cmd, [args ...])
--	rc_exp=$1; shift
--
--	$XT_MULTI "$@"
--	rc=$?
--
--	[ $rc -eq $rc_exp ] || {
--		echo "---> expected $rc_exp, got $rc for command '$@'"
--		global_rc=1
--	}
--}
--
--# test chain creation
--cmd 0 ip6tables -N foo
--cmd 1 ip6tables -N foo
--# iptables-nft allows this - bug or feature?
--#cmd 2 ip6tables -N "invalid name"
--
--# test rule adding
--cmd 0 ip6tables -A INPUT -j ACCEPT
--cmd 1 ip6tables -A noexist -j ACCEPT
--cmd 2 ip6tables -I INPUT -j foobar
--
--# test rule checking
--cmd 0 ip6tables -C INPUT -j ACCEPT
--cmd 1 ip6tables -C FORWARD -j ACCEPT
--cmd 1 ip6tables -C nonexist -j ACCEPT
--cmd 2 ip6tables -C INPUT -j foobar
--cmd 2 ip6tables -C INPUT -m foobar -j ACCEPT
--cmd 3 ip6tables -t foobar -C INPUT -j ACCEPT
--
--exit $global_rc
-diff --git a/iptables/tests/shell/testcases/iptables/0004-return-codes_0 b/iptables/tests/shell/testcases/iptables/0004-return-codes_0
-index f730bede1f612..dcd9dfd3c0806 100755
---- a/iptables/tests/shell/testcases/iptables/0004-return-codes_0
-+++ b/iptables/tests/shell/testcases/iptables/0004-return-codes_0
-@@ -13,75 +13,84 @@ cmd() { # (rc, msg, cmd, [args ...])
- 		msg_exp="$1"; shift
- 	}
- 
--	msg="$($XT_MULTI "$@" 2>&1 >/dev/null)"
--	rc=$?
-+	for ipt in iptables ip6tables; do
-+		msg="$($XT_MULTI $ipt "$@" 2>&1 >/dev/null)"
-+		rc=$?
- 
--	[ $rc -eq $rc_exp ] || {
--		echo "---> expected return code $rc_exp, got $rc for command '$@'"
--		global_rc=1
--	}
-+		[ $rc -eq $rc_exp ] || {
-+			echo "---> expected return code $rc_exp, got $rc for command '$ipt $@'"
-+			global_rc=1
-+		}
- 
--	[ -n "$msg_exp" ] || return
--	grep -q "$msg_exp" <<< $msg || {
--		echo "---> expected error message '$msg_exp', got '$msg' for command '$@'"
--		global_rc=1
--	}
-+		[ -n "$msg_exp" ] || continue
-+		msg_exp_full="${ipt}$msg_exp"
-+		grep -q "$msg_exp_full" <<< $msg || {
-+			echo "---> expected error message '$msg_exp_full', got '$msg' for command '$ipt $@'"
-+			global_rc=1
-+		}
-+	done
- }
- 
--EEXIST_F="File exists."
--EEXIST="Chain already exists."
--ENOENT="No chain/target/match by that name."
--E2BIG_I="Index of insertion too big."
--E2BIG_D="Index of deletion too big."
--E2BIG_R="Index of replacement too big."
--EBADRULE="Bad rule (does a matching rule exist in that chain?)."
--ENOTGT="Couldn't load target \`foobar':No such file or directory"
--ENOMTH="Couldn't load match \`foobar':No such file or directory"
--ENOTBL="can't initialize iptables table \`foobar': Table does not exist"
-+EEXIST_F=": File exists."
-+EEXIST=": Chain already exists."
-+ENOENT=": No chain/target/match by that name."
-+E2BIG_I=": Index of insertion too big."
-+E2BIG_D=": Index of deletion too big."
-+E2BIG_R=": Index of replacement too big."
-+EBADRULE=": Bad rule (does a matching rule exist in that chain?)."
-+#ENOTGT=" v[0-9\.]* [^ ]*: Couldn't load target \`foobar':No such file or directory"
-+ENOMTH=" v[0-9\.]* [^ ]*: Couldn't load match \`foobar':No such file or directory"
-+ENOTBL=": can't initialize iptables table \`foobar': Table does not exist"
- 
- # test chain creation
--cmd 0 iptables -N foo
--cmd 1 "$EEXIST" iptables -N foo
-+cmd 0 -N foo
-+cmd 1 "$EEXIST" -N foo
- # iptables-nft allows this - bug or feature?
--#cmd 2 iptables -N "invalid name"
-+#cmd 2 -N "invalid name"
- 
- # test chain flushing/zeroing
--cmd 0 iptables -F foo
--cmd 0 iptables -Z foo
--cmd 1 "$ENOENT" iptables -F bar
--cmd 1 "$ENOENT" iptables -Z bar
-+cmd 0 -F foo
-+cmd 0 -Z foo
-+cmd 1 "$ENOENT" -F bar
-+cmd 1 "$ENOENT" -Z bar
- 
- # test chain rename
--cmd 0 iptables -E foo bar
--cmd 1 "$EEXIST_F" iptables -E foo bar
--cmd 1 "$ENOENT" iptables -E foo bar2
--cmd 0 iptables -N foo2
--cmd 1 "$EEXIST_F" iptables -E foo2 bar
-+cmd 0 -E foo bar
-+cmd 1 "$EEXIST_F" -E foo bar
-+cmd 1 "$ENOENT" -E foo bar2
-+cmd 0 -N foo2
-+cmd 1 "$EEXIST_F" -E foo2 bar
- 
- # test rule adding
--cmd 0 iptables -A INPUT -j ACCEPT
--cmd 1 "$ENOENT" iptables -A noexist -j ACCEPT
--cmd 2 "" iptables -I INPUT -j foobar
--cmd 2 "" iptables -R INPUT 1 -j foobar
--cmd 2 "" iptables -D INPUT -j foobar
-+cmd 0 -A INPUT -j ACCEPT
-+cmd 1 "$ENOENT" -A noexist -j ACCEPT
-+# next three differ:
-+# legacy: Couldn't load target `foobar':No such file or directory
-+# nft:    Chain 'foobar' does not exist
-+cmd 2 "" -I INPUT -j foobar
-+cmd 2 "" -R INPUT 1 -j foobar
-+cmd 2 "" -D INPUT -j foobar
-+cmd 1 "$EBADRULE" -D INPUT -p tcp --dport 22 -j ACCEPT
- 
- # test rulenum commands
--cmd 1 "$E2BIG_I" iptables -I INPUT 23 -j ACCEPT
--cmd 1 "$E2BIG_D" iptables -D INPUT 23
--cmd 1 "$E2BIG_R" iptables -R INPUT 23 -j ACCEPT
--cmd 1 "$ENOENT" iptables -I nonexist 23 -j ACCEPT
--cmd 1 "$ENOENT" iptables -D nonexist 23
--cmd 1 "$ENOENT" iptables -R nonexist 23 -j ACCEPT
-+cmd 1 "$E2BIG_I" -I INPUT 23 -j ACCEPT
-+cmd 1 "$E2BIG_D" -D INPUT 23
-+cmd 1 "$E2BIG_R" -R INPUT 23 -j ACCEPT
-+cmd 1 "$ENOENT" -I nonexist 23 -j ACCEPT
-+cmd 1 "$ENOENT" -D nonexist 23
-+cmd 1 "$ENOENT" -R nonexist 23 -j ACCEPT
- 
- # test rule checking
--cmd 0 iptables -C INPUT -j ACCEPT
--cmd 1 "$EBADRULE" iptables -C FORWARD -j ACCEPT
--cmd 1 "$BADRULE" iptables -C nonexist -j ACCEPT
--cmd 2 "$ENOMTH" iptables -C INPUT -m foobar -j ACCEPT
-+cmd 0 -C INPUT -j ACCEPT
-+cmd 1 "$EBADRULE" -C FORWARD -j ACCEPT
-+cmd 1 "$BADRULE" -C nonexist -j ACCEPT
-+cmd 2 "$ENOMTH" -C INPUT -m foobar -j ACCEPT
- # messages of those don't match, but iptables-nft ones are actually nicer.
--#cmd 2 "$ENOTGT" iptables -C INPUT -j foobar
--#cmd 3 "$ENOTBL" iptables -t foobar -C INPUT -j ACCEPT
--cmd 2 "" iptables -C INPUT -j foobar
--cmd 3 "" iptables -t foobar -C INPUT -j ACCEPT
-+# legacy: Couldn't load target `foobar':No such file or directory
-+# nft:    Chain 'foobar' does not exist
-+cmd 2 "" -C INPUT -j foobar
-+# legacy: can't initialize ip6tables table `foobar': Table does not exist (do you need to insmod?)
-+# nft:    table 'foobar' does not exist
-+cmd 3 "" -t foobar -C INPUT -j ACCEPT
- 
- exit $global_rc
+Dieses Geld wurde von der Firma erworben und von einem Diplomaten begleitet und korrekt in einer Sicherheitsfirma in Amerika hinterlegt. Mein Grund dafür ist, dass ich von der Firma zu lange um meine Ansprüche betrogen wurde, nur weil ich kein bin Britisch. Die Kontaktdaten des Diplomaten erhalten Sie, wenn Sie Ihr Interesse bekunden, mir zu helfen.
+
+Jede der Schachteln enthält 20 Mio. USD. Für Ihre Hilfe bin ich bereit, 40% an Sie freizugeben. Aus Sicherheitsgründen wurde die Sendung als VERTRAULICHE DIPLOMATISCHE DOKUMENTE registriert, und ich kann erklären, warum dies so erklärt wurde. Denken Sie daran, dass der Diplomat den Inhalt der Sendung nicht kennt. Er ist seit einem Monat dort, während ich nach einem zuverlässigen Partner suchen möchte. Ich werde das Land verlassen, sobald die Sendung für Sie an Sie geliefert wird Private Investitionen und ich haben geschworen, niemals nach London zurückzukehren. Bitte, ich brauche Ihre dringende Antwort, bevor meine Pläne, das Unternehmen zu verlassen, entdeckt werden.
+
+www.tethyspetroleum.com/tethys/static/EN_US/au_seniormanagement.html
+
+Im Moment ist die sicherste Form der Korrespondenz meine eigene E-Mail-Adresse. Bitte antworten Sie im Interesse der Vertraulichkeit nur über meine direkte E-Mail-Adresse. Antworten Sie zusammen mit Ihrer direkten Telefon- und Faxnummer, unter der ich Sie alternativ erreichen kann.
+
+Bitte, wenn Sie nicht bereit und interessiert sind, mir zu helfen, löschen Sie bitte diese E-Mail aus Ihrer E-Mail und tun Sie so, als hätten Sie sie nie erhalten.
+
+Freundliche Grüße,
+Mr.Mattias Sjoborg
+(Vorsitzender des Vergütungs- und Nominierungsausschusses)
+Tethys Petroleum.
+London, England
+
 -- 
-2.27.0
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
 
