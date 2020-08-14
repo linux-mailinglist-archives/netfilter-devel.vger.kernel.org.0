@@ -2,216 +2,106 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D72244ECB
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Aug 2020 21:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5AC244F8B
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Aug 2020 23:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbgHNTWA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Aug 2020 15:22:00 -0400
-Received: from correo.us.es ([193.147.175.20]:54486 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgHNTV7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Aug 2020 15:21:59 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 87B5CB6FD0
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Aug 2020 21:21:57 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 79D53DA704
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Aug 2020 21:21:57 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 6F61BDA730; Fri, 14 Aug 2020 21:21:57 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id C1CECDA704;
-        Fri, 14 Aug 2020 21:21:54 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 14 Aug 2020 21:21:54 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [213.143.48.157])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 9104542EF4E0;
-        Fri, 14 Aug 2020 21:21:53 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     sbrivio@redhat.com
-Subject: [PATCH nf] netfilter: nft_set_rbtree: revisit partial overlap detection
-Date:   Fri, 14 Aug 2020 21:21:26 +0200
-Message-Id: <20200814192126.29528-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
+        id S1728376AbgHNV2B (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 14 Aug 2020 17:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728257AbgHNV2A (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 14 Aug 2020 17:28:00 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C02CC061385
+        for <netfilter-devel@vger.kernel.org>; Fri, 14 Aug 2020 14:28:00 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id 2so4998332pjx.5
+        for <netfilter-devel@vger.kernel.org>; Fri, 14 Aug 2020 14:28:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=lqyz283T/dIOw03L8mirawXjATrSpRlBUoTDYx+lgsQ=;
+        b=PtCFoexkA7zJf2P7uawxmUGAQj7T3vN1Fl3x2Ic2fsya99BS9F/21Hx8HJdLIFjk9g
+         qXL/KcXN9RN01DrrUEwJCWwL/oggDmrcHJNakAHQ0Bfq1KNjH1USBrKaPlyzOCWbKmeQ
+         Sr2u4w6xTxipsO0jMSco6jJBHfRwmRhoaxRQh+r5hoMWy21OAKRD2y/WpiVJl+lVUSpm
+         IQ3EZ/wWuZVIVgMtSE1Zi76OR4rpiEXxhBPQTJKrAIj/6d24KbAFgxqkLdpZOZT1VIdW
+         iTM2fqS335G8vSx3oCd2T9v/DUTsh35SKBop2brfIj/Pc+Nw9cP7nupSw7b/5EjCUSt2
+         hk1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=lqyz283T/dIOw03L8mirawXjATrSpRlBUoTDYx+lgsQ=;
+        b=aN/auUPcg7ro5RgsNNvHxwcEFvG0v0UEbAXhCYJYLUe4I57rvQa2RV6OO7ycwuJN00
+         ZYq1a4uyn+zOI06y+gcEJAqFvi4+uhyWB9Hh3KF5if+z6C00d9quEZ1+/FGbgJewAk89
+         pl4WkY7MVP7m5rNescRAlyndwvRroNG3s26Iof/xdP3I241v4L+CsAI/e0ni2SkzjmT+
+         P7KTukUIdDcdSScWn9P4sXNfm9GbmIBTkEUYeokTiwRJqfZ7oLwIkke2TlEhV1PklLng
+         c3pgk3n2EQDzlw5k75Shvw+z/3sqVl943NJfJ6IWXQhY+Hhnqwsb3o9FYcnCoaqxciID
+         M/3A==
+X-Gm-Message-State: AOAM532cAgTQd44lcFGzkQyRSGVQvUSSfim/h+ucg/MLVc/AzH6Yi46g
+        An2koE4Vij2Okt8CIhzSgw7zrupd/yZ9FGMCpGA=
+X-Google-Smtp-Source: ABdhPJyTrRE+Qdt0j5fumeatp5/O4IIMnIlSc7Ii1VXCugoC4InvCpGmZEEhd5WzR4/HkyKOEEAMo/+2wd+5Hn4j5SU=
+X-Received: by 2002:a17:902:40a:: with SMTP id 10mr3430099ple.260.1597440478997;
+ Fri, 14 Aug 2020 14:27:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Received: by 2002:a17:90b:4c41:0:0:0:0 with HTTP; Fri, 14 Aug 2020 14:27:57
+ -0700 (PDT)
+Reply-To: info.usbanking1@gmail.com
+From:   "MR.ANDY CECERE" <pinnaclebancorpinc@gmail.com>
+Date:   Fri, 14 Aug 2020 14:27:57 -0700
+Message-ID: <CAHBKM_9KT+6icAM8VR=C8wVcfCwKH8_d+BgRt81b1GxKOeRxOQ@mail.gmail.com>
+Subject: REF:- INSTRUCTION TO CREDIT YOUR ACCOUNT WITH THE SUM OF (US$5Million)
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Assuming d = memcmp(node, new) when comparing existing nodes and a new
-node, when descending the tree to find the spot to insert the node, the
-overlaps that can be detected are:
-
-1) If d < 0 and the new node represents an opening interval and there
-   is an existing opening interval node in the tree, then there is a
-   possible overlap.
-
-2) If d > 0 and the new node represents an end of interval and there is an
-   existing end of interval node, then there is a possible overlap.
-
-When descending the tree, the overlap flag can be reset if the
-conditions above do not evaluate true anymore.
-
-Note that it is not possible to detect some form of overlaps from the
-kernel: Assuming the interval [x, y] exists, then this code cannot
-detect when the interval [ a, b ] when [ a, b ] fully wraps [ x, y ], ie.
-
-             [ a, b ]
-	<---------------->
-             [ x, y ]
-           <---------->
-
-Moreover, skip checks for anonymous sets where it is not possible to
-catch overlaps since anonymous sets might not have an explicit end of
-interval.  e.g.  192.168.0.0/24 and 192.168.1.0/24 results in three tree
-nodes, one open interval for 192.168.0.0, another open interval for
-192.168.1.0 and the end of interval 192.168.2.0. In this case, there is
-no end of interval for 192.168.1.0 since userspace optimizes the
-structure to skip this redundant node.
-
-Fixes: 7c84d41416d8 ("netfilter: nft_set_rbtree: Detect partial overlaps on insertion")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-This is coming after https://bugzilla.netfilter.org/show_bug.cgi?id=1449
-I have removed the documentation in the code, although I could have updated it.
-This patch description what kind of overlaps can be detected.
-
- net/netfilter/nft_set_rbtree.c | 86 ++++++++++++----------------------
- 1 file changed, 29 insertions(+), 57 deletions(-)
-
-diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index b6aad3fc46c3..a70decea3e8c 100644
---- a/net/netfilter/nft_set_rbtree.c
-+++ b/net/netfilter/nft_set_rbtree.c
-@@ -225,39 +225,6 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 	bool overlap = false;
- 	int d;
- 
--	/* Detect overlaps as we descend the tree. Set the flag in these cases:
--	 *
--	 * a1. _ _ __>|  ?_ _ __|  (insert end before existing end)
--	 * a2. _ _ ___|  ?_ _ _>|  (insert end after existing end)
--	 * a3. _ _ ___? >|_ _ __|  (insert start before existing end)
--	 *
--	 * and clear it later on, as we eventually reach the points indicated by
--	 * '?' above, in the cases described below. We'll always meet these
--	 * later, locally, due to tree ordering, and overlaps for the intervals
--	 * that are the closest together are always evaluated last.
--	 *
--	 * b1. _ _ __>|  !_ _ __|  (insert end before existing start)
--	 * b2. _ _ ___|  !_ _ _>|  (insert end after existing start)
--	 * b3. _ _ ___! >|_ _ __|  (insert start after existing end)
--	 *
--	 * Case a3. resolves to b3.:
--	 * - if the inserted start element is the leftmost, because the '0'
--	 *   element in the tree serves as end element
--	 * - otherwise, if an existing end is found. Note that end elements are
--	 *   always inserted after corresponding start elements.
--	 *
--	 * For a new, rightmost pair of elements, we'll hit cases b3. and b2.,
--	 * in that order.
--	 *
--	 * The flag is also cleared in two special cases:
--	 *
--	 * b4. |__ _ _!|<_ _ _   (insert start right before existing end)
--	 * b5. |__ _ >|!__ _ _   (insert end right after existing start)
--	 *
--	 * which always happen as last step and imply that no further
--	 * overlapping is possible.
--	 */
--
- 	parent = NULL;
- 	p = &priv->root.rb_node;
- 	while (*p != NULL) {
-@@ -269,44 +236,49 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 		if (d < 0) {
- 			p = &parent->rb_left;
- 
--			if (nft_rbtree_interval_start(new)) {
--				if (nft_rbtree_interval_end(rbe) &&
--				    nft_set_elem_active(&rbe->ext, genmask) &&
--				    !nft_set_elem_expired(&rbe->ext))
--					overlap = false;
--			} else {
--				overlap = nft_rbtree_interval_end(rbe) &&
--					  nft_set_elem_active(&rbe->ext,
--							      genmask) &&
--					  !nft_set_elem_expired(&rbe->ext);
--			}
-+			if (nft_set_is_anonymous(set) ||
-+			    !nft_set_elem_active(&rbe->ext, genmask) ||
-+			    nft_set_elem_expired(&rbe->ext))
-+				continue;
-+
-+			if (nft_rbtree_interval_start(new) &&
-+			    nft_rbtree_interval_start(rbe))
-+				overlap = true;
-+			else
-+				overlap = false;
- 		} else if (d > 0) {
- 			p = &parent->rb_right;
- 
--			if (nft_rbtree_interval_end(new)) {
--				overlap = nft_rbtree_interval_end(rbe) &&
--					  nft_set_elem_active(&rbe->ext,
--							      genmask) &&
--					  !nft_set_elem_expired(&rbe->ext);
--			} else if (nft_rbtree_interval_end(rbe) &&
--				   nft_set_elem_active(&rbe->ext, genmask) &&
--				   !nft_set_elem_expired(&rbe->ext)) {
-+			if (nft_set_is_anonymous(set) ||
-+			    !nft_set_elem_active(&rbe->ext, genmask) ||
-+			    nft_set_elem_expired(&rbe->ext))
-+				continue;
-+
-+			if (nft_rbtree_interval_end(new) &&
-+			    nft_rbtree_interval_end(rbe))
- 				overlap = true;
--			}
-+			else
-+				overlap = false;
- 		} else {
- 			if (nft_rbtree_interval_end(rbe) &&
- 			    nft_rbtree_interval_start(new)) {
- 				p = &parent->rb_left;
- 
--				if (nft_set_elem_active(&rbe->ext, genmask) &&
--				    !nft_set_elem_expired(&rbe->ext))
-+				if (!nft_set_elem_active(&rbe->ext, genmask) ||
-+				    nft_set_elem_expired(&rbe->ext))
-+					continue;
-+
-+				if (!nft_set_is_anonymous(set))
- 					overlap = false;
- 			} else if (nft_rbtree_interval_start(rbe) &&
- 				   nft_rbtree_interval_end(new)) {
- 				p = &parent->rb_right;
- 
--				if (nft_set_elem_active(&rbe->ext, genmask) &&
--				    !nft_set_elem_expired(&rbe->ext))
-+				if (!nft_set_elem_active(&rbe->ext, genmask) ||
-+				    nft_set_elem_expired(&rbe->ext))
-+					continue;
-+
-+				if (!nft_set_is_anonymous(set))
- 					overlap = false;
- 			} else if (nft_set_elem_active(&rbe->ext, genmask) &&
- 				   !nft_set_elem_expired(&rbe->ext)) {
 -- 
-2.20.1
+Us Bank.1025 Connecticut Ave.
+NW, Ste. 510. Washington, DC 20036.
+Tell: (213) 537-2170
+E-mail: info.usbanking1@gmail.com
 
+REF:- INSTRUCTION TO CREDIT YOUR ACCOUNT WITH THE SUM OF (US$5Million)
+
+This is the second time we are notifying you about this said fund. After
+due vetting and evaluation of your file that was sent to us by the Nigerian
+Government in conjunction with the Ministry of Finance and Central Bank of
+the Federal Republic of Nigeria.
+
+This bank has an instruction to see to the immediate release of the sum of
+(US $5Million) of your claim that has been holding since is transferred
+into your bank Account from their Domiciliary Account with this bank.
+
+We were meant to understand from our findings that you have been going
+through hard ways by paying a lot of charges to see to the release of your
+fund (US$5Million), which has been the handwork of some miscreant elements
+from that Country.
+
+We advice that you stop further communication with any correspondence from
+any bank , or anywhere concerning your funds as you will receive your fund
+from this bank if you follow our instruction.
+
+We know your representatives in Nigeria or anywhere will advice you to
+still go ahead with them, which will be on your own risk. Your
+(US$5Million) will reflect in your designated bank account within five Bank
+working days.
+
+Do not go through anybody again but through this Bank if you really want
+your fund. Finally, you are advice to re-confirm these to us,
+
+Your Full Name,
+Contact address,
+Occupation
+Telephone and Fax Number for easy communication.
+
+We need your second email gmail or hotmail for security and private reasons.
+
+Yours sincerely,
+MR.ANDY CECERE,
+Tel:.(213) 537-2170
+Assistance Secretary,
+U.S Bank.
+Email address ( info.usbanking1@gmail.com )
