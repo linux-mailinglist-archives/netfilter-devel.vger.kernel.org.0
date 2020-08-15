@@ -2,86 +2,124 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C1C245331
-	for <lists+netfilter-devel@lfdr.de>; Sat, 15 Aug 2020 23:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BD9245443
+	for <lists+netfilter-devel@lfdr.de>; Sun, 16 Aug 2020 00:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729050AbgHOV7O (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 15 Aug 2020 17:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728900AbgHOVvn (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 15 Aug 2020 17:51:43 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EECFC02B8E1
-        for <netfilter-devel@vger.kernel.org>; Sat, 15 Aug 2020 04:38:03 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id p37so5765445pgl.3
-        for <netfilter-devel@vger.kernel.org>; Sat, 15 Aug 2020 04:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=QFza27HlE2Fo6lDT7DKec0DmzTvgfr60QoBd9fZUbx0=;
-        b=IrRhsFF/vfzELqdTxIg25ycQZEjWrMQ8fkNLq9GcOSJdBqR0EK2Fq6mSw3LIa3dwgv
-         NXRwelbOThFJMybvof6rCN+6EaeOXrad5WY44hlxzJecCb1hQBpzqq+Z9SCJCZWgKpW2
-         axeK6L9VE+Eftx0IkrjOQ5BDeZf4UF7L37VhYMpwf1Tt2ZSAkNR24bRRGHN9+VT+7Uz2
-         Wxl/yj8DGMxpYIL/T80fWgWtUvdhBGPF/mWyGfkKl+Xp2Oh1l6D0bq5mQfUItMFt3KVb
-         M0vUlG0izygGDFFw+m6vc7ozeuKyq8LKev+StJb/c8DOibqkzG5OJwI6KrZg6CU81ntR
-         W/Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=QFza27HlE2Fo6lDT7DKec0DmzTvgfr60QoBd9fZUbx0=;
-        b=JlKU7HBUxTAhC1suEt5PXF4mMwK/1lMNOJj/GTD0xzbX/XWiCzKDpUkPDHCq73iKk6
-         km3ftycCMujzVsemFXjKvCyEJ3T9gOgWdPmqSkXChphEICUnGt/A9QNHAcpaVGeJZjcX
-         50Y4/7j1pDXceYF6ezjY8/9HcsZks/25E60JR1hfofGBbPW6+TamzstJVUsGYrOhfo8t
-         tSseEMx0MpKuyjJiBqdsmXdm2MtXgM0b5blUzqlMIoTnPBEZ33Z+urSeFTr8Hz2U6MyF
-         uRr9O6Q+/ijZaY2q7m3LikWhHaBl56p44wqqCYlj4xHZZWstCsUsWAEorN/Aqeaw7Glh
-         BVbQ==
-X-Gm-Message-State: AOAM53319Ew2abb78GnbYxxp5ZT7YTagsokRxsvsj4I/fySUMMMqgwxl
-        2kPMkZkOHkDvc6jkgQmFJNc6o40fCDTi9vQYakyoU4Qx8cA6Lw==
-X-Google-Smtp-Source: ABdhPJy4tAJLFsft3Z2t5a1ljARRSFP2JuZSzhBmoOlVbre+vI+bfgpAEBSWIU0Kne3iKnle74kI3LWDu6guLNQOQjw=
-X-Received: by 2002:a65:610f:: with SMTP id z15mr4571720pgu.123.1597491481615;
- Sat, 15 Aug 2020 04:38:01 -0700 (PDT)
-MIME-Version: 1.0
-From:   Amiq Nahas <m992493@gmail.com>
-Date:   Sat, 15 Aug 2020 17:07:50 +0530
-Message-ID: <CAPicJaHOopep5rmgcq7VbDz6h66vd9Jsqp+yE1ukCyb8qZ+tPQ@mail.gmail.com>
-Subject: iptables: undefined symbol xtables_fini
+        id S1729111AbgHOWS5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 15 Aug 2020 18:18:57 -0400
+Received: from correo.us.es ([193.147.175.20]:38932 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728889AbgHOWS4 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 15 Aug 2020 18:18:56 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 42F28DA899
+        for <netfilter-devel@vger.kernel.org>; Sat, 15 Aug 2020 12:32:14 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 2F6C6DA852
+        for <netfilter-devel@vger.kernel.org>; Sat, 15 Aug 2020 12:32:14 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 24967DA730; Sat, 15 Aug 2020 12:32:14 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id DF921DA704;
+        Sat, 15 Aug 2020 12:32:11 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Sat, 15 Aug 2020 12:32:11 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [213.143.48.187])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPSA id F0A6942EF4E0;
+        Sat, 15 Aug 2020 12:32:10 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
+Subject: [PATCH 0/8] Netfilter fixes for net
+Date:   Sat, 15 Aug 2020 12:31:53 +0200
+Message-Id: <20200815103201.1768-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-I am using Linux 5.6.0-rc7 on Ubuntu 18.04.
+Hi,
 
-Built iptables by following instructions at
-http://www.linuxfromscratch.org/blfs/view/svn/postlfs/iptables.html
-Basically used these commands:
+The following patchset contains Netfilter fixes for net:
 
-`./configure --prefix=/usr      \
-            --sbindir=/sbin    \
-            --disable-nftables \
-            --enable-libipq    \
-            --with-xtlibdir=/lib/xtables &&
-make`
+1) Endianness issue in IPv4 option support in nft_exthdr,
+   from Stephen Suryaputra.
 
-`make install &&
-ln -sfv ../../sbin/xtables-legacy-multi /usr/bin/iptables-xml &&
+2) Removes the waitcount optimization in nft_compat,
+   from Florian Westphal.
 
-for file in ip4tc ip6tc ipq xtables
-do
-  mv -v /usr/lib/lib${file}.so.* /lib &&
-  ln -sfv ../../lib/$(readlink /usr/lib/lib${file}.so) /usr/lib/lib${file}.so
-done`
+3) Remove ipv6 -> nf_defrag_ipv6 module dependency, from
+   Florian Westphal.
 
+4) Memleak in chain binding support, also from Florian.
 
-Now I am trying to add a rule
-`iptables -I FORWARD -m conntrack --ctorigsrc 172.5.1.123 --ctproto
-tcp -j MARK --set-mark 123`
+5) Simplify nft_flowtable.sh selftest, from Fabian Frederick.
 
-I get this error
-`iptables: symbol lookup error: iptables: undefined symbol: xtables_fini`
+6) Optional MTU arguments for selftest nft_flowtable.sh,
+   also from Fabian.
 
-What am I doing wrong?
+7) Remove noise error report when killing process in
+   selftest nft_flowtable.sh, from Fabian Frederick.
+
+8) Reject bogus getsockopt option length in ebtables,
+   from Florian Westphal.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+
+Thank you.
+
+----------------------------------------------------------------
+
+The following changes since commit 7c7ab580db49cc7befe5f4b91bb1920cd6b07575:
+
+  net: Convert to use the fallthrough macro (2020-08-08 14:29:09 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git HEAD
+
+for you to fetch changes up to 5c04da55c754c44937b3d19c6522f9023fd5c5d5:
+
+  netfilter: ebtables: reject bogus getopt len value (2020-08-14 11:59:08 +0200)
+
+----------------------------------------------------------------
+Fabian Frederick (3):
+      selftests: netfilter: add checktool function
+      selftests: netfilter: add MTU arguments to flowtables
+      selftests: netfilter: kill running process only
+
+Florian Westphal (4):
+      netfilter: nft_compat: remove flush counter optimization
+      netfilter: avoid ipv6 -> nf_defrag_ipv6 module dependency
+      netfilter: nf_tables: free chain context when BINDING flag is missing
+      netfilter: ebtables: reject bogus getopt len value
+
+Stephen Suryaputra (1):
+      netfilter: nf_tables: nft_exthdr: the presence return value should be little-endian
+
+ include/linux/netfilter_ipv6.h                     | 18 ------
+ net/bridge/netfilter/ebtables.c                    |  4 ++
+ net/bridge/netfilter/nf_conntrack_bridge.c         |  8 ++-
+ net/ipv6/netfilter.c                               |  3 -
+ net/netfilter/nf_tables_api.c                      |  6 +-
+ net/netfilter/nft_compat.c                         | 37 +++++------
+ net/netfilter/nft_exthdr.c                         |  4 +-
+ tools/testing/selftests/netfilter/nft_flowtable.sh | 73 +++++++++++++---------
+ 8 files changed, 73 insertions(+), 80 deletions(-)
