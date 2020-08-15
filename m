@@ -2,106 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5AC244F8B
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Aug 2020 23:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C1C245331
+	for <lists+netfilter-devel@lfdr.de>; Sat, 15 Aug 2020 23:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728376AbgHNV2B (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Aug 2020 17:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
+        id S1729050AbgHOV7O (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 15 Aug 2020 17:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728257AbgHNV2A (ORCPT
+        with ESMTP id S1728900AbgHOVvn (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Aug 2020 17:28:00 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C02CC061385
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Aug 2020 14:28:00 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id 2so4998332pjx.5
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Aug 2020 14:28:00 -0700 (PDT)
+        Sat, 15 Aug 2020 17:51:43 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EECFC02B8E1
+        for <netfilter-devel@vger.kernel.org>; Sat, 15 Aug 2020 04:38:03 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id p37so5765445pgl.3
+        for <netfilter-devel@vger.kernel.org>; Sat, 15 Aug 2020 04:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=lqyz283T/dIOw03L8mirawXjATrSpRlBUoTDYx+lgsQ=;
-        b=PtCFoexkA7zJf2P7uawxmUGAQj7T3vN1Fl3x2Ic2fsya99BS9F/21Hx8HJdLIFjk9g
-         qXL/KcXN9RN01DrrUEwJCWwL/oggDmrcHJNakAHQ0Bfq1KNjH1USBrKaPlyzOCWbKmeQ
-         Sr2u4w6xTxipsO0jMSco6jJBHfRwmRhoaxRQh+r5hoMWy21OAKRD2y/WpiVJl+lVUSpm
-         IQ3EZ/wWuZVIVgMtSE1Zi76OR4rpiEXxhBPQTJKrAIj/6d24KbAFgxqkLdpZOZT1VIdW
-         iTM2fqS335G8vSx3oCd2T9v/DUTsh35SKBop2brfIj/Pc+Nw9cP7nupSw7b/5EjCUSt2
-         hk1A==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=QFza27HlE2Fo6lDT7DKec0DmzTvgfr60QoBd9fZUbx0=;
+        b=IrRhsFF/vfzELqdTxIg25ycQZEjWrMQ8fkNLq9GcOSJdBqR0EK2Fq6mSw3LIa3dwgv
+         NXRwelbOThFJMybvof6rCN+6EaeOXrad5WY44hlxzJecCb1hQBpzqq+Z9SCJCZWgKpW2
+         axeK6L9VE+Eftx0IkrjOQ5BDeZf4UF7L37VhYMpwf1Tt2ZSAkNR24bRRGHN9+VT+7Uz2
+         Wxl/yj8DGMxpYIL/T80fWgWtUvdhBGPF/mWyGfkKl+Xp2Oh1l6D0bq5mQfUItMFt3KVb
+         M0vUlG0izygGDFFw+m6vc7ozeuKyq8LKev+StJb/c8DOibqkzG5OJwI6KrZg6CU81ntR
+         W/Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=lqyz283T/dIOw03L8mirawXjATrSpRlBUoTDYx+lgsQ=;
-        b=aN/auUPcg7ro5RgsNNvHxwcEFvG0v0UEbAXhCYJYLUe4I57rvQa2RV6OO7ycwuJN00
-         ZYq1a4uyn+zOI06y+gcEJAqFvi4+uhyWB9Hh3KF5if+z6C00d9quEZ1+/FGbgJewAk89
-         pl4WkY7MVP7m5rNescRAlyndwvRroNG3s26Iof/xdP3I241v4L+CsAI/e0ni2SkzjmT+
-         P7KTukUIdDcdSScWn9P4sXNfm9GbmIBTkEUYeokTiwRJqfZ7oLwIkke2TlEhV1PklLng
-         c3pgk3n2EQDzlw5k75Shvw+z/3sqVl943NJfJ6IWXQhY+Hhnqwsb3o9FYcnCoaqxciID
-         M/3A==
-X-Gm-Message-State: AOAM532cAgTQd44lcFGzkQyRSGVQvUSSfim/h+ucg/MLVc/AzH6Yi46g
-        An2koE4Vij2Okt8CIhzSgw7zrupd/yZ9FGMCpGA=
-X-Google-Smtp-Source: ABdhPJyTrRE+Qdt0j5fumeatp5/O4IIMnIlSc7Ii1VXCugoC4InvCpGmZEEhd5WzR4/HkyKOEEAMo/+2wd+5Hn4j5SU=
-X-Received: by 2002:a17:902:40a:: with SMTP id 10mr3430099ple.260.1597440478997;
- Fri, 14 Aug 2020 14:27:58 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=QFza27HlE2Fo6lDT7DKec0DmzTvgfr60QoBd9fZUbx0=;
+        b=JlKU7HBUxTAhC1suEt5PXF4mMwK/1lMNOJj/GTD0xzbX/XWiCzKDpUkPDHCq73iKk6
+         km3ftycCMujzVsemFXjKvCyEJ3T9gOgWdPmqSkXChphEICUnGt/A9QNHAcpaVGeJZjcX
+         50Y4/7j1pDXceYF6ezjY8/9HcsZks/25E60JR1hfofGBbPW6+TamzstJVUsGYrOhfo8t
+         tSseEMx0MpKuyjJiBqdsmXdm2MtXgM0b5blUzqlMIoTnPBEZ33Z+urSeFTr8Hz2U6MyF
+         uRr9O6Q+/ijZaY2q7m3LikWhHaBl56p44wqqCYlj4xHZZWstCsUsWAEorN/Aqeaw7Glh
+         BVbQ==
+X-Gm-Message-State: AOAM53319Ew2abb78GnbYxxp5ZT7YTagsokRxsvsj4I/fySUMMMqgwxl
+        2kPMkZkOHkDvc6jkgQmFJNc6o40fCDTi9vQYakyoU4Qx8cA6Lw==
+X-Google-Smtp-Source: ABdhPJy4tAJLFsft3Z2t5a1ljARRSFP2JuZSzhBmoOlVbre+vI+bfgpAEBSWIU0Kne3iKnle74kI3LWDu6guLNQOQjw=
+X-Received: by 2002:a65:610f:: with SMTP id z15mr4571720pgu.123.1597491481615;
+ Sat, 15 Aug 2020 04:38:01 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a17:90b:4c41:0:0:0:0 with HTTP; Fri, 14 Aug 2020 14:27:57
- -0700 (PDT)
-Reply-To: info.usbanking1@gmail.com
-From:   "MR.ANDY CECERE" <pinnaclebancorpinc@gmail.com>
-Date:   Fri, 14 Aug 2020 14:27:57 -0700
-Message-ID: <CAHBKM_9KT+6icAM8VR=C8wVcfCwKH8_d+BgRt81b1GxKOeRxOQ@mail.gmail.com>
-Subject: REF:- INSTRUCTION TO CREDIT YOUR ACCOUNT WITH THE SUM OF (US$5Million)
-To:     undisclosed-recipients:;
+From:   Amiq Nahas <m992493@gmail.com>
+Date:   Sat, 15 Aug 2020 17:07:50 +0530
+Message-ID: <CAPicJaHOopep5rmgcq7VbDz6h66vd9Jsqp+yE1ukCyb8qZ+tPQ@mail.gmail.com>
+Subject: iptables: undefined symbol xtables_fini
+To:     netfilter-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
--- 
-Us Bank.1025 Connecticut Ave.
-NW, Ste. 510. Washington, DC 20036.
-Tell: (213) 537-2170
-E-mail: info.usbanking1@gmail.com
+I am using Linux 5.6.0-rc7 on Ubuntu 18.04.
 
-REF:- INSTRUCTION TO CREDIT YOUR ACCOUNT WITH THE SUM OF (US$5Million)
+Built iptables by following instructions at
+http://www.linuxfromscratch.org/blfs/view/svn/postlfs/iptables.html
+Basically used these commands:
 
-This is the second time we are notifying you about this said fund. After
-due vetting and evaluation of your file that was sent to us by the Nigerian
-Government in conjunction with the Ministry of Finance and Central Bank of
-the Federal Republic of Nigeria.
+`./configure --prefix=/usr      \
+            --sbindir=/sbin    \
+            --disable-nftables \
+            --enable-libipq    \
+            --with-xtlibdir=/lib/xtables &&
+make`
 
-This bank has an instruction to see to the immediate release of the sum of
-(US $5Million) of your claim that has been holding since is transferred
-into your bank Account from their Domiciliary Account with this bank.
+`make install &&
+ln -sfv ../../sbin/xtables-legacy-multi /usr/bin/iptables-xml &&
 
-We were meant to understand from our findings that you have been going
-through hard ways by paying a lot of charges to see to the release of your
-fund (US$5Million), which has been the handwork of some miscreant elements
-from that Country.
+for file in ip4tc ip6tc ipq xtables
+do
+  mv -v /usr/lib/lib${file}.so.* /lib &&
+  ln -sfv ../../lib/$(readlink /usr/lib/lib${file}.so) /usr/lib/lib${file}.so
+done`
 
-We advice that you stop further communication with any correspondence from
-any bank , or anywhere concerning your funds as you will receive your fund
-from this bank if you follow our instruction.
 
-We know your representatives in Nigeria or anywhere will advice you to
-still go ahead with them, which will be on your own risk. Your
-(US$5Million) will reflect in your designated bank account within five Bank
-working days.
+Now I am trying to add a rule
+`iptables -I FORWARD -m conntrack --ctorigsrc 172.5.1.123 --ctproto
+tcp -j MARK --set-mark 123`
 
-Do not go through anybody again but through this Bank if you really want
-your fund. Finally, you are advice to re-confirm these to us,
+I get this error
+`iptables: symbol lookup error: iptables: undefined symbol: xtables_fini`
 
-Your Full Name,
-Contact address,
-Occupation
-Telephone and Fax Number for easy communication.
-
-We need your second email gmail or hotmail for security and private reasons.
-
-Yours sincerely,
-MR.ANDY CECERE,
-Tel:.(213) 537-2170
-Assistance Secretary,
-U.S Bank.
-Email address ( info.usbanking1@gmail.com )
+What am I doing wrong?
