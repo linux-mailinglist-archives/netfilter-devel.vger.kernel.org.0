@@ -2,59 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3225C245FF3
-	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Aug 2020 10:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A2724648F
+	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Aug 2020 12:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728373AbgHQI1U (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 17 Aug 2020 04:27:20 -0400
-Received: from sonic316-55.consmr.mail.ne1.yahoo.com ([66.163.187.181]:37548
-        "EHLO sonic316-55.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728106AbgHQI1U (ORCPT
+        id S1727863AbgHQKby (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 17 Aug 2020 06:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726682AbgHQKbx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 17 Aug 2020 04:27:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1597652838; bh=wQR2TNpnSC5+pl+9xCwBDdU8shZ+1jYIhLI8TGcKGS0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=A3JTaVFwPbh4PXb+tMIM3S1HzE4+5o+RB3qk2JaOUjjOAYTwn7Vc0hmdS7QWAxLZq7Can3i4YAYz7kjgkDpcI+S+L2bdQM9YWeUOo3WFubu/dOzm9znbQEq1OQECVQwh7oXXT0AiQcnV+XXRwL4Sb7Td5PMuJpyuGWNaLs8Vz1O70KIVziN9nZPBxFrDmsHtwqSVjmEsPczHdaOrI09TF92EwdWMcO7ATsEn5g+ynG/7H2RMMszGqFrXmky2Sdol7jE4hTQjcHiFjGUuG1SXDH6SHK3WP9i4X0tWLGcPapzQX1bd7HL/qq73dFYhQT8YhfNpK5sGU/K9kjw9+/dVPA==
-X-YMail-OSG: IbjbnlcVM1n9aMntHEeMUNqbV610FoK_i8_h0K9R2y403JE3Ijn4VSq1uhLML.i
- 3_Si5N4zLeWoa90L6CVPuHISP6t.vatSWWne8KC3ED4byCy0Y3oMx1L2X1XDlK7j1Rrqw.qvYUqO
- XEU4hOep_5xDJ9D_qH.v9ZV89_0pNdHL50nQNYsXIRqOK48J2PrEkcraqJE_toiatD9SbC7GbRkz
- o3hz.LrzVPnFkWbhyCjLeHqyrbpWzmtV4g0SspuDhQfh0ZUhHI.Z_vvIC9lo3b8B7DBymTEGCyDR
- VA4Zgza587wXLc5xA_VyeV6uOHADXR20mitR7vmeW5qfUAfIL2_XnMQv1f7zqyU7qimvDawBq0NY
- 2TrzOi1jTrYMz8_0ENH8pUfwvzRJh0Fcr92Vtjkahirx7bF1K3bHl8Z2gHZmwA07mW26HqED8B4D
- OiX8KAPgM.w00yieJt9Yb7rt0HlFlPWfk9QLJkDotX04AsznkWt.6Rc33Wqy1yokHRVrDb6fVpbe
- .kVWD2103HyXxGebhOCaY_8ca7ZwghASYS4IU2hQUPdinK9nq2tXnPp0f7yXr20etR9su7HlVj4C
- JUWfCLlPkyorehP7kdH4IzlHvCNtV6QSGm7Dgwyy2QGm_5hl5fbaRadbdjikGKwBvnZ02lOtULdV
- eqQ_RAsChS8UdSL96v0PxhK7kQOQ7XAxJeXFK23U1hAvwqmWbVc0Nh_uUKkJWVVV0IetR8tsCfCA
- V1n8QcyrL5uXVvqHmcZNnPP1y40D6O59cNBTTTWyNJm3ee71MY_5Ljb85KYGA5DQj823A4k7jJzl
- 834PBf4AeyH0dLxkp246pEvqVjvHHb74s16CdzsV21y5Hz9Y2ZrygdxTqL04xCrsYrup4HjQO7wl
- Sauqncgnqav.TChKB8g1Q83HQkJaeDDg9WyOqUiETC0P10v.auYensLqcYfqevH0TvVVTk17Rusq
- a7iPeR_6w_e.U8UQfa1LYseojG93mYX7nw69qUet5qKHi9ZkpTI6ByNMtFRAopZEenglwEAMg.r_
- RpQyfig7qnD35DacKebO5epZRIOGfbqF11tRAG4F4i0PL4T3zpyvzIyaoUq8OIhAx4pXCpyoPeeL
- _WNETEavebxkLyx6LpvVe5RmLhYB64ZSnwBgeMS1RJnFA6cXNSC5.ZlaW6Ze5vbXFSzXuD1b8aex
- 2n3qsHyS.epucwOd0Jhpua46cVO9ncxnkM6coouJUEithPgtSns.3Tb5XRA1vyUNfLbg0KXHqN0o
- 3RckJ_Mzq_nYf3N.eC53m5lcUeQFQU7k6f86juqLRIGH4Mb36gTTns05kC2uInTuTnq57gMOS36p
- nK3gvOO2aV70ol8T_MnMFkHPM_GevAysaCyXAtpvxZ.pDkmNorZ0.KLTp5sWVqgrNxraVyQ1l
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Mon, 17 Aug 2020 08:27:18 +0000
-Date:   Mon, 17 Aug 2020 08:25:17 +0000 (UTC)
-From:   "Mrs. Maureen Hinckley" <mua11@gvsao.in>
-Reply-To: maurhinck2@gmail.com
-Message-ID: <457980743.3021322.1597652717729@mail.yahoo.com>
-Subject: RE
+        Mon, 17 Aug 2020 06:31:53 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A12C061389
+        for <netfilter-devel@vger.kernel.org>; Mon, 17 Aug 2020 03:31:53 -0700 (PDT)
+Received: from localhost ([::1]:60340 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.94)
+        (envelope-from <phil@nwl.cc>)
+        id 1k7cQY-0003eR-0m; Mon, 17 Aug 2020 12:31:42 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH] Makefile: Add missing man pages to CLEANFILES
+Date:   Mon, 17 Aug 2020 12:31:33 +0200
+Message-Id: <20200817103133.3521-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <457980743.3021322.1597652717729.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+The list of man pages to remove along with 'make clean' was missing a
+few built ones, add them.
 
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/Makefile.am | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I am Maureen Hinckley and my foundation is donating (Five hundred and fifty=
- thousand USD) to you. Contact us via my email at (maurhinck2@gmail.com) fo=
-r further details.
+diff --git a/iptables/Makefile.am b/iptables/Makefile.am
+index bab094b7c6aa9..4bf5742c9dc95 100644
+--- a/iptables/Makefile.am
++++ b/iptables/Makefile.am
+@@ -67,6 +67,10 @@ man_MANS	+= xtables-nft.8 xtables-translate.8 xtables-legacy.8 \
+                    ebtables-nft.8
+ endif
+ CLEANFILES       = iptables.8 xtables-monitor.8 \
++		   iptables-xml.1 iptables-apply.8 \
++		   iptables-extensions.8 iptables-extensions.8.tmpl \
++		   iptables-restore.8 iptables-save.8 \
++		   iptables-restore-translate.8 ip6tables-restore-translate.8 \
+ 		   iptables-translate.8 ip6tables-translate.8
+ 
+ vx_bin_links   = iptables-xml
+-- 
+2.27.0
 
-Best Regards,
-Mrs. Maureen Hinckley,
-Copyright =C2=A92020 The Maureen Hinckley Foundation All Rights Reserved.
