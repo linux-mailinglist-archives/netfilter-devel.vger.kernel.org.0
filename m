@@ -2,87 +2,71 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E49F249A7D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Aug 2020 12:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA53249F5A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Aug 2020 15:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgHSKhh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 19 Aug 2020 06:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
+        id S1728257AbgHSNPu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 19 Aug 2020 09:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727846AbgHSKhf (ORCPT
+        with ESMTP id S1727932AbgHSNOF (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 19 Aug 2020 06:37:35 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BAB6C061757
-        for <netfilter-devel@vger.kernel.org>; Wed, 19 Aug 2020 03:37:35 -0700 (PDT)
-Received: from localhost ([::1]:38140 helo=minime)
-        by orbyte.nwl.cc with esmtp (Exim 4.94)
-        (envelope-from <phil@nwl.cc>)
-        id 1k8LTJ-0000FA-LL; Wed, 19 Aug 2020 12:37:33 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 4/4] nft: Use nft_chain_find() in nft_chain_builtin_init()
-Date:   Wed, 19 Aug 2020 12:37:12 +0200
-Message-Id: <20200819103712.12974-5-phil@nwl.cc>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200819103712.12974-1-phil@nwl.cc>
-References: <20200819103712.12974-1-phil@nwl.cc>
+        Wed, 19 Aug 2020 09:14:05 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6543C061757
+        for <netfilter-devel@vger.kernel.org>; Wed, 19 Aug 2020 06:14:04 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d22so11666098pfn.5
+        for <netfilter-devel@vger.kernel.org>; Wed, 19 Aug 2020 06:14:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Xh+wWgJC0wYpeMZ/FY8pgcf4puZM1cXJxYtp4LJjjI0=;
+        b=GagE6qKNfCtfKu4aKmCduw3VOPdPWQp9kMYXypDj2XjE5f9zUtJEmgUSfwwroOTENW
+         3FIV+ybylLsBEmDmJdOlvyT/0OyaJVQwK1RzBnVkO4k8Jv6XzF3ftaOrn+q6V0sAfX21
+         z9XtHENiCXci4Ua5uzOZtdPxDyLfHz1bmAHdtlAKWaADrzUIPydEJmW69hWyg/2SW7JU
+         jVBPLYXn0Zx8uIjuB8gJF0vvoFn23MmPS9APKyk7nanK+sHXk+7LiBGVT0lQkjm+50lM
+         aayYYB01oH7ZSTQ2+xztkgZNQllu8SuCHnMd1g15u2AAwFHFo7tbBApMeI/MobDC6feB
+         HwxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Xh+wWgJC0wYpeMZ/FY8pgcf4puZM1cXJxYtp4LJjjI0=;
+        b=P4Pt0XvnOEQYKTMSdQz3EV5JzWNfkhSm/UGtHTivL6tUEsb5MvuALMe3nYUySrOnY4
+         tLP0J/alNlTQ5M9/JNHqNC9fHKfnyxMkN/2qR7OHw8Z8lmsadthBI2o0Y9giYQUE1LC0
+         bGxGNPK7xYXE9YgqWOyGIbO+V23cOU07Lrg2skpK5BPV4olJF6nqNpjja989jpLwCmZh
+         xL0EBS16rtSOZshwiY2OejF9mhLVEDWl3SNDLlsHjt2dUjQlTevw1QIubppfnSgue4IO
+         pVlVRZfV0bbMhXhevfF6r1wncg/RZK/rXQ2l+5ozqi4/ewGxE84Ddc6wtPQRhARTTyJS
+         VKsQ==
+X-Gm-Message-State: AOAM531coWsHC1BrQ/D/fKiFj2i+RnM29Ai24nZzE3zii1fK5nL6/or1
+        1X2rHsRAMIwrDDBBKWQwKnrulKp3WcDvUY8lD7fsywhN8T0E9A==
+X-Google-Smtp-Source: ABdhPJwHLHifyH+GHP6kJoxZQtXkZ4BZ5wj0hWsnXMXpadeEe4AwclPJcg7L/Kji0yJhIhBd+RRWMjUgaICrhT5Pxbc=
+X-Received: by 2002:a63:d517:: with SMTP id c23mr16591660pgg.65.1597842843600;
+ Wed, 19 Aug 2020 06:14:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Amiq Nahas <m992493@gmail.com>
+Date:   Wed, 19 Aug 2020 18:43:52 +0530
+Message-ID: <CAPicJaEusDtr9ODxdFvRwS1HyQicKbU=cbGbKLx+nk_DcucL1Q@mail.gmail.com>
+Subject: [iptables] connlabel, increase the number of labels supported
+To:     netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The replaced code is basically identical to nft_chain_find()'s body.
+Hi Guys,
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/nft.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+While nftables has got a solution for this https://lwn.net/Articles/524593/
+I am interested in doing something similar for iptables. If I am not
+wrong currently 128 labels are supported. I would like to increase the
+number of labels to 4096 or 8192 or make it dynamic if possible.
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index dd66b98e5004c..27bb98d184c7c 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -736,22 +736,17 @@ nft_chain_builtin_find(const struct builtin_table *t, const char *chain)
- 	return found ? &t->chains[i] : NULL;
- }
- 
-+static struct nftnl_chain *
-+nft_chain_find(struct nft_handle *h, const char *table, const char *chain);
-+
- static void nft_chain_builtin_init(struct nft_handle *h,
- 				   const struct builtin_table *table)
- {
--	struct nftnl_chain_list *list;
--	struct nftnl_chain *c;
- 	int i;
- 
- 	/* Initialize built-in chains if they don't exist yet */
- 	for (i=0; i < NF_INET_NUMHOOKS && table->chains[i].name != NULL; i++) {
--		list = nft_chain_list_get(h, table->name,
--					  table->chains[i].name);
--		if (!list)
--			continue;
--
--		c = nftnl_chain_list_lookup_byname(list, table->chains[i].name);
--		if (c != NULL)
-+		if (nft_chain_find(h, table->name, table->chains[i].name))
- 			continue;
- 
- 		nft_chain_builtin_add(h, table, &table->chains[i]);
-@@ -1388,9 +1383,6 @@ err:
- 	return NULL;
- }
- 
--static struct nftnl_chain *
--nft_chain_find(struct nft_handle *h, const char *table, const char *chain);
--
- int
- nft_rule_append(struct nft_handle *h, const char *chain, const char *table,
- 		struct nftnl_rule *r, struct nftnl_rule *ref, bool verbose)
--- 
-2.27.0
+I see that libnetfilter_conntrack has some macros which seem to govern
+the number of labels supported. Ex: MAX_BITS and HASH_SIZE.
 
+Any suggestions on how this can be done?
+Please pardon and correct my conceptual and factual errors. I am new
+here and have very little idea of what I am doing.
+
+Thanks
+Amiq
