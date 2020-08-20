@@ -2,127 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E8B24A9D0
-	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Aug 2020 01:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E8224B0F2
+	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Aug 2020 10:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgHSXID (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 19 Aug 2020 19:08:03 -0400
-Received: from correo.us.es ([193.147.175.20]:33626 "EHLO mail.us.es"
+        id S1725823AbgHTIU3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 20 Aug 2020 04:20:29 -0400
+Received: from mx1.riseup.net ([198.252.153.129]:39080 "EHLO mx1.riseup.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726209AbgHSXIC (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 19 Aug 2020 19:08:02 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 93C46DA702
-        for <netfilter-devel@vger.kernel.org>; Thu, 20 Aug 2020 01:08:00 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 85168DA722
-        for <netfilter-devel@vger.kernel.org>; Thu, 20 Aug 2020 01:08:00 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 7AB43DA704; Thu, 20 Aug 2020 01:08:00 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1577FDA730
-        for <netfilter-devel@vger.kernel.org>; Thu, 20 Aug 2020 01:07:58 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 20 Aug 2020 01:07:58 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 02E74426CCB9
-        for <netfilter-devel@vger.kernel.org>; Thu, 20 Aug 2020 01:07:57 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
+        id S1725819AbgHTIUZ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 20 Aug 2020 04:20:25 -0400
+Received: from capuchin.riseup.net (capuchin-pn.riseup.net [10.0.1.176])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4BXHdY46MLzFmbT;
+        Thu, 20 Aug 2020 01:20:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1597911624; bh=wp2CYAj3g9wTFv1IsncHk/KVW0GHzwFMKdIDIn4GCYM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nraUZA3uO5Cyg6F2btNrttYYGCDA2B3onk7+qN+SOOoFH9beSRuZ293jlLmqKu294
+         lLlREA4GmKZ+kAMDOrWkIeW7NGwW4HH/ciZMUGILxODI1zXUo9oUNUQ/YTC/qUDrPY
+         dVAuh2C6Lpz87EyVGIEfsdN/lt7LWWXtPfEYxszI=
+X-Riseup-User-ID: 0D12EF58023A8FAFA00B86D6AA04E57C1D6D86EBF3811DC68E6813448BBAF3A3
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by capuchin.riseup.net (Postfix) with ESMTPSA id 4BXHdX5bPvz8v0W;
+        Thu, 20 Aug 2020 01:20:16 -0700 (PDT)
+From:   "Jose M. Guisado Gomez" <guigom@riseup.net>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] mergesort: unbreak listing with binops
-Date:   Thu, 20 Aug 2020 01:07:33 +0200
-Message-Id: <20200819230733.439-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
+Cc:     pablo@netfilter.org
+Subject: [PATCH 0/3] Add userdata and comment support for tables
+Date:   Thu, 20 Aug 2020 10:19:00 +0200
+Message-Id: <20200820081903.36781-1-guigom@riseup.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-tcp flags == {syn, syn|ack}
-tcp flags & (fin|syn|rst|psh|ack|urg) == {ack, psh|ack, fin, fin|psh|ack}
+This patch series enables storing userdata for tables. In addition,
+using this userdata to save an optional comment when declaring new tables. 
 
-results in:
+ * nf-next
+ netfilter: nf_tables: add userdata attributes to nft_table
 
-BUG: Unknown expression binop
-nft: mergesort.c:47: expr_msort_cmp: Assertion `0' failed.
-Aborted (core dumped)
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- src/mergesort.c             |  2 ++
- tests/py/inet/tcp.t         |  2 ++
- tests/py/inet/tcp.t.payload | 21 +++++++++++++++++++++
- 3 files changed, 25 insertions(+)
-
-diff --git a/src/mergesort.c b/src/mergesort.c
-index 649b7806a7af..02094b486aeb 100644
---- a/src/mergesort.c
-+++ b/src/mergesort.c
-@@ -43,6 +43,8 @@ static int expr_msort_cmp(const struct expr *e1, const struct expr *e2)
- 		return concat_expr_msort_cmp(e1, e2);
- 	case EXPR_MAPPING:
- 		return expr_msort_cmp(e1->left, e2->left);
-+	case EXPR_BINOP:
-+		return expr_msort_cmp(e1->left, e2->left);
- 	default:
- 		BUG("Unknown expression %s\n", expr_name(e1));
- 	}
-diff --git a/tests/py/inet/tcp.t b/tests/py/inet/tcp.t
-index e0a83e2b4152..29f06f5ae484 100644
---- a/tests/py/inet/tcp.t
-+++ b/tests/py/inet/tcp.t
-@@ -79,6 +79,8 @@ tcp flags != cwr;ok
- tcp flags == syn;ok
- tcp flags & (syn|fin) == (syn|fin);ok;tcp flags & (fin | syn) == fin | syn
- tcp flags & (fin | syn | rst | psh | ack | urg | ecn | cwr) == fin | syn | rst | psh | ack | urg | ecn | cwr;ok;tcp flags == 0xff
-+tcp flags { syn, syn | ack };ok
-+tcp flags & (fin | syn | rst | psh | ack | urg) == { fin, ack, psh | ack, fin | psh | ack };ok
+ include/net/netfilter/nf_tables.h        |  2 ++
+ include/uapi/linux/netfilter/nf_tables.h |  2 ++
+ net/netfilter/nf_tables_api.c            | 25 ++++++++++++++++++++++++
+ 3 files changed, 29 insertions(+)
  
- tcp window 22222;ok
- tcp window 22;ok
-diff --git a/tests/py/inet/tcp.t.payload b/tests/py/inet/tcp.t.payload
-index 55f1bc2eff87..076e562a623c 100644
---- a/tests/py/inet/tcp.t.payload
-+++ b/tests/py/inet/tcp.t.payload
-@@ -680,3 +680,24 @@ inet test-inet input
-   [ bitwise reg 1 = (reg=1 & 0x000000f0 ) ^ 0x00000000 ]
-   [ cmp eq reg 1 0x00000080 ]
- 
-+# tcp flags & (fin | syn | rst | psh | ack | urg) == { fin, ack, psh | ack, fin | psh | ack }
-+__set%d test-inet 3
-+__set%d test-inet 0
-+        element 00000001  : 0 [end]     element 00000010  : 0 [end]     element 00000018  : 0 [end]     element 00000019  : 0 [end]
-+ip
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 1b @ transport header + 13 => reg 1 ]
-+  [ bitwise reg 1 = (reg=1 & 0x0000003f ) ^ 0x00000000 ]
-+  [ lookup reg 1 set __set%d ]
-+
-+# tcp flags { syn, syn | ack }
-+__set%d test-inet 3
-+__set%d test-inet 0
-+        element 00000002  : 0 [end]     element 00000012  : 0 [end]
-+inet
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x00000006 ]
-+  [ payload load 1b @ transport header + 13 => reg 1 ]
-+  [ lookup reg 1 set __set%d ]
-+
+ * libnftnlt
+ table: add userdata support
+
+ include/libnftnl/table.h            |  1 +
+ include/libnftnl/udata.h            |  6 ++++++
+ include/linux/netfilter/nf_tables.h |  1 +
+ src/table.c                         | 33 +++++++++++++++++++++++++++++
+ 4 files changed, 41 insertions(+)
+
+ * nftables
+ src: add comment support when adding tables
+
+ include/rule.h                                |  1 +
+ src/mnl.c                                     | 19 +++++++++--
+ src/netlink.c                                 | 32 +++++++++++++++++++
+ src/parser_bison.y                            |  4 +++
+ src/rule.c                                    |  5 +++
+ .../testcases/optionals/comments_table_0      |  0
+ .../testcases/optionals/comments_table_1      |  0
+ .../optionals/dumps/comments_table_0.nft      |  0
+ .../optionals/dumps/comments_table_1.nft      |  0
+ 9 files changed, 59 insertions(+), 2 deletions(-)
+ create mode 100755 tests/shell/testcases/optionals/comments_table_0
+ create mode 100755 tests/shell/testcases/optionals/comments_table_1
+ create mode 100644 tests/shell/testcases/optionals/dumps/comments_table_0.nft
+ create mode 100644 tests/shell/testcases/optionals/dumps/comments_table_1.nft
+
 -- 
-2.20.1
+2.27.0
 
