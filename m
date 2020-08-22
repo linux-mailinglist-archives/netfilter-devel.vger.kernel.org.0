@@ -2,57 +2,57 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D5A24E5DC
-	for <lists+netfilter-devel@lfdr.de>; Sat, 22 Aug 2020 08:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CA724E5DE
+	for <lists+netfilter-devel@lfdr.de>; Sat, 22 Aug 2020 08:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725863AbgHVGWS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1726874AbgHVGWS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Sat, 22 Aug 2020 02:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgHVGWL (ORCPT
+        with ESMTP id S1726535AbgHVGWN (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 22 Aug 2020 02:22:11 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA11C061573
-        for <netfilter-devel@vger.kernel.org>; Fri, 21 Aug 2020 23:22:11 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id k8so3701694wma.2
-        for <netfilter-devel@vger.kernel.org>; Fri, 21 Aug 2020 23:22:11 -0700 (PDT)
+        Sat, 22 Aug 2020 02:22:13 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F0CC061575
+        for <netfilter-devel@vger.kernel.org>; Fri, 21 Aug 2020 23:22:12 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id d16so3770417wrq.9
+        for <netfilter-devel@vger.kernel.org>; Fri, 21 Aug 2020 23:22:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=NTFn+H8R6EoIXom1mWtxPOmPohHjUkvDRa4YLBpWnWk=;
-        b=ElEXP0ZfLgaSEYntgTtefHeOr7jBwN6XLf1M8ng0OfqgjYn8MjtMwBZNm9ur5wvfy9
-         JKDTl+cPPe43zGKvvyUsDNq6XZmQND4fhjY9xmSd4uPvseKPgN/xnjy/DuanTlTZVDMu
-         1p1U12t+AcFE7MVL1E2yEwfR9RO44QY8jnFaqu2fgQViCYoGBDvtDo6Ez9zQC1DRONCE
-         WAu3o8qqfI4nWFkW7zK8VCvH7XIrptoZjuNlxBC21aRMVnb2z0L28AAghkoqihlhYalh
-         aKMpgkhOCtugEQ9RsZXiQ0r22qacxD4GF24B/HJeBDaj8/PDIv/sEs3mRwNMdImVQIlR
-         i3Ow==
+        bh=K1Hk/MM+7Waldffy1TUvpaANXjYs4DAdVECghwnIFmQ=;
+        b=YdHJB05dY1sJ6KschY2OTJjlL7XOR6qZ28jG57KvrW87wTzGg/UsG3tHA6J6zgykE4
+         n3jAnn08F/j0L7XAG6tg4k8hZNKoOdR+DRI0ZFDQXmAQIxsVJIekv/tzjZz3z5VjVqOv
+         +pJtnVlpPRFGXuaU4vjhPFQXbQVprIGNV2q6mewBlNjP60R3D/oTTeSKGZENSBFZoNzN
+         YLGSmAzD6N50jez5CmV57V58caZA1kwDMiObvtcEYWcCThCxEFfU2MdSeRQg3YnvvIGz
+         xzAP3zOjVivsrewsMYygJVd0QnKN463Jeibwyy0Y/OlSpHyCjrthWWHy62/J57Tq21Lc
+         XCEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=NTFn+H8R6EoIXom1mWtxPOmPohHjUkvDRa4YLBpWnWk=;
-        b=eStuJ8W+KrB5X+ubo5YmjncGVlZPyJ5pbhZ8u5te0JXylgKeoUoq9GGE99rHWCwnp/
-         zFgkelNyy/eClcftmrYVaql9LF5BCxCq2irD60beQZAaEGwJO5R3DYIIY9+/E18Tkvu1
-         C98U/fXajXzGyZXTsgJ4HMrawrU7rNvHjL0zW8fRQy2TAc6CJQK4XcHoPqUacXb3tRYm
-         N9lGbcoNuPRpjr+yL+CyPsiuhv+gcadmDoDXsSqbXmYuobCGrT9Fp9ApyCmsHQvbHX77
-         msUBGEjA1iVuxurntO7IvfB8gnsCBABj8RaPb1HpNtyLvnQlyWHYl1FIVBQEfW+KMqCs
-         xBGA==
-X-Gm-Message-State: AOAM530iVHVm4ZwfHI4flaYyAVmiWDgL74CTKVtfXOKv2E32nopkbpIL
-        hup+M3+j/7kW8/OhLOgtHAEkdMT4jyM5mw==
-X-Google-Smtp-Source: ABdhPJwwQIHSepUEDbKA2Gfo5IHwJU1FVzWUEwt2gRTfQYhJsQ3gDrw6nygcMai2tyA+YCmB5I2Lng==
-X-Received: by 2002:a1c:4c17:: with SMTP id z23mr7362438wmf.49.1598077329726;
-        Fri, 21 Aug 2020 23:22:09 -0700 (PDT)
+        bh=K1Hk/MM+7Waldffy1TUvpaANXjYs4DAdVECghwnIFmQ=;
+        b=e4kWVNX1nX7jP5kaEFn/DpbYcEmy7uSpyWSaKX1EUnsblPJspGTzWb0cwU2rRK3hIQ
+         R7LXua6ypy8n1rz8BFHG8dB6t7wT/Gtot2cmcrM9IbFQuFWEOemdevfrDiSjXdzC/aX/
+         u+lGnHSRy946UHJIMngkY3n6PMCCH88/K2r784BTt5AwGfldEEHZ5l6bhrh0e9UybyN+
+         FBA8ranFrppiKY17A9DUFNpzwFkZRMhYGmsq5FTctbRWXqI8cA8tJju4zWhNqAA/zqV2
+         PeFW7U1OU4MsDn6wsPHwrhp1pk4rYqOEpi8uZAWrHwE2b4pgMpuIQIZsgYcgdyRV1kEn
+         7uIg==
+X-Gm-Message-State: AOAM533ZT3t0dpkVJOF8Ma5Vr9V2C2zHla+ygjtr7NF/qHAu/ju5wODX
+        SECBwsjsUsMFllzJ5IbCO5FZcrxfu2/07A==
+X-Google-Smtp-Source: ABdhPJz6vw7aoVxpoEL7GLeC/bN+hwC8mjAOReyAGvJ7078V5Q7OQ/B6eOlKffmv96GGisqJAmd8IQ==
+X-Received: by 2002:a5d:4910:: with SMTP id x16mr5606402wrq.131.1598077330933;
+        Fri, 21 Aug 2020 23:22:10 -0700 (PDT)
 Received: from localhost.localdomain (BC2467A7.dsl.pool.telekom.hu. [188.36.103.167])
-        by smtp.gmail.com with ESMTPSA id h5sm7016321wrt.31.2020.08.21.23.22.08
+        by smtp.gmail.com with ESMTPSA id h5sm7016321wrt.31.2020.08.21.23.22.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 23:22:09 -0700 (PDT)
+        Fri, 21 Aug 2020 23:22:10 -0700 (PDT)
 From:   Balazs Scheidler <bazsi77@gmail.com>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Balazs Scheidler <bazsi77@gmail.com>
-Subject: [PATCH nftables 2/4] doc: added documentation on "socket wildcard"
-Date:   Sat, 22 Aug 2020 08:22:01 +0200
-Message-Id: <20200822062203.3617-3-bazsi77@gmail.com>
+Subject: [PATCH nftables 3/4] tests: added "socked wildcard" testcases
+Date:   Sat, 22 Aug 2020 08:22:02 +0200
+Message-Id: <20200822062203.3617-4-bazsi77@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200822062203.3617-1-bazsi77@gmail.com>
 References: <20200822062203.3617-1-bazsi77@gmail.com>
@@ -63,45 +63,97 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 Signed-off-by: Balazs Scheidler <bazsi77@gmail.com>
 ---
- doc/primary-expression.txt | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ tests/py/inet/socket.t         |  4 ++++
+ tests/py/inet/socket.t.json    | 29 +++++++++++++++++++++++++++++
+ tests/py/inet/socket.t.payload | 29 +++++++++++++++++++++++++++++
+ 3 files changed, 62 insertions(+)
 
-diff --git a/doc/primary-expression.txt b/doc/primary-expression.txt
-index a9c39cbb..6d3383ed 100644
---- a/doc/primary-expression.txt
-+++ b/doc/primary-expression.txt
-@@ -195,7 +195,7 @@ raw prerouting meta ipsec exists accept
- SOCKET EXPRESSION
- ~~~~~~~~~~~~~~~~~
- [verse]
--*socket* {*transparent* | *mark*}
-+*socket* {*transparent* | *mark* | *wildcard*}
+diff --git a/tests/py/inet/socket.t b/tests/py/inet/socket.t
+index 91846e8e..05e9ebb4 100644
+--- a/tests/py/inet/socket.t
++++ b/tests/py/inet/socket.t
+@@ -9,3 +9,7 @@ socket transparent 1;ok
+ socket transparent 2;fail
  
- Socket expression can be used to search for an existing open TCP/UDP socket and
- its attributes that can be associated with a packet. It looks for an established
-@@ -209,15 +209,20 @@ or non-zero bound listening socket (possibly with a non-local address).
- Value of the IP_TRANSPARENT socket option in the found socket. It can be 0 or 1.|
- boolean (1 bit)
- |mark| Value of the socket mark (SOL_SOCKET, SO_MARK). | mark
-+|wildcard|
-+Indicates weather the socket is wildcard-bound (e.g. 0.0.0.0 or ::0). |
-+boolean (1 bit)
- |==================
- 
- .Using socket expression
- ------------------------
--# Mark packets that correspond to a transparent socket
-+# Mark packets that correspond to a transparent socket. "socket wildcard 0"
-+# means that zero bound listener sockets are NOT matched (which is usually
-+# exactly what you want).
- table inet x {
-     chain y {
- 	type filter hook prerouting priority -150; policy accept;
--        socket transparent 1 mark set 0x00000001 accept
-+        socket transparent 1 socket wildcard 0 mark set 0x00000001 accept
+ socket mark 0x00000005;ok
++
++socket wildcard 0;ok
++socket wildcard 1;ok
++socket wildcard 2;fail
+diff --git a/tests/py/inet/socket.t.json b/tests/py/inet/socket.t.json
+index 99d6e248..fa48e79d 100644
+--- a/tests/py/inet/socket.t.json
++++ b/tests/py/inet/socket.t.json
+@@ -43,3 +43,32 @@
      }
- }
+ ]
  
++# socket wildcard 0
++[
++    {
++        "match": {
++            "left": {
++                "socket": {
++                    "key": "wildcard"
++                }
++            },
++            "op": "==",
++            "right": 0
++        }
++    }
++]
++
++# socket wildcard 1
++[
++    {
++        "match": {
++            "left": {
++                "socket": {
++                    "key": "wildcard"
++                }
++            },
++            "op": "==",
++            "right": 1
++        }
++    }
++]
+diff --git a/tests/py/inet/socket.t.payload b/tests/py/inet/socket.t.payload
+index 687b7a45..79fcea79 100644
+--- a/tests/py/inet/socket.t.payload
++++ b/tests/py/inet/socket.t.payload
+@@ -43,3 +43,32 @@ inet sockin sockchain
+   [ socket load mark => reg 1 ]
+   [ cmp eq reg 1 0x00000005 ]
+ 
++# socket wildcard 0
++ip sockip4 sockchain
++  [ socket load wildcard => reg 1 ]
++  [ cmp eq reg 1 0x00000000 ]
++
++# socket wildcard 0
++ip6 sockip6 sockchain
++  [ socket load wildcard => reg 1 ]
++  [ cmp eq reg 1 0x00000000 ]
++
++# socket wildcard 0
++inet sockin sockchain
++  [ socket load wildcard => reg 1 ]
++  [ cmp eq reg 1 0x00000000 ]
++
++# socket wildcard 1
++ip sockip4 sockchain
++  [ socket load wildcard => reg 1 ]
++  [ cmp eq reg 1 0x00000001 ]
++
++# socket wildcard 1
++ip6 sockip6 sockchain
++  [ socket load wildcard => reg 1 ]
++  [ cmp eq reg 1 0x00000001 ]
++
++# socket wildcard 1
++inet sockin sockchain
++  [ socket load wildcard => reg 1 ]
++  [ cmp eq reg 1 0x00000001 ]
 -- 
 2.17.1
 
