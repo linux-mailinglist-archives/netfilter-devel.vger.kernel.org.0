@@ -2,74 +2,76 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BD624E3C4
-	for <lists+netfilter-devel@lfdr.de>; Sat, 22 Aug 2020 01:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7909824E5DF
+	for <lists+netfilter-devel@lfdr.de>; Sat, 22 Aug 2020 08:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgHUXGZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 21 Aug 2020 19:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
+        id S1726535AbgHVGWT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 22 Aug 2020 02:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726541AbgHUXGY (ORCPT
+        with ESMTP id S1725975AbgHVGWM (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 21 Aug 2020 19:06:24 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC66C061573
-        for <netfilter-devel@vger.kernel.org>; Fri, 21 Aug 2020 16:06:23 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1k9G6x-0007CQ-Nj; Sat, 22 Aug 2020 01:06:15 +0200
-Date:   Sat, 22 Aug 2020 01:06:15 +0200
-From:   Phil Sutter <phil@nwl.cc>
+        Sat, 22 Aug 2020 02:22:12 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC70C061574
+        for <netfilter-devel@vger.kernel.org>; Fri, 21 Aug 2020 23:22:11 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id w13so3465766wrk.5
+        for <netfilter-devel@vger.kernel.org>; Fri, 21 Aug 2020 23:22:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=yuLKtXjHzaV46NB7nMP8tYCm3ow6QFkS6lis27VHHhA=;
+        b=Pc0H4t2BIN+m0iKF1W0DZMirak6fACTDxzsp7jRaoDIBovQ8vaCFTXeaD6TIGuqm+j
+         9bM70Qsf9jCBKXpmXzxhlIZidywdvo9REOX1t0cJYmm3StO/kG6WB5U3mOMLOY3OI8a0
+         BX3PKyu2MYlZxCRUx4IvzS7HUyy1pjkq/bSWWFyfrA/K22/+G0R14iwfZg0JhE9RcYXP
+         PxJ2KLi8SuWayQxNhOQPyZ7RGdwmLXJQc2zqS/MANK4NSU5QjrFoOfpzdRbQgOpiJyOm
+         BL+yL0qx0Y0D0qVMhaz2t0mRpw/8whs7TU5ipfreTinPq7zMuhrYzAvu01EWY7tU19bx
+         MXcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=yuLKtXjHzaV46NB7nMP8tYCm3ow6QFkS6lis27VHHhA=;
+        b=pXbEvOyyaucJl6twlk3osKEeTVFd0EPBrWwHqdYHV6X8nQBoT6AFFRPwVisJ88svn8
+         bYqzv3LdwQ+BoacLayxA9BZZrCwJydIRS+upyY7FfFAQkA+gUgzmgWrYDTBJN185MtiX
+         8lbzyydGyNXafYO6uSISCnzQXGvr63mQblPxYHu3dYtmTiQsXpTUXuJzrWWR2D1RQwR0
+         qNfK6crWfcbEkYbczZTonrAfXosQIs1AwUZkQk+s7672h/6bSTPbNUWCrmu8uCSo7ib8
+         NB9hIKmPSo8J81UrlRDhX4Z+xQnW4Si2fkt06b0Ll/mPiWSfry+1fbS2NqA7TS9A08G7
+         qnWQ==
+X-Gm-Message-State: AOAM531H1wFXSe0N3lmN8PFeqAlmzunKFk6MoOqKEniwpWxRIP+hpWHM
+        FEF/jigirKjXHwFy6QwRWnmujTSNIAqf2A==
+X-Google-Smtp-Source: ABdhPJwPAYhT7ncaMuct2n3F2TrnILECtZckkTzW75OUEB/ACC97ysIo67im0otGd0tMbpNXiBWptw==
+X-Received: by 2002:a5d:66c7:: with SMTP id k7mr5648399wrw.290.1598077327142;
+        Fri, 21 Aug 2020 23:22:07 -0700 (PDT)
+Received: from localhost.localdomain (BC2467A7.dsl.pool.telekom.hu. [188.36.103.167])
+        by smtp.gmail.com with ESMTPSA id h5sm7016321wrt.31.2020.08.21.23.22.06
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2020 23:22:06 -0700 (PDT)
+From:   Balazs Scheidler <bazsi77@gmail.com>
 To:     netfilter-devel@vger.kernel.org
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Subject: nfnetlink: Busy-loop in nfnetlink_rcv_msg()
-Message-ID: <20200821230615.GW23632@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Subject: [PATCH nftables 0/4] socket: add support for "wildcard" key
+Date:   Sat, 22 Aug 2020 08:21:59 +0200
+Message-Id: <20200822062203.3617-1-bazsi77@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+NOTE: this depends on a kernel patch, so please merge that before this can
+be merged.  Also, apart from build testing and running the binaries on an
+unpatched kernel (and confirming the netlink payload is formatted as it
+should be) this is untested.
 
-Starting firewalld with two active zones in an lxc container provokes a
-situation in which nfnetlink_rcv_msg() loops indefinitely, because
-nc->call_rcu() (nf_tables_getgen() in this case) returns -EAGAIN every
-time.
+This series adds the nftables side of "socket wildcard" a new expression
+that extracts whether the associated socket is bound to the ANY address or
+not.
 
-I identified netlink_attachskb() as the originator for the above error
-code. The conditional leading to it looks like this:
+iptables originally had this behavior by default when using "-m socket
+--transparent", but this was missing from nftables.
 
-| if ((atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf ||
-|      test_bit(NETLINK_S_CONGESTED, &nlk->state))) {
-|         [...]
-|         if (!*timeo) {
 
-*timeo is zero, so this seems to be a non-blocking socket. Both
-NETLINK_S_CONGESTED bit is set and sk->sk_rmem_alloc exceeds
-sk->sk_rcvbuf.
+Also, the last patch in the series allows one to override the "nft"
+executable used by the tests.
 
-From user space side, firewalld seems to simply call sendto() and the
-call never returns.
 
-How to solve that? I tried to find other code which does the same, but I
-haven't found one that does any looping. Should nfnetlink_rcv_msg()
-maybe just return -EAGAIN to the caller if it comes from call_rcu
-backend?
-
-This happening only in an lxc container may be due to some setsockopt()
-calls not being allowed. In particular, setsockopt(SO_RCVBUFFORCE)
-returns EPERM.
-
-The value of sk_rcvbuf is 425984, BTW. sk_rmem_alloc is 426240. In user
-space, I see a call to setsockopt(SO_RCVBUF) with value 4194304. No idea
-if this is related and how.
-
-Cheers, Phil
