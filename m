@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C71F25052B
-	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Aug 2020 19:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EED5250474
+	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Aug 2020 19:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgHXRMV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 24 Aug 2020 13:12:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41064 "EHLO mail.kernel.org"
+        id S1727076AbgHXRCz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 24 Aug 2020 13:02:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728387AbgHXQhu (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:37:50 -0400
+        id S1728470AbgHXQih (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:38:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2A8723106;
-        Mon, 24 Aug 2020 16:37:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6589922EBF;
+        Mon, 24 Aug 2020 16:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598287025;
+        s=default; t=1598287096;
         bh=AJ5GY7sStFFpN4d2wp55vrmNmGGsqU3GnYKHqvcwtPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mrUy5o8QBQZPLyA+LAz1WgIBD0MJHqFNm15B88n1GOc+79qlURWRWe9AnegbeP+CI
-         ntjSlEoqKaS1cbIs6XakTovcSm+Sw2DIvUBdem2LS95HLiJy7ZmV7uuTpSqT5mrLDy
-         XLs5/slftwviV2Nqfm9eCAbL2Qgkbo4OmNahYq9I=
+        b=2NcTrTsiYfvGpMlRCWhEfukPMsIP/Z3L5oO1AGkAlWbBI0mdxRdkZg/1xMSzI5vot
+         xo08f3suUM5NeU9AhuGwhmUm6NW1LN1jgS/INHzTigC2Yw/nIeXFD+h0AYaAYfFkou
+         NzalKI5dq/MTKq+YQNa11uvrX0Y8vI7y5bLEU5zI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>,
@@ -30,12 +30,12 @@ Cc:     Florian Westphal <fw@strlen.de>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         bridge@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 22/54] netfilter: avoid ipv6 -> nf_defrag_ipv6 module dependency
-Date:   Mon, 24 Aug 2020 12:36:01 -0400
-Message-Id: <20200824163634.606093-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 18/38] netfilter: avoid ipv6 -> nf_defrag_ipv6 module dependency
+Date:   Mon, 24 Aug 2020 12:37:30 -0400
+Message-Id: <20200824163751.606577-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200824163634.606093-1-sashal@kernel.org>
-References: <20200824163634.606093-1-sashal@kernel.org>
+In-Reply-To: <20200824163751.606577-1-sashal@kernel.org>
+References: <20200824163751.606577-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
