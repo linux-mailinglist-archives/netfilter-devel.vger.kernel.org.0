@@ -2,28 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF75252359
-	for <lists+netfilter-devel@lfdr.de>; Wed, 26 Aug 2020 00:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90A32523D5
+	for <lists+netfilter-devel@lfdr.de>; Wed, 26 Aug 2020 00:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgHYWHj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 25 Aug 2020 18:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
+        id S1726730AbgHYWw7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 25 Aug 2020 18:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgHYWHi (ORCPT
+        with ESMTP id S1726466AbgHYWw6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 25 Aug 2020 18:07:38 -0400
+        Tue, 25 Aug 2020 18:52:58 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94360C061574
-        for <netfilter-devel@vger.kernel.org>; Tue, 25 Aug 2020 15:07:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2494C061574
+        for <netfilter-devel@vger.kernel.org>; Tue, 25 Aug 2020 15:52:58 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1kAh6G-0005u7-Hr; Wed, 26 Aug 2020 00:07:28 +0200
+        id 1kAhoE-00065H-EV; Wed, 26 Aug 2020 00:52:55 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf] netfilter: conntrack: do not auto-delete clash entries on reply
-Date:   Wed, 26 Aug 2020 00:07:18 +0200
-Message-Id: <20200825220718.12866-1-fw@strlen.de>
+Subject: [PATCH nf-next 0/4] netfilter: revisit conntrack statistics
+Date:   Wed, 26 Aug 2020 00:52:41 +0200
+Message-Id: <20200825225245.8072-1-fw@strlen.de>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -32,109 +31,37 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Its possible that we have more than one packet with the same ct tuple
-simultaneously, e.g. when an application emits n packets on same UDP
-socket from multiple threads.
+With recent addition of clash resolution the 'insert_failed' counter has
+become confusing.  Depending on wheter clash resolution is successful,
+insert_failed increments or both insert_failed and drop increment.
 
-NAT rules might be applied to those packets. With the right set of rules,
-n packets will be mapped to m destinations, where at least two packets end
-up with the same destination.
+Example (conntrack -S):
+[..] insert_failed=15 drop=0 [..] search_restart=268
 
-When this happens, the existing clash resolution may merge the skb that
-is processed after the first has been received with the identical tuple
-already in hash table.
+This means clash resolution worked and the insert_failed increase is harmeless.
+In case drop is non-zero, things become murky.
 
-However, its possible that this identical tuple is a NAT_CLASH tuple.
-In that case the second skb will be sent, but no reply can be received
-since the reply that is processed first removes the NAT_CLASH tuple.
+It would be better to have a dedicated counter that only increments when
+clash resolution is successful.
 
-Do not auto-delete, this gives a 1 second window for replies to be passed
-back to originator.
+This series revisits conntrack statistics.  Counters that do not
+indicate an error or reside in fast-paths are removed.
 
-Packets that are coming later (udp stream case) will not be affected:
-they match the original ct entry, not a NAT_CLASH one.
+With patched kernel and conntrack tool, output looks similar to this
+during a 'clash resolve' stress test:
 
-Also prevent NAT_CLASH entries from getting offloaded.
+[..] insert_failed=9 drop=9 [..] search_restart=123 clash_resolve=3675
 
-Fixes: 6a757c07e51f ("netfilter: conntrack: allow insertion of clashing entries")
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/netfilter/nf_conntrack_proto_udp.c | 26 ++++++++++----------------
- net/netfilter/nft_flow_offload.c       |  2 +-
- 2 files changed, 11 insertions(+), 17 deletions(-)
+Florian Westphal (4):
+      netfilter: conntrack: do not increment two error counters at same time
+      netfilter: conntrack: remove ignore stats
+      netfilter: conntrack: add clash resolution stat counter
+      netfilter: conntrack: remove unneeded nf_ct_put
 
-diff --git a/net/netfilter/nf_conntrack_proto_udp.c b/net/netfilter/nf_conntrack_proto_udp.c
-index 760ca2422816..af402f458ee0 100644
---- a/net/netfilter/nf_conntrack_proto_udp.c
-+++ b/net/netfilter/nf_conntrack_proto_udp.c
-@@ -81,18 +81,6 @@ static bool udp_error(struct sk_buff *skb,
- 	return false;
- }
- 
--static void nf_conntrack_udp_refresh_unreplied(struct nf_conn *ct,
--					       struct sk_buff *skb,
--					       enum ip_conntrack_info ctinfo,
--					       u32 extra_jiffies)
--{
--	if (unlikely(ctinfo == IP_CT_ESTABLISHED_REPLY &&
--		     ct->status & IPS_NAT_CLASH))
--		nf_ct_kill(ct);
--	else
--		nf_ct_refresh_acct(ct, ctinfo, skb, extra_jiffies);
--}
--
- /* Returns verdict for packet, and may modify conntracktype */
- int nf_conntrack_udp_packet(struct nf_conn *ct,
- 			    struct sk_buff *skb,
-@@ -124,12 +112,15 @@ int nf_conntrack_udp_packet(struct nf_conn *ct,
- 
- 		nf_ct_refresh_acct(ct, ctinfo, skb, extra);
- 
-+		/* never set ASSURED for IPS_NAT_CLASH, they time out soon */
-+		if (unlikely((ct->status & IPS_NAT_CLASH)))
-+			return NF_ACCEPT;
-+
- 		/* Also, more likely to be important, and not a probe */
- 		if (!test_and_set_bit(IPS_ASSURED_BIT, &ct->status))
- 			nf_conntrack_event_cache(IPCT_ASSURED, ct);
- 	} else {
--		nf_conntrack_udp_refresh_unreplied(ct, skb, ctinfo,
--						   timeouts[UDP_CT_UNREPLIED]);
-+		nf_ct_refresh_acct(ct, ctinfo, skb, timeouts[UDP_CT_UNREPLIED]);
- 	}
- 	return NF_ACCEPT;
- }
-@@ -206,12 +197,15 @@ int nf_conntrack_udplite_packet(struct nf_conn *ct,
- 	if (test_bit(IPS_SEEN_REPLY_BIT, &ct->status)) {
- 		nf_ct_refresh_acct(ct, ctinfo, skb,
- 				   timeouts[UDP_CT_REPLIED]);
-+
-+		if (unlikely((ct->status & IPS_NAT_CLASH)))
-+			return NF_ACCEPT;
-+
- 		/* Also, more likely to be important, and not a probe */
- 		if (!test_and_set_bit(IPS_ASSURED_BIT, &ct->status))
- 			nf_conntrack_event_cache(IPCT_ASSURED, ct);
- 	} else {
--		nf_conntrack_udp_refresh_unreplied(ct, skb, ctinfo,
--						   timeouts[UDP_CT_UNREPLIED]);
-+		nf_ct_refresh_acct(ct, ctinfo, skb, timeouts[UDP_CT_UNREPLIED]);
- 	}
- 	return NF_ACCEPT;
- }
-diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
-index 3b9b97aa4b32..3a6c84fb2c90 100644
---- a/net/netfilter/nft_flow_offload.c
-+++ b/net/netfilter/nft_flow_offload.c
-@@ -102,7 +102,7 @@ static void nft_flow_offload_eval(const struct nft_expr *expr,
- 	}
- 
- 	if (nf_ct_ext_exist(ct, NF_CT_EXT_HELPER) ||
--	    ct->status & IPS_SEQ_ADJUST)
-+	    ct->status & (IPS_SEQ_ADJUST | IPS_NAT_CLASH))
- 		goto out;
- 
- 	if (!nf_ct_is_confirmed(ct))
--- 
-2.26.2
+ include/linux/netfilter/nf_conntrack_common.h      |    2 -
+ include/uapi/linux/netfilter/nfnetlink_conntrack.h |    3 +-
+ net/netfilter/nf_conntrack_core.c                  |   25 ++++++++-------------
+ net/netfilter/nf_conntrack_netlink.c               |    5 ++--
+ net/netfilter/nf_conntrack_standalone.c            |    4 +--
+ 5 files changed, 18 insertions(+), 21 deletions(-)
 
