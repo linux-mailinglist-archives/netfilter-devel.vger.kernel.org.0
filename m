@@ -2,84 +2,141 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8FC255EC5
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Aug 2020 18:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55BA255F47
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Aug 2020 18:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgH1QaV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 28 Aug 2020 12:30:21 -0400
-Received: from correo.us.es ([193.147.175.20]:44374 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726033AbgH1QaU (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 28 Aug 2020 12:30:20 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 4811FDA702
-        for <netfilter-devel@vger.kernel.org>; Fri, 28 Aug 2020 18:30:19 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 38D90DA730
-        for <netfilter-devel@vger.kernel.org>; Fri, 28 Aug 2020 18:30:19 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 2E82FDA72F; Fri, 28 Aug 2020 18:30:19 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1DC24DA704;
-        Fri, 28 Aug 2020 18:30:17 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 28 Aug 2020 18:30:17 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 005EA42EF4E0;
-        Fri, 28 Aug 2020 18:30:16 +0200 (CEST)
-Date:   Fri, 28 Aug 2020 18:30:16 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf] netfilter: conntrack: do not auto-delete clash
- entries on reply
-Message-ID: <20200828163016.GA16743@salvia>
-References: <20200825220718.12866-1-fw@strlen.de>
+        id S1726236AbgH1Q6a (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 28 Aug 2020 12:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725814AbgH1Q63 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 28 Aug 2020 12:58:29 -0400
+X-Greylist: delayed 2247 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 28 Aug 2020 09:58:28 PDT
+Received: from opendium2.opendium.net (opendium2.opendium.net [IPv6:2a01:4f8:10b:3d07::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E2AC061264
+        for <netfilter-devel@vger.kernel.org>; Fri, 28 Aug 2020 09:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=opendium.com; s=open; h=Content-Type:MIME-Version:Date:Message-ID:To:
+        Subject:From:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=XlOvnqiNVPx7uykD+x3MYYtKADTDOKh6kQWIb5+2nJw=; b=jr4PpUciLfkrhiw1tS5wtne8E5
+        36ZRtPEEvPrP6ocG/i3lexy78XQztFMDo4sfhSv3UJ3JUzIEWg26ivZ+3kD9vjxgoCQ/0Y8sbrpdT
+        eW4Je0o1uUz0Ex8zZDKEldzXxj4rE+drelBHI+3L7rhoGJ9VGniD05ZR16bqwkos2nP0=;
+Received: from [2a00:1940:103:8:c032:ccff:fe47:456e] (helo=rivendell.nexusuk.org)
+        by opendium2.opendium.net with esmtpsa (TLSv1.3:TLS_AES_128_GCM_SHA256:128)
+        (Exim 4.92.3)
+        (envelope-from <steve@opendium.com>)
+        id 1kBh7b-0006Jl-QE
+        for netfilter-devel@vger.kernel.org; Fri, 28 Aug 2020 17:20:59 +0100
+From:   Steve Hill <steve@opendium.com>
+Subject: [PATCH] netfilter: No increment ctx->level for NFT_GOTO
+Organization: Opendium
+To:     netfilter-devel@vger.kernel.org
+Message-ID: <231a0c69-60b1-0b18-0ed6-fcf7a9058ff0@opendium.com>
+Date:   Fri, 28 Aug 2020 17:20:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200825220718.12866-1-fw@strlen.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: multipart/mixed;
+ boundary="------------AA7A2FB1FFA83754A30DE8F5"
+Content-Language: en-GB
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 12:07:18AM +0200, Florian Westphal wrote:
-> Its possible that we have more than one packet with the same ct tuple
-> simultaneously, e.g. when an application emits n packets on same UDP
-> socket from multiple threads.
-> 
-> NAT rules might be applied to those packets. With the right set of rules,
-> n packets will be mapped to m destinations, where at least two packets end
-> up with the same destination.
-> 
-> When this happens, the existing clash resolution may merge the skb that
-> is processed after the first has been received with the identical tuple
-> already in hash table.
-> 
-> However, its possible that this identical tuple is a NAT_CLASH tuple.
-> In that case the second skb will be sent, but no reply can be received
-> since the reply that is processed first removes the NAT_CLASH tuple.
-> 
-> Do not auto-delete, this gives a 1 second window for replies to be passed
-> back to originator.
-> 
-> Packets that are coming later (udp stream case) will not be affected:
-> they match the original ct entry, not a NAT_CLASH one.
-> 
-> Also prevent NAT_CLASH entries from getting offloaded.
+This is a multi-part message in MIME format.
+--------------AA7A2FB1FFA83754A30DE8F5
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Applied, thanks.
+nft_immediate_validate() and nft_lookup_validate_setelem() treat 
+NFT_GOTO and NFT_JUMP identically, incrementing pctx->level for both. 
+This results in a -EMLINK ("Too many links") being unexpectedly returned 
+for rulesets that use lots of gotos.
+
+This fixes this problem by not incrementing pctx->level when following 
+gotos.
+
+Fixes: https://bugzilla.netfilter.org/show_bug.cgi?id=1459
+Signed-off-by: Steve Hill <steve@opendium.com>
+---
+diff -urN 
+linux-4.18.0-193.14.2.el8.x86_64.vanilla/net/netfilter/nft_immediate.c 
+linux-4.18.0-193.14.2.el8.x86_64.opendium/net/netfilter/nft_immediate.c
+--- 
+linux-4.18.0-193.14.2.el8.x86_64.vanilla/net/netfilter/nft_immediate.c 
+2020-07-19 15:03:44.000000000 +0100
++++ 
+linux-4.18.0-193.14.2.el8.x86_64.opendium/net/netfilter/nft_immediate.c 
+2020-08-26 15:39:47.004754668 +0100
+@@ -113,13 +113,19 @@
+
+      switch (data->verdict.code) {
+      case NFT_JUMP:
+-    case NFT_GOTO:
+          pctx->level++;
+          err = nft_chain_validate(ctx, data->verdict.chain);
+          if (err < 0)
+              return err;
+          pctx->level--;
+          break;
++    case NFT_GOTO:
++        err = nft_chain_validate(ctx, data->verdict.chain);
++        if (err < 0)
++            return err;
++        break;
+      default:
+          break;
+      }
+diff -urN 
+linux-4.18.0-193.14.2.el8.x86_64.vanilla/net/netfilter/nft_lookup.c 
+linux-4.18.0-193.14.2.el8.x86_64.opendium/net/netfilter/nft_lookup.c
+--- linux-4.18.0-193.14.2.el8.x86_64.vanilla/net/netfilter/nft_lookup.c 
+2020-07-19 15:03:44.000000000 +0100
++++ linux-4.18.0-193.14.2.el8.x86_64.opendium/net/netfilter/nft_lookup.c 
+2020-08-26 15:42:35.885223417 +0100
+@@ -176,13 +176,19 @@
+      data = nft_set_ext_data(ext);
+      switch (data->verdict.code) {
+      case NFT_JUMP:
+-    case NFT_GOTO:
+          pctx->level++;
+          err = nft_chain_validate(ctx, data->verdict.chain);
+          if (err < 0)
+              return err;
+          pctx->level--;
+          break;
++    case NFT_GOTO:
++        err = nft_chain_validate(ctx, data->verdict.chain);
++        if (err < 0)
++            return err;
++        break;
+      default:
+          break;
+      }
+
+--------------AA7A2FB1FFA83754A30DE8F5
+Content-Type: text/x-vcard; charset=utf-8;
+ name="steve.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="steve.vcf"
+
+begin:vcard
+fn:Steve Hill
+n:Hill;Steve
+org:Opendium Limited
+adr:1 Brue Close;;Highfield House;Bruton;Somerset;BA10 0HY;England
+email;internet:steve@opendium.com
+title:Technical Director
+x-mozilla-html:FALSE
+url:https://www.opendium.com
+version:2.1
+end:vcard
+
+
+--------------AA7A2FB1FFA83754A30DE8F5--
