@@ -2,75 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD3E25605A
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Aug 2020 20:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401AF256085
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Aug 2020 20:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgH1STc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 28 Aug 2020 14:19:32 -0400
-Received: from correo.us.es ([193.147.175.20]:40478 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726677AbgH1STc (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 28 Aug 2020 14:19:32 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 270132A2BB0
-        for <netfilter-devel@vger.kernel.org>; Fri, 28 Aug 2020 20:19:31 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1825ADA730
-        for <netfilter-devel@vger.kernel.org>; Fri, 28 Aug 2020 20:19:31 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 0D835DA789; Fri, 28 Aug 2020 20:19:31 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id EFC0BDA730;
-        Fri, 28 Aug 2020 20:19:28 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 28 Aug 2020 20:19:28 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id CB44942EF4E1;
-        Fri, 28 Aug 2020 20:19:28 +0200 (CEST)
-Date:   Fri, 28 Aug 2020 20:19:28 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Tong Zhang <ztong0001@gmail.com>
+        id S1726794AbgH1Sa6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 28 Aug 2020 14:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbgH1Sa5 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 28 Aug 2020 14:30:57 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB838C061264;
+        Fri, 28 Aug 2020 11:30:56 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id l8so22905ios.2;
+        Fri, 28 Aug 2020 11:30:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WtlD/YX0ISFkWguzbH4vW7Oxt2gP0SItAMBJ51jlhgA=;
+        b=u5ZZ+sOob/NWIylD3FsfSRO2o52LyPkjnkvg6BJJxLxSFcoY7xVzCeX4o5AGNyENgh
+         I0Mtklx0pRK3QUFdILooXaJLmJSj3Zur8vtXO0BEWiBRvQtlY0JKXlNT4jlCOrhFcnh1
+         1a+KUhcq6JxCCvZRlGHL2USpA9248WhAKkf261bFTE/QE+9+b+qGpsJjA2G1/hq9YJea
+         2xJpQ0Znplfsa8P4kG9U326heJw15KaQ2fmJxtG0t371dOMMZojXjDsMupXG4O0shg6S
+         ps8DwCx2MwUEbulW0xnuo1CB5WK7kUJT4sPD+0c5+8pQ7AezyP4AOp/tZahCkw7gtGuf
+         tkJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WtlD/YX0ISFkWguzbH4vW7Oxt2gP0SItAMBJ51jlhgA=;
+        b=oFX7RbgpZQV8KdiTdcYXqvwHzLsqthzyC11O1X+oFUM4gIXRPfq5bSLv1kBMJ5xab/
+         XYtGttlKc1YEk6a/cSB3cZyxnFWAXYmRLlFSVLc3zkY1QuolV6/4NXz1UUx7lxT0cXIX
+         JVF6/dKWnkPCGWldqZnh94ONenqBN9bl/zBmrXKN0X1+qUaI2CD26xT+ej8t+icavnbV
+         F7whKLz9bMDD+W0rKmPbO3HrKrnUmcK3VeG9pkydEJR3/57qsuew2HJzRaFYfZ8MoLr4
+         c2fhcWu32+7uebxDU3sFurx0ohl5ZG/zOhH79vYtCKTBgb5NfSJhmdV6v7uCbTDcQfvy
+         gWeQ==
+X-Gm-Message-State: AOAM533IQz2Buxby9NdVj4o4Clpv0I+ckMzbBSmhIwAVVnwVkMIiJcXn
+        41brg19dhxkeuAiVU87aV4X1IPR8+DUpoALuyHta29gl2wA7y+wh
+X-Google-Smtp-Source: ABdhPJxUhh6t9XVY7PhXWTL6ZE6/DqCdX1N3g+eC6XgS+va1XX9sfw3FnM26dG5G4eZephV45h3TK5YQcgAKRGahT/w=
+X-Received: by 2002:a02:e4a:: with SMTP id 71mr2317041jae.133.1598639456198;
+ Fri, 28 Aug 2020 11:30:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200815165030.5849-1-ztong0001@gmail.com> <20200828180742.GA20488@salvia>
+ <CAA5qM4CUO47EkJ-4wRoi0wkReAXtB5isLbvBEUw045po_TY8Sw@mail.gmail.com> <20200828181928.GA14349@salvia>
+In-Reply-To: <20200828181928.GA14349@salvia>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Fri, 28 Aug 2020 14:30:45 -0400
+Message-ID: <CAA5qM4ACaYfdj+MwACyS1oC+GT7KoD1T73DsAMPrpO9rqbxWkw@mail.gmail.com>
+Subject: Re: [PATCH] netfilter: nf_conntrack_sip: fix parsing error
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
         kuba@kernel.org, netfilter-devel@vger.kernel.org,
         coreteam@netfilter.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] netfilter: nf_conntrack_sip: fix parsing error
-Message-ID: <20200828181928.GA14349@salvia>
-References: <20200815165030.5849-1-ztong0001@gmail.com>
- <20200828180742.GA20488@salvia>
- <CAA5qM4CUO47EkJ-4wRoi0wkReAXtB5isLbvBEUw045po_TY8Sw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAA5qM4CUO47EkJ-4wRoi0wkReAXtB5isLbvBEUw045po_TY8Sw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 02:14:48PM -0400, Tong Zhang wrote:
-> Hi Pablo,
-> I'm not an expert in this networking stuff.
-> But from my point of view there's no point in checking if this
-> condition is always true.
+I think the original code complaining parsing error is there for a reason,
+A better way is to modify ct_sip_parse_numerical_param() and let it return
+a real parsing error code instead of returning FOUND(1) and NOT FOUND(0)
+if deemed necessary
+Once again I'm not an expert and I'm may suggest something stupid,
+please pardon my ignorance --
+- Tong
 
-Understood.
-
-> There's also no need of returning anything from the
-> ct_sip_parse_numerical_param()
-> if they are all being ignored like this.
-
-Then probably update this code to ignore the return value?
+On Fri, Aug 28, 2020 at 2:19 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>
+> Then probably update this code to ignore the return value?
