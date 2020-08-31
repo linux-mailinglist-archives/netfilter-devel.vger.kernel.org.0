@@ -2,165 +2,76 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9BA25769E
-	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Aug 2020 11:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20893257762
+	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Aug 2020 12:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgHaJhO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 31 Aug 2020 05:37:14 -0400
-Received: from correo.us.es ([193.147.175.20]:40450 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726485AbgHaJhG (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 31 Aug 2020 05:37:06 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id B3C5E15AEB5
-        for <netfilter-devel@vger.kernel.org>; Mon, 31 Aug 2020 11:36:59 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id A5363DA704
-        for <netfilter-devel@vger.kernel.org>; Mon, 31 Aug 2020 11:36:59 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 9A786DA78F; Mon, 31 Aug 2020 11:36:59 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 53955DA704;
-        Mon, 31 Aug 2020 11:36:57 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 31 Aug 2020 11:36:57 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 2AD0242EF4E0;
-        Mon, 31 Aug 2020 11:36:57 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH 8/8] netfilter: conntrack: do not auto-delete clash entries on reply
-Date:   Mon, 31 Aug 2020 11:36:48 +0200
-Message-Id: <20200831093648.20765-9-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200831093648.20765-1-pablo@netfilter.org>
-References: <20200831093648.20765-1-pablo@netfilter.org>
+        id S1726512AbgHaKgp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 31 Aug 2020 06:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726204AbgHaKgo (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 31 Aug 2020 06:36:44 -0400
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271E5C061573
+        for <netfilter-devel@vger.kernel.org>; Mon, 31 Aug 2020 03:36:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=5xggnq6qBiB/iIsI/rhgljEDvE3aaPg691NcOmydijA=; b=PD49v47r/HZn2hCbQNjPtFgQPv
+        Cmz+YyoYZijDkV3+yzQh0N12WAOwAV5CjXGbHNJB33X0w48wCcHbLX9n9hyeVUYr6xTfpvb101nRS
+        7eEXokHmlGefZv6Fnks7VePm3hFjNhLRpifWaAbO8Mah2DGZsmysH2mxikDcyC22q5++M/Ggh+FAX
+        MeC8KSTjMIk4dBuETcCOwZR8Uz3mJiVd5uiKXsxRb35O/6Nmm+B8pe+LFXujwRkKp8Y271JVdQReB
+        uuHeEEzsrZy6I90APGq70PyY9bcptx1MQJ+ybkaFw4S+fU5DLhj2BdlslVcoGDwMzLbj3P7Xo5tkG
+        AnGwpEyA==;
+Received: from ulthar.dreamlands ([192.168.96.2] helo=ulthar.dreamlands.azazel.net)
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1kChB0-0007Zt-38; Mon, 31 Aug 2020 11:36:38 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
+        Helmut Grohne <helmut@subdivi.de>
+Subject: [PATCH xtables-addons] build: don't hard-code pkg-config.
+Date:   Mon, 31 Aug 2020 11:36:35 +0100
+Message-Id: <20200831103635.524666-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-SA-Exim-Connect-IP: 192.168.96.2
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Helmut Grohne <helmut@subdivi.de>
 
-Its possible that we have more than one packet with the same ct tuple
-simultaneously, e.g. when an application emits n packets on same UDP
-socket from multiple threads.
+Use $PKG_CONFIG in configure.ac in order to allow it to be overridden.
+Fixes cross-compilation.
 
-NAT rules might be applied to those packets. With the right set of rules,
-n packets will be mapped to m destinations, where at least two packets end
-up with the same destination.
-
-When this happens, the existing clash resolution may merge the skb that
-is processed after the first has been received with the identical tuple
-already in hash table.
-
-However, its possible that this identical tuple is a NAT_CLASH tuple.
-In that case the second skb will be sent, but no reply can be received
-since the reply that is processed first removes the NAT_CLASH tuple.
-
-Do not auto-delete, this gives a 1 second window for replies to be passed
-back to originator.
-
-Packets that are coming later (udp stream case) will not be affected:
-they match the original ct entry, not a NAT_CLASH one.
-
-Also prevent NAT_CLASH entries from getting offloaded.
-
-Fixes: 6a757c07e51f ("netfilter: conntrack: allow insertion of clashing entries")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- net/netfilter/nf_conntrack_proto_udp.c | 26 ++++++++++----------------
- net/netfilter/nft_flow_offload.c       |  2 +-
- 2 files changed, 11 insertions(+), 17 deletions(-)
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_conntrack_proto_udp.c b/net/netfilter/nf_conntrack_proto_udp.c
-index 760ca2422816..af402f458ee0 100644
---- a/net/netfilter/nf_conntrack_proto_udp.c
-+++ b/net/netfilter/nf_conntrack_proto_udp.c
-@@ -81,18 +81,6 @@ static bool udp_error(struct sk_buff *skb,
- 	return false;
- }
+diff --git a/configure.ac b/configure.ac
+index 8f8a13b9d4b7..7d779964f77d 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -27,7 +27,7 @@ fi
+ AC_CHECK_HEADERS([linux/netfilter/x_tables.h], [],
+ 	[AC_MSG_ERROR([You need to have linux/netfilter/x_tables.h, see INSTALL file for details])])
+ PKG_CHECK_MODULES([libxtables], [xtables >= 1.6.0])
+-xtlibdir="$(pkg-config --variable=xtlibdir xtables)"
++xtlibdir="$($PKG_CONFIG --variable=xtlibdir xtables)"
  
--static void nf_conntrack_udp_refresh_unreplied(struct nf_conn *ct,
--					       struct sk_buff *skb,
--					       enum ip_conntrack_info ctinfo,
--					       u32 extra_jiffies)
--{
--	if (unlikely(ctinfo == IP_CT_ESTABLISHED_REPLY &&
--		     ct->status & IPS_NAT_CLASH))
--		nf_ct_kill(ct);
--	else
--		nf_ct_refresh_acct(ct, ctinfo, skb, extra_jiffies);
--}
--
- /* Returns verdict for packet, and may modify conntracktype */
- int nf_conntrack_udp_packet(struct nf_conn *ct,
- 			    struct sk_buff *skb,
-@@ -124,12 +112,15 @@ int nf_conntrack_udp_packet(struct nf_conn *ct,
- 
- 		nf_ct_refresh_acct(ct, ctinfo, skb, extra);
- 
-+		/* never set ASSURED for IPS_NAT_CLASH, they time out soon */
-+		if (unlikely((ct->status & IPS_NAT_CLASH)))
-+			return NF_ACCEPT;
-+
- 		/* Also, more likely to be important, and not a probe */
- 		if (!test_and_set_bit(IPS_ASSURED_BIT, &ct->status))
- 			nf_conntrack_event_cache(IPCT_ASSURED, ct);
- 	} else {
--		nf_conntrack_udp_refresh_unreplied(ct, skb, ctinfo,
--						   timeouts[UDP_CT_UNREPLIED]);
-+		nf_ct_refresh_acct(ct, ctinfo, skb, timeouts[UDP_CT_UNREPLIED]);
- 	}
- 	return NF_ACCEPT;
- }
-@@ -206,12 +197,15 @@ int nf_conntrack_udplite_packet(struct nf_conn *ct,
- 	if (test_bit(IPS_SEEN_REPLY_BIT, &ct->status)) {
- 		nf_ct_refresh_acct(ct, ctinfo, skb,
- 				   timeouts[UDP_CT_REPLIED]);
-+
-+		if (unlikely((ct->status & IPS_NAT_CLASH)))
-+			return NF_ACCEPT;
-+
- 		/* Also, more likely to be important, and not a probe */
- 		if (!test_and_set_bit(IPS_ASSURED_BIT, &ct->status))
- 			nf_conntrack_event_cache(IPCT_ASSURED, ct);
- 	} else {
--		nf_conntrack_udp_refresh_unreplied(ct, skb, ctinfo,
--						   timeouts[UDP_CT_UNREPLIED]);
-+		nf_ct_refresh_acct(ct, ctinfo, skb, timeouts[UDP_CT_UNREPLIED]);
- 	}
- 	return NF_ACCEPT;
- }
-diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
-index 3b9b97aa4b32..3a6c84fb2c90 100644
---- a/net/netfilter/nft_flow_offload.c
-+++ b/net/netfilter/nft_flow_offload.c
-@@ -102,7 +102,7 @@ static void nft_flow_offload_eval(const struct nft_expr *expr,
- 	}
- 
- 	if (nf_ct_ext_exist(ct, NF_CT_EXT_HELPER) ||
--	    ct->status & IPS_SEQ_ADJUST)
-+	    ct->status & (IPS_SEQ_ADJUST | IPS_NAT_CLASH))
- 		goto out;
- 
- 	if (!nf_ct_is_confirmed(ct))
+ AC_ARG_WITH([xtlibdir],
+ 	AS_HELP_STRING([--with-xtlibdir=PATH],
 -- 
-2.20.1
+2.28.0
 
