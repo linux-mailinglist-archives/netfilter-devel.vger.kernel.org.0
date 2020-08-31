@@ -2,46 +2,102 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADABB25782B
-	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Aug 2020 13:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73352579DE
+	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Aug 2020 15:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgHaLVa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 31 Aug 2020 07:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
+        id S1726526AbgHaNAA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 31 Aug 2020 09:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726554AbgHaLR6 (ORCPT
+        with ESMTP id S1726692AbgHaM7y (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:17:58 -0400
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0A7C061239
-        for <netfilter-devel@vger.kernel.org>; Mon, 31 Aug 2020 04:09:35 -0700 (PDT)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id 3A1785872C74C; Mon, 31 Aug 2020 13:09:29 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id 34FEB60FA6D37;
-        Mon, 31 Aug 2020 13:09:29 +0200 (CEST)
-Date:   Mon, 31 Aug 2020 13:09:29 +0200 (CEST)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     Jeremy Sowden <jeremy@azazel.net>
-cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
-        Helmut Grohne <helmut@subdivi.de>
-Subject: Re: [PATCH xtables-addons] build: don't hard-code pkg-config.
-In-Reply-To: <20200831103635.524666-1-jeremy@azazel.net>
-Message-ID: <nycvar.YFH.7.77.849.2008311309240.11784@n3.vanv.qr>
-References: <20200831103635.524666-1-jeremy@azazel.net>
-User-Agent: Alpine 2.22 (LSU 394 2020-01-19)
+        Mon, 31 Aug 2020 08:59:54 -0400
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E693C061575
+        for <netfilter-devel@vger.kernel.org>; Mon, 31 Aug 2020 05:59:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=9WlPHdGyUxID0dpDKjtBJJ7YyCIXSG1dIBx46WMk6hg=; b=sEE1gJqLIR4Ai+edGhmIUsBgXa
+        332l9qmYwXbONpDfa4fxtwXSFcO4pOezJyfbS4fnGdOxyZCgh2a8XiTFcesphz+zlBNyKTxflaAHC
+        ZaxDIn6V3pHHEiscXj4MbMko3my0Sw6w+CG9jWmQTJjEBHfwWnPNR5XUZjqASwWY5+UG/WVcLEyje
+        b/BZK7th4ojiFsA1fNjvNZB8r6JfL0vR4/SpFUbG2Vd6kczDWN3olbPgThKwmU5OJqnxMewwiPUIM
+        QkRIYmwMq466TzHZ56IRZFNPrIJbMD5KBejuvT8rxHjHpKL2Z7i1jO1/DIRLSbA2bmd8XPw03iClU
+        /k6kXFDw==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1kCjPb-0002zd-RM; Mon, 31 Aug 2020 13:59:51 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH 1/2] xt_ACCOUNT: update prototype of `struct nf_sockopt_ops` `.set` call-back.
+Date:   Mon, 31 Aug 2020 13:59:47 +0100
+Message-Id: <20200831125948.22891-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Monday 2020-08-31 12:36, Jeremy Sowden wrote:
+In 5.9, the `void __user` parameter has been replaced by a `sockptr`.
+Update `ipt_acc_set_ctl` appropriately.
 
->From: Helmut Grohne <helmut@subdivi.de>
->
->Use $PKG_CONFIG in configure.ac in order to allow it to be overridden.
->Fixes cross-compilation.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ extensions/ACCOUNT/xt_ACCOUNT.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-It is done.
+diff --git a/extensions/ACCOUNT/xt_ACCOUNT.c b/extensions/ACCOUNT/xt_ACCOUNT.c
+index 019f5bda007e..18e0b8a0a1b7 100644
+--- a/extensions/ACCOUNT/xt_ACCOUNT.c
++++ b/extensions/ACCOUNT/xt_ACCOUNT.c
+@@ -28,6 +28,9 @@
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
+ #include <linux/string.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0)
++#include <linux/sockptr.h>
++#endif
+ #include <linux/spinlock.h>
+ #include <asm/uaccess.h>
+ #include <net/netns/generic.h>
+@@ -879,7 +882,12 @@ static int ipt_acc_handle_get_data(struct ipt_acc_net *ian,
+ }
+ 
+ static int ipt_acc_set_ctl(struct sock *sk, int cmd,
+-			void *user, unsigned int len)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 9, 0)
++			   void *user,
++#else
++			   sockptr_t arg,
++#endif
++			   unsigned int len)
+ {
+ 	struct net *net = sock_net(sk);
+ 	struct ipt_acc_net *ian = net_generic(net, ipt_acc_net_id);
+@@ -898,7 +906,12 @@ static int ipt_acc_set_ctl(struct sock *sk, int cmd,
+ 			break;
+ 		}
+ 
+-		if (copy_from_user(&handle, user, len)) {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 9, 0)
++		if (copy_from_user(&handle, user, len))
++#else
++		if (copy_from_sockptr(&handle, arg, len))
++#endif
++		{
+ 			printk("ACCOUNT: ipt_acc_set_ctl: copy_from_user failed for "
+ 				"IPT_SO_SET_HANDLE_FREE\n");
+ 			break;
+-- 
+2.28.0
+
