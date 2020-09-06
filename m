@@ -2,62 +2,50 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B2C25EA64
-	for <lists+netfilter-devel@lfdr.de>; Sat,  5 Sep 2020 22:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC4D25EBD4
+	for <lists+netfilter-devel@lfdr.de>; Sun,  6 Sep 2020 02:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbgIEU2N (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 5 Sep 2020 16:28:13 -0400
-Received: from rrcs-67-53-52-108.west.biz.rr.com ([67.53.52.108]:45417 "EHLO
-        thirdlane.local" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728327AbgIEU2N (ORCPT
+        id S1728400AbgIFASW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 5 Sep 2020 20:18:22 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:42636 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728103AbgIFASW (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 5 Sep 2020 16:28:13 -0400
-Received: from Shop01 (localhost [127.0.0.1])
-        by thirdlane.local (Postfix) with SMTP id 7483D27E1CD;
-        Thu,  3 Sep 2020 09:39:02 -1000 (HST)
-Received: from [16.78.130.41] by Shop01 with ESMTP id 4FDA169AD8C; Thu, 03 Sep 2020 20:45:57 +0100
-Message-ID: <tk-$8m1g6$xm-3a$xi4z$u@nz3.gb0j.n3>
-From:   "William Saha" <wils@send.com>
-Reply-To: "William Saha" <wils@send.com>
-To:     netcontrol@k8qik.org
-Subject: Greetings
-Date:   Thu, 03 Sep 20 20:45:57 GMT
-X-Mailer: eGroups Message Poster
+        Sat, 5 Sep 2020 20:18:22 -0400
+Received: from dimstar.local.net (n49-192-221-78.sun4.vic.optusnet.com.au [49.192.221.78])
+        by mail105.syd.optusnet.com.au (Postfix) with SMTP id 122373A7BF8
+        for <netfilter-devel@vger.kernel.org>; Sun,  6 Sep 2020 10:18:18 +1000 (AEST)
+Received: (qmail 22224 invoked by uid 501); 6 Sep 2020 00:18:17 -0000
+Date:   Sun, 6 Sep 2020 10:18:17 +1000
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     Netfilter Development <netfilter-devel@vger.kernel.org>
+Subject: Can someone please update libnetfilter_queue online documentation
+Message-ID: <20200906001817.GB6585@dimstar.local.net>
+Mail-Followup-To: Netfilter Development <netfilter-devel@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="9A9.56F95A."
-X-Priority: 3
-X-MSMail-Priority: Normal
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=XJ9OtjpE c=1 sm=1 tr=0 cx=a_idp_d
+        a=6xKf4iIoQv62Sz4byRKdFA==:117 a=6xKf4iIoQv62Sz4byRKdFA==:17
+        a=kj9zAlcOel0A:10 a=reM5J-MqmosA:10 a=RSmzAf-M6YYA:10 a=3HDBlxybAAAA:8
+        a=2iCmBLDIqrXrismR8BEA:9 a=CjuIK1q_8ugA:10 a=3ZB0DOFoXBkA:10
+        a=QPIECt7LLFIA:10 a=laEoCiVfU_Unz3mSdgXN:22
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Hi everyone,
 
---9A9.56F95A.
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+The online doc for libnetfilter_queue at
+https://netfilter.org/projects/libnetfilter_queue/doxygen/html/ is still at
+release 1.0.3.
 
-Send your reply to: fkinneyofd@tampabay.rr.com 
+Documentation forms a large part of release 1.0.4 / 1.0.5, so can someone please
+build 1.0.5 doc and put it up?
 
-Greetings
+You only need to do './configure --with-doxygen; make' and you have it.
 
-This notification memo has been sent to you three times without a response=
- from you and this will be the last time and I do hope you receive it.
-This inquiry is about an account holder, who died and has no successor ove=
-r his fund with the bank.
-The essence of this communication with you is to request your willingness =
-to accept this inheritance left behind by my client if you are legally and=
- legitimately appointed.
-You must appreciate that I am constrained from providing you with more det=
-ailed information at this point. Upon your response, I will give you more =
-detailed information on the deceased client and the process of nominating =
-you to inherit his wealth. Send your comments with your full names and you=
-r telephone number to enable us discuss .
-
-Yours faithfully,
-William Saha.
-fkinneyofd@tampabay.rr.com
-
---9A9.56F95A.--
-
+Cheers ... Duncan.
