@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263B02600A0
-	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Sep 2020 18:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 103A42601D2
+	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Sep 2020 19:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730772AbgIGQeu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 7 Sep 2020 12:34:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48408 "EHLO mail.kernel.org"
+        id S1731200AbgIGRMk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 7 Sep 2020 13:12:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729764AbgIGQeb (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:34:31 -0400
+        id S1730617AbgIGQc1 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:32:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4B5421D82;
-        Mon,  7 Sep 2020 16:34:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 331F92080A;
+        Mon,  7 Sep 2020 16:32:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599496470;
-        bh=6lJqYousbkRWzTnKPucX719ewW66jKHGJq1Or/5QNn8=;
+        s=default; t=1599496346;
+        bh=N2TzsaDDwqM6tAPNhthsqRzY7Ob4UQpx+wDCC0gnkxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0X7oLzWtHmTrNc2iL8ToqSznhhH2E1B2702g73zeob7W0b0GBiN6lJi41AZBtSz34
-         duFGYOOuROwO1eSYdtG3IcKLN5JikIkq8IXOMatDIDD3D4myAgtvwvuA9mZScThWVp
-         lXrspdbQg/zJSlDg9w1w5s8yxuw6xaywzA5oFOH8=
+        b=gqoK64BhITZA1wY5V5vAzv/4aQAu/OTImrKxhm3Y8OeJnGGgDpulpMDei8UXcPlHi
+         ZqhMsLUYhnefbD/aF28UHZiWhqHISvWMfgPJvK8uUKSmLHUWbdyY5rDhO8iKzsOrZl
+         59V0ZZQxlT1URmaLk1PaXBBJpCUJJWGPkZWYNvs0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>,
@@ -30,12 +30,12 @@ Cc:     Florian Westphal <fw@strlen.de>,
         Sasha Levin <sashal@kernel.org>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 03/26] netfilter: conntrack: allow sctp hearbeat after connection re-use
-Date:   Mon,  7 Sep 2020 12:34:03 -0400
-Message-Id: <20200907163426.1281284-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 04/53] netfilter: conntrack: allow sctp hearbeat after connection re-use
+Date:   Mon,  7 Sep 2020 12:31:30 -0400
+Message-Id: <20200907163220.1280412-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200907163426.1281284-1-sashal@kernel.org>
-References: <20200907163426.1281284-1-sashal@kernel.org>
+In-Reply-To: <20200907163220.1280412-1-sashal@kernel.org>
+References: <20200907163220.1280412-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -88,10 +88,10 @@ index 9a33f171aa822..625f491b95de8 100644
  
  #endif /* _NF_CONNTRACK_SCTP_H */
 diff --git a/net/netfilter/nf_conntrack_proto_sctp.c b/net/netfilter/nf_conntrack_proto_sctp.c
-index 7d7e30ea0ecf9..a937d4f75613f 100644
+index 4f897b14b6069..810cca24b3990 100644
 --- a/net/netfilter/nf_conntrack_proto_sctp.c
 +++ b/net/netfilter/nf_conntrack_proto_sctp.c
-@@ -65,6 +65,8 @@ static const unsigned int sctp_timeouts[SCTP_CONNTRACK_MAX] = {
+@@ -62,6 +62,8 @@ static const unsigned int sctp_timeouts[SCTP_CONNTRACK_MAX] = {
  	[SCTP_CONNTRACK_HEARTBEAT_ACKED]	= 210 SECS,
  };
  
@@ -100,15 +100,15 @@ index 7d7e30ea0ecf9..a937d4f75613f 100644
  #define sNO SCTP_CONNTRACK_NONE
  #define	sCL SCTP_CONNTRACK_CLOSED
  #define	sCW SCTP_CONNTRACK_COOKIE_WAIT
-@@ -288,6 +290,7 @@ static int sctp_packet(struct nf_conn *ct,
+@@ -369,6 +371,7 @@ int nf_conntrack_sctp_packet(struct nf_conn *ct,
  	u_int32_t offset, count;
  	unsigned int *timeouts;
  	unsigned long map[256 / sizeof(unsigned long)] = { 0 };
 +	bool ignore = false;
  
- 	sh = skb_header_pointer(skb, dataoff, sizeof(_sctph), &_sctph);
- 	if (sh == NULL)
-@@ -332,15 +335,39 @@ static int sctp_packet(struct nf_conn *ct,
+ 	if (sctp_error(skb, dataoff, state))
+ 		return -NF_ACCEPT;
+@@ -427,15 +430,39 @@ int nf_conntrack_sctp_packet(struct nf_conn *ct,
  			/* Sec 8.5.1 (D) */
  			if (sh->vtag != ct->proto.sctp.vtag[dir])
  				goto out_unlock;
@@ -152,7 +152,7 @@ index 7d7e30ea0ecf9..a937d4f75613f 100644
  			}
  		}
  
-@@ -375,6 +402,10 @@ static int sctp_packet(struct nf_conn *ct,
+@@ -470,6 +497,10 @@ int nf_conntrack_sctp_packet(struct nf_conn *ct,
  	}
  	spin_unlock_bh(&ct->lock);
  
@@ -162,7 +162,7 @@ index 7d7e30ea0ecf9..a937d4f75613f 100644
 +
  	timeouts = nf_ct_timeout_lookup(ct);
  	if (!timeouts)
- 		timeouts = sctp_pernet(nf_ct_net(ct))->timeouts;
+ 		timeouts = nf_sctp_pernet(nf_ct_net(ct))->timeouts;
 -- 
 2.25.1
 
