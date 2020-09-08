@@ -2,85 +2,116 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1DA261FF8
-	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Sep 2020 22:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAB42620CE
+	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Sep 2020 22:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729908AbgIHUIf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 8 Sep 2020 16:08:35 -0400
-Received: from correo.us.es ([193.147.175.20]:35914 "EHLO mail.us.es"
+        id S1732039AbgIHUP7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 8 Sep 2020 16:15:59 -0400
+Received: from correo.us.es ([193.147.175.20]:60758 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729663AbgIHPTQ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:19:16 -0400
+        id S1729529AbgIHPKD (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:10:03 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 2E2511F0CE6
-        for <netfilter-devel@vger.kernel.org>; Tue,  8 Sep 2020 16:53:07 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 273001F0CF8
+        for <netfilter-devel@vger.kernel.org>; Tue,  8 Sep 2020 17:09:55 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1F00BDA722
-        for <netfilter-devel@vger.kernel.org>; Tue,  8 Sep 2020 16:53:07 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 19AA8DA7B6
+        for <netfilter-devel@vger.kernel.org>; Tue,  8 Sep 2020 17:09:55 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 14989DA730; Tue,  8 Sep 2020 16:53:07 +0200 (CEST)
+        id 0F0F0DA793; Tue,  8 Sep 2020 17:09:55 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 02CB6DA722;
-        Tue,  8 Sep 2020 16:53:05 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id D3BB3DA78E;
+        Tue,  8 Sep 2020 17:09:52 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 08 Sep 2020 16:53:05 +0200 (CEST)
+ Tue, 08 Sep 2020 17:09:52 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id D53304301DE1;
-        Tue,  8 Sep 2020 16:53:04 +0200 (CEST)
-Date:   Tue, 8 Sep 2020 16:53:04 +0200
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPSA id A5E354301DE1;
+        Tue,  8 Sep 2020 17:09:52 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     "Jose M. Guisado Gomez" <guigom@riseup.net>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nftables 3/3] src: add comment support for objects
-Message-ID: <20200908145304.GB12366@salvia>
-References: <20200902091241.1379-1-guigom@riseup.net>
- <20200902091241.1379-4-guigom@riseup.net>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
+Subject: [PATCH 1/5] netfilter: ctnetlink: add a range check for l3/l4 protonum
+Date:   Tue,  8 Sep 2020 17:09:43 +0200
+Message-Id: <20200908150947.12623-2-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200908150947.12623-1-pablo@netfilter.org>
+References: <20200908150947.12623-1-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200902091241.1379-4-guigom@riseup.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 11:12:41AM +0200, Jose M. Guisado Gomez wrote:
-> Enables specifying an optional comment when declaring named objects. The
-> comment is to be specified inside the object's block ({} block)
-> 
-> Relies on libnftnl exporting nftnl_obj_get_data and kernel space support
-> to store the comments.
-> 
-> For consistency, this patch makes the comment be printed first when
-> listing objects.
-> 
-> Adds a testcase importing all commented named objects except for secmark,
-> although it's supported.
-> 
-> Example: Adding a quota with a comment
-> 
-> > add table inet filter
-> > nft add quota inet filter q { over 1200 bytes \; comment "test_comment"\; }
-> > list ruleset
-> 
-> table inet filter {
-> 	quota q {
-> 		comment "test_comment"
-> 		over 1200 bytes
-> 	}
-> }
+From: Will McVicker <willmcvicker@google.com>
 
-Also applied, thanks.
+The indexes to the nf_nat_l[34]protos arrays come from userspace. So
+check the tuple's family, e.g. l3num, when creating the conntrack in
+order to prevent an OOB memory access during setup.  Here is an example
+kernel panic on 4.14.180 when userspace passes in an index greater than
+NFPROTO_NUMPROTO.
+
+Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+Modules linked in:...
+Process poc (pid: 5614, stack limit = 0x00000000a3933121)
+CPU: 4 PID: 5614 Comm: poc Tainted: G S      W  O    4.14.180-g051355490483
+Hardware name: Qualcomm Technologies, Inc. SM8150 V2 PM8150 Google Inc. MSM
+task: 000000002a3dfffe task.stack: 00000000a3933121
+pc : __cfi_check_fail+0x1c/0x24
+lr : __cfi_check_fail+0x1c/0x24
+...
+Call trace:
+__cfi_check_fail+0x1c/0x24
+name_to_dev_t+0x0/0x468
+nfnetlink_parse_nat_setup+0x234/0x258
+ctnetlink_parse_nat_setup+0x4c/0x228
+ctnetlink_new_conntrack+0x590/0xc40
+nfnetlink_rcv_msg+0x31c/0x4d4
+netlink_rcv_skb+0x100/0x184
+nfnetlink_rcv+0xf4/0x180
+netlink_unicast+0x360/0x770
+netlink_sendmsg+0x5a0/0x6a4
+___sys_sendmsg+0x314/0x46c
+SyS_sendmsg+0xb4/0x108
+el0_svc_naked+0x34/0x38
+
+This crash is not happening since 5.4+, however, ctnetlink still
+allows for creating entries with unsupported layer 3 protocol number.
+
+Fixes: c1d10adb4a521 ("[NETFILTER]: Add ctnetlink port for nf_conntrack")
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+[pablo@netfilter.org: rebased original patch on top of nf.git]
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_conntrack_netlink.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index 832eabecfbdd..d65846aa8059 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -1404,7 +1404,8 @@ ctnetlink_parse_tuple_filter(const struct nlattr * const cda[],
+ 	if (err < 0)
+ 		return err;
+ 
+-
++	if (l3num != NFPROTO_IPV4 && l3num != NFPROTO_IPV6)
++		return -EOPNOTSUPP;
+ 	tuple->src.l3num = l3num;
+ 
+ 	if (flags & CTA_FILTER_FLAG(CTA_IP_DST) ||
+-- 
+2.20.1
+
