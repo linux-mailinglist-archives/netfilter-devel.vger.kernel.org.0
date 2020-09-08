@@ -2,86 +2,73 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B02126133D
-	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Sep 2020 17:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61338261853
+	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Sep 2020 19:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730236AbgIHPNa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 8 Sep 2020 11:13:30 -0400
-Received: from correo.us.es ([193.147.175.20]:33112 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730159AbgIHPLS (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:11:18 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 2D8451F0D09
-        for <netfilter-devel@vger.kernel.org>; Tue,  8 Sep 2020 17:09:57 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 22A27DA78F
-        for <netfilter-devel@vger.kernel.org>; Tue,  8 Sep 2020 17:09:57 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 18443DA78C; Tue,  8 Sep 2020 17:09:57 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 030FCDA73D;
-        Tue,  8 Sep 2020 17:09:55 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 08 Sep 2020 17:09:55 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id C723B4301DE0;
-        Tue,  8 Sep 2020 17:09:54 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH 5/5] netfilter: nft_meta: use socket user_ns to retrieve skuid and skgid
-Date:   Tue,  8 Sep 2020 17:09:47 +0200
-Message-Id: <20200908150947.12623-6-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200908150947.12623-1-pablo@netfilter.org>
-References: <20200908150947.12623-1-pablo@netfilter.org>
+        id S1728443AbgIHRwh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 8 Sep 2020 13:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731631AbgIHQNo (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:13:44 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D362FC0612A4
+        for <netfilter-devel@vger.kernel.org>; Tue,  8 Sep 2020 06:05:38 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id u6so7050937iow.9
+        for <netfilter-devel@vger.kernel.org>; Tue, 08 Sep 2020 06:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=iEeqc7izn1gfQDcpn1vS0AEKGEVlFCoidzpeUAn3nuQ=;
+        b=HktnVl3JUpc47IjAXaLdUkTcu5uSHRpPVcerINmHDjjwFw6KNnfpvJWZHO/6mNhguU
+         yaaprGCTuYDd2zFS596+KNDoMcW7P0z0ScNZywkXD7asB7j6Fh0u/ktCx7DHvewcTbR4
+         9wNuh0sKAXhHxkLGMmh+UF/+FfS9D8FO8mC/PlO0w1D57PX2ltox5nGU2ZN3HEe4GWpm
+         TK6js6i6v22qQ7zVrw6Bvu1GNAvgNL73UYHaxjcrHCmu8vRkFb2FDani3+v8W2nX7Q0l
+         Kv91ziC2Ugoe+lwulA/M4UVyIxf4JroMtNmhWHPDavHHFG3MYZjiu564f28SPehAonwI
+         abJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=iEeqc7izn1gfQDcpn1vS0AEKGEVlFCoidzpeUAn3nuQ=;
+        b=qaE7bbMClv/dgloIIYfARphfdHh+D4QFLefQ2bV8SamDzkmUglHwjl1JPCgMvGslmP
+         kJep0d0K/di+bvLoRCiNegqrkQJV46RTOEmf19BHUYcTqowwoMqQWlEcaybOzz/oudBD
+         ByJDNyb2oonf/AxHxVUzlzbezUGdeDNUi0cY0kqax117HsFaqlpDYQKqIOdQ0CQJL+WC
+         XckRulkwP4ql0bMUv38kkIKf9A6uvMVpZ0GLZa+SSN5AyhMPelHqzwUEGESzyVo4q/gd
+         J/XmmY17SqhDwXQ3WbZWTHqsnzk+IHX8bXrUOkkUXujzhaSkdj4gZFGSbMA6/ov8aW5m
+         elDQ==
+X-Gm-Message-State: AOAM533zyeQQuaXHWvspsJ6Sj3PMhe1O/o1DLdyoc66a0xhkR5PpdgJv
+        JkaxCia5v8CC3fGefoL+izNoY8BLVE9JjNsWhmGhNFzFYxA=
+X-Google-Smtp-Source: ABdhPJxUvQA2DHHxI/YKdbSTv3D8YGu0CykzL/jAJEla+HY5NSoNy7dPacw+9W+BTVIh7si/mubHH7Av1XLP00+3RJU=
+X-Received: by 2002:a05:6638:210f:: with SMTP id n15mr22537928jaj.41.1599570338020;
+ Tue, 08 Sep 2020 06:05:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+From:   Gopal Yadav <gopunop@gmail.com>
+Date:   Tue, 8 Sep 2020 18:35:27 +0530
+Message-ID: <CAAUOv8iRkeAVDn3UK8DHju+-RvWViopGajN_+9y+Rm30pTWa+A@mail.gmail.com>
+Subject: [nftables] TODO: Replace yy_switch_to_buffer by yypop_buffer_state
+ and yypush_buffer_state
+To:     netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-... instead of using init_user_ns.
+Hi Netfilter Team,
 
-Fixes: 96518518cc41 ("netfilter: add nftables")
-Tested-by: Phil Sutter <phil@nwl.cc>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_meta.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I am looking to resolve a todo task in function yy_switch_to_buffer in
+nftables/src/scanner.c file.
+I am not familiar with lex but searching around I found that scanner.c
+is produced by lex according to the scanner.l file.
+Therefore my guess is, changing the scanner.c file directly is not the
+solution, right?
+Changes would have to be done in scanner.l, right?
+How should I proceed to complete this todo?
 
-diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
-index 7bc6537f3ccb..b37bd02448d8 100644
---- a/net/netfilter/nft_meta.c
-+++ b/net/netfilter/nft_meta.c
-@@ -147,11 +147,11 @@ nft_meta_get_eval_skugid(enum nft_meta_keys key,
- 
- 	switch (key) {
- 	case NFT_META_SKUID:
--		*dest = from_kuid_munged(&init_user_ns,
-+		*dest = from_kuid_munged(sock_net(sk)->user_ns,
- 					 sock->file->f_cred->fsuid);
- 		break;
- 	case NFT_META_SKGID:
--		*dest =	from_kgid_munged(&init_user_ns,
-+		*dest =	from_kgid_munged(sock_net(sk)->user_ns,
- 					 sock->file->f_cred->fsgid);
- 		break;
- 	default:
--- 
-2.20.1
+I browsed bugzilla to find some other issues to solve, but I feel
+lost. Are there any beginner friendly issues to solve or any other
+starting point?
 
+Thanks
+Gopal
