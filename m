@@ -2,93 +2,68 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F600262075
-	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Sep 2020 22:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C59261FFF
+	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Sep 2020 22:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729691AbgIHPPn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 8 Sep 2020 11:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730214AbgIHPOM (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:14:12 -0400
-X-Greylist: delayed 1958 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Sep 2020 06:33:35 PDT
-Received: from www62.your-server.de (www62.your-server.de [IPv6:2a01:4f8:d0a:276a::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B84EC0611E0;
-        Tue,  8 Sep 2020 06:33:35 -0700 (PDT)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kFdee-00075V-FO; Tue, 08 Sep 2020 15:27:24 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kFdee-000498-6K; Tue, 08 Sep 2020 15:27:24 +0200
-Subject: Re: [PATCH nf-next v3 3/3] netfilter: Introduce egress hook
-To:     Arturo Borrero Gonzalez <arturo@debian.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Thomas Graf <tgraf@suug.ch>, Laura Garcia <nevola@gmail.com>,
-        David Miller <davem@davemloft.net>
-References: <20200904162154.GA24295@wunner.de>
- <813edf35-6fcf-c569-aab7-4da654546d9d@iogearbox.net>
- <0b7ca97e-9548-b0a8-cdd1-5200cb3b997d@debian.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9bef756d-d17e-263e-c018-2908f2626bfe@iogearbox.net>
-Date:   Tue, 8 Sep 2020 15:27:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1730410AbgIHUIj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 8 Sep 2020 16:08:39 -0400
+Received: from correo.us.es ([193.147.175.20]:35892 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729251AbgIHPTP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:19:15 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 892861F0CE5
+        for <netfilter-devel@vger.kernel.org>; Tue,  8 Sep 2020 16:52:56 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 7B853DA78A
+        for <netfilter-devel@vger.kernel.org>; Tue,  8 Sep 2020 16:52:56 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 71002DA789; Tue,  8 Sep 2020 16:52:56 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 6E931DA73F;
+        Tue,  8 Sep 2020 16:52:54 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 08 Sep 2020 16:52:54 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 506CF4301DE2;
+        Tue,  8 Sep 2020 16:52:54 +0200 (CEST)
+Date:   Tue, 8 Sep 2020 16:52:53 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     "Jose M. Guisado Gomez" <guigom@riseup.net>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH libnftnl 2/3] object: add userdata and comment support
+Message-ID: <20200908145253.GA12366@salvia>
+References: <20200902091241.1379-1-guigom@riseup.net>
+ <20200902091241.1379-3-guigom@riseup.net>
 MIME-Version: 1.0
-In-Reply-To: <0b7ca97e-9548-b0a8-cdd1-5200cb3b997d@debian.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25923/Mon Sep  7 15:37:02 2020)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200902091241.1379-3-guigom@riseup.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 9/8/20 1:46 PM, Arturo Borrero Gonzalez wrote:
-> On 2020-09-04 23:14, Daniel Borkmann wrote:
->> root@x:~/x# clang -target bpf -Wall -O2 -c foo.c -o foo.o
+On Wed, Sep 02, 2020 at 11:12:40AM +0200, Jose M. Guisado Gomez wrote:
+> This patch adds NFTNL_OBJ_USERDATA to support userdata for objects.
 > 
-> In my honest opinion (debian hat), the simplification of the stack is a key
-> point for end users/developers. A gain in usability might justify a small
-> performance penalty.
+> Also adds NFTNL_UDATA_OBJ_COMMENT to support comments for objects,
+> stored in userdata space.
+> 
+> Bumps libnftnl.map to 15 as nftnl_obj_get_data needs to be exported to
+> enable getting object attributes/data.
 
-Not really, both are independent from each other. Usability is typically achieved
-through abstractions, e.g. hiding complexity in libraries (think of raw syscalls
-vs libc). Same with the example of bpf or any other kernel subsystem fwiw, users
-don't need to be aware of the details as applications abstract this away entirely
-but they can benefit from efficiency underneath nevertheless. One example is how
-systemd implements cgroup-aware firewalling and accounting for its services via bpf
-[0]. Zero knowledge required while it presents meta data in user friendly way via
-systemctl status. I'm not trying to convince you of bpf (or systemd), just that
-this argument is moot.
-
-> I can think on both sysadmins and network apps developers, or even casual
-> advanced users. For many people, dealing with the network stack is already
-> challenging enough.
-
-In the age of containers and distributed computing there is no such thing as
-sysadmin anymore as we know it from our university days where a bunch of grey
-bearded admins maintained a bunch of old sun boxes, printers, etc manually. ;-)
-But yes, devops these days is complex, hence abstractions to improve usability
-and gain introspection, but kernel is just a tiny fraction in the overall stack.
-
-> Also, ideally, servers would be clean of the GCC or CLANG suites.
-
-Yes agree, one can compile out all other backends (in case of clang at least) that
-would generate executable code though.
-
-   [0] http://0pointer.net/blog/ip-accounting-and-access-lists-with-systemd.html
+Applied, thanks.
