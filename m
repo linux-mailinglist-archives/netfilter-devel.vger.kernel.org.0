@@ -2,50 +2,122 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70883268737
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Sep 2020 10:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548982688FE
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Sep 2020 12:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbgINI3l convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 14 Sep 2020 04:29:41 -0400
-Received: from mail.bnv.gob.ve ([201.249.200.115]:32774 "EHLO
-        correo.bnv.gob.ve" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726139AbgINI3k (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:29:40 -0400
-X-Greylist: delayed 7871 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Sep 2020 04:29:40 EDT
-Received: from localhost (localhost.bnv.gob.ve [127.0.0.1])
-        by correo.bnv.gob.ve (Postfix) with ESMTP id 4F9E833C23F0;
-        Sun, 13 Sep 2020 21:03:04 -0400 (-04)
-Received: from correo.bnv.gob.ve ([127.0.0.1])
-        by localhost (correo.bnv.gob.ve [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id yUmboHLb-2PF; Sun, 13 Sep 2020 21:03:04 -0400 (-04)
-Received: from localhost (localhost.bnv.gob.ve [127.0.0.1])
-        by correo.bnv.gob.ve (Postfix) with ESMTP id DB55534C2540;
-        Sun, 13 Sep 2020 20:08:39 -0400 (-04)
-X-Virus-Scanned: amavisd-new at bnv.gob.ve
-Received: from correo.bnv.gob.ve ([127.0.0.1])
-        by localhost (correo.bnv.gob.ve [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ZKGFC9hdB30T; Sun, 13 Sep 2020 20:08:39 -0400 (-04)
-Received: from [192.168.8.101] (8ta-229-1-161.telkomadsl.co.za [197.229.1.161])
-        by correo.bnv.gob.ve (Postfix) with ESMTPSA id CB5D734C3562;
-        Sun, 13 Sep 2020 19:18:42 -0400 (-04)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726393AbgINKJ6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 14 Sep 2020 06:09:58 -0400
+Received: from correo.us.es ([193.147.175.20]:42970 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726239AbgINKJ5 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 14 Sep 2020 06:09:57 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 7AB3CD2AE2
+        for <netfilter-devel@vger.kernel.org>; Mon, 14 Sep 2020 12:09:53 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 65163DA855
+        for <netfilter-devel@vger.kernel.org>; Mon, 14 Sep 2020 12:09:53 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 62860DA853; Mon, 14 Sep 2020 12:09:53 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id CAE9EE1509
+        for <netfilter-devel@vger.kernel.org>; Mon, 14 Sep 2020 12:09:50 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 14 Sep 2020 12:09:50 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPSA id AE18742EF9E1
+        for <netfilter-devel@vger.kernel.org>; Mon, 14 Sep 2020 12:09:50 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft 1/2] mnl: larger receive socket buffer for netlink errors
+Date:   Mon, 14 Sep 2020 12:09:46 +0200
+Message-Id: <20200914100947.880-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Spende von 2.000.000,00 Euro.
-To:     Recipients <manuelfranco@info.com>
-From:   "manuel franco" <manuelfranco@info.com>
-Date:   Mon, 14 Sep 2020 01:18:33 +0200
-Reply-To: manuelfrancospende11@gmail.com
-Message-Id: <20200913231843.CB5D734C3562@correo.bnv.gob.ve>
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
- Sie haben eine Spende von 2.000.000,00 Euro.
+Assume each error in the batch will result in a 1k notification for the
+non-echo flag set on case as described in 860671662d3f ("mnl: fix --echo
+buffer size again").
 
-Mein Name ist Manuel Franco aus den USA.
-Ich habe die America-Lotterie im Wert von 768 Millionen US-Dollar gewonnen und spende einen Teil davon an nur 5 glückliche Menschen und einige Waisenhäuser als Wohlwollen für die Menschheit.
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/mnl.c | 21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
+
+diff --git a/src/mnl.c b/src/mnl.c
+index ca4f4b2acda9..6699b917c450 100644
+--- a/src/mnl.c
++++ b/src/mnl.c
+@@ -273,24 +273,16 @@ static int mnl_set_rcvbuffer(const struct mnl_socket *nl, socklen_t bufsiz)
+ 	return ret;
+ }
+ 
+-static size_t mnl_nft_batch_to_msg(struct netlink_ctx *ctx, struct msghdr *msg,
+-				   const struct sockaddr_nl *snl,
+-				   struct iovec *iov, unsigned int iov_len)
++static void mnl_nft_batch_to_msg(struct netlink_ctx *ctx, struct msghdr *msg,
++				 const struct sockaddr_nl *snl,
++				 struct iovec *iov, unsigned int iov_len)
+ {
+-	unsigned int i;
+-	size_t len = 0;
+-
+ 	msg->msg_name		= (struct sockaddr_nl *)snl;
+ 	msg->msg_namelen	= sizeof(*snl);
+ 	msg->msg_iov		= iov;
+ 	msg->msg_iovlen		= iov_len;
+ 
+ 	nftnl_batch_iovec(ctx->batch, iov, iov_len);
+-
+-	for (i = 0; i < iov_len; i++)
+-		len += msg->msg_iov[i].iov_len;
+-
+-	return len;
+ }
+ 
+ static ssize_t mnl_nft_socket_sendmsg(struct netlink_ctx *ctx,
+@@ -385,7 +377,6 @@ int mnl_batch_talk(struct netlink_ctx *ctx, struct list_head *err_list,
+ 	struct iovec iov[iov_len];
+ 	struct msghdr msg = {};
+ 	unsigned int rcvbufsiz;
+-	size_t batch_size;
+ 	fd_set readfds;
+ 	static mnl_cb_t cb_ctl_array[NLMSG_MIN_TYPE] = {
+ 	        [NLMSG_ERROR] = mnl_batch_extack_cb,
+@@ -397,14 +388,12 @@ int mnl_batch_talk(struct netlink_ctx *ctx, struct list_head *err_list,
+ 
+ 	mnl_set_sndbuffer(ctx->nft->nf_sock, ctx->batch);
+ 
+-	batch_size = mnl_nft_batch_to_msg(ctx, &msg, &snl, iov, iov_len);
++	mnl_nft_batch_to_msg(ctx, &msg, &snl, iov, iov_len);
+ 
++	rcvbufsiz = num_cmds * 1024;
+ 	if (nft_output_echo(&ctx->nft->output)) {
+-		rcvbufsiz = num_cmds * 1024;
+ 		if (rcvbufsiz < NFT_MNL_ECHO_RCVBUFF_DEFAULT)
+ 			rcvbufsiz = NFT_MNL_ECHO_RCVBUFF_DEFAULT;
+-	} else {
+-		rcvbufsiz = num_cmds * div_round_up(batch_size, num_cmds) * 4;
+ 	}
+ 
+ 	mnl_set_rcvbuffer(ctx->nft->nf_sock, rcvbufsiz);
+-- 
+2.20.1
+
