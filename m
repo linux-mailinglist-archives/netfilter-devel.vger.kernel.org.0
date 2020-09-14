@@ -2,113 +2,98 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC38B2688FD
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Sep 2020 12:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E8E26898E
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Sep 2020 12:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgINKJ5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 14 Sep 2020 06:09:57 -0400
-Received: from correo.us.es ([193.147.175.20]:42974 "EHLO mail.us.es"
+        id S1726439AbgINKqa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 14 Sep 2020 06:46:30 -0400
+Received: from correo.us.es ([193.147.175.20]:41338 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726393AbgINKJ5 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:09:57 -0400
+        id S1726500AbgINKqK (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 14 Sep 2020 06:46:10 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 3C9F7D2AE7
-        for <netfilter-devel@vger.kernel.org>; Mon, 14 Sep 2020 12:09:55 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 74B8FF258B
+        for <netfilter-devel@vger.kernel.org>; Mon, 14 Sep 2020 12:46:08 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 24A37DA791
-        for <netfilter-devel@vger.kernel.org>; Mon, 14 Sep 2020 12:09:55 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 65444DA793
+        for <netfilter-devel@vger.kernel.org>; Mon, 14 Sep 2020 12:46:08 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 203BDDA72F; Mon, 14 Sep 2020 12:09:55 +0200 (CEST)
+        id 5AF56DA789; Mon, 14 Sep 2020 12:46:08 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
         version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CF99FDA7E1
-        for <netfilter-devel@vger.kernel.org>; Mon, 14 Sep 2020 12:09:52 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 420BDDA789;
+        Mon, 14 Sep 2020 12:46:06 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 14 Sep 2020 12:09:52 +0200 (CEST)
+ Mon, 14 Sep 2020 12:46:06 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id B8F9542EF9E1
-        for <netfilter-devel@vger.kernel.org>; Mon, 14 Sep 2020 12:09:52 +0200 (CEST)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 2463A42EF9E1;
+        Mon, 14 Sep 2020 12:46:06 +0200 (CEST)
+Date:   Mon, 14 Sep 2020 12:46:05 +0200
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 2/2] libnftables: avoid repeated command list traversal on errors
-Date:   Mon, 14 Sep 2020 12:09:47 +0200
-Message-Id: <20200914100947.880-2-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200914100947.880-1-pablo@netfilter.org>
-References: <20200914100947.880-1-pablo@netfilter.org>
+To:     Gopal Yadav <gopunop@gmail.com>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH] Solves Bug 1388 - Combining --terse with --json has no
+ effect
+Message-ID: <20200914104605.GA1617@salvia>
+References: <CAAUOv8iVoKLZxx1xGVLj-=k4pSNyES5SWaaScx=17WV789Kw3Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAAUOv8iVoKLZxx1xGVLj-=k4pSNyES5SWaaScx=17WV789Kw3Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: netfilter-devel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Jindrich Makovicka <makovick@gmail.com>
+Hi Gopal,
 
-Because the command seqnums are monotonic, repeated traversals
-of the cmds list from the beginning are not necessary as long as
-the error seqnums are also monotonic.
+On Fri, Sep 11, 2020 at 11:04:57PM +0530, Gopal Yadav wrote:
+> Solves Bug 1388 - Combining --terse with --json has no effect
+> 
+> Signed-off-by: Gopal Yadav <gopunop@gmail.com>
+> ---
+>  src/json.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/src/json.c b/src/json.c
+> index a9f5000f..702cf6eb 100644
+> --- a/src/json.c
+> +++ b/src/json.c
+> @@ -147,7 +147,8 @@ static json_t *set_print_json(struct output_ctx
+> *octx, const struct set *set)
+>          list_for_each_entry(i, &set->init->expressions, list)
+>              json_array_append_new(array, expr_print_json(i, octx));
+> 
+> -        json_object_set_new(root, "elem", array);
+> +        if (!(octx->flags & NFT_CTX_OUTPUT_TERSE))
+> +            json_object_set_new(root, "elem", array);
+>      }
 
-Signed-off-by: Jindrich Makovicka <makovick@gmail.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-via netfilter's bugzilla.
+I suggest you update your patch and send a v2 using:
 
- src/libnftables.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+        if (!nft_output_terse(octx) && set->init && set->init->size > 0) {
+                ...
 
-diff --git a/src/libnftables.c b/src/libnftables.c
-index fce52ad4003b..a180a9a30b3d 100644
---- a/src/libnftables.c
-+++ b/src/libnftables.c
-@@ -21,7 +21,7 @@ static int nft_netlink(struct nft_ctx *nft,
- 		       struct list_head *cmds, struct list_head *msgs,
- 		       struct mnl_socket *nf_sock)
- {
--	uint32_t batch_seqnum, seqnum = 0, num_cmds = 0;
-+	uint32_t batch_seqnum, seqnum = 0, last_seqnum = UINT32_MAX, num_cmds = 0;
- 	struct netlink_ctx ctx = {
- 		.nft  = nft,
- 		.msgs = msgs,
-@@ -65,7 +65,14 @@ static int nft_netlink(struct nft_ctx *nft,
- 		ret = -1;
- 
- 	list_for_each_entry_safe(err, tmp, &err_list, head) {
--		list_for_each_entry(cmd, cmds, list) {
-+		/* cmd seqnums are monotonic: only reset the starting position
-+		 * if the error seqnum is lower than the previous one.
-+		 */
-+		if (err->seqnum < last_seqnum)
-+			cmd = list_first_entry(cmds, struct cmd, list);
-+
-+		list_for_each_entry_from(cmd, cmds, list) {
-+			last_seqnum = cmd->seqnum;
- 			if (err->seqnum == cmd->seqnum ||
- 			    err->seqnum == batch_seqnum) {
- 				nft_cmd_error(&ctx, cmd, err);
-@@ -76,6 +83,11 @@ static int nft_netlink(struct nft_ctx *nft,
- 				}
- 			}
- 		}
-+
-+		if (&cmd->list == cmds) {
-+			/* not found, rewind */
-+			last_seqnum = UINT32_MAX;
-+		}
- 	}
- out:
- 	mnl_batch_reset(ctx.batch);
--- 
-2.20.1
+It would be also good if you can add a test. For instance, have a look at:
 
+        tests/shell/testcases/transactions/0049huge_0
+
+which also adds a shell tests for json. You can just get back the
+listing in json and compare it. I suggest you use the
+testcases/listing/ folder to store this new test.
+
+Please, also check you MUA, it seems it mangles your attachments.
+
+Thanks.
