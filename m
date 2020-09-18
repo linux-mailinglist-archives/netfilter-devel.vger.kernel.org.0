@@ -2,60 +2,67 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CE926FE13
-	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Sep 2020 15:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00D526FF9A
+	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Sep 2020 16:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgIRNSM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 18 Sep 2020 09:18:12 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:54202 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726174AbgIRNSM (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 18 Sep 2020 09:18:12 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id F3088A03C82F3ABC76FB;
-        Fri, 18 Sep 2020 21:18:09 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 18 Sep 2020
- 21:18:03 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] netfilter: nf_tables_offload: Remove unused macro FLOW_SETUP_BLOCK
-Date:   Fri, 18 Sep 2020 21:17:29 +0800
-Message-ID: <20200918131729.38652-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1726192AbgIRONy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 18 Sep 2020 10:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgIRONy (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 18 Sep 2020 10:13:54 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11BAEC0613CE
+        for <netfilter-devel@vger.kernel.org>; Fri, 18 Sep 2020 07:13:54 -0700 (PDT)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1kJH94-0007Vs-D5; Fri, 18 Sep 2020 16:13:50 +0200
+Date:   Fri, 18 Sep 2020 16:13:50 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Serhey Popovych <serhe.popovych@gmail.com>
+Cc:     netfilter-devel@vger.kernel.org, willem.j.debruijn@gmail.com
+Subject: Re: [PATCH iptables 1/4] xtables: Do not register matches/targets
+ with incompatible revision
+Message-ID: <20200918141350.GB19674@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Serhey Popovych <serhe.popovych@gmail.com>,
+        netfilter-devel@vger.kernel.org, willem.j.debruijn@gmail.com
+References: <1520413843-24456-1-git-send-email-serhe.popovych@gmail.com>
+ <1520413843-24456-2-git-send-email-serhe.popovych@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1520413843-24456-2-git-send-email-serhe.popovych@gmail.com>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-commit 9a32669fecfb ("netfilter: nf_tables_offload: support indr block call")
-left behind this.
+Hi Serhey,
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- net/netfilter/nf_tables_offload.c | 2 --
- 1 file changed, 2 deletions(-)
+On Wed, Mar 07, 2018 at 11:10:40AM +0200, Serhey Popovych wrote:
+> If kernel tells revision isn't found/supported at the moment we should
+> keep entity in pending list, not register or bail to do so later.
 
-diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
-index 9ef37c1b7b3b..7c7e06624dc3 100644
---- a/net/netfilter/nf_tables_offload.c
-+++ b/net/netfilter/nf_tables_offload.c
-@@ -323,8 +323,6 @@ static int nft_indr_block_offload_cmd(struct nft_base_chain *basechain,
- 	return nft_block_setup(basechain, &bo, cmd);
- }
- 
--#define FLOW_SETUP_BLOCK TC_SETUP_BLOCK
--
- static int nft_chain_offload_cmd(struct nft_base_chain *basechain,
- 				 struct net_device *dev,
- 				 enum flow_block_command cmd)
--- 
-2.17.1
+This causes a problem in particular with conntrack match (but others may
+be affected as well): If the kernel doesn't support an older revision of
+the match, it stays in pending list and is retried for each new rule
+using the match.
 
+> Kernel might still load module for entity we asking it for and this
+> could be slow on some embedded devices.
+
+Is this a speculative problem or did you see it in reality? I'm
+wondering because kernel uses try_then_request_module() to load the
+missing extension which calls __request_module() with 'wait' parameter
+set to true. So unless the called usermode helper is behaving unexpected
+(e.g. fork and load in background), the call to
+compatible_match_revision() should block until the module has been
+loaded, no?
+
+> Catch double registration attempts by checking me->next being non-NULL
+> in xtables_register_match() and xtables_register_target().
+
+Is this a side-effect of the above or an independent fix?
+
+Cheers, Phil
