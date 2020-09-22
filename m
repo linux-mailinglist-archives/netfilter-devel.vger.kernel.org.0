@@ -2,63 +2,82 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B198E274ADE
-	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Sep 2020 23:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BAF274C56
+	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Sep 2020 00:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgIVVKx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 22 Sep 2020 17:10:53 -0400
-Received: from correo.us.es ([193.147.175.20]:51596 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726615AbgIVVKx (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:10:53 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 727CF9D3D5
-        for <netfilter-devel@vger.kernel.org>; Tue, 22 Sep 2020 23:10:52 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 63522DA704
-        for <netfilter-devel@vger.kernel.org>; Tue, 22 Sep 2020 23:10:52 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 56046DA73D; Tue, 22 Sep 2020 23:10:52 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 2880FDA704;
-        Tue, 22 Sep 2020 23:10:50 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 22 Sep 2020 23:10:50 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 00A6742EFB80;
-        Tue, 22 Sep 2020 23:10:49 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 23:10:49 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Gopal <gopunop@gmail.com>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH] Solves Bug 1388 - Combining --terse with --json has no
- effect (with test)
-Message-ID: <20200922211049.GA31330@salvia>
-References: <20200922082533.20920-1-gopunop@gmail.com>
+        id S1726550AbgIVWm1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 22 Sep 2020 18:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIVWm1 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 22 Sep 2020 18:42:27 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB1CC061755
+        for <netfilter-devel@vger.kernel.org>; Tue, 22 Sep 2020 15:42:27 -0700 (PDT)
+Received: from localhost ([::1]:52100 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.94)
+        (envelope-from <phil@nwl.cc>)
+        id 1kKqzR-0007WR-Sf; Wed, 23 Sep 2020 00:42:25 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org,
+        Serhey Popovych <serhe.popovych@gmail.com>
+Subject: [iptables PATCH 0/3] libxtables: Fix for pointless socket() calls
+Date:   Wed, 23 Sep 2020 00:53:38 +0200
+Message-Id: <20200922225341.8976-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200922082533.20920-1-gopunop@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 01:55:33PM +0530, Gopal wrote:
-> From: Gopal Yadav <gopunop@gmail.com>
-> 
-> Solves Bug 1388 - Combining --terse with --json has no effect (with test)
+The motivation for this series was a bug report claiming a near 100%
+slowdown of iptables-restore when passed a large number of rules
+containing conntrack match between two kernel versions. Turns out the
+curlprit kernel change was within SELinux and in fact a performance
+optimization, namely an introduced hash table mapping from security
+context string to SID. This hash table insert, which happened for each
+new socket, slowed iptables-restore down considerably.
 
-Applied, thanks.
+The actual problem exposed by the above was that iptables-restore opens
+a surprisingly large number of sockets when restoring said ruleset. This
+stems from bugs in extension compatibility checks done during extension
+registration (actually, "full registration").
+
+One of the problems was that incompatible older revsions of an extension
+never were never dropped from the pending list, and thus retried for
+each rule using the extension. Coincidently, conntrack revision 0
+matches this criteria.
+
+Another problem was a (likely) accidental recursion of
+xtables_fully_register_pending_*() via xtables_find_*(). In combination
+with incompatible match revisions stuck in pending list, this caused
+even more extra compatibility checks.
+
+Solve all these problems by making pending extension lists sorted by
+(descending) revision number. If at least one revision was compatible
+with the kernel, any following incompatible ones may safely be dropped.
+This should on one hand get rid of the repeated compatibility checks
+while on the other maintain the presumptions stated in commit
+3b2530ce7a0d6 ("xtables: Do not register matches/targets with
+incompatible revision").
+
+Patch 1 establishes the needed sorting in pending extension lists,
+patch 2 then simplifies xtables_fully_register_pending_*() functions.
+Patch 3 is strictly speaking not necessary but nice to have as it
+streamlines array-based extension registrators with the extension
+sorting.
+
+Phil Sutter (3):
+  libxtables: Make sure extensions register in revision order
+  libxtables: Simplify pending extension registration
+  libxtables: Register multiple extensions in ascending order
+
+ libxtables/xtables.c | 206 +++++++++++++++++++++----------------------
+ 1 file changed, 99 insertions(+), 107 deletions(-)
+
+-- 
+2.28.0
+
