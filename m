@@ -2,127 +2,85 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DEB2759FD
-	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Sep 2020 16:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB95275EEA
+	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Sep 2020 19:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgIWOaR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 23 Sep 2020 10:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgIWOaQ (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:30:16 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E36CC0613CE
-        for <netfilter-devel@vger.kernel.org>; Wed, 23 Sep 2020 07:30:16 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1kL5mg-0000qr-EL; Wed, 23 Sep 2020 16:30:14 +0200
-Date:   Wed, 23 Sep 2020 16:30:14 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org,
-        Serhey Popovych <serhe.popovych@gmail.com>
-Subject: Re: [iptables PATCH 0/3] libxtables: Fix for pointless socket() calls
-Message-ID: <20200923143014.GB19674@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org,
-        Serhey Popovych <serhe.popovych@gmail.com>
-References: <20200922225341.8976-1-phil@nwl.cc>
- <20200923114549.GA3947@salvia>
+        id S1726422AbgIWRmr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 23 Sep 2020 13:42:47 -0400
+Received: from mg.ssi.bg ([178.16.128.9]:53134 "EHLO mg.ssi.bg"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726332AbgIWRmr (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 23 Sep 2020 13:42:47 -0400
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+        by mg.ssi.bg (Proxmox) with ESMTP id EC27E2C44B
+        for <netfilter-devel@vger.kernel.org>; Wed, 23 Sep 2020 20:33:06 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [178.16.128.7])
+        by mg.ssi.bg (Proxmox) with ESMTP id 443C62C3CA
+        for <netfilter-devel@vger.kernel.org>; Wed, 23 Sep 2020 20:33:06 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [178.16.129.10])
+        by ink.ssi.bg (Postfix) with ESMTPS id AC3963C0332;
+        Wed, 23 Sep 2020 20:33:01 +0300 (EEST)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id 08NHWwhQ005307;
+        Wed, 23 Sep 2020 20:32:58 +0300
+Date:   Wed, 23 Sep 2020 20:32:58 +0300 (EEST)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     yue longguang <yuelongguang@gmail.com>
+cc:     Wensong Zhang <wensong@linux-vs.org>,
+        Simon Horman <horms@verge.net.au>, pablo@netfilter.org,
+        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH] ipvs: adjust the debug order of src and dst
+In-Reply-To: <CAPaK2r921GtJVhwGKnZyCcQ1qkcWA=8TBWwNkW03R_=7TKzo6g@mail.gmail.com>
+Message-ID: <alpine.LFD.2.23.451.2009232012470.4453@ja.home.ssi.bg>
+References: <CAPaK2r921GtJVhwGKnZyCcQ1qkcWA=8TBWwNkW03R_=7TKzo6g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923114549.GA3947@salvia>
-Sender:  <n0-1@orbyte.nwl.cc>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
 
-On Wed, Sep 23, 2020 at 01:45:49PM +0200, Pablo Neira Ayuso wrote:
-> On Wed, Sep 23, 2020 at 12:53:38AM +0200, Phil Sutter wrote:
-> > The motivation for this series was a bug report claiming a near 100%
-> > slowdown of iptables-restore when passed a large number of rules
-> > containing conntrack match between two kernel versions. Turns out the
-> > curlprit kernel change was within SELinux and in fact a performance
-> > optimization, namely an introduced hash table mapping from security
-> > context string to SID. This hash table insert, which happened for each
-> > new socket, slowed iptables-restore down considerably.
-> > 
-> > The actual problem exposed by the above was that iptables-restore opens
-> > a surprisingly large number of sockets when restoring said ruleset. This
-> > stems from bugs in extension compatibility checks done during extension
-> > registration (actually, "full registration").
-> > 
-> > One of the problems was that incompatible older revsions of an extension
-> > never were never dropped from the pending list, and thus retried for
-> > each rule using the extension. Coincidently, conntrack revision 0
-> > matches this criteria.
-> > 
-> > Another problem was a (likely) accidental recursion of
-> > xtables_fully_register_pending_*() via xtables_find_*(). In combination
-> > with incompatible match revisions stuck in pending list, this caused
-> > even more extra compatibility checks.
-> > 
-> > Solve all these problems by making pending extension lists sorted by
-> > (descending) revision number. If at least one revision was compatible
-> > with the kernel, any following incompatible ones may safely be dropped.
-> > This should on one hand get rid of the repeated compatibility checks
-> > while on the other maintain the presumptions stated in commit
-> > 3b2530ce7a0d6 ("xtables: Do not register matches/targets with
-> > incompatible revision").
-> > 
-> > Patch 1 establishes the needed sorting in pending extension lists,
-> > patch 2 then simplifies xtables_fully_register_pending_*() functions.
-> > Patch 3 is strictly speaking not necessary but nice to have as it
-> > streamlines array-based extension registrators with the extension
-> > sorting.
+	Hello,
+
+On Wed, 23 Sep 2020, yue longguang wrote:
+
+> From: ylg <bigclouds@163.com>
 > 
-> Did you run iptables-tests.py with older kernel?
+> adjust the debug order of src and dst when tcp state changes
+> 
+> Signed-off-by: ylg <bigclouds@163.com>
+> ---
+>  net/netfilter/ipvs/ip_vs_proto_tcp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_proto_tcp.c
+> b/net/netfilter/ipvs/ip_vs_proto_tcp.c
+> index dc2e7da2742a..6567eb45a234 100644
+> --- a/net/netfilter/ipvs/ip_vs_proto_tcp.c
+> +++ b/net/netfilter/ipvs/ip_vs_proto_tcp.c
+> @@ -548,10 +548,10 @@ set_tcp_state(struct ip_vs_proto_data *pd,
+> struct ip_vs_conn *cp,
+>        th->fin ? 'F' : '.',
+>        th->ack ? 'A' : '.',
+>        th->rst ? 'R' : '.',
+> -      IP_VS_DBG_ADDR(cp->daf, &cp->daddr),
+> -      ntohs(cp->dport),
+>        IP_VS_DBG_ADDR(cp->af, &cp->caddr),
+>        ntohs(cp->cport),
+> +      IP_VS_DBG_ADDR(cp->daf, &cp->daddr),
+> +      ntohs(cp->dport),
+>        tcp_state_name(cp->state),
+>        tcp_state_name(new_state),
+>        refcount_read(&cp->refcnt));
+> -- 
 
-Yes, I did. As expected, some tests fail - e.g. in the old kernel
-IDLETIMER rev 1 is not available, so xt_IDLETIMER.t fails partially:
+	The first patch applies but this one does not: wrapped lines,
+different tabs. You can also consider using the
+"c:%s:%d v:%s:%d d:%s:%d" format as in ip_vs_bind_dest(). As result,
+we will avoid the confusion about "->" meaning.
 
-| % sudo ip netns exec test ./iptables-test.py extensions/libxt_IDLETIMER.t
-| extensions/libxt_IDLETIMER.t: ERROR: line 5 (cannot load: iptables -A INPUT -j IDLETIMER --timeout 42 --label foo --alarm)
-| 1 test files, 4 unit tests, 3 passed
-| 
-| % sudo ip netns exec test ./iptables-test.py -n extensions/libxt_IDLETIMER.t
-| extensions/libxt_IDLETIMER.t: ERROR: line 5 (cannot load: iptables -A
-| INPUT -j IDLETIMER --timeout 42 --label foo --alarm)
-| 1 test files, 4 unit tests, 3 passed
+Regards
 
-Obviously, IDLETIMER rev 1 will stay lingering in pending target list
-and retried for each parsed rule:
+--
+Julian Anastasov <ja@ssi.bg>
 
-| % sudo ./install/sbin/iptables-nft-save
-| # Generated by iptables-nft-save v1.8.5 on Wed Sep 23 16:37:09 2020
-| *filter
-| :INPUT ACCEPT [0:0]
-| :FORWARD ACCEPT [0:0]
-| :OUTPUT ACCEPT [0:0]
-| xtables_register_target: inserted target IDLETIMER (family 0, revision
-| 0):
-| xtables_register_target:	target IDLETIMER (family 0, revision 0)
-| xtables_register_target: inserted target IDLETIMER (family 0, revision
-| 1):
-| xtables_register_target:	target IDLETIMER (family 0, revision 1)
-| xtables_register_target:	target IDLETIMER (family 0, revision 0)
-| requesting `IDLETIMER' rev=1 type=1 via nft_compat
-| requesting `IDLETIMER' rev=0 type=1 via nft_compat
-| -A FORWARD -j IDLETIMER --timeout 3600 --label foo
-| requesting `IDLETIMER' rev=1 type=1 via nft_compat
-| -A FORWARD -j IDLETIMER --timeout 3600 --label bar
-| COMMIT
-| # Completed on Wed Sep 23 16:37:09 2020
-
-But this is per design, assuming that Serhey fixed a real issue in
-3b2530ce7a0d6 ("xtables: Do not register matches/targets with
-incompatible revision").
-
-Do you have something else in mind I should watch out for?
-
-Thanks, Phil
