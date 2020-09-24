@@ -2,294 +2,134 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF13275EBE
-	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Sep 2020 19:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E3B276E7A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Sep 2020 12:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgIWRhH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 23 Sep 2020 13:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726498AbgIWRhG (ORCPT
+        id S1727369AbgIXKSa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 24 Sep 2020 06:18:30 -0400
+Received: from mailrelay116.isp.belgacom.be ([195.238.20.143]:26251 "EHLO
+        mailrelay116.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727003AbgIXKSa (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:37:06 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE83AC0613CE
-        for <netfilter-devel@vger.kernel.org>; Wed, 23 Sep 2020 10:37:06 -0700 (PDT)
-Received: from localhost ([::1]:54112 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.94)
-        (envelope-from <phil@nwl.cc>)
-        id 1kL8hV-0003pK-8H; Wed, 23 Sep 2020 19:37:05 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 10/10] nft: Avoid pointless table/chain creation
-Date:   Wed, 23 Sep 2020 19:48:49 +0200
-Message-Id: <20200923174849.5773-11-phil@nwl.cc>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200923174849.5773-1-phil@nwl.cc>
-References: <20200923174849.5773-1-phil@nwl.cc>
+        Thu, 24 Sep 2020 06:18:30 -0400
+IronPort-SDR: DCfxdUB7+wkZiND4NjWP5owk82Lv8LVfOg2wenZiKWydMFcelbo1Q32WqPgTYVOXHg/thHHlxh
+ VduG/K0Zk0c7iBn0ZFtZ8PrELGTAGgySK/0vP6Xar5Bm7lKh/wLRPntCn9EV20ExzPV4iJ9f+5
+ u04TpeIfONtFInMRU8QKEgxWMN/IRjOHh/1qcO53FoDpUSUGmhbtoUtbmvUxbP1K8HhZERzlkO
+ Lr7uGajBGS4fP51WxG6yUvNnqZotkmR9RL64Kz7VARRGUWXRoPDnumFi29e7YYosCDdyiCmAiw
+ F+Q=
+X-Belgacom-Dynamic: yes
+IronPort-PHdr: =?us-ascii?q?9a23=3A6+o6hR394WyQ1vt9smDT+DRfVm0co7zxezQtwd?=
+ =?us-ascii?q?8ZsesXI/rxwZ3uMQTl6Ol3ixeRBMOHsq0C0rqd6f+oGTRZp8rY7jZaKN0Efi?=
+ =?us-ascii?q?RGoP1epxYnDs+BBB+zB9/RRAt+Iv5/UkR49WqwK0lfFZW2TVTTpnqv8WxaQU?=
+ =?us-ascii?q?2nZkJ6KevvB4Hdkdm82fys9J3PeQVIgye2ba9vIBmsogjdq8sbjZF/JqsyxR?=
+ =?us-ascii?q?fFvHlFcPlSyW90OF6fhRnx6tqx8ZJ57yhcp/ct/NNcXKvneKg1UaZWByk8PW?=
+ =?us-ascii?q?Av483ruxjDTQ+R6XYZT24bjBlGDRXb4R/jRpv+vTf0ueR72CmBIM35Vqs0Vi?=
+ =?us-ascii?q?i476dqUxDnliEKPCMk/W7Ni8xwiKVboA+9pxF63oXZbp2ZOOZ4c6jAe94RWG?=
+ =?us-ascii?q?hPUdtLVyFZAo2ycZYBAeQCM+hfoIbzqEADoQe9CAS2GO/i0CNEimPw0KYn0+?=
+ =?us-ascii?q?ohCwbG3Ak4EtwOqnvbt9T1O70UUeuozKfI1yvMYO5I1jfn6YjHbhMhquyLUL?=
+ =?us-ascii?q?J+a8Xe0kcvGhjejlWTqY3lOS2a1vgXv2eA8eVtTOSigHMopA9tuDag3Nssip?=
+ =?us-ascii?q?XXiYIPzFDJ7St3zYUxKNO4SUN2YcCoHZVQuSyHK4d6X98uTmBntig117ALt4?=
+ =?us-ascii?q?C2cTUKxZkl2RPRZOCLfYaH7B/nVOifISl0iXZjdbmihBiy6VCtx+nhWsWuzV?=
+ =?us-ascii?q?pHrTRJnsPRun0M1xHf8NWLR/p780y8wziAzRrT5ftBIU0skKrbLIMuzaAom5?=
+ =?us-ascii?q?oItETDAjf2mELrjK+Kbkkk+van6+DgYrj+op+cMJN7hRv6MqQuncy/Gvg4Ph?=
+ =?us-ascii?q?IKX2ic5euzzrnj8lD+QLVPlPI2k6/ZvIjbJcQduKG5HxdY34I+5xqlEjur08?=
+ =?us-ascii?q?oUkWMaIF9EeB+LlZXlNlDWLPD9F/i/glCskDlxx/DBO73sGpvNIWLYn7fvZr?=
+ =?us-ascii?q?t98E1cyQo1zd9B+5JYEKoOL+zrVk/rqNPYFgM5MxCzw+v/ENVyzJgRWWaIAq?=
+ =?us-ascii?q?KCNqPdr0OI5uwuI+mIeI8apiz9J+Ii5/70gn8zgUUdcrWx3ZsLdHC4GexrI0?=
+ =?us-ascii?q?aDbnXxhtcOD3sFsxE4TOP0lF2CXz9TZ3KuX60i/DE3EoWmDZ3MRoq1mryOwD?=
+ =?us-ascii?q?+7HoFKZmBBEl2MH3npep6fW/cQciKSJtFukjoeWbe8VYArzQuuuxPiy7p7Mu?=
+ =?us-ascii?q?rU/TUVtZT929hp6e3TlBUy9SBqAMSHym2CUn97nn0WSD8yx61/v0N9xUmZ0a?=
+ =?us-ascii?q?RigPxXC8ZT5/VXXQc+L5LcyPZ6C9/qUALbYtiJUEqmQsmhATwpUt0xxMUObF?=
+ =?us-ascii?q?hhG9q8lB/D2jGnA7kLmLyXCpw086bc32TvKMZn0XrG07Mhj1Y+SMtVKWKmnr?=
+ =?us-ascii?q?J/9xTUB4PRlUWWibqqerkC0y7T72qD02WOs19CUAJqUqXKQ2ofZk3IotT9/E?=
+ =?us-ascii?q?/CSKWuCbs/OAtb1cGCMrdKasHujVheSvfsIs/RY2yqlmerBhaJxrWMY5T2e2?=
+ =?us-ascii?q?kHxyrSFhtMrwdG5X+MMQ8WACq9rWPaEDF0U1X1bAek8uByrH6wZkk50w+La1?=
+ =?us-ascii?q?Fszfyy4BFRzfKDY+gPxLYJvmEtpmZaBlG4ivzfAduJoUJPZqhQbMk861QPgW?=
+ =?us-ascii?q?zQvQJVJZ+xKa1+wFQTJVck93jy3gl6X90T2fMhq2knmVJ/?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2CmQgAocmxf/xCltltgGgEBAQEBPAE?=
+ =?us-ascii?q?BAQECAgEBAQECAQEBAQMBAQEBHIFKgRyBfFVfjT6SXpIECwEBAQEBAQEBASQ?=
+ =?us-ascii?q?RAQIEAQGES4IuJTgTAgMBAQEDAgUBAQYBAQEBAQEFBAGGD0WCNyKDUgEjI4E?=
+ =?us-ascii?q?/EoMmAYJXKbc5hBCFI4FCgTgBiC6FGoFBP4ERg06KNASaV5xggnGDE4Rpf5F?=
+ =?us-ascii?q?LDyKhDSuSWaIWgXpNIBiDJAlHGQ2caEIwNwIGCgEBAwlXAT0BjwQBAQ?=
+X-IPAS-Result: =?us-ascii?q?A2CmQgAocmxf/xCltltgGgEBAQEBPAEBAQECAgEBAQECA?=
+ =?us-ascii?q?QEBAQMBAQEBHIFKgRyBfFVfjT6SXpIECwEBAQEBAQEBASQRAQIEAQGES4IuJ?=
+ =?us-ascii?q?TgTAgMBAQEDAgUBAQYBAQEBAQEFBAGGD0WCNyKDUgEjI4E/EoMmAYJXKbc5h?=
+ =?us-ascii?q?BCFI4FCgTgBiC6FGoFBP4ERg06KNASaV5xggnGDE4Rpf5FLDyKhDSuSWaIWg?=
+ =?us-ascii?q?XpNIBiDJAlHGQ2caEIwNwIGCgEBAwlXAT0BjwQBAQ?=
+Received: from 16.165-182-91.adsl-dyn.isp.belgacom.be (HELO localhost.localdomain) ([91.182.165.16])
+  by relay.skynet.be with ESMTP; 24 Sep 2020 12:17:57 +0200
+From:   Fabian Frederick <fabf@skynet.be>
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, Fabian Frederick <fabf@skynet.be>
+Subject: [PATCH 1/1 nf] selftests: netfilter: add time counter check
+Date:   Thu, 24 Sep 2020 12:17:33 +0200
+Message-Id: <20200924101733.11479-1-fabf@skynet.be>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Accept a chain name in nft_xt_builtin_init() to limit the base chain
-creation to that specific chain only.
+Check packets are correctly placed in current year.
+Also do a NULL check for another one.
 
-Introduce nft_xt_builtin_table_init() to create just the table for
-situations where no builtin chains are needed but the command may still
-succeed in an empty ruleset, particularly when creating a custom chain,
-restoring base chains or adding a set for ebtables among match.
-
-Introduce nft_xt_fake_builtin_chains(), a function to call after cache
-has been populated to fill empty base chain slots. This keeps ruleset
-listing output intact if some base chains do not exist (or even the
-whole ruleset is completely empty).
-
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
 ---
-Changes since v1:
-- Add 'fake' parameter to nft_chain_builtin_add() to reuse its code for
-  chain faking.
-- Rebase onto previous changes.
-- Accept a chain name in nft_xt_fake_builtin_chains() to fake only that
-  specific chain.
----
- iptables/nft.c          | 96 ++++++++++++++++++++++++++++++++++-------
- iptables/nft.h          |  1 +
- iptables/xtables-save.c |  1 +
- 3 files changed, 82 insertions(+), 16 deletions(-)
+ tools/testing/selftests/netfilter/nft_meta.sh | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 281f1f1962fb2..1a24c51605273 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -686,7 +686,8 @@ nft_chain_builtin_alloc(const struct builtin_table *table,
+diff --git a/tools/testing/selftests/netfilter/nft_meta.sh b/tools/testing/selftests/netfilter/nft_meta.sh
+index 18a1abca32629..087f0e6e71ce7 100755
+--- a/tools/testing/selftests/netfilter/nft_meta.sh
++++ b/tools/testing/selftests/netfilter/nft_meta.sh
+@@ -23,6 +23,8 @@ ip -net "$ns0" addr add 127.0.0.1 dev lo
  
- static void nft_chain_builtin_add(struct nft_handle *h,
- 				  const struct builtin_table *table,
--				  const struct builtin_chain *chain)
-+				  const struct builtin_chain *chain,
-+				  bool fake)
- {
- 	struct nftnl_chain *c;
+ trap cleanup EXIT
  
-@@ -694,7 +695,8 @@ static void nft_chain_builtin_add(struct nft_handle *h,
- 	if (c == NULL)
- 		return;
++currentyear=$(date +%G)
++lastyear=$((currentyear-1))
+ ip netns exec "$ns0" nft -f /dev/stdin <<EOF
+ table inet filter {
+ 	counter iifcount {}
+@@ -33,6 +35,8 @@ table inet filter {
+ 	counter il4protocounter {}
+ 	counter imarkcounter {}
+ 	counter icpu0counter {}
++	counter ilastyearcounter {}
++	counter icurrentyearcounter {}
  
--	batch_chain_add(h, NFT_COMPAT_CHAIN_ADD, c);
-+	if (!fake)
-+		batch_chain_add(h, NFT_COMPAT_CHAIN_ADD, c);
- 	nft_cache_add_chain(h, table, c);
- }
- 
-@@ -746,11 +748,12 @@ static void nft_chain_builtin_init(struct nft_handle *h,
- 		if (nft_chain_find(h, table->name, table->chains[i].name))
- 			continue;
- 
--		nft_chain_builtin_add(h, table, &table->chains[i]);
-+		nft_chain_builtin_add(h, table, &table->chains[i], false);
- 	}
- }
- 
--static int nft_xt_builtin_init(struct nft_handle *h, const char *table)
-+static const struct builtin_table *
-+nft_xt_builtin_table_init(struct nft_handle *h, const char *table)
- {
- 	const struct builtin_table *t;
- 
-@@ -758,20 +761,81 @@ static int nft_xt_builtin_init(struct nft_handle *h, const char *table)
- 		return 0;
- 
- 	t = nft_table_builtin_find(h, table);
--	if (t == NULL)
--		return -1;
-+	if (!t)
-+		return NULL;
- 
- 	if (nft_table_builtin_add(h, t) < 0)
-+		return NULL;
-+
-+	return t;
-+}
-+
-+static int nft_xt_builtin_init(struct nft_handle *h, const char *table,
-+			       const char *chain)
-+{
-+	const struct builtin_table *t;
-+	const struct builtin_chain *c;
-+
-+	if (!h->cache_init)
-+		return 0;
-+
-+	t = nft_xt_builtin_table_init(h, table);
-+	if (!t)
- 		return -1;
- 
- 	if (h->cache_req.level < NFT_CL_CHAINS)
- 		return 0;
- 
--	nft_chain_builtin_init(h, t);
-+	if (!chain) {
-+		nft_chain_builtin_init(h, t);
-+		return 0;
-+	}
-+
-+	c = nft_chain_builtin_find(t, chain);
-+	if (!c)
-+		return -1;
-+
-+	if (h->cache->table[t->type].base_chains[c->hook])
-+		return 0;
-+
-+	nft_chain_builtin_add(h, t, c, false);
-+	return 0;
-+}
- 
-+static int __nft_xt_fake_builtin_chains(struct nft_handle *h,
-+				        const char *table, void *data)
-+{
-+	const char *chain = data ? *(const char **)data : NULL;
-+	const struct builtin_table *t;
-+	struct nft_chain **bcp;
-+	int i;
-+
-+	t = nft_table_builtin_find(h, table);
-+	if (!t)
-+		return -1;
-+
-+	bcp = h->cache->table[t->type].base_chains;
-+	for (i = 0; i < NF_INET_NUMHOOKS && t->chains[i].name; i++) {
-+		if (bcp[t->chains[i].hook])
-+			continue;
-+
-+		if (chain && strcmp(chain, t->chains[i].name))
-+			continue;
-+
-+		nft_chain_builtin_add(h, t, &t->chains[i], true);
-+	}
- 	return 0;
- }
- 
-+int nft_xt_fake_builtin_chains(struct nft_handle *h,
-+			       const char *table, const char *chain)
-+{
-+	if (table)
-+		return __nft_xt_fake_builtin_chains(h, table, &chain);
-+
-+	return nft_for_each_table(h, __nft_xt_fake_builtin_chains, &chain);
-+}
-+
- int nft_restart(struct nft_handle *h)
- {
- 	mnl_socket_close(h->nl);
-@@ -864,7 +928,7 @@ static struct nftnl_chain *nft_chain_new(struct nft_handle *h,
+ 	counter oifcount {}
+ 	counter oifnamecount {}
+@@ -55,6 +59,8 @@ table inet filter {
+ 		meta l4proto icmp counter name "il4protocounter"
+ 		meta mark 42 counter name "imarkcounter"
+ 		meta cpu 0 counter name "icpu0counter"
++		meta time "$lastyear-01-01" - "$lastyear-12-31" counter name ilastyearcounter
++		meta time "$currentyear-01-01" - "$currentyear-12-31" counter name icurrentyearcounter
  	}
  
- 	/* if this built-in table does not exists, create it */
--	nft_xt_builtin_init(h, table);
-+	nft_xt_builtin_init(h, table, chain);
+ 	chain output {
+@@ -100,8 +106,7 @@ check_lo_counters()
  
- 	_c = nft_chain_builtin_find(_t, chain);
- 	if (_c != NULL) {
-@@ -1379,7 +1443,7 @@ nft_rule_append(struct nft_handle *h, const char *chain, const char *table,
- 	struct nft_chain *c;
- 	int type;
+ 	for counter in iifcount iifnamecount iifgroupcount iiftypecount infproto4count \
+ 		       oifcount oifnamecount oifgroupcount oiftypecount onfproto4count \
+-		       il4protocounter \
+-		       ol4protocounter \
++		       il4protocounter icurrentyearcounter ol4protocounter \
+ 	     ; do
+ 		check_one_counter "$counter" "$want" "$verbose"
+ 	done
+@@ -116,6 +121,7 @@ check_one_counter oskuidcounter "1" true
+ check_one_counter oskgidcounter "1" true
+ check_one_counter imarkcounter "1" true
+ check_one_counter omarkcounter "1" true
++check_one_counter ilastyearcounter "0" true
  
--	nft_xt_builtin_init(h, table);
-+	nft_xt_builtin_init(h, table, chain);
- 
- 	nft_fn = nft_rule_append;
- 
-@@ -1658,7 +1722,7 @@ int nft_rule_flush(struct nft_handle *h, const char *chain, const char *table,
- 	nft_fn = nft_rule_flush;
- 
- 	if (chain || verbose)
--		nft_xt_builtin_init(h, table);
-+		nft_xt_builtin_init(h, table, chain);
- 	else if (!nft_table_find(h, table))
- 		return 1;
- 
-@@ -1691,7 +1755,7 @@ int nft_chain_user_add(struct nft_handle *h, const char *chain, const char *tabl
- 
- 	nft_fn = nft_chain_user_add;
- 
--	nft_xt_builtin_init(h, table);
-+	nft_xt_builtin_table_init(h, table);
- 
- 	if (nft_chain_exists(h, table, chain)) {
- 		errno = EEXIST;
-@@ -1724,7 +1788,7 @@ int nft_chain_restore(struct nft_handle *h, const char *chain, const char *table
- 	bool created = false;
- 	int ret;
- 
--	nft_xt_builtin_init(h, table);
-+	nft_xt_builtin_table_init(h, table);
- 
- 	nc = nft_chain_find(h, table, chain);
- 	if (nc) {
-@@ -2136,7 +2200,7 @@ int nft_rule_insert(struct nft_handle *h, const char *chain,
- 	struct nftnl_rule *r = NULL;
- 	struct nft_chain *c;
- 
--	nft_xt_builtin_init(h, table);
-+	nft_xt_builtin_init(h, table, chain);
- 
- 	nft_fn = nft_rule_insert;
- 
-@@ -2342,7 +2406,7 @@ int nft_rule_list(struct nft_handle *h, const char *chain, const char *table,
- 	};
- 	struct nft_chain *c;
- 
--	nft_xt_builtin_init(h, table);
-+	nft_xt_fake_builtin_chains(h, table, chain);
- 	nft_assert_table_compatible(h, table, chain);
- 
- 	if (chain) {
-@@ -2439,7 +2503,7 @@ int nft_rule_list_save(struct nft_handle *h, const char *chain,
- 	struct nft_chain *c;
- 	int ret = 0;
- 
--	nft_xt_builtin_init(h, table);
-+	nft_xt_fake_builtin_chains(h, table, chain);
- 	nft_assert_table_compatible(h, table, chain);
- 
- 	if (counters < 0)
-@@ -3046,7 +3110,7 @@ static int nft_prepare(struct nft_handle *h)
- 							cmd->chain, cmd->policy);
- 			break;
- 		case NFT_COMPAT_SET_ADD:
--			nft_xt_builtin_init(h, cmd->table);
-+			nft_xt_builtin_table_init(h, cmd->table);
- 			batch_set_add(h, NFT_COMPAT_SET_ADD, cmd->obj.set);
- 			ret = 1;
- 			break;
-diff --git a/iptables/nft.h b/iptables/nft.h
-index 1a2506eea7b6c..0910f82a2773c 100644
---- a/iptables/nft.h
-+++ b/iptables/nft.h
-@@ -136,6 +136,7 @@ bool nft_table_find(struct nft_handle *h, const char *tablename);
- int nft_table_purge_chains(struct nft_handle *h, const char *table, struct nftnl_chain_list *list);
- int nft_table_flush(struct nft_handle *h, const char *table);
- const struct builtin_table *nft_table_builtin_find(struct nft_handle *h, const char *table);
-+int nft_xt_fake_builtin_chains(struct nft_handle *h, const char *table, const char *chain);
- 
- /*
-  * Operations with chains.
-diff --git a/iptables/xtables-save.c b/iptables/xtables-save.c
-index bf00b0324cc4f..d7901c650ea70 100644
---- a/iptables/xtables-save.c
-+++ b/iptables/xtables-save.c
-@@ -236,6 +236,7 @@ xtables_save_main(int family, int argc, char *argv[],
- 
- 	nft_cache_level_set(&h, NFT_CL_RULES, NULL);
- 	nft_cache_build(&h);
-+	nft_xt_fake_builtin_chains(&h, tablename, NULL);
- 
- 	ret = do_output(&h, tablename, &d);
- 	nft_fini(&h);
+ if [ $ret -eq 0 ];then
+ 	echo "OK: nftables meta iif/oif counters at expected values"
 -- 
-2.28.0
+2.27.0
 
