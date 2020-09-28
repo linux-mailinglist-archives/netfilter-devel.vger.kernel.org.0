@@ -2,90 +2,61 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0232827A9C3
-	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Sep 2020 10:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73D327ADBA
+	for <lists+netfilter-devel@lfdr.de>; Mon, 28 Sep 2020 14:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgI1Ilj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 28 Sep 2020 04:41:39 -0400
-Received: from correo.us.es ([193.147.175.20]:33470 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726328AbgI1Ilj (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:41:39 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 3605ADA722
-        for <netfilter-devel@vger.kernel.org>; Mon, 28 Sep 2020 10:41:38 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 23FCADA7B9
-        for <netfilter-devel@vger.kernel.org>; Mon, 28 Sep 2020 10:41:38 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 20ABFDA7B6; Mon, 28 Sep 2020 10:41:38 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id DC4F5DA78B;
-        Mon, 28 Sep 2020 10:41:35 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 28 Sep 2020 10:41:35 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
+        id S1726477AbgI1M1S (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 28 Sep 2020 08:27:18 -0400
+Received: from bmailout1.hostsharing.net ([83.223.95.100]:45293 "EHLO
+        bmailout1.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726420AbgI1M1S (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:27:18 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 08:27:17 EDT
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id BDF2E42EE393;
-        Mon, 28 Sep 2020 10:41:35 +0200 (CEST)
-Date:   Mon, 28 Sep 2020 10:41:35 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Gopal Yadav <gopunop@gmail.com>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [nftables] counter not working on kernel 5.6
-Message-ID: <20200928084135.GA13120@salvia>
-References: <CAAUOv8iOGYqi9YvvszTJ40b8bqAWT3dzhDbjdHHJTPQtnaseSw@mail.gmail.com>
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 3D6F8300069E1;
+        Mon, 28 Sep 2020 14:20:36 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 202F91529B1; Mon, 28 Sep 2020 14:20:36 +0200 (CEST)
+Date:   Mon, 28 Sep 2020 14:20:36 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Thomas Graf <tgraf@suug.ch>, Laura Garcia <nevola@gmail.com>,
+        David Miller <davem@davemloft.net>
+Subject: Re: [PATCH nf-next v3 3/3] netfilter: Introduce egress hook
+Message-ID: <20200928122036.GA3017@wunner.de>
+References: <cover.1598517739.git.lukas@wunner.de>
+ <d2256c451876583bbbf8f0e82a5a43ce35c5cf2f.1598517740.git.lukas@wunner.de>
+ <20200919155405.GA28410@salvia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAUOv8iOGYqi9YvvszTJ40b8bqAWT3dzhDbjdHHJTPQtnaseSw@mail.gmail.com>
+In-Reply-To: <20200919155405.GA28410@salvia>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 12:48:39PM +0530, Gopal Yadav wrote:
-> Running the below commands:
+On Sat, Sep 19, 2020 at 05:54:05PM +0200, Pablo Neira Ayuso wrote:
+> Would you redo these numbers using this ruleset to address Daniel's
+> comments regarding performance?
 > 
-> nft add table inet dev
-> nft add set inet dev ports_udp { type inet_service\; size 65536\;
-> flags dynamic, timeout\; timeout 30d\; }
-> nft add element inet dev ports_udp { 53 timeout 30d counter }
-> nft list ruleset
+> Moreover, Daniel also suggested dev_direct_xmit() path from AF_PACKET
+> allows packets to escape from policy, it seems this also needs to be
+> extended to add a hook there too.
 > 
-> Output:
-> table inet dev {
-> set ports_udp {
-> type inet_service
-> size 65536
-> flags dynamic,timeout
-> timeout 30d
-> elements = { 53 expires 29d23h59m56s184ms }
-> }
-> }
-> 
-> Expected Output:
-> table inet dev {
-> set ports_udp {
-> type inet_service
-> size 65536
-> flags dynamic,timeout
-> timeout 30d
-> elements = { 53 expires 29d23h59m56s184ms counter packets 0 bytes 0 }
-> }
-> }
-> 
-> Am I doing something wrong?
+> Could you work on this and send a v2?
 
-You need a 5.7 kernel.
+Sure, will do.
+
+Thanks,
+
+Lukas
