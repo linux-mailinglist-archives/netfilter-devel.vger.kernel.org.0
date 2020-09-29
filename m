@@ -2,117 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AA627BABF
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Sep 2020 04:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0463827BC48
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Sep 2020 07:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgI2CQE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 28 Sep 2020 22:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgI2CQE (ORCPT
+        id S1725789AbgI2FEX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Sep 2020 01:04:23 -0400
+Received: from mail-m973.mail.163.com ([123.126.97.3]:60498 "EHLO
+        mail-m973.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbgI2FEX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 28 Sep 2020 22:16:04 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831FEC061755;
-        Mon, 28 Sep 2020 19:16:03 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id u8so3674543lff.1;
-        Mon, 28 Sep 2020 19:16:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DjSQ9+lJ+KOY1QhLkpVLHaBOWFdrcLty+nw0yJV/I8Q=;
-        b=DZhXDdSMQJIGkkVrGwyQS/lGggQc5c3pvIXYhO/IPdOhvQbCY+2marDi29JbT2EsKu
-         yFJZHGwHAVox4UH2X2grKfs/9aOk7V/MQYOMlAVwDCWEpTT8Qha5YjjpVgtFX53/PEGY
-         65Om4LcgoWwGsOtjri619XxiMgldZC+WAQbaE4XCJGF4B/aYF5sN/P8/WmgfSf/c7qpk
-         ERrZXQr2wol0jNmvtQHOYFSkFNz9E+4/LOeAlnNMiJegctoKTYOPSyrXui3T+YsoclU7
-         lt41N1uZG4PGWEuTqnJ+PVaEvxOLrfMMBQWL0FYkCsJ4ifddfSz3PTgiT0JA1uKXZ4To
-         Ab+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DjSQ9+lJ+KOY1QhLkpVLHaBOWFdrcLty+nw0yJV/I8Q=;
-        b=VFlNgeEvacsTG23U2JdwY36hVbWYK1FF5S7vqzOUYvjQDrCpGWVBGzEHnN91tQ0Khs
-         AcDbDX6rMyQDhDSIC4TYPxDcfYQ/90Hsc4B4BHlAZpwMfbbPUcgT/+2KiIMye6X1x7H3
-         FlSwQ+/oi68/q8mPr4m5wQ0i8U/f4Yo761mXtxhEgEyfWBQ5XYU6OtX79/jzFJpTB7oc
-         QMYm55OZPgw8tDUqbbWqnzc784N5REESAhv/Gaw+pKJAsEYrjB5XvusWhpkPJA0aN0NH
-         kaKL0iuWzeycecd/Y2BGxg2FCW+D96fIOVrFfjvF1NJ0fjgrwlUd5P5U1at9N4sAT8Ei
-         bSpw==
-X-Gm-Message-State: AOAM531sligha/B7hk65AQ6OGUN5jKp1Q/lAi8RwMvTC71z5HNMNuNm9
-        iFcyXy4qWsnvLhlBpoz0LJzx1jR2aKs7TJpb/XE=
-X-Google-Smtp-Source: ABdhPJzqPVHpxv1ABhfMES4dUiXbyCk4RTPwO8HCUtEr/JaIgCt6w4BXYPRcNnSoFkQntb43JJE/GzPGH6BacmE9YvY=
-X-Received: by 2002:ac2:5594:: with SMTP id v20mr402181lfg.344.1601345760502;
- Mon, 28 Sep 2020 19:16:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <alpine.LFD.2.23.451.2009271625160.35554@ja.home.ssi.bg> <20200928024938.97121-1-bigclouds@163.com>
-In-Reply-To: <20200928024938.97121-1-bigclouds@163.com>
-From:   yue longguang <yuelongguang@gmail.com>
-Date:   Tue, 29 Sep 2020 10:15:49 +0800
-Message-ID: <CAPaK2r8DnR_dcZ8E9w0mvDbK2KiWCt+JswO=-tqvbWb2RibaYw@mail.gmail.com>
-Subject: Re: [PATCH v5] ipvs: adjust the debug info in function set_tcp_state
-To:     Julian Anastasov <ja@ssi.bg>, "longguang.yue" <bigclouds@163.com>,
+        Tue, 29 Sep 2020 01:04:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=6uKgF
+        uXFSap/EdUsAgj497IozAnPWYkZEiXqqo30dV4=; b=TDuUmUecsCWlsrrmVse8P
+        PNPgB0PgbMi63CXLyukIN/JcSXL02GseHhw0sIeKlqkeIX4yVgAd8jEl1cyXglHu
+        7IFpeIkM0iUMOUqoSg08Oq52phT47DWZ7avEKsqV/VMH0pCjt2MZFQ57u2bqvkT4
+        v2nGnMN7Sl8e1kHqAFs5KA=
+Received: from localhost.localdomain (unknown [111.202.93.98])
+        by smtp3 (Coremail) with SMTP id G9xpCgAHEcIUwHJfwCOTEg--.1476S2;
+        Tue, 29 Sep 2020 13:03:16 +0800 (CST)
+From:   "longguang.yue" <bigclouds@163.com>
+Cc:     yuelongguang@gmail.com, "longguang.yue" <bigclouds@163.com>,
+        Wensong Zhang <wensong@linux-vs.org>,
+        Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
-        Simon Horman <horms@verge.net.au>
-Cc:     Wensong Zhang <wensong@linux-vs.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        "open list:IPVS" <netdev@vger.kernel.org>,
-        "open list:IPVS" <lvs-devel@vger.kernel.org>,
-        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
-        "open list:NETFILTER" <coreteam@netfilter.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        netdev@vger.kernel.org (open list:IPVS),
+        lvs-devel@vger.kernel.org (open list:IPVS),
+        netfilter-devel@vger.kernel.org (open list:NETFILTER),
+        coreteam@netfilter.org (open list:NETFILTER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ipvs: Add traffic statistic up even it is VS/DR or VS/TUN mode
+Date:   Tue, 29 Sep 2020 13:03:02 +0800
+Message-Id: <20200929050302.28105-1-bigclouds@163.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: G9xpCgAHEcIUwHJfwCOTEg--.1476S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZw1UAF45Wr13Kr17tF1fWFg_yoWfXwcEy3
+        yvgFy3Wr4rZ3yDKa17XF4xWFyDt3y8JF1fGryIvFWjy347C34Yy3sagr97Cr1fGa9xZFyU
+        JrZ7tryIqw1jgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0SzuJUUUUU==
+X-Originating-IP: [111.202.93.98]
+X-CM-SenderInfo: peljuzprxg2qqrwthudrp/xtbBZxSuQ1et0VA85gAAs-
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-I sincerely apologize for the trouble which takes up much of your
-time. If the last patch does not work , would you please fix it?
-thanks
+It's ipvs's duty to do traffic statistic if packets get hit,
+no matter what mode it is.
 
-On Mon, Sep 28, 2020 at 10:51 AM longguang.yue <bigclouds@163.com> wrote:
->
-> Outputting client,virtual,dst addresses info when tcp state changes,
-> which makes the connection debug more clear
->
-> Signed-off-by: longguang.yue <bigclouds@163.com>
-> ---
->  net/netfilter/ipvs/ip_vs_proto_tcp.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/net/netfilter/ipvs/ip_vs_proto_tcp.c b/net/netfilter/ipvs/ip_vs_proto_tcp.c
-> index dc2e7da2742a..7da51390cea6 100644
-> --- a/net/netfilter/ipvs/ip_vs_proto_tcp.c
-> +++ b/net/netfilter/ipvs/ip_vs_proto_tcp.c
-> @@ -539,8 +539,8 @@ set_tcp_state(struct ip_vs_proto_data *pd, struct ip_vs_conn *cp,
->         if (new_state != cp->state) {
->                 struct ip_vs_dest *dest = cp->dest;
->
-> -               IP_VS_DBG_BUF(8, "%s %s [%c%c%c%c] %s:%d->"
-> -                             "%s:%d state: %s->%s conn->refcnt:%d\n",
-> +               IP_VS_DBG_BUF(8, "%s %s [%c%c%c%c] c:%s:%d v:%s:%d "
-> +                             "d:%s:%d state: %s->%s conn->refcnt:%d\n",
->                               pd->pp->name,
->                               ((state_off == TCP_DIR_OUTPUT) ?
->                                "output " : "input "),
-> @@ -548,10 +548,12 @@ set_tcp_state(struct ip_vs_proto_data *pd, struct ip_vs_conn *cp,
->                               th->fin ? 'F' : '.',
->                               th->ack ? 'A' : '.',
->                               th->rst ? 'R' : '.',
-> -                             IP_VS_DBG_ADDR(cp->daf, &cp->daddr),
-> -                             ntohs(cp->dport),
->                               IP_VS_DBG_ADDR(cp->af, &cp->caddr),
->                               ntohs(cp->cport),
-> +                             IP_VS_DBG_ADDR(cp->af, &cp->vaddr),
-> +                             ntohs(cp->vport),
-> +                             IP_VS_DBG_ADDR(cp->daf, &cp->daddr),
-> +                             ntohs(cp->dport),
->                               tcp_state_name(cp->state),
->                               tcp_state_name(new_state),
->                               refcount_read(&cp->refcnt));
-> --
-> 2.20.1 (Apple Git-117)
->
+Signed-off-by: longguang.yue <bigclouds@163.com>
+---
+ net/netfilter/ipvs/ip_vs_core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+index e3668a6e54e4..ed523057f07f 100644
+--- a/net/netfilter/ipvs/ip_vs_core.c
++++ b/net/netfilter/ipvs/ip_vs_core.c
+@@ -1413,8 +1413,11 @@ ip_vs_out(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, in
+ 			     ipvs, af, skb, &iph);
+ 
+ 	if (likely(cp)) {
+-		if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ)
++		if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ){
++			ip_vs_out_stats(cp, skb);
++			skb->ipvs_property = 1;
+ 			goto ignore_cp;
++		}
+ 		return handle_response(af, skb, pd, cp, &iph, hooknum);
+ 	}
+ 
+-- 
+2.20.1 (Apple Git-117)
+
