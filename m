@@ -2,109 +2,131 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DAF27BC5C
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Sep 2020 07:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA1127C00F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Sep 2020 10:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727212AbgI2FRj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Sep 2020 01:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726108AbgI2FRj (ORCPT
+        id S1727484AbgI2Iv4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Sep 2020 04:51:56 -0400
+Received: from fallback25.m.smailru.net ([94.100.189.1]:50890 "EHLO
+        fallback25.mail.ru" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725786AbgI2Ivz (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Sep 2020 01:17:39 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F09FC061755;
-        Mon, 28 Sep 2020 22:17:35 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id 77so4020075lfj.0;
-        Mon, 28 Sep 2020 22:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xif5oC/NRIYYhpW7XETZfA0h68yDq+U57n1x8FOdeWU=;
-        b=rawzs6k4NMlg6bsVsbWsPDBl2UaCGARw1RPjil0OKWhWmLKHo+FOAGheM4W/l1jgCh
-         ntfnJQD1rlXTUrk+If0qpZD2YxEp3os+qzms7fAR7NI0dZkd+LmOdlaKA7/39J2TQThs
-         n7OIgwshgCO5DCcBoNk+gpLg8GsgWOyArueI5twuJ25+eeLBroZfYUD85jJqmBBC1HsZ
-         AOsL6pO/eQ3kcK4P8XtgmWLVbRC888sDzCDtBJ//C6VivSP8Rc6IvHdx5+cDx/pL3iCi
-         U447icvBcUcFBM0BdPKdDNq8m83UnVT2/ZMBdhmV+wtQSxmPW4Pjf6HHHzhjk24ybuW2
-         mbhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xif5oC/NRIYYhpW7XETZfA0h68yDq+U57n1x8FOdeWU=;
-        b=TLiionnPO0fs/L8jXVBWjVXYmBe2t5T/n2VVqORsjgDl9e504eCiJ0CJhRVASWz7U/
-         vRLQ5y2WZWM4rIWSxZaT2B9UpxW36/6eqXxLUhARRabr/fdPcAqL3hvB6AfC2dxEResp
-         69g2KsGzNYYLOzxvtLd4ncn6iVO/FCHaL/x3Jef1F65e2+XXnhcOlYMF+Dq3Ykf6Ka9Z
-         0GxpQad4CwxVYug+KBFWoNM1ZF5g9jV5hB/BiVirhyWJt88GuUmAjnHExTmADhfQujKu
-         oYu2RahCtUETEf+znITqC/gp2TinaPFJ8ZOxcNOMJFefos+zsrXSqiqJcUHL8Fsc3iuz
-         Khkw==
-X-Gm-Message-State: AOAM531tURi6cbj6RyVICuC/CDBKSnXAodX9DUNlNYg3jQT8JgQq7RpE
-        bDbS4I1yGdQ55fxkHnE3GRKwvhQ9vpNznJMVHVw=
-X-Google-Smtp-Source: ABdhPJycgZBSkevRQeXI1VbUJ3Yyp8eqTYufhpIaDs+0WpIrV5IhsXpb1BlXRucnYS+kLO+uTMnYwDrzZsNB+58IdvU=
-X-Received: by 2002:a05:6512:31d2:: with SMTP id j18mr621070lfe.316.1601356651774;
- Mon, 28 Sep 2020 22:17:31 -0700 (PDT)
+        Tue, 29 Sep 2020 04:51:55 -0400
+X-Greylist: delayed 2215 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 04:51:53 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail2;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:To:Message-ID:From:Date; bh=uhQdG2lbKmk/7pGegeK9v20iFl9hVLTfZrGeJSsrTO8=;
+        b=iBIq4D0D6ZZmmMj13RJgMOhw/5MiN2xvUanjf7rejQ5EN1ZSYQuUfdRSVgCLWSfWoaVeL+oys2YGAc/O/xvQlBQSudjPyQdUP1cQtJ/eJfrpGRBAo13ertk9K/PczUXI5CUFUj9jLVd43yWvx+BimkfpDZMCIlWeYe+wkl0a+RI=;
+Received: from [10.161.16.37] (port=53598 helo=smtp63.i.mail.ru)
+        by fallback25.m.smailru.net with esmtp (envelope-from <yacudzer@mail.ru>)
+        id 1kNAmk-0008MM-SQ
+        for netfilter-devel@vger.kernel.org; Tue, 29 Sep 2020 11:14:55 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail3;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:To:Message-ID:From:Date:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=uhQdG2lbKmk/7pGegeK9v20iFl9hVLTfZrGeJSsrTO8=;
+        b=uh+QTL0ImrlkFjhqO1dM+OpuimwyX2xDD9pFxWi/unjmgUYNdfjSR5kFZQzCFLppWvFNKNTyKcTYpnyDbUzWxVpUH6hOvDmsJt99rdKRUyWVLNziamjeswkFrZUTS1V8YGntWTgiszorLocSIZCUA2ixMKHUbAKU0E3VuwpEj9o=;
+Received: by smtp63.i.mail.ru with esmtpa (envelope-from <yacudzer@mail.ru>)
+        id 1kNAmi-0001Ge-UI
+        for netfilter-devel@vger.kernel.org; Tue, 29 Sep 2020 11:14:53 +0300
+Date:   Tue, 29 Sep 2020 11:14:51 +0300
+From:   Evgeniy Yakubov <yacudzer@mail.ru>
+X-Priority: 3 (Normal)
+Message-ID: <1452886108.20200929111451@mail.ru>
+To:     netfilter-devel@vger.kernel.org
+Subject: nftables bug?? Maybe
 MIME-Version: 1.0
-References: <20200929050302.28105-1-bigclouds@163.com>
-In-Reply-To: <20200929050302.28105-1-bigclouds@163.com>
-From:   yue longguang <yuelongguang@gmail.com>
-Date:   Tue, 29 Sep 2020 13:17:20 +0800
-Message-ID: <CAPaK2r__afG7epSM6As3SehhCvTk4KvXB_UjQuwjCNZmf-giGA@mail.gmail.com>
-Subject: Re: [PATCH] ipvs: Add traffic statistic up even it is VS/DR or VS/TUN mode
-To:     "longguang.yue" <bigclouds@163.com>
-Cc:     Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:IPVS" <netdev@vger.kernel.org>,
-        "open list:IPVS" <lvs-devel@vger.kernel.org>,
-        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
-        "open list:NETFILTER" <coreteam@netfilter.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=windows-1251
+Content-Transfer-Encoding: quoted-printable
+X-7564579A: 78E4E2B564C1792B
+X-77F55803: 4F1203BC0FB41BD93B5088A1702AF0385BF4AE435618135B287325DACA1470C5182A05F53808504018E4B55E301C265AB8B7DA4FAD18BC0C6E63032B7A5D9D286451CAC46E028436
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7C2204D4F9A221771EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006370D3D68FCEFFDD9EA8638F802B75D45FF5571747095F342E8C7A0BC55FA0FE5FC8BEF872EBE2403574ECE0BBD950FC1A5AF5A38E1BE83BA0D389733CBF5DBD5E913377AFFFEAFD269A417C69337E82CC2CC7F00164DA146DAFE8445B8C89999725571747095F342E8C26CFBAC0749D213D2E47CDBA5A9658378DA827A17800CE70F3DDF2BBF19B93A9FA2833FD35BB23DF004C90652538430927162BF670285207B076A6E789B0E975F5C1EE8F4F765FC138205E60522AB1A3AA81AA40904B5D9CF19DD082D7633A0446828A5085A663B3AA81AA40904B5D98AA50765F7900637C983FD990E3CEF3BD81D268191BDAD3D18080C068C56568E156CCFE7AF13BCA413377AFFFEAFD26923F8577A6DFFEA7CB24F08513AFFAC7993EC92FD9297F6715571747095F342E857739F23D657EF2BD5E8D9A59859A8B6A1DCCEB63E2F10FB089D37D7C0E48F6C5571747095F342E857739F23D657EF2B6825BDBE14D8E702E4EE3A04994FF497E5BFE6E7EFDEDCD789D4C264860C145E
+X-C8649E89: F1FE86ED439380E31B6F31C46073E97629C2C2A48035FDB622E6A19D2CFA2BE53A37F9C4D18B33B7
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj50aJSQv4UNYWy7Lc+iDLGw==
+X-Mailru-Sender: 159DE679A9C6F65770158377D6DB31F483D69B97CDA7E26FB5927B02875C599EDA29946C770114310E40135273D2C498342CD0BA774DB6A98B1C6C7786703E36FD8D3128AD5BC2B40D4ABDE8C577C2ED
+X-Mras: Ok
+X-7564579A: 646B95376F6C166E
+X-77F55803: 6242723A09DB00B45E190BCCE31DF978DF84D2D534E748F075A575FEC77F6C3068F3CF0E9FE49B69D4FCE5AB3379DBFA4130029F436E18D7C56F0F95692DD21EBA727AC01E90FB2D
+X-7FA49CB5: 0D63561A33F958A556551730CFD58F1A4B0118BF901E1B0F39A061D14816B66B8941B15DA834481FA18204E546F3947C9EB6D914E8CED3EDCC7F00164DA146DAFE8445B8C89999725571747095F342E8C26CFBAC0749D213D2E47CDBA5A9658378DA827A17800CE7328B01A8D746D8839FA2833FD35BB23DF004C90652538430927162BF670285207B076A6E789B0E975F5C1EE8F4F765FC79B25E177BEFA2CBD81D268191BDAD3DBD4B6F7A4D31EC0B7A15B7713DBEF166A7F4EDE966BC389F9E8FC8737B5C2249A1DCCEB63E2F10FB089D37D7C0E48F6CCF19DD082D7633A0E7DDDDC251EA7DABAAAE862A0553A39223F8577A6DFFEA7CB24F08513AFFAC7943847C11F186F3C5E7DDDDC251EA7DABCC89B49CDF41148FDCD13837A2BCF0203C9F3DD0FB1AF5EB4E70A05D1297E1BBCB5012B2E24CD356
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj50aJSQv4UNYgmaazNrOl/A==
+X-Mailru-MI: 800
+X-Mailru-Sender: A5480F10D64C90059D04A353E0DED3E6A6E9105B2E89A80077D3E0E9A007315242A3910910EDF928B3CF03E94849E0743DDE9B364B0DF289AD36756069A536122F84BEB09BBDFF42AE208404248635DF
+X-Mras: Ok
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-especially in public cloud case, statistic is related to monitorring
-and billing , both ingress and egress packets will go throught ipvs,
-even dr/tun mode.
-in dr/tun mode, ipvs need to do nothing except  statistic, so
-skb->ipvs_property = 1
+Hello, Netfilter-devel.
 
-regards
 
-On Tue, Sep 29, 2020 at 1:04 PM longguang.yue <bigclouds@163.com> wrote:
->
-> It's ipvs's duty to do traffic statistic if packets get hit,
-> no matter what mode it is.
->
-> Signed-off-by: longguang.yue <bigclouds@163.com>
-> ---
->  net/netfilter/ipvs/ip_vs_core.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-> index e3668a6e54e4..ed523057f07f 100644
-> --- a/net/netfilter/ipvs/ip_vs_core.c
-> +++ b/net/netfilter/ipvs/ip_vs_core.c
-> @@ -1413,8 +1413,11 @@ ip_vs_out(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, in
->                              ipvs, af, skb, &iph);
->
->         if (likely(cp)) {
-> -               if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ)
-> +               if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ){
-> +                       ip_vs_out_stats(cp, skb);
-> +                       skb->ipvs_property = 1;
->                         goto ignore_cp;
-> +               }
->                 return handle_response(af, skb, pd, cp, &iph, hooknum);
->         }
->
-> --
-> 2.20.1 (Apple Git-117)
->
+I tried to make autoload rules to nftables.
+
+First, I created file with set of ipv4 addresses and apply it:
+
+yacudzer@adm-ovpn-03:/etc/nftables$ cat OpenVPN_set_PRD-RMQ-star.nft
+table ip filter {
+    set OpenVPN_set_PRD-RMQ-star {
+        type ipv4_addr
+        elements =3D {
+                    10.22.0.62,                   10.22.0.93,              =
+     10.22.0.95
+        }
+    }
+}
+yacudzer@adm-ovpn-03:/etc/nftables$ sudo nft -f OpenVPN_set_PRD-RMQ-star.nft
+
+
+Then, I created file with applying this set:
+yacudzer@adm-ovpn-03:/etc/nftables$ cat ovpn-RabbitMQ.nft
+add chain filter OpenVPN-RabbitMQ
+flush chain filter OpenVPN-RabbitMQ
+
+table ip filter {
+    set OpenVPN_set_PRD-RMQ-star {
+        type ipv4_addr
+        elements =3D {
+                    10.22.0.62,                   10.22.0.93,              =
+     10.22.0.95
+        }
+    }
+        chain OpenVPN-RabbitMQ {
+                ip daddr @OpenVPN_set_PRD-RMQ-star accept
+                return
+        }
+}
+
+And when I tried to apply it, I see this error message:
+yacudzer@adm-ovpn-03:/etc/nftables$ sudo nft -f ovpn-RabbitMQ.nft
+ovpn-RabbitMQ.nft:6:26-50: Error: Set 'OpenVPN_set_PRD-RMQ-star' does not e=
+xist
+                ip daddr @OpenVPN_set_PRD-RMQ-star accept
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If I place set rule in same file - everything OK:
+
+yacudzer@adm-ovpn-03:/etc/nftables$ cat ovpn-RabbitMQ.nft
+add chain filter OpenVPN-RabbitMQ
+flush chain filter OpenVPN-RabbitMQ
+
+table ip filter {
+    set OpenVPN_set_PRD-RMQ-star {
+        type ipv4_addr
+        elements =3D {
+                    10.22.0.62,                   10.22.0.93,              =
+     10.22.0.95
+        }
+    }
+        chain OpenVPN-RabbitMQ {
+                ip daddr @OpenVPN_set_PRD-RMQ-star accept
+                return
+        }
+}
+yacudzer@adm-ovpn-03:/etc/nftables$ sudo nft -f ovpn-RabbitMQ.nft
+
+
+But error only when set and rule in different files.
+I think that it a bug.
+
+I tried versions 0.9.0 (in debian repo) and 0.9.6 (compiled manually).
+
+--=20
+=D1 =F3=E2=E0=E6=E5=ED=E8=E5=EC,
+ Evgeniy                          mailto:yacudzer@mail.ru
+
