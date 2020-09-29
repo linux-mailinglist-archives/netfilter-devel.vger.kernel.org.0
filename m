@@ -2,120 +2,98 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108D627BFA4
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Sep 2020 10:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6CD27CC93
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Sep 2020 14:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbgI2Ies (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Sep 2020 04:34:48 -0400
-Received: from mail-m974.mail.163.com ([123.126.97.4]:52928 "EHLO
-        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgI2Ier (ORCPT
+        id S1733117AbgI2MhV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Sep 2020 08:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729300AbgI2LU6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:34:47 -0400
-X-Greylist: delayed 938 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 04:34:46 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=uJw7P
-        bcKiwi2XDoJgHU84ZZoA4o7HeGvmqfG+5az7NQ=; b=Rch5DBd1wq3OPbV+pGi1J
-        sTNEnhW6f4f3z88dTUN4HcS+OjL71Ve71ISYm5tp52UHtD9jJtnCGO+SJuwrbx56
-        WnvMT6MVq22LY35zeR9xoTuf40qN3efev4SbKNilGO99Ydd8LQ/HMXpzBYq3DPC0
-        4dOCS6Cd1tYcEilUgDDfEw=
-Received: from localhost.localdomain (unknown [111.202.93.98])
-        by smtp4 (Coremail) with SMTP id HNxpCgDncWjK7XJfSDh4Rw--.1631S2;
-        Tue, 29 Sep 2020 16:18:18 +0800 (CST)
-From:   "longguang.yue" <bigclouds@163.com>
-Cc:     yuelongguang@gmail.com, "longguang.yue" <bigclouds@163.com>,
-        Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev@vger.kernel.org (open list:IPVS),
-        lvs-devel@vger.kernel.org (open list:IPVS),
-        netfilter-devel@vger.kernel.org (open list:NETFILTER),
-        coreteam@netfilter.org (open list:NETFILTER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] ipvs: Add traffic statistic up even it is VS/DR or VS/TUN mode
-Date:   Tue, 29 Sep 2020 16:18:11 +0800
-Message-Id: <20200929081811.32302-1-bigclouds@163.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200929050302.28105-1-bigclouds@163.com>
-References: <20200929050302.28105-1-bigclouds@163.com>
+        Tue, 29 Sep 2020 07:20:58 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72450C061755
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Sep 2020 04:20:50 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id i1so5931660edv.2
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Sep 2020 04:20:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KVart9pzlsQjpoXCD62AYLiJx/+Zz9Grty5qEnJegUM=;
+        b=IDj9CMRRlGAvgyx3TblEeDcvdTqJ8pZ3ObRjWi0O4uGb+slBN5prKIQNvNM18up4Mc
+         E9Pn7D1GfZeXYFnrwUORnPgr5Ojw7ZH65NyhPb+Cc1CSbbpL/VJj5xDBuICQk5LE5jPc
+         MZqwOnA27ZPqNIJ0744Iint561fLSeRNXyPqXZvBML2M1XNBD2WKfjToSC5JIqPrXEy8
+         edHoYXtg0G8JqxJi6a4UAxoysxrTrbzA2kYhPrg6XlXQ7DKS8eGIceAx6+HWuduCoi16
+         a3CYJ5YdrUG3dc1/k9KMmnGueMuj65AhymcOOw7/RTqb8R8VMfpLVoeAPBGN6R8DiyXG
+         fwXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KVart9pzlsQjpoXCD62AYLiJx/+Zz9Grty5qEnJegUM=;
+        b=bNE6J3HNMSuDNO0IdXIAWAkJfMWd8VI1G0vC//KdWRcDpDzOMjRwyfoyXXtwIhmO/o
+         lMg1yVSnWGQDX7ccrjgi0PMhAWN/NDVidbhoTVHb0XMRJXdCpaWYS03tsmGF1C87XCy7
+         R9M5RpbMUmElXw+ftGbs2Nmgqg0J82pSBRczsYIUN/jFALnLCNdaiSQsZtM5V4xwZ/9I
+         D6xNofW/qor3hS8nQznRBRH56olvTXz6bFe1uFehsISa7X+vDqn6Q54MsHXpVHUGHuUR
+         fENpkPXPX5qDtTZgu4YBE5ozCp1bcAWvZ3VvDLEvqwDs7/KnL4o2EbZoV74Mtt8dadQ7
+         YfAA==
+X-Gm-Message-State: AOAM532GAnSqgeDOCOCHdkuVRONbkAg7W7YVZUcT8wzUPUxrCGRZdKbF
+        3fOptmheDMxvxe7vS2MkqkmWyNJ/lekL5Q==
+X-Google-Smtp-Source: ABdhPJwJee9NbuuWeZe1p6t4U0mEiCHAak2Dy/WlsgkT8AV6I6mTTzXRnye7ZD0Fil18dxJsE4DGvg==
+X-Received: by 2002:a05:6402:696:: with SMTP id f22mr2598659edy.290.1601378448894;
+        Tue, 29 Sep 2020 04:20:48 -0700 (PDT)
+Received: from localhost.localdomain (ip5f5af5ad.dynamic.kabel-deutschland.de. [95.90.245.173])
+        by smtp.gmail.com with ESMTPSA id bn2sm1999761ejb.48.2020.09.29.04.20.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 04:20:48 -0700 (PDT)
+From:   Mikhail Sennikovsky <mikhail.sennikovskii@cloud.ionos.com>
+To:     netfilter-devel@vger.kernel.org, pablo@netfilter.org, fw@strlen.de
+Cc:     Mikhail Sennikovsky <mikhail.sennikovskii@cloud.ionos.com>
+Subject: [PATCH 0/2] conntrack: -L/-D both ipv4/6 if no family is given
+Date:   Tue, 29 Sep 2020 13:20:15 +0200
+Message-Id: <20200929112017.18582-1-mikhail.sennikovskii@cloud.ionos.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200926181928.GA3598@salvia>
+References: <20200926181928.GA3598@salvia>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: HNxpCgDncWjK7XJfSDh4Rw--.1631S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJryDCFykGr18CrWfGr4rZrb_yoW8uw1DpF
-        18tay3XrW8WFy5J3WxAr97CryfCr1kt3Zrur4Yka4Sy3WDXF13AFsYkrWa9ay5ArsYqaya
-        qw4Fqw13C34Dt3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j3xhdUUUUU=
-X-Originating-IP: [111.202.93.98]
-X-CM-SenderInfo: peljuzprxg2qqrwthudrp/xtbBzwquQ1aD8nIV5wAAsP
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-It's ipvs's duty to do traffic statistic if packets get hit,
-no matter what mode it is.
+Hi all,
 
-Signed-off-by: longguang.yue <bigclouds@163.com>
----
- net/netfilter/ipvs/ip_vs_conn.c | 13 +++++++++++--
- net/netfilter/ipvs/ip_vs_core.c |  5 ++++-
- 2 files changed, 15 insertions(+), 3 deletions(-)
+As we discussed in the "Fast bulk transfers of large sets of ct 
+entries" mailing thread, conntrack -L (and presumably
+conntracks -D as well) should dump/delete both IPv4 and IPv6
+entries if no family is specified.
 
-diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
-index a90b8eac16ac..2620c585d0c0 100644
---- a/net/netfilter/ipvs/ip_vs_conn.c
-+++ b/net/netfilter/ipvs/ip_vs_conn.c
-@@ -401,6 +401,8 @@ struct ip_vs_conn *ip_vs_ct_in_get(const struct ip_vs_conn_param *p)
- struct ip_vs_conn *ip_vs_conn_out_get(const struct ip_vs_conn_param *p)
- {
- 	unsigned int hash;
-+	__be16 cport;
-+	const union nf_inet_addr *caddr;
- 	struct ip_vs_conn *cp, *ret=NULL;
- 
- 	/*
-@@ -411,10 +413,17 @@ struct ip_vs_conn *ip_vs_conn_out_get(const struct ip_vs_conn_param *p)
- 	rcu_read_lock();
- 
- 	hlist_for_each_entry_rcu(cp, &ip_vs_conn_tab[hash], c_list) {
--		if (p->vport == cp->cport && p->cport == cp->dport &&
-+		if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ){
-+			cport = cp->vport;
-+			caddr = &cp->vaddr;
-+		} else {
-+			cport = cp->dport;
-+			caddr = &cp->daddr;
-+		}
-+		if (p->vport == cp->cport && p->cport == cport &&
- 		    cp->af == p->af &&
- 		    ip_vs_addr_equal(p->af, p->vaddr, &cp->caddr) &&
--		    ip_vs_addr_equal(p->af, p->caddr, &cp->daddr) &&
-+		    ip_vs_addr_equal(p->af, p->caddr, caddr) &&
- 		    p->protocol == cp->protocol &&
- 		    cp->ipvs == p->ipvs) {
- 			if (!__ip_vs_conn_get(cp))
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index e3668a6e54e4..ed523057f07f 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -1413,8 +1413,11 @@ ip_vs_out(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, in
- 			     ipvs, af, skb, &iph);
- 
- 	if (likely(cp)) {
--		if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ)
-+		if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ){
-+			ip_vs_out_stats(cp, skb);
-+			skb->ipvs_property = 1;
- 			goto ignore_cp;
-+		}
- 		return handle_response(af, skb, pd, cp, &iph, hooknum);
- 	}
- 
+As a follow-up for that here is a patch which supposed to restore
+this behavior and a patch with the test-cases covering both the
+invocation with family is specified and not.
+
+The patches are created on top of my previous set of patches,
+mainly for the reason that the "opts" output format and stdio 
+input introduced there among other thing allow testing the 
+-L functionality easily.
+
+I would really appreciate if someone could have a look into
+those patches btw and give some feedback on whether they make
+sense or not.
+
+Thanks & Regards,
+Mikhail
+
+Mikhail Sennikovsky (2):
+  conntrack: -L/-D both ipv4/6 if no family is given
+  tests: conntrack -L/-D ip family filtering
+
+ src/conntrack.c                     | 35 +++++++++++---
+ tests/conntrack/testsuite/09dumpopt | 72 ++++++++++++++++++++++++++++-
+ 2 files changed, 99 insertions(+), 8 deletions(-)
+
 -- 
-2.20.1 (Apple Git-117)
+2.25.1
 
