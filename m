@@ -2,46 +2,255 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36A027DE80
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Sep 2020 04:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0EC227E019
+	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Sep 2020 07:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729798AbgI3CY6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Sep 2020 22:24:58 -0400
-Received: from [110.74.151.213] ([110.74.151.213]:52517 "EHLO
-        mail.bless.gov.my" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729761AbgI3CY6 (ORCPT
+        id S1727851AbgI3FSE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 30 Sep 2020 01:18:04 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:52394 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725306AbgI3FSE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Sep 2020 22:24:58 -0400
-X-Greylist: delayed 12297 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 22:24:57 EDT
-Received: from User (unknown [172.20.84.1])
-        by mail.bless.gov.my (Postfix) with SMTP id A053143ED1D5;
-        Wed, 30 Sep 2020 05:00:23 +0800 (MYT)
-Reply-To: <iinfo446@gmail.com>
-From:   "Mrs. Susan Carter" <test@mail.bless.gov.my>
-Subject: Good day,    
-Date:   Tue, 29 Sep 2020 22:00:44 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20200929210023.A053143ED1D5@mail.bless.gov.my>
-To:     undisclosed-recipients:;
+        Wed, 30 Sep 2020 01:18:04 -0400
+Received: from dimstar.local.net (n49-192-70-185.sun3.vic.optusnet.com.au [49.192.70.185])
+        by mail105.syd.optusnet.com.au (Postfix) with SMTP id ECBC83ABE41
+        for <netfilter-devel@vger.kernel.org>; Wed, 30 Sep 2020 14:46:04 +1000 (AEST)
+Received: (qmail 11151 invoked by uid 501); 30 Sep 2020 04:46:03 -0000
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     pablo@netfilter.org
+Cc:     netfilter-devel@vger.kernel.org, dunc@dimstar.local.net
+Subject: [PATCH libnetfilter_queue] doc: build: Reduce size of doxygen.cfg and doxygen build o/p
+Date:   Wed, 30 Sep 2020 14:46:03 +1000
+Message-Id: <20200930044603.11109-1-duncan_roe@optusnet.com.au>
+X-Mailer: git-send-email 2.17.5
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
+        a=zRnOCfNoldqEzXEIOSrMkw==:117 a=zRnOCfNoldqEzXEIOSrMkw==:17
+        a=reM5J-MqmosA:10 a=RSmzAf-M6YYA:10 a=PO7r1zJSAAAA:8
+        a=03uqnuHKltvE6X5U11kA:9
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Good day,
+doxygen.cfg only needs to contain non-default options.
+Removing other options shaves 4KB (off a 5KB file).
+Also remove options that are obsolete at the latest doxygen release:
+ PERL_PATH, MSCGEN_PATH and PAPER_TYPE=a4wide (defaults to a4).
 
-My name are Mrs. Susan Carter an America but a United Kingdom Citizen, I???m 57 years old, widow, married to late Eng Martins Carter who is a British, who until his death worked with Dutch Filtration for Twenty-Six years before he died in the year 2015 after a brief illness that lasted only five days.
+While being about it, send doxygen stdout to /dev/null to make (future)
+warnings easier to see.
 
-When my late husband was alive he deposited the sum of US$50 Million in bank USA through his Financial Lawyer in the United State of America and we all agreed as a couple to donate all of that to charity. Following my health (Lung Cancer), my Doctor told me that I may not live longer than required due to my health condition.
+Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
+---
+ doxygen.cfg.in      | 162 +-------------------------------------------
+ doxygen/Makefile.am |   2 +-
+ 2 files changed, 3 insertions(+), 161 deletions(-)
 
-Looking forward to seeing someone who can use the money for charitable work.
+diff --git a/doxygen.cfg.in b/doxygen.cfg.in
+index c54f534..4c16e3e 100644
+--- a/doxygen.cfg.in
++++ b/doxygen.cfg.in
+@@ -1,185 +1,27 @@
+-DOXYFILE_ENCODING      = UTF-8
++# Difference with default Doxyfile 1.8.20
+ PROJECT_NAME           = @PACKAGE@
+ PROJECT_NUMBER         = @VERSION@
+ OUTPUT_DIRECTORY       = doxygen
+-CREATE_SUBDIRS         = NO
+-OUTPUT_LANGUAGE        = English
+-BRIEF_MEMBER_DESC      = YES
+-REPEAT_BRIEF           = YES
+ ABBREVIATE_BRIEF       =
+-ALWAYS_DETAILED_SEC    = NO
+-INLINE_INHERITED_MEMB  = NO
+ FULL_PATH_NAMES        = NO
+-STRIP_FROM_PATH        =
+-STRIP_FROM_INC_PATH    =
+-SHORT_NAMES            = NO
+-JAVADOC_AUTOBRIEF      = NO
+-QT_AUTOBRIEF           = NO
+-MULTILINE_CPP_IS_BRIEF = NO
+-INHERIT_DOCS           = YES
+-SEPARATE_MEMBER_PAGES  = NO
+ TAB_SIZE               = 8
+-ALIASES                =
+ OPTIMIZE_OUTPUT_FOR_C  = YES
+-OPTIMIZE_OUTPUT_JAVA   = NO
+-OPTIMIZE_FOR_FORTRAN   = NO
+-OPTIMIZE_OUTPUT_VHDL   = NO
+-BUILTIN_STL_SUPPORT    = NO
+-CPP_CLI_SUPPORT        = NO
+-SIP_SUPPORT            = NO
+-DISTRIBUTE_GROUP_DOC   = NO
+-SUBGROUPING            = YES
+-TYPEDEF_HIDES_STRUCT   = NO
+-EXTRACT_ALL            = NO
+-EXTRACT_PRIVATE        = NO
+-EXTRACT_STATIC         = NO
+-EXTRACT_LOCAL_CLASSES  = YES
+-EXTRACT_LOCAL_METHODS  = NO
+-EXTRACT_ANON_NSPACES   = NO
+-HIDE_UNDOC_MEMBERS     = NO
+-HIDE_UNDOC_CLASSES     = NO
+-HIDE_FRIEND_COMPOUNDS  = NO
+-HIDE_IN_BODY_DOCS      = NO
+-INTERNAL_DOCS          = NO
+-CASE_SENSE_NAMES       = YES
+-HIDE_SCOPE_NAMES       = NO
+-SHOW_INCLUDE_FILES     = YES
+-INLINE_INFO            = YES
+-SORT_MEMBER_DOCS       = YES
+-SORT_BRIEF_DOCS        = NO
+-SORT_GROUP_NAMES       = NO
+-SORT_BY_SCOPE_NAME     = NO
+-GENERATE_TODOLIST      = YES
+-GENERATE_TESTLIST      = YES
+-GENERATE_BUGLIST       = YES
+-GENERATE_DEPRECATEDLIST= YES
+-ENABLED_SECTIONS       =
+-MAX_INITIALIZER_LINES  = 30
+-SHOW_USED_FILES        = YES
+-FILE_VERSION_FILTER    =
+-QUIET                  = NO
+-WARNINGS               = YES
+-WARN_IF_UNDOCUMENTED   = YES
+-WARN_IF_DOC_ERROR      = YES
+-WARN_NO_PARAMDOC       = NO
+-WARN_FORMAT            = "$file:$line: $text"
+-WARN_LOGFILE           =
+ INPUT                  = .
+-INPUT_ENCODING         = UTF-8
+ FILE_PATTERNS          = *.c
+ RECURSIVE              = YES
+-EXCLUDE                =
+-EXCLUDE_SYMLINKS       = NO
+-EXCLUDE_PATTERNS       =
+ EXCLUDE_SYMBOLS        = EXPORT_SYMBOL \
+                          tcp_word_hdr \
+                          nfq_handle \
+                          nfq_data \
+                          nfq_q_handle \
+                          tcp_flag_word
+-EXAMPLE_PATH           =
+ EXAMPLE_PATTERNS       =
+-EXAMPLE_RECURSIVE      = NO
+-IMAGE_PATH             =
+ INPUT_FILTER           = "sed 's/EXPORT_SYMBOL//g'"
+-FILTER_PATTERNS        =
+-FILTER_SOURCE_FILES    = NO
+ SOURCE_BROWSER         = YES
+-INLINE_SOURCES         = NO
+-STRIP_CODE_COMMENTS    = YES
+-REFERENCED_BY_RELATION = NO
+-REFERENCES_RELATION    = NO
+-REFERENCES_LINK_SOURCE = YES
+-USE_HTAGS              = NO
+-VERBATIM_HEADERS       = YES
+ ALPHABETICAL_INDEX     = NO
+-COLS_IN_ALPHA_INDEX    = 5
+-IGNORE_PREFIX          =
+-GENERATE_HTML          = YES
+-HTML_OUTPUT            = html
+-HTML_FILE_EXTENSION    = .html
+-HTML_HEADER            =
+-HTML_STYLESHEET        =
+-GENERATE_HTMLHELP      = NO
+-GENERATE_DOCSET        = NO
+-DOCSET_FEEDNAME        = "Doxygen generated docs"
+-DOCSET_BUNDLE_ID       = org.doxygen.Project
+-HTML_DYNAMIC_SECTIONS  = NO
+-CHM_FILE               =
+-HHC_LOCATION           =
+-GENERATE_CHI           = NO
+-BINARY_TOC             = NO
+-TOC_EXPAND             = NO
+-DISABLE_INDEX          = NO
+-ENUM_VALUES_PER_LINE   = 4
+-GENERATE_TREEVIEW      = NO
+-TREEVIEW_WIDTH         = 250
++SEARCHENGINE           = NO
+ GENERATE_LATEX         = NO
+-LATEX_OUTPUT           = latex
+ LATEX_CMD_NAME         = latex
+-MAKEINDEX_CMD_NAME     = makeindex
+-COMPACT_LATEX          = NO
+-PAPER_TYPE             = a4wide
+-EXTRA_PACKAGES         =
+-LATEX_HEADER           =
+-PDF_HYPERLINKS         = YES
+-USE_PDFLATEX           = YES
+-LATEX_BATCHMODE        = NO
+-LATEX_HIDE_INDICES     = NO
+-GENERATE_RTF           = NO
+-RTF_OUTPUT             = rtf
+-COMPACT_RTF            = NO
+-RTF_HYPERLINKS         = NO
+-RTF_STYLESHEET_FILE    =
+-RTF_EXTENSIONS_FILE    =
+ GENERATE_MAN           = YES
+-MAN_OUTPUT             = man
+-MAN_EXTENSION          = .3
+-MAN_LINKS              = NO
+-GENERATE_XML           = NO
+-XML_OUTPUT             = xml
+-XML_PROGRAMLISTING     = YES
+-GENERATE_AUTOGEN_DEF   = NO
+-GENERATE_PERLMOD       = NO
+-PERLMOD_LATEX          = NO
+-PERLMOD_PRETTY         = YES
+-PERLMOD_MAKEVAR_PREFIX =
+-ENABLE_PREPROCESSING   = YES
+-MACRO_EXPANSION        = NO
+-EXPAND_ONLY_PREDEF     = NO
+-SEARCH_INCLUDES        = YES
+-INCLUDE_PATH           =
+-INCLUDE_FILE_PATTERNS  =
+-PREDEFINED             =
+-EXPAND_AS_DEFINED      =
+-SKIP_FUNCTION_MACROS   = YES
+-TAGFILES               =
+-GENERATE_TAGFILE       =
+-ALLEXTERNALS           = NO
+-EXTERNAL_GROUPS        = YES
+-PERL_PATH              = /usr/bin/perl
+-CLASS_DIAGRAMS         = YES
+-MSCGEN_PATH            =
+-HIDE_UNDOC_RELATIONS   = YES
+ HAVE_DOT               = @HAVE_DOT@
+-CLASS_GRAPH            = YES
+-COLLABORATION_GRAPH    = YES
+-GROUP_GRAPHS           = YES
+-UML_LOOK               = NO
+-TEMPLATE_RELATIONS     = NO
+-INCLUDE_GRAPH          = YES
+-INCLUDED_BY_GRAPH      = YES
+-CALL_GRAPH             = NO
+-CALLER_GRAPH           = NO
+-GRAPHICAL_HIERARCHY    = YES
+-DIRECTORY_GRAPH        = YES
+-DOT_IMAGE_FORMAT       = png
+-DOT_PATH               =
+-DOTFILE_DIRS           =
+-DOT_GRAPH_MAX_NODES    = 50
+-MAX_DOT_GRAPH_DEPTH    = 0
+ DOT_TRANSPARENT        = YES
+-DOT_MULTI_TARGETS      = NO
+-GENERATE_LEGEND        = YES
+-DOT_CLEANUP            = YES
+-SEARCHENGINE           = NO
+diff --git a/doxygen/Makefile.am b/doxygen/Makefile.am
+index ef468e0..58d153f 100644
+--- a/doxygen/Makefile.am
++++ b/doxygen/Makefile.am
+@@ -9,7 +9,7 @@ doc_srcs = $(top_srcdir)/src/libnetfilter_queue.c  \
+            $(top_srcdir)/src/extra/pktbuff.c
+ 
+ doxyfile.stamp: $(doc_srcs) $(top_srcdir)/fixmanpages.sh
+-	rm -rf html man && cd .. && doxygen doxygen.cfg && ./fixmanpages.sh
++	rm -rf html man && cd .. && doxygen doxygen.cfg >/dev/null && ./fixmanpages.sh
+ 	touch doxyfile.stamp
+ 
+ CLEANFILES = doxyfile.stamp
+-- 
+2.17.5
 
-Best Regards
-Yours sincerely
-Mrs. Susan Carter
