@@ -2,73 +2,82 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C067227FFB0
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Oct 2020 15:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C1E28041E
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Oct 2020 18:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731986AbgJANFC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Oct 2020 09:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
+        id S1732107AbgJAQkG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Oct 2020 12:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731952AbgJANFC (ORCPT
+        with ESMTP id S1731917AbgJAQkG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:05:02 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD16AC0613D0
-        for <netfilter-devel@vger.kernel.org>; Thu,  1 Oct 2020 06:05:01 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4C2Cyf1TQkzQlVP;
-        Thu,  1 Oct 2020 15:04:58 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=doubly.so; s=MBO0001;
-        t=1601557496;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MJiENjd5fwyGAUmlAVyTjKD4sQsH9dHlvJTxoGmPoxY=;
-        b=OKVqDpxuvJAh9LdWhDQymal4jw+6wfqE0e5Q8AeozS4pjMgGyEZxGD0r1i7JiJx0YPQLsG
-        Kde9K4TrERiTm8PbHWN29kr6mYYsI2gtfkfCwYBS+5r2LL3zDqLZRW+MTXzlFbYL5b6+Yw
-        YmXnMBA+0EVQOa3pv6mjGRGsnwK1A9xuQdlta6HX1poDXmLkAl3rbH4j4oDgafAlK1VH3l
-        /KABfa92cUnDZuGG0dEroGF3KJhXcaLpi4KE8Z+ZAG50duh3FRPE/np9bm9Bo4uaj/0mSg
-        mQzAMRzLM8v7LyHQ4zy2X3PZ51w5oWmjfA0OBVmteHlH5LPUM264kWuGSiPIsw==
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
-        with ESMTP id hGcR0ULR8S-U; Thu,  1 Oct 2020 15:04:55 +0200 (CEST)
-Subject: Re: [PATCH] nft: migrate man page examples with `meter` directive to
- sets
+        Thu, 1 Oct 2020 12:40:06 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C39C0613D0
+        for <netfilter-devel@vger.kernel.org>; Thu,  1 Oct 2020 09:40:06 -0700 (PDT)
+Received: from localhost ([::1]:48002 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.94)
+        (envelope-from <phil@nwl.cc>)
+        id 1kO1ci-0004N2-JP; Thu, 01 Oct 2020 18:40:04 +0200
+From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-References: <b35b744f-a29c-d76b-6969-8cf6371c2a1a@doubly.so>
- <20201001122638.GA17685@salvia>
-From:   Devin Bayer <dev@doubly.so>
-Message-ID: <760d81b9-b722-8bce-baa5-a186d3b293d7@doubly.so>
-Date:   Thu, 1 Oct 2020 15:04:53 +0200
+Subject: [net-next PATCH 0/2] netfilter: Improve inverted IP prefix matches
+Date:   Thu,  1 Oct 2020 18:57:42 +0200
+Message-Id: <20201001165744.25466-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201001122638.GA17685@salvia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -3.85 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 4283E17DD
-X-Rspamd-UID: aea4c0
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 01/10/2020 14.26, Pablo Neira Ayuso wrote:
-> Applied with small nitpick.
-> 
-> Missing semi-colons after size.
-> 
-> Please, double-check that what I have applied looks correct to you.
+The following two patches improve packet throughput in a test setup
+sending UDP packets (using iperf3) between two netns. The ruleset used
+on receiver side is like this:
 
-I didn't realize it was needed, since it's not needed for the braces in 
-the `rule` command.
+| *filter
+| :test - [0:0]
+| -A INPUT -j test
+| -A INPUT -j ACCEPT
+| -A test ! -s 10.0.0.0/10 -j DROP # this line repeats 10000 times
+| COMMIT
 
-Looks good to me 👍
+These are the generated VM instructions for each rule:
 
-~ Devin
+| [ payload load 4b @ network header + 12 => reg 1 ]
+| [ bitwise reg 1 = (reg=1 & 0x0000c0ff ) ^ 0x00000000 ]
+| [ cmp eq reg 1 0x0000000a ]
+| [ counter pkts 0 bytes 0 ]
+| [ immediate reg 0 drop ]
+
+Both sender and receiver reside within 10/10 network, iperf3 is just
+used to fill the (virtual) wire:
+
+| iperf3 -c 10.0.0.2 -u -b 10G -t 1000
+
+On receiver side, "packets received" counter of 'netstat -su' is
+monitored to calculate throughput. Averaging over about a minute, these
+are the figures:
+
+legacy:			~10000pkt/s
+nft (base):		~3000pkt/s
+nft (patch1):		~4000pkt/s
+nft (patch1+2):		~5200pkt/s
+
+In summary, this increases nftables throughput for this specific test
+case from 1/3 of legacy iptables to 1/2.
+
+Phil Sutter (2):
+  net: netfilter: Enable fast nft_cmp for inverted matches
+  net: netfilter: Implement fast bitwise expression
+
+ include/net/netfilter/nf_tables_core.h |  11 ++
+ net/netfilter/nf_tables_core.c         |  15 ++-
+ net/netfilter/nft_bitwise.c            | 141 +++++++++++++++++++++++--
+ net/netfilter/nft_cmp.c                |  10 +-
+ 4 files changed, 164 insertions(+), 13 deletions(-)
+
+-- 
+2.28.0
+
