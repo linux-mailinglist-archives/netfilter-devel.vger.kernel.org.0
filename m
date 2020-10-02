@@ -2,139 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32613280F2B
-	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Oct 2020 10:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF61281126
+	for <lists+netfilter-devel@lfdr.de>; Fri,  2 Oct 2020 13:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726051AbgJBIpW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 2 Oct 2020 04:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBIpW (ORCPT
+        id S2387578AbgJBLYv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 2 Oct 2020 07:24:51 -0400
+Received: from 70-252-206-104.staticrdns.eonix.net ([104.206.252.70]:46396
+        "EHLO 70-252-206-104.staticrdns.eonix.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725953AbgJBLYv (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 2 Oct 2020 04:45:22 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76550C0613D0
-        for <netfilter-devel@vger.kernel.org>; Fri,  2 Oct 2020 01:45:22 -0700 (PDT)
-Received: from localhost ([::1]:49680 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.94)
-        (envelope-from <phil@nwl.cc>)
-        id 1kOGgq-0005jZ-9l; Fri, 02 Oct 2020 10:45:20 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH] nft: Optimize class-based IP prefix matches
-Date:   Fri,  2 Oct 2020 11:03:34 +0200
-Message-Id: <20201002090334.29788-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.28.0
+        Fri, 2 Oct 2020 07:24:51 -0400
+X-Greylist: delayed 9697 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 07:24:50 EDT
+Received: from User (localhost [IPv6:::1])
+        by 70-252-206-104.staticrdns.eonix.net (Postfix) with SMTP id 317E944C89D;
+        Fri,  2 Oct 2020 03:13:43 -0400 (EDT)
+Reply-To: <stewart.macdonald58@rockhopperexplorationplc.co.uk>
+From:   "MacDonald" <stewart.macdonald58@rockhopperexplorationplc.co.uk>
+Subject: Please Check this out and reply urgently
+Date:   Fri, 2 Oct 2020 00:13:46 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20201002071343.317E944C89D@70-252-206-104.staticrdns.eonix.net>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Payload expression works on byte-boundaries, leverage this with suitable
-prefix lengths.
+Attention please!
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/nft-ipv4.c   |  6 ++++--
- iptables/nft-ipv6.c   |  6 ++++--
- iptables/nft-shared.c | 14 ++++++++++----
- iptables/nft-shared.h |  4 ++++
- 4 files changed, 22 insertions(+), 8 deletions(-)
+I am the Chief Financial Officer of Rockhopper and Gas company London UK, and by the virtue, as the Chief Financial Officer. I got your contact through a directory search and decided to propose this business. I am seeking your assistance in remitting of some funds,  Ninety five million  to your account for private investment purpose, hence my request for your assistance.
+ 
+  
+ SOURCE OF THE FUND:
 
-diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
-index afdecf9711e64..ce702041af0f4 100644
---- a/iptables/nft-ipv4.c
-+++ b/iptables/nft-ipv4.c
-@@ -199,7 +199,8 @@ static void nft_ipv4_parse_payload(struct nft_xt_ctx *ctx,
- 			parse_mask_ipv4(ctx, &cs->fw.ip.smsk);
- 			ctx->flags &= ~NFT_XT_CTX_BITWISE;
- 		} else {
--			cs->fw.ip.smsk.s_addr = 0xffffffff;
-+			memset(&cs->fw.ip.smsk, 0xff,
-+			       min(ctx->payload.len, sizeof(struct in_addr)));
- 		}
- 
- 		if (inv)
-@@ -212,7 +213,8 @@ static void nft_ipv4_parse_payload(struct nft_xt_ctx *ctx,
- 			parse_mask_ipv4(ctx, &cs->fw.ip.dmsk);
- 			ctx->flags &= ~NFT_XT_CTX_BITWISE;
- 		} else {
--			cs->fw.ip.dmsk.s_addr = 0xffffffff;
-+			memset(&cs->fw.ip.dmsk, 0xff,
-+			       min(ctx->payload.len, sizeof(struct in_addr)));
- 		}
- 
- 		if (inv)
-diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
-index 4008b7eab4f2a..c877ec6d10887 100644
---- a/iptables/nft-ipv6.c
-+++ b/iptables/nft-ipv6.c
-@@ -146,7 +146,8 @@ static void nft_ipv6_parse_payload(struct nft_xt_ctx *ctx,
- 			parse_mask_ipv6(ctx, &cs->fw6.ipv6.smsk);
- 			ctx->flags &= ~NFT_XT_CTX_BITWISE;
- 		} else {
--			memset(&cs->fw6.ipv6.smsk, 0xff, sizeof(struct in6_addr));
-+			memset(&cs->fw6.ipv6.smsk, 0xff,
-+			       min(ctx->payload.len, sizeof(struct in6_addr)));
- 		}
- 
- 		if (inv)
-@@ -159,7 +160,8 @@ static void nft_ipv6_parse_payload(struct nft_xt_ctx *ctx,
- 			parse_mask_ipv6(ctx, &cs->fw6.ipv6.dmsk);
- 			ctx->flags &= ~NFT_XT_CTX_BITWISE;
- 		} else {
--			memset(&cs->fw6.ipv6.dmsk, 0xff, sizeof(struct in6_addr));
-+			memset(&cs->fw6.ipv6.dmsk, 0xff,
-+			       min(ctx->payload.len, sizeof(struct in6_addr)));
- 		}
- 
- 		if (inv)
-diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
-index 7741d23befc5a..545e9c60fa015 100644
---- a/iptables/nft-shared.c
-+++ b/iptables/nft-shared.c
-@@ -166,16 +166,22 @@ void add_addr(struct nftnl_rule *r, int offset,
- 	      void *data, void *mask, size_t len, uint32_t op)
- {
- 	const unsigned char *m = mask;
-+	bool bitwise = false;
- 	int i;
- 
--	add_payload(r, offset, len, NFT_PAYLOAD_NETWORK_HEADER);
--
- 	for (i = 0; i < len; i++) {
--		if (m[i] != 0xff)
-+		if (m[i] != 0xff) {
-+			bitwise = m[i] != 0;
- 			break;
-+		}
- 	}
- 
--	if (i != len)
-+	if (!bitwise)
-+		len = i;
-+
-+	add_payload(r, offset, len, NFT_PAYLOAD_NETWORK_HEADER);
-+
-+	if (bitwise)
- 		add_bitwise(r, mask, len);
- 
- 	add_cmp_ptr(r, op, data, len);
-diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
-index 4440fd17bfeac..a52463342b30a 100644
---- a/iptables/nft-shared.h
-+++ b/iptables/nft-shared.h
-@@ -247,4 +247,8 @@ void xtables_restore_parse(struct nft_handle *h,
- 			   const struct nft_xt_restore_parse *p);
- 
- void nft_check_xt_legacy(int family, bool is_ipt_save);
-+
-+#define min(x, y) ((x) < (y) ? (x) : (y))
-+#define max(x, y) ((x) > (y) ? (x) : (y))
-+
- #endif
--- 
-2.28.0
+The fund to be transferred into your account is accrued from an over-invoiced contract amount awarded for the completion of the last phase of our refinery, valves and depot for storage of product all over our branches here in the UK which include laying of  distribution pipelines. The contract which was originally valued for One Hundred and Twenty Seven Million was manipulated to read, Two Hundred and Twenty Two Million.  The extra, Ninety Five Million, is what I want to move to your account, the original contractors who executed the job has been paid all their contract bills remaining this Ninety Five Million.
+  
+ DISBURSEMENT:
 
+I have resolved that you take Forty percent  of the total amount for your assistance. that is, fronting you as a sub contractor to claim the remaining balance of Ninety Five Million  which is left now in our bank from the over invoice contract because it is impossible for me to claim the over invoiced amount without your assistance as a Foreign Contractor. In addition Ten percent has been mapped out for any miscellaneous expenses that   might be incurred by both of us during this business while Fifty percent  will be my own share.
+
+SECURITY:
+
+All modalities to effect the payment and subsequent transfer of this money has been worked out, so this transaction is Hundred percent risk free, though you are required to treat it with strictest confidence, on our acceptance please send to me your personal details and your direct mobile phone number for speedy correspondence.
+  
+I am looking forward to doing business with you. Your prompt reply will be highly appreciated. Do kindly furnish me with your contact details if you are interested in partnering with me on this transaction.
+ 
+  
+Yours Faithfully,
+
+Stewart MacDonald
+Chief Financial Officer
+Rockhopper Exploration PLC
