@@ -2,266 +2,190 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701982837B8
-	for <lists+netfilter-devel@lfdr.de>; Mon,  5 Oct 2020 16:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AB328407B
+	for <lists+netfilter-devel@lfdr.de>; Mon,  5 Oct 2020 22:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbgJEO2b (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 5 Oct 2020 10:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725960AbgJEO2b (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:28:31 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B02C0613CE
-        for <netfilter-devel@vger.kernel.org>; Mon,  5 Oct 2020 07:28:31 -0700 (PDT)
-Received: from localhost ([::1]:58612 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.94)
-        (envelope-from <phil@nwl.cc>)
-        id 1kPRTa-0005G6-34; Mon, 05 Oct 2020 16:28:30 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
-Subject: [iptables PATCH 3/3] nft: Fix for concurrent noflush restore calls
-Date:   Mon,  5 Oct 2020 16:48:58 +0200
-Message-Id: <20201005144858.11578-4-phil@nwl.cc>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005144858.11578-1-phil@nwl.cc>
-References: <20201005144858.11578-1-phil@nwl.cc>
+        id S1729708AbgJEUPo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 5 Oct 2020 16:15:44 -0400
+Received: from mg.ssi.bg ([178.16.128.9]:39054 "EHLO mg.ssi.bg"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729695AbgJEUPo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 5 Oct 2020 16:15:44 -0400
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+        by mg.ssi.bg (Proxmox) with ESMTP id 000EB2B1D1
+        for <netfilter-devel@vger.kernel.org>; Mon,  5 Oct 2020 23:15:42 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [178.16.128.7])
+        by mg.ssi.bg (Proxmox) with ESMTP id B56F52B1CA
+        for <netfilter-devel@vger.kernel.org>; Mon,  5 Oct 2020 23:15:41 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [178.16.129.10])
+        by ink.ssi.bg (Postfix) with ESMTPS id 51B8D3C09B7;
+        Mon,  5 Oct 2020 23:15:38 +0300 (EEST)
+Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.15.2/8.15.2) with ESMTP id 095KFcJv013997;
+        Mon, 5 Oct 2020 23:15:38 +0300
+Received: (from root@localhost)
+        by ja.home.ssi.bg (8.15.2/8.15.2/Submit) id 095KFZIE013996;
+        Mon, 5 Oct 2020 23:15:35 +0300
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Simon Horman <horms@verge.net.au>
+Cc:     lvs-devel@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org,
+        "longguang.yue" <bigclouds@163.com>, yuelongguang@gmail.com
+Subject: [PATCH v8 net-next] ipvs: inspect reply packets from DR/TUN real servers
+Date:   Mon,  5 Oct 2020 23:13:47 +0300
+Message-Id: <20201005201347.13644-1-ja@ssi.bg>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Transaction refresh was broken with regards to nft_chain_restore(): It
-created a rule flush batch object only if the chain was found in cache
-and a chain add object only if the chain was not found. Yet with
-concurrent ruleset updates, one has to expect both situations:
+From: longguang.yue <bigclouds@163.com>
 
-* If a chain vanishes, the rule flush job must be skipped and instead
-  the chain add job become active.
+Just like for MASQ, inspect the reply packets coming from DR/TUN
+real servers and alter the connection's state and timeout
+according to the protocol.
 
-* If a chain appears, the chain add job must be skipped and instead
-  rules flushed.
+It's ipvs's duty to do traffic statistic if packets get hit,
+no matter what mode it is.
 
-Change the code accordingly: Create both batch objects and set their
-'skip' field depending on the situation in cache and adjust both in
-nft_refresh_transaction().
-
-As a side-effect, the implicit rule flush becomes explicit and all
-handling of implicit batch jobs is dropped along with the related field
-indicating such.
-
-Reuse the 'implicit' parameter of __nft_rule_flush() to control the
-initial 'skip' field value instead.
-
-A subtle caveat is vanishing of existing chains: Creating the chain add
-job based on the chain in cache causes a netlink message containing that
-chain's handle which the kernel dislikes. Therefore unset the chain's
-handle in that case.
-
-Fixes: 58d7de0181f61 ("xtables: handle concurrent ruleset modifications")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: longguang.yue <bigclouds@163.com>
+Signed-off-by: Julian Anastasov <ja@ssi.bg>
 ---
- iptables/nft.c                                | 58 ++++++++++---------
- .../ipt-restore/0016-concurrent-restores_0    | 53 +++++++++++++++++
- 2 files changed, 83 insertions(+), 28 deletions(-)
- create mode 100755 iptables/tests/shell/testcases/ipt-restore/0016-concurrent-restores_0
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 70be9ba908edc..9424c181d17cc 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -265,7 +265,6 @@ struct obj_update {
- 	struct list_head	head;
- 	enum obj_update_type	type:8;
- 	uint8_t			skip:1;
--	uint8_t			implicit:1;
- 	unsigned int		seq;
- 	union {
- 		struct nftnl_table	*table;
-@@ -1634,7 +1633,7 @@ struct nftnl_set *nft_set_batch_lookup_byid(struct nft_handle *h,
- 
- static void
- __nft_rule_flush(struct nft_handle *h, const char *table,
--		 const char *chain, bool verbose, bool implicit)
-+		 const char *chain, bool verbose, bool skip)
+Simon, Pablo, please review and apply!
+
+Before v6 this patch was named
+"ipvs: Add traffic statistic up even it is VS/DR or VS/TUN mode"
+
+Changes:
+v1: support DR/TUN mode statistic
+v2: ip_vs_conn_out_get handles DR/TUN mode's conn
+v3: fix checkpatch
+v4, v5: restructure and optimise this feature
+v6: rewrite subject and patch description
+v7: adjust changelogs and order of some local vars
+v8: fix patch format
+
+ net/netfilter/ipvs/ip_vs_conn.c | 18 +++++++++++++++---
+ net/netfilter/ipvs/ip_vs_core.c | 19 +++++++------------
+ 2 files changed, 22 insertions(+), 15 deletions(-)
+
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index a90b8eac16ac..c100c6b112c8 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -402,6 +402,8 @@ struct ip_vs_conn *ip_vs_conn_out_get(const struct ip_vs_conn_param *p)
  {
- 	struct obj_update *obj;
- 	struct nftnl_rule *r;
-@@ -1656,7 +1655,7 @@ __nft_rule_flush(struct nft_handle *h, const char *table,
- 		return;
- 	}
+ 	unsigned int hash;
+ 	struct ip_vs_conn *cp, *ret=NULL;
++	const union nf_inet_addr *saddr;
++	__be16 sport;
  
--	obj->implicit = implicit;
-+	obj->skip = skip;
- }
+ 	/*
+ 	 *	Check for "full" addressed entries
+@@ -411,10 +413,20 @@ struct ip_vs_conn *ip_vs_conn_out_get(const struct ip_vs_conn_param *p)
+ 	rcu_read_lock();
  
- struct nft_rule_flush_data {
-@@ -1759,19 +1758,14 @@ int nft_chain_user_add(struct nft_handle *h, const char *chain, const char *tabl
- int nft_chain_restore(struct nft_handle *h, const char *chain, const char *table)
+ 	hlist_for_each_entry_rcu(cp, &ip_vs_conn_tab[hash], c_list) {
+-		if (p->vport == cp->cport && p->cport == cp->dport &&
+-		    cp->af == p->af &&
++		if (p->vport != cp->cport)
++			continue;
++
++		if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ) {
++			sport = cp->vport;
++			saddr = &cp->vaddr;
++		} else {
++			sport = cp->dport;
++			saddr = &cp->daddr;
++		}
++
++		if (p->cport == sport && cp->af == p->af &&
+ 		    ip_vs_addr_equal(p->af, p->vaddr, &cp->caddr) &&
+-		    ip_vs_addr_equal(p->af, p->caddr, &cp->daddr) &&
++		    ip_vs_addr_equal(p->af, p->caddr, saddr) &&
+ 		    p->protocol == cp->protocol &&
+ 		    cp->ipvs == p->ipvs) {
+ 			if (!__ip_vs_conn_get(cp))
+diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+index e3668a6e54e4..cc3c275934f4 100644
+--- a/net/netfilter/ipvs/ip_vs_core.c
++++ b/net/netfilter/ipvs/ip_vs_core.c
+@@ -875,7 +875,7 @@ static int handle_response_icmp(int af, struct sk_buff *skb,
+ 	unsigned int verdict = NF_DROP;
+ 
+ 	if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ)
+-		goto ignore_cp;
++		goto after_nat;
+ 
+ 	/* Ensure the checksum is correct */
+ 	if (!skb_csum_unnecessary(skb) && ip_vs_checksum_complete(skb, ihl)) {
+@@ -901,6 +901,7 @@ static int handle_response_icmp(int af, struct sk_buff *skb,
+ 	if (ip_vs_route_me_harder(cp->ipvs, af, skb, hooknum))
+ 		goto out;
+ 
++after_nat:
+ 	/* do the statistics and put it back */
+ 	ip_vs_out_stats(cp, skb);
+ 
+@@ -909,8 +910,6 @@ static int handle_response_icmp(int af, struct sk_buff *skb,
+ 		ip_vs_notrack(skb);
+ 	else
+ 		ip_vs_update_conntrack(skb, cp, 0);
+-
+-ignore_cp:
+ 	verdict = NF_ACCEPT;
+ 
+ out:
+@@ -1276,6 +1275,9 @@ handle_response(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
  {
- 	struct nftnl_chain_list *list;
-+	struct obj_update *obj;
- 	struct nftnl_chain *c;
- 	bool created = false;
+ 	struct ip_vs_protocol *pp = pd->pp;
  
- 	nft_xt_builtin_init(h, table);
++	if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ)
++		goto after_nat;
++
+ 	IP_VS_DBG_PKT(11, af, pp, skb, iph->off, "Outgoing packet");
  
- 	c = nft_chain_find(h, table, chain);
--	if (c) {
--		/* Apparently -n still flushes existing user defined
--		 * chains that are redefined.
--		 */
--		if (h->noflush)
--			__nft_rule_flush(h, table, chain, false, true);
--	} else {
-+	if (!c) {
- 		c = nftnl_chain_alloc();
- 		if (!c)
- 			return 0;
-@@ -1779,20 +1773,26 @@ int nft_chain_restore(struct nft_handle *h, const char *chain, const char *table
- 		nftnl_chain_set_str(c, NFTNL_CHAIN_TABLE, table);
- 		nftnl_chain_set_str(c, NFTNL_CHAIN_NAME, chain);
- 		created = true;
+ 	if (skb_ensure_writable(skb, iph->len))
+@@ -1316,6 +1318,7 @@ handle_response(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
+ 
+ 	IP_VS_DBG_PKT(10, af, pp, skb, iph->off, "After SNAT");
+ 
++after_nat:
+ 	ip_vs_out_stats(cp, skb);
+ 	ip_vs_set_state(cp, IP_VS_DIR_OUTPUT, skb, pd);
+ 	skb->ipvs_property = 1;
+@@ -1412,11 +1415,8 @@ ip_vs_out(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, in
+ 	cp = INDIRECT_CALL_1(pp->conn_out_get, ip_vs_conn_out_get_proto,
+ 			     ipvs, af, skb, &iph);
+ 
+-	if (likely(cp)) {
+-		if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ)
+-			goto ignore_cp;
++	if (likely(cp))
+ 		return handle_response(af, skb, pd, cp, &iph, hooknum);
 -	}
  
--	if (h->family == NFPROTO_BRIDGE)
--		nftnl_chain_set_u32(c, NFTNL_CHAIN_POLICY, NF_ACCEPT);
-+		list = nft_chain_list_get(h, table, chain);
-+		if (list)
-+			nftnl_chain_list_add(c, list);
-+	} else {
-+		/* If the chain should vanish meanwhile, kernel genid changes
-+		 * and the transaction is refreshed enabling the chain add
-+		 * object. With the handle still set, kernel interprets it as a
-+		 * chain replace job and errors since it is not found anymore.
-+		 */
-+		nftnl_chain_unset(c, NFTNL_CHAIN_HANDLE);
-+	}
+ 	/* Check for real-server-started requests */
+ 	if (atomic_read(&ipvs->conn_out_counter)) {
+@@ -1475,14 +1475,9 @@ ip_vs_out(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, in
+ 		}
+ 	}
  
--	if (!created)
--		return 1;
-+	__nft_rule_flush(h, table, chain, false, created);
- 
--	if (!batch_chain_add(h, NFT_COMPAT_CHAIN_USER_ADD, c))
-+	obj = batch_chain_add(h, NFT_COMPAT_CHAIN_USER_ADD, c);
-+	if (!obj)
- 		return 0;
- 
--	list = nft_chain_list_get(h, table, chain);
--	if (list)
--		nftnl_chain_list_add(c, list);
-+	obj->skip = !created;
- 
- 	/* the core expects 1 for success and 0 for error */
- 	return 1;
-@@ -2649,11 +2649,6 @@ static void nft_refresh_transaction(struct nft_handle *h)
- 	h->error.lineno = 0;
- 
- 	list_for_each_entry_safe(n, tmp, &h->obj_list, head) {
--		if (n->implicit) {
--			batch_obj_del(h, n);
--			continue;
--		}
+-out:
+ 	IP_VS_DBG_PKT(12, af, pp, skb, iph.off,
+ 		      "ip_vs_out: packet continues traversal as normal");
+ 	return NF_ACCEPT;
 -
- 		switch (n->type) {
- 		case NFT_COMPAT_TABLE_FLUSH:
- 			tablename = nftnl_table_get_str(n->table, NFTNL_TABLE_NAME);
-@@ -2679,14 +2674,22 @@ static void nft_refresh_transaction(struct nft_handle *h)
+-ignore_cp:
+-	__ip_vs_conn_put(cp);
+-	goto out;
+ }
  
- 			c = nft_chain_find(h, tablename, chainname);
- 			if (c) {
--				/* -restore -n flushes existing rules from redefined user-chain */
--				__nft_rule_flush(h, tablename,
--						 chainname, false, true);
- 				n->skip = 1;
- 			} else if (!c) {
- 				n->skip = 0;
- 			}
- 			break;
-+		case NFT_COMPAT_RULE_FLUSH:
-+			tablename = nftnl_rule_get_str(n->rule, NFTNL_RULE_TABLE);
-+			if (!tablename)
-+				continue;
-+
-+			chainname = nftnl_rule_get_str(n->rule, NFTNL_RULE_CHAIN);
-+			if (!chainname)
-+				continue;
-+
-+			n->skip = !nft_chain_find(h, tablename, chainname);
-+			break;
- 		case NFT_COMPAT_TABLE_ADD:
- 		case NFT_COMPAT_CHAIN_ADD:
- 		case NFT_COMPAT_CHAIN_ZERO:
-@@ -2698,7 +2701,6 @@ static void nft_refresh_transaction(struct nft_handle *h)
- 		case NFT_COMPAT_RULE_INSERT:
- 		case NFT_COMPAT_RULE_REPLACE:
- 		case NFT_COMPAT_RULE_DELETE:
--		case NFT_COMPAT_RULE_FLUSH:
- 		case NFT_COMPAT_SET_ADD:
- 		case NFT_COMPAT_RULE_LIST:
- 		case NFT_COMPAT_RULE_CHECK:
-diff --git a/iptables/tests/shell/testcases/ipt-restore/0016-concurrent-restores_0 b/iptables/tests/shell/testcases/ipt-restore/0016-concurrent-restores_0
-new file mode 100755
-index 0000000000000..53ec12fa368af
---- /dev/null
-+++ b/iptables/tests/shell/testcases/ipt-restore/0016-concurrent-restores_0
-@@ -0,0 +1,53 @@
-+#!/bin/bash
-+
-+set -e
-+
-+RS="*filter
-+:INPUT ACCEPT [12024:3123388]
-+:FORWARD ACCEPT [0:0]
-+:OUTPUT ACCEPT [12840:2144421]
-+:FOO - [0:0]
-+:BAR0 - [0:0]
-+:BAR1 - [0:0]
-+:BAR2 - [0:0]
-+:BAR3 - [0:0]
-+:BAR4 - [0:0]
-+:BAR5 - [0:0]
-+:BAR6 - [0:0]
-+:BAR7 - [0:0]
-+:BAR8 - [0:0]
-+:BAR9 - [0:0]
-+"
-+
-+RS1="$RS
-+-X BAR3
-+-X BAR6
-+-X BAR9
-+-A FOO -s 9.9.0.1/32 -j BAR1
-+-A FOO -s 9.9.0.2/32 -j BAR2
-+-A FOO -s 9.9.0.4/32 -j BAR4
-+-A FOO -s 9.9.0.5/32 -j BAR5
-+-A FOO -s 9.9.0.7/32 -j BAR7
-+-A FOO -s 9.9.0.8/32 -j BAR8
-+COMMIT
-+"
-+
-+RS2="$RS
-+-X BAR2
-+-X BAR5
-+-X BAR7
-+-A FOO -s 9.9.0.1/32 -j BAR1
-+-A FOO -s 9.9.0.3/32 -j BAR3
-+-A FOO -s 9.9.0.4/32 -j BAR4
-+-A FOO -s 9.9.0.6/32 -j BAR6
-+-A FOO -s 9.9.0.8/32 -j BAR8
-+-A FOO -s 9.9.0.9/32 -j BAR9
-+COMMIT
-+"
-+
-+for n in $(seq 1 10); do
-+	$XT_MULTI iptables-restore --noflush -w <<< "$RS1" &
-+	$XT_MULTI iptables-restore --noflush -w <<< "$RS2" &
-+	wait -n
-+	wait -n
-+done
+ /*
 -- 
-2.28.0
+2.26.2
+
 
