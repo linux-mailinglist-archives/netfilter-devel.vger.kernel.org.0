@@ -2,162 +2,76 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11886284B13
-	for <lists+netfilter-devel@lfdr.de>; Tue,  6 Oct 2020 13:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF888284B68
+	for <lists+netfilter-devel@lfdr.de>; Tue,  6 Oct 2020 14:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgJFLqh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 6 Oct 2020 07:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgJFLqh (ORCPT
+        id S1726248AbgJFMLH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 6 Oct 2020 08:11:07 -0400
+Received: from mail-io1-f79.google.com ([209.85.166.79]:53441 "EHLO
+        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726128AbgJFMLH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 6 Oct 2020 07:46:37 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7878EC061755
-        for <netfilter-devel@vger.kernel.org>; Tue,  6 Oct 2020 04:46:37 -0700 (PDT)
-Received: from localhost ([::1]:60856 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.94)
-        (envelope-from <phil@nwl.cc>)
-        id 1kPlQR-0000Bi-Hh; Tue, 06 Oct 2020 13:46:35 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2] libxtables: Make sure extensions register in revision order
-Date:   Tue,  6 Oct 2020 14:07:48 +0200
-Message-Id: <20201006120748.22006-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200922225341.8976-2-phil@nwl.cc>
-References: <20200922225341.8976-2-phil@nwl.cc>
+        Tue, 6 Oct 2020 08:11:07 -0400
+Received: by mail-io1-f79.google.com with SMTP id x1so6990336iov.20
+        for <netfilter-devel@vger.kernel.org>; Tue, 06 Oct 2020 05:11:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=EhCOsm/XwK9KhdukuQOyPPhHwiTYn0fSo6dMXBzIANg=;
+        b=WMCcSgSohpwAhkU+8c7wYHYMp9eR60hq6AQxbOBUyYx3S4phN2VKYbq+QSFUftn4c4
+         TRGh1ZTXhIQYPmOiFTCiacIZUoKl/l02wBUObrs0sFVbYN9JmiRom4VERNQuUK7CVVWK
+         aE6XVmEXQ/6aSw7EUUcsS9H0usoWlqSDLZ6U/ckEwOwp+1iF2bjzdM4kMun4huNxoMK2
+         8SwOoP5sT/seuLYbxgvythzkldkcH3Qk+Je343rQaa1JJR7xau6IZ45z/WeN9EXRRYZw
+         CzVMP+GwCgemsDvv2xKzbWJ0ocdXyWy08YvpOdImMm49NgVYlIQ27p9VYKN/bRVDn3cX
+         6a1Q==
+X-Gm-Message-State: AOAM531JmrK7ke79ZgqBEP8OaXUTFcO4ebdQmfWFOefMASjTMLKGcL+d
+        V/YrnWhvVkLm0j35aFp5y/MRXgNwZ91uJ9KdnsYvIW3A77rQ
+X-Google-Smtp-Source: ABdhPJw+2KHWj8oxMC2Me2es2RQkss+2IPVOYHE5N1uYrNZ/tX99ER7MjGnPIDOC6uyhLER6SZk8Yb5UPmwHtKfBCzr0BFKu+SWq
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:9fcc:: with SMTP id z73mr3339261ilk.234.1601986266354;
+ Tue, 06 Oct 2020 05:11:06 -0700 (PDT)
+Date:   Tue, 06 Oct 2020 05:11:06 -0700
+In-Reply-To: <0000000000005f92b905b0fc1a5d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000575a2e05b0ff7e79@google.com>
+Subject: Re: WARNING in ieee80211_check_rate_mask
+From:   syzbot <syzbot+be0e03ca215b06199629@syzkaller.appspotmail.com>
+To:     blogic@openwrt.org, clang-built-linux@googlegroups.com,
+        coreteam@netfilter.org, davem@davemloft.net,
+        johannes@sipsolutions.net, kaber@trash.net,
+        kadlec@blackhole.kfki.hu, kuba@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-wireless@vger.kernel.org,
+        matthias.bgg@gmail.com, natechancellor@gmail.com, nbd@openwrt.org,
+        ndesaulniers@google.com, nelson.chang@mediatek.com,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Insert extensions into pending lists in ordered fashion: Group by
-extension name (and, for matches, family) and order groups by descending
-revision number.
+syzbot has bisected this issue to:
 
-This allows to simplify the later full registration considerably. Since
-that involves kernel compatibility checks, the extra cycles here pay off
-eventually.
+commit 983e1a6c95abf8058d26149a928578b720c77bce
+Author: Nelson Chang <nelson.chang@mediatek.com>
+Date:   Thu Oct 6 11:44:02 2016 +0000
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
-Changes since v1:
-- Fix wrong insertion order for arrays with ascending revision: If
-  pending extension list was empty, new lowest revision items were
-  always inserted first.
-- Add some comments explaining the algorithm.
----
- libxtables/xtables.c | 71 +++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 64 insertions(+), 7 deletions(-)
+    net: ethernet: mediatek: get hw lro capability by the chip id instead of by the dtsi
 
-diff --git a/libxtables/xtables.c b/libxtables/xtables.c
-index 8907ba2069be7..de52e3e2bbc15 100644
---- a/libxtables/xtables.c
-+++ b/libxtables/xtables.c
-@@ -948,8 +948,14 @@ static void xtables_check_options(const char *name, const struct option *opt)
- 		}
- }
- 
-+static int xtables_match_prefer(const struct xtables_match *a,
-+				const struct xtables_match *b);
-+
- void xtables_register_match(struct xtables_match *me)
- {
-+	struct xtables_match **pos;
-+	bool seen_myself = false;
-+
- 	if (me->next) {
- 		fprintf(stderr, "%s: match \"%s\" already registered\n",
- 			xt_params->program_name, me->name);
-@@ -1001,10 +1007,34 @@ void xtables_register_match(struct xtables_match *me)
- 	if (me->extra_opts != NULL)
- 		xtables_check_options(me->name, me->extra_opts);
- 
--
--	/* place on linked list of matches pending full registration */
--	me->next = xtables_pending_matches;
--	xtables_pending_matches = me;
-+	/* order into linked list of matches pending full registration */
-+	for (pos = &xtables_pending_matches; *pos; pos = &(*pos)->next) {
-+		/* group by name and family */
-+		if (strcmp(me->name, (*pos)->name) ||
-+		    me->family != (*pos)->family) {
-+			if (seen_myself)
-+				break; /* end of own group, append to it */
-+			continue;
-+		}
-+		/* found own group */
-+		seen_myself = true;
-+		if (xtables_match_prefer(me, *pos) >= 0)
-+			break; /* put preferred items first in group */
-+	}
-+	/* if own group was not found, prepend item */
-+	if (!*pos && !seen_myself)
-+		pos = &xtables_pending_matches;
-+
-+	me->next = *pos;
-+	*pos = me;
-+#ifdef DEBUG
-+	printf("%s: inserted match %s (family %d, revision %d):\n",
-+			__func__, me->name, me->family, me->revision);
-+	for (pos = &xtables_pending_matches; *pos; pos = &(*pos)->next) {
-+		printf("%s:\tmatch %s (family %d, revision %d)\n", __func__,
-+		       (*pos)->name, (*pos)->family, (*pos)->revision);
-+	}
-+#endif
- }
- 
- /**
-@@ -1143,6 +1173,9 @@ void xtables_register_matches(struct xtables_match *match, unsigned int n)
- 
- void xtables_register_target(struct xtables_target *me)
- {
-+	struct xtables_target **pos;
-+	bool seen_myself = false;
-+
- 	if (me->next) {
- 		fprintf(stderr, "%s: target \"%s\" already registered\n",
- 			xt_params->program_name, me->name);
-@@ -1198,9 +1231,33 @@ void xtables_register_target(struct xtables_target *me)
- 	if (me->family != afinfo->family && me->family != AF_UNSPEC)
- 		return;
- 
--	/* place on linked list of targets pending full registration */
--	me->next = xtables_pending_targets;
--	xtables_pending_targets = me;
-+	/* order into linked list of targets pending full registration */
-+	for (pos = &xtables_pending_targets; *pos; pos = &(*pos)->next) {
-+		/* group by name */
-+		if (!extension_cmp(me->name, (*pos)->name, (*pos)->family)) {
-+			if (seen_myself)
-+				break; /* end of own group, append to it */
-+			continue;
-+		}
-+		/* found own group */
-+		seen_myself = true;
-+		if (xtables_target_prefer(me, *pos) >= 0)
-+			break; /* put preferred items first in group */
-+	}
-+	/* if own group was not found, prepend item */
-+	if (!*pos && !seen_myself)
-+		pos = &xtables_pending_targets;
-+
-+	me->next = *pos;
-+	*pos = me;
-+#ifdef DEBUG
-+	printf("%s: inserted target %s (family %d, revision %d):\n",
-+			__func__, me->name, me->family, me->revision);
-+	for (pos = &xtables_pending_targets; *pos; pos = &(*pos)->next) {
-+		printf("%s:\ttarget %s (family %d, revision %d)\n", __func__,
-+		       (*pos)->name, (*pos)->family, (*pos)->revision);
-+	}
-+#endif
- }
- 
- static bool xtables_fully_register_pending_target(struct xtables_target *me)
--- 
-2.28.0
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1639e0d0500000
+start commit:   c2568c8c Merge branch 'net-Constify-struct-genl_small_ops'
+git tree:       net-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1539e0d0500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1139e0d0500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e6c5266df853ae
+dashboard link: https://syzkaller.appspot.com/bug?extid=be0e03ca215b06199629
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1790e83b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111a5bc7900000
 
+Reported-by: syzbot+be0e03ca215b06199629@syzkaller.appspotmail.com
+Fixes: 983e1a6c95ab ("net: ethernet: mediatek: get hw lro capability by the chip id instead of by the dtsi")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
