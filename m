@@ -2,66 +2,66 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A3C284CAB
-	for <lists+netfilter-devel@lfdr.de>; Tue,  6 Oct 2020 15:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED197285001
+	for <lists+netfilter-devel@lfdr.de>; Tue,  6 Oct 2020 18:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgJFNpd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 6 Oct 2020 09:45:33 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:40070 "EHLO mx1.riseup.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFNpc (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 6 Oct 2020 09:45:32 -0400
-Received: from capuchin.riseup.net (capuchin-pn.riseup.net [10.0.1.176])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4C5Jd71Wx5zFmfB;
-        Tue,  6 Oct 2020 06:45:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1601991931; bh=x8JKkTy+Ukd7TWeWAl4MdqYr4aN/QKXQdQAGu/82Vs4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=BToKl7OSSC9fWvUgKpL0i5HxTfk+lYBbDWMf5UrjiYhSwulIMiO04v5ozYtm47UIf
-         exT1MmVhp778F+mGxWN0flyTMjKb9kQb74GS7f8nPy4w0SRjnPTV4RHDM7mXr4ykms
-         2hjGDgIcxECyURnDyBk0hlBUAQlh+YdCdZiQ6xdU=
-X-Riseup-User-ID: 907B580780E49C65E2ADDA6884E7C217377A1B7ECFEAC0B00B8734351CFE98A5
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by capuchin.riseup.net (Postfix) with ESMTPSA id 4C5Jcm2T4Xz8wWt;
-        Tue,  6 Oct 2020 06:45:12 -0700 (PDT)
-Subject: Re: [PATCH 1/1] Solves Bug 1462 - `nft -j list set` does not show
- counters
-To:     Gopal Yadav <gopunop@gmail.com>
-Cc:     netfilter-devel@vger.kernel.org
-References: <20201003125841.5138-1-gopunop@gmail.com>
- <2c604efb-39a3-41de-f0a6-a44c703a20df@riseup.net>
- <CAAUOv8iAPJm1mTPjFamEVQAOh1y-ahExN_+4Pk2rPkELwyxBEw@mail.gmail.com>
-From:   "Jose M. Guisado" <guigom@riseup.net>
-Message-ID: <b9e9fb11-1bb4-065b-4e64-f10665820606@riseup.net>
-Date:   Tue, 6 Oct 2020 15:45:10 +0200
+        id S1725970AbgJFQhz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 6 Oct 2020 12:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgJFQhy (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 6 Oct 2020 12:37:54 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 06 Oct 2020 09:37:53 PDT
+Received: from mailgate1.med.uni-jena.de (mailgate1.med.uni-jena.de [IPv6:2001:638:909:be:141:35:213:203])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DAFC061755
+        for <netfilter-devel@vger.kernel.org>; Tue,  6 Oct 2020 09:37:53 -0700 (PDT)
+IronPort-SDR: JVdufW1Gqhhk6M+JAuj9bSeWEiPgPTv2JhZAIdQTwAOfUEbDwNdOqSxC98O3f+DZMOf0cX5XGe
+ r4H5/r3HNIPA==
+Received: from sm-exch4.krz.uni-jena.de ([172.20.160.50])
+  by mailgate1.med.uni-jena.de with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Oct 2020 18:36:47 +0200
+Received: from sm-exch1.krz.uni-jena.de (172.20.160.48) by
+ sm-exch4.krz.uni-jena.de (172.20.160.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Tue, 6 Oct 2020 18:36:46 +0200
+Received: from sm-exch1.krz.uni-jena.de ([172.20.160.48]) by
+ sm-exch1.krz.uni-jena.de ([172.20.160.48]) with mapi id 15.01.2106.002; Tue,
+ 6 Oct 2020 18:36:46 +0200
+From:   "Hirschberg, Sylvia" <Sylvia.Hirschberg@med.uni-jena.de>
+Subject: =?iso-8859-1?Q?Actualizaci=F3n_necesaria?=
+Thread-Topic: =?iso-8859-1?Q?Actualizaci=F3n_necesaria?=
+Thread-Index: AQHWm/7hRS9lGADTIU2Ix9pls0SfGA==
+Date:   Tue, 6 Oct 2020 16:36:46 +0000
+Message-ID: <a387093db76e4d21ad3ac4f678cc14dd@med.uni-jena.de>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.20.174.10]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <CAAUOv8iAPJm1mTPjFamEVQAOh1y-ahExN_+4Pk2rPkELwyxBEw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 6/10/20 14:42, Gopal Yadav wrote:
-> Should I always run ASAN before submitting patches as a regular practice?
+su buzón ha superado el límite de almacenamiento
+que es de 20 GB según lo establecido por nuestro administrador,
+actualmente utiliza 20,9 GB, puede
+no poder enviar o recibir correo nuevo hasta
+Vuelve a validar su buzón.
 
-I usually check for leaks when submitting patches, using either ASAN or 
-Valgrind.
+   para volver a validar su buzón por favor
+haga clic en el enlace y complete el formulario como
+instruido
 
-> json_object_update_missing_new() was raising a warning so I have used
-> json_object_update_missing() in the updated patch.
+https://unlpedu.wixsite.com/mysite/copy-of-contact
 
-I've been unable to reproduce said warning when using 
-json_object_update_missing_new.
+Gracias y perdón por las molestias
+administrador del sistema de correo web.
 
-You need to use the *_new function, because it will call json_decref on 
-tmp for you. If not the reference to tmp is leaked.
-
-You should version your patches, have a look at the patch submission 
-guidelines in the nftables wiki [1]
-
-[1] 
-https://wiki.nftables.org/wiki-nftables/index.php/Portal:DeveloperDocs/Patch_submission_guidelines
+--
+Universitätsklinikum Jena - Bachstrasse 18 - D-07743 Jena
+Die gesetzlichen Pflichtangaben finden Sie unter https://www.uniklinikum-jena.de/UKJ_Pflichtangaben.html
