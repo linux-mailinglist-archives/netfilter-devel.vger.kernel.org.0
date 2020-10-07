@@ -2,65 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353FB285515
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Oct 2020 02:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9BE285534
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Oct 2020 02:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgJGACT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 6 Oct 2020 20:02:19 -0400
-Received: from correo.us.es ([193.147.175.20]:46210 "EHLO mail.us.es"
+        id S1726867AbgJGAKt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 6 Oct 2020 20:10:49 -0400
+Received: from correo.us.es ([193.147.175.20]:46964 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgJGACT (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:02:19 -0400
+        id S1726864AbgJGAKh (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 6 Oct 2020 20:10:37 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 2FC371F0CE1
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Oct 2020 02:02:18 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id AE2841F0CE8
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Oct 2020 02:10:35 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 212CCDA73D
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Oct 2020 02:02:18 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id A1D1DDA78D
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Oct 2020 02:10:35 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 16947DA730; Wed,  7 Oct 2020 02:02:18 +0200 (CEST)
+        id 972F4DA78A; Wed,  7 Oct 2020 02:10:35 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1DA89DA722;
-        Wed,  7 Oct 2020 02:02:16 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 84224DA704;
+        Wed,  7 Oct 2020 02:10:33 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 07 Oct 2020 02:02:16 +0200 (CEST)
+ Wed, 07 Oct 2020 02:10:33 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 0071542EF42A;
-        Wed,  7 Oct 2020 02:02:15 +0200 (CEST)
-Date:   Wed, 7 Oct 2020 02:02:15 +0200
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPSA id 5A10142EF42A;
+        Wed,  7 Oct 2020 02:10:33 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     netfilter-devel@vger.kernel.org,
-        Serhey Popovych <serhe.popovych@gmail.com>
-Subject: Re: [iptables PATCH 0/3] libxtables: Fix for pointless socket() calls
-Message-ID: <20201007000215.GB2143@salvia>
-References: <20200922225341.8976-1-phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
+Subject: [PATCH 0/4] Netfilter fixes for net
+Date:   Wed,  7 Oct 2020 02:10:23 +0200
+Message-Id: <20201007001027.2530-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200922225341.8976-1-phil@nwl.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 12:53:38AM +0200, Phil Sutter wrote:
-> Patch 1 establishes the needed sorting in pending extension lists,
-> patch 2 then simplifies xtables_fully_register_pending_*() functions.
-> Patch 3 is strictly speaking not necessary but nice to have as it
-> streamlines array-based extension registrators with the extension
-> sorting.
+Hi,
 
-Series with patch 1 (v2) LGTM.
+The following patchset contains Netfilter selftests fixes from
+Fabian Frederick:
+
+1) Extend selftest nft_meta.sh to check for meta cpu.
+
+2) Fix selftest nft_meta.sh error reporting.
+
+3) Fix shellcheck warnings in selftest nft_meta.sh.
+
+4) Extend selftest nft_meta.sh to check for meta time.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+
+Thank you!
+
+----------------------------------------------------------------
+
+The following changes since commit 25b8ab916dd7a1f490b603d68c7765c06f9ed9e1:
+
+  Merge tag 'mac80211-for-net-2020-09-21' of git://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211 (2020-09-21 14:54:35 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git HEAD
+
+for you to fetch changes up to 48d072c4e8cdb542ade06727c31d7851bcc40a89:
+
+  selftests: netfilter: add time counter check (2020-09-30 11:49:18 +0200)
+
+----------------------------------------------------------------
+Fabian Frederick (4):
+      selftests: netfilter: add cpu counter check
+      selftests: netfilter: fix nft_meta.sh error reporting
+      selftests: netfilter: remove unused cnt and simplify command testing
+      selftests: netfilter: add time counter check
+
+ tools/testing/selftests/netfilter/nft_meta.sh | 32 +++++++++++++++++++++------
+ 1 file changed, 25 insertions(+), 7 deletions(-)
