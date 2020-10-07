@@ -2,48 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19162285531
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Oct 2020 02:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7F1285541
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Oct 2020 02:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgJGAKn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 6 Oct 2020 20:10:43 -0400
-Received: from correo.us.es ([193.147.175.20]:46968 "EHLO mail.us.es"
+        id S1727114AbgJGALI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 6 Oct 2020 20:11:08 -0400
+Received: from correo.us.es ([193.147.175.20]:47004 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726877AbgJGAKj (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:10:39 -0400
+        id S1726949AbgJGAKo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 6 Oct 2020 20:10:44 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 2488B1F0CE1
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Oct 2020 02:10:37 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id 4666B1F0CF5
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Oct 2020 02:10:38 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1569ADA78B
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Oct 2020 02:10:37 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 3A459DA72F
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Oct 2020 02:10:38 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 0B219DA722; Wed,  7 Oct 2020 02:10:37 +0200 (CEST)
+        id 2FBEFDA78A; Wed,  7 Oct 2020 02:10:38 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
         autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id ED294DA73D;
-        Wed,  7 Oct 2020 02:10:34 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 0A538DA704;
+        Wed,  7 Oct 2020 02:10:36 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 07 Oct 2020 02:10:34 +0200 (CEST)
+ Wed, 07 Oct 2020 02:10:36 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from localhost.localdomain (unknown [90.77.255.23])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id C1C5242EF42B;
-        Wed,  7 Oct 2020 02:10:34 +0200 (CEST)
+        by entrada.int (Postfix) with ESMTPSA id D48A942EF42A;
+        Wed,  7 Oct 2020 02:10:35 +0200 (CEST)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH 2/4] selftests: netfilter: fix nft_meta.sh error reporting
-Date:   Wed,  7 Oct 2020 02:10:25 +0200
-Message-Id: <20201007001027.2530-3-pablo@netfilter.org>
+Subject: [PATCH 3/4] selftests: netfilter: remove unused cnt and simplify command testing
+Date:   Wed,  7 Oct 2020 02:10:26 +0200
+Message-Id: <20201007001027.2530-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201007001027.2530-1-pablo@netfilter.org>
 References: <20201007001027.2530-1-pablo@netfilter.org>
@@ -56,40 +56,41 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: Fabian Frederick <fabf@skynet.be>
 
-When some test directly done with check_one_counter() fails,
-counter variable is undefined. This patch calls ip with cname
-which avoids errors like:
-FAIL: oskuidcounter, want "packets 2", got
-Error: syntax error, unexpected newline, expecting string
-list counter inet filter
-                        ^
-Error is now correctly rendered:
-FAIL: oskuidcounter, want "packets 2", got
-table inet filter {
-	counter oskuidcounter {
-		packets 1 bytes 84
-	}
-}
+cnt was not used in nft_meta.sh
+This patch also fixes 2 shellcheck SC2181 warnings:
+"check exit code directly with e.g. 'if mycmd;', not indirectly with
+$?."
 
 Signed-off-by: Fabian Frederick <fabf@skynet.be>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- tools/testing/selftests/netfilter/nft_meta.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/netfilter/nft_meta.sh | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/netfilter/nft_meta.sh b/tools/testing/selftests/netfilter/nft_meta.sh
-index 17b2d6eaa204..1f5b46542c14 100755
+index 1f5b46542c14..18a1abca3262 100755
 --- a/tools/testing/selftests/netfilter/nft_meta.sh
 +++ b/tools/testing/selftests/netfilter/nft_meta.sh
-@@ -90,7 +90,7 @@ check_one_counter()
- 	if [ $? -ne 0 ];then
+@@ -7,8 +7,7 @@ ksft_skip=4
+ sfx=$(mktemp -u "XXXXXXXX")
+ ns0="ns0-$sfx"
+ 
+-nft --version > /dev/null 2>&1
+-if [ $? -ne 0 ];then
++if ! nft --version > /dev/null 2>&1; then
+ 	echo "SKIP: Could not run test without nft tool"
+ 	exit $ksft_skip
+ fi
+@@ -86,8 +85,7 @@ check_one_counter()
+ 	local want="packets $2"
+ 	local verbose="$3"
+ 
+-	cnt=$(ip netns exec "$ns0" nft list counter inet filter $cname | grep -q "$want")
+-	if [ $? -ne 0 ];then
++	if ! ip netns exec "$ns0" nft list counter inet filter $cname | grep -q "$want"; then
  		echo "FAIL: $cname, want \"$want\", got"
  		ret=1
--		ip netns exec "$ns0" nft list counter inet filter $counter
-+		ip netns exec "$ns0" nft list counter inet filter $cname
- 	fi
- }
- 
+ 		ip netns exec "$ns0" nft list counter inet filter $cname
 -- 
 2.20.1
 
