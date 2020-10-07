@@ -2,118 +2,107 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1044285540
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Oct 2020 02:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2022858A7
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Oct 2020 08:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgJGALJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 6 Oct 2020 20:11:09 -0400
-Received: from correo.us.es ([193.147.175.20]:47002 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726785AbgJGAKm (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:10:42 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 6E99E1F0CF6
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Oct 2020 02:10:39 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 62117DA722
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Oct 2020 02:10:39 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 57C65DA730; Wed,  7 Oct 2020 02:10:39 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 3E86FDA722;
-        Wed,  7 Oct 2020 02:10:37 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 07 Oct 2020 02:10:37 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 1598D42EF42A;
-        Wed,  7 Oct 2020 02:10:37 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH 4/4] selftests: netfilter: add time counter check
-Date:   Wed,  7 Oct 2020 02:10:27 +0200
-Message-Id: <20201007001027.2530-5-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201007001027.2530-1-pablo@netfilter.org>
-References: <20201007001027.2530-1-pablo@netfilter.org>
+        id S1727351AbgJGG2Q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 7 Oct 2020 02:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726598AbgJGG2O (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 7 Oct 2020 02:28:14 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB89C061755
+        for <netfilter-devel@vger.kernel.org>; Tue,  6 Oct 2020 23:28:13 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id g7so1132184iov.13
+        for <netfilter-devel@vger.kernel.org>; Tue, 06 Oct 2020 23:28:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u223+82v0+23KsIel4VnqhFRMivPDkIby33C7AFFGxU=;
+        b=JHSnXSr7wEHCUGwdvioJCokfDUyzk9fDDdXZGod7tH0NiB7m4Q8m5x6YZrLz5UbSUU
+         JT2VVJk2bXG0wiJiw/DR4n9+ehpKvtj1NI1YSNh38nWYV8FPqizu7Tj8pBl6Uax4TILv
+         bqPhtxWspLxx1sSloJr9r3weMu50JK9L0jdHWoYQUi7W1rEihHaM+uMWdCvGn26DswyR
+         Di2+/GhOIir0k7mDIK4lb0CY/88aXtuVH4QfhqCtvOZG1nTBOdXGcvIhEtQM8W0kxAx2
+         xqHt5sXWI93/cbC7aiSTAOn5touK9xyyT4PzqvhM5XV9IwEu5nEFTRBWKuEXQg1/0i1X
+         NFcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u223+82v0+23KsIel4VnqhFRMivPDkIby33C7AFFGxU=;
+        b=loT7ytvakXd073HojV6WJiwRSwuwdtdswGoM0Z7S8bnZ8IB4HGI08hlmolqy+Av4vj
+         SN3ycOUmsULwtabbsb08/VVrloREqDuHwbH/5ewE8A+rtpvGyj4iDXoBE7fylOez2urD
+         Wx/LkN9qYlJdRvecFmra0keGXpTOJVDthaHL+p3mLbCjxVycBK58lW1TRqk/znmHa6Fe
+         Unk3ru2a9eEgjT7UhJT9VSqUNnNu3vrownpxEBujIqmsRq7628URrX2FRHDJfBIvk1sH
+         sf7er8LveMnZPUpI289pQcXahMAElAc/h7QE3rBDM4PcANypOumpO+qYK6R9Z47999hC
+         mk8g==
+X-Gm-Message-State: AOAM533M7yYbB3RnpMMIrQRODOsFojRRb5FyhU7FWKNwENQ6AYm24yp/
+        F9tKjwYGs0MADxjwwzYqU3aXW+KCGMifO6cUU1M=
+X-Google-Smtp-Source: ABdhPJy36DO4L5mi/HLdxAWQ/PHX1N6mfg6/Fz46p0J5NWS0XrQbeZA4+60F1gMyYF8JDIKqBGIAz+/n0TQo9eE/C0g=
+X-Received: by 2002:a05:6638:210f:: with SMTP id n15mr1534705jaj.41.1602052092281;
+ Tue, 06 Oct 2020 23:28:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+References: <20201003125841.5138-1-gopunop@gmail.com> <2c604efb-39a3-41de-f0a6-a44c703a20df@riseup.net>
+ <CAAUOv8iAPJm1mTPjFamEVQAOh1y-ahExN_+4Pk2rPkELwyxBEw@mail.gmail.com> <b9e9fb11-1bb4-065b-4e64-f10665820606@riseup.net>
+In-Reply-To: <b9e9fb11-1bb4-065b-4e64-f10665820606@riseup.net>
+From:   Gopal Yadav <gopunop@gmail.com>
+Date:   Wed, 7 Oct 2020 11:58:01 +0530
+Message-ID: <CAAUOv8gV4CZ9PZiRSkdg+acY1r7CPofpjUjZ72f6XdWfeiAd3w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] Solves Bug 1462 - `nft -j list set` does not show counters
+To:     "Jose M. Guisado" <guigom@riseup.net>
+Cc:     netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Fabian Frederick <fabf@skynet.be>
+On Tue, Oct 6, 2020 at 7:15 PM Jose M. Guisado <guigom@riseup.net> wrote:
+>
+> On 6/10/20 14:42, Gopal Yadav wrote:
+> > Should I always run ASAN before submitting patches as a regular practice?
+>
+> I usually check for leaks when submitting patches, using either ASAN or
+> Valgrind.
+>
+> > json_object_update_missing_new() was raising a warning so I have used
+> > json_object_update_missing() in the updated patch.
+>
+> I've been unable to reproduce said warning when using
+> json_object_update_missing_new.
+>
+> You need to use the *_new function, because it will call json_decref on
+> tmp for you. If not the reference to tmp is leaked.
 
-Check packets are correctly placed in current year.
-Also do a NULL check for another one.
+Since on using *_new() build fails, should I call json_decref(tmp)
+explicitly after json_object_update_missing()?
 
-Signed-off-by: Fabian Frederick <fabf@skynet.be>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- tools/testing/selftests/netfilter/nft_meta.sh | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+I couldn't get ASAN to run, but I ran valgrind by doing `valgrind nft
+list ruleset` on both versions, with & without json_decref(tmp). Both
+of them produce the same output which says no leaks:
 
-diff --git a/tools/testing/selftests/netfilter/nft_meta.sh b/tools/testing/selftests/netfilter/nft_meta.sh
-index 18a1abca3262..087f0e6e71ce 100755
---- a/tools/testing/selftests/netfilter/nft_meta.sh
-+++ b/tools/testing/selftests/netfilter/nft_meta.sh
-@@ -23,6 +23,8 @@ ip -net "$ns0" addr add 127.0.0.1 dev lo
- 
- trap cleanup EXIT
- 
-+currentyear=$(date +%G)
-+lastyear=$((currentyear-1))
- ip netns exec "$ns0" nft -f /dev/stdin <<EOF
- table inet filter {
- 	counter iifcount {}
-@@ -33,6 +35,8 @@ table inet filter {
- 	counter il4protocounter {}
- 	counter imarkcounter {}
- 	counter icpu0counter {}
-+	counter ilastyearcounter {}
-+	counter icurrentyearcounter {}
- 
- 	counter oifcount {}
- 	counter oifnamecount {}
-@@ -55,6 +59,8 @@ table inet filter {
- 		meta l4proto icmp counter name "il4protocounter"
- 		meta mark 42 counter name "imarkcounter"
- 		meta cpu 0 counter name "icpu0counter"
-+		meta time "$lastyear-01-01" - "$lastyear-12-31" counter name ilastyearcounter
-+		meta time "$currentyear-01-01" - "$currentyear-12-31" counter name icurrentyearcounter
- 	}
- 
- 	chain output {
-@@ -100,8 +106,7 @@ check_lo_counters()
- 
- 	for counter in iifcount iifnamecount iifgroupcount iiftypecount infproto4count \
- 		       oifcount oifnamecount oifgroupcount oiftypecount onfproto4count \
--		       il4protocounter \
--		       ol4protocounter \
-+		       il4protocounter icurrentyearcounter ol4protocounter \
- 	     ; do
- 		check_one_counter "$counter" "$want" "$verbose"
- 	done
-@@ -116,6 +121,7 @@ check_one_counter oskuidcounter "1" true
- check_one_counter oskgidcounter "1" true
- check_one_counter imarkcounter "1" true
- check_one_counter omarkcounter "1" true
-+check_one_counter ilastyearcounter "0" true
- 
- if [ $ret -eq 0 ];then
- 	echo "OK: nftables meta iif/oif counters at expected values"
--- 
-2.20.1
-
+==5967== Memcheck, a memory error detector
+==5967== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==5967== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==5967== Command: nft list ruleset
+==5967==
+table inet dev {
+    set ports_udp {
+        type inet_service
+        size 65536
+        flags dynamic,timeout
+        timeout 30d
+        elements = { 53 expires 29d6h14m26s268ms counter packets 0 bytes 0 }
+    }
+}
+==5967==
+==5967== HEAP SUMMARY:
+==5967==     in use at exit: 0 bytes in 0 blocks
+==5967==   total heap usage: 78 allocs, 78 frees, 390,728 bytes allocated
+==5967==
+==5967== All heap blocks were freed -- no leaks are possible
+==5967==
+==5967== For counts of detected and suppressed errors, rerun with: -v
+==5967== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
