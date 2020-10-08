@@ -2,66 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3C02874B9
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Oct 2020 15:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA2528763F
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Oct 2020 16:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730228AbgJHNB2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 8 Oct 2020 09:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
+        id S1730649AbgJHOjb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 8 Oct 2020 10:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730121AbgJHNB1 (ORCPT
+        with ESMTP id S1730353AbgJHOjb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:01:27 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A935BC061755
-        for <netfilter-devel@vger.kernel.org>; Thu,  8 Oct 2020 06:01:27 -0700 (PDT)
-Received: from localhost ([::1]:37662 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.94)
-        (envelope-from <phil@nwl.cc>)
-        id 1kQVXw-0004lt-VV; Thu, 08 Oct 2020 15:01:25 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH] libiptc: Avoid gcc-10 zero-length array warning
-Date:   Thu,  8 Oct 2020 15:01:16 +0200
-Message-Id: <20201008130116.25798-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.28.0
+        Thu, 8 Oct 2020 10:39:31 -0400
+X-Greylist: delayed 383 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 08 Oct 2020 07:39:31 PDT
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0A9C061755
+        for <netfilter-devel@vger.kernel.org>; Thu,  8 Oct 2020 07:39:31 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 87EBC58757E96; Thu,  8 Oct 2020 16:33:04 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id 871B760E6E48A;
+        Thu,  8 Oct 2020 16:33:04 +0200 (CEST)
+Date:   Thu, 8 Oct 2020 16:33:04 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Phil Sutter <phil@nwl.cc>
+cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH] libiptc: Avoid gcc-10 zero-length array
+ warning
+In-Reply-To: <20201008130116.25798-1-phil@nwl.cc>
+Message-ID: <s95qopq1-3o5o-oo9-1qso-osp024914p67@vanv.qr>
+References: <20201008130116.25798-1-phil@nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Gcc-10 doesn't like the use of zero-length arrays as last struct member
-to denote variable sized objects. The suggested alternative, namely to
-use a flexible array member as defined by C99, is problematic as that
-doesn't allow for said struct to be embedded into others. With the
-relevant structs being part of kernel UAPI, this can't be precluded
-though.
 
-The call to memcpy() which triggers the warning copies data from one
-struct xt_counters to another. Since this struct is flat and merely
-contains two u64 fields, One can use direct assignment instead which
-avoids the warning.
+On Thursday 2020-10-08 15:01, Phil Sutter wrote:
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- libiptc/libiptc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>Gcc-10 doesn't like the use of zero-length arrays as last struct member
+>to denote variable sized objects.
 
-diff --git a/libiptc/libiptc.c b/libiptc/libiptc.c
-index 5888201525213..ceeb017b39400 100644
---- a/libiptc/libiptc.c
-+++ b/libiptc/libiptc.c
-@@ -1169,7 +1169,7 @@ static int iptcc_compile_chain(struct xtc_handle *h, STRUCT_REPLACE *repl, struc
- 	else
- 		foot->target.verdict = RETURN;
- 	/* set policy-counters */
--	memcpy(&foot->e.counters, &c->counters, sizeof(STRUCT_COUNTERS));
-+	foot->e.counters = c->counters;
- 
- 	return 0;
- }
--- 
-2.28.0
+On the contrary. It does not complain about the declaration of T x[0],
+but about the write beyond the end of an array of size 0 (literally).
+Such past-end writes are Undefined Behavior by the standard, and tools
+like cov-scan (based on llvm I believe) report it just the same.
+
+That's why C99 probably had to come up with "T y[]"; the array is now
+of unspecified size rather than size 0. cov-scan agrees.
+
+Since GCC has retained "T x[0]" as an extension, it would be a gcc bug
+to warn about its own extension in conjunction with memcpy.
+
+
+>The suggested alternative, namely to
+>use a flexible array member as defined by C99, is problematic as that
+>doesn't allow for said struct to be embedded into others.
+
+Both T x[0] and T y[], in gcc, invoke the flexible scheme.
+
+Both share the "embedding problem" - i.e. by using the flexible array,
+you can accidentally access members of the surrounding struct.
+
+gcc only complains about this when combining "T y[]" with C++ mode.
+I find this to be an unusual choice and would suggest opening a bug.
+
+The reason T x[0], when embedded, in C++, does not elicit a warning
+is probably because it is already considered UB to access past-end-of-array
+(see above); and I raise the hypothesis that the GNU extension of T x[0] is
+actually only specified for C.
+
+Anyway, gcc-10/C mode does not reject embedding (and a number of maintainers
+have made it abundantly clear in the past they don't care if UAPI uses anti-C++
+"features"). Nonreject example:
+
+» cat x.c
+struct a2 {
+        int x;
+        int z[];
+};
+struct m {
+        struct a2 y;
+        long q;
+};
+» gcc -Wall -std=c11 -c -w -v x.c
+GNU C11 (SUSE Linux) version 10.2.1 20200825 [revision c0746a1beb1ba073c7981eb09f55b3d993b32e5c] (x86_64-suse-linux)
+»
+
 
