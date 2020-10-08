@@ -2,71 +2,54 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BAD287B03
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Oct 2020 19:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C2F287E1A
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Oct 2020 23:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729291AbgJHRcA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 8 Oct 2020 13:32:00 -0400
-Received: from correo.us.es ([193.147.175.20]:39150 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729179AbgJHRcA (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:32:00 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 1DE1718CDC3
-        for <netfilter-devel@vger.kernel.org>; Thu,  8 Oct 2020 19:31:59 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 0E5AEDA791
-        for <netfilter-devel@vger.kernel.org>; Thu,  8 Oct 2020 19:31:59 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 03E72DA73F; Thu,  8 Oct 2020 19:31:59 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id BBD95DA73F;
-        Thu,  8 Oct 2020 19:31:56 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 08 Oct 2020 19:31:56 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 9F7D542EF4E0;
-        Thu,  8 Oct 2020 19:31:56 +0200 (CEST)
-Date:   Thu, 8 Oct 2020 19:31:56 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Arturo Borrero Gonzalez <arturo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, phil@nwl.cc
-Subject: Re: [iptables PATCH] iptables-nft: fix basechain policy configuration
-Message-ID: <20201008173156.GA14654@salvia>
-References: <160163907669.18523.7311010971070291883.stgit@endurance>
+        id S1730023AbgJHVic (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 8 Oct 2020 17:38:32 -0400
+Received: from [58.87.100.240] ([58.87.100.240]:35424 "EHLO
+        mail.hebei-kuixing.com" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1729474AbgJHVib (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 8 Oct 2020 17:38:31 -0400
+X-Greylist: delayed 423 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Oct 2020 17:38:30 EDT
+Received: from localhost (unknown [127.0.0.1])
+        by mail.hebei-kuixing.com (Postfix) with ESMTP id 75B0160E53;
+        Thu,  8 Oct 2020 21:31:26 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at hebei-kuixing.com
+Received: from mail.hebei-kuixing.com ([127.0.0.1])
+        by localhost (mail.hebei-kuixing.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id O9HZUxCVQEaC; Fri,  9 Oct 2020 05:31:25 +0800 (CST)
+Received: from User (unknown [185.248.12.71])
+        by mail.hebei-kuixing.com (Postfix) with ESMTPA id E379E61393;
+        Fri,  9 Oct 2020 05:31:08 +0800 (CST)
+Reply-To: <kim.leang2011@yahoo.com>
+From:   " Kim Leang" <sales@hebei-kuixing.com>
+Subject: Greeting!
+Date:   Fri, 9 Oct 2020 00:31:22 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <160163907669.18523.7311010971070291883.stgit@endurance>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20201008213126.75B0160E53@mail.hebei-kuixing.com>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:44:36PM +0200, Arturo Borrero Gonzalez wrote:
-> From: Pablo Neira Ayuso <pablo@netfilter.org>
-> 
-> Previous to this patch, the basechain policy could not be properly configured if it wasn't
-> explictly set when loading the ruleset, leading to iptables-nft-restore (and ip6tables-nft-restore)
-> trying to send an invalid ruleset to the kernel.
+Greeting!
 
-I have applied this with some amendments to the test file to cover
-the --noflush case. I think this is a real problem there, where you
-can combine to apply incremental updates to the ruleset.
+I am contacting you to receive and share with me an abandoned fund ( $21,537.000.00 ) left in our bank by a deceased customer. I was going through the Internet search when I found your email address. My name is Mr. Kim Leang.
 
-For the --flush case, I still have doubts how to use this feature, not
-sure it is worth the effort to actually fix it.
+I want to utilize this opportunity and make use of this fund if I should present your name to the bank to stand as his business associate/ trustee for the fund to be released to you via Visa card for easy withdrawals in any VISA ATM machine anywhere in the World.
 
-We can revisit later, you can rewrite this later Phil.
+The bank will also give you international online transfer options. With these you can transfer the funds without any risk.
+
+Should you be interested in working with me in this project? Please reply back and let's benefit from this golden opportunity.You are my first contact. I shall wait a few days and if I do not hear from you, I shall look for another person.
+
+Thanks and have a nice day,
+Mr. Kim Leang.
