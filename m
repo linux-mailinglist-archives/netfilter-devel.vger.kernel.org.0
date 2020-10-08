@@ -2,54 +2,180 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C2F287E1A
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Oct 2020 23:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0302F287F3A
+	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Oct 2020 01:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730023AbgJHVic (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 8 Oct 2020 17:38:32 -0400
-Received: from [58.87.100.240] ([58.87.100.240]:35424 "EHLO
-        mail.hebei-kuixing.com" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1729474AbgJHVib (ORCPT
+        id S1731078AbgJHXlm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 8 Oct 2020 19:41:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730758AbgJHXlm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 8 Oct 2020 17:38:31 -0400
-X-Greylist: delayed 423 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Oct 2020 17:38:30 EDT
-Received: from localhost (unknown [127.0.0.1])
-        by mail.hebei-kuixing.com (Postfix) with ESMTP id 75B0160E53;
-        Thu,  8 Oct 2020 21:31:26 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at hebei-kuixing.com
-Received: from mail.hebei-kuixing.com ([127.0.0.1])
-        by localhost (mail.hebei-kuixing.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id O9HZUxCVQEaC; Fri,  9 Oct 2020 05:31:25 +0800 (CST)
-Received: from User (unknown [185.248.12.71])
-        by mail.hebei-kuixing.com (Postfix) with ESMTPA id E379E61393;
-        Fri,  9 Oct 2020 05:31:08 +0800 (CST)
-Reply-To: <kim.leang2011@yahoo.com>
-From:   " Kim Leang" <sales@hebei-kuixing.com>
-Subject: Greeting!
-Date:   Fri, 9 Oct 2020 00:31:22 +0300
+        Thu, 8 Oct 2020 19:41:42 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EB3C0613D4
+        for <netfilter-devel@vger.kernel.org>; Thu,  8 Oct 2020 16:41:42 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id b19so3954695qvm.6
+        for <netfilter-devel@vger.kernel.org>; Thu, 08 Oct 2020 16:41:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=googlenew;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=nFFaJQBghagcloTs22skGuUImESS4OWZQeRlNi12tDc=;
+        b=gGAheNpTYHvxFCbEuDFJwYt57f1qWB+czhjPBLWJvV6Om31+M74Ra5lWCYgSd26zMF
+         NNFoQcxZdCfBzt47SBBhUg30WM9EXwVM+pjF4Eurm5utctlTakokYGUybik9HpjOnZHR
+         7aPTOvu/bfqD8ydlkTqvdnNrjGrwoBEHp6KzZZxS5WIvI+xSzULB4rsCPPsecTpgUxoz
+         uvsjV+rIQO/k7qr6u86joMmJI5ef9ut5HGID5Fxdda9ACocnlamzr9XuYAcPb4KtQ+PG
+         PQGK0PokEL70pyMc8rzdIxadTUxVVnzSotpn52oVIC0MuuRqE7eH2DXXXIbOFUYJcwNv
+         3kSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=nFFaJQBghagcloTs22skGuUImESS4OWZQeRlNi12tDc=;
+        b=VXmGDR2v5e7TGzIUNBcLo8b0LHm6mprMWKhzV+86vQRTmxMYeDGKZjZSmJGMb92a73
+         SyikZvnUqLsGeYn2KoGQkmmrgpf4ZL+cZJuuxXVYo5RSdjXEzVkBjx9G3IFAMSYa+98a
+         MFpH672QaIvGYdOMJ1V2vJS+E7qWFwN74wS6HXv9jHJUjQxmTAEgYb7yFIO/faX1HcGq
+         RVuWTsVV/lXvQlGz91SFe7zsa5jWu+6fAvb/i0LbLR95x8ThlPFAo3ZXhbSNaHzU5qOq
+         Uu3zc63e5vWxN8cR3NoK98t6KBOdZ8w3929Ftp6nOiJtpKLYaTPS7+tQva2K1Vy3KuDm
+         Ssjw==
+X-Gm-Message-State: AOAM532UwXH1JMVhqXcv9cZ+PuwPv6yg64wlADfv98q+eb2HsHgFq+76
+        yU71tfAapt0wGKFMIKSsb7693Kifq8lYBLcTGbrhfg==
+X-Google-Smtp-Source: ABdhPJyAt7IMZsD8EVY4ebCtqaK57GoM1eaFAm9y45iXe05l7ZZlsByHkKiqheFkm9+jwAAAhrmEO/ACTmymVuiBYCQ=
+X-Received: by 2002:a0c:9c09:: with SMTP id v9mr10614592qve.57.1602200501101;
+ Thu, 08 Oct 2020 16:41:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20201008213126.75B0160E53@mail.hebei-kuixing.com>
-To:     unlisted-recipients:; (no To-header on input)
+References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
+In-Reply-To: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
+From:   Francesco Ruggeri <fruggeri@arista.com>
+Date:   Thu, 8 Oct 2020 16:41:30 -0700
+Message-ID: <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
+Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after re-register
+To:     open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
+        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>, fw@strlen.org,
+        kadlec@netfilter.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Francesco Ruggeri <fruggeri@arista.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Greeting!
+On Wed, Oct 7, 2020 at 12:32 PM Francesco Ruggeri <fruggeri@arista.com> wrote:
+>
+> If the first packet conntrack sees after a re-register is an outgoing
+> keepalive packet with no data (SEG.SEQ = SND.NXT-1), td_end is set to
+> SND.NXT-1.
+> When the peer correctly acknowledges SND.NXT, tcp_in_window fails
+> check III (Upper bound for valid (s)ack: sack <= receiver.td_end) and
+> returns false, which cascades into nf_conntrack_in setting
+> skb->_nfct = 0 and in later conntrack iptables rules not matching.
+> In cases where iptables are dropping packets that do not match
+> conntrack rules this can result in idle tcp connections to time out.
+>
+> v2: adjust td_end when getting the reply rather than when sending out
+>     the keepalive packet.
+>
 
-I am contacting you to receive and share with me an abandoned fund ( $21,537.000.00 ) left in our bank by a deceased customer. I was going through the Internet search when I found your email address. My name is Mr. Kim Leang.
+Any comments?
+Here is a simple reproducer.
+The idea is to show that keepalive packets in an idle tcp
+connection will be dropped (and the connection will time out)
+if conntrack hooks are de-registered and then re-registered.
+The reproducer has two files.
+client_server.py creates both ends of a tcp connection, bounces
+a few packets back and forth, and then blocks on a recv on the
+client side. The client's keepalive is configured to time out in
+20 seconds. This connection should not time out.
+test is a bash script that creates a net namespace where it sets
+iptables rules for the connection, starts client_server.py, and
+then clears and restores the iptables rules (which causes
+conntrack hooks to be de-registered and re-registered).
 
-I want to utilize this opportunity and make use of this fund if I should present your name to the bank to stand as his business associate/ trustee for the fund to be released to you via Visa card for easy withdrawals in any VISA ATM machine anywhere in the World.
+================ file client_server.py
+#!/usr/bin/python
 
-The bank will also give you international online transfer options. With these you can transfer the funds without any risk.
+import socket
 
-Should you be interested in working with me in this project? Please reply back and let's benefit from this golden opportunity.You are my first contact. I shall wait a few days and if I do not hear from you, I shall look for another person.
+PORT=4446
 
-Thanks and have a nice day,
-Mr. Kim Leang.
+# create server socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.bind(('localhost', PORT))
+sock.listen(1)
+
+# create client socket
+cl_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+cl_sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+cl_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 2)
+cl_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 2)
+cl_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 10)
+cl_sock.connect(('localhost', PORT))
+
+srv_sock, _ = sock.accept()
+
+# Bounce a packet back and forth a few times
+buf = 'aaaaaaaaaaaa'
+for i in range(5):
+   cl_sock.send(buf)
+   buf = srv_sock.recv(100)
+   srv_sock.send(buf)
+   buf = cl_sock.recv(100)
+   print buf
+
+# idle the connection
+try:
+   buf = cl_sock.recv(100)
+except socket.error, e:
+   print "Error: %s" % e
+
+sock.close()
+cl_sock.close()
+srv_sock.close()
+
+============== file test
+#!/bin/bash
+
+ip netns add dummy
+ip netns exec dummy ip link set lo up
+echo "Created namespace"
+
+ip netns exec dummy iptables-restore <<END
+*filter
+:INPUT DROP [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 4446 -j ACCEPT
+COMMIT
+END
+echo "Installed iptables rules"
+
+ip netns exec dummy ./client_server.py &
+echo "Created tcp connection"
+sleep 2
+
+ip netns exec dummy iptables-restore << END
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+COMMIT
+END
+echo "Cleared iptables rules"
+sleep 4
+
+ip netns exec dummy iptables-restore << END
+*filter
+:INPUT DROP [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 4446 -j ACCEPT
+COMMIT
+END
+echo "Restored original iptables rules"
+
+wait
+ip netns del dummy
+exit 0
