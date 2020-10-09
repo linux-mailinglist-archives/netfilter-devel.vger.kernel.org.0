@@ -2,60 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E60B288302
-	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Oct 2020 08:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CA1288547
+	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Oct 2020 10:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725908AbgJIGxY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 9 Oct 2020 02:53:24 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14807 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725922AbgJIGxY (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 9 Oct 2020 02:53:24 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 25B52E65A27EE55F2C9A;
-        Fri,  9 Oct 2020 14:52:57 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 9 Oct 2020
- 14:52:48 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>,
-        <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH] netfilter: nf_conntrack_sip: Fix inconsistent of format with argument type in nf_nat_sip.
-Date:   Fri, 9 Oct 2020 15:03:35 +0800
-Message-ID: <20201009070335.63812-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.16.2.dirty
+        id S1732490AbgJII34 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 9 Oct 2020 04:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732477AbgJII3z (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 9 Oct 2020 04:29:55 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61859C0613D2
+        for <netfilter-devel@vger.kernel.org>; Fri,  9 Oct 2020 01:29:55 -0700 (PDT)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1kQnmj-0007ey-Bz; Fri, 09 Oct 2020 10:29:53 +0200
+Date:   Fri, 9 Oct 2020 10:29:53 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Arturo Borrero Gonzalez <arturo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH] iptables-nft: fix basechain policy configuration
+Message-ID: <20201009082953.GD13016@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Arturo Borrero Gonzalez <arturo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+References: <160163907669.18523.7311010971070291883.stgit@endurance>
+ <20201008173156.GA14654@salvia>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008173156.GA14654@salvia>
+Sender:  <n0-1@orbyte.nwl.cc>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Fix follow warning:
-[net/netfilter/nf_nat_sip.c:469]: (warning) %u in format string (no. 1)
-requires 'unsigned int' but the argument type is 'int'.
+Hi Pablo,
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- net/netfilter/nf_nat_sip.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Oct 08, 2020 at 07:31:56PM +0200, Pablo Neira Ayuso wrote:
+> On Fri, Oct 02, 2020 at 01:44:36PM +0200, Arturo Borrero Gonzalez wrote:
+> > From: Pablo Neira Ayuso <pablo@netfilter.org>
+> > 
+> > Previous to this patch, the basechain policy could not be properly configured if it wasn't
+> > explictly set when loading the ruleset, leading to iptables-nft-restore (and ip6tables-nft-restore)
+> > trying to send an invalid ruleset to the kernel.
+> 
+> I have applied this with some amendments to the test file to cover
+> the --noflush case. I think this is a real problem there, where you
+> can combine to apply incremental updates to the ruleset.
 
-diff --git a/net/netfilter/nf_nat_sip.c b/net/netfilter/nf_nat_sip.c
-index f0a735e86851..39754fb3a298 100644
---- a/net/netfilter/nf_nat_sip.c
-+++ b/net/netfilter/nf_nat_sip.c
-@@ -466,7 +466,7 @@ static int mangle_content_len(struct sk_buff *skb, unsigned int protoff,
- 			      &matchoff, &matchlen) <= 0)
- 		return 0;
- 
--	buflen = sprintf(buffer, "%u", c_len);
-+	buflen = sprintf(buffer, "%d", c_len);
- 	return mangle_packet(skb, protoff, dataoff, dptr, datalen,
- 			     matchoff, matchlen, buffer, buflen);
- }
--- 
-2.16.2.dirty
+Yes, at least I can imagine people relying upon this behaviour.
 
+> For the --flush case, I still have doubts how to use this feature, not
+> sure it is worth the effort to actually fix it.
+
+I even find it unintuitive as it retains state despite flushing. But
+that is a significant divergence between legacy and nft:
+
+| # iptables -P FORWARD DROP
+| # iptables-restore <<EOF
+| *filter
+| COMMIT
+| EOF
+| # iptables-save
+
+With legacy, the output is:
+
+| *filter
+| :INPUT ACCEPT [0:0]
+| :FORWARD DROP [0:0]
+| :OUTPUT ACCEPT [0:0]
+| COMMIT
+
+With nft, there's no output at all. What do you think, should we fix
+that? If so, which side?
+
+> We can revisit later, you can rewrite this later Phil.
+
+Sure, no problem.
+
+Thanks, Phil
