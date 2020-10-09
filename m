@@ -2,76 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB2928972C
-	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Oct 2020 22:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58062898CE
+	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Oct 2020 22:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388397AbgJIUCv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 9 Oct 2020 16:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
+        id S2391079AbgJIUIn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 9 Oct 2020 16:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388614AbgJIUAd (ORCPT
+        with ESMTP id S2388178AbgJIUF7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 9 Oct 2020 16:00:33 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E879AC0613D8
-        for <netfilter-devel@vger.kernel.org>; Fri,  9 Oct 2020 13:00:32 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id j3so5337814qvi.7
-        for <netfilter-devel@vger.kernel.org>; Fri, 09 Oct 2020 13:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=googlenew;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2qC/FqQbzG5/8jBosr6Y+NLl7/pG/587C+U8/pqT5iw=;
-        b=RRUTeULREpVOpNCQWXgAIZtaaHU8E5Qq14J1066Xjyg4JyW+HUwF9cBse1Bm1R4yvF
-         odnAPK0J/+XH5En6zvKFETGOP1FMbcrshZcR4wRbd0JMtk2CJfn9aGg5UNteTQysd1FJ
-         S3euxOGxf2xPj1vwUUU2L+IztRLTks0tkt1bWKWHHOCklQliwV5W67dfYAWKVunbtxfi
-         j28syp4AXrV/3kw8gQNOTUgNLA6WjIhFU6TNExHEV6kET3+rFz5mYpN+8kd7pWnBwVoS
-         zMXfZjguwobHwKpMm5I/i8fOhAeRaU4YfcBNFouYTO3atevtpgWq6lDkTu7XR39ArfeS
-         YDWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2qC/FqQbzG5/8jBosr6Y+NLl7/pG/587C+U8/pqT5iw=;
-        b=A7UgEC3vx+jhtpW4ojAXRO4itCCXUDNy1VOiVxxOC+0IHKQNcTGFG8AMrelICTCMBc
-         RP6vtXTHWx0CCvNwahUviMtURwfw1mQVl88u/jdlZrIwL0TdxCENwMoBVKt98tMDssJu
-         uosrSI1wd4bR/hrajzZRqp5BhuoMNQn06PTVLMKcwkulCVIsVIPAev2hlQWGVbD5kfhf
-         lTlRDLuX7b215gC647aFURvCYP5M+E1X+akjSknHAQ6LycydD0oiVU1WxPXSogmUsrkt
-         SFO+h9N2UsPv+f8ZLEyiuwgGf5Ba2I3pPoO8zih2zZ765r/TX46Qh1HAvsn3z5raZdUA
-         QY3g==
-X-Gm-Message-State: AOAM530xWahlFE78TT4z2BVYfK+PWrrCcRuZXDs2kk0N6DkW0vabV3KN
-        U5TGcpms5vnxUJTOxbC48MfGN9mpABcjBDGKBM4kDg==
-X-Google-Smtp-Source: ABdhPJyt2PbWXX+6xs5+udRRLnk5TTa8q6pvQu2pHMe06wvrZ9hObKg6j7VG+fDE+ZYoNUjjCw7tnImmctdGVpBBmmQ=
-X-Received: by 2002:a0c:9a4e:: with SMTP id q14mr14190214qvd.22.1602273632019;
- Fri, 09 Oct 2020 13:00:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
- <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
- <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
- <20201009110323.GC5723@breakpoint.cc> <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
- <20201009185552.GF5723@breakpoint.cc> <alpine.DEB.2.23.453.2010092132220.19307@blackhole.kfki.hu>
-In-Reply-To: <alpine.DEB.2.23.453.2010092132220.19307@blackhole.kfki.hu>
-From:   Francesco Ruggeri <fruggeri@arista.com>
-Date:   Fri, 9 Oct 2020 13:00:21 -0700
-Message-ID: <CA+HUmGidgRqPmgCH=g7+H9g+TZAyh1-2y4qfzfZB3DYtHtjdKA@mail.gmail.com>
-Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after re-register
+        Fri, 9 Oct 2020 16:05:59 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AFCC0613D5;
+        Fri,  9 Oct 2020 13:05:59 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1kQyeC-0001He-AQ; Fri, 09 Oct 2020 22:05:48 +0200
+Date:   Fri, 9 Oct 2020 22:05:48 +0200
+From:   Florian Westphal <fw@strlen.de>
 To:     Jozsef Kadlecsik <kadlec@netfilter.org>
 Cc:     Florian Westphal <fw@strlen.de>,
+        Francesco Ruggeri <fruggeri@arista.com>,
         open list <linux-kernel@vger.kernel.org>,
         netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
         netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
         David Miller <davem@davemloft.net>,
         Pablo Neira Ayuso <pablo@netfilter.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
+ re-register
+Message-ID: <20201009200548.GG5723@breakpoint.cc>
+References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
+ <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
+ <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
+ <20201009110323.GC5723@breakpoint.cc>
+ <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
+ <20201009185552.GF5723@breakpoint.cc>
+ <alpine.DEB.2.23.453.2010092132220.19307@blackhole.kfki.hu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.23.453.2010092132220.19307@blackhole.kfki.hu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 12:49 PM Jozsef Kadlecsik <kadlec@netfilter.org> wrote:
-> What is the rationale behind "remove the conntrack hooks when there are no
-> rule left referring to conntrack"? Performance optimization?
+Jozsef Kadlecsik <kadlec@netfilter.org> wrote:
+> > The "delay unregister" remark was wrt. the "all rules were deleted"
+> > case, i.e. add a "grace period" rather than acting right away when
+> > conntrack use count did hit 0.
+> 
+> Now I understand it, thanks really. The hooks are removed, so conntrack 
+> cannot "see" the packets and the entries become stale. 
 
-That seems to be the case. See commit 4d3a57f23dec ("netfilter: conntrack:
-do not enable connection tracking unless needed").
+Yes.
 
-Francesco
+> What is the rationale behind "remove the conntrack hooks when there are no 
+> rule left referring to conntrack"? Performance optimization? But then the 
+> content of the whole conntrack table could be deleted too... ;-)
+
+Yes, this isn't the case at the moment -- only hooks are removed,
+entries will eventually time out.
+
+> > Conntrack entries are not removed, only the base hooks get unregistered. 
+> > This is a problem for tcp window tracking.
+> > 
+> > When re-register occurs, kernel is supposed to switch the existing 
+> > entries to "loose" mode so window tracking won't flag packets as 
+> > invalid, but apparently this isn't enough to handle keepalive case.
+> 
+> "loose" (nf_ct_tcp_loose) mode doesn't disable window tracking, it 
+> enables/disables picking up already established connections. 
+> 
+> nf_ct_tcp_be_liberal would disable TCP window checking (but not tracking) 
+> for non RST packets.
+
+You are right, mixup on my part.
+
+> But both seems to be modified only via the proc entries.
+
+Yes, we iterate table on re-register and modify the existing entries.
