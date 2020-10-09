@@ -2,86 +2,58 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CA1288547
-	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Oct 2020 10:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3DE28854E
+	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Oct 2020 10:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732490AbgJII34 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 9 Oct 2020 04:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
+        id S1732404AbgJIIbP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 9 Oct 2020 04:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732477AbgJII3z (ORCPT
+        with ESMTP id S1732438AbgJIIbP (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 9 Oct 2020 04:29:55 -0400
+        Fri, 9 Oct 2020 04:31:15 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61859C0613D2
-        for <netfilter-devel@vger.kernel.org>; Fri,  9 Oct 2020 01:29:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8BEC0613D2
+        for <netfilter-devel@vger.kernel.org>; Fri,  9 Oct 2020 01:31:15 -0700 (PDT)
 Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
         (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1kQnmj-0007ey-Bz; Fri, 09 Oct 2020 10:29:53 +0200
-Date:   Fri, 9 Oct 2020 10:29:53 +0200
+        id 1kQno1-0007i1-Ix; Fri, 09 Oct 2020 10:31:13 +0200
+Date:   Fri, 9 Oct 2020 10:31:13 +0200
 From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Arturo Borrero Gonzalez <arturo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [iptables PATCH] iptables-nft: fix basechain policy configuration
-Message-ID: <20201009082953.GD13016@orbyte.nwl.cc>
+To:     Gopal Yadav <gopunop@gmail.com>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH v2] Solves Bug 1462 - `nft -j list set` does not show
+ counters
+Message-ID: <20201009083113.GE13016@orbyte.nwl.cc>
 Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Arturo Borrero Gonzalez <arturo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-References: <160163907669.18523.7311010971070291883.stgit@endurance>
- <20201008173156.GA14654@salvia>
+        Gopal Yadav <gopunop@gmail.com>, netfilter-devel@vger.kernel.org
+References: <20201007140337.21218-1-gopunop@gmail.com>
+ <20201008170245.GC13016@orbyte.nwl.cc>
+ <CAAUOv8hXEA=2fM5UBN8xGkquO9EHMzCQ=kdEyFukDK7zPSeXow@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008173156.GA14654@salvia>
+In-Reply-To: <CAAUOv8hXEA=2fM5UBN8xGkquO9EHMzCQ=kdEyFukDK7zPSeXow@mail.gmail.com>
 Sender:  <n0-1@orbyte.nwl.cc>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
-
-On Thu, Oct 08, 2020 at 07:31:56PM +0200, Pablo Neira Ayuso wrote:
-> On Fri, Oct 02, 2020 at 01:44:36PM +0200, Arturo Borrero Gonzalez wrote:
-> > From: Pablo Neira Ayuso <pablo@netfilter.org>
-> > 
-> > Previous to this patch, the basechain policy could not be properly configured if it wasn't
-> > explictly set when loading the ruleset, leading to iptables-nft-restore (and ip6tables-nft-restore)
-> > trying to send an invalid ruleset to the kernel.
+On Fri, Oct 09, 2020 at 11:15:48AM +0530, Gopal Yadav wrote:
+> On Thu, Oct 8, 2020 at 10:32 PM Phil Sutter <phil@nwl.cc> wrote:
+> >
+> > On Wed, Oct 07, 2020 at 07:33:37PM +0530, Gopal Yadav wrote:
+> > > Solves Bug 1462 - `nft -j list set` does not show counters
+> > >
+> > > Signed-off-by: Gopal Yadav <gopunop@gmail.com>
+> >
+> > Added a comment about potential clashes (json_object_update_missing()
+> > hides those) and replaced the duplicate subject line by a commit
+> > message, then applied the result.
 > 
-> I have applied this with some amendments to the test file to cover
-> the --noflush case. I think this is a real problem there, where you
-> can combine to apply incremental updates to the ruleset.
+> Any description of those potential clashes?
 
-Yes, at least I can imagine people relying upon this behaviour.
+AFAICT, none are possible right now. Though the design allows for it and
+we might miss that.
 
-> For the --flush case, I still have doubts how to use this feature, not
-> sure it is worth the effort to actually fix it.
-
-I even find it unintuitive as it retains state despite flushing. But
-that is a significant divergence between legacy and nft:
-
-| # iptables -P FORWARD DROP
-| # iptables-restore <<EOF
-| *filter
-| COMMIT
-| EOF
-| # iptables-save
-
-With legacy, the output is:
-
-| *filter
-| :INPUT ACCEPT [0:0]
-| :FORWARD DROP [0:0]
-| :OUTPUT ACCEPT [0:0]
-| COMMIT
-
-With nft, there's no output at all. What do you think, should we fix
-that? If so, which side?
-
-> We can revisit later, you can rewrite this later Phil.
-
-Sure, no problem.
-
-Thanks, Phil
+Cheers, Phil
