@@ -2,234 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B76428AAE7
-	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Oct 2020 00:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2896728ACB0
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Oct 2020 06:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387650AbgJKWSS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 11 Oct 2020 18:18:18 -0400
-Received: from correo.us.es ([193.147.175.20]:48232 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387645AbgJKWSS (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 11 Oct 2020 18:18:18 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 051CFE2C4F
-        for <netfilter-devel@vger.kernel.org>; Mon, 12 Oct 2020 00:18:14 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id E7A53DA722
-        for <netfilter-devel@vger.kernel.org>; Mon, 12 Oct 2020 00:18:13 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id DD791DA704; Mon, 12 Oct 2020 00:18:13 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id B3765DA72F
-        for <netfilter-devel@vger.kernel.org>; Mon, 12 Oct 2020 00:18:11 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 12 Oct 2020 00:18:11 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 9854D41FF201
-        for <netfilter-devel@vger.kernel.org>; Mon, 12 Oct 2020 00:18:11 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next] netfilter: flowtable: reduce calls to pskb_may_pull()
-Date:   Mon, 12 Oct 2020 00:18:07 +0200
-Message-Id: <20201011221807.31062-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
+        id S1726756AbgJLEIe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 12 Oct 2020 00:08:34 -0400
+Received: from 70-252-206-104.staticrdns.eonix.net ([104.206.252.70]:59844
+        "EHLO 70-252-206-104.staticrdns.eonix.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726154AbgJLEIe (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 12 Oct 2020 00:08:34 -0400
+Received: from User (localhost [IPv6:::1])
+        by 70-252-206-104.staticrdns.eonix.net (Postfix) with SMTP id EBB2D2B902F;
+        Sun, 11 Oct 2020 19:13:40 -0400 (EDT)
+Reply-To: <stewart.macdonald@rockhopperexplorationplc.co.uk>
+From:   "Stewart MacDonald" 
+        <stewart.macdonald@rockhopperexplorationplc.co.uk>
+Subject: Very urgently
+Date:   Sun, 11 Oct 2020 16:13:44 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20201011231340.EBB2D2B902F@70-252-206-104.staticrdns.eonix.net>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Make two unfront calls to pskb_may_pull() to linearize the network and
-transport header.
+Attention please!
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_flow_table_core.c | 12 +++-----
- net/netfilter/nf_flow_table_ip.c   | 45 +++++++++++++++++-------------
- 2 files changed, 30 insertions(+), 27 deletions(-)
+I am the Chief Financial Officer of Rockhopper and Gas company London UK, and by the virtue, as the Chief Financial Officer. I got your contact through a directory search and decided to propose this business. I am seeking your assistance in remitting of some funds,  Ninety five million  to your account for private investment purpose, hence my request for your assistance.
+ 
+  
+ SOURCE OF THE FUND:
 
-diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-index 4f7a567c536e..513f78db3cb2 100644
---- a/net/netfilter/nf_flow_table_core.c
-+++ b/net/netfilter/nf_flow_table_core.c
-@@ -395,8 +395,7 @@ static int nf_flow_nat_port_tcp(struct sk_buff *skb, unsigned int thoff,
- {
- 	struct tcphdr *tcph;
- 
--	if (!pskb_may_pull(skb, thoff + sizeof(*tcph)) ||
--	    skb_try_make_writable(skb, thoff + sizeof(*tcph)))
-+	if (skb_try_make_writable(skb, thoff + sizeof(*tcph)))
- 		return -1;
- 
- 	tcph = (void *)(skb_network_header(skb) + thoff);
-@@ -410,8 +409,7 @@ static int nf_flow_nat_port_udp(struct sk_buff *skb, unsigned int thoff,
- {
- 	struct udphdr *udph;
- 
--	if (!pskb_may_pull(skb, thoff + sizeof(*udph)) ||
--	    skb_try_make_writable(skb, thoff + sizeof(*udph)))
-+	if (skb_try_make_writable(skb, thoff + sizeof(*udph)))
- 		return -1;
- 
- 	udph = (void *)(skb_network_header(skb) + thoff);
-@@ -449,8 +447,7 @@ int nf_flow_snat_port(const struct flow_offload *flow,
- 	struct flow_ports *hdr;
- 	__be16 port, new_port;
- 
--	if (!pskb_may_pull(skb, thoff + sizeof(*hdr)) ||
--	    skb_try_make_writable(skb, thoff + sizeof(*hdr)))
-+	if (skb_try_make_writable(skb, thoff + sizeof(*hdr)))
- 		return -1;
- 
- 	hdr = (void *)(skb_network_header(skb) + thoff);
-@@ -481,8 +478,7 @@ int nf_flow_dnat_port(const struct flow_offload *flow,
- 	struct flow_ports *hdr;
- 	__be16 port, new_port;
- 
--	if (!pskb_may_pull(skb, thoff + sizeof(*hdr)) ||
--	    skb_try_make_writable(skb, thoff + sizeof(*hdr)))
-+	if (skb_try_make_writable(skb, thoff + sizeof(*hdr)))
- 		return -1;
- 
- 	hdr = (void *)(skb_network_header(skb) + thoff);
-diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-index a3bca758b849..a698dbe28ef5 100644
---- a/net/netfilter/nf_flow_table_ip.c
-+++ b/net/netfilter/nf_flow_table_ip.c
-@@ -25,9 +25,6 @@ static int nf_flow_state_check(struct flow_offload *flow, int proto,
- 	if (proto != IPPROTO_TCP)
- 		return 0;
- 
--	if (!pskb_may_pull(skb, thoff + sizeof(*tcph)))
--		return -1;
--
- 	tcph = (void *)(skb_network_header(skb) + thoff);
- 	if (unlikely(tcph->fin || tcph->rst)) {
- 		flow_offload_teardown(flow);
-@@ -42,8 +39,7 @@ static int nf_flow_nat_ip_tcp(struct sk_buff *skb, unsigned int thoff,
- {
- 	struct tcphdr *tcph;
- 
--	if (!pskb_may_pull(skb, thoff + sizeof(*tcph)) ||
--	    skb_try_make_writable(skb, thoff + sizeof(*tcph)))
-+	if (skb_try_make_writable(skb, thoff + sizeof(*tcph)))
- 		return -1;
- 
- 	tcph = (void *)(skb_network_header(skb) + thoff);
-@@ -57,8 +53,7 @@ static int nf_flow_nat_ip_udp(struct sk_buff *skb, unsigned int thoff,
- {
- 	struct udphdr *udph;
- 
--	if (!pskb_may_pull(skb, thoff + sizeof(*udph)) ||
--	    skb_try_make_writable(skb, thoff + sizeof(*udph)))
-+	if (skb_try_make_writable(skb, thoff + sizeof(*udph)))
- 		return -1;
- 
- 	udph = (void *)(skb_network_header(skb) + thoff);
-@@ -167,8 +162,8 @@ static bool ip_has_options(unsigned int thoff)
- static int nf_flow_tuple_ip(struct sk_buff *skb, const struct net_device *dev,
- 			    struct flow_offload_tuple *tuple)
- {
-+	unsigned int thoff, hdrsize;
- 	struct flow_ports *ports;
--	unsigned int thoff;
- 	struct iphdr *iph;
- 
- 	if (!pskb_may_pull(skb, sizeof(*iph)))
-@@ -181,15 +176,22 @@ static int nf_flow_tuple_ip(struct sk_buff *skb, const struct net_device *dev,
- 	    unlikely(ip_has_options(thoff)))
- 		return -1;
- 
--	if (iph->protocol != IPPROTO_TCP &&
--	    iph->protocol != IPPROTO_UDP)
-+	switch (iph->protocol) {
-+	case IPPROTO_TCP:
-+		hdrsize = sizeof(struct tcphdr);
-+		break;
-+	case IPPROTO_UDP:
-+		hdrsize = sizeof(struct udphdr);
-+		break;
-+	default:
- 		return -1;
-+	}
- 
- 	if (iph->ttl <= 1)
- 		return -1;
- 
- 	thoff = iph->ihl * 4;
--	if (!pskb_may_pull(skb, thoff + sizeof(*ports)))
-+	if (!pskb_may_pull(skb, thoff + hdrsize))
- 		return -1;
- 
- 	iph = ip_hdr(skb);
-@@ -315,8 +317,7 @@ static int nf_flow_nat_ipv6_tcp(struct sk_buff *skb, unsigned int thoff,
- {
- 	struct tcphdr *tcph;
- 
--	if (!pskb_may_pull(skb, thoff + sizeof(*tcph)) ||
--	    skb_try_make_writable(skb, thoff + sizeof(*tcph)))
-+	if (skb_try_make_writable(skb, thoff + sizeof(*tcph)))
- 		return -1;
- 
- 	tcph = (void *)(skb_network_header(skb) + thoff);
-@@ -332,8 +333,7 @@ static int nf_flow_nat_ipv6_udp(struct sk_buff *skb, unsigned int thoff,
- {
- 	struct udphdr *udph;
- 
--	if (!pskb_may_pull(skb, thoff + sizeof(*udph)) ||
--	    skb_try_make_writable(skb, thoff + sizeof(*udph)))
-+	if (skb_try_make_writable(skb, thoff + sizeof(*udph)))
- 		return -1;
- 
- 	udph = (void *)(skb_network_header(skb) + thoff);
-@@ -439,24 +439,31 @@ static int nf_flow_nat_ipv6(const struct flow_offload *flow,
- static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
- 			      struct flow_offload_tuple *tuple)
- {
-+	unsigned int thoff, hdrsize;
- 	struct flow_ports *ports;
- 	struct ipv6hdr *ip6h;
--	unsigned int thoff;
- 
- 	if (!pskb_may_pull(skb, sizeof(*ip6h)))
- 		return -1;
- 
- 	ip6h = ipv6_hdr(skb);
- 
--	if (ip6h->nexthdr != IPPROTO_TCP &&
--	    ip6h->nexthdr != IPPROTO_UDP)
-+	switch (ip6h->nexthdr) {
-+	case IPPROTO_TCP:
-+		hdrsize = sizeof(struct tcphdr);
-+		break;
-+	case IPPROTO_UDP:
-+		hdrsize = sizeof(struct udphdr);
-+		break;
-+	default:
- 		return -1;
-+	}
- 
- 	if (ip6h->hop_limit <= 1)
- 		return -1;
- 
- 	thoff = sizeof(*ip6h);
--	if (!pskb_may_pull(skb, thoff + sizeof(*ports)))
-+	if (!pskb_may_pull(skb, thoff + hdrsize))
- 		return -1;
- 
- 	ip6h = ipv6_hdr(skb);
--- 
-2.20.1
+The fund to be transferred into your account is accrued from an over-invoiced contract amount awarded for the completion of the last phase of our refinery, valves and depot for storage of product all over our branches here in the UK which include laying of  distribution pipelines. The contract which was originally valued for One Hundred and Twenty Seven Million was manipulated to read, Two Hundred and Twenty Two Million.  The extra, Ninety Five Million, is what I want to move to your account, the original contractors who executed the job has been paid all their contract bills remaining this Ninety Five Million.
+  
+ DISBURSEMENT:
 
+I have resolved that you take Forty percent  of the total amount for your assistance. that is, fronting you as a sub contractor to claim the remaining balance of Ninety Five Million  which is left now in our bank from the over invoice contract because it is impossible for me to claim the over invoiced amount without your assistance as a Foreign Contractor. In addition Ten percent has been mapped out for any miscellaneous expenses that   might be incurred by both of us during this business while Fifty percent  will be my own share.
+
+SECURITY:
+
+All modalities to effect the payment and subsequent transfer of this money has been worked out, so this transaction is Hundred percent risk free, though you are required to treat it with strictest confidence, on our acceptance please send to me your personal details and your direct mobile phone number for speedy correspondence.
+  
+I am looking forward to doing business with you. Your prompt reply will be highly appreciated. Do kindly furnish me with your contact details if you are interested in partnering with me on this transaction.
+ 
+  
+Yours Faithfully,
+
+Stewart MacDonald
+Chief Financial Officer
+Rockhopper Exploration PLC
