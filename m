@@ -2,262 +2,234 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E229228A99F
-	for <lists+netfilter-devel@lfdr.de>; Sun, 11 Oct 2020 21:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B76428AAE7
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Oct 2020 00:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgJKTXr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 11 Oct 2020 15:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbgJKTXq (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 11 Oct 2020 15:23:46 -0400
-Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0B6C0613D2
-        for <netfilter-devel@vger.kernel.org>; Sun, 11 Oct 2020 12:23:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=fvkpm/nVD8qQCU5sfvfMMmraFi5tKzNNtDW55oY+3X0=; b=myfcUNtwqF9DdZP8vq5QhDbJqE
-        YNeSf3rBRTQcucL6urxReUwNcx64CitG2nXvPqDh7/cdnrgyb9D/6z6kO5Gz2+8AVHBZ4RcM7KdNq
-        xNuwIpvWaHMfgOvvIynszFhaMkwXEd/OGdPcZm2Bngspkux7CdAP5T4SCaYBhgh3OxaLYih2pDQBH
-        b5k9Nw6cXidArNlaKIqTcEOfPU/u/r7gjd7e3UfcCezcLQCASNHWJGvgyZoRWRLy6clZLqWYQewIa
-        EtH6UK3jJVpaNcV0qDsK+Ii5DMmGKhRdAOjApCEqH+CgMAmheZor9H3l9pbSVHOD3Tni1sXQJO5B5
-        Nejamdcw==;
-Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
-        by kadath.azazel.net with esmtp (Exim 4.92)
-        (envelope-from <jeremy@azazel.net>)
-        id 1kRgwX-00016N-WD; Sun, 11 Oct 2020 20:23:42 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nft 3/3] tests: py: add missing test JSON output for TCP flag tests.
-Date:   Sun, 11 Oct 2020 20:23:24 +0100
-Message-Id: <20201011192324.209237-4-jeremy@azazel.net>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201011192324.209237-1-jeremy@azazel.net>
-References: <20201011192324.209237-1-jeremy@azazel.net>
+        id S2387650AbgJKWSS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 11 Oct 2020 18:18:18 -0400
+Received: from correo.us.es ([193.147.175.20]:48232 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387645AbgJKWSS (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 11 Oct 2020 18:18:18 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 051CFE2C4F
+        for <netfilter-devel@vger.kernel.org>; Mon, 12 Oct 2020 00:18:14 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id E7A53DA722
+        for <netfilter-devel@vger.kernel.org>; Mon, 12 Oct 2020 00:18:13 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id DD791DA704; Mon, 12 Oct 2020 00:18:13 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id B3765DA72F
+        for <netfilter-devel@vger.kernel.org>; Mon, 12 Oct 2020 00:18:11 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 12 Oct 2020 00:18:11 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPSA id 9854D41FF201
+        for <netfilter-devel@vger.kernel.org>; Mon, 12 Oct 2020 00:18:11 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next] netfilter: flowtable: reduce calls to pskb_may_pull()
+Date:   Mon, 12 Oct 2020 00:18:07 +0200
+Message-Id: <20201011221807.31062-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Fixes: 3926a3369bb5 ("mergesort: unbreak listing with binops")
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- tests/py/inet/tcp.t.json        | 93 +++++++++++++++++++++++++++++++++
- tests/py/inet/tcp.t.json.output | 93 +++++++++++++++++++++++++++++++++
- 2 files changed, 186 insertions(+)
+Make two unfront calls to pskb_may_pull() to linearize the network and
+transport header.
 
-diff --git a/tests/py/inet/tcp.t.json b/tests/py/inet/tcp.t.json
-index babe59208925..702251828360 100644
---- a/tests/py/inet/tcp.t.json
-+++ b/tests/py/inet/tcp.t.json
-@@ -1637,3 +1637,96 @@
-     }
- ]
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_flow_table_core.c | 12 +++-----
+ net/netfilter/nf_flow_table_ip.c   | 45 +++++++++++++++++-------------
+ 2 files changed, 30 insertions(+), 27 deletions(-)
+
+diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
+index 4f7a567c536e..513f78db3cb2 100644
+--- a/net/netfilter/nf_flow_table_core.c
++++ b/net/netfilter/nf_flow_table_core.c
+@@ -395,8 +395,7 @@ static int nf_flow_nat_port_tcp(struct sk_buff *skb, unsigned int thoff,
+ {
+ 	struct tcphdr *tcph;
  
-+# tcp flags { syn, syn | ack }
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "payload": {
-+                    "field": "flags",
-+                    "protocol": "tcp"
-+                }
-+            },
-+            "op": "==",
-+            "right": {
-+                "set": [
-+                    {
-+                        "|": [
-+                            "syn",
-+                            "ack"
-+                        ]
-+                    },
-+                    "syn"
-+                ]
-+            }
-+        }
-+    }
-+]
-+
-+# tcp flags & (fin | syn | rst | psh | ack | urg) == { fin, ack, psh | ack, fin | psh | ack }
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "&": [
-+                    {
-+                        "payload": {
-+                            "field": "flags",
-+                            "protocol": "tcp"
-+                        }
-+                    },
-+                    {
-+                        "|": [
-+                            {
-+                                "|": [
-+                                    {
-+                                        "|": [
-+                                            {
-+                                                "|": [
-+                                                    {
-+                                                        "|": [
-+                                                            "fin",
-+                                                            "syn"
-+                                                        ]
-+                                                    },
-+                                                    "rst"
-+                                                ]
-+                                            },
-+                                            "psh"
-+                                        ]
-+                                    },
-+                                    "ack"
-+                                ]
-+                            },
-+                            "urg"
-+                        ]
-+                    }
-+                ]
-+            },
-+            "op": "==",
-+            "right": {
-+                "set": [
-+                    {
-+                        "|": [
-+                            {
-+                                "|": [
-+                                    "fin",
-+                                    "psh"
-+                                ]
-+                            },
-+                            "ack"
-+                        ]
-+                    },
-+                    "fin",
-+                    {
-+                        "|": [
-+                            "psh",
-+                            "ack"
-+                        ]
-+                    },
-+                    "ack"
-+                ]
-+            }
-+        }
-+    }
-+]
-diff --git a/tests/py/inet/tcp.t.json.output b/tests/py/inet/tcp.t.json.output
-index 0f7a593b788c..c471e8d8dcef 100644
---- a/tests/py/inet/tcp.t.json.output
-+++ b/tests/py/inet/tcp.t.json.output
-@@ -115,3 +115,96 @@
-     }
- ]
+-	if (!pskb_may_pull(skb, thoff + sizeof(*tcph)) ||
+-	    skb_try_make_writable(skb, thoff + sizeof(*tcph)))
++	if (skb_try_make_writable(skb, thoff + sizeof(*tcph)))
+ 		return -1;
  
-+# tcp flags { syn, syn | ack }
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "payload": {
-+                    "field": "flags",
-+                    "protocol": "tcp"
-+                }
-+            },
-+            "op": "==",
-+            "right": {
-+                "set": [
-+                    "syn",
-+                    {
-+                        "|": [
-+                            "syn",
-+                            "ack"
-+                        ]
-+                    }
-+                ]
-+            }
-+        }
-+    }
-+]
-+
-+# tcp flags & (fin | syn | rst | psh | ack | urg) == { fin, ack, psh | ack, fin | psh | ack }
-+[
-+    {
-+        "match": {
-+            "left": {
-+                "&": [
-+                    {
-+                        "payload": {
-+                            "field": "flags",
-+                            "protocol": "tcp"
-+                        }
-+                    },
-+                    {
-+                        "|": [
-+                            {
-+                                "|": [
-+                                    {
-+                                        "|": [
-+                                            {
-+                                                "|": [
-+                                                    {
-+                                                        "|": [
-+                                                            "fin",
-+                                                            "syn"
-+                                                        ]
-+                                                    },
-+                                                    "rst"
-+                                                ]
-+                                            },
-+                                            "psh"
-+                                        ]
-+                                    },
-+                                    "ack"
-+                                ]
-+                            },
-+                            "urg"
-+                        ]
-+                    }
-+                ]
-+            },
-+            "op": "==",
-+            "right": {
-+                "set": [
-+                    "fin",
-+                    {
-+                        "|": [
-+                            {
-+                                "|": [
-+                                    "fin",
-+                                    "psh"
-+                                ]
-+                            },
-+                            "ack"
-+                        ]
-+                    },
-+                    {
-+                        "|": [
-+                            "psh",
-+                            "ack"
-+                        ]
-+                    },
-+                    "ack"
-+                ]
-+            }
-+        }
-+    }
-+]
+ 	tcph = (void *)(skb_network_header(skb) + thoff);
+@@ -410,8 +409,7 @@ static int nf_flow_nat_port_udp(struct sk_buff *skb, unsigned int thoff,
+ {
+ 	struct udphdr *udph;
+ 
+-	if (!pskb_may_pull(skb, thoff + sizeof(*udph)) ||
+-	    skb_try_make_writable(skb, thoff + sizeof(*udph)))
++	if (skb_try_make_writable(skb, thoff + sizeof(*udph)))
+ 		return -1;
+ 
+ 	udph = (void *)(skb_network_header(skb) + thoff);
+@@ -449,8 +447,7 @@ int nf_flow_snat_port(const struct flow_offload *flow,
+ 	struct flow_ports *hdr;
+ 	__be16 port, new_port;
+ 
+-	if (!pskb_may_pull(skb, thoff + sizeof(*hdr)) ||
+-	    skb_try_make_writable(skb, thoff + sizeof(*hdr)))
++	if (skb_try_make_writable(skb, thoff + sizeof(*hdr)))
+ 		return -1;
+ 
+ 	hdr = (void *)(skb_network_header(skb) + thoff);
+@@ -481,8 +478,7 @@ int nf_flow_dnat_port(const struct flow_offload *flow,
+ 	struct flow_ports *hdr;
+ 	__be16 port, new_port;
+ 
+-	if (!pskb_may_pull(skb, thoff + sizeof(*hdr)) ||
+-	    skb_try_make_writable(skb, thoff + sizeof(*hdr)))
++	if (skb_try_make_writable(skb, thoff + sizeof(*hdr)))
+ 		return -1;
+ 
+ 	hdr = (void *)(skb_network_header(skb) + thoff);
+diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
+index a3bca758b849..a698dbe28ef5 100644
+--- a/net/netfilter/nf_flow_table_ip.c
++++ b/net/netfilter/nf_flow_table_ip.c
+@@ -25,9 +25,6 @@ static int nf_flow_state_check(struct flow_offload *flow, int proto,
+ 	if (proto != IPPROTO_TCP)
+ 		return 0;
+ 
+-	if (!pskb_may_pull(skb, thoff + sizeof(*tcph)))
+-		return -1;
+-
+ 	tcph = (void *)(skb_network_header(skb) + thoff);
+ 	if (unlikely(tcph->fin || tcph->rst)) {
+ 		flow_offload_teardown(flow);
+@@ -42,8 +39,7 @@ static int nf_flow_nat_ip_tcp(struct sk_buff *skb, unsigned int thoff,
+ {
+ 	struct tcphdr *tcph;
+ 
+-	if (!pskb_may_pull(skb, thoff + sizeof(*tcph)) ||
+-	    skb_try_make_writable(skb, thoff + sizeof(*tcph)))
++	if (skb_try_make_writable(skb, thoff + sizeof(*tcph)))
+ 		return -1;
+ 
+ 	tcph = (void *)(skb_network_header(skb) + thoff);
+@@ -57,8 +53,7 @@ static int nf_flow_nat_ip_udp(struct sk_buff *skb, unsigned int thoff,
+ {
+ 	struct udphdr *udph;
+ 
+-	if (!pskb_may_pull(skb, thoff + sizeof(*udph)) ||
+-	    skb_try_make_writable(skb, thoff + sizeof(*udph)))
++	if (skb_try_make_writable(skb, thoff + sizeof(*udph)))
+ 		return -1;
+ 
+ 	udph = (void *)(skb_network_header(skb) + thoff);
+@@ -167,8 +162,8 @@ static bool ip_has_options(unsigned int thoff)
+ static int nf_flow_tuple_ip(struct sk_buff *skb, const struct net_device *dev,
+ 			    struct flow_offload_tuple *tuple)
+ {
++	unsigned int thoff, hdrsize;
+ 	struct flow_ports *ports;
+-	unsigned int thoff;
+ 	struct iphdr *iph;
+ 
+ 	if (!pskb_may_pull(skb, sizeof(*iph)))
+@@ -181,15 +176,22 @@ static int nf_flow_tuple_ip(struct sk_buff *skb, const struct net_device *dev,
+ 	    unlikely(ip_has_options(thoff)))
+ 		return -1;
+ 
+-	if (iph->protocol != IPPROTO_TCP &&
+-	    iph->protocol != IPPROTO_UDP)
++	switch (iph->protocol) {
++	case IPPROTO_TCP:
++		hdrsize = sizeof(struct tcphdr);
++		break;
++	case IPPROTO_UDP:
++		hdrsize = sizeof(struct udphdr);
++		break;
++	default:
+ 		return -1;
++	}
+ 
+ 	if (iph->ttl <= 1)
+ 		return -1;
+ 
+ 	thoff = iph->ihl * 4;
+-	if (!pskb_may_pull(skb, thoff + sizeof(*ports)))
++	if (!pskb_may_pull(skb, thoff + hdrsize))
+ 		return -1;
+ 
+ 	iph = ip_hdr(skb);
+@@ -315,8 +317,7 @@ static int nf_flow_nat_ipv6_tcp(struct sk_buff *skb, unsigned int thoff,
+ {
+ 	struct tcphdr *tcph;
+ 
+-	if (!pskb_may_pull(skb, thoff + sizeof(*tcph)) ||
+-	    skb_try_make_writable(skb, thoff + sizeof(*tcph)))
++	if (skb_try_make_writable(skb, thoff + sizeof(*tcph)))
+ 		return -1;
+ 
+ 	tcph = (void *)(skb_network_header(skb) + thoff);
+@@ -332,8 +333,7 @@ static int nf_flow_nat_ipv6_udp(struct sk_buff *skb, unsigned int thoff,
+ {
+ 	struct udphdr *udph;
+ 
+-	if (!pskb_may_pull(skb, thoff + sizeof(*udph)) ||
+-	    skb_try_make_writable(skb, thoff + sizeof(*udph)))
++	if (skb_try_make_writable(skb, thoff + sizeof(*udph)))
+ 		return -1;
+ 
+ 	udph = (void *)(skb_network_header(skb) + thoff);
+@@ -439,24 +439,31 @@ static int nf_flow_nat_ipv6(const struct flow_offload *flow,
+ static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
+ 			      struct flow_offload_tuple *tuple)
+ {
++	unsigned int thoff, hdrsize;
+ 	struct flow_ports *ports;
+ 	struct ipv6hdr *ip6h;
+-	unsigned int thoff;
+ 
+ 	if (!pskb_may_pull(skb, sizeof(*ip6h)))
+ 		return -1;
+ 
+ 	ip6h = ipv6_hdr(skb);
+ 
+-	if (ip6h->nexthdr != IPPROTO_TCP &&
+-	    ip6h->nexthdr != IPPROTO_UDP)
++	switch (ip6h->nexthdr) {
++	case IPPROTO_TCP:
++		hdrsize = sizeof(struct tcphdr);
++		break;
++	case IPPROTO_UDP:
++		hdrsize = sizeof(struct udphdr);
++		break;
++	default:
+ 		return -1;
++	}
+ 
+ 	if (ip6h->hop_limit <= 1)
+ 		return -1;
+ 
+ 	thoff = sizeof(*ip6h);
+-	if (!pskb_may_pull(skb, thoff + sizeof(*ports)))
++	if (!pskb_may_pull(skb, thoff + hdrsize))
+ 		return -1;
+ 
+ 	ip6h = ipv6_hdr(skb);
 -- 
-2.28.0
+2.20.1
 
