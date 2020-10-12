@@ -2,60 +2,67 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2896728ACB0
-	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Oct 2020 06:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4E628AB23
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Oct 2020 02:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgJLEIe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 12 Oct 2020 00:08:34 -0400
-Received: from 70-252-206-104.staticrdns.eonix.net ([104.206.252.70]:59844
-        "EHLO 70-252-206-104.staticrdns.eonix.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726154AbgJLEIe (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 12 Oct 2020 00:08:34 -0400
-Received: from User (localhost [IPv6:::1])
-        by 70-252-206-104.staticrdns.eonix.net (Postfix) with SMTP id EBB2D2B902F;
-        Sun, 11 Oct 2020 19:13:40 -0400 (EDT)
-Reply-To: <stewart.macdonald@rockhopperexplorationplc.co.uk>
-From:   "Stewart MacDonald" 
-        <stewart.macdonald@rockhopperexplorationplc.co.uk>
-Subject: Very urgently
-Date:   Sun, 11 Oct 2020 16:13:44 -0700
+        id S1726618AbgJLAA3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 11 Oct 2020 20:00:29 -0400
+Received: from correo.us.es ([193.147.175.20]:33418 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726460AbgJLAA2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 11 Oct 2020 20:00:28 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id D53E1E780C
+        for <netfilter-devel@vger.kernel.org>; Mon, 12 Oct 2020 02:00:27 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id C827EDA72F
+        for <netfilter-devel@vger.kernel.org>; Mon, 12 Oct 2020 02:00:27 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id BDB0BDA73D; Mon, 12 Oct 2020 02:00:27 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id D86D5DA72F;
+        Mon, 12 Oct 2020 02:00:25 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 12 Oct 2020 02:00:25 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id B9DE441FF201;
+        Mon, 12 Oct 2020 02:00:25 +0200 (CEST)
+Date:   Mon, 12 Oct 2020 02:00:25 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf v2] selftests: netfilter: extend nfqueue test case
+Message-ID: <20201012000025.GA9167@salvia>
+References: <20201009115834.24241-1-fw@strlen.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20201011231340.EBB2D2B902F@70-252-206-104.staticrdns.eonix.net>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201009115834.24241-1-fw@strlen.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Attention please!
+On Fri, Oct 09, 2020 at 01:58:34PM +0200, Florian Westphal wrote:
+> add a test with re-queueing: usespace doesn't pass accept verdict,
+> but tells to re-queue to another nf_queue instance.
+> 
+> Also, make the second nf-queue program use non-gso mode, kernel will
+> have to perform software segmentation.
+> 
+> Lastly, do not queue every packet, just one per second, and add delay
+> when re-injecting the packet to the kernel.
 
-I am the Chief Financial Officer of Rockhopper and Gas company London UK, and by the virtue, as the Chief Financial Officer. I got your contact through a directory search and decided to propose this business. I am seeking your assistance in remitting of some funds,  Ninety five million  to your account for private investment purpose, hence my request for your assistance.
- 
-  
- SOURCE OF THE FUND:
-
-The fund to be transferred into your account is accrued from an over-invoiced contract amount awarded for the completion of the last phase of our refinery, valves and depot for storage of product all over our branches here in the UK which include laying of  distribution pipelines. The contract which was originally valued for One Hundred and Twenty Seven Million was manipulated to read, Two Hundred and Twenty Two Million.  The extra, Ninety Five Million, is what I want to move to your account, the original contractors who executed the job has been paid all their contract bills remaining this Ninety Five Million.
-  
- DISBURSEMENT:
-
-I have resolved that you take Forty percent  of the total amount for your assistance. that is, fronting you as a sub contractor to claim the remaining balance of Ninety Five Million  which is left now in our bank from the over invoice contract because it is impossible for me to claim the over invoiced amount without your assistance as a Foreign Contractor. In addition Ten percent has been mapped out for any miscellaneous expenses that   might be incurred by both of us during this business while Fifty percent  will be my own share.
-
-SECURITY:
-
-All modalities to effect the payment and subsequent transfer of this money has been worked out, so this transaction is Hundred percent risk free, though you are required to treat it with strictest confidence, on our acceptance please send to me your personal details and your direct mobile phone number for speedy correspondence.
-  
-I am looking forward to doing business with you. Your prompt reply will be highly appreciated. Do kindly furnish me with your contact details if you are interested in partnering with me on this transaction.
- 
-  
-Yours Faithfully,
-
-Stewart MacDonald
-Chief Financial Officer
-Rockhopper Exploration PLC
+Applied, thanks.
