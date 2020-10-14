@@ -2,67 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E3D28E762
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Oct 2020 21:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D048D28E8C1
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Oct 2020 00:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390751AbgJNTf4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 14 Oct 2020 15:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390744AbgJNTf4 (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 14 Oct 2020 15:35:56 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC90C061755;
-        Wed, 14 Oct 2020 12:35:56 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1kSmYx-0003tJ-Cz; Wed, 14 Oct 2020 21:35:51 +0200
-Date:   Wed, 14 Oct 2020 21:35:51 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Francesco Ruggeri <fruggeri@arista.com>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
-        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>
-Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
- re-register
-Message-ID: <20201014193551.GD16895@breakpoint.cc>
-References: <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
- <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
- <20201009110323.GC5723@breakpoint.cc>
- <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
- <20201009185552.GF5723@breakpoint.cc>
- <alpine.DEB.2.23.453.2010092132220.19307@blackhole.kfki.hu>
- <20201009200548.GG5723@breakpoint.cc>
- <20201014000628.GA15290@salvia>
- <20201014082341.GA16895@breakpoint.cc>
- <CA+HUmGij2kddxovowfK=Wt=SB6N2sTLTb1Hs+65MfrZGpv=YWg@mail.gmail.com>
+        id S1728761AbgJNWaR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 14 Oct 2020 18:30:17 -0400
+Received: from [209.127.18.34] ([209.127.18.34]:53301 "EHLO visi.com"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728730AbgJNWaR (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 14 Oct 2020 18:30:17 -0400
+X-Greylist: delayed 2553 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Oct 2020 18:30:16 EDT
+Received: from [209.127.18.34] (account robiate@visi.com HELO User)
+  by visi.com (CommuniGate Pro SMTP 6.1.9 _community_)
+  with ESMTPA id 436780; Wed, 14 Oct 2020 14:53:51 -0700
+Reply-To: <mrsveraaellen@gmail.com>
+From:   "Mrs. Vera Aellen." <aellenvera@gmail.com>
+Subject: working together
+Date:   Wed, 14 Oct 2020 14:53:51 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+HUmGij2kddxovowfK=Wt=SB6N2sTLTb1Hs+65MfrZGpv=YWg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <auto-000000436780@visi.com>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Francesco Ruggeri <fruggeri@arista.com> wrote:
-> On Wed, Oct 14, 2020 at 1:23 AM Florian Westphal <fw@strlen.de> wrote:
-> >
-> > Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > > Legacy would still be flawed though.
-> >
-> > Its fine too, new rule blob gets handled (and match/target checkentry
-> > called) before old one is dismantled.
-> >
-> > We only have a 0 refcount + hook unregister when rules get
-> > flushed/removed explicitly.
-> 
-> Should the patch be used in the meantime while this gets
-> worked out?
+Good day,
 
-I think the patch is correct, and I do NOT see a better solution.
+You have been selected to receive my grant donation. Please, contact me for further detail.to email  mrsveraaellen@gmail.com
+
+Best Regards,
+Mrs. Vera Aellen.
