@@ -2,46 +2,37 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD0D28F818
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Oct 2020 20:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F6728F8F4
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Oct 2020 20:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728460AbgJOSER (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 15 Oct 2020 14:04:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52254 "EHLO mail.kernel.org"
+        id S1727190AbgJOSym (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 15 Oct 2020 14:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726147AbgJOSER (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:04:17 -0400
+        id S1726487AbgJOSym (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:54:42 -0400
 Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E175720797;
-        Thu, 15 Oct 2020 18:04:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DDD521527;
+        Thu, 15 Oct 2020 18:54:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602785056;
-        bh=p+alG96VqUHzWl/iQOrip1ok4bKiK0HcnG43T8fhhoA=;
+        s=default; t=1602788081;
+        bh=UIkTh2LW6GxJ01HN/FOH/tzqZspvRrpV9rvLtD7I3Xs=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SJuoRfy0QJPz03+HW9k8/hBgyICGcRUzaf6H5MAk04x8J8qNw347acMyl8IYgQcMl
-         krZ7KvhGBcNBuT/HMQSRakPWnKwJU/OZvnIxpoMVK7J/69RFelISG5U4CCvRsv0NDw
-         4UHUH0lZKmTwVGpYLr3BWkkdhdtTVNACkC/gQQC4=
-Date:   Thu, 15 Oct 2020 11:04:14 -0700
+        b=Y8y2nsKTLb0TxsBSKYjAEtQNxFaok9hIyRyO49xkB/M9Bol9SHfbW5f8DGMpquLMY
+         kZhq8Qjxbj6CwdWJBpUbZUtv+wN3j8BFTIN4VFdSOjN2BtjIo+oZM4bJhSQAFaPC8g
+         o/hqq85JdJmyF/RRlqxt3QvBdjI34HTwQCSVcWRU=
+Date:   Thu, 15 Oct 2020 11:54:39 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: bpf-next test error: BUG: program execution failed: executor 0:
- exit status 67
-Message-ID: <20201015110409.66a8a054@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201015110203.7cffc1d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <000000000000376ecf05b1b92848@google.com>
-        <CACT4Y+aTPCPRtJ2wJ5P58DijtG2pxXtZm6w=C838YKLKCEdSfw@mail.gmail.com>
-        <20201015110203.7cffc1d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH net-next] netfilter: nftables: allow re-computing sctp
+ CRC-32C in 'payload' statements
+Message-ID: <20201015115439.7791c3f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201015163927.28730-1-pablo@netfilter.org>
+References: <20201015163927.28730-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -49,45 +40,26 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, 15 Oct 2020 11:02:08 -0700 Jakub Kicinski wrote:
-> On Thu, 15 Oct 2020 19:46:35 +0200 Dmitry Vyukov wrote:
-> > On Thu, Oct 15, 2020 at 7:41 PM syzbot
-> > <syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com> wrote:  
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    e688c3db bpf: Fix register equivalence tracking.
-> > > git tree:       bpf-next
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=13d3c678500000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ea7dc57e899da16d
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=5609d37b3a926aad75b7
-> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com
-> > >
-> > > executing program
-> > > 2020/10/15 14:32:51 BUG: program execution failed: executor 0: exit status 67
-> > > iptable checkpoint filter/2: getsockopt(IPT_SO_GET_INFO) (errno 22)
-> > > loop exited with status 67
-> > >
-> > > iptable checkpoint filter/2: getsockopt(IPT_SO_GET_INFO) (errno 22)
-> > > loop exited with status 67    
-> > 
-> > +netfilter maintainers
-> > 
-> > It seems one of these recent commits broke netfiler.
-> > Since syzkaller uses netfiler for sandboxing, syzbot is currently down
-> > on bpf-next and linux-next. Other trees will follow once they merge
-> > the breakage.  
+On Thu, 15 Oct 2020 18:39:27 +0200 Pablo Neira Ayuso wrote:
+> From: Davide Caratti <dcaratti@redhat.com>
 > 
-> Do you have this?
+> nftables payload statements are used to mangle SCTP headers, but they can
+> only replace the Internet Checksum. As a consequence, nftables rules that
+> mangle sport/dport/vtag in SCTP headers potentially generate packets that
+> are discarded by the receiver, unless the CRC-32C is "offloaded" (e.g the
+> rule mangles a skb having 'ip_summed' equal to 'CHECKSUM_PARTIAL'.
 > 
-> d25e2e9388ed ("netfilter: restore NF_INET_NUMHOOKS")
+> Fix this extending uAPI definitions and L4 checksum update function, in a
+> way that userspace programs (e.g. nft) can instruct the kernel to compute
+> CRC-32C in SCTP headers. Also ensure that LIBCRC32C is built if NF_TABLES
+> is 'y' or 'm' in the kernel build configuration.
+> 
+> Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+> Signed-off-by: Florian Westphal <fw@strlen.de>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> ---
+> @Jakub: This is my last pending item in nf-next I think, I'm not planning to
+> 	send a pull request for a single patch, so please directly apply this
+> 	one to net-next. Thank you.
 
-Ah, you're saying it's just linux-next and bpf-next that's down.
-I think the quoted fix will hit bpf-next in a few hours.
-
-Thanks!
+Applied, thanks!
