@@ -2,65 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D926328FF8E
-	for <lists+netfilter-devel@lfdr.de>; Fri, 16 Oct 2020 09:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDE728FE76
+	for <lists+netfilter-devel@lfdr.de>; Fri, 16 Oct 2020 08:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404914AbgJPHyu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 16 Oct 2020 03:54:50 -0400
-Received: from cpanel.giganet.cl ([190.96.78.139]:39928 "EHLO
-        cpanel.giganet.cl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404864AbgJPHyt (ORCPT
+        id S2394351AbgJPGpV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 16 Oct 2020 02:45:21 -0400
+Received: from out3.mail.ruhr-uni-bochum.de ([134.147.53.155]:46019 "EHLO
+        out3.mail.ruhr-uni-bochum.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389811AbgJPGpV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:54:49 -0400
-X-Greylist: delayed 3598 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Oct 2020 03:54:48 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=dplgrout.cl
-        ; s=default; h=Content-Transfer-Encoding:Content-Type:Message-ID:Reply-To:
-        Subject:To:From:Date:MIME-Version:Sender:Cc:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=TrgUs68YRs3neP+PfrvGhLoeMXh3YzKv5z9oCWPJ0m4=; b=AXvm5rGlKDJ5gc2+yLOM/w2jjL
-        1H7q83YzCNGOZT7WKql67aWE+rWc3H1PfbQCV+cBV/+e17yPdML2E2F1cocBE7m7Obx7q+8lTz2mY
-        7V07ikpZGokoxnIj/eHEaXceAPXH/1b4ze0WzS7ysbet/JG8g9AVgizUxKKjKg5NPZZr0SFBqqt05
-        rlhuQsl0vMJTUMuVm6I81q8itILyXHylNNIc2kAl5CER5jEOUC14OngGxsVOA72epjM7XlJPhHDxJ
-        zri2tvJJKB0vrnfwgudC2RmXzAbWD6c6W84pbZg++zsCt7Xv+jqi6gI3MJO8MHV8Ut7yJ5eMiIZJB
-        nVXwyr2w==;
-Received: from [::1] (port=35968 helo=cpanel.giganet.cl)
-        by cpanel.giganet.cl with esmtpa (Exim 4.93)
-        (envelope-from <info@controlypotencia.com>)
-        id 1kTJBm-000AzW-BK; Fri, 16 Oct 2020 03:26:06 -0300
+        Fri, 16 Oct 2020 02:45:21 -0400
+X-Greylist: delayed 532 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Oct 2020 02:45:20 EDT
+Received: from mx3.mail.ruhr-uni-bochum.de (localhost [127.0.0.1])
+        by out3.mail.ruhr-uni-bochum.de (Postfix mo-ext) with ESMTP id 4CCGdJ6C91z8SJW
+        for <netfilter-devel@vger.kernel.org>; Fri, 16 Oct 2020 08:36:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ruhr-uni-bochum.de;
+        s=mail-2017; t=1602830180;
+        bh=uEp+7Q05lW9n/D32M21eqG1/5kxtS1jDhuLqSVT17E4=;
+        h=Date:To:From:Subject:From;
+        b=nYWt9A0Te7JXnWJ39UxTvRdY3wXy5IcGt4JjIaVVUm8pkYUDVJkwRyWF/GGTdltpW
+         FN69F+ZVuXvcvxAPkBKKyvJommhfuAFNJNTSltqdEl1hK8+/wJdJYUPAucB+ERgKvH
+         8BvLjC5XGKCKvucsWFrKfgK0nYSIozsIQTuCIZ5Q=
+Received: from out3.mail.ruhr-uni-bochum.de (localhost [127.0.0.1])
+        by mx3.mail.ruhr-uni-bochum.de (Postfix idis) with ESMTP id 4CCGdJ4fjmz8ScZ
+        for <netfilter-devel@vger.kernel.org>; Fri, 16 Oct 2020 08:36:20 +0200 (CEST)
+X-Envelope-Sender: <syssecsurvey@ruhr-uni-bochum.de>
+X-Auto-Response-Suppress: All
+X-RUB-Notes: Internal Noautoreply origin=134.147.203.182
+Received: from survey.syssec.ruhr-uni-bochum.de (survey.syssec.ruhr-uni-bochum.de [134.147.203.182])
+        by out3.mail.ruhr-uni-bochum.de (Postfix mi-int) with ESMTP id 4CCGdJ25lKz8Sdp
+        for <netfilter-devel@vger.kernel.org>; Fri, 16 Oct 2020 08:36:20 +0200 (CEST)
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.1 at mx3.mail.ruhr-uni-bochum.de
+Received: by survey.syssec.ruhr-uni-bochum.de (Postfix, from userid 33)
+        id 1EC2F1FA81; Fri, 16 Oct 2020 08:36:21 +0200 (CEST)
+Date:   Fri, 16 Oct 2020 08:36:21 +0200
+To:     netfilter-devel@vger.kernel.org
+From:   "Thorsten Holz, Ruhr University Bochum" 
+        <syssecsurvey@ruhr-uni-bochum.de>
+Auto-Submitted: auto-generated
+Subject: University study about the use of web technologies on websites
+Message-ID: <cRDhBH9H3evN6kG5KOAVkwh1mQlqux21SfzRDw2KSNg@survey.syssec.rub.de>
+X-Mailer: PHPMailer 6.0.7 (https://github.com/PHPMailer/PHPMailer)
+X-surveyid: 218135
+X-tokenid: 6jvwOdc1rfhPWsq
+X-Surveymailer: SysSec LimeSurvey Emailer (LimeSurvey.org)
 MIME-Version: 1.0
-Date:   Fri, 16 Oct 2020 03:26:05 -0300
-From:   Ying Chongan <info@controlypotencia.com>
-To:     undisclosed-recipients:;
-Subject: Investment opportunity
-Reply-To: yingchongan@zohomail.com
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <c397dfad04eba985ce889cdaa424e4d4@controlypotencia.com>
-X-Sender: info@controlypotencia.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cpanel.giganet.cl
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - controlypotencia.com
-X-Get-Message-Sender-Via: cpanel.giganet.cl: authenticated_id: mariapaz.lopez@dplgrout.cl
-X-Authenticated-Sender: cpanel.giganet.cl: mariapaz.lopez@dplgrout.cl
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=utf-8
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Greetings,
+Dear web professional,
 
-This email is for an opportunity to invest in any lucrative business in 
-your country.
+We invite you to participate in a research study conducted at Ruhr University Bochum (Germany) in cooperation with Leibniz University Hannover (Germany) and the University of Michigan (USA). We found your email address (netfilter-devel@vger.kernel.org) on the website netfilter.org.
 
-We offer a quick loan at low interest rate, if you are interested, 
-please reply to yingchongan@gmail.com for more details.
+We are interested in understanding how web technologies are integrated into and used by websites. We are looking for perspectives from a wide variety of people working on or with websites, such as developers, content creators, marketing, customer service, legal, and others. Our research relies on the generous help of interested web professionals like you!
 
-Sincerely: Ying Chongan
+This online survey will take about 20-25 minutes to complete.
+
+You are eligible to participate in the study if you
+
+(1) are at least 18 years old,
+(2) are involved with websites in some capacity (e. g., their design, development, deployment, maintenance, and / or management), and
+(3) are comfortable completing the survey in English.
+
+In case you do not meet these requirements, you can still help us by forwarding this email to someone involved with the website netfilter.org.
+
+Participate!
+To participate, please use this link to access our survey: https://survey.syssec.ruhr-uni-bochum.de/index.php?r=survey/index&sid=218135&token=6jvwOdc1rfhPWsq&lang=en
+
+Other Options:
+* If you do not want to participate in this survey and do not want us to send you any further emails, please click the following link: https://survey.syssec.ruhr-uni-bochum.de/index.php?r=optout/tokens&surveyid=218135&langcode=en&token=6jvwOdc1rfhPWsq
+* If you would like to reverse your opt-out decision, please click the following link: https://survey.syssec.ruhr-uni-bochum.de/index.php?r=optin/tokens&surveyid=218135&langcode=en&token=6jvwOdc1rfhPWsq
+
+If you have any further questions, please contact us at syssecsurvey@ruhr-uni-bochum.de.
+
+Thank you for helping our research!
+
+Sincerely,
+
+Prof. Thorsten Holz (Ruhr University Bochum)
+Prof. Sascha Fahl (Leibniz University Hannover)
+Prof. Florian Schaub (University of Michigan)
