@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC18291C5E
-	for <lists+netfilter-devel@lfdr.de>; Sun, 18 Oct 2020 21:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576AB291BD9
+	for <lists+netfilter-devel@lfdr.de>; Sun, 18 Oct 2020 21:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731197AbgJRTho (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 18 Oct 2020 15:37:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39718 "EHLO mail.kernel.org"
+        id S1731690AbgJRT01 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 18 Oct 2020 15:26:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731228AbgJRTZT (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 18 Oct 2020 15:25:19 -0400
+        id S1731684AbgJRT01 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 18 Oct 2020 15:26:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5A2C222C8;
-        Sun, 18 Oct 2020 19:25:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8125222EC;
+        Sun, 18 Oct 2020 19:26:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603049119;
-        bh=JC0Y0QPLd4dv2Chd2uSnFM6k2pNn9+xYOM4MwLSX+Ps=;
+        s=default; t=1603049186;
+        bh=kvq5Va+Jj0JvbL9llGVrEJdatR8nffGjna8c2o1b9G4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I/UTwr1vfNZNZnCFBRSRBXlvnAUX8TmcEYTPukCr3taqO0HbZw3QiQvE9wMHzM8Hl
-         ZocWgSgRefUzp0BFBoK0erbD4GsDGbwPOa/v52ZcsgYczL4Oe+Lru0OfZO52ZlhyUK
-         hyB6RpHjkN7URlIecD5IjgQLA3cjRVoiw8C8IRtE=
+        b=DHQl+uyDg91pu5y/XeibtwyUsaOnYvp4YfdgwMxRvahLU9C/SF1V/VNBsbS9eVGrx
+         Xa8WTTSZToXmm2QmlYRDmm9aOjs7EzerAXvmUHBaH+/jvEnMO9EXJPJgv+eISaN7N7
+         1xkeRiDzY8HYEvyRpnj+P1/da94q0ps1twKuj11M=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
@@ -33,12 +33,12 @@ Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
         coreteam@netfilter.org
-Subject: [PATCH AUTOSEL 4.19 50/56] ipvs: Fix uninit-value in do_ip_vs_set_ctl()
-Date:   Sun, 18 Oct 2020 15:24:11 -0400
-Message-Id: <20201018192417.4055228-50-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 46/52] ipvs: Fix uninit-value in do_ip_vs_set_ctl()
+Date:   Sun, 18 Oct 2020 15:25:23 -0400
+Message-Id: <20201018192530.4055730-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201018192417.4055228-1-sashal@kernel.org>
-References: <20201018192417.4055228-1-sashal@kernel.org>
+In-Reply-To: <20201018192530.4055730-1-sashal@kernel.org>
+References: <20201018192530.4055730-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -67,10 +67,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index c339b5e386b78..3ad1de081e3c7 100644
+index 5ec80818ace2c..c1672ff009637 100644
 --- a/net/netfilter/ipvs/ip_vs_ctl.c
 +++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -2393,6 +2393,10 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
+@@ -2425,6 +2425,10 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
  		/* Set timeout values for (tcp tcpfin udp) */
  		ret = ip_vs_set_timeout(ipvs, (struct ip_vs_timeout_user *)arg);
  		goto out_unlock;
@@ -81,7 +81,7 @@ index c339b5e386b78..3ad1de081e3c7 100644
  	}
  
  	usvc_compat = (struct ip_vs_service_user *)arg;
-@@ -2469,9 +2473,6 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
+@@ -2501,9 +2505,6 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
  		break;
  	case IP_VS_SO_SET_DELDEST:
  		ret = ip_vs_del_dest(svc, &udest);
