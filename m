@@ -2,156 +2,103 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F7F2924A1
-	for <lists+netfilter-devel@lfdr.de>; Mon, 19 Oct 2020 11:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB262927A1
+	for <lists+netfilter-devel@lfdr.de>; Mon, 19 Oct 2020 14:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730392AbgJSJc3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 19 Oct 2020 05:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgJSJc3 (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:32:29 -0400
-Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F83C0613CE
-        for <netfilter-devel@vger.kernel.org>; Mon, 19 Oct 2020 02:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=FuEOZSgm5H1L5cztLD6TzgbW6piUBLMuJWFSX1u9BpU=; b=gGKxbZ9IfKQ7ctRX6vg55S8egJ
-        wZETWsmuorCbCGLwfe/UK6Tz+ZaJ8kRe5uikBrjNj8+hKuFW8VxnegOpG/3RdaIEEt0FKCi1ZdfpG
-        89HqUJn7vyAbp+MbgAGzM9NRZxdXNyJ0fZF8oRHdZ+4H5ctDAutOMRbhRTXtJzjTPA6co70jgN31t
-        xmhcMTswZfPbfVR9lDKOorVjHOjfzMf0sJ/EtieI1cMtvyRseJEJ6kITE7Dk2wkd+li7CLcacJC9t
-        4nRjzNZORLeDgkGXd6RltChCC5goBnh8UdCAsb5HcvSnPBs+BEApVWsJxX/p4TzEntQokSM2Frj/r
-        lZHlTp0w==;
-Received: from celephais.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:5ec5:d4ff:fe95:cee6] helo=azazel.net)
-        by kadath.azazel.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <jeremy@azazel.net>)
-        id 1kURWk-00070C-Qe; Mon, 19 Oct 2020 10:32:26 +0100
-Date:   Mon, 19 Oct 2020 10:32:25 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, kuba@kernel.org
-Subject: Re: [PATCH net-next,v2 8/9] netfilter: flowtable: bridge port support
-Message-ID: <20201019093225.GF169425@azazel.net>
-References: <20201015163038.26992-1-pablo@netfilter.org>
- <20201015163038.26992-9-pablo@netfilter.org>
+        id S1726336AbgJSMtW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 19 Oct 2020 08:49:22 -0400
+Received: from correo.us.es ([193.147.175.20]:34678 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726561AbgJSMtW (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 19 Oct 2020 08:49:22 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 32D11154E8D
+        for <netfilter-devel@vger.kernel.org>; Mon, 19 Oct 2020 14:49:20 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 23E06DA78B
+        for <netfilter-devel@vger.kernel.org>; Mon, 19 Oct 2020 14:49:20 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 196A3DA73D; Mon, 19 Oct 2020 14:49:20 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id CE54BDA78C
+        for <netfilter-devel@vger.kernel.org>; Mon, 19 Oct 2020 14:49:17 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 19 Oct 2020 14:49:17 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPSA id 852E94301DE2
+        for <netfilter-devel@vger.kernel.org>; Mon, 19 Oct 2020 14:49:17 +0200 (CEST)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH libnftnl] expr: add nftnl_rule_del_expr()
+Date:   Mon, 19 Oct 2020 14:49:13 +0200
+Message-Id: <20201019124913.6938-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Km1U/tdNT/EmXiR1"
-Content-Disposition: inline
-In-Reply-To: <20201015163038.26992-9-pablo@netfilter.org>
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:5ec5:d4ff:fe95:cee6
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Add a function to remove expression from the rule list.
 
---Km1U/tdNT/EmXiR1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ include/libnftnl/rule.h | 1 +
+ src/libnftnl.map        | 1 +
+ src/rule.c              | 6 ++++++
+ 3 files changed, 8 insertions(+)
 
-On 2020-10-15, at 18:30:37 +0200, Pablo Neira Ayuso wrote:
-> Update hardware destination address to the master bridge device to
-> emulate the forwarding behaviour.
->
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> ---
-> v2: no changes.
->
->  include/net/netfilter/nf_flow_table.h | 1 +
->  net/netfilter/nf_flow_table_core.c    | 4 ++++
->  net/netfilter/nft_flow_offload.c      | 6 +++++-
->  3 files changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
-> index 1b57d1d1270d..4ec3f9bb2f32 100644
-> --- a/include/net/netfilter/nf_flow_table.h
-> +++ b/include/net/netfilter/nf_flow_table.h
-> @@ -172,6 +172,7 @@ struct nf_flow_route {
->  			u32		ifindex;
->  			u8		h_source[ETH_ALEN];
->  			u8		h_dest[ETH_ALEN];
-> +			enum flow_offload_xmit_type xmit_type;
->  		} out;
->  		struct dst_entry	*dst;
->  	} tuple[FLOW_OFFLOAD_DIR_MAX];
-> diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-> index 725366339b85..e80dcabe3668 100644
-> --- a/net/netfilter/nf_flow_table_core.c
-> +++ b/net/netfilter/nf_flow_table_core.c
-> @@ -100,6 +100,10 @@ static int flow_offload_fill_route(struct flow_offload *flow,
->
->  	if (dst_xfrm(dst))
->  		flow_tuple->xmit_type = FLOW_OFFLOAD_XMIT_XFRM;
-> +	else
-> +		flow_tuple->xmit_type = route->tuple[dir].out.xmit_type;
-> +
-> +	flow_tuple->dst_cache = dst;
->
->  	flow_tuple->dst_cache = dst;
+diff --git a/include/libnftnl/rule.h b/include/libnftnl/rule.h
+index e5d1ca0534b7..b6b93c62b840 100644
+--- a/include/libnftnl/rule.h
++++ b/include/libnftnl/rule.h
+@@ -51,6 +51,7 @@ uint32_t nftnl_rule_get_u32(const struct nftnl_rule *r, uint16_t attr);
+ uint64_t nftnl_rule_get_u64(const struct nftnl_rule *r, uint16_t attr);
+ 
+ void nftnl_rule_add_expr(struct nftnl_rule *r, struct nftnl_expr *expr);
++void nftnl_rule_del_expr(struct nftnl_expr *expr);
+ 
+ struct nlmsghdr;
+ 
+diff --git a/src/libnftnl.map b/src/libnftnl.map
+index 7937e05b669d..2d35ace0355b 100644
+--- a/src/libnftnl.map
++++ b/src/libnftnl.map
+@@ -372,4 +372,5 @@ LIBNFTNL_14 {
+ LIBNFTNL_15 {
+   nftnl_obj_get_data;
+   nftnl_expr_build_payload;
++  nftnl_rule_del_expr;
+ } LIBNFTNL_14;
+diff --git a/src/rule.c b/src/rule.c
+index 8d7e0681cb42..480afc8ffc1b 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -330,6 +330,12 @@ void nftnl_rule_add_expr(struct nftnl_rule *r, struct nftnl_expr *expr)
+ 	list_add_tail(&expr->head, &r->expr_list);
+ }
+ 
++EXPORT_SYMBOL(nftnl_rule_del_expr);
++void nftnl_rule_del_expr(struct nftnl_expr *expr)
++{
++	list_del(&expr->head);
++}
++
+ static int nftnl_rule_parse_attr_cb(const struct nlattr *attr, void *data)
+ {
+ 	const struct nlattr **tb = data;
+-- 
+2.20.1
 
-Accidentally duplicated assignment?
-
-> diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
-> index d440e436cb16..9efb5d584290 100644
-> --- a/net/netfilter/nft_flow_offload.c
-> +++ b/net/netfilter/nft_flow_offload.c
-> @@ -54,6 +54,7 @@ struct nft_forward_info {
->  	u32 iifindex;
->  	u8 h_source[ETH_ALEN];
->  	u8 h_dest[ETH_ALEN];
-> +	enum flow_offload_xmit_type xmit_type;
->  };
->
->  static int nft_dev_forward_path(struct nf_flow_route *route,
-> @@ -83,7 +84,9 @@ static int nft_dev_forward_path(struct nf_flow_route *route,
->  		case DEV_PATH_VLAN:
->  			return -1;
->  		case DEV_PATH_BRIDGE:
-> -			return -1;
-> +			memcpy(info.h_dest, path->dev->dev_addr, ETH_ALEN);
-> +			info.xmit_type = FLOW_OFFLOAD_XMIT_DIRECT;
-> +			break;
->  		}
->  	}
->
-> @@ -91,6 +94,7 @@ static int nft_dev_forward_path(struct nf_flow_route *route,
->  	memcpy(route->tuple[dir].out.h_dest, info.h_source, ETH_ALEN);
->  	memcpy(route->tuple[dir].out.h_source, info.h_dest, ETH_ALEN);
->  	route->tuple[dir].out.ifindex = info.iifindex;
-> +	route->tuple[dir].out.xmit_type = info.xmit_type;
->
->  	return 0;
->  }
-> --
-> 2.20.1
-
-J.
-
---Km1U/tdNT/EmXiR1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEEd/6/sDFjb+OCRmRMonv1GCHZ79cFAl+NXSkACgkQonv1GCHZ
-79dfdQv/fgPi1Zh25jhaTI8uPjNvAoPCgMHwCFIxq/2EbtUpUK9lTDhmbfNQi5QE
-v0JQb0vNdC6jV/bUiTDbgTWtedhESrpxP5pkoc1j8P16R7Rx1PY1b+ZBTXS7nXf7
-DXWzBMRSLOrTdSQ2LPLMZRiR88LnkWKqdBVpxney56+A4m6sPQDCoGURLtD42xYe
-GgMGncKxcFSbAh7TBgC9+ZZheLukHNh8h9suxaLlFBOGXjebHp1JmS/pKlwsbLoB
-5KHir10S+c/kGaXsZcFvWYEp8fQ3EmN0qA4IJe2wq3fCpEJ9frZDRQgDP1QfXO2l
-Q5KYDvn5e5tpHzgbpmv2vRJOwz6bW8rln3Gy0dHaiqWuVNcwo7u5EZ//I8eiKm/B
-dgcHxrTiD43HKy35+vO60cqgzu5SYQUzmYO8BMXSv/1B7gv6dK2WdB1+F8FjWJuu
-9J/d0hZ9pYUoOKhLRvOk90GliixG9wCX66VF9xlfIwTHogazqpAFX52lDq5pzX9e
-y9YYWuZh
-=UHob
------END PGP SIGNATURE-----
-
---Km1U/tdNT/EmXiR1--
