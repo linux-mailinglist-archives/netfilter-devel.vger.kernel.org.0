@@ -2,66 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC6C293F69
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Oct 2020 17:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DC3293F6D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Oct 2020 17:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408622AbgJTPSz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 20 Oct 2020 11:18:55 -0400
-Received: from correo.us.es ([193.147.175.20]:50222 "EHLO mail.us.es"
+        id S2408633AbgJTPTT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 20 Oct 2020 11:19:19 -0400
+Received: from correo.us.es ([193.147.175.20]:50422 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726689AbgJTPSz (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 20 Oct 2020 11:18:55 -0400
+        id S1726689AbgJTPTT (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 20 Oct 2020 11:19:19 -0400
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 1A40B1761A7
-        for <netfilter-devel@vger.kernel.org>; Tue, 20 Oct 2020 17:18:54 +0200 (CEST)
+        by mail.us.es (Postfix) with ESMTP id DDF9C1761B4
+        for <netfilter-devel@vger.kernel.org>; Tue, 20 Oct 2020 17:19:17 +0200 (CEST)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 0C9B6FC600
-        for <netfilter-devel@vger.kernel.org>; Tue, 20 Oct 2020 17:18:54 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id D038DE1506
+        for <netfilter-devel@vger.kernel.org>; Tue, 20 Oct 2020 17:19:17 +0200 (CEST)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 021A334EE; Tue, 20 Oct 2020 17:18:54 +0200 (CEST)
+        id C5CF5E1517; Tue, 20 Oct 2020 17:19:17 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CA93534EE;
-        Tue, 20 Oct 2020 17:18:51 +0200 (CEST)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 9C41AE150F;
+        Tue, 20 Oct 2020 17:19:15 +0200 (CEST)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 20 Oct 2020 17:18:51 +0200 (CEST)
+ Tue, 20 Oct 2020 17:19:15 +0200 (CEST)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from us.es (unknown [90.77.255.23])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id AD3C34301DE1;
-        Tue, 20 Oct 2020 17:18:51 +0200 (CEST)
-Date:   Tue, 20 Oct 2020 17:18:51 +0200
+        by entrada.int (Postfix) with ESMTPSA id 75F284301DE0;
+        Tue, 20 Oct 2020 17:19:15 +0200 (CEST)
+Date:   Tue, 20 Oct 2020 17:19:15 +0200
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     timothee.cocault@orange.com
-Cc:     Florian Westphal <fw@strlen.de>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH] Fixes dropping of small packets in bridge nat
-Message-ID: <20201020151851.GA19821@salvia>
-References: <585B71F7B267D04784B84104A88F7DEE0DB503A6@OPEXCAUBM34.corporate.adroot.infra.ftgroup>
+To:     Jeremy Sowden <jeremy@azazel.net>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH] docs: nf_flowtable: fix typo.
+Message-ID: <20201020151915.GA19841@salvia>
+References: <20201018153019.350400-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <585B71F7B267D04784B84104A88F7DEE0DB503A6@OPEXCAUBM34.corporate.adroot.infra.ftgroup>
+In-Reply-To: <20201018153019.350400-1-jeremy@azazel.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 12:36:15PM +0000, timothee.cocault@orange.com wrote:
-> Fixes an error causing small packets to get dropped. skb_ensure_writable
-> expects the second parameter to be a length in the ethernet payload. 
-> If we want to write the ethernet header (src, dst), we should pass 0.
-> Otherwise, packets with small payloads (< ETH_ALEN) will get dropped.
+On Sun, Oct 18, 2020 at 04:30:19PM +0100, Jeremy Sowden wrote:
+> "mailined" should be "mainlined."
 
-Applied, thanks.
+Applied to nf.git, thanks.
