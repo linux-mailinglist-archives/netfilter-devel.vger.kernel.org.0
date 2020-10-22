@@ -2,101 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0CB2963C8
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Oct 2020 19:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34362296527
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Oct 2020 21:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368004AbgJVRaT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 22 Oct 2020 13:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S369204AbgJVRaT (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 22 Oct 2020 13:30:19 -0400
-Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF24CC0613D4
-        for <netfilter-devel@vger.kernel.org>; Thu, 22 Oct 2020 10:30:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=XLIRaNv87IMDehcPgZz/aAp+n1fZV9b2iA1ljI7YxsQ=; b=RJJzuc8Cx9f5cjVH8/3jggsMzo
-        LDIObqjZtPky78GFR41PZohe9B5unzpD40/pEd9dGfFylW3LcmJsvqordWZLClEjpgvad72J5r4Wn
-        0mjYEkS8YjmkiJA4blrBHkZZLYO5+DqPfWOnau6zdXLklONkJkEsJTW7PB7rUL9QvF2evfL0dL6Fv
-        EDa2aqEHA5ufyUDsFRWeaV94JlVE2oMQvFMsB33LB0qCpg6WW1+O2eQ0AGMUlUciP8LIB9aVObJMb
-        OghQLTx8xyp4Zjd1LWNqEGNVWt230ExAQbD4JI1TGy4/rLgEziUuqP7FDWWjnePr44enRtAhvx+ew
-        7jtCkYNA==;
-Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
-        by kadath.azazel.net with esmtp (Exim 4.92)
-        (envelope-from <jeremy@azazel.net>)
-        id 1kVePl-0003s0-Gr; Thu, 22 Oct 2020 18:30:13 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Jan Engelhardt <jengelh@inai.de>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons 3/3] pknock: pknlusr: add man-page.
-Date:   Thu, 22 Oct 2020 18:30:05 +0100
-Message-Id: <20201022173006.635720-4-jeremy@azazel.net>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201022173006.635720-1-jeremy@azazel.net>
-References: <20201022173006.635720-1-jeremy@azazel.net>
+        id S2508771AbgJVTQ4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 22 Oct 2020 15:16:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2508751AbgJVTQ4 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 22 Oct 2020 15:16:56 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C01A224656;
+        Thu, 22 Oct 2020 19:16:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603394216;
+        bh=b+HpGV/SQiY/H5FbibSh4WTK4U78aHJqHe+3GHGYePQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=p0gQU1GmG5L7gwBk7Wj659fEPpi94yqsY17dOdbSsdcGnLNKypv9o0twA0uIupPmd
+         MDQf7aSjlEtI/Kr0JPUJzz4Qtjg+RctZ2PDqwci8MsoTL0kk0P1YDA8/C+gnAeODVc
+         hTrDnM98YL45OPdcVG5mBtaAQns3kpWA+/8QRg3g=
+Date:   Thu, 22 Oct 2020 12:16:53 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 0/7] Netfilter fixes for net
+Message-ID: <20201022121653.1238a843@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201022172925.22770-1-pablo@netfilter.org>
+References: <20201022172925.22770-1-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Since pknlusr is now being installed, let's give it a man-page.
+On Thu, 22 Oct 2020 19:29:18 +0200 Pablo Neira Ayuso wrote:
+> Hi Jakub,
+> 
+> The following patchset contains Netfilter fixes for net:
+> 
+> 1) Update debugging in IPVS tcp protocol handler to make it easier
+>    to understand, from longguang.yue
+> 
+> 2) Update TCP tracker to deal with keepalive packet after
+>    re-registration, from Franceso Ruggeri.
+> 
+> 3) Missing IP6SKB_FRAGMENTED from netfilter fragment reassembly,
+>    from Georg Kohmann.
+> 
+> 4) Fix bogus packet drop in ebtables nat extensions, from
+>    Thimothee Cocault.
+> 
+> 5) Fix typo in flowtable documentation.
+> 
+> 6) Reset skb timestamp in nft_fwd_netdev.
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- extensions/pknock/Makefile.am |  2 ++
- extensions/pknock/pknlusr.8   | 23 +++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
- create mode 100644 extensions/pknock/pknlusr.8
-
-diff --git a/extensions/pknock/Makefile.am b/extensions/pknock/Makefile.am
-index dcb3096afd35..fb419ede0d2b 100644
---- a/extensions/pknock/Makefile.am
-+++ b/extensions/pknock/Makefile.am
-@@ -6,3 +6,5 @@ AM_CFLAGS   = ${regular_CFLAGS} ${libxtables_CFLAGS}
- include ../../Makefile.extra
- 
- sbin_PROGRAMS = pknlusr
-+
-+dist_man8_MANS = pknlusr.8
-diff --git a/extensions/pknock/pknlusr.8 b/extensions/pknock/pknlusr.8
-new file mode 100644
-index 000000000000..da8798a463db
---- /dev/null
-+++ b/extensions/pknock/pknlusr.8
-@@ -0,0 +1,23 @@
-+.TH pknlusr 8 "2020-10-22" "xtables-addons" "xtables-addons"
-+.
-+.SH NAME
-+pknlusr \- userspace monitor for successful xt_pknock matches
-+.
-+.SH SYNOPSIS
-+.SY pknlusr
-+.RI [ group-id ]
-+.YS
-+.
-+.SH DESCRIPTION
-+\fIxt_pknock\fP is an xtables match extension that implements so-called \fIport
-+knocking\fP.  It can be configured to send information about each successful
-+match via a netlink socket to userspace.  \fBpknluser\fP listens for these
-+notifications.
-+.
-+.SH OPTIONS
-+.TP 9
-+.B group-id
-+The ID of the netlink multicast group used by \fIxt_pknock\fP.  Defaults to \fB1\fP.
-+.
-+.SH SEE ALSO
-+.IR xtables-addons (8)
--- 
-2.28.0
-
+Pulled, please remember about that [PATCH net] tag if you can, thanks!
