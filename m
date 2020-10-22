@@ -2,94 +2,64 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9E22963BC
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Oct 2020 19:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5148D2963C9
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Oct 2020 19:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900178AbgJVR3l (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 22 Oct 2020 13:29:41 -0400
-Received: from correo.us.es ([193.147.175.20]:54166 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900169AbgJVR3j (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 22 Oct 2020 13:29:39 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id DCD041C43A9
-        for <netfilter-devel@vger.kernel.org>; Thu, 22 Oct 2020 19:29:38 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CFAFCDA73D
-        for <netfilter-devel@vger.kernel.org>; Thu, 22 Oct 2020 19:29:38 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id C5730DA72F; Thu, 22 Oct 2020 19:29:38 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id AC7C1DA73D;
-        Thu, 22 Oct 2020 19:29:36 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 22 Oct 2020 19:29:36 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 7FA9F42EE38E;
-        Thu, 22 Oct 2020 19:29:36 +0200 (CEST)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH 7/7] netfilter: nf_fwd_netdev: clear timestamp in forwarding path
-Date:   Thu, 22 Oct 2020 19:29:25 +0200
-Message-Id: <20201022172925.22770-8-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201022172925.22770-1-pablo@netfilter.org>
-References: <20201022172925.22770-1-pablo@netfilter.org>
+        id S369204AbgJVRaU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 22 Oct 2020 13:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S368006AbgJVRaT (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 22 Oct 2020 13:30:19 -0400
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7025C0613CF
+        for <netfilter-devel@vger.kernel.org>; Thu, 22 Oct 2020 10:30:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=Cfn9zEVRHu2+pgXhM3HGsmgB7etLYB45W+3Q5bIkwwU=; b=rxjCt424Ou0qItLiobdEIT9ZQB
+        B3hn5qXvcKiJZ8ZWZ8J1vkHNIJ8sld0+aW5CpeCz1/4pBcMYVF6l0XEGETQnFvRQs6+w9VZ0k0Voo
+        +dpR60YdJASv+NyLPS0Ch6wP+roWbSwgb1dL1kmZ7syBTB6EjtuSlDYfEP0xOhmRtsZrGhkBsMCOU
+        FZWqKAFlxBzTW8CXmhciG6UQ8EfgkQHk4w+BhD2yRV8idHIuvkjNUew/KdcmGY7yWdqJ+E8yMm/i+
+        58DSuz5i3wTZW1biHo1m17+Hj0EoxmSxgL0phtAoELgzgMNUDWbF/E7XhsZ2VQynJDJrTXHC+X4/x
+        LIxm/OFw==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1kVePl-0003s0-5L; Thu, 22 Oct 2020 18:30:13 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH xtables-addons 0/3] pknlusr improvements
+Date:   Thu, 22 Oct 2020 18:30:02 +0100
+Message-Id: <20201022173006.635720-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Similar to 7980d2eabde8 ("ipvs: clear skb->tstamp in forwarding path").
-fq qdisc requires tstamp to be cleared in forwarding path.
+Since pknlusr is now installed, here are a few improvements.
 
-Fixes: 8203e2d844d3 ("net: clear skb->tstamp in forwarding paths")
-Fixes: fb420d5d91c1 ("tcp/fq: move back to CLOCK_MONOTONIC")
-Fixes: 80b14dee2bea ("net: Add a new socket option for a future transmit time.")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_dup_netdev.c  | 1 +
- net/netfilter/nft_fwd_netdev.c | 1 +
- 2 files changed, 2 insertions(+)
+Jeremy Sowden (3):
+  pknock: pknlusr: fix formatting.
+  pknock: pknlusr: fix hard-coded netlink multicast group ID.
+  pknock: pknlusr: add man-page.
 
-diff --git a/net/netfilter/nf_dup_netdev.c b/net/netfilter/nf_dup_netdev.c
-index 2b01a151eaa8..a579e59ee5c5 100644
---- a/net/netfilter/nf_dup_netdev.c
-+++ b/net/netfilter/nf_dup_netdev.c
-@@ -19,6 +19,7 @@ static void nf_do_netdev_egress(struct sk_buff *skb, struct net_device *dev)
- 		skb_push(skb, skb->mac_len);
- 
- 	skb->dev = dev;
-+	skb->tstamp = 0;
- 	dev_queue_xmit(skb);
- }
- 
-diff --git a/net/netfilter/nft_fwd_netdev.c b/net/netfilter/nft_fwd_netdev.c
-index 3087e23297db..b77985986b24 100644
---- a/net/netfilter/nft_fwd_netdev.c
-+++ b/net/netfilter/nft_fwd_netdev.c
-@@ -138,6 +138,7 @@ static void nft_fwd_neigh_eval(const struct nft_expr *expr,
- 		return;
- 
- 	skb->dev = dev;
-+	skb->tstamp = 0;
- 	neigh_xmit(neigh_table, dev, addr, skb);
- out:
- 	regs->verdict.code = verdict;
+ extensions/pknock/Makefile.am |  2 ++
+ extensions/pknock/pknlusr.8   | 23 +++++++++++++++++++++++
+ extensions/pknock/pknlusr.c   | 35 +++++++++++++++++++++++++++++++++--
+ 3 files changed, 58 insertions(+), 2 deletions(-)
+ create mode 100644 extensions/pknock/pknlusr.8
+
 -- 
-2.20.1
+2.28.0
 
