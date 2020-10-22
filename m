@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2932963C6
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Oct 2020 19:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156532963C7
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Oct 2020 19:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369205AbgJVRaT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S368010AbgJVRaT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Thu, 22 Oct 2020 13:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33298 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S368010AbgJVRaT (ORCPT
+        with ESMTP id S368004AbgJVRaT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Thu, 22 Oct 2020 13:30:19 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86D6C0613D2
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FB8C0613CE
         for <netfilter-devel@vger.kernel.org>; Thu, 22 Oct 2020 10:30:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=a6iDeEpz4uHi0cBGe88N79CiX2NM6O94Y9A/6095EH0=; b=TLca35oMxyN5F62JlcSB6nEbq7
-        7SsqoZ7Sd3EEE9IgD0bSH69PuOBSj35ereLkojN3/cOtAMAMIs9ohnmDVaGyggbDgd7LPvYwDUFik
-        0AjJ8IMQSP2toq+JVP6xkUj9Y4yxByiDStbI8CuKmnjqJXDkCVmae4hq82etBgslClwQ4KCHxb7L/
-        tokJGo8BibTEVUzfeN/jJCYAjWYyAkYQ1+OBTZXfXu7uSWGj2qA0DkyxCc3U2yECkHnZVxE7FW8pO
-        EN3WbMzAPuMWvB/E5WKTpdUPWNvMFO/NUNPzgANJmLBH6Nece/9TJiHfYf0VW6GIszejsBlEpi2R9
-        NAzWDTNg==;
+        bh=fgaLF2ps+ngTudmj6aOBA9IhsN5m8w7WF3LHKTcOp1Y=; b=T53GQiKMME1X24eX/zUbD4lUB4
+        Slk70fNw6tI9b5BmY3sURKni4WJvtILgxkWPd9/TpM69gewGzSSJ6m2EFsScrijNkzvhG31nr/sSN
+        0p7hJ9K7NVBv4iN1wfKCBJz6Uox+g/qtRMu3WJ75IYEYBg6bV5dDyAE1mT3gdOwyHMm8Ew/AtUaRZ
+        1iCVckyTHtC8bRm/65bmoQ5NmPhXet8+pjwCERidlu69LAg+beWM08+drubad4PpJuqq/1Eh3jSs+
+        S6ssY5iBWXyqHieMlc6ZeLrQIw/U24sf7e6QNB4VgHDPjMXv8z74vgvAmcfKJu6GEc6os9RaK7Ixl
+        p3MuapMw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1kVePl-0003s0-9c; Thu, 22 Oct 2020 18:30:13 +0100
+        id 1kVePl-0003s0-EI; Thu, 22 Oct 2020 18:30:13 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Jan Engelhardt <jengelh@inai.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons 1/3] pknock: pknlusr: fix formatting.
-Date:   Thu, 22 Oct 2020 18:30:03 +0100
-Message-Id: <20201022173006.635720-2-jeremy@azazel.net>
+Subject: [PATCH xtables-addons 2/3] pknock: pknlusr: fix hard-coded netlink multicast group ID.
+Date:   Thu, 22 Oct 2020 18:30:04 +0100
+Message-Id: <20201022173006.635720-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201022173006.635720-1-jeremy@azazel.net>
 References: <20201022173006.635720-1-jeremy@azazel.net>
@@ -49,24 +49,72 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+The group ID used by xt_pknock is configurable, but pknlusr hard-codes
+it to 1.  Modify pknlusr to accept an optional ID from the command-line.
+
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- extensions/pknock/pknlusr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ extensions/pknock/pknlusr.c | 33 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 32 insertions(+), 1 deletion(-)
 
 diff --git a/extensions/pknock/pknlusr.c b/extensions/pknock/pknlusr.c
-index 6153bf6de099..161a9610a018 100644
+index 161a9610a018..ca3af835c9a8 100644
 --- a/extensions/pknock/pknlusr.c
 +++ b/extensions/pknock/pknlusr.c
-@@ -76,7 +76,7 @@ int main(void)
- 			return 1;
- 		}
+@@ -7,6 +7,8 @@
+ #include <arpa/inet.h>
+ #include <linux/netlink.h>
+ #include <linux/connector.h>
++#include <libgen.h>
++#include <limits.h>
  
--	nlmsg = (struct xt_pknock_nl_msg *) (buf + sizeof(struct cn_msg) + sizeof(struct nlmsghdr));
-+		nlmsg = (struct xt_pknock_nl_msg *) (buf + sizeof(struct cn_msg) + sizeof(struct nlmsghdr));
+ #include "xt_pknock.h"
  
- 		ip = inet_ntop(AF_INET, &nlmsg->peer_ip, ipbuf, sizeof(ipbuf));
- 		printf("rule_name: %s - ip %s\n", nlmsg->rule_name, ip);
+@@ -19,7 +21,19 @@ static unsigned char *buf;
+ 
+ static struct xt_pknock_nl_msg *nlmsg;
+ 
+-int main(void)
++static void
++usage(const char *argv0)
++{
++	char *prog;
++	if (!(prog = strdup (argv0))) {
++		perror("strdup()");
++	} else {
++		fprintf(stderr, "%s [ group-id ]\n", basename(prog));
++		free(prog);
++	}
++}
++
++int main(int argc, char **argv)
+ {
+ 	socklen_t addrlen;
+ 	int status;
+@@ -30,6 +44,23 @@ int main(void)
+ 	const char *ip;
+ 	char ipbuf[48];
+ 
++	if (argc > 2) {
++		usage(argv[0]);
++		exit(EXIT_FAILURE);
++	}
++
++	if (argc == 2) {
++		long n;
++		char *end;
++
++		n = strtol(argv[1], &end, 10);
++		if (*end || n < INT_MIN || n > INT_MAX) {
++			usage(argv[0]);
++			exit(EXIT_FAILURE);
++		}
++		group = n;
++	}
++
+ 	sock_fd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_CONNECTOR);
+ 
+ 	if (sock_fd == -1) {
 -- 
 2.28.0
 
