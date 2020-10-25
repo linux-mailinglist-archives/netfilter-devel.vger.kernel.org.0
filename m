@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60862981CC
-	for <lists+netfilter-devel@lfdr.de>; Sun, 25 Oct 2020 14:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F49F2981CE
+	for <lists+netfilter-devel@lfdr.de>; Sun, 25 Oct 2020 14:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416223AbgJYNQJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 25 Oct 2020 09:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
+        id S1416220AbgJYNQK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 25 Oct 2020 09:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1416215AbgJYNQH (ORCPT
+        with ESMTP id S1416216AbgJYNQH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 25 Oct 2020 09:16:07 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23317C0613D6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA8DC0613D7
         for <netfilter-devel@vger.kernel.org>; Sun, 25 Oct 2020 06:16:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=rWtAwLsHZlbt+7ru4uruwoqfR8VbpKWfFs2d6OBm67o=; b=NxVBWlBZnK7KR9BhtV7MtZlnyO
-        RVVVep8BQhyQBnzlJKVc2g23BLB8g3vSCSqNBqmepAvg8h7hF6UbuAua5xI/aCSxnh9CbzYhvaRWB
-        CekASZMnOI6lGEY+A9rNpect3XmwII5YjtQhLTfdhOOw9or7YDD//v9jMW/ym0tq3UxbNPFF5cGht
-        T9rSitxwruuNO2shEbP7Kik5V1/lDiCxVQduotJOVecYzUk+mvmOan34n/UJwKWgJwvd70VAfbA1J
-        fHPDqr5TXKWIgkh59T60zrUIUypeISll7BafjtGkWsMbYeiGjhrwE3D99p40fPtHBJiiW3EqsvAiV
-        J9uzIeLA==;
+        bh=nfWXc5JEFWpJhWHhyTt+vjN+n8ZVp082hYpO+KvKboE=; b=j1xye2EAIt24FzsswH9usEJ2AL
+        jJr2qmt+s73WA3xicqwiih8x6tkugxVtr5Wk8iUmXeiG0Z0egCghJmJpuItLYjLSi4aPzeSMnE6vk
+        lz3Kzr20OCTq8geOBqYBUaZqBJ+UTdueGgTbzfqLqUk163WgY8Cf3Blg+LI7X1fHVTsBLu1h1+/cN
+        kS1364Ih1/t9LwYJT1H8yO3KYkYQKdnCsGCEWUg26LxozvyXQpg6jc5kR1345BAUGStzPTwT2fqMD
+        bVQAZ9rVbJR7ZgvrOJKo7evq1daYW4zNDyAmoDaqxop5sjcReEnLbGf/fvsbIJp28WnumpIu8lxIG
+        3RL4gbMQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1kWfsT-0001SE-Kk; Sun, 25 Oct 2020 13:16:05 +0000
+        id 1kWfsT-0001SE-Ty; Sun, 25 Oct 2020 13:16:06 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Jan Engelhardt <jengelh@inai.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons v2 04/13] pknock: pknlusr: tidy up initialization of local address.
-Date:   Sun, 25 Oct 2020 13:15:50 +0000
-Message-Id: <20201025131559.920038-6-jeremy@azazel.net>
+Subject: [PATCH xtables-addons v2 05/13] pknock: pknlusr: use NLMSG macros and proper types, rather than arithmetic on char pointers.
+Date:   Sun, 25 Oct 2020 13:15:51 +0000
+Message-Id: <20201025131559.920038-7-jeremy@azazel.net>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201025131559.920038-1-jeremy@azazel.net>
 References: <20201025131559.920038-1-jeremy@azazel.net>
@@ -49,37 +49,78 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Use struct initialization and drop memset.  We don't need to set the port
-ID, since the kernel will do it for us.
-
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- extensions/pknock/pknlusr.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ extensions/pknock/pknlusr.c | 28 +++++++++++++++-------------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
 diff --git a/extensions/pknock/pknlusr.c b/extensions/pknock/pknlusr.c
-index 808b737f1db2..ed741599558b 100644
+index ed741599558b..252fd42ffecd 100644
 --- a/extensions/pknock/pknlusr.c
 +++ b/extensions/pknock/pknlusr.c
-@@ -17,7 +17,7 @@ int main(void)
- 	int status;
- 	int group = GROUP;
- 
--	struct sockaddr_nl local_addr;
-+	struct sockaddr_nl local_addr = { .nl_family = AF_NETLINK };
+@@ -20,8 +20,10 @@ int main(void)
+ 	struct sockaddr_nl local_addr = { .nl_family = AF_NETLINK };
  	int sock_fd;
  
- 	int buf_size;
-@@ -30,9 +30,6 @@ int main(void)
+-	int buf_size;
+-	unsigned char *buf;
++	size_t nlmsg_size;
++	struct nlmgrhdr *nlmsg;
++	struct cn_msg *cn_msg;
++	struct xt_pknock_nl_msg *pknock_msg;
+ 
+ 	sock_fd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_CONNECTOR);
+ 
+@@ -40,38 +42,38 @@ int main(void)
  		return 1;
  	}
  
--	memset(&local_addr, 0, sizeof(local_addr));
--	local_addr.nl_family = AF_NETLINK;
--	local_addr.nl_pid = getpid();
- 	local_addr.nl_groups = group;
+-	buf_size = sizeof(struct xt_pknock_nl_msg) + sizeof(struct cn_msg) + sizeof(struct nlmsghdr);
+-	buf = malloc(buf_size);
++	nlmsg_size = NLMSG_SPACE(sizeof(*cn_msg) + sizeof(*pknock_msg));
++	nlmsg = malloc(nlmsg_size);
  
- 	status = bind(sock_fd, (struct sockaddr*)&local_addr, sizeof(local_addr));
+-	if (!buf) {
++	if (!nlmsg) {
+ 		perror("malloc()");
+ 		return 1;
+ 	}
+ 
+ 	while(1) {
+ 
+-		struct xt_pknock_nl_msg *nlmsg;
+-
+ 		const char *ip;
+ 		char ipbuf[48];
+ 
+-		memset(buf, 0, buf_size);
++		memset(nlmsg, 0, nlmsg_size);
+ 
+-		status = recv(sock_fd, buf, buf_size, 0);
++		status = recv(sock_fd, nlmsg, nlmsg_size, 0);
+ 
+ 		if (status <= 0) {
+ 			perror("recv()");
+ 			return 1;
+ 		}
+-		nlmsg = (struct xt_pknock_nl_msg *)(buf + sizeof(struct cn_msg) + sizeof(struct nlmsghdr));
+-		ip = inet_ntop(AF_INET, &nlmsg->peer_ip, ipbuf, sizeof(ipbuf));
+-		printf("rule_name: %s - ip %s\n", nlmsg->rule_name, ip);
++
++		cn_msg = NLMSG_DATA(nlmsg);
++		pknock_msg = (struct xt_pknock_nl_msg *)(cn_msg->data);
++		ip = inet_ntop(AF_INET, &pknock_msg->peer_ip, ipbuf, sizeof(ipbuf));
++		printf("rule_name: %s - ip %s\n", pknock_msg->rule_name, ip);
+ 
+ 	}
+ 
+ 	close(sock_fd);
+ 
+-	free(buf);
++	free(nlmsg);
+ 
+ 	return 0;
+ }
 -- 
 2.28.0
 
