@@ -2,99 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0C92981D7
-	for <lists+netfilter-devel@lfdr.de>; Sun, 25 Oct 2020 14:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C7229820B
+	for <lists+netfilter-devel@lfdr.de>; Sun, 25 Oct 2020 15:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416203AbgJYNRS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 25 Oct 2020 09:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37140 "EHLO
+        id S1416518AbgJYOTA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 25 Oct 2020 10:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2894311AbgJYNRR (ORCPT
+        with ESMTP id S1416511AbgJYOTA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 25 Oct 2020 09:17:17 -0400
-Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4194CC0613CE
-        for <netfilter-devel@vger.kernel.org>; Sun, 25 Oct 2020 06:17:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=ddIkmwyIxuGA7rz9Dd+Wulfk5a4Zw05Tm7rJdZmVM6I=; b=s3x5PIbNcIQ2XqBbPgvNoYWNhH
-        iI/FtJdg7xu8b+nrMK1yRnuit/WJ089Whb+gXlaQzE1xcRMdZPd8ZoK3OdR67NLeA+DFpxy19ZXHu
-        apK7wLoZyRQOX5uYi820aWyACMl2uYGMleJDlmqh49g57pUB3jwCP2xyfckcRtl+vlXdZu/4EDZI+
-        7XXsBzNIZFHH4KOS4mwFc8H3IqKr+uYQGE2n2uPSxEXk2IwPoO+g323GH6A+/dtkZY388yCCzSaPa
-        iVFWxG37gLykpgh5drcO86F3OY8YWsnTCCxu3beff4Z8wRHet3VxOl0AF6CbegmbwAWjHAYti4vlz
-        zae23JfA==;
-Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
-        by kadath.azazel.net with esmtp (Exim 4.92)
-        (envelope-from <jeremy@azazel.net>)
-        id 1kWfsX-0001SE-5I; Sun, 25 Oct 2020 13:16:09 +0000
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Jan Engelhardt <jengelh@inai.de>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons v2 13/13] pknock: xt_pknock: remove DEBUG definition and disable debug output.
-Date:   Sun, 25 Oct 2020 13:15:59 +0000
-Message-Id: <20201025131559.920038-15-jeremy@azazel.net>
-X-Mailer: git-send-email 2.28.0
+        Sun, 25 Oct 2020 10:19:00 -0400
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA143C0613CE
+        for <netfilter-devel@vger.kernel.org>; Sun, 25 Oct 2020 07:18:59 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 8F59B588AA95B; Sun, 25 Oct 2020 15:18:55 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id 8DB6460EB5244;
+        Sun, 25 Oct 2020 15:18:55 +0100 (CET)
+Date:   Sun, 25 Oct 2020 15:18:55 +0100 (CET)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Jeremy Sowden <jeremy@azazel.net>
+cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH xtables-addons v2 00/13] pknlusr improvements
 In-Reply-To: <20201025131559.920038-1-jeremy@azazel.net>
+Message-ID: <5468o978-1q51-3n81-9o93-3ss33os2570@vanv.qr>
 References: <20201025131559.920038-1-jeremy@azazel.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The DEBUG definition in xt_pknock.h causes a compiler warning if one
-adds a DEBUG define to xt_pknock.c to enable pr_debug.  Since it only
-controls some debugging output in libxt_pknock.c, it would make sense to
-move the definition there, but let's just disable the debugging instead.
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- extensions/pknock/libxt_pknock.c | 4 ++--
- extensions/pknock/xt_pknock.h    | 2 --
- 2 files changed, 2 insertions(+), 4 deletions(-)
+On Sunday 2020-10-25 14:15, Jeremy Sowden wrote:
 
-diff --git a/extensions/pknock/libxt_pknock.c b/extensions/pknock/libxt_pknock.c
-index 4852e9f25a9e..1cd829333a1d 100644
---- a/extensions/pknock/libxt_pknock.c
-+++ b/extensions/pknock/libxt_pknock.c
-@@ -123,7 +123,7 @@ __pknock_parse(int c, char **argv, int invert, unsigned int *flags,
- 		info->ports_count = parse_ports(optarg, info->port, proto);
- 		info->option |= XT_PKNOCK_KNOCKPORT;
- 		*flags |= XT_PKNOCK_KNOCKPORT;
--#if DEBUG
-+#ifdef DEBUG
- 		printf("ports_count: %d\n", info->ports_count);
- #endif
- 		break;
-@@ -162,7 +162,7 @@ __pknock_parse(int c, char **argv, int invert, unsigned int *flags,
- 		info->rule_name_len = strlen(info->rule_name);
- 		info->option |= XT_PKNOCK_NAME;
- 		*flags |= XT_PKNOCK_NAME;
--#if DEBUG
-+#ifdef DEBUG
- 		printf("info->rule_name: %s\n", info->rule_name);
- #endif
- 		break;
-diff --git a/extensions/pknock/xt_pknock.h b/extensions/pknock/xt_pknock.h
-index d44905b44e0d..fb201df49e82 100644
---- a/extensions/pknock/xt_pknock.h
-+++ b/extensions/pknock/xt_pknock.h
-@@ -29,8 +29,6 @@ enum {
- 	XT_PKNOCK_MAX_PASSWD_LEN = 31,
- };
- 
--#define DEBUG 1
--
- struct xt_pknock_mtinfo {
- 	char rule_name[XT_PKNOCK_MAX_BUF_LEN+1];
- 	uint32_t			rule_name_len;
--- 
-2.28.0
+>Since pknlusr is now installed, here are some improvements.  There's one
+>automake change related to the new man-page, a number of new patches
+>tidying up the source of pknlusr.c, before a new version of the patch to
+>remove the hard-coded group ID.  The last four patches do a bit of
+>tiding of the pknock kernel module.
 
+So applied. I removed the periods from the summaries, 
+and then some whitespace.
+
+>Jeremy Sowden (13):
+>  pknock: pknlusr: ensure man-page is included by `make dist`.
+>  pknock: pknlusr: remove dest_addr and rename src_addr.
+>  pknock: pknlusr: tighten up variable scopes.
+>  pknock: pknlusr: tidy up initialization of local address.
+>  pknock: pknlusr: use NLMSG macros and proper types, rather than
+>    arithmetic on char pointers.
+>  pknock: pknlusr: use macro to define inet_ntop buffer size.
+>  pknock: pknlusr: don't treat recv return value of zero as an error.
+>  pknock: pknlusr: always close socket.
+>  pknock: pknlusr: fix hard-coded netlink multicast group ID.
+>  pknock: xt_pknock: use IS_ENABLED.
+>  pknock: xt_pknock: use kzalloc.
+>  pknock: xt_pknock: use pr_err.
+>  pknock: xt_pknock: remove DEBUG definition.
