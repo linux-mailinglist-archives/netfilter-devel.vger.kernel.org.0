@@ -2,96 +2,79 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F2C298165
-	for <lists+netfilter-devel@lfdr.de>; Sun, 25 Oct 2020 11:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B03C2981CB
+	for <lists+netfilter-devel@lfdr.de>; Sun, 25 Oct 2020 14:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415261AbgJYK7Q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 25 Oct 2020 06:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
+        id S1416211AbgJYNQI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 25 Oct 2020 09:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1415239AbgJYK7P (ORCPT
+        with ESMTP id S1416212AbgJYNQG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 25 Oct 2020 06:59:15 -0400
+        Sun, 25 Oct 2020 09:16:06 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFB9C0613D0
-        for <netfilter-devel@vger.kernel.org>; Sun, 25 Oct 2020 03:59:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9680EC0613D2
+        for <netfilter-devel@vger.kernel.org>; Sun, 25 Oct 2020 06:16:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-         s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=7n7SwAXK/1iIppVx97iK1x5jtej4kFrNJQQ4dbwgUjE=; b=WoR89xspZns/u9Vhyd1CUKj53R
-        0F03hArNuoMR/AWZOSlnSROT980lHjMQags5UyfmnEif54rWoQmxa4tSISOJPL3qaRIiv7QducjdA
-        SrJUKnUTnQMXqtJuvf2h17FUDEccp9NW8vwQ+jjm8ab0q4RVUpkRWYWYyLExmHpRrCYghqsmbcpnE
-        sTAFvxhmDZlPHiKd0Hms+3aB8BfJjAM1kLl4YVefIcHTwmimqojfxd6s9MZUoyKQgJq2KPjygnlYb
-        R50DoawxJ04QaQqzpQDtzdbNHWjZxSlyFZT3IdIYKgOQjRa+ik+EERJQvt6Yiv3/6esISXvbVZdNz
-        1Ete9CNA==;
-Received: from celephais.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:5ec5:d4ff:fe95:cee6] helo=azazel.net)
-        by kadath.azazel.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
+        bh=nehFOayPVG8vpj6TWGUIwnABCurylEc22NkBysTX/O0=; b=iUdqebLW1e+4eQR+s5T6fXGmps
+        iNKmxgErMjjXovjkEZ/sIzjL4yamloAQAAe/8FmqC9J+fmiDAgfrFu0eP3M4HYw26S6Rp21HKz0Ik
+        Mq7f28FMUr/LuwtN/aKLGtszGtYDvwen8z3TfNKPj0GB4yyQBJR8B2Hdy2dqPKYJHwIkKE8mWc3t4
+        N6Ji0155PWtFoPrF0j/EUnI2Y1fTHsx/WLxb6r9JxW2+w2UFmY220BrZrbukOcunSrOXcUu7eUrFY
+        0S9+u+XdnTa+dIKbwb1nKmgyGMry1L4/lHThvBKwXz0JBV/gf+Dzl1pzyeXg2a32PLMaq73zv3kjl
+        oarADaRA==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1kWdk2-0003AL-BB; Sun, 25 Oct 2020 10:59:14 +0000
-Date:   Sun, 25 Oct 2020 10:59:13 +0000
+        id 1kWfsS-0001SE-31; Sun, 25 Oct 2020 13:16:04 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Jan Engelhardt <jengelh@inai.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH xtables-addons 3/3] pknock: pknlusr: add man-page.
-Message-ID: <20201025105913.GB5964@azazel.net>
-References: <20201022173006.635720-1-jeremy@azazel.net>
- <20201022173006.635720-4-jeremy@azazel.net>
- <2p319p4q-576n-34r9-6oqn-7n93p6892rr@vanv.qr>
+Subject: [PATCH xtables-addons v2 00/13] pknlusr improvements
+Date:   Sun, 25 Oct 2020 13:15:45 +0000
+Message-Id: <20201025131559.920038-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7ZAtKRhVyVSsbBD2"
-Content-Disposition: inline
-In-Reply-To: <2p319p4q-576n-34r9-6oqn-7n93p6892rr@vanv.qr>
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:5ec5:d4ff:fe95:cee6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
 X-SA-Exim-Mail-From: jeremy@azazel.net
 X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Since pknlusr is now installed, here are some improvements.  There's one
+automake change related to the new man-page, a number of new patches
+tidying up the source of pknlusr.c, before a new version of the patch to
+remove the hard-coded group ID.  The last four patches do a bit of
+tiding of the pknock kernel module.
 
---7ZAtKRhVyVSsbBD2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Jeremy Sowden (13):
+  pknock: pknlusr: ensure man-page is included by `make dist`.
+  pknock: pknlusr: remove dest_addr and rename src_addr.
+  pknock: pknlusr: tighten up variable scopes.
+  pknock: pknlusr: tidy up initialization of local address.
+  pknock: pknlusr: use NLMSG macros and proper types, rather than
+    arithmetic on char pointers.
+  pknock: pknlusr: use macro to define inet_ntop buffer size.
+  pknock: pknlusr: don't treat recv return value of zero as an error.
+  pknock: pknlusr: always close socket.
+  pknock: pknlusr: fix hard-coded netlink multicast group ID.
+  pknock: xt_pknock: use IS_ENABLED.
+  pknock: xt_pknock: use kzalloc.
+  pknock: xt_pknock: use pr_err.
+  pknock: xt_pknock: remove DEBUG definition.
 
-On 2020-10-23, at 11:24:16 +0200, Jan Engelhardt wrote:
-> On Thursday 2020-10-22 19:30, Jeremy Sowden wrote:
-> > Since pknlusr is now being installed, let's give it a man-page.
->
-> There's a lot of.. markup I have never seen before (and thus did not
-> feel would be necessary).
+ extensions/pknock/Makefile.am |   2 +-
+ extensions/pknock/pknlusr.c   | 120 ++++++++++++++++++++++------------
+ extensions/pknock/xt_pknock.c |  27 +++-----
+ extensions/pknock/xt_pknock.h |   2 -
+ 4 files changed, 88 insertions(+), 63 deletions(-)
 
-First man-page I've written from scratch in roff.  I used the
-groff_man(7) man-page as a reference.
+-- 
+2.28.0
 
-> I pushed a shortened version; if anything should be different, please
-> send more patches on top.
-
-No problem with the man-page itself, but the patch to Makefile.am isn't
-quite right.  Will fix in v2.
-
-J.
-
---7ZAtKRhVyVSsbBD2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEEd/6/sDFjb+OCRmRMonv1GCHZ79cFAl+VWoAACgkQonv1GCHZ
-79eQHQv/WIYSguwW4YPaWw9HGsaMNpHQ7U8FpEzN1z1Pm06lsFs8qVpqDGMZtrEq
-714D0pplz/esI4PEnTM6k1QNXMz93jw81z3IzpYCEXie6g0UWKaVPsZpiqKpWCur
-ULzb4gFaBWG80T81D+fwlAYtRGf5OFTCoWjXH0fAuuBkrV/TFNkP6Rlqq6VbpyG7
-iePigCgSDzd3MzGesbn5GbGhSmBeERuFPK+Gi10VqQ8G74GG+VqXNSeIbSZrHZHw
-r7AoV/ZXJnOtAN+h0ks08C/ZSSD3PhGqElO5N8g8j9ugsvDMAXCdRIpASLlSWk8S
-CK+hblHhm63A6FvDdgZTbdebNPlgLSZRdwKBjveN6ulyh0CsfMNLw7wbN+uboB5O
-wfmz9HncCEiKV6DtrsmAKDHyWFqk99DIUEw4IZvuRPhrzuKBKIXMiz8tGuFA1jGe
-te3TfXTrOhlZhmTeSh5HLuAOPHsCAeP8slemeyVFNjjoEMpyciynM6R4jiyUCtIG
-otTHZ1yw
-=BJ0N
------END PGP SIGNATURE-----
-
---7ZAtKRhVyVSsbBD2--
