@@ -2,76 +2,91 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BD529E746
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Oct 2020 10:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1A329E8C0
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Oct 2020 11:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725808AbgJ2J2m (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 29 Oct 2020 05:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgJ2J2m (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:28:42 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79990C0613CF;
-        Thu, 29 Oct 2020 02:28:42 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1kY4EY-0007hc-HH; Thu, 29 Oct 2020 10:28:38 +0100
-Date:   Thu, 29 Oct 2020 10:28:38 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH nf 2/2] netfilter: use actual socket sk rather than skb
- sk when routing harder
-Message-ID: <20201029092838.GC15770@breakpoint.cc>
-References: <20201029025606.3523771-1-Jason@zx2c4.com>
- <20201029025606.3523771-3-Jason@zx2c4.com>
+        id S1725769AbgJ2KO6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 29 Oct 2020 06:14:58 -0400
+Received: from correo.us.es ([193.147.175.20]:33400 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726381AbgJ2KM7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 29 Oct 2020 06:12:59 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id F2F71EBAD4
+        for <netfilter-devel@vger.kernel.org>; Thu, 29 Oct 2020 11:12:57 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id E3A01DA858
+        for <netfilter-devel@vger.kernel.org>; Thu, 29 Oct 2020 11:12:57 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id D8F03DA730; Thu, 29 Oct 2020 11:12:57 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 9E4BADA861
+        for <netfilter-devel@vger.kernel.org>; Thu, 29 Oct 2020 11:12:55 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Thu, 29 Oct 2020 11:12:55 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPSA id 7D58D42EF42D
+        for <netfilter-devel@vger.kernel.org>; Thu, 29 Oct 2020 11:12:55 +0100 (CET)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH libnetfilter_conntrack] conntrack: add flush filter command
+Date:   Thu, 29 Oct 2020 11:12:52 +0100
+Message-Id: <20201029101252.8681-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029025606.3523771-3-Jason@zx2c4.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> If netfilter changes the packet mark when mangling, the packet is
-> rerouted using the route_me_harder set of functions. Prior to this
-> commit, there's one big difference between route_me_harder and the
-> ordinary initial routing functions, described in the comment above
-> __ip_queue_xmit():
-> 
->    /* Note: skb->sk can be different from sk, in case of tunnels */
->    int __ip_queue_xmit(struct sock *sk, struct sk_buff *skb, struct flowi *fl,
-> 
-> That function goes on to correctly make use of sk->sk_bound_dev_if,
-> rather than skb->sk->sk_bound_dev_if. And indeed the comment is true: a
-> tunnel will receive a packet in ndo_start_xmit with an initial skb->sk.
-> It will make some transformations to that packet, and then it will send
-> the encapsulated packet out of a *new* socket. That new socket will
-> basically always have a different sk_bound_dev_if (otherwise there'd be
-> a routing loop). So for the purposes of routing the encapsulated packet,
-> the routing information as it pertains to the socket should come from
-> that socket's sk, rather than the packet's original skb->sk. For that
-> reason __ip_queue_xmit() and related functions all do the right thing.
-> 
-> One might argue that all tunnels should just call skb_orphan(skb) before
-> transmitting the encapsulated packet into the new socket. But tunnels do
-> *not* do this -- and this is wisely avoided in skb_scrub_packet() too --
-> because features like TSQ rely on skb->destructor() being called when
-> that buffer space is truely available again. Calling skb_orphan(skb) too
-> early would result in buffers filling up unnecessarily and accounting
-> info being all wrong. Instead, additional routing must take into account
-> the new sk, just as __ip_queue_xmit() notes.
-> 
-> So, this commit addresses the problem by fishing the correct sk out of
-> state->sk -- it's already set properly in the call to nf_hook() in
-> __ip_local_out(), which receives the sk as part of its normal
-> functionality. So we make sure to plumb state->sk through the various
-> route_me_harder functions, and then make correct use of it following the
-> example of __ip_queue_xmit().
+The NFCT_Q_FLUSH command flushes both IPv4 and IPv6 conntrack tables.
+Add new command NFCT_Q_FLUSH_FILTER that allows to flush based on the
+family to retain backward compatibility on NFCT_Q_FLUSH.
 
-Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ include/libnetfilter_conntrack/libnetfilter_conntrack.h | 1 +
+ src/conntrack/api.c                                     | 3 +++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/include/libnetfilter_conntrack/libnetfilter_conntrack.h b/include/libnetfilter_conntrack/libnetfilter_conntrack.h
+index c5c6b615a3bf..f02d827761a8 100644
+--- a/include/libnetfilter_conntrack/libnetfilter_conntrack.h
++++ b/include/libnetfilter_conntrack/libnetfilter_conntrack.h
+@@ -452,6 +452,7 @@ enum nf_conntrack_query {
+ 	NFCT_Q_CREATE_UPDATE,
+ 	NFCT_Q_DUMP_FILTER,
+ 	NFCT_Q_DUMP_FILTER_RESET,
++	NFCT_Q_FLUSH_FILTER,
+ };
+ 
+ extern int nfct_query(struct nfct_handle *h,
+diff --git a/src/conntrack/api.c b/src/conntrack/api.c
+index 78d7d613d925..b7f64fb43ce8 100644
+--- a/src/conntrack/api.c
++++ b/src/conntrack/api.c
+@@ -831,6 +831,9 @@ __build_query_ct(struct nfnl_subsys_handle *ssh,
+ 		nfct_fill_hdr(req, IPCTNL_MSG_CT_DELETE, NLM_F_ACK, *family,
+ 			      NFNETLINK_V0);
+ 		break;
++	case NFCT_Q_FLUSH_FILTER:
++		nfct_fill_hdr(req, IPCTNL_MSG_CT_DELETE, NLM_F_ACK, *family, 1);
++		break;
+ 	case NFCT_Q_DUMP:
+ 		nfct_fill_hdr(req, IPCTNL_MSG_CT_GET, NLM_F_DUMP, *family,
+ 			      NFNETLINK_V0);
+-- 
+2.20.1
+
