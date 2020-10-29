@@ -2,99 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC8F29E2ED
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Oct 2020 03:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEF429E64C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Oct 2020 09:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbgJ1Vdb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 28 Oct 2020 17:33:31 -0400
-Received: from correo.us.es ([193.147.175.20]:45718 "EHLO mail.us.es"
+        id S1727529AbgJ2IW5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 29 Oct 2020 04:22:57 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:33561 "EHLO mail.zx2c4.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725922AbgJ1VdO (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:33:14 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id CB22D114805
-        for <netfilter-devel@vger.kernel.org>; Wed, 28 Oct 2020 20:05:41 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id BA419DA78D
-        for <netfilter-devel@vger.kernel.org>; Wed, 28 Oct 2020 20:05:41 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id AF94FDA722; Wed, 28 Oct 2020 20:05:41 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 54E09DA730;
-        Wed, 28 Oct 2020 20:05:39 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 28 Oct 2020 20:05:39 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 3900942EFB82;
-        Wed, 28 Oct 2020 20:05:39 +0100 (CET)
-Date:   Wed, 28 Oct 2020 20:05:38 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] tests/shell: Restore
- testcases/sets/0036add_set_element_expiration_0
-Message-ID: <20201028190538.GA4169@salvia>
-References: <20201028170338.32033-1-phil@nwl.cc>
+        id S1725982AbgJ2IW5 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:22:57 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 675cc25d;
+        Thu, 29 Oct 2020 02:54:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
+        :subject:date:message-id:mime-version:content-transfer-encoding;
+         s=mail; bh=H+xkEXz6xd/uevfOEO8weeo2nyA=; b=aAfl/qFgFu+QAloI0Yq3
+        U3RfuRqFJpImAk+B/ynkTCmWP1ezM9C0IIxwtgAfXOCzF9ZEx7uOQ0anF95WC0iv
+        TZlbG4xlIBzJQlG8DCC87trDnCDRqdCgbu/D4QQ39slwNrw/Jy3yYo7n2GTguUmw
+        jvH4rvThMBkLdd5JGx+CDxgmwA62LFEdQqJSGCkqQkbvVpnxX1gWLSLtrFEZNdp2
+        8uwl3eSHc37UCG/k7POJIPIRINeVXtF7X5m3Sq0LMVAubAS63i6VHyGw5dB7yT0o
+        1rMGHs97sMvAHc4+0wybZ5q5ybuUOAgCakOSi0/CsyWLMKb5Lcz4W4GLM8f3ECsz
+        wA==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 00cca5fc (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Thu, 29 Oct 2020 02:54:54 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH nf 0/2] route_me_harder routing loop with tunnels
+Date:   Thu, 29 Oct 2020 03:56:04 +0100
+Message-Id: <20201029025606.3523771-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201028170338.32033-1-phil@nwl.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Phil,
+Hi Pablo,
 
-On Wed, Oct 28, 2020 at 06:03:38PM +0100, Phil Sutter wrote:
-> This reverts both commits 46b54fdcf266d3d631ffb6102067825d7672db46 and
-> 0e258556f7f3da35deeb6d5cfdec51eafc7db80d.
-> 
-> With both applied, the test succeeded *only* if 'nft monitor' was
-> running in background, which is equivalent to the original problem
-> (where the test succeeded only if *no* 'nft monitor' was running).
-> 
-> The test merely exposed a kernel bug, so in fact it is correct.
+This series fixes a bug in the route_me_harder family of functions with
+regards to tunnel interfaces. The first patch contains an addition to
+the wireguard test suite; I normally send my wireguard patches through
+Dave's tree, but I thought it'd be nice to send these together here
+because the test case is illustrative of the issue. The second patch
+then fixes the issue with a lengthy explanation of what's going on.
 
-Please, do not revert this.
+These are intended for net.git/nf.git, not the -next variety, and to
+eventually be backported to stable. So, the second patch has a proper
+Fixes: line on it to help with that.
 
-This kernel patch needs this fix:
+Thanks,
+Jason
 
-https://patchwork.ozlabs.org/project/netfilter-devel/patch/20201022204032.28904-1-pablo@netfilter.org/
+Jason A. Donenfeld (2):
+  wireguard: selftests: check that route_me_harder packets use the right
+    sk
+  netfilter: use actual socket sk rather than skb sk when routing harder
 
-Thanks.
+ include/linux/netfilter_ipv4.h                       |  2 +-
+ include/linux/netfilter_ipv6.h                       | 10 +++++-----
+ net/ipv4/netfilter.c                                 |  8 +++++---
+ net/ipv4/netfilter/iptable_mangle.c                  |  2 +-
+ net/ipv4/netfilter/nf_reject_ipv4.c                  |  2 +-
+ net/ipv6/netfilter.c                                 |  6 +++---
+ net/ipv6/netfilter/ip6table_mangle.c                 |  2 +-
+ net/netfilter/ipvs/ip_vs_core.c                      |  4 ++--
+ net/netfilter/nf_nat_proto.c                         |  4 ++--
+ net/netfilter/nf_synproxy_core.c                     |  2 +-
+ net/netfilter/nft_chain_route.c                      |  4 ++--
+ net/netfilter/utils.c                                |  4 ++--
+ tools/testing/selftests/wireguard/netns.sh           |  8 ++++++++
+ tools/testing/selftests/wireguard/qemu/kernel.config |  2 ++
+ 14 files changed, 36 insertions(+), 24 deletions(-)
 
-> Fixes: 46b54fdcf266d ("Revert "monitor: do not print generation ID with --echo"")
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
-> ---
->  tests/shell/testcases/sets/0036add_set_element_expiration_0 | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tests/shell/testcases/sets/0036add_set_element_expiration_0 b/tests/shell/testcases/sets/0036add_set_element_expiration_0
-> index 7b2e39a3f0406..51ed0f2c1b3e8 100755
-> --- a/tests/shell/testcases/sets/0036add_set_element_expiration_0
-> +++ b/tests/shell/testcases/sets/0036add_set_element_expiration_0
-> @@ -6,7 +6,7 @@ RULESET="add table ip x
->  add set ip x y { type ipv4_addr; flags dynamic,timeout; } 
->  add element ip x y { 1.1.1.1 timeout 30s expires 15s }"
->  
-> -test_output=$($NFT -e -f - <<< "$RULESET" 2>&1 | head -n -1)
-> +test_output=$($NFT -e -f - <<< "$RULESET" 2>&1)
->  
->  if [ "$test_output" != "$RULESET" ] ; then
->  	$DIFF -u <(echo "$test_output") <(echo "$RULESET")
-> -- 
-> 2.28.0
-> 
+-- 
+2.29.1
+
