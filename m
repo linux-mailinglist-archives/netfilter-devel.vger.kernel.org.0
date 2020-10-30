@@ -2,206 +2,179 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F4129F8A8
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Oct 2020 23:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EA52A065F
+	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Oct 2020 14:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725780AbgJ2WuQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 29 Oct 2020 18:50:16 -0400
-Received: from correo.us.es ([193.147.175.20]:36718 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725768AbgJ2WuP (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 29 Oct 2020 18:50:15 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 976F03066A8
-        for <netfilter-devel@vger.kernel.org>; Thu, 29 Oct 2020 23:50:13 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 873B3DA730
-        for <netfilter-devel@vger.kernel.org>; Thu, 29 Oct 2020 23:50:13 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 7CE0ADA72F; Thu, 29 Oct 2020 23:50:13 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id F3018DA704
-        for <netfilter-devel@vger.kernel.org>; Thu, 29 Oct 2020 23:50:10 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 29 Oct 2020 23:50:10 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id E05804301DE0
-        for <netfilter-devel@vger.kernel.org>; Thu, 29 Oct 2020 23:50:10 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf] netfilter: nf_tables: missing validation from the abort path
-Date:   Thu, 29 Oct 2020 23:50:06 +0100
-Message-Id: <20201029225006.3333-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
+        id S1726259AbgJ3NZF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 30 Oct 2020 09:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbgJ3NZE (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 30 Oct 2020 09:25:04 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8775C0613CF
+        for <netfilter-devel@vger.kernel.org>; Fri, 30 Oct 2020 06:25:04 -0700 (PDT)
+Received: from localhost ([::1]:37598 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.94)
+        (envelope-from <phil@nwl.cc>)
+        id 1kYUOt-0004oE-7i; Fri, 30 Oct 2020 14:25:03 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH v2 1/2] nft: Optimize class-based IP prefix matches
+Date:   Fri, 30 Oct 2020 14:24:48 +0100
+Message-Id: <20201030132449.5576-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If userspace does not include the trailing end of batch message, then
-nfnetlink aborts the transaction. This allows to check that ruleset
-updates trigger no errors.
+Payload expression works on byte-boundaries, leverage this with suitable
+prefix lengths.
 
-After this patch, invoking this command from the prerouting chain:
-
- # nft -c add rule x y fib saddr . oif type local
-
-fails since oif is not supported there.
-
-This patch fixes the lack of rule validation from the abort/check path
-to catch configuration errors such as the one above.
-
-Fixes: a654de8fdc18 ("netfilter: nf_tables: fix chain dependency validation")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- include/linux/netfilter/nfnetlink.h |  9 ++++++++-
- net/netfilter/nf_tables_api.c       | 15 ++++++++++-----
- net/netfilter/nfnetlink.c           | 22 ++++++++++++++++++----
- 3 files changed, 36 insertions(+), 10 deletions(-)
+Changes since v1:
+- Fix prefix printing in arptables, it uses add_addr() as well.
+---
+ iptables/nft-arp.c    | 11 ++++++++---
+ iptables/nft-ipv4.c   |  6 ++++--
+ iptables/nft-ipv6.c   |  6 ++++--
+ iptables/nft-shared.c | 14 ++++++++++----
+ iptables/nft-shared.h |  4 ++++
+ 5 files changed, 30 insertions(+), 11 deletions(-)
 
-diff --git a/include/linux/netfilter/nfnetlink.h b/include/linux/netfilter/nfnetlink.h
-index 89016d08f6a2..f6267e2883f2 100644
---- a/include/linux/netfilter/nfnetlink.h
-+++ b/include/linux/netfilter/nfnetlink.h
-@@ -24,6 +24,12 @@ struct nfnl_callback {
- 	const u_int16_t attr_count;		/* number of nlattr's */
- };
- 
-+enum nfnl_abort_action {
-+	NFNL_ABORT_NONE		= 0,
-+	NFNL_ABORT_AUTOLOAD,
-+	NFNL_ABORT_VALIDATE,
-+};
-+
- struct nfnetlink_subsystem {
- 	const char *name;
- 	__u8 subsys_id;			/* nfnetlink subsystem ID */
-@@ -31,7 +37,8 @@ struct nfnetlink_subsystem {
- 	const struct nfnl_callback *cb;	/* callback for individual types */
- 	struct module *owner;
- 	int (*commit)(struct net *net, struct sk_buff *skb);
--	int (*abort)(struct net *net, struct sk_buff *skb, bool autoload);
-+	int (*abort)(struct net *net, struct sk_buff *skb,
-+		     enum nfnl_abort_action action);
- 	void (*cleanup)(struct net *net);
- 	bool (*valid_genid)(struct net *net, u32 genid);
- };
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 9b70e136fb5d..0f58e98542be 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -8053,12 +8053,16 @@ static void nf_tables_abort_release(struct nft_trans *trans)
- 	kfree(trans);
- }
- 
--static int __nf_tables_abort(struct net *net, bool autoload)
-+static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
- {
- 	struct nft_trans *trans, *next;
- 	struct nft_trans_elem *te;
- 	struct nft_hook *hook;
- 
-+	if (action == NFNL_ABORT_VALIDATE &&
-+	    nf_tables_validate(net) < 0)
-+		return -EAGAIN;
-+
- 	list_for_each_entry_safe_reverse(trans, next, &net->nft.commit_list,
- 					 list) {
- 		switch (trans->msg_type) {
-@@ -8190,7 +8194,7 @@ static int __nf_tables_abort(struct net *net, bool autoload)
- 		nf_tables_abort_release(trans);
- 	}
- 
--	if (autoload)
-+	if (action == NFNL_ABORT_AUTOLOAD)
- 		nf_tables_module_autoload(net);
- 	else
- 		nf_tables_module_autoload_cleanup(net);
-@@ -8203,9 +8207,10 @@ static void nf_tables_cleanup(struct net *net)
- 	nft_validate_state_update(net, NFT_VALIDATE_SKIP);
- }
- 
--static int nf_tables_abort(struct net *net, struct sk_buff *skb, bool autoload)
-+static int nf_tables_abort(struct net *net, struct sk_buff *skb,
-+			   enum nfnl_abort_action action)
- {
--	int ret = __nf_tables_abort(net, autoload);
-+	int ret = __nf_tables_abort(net, action);
- 
- 	mutex_unlock(&net->nft.commit_mutex);
- 
-@@ -8836,7 +8841,7 @@ static void __net_exit nf_tables_exit_net(struct net *net)
- {
- 	mutex_lock(&net->nft.commit_mutex);
- 	if (!list_empty(&net->nft.commit_list))
--		__nf_tables_abort(net, false);
-+		__nf_tables_abort(net, NFNL_ABORT_NONE);
- 	__nft_release_tables(net);
- 	mutex_unlock(&net->nft.commit_mutex);
- 	WARN_ON_ONCE(!list_empty(&net->nft.tables));
-diff --git a/net/netfilter/nfnetlink.c b/net/netfilter/nfnetlink.c
-index 2daa1f6ae344..d3df66a39b5e 100644
---- a/net/netfilter/nfnetlink.c
-+++ b/net/netfilter/nfnetlink.c
-@@ -333,7 +333,7 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
- 		return netlink_ack(skb, nlh, -EINVAL, NULL);
- replay:
- 	status = 0;
--
-+replay_abort:
- 	skb = netlink_skb_clone(oskb, GFP_KERNEL);
- 	if (!skb)
- 		return netlink_ack(oskb, nlh, -ENOMEM, NULL);
-@@ -499,7 +499,7 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	}
- done:
- 	if (status & NFNL_BATCH_REPLAY) {
--		ss->abort(net, oskb, true);
-+		ss->abort(net, oskb, NFNL_ABORT_AUTOLOAD);
- 		nfnl_err_reset(&err_list);
- 		kfree_skb(skb);
- 		module_put(ss->owner);
-@@ -510,11 +510,25 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
- 			status |= NFNL_BATCH_REPLAY;
- 			goto done;
- 		} else if (err) {
--			ss->abort(net, oskb, false);
-+			ss->abort(net, oskb, NFNL_ABORT_NONE);
- 			netlink_ack(oskb, nlmsg_hdr(oskb), err, NULL);
- 		}
+diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
+index 67f4529d93652..952f0c6916e59 100644
+--- a/iptables/nft-arp.c
++++ b/iptables/nft-arp.c
+@@ -303,7 +303,8 @@ static bool nft_arp_parse_devaddr(struct nft_xt_ctx *ctx,
+ 		memcpy(info->mask, ctx->bitwise.mask, ETH_ALEN);
+ 		ctx->flags &= ~NFT_XT_CTX_BITWISE;
  	} else {
--		ss->abort(net, oskb, false);
-+		enum nfnl_abort_action abort_action;
-+
-+		if (status & NFNL_BATCH_FAILURE)
-+			abort_action = NFNL_ABORT_NONE;
-+		else
-+			abort_action = NFNL_ABORT_VALIDATE;
-+
-+		err = ss->abort(net, oskb, abort_action);
-+		if (err == -EAGAIN) {
-+			nfnl_err_reset(&err_list);
-+			kfree_skb(skb);
-+			module_put(ss->owner);
-+			status |= NFNL_BATCH_FAILURE;
-+			goto replay_abort;
+-		memset(info->mask, 0xff, ETH_ALEN);
++		memset(info->mask, 0xff,
++		       min(ctx->payload.len, ETH_ALEN));
+ 	}
+ 
+ 	return inv;
+@@ -360,7 +361,9 @@ static void nft_arp_parse_payload(struct nft_xt_ctx *ctx,
+ 				parse_mask_ipv4(ctx, &fw->arp.smsk);
+ 				ctx->flags &= ~NFT_XT_CTX_BITWISE;
+ 			} else {
+-				fw->arp.smsk.s_addr = 0xffffffff;
++				memset(&fw->arp.smsk, 0xff,
++				       min(ctx->payload.len,
++					   sizeof(struct in_addr)));
+ 			}
+ 
+ 			if (inv)
+@@ -380,7 +383,9 @@ static void nft_arp_parse_payload(struct nft_xt_ctx *ctx,
+ 				parse_mask_ipv4(ctx, &fw->arp.tmsk);
+ 				ctx->flags &= ~NFT_XT_CTX_BITWISE;
+ 			} else {
+-				fw->arp.tmsk.s_addr = 0xffffffff;
++				memset(&fw->arp.tmsk, 0xff,
++				       min(ctx->payload.len,
++					   sizeof(struct in_addr)));
+ 			}
+ 
+ 			if (inv)
+diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
+index afdecf9711e64..ce702041af0f4 100644
+--- a/iptables/nft-ipv4.c
++++ b/iptables/nft-ipv4.c
+@@ -199,7 +199,8 @@ static void nft_ipv4_parse_payload(struct nft_xt_ctx *ctx,
+ 			parse_mask_ipv4(ctx, &cs->fw.ip.smsk);
+ 			ctx->flags &= ~NFT_XT_CTX_BITWISE;
+ 		} else {
+-			cs->fw.ip.smsk.s_addr = 0xffffffff;
++			memset(&cs->fw.ip.smsk, 0xff,
++			       min(ctx->payload.len, sizeof(struct in_addr)));
+ 		}
+ 
+ 		if (inv)
+@@ -212,7 +213,8 @@ static void nft_ipv4_parse_payload(struct nft_xt_ctx *ctx,
+ 			parse_mask_ipv4(ctx, &cs->fw.ip.dmsk);
+ 			ctx->flags &= ~NFT_XT_CTX_BITWISE;
+ 		} else {
+-			cs->fw.ip.dmsk.s_addr = 0xffffffff;
++			memset(&cs->fw.ip.dmsk, 0xff,
++			       min(ctx->payload.len, sizeof(struct in_addr)));
+ 		}
+ 
+ 		if (inv)
+diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
+index 4008b7eab4f2a..c877ec6d10887 100644
+--- a/iptables/nft-ipv6.c
++++ b/iptables/nft-ipv6.c
+@@ -146,7 +146,8 @@ static void nft_ipv6_parse_payload(struct nft_xt_ctx *ctx,
+ 			parse_mask_ipv6(ctx, &cs->fw6.ipv6.smsk);
+ 			ctx->flags &= ~NFT_XT_CTX_BITWISE;
+ 		} else {
+-			memset(&cs->fw6.ipv6.smsk, 0xff, sizeof(struct in6_addr));
++			memset(&cs->fw6.ipv6.smsk, 0xff,
++			       min(ctx->payload.len, sizeof(struct in6_addr)));
+ 		}
+ 
+ 		if (inv)
+@@ -159,7 +160,8 @@ static void nft_ipv6_parse_payload(struct nft_xt_ctx *ctx,
+ 			parse_mask_ipv6(ctx, &cs->fw6.ipv6.dmsk);
+ 			ctx->flags &= ~NFT_XT_CTX_BITWISE;
+ 		} else {
+-			memset(&cs->fw6.ipv6.dmsk, 0xff, sizeof(struct in6_addr));
++			memset(&cs->fw6.ipv6.dmsk, 0xff,
++			       min(ctx->payload.len, sizeof(struct in6_addr)));
+ 		}
+ 
+ 		if (inv)
+diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
+index 7741d23befc5a..545e9c60fa015 100644
+--- a/iptables/nft-shared.c
++++ b/iptables/nft-shared.c
+@@ -166,16 +166,22 @@ void add_addr(struct nftnl_rule *r, int offset,
+ 	      void *data, void *mask, size_t len, uint32_t op)
+ {
+ 	const unsigned char *m = mask;
++	bool bitwise = false;
+ 	int i;
+ 
+-	add_payload(r, offset, len, NFT_PAYLOAD_NETWORK_HEADER);
+-
+ 	for (i = 0; i < len; i++) {
+-		if (m[i] != 0xff)
++		if (m[i] != 0xff) {
++			bitwise = m[i] != 0;
+ 			break;
 +		}
  	}
- 	if (ss->cleanup)
- 		ss->cleanup(net);
+ 
+-	if (i != len)
++	if (!bitwise)
++		len = i;
++
++	add_payload(r, offset, len, NFT_PAYLOAD_NETWORK_HEADER);
++
++	if (bitwise)
+ 		add_bitwise(r, mask, len);
+ 
+ 	add_cmp_ptr(r, op, data, len);
+diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
+index 4440fd17bfeac..a52463342b30a 100644
+--- a/iptables/nft-shared.h
++++ b/iptables/nft-shared.h
+@@ -247,4 +247,8 @@ void xtables_restore_parse(struct nft_handle *h,
+ 			   const struct nft_xt_restore_parse *p);
+ 
+ void nft_check_xt_legacy(int family, bool is_ipt_save);
++
++#define min(x, y) ((x) < (y) ? (x) : (y))
++#define max(x, y) ((x) > (y) ? (x) : (y))
++
+ #endif
 -- 
-2.20.1
+2.28.0
 
