@@ -2,246 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059842A065E
-	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Oct 2020 14:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C274E2A094C
+	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Oct 2020 16:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgJ3NZC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 30 Oct 2020 09:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
+        id S1726063AbgJ3PJc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 30 Oct 2020 11:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJ3NZC (ORCPT
+        with ESMTP id S1727011AbgJ3PJb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 30 Oct 2020 09:25:02 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD14C0613CF
-        for <netfilter-devel@vger.kernel.org>; Fri, 30 Oct 2020 06:25:01 -0700 (PDT)
-Received: from localhost ([::1]:37584 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.94)
-        (envelope-from <phil@nwl.cc>)
-        id 1kYUOn-0004nB-T7; Fri, 30 Oct 2020 14:24:57 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] ebtables: Optimize masked MAC address matches
-Date:   Fri, 30 Oct 2020 14:24:49 +0100
-Message-Id: <20201030132449.5576-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201030132449.5576-1-phil@nwl.cc>
-References: <20201030132449.5576-1-phil@nwl.cc>
+        Fri, 30 Oct 2020 11:09:31 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767CAC0613CF
+        for <netfilter-devel@vger.kernel.org>; Fri, 30 Oct 2020 08:09:30 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id m188so5394489ybf.2
+        for <netfilter-devel@vger.kernel.org>; Fri, 30 Oct 2020 08:09:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
+        b=h7mhMMJyQC+m6Bmn+IYUapYZ8RnGeHVd3ASo+V4hqsoVRmxtRQf5exNgRinJkzi7oa
+         EQki0FkKCMvOBZ3DBk+Gx57E53zyBZKjIblewa466Wt6uUrJYOJfnV+lppVLEXJlaSHl
+         mhP8Kh3huQ9UDUHMFqvJ1PKUne7RW46+SzGJ4Dp0ZyLZDJESzN8v0aS3zE6zPQ+f+QxR
+         FCtIMrM8A/Y4+9f5eEmOhe0x3kmfhSfdmWwmGRUUO/Gey1V+h2tyN1+7jgx14dD6UD+X
+         rusZ6+EHq1NDtbO3m6Zpcwp8fzFoubbix26NVopl6zlXpD4fjtLrj6c1UCrDltM9gdDw
+         tjKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
+        b=XJLKU0DkfKyLhjLKeDVqX0zLPRcK5vepAFmCGWM0qYSLkf67gNMKqhmLEYV9FcUxm+
+         NPhZlvqMZq+lJwa4jaZuUhWnsS/5EM/K1/71n4zQ4lLgI9oLkx279iI7XBxCBBky7RlS
+         xJhp6eS+nN7GSWrUgY0C25lxNsNQjQ+9PgnMIxHk4r59h6FrgshNjFbxeBMkeDJAN9qk
+         HevyzJ19J55ckI4KkxBBs4TZgLaBEbpeWuTTS+2/+IeCX9Y39YQNh9KzOcsmNQOF+nym
+         P3kQ8wulnEU0Ot+bVcVSA2WKgVVdHwDqC6mX0ldecMqaGumGGHY+xnCsT7Kyu+tM2Pcw
+         NTpA==
+X-Gm-Message-State: AOAM532caClHZJMXR2SGcy6VR/Oio9nGjD3JA66PtBAsnGMPJ37sH2q2
+        suhbAxmsZ1jtB3Z94pxDhLsxqvODo1ZErw7IOP8=
+X-Google-Smtp-Source: ABdhPJwfui+HkSsbq07Vu0lFxxC8QkIDY6MgdwTu4cRLDciRIJ2HrLvfPTIJw/f+NYt9xXsQIQG0bLFv/Q/Fq+Rujrc=
+X-Received: by 2002:a05:6902:4ea:: with SMTP id w10mr3966802ybs.379.1604070569747;
+ Fri, 30 Oct 2020 08:09:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:7110:6d2:b029:2b:3c03:52a8 with HTTP; Fri, 30 Oct 2020
+ 08:09:29 -0700 (PDT)
+Reply-To: li.anable85@gmail.com
+From:   Liliane Abel <k.griest05@gmail.com>
+Date:   Fri, 30 Oct 2020 16:09:29 +0100
+Message-ID: <CADvfYkv-jucHbN+N3zbdsYUNQvTgKE6oB32EYHERVmw8VYn9Xw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Just like with class-based prefix matches in iptables-nft, optimize
-masked MAC address matches if the mask is on a byte-boundary.
+Dearest
 
-To reuse the logic in add_addr(), extend it to accept the payload base
-value via parameter.
+Greeting my dear, I am Liliane Abel by name, The only daughter of late
+Mr.Benson Abel. My father is one of the top Politician in our country
+and my mother is a farmers and cocoa merchant when they were both
+alive. After the death of my mother, long ago, my father was
+controlling their business until he was poisoned by his business
+associates which he suffered and died.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/nft-arp.c    | 12 ++++++++----
- iptables/nft-bridge.c | 22 ++++++++++------------
- iptables/nft-ipv4.c   |  6 ++++--
- iptables/nft-ipv6.c   |  6 ++++--
- iptables/nft-shared.c |  5 ++---
- iptables/nft-shared.h |  3 ++-
- 6 files changed, 30 insertions(+), 24 deletions(-)
-
-diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
-index 952f0c6916e59..5dc38da831aa0 100644
---- a/iptables/nft-arp.c
-+++ b/iptables/nft-arp.c
-@@ -178,7 +178,8 @@ static int nft_arp_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 
- 	if (need_devaddr(&fw->arp.src_devaddr)) {
- 		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_SRCDEVADDR);
--		add_addr(r, sizeof(struct arphdr),
-+		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
-+			 sizeof(struct arphdr),
- 			 &fw->arp.src_devaddr.addr,
- 			 &fw->arp.src_devaddr.mask,
- 			 fw->arp.arhln, op);
-@@ -189,7 +190,8 @@ static int nft_arp_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 	    fw->arp.smsk.s_addr != 0 ||
- 	    fw->arp.invflags & ARPT_INV_SRCIP) {
- 		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_SRCIP);
--		add_addr(r, sizeof(struct arphdr) + fw->arp.arhln,
-+		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
-+			 sizeof(struct arphdr) + fw->arp.arhln,
- 			 &fw->arp.src.s_addr, &fw->arp.smsk.s_addr,
- 			 sizeof(struct in_addr), op);
- 	}
-@@ -197,7 +199,8 @@ static int nft_arp_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 
- 	if (need_devaddr(&fw->arp.tgt_devaddr)) {
- 		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_TGTDEVADDR);
--		add_addr(r, sizeof(struct arphdr) + fw->arp.arhln + sizeof(struct in_addr),
-+		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
-+			 sizeof(struct arphdr) + fw->arp.arhln + sizeof(struct in_addr),
- 			 &fw->arp.tgt_devaddr.addr,
- 			 &fw->arp.tgt_devaddr.mask,
- 			 fw->arp.arhln, op);
-@@ -207,7 +210,8 @@ static int nft_arp_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 	    fw->arp.tmsk.s_addr != 0 ||
- 	    fw->arp.invflags & ARPT_INV_TGTIP) {
- 		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_TGTIP);
--		add_addr(r, sizeof(struct arphdr) + fw->arp.arhln + sizeof(struct in_addr) + fw->arp.arhln,
-+		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
-+			 sizeof(struct arphdr) + fw->arp.arhln + sizeof(struct in_addr) + fw->arp.arhln,
- 			 &fw->arp.tgt.s_addr, &fw->arp.tmsk.s_addr,
- 			 sizeof(struct in_addr), op);
- 	}
-diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
-index dbf11eb5e1fa8..c1a2c209cc1aa 100644
---- a/iptables/nft-bridge.c
-+++ b/iptables/nft-bridge.c
-@@ -159,20 +159,16 @@ static int nft_bridge_add(struct nft_handle *h,
- 
- 	if (fw->bitmask & EBT_ISOURCE) {
- 		op = nft_invflags2cmp(fw->invflags, EBT_ISOURCE);
--		add_payload(r, offsetof(struct ethhdr, h_source), 6,
--			    NFT_PAYLOAD_LL_HEADER);
--		if (!mac_all_ones(fw->sourcemsk))
--			add_bitwise(r, fw->sourcemsk, 6);
--		add_cmp_ptr(r, op, fw->sourcemac, 6);
-+		add_addr(r, NFT_PAYLOAD_LL_HEADER,
-+			 offsetof(struct ethhdr, h_source),
-+			 fw->sourcemac, fw->sourcemsk, ETH_ALEN, op);
- 	}
- 
- 	if (fw->bitmask & EBT_IDEST) {
- 		op = nft_invflags2cmp(fw->invflags, EBT_IDEST);
--		add_payload(r, offsetof(struct ethhdr, h_dest), 6,
--			    NFT_PAYLOAD_LL_HEADER);
--		if (!mac_all_ones(fw->destmsk))
--			add_bitwise(r, fw->destmsk, 6);
--		add_cmp_ptr(r, op, fw->destmac, 6);
-+		add_addr(r, NFT_PAYLOAD_LL_HEADER,
-+			 offsetof(struct ethhdr, h_dest),
-+			 fw->destmac, fw->destmsk, ETH_ALEN, op);
- 	}
- 
- 	if ((fw->bitmask & EBT_NOPROTO) == 0) {
-@@ -258,7 +254,8 @@ static void nft_bridge_parse_payload(struct nft_xt_ctx *ctx,
-                         memcpy(fw->destmsk, ctx->bitwise.mask, ETH_ALEN);
-                         ctx->flags &= ~NFT_XT_CTX_BITWISE;
-                 } else {
--                        memset(&fw->destmsk, 0xff, ETH_ALEN);
-+			memset(&fw->destmsk, 0xff,
-+			       min(ctx->payload.len, ETH_ALEN));
-                 }
- 		fw->bitmask |= EBT_IDEST;
- 		break;
-@@ -272,7 +269,8 @@ static void nft_bridge_parse_payload(struct nft_xt_ctx *ctx,
-                         memcpy(fw->sourcemsk, ctx->bitwise.mask, ETH_ALEN);
-                         ctx->flags &= ~NFT_XT_CTX_BITWISE;
-                 } else {
--                        memset(&fw->sourcemsk, 0xff, ETH_ALEN);
-+			memset(&fw->sourcemsk, 0xff,
-+			       min(ctx->payload.len, ETH_ALEN));
-                 }
- 		fw->bitmask |= EBT_ISOURCE;
- 		break;
-diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
-index ce702041af0f4..fdc15c6f04066 100644
---- a/iptables/nft-ipv4.c
-+++ b/iptables/nft-ipv4.c
-@@ -50,13 +50,15 @@ static int nft_ipv4_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 
- 	if (cs->fw.ip.src.s_addr || cs->fw.ip.smsk.s_addr || cs->fw.ip.invflags & IPT_INV_SRCIP) {
- 		op = nft_invflags2cmp(cs->fw.ip.invflags, IPT_INV_SRCIP);
--		add_addr(r, offsetof(struct iphdr, saddr),
-+		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
-+			 offsetof(struct iphdr, saddr),
- 			 &cs->fw.ip.src.s_addr, &cs->fw.ip.smsk.s_addr,
- 			 sizeof(struct in_addr), op);
- 	}
- 	if (cs->fw.ip.dst.s_addr || cs->fw.ip.dmsk.s_addr || cs->fw.ip.invflags & IPT_INV_DSTIP) {
- 		op = nft_invflags2cmp(cs->fw.ip.invflags, IPT_INV_DSTIP);
--		add_addr(r, offsetof(struct iphdr, daddr),
-+		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
-+			 offsetof(struct iphdr, daddr),
- 			 &cs->fw.ip.dst.s_addr, &cs->fw.ip.dmsk.s_addr,
- 			 sizeof(struct in_addr), op);
- 	}
-diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
-index c877ec6d10887..130ad3e6e7c44 100644
---- a/iptables/nft-ipv6.c
-+++ b/iptables/nft-ipv6.c
-@@ -51,7 +51,8 @@ static int nft_ipv6_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 	    !IN6_IS_ADDR_UNSPECIFIED(&cs->fw6.ipv6.smsk) ||
- 	    (cs->fw6.ipv6.invflags & IPT_INV_SRCIP)) {
- 		op = nft_invflags2cmp(cs->fw6.ipv6.invflags, IPT_INV_SRCIP);
--		add_addr(r, offsetof(struct ip6_hdr, ip6_src),
-+		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
-+			 offsetof(struct ip6_hdr, ip6_src),
- 			 &cs->fw6.ipv6.src, &cs->fw6.ipv6.smsk,
- 			 sizeof(struct in6_addr), op);
- 	}
-@@ -59,7 +60,8 @@ static int nft_ipv6_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 	    !IN6_IS_ADDR_UNSPECIFIED(&cs->fw6.ipv6.dmsk) ||
- 	    (cs->fw6.ipv6.invflags & IPT_INV_DSTIP)) {
- 		op = nft_invflags2cmp(cs->fw6.ipv6.invflags, IPT_INV_DSTIP);
--		add_addr(r, offsetof(struct ip6_hdr, ip6_dst),
-+		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
-+			 offsetof(struct ip6_hdr, ip6_dst),
- 			 &cs->fw6.ipv6.dst, &cs->fw6.ipv6.dmsk,
- 			 sizeof(struct in6_addr), op);
- 	}
-diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
-index 545e9c60fa015..10553ab26823b 100644
---- a/iptables/nft-shared.c
-+++ b/iptables/nft-shared.c
-@@ -20,7 +20,6 @@
- 
- #include <xtables.h>
- 
--#include <linux/netfilter/nf_tables.h>
- #include <linux/netfilter/xt_comment.h>
- #include <linux/netfilter/xt_limit.h>
- 
-@@ -162,7 +161,7 @@ void add_outiface(struct nftnl_rule *r, char *iface, uint32_t op)
- 		add_cmp_ptr(r, op, iface, iface_len + 1);
- }
- 
--void add_addr(struct nftnl_rule *r, int offset,
-+void add_addr(struct nftnl_rule *r, enum nft_payload_bases base, int offset,
- 	      void *data, void *mask, size_t len, uint32_t op)
- {
- 	const unsigned char *m = mask;
-@@ -179,7 +178,7 @@ void add_addr(struct nftnl_rule *r, int offset,
- 	if (!bitwise)
- 		len = i;
- 
--	add_payload(r, offset, len, NFT_PAYLOAD_NETWORK_HEADER);
-+	add_payload(r, offset, len, base);
- 
- 	if (bitwise)
- 		add_bitwise(r, mask, len);
-diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
-index a52463342b30a..da4ba9d2ba8de 100644
---- a/iptables/nft-shared.h
-+++ b/iptables/nft-shared.h
-@@ -8,6 +8,7 @@
- #include <libnftnl/chain.h>
- 
- #include <linux/netfilter_arp/arp_tables.h>
-+#include <linux/netfilter/nf_tables.h>
- 
- #include "xshared.h"
- 
-@@ -121,7 +122,7 @@ void add_cmp_u16(struct nftnl_rule *r, uint16_t val, uint32_t op);
- void add_cmp_u32(struct nftnl_rule *r, uint32_t val, uint32_t op);
- void add_iniface(struct nftnl_rule *r, char *iface, uint32_t op);
- void add_outiface(struct nftnl_rule *r, char *iface, uint32_t op);
--void add_addr(struct nftnl_rule *r, int offset,
-+void add_addr(struct nftnl_rule *r, enum nft_payload_bases base, int offset,
- 	      void *data, void *mask, size_t len, uint32_t op);
- void add_proto(struct nftnl_rule *r, int offset, size_t len,
- 	       uint8_t proto, uint32_t op);
--- 
-2.28.0
-
+Before the death of my father, He told me about (two million five
+hundred thousand united states dollars) which he deposited in the bank
+in Lome-Togo, It was the money he intended to transfer overseas for
+investment before he was poisoned. He also instructed me that I should
+seek for foreign partners in any country of my choice who will assist
+me transfer this money in overseas account where the money will be
+wisely invested.
+I am seeking for your kind assistance in the following ways:  (1) to
+provide a safe bank account into where the money will be transferred
+for investment. (2) To serve as a guardian of this fund since I am a
+girl of 19 years old. (3) To make arrangement for me to come over to
+your country to further my education. This is my reason for writing to
+you. Please if you are willing to assist me I will offer you 25% of
+the total money. Reply if  you are interested
+Best regards.
+Liliane Abel.
