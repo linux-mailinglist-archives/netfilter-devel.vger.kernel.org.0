@@ -2,87 +2,68 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918AF2A1150
-	for <lists+netfilter-devel@lfdr.de>; Sat, 31 Oct 2020 00:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1F32A11D5
+	for <lists+netfilter-devel@lfdr.de>; Sat, 31 Oct 2020 01:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgJ3XCY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 30 Oct 2020 19:02:24 -0400
-Received: from server.msgroupspa.com ([185.149.113.111]:55162 "EHLO
-        server.msgroupspa.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3XCU (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 30 Oct 2020 19:02:20 -0400
-X-Greylist: delayed 53432 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Oct 2020 19:02:11 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=msgroupspa.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Sender:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=gOeEglh1DIJatPKqyvOsPs4e0Zw8Lzg9wwjnNfQdiM8=; b=f0J1AWuajA3oZ1Dpfc1x8K8xEJ
-        AUip3Gv2UXILC1QLa9azjb3AcsLQqGjiyvcdNpmgT4E3ckADFb84tXlqXdyZsQiNBG2DujmkXqT6T
-        d2mjFNqNRzqSvTZ5qo3MQnCtCov24Wb4wcnpMjift4pdGB4JPDnKAHB+AICh1brF5U0xFQPetWE6H
-        BdPwBb7MNTVWN2mlAPb66Psghg7IoDbQVF1Tmf3H0jaTjlEaWeH4lQoLQpQIzRJYm5NbY0Di4+n63
-        5jJQ9+O4mZNL1aiyS8rwPAgEOxxbLBRAAH3FJTu26AO783jjZImRhbqNmO2ZZgHvlSfFh6vWgR2oo
-        WibXGz9w==;
-Received: from [::1] (port=55834 helo=server.msgroupspa.com)
-        by server.msgroupspa.com with esmtpa (Exim 4.93)
-        (envelope-from <no-reply@msgroupspa.com>)
-        id 1kYPS7-0006MI-86; Fri, 30 Oct 2020 16:08:03 +0800
+        id S1725806AbgJaAFS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 30 Oct 2020 20:05:18 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:59375 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725562AbgJaAFS (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 30 Oct 2020 20:05:18 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id ba88ee7e;
+        Sat, 31 Oct 2020 00:03:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=NPBfg4ApTqVyAYhGQrqly0owwA4=; b=BVea4v
+        IHRs7aS0fC9YvGdn2SB00C7HUCfdrNchTG12gcOkjoGHzrnP+f36TiljP5pcm5Tw
+        1jHzK1uidyXxWYtmUvx1qEfk19l7cXrnr4iLz/oi2/R/94EsLKkarw/4nsmqRhms
+        +kr0x1O2ZAeCCCoZZq62/uZn92MMJsn/1o1vsmTrFclnhwHolNyRqkFRYgqLKacv
+        DjXQZv3q5dhFlcmy4xm38hUK5C1OGn6WmcV5liSJ5hqg+ryFUuzTmH4oXx8xrZpH
+        CPR2mPSN9mw4e5q9XLfeDzkYQ2BLYK1HJ1BDUSMEJvCbqL54lebD6DCtKqhE49st
+        BDswvI7N3ZfN237Q==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 469881f8 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Sat, 31 Oct 2020 00:03:40 +0000 (UTC)
+Received: by mail-yb1-f181.google.com with SMTP id f6so6571580ybr.0;
+        Fri, 30 Oct 2020 17:05:14 -0700 (PDT)
+X-Gm-Message-State: AOAM530Dmj6CCnEfuNlZu1VWWmXDNUZc10yGy/F9l98aBlkFXo3CuxlQ
+        Fduv6Frw5fvmjmTkiQnIEROo0BKlci2JUaCuPm0=
+X-Google-Smtp-Source: ABdhPJxbo1skH4KC8Pq63zT8HL5RAX1jmOYWBJ41hp0DHKBOhSGfYriSD6fx+ZS4nvKASqla7w0O/W1/4WRW+kcISb8=
+X-Received: by 2002:a5b:c4a:: with SMTP id d10mr7249986ybr.123.1604102713734;
+ Fri, 30 Oct 2020 17:05:13 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Fri, 30 Oct 2020 16:08:03 +0800
-From:   "Mr. John Galvan" <no-reply@msgroupspa.com>
-To:     undisclosed-recipients:;
-Subject: Hello/Hallo
-Reply-To: galvan.johnny@outlook.com
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <0d2cf4301ff4649fbf993b8f3f7e83c8@msgroupspa.com>
-X-Sender: no-reply@msgroupspa.com
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server.msgroupspa.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - msgroupspa.com
-X-Get-Message-Sender-Via: server.msgroupspa.com: authenticated_id: no-reply@msgroupspa.com
-X-Authenticated-Sender: server.msgroupspa.com: no-reply@msgroupspa.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20201029025606.3523771-1-Jason@zx2c4.com> <20201030192301.GA19199@salvia>
+In-Reply-To: <20201030192301.GA19199@salvia>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Sat, 31 Oct 2020 01:05:03 +0100
+X-Gmail-Original-Message-ID: <CAHmME9qs0h6SaKFrDR18wH2=vCBC9YpOKCBnZzbjQb69SEDB0g@mail.gmail.com>
+Message-ID: <CAHmME9qs0h6SaKFrDR18wH2=vCBC9YpOKCBnZzbjQb69SEDB0g@mail.gmail.com>
+Subject: Re: [PATCH nf 0/2] route_me_harder routing loop with tunnels
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+On Fri, Oct 30, 2020 at 8:23 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>
+> On Thu, Oct 29, 2020 at 03:56:04AM +0100, Jason A. Donenfeld wrote:
+> > Hi Pablo,
+> >
+> > This series fixes a bug in the route_me_harder family of functions with
+> > regards to tunnel interfaces. The first patch contains an addition to
+> > the wireguard test suite; I normally send my wireguard patches through
+> > Dave's tree, but I thought it'd be nice to send these together here
+> > because the test case is illustrative of the issue. The second patch
+> > then fixes the issue with a lengthy explanation of what's going on.
+> >
+> > These are intended for net.git/nf.git, not the -next variety, and to
+> > eventually be backported to stable. So, the second patch has a proper
+> > Fixes: line on it to help with that.
+>
+> Series applied, thanks.
 
+To nf.git? Did you forget to git-push perhaps?
 
--- 
-Sir/Madam,
-
-I have access to very vital information that can be used to move a huge 
-amount of money. I have done my homework very well and I have the 
-machineries in place to get it done since I am still in active service. 
-If it was possible for me to do it alone I would not have bothered 
-contacting you. Ultimately I need an honest foreigner to play an 
-important role in the completion of this business transaction. Send 
-responds to this email: galvan.johnny@outlook.com
-
-Regards,
-John Galvan
-
----------------------------------------------------------------
-
-Sir / Madam,
-
-Ich habe Zugang zu sehr wichtigen Informationen, mit denen ich eine 
-große Menge Geld bewegen kann. Ich habe meine Hausaufgaben sehr gut 
-gemacht und ich habe die Maschinen, um sie zu erledigen, da ich immer 
-noch im aktiven Dienst bin. Wenn es mir möglich gewesen wäre, es alleine 
-zu tun, hätte ich mich nicht darum gekümmert, Sie zu kontaktieren. 
-Letztendlich brauche ich einen ehrlichen Ausländer, der eine wichtige 
-Rolle beim Abschluss dieses Geschäftsvorgangs spielt. Senden Sie 
-Antworten auf diese E-Mail: galvan.johnny@outlook.com
-
-Grüße,
-John Galvan
+Jason
