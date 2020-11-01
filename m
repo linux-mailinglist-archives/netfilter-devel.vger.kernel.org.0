@@ -2,40 +2,82 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04BA2A2181
-	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Nov 2020 21:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 646D42A21F3
+	for <lists+netfilter-devel@lfdr.de>; Sun,  1 Nov 2020 22:49:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgKAUVn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 1 Nov 2020 15:21:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
+        id S1727173AbgKAVts (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 1 Nov 2020 16:49:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726848AbgKAUVn (ORCPT
+        with ESMTP id S1727081AbgKAVts (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 1 Nov 2020 15:21:43 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFE4C0617A6
-        for <netfilter-devel@vger.kernel.org>; Sun,  1 Nov 2020 12:21:42 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1kZJr7-0005ZR-00; Sun, 01 Nov 2020 21:21:37 +0100
-Date:   Sun, 1 Nov 2020 21:21:36 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Jeremy Sowden <jeremy@azazel.net>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH] doc: correct chain name in example of adding a rule.
-Message-ID: <20201101202136.GD15770@breakpoint.cc>
-References: <20201101193313.10879-1-jeremy@azazel.net>
+        Sun, 1 Nov 2020 16:49:48 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2BDC0617A6
+        for <netfilter-devel@vger.kernel.org>; Sun,  1 Nov 2020 13:49:48 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id z7so8215676ybg.10
+        for <netfilter-devel@vger.kernel.org>; Sun, 01 Nov 2020 13:49:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=jy5whpdkbJURNW0PeeiRBIKqG8eYfhi8IgQsqrYGi50=;
+        b=DAUZS5W0q0MKiCopPQOOj+SDwYvSEf0GdaTyBwV+oRpNlAukn4Y6eEHM/tYU7ZCT/1
+         tDmiPCXOTlzj8qB904NXAKnga7u0bUS3rKbX85gHlw1ob9OfewqB5JrPsL8pJ1aSavzq
+         l351nDpEzsj8vQjAecFbFRxZ95VxfRnUQqfldG5ti0RRJmuJS3cZigVnewL3Df8FvwLY
+         Ji47DEFJmhjipvkYnb4GoJJe/dnSXWj8xJtO5fpVbI2FjDrdP24DObHp2sVtJ8URHr4L
+         4dA1vGmZO2stqVLXZ0Mut16mWp5JabPXSnrVhJ1qIw6Lc4+ikkjRC+sGHbdX0wKbemT4
+         RJZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=jy5whpdkbJURNW0PeeiRBIKqG8eYfhi8IgQsqrYGi50=;
+        b=sXsJFmuijuK6v3ZmLuzSF0mfIbJe3Eyg+dpbw0Gk1j0aja8GnbUqjYeN3HzboqLz1N
+         oL9zHI9+6zqZaJI2qBOhJWQEqmKSno/V5kE7KNUKibHJA5WwkXtNyodwVs1sPSyqPS+1
+         RoGo0HmjcxNAKc0Xf0FqauUnAN3EIPCl82Fig75QMNgZff9X8onDf23P9xSCD7JFpGzK
+         MVTc2D/mpVPUo3/5YwIfzE4ZFdFc/8JCe99LogBCJax9W9KosIb3LYYiuQMrjoBV7Rkf
+         T9h2Qy1JT97shBzES8kKIEGKZxspjYihHqTiOsgZb3cFT0BwBtpC1LoNkCzWFppX3bbd
+         T76w==
+X-Gm-Message-State: AOAM532vnf6TLq5EY6/JwMj3jZ9r7NSjPDIIoY1lfnWYcOULtugc29uK
+        QsbuYWQUxwGftmgHFm7YqpLyrXsVsXkr2e1QCZupZICmh6mLSTpq
+X-Google-Smtp-Source: ABdhPJyVz82pAeNQLilUE6GjPa8s66/AEwVSfZ/j3O0XZx8YuvMyEU9tSLM1WYX5y3xKCquOWuwaVMldJtF1vadajmM=
+X-Received: by 2002:a25:d68a:: with SMTP id n132mr17215667ybg.325.1604267387543;
+ Sun, 01 Nov 2020 13:49:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201101193313.10879-1-jeremy@azazel.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Oskar Berggren <oskar.berggren@gmail.com>
+Date:   Sun, 1 Nov 2020 22:49:36 +0100
+Message-ID: <CAHOuc7N4gWZQmGaHdZ3oMt6S2PA-8JXTEabaybsH2bM9zHcBfA@mail.gmail.com>
+Subject: ipset 7.7 modules fail to build on kernel 4.19.152
+To:     netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Jeremy Sowden <jeremy@azazel.net> wrote:
-> The example adds a rule to the `output` chain, not the `input` chain.
+Hi,
 
-Applied, thanks.
+I can build ipset 7.6 modules on 4.19.152 kernel (Debian buster
+current stable), but 7.7 fails:
+
+$ configure; make
+$ make modules
+jhash.h:90:32 `fallthrough` undeclared
+jhash.h:136:21 `fallthrough` undeclared
+
+ip_set_core.c:90:40 macro list_for_each_entry_rcu passed 4 arguments
+but takes just 3
+ip_set_core.c:89:2 list_for_each_entry_rcu undeclared
+
+Plus a few more but I think they are just because the compiler is
+confused after the above problems.
+
+There are commits in 7.7 touching the above pieces of code.
+
+
+Btw, and unrelated to above, recent kernels (4.19.134+) remove
+tc_skb_protocol [0] but seems to provide vlan aware skb_protocol [1]
+instead. Perhaps ipset should use that when available, instead of its
+own tc_skb_protocol fallback?
+
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v4.19.134&id=9fd235ff00008e093951b4801349436fa27c64e8
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v4.19.134&id=d4d0e6c07bcd17d704afe64e10382ffc5d342765
