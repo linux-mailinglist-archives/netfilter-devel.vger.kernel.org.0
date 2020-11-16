@@ -2,546 +2,141 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7D32B4577
-	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Nov 2020 15:03:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E422B45A7
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Nov 2020 15:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727248AbgKPOC7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 16 Nov 2020 09:02:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40342 "EHLO
+        id S1727416AbgKPOSQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 16 Nov 2020 09:18:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbgKPOC7 (ORCPT
+        with ESMTP id S1726321AbgKPOSP (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:02:59 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B899C0613CF
-        for <netfilter-devel@vger.kernel.org>; Mon, 16 Nov 2020 06:02:59 -0800 (PST)
-Received: from localhost ([::1]:51040 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.94)
-        (envelope-from <phil@nwl.cc>)
-        id 1kef5t-0001Rl-Ig; Mon, 16 Nov 2020 15:02:57 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 3/3] xshared: Merge some command option-related code
-Date:   Mon, 16 Nov 2020 15:02:38 +0100
-Message-Id: <20201116140238.25955-4-phil@nwl.cc>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201116140238.25955-1-phil@nwl.cc>
-References: <20201116140238.25955-1-phil@nwl.cc>
+        Mon, 16 Nov 2020 09:18:15 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4716C0613CF
+        for <netfilter-devel@vger.kernel.org>; Mon, 16 Nov 2020 06:18:15 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1kefKc-0006fs-VT; Mon, 16 Nov 2020 15:18:11 +0100
+Date:   Mon, 16 Nov 2020 15:18:10 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     subashab@codeaurora.org
+Cc:     Florian Westphal <fw@strlen.de>, pablo@netfilter.org,
+        Sean Tranchetti <stranche@codeaurora.org>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf] x_tables: Properly close read section with
+ read_seqcount_retry
+Message-ID: <20201116141810.GB22792@breakpoint.cc>
+References: <1605320516-17810-1-git-send-email-stranche@codeaurora.org>
+ <20201114165330.GM23619@breakpoint.cc>
+ <2ab4bcb63cbacba12ad927621fb56aab@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2ab4bcb63cbacba12ad927621fb56aab@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add OPT_FRAGMENT define into the enum of other OPT_* defines at the
-right position and adjust the arptables-specific ones that follow
-accordingly. Appropriately adjust inverse_for_options array in
-xtables-arp.c.
+subashab@codeaurora.org <subashab@codeaurora.org> wrote:
+> > I'm fine with this change but AFAIU this is just a cleanup since
+> > this part isn't a read-sequence as no  'shared state' is accessed/read
+> > between
+> > the seqcount begin and the do{}while. smb_rmb placement should not
+> > matter here.
+> > 
+> > Did I miss anything?
+> > 
+> > Thanks.
+> 
+> Hi Florian
+> 
+> To provide more background on this, we are seeing occasional crashes in a
+> regression rack in the packet receive path where there appear to be
+> some rules being modified concurrently.
+> 
+> Unable to handle kernel NULL pointer dereference at virtual
+> address 000000000000008e
+> pc : ip6t_do_table+0x5d0/0x89c
+> lr : ip6t_do_table+0x5b8/0x89c
+> ip6t_do_table+0x5d0/0x89c
+> ip6table_filter_hook+0x24/0x30
+> nf_hook_slow+0x84/0x120
+> ip6_input+0x74/0xe0
+> ip6_rcv_finish+0x7c/0x128
+> ipv6_rcv+0xac/0xe4
+> __netif_receive_skb+0x84/0x17c
+> process_backlog+0x15c/0x1b8
+> napi_poll+0x88/0x284
+> net_rx_action+0xbc/0x23c
+> __do_softirq+0x20c/0x48c
+> 
+> We found that ip6t_do_table was reading stale values from the READ_ONCE
+> leading to use after free when dereferencing per CPU jumpstack values.
+> 
+> [https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/net/ipv6/netfilter/ip6_tables.c?h=v5.4.77#n282]
+> 	addend = xt_write_recseq_begin();
+> 	private = READ_ONCE(table->private); /* Address dependency. */
+> 
+> We were able to confirm that the xt_replace_table & __do_replace
+> had already executed by logging the seqcount values. The value of
+> seqcount at ip6t_do_table was 1 more than the value at xt_replace_table.
 
-Extend optflags from iptables.c by the arptables values for the sake of
-completeness, then move it to xshared.h along with NUMBER_OF_OPT
-definition. As a side-effect, this fixes for wrong ordering of entries
-in arptables' 'optflags' copy.
+Can you elaborate? Was that before xt_write_recseq_begin() or after?
 
-Add arptables-specific bits to commands_v_options table (the speicific
-options are matches on ARP header fields, just treat them like '-s'
-option. This is also just a cosmetic change, arptables doesn't have a
-generic_opt_check() implementation and hence doesn't use such a table.
+> The seqcount read at xt_replace_table also showed that it was an even value
+> and hence meant that there was no conccurent writer instance
+> (xt_write_recseq_begin)
+> at that point.
 
-With things potentially ready for common use, move commands_v_options
-table along with generic_opt_check() and opt2char() into xshared.c and
-drop the local (identical) implementations from iptables.c, ip6tables.c
-xtables.c and xtables-arp.c. While doing so, fix ordering of entries in
-that table: the row for CMD_ZERO_NUM was in the wrong position. Since
-all moved rows though are identical, this had no effect in practice.
+Ok, so either ip6_do_table was done or just starting (and it should not
+matter which one).
 
-Fixes: d960a991350ca ("xtables-arp: Integrate OPT_* defines into xshared.h")
-Fixes: 384958620abab ("use nf_tables and nf_tables compatibility interface")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/ip6tables.c   | 79 -----------------------------------------
- iptables/iptables.c    | 80 ------------------------------------------
- iptables/xshared.c     | 74 ++++++++++++++++++++++++++++++++++++++
- iptables/xshared.h     | 20 +++++++----
- iptables/xtables-arp.c | 14 +-------
- iptables/xtables.c     | 80 ------------------------------------------
- 6 files changed, 89 insertions(+), 258 deletions(-)
+> [https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/net/netfilter/x_tables.c?h=v5.4.77#n1401]
+> 		u32 seq = raw_read_seqcount(s);
+> 
+> This means that table assignment at xt_replace_table did not take effect
+> as expected.
 
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index 576c2cf8b0d9f..c95355b091568 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -45,10 +45,6 @@
- #include "ip6tables-multi.h"
- #include "xshared.h"
- 
--#define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
--static const char optflags[]
--= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c'};
--
- static const char unsupported_rev[] = " [unsupported revision]";
- 
- static struct option original_opts[] = {
-@@ -100,36 +96,6 @@ struct xtables_globals ip6tables_globals = {
- 	.compat_rev = xtables_compatible_revision,
- };
- 
--/* Table of legal combinations of commands and options.  If any of the
-- * given commands make an option legal, that option is legal (applies to
-- * CMD_LIST and CMD_ZERO only).
-- * Key:
-- *  +  compulsory
-- *  x  illegal
-- *     optional
-- */
--
--static const char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
--/* Well, it's better than "Re: Linux vs FreeBSD" */
--{
--	/*     -n  -s  -d  -p  -j  -v  -x  -i  -o --line -c */
--/*INSERT*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' '},
--/*DELETE*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x'},
--/*DELETE_NUM*/{'x','x','x','x','x',' ','x','x','x','x','x'},
--/*REPLACE*/   {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' '},
--/*APPEND*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' '},
--/*LIST*/      {' ','x','x','x','x',' ',' ','x','x',' ','x'},
--/*FLUSH*/     {'x','x','x','x','x',' ','x','x','x','x','x'},
--/*ZERO*/      {'x','x','x','x','x',' ','x','x','x','x','x'},
--/*NEW_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x'},
--/*DEL_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x'},
--/*SET_POLICY*/{'x','x','x','x','x',' ','x','x','x','x',' '},
--/*RENAME*/    {'x','x','x','x','x',' ','x','x','x','x','x'},
--/*LIST_RULES*/{'x','x','x','x','x',' ','x','x','x','x','x'},
--/*ZERO_NUM*/  {'x','x','x','x','x',' ','x','x','x','x','x'},
--/*CHECK*/     {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x'},
--};
--
- static const unsigned int inverse_for_options[NUMBER_OF_OPT] =
- {
- /* -n */ 0,
-@@ -264,51 +230,6 @@ ip6tables_exit_error(enum xtables_exittype status, const char *msg, ...)
- 	exit(status);
- }
- 
--static void
--generic_opt_check(int command, int options)
--{
--	int i, j, legal = 0;
--
--	/* Check that commands are valid with options.  Complicated by the
--	 * fact that if an option is legal with *any* command given, it is
--	 * legal overall (ie. -z and -l).
--	 */
--	for (i = 0; i < NUMBER_OF_OPT; i++) {
--		legal = 0; /* -1 => illegal, 1 => legal, 0 => undecided. */
--
--		for (j = 0; j < NUMBER_OF_CMD; j++) {
--			if (!(command & (1<<j)))
--				continue;
--
--			if (!(options & (1<<i))) {
--				if (commands_v_options[j][i] == '+')
--					xtables_error(PARAMETER_PROBLEM,
--						   "You need to supply the `-%c' "
--						   "option for this command\n",
--						   optflags[i]);
--			} else {
--				if (commands_v_options[j][i] != 'x')
--					legal = 1;
--				else if (legal == 0)
--					legal = -1;
--			}
--		}
--		if (legal == -1)
--			xtables_error(PARAMETER_PROBLEM,
--				   "Illegal option `-%c' with this command\n",
--				   optflags[i]);
--	}
--}
--
--static char
--opt2char(int option)
--{
--	const char *ptr;
--	for (ptr = optflags; option > 1; option >>= 1, ptr++);
--
--	return *ptr;
--}
--
- /*
-  *	All functions starting with "parse" should succeed, otherwise
-  *	the program fails.
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index 88ef6cf666d4b..7d6183116d265 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -41,11 +41,6 @@
- #include <fcntl.h>
- #include "xshared.h"
- 
--#define OPT_FRAGMENT    0x00800U
--#define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
--static const char optflags[]
--= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c', 'f'};
--
- static const char unsupported_rev[] = " [unsupported revision]";
- 
- static struct option original_opts[] = {
-@@ -99,36 +94,6 @@ struct xtables_globals iptables_globals = {
- 	.compat_rev = xtables_compatible_revision,
- };
- 
--/* Table of legal combinations of commands and options.  If any of the
-- * given commands make an option legal, that option is legal (applies to
-- * CMD_LIST and CMD_ZERO only).
-- * Key:
-- *  +  compulsory
-- *  x  illegal
-- *     optional
-- */
--
--static const char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
--/* Well, it's better than "Re: Linux vs FreeBSD" */
--{
--	/*     -n  -s  -d  -p  -j  -v  -x  -i  -o --line -c -f */
--/*INSERT*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
--/*DELETE*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' '},
--/*DELETE_NUM*/{'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*REPLACE*/   {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
--/*APPEND*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
--/*LIST*/      {' ','x','x','x','x',' ',' ','x','x',' ','x','x'},
--/*FLUSH*/     {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*ZERO*/      {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*NEW_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*DEL_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*SET_POLICY*/{'x','x','x','x','x',' ','x','x','x','x',' ','x'},
--/*RENAME*/    {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*LIST_RULES*/{'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*ZERO_NUM*/  {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*CHECK*/     {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' '},
--};
--
- static const int inverse_for_options[NUMBER_OF_OPT] =
- {
- /* -n */ 0,
-@@ -263,51 +228,6 @@ iptables_exit_error(enum xtables_exittype status, const char *msg, ...)
- 	exit(status);
- }
- 
--static void
--generic_opt_check(int command, int options)
--{
--	int i, j, legal = 0;
--
--	/* Check that commands are valid with options.  Complicated by the
--	 * fact that if an option is legal with *any* command given, it is
--	 * legal overall (ie. -z and -l).
--	 */
--	for (i = 0; i < NUMBER_OF_OPT; i++) {
--		legal = 0; /* -1 => illegal, 1 => legal, 0 => undecided. */
--
--		for (j = 0; j < NUMBER_OF_CMD; j++) {
--			if (!(command & (1<<j)))
--				continue;
--
--			if (!(options & (1<<i))) {
--				if (commands_v_options[j][i] == '+')
--					xtables_error(PARAMETER_PROBLEM,
--						   "You need to supply the `-%c' "
--						   "option for this command\n",
--						   optflags[i]);
--			} else {
--				if (commands_v_options[j][i] != 'x')
--					legal = 1;
--				else if (legal == 0)
--					legal = -1;
--			}
--		}
--		if (legal == -1)
--			xtables_error(PARAMETER_PROBLEM,
--				   "Illegal option `-%c' with this command\n",
--				   optflags[i]);
--	}
--}
--
--static char
--opt2char(int option)
--{
--	const char *ptr;
--	for (ptr = optflags; option > 1; option >>= 1, ptr++);
--
--	return *ptr;
--}
--
- /*
-  *	All functions starting with "parse" should succeed, otherwise
-  *	the program fails.
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 7d97637f7e129..71f689901e1d4 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -779,3 +779,77 @@ int parse_rulenumber(const char *rule)
- 
- 	return rulenum;
- }
-+
-+/* Table of legal combinations of commands and options.  If any of the
-+ * given commands make an option legal, that option is legal (applies to
-+ * CMD_LIST and CMD_ZERO only).
-+ * Key:
-+ *  +  compulsory
-+ *  x  illegal
-+ *     optional
-+ */
-+static const char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
-+/* Well, it's better than "Re: Linux vs FreeBSD" */
-+{
-+	/*     -n  -s  -d  -p  -j  -v  -x  -i  -o --line -c -f 2 3 l 4 5 6 */
-+/*INSERT*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' ',' ',' ',' ',' ',' ',' '},
-+/*DELETE*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' ',' ',' ',' ',' ',' ',' '},
-+/*DELETE_NUM*/{'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
-+/*REPLACE*/   {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' ',' ',' ',' ',' ',' ',' '},
-+/*APPEND*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' ',' ',' ',' ',' ',' ',' '},
-+/*LIST*/      {' ','x','x','x','x',' ',' ','x','x',' ','x','x','x','x','x','x','x','x'},
-+/*FLUSH*/     {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
-+/*ZERO*/      {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
-+/*NEW_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
-+/*DEL_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
-+/*SET_POLICY*/{'x','x','x','x','x',' ','x','x','x','x',' ','x','x','x','x','x','x','x'},
-+/*RENAME*/    {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
-+/*LIST_RULES*/{'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
-+/*ZERO_NUM*/  {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
-+/*CHECK*/     {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' ',' ',' ',' ',' ',' ',' '},
-+};
-+
-+void generic_opt_check(int command, int options)
-+{
-+	int i, j, legal = 0;
-+
-+	/* Check that commands are valid with options. Complicated by the
-+	 * fact that if an option is legal with *any* command given, it is
-+	 * legal overall (ie. -z and -l).
-+	 */
-+	for (i = 0; i < NUMBER_OF_OPT; i++) {
-+		legal = 0; /* -1 => illegal, 1 => legal, 0 => undecided. */
-+
-+		for (j = 0; j < NUMBER_OF_CMD; j++) {
-+			if (!(command & (1<<j)))
-+				continue;
-+
-+			if (!(options & (1<<i))) {
-+				if (commands_v_options[j][i] == '+')
-+					xtables_error(PARAMETER_PROBLEM,
-+						   "You need to supply the `-%c' "
-+						   "option for this command\n",
-+						   optflags[i]);
-+			} else {
-+				if (commands_v_options[j][i] != 'x')
-+					legal = 1;
-+				else if (legal == 0)
-+					legal = -1;
-+			}
-+		}
-+		if (legal == -1)
-+			xtables_error(PARAMETER_PROBLEM,
-+				   "Illegal option `-%c' with this command\n",
-+				   optflags[i]);
-+	}
-+}
-+
-+char opt2char(int option)
-+{
-+	const char *ptr;
-+
-+	for (ptr = optflags; option > 1; option >>= 1, ptr++)
-+		;
-+
-+	return *ptr;
-+}
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index c41bd054bf36f..9159b2b1f3768 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -30,15 +30,20 @@ enum {
- 	OPT_VIANAMEOUT  = 1 << 8,
- 	OPT_LINENUMBERS = 1 << 9,
- 	OPT_COUNTERS    = 1 << 10,
-+	OPT_FRAGMENT	= 1 << 11,
- 	/* below are for arptables only */
--	OPT_S_MAC	= 1 << 11,
--	OPT_D_MAC	= 1 << 12,
--	OPT_H_LENGTH	= 1 << 13,
--	OPT_OPCODE	= 1 << 14,
--	OPT_H_TYPE	= 1 << 15,
--	OPT_P_TYPE	= 1 << 16,
-+	OPT_S_MAC	= 1 << 12,
-+	OPT_D_MAC	= 1 << 13,
-+	OPT_H_LENGTH	= 1 << 14,
-+	OPT_OPCODE	= 1 << 15,
-+	OPT_H_TYPE	= 1 << 16,
-+	OPT_P_TYPE	= 1 << 17,
- };
- 
-+#define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
-+static const char optflags[]
-+= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c', 'f', 2, 3, 'l', 4, 5, 6 };
-+
- enum {
- 	CMD_NONE		= 0,
- 	CMD_INSERT		= 1 << 0,
-@@ -216,4 +221,7 @@ void add_command(unsigned int *cmd, const int newcmd,
- 		 const int othercmds, int invert);
- int parse_rulenumber(const char *rule);
- 
-+void generic_opt_check(int command, int options);
-+char opt2char(int option);
-+
- #endif /* IPTABLES_XSHARED_H */
-diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
-index a557f258b437a..4a89ae9507051 100644
---- a/iptables/xtables-arp.c
-+++ b/iptables/xtables-arp.c
-@@ -53,10 +53,6 @@
- #include "nft-arp.h"
- #include <linux/netfilter_arp/arp_tables.h>
- 
--#define NUMBER_OF_OPT	16
--static const char optflags[NUMBER_OF_OPT]
--= { 'n', 's', 'd', 2, 3, 7, 8, 4, 5, 6, 'j', 'v', 'i', 'o', '0', 'c'};
--
- static struct option original_opts[] = {
- 	{ "append", 1, 0, 'A' },
- 	{ "delete", 1, 0,  'D' },
-@@ -123,6 +119,7 @@ static int inverse_for_options[] =
- /* -o */ IPT_INV_VIA_OUT,
- /*--line*/ 0,
- /* -c */ 0,
-+/* -f */ 0,
- /* 2 */ IPT_INV_SRCDEVADDR,
- /* 3 */ IPT_INV_TGTDEVADDR,
- /* -l */ IPT_INV_ARPHLN,
-@@ -281,15 +278,6 @@ printhelp(void)
- 	}
- }
- 
--static char
--opt2char(int option)
--{
--	const char *ptr;
--	for (ptr = optflags; option > 1; option >>= 1, ptr++);
--
--	return *ptr;
--}
--
- static int
- check_inverse(const char option[], int *invert, int *optidx, int argc)
- {
-diff --git a/iptables/xtables.c b/iptables/xtables.c
-index 9d2e441e0b773..9779bd83d53b3 100644
---- a/iptables/xtables.c
-+++ b/iptables/xtables.c
-@@ -43,11 +43,6 @@
- #include "nft-shared.h"
- #include "nft.h"
- 
--#define OPT_FRAGMENT	0x00800U
--#define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
--static const char optflags[]
--= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c', 'f'};
--
- static struct option original_opts[] = {
- 	{.name = "append",	  .has_arg = 1, .val = 'A'},
- 	{.name = "delete",	  .has_arg = 1, .val = 'D'},
-@@ -99,36 +94,6 @@ struct xtables_globals xtables_globals = {
- 	.compat_rev = nft_compatible_revision,
- };
- 
--/* Table of legal combinations of commands and options.  If any of the
-- * given commands make an option legal, that option is legal (applies to
-- * CMD_LIST and CMD_ZERO only).
-- * Key:
-- *  +  compulsory
-- *  x  illegal
-- *     optional
-- */
--
--static const char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
--/* Well, it's better than "Re: Linux vs FreeBSD" */
--{
--	/*     -n  -s  -d  -p  -j  -v  -x  -i  -o --line -c -f */
--/*INSERT*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
--/*DELETE*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' '},
--/*DELETE_NUM*/{'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*REPLACE*/   {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
--/*APPEND*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
--/*LIST*/      {' ','x','x','x','x',' ',' ','x','x',' ','x','x'},
--/*FLUSH*/     {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*ZERO*/      {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*ZERO_NUM*/  {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*NEW_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*DEL_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*SET_POLICY*/{'x','x','x','x','x',' ','x','x','x','x',' ','x'},
--/*RENAME*/    {'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*LIST_RULES*/{'x','x','x','x','x',' ','x','x','x','x','x','x'},
--/*CHECK*/     {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' '},
--};
--
- static const int inverse_for_options[NUMBER_OF_OPT] =
- {
- /* -n */ 0,
-@@ -262,51 +227,6 @@ xtables_exit_error(enum xtables_exittype status, const char *msg, ...)
- 	exit(status);
- }
- 
--static void
--generic_opt_check(int command, int options)
--{
--	int i, j, legal = 0;
--
--	/* Check that commands are valid with options.	Complicated by the
--	 * fact that if an option is legal with *any* command given, it is
--	 * legal overall (ie. -z and -l).
--	 */
--	for (i = 0; i < NUMBER_OF_OPT; i++) {
--		legal = 0; /* -1 => illegal, 1 => legal, 0 => undecided. */
--
--		for (j = 0; j < NUMBER_OF_CMD; j++) {
--			if (!(command & (1<<j)))
--				continue;
--
--			if (!(options & (1<<i))) {
--				if (commands_v_options[j][i] == '+')
--					xtables_error(PARAMETER_PROBLEM,
--						   "You need to supply the `-%c' "
--						   "option for this command\n",
--						   optflags[i]);
--			} else {
--				if (commands_v_options[j][i] != 'x')
--					legal = 1;
--				else if (legal == 0)
--					legal = -1;
--			}
--		}
--		if (legal == -1)
--			xtables_error(PARAMETER_PROBLEM,
--				   "Illegal option `-%c' with this command\n",
--				   optflags[i]);
--	}
--}
--
--static char
--opt2char(int option)
--{
--	const char *ptr;
--	for (ptr = optflags; option > 1; option >>= 1, ptr++);
--
--	return *ptr;
--}
--
- /*
-  *	All functions starting with "parse" should succeed, otherwise
-  *	the program fails.
--- 
-2.28.0
+You mean
+"private = READ_ONCE(table->private); /* Address dependency. */" in
+ip6_do_table did pick up the 'old' private pointer, AFTER xt_replace
+had updated it?
 
+> [https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/net/netfilter/x_tables.c?h=v5.4.77#n1386]
+> 	smp_wmb();
+> 	table->private = newinfo;
+> 
+> 	/* make sure all cpus see new ->private value */
+> 	smp_wmb();
+> 
+> We want to know if this barrier usage is as expected here.
+> Alternatively, would changing this help here -
+> 
+> diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+> index 525f674..417ea1b 100644
+> --- a/net/netfilter/x_tables.c
+> +++ b/net/netfilter/x_tables.c
+> @@ -1431,11 +1431,11 @@ xt_replace_table(struct xt_table *table,
+>          * Ensure contents of newinfo are visible before assigning to
+>          * private.
+>          */
+> -       smp_wmb();
+> -       table->private = newinfo;
+> +       smp_mb();
+> +       WRITE_ONCE(table->private, newinfo);
+
+The WRITE_ONCE looks correct.
+
+>         /* make sure all cpus see new ->private value */
+> -       smp_wmb();
+> +       smp_mb();
+
+Is that to order wrt. seqcount_sequence?
+Do you have a way to reproduce such crashes?
+
+I tried to no avail but I guess thats just because amd64 is more
+forgiving.
+
+Thanks!
