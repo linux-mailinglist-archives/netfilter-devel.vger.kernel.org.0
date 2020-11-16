@@ -2,80 +2,90 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8ABA2B3BE4
-	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Nov 2020 04:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 476472B3BF1
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Nov 2020 04:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbgKPDmP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 15 Nov 2020 22:42:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726359AbgKPDmP (ORCPT
+        id S1726777AbgKPD6h (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 15 Nov 2020 22:58:37 -0500
+Received: from smtprelay0094.hostedemail.com ([216.40.44.94]:35450 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726532AbgKPD6h (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 15 Nov 2020 22:42:15 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5850EC0613CF;
-        Sun, 15 Nov 2020 19:42:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=zql9Wmwi3sE1HYgw8ZdAK67RzlkxzMR12yOWc2tObwI=; b=dBB+XQDOhLl0c6Qr6FP86RlKX9
-        +3NMHlnmbassjX2cz/53VIkRW/NsvD9Jg68lZCIZ+Iktas/avxSnvCiZ/rxa6f3zI/qwLcOCf2oW3
-        +aDfYw8dStRwK/V88munLm88worWTNOTGOl1yOBLupBdvgqA9Tjkj7tojgY9qzX+Ttyjw0sC7YQ/o
-        rAGGqA13+WMERtXA3R3NOGz/Q+FmNKg5IXnJH9n4gjBwT0vvraWoNikmI1nLrTW9tTnMnwwAl3KwG
-        FdmbcIsHsKcNV7C4fyYRqdLgKz+TeZwP1bV5jpgugVuNSjvtzEdAEDexlUHihgVuO83+Kcp+M4hFh
-        TKx5YNqQ==;
-Received: from [2601:1c0:6280:3f0::f32] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1keVP7-0001f8-65; Mon, 16 Nov 2020 03:42:09 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     netdev@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        "Jose M . Guisado Gomez" <guigom@riseup.net>,
+        Sun, 15 Nov 2020 22:58:37 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 5630C1730858;
+        Mon, 16 Nov 2020 03:58:36 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:982:988:989:1260:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2561:2564:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4605:4659:5007:9010:9025:9388:10004:10049:10400:10848:11232:11657:11658:11783:11914:12043:12048:12297:12555:12740:12895:13069:13311:13357:13439:13894:14094:14106:14181:14659:14721:14764:14849:21080:21451:21627:21691:21740:21781:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: scent45_491207927325
+X-Filterd-Recvd-Size: 2428
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 16 Nov 2020 03:58:34 +0000 (UTC)
+Message-ID: <d03c87f9fcc4bb68c148cfad12cafef5f2385eef.camel@perches.com>
+Subject: Re: [PATCH] MAINTAINERS: rectify file patterns for NETFILTER
+From:   Joe Perches <joe@perches.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net-next] netfilter: nf_reject: bridge: fix build errors due to code movement
-Date:   Sun, 15 Nov 2020 19:42:03 -0800
-Message-Id: <20201116034203.7264-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sun, 15 Nov 2020 19:58:33 -0800
+In-Reply-To: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
+References: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Fix build errors in net/bridge/netfilter/nft_reject_bridge.ko
-by selecting NF_REJECT_IPV4, which provides the missing symbols.
+On Mon, 2020-11-09 at 10:19 +0100, Lukas Bulwahn wrote:
+> The two file patterns in the NETFILTER section:
+> 
+>   F:      include/linux/netfilter*
+>   F:      include/uapi/linux/netfilter*
+> 
+> intended to match the directories:
+> 
+>   ./include{/uapi}/linux/netfilter_{arp,bridge,ipv4,ipv6}
+> 
+> A quick check with ./scripts/get_maintainer.pl --letters -f will show that
+> they are not matched, though, because this pattern only matches files, but
+> not directories.
+> 
+> Rectify the patterns to match the intended directories.
+[]
+diff --git a/MAINTAINERS b/MAINTAINERS
+[]
+> @@ -12139,10 +12139,10 @@ W:	http://www.nftables.org/
+>  Q:	http://patchwork.ozlabs.org/project/netfilter-devel/list/
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git
+> -F:	include/linux/netfilter*
+> +F:	include/linux/netfilter*/
+>  F:	include/linux/netfilter/
 
-ERROR: modpost: "nf_reject_skb_v4_tcp_reset" [net/bridge/netfilter/nft_reject_bridge.ko] undefined!
-ERROR: modpost: "nf_reject_skb_v4_unreach" [net/bridge/netfilter/nft_reject_bridge.ko] undefined!
+This line could be deleted or perhaps moved up one line above
 
-Fixes: fa538f7cf05a ("netfilter: nf_reject: add reject skbuff creation helpers")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: kernel test robot <lkp@intel.com>
-Cc: Jose M. Guisado Gomez <guigom@riseup.net>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>
-Cc: netfilter-devel@vger.kernel.org
-Cc: coreteam@netfilter.org
-Cc: Jakub Kicinski <kuba@kernel.org>
----
- net/bridge/netfilter/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+F:	include/linux/netfilter/
+F:	include/linux/netfilter*/
 
---- linux-next-20201113.orig/net/bridge/netfilter/Kconfig
-+++ linux-next-20201113/net/bridge/netfilter/Kconfig
-@@ -18,6 +18,7 @@ config NFT_BRIDGE_META
- config NFT_BRIDGE_REJECT
- 	tristate "Netfilter nf_tables bridge reject support"
- 	depends on NFT_REJECT
-+	depends on NF_REJECT_IPV4
- 	help
- 	  Add support to reject packets.
- 
+(as the second line already matches the first line's files too)
+
+>  F:	include/net/netfilter/
+> -F:	include/uapi/linux/netfilter*
+> +F:	include/uapi/linux/netfilter*/
+>  F:	include/uapi/linux/netfilter/
+
+same here.
+
+>  F:	net/*/netfilter.c
+>  F:	net/*/netfilter/
+
+
