@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE52F2B4575
-	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Nov 2020 15:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7D32B4577
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Nov 2020 15:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729665AbgKPOCu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 16 Nov 2020 09:02:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
+        id S1727248AbgKPOC7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 16 Nov 2020 09:02:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729572AbgKPOCu (ORCPT
+        with ESMTP id S1726657AbgKPOC7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:02:50 -0500
+        Mon, 16 Nov 2020 09:02:59 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CAFC0613CF
-        for <netfilter-devel@vger.kernel.org>; Mon, 16 Nov 2020 06:02:50 -0800 (PST)
-Received: from localhost ([::1]:51028 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B899C0613CF
+        for <netfilter-devel@vger.kernel.org>; Mon, 16 Nov 2020 06:02:59 -0800 (PST)
+Received: from localhost ([::1]:51040 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.94)
         (envelope-from <phil@nwl.cc>)
-        id 1kef5i-0001RY-Ok; Mon, 16 Nov 2020 15:02:46 +0100
+        id 1kef5t-0001Rl-Ig; Mon, 16 Nov 2020 15:02:57 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/3] xtables-arp: Don't use ARPT_INV_*
-Date:   Mon, 16 Nov 2020 15:02:37 +0100
-Message-Id: <20201116140238.25955-3-phil@nwl.cc>
+Subject: [iptables PATCH 3/3] xshared: Merge some command option-related code
+Date:   Mon, 16 Nov 2020 15:02:38 +0100
+Message-Id: <20201116140238.25955-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201116140238.25955-1-phil@nwl.cc>
 References: <20201116140238.25955-1-phil@nwl.cc>
@@ -34,371 +34,514 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Arptables invflags are partly identical to IPT_INV_* ones but the bits
-are differently assigned. Eliminate this incompatibility by definition
-of the unique invflags in nft-arp.h on bits that don't collide with
-IPT_INV_* ones, then use those in combination with IPT_INV_* ones in
-arptables-specific code.
+Add OPT_FRAGMENT define into the enum of other OPT_* defines at the
+right position and adjust the arptables-specific ones that follow
+accordingly. Appropriately adjust inverse_for_options array in
+xtables-arp.c.
 
-Note that ARPT_INV_ARPPRO is replaced by IPT_INV_PROTO although these
-are in fact different options - yet since '-p' option is not supported
-by arptables, this does not lead to a collision.
+Extend optflags from iptables.c by the arptables values for the sake of
+completeness, then move it to xshared.h along with NUMBER_OF_OPT
+definition. As a side-effect, this fixes for wrong ordering of entries
+in arptables' 'optflags' copy.
 
+Add arptables-specific bits to commands_v_options table (the speicific
+options are matches on ARP header fields, just treat them like '-s'
+option. This is also just a cosmetic change, arptables doesn't have a
+generic_opt_check() implementation and hence doesn't use such a table.
+
+With things potentially ready for common use, move commands_v_options
+table along with generic_opt_check() and opt2char() into xshared.c and
+drop the local (identical) implementations from iptables.c, ip6tables.c
+xtables.c and xtables-arp.c. While doing so, fix ordering of entries in
+that table: the row for CMD_ZERO_NUM was in the wrong position. Since
+all moved rows though are identical, this had no effect in practice.
+
+Fixes: d960a991350ca ("xtables-arp: Integrate OPT_* defines into xshared.h")
+Fixes: 384958620abab ("use nf_tables and nf_tables compatibility interface")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-arp.c     | 92 ++++++++++++++++--------------------------
- iptables/nft-arp.h     |  7 ++++
- iptables/xtables-arp.c | 22 +++++-----
- 3 files changed, 53 insertions(+), 68 deletions(-)
+ iptables/ip6tables.c   | 79 -----------------------------------------
+ iptables/iptables.c    | 80 ------------------------------------------
+ iptables/xshared.c     | 74 ++++++++++++++++++++++++++++++++++++++
+ iptables/xshared.h     | 20 +++++++----
+ iptables/xtables-arp.c | 14 +-------
+ iptables/xtables.c     | 80 ------------------------------------------
+ 6 files changed, 89 insertions(+), 258 deletions(-)
 
-diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
-index 5dc38da831aa0..c82ffdc95e300 100644
---- a/iptables/nft-arp.c
-+++ b/iptables/nft-arp.c
-@@ -134,34 +134,34 @@ static int nft_arp_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 	int ret = 0;
+diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
+index 576c2cf8b0d9f..c95355b091568 100644
+--- a/iptables/ip6tables.c
++++ b/iptables/ip6tables.c
+@@ -45,10 +45,6 @@
+ #include "ip6tables-multi.h"
+ #include "xshared.h"
  
- 	if (fw->arp.iniface[0] != '\0') {
--		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_VIA_IN);
-+		op = nft_invflags2cmp(fw->arp.invflags, IPT_INV_VIA_IN);
- 		add_iniface(r, fw->arp.iniface, op);
- 	}
- 
- 	if (fw->arp.outiface[0] != '\0') {
--		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_VIA_OUT);
-+		op = nft_invflags2cmp(fw->arp.invflags, IPT_INV_VIA_OUT);
- 		add_outiface(r, fw->arp.outiface, op);
- 	}
- 
- 	if (fw->arp.arhrd != 0 ||
--	    fw->arp.invflags & ARPT_INV_ARPHRD) {
--		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_ARPHRD);
-+	    fw->arp.invflags & IPT_INV_ARPHRD) {
-+		op = nft_invflags2cmp(fw->arp.invflags, IPT_INV_ARPHRD);
- 		add_payload(r, offsetof(struct arphdr, ar_hrd), 2,
- 			    NFT_PAYLOAD_NETWORK_HEADER);
- 		add_cmp_u16(r, fw->arp.arhrd, op);
- 	}
- 
- 	if (fw->arp.arpro != 0 ||
--	    fw->arp.invflags & ARPT_INV_ARPPRO) {
--		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_ARPPRO);
-+	    fw->arp.invflags & IPT_INV_PROTO) {
-+		op = nft_invflags2cmp(fw->arp.invflags, IPT_INV_PROTO);
- 	        add_payload(r, offsetof(struct arphdr, ar_pro), 2,
- 			    NFT_PAYLOAD_NETWORK_HEADER);
- 		add_cmp_u16(r, fw->arp.arpro, op);
- 	}
- 
- 	if (fw->arp.arhln != 0 ||
--	    fw->arp.invflags & ARPT_INV_ARPHLN) {
--		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_ARPHLN);
-+	    fw->arp.invflags & IPT_INV_ARPHLN) {
-+		op = nft_invflags2cmp(fw->arp.invflags, IPT_INV_ARPHLN);
- 		add_proto(r, offsetof(struct arphdr, ar_hln), 1,
- 			  fw->arp.arhln, op);
- 	}
-@@ -169,15 +169,15 @@ static int nft_arp_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 	add_proto(r, offsetof(struct arphdr, ar_pln), 1, 4, NFT_CMP_EQ);
- 
- 	if (fw->arp.arpop != 0 ||
--	    fw->arp.invflags & ARPT_INV_ARPOP) {
--		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_ARPOP);
-+	    fw->arp.invflags & IPT_INV_ARPOP) {
-+		op = nft_invflags2cmp(fw->arp.invflags, IPT_INV_ARPOP);
- 		add_payload(r, offsetof(struct arphdr, ar_op), 2,
- 			    NFT_PAYLOAD_NETWORK_HEADER);
- 		add_cmp_u16(r, fw->arp.arpop, op);
- 	}
- 
- 	if (need_devaddr(&fw->arp.src_devaddr)) {
--		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_SRCDEVADDR);
-+		op = nft_invflags2cmp(fw->arp.invflags, IPT_INV_SRCDEVADDR);
- 		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
- 			 sizeof(struct arphdr),
- 			 &fw->arp.src_devaddr.addr,
-@@ -188,8 +188,8 @@ static int nft_arp_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 
- 	if (fw->arp.src.s_addr != 0 ||
- 	    fw->arp.smsk.s_addr != 0 ||
--	    fw->arp.invflags & ARPT_INV_SRCIP) {
--		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_SRCIP);
-+	    fw->arp.invflags & IPT_INV_SRCIP) {
-+		op = nft_invflags2cmp(fw->arp.invflags, IPT_INV_SRCIP);
- 		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
- 			 sizeof(struct arphdr) + fw->arp.arhln,
- 			 &fw->arp.src.s_addr, &fw->arp.smsk.s_addr,
-@@ -198,7 +198,7 @@ static int nft_arp_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 
- 
- 	if (need_devaddr(&fw->arp.tgt_devaddr)) {
--		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_TGTDEVADDR);
-+		op = nft_invflags2cmp(fw->arp.invflags, IPT_INV_TGTDEVADDR);
- 		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
- 			 sizeof(struct arphdr) + fw->arp.arhln + sizeof(struct in_addr),
- 			 &fw->arp.tgt_devaddr.addr,
-@@ -208,8 +208,8 @@ static int nft_arp_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 
- 	if (fw->arp.tgt.s_addr != 0 ||
- 	    fw->arp.tmsk.s_addr != 0 ||
--	    fw->arp.invflags & ARPT_INV_TGTIP) {
--		op = nft_invflags2cmp(fw->arp.invflags, ARPT_INV_TGTIP);
-+	    fw->arp.invflags & IPT_INV_DSTIP) {
-+		op = nft_invflags2cmp(fw->arp.invflags, IPT_INV_DSTIP);
- 		add_addr(r, NFT_PAYLOAD_NETWORK_HEADER,
- 			 sizeof(struct arphdr) + fw->arp.arhln + sizeof(struct in_addr) + fw->arp.arhln,
- 			 &fw->arp.tgt.s_addr, &fw->arp.tmsk.s_addr,
-@@ -240,28 +240,6 @@ static int nft_arp_add(struct nft_handle *h, struct nftnl_rule *r, void *data)
- 	return ret;
- }
- 
--static uint16_t ipt_to_arpt_flags(uint8_t invflags)
--{
--	uint16_t result = 0;
+-#define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
+-static const char optflags[]
+-= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c'};
 -
--	if (invflags & IPT_INV_VIA_IN)
--		result |= ARPT_INV_VIA_IN;
--
--	if (invflags & IPT_INV_VIA_OUT)
--		result |= ARPT_INV_VIA_OUT;
--
--	if (invflags & IPT_INV_SRCIP)
--		result |= ARPT_INV_SRCIP;
--
--	if (invflags & IPT_INV_DSTIP)
--		result |= ARPT_INV_TGTIP;
--
--	if (invflags & IPT_INV_PROTO)
--		result |= ARPT_INV_ARPPRO;
--
--	return result;
--}
--
- static void nft_arp_parse_meta(struct nft_xt_ctx *ctx, struct nftnl_expr *e,
- 			       void *data)
- {
-@@ -273,7 +251,7 @@ static void nft_arp_parse_meta(struct nft_xt_ctx *ctx, struct nftnl_expr *e,
- 		   fw->arp.outiface, fw->arp.outiface_mask,
- 		   &flags);
+ static const char unsupported_rev[] = " [unsupported revision]";
  
--	fw->arp.invflags |= ipt_to_arpt_flags(flags);
-+	fw->arp.invflags |= flags;
- }
- 
- static void nft_arp_parse_immediate(const char *jumpto, bool nft_goto,
-@@ -330,33 +308,33 @@ static void nft_arp_parse_payload(struct nft_xt_ctx *ctx,
- 		fw->arp.arhrd = ar_hrd;
- 		fw->arp.arhrd_mask = 0xffff;
- 		if (inv)
--			fw->arp.invflags |= ARPT_INV_ARPHRD;
-+			fw->arp.invflags |= IPT_INV_ARPHRD;
- 		break;
- 	case offsetof(struct arphdr, ar_pro):
- 		get_cmp_data(e, &ar_pro, sizeof(ar_pro), &inv);
- 		fw->arp.arpro = ar_pro;
- 		fw->arp.arpro_mask = 0xffff;
- 		if (inv)
--			fw->arp.invflags |= ARPT_INV_ARPPRO;
-+			fw->arp.invflags |= IPT_INV_PROTO;
- 		break;
- 	case offsetof(struct arphdr, ar_op):
- 		get_cmp_data(e, &ar_op, sizeof(ar_op), &inv);
- 		fw->arp.arpop = ar_op;
- 		fw->arp.arpop_mask = 0xffff;
- 		if (inv)
--			fw->arp.invflags |= ARPT_INV_ARPOP;
-+			fw->arp.invflags |= IPT_INV_ARPOP;
- 		break;
- 	case offsetof(struct arphdr, ar_hln):
- 		get_cmp_data(e, &ar_hln, sizeof(ar_hln), &inv);
- 		fw->arp.arhln = ar_hln;
- 		fw->arp.arhln_mask = 0xff;
- 		if (inv)
--			fw->arp.invflags |= ARPT_INV_ARPOP;
-+			fw->arp.invflags |= IPT_INV_ARPOP;
- 		break;
- 	default:
- 		if (ctx->payload.offset == sizeof(struct arphdr)) {
- 			if (nft_arp_parse_devaddr(ctx, e, &fw->arp.src_devaddr))
--				fw->arp.invflags |= ARPT_INV_SRCDEVADDR;
-+				fw->arp.invflags |= IPT_INV_SRCDEVADDR;
- 		} else if (ctx->payload.offset == sizeof(struct arphdr) +
- 					   fw->arp.arhln) {
- 			get_cmp_data(e, &addr, sizeof(addr), &inv);
-@@ -371,12 +349,12 @@ static void nft_arp_parse_payload(struct nft_xt_ctx *ctx,
- 			}
- 
- 			if (inv)
--				fw->arp.invflags |= ARPT_INV_SRCIP;
-+				fw->arp.invflags |= IPT_INV_SRCIP;
- 		} else if (ctx->payload.offset == sizeof(struct arphdr) +
- 						  fw->arp.arhln +
- 						  sizeof(struct in_addr)) {
- 			if (nft_arp_parse_devaddr(ctx, e, &fw->arp.tgt_devaddr))
--				fw->arp.invflags |= ARPT_INV_TGTDEVADDR;
-+				fw->arp.invflags |= IPT_INV_TGTDEVADDR;
- 		} else if (ctx->payload.offset == sizeof(struct arphdr) +
- 						  fw->arp.arhln +
- 						  sizeof(struct in_addr) +
-@@ -393,7 +371,7 @@ static void nft_arp_parse_payload(struct nft_xt_ctx *ctx,
- 			}
- 
- 			if (inv)
--				fw->arp.invflags |= ARPT_INV_TGTIP;
-+				fw->arp.invflags |= IPT_INV_DSTIP;
- 		}
- 		break;
- 	}
-@@ -448,7 +426,7 @@ static void nft_arp_print_rule_details(const struct iptables_command_state *cs,
- 		else strcat(iface, "any");
- 	}
- 	if (print_iface) {
--		printf("%s%s-i %s", sep, fw->arp.invflags & ARPT_INV_VIA_IN ?
-+		printf("%s%s-i %s", sep, fw->arp.invflags & IPT_INV_VIA_IN ?
- 				   "! " : "", iface);
- 		sep = " ";
- 	}
-@@ -466,13 +444,13 @@ static void nft_arp_print_rule_details(const struct iptables_command_state *cs,
- 		else strcat(iface, "any");
- 	}
- 	if (print_iface) {
--		printf("%s%s-o %s", sep, fw->arp.invflags & ARPT_INV_VIA_OUT ?
-+		printf("%s%s-o %s", sep, fw->arp.invflags & IPT_INV_VIA_OUT ?
- 				   "! " : "", iface);
- 		sep = " ";
- 	}
- 
- 	if (fw->arp.smsk.s_addr != 0L) {
--		printf("%s%s", sep, fw->arp.invflags & ARPT_INV_SRCIP
-+		printf("%s%s", sep, fw->arp.invflags & IPT_INV_SRCIP
- 			? "! " : "");
- 		if (format & FMT_NUMERIC)
- 			sprintf(buf, "%s", addr_to_dotted(&(fw->arp.src)));
-@@ -489,7 +467,7 @@ static void nft_arp_print_rule_details(const struct iptables_command_state *cs,
- 			break;
- 	if (i == ARPT_DEV_ADDR_LEN_MAX)
- 		goto after_devsrc;
--	printf("%s%s", sep, fw->arp.invflags & ARPT_INV_SRCDEVADDR
-+	printf("%s%s", sep, fw->arp.invflags & IPT_INV_SRCDEVADDR
- 		? "! " : "");
- 	printf("--src-mac ");
- 	xtables_print_mac_and_mask((unsigned char *)fw->arp.src_devaddr.addr,
-@@ -498,7 +476,7 @@ static void nft_arp_print_rule_details(const struct iptables_command_state *cs,
- after_devsrc:
- 
- 	if (fw->arp.tmsk.s_addr != 0L) {
--		printf("%s%s", sep, fw->arp.invflags & ARPT_INV_TGTIP
-+		printf("%s%s", sep, fw->arp.invflags & IPT_INV_DSTIP
- 			? "! " : "");
- 		if (format & FMT_NUMERIC)
- 			sprintf(buf, "%s", addr_to_dotted(&(fw->arp.tgt)));
-@@ -515,7 +493,7 @@ after_devsrc:
- 			break;
- 	if (i == ARPT_DEV_ADDR_LEN_MAX)
- 		goto after_devdst;
--	printf("%s%s", sep, fw->arp.invflags & ARPT_INV_TGTDEVADDR
-+	printf("%s%s", sep, fw->arp.invflags & IPT_INV_TGTDEVADDR
- 		? "! " : "");
- 	printf("--dst-mac ");
- 	xtables_print_mac_and_mask((unsigned char *)fw->arp.tgt_devaddr.addr,
-@@ -525,7 +503,7 @@ after_devsrc:
- after_devdst:
- 
- 	if (fw->arp.arhln_mask != 255 || fw->arp.arhln != 6) {
--		printf("%s%s", sep, fw->arp.invflags & ARPT_INV_ARPHLN
-+		printf("%s%s", sep, fw->arp.invflags & IPT_INV_ARPHLN
- 			? "! " : "");
- 		printf("--h-length %d", fw->arp.arhln);
- 		if (fw->arp.arhln_mask != 255)
-@@ -536,7 +514,7 @@ after_devdst:
- 	if (fw->arp.arpop_mask != 0) {
- 		int tmp = ntohs(fw->arp.arpop);
- 
--		printf("%s%s", sep, fw->arp.invflags & ARPT_INV_ARPOP
-+		printf("%s%s", sep, fw->arp.invflags & IPT_INV_ARPOP
- 			? "! " : "");
- 		if (tmp <= NUMOPCODES && !(format & FMT_NUMERIC))
- 			printf("--opcode %s", arp_opcodes[tmp-1]);
-@@ -551,7 +529,7 @@ after_devdst:
- 	if (fw->arp.arhrd_mask != 65535 || fw->arp.arhrd != htons(1)) {
- 		uint16_t tmp = ntohs(fw->arp.arhrd);
- 
--		printf("%s%s", sep, fw->arp.invflags & ARPT_INV_ARPHRD
-+		printf("%s%s", sep, fw->arp.invflags & IPT_INV_ARPHRD
- 			? "! " : "");
- 		if (tmp == 1 && !(format & FMT_NUMERIC))
- 			printf("--h-type %s", "Ethernet");
-@@ -565,7 +543,7 @@ after_devdst:
- 	if (fw->arp.arpro_mask != 0) {
- 		int tmp = ntohs(fw->arp.arpro);
- 
--		printf("%s%s", sep, fw->arp.invflags & ARPT_INV_ARPPRO
-+		printf("%s%s", sep, fw->arp.invflags & IPT_INV_PROTO
- 			? "! " : "");
- 		if (tmp == 0x0800 && !(format & FMT_NUMERIC))
- 			printf("--proto-type %s", "IPv4");
-diff --git a/iptables/nft-arp.h b/iptables/nft-arp.h
-index 3411fc3d7c7b3..0d93a31f563b1 100644
---- a/iptables/nft-arp.h
-+++ b/iptables/nft-arp.h
-@@ -4,4 +4,11 @@
- extern char *arp_opcodes[];
- #define NUMOPCODES 9
- 
-+/* define invflags which won't collide with IPT ones */
-+#define IPT_INV_SRCDEVADDR	0x0080
-+#define IPT_INV_TGTDEVADDR	0x0100
-+#define IPT_INV_ARPHLN		0x0200
-+#define IPT_INV_ARPOP		0x0400
-+#define IPT_INV_ARPHRD		0x0800
-+
- #endif
-diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
-index e56bbb4dd0363..a557f258b437a 100644
---- a/iptables/xtables-arp.c
-+++ b/iptables/xtables-arp.c
-@@ -113,22 +113,22 @@ struct xtables_globals arptables_globals = {
- static int inverse_for_options[] =
- {
- /* -n */ 0,
--/* -s */ ARPT_INV_SRCIP,
--/* -d */ ARPT_INV_TGTIP,
-+/* -s */ IPT_INV_SRCIP,
-+/* -d */ IPT_INV_DSTIP,
- /* -p */ 0,
- /* -j */ 0,
- /* -v */ 0,
- /* -x */ 0,
--/* -i */ ARPT_INV_VIA_IN,
--/* -o */ ARPT_INV_VIA_OUT,
-+/* -i */ IPT_INV_VIA_IN,
-+/* -o */ IPT_INV_VIA_OUT,
- /*--line*/ 0,
- /* -c */ 0,
--/* 2 */ ARPT_INV_SRCDEVADDR,
--/* 3 */ ARPT_INV_TGTDEVADDR,
--/* -l */ ARPT_INV_ARPHLN,
--/* 4 */ ARPT_INV_ARPOP,
--/* 5 */ ARPT_INV_ARPHRD,
--/* 6 */ ARPT_INV_ARPPRO,
-+/* 2 */ IPT_INV_SRCDEVADDR,
-+/* 3 */ IPT_INV_TGTDEVADDR,
-+/* -l */ IPT_INV_ARPHLN,
-+/* 4 */ IPT_INV_ARPOP,
-+/* 5 */ IPT_INV_ARPHRD,
-+/* 6 */ IPT_INV_PROTO,
+ static struct option original_opts[] = {
+@@ -100,36 +96,6 @@ struct xtables_globals ip6tables_globals = {
+ 	.compat_rev = xtables_compatible_revision,
  };
  
- /***********************************************/
-@@ -855,7 +855,7 @@ int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
- 					 &dmasks, &ndaddrs);
+-/* Table of legal combinations of commands and options.  If any of the
+- * given commands make an option legal, that option is legal (applies to
+- * CMD_LIST and CMD_ZERO only).
+- * Key:
+- *  +  compulsory
+- *  x  illegal
+- *     optional
+- */
+-
+-static const char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
+-/* Well, it's better than "Re: Linux vs FreeBSD" */
+-{
+-	/*     -n  -s  -d  -p  -j  -v  -x  -i  -o --line -c */
+-/*INSERT*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' '},
+-/*DELETE*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x'},
+-/*DELETE_NUM*/{'x','x','x','x','x',' ','x','x','x','x','x'},
+-/*REPLACE*/   {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' '},
+-/*APPEND*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' '},
+-/*LIST*/      {' ','x','x','x','x',' ',' ','x','x',' ','x'},
+-/*FLUSH*/     {'x','x','x','x','x',' ','x','x','x','x','x'},
+-/*ZERO*/      {'x','x','x','x','x',' ','x','x','x','x','x'},
+-/*NEW_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x'},
+-/*DEL_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x'},
+-/*SET_POLICY*/{'x','x','x','x','x',' ','x','x','x','x',' '},
+-/*RENAME*/    {'x','x','x','x','x',' ','x','x','x','x','x'},
+-/*LIST_RULES*/{'x','x','x','x','x',' ','x','x','x','x','x'},
+-/*ZERO_NUM*/  {'x','x','x','x','x',' ','x','x','x','x','x'},
+-/*CHECK*/     {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x'},
+-};
+-
+ static const unsigned int inverse_for_options[NUMBER_OF_OPT] =
+ {
+ /* -n */ 0,
+@@ -264,51 +230,6 @@ ip6tables_exit_error(enum xtables_exittype status, const char *msg, ...)
+ 	exit(status);
+ }
  
- 	if ((nsaddrs > 1 || ndaddrs > 1) &&
--	    (cs.arp.arp.invflags & (ARPT_INV_SRCIP | ARPT_INV_TGTIP)))
-+	    (cs.arp.arp.invflags & (IPT_INV_SRCIP | IPT_INV_DSTIP)))
- 		xtables_error(PARAMETER_PROBLEM, "! not allowed with multiple"
- 				" source or destination IP addresses");
+-static void
+-generic_opt_check(int command, int options)
+-{
+-	int i, j, legal = 0;
+-
+-	/* Check that commands are valid with options.  Complicated by the
+-	 * fact that if an option is legal with *any* command given, it is
+-	 * legal overall (ie. -z and -l).
+-	 */
+-	for (i = 0; i < NUMBER_OF_OPT; i++) {
+-		legal = 0; /* -1 => illegal, 1 => legal, 0 => undecided. */
+-
+-		for (j = 0; j < NUMBER_OF_CMD; j++) {
+-			if (!(command & (1<<j)))
+-				continue;
+-
+-			if (!(options & (1<<i))) {
+-				if (commands_v_options[j][i] == '+')
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "You need to supply the `-%c' "
+-						   "option for this command\n",
+-						   optflags[i]);
+-			} else {
+-				if (commands_v_options[j][i] != 'x')
+-					legal = 1;
+-				else if (legal == 0)
+-					legal = -1;
+-			}
+-		}
+-		if (legal == -1)
+-			xtables_error(PARAMETER_PROBLEM,
+-				   "Illegal option `-%c' with this command\n",
+-				   optflags[i]);
+-	}
+-}
+-
+-static char
+-opt2char(int option)
+-{
+-	const char *ptr;
+-	for (ptr = optflags; option > 1; option >>= 1, ptr++);
+-
+-	return *ptr;
+-}
+-
+ /*
+  *	All functions starting with "parse" should succeed, otherwise
+  *	the program fails.
+diff --git a/iptables/iptables.c b/iptables/iptables.c
+index 88ef6cf666d4b..7d6183116d265 100644
+--- a/iptables/iptables.c
++++ b/iptables/iptables.c
+@@ -41,11 +41,6 @@
+ #include <fcntl.h>
+ #include "xshared.h"
  
+-#define OPT_FRAGMENT    0x00800U
+-#define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
+-static const char optflags[]
+-= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c', 'f'};
+-
+ static const char unsupported_rev[] = " [unsupported revision]";
+ 
+ static struct option original_opts[] = {
+@@ -99,36 +94,6 @@ struct xtables_globals iptables_globals = {
+ 	.compat_rev = xtables_compatible_revision,
+ };
+ 
+-/* Table of legal combinations of commands and options.  If any of the
+- * given commands make an option legal, that option is legal (applies to
+- * CMD_LIST and CMD_ZERO only).
+- * Key:
+- *  +  compulsory
+- *  x  illegal
+- *     optional
+- */
+-
+-static const char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
+-/* Well, it's better than "Re: Linux vs FreeBSD" */
+-{
+-	/*     -n  -s  -d  -p  -j  -v  -x  -i  -o --line -c -f */
+-/*INSERT*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
+-/*DELETE*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' '},
+-/*DELETE_NUM*/{'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*REPLACE*/   {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
+-/*APPEND*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
+-/*LIST*/      {' ','x','x','x','x',' ',' ','x','x',' ','x','x'},
+-/*FLUSH*/     {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*ZERO*/      {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*NEW_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*DEL_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*SET_POLICY*/{'x','x','x','x','x',' ','x','x','x','x',' ','x'},
+-/*RENAME*/    {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*LIST_RULES*/{'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*ZERO_NUM*/  {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*CHECK*/     {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' '},
+-};
+-
+ static const int inverse_for_options[NUMBER_OF_OPT] =
+ {
+ /* -n */ 0,
+@@ -263,51 +228,6 @@ iptables_exit_error(enum xtables_exittype status, const char *msg, ...)
+ 	exit(status);
+ }
+ 
+-static void
+-generic_opt_check(int command, int options)
+-{
+-	int i, j, legal = 0;
+-
+-	/* Check that commands are valid with options.  Complicated by the
+-	 * fact that if an option is legal with *any* command given, it is
+-	 * legal overall (ie. -z and -l).
+-	 */
+-	for (i = 0; i < NUMBER_OF_OPT; i++) {
+-		legal = 0; /* -1 => illegal, 1 => legal, 0 => undecided. */
+-
+-		for (j = 0; j < NUMBER_OF_CMD; j++) {
+-			if (!(command & (1<<j)))
+-				continue;
+-
+-			if (!(options & (1<<i))) {
+-				if (commands_v_options[j][i] == '+')
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "You need to supply the `-%c' "
+-						   "option for this command\n",
+-						   optflags[i]);
+-			} else {
+-				if (commands_v_options[j][i] != 'x')
+-					legal = 1;
+-				else if (legal == 0)
+-					legal = -1;
+-			}
+-		}
+-		if (legal == -1)
+-			xtables_error(PARAMETER_PROBLEM,
+-				   "Illegal option `-%c' with this command\n",
+-				   optflags[i]);
+-	}
+-}
+-
+-static char
+-opt2char(int option)
+-{
+-	const char *ptr;
+-	for (ptr = optflags; option > 1; option >>= 1, ptr++);
+-
+-	return *ptr;
+-}
+-
+ /*
+  *	All functions starting with "parse" should succeed, otherwise
+  *	the program fails.
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 7d97637f7e129..71f689901e1d4 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -779,3 +779,77 @@ int parse_rulenumber(const char *rule)
+ 
+ 	return rulenum;
+ }
++
++/* Table of legal combinations of commands and options.  If any of the
++ * given commands make an option legal, that option is legal (applies to
++ * CMD_LIST and CMD_ZERO only).
++ * Key:
++ *  +  compulsory
++ *  x  illegal
++ *     optional
++ */
++static const char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
++/* Well, it's better than "Re: Linux vs FreeBSD" */
++{
++	/*     -n  -s  -d  -p  -j  -v  -x  -i  -o --line -c -f 2 3 l 4 5 6 */
++/*INSERT*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' ',' ',' ',' ',' ',' ',' '},
++/*DELETE*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' ',' ',' ',' ',' ',' ',' '},
++/*DELETE_NUM*/{'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
++/*REPLACE*/   {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' ',' ',' ',' ',' ',' ',' '},
++/*APPEND*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' ',' ',' ',' ',' ',' ',' '},
++/*LIST*/      {' ','x','x','x','x',' ',' ','x','x',' ','x','x','x','x','x','x','x','x'},
++/*FLUSH*/     {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
++/*ZERO*/      {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
++/*NEW_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
++/*DEL_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
++/*SET_POLICY*/{'x','x','x','x','x',' ','x','x','x','x',' ','x','x','x','x','x','x','x'},
++/*RENAME*/    {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
++/*LIST_RULES*/{'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
++/*ZERO_NUM*/  {'x','x','x','x','x',' ','x','x','x','x','x','x','x','x','x','x','x','x'},
++/*CHECK*/     {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' ',' ',' ',' ',' ',' ',' '},
++};
++
++void generic_opt_check(int command, int options)
++{
++	int i, j, legal = 0;
++
++	/* Check that commands are valid with options. Complicated by the
++	 * fact that if an option is legal with *any* command given, it is
++	 * legal overall (ie. -z and -l).
++	 */
++	for (i = 0; i < NUMBER_OF_OPT; i++) {
++		legal = 0; /* -1 => illegal, 1 => legal, 0 => undecided. */
++
++		for (j = 0; j < NUMBER_OF_CMD; j++) {
++			if (!(command & (1<<j)))
++				continue;
++
++			if (!(options & (1<<i))) {
++				if (commands_v_options[j][i] == '+')
++					xtables_error(PARAMETER_PROBLEM,
++						   "You need to supply the `-%c' "
++						   "option for this command\n",
++						   optflags[i]);
++			} else {
++				if (commands_v_options[j][i] != 'x')
++					legal = 1;
++				else if (legal == 0)
++					legal = -1;
++			}
++		}
++		if (legal == -1)
++			xtables_error(PARAMETER_PROBLEM,
++				   "Illegal option `-%c' with this command\n",
++				   optflags[i]);
++	}
++}
++
++char opt2char(int option)
++{
++	const char *ptr;
++
++	for (ptr = optflags; option > 1; option >>= 1, ptr++)
++		;
++
++	return *ptr;
++}
+diff --git a/iptables/xshared.h b/iptables/xshared.h
+index c41bd054bf36f..9159b2b1f3768 100644
+--- a/iptables/xshared.h
++++ b/iptables/xshared.h
+@@ -30,15 +30,20 @@ enum {
+ 	OPT_VIANAMEOUT  = 1 << 8,
+ 	OPT_LINENUMBERS = 1 << 9,
+ 	OPT_COUNTERS    = 1 << 10,
++	OPT_FRAGMENT	= 1 << 11,
+ 	/* below are for arptables only */
+-	OPT_S_MAC	= 1 << 11,
+-	OPT_D_MAC	= 1 << 12,
+-	OPT_H_LENGTH	= 1 << 13,
+-	OPT_OPCODE	= 1 << 14,
+-	OPT_H_TYPE	= 1 << 15,
+-	OPT_P_TYPE	= 1 << 16,
++	OPT_S_MAC	= 1 << 12,
++	OPT_D_MAC	= 1 << 13,
++	OPT_H_LENGTH	= 1 << 14,
++	OPT_OPCODE	= 1 << 15,
++	OPT_H_TYPE	= 1 << 16,
++	OPT_P_TYPE	= 1 << 17,
+ };
+ 
++#define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
++static const char optflags[]
++= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c', 'f', 2, 3, 'l', 4, 5, 6 };
++
+ enum {
+ 	CMD_NONE		= 0,
+ 	CMD_INSERT		= 1 << 0,
+@@ -216,4 +221,7 @@ void add_command(unsigned int *cmd, const int newcmd,
+ 		 const int othercmds, int invert);
+ int parse_rulenumber(const char *rule);
+ 
++void generic_opt_check(int command, int options);
++char opt2char(int option);
++
+ #endif /* IPTABLES_XSHARED_H */
+diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
+index a557f258b437a..4a89ae9507051 100644
+--- a/iptables/xtables-arp.c
++++ b/iptables/xtables-arp.c
+@@ -53,10 +53,6 @@
+ #include "nft-arp.h"
+ #include <linux/netfilter_arp/arp_tables.h>
+ 
+-#define NUMBER_OF_OPT	16
+-static const char optflags[NUMBER_OF_OPT]
+-= { 'n', 's', 'd', 2, 3, 7, 8, 4, 5, 6, 'j', 'v', 'i', 'o', '0', 'c'};
+-
+ static struct option original_opts[] = {
+ 	{ "append", 1, 0, 'A' },
+ 	{ "delete", 1, 0,  'D' },
+@@ -123,6 +119,7 @@ static int inverse_for_options[] =
+ /* -o */ IPT_INV_VIA_OUT,
+ /*--line*/ 0,
+ /* -c */ 0,
++/* -f */ 0,
+ /* 2 */ IPT_INV_SRCDEVADDR,
+ /* 3 */ IPT_INV_TGTDEVADDR,
+ /* -l */ IPT_INV_ARPHLN,
+@@ -281,15 +278,6 @@ printhelp(void)
+ 	}
+ }
+ 
+-static char
+-opt2char(int option)
+-{
+-	const char *ptr;
+-	for (ptr = optflags; option > 1; option >>= 1, ptr++);
+-
+-	return *ptr;
+-}
+-
+ static int
+ check_inverse(const char option[], int *invert, int *optidx, int argc)
+ {
+diff --git a/iptables/xtables.c b/iptables/xtables.c
+index 9d2e441e0b773..9779bd83d53b3 100644
+--- a/iptables/xtables.c
++++ b/iptables/xtables.c
+@@ -43,11 +43,6 @@
+ #include "nft-shared.h"
+ #include "nft.h"
+ 
+-#define OPT_FRAGMENT	0x00800U
+-#define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
+-static const char optflags[]
+-= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c', 'f'};
+-
+ static struct option original_opts[] = {
+ 	{.name = "append",	  .has_arg = 1, .val = 'A'},
+ 	{.name = "delete",	  .has_arg = 1, .val = 'D'},
+@@ -99,36 +94,6 @@ struct xtables_globals xtables_globals = {
+ 	.compat_rev = nft_compatible_revision,
+ };
+ 
+-/* Table of legal combinations of commands and options.  If any of the
+- * given commands make an option legal, that option is legal (applies to
+- * CMD_LIST and CMD_ZERO only).
+- * Key:
+- *  +  compulsory
+- *  x  illegal
+- *     optional
+- */
+-
+-static const char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
+-/* Well, it's better than "Re: Linux vs FreeBSD" */
+-{
+-	/*     -n  -s  -d  -p  -j  -v  -x  -i  -o --line -c -f */
+-/*INSERT*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
+-/*DELETE*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' '},
+-/*DELETE_NUM*/{'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*REPLACE*/   {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
+-/*APPEND*/    {'x',' ',' ',' ',' ',' ','x',' ',' ','x',' ',' '},
+-/*LIST*/      {' ','x','x','x','x',' ',' ','x','x',' ','x','x'},
+-/*FLUSH*/     {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*ZERO*/      {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*ZERO_NUM*/  {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*NEW_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*DEL_CHAIN*/ {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*SET_POLICY*/{'x','x','x','x','x',' ','x','x','x','x',' ','x'},
+-/*RENAME*/    {'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*LIST_RULES*/{'x','x','x','x','x',' ','x','x','x','x','x','x'},
+-/*CHECK*/     {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' '},
+-};
+-
+ static const int inverse_for_options[NUMBER_OF_OPT] =
+ {
+ /* -n */ 0,
+@@ -262,51 +227,6 @@ xtables_exit_error(enum xtables_exittype status, const char *msg, ...)
+ 	exit(status);
+ }
+ 
+-static void
+-generic_opt_check(int command, int options)
+-{
+-	int i, j, legal = 0;
+-
+-	/* Check that commands are valid with options.	Complicated by the
+-	 * fact that if an option is legal with *any* command given, it is
+-	 * legal overall (ie. -z and -l).
+-	 */
+-	for (i = 0; i < NUMBER_OF_OPT; i++) {
+-		legal = 0; /* -1 => illegal, 1 => legal, 0 => undecided. */
+-
+-		for (j = 0; j < NUMBER_OF_CMD; j++) {
+-			if (!(command & (1<<j)))
+-				continue;
+-
+-			if (!(options & (1<<i))) {
+-				if (commands_v_options[j][i] == '+')
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "You need to supply the `-%c' "
+-						   "option for this command\n",
+-						   optflags[i]);
+-			} else {
+-				if (commands_v_options[j][i] != 'x')
+-					legal = 1;
+-				else if (legal == 0)
+-					legal = -1;
+-			}
+-		}
+-		if (legal == -1)
+-			xtables_error(PARAMETER_PROBLEM,
+-				   "Illegal option `-%c' with this command\n",
+-				   optflags[i]);
+-	}
+-}
+-
+-static char
+-opt2char(int option)
+-{
+-	const char *ptr;
+-	for (ptr = optflags; option > 1; option >>= 1, ptr++);
+-
+-	return *ptr;
+-}
+-
+ /*
+  *	All functions starting with "parse" should succeed, otherwise
+  *	the program fails.
 -- 
 2.28.0
 
