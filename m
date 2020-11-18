@@ -2,164 +2,214 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA832B864A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Nov 2020 22:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05B82B87B1
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Nov 2020 23:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726081AbgKRVKN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 18 Nov 2020 16:10:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgKRVKN (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 18 Nov 2020 16:10:13 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5A7C0613D4
-        for <netfilter-devel@vger.kernel.org>; Wed, 18 Nov 2020 13:10:12 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1kfUiN-0005qU-Ty; Wed, 18 Nov 2020 22:10:07 +0100
-Date:   Wed, 18 Nov 2020 22:10:07 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     subashab@codeaurora.org
-Cc:     Florian Westphal <fw@strlen.de>, Will Deacon <will@kernel.org>,
-        pablo@netfilter.org, Sean Tranchetti <stranche@codeaurora.org>,
-        netfilter-devel@vger.kernel.org, peterz@infradead.org,
-        tglx@linutronix.de
-Subject: Re: [PATCH nf] x_tables: Properly close read section with
- read_seqcount_retry
-Message-ID: <20201118211007.GA15137@breakpoint.cc>
-References: <20201116141810.GB22792@breakpoint.cc>
- <8256f40ba9b73181f121baafe12cac61@codeaurora.org>
- <20201116170440.GA26150@breakpoint.cc>
- <983d178e6f3aac81d491362ab60db61f@codeaurora.org>
- <20201116182028.GE22792@breakpoint.cc>
- <20201118121322.GA1821@willie-the-truck>
- <20201118124228.GJ22792@breakpoint.cc>
- <20201118125406.GA2029@willie-the-truck>
- <20201118131419.GK22792@breakpoint.cc>
- <7d52f54a7e3ebc794f0b775e793ab142@codeaurora.org>
+        id S1726397AbgKRWaV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 18 Nov 2020 17:30:21 -0500
+Received: from correo.us.es ([193.147.175.20]:51096 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725710AbgKRWaU (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 18 Nov 2020 17:30:20 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 65B7B18FD88
+        for <netfilter-devel@vger.kernel.org>; Wed, 18 Nov 2020 23:30:17 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 557EFDA722
+        for <netfilter-devel@vger.kernel.org>; Wed, 18 Nov 2020 23:30:17 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 4AD62DA73D; Wed, 18 Nov 2020 23:30:17 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id D8F14DA722;
+        Wed, 18 Nov 2020 23:30:14 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Wed, 18 Nov 2020 23:30:14 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPSA id 93FBC42514AC;
+        Wed, 18 Nov 2020 23:30:14 +0100 (CET)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+        razor@blackwall.org, tobias@waldekranz.com, jeremy@azazel.net
+Subject: [PATCH net-next,v4 0/9] netfilter: flowtable bridge and vlan enhancements
+Date:   Wed, 18 Nov 2020 23:30:02 +0100
+Message-Id: <20201118223011.3216-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7d52f54a7e3ebc794f0b775e793ab142@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-subashab@codeaurora.org <subashab@codeaurora.org> wrote:
-> I have tried the following to ensure the instruction ordering of private
-> assignment and I haven't seen the crash so far.
-> 
-> diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-> index af22dbe..2a4f6b3 100644
-> --- a/net/netfilter/x_tables.c
-> +++ b/net/netfilter/x_tables.c
-> @@ -1389,6 +1389,9 @@ xt_replace_table(struct xt_table *table,
->         /* make sure all cpus see new ->private value */
->         smp_wmb();
-> 
-> +       /* make sure the instructions above are actually executed */
-> +       smp_mb();
-> +
+Hi,
 
-This looks funny, I'd rather have s/smp_wmb/smp_mb instead of yet
-another one.
+The following patchset augments the Netfilter flowtable fastpath [1] to
+support for network topologies that combine IP forwarding, bridge and
+VLAN devices.
 
-> I assume we would need the following changes to address this.
+This v4 includes updates for Patches:
+- Patch #3 Check for possible device stack overflow in
+  dev_fill_forward_path(), per Jakub Kicinski.
+- Patch #3 Remove memset for the net_device_path_ctx structure in
+  dev_fill_forward_path() and avoid full memset of struct
+  net_device_path_stack.
+- Patch #5 Check for valid bridge dst pointer after READ_ONCE, per Nikolay
+  Aleksandrov.
+- Patch #6 remove initialization of the net_device_path_ctx structure,
+  already done from patch #3.
 
-Yes, something like this.  More comments below.
+A typical scenario that can benefit from this infrastructure is composed
+of several VMs connected to bridge ports where the bridge master device
+'br0' has an IP address. A DHCP server is also assumed to be running to
+provide connectivity to the VMs. The VMs reach the Internet through
+'br0' as default gateway, which makes the packet enter the IP forwarding
+path. Then, netfilter is used to NAT the packets before they leave
+through the wan device.
 
-> diff --git a/include/linux/netfilter/x_tables.h
-> b/include/linux/netfilter/x_tables.h
-> index 5deb099..7ab0e4f 100644
-> --- a/include/linux/netfilter/x_tables.h
-> +++ b/include/linux/netfilter/x_tables.h
-> @@ -227,7 +227,7 @@ struct xt_table {
->  	unsigned int valid_hooks;
-> 
->  	/* Man behind the curtain... */
-> -	struct xt_table_info *private;
-> +	struct xt_table_info __rcu *private;
-> 
->  	/* Set this to THIS_MODULE if you are a module, otherwise NULL */
->  	struct module *me;
-> diff --git a/net/ipv4/netfilter/arp_tables.c
-> b/net/ipv4/netfilter/arp_tables.c
-> index d1e04d2..6a2b551 100644
-> --- a/net/ipv4/netfilter/arp_tables.c
-> +++ b/net/ipv4/netfilter/arp_tables.c
-> @@ -203,7 +203,7 @@ unsigned int arpt_do_table(struct sk_buff *skb,
-> 
->  	local_bh_disable();
->  	addend = xt_write_recseq_begin();
-> -	private = READ_ONCE(table->private); /* Address dependency. */
-> +	private = rcu_access_pointer(table->private);
+Something like this:
 
-The three _do_table() functions need to use rcu_dereference().
+                       fast path
+                .------------------------.
+               /                          \
+               |           IP forwarding   |
+               |          /             \  .
+               |       br0               eth0
+               .       / \
+               -- veth1  veth2
+                   .
+                   .
+                   .
+                 eth0
+           ab:cd:ef:ab:cd:ef
+                  VM
 
->  	cpu     = smp_processor_id();
->  	table_base = private->entries;
->  	jumpstack  = (struct arpt_entry **)private->jumpstack[cpu];
-> @@ -649,7 +649,7 @@ static struct xt_counters *alloc_counters(const struct
-> xt_table *table)
->  {
->  	unsigned int countersize;
->  	struct xt_counters *counters;
-> -	const struct xt_table_info *private = table->private;
-> +	const struct xt_table_info *private = rcu_access_pointer(table->private);
+The idea is to accelerate forwarding by building a fast path that takes
+packets from the ingress path of the bridge port and place them in the
+egress path of the wan device (and vice versa). Hence, skipping the
+classic bridge and IP stack paths.
 
-This looks wrong.  I know its ok, but perhaps its better to add this:
+This patchset is composed of:
 
-struct xt_table_info *xt_table_get_private_protected(const struct xt_table *table)
-{
- return rcu_dereference_protected(table->private, mutex_is_locked(&xt[table->af].mutex));
-}
-EXPORT_SYMBOL(xt_table_get_private_protected);
+Patch #1 adds a placeholder for the hash calculation, instead of using
+         the dir field.
 
-to x_tables.c.
+Patch #2 adds the transmit path type field to the flow tuple. Two transmit
+         paths are supported so far: the neighbour and the xfrm transmit
+         paths. This patch comes in preparation to add a new direct ethernet
+         transmit path (see patch #7).
 
-If you dislike this extra function, add
+Patch #3 adds dev_fill_forward_path() and .ndo_fill_forward_path() to
+         netdev_ops. This new function describes the list of netdevice hops
+         to reach a given destination MAC address in the local network topology,
+         e.g.
 
-#define xt_table_get_private_protected(t) rcu_access_pointer((t)->private)
+                           IP forwarding
+                          /             \
+                       br0              eth0
+                       / \
+                   veth1 veth2
+                    .
+                    .
+                    .
+                   eth0
+             ab:cd:ef:ab:cd:ef
 
-in include/linux/netfilter/x_tables.h, with a bit fat comment telling
-that the xt table mutex must be held.
+          where veth1 and veth2 are bridge ports and eth0 provides Internet
+          connectivity. eth0 is the interface in the VM which is connected to
+          the veth1 bridge port. Then, for packets going to br0 whose
+          destination MAC address is ab:cd:ef:ab:cd:ef, dev_fill_forward_path()
+          provides the following path: br0 -> veth1.
 
-But I'd rather have/use the helper function as it documents when its
-safe to do this (and there will be splats if misused).
+Patch #4 adds .ndo_fill_forward_path for VLAN devices, which provides the next
+         device hop via vlan->real_dev. This annotates the VLAN id and protocol.
+         This is useful to know what VLAN headers are expected from the ingress
+         device. This also provides information regarding the VLAN headers
+         to be pushed in the egress path.
 
-> index af22dbe..2e6c09c 100644
-> --- a/net/netfilter/x_tables.c
-> +++ b/net/netfilter/x_tables.c
-> @@ -1367,7 +1367,7 @@ xt_replace_table(struct xt_table *table,
-> 
->  	/* Do the substitution. */
->  	local_bh_disable();
-> -	private = table->private;
-> +	private = rcu_access_pointer(table->private);
+Patch #5 adds .ndo_fill_forward_path for bridge devices, which allows to make
+         lookups to the FDB to locate the next device hop (bridge port) in the
+         forwarding path.
 
-AFAICS the local_bh_disable/enable calls can be removed too after this,
-if we're interrupted by softirq calling any of the _do_table()
-functions changes to the xt seqcount do not matter anymore.
+Patch #6 updates the flowtable to use the dev_fill_forward_path()
+         infrastructure to obtain the ingress device in the fastpath.
 
->       /*
->        * Even though table entries have now been swapped, other CPU's
+Patch #7 updates the flowtable to use dev_fill_forward_path() to obtain the
+         egress device in the forwarding path. This also adds the direct
+         ethernet transmit path, which pushes the ethernet header to the
+         packet and send it through dev_queue_xmit(). This patch adds
+         support for the bridge, so bridge ports use this direct xmit path.
 
-We need this additional hunk to switch to rcu for replacement/sync, no?
+Patch #8 adds ingress VLAN support (up to 2 VLAN tags, QinQ). The VLAN
+         information is also provided by dev_fill_forward_path(). Store the
+         VLAN id and protocol in the flow tuple for hash lookups. The VLAN
+         support in the xmit path is achieved by annotating the first vlan
+         device found in the xmit path and by calling dev_hard_header()
+         (previous patch #7) before dev_queue_xmit().
 
--       local_bh_enable();
--
--       /* ... so wait for even xt_recseq on all cpus */
--       for_each_possible_cpu(cpu) {
--               seqcount_t *s = &per_cpu(xt_recseq, cpu);
--               u32 seq = raw_read_seqcount(s);
--
--               if (seq & 1) {
--                       do {
--                               cond_resched();
--                               cpu_relax();
--                       } while (seq == raw_read_seqcount(s));
--               }
--       }
-+       synchronize_rcu();
+Patch #9 extends nft_flowtable.sh selftest: This is adding a test to
+         cover bridge and vlan support coming in this patchset.
+
+= Performance numbers
+
+My testbed environment consists of three containers:
+
+  192.168.20.2     .20.1     .10.1   10.141.10.2
+         veth0       veth0 veth1      veth0
+        ns1 <---------> nsr1 <--------> ns2
+                            SNAT
+     iperf -c                          iperf -s
+
+where nsr1 is used for forwarding. There is a bridge device br0 in nsr1,
+veth0 is a port of br0. SNAT is performed on the veth1 device of nsr1.
+
+- ns2 runs iperf -s
+- ns1 runs iperf -c 10.141.10.2 -n 100G
+
+My results are:
+
+- Baseline (no flowtable, classic forwarding path + netfilter): ~16 Gbit/s
+- Fastpath (with flowtable, this patchset): ~25 Gbit/s
+
+This is an improvement of ~50% compared to baseline.
+
+Please, apply this patchset.
+
+Thank you.
+
+Pablo Neira Ayuso (9):
+  netfilter: flowtable: add hash offset field to tuple
+  netfilter: flowtable: add xmit path types
+  net: resolve forwarding path from virtual netdevice and HW destination address
+  net: 8021q: resolve forwarding path for vlan devices
+  bridge: resolve forwarding path for bridge devices
+  netfilter: flowtable: use dev_fill_forward_path() to obtain ingress device
+  netfilter: flowtable: use dev_fill_forward_path() to obtain egress device
+  netfilter: flowtable: add vlan support
+  selftests: netfilter: flowtable bridge and VLAN support
+
+ include/linux/netdevice.h                     |  35 +++
+ include/net/netfilter/nf_flow_table.h         |  43 +++-
+ net/8021q/vlan_dev.c                          |  15 ++
+ net/bridge/br_device.c                        |  27 +++
+ net/core/dev.c                                |  36 ++++
+ net/netfilter/nf_flow_table_core.c            |  51 +++--
+ net/netfilter/nf_flow_table_ip.c              | 200 ++++++++++++++----
+ net/netfilter/nft_flow_offload.c              | 159 +++++++++++++-
+ .../selftests/netfilter/nft_flowtable.sh      |  82 +++++++
+ 9 files changed, 588 insertions(+), 60 deletions(-)
+
+--
+2.20.1
+
