@@ -2,58 +2,103 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB482B9D62
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 Nov 2020 23:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B12462BA0B6
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Nov 2020 04:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgKSWHr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 19 Nov 2020 17:07:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
+        id S1726100AbgKTDBp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 19 Nov 2020 22:01:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgKSWHr (ORCPT
+        with ESMTP id S1725890AbgKTDBp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:07:47 -0500
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52221C0613CF;
-        Thu, 19 Nov 2020 14:07:47 -0800 (PST)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id D738B589BBA0C; Thu, 19 Nov 2020 23:07:45 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id D34C060F323A8;
-        Thu, 19 Nov 2020 23:07:45 +0100 (CET)
-Date:   Thu, 19 Nov 2020 23:07:45 +0100 (CET)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     Jozsef Kadlecsik <kadlec@netfilter.org>
-cc:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: Re: [ANNOUNCE] ipset 7.8 released
-In-Reply-To: <alpine.DEB.2.23.453.2011192237290.19567@blackhole.kfki.hu>
-Message-ID: <83oq5412-o0sq-5q31-s7o5-s0q28s12844@vanv.qr>
-References: <alpine.DEB.2.23.453.2011192141150.19567@blackhole.kfki.hu> <45rqn0n5-5385-o997-rn9q-os784nqrn9p@vanv.qr> <alpine.DEB.2.23.453.2011192237290.19567@blackhole.kfki.hu>
+        Thu, 19 Nov 2020 22:01:45 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D2CC0613CF;
+        Thu, 19 Nov 2020 19:01:43 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id j14so7490232ots.1;
+        Thu, 19 Nov 2020 19:01:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JPhNPKtFRMqdIBM7nTGH/SqOjVL2v13M9KwRX/ticv4=;
+        b=qIqK2sHBWDww/yNKBkfTe4FNeInkAsB/ayOybMgYkQ44CPoXGo6c4h7vhTZO0ttjp2
+         zj9OtlN86iekUYB55AE/DGpzuX0Ta0C03LHycjKQE0tv0xNqaj9vhrRlAGTb8TOMAum3
+         PyCndT2jwziPmCFGBvdZLzaqolZwhDOEcVj/qlZ4c++4EoykdBvrU+r1KrjVyFYIWtHd
+         51HE6AYMxfv18UyR4xlcnqtbzOK7Qi64OKdp68r78W+WcQc5UgX5EOF3cpwM3ol3vSaL
+         mzhP/zDvDajJ53g4RNr9K8WtZYxoqEPb3JOa2R6ZueWcfkhoSu9sJB3rHHSCoXlYi61J
+         ov2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JPhNPKtFRMqdIBM7nTGH/SqOjVL2v13M9KwRX/ticv4=;
+        b=pwb++gX9MPeqj+8Q5zs3Op9cemZCAKn8Y01tysnwU5ttCAtMXBa0PD2wXb1PYRoskf
+         IAenXhsJ35n/MecXCRPlCjVgJnzdObXpF12n5Vz+g88Rtj7wyPi+0KVrYXamyQrfnw0O
+         PcXEuBePhYOzjgNC/BExPwsdekxLO4bL40bI6/jDqjs1wD89dR3xBlkwRfj6ZRkJTUTk
+         AR44vm6j4XMK5ETLCBUecH9fzF7mwrTZldvWmA7ZPlC74VN3q2ybLluI122PFD4NJ+7c
+         hFMrS7FTBr5kj8Nej2P+IzOR0m1PlO0gwGfe5pQ2qVGHVYyky7wl1CDq9BEpVSq5S48O
+         hahg==
+X-Gm-Message-State: AOAM530aSNZTZlpJtHCpaZYGTTpSouhJjJvSfAubNh6KJtVoJP8sH26B
+        1Ti6mDPne0DeVCoLoLoXGVB6fKIsN6/apz4zezK8HUDdWu4=
+X-Google-Smtp-Source: ABdhPJxcWetfBbagxikGOx8xVIfWm9dmFp1Zxn+3qpl1h7hlcZz+lhytVGuaPeBrz0gn9Hzuo0mtxm5ry4qST/muEiE=
+X-Received: by 2002:a05:6830:1bcb:: with SMTP id v11mr11790619ota.115.1605841302724;
+ Thu, 19 Nov 2020 19:01:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <alpine.DEB.2.23.453.2011192141150.19567@blackhole.kfki.hu>
+ <45rqn0n5-5385-o997-rn9q-os784nqrn9p@vanv.qr> <alpine.DEB.2.23.453.2011192237290.19567@blackhole.kfki.hu>
+ <83oq5412-o0sq-5q31-s7o5-s0q28s12844@vanv.qr>
+In-Reply-To: <83oq5412-o0sq-5q31-s7o5-s0q28s12844@vanv.qr>
+From:   Neutron Soutmun <neo.neutron@gmail.com>
+Date:   Fri, 20 Nov 2020 10:01:31 +0700
+Message-ID: <CAMQP0skDvG-vOAGmcx2kn21KYS9UgMfxND7NTi_X75GOnx_izw@mail.gmail.com>
+Subject: Re: [ANNOUNCE] ipset 7.8 released
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>, netfilter@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thursday 2020-11-19 22:46, Jozsef Kadlecsik wrote:
+Hi,
 
->Hi Jan,
->
->On Thu, 19 Nov 2020, Jan Engelhardt wrote:
->
->> LIBVERSION changed from 14:0:1 (ipset 7.6) to 14:1:2,
->> producing libipset.so.13 (7.6) and now libipset.so.12
->> 
->> That seems incorrect! It should have been
->> - 14:0:1 (no changes)
->> - 15:0:2 (compatible changes)
->> - 15:0:0 (incompatible changes)
->
->Oh, my. It should be 15:0:2 (compatible changes). I dunno how many times I 
->can mix it up, this numbering scheme is simply alien to my brain wiring.
+For the ipset 7.9, I found the released download url is
+http://ipset.netfilter.org/ipset-7.9.tar.bz2,
+however, it's previous releases are in http://ftp.netfilter.org/pub/ipset/
 
-If in doubt, always use :0:0 --- and make a mental note of exactly the 
-:0:0 requirement in Make_global.am. :-)
+The Debian has the tool to detect the new release with package watch [1] file.
+Could you please consider uploading the new release to the
+fpt.netfiler.org/pub/ipset also.
 
-Distros can always rebuild transitively. They have to do that anyway for 
-things like /usr/lib64/libbfd-2.35.0.20200915-1.so (with a date, it 
-could change daily anyway). But recovering from a backjumping lib...
+Best regards,
+Neutron Soutmun
+
+---
+[1] https://salsa.debian.org/pkg-netfilter-team/pkg-ipset/-/blob/debian/master/debian/watch
+
+On Fri, Nov 20, 2020 at 5:09 AM Jan Engelhardt <jengelh@inai.de> wrote:
+>
+> On Thursday 2020-11-19 22:46, Jozsef Kadlecsik wrote:
+>
+> >Hi Jan,
+> >
+> >On Thu, 19 Nov 2020, Jan Engelhardt wrote:
+> >
+> >> LIBVERSION changed from 14:0:1 (ipset 7.6) to 14:1:2,
+> >> producing libipset.so.13 (7.6) and now libipset.so.12
+> >>
+> >> That seems incorrect! It should have been
+> >> - 14:0:1 (no changes)
+> >> - 15:0:2 (compatible changes)
+> >> - 15:0:0 (incompatible changes)
+> >
+> >Oh, my. It should be 15:0:2 (compatible changes). I dunno how many times I
+> >can mix it up, this numbering scheme is simply alien to my brain wiring.
+>
+> If in doubt, always use :0:0 --- and make a mental note of exactly the
+> :0:0 requirement in Make_global.am. :-)
+>
+> Distros can always rebuild transitively. They have to do that anyway for
+> things like /usr/lib64/libbfd-2.35.0.20200915-1.so (with a date, it
+> could change daily anyway). But recovering from a backjumping lib...
