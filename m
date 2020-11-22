@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B672BC5F9
-	for <lists+netfilter-devel@lfdr.de>; Sun, 22 Nov 2020 15:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096582BC5FA
+	for <lists+netfilter-devel@lfdr.de>; Sun, 22 Nov 2020 15:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgKVOFh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 22 Nov 2020 09:05:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47426 "EHLO
+        id S1727850AbgKVOFi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 22 Nov 2020 09:05:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727850AbgKVOFg (ORCPT
+        with ESMTP id S1727876AbgKVOFg (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 22 Nov 2020 09:05:36 -0500
 Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F89C061A4B
-        for <netfilter-devel@vger.kernel.org>; Sun, 22 Nov 2020 06:05:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411D1C061A4C
+        for <netfilter-devel@vger.kernel.org>; Sun, 22 Nov 2020 06:05:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
          s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=txpXbQxru/bCifD196lQEsMZ6ymgJxc0EtvT43oj3jM=; b=JkL2AlXIaaWSeMlPeg1O7OZBid
-        mAZrQpprsNdJEnKkfEbucwy9ZGcKFNcBZghmWuMAeyFPtudr3lAcPdyvw91yGHpZymHnRRrZUMhY3
-        /vl9xqa3zfFu+MWxU6edzDVNxVJIk0vwuDkQGIaKYHDP2k2cpG2nv2Lr1PgFzVDAmMDjPgkSSjb4O
-        1CFy2ZYxxHO2YPY17PL+XkaathCw547IgfRbkOJmKHWULF7tvbPOm/zllBu3L8tu0iMpHZKHkMs0f
-        d2IFw2Xt3/VqksUzmmvQNZLoF9pEzDadPIQqepF40Qer0zxnSuQ5xxlzvywX1qtyU/GoyAeuZPi4C
-        9HjEtXbw==;
+        bh=il/CPPwUrGbQYeXmbvAXy9sjzAPQafR/BMH6uONb8xM=; b=aXx8HtMtKPQSQ2ukNoNLemzN+B
+        94rIP7ssNg3nhPC7TTmFiCuNEH86h3dE/6uT+I+Ev1+2rQ08x8xoQHt5uavnK7c9vjbadIS6QdyFn
+        abnfjhmlYqEMbxUfRRXJ91NGP3gKaKq2oPYKfcVF5D9vWmeoEXfo7FU1voJfQhKVZB69Ft514A9Tk
+        9nz8R5Vzm55ukoXICnhOx4OP1Wuu/eX/J6lRPVIuGOmJy0KLAesgfGckw/T70gdBmyan0VPd6mFI3
+        1cKO0H31uyPta8R+VbIXriw5KFJbf8YeQwxsy0T1yjzLRf3j6MWfeTmKNO/wKcug41hrTMBhfTcaU
+        NjGBSBpQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.92)
         (envelope-from <jeremy@azazel.net>)
-        id 1kgpzh-0002wq-U0; Sun, 22 Nov 2020 14:05:34 +0000
+        id 1kgpzi-0002wq-Hm; Sun, 22 Nov 2020 14:05:34 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Jan Engelhardt <jengelh@inai.de>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons 3/4] geoip: add man-pages for MaxMind scripts.
-Date:   Sun, 22 Nov 2020 14:05:29 +0000
-Message-Id: <20201122140530.250248-4-jeremy@azazel.net>
+Subject: [PATCH xtables-addons 4/4] geoip: use correct download URL for MaxMind DB's.
+Date:   Sun, 22 Nov 2020 14:05:30 +0000
+Message-Id: <20201122140530.250248-5-jeremy@azazel.net>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201122140530.250248-1-jeremy@azazel.net>
 References: <20201122140530.250248-1-jeremy@azazel.net>
@@ -49,101 +49,37 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+The download URL for the GeoLite2 DB's has changed and includes a
+licence-key.  Update the download script to read the key from file or
+stdin and use the correct URL.
+
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- geoip/Makefile.am              |  4 +++-
- geoip/xt_geoip_build_maxmind.1 | 40 ++++++++++++++++++++++++++++++++++
- geoip/xt_geoip_dl_maxmind.1    | 22 +++++++++++++++++++
- 3 files changed, 65 insertions(+), 1 deletion(-)
- create mode 100644 geoip/xt_geoip_build_maxmind.1
- create mode 100644 geoip/xt_geoip_dl_maxmind.1
+ geoip/xt_geoip_dl_maxmind | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/geoip/Makefile.am b/geoip/Makefile.am
-index 5323c82eb7c4..8c0b6af80054 100644
---- a/geoip/Makefile.am
-+++ b/geoip/Makefile.am
-@@ -4,4 +4,6 @@ bin_SCRIPTS = xt_geoip_fetch
+diff --git a/geoip/xt_geoip_dl_maxmind b/geoip/xt_geoip_dl_maxmind
+index 1de60442a804..d5640336c1c0 100755
+--- a/geoip/xt_geoip_dl_maxmind
++++ b/geoip/xt_geoip_dl_maxmind
+@@ -1,7 +1,16 @@
+ #!/bin/sh
  
- pkglibexec_SCRIPTS = xt_geoip_build xt_geoip_build_maxmind xt_geoip_dl xt_geoip_dl_maxmind
++if [ $# -eq 1 ]; then
++    exec <$1
++elif [ $# -ne 0 ]; then
++    echo $(basename $0) [ licence_key_file ] 1>&2
++    exit 1
++fi
++
++read licence_key
++
+ rm -rf GeoLite2-Country-CSV_*
  
--man1_MANS = xt_geoip_build.1 xt_geoip_dl.1 xt_geoip_fetch.1
-+man1_MANS = xt_geoip_build.1 xt_geoip_dl.1 \
-+	    xt_geoip_build_maxmind.1 xt_geoip_dl_maxmind.1 \
-+	    xt_geoip_fetch.1
-diff --git a/geoip/xt_geoip_build_maxmind.1 b/geoip/xt_geoip_build_maxmind.1
-new file mode 100644
-index 000000000000..e20e44848b82
---- /dev/null
-+++ b/geoip/xt_geoip_build_maxmind.1
-@@ -0,0 +1,40 @@
-+.TH xt_geoip_build_maxmind 1 "2010-12-17" "xtables-addons" "xtables-addons"
-+.SH Name
-+.PP
-+xt_geoip_build_maxmind \(em convert GeoIP.csv to packed format for xt_geoip
-+.SH Syntax
-+.PP
-+\fI/usr/libexec/xt_geoip/\fP\fBxt_geoip_build_maxmind\fP [\fB\-D\fP
-+\fItarget_dir\fP] [\fB\-S\fP \fIsource_dir\fP]
-+.SH Description
-+.PP
-+xt_geoip_build_maxmind is used to build packed raw representations of the range
-+database that the xt_geoip module relies on. Since kernel memory is precious,
-+much of the preprocessing is done in userspace by this very building tool. One
-+file is produced for each country, so that no more addresses than needed are
-+required to be loaded into memory. The ranges in the packed database files are
-+also ordered, as xt_geoip relies on this property for its bisection approach to
-+work.
-+.PP
-+Since the script is usually installed to the libexec directory of the
-+xtables-addons package and this is outside $PATH (on purpose), invoking the
-+script requires it to be called with a path.
-+.PP Options
-+.TP
-+\fB\-D\fP \fItarget_dir\fP
-+Specifies the target directory into which the files are to be put. Defaults to ".".
-+.TP
-+\fB\-S\fP \fIsource_dir\fP
-+Specifies the source directory of the MaxMind CSV files. Defaults to ".".
-+.TP
-+\fB\-s\fP
-+"System mode". Equivalent to \fB\-D /usr/share/xt_geoip\fP.
-+.SH Application
-+.PP
-+Shell commands to build the databases and put them to where they are expected
-+(usually run as root):
-+.PP
-+xt_geoip_build_maxmind \-s
-+.SH See also
-+.PP
-+xt_geoip_dl_maxmind(1)
-diff --git a/geoip/xt_geoip_dl_maxmind.1 b/geoip/xt_geoip_dl_maxmind.1
-new file mode 100644
-index 000000000000..00a73d7ee90d
---- /dev/null
-+++ b/geoip/xt_geoip_dl_maxmind.1
-@@ -0,0 +1,22 @@
-+.TH xt_geoip_dl_maxmind 1 "2010-12-17" "xtables-addons" "xtables-addons"
-+.SH Name
-+.PP
-+xt_geoip_dl_maxmind \(em download MaxMind GeoIP database files
-+.SH Syntax
-+.PP
-+\fI/usr/libexec/xt_geoip/\fP\fBxt_geoip_dl_maxmind\fP [\fI licence-key file\fP]
-+.SH Description
-+.PP
-+Downloads the MaxMind GeoLite2 databases for IPv4 and IPv6 and unpacks them to
-+the current directory.  The alternate \fBxt_geoip_dl\fP script can be
-+used for the DB-IP Country Lite databases.
-+.PP
-+Since the script is usually installed to the libexec directory of the
-+xtables-addons package and this is outside $PATH (on purpose), invoking the
-+script requires it to be called with a path.
-+.SH Options
-+.PP
-+None.
-+.SH See also
-+.PP
-+xt_geoip_build_maxmind(1)
+-wget -q http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country-CSV.zip
++wget -q -OGeoLite2-Country-CSV.zip "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=${licence_key}&suffix=zip"
+ unzip -q GeoLite2-Country-CSV.zip
+ rm -f GeoLite2-Country-CSV.zip
 -- 
 2.29.2
 
