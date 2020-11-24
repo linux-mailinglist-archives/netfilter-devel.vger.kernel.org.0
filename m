@@ -2,91 +2,98 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539D42C1EFD
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Nov 2020 08:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B358C2C1F6D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Nov 2020 09:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730083AbgKXHjy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 24 Nov 2020 02:39:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730064AbgKXHjy (ORCPT
+        id S1727667AbgKXIHP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 24 Nov 2020 03:07:15 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8396 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726529AbgKXIHO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 24 Nov 2020 02:39:54 -0500
-X-Greylist: delayed 502 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Nov 2020 23:39:53 PST
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [IPv6:2a01:4f8:150:2161:1:b009:f23e:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB82C0613CF;
-        Mon, 23 Nov 2020 23:39:53 -0800 (PST)
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id A9BAD100BA619;
-        Tue, 24 Nov 2020 08:31:25 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id DEDA867C55; Tue, 24 Nov 2020 08:31:26 +0100 (CET)
-Date:   Tue, 24 Nov 2020 08:31:26 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Laura =?iso-8859-1?Q?Garc=EDa_Li=E9bana?= <nevola@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Netfilter Development Mailing list 
-        <netfilter-devel@vger.kernel.org>, coreteam@netfilter.org,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Thomas Graf <tgraf@suug.ch>, David Miller <davem@davemloft.net>
-Subject: Re: [PATCH nf-next v3 3/3] netfilter: Introduce egress hook
-Message-ID: <20201124073126.GA4856@wunner.de>
-References: <e8aecc2b-80cb-8ee5-8efe-7ae5c4eafc70@iogearbox.net>
- <CAF90-Whc3HL9x-7TJ7m3tZp10RNmQxFD=wdQUJLCaUajL2RqXg@mail.gmail.com>
- <8e991436-cb1c-1306-51ac-bb582bfaa8a7@iogearbox.net>
- <CAF90-Wh=wzjNtFWRv9bzn=-Dkg-Qc9G_cnyoq0jSypxQQgg3uA@mail.gmail.com>
- <29b888f5-5e8e-73fe-18db-6c5dd57c6b4f@iogearbox.net>
- <20201011082657.GB15225@wunner.de>
- <20201121185922.GA23266@salvia>
- <CAADnVQK8qHwdZrqMzQ+4Q9Cg589xLX5zTve92ZKN_zftJg_WHw@mail.gmail.com>
- <20201122110145.GB26512@salvia>
- <20201124033422.gvwhvsjmwt3b3irx@ast-mbp>
+        Tue, 24 Nov 2020 03:07:14 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CgGnf0yswz72tj;
+        Tue, 24 Nov 2020 16:06:46 +0800 (CST)
+Received: from [10.174.179.81] (10.174.179.81) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 24 Nov 2020 16:07:01 +0800
+Subject: Re: [PATCH net v2] ipvs: fix possible memory leak in
+ ip_vs_control_net_init
+To:     Julian Anastasov <ja@ssi.bg>
+CC:     Simon Horman <horms@verge.net.au>, <pablo@netfilter.org>,
+        <christian@brauner.io>, <lvs-devel@vger.kernel.org>,
+        <netfilter-devel@vger.kernel.org>
+References: <20201120082610.60917-1-wanghai38@huawei.com>
+ <21af4c92-8ca6-cce9-64bc-c4e88b6d1e8a@ssi.bg>
+ <66825441-bb06-3d18-0424-df355d596c5f@huawei.com>
+ <9c409f4a-42df-1dd8-e69a-d5d3bab8d0c0@ssi.bg>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <506b722c-e049-eab1-3f19-f30473467fff@huawei.com>
+Date:   Tue, 24 Nov 2020 16:07:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124033422.gvwhvsjmwt3b3irx@ast-mbp>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <9c409f4a-42df-1dd8-e69a-d5d3bab8d0c0@ssi.bg>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.81]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 07:34:22PM -0800, Alexei Starovoitov wrote:
-> It's a missing hook for out-of-tree module. That's why it stinks so much.
 
-As I've said before, the motivation for these patches has pivoted away
-from the original use case (which was indeed an out-of-tree module by
-a company for which I no longer work):
+在 2020/11/24 3:04, Julian Anastasov 写道:
+> 	Hello,
+>
+> On Mon, 23 Nov 2020, wanghai (M) wrote:
+>
+>> 在 2020/11/22 19:20, Julian Anastasov 写道:
+>>>   Hello,
+>>>
+>>> On Fri, 20 Nov 2020, Wang Hai wrote:
+>>>
+>>>> +	if (!proc_create_net_single("ip_vs_stats_percpu", 0,
+>>>> ipvs->net->proc_net,
+>>>> +			ip_vs_stats_percpu_show, NULL))
+>>>> +		goto err_percpu;
+>>> 	Make sure the parameters are properly aligned to function open
+>>> parenthesis without exceeding 80 columns:
+>>>
+>>> linux# scripts/checkpatch.pl --strict /tmp/file.patch
+>> Thanks, I'll perfect it.
+>>> 	It was true only for first call due to some
+>>> renames for the others two in commit 3617d9496cd9 :(
+>> It does indeed rename in commit 3617d9496cd9.
+>> But I don't understand what's wrong with my patch here.
+> 	Visually, they should look like this:
+>
+>          if (!proc_create_net("ip_vs", 0, ipvs->net->proc_net,
+>                               &ip_vs_info_seq_ops, sizeof(struct ip_vs_iter)))
+>                  goto err_vs;
+>          if (!proc_create_net_single("ip_vs_stats", 0, ipvs->net->proc_net,
+>                                      ip_vs_stats_show, NULL))
+>                  goto err_stats;
+>          if (!proc_create_net_single("ip_vs_stats_percpu", 0,
+>                                      ipvs->net->proc_net,
+>                                      ip_vs_stats_percpu_show, NULL))
+>                  goto err_percpu;
 
-https://lore.kernel.org/netdev/20200905052403.GA10306@wunner.de/
+Thank you for your patient explanation, I got it.
 
-When first submitting this series I also posted a patch to use the nft
-egress hook from userspace for filtering and mangling.  It seems Zevenet
-is actively using that:
+I just sent v3
 
-https://lore.kernel.org/netdev/CAF90-Wi4W1U4FSYqyBTqe7sANbdO6=zgr-u+YY+X-gvNmOgc6A@mail.gmail.com/
+"[PATCH net v3] ipvs: fix possible memory leak in ip_vs_control_net_init"
 
-
-> So please consider augmenting your nft k8s solution with a tiny bit of bpf.
-> bpf can add a new helper to call into nf_hook_slow().
-
-The out-of-tree module had nothing to do with k8s, it was for industrial
-fieldbus communication.  But again, I no longer work for that company.
-We're talking about a hook that's used by userspace, not by an out-of-tree
-module.
-
-
-> If it was not driven by
-> out-of-tree kernel module I wouldn't have any problem with it.
-
-Good!  Thank you.  Let me update and repost the patches then.
-
-Lukas
+> 	The first one explained:
+>
+> <1  TAB>if (!proc_create_net("ip_vs", 0, ipvs->net->proc_net,
+> <  open parenthesis is here  ^ and all next lines align to first parameter>
+> <1  TAB><1  TAB><1 TAB><5 SP>&ip_vs_info_seq_ops, sizeof(struct ip_vs_iter)))
+> <1  TAB><1  TAB>goto err_vs;
+>
+> Regards
+>
+> --
+> Julian Anastasov <ja@ssi.bg>
