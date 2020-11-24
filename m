@@ -2,94 +2,91 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC992C1E55
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Nov 2020 07:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 539D42C1EFD
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Nov 2020 08:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgKXGhD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 24 Nov 2020 01:37:03 -0500
-Received: from 285650.cloudwaysapps.com ([178.62.47.54]:35612 "EHLO
-        285650.cloudwaysapps.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729118AbgKXGhC (ORCPT
+        id S1730083AbgKXHjy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 24 Nov 2020 02:39:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730064AbgKXHjy (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:37:02 -0500
-X-Greylist: delayed 72351 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 01:37:02 EST
-Received: from 127.0.0.1 (285650.cloudwaysapps.com [127.0.0.1])
-        by 285650.cloudwaysapps.com (Postfix) with SMTP id CB327129BBF;
-        Sun, 22 Nov 2020 09:56:06 +0000 (UTC)
-Received: from [94.73.0.199] by 127.0.0.1 id <5236466-22738>; Sun, 22 Nov 2020 02:46:23 -0700
-Message-ID: <646$u$6qz0h4sp6o57g$9c@b4a0qx7quv>
-From:   "GADDAFI" <safs451@gmail.com>
-Reply-To: "GADDAFI" <safs451@gmail.com>
-To:     sunnytu0209@hotmail.com
-Subject: HELLO.
-Date:   Sun, 22 Nov 20 02:46:23 GMT
-X-Mailer: MIME-tools 5.503 (Entity 5.501)
+        Tue, 24 Nov 2020 02:39:54 -0500
+X-Greylist: delayed 502 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Nov 2020 23:39:53 PST
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [IPv6:2a01:4f8:150:2161:1:b009:f23e:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB82C0613CF;
+        Mon, 23 Nov 2020 23:39:53 -0800 (PST)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by bmailout3.hostsharing.net (Postfix) with ESMTPS id A9BAD100BA619;
+        Tue, 24 Nov 2020 08:31:25 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id DEDA867C55; Tue, 24 Nov 2020 08:31:26 +0100 (CET)
+Date:   Tue, 24 Nov 2020 08:31:26 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Laura =?iso-8859-1?Q?Garc=EDa_Li=E9bana?= <nevola@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Netfilter Development Mailing list 
+        <netfilter-devel@vger.kernel.org>, coreteam@netfilter.org,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Thomas Graf <tgraf@suug.ch>, David Miller <davem@davemloft.net>
+Subject: Re: [PATCH nf-next v3 3/3] netfilter: Introduce egress hook
+Message-ID: <20201124073126.GA4856@wunner.de>
+References: <e8aecc2b-80cb-8ee5-8efe-7ae5c4eafc70@iogearbox.net>
+ <CAF90-Whc3HL9x-7TJ7m3tZp10RNmQxFD=wdQUJLCaUajL2RqXg@mail.gmail.com>
+ <8e991436-cb1c-1306-51ac-bb582bfaa8a7@iogearbox.net>
+ <CAF90-Wh=wzjNtFWRv9bzn=-Dkg-Qc9G_cnyoq0jSypxQQgg3uA@mail.gmail.com>
+ <29b888f5-5e8e-73fe-18db-6c5dd57c6b4f@iogearbox.net>
+ <20201011082657.GB15225@wunner.de>
+ <20201121185922.GA23266@salvia>
+ <CAADnVQK8qHwdZrqMzQ+4Q9Cg589xLX5zTve92ZKN_zftJg_WHw@mail.gmail.com>
+ <20201122110145.GB26512@salvia>
+ <20201124033422.gvwhvsjmwt3b3irx@ast-mbp>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="7B_B09642F8D_B.D049B0C"
-X-Priority: 3
-X-MSMail-Priority: Normal
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201124033422.gvwhvsjmwt3b3irx@ast-mbp>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+On Mon, Nov 23, 2020 at 07:34:22PM -0800, Alexei Starovoitov wrote:
+> It's a missing hook for out-of-tree module. That's why it stinks so much.
 
---7B_B09642F8D_B.D049B0C
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+As I've said before, the motivation for these patches has pivoted away
+from the original use case (which was indeed an out-of-tree module by
+a company for which I no longer work):
 
-Dear friend,
+https://lore.kernel.org/netdev/20200905052403.GA10306@wunner.de/
 
-  Greetings from Libya,  I am the wife of the ex-Libyan leader Colonel Mua=
-mmar Qaddafi, the former and late leader of
-Libya Colonel Muammar Qaddafi who was betrayed and embattled by Libyan
-and murdered by the Libyan rebels which led to his untimely death.
+When first submitting this series I also posted a patch to use the nft
+egress hook from userspace for filtering and mangling.  It seems Zevenet
+is actively using that:
 
-Since then, me and my children has been on travel ban, no access to
-bank accounts  and we have been rendered homeless and at the same time we =
-are
-under threat and we are not allowed to
-invest or operate bank account. I wrote this letter because
-I need you to help me to secure some of my family funds that is deposited =
-by my late husband in different security
-companies abroad which is no longer safe under the name of my late
-husband therefore I urgently need your help to transfer the amount to your=
- bank account
-and ones we start, first, the beneficiary name should be
-immediately changed from my late husband name to your name through my
-lawyers.
-
-I promise to make you richer by offering you 30% of the total amount
-that can be secured through your help and in each transactions successfull=
-y
-completed by you and if you can assist me, we must work in confidentiality=
- therefore I want
-you to please keep this as a greater secret.
+https://lore.kernel.org/netdev/CAF90-Wi4W1U4FSYqyBTqe7sANbdO6=zgr-u+YY+X-gvNmOgc6A@mail.gmail.com/
 
 
-In your response, I want you to provide me with your particulars as
-listed below because it will be used by my lawyers to make change of
-ownership of funds to your name:
+> So please consider augmenting your nft k8s solution with a tiny bit of bpf.
+> bpf can add a new helper to call into nf_hook_slow().
 
-1) Your  full name.
+The out-of-tree module had nothing to do with k8s, it was for industrial
+fieldbus communication.  But again, I no longer work for that company.
+We're talking about a hook that's used by userspace, not by an out-of-tree
+module.
 
-2) Home or office Address.
 
-3) Land Telephone and mobile phone numbers.
+> If it was not driven by
+> out-of-tree kernel module I wouldn't have any problem with it.
 
-4) Your Age.
+Good!  Thank you.  Let me update and repost the patches then.
 
-5) Your gender/Sex.
-
-6) Your Occupation.
-
-7) Any form of Identification.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Please contact me on my secure email address: safqad203@gmail.com 
-
-Yours sincerely,
-Mrs.Safiya Qaddafi.
-
---7B_B09642F8D_B.D049B0C--
-
+Lukas
