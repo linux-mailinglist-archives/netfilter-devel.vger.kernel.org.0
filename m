@@ -2,87 +2,59 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D0A2C6E30
-	for <lists+netfilter-devel@lfdr.de>; Sat, 28 Nov 2020 02:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E602C72FA
+	for <lists+netfilter-devel@lfdr.de>; Sat, 28 Nov 2020 23:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729486AbgK1BbK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 27 Nov 2020 20:31:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42356 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731101AbgK0T72 (ORCPT
+        id S1730597AbgK1VuF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:05 -0500
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:41777 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730506AbgK0TvY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 27 Nov 2020 14:59:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606507152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=3cBR/GAHSZu/mG/kVh3pbERrLW8qnpOV0nfvW9Q+mXU=;
-        b=UoTHEUklWlpqlQbQUiYQFUAeivaC/NIiouxNwSjnun3K6Nm7GcyhOKdkk8aZ71VSiWHmf4
-        hZL733RRuxvgiz7i9cjA2O0BvQEkzwMojK2J08gdIvmOupR/FMmwwA+/PlUkrYw46W1vUC
-        NWtgSf6OS162AJ8cMQiu+ywaKJBUV08=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-418-ctz6WqwJNTuiUdOcKB98-g-1; Fri, 27 Nov 2020 14:20:40 -0500
-X-MC-Unique: ctz6WqwJNTuiUdOcKB98-g-1
-Received: by mail-qt1-f198.google.com with SMTP id d9so3767186qtr.5
-        for <netfilter-devel@vger.kernel.org>; Fri, 27 Nov 2020 11:20:40 -0800 (PST)
+        Fri, 27 Nov 2020 14:51:24 -0500
+Received: by mail-lf1-f51.google.com with SMTP id r24so8522623lfm.8;
+        Fri, 27 Nov 2020 11:51:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3cBR/GAHSZu/mG/kVh3pbERrLW8qnpOV0nfvW9Q+mXU=;
-        b=ZWWcgfIX+PCHxnVWAvR2/MVZ4g6NAXcR8KsYDt+qQ++FusUOxYCgxH6cbvMWSZNrHT
-         +FeftMSeZZdDd9bg8aXBEQIW/YBGaYAcnjP17u0+2sMad5WBKbuWRdhQzkoW6CNy3rN3
-         31Pd3RWfCiTqwJt9wkYecUrSqwScpYcxdg8zY5E/WHol07bX7vbJtlkWJIgoQqbTZ2/c
-         1TuHJbafdD8eb7qKWXcm27y/NB7b3sp8bjcrU2cgqD6VtiHaCZR8dVZ6+s3f++PfiRWv
-         GurpUoOuiP+CYC9HPOu77NaxlqsuOrX20oqcaBmI8LUSVDxOMdMqoiAeRTemzCdJ/Xqm
-         +07g==
-X-Gm-Message-State: AOAM530LlBCVe3Z5csY2y1oEE5rEkenmIB1rdHS1gmWwlo5O6No8Ijyo
-        Zcpu/nV9+dyVhjPnamI3ksifFCPORjB9X92v4+jl2l3xtQZfH7WmUztdIKRHy1Oxo8FqRHshIGN
-        cQIRRx+sO9H+xfu+E+/Kw736CX7fO
-X-Received: by 2002:aed:2f81:: with SMTP id m1mr9264792qtd.209.1606504840012;
-        Fri, 27 Nov 2020 11:20:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwow2CpnnXkAmPv5elf6jRYc2fUaRyRZggyU2yVjFNSThGuDv/h+bB3I0vDIjnpmjS8h7gaFA==
-X-Received: by 2002:aed:2f81:: with SMTP id m1mr9264774qtd.209.1606504839841;
-        Fri, 27 Nov 2020 11:20:39 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id h4sm7327013qkh.93.2020.11.27.11.20.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 11:20:39 -0800 (PST)
-From:   trix@redhat.com
-To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] netfilter: remove trailing semicolon in macro definition
-Date:   Fri, 27 Nov 2020 11:20:34 -0800
-Message-Id: <20201127192034.2858213-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.4
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=pVY27RlXdSwCmziTRPPFMGA75xoNNNryw43jm/wsTCw=;
+        b=YTwju2m6t7hut/zrT4m+zjBHZFE5GFIVxAl8WNE9HVypjgAtHh1X56KM12xhQDj/m4
+         pQ2ZTbZM7dXnDE+pz36vFl/XmNtUQqiJOP8V7agCwjI0HVFDY9Zhy4EaZz25Gkhhr9QC
+         00nutvs4r0gOlozx5o/T1ChUwr8iRWawSJ2a3gdUpuTzGxg7lyJfZnOxIATSzDI81Bqq
+         49SyQLay85jxm/xxaa6lEkFWQWO31x4sx9a+cUTGJe4sRvhbL1bLMtiqrnN78beRu4Ea
+         At08KPvj+vX8R2wdp8x+I0FKlMvZ7U9u8K9NJ8hHERGNTauqkyCdHkFMi+ebwnmb69XH
+         5tDg==
+X-Gm-Message-State: AOAM530+Y5jJoSsbfqJq1fDUZkAiY9ms/0LKUDMjIfZXnzDQDrokIsBM
+        Vsi+WCzvif9ifFKvpJHSAZJdVFCrxKWbrQ==
+X-Google-Smtp-Source: ABdhPJzXxJcVAXzxcLMRIdgnyS0T79f34vFQiH1BHhhmTmVDgIILkHPxoRyVqBCYZ6CraZoPSVnREQ==
+X-Received: by 2002:adf:a551:: with SMTP id j17mr12890547wrb.217.1606505729700;
+        Fri, 27 Nov 2020 11:35:29 -0800 (PST)
+Received: from [192.168.1.173] ([213.194.141.17])
+        by smtp.gmail.com with ESMTPSA id u12sm3078525wmu.28.2020.11.27.11.35.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Nov 2020 11:35:29 -0800 (PST)
+To:     "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Cc:     "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+From:   Arturo Borrero Gonzalez <arturo@netfilter.org>
+Subject: [FYI] summary of Netfilter workshop 2020 virtual
+Message-ID: <a7d4f6d6-0576-2918-0f28-f9804d296a3e@netfilter.org>
+Date:   Fri, 27 Nov 2020 20:35:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Hi there,
 
-The macro use will already have a semicolon.
+I'm sharing here a link to the summary I wrote about the 2020 Netfilter
+workshop, which was held in a virtual format this year:
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- include/net/netfilter/nf_tables_offload.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+https://ral-arturo.org/2020/11/27/netfilter-virtual-workshop.html
 
-diff --git a/include/net/netfilter/nf_tables_offload.h b/include/net/netfilter/nf_tables_offload.h
-index 1d34fe154fe0..ae8160b62b10 100644
---- a/include/net/netfilter/nf_tables_offload.h
-+++ b/include/net/netfilter/nf_tables_offload.h
-@@ -81,7 +81,7 @@ int nft_flow_rule_offload_commit(struct net *net);
- 
- #define NFT_OFFLOAD_MATCH_EXACT(__key, __base, __field, __len, __reg)	\
- 	NFT_OFFLOAD_MATCH(__key, __base, __field, __len, __reg)		\
--	memset(&(__reg)->mask, 0xff, (__reg)->len);
-+	memset(&(__reg)->mask, 0xff, (__reg)->len)
- 
- int nft_chain_offload_priority(struct nft_base_chain *basechain);
- 
--- 
-2.18.4
-
+regards.
