@@ -2,95 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB7D2C7BED
-	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Nov 2020 00:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1252C834B
+	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Nov 2020 12:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbgK2XJ7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 29 Nov 2020 18:09:59 -0500
-Received: from 285650.cloudwaysapps.com ([178.62.47.54]:57918 "EHLO
-        285650.cloudwaysapps.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727670AbgK2XJ7 (ORCPT
+        id S1726298AbgK3LcI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 30 Nov 2020 06:32:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbgK3LcI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 29 Nov 2020 18:09:59 -0500
-Received: from 127.0.0.1 (285650.cloudwaysapps.com [127.0.0.1])
-        by 285650.cloudwaysapps.com (Postfix) with SMTP id 2F1A9112B69;
-        Sun, 22 Nov 2020 12:49:25 +0000 (UTC)
-Received: from [29.110.37.186]
-        by 127.0.0.1;
-        Sun, 22 Nov 2020 06:38:38 -0600
-Message-ID: <n77$1-$n-8f659@xqw5q.hf.5o>
-From:   "GADDAFI" <safs451@gmail.com>
-Reply-To: "GADDAFI" <safs451@gmail.com>
-To:     flavio@btcjam.com
-Subject: HELLO.
-Date:   Sun, 22 Nov 20 06:38:38 GMT
-X-Mailer: The Bat! (v1.52f) Business
+        Mon, 30 Nov 2020 06:32:08 -0500
+Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD94C0613CF
+        for <netfilter-devel@vger.kernel.org>; Mon, 30 Nov 2020 03:31:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=vNIIVblqmTKdOFhUS9k0oR94hOiVAWHlnek9KSV/F3o=; b=jB4+wzkEzHiaNlgmWIXPSPiyRp
+        RqZVgQRVL+cY2u3ifHxTNyS4juHbKu1uDRQGDnpPwbFunwXuXMaHwh5cJ0TMRLFmLcIU800Uqe9BR
+        eF4sJ6cCZFVf1r74/QQS1oByAUe9hRhEhKlXEWUbIVAEtA8aH/mdYcHsvxN9RukZAVNq7z9LPIrm2
+        LaJAg8UFRBxGS24RBSDUAfdJwtLPufRVVKF3slGdaaucXyrskJMmajAMwkhoR6UicfdWmvW4g5SO1
+        uK+QtUzrrMapv6pIYQk0nGtaV3rrCb/mYYUvNoikNwge4Os16HOMhXBohIK7ejXM8UAHk8CuDqaUd
+        sFsDCLbg==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1kjhOw-0002ji-Jr; Mon, 30 Nov 2020 11:31:26 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH libnetfilter_log 0/2] build: a couple of `-lnfnetlink` fixes.
+Date:   Mon, 30 Nov 2020 11:31:23 +0000
+Message-Id: <20201130113125.1346744-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="8A__E0.F_EBD..A._80_47C"
-X-Priority: 3
-X-MSMail-Priority: Normal
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Building libnetfilter_log.so passes `-lnfnetlink` to the linker twice and
+building libnetfilter_log_libipulog.so doesn't pass it at all.
 
---8A__E0.F_EBD..A._80_47C
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+Jeremy Sowden (2):
+  build: remove duplicate `-lnfnetlink` from LDFLAGS.
+  build: link libnetfilter_log_libipulog.so explicitly to
+    libnfnetlink.so.
 
-Dear friend,
+ src/Makefile.am | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-  Greetings from Libya,  I am the wife of the ex-Libyan leader Colonel Mua=
-mmar Qaddafi, the former and late leader of
-Libya Colonel Muammar Qaddafi who was betrayed and embattled by Libyan
-and murdered by the Libyan rebels which led to his untimely death.
-
-Since then, me and my children has been on travel ban, no access to
-bank accounts  and we have been rendered homeless and at the same time we =
-are
-under threat and we are not allowed to
-invest or operate bank account. I wrote this letter because
-I need you to help me to secure some of my family funds that is deposited =
-by my late husband in different security
-companies abroad which is no longer safe under the name of my late
-husband therefore I urgently need your help to transfer the amount to your=
- bank account
-and ones we start, first, the beneficiary name should be
-immediately changed from my late husband name to your name through my
-lawyers.
-
-I promise to make you richer by offering you 30% of the total amount
-that can be secured through your help and in each transactions successfull=
-y
-completed by you and if you can assist me, we must work in confidentiality=
- therefore I want
-you to please keep this as a greater secret.
-
-
-In your response, I want you to provide me with your particulars as
-listed below because it will be used by my lawyers to make change of
-ownership of funds to your name:
-
-1) Your  full name.
-
-2) Home or office Address.
-
-3) Land Telephone and mobile phone numbers.
-
-4) Your Age.
-
-5) Your gender/Sex.
-
-6) Your Occupation.
-
-7) Any form of Identification.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Please contact me on my secure email address: safqad203@gmail.com 
-
-Yours sincerely,
-Mrs.Safiya Qaddafi.
-
---8A__E0.F_EBD..A._80_47C--
+-- 
+2.29.2
 
