@@ -2,55 +2,71 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816032CF788
-	for <lists+netfilter-devel@lfdr.de>; Sat,  5 Dec 2020 00:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CEA2D0273
+	for <lists+netfilter-devel@lfdr.de>; Sun,  6 Dec 2020 11:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727186AbgLDXbA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 4 Dec 2020 18:31:00 -0500
-Received: from vsm-gw.hyogo-dai.ac.jp ([202.244.76.12]:57950 "EHLO
-        vsm-gw.hyogo-dai.ac.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgLDXbA (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 4 Dec 2020 18:31:00 -0500
-X-Greylist: delayed 10678 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Dec 2020 18:30:59 EST
-Received: from humans-kc.hyogo-dai.ac.jp (humans-kc.hyogo-dai.ac.jp [202.244.77.11])
-        by vsm-gw.hyogo-dai.ac.jp (Postfix) with ESMTP id 4BAD91A53EE;
-        Sat,  5 Dec 2020 04:40:44 +0900 (JST)
-Received: from humans-kc.hyogo-dai.ac.jp (humans-kc.hyogo-dai.ac.jp [127.0.0.1])
-        by postfix.imss71 (Postfix) with ESMTP id 06E2C6821BE;
-        Sat,  5 Dec 2020 04:40:44 +0900 (JST)
-Received: from hyogo-dai.ac.jp (unknown [202.244.77.11])
-        by humans-kc.hyogo-dai.ac.jp (Postfix) with SMTP id D1554838260;
-        Sat,  5 Dec 2020 04:40:43 +0900 (JST)
+        id S1725943AbgLFKOS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 6 Dec 2020 05:14:18 -0500
+Received: from mx1.riseup.net ([198.252.153.129]:57666 "EHLO mx1.riseup.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725822AbgLFKOS (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 6 Dec 2020 05:14:18 -0500
+Received: from capuchin.riseup.net (capuchin-pn.riseup.net [10.0.1.176])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4Cpj2V1WhgzFmZm;
+        Sun,  6 Dec 2020 02:13:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1607249618; bh=MPJxsd/wly6TycTKdsClWvcITRPYIiTnUNRr5TKeEpk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=d/gN7lbecInXBrOa5T+RbMaAM4YbB/8OF2gbL6eIk9iV7mtoABo50QEr1FinMZ/Ti
+         TXcoPxU5Fd+B1qL7cFBYllhpFkju2OwzMsaBSc2x/mHvEOvKrtQrT4t5nfiCGVxzrF
+         DaWet+nNGO1KlxK6fbuiRcjo/yDVLZIsOHR45QfA=
+X-Riseup-User-ID: 8009B309F2A3EDC4C77FB4ECE89CB9885DF2B57CB88A6BE75E13E65DAB6093CB
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by capuchin.riseup.net (Postfix) with ESMTPSA id 4Cpj2T2XbHz8tKR;
+        Sun,  6 Dec 2020 02:13:35 -0800 (PST)
+From:   "Jose M. Guisado Gomez" <guigom@riseup.net>
+To:     pablo@netfilter.org
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nftables 1/2] monitor: add assignment check for json_echo
+Date:   Sun,  6 Dec 2020 11:12:33 +0100
+Message-Id: <20201206101233.641-1-guigom@riseup.net>
 MIME-Version: 1.0
-Message-ID: <20201204194043.00001494.0554@hyogo-dai.ac.jp>
-Date:   Sat, 05 Dec 2020 04:40:43 +0900
-From:   "Dr.Raymond" <tabata@hyogo-dai.ac.jp>
-To:     <infocarferr1@aim.com>
-Reply-To: <infocarfer@aim.com>
-Subject: I am Vice Chairman of Hang Seng Bank, Dr. Raymond Chien
-         Kuo Fung I have Important Matter to Discuss with you concerning
-         my late client. Died without a NEXT OF KIN. Send me your private
-         email for full details information. 
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MAILER: Active! mail
-X-TM-AS-MML: disable
-X-TM-AS-Product-Ver: IMSS-7.1.0.1808-8.2.0.1013-25446.007
-X-TM-AS-Result: No--4.326-5.0-31-10
-X-imss-scan-details: No--4.326-5.0-31-10
-X-TM-AS-User-Approved-Sender: No
-X-TMASE-MatchedRID: +T4Z3mpR0x5ITndh1lLRASsOycAMAhSTkCM77ifYafsBLhz6t76Ce/bj
-        Enpjm61/Gf23dqZJjE4Erxo5p8V1/E1+zyfzlN7y/sToY2qzpx7w5nZ/qYg41XEWw1TkKAjcYff
-        qdBtG2ocgOkCKsW/kbuunGEBqPil++coAzulIP8gMTyJMXCOBhj9BWL7GG0LsKrauXd3MZDUZaR
-        NzIP3XI5u3uLPgwbAMH5RdHnhWfwyq9gpuf+A6coDeeVSgzszVDx5n520Z3eZyT7DDRtYlKaWBy
-        ZE9nSaC/rhfyjvqkZu/pNa4BidtZEMMprcbiest
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-infocarfer@aim.com
+When --echo and --json is specified and native syntax is read, only the
+last instruction is printed. This happens because the reference to the
+json_echo is reassigned each time netlink_echo_callback is executed for
+an instruction to be echoed.
 
+Add an assignment check for json_echo to avoid reassigning it.
 
+Fixes: cb7e02f4 (src: enable json echo output when reading native
+syntax)
+Signed-off-by: Jose M. Guisado Gomez <guigom@riseup.net>
+---
+ src/monitor.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/monitor.c b/src/monitor.c
+index a733a9f0..2b5325ea 100644
+--- a/src/monitor.c
++++ b/src/monitor.c
+@@ -939,8 +939,8 @@ int netlink_echo_callback(const struct nlmsghdr *nlh, void *data)
+ 	if (nft_output_json(&nft->output)) {
+ 		if (nft->json_root)
+ 			return json_events_cb(nlh, &echo_monh);
+-
+-		json_alloc_echo(nft);
++		if (!nft->json_echo)
++			json_alloc_echo(nft);
+ 		echo_monh.format = NFTNL_OUTPUT_JSON;
+ 	}
+ 
+-- 
+2.28.0
 
