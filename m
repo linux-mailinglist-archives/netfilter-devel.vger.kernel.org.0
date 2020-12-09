@@ -2,28 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA782D4853
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Dec 2020 18:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DFF2D4855
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Dec 2020 18:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgLIRu4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 9 Dec 2020 12:50:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39342 "EHLO
+        id S1728361AbgLIRvD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 9 Dec 2020 12:51:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728364AbgLIRu4 (ORCPT
+        with ESMTP id S1726627AbgLIRvC (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:50:56 -0500
+        Wed, 9 Dec 2020 12:51:02 -0500
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E78C06138C
-        for <netfilter-devel@vger.kernel.org>; Wed,  9 Dec 2020 09:50:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D15C061282
+        for <netfilter-devel@vger.kernel.org>; Wed,  9 Dec 2020 09:50:08 -0800 (PST)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1kn3bG-0004RW-K9; Wed, 09 Dec 2020 18:50:02 +0100
+        id 1kn3bK-0004Rd-RQ; Wed, 09 Dec 2020 18:50:06 +0100
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 08/10] tests: icmp, icmpv6: avoid remaining warnings
-Date:   Wed,  9 Dec 2020 18:49:22 +0100
-Message-Id: <20201209174924.27720-9-fw@strlen.de>
+Subject: [PATCH nft 09/10] tests: ip: add one test case to cover both id and sequence
+Date:   Wed,  9 Dec 2020 18:49:23 +0100
+Message-Id: <20201209174924.27720-10-fw@strlen.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201209174924.27720-1-fw@strlen.de>
 References: <20201209174924.27720-1-fw@strlen.de>
@@ -33,134 +33,57 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In case of id/sequence, both 'reply' and 'request' are valid types.
+These are two 2-byte matches, so nft will merge the accesses to
+a single 4-byte load+compare.
 
-nft currently does not remove dependencies that don't have
-a fixed rhs constant.
+Check this is properly demangled.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- tests/py/ip/icmp.t    | 35 ++++++++++++++++++-----------------
- tests/py/ip6/icmpv6.t | 41 ++++++++++++++++-------------------------
- 2 files changed, 34 insertions(+), 42 deletions(-)
+ tests/py/ip/icmp.t            |  2 ++
+ tests/py/ip/icmp.t.payload.ip | 12 ++++++++++++
+ 2 files changed, 14 insertions(+)
 
 diff --git a/tests/py/ip/icmp.t b/tests/py/ip/icmp.t
-index cb3b3e356964..e81aeca76088 100644
+index e81aeca76088..996e1fc321e4 100644
 --- a/tests/py/ip/icmp.t
 +++ b/tests/py/ip/icmp.t
-@@ -40,24 +40,25 @@ icmp checksum != { 11-343} accept;ok
- icmp checksum { 1111, 222, 343} accept;ok
- icmp checksum != { 1111, 222, 343} accept;ok
- 
--icmp id 1245 log;ok
--icmp id 22;ok
--icmp id != 233;ok
--icmp id 33-45;ok
--icmp id != 33-45;ok
--icmp id { 33-55};ok
--icmp id != { 33-55};ok
--icmp id { 22, 34, 333};ok
--icmp id != { 22, 34, 333};ok
-+icmp id 1245 log;ok;icmp type { echo-reply, echo-request} icmp id 1245 log
-+icmp id 22;ok;icmp type { echo-reply, echo-request} icmp id 22
-+icmp id != 233;ok;icmp type { echo-reply, echo-request} icmp id != 233
-+icmp id 33-45;ok;icmp type { echo-reply, echo-request} icmp id 33-45
-+icmp id != 33-45;ok;icmp type { echo-reply, echo-request} icmp id != 33-45
-+icmp id { 33-55};ok;icmp type { echo-reply, echo-request} icmp id { 33-55}
-+icmp id != { 33-55};ok;icmp type { echo-reply, echo-request} icmp id != { 33-55}
- 
--icmp sequence 22;ok
--icmp sequence != 233;ok
--icmp sequence 33-45;ok
--icmp sequence != 33-45;ok
--icmp sequence { 33, 55, 67, 88};ok
--icmp sequence != { 33, 55, 67, 88};ok
--icmp sequence { 33-55};ok
--icmp sequence != { 33-55};ok
-+icmp id { 22, 34, 333};ok;icmp type { echo-request, echo-reply} icmp id { 22, 34, 333}
-+icmp id != { 22, 34, 333};ok;icmp type { echo-request, echo-reply} icmp id != { 22, 34, 333}
-+
-+icmp sequence 22;ok;icmp type { echo-reply, echo-request} icmp sequence 22
-+icmp sequence != 233;ok;icmp type { echo-reply, echo-request} icmp sequence != 233
-+icmp sequence 33-45;ok;icmp type { echo-reply, echo-request} icmp sequence 33-45
-+icmp sequence != 33-45;ok;icmp type { echo-reply, echo-request} icmp sequence != 33-45
-+icmp sequence { 33, 55, 67, 88};ok;icmp type { echo-request, echo-reply} icmp sequence { 33, 55, 67, 88}
-+icmp sequence != { 33, 55, 67, 88};ok;icmp type { echo-request, echo-reply} icmp sequence != { 33, 55, 67, 88}
-+icmp sequence { 33-55};ok;icmp type { echo-request, echo-reply} icmp sequence { 33-55}
-+icmp sequence != { 33-55};ok;icmp type { echo-request, echo-reply} icmp sequence != { 33-55}
+@@ -59,6 +59,7 @@ icmp sequence { 33, 55, 67, 88};ok;icmp type { echo-request, echo-reply} icmp se
+ icmp sequence != { 33, 55, 67, 88};ok;icmp type { echo-request, echo-reply} icmp sequence != { 33, 55, 67, 88}
+ icmp sequence { 33-55};ok;icmp type { echo-request, echo-reply} icmp sequence { 33-55}
+ icmp sequence != { 33-55};ok;icmp type { echo-request, echo-reply} icmp sequence != { 33-55}
++icmp id 1 icmp sequence 2;ok;icmp type { echo-reply, echo-request} icmp id 1 icmp sequence 2
  
  icmp mtu 33;ok
  icmp mtu 22-33;ok
-diff --git a/tests/py/ip6/icmpv6.t b/tests/py/ip6/icmpv6.t
-index 8d794115d51e..67fa6ca8490f 100644
---- a/tests/py/ip6/icmpv6.t
-+++ b/tests/py/ip6/icmpv6.t
-@@ -44,9 +44,8 @@ icmpv6 checksum != { 222, 226};ok
- icmpv6 checksum { 222-226};ok
- icmpv6 checksum != { 222-226};ok
- 
--# BUG: icmpv6 parameter-problem, pptr, mtu, packet-too-big
-+# BUG: icmpv6 parameter-problem, pptr
- # [ICMP6HDR_PPTR]         = ICMP6HDR_FIELD("parameter-problem", icmp6_pptr),
--# [ICMP6HDR_MTU]          = ICMP6HDR_FIELD("packet-too-big", icmp6_mtu),
- # $ sudo nft add rule ip6 test6 input icmpv6 parameter-problem 35
- # <cmdline>:1:53-53: Error: syntax error, unexpected end of file
- # add rule ip6 test6 input icmpv6 parameter-problem 35
-@@ -59,11 +58,6 @@ icmpv6 checksum != { 222-226};ok
- # <cmdline>:1:54-54: Error: syntax error, unexpected end of file
- # add rule ip6 test6 input icmpv6 parameter-problem 2-4
- 
--# BUG: packet-too-big
--# $ sudo nft add rule ip6 test6 input icmpv6 packet-too-big 34
--# <cmdline>:1:50-50: Error: syntax error, unexpected end of file
--# add rule ip6 test6 input icmpv6 packet-too-big 34
--
- icmpv6 mtu 22;ok
- icmpv6 mtu != 233;ok
- icmpv6 mtu 33-45;ok
-@@ -73,27 +67,24 @@ icmpv6 mtu != {33, 55, 67, 88};ok
- icmpv6 mtu {33-55};ok
- icmpv6 mtu != {33-55};ok
- 
--- icmpv6 id 2;ok
--- icmpv6 id != 233;ok
--icmpv6 id 33-45;ok
--icmpv6 id != 33-45;ok
--icmpv6 id {33, 55, 67, 88};ok
--icmpv6 id != {33, 55, 67, 88};ok
--icmpv6 id {33-55};ok
--icmpv6 id != {33-55};ok
-+icmpv6 id 33-45;ok;icmpv6 type { echo-request, echo-reply} icmpv6 id 33-45
-+icmpv6 id != 33-45;ok;icmpv6 type { echo-request, echo-reply} icmpv6 id != 33-45
-+icmpv6 id {33, 55, 67, 88};ok;icmpv6 type { echo-request, echo-reply} icmpv6 id { 33, 55, 67, 88}
-+icmpv6 id != {33, 55, 67, 88};ok;icmpv6 type { echo-request, echo-reply} icmpv6 id != { 33, 55, 67, 88}
-+icmpv6 id {33-55};ok;icmpv6 type { echo-request, echo-reply} icmpv6 id { 33-55}
-+icmpv6 id != {33-55};ok;icmpv6 type { echo-request, echo-reply} icmpv6 id != { 33-55}
+@@ -83,3 +84,4 @@ icmp gateway { 33-55};ok
+ icmp gateway != { 33-55};ok
+ icmp gateway != 34;ok
+ icmp gateway != { 333, 334};ok
 +
-+icmpv6 sequence 2;ok;icmpv6 type { echo-request, echo-reply} icmpv6 sequence 2
-+icmpv6 sequence {3, 4, 5, 6, 7} accept;ok;icmpv6 type { echo-request, echo-reply} icmpv6 sequence { 3, 4, 5, 6, 7} accept
+diff --git a/tests/py/ip/icmp.t.payload.ip b/tests/py/ip/icmp.t.payload.ip
+index 6ed4dff86d10..e238c4bb142c 100644
+--- a/tests/py/ip/icmp.t.payload.ip
++++ b/tests/py/ip/icmp.t.payload.ip
+@@ -502,6 +502,18 @@ ip test-ip4 input
+   [ payload load 2b @ transport header + 6 => reg 1 ]
+   [ lookup reg 1 set __set%d 0x1 ]
  
--icmpv6 sequence 2;ok
--icmpv6 sequence {3, 4, 5, 6, 7} accept;ok
- 
--icmpv6 sequence {2, 4};ok
--icmpv6 sequence != {2, 4};ok
--icmpv6 sequence 2-4;ok
--icmpv6 sequence != 2-4;ok
--icmpv6 sequence { 2-4};ok
--icmpv6 sequence != { 2-4};ok
-+icmpv6 sequence {2, 4};ok;icmpv6 type { echo-request, echo-reply} icmpv6 sequence { 2, 4}
-+icmpv6 sequence != {2, 4};ok;icmpv6 type { echo-request, echo-reply} icmpv6 sequence != { 2, 4}
-+icmpv6 sequence 2-4;ok;icmpv6 type { echo-request, echo-reply} icmpv6 sequence 2-4
-+icmpv6 sequence != 2-4;ok;icmpv6 type { echo-request, echo-reply} icmpv6 sequence != 2-4
-+icmpv6 sequence { 2-4};ok;icmpv6 type { echo-request, echo-reply} icmpv6 sequence { 2-4}
-+icmpv6 sequence != { 2-4};ok;icmpv6 type { echo-request, echo-reply} icmpv6 sequence != { 2-4}
- 
--- icmpv6 max-delay 22;ok
--- icmpv6 max-delay != 233;ok
- icmpv6 max-delay 33-45;ok
- icmpv6 max-delay != 33-45;ok
- icmpv6 max-delay {33, 55, 67, 88};ok
++# icmp id 1 icmp sequence 2
++__set%d test-ip4 3
++__set%d test-ip4 0
++	element 00000008  : 0 [end]	element 00000000  : 0 [end]
++ip 
++  [ meta load l4proto => reg 1 ]
++  [ cmp eq reg 1 0x00000001 ]
++  [ payload load 1b @ transport header + 0 => reg 1 ]
++  [ lookup reg 1 set __set%d ]
++  [ payload load 4b @ transport header + 4 => reg 1 ]
++  [ cmp eq reg 1 0x02000100 ]
++
+ # icmp mtu 33
+ ip test-ip4 input
+   [ meta load l4proto => reg 1 ]
 -- 
 2.26.2
 
