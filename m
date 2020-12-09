@@ -2,89 +2,53 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE7E2D4D72
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Dec 2020 23:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7692D4F0D
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Dec 2020 00:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388490AbgLIWTI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 9 Dec 2020 17:19:08 -0500
-Received: from correo.us.es ([193.147.175.20]:32994 "EHLO mail.us.es"
+        id S1727174AbgLIXu6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 9 Dec 2020 18:50:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388423AbgLIWTE (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:19:04 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 9A478D2DA1B
-        for <netfilter-devel@vger.kernel.org>; Wed,  9 Dec 2020 23:18:10 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 88FF9DA73F
-        for <netfilter-devel@vger.kernel.org>; Wed,  9 Dec 2020 23:18:10 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 7E52ADA722; Wed,  9 Dec 2020 23:18:10 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 5A635DA704;
-        Wed,  9 Dec 2020 23:18:08 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 09 Dec 2020 23:18:08 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 27FE74265A5A;
-        Wed,  9 Dec 2020 23:18:08 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net 4/4] netfilter: nft_ct: Remove confirmation check for NFT_CT_ID
-Date:   Wed,  9 Dec 2020 23:18:10 +0100
-Message-Id: <20201209221810.32504-5-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201209221810.32504-1-pablo@netfilter.org>
-References: <20201209221810.32504-1-pablo@netfilter.org>
+        id S1730106AbgLIXut (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 9 Dec 2020 18:50:49 -0500
+Date:   Wed, 9 Dec 2020 15:50:08 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607557809;
+        bh=W9dAN5rI9swhy8m0JMx+pOH4eDDaaA4dd5Bc2GHP24U=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kwpDzHJ3GNyZxjgbhGxljZ3rz/wKR2D1OHkLqWXewdPnmLZGz/LDf6Y2V04yuni5T
+         VdjoN5lOPJwVN78S/q7mn2BUKYn+0vpULEzWOpR+YOlXKD9IgtF3cVU8u8Wi5FKFOO
+         YNrZjQ6sC+KShBrBIzVdauwAB+JgSmOHajGlBXhLtpalNYBExv6j6hNaSdWL+/oFC+
+         4aYw5x9/cXy4sy3UztSrnryGLDDdqfC11ylXI7tDfwIo5j8axpalNXrEkzGQ/gLbmr
+         ywEXJcM6/dJ6aEjgs/7WKGbFmJEcNcSq0knjp9/MDZD9TXdzSCws8qEkCInujiUY+c
+         rWaMDBNjJHd1Q==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH net] net: sched: incorrect Kconfig dependencies on
+ Netfilter modules
+Message-ID: <20201209155008.42b12cfa@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201208204707.11268-1-pablo@netfilter.org>
+References: <20201208204707.11268-1-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Brett Mastbergen <brett.mastbergen@gmail.com>
+On Tue,  8 Dec 2020 21:47:07 +0100 Pablo Neira Ayuso wrote:
+> - NET_ACT_CONNMARK and NET_ACT_CTINFO only require conntrack support.
+> - NET_ACT_IPT only requires NETFILTER_XTABLES symbols, not
+>   IP_NF_IPTABLES. After this patch, NET_ACT_IPT becomes consistent
+>   with NET_EMATCH_IPT. NET_ACT_IPT dependency on IP_NF_IPTABLES predates
+>   Linux-2.6.12-rc2 (initial git repository build).
+> 
+> Fixes: 22a5dc0e5e3e ("net: sched: Introduce connmark action")
+> Fixes: 24ec483cec98 ("net: sched: Introduce act_ctinfo action")
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 
-Since commit 656c8e9cc1ba ("netfilter: conntrack: Use consistent ct id
-hash calculation") the ct id will not change from initialization to
-confirmation.  Removing the confirmation check allows for things like
-adding an element to a 'typeof ct id' set in prerouting upon reception
-of the first packet of a new connection, and then being able to
-reference that set consistently both before and after the connection
-is confirmed.
+Doesn't seem too critical to remove unnecessary dependencies.
 
-Fixes: 656c8e9cc1ba ("netfilter: conntrack: Use consistent ct id hash calculation")
-Signed-off-by: Brett Mastbergen <brett.mastbergen@gmail.com>
-Acked-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_ct.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
-index 322bd674963e..a1b0aac46e9e 100644
---- a/net/netfilter/nft_ct.c
-+++ b/net/netfilter/nft_ct.c
-@@ -177,8 +177,6 @@ static void nft_ct_get_eval(const struct nft_expr *expr,
- 	}
- #endif
- 	case NFT_CT_ID:
--		if (!nf_ct_is_confirmed(ct))
--			goto err;
- 		*dest = nf_ct_get_id(ct);
- 		return;
- 	default:
--- 
-2.20.1
-
+Applied to net-next, thanks!
