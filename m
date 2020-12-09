@@ -2,28 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DFF2D4855
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Dec 2020 18:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B95C22D4854
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Dec 2020 18:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728361AbgLIRvD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 9 Dec 2020 12:51:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39360 "EHLO
+        id S1728636AbgLIRvC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 9 Dec 2020 12:51:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbgLIRvC (ORCPT
+        with ESMTP id S1728361AbgLIRvC (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Wed, 9 Dec 2020 12:51:02 -0500
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D15C061282
-        for <netfilter-devel@vger.kernel.org>; Wed,  9 Dec 2020 09:50:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3DFC061285
+        for <netfilter-devel@vger.kernel.org>; Wed,  9 Dec 2020 09:50:12 -0800 (PST)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1kn3bK-0004Rd-RQ; Wed, 09 Dec 2020 18:50:06 +0100
+        id 1kn3bP-0004Rk-3h; Wed, 09 Dec 2020 18:50:11 +0100
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 09/10] tests: ip: add one test case to cover both id and sequence
-Date:   Wed,  9 Dec 2020 18:49:23 +0100
-Message-Id: <20201209174924.27720-10-fw@strlen.de>
+Subject: [PATCH nft 10/10] tests: icmp, icmpv6: check we don't add second dependency
+Date:   Wed,  9 Dec 2020 18:49:24 +0100
+Message-Id: <20201209174924.27720-11-fw@strlen.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201209174924.27720-1-fw@strlen.de>
 References: <20201209174924.27720-1-fw@strlen.de>
@@ -33,46 +33,40 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-These are two 2-byte matches, so nft will merge the accesses to
-a single 4-byte load+compare.
-
-Check this is properly demangled.
+If dependency is already fulfilled, do not add another one.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- tests/py/ip/icmp.t            |  2 ++
- tests/py/ip/icmp.t.payload.ip | 12 ++++++++++++
- 2 files changed, 14 insertions(+)
+ tests/py/ip/icmp.t                |  1 +
+ tests/py/ip/icmp.t.payload.ip     | 12 ++++++++++++
+ tests/py/ip6/icmpv6.t             |  1 +
+ tests/py/ip6/icmpv6.t.payload.ip6 |  9 +++++++++
+ 4 files changed, 23 insertions(+)
 
 diff --git a/tests/py/ip/icmp.t b/tests/py/ip/icmp.t
-index e81aeca76088..996e1fc321e4 100644
+index 996e1fc321e4..c22b55eb1e3f 100644
 --- a/tests/py/ip/icmp.t
 +++ b/tests/py/ip/icmp.t
-@@ -59,6 +59,7 @@ icmp sequence { 33, 55, 67, 88};ok;icmp type { echo-request, echo-reply} icmp se
- icmp sequence != { 33, 55, 67, 88};ok;icmp type { echo-request, echo-reply} icmp sequence != { 33, 55, 67, 88}
+@@ -60,6 +60,7 @@ icmp sequence != { 33, 55, 67, 88};ok;icmp type { echo-request, echo-reply} icmp
  icmp sequence { 33-55};ok;icmp type { echo-request, echo-reply} icmp sequence { 33-55}
  icmp sequence != { 33-55};ok;icmp type { echo-request, echo-reply} icmp sequence != { 33-55}
-+icmp id 1 icmp sequence 2;ok;icmp type { echo-reply, echo-request} icmp id 1 icmp sequence 2
+ icmp id 1 icmp sequence 2;ok;icmp type { echo-reply, echo-request} icmp id 1 icmp sequence 2
++icmp type { echo-reply, echo-request} icmp id 1 icmp sequence 2;ok
  
  icmp mtu 33;ok
  icmp mtu 22-33;ok
-@@ -83,3 +84,4 @@ icmp gateway { 33-55};ok
- icmp gateway != { 33-55};ok
- icmp gateway != 34;ok
- icmp gateway != { 333, 334};ok
-+
 diff --git a/tests/py/ip/icmp.t.payload.ip b/tests/py/ip/icmp.t.payload.ip
-index 6ed4dff86d10..e238c4bb142c 100644
+index e238c4bb142c..d75d12a06125 100644
 --- a/tests/py/ip/icmp.t.payload.ip
 +++ b/tests/py/ip/icmp.t.payload.ip
-@@ -502,6 +502,18 @@ ip test-ip4 input
-   [ payload load 2b @ transport header + 6 => reg 1 ]
-   [ lookup reg 1 set __set%d 0x1 ]
+@@ -514,6 +514,18 @@ ip
+   [ payload load 4b @ transport header + 4 => reg 1 ]
+   [ cmp eq reg 1 0x02000100 ]
  
-+# icmp id 1 icmp sequence 2
++# icmp type { echo-reply, echo-request} icmp id 1 icmp sequence 2
 +__set%d test-ip4 3
 +__set%d test-ip4 0
-+	element 00000008  : 0 [end]	element 00000000  : 0 [end]
++	element 00000000  : 0 [end]	element 00000008  : 0 [end]
 +ip 
 +  [ meta load l4proto => reg 1 ]
 +  [ cmp eq reg 1 0x00000001 ]
@@ -84,6 +78,38 @@ index 6ed4dff86d10..e238c4bb142c 100644
  # icmp mtu 33
  ip test-ip4 input
    [ meta load l4proto => reg 1 ]
+diff --git a/tests/py/ip6/icmpv6.t b/tests/py/ip6/icmpv6.t
+index 67fa6ca8490f..8b411a8bf439 100644
+--- a/tests/py/ip6/icmpv6.t
++++ b/tests/py/ip6/icmpv6.t
+@@ -66,6 +66,7 @@ icmpv6 mtu {33, 55, 67, 88};ok
+ icmpv6 mtu != {33, 55, 67, 88};ok
+ icmpv6 mtu {33-55};ok
+ icmpv6 mtu != {33-55};ok
++icmpv6 type packet-too-big icmpv6 mtu 1280;ok;icmpv6 mtu 1280
+ 
+ icmpv6 id 33-45;ok;icmpv6 type { echo-request, echo-reply} icmpv6 id 33-45
+ icmpv6 id != 33-45;ok;icmpv6 type { echo-request, echo-reply} icmpv6 id != 33-45
+diff --git a/tests/py/ip6/icmpv6.t.payload.ip6 b/tests/py/ip6/icmpv6.t.payload.ip6
+index 406bdd6dab93..171b7eade6d3 100644
+--- a/tests/py/ip6/icmpv6.t.payload.ip6
++++ b/tests/py/ip6/icmpv6.t.payload.ip6
+@@ -408,6 +408,15 @@ ip6 test-ip6 input
+   [ payload load 4b @ transport header + 4 => reg 1 ]
+   [ lookup reg 1 set __set%d 0x1 ]
+ 
++# icmpv6 type packet-too-big icmpv6 mtu 1280
++ip6 
++  [ meta load l4proto => reg 1 ]
++  [ cmp eq reg 1 0x0000003a ]
++  [ payload load 1b @ transport header + 0 => reg 1 ]
++  [ cmp eq reg 1 0x00000002 ]
++  [ payload load 4b @ transport header + 4 => reg 1 ]
++  [ cmp eq reg 1 0x00050000 ]
++
+ # icmpv6 id 33-45
+ __set%d test-ip6 3
+ __set%d test-ip6 0
 -- 
 2.26.2
 
