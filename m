@@ -2,50 +2,67 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949B42D3D91
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Dec 2020 09:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9D32D3ED7
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Dec 2020 10:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbgLIIf0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 9 Dec 2020 03:35:26 -0500
-Received: from vps-ad94741f.vps.ovh.ca ([51.79.157.202]:50502 "EHLO visi.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726035AbgLIIf0 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:35:26 -0500
-Received: from [89.200.9.204] (account juliangath@visi.com HELO User)
-  by visi.com (CommuniGate Pro SMTP 6.1.9 _community_)
-  with ESMTPA id 202656; Wed, 09 Dec 2020 07:22:16 -0800
-Reply-To: <jalghafri3@gmail.com>
-From:   "MR JABER AL-GHAFR" <raywandyg@gmail.com>
-Subject: INVESTMENT
-Date:   Wed, 9 Dec 2020 09:34:11 +0100
+        id S1727505AbgLIJcT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 9 Dec 2020 04:32:19 -0500
+Received: from correo.us.es ([193.147.175.20]:39862 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729334AbgLIJcS (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 9 Dec 2020 04:32:18 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 27B2CE8E91
+        for <netfilter-devel@vger.kernel.org>; Wed,  9 Dec 2020 10:31:27 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 138A4DA90D
+        for <netfilter-devel@vger.kernel.org>; Wed,  9 Dec 2020 10:31:27 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 079FFDA918; Wed,  9 Dec 2020 10:31:27 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 0452CDA8F4;
+        Wed,  9 Dec 2020 10:31:25 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Wed, 09 Dec 2020 10:31:25 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id DD8D942EE39A;
+        Wed,  9 Dec 2020 10:31:24 +0100 (CET)
+Date:   Wed, 9 Dec 2020 10:31:33 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Brett Mastbergen <brett.mastbergen@gmail.com>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf] netfilter: nft_ct: Remove confirmation check for
+ NFT_CT_ID
+Message-ID: <20201209093133.GA14835@salvia>
+References: <20201208213924.3106-1-brett.mastbergen@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 8BIT
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2800.1081
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2800.1081
-X-Antivirus: AVG (VPS 201207-4, 07/12/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <auto-000000202656@visi.com>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201208213924.3106-1-brett.mastbergen@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Good Day
-I am JABER AL-GHAFRI, Pleasant greetings to you as i seek your indulgence to introduce to you the desire of my principal’s wish, to make huge financial investment in your home country on areas of oil and gas, real estate, tourism and hotel, manufacturing and production company, agriculture, fishing, Mining & Trading of natural resources such as crude oil, coal, graphite, coke, refinery, energy, hospital etc.
+On Tue, Dec 08, 2020 at 04:39:24PM -0500, Brett Mastbergen wrote:
+> Since commit 656c8e9cc1ba ("netfilter: conntrack: Use consistent ct id
+> hash calculation") the ct id will not change from initialization to
+> confirmation.  Removing the confirmation check allows for things like
+> adding an element to a 'typeof ct id' set in prerouting upon reception
+> of the first packet of a new connection, and then being able to
+> reference that set consistently both before and after the connection
+> is confirmed.
 
-He needs a capable, trustworthy and understanding business partner, who can confidently handle and manage his investment funds with utmost care of secrecy without traces or link to him as he is politically exposed at the moment in his country. He has a huge available financial portfolio.
-
-Please, I will provide more details about the transaction if you are sure you can handle classified information and also let me know your entitlement for the solicited role
-I shall be expecting your quick reply. E-mail jalghafri3@gmail.com
-Best Regards,
-JABER AL-GHAFRI
-
--- 
-This email has been checked for viruses by AVG.
-https://www.avg.com
-
+Applied, thanks.
