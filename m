@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85702D5B3E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Dec 2020 14:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D892D5B3A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Dec 2020 14:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387647AbgLJNHe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 10 Dec 2020 08:07:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
+        id S2389059AbgLJNHH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 10 Dec 2020 08:07:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729355AbgLJNHe (ORCPT
+        with ESMTP id S2388970AbgLJNHH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:07:34 -0500
+        Thu, 10 Dec 2020 08:07:07 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CFEC0617A6
-        for <netfilter-devel@vger.kernel.org>; Thu, 10 Dec 2020 05:06:46 -0800 (PST)
-Received: from localhost ([::1]:40984 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E30C0613D6
+        for <netfilter-devel@vger.kernel.org>; Thu, 10 Dec 2020 05:06:27 -0800 (PST)
+Received: from localhost ([::1]:40960 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.94)
         (envelope-from <phil@nwl.cc>)
-        id 1knLef-0000ga-7x; Thu, 10 Dec 2020 14:06:45 +0100
+        id 1knLeK-0000fk-2x; Thu, 10 Dec 2020 14:06:24 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v3 6/9] nft: Introduce a dedicated base chain array
-Date:   Thu, 10 Dec 2020 14:06:33 +0100
-Message-Id: <20201210130636.26379-7-phil@nwl.cc>
+Subject: [iptables PATCH v3 7/9] nft: cache: Sort custom chains by name
+Date:   Thu, 10 Dec 2020 14:06:34 +0100
+Message-Id: <20201210130636.26379-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201210130636.26379-1-phil@nwl.cc>
 References: <20201210130636.26379-1-phil@nwl.cc>
@@ -34,124 +34,62 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Preparing for sorted chain output, introduce a per-table array holding
-base chains indexed by nf_inet_hooks value. Since the latter is ordered
-correctly, iterating over the array will return base chains in expected
-order.
+With base chains no longer residing in the tables' chain lists, they can
+easily be sorted upon insertion. This on one hand aligns custom chain
+ordering with legacy iptables and on the other makes it predictable,
+which is very helpful when manually comparing ruleset dumps for
+instance.
+
+Adjust the one ebtables-nft test case this change breaks (as wrong
+ordering is expected in there). The manual output sorting done for tests
+which apply to legacy as well as nft is removed in a separate patch.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-cache.c | 34 +++++++++++++++++++++++++++++++++-
- iptables/nft.c       | 12 +++++++++++-
- iptables/nft.h       |  1 +
- 3 files changed, 45 insertions(+), 2 deletions(-)
+ iptables/nft-cache.c                              | 15 +++++++++++++--
+ .../ebtables/0002-ebtables-save-restore_0         |  2 +-
+ 2 files changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/iptables/nft-cache.c b/iptables/nft-cache.c
-index f62e5100cd67b..bd19b6dfc4d8a 100644
+index bd19b6dfc4d8a..6b6e6da40a826 100644
 --- a/iptables/nft-cache.c
 +++ b/iptables/nft-cache.c
-@@ -208,7 +208,24 @@ int nft_cache_add_chain(struct nft_handle *h, const struct builtin_table *t,
- 	const char *cname = nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
- 	struct nft_chain *nc = nft_chain_alloc(c);
+@@ -223,8 +223,19 @@ int nft_cache_add_chain(struct nft_handle *h, const struct builtin_table *t,
  
--	list_add_tail(&nc->head, &h->cache->table[t->type].chains->list);
-+	if (nftnl_chain_is_set(c, NFTNL_CHAIN_HOOKNUM)) {
-+		uint32_t hooknum = nftnl_chain_get_u32(c, NFTNL_CHAIN_HOOKNUM);
+ 		h->cache->table[t->type].base_chains[hooknum] = nc;
+ 	} else {
+-		list_add_tail(&nc->head,
+-			      &h->cache->table[t->type].chains->list);
++		struct nft_chain_list *clist = h->cache->table[t->type].chains;
++		struct list_head *pos = &clist->list;
++		struct nft_chain *cur;
++		const char *n;
 +
-+		if (hooknum >= NF_INET_NUMHOOKS) {
-+			nft_chain_free(nc);
-+			return -EINVAL;
++		list_for_each_entry(cur, &clist->list, head) {
++			n = nftnl_chain_get_str(cur->nftnl, NFTNL_CHAIN_NAME);
++			if (strcmp(cname, n) <= 0) {
++				pos = &cur->head;
++				break;
++			}
 +		}
-+
-+		if (h->cache->table[t->type].base_chains[hooknum]) {
-+			nft_chain_free(nc);
-+			return -EEXIST;
-+		}
-+
-+		h->cache->table[t->type].base_chains[hooknum] = nc;
-+	} else {
-+		list_add_tail(&nc->head,
-+			      &h->cache->table[t->type].chains->list);
-+	}
++		list_add_tail(&nc->head, pos);
+ 	}
  	hlist_add_head(&nc->hnode, chain_name_hlist(h, t, cname));
  	return 0;
- }
-@@ -609,6 +626,19 @@ static int __flush_set_cache(struct nftnl_set *s, void *data)
- 	return 0;
- }
- 
-+static void flush_base_chain_cache(struct nft_chain **base_chains)
-+{
-+	int i;
-+
-+	for (i = 0; i < NF_INET_NUMHOOKS; i++) {
-+		if (!base_chains[i])
-+			continue;
-+		hlist_del(&base_chains[i]->hnode);
-+		nft_chain_free(base_chains[i]);
-+		base_chains[i] = NULL;
-+	}
-+}
-+
- static int flush_cache(struct nft_handle *h, struct nft_cache *c,
- 		       const char *tablename)
- {
-@@ -620,6 +650,7 @@ static int flush_cache(struct nft_handle *h, struct nft_cache *c,
- 		if (!table)
- 			return 0;
- 
-+		flush_base_chain_cache(c->table[table->type].base_chains);
- 		nft_chain_foreach(h, tablename, __flush_chain_cache, NULL);
- 
- 		if (c->table[table->type].sets)
-@@ -632,6 +663,7 @@ static int flush_cache(struct nft_handle *h, struct nft_cache *c,
- 		if (h->tables[i].name == NULL)
- 			continue;
- 
-+		flush_base_chain_cache(c->table[i].base_chains);
- 		if (c->table[i].chains) {
- 			nft_chain_list_free(c->table[i].chains);
- 			c->table[i].chains = NULL;
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 1b7400050c0ed..4187e691d8926 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -2396,12 +2396,22 @@ int nft_chain_foreach(struct nft_handle *h, const char *table,
- 	const struct builtin_table *t;
- 	struct nft_chain_list *list;
- 	struct nft_chain *c, *c_bak;
--	int ret;
-+	int i, ret;
- 
- 	t = nft_table_builtin_find(h, table);
- 	if (!t)
- 		return -1;
- 
-+	for (i = 0; i < NF_INET_NUMHOOKS; i++) {
-+		c = h->cache->table[t->type].base_chains[i];
-+		if (!c)
-+			continue;
-+
-+		ret = cb(c, data);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	list = h->cache->table[t->type].chains;
- 	if (!list)
- 		return -1;
-diff --git a/iptables/nft.h b/iptables/nft.h
-index ac227b4c6c581..1a2506eea7b6c 100644
---- a/iptables/nft.h
-+++ b/iptables/nft.h
-@@ -40,6 +40,7 @@ enum nft_cache_level {
- 
- struct nft_cache {
- 	struct {
-+		struct nft_chain	*base_chains[NF_INET_NUMHOOKS];
- 		struct nft_chain_list	*chains;
- 		struct nftnl_set_list	*sets;
- 		bool			exists;
+diff --git a/iptables/tests/shell/testcases/ebtables/0002-ebtables-save-restore_0 b/iptables/tests/shell/testcases/ebtables/0002-ebtables-save-restore_0
+index b84f63a7c3672..ccdef19cfb215 100755
+--- a/iptables/tests/shell/testcases/ebtables/0002-ebtables-save-restore_0
++++ b/iptables/tests/shell/testcases/ebtables/0002-ebtables-save-restore_0
+@@ -70,8 +70,8 @@ DUMP='*filter
+ :INPUT ACCEPT
+ :FORWARD DROP
+ :OUTPUT ACCEPT
+-:foo ACCEPT
+ :bar RETURN
++:foo ACCEPT
+ -A INPUT -p IPv4 -i lo -j ACCEPT
+ -A FORWARD -j foo
+ -A OUTPUT -s Broadcast -j DROP
 -- 
 2.28.0
 
