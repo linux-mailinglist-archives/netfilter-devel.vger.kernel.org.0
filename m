@@ -2,139 +2,80 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EA52D59A3
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Dec 2020 12:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721562D5B3D
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Dec 2020 14:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727190AbgLJLt4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 10 Dec 2020 06:49:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35966 "EHLO
+        id S2388052AbgLJNHV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 10 Dec 2020 08:07:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728096AbgLJLtq (ORCPT
+        with ESMTP id S1729355AbgLJNHV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:49:46 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF26C0613CF;
-        Thu, 10 Dec 2020 03:49:06 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id r9so5201704ioo.7;
-        Thu, 10 Dec 2020 03:49:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uHnLh3RxV8CC7Q4kxdfl/eSu3D4NGdwhj2py/jj4RS8=;
-        b=BnM2rbZLFHMtxBFoqU9BlPxRJu2ESXxA61Dw8datybFNBVtDdSRSw+VFO+Urm8vf/R
-         VGeND/g66Y7jtK2GOq7Z8ckuB5+QSeiM4jhSmTv2t6ZRxc6UMrj0/EHEBq/YF9pDx/Ud
-         wotpk26QiruA6R/C3LxEek6aNH9yIS8KECWTkAm+yizRCtCy8eoA5IIDH6edbOuyBeHZ
-         hB6UgGWO5oGnfutTZ4hAg6WKqYh0TLrTAmYKX+RiSxUW7qncKrw15MKT2XNu1z5BZHTe
-         THjo7GfFCjk4W3gbZPCU8le2gLnet9IEuMWT7gXMqkGr8q7UqC6P+ll/RIapRe1cHjss
-         DxOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uHnLh3RxV8CC7Q4kxdfl/eSu3D4NGdwhj2py/jj4RS8=;
-        b=DOp8axp13ctJgTGuctzzIaauTC9mO8usjmNLcJR48jKyGemGiDSewchGHC0PsGPQeI
-         r+ABy2P3kMm8GLN3hudIUP1+PNNXe4rpP+XroIqW2geJXBPFwLRDUzmR9k33wJ8uGlnw
-         Fx41v4NpvxAXq6v2NqWkPG6H4m9h9+5E5SkfF2XKS17o1vKjc2Lg8w3q6yj58VUNPfpM
-         counSljqAlGhf+eYTSZybXVQn0B6KcA+dvB4b0EdjOpQZ+7+5QE61hKKajPLJ6dnOFRb
-         +vX5YAXcmG0NC/G8O+5AN6DiQSdKy3FIzsukDeawKzuF/UmnyowpJO0zO1JtanC8GaFE
-         l/Qw==
-X-Gm-Message-State: AOAM532+yfjYy+X5r7vyZS+oedK4bUAu+RB1PbsU3WgRvZJnjsXRVjFW
-        T2aMUTrkulaYjAIdr7hruzN6nH+gZ1NhuU3cI7yPuF1BySk/DRSLgLk=
-X-Google-Smtp-Source: ABdhPJxxMYBRUUxSC3cV2YOGczvbnMbPHP6hzRJICuNM+/zMYtUMVcd8SGHkBmFj4YVXc8RI1UZZYv5hEe0q37FYg+c=
-X-Received: by 2002:a5e:a614:: with SMTP id q20mr8093353ioi.198.1607600945394;
- Thu, 10 Dec 2020 03:49:05 -0800 (PST)
+        Thu, 10 Dec 2020 08:07:21 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDAAC06179C
+        for <netfilter-devel@vger.kernel.org>; Thu, 10 Dec 2020 05:06:41 -0800 (PST)
+Received: from localhost ([::1]:40978 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.94)
+        (envelope-from <phil@nwl.cc>)
+        id 1knLeZ-0000gQ-Vo; Thu, 10 Dec 2020 14:06:40 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH v3 0/9] nft: Sorted chain listing et al.
+Date:   Thu, 10 Dec 2020 14:06:27 +0100
+Message-Id: <20201210130636.26379-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201207134309.16762-1-phil@nwl.cc> <CAHsH6Gupw7o96e5hOmaLBCZtqgoV0LZ4L7h-Y+2oROtXSXvTxw@mail.gmail.com>
- <20201208185139.GZ4647@orbyte.nwl.cc> <CAHsH6GvT=Af-BAWK0z_CdrYWPn0qt+C=BRjy10MLRNhLWfH0rQ@mail.gmail.com>
- <9fc5cbb8-26c7-c1c2-2018-3c0cd8c805f4@6wind.com>
-In-Reply-To: <9fc5cbb8-26c7-c1c2-2018-3c0cd8c805f4@6wind.com>
-From:   Eyal Birger <eyal.birger@gmail.com>
-Date:   Thu, 10 Dec 2020 13:48:53 +0200
-Message-ID: <CAHsH6GsoavW+435MOTKy33iznMc_-JZ-kndr+G=YxuW7DWLNPA@mail.gmail.com>
-Subject: Re: [PATCH v2] xfrm: interface: Don't hide plain packets from netfilter
-To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc:     Phil Sutter <phil@nwl.cc>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        linux-crypto@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Nicolas,
+This is a respin of my original series after getting rid of a few
+initial ("fallout") patches. It implements structs nft_chain and
+nft_chain_list to avoid changes to libnftnl as requested. Obviously this
+introduces some code duplication as some bits from libnftnl have to be
+replicated within iptables now.
 
-On Thu, Dec 10, 2020 at 1:10 PM Nicolas Dichtel
-<nicolas.dichtel@6wind.com> wrote:
->
-> Le 09/12/2020 =C3=A0 15:40, Eyal Birger a =C3=A9crit :
-> > Hi Phil,
-> >
-> > On Tue, Dec 8, 2020 at 8:51 PM Phil Sutter <phil@nwl.cc> wrote:
-> >>
-> >> Hi Eyal,
-> >>
-> >> On Tue, Dec 08, 2020 at 04:47:02PM +0200, Eyal Birger wrote:
-> >>> On Mon, Dec 7, 2020 at 4:07 PM Phil Sutter <phil@nwl.cc> wrote:
-> [snip]
-> >>
-> >> The packet appears twice being sent to eth1, the second time as ESP
-> >> packet. I understand xfrm interface as a collector of to-be-xfrmed
-> >> packets, dropping those which do not match a policy.
-> >>
-> >>>> Fix this by looping packets transmitted from xfrm_interface through
-> >>>> NF_INET_LOCAL_OUT before passing them on to dst_output(), which make=
-s
-> >>>> behaviour consistent again from netfilter's point of view.
-> >>>
-> >>> When an XFRM interface is used when forwarding, why would it be corre=
-ct
-> >>> for NF_INET_LOCAL_OUT to observe the inner packet?
-> I think it is valid because:
->  - it would be consistent with ip tunnels (see iptunnel_xmit())
+Changes since v2:
 
-Are you referring to the flow:
-  iptunnel_xmit()
-    ip_local_out()
-      __ip_local_out()
-        nf_hook(.., NF_INET_LOCAL_OUT, ...)
+* Reworded patch 1 comment to clarify what it fixes.
 
-If I understand that flow correctly it operates on the outer packet
-as it is called after all the header had been pushed already. no?
-Or are you referring to a different flow?
+* Reordered patches so that nft_chain_foreach() introduced in patch
+  3 replaces nft_chain_list_get().
 
->  - it would be consistent with the standard xfrm path see [1]
+* Drop getters previously introduced along with struct nft_chain to
+  reduce size of patch 5. Extracting data from embedded nftnl_chain into
+  nft_chain and back if needed is future work.
 
-In the regular path as well I understand the OUTPUT hooks are called
-after xfrm encoding in the forwarding case, so they can't see the inner
-packet.
+Phil Sutter (9):
+  nft: Fix selective chain compatibility checks
+  nft: cache: Introduce nft_cache_add_chain()
+  nft: Implement nft_chain_foreach()
+  nft: cache: Move nft_chain_find() over
+  nft: Introduce struct nft_chain
+  nft: Introduce a dedicated base chain array
+  nft: cache: Sort custom chains by name
+  tests: shell: Drop any dump sorting in place
+  nft: Avoid pointless table/chain creation
 
->  - from the POV of the forwarder, the packet is locally emitted, the src =
-@ is
->    owned by the forwarder.
+ iptables/Makefile.am                          |   2 +-
+ iptables/nft-cache.c                          | 162 ++++++---
+ iptables/nft-cache.h                          |  11 +-
+ iptables/nft-chain.c                          |  59 ++++
+ iptables/nft-chain.h                          |  29 ++
+ iptables/nft.c                                | 322 +++++++++++-------
+ iptables/nft.h                                |  10 +-
+ .../ebtables/0002-ebtables-save-restore_0     |   2 +-
+ .../firewalld-restore/0001-firewalld_0        |  17 +-
+ .../ipt-restore/0007-flush-noflush_0          |   4 +-
+ .../ipt-restore/0014-verbose-restore_0        |   2 +-
+ iptables/xtables-save.c                       |   8 +-
+ 12 files changed, 421 insertions(+), 207 deletions(-)
+ create mode 100644 iptables/nft-chain.c
+ create mode 100644 iptables/nft-chain.h
 
-The inner IP source address is not owned by the forwarder to my understandi=
-ng.
+-- 
+2.28.0
 
-> >>
-> >> A valid question, indeed. One could interpret packets being forwarded =
-by
-> >> those tunneling devices emit the packets one feeds them from the local
-> >> host. I just checked and ip_vti behaves identical to xfrm_interface
-> >> prior to my patch, so maybe my patch is crap and the inability to matc=
-h
-> >> on ipsec context data when using any of those devices is just by desig=
-n.
-> There was no real design for vti[6] interfaces, it's why xfrmi interfaces=
- have
-> been added. But they should be consistent I think, so this patch should h=
-andle
-> xfrmi and vti[6] together.
-
-I also think they should be consistent. But it'd still be confusing to me
-to get an OUTPUT hook on the inner packet in the forwarding case.
-
-Thanks,
-Eyal.
