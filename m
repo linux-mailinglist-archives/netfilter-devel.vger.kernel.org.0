@@ -2,84 +2,52 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70512D6B20
-	for <lists+netfilter-devel@lfdr.de>; Fri, 11 Dec 2020 00:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B76D62D6E3C
+	for <lists+netfilter-devel@lfdr.de>; Fri, 11 Dec 2020 03:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404330AbgLJWb3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 10 Dec 2020 17:31:29 -0500
-Received: from smtp-out.kfki.hu ([148.6.0.45]:37149 "EHLO smtp-out.kfki.hu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405142AbgLJW2Y (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:28:24 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by smtp0.kfki.hu (Postfix) with ESMTP id E108F67401BE;
-        Thu, 10 Dec 2020 23:19:21 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
-        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Thu, 10 Dec 2020 23:19:19 +0100 (CET)
-Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-        by smtp0.kfki.hu (Postfix) with ESMTP id 9C03767401BB;
-        Thu, 10 Dec 2020 23:19:19 +0100 (CET)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id 70B21340D5D; Thu, 10 Dec 2020 23:19:19 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by blackhole.kfki.hu (Postfix) with ESMTP id 6C4E8340D5C;
-        Thu, 10 Dec 2020 23:19:19 +0100 (CET)
-Date:   Thu, 10 Dec 2020 23:19:19 +0100 (CET)
-From:   Jozsef Kadlecsik <kadlec@netfilter.org>
-X-X-Sender: kadlec@blackhole.kfki.hu
-To:     Ed W <lists@wildgooses.com>
-cc:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: Re: ipset 7.9 compilation fix on kernel 4.14
-In-Reply-To: <701adbbb-202a-4ee4-ce2e-ecaaed6dc3b5@wildgooses.com>
-Message-ID: <alpine.DEB.2.23.453.2012102309430.14614@blackhole.kfki.hu>
-References: <alpine.DEB.2.23.453.2011192141150.19567@blackhole.kfki.hu> <c4778467-3abe-b40f-c4f7-945576fa097f@wildgooses.com> <alpine.DEB.2.23.453.2012071419590.30865@blackhole.kfki.hu> <701adbbb-202a-4ee4-ce2e-ecaaed6dc3b5@wildgooses.com>
-User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+        id S2391989AbgLKCuq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 10 Dec 2020 21:50:46 -0500
+Received: from server.kenspensetc.com ([185.148.128.76]:34922 "EHLO
+        server.kenspensetc.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391799AbgLKCum (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 10 Dec 2020 21:50:42 -0500
+Received: from localhost ([127.0.0.1]:60954 helo=server.kenspensetc.com)
+        by server.kenspensetc.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <sender@ridecals.com>)
+        id 1knMCY-0006gB-U3; Thu, 10 Dec 2020 08:41:46 -0500
+Received: from [70.32.0.46] ([70.32.0.46]) by ridecals.com (Horde Framework)
+ with HTTPS; Thu, 10 Dec 2020 08:41:46 -0500
+Date:   Thu, 10 Dec 2020 08:41:46 -0500
+Message-ID: <20201210084146.Horde.yAdn6FMXJsZFHQCwCoLtJDx@ridecals.com>
+From:   Russell Branting <sender@ridecals.com>
+Subject: Vital
+Reply-to: Goodagent01@gmail.com
+User-Agent: Horde Application Framework 5
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="110363376-271306815-1607638759=:14614"
+Content-Disposition: inline
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server.kenspensetc.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - ridecals.com
+X-Get-Message-Sender-Via: server.kenspensetc.com: authenticated_id: sender9@ridecals.com
+X-Authenticated-Sender: server.kenspensetc.com: sender9@ridecals.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---110363376-271306815-1607638759=:14614
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+I am instructed to inform you of your appointment as the next of kin  
+to your deceased relative estate. Kindly indicate your acceptance by  
+reconfirming your Full Name, Address & Phone Number for immediate  
+processing of the funds release to your control OR the deceased  
+deposited funds will be declared unclaimed.
 
-Hi,
 
-On Thu, 10 Dec 2020, Ed W wrote:
-
-> There remains a compile warning, just wanted to bring to your attention=
-:
->=20
-> /var/tmp/portage/net-firewall/ipset-7.9/work/ipset-7.9/kernel/net/netfi=
-lter/ips
-> et/ip_set_core.c: In function 'ip_set_rename':
-> /var/tmp/portage/net-firewall/ipset-7.9/work/ipset-7.9/kernel/net/netfi=
-lter/ips
-> et/ip_set_core.c:1359:2: warning: 'strncpy' specified bound 32 equals
-> destination size [-Wstringop-truncation]
-> =C2=A01359 |=C2=A0 strncpy(set->name, name2, IPSET_MAXNAMELEN);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~
-> =C2=A0 LD [M]=C2=A0/var/tmp/portage/net-firewall/ipset-7.9/work/ipset-7=
-.9/kernel/net/netfilter/ips
-> et/ip_set.o
-
-That's a false warning: name2 comes from a netlink attribute which size=20
-is limited to IPSET_MAXNAMELEN-1, including NUL. The compiler can't figur=
-e=20
-it out though.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
---110363376-271306815-1607638759=:14614--
