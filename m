@@ -2,28 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4382F2D8736
-	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Dec 2020 16:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD4F2D8734
+	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Dec 2020 16:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439229AbgLLPQ3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 12 Dec 2020 10:16:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
+        id S2439231AbgLLPQd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 12 Dec 2020 10:16:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727395AbgLLPQ3 (ORCPT
+        with ESMTP id S1727395AbgLLPQc (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 12 Dec 2020 10:16:29 -0500
+        Sat, 12 Dec 2020 10:16:32 -0500
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13F6C0613D3
-        for <netfilter-devel@vger.kernel.org>; Sat, 12 Dec 2020 07:15:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAADC0613D6
+        for <netfilter-devel@vger.kernel.org>; Sat, 12 Dec 2020 07:15:52 -0800 (PST)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1ko6cd-0005zd-Hb; Sat, 12 Dec 2020 16:15:47 +0100
+        id 1ko6cg-0005zk-UG; Sat, 12 Dec 2020 16:15:51 +0100
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH xtables-nft 1/3] xtables-monitor: fix rule printing
-Date:   Sat, 12 Dec 2020 16:15:32 +0100
-Message-Id: <20201212151534.54336-2-fw@strlen.de>
+Subject: [PATCH xtables-nft 2/3] xtables-monitor: fix packet family protocol
+Date:   Sat, 12 Dec 2020 16:15:33 +0100
+Message-Id: <20201212151534.54336-3-fw@strlen.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201212151534.54336-1-fw@strlen.de>
 References: <20201212151534.54336-1-fw@strlen.de>
@@ -33,82 +33,35 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-trace_print_rule does a rule dump.  This prints unrelated rules
-in the same chain.  Instead the function should only request the
-specific handle.
-
-Furthermore, flush output buffer afterwards so this plays nice when
-output isn't a terminal.
+This prints the family passed on the command line (which might be 0).
+Print the table family instead.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- iptables/xtables-monitor.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+ iptables/xtables-monitor.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/iptables/xtables-monitor.c b/iptables/xtables-monitor.c
-index 4008cc00d469..364e600e1b38 100644
+index 364e600e1b38..8850a12032d2 100644
 --- a/iptables/xtables-monitor.c
 +++ b/iptables/xtables-monitor.c
-@@ -227,12 +227,12 @@ static void trace_print_rule(const struct nftnl_trace *nlt, struct cb_arg *args)
- 		exit(EXIT_FAILURE);
- 	}
+@@ -273,14 +273,14 @@ static void trace_print_packet(const struct nftnl_trace *nlt, struct cb_arg *arg
+ 	uint32_t mark;
+ 	char name[IFNAMSIZ];
  
--	nlh = nftnl_chain_nlmsg_build_hdr(buf, NFT_MSG_GETRULE, family, NLM_F_DUMP, 0);
-+	nlh = nftnl_chain_nlmsg_build_hdr(buf, NFT_MSG_GETRULE, family, 0, 0);
+-	printf("PACKET: %d %08x ", args->nfproto, nftnl_trace_get_u32(nlt, NFTNL_TRACE_ID));
++	family = nftnl_trace_get_u32(nlt, NFTNL_TRACE_FAMILY);
++	printf("PACKET: %d %08x ", family, nftnl_trace_get_u32(nlt, NFTNL_TRACE_ID));
  
-         nftnl_rule_set_u32(r, NFTNL_RULE_FAMILY, family);
- 	nftnl_rule_set_str(r, NFTNL_RULE_CHAIN, chain);
- 	nftnl_rule_set_str(r, NFTNL_RULE_TABLE, table);
--	nftnl_rule_set_u64(r, NFTNL_RULE_POSITION, handle);
-+	nftnl_rule_set_u64(r, NFTNL_RULE_HANDLE, handle);
- 	nftnl_rule_nlmsg_build_payload(nlh, r);
- 	nftnl_rule_free(r);
+ 	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_IIF))
+ 		printf("IN=%s ", if_indextoname(nftnl_trace_get_u32(nlt, NFTNL_TRACE_IIF), name));
+ 	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_OIF))
+ 		printf("OUT=%s ", if_indextoname(nftnl_trace_get_u32(nlt, NFTNL_TRACE_OIF), name));
  
-@@ -248,24 +248,21 @@ static void trace_print_rule(const struct nftnl_trace *nlt, struct cb_arg *args)
- 	}
- 
- 	portid = mnl_socket_get_portid(nl);
--        if (mnl_socket_sendto(nl, nlh, nlh->nlmsg_len) < 0) {
--                perror("mnl_socket_send");
--                exit(EXIT_FAILURE);
--        }
-+	if (mnl_socket_sendto(nl, nlh, nlh->nlmsg_len) < 0) {
-+		perror("mnl_socket_send");
-+		exit(EXIT_FAILURE);
-+	}
- 
- 	ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
--        while (ret > 0) {
-+	if (ret > 0) {
- 		args->is_event = false;
--                ret = mnl_cb_run(buf, ret, 0, portid, rule_cb, args);
--                if (ret <= 0)
--                        break;
--                ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
--        }
--        if (ret == -1) {
--                perror("error");
--                exit(EXIT_FAILURE);
--        }
--        mnl_socket_close(nl);
-+		ret = mnl_cb_run(buf, ret, 0, portid, rule_cb, args);
-+	}
-+	if (ret == -1) {
-+		perror("error");
-+		exit(EXIT_FAILURE);
-+	}
-+	mnl_socket_close(nl);
- }
- 
- static void trace_print_packet(const struct nftnl_trace *nlt, struct cb_arg *args)
-@@ -531,6 +528,7 @@ static int trace_cb(const struct nlmsghdr *nlh, struct cb_arg *arg)
- err_free:
- 	nftnl_trace_free(nlt);
- err:
-+	fflush(stdout);
- 	return MNL_CB_OK;
- }
- 
+-	family = nftnl_trace_get_u32(nlt, NFTNL_TRACE_FAMILY);
+ 	nfproto = family;
+ 	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_NFPROTO)) {
+ 		nfproto = nftnl_trace_get_u32(nlt, NFTNL_TRACE_NFPROTO);
 -- 
 2.28.0
 
