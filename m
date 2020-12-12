@@ -2,68 +2,61 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F14D2D8952
-	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Dec 2020 19:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A53E52D897B
+	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Dec 2020 19:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407731AbgLLShV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 12 Dec 2020 13:37:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407729AbgLLShU (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 12 Dec 2020 13:37:20 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD479C0613CF
-        for <netfilter-devel@vger.kernel.org>; Sat, 12 Dec 2020 10:36:40 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1ko9l1-0006pr-9E; Sat, 12 Dec 2020 19:36:39 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft] nft: trace: print packet unconditionally
-Date:   Sat, 12 Dec 2020 19:36:25 +0100
-Message-Id: <20201212183625.71140-1-fw@strlen.de>
-X-Mailer: git-send-email 2.28.0
+        id S2407777AbgLLS4D (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 12 Dec 2020 13:56:03 -0500
+Received: from vps-ad94741f.vps.ovh.ca ([51.79.157.202]:50663 "EHLO visi.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2407762AbgLLS4C (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 12 Dec 2020 13:56:02 -0500
+Received: from [89.200.13.112] (account juliangath@visi.com HELO User)
+  by visi.com (CommuniGate Pro SMTP 6.1.9 _community_)
+  with ESMTPA id 747780; Sat, 12 Dec 2020 17:42:58 -0800
+Reply-To: <abadrmohamedsaleh@gmail.com>
+From:   "MR ALHOUSHANI" <qadeerkk85@gmail.com>
+Subject: ASAP
+Date:   Sat, 12 Dec 2020 19:54:46 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2800.1081
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2800.1081
+X-Antivirus: AVG (VPS 201211-2, 11/12/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-ID: <auto-000000747780@visi.com>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The kernel includes the packet dump once for each base hook.
-This means that in case a table contained no matching rule(s),
-the packet dump will be included in the base policy dump.
-
-Simply move the packet dump request out of the switch statement
-so the debug output shows current packet even with no matched rule.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- src/netlink.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/src/netlink.c b/src/netlink.c
-index 2ea2d4457664..8098b9746c95 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -1880,12 +1880,12 @@ int netlink_events_trace_cb(const struct nlmsghdr *nlh, int type,
- 	if (nftnl_trace_nlmsg_parse(nlh, nlt) < 0)
- 		netlink_abi_error();
+Assalamualaikum.
  
-+	if (nftnl_trace_is_set(nlt, NFTNL_TRACE_LL_HEADER) ||
-+	    nftnl_trace_is_set(nlt, NFTNL_TRACE_NETWORK_HEADER))
-+		trace_print_packet(nlt, &monh->ctx->nft->output);
-+
- 	switch (nftnl_trace_get_u32(nlt, NFTNL_TRACE_TYPE)) {
- 	case NFT_TRACETYPE_RULE:
--		if (nftnl_trace_is_set(nlt, NFTNL_TRACE_LL_HEADER) ||
--		    nftnl_trace_is_set(nlt, NFTNL_TRACE_NETWORK_HEADER))
--			trace_print_packet(nlt, &monh->ctx->nft->output);
--
- 		if (nftnl_trace_is_set(nlt, NFTNL_TRACE_RULE_HANDLE))
- 			trace_print_rule(nlt, &monh->ctx->nft->output,
- 					 &monh->ctx->nft->cache);
+ I am ALHOUSHANI, BADR MOHAMED SALEH, and I want to inform you that an amount of
+ US$900,000,Nine Hundred Thousand United State Of America Dollars. will 
+ be
+ moved on your name as the beneficiary of my late client I need your help 
+ to
+ receive this money and you will get 45% of the money while I get 55%. 
+ You
+ will either receive this amount through a bank wire transfer.
+ 
+ Please send your Full Names, Direct Private Telephone Numbers, Private
+ Email Address and Physical Address.
+ 
+ More details will be given upon your reply. abadrmohamedsaleh@gmail.com
+ 
+ Your quick response will be highly appreciated.
+ 
+ Allah Hafiz,
+ 
+ ALHOUSHANI, BADR MOHAMED SALEH.
+
 -- 
-2.28.0
+This email has been checked for viruses by AVG.
+https://www.avg.com
 
