@@ -2,47 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BFB2DE20C
-	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Dec 2020 12:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45352DE251
+	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Dec 2020 13:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgLRLdd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 18 Dec 2020 06:33:33 -0500
-Received: from correo.us.es ([193.147.175.20]:51180 "EHLO mail.us.es"
+        id S1726555AbgLRME7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 18 Dec 2020 07:04:59 -0500
+Received: from correo.us.es ([193.147.175.20]:51906 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726187AbgLRLdd (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 18 Dec 2020 06:33:33 -0500
+        id S1726540AbgLRME7 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 18 Dec 2020 07:04:59 -0500
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 8D0B915C12B
-        for <netfilter-devel@vger.kernel.org>; Fri, 18 Dec 2020 12:32:30 +0100 (CET)
+        by mail.us.es (Postfix) with ESMTP id C9615EB46F
+        for <netfilter-devel@vger.kernel.org>; Fri, 18 Dec 2020 13:03:58 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 5F468FC5E8
-        for <netfilter-devel@vger.kernel.org>; Fri, 18 Dec 2020 12:32:30 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id B7911DA84A
+        for <netfilter-devel@vger.kernel.org>; Fri, 18 Dec 2020 13:03:58 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id BCA3EFC619; Fri, 18 Dec 2020 12:32:25 +0100 (CET)
+        id ABF64DA852; Fri, 18 Dec 2020 13:03:58 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 3CC3BE151B
-        for <netfilter-devel@vger.kernel.org>; Fri, 18 Dec 2020 12:31:58 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 845B7DA78A;
+        Fri, 18 Dec 2020 13:03:56 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 18 Dec 2020 12:31:58 +0100 (CET)
+ Fri, 18 Dec 2020 13:03:56 +0100 (CET)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from localhost.localdomain (unknown [90.77.255.23])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 20C5A42DF561
-        for <netfilter-devel@vger.kernel.org>; Fri, 18 Dec 2020 12:31:58 +0100 (CET)
+        by entrada.int (Postfix) with ESMTPSA id 4DFD642DF562;
+        Fri, 18 Dec 2020 13:03:56 +0100 (CET)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] tests: shell: set element multistatement support
-Date:   Fri, 18 Dec 2020 12:32:12 +0100
-Message-Id: <20201218113212.1993-1-pablo@netfilter.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
+Subject: [PATCH net 0/4] Netfilter fixes for net
+Date:   Fri, 18 Dec 2020 13:04:05 +0100
+Message-Id: <20201218120409.3659-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -51,138 +52,54 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch adds two tests to add multistatement support:
+Hi Jakub, David,
 
-- Dynamic set updates from packet path.
-- Set that is updated from the control plane.
+The following patchset contains Netfilter fixes for net:
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- .../testcases/sets/0059set_update_multistmt_0 | 17 +++++++
- .../shell/testcases/sets/0060set_multistmt_0  | 49 +++++++++++++++++++
- .../sets/dumps/0059set_update_multistmt_0.nft | 13 +++++
- .../sets/dumps/0060set_multistmt_0.nft        | 12 +++++
- 4 files changed, 91 insertions(+)
- create mode 100755 tests/shell/testcases/sets/0059set_update_multistmt_0
- create mode 100755 tests/shell/testcases/sets/0060set_multistmt_0
- create mode 100644 tests/shell/testcases/sets/dumps/0059set_update_multistmt_0.nft
- create mode 100644 tests/shell/testcases/sets/dumps/0060set_multistmt_0.nft
+1) Incorrect loop in error path of nft_set_elem_expr_clone(),
+   from Colin Ian King.
 
-diff --git a/tests/shell/testcases/sets/0059set_update_multistmt_0 b/tests/shell/testcases/sets/0059set_update_multistmt_0
-new file mode 100755
-index 000000000000..107bfb870932
---- /dev/null
-+++ b/tests/shell/testcases/sets/0059set_update_multistmt_0
-@@ -0,0 +1,17 @@
-+#!/bin/bash
-+
-+RULESET="table x {
-+	set y {
-+		type ipv4_addr
-+		size 65535
-+		flags dynamic,timeout
-+		timeout 1h
-+	}
-+	chain z {
-+		type filter hook output priority 0;
-+		update @y { ip daddr limit rate 1/second counter }
-+	}
-+}"
-+
-+set -e
-+$NFT -f - <<< $RULESET
-diff --git a/tests/shell/testcases/sets/0060set_multistmt_0 b/tests/shell/testcases/sets/0060set_multistmt_0
-new file mode 100755
-index 000000000000..2cb4d3c55535
---- /dev/null
-+++ b/tests/shell/testcases/sets/0060set_multistmt_0
-@@ -0,0 +1,49 @@
-+#!/bin/bash
-+
-+RULESET="table x {
-+	set y {
-+		type ipv4_addr
-+		limit rate 1/second counter
-+	}
-+	chain y {
-+		type filter hook output priority filter; policy accept;
-+		ip daddr @y
-+	}
-+}"
-+
-+$NFT -f - <<< $RULESET
-+# should work
-+if [ $? -ne 0 ]
-+then
-+	exit 1
-+fi
-+
-+# should work
-+$NFT add element x y { 1.1.1.1 limit rate 1/second counter }
-+if [ $? -ne 0 ]
-+then
-+	exit 1
-+fi
-+
-+# should fail
-+$NFT add element x y { 2.2.2.2 limit rate 1/second }
-+if [ $? -eq 0 ]
-+then
-+	exit 1
-+fi
-+
-+# should fail
-+$NFT add element x y { 3.3.3.3 counter limit rate 1/second }
-+if [ $? -eq 0 ]
-+then
-+	exit 1
-+fi
-+
-+# should work
-+$NFT add element x y { 4.4.4.4 }
-+if [ $? -ne 0 ]
-+then
-+	exit 1
-+fi
-+
-+exit 0
-diff --git a/tests/shell/testcases/sets/dumps/0059set_update_multistmt_0.nft b/tests/shell/testcases/sets/dumps/0059set_update_multistmt_0.nft
-new file mode 100644
-index 000000000000..1b0ffae4d651
---- /dev/null
-+++ b/tests/shell/testcases/sets/dumps/0059set_update_multistmt_0.nft
-@@ -0,0 +1,13 @@
-+table ip x {
-+	set y {
-+		type ipv4_addr
-+		size 65535
-+		flags dynamic,timeout
-+		timeout 1h
-+	}
-+
-+	chain z {
-+		type filter hook output priority filter; policy accept;
-+		update @y { ip daddr limit rate 1/second counter }
-+	}
-+}
-diff --git a/tests/shell/testcases/sets/dumps/0060set_multistmt_0.nft b/tests/shell/testcases/sets/dumps/0060set_multistmt_0.nft
-new file mode 100644
-index 000000000000..7ebb709fac2a
---- /dev/null
-+++ b/tests/shell/testcases/sets/dumps/0060set_multistmt_0.nft
-@@ -0,0 +1,12 @@
-+table ip x {
-+	set y {
-+		type ipv4_addr
-+		limit rate 1/second counter
-+		elements = { 1.1.1.1 limit rate 1/second counter packets 0 bytes 0, 4.4.4.4 limit rate 1/second counter packets 0 bytes 0 }
-+	}
-+
-+	chain y {
-+		type filter hook output priority filter; policy accept;
-+		ip daddr @y
-+	}
-+}
--- 
-2.20.1
+2) Missing xt_table_get_private_protected() to access table
+   private data in x_tables, from Subash Abhinov Kasiviswanathan.
 
+3) Possible oops in ipset hash type resize, from Vasily Averin.
+
+4) Fix shift-out-of-bounds in ipset hash type, also from Vasily.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+
+Thanks!
+
+----------------------------------------------------------------
+
+The following changes since commit 3db1a3fa98808aa90f95ec3e0fa2fc7abf28f5c9:
+
+  Merge tag 'staging-5.11-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging (2020-12-15 14:18:40 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git HEAD
+
+for you to fetch changes up to 5c8193f568ae16f3242abad6518dc2ca6c8eef86:
+
+  netfilter: ipset: fix shift-out-of-bounds in htable_bits() (2020-12-17 19:44:52 +0100)
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      netfilter: nftables: fix incorrect increment of loop counter
+
+Subash Abhinov Kasiviswanathan (1):
+      netfilter: x_tables: Update remaining dereference to RCU
+
+Vasily Averin (2):
+      netfilter: ipset: fixes possible oops in mtype_resize
+      netfilter: ipset: fix shift-out-of-bounds in htable_bits()
+
+ net/ipv4/netfilter/arp_tables.c       |  2 +-
+ net/ipv4/netfilter/ip_tables.c        |  2 +-
+ net/ipv6/netfilter/ip6_tables.c       |  2 +-
+ net/netfilter/ipset/ip_set_hash_gen.h | 42 +++++++++++++++--------------------
+ net/netfilter/nf_tables_api.c         |  4 ++--
+ 5 files changed, 23 insertions(+), 29 deletions(-)
