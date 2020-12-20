@@ -2,45 +2,77 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D601E2DF2A5
-	for <lists+netfilter-devel@lfdr.de>; Sun, 20 Dec 2020 02:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D51492DF4C1
+	for <lists+netfilter-devel@lfdr.de>; Sun, 20 Dec 2020 10:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgLTBhx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 19 Dec 2020 20:37:53 -0500
-Received: from mail.univ-alger.dz ([193.194.83.97]:55428 "EHLO
-        mail.univ-alger.dz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726570AbgLTBhx (ORCPT
+        id S1727362AbgLTJhp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 20 Dec 2020 04:37:45 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:50477 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727283AbgLTJho (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 19 Dec 2020 20:37:53 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.univ-alger.dz (Postfix) with ESMTP id AE6DF4E61337;
-        Sat, 19 Dec 2020 20:53:43 +0100 (CET)
-Received: from mail.univ-alger.dz ([127.0.0.1])
-        by localhost (mail.univ-alger.dz [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id ePa5ISob2eLv; Sat, 19 Dec 2020 20:53:43 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.univ-alger.dz (Postfix) with ESMTP id 49D044DC30D7;
-        Sat, 19 Dec 2020 16:22:07 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mail.univ-alger.dz
-Received: from mail.univ-alger.dz ([127.0.0.1])
-        by localhost (mail.univ-alger.dz [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id NQnvrp31Tivc; Sat, 19 Dec 2020 16:22:07 +0100 (CET)
-Received: from MACBOOK341C.localdomain (unknown [45.132.227.75])
-        by mail.univ-alger.dz (Postfix) with ESMTPSA id 460BE4E04C3E;
-        Sat, 19 Dec 2020 16:15:44 +0100 (CET)
-Content-Type: text/plain; charset="utf-8"
+        Sun, 20 Dec 2020 04:37:44 -0500
+Received: by mail-il1-f197.google.com with SMTP id t8so6670852ils.17
+        for <netfilter-devel@vger.kernel.org>; Sun, 20 Dec 2020 01:37:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=0fT5mqBE94g71/WluOC6bf1J/UQhmIMm/DUDfbpZB9U=;
+        b=sR8aqGsSQ/m8SDpRCdaMhBjhAYO4fa5kPomfNVbaMAPsIqBTzGiKotlYC91xFVbccF
+         QeLLO9rC5N5sOeOnrV5UkOA6DKZG3ZVpOCUXq3/Ziwyv8fMBBwFmAEw1OHAoPo9ru+Os
+         MUUVkICGjEuPbsveZd685NUSsTcsmh24BwneLF/gmKY1u9s2i2EZzXXXKCK3UdExszEi
+         Igb2dfnvqjn46+iQeze+CU60eJA2NU6jqxy4tBXX6o9NqAe2Rst3GeC9UzNFOf3yQF7s
+         BQ2NR3NqJIrrvPWUv6/VWDHzEKfo1g2i4i7eoKUpzWzRLeTz2bUVkDqHA9l721RTAJSf
+         t0Vw==
+X-Gm-Message-State: AOAM532o7Wa2BLoVYVPQJVL94ceLcRRYM5+c8M8wPmNtbWUuhwJneFO9
+        vdfTddVwVJjOF/gn0z0cBba6dhF27/bAeXejUmnScBxXQOoG
+X-Google-Smtp-Source: ABdhPJy/2OvStEVOk368NFkl05TcHnoLfL9VubxJP+qHGmxR1gjcoH5bassxkyk/ywRnffzn1GiHR9p3jFp67h07+mij430mJ0zN
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?q?Sie_haben_eine_Spende_von_=E2=82=AC_5=2E800=2E000=2C00=2E?=
-To:     Recipients <z.benamor@univ-alger.dz>
-From:   "Mrs. Mavis" <z.benamor@univ-alger.dz>
-Date:   Sat, 19 Dec 2020 07:15:29 -0800
-Reply-To: wanczykm61@gmail.com
-Message-Id: <20201219151545.460BE4E04C3E@mail.univ-alger.dz>
+X-Received: by 2002:a5d:8704:: with SMTP id u4mr10573638iom.3.1608457023536;
+ Sun, 20 Dec 2020 01:37:03 -0800 (PST)
+Date:   Sun, 20 Dec 2020 01:37:03 -0800
+In-Reply-To: <000000000000264c6305a9c74d9b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008647f705b6e215de@google.com>
+Subject: Re: INFO: rcu detected stall in tipc_release
+From:   syzbot <syzbot+3654c027d861c6df4b06@syzkaller.appspotmail.com>
+To:     Markus.Elfring@web.de, bp@alien8.de, coreteam@netfilter.org,
+        davem@davemloft.net, fw@strlen.de, fweisbec@gmail.com,
+        hdanton@sina.com, hpa@zytor.com, jmaloy@redhat.com,
+        jmattson@google.com, joro@8bytes.org, kadlec@netfilter.org,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, subashab@codeaurora.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        tuong.t.lien@dektech.com.au, vkuznets@redhat.com,
+        wanpengli@tencent.com, x86@kernel.org, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Sie haben eine Spende von € 5.800.000,00. von Mavis Wanczyk antworten Sie mit diesem Code [MW530342019], um die Spende zu erhalten
+syzbot suspects this issue was fixed by commit:
+
+commit cc00bcaa589914096edef7fb87ca5cee4a166b5c
+Author: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+Date:   Wed Nov 25 18:27:22 2020 +0000
+
+    netfilter: x_tables: Switch synchronization to RCU
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1445cb37500000
+start commit:   7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
+dashboard link: https://syzkaller.appspot.com/bug?extid=3654c027d861c6df4b06
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12948233100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11344c05100000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: netfilter: x_tables: Switch synchronization to RCU
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
