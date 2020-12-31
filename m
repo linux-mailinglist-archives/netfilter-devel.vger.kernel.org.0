@@ -2,108 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2E82E79A0
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Dec 2020 14:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A21782E7E4C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Dec 2020 06:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgL3NWS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 30 Dec 2020 08:22:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726791AbgL3NWS (ORCPT
+        id S1726470AbgLaFtg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 31 Dec 2020 00:49:36 -0500
+Received: from host82-217-36-89.serverdedicati.aruba.it ([89.36.217.82]:63792
+        "EHLO aquckbulck.top" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726281AbgLaFta (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 30 Dec 2020 08:22:18 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE58C061799
-        for <netfilter-devel@vger.kernel.org>; Wed, 30 Dec 2020 05:21:38 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id f26so13882623qka.0
-        for <netfilter-devel@vger.kernel.org>; Wed, 30 Dec 2020 05:21:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:references:to:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=DiKW6kn9xhWzj8pGVjJbHM5laaOWiHgnfOrQhi/+dEw=;
-        b=yPbNWNIujU98p8FqUMNJqpEC5Ikdh7AOH0Rug7KF4R/bQHyWPIZvXytjtYCSbnMQS1
-         L2nNfd2Ft3VLmCf1sIsGVckwbfV+DQdMc9AT1qOtETAtDndsz5Lq7f5A/w/aYA0eDRai
-         qdHlS0/htIDRjxyL0V17Jh6yHEZ742Kv0uByj/vBIGBu9H0Bm/z/VRpn8xb3Ujek0F5T
-         R+sviMzyvYanOHV5gTo/C4EVvSHgWfw8WD4yxnOq8+jUp2IyUnQXB+gnxhZezibC3goY
-         zvyufQ1+qPkMbdJnuNlNmTS0ZViS5O67Du6tjdzhwSXP2dA8C9aCRKYhZGqZkUrCLRwX
-         CwmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:references:to:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DiKW6kn9xhWzj8pGVjJbHM5laaOWiHgnfOrQhi/+dEw=;
-        b=Zu0DtD52vigDBMFWbJz49iFjDeePvAs17qozr9b2z3lULDLmEtVHFDnLpGCA0oObnn
-         Loiotw61saHDqv3FKRnQMw5qqhobhJ13OmQDWW5wFEboeWxIwPv7urcKJV8K0JSnVA/i
-         c1Z5EiVfIJ0RiRHQEj0eJS21M9uSRfGCNCnnL40jHug9S7eLaGcpdDOEj0I5VKzhTKnu
-         C+YMOdRWuuCnN9Xzn7kvxZir64hOprLiEkCeyxRcEmOpfqThsuRkKKnwYdTAmy0M+c5u
-         OZRqdWT3T8JxX3yHghTW4dVYZpMDGBl4WyxO5HuEU0vKamZdjZ1eVyMP+znm28TSpJOO
-         wzjQ==
-X-Gm-Message-State: AOAM531DkajuQ1L0XM/4VUL87vpc9Vy8YlDCBi0DAXfyyBmSvZmsY3tS
-        mA40Fx8nFRi1D+3YB2QVG7RrFw==
-X-Google-Smtp-Source: ABdhPJyI4saX0gdxJdnD4Bf3YFY/cQY8QsgzyJ7q0uukmiS6+O3U3JS55RVZqQebkxjPEwMhuZlJOQ==
-X-Received: by 2002:a37:6846:: with SMTP id d67mr23625271qkc.219.1609334497299;
-        Wed, 30 Dec 2020 05:21:37 -0800 (PST)
-Received: from [192.168.2.48] (bras-base-kntaon1617w-grc-10-184-147-165-106.dsl.bell.ca. [184.147.165.106])
-        by smtp.googlemail.com with ESMTPSA id c8sm27308643qkc.12.2020.12.30.05.21.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Dec 2020 05:21:36 -0800 (PST)
-Subject: Announcing Netdev 0x15
-References: <193eea01.AUkAABw1d3IAAAAAAAAAAAKSBpUAAYCsBU0AAAAAAAwWzABf6RC7@mailjet.com>
-To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, lartc@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>, lwn@lwn.net
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-X-Forwarded-Message-Id: <193eea01.AUkAABw1d3IAAAAAAAAAAAKSBpUAAYCsBU0AAAAAAAwWzABf6RC7@mailjet.com>
-Message-ID: <2e1f6717-715c-c63c-ba60-676c986f9876@mojatatu.com>
-Date:   Wed, 30 Dec 2020 08:21:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        Thu, 31 Dec 2020 00:49:30 -0500
+X-Greylist: delayed 21439 seconds by postgrey-1.27 at vger.kernel.org; Thu, 31 Dec 2020 00:49:29 EST
+Reply-To: andrewgraham267@gmail.com
+From:   TWP PROGRAM 2021 <sales@aquckbulck.top>
+To:     netfilter-devel@vger.kernel.org
+Subject: =?UTF-8?B?TWFucG93ZXIgUmVjcnVpdG1lbnQgRm9yIENhbmFkYeKEog==?=
+Date:   31 Dec 2020 06:48:42 +0100
+Message-ID: <20201231064841.C4A8773B30C3F5ED@aquckbulck.top>
 MIME-Version: 1.0
-In-Reply-To: <193eea01.AUkAABw1d3IAAAAAAAAAAAKSBpUAAYCsBU0AAAAAAAwWzABf6RC7@mailjet.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Dear Sir/Madam,
 
-While we bid goodbye to 2020, here's some good hopeful news for 2021.
+We are authorized to recruit 120 unskilled workers to work in 
+Canada on a two years contract. Please kindly let us know if you 
+can supply the same workers as my client's requirements for the 
+following positions. Fish Packers, Cleaners, Laborers, Fruit 
+packers, Supervisors, supermarket manager, salesman/woman, 
+Storekeeper, Ground Maintenance, Gardener, Truck Drivers.
+Age from 20 to 55 years old is eligible to work, Primary 
+Location: Montreal Quebec Canada.
 
-cheers,
-jamal
+NOTE: No qualification is needed.
+
+TERMS AND CONDITIONS:
+
+1. Accommodation           - Provided.
+2. Ticket                  -Provided.
+3. Medical                 - Provided.
+4. Transportation          - Provided.
+5. Working hours           - 8a.m-4p.m [Mon-Sat]
+6. Vacation                - 28.5 days every year
+7. Salary                  - Ca$20 per hourly
+8. Contract                - 2 years. Renewable
+9. Extra time              - Ca$22per hourly
+10. Insurance & Pension     - According to Quebec Labor laws.
+11. Requirement               120 workers
+12. job description           Laborers
+13. Skilled required          Physically fit
+Other Benefits                Family Status, group benefit, and 
+other fringe benefits.
 
 
--------- Forwarded Message --------
-Subject: [NetDev-People] Announcing Netdev 0x15
-Date: Sun, 27 Dec 2020 15:54:31 -0700
-From: Tom Herbert via people <people@netdevconf.info>
-Reply-To: Tom Herbert <tom@herbertland.com>
-To: people@netdevconf.info
+If you need more information regards to this recruitment please 
+feel free to contact us at your most convenient time. Your Quick 
+and Favorable Response would be highly appreciated.
 
-Hello Netdev'ers,
+Best Regards
 
-On behalf of Netdev Society, I am very pleased to announce the Netdev
-0x15 conference! The tentative dates are July 20-23, 2021 and the
-location will be San Francisco, California, USA.
 
-Our current plan is to hold an in person conference assuming that the
-conditions around Covid-19 have improved, however if conditions
-warrant we do have the option of holding a virtual conference again.
-We will try to make a definitive announcement about this at least six
-weeks before the conference date. Additionally, it seems likely that
-even if we do hold the conference in person there will be a hybrid
-component to accommodate remote participants that wish to opt out of
-attending in person.
-
-The call for papers and workshops will be made early next year, so stay 
-tuned!
-
-Thanks,
-Tom
-_______________________________________________
-people mailing list
-people@netdevconf.org
-https://lists.netdevconf.info/cgi-bin/mailman/listinfo/people
+Mr. Andrew Graham
+7450 Rue des Loutres
+Quebec City,
+Canada
+Phone: +1-581-533-6655
+Whats-app: +1-581-533-6655
+E-mail | andrewgraham267@gmail.com 
