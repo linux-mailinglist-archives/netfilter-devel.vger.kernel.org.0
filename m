@@ -2,75 +2,116 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21782E7E4C
-	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Dec 2020 06:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E86A2E82BB
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Jan 2021 02:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgLaFtg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 31 Dec 2020 00:49:36 -0500
-Received: from host82-217-36-89.serverdedicati.aruba.it ([89.36.217.82]:63792
-        "EHLO aquckbulck.top" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726281AbgLaFta (ORCPT
+        id S1726707AbhAAAtx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 31 Dec 2020 19:49:53 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:46557 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726314AbhAAAtx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 31 Dec 2020 00:49:30 -0500
-X-Greylist: delayed 21439 seconds by postgrey-1.27 at vger.kernel.org; Thu, 31 Dec 2020 00:49:29 EST
-Reply-To: andrewgraham267@gmail.com
-From:   TWP PROGRAM 2021 <sales@aquckbulck.top>
-To:     netfilter-devel@vger.kernel.org
-Subject: =?UTF-8?B?TWFucG93ZXIgUmVjcnVpdG1lbnQgRm9yIENhbmFkYeKEog==?=
-Date:   31 Dec 2020 06:48:42 +0100
-Message-ID: <20201231064841.C4A8773B30C3F5ED@aquckbulck.top>
+        Thu, 31 Dec 2020 19:49:53 -0500
+Received: by mail-il1-f197.google.com with SMTP id x14so18873488ilg.13
+        for <netfilter-devel@vger.kernel.org>; Thu, 31 Dec 2020 16:49:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=f4jpcmyenKqYfST2LyQr30I+nGdhfXpwOSlfzY/gMRg=;
+        b=D8MDje3UiP9/oZxcQosaZu4IpfDdm1ugCr6xDP3CTlcTkvcG/k6hDCRDZfQSVD9d8F
+         yqmvowcTUWg3+1UP6JSNDmTrbGpggAqAFUsOmcsTkNL2RljNmrenLTRyjc5v75XrsRy3
+         ByWqROMPa7SkD5Ig0X7b166ZodRoiq48Fc154dA+0dgvZYQlgg98TvOZABt0WVQJ5Xzz
+         j2uPOUwTfbOV5yw4JmJX77sghyipyZQofZUBe2Kwm8cwJd609AW0Z9x82zckUwfxS7oY
+         +86hwtJFJYxGyKDrocU78etQZA+FKGlYJ0om70qJRkFERKJ44MDLRE4pav/t+QuP4egs
+         rTBw==
+X-Gm-Message-State: AOAM532njyDOIMnVHgjt/D0mtabkP70rdGdEGjgx/aXbABWJI/qG2zdd
+        KfZ2vaE/ubLaiAe/Vv2d6zCGZXie+R9KpCcb+d/8iQp/APd+
+X-Google-Smtp-Source: ABdhPJz5xy4u3Ybd++5GdqLQDigch4VAvgPEqKu2JTiKDWpaq0dnJo0DnSWd61C0FPgiaKY1aFv6nXGlpQzz7SzLD8LwnGBb8WKf
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+X-Received: by 2002:a92:58dc:: with SMTP id z89mr58050886ilf.11.1609462151899;
+ Thu, 31 Dec 2020 16:49:11 -0800 (PST)
+Date:   Thu, 31 Dec 2020 16:49:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d7f02105b7cc1b99@google.com>
+Subject: WARNING: suspicious RCU usage in xt_obj_to_user
+From:   syzbot <syzbot+00399fa030c641ffc5ae@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dear Sir/Madam,
+Hello,
 
-We are authorized to recruit 120 unskilled workers to work in 
-Canada on a two years contract. Please kindly let us know if you 
-can supply the same workers as my client's requirements for the 
-following positions. Fish Packers, Cleaners, Laborers, Fruit 
-packers, Supervisors, supermarket manager, salesman/woman, 
-Storekeeper, Ground Maintenance, Gardener, Truck Drivers.
-Age from 20 to 55 years old is eligible to work, Primary 
-Location: Montreal Quebec Canada.
+syzbot found the following issue on:
 
-NOTE: No qualification is needed.
+HEAD commit:    f838f8d2 mfd: ab8500-debugfs: Remove extraneous seq_putc
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17074c47500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7a43a64bad3fdb39
+dashboard link: https://syzkaller.appspot.com/bug?extid=00399fa030c641ffc5ae
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-TERMS AND CONDITIONS:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-1. Accommodation           - Provided.
-2. Ticket                  -Provided.
-3. Medical                 - Provided.
-4. Transportation          - Provided.
-5. Working hours           - 8a.m-4p.m [Mon-Sat]
-6. Vacation                - 28.5 days every year
-7. Salary                  - Ca$20 per hourly
-8. Contract                - 2 years. Renewable
-9. Extra time              - Ca$22per hourly
-10. Insurance & Pension     - According to Quebec Labor laws.
-11. Requirement               120 workers
-12. job description           Laborers
-13. Skilled required          Physically fit
-Other Benefits                Family Status, group benefit, and 
-other fringe benefits.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+00399fa030c641ffc5ae@syzkaller.appspotmail.com
+
+=============================
+WARNING: suspicious RCU usage
+5.10.0-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:7877 Illegal context switch in RCU-bh read-side critical section!
+
+other info that might help us debug this:
 
 
-If you need more information regards to this recruitment please 
-feel free to contact us at your most convenient time. Your Quick 
-and Favorable Response would be highly appreciated.
+rcu_scheduler_active = 2, debug_locks = 0
+1 lock held by syz-executor.0/9704:
+ #0: ffff888013794458 (&xt[i].mutex){+.+.}-{3:3}, at: xt_find_table_lock+0x41/0x540 net/netfilter/x_tables.c:1206
 
-Best Regards
+stack backtrace:
+CPU: 0 PID: 9704 Comm: syz-executor.0 Not tainted 5.10.0-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ___might_sleep+0x229/0x2c0 kernel/sched/core.c:7877
+ __might_fault+0x6e/0x180 mm/memory.c:5014
+ xt_obj_to_user+0x31/0x110 net/netfilter/x_tables.c:277
+ xt_target_to_user+0xa8/0x200 net/netfilter/x_tables.c:323
+ copy_entries_to_user net/ipv4/netfilter/arp_tables.c:705 [inline]
+ get_entries net/ipv4/netfilter/arp_tables.c:866 [inline]
+ do_arpt_get_ctl+0x733/0x8f0 net/ipv4/netfilter/arp_tables.c:1450
+ nf_getsockopt+0x72/0xd0 net/netfilter/nf_sockopt.c:116
+ ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
+ ip_getsockopt+0x164/0x1c0 net/ipv4/ip_sockglue.c:1756
+ tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:4141
+ __sys_getsockopt+0x219/0x4c0 net/socket.c:2156
+ __do_sys_getsockopt net/socket.c:2171 [inline]
+ __se_sys_getsockopt net/socket.c:2168 [inline]
+ __x64_sys_getsockopt+0xba/0x150 net/socket.c:2168
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45ef5a
+Code: b8 34 01 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd 9f fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa 9f fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007ffcf91ed728 EFLAGS: 00000212 ORIG_RAX: 0000000000000037
+RAX: ffffffffffffffda RBX: 00007ffcf91ed790 RCX: 000000000045ef5a
+RDX: 0000000000000061 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000003 R08: 00007ffcf91ed73c R09: 000000000000000a
+R10: 00007ffcf91ed790 R11: 0000000000000212 R12: 00007ffcf91ed73c
+R13: 0000000000000000 R14: 0000000000000032 R15: 000000000003354d
 
 
-Mr. Andrew Graham
-7450 Rue des Loutres
-Quebec City,
-Canada
-Phone: +1-581-533-6655
-Whats-app: +1-581-533-6655
-E-mail | andrewgraham267@gmail.com 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
