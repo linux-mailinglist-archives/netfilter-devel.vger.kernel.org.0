@@ -2,65 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB5A2EF2AB
-	for <lists+netfilter-devel@lfdr.de>; Fri,  8 Jan 2021 13:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828E32EFF4F
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Jan 2021 13:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbhAHMwM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 8 Jan 2021 07:52:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbhAHMwM (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:52:12 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFCDC0612F4
-        for <netfilter-devel@vger.kernel.org>; Fri,  8 Jan 2021 04:51:31 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id t3so6010233ilh.9
-        for <netfilter-devel@vger.kernel.org>; Fri, 08 Jan 2021 04:51:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:in-reply-to:references:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=ik6B+6lkNc+iFrIPLOlH6nyfA0JsJ4cRGzVhof+Ll8w=;
-        b=ZPLbAmDSdN9gytA2Mg6XzGXRjKOCL7kdkZJuvLt73/ZFLUiZoWRfI99EDF8Q7sM6Ms
-         /tY5gTSJF4yT9FXyr7c/aQDzeBzftlPxcw8bxDkKSZ/c3Oaqn3Nce1OMdn1GDnebCcWs
-         IaUbDeYlTz/T/CR18LhvY2dye8l01AXBrFehZEzeSjJHaLHTVsGroacoPUTDUs/2lEYO
-         oWxz4e6JbYiTBTjIAOUmEn/hKNkaBXbidJnr4kwYBSUUO6sgrNz3FDXBjpCatGgvxLWx
-         4cieEmdIvNxh5MUFmI+eCdq2Ug8ki6Cj0TxDMjWzAtc9YPZLEOVfYzcdzUU1AUd2p1Dw
-         6p/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:in-reply-to:references:from
-         :date:message-id:subject:to:content-transfer-encoding;
-        bh=ik6B+6lkNc+iFrIPLOlH6nyfA0JsJ4cRGzVhof+Ll8w=;
-        b=clCiUjr3NAdbsoshoZRr4wizj5L/N+UfDG/wCYqobdGzeVHWiOen1nRji7ojjRrVmc
-         o8gcJD1YIixYIX9yn7xrThEbhc9O/BpZ/nflPGpTsOP0z76mw6ArMeDOrf5Lj460/8bF
-         WBJQ5gIiCwcgqBjRBmLtMP/yeon0XxU6pVaivdqyT84UK0AYWfQDGbvvhcGUtCcfYQPF
-         rpLGFj3ZUxVH25zkE+S4zqOwpboNlZak1yHqmtTWM05usFQufJHTn8TLIG9emJ5fvqvJ
-         oJu2aWE4ngCb7io66cyzkf/lJJA+4qBYwD/6HJ2SuAH1Z5pnZbRAtu9QKTXRpW4/SzT/
-         6LdA==
-X-Gm-Message-State: AOAM532IsiaxeVraQeJeV4gPNV1PYYGgFSqkhqsh093zpyApHF7R39y9
-        HSERnVfZI8aKxIS1ZfnISSVhQyyPxZDfe9Yye6CvsdLR
-X-Google-Smtp-Source: ABdhPJx/N4iyyJV0zD7MS8C300WZVFYYFWNQvubc+YwpY0mQnr5rNc5kRHP2xMBzbSlXfvqIYlPFA1YThr6TVymRgDY=
-X-Received: by 2002:a05:6e02:1a4d:: with SMTP id u13mr3819596ilv.244.1610110291272;
- Fri, 08 Jan 2021 04:51:31 -0800 (PST)
-MIME-Version: 1.0
-Sender: batouziberth@gmail.com
-Received: by 2002:a4f:1b10:0:0:0:0:0 with HTTP; Fri, 8 Jan 2021 04:51:30 -0800 (PST)
-In-Reply-To: <CAMppdSy3w6-UfydAH798h1=Bod0wo0RVMaQphkoLSY0X4ik+Zw@mail.gmail.com>
-References: <CAMppdSy3w6-UfydAH798h1=Bod0wo0RVMaQphkoLSY0X4ik+Zw@mail.gmail.com>
-From:   camille <camillejackson021@gmail.com>
-Date:   Fri, 8 Jan 2021 12:51:30 +0000
-X-Google-Sender-Auth: VeKgZ2CPJ_wnkl20sIMj9io2koY
-Message-ID: <CAMppdSws020zMP19jxqNRRxawBfdq-53XXQCnLUgL3Mk5gc5Jw@mail.gmail.com>
-Subject: =?UTF-8?B?0JfQtNGA0LDQstGB0YLQstGD0LnRgtC1LA==?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+        id S1726212AbhAIMCk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 9 Jan 2021 07:02:40 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:13930 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726001AbhAIMCk (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 9 Jan 2021 07:02:40 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app4 (Coremail) with SMTP id cS_KCgDnyR4Rm_lfDiw3AA--.54507S4;
+        Sat, 09 Jan 2021 20:01:24 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] netfilter: Fix memleak in nf_nat_init
+Date:   Sat,  9 Jan 2021 20:01:21 +0800
+Message-Id: <20210109120121.15938-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgDnyR4Rm_lfDiw3AA--.54507S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw4UZr47CFyrGr4fKFykKrg_yoW3WFc_tr
+        y0qryIqFn5Gr17Ww4Y9FsrXr18ua4xZF1fX34xXFW8A3s5X3W0kFZ3ur95Aa47Ww4SkryU
+        CrWDKF1Iv3sF9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVkFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoABlZdtR6GKAAEsE
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-0J/RgNC40LLQtdGC0YHRgtCy0YPRjiDRgtC10LHRjywg0LzQvtC5INC00YDRg9CzLCDQvdCw0LTQ
-tdGO0YHRjCwg0YLRiyDQsiDQv9C+0YDRj9C00LrQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsINC+
-0YLQstC10YLRjCDQvNC90LUNCtCx0LvQsNCz0L7QtNCw0YDRjywNCg==
+When register_pernet_subsys() fails, nf_nat_bysource
+should be freed just like when nf_ct_extend_register()
+fails.
+
+Fixes: 1cd472bf036ca ("netfilter: nf_nat: add nat hook register functions to nf_nat")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ net/netfilter/nf_nat_core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index ea923f8cf9c4..b7c3c902290f 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -1174,6 +1174,7 @@ static int __init nf_nat_init(void)
+ 	ret = register_pernet_subsys(&nat_net_ops);
+ 	if (ret < 0) {
+ 		nf_ct_extend_unregister(&nat_extend);
++		kvfree(nf_nat_bysource);
+ 		return ret;
+ 	}
+ 
+-- 
+2.17.1
+
