@@ -2,84 +2,52 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78912F3F73
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Jan 2021 01:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DC82F431A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Jan 2021 05:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404866AbhALWVj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 12 Jan 2021 17:21:39 -0500
-Received: from correo.us.es ([193.147.175.20]:49914 "EHLO mail.us.es"
+        id S1725917AbhAME1P (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 12 Jan 2021 23:27:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404831AbhALWV2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:21:28 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 71EC8D28CF
-        for <netfilter-devel@vger.kernel.org>; Tue, 12 Jan 2021 23:20:01 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 62944DA78E
-        for <netfilter-devel@vger.kernel.org>; Tue, 12 Jan 2021 23:20:01 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 5830ADA72F; Tue, 12 Jan 2021 23:20:01 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id C816ADA72F;
-        Tue, 12 Jan 2021 23:19:58 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 12 Jan 2021 23:19:58 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from salvia.lan (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 846FF42EF528;
-        Tue, 12 Jan 2021 23:19:58 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net 3/3] netfilter: nf_nat: Fix memleak in nf_nat_init
-Date:   Tue, 12 Jan 2021 23:20:33 +0100
-Message-Id: <20210112222033.9732-4-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
+        id S1725681AbhAME1O (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 12 Jan 2021 23:27:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4C3C2312E;
+        Wed, 13 Jan 2021 04:26:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610511994;
+        bh=ebWVBNgjIS95zbpspVZ4MTQupc/TKqWi3PdJD+H0BkQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cq6PZu6/bbI0/Z8ZxBqURoT2oxNksJ1tKYuGg4Gbxwh4PkELdLbT9IIGmbKYFex2m
+         66p5UhknPIzBuH6yvyJgJxaa9WCCtcqiig85j6WqbWPGOBC1qOGViugjRJJXDS7p6w
+         8g/BfOYO2k/Rf6KFLFuNTDLTGmf+dOntFh30sXu8OVU3KiJYVdTNlG3BdSbkU5f+uK
+         0gl6/dW/2/dNtvT8kmswK3w/Ug+DKPMlgCQKqqp0kl6Jt8/3xdTzHo07oElfUtrkC0
+         dmUCMuZ3SAsb6p2OSf/kYSYXrmW9CUhTxphRi4eFC+SlBIC6DMquw09G8zCyuRhz7L
+         4Rk2Dn9w8CqmA==
+Date:   Tue, 12 Jan 2021 20:26:32 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH net 0/3] Netfilter fixes for net
+Message-ID: <20210112202632.7286b8a2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 In-Reply-To: <20210112222033.9732-1-pablo@netfilter.org>
 References: <20210112222033.9732-1-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+On Tue, 12 Jan 2021 23:20:30 +0100 Pablo Neira Ayuso wrote:
+> The following patchset contains Netfilter fixes for net:
+> 
+> 1) Pass conntrack -f to specify family in netfilter conntrack helper
+>    selftests, from Chen Yi.
+> 
+> 2) Honor hashsize modparam from nf_conntrack_buckets sysctl,
+>    from Jesper D. Brouer.
+> 
+> 3) Fix memleak in nf_nat_init() error path, from Dinghao Liu.
 
-When register_pernet_subsys() fails, nf_nat_bysource
-should be freed just like when nf_ct_extend_register()
-fails.
-
-Fixes: 1cd472bf036ca ("netfilter: nf_nat: add nat hook register functions to nf_nat")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_nat_core.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-index ea923f8cf9c4..b7c3c902290f 100644
---- a/net/netfilter/nf_nat_core.c
-+++ b/net/netfilter/nf_nat_core.c
-@@ -1174,6 +1174,7 @@ static int __init nf_nat_init(void)
- 	ret = register_pernet_subsys(&nat_net_ops);
- 	if (ret < 0) {
- 		nf_ct_extend_unregister(&nat_extend);
-+		kvfree(nf_nat_bysource);
- 		return ret;
- 	}
- 
--- 
-2.20.1
-
+Pulled, thanks!
