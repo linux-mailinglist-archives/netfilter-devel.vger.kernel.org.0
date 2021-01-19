@@ -2,189 +2,129 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029332FBB3F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Jan 2021 16:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AEF2FC3B0
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Jan 2021 23:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390723AbhASPcQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 19 Jan 2021 10:32:16 -0500
-Received: from ma1-aaemail-dr-lapp03.apple.com ([17.171.2.72]:39210 "EHLO
-        ma1-aaemail-dr-lapp03.apple.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390820AbhASPL1 (ORCPT
+        id S1732773AbhASOhZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 19 Jan 2021 09:37:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732638AbhASJXO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:11:27 -0500
-Received: from pps.filterd (ma1-aaemail-dr-lapp03.apple.com [127.0.0.1])
-        by ma1-aaemail-dr-lapp03.apple.com (8.16.0.42/8.16.0.42) with SMTP id 10JF8GXi064056;
-        Tue, 19 Jan 2021 07:10:39 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com; h=date : subject : from
- : to : cc : message-id : references : in-reply-to : mime-version :
- content-type : content-transfer-encoding; s=20180706;
- bh=pCXcINayXbyQwq7ib9jnV/lVsU5f5Umq5rqdRxtLgKM=;
- b=HH/6XlBB+tgyFo1C2QWIXq1JLyPAxzpb+9W3OBvxeUzi47V8zCYrveh6RFRxA21JaUps
- XN/3b5xxJIVcqEUrr3gGiu7Ib78t9F9gBPzxT+umdSNOrxroJTOXX8l+kEbi6gvzM7GM
- Hw4QoHM6NTUNkjr1jkuFBgn5FNfoHMoZdufTgL4sr6VRI7O3zkDy+kmoRrV4oJ+jar+e
- U7Ttv9gUaqkhnI8S8ETXnykFESM+lojZ5A7Bi/fIRH7yJlCedB8qjmVnp0+6qQ12l0yp
- SbRvtnzBgQlq83B96MgpoORCT5NmbOWzF1vYsQ+C7yqiwpOJ9cKLNecLCexE18kyMnnN Jw== 
-Received: from crk-mailsvcp-mta-lapp03.euro.apple.com (crk-mailsvcp-mta-lapp03.euro.apple.com [17.66.55.16])
-        by ma1-aaemail-dr-lapp03.apple.com with ESMTP id 36400yhhkg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
-        Tue, 19 Jan 2021 07:10:39 -0800
-Received: from crk-mailsvcp-mmp-lapp02.euro.apple.com
- (crk-mailsvcp-mmp-lapp02.euro.apple.com [17.72.136.16])
- by crk-mailsvcp-mta-lapp03.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.7.20201203 64bit (built Dec  3
- 2020))
- with ESMTPS id <0QN6006HOSTQRT00@crk-mailsvcp-mta-lapp03.euro.apple.com>; Tue,
- 19 Jan 2021 15:10:38 +0000 (GMT)
-Received: from process_milters-daemon.crk-mailsvcp-mmp-lapp02.euro.apple.com by
- crk-mailsvcp-mmp-lapp02.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.6.20200729 64bit (built Jul 29
- 2020)) id <0QN600A00S01LV00@crk-mailsvcp-mmp-lapp02.euro.apple.com>; Tue,
- 19 Jan 2021 15:10:38 +0000 (GMT)
-X-Va-A: 
-X-Va-T-CD: ee775fe296fae01696e403bd65ae1163
-X-Va-E-CD: 05c635055d51c425e80d5b4b6baa240a
-X-Va-R-CD: 04d20a26b01efeff662a196593a2241e
-X-Va-CD: 0
-X-Va-ID: 175a09a6-a447-4f20-80da-812f008154e2
-X-V-A:  
-X-V-T-CD: ee775fe296fae01696e403bd65ae1163
-X-V-E-CD: 05c635055d51c425e80d5b4b6baa240a
-X-V-R-CD: 04d20a26b01efeff662a196593a2241e
-X-V-CD: 0
-X-V-ID: 49af9a1b-68a8-4476-ac9c-b7ba1a6cca43
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-19_05:2021-01-18,2021-01-19 signatures=0
-Received: from [192.168.1.127] (unknown [17.235.218.21])
- by crk-mailsvcp-mmp-lapp02.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.6.20200729 64bit (built Jul 29
- 2020))
- with ESMTPSA id <0QN600UAKSTPPZ00@crk-mailsvcp-mmp-lapp02.euro.apple.com>;
- Tue, 19 Jan 2021 15:10:38 +0000 (GMT)
-User-Agent: Microsoft-MacOutlook/16.45.21011103
-Date:   Tue, 19 Jan 2021 16:05:39 +0100
-Subject: [PATCH libnetfilter_queue] src: add pkt_buff function for ICMP
-From:   Etan Kissling <etan_kissling@apple.com>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
-Message-id: <F380D43B-7B1E-4FB4-9E83-BAD37E062C13@apple.com>
-Thread-topic: [PATCH libnetfilter_queue] src: add pkt_buff function for ICMP
-References: <57E75703-5B8A-4E88-810C-E5F0963BF6E7@apple.com>
-In-reply-to: <57E75703-5B8A-4E88-810C-E5F0963BF6E7@apple.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=UTF-8
-Content-transfer-encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-19_05:2021-01-18,2021-01-19 signatures=0
+        Tue, 19 Jan 2021 04:23:14 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8976FC06179F
+        for <netfilter-devel@vger.kernel.org>; Tue, 19 Jan 2021 01:21:56 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1l1nD0-0006sX-Gh; Tue, 19 Jan 2021 10:21:54 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf-next] netfilter: ctnetlink: remove get_ct indirection
+Date:   Tue, 19 Jan 2021 10:21:14 +0100
+Message-Id: <20210119092114.29786-1-fw@strlen.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add support for processing ICMP packets using pkt_buff, similar to
-existing library support for TCP and UDP.
+Use nf_ct_get() directly, its a small inline helper without dependencies.
 
-Signed-off-by: Etan Kissling <etan_kissling@apple.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/libnetfilter_queue/Makefile.am        |  1 +
- .../libnetfilter_queue_icmp.h                 |  8 ++++
- src/Makefile.am                               |  1 +
- src/extra/icmp.c                              | 48 +++++++++++++++++++
- 4 files changed, 58 insertions(+)
- create mode 100644 include/libnetfilter_queue/libnetfilter_queue_icmp.h
- create mode 100644 src/extra/icmp.c
+ include/linux/netfilter.h            | 2 --
+ net/netfilter/nf_conntrack_netlink.c | 7 -------
+ net/netfilter/nfnetlink_log.c        | 6 +++++-
+ net/netfilter/nfnetlink_queue.c      | 4 ++--
+ 4 files changed, 7 insertions(+), 12 deletions(-)
 
-diff --git a/include/libnetfilter_queue/Makefile.am b/include/libnetfilter_queue/Makefile.am
-index 902fbf9..e436bab 100644
---- a/include/libnetfilter_queue/Makefile.am
-+++ b/include/libnetfilter_queue/Makefile.am
-@@ -1,5 +1,6 @@
- pkginclude_HEADERS = libnetfilter_queue.h	\
- 		     linux_nfnetlink_queue.h	\
-+		     libnetfilter_queue_icmp.h	\
- 		     libnetfilter_queue_ipv4.h	\
- 		     libnetfilter_queue_ipv6.h	\
- 		     libnetfilter_queue_tcp.h	\
-diff --git a/include/libnetfilter_queue/libnetfilter_queue_icmp.h b/include/libnetfilter_queue/libnetfilter_queue_icmp.h
-new file mode 100644
-index 0000000..9a8bd52
---- /dev/null
-+++ b/include/libnetfilter_queue/libnetfilter_queue_icmp.h
-@@ -0,0 +1,8 @@
-+#ifndef _LIBNFQUEUE_ICMP_H_
-+#define _LIBNFQUEUE_ICMP_H_
-+
-+struct pkt_buff;
-+
-+struct icmphdr *nfq_icmp_get_hdr(struct pkt_buff *pktb);
-+
+diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+index 0101747de549..f0f3a8354c3c 100644
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -463,8 +463,6 @@ extern struct nf_ct_hook __rcu *nf_ct_hook;
+ struct nlattr;
+ 
+ struct nfnl_ct_hook {
+-	struct nf_conn *(*get_ct)(const struct sk_buff *skb,
+-				  enum ip_conntrack_info *ctinfo);
+ 	size_t (*build_size)(const struct nf_conn *ct);
+ 	int (*build)(struct sk_buff *skb, struct nf_conn *ct,
+ 		     enum ip_conntrack_info ctinfo,
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index 84caf3316946..1469365bac7e 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -2686,12 +2686,6 @@ ctnetlink_glue_build_size(const struct nf_conn *ct)
+ 	       ;
+ }
+ 
+-static struct nf_conn *ctnetlink_glue_get_ct(const struct sk_buff *skb,
+-					     enum ip_conntrack_info *ctinfo)
+-{
+-	return nf_ct_get(skb, ctinfo);
+-}
+-
+ static int __ctnetlink_glue_build(struct sk_buff *skb, struct nf_conn *ct)
+ {
+ 	const struct nf_conntrack_zone *zone;
+@@ -2925,7 +2919,6 @@ static void ctnetlink_glue_seqadj(struct sk_buff *skb, struct nf_conn *ct,
+ }
+ 
+ static struct nfnl_ct_hook ctnetlink_glue_hook = {
+-	.get_ct		= ctnetlink_glue_get_ct,
+ 	.build_size	= ctnetlink_glue_build_size,
+ 	.build		= ctnetlink_glue_build,
+ 	.parse		= ctnetlink_glue_parse,
+diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
+index b35e8d9a5b37..4a7f1d122e58 100644
+--- a/net/netfilter/nfnetlink_log.c
++++ b/net/netfilter/nfnetlink_log.c
+@@ -43,6 +43,10 @@
+ #include "../bridge/br_private.h"
+ #endif
+ 
++#if IS_ENABLED(CONFIG_NF_CONNTRACK)
++#include <net/netfilter/nf_conntrack.h>
 +#endif
-diff --git a/src/Makefile.am b/src/Makefile.am
-index 8cede12..079853e 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -31,6 +31,7 @@ libnetfilter_queue_la_LDFLAGS = -Wc,-nostartfiles \
- libnetfilter_queue_la_SOURCES = libnetfilter_queue.c	\
- 				nlmsg.c			\
- 				extra/checksum.c	\
-+				extra/icmp.c		\
- 				extra/ipv6.c		\
- 				extra/tcp.c		\
- 				extra/ipv4.c		\
-diff --git a/src/extra/icmp.c b/src/extra/icmp.c
-new file mode 100644
-index 0000000..a97979b
---- /dev/null
-+++ b/src/extra/icmp.c
-@@ -0,0 +1,48 @@
-+/*
-+ * (C) 2012 by Pablo Neira Ayuso <pablo@netfilter.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This code has been sponsored by Vyatta Inc. <http://www.vyatta.com>
-+ */
 +
-+#include <stdio.h>
-+#define _GNU_SOURCE
-+#include <netinet/ip_icmp.h>
-+
-+#include <libnetfilter_queue/libnetfilter_queue_icmp.h>
-+
-+#include "internal.h"
-+
-+/**
-+ * \defgroup icmp ICMP helper functions
-+ * @{
-+ */
-+
-+/**
-+ * nfq_icmp_get_hdr - get the ICMP header.
-+ * \param pktb: pointer to user-space network packet buffer
-+ * \returns validated pointer to the ICMP header or NULL if the ICMP header was
-+ * not set or if a minimal length check fails.
-+ * \note You have to call nfq_ip_set_transport_header() or
-+ * nfq_ip6_set_transport_header() first to set the ICMP header.
-+ */
-+EXPORT_SYMBOL
-+struct icmphdr *nfq_icmp_get_hdr(struct pkt_buff *pktb)
-+{
-+	if (pktb->transport_header == NULL)
-+		return NULL;
-+
-+	/* No room for the ICMP header. */
-+	if (pktb_tail(pktb) - pktb->transport_header < sizeof(struct icmphdr))
-+		return NULL;
-+
-+	return (struct icmphdr *)pktb->transport_header;
-+}
-+
-+/**
-+ * @}
-+ */
+ #define NFULNL_COPY_DISABLED	0xff
+ #define NFULNL_NLBUFSIZ_DEFAULT	NLMSG_GOODSIZE
+ #define NFULNL_TIMEOUT_DEFAULT 	100	/* every second */
+@@ -736,7 +740,7 @@ nfulnl_log_packet(struct net *net,
+ 	if (inst->flags & NFULNL_CFG_F_CONNTRACK) {
+ 		nfnl_ct = rcu_dereference(nfnl_ct_hook);
+ 		if (nfnl_ct != NULL) {
+-			ct = nfnl_ct->get_ct(skb, &ctinfo);
++			ct = nf_ct_get(skb, &ctinfo);
+ 			if (ct != NULL)
+ 				size += nfnl_ct->build_size(ct);
+ 		}
+diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+index d1d8bca03b4f..a8bb23881ab3 100644
+--- a/net/netfilter/nfnetlink_queue.c
++++ b/net/netfilter/nfnetlink_queue.c
+@@ -446,7 +446,7 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+ 
+ 	if (queue->flags & NFQA_CFG_F_CONNTRACK) {
+ 		if (nfnl_ct != NULL) {
+-			ct = nfnl_ct->get_ct(entskb, &ctinfo);
++			ct = nf_ct_get(entskb, &ctinfo);
+ 			if (ct != NULL)
+ 				size += nfnl_ct->build_size(ct);
+ 		}
+@@ -1106,7 +1106,7 @@ static struct nf_conn *nfqnl_ct_parse(struct nfnl_ct_hook *nfnl_ct,
+ {
+ 	struct nf_conn *ct;
+ 
+-	ct = nfnl_ct->get_ct(entry->skb, ctinfo);
++	ct = nf_ct_get(entry->skb, ctinfo);
+ 	if (ct == NULL)
+ 		return NULL;
+ 
 -- 
-2.21.1 (Apple Git-122.3)
-
-
+2.26.2
 
