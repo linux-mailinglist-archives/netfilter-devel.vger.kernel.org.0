@@ -2,116 +2,422 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14AC2FC3AD
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Jan 2021 23:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 337082FD274
+	for <lists+netfilter-devel@lfdr.de>; Wed, 20 Jan 2021 15:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387723AbhASOhg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 19 Jan 2021 09:37:36 -0500
-Received: from ma1-aaemail-dr-lapp02.apple.com ([17.171.2.68]:47832 "EHLO
-        ma1-aaemail-dr-lapp02.apple.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389891AbhASN0I (ORCPT
+        id S1728891AbhATOOt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 20 Jan 2021 09:14:49 -0500
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:42772 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732666AbhATNjp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:26:08 -0500
-Received: from pps.filterd (ma1-aaemail-dr-lapp02.apple.com [127.0.0.1])
-        by ma1-aaemail-dr-lapp02.apple.com (8.16.0.42/8.16.0.42) with SMTP id 10JDNbjX049279;
-        Tue, 19 Jan 2021 05:25:16 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com; h=date : subject : from
- : to : cc : message-id : references : in-reply-to : mime-version :
- content-type : content-transfer-encoding; s=20180706;
- bh=yU7VMUmFiBGJYDdFc17kup+VaqjxMXcYkcdv35yCB8Q=;
- b=FT0qEKViJCjRLqssU3afoXwDDFvhHATl43Yjab7bgSFls+4+5ePtM8O6+FY/bwyXuR/1
- 0lARzKFathcJ1mEXAMc9wn9+na7cJQ38kovhiuGAhaBSqpPnPHPnf+Gma9hX7iMKapSt
- 3MOlLOAp2w0ZZvCrogiCgFRggQSt7qC+wrZ+WpnDwKuxiOg5r+QEHVBEGuRS6WyAZn3Q
- u1/JoWxVaRePmw+JgtQzwxj185NvGtgJGlO5cRlnB7IGdWi8O5iMTJ0ebSyDC/0rSiXg
- Y5IdKN3KQOn7lAk13wMgpN6PfqNp6drlCL+0pU6kXdHcuHz+s5MDDHKlVd4WsoPn02HI nQ== 
-Received: from crk-mailsvcp-mta-lapp02.euro.apple.com (crk-mailsvcp-mta-lapp02.euro.apple.com [17.66.55.14])
-        by ma1-aaemail-dr-lapp02.apple.com with ESMTP id 363wq0h7jh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
-        Tue, 19 Jan 2021 05:25:16 -0800
-Received: from crk-mailsvcp-mmp-lapp02.euro.apple.com
- (crk-mailsvcp-mmp-lapp02.euro.apple.com [17.72.136.16])
- by crk-mailsvcp-mta-lapp02.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.7.20201203 64bit (built Dec  3
- 2020))
- with ESMTPS id <0QN600MN7NY2P600@crk-mailsvcp-mta-lapp02.euro.apple.com>; Tue,
- 19 Jan 2021 13:25:14 +0000 (GMT)
-Received: from process_milters-daemon.crk-mailsvcp-mmp-lapp02.euro.apple.com by
- crk-mailsvcp-mmp-lapp02.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.6.20200729 64bit (built Jul 29
- 2020)) id <0QN600W00NTYR900@crk-mailsvcp-mmp-lapp02.euro.apple.com>; Tue,
- 19 Jan 2021 13:25:14 +0000 (GMT)
-X-Va-A: 
-X-Va-T-CD: ee775fe296fae01696e403bd65ae1163
-X-Va-E-CD: 785a83b2b63a5a352022c3616ae5f6e3
-X-Va-R-CD: 1f2f1a1e678e5861357bfe6b87eec27b
-X-Va-CD: 0
-X-Va-ID: f9d0e5fe-f220-4a0b-97c7-4edb5846ddba
-X-V-A:  
-X-V-T-CD: ee775fe296fae01696e403bd65ae1163
-X-V-E-CD: 785a83b2b63a5a352022c3616ae5f6e3
-X-V-R-CD: 1f2f1a1e678e5861357bfe6b87eec27b
-X-V-CD: 0
-X-V-ID: 8afa557e-9f59-49d6-b5f9-15b4cc9b2c68
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-19_04:2021-01-18,2021-01-19 signatures=0
-Received: from [192.168.1.127] (unknown [17.235.218.21])
- by crk-mailsvcp-mmp-lapp02.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.6.20200729 64bit (built Jul 29
- 2020))
- with ESMTPSA id <0QN600HDVNY1IN00@crk-mailsvcp-mmp-lapp02.euro.apple.com>;
- Tue, 19 Jan 2021 13:25:14 +0000 (GMT)
-User-Agent: Microsoft-MacOutlook/16.45.21011103
-Date:   Tue, 19 Jan 2021 14:25:13 +0100
-Subject: [PATCH libnetfilter_queue] src: fix IPv6 header handling
-From:   Etan Kissling <etan_kissling@apple.com>
+        Wed, 20 Jan 2021 08:39:45 -0500
+Received: by mail-wr1-f47.google.com with SMTP id m4so23116561wrx.9
+        for <netfilter-devel@vger.kernel.org>; Wed, 20 Jan 2021 05:39:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=OLfF0spozksxfONXz9yh+9WoiKIXPq1TfnSumuh8esE=;
+        b=QSWiB69Hck3gE2sIVa2SjOZ4OHRMMXh5ABSl7tjjAVi7hqc02c5xSce0C2mnSQXjni
+         WCglxtYNa/nKTdS/YxaD2CmLG478NnRY/G+IJrpKJbDegr5HlHIjUP/QSYuKezH0k6NS
+         Tx4cjKEYbPKUCI5kpHDZHxXJzWaomQMGJG48vu7ilZPnCKt1HzqK1ReIPrSyBxVJspdl
+         YKj5pMeolL/izx6/7AFi2YvsJHLiFYh3KDQbPIF1pIoZNXGa9OgihGMmQ4V9Cz4lbXmG
+         Kj7epC2h+mjUfqrhSPh+MTGgBAl7EhaPg5/AcsKhubKnkOXE9sa9IhybtnmWVOfQhEqJ
+         ZglQ==
+X-Gm-Message-State: AOAM532Xqvulbxo8FPVHITbcB+ZX4zOLOmYqJrqRl87PDhs6ROSs6h7Z
+        x2Y87aaBZ9cypiM28HmojKn9IFVMXoPU5Q==
+X-Google-Smtp-Source: ABdhPJxaLvLc2uLksR97LTugyJeKsEV3pCKfuTnM4+MylaiY3Tq5rFlCYnCQmscjFJoNlpuDctstLQ==
+X-Received: by 2002:a5d:6cd4:: with SMTP id c20mr9347487wrc.57.1611149941843;
+        Wed, 20 Jan 2021 05:39:01 -0800 (PST)
+Received: from localhost ([213.194.141.17])
+        by smtp.gmail.com with ESMTPSA id y63sm4199036wmd.21.2021.01.20.05.39.00
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 05:39:01 -0800 (PST)
+Subject: [conntrack-tools PATCH] conntrackd: introduce yes & no config values
+From:   Arturo Borrero Gonzalez <arturo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
-Message-id: <522C1546-5985-45B1-96CE-DF8B897EA13E@apple.com>
-Thread-topic: [PATCH libnetfilter_queue] src: fix IPv6 header handling
-References: <EA975B90-266F-4DED-A655-8DB522DDF586@apple.com>
-In-reply-to: <EA975B90-266F-4DED-A655-8DB522DDF586@apple.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=UTF-8
-Content-transfer-encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-19_04:2021-01-18,2021-01-19 signatures=0
+Date:   Wed, 20 Jan 2021 14:39:00 +0100
+Message-ID: <161114994034.48299.3516818154943179595.stgit@endurance>
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This corrects issues in IPv6 header handling that sometimes resulted
-in an endless loop.
+They are equivalent of 'on' and 'off' and makes the config easier to understand.
 
-Signed-off-by: Etan Kissling <etan_kissling@apple.com>
+Signed-off-by: Arturo Borrero Gonzalez <arturo@netfilter.org>
 ---
- src/extra/ipv6.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ conntrackd.conf.5     |  110 +++++++++++++++++++++++++------------------------
+ src/read_config_lex.l |    8 +++-
+ 2 files changed, 61 insertions(+), 57 deletions(-)
 
-diff --git a/src/extra/ipv6.c b/src/extra/ipv6.c
-index 42c5e25..c088240 100644
---- a/src/extra/ipv6.c
-+++ b/src/extra/ipv6.c
-@@ -72,7 +72,8 @@ int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *ip6h,
- 		uint32_t hdrlen;
+diff --git a/conntrackd.conf.5 b/conntrackd.conf.5
+index 673f895..a73c3f7 100644
+--- a/conntrackd.conf.5
++++ b/conntrackd.conf.5
+@@ -22,7 +22,7 @@
+ .\" <http://www.gnu.org/licenses/>.
+ .\" %%%LICENSE_END
+ .\"
+-.TH CONNTRACKD.CONF 5 "Jan 27, 2019"
++.TH CONNTRACKD.CONF 5 "Jan 20, 2021"
  
- 		/* No more extensions, we're done. */
--		if (nexthdr == IPPROTO_NONE) {
-+		if (nexthdr == IPPROTO_TCP || nexthdr == IPPROTO_UDP || nexthdr == IPPROTO_ESP ||
-+			nexthdr == IPPROTO_ICMPV6 || nexthdr == IPPROTO_NONE) {
- 			cur = NULL;
- 			break;
- 		}
-@@ -107,7 +108,7 @@ int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *ip6h,
- 		} else if (nexthdr == IPPROTO_AH)
- 			hdrlen = (ip6_ext->ip6e_len + 2) << 2;
- 		else
--			hdrlen = ip6_ext->ip6e_len;
-+			hdrlen = (ip6_ext->ip6e_len + 1) << 3;
+ .SH NAME
+ conntrackd.conf \- configuration file for conntrackd daemon
+@@ -133,7 +133,7 @@ experiments measuring the cycles spent by the acknowledgment handling
+ with oprofile).
  
- 		nexthdr = ip6_ext->ip6e_nxt;
- 		cur += hdrlen;
--- 
-2.21.1 (Apple Git-122.3)
-
-
+ .TP
+-.BI "DisableExternalCache <on|off>"
++.BI "DisableExternalCache <yes|no>"
+ This clause allows you to disable the external cache. Thus, the state entries
+ are directly injected into the kernel conntrack table. As a result, you save
+ memory in user-space but you consume slots in the kernel conntrack table for
+@@ -144,19 +144,19 @@ If you are installing \fBconntrackd(8)\fP for first time, please read the user
+ manual and I encourage you to consider using the fail-over scripts instead of
+ enabling this option!
+ 
+-By default, this clause is set off.
++By default this is set to no, meaning the external cache is enabled.
+ 
+ .TP
+-.BI "StartupResync <on|off>"
++.BI "StartupResync <yes|no>"
+ Order conntrackd to request a complete conntrack table resync against the other
+ node at startup. A single request will be made.
+ 
+ This is useful to get in sync with another node which has been running while we
+ were down.
+ 
+-Example: StartupResync on
++Example: StartupResync yes
+ 
+-By default, this clause is set off.
++By default, this clause is set to no.
+ 
+ .SS Mode ALARM
+ 
+@@ -201,14 +201,14 @@ In this synchronization mode you may configure \fBDisableInternalCache\fP,
+ \fBStartupResync\fP.
+ 
+ .TP
+-.BI "DisableInternalCache <on|off>"
++.BI "DisableInternalCache <yes|no>"
+ This clause allows you to disable the internal cache. Thus, the synchronization
+ messages are directly sent through the dedicated link.
+ 
+-This option is set off by default.
++This option is set to no by default.
+ 
+ .TP
+-.BI "DisableExternalCache <on|off>"
++.BI "DisableExternalCache <yes|no>"
+ Same as in \fBFTFW\fP mode.
+ 
+ .TP
+@@ -220,7 +220,7 @@ Same as in \fBFTFW\fP mode.
+ Same as in \fBFTFW\fP mode.
+ 
+ .TP
+-.BI "StartupResync <on|off>"
++.BI "StartupResync <yes|no>"
+ Same as in \fBFTFW\fP mode.
+ 
+ .SS MULTICAST
+@@ -326,7 +326,7 @@ to increase the buffer size.
+ Example: RcvSocketBuffer 1249280
+ 
+ .TP
+-.BI "Checksum <on|off>"
++.BI "Checksum <yes|no>"
+ Enable/Disable message checksumming. This is a good property to achieve
+ fault-tolerance. In case of doubt, use it.
+ 
+@@ -395,7 +395,7 @@ Same as in the \fBMulticast\fP transport protocol configuration.
+ Same as in the \fBMulticast\fP transport protocol configuration.
+ 
+ .TP
+-.BI "Checksum <on|off>"
++.BI "Checksum <yes|no>"
+ Same as in the \fBMulticast\fP transport protocol configuration.
+ 
+ 
+@@ -419,7 +419,7 @@ Example:
+ 		Interface eth2
+ 		SndSocketBuffer 1249280
+ 		RcvSocketBuffer 1249280
+-		Checksum on
++		Checksum yes
+ 	}
+ .fi
+ 
+@@ -429,7 +429,7 @@ Other unsorted options that are related to the synchronization protocol
+ or transport mechanism.
+ 
+ .TP
+-.BI "TCPWindowTracking <on|off>"
++.BI "TCPWindowTracking <yes|no>"
+ TCP state-entries have window tracking disabled by default, you can enable it
+ with this option. As said, default is off.
+ This feature requires a \fBLinux kernel >= 2.6.36\fP.
+@@ -465,7 +465,7 @@ This top-level section contains generic configuration directives for the
+ \fBconntrackd(8)\fP daemon.
+ 
+ .TP
+-.BI "Systemd <on|off>"
++.BI "Systemd <yes|no>"
+ Enable \fBsystemd(1)\fP runtime support if \fBconntrackd(8)\fP is compiled
+ with the proper configuration. Then you can use a service unit of
+ \fIType=notify\fP.
+@@ -474,7 +474,7 @@ Obviously, this requires the init of your system to be \fBsystemd(1)\fP.
+ 
+ Note: \fBsystemd(1)\fP watchdog is supported as well.
+ 
+-Example: Systemd on
++Example: Systemd yes
+ 
+ By default runtime support is enabled if conntrackd was built with the systemd
+ feature. Otherwise is off.
+@@ -503,15 +503,15 @@ dead entries cached for possible retransmission during state synchronization.
+ Example: HashLimit 131072
+ 
+ .TP
+-.BI "LogFile <on|off|filename>"
++.BI "LogFile <yes|no|filename>"
+ Enable \fBconntrackd(8)\fP to log to a file.
+ 
+-Example: LogFile on
++Example: LogFile no
+ 
+-Default is off. The default logfile is \fB/var/log/conntrackd.log\fP.
++Default is no. Default logfile is \fB/var/log/conntrackd.log\fP.
+ 
+ .TP
+-.BI "Syslog <on|off|facility>"
++.BI "Syslog <yes|no|facility>"
+ Enable connection logging via Syslog. If you set the facility, use the same as
+ in the \fBStats\fP section, otherwise you'll get a warning message.
+ 
+@@ -545,7 +545,7 @@ size growth that can be reached.
+ Example:  NetlinkBufferSizeMaxGrowth 8388608
+ 
+ .TP
+-.BI "NetlinkOverrunResync <on|off|value>"
++.BI "NetlinkOverrunResync <yes|no|value>"
+ If the daemon detects that Netlink is dropping state-change events, it
+ automatically schedules a resynchronization against the Kernel after 30 seconds
+ (default value). Resynchronizations are expensive in terms of CPU consumption
+@@ -554,20 +554,20 @@ that do not exist anymore.
+ 
+ Note: Be careful of setting a very small value here.
+ 
+-Example: NetlinkOverrunResync on
++Example: NetlinkOverrunResync yes
+ 
+ The default value is \fB30\fP seconds.
+ If not specified, the daemon assumes that this option is enabled and uses the
+ default value.
+ 
+ .TP
+-.BI "NetlinkEventsReliable <on|off>"
++.BI "NetlinkEventsReliable <yes|no>"
+ If you want reliable event reporting over Netlink, set on this option. If you
+ set on this clause, it is a good idea to set off \fBNetlinkOverrunResync\fP.
+ 
+ You need \fBLinux Kernel >= 2.6.31\fP for this option to work.
+ 
+-Example: NetlinkEventsReliable on
++Example: NetlinkEventsReliable yes
+ 
+ This option is off by default.
+ 
+@@ -758,29 +758,29 @@ This top-level section indicates \fBconntrackd(8)\fP to work as a statistic
+ collector for the nf_conntrack linux kernel subsystem.
+ 
+ .TP
+-.BI "LogFile <on|off|filename>"
++.BI "LogFile <yes|no|filename>"
+ If you enable this option, the daemon writes the information about destroyed
+ connections to a logfile.
+ 
+-Default is off. Default filename is \fB/var/log/conntrackd-stats.log\fP.
++Default is no. Default filename is \fB/var/log/conntrackd-stats.log\fP.
+ 
+ .TP
+-.BI "NetlinkEventsReliable <on|off>"
++.BI "NetlinkEventsReliable <yes|no>"
+ If you want reliable event reporting over Netlink, set on this option. If
+ you set on this clause, it is a good idea to set off
+ \fBNetlinkOverrunResync\fP. This requires \fBLinux kernel >= 2.6.31\fP.
+ 
+-Default is off.
++Default is no.
+ 
+ .TP
+-.BI "Syslog <on|off|facility>"
++.BI "Syslog <yes|no|facility>"
+ Enable connection logging via Syslog.
+ If you set the facility, use the same as in the \fBGeneral\fP section,
+ otherwise you'll get a warning message.
+ 
+ Example: Syslog local0
+ 
+-Default is off.
++Default is no.
+ 
+ .SH HELPER
+ Note: this configuration is very advanced and has nothing to do with
+@@ -899,15 +899,15 @@ collector.
+ 
+ .nf
+ Stats {
+-	LogFile on
+-	NetlinkEventsReliable Off
+-	Syslog off
++	LogFile yes
++	NetlinkEventsReliable no
++	Syslog yes
+ }
+ General {
+-	Systemd on
++	Systemd yes
+ 	HashSize 8192
+ 	HashLimit 65535
+-	Syslog on
++	Syslog yes
+ 	LockFile /var/lock/conntrack.lock
+ 	UNIX {
+ 		Path /var/run/conntrackd.ctl
+@@ -942,7 +942,7 @@ Sync {
+ 		ResendQueueSize 131072
+ 		PurgeTimeout 60
+ 		ACKWindowSize 300
+-		DisableExternalCache Off
++		DisableExternalCache no
+ 	}
+ 	Multicast {
+ 		IPv4_address 225.0.0.50
+@@ -951,7 +951,7 @@ Sync {
+ 		Interface eth2
+ 		SndSocketBuffer 1249280
+ 		RcvSocketBuffer 1249280
+-		Checksum on
++		Checksum yes
+ 	}
+ 	Multicast Default {
+ 		IPv4_address 225.0.0.51
+@@ -960,27 +960,27 @@ Sync {
+ 		Interface eth3
+ 		SndSocketBuffer 1249280
+ 		RcvSocketBuffer 1249280
+-		Checksum on
++		Checksum yes
+ 	}
+ 	Options {
+-		TCPWindowTracking Off
+-		ExpectationSync On
++		TCPWindowTracking no
++		ExpectationSync yes
+ 	}
+ }
+ General {
+-	Systemd on
++	Systemd yes
+ 	HashSize 32768
+ 	HashLimit 131072
+-	LogFile on
+-	Syslog off
++	LogFile yes
++	Syslog no
+ 	LockFile /var/lock/conntrack.lock
+ 	UNIX {
+ 		Path /var/run/conntrackd.ctl
+ 	}
+ 	NetlinkBufferSize 2097152
+ 	NetlinkBufferSizeMaxGrowth 8388608
+-	NetlinkOverrunResync On
+-	NetlinkEventsReliable Off
++	NetlinkOverrunResync yes
++	NetlinkEventsReliable no
+ 	EventIterationLimit 100
+ 	Filter From Userspace {
+ 		Protocol Accept {
+@@ -1007,8 +1007,8 @@ It includes common general configuration as well.
+ .nf
+ Sync {
+ 	Mode NOTRACK {
+-		DisableInternalCache on
+-		DisableExternalCache on
++		DisableInternalCache yes
++		DisableExternalCache yes
+ 	}
+ 	TCP {
+ 		IPv4_address 192.168.2.100
+@@ -1017,27 +1017,27 @@ Sync {
+ 		Interface eth2
+ 		SndSocketBuffer 1249280
+ 		RcvSocketBuffer 1249280
+-		Checksum on
++		Checksum yes
+ 	}
+ 	Options {
+-		TCPWindowTracking Off
+-		ExpectationSync On
++		TCPWindowTracking no
++		ExpectationSync yes
+ 	}
+ }
+ General {
+-	Systemd on
++	Systemd yes
+ 	HashSize 32768
+ 	HashLimit 131072
+-	LogFile on
+-	Syslog off
++	LogFile yes
++	Syslog no
+ 	LockFile /var/lock/conntrack.lock
+ 	UNIX {
+ 		Path /var/run/conntrackd.ctl
+ 	}
+ 	NetlinkBufferSize 2097152
+ 	NetlinkBufferSizeMaxGrowth 8388608
+-	NetlinkOverrunResync On
+-	NetlinkEventsReliable Off
++	NetlinkOverrunResync yes
++	NetlinkEventsReliable no
+ 	EventIterationLimit 100
+ 	Filter From Userspace {
+ 		Protocol Accept {
+diff --git a/src/read_config_lex.l b/src/read_config_lex.l
+index b0d9e61..f1f4fe3 100644
+--- a/src/read_config_lex.l
++++ b/src/read_config_lex.l
+@@ -35,6 +35,10 @@ nl		[\n\r]
+ 
+ is_on		[o|O][n|N]
+ is_off		[o|O][f|F][f|F]
++is_yes		[y|Y][e|E][s|S]
++is_no		[n|N][o|O]
++is_true		{is_on}|{is_yes}
++is_false	{is_off}|{is_no}
+ integer		[0-9]+
+ signed_integer	[\-\+][0-9]+
+ path		\/[^\"\n ]*
+@@ -138,8 +142,8 @@ notrack		[N|n][O|o][T|t][R|r][A|a][C|c][K|k]
+ "Systemd"			{ return T_SYSTEMD; }
+ "StartupResync"			{ return T_STARTUP_RESYNC; }
+ 
+-{is_on}			{ return T_ON; }
+-{is_off}		{ return T_OFF; }
++{is_true}		{ return T_ON; }
++{is_false}		{ return T_OFF; }
+ {integer}		{ yylval.val = atoi(yytext); return T_NUMBER; }
+ {signed_integer}	{ yylval.val = atoi(yytext); return T_SIGNED_NUMBER; }
+ {ip4}			{ yylval.string = strdup(yytext); return T_IP; }
 
