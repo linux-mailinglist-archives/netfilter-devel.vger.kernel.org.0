@@ -2,273 +2,101 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0522FEE57
-	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Jan 2021 16:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 931A32FEE13
+	for <lists+netfilter-devel@lfdr.de>; Thu, 21 Jan 2021 16:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731396AbhAUPUQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 21 Jan 2021 10:20:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
+        id S1732442AbhAUPIg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 21 Jan 2021 10:08:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730981AbhAUPDe (ORCPT
+        with ESMTP id S1731979AbhAUPFH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 21 Jan 2021 10:03:34 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B69C06174A
-        for <netfilter-devel@vger.kernel.org>; Thu, 21 Jan 2021 07:02:54 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1l2bU5-0004Oo-0v; Thu, 21 Jan 2021 16:02:53 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft] exthdr: remove tcp dependency for tcp option matching
-Date:   Thu, 21 Jan 2021 16:02:47 +0100
-Message-Id: <20210121150247.19565-1-fw@strlen.de>
-X-Mailer: git-send-email 2.26.2
+        Thu, 21 Jan 2021 10:05:07 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36BFC0613D6
+        for <netfilter-devel@vger.kernel.org>; Thu, 21 Jan 2021 07:04:26 -0800 (PST)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1l2bVZ-0003io-Ig; Thu, 21 Jan 2021 16:04:25 +0100
+Date:   Thu, 21 Jan 2021 16:04:25 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH 4/4] json: icmp: refresh json output
+Message-ID: <20210121150425.GR3158@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+References: <20210121135510.14941-1-fw@strlen.de>
+ <20210121135510.14941-5-fw@strlen.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121135510.14941-5-fw@strlen.de>
+Sender:  <n0-1@orbyte.nwl.cc>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Kernel won't search for tcp options in non-tcp packets.
+Hi,
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- src/evaluate.c                |  4 +--
- tests/py/any/tcpopt.t.payload | 60 -----------------------------------
- 2 files changed, 1 insertion(+), 63 deletions(-)
+On Thu, Jan 21, 2021 at 02:55:10PM +0100, Florian Westphal wrote:
+> nft inserts dependencies for icmp header types, but I forgot to
+> update the json test files to reflect this change.
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index c830dcdbd965..ee5655064cb8 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -580,9 +580,7 @@ static int expr_evaluate_exthdr(struct eval_ctx *ctx, struct expr **exprp)
- 
- 	switch (expr->exthdr.op) {
- 	case NFT_EXTHDR_OP_TCPOPT:
--		dependency = &proto_tcp;
--		pb = PROTO_BASE_TRANSPORT_HDR;
--		break;
-+		return __expr_evaluate_exthdr(ctx, exprp);
- 	case NFT_EXTHDR_OP_IPV4:
- 		dependency = &proto_ip;
- 		break;
-diff --git a/tests/py/any/tcpopt.t.payload b/tests/py/any/tcpopt.t.payload
-index 56473798f8fd..1005df32ab33 100644
---- a/tests/py/any/tcpopt.t.payload
-+++ b/tests/py/any/tcpopt.t.payload
-@@ -1,210 +1,150 @@
- # tcp option eol kind 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 0 + 0 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option nop kind 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 1 + 0 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option maxseg kind 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 2 + 0 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option maxseg length 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 2 + 1 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option maxseg size 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 2b @ 2 + 2 => reg 1 ]
-   [ cmp eq reg 1 0x00000100 ]
- 
- # tcp option window kind 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 3 + 0 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option window length 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 3 + 1 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option window count 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 3 + 2 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option sack-perm kind 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 4 + 0 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option sack-perm length 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 4 + 1 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option sack kind 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 5 + 0 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option sack length 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 5 + 1 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option sack left 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 5 + 2 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option sack0 left 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 5 + 2 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option sack1 left 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 5 + 10 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option sack2 left 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 5 + 18 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option sack3 left 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 5 + 26 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option sack right 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 5 + 6 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option sack0 right 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 5 + 6 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option sack1 right 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 5 + 14 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option sack2 right 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 5 + 22 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option sack3 right 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 5 + 30 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option timestamp kind 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 8 + 0 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option timestamp length 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 8 + 1 => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option timestamp tsval 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 8 + 2 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option timestamp tsecr 1
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 4b @ 8 + 6 => reg 1 ]
-   [ cmp eq reg 1 0x01000000 ]
- 
- # tcp option 255 missing
- inet
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 255 + 0 present => reg 1 ]
-   [ cmp eq reg 1 0x00000000 ]
- 
- # tcp option @255,8,8 255
- inet
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 255 + 1 => reg 1 ]
-   [ cmp eq reg 1 0x000000ff ]
- 
- # tcp option window exists
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 3 + 0 present => reg 1 ]
-   [ cmp eq reg 1 0x00000001 ]
- 
- # tcp option window missing
- inet 
--  [ meta load l4proto => reg 1 ]
--  [ cmp eq reg 1 0x00000006 ]
-   [ exthdr load tcpopt 1b @ 3 + 0 present => reg 1 ]
-   [ cmp eq reg 1 0x00000000 ]
- 
--- 
-2.26.2
+For asymmetric JSON output, there are *.t.json.output files. Please add
+the missing dependency expressions there.
 
+In general, *.t.json files should contain JSON equivalents for rules as
+they are *input* into nft. So we want them to be as close to the
+introductory standard syntax comment as possible. This patch "breaks" a
+few cases, e.g.:
+
+[...]
+> @@ -301,6 +301,8 @@
+>                      "source-quench",
+>                      "redirect",
+>                      "echo-request",
+> +                    "router-advertisement",
+> +                    "router-solicitation",
+>                      "time-exceeded",
+>                      "parameter-problem",
+>                      "timestamp-request",
+> @@ -308,9 +310,7 @@
+>                      "info-request",
+>                      "info-reply",
+>                      "address-mask-request",
+> -                    "address-mask-reply",
+> -                    "router-advertisement",
+> -                    "router-solicitation"
+> +                    "address-mask-reply"
+>                  ]
+>              }
+>          }
+
+Input is indeed sorted as prior to this patch. The reordered output is
+found in icmp.t.json.output. The benefit from being picky here is minor,
+but here's a better example:
+
+[...]
+> @@ -466,11 +482,11 @@
+>                      "protocol": "icmp"
+>                  }
+>              },
+> -	    "op": "==",
+> +            "op": "==",
+>              "right": {
+>                  "set": [
+> -                    2,
+> -                    4,
+> +                    "prot-unreachable",
+> +                    "frag-needed",
+>                      33,
+>                      54,
+>                      56
+
+We test that icmp code values 2 and 4 are accepted. Standard syntax test
+covers the asymmetric output containing the names. JSON should do the
+same. OTOH, names as input is tested in the negated form of the same
+test which follows this one.
+
+Thanks, Phil
