@@ -2,166 +2,123 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2122FFF81
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Jan 2021 10:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2F73000D5
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Jan 2021 11:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbhAVJoR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 22 Jan 2021 04:44:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46366 "EHLO
+        id S1726997AbhAVJ2G (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 22 Jan 2021 04:28:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727390AbhAVJlD (ORCPT
+        with ESMTP id S1727309AbhAVJKM (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:41:03 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933C4C061786
-        for <netfilter-devel@vger.kernel.org>; Fri, 22 Jan 2021 01:40:17 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id e22so9822250iom.5
-        for <netfilter-devel@vger.kernel.org>; Fri, 22 Jan 2021 01:40:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j/8AMFI2hyfL+MbywCIfVyY8g5M1eDaVQ4W1unFATlg=;
-        b=iEwN/rWtohJuD6xj6j4fleW4+lNdJjx21JDwWwlny+4CMMEfYEqTkm8J3lpn3N0NDw
-         PNWHEhJ0czIKLivilnBSufic9Dzc/P5cyEYSRYoPNz8U8B6nojUXLQZpD+C3GNLn1pd6
-         CcuVWzMdKfJdJ/OFevr0uWPe6XCxvtD9CENmn11G1nVgF0/+JjR4nB91RurGjn7ePRdT
-         ItpLHXOh34r44wuiBvMtGj/0yK82mCWfyktzjn14n5syNDbNE17a6mZOIG13kaLS87fv
-         s76JYClQFuPxE/9rkfncKhGXrlbZ3d+o99IGUeak4qJXeYUVI78FetnpuZa3/9m+Ezh2
-         /M/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j/8AMFI2hyfL+MbywCIfVyY8g5M1eDaVQ4W1unFATlg=;
-        b=cTlH9xIB2a7D0Cjoww30/gIwjB9wZxpqX9BSiNjaHrlbTh38IOZ5gm6mxkjJ6LpF+B
-         9Tjh91Rtw1Y0NfmxU+wSYbyrRENiHUfnbTTyCTpR7IsHad22XX2DQrsH4Jz8ucjX9lgV
-         FCN753ug5wOQTaoxzG3v06gr76Tzu4gF4f4nOkCCb1Y4rT20ddMdOLXaelaEA4f5SuPQ
-         klpyCEGm8t2dm89lY3/iaerjJbGPCXjv32BdfmwLnOWCL+TDhX0zIMwjKBSIV161HLmJ
-         5o00eBwmQQ23NAcd+OuYgjSVQD3gnwk4xy06QCyBm5AT0MS7IlFHoYkO41GQxkbrlPFF
-         hAzw==
-X-Gm-Message-State: AOAM531K8GYaWpokZuw8bDQNj+hLCdgtUhsh3vy8j+GYTBuH1g59fTQ+
-        7ux7yRMJ3UilyKJdELUqyNcoIWMkcRtBI2b7MIxxGg==
-X-Google-Smtp-Source: ABdhPJxJ/ohJLKvwlQtieV7o/jIMPZASEESUkCsU5nU6igg0Y0qiPw36IFBqGLempNqqP0UZ7hvUHpfyisY7o2c3ZMw=
-X-Received: by 2002:a05:6e02:13ea:: with SMTP id w10mr3288074ilj.68.1611308416585;
- Fri, 22 Jan 2021 01:40:16 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1611304190.git.lukas@wunner.de> <a2a8af1622dff2bfd51d446aa8da2c1d2f6f543c.1611304190.git.lukas@wunner.de>
-In-Reply-To: <a2a8af1622dff2bfd51d446aa8da2c1d2f6f543c.1611304190.git.lukas@wunner.de>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 22 Jan 2021 10:40:05 +0100
-Message-ID: <CANn89iK3CC3fapmQpwwbVkGs4-+fmJF+nj0pmBHJ9fy6poWseg@mail.gmail.com>
-Subject: Re: [PATCH nf-next v4 1/5] net: sched: Micro-optimize egress handling
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Fri, 22 Jan 2021 04:10:12 -0500
+Received: from mailout1.hostsharing.net (mailout1.hostsharing.net [IPv6:2a01:37:1000::53df:5fcc:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1E0C061793;
+        Fri, 22 Jan 2021 01:09:03 -0800 (PST)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by mailout1.hostsharing.net (Postfix) with ESMTPS id 98614101903A5;
+        Fri, 22 Jan 2021 10:09:02 +0100 (CET)
+Received: from localhost (unknown [89.246.108.87])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by h08.hostsharing.net (Postfix) with ESMTPSA id 6EC4160B67B0;
+        Fri, 22 Jan 2021 10:09:02 +0100 (CET)
+X-Mailbox-Line: From 012e6863d0103d8dda1932d56427d1b5ba2b9619 Mon Sep 17 00:00:00 2001
+Message-Id: <012e6863d0103d8dda1932d56427d1b5ba2b9619.1611304190.git.lukas@wunner.de>
+In-Reply-To: <cover.1611304190.git.lukas@wunner.de>
+References: <cover.1611304190.git.lukas@wunner.de>
+From:   Lukas Wunner <lukas@wunner.de>
+Date:   Fri, 22 Jan 2021 09:47:05 +0100
+Subject: [PATCH nf-next v4 5/5] af_packet: Introduce egress hook
+To:     "Pablo Neira Ayuso" <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
         Thomas Graf <tgraf@suug.ch>,
         Laura Garcia Liebana <nevola@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 9:55 AM Lukas Wunner <lukas@wunner.de> wrote:
->
-> sch_handle_egress() returns either the skb or NULL to signal to its
-> caller __dev_queue_xmit() whether a packet should continue to be
-> processed.
->
-> The skb is always non-NULL, otherwise __dev_queue_xmit() would hit a
-> NULL pointer deref right at its top.
->
-> But the compiler doesn't know that.  So if sch_handle_egress() signals
-> success by returning the skb, the "if (!skb) goto out;" statement
-> results in a gratuitous NULL pointer check in the Assembler output.
->
-> Avoid by telling the compiler that __dev_queue_xmit() is never passed a
-> NULL skb.  This also eliminates another gratuitous NULL pointer check in
-> __dev_queue_xmit()
->   qdisc_pkt_len_init()
->     skb_header_pointer()
->       __skb_header_pointer()
->
-> The speedup is barely measurable:
-> Before: 1877 1875 1878 1874 1882 1873 Mb/sec
-> After:  1877 1877 1880 1883 1888 1886 Mb/sec
->
-> However we're about to add a netfilter egress hook to __dev_queue_xmit()
-> and without the micro-optimization, it will result in a performance
-> degradation which is indeed measurable:
-> With netfilter hook:               1853 1852 1850 1848 1849 1851 Mb/sec
-> With netfilter hook + micro-optim: 1874 1877 1881 1875 1876 1876 Mb/sec
->
-> The performance degradation is caused by a JNE instruction ("if (skb)")
-> being flipped to a JE instruction ("if (!skb)") once the netfilter hook
-> is added.  The micro-optimization removes the test and jump instructions
-> altogether.
->
-> Measurements were performed on a Core i7-3615QM.  Reproducer:
-> ip link add dev foo type dummy
-> ip link set dev foo up
-> tc qdisc add dev foo clsact
-> tc filter add dev foo egress bpf da bytecode '1,6 0 0 0,'
-> modprobe pktgen
-> echo "add_device foo" > /proc/net/pktgen/kpktgend_3
-> samples/pktgen/pktgen_bench_xmit_mode_queue_xmit.sh -i foo -n 400000000 -m "11:11:11:11:11:11" -d 1.1.1.1
->
-> Signed-off-by: Lukas Wunner <lukas@wunner.de>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Thomas Graf <tgraf@suug.ch>
-> ---
->  net/core/dev.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 7afbb642e203..4c16b9932823 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -4072,6 +4072,7 @@ struct netdev_queue *netdev_core_pick_tx(struct net_device *dev,
->   *      the BH enable code must have IRQs enabled so that it will not deadlock.
->   *          --BLG
->   */
-> +__attribute__((nonnull(1)))
->  static int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
->  {
->         struct net_device *dev = skb->dev;
-> --
-> 2.29.2
->
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-Interesting !
+Add egress hook for AF_PACKET sockets that have the PACKET_QDISC_BYPASS
+socket option set to on, which allows packets to escape without being
+filtered in the egress path.
 
-It is a bit sad the compilers do not automatically get this knowledge
-from the very first instruction :
+This patch only updates the AF_PACKET path, it does not update
+dev_direct_xmit() so the XDP infrastructure has a chance to bypass
+Netfilter.
 
- struct net_device *dev = skb->dev;
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+[lukas: acquire rcu_read_lock, fix typos, rebase]
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+---
+ net/packet/af_packet.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-I see this also makes qdisc_pkt_len_init() slightly faster because
-this removes the if (!skb) test from __skb_header_pointer()
-
-I guess we also could add this patch to benefit all
-skb_header_pointer() callers :
-
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 5f60c9e907c9d8eae1e85ae0329838383e3325df..db8774c50cc6ab99deaecdb1dfc31dc5306b9a37
-100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -3627,6 +3627,7 @@ __skb_header_pointer(const struct sk_buff *skb,
-int offset,
-        return buffer;
- }
-
-+__attribute__((nonnull(1)))
- static inline void * __must_check
- skb_header_pointer(const struct sk_buff *skb, int offset, int len,
-void *buffer)
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index 6bbc7a448593..6dca6ead1162 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -89,6 +89,7 @@
+ #endif
+ #include <linux/bpf.h>
+ #include <net/compat.h>
++#include <linux/netfilter_netdev.h>
+ 
+ #include "internal.h"
+ 
+@@ -239,8 +240,42 @@ struct packet_skb_cb {
+ static void __fanout_unlink(struct sock *sk, struct packet_sock *po);
+ static void __fanout_link(struct sock *sk, struct packet_sock *po);
+ 
++#ifdef CONFIG_NETFILTER_EGRESS
++static noinline struct sk_buff *nf_hook_direct_egress(struct sk_buff *skb)
++{
++	struct sk_buff *next, *head = NULL, *tail;
++	int rc;
++
++	rcu_read_lock();
++	for (; skb != NULL; skb = next) {
++		next = skb->next;
++		skb_mark_not_on_list(skb);
++
++		if (!nf_hook_egress(skb, &rc, skb->dev))
++			continue;
++
++		if (!head)
++			head = skb;
++		else
++			tail->next = skb;
++
++		tail = skb;
++	}
++	rcu_read_unlock();
++
++	return head;
++}
++#endif
++
+ static int packet_direct_xmit(struct sk_buff *skb)
  {
++#ifdef CONFIG_NETFILTER_EGRESS
++	if (nf_hook_egress_active()) {
++		skb = nf_hook_direct_egress(skb);
++		if (!skb)
++			return NET_XMIT_DROP;
++	}
++#endif
+ 	return dev_direct_xmit(skb, packet_pick_tx_queue(skb));
+ }
+ 
+-- 
+2.29.2
+
