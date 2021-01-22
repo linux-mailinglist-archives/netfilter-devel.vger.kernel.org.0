@@ -2,123 +2,97 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2F73000D5
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Jan 2021 11:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D7B300997
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Jan 2021 18:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbhAVJ2G (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 22 Jan 2021 04:28:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39600 "EHLO
+        id S1729452AbhAVQ4j (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 22 Jan 2021 11:56:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbhAVJKM (ORCPT
+        with ESMTP id S1729415AbhAVQOk (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:10:12 -0500
-Received: from mailout1.hostsharing.net (mailout1.hostsharing.net [IPv6:2a01:37:1000::53df:5fcc:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1E0C061793;
-        Fri, 22 Jan 2021 01:09:03 -0800 (PST)
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by mailout1.hostsharing.net (Postfix) with ESMTPS id 98614101903A5;
-        Fri, 22 Jan 2021 10:09:02 +0100 (CET)
-Received: from localhost (unknown [89.246.108.87])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by h08.hostsharing.net (Postfix) with ESMTPSA id 6EC4160B67B0;
-        Fri, 22 Jan 2021 10:09:02 +0100 (CET)
-X-Mailbox-Line: From 012e6863d0103d8dda1932d56427d1b5ba2b9619 Mon Sep 17 00:00:00 2001
-Message-Id: <012e6863d0103d8dda1932d56427d1b5ba2b9619.1611304190.git.lukas@wunner.de>
-In-Reply-To: <cover.1611304190.git.lukas@wunner.de>
-References: <cover.1611304190.git.lukas@wunner.de>
-From:   Lukas Wunner <lukas@wunner.de>
-Date:   Fri, 22 Jan 2021 09:47:05 +0100
-Subject: [PATCH nf-next v4 5/5] af_packet: Introduce egress hook
-To:     "Pablo Neira Ayuso" <pablo@netfilter.org>,
+        Fri, 22 Jan 2021 11:14:40 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC3CC0613D6
+        for <netfilter-devel@vger.kernel.org>; Fri, 22 Jan 2021 08:14:00 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id v19so2851232vsf.9
+        for <netfilter-devel@vger.kernel.org>; Fri, 22 Jan 2021 08:14:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h8+g/NRfnVZLGFcDvx8fAHELJk187RHrW8PWSNrlAnk=;
+        b=WSNVo6+0oBK2cG3IjqGcQfv7+Csg2Rems3GNcds6v0PCg2X3V13M8qPfjwYQHc+3VQ
+         CzB5MgRh4tqLusti9t05XHIOHMZoOjsRXL5rpUtOt5TGwU/EakqZQzzoA2slfkbAyZP+
+         fdnd2EDTbGcIonZkXmqzhDQVKuUQDougJYnh6sZ/OFBL1NMD0lsJmQomyhYzvi2s4RIo
+         Gps6J3K/c5pSQpce8U5xq33KC6+tTVJUWjZnc9oymht+I6LIqmdQZrYvG0uEu4xYN+Uq
+         PxJhbPSmu2BVaQXWFyVSMPBfVEFc4KPcq9t3kzSi2PnMPqN+XkgjPb7hGm+eDb/cjZzo
+         agfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h8+g/NRfnVZLGFcDvx8fAHELJk187RHrW8PWSNrlAnk=;
+        b=Ckc+btkEkXECFCZpynvzBKT4aRXOO0FpDW8FpziP7mPILG0mMdmfDCO7vhvnWkBeIe
+         dzcoXmq8G3mHCx8gKIW5JlMVRnpUV7YDCZPlEXDRKIPQ5jibgScFesjFncr/G/OqRadu
+         WySH+V17rCVfyuYgp/JGDIoXxa30gEoOYdFybKeYTJtGRH7qVDKnvDkyn7fAMiODDA7+
+         TnUIxBTokFD2ZUqi+r2TamxcgeenTo9IbgIgO0GJKUEJvwbcUMCn7NNTd4pUi0ac7ff8
+         Ia4aRZPbL4odf+e76U1Ea3smG0pc9dWV5lGLxzk2fn3Hae6W1TlSwaUNmmbDIQKwJ87B
+         b6sA==
+X-Gm-Message-State: AOAM533ALgzaEK8zsKzFaHhh+as3KAx8hJW6EuZU56wm3Rl0DKvQ1qbG
+        ZcsqqsNq5eC1OGoaYKuVU20XzNTpye8=
+X-Google-Smtp-Source: ABdhPJynHUBZEN50ENeCLfP8mPFe1Fb7RNJmByDxmz7F61Ootf8I2gsCzGjTAGeZeZ96/Ask2J05tw==
+X-Received: by 2002:a67:f910:: with SMTP id t16mr1465903vsq.50.1611332038736;
+        Fri, 22 Jan 2021 08:13:58 -0800 (PST)
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
+        by smtp.gmail.com with ESMTPSA id x186sm1277846vke.32.2021.01.22.08.13.56
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Jan 2021 08:13:56 -0800 (PST)
+Received: by mail-vs1-f44.google.com with SMTP id 186so3256815vsz.13
+        for <netfilter-devel@vger.kernel.org>; Fri, 22 Jan 2021 08:13:56 -0800 (PST)
+X-Received: by 2002:a67:a41:: with SMTP id 62mr1273885vsk.51.1611332035582;
+ Fri, 22 Jan 2021 08:13:55 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1611304190.git.lukas@wunner.de> <012e6863d0103d8dda1932d56427d1b5ba2b9619.1611304190.git.lukas@wunner.de>
+In-Reply-To: <012e6863d0103d8dda1932d56427d1b5ba2b9619.1611304190.git.lukas@wunner.de>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 22 Jan 2021 11:13:19 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSfuLfh3H45HnvtJPocxj+E7maGwzkgYsfktna2+cJi9zQ@mail.gmail.com>
+Message-ID: <CA+FuTSfuLfh3H45HnvtJPocxj+E7maGwzkgYsfktna2+cJi9zQ@mail.gmail.com>
+Subject: Re: [PATCH nf-next v4 5/5] af_packet: Introduce egress hook
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org,
+        Network Development <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         Thomas Graf <tgraf@suug.ch>,
         Laura Garcia Liebana <nevola@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+On Fri, Jan 22, 2021 at 4:44 AM Lukas Wunner <lukas@wunner.de> wrote:
+>
+> From: Pablo Neira Ayuso <pablo@netfilter.org>
+>
+> Add egress hook for AF_PACKET sockets that have the PACKET_QDISC_BYPASS
+> socket option set to on, which allows packets to escape without being
+> filtered in the egress path.
+>
+> This patch only updates the AF_PACKET path, it does not update
+> dev_direct_xmit() so the XDP infrastructure has a chance to bypass
+> Netfilter.
+>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> [lukas: acquire rcu_read_lock, fix typos, rebase]
+> Signed-off-by: Lukas Wunner <lukas@wunner.de>
 
-Add egress hook for AF_PACKET sockets that have the PACKET_QDISC_BYPASS
-socket option set to on, which allows packets to escape without being
-filtered in the egress path.
-
-This patch only updates the AF_PACKET path, it does not update
-dev_direct_xmit() so the XDP infrastructure has a chance to bypass
-Netfilter.
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-[lukas: acquire rcu_read_lock, fix typos, rebase]
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
----
- net/packet/af_packet.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
-
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 6bbc7a448593..6dca6ead1162 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -89,6 +89,7 @@
- #endif
- #include <linux/bpf.h>
- #include <net/compat.h>
-+#include <linux/netfilter_netdev.h>
- 
- #include "internal.h"
- 
-@@ -239,8 +240,42 @@ struct packet_skb_cb {
- static void __fanout_unlink(struct sock *sk, struct packet_sock *po);
- static void __fanout_link(struct sock *sk, struct packet_sock *po);
- 
-+#ifdef CONFIG_NETFILTER_EGRESS
-+static noinline struct sk_buff *nf_hook_direct_egress(struct sk_buff *skb)
-+{
-+	struct sk_buff *next, *head = NULL, *tail;
-+	int rc;
-+
-+	rcu_read_lock();
-+	for (; skb != NULL; skb = next) {
-+		next = skb->next;
-+		skb_mark_not_on_list(skb);
-+
-+		if (!nf_hook_egress(skb, &rc, skb->dev))
-+			continue;
-+
-+		if (!head)
-+			head = skb;
-+		else
-+			tail->next = skb;
-+
-+		tail = skb;
-+	}
-+	rcu_read_unlock();
-+
-+	return head;
-+}
-+#endif
-+
- static int packet_direct_xmit(struct sk_buff *skb)
- {
-+#ifdef CONFIG_NETFILTER_EGRESS
-+	if (nf_hook_egress_active()) {
-+		skb = nf_hook_direct_egress(skb);
-+		if (!skb)
-+			return NET_XMIT_DROP;
-+	}
-+#endif
- 	return dev_direct_xmit(skb, packet_pick_tx_queue(skb));
- }
- 
--- 
-2.29.2
-
+Isn't the point of PACKET_QDISC_BYPASS to skip steps like this?
