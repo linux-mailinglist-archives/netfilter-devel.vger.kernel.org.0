@@ -2,113 +2,64 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE8F305D2C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Jan 2021 14:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4F5305D6B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Jan 2021 14:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238387AbhA0N3C (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 27 Jan 2021 08:29:02 -0500
-Received: from correo.us.es ([193.147.175.20]:40300 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238392AbhA0N0G (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:26:06 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 3B1FB2A2BB5
-        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 14:24:23 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 2D2CBDA792
-        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 14:24:23 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 22D8EDA78E; Wed, 27 Jan 2021 14:24:23 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 01574DA78A;
-        Wed, 27 Jan 2021 14:24:21 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 27 Jan 2021 14:24:21 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id C9E97426CC85;
-        Wed, 27 Jan 2021 14:24:20 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net 3/3] netfilter: nft_dynset: dump expressions when set definition contains no expressions
-Date:   Wed, 27 Jan 2021 14:25:12 +0100
-Message-Id: <20210127132512.5472-4-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210127132512.5472-1-pablo@netfilter.org>
-References: <20210127132512.5472-1-pablo@netfilter.org>
+        id S229636AbhA0NmE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 27 Jan 2021 08:42:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235412AbhA0Nk6 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:40:58 -0500
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [IPv6:2001:738:5001::48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A32C06174A
+        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 05:40:18 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp2.kfki.hu (Postfix) with ESMTP id 1CEACCC0185;
+        Wed, 27 Jan 2021 14:39:01 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Wed, 27 Jan 2021 14:38:58 +0100 (CET)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [IPv6:2001:738:5001:1::240:2])
+        by smtp2.kfki.hu (Postfix) with ESMTP id D38C9CC0162;
+        Wed, 27 Jan 2021 14:38:58 +0100 (CET)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+        id C0266340D5D; Wed, 27 Jan 2021 14:38:58 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by blackhole.kfki.hu (Postfix) with ESMTP id BC8C6340D5C;
+        Wed, 27 Jan 2021 14:38:58 +0100 (CET)
+Date:   Wed, 27 Jan 2021 14:38:58 +0100 (CET)
+From:   Jozsef Kadlecsik <kadlec@netfilter.org>
+X-X-Sender: kadlec@blackhole.kfki.hu
+To:     Reindl Harald <h.reindl@thelounge.net>
+cc:     netfilter-devel@vger.kernel.org
+Subject: Re: https://bugzilla.kernel.org/show_bug.cgi?id=207773
+In-Reply-To: <9ab32341-ca2f-22e2-0cb0-7ab55198ab80@thelounge.net>
+Message-ID: <alpine.DEB.2.23.453.2101271435390.11052@blackhole.kfki.hu>
+References: <9ab32341-ca2f-22e2-0cb0-7ab55198ab80@thelounge.net>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If the set definition provides no stateful expressions, then include the
-stateful expression in the ruleset listing. Without this fix, the dynset
-rule listing shows the stateful expressions provided by the set
-definition.
+Hi,
 
-Fixes: 65038428b2c6 ("netfilter: nf_tables: allow to specify stateful expression in set definition")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_dynset.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+On Wed, 27 Jan 2021, Reindl Harald wrote:
 
-diff --git a/net/netfilter/nft_dynset.c b/net/netfilter/nft_dynset.c
-index 218c09e4fddd..d164ef9e6843 100644
---- a/net/netfilter/nft_dynset.c
-+++ b/net/netfilter/nft_dynset.c
-@@ -384,22 +384,25 @@ static int nft_dynset_dump(struct sk_buff *skb, const struct nft_expr *expr)
- 			 nf_jiffies64_to_msecs(priv->timeout),
- 			 NFTA_DYNSET_PAD))
- 		goto nla_put_failure;
--	if (priv->num_exprs == 1) {
--		if (nft_expr_dump(skb, NFTA_DYNSET_EXPR, priv->expr_array[0]))
--			goto nla_put_failure;
--	} else if (priv->num_exprs > 1) {
--		struct nlattr *nest;
+> for the sake of god may someone look at this?
+> https://bugzilla.kernel.org/show_bug.cgi?id=207773
+
+Could you send your iptables rules and at least the set definitions 
+without the set contents? I need to reproduce the issue.
+
+Best regards,
+Jozsef
 -
--		nest = nla_nest_start_noflag(skb, NFTA_DYNSET_EXPRESSIONS);
--		if (!nest)
--			goto nla_put_failure;
--
--		for (i = 0; i < priv->num_exprs; i++) {
--			if (nft_expr_dump(skb, NFTA_LIST_ELEM,
--					  priv->expr_array[i]))
-+	if (priv->set->num_exprs == 0) {
-+		if (priv->num_exprs == 1) {
-+			if (nft_expr_dump(skb, NFTA_DYNSET_EXPR,
-+					  priv->expr_array[0]))
- 				goto nla_put_failure;
-+		} else if (priv->num_exprs > 1) {
-+			struct nlattr *nest;
-+
-+			nest = nla_nest_start_noflag(skb, NFTA_DYNSET_EXPRESSIONS);
-+			if (!nest)
-+				goto nla_put_failure;
-+
-+			for (i = 0; i < priv->num_exprs; i++) {
-+				if (nft_expr_dump(skb, NFTA_LIST_ELEM,
-+						  priv->expr_array[i]))
-+					goto nla_put_failure;
-+			}
-+			nla_nest_end(skb, nest);
- 		}
--		nla_nest_end(skb, nest);
- 	}
- 	if (nla_put_be32(skb, NFTA_DYNSET_FLAGS, htonl(flags)))
- 		goto nla_put_failure;
--- 
-2.20.1
-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
