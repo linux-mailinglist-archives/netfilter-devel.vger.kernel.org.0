@@ -2,47 +2,47 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5323051A3
-	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Jan 2021 06:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57473052C0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Jan 2021 07:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhA0FCm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 27 Jan 2021 00:02:42 -0500
-Received: from correo.us.es ([193.147.175.20]:55538 "EHLO mail.us.es"
+        id S234903AbhA0GDO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 27 Jan 2021 01:03:14 -0500
+Received: from correo.us.es ([193.147.175.20]:41776 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S316537AbhA0Bxe (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 26 Jan 2021 20:53:34 -0500
+        id S236882AbhA0Dn6 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:43:58 -0500
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id F1F9FD28CD
-        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 02:51:07 +0100 (CET)
+        by mail.us.es (Postfix) with ESMTP id E080EDA718
+        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 03:18:35 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id E0DCDDA730
-        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 02:51:07 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id D1B52DA704
+        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 03:18:35 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id D6644DA73D; Wed, 27 Jan 2021 02:51:07 +0100 (CET)
+        id C6F3FDA73D; Wed, 27 Jan 2021 03:18:35 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
 X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
         SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
         autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id EB46BDA730
-        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 02:51:04 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 011A8DA704
+        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 03:18:32 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 27 Jan 2021 02:51:04 +0100 (CET)
+ Wed, 27 Jan 2021 03:18:32 +0100 (CET)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
 Received: from localhost.localdomain (unknown [90.77.255.23])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id CAFD1426CC84
-        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 02:51:04 +0100 (CET)
+        by entrada.int (Postfix) with ESMTPSA id D34FA426CC84
+        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 03:18:32 +0100 (CET)
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Subject: [PATCH nf-next] netfilter: nftables: introduce table ownership
-Date:   Wed, 27 Jan 2021 02:52:00 +0100
-Message-Id: <20210127015200.2026-1-pablo@netfilter.org>
+Date:   Wed, 27 Jan 2021 03:19:28 +0100
+Message-Id: <20210127021928.2444-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
