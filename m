@@ -2,74 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543E03067E2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 28 Jan 2021 00:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34493306884
+	for <lists+netfilter-devel@lfdr.de>; Thu, 28 Jan 2021 01:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbhA0X2q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 27 Jan 2021 18:28:46 -0500
-Received: from mail.thelounge.net ([91.118.73.15]:29441 "EHLO
-        mail.thelounge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233727AbhA0X0n (ORCPT
+        id S231250AbhA1AS0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 27 Jan 2021 19:18:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231378AbhA1ARz (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:26:43 -0500
-Received: from srv-rhsoft.rhsoft.net (rh.vpn.thelounge.net [10.10.10.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: h.reindl@thelounge.net)
-        by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4DR08m1VWyzY8v;
-        Thu, 28 Jan 2021 00:25:55 +0100 (CET)
-Subject: Re: https://bugzilla.kernel.org/show_bug.cgi?id=207773
-To:     Jozsef Kadlecsik <kadlec@netfilter.org>
+        Wed, 27 Jan 2021 19:17:55 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46EAC06174A
+        for <netfilter-devel@vger.kernel.org>; Wed, 27 Jan 2021 16:17:15 -0800 (PST)
+Received: from localhost ([::1]:47878 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.94)
+        (envelope-from <phil@nwl.cc>)
+        id 1l4uzp-0001rO-RD; Thu, 28 Jan 2021 01:17:13 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-References: <9ab32341-ca2f-22e2-0cb0-7ab55198ab80@thelounge.net>
- <alpine.DEB.2.23.453.2101271435390.11052@blackhole.kfki.hu>
- <alpine.DEB.2.23.453.2101280006200.11052@blackhole.kfki.hu>
-From:   Reindl Harald <h.reindl@thelounge.net>
-Organization: the lounge interactive design
-Message-ID: <8172eaaf-1911-14a2-9b20-fcad8602a1ec@thelounge.net>
-Date:   Thu, 28 Jan 2021 00:25:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+Subject: [iptables PATCH] ebtables: Exit gracefully on invalid table names
+Date:   Thu, 28 Jan 2021 01:17:05 +0100
+Message-Id: <20210128001705.13967-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.23.453.2101280006200.11052@blackhole.kfki.hu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Users are able to cause program abort by passing a table name that
+doesn't exist:
 
+| # ebtables-nft -t dummy -P INPUT ACCEPT
+| ebtables: nft-cache.c:455: fetch_chain_cache: Assertion `t' failed.
+| Aborted
 
-Am 28.01.21 um 00:13 schrieb Jozsef Kadlecsik:
-> Hi,
-> 
-> On Wed, 27 Jan 2021, Jozsef Kadlecsik wrote:
-> 
->> On Wed, 27 Jan 2021, Reindl Harald wrote:
->>
->>> for the sake of god may someone look at this?
->>> https://bugzilla.kernel.org/show_bug.cgi?id=207773
->>
->> Could you send your iptables rules and at least the set definitions
->> without the set contents? I need to reproduce the issue.
-> 
-> Checking your rules, you have got a recent match in which you use both the
-> --reap and --update flags. 
+Avoid this by checking table existence just like iptables-nft does upon
+parsing '-t' optarg. Since the list of tables is known and fixed,
+checking the given name's length is pointless. So just drop that check
+in return.
 
-which makes sense
+With this patch in place, output looks much better:
 
-> However, as far as I see the code leaves the
-> possibility open that the recent entry to be updated is reaped, which
-> then leads to the crash.
+| # ebtables-nft -t dummy -P INPUT ACCEPT
+| ebtables v1.8.7 (nf_tables): table 'dummy' does not exist
+| Perhaps iptables or your kernel needs to be upgraded.
 
-thanks for checking
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/xtables-eb.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> The following patch should fix the issue - however, I could not test it
-
-hopefully this makes it into a near future kernel update, i rely on 
-distribution packages and Fedora is pretty quick
-
-
+diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
+index cfa9317c78e94..5bb34d6d292a9 100644
+--- a/iptables/xtables-eb.c
++++ b/iptables/xtables-eb.c
+@@ -914,10 +914,10 @@ print_zero:
+ 				xtables_error(PARAMETER_PROBLEM,
+ 					      "The -t option (seen in line %u) cannot be used in %s.\n",
+ 					      line, xt_params->program_name);
+-			if (strlen(optarg) > EBT_TABLE_MAXNAMELEN - 1)
+-				xtables_error(PARAMETER_PROBLEM,
+-					      "Table name length cannot exceed %d characters",
+-					      EBT_TABLE_MAXNAMELEN - 1);
++			if (!nft_table_builtin_find(h, optarg))
++				xtables_error(VERSION_PROBLEM,
++					      "table '%s' does not exist",
++					      optarg);
+ 			*table = optarg;
+ 			table_set = true;
+ 			break;
+-- 
+2.28.0
 
