@@ -2,58 +2,58 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE218308F44
-	for <lists+netfilter-devel@lfdr.de>; Fri, 29 Jan 2021 22:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D2B308F66
+	for <lists+netfilter-devel@lfdr.de>; Fri, 29 Jan 2021 22:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233453AbhA2V0P (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 29 Jan 2021 16:26:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
+        id S233465AbhA2V0k (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 29 Jan 2021 16:26:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbhA2VZ7 (ORCPT
+        with ESMTP id S233369AbhA2V0h (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:25:59 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3690AC0613D6
-        for <netfilter-devel@vger.kernel.org>; Fri, 29 Jan 2021 13:25:19 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id z22so12212745edb.9
-        for <netfilter-devel@vger.kernel.org>; Fri, 29 Jan 2021 13:25:19 -0800 (PST)
+        Fri, 29 Jan 2021 16:26:37 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD81C0613ED
+        for <netfilter-devel@vger.kernel.org>; Fri, 29 Jan 2021 13:25:20 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id w1so14956480ejf.11
+        for <netfilter-devel@vger.kernel.org>; Fri, 29 Jan 2021 13:25:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=n8vJceBMMYCQ8JIumv0N1HCIgk6n9/a9VY0by/5BQqo=;
-        b=CnAJcp4dm8WFBkJP5G/+XdbBhXbVZrGqSAZEpK3UqJiBRGB+jan4es5Qsld3LZSmJD
-         2TRGKhpno8hHHcKXwirs2BLdsUAxzNqKAIZ8RqxAj+CkhfBiBLB3yBLPZChfV4hpRcsQ
-         DjRk+DDdCGny1qFvsT1SfJ6+HDNlrFaHKRAM6FswaGESrJjniEzUV5RAowh50+EOwZj7
-         3JjKqOMSeOJFGTe2TAl4JmaCcZt77/cRWs9Aq49H5S5Kr6RP9lw+3YJojg05bHGbeon2
-         KzQMPoXNSm6RlSBGeUpmFtQIJsqdM8uKdLtX0lmUFayq7QYGXeO0T7WH8WPuA/GyTYUj
-         zJng==
+        bh=Pev26Wl8npqOnE2zS5Mqns+dc9VfXdgx8YoOnh20kfQ=;
+        b=E1zF+eS5ZENzAN8uUepEkG1zq/Ru8cFcLiI1pPrZDMAaMYKsy8PKy47+4rUMaODvH2
+         +NRNIMB+gWhZIRbF38GdV47Qk6Vv7jCMLpyvupzUB8gCGtF7UokFUT3uCxg5833KF0Rz
+         +GlStEzBDH0UbJ/Opot/bJDgIQJIDFQUWqAni7jJT7D9dkXo1bUQy/XMuKsblCy/hdPM
+         hmBcyOY/Ufi2tdtQFtcMjdBX8Lgdo9A45vYfGtai9qcGgI4Yc3bv0k8A5XcsJh4tvNYr
+         CKXLzp3EM/8R2fOvvjh7NanOl8B1rgVZaewBOa+HPYiFHtfjeEaEuGgA7a6JIjRuRxWG
+         DoSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=n8vJceBMMYCQ8JIumv0N1HCIgk6n9/a9VY0by/5BQqo=;
-        b=fupxX+yEMXXExIr5BTh5VDupLWGVOlVXXuavKW616zp4h5KSZSbDTtupuYl6Uch4Sj
-         tEvL/MWtNm4lMGOzi5IpgmMrX3D7/FZQEUdsK8v5PCFYQbuy5AIDjUwKn/3tCyd91kxf
-         Mq1RHIPG7hDc5HY8T/xz4QcfXVCeb/nR79Z4JIcQlsRFX7mu5DjFmzFweAjPxVodCd3a
-         U0Z3yTQB1Cu6So1tj1GvnVW3xi2t6QIEZZrqohoThQJlYtQqZseRd5CkTnlq8JKgzM7W
-         Y8gq3FMVglvPharsGChY5ONR3PoyRZmdAMqGbfhJYdYcdhgKPBYpsaKLzDElKkQpP/0t
-         tcIA==
-X-Gm-Message-State: AOAM5318WRYmgzWF2JfPRljlZ+O8k1/tk0UXIN46BfGnsWCqPzOyoPHG
-        y3acJfm+Hr1REDUU5jYVWDeXU4WQB/fZxg==
-X-Google-Smtp-Source: ABdhPJxIxk8MBPfA0JDLK5XM1QyAtvyqyVAp/VuUHAeN4lHNxvxdzuCgBVEn1jJG4fiqvPbKS0z4zg==
-X-Received: by 2002:a05:6402:2288:: with SMTP id cw8mr7333813edb.161.1611955517782;
-        Fri, 29 Jan 2021 13:25:17 -0800 (PST)
+        bh=Pev26Wl8npqOnE2zS5Mqns+dc9VfXdgx8YoOnh20kfQ=;
+        b=G12dbX4VjFunkEpCdu8laQTYguk2CDymo59lKbxjZ4Jp4MlI320Nuk/uTqrtQOc6j2
+         UUk/qw+CYi9tnh1z//jXh6Ve3hPgohItL39vfsYWJmItuZZKzM3A8gT+fxPcMjesJMBo
+         AHcff1giFTqRZkPZ+oSsdKrx45dNufLwM5XJkkvt/Sp/EcMU8wVQ8smR+OBP8RPweb+q
+         Ray7TufFjo4pG7t4dwRPVMZY9BScH4XrvnW4R+QEUBjNGT52FUql2vJUb6x9Ls3iBK5G
+         hNAAABiDYgvP+DonxU/ZXQPpT9mL00DIsdc9BLBRm/+UaID7XCmG/A1ad2bvB2lsFpx8
+         DGLg==
+X-Gm-Message-State: AOAM530ht6r7xgcttT60d6B24L9ACD9mNpPbnrLQpALHEg1k5Wx40sRy
+        MturDCPUe88kaLbvZV7HeNNhwzkpoi8L2w==
+X-Google-Smtp-Source: ABdhPJw2BU37JAWS82NjEWpfqedC7t3rYeCegmIQ2agxfz0a04wcEKZp4Qd+PusqPlu1Bno0GdgfRw==
+X-Received: by 2002:a17:906:52c1:: with SMTP id w1mr6675019ejn.214.1611955518690;
+        Fri, 29 Jan 2021 13:25:18 -0800 (PST)
 Received: from msennikovskii4.fkb.profitbricks.net (ip5f5bd4ff.dynamic.kabel-deutschland.de. [95.91.212.255])
-        by smtp.gmail.com with ESMTPSA id q2sm5143218edv.93.2021.01.29.13.25.16
+        by smtp.gmail.com with ESMTPSA id q2sm5143218edv.93.2021.01.29.13.25.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 13:25:17 -0800 (PST)
+        Fri, 29 Jan 2021 13:25:18 -0800 (PST)
 From:   Mikhail Sennikovsky <mikhail.sennikovskii@cloud.ionos.com>
 To:     netfilter-devel@vger.kernel.org, pablo@netfilter.org
 Cc:     Mikhail Sennikovsky <mikhail.sennikovskii@cloud.ionos.com>
-Subject: [PATCH v3 4/8] conntrack: introduce ct_cmd_list
-Date:   Fri, 29 Jan 2021 22:24:48 +0100
-Message-Id: <20210129212452.45352-5-mikhail.sennikovskii@cloud.ionos.com>
+Subject: [PATCH v3 5/8] conntrack: accept commands from file
+Date:   Fri, 29 Jan 2021 22:24:49 +0100
+Message-Id: <20210129212452.45352-6-mikhail.sennikovskii@cloud.ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210129212452.45352-1-mikhail.sennikovskii@cloud.ionos.com>
 References: <20210129212452.45352-1-mikhail.sennikovskii@cloud.ionos.com>
@@ -63,134 +63,212 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-As a multicommand support preparation, add support for the
-ct_cmd_list, which represents a list of ct_cmd elements.
-Currently only a single entry generated from the command line
-arguments is created.
+This commit implements the --load-file option which
+allows processing conntrack commands stored in file.
+Most often this would be used as a counter-part for the
+-o save option, which outputs conntrack entries
+in the format of the conntrack tool options.
+This could be useful when one needs to add/update/delete a large
+set of ct entries with a single conntrack tool invocation.
+
+Expected syntax is "conntrack --load-file file".
+If "-" is given as a file name, stdin is used.
+No other commands or options are allowed to be specified
+in conjunction with the --load-file command.
+It is however possible to specify multiple --load-file file pairs.
+
+Example:
+Copy all entries from ct zone 11 to ct zone 12:
+
+conntrack -L -w 11 -o save | sed "s/-w 11/-w 12/g" | \
+        conntrack --load-file -
 
 Signed-off-by: Mikhail Sennikovsky <mikhail.sennikovskii@cloud.ionos.com>
 ---
- src/conntrack.c | 69 ++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 66 insertions(+), 3 deletions(-)
+ src/conntrack.c | 163 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 162 insertions(+), 1 deletion(-)
 
 diff --git a/src/conntrack.c b/src/conntrack.c
-index 4783825..1719ca9 100644
+index 1719ca9..97357b0 100644
 --- a/src/conntrack.c
 +++ b/src/conntrack.c
-@@ -598,6 +598,19 @@ static unsigned int addr_valid_flags[ADDR_VALID_FLAGS_MAX] = {
- 	CT_OPT_REPL_SRC | CT_OPT_REPL_DST,
- };
- 
-+#define CT_COMMANDS_LOAD_FILE_ALLOWED ( 0 \
-+						| CT_CREATE       \
-+						| CT_UPDATE_BIT   \
-+						| CT_DELETE       \
-+						| CT_FLUSH        \
-+						| EXP_CREATE      \
-+						| EXP_DELETE      \
-+						| EXP_FLUSH       \
-+						)
-+
-+static unsigned int cmd_allowed = ~0;
-+
-+
- static LIST_HEAD(proto_list);
- 
- static struct nfct_labelmap *labelmap;
-@@ -1250,6 +1263,9 @@ add_command(unsigned int *cmd, const int newcmd)
- {
- 	if (*cmd)
- 		exit_error(PARAMETER_PROBLEM, "Invalid commands combination");
-+	if (!(cmd_allowed & newcmd))
-+		exit_error(PARAMETER_PROBLEM,
-+				"Command can not be used in the current mode");
- 	*cmd |= newcmd;
+@@ -3648,6 +3648,167 @@ static void ct_cmd_list_parse_argv(struct ct_cmd_list *list,
+ 	ct_cmd_list_add(list, ct_cmd_create(argc, argv));
  }
  
-@@ -1472,6 +1488,10 @@ struct ct_cmd {
- 	struct ct_tmpl	tmpl;
- };
- 
-+struct ct_cmd_list {
-+	struct list_head list;
++#define MAX_ARGC	255
++struct argv_store {
++	int argc;
++	char *argv[MAX_ARGC];
++	int argvattr[MAX_ARGC];
 +};
 +
- static int
- filter_label(const struct nf_conntrack *ct, const struct ct_tmpl *tmpl)
- {
-@@ -3155,6 +3175,19 @@ static void do_parse(struct ct_cmd *ct_cmd, int argc, char *argv[])
- 	ct_cmd->socketbuffersize = socketbuffersize;
- }
- 
-+static struct ct_cmd *ct_cmd_create(int argc, char *argv[])
++/* function adding one argument to store, updating argc
++ * returns if argument added, does not return otherwise */
++static void add_argv(struct argv_store *store, const char *what, int quoted)
 +{
-+	struct ct_cmd *ct_cmd;
++	if (store->argc + 1 >= MAX_ARGC)
++		exit_error(PARAMETER_PROBLEM,
++			      "Parser cannot handle more arguments\n");
++	if (!what)
++		exit_error(PARAMETER_PROBLEM,
++			      "Trying to store NULL argument\n");
 +
-+	ct_cmd = calloc(1, sizeof(*ct_cmd));
-+	if (!ct_cmd)
-+		exit_error(OTHER_PROBLEM, "cmd alloc failed!!");
-+
-+	do_parse(ct_cmd, argc, argv);
-+
-+	return ct_cmd;
++	store->argv[store->argc] = strdup(what);
++	store->argvattr[store->argc] = quoted;
++	store->argv[++store->argc] = NULL;
 +}
 +
- static void do_command_ct(const char *progname, struct ct_cmd *cmd)
- {
- 	struct nfct_filter_dump *filter_dump;
-@@ -3587,9 +3620,37 @@ try_proc:
- 		nfct_labelmap_destroy(labelmap);
- }
- 
-+static void ct_cmd_list_init(struct ct_cmd_list *list)
++static void free_argv(struct argv_store *store)
 +{
-+	memset(list, 0, sizeof(*list));
-+	INIT_LIST_HEAD(&list->list);
-+}
-+
-+static void ct_cmd_list_add(struct ct_cmd_list *list, struct ct_cmd *cmd)
-+{
-+	list_add_tail(&cmd->list_entry, &list->list);
-+}
-+
-+static void ct_cmd_list_apply(struct ct_cmd_list *list, const char *progname)
-+{
-+	struct ct_cmd *cmd, *tmp;
-+
-+	list_for_each_entry_safe(cmd, tmp, &list->list, list_entry) {
-+		list_del(&cmd->list_entry);
-+		do_command_ct(progname, cmd);
-+		free(cmd);
++	while (store->argc) {
++		store->argc--;
++		free(store->argv[store->argc]);
++		store->argvattr[store->argc] = 0;
 +	}
 +}
 +
-+static void ct_cmd_list_parse_argv(struct ct_cmd_list *list,
-+		int argc, char *argv[])
++struct ct_param_buf {
++	char	buffer[1024];
++	int 	len;
++};
++
++static void add_param(struct ct_param_buf *param, const char *curchar)
 +{
-+	ct_cmd_list_add(list, ct_cmd_create(argc, argv));
++	param->buffer[param->len++] = *curchar;
++	if (param->len >= (int)sizeof(param->buffer))
++		exit_error(PARAMETER_PROBLEM, "Parameter too long!");
++}
++
++static void add_param_to_argv(struct argv_store *store, char *parsestart)
++{
++	int quote_open = 0, escaped = 0, quoted = 0;
++	struct ct_param_buf param = {};
++	char *curchar;
++
++	/* After fighting with strtok enough, here's now
++	 * a 'real' parser. According to Rusty I'm now no
++	 * longer a real hacker, but I can live with that */
++
++	for (curchar = parsestart; *curchar; curchar++) {
++		if (quote_open) {
++			if (escaped) {
++				add_param(&param, curchar);
++				escaped = 0;
++				continue;
++			} else if (*curchar == '\\') {
++				escaped = 1;
++				continue;
++			} else if (*curchar == '"') {
++				quote_open = 0;
++			} else {
++				add_param(&param, curchar);
++				continue;
++			}
++		} else {
++			if (*curchar == '"') {
++				quote_open = 1;
++				quoted = 1;
++				continue;
++			}
++		}
++
++		switch (*curchar) {
++		case '"':
++			break;
++		case ' ':
++		case '\t':
++		case '\n':
++			if (!param.len) {
++				/* two spaces? */
++				continue;
++			}
++			break;
++		default:
++			/* regular character, copy to buffer */
++			add_param(&param, curchar);
++			continue;
++		}
++
++		param.buffer[param.len] = '\0';
++		add_argv(store, param.buffer, quoted);
++		param.len = 0;
++		quoted = 0;
++	}
++	if (param.len) {
++		param.buffer[param.len] = '\0';
++		add_argv(store, param.buffer, 0);
++	}
++}
++
++static void ct_cmd_list_parse_line(struct ct_cmd_list *list,
++		const char *progname, char *buffer)
++{
++	struct argv_store store = {};
++
++	/* skip prepended tabs and spaces */
++	for (; *buffer == ' ' || *buffer == '\t'; buffer++);
++
++	if (buffer[0] == '\n'
++			|| buffer[0] == '#')
++		return;
++
++	add_argv(&store, progname, false);
++
++	add_param_to_argv(&store, buffer);
++
++	ct_cmd_list_parse_argv(list, store.argc, store.argv);
++
++	free_argv(&store);
++}
++
++static void ct_cmd_list_parse_file(struct ct_cmd_list *list,
++			   const char *progname,
++			   const char *file_name)
++{
++	char buffer[10240] = {};
++	FILE *file;
++
++	if (!strcmp(file_name, "-"))
++		file_name = "/dev/stdin";
++
++	file = fopen(file_name, "r");
++	if (!file)
++		exit_error(PARAMETER_PROBLEM, NULL,
++					   "Failed to open file %s for reading", file_name);
++
++	while (fgets(buffer, sizeof(buffer), file))
++		ct_cmd_list_parse_line(list, progname, buffer);
++}
++
++static void ct_cmd_list_parse(struct ct_cmd_list *list, int argc, char *argv[])
++{
++	if (argc > 2
++			&& (!strcmp(argv[1], "-R")
++			|| !strcmp(argv[1], "--load-file"))) {
++		int i;
++
++		cmd_allowed = CT_COMMANDS_LOAD_FILE_ALLOWED;
++
++		for (i = 2; i < argc; ++i)
++			ct_cmd_list_parse_file(list, argv[0], argv[i]);
++		return;
++	}
++	ct_cmd_list_parse_argv(list, argc, argv);
 +}
 +
  int main(int argc, char *argv[])
  {
--	struct ct_cmd _cmd = {}, *cmd = &_cmd;
-+	struct ct_cmd_list list;
+ 	struct ct_cmd_list list;
+@@ -3664,7 +3825,7 @@ int main(int argc, char *argv[])
  
- 	register_tcp();
- 	register_udp();
-@@ -3601,9 +3662,11 @@ int main(int argc, char *argv[])
- 	register_gre();
- 	register_unknown();
+ 	ct_cmd_list_init(&list);
  
--	do_parse(cmd, argc, argv);
-+	ct_cmd_list_init(&list);
-+
-+	ct_cmd_list_parse_argv(&list, argc, argv);
+-	ct_cmd_list_parse_argv(&list, argc, argv);
++	ct_cmd_list_parse(&list, argc, argv);
  
--	do_command_ct(argv[0], cmd);
-+	ct_cmd_list_apply(&list, argv[0]);
+ 	ct_cmd_list_apply(&list, argv[0]);
  
- 	return print_cmd_counters();
- }
 -- 
 2.25.1
 
