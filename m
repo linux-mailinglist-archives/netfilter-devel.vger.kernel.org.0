@@ -2,108 +2,64 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965563096FA
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Jan 2021 18:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A8E30A1E7
+	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Feb 2021 07:25:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhA3Q7Y (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Jan 2021 11:59:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhA3Q7X (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Jan 2021 11:59:23 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB16C061574;
-        Sat, 30 Jan 2021 08:58:43 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id kg20so17716711ejc.4;
-        Sat, 30 Jan 2021 08:58:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MfMoVHfO0rKFbhfuJqWumZvD8HUvpL3L63SSmxfbwGE=;
-        b=flwI+HsFKGSV5iuOD0P8U87awp5SFYN2AIddH3KhseiIuQ2ZEy5fphqGzUlAgbxM2T
-         UGDy+uAZDBze0HxWviIXWsDJFJGkTHB9oliiJxyuOo/8lrDb1lqbWhGa4EB8rlVWUBsf
-         tRcNaVEbsf0ROlZ5frgnMhN0bsDmgokhg+tPmvixnut9ImWdBDz1KkJpOQqWprzEv7ND
-         OXQLY/amon8mzpJKlub8n2C3DESvuBHA7rYDGPnwGABwylqIBQtgomaKO6LnOZA+OLjo
-         dwGHMwpKBzDNAAPpYFbP0+B6P3iiRivz5mO9lN45lXb786c0DM1ojYe3GnZb9z+FA5wF
-         Xbog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MfMoVHfO0rKFbhfuJqWumZvD8HUvpL3L63SSmxfbwGE=;
-        b=qEFDKgtmkW2t9mUu8HrTAUZwE4QKZyW/hFdUeRLlaGx2P06bejg9R+3CRLtDYX76WS
-         +qsQG8wwu45UcWTfcsUICs9Jff8sYSk5HAtQCI54qLrXPpm9vsj7ifWHsegrVncuRhdM
-         sHBcZuaOCHE+H9X0VxJKJgXjVpziH7aVbt1N5He7jjCndIql264hLu/rOGHTuFD+PAMI
-         PPW4TctUqkwX40PSTZIN5YXBl9SwSaRYjH8SFQEU0HtoOqVDxTYnGlCUFouOVgDxaSS9
-         XX5iQswKJnJtgLivQdU+riuUheUglo+qV5HE541+epR6muCij4jXJxQh4kY1VS5zTMxY
-         /5BA==
-X-Gm-Message-State: AOAM5321gSZY8oXZIi0jieicv2oEDbJHPiNcvgmXF2F+Q3wlaGhn7zHV
-        ocxpaGXB9AG/Y45JbQ5yCTLxrMa64mG7v6PLP5Y=
-X-Google-Smtp-Source: ABdhPJy9J/183fvbfFId3I+LBl0H16qDITdUI/9L8kRbTPDNNgl0r10bGcSujpaiA0OMYph1PkRcqpBD9oXafNPV0Bw=
-X-Received: by 2002:a17:906:7698:: with SMTP id o24mr2170840ejm.504.1612025921810;
- Sat, 30 Jan 2021 08:58:41 -0800 (PST)
+        id S231540AbhBAGY6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 1 Feb 2021 01:24:58 -0500
+Received: from [20.39.40.203] ([20.39.40.203]:50377 "EHLO optinix.in"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S231779AbhBAGF2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 1 Feb 2021 01:05:28 -0500
+dkim-signature: v=1; a=rsa-sha256; d=digitalsol.in; s=dkim;
+        c=relaxed/relaxed; q=dns/txt; h=From:Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=wK2neTcOXNiSQ+RBxrnFed+mRrGUU/ndLGEgvo8IMCc=;
+        b=EVXY7Emkj77Ml73WwgHKj6FRSsvpdu+N32P3aAtU9vobJiJ1nIiO4iER3hFlfKkf7JXchtT5QiVBo7vPhBQoxVdxwy1blNyEuSRLQCqFv29IWawnQd6kTBdX44eww6pl4Kbj6FfLtJ/2Z/+qJMzPeK8IFebk9l+1c7rcQ6LW6+0Tp8r21YX+z8mUYJVLMYK34liBibLnUEzDkkb2n6JPurHbfXAHjGYzIgZOw72AhqTvIWfsFt/d/krbJj
+        ttanJPzrfEzkTJX1rinrbUU8Kr8R3QMEgomRGlWlVPCwq2oT/UR0tsfIOAKyNK4mB1pifFTaUZhtEch3hz5+c9Nf/ChQ==
+Received: from User (Unknown [52.231.31.5])
+        by optinix.in with ESMTP
+        ; Sat, 30 Jan 2021 09:12:40 +0000
+Message-ID: <3FE7D898-3786-406C-B792-9BBDD0B5C026@optinix.in>
+Reply-To: <ms.reem@yandex.com>
+From:   "Ms. Reem" <support@digitalsol.in>
+Subject: Re:read
+Date:   Sat, 30 Jan 2021 09:12:38 -0000
 MIME-Version: 1.0
-References: <cover.1611304190.git.lukas@wunner.de> <012e6863d0103d8dda1932d56427d1b5ba2b9619.1611304190.git.lukas@wunner.de>
- <CA+FuTSfuLfh3H45HnvtJPocxj+E7maGwzkgYsfktna2+cJi9zQ@mail.gmail.com>
- <20210124111432.GC1056@wunner.de> <CAF=yD-+BXKynYaYgg8n_R1gEtEbkRWm-8WdtrXOjdjyOj-unfg@mail.gmail.com>
- <20210130162629.GB1959@wunner.de>
-In-Reply-To: <20210130162629.GB1959@wunner.de>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Sat, 30 Jan 2021 11:58:06 -0500
-Message-ID: <CAF=yD-+W_RxnmLvYugL0TkgwYM4S3392wNu_=FddujeYx7+gUA@mail.gmail.com>
-Subject: Re: [PATCH nf-next v4 5/5] af_packet: Introduce egress hook
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org,
-        Network Development <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Thomas Graf <tgraf@suug.ch>,
-        Laura Garcia Liebana <nevola@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 11:26 AM Lukas Wunner <lukas@wunner.de> wrote:
->
-> On Sun, Jan 24, 2021 at 11:18:00AM -0500, Willem de Bruijn wrote:
-> > On Sun, Jan 24, 2021 at 6:14 AM Lukas Wunner <lukas@wunner.de> wrote:
-> > > On Fri, Jan 22, 2021 at 11:13:19AM -0500, Willem de Bruijn wrote:
-> > > > On Fri, Jan 22, 2021 at 4:44 AM Lukas Wunner <lukas@wunner.de> wrote:
-> > > > > Add egress hook for AF_PACKET sockets that have the PACKET_QDISC_BYPASS
-> > > > > socket option set to on, which allows packets to escape without being
-> > > > > filtered in the egress path.
-> > > > >
-> > > > > This patch only updates the AF_PACKET path, it does not update
-> > > > > dev_direct_xmit() so the XDP infrastructure has a chance to bypass
-> > > > > Netfilter.
-> > > >
-> > > > Isn't the point of PACKET_QDISC_BYPASS to skip steps like this?
-> > >
-> > > I suppose PACKET_QDISC_BYPASS "was introduced to bypass qdisc,
-> > > not to bypass everything."
-> > >
-> > > (The quote is taken from this message by Eric Dumazet:
-> > > https://lore.kernel.org/netfilter-devel/a9006cf7-f4ba-81b1-fca1-fd2e97939fdc@gmail.com/
-> > > )
-> >
-> > I see. I don't understand the value of a short-cut fast path if we
-> > start chipping away at its characteristic feature.
->
-> The point is to filter traffic coming in through af_packet.
-> Exempting PACKET_QDISC_BYPASS from filtering would open up a
-> trivial security hole.
+Hello,
 
-Sure. But that argument is no different for TC_EGRESS.
+My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
+and Petroleum" also "Minister of State for International Cooperation"
+in UAE. I write to you on behalf of my other "three (3) colleagues"
+who has approved me to solicit for your "partnership in claiming of
+{us$47=Million}" from a Financial Home in Cambodia on their behalf and
+for our "Mutual Benefits".
 
-That's why packet sockets require CAP_NET_RAW. It is perhaps
-unfortunately that it is ns_capable instead of capable. But there is
-nothing netfilter specific about this.
+The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
+deal with Cambodian/Vietnam Government within 2013/2014, however, we
+don't want our government to know about the fund. If this proposal
+interests you, let me know, by sending me an email and I will send to
+you detailed information on how this business would be successfully
+transacted. Be informed that nobody knows about the secret of this
+fund except us, and we know how to carry out the entire transaction.
+So I am compelled to ask, that you will stand on our behalf and
+receive this fund into any account that is solely controlled by you.
+
+We will compensate you with 15% of the total amount involved as
+gratification for being our partner in this transaction. Reply to:
+ms.reem@yandex.com
+
+Regards,
+Ms. Reem.
+
