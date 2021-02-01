@@ -2,64 +2,65 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A8E30A1E7
-	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Feb 2021 07:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB38130A07B
+	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Feb 2021 04:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbhBAGY6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 1 Feb 2021 01:24:58 -0500
-Received: from [20.39.40.203] ([20.39.40.203]:50377 "EHLO optinix.in"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S231779AbhBAGF2 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 1 Feb 2021 01:05:28 -0500
-dkim-signature: v=1; a=rsa-sha256; d=digitalsol.in; s=dkim;
-        c=relaxed/relaxed; q=dns/txt; h=From:Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=wK2neTcOXNiSQ+RBxrnFed+mRrGUU/ndLGEgvo8IMCc=;
-        b=EVXY7Emkj77Ml73WwgHKj6FRSsvpdu+N32P3aAtU9vobJiJ1nIiO4iER3hFlfKkf7JXchtT5QiVBo7vPhBQoxVdxwy1blNyEuSRLQCqFv29IWawnQd6kTBdX44eww6pl4Kbj6FfLtJ/2Z/+qJMzPeK8IFebk9l+1c7rcQ6LW6+0Tp8r21YX+z8mUYJVLMYK34liBibLnUEzDkkb2n6JPurHbfXAHjGYzIgZOw72AhqTvIWfsFt/d/krbJj
-        ttanJPzrfEzkTJX1rinrbUU8Kr8R3QMEgomRGlWlVPCwq2oT/UR0tsfIOAKyNK4mB1pifFTaUZhtEch3hz5+c9Nf/ChQ==
-Received: from User (Unknown [52.231.31.5])
-        by optinix.in with ESMTP
-        ; Sat, 30 Jan 2021 09:12:40 +0000
-Message-ID: <3FE7D898-3786-406C-B792-9BBDD0B5C026@optinix.in>
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <support@digitalsol.in>
-Subject: Re:read
-Date:   Sat, 30 Jan 2021 09:12:38 -0000
+        id S231126AbhBADNe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 31 Jan 2021 22:13:34 -0500
+Received: from correo.us.es ([193.147.175.20]:38780 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231136AbhBADNd (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 31 Jan 2021 22:13:33 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 7E07DDA7E8
+        for <netfilter-devel@vger.kernel.org>; Mon,  1 Feb 2021 04:12:52 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 70576DA704
+        for <netfilter-devel@vger.kernel.org>; Mon,  1 Feb 2021 04:12:52 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 65FBDDA72F; Mon,  1 Feb 2021 04:12:52 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 457A3DA704;
+        Mon,  1 Feb 2021 04:12:48 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 01 Feb 2021 04:12:48 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 1DBDA426CC84;
+        Mon,  1 Feb 2021 04:12:48 +0100 (CET)
+Date:   Mon, 1 Feb 2021 04:12:47 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Arturo Borrero Gonzalez <arturo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [conntrack-tools PATCH] conntrackd: introduce yes & no config
+ values
+Message-ID: <20210201031247.GA20742@salvia>
+References: <161114994034.48299.3516818154943179595.stgit@endurance>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <161114994034.48299.3516818154943179595.stgit@endurance>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
+On Wed, Jan 20, 2021 at 02:39:00PM +0100, Arturo Borrero Gonzalez wrote:
+> They are equivalent of 'on' and 'off' and makes the config easier to understand.
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
+LGTM.
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+Please, push it out.
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
-
-Regards,
-Ms. Reem.
-
+Thanks.
