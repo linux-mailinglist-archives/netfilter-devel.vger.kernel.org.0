@@ -2,78 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8CB30BF46
-	for <lists+netfilter-devel@lfdr.de>; Tue,  2 Feb 2021 14:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853D630C1F2
+	for <lists+netfilter-devel@lfdr.de>; Tue,  2 Feb 2021 15:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhBBNWf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 2 Feb 2021 08:22:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49940 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231290AbhBBNWd (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:22:33 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-lKDvItlsNBqHhC4wCE1skg-1; Tue, 02 Feb 2021 08:21:04 -0500
-X-MC-Unique: lKDvItlsNBqHhC4wCE1skg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04FB3107ACF6;
-        Tue,  2 Feb 2021 13:21:03 +0000 (UTC)
-Received: from localhost (ovpn-113-65.rdu2.redhat.com [10.10.113.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BDF685C1CF;
-        Tue,  2 Feb 2021 13:21:02 +0000 (UTC)
-Date:   Tue, 2 Feb 2021 08:21:02 -0500
-From:   Eric Garver <eric@garver.life>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org, Michael Biebl <biebl@debian.org>
-Subject: Re: [PATCH nft 2/2] payload: check icmp dependency before removing
- previous icmp expression
-Message-ID: <20210202132102.GY3286651@egarver.remote.csb>
-Mail-Followup-To: Eric Garver <eric@garver.life>,
-        Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
-        Michael Biebl <biebl@debian.org>
-References: <20210201215005.26612-1-fw@strlen.de>
- <20210201215005.26612-2-fw@strlen.de>
+        id S234637AbhBBOiM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 2 Feb 2021 09:38:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229983AbhBBORp (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:17:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9454164FC5;
+        Tue,  2 Feb 2021 13:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612274149;
+        bh=keCkanpK2quFyUoP2sx6/rYjvo75AHXrNu1jIcal3Nk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BkqNr1X+v2SqOy6cjJ9bc7qgUWfmFxrAWzOXsO57Ko5nkViZYaz9DRIVvzt/6rg+X
+         V1/IoxLg98kVAy38RnB5qDcYnkrQkzPYDJDvN/C+fwQPrff6CDBcqiKKe2KA4zgpls
+         cAwuFtQ4JzUQxaInNBSnz6xAL/vw6PYbT9rqpyuQ4+Dnk3du/F+8mBNzD7ajHeizaO
+         WcLY2pWHY5XUTkrCo9OTZGVufSybf6xW5PIW9l5DTzTuWu5yqRgU34A22XnbGx5nda
+         +53ZsdeGnrR18zrE08B6OjVLT+loJBOMo/Tft9e9vLYcgfkld/iOwyZn8b29r9Ec9F
+         pqgPtCPIQNVvw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, coreteam@netfilter.org,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Westphal <fw@strlen.de>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
+        lvs-devel@vger.kernel.org, Matteo Croce <mcroce@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Simon Horman <horms@verge.net.au>
+Subject: [PATCH net 0/4] Fix W=1 compilation warnings in net/* folder
+Date:   Tue,  2 Feb 2021 15:55:40 +0200
+Message-Id: <20210202135544.3262383-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201215005.26612-2-fw@strlen.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 10:50:04PM +0100, Florian Westphal wrote:
-> nft is too greedy when removing icmp dependencies.
-> 'icmp code 1 type 2' did remove the type when printing.
-> 
-> Be more careful and check that the icmp type dependency of the
-> candidate expression (earlier icmp payload expression) has the same
-> type dependency as the new expression.
-> 
-> Reported-by: Eric Garver <eric@garver.life>
-> Reported-by: Michael Biebl <biebl@debian.org>
-> Fixes: d0f3b9eaab8d77e ("payload: auto-remove simple icmp/icmpv6 dependency expressions")
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Tested-by: Eric Garver <eric@garver.life>
+Hi,
 
-Thanks Florian. This fixes the issue [1] reported against firewalld.
+This short series fixes W=1 compilation warnings which I experienced
+when tried to compile net/* folder.
 
-[1]: https://github.com/firewalld/firewalld/issues/752
+Thanks
 
---->8---
+Leon Romanovsky (4):
+  ipv6: silence compilation warning for non-IPV6 builds
+  ipv6: move udp declarations to net/udp.h
+  net/core: move ipv6 gro function declarations to net/ipv6
+  netfilter: move handlers to net/ip_vs.h
 
---- -	2021-02-01 16:02:58.854101473 +0000
-+++ /tmp/autopkgtest.PRXtPH/build.yiS/src/src/tests/testsuite.dir/at-groups/97/stdout	2021-02-01 16:02:58.846718150 +0000
-@@ -1,6 +1,6 @@
- table inet firewalld {
- chain filter_IN_public_deny {
--icmp type destination-unreachable icmp code host-prohibited reject with icmpx type admin-prohibited
-+icmp code host-prohibited reject with icmpx type admin-prohibited
- }
- }
+ include/net/ip_vs.h             | 11 +++++++++++
+ include/net/ipv6.h              |  3 +++
+ include/net/udp.h               |  3 +++
+ net/core/dev.c                  |  4 +---
+ net/ipv6/icmp.c                 |  6 ++++++
+ net/ipv6/ip6_input.c            |  3 +--
+ net/netfilter/ipvs/ip_vs_core.c | 12 ------------
+ 7 files changed, 25 insertions(+), 17 deletions(-)
+
+--
+2.29.2
 
