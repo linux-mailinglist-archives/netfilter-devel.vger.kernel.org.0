@@ -2,148 +2,70 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7ABA30B24F
-	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Feb 2021 22:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897D830BBFF
+	for <lists+netfilter-devel@lfdr.de>; Tue,  2 Feb 2021 11:24:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbhBAVu7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 1 Feb 2021 16:50:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhBAVu4 (ORCPT
+        id S229609AbhBBKX7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 2 Feb 2021 05:23:59 -0500
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:41862 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhBBKXz (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:50:56 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4416C06174A
-        for <netfilter-devel@vger.kernel.org>; Mon,  1 Feb 2021 13:50:15 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1l6h5K-0004HB-A5; Mon, 01 Feb 2021 22:50:14 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>, Eric Garver <eric@garver.life>,
-        Michael Biebl <biebl@debian.org>
-Subject: [PATCH nft 2/2] payload: check icmp dependency before removing previous icmp expression
-Date:   Mon,  1 Feb 2021 22:50:04 +0100
-Message-Id: <20210201215005.26612-2-fw@strlen.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210201215005.26612-1-fw@strlen.de>
-References: <20210201215005.26612-1-fw@strlen.de>
+        Tue, 2 Feb 2021 05:23:55 -0500
+Received: by mail-wr1-f49.google.com with SMTP id p15so19773839wrq.8
+        for <netfilter-devel@vger.kernel.org>; Tue, 02 Feb 2021 02:23:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OpqAiphjryiJel6wTCOfgYsf28BTiejTsAO50rOy9Rg=;
+        b=GBGZxXFfaEYZaRuG1I0bSbHIb/3AVkE5IMZqvbgRO53S+0ufRYtPKe7XHUzf3YEJUm
+         mQMR9qiNmh3rPekclbDHZxwKlaW4RqKHbtT9F5FnBzSeZ9sbTJxgcRGqhQXoSSxUjtql
+         zs6HGMEuISFVwddF5If1DfsEa7z/JiF0OFxAhwwO2Dr31a/lq1PZdZaYZkzyohTmCeFa
+         bbIKk6C56EHVObKAecGxfXRW0whDJaVfpJopsa82tacv3LsAfcgGbm0W92B8Hs6md5bQ
+         4KgoCfyWsuduo+94pkSu0O9qdUeJzbzKNkzUstP+45aiziIcvnFjdHe1P1FXh8E7s8na
+         9Qsg==
+X-Gm-Message-State: AOAM531DuF+iNWEW86jrlvohTIgm5z6gT6zGz9POP1PpItnfOBkLGNm5
+        SaZTvFu1Eer3meyJR3ylYItlybyoXRY=
+X-Google-Smtp-Source: ABdhPJyqVet79r6exZ7QXpshl4CmYGErDRnipcgdY/OZa41YKbjJPfB7j8dYdVlFnwB865Ov2nERMQ==
+X-Received: by 2002:a5d:6c66:: with SMTP id r6mr22440706wrz.86.1612261393481;
+        Tue, 02 Feb 2021 02:23:13 -0800 (PST)
+Received: from [10.239.43.214] (79.red-80-24-233.staticip.rima-tde.net. [80.24.233.79])
+        by smtp.gmail.com with ESMTPSA id j17sm2250411wmc.28.2021.02.02.02.23.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Feb 2021 02:23:12 -0800 (PST)
+Subject: Re: [PATCH conntrack-tools] tests: conntrackd: move basic netns
+ scenario setup to shell script
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+References: <20210201170015.28217-1-pablo@netfilter.org>
+From:   Arturo Borrero Gonzalez <arturo@netfilter.org>
+Message-ID: <6dc09925-9c93-fdbb-12f4-c9cd2c7d1bb4@netfilter.org>
+Date:   Tue, 2 Feb 2021 11:23:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210201170015.28217-1-pablo@netfilter.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-nft is too greedy when removing icmp dependencies.
-'icmp code 1 type 2' did remove the type when printing.
+On 2/1/21 6:00 PM, Pablo Neira Ayuso wrote:
+> This allows for running the script away from the test infrastructure,
+> which is convenient when developing new tests. This also allows for
+> reusing the same netns setup from new tests.
+> 
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> ---
+>   tests/conntrackd/scenarios.yaml               | 29 +--------
+>   .../scenarios/basic/network-setup.sh          | 59 +++++++++++++++++++
+>   2 files changed, 61 insertions(+), 27 deletions(-)
+>   create mode 100755 tests/conntrackd/scenarios/basic/network-setup.sh
+> 
 
-Be more careful and check that the icmp type dependency of the
-candidate expression (earlier icmp payload expression) has the same
-type dependency as the new expression.
-
-Reported-by: Eric Garver <eric@garver.life>
-Reported-by: Michael Biebl <biebl@debian.org>
-Fixes: d0f3b9eaab8d77e ("payload: auto-remove simple icmp/icmpv6 dependency expressions")
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- src/payload.c | 63 ++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 42 insertions(+), 21 deletions(-)
-
-diff --git a/src/payload.c b/src/payload.c
-index 48529bcf5c51..a77ca5500550 100644
---- a/src/payload.c
-+++ b/src/payload.c
-@@ -627,6 +627,40 @@ void payload_dependency_release(struct payload_dep_ctx *ctx)
- 	ctx->pdep  = NULL;
- }
- 
-+static uint8_t icmp_dep_to_type(enum icmp_hdr_field_type t)
-+{
-+	switch (t) {
-+	case PROTO_ICMP_ANY:
-+		BUG("Invalid map for simple dependency");
-+	case PROTO_ICMP_ECHO: return ICMP_ECHO;
-+	case PROTO_ICMP6_ECHO: return ICMP6_ECHO_REQUEST;
-+	case PROTO_ICMP_MTU: return ICMP_DEST_UNREACH;
-+	case PROTO_ICMP_ADDRESS: return ICMP_REDIRECT;
-+	case PROTO_ICMP6_MTU: return ICMP6_PACKET_TOO_BIG;
-+	case PROTO_ICMP6_MGMQ: return MLD_LISTENER_QUERY;
-+	case PROTO_ICMP6_PPTR: return ICMP6_PARAM_PROB;
-+	}
-+
-+	BUG("Missing icmp type mapping");
-+}
-+
-+static bool payload_may_dependency_kill_icmp(struct payload_dep_ctx *ctx, struct expr *expr)
-+{
-+	const struct expr *dep = ctx->pdep->expr;
-+	uint8_t icmp_type;
-+
-+	icmp_type = expr->payload.tmpl->icmp_dep;
-+	if (icmp_type == PROTO_ICMP_ANY)
-+		return false;
-+
-+	if (dep->left->payload.desc != expr->payload.desc)
-+		return false;
-+
-+	icmp_type = icmp_dep_to_type(expr->payload.tmpl->icmp_dep);
-+
-+	return ctx->icmp_type == icmp_type;
-+}
-+
- static bool payload_may_dependency_kill(struct payload_dep_ctx *ctx,
- 					unsigned int family, struct expr *expr)
- {
-@@ -661,6 +695,14 @@ static bool payload_may_dependency_kill(struct payload_dep_ctx *ctx,
- 		break;
- 	}
- 
-+	if (expr->payload.base == PROTO_BASE_TRANSPORT_HDR &&
-+	    dep->left->payload.base == PROTO_BASE_TRANSPORT_HDR) {
-+		if (dep->left->payload.desc == &proto_icmp)
-+			return payload_may_dependency_kill_icmp(ctx, expr);
-+		if (dep->left->payload.desc == &proto_icmp6)
-+			return payload_may_dependency_kill_icmp(ctx, expr);
-+	}
-+
- 	return true;
- }
- 
-@@ -680,10 +722,6 @@ void payload_dependency_kill(struct payload_dep_ctx *ctx, struct expr *expr,
- 	if (payload_dependency_exists(ctx, expr->payload.base) &&
- 	    payload_may_dependency_kill(ctx, family, expr))
- 		payload_dependency_release(ctx);
--	else if (ctx->icmp_type && ctx->pdep) {
--		fprintf(stderr, "Did not kill \n");
--		payload_dependency_release(ctx);
--	}
- }
- 
- void exthdr_dependency_kill(struct payload_dep_ctx *ctx, struct expr *expr,
-@@ -707,23 +745,6 @@ void exthdr_dependency_kill(struct payload_dep_ctx *ctx, struct expr *expr,
- 	}
- }
- 
--static uint8_t icmp_dep_to_type(enum icmp_hdr_field_type t)
--{
--	switch (t) {
--	case PROTO_ICMP_ANY:
--		BUG("Invalid map for simple dependency");
--	case PROTO_ICMP_ECHO: return ICMP_ECHO;
--	case PROTO_ICMP6_ECHO: return ICMP6_ECHO_REQUEST;
--	case PROTO_ICMP_MTU: return ICMP_DEST_UNREACH;
--	case PROTO_ICMP_ADDRESS: return ICMP_REDIRECT;
--	case PROTO_ICMP6_MTU: return ICMP6_PACKET_TOO_BIG;
--	case PROTO_ICMP6_MGMQ: return MLD_LISTENER_QUERY;
--	case PROTO_ICMP6_PPTR: return ICMP6_PARAM_PROB;
--	}
--
--	BUG("Missing icmp type mapping");
--}
--
- /**
-  * payload_expr_complete - fill in type information of a raw payload expr
-  *
--- 
-2.26.2
+Acked-by: Arturo Borrero Gonzalez <arturo@netfilter.org>
 
