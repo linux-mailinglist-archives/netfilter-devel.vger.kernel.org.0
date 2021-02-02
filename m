@@ -2,109 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAB830C3CD
-	for <lists+netfilter-devel@lfdr.de>; Tue,  2 Feb 2021 16:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8295130C49C
+	for <lists+netfilter-devel@lfdr.de>; Tue,  2 Feb 2021 16:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235397AbhBBP2x (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 2 Feb 2021 10:28:53 -0500
-Received: from correo.us.es ([193.147.175.20]:52106 "EHLO mail.us.es"
+        id S235811AbhBBP4x (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 2 Feb 2021 10:56:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235074AbhBBP0k (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:26:40 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 9FDFDCA6AE
-        for <netfilter-devel@vger.kernel.org>; Tue,  2 Feb 2021 16:25:58 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 92E7EDA722
-        for <netfilter-devel@vger.kernel.org>; Tue,  2 Feb 2021 16:25:58 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 9235CDA73F; Tue,  2 Feb 2021 16:25:58 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 55380DA722;
-        Tue,  2 Feb 2021 16:25:56 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 02 Feb 2021 16:25:56 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 38E4A426CC85;
-        Tue,  2 Feb 2021 16:25:56 +0100 (CET)
-Date:   Tue, 2 Feb 2021 16:25:55 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     fw@strlen.de
-Subject: Re: [PATCH net 0/3] Netfilter fixes for net
-Message-ID: <20210202152555.GC26494@salvia>
-References: <20210202152156.25979-1-pablo@netfilter.org>
+        id S235818AbhBBPzB (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 2 Feb 2021 10:55:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D557B64F5E;
+        Tue,  2 Feb 2021 15:54:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612281253;
+        bh=tTSJ6G+PI+xlH2RyCUwOWa9GfU59ob6JOGgyGyJE9sw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o5BVmYjm39/e/jNOOkOycCC7U3mmvdIGvFgpAQbXVOb3+fxRR2qxg1DszNJ+v4845
+         FHzTHCJRSz2GukZKc2iGH9X+ifok5xqA/yaQYpV/IX+gkHEKRGTWLo/uSZJgWM6/Ff
+         SiPm4vECoGC79qEmse7uAeR/aHNNeWuSUcRG5RFDbf9AmmOVIkb/kOcQ+WTMJm9rYU
+         loq+oVF5QDBjexBJepGPQkjrm8Oj16fXm5KUtgQBS4x/2RktW88S57zI1UEJ0V1hPX
+         RKDfhi7Kx4mO1KwNqz+Fmd+9A4kX2xN3ruQFm0ZnYUxIwg1VOEVQkOPRS0xevZzQbZ
+         Aw0g2YBRC17eg==
+Date:   Tue, 2 Feb 2021 17:54:09 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        coreteam@netfilter.org, Florian Westphal <fw@strlen.de>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>,
+        LKML <linux-kernel@vger.kernel.org>, lvs-devel@vger.kernel.org,
+        Matteo Croce <mcroce@redhat.com>,
+        netdev <netdev@vger.kernel.org>, netfilter-devel@vger.kernel.org,
+        Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH net 0/4] Fix W=1 compilation warnings in net/* folder
+Message-ID: <20210202155409.GB3264866@unreal>
+References: <20210202135544.3262383-1-leon@kernel.org>
+ <CANn89iL4jGbr_6rr11nsHxmdh7uz=kqXuMhRb0nakWO3rBZwsQ@mail.gmail.com>
+ <20210202145724.GA3264866@unreal>
+ <CANn89iJ1WYEfS-Pgzvec+54+3JQHCPSNdCfYaFkGYAEk3sGwmA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202152156.25979-1-pablo@netfilter.org>
-User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <CANn89iJ1WYEfS-Pgzvec+54+3JQHCPSNdCfYaFkGYAEk3sGwmA@mail.gmail.com>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Please, scratch this.
+On Tue, Feb 02, 2021 at 03:59:38PM +0100, Eric Dumazet wrote:
+> On Tue, Feb 2, 2021 at 3:57 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Tue, Feb 02, 2021 at 03:34:37PM +0100, Eric Dumazet wrote:
+> > > On Tue, Feb 2, 2021 at 2:55 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > >
+> > > > Hi,
+> > > >
+> > > > This short series fixes W=1 compilation warnings which I experienced
+> > > > when tried to compile net/* folder.
+> > > >
+> > >
+> > > Ok, but we never had a strong requirement about W=1, so adding Fixes:
+> > > tag is adding
+> >
+> > I added because Jakub has checker that looks for Fixes lines in "net"
+> > patches.
+>
+> Send this to net-next
 
-My robot resent an old pull request that was stale on my submission
-folder.
+No problem.
 
-Sorry for the noise.
+>
+> As I stated, we never enforce W=1 compilation rule.
+>
+> I understand we might want that for _future_ kernels.
+>
+> >
+> > > unnecessary burden to stable teams all around the world.
+> >
+> > It is automatic.
+>
+> I do receive a copy of all backports in my mailbox, whenever I am tagged.
+>
+> I can tell you there is a lot of pollution.
 
-On Tue, Feb 02, 2021 at 04:21:52PM +0100, Pablo Neira Ayuso wrote:
-> Hi,
-> 
-> The following patchset contains Netfilter fixes for net:
-> 
-> 1) Honor stateful expressions defined in the set from the dynset
->    extension. The set definition provides a stateful expression
->    that must be used by the dynset expression in case it is specified.
-> 
-> 2) Missing timeout extension in the set element in the dynset
->    extension leads to inconsistent ruleset listing, not allowing
->    the user to restore timeout and expiration on ruleset reload.
-> 
-> 3) Do not dump the stateful expression from the dynset extension
->    if it coming from the set definition.
-> 
-> Please, pull these changes from:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
-> 
-> Thanks!
-> 
-> ----------------------------------------------------------------
-> 
-> The following changes since commit c8a8ead01736419a14c3106e1f26a79d74fc84c7:
-> 
->   Merge git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf (2021-01-12 20:25:29 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git HEAD
-> 
-> for you to fetch changes up to ce5379963b2884e9d23bea0c5674a7251414c84b:
-> 
->   netfilter: nft_dynset: dump expressions when set definition contains no expressions (2021-01-16 19:54:42 +0100)
-> 
-> ----------------------------------------------------------------
-> Pablo Neira Ayuso (3):
->       netfilter: nft_dynset: honor stateful expressions in set definition
->       netfilter: nft_dynset: add timeout extension to template
->       netfilter: nft_dynset: dump expressions when set definition contains no expressions
-> 
->  include/net/netfilter/nf_tables.h |  2 ++
->  net/netfilter/nf_tables_api.c     |  5 ++---
->  net/netfilter/nft_dynset.c        | 41 +++++++++++++++++++++++++--------------
->  3 files changed, 30 insertions(+), 18 deletions(-)
+I'm receiving them either.
+
+>
+> >
+> > Thanks
