@@ -2,51 +2,164 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E541730E05F
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Feb 2021 18:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 610E630E05C
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Feb 2021 18:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhBCQ77 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 Feb 2021 11:59:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
+        id S231858AbhBCQ7J (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Feb 2021 11:59:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbhBCQ5x (ORCPT
+        with ESMTP id S231540AbhBCQ55 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:57:53 -0500
+        Wed, 3 Feb 2021 11:57:57 -0500
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6A4C0613D6
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 Feb 2021 08:57:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5858C061573
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 Feb 2021 08:57:17 -0800 (PST)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1l7LSq-0005LE-1P; Wed, 03 Feb 2021 17:57:12 +0100
+        id 1l7LSu-0005LL-70; Wed, 03 Feb 2021 17:57:16 +0100
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 0/3] nft: fix ct zone handling in sets and maps
-Date:   Wed,  3 Feb 2021 17:57:03 +0100
-Message-Id: <20210203165707.21781-1-fw@strlen.de>
+Subject: [PATCH nft 1/3] extend_test
+Date:   Wed,  3 Feb 2021 17:57:04 +0100
+Message-Id: <20210203165707.21781-2-fw@strlen.de>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210203165707.21781-1-fw@strlen.de>
+References: <20210203165707.21781-1-fw@strlen.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-'ct zone' (and other expressions w. host byte order and integer dtype)
-are not handled correctly on little endian platforms.
-
-First patch adds a test case that demonstrates the problem,
-patch 2 and 3 resolve this for the mapping and set key cases.
-
-Florian Westphal (3):
-  tests: extend dtype test case to cover expression with integer type
-  evaluate: pick data element byte order, not dtype one
-  evaluate: set evaluation context for set elements
-
- src/evaluate.c                                | 13 ++++--
+---
  .../testcases/sets/0029named_ifname_dtype_0   | 41 +++++++++++++++++
  .../sets/dumps/0029named_ifname_dtype_0.nft   | 44 ++++++++++++++++++-
- 3 files changed, 93 insertions(+), 5 deletions(-)
+ 2 files changed, 83 insertions(+), 2 deletions(-)
 
+diff --git a/tests/shell/testcases/sets/0029named_ifname_dtype_0 b/tests/shell/testcases/sets/0029named_ifname_dtype_0
+index 39b3c90cf8dc..2dbcd22bb2ce 100755
+--- a/tests/shell/testcases/sets/0029named_ifname_dtype_0
++++ b/tests/shell/testcases/sets/0029named_ifname_dtype_0
+@@ -13,12 +13,53 @@ EXPECTED="table inet t {
+ 		elements = { \"ssh\" . \"eth0\" }
+ 	}
+ 
++	set nv {
++		type ifname . mark
++	}
++
++	set z {
++		typeof ct zone
++		elements = { 1 }
++	}
++
++	set m {
++		typeof meta mark
++		elements = { 1 }
++	}
++
++	map cz {
++		typeof meta iifname : ct zone
++		elements = { \"veth4\" : 1 }
++	}
++
++	map cm {
++		typeof meta iifname : ct mark
++		elements = { \"veth4\" : 1 }
++	}
++
+ 	chain c {
+ 		iifname @s accept
+ 		oifname @s accept
+ 		tcp dport . meta iifname @sc accept
++		meta iifname . meta mark @nv accept
+ 	}
+ }"
+ 
+ set -e
+ $NFT -f - <<< "$EXPECTED"
++$NFT add element inet t s '{ "eth1" }'
++$NFT add element inet t s '{ "eth2", "eth3", "veth1" }'
++
++$NFT add element inet t sc '{ 80 . "eth0" }'
++$NFT add element inet t sc '{ 80 . "eth0" }' || true
++$NFT add element inet t sc '{ 80 . "eth1" }'
++$NFT add element inet t sc '{ 81 . "eth0" }'
++
++$NFT add element inet t nv '{ "eth0" . 1 }'
++$NFT add element inet t nv '{ "eth0" . 2 }'
++
++$NFT add element inet t z '{ 2, 3, 4, 5, 6 }'
++$NFT add element inet t cz '{ "eth0" : 1,  "eth1" : 2 }'
++
++$NFT add element inet t m '{ 2, 3, 4, 5, 6 }'
++$NFT add element inet t cm '{ "eth0" : 1,  "eth1" : 2 }'
+diff --git a/tests/shell/testcases/sets/dumps/0029named_ifname_dtype_0.nft b/tests/shell/testcases/sets/dumps/0029named_ifname_dtype_0.nft
+index 23ff89bb90e4..55cd4f262b35 100644
+--- a/tests/shell/testcases/sets/dumps/0029named_ifname_dtype_0.nft
++++ b/tests/shell/testcases/sets/dumps/0029named_ifname_dtype_0.nft
+@@ -1,17 +1,57 @@
+ table inet t {
+ 	set s {
+ 		type ifname
+-		elements = { "eth0" }
++		elements = { "eth0",
++			     "eth1",
++			     "eth2",
++			     "eth3",
++			     "veth1" }
+ 	}
+ 
+ 	set sc {
+ 		type inet_service . ifname
+-		elements = { 22 . "eth0" }
++		elements = { 22 . "eth0",
++			     80 . "eth0",
++			     81 . "eth0",
++			     80 . "eth1" }
++	}
++
++	set nv {
++		type ifname . mark
++		elements = { "eth0" . 0x00000001,
++			     "eth0" . 0x00000002 }
++	}
++
++	set z {
++		typeof ct zone
++		elements = { 1, 2, 3, 4, 5,
++			     6 }
++	}
++
++	set m {
++		typeof meta mark
++		elements = { 0x00000001, 0x00000002, 0x00000003, 0x00000004, 0x00000005,
++			     0x00000006 }
++	}
++
++	map cz {
++		typeof iifname : ct zone
++		elements = { "eth0" : 1,
++			     "eth1" : 2,
++			     "veth4" : 1 }
++	}
++
++	map cm {
++		typeof iifname : ct mark
++		elements = { "eth0" : 0x00000001,
++			     "eth1" : 0x00000002,
++			     "veth4" : 0x00000001 }
+ 	}
+ 
+ 	chain c {
+ 		iifname @s accept
+ 		oifname @s accept
+ 		tcp dport . iifname @sc accept
++		iifname . meta mark @nv accept
+ 	}
+ }
 -- 
 2.26.2
 
