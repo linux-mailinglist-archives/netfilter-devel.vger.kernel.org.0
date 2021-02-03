@@ -2,110 +2,74 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDBE30D747
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Feb 2021 11:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E67530D7E5
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Feb 2021 11:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbhBCKRR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 Feb 2021 05:17:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233804AbhBCKRO (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 Feb 2021 05:17:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47DD564F76;
-        Wed,  3 Feb 2021 10:16:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612347394;
-        bh=/KEuRgVOiA/VvIPSzucVMF3o8/yUTvTxNRQRpZ1mn68=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BH1MpRqT+tt++8ZEd9+ocZijwXT+4pEgGwXYSY32eZbmga5ecYEmTplLImyib1O9S
-         VsKmHOBufgkhLL30YBCYjp532+mTDclCOz89vrCGi8YEC5Ud0fTmINqN5k4hbE4QQu
-         AuAT5weWqHwtopZRCAmgeo/nFq/ONvWfvE1uJlHIPddtWNGIl0fPSsqHYVqnsMWPTH
-         aqE6/FFVx6RB06OuyTzYREgGaguThRZ7daycMfHZYrcI+Aoz6wiYcS43aAz7eUAtty
-         iXmPn0QKkWPOcCOqkm5YhgBYo5hBQu1YzfXOCIvg2v2UflefdhGR3M86+vGfD0uU8l
-         iYiCedBFaNJPw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S233839AbhBCKpv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Feb 2021 05:45:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233932AbhBCKpu (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 3 Feb 2021 05:45:50 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABBCC061573
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 Feb 2021 02:45:09 -0800 (PST)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1l7Fel-0003KG-N8; Wed, 03 Feb 2021 11:45:07 +0100
+Date:   Wed, 3 Feb 2021 11:45:07 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [nft PATCH] erec: Sanitize erec location indesc
+Message-ID: <20210203104507.GO3158@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, coreteam@netfilter.org,
-        Florian Westphal <fw@strlen.de>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Julian Anastasov <ja@ssi.bg>, lvs-devel@vger.kernel.org,
-        Matteo Croce <mcroce@redhat.com>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, Simon Horman <horms@verge.net.au>
-Subject: [PATCH net-next v1 4/4] netfilter: move handlers to net/ip_vs.h
-Date:   Wed,  3 Feb 2021 12:16:12 +0200
-Message-Id: <20210203101612.4004322-5-leon@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210203101612.4004322-1-leon@kernel.org>
-References: <20210203101612.4004322-1-leon@kernel.org>
+        netfilter-devel@vger.kernel.org
+References: <20210126175502.9171-1-phil@nwl.cc>
+ <20210203003832.GA30866@salvia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203003832.GA30866@salvia>
+Sender:  <n0-1@orbyte.nwl.cc>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Hi Pablo,
 
-Fix the following compilation warnings:
-net/netfilter/ipvs/ip_vs_proto_tcp.c:147:1: warning: no previous prototype for 'tcp_snat_handler' [-Wmissing-prototypes]
-  147 | tcp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
-      | ^~~~~~~~~~~~~~~~
-net/netfilter/ipvs/ip_vs_proto_udp.c:136:1: warning: no previous prototype for 'udp_snat_handler' [-Wmissing-prototypes]
-  136 | udp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
-      | ^~~~~~~~~~~~~~~~
+On Wed, Feb 03, 2021 at 01:38:32AM +0100, Pablo Neira Ayuso wrote:
+> On Tue, Jan 26, 2021 at 06:55:02PM +0100, Phil Sutter wrote:
+> > erec_print() unconditionally dereferences erec->locations->indesc, so
+> > make sure it is valid when either creating an erec or adding a location.
+> 
+> I guess your're trigger a bug where erec is indesc is NULL, thing is
+> that indesc should be always set on. Is there a reproducer for this bug?
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- include/net/ip_vs.h             | 11 +++++++++++
- net/netfilter/ipvs/ip_vs_core.c | 12 ------------
- 2 files changed, 11 insertions(+), 12 deletions(-)
+Yes, exactly. I hit it when trying to clean up the netdev family reject
+support, while just "hacking around". You can trigger it with the
+following change:
 
-diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-index d609e957a3ec..7cb5a1aace40 100644
---- a/include/net/ip_vs.h
-+++ b/include/net/ip_vs.h
-@@ -1712,4 +1712,15 @@ ip_vs_dest_conn_overhead(struct ip_vs_dest *dest)
- 		atomic_read(&dest->inactconns);
- }
+| --- a/src/evaluate.c
+| +++ b/src/evaluate.c
+| @@ -2718,7 +2718,7 @@ static int stmt_evaluate_reject_bridge(struct eval_ctx *ctx, struct stmt *stmt,
+|         const struct proto_desc *desc;
+|  
+|         desc = ctx->pctx.protocol[PROTO_BASE_LL_HDR].desc;
+| -       if (desc != &proto_eth && desc != &proto_vlan && desc != &proto_netdev)
+| +       if (desc != &proto_eth && desc != &proto_vlan)
+|                 return stmt_binary_error(ctx,
+|                                          &ctx->pctx.protocol[PROTO_BASE_LL_HDR],
+|                                          stmt, "unsupported link layer protocol");
 
-+#ifdef CONFIG_IP_VS_PROTO_TCP
-+INDIRECT_CALLABLE_DECLARE(int
-+	tcp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
-+			 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph));
-+#endif
-+
-+#ifdef CONFIG_IP_VS_PROTO_UDP
-+INDIRECT_CALLABLE_DECLARE(int
-+	udp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
-+			 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph));
-+#endif
- #endif	/* _NET_IP_VS_H */
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index 54e086c65721..0c132ff9b446 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -68,18 +68,6 @@ EXPORT_SYMBOL(ip_vs_get_debug_level);
- #endif
- EXPORT_SYMBOL(ip_vs_new_conn_out);
+and this ruleset:
 
--#ifdef CONFIG_IP_VS_PROTO_TCP
--INDIRECT_CALLABLE_DECLARE(int
--	tcp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
--			 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph));
--#endif
--
--#ifdef CONFIG_IP_VS_PROTO_UDP
--INDIRECT_CALLABLE_DECLARE(int
--	udp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
--			 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph));
--#endif
--
- #if defined(CONFIG_IP_VS_PROTO_TCP) && defined(CONFIG_IP_VS_PROTO_UDP)
- #define SNAT_CALL(f, ...) \
- 	INDIRECT_CALL_2(f, tcp_snat_handler, udp_snat_handler, __VA_ARGS__)
---
-2.29.2
+| table netdev t {
+| 	chain c {
+| 		reject
+| 	}
+| }
 
+Cheers, Phil
