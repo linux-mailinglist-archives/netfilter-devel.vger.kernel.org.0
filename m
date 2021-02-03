@@ -2,87 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA0830D05D
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Feb 2021 01:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD1230DE5B
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Feb 2021 16:37:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbhBCAjS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 2 Feb 2021 19:39:18 -0500
-Received: from correo.us.es ([193.147.175.20]:57094 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232289AbhBCAjR (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 2 Feb 2021 19:39:17 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 0E8181C41C2
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 Feb 2021 01:38:35 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 16E40DA704
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 Feb 2021 01:38:35 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 0C058DA730; Wed,  3 Feb 2021 01:38:35 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-106.1 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        FORGED_MUA_MOZILLA,NICE_REPLY_A,SMTPAUTH_US2,URIBL_BLOCKED,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id D4EC8DA704;
-        Wed,  3 Feb 2021 01:38:32 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 03 Feb 2021 01:38:32 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id AC6C942DF561;
-        Wed,  3 Feb 2021 01:38:32 +0100 (CET)
-Date:   Wed, 3 Feb 2021 01:38:32 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] erec: Sanitize erec location indesc
-Message-ID: <20210203003832.GA30866@salvia>
-References: <20210126175502.9171-1-phil@nwl.cc>
+        id S234591AbhBCPhn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Feb 2021 10:37:43 -0500
+Received: from 198-20-226-115.unifiedlayer.com ([198.20.226.115]:56722 "EHLO
+        198-20-226-115.unifiedlayer.com" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234512AbhBCPgR (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 3 Feb 2021 10:36:17 -0500
+X-Greylist: delayed 29383 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Feb 2021 10:35:24 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=carnivalassure.com.bd; s=default; h=Content-Transfer-Encoding:Content-Type:
+        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Sender:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=miRpAdBSO5eDo01VDX+EK9bqGCmqMjXHS3kO16T6iWw=; b=BeRp52iTZNZnIj6Yk4q4qmVg1o
+        TGW3OyQQDqdIygbFzrOvnb1VFlTwDZeYzPg7x0gcAhNqpY+RPOU8XZPJCHVzHp7N6NMkd40+DlrAZ
+        BxMd0S46HbScvjeaenOH3+S94exP2AbS+FzziGjhE87mUv7G1Yf3DGvnuFRQOMF8rB7m0VxjRMPDd
+        55/dxUiSnVbBa0JImuQYYXUpRt83SOvMPmEy3tm7HhC6eVNF+f6Wxow3WBSbpKE+vZC1jXRKKl9C1
+        bK6OQxLWFq7P4uMl6BygkP9QC4QklVZQU7qWYFjfzBfV8UP2ROnwJjNJGJIyClrEEjRpgcDNFfVIx
+        4EKHpC7g==;
+Received: from [127.0.0.1] (port=46990 helo=dot.dotlines.com.sg)
+        by dot.dotlines.com.sg with esmtpa (Exim 4.93)
+        (envelope-from <noreply@carnivalassure.com.bd>)
+        id 1l7CVy-0005dS-7D; Wed, 03 Feb 2021 01:23:50 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210126175502.9171-1-phil@nwl.cc>
-User-Agent: Mozilla/5.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+Date:   Wed, 03 Feb 2021 01:23:49 -0600
+From:   Francois Pinault <noreply@carnivalassure.com.bd>
+To:     undisclosed-recipients:;
+Subject: Hello/Hallo
+Organization: Donation
+Reply-To: francoispinault1936@outlook.com
+Mail-Reply-To: francoispinault1936@outlook.com
+Message-ID: <6b70d71c493b5c027dd3ef878f38d028@carnivalassure.com.bd>
+X-Sender: noreply@carnivalassure.com.bd
+User-Agent: Roundcube Webmail/1.3.15
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - dot.dotlines.com.sg
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - carnivalassure.com.bd
+X-Get-Message-Sender-Via: dot.dotlines.com.sg: authenticated_id: noreply@carnivalassure.com.bd
+X-Authenticated-Sender: dot.dotlines.com.sg: noreply@carnivalassure.com.bd
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Phil,
 
-On Tue, Jan 26, 2021 at 06:55:02PM +0100, Phil Sutter wrote:
-> erec_print() unconditionally dereferences erec->locations->indesc, so
-> make sure it is valid when either creating an erec or adding a location.
 
-I guess your're trigger a bug where erec is indesc is NULL, thing is
-that indesc should be always set on. Is there a reproducer for this bug?
+-- 
+Hallo, ich bin Herr Francois Pinault, ich habe Ihnen gespendet. Sie 
+können mein Profil auf Wikipedia, Google oder Forbes überprüfen.
 
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
-> ---
->  src/erec.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/src/erec.c b/src/erec.c
-> index c550a596b38c8..5c3351a512464 100644
-> --- a/src/erec.c
-> +++ b/src/erec.c
-> @@ -38,7 +38,8 @@ void erec_add_location(struct error_record *erec, const struct location *loc)
->  {
->  	assert(erec->num_locations < EREC_LOCATIONS_MAX);
->  	erec->locations[erec->num_locations] = *loc;
-> -	erec->locations[erec->num_locations].indesc = loc->indesc;
-> +	erec->locations[erec->num_locations].indesc = loc->indesc ?
-> +						    : &internal_indesc;
->  	erec->num_locations++;
->  }
->  
-> -- 
-> 2.28.0
-> 
+Für Ihren Spendenanspruch und weitere Informationen kontaktieren Sie 
+mich umgehend unter francoispinault1936@outlook.com
+
+Mit freundlichen Grüßen,
+Herr Francois Pinault
