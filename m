@@ -2,101 +2,65 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7005931017A
-	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Feb 2021 01:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7703B310458
+	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Feb 2021 06:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhBEASV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 4 Feb 2021 19:18:21 -0500
-Received: from correo.us.es ([193.147.175.20]:40698 "EHLO mail.us.es"
+        id S229876AbhBEFIl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 5 Feb 2021 00:08:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231776AbhBEASR (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:18:17 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 9DA0E2A4703
-        for <netfilter-devel@vger.kernel.org>; Fri,  5 Feb 2021 01:17:35 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 89FFBDA78F
-        for <netfilter-devel@vger.kernel.org>; Fri,  5 Feb 2021 01:17:35 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 7F67BDA78B; Fri,  5 Feb 2021 01:17:35 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 405A7DA73D;
-        Fri,  5 Feb 2021 01:17:33 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Fri, 05 Feb 2021 01:17:33 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 0EB8D42EF9E1;
-        Fri,  5 Feb 2021 01:17:33 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net 4/4] netfilter: flowtable: fix tcp and udp header checksum update
-Date:   Fri,  5 Feb 2021 01:17:27 +0100
-Message-Id: <20210205001727.2125-5-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210205001727.2125-1-pablo@netfilter.org>
-References: <20210205001727.2125-1-pablo@netfilter.org>
+        id S229587AbhBEFIk (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 5 Feb 2021 00:08:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8889164E24;
+        Fri,  5 Feb 2021 05:07:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612501679;
+        bh=ulBEqcu3uB/xXFXJGBCw5AtPU0BmN4KWSiBM/1b2+F4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=e++b4k9sV6hSevPgZIJ/JhKzd5knmr9mIJmFhKbl//RPLsK7MBJGluO9Z54NTWIJg
+         3PkPBROBlhX8eFVj1fAxlhMqjV6V9wyNuGDhcqtT9hF4qkV+AWPH1s3re6AK7QDJwq
+         mp4Cej7dWdn1Xf8pHyti76LS5XdRyBmmneQJZ2BC6E9OkWhyxzqvyrtRS+l3+5O2XS
+         MGhpShgamjgGhSOtf5Yr3/4L0b6l3qTG0t+izkzSnbQWd4grjQATGEIkDHrYldNlBL
+         J6VRcocMTF5T+3qy3X3tbmHCHJieyZqrS+2/CmUfZy0acxECVUAer7DNk4Leg1BROU
+         Oco+/q6wBJ8Fw==
+Date:   Thu, 4 Feb 2021 21:07:57 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Leon Romanovsky <leonro@nvidia.com>, coreteam@netfilter.org,
+        Florian Westphal <fw@strlen.de>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
+        lvs-devel@vger.kernel.org, Matteo Croce <mcroce@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH net-next v2 0/4] Fix W=1 compilation warnings in net/*
+ folder
+Message-ID: <20210204210757.5f3f4f5a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210203135112.4083711-1-leon@kernel.org>
+References: <20210203135112.4083711-1-leon@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Sven Auhagen <sven.auhagen@voleatech.de>
+On Wed,  3 Feb 2021 15:51:08 +0200 Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Changelog:
+> v2:
+>  * Patch 3: Added missing include file.
+> v1: https://lore.kernel.org/lkml/20210203101612.4004322-1-leon@kernel.org
+>  * Removed Fixes lines.
+>  * Changed target from net to be net-next.
+>  * Patch 1: Moved function declaration to be outside config instead
+>    games with if/endif.
+>  * Patch 3: Moved declarations to new header file.
+> v0: https://lore.kernel.org/lkml/20210202135544.3262383-1-leon@kernel.org
 
-When updating the tcp or udp header checksum on port nat the function
-inet_proto_csum_replace2 with the last parameter pseudohdr as true.
-This leads to an error in the case that GRO is used and packets are
-split up in GSO. The tcp or udp checksum of all packets is incorrect.
-
-The error is probably masked due to the fact the most network driver
-implement tcp/udp checksum offloading. It also only happens when GRO is
-applied and not on single packets.
-
-The error is most visible when using a pppoe connection which is not
-triggering the tcp/udp checksum offload.
-
-Fixes: ac2a66665e23 ("netfilter: add generic flow table infrastructure")
-Signed-off-by: Sven Auhagen <sven.auhagen@voleatech.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_flow_table_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
-index 513f78db3cb2..4a4acbba78ff 100644
---- a/net/netfilter/nf_flow_table_core.c
-+++ b/net/netfilter/nf_flow_table_core.c
-@@ -399,7 +399,7 @@ static int nf_flow_nat_port_tcp(struct sk_buff *skb, unsigned int thoff,
- 		return -1;
- 
- 	tcph = (void *)(skb_network_header(skb) + thoff);
--	inet_proto_csum_replace2(&tcph->check, skb, port, new_port, true);
-+	inet_proto_csum_replace2(&tcph->check, skb, port, new_port, false);
- 
- 	return 0;
- }
-@@ -415,7 +415,7 @@ static int nf_flow_nat_port_udp(struct sk_buff *skb, unsigned int thoff,
- 	udph = (void *)(skb_network_header(skb) + thoff);
- 	if (udph->check || skb->ip_summed == CHECKSUM_PARTIAL) {
- 		inet_proto_csum_replace2(&udph->check, skb, port,
--					 new_port, true);
-+					 new_port, false);
- 		if (!udph->check)
- 			udph->check = CSUM_MANGLED_0;
- 	}
--- 
-2.20.1
-
+Applied, thanks!
