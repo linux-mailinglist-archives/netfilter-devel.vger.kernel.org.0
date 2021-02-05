@@ -2,72 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5B8310ACD
-	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Feb 2021 13:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5EA310B17
+	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Feb 2021 13:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhBEL7x (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 5 Feb 2021 06:59:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhBEL5c (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:57:32 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09443C061793
-        for <netfilter-devel@vger.kernel.org>; Fri,  5 Feb 2021 03:56:52 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1l7zjF-0000E6-IK; Fri, 05 Feb 2021 12:56:49 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf] netfilter: conntrack: skip identical origin tuple in same zone only
-Date:   Fri,  5 Feb 2021 12:56:43 +0100
-Message-Id: <20210205115643.25739-1-fw@strlen.de>
-X-Mailer: git-send-email 2.26.2
+        id S231863AbhBEMbi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 5 Feb 2021 07:31:38 -0500
+Received: from correo.us.es ([193.147.175.20]:42810 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231301AbhBEM30 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 5 Feb 2021 07:29:26 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 75FF0ADCEF
+        for <netfilter-devel@vger.kernel.org>; Fri,  5 Feb 2021 13:28:27 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 62DB3DA722
+        for <netfilter-devel@vger.kernel.org>; Fri,  5 Feb 2021 13:28:27 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 57DADDA78C; Fri,  5 Feb 2021 13:28:27 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-106.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        FORGED_MUA_MOZILLA,NICE_REPLY_A,SMTPAUTH_US2,USER_IN_WELCOMELIST,
+        USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 1A9EBDA722;
+        Fri,  5 Feb 2021 13:28:25 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Fri, 05 Feb 2021 13:28:25 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id F2CC542DF560;
+        Fri,  5 Feb 2021 13:28:24 +0100 (CET)
+Date:   Fri, 5 Feb 2021 13:28:24 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Arturo Borrero Gonzalez <arturo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [RFC conntrack-tools PATCH] conntrack-tools: introduce
+ conntrackdctl
+Message-ID: <20210205122824.GA16269@salvia>
+References: <161243463641.9380.7754148010781645692.stgit@endurance>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <161243463641.9380.7754148010781645692.stgit@endurance>
+User-Agent: Mozilla/5.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The origin skip check needs to re-test the zone. Else, we might skip
-a colliding tuple in the reply direction.
+On Thu, Feb 04, 2021 at 11:32:06AM +0100, Arturo Borrero Gonzalez wrote:
+> Separate conntrackd command line client functionalities into a different
+> binary.
+> 
+> This should help with several things:
+>  * avoid reading and parsing the config file, which can fail in some enviroments, for example if
+>    conntrackd is running inside a netns and the referenced interfaces/addresses doesn't exist in
+>    the namespace conntrackd client command is running from.
+>  * easily update conntrakdctl with more functionalities without polluting the daemon binary
+>  * easier code maintenance
+[...]
+> @@ -333,15 +151,6 @@ int main(int argc, char *argv[])
+>  		exit(EXIT_FAILURE);
+>  	}
+>  
+> -	if (type == REQUEST) {
+> -		if (do_local_request(action, &conf.local, local_step) == -1) {
+> -			dlog(LOG_ERR, "can't connect: is conntrackd "
+> -			     "running? appropriate permissions?");
+> -			exit(EXIT_FAILURE);
+> -		}
+> -		exit(EXIT_SUCCESS);
+> -	}
 
-This only occurs when using 'directional zones' where origin tuples
-reside in different zones but the reply tuples share the same zone.
+The existing interface needs to be in place to be backward compatible.
 
-This causes the new conntrack entry to be dropped at confirmation time
-because NAT clash resolution was elided.
-
-Fixes: 4e35c1cb9460240 ("netfilter: nf_nat: skip nat clash resolution for same-origin entries")
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- I have a selftest to trigger this bug, but it depends on
- https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210203165707.21781-4-fw@strlen.de/
- and
- https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210203165707.21781-5-fw@strlen.de/
-
- so I will only send it once a new nft release with those patches is
- out.
-
- net/netfilter/nf_conntrack_core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 234b7cab37c3..ff0168736f6e 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -1229,7 +1229,8 @@ nf_conntrack_tuple_taken(const struct nf_conntrack_tuple *tuple,
- 			 * Let nf_ct_resolve_clash() deal with this later.
- 			 */
- 			if (nf_ct_tuple_equal(&ignored_conntrack->tuplehash[IP_CT_DIR_ORIGINAL].tuple,
--					      &ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple))
-+					      &ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple) &&
-+					      nf_ct_zone_equal(ct, zone, IP_CT_DIR_ORIGINAL))
- 				continue;
- 
- 			NF_CT_STAT_INC_ATOMIC(net, found);
--- 
-2.26.2
-
+I'm fine for you to add this, but we'll have to leave the existing
+interface for quite a bit of time, it might take years before we can
+deprecate the old way.
