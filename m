@@ -2,106 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E386831195A
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Feb 2021 04:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03A0311DDB
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Feb 2021 15:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhBFDCm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 5 Feb 2021 22:02:42 -0500
-Received: from correo.us.es ([193.147.175.20]:48938 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231708AbhBFCxC (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:53:02 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 249CA191906
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Feb 2021 02:57:06 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 10129DA789
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Feb 2021 02:57:06 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 05249DA73F; Sat,  6 Feb 2021 02:57:06 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-106.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        FORGED_MUA_MOZILLA,NICE_REPLY_A,SMTPAUTH_US2,USER_IN_WELCOMELIST,
-        USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id BB69DDA73D;
-        Sat,  6 Feb 2021 02:57:03 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sat, 06 Feb 2021 02:57:03 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 96AA542E0F80;
-        Sat,  6 Feb 2021 02:57:03 +0100 (CET)
-Date:   Sat, 6 Feb 2021 02:57:03 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Arturo Borrero Gonzalez <arturo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [RFC conntrack-tools PATCH] conntrack-tools: introduce
- conntrackdctl
-Message-ID: <20210206015703.GA23084@salvia>
-References: <161243463641.9380.7754148010781645692.stgit@endurance>
- <20210205122824.GA16269@salvia>
+        id S230120AbhBFOkA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 6 Feb 2021 09:40:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230208AbhBFOjy (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 6 Feb 2021 09:39:54 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AE6C06178A
+        for <netfilter-devel@vger.kernel.org>; Sat,  6 Feb 2021 06:39:14 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id o12so9823549ote.12
+        for <netfilter-devel@vger.kernel.org>; Sat, 06 Feb 2021 06:39:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=sY4fgq/DSyThalwU7QX+pWYKs/8sGH7ZznMUn5qQ1EY=;
+        b=U86T9aBtyi70OsKIRDepEOEj62kPFcZD0vyBir2KyOyq/qRS9cbBSAetVzdhWAWKLy
+         r7+Up5WRsFasn+an1ah+bDgPum/NFrEly21eQV4XI4lvE8urFwgm8E/JXqGHAUTLXFMI
+         XR5wwduKqSRfUXH+a/23dDO11fA3ffHSjqyI0XIsHD1RUJGRCTACFbB1d/9cH5Y+xWAY
+         KH8ohbAqmh57S6A3/T2eowLOP9IEHKzcQ4IIEzNJFyL1iKFT1s5dgoMvFa2xT2rMSSaE
+         MUBYUu6uP4R9BuQovRj7ro2osH0OqhupmWJSFyRQdUPjMRmgicZsV29ktz3wzgK1VnP5
+         J0iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=sY4fgq/DSyThalwU7QX+pWYKs/8sGH7ZznMUn5qQ1EY=;
+        b=r0e18kTYiu/NREUHQtNnMb9sSIu9uES/ALE+l7r5j5gRtCG9GDG+v27J3o9qnqiNOf
+         sNBMdtgXbIrvB4Je5LzXkB063wnwsMsJQ7DPtYmmNLXQWmC/Heqr9iO0wUHWRBJQGo93
+         FyLoJCDcDQ93xEhQ1LJsKRxYwqlfIN9I5OPjDmTwUL2apz4uo6znUt7ChQcw5/2dQMri
+         oDZ5vqdNfIrmQr0Y7GI/N+yvDmhluLkGOnrNoUrXVGvpG7oNuQSJZerQQ3NCQ33wb0jK
+         F8ZPXRKaWRCrSYHk9PZEzQloqUxTzjFxv5JWFzuo+59sDHk70r1WJQdJeq2NPcE70JjL
+         1yvA==
+X-Gm-Message-State: AOAM531yZczfSIpT8VZ0PNOfFTi7UWWE9bDJr5tililpSA6hCXvQS/JN
+        o0NSMUNpsE2YeO1BBIDbceaTa9FUgbz7N1fnOoY=
+X-Google-Smtp-Source: ABdhPJzemuc++HfkzpZjEGrZ7w84O3yT+AzVJK9+3EYUNItGOmdUNtV6wCa0k20TCb5aqJn8kWa8jt13uZwjfgHetsc=
+X-Received: by 2002:a05:6830:1318:: with SMTP id p24mr6861366otq.302.1612622353656;
+ Sat, 06 Feb 2021 06:39:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210205122824.GA16269@salvia>
-User-Agent: Mozilla/5.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+Received: by 2002:a9d:3e4c:0:0:0:0:0 with HTTP; Sat, 6 Feb 2021 06:39:13 -0800 (PST)
+Reply-To: lawyer.nba@gmail.com
+From:   Barrister Daven Bango <stephennbada@gmail.com>
+Date:   Sat, 6 Feb 2021 15:39:13 +0100
+Message-ID: <CAO_fDi9Pk1D6EeeMtarfFSuyA+g6REGEoPRYFdOUeGv3H2xHdw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 01:28:24PM +0100, Pablo Neira Ayuso wrote:
-> On Thu, Feb 04, 2021 at 11:32:06AM +0100, Arturo Borrero Gonzalez wrote:
-> > Separate conntrackd command line client functionalities into a different
-> > binary.
-> > 
-> > This should help with several things:
-> >  * avoid reading and parsing the config file, which can fail in some enviroments, for example if
-> >    conntrackd is running inside a netns and the referenced interfaces/addresses doesn't exist in
-> >    the namespace conntrackd client command is running from.
-> >  * easily update conntrakdctl with more functionalities without polluting the daemon binary
-> >  * easier code maintenance
-> [...]
-> > @@ -333,15 +151,6 @@ int main(int argc, char *argv[])
-> >  		exit(EXIT_FAILURE);
-> >  	}
-> >  
-> > -	if (type == REQUEST) {
-> > -		if (do_local_request(action, &conf.local, local_step) == -1) {
-> > -			dlog(LOG_ERR, "can't connect: is conntrackd "
-> > -			     "running? appropriate permissions?");
-> > -			exit(EXIT_FAILURE);
-> > -		}
-> > -		exit(EXIT_SUCCESS);
-> > -	}
-> 
-> The existing interface needs to be in place to be backward compatible.
-> 
-> I'm fine for you to add this, but we'll have to leave the existing
-> interface for quite a bit of time, it might take years before we can
-> deprecate the old way.
+--=20
+Korisnik fonda =C4=8Destitanja, Va=C5=A1a sredstva za naknadu od 850.000,00
+ameri=C4=8Dkih dolara odobrila je Me=C4=91unarodna monetarna organizacija (=
+MMF)
+u suradnji s (FBI) nakon mnogo istraga. =C4=8Cekamo da se obratimo za
+dodatne informacije
 
-You could probably update conntrackd to invoke conntrackdctl when you
-detect options that represent queries to the daemon. That would allow
-you to retain backward compatibility. Hence, old scripts still work
-while new ones might start using the new conntrackdctl command.
-
-If the problem is that you would like to skip the config parsing
-(which is what has triggered the errors when running things from the
-netns environment IIRC), then, you could update the code to skip the
-parsing:
-
-- the user does not specify a configuration file
-
-AND
-
-- the options refer to a query to the daemon via UNIX socket.
-
-That's another possibility to consider.
+Advokat: Daven Bango
+Telefon: +22891667276
+(URED MMF-a LOME TOGO)
