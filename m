@@ -2,87 +2,106 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D02A31199A
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Feb 2021 04:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E386831195A
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Feb 2021 04:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhBFDNp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 5 Feb 2021 22:13:45 -0500
-Received: from correo.us.es ([193.147.175.20]:53508 "EHLO mail.us.es"
+        id S231612AbhBFDCm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 5 Feb 2021 22:02:42 -0500
+Received: from correo.us.es ([193.147.175.20]:48938 "EHLO mail.us.es"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231365AbhBFDH5 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:07:57 -0500
+        id S231708AbhBFCxC (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 5 Feb 2021 21:53:02 -0500
 Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id CA1C6191933
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Feb 2021 02:50:15 +0100 (CET)
+        by mail.us.es (Postfix) with ESMTP id 249CA191906
+        for <netfilter-devel@vger.kernel.org>; Sat,  6 Feb 2021 02:57:06 +0100 (CET)
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id BCCD2DA789
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Feb 2021 02:50:15 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 10129DA789
+        for <netfilter-devel@vger.kernel.org>; Sat,  6 Feb 2021 02:57:06 +0100 (CET)
 Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id B21F9DA73F; Sat,  6 Feb 2021 02:50:15 +0100 (CET)
+        id 05249DA73F; Sat,  6 Feb 2021 02:57:06 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
 X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
+X-Spam-Status: No, score=-106.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        FORGED_MUA_MOZILLA,NICE_REPLY_A,SMTPAUTH_US2,USER_IN_WELCOMELIST,
+        USER_IN_WHITELIST autolearn=disabled version=3.4.1
 Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 774C4DA704;
-        Sat,  6 Feb 2021 02:50:13 +0100 (CET)
+        by antivirus1-rhel7.int (Postfix) with ESMTP id BB69DDA73D;
+        Sat,  6 Feb 2021 02:57:03 +0100 (CET)
 Received: from 192.168.1.97 (192.168.1.97)
  by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sat, 06 Feb 2021 02:50:13 +0100 (CET)
+ Sat, 06 Feb 2021 02:57:03 +0100 (CET)
 X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 4B25C42E0F80;
-        Sat,  6 Feb 2021 02:50:13 +0100 (CET)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 96AA542E0F80;
+        Sat,  6 Feb 2021 02:57:03 +0100 (CET)
+Date:   Sat, 6 Feb 2021 02:57:03 +0100
 X-SMTPAUTHUS: auth mail.us.es
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net-next 7/7] netfilter: nftables: remove redundant assignment of variable err
-Date:   Sat,  6 Feb 2021 02:50:05 +0100
-Message-Id: <20210206015005.23037-8-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210206015005.23037-1-pablo@netfilter.org>
-References: <20210206015005.23037-1-pablo@netfilter.org>
+To:     Arturo Borrero Gonzalez <arturo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [RFC conntrack-tools PATCH] conntrack-tools: introduce
+ conntrackdctl
+Message-ID: <20210206015703.GA23084@salvia>
+References: <161243463641.9380.7754148010781645692.stgit@endurance>
+ <20210205122824.GA16269@salvia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210205122824.GA16269@salvia>
+User-Agent: Mozilla/5.0
 X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, Feb 05, 2021 at 01:28:24PM +0100, Pablo Neira Ayuso wrote:
+> On Thu, Feb 04, 2021 at 11:32:06AM +0100, Arturo Borrero Gonzalez wrote:
+> > Separate conntrackd command line client functionalities into a different
+> > binary.
+> > 
+> > This should help with several things:
+> >  * avoid reading and parsing the config file, which can fail in some enviroments, for example if
+> >    conntrackd is running inside a netns and the referenced interfaces/addresses doesn't exist in
+> >    the namespace conntrackd client command is running from.
+> >  * easily update conntrakdctl with more functionalities without polluting the daemon binary
+> >  * easier code maintenance
+> [...]
+> > @@ -333,15 +151,6 @@ int main(int argc, char *argv[])
+> >  		exit(EXIT_FAILURE);
+> >  	}
+> >  
+> > -	if (type == REQUEST) {
+> > -		if (do_local_request(action, &conf.local, local_step) == -1) {
+> > -			dlog(LOG_ERR, "can't connect: is conntrackd "
+> > -			     "running? appropriate permissions?");
+> > -			exit(EXIT_FAILURE);
+> > -		}
+> > -		exit(EXIT_SUCCESS);
+> > -	}
+> 
+> The existing interface needs to be in place to be backward compatible.
+> 
+> I'm fine for you to add this, but we'll have to leave the existing
+> interface for quite a bit of time, it might take years before we can
+> deprecate the old way.
 
-The variable err is being assigned a value that is never read,
-the same error number is being returned at the error return
-path via label err1.  Clean up the code by removing the assignment.
+You could probably update conntrackd to invoke conntrackdctl when you
+detect options that represent queries to the daemon. That would allow
+you to retain backward compatibility. Hence, old scripts still work
+while new ones might start using the new conntrackdctl command.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_cmp.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+If the problem is that you would like to skip the config parsing
+(which is what has triggered the errors when running things from the
+netns environment IIRC), then, you could update the code to skip the
+parsing:
 
-diff --git a/net/netfilter/nft_cmp.c b/net/netfilter/nft_cmp.c
-index 3640eea8a87b..eb6a43a180bb 100644
---- a/net/netfilter/nft_cmp.c
-+++ b/net/netfilter/nft_cmp.c
-@@ -266,10 +266,8 @@ nft_cmp_select_ops(const struct nft_ctx *ctx, const struct nlattr * const tb[])
- 	if (err < 0)
- 		return ERR_PTR(err);
- 
--	if (desc.type != NFT_DATA_VALUE) {
--		err = -EINVAL;
-+	if (desc.type != NFT_DATA_VALUE)
- 		goto err1;
--	}
- 
- 	if (desc.len <= sizeof(u32) && (op == NFT_CMP_EQ || op == NFT_CMP_NEQ))
- 		return &nft_cmp_fast_ops;
--- 
-2.20.1
+- the user does not specify a configuration file
 
+AND
+
+- the options refer to a query to the daemon via UNIX socket.
+
+That's another possibility to consider.
