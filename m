@@ -2,64 +2,79 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1707D311F3D
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Feb 2021 18:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FEA31208D
+	for <lists+netfilter-devel@lfdr.de>; Sun,  7 Feb 2021 01:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhBFR6h (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 6 Feb 2021 12:58:37 -0500
-Received: from [20.39.40.203] ([20.39.40.203]:60853 "EHLO optinix.in"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S230417AbhBFR6c (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 6 Feb 2021 12:58:32 -0500
-dkim-signature: v=1; a=rsa-sha256; d=digitalsol.in; s=dkim;
-        c=relaxed/relaxed; q=dns/txt; h=From:Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=wK2neTcOXNiSQ+RBxrnFed+mRrGUU/ndLGEgvo8IMCc=;
-        b=RUHJmunRq22VsostJG7ZD7Yhb+WeJD/1GaM9k5+Na0ysbc46awJjtZzyjZ3Nlqz8ibKCvblpbdIU332nrboEUCHSIEg6uwoG+Audtm9PQNX4UO98YbSQjysP4RW7Oo0axFniQkJUHw+8CTylIi7cOwodfzZi5HQTPrjC7g90/Fo8sEPw7VxEOpKoxehxHe3UUhXOpxAxnlnEZt5St8Um3WDbkztV71jmkcDeg+T2ihrFJ94l/YRSfAbvwk
-        1WujLuEQY2SXZqaQhKavfrlencRlCd8cAaJ86t+PT7CnLJLix2PBIJQm61MZzGKKs7DCYL99bUulc6Ch6TmhTIKqC18w==
-Received: from User (Unknown [52.231.31.5])
-        by optinix.in with ESMTP
-        ; Mon, 1 Feb 2021 15:52:22 +0000
-Message-ID: <9E56C8C9-8BFB-4F2C-9A49-F1B27A3AB315@optinix.in>
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <support@digitalsol.in>
-Subject: Re:read
-Date:   Mon, 1 Feb 2021 15:52:21 -0000
+        id S229522AbhBGAAt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 6 Feb 2021 19:00:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhBGAAt (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 6 Feb 2021 19:00:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3C8A464E54;
+        Sun,  7 Feb 2021 00:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612656008;
+        bh=gK1pygfKTMPF7MwlCM+NolIGSgXAPeAMMR5wiMvGp7U=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=cmWsiZnUzxMPxV92JNzLo2RV72z3JhSSYeIuFbUyysg+tCVRs1c+wXrlX7cH2ltUU
+         l6ja06jvULL7o/1/RLG6YIZazrGPVoIkbhq9kDVLzYFi5ikOwFudBtsAe6xw4a7JMp
+         oAdLb5uyNuIJXD2OlSfxI8S0iQa8NdU8SK96IGqppih8kaax3tjQLIqvJkxT27e8Mi
+         rDJ7pUuZJOR33qdWzjeJSv9P5OULR/r39xAN9aCrGTAK+x6HaJYqfJZJX2fVPh9hmt
+         H5+5+7GlVU1kHwb4Hu+tZGNPEexxfSabGEY6Zrm5cX9dmrYRqzoJiTZ36mYD0w4jcL
+         C1yWcTjI7+ltg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 27606609F7;
+        Sun,  7 Feb 2021 00:00:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 1/7] netfilter: ctnetlink: remove get_ct indirection
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161265600815.10570.16310764666033863453.git-patchwork-notify@kernel.org>
+Date:   Sun, 07 Feb 2021 00:00:08 +0000
+References: <20210206015005.23037-2-pablo@netfilter.org>
+In-Reply-To: <20210206015005.23037-2-pablo@netfilter.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, kuba@kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
+Hello:
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+On Sat,  6 Feb 2021 02:49:59 +0100 you wrote:
+> From: Florian Westphal <fw@strlen.de>
+> 
+> Use nf_ct_get() directly, its a small inline helper without dependencies.
+> 
+> Add CONFIG_NF_CONNTRACK guards to elide the relevant part when conntrack
+> isn't available at all.
+> 
+> [...]
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
+Here is the summary with links:
+  - [net-next,1/7] netfilter: ctnetlink: remove get_ct indirection
+    https://git.kernel.org/netdev/net-next/c/83ace77f5117
+  - [net-next,2/7] ipvs: add weighted random twos choice algorithm
+    https://git.kernel.org/netdev/net-next/c/012da53d1afb
+  - [net-next,3/7] netfilter: flowtable: add hash offset field to tuple
+    https://git.kernel.org/netdev/net-next/c/dbc859d96f1a
+  - [net-next,4/7] netfilter: nftables: add nft_parse_register_load() and use it
+    https://git.kernel.org/netdev/net-next/c/4f16d25c68ec
+  - [net-next,5/7] netfilter: nftables: add nft_parse_register_store() and use it
+    https://git.kernel.org/netdev/net-next/c/345023b0db31
+  - [net-next,6/7] netfilter: nftables: statify nft_parse_register()
+    https://git.kernel.org/netdev/net-next/c/08a01c11a5bb
+  - [net-next,7/7] netfilter: nftables: remove redundant assignment of variable err
+    https://git.kernel.org/netdev/net-next/c/626899a02e6a
 
-Regards,
-Ms. Reem.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
