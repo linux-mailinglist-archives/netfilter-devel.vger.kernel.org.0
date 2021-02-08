@@ -2,70 +2,67 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BE531273A
-	for <lists+netfilter-devel@lfdr.de>; Sun,  7 Feb 2021 20:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F9F312E7D
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Feb 2021 11:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbhBGTjF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 7 Feb 2021 14:39:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55162 "EHLO
+        id S232000AbhBHKCi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 Feb 2021 05:02:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhBGTjC (ORCPT
+        with ESMTP id S232002AbhBHJ51 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 7 Feb 2021 14:39:02 -0500
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [IPv6:2001:738:5001::48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935A7C06174A;
-        Sun,  7 Feb 2021 11:38:22 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.kfki.hu (Postfix) with ESMTP id C480CCC0171;
-        Sun,  7 Feb 2021 20:38:20 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
-        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Sun,  7 Feb 2021 20:38:18 +0100 (CET)
-Received: from blackhole.kfki.hu (blackhole.kfki.hu [148.6.240.2])
-        by smtp2.kfki.hu (Postfix) with ESMTP id 8FD05CC0119;
-        Sun,  7 Feb 2021 20:38:18 +0100 (CET)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id 4A4C4340D5D; Sun,  7 Feb 2021 20:38:18 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by blackhole.kfki.hu (Postfix) with ESMTP id 45855340D5C;
-        Sun,  7 Feb 2021 20:38:18 +0100 (CET)
-Date:   Sun, 7 Feb 2021 20:38:18 +0100 (CET)
-From:   Jozsef Kadlecsik <kadlec@netfilter.org>
-X-X-Sender: kadlec@blackhole.kfki.hu
-To:     Reindl Harald <h.reindl@thelounge.net>
-cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, kuba@kernel.org
-Subject: Re: [PATCH net 1/4] netfilter: xt_recent: Fix attempt to update
- deleted entry
-In-Reply-To: <3018f068-62b1-6dae-2dde-39d1a62fbcb2@thelounge.net>
-Message-ID: <alpine.DEB.2.23.453.2102072036220.16338@blackhole.kfki.hu>
-References: <20210205001727.2125-1-pablo@netfilter.org> <20210205001727.2125-2-pablo@netfilter.org> <69957353-7fe0-9faa-4ddd-1ac44d5386a5@thelounge.net> <alpine.DEB.2.23.453.2102051448220.10405@blackhole.kfki.hu> <a51d867a-3ca9-fd36-528a-353aa6c42f42@thelounge.net>
- <3018f068-62b1-6dae-2dde-39d1a62fbcb2@thelounge.net>
-User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+        Mon, 8 Feb 2021 04:57:27 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DF0C061793
+        for <netfilter-devel@vger.kernel.org>; Mon,  8 Feb 2021 01:47:25 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id w18so9355261pfu.9
+        for <netfilter-devel@vger.kernel.org>; Mon, 08 Feb 2021 01:47:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=z7Z/JdX0RhrlgqchmamXWMY47TIIKUp5Zm0+e0J1lMs=;
+        b=fk5X47Bp4JpIFw4J8Dzq6dwV8UPWOIkiwe/ErtlzJOHRS1gr7aKbW19mkJT2vF3js1
+         7WlvPhQS2alcCig1V0cXHg2roG6XpOIsM1ds6uJo5spaB3M6YJsVuQmUu+6ICfCetfa6
+         Koi02+5WpNc610/+cHbPw8abuWrHdaNhbdG9Tilhs9eXdq/PEN8Oj82I7z7XsSQ7PN01
+         65XYkHcwIlOoMW3OQCmHV5LQEBq6Wg/C0nP79dD6C5t2TiIWiDN6DcduvenZO6o1Wb/8
+         BeWfUpE5lSJu3dACNFRzNrJakcDMU4URIIyZTuiP++m9zwAp3vlMEQnGLt++4S1dlUrX
+         9n8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=z7Z/JdX0RhrlgqchmamXWMY47TIIKUp5Zm0+e0J1lMs=;
+        b=HkeLQdn8eZ4uQ6SHOjlgfGDOZVhMDUye8Yj0v9RcnGh7x3idJ6x97E2HIqo/Edn7e7
+         YJDZ7SndpJdG6zviupqytIBy3njP/0TsRRV1YOKittAdFyWjW2J1fiLJJ1gvA3iyJfoA
+         uGsNP2bTr4ENZUcfGHR/q7qG4gdSNbUvliXPV3E+0+P9K2s+sMeq7Rk4OthujYm5fFsw
+         Oq3zuizRB0FVU0I/cL/pz8if8zD1YaRwkz377dgbab5YfL8iripQASdYA4HxBVqfrMar
+         N51849NL4NtSVBLyYV7Dac60YzIKSGntq8ov2YJ9szfjUsTAiK1kIjFjNNdMNle32K8t
+         flHw==
+X-Gm-Message-State: AOAM531MXA4QPOAq287qVefs5Esxa4iZOGMb+30J/9cF2PmDrC4hjuXr
+        oB4l/Uy3sbX0crl3eMQ/zk+0qRP6+x8pGJEa+EE=
+X-Google-Smtp-Source: ABdhPJxwrnH4gymVdShiqzlCFHh62R84eesvczx650WNPvU/rL31gCb9EVSf4Ewee2Yu9Ja/wjh9YBBUu9fR6NwpHGk=
+X-Received: by 2002:a63:5c61:: with SMTP id n33mr16711005pgm.153.1612777645223;
+ Mon, 08 Feb 2021 01:47:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: by 2002:a17:90a:5d0a:0:0:0:0 with HTTP; Mon, 8 Feb 2021 01:47:24
+ -0800 (PST)
+Reply-To: richadtomm@qq.com
+From:   "Mr.Richard Thomas" <tommiirrrch@gmail.com>
+Date:   Mon, 8 Feb 2021 01:47:24 -0800
+Message-ID: <CAGbSTZNfWp7LOm-NiXQyGyYyvzPT6_dHipKmxZUXEZ5wGO854A@mail.gmail.com>
+Subject: Re Thanks.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sun, 7 Feb 2021, Reindl Harald wrote:
+Dear Friend,
+I will be pleased if you can allow me to invest $104M Dollars in
+Estate Management,in your company or any area you best that will be
+of good profit to both of us
 
-> > well, the most important thing is that the firewall-vm stops to 
-> > kernel-panic
-> 
-> why is that still not part of 5.10.14 given how old that issue is :-(
-> 
-> https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.14
+Please do well to respond including your information for more details.
 
-Probably we missed the window when patches were accepted for the new 
-release. That's all.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks.
+Mr.Richard Thomas
