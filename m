@@ -2,127 +2,93 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2486315702
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Feb 2021 20:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4386431593C
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Feb 2021 23:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233435AbhBITkT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 9 Feb 2021 14:40:19 -0500
-Received: from nwk-aaemail-lapp02.apple.com ([17.151.62.67]:56698 "EHLO
-        nwk-aaemail-lapp02.apple.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233676AbhBIT0C (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:26:02 -0500
-Received: from pps.filterd (nwk-aaemail-lapp02.apple.com [127.0.0.1])
-        by nwk-aaemail-lapp02.apple.com (8.16.0.43/8.16.0.42) with SMTP id 119JJOl6050470;
-        Tue, 9 Feb 2021 11:24:24 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com; h=date : subject : from
- : to : cc : message-id : mime-version : content-type :
- content-transfer-encoding; s=20180706;
- bh=K6KuLU8qJx6OWF6vf4hF+med+RPNeMJPnVZlH8JCSKY=;
- b=Bv0erVpFA2qp2AJLsEb4ckn7GB6aTd6ws6Mxd1oaWhp2VLhrybGgXltd26zD7Y/ebzQU
- T6DDEvQQ654oRkcPKd9QC1eoirXtOaOHEUqmKopYOWMjqOSfVQxGf6jeV+y3JoPUYZr4
- 3/+vf2G/69hiFFeX69zCjB3JCTZE/0aSncCeM/4tONeii0BdWSh8FEbnXnXmLQ3zb0/o
- kZA4B+DR0rf1sWHx7IXx68GbHZCHX2xXb0yfnw/jikN/oSh8M8RQHe8ZCQAR8eXbKnlR
- g2qJ1GiCbpFpPpeI53ZuNtrWV8b3k+k3hjMYgWZ6pht9VLUXCwSXUgUhHNwG75LpQxe3 gA== 
-Received: from crk-mailsvcp-mta-lapp03.euro.apple.com (crk-mailsvcp-mta-lapp03.euro.apple.com [17.66.55.16])
-        by nwk-aaemail-lapp02.apple.com with ESMTP id 36hrjms24a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
-        Tue, 09 Feb 2021 11:24:23 -0800
-Received: from crk-mailsvcp-mmp-lapp02.euro.apple.com
- (crk-mailsvcp-mmp-lapp02.euro.apple.com [17.72.136.16])
- by crk-mailsvcp-mta-lapp03.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.7.20201203 64bit (built Dec  3
- 2020))
- with ESMTPS id <0QOA00VMO0KMQB00@crk-mailsvcp-mta-lapp03.euro.apple.com>; Tue,
- 09 Feb 2021 19:24:22 +0000 (GMT)
-Received: from process_milters-daemon.crk-mailsvcp-mmp-lapp02.euro.apple.com by
- crk-mailsvcp-mmp-lapp02.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.7.20201203 64bit (built Dec  3
- 2020)) id <0QOA00Z000D41X00@crk-mailsvcp-mmp-lapp02.euro.apple.com>; Tue,
- 09 Feb 2021 19:24:22 +0000 (GMT)
-X-Va-A: 
-X-Va-T-CD: b733bd983304443b63a993f2477c8539
-X-Va-E-CD: ae55c2cbabce46db1fee1813278865b3
-X-Va-R-CD: ea8436ad7cdf8c0bb84499addee28544
-X-Va-CD: 0
-X-Va-ID: 106b11f0-328c-4b88-a508-beb2cfd401ed
-X-V-A:  
-X-V-T-CD: b733bd983304443b63a993f2477c8539
-X-V-E-CD: ae55c2cbabce46db1fee1813278865b3
-X-V-R-CD: ea8436ad7cdf8c0bb84499addee28544
-X-V-CD: 0
-X-V-ID: 8401b314-caa8-4f85-834f-47f64e235f8f
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_06:2021-02-09,2021-02-09 signatures=0
-Received: from [192.168.1.127] (unknown [17.235.208.127])
- by crk-mailsvcp-mmp-lapp02.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.7.20201203 64bit (built Dec  3
- 2020))
- with ESMTPSA id <0QOA00W7H0KKDR00@crk-mailsvcp-mmp-lapp02.euro.apple.com>;
- Tue, 09 Feb 2021 19:24:22 +0000 (GMT)
-User-Agent: Microsoft-MacOutlook/16.45.21011103
-Date:   Tue, 09 Feb 2021 20:24:18 +0100
-Subject: [PATCH libnetfilter_queue v2] src: fix IPv6 header handling
-From:   Etan Kissling <etan_kissling@apple.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Message-id: <E541C42D-FD3B-4B5B-8806-8F96799BD6D6@apple.com>
-Thread-topic: [PATCH libnetfilter_queue v2] src: fix IPv6 header handling
-MIME-version: 1.0
-Content-type: text/plain; charset=UTF-8
-Content-transfer-encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_06:2021-02-09,2021-02-09 signatures=0
+        id S233699AbhBIWQQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 9 Feb 2021 17:16:16 -0500
+Received: from correo.us.es ([193.147.175.20]:40674 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233809AbhBIWIH (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 9 Feb 2021 17:08:07 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id C307EB632D
+        for <netfilter-devel@vger.kernel.org>; Tue,  9 Feb 2021 22:35:17 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id B02CCDA78F
+        for <netfilter-devel@vger.kernel.org>; Tue,  9 Feb 2021 22:35:17 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id A4ECCDA78B; Tue,  9 Feb 2021 22:35:17 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 55E95DA722;
+        Tue,  9 Feb 2021 22:35:15 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 09 Feb 2021 22:35:15 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPSA id 1E3DD42DC6DD;
+        Tue,  9 Feb 2021 22:35:15 +0100 (CET)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
+Subject: [PATCH net 0/2] Netfilter fixes for net
+Date:   Tue,  9 Feb 2021 22:35:09 +0100
+Message-Id: <20210209213511.23298-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This corrects issues in IPv6 header handling that sometimes resulted
-in an endless loop.
+Hi,
 
-Signed-off-by: Etan Kissling <etan_kissling@apple.com>
----
-v2: Updated loop condition to be consistent with the implementation
-    ipv6_skip_exthdr() in the Linux kernel.
+The following patchset contains Netfilter fixes for net:
 
- src/extra/ipv6.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+1) nf_conntrack_tuple_taken() needs to recheck zone for
+   NAT clash resolution, from Florian Westphal.
 
-diff --git a/src/extra/ipv6.c b/src/extra/ipv6.c
-index 42c5e25..0ec8fbf 100644
---- a/src/extra/ipv6.c
-+++ b/src/extra/ipv6.c
-@@ -67,7 +67,12 @@ int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *ip6h,
- 	uint8_t nexthdr = ip6h->ip6_nxt;
- 	uint8_t *cur = (uint8_t *)ip6h + sizeof(struct ip6_hdr);
- 
--	while (nexthdr != target) {
-+	while (nexthdr == IPPROTO_HOPOPTS ||
-+			nexthdr == IPPROTO_ROUTING ||
-+			nexthdr == IPPROTO_FRAGMENT ||
-+			nexthdr == IPPROTO_AH ||
-+			nexthdr == IPPROTO_NONE ||
-+			nexthdr == IPPROTO_DSTOPTS) {
- 		struct ip6_ext *ip6_ext;
- 		uint32_t hdrlen;
- 
-@@ -107,11 +112,13 @@ int nfq_ip6_set_transport_header(struct pkt_buff *pktb, struct ip6_hdr *ip6h,
- 		} else if (nexthdr == IPPROTO_AH)
- 			hdrlen = (ip6_ext->ip6e_len + 2) << 2;
- 		else
--			hdrlen = ip6_ext->ip6e_len;
-+			hdrlen = (ip6_ext->ip6e_len + 1) << 3;
- 
- 		nexthdr = ip6_ext->ip6e_nxt;
- 		cur += hdrlen;
- 	}
-+	if (nexthdr != target)
-+		cur = NULL;
- 	pktb->transport_header = cur;
- 	return cur ? 1 : 0;
- }
--- 
-2.21.1 (Apple Git-122.3)
+2) Restore support for stateful expressions when set definition
+   specifies no stateful expressions.
 
+Please, pull these changes from:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
 
+Thanks!
+
+----------------------------------------------------------------
+
+The following changes since commit ce7536bc7398e2ae552d2fabb7e0e371a9f1fe46:
+
+  vsock/virtio: update credit only if socket is not closed (2021-02-08 13:27:46 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git HEAD
+
+for you to fetch changes up to 664899e85c1312e51d2761e7f8b2f25d053e8489:
+
+  netfilter: nftables: relax check for stateful expressions in set definition (2021-02-09 00:50:14 +0100)
+
+----------------------------------------------------------------
+Florian Westphal (1):
+      netfilter: conntrack: skip identical origin tuple in same zone only
+
+Pablo Neira Ayuso (1):
+      netfilter: nftables: relax check for stateful expressions in set definition
+
+ net/netfilter/nf_conntrack_core.c |  3 ++-
+ net/netfilter/nf_tables_api.c     | 28 +++++++++++++++-------------
+ 2 files changed, 17 insertions(+), 14 deletions(-)
