@@ -2,70 +2,80 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7DE316404
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Feb 2021 11:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3EA316641
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Feb 2021 13:13:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhBJKig (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 10 Feb 2021 05:38:36 -0500
-Received: from mail.thelounge.net ([91.118.73.15]:21841 "EHLO
-        mail.thelounge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbhBJKf7 (ORCPT
+        id S230328AbhBJMNN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 10 Feb 2021 07:13:13 -0500
+Received: from spam.auroraoh.com ([24.56.89.101]:53060 "EHLO
+        barracuda.auroraoh.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230302AbhBJMK3 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:35:59 -0500
-Received: from srv-rhsoft.rhsoft.net (rh.vpn.thelounge.net [10.10.10.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-256))
-        (No client certificate requested)
-        (Authenticated sender: h.reindl@thelounge.net)
-        by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4DbGNd6cv9zXMD;
-        Wed, 10 Feb 2021 11:34:57 +0100 (CET)
-Subject: Re: [PATCH net 1/4] netfilter: xt_recent: Fix attempt to update
- deleted entry
-To:     Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, kuba@kernel.org
-References: <20210205001727.2125-1-pablo@netfilter.org>
- <20210205001727.2125-2-pablo@netfilter.org>
- <69957353-7fe0-9faa-4ddd-1ac44d5386a5@thelounge.net>
- <alpine.DEB.2.23.453.2102051448220.10405@blackhole.kfki.hu>
- <a51d867a-3ca9-fd36-528a-353aa6c42f42@thelounge.net>
- <3018f068-62b1-6dae-2dde-39d1a62fbcb2@thelounge.net>
- <alpine.DEB.2.23.453.2102072036220.16338@blackhole.kfki.hu>
-From:   Reindl Harald <h.reindl@thelounge.net>
-Organization: the lounge interactive design
-Message-ID: <303fdd83-a324-5d0c-b45e-9584ea0c9cd5@thelounge.net>
-Date:   Wed, 10 Feb 2021 11:34:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 10 Feb 2021 07:10:29 -0500
+X-ASG-Debug-ID: 1612958957-112c0d6a799d360001-kpcQIA
+Received: from COASRV-MAIL2.auroraoh.loc (coasrv-mail2.auroraoh.loc [10.3.1.15]) by barracuda.auroraoh.com with ESMTP id X7nyYCbXL2pSaaZe; Wed, 10 Feb 2021 07:09:17 -0500 (EST)
+X-Barracuda-Envelope-From: JanuskaD@auroraoh.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.3.1.15
+Received: from [172.20.10.5] (197.210.29.8) by COASRV-MAIL2.auroraoh.loc
+ (10.3.1.15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 9 Feb 2021
+ 02:46:18 -0500
+Content-Type: text/plain; charset="iso-8859-1"
+X-Barracuda-RBL-Trusted-Forwarder: 172.20.10.5
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.23.453.2102072036220.16338@blackhole.kfki.hu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: We are a registered Private Loan Investment Company in the United Kingdom,
+ we also registered with the Turkish British Chamber of Commerce and Industry
+ (TBCCI) we have operations in Europe and Asia.
+To:     Recipients <januskad@auroraoh.com>
+X-ASG-Orig-Subj: We are a registered Private Loan Investment Company in the United Kingdom,
+ we also registered with the Turkish British Chamber of Commerce and Industry
+ (TBCCI) we have operations in Europe and Asia.
+From:   <januskad@auroraoh.com>
+Date:   Tue, 9 Feb 2021 15:45:32 +0800
+Reply-To: <cfolimiited@gmail.com>
+X-Priority: 1 (High)
+X-Antivirus: Avast (VPS 210207-2, 02/07/2021), Outbound message
+X-Antivirus-Status: Clean
+Message-ID: <fcb0cdea-e224-43e7-87c3-ae3968f6d483@COASRV-MAIL2.auroraoh.loc>
+X-Originating-IP: [197.210.29.8]
+X-ClientProxiedBy: COASRV-MAIL3.auroraoh.loc (10.3.1.13) To
+ COASRV-MAIL2.auroraoh.loc (10.3.1.15)
+X-Barracuda-Connect: coasrv-mail2.auroraoh.loc[10.3.1.15]
+X-Barracuda-Start-Time: 1612958957
+X-Barracuda-URL: https://10.3.1.12:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at auroraoh.com
+X-Barracuda-Scan-Msg-Size: 755
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Spam-Score: 1.61
+X-Barracuda-Spam-Status: No, SCORE=1.61 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=5.0 tests=BSF_SC0_SA609_NRN, BSF_SC0_SA912_RP_FR, BSF_SC0_SA_TO_FROM_ADDR_MATCH, NO_REAL_NAME
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.87884
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+        0.00 NO_REAL_NAME           From: does not include a real name
+        0.01 BSF_SC0_SA912_RP_FR    Custom Rule BSF_SC0_SA912_RP_FR
+        0.50 BSF_SC0_SA_TO_FROM_ADDR_MATCH Sender Address Matches Recipient
+                                   Address
+        1.10 BSF_SC0_SA609_NRN      Custom Rule SA609_NRN
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+We are seeking for beneficiaries who source for fund to expand/relocating their business interest abroad. We are ready to fund projects outside Turkey and United Kingdom in the form of Soft Loan. We grant loans to both corporate and private entities at a low interest rate of 2% R.O.I per annul.
+
+We like to grant loan in the following sectors: oil/Gas, banking, real estate, stock speculation and mining, transportation, health sector and tobacco, Communication Services, Agriculture Forestry & Fishing, thus any sector. The terms are very flexible and interesting.
+
+Please contact us for more details;
 
 
-Am 07.02.21 um 20:38 schrieb Jozsef Kadlecsik:
-> On Sun, 7 Feb 2021, Reindl Harald wrote:
-> 
->>> well, the most important thing is that the firewall-vm stops to
->>> kernel-panic
->>
->> why is that still not part of 5.10.14 given how old that issue is :-(
->>
->> https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.14
-> 
-> Probably we missed the window when patches were accepted for the new
-> release. That's all
+Kind regards,
 
-probably something is broken in the whole process given that 5.10.15 
-still don't contain the fix while i am tired of a new "stable release" 
-every few days and 5.10.x like every LTS release in the past few years 
-has a peak of it
+Paul McCann
 
-https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.15
+-- 
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
 
