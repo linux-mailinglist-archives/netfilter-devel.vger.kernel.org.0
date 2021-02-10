@@ -2,80 +2,49 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3EA316641
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Feb 2021 13:13:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DCE316EAB
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Feb 2021 19:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhBJMNN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 10 Feb 2021 07:13:13 -0500
-Received: from spam.auroraoh.com ([24.56.89.101]:53060 "EHLO
-        barracuda.auroraoh.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230302AbhBJMK3 (ORCPT
+        id S234001AbhBJSaK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 10 Feb 2021 13:30:10 -0500
+Received: from [125.140.134.231] ([125.140.134.231]:57069 "EHLO
+        WINDOWS-63LO558" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234198AbhBJS1y (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:10:29 -0500
-X-ASG-Debug-ID: 1612958957-112c0d6a799d360001-kpcQIA
-Received: from COASRV-MAIL2.auroraoh.loc (coasrv-mail2.auroraoh.loc [10.3.1.15]) by barracuda.auroraoh.com with ESMTP id X7nyYCbXL2pSaaZe; Wed, 10 Feb 2021 07:09:17 -0500 (EST)
-X-Barracuda-Envelope-From: JanuskaD@auroraoh.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.3.1.15
-Received: from [172.20.10.5] (197.210.29.8) by COASRV-MAIL2.auroraoh.loc
- (10.3.1.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 9 Feb 2021
- 02:46:18 -0500
-Content-Type: text/plain; charset="iso-8859-1"
-X-Barracuda-RBL-Trusted-Forwarder: 172.20.10.5
+        Wed, 10 Feb 2021 13:27:54 -0500
+Received: from User ([154.127.53.41]) by WINDOWS-63LO558 with Microsoft SMTPSVC(10.0.14393.2608);
+         Thu, 11 Feb 2021 03:24:03 +0900
+Reply-To: <mrs.verenich_ekmaterina@yahoo.com>
+From:   "erenich ekaterina" <verenichekaterinaekaterina@gmail.com>
+Subject: Dear Beloved
+Date:   Wed, 10 Feb 2021 10:24:03 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: We are a registered Private Loan Investment Company in the United Kingdom,
- we also registered with the Turkish British Chamber of Commerce and Industry
- (TBCCI) we have operations in Europe and Asia.
-To:     Recipients <januskad@auroraoh.com>
-X-ASG-Orig-Subj: We are a registered Private Loan Investment Company in the United Kingdom,
- we also registered with the Turkish British Chamber of Commerce and Industry
- (TBCCI) we have operations in Europe and Asia.
-From:   <januskad@auroraoh.com>
-Date:   Tue, 9 Feb 2021 15:45:32 +0800
-Reply-To: <cfolimiited@gmail.com>
-X-Priority: 1 (High)
-X-Antivirus: Avast (VPS 210207-2, 02/07/2021), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <fcb0cdea-e224-43e7-87c3-ae3968f6d483@COASRV-MAIL2.auroraoh.loc>
-X-Originating-IP: [197.210.29.8]
-X-ClientProxiedBy: COASRV-MAIL3.auroraoh.loc (10.3.1.13) To
- COASRV-MAIL2.auroraoh.loc (10.3.1.15)
-X-Barracuda-Connect: coasrv-mail2.auroraoh.loc[10.3.1.15]
-X-Barracuda-Start-Time: 1612958957
-X-Barracuda-URL: https://10.3.1.12:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at auroraoh.com
-X-Barracuda-Scan-Msg-Size: 755
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 1.61
-X-Barracuda-Spam-Status: No, SCORE=1.61 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=5.0 tests=BSF_SC0_SA609_NRN, BSF_SC0_SA912_RP_FR, BSF_SC0_SA_TO_FROM_ADDR_MATCH, NO_REAL_NAME
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.87884
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
-        0.00 NO_REAL_NAME           From: does not include a real name
-        0.01 BSF_SC0_SA912_RP_FR    Custom Rule BSF_SC0_SA912_RP_FR
-        0.50 BSF_SC0_SA_TO_FROM_ADDR_MATCH Sender Address Matches Recipient
-                                   Address
-        1.10 BSF_SC0_SA609_NRN      Custom Rule SA609_NRN
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <WINDOWS-63LO558CYhk00040d01@WINDOWS-63LO558>
+X-OriginalArrivalTime: 10 Feb 2021 18:24:03.0783 (UTC) FILETIME=[E91A9D70:01D6FFD9]
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We are seeking for beneficiaries who source for fund to expand/relocating their business interest abroad. We are ready to fund projects outside Turkey and United Kingdom in the form of Soft Loan. We grant loans to both corporate and private entities at a low interest rate of 2% R.O.I per annul.
+Dear Beloved
 
-We like to grant loan in the following sectors: oil/Gas, banking, real estate, stock speculation and mining, transportation, health sector and tobacco, Communication Services, Agriculture Forestry & Fishing, thus any sector. The terms are very flexible and interesting.
+Life is gradually passing away from me as a result of my present medical condition and my personal doctor confided in me yesterday that I have only but few more weeks to live.
 
-Please contact us for more details;
+In view of this setback, I want to donate my estate for humanitarian assistance, since this has always been the plan of my late husband and besides I have no child.
 
+In an effort to compliment the good work of God almighty and the wish of my late Husband I donate the sum of $2,800,000.00 (Two Million Eight Hundred Thousand United States Dollars) to you.
 
-Kind regards,
+On your acknowledgment of this mail and informing me of your nationality and current place of resident, my Bank will facilitate due processes for transfer of this legacy to you.
 
-Paul McCann
+May God bless you as you use this money judiciously for the work of charity.
 
--- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+Sincere regards,
 
+Mrs.verenich ekaterina
