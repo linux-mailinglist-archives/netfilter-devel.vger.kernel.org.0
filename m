@@ -2,181 +2,71 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9EF31593A
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Feb 2021 23:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 418C3315B2B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Feb 2021 01:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233600AbhBIWPs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 9 Feb 2021 17:15:48 -0500
-Received: from correo.us.es ([193.147.175.20]:40680 "EHLO mail.us.es"
+        id S233880AbhBJA3k (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 9 Feb 2021 19:29:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233804AbhBIWIG (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:08:06 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 28459B6342
-        for <netfilter-devel@vger.kernel.org>; Tue,  9 Feb 2021 22:35:20 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 19815DA78A
-        for <netfilter-devel@vger.kernel.org>; Tue,  9 Feb 2021 22:35:20 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 0EDD1DA73D; Tue,  9 Feb 2021 22:35:20 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id AFBF6DA78D;
-        Tue,  9 Feb 2021 22:35:17 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 09 Feb 2021 22:35:17 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 7713542DC6DD;
-        Tue,  9 Feb 2021 22:35:17 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net 2/2] netfilter: nftables: relax check for stateful expressions in set definition
-Date:   Tue,  9 Feb 2021 22:35:11 +0100
-Message-Id: <20210209213511.23298-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210209213511.23298-1-pablo@netfilter.org>
-References: <20210209213511.23298-1-pablo@netfilter.org>
+        id S234655AbhBJABw (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 9 Feb 2021 19:01:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1AA1C64E3E;
+        Wed, 10 Feb 2021 00:00:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612915207;
+        bh=x5pgBcqbG3lwUZrHwM0Zz0D9SDwqthOib1BhLMs1HPQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=D3tX3VjKrna1kkiMcIW0c4CH+I3rkFSWqMH0F5F0fnKljkkB+P02OI8TLHK1tAffq
+         iFq+M+7T12jD4FSozx9an0OP+YWsGu6Vj7+23bxoH2IhR5lJ9Y47WW5wWIxM9TjUxH
+         gsn2wOzkLtJSvgjSTHFx8C9NEZmcbR3f1ZVWdkydDuzjQyadIdbW2gdqK3LzlFR7gJ
+         3exzwH4vtYM7DMcP54JYkEOoLkMG8rP+y9CDhxrNIgmWgzXYQfmRCedSqknPffp5/Q
+         RfR/uUEjDAJpdP5tY2WMBi1Z8pUR5IPvy+523RPM8RJvfH6QKcBgeroJrETLX4pTWU
+         WIryiw8/O/TEQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0888B609E2;
+        Wed, 10 Feb 2021 00:00:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Subject: Re: [PATCH net 1/2] netfilter: conntrack: skip identical origin tuple in
+ same zone only
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161291520703.5175.1064410390675705112.git-patchwork-notify@kernel.org>
+Date:   Wed, 10 Feb 2021 00:00:07 +0000
+References: <20210209213511.23298-2-pablo@netfilter.org>
+In-Reply-To: <20210209213511.23298-2-pablo@netfilter.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, kuba@kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Restore the original behaviour where users are allowed to add an element
-with any stateful expression if the set definition specifies no stateful
-expressions. Make sure upper maximum number of stateful expressions of
-NFT_SET_EXPR_MAX is not reached.
+Hello:
 
-Fixes: 8cfd9b0f8515 ("netfilter: nftables: generalize set expressions support")
-Fixes: 48b0ae046ee9 ("netfilter: nftables: netlink support for several set element expressions")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+This series was applied to netdev/net.git (refs/heads/master):
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 43fe80f10313..8ee9f40cc0ea 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -5281,6 +5281,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 	struct nft_expr *expr_array[NFT_SET_EXPR_MAX] = {};
- 	struct nlattr *nla[NFTA_SET_ELEM_MAX + 1];
- 	u8 genmask = nft_genmask_next(ctx->net);
-+	u32 flags = 0, size = 0, num_exprs = 0;
- 	struct nft_set_ext_tmpl tmpl;
- 	struct nft_set_ext *ext, *ext2;
- 	struct nft_set_elem elem;
-@@ -5290,7 +5291,6 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 	struct nft_data_desc desc;
- 	enum nft_registers dreg;
- 	struct nft_trans *trans;
--	u32 flags = 0, size = 0;
- 	u64 timeout;
- 	u64 expiration;
- 	int err, i;
-@@ -5356,7 +5356,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 	if (nla[NFTA_SET_ELEM_EXPR]) {
- 		struct nft_expr *expr;
- 
--		if (set->num_exprs != 1)
-+		if (set->num_exprs && set->num_exprs != 1)
- 			return -EOPNOTSUPP;
- 
- 		expr = nft_set_elem_expr_alloc(ctx, set,
-@@ -5365,8 +5365,9 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 			return PTR_ERR(expr);
- 
- 		expr_array[0] = expr;
-+		num_exprs = 1;
- 
--		if (set->exprs[0] && set->exprs[0]->ops != expr->ops) {
-+		if (set->num_exprs && set->exprs[0]->ops != expr->ops) {
- 			err = -EOPNOTSUPP;
- 			goto err_set_elem_expr;
- 		}
-@@ -5375,12 +5376,10 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 		struct nlattr *tmp;
- 		int left;
- 
--		if (set->num_exprs == 0)
--			return -EOPNOTSUPP;
--
- 		i = 0;
- 		nla_for_each_nested(tmp, nla[NFTA_SET_ELEM_EXPRESSIONS], left) {
--			if (i == set->num_exprs) {
-+			if (i == NFT_SET_EXPR_MAX ||
-+			    (set->num_exprs && set->num_exprs == i)) {
- 				err = -E2BIG;
- 				goto err_set_elem_expr;
- 			}
-@@ -5394,14 +5393,15 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 				goto err_set_elem_expr;
- 			}
- 			expr_array[i] = expr;
-+			num_exprs++;
- 
--			if (expr->ops != set->exprs[i]->ops) {
-+			if (set->num_exprs && expr->ops != set->exprs[i]->ops) {
- 				err = -EOPNOTSUPP;
- 				goto err_set_elem_expr;
- 			}
- 			i++;
- 		}
--		if (set->num_exprs != i) {
-+		if (set->num_exprs && set->num_exprs != i) {
- 			err = -EOPNOTSUPP;
- 			goto err_set_elem_expr;
- 		}
-@@ -5409,6 +5409,8 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 		err = nft_set_elem_expr_clone(ctx, set, expr_array);
- 		if (err < 0)
- 			goto err_set_elem_expr_clone;
-+
-+		num_exprs = set->num_exprs;
- 	}
- 
- 	err = nft_setelem_parse_key(ctx, set, &elem.key.val,
-@@ -5433,8 +5435,8 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 			nft_set_ext_add(&tmpl, NFT_SET_EXT_TIMEOUT);
- 	}
- 
--	if (set->num_exprs) {
--		for (i = 0; i < set->num_exprs; i++)
-+	if (num_exprs) {
-+		for (i = 0; i < num_exprs; i++)
- 			size += expr_array[i]->ops->size;
- 
- 		nft_set_ext_add_length(&tmpl, NFT_SET_EXT_EXPRESSIONS,
-@@ -5522,7 +5524,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 		*nft_set_ext_obj(ext) = obj;
- 		obj->use++;
- 	}
--	for (i = 0; i < set->num_exprs; i++)
-+	for (i = 0; i < num_exprs; i++)
- 		nft_set_elem_expr_setup(ext, i, expr_array);
- 
- 	trans = nft_trans_elem_alloc(ctx, NFT_MSG_NEWSETELEM, set);
-@@ -5584,7 +5586,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- err_parse_key:
- 	nft_data_release(&elem.key.val, NFT_DATA_VALUE);
- err_set_elem_expr:
--	for (i = 0; i < set->num_exprs && expr_array[i]; i++)
-+	for (i = 0; i < num_exprs && expr_array[i]; i++)
- 		nft_expr_destroy(ctx, expr_array[i]);
- err_set_elem_expr_clone:
- 	return err;
--- 
-2.20.1
+On Tue,  9 Feb 2021 22:35:10 +0100 you wrote:
+> From: Florian Westphal <fw@strlen.de>
+> 
+> The origin skip check needs to re-test the zone. Else, we might skip
+> a colliding tuple in the reply direction.
+> 
+> This only occurs when using 'directional zones' where origin tuples
+> reside in different zones but the reply tuples share the same zone.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/2] netfilter: conntrack: skip identical origin tuple in same zone only
+    https://git.kernel.org/netdev/net/c/07998281c268
+  - [net,2/2] netfilter: nftables: relax check for stateful expressions in set definition
+    https://git.kernel.org/netdev/net/c/664899e85c13
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
