@@ -2,65 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518A231D2FD
-	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Feb 2021 00:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC68131D8B5
+	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Feb 2021 12:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhBPXRg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 16 Feb 2021 18:17:36 -0500
-Received: from correo.us.es ([193.147.175.20]:45488 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229746AbhBPXRg (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 16 Feb 2021 18:17:36 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 50A8911772A
-        for <netfilter-devel@vger.kernel.org>; Wed, 17 Feb 2021 00:16:53 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 3D570DA840
-        for <netfilter-devel@vger.kernel.org>; Wed, 17 Feb 2021 00:16:53 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 7D5B6DA704; Wed, 17 Feb 2021 00:16:52 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-105.9 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        FORGED_MUA_MOZILLA,NICE_REPLY_A,SMTPAUTH_US2,URIBL_BLOCKED,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 2511BDA722;
-        Wed, 17 Feb 2021 00:16:50 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 17 Feb 2021 00:16:50 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id F38AF42DC6E3;
-        Wed, 17 Feb 2021 00:16:49 +0100 (CET)
-Date:   Wed, 17 Feb 2021 00:16:49 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>
+        id S232289AbhBQLpD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 17 Feb 2021 06:45:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231655AbhBQLoN (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 17 Feb 2021 06:44:13 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBC3C061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 17 Feb 2021 03:43:32 -0800 (PST)
+Received: from localhost ([::1]:54880 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.94)
+        (envelope-from <phil@nwl.cc>)
+        id 1lCLEw-0002nr-PF; Wed, 17 Feb 2021 12:43:30 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [iptables PATCH] include: Drop libipulog.h
-Message-ID: <20210216231649.GA13735@salvia>
-References: <20210216222453.2519-1-phil@nwl.cc>
+Subject: [nft PATCH] monitor: Don't print newgen message with JSON output
+Date:   Wed, 17 Feb 2021 12:43:23 +0100
+Message-Id: <20210217114323.25322-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210216222453.2519-1-phil@nwl.cc>
-User-Agent: Mozilla/5.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:24:53PM +0100, Phil Sutter wrote:
-> The file is not included anywhere, also it seems outdated compared to
-> the one in libnetfilter_log (which also holds the implementation).
-> 
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
+Iff this should be printed, it must adhere to output format settings. In
+its current form it breaks JSON syntax, so skip it for non-default
+output formats.
 
-Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: cb7e02f44d6a6 ("src: enable json echo output when reading native syntax")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ src/monitor.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thanks
+diff --git a/src/monitor.c b/src/monitor.c
+index af2998d4272b2..047d89db933a4 100644
+--- a/src/monitor.c
++++ b/src/monitor.c
+@@ -842,6 +842,9 @@ static int netlink_events_newgen_cb(const struct nlmsghdr *nlh, int type,
+ 	char name[256] = "";
+ 	int genid = -1, pid = -1;
+ 
++	if (monh->format != NFTNL_OUTPUT_DEFAULT)
++		return MNL_CB_OK;
++
+ 	mnl_attr_for_each(attr, nlh, sizeof(struct nfgenmsg)) {
+ 		switch (mnl_attr_get_type(attr)) {
+ 		case NFTA_GEN_ID:
+-- 
+2.28.0
+
