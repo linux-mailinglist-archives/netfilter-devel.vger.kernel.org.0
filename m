@@ -2,78 +2,50 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0130E31FFF0
-	for <lists+netfilter-devel@lfdr.de>; Fri, 19 Feb 2021 21:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4649E320467
+	for <lists+netfilter-devel@lfdr.de>; Sat, 20 Feb 2021 09:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229555AbhBSUme (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 19 Feb 2021 15:42:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhBSUme (ORCPT
+        id S229826AbhBTISV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 20 Feb 2021 03:18:21 -0500
+Received: from mpcb.gov.in ([125.17.249.59]:51788 "EHLO
+        fortimail.email.mpcb.gov.in" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229476AbhBTISU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 19 Feb 2021 15:42:34 -0500
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [IPv6:2001:738:5001::45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75A9C061574
-        for <netfilter-devel@vger.kernel.org>; Fri, 19 Feb 2021 12:41:43 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp0.kfki.hu (Postfix) with ESMTP id 12ADA67401E0;
-        Fri, 19 Feb 2021 21:41:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mail.kfki.hu; h=
-        mime-version:message-id:from:from:date:date:received:received
-        :received:received; s=20151130; t=1613767296; x=1615581697; bh=L
-        UM5fSxBk+IUYZuD8kykew4utX+YwXtCtjDkqAFzzi0=; b=WtB5aFALQPmlFCRt+
-        ZLd146Gv2Pm/srtRLJmxVHXFq67bAkWT9/geTMfyn2nttK+k0NTq5uLXCIrGggj/
-        u5NSihzarS09+twlcm+PwG+qADZgFKgWTn37nVsLpWpr3Yww+toRu+HEsTjCM7QB
-        9VeZ7tpBheflnfSb1Bd9K1uKGo=
-X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
-        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Fri, 19 Feb 2021 21:41:36 +0100 (CET)
-Received: from localhost.kfki.hu (host-94-248-219-210.kabelnet.hu [94.248.219.210])
-        (Authenticated sender: kadlecsik.jozsef@wigner.mta.hu)
-        by smtp0.kfki.hu (Postfix) with ESMTPSA id BAD2067401DF;
-        Fri, 19 Feb 2021 21:41:36 +0100 (CET)
-Received: by localhost.kfki.hu (Postfix, from userid 1000)
-        id 6116A3009EF; Fri, 19 Feb 2021 21:41:36 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by localhost.kfki.hu (Postfix) with ESMTP id 5DE77300278;
-        Fri, 19 Feb 2021 21:41:36 +0100 (CET)
-Date:   Fri, 19 Feb 2021 21:41:36 +0100 (CET)
-From:   Jozsef Kadlecsik <kadlec@mail.kfki.hu>
-To:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: [ANNOUNCE] ipset 7.11 released
-Message-ID: <28d6aaed-79eb-dd80-ab29-624138969de4@mail.kfki.hu>
+        Sat, 20 Feb 2021 03:18:20 -0500
+X-Greylist: delayed 70552 seconds by postgrey-1.27 at vger.kernel.org; Sat, 20 Feb 2021 03:18:19 EST
+Received: from User (rain-197-185-103-30.rain.network [197.185.103.30])
+        (user=feedback.consent@mpcb.gov.in mech=LOGIN bits=0)
+        by fortimail.email.mpcb.gov.in  with ESMTP id 11JCWIVc011972-11JCWIVe011972;
+        Fri, 19 Feb 2021 18:02:24 +0530
+Message-Id: <202102191232.11JCWIVc011972-11JCWIVe011972@fortimail.email.mpcb.gov.in>
+Reply-To: <brightwayfinanceloan01@protonmail.com>
+From:   "Brightway Finance Loan" <brightwayfinanceloan@gmail.com>
+Subject: Apply for loan at 5% interest rate per year
+Date:   Fri, 19 Feb 2021 14:32:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+X-FEAS-Auth-User: feedback.consent@mpcb.gov.in
+X-FE-Policy-ID: 0:1:2:SYSTEM
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+BrightWay Finance offers Loans ranging from (R10, 000.00 - R60, 000,000.00). Loan duration is from 1 to 20 years (Maximum) No collateral,
+No ITC CHECK and Blacklisted are welcome. If you wish to apply kindly send your full names, ID number, 
+email address and cellphone number to brightwayfinanceloan01@protonmail.com
 
-I'm happy to announce ipset 7.11. The most important thing is that there 
-was an argument parsin buffer overflow in the ipset userspace utility 
-which is fixed in this release.
 
-Userspace changes:
-  - Parse port before trying by service name (Haw Loeung)
-  - Silence unused-but-set-variable warnings (reported by
-    Serhey Popovych)
-  - Handle -Werror=implicit-fallthrough= in debug mode compiling
-  - ipset: fix print format warning (Neutron Soutmun)
-  - Updated utilities
-  - Argument parsing buffer overflow in ipset_parse_argv fixed
-    (reported by Marshall Whittaker)
+Yours in Service,
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Jane Cooper
+MARKETING TEAM
+Tel No: +27(0)622541582
+BrightWay Finance Loan(PTY) LTD.
+brightwayfinanceloan01@protonmail.com
