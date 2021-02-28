@@ -2,79 +2,48 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744653272A7
-	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Feb 2021 15:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD40327307
+	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Feb 2021 16:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhB1Ozt convert rfc822-to-8bit (ORCPT
+        id S230019AbhB1P05 convert rfc822-to-8bit (ORCPT
         <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 28 Feb 2021 09:55:49 -0500
-Received: from p3plsmtp05-06-02.prod.phx3.secureserver.net ([97.74.135.51]:55755
-        "EHLO p3plwbeout05-06.prod.phx3.secureserver.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229715AbhB1Ozt (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 28 Feb 2021 09:55:49 -0500
-Received: from p3plgemwbe05-06.prod.phx3.secureserver.net ([97.74.135.6])
-        by :WBEOUT: with SMTP
-        id GNTFl7QaLOIbeGNTFltnHH; Sun, 28 Feb 2021 07:54:57 -0700
-X-CMAE-Analysis: v=2.4 cv=W7f96Tak c=1 sm=1 tr=0 ts=603baec1
- a=4PocnuTK4F0hwI5R9ZIbCA==:117 a=Tb-8IF_VHAgA:10 a=gOoLzYk5U4MA:10
- a=IkcTkHD0fZMA:10 a=qa6Q16uM49sA:10 a=inyria9KPeIrDzR3zkwA:9 a=QEXdDO2ut3YA:10
-X-SECURESERVER-ACCT: andy@asjohnson.com
-X-SID:  GNTFl7QaLOIbe
-Received: (qmail 12034 invoked by uid 99); 28 Feb 2021 14:54:57 -0000
+        Sun, 28 Feb 2021 10:26:57 -0500
+Received: from [161.35.15.117] ([161.35.15.117]:55218 "EHLO cunjimwen.com"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230128AbhB1P05 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 28 Feb 2021 10:26:57 -0500
+Received: from 188-206-99-226.mobile.kpn.net ([188.206.99.226] helo=User)
+        by cunjimwen.com with esmtpa (Exim 4.86_2)
+        (envelope-from <kasimachma@gmail.com>)
+        id 1lGNwm-0002sP-CH; Sun, 28 Feb 2021 15:25:28 +0000
+Reply-To: <mrjamesmc6@gmail.com>
+From:   "Mr. James Mcgregor" <kasimachma@gmail.com>
+Subject: Working together
+Date:   Sun, 28 Feb 2021 16:25:28 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="Windows-1250"
 Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="utf-8"
-X-Originating-IP: 66.72.221.161
-User-Agent: Workspace Webmail 6.12.1
-Message-Id: <20210228075456.fcdaf64278890662106b299d41e0899d.6d7dc7cab7.wbe@email05.godaddy.com>
-From:   <andy@asjohnson.com>
-To:     "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
-Subject: RE: [PATCH] xtables-addons 3.15 doesn't compile on 32-bit x86
-Date:   Sun, 28 Feb 2021 07:54:56 -0700
-Mime-Version: 1.0
-X-CMAE-Envelope: MS4xfBB7eQ754cntJwGSGzDmUXl7JXugPMlSii7wC/3Ohh7o7ZHTOWFlN16FE8fZ4s0GCUKxm5sekpaqo6nSxlNp/Rb6HSTmGhgUo5XGJqKTD2B9X2VgChsx
- 3YTjjtGLcafcCsmtPbQg0OChU0IpQKT7F+zfARe2EuHkHfgPeMiAlh5/QIYtoqxdlXzha2gSqtE7x3UlQpSwp8dEaM2xWoFzZchEeEu1V4NxkQz2TmANNWX/
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2800.1081
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2800.1081
+X-Antivirus: AVG (VPS 210227-8, 27/02/2021), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <E1lGNwm-0002sP-CH@cunjimwen.com>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The original patch for long division on x86 didn't take into account
-the use of short circuit logic for checking if peer is NULL before
-testing it. Here is a revised patch to v3.16:
+Good Day
+I am James Mcgregor,my principal’s wish, to make huge financial investment in your home country .
+Please, I will provide more details about the transaction if you are sure you can handle classified information and also let me know your entitlement for the solicited role,
+I shall be expecting your quick response  mrjamesmc6@gmail.com
+Best Regards,
+James Mcgregor
 
---- xtables-addons-3.16-orig/extensions/pknock/xt_pknock.c
-+++ xtables-addons-3.16-patched/extensions/pknock/xt_pknock.c
-@@ -311,9 +311,13 @@
- static inline bool
- autoclose_time_passed(const struct peer *peer, unsigned int
-autoclose_time)
- {
--	unsigned long x = ktime_get_seconds();
--	unsigned long y = peer->login_sec + autoclose_time * 60;
--	return peer != NULL && autoclose_time != 0 && time_after(x, y);
-+	if (peer != NULL) {
-+		unsigned long x = ktime_get_seconds();
-+		unsigned long y = peer->login_sec + autoclose_time * 60;
-+		return autoclose_time != 0 && time_after(x, y);
-+	} else {
-+		return 0;
-+	}
- }
- 
- /**
-@@ -335,8 +339,12 @@
- static inline bool
- has_logged_during_this_minute(const struct peer *peer)
- {
--	unsigned long x = ktime_get_seconds(), y = peer->login_sec;
--	return peer != NULL && do_div(y, 60) == do_div(x, 60);
-+	if (peer != NULL) {
-+		unsigned long x = ktime_get_seconds(), y = peer->login_sec;
-+		return do_div(y, 60) == do_div(x, 60);
-+	} else {
-+		return 0;
-+	}
- }
- 
- /**
+-- 
+This email has been checked for viruses by AVG.
+https://www.avg.com
 
