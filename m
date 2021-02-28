@@ -2,92 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF7E326FD9
-	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Feb 2021 01:57:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1525132701E
+	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Feb 2021 03:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhB1A5H (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 27 Feb 2021 19:57:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhB1A5H (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 27 Feb 2021 19:57:07 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31511C06174A;
-        Sat, 27 Feb 2021 16:56:26 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dp4hj1kTmz9sCD;
-        Sun, 28 Feb 2021 11:56:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614473782;
-        bh=daldXCOG6n+ja1M6CZ7O/xC0XSRKtxIXPGPZruF4h6M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kzg8aLM3ROnLSOQSkPKpOcmf4nZDPNpPpKlC53ipUJxcYO65CiQ128funCCiESiAv
-         pDcgl1+JKAfVKR2J2if7zYVNsvgvYYXtrUVkNo8xfzNni5kahJ0ppXiuH1FmDqtZ+9
-         bA3yOfexNRUd5zgmbMEjbiuqC4bLkThrTLtv/S0jtLUhlwnjELFXoFIDDV8/UrjZQS
-         grcRf9rrDsFV5P8OozPXzxMn/37udtAByEE8Bj+B3JXIz/1pvsoYaN9wkjIIwNH/zm
-         +DdZO1yP9o3gQHFGh74cl+zWK+WEMdDA/vaSVlMxpy5Kmn3vM/R0zZ8mmuT0PlYATw
-         s9zC6aqj9kXOA==
-Date:   Sun, 28 Feb 2021 11:56:20 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Vasily Averin <vvs@virtuozzo.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the netfilter tree
-Message-ID: <20210228115620.0d137d4a@canb.auug.org.au>
+        id S230010AbhB1Czl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 27 Feb 2021 21:55:41 -0500
+Received: from mail.jvpinto.com ([65.49.11.60]:45778 "EHLO mail.JVPinto.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230008AbhB1Czl (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 27 Feb 2021 21:55:41 -0500
+Received: from RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) by
+ RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Sat, 27 Feb 2021 18:26:01 -0800
+Received: from User (52.231.198.195) by RW-EXC1.JVPinto.com (172.32.1.13) with
+ Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Sat, 27 Feb 2021
+ 18:25:47 -0800
+Reply-To: <ms.reem@yandex.com>
+From:   "Ms. Reem" <johnpinto@jvpinto.com>
+Subject: Hello okay
+Date:   Sun, 28 Feb 2021 02:26:01 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Q_Zai7JISNQygs6xc+JOI7a";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <72a808c0b7dd4d43b100a68d7ce1a1df@RW-EXC1.JVPinto.com>
+To:     Undisclosed recipients:;
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
---Sig_/Q_Zai7JISNQygs6xc+JOI7a
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
+and Petroleum" also "Minister of State for International Cooperation"
+in UAE. I write to you on behalf of my other "three (3) colleagues"
+who has approved me to solicit for your "partnership in claiming of
+{us$47=Million}" from a Financial Home in Cambodia on their behalf and
+for our "Mutual Benefits".
 
-In commit
+The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
+deal with Cambodian/Vietnam Government within 2013/2014, however, we
+don't want our government to know about the fund. If this proposal
+interests you, let me know, by sending me an email and I will send to
+you detailed information on how this business would be successfully
+transacted. Be informed that nobody knows about the secret of this
+fund except us, and we know how to carry out the entire transaction.
+So I am compelled to ask, that you will stand on our behalf and
+receive this fund into any account that is solely controlled by you.
 
-  8e24edddad15 ("netfilter: x_tables: gpf inside xt_find_revision()")
+We will compensate you with 15% of the total amount involved as
+gratification for being our partner in this transaction. Reply to:
+ms.reem@yandex.com
 
-Fixes tag
-
-  Fixes: 656caff20e1 ("netfilter 04/09: x_tables: fix match/target revision=
- lookup")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-I don't think it is worth rebasing to fix this, but it can be fixed for
-future commits by setting core.abbrev to 12 (or more) or (for git v2.11
-or later) just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Q_Zai7JISNQygs6xc+JOI7a
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA66jQACgkQAVBC80lX
-0Gx2UAf+LRxwNwFXk/idziZMEFejswlcDmyiCYNvY5+AY36aCk+KdFBAe5SaECcM
-2wv3yefGsd12UAO4QVd5CNsdAs299CZrmzgxEYrmIsBG6BE0AxdsLVmaIUwwixli
-x09mQz2jvJKTsmTw6IOn/v0evgnTCJu8LuR0Zh55GD5aqjFauSjoXob1xDT21P26
-VNFSML9zgbms0f3gLcqvGRE4GM29sasEWSDiaGNmY01w0FZqB2matxhSKSrsXoTx
-mgO164MEdA+i0gwsMdFSGtrWkdr5q3oTi6w7NXslFwGF8SlrfVFsZoMrJBjx2CKv
-1npHxabadacahoCeG1DHO/WL+W6veg==
-=/YrI
------END PGP SIGNATURE-----
-
---Sig_/Q_Zai7JISNQygs6xc+JOI7a--
+Regards,
+Ms. Reem.
