@@ -2,58 +2,91 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD4932C35F
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Mar 2021 01:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4167832C347
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Mar 2021 01:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhCDAEd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 Mar 2021 19:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384832AbhCCQ2g (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 Mar 2021 11:28:36 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F338DC06175F
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 Mar 2021 08:27:53 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1lHULm-0002iI-Kg; Wed, 03 Mar 2021 17:27:50 +0100
-Date:   Wed, 3 Mar 2021 17:27:50 +0100
-From:   Florian Westphal <fw@strlen.de>
+        id S1353422AbhCDAEh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Mar 2021 19:04:37 -0500
+Received: from correo.us.es ([193.147.175.20]:60290 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240137AbhCCQe0 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 3 Mar 2021 11:34:26 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 9CE5D1F0CED
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 Mar 2021 17:33:25 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 8C94DDA730
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 Mar 2021 17:33:25 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 817B3DA78B; Wed,  3 Mar 2021 17:33:25 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-105.9 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        FORGED_MUA_MOZILLA,NICE_REPLY_A,SMTPAUTH_US2,USER_IN_WELCOMELIST,
+        USER_IN_WHITELIST autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 3BFEFDA730;
+        Wed,  3 Mar 2021 17:33:23 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Wed, 03 Mar 2021 17:33:23 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 1CBCD42DF561;
+        Wed,  3 Mar 2021 17:33:23 +0100 (CET)
+Date:   Wed, 3 Mar 2021 17:33:22 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     linuxludo@free.fr
-Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+Cc:     kadlec@netfilter.org, fw@strlen.de,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org
 Subject: Re: [PATCH] netfilter: Fix GRE over IPv6 with conntrack module
-Message-ID: <20210303162750.GD17911@breakpoint.cc>
+Message-ID: <20210303163322.GA17445@salvia>
 References: <1524997693.135804496.1614764827412.JavaMail.root@zimbra63-e11.priv.proxad.net>
  <471218486.135924319.1614766871068.JavaMail.root@zimbra63-e11.priv.proxad.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <471218486.135924319.1614766871068.JavaMail.root@zimbra63-e11.priv.proxad.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-linuxludo@free.fr <linuxludo@free.fr> wrote:
+Hi,
+
+On Wed, Mar 03, 2021 at 11:21:11AM +0100, linuxludo@free.fr wrote:
+> Dear,
+> 
 > I would provide you a small patch in order to fix a BUG when GRE over IPv6 is used with netfilter/conntrack module.
 > 
 > This is my first contribution, not knowing the procedure well, thank you for being aware of this request.
-
-See
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst
-
-In short, the patch should pass 'scripts/checkpatch.pl' and should apply
-cleanly with 'git am'.
-
+> 
 > Regarding the proposed patch, here is a description of the encountered bug.
 > Indeed, when an ip6tables rule dropping traffic due to an invalid packet (aka w/ conntrack module) is placed before a GRE protocol permit rule, the latter is never reached ; the packet is discarded via the previous rule. 
 > 
 > The proposed patch takes into account both IPv4 and IPv6 in conntrack module for GRE protocol.
 > You will find this one at the end of this email.
-> 
-> I personally tested this, successfully.
 
-If the GRE tracker works fine with ipv6 its best to just remove
-the if-clause entirely, we only support ipv4 and ipv6 anyway.
+The GRE protocol helper is tied to the PPTP conntrack helper which
+does not support for IPv6. How are you using this update in your
+infrastructure?
+
+Thanks.
+
+> --- nf_conntrack_proto_gre.c.orig       2021-03-03 05:03:37.034665100 -0500
+> +++ nf_conntrack_proto_gre.c    2021-03-02 17:42:53.000000000 -0500
+> @@ -219,7 +219,7 @@ int nf_conntrack_gre_packet(struct nf_co
+>                             enum ip_conntrack_info ctinfo,
+>                             const struct nf_hook_state *state)
+>  {
+> -       if (state->pf != NFPROTO_IPV4)
+> +       if (state->pf != NFPROTO_IPV4 && state->pf != NFPROTO_IPV6)
+>                 return -NF_ACCEPT;
+> 
+>         if (!nf_ct_is_confirmed(ct)) {
+> 
