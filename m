@@ -2,86 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3C632AE7F
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Mar 2021 03:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A520F32C342
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Mar 2021 01:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbhCBXii (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 2 Mar 2021 18:38:38 -0500
-Received: from correo.us.es ([193.147.175.20]:43058 "EHLO mail.us.es"
+        id S1353284AbhCDAEC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Mar 2021 19:04:02 -0500
+Received: from smtp4-g21.free.fr ([212.27.42.4]:8732 "EHLO smtp4-g21.free.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1575963AbhCBQFL (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:05:11 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 63D54508CD3
-        for <netfilter-devel@vger.kernel.org>; Tue,  2 Mar 2021 16:38:28 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 4FF10DA78F
-        for <netfilter-devel@vger.kernel.org>; Tue,  2 Mar 2021 16:38:28 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 4426DDA78B; Tue,  2 Mar 2021 16:38:28 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-105.9 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        FORGED_MUA_MOZILLA,NICE_REPLY_A,SMTPAUTH_US2,URIBL_BLOCKED,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 9A7C4DA704;
-        Tue,  2 Mar 2021 16:38:25 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 02 Mar 2021 16:38:25 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 7A41B42DF562;
-        Tue,  2 Mar 2021 16:38:25 +0100 (CET)
-Date:   Tue, 2 Mar 2021 16:38:25 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [nf:master 7/7] net/netfilter/nf_tables_api.c:920:15: warning:
- converting the enum constant to a boolean
-Message-ID: <20210302153825.GA26011@salvia>
-References: <202103022132.6FiROxhQ-lkp@intel.com>
+        id S1842914AbhCCKW3 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:22:29 -0500
+Received: from zimbra63-e11.priv.proxad.net (unknown [172.20.243.213])
+        by smtp4-g21.free.fr (Postfix) with ESMTP id 9D6BA19F59E;
+        Wed,  3 Mar 2021 11:21:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
+        s=smtp-20201208; t=1614766871;
+        bh=Mrx9qsU6U+BZwVL6o3ZnWnOL0l/Sq+yXvKE0PAZiYqQ=;
+        h=Date:From:To:Cc:In-Reply-To:Subject:From;
+        b=cAAanOcPVr8pcfvOI7lyXLDUNPCP4kTsUqThhYydhe5BIt8ZXAj5Fpg6mNqMGVocw
+         0LmjI8ZPOjSklsLeRl8kuvCtFEZwBWnuraJCUqge8bG5gxEwhPHbfwnC8w/SJWMgF0
+         5A9nvVrk4EI4umxtoRL9M+ek4VX/X2Bb9PubYnfYeYldpJQL0BTxozOpxeIJ+gQ+E8
+         WDWPu8EoyPLbforrEfsOGbdg6v35Pz/44Z6HqCE1r4P1kXdqUZPwNrQhdsfhV3x7eG
+         DUzqeoLxkdWLUQJz4P2eH5GCEIOPZP8hYrk9Q9tpk9NAX2f48JEj5zbNOjHKAw228y
+         IBt669pSEdqcQ==
+Date:   Wed, 3 Mar 2021 11:21:11 +0100 (CET)
+From:   linuxludo@free.fr
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Message-ID: <471218486.135924319.1614766871068.JavaMail.root@zimbra63-e11.priv.proxad.net>
+In-Reply-To: <1524997693.135804496.1614764827412.JavaMail.root@zimbra63-e11.priv.proxad.net>
+Subject: [PATCH] netfilter: Fix GRE over IPv6 with conntrack module
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202103022132.6FiROxhQ-lkp@intel.com>
-User-Agent: Mozilla/5.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [82.64.212.11]
+X-Mailer: Zimbra 7.2.0-GA2598 (ZimbraWebClient - GC88 (Win)/7.2.0-GA2598)
+X-Authenticated-User: linuxludo@free.fr
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 09:17:37PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git master
-> head:   64d075d0d3770d761018500d59dbca37b1867017
-> commit: 64d075d0d3770d761018500d59dbca37b1867017 [7/7] netfilter: nftables: disallow updates on table ownership
-> config: powerpc64-randconfig-r022-20210302 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 5de09ef02e24d234d9fc0cd1c6dfe18a1bb784b0)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install powerpc64 cross compiling tool for clang build
->         # apt-get install binutils-powerpc64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git/commit/?id=64d075d0d3770d761018500d59dbca37b1867017
->         git remote add nf https://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
->         git fetch --no-tags nf master
->         git checkout 64d075d0d3770d761018500d59dbca37b1867017
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> net/netfilter/nf_tables_api.c:920:15: warning: converting the enum constant to a boolean [-Wint-in-bool-context]
->                 !(flags && NFT_TABLE_F_OWNER)) ||
->                         ^
+Dear,
 
-Ouch. Fixed.
+I would provide you a small patch in order to fix a BUG when GRE over IPv6 is used with netfilter/conntrack module.
+
+This is my first contribution, not knowing the procedure well, thank you for being aware of this request.
+
+Regarding the proposed patch, here is a description of the encountered bug.
+Indeed, when an ip6tables rule dropping traffic due to an invalid packet (aka w/ conntrack module) is placed before a GRE protocol permit rule, the latter is never reached ; the packet is discarded via the previous rule. 
+
+The proposed patch takes into account both IPv4 and IPv6 in conntrack module for GRE protocol.
+You will find this one at the end of this email.
+
+I personally tested this, successfully.
+
+
+
+By making a contribution to this project, I certify that:
+
+a. The contribution was created in whole or in part by me and I have the right to submit it under the open source license indicated in the file; or
+b. The contribution is based upon previous work that, to the best of my knowledge, is covered under an appropriate open source license and I have the right under that license to submit that work with modifications, whether created in whole or in part by me, under the same open source license (unless I am permitted to submit under a different license), as indicated in the file; or
+c. The contribution was provided directly to me by some other person who certified (a), (b) or (c) and I have not modified it.
+d. I understand and agree that this project and the contribution are public and that a record of the contribution (including all personal information I submit with it, including my sign-off) is maintained indefinitely and may be redistributed consistent with this project or the open source license(s) involved.
+
+
+
+Signed-off-by: ludovic senecaux <linuxludo@free.fr>
+
+
+Thanks for your reply,
+
+Regards,
+
+
+---
+
+Here is the patch:
+
+
+--- nf_conntrack_proto_gre.c.orig       2021-03-03 05:03:37.034665100 -0500
++++ nf_conntrack_proto_gre.c    2021-03-02 17:42:53.000000000 -0500
+@@ -219,7 +219,7 @@ int nf_conntrack_gre_packet(struct nf_co
+                            enum ip_conntrack_info ctinfo,
+                            const struct nf_hook_state *state)
+ {
+-       if (state->pf != NFPROTO_IPV4)
++       if (state->pf != NFPROTO_IPV4 && state->pf != NFPROTO_IPV6)
+                return -NF_ACCEPT;
+
+        if (!nf_ct_is_confirmed(ct)) {
+
