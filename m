@@ -2,107 +2,98 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE68432CA0F
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Mar 2021 02:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CCC32CA8B
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Mar 2021 03:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhCDBct (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 Mar 2021 20:32:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbhCDBcm (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 Mar 2021 20:32:42 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0107C061761
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 Mar 2021 17:32:01 -0800 (PST)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id A069C891B0;
-        Thu,  4 Mar 2021 14:31:57 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1614821517;
-        bh=ieQ7b5wNrnu8y/4bsKz/gQmkGPRgNlEIbpHLpIANBM4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=aVPp4jxLHH0vaiF7XPWZbqQEtzjmuRigNoem0dowtF55/9CW1aDT9bnLKvZhy4+OA
-         jSCvKiFiEgx7cR4darBN5GgdvikCRGvlqxfASftqeVXs2AeSCIJPTNPf01KC92C1Cx
-         ip91EsP8EkqU1VxOesJDyNCb6GYolH8plOybqHj2fAuj/A8+rsi9Yl3tVy+fWtbpll
-         3mKQY+f331Qq1VHAe+q0chOb/NO5D2LGIsyEuyPvjYWzMhMJgE/un95f0NCJWm1D4B
-         eKlqMJKkTszkmbf1gq6HDo30dbvNLJhHtCrnEpfu9YHRg5UfJ7Cq87Ss+5Gqaf0N9b
-         ze6g3H/URzrxA==
-Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B6040388d0003>; Thu, 04 Mar 2021 14:31:57 +1300
-Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
-        by smtp (Postfix) with ESMTP id 67F1913EF39;
-        Thu,  4 Mar 2021 14:32:08 +1300 (NZDT)
-Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
-        id 483F1341002; Thu,  4 Mar 2021 14:31:57 +1300 (NZDT)
-From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
-Cc:     netfilter-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Subject: [PATCH 3/3] netfilter: x_tables: Use correct memory barriers.
-Date:   Thu,  4 Mar 2021 14:31:16 +1300
-Message-Id: <20210304013116.8420-4-mark.tomlinson@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210304013116.8420-1-mark.tomlinson@alliedtelesis.co.nz>
-References: <20210304013116.8420-1-mark.tomlinson@alliedtelesis.co.nz>
+        id S231601AbhCDCtd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Mar 2021 21:49:33 -0500
+Received: from correo.us.es ([193.147.175.20]:35920 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231527AbhCDCtF (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 3 Mar 2021 21:49:05 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 41507DA70F
+        for <netfilter-devel@vger.kernel.org>; Thu,  4 Mar 2021 03:48:24 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 2E177DA704
+        for <netfilter-devel@vger.kernel.org>; Thu,  4 Mar 2021 03:48:24 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 23299DA722; Thu,  4 Mar 2021 03:48:24 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 9626EDA704
+        for <netfilter-devel@vger.kernel.org>; Thu,  4 Mar 2021 03:48:21 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Thu, 04 Mar 2021 03:48:21 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pneira@us.es)
+        by entrada.int (Postfix) with ESMTPSA id 7EC7E42DF560
+        for <netfilter-devel@vger.kernel.org>; Thu,  4 Mar 2021 03:48:21 +0100 (CET)
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf] netfilter: nftables: fix possible double hook unregistration with table owner
+Date:   Thu,  4 Mar 2021 03:48:18 +0100
+Message-Id: <20210304024818.30133-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=Ma0BngSExibuLm0IY5UA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When a new table value was assigned, it was followed by a write memory
-barrier. This ensured that all writes before this point would complete
-before any writes after this point. However, to determine whether the
-rules are unused, the sequence counter is read. To ensure that all
-writes have been done before these reads, a full memory barrier is
-needed, not just a write memory barrier. The same argument applies when
-incrementing the counter, before the rules are read.
+Skip hook unregistration of owner tables from the netns exit path,
+nft_rcv_nl_event() unregisters the table hooks before tearing down
+the table content.
 
-Changing to using smp_mb() instead of smp_wmb() fixes the kernel panic
-reported in cc00bcaa5899, while still maintaining the same speed of
-replacing tables.
-
-Fixes: 7f5c6d4f665b ("netfilter: get rid of atomic ops in fast path")
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Fixes: 6001a930ce03 ("netfilter: nftables: introduce table ownership")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/linux/netfilter/x_tables.h | 2 +-
- net/netfilter/x_tables.c           | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ net/netfilter/nf_tables_api.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/netfilter/x_tables.h b/include/linux/netfilter=
-/x_tables.h
-index 5deb099d156d..8ec48466410a 100644
---- a/include/linux/netfilter/x_tables.h
-+++ b/include/linux/netfilter/x_tables.h
-@@ -376,7 +376,7 @@ static inline unsigned int xt_write_recseq_begin(void=
-)
- 	 * since addend is most likely 1
- 	 */
- 	__this_cpu_add(xt_recseq.sequence, addend);
--	smp_wmb();
-+	smp_mb();
-=20
- 	return addend;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index b07703e19108..495f320b1c93 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -9024,12 +9024,17 @@ static void __nft_release_hook(struct net *net, struct nft_table *table)
+ 		nf_tables_unregister_hook(net, table, chain);
  }
-diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-index af22dbe85e2c..a2b50596b87e 100644
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -1387,7 +1387,7 @@ xt_replace_table(struct xt_table *table,
- 	table->private =3D newinfo;
-=20
- 	/* make sure all cpus see new ->private value */
--	smp_wmb();
-+	smp_mb();
-=20
- 	/*
- 	 * Even though table entries have now been swapped, other CPU's
---=20
-2.30.1
+ 
+-static void __nft_release_hooks(struct net *net)
++static void __nft_release_hooks(struct net *net, u32 nlpid)
+ {
+ 	struct nft_table *table;
+ 
+-	list_for_each_entry(table, &net->nft.tables, list)
++	list_for_each_entry(table, &net->nft.tables, list) {
++		if (nft_table_has_owner(table) &&
++		    nlpid != table->nlpid)
++			continue;
++
+ 		__nft_release_hook(net, table);
++	}
+ }
+ 
+ static void __nft_release_table(struct net *net, struct nft_table *table)
+@@ -9143,7 +9148,7 @@ static int __net_init nf_tables_init_net(struct net *net)
+ 
+ static void __net_exit nf_tables_pre_exit_net(struct net *net)
+ {
+-	__nft_release_hooks(net);
++	__nft_release_hooks(net, 0);
+ }
+ 
+ static void __net_exit nf_tables_exit_net(struct net *net)
+-- 
+2.20.1
 
