@@ -2,175 +2,109 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800CC32C9EA
-	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Mar 2021 02:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0FB32C9EC
+	for <lists+netfilter-devel@lfdr.de>; Thu,  4 Mar 2021 02:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239852AbhCDBPW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 Mar 2021 20:15:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        id S240150AbhCDBPX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Mar 2021 20:15:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1454173AbhCDBI0 (ORCPT
+        with ESMTP id S1454277AbhCDBIb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 Mar 2021 20:08:26 -0500
+        Wed, 3 Mar 2021 20:08:31 -0500
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5DFC06175F
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 Mar 2021 17:07:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4627C061760
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 Mar 2021 17:07:50 -0800 (PST)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1lHcSu-0005N2-RP; Thu, 04 Mar 2021 02:07:44 +0100
+        id 1lHcSz-0005NG-B3; Thu, 04 Mar 2021 02:07:49 +0100
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 1/3] parser: squash duplicated spec/specid rules
-Date:   Thu,  4 Mar 2021 02:07:33 +0100
-Message-Id: <20210304010735.28683-1-fw@strlen.de>
+Subject: [PATCH nft 2/3] parser: compact map RHS type
+Date:   Thu,  4 Mar 2021 02:07:34 +0100
+Message-Id: <20210304010735.28683-2-fw@strlen.de>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210304010735.28683-1-fw@strlen.de>
+References: <20210304010735.28683-1-fw@strlen.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-No need to have duplicate CMD rules for spec and specid: add and use
-a common rule for those cases.
+Similar to previous patch, we can avoid duplication.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- src/parser_bison.y | 82 +++++++++++++++++++++-------------------------
- 1 file changed, 38 insertions(+), 44 deletions(-)
+ src/parser_bison.y | 38 +++++++++-----------------------------
+ 1 file changed, 9 insertions(+), 29 deletions(-)
 
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index a2c150180ca3..363569ffacb6 100644
+index 363569ffacb6..c4f3e341333d 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -588,10 +588,20 @@ int nft_lex(void *, void *, void *);
- %type <cmd>			base_cmd add_cmd replace_cmd create_cmd insert_cmd delete_cmd get_cmd list_cmd reset_cmd flush_cmd rename_cmd export_cmd monitor_cmd describe_cmd import_cmd
- %destructor { cmd_free($$); }	base_cmd add_cmd replace_cmd create_cmd insert_cmd delete_cmd get_cmd list_cmd reset_cmd flush_cmd rename_cmd export_cmd monitor_cmd describe_cmd import_cmd
+@@ -627,6 +627,7 @@ int nft_lex(void *, void *, void *);
  
--%type <handle>			table_spec tableid_spec chain_spec chainid_spec flowtable_spec chain_identifier ruleid_spec handle_spec position_spec rule_position ruleset_spec index_spec
--%destructor { handle_free(&$$); } table_spec tableid_spec chain_spec chainid_spec flowtable_spec chain_identifier ruleid_spec handle_spec position_spec rule_position ruleset_spec index_spec
--%type <handle>			set_spec setid_spec set_identifier flowtableid_spec flowtable_identifier obj_spec objid_spec obj_identifier
--%destructor { handle_free(&$$); } set_spec setid_spec set_identifier flowtableid_spec obj_spec objid_spec obj_identifier
-+%type <handle>			table_spec tableid_spec table_or_id_spec
-+%destructor { handle_free(&$$); } table_spec tableid_spec table_or_id_spec
-+%type <handle>			chain_spec chainid_spec chain_or_id_spec
-+%destructor { handle_free(&$$); } chain_spec chainid_spec chain_or_id_spec
-+
-+%type <handle>			flowtable_spec chain_identifier ruleid_spec handle_spec position_spec rule_position ruleset_spec index_spec
-+%destructor { handle_free(&$$); } flowtable_spec chain_identifier ruleid_spec handle_spec position_spec rule_position ruleset_spec index_spec
-+%type <handle>			set_spec setid_spec set_or_id_spec
-+%destructor { handle_free(&$$); } set_spec setid_spec set_or_id_spec
-+%type <handle>			obj_spec objid_spec obj_or_id_spec
-+%destructor { handle_free(&$$); } obj_spec objid_spec obj_or_id_spec
-+
-+%type <handle>			set_identifier flowtableid_spec flowtable_identifier obj_identifier
-+%destructor { handle_free(&$$); } set_identifier flowtableid_spec obj_identifier
- %type <val>			family_spec family_spec_explicit
- %type <val32>			int_num	chain_policy
- %type <prio_spec>		extended_prio_spec prio_spec
-@@ -1167,19 +1177,27 @@ insert_cmd		:	RULE		rule_position	rule
+ %type <set>			map_block_alloc map_block
+ %destructor { set_free($$); }	map_block_alloc
++%type <val>			map_block_obj_type
+ 
+ %type <flowtable>		flowtable_block_alloc flowtable_block
+ %destructor { flowtable_free($$); }	flowtable_block_alloc
+@@ -1877,6 +1878,12 @@ map_block_alloc		:	/* empty */
  			}
  			;
  
--delete_cmd		:	TABLE		table_spec
--			{
--				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_TABLE, &$2, &@$, NULL);
--			}
--			|	TABLE 		tableid_spec
-+table_or_id_spec	:	table_spec
-+			|	tableid_spec
++map_block_obj_type	:	COUNTER	{ $$ = NFT_OBJECT_COUNTER; }
++			|	QUOTA { $$ = NFT_OBJECT_QUOTA; }
++			|	LIMIT { $$ = NFT_OBJECT_LIMIT; }
++			|	SECMARK { $$ = NFT_OBJECT_SECMARK; }
 +			;
 +
-+chain_or_id_spec	:	chain_spec
-+			|	chainid_spec
-+			;
-+
-+set_or_id_spec		:	set_spec
-+			|	setid_spec
-+			;
-+
-+obj_or_id_spec		:	obj_spec
-+			|	objid_spec
-+			;
-+
-+delete_cmd		:	TABLE		table_or_id_spec
- 			{
- 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_TABLE, &$2, &@$, NULL);
+ map_block		:	/* empty */	{ $$ = $<set>-1; }
+ 			|	map_block	common_block
+ 			|	map_block	stmt_separator
+@@ -1930,38 +1937,11 @@ map_block		:	/* empty */	{ $$ = $<set>-1; }
+ 				$$ = $1;
  			}
--			|	CHAIN		chain_spec
+ 			|	map_block	TYPE
+-						data_type_expr	COLON	COUNTER
+-						stmt_separator
 -			{
--				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_CHAIN, &$2, &@$, NULL);
+-				$1->key = $3;
+-				$1->objtype = NFT_OBJECT_COUNTER;
+-				$1->flags  |= NFT_SET_OBJECT;
+-				$$ = $1;
 -			}
--			| 	CHAIN 		chainid_spec
-+			|	CHAIN		chain_or_id_spec
- 			{
- 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_CHAIN, &$2, &@$, NULL);
- 			}
-@@ -1187,11 +1205,7 @@ delete_cmd		:	TABLE		table_spec
- 			{
- 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_RULE, &$2, &@$, NULL);
- 			}
--			|	SET		set_spec
+-			|	map_block	TYPE
+-						data_type_expr	COLON	QUOTA
+-						stmt_separator
 -			{
--				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_SET, &$2, &@$, NULL);
+-				$1->key = $3;
+-				$1->objtype = NFT_OBJECT_QUOTA;
+-				$1->flags  |= NFT_SET_OBJECT;
+-				$$ = $1;
 -			}
--			| 	SET 		setid_spec
-+			|	SET		set_or_id_spec
- 			{
- 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_SET, &$2, &@$, NULL);
- 			}
-@@ -1218,19 +1232,11 @@ delete_cmd		:	TABLE		table_spec
- 				handle_merge(&$3->handle, &$2);
- 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_FLOWTABLE, &$2, &@$, $5);
- 			}
--			|	COUNTER		obj_spec
-+			|	COUNTER		obj_or_id_spec
- 			{
- 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_COUNTER, &$2, &@$, NULL);
- 			}
--			|  	COUNTER 	objid_spec
+-			|	map_block	TYPE
+-						data_type_expr	COLON	LIMIT
+-						stmt_separator
 -			{
--				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_COUNTER, &$2, &@$, NULL);
+-				$1->key = $3;
+-				$1->objtype = NFT_OBJECT_LIMIT;
+-				$1->flags  |= NFT_SET_OBJECT;
+-				$$ = $1;
 -			}
--			|	QUOTA		obj_spec
--			{
--				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_QUOTA, &$2, &@$, NULL);
--			}
--			| 	QUOTA 		objid_spec
-+			|	QUOTA		obj_or_id_spec
+-			|	map_block	TYPE
+-						data_type_expr	COLON	SECMARK
++						data_type_expr	COLON	map_block_obj_type
+ 						stmt_separator
  			{
- 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_QUOTA, &$2, &@$, NULL);
- 			}
-@@ -1238,27 +1244,15 @@ delete_cmd		:	TABLE		table_spec
- 			{
- 				$$ = cmd_alloc_obj_ct(CMD_DELETE, $2, &$3, &@$, $4);
- 			}
--			|	LIMIT		obj_spec
-+			|	LIMIT		obj_or_id_spec
- 			{
- 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_LIMIT, &$2, &@$, NULL);
- 			}
--			| 	LIMIT 		objid_spec
--			{
--				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_LIMIT, &$2, &@$, NULL);
--			}
--			|	SECMARK		obj_spec
--			{
--				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_SECMARK, &$2, &@$, NULL);
--			}
--			| 	SECMARK		objid_spec
-+			|	SECMARK		obj_or_id_spec
- 			{
- 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_SECMARK, &$2, &@$, NULL);
- 			}
--			|	SYNPROXY	obj_spec
--			{
--				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_SYNPROXY, &$2, &@$, NULL);
--			}
--			|	SYNPROXY	objid_spec
-+			|	SYNPROXY	obj_or_id_spec
- 			{
- 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_SYNPROXY, &$2, &@$, NULL);
+ 				$1->key = $3;
+-				$1->objtype = NFT_OBJECT_SECMARK;
++				$1->objtype = $5;
+ 				$1->flags  |= NFT_SET_OBJECT;
+ 				$$ = $1;
  			}
 -- 
 2.26.2
