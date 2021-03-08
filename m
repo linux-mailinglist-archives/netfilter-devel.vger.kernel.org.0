@@ -2,81 +2,89 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AD8331348
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 17:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC5033146F
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 18:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhCHQWA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 8 Mar 2021 11:22:00 -0500
-Received: from smtp-out-so.shaw.ca ([64.59.136.137]:45657 "EHLO
-        smtp-out-so.shaw.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhCHQVg (ORCPT
+        id S230480AbhCHRTG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 Mar 2021 12:19:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230446AbhCHRSq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:21:36 -0500
-Received: from fanir.tuyoix.net ([68.150.218.192])
-        by shaw.ca with ESMTP
-        id JIdRlI0WCHmS3JIdSla68o; Mon, 08 Mar 2021 09:21:35 -0700
-X-Authority-Analysis: v=2.4 cv=MaypB7zf c=1 sm=1 tr=0 ts=60464f0f
- a=LfNn7serMq+1bQZBlMsSfQ==:117 a=LfNn7serMq+1bQZBlMsSfQ==:17
- a=dESyimp9J3IA:10 a=M51BFTxLslgA:10 a=nlC_4_pT8q9DhB4Ho9EA:9
- a=67Hp3EJipaeTLZmLvIAA:9 a=QEXdDO2ut3YA:10
-Received: from CLUIJ (cluij.tuyoix.net [192.168.144.15])
-        (authenticated bits=0)
-        by fanir.tuyoix.net (8.15.2/8.15.2) with ESMTPSA id 128GLXM9012698
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Mon, 8 Mar 2021 09:21:33 -0700
-Date:   Mon, 8 Mar 2021 09:21:20 -0700 (Mountain Standard Time)
-From:   =?UTF-8?Q?Marc_Aur=C3=A8le_La_France?= <tsi@tuyoix.net>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf] netfilter REJECT: Fix destination MAC in RST
- packets
-In-Reply-To: <20210308102510.GA23497@salvia>
-Message-ID: <alpine.WNT.2.20.2103080908550.2772@CLUIJ>
-References: <alpine.LNX.2.20.2103071736460.15162@fanir.tuyoix.net> <20210308102510.GA23497@salvia>
-User-Agent: Alpine 2.20 (WNT 67 2015-01-07)
+        Mon, 8 Mar 2021 12:18:46 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A76C06174A
+        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 09:18:46 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1lJJWm-0000LL-4r; Mon, 08 Mar 2021 18:18:44 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nft 0/6] scanner rework part 1
+Date:   Mon,  8 Mar 2021 18:18:31 +0100
+Message-Id: <20210308171837.8542-1-fw@strlen.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="4051235-17762-1615220480=:2772"
-X-CMAE-Envelope: MS4xfJY7rkKGYV0Tdor4f133G9aalEEnUPC0z1hRiOa4MFJ68bfTdDyPZYnT93wKqkNSJiBS9o7sevNQMbjMPEtYF4Lw4TXZdUpBBEQyZNz6OZ6jIe3ZSnei
- NbFzFaLfTMJF699iGA+AjIRwUKveO4Xz1J9Wunax50OYkHBu5+IB21P20EX98RFY4EkmHJO0I8YNYcY5vf0nMy6jRbwgSXhSTgFEOoTFDmCU3NzYVPCcheZ7
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+This is the initial batch of patches to rework the nft scanner.
+This adds a start condition stack and moves a few expressions to
+use start conditions.
 
---4051235-17762-1615220480=:2772
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+This first batch only comes with inclusive start conditions, i.e.
+the rules in INITIAL scope are still recognized; the only change is that
+the tokens moved to per-expression start conditions disappear from the
+INITIAL scope.
 
-On Mon, 8 Mar 2021, Pablo Neira Ayuso wrote:
-> On Sun, Mar 07, 2021 at 06:16:34PM -0700, Marc Aurèle La France wrote:
->> In the non-bridge case, the REJECT target code assumes the REJECTed
->> packets were originally emitted by the local host, but that's not
->> necessarily true when the local host is the default route of a subnet
->> it is on, resulting in RST packets being sent out with an incorrect
->> destination MAC.  Address this by refactoring the handling of bridged
->> packets which deals with a similar issue.  Modulo patch fuzz, the
->> following applies to v5 and later kernels.
+For example, after this series 'chain mod' is no longer a syntax error
+because the MOD token isn't part of the initial scope anymore.
 
-> The code this patch updates is related to BRIDGE_NETFILTER. Your patch
-> description refers to the non-bridge case. What are you trying to
-> achieve?
+The next set of patches (not included here) adds start conditions for ip, ip6, arp,
+ether and makes saddr/daddr recognized as STRING unless part of a
+'ip/ip6 ...' expression.
 
-Via DHCP, my subnet's default route is a Linux system so that it can 
-monitor all outbound traffic.  By doing so, for example, I have determined 
-that my Android phone connects to Facebook despite the fact that I have no 
-such app installed.  I want to know, and control, what other 
-behind-the-scenes (under-handed) traffic devices on my subnet generate.
+The plan is to introduce exclusive scopes to deal with table/chain
+names, i.e. 'TABLE' and 'CHAIN' keywords switch nft into a mode where
+all default rules are disabled.
 
-> dev_queue_xmit() path should not be exercised from the prerouting
-> chain, packets generated from the IP later must follow the
-> ip_local_out() path.
+This will then allow to handle really weird rulesets like
 
-Well, I can tell you dev_queue_xmit() does in fact work in prerouting 
-chains, as it must for the bridging case.  The only potential problem I've 
-found so far is that the RST packet doesn't go through any netfilter 
-hooks.
+table ip chain {
+	chain netdev {
+		meta iifname saddr ip saddr 1.2.3.4 ...
+	}
 
-Marc.
---4051235-17762-1615220480=:2772--
+and so on.
+
+Main motivation is to avoid breakage of existing rulesets, e.g.
+
+table inet filter {
+	chain vid {
+
+... when a future version of nft adds a 'vid' token.
+
+Another effect is that this reduces the need for workarounds like e.g.
+'parser: allow classid as set key' and other workarounds that needed to
+(re-) enable keywords in STRING context.
+
+
+Florian Westphal (6):
+  scanner: remove unused tokens
+  scanner: introduce start condition stack
+  scanner: queue: move to own scope
+  scanner: ipsec: move to own scope
+  scanner: rt: move to own scope
+  scanner: socket: move to own scope
+
+ include/parser.h   | 12 +++++++
+ src/parser_bison.y | 41 +++++++++++-----------
+ src/scanner.l      | 86 ++++++++++++++++++++++++++++++----------------
+ 3 files changed, 89 insertions(+), 50 deletions(-)
+
+-- 
+2.26.2
+
