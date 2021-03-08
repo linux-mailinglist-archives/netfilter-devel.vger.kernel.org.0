@@ -2,97 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4F2330B4C
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 11:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1607331082
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 15:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhCHKer (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 8 Mar 2021 05:34:47 -0500
-Received: from correo.us.es ([193.147.175.20]:53234 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230488AbhCHKem (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:34:42 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 23F26B56F1
-        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 11:34:41 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 14473DA55C
-        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 11:34:41 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 085F8DA844; Mon,  8 Mar 2021 11:34:41 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-105.9 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        FORGED_MUA_MOZILLA,NICE_REPLY_A,SMTPAUTH_US2,USER_IN_WELCOMELIST,
-        USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id A620ADA78C;
-        Mon,  8 Mar 2021 11:34:38 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Mon, 08 Mar 2021 11:34:38 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 88BD442DF563;
-        Mon,  8 Mar 2021 11:34:38 +0100 (CET)
-Date:   Mon, 8 Mar 2021 11:34:38 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Marc =?utf-8?Q?Aur=C3=A8le?= La France <tsi@tuyoix.net>
-Cc:     Laura Garcia Liebana <nevola@gmail.com>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: {PATCH nf] x_tables: Allow REJECT targets in PREROUTING chains
-Message-ID: <20210308103438.GA23953@salvia>
-References: <alpine.LNX.2.20.2103071733480.15162@fanir.tuyoix.net>
+        id S230488AbhCHOM1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 Mar 2021 09:12:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229904AbhCHOL4 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 8 Mar 2021 09:11:56 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37567C06174A
+        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 06:11:56 -0800 (PST)
+Received: from localhost ([::1]:53502 helo=tatos)
+        by orbyte.nwl.cc with esmtp (Exim 4.94)
+        (envelope-from <phil@nwl.cc>)
+        id 1lJGby-0003SA-Q2; Mon, 08 Mar 2021 15:11:54 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [libnftnl PATCH 0/5] A few cosmetic changes
+Date:   Mon,  8 Mar 2021 15:11:14 +0100
+Message-Id: <20210308141119.17809-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.LNX.2.20.2103071733480.15162@fanir.tuyoix.net>
-User-Agent: Mozilla/5.0
-X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 06:16:10PM -0700, Marc Aurèle La France wrote:
-> Extend commit f53b9b0bdc59c0823679f2e3214e0d538f5951b9 "netfilter:
-> introduce support for reject at prerouting stage", which appeared in
-> 5.9, by making the corresponding changes to x_tables REJECT targets.
-> 
-> Please Reply-To-All.
+This is fallout from the sheer endless mini-project of fixing byteorder
+in debug output.
 
-This patch LGTM.
+This series deals with minor nuisances I found:
 
-> Thanks.
-> 
-> Marc.
-> 
-> Signed-off-by: Marc Aurèle La France <tsi@tuyoix.net>
-> Tested-by: Marc Aurèle La France <tsi@tuyoix.net>
-> 
-> --- a/net/ipv4/netfilter/ipt_REJECT.c
-> +++ b/net/ipv4/netfilter/ipt_REJECT.c
-> @@ -92,7 +92,7 @@ static struct xt_target reject_tg_reg __read_mostly = {
->  	.targetsize	= sizeof(struct ipt_reject_info),
->  	.table		= "filter",
->  	.hooks		= (1 << NF_INET_LOCAL_IN) | (1 << NF_INET_FORWARD) |
-> -			  (1 << NF_INET_LOCAL_OUT),
-> +			  (1 << NF_INET_LOCAL_OUT) | (1 << NF_INET_PRE_ROUTING),
->  	.checkentry	= reject_tg_check,
->  	.me		= THIS_MODULE,
->  };
-> --- a/net/ipv6/netfilter/ip6t_REJECT.c
-> +++ b/net/ipv6/netfilter/ip6t_REJECT.c
-> @@ -102,7 +102,7 @@ static struct xt_target reject_tg6_reg __read_mostly = {
->  	.targetsize	= sizeof(struct ip6t_reject_info),
->  	.table		= "filter",
->  	.hooks		= (1 << NF_INET_LOCAL_IN) | (1 << NF_INET_FORWARD) |
-> -			  (1 << NF_INET_LOCAL_OUT),
-> +			  (1 << NF_INET_LOCAL_OUT) | (1 << NF_INET_PRE_ROUTING),
->  	.checkentry	= reject_tg6_check,
->  	.me		= THIS_MODULE
->  };
+* Dead code in socket, tunnel and xfrm expressions
+* Trailing spaces in debug output for rules
+* Ugly indenting due to long function
+  nftnl_data_reg_value_snprintf_default()
+
+Phil Sutter (5):
+  expr/socket: Kill dead code
+  expr/tunnel: Kill dead code
+  expr/xfrm: Kill dead code
+  rule: Avoid printing trailing spaces
+  expr: data_reg: Reduce indenting level a bit
+
+ src/expr/data_reg.c | 31 ++++++++-----------------------
+ src/expr/socket.c   | 13 -------------
+ src/expr/tunnel.c   | 13 -------------
+ src/expr/xfrm.c     | 28 ----------------------------
+ src/rule.c          | 27 ++++++++++++++++++---------
+ 5 files changed, 26 insertions(+), 86 deletions(-)
+
+-- 
+2.30.1
 
