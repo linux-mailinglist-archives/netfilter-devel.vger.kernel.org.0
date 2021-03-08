@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CAC331074
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 15:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE167331078
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 15:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbhCHOLv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 8 Mar 2021 09:11:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
+        id S231148AbhCHOLw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 Mar 2021 09:11:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230411AbhCHOLf (ORCPT
+        with ESMTP id S230425AbhCHOLk (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:11:35 -0500
+        Mon, 8 Mar 2021 09:11:40 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120BAC06174A
-        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 06:11:35 -0800 (PST)
-Received: from localhost ([::1]:53486 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A31C06174A
+        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 06:11:40 -0800 (PST)
+Received: from localhost ([::1]:53490 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.94)
         (envelope-from <phil@nwl.cc>)
-        id 1lJGbd-0003Ri-LY; Mon, 08 Mar 2021 15:11:33 +0100
+        id 1lJGbi-0003Rn-UR; Mon, 08 Mar 2021 15:11:38 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 4/5] rule: Avoid printing trailing spaces
-Date:   Mon,  8 Mar 2021 15:11:18 +0100
-Message-Id: <20210308141119.17809-5-phil@nwl.cc>
+Subject: [libnftnl PATCH 5/5] expr: data_reg: Reduce indenting level a bit
+Date:   Mon,  8 Mar 2021 15:11:19 +0100
+Message-Id: <20210308141119.17809-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210308141119.17809-1-phil@nwl.cc>
 References: <20210308141119.17809-1-phil@nwl.cc>
@@ -34,82 +34,62 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Introduce 'sep' variable to track whether something was printed already.
-While being at it, introduce PRIu64 for 'handle' and 'position'
-attributes.
+Given there's only a single valid output_format left, catch other values
+early to help a bit with those calls to overlong function names.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/rule.c | 27 ++++++++++++++++++---------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ src/expr/data_reg.c | 31 ++++++++-----------------------
+ 1 file changed, 8 insertions(+), 23 deletions(-)
 
-diff --git a/src/rule.c b/src/rule.c
-index 480afc8ffc1b8..e82cf73e9bbe5 100644
---- a/src/rule.c
-+++ b/src/rule.c
-@@ -551,44 +551,53 @@ static int nftnl_rule_snprintf_default(char *buf, size_t size,
+diff --git a/src/expr/data_reg.c b/src/expr/data_reg.c
+index d3ccc612ce812..60dc9b81cb4d3 100644
+--- a/src/expr/data_reg.c
++++ b/src/expr/data_reg.c
+@@ -66,35 +66,20 @@ int nftnl_data_reg_snprintf(char *buf, size_t size,
+ 			    uint32_t output_format, uint32_t flags,
+ 			    int reg_type)
  {
- 	struct nftnl_expr *expr;
- 	int ret, remain = size, offset = 0, i;
-+	const char *sep = "";
- 
- 	if (r->flags & (1 << NFTNL_RULE_FAMILY)) {
--		ret = snprintf(buf + offset, remain, "%s ",
-+		ret = snprintf(buf + offset, remain, "%s%s", sep,
- 			       nftnl_family2str(r->family));
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+		sep = " ";
++	if (output_format != NFTNL_OUTPUT_DEFAULT)
++		return -1;
++
+ 	switch(reg_type) {
+ 	case DATA_VALUE:
+-		switch(output_format) {
+-		case NFTNL_OUTPUT_DEFAULT:
+-			return nftnl_data_reg_value_snprintf_default(buf, size,
+-								   reg, flags);
+-		case NFTNL_OUTPUT_JSON:
+-		case NFTNL_OUTPUT_XML:
+-		default:
+-			break;
+-		}
+-		break;
++		return nftnl_data_reg_value_snprintf_default(buf, size, reg,
++							     flags);
+ 	case DATA_VERDICT:
+ 	case DATA_CHAIN:
+-		switch(output_format) {
+-		case NFTNL_OUTPUT_DEFAULT:
+-			return nftnl_data_reg_verdict_snprintf_def(buf, size,
+-								 reg, flags);
+-		case NFTNL_OUTPUT_JSON:
+-		case NFTNL_OUTPUT_XML:
+-		default:
+-			break;
+-		}
+-		break;
++		return nftnl_data_reg_verdict_snprintf_def(buf, size, reg,
++							   flags);
+ 	default:
+-		break;
++		return -1;
  	}
+-
+-	return -1;
+ }
  
- 	if (r->flags & (1 << NFTNL_RULE_TABLE)) {
--		ret = snprintf(buf + offset, remain, "%s ",
-+		ret = snprintf(buf + offset, remain, "%s%s", sep,
- 			       r->table);
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+		sep = " ";
- 	}
- 
- 	if (r->flags & (1 << NFTNL_RULE_CHAIN)) {
--		ret = snprintf(buf + offset, remain, "%s ",
-+		ret = snprintf(buf + offset, remain, "%s%s", sep,
- 			       r->chain);
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+		sep = " ";
- 	}
- 	if (r->flags & (1 << NFTNL_RULE_HANDLE)) {
--		ret = snprintf(buf + offset, remain, "%llu ",
--			       (unsigned long long)r->handle);
-+		ret = snprintf(buf + offset, remain, "%s%" PRIu64, sep,
-+			       r->handle);
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+		sep = " ";
- 	}
- 
- 	if (r->flags & (1 << NFTNL_RULE_POSITION)) {
--		ret = snprintf(buf + offset, remain, "%llu ",
--			       (unsigned long long)r->position);
-+		ret = snprintf(buf + offset, remain, "%s%" PRIu64, sep,
-+			       r->position);
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+		sep = " ";
- 	}
- 
- 	if (r->flags & (1 << NFTNL_RULE_ID)) {
--		ret = snprintf(buf + offset, remain, "%u ", r->id);
-+		ret = snprintf(buf + offset, remain, "%s%u", sep, r->id);
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+		sep = " ";
- 	}
- 
- 	if (r->flags & (1 << NFTNL_RULE_POSITION_ID)) {
--		ret = snprintf(buf + offset, remain, "%u ", r->position_id);
-+		ret = snprintf(buf + offset, remain, "%s%u", sep,
-+			       r->position_id);
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+		sep = " ";
- 	}
- 
- 	ret = snprintf(buf + offset, remain, "\n");
+ static int nftnl_data_parse_cb(const struct nlattr *attr, void *data)
 -- 
 2.30.1
 
