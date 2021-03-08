@@ -2,109 +2,111 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47234330599
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 02:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64ADE330777
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 06:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbhCHBZN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 7 Mar 2021 20:25:13 -0500
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:45548 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233479AbhCHBYk (ORCPT
+        id S234398AbhCHFgh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 Mar 2021 00:36:37 -0500
+Received: from zucker.schokokeks.org ([178.63.68.96]:41201 "EHLO
+        zucker.schokokeks.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234394AbhCHFgf (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 7 Mar 2021 20:24:40 -0500
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id E0864891B0;
-        Mon,  8 Mar 2021 14:24:34 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1615166674;
-        bh=vZT52xbfVfFNHbppq3XxQvqLpy688PuIoObPORnqI5g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Xd+qdLDARhZ+PIdweC93dg4dUlAJW8MfbBwqfLEBe1aOJZaMy7hn99L1HbG23ZGiQ
-         2qgdajDIlrp6P4sOuUOocvJaCuQt/O0g4MuKqNE+lKJTWujrigkJUP2Mb3beg/X8T5
-         uDby+SI4EXnakWMTPnC4P4b3WmGMijFzUs71lop9W8t8uyIavM76EbsmZm9m5uRzO4
-         Hh+6s29HGzK7eIBH06tms1M8aV7QIQaqFyP8b57JcjnMuXfvz1DbFRnHiBxOYX3pIU
-         YsVwdBbtKoKlUtGMRBVzPRqER5sGlXCGMs++vcH70703t+s/QFjvoIJ1w+NuzpODlX
-         gyKnkHOdCqYJA==
-Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60457cd20003>; Mon, 08 Mar 2021 14:24:34 +1300
-Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
-        by smtp (Postfix) with ESMTP id 957F413EFA5;
-        Mon,  8 Mar 2021 14:24:46 +1300 (NZDT)
-Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
-        id 9FA84340F85; Mon,  8 Mar 2021 14:24:34 +1300 (NZDT)
-From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
-Cc:     subashab@codeaurora.org, netfilter-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Subject: [PATCH v2 3/3] netfilter: x_tables: Use correct memory barriers.
-Date:   Mon,  8 Mar 2021 14:24:13 +1300
-Message-Id: <20210308012413.14383-4-mark.tomlinson@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210308012413.14383-1-mark.tomlinson@alliedtelesis.co.nz>
-References: <20210308012413.14383-1-mark.tomlinson@alliedtelesis.co.nz>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=Ma0BngSExibuLm0IY5UA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+        Mon, 8 Mar 2021 00:36:35 -0500
+Received: from localhost (localhost [::1])
+  (AUTH: PLAIN simon@ruderich.org, TLS: TLSv1.3,256bits,TLS_AES_256_GCM_SHA384)
+  by zucker.schokokeks.org with ESMTPSA
+  id 000000000000008C.000000006045B7E1.00000A2C; Mon, 08 Mar 2021 06:36:33 +0100
+Date:   Mon, 8 Mar 2021 06:36:33 +0100
+From:   Simon Ruderich <simon@ruderich.org>
+To:     Frank Myhr <fmyhr@fhmtech.com>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [RFC PATCH] doc: use symbolic names for chain priorities
+Message-ID: <YEW34W5oCspFnSt+@ruderich.org>
+References: <b1320180e5617ae9910848b7fc17daf9c3edca04.1615109258.git.simon@ruderich.org>
+ <0a7f088c-f813-0425-8bec-d693d95a97a0@fhmtech.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512; protocol="application/pgp-signature"; boundary="=_zucker.schokokeks.org-2604-1615181793-0001-2"
+Content-Disposition: inline
+In-Reply-To: <0a7f088c-f813-0425-8bec-d693d95a97a0@fhmtech.com>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When a new table value was assigned, it was followed by a write memory
-barrier. This ensured that all writes before this point would complete
-before any writes after this point. However, to determine whether the
-rules are unused, the sequence counter is read. To ensure that all
-writes have been done before these reads, a full memory barrier is
-needed, not just a write memory barrier. The same argument applies when
-incrementing the counter, before the rules are read.
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-Changing to using smp_mb() instead of smp_wmb() fixes the kernel panic
-reported in cc00bcaa5899 (which is still present), while still
-maintaining the same speed of replacing tables.
+--=_zucker.schokokeks.org-2604-1615181793-0001-2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The smb_mb() barriers potentially slow the packet path, however testing
-has shown no measurable change in performance on a 4-core MIPS64
-platform.
+On Sun, Mar 07, 2021 at 10:02:52AM -0500, Frank Myhr wrote:
+> Hi Simon,
+>
+> Priority is only relevant _within a given hook_. So comparing priorities =
+of
+> base chains hooked to prerouting and postrouting (as in your example abov=
+e)
+> does not make sense. Please see:
+>
+> https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Base=
+_chain_priority
+> https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks
 
-Fixes: 7f5c6d4f665b ("netfilter: get rid of atomic ops in fast path")
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
----
- include/linux/netfilter/x_tables.h | 2 +-
- net/netfilter/x_tables.c           | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Hello Frank,
 
-diff --git a/include/linux/netfilter/x_tables.h b/include/linux/netfilter=
-/x_tables.h
-index 5deb099d156d..8ec48466410a 100644
---- a/include/linux/netfilter/x_tables.h
-+++ b/include/linux/netfilter/x_tables.h
-@@ -376,7 +376,7 @@ static inline unsigned int xt_write_recseq_begin(void=
-)
- 	 * since addend is most likely 1
- 	 */
- 	__this_cpu_add(xt_recseq.sequence, addend);
--	smp_wmb();
-+	smp_mb();
-=20
- 	return addend;
- }
-diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-index af22dbe85e2c..a2b50596b87e 100644
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -1387,7 +1387,7 @@ xt_replace_table(struct xt_table *table,
- 	table->private =3D newinfo;
-=20
- 	/* make sure all cpus see new ->private value */
--	smp_wmb();
-+	smp_mb();
-=20
- 	/*
- 	 * Even though table entries have now been swapped, other CPU's
+thank you. This helped, somewhat.
+
+The image https://people.netfilter.org/pablo/nf-hooks.png in the
+wiki lists netfilter hooks. Do these correspond to nftables
+hooks? So all prerouting hooks (type nat, type filter, etc.) for
+IP are applied to the green "Prerouting Hook" in the IP part of
+the diagram? And the "Netfilter Internal Priority" applies only
+within such a hook to order them?
+
+If this is correct this leads me to three questions:
+
+Why is there a global order of netfilter hooks (via the priority,
+-450 to INT_MAX)? Wouldn't it also work to set for example
+NF_IP_PRI_NAT_SRC to -400 because it only applies in postrouting
+anyway? Or is it designed that way to "hint" at the packet flow
+(lower numbers first, independent of the actual hooks)?
+
+For type nat and hook prerouting priorities like -100, 0 and 500
+would all work because we have no other hooks in that range.
+However, using priority -250 would be problematic because it puts
+it before the netfilter connection tracking?
+
+What exactly is the difference between the chain types? Is it
+relevant for netfilter or is it only for nftables so it knows
+which rules to expect in the given chain?
+
+Regards
+Simon
 --=20
-2.30.1
++ privacy is necessary
++ using gnupg http://gnupg.org
++ public key id: 0x92FEFDB7E44C32F9
 
+--=_zucker.schokokeks.org-2604-1615181793-0001-2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEO7rfWMMObpFkF3n0kv79t+RMMvkFAmBFt9wACgkQkv79t+RM
+MvnJKw//e5boWg0G6vyQTcWQ2qFz8N7gNCJuZjdvDwPD5dXyZ0K3RRY8D5OThafs
+a3Ux35MgyeO4PQZvrtQZ6o7tfvMOUyTuADAGi3bgZKgDwjiDRneZPGRItx1Jpjtz
+A0C1SF4e/GSxu3Nh56lI6cTp+gKejjoPyGg19CDnnPeQDP/iYzsfBw2UcBmVSr1e
+l+ADQgycL9wKYSMuYV20tcT30NStxzT/mkoOvewaxlrWDGGlwrvNzugNDrOq5HII
+1c25ze5orCItK05eNhTbQ3uaWtbxJNBFSHFve6XsVhQyeyPdxRU3V2MPiII3ll7h
+pqtuqJXANCIAM2qLf13ofrMhf/1HhuJHpwpCk0vKj41WmSRg16yN/VOsjaiUDZah
+frGwMSW94lFRBQZ8PH+681cazDVePezHwTsCQI6Jd1hxkXZ6gowy9gMh/ryYz9Mz
+6Zygboq7SUkoP1S2x9WvhYQzdZMjik53olOlbHuFKr+CDv4nCRpmo79xd8mrLKSX
+pvDIzYl6OS9YPhNbOjDExXKDVjMn7FG/jKyUwAUGkaKyWQZDzIeOQvURBm+Wdd48
+pWkfmod9X+Q9iNwOCPDqbg5INCe8MhGxIhdFLjVNFazs5PKFLYRDpkU7q3Crz1y+
+8qfjR8EWskiWuTBePdflgQvBub6wK/DSV2FAWyv6+4Zg902Bqts=
+=WfKW
+-----END PGP SIGNATURE-----
+
+--=_zucker.schokokeks.org-2604-1615181793-0001-2--
