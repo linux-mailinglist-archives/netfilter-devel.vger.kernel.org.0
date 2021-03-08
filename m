@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7A3331077
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 15:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CAC331074
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 15:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhCHOLw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 8 Mar 2021 09:11:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
+        id S230521AbhCHOLv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 Mar 2021 09:11:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbhCHOLp (ORCPT
+        with ESMTP id S230411AbhCHOLf (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:11:45 -0500
+        Mon, 8 Mar 2021 09:11:35 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F21C06174A
-        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 06:11:45 -0800 (PST)
-Received: from localhost ([::1]:53494 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120BAC06174A
+        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 06:11:35 -0800 (PST)
+Received: from localhost ([::1]:53486 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.94)
         (envelope-from <phil@nwl.cc>)
-        id 1lJGbo-0003Rs-7l; Mon, 08 Mar 2021 15:11:44 +0100
+        id 1lJGbd-0003Ri-LY; Mon, 08 Mar 2021 15:11:33 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 3/5] expr/xfrm: Kill dead code
-Date:   Mon,  8 Mar 2021 15:11:17 +0100
-Message-Id: <20210308141119.17809-4-phil@nwl.cc>
+Subject: [libnftnl PATCH 4/5] rule: Avoid printing trailing spaces
+Date:   Mon,  8 Mar 2021 15:11:18 +0100
+Message-Id: <20210308141119.17809-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210308141119.17809-1-phil@nwl.cc>
 References: <20210308141119.17809-1-phil@nwl.cc>
@@ -34,53 +34,82 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-These functions were used by removed JSON parser only.
+Introduce 'sep' variable to track whether something was printed already.
+While being at it, introduce PRIu64 for 'handle' and 'position'
+attributes.
 
-Fixes: 80077787f8f21 ("src: remove json support")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/expr/xfrm.c | 28 ----------------------------
- 1 file changed, 28 deletions(-)
+ src/rule.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/src/expr/xfrm.c b/src/expr/xfrm.c
-index 8fe5438bd792a..0502b53bb7edc 100644
---- a/src/expr/xfrm.c
-+++ b/src/expr/xfrm.c
-@@ -171,34 +171,6 @@ static const char *xfrmdir2str(uint8_t dir)
- 	return xfrmdir2str_array[dir];
- }
+diff --git a/src/rule.c b/src/rule.c
+index 480afc8ffc1b8..e82cf73e9bbe5 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -551,44 +551,53 @@ static int nftnl_rule_snprintf_default(char *buf, size_t size,
+ {
+ 	struct nftnl_expr *expr;
+ 	int ret, remain = size, offset = 0, i;
++	const char *sep = "";
  
--#ifdef JSON_PARSING
--static uint32_t str2xfrmkey(const char *s)
--{
--	int i;
--
--	for (i = 0;
--	     i < sizeof(xfrmkey2str_array) / sizeof(xfrmkey2str_array[0]);
--	     i++) {
--		if (strcmp(xfrmkey2str_array[i], s) == 0)
--			return i;
--	}
--	return -1;
--}
--
--static int str2xfmrdir(const char *s)
--{
--	int i;
--
--	for (i = 0;
--	     i <  sizeof(xfrmdir2str_array) / sizeof(xfrmdir2str_array[0]);
--	     i++) {
--		if (strcmp(xfrmkey2str_array[i], s) == 0)
--			return i;
--	}
--	return -1;
--}
--#endif
--
- static int
- nftnl_expr_xfrm_snprintf_default(char *buf, size_t size,
- 			       const struct nftnl_expr *e)
+ 	if (r->flags & (1 << NFTNL_RULE_FAMILY)) {
+-		ret = snprintf(buf + offset, remain, "%s ",
++		ret = snprintf(buf + offset, remain, "%s%s", sep,
+ 			       nftnl_family2str(r->family));
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++		sep = " ";
+ 	}
+ 
+ 	if (r->flags & (1 << NFTNL_RULE_TABLE)) {
+-		ret = snprintf(buf + offset, remain, "%s ",
++		ret = snprintf(buf + offset, remain, "%s%s", sep,
+ 			       r->table);
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++		sep = " ";
+ 	}
+ 
+ 	if (r->flags & (1 << NFTNL_RULE_CHAIN)) {
+-		ret = snprintf(buf + offset, remain, "%s ",
++		ret = snprintf(buf + offset, remain, "%s%s", sep,
+ 			       r->chain);
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++		sep = " ";
+ 	}
+ 	if (r->flags & (1 << NFTNL_RULE_HANDLE)) {
+-		ret = snprintf(buf + offset, remain, "%llu ",
+-			       (unsigned long long)r->handle);
++		ret = snprintf(buf + offset, remain, "%s%" PRIu64, sep,
++			       r->handle);
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++		sep = " ";
+ 	}
+ 
+ 	if (r->flags & (1 << NFTNL_RULE_POSITION)) {
+-		ret = snprintf(buf + offset, remain, "%llu ",
+-			       (unsigned long long)r->position);
++		ret = snprintf(buf + offset, remain, "%s%" PRIu64, sep,
++			       r->position);
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++		sep = " ";
+ 	}
+ 
+ 	if (r->flags & (1 << NFTNL_RULE_ID)) {
+-		ret = snprintf(buf + offset, remain, "%u ", r->id);
++		ret = snprintf(buf + offset, remain, "%s%u", sep, r->id);
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++		sep = " ";
+ 	}
+ 
+ 	if (r->flags & (1 << NFTNL_RULE_POSITION_ID)) {
+-		ret = snprintf(buf + offset, remain, "%u ", r->position_id);
++		ret = snprintf(buf + offset, remain, "%s%u", sep,
++			       r->position_id);
+ 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
++		sep = " ";
+ 	}
+ 
+ 	ret = snprintf(buf + offset, remain, "\n");
 -- 
 2.30.1
 
