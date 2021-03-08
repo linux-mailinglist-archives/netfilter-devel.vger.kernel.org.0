@@ -2,28 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A641F331485
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 18:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CAF33148C
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 18:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhCHRTI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 8 Mar 2021 12:19:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
+        id S230046AbhCHRTh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 Mar 2021 12:19:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbhCHRTC (ORCPT
+        with ESMTP id S230502AbhCHRTG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:19:02 -0500
+        Mon, 8 Mar 2021 12:19:06 -0500
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7E7C06174A
-        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 09:19:02 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BC3C06174A
+        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 09:19:06 -0800 (PST)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1lJJX2-0000Lp-V2; Mon, 08 Mar 2021 18:19:01 +0100
+        id 1lJJX7-0000Ly-55; Mon, 08 Mar 2021 18:19:05 +0100
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 4/6] scanner: ipsec: move to own scope
-Date:   Mon,  8 Mar 2021 18:18:35 +0100
-Message-Id: <20210308171837.8542-5-fw@strlen.de>
+Subject: [PATCH nft 5/6] scanner: rt: move to own scope
+Date:   Mon,  8 Mar 2021 18:18:36 +0100
+Message-Id: <20210308171837.8542-6-fw@strlen.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210308171837.8542-1-fw@strlen.de>
 References: <20210308171837.8542-1-fw@strlen.de>
@@ -33,107 +33,98 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-... and hide the ipsec specific tokens from the INITITAL scope.
+classid and nexthop can be moved out of INIT scope.
+Rest are still needed because tehy are used by other expressions as
+well.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/parser.h   |  1 +
- src/parser_bison.y |  9 +++++----
- src/scanner.l      | 13 ++++++++-----
- 3 files changed, 14 insertions(+), 9 deletions(-)
+ include/parser.h   | 1 +
+ src/parser_bison.y | 7 ++++---
+ src/scanner.l      | 9 ++++++---
+ 3 files changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/include/parser.h b/include/parser.h
-index c3a85a4cf4c2..001698db259b 100644
+index 001698db259b..2cdccaf5fb3d 100644
 --- a/include/parser.h
 +++ b/include/parser.h
-@@ -29,6 +29,7 @@ struct parser_state {
- enum startcond_type {
- 	PARSER_SC_BEGIN,
- 	PARSER_SC_EXPR_HASH,
-+	PARSER_SC_EXPR_IPSEC,
+@@ -32,6 +32,7 @@ enum startcond_type {
+ 	PARSER_SC_EXPR_IPSEC,
  	PARSER_SC_EXPR_NUMGEN,
  	PARSER_SC_EXPR_QUEUE,
++	PARSER_SC_EXPR_RT,
  };
+ 
+ struct mnl_socket;
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 423dddfc2c6d..83d78a23b2ac 100644
+index 83d78a23b2ac..0f4d51ad30bc 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -862,6 +862,7 @@ opt_newline		:	NEWLINE
- 			;
- 
- close_scope_hash	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_HASH); };
-+close_scope_ipsec	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_IPSEC); };
+@@ -865,6 +865,7 @@ close_scope_hash	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_HASH);
+ close_scope_ipsec	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_IPSEC); };
  close_scope_numgen	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_NUMGEN); };
  close_scope_queue	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_QUEUE); };
++close_scope_rt		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_RT); };
  
-@@ -4738,7 +4739,7 @@ meta_key_unqualified	:	MARK		{ $$ = NFT_META_MARK; }
- 			|       IIFGROUP	{ $$ = NFT_META_IIFGROUP; }
- 			|       OIFGROUP	{ $$ = NFT_META_OIFGROUP; }
- 			|       CGROUP		{ $$ = NFT_META_CGROUP; }
--			|       IPSEC		{ $$ = NFT_META_SECPATH; }
-+			|       IPSEC	close_scope_ipsec { $$ = NFT_META_SECPATH; }
- 			|       TIME		{ $$ = NFT_META_TIME_NS; }
- 			|       DAY		{ $$ = NFT_META_TIME_DAY; }
- 			|       HOUR		{ $$ = NFT_META_TIME_HOUR; }
-@@ -4837,7 +4838,7 @@ xfrm_state_proto_key	:	DADDR		{ $$ = NFT_XFRM_KEY_DADDR_IP4; }
- 			|	SADDR		{ $$ = NFT_XFRM_KEY_SADDR_IP4; }
+ common_block		:	INCLUDE		QUOTED_STRING	stmt_separator
+ 			{
+@@ -4893,11 +4894,11 @@ nf_key_proto		:	IP		{ $$ = NFPROTO_IPV4; }
+ 			|	IP6		{ $$ = NFPROTO_IPV6; }
  			;
  
--xfrm_expr		:	IPSEC	xfrm_dir	xfrm_spnum	xfrm_state_key
-+xfrm_expr		:	IPSEC	xfrm_dir	xfrm_spnum	xfrm_state_key	close_scope_ipsec
+-rt_expr			:	RT	rt_key
++rt_expr			:	RT	rt_key	close_scope_rt
  			{
- 				if ($3 > 255) {
- 					erec_queue(error(&@3, "value too large"), state->msgs);
-@@ -4845,7 +4846,7 @@ xfrm_expr		:	IPSEC	xfrm_dir	xfrm_spnum	xfrm_state_key
- 				}
- 				$$ = xfrm_expr_alloc(&@$, $2, $3, $4);
+ 				$$ = rt_expr_alloc(&@$, $2, true);
  			}
--			|	IPSEC	xfrm_dir	xfrm_spnum	nf_key_proto	xfrm_state_proto_key
-+			|	IPSEC	xfrm_dir	xfrm_spnum	nf_key_proto	xfrm_state_proto_key	close_scope_ipsec
+-			|	RT	nf_key_proto	rt_key
++			|	RT	nf_key_proto	rt_key	close_scope_rt
  			{
- 				enum nft_xfrm_keys xfrmk = $5;
+ 				enum nft_rt_keys rtk = $3;
  
-@@ -4919,7 +4920,7 @@ rt_expr			:	RT	rt_key
- rt_key			:	CLASSID		{ $$ = NFT_RT_CLASSID; }
- 			|	NEXTHOP		{ $$ = NFT_RT_NEXTHOP4; }
- 			|	MTU		{ $$ = NFT_RT_TCPMSS; }
--			|	IPSEC		{ $$ = NFT_RT_XFRM; }
-+			|	IPSEC	close_scope_ipsec { $$ = NFT_RT_XFRM; }
+@@ -5391,7 +5392,7 @@ hbh_hdr_field		:	NEXTHDR		{ $$ = HBHHDR_NEXTHDR; }
+ 			|	HDRLENGTH	{ $$ = HBHHDR_HDRLENGTH; }
  			;
  
- ct_expr			: 	CT	ct_key
+-rt_hdr_expr		:	RT	rt_hdr_field
++rt_hdr_expr		:	RT	rt_hdr_field	close_scope_rt
+ 			{
+ 				$$ = exthdr_expr_alloc(&@$, &exthdr_rt, $2);
+ 			}
 diff --git a/src/scanner.l b/src/scanner.l
-index 893364b7b9e7..cf3d7d52b4c5 100644
+index cf3d7d52b4c5..faf180ca4701 100644
 --- a/src/scanner.l
 +++ b/src/scanner.l
-@@ -197,6 +197,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
- %option warn
- %option stack
- %s SCANSTATE_EXPR_HASH
-+%s SCANSTATE_EXPR_IPSEC
+@@ -200,6 +200,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ %s SCANSTATE_EXPR_IPSEC
  %s SCANSTATE_EXPR_NUMGEN
  %s SCANSTATE_EXPR_QUEUE
++%s SCANSTATE_EXPR_RT
  
-@@ -594,12 +595,14 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ %%
  
- "exthdr"		{ return EXTHDR; }
+@@ -494,7 +495,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "sctp"			{ return SCTP; }
+ "vtag"			{ return VTAG; }
  
--"ipsec"			{ return IPSEC; }
--"reqid"			{ return REQID; }
--"spnum"			{ return SPNUM; }
-+"ipsec"			{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_IPSEC); return IPSEC; }
-+<SCANSTATE_EXPR_IPSEC>{
-+	"reqid"			{ return REQID; }
-+	"spnum"			{ return SPNUM; }
+-"rt"			{ return RT; }
++"rt"			{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_RT); return RT; }
+ "rt0"			{ return RT0; }
+ "rt2"			{ return RT2; }
+ "srh"			{ return RT4; }
+@@ -536,8 +537,10 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "oifgroup"		{ return OIFGROUP; }
+ "cgroup"		{ return CGROUP; }
  
--"in"			{ return IN; }
--"out"			{ return OUT; }
-+	"in"			{ return IN; }
-+	"out"			{ return OUT; }
+-"classid"		{ return CLASSID; }
+-"nexthop"		{ return NEXTHOP; }
++<SCANSTATE_EXPR_RT>{
++	"classid"		{ return CLASSID; }
++	"nexthop"		{ return NEXTHOP; }
 +}
  
- "secmark"		{ return SECMARK; }
- "secmarks"		{ return SECMARKS; }
+ "ct"			{ return CT; }
+ "l3proto"		{ return L3PROTOCOL; }
 -- 
 2.26.2
 
