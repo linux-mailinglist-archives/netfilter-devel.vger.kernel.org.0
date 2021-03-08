@@ -2,161 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D4C33059A
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 02:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F4F330594
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 02:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233519AbhCHBZN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 7 Mar 2021 20:25:13 -0500
-Received: from smtp-out-so.shaw.ca ([64.59.136.138]:39301 "EHLO
-        smtp-out-so.shaw.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233488AbhCHBYm (ORCPT
+        id S233499AbhCHBZL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 7 Mar 2021 20:25:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232085AbhCHBYj (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 7 Mar 2021 20:24:42 -0500
-Received: from fanir.tuyoix.net ([68.150.218.192])
-        by shaw.ca with ESMTP
-        id J4VelVweWnRGtJ4VflAVZ6; Sun, 07 Mar 2021 18:16:35 -0700
-X-Authority-Analysis: v=2.4 cv=cagXElPM c=1 sm=1 tr=0 ts=60457af3
- a=LfNn7serMq+1bQZBlMsSfQ==:117 a=LfNn7serMq+1bQZBlMsSfQ==:17
- a=dESyimp9J3IA:10 a=M51BFTxLslgA:10 a=3I1X_3ewAAAA:8 a=bS_0ojvJHiWYQsesOFsA:9
- a=QEXdDO2ut3YA:10 a=VG9N9RgkD3hcbI6YpJ1l:22
-Received: from tuyoix.net (fanir.tuyoix.net [192.168.144.16])
-        (authenticated bits=0)
-        by fanir.tuyoix.net (8.15.2/8.15.2) with ESMTPSA id 1281GYuE021021
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO)
-        for <netfilter-devel@vger.kernel.org>; Sun, 7 Mar 2021 18:16:34 -0700
-Date:   Sun, 7 Mar 2021 18:16:34 -0700 (MST)
-From:   =?UTF-8?Q?Marc_Aur=C3=A8le_La_France?= <tsi@tuyoix.net>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf] netfilter REJECT: Fix destination MAC in RST packets
-Message-ID: <alpine.LNX.2.20.2103071736460.15162@fanir.tuyoix.net>
-User-Agent: Alpine 2.20 (LNX 67 2015-01-07)
+        Sun, 7 Mar 2021 20:24:39 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F2EC06174A
+        for <netfilter-devel@vger.kernel.org>; Sun,  7 Mar 2021 17:24:39 -0800 (PST)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id C5933891AE;
+        Mon,  8 Mar 2021 14:24:34 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1615166674;
+        bh=ABabwrGZph5Afo5RyJHi6FSG681DtoXzWh8yvDMtmxY=;
+        h=From:To:Cc:Subject:Date;
+        b=Ag879LDN87DRqRqwn2EjXNq2A3iwG787V1/fCaA4gc3OlUULBEpDXnMK7ygEEsNbZ
+         Dh+FssSN/BKx8AUPo7sNU/zGV4EpSNLWn+yUibVVGzS+LsboieNXEVWd6LDM+LcvDX
+         KHhYnC8V6dqEM88A9apY43HB3lp0b+aDH+Y18pcMebOu7oOE0do1tAaowUJwnqKXin
+         l4TeRUSpVRjpBGwW9Qx2BcSihzIE5ED8HZHXA+uiNF5lhdGD+uMLrOnDqa4YAW9N97
+         dXliRjv4SxOezvBeCcZvSelNotF0ipYIU8RBtX8MD8HdA3kYmYdsjqd4wqhjMpbTVW
+         dZkMIBeFmOtWw==
+Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B60457cd20000>; Mon, 08 Mar 2021 14:24:34 +1300
+Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
+        by smtp (Postfix) with ESMTP id 8FD4713EEFA;
+        Mon,  8 Mar 2021 14:24:46 +1300 (NZDT)
+Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
+        id 97505340F85; Mon,  8 Mar 2021 14:24:34 +1300 (NZDT)
+From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
+Cc:     subashab@codeaurora.org, netfilter-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Subject: [PATCH v2 0/3] Don't use RCU for x_tables synchronization
+Date:   Mon,  8 Mar 2021 14:24:10 +1300
+Message-Id: <20210308012413.14383-1-mark.tomlinson@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463807856-1355267220-1615164351=:15162"
-Content-ID: <alpine.LNX.2.20.2103071816160.20147@fanir.tuyoix.net>
-X-CMAE-Envelope: MS4xfAlUggXO+Vkw6iYMWfVimnrGBXXeYqEC1JZiwG9m/m7oShSaDosDVpHf0gCKg9tZDvyF+WvcadtBF3hE9Mmwm1Qu6cCu4iAp5WER0tADOq4BT+3ZX2Q1
- iGX0RAo1F9YMxg7jT8DJN3LYtnlTazsjfeA0uFn5J/BLho8aBkBUFU2yiF+HEYf14YcIg3SuI7MlOYHRkq63+wHOWQQHyLj8zAE=
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=VwQbUJbxAAAA:8 a=LRamHRUzJ3vSQRNnU0gA:9 a=AjGcO6oz07-iQ99wixmX:22 a=BPzZvq435JnGatEyYwdK:22
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
----1463807856-1355267220-1615164351=:15162
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-ID: <alpine.LNX.2.20.2103071750301.15181@fanir.tuyoix.net>
+The patches to change to using RCU synchronization in x_tables cause
+updating tables to be slowed down by an order of magnitude. This has
+been tried before, see https://lore.kernel.org/patchwork/patch/151796/
+and ultimately was rejected. As mentioned in the patch description, a
+different method can be used to ensure ordering of reads/writes. This
+can simply be done by changing from smp_wmb() to smp_mb().
 
-In the non-bridge case, the REJECT target code assumes the REJECTed
-packets were originally emitted by the local host, but that's not
-necessarily true when the local host is the default route of a subnet
-it is on, resulting in RST packets being sent out with an incorrect
-destination MAC.  Address this by refactoring the handling of bridged
-packets which deals with a similar issue.  Modulo patch fuzz, the
-following applies to v5 and later kernels.
+changes in v2:
+- Update commit messages only
 
-Please Reply-To-All.
+Mark Tomlinson (3):
+  Revert "netfilter: x_tables: Update remaining dereference to RCU"
+  Revert "netfilter: x_tables: Switch synchronization to RCU"
+  netfilter: x_tables: Use correct memory barriers.
 
-Thanks.
+ include/linux/netfilter/x_tables.h |  7 ++---
+ net/ipv4/netfilter/arp_tables.c    | 16 +++++-----
+ net/ipv4/netfilter/ip_tables.c     | 16 +++++-----
+ net/ipv6/netfilter/ip6_tables.c    | 16 +++++-----
+ net/netfilter/x_tables.c           | 49 +++++++++++++++++++++---------
+ 5 files changed, 60 insertions(+), 44 deletions(-)
 
-Marc.
+--=20
+2.30.1
 
-Signed-off-by: Marc Aurèle La France <tsi@tuyoix.net>
-Tested-by: Marc Aurèle La France <tsi@tuyoix.net>
-
---- a/net/ipv4/netfilter/nf_reject_ipv4.c
-+++ b/net/ipv4/netfilter/nf_reject_ipv4.c
-@@ -237,7 +237,7 @@ static int nf_reject_fill_skb_dst(struct sk_buff *skb_in)
- void nf_send_reset(struct net *net, struct sock *sk, struct sk_buff *oldskb,
- 		   int hook)
- {
--	struct net_device *br_indev __maybe_unused;
-+	struct net_device *indev;
- 	struct sk_buff *nskb;
- 	struct iphdr *niph;
- 	const struct tcphdr *oth;
-@@ -279,18 +279,20 @@ void nf_send_reset(struct net *net, struct sock *sk, struct sk_buff *oldskb,
-
- 	nf_ct_attach(nskb, oldskb);
-
--#if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
--	/* If we use ip_local_out for bridged traffic, the MAC source on
--	 * the RST will be ours, instead of the destination's.  This confuses
--	 * some routers/firewalls, and they drop the packet.  So we need to
--	 * build the eth header using the original destination's MAC as the
--	 * source, and send the RST packet directly.
-+	/* Swap the source and destination MACs of the RST packet from that
-+	 * of the REJECTed packet's, if available from it.  Otherwise, let
-+	 * ip_local_out decide.
- 	 */
--	br_indev = nf_bridge_get_physindev(oldskb);
--	if (br_indev) {
-+#if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
-+	indev = nf_bridge_get_physindev(oldskb);
-+	if (!indev)
-+#endif
-+		indev = oldskb->dev;
-+
-+	if (indev) {
- 		struct ethhdr *oeth = eth_hdr(oldskb);
-
--		nskb->dev = br_indev;
-+		nskb->dev = indev;
- 		niph->tot_len = htons(nskb->len);
- 		ip_send_check(niph);
- 		if (dev_hard_header(nskb, nskb->dev, ntohs(nskb->protocol),
-@@ -298,7 +300,6 @@ void nf_send_reset(struct net *net, struct sock *sk, struct sk_buff *oldskb,
- 			goto free_nskb;
- 		dev_queue_xmit(nskb);
- 	} else
--#endif
- 		ip_local_out(net, nskb->sk, nskb);
-
- 	return;
---- a/net/ipv6/netfilter/nf_reject_ipv6.c
-+++ b/net/ipv6/netfilter/nf_reject_ipv6.c
-@@ -278,7 +278,7 @@ static int nf_reject6_fill_skb_dst(struct sk_buff *skb_in)
- void nf_send_reset6(struct net *net, struct sock *sk, struct sk_buff *oldskb,
- 		    int hook)
- {
--	struct net_device *br_indev __maybe_unused;
-+	struct net_device *indev;
- 	struct sk_buff *nskb;
- 	struct tcphdr _otcph;
- 	const struct tcphdr *otcph;
-@@ -346,18 +346,20 @@ void nf_send_reset6(struct net *net, struct sock *sk, struct sk_buff *oldskb,
-
- 	nf_ct_attach(nskb, oldskb);
-
--#if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
--	/* If we use ip6_local_out for bridged traffic, the MAC source on
--	 * the RST will be ours, instead of the destination's.  This confuses
--	 * some routers/firewalls, and they drop the packet.  So we need to
--	 * build the eth header using the original destination's MAC as the
--	 * source, and send the RST packet directly.
-+	/* Swap the source and destination MACs of the RST packet from that
-+	 * of the REJECTed packet's, if available from it.  Otherwise, let
-+	 * ip6_local_out decide.
- 	 */
--	br_indev = nf_bridge_get_physindev(oldskb);
--	if (br_indev) {
-+#if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
-+	indev = nf_bridge_get_physindev(oldskb);
-+	if (!indev)
-+#endif
-+		indev = oldskb->dev;
-+
-+	if (indev) {
- 		struct ethhdr *oeth = eth_hdr(oldskb);
-
--		nskb->dev = br_indev;
-+		nskb->dev = indev;
- 		nskb->protocol = htons(ETH_P_IPV6);
- 		ip6h->payload_len = htons(sizeof(struct tcphdr));
- 		if (dev_hard_header(nskb, nskb->dev, ntohs(nskb->protocol),
-@@ -367,7 +369,6 @@ void nf_send_reset6(struct net *net, struct sock *sk, struct sk_buff *oldskb,
- 		}
- 		dev_queue_xmit(nskb);
- 	} else
--#endif
- 		ip6_local_out(net, sk, nskb);
- }
- EXPORT_SYMBOL_GPL(nf_send_reset6);
----1463807856-1355267220-1615164351=:15162--
