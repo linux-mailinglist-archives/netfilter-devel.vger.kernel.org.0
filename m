@@ -2,28 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB99633146A
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 18:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE02C331488
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Mar 2021 18:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhCHRTG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 8 Mar 2021 12:19:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37238 "EHLO
+        id S230385AbhCHRTH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 Mar 2021 12:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbhCHRSt (ORCPT
+        with ESMTP id S230126AbhCHRSy (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:18:49 -0500
+        Mon, 8 Mar 2021 12:18:54 -0500
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BBDC06174A
-        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 09:18:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D52C06174A
+        for <netfilter-devel@vger.kernel.org>; Mon,  8 Mar 2021 09:18:53 -0800 (PST)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1lJJWq-0000LS-9v; Mon, 08 Mar 2021 18:18:48 +0100
+        id 1lJJWu-0000Lb-Gy; Mon, 08 Mar 2021 18:18:52 +0100
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 1/6] scanner: remove unused tokens
-Date:   Mon,  8 Mar 2021 18:18:32 +0100
-Message-Id: <20210308171837.8542-2-fw@strlen.de>
+Subject: [PATCH nft 2/6] scanner: introduce start condition stack
+Date:   Mon,  8 Mar 2021 18:18:33 +0100
+Message-Id: <20210308171837.8542-3-fw@strlen.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210308171837.8542-1-fw@strlen.de>
 References: <20210308171837.8542-1-fw@strlen.de>
@@ -33,64 +33,164 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Add a small initial chunk of flex start conditionals.
+
+This starts with two low-hanging fruits, numgen and j/symhash.
+
+NUMGEN and HASH start conditions are entered from flex when
+the corresponding expression token is encountered.
+
+Flex returns to the INIT condition when the bison parser
+has seen a complete numgen/hash statement.
+
+This intentionally uses a stack rather than BEGIN()
+to eventually support nested states.
+
+The scanner_pop_start_cond() function argument is not used yet, but
+will need to be used later to deal with nesting.
+
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- src/parser_bison.y | 6 ------
- src/scanner.l      | 6 ------
- 2 files changed, 12 deletions(-)
+ include/parser.h   |  8 ++++++++
+ src/parser_bison.y | 11 +++++++----
+ src/scanner.l      | 36 +++++++++++++++++++++++++++++-------
+ 3 files changed, 44 insertions(+), 11 deletions(-)
 
+diff --git a/include/parser.h b/include/parser.h
+index 9baa3a4db789..b2ebd7aa226c 100644
+--- a/include/parser.h
++++ b/include/parser.h
+@@ -26,6 +26,12 @@ struct parser_state {
+ 	struct list_head		*cmds;
+ };
+ 
++enum startcond_type {
++	PARSER_SC_BEGIN,
++	PARSER_SC_EXPR_HASH,
++	PARSER_SC_EXPR_NUMGEN,
++};
++
+ struct mnl_socket;
+ 
+ extern void parser_init(struct nft_ctx *nft, struct parser_state *state,
+@@ -45,4 +51,6 @@ extern void scanner_push_buffer(void *scanner,
+ 				const struct input_descriptor *indesc,
+ 				const char *buffer);
+ 
++extern void scanner_pop_start_cond(void *scanner, enum startcond_type sc);
++
+ #endif /* NFTABLES_PARSER_H */
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index bfb181747ca1..abfcccc4a021 100644
+index abfcccc4a021..1ac4dbe43c84 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -511,9 +511,6 @@ int nft_lex(void *, void *, void *);
- %token SECMARK			"secmark"
- %token SECMARKS			"secmarks"
+@@ -861,6 +861,9 @@ opt_newline		:	NEWLINE
+ 		 	|	/* empty */
+ 			;
  
--%token NANOSECOND		"nanosecond"
--%token MICROSECOND		"microsecond"
--%token MILLISECOND		"millisecond"
- %token SECOND			"second"
- %token MINUTE			"minute"
- %token HOUR			"hour"
-@@ -565,11 +562,8 @@ int nft_lex(void *, void *, void *);
- %token EXTHDR			"exthdr"
++close_scope_hash	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_HASH); };
++close_scope_numgen	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_NUMGEN); };
++
+ common_block		:	INCLUDE		QUOTED_STRING	stmt_separator
+ 			{
+ 				if (scanner_include_file(nft, scanner, $2, &@$) < 0) {
+@@ -4811,7 +4814,7 @@ numgen_type		:	INC		{ $$ = NFT_NG_INCREMENTAL; }
+ 			|	RANDOM		{ $$ = NFT_NG_RANDOM; }
+ 			;
  
- %token IPSEC		"ipsec"
--%token MODE			"mode"
- %token REQID		"reqid"
- %token SPNUM		"spnum"
--%token TRANSPORT	"transport"
--%token TUNNEL		"tunnel"
+-numgen_expr		:	NUMGEN	numgen_type	MOD	NUM	offset_opt
++numgen_expr		:	NUMGEN	numgen_type	MOD	NUM	offset_opt	close_scope_numgen
+ 			{
+ 				$$ = numgen_expr_alloc(&@$, $2, $4, $5);
+ 			}
+@@ -4868,17 +4871,17 @@ xfrm_expr		:	IPSEC	xfrm_dir	xfrm_spnum	xfrm_state_key
+ 			}
+ 			;
  
- %token IN			"in"
- %token OUT			"out"
+-hash_expr		:	JHASH		expr	MOD	NUM	SEED	NUM	offset_opt
++hash_expr		:	JHASH		expr	MOD	NUM	SEED	NUM	offset_opt	close_scope_hash
+ 			{
+ 				$$ = hash_expr_alloc(&@$, $4, true, $6, $7, NFT_HASH_JENKINS);
+ 				$$->hash.expr = $2;
+ 			}
+-			|	JHASH		expr	MOD	NUM	offset_opt
++			|	JHASH		expr	MOD	NUM	offset_opt	close_scope_hash
+ 			{
+ 				$$ = hash_expr_alloc(&@$, $4, false, 0, $5, NFT_HASH_JENKINS);
+ 				$$->hash.expr = $2;
+ 			}
+-			|	SYMHASH		MOD	NUM	offset_opt
++			|	SYMHASH		MOD	NUM	offset_opt	close_scope_hash
+ 			{
+ 				$$ = hash_expr_alloc(&@$, $3, false, 0, $4, NFT_HASH_SYM);
+ 			}
 diff --git a/src/scanner.l b/src/scanner.l
-index 8bde1fbe912d..1da3b5e0628c 100644
+index 1da3b5e0628c..94225c296a3b 100644
 --- a/src/scanner.l
 +++ b/src/scanner.l
-@@ -355,9 +355,6 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
- "quota"			{ return QUOTA; }
- "used"			{ return USED; }
+@@ -98,6 +98,8 @@ static void reset_pos(struct parser_state *state, struct location *loc)
+ 	state->indesc->column		= 1;
+ }
  
--"nanosecond"		{ return NANOSECOND; }
--"microsecond"		{ return MICROSECOND; }
--"millisecond"		{ return MILLISECOND; }
- "second"		{ return SECOND; }
- "minute"		{ return MINUTE; }
- "hour"			{ return HOUR; }
-@@ -585,11 +582,8 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
- "exthdr"		{ return EXTHDR; }
++static void scanner_push_start_cond(void *scanner, enum startcond_type type);
++
+ #define YY_USER_ACTION {					\
+ 	update_pos(yyget_extra(yyscanner), yylloc, yyleng);	\
+ 	update_offset(yyget_extra(yyscanner), yylloc, yyleng);	\
+@@ -193,6 +195,9 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ %option yylineno
+ %option nodefault
+ %option warn
++%option stack
++%s SCANSTATE_EXPR_HASH
++%s SCANSTATE_EXPR_NUMGEN
  
- "ipsec"			{ return IPSEC; }
--"mode"			{ return MODE; }
- "reqid"			{ return REQID; }
- "spnum"			{ return SPNUM; }
--"transport"		{ return TRANSPORT; }
--"tunnel"		{ return TUNNEL; }
+ %%
  
- "in"			{ return IN; }
- "out"			{ return OUT; }
+@@ -548,15 +553,21 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "state"			{ return STATE; }
+ "status"		{ return STATUS; }
+ 
+-"numgen"		{ return NUMGEN; }
+-"inc"			{ return INC; }
+-"mod"			{ return MOD; }
+-"offset"		{ return OFFSET; }
++"numgen"		{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_NUMGEN); return NUMGEN; }
++<SCANSTATE_EXPR_NUMGEN>{
++	"inc"		{ return INC; }
++}
+ 
+-"jhash"			{ return JHASH; }
+-"symhash"		{ return SYMHASH; }
+-"seed"			{ return SEED; }
++"jhash"			{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_HASH); return JHASH; }
++"symhash"		{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_HASH); return SYMHASH; }
+ 
++<SCANSTATE_EXPR_HASH>{
++	"seed"		{ return SEED; }
++}
++<SCANSTATE_EXPR_HASH,SCANSTATE_EXPR_NUMGEN>{
++	"mod"		{ return MOD; }
++	"offset"	{ return OFFSET; }
++}
+ "dup"			{ return DUP; }
+ "fwd"			{ return FWD; }
+ 
+@@ -967,3 +978,14 @@ void scanner_destroy(struct nft_ctx *nft)
+ 	input_descriptor_list_destroy(state);
+ 	yylex_destroy(nft->scanner);
+ }
++
++static void scanner_push_start_cond(void *scanner, enum startcond_type type)
++{
++	yy_push_state((int)type, scanner);
++}
++
++void scanner_pop_start_cond(void *scanner, enum startcond_type t)
++{
++	yy_pop_state(scanner);
++	(void)yy_top_state(scanner); /* suppress gcc warning wrt. unused function */
++}
 -- 
 2.26.2
 
