@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C255332AE7
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Mar 2021 16:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 368A5332AEE
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Mar 2021 16:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhCIPqD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 9 Mar 2021 10:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
+        id S231229AbhCIPqa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 9 Mar 2021 10:46:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231901AbhCIPpy (ORCPT
+        with ESMTP id S231195AbhCIPp7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:45:54 -0500
+        Tue, 9 Mar 2021 10:45:59 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE26AC06174A
-        for <netfilter-devel@vger.kernel.org>; Tue,  9 Mar 2021 07:45:53 -0800 (PST)
-Received: from localhost ([::1]:56670 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C4DC06174A
+        for <netfilter-devel@vger.kernel.org>; Tue,  9 Mar 2021 07:45:59 -0800 (PST)
+Received: from localhost ([::1]:56676 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.94)
         (envelope-from <phil@nwl.cc>)
-        id 1lJeYS-00016w-Bl; Tue, 09 Mar 2021 16:45:52 +0100
+        id 1lJeYX-000171-Ko; Tue, 09 Mar 2021 16:45:57 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 06/10] expr/data_reg: Drop output_format parameter
-Date:   Tue,  9 Mar 2021 16:45:12 +0100
-Message-Id: <20210309154516.4987-7-phil@nwl.cc>
+Subject: [libnftnl PATCH 07/10] obj: Drop type parameter from snprintf callback
+Date:   Tue,  9 Mar 2021 16:45:13 +0100
+Message-Id: <20210309154516.4987-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210309154516.4987-1-phil@nwl.cc>
 References: <20210309154516.4987-1-phil@nwl.cc>
@@ -34,198 +34,407 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The function nftnl_data_reg_snprintf is exclusively called with
-NFTNL_OUTPUT_DEFAULT as parameter, others are not supported - just drop
-it.
+Objects don't support any other output type than NFTNL_OUTPUT_DEFAULT,
+so just drop the parameter.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- include/data_reg.h   |  3 +--
- src/expr/bitwise.c   |  6 +++---
- src/expr/cmp.c       |  2 +-
- src/expr/data_reg.c  | 31 ++++++-------------------------
- src/expr/immediate.c |  6 +++---
- src/expr/range.c     |  4 ++--
- src/set_elem.c       |  3 ---
- 7 files changed, 16 insertions(+), 39 deletions(-)
+ include/obj.h        |  2 +-
+ src/obj/counter.c    | 22 ++--------------------
+ src/obj/ct_expect.c  | 22 +++-------------------
+ src/obj/ct_helper.c  | 22 +++-------------------
+ src/obj/ct_timeout.c | 22 +++-------------------
+ src/obj/limit.c      | 23 +++--------------------
+ src/obj/quota.c      | 23 +++--------------------
+ src/obj/secmark.c    | 23 +++--------------------
+ src/obj/synproxy.c   | 20 +++-----------------
+ src/obj/tunnel.c     | 21 ++-------------------
+ src/object.c         |  3 +--
+ 11 files changed, 27 insertions(+), 176 deletions(-)
 
-diff --git a/include/data_reg.h b/include/data_reg.h
-index 0d6b77829cf89..6d2dc66858bf8 100644
---- a/include/data_reg.h
-+++ b/include/data_reg.h
-@@ -31,8 +31,7 @@ union nftnl_data_reg {
+diff --git a/include/obj.h b/include/obj.h
+index d9e856ab2bfbf..60dc8533b30f3 100644
+--- a/include/obj.h
++++ b/include/obj.h
+@@ -109,7 +109,7 @@ struct obj_ops {
+ 	const void *(*get)(const struct nftnl_obj *e, uint16_t type, uint32_t *data_len);
+ 	int	(*parse)(struct nftnl_obj *e, struct nlattr *attr);
+ 	void	(*build)(struct nlmsghdr *nlh, const struct nftnl_obj *e);
+-	int	(*snprintf)(char *buf, size_t len, uint32_t type, uint32_t flags, const struct nftnl_obj *e);
++	int	(*snprintf)(char *buf, size_t len, uint32_t flags, const struct nftnl_obj *e);
+ };
  
- int nftnl_data_reg_snprintf(char *buf, size_t size,
- 			    const union nftnl_data_reg *reg,
--			    uint32_t output_format, uint32_t flags,
--			    int reg_type);
-+			    uint32_t flags, int reg_type);
- struct nlattr;
- 
- int nftnl_parse_data(union nftnl_data_reg *data, struct nlattr *attr, int *type);
-diff --git a/src/expr/bitwise.c b/src/expr/bitwise.c
-index 139f25f86b802..1d46a97757dfd 100644
---- a/src/expr/bitwise.c
-+++ b/src/expr/bitwise.c
-@@ -220,14 +220,14 @@ nftnl_expr_bitwise_snprintf_bool(char *buf, size_t size,
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 	ret = nftnl_data_reg_snprintf(buf + offset, remain, &bitwise->mask,
--				      NFTNL_OUTPUT_DEFAULT, 0, DATA_VALUE);
-+				      0, DATA_VALUE);
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 	ret = snprintf(buf + offset, remain, ") ^ ");
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 	ret = nftnl_data_reg_snprintf(buf + offset, remain, &bitwise->xor,
--				      NFTNL_OUTPUT_DEFAULT, 0, DATA_VALUE);
-+				      0, DATA_VALUE);
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 	return offset;
-@@ -243,7 +243,7 @@ nftnl_expr_bitwise_snprintf_shift(char *buf, size_t size, const char *op,
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 	ret = nftnl_data_reg_snprintf(buf + offset, remain, &bitwise->data,
--				      NFTNL_OUTPUT_DEFAULT, 0, DATA_VALUE);
-+				      0, DATA_VALUE);
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 	ret = snprintf(buf + offset, remain, ") ");
-diff --git a/src/expr/cmp.c b/src/expr/cmp.c
-index 6b1c0fa3ac97f..04b9f25806725 100644
---- a/src/expr/cmp.c
-+++ b/src/expr/cmp.c
-@@ -188,7 +188,7 @@ nftnl_expr_cmp_snprintf(char *buf, size_t size,
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 	ret = nftnl_data_reg_snprintf(buf + offset, remain, &cmp->data,
--				    NFTNL_OUTPUT_DEFAULT, 0, DATA_VALUE);
-+				      0, DATA_VALUE);
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 	return offset;
-diff --git a/src/expr/data_reg.c b/src/expr/data_reg.c
-index d3ccc612ce812..bafdc6f3dadd3 100644
---- a/src/expr/data_reg.c
-+++ b/src/expr/data_reg.c
-@@ -63,38 +63,19 @@ nftnl_data_reg_verdict_snprintf_def(char *buf, size_t size,
- 
- int nftnl_data_reg_snprintf(char *buf, size_t size,
- 			    const union nftnl_data_reg *reg,
--			    uint32_t output_format, uint32_t flags,
--			    int reg_type)
-+			    uint32_t flags, int reg_type)
- {
- 	switch(reg_type) {
- 	case DATA_VALUE:
--		switch(output_format) {
--		case NFTNL_OUTPUT_DEFAULT:
--			return nftnl_data_reg_value_snprintf_default(buf, size,
--								   reg, flags);
--		case NFTNL_OUTPUT_JSON:
--		case NFTNL_OUTPUT_XML:
--		default:
--			break;
--		}
--		break;
-+		return nftnl_data_reg_value_snprintf_default(buf, size,
-+							     reg, flags);
- 	case DATA_VERDICT:
- 	case DATA_CHAIN:
--		switch(output_format) {
--		case NFTNL_OUTPUT_DEFAULT:
--			return nftnl_data_reg_verdict_snprintf_def(buf, size,
--								 reg, flags);
--		case NFTNL_OUTPUT_JSON:
--		case NFTNL_OUTPUT_XML:
--		default:
--			break;
--		}
--		break;
-+		return nftnl_data_reg_verdict_snprintf_def(buf, size,
-+							   reg, flags);
- 	default:
--		break;
-+		return -1;
- 	}
--
--	return -1;
+ extern struct obj_ops obj_ops_counter;
+diff --git a/src/obj/counter.c b/src/obj/counter.c
+index 1baba4e149414..ef0cd203e3a1b 100644
+--- a/src/obj/counter.c
++++ b/src/obj/counter.c
+@@ -109,8 +109,8 @@ nftnl_obj_counter_parse(struct nftnl_obj *e, struct nlattr *attr)
+ 	return 0;
  }
  
- static int nftnl_data_parse_cb(const struct nlattr *attr, void *data)
-diff --git a/src/expr/immediate.c b/src/expr/immediate.c
-index 08ddd22a54c5f..241aad3b5507c 100644
---- a/src/expr/immediate.c
-+++ b/src/expr/immediate.c
-@@ -195,17 +195,17 @@ nftnl_expr_immediate_snprintf(char *buf, size_t len,
+-static int nftnl_obj_counter_snprintf_default(char *buf, size_t len,
+-					       const struct nftnl_obj *e)
++static int nftnl_obj_counter_snprintf(char *buf, size_t len, uint32_t flags,
++				      const struct nftnl_obj *e)
+ {
+ 	struct nftnl_obj_counter *ctr = nftnl_obj_data(e);
  
- 	if (e->flags & (1 << NFTNL_EXPR_IMM_DATA)) {
- 		ret = nftnl_data_reg_snprintf(buf + offset, remain, &imm->data,
--					NFTNL_OUTPUT_DEFAULT, flags, DATA_VALUE);
-+					      flags, DATA_VALUE);
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+@@ -118,24 +118,6 @@ static int nftnl_obj_counter_snprintf_default(char *buf, size_t len,
+ 			ctr->pkts, ctr->bytes);
+ }
  
- 	} else if (e->flags & (1 << NFTNL_EXPR_IMM_VERDICT)) {
- 		ret = nftnl_data_reg_snprintf(buf + offset, remain, &imm->data,
--				NFTNL_OUTPUT_DEFAULT, flags, DATA_VERDICT);
-+					      flags, DATA_VERDICT);
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+-static int nftnl_obj_counter_snprintf(char *buf, size_t len, uint32_t type,
+-				       uint32_t flags,
+-				       const struct nftnl_obj *e)
+-{
+-	if (len)
+-		buf[0] = '\0';
+-
+-	switch (type) {
+-	case NFTNL_OUTPUT_DEFAULT:
+-		return nftnl_obj_counter_snprintf_default(buf, len, e);
+-	case NFTNL_OUTPUT_XML:
+-	case NFTNL_OUTPUT_JSON:
+-	default:
+-		break;
+-	}
+-	return -1;
+-}
+-
+ struct obj_ops obj_ops_counter = {
+ 	.name		= "counter",
+ 	.type		= NFT_OBJECT_COUNTER,
+diff --git a/src/obj/ct_expect.c b/src/obj/ct_expect.c
+index 0b4eb8fe541d9..c29f99c419dcb 100644
+--- a/src/obj/ct_expect.c
++++ b/src/obj/ct_expect.c
+@@ -151,8 +151,9 @@ nftnl_obj_ct_expect_parse(struct nftnl_obj *e, struct nlattr *attr)
+ 	return 0;
+ }
  
- 	} else if (e->flags & (1 << NFTNL_EXPR_IMM_CHAIN)) {
- 		ret = nftnl_data_reg_snprintf(buf + offset, remain, &imm->data,
--					NFTNL_OUTPUT_DEFAULT, flags, DATA_CHAIN);
-+					      flags, DATA_CHAIN);
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 	}
- 
-diff --git a/src/expr/range.c b/src/expr/range.c
-index a93b2ea74d6d4..eed48829a246d 100644
---- a/src/expr/range.c
-+++ b/src/expr/range.c
-@@ -195,11 +195,11 @@ static int nftnl_expr_range_snprintf(char *buf, size_t size,
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 	ret = nftnl_data_reg_snprintf(buf + offset, remain, &range->data_from,
--				      NFTNL_OUTPUT_DEFAULT, 0, DATA_VALUE);
-+				      0, DATA_VALUE);
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 	ret = nftnl_data_reg_snprintf(buf + offset, remain, &range->data_to,
--				      NFTNL_OUTPUT_DEFAULT, 0, DATA_VALUE);
-+				      0, DATA_VALUE);
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
+-static int nftnl_obj_ct_expect_snprintf_default(char *buf, size_t len,
+-						const struct nftnl_obj *e)
++static int nftnl_obj_ct_expect_snprintf(char *buf, size_t len,
++					uint32_t flags,
++					const struct nftnl_obj *e)
+ {
+ 	int ret = 0;
+ 	int offset = 0, remain = len;
+@@ -187,23 +188,6 @@ static int nftnl_obj_ct_expect_snprintf_default(char *buf, size_t len,
  	return offset;
-diff --git a/src/set_elem.c b/src/set_elem.c
-index ad528e28475a7..061469a74789c 100644
---- a/src/set_elem.c
-+++ b/src/set_elem.c
-@@ -710,7 +710,6 @@ int nftnl_set_elem_snprintf_default(char *buf, size_t size,
+ }
+ 
+-static int nftnl_obj_ct_expect_snprintf(char *buf, size_t len, uint32_t type,
+-					uint32_t flags,
+-					const struct nftnl_obj *e)
+-{
+-	if (len)
+-		buf[0] = '\0';
+-
+-	switch (type) {
+-	case NFTNL_OUTPUT_DEFAULT:
+-		return nftnl_obj_ct_expect_snprintf_default(buf, len, e);
+-	case NFTNL_OUTPUT_JSON:
+-	default:
+-		break;
+-	}
+-	return -1;
+-}
+-
+ struct obj_ops obj_ops_ct_expect = {
+ 	.name		= "ct_expect",
+ 	.type		= NFT_OBJECT_CT_EXPECT,
+diff --git a/src/obj/ct_helper.c b/src/obj/ct_helper.c
+index d91f636d4c64c..c52032a9895c3 100644
+--- a/src/obj/ct_helper.c
++++ b/src/obj/ct_helper.c
+@@ -131,8 +131,9 @@ nftnl_obj_ct_helper_parse(struct nftnl_obj *e, struct nlattr *attr)
+ 	return 0;
+ }
+ 
+-static int nftnl_obj_ct_helper_snprintf_default(char *buf, size_t len,
+-					       const struct nftnl_obj *e)
++static int nftnl_obj_ct_helper_snprintf(char *buf, size_t len,
++				       uint32_t flags,
++				       const struct nftnl_obj *e)
+ {
+ 	struct nftnl_obj_ct_helper *helper = nftnl_obj_data(e);
+ 
+@@ -140,23 +141,6 @@ static int nftnl_obj_ct_helper_snprintf_default(char *buf, size_t len,
+ 			helper->name, helper->l3proto, helper->l4proto);
+ }
+ 
+-static int nftnl_obj_ct_helper_snprintf(char *buf, size_t len, uint32_t type,
+-				       uint32_t flags,
+-				       const struct nftnl_obj *e)
+-{
+-	if (len)
+-		buf[0] = '\0';
+-
+-	switch (type) {
+-	case NFTNL_OUTPUT_DEFAULT:
+-		return nftnl_obj_ct_helper_snprintf_default(buf, len, e);
+-	case NFTNL_OUTPUT_JSON:
+-	default:
+-		break;
+-	}
+-	return -1;
+-}
+-
+ struct obj_ops obj_ops_ct_helper = {
+ 	.name		= "ct_helper",
+ 	.type		= NFT_OBJECT_CT_HELPER,
+diff --git a/src/obj/ct_timeout.c b/src/obj/ct_timeout.c
+index c3f577bdecd90..a2e5b4fe6de99 100644
+--- a/src/obj/ct_timeout.c
++++ b/src/obj/ct_timeout.c
+@@ -257,8 +257,9 @@ nftnl_obj_ct_timeout_parse(struct nftnl_obj *e, struct nlattr *attr)
+ 	return 0;
+ }
+ 
+-static int nftnl_obj_ct_timeout_snprintf_default(char *buf, size_t len,
+-					       const struct nftnl_obj *e)
++static int nftnl_obj_ct_timeout_snprintf(char *buf, size_t len,
++				       uint32_t flags,
++				       const struct nftnl_obj *e)
+ {
+ 	int ret = 0;
+ 	int offset = 0, remain = len;
+@@ -307,23 +308,6 @@ static int nftnl_obj_ct_timeout_snprintf_default(char *buf, size_t len,
+ 	return offset;
+ }
+ 
+-static int nftnl_obj_ct_timeout_snprintf(char *buf, size_t len, uint32_t type,
+-				       uint32_t flags,
+-				       const struct nftnl_obj *e)
+-{
+-	if (len)
+-		buf[0] = '\0';
+-
+-	switch (type) {
+-	case NFTNL_OUTPUT_DEFAULT:
+-		return nftnl_obj_ct_timeout_snprintf_default(buf, len, e);
+-	case NFTNL_OUTPUT_JSON:
+-	default:
+-		break;
+-	}
+-	return -1;
+-}
+-
+ struct obj_ops obj_ops_ct_timeout = {
+ 	.name		= "ct_timeout",
+ 	.type		= NFT_OBJECT_CT_TIMEOUT,
+diff --git a/src/obj/limit.c b/src/obj/limit.c
+index 60b01592e4c50..8b40f9d0976ff 100644
+--- a/src/obj/limit.c
++++ b/src/obj/limit.c
+@@ -148,8 +148,9 @@ static int nftnl_obj_limit_parse(struct nftnl_obj *e, struct nlattr *attr)
+ 	return 0;
+ }
+ 
+-static int nftnl_obj_limit_snprintf_default(char *buf, size_t len,
+-					    const struct nftnl_obj *e)
++static int nftnl_obj_limit_snprintf(char *buf, size_t len,
++				    uint32_t flags,
++				    const struct nftnl_obj *e)
+ {
+ 	struct nftnl_obj_limit *limit = nftnl_obj_data(e);
+ 
+@@ -158,24 +159,6 @@ static int nftnl_obj_limit_snprintf_default(char *buf, size_t len,
+ 			limit->burst, limit->type, limit->flags);
+ }
+ 
+-static int nftnl_obj_limit_snprintf(char *buf, size_t len, uint32_t type,
+-				    uint32_t flags,
+-				    const struct nftnl_obj *e)
+-{
+-	if (len)
+-		buf[0] = '\0';
+-
+-	switch (type) {
+-	case NFTNL_OUTPUT_DEFAULT:
+-		return nftnl_obj_limit_snprintf_default(buf, len, e);
+-	case NFTNL_OUTPUT_XML:
+-	case NFTNL_OUTPUT_JSON:
+-	default:
+-		break;
+-	}
+-	return -1;
+-}
+-
+ struct obj_ops obj_ops_limit = {
+ 	.name		= "limit",
+ 	.type		= NFT_OBJECT_LIMIT,
+diff --git a/src/obj/quota.c b/src/obj/quota.c
+index 1914037d3f70d..8ab33005daeea 100644
+--- a/src/obj/quota.c
++++ b/src/obj/quota.c
+@@ -125,8 +125,9 @@ nftnl_obj_quota_parse(struct nftnl_obj *e, struct nlattr *attr)
+ 	return 0;
+ }
+ 
+-static int nftnl_obj_quota_snprintf_default(char *buf, size_t len,
+-					       const struct nftnl_obj *e)
++static int nftnl_obj_quota_snprintf(char *buf, size_t len,
++				       uint32_t flags,
++				       const struct nftnl_obj *e)
+ {
+ 	struct nftnl_obj_quota *quota = nftnl_obj_data(e);
+ 
+@@ -134,24 +135,6 @@ static int nftnl_obj_quota_snprintf_default(char *buf, size_t len,
+ 			quota->bytes, quota->flags);
+ }
+ 
+-static int nftnl_obj_quota_snprintf(char *buf, size_t len, uint32_t type,
+-				       uint32_t flags,
+-				       const struct nftnl_obj *e)
+-{
+-	if (len)
+-		buf[0] = '\0';
+-
+-	switch (type) {
+-	case NFTNL_OUTPUT_DEFAULT:
+-		return nftnl_obj_quota_snprintf_default(buf, len, e);
+-	case NFTNL_OUTPUT_XML:
+-	case NFTNL_OUTPUT_JSON:
+-	default:
+-		break;
+-	}
+-	return -1;
+-}
+-
+ struct obj_ops obj_ops_quota = {
+ 	.name		= "quota",
+ 	.type		= NFT_OBJECT_QUOTA,
+diff --git a/src/obj/secmark.c b/src/obj/secmark.c
+index e27b5faf2d39f..2ccc803bacf4e 100644
+--- a/src/obj/secmark.c
++++ b/src/obj/secmark.c
+@@ -98,30 +98,13 @@ nftnl_obj_secmark_parse(struct nftnl_obj *e, struct nlattr *attr)
+ 	return 0;
+ }
+ 
+-static int nftnl_obj_secmark_snprintf_default(char *buf, size_t len,
+-					       const struct nftnl_obj *e)
+-{
+-	struct nftnl_obj_secmark *secmark = nftnl_obj_data(e);
+-
+-	return snprintf(buf, len, "context %s ", secmark->ctx);
+-}
+-
+-static int nftnl_obj_secmark_snprintf(char *buf, size_t len, uint32_t type,
++static int nftnl_obj_secmark_snprintf(char *buf, size_t len,
+ 				       uint32_t flags,
+ 				       const struct nftnl_obj *e)
+ {
+-	if (len)
+-		buf[0] = '\0';
++	struct nftnl_obj_secmark *secmark = nftnl_obj_data(e);
+ 
+-	switch (type) {
+-	case NFTNL_OUTPUT_DEFAULT:
+-		return nftnl_obj_secmark_snprintf_default(buf, len, e);
+-	case NFTNL_OUTPUT_XML:
+-	case NFTNL_OUTPUT_JSON:
+-	default:
+-		break;
+-	}
+-	return -1;
++	return snprintf(buf, len, "context %s ", secmark->ctx);
+ }
+ 
+ struct obj_ops obj_ops_secmark = {
+diff --git a/src/obj/synproxy.c b/src/obj/synproxy.c
+index 56ebc85b02d63..e3a991bc6e023 100644
+--- a/src/obj/synproxy.c
++++ b/src/obj/synproxy.c
+@@ -117,8 +117,9 @@ static int nftnl_obj_synproxy_parse(struct nftnl_obj *e, struct nlattr *attr)
+ 	return 0;
+ }
+ 
+-static int nftnl_obj_synproxy_snprintf_default(char *buf, size_t size,
+-					       const struct nftnl_obj *e)
++static int nftnl_obj_synproxy_snprintf(char *buf, size_t size,
++				    uint32_t flags,
++				    const struct nftnl_obj *e)
+ {
+ 	struct nftnl_obj_synproxy *synproxy = nftnl_obj_data(e);
+         int ret, offset = 0, len = size;
+@@ -133,21 +134,6 @@ static int nftnl_obj_synproxy_snprintf_default(char *buf, size_t size,
+         return offset;
+ }
+ 
+-static int nftnl_obj_synproxy_snprintf(char *buf, size_t len, uint32_t type,
+-				    uint32_t flags,
+-				    const struct nftnl_obj *e)
+-{
+-	switch (type) {
+-	case NFTNL_OUTPUT_DEFAULT:
+-		return nftnl_obj_synproxy_snprintf_default(buf, len, e);
+-	case NFTNL_OUTPUT_XML:
+-	case NFTNL_OUTPUT_JSON:
+-	default:
+-		break;
+-	}
+-	return -1;
+-}
+-
+ struct obj_ops obj_ops_synproxy = {
+ 	.name		= "synproxy",
+ 	.type		= NFT_OBJECT_SYNPROXY,
+diff --git a/src/obj/tunnel.c b/src/obj/tunnel.c
+index 100aa099c6e97..5ede6bd545b38 100644
+--- a/src/obj/tunnel.c
++++ b/src/obj/tunnel.c
+@@ -530,31 +530,14 @@ nftnl_obj_tunnel_parse(struct nftnl_obj *e, struct nlattr *attr)
+ 	return 0;
+ }
+ 
+-static int nftnl_obj_tunnel_snprintf_default(char *buf, size_t len,
+-					     const struct nftnl_obj *e)
++static int nftnl_obj_tunnel_snprintf(char *buf, size_t len,
++				     uint32_t flags, const struct nftnl_obj *e)
+ {
+ 	struct nftnl_obj_tunnel *tun = nftnl_obj_data(e);
+ 
+ 	return snprintf(buf, len, "id %u ", tun->id);
+ }
+ 
+-static int nftnl_obj_tunnel_snprintf(char *buf, size_t len, uint32_t type,
+-				     uint32_t flags, const struct nftnl_obj *e)
+-{
+-	if (len)
+-		buf[0] = '\0';
+-
+-	switch (type) {
+-	case NFTNL_OUTPUT_DEFAULT:
+-		return nftnl_obj_tunnel_snprintf_default(buf, len, e);
+-	case NFTNL_OUTPUT_XML:
+-	case NFTNL_OUTPUT_JSON:
+-	default:
+-		break;
+-	}
+-	return -1;
+-}
+-
+ struct obj_ops obj_ops_tunnel = {
+ 	.name		= "tunnel",
+ 	.type		= NFT_OBJECT_TUNNEL,
+diff --git a/src/object.c b/src/object.c
+index 46e79168daa76..2d15629eb0f95 100644
+--- a/src/object.c
++++ b/src/object.c
+@@ -396,8 +396,7 @@ static int nftnl_obj_snprintf_dflt(char *buf, size_t size,
  	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
  
- 	ret = nftnl_data_reg_snprintf(buf + offset, remain, &e->key,
--				      NFTNL_OUTPUT_DEFAULT,
- 				      DATA_F_NOPFX, DATA_VALUE);
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
-@@ -719,7 +718,6 @@ int nftnl_set_elem_snprintf_default(char *buf, size_t size,
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 		ret = nftnl_data_reg_snprintf(buf + offset, remain, &e->key_end,
--					      NFTNL_OUTPUT_DEFAULT,
- 					      DATA_F_NOPFX, DATA_VALUE);
+ 	if (obj->ops) {
+-		ret = obj->ops->snprintf(buf + offset, remain, type, flags,
+-					 obj);
++		ret = obj->ops->snprintf(buf + offset, remain, flags, obj);
  		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
  	}
-@@ -728,7 +726,6 @@ int nftnl_set_elem_snprintf_default(char *buf, size_t size,
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
- 	ret = nftnl_data_reg_snprintf(buf + offset, remain, &e->data,
--				      NFTNL_OUTPUT_DEFAULT,
- 				      DATA_F_NOPFX, dregtype);
- 	SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 
+ 	ret = snprintf(buf + offset, remain, "]");
 -- 
 2.30.1
 
