@@ -2,72 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56574333CB8
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Mar 2021 13:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB7B333FC8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Mar 2021 15:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhCJMhd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 10 Mar 2021 07:37:33 -0500
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:41960 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhCJMhM (ORCPT
+        id S232471AbhCJOBF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 10 Mar 2021 09:01:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231519AbhCJOBA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 10 Mar 2021 07:37:12 -0500
-Received: by mail-wm1-f43.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso10599122wmi.0
-        for <netfilter-devel@vger.kernel.org>; Wed, 10 Mar 2021 04:37:11 -0800 (PST)
+        Wed, 10 Mar 2021 09:01:00 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524F4C061763
+        for <netfilter-devel@vger.kernel.org>; Wed, 10 Mar 2021 06:01:00 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id bm21so38890277ejb.4
+        for <netfilter-devel@vger.kernel.org>; Wed, 10 Mar 2021 06:01:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=5rh8dKjg0pKk0KNWl2xSO7nhxy+c296f7suB18dXI8U=;
+        b=URiq+ec3+BxcG1NDx3dMF3sCE/FNaQYIdgLFH+Ugvgm6YQyxL+u7SWKSSFp/RO4guK
+         kfOwaifi9xoV4igMGLN5ZDIljq44SsViGDV6Lh6xWTGrUHVNgtnytdMbJpmb/MWCPL/G
+         rYkYn81Wc/cbxjHQUBv6XnpXrGs7fHIklfeIYFiTztnwXHD3U2Z/RcePZMQ44b6EKDq1
+         F019lMoHqczecTXCbSJuIEx8rxLRMDaMmfTBRgQz4gftRZJK3ZzTi5dEPM6p043nCYNa
+         brKUx19YQ7cifm/BmPGLamwNKLcMK8v8QueCVXlE88WVgSHrzKvIJpAJFwNNIEzAGO5Y
+         S+Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=1qDF5KUTarv2NXAP0Zn2THXreYHEwEjE36vB+/71HQs=;
-        b=IPk2K1iMcQ+4tuI4hmtEWJBs4vxgqqjYVsc2fcAhW3ntUPYvRgsOTQVo+Cv5vCS2cj
-         1rOQ2HwU5Zi4hUD6KbHba0+p1XuIQuFPSSW2NdEoDoKGaLj2TSPCF+0QXANwft9sTjM6
-         9EQU6vnLvBD5WR0QF0znOzstarYwXptAXVhleHk99J/huC79WxIEgJI3dkCST2h3o44d
-         8RhGKP0DUMAFRJHcybHHCK/g+CEC2IvNqFlvU8bQDgcvbXWtszgY/A48/OFOO+4dUa0j
-         Ee0fjUC7e2kQNFzD2IdOpemFfRvK8Q5UnWwncw355aUY09xoLyLxBWclVemkUW+5ila9
-         ihYg==
-X-Gm-Message-State: AOAM531ne/TJg/RRJelHOBUqQz47BFW5gNC9MtmKsh4C4dM2GUa9M2hJ
-        AdSShqT3sUBdznUqBboDxVr11mRc+l/xMA==
-X-Google-Smtp-Source: ABdhPJwip2QIIxhDZTOEiY6szGVjtvG21gt6qHw6hqx1iddEdY6xMC5xRGFsuf94lDVYs1e8WsZ9Zg==
-X-Received: by 2002:a1c:9a48:: with SMTP id c69mr3095280wme.157.1615379831382;
-        Wed, 10 Mar 2021 04:37:11 -0800 (PST)
-Received: from localhost (79.red-80-24-233.staticip.rima-tde.net. [80.24.233.79])
-        by smtp.gmail.com with ESMTPSA id s83sm9129747wmf.26.2021.03.10.04.37.10
-        for <netfilter-devel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 04:37:10 -0800 (PST)
-Subject: [conntrack-tools PATCH 2/2] tests: conntrackd: silence sysctl
-From:   Arturo Borrero Gonzalez <arturo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Date:   Wed, 10 Mar 2021 13:37:10 +0100
-Message-ID: <161537982997.41950.2854340685406654847.stgit@endurance>
-In-Reply-To: <161537982333.41950.4295612522904541534.stgit@endurance>
-References: <161537982333.41950.4295612522904541534.stgit@endurance>
-User-Agent: StGit/0.19
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=5rh8dKjg0pKk0KNWl2xSO7nhxy+c296f7suB18dXI8U=;
+        b=LSe/QwjzpTsXPayxb7f++v6NVJAI1iIGolxAnncyrt3++r3bkyxPwV3MyCh/a+7Y8z
+         4jBOmeCeQTmzftHyHmIixdXYOiGBe8iR62IoHjju+Z0AowKyHvwJhS2vhQmhs6Ifk2IL
+         DC6thF9+rK6IIf9N+9Ow9s/Ntv2gMC2jEJgBhPprtrOLktrZRvYV9wKU3RZMst40veJw
+         sbj46V92rwyoBkiJXMnd0XZ9V6LU8Bv7/Qp0Z2S94QJJVf7TLaJTgfJ14CLEl+ZXjPZG
+         /1Hx0NfO8pkh/st/oJyFrIxqBDX/kWbyU4XXU/UvKA9aAN/axX0p4zh7EUJA8QfP2eKX
+         WhTw==
+X-Gm-Message-State: AOAM533Ztnc8rcRQLdcqiKhXnI114hyKcOzRZIEv1udAmMtEQxDfkPCK
+        8+A+C57YwNQ9ARMJZaHF34RHHIMx5F6w3c4Du94=
+X-Google-Smtp-Source: ABdhPJzdCl60z5tvz9t/ueyvD28Q6xqjKxCjtyFN1dzri/wBDU2lX4uVVzwAl8Icl7LFjxN/Mm2wCc1Xiy2XfINvsa4=
+X-Received: by 2002:a17:906:2551:: with SMTP id j17mr3749097ejb.441.1615384858773;
+ Wed, 10 Mar 2021 06:00:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ab4:92c3:0:0:0:0:0 with HTTP; Wed, 10 Mar 2021 06:00:58
+ -0800 (PST)
+From:   JOHN UMAH <pastorjohnumnewaposchurch@gmail.com>
+Date:   Wed, 10 Mar 2021 14:00:58 +0000
+Message-ID: <CANw=0K4=AFv2ivmE+e06nTO1iaw83yG-FrN1SHOdnXyYO3o5pw@mail.gmail.com>
+Subject: Caleb Leo Foundation,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We are not interested in sysctl echoing the value it just set.
+Caleb Leo Foundation
+1501 K St NWWashington DC 20005
+United States of America
+You've received $ 1,300,000 from the Calab Leo Foundation course
+Humanitarian aid / poverty reduction program.
+In the case of claims for this gift, please fill in the following form;
 
-Signed-off-by: Arturo Borrero Gonzalez <arturo@netfilter.org>
----
- tests/conntrackd/scenarios/basic/network-setup.sh |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tests/conntrackd/scenarios/basic/network-setup.sh b/tests/conntrackd/scenarios/basic/network-setup.sh
-index ff8df26..7f2f78a 100755
---- a/tests/conntrackd/scenarios/basic/network-setup.sh
-+++ b/tests/conntrackd/scenarios/basic/network-setup.sh
-@@ -25,7 +25,7 @@ start () {
- 	ip -net nsr1 link set up dev veth0
- 	ip -net nsr1 link set up dev veth1
- 	ip -net nsr1 route add default via 192.168.10.2
--	ip netns exec nsr1 sysctl net.ipv4.ip_forward=1
-+	ip netns exec nsr1 sysctl -q net.ipv4.ip_forward=1
- 
- 	ip -net nsr1 addr add 192.168.100.2/24 dev veth2
- 	ip -net nsr1 link set up dev veth2
-
+Full name:
+Telephone number:
+State:
+Country:
+kindly respond for more details.
+in God We Trust.
