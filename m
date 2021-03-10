@@ -2,107 +2,112 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C9A3330DB
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Mar 2021 22:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0481A333CB7
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 Mar 2021 13:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbhCIVZF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 9 Mar 2021 16:25:05 -0500
-Received: from correo.us.es ([193.147.175.20]:37498 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231814AbhCIVYr (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 9 Mar 2021 16:24:47 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 06F77E34C1
-        for <netfilter-devel@vger.kernel.org>; Tue,  9 Mar 2021 22:24:46 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id E8C43DA78A
-        for <netfilter-devel@vger.kernel.org>; Tue,  9 Mar 2021 22:24:45 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id DD6AEDA73D; Tue,  9 Mar 2021 22:24:45 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-105.9 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        FORGED_MUA_MOZILLA,NICE_REPLY_A,SMTPAUTH_US2,URIBL_BLOCKED,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 8FF7EDA704;
-        Tue,  9 Mar 2021 22:24:43 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 09 Mar 2021 22:24:43 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 71EDB42DF564;
-        Tue,  9 Mar 2021 22:24:43 +0100 (CET)
-Date:   Tue, 9 Mar 2021 22:24:43 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org, fmyhr@fhmtech.com,
-        stefanh@hafenthal.de
-Subject: Re: [PATCH RFC nf-next 0/2] ct helper object name matching
-Message-ID: <20210309212443.GA13962@salvia>
-References: <20210309210134.13620-1-pablo@netfilter.org>
- <20210309211817.GG10808@breakpoint.cc>
+        id S230081AbhCJMhd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 10 Mar 2021 07:37:33 -0500
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:36785 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232112AbhCJMhG (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 10 Mar 2021 07:37:06 -0500
+Received: by mail-wr1-f48.google.com with SMTP id u14so23145097wri.3
+        for <netfilter-devel@vger.kernel.org>; Wed, 10 Mar 2021 04:37:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=vuVt5QcG8C2+Dpx7+Ib7265GaQAy0gGfGDMJW3ZnrTU=;
+        b=rlAKB/u0TafcRZjDxrxYhs+ABewmVB96urNRPKM7epH/0hkOfYfsLFqZmFuPswkEkK
+         dHt4HwzW7BYntiHMNZOWfBj6llnj5+DefS8APmKAAUiGdUVxVbEQqf+tCyHW438YfbvA
+         cUHX6OwGhgpolOjqv8DVgSRs3SLcjdE3DsdvxIj8BJP0LfiGtdOxz5JLhcxcbYUQzvnV
+         3ifae/kClsO1OhKijhVSejhMW8OZEUQh3QSxahF8V+saJ807zJxvMq6I85chOb73iMVY
+         V837fu6eCuutZguF1ZOIyOfvE33JKAWPZ9ZHvVj26ly9yN5lT1li4YS1svjZ9e5DH3eh
+         1PAA==
+X-Gm-Message-State: AOAM533NeadRMZ+TaU/3+vI5tL+eJq8imghdXj/dTRiOFcWWvcuVyWOU
+        X2bm80GeizpwKxHYnP+L8wSTeksRiPQJ/Q==
+X-Google-Smtp-Source: ABdhPJylqDGWmro6oMcRNKu2siZ6lngFmw9Hv+hEuyhW1n+ERuB0IZOAj2H33RvmW2e+eBBE1SvCOw==
+X-Received: by 2002:a5d:640b:: with SMTP id z11mr3239209wru.327.1615379824834;
+        Wed, 10 Mar 2021 04:37:04 -0800 (PST)
+Received: from localhost (79.red-80-24-233.staticip.rima-tde.net. [80.24.233.79])
+        by smtp.gmail.com with ESMTPSA id g202sm9141455wme.20.2021.03.10.04.37.03
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 04:37:04 -0800 (PST)
+Subject: [conntrack-tools PATCH 1/2] tests: conntrackd: add testcase for
+ missing hashtable buckets and max entries
+From:   Arturo Borrero Gonzalez <arturo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Date:   Wed, 10 Mar 2021 13:37:03 +0100
+Message-ID: <161537982333.41950.4295612522904541534.stgit@endurance>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210309211817.GG10808@breakpoint.cc>
-User-Agent: Mozilla/5.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 10:18:17PM +0100, Florian Westphal wrote:
-> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > From nftables, existing (inconsistent) syntax can be left in place for
-> > backward compatibility. The new proposed syntax would more explicitly
-> > refer to match the user wants to do, e.g.
-> > 
-> > 	ct helper name set "ftp-21"
-> 
-> That would be same as 'ct helper set "ftp-21" that we use at the
-> moment, i.e. this generates same byte code, correct?
+This test case covers missing hashtable buckets and max entries configuration options. There should
+be a value for them, otherwise the daemon segfaults.
 
-Yes.
+Signed-off-by: Arturo Borrero Gonzalez <arturo@netfilter.org>
+---
+ tests/conntrackd/scenarios.yaml |    5 +++++
+ tests/conntrackd/tests.yaml     |   31 +++++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
 
-> > 	ct helper name "ftp-21"
-> 
-> I see, kernel ct extension gains a pointer to the objref name.
-> 
-> > For NFT_CT_HELPER_TYPE (formerly NFT_CT_HELPER), syntax would be:
-> > 
-> > 	ct helper type "ftp"
-> 
-> That would be the 'new' name for existing 'ct helper', so same bytecode,
-> correct?
+diff --git a/tests/conntrackd/scenarios.yaml b/tests/conntrackd/scenarios.yaml
+index 6c425d0..65d6fa4 100644
+--- a/tests/conntrackd/scenarios.yaml
++++ b/tests/conntrackd/scenarios.yaml
+@@ -1,3 +1,8 @@
++- name: empty
++  start:
++    - ":"
++  stop:
++    - ":"
+ - name: simple_stats
+   start:
+     - rm -f /var/lock/conntrack.lock
+diff --git a/tests/conntrackd/tests.yaml b/tests/conntrackd/tests.yaml
+index 872269d..307f38f 100644
+--- a/tests/conntrackd/tests.yaml
++++ b/tests/conntrackd/tests.yaml
+@@ -50,3 +50,34 @@
+     - timeout 5 bash -c -- '
+       while ! ip netns exec nsr2 $CONNTRACK -L -p icmp 2>/dev/null | grep -q icmp
+       ; do sleep 0.5 ; done'
++
++- name: hash_defaults_segfault
++  scenario: empty
++  test:
++    - rm -f /var/lock/conntrack.lock
++    - |
++      cat << EOF > /tmp/conntrackd_notrack_hash_defaults
++      Sync {
++        Mode NOTRACK { }
++        Multicast {
++          IPv4_address 225.0.0.50
++          Group 3780
++          IPv4_interface 127.0.0.1
++          Interface lo
++          SndSocketBuffer 1249280
++          RcvSocketBuffer 1249280
++          Checksum on
++        }
++      }
++      General {
++        LogFile on
++        Syslog on
++        LockFile /var/lock/conntrackd.lock
++        UNIX { Path /var/run/conntrackd.sock }
++        NetlinkBufferSize 2097152
++        NetlinkBufferSizeMaxGrowth 8388608
++      }
++      EOF
++    - $CONNTRACKD -C /tmp/conntrackd_notrack_hash_defaults -d
++    - $CONNTRACKD -C /tmp/conntrackd_notrack_hash_defaults -s | grep -q "cache"
++    - $CONNTRACKD -C /tmp/conntrackd_notrack_hash_defaults -k
 
-Yes.
-
-> > It should be also possible to support for:
-> > 
-> > 	ct helper type set "ftp"
-> 
-> IIRC another argument for objref usage was that this won't work
-> with set infra.
-
-Right. The (missing) implicit object support would make it fit into
-the set infrastructure.
-
-> > via implicit object, this infrastructure is missing in the kernel
-> > though, the idea would be to create an implicit object that is attached
-> > to the rule.  Such object would be released when the rule is removed.
-> 
-> Ah, I see.
-> 
-> Yes, that would work.
-> 
-> > Let me know.
-> 
-> Looks good to me.
-
-Thanks for reviewing.
