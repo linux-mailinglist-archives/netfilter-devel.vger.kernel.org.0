@@ -2,132 +2,128 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDEA3368EF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Mar 2021 01:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BAD336AD2
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Mar 2021 04:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhCKAgw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 10 Mar 2021 19:36:52 -0500
-Received: from correo.us.es ([193.147.175.20]:50216 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230143AbhCKAgb (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 10 Mar 2021 19:36:31 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id B05DD12E837
-        for <netfilter-devel@vger.kernel.org>; Thu, 11 Mar 2021 01:36:30 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 9C5BDDA78D
-        for <netfilter-devel@vger.kernel.org>; Thu, 11 Mar 2021 01:36:30 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 91AABDA72F; Thu, 11 Mar 2021 01:36:30 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 69138DA73D;
-        Thu, 11 Mar 2021 01:36:28 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Thu, 11 Mar 2021 01:36:28 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pneira@us.es)
-        by entrada.int (Postfix) with ESMTPSA id 336CB42DC6E2;
-        Thu, 11 Mar 2021 01:36:28 +0100 (CET)
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
-        Felix Fietkau <nbd@nbd.name>
-Subject: [PATCH net-next 23/23] net: ethernet: mtk_eth_soc: fix parsing packets in GDM
-Date:   Thu, 11 Mar 2021 01:36:04 +0100
-Message-Id: <20210311003604.22199-24-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210311003604.22199-1-pablo@netfilter.org>
-References: <20210311003604.22199-1-pablo@netfilter.org>
+        id S230397AbhCKDjw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 10 Mar 2021 22:39:52 -0500
+Received: from smtp-out-no.shaw.ca ([64.59.134.12]:34748 "EHLO
+        smtp-out-no.shaw.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230346AbhCKDjr (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 10 Mar 2021 22:39:47 -0500
+Received: from fanir.tuyoix.net ([68.150.218.192])
+        by shaw.ca with ESMTP
+        id KCAslx8A52SWTKCAtlQltv; Wed, 10 Mar 2021 20:39:47 -0700
+X-Authority-Analysis: v=2.4 cv=fdJod2cF c=1 sm=1 tr=0 ts=60499103
+ a=LfNn7serMq+1bQZBlMsSfQ==:117 a=LfNn7serMq+1bQZBlMsSfQ==:17
+ a=dESyimp9J3IA:10 a=M51BFTxLslgA:10 a=nlC_4_pT8q9DhB4Ho9EA:9
+ a=JsWhZaN1S4tDNjAKWpUA:9 a=QEXdDO2ut3YA:10
+Received: from CLUIJ (cluij.tuyoix.net [192.168.144.15])
+        (authenticated bits=0)
+        by fanir.tuyoix.net (8.15.2/8.15.2) with ESMTPSA id 12B3djYh009650
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 10 Mar 2021 20:39:46 -0700
+Date:   Wed, 10 Mar 2021 20:39:44 -0700 (Mountain Standard Time)
+From:   =?UTF-8?Q?Marc_Aur=C3=A8le_La_France?= <tsi@tuyoix.net>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf] netfilter REJECT: Fix destination MAC in RST
+ packets
+In-Reply-To: <20210311000212.GA21480@salvia>
+Message-ID: <alpine.WNT.2.20.2103102037030.2800@CLUIJ>
+References: <alpine.LNX.2.20.2103071736460.15162@fanir.tuyoix.net> <20210308102510.GA23497@salvia> <alpine.WNT.2.20.2103080908550.2772@CLUIJ> <20210309013621.GA27206@salvia> <alpine.WNT.2.20.2103082114130.1604@CLUIJ> <20210309102740.GA30899@salvia>
+ <alpine.WNT.2.20.2103101640090.3708@CLUIJ> <20210311000212.GA21480@salvia>
+User-Agent: Alpine 2.20 (WNT 67 2015-01-07)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: multipart/mixed; BOUNDARY="244749-10899-1615433984=:2800"
+X-CMAE-Envelope: MS4xfNBc5n49S8W/bm2Z2uhPBkGiJXCFKtRif+GH454s0GavP+OtaGYETzAmMUer48x/e+Y2oA2Igppq4wwaok/mnyjXmOr3VOpp1cZSP0p3NBC82+g+ywqW
+ HQElGABygQyRFH/RTN5ZJTq8pgyzxG5QM96qgFt98u/u3CC1e/FJ/tKw8AmVSSyPpfEkc0y0DOWX5mGHiFq/eWC3RxUYxakFcDbpEkWOCQIknsgmImEjDR3N
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-When using DSA, set the special tag in GDM ingress control to allow the MAC
-to parse packets properly earlier. This affects rx DMA source port reporting.
+--244749-10899-1615433984=:2800
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 15 +++++++++------
- drivers/net/ethernet/mediatek/mtk_eth_soc.h |  2 ++
- 2 files changed, 11 insertions(+), 6 deletions(-)
+On Thu, 11 Mar 2021, Pablo Neira Ayuso wrote:
+> On Wed, Mar 10, 2021 at 04:51:26PM -0700, Marc Aurèle La France wrote:
+>> On Tue, 9 Mar 2021, Pablo Neira Ayuso wrote:
+>>> On Mon, Mar 08, 2021 at 09:25:28PM -0700, Marc Aurèle La France wrote:
+>>>> On Tue, 9 Mar 2021, Pablo Neira Ayuso wrote:
+>>>>> On Mon, Mar 08, 2021 at 09:21:20AM -0700, Marc Aurèle La France wrote:
+>>>>>> On Mon, 8 Mar 2021, Pablo Neira Ayuso wrote:
+>>>>>>> On Sun, Mar 07, 2021 at 06:16:34PM -0700, Marc Aurèle La France wrote:
+>>>>>>>> In the non-bridge case, the REJECT target code assumes the REJECTed
+>>>>>>>> packets were originally emitted by the local host, but that's not
+>>>>>>>> necessarily true when the local host is the default route of a subnet
+>>>>>>>> it is on, resulting in RST packets being sent out with an incorrect
+>>>>>>>> destination MAC.  Address this by refactoring the handling of bridged
+>>>>>>>> packets which deals with a similar issue.  Modulo patch fuzz, the
+>>>>>>>> following applies to v5 and later kernels.
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index 2e6d79b2ff24..0396f0db855f 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -19,6 +19,7 @@
- #include <linux/interrupt.h>
- #include <linux/pinctrl/devinfo.h>
- #include <linux/phylink.h>
-+#include <net/dsa.h>
- 
- #include "mtk_eth_soc.h"
- 
-@@ -1264,13 +1265,12 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 			break;
- 
- 		/* find out which mac the packet come from. values start at 1 */
--		if (MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628)) {
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628) ||
-+		    (trxd.rxd4 & RX_DMA_SPECIAL_TAG))
- 			mac = 0;
--		} else {
--			mac = (trxd.rxd4 >> RX_DMA_FPORT_SHIFT) &
--				RX_DMA_FPORT_MASK;
--			mac--;
--		}
-+		else
-+			mac = ((trxd.rxd4 >> RX_DMA_FPORT_SHIFT) &
-+			       RX_DMA_FPORT_MASK) - 1;
- 
- 		if (unlikely(mac < 0 || mac >= MTK_MAC_COUNT ||
- 			     !eth->netdev[mac]))
-@@ -2233,6 +2233,9 @@ static void mtk_gdm_config(struct mtk_eth *eth, u32 config)
- 
- 		val |= config;
- 
-+		if (!i && eth->netdev[0] && netdev_uses_dsa(eth->netdev[0]))
-+			val |= MTK_GDMA_SPECIAL_TAG;
-+
- 		mtk_w32(eth, val, MTK_GDMA_FWD_CFG(i));
- 	}
- 	/* Reset and enable PSE */
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 72757977ccfb..1a6750c08bb9 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -85,6 +85,7 @@
- 
- /* GDM Exgress Control Register */
- #define MTK_GDMA_FWD_CFG(x)	(0x500 + (x * 0x1000))
-+#define MTK_GDMA_SPECIAL_TAG	BIT(24)
- #define MTK_GDMA_ICS_EN		BIT(22)
- #define MTK_GDMA_TCS_EN		BIT(21)
- #define MTK_GDMA_UCS_EN		BIT(20)
-@@ -315,6 +316,7 @@
- #define RX_DMA_L4_VALID_PDMA	BIT(30)		/* when PDMA is used */
- #define RX_DMA_FPORT_SHIFT	19
- #define RX_DMA_FPORT_MASK	0x7
-+#define RX_DMA_SPECIAL_TAG	BIT(22)
- 
- /* PHY Indirect Access Control registers */
- #define MTK_PHY_IAC		0x10004
--- 
-2.20.1
+>>>>>>> The code this patch updates is related to BRIDGE_NETFILTER. Your patch
+>>>>>>> description refers to the non-bridge case. What are you trying to
+>>>>>>> achieve?
 
+>>>>>> Via DHCP, my subnet's default route is a Linux system so that it can monitor
+>>>>>> all outbound traffic.  By doing so, for example, I have determined that my
+>>>>>> Android phone connects to Facebook despite the fact that I have no such app
+>>>>>> installed.  I want to know, and control, what other behind-the-scenes
+>>>>>> (under-handed) traffic devices on my subnet generate.
+
+>>>>>>> dev_queue_xmit() path should not be exercised from the prerouting
+>>>>>>> chain, packets generated from the IP later must follow the
+>>>>>>> ip_local_out() path.
+
+>>>>>> Well, I can tell you dev_queue_xmit() does in fact work in prerouting
+>>>>>> chains, as it must for the bridging case.  The only potential problem I've
+>>>>>> found so far is that the RST packet doesn't go through any netfilter hooks.
+
+>>>>> That's the issue, Netfilter rejects code from the IP layer, so the
+>>>>> packets follows the ip_local_out() path.
+
+>>>> ... which sets an incorrect destination MAC.  Also, in this case, netfilter
+>>>> doesn't reject any such thing.  It doesn't even "see" the RST packet
+>>>> dev_queue_xmit() sends out.  That's OK as there is no further need to
+>>>> process such a packet.
+
+>>> dev_queue_xmit() skips the policy in the local out path for the
+>>> generated RST packet. If you want to plain reject using
+>>> dev_queue_xmit() then you have to use the ingress hook.
+
+>>>> At least, the device whose connection request is being denied
+>>>> doesn't hang anymore...
+
+>>> The neighbour cache selects the destination MAC from the destination
+>>> IP address of the RST packet.
+
+>>> Your patch also refers to non-bridge scenario (no br_netfilter in
+>>> place).
+
+>>> Could you describe what you're trying to achieve in plain layman terms?
+
+>> I will (re-)do no such thing because you are refusing to make sense.
+
+>> It's OK that the bridge code uses dev_queue_xmit() to send out an RST packet
+>> that has correct MACs, but that doesn't make another trip through netfilter.
+
+> It's not OK that the bridge uses dev_queue_xmit().
+
+> That was an ugly solution to make the REJECT target work from
+> br_netfilter, because there was absolutely no other better way at that
+> time to make it work.
+
+> There has been now native support to reject traffic from the bridge
+> from many years on through br_forward(), which is the way to go.
+
+Ah, the cart before the horse.  I'll wait.
+
+Later.
+
+Marc.
+--244749-10899-1615433984=:2800--
