@@ -2,28 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447AB3373BB
-	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Mar 2021 14:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0C23373BE
+	for <lists+netfilter-devel@lfdr.de>; Thu, 11 Mar 2021 14:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbhCKNYD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 11 Mar 2021 08:24:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45314 "EHLO
+        id S233536AbhCKNYE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 11 Mar 2021 08:24:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233540AbhCKNXl (ORCPT
+        with ESMTP id S233542AbhCKNXp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 11 Mar 2021 08:23:41 -0500
+        Thu, 11 Mar 2021 08:23:45 -0500
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC54DC061574
-        for <netfilter-devel@vger.kernel.org>; Thu, 11 Mar 2021 05:23:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12770C061574
+        for <netfilter-devel@vger.kernel.org>; Thu, 11 Mar 2021 05:23:45 -0800 (PST)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1lKLHv-0003h1-Hx; Thu, 11 Mar 2021 14:23:39 +0100
+        id 1lKLHz-0003h8-NR; Thu, 11 Mar 2021 14:23:43 +0100
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 05/12] scanner: add ether scope
-Date:   Thu, 11 Mar 2021 14:23:06 +0100
-Message-Id: <20210311132313.24403-6-fw@strlen.de>
+Subject: [PATCH nft 06/12] scanner: arp: move to own scope
+Date:   Thu, 11 Mar 2021 14:23:07 +0100
+Message-Id: <20210311132313.24403-7-fw@strlen.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210311132313.24403-1-fw@strlen.de>
 References: <20210311132313.24403-1-fw@strlen.de>
@@ -33,99 +33,99 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-just like previous change: useless as-is, but prepares
-for removal of saddr/daddr from INITIAL scope.
+allows to move the arp specific tokens out of the INITIAL scope.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
  include/parser.h   |  1 +
- src/parser_bison.y | 11 ++++++-----
- src/scanner.l      |  3 ++-
- 3 files changed, 9 insertions(+), 6 deletions(-)
+ src/parser_bison.y |  7 ++++---
+ src/scanner.l      | 15 +++++++++------
+ 3 files changed, 14 insertions(+), 9 deletions(-)
 
 diff --git a/include/parser.h b/include/parser.h
-index e338713dad32..cdc5fd094af5 100644
+index cdc5fd094af5..38039677cd1d 100644
 --- a/include/parser.h
 +++ b/include/parser.h
-@@ -29,6 +29,7 @@ struct parser_state {
+@@ -28,6 +28,7 @@ struct parser_state {
+ 
  enum startcond_type {
  	PARSER_SC_BEGIN,
++	PARSER_SC_ARP,
  	PARSER_SC_CT,
-+	PARSER_SC_ETH,
+ 	PARSER_SC_ETH,
  	PARSER_SC_IP,
- 	PARSER_SC_IP6,
- 	PARSER_SC_EXPR_FIB,
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 74ab69dd8820..9cfa336643e5 100644
+index 9cfa336643e5..a22f61c4c99b 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -862,6 +862,7 @@ opt_newline		:	NEWLINE
+@@ -861,6 +861,7 @@ opt_newline		:	NEWLINE
+ 		 	|	/* empty */
  			;
  
++close_scope_arp		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_ARP); };
  close_scope_ct		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_CT); };
-+close_scope_eth		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_ETH); };
+ close_scope_eth		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_ETH); };
  close_scope_fib		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_FIB); };
- close_scope_hash	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_HASH); };
- close_scope_ip		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_IP); };
-@@ -3015,7 +3016,7 @@ log_flags		:	TCP	log_flags_tcp
- 			{
- 				$$ = NF_LOG_UID;
- 			}
--			|	ETHER
-+			|	ETHER	close_scope_eth
- 			{
- 				$$ = NF_LOG_MACDECODE;
- 			}
-@@ -4539,7 +4540,7 @@ boolean_expr		:	boolean_keys
- 			}
+@@ -2431,7 +2432,7 @@ family_spec		:	/* empty */		{ $$ = NFPROTO_IPV4; }
+ family_spec_explicit	:	IP	close_scope_ip 	{ $$ = NFPROTO_IPV4; }
+ 			|	IP6	close_scope_ip6 { $$ = NFPROTO_IPV6; }
+ 			|	INET			{ $$ = NFPROTO_INET; }
+-			|	ARP			{ $$ = NFPROTO_ARP; }
++			|	ARP	close_scope_arp { $$ = NFPROTO_ARP; }
+ 			|	BRIDGE			{ $$ = NFPROTO_BRIDGE; }
+ 			|	NETDEV			{ $$ = NFPROTO_NETDEV; }
  			;
- 
--keyword_expr		:	ETHER                   { $$ = symbol_value(&@$, "ether"); }
-+keyword_expr		:	ETHER   close_scope_eth { $$ = symbol_value(&@$, "ether"); }
+@@ -4544,7 +4545,7 @@ keyword_expr		:	ETHER   close_scope_eth { $$ = symbol_value(&@$, "ether"); }
  			|	IP	close_scope_ip  { $$ = symbol_value(&@$, "ip"); }
  			|	IP6	close_scope_ip6 { $$ = symbol_value(&@$, "ip6"); }
  			|	VLAN			{ $$ = symbol_value(&@$, "vlan"); }
-@@ -5080,7 +5081,7 @@ payload_base_spec	:	LL_HDR		{ $$ = PROTO_BASE_LL_HDR; }
- 			|	TRANSPORT_HDR	{ $$ = PROTO_BASE_TRANSPORT_HDR; }
+-			|	ARP			{ $$ = symbol_value(&@$, "arp"); }
++			|	ARP	close_scope_arp { $$ = symbol_value(&@$, "arp"); }
+ 			|	DNAT			{ $$ = symbol_value(&@$, "dnat"); }
+ 			|	SNAT			{ $$ = symbol_value(&@$, "snat"); }
+ 			|	ECN			{ $$ = symbol_value(&@$, "ecn"); }
+@@ -5104,7 +5105,7 @@ vlan_hdr_field		:	ID		{ $$ = VLANHDR_VID; }
+ 			|	TYPE		{ $$ = VLANHDR_TYPE; }
  			;
  
--eth_hdr_expr		:	ETHER	eth_hdr_field
-+eth_hdr_expr		:	ETHER	eth_hdr_field	close_scope_eth
+-arp_hdr_expr		:	ARP	arp_hdr_field
++arp_hdr_expr		:	ARP	arp_hdr_field	close_scope_arp
  			{
- 				$$ = payload_expr_alloc(&@$, &proto_eth, $2);
+ 				$$ = payload_expr_alloc(&@$, &proto_arp, $2);
  			}
-@@ -5114,8 +5115,8 @@ arp_hdr_field		:	HTYPE		{ $$ = ARPHDR_HRD; }
- 			|	HLEN		{ $$ = ARPHDR_HLN; }
- 			|	PLEN		{ $$ = ARPHDR_PLN; }
- 			|	OPERATION	{ $$ = ARPHDR_OP; }
--			|	SADDR ETHER	{ $$ = ARPHDR_SADDR_ETHER; }
--			|	DADDR ETHER	{ $$ = ARPHDR_DADDR_ETHER; }
-+			|	SADDR ETHER	close_scope_eth	{ $$ = ARPHDR_SADDR_ETHER; }
-+			|	DADDR ETHER	close_scope_eth { $$ = ARPHDR_DADDR_ETHER; }
- 			|	SADDR IP	close_scope_ip	{ $$ = ARPHDR_SADDR_IP; }
- 			|	DADDR IP	close_scope_ip	{ $$ = ARPHDR_DADDR_IP; }
- 			;
 diff --git a/src/scanner.l b/src/scanner.l
-index c78f34b625c2..b1b03b951263 100644
+index b1b03b951263..509b1b0d77a2 100644
 --- a/src/scanner.l
 +++ b/src/scanner.l
-@@ -197,6 +197,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+@@ -196,6 +196,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ %option nodefault
  %option warn
  %option stack
++%s SCANSTATE_ARP
  %s SCANSTATE_CT
-+%s SCANSTATE_ETH
+ %s SCANSTATE_ETH
  %s SCANSTATE_IP
- %s SCANSTATE_IP6
- %s SCANSTATE_EXPR_FIB
-@@ -393,7 +394,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+@@ -405,12 +406,14 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "cfi"			{ return CFI; }
+ "pcp"			{ return PCP; }
  
- "bridge"		{ return BRIDGE; }
+-"arp"			{ return ARP; }
+-"htype"			{ return HTYPE; }
+-"ptype"			{ return PTYPE; }
+-"hlen"			{ return HLEN; }
+-"plen"			{ return PLEN; }
+-"operation"		{ return OPERATION; }
++"arp"			{ scanner_push_start_cond(yyscanner, SCANSTATE_ARP); return ARP; }
++<SCANSTATE_ARP>{
++	"htype"			{ return HTYPE; }
++	"ptype"			{ return PTYPE; }
++	"hlen"			{ return HLEN; }
++	"plen"			{ return PLEN; }
++	"operation"		{ return OPERATION; }
++}
  
--"ether"			{ return ETHER; }
-+"ether"			{ scanner_push_start_cond(yyscanner, SCANSTATE_ETH); return ETHER; }
- "saddr"			{ return SADDR; }
- "daddr"			{ return DADDR; }
- "type"			{ return TYPE; }
+ "ip"			{ scanner_push_start_cond(yyscanner, SCANSTATE_IP); return IP; }
+ "version"		{ return HDRVERSION; }
 -- 
 2.26.2
 
