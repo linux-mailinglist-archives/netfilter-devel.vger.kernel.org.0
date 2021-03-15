@@ -2,62 +2,181 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4EB33AFFF
-	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Mar 2021 11:31:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D024033C299
+	for <lists+netfilter-devel@lfdr.de>; Mon, 15 Mar 2021 17:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhCOKbW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 15 Mar 2021 06:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56106 "EHLO
+        id S232996AbhCOQzb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 15 Mar 2021 12:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhCOKbT (ORCPT
+        with ESMTP id S233156AbhCOQzD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 15 Mar 2021 06:31:19 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6C0C061574
-        for <netfilter-devel@vger.kernel.org>; Mon, 15 Mar 2021 03:31:19 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1lLkVG-0000fH-U1; Mon, 15 Mar 2021 11:31:14 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf] netfilter: ctnetlink: fix dump of the expect mask attribute
-Date:   Mon, 15 Mar 2021 11:31:09 +0100
-Message-Id: <20210315103109.12004-1-fw@strlen.de>
-X-Mailer: git-send-email 2.26.2
+        Mon, 15 Mar 2021 12:55:03 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [IPv6:2001:4b98:dc0:41:216:3eff:fe8c:2bda])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0541C06174A
+        for <netfilter-devel@vger.kernel.org>; Mon, 15 Mar 2021 09:55:02 -0700 (PDT)
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 62C6D63534;
+        Mon, 15 Mar 2021 17:49:36 +0100 (CET)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     mikhail.sennikovskii@cloud.ionos.com
+Subject: [PATCH conntrack 1/6] conntrack: pass command object to callbacks
+Date:   Mon, 15 Mar 2021 17:49:24 +0100
+Message-Id: <20210315164929.23608-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Before this change, the mask is never included in the netlink message, so
-"conntrack -E expect" always prints 0.0.0.0.
+Pass the command object to prepare for batch support.
 
-In older kernels the l3num callback struct was passed as argument, based
-on tuple->src.l3num. After the l3num indirection got removed, the call
-chain is based on m.src.l3num, but this value is 0xffff.
+Move ct_cmd structure definition right at the top of file otherwise
+compilation breaks.
 
-Init l3num to the correct value.
-
-Fixes: f957be9d349a3 ("netfilter: conntrack: remove ctnetlink callbacks from l3 protocol trackers")
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_conntrack_netlink.c | 1 +
- 1 file changed, 1 insertion(+)
+ src/conntrack.c | 50 ++++++++++++++++++++++++++-----------------------
+ 1 file changed, 27 insertions(+), 23 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 1469365bac7e..1d519b0e51a5 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -2962,6 +2962,7 @@ static int ctnetlink_exp_dump_mask(struct sk_buff *skb,
- 	memset(&m, 0xFF, sizeof(m));
- 	memcpy(&m.src.u3, &mask->src.u3, sizeof(m.src.u3));
- 	m.src.u.all = mask->src.u.all;
-+	m.src.l3num = tuple->src.l3num;
- 	m.dst.protonum = tuple->dst.protonum;
+diff --git a/src/conntrack.c b/src/conntrack.c
+index 987d936e7ee2..333da0f83453 100644
+--- a/src/conntrack.c
++++ b/src/conntrack.c
+@@ -101,6 +101,17 @@ struct ct_tmpl {
  
- 	nest_parms = nla_nest_start(skb, CTA_EXPECT_MASK);
+ static struct ct_tmpl *cur_tmpl;
+ 
++struct ct_cmd {
++	unsigned int	command;
++	unsigned int	cmd;
++	unsigned int	type;
++	unsigned int	event_mask;
++	int		family;
++	int		protonum;
++	size_t		socketbuffersize;
++	struct ct_tmpl	tmpl;
++};
++
+ static int alloc_tmpl_objects(struct ct_tmpl *tmpl)
+ {
+ 	tmpl->ct = nfct_new();
+@@ -1843,7 +1854,8 @@ static int event_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct nfgenmsg *nfh = mnl_nlmsg_get_payload(nlh);
+ 	unsigned int op_type = NFCT_O_DEFAULT;
+-	struct nf_conntrack *obj = data;
++	struct ct_cmd *cmd = data;
++	struct nf_conntrack *obj = cmd->tmpl.ct;
+ 	enum nf_conntrack_msg_type type;
+ 	unsigned int op_flags = 0;
+ 	struct nf_conntrack *ct;
+@@ -1929,10 +1941,11 @@ static int dump_cb(enum nf_conntrack_msg_type type,
+ 		   struct nf_conntrack *ct,
+ 		   void *data)
+ {
+-	char buf[1024];
+-	struct nf_conntrack *obj = data;
++	struct ct_cmd *cmd = data;
++	struct nf_conntrack *obj = cmd->tmpl.ct;
+ 	unsigned int op_type = NFCT_O_DEFAULT;
+ 	unsigned int op_flags = 0;
++	char buf[1024];
+ 
+ 	if (nfct_filter(obj, ct, cur_tmpl))
+ 		return NFCT_CB_CONTINUE;
+@@ -1970,11 +1983,12 @@ static int delete_cb(enum nf_conntrack_msg_type type,
+ 		     struct nf_conntrack *ct,
+ 		     void *data)
+ {
+-	int res;
+-	char buf[1024];
+-	struct nf_conntrack *obj = data;
++	struct ct_cmd *cmd = data;
++	struct nf_conntrack *obj = cmd->tmpl.ct;
+ 	unsigned int op_type = NFCT_O_DEFAULT;
+ 	unsigned int op_flags = 0;
++	char buf[1024];
++	int res;
+ 
+ 	if (nfct_filter(obj, ct, cur_tmpl))
+ 		return NFCT_CB_CONTINUE;
+@@ -2125,8 +2139,9 @@ static int update_cb(enum nf_conntrack_msg_type type,
+ 		     struct nf_conntrack *ct,
+ 		     void *data)
+ {
++	struct ct_cmd *cmd = data;
++	struct nf_conntrack *obj = cmd->tmpl.ct, *tmp;
+ 	int res;
+-	struct nf_conntrack *obj = data, *tmp;
+ 
+ 	if (filter_nat(obj, ct) ||
+ 	    filter_label(ct, cur_tmpl) ||
+@@ -2768,17 +2783,6 @@ nfct_set_nat_details(const int opt, struct nf_conntrack *ct,
+ 
+ }
+ 
+-struct ct_cmd {
+-	unsigned int	command;
+-	unsigned int	cmd;
+-	unsigned int	type;
+-	unsigned int	event_mask;
+-	int		family;
+-	int		protonum;
+-	size_t		socketbuffersize;
+-	struct ct_tmpl	tmpl;
+-};
+-
+ static void do_parse(struct ct_cmd *ct_cmd, int argc, char *argv[])
+ {
+ 	unsigned int type = 0, event_mask = 0, l4flags = 0, status = 0;
+@@ -3123,7 +3127,7 @@ static int do_command_ct(const char *progname, struct ct_cmd *cmd)
+ 
+ 		nfct_filter_init(cmd->family, &cmd->tmpl);
+ 
+-		nfct_callback_register(cth, NFCT_T_ALL, dump_cb, cmd->tmpl.ct);
++		nfct_callback_register(cth, NFCT_T_ALL, dump_cb, cmd);
+ 
+ 		filter_dump = nfct_filter_dump_create();
+ 		if (filter_dump == NULL)
+@@ -3214,7 +3218,7 @@ static int do_command_ct(const char *progname, struct ct_cmd *cmd)
+ 
+ 		nfct_filter_init(cmd->family, &cmd->tmpl);
+ 
+-		nfct_callback_register(cth, NFCT_T_ALL, update_cb, cmd->tmpl.ct);
++		nfct_callback_register(cth, NFCT_T_ALL, update_cb, cmd);
+ 
+ 		res = nfct_query(cth, NFCT_Q_DUMP, &cmd->family);
+ 		nfct_close(ith);
+@@ -3229,7 +3233,7 @@ static int do_command_ct(const char *progname, struct ct_cmd *cmd)
+ 
+ 		nfct_filter_init(cmd->family, &cmd->tmpl);
+ 
+-		nfct_callback_register(cth, NFCT_T_ALL, delete_cb, cmd->tmpl.ct);
++		nfct_callback_register(cth, NFCT_T_ALL, delete_cb, cmd);
+ 
+ 		filter_dump = nfct_filter_dump_create();
+ 		if (filter_dump == NULL)
+@@ -3268,7 +3272,7 @@ static int do_command_ct(const char *progname, struct ct_cmd *cmd)
+ 		if (!cth)
+ 			exit_error(OTHER_PROBLEM, "Can't open handler");
+ 
+-		nfct_callback_register(cth, NFCT_T_ALL, dump_cb, cmd->tmpl.ct);
++		nfct_callback_register(cth, NFCT_T_ALL, dump_cb, cmd);
+ 		res = nfct_query(cth, NFCT_Q_GET, cmd->tmpl.ct);
+ 		nfct_close(cth);
+ 		break;
+@@ -3373,7 +3377,7 @@ static int do_command_ct(const char *progname, struct ct_cmd *cmd)
+ 					   strerror(errno));
+ 				break;
+ 			}
+-			res = mnl_cb_run(buf, res, 0, 0, event_cb, cmd->tmpl.ct);
++			res = mnl_cb_run(buf, res, 0, 0, event_cb, cmd);
+ 		}
+ 		mnl_socket_close(sock.mnl);
+ 		break;
 -- 
-2.29.2
+2.20.1
 
