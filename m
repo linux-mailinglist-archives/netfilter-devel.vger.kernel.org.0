@@ -2,28 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C8A33E245
-	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Mar 2021 00:41:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8AD133E24A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Mar 2021 00:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhCPXlQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S229686AbhCPXlQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Tue, 16 Mar 2021 19:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhCPXlA (ORCPT
+        with ESMTP id S229771AbhCPXlF (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 16 Mar 2021 19:41:00 -0400
+        Tue, 16 Mar 2021 19:41:05 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34266C06174A
-        for <netfilter-devel@vger.kernel.org>; Tue, 16 Mar 2021 16:41:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D455EC06174A
+        for <netfilter-devel@vger.kernel.org>; Tue, 16 Mar 2021 16:41:04 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1lMJJ3-000586-VG; Wed, 17 Mar 2021 00:40:58 +0100
+        id 1lMJJ8-00058E-SA; Wed, 17 Mar 2021 00:41:03 +0100
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 3/6] scanner: log: move to own scope
-Date:   Wed, 17 Mar 2021 00:40:36 +0100
-Message-Id: <20210316234039.15677-4-fw@strlen.de>
+Subject: [PATCH nft 4/6] scanner: support arbitary table names
+Date:   Wed, 17 Mar 2021 00:40:37 +0100
+Message-Id: <20210316234039.15677-5-fw@strlen.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210316234039.15677-1-fw@strlen.de>
 References: <20210316234039.15677-1-fw@strlen.de>
@@ -33,83 +33,158 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-GROUP and PREFIX are used by igmp and nat, so they can't be moved out of
-INITIAL scope yet.
+Add exclusive start condition that only recognizes strings, then
+switch to it from table keyword.
+
+This prevents
+
+table foo {
+
+... from breaking when a foo expression keyword would be added to nft
+in the future.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/parser.h   |  2 ++
- src/parser_bison.y |  4 +++-
- src/scanner.l      | 12 ++++++++----
- 3 files changed, 13 insertions(+), 5 deletions(-)
+ include/parser.h |  3 ++
+ src/scanner.l    | 72 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 74 insertions(+), 1 deletion(-)
 
 diff --git a/include/parser.h b/include/parser.h
-index 59eff16eac20..d890ab223c52 100644
+index d890ab223c52..0843aa1adb6a 100644
 --- a/include/parser.h
 +++ b/include/parser.h
-@@ -47,6 +47,8 @@ enum startcond_type {
- 	PARSER_SC_EXPR_QUEUE,
- 	PARSER_SC_EXPR_RT,
+@@ -25,6 +25,7 @@ struct parser_state {
+ 
+ 	unsigned int			flex_state_pop;
+ 	unsigned int			startcond_type;
++	unsigned int			saw_family:1;
+ 	struct list_head		*cmds;
+ };
+ 
+@@ -49,6 +50,8 @@ enum startcond_type {
  	PARSER_SC_EXPR_SOCKET,
+ 
+ 	PARSER_SC_STMT_LOG,
 +
-+	PARSER_SC_STMT_LOG,
++	PARSER_SC_STRING_TABLE,
  };
  
  struct mnl_socket;
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 805a38ab22ed..98fe4431c4f4 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -879,6 +879,8 @@ close_scope_rt		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_RT); };
- close_scope_secmark	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_SECMARK); };
- close_scope_socket	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_SOCKET); }
- 
-+close_scope_log		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_STMT_LOG); }
-+
- common_block		:	INCLUDE		QUOTED_STRING	stmt_separator
- 			{
- 				if (scanner_include_file(nft, scanner, $2, &@$) < 0) {
-@@ -2695,7 +2697,7 @@ stmt			:	verdict_stmt
- 			|	payload_stmt
- 			|	stateful_stmt
- 			|	meta_stmt
--			|	log_stmt
-+			|	log_stmt	close_scope_log
- 			|	reject_stmt
- 			|	nat_stmt
- 			|	tproxy_stmt
 diff --git a/src/scanner.l b/src/scanner.l
-index 783436504326..0082b3eeca29 100644
+index 0082b3eeca29..bf6f290db3db 100644
 --- a/src/scanner.l
 +++ b/src/scanner.l
-@@ -214,6 +214,8 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
- %s SCANSTATE_EXPR_RT
- %s SCANSTATE_EXPR_SOCKET
+@@ -98,6 +98,8 @@ static void reset_pos(struct parser_state *state, struct location *loc)
+ 	state->indesc->column		= 1;
+ }
  
-+%s SCANSTATE_STMT_LOG
++static int scanner_handle_tablename(void *scanner, const char *token);
 +
+ static void scanner_push_start_cond(void *scanner, enum startcond_type type);
+ 
+ #define YY_USER_ACTION {					\
+@@ -216,6 +218,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 
+ %s SCANSTATE_STMT_LOG
+ 
++%x SCANSTATE_STRING_TABLE
  %%
  
  "=="			{ return EQ; }
-@@ -354,12 +356,14 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
- "limits"		{ return LIMITS; }
- "synproxys"		{ return SYNPROXYS; }
+@@ -272,7 +275,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "hook"			{ return HOOK; }
+ "device"		{ return DEVICE; }
+ "devices"		{ return DEVICES; }
+-"table"			{ return TABLE; }
++"table"			{ scanner_push_start_cond(yyscanner, SCANSTATE_STRING_TABLE); return TABLE; }
+ "tables"		{ return TABLES; }
+ "chain"			{ return CHAIN; }
+ "chains"		{ return CHAINS; }
+@@ -712,6 +715,34 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
  
--"log"			{ return LOG; }
-+"log"			{ scanner_push_start_cond(yyscanner, SCANSTATE_STMT_LOG); return LOG; }
- "prefix"		{ return PREFIX; }
- "group"			{ return GROUP; }
--"snaplen"		{ return SNAPLEN; }
--"queue-threshold"	{ return QUEUE_THRESHOLD; }
--"level"			{ return LEVEL; }
-+<SCANSTATE_STMT_LOG>{
-+	"snaplen"		{ return SNAPLEN; }
-+	"queue-threshold"	{ return QUEUE_THRESHOLD; }
-+	"level"			{ return LEVEL; }
+ .			{ return JUNK; }
+ 
++<SCANSTATE_STRING_TABLE>{string}		{
++				int token = scanner_handle_tablename(yyscanner, yytext);
++
++				if (token != STRING)
++					return token;
++
++				yylval->string = xstrdup(yytext);
++				return STRING;
++			}
++
++<SCANSTATE_STRING_TABLE>{
++\\{newline}		{
++				reset_pos(yyget_extra(yyscanner), yylloc);
++			}
++
++{newline}		{
++				reset_pos(yyget_extra(yyscanner), yylloc);
++				return NEWLINE;
++			}
++
++{tab}+
++{space}+
++{comment}
++"$"			{ return '$'; }
++
++.			{ return JUNK; }
 +}
++
+ %%
  
- "queue"			{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_QUEUE); return QUEUE;}
- <SCANSTATE_EXPR_QUEUE>{
+ static void scanner_push_indesc(struct parser_state *state,
+@@ -1033,6 +1064,9 @@ void scanner_pop_start_cond(void *scanner, enum startcond_type t)
+ 	struct parser_state *state = yyget_extra(scanner);
+ 
+ 	if (state->startcond_type != t) {
++		if (state->startcond_type == SCANSTATE_STRING_TABLE)
++			return;
++
+ 		state->flex_state_pop++;
+ 		return; /* Can't pop just yet! */
+ 	}
+@@ -1047,3 +1081,39 @@ void scanner_pop_start_cond(void *scanner, enum startcond_type t)
+ 	yy_pop_state(scanner);
+ 	(void)yy_top_state(scanner); /* suppress gcc warning wrt. unused function */
+ }
++
++static int scanner_handle_tablename(void *scanner, const char *token)
++{
++	struct parser_state *state = yyget_extra(scanner);
++	int ret = STRING;
++
++	if (state->startcond_type != SCANSTATE_STRING_TABLE)
++		return STRING;
++
++	if (state->saw_family) {
++		state->saw_family = 0;
++		scanner_pop_start_cond(scanner, SCANSTATE_STRING_TABLE);
++		return STRING;
++	}
++
++	if (strcmp(token, "ip") == 0) {
++		ret = IP;
++	} else if (strcmp(token, "ip6") == 0) {
++		ret = IP6;
++	} else if (strcmp(token, "inet") == 0) {
++		ret = INET;
++	} else if (strcmp(token, "bridge") == 0) {
++		ret = BRIDGE;
++	} else if (strcmp(token, "arp") == 0) {
++		ret = ARP;
++	} else if (strcmp(token, "netdev") == 0) {
++		ret = NETDEV;
++	}
++
++	if (ret != STRING)
++		state->saw_family = 1;
++	else
++		scanner_pop_start_cond(scanner, SCANSTATE_STRING_TABLE);
++
++	return ret;
++}
 -- 
 2.26.2
 
