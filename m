@@ -2,46 +2,66 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB6133DE2A
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 Mar 2021 20:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 690CC33E247
+	for <lists+netfilter-devel@lfdr.de>; Wed, 17 Mar 2021 00:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237569AbhCPTuP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 16 Mar 2021 15:50:15 -0400
-Received: from esa2.ssilver.iphmx.com ([68.232.149.189]:49849 "EHLO
-        esa2.ssilver.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231852AbhCPTuK (ORCPT
+        id S229687AbhCPXlP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 16 Mar 2021 19:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhCPXkr (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:50:10 -0400
-Message-Id: <beccef$544nc@ob1.ssilver.iphmx.com>
-IronPort-SDR: v2LOX48i11JawflL1CTyTo5OaIq+Cn0VaFdO4Mi8DHww9mSx2ARLYvJmB1sxNA7VDu8OkXKa/F
- m3XpgEj2cIAGSUOlu9JSxuFt4j1rYKLvJkzUoazBFzg0Isdy52daULd66kLMuuMf5eQGkVrteJ
- 5gvPYZlWC42gmJtolN6O7vJI/J+SC5MPckto27oQMaIZSnLAZGVXUwGu217Pexyyj3gNw5VN9u
- k3mWBEMj5wpbd3Vnpn+uloWpVDRinckBRYjIkMlTEzsbUEZ1dFrgMD4IyrZwFfN5De7zfUMVfd
- Jjc=
-Received: from unknown (HELO User) ([202.38.180.78])
-  by ob1.ssilver.iphmx.com with SMTP; 16 Mar 2021 14:50:00 -0500
-Reply-To: <benobi236@yahoo.com.co>
-From:   "Fred Grenville" <chiatatwah@camv.vn>
-Subject: Reply Asap!! 
-Date:   Tue, 16 Mar 2021 12:50:08 -0700
+        Tue, 16 Mar 2021 19:40:47 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF23CC06174A
+        for <netfilter-devel@vger.kernel.org>; Tue, 16 Mar 2021 16:40:46 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1lMJIp-00057f-Vk; Wed, 17 Mar 2021 00:40:44 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nft 0/6] arbirary table/chain names
+Date:   Wed, 17 Mar 2021 00:40:33 +0100
+Message-Id: <20210316234039.15677-1-fw@strlen.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Good day
+This series allows (almost) arbitrary chain names.
 
-How are you today, did you receive the email I sent you three days ago? For important discussion on ( Investment ) If not please reply me back so that I will resend it again.
+Unsolved problem:
+nft has implict 'rule add' behaviour, e.g.
 
-Please confirm if you did ( u.abdulghani@yahoo.com.co ).
+'nft add rule ip filter input foo ip saddr 1.2.3.4 drop' can be written like
+'nft ip filter input foo ip saddr 1.2.3.4 drop' or even
+'nft filter input foo ip saddr 1.2.3.4 drop'.
 
-Best Regards,
-Mr. Fred Grenville
+IOW, the scanner cannot switch to the exclusive rule scope
+added in patch 5 to allow for arbitrary names.
+
+Patch 6 resolves this by switching state from bison, but this
+requires to add future tokens to a special whitelist.
+
+It might be better to omit patch 6 and/or deprecate the
+implicit rule add behaviour.  See patch 6 for details.
+
+Florian Westphal (6):
+  scanner: add support for scope nesting
+  scanner: counter: move to own scope
+  scanner: log: move to own scope
+  scanner: support arbitary table names
+  scanner: support arbitrary chain names
+  src: allow arbitary chain name in implicit rule add case
+
+ include/parser.h   |  12 ++++
+ src/parser_bison.y |  97 ++++++++++++++++++-------
+ src/scanner.l      | 173 +++++++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 241 insertions(+), 41 deletions(-)
+
+-- 
+2.26.2
+
