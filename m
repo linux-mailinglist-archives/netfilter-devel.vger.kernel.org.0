@@ -2,47 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA0A33FBF5
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Mar 2021 00:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EECA33FC2B
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Mar 2021 01:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbhCQXlw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 17 Mar 2021 19:41:52 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:49752 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhCQXlX (ORCPT
+        id S229570AbhCRAVu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 17 Mar 2021 20:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhCRAVZ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 17 Mar 2021 19:41:23 -0400
+        Wed, 17 Mar 2021 20:21:25 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [IPv6:2001:4b98:dc0:41:216:3eff:fe8c:2bda])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 41B51C06174A
+        for <netfilter-devel@vger.kernel.org>; Wed, 17 Mar 2021 17:21:25 -0700 (PDT)
 Received: from us.es (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 7B6B762BB1;
-        Thu, 18 Mar 2021 00:41:19 +0100 (CET)
-Date:   Thu, 18 Mar 2021 00:41:20 +0100
+        by mail.netfilter.org (Postfix) with ESMTPSA id AA36D62BA4
+        for <netfilter-devel@vger.kernel.org>; Thu, 18 Mar 2021 01:21:21 +0100 (CET)
+Date:   Thu, 18 Mar 2021 01:21:22 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Simon Horman <simon.horman@netronome.com>
-Cc:     netfilter-devel@vger.kernel.org, oss-drivers@netronome.com,
-        Yinjun Zhang <yinjun.zhang@corigine.com>,
-        Louis Peens <louis.peens@corigine.com>
-Subject: Re: [PATCH nf] netfilter: flowtable: Make sure GC works periodically
- in idle system
-Message-ID: <20210317234120.GA14924@salvia>
-References: <20210317124224.16665-1-simon.horman@netronome.com>
+To:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf 1/2] netfilter: nftables: missing transaction object
+ on flowtable deletion
+Message-ID: <20210318002122.GA21014@salvia>
+References: <20210317201957.13165-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210317124224.16665-1-simon.horman@netronome.com>
+In-Reply-To: <20210317201957.13165-1-pablo@netfilter.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 01:42:24PM +0100, Simon Horman wrote:
-> From: Yinjun Zhang <yinjun.zhang@corigine.com>
-> 
-> Currently flowtable's GC work is initialized as deferrable, which
-> means GC cannot work on time when system is idle. So the hardware
-> offloaded flow may be deleted for timeout, since its used time is
-> not timely updated.
-> 
-> Resolve it by initializing the GC work as delayed work instead of
-> deferrable.
+On Wed, Mar 17, 2021 at 09:19:56PM +0100, Pablo Neira Ayuso wrote:
+> The delete flowtable command does not create a transaction if the
+> NFTA_FLOWTABLE_HOOK attribute is specified, hence, the flowtable
+> is never deleted.
 
-Applied, thanks.
+Scratch this.
+
+The existing code is correct. Userspace only includes
+NFTA_FLOWTABLE_HOOK when performing an incremental deletion of devices
+in the flowtable.
