@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4032B33FC3E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Mar 2021 01:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E6B33FC48
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Mar 2021 01:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbhCRAa4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 17 Mar 2021 20:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
+        id S229846AbhCRAhS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 17 Mar 2021 20:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhCRAa0 (ORCPT
+        with ESMTP id S229720AbhCRAgs (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 17 Mar 2021 20:30:26 -0400
+        Wed, 17 Mar 2021 20:36:48 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [IPv6:2001:4b98:dc0:41:216:3eff:fe8c:2bda])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F7D7C06174A
-        for <netfilter-devel@vger.kernel.org>; Wed, 17 Mar 2021 17:30:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5C59FC06174A
+        for <netfilter-devel@vger.kernel.org>; Wed, 17 Mar 2021 17:36:48 -0700 (PDT)
 Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 2C68462BA4
-        for <netfilter-devel@vger.kernel.org>; Thu, 18 Mar 2021 01:30:22 +0100 (CET)
+        by mail.netfilter.org (Postfix) with ESMTPSA id DC45762BA4
+        for <netfilter-devel@vger.kernel.org>; Thu, 18 Mar 2021 01:36:44 +0100 (CET)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next] netfilter: nftables: update table flags from the commit phase
-Date:   Thu, 18 Mar 2021 01:30:17 +0100
-Message-Id: <20210318003017.8268-1-pablo@netfilter.org>
+Subject: [nf-next,v2] netfilter: nftables: update table flags from the commit phase
+Date:   Thu, 18 Mar 2021 01:36:40 +0100
+Message-Id: <20210318003640.27468-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -36,9 +36,11 @@ phase.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
+v2: do not update from the flags from the abort path.
+
  include/net/netfilter/nf_tables.h |  9 ++++++---
- net/netfilter/nf_tables_api.c     | 32 ++++++++++++++++---------------
- 2 files changed, 23 insertions(+), 18 deletions(-)
+ net/netfilter/nf_tables_api.c     | 31 ++++++++++++++++---------------
+ 2 files changed, 22 insertions(+), 18 deletions(-)
 
 diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
 index fdec57d862b7..67bc36f7f4fb 100644
@@ -65,7 +67,7 @@ index fdec57d862b7..67bc36f7f4fb 100644
  struct nft_trans_elem {
  	struct nft_set			*set;
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 083c112bee0b..6d2a44d33469 100644
+index 083c112bee0b..bd5e8122ea5e 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
 @@ -900,6 +900,12 @@ static void nf_tables_table_disable(struct net *net, struct nft_table *table)
@@ -120,7 +122,7 @@ index 083c112bee0b..6d2a44d33469 100644
  			} else {
  				nft_clear(net, trans->ctx.table);
  			}
-@@ -8283,11 +8286,10 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
+@@ -8283,11 +8286,9 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
  		switch (trans->msg_type) {
  		case NFT_MSG_NEWTABLE:
  			if (nft_trans_table_update(trans)) {
@@ -132,7 +134,6 @@ index 083c112bee0b..6d2a44d33469 100644
 +				if (nft_trans_table_state(trans) == NFT_TABLE_STATE_WAKEUP)
 +					nf_tables_table_disable(net, trans->ctx.table);
 +
-+				trans->ctx.table->flags = nft_trans_table_flags(trans);
  				nft_trans_destroy(trans);
  			} else {
  				list_del_rcu(&trans->ctx.table->list);
