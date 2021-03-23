@@ -2,139 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A1234537C
-	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Mar 2021 00:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCB03453DB
+	for <lists+netfilter-devel@lfdr.de>; Tue, 23 Mar 2021 01:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbhCVX5O (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 22 Mar 2021 19:57:14 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:58354 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230468AbhCVX4t (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 22 Mar 2021 19:56:49 -0400
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 9C5AB63515;
-        Tue, 23 Mar 2021 00:56:36 +0100 (CET)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net-next 10/10] netfilter: nftables: update table flags from the commit phase
-Date:   Tue, 23 Mar 2021 00:56:28 +0100
-Message-Id: <20210322235628.2204-11-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210322235628.2204-1-pablo@netfilter.org>
-References: <20210322235628.2204-1-pablo@netfilter.org>
+        id S230483AbhCWAak (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 22 Mar 2021 20:30:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230438AbhCWAaM (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:30:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 963D8619AE;
+        Tue, 23 Mar 2021 00:30:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616459411;
+        bh=Nuq+Tv2awdUTapm6DlH/yNafv2lauJPVNi1X/r/9HDU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=K3OjFEz2wxBhipEg5vw9jFF3zA+flbfEMWG8XNwgJCS72sn45qWQGtGy4cKb7160h
+         x4u81YFYifvktlqhB9BBEDyghNjICxPZflXt2QB1Y9wA1NPrDNM2/kjmsAXA+XZg/k
+         COVtEN6zoxrUkt5ZjFfX3pxZT8azlqAPuDaFzkiniL5f6G1gpodrXAZB2chIGQv15L
+         DDCypU1jiQg53pXPqCtmFarczSwgXcHFFolVPc+0wRSBP7sCrPZkVuHzYK/MqPoiVY
+         us6rgxw/OFieSIBYsadEoICd4IUkQHp2TZxYUMKI1NP8UiDNYGGiNW5LZJRGG1zeoj
+         1trbR5UruBUgg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9277660A0B;
+        Tue, 23 Mar 2021 00:30:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 01/10] netfilter: flowtable: separate replace,
+ destroy and stats to different workqueues
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161645941159.31154.378858008887571926.git-patchwork-notify@kernel.org>
+Date:   Tue, 23 Mar 2021 00:30:11 +0000
+References: <20210322235628.2204-2-pablo@netfilter.org>
+In-Reply-To: <20210322235628.2204-2-pablo@netfilter.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, kuba@kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Do not update table flags from the preparation phase. Store the flags
-update into the transaction, then update the flags from the commit
-phase.
+Hello:
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- include/net/netfilter/nf_tables.h |  9 ++++++---
- net/netfilter/nf_tables_api.c     | 31 ++++++++++++++++---------------
- 2 files changed, 22 insertions(+), 18 deletions(-)
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index fdec57d862b7..67bc36f7f4fb 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -1498,13 +1498,16 @@ struct nft_trans_chain {
- 
- struct nft_trans_table {
- 	bool				update;
--	bool				enable;
-+	u8				state;
-+	u32				flags;
- };
- 
- #define nft_trans_table_update(trans)	\
- 	(((struct nft_trans_table *)trans->data)->update)
--#define nft_trans_table_enable(trans)	\
--	(((struct nft_trans_table *)trans->data)->enable)
-+#define nft_trans_table_state(trans)	\
-+	(((struct nft_trans_table *)trans->data)->state)
-+#define nft_trans_table_flags(trans)	\
-+	(((struct nft_trans_table *)trans->data)->flags)
- 
- struct nft_trans_elem {
- 	struct nft_set			*set;
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 083c112bee0b..bd5e8122ea5e 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -900,6 +900,12 @@ static void nf_tables_table_disable(struct net *net, struct nft_table *table)
- 	nft_table_disable(net, table, 0);
- }
- 
-+enum {
-+	NFT_TABLE_STATE_UNCHANGED	= 0,
-+	NFT_TABLE_STATE_DORMANT,
-+	NFT_TABLE_STATE_WAKEUP
-+};
-+
- static int nf_tables_updtable(struct nft_ctx *ctx)
- {
- 	struct nft_trans *trans;
-@@ -929,19 +935,17 @@ static int nf_tables_updtable(struct nft_ctx *ctx)
- 
- 	if ((flags & NFT_TABLE_F_DORMANT) &&
- 	    !(ctx->table->flags & NFT_TABLE_F_DORMANT)) {
--		nft_trans_table_enable(trans) = false;
-+		nft_trans_table_state(trans) = NFT_TABLE_STATE_DORMANT;
- 	} else if (!(flags & NFT_TABLE_F_DORMANT) &&
- 		   ctx->table->flags & NFT_TABLE_F_DORMANT) {
--		ctx->table->flags &= ~NFT_TABLE_F_DORMANT;
- 		ret = nf_tables_table_enable(ctx->net, ctx->table);
- 		if (ret >= 0)
--			nft_trans_table_enable(trans) = true;
--		else
--			ctx->table->flags |= NFT_TABLE_F_DORMANT;
-+			nft_trans_table_state(trans) = NFT_TABLE_STATE_WAKEUP;
- 	}
- 	if (ret < 0)
- 		goto err;
- 
-+	nft_trans_table_flags(trans) = flags;
- 	nft_trans_table_update(trans) = true;
- 	list_add_tail(&trans->list, &ctx->net->nft.commit_list);
- 	return 0;
-@@ -8068,11 +8072,10 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
- 		switch (trans->msg_type) {
- 		case NFT_MSG_NEWTABLE:
- 			if (nft_trans_table_update(trans)) {
--				if (!nft_trans_table_enable(trans)) {
--					nf_tables_table_disable(net,
--								trans->ctx.table);
--					trans->ctx.table->flags |= NFT_TABLE_F_DORMANT;
--				}
-+				if (nft_trans_table_state(trans) == NFT_TABLE_STATE_DORMANT)
-+					nf_tables_table_disable(net, trans->ctx.table);
-+
-+				trans->ctx.table->flags = nft_trans_table_flags(trans);
- 			} else {
- 				nft_clear(net, trans->ctx.table);
- 			}
-@@ -8283,11 +8286,9 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
- 		switch (trans->msg_type) {
- 		case NFT_MSG_NEWTABLE:
- 			if (nft_trans_table_update(trans)) {
--				if (nft_trans_table_enable(trans)) {
--					nf_tables_table_disable(net,
--								trans->ctx.table);
--					trans->ctx.table->flags |= NFT_TABLE_F_DORMANT;
--				}
-+				if (nft_trans_table_state(trans) == NFT_TABLE_STATE_WAKEUP)
-+					nf_tables_table_disable(net, trans->ctx.table);
-+
- 				nft_trans_destroy(trans);
- 			} else {
- 				list_del_rcu(&trans->ctx.table->list);
--- 
-2.20.1
+On Tue, 23 Mar 2021 00:56:19 +0100 you wrote:
+> From: Oz Shlomo <ozsh@nvidia.com>
+> 
+> Currently the flow table offload replace, destroy and stats work items are
+> executed on a single workqueue. As such, DESTROY and STATS commands may
+> be backloged after a burst of REPLACE work items. This scenario can bloat
+> up memory and may cause active connections to age.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,01/10] netfilter: flowtable: separate replace, destroy and stats to different workqueues
+    https://git.kernel.org/netdev/net-next/c/2ed37183abb7
+  - [net-next,02/10] netfilter: Fix fall-through warnings for Clang
+    https://git.kernel.org/netdev/net-next/c/c2168e6bd7ec
+  - [net-next,03/10] netfilter: conntrack: Remove unused variable declaration
+    https://git.kernel.org/netdev/net-next/c/d4a96be65423
+  - [net-next,04/10] netfilter: flowtable: consolidate skb_try_make_writable() call
+    https://git.kernel.org/netdev/net-next/c/2fc11745c3ff
+  - [net-next,05/10] netfilter: flowtable: move skb_try_make_writable() before NAT in IPv4
+    https://git.kernel.org/netdev/net-next/c/2babb46c8c82
+  - [net-next,06/10] netfilter: flowtable: move FLOW_OFFLOAD_DIR_MAX away from enumeration
+    https://git.kernel.org/netdev/net-next/c/4f08f173d08c
+  - [net-next,07/10] netfilter: flowtable: fast NAT functions never fail
+    https://git.kernel.org/netdev/net-next/c/f4401262b927
+  - [net-next,08/10] netfilter: flowtable: call dst_check() to fall back to classic forwarding
+    https://git.kernel.org/netdev/net-next/c/e5075c0badaa
+  - [net-next,09/10] netfilter: flowtable: refresh timeout after dst and writable checks
+    https://git.kernel.org/netdev/net-next/c/1b9cd7690a1e
+  - [net-next,10/10] netfilter: nftables: update table flags from the commit phase
+    https://git.kernel.org/netdev/net-next/c/0ce7cf4127f1
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
