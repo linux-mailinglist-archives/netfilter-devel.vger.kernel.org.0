@@ -2,67 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576A634B585
-	for <lists+netfilter-devel@lfdr.de>; Sat, 27 Mar 2021 09:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A5A34BE4A
+	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Mar 2021 20:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhC0IhL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 27 Mar 2021 04:37:11 -0400
-Received: from kirsty.vergenet.net ([202.4.237.240]:56344 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhC0Igq (ORCPT
+        id S229950AbhC1Shl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 28 Mar 2021 14:37:41 -0400
+Received: from mail.hanoi.gov.vn ([113.160.32.33]:27140 "EHLO
+        mx01.hanoi.gov.vn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhC1Shh (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 27 Mar 2021 04:36:46 -0400
-Received: from madeliefje.horms.nl (tulip.horms.nl [83.161.246.101])
-        by kirsty.vergenet.net (Postfix) with ESMTPA id 2B7A925B7A8;
-        Sat, 27 Mar 2021 19:36:45 +1100 (AEDT)
-Received: by madeliefje.horms.nl (Postfix, from userid 7100)
-        id C84943C01; Sat, 27 Mar 2021 09:36:42 +0100 (CET)
-Date:   Sat, 27 Mar 2021 09:36:42 +0100
-From:   Simon Horman <horms@verge.net.au>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH 08/19] netfilter: ipvs: A spello fix
-Message-ID: <20210327083642.GB734@vergenet.net>
-References: <cover.1616797633.git.unixbhaskar@gmail.com>
- <e332d89570c2dd95512a888c8372e69fab711952.1616797633.git.unixbhaskar@gmail.com>
+        Sun, 28 Mar 2021 14:37:37 -0400
+X-Greylist: delayed 1388 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Mar 2021 14:37:36 EDT
+Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 69B1EEC3EC;
+        Mon, 29 Mar 2021 01:11:40 +0700 (+07)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hanoi.gov.vn;
+        s=default; t=1616955101;
+        bh=ane1edRy/RH6FD3OmgbICUSxI1fRkhA2HpHNylVfJo4=; h=Date:From:To;
+        b=rB/1zzoQPbEHIlu1B71+pZvEoDoUdsqOZWvKmDQJEzYKp3RZRC6BBJzGu1tCvRfDg
+         5Frv6HF9kq9rCzK56gdRsK2Ocgc8yN6G19CIJsEd+W1O3YSHWEuxbudkg1oegl0GWA
+         ZeMTO/0r8FlDOYZEdjQgs+C+mNUkQg2m4GFqHD3g=
+X-IMSS-DKIM-Authentication-Result: mx01.hanoi.gov.vn; sigcount=0
+Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8AABDEC3EE;
+        Mon, 29 Mar 2021 01:11:38 +0700 (+07)
+Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
+        by mx01.hanoi.gov.vn (Postfix) with ESMTPS;
+        Mon, 29 Mar 2021 01:11:38 +0700 (+07)
+Received: from mail.hanoi.gov.vn (localhost [127.0.0.1])
+        by mail.hanoi.gov.vn (Postfix) with ESMTPS id 698147F41B8C;
+        Mon, 29 Mar 2021 01:11:33 +0700 (+07)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.hanoi.gov.vn (Postfix) with ESMTP id 9E9407F41B5D;
+        Mon, 29 Mar 2021 01:11:30 +0700 (+07)
+Received: from mail.hanoi.gov.vn ([127.0.0.1])
+        by localhost (mail.hanoi.gov.vn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id qCMX4uhEC0OX; Mon, 29 Mar 2021 01:11:26 +0700 (+07)
+Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
+        by mail.hanoi.gov.vn (Postfix) with ESMTP id 5004F7F41B59;
+        Mon, 29 Mar 2021 01:11:23 +0700 (+07)
+Date:   Mon, 29 Mar 2021 01:11:23 +0700 (ICT)
+From:   Mackenzie Scott <ttptqd_thanhoai@hanoi.gov.vn>
+Reply-To: Mackenzie Scott <propack@propck.net>
+Message-ID: <636549412.25924665.1616955083257.JavaMail.zimbra@hanoi.gov.vn>
+Subject: Congratulations ($ 100,800,000.00)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e332d89570c2dd95512a888c8372e69fab711952.1616797633.git.unixbhaskar@gmail.com>
-Organisation: Horms Solutions BV
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [185.107.80.217]
+X-Mailer: Zimbra 8.8.15_GA_3894 (zclient/8.8.15_GA_3894)
+Thread-Index: PMP1YxuL3nCz/VviIoVHezcTuG9o0w==
+Thread-Topic: Congratulations ($ 100,800,000.00)
+To:     undisclosed-recipients:;
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-+ netfilter-devel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 04:43:01AM +0530, Bhaskar Chowdhury wrote:
-> s/registerd/registered/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Reviewed-by: Simon Horman <horms@verge.net.au>
-
-> ---
->  net/netfilter/ipvs/ip_vs_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-> index 0c132ff9b446..128690c512df 100644
-> --- a/net/netfilter/ipvs/ip_vs_core.c
-> +++ b/net/netfilter/ipvs/ip_vs_core.c
-> @@ -2398,7 +2398,7 @@ static int __net_init __ip_vs_init(struct net *net)
->  	if (ipvs == NULL)
->  		return -ENOMEM;
-> 
-> -	/* Hold the beast until a service is registerd */
-> +	/* Hold the beast until a service is registered */
->  	ipvs->enable = 0;
->  	ipvs->net = net;
->  	/* Counters used for creating unique names */
-> --
-> 2.26.2
-> 
+Hello,i&#39;m Mackenzie Scott,Ex-wife of Amazon founder i&#39;m donating $4 billion to charities,individuals,universities across the Globe from my divorce funds,i&#39;m donating part of it to provide immediate support to people suffering economically during the COVID-19 pandemic,i have a donation worth $100,800,000.00 Dollars for you,you can contact me for more information if you&#39;re interested.
