@@ -2,62 +2,88 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A5A34BE4A
-	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Mar 2021 20:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AFE34BE8D
+	for <lists+netfilter-devel@lfdr.de>; Sun, 28 Mar 2021 21:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhC1Shl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 28 Mar 2021 14:37:41 -0400
-Received: from mail.hanoi.gov.vn ([113.160.32.33]:27140 "EHLO
-        mx01.hanoi.gov.vn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhC1Shh (ORCPT
+        id S231142AbhC1Tb0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 28 Mar 2021 15:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229955AbhC1TbD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 28 Mar 2021 14:37:37 -0400
-X-Greylist: delayed 1388 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Mar 2021 14:37:36 EDT
-Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 69B1EEC3EC;
-        Mon, 29 Mar 2021 01:11:40 +0700 (+07)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hanoi.gov.vn;
-        s=default; t=1616955101;
-        bh=ane1edRy/RH6FD3OmgbICUSxI1fRkhA2HpHNylVfJo4=; h=Date:From:To;
-        b=rB/1zzoQPbEHIlu1B71+pZvEoDoUdsqOZWvKmDQJEzYKp3RZRC6BBJzGu1tCvRfDg
-         5Frv6HF9kq9rCzK56gdRsK2Ocgc8yN6G19CIJsEd+W1O3YSHWEuxbudkg1oegl0GWA
-         ZeMTO/0r8FlDOYZEdjQgs+C+mNUkQg2m4GFqHD3g=
-X-IMSS-DKIM-Authentication-Result: mx01.hanoi.gov.vn; sigcount=0
-Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8AABDEC3EE;
-        Mon, 29 Mar 2021 01:11:38 +0700 (+07)
-Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
-        by mx01.hanoi.gov.vn (Postfix) with ESMTPS;
-        Mon, 29 Mar 2021 01:11:38 +0700 (+07)
-Received: from mail.hanoi.gov.vn (localhost [127.0.0.1])
-        by mail.hanoi.gov.vn (Postfix) with ESMTPS id 698147F41B8C;
-        Mon, 29 Mar 2021 01:11:33 +0700 (+07)
+        Sun, 28 Mar 2021 15:31:03 -0400
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [IPv6:2001:738:5001::45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE22C061762
+        for <netfilter-devel@vger.kernel.org>; Sun, 28 Mar 2021 12:31:02 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.hanoi.gov.vn (Postfix) with ESMTP id 9E9407F41B5D;
-        Mon, 29 Mar 2021 01:11:30 +0700 (+07)
-Received: from mail.hanoi.gov.vn ([127.0.0.1])
-        by localhost (mail.hanoi.gov.vn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id qCMX4uhEC0OX; Mon, 29 Mar 2021 01:11:26 +0700 (+07)
-Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
-        by mail.hanoi.gov.vn (Postfix) with ESMTP id 5004F7F41B59;
-        Mon, 29 Mar 2021 01:11:23 +0700 (+07)
-Date:   Mon, 29 Mar 2021 01:11:23 +0700 (ICT)
-From:   Mackenzie Scott <ttptqd_thanhoai@hanoi.gov.vn>
-Reply-To: Mackenzie Scott <propack@propck.net>
-Message-ID: <636549412.25924665.1616955083257.JavaMail.zimbra@hanoi.gov.vn>
-Subject: Congratulations ($ 100,800,000.00)
+        by smtp0.kfki.hu (Postfix) with ESMTP id 1613C67400F1;
+        Sun, 28 Mar 2021 21:30:52 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
+Received: from smtp0.kfki.hu ([127.0.0.1])
+        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Sun, 28 Mar 2021 21:30:49 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
+        by smtp0.kfki.hu (Postfix) with ESMTP id 36ED067400EB;
+        Sun, 28 Mar 2021 21:30:49 +0200 (CEST)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+        id 2389A340D5D; Sun, 28 Mar 2021 21:30:49 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by blackhole.kfki.hu (Postfix) with ESMTP id 1F038340D5C;
+        Sun, 28 Mar 2021 21:30:49 +0200 (CEST)
+Date:   Sun, 28 Mar 2021 21:30:49 +0200 (CEST)
+From:   Jozsef Kadlecsik <kadlec@netfilter.org>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org, kael_w@yeah.net
+Subject: Re: [PATCH] netfilter: ipset: Remove duplicate declaration
+In-Reply-To: <20210327025454.917202-1-wanjiabing@vivo.com>
+Message-ID: <508fa09b-b2a2-b88f-35b1-d6d3d2a24254@netfilter.org>
+References: <20210327025454.917202-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [185.107.80.217]
-X-Mailer: Zimbra 8.8.15_GA_3894 (zclient/8.8.15_GA_3894)
-Thread-Index: PMP1YxuL3nCz/VviIoVHezcTuG9o0w==
-Thread-Topic: Congratulations ($ 100,800,000.00)
-To:     undisclosed-recipients:;
-X-TM-AS-GCONF: 00
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+On Sat, 27 Mar 2021, Wan Jiabing wrote:
 
-Hello,i&#39;m Mackenzie Scott,Ex-wife of Amazon founder i&#39;m donating $4 billion to charities,individuals,universities across the Globe from my divorce funds,i&#39;m donating part of it to provide immediate support to people suffering economically during the COVID-19 pandemic,i have a donation worth $100,800,000.00 Dollars for you,you can contact me for more information if you&#39;re interested.
+> struct ip_set is declared twice. One is declared at 79th line,
+> so remove the duplicate.
+
+Yes, it's a duplicate. Pablo, could you apply it?
+
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+
+Acked-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+
+Best regards,
+Jozsef
+> ---
+>  include/linux/netfilter/ipset/ip_set.h | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/include/linux/netfilter/ipset/ip_set.h b/include/linux/netfilter/ipset/ip_set.h
+> index 46d9a0c26c67..10279c4830ac 100644
+> --- a/include/linux/netfilter/ipset/ip_set.h
+> +++ b/include/linux/netfilter/ipset/ip_set.h
+> @@ -124,8 +124,6 @@ struct ip_set_ext {
+>  	bool target;
+>  };
+>  
+> -struct ip_set;
+> -
+>  #define ext_timeout(e, s)	\
+>  ((unsigned long *)(((void *)(e)) + (s)->offset[IPSET_EXT_ID_TIMEOUT]))
+>  #define ext_counter(e, s)	\
+> -- 
+> 2.25.1
+> 
+> 
+
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
