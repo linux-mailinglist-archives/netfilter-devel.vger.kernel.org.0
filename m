@@ -2,59 +2,77 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5CC34D1DA
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Mar 2021 15:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57EB234DA5F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Mar 2021 00:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhC2NxB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 29 Mar 2021 09:53:01 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14186 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231810AbhC2Nwg (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:52:36 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F8DTt0PTPzmbgJ;
-        Mon, 29 Mar 2021 21:49:54 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Mon, 29 Mar 2021
- 21:52:26 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <netdev@vger.kernel.org>, <netfilter-devel@vger.kernel.org>
-CC:     <pablo@netfilter.org>, <kadlec@netfilter.org>
-Subject: [PATCH -next] netfilter: nftables: remove unnecessary spin_lock_init()
-Date:   Mon, 29 Mar 2021 21:55:41 +0800
-Message-ID: <20210329135541.3304940-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S232098AbhC2WW3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 29 Mar 2021 18:22:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231743AbhC2WV6 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:21:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F043961985;
+        Mon, 29 Mar 2021 22:21:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617056517;
+        bh=VBA9o2EIdCUut3Sn5HLHtWT4SJ8aHzBGbxbctElJdEk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mh98EQNNu0suFlZflgWQ+VP3HhRUgngtCavWEy64wAUguanyrz9lD6UTCmXYPlDFy
+         4MsmVlvMuAWgmLjVHzCWF3ykW6+4/ko3UUQBKaZP+wMiVGDlPdo59R6znWrgUYMenX
+         cXqujlms0cf6RImUIkPGMckhnkMr5UHBtKmyJGvXoKEYsYXtTcZlIYWdIiw32O1IPz
+         4JEOlIVYFzYiuyUNeODuv1v98DbvJoVDFHoQx7h1xeqTtQf/JYjIOBwxoqMElVK3Wo
+         yFckcxLzRIbBZnUunMFIiiPOxjAXdpXyKIRrmDFoB7z2WyjbL6lXgiAVT0E9CUIk0x
+         nqZJ8LFvdvKbw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Ludovic Senecaux <linuxludo@free.fr>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 19/38] netfilter: conntrack: Fix gre tunneling over ipv6
+Date:   Mon, 29 Mar 2021 18:21:14 -0400
+Message-Id: <20210329222133.2382393-19-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210329222133.2382393-1-sashal@kernel.org>
+References: <20210329222133.2382393-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The spinlock nf_tables_destroy_list_lock is initialized statically.
-It is unnecessary to initialize by spin_lock_init().
+From: Ludovic Senecaux <linuxludo@free.fr>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+[ Upstream commit 8b2030b4305951f44afef80225f1475618e25a73 ]
+
+This fix permits gre connections to be tracked within ip6tables rules
+
+Signed-off-by: Ludovic Senecaux <linuxludo@free.fr>
+Acked-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_tables_api.c | 1 -
- 1 file changed, 1 deletion(-)
+ net/netfilter/nf_conntrack_proto_gre.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index fc2526b8bd55..24eeb027a888 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -9193,7 +9193,6 @@ static int __init nf_tables_module_init(void)
+diff --git a/net/netfilter/nf_conntrack_proto_gre.c b/net/netfilter/nf_conntrack_proto_gre.c
+index 5b05487a60d2..db11e403d818 100644
+--- a/net/netfilter/nf_conntrack_proto_gre.c
++++ b/net/netfilter/nf_conntrack_proto_gre.c
+@@ -218,9 +218,6 @@ int nf_conntrack_gre_packet(struct nf_conn *ct,
+ 			    enum ip_conntrack_info ctinfo,
+ 			    const struct nf_hook_state *state)
  {
- 	int err;
+-	if (state->pf != NFPROTO_IPV4)
+-		return -NF_ACCEPT;
+-
+ 	if (!nf_ct_is_confirmed(ct)) {
+ 		unsigned int *timeouts = nf_ct_timeout_lookup(ct);
  
--	spin_lock_init(&nf_tables_destroy_list_lock);
- 	err = register_pernet_subsys(&nf_tables_net_ops);
- 	if (err < 0)
- 		return err;
 -- 
-2.25.1
+2.30.1
 
