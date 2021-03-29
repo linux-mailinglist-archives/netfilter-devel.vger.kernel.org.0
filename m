@@ -2,126 +2,85 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C36434C0B2
-	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Mar 2021 02:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4647C34D2AF
+	for <lists+netfilter-devel@lfdr.de>; Mon, 29 Mar 2021 16:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231655AbhC2AvR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 28 Mar 2021 20:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhC2Au6 (ORCPT
+        id S229628AbhC2OrK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 29 Mar 2021 10:47:10 -0400
+Received: from secservnett.com ([62.173.139.46]:47878 "EHLO
+        host.secservnett.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231334AbhC2OrG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 28 Mar 2021 20:50:58 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFF4C061574
-        for <netfilter-devel@vger.kernel.org>; Sun, 28 Mar 2021 17:50:57 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id hq27so16801170ejc.9
-        for <netfilter-devel@vger.kernel.org>; Sun, 28 Mar 2021 17:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=30hFefP4ZO3Nkr29x6IoXC7oVy/hkWSV5Sy2cpozq2o=;
-        b=IN9c0bwKYu7WHm08RU2hXvRkJ/DfU1jsPofy54Fcf5MqkKU4M4/zuXrJ74WhTw/oc3
-         Qn5gL2Pqce1lQX9GzI2fkvvBsraDayLX1V5Uq6rlYkWPvqtXpTHrEGNVvOhyFjVeG7uK
-         s+gaEa+LrZFYqvHQhzYnfqYCrTnphcqt2pVup20vGGEGbZGkkCQIX57OmG3ALy9P940c
-         PZbB4lIINkmfSj0ffEv/BLIhTgYN+Mj7oVZsfVb/CBGwdAUfsJt6D+HqlpR/UD/S/KqL
-         Lc4Lf/0yjyZIBWuUC2YKbfp74Bmy4TWB7qiSMbhl976eoNSQCgRZSGKbGEKCw+jxPngo
-         Ab/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=30hFefP4ZO3Nkr29x6IoXC7oVy/hkWSV5Sy2cpozq2o=;
-        b=XrWf1rVELTu88ED15hyNgF6r3S3rVx2Q0dJiAHhm1GmcQ5YBnOKefeII+PhzDHTHCA
-         jr7w7836wwcf0g/Dx8aC5a9g/ptude/lACWND0c/ow8X5Udvn88nwZiOFIxdYRHdo7zy
-         kiVQQL+GHTtq3lEbAuFJw1Xpk5JmZDbgWEa79q5Sf1V9++x5due3GdOlVrSQy/O3uTxo
-         pIGGstJbON2RggOJvHaw8VGmWp0oeDpvAtNYJNXI97pxka6fAwuSPiU9rQ/s0UrXvCUp
-         3V6IKr0HvlMWg3Lg5DTfp2qnjfYR/Dibk9C0j5CO7KCz35EAe7pOU8VroUJuuTUJncCd
-         DV3Q==
-X-Gm-Message-State: AOAM531dmJPtO0eHO1YRCauJh9+u87p//orq+SXQy6lBslYsnRiImDdp
-        9NOoTTeTrLwqXJLG48zGzoOQJ0+MPXhJi7V53sCH
-X-Google-Smtp-Source: ABdhPJymzHFuTcp5RmAop4j8vr4nvsReBMBhbfDdtl2mYkWAszWg3rggapnjcBBz8387TSOrzu38UIz933tpKAZEQSs=
-X-Received: by 2002:a17:906:b846:: with SMTP id ga6mr25901053ejb.542.1616979056270;
- Sun, 28 Mar 2021 17:50:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
-In-Reply-To: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Sun, 28 Mar 2021 20:50:45 -0400
-Message-ID: <CAHC9VhRo62vCJL0d_YiKC-Mq9S3P5rNN3yoiF+NBu7oeeeU9rw@mail.gmail.com>
-Subject: Re: [PATCH v5] audit: log nftables configuration change events once
- per table
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-        twoerner@redhat.com, tgraf@infradead.org, dan.carpenter@oracle.com,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 29 Mar 2021 10:47:06 -0400
+X-Greylist: delayed 3072 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Mar 2021 10:47:06 EDT
+Received: from secservnett.com (ec2-18-218-163-80.us-east-2.compute.amazonaws.com [18.218.163.80])
+        by host.secservnett.com (Postfix) with ESMTPA id 51BE810C6EC0
+        for <netfilter-devel@vger.kernel.org>; Mon, 29 Mar 2021 16:47:07 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.secservnett.com 51BE810C6EC0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secservnett.com;
+        s=default; t=1617025627;
+        bh=8TmItn+cxRzt7hgTnS7zinr9gyY46RNS/wowQAcy4HU=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=TaNAuG6d/rhdobnJlh920bVmWn6A1KUQQZtUQDe3YplyncY9p6HsnuZElVkviR3BW
+         RoPgdLcZXjTHH9Ww8p4Inx37gjry7U9bOAglnjdDQJWOi7DNKNjF7hWfqQY88vnylQ
+         GR+tSdVc6r9LSpgZR57w6nRbSMEctodjZCkeGDNQ=
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.secservnett.com 51BE810C6EC0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secservnett.com;
+        s=default; t=1617025627;
+        bh=8TmItn+cxRzt7hgTnS7zinr9gyY46RNS/wowQAcy4HU=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=TaNAuG6d/rhdobnJlh920bVmWn6A1KUQQZtUQDe3YplyncY9p6HsnuZElVkviR3BW
+         RoPgdLcZXjTHH9Ww8p4Inx37gjry7U9bOAglnjdDQJWOi7DNKNjF7hWfqQY88vnylQ
+         GR+tSdVc6r9LSpgZR57w6nRbSMEctodjZCkeGDNQ=
+Reply-To: yusufhassan185@secsuremail.com
+From:   Yusuf <yusufhassan185@secservnett.com>
+To:     netfilter-devel@vger.kernel.org
+Subject: Proposal
+Date:   29 Mar 2021 13:47:06 +0000
+Message-ID: <20210329134706.0BE0ADDADBBF2243@secservnett.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 1:39 PM Richard Guy Briggs <rgb@redhat.com> wrote:
->
-> Reduce logging of nftables events to a level similar to iptables.
-> Restore the table field to list the table, adding the generation.
->
-> Indicate the op as the most significant operation in the event.
->
-> A couple of sample events:
->
-> type=PROCTITLE msg=audit(2021-03-18 09:30:49.801:143) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
-> type=SYSCALL msg=audit(2021-03-18 09:30:49.801:143) : arch=x86_64 syscall=sendmsg success=yes exit=172 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=roo
-> t sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv6 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv4 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=inet entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
->
-> type=PROCTITLE msg=audit(2021-03-18 09:30:49.839:144) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
-> type=SYSCALL msg=audit(2021-03-18 09:30:49.839:144) : arch=x86_64 syscall=sendmsg success=yes exit=22792 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=r
-> oot sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv6 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv4 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=inet entries=165 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
->
-> The issue was originally documented in
-> https://github.com/linux-audit/audit-kernel/issues/124
->
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> ---
-> Changelog:
-> v5:
-> (sorry for all the noise...)
-> - fix kbuild missing prototype warning in nf_tables_commit_audit_{alloc,collect,log}() <lkp@intel.com>
->
-> v4:
-> - move nf_tables_commit_audit_log() before nf_tables_commit_release() [fw]
-> - move nft2audit_op[] from audit.h to nf_tables_api.c
->
-> v3:
-> - fix function braces, reduce parameter scope [pna]
-> - pre-allocate nft_audit_data per table in step 1, bail on ENOMEM [pna]
->
-> v2:
-> - convert NFT ops to array indicies in nft2audit_op[] [ps]
-> - use linux lists [pna]
-> - use functions for each of collection and logging of audit data [pna]
-> ---
->  net/netfilter/nf_tables_api.c | 187 +++++++++++++++++++---------------
->  1 file changed, 104 insertions(+), 83 deletions(-)
+Good day.
 
-Netfilter folks, were you planning to pull this via your tree/netdev
-or would you like me to merge this via the audit tree?  If the latter,
-I would appreciate it if I could get an ACK from one of you; if the
-former, my ACK is below.
+I got your contact from a business director online and I am=20
+contacting you because I have a proposition that could be of=20
+great interest to you. I represent the interest of my brother in-
+law who was a minister in the Syrian Government. As you probably=20
+know, there is a lot of crisis and war going on currently in=20
+Syria and my brother in-law has been one of the few people to=20
+publicly oppose the Government's policy on this senseless war and=20
+killings of innocent citizens that has been going on for a long=20
+time. Due to his support for the opposition to put an end to this=20
+war and install a more peaceful regime, the current Government=20
+are now out to unlawfully arrest and seize all of his assets.=20
+Their plan is to incapacitate and frustrate my brother in-law so=20
+that he would not have the resources needed to continue his=20
+campaign towards peace and justice in the country.
 
-Acked-by: Paul Moore <paul@paul-moore.com>
+In the midst of all these problems he is facing and in order to=20
+secure the future of his family, he has asked me to help him find=20
+a foreigner with good business acumen that can help him invest=20
+the total sum of $100 Million USD that he has secured with a=20
+financial institution in Europe. Fortunately, at this time, the=20
+Government of his country do not know of the existence of the=20
+funds and he wants to move it out and invest it in a stable and=20
+neutral country. I am contacting you mainly to see if you if will=20
+be interested in this opportunity to help accomodate these funds=20
+and invest it on our behalf. We will handle the logistics=20
+involved in the movement of the funds to you and you will also be=20
+greatly compensated for your efforts. Please note that this=20
+transaction will be executed in a legal way and will not bring=20
+any harm to you or your family.
 
--- 
-paul moore
-www.paul-moore.com
+If this proposal interests you, kindly respond so that I can give=20
+you more details and we can also negotiate your compensation.
+
+Regards,
+
+Hassan.
