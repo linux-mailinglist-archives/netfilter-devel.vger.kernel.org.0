@@ -2,47 +2,49 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E7634E7C0
+	by mail.lfdr.de (Postfix) with ESMTP id 1F19634E7BF
 	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Mar 2021 14:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbhC3Mq3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 30 Mar 2021 08:46:29 -0400
-Received: from relay.sw.ru ([185.231.240.75]:39350 "EHLO relay.sw.ru"
+        id S232019AbhC3Mq2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 30 Mar 2021 08:46:28 -0400
+Received: from relay.sw.ru ([185.231.240.75]:39352 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232054AbhC3MqJ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        id S232057AbhC3MqJ (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 30 Mar 2021 08:46:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=virtuozzo.com; s=relay; h=MIME-Version:Message-Id:Date:Subject:From:
-        Content-Type; bh=3+IIpFewwoy8HVW52VE19N4BnJpPt/kiKdbzxS9js8o=; b=w7k2qiQF6EkJ
-        eVJnIrGFL7A4oE06hGXYQI+kP3WFLN0wijODDwTEH9P74INlQYfN916fod59LRcrCr2O83iCXe4Ol
-        0dm4/WS5ML1tRsVMXnM2Y177dpsQgnV6UQTxvoYjtyTgK1oS8zDEeIT67AEketXdRfokGMed9x33G
-        mGw+w=;
+        Content-Type; bh=B01gtK4hc27EAxDiCu5ErZVoq48yA2WC8mqECLCTgLQ=; b=AJR8U8xy68IM
+        CZNIuK7ralZXlGuT5FJFYxR2gLhY3NSL8wqCL7ghDa2R7TynBbUcgHj+PaW/C28H0eDVuY6plB4V4
+        MPgkhTe2objznT/xITdCZ8XqkMJmxtapAEjHwzr2ZJFm/QJuiHbeZbJQZD76YUvr9NpWYI5xyEFqP
+        UsCXU=;
 Received: from [10.93.0.33] (helo=dhcp-172-16-24-175.sw.ru)
         by relay.sw.ru with esmtp (Exim 4.94)
         (envelope-from <alexander.mikhalitsyn@virtuozzo.com>)
-        id 1lRDl0-000AnC-GV; Tue, 30 Mar 2021 15:46:06 +0300
+        id 1lRDl0-000AnC-Iv; Tue, 30 Mar 2021 15:46:06 +0300
 From:   Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
 To:     netfilter-devel@vger.kernel.org
 Cc:     pablo@netfilter.org, fw@strlen.de
-Subject: [iptables PATCH 1/2] extensions: libxt_conntrack: print xlate state as set
-Date:   Tue, 30 Mar 2021 15:45:47 +0300
-Message-Id: <20210330124548.739796-1-alexander.mikhalitsyn@virtuozzo.com>
+Subject: [iptables PATCH 2/2] extensions: libxt_conntrack: print xlate status as set
+Date:   Tue, 30 Mar 2021 15:45:48 +0300
+Message-Id: <20210330124548.739796-2-alexander.mikhalitsyn@virtuozzo.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20210330124548.739796-1-alexander.mikhalitsyn@virtuozzo.com>
+References: <20210330124548.739796-1-alexander.mikhalitsyn@virtuozzo.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Currently, state_xlate_print function prints statemask
-without { ... } around. But if ctstate condition is
-negative, then we have to use { ... } after "!=" operator
+status_xlate_print function prints statusmask
+without { ... } around. But if ctstatus condition is
+negative, then we have to use { ... } after "!=" operator in nft
 
 Reproducer:
-$ iptables -A INPUT -d 127.0.0.1/32 -p tcp -m conntrack ! --ctstate RELATED,ESTABLISHED -j DROP
+$ iptables -A INPUT -d 127.0.0.1/32 -p tcp -m conntrack ! --ctstatus expected,assured -j DROP
 $ nft list ruleset
 ...
-meta l4proto tcp ip daddr 127.0.0.1 ct state != related,established counter packets 0 bytes 0 drop
+meta l4proto tcp ip daddr 127.0.0.1 ct status != expected,assured counter packets 0 bytes 0 drop
 ...
 
 it will fail if we try to load this rule:
@@ -56,27 +58,27 @@ Signed-off-by: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
  1 file changed, 4 insertions(+)
 
 diff --git a/extensions/libxt_conntrack.c b/extensions/libxt_conntrack.c
-index 7734509..b3a2b2d 100644
+index b3a2b2d..132d512 100644
 --- a/extensions/libxt_conntrack.c
 +++ b/extensions/libxt_conntrack.c
-@@ -1152,6 +1152,8 @@ static void state_xlate_print(struct xt_xlate *xl, unsigned int statemask)
+@@ -1195,6 +1195,8 @@ static void status_xlate_print(struct xt_xlate *xl, unsigned int statusmask)
  {
  	const char *sep = "";
  
 +	xt_xlate_add(xl, "{ ");
 +
- 	if (statemask & XT_CONNTRACK_STATE_INVALID) {
- 		xt_xlate_add(xl, "%s%s", sep, "invalid");
+ 	if (statusmask & IPS_EXPECTED) {
+ 		xt_xlate_add(xl, "%s%s", sep, "expected");
  		sep = ",";
-@@ -1172,6 +1174,8 @@ static void state_xlate_print(struct xt_xlate *xl, unsigned int statemask)
- 		xt_xlate_add(xl, "%s%s", sep, "untracked");
+@@ -1211,6 +1213,8 @@ static void status_xlate_print(struct xt_xlate *xl, unsigned int statusmask)
+ 		xt_xlate_add(xl, "%s%s", sep, "confirmed");
  		sep = ",";
  	}
 +
 +	xt_xlate_add(xl, " }");
  }
  
- static int state_xlate(struct xt_xlate *xl,
+ static void addr_xlate_print(struct xt_xlate *xl,
 -- 
 1.8.3.1
 
