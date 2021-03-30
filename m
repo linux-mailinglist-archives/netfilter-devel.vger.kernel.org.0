@@ -2,77 +2,56 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCA734DB19
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Mar 2021 00:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F6D34E163
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Mar 2021 08:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbhC2WZc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 29 Mar 2021 18:25:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232590AbhC2WXk (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:23:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48DE761976;
-        Mon, 29 Mar 2021 22:23:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617056598;
-        bh=VBA9o2EIdCUut3Sn5HLHtWT4SJ8aHzBGbxbctElJdEk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aFRCoi2DXlauuoa6by4S4yYLQ/xtv0k0cftfKYg86I+vEyZirVYAF130ktt/Yyh4i
-         b6+iyLPuX8VE7O+0y89tNNIwzTyj3SQdzUykgOeKyy/k6S65wOrWMiUeqgG/xGYs9c
-         JM7ETYHchJyksscxYYKcPMuR24R96XbOAKOAuRQZXpVD7txalsWbLmbLsewFWIjfjF
-         s2COIMZkJgbL9hsgpteVZItZCpcaSn5gkcwxlKwXYpMfOQqSW3aAMJn3e1jFKFC/wU
-         CmvOHOTtcHgZg+x2760o/nI9KkZbMAgqBz7QFjSw602FzMk9ea17jQTpwPlXGoblfW
-         lm1R/wrscrIsQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ludovic Senecaux <linuxludo@free.fr>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 12/19] netfilter: conntrack: Fix gre tunneling over ipv6
-Date:   Mon, 29 Mar 2021 18:22:55 -0400
-Message-Id: <20210329222303.2383319-12-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210329222303.2383319-1-sashal@kernel.org>
-References: <20210329222303.2383319-1-sashal@kernel.org>
+        id S230316AbhC3Gmy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 30 Mar 2021 02:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230501AbhC3Gmp (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 30 Mar 2021 02:42:45 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27704C061762;
+        Mon, 29 Mar 2021 23:42:45 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1lR85J-0002FN-F0; Tue, 30 Mar 2021 08:42:41 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     lvs-devel@vger.kernel.org, ja@ssi.bg, horms@verge.net.au,
+        Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf-next] netfilter: ipvs: do not printk on netns creation
+Date:   Tue, 30 Mar 2021 08:42:32 +0200
+Message-Id: <20210330064232.11960-1-fw@strlen.de>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Ludovic Senecaux <linuxludo@free.fr>
+This causes dmesg spew during normal operation, so remove this.
 
-[ Upstream commit 8b2030b4305951f44afef80225f1475618e25a73 ]
-
-This fix permits gre connections to be tracked within ip6tables rules
-
-Signed-off-by: Ludovic Senecaux <linuxludo@free.fr>
-Acked-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_conntrack_proto_gre.c | 3 ---
- 1 file changed, 3 deletions(-)
+ net/netfilter/ipvs/ip_vs_ftp.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_proto_gre.c b/net/netfilter/nf_conntrack_proto_gre.c
-index 5b05487a60d2..db11e403d818 100644
---- a/net/netfilter/nf_conntrack_proto_gre.c
-+++ b/net/netfilter/nf_conntrack_proto_gre.c
-@@ -218,9 +218,6 @@ int nf_conntrack_gre_packet(struct nf_conn *ct,
- 			    enum ip_conntrack_info ctinfo,
- 			    const struct nf_hook_state *state)
- {
--	if (state->pf != NFPROTO_IPV4)
--		return -NF_ACCEPT;
--
- 	if (!nf_ct_is_confirmed(ct)) {
- 		unsigned int *timeouts = nf_ct_timeout_lookup(ct);
+diff --git a/net/netfilter/ipvs/ip_vs_ftp.c b/net/netfilter/ipvs/ip_vs_ftp.c
+index cf925906f59b..ef1f45e43b63 100644
+--- a/net/netfilter/ipvs/ip_vs_ftp.c
++++ b/net/netfilter/ipvs/ip_vs_ftp.c
+@@ -591,8 +591,6 @@ static int __net_init __ip_vs_ftp_init(struct net *net)
+ 		ret = register_ip_vs_app_inc(ipvs, app, app->protocol, ports[i]);
+ 		if (ret)
+ 			goto err_unreg;
+-		pr_info("%s: loaded support on port[%d] = %u\n",
+-			app->name, i, ports[i]);
+ 	}
+ 	return 0;
  
 -- 
-2.30.1
+2.26.3
 
