@@ -2,65 +2,56 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4C3350153
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Mar 2021 15:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED513501FF
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Mar 2021 16:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235635AbhCaNfh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 31 Mar 2021 09:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235314AbhCaNfN (ORCPT
+        id S235771AbhCaOQI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 31 Mar 2021 10:16:08 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:48042 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235865AbhCaOPh (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:35:13 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B379CC061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 31 Mar 2021 06:35:12 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1lRb02-0003Bh-4u; Wed, 31 Mar 2021 15:35:10 +0200
-Date:   Wed, 31 Mar 2021 15:35:10 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Phil Sutter <phil@nwl.cc>, Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: iptables-nft fails to restore huge rulesets
-Message-ID: <20210331133510.GF17285@breakpoint.cc>
-References: <20210331091331.GE7863@orbyte.nwl.cc>
+        Wed, 31 Mar 2021 10:15:37 -0400
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 289BC630C2
+        for <netfilter-devel@vger.kernel.org>; Wed, 31 Mar 2021 16:15:22 +0200 (CEST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft 1/2] mnl: do not set flowtable flags twice
+Date:   Wed, 31 Mar 2021 16:15:32 +0200
+Message-Id: <20210331141533.25158-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331091331.GE7863@orbyte.nwl.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Phil Sutter <phil@nwl.cc> wrote:
-> Hi,
-> 
-> I'm currently trying to fix for an issue in Kubernetes realm[1]:
-> Baseline is they are trying to restore a ruleset with ~700k lines and it
-> fails. Needless to say, legacy iptables handles it just fine.
-> 
-> Meanwhile I found out there's a limit of 1024 iovecs when submitting the
-> batch to kernel, and this is what they're hitting.
-> 
-> I can work around that limit by increasing each iovec (via
-> BATCH_PAGE_SIZE) but keeping pace with legacy seems ridiculous:
-> 
-> With a scripted binary-search I checked the maximum working number of
-> restore items of:
-> 
-> (1) User-defined chains
-> (2) rules with merely comment match present
-> (3) rules matching on saddr, daddr, iniface and outiface
-> 
-> Here's legacy compared to nft with different factors in BATCH_PAGE_SIZE:
-> 
-> legacy		32 (stock)	  64		   128          256
-> ----------------------------------------------------------------------
-> 1'636'799	1'602'202	- NC -		  - NC -       - NC -
-> 1'220'159	  302'079	604'160		1'208'320      - NC -
-> 3'532'040	  242'688	485'376		  971'776    1'944'576
+Flags are already set on from mnl_nft_flowtable_add(), remove duplicated
+code.
 
-Can you explain that table? What does 1'636'799 mean? NC?
+Fixes: e6cc9f37385 ("nftables: add flags offload to flowtable")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/mnl.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/src/mnl.c b/src/mnl.c
+index ffbfe48158de..deea586f9b00 100644
+--- a/src/mnl.c
++++ b/src/mnl.c
+@@ -1779,11 +1779,6 @@ int mnl_nft_flowtable_add(struct netlink_ctx *ctx, struct cmd *cmd,
+ 		nftnl_flowtable_set_u32(flo, NFTNL_FLOWTABLE_PRIO, 0);
+ 	}
+ 
+-	if (cmd->flowtable->flags & FLOWTABLE_F_HW_OFFLOAD) {
+-		nftnl_flowtable_set_u32(flo, NFTNL_FLOWTABLE_FLAGS,
+-				    NFT_FLOWTABLE_HW_OFFLOAD);
+-	}
+-
+ 	if (cmd->flowtable->dev_expr) {
+ 		dev_array = nft_flowtable_dev_array(cmd);
+ 		nftnl_flowtable_set_data(flo, NFTNL_FLOWTABLE_DEVICES,
+-- 
+2.20.1
+
