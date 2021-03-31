@@ -2,134 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3E63507EF
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Mar 2021 22:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50669350820
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Mar 2021 22:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235928AbhCaULa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 31 Mar 2021 16:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236509AbhCaULL (ORCPT
+        id S236385AbhCaUWv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 31 Mar 2021 16:22:51 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:48918 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236379AbhCaUWf (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:11:11 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F839C061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 31 Mar 2021 13:11:11 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1lRhBG-0005B5-3e; Wed, 31 Mar 2021 22:11:10 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next 11/11] net: remove obsolete members from struct net
-Date:   Wed, 31 Mar 2021 22:10:14 +0200
-Message-Id: <20210331201014.23293-12-fw@strlen.de>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210331201014.23293-1-fw@strlen.de>
-References: <20210331201014.23293-1-fw@strlen.de>
+        Wed, 31 Mar 2021 16:22:35 -0400
+Received: from us.es (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 8110663E47;
+        Wed, 31 Mar 2021 22:22:19 +0200 (CEST)
+Date:   Wed, 31 Mar 2021 22:22:30 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+        twoerner@redhat.com, tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+Subject: Re: [PATCH v5] audit: log nftables configuration change events once
+ per table
+Message-ID: <20210331202230.GA4109@salvia>
+References: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
+In-Reply-To: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-all have been moved to generic_net infra. On x86_64, this reduces
-struct net size from 70 to 63 cache lines (4480 to 4032 byte).
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- include/net/net_namespace.h   | 9 ---------
- include/net/netns/conntrack.h | 4 ----
- include/net/netns/netfilter.h | 6 ------
- include/net/netns/nftables.h  | 7 -------
- include/net/netns/x_tables.h  | 1 -
- 5 files changed, 27 deletions(-)
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
-index dcaee24a4d87..fdb16dc33703 100644
---- a/include/net/net_namespace.h
-+++ b/include/net/net_namespace.h
-@@ -142,15 +142,6 @@ struct net {
- #if defined(CONFIG_NF_TABLES) || defined(CONFIG_NF_TABLES_MODULE)
- 	struct netns_nftables	nft;
- #endif
--#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
--	struct netns_nf_frag	nf_frag;
--	struct ctl_table_header *nf_frag_frags_hdr;
--#endif
--	struct sock		*nfnl;
--	struct sock		*nfnl_stash;
--#if IS_ENABLED(CONFIG_NF_CT_NETLINK_TIMEOUT)
--	struct list_head	nfct_timeout_list;
--#endif
- #endif
- #ifdef CONFIG_WEXT_CORE
- 	struct sk_buff_head	wext_nlevents;
-diff --git a/include/net/netns/conntrack.h b/include/net/netns/conntrack.h
-index 806454e767bf..e5f664d69ead 100644
---- a/include/net/netns/conntrack.h
-+++ b/include/net/netns/conntrack.h
-@@ -96,13 +96,9 @@ struct netns_ct {
- 	atomic_t		count;
- 	unsigned int		expect_count;
- #ifdef CONFIG_NF_CONNTRACK_EVENTS
--	struct delayed_work ecache_dwork;
- 	bool ecache_dwork_pending;
- #endif
- 	bool			auto_assign_helper_warned;
--#ifdef CONFIG_SYSCTL
--	struct ctl_table_header	*sysctl_header;
--#endif
- 	unsigned int		sysctl_log_invalid; /* Log invalid packets */
- 	int			sysctl_events;
- 	int			sysctl_acct;
-diff --git a/include/net/netns/netfilter.h b/include/net/netns/netfilter.h
-index ca043342c0eb..15e2b13fb0c0 100644
---- a/include/net/netns/netfilter.h
-+++ b/include/net/netns/netfilter.h
-@@ -28,11 +28,5 @@ struct netns_nf {
- #if IS_ENABLED(CONFIG_DECNET)
- 	struct nf_hook_entries __rcu *hooks_decnet[NF_DN_NUMHOOKS];
- #endif
--#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4)
--	bool			defrag_ipv4;
--#endif
--#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
--	bool			defrag_ipv6;
--#endif
- };
- #endif
-diff --git a/include/net/netns/nftables.h b/include/net/netns/nftables.h
-index 6c0806bd8d1e..8c77832d0240 100644
---- a/include/net/netns/nftables.h
-+++ b/include/net/netns/nftables.h
-@@ -5,14 +5,7 @@
- #include <linux/list.h>
- 
- struct netns_nftables {
--	struct list_head	tables;
--	struct list_head	commit_list;
--	struct list_head	module_list;
--	struct list_head	notify_list;
--	struct mutex		commit_mutex;
--	unsigned int		base_seq;
- 	u8			gencursor;
--	u8			validate_state;
- };
- 
- #endif
-diff --git a/include/net/netns/x_tables.h b/include/net/netns/x_tables.h
-index 9bc5a12fdbb0..83c8ea2e87a6 100644
---- a/include/net/netns/x_tables.h
-+++ b/include/net/netns/x_tables.h
-@@ -8,7 +8,6 @@
- struct ebt_table;
- 
- struct netns_xt {
--	struct list_head tables[NFPROTO_NUMPROTO];
- 	bool notrack_deprecated_warning;
- 	bool clusterip_deprecated_warning;
- #if defined(CONFIG_BRIDGE_NF_EBTABLES) || \
--- 
-2.26.3
+On Fri, Mar 26, 2021 at 01:38:59PM -0400, Richard Guy Briggs wrote:
+> Reduce logging of nftables events to a level similar to iptables.
+> Restore the table field to list the table, adding the generation.
+> 
+> Indicate the op as the most significant operation in the event.
 
+There's a UAF, Florian reported. I'm attaching an incremental fix.
+
+nf_tables_commit_audit_collect() refers to the trans object which
+might have been already released.
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/x-diff; charset=utf-8
+Content-Disposition: attachment; filename="fix-uaf.patch"
+
+commit e4d272948d25b66d86fc241cefd95281bfb1079e
+Author: Pablo Neira Ayuso <pablo@netfilter.org>
+Date:   Wed Mar 31 22:19:51 2021 +0200
+
+    netfilter: nf_tables: use-after-free
+    
+    Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 5dd4bb7cabf5..01674c0d9103 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -8063,6 +8063,8 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 	net->nft.gencursor = nft_gencursor_next(net);
+ 
+ 	list_for_each_entry_safe(trans, next, &net->nft.commit_list, list) {
++		nf_tables_commit_audit_collect(&adl, trans->ctx.table,
++					       trans->msg_type);
+ 		switch (trans->msg_type) {
+ 		case NFT_MSG_NEWTABLE:
+ 			if (nft_trans_table_update(trans)) {
+@@ -8211,8 +8213,6 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 			}
+ 			break;
+ 		}
+-		nf_tables_commit_audit_collect(&adl, trans->ctx.table,
+-					       trans->msg_type);
+ 	}
+ 
+ 	nft_commit_notify(net, NETLINK_CB(skb).portid);
+
+--OXfL5xGRrasGEqWY--
