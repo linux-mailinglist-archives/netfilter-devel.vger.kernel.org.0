@@ -2,104 +2,84 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442A434F9C8
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Mar 2021 09:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D42034FC02
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Mar 2021 10:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234003AbhCaHZs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 31 Mar 2021 03:25:48 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:14056 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233925AbhCaHZq (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 31 Mar 2021 03:25:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617175546; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=d+v3PqBqmobTpf4UPrjE7XKvG2o6TTpsv6c3K4j1hbo=; b=lL+GA2HchVW4KgcrbasRC0JACN2w90pKsPhe8AEmk8gYV4tICdcTUpSfLXemOdHjUhZmhJOj
- /Q1H0CRzL4Cifu1Ha+0+qrU0Iq2mH3vWGP9S277YAxXCloPaXKTZXKz8no639C+1NGUhsutk
- fb1TDAo/uZxQBztN7dxWPoJ37VQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyJlM2NhZSIsICJuZXRmaWx0ZXItZGV2ZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 606423f08166b7eff743f3ed (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 31 Mar 2021 07:25:36
- GMT
-Sender: manojbm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D3044C43463; Wed, 31 Mar 2021 07:25:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from manojbm-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: manojbm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C745BC433C6;
-        Wed, 31 Mar 2021 07:25:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C745BC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=manojbm@codeaurora.org
-From:   Manoj Basapathi <manojbm@codeaurora.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     fw@strlen.de, pablo@netfilter.org, sharathv@qti.qualcomm.com,
-        ssaha@qti.qualcomm.com, vidulak@qti.qualcomm.com,
-        manojbm@qti.qualcomm.com, subashab@quicinc.com,
-        rpavan@qti.qualcomm.com, Manoj Basapathi <manojbm@codeaurora.org>,
-        Sauvik Saha <ssaha@codeaurora.org>
-Subject: [PATCH] tcp: Reset tcp connections in SYN-SENT state
-Date:   Wed, 31 Mar 2021 12:55:22 +0530
-Message-Id: <20210331072522.8576-1-manojbm@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231278AbhCaI7R (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 31 Mar 2021 04:59:17 -0400
+Received: from m97179.mail.qiye.163.com ([220.181.97.179]:37238 "EHLO
+        m97179.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhCaI6v (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 31 Mar 2021 04:58:51 -0400
+X-Greylist: delayed 304 seconds by postgrey-1.27 at vger.kernel.org; Wed, 31 Mar 2021 04:58:51 EDT
+Received: from localhost.localdomain (unknown [123.59.132.129])
+        by m97179.mail.qiye.163.com (Hmail) with ESMTPA id 1528FE02B9E;
+        Wed, 31 Mar 2021 16:53:43 +0800 (CST)
+From:   wenxu@ucloud.cn
+To:     pablo@netfilter.org
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next] netfilter: flowtable: fix set software outdev on top of the net_device_path_stack
+Date:   Wed, 31 Mar 2021 16:53:43 +0800
+Message-Id: <1617180823-21881-1-git-send-email-wenxu@ucloud.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
+        oVCBIfWUFZShpLGkIYHksYSh9LVkpNSkxKQ0tDSU9ITEpVGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PyI6KQw5Iz0*NQpLCAEJDh8o
+        KS8KCxNVSlVKTUpMSkNLQ0lPTU9KVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
+        QlVKSElVSklCWVdZCAFZQUlIQk83Bg++
+X-HM-Tid: 0a78877d124b20bdkuqy1528fe02b9e
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Userspace sends tcp connection (sock) destroy on network switch
-i.e switching the default network of the device between multiple
-networks(Cellular/Wifi/Ethernet).
+From: wenxu <wenxu@ucloud.cn>
 
-Kernel though doesn't send reset for the connections in SYN-SENT state
-and these connections continue to remain.
-Even as per RFC 793, there is no hard rule to not send RST on ABORT in
-this state.
+The outdev of nft_forward_info should be set on the top of stack device.
+Such the following case:
+br0 is a bridge with pvid 100 and veth is in the vlan 100 without untagged
 
-Modify tcp_abort and tcp_disconnect behavior to send RST for connections
-in syn-sent state to avoid lingering connections on network switch.
+ip l add dev br0 type bridge vlan_filtering 1
+brctl addif br0 veth
+bridge vlan add dev veth vid 100
+bridge vlan add dev br0 vid 100 pvid untagged self
 
-Signed-off-by: Manoj Basapathi <manojbm@codeaurora.org>
-Signed-off-by: Sauvik Saha <ssaha@codeaurora.org>
+The net device path should be br0-->veth
+The software offload doesn't encap the vlan tag and the outdev should
+be the top device in the stack(route device).
+So thehe outdev for softeware offload should set on br0 but not veth.
+Or the vlan didn't tagged outgoing through veth
+
+Fixes: 4cd91f7c290f ("netfilter: flowtable: add vlan support")
+Signed-off-by: wenxu <wenxu@ucloud.cn>
 ---
- net/ipv4/tcp.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/netfilter/nft_flow_offload.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index e14fd0c50c10..627a472161fb 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -2888,7 +2888,7 @@ static inline bool tcp_need_reset(int state)
- {
- 	return (1 << state) &
- 	       (TCPF_ESTABLISHED | TCPF_CLOSE_WAIT | TCPF_FIN_WAIT1 |
--		TCPF_FIN_WAIT2 | TCPF_SYN_RECV);
-+		TCPF_FIN_WAIT2 | TCPF_SYN_RECV | TCPF_SYN_SENT);
- }
+diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
+index 4843dd2..53f641b 100644
+--- a/net/netfilter/nft_flow_offload.c
++++ b/net/netfilter/nft_flow_offload.c
+@@ -119,7 +119,8 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
+ 				info->indev = NULL;
+ 				break;
+ 			}
+-			info->outdev = path->dev;
++			if (!info->outdev)
++				info->outdev = path->dev;
+ 			info->encap[info->num_encaps].id = path->encap.id;
+ 			info->encap[info->num_encaps].proto = path->encap.proto;
+ 			info->num_encaps++;
+@@ -129,6 +130,8 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
+ 		case DEV_PATH_BRIDGE:
+ 			if (is_zero_ether_addr(info->h_source))
+ 				memcpy(info->h_source, path->dev->dev_addr, ETH_ALEN);
++			if (!info->outdev)
++				info->outdev = path->dev;
  
- static void tcp_rtx_queue_purge(struct sock *sk)
-@@ -2954,8 +2954,7 @@ int tcp_disconnect(struct sock *sk, int flags)
- 		 */
- 		tcp_send_active_reset(sk, gfp_any());
- 		sk->sk_err = ECONNRESET;
--	} else if (old_state == TCP_SYN_SENT)
--		sk->sk_err = ECONNRESET;
-+	}
- 
- 	tcp_clear_xmit_timers(sk);
- 	__skb_queue_purge(&sk->sk_receive_queue);
+ 			switch (path->bridge.vlan_mode) {
+ 			case DEV_PATH_BR_VLAN_UNTAG_HW:
 -- 
-2.29.0
+1.8.3.1
 
