@@ -2,73 +2,128 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7566534FC49
-	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Mar 2021 11:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CB834FE11
+	for <lists+netfilter-devel@lfdr.de>; Wed, 31 Mar 2021 12:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbhCaJN5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 31 Mar 2021 05:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbhCaJNg (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 31 Mar 2021 05:13:36 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6603C061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 31 Mar 2021 02:13:35 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1lRWup-0008Gs-As; Wed, 31 Mar 2021 11:13:31 +0200
-Date:   Wed, 31 Mar 2021 11:13:31 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: iptables-nft fails to restore huge rulesets
-Message-ID: <20210331091331.GE7863@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+        id S234956AbhCaKaJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 31 Mar 2021 06:30:09 -0400
+Received: from relay.sw.ru ([185.231.240.75]:49890 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234855AbhCaK3x (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 31 Mar 2021 06:29:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=MIME-Version:Message-Id:Date:Subject:From:
+        Content-Type; bh=TV2YQyVZAUq8Kt3dD6VeMG/SVDZRtjirvvPwbzVjEqM=; b=QW5mrwvuicuw
+        pj1K3SnYJcbrhD9cAwXrMai1eCLsh1Fv9pWkMvX+bCk45O5vRVhoip0TMiK87RKD5ll5rzah5u9eo
+        ow02CyZI7U+LOr9L7fXFu1lPERjDei8Fa7StwT6bQ6I68fXfwmYsr4NF6lmFihQq86/bmyL2yktCn
+        agDsc=;
+Received: from [10.93.0.33] (helo=dhcp-172-16-24-175.sw.ru)
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <alexander.mikhalitsyn@virtuozzo.com>)
+        id 1lRY6h-000CRd-Oc; Wed, 31 Mar 2021 13:29:51 +0300
+From:   Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+To:     netfilter-devel@vger.kernel.org
+Cc:     pablo@netfilter.org, fw@strlen.de
+Subject: [iptables PATCH v3 1/2] extensions: libxt_conntrack: print xlate state as set
+Date:   Wed, 31 Mar 2021 13:29:33 +0300
+Message-Id: <20210331102934.848126-1-alexander.mikhalitsyn@virtuozzo.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender:  <n0-1@orbyte.nwl.cc>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+Currently, state_xlate_print function prints statemask
+without { ... } around. But if ctstate condition is
+negative, then we have to use { ... } after "!=" operator
 
-I'm currently trying to fix for an issue in Kubernetes realm[1]:
-Baseline is they are trying to restore a ruleset with ~700k lines and it
-fails. Needless to say, legacy iptables handles it just fine.
+Reproducer:
+$ iptables -A INPUT -d 127.0.0.1/32 -p tcp -m conntrack ! --ctstate RELATED,ESTABLISHED -j DROP
+$ nft list ruleset
+...
+meta l4proto tcp ip daddr 127.0.0.1 ct state != related,established counter packets 0 bytes 0 drop
+...
 
-Meanwhile I found out there's a limit of 1024 iovecs when submitting the
-batch to kernel, and this is what they're hitting.
+it will fail if we try to load this rule:
+$ nft -f nft_test
+../nft_test:6:97-97: Error: syntax error, unexpected comma, expecting newline or semicolon
 
-I can work around that limit by increasing each iovec (via
-BATCH_PAGE_SIZE) but keeping pace with legacy seems ridiculous:
+Cc: Florian Westphal <fw@strlen.de>
+Signed-off-by: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+---
+ extensions/libxt_conntrack.c      | 18 +++++++++++++++---
+ extensions/libxt_conntrack.txlate |  5 ++++-
+ 2 files changed, 19 insertions(+), 4 deletions(-)
 
-With a scripted binary-search I checked the maximum working number of
-restore items of:
+diff --git a/extensions/libxt_conntrack.c b/extensions/libxt_conntrack.c
+index 7734509..fe964aa 100644
+--- a/extensions/libxt_conntrack.c
++++ b/extensions/libxt_conntrack.c
+@@ -1148,9 +1148,16 @@ static void state_save(const void *ip, const struct xt_entry_match *match)
+ 	state_print_state(sinfo->statemask);
+ }
+ 
+-static void state_xlate_print(struct xt_xlate *xl, unsigned int statemask)
++static void state_xlate_print(struct xt_xlate *xl, unsigned int statemask, int afterinv)
+ {
+ 	const char *sep = "";
++	int as_set;
++
++	/* print as set only after inversion and if more than one flag is set */
++	as_set = afterinv && (statemask & (statemask - 1));
++
++	if (as_set)
++		xt_xlate_add(xl, "{ ");
+ 
+ 	if (statemask & XT_CONNTRACK_STATE_INVALID) {
+ 		xt_xlate_add(xl, "%s%s", sep, "invalid");
+@@ -1172,6 +1179,9 @@ static void state_xlate_print(struct xt_xlate *xl, unsigned int statemask)
+ 		xt_xlate_add(xl, "%s%s", sep, "untracked");
+ 		sep = ",";
+ 	}
++
++	if (as_set)
++		xt_xlate_add(xl, " }");
+ }
+ 
+ static int state_xlate(struct xt_xlate *xl,
+@@ -1182,7 +1192,8 @@ static int state_xlate(struct xt_xlate *xl,
+ 
+ 	xt_xlate_add(xl, "ct state %s", sinfo->invert_flags & XT_CONNTRACK_STATE ?
+ 					"!= " : "");
+-	state_xlate_print(xl, sinfo->state_mask);
++	state_xlate_print(xl, sinfo->state_mask,
++			  sinfo->invert_flags & XT_CONNTRACK_STATE);
+ 	xt_xlate_add(xl, " ");
+ 	return 1;
+ }
+@@ -1259,7 +1270,8 @@ static int _conntrack3_mt_xlate(struct xt_xlate *xl,
+ 			xt_xlate_add(xl, "%sct state %s", space,
+ 				     sinfo->invert_flags & XT_CONNTRACK_STATE ?
+ 				     "!= " : "");
+-			state_xlate_print(xl, sinfo->state_mask);
++			state_xlate_print(xl, sinfo->state_mask,
++					  sinfo->invert_flags & XT_CONNTRACK_STATE);
+ 			space = " ";
+ 		}
+ 	}
+diff --git a/extensions/libxt_conntrack.txlate b/extensions/libxt_conntrack.txlate
+index d374f8a..75b3daa 100644
+--- a/extensions/libxt_conntrack.txlate
++++ b/extensions/libxt_conntrack.txlate
+@@ -2,7 +2,10 @@ iptables-translate -t filter -A INPUT -m conntrack --ctstate NEW,RELATED -j ACCE
+ nft add rule ip filter INPUT ct state new,related counter accept
+ 
+ ip6tables-translate -t filter -A INPUT -m conntrack ! --ctstate NEW,RELATED -j ACCEPT
+-nft add rule ip6 filter INPUT ct state != new,related counter accept
++nft add rule ip6 filter INPUT ct state != { new,related } counter accept
++
++ip6tables-translate -t filter -A INPUT -m conntrack ! --ctstate NEW -j ACCEPT
++nft add rule ip6 filter INPUT ct state != new counter accept
+ 
+ iptables-translate -t filter -A INPUT -m conntrack --ctproto UDP -j ACCEPT
+ nft add rule ip filter INPUT ct original protocol 17 counter accept
+-- 
+1.8.3.1
 
-(1) User-defined chains
-(2) rules with merely comment match present
-(3) rules matching on saddr, daddr, iniface and outiface
-
-Here's legacy compared to nft with different factors in BATCH_PAGE_SIZE:
-
-legacy		32 (stock)	  64		   128          256
-----------------------------------------------------------------------
-1'636'799	1'602'202	- NC -		  - NC -       - NC -
-1'220'159	  302'079	604'160		1'208'320      - NC -
-3'532'040	  242'688	485'376		  971'776    1'944'576
-
-At this point I stopped as the VM's 20GB RAM became the limit
-(iptables-nft-restore being OOM-killed instead of just failing).
-
-What would you suggest? Should I just change BATCH_PAGE_SIZE to make it
-"large enough" or is there a better approach?
-
-Cheers, Phil
-
-[1] https://github.com/kubernetes/kubernetes/issues/96018
