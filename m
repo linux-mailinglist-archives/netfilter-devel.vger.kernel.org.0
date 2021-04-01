@@ -2,100 +2,89 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BDA3513A5
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 12:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46673518D3
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 19:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhDAKbQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Apr 2021 06:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
+        id S235067AbhDARrs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Apr 2021 13:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234103AbhDAKa7 (ORCPT
+        with ESMTP id S234474AbhDARmQ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:30:59 -0400
+        Thu, 1 Apr 2021 13:42:16 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3B3C061788
-        for <netfilter-devel@vger.kernel.org>; Thu,  1 Apr 2021 03:30:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4186C08EA3C;
+        Thu,  1 Apr 2021 06:24:49 -0700 (PDT)
 Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94)
         (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1lRubH-0008Rz-8M; Thu, 01 Apr 2021 12:30:55 +0200
-Date:   Thu, 1 Apr 2021 12:30:55 +0200
+        id 1lRxJU-0001yJ-EH; Thu, 01 Apr 2021 15:24:44 +0200
+Date:   Thu, 1 Apr 2021 15:24:44 +0200
 From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: Re: iptables-nft fails to restore huge rulesets
-Message-ID: <20210401103055.GW3158@orbyte.nwl.cc>
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
+        tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+Subject: Re: [PATCH v5] audit: log nftables configuration change events once
+ per table
+Message-ID: <20210401132444.GX3158@orbyte.nwl.cc>
 Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-References: <20210331091331.GE7863@orbyte.nwl.cc>
- <20210331133510.GF17285@breakpoint.cc>
- <20210331144140.GV3158@orbyte.nwl.cc>
- <20210331205151.GA4773@salvia>
+        Richard Guy Briggs <rgb@redhat.com>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>, Steve Grubb <sgrubb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
+        tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+References: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210331205151.GA4773@salvia>
+In-Reply-To: <28de34275f58b45fd4626a92ccae96b6d2b4e287.1616702731.git.rgb@redhat.com>
 Sender:  <n0-1@orbyte.nwl.cc>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
-
-On Wed, Mar 31, 2021 at 10:51:51PM +0200, Pablo Neira Ayuso wrote:
-> On Wed, Mar 31, 2021 at 04:41:40PM +0200, Phil Sutter wrote:
-> > On Wed, Mar 31, 2021 at 03:35:10PM +0200, Florian Westphal wrote:
-> > > Phil Sutter <phil@nwl.cc> wrote:
-> > > > I'm currently trying to fix for an issue in Kubernetes realm[1]:
-> > > > Baseline is they are trying to restore a ruleset with ~700k lines and it
-> > > > fails. Needless to say, legacy iptables handles it just fine.
-> > > > 
-> > > > Meanwhile I found out there's a limit of 1024 iovecs when submitting the
-> > > > batch to kernel, and this is what they're hitting.
-> > > > 
-> > > > I can work around that limit by increasing each iovec (via
-> > > > BATCH_PAGE_SIZE) but keeping pace with legacy seems ridiculous:
-> > > > 
-> > > > With a scripted binary-search I checked the maximum working number of
-> > > > restore items of:
-> > > > 
-> > > > (1) User-defined chains
-> > > > (2) rules with merely comment match present
-> > > > (3) rules matching on saddr, daddr, iniface and outiface
-> > > > 
-> > > > Here's legacy compared to nft with different factors in BATCH_PAGE_SIZE:
-> > > > 
-> > > > legacy		32 (stock)	  64		   128          256
-> > > > ----------------------------------------------------------------------
-> > > > 1'636'799	1'602'202	- NC -		  - NC -       - NC -
-> > > > 1'220'159	  302'079	604'160		1'208'320      - NC -
-> > > > 3'532'040	  242'688	485'376		  971'776    1'944'576
-> > > 
-> > > Can you explain that table? What does 1'636'799 mean? NC?
-> > 
-> > Ah, sorry: NC is "not care", I didn't consider those numbers relevant
-> > given that iptables-nft has caught up to legacy previously already.
-> > 
-> > 1'636'799 is the max number of user-defined chains I can successfully
-> > restore using iptables-legacy-restore. Looks like I dropped the rows'
-> > description while reformatting by accident: the first row of that table
-> > corresponds with test (1), second with test (2) and third with test (3).
-> > 
-> > So legacy may restore at once ~1.6M chains or ~1.2M comment rules or
-> > ~3.5M rules with {s,d}{addr,iface} matches.
-> > 
-> > The following columns are for iptables-nft with varying BATCH_PAGE_SIZE
-> > values. Each of the (max 1024) iovecs passed to kernel via sendmsg() is
-> > 'N * getpagesize()' large.
+On Fri, Mar 26, 2021 at 01:38:59PM -0400, Richard Guy Briggs wrote:
+> Reduce logging of nftables events to a level similar to iptables.
+> Restore the table field to list the table, adding the generation.
 > 
-> Did you measure any slow down in the ruleset load time after selecting
-> a larger batch chunk size?
+> Indicate the op as the most significant operation in the event.
+> 
+> A couple of sample events:
+> 
+> type=PROCTITLE msg=audit(2021-03-18 09:30:49.801:143) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
+> type=SYSCALL msg=audit(2021-03-18 09:30:49.801:143) : arch=x86_64 syscall=sendmsg success=yes exit=172 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=roo
+> t sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv6 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv4 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=inet entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> 
+> type=PROCTITLE msg=audit(2021-03-18 09:30:49.839:144) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
+> type=SYSCALL msg=audit(2021-03-18 09:30:49.839:144) : arch=x86_64 syscall=sendmsg success=yes exit=22792 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=r
+> oot sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv6 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv4 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=inet entries=165 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> 
+> The issue was originally documented in
+> https://github.com/linux-audit/audit-kernel/issues/124
+> 
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
 
-Restoring 100k rules shows no significant difference in between stock
-(32 * 8k) and 512 * 8k chunk sizes. So if you think it's acceptable to
-allocate 4MB of buffer at once, I'd just send a patch.
+Tested this patch to make sure it eliminates the slowdown of
+iptables-nft when auditd is running. With this applied, neither
+iptables-nft-restore nor 'iptables-nft -F' show a significant
+difference in run-time between running or stopped auditd, at least for
+large rulesets. Individual calls suffer from added audit logging, but
+that's expected of course.
 
-Lifting that 1024 chunk count limit might be an alternative, but I guess
-that sits in kernel space?
+Tested-by: Phil Sutter <phil@nwl.cc>
 
-Cheers, Phil
+Thanks, Phil
