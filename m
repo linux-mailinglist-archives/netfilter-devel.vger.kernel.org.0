@@ -2,114 +2,157 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F040351EC8
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 20:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E70A351C87
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 20:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237652AbhDASq5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Apr 2021 14:46:57 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:53482 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238383AbhDASoz (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:44:55 -0400
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id C959F63E3D
-        for <netfilter-devel@vger.kernel.org>; Thu,  1 Apr 2021 13:40:01 +0200 (CEST)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
+        id S236939AbhDASSk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Apr 2021 14:18:40 -0400
+Received: from relay.sw.ru ([185.231.240.75]:40410 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239281AbhDASP4 (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:15:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=MIME-Version:Message-Id:Date:Subject:From:
+        Content-Type; bh=e3tk5xDoSfyxLRwLIuKieQIuqPzaVP3KgPrwUqMojyM=; b=A0Hymgv+DLbx
+        hQ/pbClVhwSd1a/gM7B2pCNYxanyWEPJOZ61e4GiKpXFKPoVdLxr3nwDdmrdhNh22LvgF3Eao8E/C
+        1S4H/u0+Ahkr8q0NfZEMvJw6JoA7HoUftyTSP1OoxqJB3alG4cYu8TdzvyOzsj8AiXPMDYJmywQ39
+        klCg4=;
+Received: from [10.94.6.52] (helo=dhcp-172-16-24-175.sw.ru)
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <alexander.mikhalitsyn@virtuozzo.com>)
+        id 1lRwnc-000EBL-Hj; Thu, 01 Apr 2021 15:51:48 +0300
+From:   Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] evaluate: use chain hashtable for lookups
-Date:   Thu,  1 Apr 2021 13:40:13 +0200
-Message-Id: <20210401114013.5047-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
+Cc:     pablo@netfilter.org, fw@strlen.de
+Subject: [iptables PATCH v5 PATCH 1/2] extensions: libxt_conntrack: print xlate state as set
+Date:   Thu,  1 Apr 2021 15:51:43 +0300
+Message-Id: <20210401125144.30306-1-alexander.mikhalitsyn@virtuozzo.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Instead of the linear list lookup.
+Currently, state_xlate_print function prints statemask as comma-separated sequence of enabled
+statemask flags. But if we have inverted conntrack ctstate condition then we have to use more
+complex expression because nft not supports syntax like "ct state != related,established".
 
-Before this patch:
+Reproducer:
+$ iptables -A INPUT -d 127.0.0.1/32 -p tcp -m conntrack ! --ctstate RELATED,ESTABLISHED -j DROP
+$ nft list ruleset
+...
+meta l4proto tcp ip daddr 127.0.0.1 ct state != related,established counter packets 0 bytes 0 drop
+...
 
-real    0m21,735s
-user    0m20,329s
-sys     0m1,384s
+it will fail if we try to load this rule:
+$ nft -f nft_test
+../nft_test:6:97-97: Error: syntax error, unexpected comma, expecting newline or semicolon
 
-After:
-
-real    0m10,910s
-user    0m9,448s
-sys     0m1,434s
-
-This patch requires a small adjust: Allocate a clone of the existing
-chain in the cache, instead of recycling the object to avoid a list
-corruption.
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>
+Signed-off-by: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
 ---
- src/evaluate.c | 15 ++++++++++-----
- src/rule.c     |  2 +-
- 2 files changed, 11 insertions(+), 6 deletions(-)
+ extensions/libxt_conntrack.c      | 38 +++++++++++++++++++++++++-------------
+ extensions/libxt_conntrack.txlate |  5 ++++-
+ 2 files changed, 29 insertions(+), 14 deletions(-)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index cebf7cb8ef2c..5f64979453ad 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -4106,15 +4106,20 @@ static int chain_evaluate(struct eval_ctx *ctx, struct chain *chain)
- 		return table_not_found(ctx);
+diff --git a/extensions/libxt_conntrack.c b/extensions/libxt_conntrack.c
+index 7734509..91f9e4a 100644
+--- a/extensions/libxt_conntrack.c
++++ b/extensions/libxt_conntrack.c
+@@ -1148,30 +1148,43 @@ static void state_save(const void *ip, const struct xt_entry_match *match)
+ 	state_print_state(sinfo->statemask);
+ }
  
- 	if (chain == NULL) {
--		if (chain_lookup(table, &ctx->cmd->handle) == NULL) {
-+		if (chain_cache_find(table, &ctx->cmd->handle) == NULL) {
- 			chain = chain_alloc(NULL);
- 			handle_merge(&chain->handle, &ctx->cmd->handle);
- 			chain_cache_add(chain, table);
- 		}
- 		return 0;
- 	} else if (!(chain->flags & CHAIN_F_BINDING)) {
--		if (chain_lookup(table, &chain->handle) == NULL)
--			chain_cache_add(chain_get(chain), table);
-+		if (chain_cache_find(table, &chain->handle) == NULL) {
-+			struct chain *newchain;
+-static void state_xlate_print(struct xt_xlate *xl, unsigned int statemask)
++static void state_xlate_print(struct xt_xlate *xl, unsigned int statemask, int inverted)
+ {
+ 	const char *sep = "";
++	int one_flag_set;
 +
-+			newchain = chain_alloc(NULL);
-+			handle_merge(&newchain->handle, &chain->handle);
-+			chain_cache_add(newchain, table);
-+		}
++	one_flag_set = !(statemask & (statemask - 1));
++
++	if (inverted && !one_flag_set)
++		xt_xlate_add(xl, "& (");
++	else if (inverted)
++		xt_xlate_add(xl, "& ");
+ 
+ 	if (statemask & XT_CONNTRACK_STATE_INVALID) {
+ 		xt_xlate_add(xl, "%s%s", sep, "invalid");
+-		sep = ",";
++		sep = inverted && !one_flag_set ? "|" : ",";
  	}
+ 	if (statemask & XT_CONNTRACK_STATE_BIT(IP_CT_NEW)) {
+ 		xt_xlate_add(xl, "%s%s", sep, "new");
+-		sep = ",";
++		sep = inverted && !one_flag_set ? "|" : ",";
+ 	}
+ 	if (statemask & XT_CONNTRACK_STATE_BIT(IP_CT_RELATED)) {
+ 		xt_xlate_add(xl, "%s%s", sep, "related");
+-		sep = ",";
++		sep = inverted && !one_flag_set ? "|" : ",";
+ 	}
+ 	if (statemask & XT_CONNTRACK_STATE_BIT(IP_CT_ESTABLISHED)) {
+ 		xt_xlate_add(xl, "%s%s", sep, "established");
+-		sep = ",";
++		sep = inverted && !one_flag_set ? "|" : ",";
+ 	}
+ 	if (statemask & XT_CONNTRACK_STATE_UNTRACKED) {
+ 		xt_xlate_add(xl, "%s%s", sep, "untracked");
+-		sep = ",";
++		sep = inverted && !one_flag_set ? "|" : ",";
+ 	}
++
++	if (inverted && !one_flag_set)
++		xt_xlate_add(xl, ") == 0");
++	else if (inverted)
++		xt_xlate_add(xl, " == 0");
+ }
  
- 	if (chain->flags & CHAIN_F_BASECHAIN) {
-@@ -4440,7 +4445,7 @@ static int cmd_evaluate_list(struct eval_ctx *ctx, struct cmd *cmd)
- 		if (table == NULL)
- 			return table_not_found(ctx);
+ static int state_xlate(struct xt_xlate *xl,
+@@ -1180,9 +1193,9 @@ static int state_xlate(struct xt_xlate *xl,
+ 	const struct xt_conntrack_mtinfo3 *sinfo =
+ 		(const void *)params->match->data;
  
--		if (chain_lookup(table, &cmd->handle) == NULL)
-+		if (chain_cache_find(table, &cmd->handle) == NULL)
- 			return chain_not_found(ctx);
+-	xt_xlate_add(xl, "ct state %s", sinfo->invert_flags & XT_CONNTRACK_STATE ?
+-					"!= " : "");
+-	state_xlate_print(xl, sinfo->state_mask);
++	xt_xlate_add(xl, "ct state ");
++	state_xlate_print(xl, sinfo->state_mask,
++			  sinfo->invert_flags & XT_CONNTRACK_STATE);
+ 	xt_xlate_add(xl, " ");
+ 	return 1;
+ }
+@@ -1256,10 +1269,9 @@ static int _conntrack3_mt_xlate(struct xt_xlate *xl,
+ 				     sinfo->state_mask & XT_CONNTRACK_STATE_SNAT ? "snat" : "dnat");
+ 			space = " ";
+ 		} else {
+-			xt_xlate_add(xl, "%sct state %s", space,
+-				     sinfo->invert_flags & XT_CONNTRACK_STATE ?
+-				     "!= " : "");
+-			state_xlate_print(xl, sinfo->state_mask);
++			xt_xlate_add(xl, "%sct state ", space);
++			state_xlate_print(xl, sinfo->state_mask,
++					  sinfo->invert_flags & XT_CONNTRACK_STATE);
+ 			space = " ";
+ 		}
+ 	}
+diff --git a/extensions/libxt_conntrack.txlate b/extensions/libxt_conntrack.txlate
+index d374f8a..5ab85b1 100644
+--- a/extensions/libxt_conntrack.txlate
++++ b/extensions/libxt_conntrack.txlate
+@@ -2,7 +2,10 @@ iptables-translate -t filter -A INPUT -m conntrack --ctstate NEW,RELATED -j ACCE
+ nft add rule ip filter INPUT ct state new,related counter accept
  
- 		return 0;
-@@ -4600,7 +4605,7 @@ static int cmd_evaluate_rename(struct eval_ctx *ctx, struct cmd *cmd)
- 		if (table == NULL)
- 			return table_not_found(ctx);
+ ip6tables-translate -t filter -A INPUT -m conntrack ! --ctstate NEW,RELATED -j ACCEPT
+-nft add rule ip6 filter INPUT ct state != new,related counter accept
++nft add rule ip6 filter INPUT ct state & (new|related) == 0 counter accept
++
++ip6tables-translate -t filter -A INPUT -m conntrack ! --ctstate NEW -j ACCEPT
++nft add rule ip6 filter INPUT ct state & new == 0 counter accept
  
--		if (chain_lookup(table, &ctx->cmd->handle) == NULL)
-+		if (chain_cache_find(table, &ctx->cmd->handle) == NULL)
- 			return chain_not_found(ctx);
- 
- 		break;
-diff --git a/src/rule.c b/src/rule.c
-index 969318008933..4f1ca22ec9e7 100644
---- a/src/rule.c
-+++ b/src/rule.c
-@@ -2621,7 +2621,7 @@ static int do_command_rename(struct netlink_ctx *ctx, struct cmd *cmd)
- 
- 	switch (cmd->obj) {
- 	case CMD_OBJ_CHAIN:
--		chain = chain_lookup(table, &cmd->handle);
-+		chain = chain_cache_find(table, &cmd->handle);
- 
- 		return mnl_nft_chain_rename(ctx, cmd, chain);
- 	default:
+ iptables-translate -t filter -A INPUT -m conntrack --ctproto UDP -j ACCEPT
+ nft add rule ip filter INPUT ct original protocol 17 counter accept
 -- 
-2.20.1
+1.8.3.1
 
