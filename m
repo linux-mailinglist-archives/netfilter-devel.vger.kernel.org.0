@@ -2,61 +2,112 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CE1351BC6
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 20:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC551351BBF
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 20:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235957AbhDASLA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Apr 2021 14:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
+        id S234323AbhDASK7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Apr 2021 14:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237761AbhDASIs (ORCPT
+        with ESMTP id S235647AbhDASDY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:08:48 -0400
+        Thu, 1 Apr 2021 14:03:24 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8AEC08ECBD
-        for <netfilter-devel@vger.kernel.org>; Thu,  1 Apr 2021 07:08:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E6CC0A88B8
+        for <netfilter-devel@vger.kernel.org>; Thu,  1 Apr 2021 07:11:44 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1lRy0C-0001XB-83; Thu, 01 Apr 2021 16:08:52 +0200
+        id 1lRy2x-0001c8-Bd; Thu, 01 Apr 2021 16:11:43 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 0/4] Add support for 8021.AD frame matching
-Date:   Thu,  1 Apr 2021 16:08:42 +0200
-Message-Id: <20210401140846.24452-1-fw@strlen.de>
+Subject: [PATCH nf-next v2 05/11] netfilter: nf_defrag_ipv4: use net_generic infra
+Date:   Thu,  1 Apr 2021 16:11:08 +0200
+Message-Id: <20210401141114.24712-6-fw@strlen.de>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <20210401141114.24712-1-fw@strlen.de>
+References: <20210401141114.24712-1-fw@strlen.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This allows to match vlan frames with 8021.AD ("QinQ") type.
+This allows followup patch to remove the defrag_ipv4 member from struct
+net.  It also allows to auto-remove the hooks later on by adding a
+_disable() function.  This will be done later in a follow patch series.
 
-Plan 'vlan id 1' will imply 8021Q, just as before, so explicit
-type specification is needed.
-This in turn makes it necessary to extend dependency removal so that
-it will not auto-remove 8021ad check.
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/ipv4/netfilter/nf_defrag_ipv4.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-Add test case to make sure depdenencies are generated correctly,
-this includes checks for 'vlan id 2' in a 'vlan id 1' vlan tag stack.
-
-Florian Westphal (4):
-  src: vlan: allow matching vlan id insider 802.1ad frame
-  proto: add 8021ad as mnemonic for IEEE 802.1AD (0x88a8) ether type
-  payload: be careful on vlan dependency removal
-  tests: add 8021.AD vlan test cases
-
- src/payload.c                         |  29 ++++-
- src/proto.c                           |   4 +
- src/scanner.l                         |   1 +
- tests/py/bridge/vlan.t                |   5 +
- tests/py/bridge/vlan.t.json           | 176 ++++++++++++++++++++++++++
- tests/py/bridge/vlan.t.json.output    | 173 +++++++++++++++++++++++++
- tests/py/bridge/vlan.t.payload        |  45 +++++++
- tests/py/bridge/vlan.t.payload.netdev |  51 ++++++++
- 8 files changed, 481 insertions(+), 3 deletions(-)
-
+diff --git a/net/ipv4/netfilter/nf_defrag_ipv4.c b/net/ipv4/netfilter/nf_defrag_ipv4.c
+index 8115611aa47d..ffdcc2b9360f 100644
+--- a/net/ipv4/netfilter/nf_defrag_ipv4.c
++++ b/net/ipv4/netfilter/nf_defrag_ipv4.c
+@@ -20,8 +20,13 @@
+ #endif
+ #include <net/netfilter/nf_conntrack_zones.h>
+ 
++static unsigned int defrag4_pernet_id __read_mostly;
+ static DEFINE_MUTEX(defrag4_mutex);
+ 
++struct defrag4_pernet {
++	unsigned int users;
++};
++
+ static int nf_ct_ipv4_gather_frags(struct net *net, struct sk_buff *skb,
+ 				   u_int32_t user)
+ {
+@@ -106,15 +111,19 @@ static const struct nf_hook_ops ipv4_defrag_ops[] = {
+ 
+ static void __net_exit defrag4_net_exit(struct net *net)
+ {
+-	if (net->nf.defrag_ipv4) {
++	struct defrag4_pernet *nf_defrag = net_generic(net, defrag4_pernet_id);
++
++	if (nf_defrag->users) {
+ 		nf_unregister_net_hooks(net, ipv4_defrag_ops,
+ 					ARRAY_SIZE(ipv4_defrag_ops));
+-		net->nf.defrag_ipv4 = false;
++		nf_defrag->users = 0;
+ 	}
+ }
+ 
+ static struct pernet_operations defrag4_net_ops = {
+ 	.exit = defrag4_net_exit,
++	.id   = &defrag4_pernet_id,
++	.size = sizeof(struct defrag4_pernet),
+ };
+ 
+ static int __init nf_defrag_init(void)
+@@ -129,21 +138,22 @@ static void __exit nf_defrag_fini(void)
+ 
+ int nf_defrag_ipv4_enable(struct net *net)
+ {
++	struct defrag4_pernet *nf_defrag = net_generic(net, defrag4_pernet_id);
+ 	int err = 0;
+ 
+ 	might_sleep();
+ 
+-	if (net->nf.defrag_ipv4)
++	if (nf_defrag->users)
+ 		return 0;
+ 
+ 	mutex_lock(&defrag4_mutex);
+-	if (net->nf.defrag_ipv4)
++	if (nf_defrag->users)
+ 		goto out_unlock;
+ 
+ 	err = nf_register_net_hooks(net, ipv4_defrag_ops,
+ 				    ARRAY_SIZE(ipv4_defrag_ops));
+ 	if (err == 0)
+-		net->nf.defrag_ipv4 = true;
++		nf_defrag->users = 1;
+ 
+  out_unlock:
+ 	mutex_unlock(&defrag4_mutex);
 -- 
 2.26.3
 
