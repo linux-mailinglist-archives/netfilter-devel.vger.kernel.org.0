@@ -2,114 +2,101 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C66D351991
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 20:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301D6351A20
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 20:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235516AbhDARyJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Apr 2021 13:54:09 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:53002 "EHLO
+        id S234363AbhDAR6T (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Apr 2021 13:58:19 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:53110 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236435AbhDARoy (ORCPT
+        with ESMTP id S236600AbhDARyy (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:44:54 -0400
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 9074163E34
-        for <netfilter-devel@vger.kernel.org>; Thu,  1 Apr 2021 13:37:20 +0200 (CEST)
+        Thu, 1 Apr 2021 13:54:54 -0400
+Received: from us.es (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id D355263E43;
+        Thu,  1 Apr 2021 13:44:39 +0200 (CEST)
+Date:   Thu, 1 Apr 2021 13:44:52 +0200
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] evaluate: use chain hashtable for lookups
-Date:   Thu,  1 Apr 2021 13:37:32 +0200
-Message-Id: <20210401113732.8328-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
+To:     Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: iptables-nft fails to restore huge rulesets
+Message-ID: <20210401114452.GA5950@salvia>
+References: <20210331091331.GE7863@orbyte.nwl.cc>
+ <20210331133510.GF17285@breakpoint.cc>
+ <20210331144140.GV3158@orbyte.nwl.cc>
+ <20210331205151.GA4773@salvia>
+ <20210401103055.GW3158@orbyte.nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210401103055.GW3158@orbyte.nwl.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Instead of the linear list.
+On Thu, Apr 01, 2021 at 12:30:55PM +0200, Phil Sutter wrote:
+> Hi,
+> 
+> On Wed, Mar 31, 2021 at 10:51:51PM +0200, Pablo Neira Ayuso wrote:
+> > On Wed, Mar 31, 2021 at 04:41:40PM +0200, Phil Sutter wrote:
+> > > On Wed, Mar 31, 2021 at 03:35:10PM +0200, Florian Westphal wrote:
+> > > > Phil Sutter <phil@nwl.cc> wrote:
+> > > > > I'm currently trying to fix for an issue in Kubernetes realm[1]:
+> > > > > Baseline is they are trying to restore a ruleset with ~700k lines and it
+> > > > > fails. Needless to say, legacy iptables handles it just fine.
+> > > > > 
+> > > > > Meanwhile I found out there's a limit of 1024 iovecs when submitting the
+> > > > > batch to kernel, and this is what they're hitting.
+> > > > > 
+> > > > > I can work around that limit by increasing each iovec (via
+> > > > > BATCH_PAGE_SIZE) but keeping pace with legacy seems ridiculous:
+> > > > > 
+> > > > > With a scripted binary-search I checked the maximum working number of
+> > > > > restore items of:
+> > > > > 
+> > > > > (1) User-defined chains
+> > > > > (2) rules with merely comment match present
+> > > > > (3) rules matching on saddr, daddr, iniface and outiface
+> > > > > 
+> > > > > Here's legacy compared to nft with different factors in BATCH_PAGE_SIZE:
+> > > > > 
+> > > > > legacy		32 (stock)	  64		   128          256
+> > > > > ----------------------------------------------------------------------
+> > > > > 1'636'799	1'602'202	- NC -		  - NC -       - NC -
+> > > > > 1'220'159	  302'079	604'160		1'208'320      - NC -
+> > > > > 3'532'040	  242'688	485'376		  971'776    1'944'576
+> > > > 
+> > > > Can you explain that table? What does 1'636'799 mean? NC?
+> > > 
+> > > Ah, sorry: NC is "not care", I didn't consider those numbers relevant
+> > > given that iptables-nft has caught up to legacy previously already.
+> > > 
+> > > 1'636'799 is the max number of user-defined chains I can successfully
+> > > restore using iptables-legacy-restore. Looks like I dropped the rows'
+> > > description while reformatting by accident: the first row of that table
+> > > corresponds with test (1), second with test (2) and third with test (3).
+> > > 
+> > > So legacy may restore at once ~1.6M chains or ~1.2M comment rules or
+> > > ~3.5M rules with {s,d}{addr,iface} matches.
+> > > 
+> > > The following columns are for iptables-nft with varying BATCH_PAGE_SIZE
+> > > values. Each of the (max 1024) iovecs passed to kernel via sendmsg() is
+> > > 'N * getpagesize()' large.
+> > 
+> > Did you measure any slow down in the ruleset load time after selecting
+> > a larger batch chunk size?
+> 
+> Restoring 100k rules shows no significant difference in between stock
+> (32 * 8k) and 512 * 8k chunk sizes. So if you think it's acceptable to
+> allocate 4MB of buffer at once, I'd just send a patch.
 
-Before this patch:
+That's fine.
 
-real    0m21,735s
-user    0m20,329s
-sys     0m1,384s
+> Lifting that 1024 chunk count limit might be an alternative, but I guess
+> that sits in kernel space?
 
-After:
+That sits in the kernel, in the generic socket layer IIRC.
 
-real    0m10,910s
-user    0m9,448s
-sys     0m1,434s
-
-This patch requires a small adjust: Allocate a clone of the existing
-chain in the cache, instead of recycling the object to avoid a list
-corruption.
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- src/evaluate.c | 15 ++++++++++-----
- src/rule.c     |  2 +-
- 2 files changed, 11 insertions(+), 6 deletions(-)
-
-diff --git a/src/evaluate.c b/src/evaluate.c
-index cebf7cb8ef2c..5f64979453ad 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -4106,15 +4106,20 @@ static int chain_evaluate(struct eval_ctx *ctx, struct chain *chain)
- 		return table_not_found(ctx);
- 
- 	if (chain == NULL) {
--		if (chain_lookup(table, &ctx->cmd->handle) == NULL) {
-+		if (chain_cache_find(table, &ctx->cmd->handle) == NULL) {
- 			chain = chain_alloc(NULL);
- 			handle_merge(&chain->handle, &ctx->cmd->handle);
- 			chain_cache_add(chain, table);
- 		}
- 		return 0;
- 	} else if (!(chain->flags & CHAIN_F_BINDING)) {
--		if (chain_lookup(table, &chain->handle) == NULL)
--			chain_cache_add(chain_get(chain), table);
-+		if (chain_cache_find(table, &chain->handle) == NULL) {
-+			struct chain *newchain;
-+
-+			newchain = chain_alloc(NULL);
-+			handle_merge(&newchain->handle, &chain->handle);
-+			chain_cache_add(newchain, table);
-+		}
- 	}
- 
- 	if (chain->flags & CHAIN_F_BASECHAIN) {
-@@ -4440,7 +4445,7 @@ static int cmd_evaluate_list(struct eval_ctx *ctx, struct cmd *cmd)
- 		if (table == NULL)
- 			return table_not_found(ctx);
- 
--		if (chain_lookup(table, &cmd->handle) == NULL)
-+		if (chain_cache_find(table, &cmd->handle) == NULL)
- 			return chain_not_found(ctx);
- 
- 		return 0;
-@@ -4600,7 +4605,7 @@ static int cmd_evaluate_rename(struct eval_ctx *ctx, struct cmd *cmd)
- 		if (table == NULL)
- 			return table_not_found(ctx);
- 
--		if (chain_lookup(table, &ctx->cmd->handle) == NULL)
-+		if (chain_cache_find(table, &ctx->cmd->handle) == NULL)
- 			return chain_not_found(ctx);
- 
- 		break;
-diff --git a/src/rule.c b/src/rule.c
-index 969318008933..4f1ca22ec9e7 100644
---- a/src/rule.c
-+++ b/src/rule.c
-@@ -2621,7 +2621,7 @@ static int do_command_rename(struct netlink_ctx *ctx, struct cmd *cmd)
- 
- 	switch (cmd->obj) {
- 	case CMD_OBJ_CHAIN:
--		chain = chain_lookup(table, &cmd->handle);
-+		chain = chain_cache_find(table, &cmd->handle);
- 
- 		return mnl_nft_chain_rename(ctx, cmd, chain);
- 	default:
--- 
-2.20.1
-
+P.S: Would you mind to send a patch for nftables too to keep it in
+sync? Thanks.
