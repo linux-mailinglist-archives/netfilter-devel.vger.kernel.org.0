@@ -2,28 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC623518D0
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 19:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E20835174D
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 19:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234644AbhDARrn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Apr 2021 13:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
+        id S234680AbhDARlt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Apr 2021 13:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234735AbhDARmJ (ORCPT
+        with ESMTP id S234743AbhDARji (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:42:09 -0400
+        Thu, 1 Apr 2021 13:39:38 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9072C0A88C0
-        for <netfilter-devel@vger.kernel.org>; Thu,  1 Apr 2021 07:11:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2594FC00858B
+        for <netfilter-devel@vger.kernel.org>; Thu,  1 Apr 2021 07:11:57 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1lRy31-0001cF-GS; Thu, 01 Apr 2021 16:11:47 +0200
+        id 1lRy39-0001cU-Qc; Thu, 01 Apr 2021 16:11:55 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next v2 06/11] netfilter: ebtables: use net_generic infra
-Date:   Thu,  1 Apr 2021 16:11:09 +0200
-Message-Id: <20210401141114.24712-7-fw@strlen.de>
+Subject: [PATCH nf-next v2 08/11] netfilter: x_tables: move known table lists to net_generic infra
+Date:   Thu,  1 Apr 2021 16:11:11 +0200
+Message-Id: <20210401141114.24712-9-fw@strlen.de>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210401141114.24712-1-fw@strlen.de>
 References: <20210401141114.24712-1-fw@strlen.de>
@@ -33,123 +33,171 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-ebtables currently uses net->xt.tables[BRIDGE], but upcoming
-patch will move net->xt.tables away from struct net.
-
-To avoid exposing x_tables internals to ebtables, use a private list
-instead.
+Will reduce struct net size by 208 bytes.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/bridge/netfilter/ebtables.c | 39 ++++++++++++++++++++++++++++-----
- 1 file changed, 34 insertions(+), 5 deletions(-)
+ net/netfilter/x_tables.c | 46 ++++++++++++++++++++++++++++------------
+ 1 file changed, 33 insertions(+), 13 deletions(-)
 
-diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
-index ebe33b60efd6..11625d05bbbc 100644
---- a/net/bridge/netfilter/ebtables.c
-+++ b/net/bridge/netfilter/ebtables.c
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index 6bd31a7a27fc..8e23ef2673e4 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
 @@ -24,6 +24,7 @@
- #include <linux/cpumask.h>
  #include <linux/audit.h>
- #include <net/sock.h>
+ #include <linux/user_namespace.h>
+ #include <net/net_namespace.h>
 +#include <net/netns/generic.h>
- /* needed for logical [in,out]-dev filtering */
- #include "../br_private.h"
  
-@@ -39,8 +40,11 @@
- #define COUNTER_BASE(c, n, cpu) ((struct ebt_counter *)(((char *)c) + \
- 				 COUNTER_OFFSET(n) * cpu))
+ #include <linux/netfilter/x_tables.h>
+ #include <linux/netfilter_arp.h>
+@@ -38,6 +39,10 @@ MODULE_DESCRIPTION("{ip,ip6,arp,eb}_tables backend module");
+ #define XT_PCPU_BLOCK_SIZE 4096
+ #define XT_MAX_TABLE_SIZE	(512 * 1024 * 1024)
  
-+struct ebt_pernet {
-+	struct list_head tables;
++struct xt_pernet {
++	struct list_head tables[NFPROTO_NUMPROTO];
 +};
- 
--
-+static unsigned int ebt_pernet_id __read_mostly;
- static DEFINE_MUTEX(ebt_mutex);
- 
- #ifdef CONFIG_COMPAT
-@@ -336,7 +340,9 @@ static inline struct ebt_table *
- find_table_lock(struct net *net, const char *name, int *error,
- 		struct mutex *mutex)
- {
--	return find_inlist_lock(&net->xt.tables[NFPROTO_BRIDGE], name,
-+	struct ebt_pernet *ebt_net = net_generic(net, ebt_pernet_id);
 +
-+	return find_inlist_lock(&ebt_net->tables, name,
- 				"ebtable_", error, mutex);
- }
- 
-@@ -1136,6 +1142,7 @@ static void __ebt_unregister_table(struct net *net, struct ebt_table *table)
- int ebt_register_table(struct net *net, const struct ebt_table *input_table,
- 		       const struct nf_hook_ops *ops, struct ebt_table **res)
- {
-+	struct ebt_pernet *ebt_net = net_generic(net, ebt_pernet_id);
- 	struct ebt_table_info *newinfo;
- 	struct ebt_table *t, *table;
- 	struct ebt_replace_kernel *repl;
-@@ -1194,7 +1201,7 @@ int ebt_register_table(struct net *net, const struct ebt_table *input_table,
- 	table->private = newinfo;
- 	rwlock_init(&table->lock);
- 	mutex_lock(&ebt_mutex);
--	list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
-+	list_for_each_entry(t, &ebt_net->tables, list) {
- 		if (strcmp(t->name, table->name) == 0) {
- 			ret = -EEXIST;
- 			goto free_unlock;
-@@ -1206,7 +1213,7 @@ int ebt_register_table(struct net *net, const struct ebt_table *input_table,
- 		ret = -ENOENT;
- 		goto free_unlock;
- 	}
--	list_add(&table->list, &net->xt.tables[NFPROTO_BRIDGE]);
-+	list_add(&table->list, &ebt_net->tables);
- 	mutex_unlock(&ebt_mutex);
- 
- 	WRITE_ONCE(*res, table);
-@@ -2412,6 +2419,20 @@ static struct nf_sockopt_ops ebt_sockopts = {
- 	.owner		= THIS_MODULE,
+ struct compat_delta {
+ 	unsigned int offset; /* offset in kernel */
+ 	int delta; /* delta in 32bit user land */
+@@ -55,7 +60,8 @@ struct xt_af {
+ #endif
  };
  
-+static int __net_init ebt_pernet_init(struct net *net)
-+{
-+	struct ebt_pernet *ebt_net = net_generic(net, ebt_pernet_id);
-+
-+	INIT_LIST_HEAD(&ebt_net->tables);
-+	return 0;
-+}
-+
-+static struct pernet_operations ebt_net_ops = {
-+	.init = ebt_pernet_init,
-+	.id   = &ebt_pernet_id,
-+	.size = sizeof(struct ebt_pernet),
-+};
-+
- static int __init ebtables_init(void)
- {
- 	int ret;
-@@ -2425,13 +2446,21 @@ static int __init ebtables_init(void)
- 		return ret;
- 	}
+-static struct xt_af *xt;
++static unsigned int xt_pernet_id __read_mostly;
++static struct xt_af *xt __read_mostly;
  
-+	ret = register_pernet_subsys(&ebt_net_ops);
-+	if (ret < 0) {
-+		nf_unregister_sockopt(&ebt_sockopts);
-+		xt_unregister_target(&ebt_standard_target);
-+		return ret;
-+	}
+ static const char *const xt_prefix[NFPROTO_NUMPROTO] = {
+ 	[NFPROTO_UNSPEC] = "x",
+@@ -1203,10 +1209,11 @@ EXPORT_SYMBOL(xt_free_table_info);
+ struct xt_table *xt_find_table_lock(struct net *net, u_int8_t af,
+ 				    const char *name)
+ {
++	struct xt_pernet *xt_net = net_generic(net, xt_pernet_id);
+ 	struct xt_table *t, *found = NULL;
+ 
+ 	mutex_lock(&xt[af].mutex);
+-	list_for_each_entry(t, &net->xt.tables[af], list)
++	list_for_each_entry(t, &xt_net->tables[af], list)
+ 		if (strcmp(t->name, name) == 0 && try_module_get(t->me))
+ 			return t;
+ 
+@@ -1214,7 +1221,8 @@ struct xt_table *xt_find_table_lock(struct net *net, u_int8_t af,
+ 		goto out;
+ 
+ 	/* Table doesn't exist in this netns, re-try init */
+-	list_for_each_entry(t, &init_net.xt.tables[af], list) {
++	xt_net = net_generic(&init_net, xt_pernet_id);
++	list_for_each_entry(t, &xt_net->tables[af], list) {
+ 		int err;
+ 
+ 		if (strcmp(t->name, name))
+@@ -1237,8 +1245,9 @@ struct xt_table *xt_find_table_lock(struct net *net, u_int8_t af,
+ 	if (!found)
+ 		goto out;
+ 
++	xt_net = net_generic(net, xt_pernet_id);
+ 	/* and once again: */
+-	list_for_each_entry(t, &net->xt.tables[af], list)
++	list_for_each_entry(t, &xt_net->tables[af], list)
+ 		if (strcmp(t->name, name) == 0)
+ 			return t;
+ 
+@@ -1423,9 +1432,10 @@ struct xt_table *xt_register_table(struct net *net,
+ 				   struct xt_table_info *bootstrap,
+ 				   struct xt_table_info *newinfo)
+ {
+-	int ret;
++	struct xt_pernet *xt_net = net_generic(net, xt_pernet_id);
+ 	struct xt_table_info *private;
+ 	struct xt_table *t, *table;
++	int ret;
+ 
+ 	/* Don't add one object to multiple lists. */
+ 	table = kmemdup(input_table, sizeof(struct xt_table), GFP_KERNEL);
+@@ -1436,7 +1446,7 @@ struct xt_table *xt_register_table(struct net *net,
+ 
+ 	mutex_lock(&xt[table->af].mutex);
+ 	/* Don't autoload: we'd eat our tail... */
+-	list_for_each_entry(t, &net->xt.tables[table->af], list) {
++	list_for_each_entry(t, &xt_net->tables[table->af], list) {
+ 		if (strcmp(t->name, table->name) == 0) {
+ 			ret = -EEXIST;
+ 			goto unlock;
+@@ -1455,7 +1465,7 @@ struct xt_table *xt_register_table(struct net *net,
+ 	/* save number of initial entries */
+ 	private->initial_entries = private->number;
+ 
+-	list_add(&table->list, &net->xt.tables[table->af]);
++	list_add(&table->list, &xt_net->tables[table->af]);
+ 	mutex_unlock(&xt[table->af].mutex);
+ 	return table;
+ 
+@@ -1486,19 +1496,25 @@ EXPORT_SYMBOL_GPL(xt_unregister_table);
+ #ifdef CONFIG_PROC_FS
+ static void *xt_table_seq_start(struct seq_file *seq, loff_t *pos)
+ {
++	u8 af = (unsigned long)PDE_DATA(file_inode(seq->file));
+ 	struct net *net = seq_file_net(seq);
+-	u_int8_t af = (unsigned long)PDE_DATA(file_inode(seq->file));
++	struct xt_pernet *xt_net;
 +
++	xt_net = net_generic(net, xt_pernet_id);
+ 
+ 	mutex_lock(&xt[af].mutex);
+-	return seq_list_start(&net->xt.tables[af], *pos);
++	return seq_list_start(&xt_net->tables[af], *pos);
+ }
+ 
+ static void *xt_table_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+ {
++	u8 af = (unsigned long)PDE_DATA(file_inode(seq->file));
+ 	struct net *net = seq_file_net(seq);
+-	u_int8_t af = (unsigned long)PDE_DATA(file_inode(seq->file));
++	struct xt_pernet *xt_net;
++
++	xt_net = net_generic(net, xt_pernet_id);
+ 
+-	return seq_list_next(v, &net->xt.tables[af], pos);
++	return seq_list_next(v, &xt_net->tables[af], pos);
+ }
+ 
+ static void xt_table_seq_stop(struct seq_file *seq, void *v)
+@@ -1864,24 +1880,28 @@ EXPORT_SYMBOL_GPL(xt_percpu_counter_free);
+ 
+ static int __net_init xt_net_init(struct net *net)
+ {
++	struct xt_pernet *xt_net = net_generic(net, xt_pernet_id);
+ 	int i;
+ 
+ 	for (i = 0; i < NFPROTO_NUMPROTO; i++)
+-		INIT_LIST_HEAD(&net->xt.tables[i]);
++		INIT_LIST_HEAD(&xt_net->tables[i]);
  	return 0;
  }
  
--static void __exit ebtables_fini(void)
-+static void ebtables_fini(void)
+ static void __net_exit xt_net_exit(struct net *net)
  {
- 	nf_unregister_sockopt(&ebt_sockopts);
- 	xt_unregister_target(&ebt_standard_target);
-+	unregister_pernet_subsys(&ebt_net_ops);
++	struct xt_pernet *xt_net = net_generic(net, xt_pernet_id);
+ 	int i;
+ 
+ 	for (i = 0; i < NFPROTO_NUMPROTO; i++)
+-		WARN_ON_ONCE(!list_empty(&net->xt.tables[i]));
++		WARN_ON_ONCE(!list_empty(&xt_net->tables[i]));
  }
  
- EXPORT_SYMBOL(ebt_register_table);
+ static struct pernet_operations xt_net_ops = {
+ 	.init = xt_net_init,
+ 	.exit = xt_net_exit,
++	.id   = &xt_pernet_id,
++	.size = sizeof(struct xt_pernet),
+ };
+ 
+ static int __init xt_init(void)
 -- 
 2.26.3
 
