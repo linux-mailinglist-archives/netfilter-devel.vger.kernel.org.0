@@ -2,82 +2,119 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C2E351C86
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 20:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30B4352096
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Apr 2021 22:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236885AbhDASSi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Apr 2021 14:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239227AbhDASPr (ORCPT
+        id S234600AbhDAU3f (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Apr 2021 16:29:35 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:53700 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234201AbhDAU3e (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:15:47 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F3E4C0D9425
-        for <netfilter-devel@vger.kernel.org>; Thu,  1 Apr 2021 07:53:18 -0700 (PDT)
-Received: from localhost ([::1]:40454 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.94)
-        (envelope-from <phil@nwl.cc>)
-        id 1lRyhA-0003N7-2C; Thu, 01 Apr 2021 16:53:16 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH] nft: Increase BATCH_PAGE_SIZE to support huge rulesets
-Date:   Thu,  1 Apr 2021 16:53:07 +0200
-Message-Id: <20210401145307.29927-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.31.0
+        Thu, 1 Apr 2021 16:29:34 -0400
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 84353630C2
+        for <netfilter-devel@vger.kernel.org>; Thu,  1 Apr 2021 22:29:16 +0200 (CEST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft 1/4] cache: rename chain_htable to cache_chain_ht
+Date:   Thu,  1 Apr 2021 22:29:25 +0200
+Message-Id: <20210401202928.5222-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In order to support the same ruleset sizes as legacy iptables, the
-kernel's limit of 1024 iovecs has to be overcome. Therefore increase
-each iovec's size from 256KB to 4MB.
+Rename the hashtable chain that is used for fast cache lookups.
 
-While being at it, add a log message for failing sendmsg() call. This is
-not supposed to happen, even if the transaction fails. Yet if it does,
-users are left with only a "line XXX failed" message (with line number
-being the COMMIT line).
-
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- iptables/nft.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ include/rule.h | 4 ++--
+ src/cache.c    | 6 +++---
+ src/rule.c     | 6 +++---
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index bd840e75f83f4..e19c88ece6c2a 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -88,11 +88,11 @@ int mnl_talk(struct nft_handle *h, struct nlmsghdr *nlh,
- 
- #define NFT_NLMSG_MAXSIZE (UINT16_MAX + getpagesize())
- 
--/* selected batch page is 256 Kbytes long to load ruleset of
-- * half a million rules without hitting -EMSGSIZE due to large
-- * iovec.
-+/* Selected batch page is 4 Mbytes long to support loading a ruleset of 3.5M
-+ * rules matching on source and destination address as well as input and output
-+ * interfaces. This is what legacy iptables supports.
+diff --git a/include/rule.h b/include/rule.h
+index 4ef24eb4ec63..f8e615121113 100644
+--- a/include/rule.h
++++ b/include/rule.h
+@@ -155,7 +155,7 @@ struct table {
+ 	struct handle		handle;
+ 	struct location		location;
+ 	struct scope		scope;
+-	struct list_head	*chain_htable;
++	struct list_head	*cache_chain_ht;
+ 	struct list_head	chains;
+ 	struct list_head	sets;
+ 	struct list_head	objs;
+@@ -230,7 +230,7 @@ struct hook_spec {
   */
--#define BATCH_PAGE_SIZE getpagesize() * 32
-+#define BATCH_PAGE_SIZE getpagesize() * 512
+ struct chain {
+ 	struct list_head	list;
+-	struct list_head	hlist;
++	struct list_head	cache_hlist;
+ 	struct handle		handle;
+ 	struct location		location;
+ 	unsigned int		refcnt;
+diff --git a/src/cache.c b/src/cache.c
+index 63971e865622..400128906b03 100644
+--- a/src/cache.c
++++ b/src/cache.c
+@@ -195,7 +195,7 @@ static int chain_cache_cb(struct nftnl_chain *nlc, void *arg)
+ 	if (chain->flags & CHAIN_F_BINDING) {
+ 		list_add_tail(&chain->list, &ctx->table->chain_bindings);
+ 	} else {
+-		list_add_tail(&chain->hlist, &ctx->table->chain_htable[hash]);
++		list_add_tail(&chain->cache_hlist, &ctx->table->cache_chain_ht[hash]);
+ 		list_add_tail(&chain->list, &ctx->table->chains);
+ 	}
  
- static struct nftnl_batch *mnl_batch_init(void)
- {
-@@ -220,8 +220,10 @@ static int mnl_batch_talk(struct nft_handle *h, int numcmds)
- 	int err = 0;
+@@ -239,7 +239,7 @@ void chain_cache_add(struct chain *chain, struct table *table)
+ 	uint32_t hash;
  
- 	ret = mnl_nft_socket_sendmsg(h, numcmds);
--	if (ret == -1)
-+	if (ret == -1) {
-+		fprintf(stderr, "sendmsg() failed: %s\n", strerror(errno));
- 		return -1;
-+	}
+ 	hash = djb_hash(chain->handle.chain.name) % NFT_CACHE_HSIZE;
+-	list_add_tail(&chain->hlist, &table->chain_htable[hash]);
++	list_add_tail(&chain->cache_hlist, &table->cache_chain_ht[hash]);
+ 	list_add_tail(&chain->list, &table->chains);
+ }
  
- 	FD_ZERO(&readfds);
- 	FD_SET(fd, &readfds);
+@@ -250,7 +250,7 @@ struct chain *chain_cache_find(const struct table *table,
+ 	uint32_t hash;
+ 
+ 	hash = djb_hash(handle->chain.name) % NFT_CACHE_HSIZE;
+-	list_for_each_entry(chain, &table->chain_htable[hash], hlist) {
++	list_for_each_entry(chain, &table->cache_chain_ht[hash], cache_hlist) {
+ 		if (!strcmp(chain->handle.chain.name, handle->chain.name))
+ 			return chain;
+ 	}
+diff --git a/src/rule.c b/src/rule.c
+index 969318008933..79706ab7b60a 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -1140,10 +1140,10 @@ struct table *table_alloc(void)
+ 	init_list_head(&table->scope.symbols);
+ 	table->refcnt = 1;
+ 
+-	table->chain_htable =
++	table->cache_chain_ht =
+ 		xmalloc(sizeof(struct list_head) * NFT_CACHE_HSIZE);
+ 	for (i = 0; i < NFT_CACHE_HSIZE; i++)
+-		init_list_head(&table->chain_htable[i]);
++		init_list_head(&table->cache_chain_ht[i]);
+ 
+ 	return table;
+ }
+@@ -1171,7 +1171,7 @@ void table_free(struct table *table)
+ 		obj_free(obj);
+ 	handle_free(&table->handle);
+ 	scope_release(&table->scope);
+-	xfree(table->chain_htable);
++	xfree(table->cache_chain_ht);
+ 	xfree(table);
+ }
+ 
 -- 
-2.31.0
+2.20.1
 
