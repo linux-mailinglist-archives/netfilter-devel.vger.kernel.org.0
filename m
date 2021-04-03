@@ -2,82 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BBB353438
-	for <lists+netfilter-devel@lfdr.de>; Sat,  3 Apr 2021 15:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEA135346C
+	for <lists+netfilter-devel@lfdr.de>; Sat,  3 Apr 2021 17:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbhDCN7t (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 3 Apr 2021 09:59:49 -0400
-Received: from m97179.mail.qiye.163.com ([220.181.97.179]:18404 "EHLO
+        id S236380AbhDCPAD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 3 Apr 2021 11:00:03 -0400
+Received: from m97179.mail.qiye.163.com ([220.181.97.179]:50210 "EHLO
         m97179.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231800AbhDCN7t (ORCPT
+        with ESMTP id S231821AbhDCPAD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 3 Apr 2021 09:59:49 -0400
-Received: from localhost.localdomain (unknown [123.59.132.129])
-        by m97179.mail.qiye.163.com (Hmail) with ESMTPA id D5E26E01E61;
-        Sat,  3 Apr 2021 21:59:43 +0800 (CST)
-From:   wenxu@ucloud.cn
-To:     pablo@netfilter.org
+        Sat, 3 Apr 2021 11:00:03 -0400
+Received: from [192.168.1.8] (unknown [180.157.172.243])
+        by m97179.mail.qiye.163.com (Hmail) with ESMTPA id 1D1C5E02340;
+        Sat,  3 Apr 2021 22:59:57 +0800 (CST)
+Subject: Re: [PATCH nf] netfilter: nft_payload: fix vlan_tpid get from
+ h_vlan_proto
+From:   wenxu <wenxu@ucloud.cn>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next v2 2/2] netfilter: flowtable: add vlan pop action offload support
-Date:   Sat,  3 Apr 2021 21:59:43 +0800
-Message-Id: <1617458383-8620-2-git-send-email-wenxu@ucloud.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1617458383-8620-1-git-send-email-wenxu@ucloud.cn>
-References: <1617458383-8620-1-git-send-email-wenxu@ucloud.cn>
+References: <1617347632-19283-1-git-send-email-wenxu@ucloud.cn>
+ <20210402195403.GA22049@salvia>
+ <6ce0f16c-69ae-265a-bea8-bc2c4705dd5b@ucloud.cn>
+Message-ID: <920cc175-3bc9-912c-6d00-5e6bd02d546a@ucloud.cn>
+Date:   Sat, 3 Apr 2021 22:59:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
+MIME-Version: 1.0
+In-Reply-To: <6ce0f16c-69ae-265a-bea8-bc2c4705dd5b@ucloud.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
-        oVCBIfWUFZTR0eTk1NTB8ZTUIaVkpNSkxPTkNIQ0hCS0xVGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        oVCBIfWUFZQkgZTE8fGk1JHR4ZVkpNSkxPTUpCQkxJTkJVGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
         FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MSI6PCo6KD0zEwwhSTwLCDU2
-        GgsKCSFVSlVKTUpMT05DSENPS0lLVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpJSFVO
-        QlVKSElVSklCWVdZCAFZQUlKTEo3Bg++
-X-HM-Tid: 0a7898084c1020bdkuqyd5e26e01e61
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OjY6OTo4Kj00OQwQMjc4ARNI
+        CT8wChRVSlVKTUpMT01KQkJMSEJJVTMWGhIXVQweFQMOOw4YFxQOH1UYFUVZV1kSC1lBWUpDS1VK
+        TkxVSkxJVUlPSFlXWQgBWUFIQ0xNNwY+
+X-HM-Tid: 0a78983f6e8f20bdkuqy1d1c5e02340
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: wenxu <wenxu@ucloud.cn>
 
-This patch add vlan pop action offload in the flowtable
-offload.
+在 2021/4/3 21:33, wenxu 写道:
+> 在 2021/4/3 3:54, Pablo Neira Ayuso 写道:
+>> On Fri, Apr 02, 2021 at 03:13:52PM +0800, wenxu@ucloud.cn wrote:
+>>> From: wenxu <wenxu@ucloud.cn>
+>>>
+>>> vlan_tpid of flow_dissector_key_vlan should be set as h_vlan_proto
+>>> but not h_vlan_encapsulated_proto.
+>> Probably this patch instead?
+> I don't think so.  The vlan_tpid in flow_dissector_key_vlan should be the
+>
+> vlan proto (such as ETH_P_8021Q or ETH_P_8021AD) but not h_vlan_encapsulated_proto (for next header proto).
+>
+> But this is a problem that the vlan_h_proto is the same as offsetof(struct ethhdr, h_proto)
 
-Signed-off-by: wenxu <wenxu@ucloud.cn>
----
- net/netfilter/nf_flow_table_offload.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
 
-diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
-index dc1d6b4..b87f8c3 100644
---- a/net/netfilter/nf_flow_table_offload.c
-+++ b/net/netfilter/nf_flow_table_offload.c
-@@ -619,6 +619,7 @@ static void flow_offload_decap_tunnel(const struct flow_offload *flow,
- 			  struct nf_flow_rule *flow_rule)
- {
- 	const struct flow_offload_tuple *other_tuple;
-+	const struct flow_offload_tuple *tuple;
- 	int i;
- 
- 	flow_offload_decap_tunnel(flow, dir, flow_rule);
-@@ -628,6 +629,20 @@ static void flow_offload_decap_tunnel(const struct flow_offload *flow,
- 	    flow_offload_eth_dst(net, flow, dir, flow_rule) < 0)
- 		return -1;
- 
-+	tuple = &flow->tuplehash[dir].tuple;
-+
-+	for (i = 0; i < tuple->encap_num; i++) {
-+		struct flow_action_entry *entry;
-+
-+		if (tuple->in_vlan_ingress & BIT(i))
-+			continue;
-+
-+		if (tuple->encap[i].proto == htons(ETH_P_8021Q)) {
-+			entry = flow_action_entry_next(flow_rule);
-+			entry->id = FLOW_ACTION_VLAN_POP;
-+		}
-+	}
-+
- 	other_tuple = &flow->tuplehash[!dir].tuple;
- 
- 	for (i = 0; i < other_tuple->encap_num; i++) {
--- 
-1.8.3.1
+The design of flow_dissector_key_basic->n_porto should be set as next header proto(ipv4/6)
 
+for vlan packet which is h_vlan_encapsulated_proto in the vlan header. (check from fl_set_key and skb_flow_dissect)
+
+Maybe the patch should as following?
+
+diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
+index cb1c8c2..84c5ecc 100644
+--- a/net/netfilter/nft_payload.c
++++ b/net/netfilter/nft_payload.c
+@@ -233,8 +233,8 @@ static int nft_payload_offload_ll(struct nft_offload_ctx *ctx,
+                if (!nft_payload_offload_mask(reg, priv->len, sizeof(__be16)))
+                        return -EOPNOTSUPP;
+ 
+-               NFT_OFFLOAD_MATCH(FLOW_DISSECTOR_KEY_VLAN, vlan,
+-                                 vlan_tpid, sizeof(__be16), reg);
++               NFT_OFFLOAD_MATCH(FLOW_DISSECTOR_KEY_BASIC, basic,
++                                 n_proto, sizeof(__be16), reg);
+                nft_offload_set_dependency(ctx, NFT_OFFLOAD_DEP_NETWORK);
+                break;
+        case offsetof(struct vlan_ethhdr, h_vlan_TCI) + sizeof(struct vlan_hdr):
+@@ -249,8 +249,8 @@ static int nft_payload_offload_ll(struct nft_offload_ctx *ctx,
+                if (!nft_payload_offload_mask(reg, priv->len, sizeof(__be16)))
+                        return -EOPNOTSUPP;
+ 
+-               NFT_OFFLOAD_MATCH(FLOW_DISSECTOR_KEY_CVLAN, vlan,
+-                                 vlan_tpid, sizeof(__be16), reg);
++               NFT_OFFLOAD_MATCH(FLOW_DISSECTOR_KEY_BASIC, basic,
++                                 n_proto, sizeof(__be16), reg);
+                break;
+        default:
+                return -EOPNOTSUPP;
+
+>
+>
+>
