@@ -2,164 +2,155 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C2835508D
-	for <lists+netfilter-devel@lfdr.de>; Tue,  6 Apr 2021 12:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E791E3551EB
+	for <lists+netfilter-devel@lfdr.de>; Tue,  6 Apr 2021 13:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237305AbhDFKKO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 6 Apr 2021 06:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242659AbhDFKKO (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 6 Apr 2021 06:10:14 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA8BC06174A
-        for <netfilter-devel@vger.kernel.org>; Tue,  6 Apr 2021 03:10:06 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id d12so21783558lfv.11
-        for <netfilter-devel@vger.kernel.org>; Tue, 06 Apr 2021 03:10:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ootrj0MHPzZ7u8gCpBFAcFoQ8aKA6G+ziCd0m3Nz7FQ=;
-        b=B1IGAmemC4rRUa4tNqzW+gy0X4CWictAIvoXusWLVG7T08NnpbjooV/nLO9pB5DMsB
-         Ug5rNF7yXc8jbs5bflj4X95W0EcsYDN74G5fAnoZoh4rG5BxJnGSevbfhJdNRWP5XscT
-         fRdtY7i5XdynfJjNZ9lqs9S2Id6fDuGF5pzG1mcRTZx/qQ0weHotqlvOlvYQSUroV6VY
-         bX9k9R5ny4ANWy7o6Pj1TnkDMSNWzhAR4YDnIqdlVXS5T4Mx3Mz2QFiUd5KGtIaBftvW
-         VKafPSWgk5rU/2Lv1n/i5PO+2RBTCcBl6DByCocoDFTUNQmstCp/UOy7vd/OWHBD5WFW
-         J5iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ootrj0MHPzZ7u8gCpBFAcFoQ8aKA6G+ziCd0m3Nz7FQ=;
-        b=io9VPcYPRfg1i0/cvvff0hrzaWB6unw5YFhg4y5z39HqktbwE1BjTfbfggbDBck3gN
-         FIdr4lYoPaz8LRjacsUyDgLAZ94NmvCV2MldrH0W7GNwgfYpvOjPrXLRfz0npNns5xfu
-         U4M9em3C1l3bfjiDS8UMcOcj4MYMs4UatPSSyti8PUQP/Qty5MLjV/Fb9YYRpfY5HKFD
-         sxHeC5KKzB8nOzBM7oSyz+e2FSdE0rtOanYLFW/LmBZS+ZnrCKnKJ/htH1OKr9fE15zX
-         lM2izR1ng7aKoQ63OD157BLNx8Hc0G/zGrRv7AE8xA8G2x9Yrdbjx6LrvoBfgrmfK9U5
-         7W/A==
-X-Gm-Message-State: AOAM530l2tOGx+iT0nHnHYfwZKZaJVXBBU14cs3EFbVof0Gz3775hcOl
-        nP0IsbzOqrnZ7EyeOS3OTGPTjDcZes//1Dfx
-X-Google-Smtp-Source: ABdhPJx2K50ltn8sAKvZMu24rcxkwqqMIDTdxmbdqNO85lc6ywlXWPBp31alxPQrXK5cjtE9EFqr0Q==
-X-Received: by 2002:a05:6512:a95:: with SMTP id m21mr20569545lfu.59.1617703804560;
-        Tue, 06 Apr 2021 03:10:04 -0700 (PDT)
-Received: from msennikovskii4.fkb.profitbricks.net ([2a00:1fa1:c4fc:25fe:f165:934d:dfbd:8cd3])
-        by smtp.gmail.com with ESMTPSA id l7sm2170070lje.30.2021.04.06.03.10.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 03:10:04 -0700 (PDT)
-From:   Mikhail Sennikovsky <mikhail.sennikovskii@ionos.com>
-To:     netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        mikhail.sennikovskii@ionos.com
-Cc:     Mikhail Sennikovsky <mikhail.sennikovskii@cloud.ionos.com>
-Subject: [PATCH v4 5/5] tests: conntrack -L/-D ip family filtering
-Date:   Tue,  6 Apr 2021 12:09:47 +0200
-Message-Id: <20210406100947.57579-6-mikhail.sennikovskii@ionos.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210406100947.57579-1-mikhail.sennikovskii@ionos.com>
-References: <20210406100947.57579-1-mikhail.sennikovskii@ionos.com>
+        id S242088AbhDFLVp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 6 Apr 2021 07:21:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56642 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242052AbhDFLVo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 6 Apr 2021 07:21:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BF4E9B14C;
+        Tue,  6 Apr 2021 11:21:35 +0000 (UTC)
+Subject: Re: [PATCH 1/2] ebtables: processing '--concurrent' beofore other
+ arguments
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Firo Yang <firo.yang@suse.com>,
+        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
+        Simon Lees <SimonF.Lees@suse.com>
+References: <20210401040741.15672-1-firo.yang@suse.com>
+ <20210401040741.15672-2-firo.yang@suse.com> <20210403181517.GA4624@salvia>
+ <20210403182204.GA5182@salvia>
+ <6cc20464d5814fe899d7fb1e21d5488c@DB8PR04MB5881.eurprd04.prod.outlook.com>
+ <f5efb453-0197-658c-1886-a4d88fc3b193@suse.de>
+ <64466cd69b054f5d803722dfbcf8c4be@DB8PR04MB5881.eurprd04.prod.outlook.com>
+From:   Simon Lees <sflees@suse.de>
+Message-ID: <d135ba6e-aa30-9a1d-136c-56a96aa10da6@suse.de>
+Date:   Tue, 6 Apr 2021 20:51:30 +0930
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <64466cd69b054f5d803722dfbcf8c4be@DB8PR04MB5881.eurprd04.prod.outlook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="HFodkxwA44CCim5ptvNm1LOimnvyRxDAp"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Mikhail Sennikovsky <mikhail.sennikovskii@cloud.ionos.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--HFodkxwA44CCim5ptvNm1LOimnvyRxDAp
+Content-Type: multipart/mixed; boundary="QaoDH4Bozqh8F93YUXHpjgPGWvvPVE8Zq";
+ protected-headers="v1"
+From: Simon Lees <sflees@suse.de>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Firo Yang <firo.yang@suse.com>,
+ "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
+ Simon Lees <SimonF.Lees@suse.com>
+Message-ID: <d135ba6e-aa30-9a1d-136c-56a96aa10da6@suse.de>
+Subject: Re: [PATCH 1/2] ebtables: processing '--concurrent' beofore other
+ arguments
+References: <20210401040741.15672-1-firo.yang@suse.com>
+ <20210401040741.15672-2-firo.yang@suse.com> <20210403181517.GA4624@salvia>
+ <20210403182204.GA5182@salvia>
+ <6cc20464d5814fe899d7fb1e21d5488c@DB8PR04MB5881.eurprd04.prod.outlook.com>
+ <f5efb453-0197-658c-1886-a4d88fc3b193@suse.de>
+ <64466cd69b054f5d803722dfbcf8c4be@DB8PR04MB5881.eurprd04.prod.outlook.com>
+In-Reply-To: <64466cd69b054f5d803722dfbcf8c4be@DB8PR04MB5881.eurprd04.prod.outlook.com>
 
-Tests to cover conntrack -L and conntrack -D with and w/o
-family (-f) specfied.
+--QaoDH4Bozqh8F93YUXHpjgPGWvvPVE8Zq
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-conntrack -L and contnrack -D shold list/delete
-both IPv4 and IPv6 entries if no family is specified,
-and should ony display the corresponding entries if
-the family is given.
 
-Signed-off-by: Mikhail Sennikovsky <mikhail.sennikovskii@cloud.ionos.com>
----
- tests/conntrack/testsuite/09dumpopt | 72 ++++++++++++++++++++++++++++-
- 1 file changed, 71 insertions(+), 1 deletion(-)
 
-diff --git a/tests/conntrack/testsuite/09dumpopt b/tests/conntrack/testsuite/09dumpopt
-index 0d5d9d4..447590b 100644
---- a/tests/conntrack/testsuite/09dumpopt
-+++ b/tests/conntrack/testsuite/09dumpopt
-@@ -74,4 +74,74 @@
- # delete v6 conntrack
- -D -w 10-s 2001:DB8::1.1.1.1 -d 2001:DB8::2.2.2.2 -p tcp --sport 10 --dport 20 ; BAD
- # delete icmp ping request entry
---D -w 10 -u SEEN_REPLY -s 1.1.1.1 -d 2.2.2.2 -r 2.2.2.2 -q 1.1.1.1 -p icmp --icmp-type 8 --icmp-code 0 --icmp-id 1226 ; BAD
-\ No newline at end of file
-+-D -w 10 -u SEEN_REPLY -s 1.1.1.1 -d 2.2.2.2 -r 2.2.2.2 -q 1.1.1.1 -p icmp --icmp-type 8 --icmp-code 0 --icmp-id 1226 ; BAD
-+#
-+# Additional tests to check that family attribute is treated properly
-+# for -L and -D commands
-+# namely:
-+# - if family (-f) is given - only entries of the given family are dumped/deleted
-+# - if no family is given - entries of both ipv4 and ipv6 families are dumped/deleted
-+# First create some ipv4 and ipv6 entries
-+-I -w 10 -s 1.1.1.1 -d 2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY -t 50 ; OK
-+-I -w 10 -r 2.2.2.2 -q 1.1.1.1 -p tcp --reply-port-src 11 --reply-port-dst 21 --state LISTEN -u SEEN_REPLY -t 50 ; OK
-+-I -w 10 -s 2001:DB8::1.1.1.1 -d 2001:DB8::2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY -t 50 ; OK
-+-I -w 10 -t 29 -u SEEN_REPLY -s 1.1.1.1 -d 2.2.2.2 -r 2.2.2.2 -q 1.1.1.1 -p icmp --icmp-type 8 --icmp-code 0 --icmp-id 1226 ; OK
-+# dump all entries to zone 11
-+-L -w 10 -o save; |s/-w 10/-w 11/g
-+-R - ; OK
-+# ensure that both ipv4 and ipv6 entries get copied (delete for each of them should succeed)
-+-D -w 11 -s 1.1.1.1 -d 2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY ; OK
-+-D -w 11 -r 2.2.2.2 -q 1.1.1.1 -p tcp --reply-port-src 11 --reply-port-dst 21 --state LISTEN -u SEEN_REPLY ; OK
-+-D -w 11 -s 2001:DB8::1.1.1.1 -d 2001:DB8::2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY; OK
-+-D -w 11 -u SEEN_REPLY -s 1.1.1.1 -d 2.2.2.2 -r 2.2.2.2 -q 1.1.1.1 -p icmp --icmp-type 8 --icmp-code 0 --icmp-id 1226 ; OK
-+# dump only ipv4 entries to zone 11
-+-L -w 10 -o save -f ipv4; |s/-w 10/-w 11/g
-+-R - ; OK
-+# ensure that only ipv4 entries get copied (delete only for ipv4 entries should succeed)
-+-D -w 11 -s 1.1.1.1 -d 2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY; OK
-+-D -w 11 -r 2.2.2.2 -q 1.1.1.1 -p tcp --reply-port-src 11 --reply-port-dst 21 --state LISTEN -u SEEN_REPLY; OK
-+-D -w 11 -s 2001:DB8::1.1.1.1 -d 2001:DB8::2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY; BAD
-+-D -w 11 -u SEEN_REPLY -s 1.1.1.1 -d 2.2.2.2 -r 2.2.2.2 -q 1.1.1.1 -p icmp --icmp-type 8 --icmp-code 0 --icmp-id 1226 ; OK
-+# dump only ipv6 entries to zone 11
-+-L -w 10 -o save -f ipv6; |s/-w 10/-w 11/g
-+-R - ; OK
-+# ensure that only ipv6 entries get copied (delete only for ipv6 entries should succeed)
-+-D -w 11 -s 1.1.1.1 -d 2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY; BAD
-+-D -w 11 -r 2.2.2.2 -q 1.1.1.1 -p tcp --reply-port-src 11 --reply-port-dst 21 --state LISTEN -u SEEN_REPLY; BAD
-+-D -w 11 -s 2001:DB8::1.1.1.1 -d 2001:DB8::2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY; OK
-+-D -w 11 -u SEEN_REPLY -s 1.1.1.1 -d 2.2.2.2 -r 2.2.2.2 -q 1.1.1.1 -p icmp --icmp-type 8 --icmp-code 0 --icmp-id 1226 ; BAD
-+# now test deleting w/ and /o family specified
-+# for simplicity do it by re-creating entries in zone 11
-+# by copying ezisting entries from zone 10 into it
-+# re-create entries in ct zone 11
-+-L -w 10 -o save; |s/-w 10/-w 11/g
-+-R - ; OK
-+# delete all entries in zone 11
-+-D -w 11 ; OK
-+# both ipv4 and ipv6 should be deleted
-+-D -w 11 -s 1.1.1.1 -d 2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY; BAD
-+-D -w 11 -r 2.2.2.2 -q 1.1.1.1 -p tcp --reply-port-src 11 --reply-port-dst 21 --state LISTEN -u SEEN_REPLY; BAD
-+-D -w 11 -s 2001:DB8::1.1.1.1 -d 2001:DB8::2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY; BAD
-+-D -w 11 -u SEEN_REPLY -s 1.1.1.1 -d 2.2.2.2 -r 2.2.2.2 -q 1.1.1.1 -p icmp --icmp-type 8 --icmp-code 0 --icmp-id 1226 ; BAD
-+# re-create entries in ct zone 11
-+-L -w 10 -o save; |s/-w 10/-w 11/g
-+-R - ; OK
-+# delete only ipv4 entries in zone 11
-+-D -w 11 -f ipv4 ; OK
-+# ipv6 should remain
-+-D -w 11 -s 1.1.1.1 -d 2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY; BAD
-+-D -w 11 -r 2.2.2.2 -q 1.1.1.1 -p tcp --reply-port-src 11 --reply-port-dst 21 --state LISTEN -u SEEN_REPLY; BAD
-+-D -w 11 -s 2001:DB8::1.1.1.1 -d 2001:DB8::2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY; OK
-+-D -w 11 -u SEEN_REPLY -s 1.1.1.1 -d 2.2.2.2 -r 2.2.2.2 -q 1.1.1.1 -p icmp --icmp-type 8 --icmp-code 0 --icmp-id 1226 ; BAD
-+ # re-create entries in ct zone 11
-+-L -w 10 -o save; |s/-w 10/-w 11/g
-+-R - ; OK
-+# delete only ipv6 entries in zone 11
-+-D -w 11 -f ipv6 ; OK
-+# ipv4 should remain
-+-D -w 11 -s 1.1.1.1 -d 2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY; OK
-+-D -w 11 -r 2.2.2.2 -q 1.1.1.1 -p tcp --reply-port-src 11 --reply-port-dst 21 --state LISTEN -u SEEN_REPLY; OK
-+-D -w 11 -s 2001:DB8::1.1.1.1 -d 2001:DB8::2.2.2.2 -p tcp --sport 10 --dport 20 --state LISTEN -u SEEN_REPLY; BAD
-+-D -w 11 -u SEEN_REPLY -s 1.1.1.1 -d 2.2.2.2 -r 2.2.2.2 -q 1.1.1.1 -p icmp --icmp-type 8 --icmp-code 0 --icmp-id 1226 ; OK
-+# clean up after yourself
-+-D -w 10 ; OK
--- 
-2.25.1
+On 4/6/21 7:22 PM, Pablo Neira Ayuso wrote:
+> Hi,
+>=20
+> On Tue, Apr 06, 2021 at 05:29:11PM +0930, Simon Lees wrote:
+>>
+>>
+>> On 4/6/21 12:27 PM, Firo Yang wrote:
+>>> The 04/03/2021 20:22, Pablo Neira Ayuso wrote:
+>>>> On Sat, Apr 03, 2021 at 08:15:17PM +0200, Pablo Neira Ayuso wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On Thu, Apr 01, 2021 at 12:07:40PM +0800, Firo Yang wrote:
+>>>>>> Our customer reported a following issue:
+>>>>>> If '--concurrent' was passed to ebtables command behind other argu=
+ments,
+>>>>>> '--concurrent' will not take effect sometimes; for a simple exampl=
+e,
+>>>>>> ebtables -L --concurrent. This is becuase the handling of '--concu=
+rrent'
+>>>>>> is implemented in a passing-order-dependent way.
+>>>>>>
+>>>>>> So we can fix this problem by processing it before other arguments=
+=2E
+>>>>>
+>>>>> Would you instead make a patch to spew an error if --concurrent is =
+the
+>>>>> first argument?
+>>>>
+>>>> Wrong wording:
+>>>>
+>>>> Would you instead make a patch to spew an error if --concurrent is
+>>>> _not_ the first argument?
+>>>
+>>> Hi Pablo, I think it would make more sense if we don't introduce this=
 
+>>> inconvenice to users. If you insist, I would go create the patch as y=
+ou
+>>> intended.
+>>
+>> Agreed, that also wouldn't be seen as a workable solution for us "SUSE=
+"
+>> as our customers who may have scripts or documented processes where
+>> --concurrent is not first and such a change would be considered a
+>> "Change in behavior" as such we can't ship it in a bugfix or minor
+>> version update, only in the next major update and we don't know when
+>> that will be yet.
+>>
+>> Sure this is probably only a issue for enterprise distro's but such a
+>> change would likely inconvenience other users as well.
+>=20
+> --concurrent has never worked away from the early positions ever.
+>=20
+> What's the issue?
+
+We had a customer complaining about the change in ordering causing
+different results with one way working and the other not, looking back
+at the report a second time I don't think they were ever using the "non
+working way" in production but just to debug the other issue.
+
+--=20
+Simon Lees (Simotek)                            http://simotek.net
+
+Emergency Update Team                           keybase.io/simotek
+SUSE Linux                           Adelaide Australia, UTC+10:30
+GPG Fingerprint: 5B87 DB9D 88DC F606 E489 CEC5 0922 C246 02F0 014B
+
+
+--QaoDH4Bozqh8F93YUXHpjgPGWvvPVE8Zq--
+
+--HFodkxwA44CCim5ptvNm1LOimnvyRxDAp
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEED0hBIYMo9ADHKtZgEdQumr4Y/JEFAmBsRDoFAwAAAAAACgkQEdQumr4Y/JHL
+HwgAiC0vYahr1eAI1g24809ODVx1KWB6xSJprGufLASW/o4MHjaeMEBcbS7AmRPXoC7zEYbKIkis
+CckqVBgx7m1swSdlnJySy3SyvbG1CvDzLEmG1+V77B//T+SVUwCGCEH9aeSlNcdyUwleD7qmkNnr
+dv4IMngfjTEcprYAXCJ9/+ZlZkKH/sLNEw5gnap9QX5omBKblH17Q32+vixVVyPuy2qO96P/Aah9
+ChipdpyYG5xoi4AYW43LRL9LJbQt/SXUomKMAA1rcUj5OrAl9QaFbNit1f3XZZQNcxfngMtfAFkK
+LA9Y5uchBmC+XCAUszPbhmt1QKm8P1/Ye+peKixYqQ==
+=q6Xi
+-----END PGP SIGNATURE-----
+
+--HFodkxwA44CCim5ptvNm1LOimnvyRxDAp--
