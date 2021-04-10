@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F7B35B018
-	for <lists+netfilter-devel@lfdr.de>; Sat, 10 Apr 2021 21:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BAD35B01A
+	for <lists+netfilter-devel@lfdr.de>; Sat, 10 Apr 2021 21:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234536AbhDJTad (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 10 Apr 2021 15:30:33 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:44996 "EHLO
+        id S234548AbhDJTdg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 10 Apr 2021 15:33:36 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:45012 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234439AbhDJTac (ORCPT
+        with ESMTP id S234439AbhDJTdg (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 10 Apr 2021 15:30:32 -0400
+        Sat, 10 Apr 2021 15:33:36 -0400
 Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id F1EDE62C0E;
-        Sat, 10 Apr 2021 21:29:53 +0200 (CEST)
+        by mail.netfilter.org (Postfix) with ESMTPSA id A210D62C17;
+        Sat, 10 Apr 2021 21:32:57 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     nevola@gmail.com
-Subject: [PATCH nf,v3] netfilter: nftables: clone set element expression template
-Date:   Sat, 10 Apr 2021 21:30:13 +0200
-Message-Id: <20210410193013.18629-1-pablo@netfilter.org>
+Subject: [PATCH nf,v4] netfilter: nftables: clone set element expression template
+Date:   Sat, 10 Apr 2021 21:33:17 +0200
+Message-Id: <20210410193317.18854-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -52,13 +52,13 @@ Reported-by: Laura Garcia Liebana <nevola@gmail.com>
 Fixes: 409444522976 ("netfilter: nf_tables: add elements with stateful expressions")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v3: fix expr_array[] leak in error path
+v4: set err to -ENOMEM when transaction allocation fails.
 
- net/netfilter/nf_tables_api.c | 42 ++++++++++++++++++++++++++---------
- 1 file changed, 31 insertions(+), 11 deletions(-)
+ net/netfilter/nf_tables_api.c | 46 ++++++++++++++++++++++++++---------
+ 1 file changed, 34 insertions(+), 12 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index f57f1a6ba96f..81da339b39a3 100644
+index f57f1a6ba96f..589d2f6978d3 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
 @@ -5295,16 +5295,35 @@ int nft_set_elem_expr_clone(const struct nft_ctx *ctx, struct nft_set *set,
@@ -89,22 +89,22 @@ index f57f1a6ba96f..81da339b39a3 100644
 +	}
 +
 +	return 0;
- 
--	memcpy(expr, expr_array[i], expr_array[i]->ops->size);
--	elem_expr->size += expr_array[i]->ops->size;
--	kfree(expr_array[i]);
--	expr_array[i] = NULL;
++
 +err_elem_expr_setup:
 +	for (; i < num_exprs; i++) {
 +		nft_expr_destroy(ctx, expr_array[i]);
 +		expr_array[i] = NULL;
 +	}
-+
+ 
+-	memcpy(expr, expr_array[i], expr_array[i]->ops->size);
+-	elem_expr->size += expr_array[i]->ops->size;
+-	kfree(expr_array[i]);
+-	expr_array[i] = NULL;
 +	return -ENOMEM;
  }
  
  static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
-@@ -5556,12 +5575,13 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+@@ -5556,12 +5575,15 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
  		*nft_set_ext_obj(ext) = obj;
  		obj->use++;
  	}
@@ -115,13 +115,16 @@ index f57f1a6ba96f..81da339b39a3 100644
 +		goto err_elem_expr;
  
  	trans = nft_trans_elem_alloc(ctx, NFT_MSG_NEWSETELEM, set);
- 	if (trans == NULL)
+-	if (trans == NULL)
 -		goto err_trans;
++	if (trans == NULL) {
++		err = -ENOMEM;
 +		goto err_elem_expr;
++	}
  
  	ext->genmask = nft_genmask_cur(ctx->net) | NFT_SET_ELEM_BUSY_MASK;
  	err = set->ops->insert(ctx->net, set, &elem, &ext2);
-@@ -5605,7 +5625,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+@@ -5605,7 +5627,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
  	set->ops->remove(ctx->net, set, &elem);
  err_element_clash:
  	kfree(trans);
