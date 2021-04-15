@@ -2,53 +2,73 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3401B3600EA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Apr 2021 06:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEFC360A45
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Apr 2021 15:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229499AbhDOEXd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 15 Apr 2021 00:23:33 -0400
-Received: from [121.4.85.183] ([121.4.85.183]:51642 "EHLO mail.kuanyit.com"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S229489AbhDOEXd (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 15 Apr 2021 00:23:33 -0400
-X-Greylist: delayed 592 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 00:23:33 EDT
-Received: from localhost (unknown [127.0.0.1])
-        by mail.kuanyit.com (Postfix) with ESMTP id 735EF1C589;
-        Thu, 15 Apr 2021 04:10:07 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at kuanyit.com
-Received: from mail.kuanyit.com ([127.0.0.1])
-        by localhost (mail.kuanyit.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 6IVLuxUYXf06; Thu, 15 Apr 2021 12:10:01 +0800 (CST)
-Received: from User (unknown [203.159.80.22])
-        by mail.kuanyit.com (Postfix) with SMTP id 2299BA426B;
-        Thu, 15 Apr 2021 07:00:47 +0800 (CST)
-Reply-To: <mr.greg_rhodes_0712@meta.ua>
-From:   "Greg Rhodes" <info@go.org>
-Subject: Your prompt response would be highly appreciated
-Date:   Wed, 14 Apr 2021 16:00:59 -0700
+        id S232332AbhDONN5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 15 Apr 2021 09:13:57 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:57866 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhDONN5 (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Thu, 15 Apr 2021 09:13:57 -0400
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 64F1B62C0E
+        for <netfilter-devel@vger.kernel.org>; Thu, 15 Apr 2021 15:13:06 +0200 (CEST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft 0/10] cache updates
+Date:   Thu, 15 Apr 2021 15:13:20 +0200
+Message-Id: <20210415131330.6692-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20210415041007.735EF1C589@mail.kuanyit.com>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-I am Mr Greg Rhodes a supervisor at a gold mining site in Sierra Leone.
+Hi,
 
-Due to Covid-19 some of our customers are not picking up their orders, thus, there is a glut of gold bars in our safe.
+The following patchset contains cache updates for nft:
 
-In view of this, we are seriously looking for buyers. Our prices are favourable and the business is profitable.
+#1 adds a object hashtable for lookups by name.
+#2 adds a flowtable hashtable for lookups by name.
+#3 adds set_cache_del() and use it from the monitor path.
+#4 adds ruleset-defined sets to the cache.
+#5 adds ruleset-defined flowtables to the cache.
+#6 populates the table cache for several objects.
+#7 adds ruleset-define policy objects to the cache.
+#8 move struct nft_cache declaration to include/cache.h
+#9 adds a table hashtable for lookups by name.
+#10 removes table_lookup_global() which is not required
+    anymore after the previous updates.
 
-For a kilogram of gold purchased from us, you are sure to make at between $10,000 - $12,000.
+Pablo Neira Ayuso (10):
+  cache: add hashtable cache for object
+  cache: add hashtable cache for flowtable
+  cache: add set_cache_del() and use it
+  evaluate: add set to the cache
+  evaluate: add flowtable to the cache
+  cache: missing table cache for several policy objects
+  evaluate: add object to the cache
+  cache: move struct nft_cache declaration to cache.h
+  cache: add hashtable cache for table
+  evaluate: remove table_lookup_global()
 
-We thank you and look forward to a good business relationship.
+ include/cache.h           |  25 ++++
+ include/netlink.h         |   2 +
+ include/nftables.h        |   8 +-
+ include/rule.h            |  18 +--
+ src/cache.c               | 244 ++++++++++++++++++++++++++++++++++++--
+ src/evaluate.c            |  83 ++++++-------
+ src/json.c                |  24 ++--
+ src/libnftables.c         |   8 ++
+ src/monitor.c             |  20 ++--
+ src/netlink.c             |  23 +---
+ src/netlink_delinearize.c |   4 +-
+ src/rule.c                | 125 ++++++++-----------
+ 12 files changed, 399 insertions(+), 185 deletions(-)
 
-Best regards,
-Greg Rhodes
+-- 
+2.20.1
+
