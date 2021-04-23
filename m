@@ -2,777 +2,102 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23BA3688F6
-	for <lists+netfilter-devel@lfdr.de>; Fri, 23 Apr 2021 00:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C3E369672
+	for <lists+netfilter-devel@lfdr.de>; Fri, 23 Apr 2021 17:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239576AbhDVWSA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 22 Apr 2021 18:18:00 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:45300 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbhDVWR7 (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 22 Apr 2021 18:17:59 -0400
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 0030B6411E
-        for <netfilter-devel@vger.kernel.org>; Fri, 23 Apr 2021 00:16:49 +0200 (CEST)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
+        id S231560AbhDWPzY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 23 Apr 2021 11:55:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49608 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231445AbhDWPzV (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:55:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619193284; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=l4gb+WUBpaPLz6C2Ib3LLhenZONdMk4LISwnpYDVs4E=;
+        b=ThH7yUAmu6rFMpaVpRkBxOSV7HKmab0kJuX95p2kjh+vvplamvACDG+ZN3Fdg8g20cs2Cc
+        KtG/BkhFlNp2sVQOaH+L9s3Ju+6dPHOpQPH68iocQgmA0rmd0CRShd4Fjbyjyusj1/SMcp
+        IQ4SftauM1sD6pLftrba8U/UKcixB/g=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2907BB140
+        for <netfilter-devel@vger.kernel.org>; Fri, 23 Apr 2021 15:54:44 +0000 (UTC)
+Date:   Fri, 23 Apr 2021 17:54:43 +0200
+From:   Ali Abdallah <ali.abdallah@suse.com>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next 5/5] netfilter: nfnetlink: consolidate callback types
-Date:   Fri, 23 Apr 2021 00:17:12 +0200
-Message-Id: <20210422221712.399156-6-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210422221712.399156-1-pablo@netfilter.org>
-References: <20210422221712.399156-1-pablo@netfilter.org>
+Subject: RSTs being marked as invalid because of wrong td_maxack value
+Message-ID: <20210423155443.fmlbssgi6pq7nfp4@Fryzen495>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="thyjxneyzhrnuxo6"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add enum nfnl_callback_type to identify the callback type to provide one
-single callback.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- include/linux/netfilter/nfnetlink.h  | 16 +++--
- net/netfilter/ipset/ip_set_core.c    | 16 +++++
- net/netfilter/nf_conntrack_netlink.c | 88 ++++++++++++++++++++--------
- net/netfilter/nf_tables_api.c        | 69 ++++++++++++++--------
- net/netfilter/nfnetlink.c            | 37 +++++++-----
- net/netfilter/nfnetlink_acct.c       | 36 ++++++++----
- net/netfilter/nfnetlink_cthelper.c   | 27 ++++++---
- net/netfilter/nfnetlink_cttimeout.c  | 45 +++++++++-----
- net/netfilter/nfnetlink_log.c        | 16 +++--
- net/netfilter/nfnetlink_osf.c        |  2 +
- net/netfilter/nfnetlink_queue.c      | 34 +++++++----
- net/netfilter/nft_compat.c           |  9 ++-
- 12 files changed, 271 insertions(+), 124 deletions(-)
+--thyjxneyzhrnuxo6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/linux/netfilter/nfnetlink.h b/include/linux/netfilter/nfnetlink.h
-index df0e3254c57b..515ce53aa20d 100644
---- a/include/linux/netfilter/nfnetlink.h
-+++ b/include/linux/netfilter/nfnetlink.h
-@@ -14,15 +14,19 @@ struct nfnl_info {
- 	struct netlink_ext_ack	*extack;
- };
- 
-+enum nfnl_callback_type {
-+	NFNL_CB_UNSPEC	= 0,
-+	NFNL_CB_MUTEX,
-+	NFNL_CB_RCU,
-+	NFNL_CB_BATCH,
-+};
-+
- struct nfnl_callback {
- 	int (*call)(struct sk_buff *skb, const struct nfnl_info *info,
- 		    const struct nlattr * const cda[]);
--	int (*call_rcu)(struct sk_buff *skb, const struct nfnl_info *info,
--			const struct nlattr * const cda[]);
--	int (*call_batch)(struct sk_buff *skb, const struct nfnl_info *info,
--			  const struct nlattr * const cda[]);
--	const struct nla_policy *policy;	/* netlink attribute policy */
--	const u_int16_t attr_count;		/* number of nlattr's */
-+	const struct nla_policy	*policy;
-+	enum nfnl_callback_type	type;
-+	__u16			attr_count;
- };
- 
- enum nfnl_abort_action {
-diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
-index bf9902c1daa8..de2d20c37cda 100644
---- a/net/netfilter/ipset/ip_set_core.c
-+++ b/net/netfilter/ipset/ip_set_core.c
-@@ -2108,80 +2108,96 @@ static int ip_set_byindex(struct sk_buff *skb, const struct nfnl_info *info,
- static const struct nfnl_callback ip_set_netlink_subsys_cb[IPSET_MSG_MAX] = {
- 	[IPSET_CMD_NONE]	= {
- 		.call		= ip_set_none,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 	},
- 	[IPSET_CMD_CREATE]	= {
- 		.call		= ip_set_create,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_create_policy,
- 	},
- 	[IPSET_CMD_DESTROY]	= {
- 		.call		= ip_set_destroy,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_setname_policy,
- 	},
- 	[IPSET_CMD_FLUSH]	= {
- 		.call		= ip_set_flush,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_setname_policy,
- 	},
- 	[IPSET_CMD_RENAME]	= {
- 		.call		= ip_set_rename,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_setname2_policy,
- 	},
- 	[IPSET_CMD_SWAP]	= {
- 		.call		= ip_set_swap,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_setname2_policy,
- 	},
- 	[IPSET_CMD_LIST]	= {
- 		.call		= ip_set_dump,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_dump_policy,
- 	},
- 	[IPSET_CMD_SAVE]	= {
- 		.call		= ip_set_dump,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_setname_policy,
- 	},
- 	[IPSET_CMD_ADD]	= {
- 		.call		= ip_set_uadd,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_adt_policy,
- 	},
- 	[IPSET_CMD_DEL]	= {
- 		.call		= ip_set_udel,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_adt_policy,
- 	},
- 	[IPSET_CMD_TEST]	= {
- 		.call		= ip_set_utest,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_adt_policy,
- 	},
- 	[IPSET_CMD_HEADER]	= {
- 		.call		= ip_set_header,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_setname_policy,
- 	},
- 	[IPSET_CMD_TYPE]	= {
- 		.call		= ip_set_type,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_type_policy,
- 	},
- 	[IPSET_CMD_PROTOCOL]	= {
- 		.call		= ip_set_protocol,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_protocol_policy,
- 	},
- 	[IPSET_CMD_GET_BYNAME]	= {
- 		.call		= ip_set_byname,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_setname_policy,
- 	},
- 	[IPSET_CMD_GET_BYINDEX]	= {
- 		.call		= ip_set_byindex,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= IPSET_ATTR_CMD_MAX,
- 		.policy		= ip_set_index_policy,
- 	},
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 5147a63b3d1b..8690fc07030f 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -3751,35 +3751,71 @@ static struct nf_exp_event_notifier ctnl_notifier_exp = {
- #endif
- 
- static const struct nfnl_callback ctnl_cb[IPCTNL_MSG_MAX] = {
--	[IPCTNL_MSG_CT_NEW]		= { .call = ctnetlink_new_conntrack,
--					    .attr_count = CTA_MAX,
--					    .policy = ct_nla_policy },
--	[IPCTNL_MSG_CT_GET] 		= { .call = ctnetlink_get_conntrack,
--					    .attr_count = CTA_MAX,
--					    .policy = ct_nla_policy },
--	[IPCTNL_MSG_CT_DELETE]  	= { .call = ctnetlink_del_conntrack,
--					    .attr_count = CTA_MAX,
--					    .policy = ct_nla_policy },
--	[IPCTNL_MSG_CT_GET_CTRZERO] 	= { .call = ctnetlink_get_conntrack,
--					    .attr_count = CTA_MAX,
--					    .policy = ct_nla_policy },
--	[IPCTNL_MSG_CT_GET_STATS_CPU]	= { .call = ctnetlink_stat_ct_cpu },
--	[IPCTNL_MSG_CT_GET_STATS]	= { .call = ctnetlink_stat_ct },
--	[IPCTNL_MSG_CT_GET_DYING]	= { .call = ctnetlink_get_ct_dying },
--	[IPCTNL_MSG_CT_GET_UNCONFIRMED]	= { .call = ctnetlink_get_ct_unconfirmed },
-+	[IPCTNL_MSG_CT_NEW]	= {
-+		.call		= ctnetlink_new_conntrack,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_MAX,
-+		.policy		= ct_nla_policy
-+	},
-+	[IPCTNL_MSG_CT_GET]	= {
-+		.call		= ctnetlink_get_conntrack,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_MAX,
-+		.policy		= ct_nla_policy
-+	},
-+	[IPCTNL_MSG_CT_DELETE]	= {
-+		.call		= ctnetlink_del_conntrack,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_MAX,
-+		.policy		= ct_nla_policy
-+	},
-+	[IPCTNL_MSG_CT_GET_CTRZERO] = {
-+		.call		= ctnetlink_get_conntrack,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_MAX,
-+		.policy		= ct_nla_policy
-+	},
-+	[IPCTNL_MSG_CT_GET_STATS_CPU] = {
-+		.call		= ctnetlink_stat_ct_cpu,
-+		.type		= NFNL_CB_MUTEX,
-+	},
-+	[IPCTNL_MSG_CT_GET_STATS] = {
-+		.call		= ctnetlink_stat_ct,
-+		.type		= NFNL_CB_MUTEX,
-+	},
-+	[IPCTNL_MSG_CT_GET_DYING] = {
-+		.call		= ctnetlink_get_ct_dying,
-+		.type		= NFNL_CB_MUTEX,
-+	},
-+	[IPCTNL_MSG_CT_GET_UNCONFIRMED]	= {
-+		.call		= ctnetlink_get_ct_unconfirmed,
-+		.type		= NFNL_CB_MUTEX,
-+	},
- };
- 
- static const struct nfnl_callback ctnl_exp_cb[IPCTNL_MSG_EXP_MAX] = {
--	[IPCTNL_MSG_EXP_GET]		= { .call = ctnetlink_get_expect,
--					    .attr_count = CTA_EXPECT_MAX,
--					    .policy = exp_nla_policy },
--	[IPCTNL_MSG_EXP_NEW]		= { .call = ctnetlink_new_expect,
--					    .attr_count = CTA_EXPECT_MAX,
--					    .policy = exp_nla_policy },
--	[IPCTNL_MSG_EXP_DELETE]		= { .call = ctnetlink_del_expect,
--					    .attr_count = CTA_EXPECT_MAX,
--					    .policy = exp_nla_policy },
--	[IPCTNL_MSG_EXP_GET_STATS_CPU]	= { .call = ctnetlink_stat_exp_cpu },
-+	[IPCTNL_MSG_EXP_GET] = {
-+		.call		= ctnetlink_get_expect,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_EXPECT_MAX,
-+		.policy		= exp_nla_policy
-+	},
-+	[IPCTNL_MSG_EXP_NEW] = {
-+		.call		= ctnetlink_new_expect,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_EXPECT_MAX,
-+		.policy		= exp_nla_policy
-+	},
-+	[IPCTNL_MSG_EXP_DELETE] = {
-+		.call		= ctnetlink_del_expect,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_EXPECT_MAX,
-+		.policy		= exp_nla_policy
-+	},
-+	[IPCTNL_MSG_EXP_GET_STATS_CPU] = {
-+		.call		= ctnetlink_stat_exp_cpu,
-+		.type		= NFNL_CB_MUTEX,
-+	},
- };
- 
- static const struct nfnetlink_subsystem ctnl_subsys = {
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 280ca136df56..1050f23c0d29 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -7554,115 +7554,138 @@ static int nf_tables_getgen(struct sk_buff *skb, const struct nfnl_info *info,
- 
- static const struct nfnl_callback nf_tables_cb[NFT_MSG_MAX] = {
- 	[NFT_MSG_NEWTABLE] = {
--		.call_batch	= nf_tables_newtable,
-+		.call		= nf_tables_newtable,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_TABLE_MAX,
- 		.policy		= nft_table_policy,
- 	},
- 	[NFT_MSG_GETTABLE] = {
--		.call_rcu	= nf_tables_gettable,
-+		.call		= nf_tables_gettable,
-+		.type		= NFNL_CB_RCU,
- 		.attr_count	= NFTA_TABLE_MAX,
- 		.policy		= nft_table_policy,
- 	},
- 	[NFT_MSG_DELTABLE] = {
--		.call_batch	= nf_tables_deltable,
-+		.call		= nf_tables_deltable,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_TABLE_MAX,
- 		.policy		= nft_table_policy,
- 	},
- 	[NFT_MSG_NEWCHAIN] = {
--		.call_batch	= nf_tables_newchain,
-+		.call		= nf_tables_newchain,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_CHAIN_MAX,
- 		.policy		= nft_chain_policy,
- 	},
- 	[NFT_MSG_GETCHAIN] = {
--		.call_rcu	= nf_tables_getchain,
-+		.call		= nf_tables_getchain,
-+		.type		= NFNL_CB_RCU,
- 		.attr_count	= NFTA_CHAIN_MAX,
- 		.policy		= nft_chain_policy,
- 	},
- 	[NFT_MSG_DELCHAIN] = {
--		.call_batch	= nf_tables_delchain,
-+		.call		= nf_tables_delchain,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_CHAIN_MAX,
- 		.policy		= nft_chain_policy,
- 	},
- 	[NFT_MSG_NEWRULE] = {
--		.call_batch	= nf_tables_newrule,
-+		.call		= nf_tables_newrule,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_RULE_MAX,
- 		.policy		= nft_rule_policy,
- 	},
- 	[NFT_MSG_GETRULE] = {
--		.call_rcu	= nf_tables_getrule,
-+		.call		= nf_tables_getrule,
-+		.type		= NFNL_CB_RCU,
- 		.attr_count	= NFTA_RULE_MAX,
- 		.policy		= nft_rule_policy,
- 	},
- 	[NFT_MSG_DELRULE] = {
--		.call_batch	= nf_tables_delrule,
-+		.call		= nf_tables_delrule,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_RULE_MAX,
- 		.policy		= nft_rule_policy,
- 	},
- 	[NFT_MSG_NEWSET] = {
--		.call_batch	= nf_tables_newset,
-+		.call		= nf_tables_newset,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_SET_MAX,
- 		.policy		= nft_set_policy,
- 	},
- 	[NFT_MSG_GETSET] = {
--		.call_rcu	= nf_tables_getset,
-+		.call		= nf_tables_getset,
-+		.type		= NFNL_CB_RCU,
- 		.attr_count	= NFTA_SET_MAX,
- 		.policy		= nft_set_policy,
- 	},
- 	[NFT_MSG_DELSET] = {
--		.call_batch	= nf_tables_delset,
-+		.call		= nf_tables_delset,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_SET_MAX,
- 		.policy		= nft_set_policy,
- 	},
- 	[NFT_MSG_NEWSETELEM] = {
--		.call_batch	= nf_tables_newsetelem,
-+		.call		= nf_tables_newsetelem,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_SET_ELEM_LIST_MAX,
- 		.policy		= nft_set_elem_list_policy,
- 	},
- 	[NFT_MSG_GETSETELEM] = {
--		.call_rcu	= nf_tables_getsetelem,
-+		.call		= nf_tables_getsetelem,
-+		.type		= NFNL_CB_RCU,
- 		.attr_count	= NFTA_SET_ELEM_LIST_MAX,
- 		.policy		= nft_set_elem_list_policy,
- 	},
- 	[NFT_MSG_DELSETELEM] = {
--		.call_batch	= nf_tables_delsetelem,
-+		.call		= nf_tables_delsetelem,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_SET_ELEM_LIST_MAX,
- 		.policy		= nft_set_elem_list_policy,
- 	},
- 	[NFT_MSG_GETGEN] = {
--		.call_rcu	= nf_tables_getgen,
-+		.call		= nf_tables_getgen,
-+		.type		= NFNL_CB_RCU,
- 	},
- 	[NFT_MSG_NEWOBJ] = {
--		.call_batch	= nf_tables_newobj,
-+		.call		= nf_tables_newobj,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_OBJ_MAX,
- 		.policy		= nft_obj_policy,
- 	},
- 	[NFT_MSG_GETOBJ] = {
--		.call_rcu	= nf_tables_getobj,
-+		.call		= nf_tables_getobj,
-+		.type		= NFNL_CB_RCU,
- 		.attr_count	= NFTA_OBJ_MAX,
- 		.policy		= nft_obj_policy,
- 	},
- 	[NFT_MSG_DELOBJ] = {
--		.call_batch	= nf_tables_delobj,
-+		.call		= nf_tables_delobj,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_OBJ_MAX,
- 		.policy		= nft_obj_policy,
- 	},
- 	[NFT_MSG_GETOBJ_RESET] = {
--		.call_rcu	= nf_tables_getobj,
-+		.call		= nf_tables_getobj,
-+		.type		= NFNL_CB_RCU,
- 		.attr_count	= NFTA_OBJ_MAX,
- 		.policy		= nft_obj_policy,
- 	},
- 	[NFT_MSG_NEWFLOWTABLE] = {
--		.call_batch	= nf_tables_newflowtable,
-+		.call		= nf_tables_newflowtable,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_FLOWTABLE_MAX,
- 		.policy		= nft_flowtable_policy,
- 	},
- 	[NFT_MSG_GETFLOWTABLE] = {
--		.call_rcu	= nf_tables_getflowtable,
-+		.call		= nf_tables_getflowtable,
-+		.type		= NFNL_CB_RCU,
- 		.attr_count	= NFTA_FLOWTABLE_MAX,
- 		.policy		= nft_flowtable_policy,
- 	},
- 	[NFT_MSG_DELFLOWTABLE] = {
--		.call_batch	= nf_tables_delflowtable,
-+		.call		= nf_tables_delflowtable,
-+		.type		= NFNL_CB_BATCH,
- 		.attr_count	= NFTA_FLOWTABLE_MAX,
- 		.policy		= nft_flowtable_policy,
- 	},
-diff --git a/net/netfilter/nfnetlink.c b/net/netfilter/nfnetlink.c
-index e62c5af4b631..d7a9628b6cee 100644
---- a/net/netfilter/nfnetlink.c
-+++ b/net/netfilter/nfnetlink.c
-@@ -273,23 +273,30 @@ static int nfnetlink_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh,
- 			return err;
- 		}
- 
--		if (nc->call_rcu) {
--			err = nc->call_rcu(skb, &info,
--					   (const struct nlattr **)cda);
-+		if (!nc->call) {
- 			rcu_read_unlock();
--		} else {
-+			return -EINVAL;
-+		}
-+
-+		switch (nc->type) {
-+		case NFNL_CB_RCU:
-+			err = nc->call(skb, &info, (const struct nlattr **)cda);
-+			rcu_read_unlock();
-+			break;
-+		case NFNL_CB_MUTEX:
- 			rcu_read_unlock();
- 			nfnl_lock(subsys_id);
- 			if (nfnl_dereference_protected(subsys_id) != ss ||
- 			    nfnetlink_find_client(type, ss) != nc) {
- 				err = -EAGAIN;
--			} else if (nc->call) {
--				err = nc->call(skb, &info,
--					       (const struct nlattr **)cda);
--			} else {
--				err = -EINVAL;
-+				break;
- 			}
-+			err = nc->call(skb, &info, (const struct nlattr **)cda);
- 			nfnl_unlock(subsys_id);
-+			break;
-+		default:
-+			err = -EINVAL;
-+			break;
- 		}
- 		if (err == -EAGAIN)
- 			goto replay;
-@@ -467,12 +474,17 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
- 			goto ack;
- 		}
- 
-+		if (nc->type != NFNL_CB_BATCH) {
-+			err = -EINVAL;
-+			goto ack;
-+		}
-+
- 		{
- 			int min_len = nlmsg_total_size(sizeof(struct nfgenmsg));
- 			struct nfnl_net *nfnlnet = nfnl_pernet(net);
--			u8 cb_id = NFNL_MSG_TYPE(nlh->nlmsg_type);
- 			struct nlattr *cda[NFNL_MAX_ATTR_COUNT + 1];
- 			struct nlattr *attr = (void *)nlh + min_len;
-+			u8 cb_id = NFNL_MSG_TYPE(nlh->nlmsg_type);
- 			int attrlen = nlh->nlmsg_len - min_len;
- 			struct nfnl_info info = {
- 				.net	= net,
-@@ -494,10 +506,7 @@ static void nfnetlink_rcv_batch(struct sk_buff *skb, struct nlmsghdr *nlh,
- 			if (err < 0)
- 				goto ack;
- 
--			if (nc->call_batch) {
--				err = nc->call_batch(skb, &info,
--						     (const struct nlattr **)cda);
--			}
-+			err = nc->call(skb, &info, (const struct nlattr **)cda);
- 
- 			/* The lock was released to autoload some module, we
- 			 * have to abort and start from scratch using the
-diff --git a/net/netfilter/nfnetlink_acct.c b/net/netfilter/nfnetlink_acct.c
-index 9cb4b21b8e95..3c8cf8748cfb 100644
---- a/net/netfilter/nfnetlink_acct.c
-+++ b/net/netfilter/nfnetlink_acct.c
-@@ -382,18 +382,30 @@ static const struct nla_policy nfnl_acct_policy[NFACCT_MAX+1] = {
- };
- 
- static const struct nfnl_callback nfnl_acct_cb[NFNL_MSG_ACCT_MAX] = {
--	[NFNL_MSG_ACCT_NEW]		= { .call = nfnl_acct_new,
--					    .attr_count = NFACCT_MAX,
--					    .policy = nfnl_acct_policy },
--	[NFNL_MSG_ACCT_GET] 		= { .call = nfnl_acct_get,
--					    .attr_count = NFACCT_MAX,
--					    .policy = nfnl_acct_policy },
--	[NFNL_MSG_ACCT_GET_CTRZERO] 	= { .call = nfnl_acct_get,
--					    .attr_count = NFACCT_MAX,
--					    .policy = nfnl_acct_policy },
--	[NFNL_MSG_ACCT_DEL]		= { .call = nfnl_acct_del,
--					    .attr_count = NFACCT_MAX,
--					    .policy = nfnl_acct_policy },
-+	[NFNL_MSG_ACCT_NEW] = {
-+		.call		= nfnl_acct_new,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= NFACCT_MAX,
-+		.policy		= nfnl_acct_policy
-+	},
-+	[NFNL_MSG_ACCT_GET] = {
-+		.call		= nfnl_acct_get,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= NFACCT_MAX,
-+		.policy		= nfnl_acct_policy
-+	},
-+	[NFNL_MSG_ACCT_GET_CTRZERO] = {
-+		.call		= nfnl_acct_get,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= NFACCT_MAX,
-+		.policy		= nfnl_acct_policy
-+	},
-+	[NFNL_MSG_ACCT_DEL] = {
-+		.call		= nfnl_acct_del,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= NFACCT_MAX,
-+		.policy		= nfnl_acct_policy
-+	},
- };
- 
- static const struct nfnetlink_subsystem nfnl_acct_subsys = {
-diff --git a/net/netfilter/nfnetlink_cthelper.c b/net/netfilter/nfnetlink_cthelper.c
-index 3d1a5215177b..322ac5dd5402 100644
---- a/net/netfilter/nfnetlink_cthelper.c
-+++ b/net/netfilter/nfnetlink_cthelper.c
-@@ -737,15 +737,24 @@ static const struct nla_policy nfnl_cthelper_policy[NFCTH_MAX+1] = {
- };
- 
- static const struct nfnl_callback nfnl_cthelper_cb[NFNL_MSG_CTHELPER_MAX] = {
--	[NFNL_MSG_CTHELPER_NEW]		= { .call = nfnl_cthelper_new,
--					    .attr_count = NFCTH_MAX,
--					    .policy = nfnl_cthelper_policy },
--	[NFNL_MSG_CTHELPER_GET]		= { .call = nfnl_cthelper_get,
--					    .attr_count = NFCTH_MAX,
--					    .policy = nfnl_cthelper_policy },
--	[NFNL_MSG_CTHELPER_DEL]		= { .call = nfnl_cthelper_del,
--					    .attr_count = NFCTH_MAX,
--					    .policy = nfnl_cthelper_policy },
-+	[NFNL_MSG_CTHELPER_NEW]	= {
-+		.call		= nfnl_cthelper_new,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= NFCTH_MAX,
-+		.policy		= nfnl_cthelper_policy
-+	},
-+	[NFNL_MSG_CTHELPER_GET] = {
-+		.call		= nfnl_cthelper_get,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= NFCTH_MAX,
-+		.policy		= nfnl_cthelper_policy
-+	},
-+	[NFNL_MSG_CTHELPER_DEL]	= {
-+		.call		= nfnl_cthelper_del,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= NFCTH_MAX,
-+		.policy		= nfnl_cthelper_policy
-+	},
- };
- 
- static const struct nfnetlink_subsystem nfnl_cthelper_subsys = {
-diff --git a/net/netfilter/nfnetlink_cttimeout.c b/net/netfilter/nfnetlink_cttimeout.c
-index 994f3172bf42..38848ad68899 100644
---- a/net/netfilter/nfnetlink_cttimeout.c
-+++ b/net/netfilter/nfnetlink_cttimeout.c
-@@ -546,21 +546,36 @@ static void ctnl_timeout_put(struct nf_ct_timeout *t)
- }
- 
- static const struct nfnl_callback cttimeout_cb[IPCTNL_MSG_TIMEOUT_MAX] = {
--	[IPCTNL_MSG_TIMEOUT_NEW]	= { .call = cttimeout_new_timeout,
--					    .attr_count = CTA_TIMEOUT_MAX,
--					    .policy = cttimeout_nla_policy },
--	[IPCTNL_MSG_TIMEOUT_GET]	= { .call = cttimeout_get_timeout,
--					    .attr_count = CTA_TIMEOUT_MAX,
--					    .policy = cttimeout_nla_policy },
--	[IPCTNL_MSG_TIMEOUT_DELETE]	= { .call = cttimeout_del_timeout,
--					    .attr_count = CTA_TIMEOUT_MAX,
--					    .policy = cttimeout_nla_policy },
--	[IPCTNL_MSG_TIMEOUT_DEFAULT_SET]= { .call = cttimeout_default_set,
--					    .attr_count = CTA_TIMEOUT_MAX,
--					    .policy = cttimeout_nla_policy },
--	[IPCTNL_MSG_TIMEOUT_DEFAULT_GET]= { .call = cttimeout_default_get,
--					    .attr_count = CTA_TIMEOUT_MAX,
--					    .policy = cttimeout_nla_policy },
-+	[IPCTNL_MSG_TIMEOUT_NEW] = {
-+		.call		= cttimeout_new_timeout,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_TIMEOUT_MAX,
-+		.policy		= cttimeout_nla_policy
-+	},
-+	[IPCTNL_MSG_TIMEOUT_GET] = {
-+		.call		= cttimeout_get_timeout,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_TIMEOUT_MAX,
-+		.policy		= cttimeout_nla_policy
-+	},
-+	[IPCTNL_MSG_TIMEOUT_DELETE] = {
-+		.call		= cttimeout_del_timeout,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_TIMEOUT_MAX,
-+		.policy		= cttimeout_nla_policy
-+	},
-+	[IPCTNL_MSG_TIMEOUT_DEFAULT_SET] = {
-+		.call		= cttimeout_default_set,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_TIMEOUT_MAX,
-+		.policy		= cttimeout_nla_policy
-+	},
-+	[IPCTNL_MSG_TIMEOUT_DEFAULT_GET] = {
-+		.call		= cttimeout_default_get,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= CTA_TIMEOUT_MAX,
-+		.policy		= cttimeout_nla_policy
-+	},
- };
- 
- static const struct nfnetlink_subsystem cttimeout_subsys = {
-diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
-index 81630600b4ef..587086b18c36 100644
---- a/net/netfilter/nfnetlink_log.c
-+++ b/net/netfilter/nfnetlink_log.c
-@@ -989,11 +989,17 @@ static int nfulnl_recv_config(struct sk_buff *skb, const struct nfnl_info *info,
- }
- 
- static const struct nfnl_callback nfulnl_cb[NFULNL_MSG_MAX] = {
--	[NFULNL_MSG_PACKET]	= { .call = nfulnl_recv_unsupp,
--				    .attr_count = NFULA_MAX, },
--	[NFULNL_MSG_CONFIG]	= { .call = nfulnl_recv_config,
--				    .attr_count = NFULA_CFG_MAX,
--				    .policy = nfula_cfg_policy },
-+	[NFULNL_MSG_PACKET]	= {
-+		.call		= nfulnl_recv_unsupp,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= NFULA_MAX,
-+	},
-+	[NFULNL_MSG_CONFIG]	= {
-+		.call		= nfulnl_recv_config,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= NFULA_CFG_MAX,
-+		.policy		= nfula_cfg_policy
-+	},
- };
- 
- static const struct nfnetlink_subsystem nfulnl_subsys = {
-diff --git a/net/netfilter/nfnetlink_osf.c b/net/netfilter/nfnetlink_osf.c
-index 1fd537ef4496..e8f8875c6884 100644
---- a/net/netfilter/nfnetlink_osf.c
-+++ b/net/netfilter/nfnetlink_osf.c
-@@ -374,11 +374,13 @@ static int nfnl_osf_remove_callback(struct sk_buff *skb,
- static const struct nfnl_callback nfnl_osf_callbacks[OSF_MSG_MAX] = {
- 	[OSF_MSG_ADD]	= {
- 		.call		= nfnl_osf_add_callback,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= OSF_ATTR_MAX,
- 		.policy		= nfnl_osf_policy,
- 	},
- 	[OSF_MSG_REMOVE]	= {
- 		.call		= nfnl_osf_remove_callback,
-+		.type		= NFNL_CB_MUTEX,
- 		.attr_count	= OSF_ATTR_MAX,
- 		.policy		= nfnl_osf_policy,
- 	},
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index d80f4f0a1c7b..997b537c8880 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -1365,17 +1365,29 @@ static int nfqnl_recv_config(struct sk_buff *skb, const struct nfnl_info *info,
- }
- 
- static const struct nfnl_callback nfqnl_cb[NFQNL_MSG_MAX] = {
--	[NFQNL_MSG_PACKET]	= { .call_rcu = nfqnl_recv_unsupp,
--				    .attr_count = NFQA_MAX, },
--	[NFQNL_MSG_VERDICT]	= { .call_rcu = nfqnl_recv_verdict,
--				    .attr_count = NFQA_MAX,
--				    .policy = nfqa_verdict_policy },
--	[NFQNL_MSG_CONFIG]	= { .call = nfqnl_recv_config,
--				    .attr_count = NFQA_CFG_MAX,
--				    .policy = nfqa_cfg_policy },
--	[NFQNL_MSG_VERDICT_BATCH]={ .call_rcu = nfqnl_recv_verdict_batch,
--				    .attr_count = NFQA_MAX,
--				    .policy = nfqa_verdict_batch_policy },
-+	[NFQNL_MSG_PACKET]	= {
-+		.call		= nfqnl_recv_unsupp,
-+		.type		= NFNL_CB_RCU,
-+		.attr_count	= NFQA_MAX,
-+	},
-+	[NFQNL_MSG_VERDICT]	= {
-+		.call		= nfqnl_recv_verdict,
-+		.type		= NFNL_CB_RCU,
-+		.attr_count	= NFQA_MAX,
-+		.policy		= nfqa_verdict_policy
-+	},
-+	[NFQNL_MSG_CONFIG]	= {
-+		.call		= nfqnl_recv_config,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= NFQA_CFG_MAX,
-+		.policy		= nfqa_cfg_policy
-+	},
-+	[NFQNL_MSG_VERDICT_BATCH] = {
-+		.call		= nfqnl_recv_verdict_batch,
-+		.type		= NFNL_CB_RCU,
-+		.attr_count	= NFQA_MAX,
-+		.policy		= nfqa_verdict_batch_policy
-+	},
- };
- 
- static const struct nfnetlink_subsystem nfqnl_subsys = {
-diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
-index 83e82a0eb601..8ee4439f524d 100644
---- a/net/netfilter/nft_compat.c
-+++ b/net/netfilter/nft_compat.c
-@@ -699,9 +699,12 @@ static const struct nla_policy nfnl_compat_policy_get[NFTA_COMPAT_MAX+1] = {
- };
- 
- static const struct nfnl_callback nfnl_nft_compat_cb[NFNL_MSG_COMPAT_MAX] = {
--	[NFNL_MSG_COMPAT_GET]		= { .call_rcu = nfnl_compat_get_rcu,
--					    .attr_count = NFTA_COMPAT_MAX,
--					    .policy = nfnl_compat_policy_get },
-+	[NFNL_MSG_COMPAT_GET]	= {
-+		.call		= nfnl_compat_get_rcu,
-+		.type		= NFNL_CB_MUTEX,
-+		.attr_count	= NFTA_COMPAT_MAX,
-+		.policy		= nfnl_compat_policy_get
-+	},
- };
- 
- static const struct nfnetlink_subsystem nfnl_compat_subsys = {
--- 
-2.30.2
+Greetings,
 
+We are seeing the following situation, on an established connection:
+
+1: 2049 =E2=86=92 703 [RST, ACK] Seq=3D1202969688 Ack=3D1132949130
+2: [TCP Port numbers reused] 703 =E2=86=92 2049 [SYN] Seq=3D1433611541
+3: [TCP Out-Of-Order] 703 =E2=86=92 2049 [PSH, ACK] Seq=3D1132949130 Ack=3D=
+1202969688
+4: 2049 =E2=86=92 703 [RST, ACK] Seq=3D0 Ack=3D1433611542
+
+The RST in 4 is dropped, printing out the td_maxack value, it turns out
+to be:
+
+nf_ct_tcp: invalid RST seq:0 td_maxack:1202969688 SRC=3D10.78.206.110
+DST=3D10.78.202.146 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D43722 DF =
+PROTO=3DTCP
+SPT=3D2049 DPT=3D703 SEQ=3D0 ACK=3D1433611542 WINDOW=3D0 RES=3D0x00 ACK RST=
+ URGP=3D0
+
+So basically the SYN in 2 resets the IP_CT_TCP_FLAG_MAXACK_SET, while
+the out of order frame 3 resets it back, and we end up having again
+td_maxack=3D1202969688, that is compared against Seq=3D0 and the RST is dro=
+pped.
+
+While we are still testing a proper fix, we would like to have the RST
+check introduced in [1] tunable. I can send a patch to add a proc bit
+for that, but I'm wondering whether or not to re-use the tcp_be_liberal
+option. Please let me know which option would work best for you.
+
+Thanks in advance.
+
+[1] https://patchwork.ozlabs.org/project/netdev/patch/20090527143523.4649.9=
+1602.sendpatchset@x2.localnet/
+
+--=20
+Ali Abdallah | SUSE Linux L3 Engineer
+GPG fingerprint: 51A0 F4A0 C8CF C98F 842E  A9A8 B945 56F8 1C85 D0D5
+
+
+--thyjxneyzhrnuxo6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEUaD0oMjPyY+ELqmouUVW+ByF0NUFAmCC7cAACgkQuUVW+ByF
+0NU+iBAAgHYHqyWS0Yw76uYsrBO9K9eZjGP8+gqnNfZ8xQ8pq/QjnrUJuirAV4u1
+nXWkKINQNpV3YoI0DKJCdicch/eVxDy7mcsF4SFo57gtLGnf3EDHfXNUw4Im+33k
+rmyzw4q4Uf6bpqpBI1W0ir9DB8BKv/+xLKZAeLfkrgsEhySOUTSR/ct9RJyV+L8w
+IGzE7ZeVyoeH4RX76sQ7ic7/fj4Ff3lHEL72AVRvou45Sy1eSbl89tQHnFqlb2Ty
+GN8uJe7jeZAvBgMIRlm0l28Wy8e075Po6l2zSN7Vnlzqxl738/mgHTh1BCBhSIm5
+ilbYEeWS+zLlbEyHpA8wVKzu0dyzlU4SiWpuiYvgUAmuuS4rp4ZUat58eNw0yFOB
+LRiSEnahVDqIMrImPtkiFFfo5PUulf1yR3Zos/WtEfTBMPVl9Ld6wGWKa0s1VW5X
+eWlYWC2dxPXQsvagOA0xZwlmSQU8dfGWSG/dgf7G6+f+EAaUoXoghzzk5Y+XQaqS
+IDonjmNskebVoNsBLav2ORJLNIO6Gvw7j8AZt4y2F0Fq/KerZ/Z0QOmtpR6fwYzI
+GEyQhsfxj6VGxT1RwQEVX0LqiY2w7FKMVdMHh3gNVEltqu1pRyXWMHs8ZRN3dj7a
+R2n0FedtozARRGDB5xExVgaG3/E/CzG28iDtNvAKLTNyye5P0es=
+=bC3h
+-----END PGP SIGNATURE-----
+
+--thyjxneyzhrnuxo6--
