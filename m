@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2753A36C451
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Apr 2021 12:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7267636C44F
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Apr 2021 12:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235590AbhD0Kn7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 27 Apr 2021 06:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
+        id S235545AbhD0Knv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 27 Apr 2021 06:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235562AbhD0Kn7 (ORCPT
+        with ESMTP id S235133AbhD0Knu (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 27 Apr 2021 06:43:59 -0400
+        Tue, 27 Apr 2021 06:43:50 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6487C061574
-        for <netfilter-devel@vger.kernel.org>; Tue, 27 Apr 2021 03:43:16 -0700 (PDT)
-Received: from localhost ([::1]:59182 helo=tatos)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2523C061574
+        for <netfilter-devel@vger.kernel.org>; Tue, 27 Apr 2021 03:43:07 -0700 (PDT)
+Received: from localhost ([::1]:59170 helo=tatos)
         by orbyte.nwl.cc with esmtp (Exim 4.94)
         (envelope-from <phil@nwl.cc>)
-        id 1lbLBT-0001Yy-7c; Tue, 27 Apr 2021 12:43:15 +0200
+        id 1lbLBI-0001YM-Lm; Tue, 27 Apr 2021 12:43:04 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 1/2] Eliminate inet_aton() and inet_ntoa()
-Date:   Tue, 27 Apr 2021 12:42:58 +0200
-Message-Id: <20210427104259.22042-2-phil@nwl.cc>
+Subject: [iptables PATCH 2/2] nft-arp: Make use of ipv4_addr_to_string()
+Date:   Tue, 27 Apr 2021 12:42:59 +0200
+Message-Id: <20210427104259.22042-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210427104259.22042-1-phil@nwl.cc>
 References: <20210427104259.22042-1-phil@nwl.cc>
@@ -34,116 +34,177 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Both functions are obsolete, replace them by equivalent calls to
-inet_pton() and inet_ntop().
+This eliminates quite a bit of redundant code apart from also dropping
+use of obsolete function gethostbyaddr().
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libebt_among.c |  6 ++++--
- iptables/nft-ipv4.c       | 23 ++++++++++++++---------
- 2 files changed, 18 insertions(+), 11 deletions(-)
+ iptables/nft-arp.c | 99 ++++------------------------------------------
+ iptables/xshared.c |  6 +--
+ iptables/xshared.h |  3 ++
+ 3 files changed, 14 insertions(+), 94 deletions(-)
 
-diff --git a/extensions/libebt_among.c b/extensions/libebt_among.c
-index 2b9a1b6566684..7eb898f984bba 100644
---- a/extensions/libebt_among.c
-+++ b/extensions/libebt_among.c
-@@ -66,7 +66,7 @@ parse_nft_among_pair(char *buf, struct nft_among_pair *pair, bool have_ip)
- 	if (sep) {
- 		*sep = '\0';
+diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
+index c82ffdc95e300..2a9387a18dffe 100644
+--- a/iptables/nft-arp.c
++++ b/iptables/nft-arp.c
+@@ -42,78 +42,6 @@ char *arp_opcodes[] =
+ 	"ARP_NAK",
+ };
  
--		if (!inet_aton(sep + 1, &pair->in))
-+		if (!inet_pton(AF_INET, sep + 1, &pair->in))
- 			xtables_error(PARAMETER_PROBLEM,
- 				      "Invalid IP address '%s'\n", sep + 1);
- 	}
-@@ -194,6 +194,7 @@ static void __bramong_print(struct nft_among_pair *pairs,
- 			    int cnt, bool inv, bool have_ip)
+-static char *
+-addr_to_dotted(const struct in_addr *addrp)
+-{
+-	static char buf[20];
+-	const unsigned char *bytep;
+-
+-	bytep = (const unsigned char *) &(addrp->s_addr);
+-	sprintf(buf, "%d.%d.%d.%d", bytep[0], bytep[1], bytep[2], bytep[3]);
+-	return buf;
+-}
+-
+-static char *
+-addr_to_host(const struct in_addr *addr)
+-{
+-	struct hostent *host;
+-
+-	if ((host = gethostbyaddr((char *) addr,
+-					sizeof(struct in_addr), AF_INET)) != NULL)
+-		return (char *) host->h_name;
+-
+-	return (char *) NULL;
+-}
+-
+-static char *
+-addr_to_network(const struct in_addr *addr)
+-{
+-	struct netent *net;
+-
+-	if ((net = getnetbyaddr((long) ntohl(addr->s_addr), AF_INET)) != NULL)
+-		return (char *) net->n_name;
+-
+-	return (char *) NULL;
+-}
+-
+-static char *
+-addr_to_anyname(const struct in_addr *addr)
+-{
+-	char *name;
+-
+-	if ((name = addr_to_host(addr)) != NULL ||
+-		(name = addr_to_network(addr)) != NULL)
+-		return name;
+-
+-	return addr_to_dotted(addr);
+-}
+-
+-static char *
+-mask_to_dotted(const struct in_addr *mask)
+-{
+-	int i;
+-	static char buf[22];
+-	u_int32_t maskaddr, bits;
+-
+-	maskaddr = ntohl(mask->s_addr);
+-
+-	if (maskaddr == 0xFFFFFFFFL)
+-		/* we don't want to see "/32" */
+-		return "";
+-
+-	i = 32;
+-	bits = 0xFFFFFFFEL;
+-	while (--i >= 0 && maskaddr != bits)
+-		bits <<= 1;
+-	if (i >= 0)
+-		sprintf(buf, "/%d", i);
+-	else
+-		/* mask was not a decent combination of 1's and 0's */
+-		snprintf(buf, sizeof(buf), "/%s", addr_to_dotted(mask));
+-
+-	return buf;
+-}
+-
+ static bool need_devaddr(struct arpt_devaddr_info *info)
  {
- 	const char *isep = inv ? "! " : "";
-+	char abuf[INET_ADDRSTRLEN];
  	int i;
- 
- 	for (i = 0; i < cnt; i++) {
-@@ -202,7 +203,8 @@ static void __bramong_print(struct nft_among_pair *pairs,
- 
- 		printf("%s", ether_ntoa(&pairs[i].ether));
- 		if (pairs[i].in.s_addr != INADDR_ANY)
--			printf("=%s", inet_ntoa(pairs[i].in));
-+			printf("=%s", inet_ntop(AF_INET, &pairs[i].in,
-+						abuf, sizeof(abuf)));
+@@ -403,7 +331,6 @@ static void nft_arp_print_rule_details(const struct iptables_command_state *cs,
+ 				       unsigned int format)
+ {
+ 	const struct arpt_entry *fw = &cs->arp;
+-	char buf[BUFSIZ];
+ 	char iface[IFNAMSIZ+2];
+ 	const char *sep = "";
+ 	int print_iface = 0;
+@@ -450,15 +377,10 @@ static void nft_arp_print_rule_details(const struct iptables_command_state *cs,
  	}
- 	printf(" ");
- }
-diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
-index 0d32a30010519..a5b835b1f681d 100644
---- a/iptables/nft-ipv4.c
-+++ b/iptables/nft-ipv4.c
-@@ -136,7 +136,7 @@ static void get_frag(struct nft_xt_ctx *ctx, struct nftnl_expr *e, bool *inv)
  
- static const char *mask_to_str(uint32_t mask)
- {
--	static char mask_str[sizeof("255.255.255.255")];
-+	static char mask_str[INET_ADDRSTRLEN];
- 	uint32_t bits, hmask = ntohl(mask);
- 	struct in_addr mask_addr = {
- 		.s_addr = mask,
-@@ -155,7 +155,7 @@ static const char *mask_to_str(uint32_t mask)
- 	if (i >= 0)
- 		sprintf(mask_str, "%u", i);
- 	else
--		sprintf(mask_str, "%s", inet_ntoa(mask_addr));
-+		inet_ntop(AF_INET, &mask_addr, mask_str, sizeof(mask_str));
- 
- 	return mask_str;
- }
-@@ -298,10 +298,13 @@ static void nft_ipv4_print_rule(struct nft_handle *h, struct nftnl_rule *r,
- static void save_ipv4_addr(char letter, const struct in_addr *addr,
- 			   uint32_t mask, int invert)
- {
-+	char addrbuf[INET_ADDRSTRLEN];
-+
- 	if (!mask && !invert && !addr->s_addr)
- 		return;
- 
--	printf("%s-%c %s/%s ", invert ? "! " : "", letter, inet_ntoa(*addr),
-+	printf("%s-%c %s/%s ", invert ? "! " : "", letter,
-+	       inet_ntop(AF_INET, addr, addrbuf, sizeof(addrbuf)),
- 	       mask_to_str(mask));
- }
- 
-@@ -387,25 +390,27 @@ static void xlate_ipv4_addr(const char *selector, const struct in_addr *addr,
- 			    const struct in_addr *mask,
- 			    bool inv, struct xt_xlate *xl)
- {
-+	char mbuf[INET_ADDRSTRLEN], abuf[INET_ADDRSTRLEN];
- 	const char *op = inv ? "!= " : "";
- 	int cidr;
- 
- 	if (!inv && !addr->s_addr && !mask->s_addr)
- 		return;
- 
-+	inet_ntop(AF_INET, addr, abuf, sizeof(abuf));
-+
- 	cidr = xtables_ipmask_to_cidr(mask);
- 	switch (cidr) {
- 	case -1:
--		/* inet_ntoa() is not reentrant */
--		xt_xlate_add(xl, "%s & %s ", selector, inet_ntoa(*mask));
--		xt_xlate_add(xl, "%s %s ", inv ? "!=" : "==", inet_ntoa(*addr));
-+		xt_xlate_add(xl, "%s & %s %s %s ", selector,
-+			     inet_ntop(AF_INET, mask, mbuf, sizeof(mbuf)),
-+			     inv ? "!=" : "==", abuf);
- 		break;
- 	case 32:
--		xt_xlate_add(xl, "%s %s%s ", selector, op, inet_ntoa(*addr));
-+		xt_xlate_add(xl, "%s %s%s ", selector, op, abuf);
- 		break;
- 	default:
--		xt_xlate_add(xl, "%s %s%s/%d ", selector, op, inet_ntoa(*addr),
--			     cidr);
-+		xt_xlate_add(xl, "%s %s%s/%d ", selector, op, abuf, cidr);
+ 	if (fw->arp.smsk.s_addr != 0L) {
+-		printf("%s%s", sep, fw->arp.invflags & IPT_INV_SRCIP
+-			? "! " : "");
+-		if (format & FMT_NUMERIC)
+-			sprintf(buf, "%s", addr_to_dotted(&(fw->arp.src)));
+-		else
+-			sprintf(buf, "%s", addr_to_anyname(&(fw->arp.src)));
+-		strncat(buf, mask_to_dotted(&(fw->arp.smsk)),
+-			sizeof(buf) - strlen(buf) - 1);
+-		printf("-s %s", buf);
++		printf("%s%s-s %s", sep,
++		       fw->arp.invflags & IPT_INV_SRCIP ? "! " : "",
++		       ipv4_addr_to_string(&fw->arp.src,
++					   &fw->arp.smsk, format));
+ 		sep = " ";
  	}
+ 
+@@ -476,15 +398,10 @@ static void nft_arp_print_rule_details(const struct iptables_command_state *cs,
+ after_devsrc:
+ 
+ 	if (fw->arp.tmsk.s_addr != 0L) {
+-		printf("%s%s", sep, fw->arp.invflags & IPT_INV_DSTIP
+-			? "! " : "");
+-		if (format & FMT_NUMERIC)
+-			sprintf(buf, "%s", addr_to_dotted(&(fw->arp.tgt)));
+-		else
+-			sprintf(buf, "%s", addr_to_anyname(&(fw->arp.tgt)));
+-		strncat(buf, mask_to_dotted(&(fw->arp.tmsk)),
+-			sizeof(buf) - strlen(buf) - 1);
+-		printf("-d %s", buf);
++		printf("%s%s-d %s", sep,
++		       fw->arp.invflags & IPT_INV_DSTIP ? "! " : "",
++		       ipv4_addr_to_string(&fw->arp.tgt,
++					   &fw->arp.tmsk, format));
+ 		sep = " ";
+ 	}
+ 
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 71f689901e1d4..9a1f465a5a6d3 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -550,9 +550,9 @@ void debug_print_argv(struct argv_store *store)
  }
+ #endif
+ 
+-static const char *ipv4_addr_to_string(const struct in_addr *addr,
+-				       const struct in_addr *mask,
+-				       unsigned int format)
++const char *ipv4_addr_to_string(const struct in_addr *addr,
++				const struct in_addr *mask,
++				unsigned int format)
+ {
+ 	static char buf[BUFSIZ];
+ 
+diff --git a/iptables/xshared.h b/iptables/xshared.h
+index 9159b2b1f3768..1e86aba8b2375 100644
+--- a/iptables/xshared.h
++++ b/iptables/xshared.h
+@@ -206,6 +206,9 @@ void debug_print_argv(struct argv_store *store);
+ #  define debug_print_argv(...) /* nothing */
+ #endif
+ 
++const char *ipv4_addr_to_string(const struct in_addr *addr,
++				const struct in_addr *mask,
++				unsigned int format);
+ void print_ipv4_addresses(const struct ipt_entry *fw, unsigned int format);
+ void print_ipv6_addresses(const struct ip6t_entry *fw6, unsigned int format);
  
 -- 
 2.31.0
