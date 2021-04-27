@@ -2,79 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6A736CC88
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Apr 2021 22:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4F736CEAE
+	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Apr 2021 00:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235401AbhD0Uol (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 27 Apr 2021 16:44:41 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:54322 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239010AbhD0Uok (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 27 Apr 2021 16:44:40 -0400
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id C522864145;
-        Tue, 27 Apr 2021 22:43:18 +0200 (CEST)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net-next 7/7] netfilter: nft_socket: fix build with CONFIG_SOCK_CGROUP_DATA=n
-Date:   Tue, 27 Apr 2021 22:43:45 +0200
-Message-Id: <20210427204345.22043-8-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210427204345.22043-1-pablo@netfilter.org>
-References: <20210427204345.22043-1-pablo@netfilter.org>
+        id S239321AbhD0Wk5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 27 Apr 2021 18:40:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235420AbhD0Wky (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 27 Apr 2021 18:40:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6DE13611F2;
+        Tue, 27 Apr 2021 22:40:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619563210;
+        bh=WpoBdws40s0ptUiWd2wf5ZMreUQMpAaFhxEbKG9nC9Q=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=haI2X0aXC9v7KLVXP3PaHWjZq5gsqATM921KbWk63fVdEUBk+Li+NHVdGlhwQALC2
+         y5f9iKtf1v7YLsE1x8IupFiLDy5uXpPyWRnZkpEvds1D7W3D8lKVVuvMD9j38eCigS
+         XLCCCYbXlW7nG9oswkPzDbA5SJRl5psLmwm8YqyNS4hVOrXG1+OnILwxYZ4t0i2NHH
+         /1l/jZvW2Ft6Vz1Or9NFY7vmu7azuO33NHoEIyw7BD2KiGDY7vEJfzH7EYHvT5q5eb
+         mThRv7IuJeZT2QbaEFLWEz7aY/iGH2Quwt//U+eaYflL8WriMqm09EcMAE6DVpLT3K
+         p8Uef66V7OMMg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 61515609B0;
+        Tue, 27 Apr 2021 22:40:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 1/7] netfilter: nftables: rename set element data
+ activation/deactivation functions
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161956321039.28898.12248117195922527285.git-patchwork-notify@kernel.org>
+Date:   Tue, 27 Apr 2021 22:40:10 +0000
+References: <20210427204345.22043-2-pablo@netfilter.org>
+In-Reply-To: <20210427204345.22043-2-pablo@netfilter.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, kuba@kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hello:
 
-In some configurations, the sock_cgroup_ptr() function is not available:
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-net/netfilter/nft_socket.c: In function 'nft_sock_get_eval_cgroupv2':
-net/netfilter/nft_socket.c:47:16: error: implicit declaration of function 'sock_cgroup_ptr'; did you mean 'obj_cgroup_put'? [-Werror=implicit-function-declaration]
-   47 |         cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-      |                ^~~~~~~~~~~~~~~
-      |                obj_cgroup_put
-net/netfilter/nft_socket.c:47:14: error: assignment to 'struct cgroup *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
-   47 |         cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-      |              ^
+On Tue, 27 Apr 2021 22:43:39 +0200 you wrote:
+> Rename:
+> 
+> - nft_set_elem_activate() to nft_set_elem_data_activate().
+> - nft_set_elem_deactivate() to nft_set_elem_data_deactivate().
+> 
+> To prepare for updates in the set element infrastructure to add support
+> for the special catch-all element.
+> 
+> [...]
 
-Change the caller to match the same #ifdef check, only calling it
-when the function is defined.
+Here is the summary with links:
+  - [net-next,1/7] netfilter: nftables: rename set element data activation/deactivation functions
+    https://git.kernel.org/netdev/net-next/c/f8bb7889af58
+  - [net-next,2/7] netfilter: nftables: add loop check helper function
+    https://git.kernel.org/netdev/net-next/c/6387aa6e59be
+  - [net-next,3/7] netfilter: nftables: add helper function to flush set elements
+    https://git.kernel.org/netdev/net-next/c/e6ba7cb63b8a
+  - [net-next,4/7] netfilter: nftables: add helper function to validate set element data
+    https://git.kernel.org/netdev/net-next/c/97c976d662fb
+  - [net-next,5/7] netfilter: nftables: add catch-all set element support
+    https://git.kernel.org/netdev/net-next/c/aaa31047a6d2
+  - [net-next,6/7] netfilter: nft_socket: fix an unused variable warning
+    https://git.kernel.org/netdev/net-next/c/8a7363f84979
+  - [net-next,7/7] netfilter: nft_socket: fix build with CONFIG_SOCK_CGROUP_DATA=n
+    https://git.kernel.org/netdev/net-next/c/7acc0bb490c8
 
-Fixes: e0bb96db96f8 ("netfilter: nft_socket: add support for cgroupsv2")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_socket.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
-index f9c5ff6024e0..d601974c9d2e 100644
---- a/net/netfilter/nft_socket.c
-+++ b/net/netfilter/nft_socket.c
-@@ -34,7 +34,7 @@ static void nft_socket_wildcard(const struct nft_pktinfo *pkt,
- 	}
- }
- 
--#ifdef CONFIG_CGROUPS
-+#ifdef CONFIG_SOCK_CGROUP_DATA
- static noinline bool
- nft_sock_get_eval_cgroupv2(u32 *dest, const struct nft_pktinfo *pkt, u32 level)
- {
-@@ -106,7 +106,7 @@ static void nft_socket_eval(const struct nft_expr *expr,
- 		}
- 		nft_socket_wildcard(pkt, regs, sk, dest);
- 		break;
--#ifdef CONFIG_CGROUPS
-+#ifdef CONFIG_SOCK_CGROUP_DATA
- 	case NFT_SOCKET_CGROUPV2:
- 		if (!nft_sock_get_eval_cgroupv2(dest, pkt, priv->level)) {
- 			regs->verdict.code = NFT_BREAK;
--- 
-2.30.2
 
