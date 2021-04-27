@@ -2,20 +2,20 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E4936CC61
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Apr 2021 22:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61E136CC64
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Apr 2021 22:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235412AbhD0UgO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 27 Apr 2021 16:36:14 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:54170 "EHLO
+        id S237011AbhD0UhI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 27 Apr 2021 16:37:08 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:54236 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237055AbhD0UgO (ORCPT
+        with ESMTP id S235803AbhD0UhH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 27 Apr 2021 16:36:14 -0400
+        Tue, 27 Apr 2021 16:37:07 -0400
 Received: from us.es (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 12F3763E81;
-        Tue, 27 Apr 2021 22:34:50 +0200 (CEST)
-Date:   Tue, 27 Apr 2021 22:35:25 +0200
+        by mail.netfilter.org (Postfix) with ESMTPSA id BF12363E85;
+        Tue, 27 Apr 2021 22:35:45 +0200 (CEST)
+Date:   Tue, 27 Apr 2021 22:36:20 +0200
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     Arnd Bergmann <arnd@kernel.org>
 Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
@@ -26,28 +26,46 @@ Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
         Balazs Scheidler <bazsi77@gmail.com>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] netfilter: nft_socket: fix an unused variable warning
-Message-ID: <20210427203525.GA14154@salvia>
+Subject: Re: [PATCH 2/2] netfilter: nft_socket: fix build with
+ CONFIG_SOCK_CGROUP_DATA=n
+Message-ID: <20210427203620.GB14154@salvia>
 References: <20210427194528.2325108-1-arnd@kernel.org>
+ <20210427194528.2325108-2-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210427194528.2325108-1-arnd@kernel.org>
+In-Reply-To: <20210427194528.2325108-2-arnd@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 09:45:18PM +0200, Arnd Bergmann wrote:
+On Tue, Apr 27, 2021 at 09:45:19PM +0200, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
-> The variable is only used in an #ifdef, causing a harmless warning:
+> In some configurations, the sock_cgroup_ptr() function is not available:
 > 
-> net/netfilter/nft_socket.c: In function 'nft_socket_init':
-> net/netfilter/nft_socket.c:137:27: error: unused variable 'level' [-Werror=unused-variable]
->   137 |         unsigned int len, level;
->       |                           ^~~~~
+> net/netfilter/nft_socket.c: In function 'nft_sock_get_eval_cgroupv2':
+> net/netfilter/nft_socket.c:47:16: error: implicit declaration of function 'sock_cgroup_ptr'; did you mean 'obj_cgroup_put'? [-Werror=implicit-function-declaration]
+>    47 |         cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+>       |                ^~~~~~~~~~~~~~~
+>       |                obj_cgroup_put
+> net/netfilter/nft_socket.c:47:14: error: assignment to 'struct cgroup *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
+>    47 |         cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+>       |              ^
 > 
-> Move it into the same #ifdef block.
+> Change the caller to match the same #ifdef check, only calling it
+> when the function is defined.
+> 
+> Fixes: e0bb96db96f8 ("netfilter: nft_socket: add support for cgroupsv2")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> I don't actually know what the right fix is for this, I only checked
+> that my patch fixes the build failure. Is is possible that the function
+> should always be defined.
+> 
+> Please make sure you review carefully before applying.
+
+LGTM.
 
 Applied, thanks Arnd.
