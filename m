@@ -2,185 +2,313 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9480936DE67
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Apr 2021 19:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AA636E254
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Apr 2021 02:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242212AbhD1RiH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 28 Apr 2021 13:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
+        id S230084AbhD2AAU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 28 Apr 2021 20:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242080AbhD1Rhz (ORCPT
+        with ESMTP id S229718AbhD2AAT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:37:55 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6E9C0613ED
-        for <netfilter-devel@vger.kernel.org>; Wed, 28 Apr 2021 10:37:09 -0700 (PDT)
-Received: from localhost ([::1]:34724 helo=tatos)
-        by orbyte.nwl.cc with esmtp (Exim 4.94)
-        (envelope-from <phil@nwl.cc>)
-        id 1lbo7Y-0007AG-At; Wed, 28 Apr 2021 19:37:08 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 5/5] Use proto_to_name() from xshared in more places
-Date:   Wed, 28 Apr 2021 19:36:56 +0200
-Message-Id: <20210428173656.16851-6-phil@nwl.cc>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210428173656.16851-1-phil@nwl.cc>
-References: <20210428173656.16851-1-phil@nwl.cc>
+        Wed, 28 Apr 2021 20:00:19 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A517C06138B
+        for <netfilter-devel@vger.kernel.org>; Wed, 28 Apr 2021 16:59:34 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id b21so5272889plz.0
+        for <netfilter-devel@vger.kernel.org>; Wed, 28 Apr 2021 16:59:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:mail-followup-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QQChGS24ElWH5fX74BmVpeqrazmwvLdKwMYOPj/et3g=;
+        b=dX3QWX9+m3OcCUXvghe3gGmni8XgRLgweuqj+Guj0hZwiAIgSVVOGpr9gM1mOvUiFZ
+         4GLZ9hJ62vJrrxP582epAQCPjx3vPbFZ1Dywbe9VF1nRmo5YN7jaN6ZWsbiuwgOYqVoG
+         2ZBGuUgndhBlFev0wogRlfUQdB6QYoJPpU9NVaWpt4SPIVKp2236SPKHw+oXzyadnIZx
+         NPeHmbJTBS9pCagADNSFfJzFgCBJrsN9FRgUhQdzq59V8rfl3opbhb81AP1iBhZOfXMS
+         3dObaNG84H5dJfa78A54U4zO7Zs4sXfCZ4OKT6fIUM9VSUzRIN5l5G/2wwziNTWosEJQ
+         z3bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=QQChGS24ElWH5fX74BmVpeqrazmwvLdKwMYOPj/et3g=;
+        b=pIbSc6LAfC9KmYX1TZSQD78YZEd3xzOSYEkKN4XndXbqPWUG6R7gFhg9vYHbC13zSm
+         Y5qPRcgNEowTt5S7HGhT8BV74eji4OBqmtCxlUgmiapLOLnqEksL9AunaMgazwhhPdox
+         75OCwel6ILxoZrVnbGkB1Kk0V6D1L2uOY6XzYO3ZnK6wCeU/W9Aq/9Y+XgWGAxhJV16C
+         PZJ6iO6CK57+2lVqaAbfVWolNMv3JqjN8vnu9dbW6Q3e/6+UACBFhBW0MVkSpHK3RkhB
+         TmCbH8KpllwWrlE5tWxNvahCdQ1Eljyc4xISER1xZva5qR95BN8uYDFqxGguVg5aMCAi
+         QFcw==
+X-Gm-Message-State: AOAM530h+iqEsCGPFz8wBhdk0oa2214uIp/0tR3+8pmRK18nY/MMrxuO
+        6kUBeA2neNHp8JGQL2+oXYageYp9whuTPg==
+X-Google-Smtp-Source: ABdhPJywZczYQGTXEQeLGTETE7J1Y2pEQ23Kafu+Pf1k1hBiYqhMkuMdJSYJWtIKM/FJHiubmeAQJA==
+X-Received: by 2002:a17:902:7005:b029:ec:aead:23fa with SMTP id y5-20020a1709027005b02900ecaead23famr32548436plk.30.1619654373704;
+        Wed, 28 Apr 2021 16:59:33 -0700 (PDT)
+Received: from smallstar.local.net (n49-192-36-100.sun3.vic.optusnet.com.au. [49.192.36.100])
+        by smtp.gmail.com with ESMTPSA id x77sm709716pfc.19.2021.04.28.16.59.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Apr 2021 16:59:32 -0700 (PDT)
+Sender: Duncan Roe <duncan.roe2@gmail.com>
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+X-Google-Original-From: Duncan Roe <dunc@smallstar.local.net>
+Date:   Thu, 29 Apr 2021 09:59:27 +1000
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Netfilter Development <netfilter-devel@vger.kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH libnetfilter_queue v2] build: doc: `make distcheck`
+ passes with doxygen enabled
+Message-ID: <20210428235927.GA1962@smallstar.local.net>
+Mail-Followup-To: Jan Engelhardt <jengelh@inai.de>,
+        Netfilter Development <netfilter-devel@vger.kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+References: <s6o3s8n-8486-r468-728s-4384736oqq@vanv.qr>
+ <20210422093544.5460-1-duncan_roe@optusnet.com.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422093544.5460-1-duncan_roe@optusnet.com.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Share the common proto name lookup code. While being at it, make proto
-number variable 16bit, values may exceed 256.
+Hi Jan,
 
-This aligns iptables-nft '-p' argument printing with legacy iptables. In
-practice, this should make a difference only in corner cases.
+Are you satisfied with the v2 patch?
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- include/xtables.h     |  2 +-
- iptables/ip6tables.c  | 22 +++++-----------------
- iptables/iptables.c   | 20 +++++---------------
- iptables/nft-shared.c |  6 +++---
- iptables/xshared.c    |  2 +-
- iptables/xshared.h    |  2 +-
- 6 files changed, 16 insertions(+), 38 deletions(-)
+If so, could you maybe post an "Acked-by", "Reviewed-by" or LGTM please?
 
-diff --git a/include/xtables.h b/include/xtables.h
-index df1eaee326643..1fd5f63ac4b69 100644
---- a/include/xtables.h
-+++ b/include/xtables.h
-@@ -395,7 +395,7 @@ struct xtables_rule_match {
-  */
- struct xtables_pprot {
- 	const char *name;
--	uint8_t num;
-+	uint16_t num;
- };
- 
- enum xtables_tryload {
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index 044d9a33a0266..e967c040fd3c9 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -759,28 +759,16 @@ print_iface(char letter, const char *iface, const unsigned char *mask,
- 	}
- }
- 
--/* The ip6tables looks up the /etc/protocols. */
- static void print_proto(uint16_t proto, int invert)
- {
- 	if (proto) {
--		unsigned int i;
-+		const char *pname = proto_to_name(proto, 0);
- 		const char *invertstr = invert ? " !" : "";
- 
--		const struct protoent *pent = getprotobynumber(proto);
--		if (pent) {
--			printf("%s -p %s",
--			       invertstr, pent->p_name);
--			return;
--		}
--
--		for (i = 0; xtables_chain_protos[i].name != NULL; ++i)
--			if (xtables_chain_protos[i].num == proto) {
--				printf("%s -p %s",
--				       invertstr, xtables_chain_protos[i].name);
--				return;
--			}
--
--		printf("%s -p %u", invertstr, proto);
-+		if (pname)
-+			printf("%s -p %s", invertstr, pname);
-+		else
-+			printf("%s -p %u", invertstr, proto);
- 	}
- }
- 
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index da67dd2e1e997..b925f0892e0d5 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -727,23 +727,13 @@ list_entries(const xt_chainlabel chain, int rulenum, int verbose, int numeric,
- static void print_proto(uint16_t proto, int invert)
- {
- 	if (proto) {
--		unsigned int i;
-+		const char *pname = proto_to_name(proto, 0);
- 		const char *invertstr = invert ? " !" : "";
- 
--		const struct protoent *pent = getprotobynumber(proto);
--		if (pent) {
--			printf("%s -p %s", invertstr, pent->p_name);
--			return;
--		}
--
--		for (i = 0; xtables_chain_protos[i].name != NULL; ++i)
--			if (xtables_chain_protos[i].num == proto) {
--				printf("%s -p %s",
--				       invertstr, xtables_chain_protos[i].name);
--				return;
--			}
--
--		printf("%s -p %u", invertstr, proto);
-+		if (pname)
-+			printf("%s -p %s", invertstr, pname);
-+		else
-+			printf("%s -p %u", invertstr, proto);
- 	}
- }
- 
-diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
-index c1664b50f9383..4253b08196d29 100644
---- a/iptables/nft-shared.c
-+++ b/iptables/nft-shared.c
-@@ -826,13 +826,13 @@ void save_rule_details(const struct iptables_command_state *cs,
- 	}
- 
- 	if (proto > 0) {
--		const struct protoent *pent = getprotobynumber(proto);
-+		const char *pname = proto_to_name(proto, 0);
- 
- 		if (invflags & XT_INV_PROTO)
- 			printf("! ");
- 
--		if (pent)
--			printf("-p %s ", pent->p_name);
-+		if (pname)
-+			printf("-p %s ", pname);
- 		else
- 			printf("-p %u ", proto);
- 	}
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 5e3a6aeb343a6..eff4898db3f9a 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -48,7 +48,7 @@ void print_extension_helps(const struct xtables_target *t,
- }
- 
- const char *
--proto_to_name(uint8_t proto, int nolookup)
-+proto_to_name(uint16_t proto, int nolookup)
- {
- 	unsigned int i;
- 
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index c4de0292f4d8e..0a029d5b20036 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -162,7 +162,7 @@ enum {
- 
- extern void print_extension_helps(const struct xtables_target *,
- 	const struct xtables_rule_match *);
--extern const char *proto_to_name(uint8_t, int);
-+extern const char *proto_to_name(uint16_t, int);
- extern int command_default(struct iptables_command_state *,
- 	struct xtables_globals *, bool invert);
- extern struct xtables_match *load_proto(struct iptables_command_state *);
--- 
-2.31.0
+Pablo has not responded and there is a bit of urgency in that I have 3 more
+patchsets before the next LNFQ release and was hoping the release would get out
+in time for Slackware 15.0.
 
+Cheers ... Duncan.
+
+On Thu, Apr 22, 2021 at 07:35:44PM +1000, Duncan Roe wrote:
+> The main fix is to move fixmanpages.sh to inside doxygen/Makefile.am.
+>
+> This means that in future, developers need to update doxygen/Makefile.am
+> when they add new functions and source files, since fixmanpages.sh is deleted.
+>
+> Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
+> ---
+> v2: Implement suggestions from Jan Engelhardt <jengelh@inai.de>
+>
+>  Makefile.am         |  1 -
+>  configure.ac        | 11 +++++--
+>  doxygen/Makefile.am | 76 +++++++++++++++++++++++++++++++++++++++++++--
+>  fixmanpages.sh      | 66 ---------------------------------------
+>  4 files changed, 82 insertions(+), 72 deletions(-)
+>  delete mode 100755 fixmanpages.sh
+>
+> diff --git a/Makefile.am b/Makefile.am
+> index 796f0d0..a5b347b 100644
+> --- a/Makefile.am
+> +++ b/Makefile.am
+> @@ -10,4 +10,3 @@ pkgconfigdir = $(libdir)/pkgconfig
+>  pkgconfig_DATA = libnetfilter_queue.pc
+>
+>  EXTRA_DIST += Make_global.am
+> -EXTRA_DIST += fixmanpages.sh
+> diff --git a/configure.ac b/configure.ac
+> index 32e4990..bdbee98 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -37,9 +37,10 @@ AC_CONFIG_FILES([Makefile src/Makefile utils/Makefile examples/Makefile
+>  	include/linux/Makefile include/linux/netfilter/Makefile])
+>
+>  AC_ARG_WITH([doxygen], [AS_HELP_STRING([--with-doxygen],
+> -	    [create doxygen documentation [default=no]])],
+> -	    [], [with_doxygen=no])
+> -AS_IF([test "x$with_doxygen" = xyes], [
+> +	    [create doxygen documentation])],
+> +	    [with_doxygen="$withval"], [with_doxygen=yes])
+> +
+> +AS_IF([test "x$with_doxygen" != xno], [
+>  	AC_CHECK_PROGS([DOXYGEN], [doxygen])
+>  	AC_CHECK_PROGS([DOT], [dot], [""])
+>  	AS_IF([test "x$DOT" != "x"],
+> @@ -48,6 +49,10 @@ AS_IF([test "x$with_doxygen" = xyes], [
+>  ])
+>
+>  AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+> +AS_IF([test "x$DOXYGEN" = x], [
+> +	dnl Only run doxygen Makefile if doxygen installed
+> +	AC_MSG_WARN([Doxygen not found - continuing without Doxygen support])
+> +])
+>  AC_OUTPUT
+>
+>  echo "
+> diff --git a/doxygen/Makefile.am b/doxygen/Makefile.am
+> index 0f99feb..b4268a5 100644
+> --- a/doxygen/Makefile.am
+> +++ b/doxygen/Makefile.am
+> @@ -1,4 +1,6 @@
+>  if HAVE_DOXYGEN
+> +
+> +# Be sure to add new source files to this table
+>  doc_srcs = $(top_srcdir)/src/libnetfilter_queue.c  \
+>             $(top_srcdir)/src/nlmsg.c               \
+>             $(top_srcdir)/src/extra/checksum.c      \
+> @@ -9,8 +11,74 @@ doc_srcs = $(top_srcdir)/src/libnetfilter_queue.c  \
+>             $(top_srcdir)/src/extra/icmp.c          \
+>             $(top_srcdir)/src/extra/pktbuff.c
+>
+> -doxyfile.stamp: $(doc_srcs) $(top_srcdir)/fixmanpages.sh
+> -	rm -rf html man && cd .. && doxygen doxygen.cfg >/dev/null && ./fixmanpages.sh
+> +doxyfile.stamp: $(doc_srcs) Makefile.am
+> +	rm -rf html man
+> +
+> +# Test for running under make distcheck.
+> +# If so, sibling src directory will be empty:
+> +# move it out of the way and symlink the real one while we run doxygen.
+> +	[ -f ../src/Makefile.in ] || \
+> +{ set -x; cd ..; mv src src.distcheck; ln -s $(top_srcdir)/src; }
+> +
+> +	cd ..; doxygen doxygen.cfg >/dev/null
+> +
+> +	[ ! -d ../src.distcheck ] || \
+> +{ set -x; cd ..; rm src; mv src.distcheck src; }
+> +
+> +# Keep this command up to date after adding new functions and source files.
+> +# The command has to be a single line so the functions work
+> +# (hence ";\" at the end of every line but the last).
+> +	main() { set -e; cd man/man3; rm -f _*;\
+> +setgroup LibrarySetup nfq_open;\
+> +  add2group nfq_close nfq_bind_pf nfq_unbind_pf;\
+> +setgroup Parsing nfq_get_msg_packet_hdr;\
+> +  add2group nfq_get_nfmark nfq_get_timestamp nfq_get_indev nfq_get_physindev;\
+> +  add2group nfq_get_outdev nfq_get_physoutdev nfq_get_indev_name;\
+> +  add2group nfq_get_physindev_name nfq_get_outdev_name;\
+> +  add2group nfq_get_physoutdev_name nfq_get_packet_hw;\
+> +  add2group nfq_get_skbinfo;\
+> +  add2group nfq_get_uid nfq_get_gid;\
+> +  add2group nfq_get_secctx nfq_get_payload;\
+> +setgroup Queue nfq_fd;\
+> +  add2group nfq_create_queue nfq_destroy_queue nfq_handle_packet nfq_set_mode;\
+> +  add2group nfq_set_queue_flags nfq_set_queue_maxlen nfq_set_verdict;\
+> +  add2group nfq_set_verdict2 nfq_set_verdict_batch;\
+> +  add2group nfq_set_verdict_batch2 nfq_set_verdict_mark;\
+> +setgroup ipv4 nfq_ip_get_hdr;\
+> +  add2group nfq_ip_set_transport_header nfq_ip_mangle nfq_ip_snprintf;\
+> +  setgroup ip_internals nfq_ip_set_checksum;\
+> +setgroup ipv6 nfq_ip6_get_hdr;\
+> +  add2group nfq_ip6_set_transport_header nfq_ip6_mangle nfq_ip6_snprintf;\
+> +setgroup nfq_cfg nfq_nlmsg_cfg_put_cmd;\
+> +  add2group nfq_nlmsg_cfg_put_params nfq_nlmsg_cfg_put_qmaxlen;\
+> +setgroup nfq_verd nfq_nlmsg_verdict_put;\
+> +  add2group nfq_nlmsg_verdict_put_mark nfq_nlmsg_verdict_put_pkt;\
+> +setgroup nlmsg nfq_nlmsg_parse;\
+> +  add2group nfq_nlmsg_put;\
+> +setgroup pktbuff pktb_alloc;\
+> +  add2group pktb_data pktb_len pktb_mangle pktb_mangled;\
+> +  add2group pktb_free;\
+> +  setgroup otherfns pktb_tailroom;\
+> +    add2group pktb_mac_header pktb_network_header pktb_transport_header;\
+> +    setgroup uselessfns pktb_push;\
+> +      add2group pktb_pull pktb_put pktb_trim;\
+> +setgroup tcp nfq_tcp_get_hdr;\
+> +  add2group nfq_tcp_get_payload nfq_tcp_get_payload_len;\
+> +  add2group nfq_tcp_snprintf nfq_tcp_mangle_ipv4 nfq_tcp_mangle_ipv6;\
+> +  setgroup tcp_internals nfq_tcp_compute_checksum_ipv4;\
+> +    add2group nfq_tcp_compute_checksum_ipv6;\
+> +setgroup udp nfq_udp_get_hdr;\
+> +  add2group nfq_udp_get_payload nfq_udp_get_payload_len;\
+> +  add2group nfq_udp_mangle_ipv4 nfq_udp_mangle_ipv6 nfq_udp_snprintf;\
+> +  setgroup udp_internals nfq_udp_compute_checksum_ipv4;\
+> +    add2group nfq_udp_compute_checksum_ipv6;\
+> +setgroup Printing nfq_snprintf_xml;\
+> +setgroup icmp nfq_icmp_get_hdr;\
+> +};\
+> +setgroup() { mv $$1.3 $$2.3; BASE=$$2; };\
+> +add2group() { for i in $$@; do ln -sf $$BASE.3 $$i.3; done; };\
+> +main
+> +
+>  	touch doxyfile.stamp
+>
+>  CLEANFILES = doxyfile.stamp
+> @@ -21,4 +89,8 @@ clean-local:
+>  install-data-local:
+>  	mkdir -p $(DESTDIR)$(mandir)/man3
+>  	cp --no-dereference --preserve=links,mode,timestamps man/man3/*.3 $(DESTDIR)$(mandir)/man3/
+> +
+> +# make distcheck needs uninstall-local
+> +uninstall-local:
+> +	rm -r $(DESTDIR)$(mandir) man html doxyfile.stamp
+>  endif
+> diff --git a/fixmanpages.sh b/fixmanpages.sh
+> deleted file mode 100755
+> index 02064ab..0000000
+> --- a/fixmanpages.sh
+> +++ /dev/null
+> @@ -1,66 +0,0 @@
+> -#!/bin/bash -p
+> -#set -x
+> -function main
+> -{
+> -  set -e
+> -  cd doxygen/man/man3
+> -  rm -f _*
+> -  setgroup LibrarySetup nfq_open
+> -    add2group nfq_close nfq_bind_pf nfq_unbind_pf
+> -  setgroup Parsing nfq_get_msg_packet_hdr
+> -    add2group nfq_get_nfmark nfq_get_timestamp nfq_get_indev nfq_get_physindev
+> -    add2group nfq_get_outdev nfq_get_physoutdev nfq_get_indev_name
+> -    add2group nfq_get_physindev_name nfq_get_outdev_name
+> -    add2group nfq_get_physoutdev_name nfq_get_packet_hw
+> -    add2group nfq_get_skbinfo
+> -    add2group nfq_get_uid nfq_get_gid
+> -    add2group nfq_get_secctx nfq_get_payload
+> -  setgroup Queue nfq_fd
+> -    add2group nfq_create_queue nfq_destroy_queue nfq_handle_packet nfq_set_mode
+> -    add2group nfq_set_queue_flags nfq_set_queue_maxlen nfq_set_verdict
+> -    add2group nfq_set_verdict2 nfq_set_verdict_batch
+> -    add2group nfq_set_verdict_batch2 nfq_set_verdict_mark
+> -  setgroup ipv4 nfq_ip_get_hdr
+> -    add2group nfq_ip_set_transport_header nfq_ip_mangle nfq_ip_snprintf
+> -    setgroup ip_internals nfq_ip_set_checksum
+> -  setgroup ipv6 nfq_ip6_get_hdr
+> -    add2group nfq_ip6_set_transport_header nfq_ip6_mangle nfq_ip6_snprintf
+> -  setgroup nfq_cfg nfq_nlmsg_cfg_put_cmd
+> -    add2group nfq_nlmsg_cfg_put_params nfq_nlmsg_cfg_put_qmaxlen
+> -  setgroup nfq_verd nfq_nlmsg_verdict_put
+> -    add2group nfq_nlmsg_verdict_put_mark nfq_nlmsg_verdict_put_pkt
+> -  setgroup nlmsg nfq_nlmsg_parse
+> -    add2group nfq_nlmsg_put
+> -  setgroup pktbuff pktb_alloc
+> -    add2group pktb_data pktb_len pktb_mangle pktb_mangled
+> -    add2group pktb_free
+> -    setgroup otherfns pktb_tailroom
+> -      add2group pktb_mac_header pktb_network_header pktb_transport_header
+> -      setgroup uselessfns pktb_push
+> -        add2group pktb_pull pktb_put pktb_trim
+> -  setgroup tcp nfq_tcp_get_hdr
+> -    add2group nfq_tcp_get_payload nfq_tcp_get_payload_len
+> -    add2group nfq_tcp_snprintf nfq_tcp_mangle_ipv4 nfq_tcp_mangle_ipv6
+> -    setgroup tcp_internals nfq_tcp_compute_checksum_ipv4
+> -      add2group nfq_tcp_compute_checksum_ipv6
+> -  setgroup udp nfq_udp_get_hdr
+> -    add2group nfq_udp_get_payload nfq_udp_get_payload_len
+> -    add2group nfq_udp_mangle_ipv4 nfq_udp_mangle_ipv6 nfq_udp_snprintf
+> -    setgroup udp_internals nfq_udp_compute_checksum_ipv4
+> -      add2group nfq_udp_compute_checksum_ipv6
+> -  setgroup Printing nfq_snprintf_xml
+> -  setgroup icmp nfq_icmp_get_hdr
+> -}
+> -function setgroup
+> -{
+> -  mv $1.3 $2.3
+> -  BASE=$2
+> -}
+> -function add2group
+> -{
+> -  for i in $@
+> -  do
+> -    ln -sf $BASE.3 $i.3
+> -  done
+> -}
+> -main
+> --
+> 2.17.5
+>
