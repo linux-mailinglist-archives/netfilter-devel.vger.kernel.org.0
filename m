@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7F136F303
-	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Apr 2021 01:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F5F36F305
+	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Apr 2021 01:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhD2Xn7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 29 Apr 2021 19:43:59 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:59536 "EHLO
+        id S230045AbhD2XoA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 29 Apr 2021 19:44:00 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:59542 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbhD2Xnz (ORCPT
+        with ESMTP id S230063AbhD2Xnz (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Thu, 29 Apr 2021 19:43:55 -0400
 Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 83FFE6414D
+        by mail.netfilter.org (Postfix) with ESMTPSA id D22736413C
         for <netfilter-devel@vger.kernel.org>; Fri, 30 Apr 2021 01:42:28 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 17/18] evaluate: remove flowtable from cache on delete flowtable command
-Date:   Fri, 30 Apr 2021 01:42:54 +0200
-Message-Id: <20210429234255.16840-18-pablo@netfilter.org>
+Subject: [PATCH nft 18/18] evaluate: remove object from cache on delete object command
+Date:   Fri, 30 Apr 2021 01:42:55 +0200
+Message-Id: <20210429234255.16840-19-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210429234255.16840-1-pablo@netfilter.org>
 References: <20210429234255.16840-1-pablo@netfilter.org>
@@ -29,58 +29,27 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Update the cache to remove this flowtable from the evaluation phase.
-Add flowtable_cache_del() function for this purpose.
+Update the cache to remove this object from the evaluation phase.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/cache.h |  1 +
- src/cache.c     |  5 +++++
- src/evaluate.c  | 24 ++++++++++++++++++++++++
- 3 files changed, 30 insertions(+)
+ src/evaluate.c | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-diff --git a/include/cache.h b/include/cache.h
-index 3823e9a78653..ad9078432c73 100644
---- a/include/cache.h
-+++ b/include/cache.h
-@@ -96,6 +96,7 @@ struct obj *obj_cache_find(const struct table *table, const char *name,
- 
- struct flowtable;
- void ft_cache_add(struct flowtable *ft, struct table *table);
-+void ft_cache_del(struct flowtable *ft);
- struct flowtable *ft_cache_find(const struct table *table, const char *name);
- 
- struct nft_cache {
-diff --git a/src/cache.c b/src/cache.c
-index a98ee5954c36..f59bba03b81e 100644
---- a/src/cache.c
-+++ b/src/cache.c
-@@ -527,6 +527,11 @@ void ft_cache_add(struct flowtable *ft, struct table *table)
- 	cache_add(&ft->cache, &table->ft_cache, hash);
- }
- 
-+void ft_cache_del(struct flowtable *ft)
-+{
-+	cache_del(&ft->cache);
-+}
-+
- struct flowtable *ft_cache_find(const struct table *table, const char *name)
- {
- 	struct flowtable *ft;
 diff --git a/src/evaluate.c b/src/evaluate.c
-index 19bf73878181..97a77657bbd6 100644
+index 97a77657bbd6..b5dcdd3542f1 100644
 --- a/src/evaluate.c
 +++ b/src/evaluate.c
-@@ -4411,6 +4411,28 @@ static void set_del_cache(struct eval_ctx *ctx, struct cmd *cmd)
- 	set_free(set);
+@@ -4433,6 +4433,28 @@ static void ft_del_cache(struct eval_ctx *ctx, struct cmd *cmd)
+ 	flowtable_free(ft);
  }
  
-+static void ft_del_cache(struct eval_ctx *ctx, struct cmd *cmd)
++static void obj_del_cache(struct eval_ctx *ctx, struct cmd *cmd, int type)
 +{
-+	struct flowtable *ft;
 +	struct table *table;
++	struct obj *obj;
 +
-+	if (!cmd->handle.flowtable.name)
++	if (!cmd->handle.obj.name)
 +		return;
 +
 +	table = table_cache_find(&ctx->nft->cache.table_cache,
@@ -89,26 +58,46 @@ index 19bf73878181..97a77657bbd6 100644
 +	if (!table)
 +		return;
 +
-+	ft = ft_cache_find(table, cmd->handle.flowtable.name);
-+	if (!ft)
++	obj = obj_cache_find(table, cmd->handle.obj.name, type);
++	if (!obj)
 +		return;
 +
-+	ft_cache_del(ft);
-+	flowtable_free(ft);
++	obj_cache_del(obj);
++	obj_free(obj);
 +}
 +
  static int cmd_evaluate_delete(struct eval_ctx *ctx, struct cmd *cmd)
  {
  	switch (cmd->obj) {
-@@ -4428,6 +4450,8 @@ static int cmd_evaluate_delete(struct eval_ctx *ctx, struct cmd *cmd)
- 		table_del_cache(ctx, cmd);
+@@ -4453,13 +4475,28 @@ static int cmd_evaluate_delete(struct eval_ctx *ctx, struct cmd *cmd)
+ 		ft_del_cache(ctx, cmd);
  		return 0;
- 	case CMD_OBJ_FLOWTABLE:
-+		ft_del_cache(ctx, cmd);
-+		return 0;
  	case CMD_OBJ_COUNTER:
++		obj_del_cache(ctx, cmd, NFT_OBJECT_COUNTER);
++		return 0;
  	case CMD_OBJ_QUOTA:
++		obj_del_cache(ctx, cmd, NFT_OBJECT_QUOTA);
++		return 0;
  	case CMD_OBJ_CT_HELPER:
++		obj_del_cache(ctx, cmd, NFT_OBJECT_CT_HELPER);
++		return 0;
+ 	case CMD_OBJ_CT_TIMEOUT:
++		obj_del_cache(ctx, cmd, NFT_OBJECT_CT_TIMEOUT);
++		return 0;
+ 	case CMD_OBJ_LIMIT:
++		obj_del_cache(ctx, cmd, NFT_OBJECT_LIMIT);
++		return 0;
+ 	case CMD_OBJ_SECMARK:
++		obj_del_cache(ctx, cmd, NFT_OBJECT_SECMARK);
++		return 0;
+ 	case CMD_OBJ_CT_EXPECT:
++		obj_del_cache(ctx, cmd, NFT_OBJECT_CT_EXPECT);
++		return 0;
+ 	case CMD_OBJ_SYNPROXY:
++		obj_del_cache(ctx, cmd, NFT_OBJECT_SYNPROXY);
+ 		return 0;
+ 	default:
+ 		BUG("invalid command object type %u\n", cmd->obj);
 -- 
 2.20.1
 
