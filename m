@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF41936F2F6
-	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Apr 2021 01:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AE236F2F7
+	for <lists+netfilter-devel@lfdr.de>; Fri, 30 Apr 2021 01:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbhD2Xnv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 29 Apr 2021 19:43:51 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:59536 "EHLO
+        id S229893AbhD2Xnw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 29 Apr 2021 19:43:52 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:59542 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbhD2Xnu (ORCPT
+        with ESMTP id S229753AbhD2Xnv (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 29 Apr 2021 19:43:50 -0400
+        Thu, 29 Apr 2021 19:43:51 -0400
 Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id E50E264133
-        for <netfilter-devel@vger.kernel.org>; Fri, 30 Apr 2021 01:42:23 +0200 (CEST)
+        by mail.netfilter.org (Postfix) with ESMTPSA id 5C7D46413C
+        for <netfilter-devel@vger.kernel.org>; Fri, 30 Apr 2021 01:42:24 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 03/18] rule: skip fuzzy lookup for unexisting 64-bit handle
-Date:   Fri, 30 Apr 2021 01:42:40 +0200
-Message-Id: <20210429234255.16840-4-pablo@netfilter.org>
+Subject: [PATCH nft 04/18] src: pass chain name to chain_cache_find()
+Date:   Fri, 30 Apr 2021 01:42:41 +0200
+Message-Id: <20210429234255.16840-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210429234255.16840-1-pablo@netfilter.org>
 References: <20210429234255.16840-1-pablo@netfilter.org>
@@ -29,85 +29,139 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Deletion by handle, if incorrect, should not exercise the misspell
-lookup functions.
+You can identify chains through the unique handle in deletions, update
+this interface to take a string instead of the handle to prepare for
+the introduction of 64-bit handle chain lookups.
 
-Fixes: 3a0e07106f66 ("src: combine extended netlink error reporting with mispelling support")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/cmd.c                                         | 15 +++++++++++++++
- .../cache/0009_delete_by_handle_incorrect_0       |  8 ++++++++
- 2 files changed, 23 insertions(+)
- create mode 100755 tests/shell/testcases/cache/0009_delete_by_handle_incorrect_0
+ include/cache.h |  3 +--
+ src/cache.c     |  9 ++++-----
+ src/evaluate.c  | 10 +++++-----
+ src/netlink.c   |  2 +-
+ src/rule.c      |  2 +-
+ 5 files changed, 12 insertions(+), 14 deletions(-)
 
-diff --git a/src/cmd.c b/src/cmd.c
-index 9cb5b6a3f33d..c04efce3801a 100644
---- a/src/cmd.c
-+++ b/src/cmd.c
-@@ -14,6 +14,9 @@ static int nft_cmd_enoent_table(struct netlink_ctx *ctx, const struct cmd *cmd,
+diff --git a/include/cache.h b/include/cache.h
+index f500e1b19e45..0009276701a3 100644
+--- a/include/cache.h
++++ b/include/cache.h
+@@ -57,8 +57,7 @@ int cache_update(struct nft_ctx *nft, unsigned int flags, struct list_head *msgs
+ void cache_release(struct nft_cache *cache);
+ 
+ void chain_cache_add(struct chain *chain, struct table *table);
+-struct chain *chain_cache_find(const struct table *table,
+-			       const struct handle *handle);
++struct chain *chain_cache_find(const struct table *table, const char *name);
+ void set_cache_add(struct set *set, struct table *table);
+ struct set *set_cache_find(const struct table *table, const char *name);
+ 
+diff --git a/src/cache.c b/src/cache.c
+index f032171a95ff..b38f3b84eda6 100644
+--- a/src/cache.c
++++ b/src/cache.c
+@@ -244,15 +244,14 @@ void chain_cache_add(struct chain *chain, struct table *table)
+ 	list_add_tail(&chain->cache_list, &table->cache_chain);
+ }
+ 
+-struct chain *chain_cache_find(const struct table *table,
+-			       const struct handle *handle)
++struct chain *chain_cache_find(const struct table *table, const char *name)
  {
- 	struct table *table;
- 
-+	if (!cmd->handle.table.name)
-+		return 0;
-+
- 	table = table_lookup_fuzzy(&cmd->handle, &ctx->nft->cache);
- 	if (!table)
- 		return 0;
-@@ -30,6 +33,9 @@ static int nft_cmd_enoent_chain(struct netlink_ctx *ctx, const struct cmd *cmd,
- 	const struct table *table;
  	struct chain *chain;
+ 	uint32_t hash;
  
-+	if (!cmd->handle.chain.name)
-+		return 0;
-+
- 	chain = chain_lookup_fuzzy(&cmd->handle, &ctx->nft->cache, &table);
+-	hash = djb_hash(handle->chain.name) % NFT_CACHE_HSIZE;
++	hash = djb_hash(name) % NFT_CACHE_HSIZE;
+ 	list_for_each_entry(chain, &table->cache_chain_ht[hash], cache_hlist) {
+-		if (!strcmp(chain->handle.chain.name, handle->chain.name))
++		if (!strcmp(chain->handle.chain.name, name))
+ 			return chain;
+ 	}
+ 
+@@ -421,7 +420,7 @@ static int cache_init_objects(struct netlink_ctx *ctx, unsigned int flags)
+ 		if (flags & NFT_CACHE_RULE_BIT) {
+ 			ret = netlink_list_rules(ctx, &table->handle);
+ 			list_for_each_entry_safe(rule, nrule, &ctx->list, list) {
+-				chain = chain_cache_find(table, &rule->handle);
++				chain = chain_cache_find(table, rule->handle.chain.name);
+ 				if (!chain)
+ 					chain = chain_binding_lookup(table,
+ 							rule->handle.chain.name);
+diff --git a/src/evaluate.c b/src/evaluate.c
+index c52309f46f59..2c8a649f5392 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -4002,7 +4002,7 @@ static int rule_cache_update(struct eval_ctx *ctx, enum cmd_ops op)
+ 	if (!table)
+ 		return table_not_found(ctx);
+ 
+-	chain = chain_cache_find(table, &rule->handle);
++	chain = chain_cache_find(table, rule->handle.chain.name);
  	if (!chain)
- 		return 0;
-@@ -81,6 +87,9 @@ static int nft_cmd_enoent_set(struct netlink_ctx *ctx, const struct cmd *cmd,
- 	const struct table *table;
- 	struct set *set;
+ 		return chain_not_found(ctx);
  
-+	if (!cmd->handle.set.name)
-+		return 0;
-+
- 	set = set_lookup_fuzzy(cmd->handle.set.name, &ctx->nft->cache, &table);
- 	if (!set)
- 		return 0;
-@@ -100,6 +109,9 @@ static int nft_cmd_enoent_obj(struct netlink_ctx *ctx, const struct cmd *cmd,
- 	const struct table *table;
- 	struct obj *obj;
+@@ -4145,14 +4145,14 @@ static int chain_evaluate(struct eval_ctx *ctx, struct chain *chain)
+ 		return table_not_found(ctx);
  
-+	if (!cmd->handle.obj.name)
-+		return 0;
-+
- 	obj = obj_lookup_fuzzy(cmd->handle.obj.name, &ctx->nft->cache, &table);
- 	if (!obj)
+ 	if (chain == NULL) {
+-		if (chain_cache_find(table, &ctx->cmd->handle) == NULL) {
++		if (!chain_cache_find(table, ctx->cmd->handle.chain.name)) {
+ 			chain = chain_alloc(NULL);
+ 			handle_merge(&chain->handle, &ctx->cmd->handle);
+ 			chain_cache_add(chain, table);
+ 		}
  		return 0;
-@@ -118,6 +130,9 @@ static int nft_cmd_enoent_flowtable(struct netlink_ctx *ctx,
- 	const struct table *table;
- 	struct flowtable *ft;
+ 	} else if (!(chain->flags & CHAIN_F_BINDING)) {
+-		if (chain_cache_find(table, &chain->handle) == NULL)
++		if (!chain_cache_find(table, chain->handle.chain.name))
+ 			chain_cache_add(chain_get(chain), table);
+ 	}
  
-+	if (!cmd->handle.flowtable.name)
-+		return 0;
-+
- 	ft = flowtable_lookup_fuzzy(cmd->handle.flowtable.name,
- 				    &ctx->nft->cache, &table);
- 	if (!ft)
-diff --git a/tests/shell/testcases/cache/0009_delete_by_handle_incorrect_0 b/tests/shell/testcases/cache/0009_delete_by_handle_incorrect_0
-new file mode 100755
-index 000000000000..f0bb02a636ee
---- /dev/null
-+++ b/tests/shell/testcases/cache/0009_delete_by_handle_incorrect_0
-@@ -0,0 +1,8 @@
-+#!/bin/bash
-+
-+$NFT delete table handle 4000 && exit 1
-+$NFT delete chain t handle 4000 && exit 1
-+$NFT delete set t handle 4000 && exit 1
-+$NFT delete flowtable t handle 4000 && exit 1
-+$NFT delete counter t handle 4000 && exit 1
-+exit 0
+@@ -4482,7 +4482,7 @@ static int cmd_evaluate_list(struct eval_ctx *ctx, struct cmd *cmd)
+ 		if (table == NULL)
+ 			return table_not_found(ctx);
+ 
+-		if (chain_cache_find(table, &cmd->handle) == NULL)
++		if (!chain_cache_find(table, cmd->handle.chain.name))
+ 			return chain_not_found(ctx);
+ 
+ 		return 0;
+@@ -4642,7 +4642,7 @@ static int cmd_evaluate_rename(struct eval_ctx *ctx, struct cmd *cmd)
+ 		if (table == NULL)
+ 			return table_not_found(ctx);
+ 
+-		if (chain_cache_find(table, &ctx->cmd->handle) == NULL)
++		if (!chain_cache_find(table, ctx->cmd->handle.chain.name))
+ 			return chain_not_found(ctx);
+ 
+ 		break;
+diff --git a/src/netlink.c b/src/netlink.c
+index e8b016096b67..123525570c39 100644
+--- a/src/netlink.c
++++ b/src/netlink.c
+@@ -1718,7 +1718,7 @@ static struct rule *trace_lookup_rule(const struct nftnl_trace *nlt,
+ 	if (!table)
+ 		return NULL;
+ 
+-	chain = chain_cache_find(table, &h);
++	chain = chain_cache_find(table, h.chain.name);
+ 	if (!chain)
+ 		return NULL;
+ 
+diff --git a/src/rule.c b/src/rule.c
+index 2c6292c4e173..fac8d22a85ee 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -2608,7 +2608,7 @@ static int do_command_rename(struct netlink_ctx *ctx, struct cmd *cmd)
+ 
+ 	switch (cmd->obj) {
+ 	case CMD_OBJ_CHAIN:
+-		chain = chain_cache_find(table, &cmd->handle);
++		chain = chain_cache_find(table, cmd->handle.chain.name);
+ 
+ 		return mnl_nft_chain_rename(ctx, cmd, chain);
+ 	default:
 -- 
 2.20.1
 
