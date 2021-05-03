@@ -2,40 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AC4371E55
-	for <lists+netfilter-devel@lfdr.de>; Mon,  3 May 2021 19:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410B3371E78
+	for <lists+netfilter-devel@lfdr.de>; Mon,  3 May 2021 19:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbhECRVP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 3 May 2021 13:21:15 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:52084 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbhECRVO (ORCPT
+        id S233018AbhECRWf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 3 May 2021 13:22:35 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:37573 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232803AbhECRWU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 3 May 2021 13:21:14 -0400
-Received: by mail-io1-f72.google.com with SMTP id h7-20020a5d9e070000b029041a1f6bccc8so3781839ioh.18
-        for <netfilter-devel@vger.kernel.org>; Mon, 03 May 2021 10:20:21 -0700 (PDT)
+        Mon, 3 May 2021 13:22:20 -0400
+Received: by mail-il1-f200.google.com with SMTP id r13-20020a92cd8d0000b02901a627ef20a2so1900440ilb.4
+        for <netfilter-devel@vger.kernel.org>; Mon, 03 May 2021 10:21:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=SsW4WGApkthaeG/yN0Sh2zDtXgNB7YUudWMFW51IJwk=;
-        b=MzT+rL6j0wqjrC5NkME4VPmzWDn8v9FoonNgDRjpG63SkRKxdbpqcCtLhPcWJU2JZt
-         yNN7NnEFArqAqXQLNZPj6JaP4NWeZ8Ib96y5TLkwJHQsNy/KjWU6mmndw8JgNBTt6c5H
-         QiKvcRA5bFbBzCeoXEdVhRpBWyhc5PYi4Pb/2nmX4SsaZU+swPPnoWO1TWeMgAItuoCr
-         xSTiKQAoCaUIln1dKViXtp6yEdZD+cdA8CTquUldauutIZc7HpXFB5p1szNZFdsoqjoB
-         rl80hZ+dt2bq1Hay0esnPtmCQNY2gOteBqAFx7cdYOb5/v2C2WkjFA+/qLFYNQ3s0uQ9
-         k/8g==
-X-Gm-Message-State: AOAM532sDv+W62DqU215qGg50kC7CpodS7/NE6lJky7ywf1jLYHlzSnz
-        68A9+/qMD4lu1xtWieXrYH0Temr7GslO4rhP1On4Vh7zhsKX
-X-Google-Smtp-Source: ABdhPJyt0vvFF+YFkGZh1hStsZ1HJyTL9uTFPJzka9gUtjT7vrUzG58a5Y5uPLQo8wLUfqm2+v60eWC5ekB5R+ERdt9TXZYXwj/1
+        bh=qxFHdf1JyUHuKTV5N7flUIAC+ZyvCmlhk8Q5OCqaAEg=;
+        b=aTJw7pJEcCpne2Qilxe3u9UZtPnWVi6UTmG+2DJcXTZXIdwuGpKlzOG+miLav2WgEY
+         CVR6FoaqX8ahUO2pQRz72hsUoEMR12pH/KFs/3Z9MbLCl3TcTRWmWmEBWU52gPfa1pf9
+         NgOLURwb3vd+JcV1VJXU7OcWW4r2W//+y6g5hdVmIFc3Uk9oQTnQxmEDpDJLXFgtloua
+         iAZoTcz3ff6t3dKqqUEHc0S4BaDbBtiTsg8qqk2NYEKPu20JBWNOCwHPlJHaxWrFVzJn
+         qbcJ5LceI3sqjGkIfXSYsz42mqKgUdrR4wBiO/Wsqxdyq1GFACLc+gCT88fsqD+I9GEa
+         bFfg==
+X-Gm-Message-State: AOAM531pRYLCNbYFrB1V8G5dyvOqsGuDoU7A2MYiR+mS74uys/eZURQs
+        3y2tVn/p98w/uSIX5fRyYRVDoklwhTbmqD+kCfSePzniR/Po
+X-Google-Smtp-Source: ABdhPJwOLPQv3RamVzSEtvjFDe2UbeRHMXHhlq9OqdtKVPh833BUUtSmprOeelnjLpPlNqaSPbFl9gOggNKDEt3j0vr7lXhuBzNK
 MIME-Version: 1.0
-X-Received: by 2002:a6b:ea10:: with SMTP id m16mr15356144ioc.124.1620062421212;
- Mon, 03 May 2021 10:20:21 -0700 (PDT)
-Date:   Mon, 03 May 2021 10:20:21 -0700
+X-Received: by 2002:a05:6e02:1051:: with SMTP id p17mr1757122ilj.96.1620062486145;
+ Mon, 03 May 2021 10:21:26 -0700 (PDT)
+Date:   Mon, 03 May 2021 10:21:26 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000021665f05c1702dd1@google.com>
-Subject: [syzbot] upstream test error: WARNING in __nf_unregister_net_hook
-From:   syzbot <syzbot+7ad5cd1615f2d89c6e7e@syzkaller.appspotmail.com>
+Message-ID: <0000000000000032b105c170317c@google.com>
+Subject: [syzbot] net test error: WARNING in __nf_unregister_net_hook
+From:   syzbot <syzbot+33d023f240aa788eb7fe@syzkaller.appspotmail.com>
 To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
         kadlec@netfilter.org, kuba@kernel.org,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
@@ -50,35 +50,37 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    9ccce092 Merge tag 'for-linus-5.13-ofs-1' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15303b33d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=27df24136354948b
-dashboard link: https://syzkaller.appspot.com/bug?extid=7ad5cd1615f2d89c6e7e
+HEAD commit:    f18c51b6 net: stmmac: Remove duplicate declaration of stmm..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=160a1da5d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=57b4b78935781045
+dashboard link: https://syzkaller.appspot.com/bug?extid=33d023f240aa788eb7fe
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7ad5cd1615f2d89c6e7e@syzkaller.appspotmail.com
+Reported-by: syzbot+33d023f240aa788eb7fe@syzkaller.appspotmail.com
 
 wlan1: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
 wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
 ------------[ cut here ]------------
 hook not found, pf 3 num 0
-WARNING: CPU: 0 PID: 334 at net/netfilter/core.c:480 __nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
+WARNING: CPU: 1 PID: 224 at net/netfilter/core.c:480 __nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
 Modules linked in:
-CPU: 0 PID: 334 Comm: kworker/u4:5 Not tainted 5.12.0-syzkaller #0
+CPU: 1 PID: 224 Comm: kworker/u4:5 Not tainted 5.12.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Workqueue: netns cleanup_net
 RIP: 0010:__nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
-Code: 0f b6 14 02 48 89 c8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 11 04 00 00 8b 53 1c 89 ee 48 c7 c7 c0 15 6e 8a e8 f6 3c 8a 01 <0f> 0b e9 e5 00 00 00 e8 59 3e 2e fa 44 8b 3c 24 4c 89 f8 48 c1 e0
-RSP: 0018:ffffc90001fcfbc0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff88814459f300 RCX: 0000000000000000
-RDX: ffff888013648000 RSI: ffffffff815caa75 RDI: fffff520003f9f6a
+Code: 0f b6 14 02 48 89 c8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 11 04 00 00 8b 53 1c 89 ee 48 c7 c7 c0 78 6d 8a e8 40 4c 8a 01 <0f> 0b e9 e5 00 00 00 e8 59 48 30 fa 44 8b 3c 24 4c 89 f8 48 c1 e0
+RSP: 0018:ffffc9000178fbc0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff888021b56400 RCX: 0000000000000000
+RDX: ffff8880128354c0 RSI: ffffffff815c8ba5 RDI: fffff520002f1f6a
 RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815c48de R11: 0000000000000000 R12: ffff888033e98f20
-R13: 0000000000000000 R14: ffff888012825c00 R15: 0000000000000001
+R10: ffffffff815c2a0e R11: 0000000000000000 R12: ffff88802db68f20
+R13: 0000000000000000 R14: ffff88801ec20900 R15: 0000000000000001
 FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000c000a00000 CR3: 00000000159c4000 CR4: 0000000000350ee0
+CR2: 0000563c6b380160 CR3: 000000001d865000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  nf_unregister_net_hook net/netfilter/core.c:502 [inline]
  nf_unregister_net_hooks+0x117/0x160 net/netfilter/core.c:576
