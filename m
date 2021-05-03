@@ -2,103 +2,156 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45653371493
-	for <lists+netfilter-devel@lfdr.de>; Mon,  3 May 2021 13:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C052371E58
+	for <lists+netfilter-devel@lfdr.de>; Mon,  3 May 2021 19:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhECLwT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 3 May 2021 07:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbhECLwT (ORCPT
+        id S232348AbhECRVW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 3 May 2021 13:21:22 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:34319 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232239AbhECRVP (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 3 May 2021 07:52:19 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7064FC06174A
-        for <netfilter-devel@vger.kernel.org>; Mon,  3 May 2021 04:51:26 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1ldX6i-0005IO-CS; Mon, 03 May 2021 13:51:24 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     syzkaller-bugs@googlegroups.com, Florian Westphal <fw@strlen.de>,
-        syzbot+dcccba8a1e41a38cb9df@syzkaller.appspotmail.com
-Subject: [PATCH nf] netfilter: arptables: use pernet ops struct during unregister
-Date:   Mon,  3 May 2021 13:51:15 +0200
-Message-Id: <20210503115115.30856-1-fw@strlen.de>
-X-Mailer: git-send-email 2.26.3
+        Mon, 3 May 2021 13:21:15 -0400
+Received: by mail-io1-f69.google.com with SMTP id v25-20020a0566020159b02904017f565b33so3804410iot.1
+        for <netfilter-devel@vger.kernel.org>; Mon, 03 May 2021 10:20:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=IaLwSAlCAkwIV8aH0MiazbmbvKJrXYiGrbTABtoSizM=;
+        b=VWa26sCmoBogTBm1OKJY5VECmdyQPDYpiWIFSzxXJpTO7z9juOS3IUUkO+mrLCvyHJ
+         WU4hSehGq9rO61Jy7YkXP2X4I2ImUuGvIyLwbLyENgQZA9ov3vNDS+xey5Lc2MB3CcRI
+         hhbNSEj2oLjzSt15T3OwsrhAtE6Pd54tBGOdQ+BCT4f5zdYnhQ/3Gb5Q/r2a13o9IXJr
+         mxGFt+jk27eQg+qvly0xOKaT77HPNu+OtYpqqs8Mb1vMlCUFrcCvviEPZ5GkG2AVRcV4
+         0+fHf5oeZRtZIVW+eQsteE4T7nMjQjB1mOtG3kPSIpsOT0rJZCcLIKMN4humT7HlW5Zc
+         JPmg==
+X-Gm-Message-State: AOAM530mAJE9JlEflL31jYvngnCKkojEPS6msmKhivesVnQ9asHBd2rU
+        S7E8Od63ik1gj0oS5+YIjHyjvx3z4CBwtk2z+6bTDnbihKb+
+X-Google-Smtp-Source: ABdhPJycz2XLkjHbhliGqjnXWzI80M9F9/U/yrCPQrUHd/RWsJNFOEtVW6fNfObLWwqF1WZmXG5iTwuW758ynXb4g6INmQQNSaCo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:c005:: with SMTP id q5mr16225105ild.202.1620062420942;
+ Mon, 03 May 2021 10:20:20 -0700 (PDT)
+Date:   Mon, 03 May 2021 10:20:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001d488205c1702d78@google.com>
+Subject: [syzbot] memory leak in nf_hook_entries_grow (2)
+From:   syzbot <syzbot+050de9f900eb45b94ef9@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Like with iptables and ebtables, hook unregistration has to use the
-pernet ops struct, not the template.
+Hello,
 
-This triggered following splat:
-  hook not found, pf 3 num 0
-  WARNING: CPU: 0 PID: 224 at net/netfilter/core.c:480 __nf_unregister_net_hook+0x1eb/0x610 net/netfilter/core.c:480
-[..]
- nf_unregister_net_hook net/netfilter/core.c:502 [inline]
- nf_unregister_net_hooks+0x117/0x160 net/netfilter/core.c:576
- arpt_unregister_table_pre_exit+0x67/0x80 net/ipv4/netfilter/arp_tables.c:1565
+syzbot found the following issue on:
 
-Fixes: f9006acc8dfe5 ("netfilter: arp_tables: pass table pointer via nf_hook_ops")
-Reported-by: syzbot+dcccba8a1e41a38cb9df@syzkaller.appspotmail.com
-Signed-off-by: Florian Westphal <fw@strlen.de>
+HEAD commit:    9ccce092 Merge tag 'for-linus-5.13-ofs-1' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=141aec93d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5ab124e5617a0cfa
+dashboard link: https://syzkaller.appspot.com/bug?extid=050de9f900eb45b94ef9
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14bd921ed00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+050de9f900eb45b94ef9@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff888128e8efc0 (size 64):
+  comm "syz-executor.1", pid 8445, jiffies 4294969756 (age 19.530s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 10 8a a5 83 ff ff ff ff  ................
+    00 f6 f4 27 81 88 ff ff 00 40 5a 28 81 88 ff ff  ...'.....@Z(....
+  backtrace:
+    [<ffffffff8146e301>] kmalloc_node include/linux/slab.h:579 [inline]
+    [<ffffffff8146e301>] kvmalloc_node+0x61/0xf0 mm/util.c:587
+    [<ffffffff8381be3b>] kvmalloc include/linux/mm.h:797 [inline]
+    [<ffffffff8381be3b>] kvzalloc include/linux/mm.h:805 [inline]
+    [<ffffffff8381be3b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
+    [<ffffffff8381be3b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
+    [<ffffffff8381c19d>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
+    [<ffffffff8381c45f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
+    [<ffffffff8381c4f9>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
+    [<ffffffff83a56452>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
+    [<ffffffff83a58a7d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
+    [<ffffffff838b85a9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
+    [<ffffffff838b86d7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
+    [<ffffffff83a575b2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
+    [<ffffffff83a57b34>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
+    [<ffffffff8381e3b7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
+    [<ffffffff83986b9a>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
+    [<ffffffff83986b9a>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
+    [<ffffffff8399b06b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
+    [<ffffffff8366dc23>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
+    [<ffffffff8366de02>] __do_sys_getsockopt net/socket.c:2176 [inline]
+    [<ffffffff8366de02>] __se_sys_getsockopt net/socket.c:2173 [inline]
+    [<ffffffff8366de02>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
+
+BUG: memory leak
+unreferenced object 0xffff888128f2fb80 (size 64):
+  comm "syz-executor.1", pid 8445, jiffies 4294969756 (age 19.530s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 10 8a a5 83 ff ff ff ff  ................
+    00 f6 f4 27 81 88 ff ff 50 40 5a 28 81 88 ff ff  ...'....P@Z(....
+  backtrace:
+    [<ffffffff8146e301>] kmalloc_node include/linux/slab.h:579 [inline]
+    [<ffffffff8146e301>] kvmalloc_node+0x61/0xf0 mm/util.c:587
+    [<ffffffff8381be3b>] kvmalloc include/linux/mm.h:797 [inline]
+    [<ffffffff8381be3b>] kvzalloc include/linux/mm.h:805 [inline]
+    [<ffffffff8381be3b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
+    [<ffffffff8381be3b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
+    [<ffffffff8381c19d>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
+    [<ffffffff8381c45f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
+    [<ffffffff8381c4f9>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
+    [<ffffffff83a56452>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
+    [<ffffffff83a58a7d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
+    [<ffffffff838b85a9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
+    [<ffffffff838b86d7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
+    [<ffffffff83a575b2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
+    [<ffffffff83a57b34>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
+    [<ffffffff8381e3b7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
+    [<ffffffff83986b9a>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
+    [<ffffffff83986b9a>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
+    [<ffffffff8399b06b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
+    [<ffffffff8366dc23>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
+    [<ffffffff8366de02>] __do_sys_getsockopt net/socket.c:2176 [inline]
+    [<ffffffff8366de02>] __se_sys_getsockopt net/socket.c:2173 [inline]
+    [<ffffffff8366de02>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
+
+BUG: memory leak
+unreferenced object 0xffff88812249b100 (size 64):
+  comm "kworker/u4:1", pid 24, jiffies 4294970575 (age 11.350s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 10 8a a5 83 ff ff ff ff  ................
+    00 f6 f4 27 81 88 ff ff 28 40 5a 28 81 88 ff ff  ...'....(@Z(....
+  backtrace:
+    [<ffffffff8146e301>] kmalloc_node include/linux/slab.h:579 [inline]
+    [<ffffffff8146e301>] kvmalloc_node+0x61/0xf0 mm/util.c:587
+    [<ffffffff8381b1ad>] kvmalloc include/linux/mm.h:797 [inline]
+    [<ffffffff8381b1ad>] kvzalloc include/linux/mm.h:805 [inline]
+    [<ffffffff8381b1ad>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
+    [<ffffffff8381b1ad>] __nf_hook_entries_try_shrink+0xfd/0x210 net/netfilter/core.c:248
+    [<ffffffff8381b96b>] __nf_unregister_net_hook+0x17b/0x280 net/netfilter/core.c:483
+    [<ffffffff8381baf2>] nf_unregister_net_hook+0x82/0xb0 net/netfilter/core.c:502
+    [<ffffffff8368fca1>] ops_exit_list+0x41/0x80 net/core/net_namespace.c:175
+    [<ffffffff83690861>] cleanup_net+0x2c1/0x4d0 net/core/net_namespace.c:595
+    [<ffffffff8125e109>] process_one_work+0x2c9/0x600 kernel/workqueue.c:2275
+    [<ffffffff8125e9f9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2421
+    [<ffffffff81266268>] kthread+0x178/0x1b0 kernel/kthread.c:313
+    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+
+
 ---
- include/linux/netfilter_arp/arp_tables.h | 3 +--
- net/ipv4/netfilter/arp_tables.c          | 5 ++---
- net/ipv4/netfilter/arptable_filter.c     | 2 +-
- 3 files changed, 4 insertions(+), 6 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/include/linux/netfilter_arp/arp_tables.h b/include/linux/netfilter_arp/arp_tables.h
-index 2aab9612f6ab..4f9a4b3c5892 100644
---- a/include/linux/netfilter_arp/arp_tables.h
-+++ b/include/linux/netfilter_arp/arp_tables.h
-@@ -53,8 +53,7 @@ int arpt_register_table(struct net *net, const struct xt_table *table,
- 			const struct arpt_replace *repl,
- 			const struct nf_hook_ops *ops);
- void arpt_unregister_table(struct net *net, const char *name);
--void arpt_unregister_table_pre_exit(struct net *net, const char *name,
--				    const struct nf_hook_ops *ops);
-+void arpt_unregister_table_pre_exit(struct net *net, const char *name);
- extern unsigned int arpt_do_table(struct sk_buff *skb,
- 				  const struct nf_hook_state *state,
- 				  struct xt_table *table);
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index cf20316094d0..c53f14b94356 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1556,13 +1556,12 @@ int arpt_register_table(struct net *net,
- 	return ret;
- }
- 
--void arpt_unregister_table_pre_exit(struct net *net, const char *name,
--				    const struct nf_hook_ops *ops)
-+void arpt_unregister_table_pre_exit(struct net *net, const char *name)
- {
- 	struct xt_table *table = xt_find_table(net, NFPROTO_ARP, name);
- 
- 	if (table)
--		nf_unregister_net_hooks(net, ops, hweight32(table->valid_hooks));
-+		nf_unregister_net_hooks(net, table->ops, hweight32(table->valid_hooks));
- }
- EXPORT_SYMBOL(arpt_unregister_table_pre_exit);
- 
-diff --git a/net/ipv4/netfilter/arptable_filter.c b/net/ipv4/netfilter/arptable_filter.c
-index b8f45e9bbec8..6922612df456 100644
---- a/net/ipv4/netfilter/arptable_filter.c
-+++ b/net/ipv4/netfilter/arptable_filter.c
-@@ -54,7 +54,7 @@ static int __net_init arptable_filter_table_init(struct net *net)
- 
- static void __net_exit arptable_filter_net_pre_exit(struct net *net)
- {
--	arpt_unregister_table_pre_exit(net, "filter", arpfilter_ops);
-+	arpt_unregister_table_pre_exit(net, "filter");
- }
- 
- static void __net_exit arptable_filter_net_exit(struct net *net)
--- 
-2.26.3
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
