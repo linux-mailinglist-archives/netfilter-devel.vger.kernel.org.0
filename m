@@ -2,82 +2,82 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C85376B72
-	for <lists+netfilter-devel@lfdr.de>; Fri,  7 May 2021 23:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F380376D38
+	for <lists+netfilter-devel@lfdr.de>; Sat,  8 May 2021 01:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhEGVIg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 7 May 2021 17:08:36 -0400
-Received: from bosmailout07.eigbox.net ([66.96.187.7]:51615 "EHLO
-        bosmailout07.eigbox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbhEGVIg (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 7 May 2021 17:08:36 -0400
-X-Greylist: delayed 1993 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 May 2021 17:08:34 EDT
-Received: from bosmailscan09.eigbox.net ([10.20.15.9])
-        by bosmailout07.eigbox.net with esmtp (Exim)
-        id 1lf7Av-0006tO-7P; Fri, 07 May 2021 16:34:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=godsofu4.com; s=dkim; h=Sender:Content-Transfer-Encoding:Content-Type:
-        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=aM9bUFGSTpfnep8zAVAJMnojqhcwpuHDFPgQnPqW4M4=; b=L/dzd5zNAEgsj4wIrKa+NtSPJw
-        eQ6m0GeIJ6FqTTz2wiDrKQSrTcort882vfn/+WrQRiS6dPQyUMnRoYzBdTC3E+FPhQC0J5kKK/D0H
-        LM0KWgEROPL9XGkkPtDbKcgO4+OMnZdyobiKxOhkfe91ky2DNAXxyoYHdAO9zpzXG+7mrT96w/C0D
-        cSd8H7hg5/xg61MAGwsjzNLbBqB/Um6CNHq79BiaCrU/VOU9jFfq+aQrz3oTlTvSP7fReohDtc0So
-        ompsD7yaXBZ9hvgSYsYha8MroiFNOSv4R+xYZEYz8YP739+DdmhMwQWEH6X2KZGYjJyQTGC+0Ty8F
-        p4i+Ml+Q==;
-Received: from [10.115.3.33] (helo=bosimpout13)
-        by bosmailscan09.eigbox.net with esmtp (Exim)
-        id 1lf7Ap-0008KG-EB; Fri, 07 May 2021 16:34:11 -0400
-Received: from boswebmail06.eigbox.net ([10.20.16.6])
-        by bosimpout13 with 
-        id 1wa22500Q07qujN01wa7Wz; Fri, 07 May 2021 16:34:11 -0400
-X-EN-SP-DIR: OUT
-X-EN-SP-SQ: 1
-Received: from [127.0.0.1] (helo=homestead)
-        by boswebmail06.eigbox.net with esmtp (Exim)
-        id 1lf79s-0005SY-TS; Fri, 07 May 2021 16:33:12 -0400
-Received: from [197.239.81.229]
- by emailmg.homestead.com
- with HTTP (HTTP/1.1 POST); Fri, 07 May 2021 16:33:12 -0400
+        id S229920AbhEGXVM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 7 May 2021 19:21:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229880AbhEGXVL (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 7 May 2021 19:21:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5BE62613C8;
+        Fri,  7 May 2021 23:20:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620429611;
+        bh=THr0F/hFQpqBAth+hbYvknveZ4BrYgFvYTKEURFHNxM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Vr/WpDjV53YHbL7fV5Zvnlfsr6/WJ3QEEfaImMagGNcqFVmoEoKRTnoO+5qDkNUox
+         8fy51aV3oxP3cWvjfi7SDmpSa9y+HkiK8p7JkmyUpPiiIOh0JOXO5Nz1ypA00JvrZ8
+         I4LlkGGOhLxJkDQKE1B6Mr3t8f+ZnXGRwf7hFj+DmBh8+udXZgYB9AirRw8LnArPFx
+         cY+ueSq2GLrACucbrQ33jJPeMfgZ9yFLye9PhY9m6VbRArWFoAmOMjFDs6ymhDRyat
+         isdtjjoKkxl2pmKGyQp5sEVfBM7pqKp6DiZZB6ncYQN9Mcqn/+DVg32lYjUiUMkd9y
+         epIZ8IfOr52Rg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4B86D60A21;
+        Fri,  7 May 2021 23:20:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Date:   Fri, 07 May 2021 20:33:12 +0000
-From:   Mrs Suzara Maling Wan <fast65@godsofu4.com>
-To:     undisclosed-recipients:;
-Subject: URGENT REPLY NEEDED
-Reply-To: suzara2017malingwan@gmail.com
-Mail-Reply-To: suzara2017malingwan@gmail.com
-Message-ID: <631345976938ca35031d7e185b0c5f57@godsofu4.com>
-X-Sender: fast65@godsofu4.com
-User-Agent: Roundcube Webmail/1.3.14
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-EN-AuthUser: fast65@godsofu4.com
-Sender:  Mrs Suzara Maling Wan <fast65@godsofu4.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 1/8] netfilter: xt_SECMARK: add new revision to fix
+ structure layout
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162042961130.24697.11074658314120530630.git-patchwork-notify@kernel.org>
+Date:   Fri, 07 May 2021 23:20:11 +0000
+References: <20210507174739.1850-2-pablo@netfilter.org>
+In-Reply-To: <20210507174739.1850-2-pablo@netfilter.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, kuba@kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Hello:
+
+This series was applied to netdev/net.git (refs/heads/master):
+
+On Fri,  7 May 2021 19:47:32 +0200 you wrote:
+> This extension breaks when trying to delete rules, add a new revision to
+> fix this.
+> 
+> Fixes: 5e6874cdb8de ("[SECMARK]: Add xtables SECMARK target")
+> Signed-off-by: Phil Sutter <phil@nwl.cc>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/8] netfilter: xt_SECMARK: add new revision to fix structure layout
+    https://git.kernel.org/netdev/net/c/c7d13358b6a2
+  - [net,2/8] netfilter: arptables: use pernet ops struct during unregister
+    https://git.kernel.org/netdev/net/c/43016d02cf6e
+  - [net,3/8] netfilter: nfnetlink: add a missing rcu_read_unlock()
+    https://git.kernel.org/netdev/net/c/7072a355ba19
+  - [net,4/8] netfilter: nfnetlink_osf: Fix a missing skb_header_pointer() NULL check
+    https://git.kernel.org/netdev/net/c/5e024c325406
+  - [net,5/8] netfilter: remove BUG_ON() after skb_header_pointer()
+    https://git.kernel.org/netdev/net/c/198ad973839c
+  - [net,6/8] netfilter: nftables: Fix a memleak from userdata error path in new objects
+    https://git.kernel.org/netdev/net/c/85dfd816fabf
+  - [net,7/8] netfilter: nftables: avoid overflows in nft_hash_buckets()
+    https://git.kernel.org/netdev/net/c/a54754ec9891
+  - [net,8/8] netfilter: nftables: avoid potential overflows on 32bit arches
+    https://git.kernel.org/netdev/net/c/6c8774a94e6a
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-My names are Mrs Suzara Maling Wan, I am a Nationality of the Republic
-of the Philippine presently base in West Africa B/F, dealing with
-exportation of Gold, I was diagnose of blood Causal decease, and my
-doctor have announce to me that I have few days to leave due to the
-condition of my sickness.
-
-I have a desire to build an orphanage home in your country of which i
-cannot execute the project myself due to my present health condition,
-I am willing to hand over the project under your care for you to help
-me fulfill my dreams and desire of building an orphanage home in your
-country.
-
-Reply in you are will to help so that I can direct you to my bank for
-the urgent transfer of the fund/money require for the project to your
-account as I have already made the fund/money available.
-
-With kind regards
-Mrs Suzara Maling Wan
