@@ -2,52 +2,72 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A16A379010
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 May 2021 16:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C058337949C
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 May 2021 18:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238025AbhEJOCW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 10 May 2021 10:02:22 -0400
-Received: from mxmail.comune.corciano.pg.it ([80.17.45.36]:34260 "EHLO
-        mxmail.comune.corciano.pg.it" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244616AbhEJOAL (ORCPT
+        id S231984AbhEJQyd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 10 May 2021 12:54:33 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:54294 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232047AbhEJQyc (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 10 May 2021 10:00:11 -0400
-X-Greylist: delayed 1689 seconds by postgrey-1.27 at vger.kernel.org; Mon, 10 May 2021 10:00:10 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mxmail.comune.corciano.pg.it (Postfix) with ESMTP id 35D665842E0;
-        Mon, 10 May 2021 15:21:23 +0200 (CEST)
-Received: from mxmail.comune.corciano.pg.it ([127.0.0.1])
-        by localhost (mxmail.comune.corciano.pg.it [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id NqtVYYqxatSM; Mon, 10 May 2021 15:21:21 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mxmail.comune.corciano.pg.it (Postfix) with ESMTP id 46B22584337;
-        Mon, 10 May 2021 15:21:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mxmail.comune.corciano.pg.it
-Received: from mxmail.comune.corciano.pg.it ([127.0.0.1])
-        by localhost (mxmail.comune.corciano.pg.it [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id XjgT7ODSEFhL; Mon, 10 May 2021 15:21:12 +0200 (CEST)
-Received: from [192.168.43.18] (unknown [197.234.221.90])
-        by mxmail.comune.corciano.pg.it (Postfix) with ESMTPSA id DE554584268;
-        Mon, 10 May 2021 15:19:59 +0200 (CEST)
-Content-Type: text/plain; charset="iso-8859-1"
+        Mon, 10 May 2021 12:54:32 -0400
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id AF92164164
+        for <netfilter-devel@vger.kernel.org>; Mon, 10 May 2021 18:52:38 +0200 (CEST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nftables 1/2] parser_bison: add set_elem_key_expr rule
+Date:   Mon, 10 May 2021 18:53:20 +0200
+Message-Id: <20210510165322.130181-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: RE
-To:     Recipients <bobmo509@netins.net>
-From:   "Sheng li Hung" <bobmo509@netins.net>
-Date:   Mon, 10 May 2021 01:18:59 -1200
-Reply-To: shengli0019@outlook.com
-Message-Id: <20210510131959.DE554584268@mxmail.comune.corciano.pg.it>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-I have a business deal for you worth $11 million
+Add a rule to specify the set key expression in preparation for the
+catch-all element support.
 
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/parser_bison.y | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-
-
-
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index b50b60649d2e..e4a5ade296d7 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -842,6 +842,9 @@ int nft_lex(void *, void *, void *);
+ %type <expr>			xfrm_expr
+ %destructor { expr_free($$); }	xfrm_expr
+ 
++%type <expr>			set_elem_key_expr
++%destructor { expr_free($$); }	set_elem_key_expr
++
+ %%
+ 
+ input			:	/* empty */
+@@ -4084,13 +4087,16 @@ set_elem_expr		:	set_elem_expr_alloc
+ 			|	set_elem_expr_alloc		set_elem_expr_options
+ 			;
+ 
+-set_elem_expr_alloc	:	set_lhs_expr	set_elem_stmt_list
++set_elem_key_expr	:	set_lhs_expr		{ $$ = $1; }
++			;
++
++set_elem_expr_alloc	:	set_elem_key_expr	set_elem_stmt_list
+ 			{
+ 				$$ = set_elem_expr_alloc(&@1, $1);
+ 				list_splice_tail($2, &$$->stmt_list);
+ 				xfree($2);
+ 			}
+-			|	set_lhs_expr
++			|	set_elem_key_expr
+ 			{
+ 				$$ = set_elem_expr_alloc(&@1, $1);
+ 			}
+-- 
+2.30.2
 
