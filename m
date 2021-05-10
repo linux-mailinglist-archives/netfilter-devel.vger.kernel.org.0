@@ -2,27 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4627637949D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 May 2021 18:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2063794A3
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 May 2021 18:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbhEJQye (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 10 May 2021 12:54:34 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:54296 "EHLO
+        id S232167AbhEJQzI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 10 May 2021 12:55:08 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:54320 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231953AbhEJQyd (ORCPT
+        with ESMTP id S232159AbhEJQy4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 10 May 2021 12:54:33 -0400
+        Mon, 10 May 2021 12:54:56 -0400
 Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 030E564165
-        for <netfilter-devel@vger.kernel.org>; Mon, 10 May 2021 18:52:39 +0200 (CEST)
+        by mail.netfilter.org (Postfix) with ESMTPSA id 0819764164
+        for <netfilter-devel@vger.kernel.org>; Mon, 10 May 2021 18:53:02 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Subject: [PATCH nftables 2/2] src: add set element catch-all support
-Date:   Mon, 10 May 2021 18:53:21 +0200
-Message-Id: <20210510165322.130181-2-pablo@netfilter.org>
+Date:   Mon, 10 May 2021 18:53:37 +0200
+Message-Id: <20210510165337.134003-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210510165322.130181-1-pablo@netfilter.org>
-References: <20210510165322.130181-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
