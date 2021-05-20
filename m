@@ -2,123 +2,141 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6800A38B9BC
-	for <lists+netfilter-devel@lfdr.de>; Fri, 21 May 2021 00:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F77D38BA52
+	for <lists+netfilter-devel@lfdr.de>; Fri, 21 May 2021 01:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhETWwV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 20 May 2021 18:52:21 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:49646 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232177AbhETWwT (ORCPT
+        id S233000AbhETXPe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 20 May 2021 19:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231723AbhETXPd (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 20 May 2021 18:52:19 -0400
-Received: from us.es (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 6AA1A64197;
-        Fri, 21 May 2021 00:50:00 +0200 (CEST)
-Date:   Fri, 21 May 2021 00:50:54 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org, dvyukov@google.com
-Subject: Re: [PATCH nf,v2] netfilter: nftables: accept all dummy chain when
- table is dormant
-Message-ID: <20210520225054.GA31069@salvia>
-References: <20210519101402.45141-1-pablo@netfilter.org>
- <20210519121533.GC8317@breakpoint.cc>
- <20210519155633.GA3182@salvia>
- <20210519183404.GG8317@breakpoint.cc>
+        Thu, 20 May 2021 19:15:33 -0400
+X-Greylist: delayed 366 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 20 May 2021 16:14:09 PDT
+Received: from gimli.rothwell.id.au (gimli.rothwell.id.au [IPv6:2404:9400:2:0:216:3eff:fee1:997a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBE2C061574;
+        Thu, 20 May 2021 16:14:09 -0700 (PDT)
+Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4FmQPj2vLxzyNq;
+        Fri, 21 May 2021 09:07:52 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
+        s=201702; t=1621552075;
+        bh=Unlt47Kkfklu/HTssSugfEykbEe17Uyd/D0Lfbbb2+k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rte9g4vDv1SIhAY2TXQqiAjvNCXngdEjTSX/iqRQM8GKscZUv5oB6kK0BpJddFLXj
+         YnVuBZT2gpViUYToYFFRsTyAiYlTy0fsCkho7MBa4fN10ZbTLMIGKfeV58IiQOkTGJ
+         LE+lgByzbIzCjFa0DLaRLCTiOA/Lz2POWzYc/UC9IIRZwnWY9kk07vk3+R9hMDWm+w
+         4q3DooAxbEDLUboyx/whjOq1qFpZIFU4autj221iQ4a8pypd5WqczDTfshJsvg19Tk
+         qYkEpBjAcSlXC8ZQlMqDLMXk38CkvGXxJPT0HsyyzEqBZjTRdsNUupAASizK/4RUxm
+         MUHmCAoLgLbAg==
+Date:   Fri, 21 May 2021 09:07:51 +1000
+From:   Stephen Rothwell <sfr@rothwell.id.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: Re: mmotm 2021-05-19-23-58 uploaded
+ (net/netfilter/nft_set_pipapo_avx2.c)
+Message-ID: <20210521090751.51afa10f@elm.ozlabs.ibm.com>
+In-Reply-To: <3d718861-28bd-dd51-82d4-96b040aa1ab4@infradead.org>
+References: <20210520065918.KsmugQp47%akpm@linux-foundation.org>
+        <3d718861-28bd-dd51-82d4-96b040aa1ab4@infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210519183404.GG8317@breakpoint.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/54qkpJW_btyh87AxEnT6H5P";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, May 19, 2021 at 08:34:04PM +0200, Florian Westphal wrote:
-> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-[...]
-> > Let's have a look a several possible scenarios:
-> > 
-> > Scenario A) batch containing two commands: dorm + wake up
-> > 
-> > From preparation phase.
-> > 
-> > - dorm: preparation phase sets the dormant flag (hooks are
-> >         still registered).
-> > - wake up: unset the dormant flag. This needs to skip hook
-> >            registration, because they are already registered.
-> >            (it needs a way to check that hooks are registered).
-> > 
-> > From commit phase.
-> > 
-> > - dorm: dormant flag is unset, no-op.
-> > - wake-up: dormant flag is unset, no-op.
-> > 
-> > From abort phase (reversed), it undoes preparation phase.
-> > 
-> > - wake-up: set the dormant flag, unregister hooks.
-> > - dorm: unset the dormant flag, register hooks (not possible)
-> > 
-> > Problems: Needs a function to check if hooks are present.
-> >           abort phase needs to register hooks.
-> 
-> I agree that abort and/or commit phases cannot register hooks.
-> 
-> > Scenario B) batch containing two commands: wake up + dorm
-> > 
-> > From preparation phase.
-> > 
-> > - wake up: unset the dormant flag. This needs to register hooks.
-> > - dorm: preparation phase sets the dormant flag (hooks are
-> >         still registered).
-> > 
-> > From commit phase.
-> > 
-> > - wake-up: dormant flag is set, unregister hooks.
-> > - dorm: dormant flag is set, unregister hooks (again).
-> > 
-> > From abort phase (reversed), it undoes preparation phase.
-> > 
-> > - dorm: unset the dormant flag, register hooks (not possible)
-> > - wake-up: set dormant flag, unregister hooks.
-> > 
-> > Problems: commit phase needs try_unregister hook function.
-> >           abort phase needs to unregister hooks.
-> 
-> ... but that is doable in the sense that unregister can't fail.
+--Sig_/54qkpJW_btyh87AxEnT6H5P
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Right, but adding "unregister hooks" to the abort path breaks a
-different scenario. This might unregister a hook that, because of a later
-wake-up action, needs to stay there, because you cannot call register
-a hook from the abort path, it's a bit of a whac-a-mole game.
+Hi Randy,
 
-> > I also tried looking at the transaction state instead of the dormant
-> > flags, similar problems.
-> > 
-> > I also tried adding more internal flags to annotate context. I looked
-> > at adding fields to nft_table to count for the number of pending hook
-> > registration / unregistration. It's all tricky.
-> 
-> Ok, too bad.
-> 
-> > The patch I posted is addressing the issue by skipping hook
-> > registration / unregistration for dormant flags updates.
-> > 
-> > What's your concern with the approach I'm proposing?
-> 
-> No concern, I did not understand the problem with hook register in
-> abort/commit.
-> 
-> I also dislike that dormat tables now retrain the hook overhead, but
-> I guess dormat tables are an exception and not the norm, so maybe
-> unfounded concern.
+On Thu, 20 May 2021 15:40:54 -0700 Randy Dunlap <rdunlap@infradead.org> wro=
+te:
+>
+> on x86_64:
+> (from linux-next, not mmotm)
 
-You are right that this approach incurs in the hook evaluation penalty
-from the packet path. But I don't think there's a need to optimize
-this feature at this stage. If it turns out that this needs to be
-optimized, maybe it should be possible to add a core feature to
-disable hook while leaving in registered (ie. hook "dormant" state).
+Yeah, this is caused by a bad merge resolution by me.
 
-So I'm just inclined to keep it simple while making sure that any
-possible (silly) robot-generated sequence with this toggle works fine.
+> ../net/netfilter/nft_set_pipapo_avx2.c: In function =E2=80=98nft_pipapo_a=
+vx2_lookup=E2=80=99:
+> ../net/netfilter/nft_set_pipapo_avx2.c:1135:10: error: implicit declarati=
+on of function =E2=80=98nft_pipapo_lookup=E2=80=99; did you mean =E2=80=98n=
+ft_pipapo_avx2_lookup=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+>    return nft_pipapo_lookup(net, set, key, ext);
+>           ^~~~~~~~~~~~~~~~~
+
+I have added this to the merge resolution today:
+
+diff --git a/include/net/netfilter/nf_tables_core.h b/include/net/netfilter=
+/nf_tables_core.h
+index 789e9eadd76d..8652b2514e57 100644
+--- a/include/net/netfilter/nf_tables_core.h
++++ b/include/net/netfilter/nf_tables_core.h
+@@ -89,6 +89,8 @@ extern const struct nft_set_type nft_set_bitmap_type;
+ extern const struct nft_set_type nft_set_pipapo_type;
+ extern const struct nft_set_type nft_set_pipapo_avx2_type;
+=20
++bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
++			    const u32 *key, const struct nft_set_ext **ext);
+ #ifdef CONFIG_RETPOLINE
+ bool nft_rhash_lookup(const struct net *net, const struct nft_set *set,
+ 		      const u32 *key, const struct nft_set_ext **ext);
+@@ -101,8 +103,6 @@ bool nft_hash_lookup_fast(const struct net *net,
+ 			  const u32 *key, const struct nft_set_ext **ext);
+ bool nft_hash_lookup(const struct net *net, const struct nft_set *set,
+ 		     const u32 *key, const struct nft_set_ext **ext);
+-bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
+-			    const u32 *key, const struct nft_set_ext **ext);
+ bool nft_set_do_lookup(const struct net *net, const struct nft_set *set,
+ 		       const u32 *key, const struct nft_set_ext **ext);
+ #else
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index 9addc0b447f7..dce866d93fee 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -408,7 +408,6 @@ int pipapo_refill(unsigned long *map, int len, int rule=
+s, unsigned long *dst,
+  *
+  * Return: true on match, false otherwise.
+  */
+-INDIRECT_CALLABLE_SCOPE
+ bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
+ 		       const u32 *key, const struct nft_set_ext **ext)
+ {
+
+It should apply on top of next-20210520 if you want to test it (I
+haven't tested it yet, but will later today).
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/54qkpJW_btyh87AxEnT6H5P
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCm68cACgkQAVBC80lX
+0GwTEQf+I/lcXs8xFLj2V8fskUhUh0ml6V76sP1fAmL1MKzIL6W60YTCmIAFNLsj
+Ix6HLfIQTuEZz7JTqmJ3SCkrng4MBad0ml6zka+ZLs7VSvLgb1h2kK2WSjbMY/8k
+G9v3TG67ZZ30tV3IrItwQ13Z94TQnY7s4P1ZMqhGIuWjDah5XVXT3DOFCqwALGjq
+JhljLSOAyoynEfZyEzfaBVEN0Ktwao2ltV7o5igFHtGVsOPy8SiB1E5HV52gSLtk
+2HQjHKqjseNCtPW6ys56iSxAJFODxf8L+/zyxqFzLC7fGqZzZa5AvRqEDo5ppvSg
+PmRNA60ZvTkE4+D3sbyafNO4TgvzMg==
+=B2VX
+-----END PGP SIGNATURE-----
+
+--Sig_/54qkpJW_btyh87AxEnT6H5P--
