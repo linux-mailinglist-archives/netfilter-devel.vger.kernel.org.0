@@ -2,119 +2,37 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B0A3932A2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 27 May 2021 17:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD92393541
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 May 2021 20:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235246AbhE0Pp3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 27 May 2021 11:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235519AbhE0Pp1 (ORCPT
+        id S235484AbhE0SJX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 27 May 2021 14:09:23 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:38114 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231226AbhE0SJX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 27 May 2021 11:45:27 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E5FC06138B
-        for <netfilter-devel@vger.kernel.org>; Thu, 27 May 2021 08:43:54 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1lmIAq-0003PD-Ru; Thu, 27 May 2021 17:43:52 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 6/6] tests: add test case for removal of anon sets with only a single element
-Date:   Thu, 27 May 2021 17:43:23 +0200
-Message-Id: <20210527154323.4003-7-fw@strlen.de>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210527154323.4003-1-fw@strlen.de>
-References: <20210527154323.4003-1-fw@strlen.de>
+        Thu, 27 May 2021 14:09:23 -0400
+Received: from netfilter.org (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id D5FEE6441E;
+        Thu, 27 May 2021 20:06:46 +0200 (CEST)
+Date:   Thu, 27 May 2021 20:07:45 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [ulogd2 PATCH] ulogd: printpkt: print pkt mark like kernel
+Message-ID: <20210527180745.GA8767@salvia>
+References: <20210524205913.18411-1-Cole.Dishington@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210524205913.18411-1-Cole.Dishington@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- .../optimizations/dumps/single_anon_set.nft   | 12 ++++++++
- .../single_anon_set.replace-single-anon-sets  | 12 ++++++++
- .../testcases/optimizations/single_anon_set   | 30 +++++++++++++++++++
- 3 files changed, 54 insertions(+)
- create mode 100644 tests/shell/testcases/optimizations/dumps/single_anon_set.nft
- create mode 100644 tests/shell/testcases/optimizations/dumps/single_anon_set.replace-single-anon-sets
- create mode 100755 tests/shell/testcases/optimizations/single_anon_set
+On Tue, May 25, 2021 at 08:59:13AM +1200, Cole Dishington wrote:
+> Print the pkt mark in hex with a preceding '0x', like the kernel prints
+> pkts logged by netfilter.
 
-diff --git a/tests/shell/testcases/optimizations/dumps/single_anon_set.nft b/tests/shell/testcases/optimizations/dumps/single_anon_set.nft
-new file mode 100644
-index 000000000000..5320bcfc360a
---- /dev/null
-+++ b/tests/shell/testcases/optimizations/dumps/single_anon_set.nft
-@@ -0,0 +1,12 @@
-+table ip test {
-+	chain test {
-+		ip saddr { 127.0.0.1 } accept
-+		ip saddr { 127.0.0.0/8 } accept
-+		ip saddr { 127.0.0.1-192.168.7.3 } accept
-+		ip daddr { 192.168.7.1, 192.168.7.5 } accept
-+		tcp dport { 80, 443 } accept
-+		tcp dport != { 22 } drop
-+		tcp sport { 1-1023 } drop
-+		iif { "lo" } accept
-+	}
-+}
-diff --git a/tests/shell/testcases/optimizations/dumps/single_anon_set.replace-single-anon-sets b/tests/shell/testcases/optimizations/dumps/single_anon_set.replace-single-anon-sets
-new file mode 100644
-index 000000000000..b9afa245fc16
---- /dev/null
-+++ b/tests/shell/testcases/optimizations/dumps/single_anon_set.replace-single-anon-sets
-@@ -0,0 +1,12 @@
-+table ip test {
-+	chain test {
-+		ip saddr 127.0.0.1 accept
-+		ip saddr 127.0.0.0/8 accept
-+		ip saddr 127.0.0.1-192.168.7.3 accept
-+		ip daddr { 192.168.7.1, 192.168.7.5 } accept
-+		tcp dport { 80, 443 } accept
-+		tcp dport != 22 drop
-+		tcp sport 1-1023 drop
-+		iif "lo" accept
-+	}
-+}
-diff --git a/tests/shell/testcases/optimizations/single_anon_set b/tests/shell/testcases/optimizations/single_anon_set
-new file mode 100755
-index 000000000000..81c8533b2a57
---- /dev/null
-+++ b/tests/shell/testcases/optimizations/single_anon_set
-@@ -0,0 +1,30 @@
-+#!/bin/bash
-+
-+set -e
-+
-+# Input file contains rules with anon sets that contain
-+# one element, plus extra rule with two elements (that should be
-+# left alone).
-+
-+# Second file contains a postprocessed version with rules
-+# translated to simple equality test rather than set lookup.
-+dumpfile=$(dirname $0)/dumps/$(basename $0).nft
-+dumpfile_pp=$(dirname $0)/dumps/$(basename $0).replace-single-anon-sets
-+
-+$NFT -O replace-single-anon-sets -f "$dumpfile"
-+A=$(mktemp)
-+$NFT list ruleset > "$A"
-+
-+# This checks that -O no-remove... kept all auto-generated
-+# dependencies, even though the imported file doesn't
-+# mention them.
-+
-+diff -u "$A" "$dumpfile_pp"
-+ret=$?
-+
-+rm -f "$A"
-+
-+$NFT delete table ip test
-+$NFT -f "$dumpfile"
-+
-+exit $ret
--- 
-2.26.3
-
+Applied, thanks.
