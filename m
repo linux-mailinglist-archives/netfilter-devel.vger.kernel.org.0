@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45AA2398E7C
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Jun 2021 17:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22AF398E84
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Jun 2021 17:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhFBPZs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Jun 2021 11:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
+        id S231991AbhFBP0Z (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Jun 2021 11:26:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbhFBPZs (ORCPT
+        with ESMTP id S231739AbhFBP0Z (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:25:48 -0400
+        Wed, 2 Jun 2021 11:26:25 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BACEC061574
-        for <netfilter-devel@vger.kernel.org>; Wed,  2 Jun 2021 08:24:04 -0700 (PDT)
-Received: from localhost ([::1]:43074 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C71C061574
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Jun 2021 08:24:41 -0700 (PDT)
+Received: from localhost ([::1]:43118 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1loSiv-0007Nc-3v; Wed, 02 Jun 2021 17:24:01 +0200
+        id 1loSjW-0007Pt-TP; Wed, 02 Jun 2021 17:24:39 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 6/9] iptables-apply: Drop unused variable
-Date:   Wed,  2 Jun 2021 17:24:00 +0200
-Message-Id: <20210602152403.5689-7-phil@nwl.cc>
+Subject: [iptables PATCH 7/9] extensions: libebt_ip6: Use xtables_ip6parse_any()
+Date:   Wed,  2 Jun 2021 17:24:01 +0200
+Message-Id: <20210602152403.5689-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210602152403.5689-1-phil@nwl.cc>
 References: <20210602152403.5689-1-phil@nwl.cc>
@@ -34,26 +34,106 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-It was assigned to but never read.
+The code was almost identical and suffered from the same problem as
+fixed in commit a76a5c997a235 ("libxtables: fix two off-by-one memory
+corruption bugs").
 
-Fixes: b45b4e3903414 ("iptables-apply: script and manpage update")
+The only functional change this involves is ebt_parse_ip6_address() will
+now accept hostnames as well.
+
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/iptables-apply | 1 -
- 1 file changed, 1 deletion(-)
+ extensions/libebt_ip6.c | 74 ++++++-----------------------------------
+ 1 file changed, 10 insertions(+), 64 deletions(-)
 
-diff --git a/iptables/iptables-apply b/iptables/iptables-apply
-index 4683b1b402d08..3a7df5e3cbc1f 100755
---- a/iptables/iptables-apply
-+++ b/iptables/iptables-apply
-@@ -231,7 +231,6 @@ case "$MODE" in
- 		"$RUNCMD" &
- 		CMD_PID=$!
- 		( sleep "$TIMEOUT"; kill "$CMD_PID" 2>/dev/null; exit 0 ) &
--		CMDTIMEOUT_PID=$!
- 		if ! wait "$CMD_PID"; then
- 			echo "failed."
- 			echo "Error: unknown error running command: $RUNCMD" >&2
+diff --git a/extensions/libebt_ip6.c b/extensions/libebt_ip6.c
+index 301bed9aadefd..3cc39271d4658 100644
+--- a/extensions/libebt_ip6.c
++++ b/extensions/libebt_ip6.c
+@@ -247,73 +247,19 @@ static void brip6_init(struct xt_entry_match *match)
+ 	memset(ipinfo->dmsk.s6_addr, 0, sizeof(ipinfo->dmsk.s6_addr));
+ }
+ 
+-static struct in6_addr *numeric_to_addr(const char *num)
++/* wrap xtables_ip6parse_any(), ignoring any but the first returned address */
++static void ebt_parse_ip6_address(char *address,
++				  struct in6_addr *addr, struct in6_addr *msk)
+ {
+-	static struct in6_addr ap;
+-
+-	if (inet_pton(AF_INET6, num, &ap) == 1)
+-		return &ap;
+-	return (struct in6_addr *)NULL;
+-}
+-
+-static struct in6_addr *parse_ip6_mask(char *mask)
+-{
+-	static struct in6_addr maskaddr;
+ 	struct in6_addr *addrp;
+-	unsigned int bits;
+-
+-	if (mask == NULL) {
+-		/* no mask at all defaults to 128 bits */
+-		memset(&maskaddr, 0xff, sizeof maskaddr);
+-		return &maskaddr;
+-	}
+-	if ((addrp = numeric_to_addr(mask)) != NULL)
+-		return addrp;
+-	if (!xtables_strtoui(mask, NULL, &bits, 0, 128))
+-		xtables_error(PARAMETER_PROBLEM, "Invalid IPv6 Mask '%s' specified", mask);
+-	if (bits != 0) {
+-		char *p = (char *)&maskaddr;
+-		memset(p, 0xff, bits / 8);
+-		memset(p + (bits / 8) + 1, 0, (128 - bits) / 8);
+-		p[bits / 8] = 0xff << (8 - (bits & 7));
+-		return &maskaddr;
+-	}
++	unsigned int naddrs;
+ 
+-	memset(&maskaddr, 0, sizeof maskaddr);
+-	return &maskaddr;
+-}
+-
+-/* Set the ipv6 mask and address. Callers should check ebt_errormsg[0].
+- * The string pointed to by address can be altered. */
+-static void ebt_parse_ip6_address(char *address, struct in6_addr *addr, struct in6_addr *msk)
+-{
+-	struct in6_addr *tmp_addr;
+-	char buf[256];
+-	char *p;
+-	int i;
+-
+-	strncpy(buf, address, sizeof(buf) - 1);
+-	/* first the mask */
+-	buf[sizeof(buf) - 1] = '\0';
+-	if ((p = strrchr(buf, '/')) != NULL) {
+-		*p = '\0';
+-		tmp_addr = parse_ip6_mask(p + 1);
+-	} else
+-		tmp_addr = parse_ip6_mask(NULL);
+-
+-	*msk = *tmp_addr;
+-
+-	/* if a null mask is given, the name is ignored, like in "any/0" */
+-	if (!memcmp(msk, &in6addr_any, sizeof(in6addr_any)))
+-		strcpy(buf, "::");
+-
+-	if (inet_pton(AF_INET6, buf, addr) < 1) {
+-		xtables_error(PARAMETER_PROBLEM, "Invalid IPv6 Address '%s' specified", buf);
+-		return;
+-	}
+-
+-	for (i = 0; i < 4; i++)
+-		addr->s6_addr32[i] &= msk->s6_addr32[i];
++	xtables_ip6parse_any(address, &addrp, msk, &naddrs);
++	if (naddrs != 1)
++		xtables_error(PARAMETER_PROBLEM,
++			      "Invalid IPv6 Address '%s' specified", address);
++	memcpy(addr, addrp, sizeof(*addr));
++	free(addrp);
+ }
+ 
+ #define OPT_SOURCE 0x01
 -- 
 2.31.1
 
