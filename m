@@ -2,70 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666C53986B4
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Jun 2021 12:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBD03987E1
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Jun 2021 13:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhFBKmh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Jun 2021 06:42:37 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:40940 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhFBKmf (ORCPT
+        id S229964AbhFBLUw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Jun 2021 07:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230343AbhFBLUv (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Jun 2021 06:42:35 -0400
-Received: from netfilter.org (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 235D7641D0;
-        Wed,  2 Jun 2021 12:39:45 +0200 (CEST)
-Date:   Wed, 2 Jun 2021 12:40:49 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Shaokun Zhang <zhangshaokun@hisilicon.com>
-Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Subject: Re: [PATCH] netfilter: conntrack: remove the repeated declaration
-Message-ID: <20210602104049.GA8127@salvia>
-References: <1622270966-36196-1-git-send-email-zhangshaokun@hisilicon.com>
+        Wed, 2 Jun 2021 07:20:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F442C061574;
+        Wed,  2 Jun 2021 04:19:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HDweTCl+XEUHn4S+CyKOejrxpiweHcZr8IDGuVHWUQs=; b=Tcy9hOUYXzaNYvb838lLrK5nCc
+        5O8nyC5DFTersZ93EfzI5GQE21FOEITswYvUc1bzoXzAdmLrF9tATY/XDeKZrK6+Y7uDTo5SwI51V
+        FR7b3yUH8ZgB9lTGbgNiLOmPV9WaVtGCr2o1NZ6zmpnEnirvy/vLeqagzG8OwvRtkfqctkQqmBwLF
+        6eHNPe1uOWKY0CLOQJHqsjx2ew98SABPi+1IhMLEXUA+Fsr57UhENhx7uAjt2qKyo2SfVW15W8XR7
+        BMcLuj4i65zASAENdaHGegVz1dnCwLR8NxGcvdydOTuvbYsXAOwarYwENq71hDSajiOaROsMPsWXk
+        bTgtZoLg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1loOsx-00B1wM-Qt; Wed, 02 Jun 2021 11:18:13 +0000
+Date:   Wed, 2 Jun 2021 12:18:07 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     syzbot <syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com>
+Cc:     anmol.karan123@gmail.com, bjorn.andersson@linaro.org,
+        coreteam@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
+        ebiggers@google.com, ebiggers@kernel.org, eric.dumazet@gmail.com,
+        fw@strlen.de, kadlec@netfilter.org, kuba@kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
+        necip@google.com, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Subject: Re: [syzbot] WARNING in idr_get_next
+Message-ID: <YLdo77SkmGLgPUBi@casper.infradead.org>
+References: <000000000000c98d7205ae300144@google.com>
+ <0000000000003e409f05c3c5f190@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1622270966-36196-1-git-send-email-zhangshaokun@hisilicon.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0000000000003e409f05c3c5f190@google.com>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+#syz fixed qrtr: Convert qrtr_ports from IDR to XArray
 
-On Sat, May 29, 2021 at 02:49:26PM +0800, Shaokun Zhang wrote:
-> Variable 'nf_conntrack_net_id' is declared twice, so remove the
-> repeated declaration.
-
-Thanks for your patch.
-
-I prefer to fix this in nf-next with this patch I'm proposing:
-
-https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210602103907.8082-1-pablo@netfilter.org/
-
-> Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-> Cc: Florian Westphal <fw@strlen.de>
-> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-> ---
->  net/netfilter/nf_conntrack_core.c | 2 --
->  1 file changed, 2 deletions(-)
+On Wed, Jun 02, 2021 at 03:30:06AM -0700, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
 > 
-> diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-> index e0befcf8113a..757520725cd4 100644
-> --- a/net/netfilter/nf_conntrack_core.c
-> +++ b/net/netfilter/nf_conntrack_core.c
-> @@ -87,8 +87,6 @@ static __read_mostly bool nf_conntrack_locks_all;
->  
->  static struct conntrack_gc_work conntrack_gc_work;
->  
-> -extern unsigned int nf_conntrack_net_id;
-> -
->  void nf_conntrack_lock(spinlock_t *lock) __acquires(lock)
->  {
->  	/* 1) Acquire the lock */
-> -- 
-> 2.7.4
-> 
+> commit 43016d02cf6e46edfc4696452251d34bba0c0435
+> Author: Florian Westphal <fw@strlen.de>
+> Date:   Mon May 3 11:51:15 2021 +0000
+
+Your bisect went astray.
