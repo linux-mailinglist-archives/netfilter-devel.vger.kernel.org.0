@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F061398E81
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Jun 2021 17:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0402C398E85
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Jun 2021 17:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhFBP0H (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Jun 2021 11:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51476 "EHLO
+        id S231286AbhFBP0c (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Jun 2021 11:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhFBP0H (ORCPT
+        with ESMTP id S231848AbhFBP0b (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:26:07 -0400
+        Wed, 2 Jun 2021 11:26:31 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D5DC061574
-        for <netfilter-devel@vger.kernel.org>; Wed,  2 Jun 2021 08:24:24 -0700 (PDT)
-Received: from localhost ([::1]:43100 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BA5C061574
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Jun 2021 08:24:47 -0700 (PDT)
+Received: from localhost ([::1]:43124 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1loSjG-0007P3-Pu; Wed, 02 Jun 2021 17:24:22 +0200
+        id 1loSjd-0007QB-NT; Wed, 02 Jun 2021 17:24:45 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/9] extensions: libebt_ip6: Drop unused variables
-Date:   Wed,  2 Jun 2021 17:23:56 +0200
-Message-Id: <20210602152403.5689-3-phil@nwl.cc>
+Subject: [iptables PATCH 3/9] libxtables: Fix memleak in xtopt_parse_hostmask()
+Date:   Wed,  2 Jun 2021 17:23:57 +0200
+Message-Id: <20210602152403.5689-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210602152403.5689-1-phil@nwl.cc>
 References: <20210602152403.5689-1-phil@nwl.cc>
@@ -34,46 +34,26 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-They are being assigned to but never read.
+The allocated hostmask duplicate needs to be freed again.
 
-Fixes: 5c8ce9c6aede0 ("ebtables-compat: add 'ip6' match extension")
+Fixes: 66266abd17adc ("libxtables: XTTYPE_HOSTMASK support")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libebt_ip6.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ libxtables/xtoptions.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/extensions/libebt_ip6.c b/extensions/libebt_ip6.c
-index b8a5a5d8c3a92..301bed9aadefd 100644
---- a/extensions/libebt_ip6.c
-+++ b/extensions/libebt_ip6.c
-@@ -250,9 +250,8 @@ static void brip6_init(struct xt_entry_match *match)
- static struct in6_addr *numeric_to_addr(const char *num)
- {
- 	static struct in6_addr ap;
--	int err;
- 
--	if ((err=inet_pton(AF_INET6, num, &ap)) == 1)
-+	if (inet_pton(AF_INET6, num, &ap) == 1)
- 		return &ap;
- 	return (struct in6_addr *)NULL;
+diff --git a/libxtables/xtoptions.c b/libxtables/xtoptions.c
+index d329f2ff7979e..0dcdf607f4678 100644
+--- a/libxtables/xtoptions.c
++++ b/libxtables/xtoptions.c
+@@ -763,6 +763,7 @@ static void xtopt_parse_hostmask(struct xt_option_call *cb)
+ 	cb->arg = p;
+ 	xtopt_parse_plenmask(cb);
+ 	cb->arg = orig_arg;
++	free(work);
  }
-@@ -292,7 +291,6 @@ static void ebt_parse_ip6_address(char *address, struct in6_addr *addr, struct i
- 	char buf[256];
- 	char *p;
- 	int i;
--	int err;
  
- 	strncpy(buf, address, sizeof(buf) - 1);
- 	/* first the mask */
-@@ -309,7 +307,7 @@ static void ebt_parse_ip6_address(char *address, struct in6_addr *addr, struct i
- 	if (!memcmp(msk, &in6addr_any, sizeof(in6addr_any)))
- 		strcpy(buf, "::");
- 
--	if ((err=inet_pton(AF_INET6, buf, addr)) < 1) {
-+	if (inet_pton(AF_INET6, buf, addr) < 1) {
- 		xtables_error(PARAMETER_PROBLEM, "Invalid IPv6 Address '%s' specified", buf);
- 		return;
- 	}
+ static void xtopt_parse_ethermac(struct xt_option_call *cb)
 -- 
 2.31.1
 
