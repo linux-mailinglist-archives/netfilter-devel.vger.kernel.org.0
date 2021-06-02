@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E54398E83
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Jun 2021 17:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AA2398E7C
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Jun 2021 17:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbhFBP0S (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Jun 2021 11:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51518 "EHLO
+        id S230479AbhFBPZs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Jun 2021 11:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbhFBP0S (ORCPT
+        with ESMTP id S230257AbhFBPZs (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:26:18 -0400
+        Wed, 2 Jun 2021 11:25:48 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D743C061574
-        for <netfilter-devel@vger.kernel.org>; Wed,  2 Jun 2021 08:24:35 -0700 (PDT)
-Received: from localhost ([::1]:43112 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BACEC061574
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Jun 2021 08:24:04 -0700 (PDT)
+Received: from localhost ([::1]:43074 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1loSjR-0007PW-HT; Wed, 02 Jun 2021 17:24:33 +0200
+        id 1loSiv-0007Nc-3v; Wed, 02 Jun 2021 17:24:01 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 5/9] nft: Avoid buffer size warnings copying iface names
-Date:   Wed,  2 Jun 2021 17:23:59 +0200
-Message-Id: <20210602152403.5689-6-phil@nwl.cc>
+Subject: [iptables PATCH 6/9] iptables-apply: Drop unused variable
+Date:   Wed,  2 Jun 2021 17:24:00 +0200
+Message-Id: <20210602152403.5689-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210602152403.5689-1-phil@nwl.cc>
 References: <20210602152403.5689-1-phil@nwl.cc>
@@ -34,53 +34,26 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The call to strncpy() is actually not needed: source buffer is only
-IFNAMSIZ bytes large and guaranteed to be null-terminated. Use this to
-avoid compiler warnings due to size parameter matching the destination
-buffer size by performing the copy using (dumb) memcpy() instead.
+It was assigned to but never read.
 
+Fixes: b45b4e3903414 ("iptables-apply: script and manpage update")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-ipv4.c | 4 ++--
- iptables/nft-ipv6.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ iptables/iptables-apply | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
-index a5b835b1f681d..34f94bd8cc24a 100644
---- a/iptables/nft-ipv4.c
-+++ b/iptables/nft-ipv4.c
-@@ -348,11 +348,11 @@ static void nft_ipv4_post_parse(int command,
- 	 */
- 	cs->fw.ip.invflags = args->invflags;
- 
--	strncpy(cs->fw.ip.iniface, args->iniface, IFNAMSIZ);
-+	memcpy(cs->fw.ip.iniface, args->iniface, IFNAMSIZ);
- 	memcpy(cs->fw.ip.iniface_mask,
- 	       args->iniface_mask, IFNAMSIZ*sizeof(unsigned char));
- 
--	strncpy(cs->fw.ip.outiface, args->outiface, IFNAMSIZ);
-+	memcpy(cs->fw.ip.outiface, args->outiface, IFNAMSIZ);
- 	memcpy(cs->fw.ip.outiface_mask,
- 	       args->outiface_mask, IFNAMSIZ*sizeof(unsigned char));
- 
-diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
-index 46008fc5e762a..d9c9400ad7dc3 100644
---- a/iptables/nft-ipv6.c
-+++ b/iptables/nft-ipv6.c
-@@ -293,11 +293,11 @@ static void nft_ipv6_post_parse(int command, struct iptables_command_state *cs,
- 	 */
- 	cs->fw6.ipv6.invflags = args->invflags;
- 
--	strncpy(cs->fw6.ipv6.iniface, args->iniface, IFNAMSIZ);
-+	memcpy(cs->fw6.ipv6.iniface, args->iniface, IFNAMSIZ);
- 	memcpy(cs->fw6.ipv6.iniface_mask,
- 	       args->iniface_mask, IFNAMSIZ*sizeof(unsigned char));
- 
--	strncpy(cs->fw6.ipv6.outiface, args->outiface, IFNAMSIZ);
-+	memcpy(cs->fw6.ipv6.outiface, args->outiface, IFNAMSIZ);
- 	memcpy(cs->fw6.ipv6.outiface_mask,
- 	       args->outiface_mask, IFNAMSIZ*sizeof(unsigned char));
- 
+diff --git a/iptables/iptables-apply b/iptables/iptables-apply
+index 4683b1b402d08..3a7df5e3cbc1f 100755
+--- a/iptables/iptables-apply
++++ b/iptables/iptables-apply
+@@ -231,7 +231,6 @@ case "$MODE" in
+ 		"$RUNCMD" &
+ 		CMD_PID=$!
+ 		( sleep "$TIMEOUT"; kill "$CMD_PID" 2>/dev/null; exit 0 ) &
+-		CMDTIMEOUT_PID=$!
+ 		if ! wait "$CMD_PID"; then
+ 			echo "failed."
+ 			echo "Error: unknown error running command: $RUNCMD" >&2
 -- 
 2.31.1
 
