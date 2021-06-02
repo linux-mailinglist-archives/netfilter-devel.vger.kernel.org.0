@@ -2,152 +2,74 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F646399018
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Jun 2021 18:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5AC39910B
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Jun 2021 19:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhFBQjL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Jun 2021 12:39:11 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:46852 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbhFBQjK (ORCPT
+        id S229978AbhFBRFE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Jun 2021 13:05:04 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:42458 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhFBRFE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:39:10 -0400
-Received: by mail-io1-f71.google.com with SMTP id a24-20020a5d95580000b029044cbcdddd23so1935945ios.13
-        for <netfilter-devel@vger.kernel.org>; Wed, 02 Jun 2021 09:37:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=kaa2yadqbxfM98fGWlqhzlCBWMNgO1nQ34AqbCOd+Ug=;
-        b=oozWht/3yV6wfVsQtTqjeuPBS1Fu+b+8x6bCzHHz0hBJEtHx34AdVDHrJdUykIFT0f
-         TmNzPr+z5bKuCIHkA21jl7kL4Ii8shKI8xL2jRl4xXAx5XJ3TPQkFR5fWIBqrcYUX4Bw
-         dtesPQ1mq+yW2rpEAXjQCsT6XLb8DvUv+oZu+vSYBL9s69U0w6BXYC2SmOotwSnx2j5u
-         swLjqknnuS7DKZIbSIKnZvcxYvO0V8vDtsMaPBKd5YPBtm4lpHnPpNUWYSMZAslMWPJ3
-         Yj8gAt2AQyeTQfMq3nM7uoBTLvCpI425td9t1wf7EyAgs9TO+H/76ZM8PEljq1o4W//G
-         hR2Q==
-X-Gm-Message-State: AOAM531AsSDGisUkh0gc5qn7/KBISYGrJ5oXd3aRsArHHk+nrUY+YcPS
-        9Y6onx+aYNCVZC+6YuUe5GqIMq7viNpMh3XofoGxQkWB3Y3e
-X-Google-Smtp-Source: ABdhPJxb5RcIkLclOuo1ds69KxkNJjR6Hh8O7u1W6hGDT2+NlVonxrtP5jwVaNsLbchUvHguaT3xNifgIYEO4vigrPmZLqnx7FC5
+        Wed, 2 Jun 2021 13:05:04 -0400
+Received: from netfilter.org (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id BE28F641FC;
+        Wed,  2 Jun 2021 19:02:12 +0200 (CEST)
+Date:   Wed, 2 Jun 2021 19:03:17 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     syzbot <syzbot+ce96ca2b1d0b37c6422d@syzkaller.appspotmail.com>
+Cc:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] general protection fault in nft_set_elem_expr_alloc
+Message-ID: <20210602170317.GA18869@salvia>
+References: <000000000000ef07b205c3cb1234@google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1008:: with SMTP id r8mr15472439jab.112.1622651847194;
- Wed, 02 Jun 2021 09:37:27 -0700 (PDT)
-Date:   Wed, 02 Jun 2021 09:37:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f23c9e05c3cb1250@google.com>
-Subject: [syzbot] general protection fault in lock_page_memcg
-From:   syzbot <syzbot+15a9609cfd4687eb7269@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        coreteam@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
-        fw@strlen.de, hannes@cmpxchg.org, kadlec@netfilter.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com, vdavydov.dev@gmail.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <000000000000ef07b205c3cb1234@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
+On Wed, Jun 02, 2021 at 09:37:26AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    6850ec97 Merge branch 'mptcp-fixes-for-5-13'
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1355504dd00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ce96ca2b1d0b37c6422d
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1502d517d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12bbbe13d00000
+> 
+> The issue was bisected to:
+> 
+> commit 05abe4456fa376040f6cc3cc6830d2e328723478
+> Author: Pablo Neira Ayuso <pablo@netfilter.org>
+> Date:   Wed May 20 13:44:37 2020 +0000
+> 
+>     netfilter: nf_tables: allow to register flowtable with no devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10fa1387d00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=12fa1387d00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14fa1387d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ce96ca2b1d0b37c6422d@syzkaller.appspotmail.com
+> Fixes: 05abe4456fa3 ("netfilter: nf_tables: allow to register flowtable with no devices")
+> 
+> general protection fault, probably for non-canonical address 0xdffffc000000000e: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000070-0x0000000000000077]
+> CPU: 1 PID: 8438 Comm: syz-executor343 Not tainted 5.13.0-rc3-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:nft_set_elem_expr_alloc+0x17e/0x280 net/netfilter/nf_tables_api.c:5321
+> Code: 48 c1 ea 03 80 3c 02 00 0f 85 09 01 00 00 49 8b 9d c0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 70 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d9 00 00 00 48 8b 5b 70 48 85 db 74 21 e8 9a bd
 
-syzbot found the following issue on:
+It's a real bug. Bisect is not correct though.
 
-HEAD commit:    a1f92694 Add linux-next specific files for 20210518
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=112d5fcfd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d612e75ffd53a6d3
-dashboard link: https://syzkaller.appspot.com/bug?extid=15a9609cfd4687eb7269
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143ecb5fd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11c7326bd00000
-
-The issue was bisected to:
-
-commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
-Author: Florian Westphal <fw@strlen.de>
-Date:   Wed Apr 21 07:51:08 2021 +0000
-
-    netfilter: arp_tables: pass table pointer via nf_hook_ops
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16d4af03d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15d4af03d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11d4af03d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+15a9609cfd4687eb7269@syzkaller.appspotmail.com
-Fixes: f9006acc8dfe ("netfilter: arp_tables: pass table pointer via nf_hook_ops")
-
-general protection fault, probably for non-canonical address 0xdffffd1002ed3a01: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x000008801769d008-0x000008801769d00f]
-CPU: 1 PID: 8455 Comm: syz-executor974 Not tainted 5.13.0-rc2-next-20210518-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:_compound_head include/linux/page-flags.h:182 [inline]
-RIP: 0010:lock_page_memcg+0x29/0x7d0 mm/memcontrol.c:1984
-Code: 00 48 b8 00 00 00 00 00 fc ff df 55 48 89 e5 41 57 49 89 ff 41 56 41 55 41 54 4c 8d 67 08 4c 89 e2 53 48 c1 ea 03 48 83 ec 20 <80> 3c 02 00 0f 85 10 06 00 00 49 8b 47 08 48 8d 50 ff a8 01 4c 0f
-RSP: 0018:ffffc9000194f8b8 EFLAGS: 00010286
-RAX: dffffc0000000000 RBX: 00001e801769d000 RCX: 0000000000000000
-RDX: 0000011002ed3a01 RSI: ffffffff81aee7cd RDI: 000008801769d000
-RBP: ffffc9000194f900 R08: 0000000000000000 R09: ffff88801cf9b82f
-R10: ffffffff81be0aa6 R11: 000000000000003f R12: 000008801769d008
-R13: 0000000000000001 R14: 000008801769d000 R15: 000008801769d000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000480de8 CR3: 00000000127fa000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- page_remove_rmap+0x25/0x1480 mm/rmap.c:1348
- zap_huge_pmd+0x9c4/0xfb0 mm/huge_memory.c:1689
- zap_pmd_range mm/memory.c:1362 [inline]
- zap_pud_range mm/memory.c:1404 [inline]
- zap_p4d_range mm/memory.c:1425 [inline]
- unmap_page_range+0x1aac/0x2660 mm/memory.c:1446
- unmap_single_vma+0x198/0x300 mm/memory.c:1491
- unmap_vmas+0x16d/0x2f0 mm/memory.c:1523
- exit_mmap+0x1d0/0x620 mm/mmap.c:3201
- __mmput+0x122/0x470 kernel/fork.c:1096
- mmput+0x58/0x60 kernel/fork.c:1117
- exit_mm kernel/exit.c:502 [inline]
- do_exit+0xb0a/0x2a70 kernel/exit.c:813
- do_group_exit+0x125/0x310 kernel/exit.c:923
- __do_sys_exit_group kernel/exit.c:934 [inline]
- __se_sys_exit_group kernel/exit.c:932 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:932
- do_syscall_64+0x31/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43da89
-Code: Unable to access opcode bytes at RIP 0x43da5f.
-RSP: 002b:00007ffc45bf0b08 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 00000000004ae230 RCX: 000000000043da89
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000000
-R10: 0000000000000003 R11: 0000000000000246 R12: 00000000004ae230
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-Modules linked in:
----[ end trace 048141dd003294dd ]---
-RIP: 0010:_compound_head include/linux/page-flags.h:182 [inline]
-RIP: 0010:lock_page_memcg+0x29/0x7d0 mm/memcontrol.c:1984
-Code: 00 48 b8 00 00 00 00 00 fc ff df 55 48 89 e5 41 57 49 89 ff 41 56 41 55 41 54 4c 8d 67 08 4c 89 e2 53 48 c1 ea 03 48 83 ec 20 <80> 3c 02 00 0f 85 10 06 00 00 49 8b 47 08 48 8d 50 ff a8 01 4c 0f
-RSP: 0018:ffffc9000194f8b8 EFLAGS: 00010286
-RAX: dffffc0000000000 RBX: 00001e801769d000 RCX: 0000000000000000
-RDX: 0000011002ed3a01 RSI: ffffffff81aee7cd RDI: 000008801769d000
-RBP: ffffc9000194f900 R08: 0000000000000000 R09: ffff88801cf9b82f
-R10: ffffffff81be0aa6 R11: 000000000000003f R12: 000008801769d008
-R13: 0000000000000001 R14: 000008801769d000 R15: 000008801769d000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000480de8 CR3: 00000000127fa000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+I'll post a patch to fix it. Thanks.
