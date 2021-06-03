@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D52039AE70
+	by mail.lfdr.de (Postfix) with ESMTP id EEB9139AE71
 	for <lists+netfilter-devel@lfdr.de>; Fri,  4 Jun 2021 00:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhFCW76 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 3 Jun 2021 18:59:58 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:45826 "EHLO
+        id S229814AbhFCW77 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 3 Jun 2021 18:59:59 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:45828 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhFCW76 (ORCPT
+        with ESMTP id S229576AbhFCW77 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 3 Jun 2021 18:59:58 -0400
+        Thu, 3 Jun 2021 18:59:59 -0400
 Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 3816E641FD
+        by mail.netfilter.org (Postfix) with ESMTPSA id A867E6420A
         for <netfilter-devel@vger.kernel.org>; Fri,  4 Jun 2021 00:57:04 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH iptables,v2 2/5] tests: xlate-test: support multiline expectation
-Date:   Fri,  4 Jun 2021 00:58:03 +0200
-Message-Id: <20210603225806.13625-3-pablo@netfilter.org>
+Subject: [PATCH iptables,v2 3/5] extensions: libxt_connlimit: add translation
+Date:   Fri,  4 Jun 2021 00:58:04 +0200
+Message-Id: <20210603225806.13625-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210603225806.13625-1-pablo@netfilter.org>
 References: <20210603225806.13625-1-pablo@netfilter.org>
@@ -29,55 +29,119 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Extend translation test to deal with multiline translation, e.g.
-
-iptables-translate -A INPUT -m connlimit --connlimit-above 2
-nft add set ip filter connlimit0 { type ipv4_addr; flags dynamic; }
-nft add rule ip filter INPUT add @connlimit0 { ip saddr ct count over 2 } counter
+This patch adds a translation for connlimit matches which requires
+the definition of a set and the family context (either IPv4 or IPv6)
+which is required to display the netmask accordingly.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- xlate-test.py | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ extensions/libxt_connlimit.c      | 49 +++++++++++++++++++++++++++++++
+ extensions/libxt_connlimit.txlate | 15 ++++++++++
+ 2 files changed, 64 insertions(+)
+ create mode 100644 extensions/libxt_connlimit.txlate
 
-diff --git a/xlate-test.py b/xlate-test.py
-index 4c014f9bd269..cba98b6e8e49 100755
---- a/xlate-test.py
-+++ b/xlate-test.py
-@@ -39,14 +39,21 @@ def run_test(name, payload):
-     tests = passed = failed = errors = 0
-     result = []
+diff --git a/extensions/libxt_connlimit.c b/extensions/libxt_connlimit.c
+index a569f86aa6b2..118faea560f7 100644
+--- a/extensions/libxt_connlimit.c
++++ b/extensions/libxt_connlimit.c
+@@ -2,6 +2,8 @@
+ #include <netdb.h>
+ #include <string.h>
+ #include <xtables.h>
++#include <arpa/inet.h>
++
+ #include <linux/netfilter/xt_connlimit.h>
  
--    for line in payload:
-+    line = payload.readline()
-+    while line:
-         if line.startswith(keywords):
-             tests += 1
-             process = Popen([ xtables_nft_multi ] + shlex.split(line), stdout=PIPE, stderr=PIPE)
-             (output, error) = process.communicate()
-             if process.returncode == 0:
-                 translation = output.decode("utf-8").rstrip(" \n")
--                expected = next(payload).rstrip(" \n")
-+                expected = payload.readline().rstrip(" \n")
-+                next_expected = payload.readline().rstrip(" \n")
-+                if next_expected.startswith("nft"):
-+                    expected += "\n" + next_expected
-+                    line = payload.readline()
-+                else:
-+                    line = next_expected
-                 if translation != expected:
-                     test_passed = False
-                     failed += 1
-@@ -62,6 +69,9 @@ def run_test(name, payload):
-                 errors += 1
-                 result.append(name + ": " + red("Error: ") + "iptables-translate failure")
-                 result.append(error.decode("utf-8"))
-+                line = payload.readline()
-+        else:
-+                line = payload.readline()
-     if (passed == tests) and not args.test:
-         print(name + ": " + green("OK"))
-     if not test_passed:
+ enum {
+@@ -183,6 +185,51 @@ static void connlimit_save6(const void *ip, const struct xt_entry_match *match)
+ 	}
+ }
+ 
++static int connlimit_xlate(struct xt_xlate *xl,
++			   const struct xt_xlate_mt_params *params)
++{
++	const struct xt_connlimit_info *info = (const void *)params->match->data;
++	static uint32_t connlimit_id;
++	char netmask[128] = {};
++	char addr[64] = {};
++	uint32_t mask;
++
++	switch (xt_xlate_get_family(xl)) {
++	case AF_INET:
++		mask = count_bits4(info->v4_mask);
++		if (mask != 32) {
++			struct in_addr *in = (struct in_addr *)&info->v4_mask;
++
++			inet_ntop(AF_INET, in, addr, sizeof(addr));
++			snprintf(netmask, sizeof(netmask), "and %s ", addr);
++		}
++		break;
++	case AF_INET6:
++		mask = count_bits6(info->v6_mask);
++		if (mask != 128) {
++			struct in6_addr *in6 = (struct in6_addr *)&info->v6_mask;
++
++			inet_ntop(AF_INET6, in6, addr, sizeof(addr));
++			snprintf(netmask, sizeof(netmask), "and %s ", addr);
++		}
++		break;
++	default:
++		return 0;
++	}
++
++	xt_xlate_set_add(xl, "connlimit%u { type ipv4_addr; flags dynamic; }",
++			 connlimit_id);
++	xt_xlate_rule_add(xl, "add @connlimit%u { %s %s %sct count %s%u }",
++			  connlimit_id++,
++			  xt_xlate_get_family(xl) == AF_INET ? "ip" : "ip6",
++			  info->flags & XT_CONNLIMIT_DADDR ? "daddr" : "saddr",
++			  netmask,
++			  info->flags & XT_CONNLIMIT_INVERT ? "" : "over ",
++			  info->limit);
++
++	return 1;
++}
++
+ static struct xtables_match connlimit_mt_reg[] = {
+ 	{
+ 		.name          = "connlimit",
+@@ -228,6 +275,7 @@ static struct xtables_match connlimit_mt_reg[] = {
+ 		.print         = connlimit_print4,
+ 		.save          = connlimit_save4,
+ 		.x6_options    = connlimit_opts,
++		.xlate         = connlimit_xlate,
+ 	},
+ 	{
+ 		.name          = "connlimit",
+@@ -243,6 +291,7 @@ static struct xtables_match connlimit_mt_reg[] = {
+ 		.print         = connlimit_print6,
+ 		.save          = connlimit_save6,
+ 		.x6_options    = connlimit_opts,
++		.xlate         = connlimit_xlate,
+ 	},
+ };
+ 
+diff --git a/extensions/libxt_connlimit.txlate b/extensions/libxt_connlimit.txlate
+new file mode 100644
+index 000000000000..758868c4436c
+--- /dev/null
++++ b/extensions/libxt_connlimit.txlate
+@@ -0,0 +1,15 @@
++iptables-translate -A INPUT -m connlimit --connlimit-above 2
++nft add set ip filter connlimit0 { type ipv4_addr; flags dynamic; }
++nft add rule ip filter INPUT add @connlimit0 { ip saddr ct count over 2 } counter
++
++iptables-translate -A INPUT -m connlimit --connlimit-upto 2
++nft add set ip filter connlimit0 { type ipv4_addr; flags dynamic; }
++nft add rule ip filter INPUT add @connlimit0 { ip saddr ct count 2 } counter
++
++iptables-translate -A INPUT -m connlimit --connlimit-upto 2 --connlimit-mask 24
++nft add set ip filter connlimit0 { type ipv4_addr; flags dynamic; }
++nft add rule ip filter INPUT add @connlimit0 { ip saddr and 255.255.255.0 ct count 2 } counter
++
++iptables-translate -A INPUT -m connlimit --connlimit-upto 2 --connlimit-daddr
++nft add set ip filter connlimit0 { type ipv4_addr; flags dynamic; }
++nft add rule ip filter INPUT add @connlimit0 { ip daddr ct count 2 } counter
 -- 
 2.20.1
 
