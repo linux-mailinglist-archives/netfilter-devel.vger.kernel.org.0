@@ -2,169 +2,196 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4475439AE73
-	for <lists+netfilter-devel@lfdr.de>; Fri,  4 Jun 2021 00:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4039239AEC3
+	for <lists+netfilter-devel@lfdr.de>; Fri,  4 Jun 2021 01:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhFCW77 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 3 Jun 2021 18:59:59 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:45826 "EHLO
+        id S229576AbhFCXkY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 3 Jun 2021 19:40:24 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:45938 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhFCW77 (ORCPT
+        with ESMTP id S229697AbhFCXkX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 3 Jun 2021 18:59:59 -0400
+        Thu, 3 Jun 2021 19:40:23 -0400
 Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 5B4506420B
-        for <netfilter-devel@vger.kernel.org>; Fri,  4 Jun 2021 00:57:05 +0200 (CEST)
+        by mail.netfilter.org (Postfix) with ESMTPSA id 98B37641FD
+        for <netfilter-devel@vger.kernel.org>; Fri,  4 Jun 2021 01:37:29 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH iptables,v2 5/5] extensions: libxt_conntrack: simplify translation using negation
-Date:   Fri,  4 Jun 2021 00:58:06 +0200
-Message-Id: <20210603225806.13625-6-pablo@netfilter.org>
+Subject: [PATCH nf-next] netfilter: nf_tables: add last expression
+Date:   Fri,  4 Jun 2021 01:38:31 +0200
+Message-Id: <20210603233831.21962-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210603225806.13625-1-pablo@netfilter.org>
-References: <20210603225806.13625-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Available since nftables 0.9.9. For example:
-
- # iptables-translate -I INPUT -m state ! --state NEW,INVALID
- nft insert rule ip filter INPUT ct state ! invalid,new  counter
+Add a new optional expression that allows you to know when last match on
+a given rule / set element.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- extensions/libxt_conntrack.c      | 46 +++++++++----------------------
- extensions/libxt_conntrack.txlate |  8 +++---
- 2 files changed, 17 insertions(+), 37 deletions(-)
+ include/uapi/linux/netfilter/nf_tables.h | 13 ++++
+ net/netfilter/Kconfig                    |  6 ++
+ net/netfilter/Makefile                   |  1 +
+ net/netfilter/nft_last.c                 | 94 ++++++++++++++++++++++++
+ 4 files changed, 114 insertions(+)
+ create mode 100644 net/netfilter/nft_last.c
 
-diff --git a/extensions/libxt_conntrack.c b/extensions/libxt_conntrack.c
-index 7f7b45ee1f82..64018ce152b7 100644
---- a/extensions/libxt_conntrack.c
-+++ b/extensions/libxt_conntrack.c
-@@ -1151,40 +1151,30 @@ static void state_save(const void *ip, const struct xt_entry_match *match)
- static void state_xlate_print(struct xt_xlate *xl, unsigned int statemask, int inverted)
- {
- 	const char *sep = "";
--	int one_flag_set;
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index 19715e2679d1..1c5814e3b2b2 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -1195,6 +1195,19 @@ enum nft_counter_attributes {
+ };
+ #define NFTA_COUNTER_MAX	(__NFTA_COUNTER_MAX - 1)
  
--	one_flag_set = !(statemask & (statemask - 1));
--
--	if (inverted && !one_flag_set)
--		xt_xlate_add(xl, "& (");
--	else if (inverted)
--		xt_xlate_add(xl, "& ");
-+	if (inverted)
-+		xt_xlate_add(xl, "! ");
++/**
++ * enum nft_last_attributes - nf_tables last expression netlink attributes
++ *
++ * @NFTA_LAST_MSECS: number of bytes (NLA_U64)
++ */
++enum nft_last_attributes {
++	NFTA_LAST_UNSPEC,
++	NFTA_LAST_MSECS,
++	NFTA_LAST_PAD,
++	__NFTA_LAST_MAX
++};
++#define NFTA_LAST_MAX	(__NFTA_LAST_MAX - 1)
++
+ /**
+  * enum nft_log_attributes - nf_tables log expression netlink attributes
+  *
+diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
+index 172d74560632..cf113cbfb69e 100644
+--- a/net/netfilter/Kconfig
++++ b/net/netfilter/Kconfig
+@@ -509,6 +509,12 @@ config NFT_CONNLIMIT
+ 	  This option adds the "connlimit" expression that you can use to
+ 	  ratelimit rule matchings per connections.
  
- 	if (statemask & XT_CONNTRACK_STATE_INVALID) {
- 		xt_xlate_add(xl, "%s%s", sep, "invalid");
--		sep = inverted && !one_flag_set ? "|" : ",";
-+		sep = ",";
- 	}
- 	if (statemask & XT_CONNTRACK_STATE_BIT(IP_CT_NEW)) {
- 		xt_xlate_add(xl, "%s%s", sep, "new");
--		sep = inverted && !one_flag_set ? "|" : ",";
-+		sep = ",";
- 	}
- 	if (statemask & XT_CONNTRACK_STATE_BIT(IP_CT_RELATED)) {
- 		xt_xlate_add(xl, "%s%s", sep, "related");
--		sep = inverted && !one_flag_set ? "|" : ",";
-+		sep = ",";
- 	}
- 	if (statemask & XT_CONNTRACK_STATE_BIT(IP_CT_ESTABLISHED)) {
- 		xt_xlate_add(xl, "%s%s", sep, "established");
--		sep = inverted && !one_flag_set ? "|" : ",";
-+		sep = ",";
- 	}
- 	if (statemask & XT_CONNTRACK_STATE_UNTRACKED) {
- 		xt_xlate_add(xl, "%s%s", sep, "untracked");
--		sep = inverted && !one_flag_set ? "|" : ",";
-+		sep = ",";
- 	}
--
--	if (inverted && !one_flag_set)
--		xt_xlate_add(xl, ") == 0");
--	else if (inverted)
--		xt_xlate_add(xl, " == 0");
- }
- 
- static int state_xlate(struct xt_xlate *xl,
-@@ -1203,36 +1193,26 @@ static int state_xlate(struct xt_xlate *xl,
- static void status_xlate_print(struct xt_xlate *xl, unsigned int statusmask, int inverted)
- {
- 	const char *sep = "";
--	int one_flag_set;
- 
--	one_flag_set = !(statusmask & (statusmask - 1));
--
--	if (inverted && !one_flag_set)
--		xt_xlate_add(xl, "& (");
--	else if (inverted)
--		xt_xlate_add(xl, "& ");
-+	if (inverted)
-+		xt_xlate_add(xl, "! ");
- 
- 	if (statusmask & IPS_EXPECTED) {
- 		xt_xlate_add(xl, "%s%s", sep, "expected");
--		sep = inverted && !one_flag_set ? "|" : ",";
-+		sep = ",";
- 	}
- 	if (statusmask & IPS_SEEN_REPLY) {
- 		xt_xlate_add(xl, "%s%s", sep, "seen-reply");
--		sep = inverted && !one_flag_set ? "|" : ",";
-+		sep = ",";
- 	}
- 	if (statusmask & IPS_ASSURED) {
- 		xt_xlate_add(xl, "%s%s", sep, "assured");
--		sep = inverted && !one_flag_set ? "|" : ",";
-+		sep = ",";
- 	}
- 	if (statusmask & IPS_CONFIRMED) {
- 		xt_xlate_add(xl, "%s%s", sep, "confirmed");
--		sep = inverted && !one_flag_set ? "|" : ",";
-+		sep = ",";
- 	}
--
--	if (inverted && !one_flag_set)
--		xt_xlate_add(xl, ") == 0");
--	else if (inverted)
--		xt_xlate_add(xl, " == 0");
- }
- 
- static void addr_xlate_print(struct xt_xlate *xl,
-diff --git a/extensions/libxt_conntrack.txlate b/extensions/libxt_conntrack.txlate
-index 8cc7c504ab4b..45fba984ba96 100644
---- a/extensions/libxt_conntrack.txlate
-+++ b/extensions/libxt_conntrack.txlate
-@@ -2,10 +2,10 @@ iptables-translate -t filter -A INPUT -m conntrack --ctstate NEW,RELATED -j ACCE
- nft add rule ip filter INPUT ct state new,related counter accept
- 
- ip6tables-translate -t filter -A INPUT -m conntrack ! --ctstate NEW,RELATED -j ACCEPT
--nft add rule ip6 filter INPUT ct state & (new|related) == 0 counter accept
-+nft add rule ip6 filter INPUT ct state ! new,related counter accept
- 
- ip6tables-translate -t filter -A INPUT -m conntrack ! --ctstate NEW -j ACCEPT
--nft add rule ip6 filter INPUT ct state & new == 0 counter accept
-+nft add rule ip6 filter INPUT ct state ! new counter accept
- 
- iptables-translate -t filter -A INPUT -m conntrack --ctproto UDP -j ACCEPT
- nft add rule ip filter INPUT ct original protocol 17 counter accept
-@@ -35,10 +35,10 @@ iptables-translate -t filter -A INPUT -m conntrack --ctstatus EXPECTED -j ACCEPT
- nft add rule ip filter INPUT ct status expected counter accept
- 
- iptables-translate -t filter -A INPUT -m conntrack ! --ctstatus CONFIRMED -j ACCEPT
--nft add rule ip filter INPUT ct status & confirmed == 0 counter accept
-+nft add rule ip filter INPUT ct status ! confirmed counter accept
- 
- iptables-translate -t filter -A INPUT -m conntrack ! --ctstatus CONFIRMED,ASSURED -j ACCEPT
--nft add rule ip filter INPUT ct status & (assured|confirmed) == 0 counter accept
-+nft add rule ip filter INPUT ct status ! assured,confirmed counter accept
- 
- iptables-translate -t filter -A INPUT -m conntrack --ctstatus CONFIRMED,ASSURED -j ACCEPT
- nft add rule ip filter INPUT ct status assured,confirmed counter accept
++config NFT_LAST
++	tristate "Netfilter nf_tables last module"
++	help
++	  This option adds the "last" expression that you can use to know
++	  when this rule has matched last time.
++
+ config NFT_LOG
+ 	tristate "Netfilter nf_tables log module"
+ 	help
+diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
+index e80e010354b1..60204c6542e7 100644
+--- a/net/netfilter/Makefile
++++ b/net/netfilter/Makefile
+@@ -100,6 +100,7 @@ obj-$(CONFIG_NFT_REJECT_INET)	+= nft_reject_inet.o
+ obj-$(CONFIG_NFT_REJECT_NETDEV)	+= nft_reject_netdev.o
+ obj-$(CONFIG_NFT_TUNNEL)	+= nft_tunnel.o
+ obj-$(CONFIG_NFT_COUNTER)	+= nft_counter.o
++obj-$(CONFIG_NFT_LAST)		+= nft_last.o
+ obj-$(CONFIG_NFT_LOG)		+= nft_log.o
+ obj-$(CONFIG_NFT_MASQ)		+= nft_masq.o
+ obj-$(CONFIG_NFT_REDIR)		+= nft_redir.o
+diff --git a/net/netfilter/nft_last.c b/net/netfilter/nft_last.c
+new file mode 100644
+index 000000000000..14b3aa27d4c4
+--- /dev/null
++++ b/net/netfilter/nft_last.c
+@@ -0,0 +1,94 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/seqlock.h>
++#include <linux/netlink.h>
++#include <linux/netfilter.h>
++#include <linux/netfilter/nf_tables.h>
++#include <net/netfilter/nf_tables.h>
++
++struct nft_last_priv {
++	unsigned long last_jiffies;
++};
++
++static const struct nla_policy nft_last_policy[NFTA_LAST_MAX + 1] = {
++	[NFTA_LAST_MSECS] = { .type = NLA_U64 },
++};
++
++static int nft_last_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
++			 const struct nlattr * const tb[])
++{
++	struct nft_last_priv *priv = nft_expr_priv(expr);
++	u64 last;
++	int err;
++
++	if (tb[NFTA_LAST_MSECS]) {
++		err = nf_msecs_to_jiffies64(tb[NFTA_LAST_MSECS], &last);
++		if (err < 0)
++			return err;
++
++		priv->last_jiffies = (unsigned long)last;
++	}
++
++	return 0;
++}
++
++static void nft_last_eval(const struct nft_expr *expr,
++			  struct nft_regs *regs, const struct nft_pktinfo *pkt)
++{
++	struct nft_last_priv *priv = nft_expr_priv(expr);
++
++	priv->last_jiffies = jiffies;
++}
++
++static int nft_last_dump(struct sk_buff *skb, const struct nft_expr *expr)
++{
++	struct nft_last_priv *priv = nft_expr_priv(expr);
++
++	if (nla_put_be64(skb, NFTA_LAST_MSECS,
++			 nf_jiffies64_to_msecs(priv->last_jiffies),
++			 NFTA_LAST_PAD))
++		goto nla_put_failure;
++
++	return 0;
++
++nla_put_failure:
++	return -1;
++}
++
++static struct nft_expr_type nft_last_type;
++static const struct nft_expr_ops nft_last_ops = {
++	.type		= &nft_last_type,
++	.size		= NFT_EXPR_SIZE(sizeof(struct nft_last_priv)),
++	.eval		= nft_last_eval,
++	.init		= nft_last_init,
++	.dump		= nft_last_dump,
++};
++
++static struct nft_expr_type nft_last_type __read_mostly = {
++	.name		= "last",
++	.ops		= &nft_last_ops,
++	.policy		= nft_last_policy,
++	.maxattr	= NFTA_LAST_MAX,
++	.flags		= NFT_EXPR_STATEFUL,
++	.owner		= THIS_MODULE,
++};
++
++static int __init nft_last_module_init(void)
++{
++	return nft_register_expr(&nft_last_type);
++}
++
++static void __exit nft_last_module_exit(void)
++{
++	nft_unregister_expr(&nft_last_type);
++}
++
++module_init(nft_last_module_init);
++module_exit(nft_last_module_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Pablo Neira Ayuso <pablo@netfilter.org>");
++MODULE_ALIAS_NFT_EXPR("last");
++MODULE_DESCRIPTION("nftables last expression support");
 -- 
 2.20.1
 
