@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C95399675
-	for <lists+netfilter-devel@lfdr.de>; Thu,  3 Jun 2021 01:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C4A3996B7
+	for <lists+netfilter-devel@lfdr.de>; Thu,  3 Jun 2021 02:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbhFBXt7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Jun 2021 19:49:59 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:43216 "EHLO
+        id S229790AbhFCAIo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Jun 2021 20:08:44 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:43240 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhFBXt7 (ORCPT
+        with ESMTP id S229568AbhFCAIo (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Jun 2021 19:49:59 -0400
+        Wed, 2 Jun 2021 20:08:44 -0400
 Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 770F264200
-        for <netfilter-devel@vger.kernel.org>; Thu,  3 Jun 2021 01:47:07 +0200 (CEST)
+        by mail.netfilter.org (Postfix) with ESMTPSA id 1523364156
+        for <netfilter-devel@vger.kernel.org>; Thu,  3 Jun 2021 02:05:52 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH iptables] extensions: libxt_tcp: rework translation to use flags match representation
-Date:   Thu,  3 Jun 2021 01:48:12 +0200
-Message-Id: <20210602234812.25399-1-pablo@netfilter.org>
+Subject: [PATCH iptables] extensions: libxt_conntrack: simplify translation using negation
+Date:   Thu,  3 Jun 2021 02:06:56 +0200
+Message-Id: <20210603000656.4348-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -27,43 +27,111 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Use the new flags match representation available since nftables 0.9.9
-to simplify the translation.
+Available since nftables 0.9.9. For example:
+
+ # iptables-translate -I INPUT -m state ! --state NEW,INVALID
+ nft insert rule ip filter INPUT ct state ! invalid,new  counter
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- extensions/libxt_tcp.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ extensions/libxt_conntrack.c | 46 ++++++++++--------------------------
+ 1 file changed, 13 insertions(+), 33 deletions(-)
 
-diff --git a/extensions/libxt_tcp.c b/extensions/libxt_tcp.c
-index 58f3c0a0c3c2..4bcd94630111 100644
---- a/extensions/libxt_tcp.c
-+++ b/extensions/libxt_tcp.c
-@@ -381,7 +381,7 @@ static void print_tcp_xlate(struct xt_xlate *xl, uint8_t flags)
- 		for (i = 0; (flags & tcp_flag_names_xlate[i].flag) == 0; i++);
+diff --git a/extensions/libxt_conntrack.c b/extensions/libxt_conntrack.c
+index 7f7b45ee1f82..64018ce152b7 100644
+--- a/extensions/libxt_conntrack.c
++++ b/extensions/libxt_conntrack.c
+@@ -1151,40 +1151,30 @@ static void state_save(const void *ip, const struct xt_entry_match *match)
+ static void state_xlate_print(struct xt_xlate *xl, unsigned int statemask, int inverted)
+ {
+ 	const char *sep = "";
+-	int one_flag_set;
  
- 		if (have_flag)
--			xt_xlate_add(xl, "|");
-+			xt_xlate_add(xl, ",");
+-	one_flag_set = !(statemask & (statemask - 1));
+-
+-	if (inverted && !one_flag_set)
+-		xt_xlate_add(xl, "& (");
+-	else if (inverted)
+-		xt_xlate_add(xl, "& ");
++	if (inverted)
++		xt_xlate_add(xl, "! ");
  
- 		xt_xlate_add(xl, "%s", tcp_flag_names_xlate[i].name);
- 		have_flag = 1;
-@@ -435,11 +435,11 @@ static int tcp_xlate(struct xt_xlate *xl,
- 		return 0;
- 
- 	if (tcpinfo->flg_mask || (tcpinfo->invflags & XT_TCP_INV_FLAGS)) {
--		xt_xlate_add(xl, "%stcp flags & (", space);
--		print_tcp_xlate(xl, tcpinfo->flg_mask);
--		xt_xlate_add(xl, ") %s ",
--			   tcpinfo->invflags & XT_TCP_INV_FLAGS ? "!=": "==");
-+		xt_xlate_add(xl, "%stcp flags %s", space,
-+			     tcpinfo->invflags & XT_TCP_INV_FLAGS ? "!= ": "");
- 		print_tcp_xlate(xl, tcpinfo->flg_cmp);
-+		xt_xlate_add(xl, " / ");
-+		print_tcp_xlate(xl, tcpinfo->flg_mask);
+ 	if (statemask & XT_CONNTRACK_STATE_INVALID) {
+ 		xt_xlate_add(xl, "%s%s", sep, "invalid");
+-		sep = inverted && !one_flag_set ? "|" : ",";
++		sep = ",";
  	}
+ 	if (statemask & XT_CONNTRACK_STATE_BIT(IP_CT_NEW)) {
+ 		xt_xlate_add(xl, "%s%s", sep, "new");
+-		sep = inverted && !one_flag_set ? "|" : ",";
++		sep = ",";
+ 	}
+ 	if (statemask & XT_CONNTRACK_STATE_BIT(IP_CT_RELATED)) {
+ 		xt_xlate_add(xl, "%s%s", sep, "related");
+-		sep = inverted && !one_flag_set ? "|" : ",";
++		sep = ",";
+ 	}
+ 	if (statemask & XT_CONNTRACK_STATE_BIT(IP_CT_ESTABLISHED)) {
+ 		xt_xlate_add(xl, "%s%s", sep, "established");
+-		sep = inverted && !one_flag_set ? "|" : ",";
++		sep = ",";
+ 	}
+ 	if (statemask & XT_CONNTRACK_STATE_UNTRACKED) {
+ 		xt_xlate_add(xl, "%s%s", sep, "untracked");
+-		sep = inverted && !one_flag_set ? "|" : ",";
++		sep = ",";
+ 	}
+-
+-	if (inverted && !one_flag_set)
+-		xt_xlate_add(xl, ") == 0");
+-	else if (inverted)
+-		xt_xlate_add(xl, " == 0");
+ }
  
- 	return 1;
+ static int state_xlate(struct xt_xlate *xl,
+@@ -1203,36 +1193,26 @@ static int state_xlate(struct xt_xlate *xl,
+ static void status_xlate_print(struct xt_xlate *xl, unsigned int statusmask, int inverted)
+ {
+ 	const char *sep = "";
+-	int one_flag_set;
+ 
+-	one_flag_set = !(statusmask & (statusmask - 1));
+-
+-	if (inverted && !one_flag_set)
+-		xt_xlate_add(xl, "& (");
+-	else if (inverted)
+-		xt_xlate_add(xl, "& ");
++	if (inverted)
++		xt_xlate_add(xl, "! ");
+ 
+ 	if (statusmask & IPS_EXPECTED) {
+ 		xt_xlate_add(xl, "%s%s", sep, "expected");
+-		sep = inverted && !one_flag_set ? "|" : ",";
++		sep = ",";
+ 	}
+ 	if (statusmask & IPS_SEEN_REPLY) {
+ 		xt_xlate_add(xl, "%s%s", sep, "seen-reply");
+-		sep = inverted && !one_flag_set ? "|" : ",";
++		sep = ",";
+ 	}
+ 	if (statusmask & IPS_ASSURED) {
+ 		xt_xlate_add(xl, "%s%s", sep, "assured");
+-		sep = inverted && !one_flag_set ? "|" : ",";
++		sep = ",";
+ 	}
+ 	if (statusmask & IPS_CONFIRMED) {
+ 		xt_xlate_add(xl, "%s%s", sep, "confirmed");
+-		sep = inverted && !one_flag_set ? "|" : ",";
++		sep = ",";
+ 	}
+-
+-	if (inverted && !one_flag_set)
+-		xt_xlate_add(xl, ") == 0");
+-	else if (inverted)
+-		xt_xlate_add(xl, " == 0");
+ }
+ 
+ static void addr_xlate_print(struct xt_xlate *xl,
 -- 
 2.20.1
 
