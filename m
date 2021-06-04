@@ -2,28 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9B539B826
+	by mail.lfdr.de (Postfix) with ESMTP id 885F739B827
 	for <lists+netfilter-devel@lfdr.de>; Fri,  4 Jun 2021 13:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhFDLmt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 4 Jun 2021 07:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        id S230205AbhFDLmx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 4 Jun 2021 07:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhFDLms (ORCPT
+        with ESMTP id S230080AbhFDLmx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 4 Jun 2021 07:42:48 -0400
+        Fri, 4 Jun 2021 07:42:53 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C159CC06174A
-        for <netfilter-devel@vger.kernel.org>; Fri,  4 Jun 2021 04:41:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72F5C06174A
+        for <netfilter-devel@vger.kernel.org>; Fri,  4 Jun 2021 04:41:06 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1lp8CD-0004vg-7G; Fri, 04 Jun 2021 13:41:01 +0200
+        id 1lp8CH-0004vp-F7; Fri, 04 Jun 2021 13:41:05 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 3/4] evaluate: remove anon sets with exactly one element
-Date:   Fri,  4 Jun 2021 13:40:42 +0200
-Message-Id: <20210604114043.4153-4-fw@strlen.de>
+Subject: [PATCH nft 4/4] tests: add test case for removal of anon sets with only a single element
+Date:   Fri,  4 Jun 2021 13:40:43 +0200
+Message-Id: <20210604114043.4153-5-fw@strlen.de>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210604114043.4153-1-fw@strlen.de>
 References: <20210604114043.4153-1-fw@strlen.de>
@@ -33,59 +33,119 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Auto-replace lookups in single-element anon sets with a standard compare.
+Also add a few examples that should not be changed:
+- anon set with 2 elements
+- anon map with 1 element
+- anon set with a concatenation
 
-'add rule foo bar meta iif { "lo" }' gets replaced with
-'add rule foo bar meta iif "lo"'.
-
-The former is a set lookup, the latter is a comparision.
-Comparisions are faster for the one-element case.
-
-Only prefixes, ranges and values are handled at this time.
-
-Anonymous maps are left alone, same for concatenations.
-
-Concatenations could be handled, but it would require more work:
-the concatenation would have to be replaced with a singleton value.
-Evaluation step rejects concat RHS on a relational expression.
+The latter could be done with cmp but this currently triggers
+'Error: Use concatenations with sets and maps, not singleton values'
+after removing the anon set.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- src/evaluate.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ .../optimizations/dumps/single_anon_set.nft   | 15 ++++++++
+ .../dumps/single_anon_set.nft.input           | 35 +++++++++++++++++++
+ .../testcases/optimizations/single_anon_set   | 13 +++++++
+ .../shell/testcases/sets/dumps/0053echo_0.nft |  2 +-
+ 4 files changed, 64 insertions(+), 1 deletion(-)
+ create mode 100644 tests/shell/testcases/optimizations/dumps/single_anon_set.nft
+ create mode 100644 tests/shell/testcases/optimizations/dumps/single_anon_set.nft.input
+ create mode 100755 tests/shell/testcases/optimizations/single_anon_set
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 384e2fa786e0..2ed68aad0392 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -1455,8 +1455,25 @@ static int expr_evaluate_set(struct eval_ctx *ctx, struct expr **expr)
- 		}
- 	}
- 
--	if (ctx->set && (ctx->set->flags & NFT_SET_CONCAT))
--		set->set_flags |= NFT_SET_CONCAT;
-+	if (ctx->set) {
-+		if (ctx->set->flags & NFT_SET_CONCAT)
-+			set->set_flags |= NFT_SET_CONCAT;
-+	} else if (set->size == 1) {
-+		i = list_first_entry(&set->expressions, struct expr, list);
-+		if (i->etype == EXPR_SET_ELEM) {
-+			switch (i->key->etype) {
-+			case EXPR_PREFIX:
-+			case EXPR_RANGE:
-+			case EXPR_VALUE:
-+				*expr = i->key;
-+				i->key = NULL;
-+				expr_free(set);
-+				return 0;
-+			default:
-+				break;
-+			}
-+		}
+diff --git a/tests/shell/testcases/optimizations/dumps/single_anon_set.nft b/tests/shell/testcases/optimizations/dumps/single_anon_set.nft
+new file mode 100644
+index 000000000000..35e3f36e1a54
+--- /dev/null
++++ b/tests/shell/testcases/optimizations/dumps/single_anon_set.nft
+@@ -0,0 +1,15 @@
++table ip test {
++	chain test {
++		ip saddr 127.0.0.1 accept
++		iif "lo" accept
++		tcp dport != 22 drop
++		ip saddr 127.0.0.0/8 accept
++		ip saddr 127.0.0.1-192.168.7.3 accept
++		tcp sport 1-1023 drop
++		ip daddr { 192.168.7.1, 192.168.7.5 } accept
++		tcp dport { 80, 443 } accept
++		ip daddr . tcp dport { 192.168.0.1 . 22 } accept
++		meta mark set ip daddr map { 192.168.0.1 : 0x00000001 }
++		ct state { established, related } accept
 +	}
- 
- 	set->set_flags |= NFT_SET_CONSTANT;
- 
++}
+diff --git a/tests/shell/testcases/optimizations/dumps/single_anon_set.nft.input b/tests/shell/testcases/optimizations/dumps/single_anon_set.nft.input
+new file mode 100644
+index 000000000000..35b93832420f
+--- /dev/null
++++ b/tests/shell/testcases/optimizations/dumps/single_anon_set.nft.input
+@@ -0,0 +1,35 @@
++table ip test {
++	chain test {
++		# Test cases where anon set can be removed:
++		ip saddr { 127.0.0.1 } accept
++		iif { "lo" } accept
++
++		# negation, can change to != 22.
++		tcp dport != { 22 } drop
++
++		# single prefix, can remove anon set.
++		ip saddr { 127.0.0.0/8 } accept
++
++		# range, can remove anon set.
++		ip saddr { 127.0.0.1-192.168.7.3 } accept
++		tcp sport { 1-1023 } drop
++
++		# Test cases where anon set must be kept.
++
++		# 2 elements, cannot remove the anon set.
++		ip daddr { 192.168.7.1, 192.168.7.5 } accept
++		tcp dport { 80, 443 } accept
++
++		# single element, but concatenation which is not
++		# supported outside of set/map context at this time.
++		ip daddr . tcp dport { 192.168.0.1 . 22 } accept
++
++		# single element, but a map.
++		meta mark set ip daddr map { 192.168.0.1 : 1 }
++
++		# 2 elements.  This could be converted because
++		# ct state cannot be both established and related
++		# at the same time, but this needs extra work.
++		ct state { established, related } accept
++	}
++}
+diff --git a/tests/shell/testcases/optimizations/single_anon_set b/tests/shell/testcases/optimizations/single_anon_set
+new file mode 100755
+index 000000000000..7275e3606900
+--- /dev/null
++++ b/tests/shell/testcases/optimizations/single_anon_set
+@@ -0,0 +1,13 @@
++#!/bin/bash
++
++set -e
++
++# Input file contains rules with anon sets that contain
++# one element, plus extra rule with two elements (that should be
++# left alone).
++
++# Dump file has the simplified rules where anon sets have been
++# replaced by equality tests where possible.
++dumpfile=$(dirname $0)/dumps/$(basename $0).nft
++
++$NFT -f "$dumpfile".input
+diff --git a/tests/shell/testcases/sets/dumps/0053echo_0.nft b/tests/shell/testcases/sets/dumps/0053echo_0.nft
+index 6a8166360ceb..bb7c55136619 100644
+--- a/tests/shell/testcases/sets/dumps/0053echo_0.nft
++++ b/tests/shell/testcases/sets/dumps/0053echo_0.nft
+@@ -1,6 +1,6 @@
+ table inet filter {
+ 	chain input {
+ 		type filter hook input priority filter; policy drop;
+-		iifname { "lo" } ip saddr { 10.0.0.0/8 } ip daddr { 192.168.100.62 } tcp dport { 2001 } counter packets 0 bytes 0 accept
++		iifname "lo" ip saddr 10.0.0.0/8 ip daddr 192.168.100.62 tcp dport 2001 counter packets 0 bytes 0 accept
+ 	}
+ }
 -- 
 2.26.3
 
