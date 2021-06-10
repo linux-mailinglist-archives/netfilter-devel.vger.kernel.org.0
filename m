@@ -2,92 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38C33A317E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Jun 2021 18:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BB23A3268
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Jun 2021 19:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhFJQ5E (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 10 Jun 2021 12:57:04 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:34640 "EHLO
+        id S229823AbhFJRpe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 10 Jun 2021 13:45:34 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:34860 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231558AbhFJQ5D (ORCPT
+        with ESMTP id S229802AbhFJRpe (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:57:03 -0400
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 93BEE64240;
-        Thu, 10 Jun 2021 18:53:51 +0200 (CEST)
+        Thu, 10 Jun 2021 13:45:34 -0400
+Received: from netfilter.org (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id DCF1E6423A;
+        Thu, 10 Jun 2021 19:42:22 +0200 (CEST)
+Date:   Thu, 10 Jun 2021 19:43:34 +0200
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net 3/3] netfilter: nft_fib_ipv6: skip ipv6 packets from any to link-local
-Date:   Thu, 10 Jun 2021 18:54:58 +0200
-Message-Id: <20210610165458.23071-4-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210610165458.23071-1-pablo@netfilter.org>
-References: <20210610165458.23071-1-pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
+Subject: Re: [nf-next PATCH] netfilter: nft_exthdr: Search chunks in SCTP
+ packets only
+Message-ID: <20210610174334.GA24536@salvia>
+References: <20210610142316.24354-1-phil@nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210610142316.24354-1-phil@nwl.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+Hi Phil,
 
-The ip6tables rpfilter match has an extra check to skip packets with
-"::" source address.
+On Thu, Jun 10, 2021 at 04:23:16PM +0200, Phil Sutter wrote:
+> Since user space does not generate a payload dependency, plain sctp
+> chunk matches cause searching in non-SCTP packets, too. Avoid this
+> potential mis-interpretation of packet data by checking pkt->tprot.
+> 
+> Fixes: 133dc203d77df ("netfilter: nft_exthdr: Support SCTP chunks")
+> Signed-off-by: Phil Sutter <phil@nwl.cc>
+> ---
+>  net/netfilter/nft_exthdr.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/netfilter/nft_exthdr.c b/net/netfilter/nft_exthdr.c
+> index 7f705b5c09de8..1093bb83f8aeb 100644
+> --- a/net/netfilter/nft_exthdr.c
+> +++ b/net/netfilter/nft_exthdr.c
+> @@ -312,6 +312,9 @@ static void nft_exthdr_sctp_eval(const struct nft_expr *expr,
+>  	const struct sctp_chunkhdr *sch;
+>  	struct sctp_chunkhdr _sch;
+>  
+> +	if (!pkt->tprot_set || pkt->tprot != IPPROTO_SCTP)
+> +		goto err;
 
-Extend this to ipv6 fib expression.  Else ipv6 duplicate address detection
-packets will fail rpf route check -- lookup returns -ENETUNREACH.
+nft_set_pktinfo_unspec() already initializes pkt->tprot to zero.
 
-While at it, extend the prerouting check to also cover the ingress hook.
+I think it's safe to simplify this to:
 
-Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1543
-Fixes: f6d0cbcf09c5 ("netfilter: nf_tables: add fib expression")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/ipv6/netfilter/nft_fib_ipv6.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
-
-diff --git a/net/ipv6/netfilter/nft_fib_ipv6.c b/net/ipv6/netfilter/nft_fib_ipv6.c
-index e204163c7036..92f3235fa287 100644
---- a/net/ipv6/netfilter/nft_fib_ipv6.c
-+++ b/net/ipv6/netfilter/nft_fib_ipv6.c
-@@ -135,6 +135,17 @@ void nft_fib6_eval_type(const struct nft_expr *expr, struct nft_regs *regs,
- }
- EXPORT_SYMBOL_GPL(nft_fib6_eval_type);
- 
-+static bool nft_fib_v6_skip_icmpv6(const struct sk_buff *skb, u8 next, const struct ipv6hdr *iph)
-+{
-+	if (likely(next != IPPROTO_ICMPV6))
-+		return false;
-+
-+	if (ipv6_addr_type(&iph->saddr) != IPV6_ADDR_ANY)
-+		return false;
-+
-+	return ipv6_addr_type(&iph->daddr) & IPV6_ADDR_LINKLOCAL;
-+}
-+
- void nft_fib6_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 		   const struct nft_pktinfo *pkt)
- {
-@@ -163,10 +174,13 @@ void nft_fib6_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 
- 	lookup_flags = nft_fib6_flowi_init(&fl6, priv, pkt, oif, iph);
- 
--	if (nft_hook(pkt) == NF_INET_PRE_ROUTING &&
--	    nft_fib_is_loopback(pkt->skb, nft_in(pkt))) {
--		nft_fib_store_result(dest, priv, nft_in(pkt));
--		return;
-+	if (nft_hook(pkt) == NF_INET_PRE_ROUTING ||
-+	    nft_hook(pkt) == NF_INET_INGRESS) {
-+		if (nft_fib_is_loopback(pkt->skb, nft_in(pkt)) ||
-+		    nft_fib_v6_skip_icmpv6(pkt->skb, pkt->tprot, iph)) {
-+			nft_fib_store_result(dest, priv, nft_in(pkt));
-+			return;
-+		}
- 	}
- 
- 	*dest = 0;
--- 
-2.20.1
-
+	if (pkt->tprot != IPPROTO_SCTP)
