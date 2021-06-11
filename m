@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72493A46A4
-	for <lists+netfilter-devel@lfdr.de>; Fri, 11 Jun 2021 18:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2553A46AB
+	for <lists+netfilter-devel@lfdr.de>; Fri, 11 Jun 2021 18:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbhFKQnB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 11 Jun 2021 12:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
+        id S230332AbhFKQn3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 11 Jun 2021 12:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhFKQm7 (ORCPT
+        with ESMTP id S230344AbhFKQn1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:42:59 -0400
+        Fri, 11 Jun 2021 12:43:27 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3B1C0617AF
-        for <netfilter-devel@vger.kernel.org>; Fri, 11 Jun 2021 09:41:00 -0700 (PDT)
-Received: from localhost ([::1]:41312 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD328C061574
+        for <netfilter-devel@vger.kernel.org>; Fri, 11 Jun 2021 09:41:26 -0700 (PDT)
+Received: from localhost ([::1]:41342 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1lrkDK-0005bu-TU; Fri, 11 Jun 2021 18:40:58 +0200
+        id 1lrkDl-0005e8-C0; Fri, 11 Jun 2021 18:41:25 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 04/10] json: Drop pointless assignment in exthdr_expr_json()
-Date:   Fri, 11 Jun 2021 18:40:58 +0200
-Message-Id: <20210611164104.8121-5-phil@nwl.cc>
+Subject: [nft PATCH 05/10] netlink: Avoid memleak in error path of netlink_delinearize_set()
+Date:   Fri, 11 Jun 2021 18:40:59 +0200
+Message-Id: <20210611164104.8121-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210611164104.8121-1-phil@nwl.cc>
 References: <20210611164104.8121-1-phil@nwl.cc>
@@ -34,26 +34,37 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The updated value of 'is_exists' is no longer read at this point.
+Duplicate string 'comment' later when the function does not fail
+anymore.
 
-Fixes: cb21869649208 ("json: tcp: add raw tcp option match support")
+Fixes: 0864c2d49ee8a ("src: add comment support for set declarations")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/json.c | 1 -
- 1 file changed, 1 deletion(-)
+ src/netlink.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/src/json.c b/src/json.c
-index f648ea1b8c178..f111ad678f8a0 100644
---- a/src/json.c
-+++ b/src/json.c
-@@ -708,7 +708,6 @@ json_t *exthdr_expr_json(const struct expr *expr, struct output_ctx *octx)
- 					 "base", expr->exthdr.raw_type,
- 					 "offset", expr->exthdr.offset,
- 					 "len", expr->len);
--			is_exists = false;
- 		}
+diff --git a/src/netlink.c b/src/netlink.c
+index e91b06e3ea971..41cce3379ca50 100644
+--- a/src/netlink.c
++++ b/src/netlink.c
+@@ -867,7 +867,7 @@ struct set *netlink_delinearize_set(struct netlink_ctx *ctx,
+ 		if (ud[NFTNL_UDATA_SET_DATA_TYPEOF])
+ 			typeof_expr_data = set_make_key(ud[NFTNL_UDATA_SET_DATA_TYPEOF]);
+ 		if (ud[NFTNL_UDATA_SET_COMMENT])
+-			comment = xstrdup(nftnl_udata_get(ud[NFTNL_UDATA_SET_COMMENT]));
++			comment = nftnl_udata_get(ud[NFTNL_UDATA_SET_COMMENT]);
+ 	}
  
- 		return json_pack("{s:o}", "tcp option", root);
+ 	key = nftnl_set_get_u32(nls, NFTNL_SET_KEY_TYPE);
+@@ -905,7 +905,7 @@ struct set *netlink_delinearize_set(struct netlink_ctx *ctx,
+ 	set->handle.set.name = xstrdup(nftnl_set_get_str(nls, NFTNL_SET_NAME));
+ 	set->automerge	   = automerge;
+ 	if (comment)
+-		set->comment = comment;
++		set->comment = xstrdup(comment);
+ 
+ 	init_list_head(&set_parse_ctx.stmt_list);
+ 
 -- 
 2.31.1
 
