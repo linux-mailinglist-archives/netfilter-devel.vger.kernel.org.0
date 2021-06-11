@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2553A46AB
-	for <lists+netfilter-devel@lfdr.de>; Fri, 11 Jun 2021 18:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70AFD3A46A5
+	for <lists+netfilter-devel@lfdr.de>; Fri, 11 Jun 2021 18:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhFKQn3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 11 Jun 2021 12:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
+        id S230017AbhFKQnE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 11 Jun 2021 12:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbhFKQn1 (ORCPT
+        with ESMTP id S229935AbhFKQnD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 11 Jun 2021 12:43:27 -0400
+        Fri, 11 Jun 2021 12:43:03 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD328C061574
-        for <netfilter-devel@vger.kernel.org>; Fri, 11 Jun 2021 09:41:26 -0700 (PDT)
-Received: from localhost ([::1]:41342 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E93C061574
+        for <netfilter-devel@vger.kernel.org>; Fri, 11 Jun 2021 09:41:05 -0700 (PDT)
+Received: from localhost ([::1]:41318 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1lrkDl-0005e8-C0; Fri, 11 Jun 2021 18:41:25 +0200
+        id 1lrkDQ-0005cc-7A; Fri, 11 Jun 2021 18:41:04 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 05/10] netlink: Avoid memleak in error path of netlink_delinearize_set()
-Date:   Fri, 11 Jun 2021 18:40:59 +0200
-Message-Id: <20210611164104.8121-6-phil@nwl.cc>
+Subject: [nft PATCH 06/10] netlink: Avoid memleak in error path of netlink_delinearize_chain()
+Date:   Fri, 11 Jun 2021 18:41:00 +0200
+Message-Id: <20210611164104.8121-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210611164104.8121-1-phil@nwl.cc>
 References: <20210611164104.8121-1-phil@nwl.cc>
@@ -34,37 +34,27 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Duplicate string 'comment' later when the function does not fail
-anymore.
+If parsing udata fails, 'chain' has to be freed before returning to
+caller.
 
-Fixes: 0864c2d49ee8a ("src: add comment support for set declarations")
+Fixes: 702ac2b72c0e8 ("src: add comment support for chains")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/netlink.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/netlink.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/src/netlink.c b/src/netlink.c
-index e91b06e3ea971..41cce3379ca50 100644
+index 41cce3379ca50..1bbdf98bd2ee2 100644
 --- a/src/netlink.c
 +++ b/src/netlink.c
-@@ -867,7 +867,7 @@ struct set *netlink_delinearize_set(struct netlink_ctx *ctx,
- 		if (ud[NFTNL_UDATA_SET_DATA_TYPEOF])
- 			typeof_expr_data = set_make_key(ud[NFTNL_UDATA_SET_DATA_TYPEOF]);
- 		if (ud[NFTNL_UDATA_SET_COMMENT])
--			comment = xstrdup(nftnl_udata_get(ud[NFTNL_UDATA_SET_COMMENT]));
-+			comment = nftnl_udata_get(ud[NFTNL_UDATA_SET_COMMENT]);
- 	}
- 
- 	key = nftnl_set_get_u32(nls, NFTNL_SET_KEY_TYPE);
-@@ -905,7 +905,7 @@ struct set *netlink_delinearize_set(struct netlink_ctx *ctx,
- 	set->handle.set.name = xstrdup(nftnl_set_get_str(nls, NFTNL_SET_NAME));
- 	set->automerge	   = automerge;
- 	if (comment)
--		set->comment = comment;
-+		set->comment = xstrdup(comment);
- 
- 	init_list_head(&set_parse_ctx.stmt_list);
- 
+@@ -599,6 +599,7 @@ struct chain *netlink_delinearize_chain(struct netlink_ctx *ctx,
+ 		udata = nftnl_chain_get_data(nlc, NFTNL_CHAIN_USERDATA, &ulen);
+ 		if (nftnl_udata_parse(udata, ulen, chain_parse_udata_cb, ud) < 0) {
+ 			netlink_io_error(ctx, NULL, "Cannot parse userdata");
++			chain_free(chain);
+ 			return NULL;
+ 		}
+ 		if (ud[NFTNL_UDATA_CHAIN_COMMENT])
 -- 
 2.31.1
 
