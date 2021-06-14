@@ -2,83 +2,46 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3AE3A663A
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Jun 2021 14:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9133A667C
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Jun 2021 14:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbhFNMGY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 14 Jun 2021 08:06:24 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:41226 "EHLO
+        id S232791AbhFNM1B (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 14 Jun 2021 08:27:01 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:41284 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbhFNMGX (ORCPT
+        with ESMTP id S232775AbhFNM1B (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 14 Jun 2021 08:06:23 -0400
-Received: from netfilter.org (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id B68186420F;
-        Mon, 14 Jun 2021 14:03:02 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 14:04:17 +0200
+        Mon, 14 Jun 2021 08:27:01 -0400
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 92ACF6420F;
+        Mon, 14 Jun 2021 14:23:40 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft 2/2] evaluate: restore interval + concatenation in
- anonymous set
-Message-ID: <20210614120417.GA27514@salvia>
-References: <20210611171538.14049-1-pablo@netfilter.org>
- <20210614113403.GP22614@orbyte.nwl.cc>
- <20210614115644.GA27182@salvia>
- <20210614115855.GA27287@salvia>
+To:     netfilter-devel@vger.kernel.org
+Cc:     phil@nwl.cc
+Subject: [PATCH nftables] evaluate: add set to cache once
+Date:   Mon, 14 Jun 2021 14:24:54 +0200
+Message-Id: <20210614122454.27902-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="mP3DRpeJDSE+ciuQ"
-Content-Disposition: inline
-In-Reply-To: <20210614115855.GA27287@salvia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+67d3969a7244 ("evaluate: add set to the cache") re-adds the set into the
+cache again.
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+This bug was hidden behind 5ec5c706d993 ("cache: add hashtable cache for
+table") which broken set_evaluate() for anonymous sets.
 
-On Mon, Jun 14, 2021 at 01:58:55PM +0200, Pablo Neira Ayuso wrote:
-> On Mon, Jun 14, 2021 at 01:56:44PM +0200, Pablo Neira Ayuso wrote:
-> > On Mon, Jun 14, 2021 at 01:34:03PM +0200, Phil Sutter wrote:
-> > > Hi Pablo,
-> > > 
-> > > On Fri, Jun 11, 2021 at 07:15:38PM +0200, Pablo Neira Ayuso wrote:
-> > > > Perform the table and set lookup only for non-anonymous sets, where the
-> > > > incremental cache update is required.
-> > > > 
-> > > > The problem fixed by 7aa08d45031e ("evaluate: Perform set evaluation on
-> > > > implicitly declared (anonymous) sets") resurrected after the cache
-> > > > rework.
-> > > > 
-> > > >  # nft add rule x y tcp sport . tcp dport vmap { ssh . 0-65535 : accept, 0-65535 . ssh : accept }
-> > > >  BUG: invalid range expression type concat
-> > > >  nft: expression.c:1422: range_expr_value_low: Assertion `0' failed.
-> > > >  Abort
-> > > > 
-> > > > Add a test case to make sure this does not happen again.
-> > > > 
-> > > > Fixes: 5ec5c706d993 ("cache: add hashtable cache for table")
-> > > > Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> > > 
-> > > This triggers a warning:
-> > > 
-> > > evaluate.c: In function 'set_evaluate':
-> > > evaluate.c:3870:13: warning: 'table' may be used uninitialized in this function [-Wmaybe-uninitialized]
-> > >  3870 |         if (set_cache_find(table, set->handle.set.name) == NULL)
-> > >       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > Hm, this needs to be restricted to anonymous sets, attaching patch.
-> 
-> It's a false positive though, there is a check for anonymous set a few
-> lines before. I'll apply this patch if this makes gcc happy on your side.
+Phil reported a gcc compilation warning which uncovered this problem.
 
-Actually, this code should not be there. The set is already in the cache.
-
---mP3DRpeJDSE+ciuQ
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="x.patch"
+Reported-by: Phil Sutter <phil@nwl.cc>
+Fixes: 67d3969a7244 ("evaluate: add set to the cache")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/evaluate.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/src/evaluate.c b/src/evaluate.c
 index 5311963a20c5..92cc8994c809 100644
@@ -94,5 +57,6 @@ index 5311963a20c5..92cc8994c809 100644
  	return 0;
  }
  
+-- 
+2.20.1
 
---mP3DRpeJDSE+ciuQ--
