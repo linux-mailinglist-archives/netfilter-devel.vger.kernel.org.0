@@ -2,29 +2,31 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFADB3A6776
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Jun 2021 15:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DA03A6779
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Jun 2021 15:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232761AbhFNNMT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 14 Jun 2021 09:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
+        id S233571AbhFNNMV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 14 Jun 2021 09:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbhFNNMS (ORCPT
+        with ESMTP id S233218AbhFNNMU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 14 Jun 2021 09:12:18 -0400
+        Mon, 14 Jun 2021 09:12:20 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECB1C061574
-        for <netfilter-devel@vger.kernel.org>; Mon, 14 Jun 2021 06:10:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC84C061574
+        for <netfilter-devel@vger.kernel.org>; Mon, 14 Jun 2021 06:10:18 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1lsmM0-0000LV-Eo; Mon, 14 Jun 2021 15:10:12 +0200
+        id 1lsmM4-0000Le-OC; Mon, 14 Jun 2021 15:10:16 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 0/3] fix icmpv6 id dependeny handling
-Date:   Mon, 14 Jun 2021 15:10:03 +0200
-Message-Id: <20210614131006.26490-1-fw@strlen.de>
+Subject: [PATCH nft 1/3] netlink_delinearize: add missing icmp id/sequence support
+Date:   Mon, 14 Jun 2021 15:10:04 +0200
+Message-Id: <20210614131006.26490-2-fw@strlen.de>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210614131006.26490-1-fw@strlen.de>
+References: <20210614131006.26490-1-fw@strlen.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -35,9 +37,19 @@ Pablo reports following input and output:
 in: icmpv6 id 1
 out: icmpv6 type { echo-request, echo-reply } icmpv6 parameter-problem 65536/16
 
-First patch fixes delinearization to handle this correctly.
-Second patch fixes a bug related to dependency removal.
-Third patch adds test cases for this bug.
+Reason is that icmp fields overlap, decoding of the correct name requires
+check of the icmpv6 type.  This only works for equality tests, for
+instance
+
+in: icmpv6 type echo-request icmpv6 id 1
+will be listed as "icmpv6 id 1" (which is not correct either, since the
+input only matches on echo-request).
+
+with this patch, output of 'icmpv6 id 1' is
+icmpv6 type { echo-request, echo-reply } icmpv6 id 1
+
+The second problem, the removal of a single check (request OR reply),
+is resolved in the followup patch.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
@@ -137,6 +149,4 @@ index 9a1cf3c4f7d9..94f68c956018 100644
  	default:
 -- 
 2.31.1
-
-
 
