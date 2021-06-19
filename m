@@ -2,25 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D243AD636
-	for <lists+netfilter-devel@lfdr.de>; Sat, 19 Jun 2021 02:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EF93AD637
+	for <lists+netfilter-devel@lfdr.de>; Sat, 19 Jun 2021 02:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhFSAL1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 18 Jun 2021 20:11:27 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:51450 "EHLO
+        id S231134AbhFSAMW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 18 Jun 2021 20:12:22 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:51462 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhFSAL0 (ORCPT
+        with ESMTP id S229730AbhFSAMV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 18 Jun 2021 20:11:26 -0400
+        Fri, 18 Jun 2021 20:12:21 -0400
 Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id EB0DA6426B;
-        Sat, 19 Jun 2021 02:07:54 +0200 (CEST)
+        by mail.netfilter.org (Postfix) with ESMTPSA id 034116426B
+        for <netfilter-devel@vger.kernel.org>; Sat, 19 Jun 2021 02:08:48 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Cc:     chutzpah@gentoo.org
 Subject: [PATCH nf] netfilter: nf_tables_offload: skip VLAN handling if FLOW_DISSECTOR_KEY_CONTROL is unset
-Date:   Sat, 19 Jun 2021 02:09:10 +0200
-Message-Id: <20210619000910.1985-1-pablo@netfilter.org>
+Date:   Sat, 19 Jun 2021 02:10:06 +0200
+Message-Id: <20210619001006.2067-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
