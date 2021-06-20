@@ -2,94 +2,104 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96323ADE48
-	for <lists+netfilter-devel@lfdr.de>; Sun, 20 Jun 2021 14:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118933ADEA3
+	for <lists+netfilter-devel@lfdr.de>; Sun, 20 Jun 2021 15:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229593AbhFTMY5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 20 Jun 2021 08:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
+        id S229618AbhFTNfL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 20 Jun 2021 09:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhFTMY5 (ORCPT
+        with ESMTP id S229836AbhFTNfK (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 20 Jun 2021 08:24:57 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEC1C061574
-        for <netfilter-devel@vger.kernel.org>; Sun, 20 Jun 2021 05:22:44 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id a21so16022087ljj.1
-        for <netfilter-devel@vger.kernel.org>; Sun, 20 Jun 2021 05:22:44 -0700 (PDT)
+        Sun, 20 Jun 2021 09:35:10 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245EAC061768
+        for <netfilter-devel@vger.kernel.org>; Sun, 20 Jun 2021 06:32:56 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id v12so7101583plo.10
+        for <netfilter-devel@vger.kernel.org>; Sun, 20 Jun 2021 06:32:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=8J2fW15A5DViXf1jLAsw6iBiwaWd/jZj6otzgwLqcz0=;
-        b=AOUd8QPFBKd+Mjy3prXwaV/Z/YMIdlCaaWWRYC/on88n6IY3aGQwfdCy2++ePK08UP
-         bgVBMuuKg22AJa86yGQ+W2IKruoVcn2SrO3UwyNHbVCzUZUXilDojlv7QyQIVF8+L6J1
-         wIh+cfWhm8ZYnR7IFagCWhTv1YmHo2zKoZwuYewD4HRwaijQ8NjEIOsC66cacH/rmNe5
-         CnL2G7+/ENP/Gq2u6J2ZnTkBkCmrodH4FIj4psxAtXhH6sfyYPai/XmzjD+/DswHN8mf
-         ZeWTUzeMXPHawn8b9BjjhuvI5Nv24OZK/UdYjMDfe+KIaDN3/njYbqZMLdNtJ79Kgpvo
-         ANlg==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
+        b=dH2qs8pOGF97K/MQd5HAAEkctrLeUXolqVtlebnH1HSZZsayuSoXQZJ4VeDtyGBk35
+         Er12oSb6eiSpX3j3YRGQme8wMBbhqvVIiLsP0bULwKabV2oKC6f2nFG6PRq13JX1MFuR
+         hRxUfpXYD9rRZyjTB4nCGoKhvgkA4LgvHHMteBR2lKS/6fg6zjdUPnG6+U+5q2Y8NJ+C
+         n+rlJIk0aCGSQy8BRp/YVaGW7Bo5OFwcOMbLT4nKLI6l8IU29cd2mlieWGjeuqsMq0Zv
+         8i7Ul4h31oRA2STp8EGplMegye6Io98EUPhfD5Y3hHIuHcMJ6LPd4crXM6HgS/mV28Rp
+         W6iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=8J2fW15A5DViXf1jLAsw6iBiwaWd/jZj6otzgwLqcz0=;
-        b=Dy3r3QRaELiVAkDzPRczwGvu4geSlvt+SOpmKNChXH6jmIxatJh2OZBKnifJowj5km
-         wMVBjouwrT0ldkZhmzOMKDT2mm9sK2oqxBuZmFvHoPAyaM+NQ9GFvHnqoQdH63gSx4wX
-         gEKhK94N+UgSZz1PlzjwOsKabpOx+8EexBpgn8uSvw06VbCYQH1WoBkbBdJR/bIjcy/o
-         6CGxer9JwG/TxXpt0JJ2RARXm4rBYS6aHthNI6Pls6Ti5DnexhHuMF4uOcMz9xJTxvos
-         M226NRVAa/YzRg8ce27xRKZDx+mQEfnJU24s8jT5T5nvLR+xJG81zSizAy4t6pYCPMuK
-         KtnQ==
-X-Gm-Message-State: AOAM533HqyT+FI4t2rzIcqgCpoN5E4CVioe037J+bMLUUNDswYMP0mOB
-        vk8dXiN/IgKHWeS1nbtdhgWI7YI/bN+Z1O0lOsrlOWsmZSo=
-X-Google-Smtp-Source: ABdhPJzk6oKVQRdHqxaaKM1gtzd1ZSZtpGt70fhU2KAwrq1tV9/em70gevIDq9K8AMTHGPj0PLqlMRmFisIX7Z466do=
-X-Received: by 2002:a2e:a317:: with SMTP id l23mr17307415lje.117.1624191762933;
- Sun, 20 Jun 2021 05:22:42 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
+        b=QrFr4nyMS8YXen01qem55Bg3FxzohO2N/x/S9w5azrOSjPZngk/+Q9ofqlPA7n3gYW
+         GHBZhsXmWd19YEzjWg9tNH5RPDLc1Wk1ZSlIOtyU7RJNsDId+/plJ2u1fqOI948mkBaF
+         BTTfCBUYNY3eA9+Tw7VgABohNNbqHYUqsPvMWkK70cDQJyv9hStxcdJHs3wS4IZUpOn2
+         kDdouNiZ+RbKD2kMIe0uL0G2A1JiQgb4SVuO1zbWS6d3mMHzhN9kyfjlymywt2f//G6W
+         8ZZfo3jffo0r81m7QU8rRUvLpveupiJgdPhBqVteYz2xgXP7qwZfoaz5/fw/nexsuahT
+         ReWQ==
+X-Gm-Message-State: AOAM533nXIRtjSesiBJ2HKFLTHcfyo81ikZvxHdU1warA5V9PK657WLY
+        rbUgZOPbDu9k6NJ5WnUhHqD16mB+wfs6P5iF5P4=
+X-Google-Smtp-Source: ABdhPJx00tt/7aabVQcW6POE0TvfdiIkkIAZCpBR/30vjscsjT3jKr9zw9m3MkwyQc9oGQLSVkB5HYsPhxhU3CS3v6I=
+X-Received: by 2002:a17:90b:3842:: with SMTP id nl2mr32192239pjb.227.1624195975552;
+ Sun, 20 Jun 2021 06:32:55 -0700 (PDT)
 MIME-Version: 1.0
-From:   Pascal Dupuis <cdemills@gmail.com>
-Date:   Sun, 20 Jun 2021 14:22:32 +0200
-Message-ID: <CAPo1VG=UuHtCpLZnQ=-kbeTuXz2Xv_-WZ-xfPGB7qjpaFeia1g@mail.gmail.com>
-Subject: can't compile with CLANG + ThinLTO
-To:     netfilter-devel@vger.kernel.org
+Received: by 2002:a17:90b:38c4:0:0:0:0 with HTTP; Sun, 20 Jun 2021 06:32:55
+ -0700 (PDT)
+Reply-To: sarahkoffi389@yahoo.co.jp
+From:   Sarah Koffi <william.p15179@gmail.com>
+Date:   Sun, 20 Jun 2021 15:32:55 +0200
+Message-ID: <CAGDeiXHSJFkD=4+MH2yCevC190Es0W98OwPTSfKNw23HQDt3Cw@mail.gmail.com>
+Subject: Greetings From Mrs. Sarah Koffi
+To:     sarahkoffi389@yahoo.co.jp
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
-since kernel 5.12, I compile kernel and xtables-addons-kmod with CLANG using:
+Greetings From Mrs. Sarah Koffi
 
-1) extract the kernel source, and get the config included in
-https://elrepo.org/linux/kernel/el8/SRPMS/kernel-ml-5.12.12-1.el8.elrepo.nosrc.rpm
-2) inside the kernel source, execute
-env LC_ALL=C TMPDIR=/var/tmp MAKEFLAGS="LLVM=1 " make oldconfig
-explanation: this uses CLANG as compiler, but LTO is not enabled.
-3) substitute the new .config to the one from elrepo
-4) compile the kernel with
- env LC_ALL=C TMPDIR=/var/tmp MAKEFLAGS="LLVM=1" nice -n 20 rpmbuild
---noclean --nocheck --nodebuginfo --without bpftool --without perf
---without tools -ba SPECS/kernel-ml-5.12.spec
-5) install and boot the new kernel
-6) generate the xtables-addons-kmod with
-env LC_ALL=C TMPDIR=/var/tmp MAKEFLAGS="LLVM=1" akmods --kernels
-5.12.12-1.el8.clang.nolto.x86_64
+I'm contacting you based on your good profiles I read and for a good
+reasons, I am in search of a property to buy in your country as I
+intended to come over to your
+country for investment, Though I have not meet with you before but I
+believe that one has to risk confiding in someone to succeed sometimes
+in life.
 
-I also tried using  MAKEFLAGS="LLVM=1 LLVM_IAS=1" and selecting
-"thinlto" at step 2). It either failed either produced unbootable
-kernels. At kernel 5.12.12, this step succeeds and produces a working
-kernel.
+My name is Mrs. Sarah Koffi. My late husband deals on Crude Oil with
+Federal Government of Sudan and he has a personal Oil firm in Bentiu
+Oil zone town and Upper
+Nile city. What I have experience physically, I don't wish to
+experience it again in my life due to the recent civil Ethnic war
+cause by our President Mr. Salva Kiir
+and the rebel leader Mr Riek Machar, I have been Under United Nation
+refuge camp in chad to save my life and that of my little daughter.
 
-But step 6, now becoming
-env LC_ALL=C TMPDIR=/var/tmp MAKEFLAGS="LLVM=1 LLVM_IAS=1" akmods
---kernels 5.12.12-1.el8.clang.thinlto.x86_64
-fails during the compilation. I tried to narrow down the problem by
-calling the script generated by akmods a few times. It fails after
-invoking ld.ldd with "error: permission denied". Restarting  manually
-the last failed line succeeds, but relaunching the script fails at
-another ld.ldd invocation.
+Though, I do not know how you will feel to my proposal, but the truth
+is that I sneaked into Chad our neighboring country where I am living
+now as a refugee.
+I escaped with my little daughter when the rebels bust into our house
+and killed my husband as one of the big oil dealers in the country,
+ever since then, I have being on the run.
 
-The platform is x86_64 with CentOS 8 Stream, clang is 11.0
+I left my country and move to Chad our neighboring country with the
+little ceasefire we had, due to the face to face peace meeting accord
+coordinated by the US Secretary of State, Mr John Kerry and United
+Nations in Ethiopia (Addis Ababa) between our President Mr Salva Kiir
+and the rebel leader Mr Riek Machar to stop this war.
 
-Could you please try to compile this module under a kernel with
-CLANG+ThinLTO enabled ?
+I want to solicit for your partnership with trust to invest the $8
+million dollars deposited by my late husband in Bank because my life
+is no longer safe in our country, since the rebels are looking for the
+families of all the oil business men in the country to kill, saying
+that they are they one that is milking the country dry.
 
-Thanks in advance
+I will offer you 20% of the total fund for your help while I will
+partner with you for the investment in your country.
+If I get your reply.
 
-Pascal Dupuis
+I will wait to hear from you so as to give you details.With love from
+
+ i need you to contact me here sarahkoffi389@yahoo.co.jp
+
+Mrs. Sarah Koffi
