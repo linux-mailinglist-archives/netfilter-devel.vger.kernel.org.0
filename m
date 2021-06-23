@@ -2,40 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154323B1EA8
-	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Jun 2021 18:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2A03B1EAD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Jun 2021 18:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhFWQbD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 23 Jun 2021 12:31:03 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:52879 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFWQbC (ORCPT
+        id S230044AbhFWQbG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 23 Jun 2021 12:31:06 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:55058 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230062AbhFWQbF (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 23 Jun 2021 12:31:02 -0400
-Received: by mail-il1-f198.google.com with SMTP id a7-20020a9233070000b02901edc50cdfdcso2088239ilf.19
-        for <netfilter-devel@vger.kernel.org>; Wed, 23 Jun 2021 09:28:45 -0700 (PDT)
+        Wed, 23 Jun 2021 12:31:05 -0400
+Received: by mail-io1-f71.google.com with SMTP id s14-20020a5eaa0e0000b02904abce57cb24so2262056ioe.21
+        for <netfilter-devel@vger.kernel.org>; Wed, 23 Jun 2021 09:28:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
          :from:to:cc;
-        bh=aP6mT2qrVDZrhD2GlNrwXfQc4RVciPnhRbx1x2YC7LY=;
-        b=MNRms9PuSjzxnJut5P5AB8d71XAFjH2mJSqbsh6Z56Ux8bETY90bE4MzzlTh/UrgG7
-         Y1GWLIroTCSjgd7/9dWzjnh6XnRWY4Cg2TzIfhb3cH9zBkHY+9cEyWHgI2nZAvIUIS8L
-         sfyxuPcYaFq/5cDRnSQQ1yu+DKmxCa1kcrXnREMz00J8S2PfPozBAcTmmzuMCTUN+pVJ
-         ywr92/uheJkpzhcUm8hMFixRjvRW3166KcAG0GqqKCVmLqfzIkVPJQjkmsZslvgwM/4Q
-         pxyPNrGgsLwBT808MFurVfXqKsjuNenhirSK0ZgvdmYpyCkUF6iy8u4ToXlBjCteSGs8
-         LXZw==
-X-Gm-Message-State: AOAM531Efe8FwqwfdETw9xkBF1n6+6o1zjeSyRiMYqYt07WnEBAqGveA
-        cvc6qe6tVx+EvOFLZ/zHktMd4tB28CA1Ux9aSVjEuCR61vXY
-X-Google-Smtp-Source: ABdhPJyLpcXJHB3MVxVIUy+85q0zE6Yj6eHUyrMEtmeC9c1NUmAjPrMWUpjD2gA0KaLltVYjkpscqbOZZc3Jcgy/3ztGMWNd7oE+
+        bh=U3PZEl0Cdz5lWpgoZ3LcxBmCftsorG7+dKagwjSphas=;
+        b=YeQlTZ11q0/4DJtqxyPMpTisyeZ7sJ1jKzCV1qU716gVe847UBURY2g34SfE0ejHFV
+         IS7SQHK+SGmajJypLKnZQBZy9e0EpbQgFJQMkipGW5tO6IisrNaTYYom8XKJAUUrYXPn
+         t/yxG/RLRsEU4pSA/eRee2Dd2md26UeEyro1P6V0ehD0unzh+oXYynJRguyQtC/KfZGo
+         WuGtJIINkPTdcgeHNGoqBIGyoLkwH1XLQiGfYxlY7tJsKvtT4GatG6HYrev5XG+e4Uk5
+         QxuPGAr4E3Vvu/SdSGevycqnEJA3Sg0/HPYMrkeMtFrJ97+MjrKzFownnHJwTrysxGqI
+         ghTA==
+X-Gm-Message-State: AOAM53067Uf9k7cSDOchfD2gIsUJqhxX6xu0QpOY6mTcKJZFpXH83R1i
+        jzmP7cDBLklmRXVFW8qLBtqZXUpu3yI+LMAVPoDmE0rFPsxQ
+X-Google-Smtp-Source: ABdhPJxWibJjI3zl8BX97kjoK8MD9g1qOHd22umTb2oqfAL1duULt7iEPmx3R7h0vjlzdlOJ5d2bXHVdheJ/jqPGdiGn+EFMmyQK
 MIME-Version: 1.0
-X-Received: by 2002:a92:d781:: with SMTP id d1mr196234iln.162.1624465724721;
- Wed, 23 Jun 2021 09:28:44 -0700 (PDT)
-Date:   Wed, 23 Jun 2021 09:28:44 -0700
+X-Received: by 2002:a05:6602:2206:: with SMTP id n6mr339969ion.54.1624465725884;
+ Wed, 23 Jun 2021 09:28:45 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 09:28:45 -0700
 In-Reply-To: <20210623192837.13792eae@gmail.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000078d19c05c5716638@google.com>
+Message-ID: <0000000000008a8f9c05c571668c@google.com>
 Subject: Re: [syzbot] WARNING: zero-size vmalloc in corrupted
 From:   syzbot <syzbot+c2f6f09fe907a838effb@syzkaller.appspotmail.com>
 To:     Pavel Skripkin <paskripkin@gmail.com>
@@ -110,3 +110,8 @@ Can't dup bug to a bug in different reporting (upstream->internal).Please dup sy
 >
 > With regards,
 > Pavel Skripkin
+>
+> -- 
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/20210623192837.13792eae%40gmail.com.
