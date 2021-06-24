@@ -2,83 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F133B2C8F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Jun 2021 12:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7177C3B34AF
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Jun 2021 19:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232187AbhFXKjU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 24 Jun 2021 06:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47376 "EHLO
+        id S232178AbhFXRZp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 24 Jun 2021 13:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231373AbhFXKjT (ORCPT
+        with ESMTP id S229881AbhFXRZo (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 24 Jun 2021 06:39:19 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB90C061574
-        for <netfilter-devel@vger.kernel.org>; Thu, 24 Jun 2021 03:37:00 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1lwMjD-0003Du-8R; Thu, 24 Jun 2021 12:36:59 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     kadlec@netfilter.org, Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next 2/2] netfilter: conntrack: do not renew entry stuck in tcp SYN_SENT state
-Date:   Thu, 24 Jun 2021 12:36:42 +0200
-Message-Id: <20210624103642.29087-3-fw@strlen.de>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210624103642.29087-1-fw@strlen.de>
-References: <20210624103642.29087-1-fw@strlen.de>
+        Thu, 24 Jun 2021 13:25:44 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67636C06175F
+        for <netfilter-devel@vger.kernel.org>; Thu, 24 Jun 2021 10:23:24 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id s19so7142182ilj.1
+        for <netfilter-devel@vger.kernel.org>; Thu, 24 Jun 2021 10:23:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
+         :subject:to;
+        bh=ANhbTggsY3NFhRZExKMwUmb3VzJqye8XLvWVXSvNBkQ=;
+        b=JkpCA0c1WE0O+qtnOo4F98bjxgDcdAOfneSK2ssBcpR7YSDyg+YJFh58ZeqJrv5MlG
+         ZP9f5oEu/Cac20jboaWMwGrmKTckemIAjkXFS0b1+6+P5aceOBWwHyApsPtfj+Yd/S65
+         Igqr6QFkR15TT+jddIr8cKEvXX5o0/Sa0XoP1u3O6ulkFEYJPNHbhVBPT7ZlDxOlN8EV
+         6zOXVaaRZwPhndH1JGanziuUK1LJnaZyM18ydqnpfa6wUCDCW9AUTkzeCg1R6iP70qiJ
+         kDm8hD7hInE41JocZX7yhJhjDY0TBhnYgX3uXEXQWPgjrMevZ7KpgFq+g43j8r3CtNvj
+         T+Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
+         :from:date:message-id:subject:to;
+        bh=ANhbTggsY3NFhRZExKMwUmb3VzJqye8XLvWVXSvNBkQ=;
+        b=Z5tVkMADJ4VxpTag5+qLOO6QphlBB5HWC2qGwil21wjkjhHl/x2q1MFImEyetrDFLx
+         bjLXEglYFv4m+3xPxZDw5dEsYahVRez33AfKTcH/MntUUeqr0Xklj49e2DEdJtmqfT+s
+         qpantTpJEpwQV2x4yXkovhTmpCiIbn+yf+6H2QVvL5DQojH0yMHNQ5h0ZVuMyP0O2ops
+         HN1Ir/Sz/2Y0iitDOLtSWsKq1nin3/saA5oQkpidHIRsEioJMGLG4aA4TkvX0GUTAV4J
+         UUtJpOrYTkLAe35X3s7BAfDUaKzl53NVV++xx2hDC6PFJXvCRS1tNekjIvsAjQ9/tJ7M
+         yNCg==
+X-Gm-Message-State: AOAM530bdnaD1FCC9Bi9hTtKOBbHPI+0kmzuXlmy8lkTT7DyOy3F2niX
+        yPDcnKCkuI8Mg3rMlrbXgrLbzK8ywkGvgbrJ2eM=
+X-Google-Smtp-Source: ABdhPJxZ62ZI7yZSYkT2HhH/wgsJZv95Z4F/SUm9uQCEgH6mUoNSS2m9mIvt+OupMlpq0wrEeUgqQpt5aB8oJF682ac=
+X-Received: by 2002:a92:d7c8:: with SMTP id g8mr4438396ilq.117.1624555403898;
+ Thu, 24 Jun 2021 10:23:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6638:3aa:0:0:0:0 with HTTP; Thu, 24 Jun 2021 10:23:23
+ -0700 (PDT)
+Reply-To: tutywoolgar021@gmail.com
+In-Reply-To: <CADB47+4Wa3T59Vq_==GTXEfHrX5x-2vQFxaTBO0dTdyAweCVpw@mail.gmail.com>
+References: <CADB47+4Wa3T59Vq_==GTXEfHrX5x-2vQFxaTBO0dTdyAweCVpw@mail.gmail.com>
+From:   tuty woolgar <faridaamadoubas@gmail.com>
+Date:   Thu, 24 Jun 2021 17:23:23 +0000
+Message-ID: <CADB47+4p1fgC-_U-tuAJARm1t6ST052LuyPJY-w4MnCgf6wMrA@mail.gmail.com>
+Subject: greetings,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Consider:
-  client -----> conntrack ---> Host
-
-client sends a SYN, but $Host is unreachable/silent.
-Client eventually gives up and the conntrack entry will time out.
-
-However, if the client is restarted with same addr/port pair, it
-may prevent the conntrack entry from timing out.
-
-This is noticeable when the existing conntrack entry has no NAT
-transformation or an outdated one and port reuse happens either
-on client or due to a NAT middlebox.
-
-This change prevents refresh of the timeout for SYN retransmits,
-so entry is going away after nf_conntrack_tcp_timeout_syn_sent
-seconds (default: 60).
-
-Entry will be re-created on next connection attempt, but then
-nat rules will be evaluated again.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/netfilter/nf_conntrack_proto_tcp.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
-index f7e8baf59b51..eb4de92077a8 100644
---- a/net/netfilter/nf_conntrack_proto_tcp.c
-+++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -1134,6 +1134,16 @@ int nf_conntrack_tcp_packet(struct nf_conn *ct,
- 			nf_ct_kill_acct(ct, ctinfo, skb);
- 			return NF_ACCEPT;
- 		}
-+
-+		if (index == TCP_SYN_SET && old_state == TCP_CONNTRACK_SYN_SENT) {
-+			/* do not renew timeout on SYN retransmit.
-+			 *
-+			 * Else port reuse by client or NAT middlebox can keep
-+			 * entry alive indefinitely (including nat info).
-+			 */
-+			return NF_ACCEPT;
-+		}
-+
- 		/* ESTABLISHED without SEEN_REPLY, i.e. mid-connection
- 		 * pickup with loose=1. Avoid large ESTABLISHED timeout.
- 		 */
--- 
-2.31.1
-
+My greetings to you my friend i hope you are fine and good please respond
+back to me thanks,
