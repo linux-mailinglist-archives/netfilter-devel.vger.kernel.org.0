@@ -2,186 +2,47 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F42143C1470
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Jul 2021 15:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A733C14A2
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Jul 2021 15:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhGHNlr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 8 Jul 2021 09:41:47 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:56986 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhGHNlr (ORCPT
+        id S231828AbhGHNuO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 8 Jul 2021 09:50:14 -0400
+Received: from mx-n06.wc2.phx1.stabletransit.com ([207.246.242.252]:59990 "HELO
+        mx-n06.wc2.phx1.stabletransit.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S231152AbhGHNuO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:41:47 -0400
-Received: from netfilter.org (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 888396164F;
-        Thu,  8 Jul 2021 15:38:50 +0200 (CEST)
-Date:   Thu, 8 Jul 2021 15:38:59 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Andrea Mayer <andrea.mayer@uniroma2.it>
-Cc:     Ryoga Saito <proelbtn@gmail.com>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH] net: Add netfilter hooks to track SRv6-encapsulated flows
-Message-ID: <20210708133859.GA6745@salvia>
-References: <20210706052548.5440-1-proelbtn@gmail.com>
- <20210708033138.ef3af5a724d7b569c379c35e@uniroma2.it>
+        Thu, 8 Jul 2021 09:50:14 -0400
+X-Greylist: delayed 491 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Jul 2021 09:50:14 EDT
+Received: by mx-n06.wc2.phx1.stabletransit.com (Postfix, from userid 114)
+        id 91B1231BC; Thu,  8 Jul 2021 08:39:21 -0500 (CDT)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
+        mx-n06.wc2.phx1.stabletransit.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.6 required=6.0 tests=BAYES_50,FREEMAIL_FROM,
+        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,SUBJ_ALL_CAPS,
+        T_FILL_THIS_FORM_SHORT,UNPARSEABLE_RELAY autolearn=no
+        autolearn_force=no version=3.4.2
+X-Spam-Virus: No
+Received: from php-v027.wc2.phx1.stabletransit.com (unknown [10.40.206.156])
+        by mx-n06.wc2.phx1.stabletransit.com (Postfix) with ESMTP id E482731B3
+        for <netfilter-devel@vger.kernel.org>; Thu,  8 Jul 2021 08:39:20 -0500 (CDT)
+Received: from digilu (uid 2914979)
+        (envelope-from mabeljohnson1@citromail.hu)
+        id 20156
+        by php-v027.wc2.phx1.stabletransit.com (DragonFly Mail Agent v0.11);
+        Thu, 08 Jul 2021 08:39:20 -0500
+To:     netfilter-devel@vger.kernel.org
+Subject: WORK OF GOD.
+X-PHP-Originating-Script: 2914979:class.engine.php(12) : runtime-created function
+Date:   Thu, 8 Jul 2021 08:39:20 -0500
+From:   MARY JOHNSON <mabeljohnson1@citromail.hu>
+Reply-To: mj224294@gmail.com
+Message-ID: <78c6880da26a0be05268e2e127cb9069@jackieleestudio.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210708033138.ef3af5a724d7b569c379c35e@uniroma2.it>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dear Andrea,
+I am Mrs. Mary Johnson,78years,an aging widow suffering from cancer, I am on admission at a hospital.I would like to willfully entrust the rest of my monetary assets to you, Kindly reply back with your full Name, cellphone, address, to enable me to send you a letter of authorization to contact my bank first inland bank nigeria plc so that they can transfer my funds to your account for the purpose of helping the poor as indicated on my WILL.
 
-On Thu, Jul 08, 2021 at 03:31:38AM +0200, Andrea Mayer wrote:
-> Dear Ryoga,
-> looking at your patch I noted several issues.
-> I start from the decap part but the same critical aspects are present also in
-> the encap one.
-> 
-> On Tue, 6 Jul 2021 14:25:48 +0900
-> Ryoga Saito <proelbtn@gmail.com> wrote:
-> > [...]
-> >
-> >
-> > +static int seg6_local_input(struct sk_buff *skb)
-> > +{
-> > +    if (skb->protocol != htons(ETH_P_IPV6)) {
-> > +        kfree_skb(skb);
-> > +        return -EINVAL;
-> > +    }
-> > +
-> > +    return NF_HOOK(NFPROTO_IPV6, NF_INET_LOCAL_IN, dev_net(skb->dev), NULL,
-> > +               skb, skb->dev, NULL, seg6_local_input_core);
-> > +}
-> > +
-> 
-> The main problem here concerns the use that has been made of the netfilter
-> HOOKs combined with the SRv6 processing logic.
-> 
-> In seg6_local_input, it is not absolutely guaranteed that the packet is
-> intended to be processed and delivered locally. In fact, depending on the given
-> configuration and behavior, the packet can either be i) processed and delivered
-> locally or ii) processed and forwarded to another node.
-
-What SRv6 decides to do with the packet is irrelevant, see below.
-
-> In seg6_local_input, depending on the given configuration and behavior, the
-> packet can either be i) processed and delivered locally or ii) processed and
-> forwarded to another node. On the other hand, your code assumes that the packet
-> is intended to be processed and delivered locally.
->
-> Calling the nfhook NFPROTO_IPV6 with NF_INET_LOCAL_IN can have several side
-> effects.
-
-This is how UDP tunnel encap_rcv infrastructure works: the packet
-follows the INPUT path. The encap_rcv() might decide to reinject the
-decapsulated packet to stack or forward it somewhere else.
-
-> I'll show you one below with an example:
-> 
-> suppose you have a transit SRv6 node (which we call T) configured with an SRv6
-> Behavior End (in other words, node T receives SRv6 traffic to be processed by
-> SRv6 End and forwarded to another node). Such node T is configured with
-> firewall rules on the INPUT CHAIN that prevent it from receiving traffic that
-> was *NOT* generated by the node itself (speaking of conntrack...). This
-> configuration can be enforced either through an explicit rule (i.e. XXX -j
-> DROP) or by setting the default INPUT CHAIN policy to DROP (as it would be done
-> in a traditional firewall configuration).
-> 
-> In this patch, what happens is that when an SRv6 packet passes through the
-> node, the call to the nfhook with NF_INET_LOCAL_IN triggers the call to the
-> firewall and the DROP policy on INPUT kicks in. As a result, the packet is
-> discarded. What makes the situation even worse is that using the nfhook in this
-> way breaks the SRv6 Behavior counter system (making that totally unusable).
-
-By default there are no registered hooks, ie. no filtering policy in
-place, the user needs to explicity specify a filtering policy, the
-mechanism is not breaking anything, the user policy needs to be
-consistent, that's all.
-
-> > +static int input_action_end_dx4(struct sk_buff *skb,
-> > +                struct seg6_local_lwt *slwt)
-> > +{
-> [...]
-> 
-> Similar problems with the inappropriate use of the hook also exist in
-> action_end_dx4.
-> 
-> > +static int seg6_input(struct sk_buff *skb)
-> > +{
-> > +    int proto;
-> > +
-> > +    if (skb->protocol == htons(ETH_P_IPV6))
-> > +        proto = NFPROTO_IPV6;
-> > +    else if (skb->protocol == htons(ETH_P_IP))
-> > +        proto = NFPROTO_IPV4;
-> > +    else
-> > +        return -EINVAL;
-> > +
-> > +    return NF_HOOK(proto, NF_INET_POST_ROUTING, dev_net(skb->dev), NULL,
-> > +               skb, NULL, skb_dst(skb)->dev, seg6_input_core);
-> > +}
-> > +
-> 
-> Another example where the normal processing flow is altered is in the
-> seg6_input() function (on the encap side). The seg6_input function should be
-> called in case of i) local processing and delivery or ii) local processing and
-> forwarding of the packet to another node. However, in this case a nfhook with
-> POST_ROUTING is called.
-
-By "local processing" here, you mean that the packet is going to enter
-the tunnel. If this packet is locally generated, then calling
-NF_INET_POST_ROUTING on the original packet (before being tunneled)
-looks correct to me.
-
-> > +static int seg6_output_core(struct net *net, struct sock *sk,
-> > +                struct sk_buff *skb)
-> > {
-> >     struct dst_entry *orig_dst = skb_dst(skb);
-> >     struct dst_entry *dst = NULL;
-> > @@ -387,12 +411,28 @@ static int seg6_output(struct net *net, struct sock > > *sk, struct sk_buff *skb)
-> >     if (unlikely(err))
-> >         goto drop;
-> >
-> > -    return dst_output(net, sk, skb);
-> > +    return NF_HOOK(NFPROTO_IPV6, NF_INET_LOCAL_OUT, net, sk, skb, NULL,
-> > +               skb_dst(skb)->dev, dst_output);
-> >
-> 
-> In turn, the seg6_input_core function calls the nfhook set with
-> NF_INET_LOCAL_OUT.
-
-This looks consistent to me: the tunneled packet follows the output
-path just like the UDP-based tunnel drivers, ie.
-iudp_tunnel_xmit_skb() -> ip6tunnel_xmit() -> ip6_local_out().
-
-> Doing that side effects may be expected, because the natural order
-> of packet processing in netfilter, or more specifically in the SRv6
-> framework, has been changed.
->
-> There are also some minor issues, such as trying to follow the coding style of
-> the SRv6 Networking subsystem (this applies also to the Networking subsystem in
-> general). For example here:
-> 
-> +static int input_action_end_dx6_finish(struct net *net, struct sock *sk,
-> +                       struct sk_buff *skb)
-> +{
-> +    struct dst_entry *orig_dst = skb_dst(skb);
-> +    struct seg6_local_lwt *slwt = seg6_local_lwtunnel(orig_dst->lwtstate);
-> +    struct in6_addr *nhaddr = NULL;
-> +    [...]
-> 
-> The code should respect the Reverse Christmas tree, i.e:
-> 
->     struct dst_entry *orig_dst = skb_dst(skb);
->     struct in6_addr *nhaddr = NULL;
->     struct seg6_local_lwt *slwt;
-> 
->     slwt = seg6_local_lwtunnel(orig_dst->lwtstate);
->     [...]
-
-Indeed.
