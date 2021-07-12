@@ -2,61 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E48C3C3ECD
-	for <lists+netfilter-devel@lfdr.de>; Sun, 11 Jul 2021 20:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E48D3C5A4F
+	for <lists+netfilter-devel@lfdr.de>; Mon, 12 Jul 2021 13:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231284AbhGKSwC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 11 Jul 2021 14:52:02 -0400
-Received: from mail.07d05.mspz7.gob.ec ([186.46.59.139]:53402 "EHLO
-        mail.07d05.mspz7.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbhGKSwB (ORCPT
+        id S236715AbhGLJuk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 12 Jul 2021 05:50:40 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:34962 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245423AbhGLJto (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 11 Jul 2021 14:52:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.07d05.mspz7.gob.ec (Postfix) with ESMTP id DE30118479AC;
-        Sun, 11 Jul 2021 13:06:12 -0500 (-05)
-Received: from mail.07d05.mspz7.gob.ec ([127.0.0.1])
-        by localhost (mail.07d05.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id s-G_b0KAkXQF; Sun, 11 Jul 2021 13:06:12 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.07d05.mspz7.gob.ec (Postfix) with ESMTP id 79BB31847956;
-        Sun, 11 Jul 2021 13:06:12 -0500 (-05)
-X-Virus-Scanned: amavisd-new at 07d05.mspz7.gob.ec
-Received: from mail.07d05.mspz7.gob.ec ([127.0.0.1])
-        by localhost (mail.07d05.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id MbSugSnUbkw1; Sun, 11 Jul 2021 13:06:12 -0500 (-05)
-Received: from cris-PC.wifi (unknown [105.9.79.139])
-        by mail.07d05.mspz7.gob.ec (Postfix) with ESMTPSA id 5F572184796D;
-        Sun, 11 Jul 2021 13:06:04 -0500 (-05)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 12 Jul 2021 05:49:44 -0400
+Received: from netfilter.org (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 42AD860705;
+        Mon, 12 Jul 2021 11:46:39 +0200 (CEST)
+Date:   Mon, 12 Jul 2021 11:46:52 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     nbd@nbd.name, coreteam@netfilter.org, davem@davemloft.net,
+        fw@strlen.de, kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, olek2@wp.pl, roid@nvidia.com
+Subject: Re: [PATCH nf] Revert "netfilter: flowtable: Remove redundant hw
+ refresh bit"
+Message-ID: <20210712094652.GA6320@salvia>
+References: <20210614215351.GA734@salvia>
+ <20210711010244.1709329-1-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: spende von 2,000,000 euro
-To:     Recipients <maria.coronel@07d05.mspz7.gob.ec>
-From:   ''Michael Weirsky'' <maria.coronel@07d05.mspz7.gob.ec>
-Date:   Sun, 11 Jul 2021 20:05:51 +0200
-Reply-To: mikeweirskyspende@gmail.com
-Message-Id: <20210711180604.5F572184796D@mail.07d05.mspz7.gob.ec>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210711010244.1709329-1-martin.blumenstingl@googlemail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Lieber Freund,
+Hi Martin,
 
-Ich bin Herr Mike Weirsky, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 273million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen.
-Das ist dein Spendencode: [MW530342019]
+On Sun, Jul 11, 2021 at 03:02:44AM +0200, Martin Blumenstingl wrote:
+> Hi Aleksander,
+> 
+> > The xt_flowoffload module is inconditionally setting on the hardware
+> > offload flag:
+> [...]
+> >
+> > which is triggering the slow down because packet path is allocating
+> > work to offload the entry to hardware, however, this driver does not
+> > support for hardware offload.
+> > 
+> > Probably this module can be updated to unset the flowtable flag if the
+> > harware does not support hardware offload.
+> 
+> yesterday there was a discussion about this on the #openwrt-devel IRC
+> channel. I am adding the IRC log to the end of this email because I am
+> not sure if you're using IRC.
+> 
+> I typically don't test with flow offloading enabled (I am testing with
+> OpenWrt's "default" network configuration, where flow offloading is
+> disabled by default). Also I am not familiar with the flow offloading
+> code at all and reading the xt_FLOWOFFLOAD code just raised more
+> questions for me.
+> 
+> Maybe you can share some info whether your workaround from [0] "fixes"
+> this issue. I am aware that it will probably break other devices. But
+> maybe it helps Pablo to confirm whether it's really an xt_FLOWOFFLOAD
+> bug or rather some generic flow offload issue (as Felix suggested on
+> IRC).
 
-www.youtube.com/watch?v=un8yRTmrYMY
+Maybe the user reporting this issue is enabling the --hw option?
+As I said, the patch that is being proposed to be revert is just
+amplifying.
 
+The only way to trigger this bug that I can find is:
 
-Antworten Sie mit dem SPENDE-CODE an diese 
+- NF_FLOWTABLE_HW_OFFLOAD is enabled.
+- packets are following the software path.
 
-E-Mail:mikeweirskyspende@gmail.com
+I don't see yet how this can happen with upstream codebase, nftables
+enables NF_FLOWTABLE_HW_OFFLOAD at configuration time, if the driver
+does not support for hardware offload, then NF_FLOWTABLE_HW_OFFLOAD is
+not set.
 
+Is xt_flowoffload rejecting the rule load if user specifies --hw and
+the hardware does not support for hardware offload?
 
-Ich hoffe, Sie und Ihre Familie glücklich zu machen.
-
-Grüße
-Herr Mike Weirsky
+By reading Felix's discussion on the IRC, it seems to me he does not
+like that the packet path retries to offload flows. If so, it should
+be possible to add a driver flag to disable this behaviour, so driver
+developers select what they prefer that flowtable core retries to
+offload entries. I can have a look into adding such flag and use it
+from the mtk driver.
