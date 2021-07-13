@@ -2,58 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3CA3C7539
-	for <lists+netfilter-devel@lfdr.de>; Tue, 13 Jul 2021 18:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D6C3C76A3
+	for <lists+netfilter-devel@lfdr.de>; Tue, 13 Jul 2021 20:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhGMQtd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 13 Jul 2021 12:49:33 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:38542 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhGMQtd (ORCPT
+        id S233980AbhGMSqs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 13 Jul 2021 14:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229478AbhGMSqs (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 13 Jul 2021 12:49:33 -0400
-Received: from localhost.localdomain (unknown [90.77.255.23])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 337EE60702;
-        Tue, 13 Jul 2021 18:46:24 +0200 (CEST)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     yajun.deng@linux.dev
-Subject: [PATCH nf] netfilter: nft_compat: use nfnetlink_unicast()
-Date:   Tue, 13 Jul 2021 18:46:40 +0200
-Message-Id: <20210713164640.28501-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.20.1
+        Tue, 13 Jul 2021 14:46:48 -0400
+X-Greylist: delayed 1121 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 13 Jul 2021 11:43:57 PDT
+Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7C1C0613DD
+        for <netfilter-devel@vger.kernel.org>; Tue, 13 Jul 2021 11:43:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=liG/iYwCjk9IwFIWJzxxmXPQVJ5gALM1qXYXgEh6FLE=; b=U0krkkn3Owz+SOLcFScUnvgb9/
+        qk/2saV1k9abkX1GlWSZ45nSlr2tXNqZ02LiDh2sdLoSikFUMEW8ILjokfxbd9zdtH9srhz5T2B4n
+        0v3keBFzD6UvJcEdLv5Oy9pIbQPiuw6JVt67Tgo02g8BORsuSFw8bFAw+yD1PJBUw3O1Twbf6cSPA
+        px2/XMyaO/+XLkpQ1ZjTaxXdXvICNhkKQVHrIZHrd2VqrHrj1pJ7S4XkFX9zUgB1QaJ4noTih5WG1
+        jSD3sqZ8CIWWBeT6I4RAqhar5haBdC6yzwhGJDtVnmzLJTGktq+5q1w3wuBoDaqHqh/Se8dT4siPp
+        c/xGj4nQ==;
+Received: from [2001:8b0:fb7d:d6d7:feb3:bcff:fe5e:42c3] (helo=azazel.net)
+        by kadath.azazel.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1m3N5f-0003he-Kv; Tue, 13 Jul 2021 19:25:07 +0100
+Date:   Tue, 13 Jul 2021 19:25:06 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nftables,v2 1/2] src: infer interval from set
+Message-ID: <YO3agpfuoOaV7HsF@azazel.net>
+References: <20210713124735.31498-1-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BjM+8LHwK3uRYr3b"
+Content-Disposition: inline
+In-Reply-To: <20210713124735.31498-1-pablo@netfilter.org>
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:feb3:bcff:fe5e:42c3
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-nfnetlink_unicast() translates EAGAIN to ENOBUFS, since EAGAIN is
-reserved to report missing module dependencies to the nfnetlink core.
 
-Reported-by: Yajun Deng <yajun.deng@linux.dev>
-Fixes: e0241ae6ac59 ("netfilter: use nfnetlink_unicast()")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_compat.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+--BjM+8LHwK3uRYr3b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
-index 639c337c885b..60f234df4e1d 100644
---- a/net/netfilter/nft_compat.c
-+++ b/net/netfilter/nft_compat.c
-@@ -683,10 +683,7 @@ static int nfnl_compat_get_rcu(struct sk_buff *skb,
- 		goto out_put;
- 	}
- 
--	ret = netlink_unicast(info->sk, skb2, NETLINK_CB(skb).portid,
--			      MSG_DONTWAIT);
--	if (ret > 0)
--		ret = 0;
-+	ret = nfnetlink_unicast(skb2, info->net, NETLINK_CB(skb).portid);
- out_put:
- 	rcu_read_lock();
- 	module_put(THIS_MODULE);
--- 
-2.20.1
+On 2021-07-13, at 14:47:34 +0200, Pablo Neira Ayuso wrote:
+> STMT_NAT_F_INTERVAL can actually be interfered from the set, update
+                                      ^^^^^^^^^^
+inferred.
 
+> 9599d9d25a6b ("src: NAT support for intervals in maps") not to set on
+> this flag.
+>
+> Do not remove STMT_NAT_F_INTERVAL since this flag is needed for
+> interval concatenations.
+>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> ---
+
+J.
+
+--BjM+8LHwK3uRYr3b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmDt2nkACgkQKYasCr3x
+BA2a6Q/8D6A9b3Ygdt6K7akLqkfDq5LFVkZxvhf2hLowdS50w/qn+CvbmU256xfm
+v7y95qviFKyit8XczpIk6uZyMHt2vhY9CZxHWYTpoyEYwISmw6xrwNLtBU4RF3EV
+gSTktuRU1LSH7Br/z5L4rOFEGWMynnYWSC3huVY4bfhtJcsDyzk4TKBs6W5/eBKg
+1aZZIjT7THlEvji7xQs8k5ZTYOcT4bA4C6r9DTbofOwn0Y/aPTMbE/Vgl0LFg6i3
+LZQXE7UphBuJ0fmRR8tqKyNL26KUeDtc2hXbc99l5MbFStRwyGMgidoZPnXfNh9R
+EwdHbcrH3cMHRZox+AuWTH3y3W2qXG+/WFAhInpgWOgAF6Mo/9IsN93LfXiWhX4n
++JsrUexBWMqgeoN/46eb7qvj2GaMsozCijcFCxT6DIauDzW3eP8E2f+ov2chwyzB
+vmxPBDeNvGwnJG4Xfc8WD0flSApnq9qmO/qFFDO8GkurS9FpcoEyCJFnij33EjOw
+WAZgD0V+27wggIxgGgmHGiv2ppl/tZNs7kiHyBlYZjh8zTralkdvQaL1eQC8drm4
+34YPHzfMkSD3RTwziKMQTbZlMOwQdPE/ke+nBDCWqsliOqw58VDbwcgt9bD/R5yO
+CH7wU/4t6NRmY4mF6W7wc0wArS6+ou98zSvhGVh3pJiS+ZosLAA=
+=KmLU
+-----END PGP SIGNATURE-----
+
+--BjM+8LHwK3uRYr3b--
