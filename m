@@ -2,42 +2,68 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACAC13C81AC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 14 Jul 2021 11:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937BB3C9B2D
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Jul 2021 11:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238773AbhGNJhO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 14 Jul 2021 05:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238337AbhGNJhO (ORCPT
+        id S230310AbhGOJOV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 15 Jul 2021 05:14:21 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:42114 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229927AbhGOJOV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:37:14 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A785FC06175F
-        for <netfilter-devel@vger.kernel.org>; Wed, 14 Jul 2021 02:34:22 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1m3bHY-0005vD-V4; Wed, 14 Jul 2021 11:34:20 +0200
-Date:   Wed, 14 Jul 2021 11:34:20 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Erik Wilson <erik.e.wilson@gmail.com>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH] xtables: Call init_extensions6() for static builds
-Message-ID: <20210714093420.GA9904@breakpoint.cc>
-References: <20210713234823.36131-1-Erik.E.Wilson@gmail.com>
+        Thu, 15 Jul 2021 05:14:21 -0400
+Received: from localhost.localdomain (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 559436165A
+        for <netfilter-devel@vger.kernel.org>; Thu, 15 Jul 2021 11:11:08 +0200 (CEST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next,v2] netfilter: nft_compat: use nfnetlink_unicast()
+Date:   Thu, 15 Jul 2021 11:11:26 +0200
+Message-Id: <20210715091126.10824-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210713234823.36131-1-Erik.E.Wilson@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Erik Wilson <erik.e.wilson@gmail.com> wrote:
-> Initialize extensions from libext6 for cases where xtables is built statically.
-> 
-> Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1550
-> Signed-off-by: Erik Wilson <Erik.E.Wilson@gmail.com>
+Use nfnetlink_unicast() which already translates EAGAIN to ENOBUFS,
+since EAGAIN is reserved to report missing module dependencies to the
+nfnetlink core.
 
-Applied, thank you.
+e0241ae6ac59 ("netfilter: use nfnetlink_unicast() forgot to update
+this spot.
+
+Reported-by: Yajun Deng <yajun.deng@linux.dev>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v2: update return value of nfnl_compat_get_rcu().
+
+ net/netfilter/nft_compat.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
+index 639c337c885b..272bcdb1392d 100644
+--- a/net/netfilter/nft_compat.c
++++ b/net/netfilter/nft_compat.c
+@@ -683,14 +683,12 @@ static int nfnl_compat_get_rcu(struct sk_buff *skb,
+ 		goto out_put;
+ 	}
+ 
+-	ret = netlink_unicast(info->sk, skb2, NETLINK_CB(skb).portid,
+-			      MSG_DONTWAIT);
+-	if (ret > 0)
+-		ret = 0;
++	ret = nfnetlink_unicast(skb2, info->net, NETLINK_CB(skb).portid);
+ out_put:
+ 	rcu_read_lock();
+ 	module_put(THIS_MODULE);
+-	return ret == -EAGAIN ? -ENOBUFS : ret;
++
++	return ret;
+ }
+ 
+ static const struct nla_policy nfnl_compat_policy_get[NFTA_COMPAT_MAX+1] = {
+-- 
+2.20.1
+
