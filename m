@@ -2,137 +2,171 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663D13D742C
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jul 2021 13:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0233D76D0
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jul 2021 15:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236326AbhG0LTJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 27 Jul 2021 07:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
+        id S236648AbhG0Ncy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 27 Jul 2021 09:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236284AbhG0LTI (ORCPT
+        with ESMTP id S236604AbhG0Nct (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:19:08 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB50DC061757;
-        Tue, 27 Jul 2021 04:19:08 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id e5so15438361ljp.6;
-        Tue, 27 Jul 2021 04:19:08 -0700 (PDT)
+        Tue, 27 Jul 2021 09:32:49 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1775C0613C1
+        for <netfilter-devel@vger.kernel.org>; Tue, 27 Jul 2021 06:32:48 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id k4so7590048wms.3
+        for <netfilter-devel@vger.kernel.org>; Tue, 27 Jul 2021 06:32:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=1JX+ZuxpFYJrHa2C/X3TLcDrsbZOOIKz4FHeTxuU2/k=;
-        b=kwk6OU2heV4rRnyasqjIsQ69eFLv9M2vvZ/jDt4lHvD3Fk+UiOn86sH7RCKRG8tfN9
-         sNMwFlJOWbFA6scJNdLHO2aq0jKBABLAGIBl63VEefqDwZHaTUFvpg5Z46qqeT3b8NmN
-         qncw1cg/2hufOVdC3Dl2I4FjX9eZmR9W+IhxCZEbx4ZJ5Qta5Fli0jQGTsc6hiDyigQF
-         M682vwa6AajPtVVPtQSOagCd6yI0W3uk3xkKO63jBLaTSHNMOnIp+7VSaME16mKe8EE+
-         7uckdGSvCJpWV2ps6cFQ/a6apUKsd69qg29yJq4zAo50CSg6CkpUJ8HUnPQf4wEunuEJ
-         XocQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pv2Kr96fLteAlNp2/l7f5CHe0z5QYiMahXyKqjaVUfk=;
+        b=UzUzVbmg9RenswInYAbhQzf5Otryjlw39xOdGhU01EIcoDs5PQXuWUHZLlk8wXGZWL
+         O4+5ig1RVgQvcabYMhaBRCTGAtiyFB0iu0tjO1JJyna2Qw9kCJOBjRbHc6oysIjwRHn4
+         BZfshBo/M/Gg73I8MGNPnNHX7nTbAGCStJQEvRdIeedH4M7lL10EUJmEtSnwXyVb4/aS
+         mHX2Q8cHEZJ5VTujKFOHC1miPVYJOzhoLuDidg21+OWpGJsb93r5KX2ixCMb/LgZKOCW
+         Koo7G4+wd5hW6DClz5TNsuZgH/Oe1jf7Z7c8aoK7PPeMnaNUUwaR+4xMBmtV4a4dLQR8
+         vx9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=1JX+ZuxpFYJrHa2C/X3TLcDrsbZOOIKz4FHeTxuU2/k=;
-        b=faAG6PT7WChtpSQQEbPOTu73qEpgBQmJyrNcI8j3/1trM5AXx2V9l/Mge8hk3sYDuf
-         wuxPychfd4zp9aNdwaQ1vnvCcw9mvOvQTygV/9MpkCRYcToqTR/lPVD+YCp6i3vjD1Ms
-         qXxdCBGNQHyYGaBepwzAx98jpWD8QgJINDq6tkFIkV2jhXjqfA/2HXDl81Xygo94vJL+
-         DxBglsLOPY8BmIdcLgGQJHjclbyeofEhVX4i0hr0cs2CEkT1LU48GtDjQGlmjGLvBAHK
-         W1awahrKt+FIX4aCraoXAL/dP+zKA7JnpVeAG3nYQg6kHj9gPr4FHNFp6Og6RL59Zu7F
-         crzA==
-X-Gm-Message-State: AOAM533ewpyHz2FXuzoZSjC+MwobmAb2Fdl29C4U370dLtq64jJTLUtd
-        fo6GJ2db1GQFge7PtInD8MTMDp3b+e/yYQ287eFUqHcQroF+HA==
-X-Google-Smtp-Source: ABdhPJwn8vcjiWXzipe41ro8SRuckcaXGs1Q2QWjqodFlnrqJwk3ghht43mrnmBJbIa3zYJDTgd0NKfpAXlCYYn+7IM=
-X-Received: by 2002:a05:651c:896:: with SMTP id d22mr15434670ljq.242.1627384746360;
- Tue, 27 Jul 2021 04:19:06 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pv2Kr96fLteAlNp2/l7f5CHe0z5QYiMahXyKqjaVUfk=;
+        b=r8NvzABhPVwatCabQcIwPvY6sL8UUq1VA6GeLSDAsyL9CRJPp/OUE8q3GcV+MnPrE5
+         2YabKatcDy96K2hmfXnBHOe81+N7HeJvjV4VAbu/KhguVrT2DkYcBG8NAhKW04+lcVwc
+         3VizjIZoUY4RCVtJeEcbuo8i6RomT4Abowt0TENCIALQBe0vHKBlgXpunNpxzuKi1SQ+
+         2AXDYLFaC3UGVSIu68VVrvd+8iZzfDvtOto2RUP+z2h7ahDbNe5MdJfTf1CO/jez3y1L
+         yLh311jxv9+hz5t3djPivgWNBrgAn23ypzBM3uGD++dRWOSo2mzTgnJepFgmjlrSAzFV
+         R3NQ==
+X-Gm-Message-State: AOAM533sA4q4Jikt53YsPn+1j3EthX+ahyHZnMlUSTDiBjsEgR9oyloq
+        FSTZg5jUvL48+Gn6mXHSwYoha7J0o37HIZnli1I=
+X-Google-Smtp-Source: ABdhPJztH5NqqOZ7IJWFYwmACBBkSSRaF5wXXPGSClTKgdkZHaRf0Hk+9LLLoB8UKwDj5UVmFy8Fu2ZYTYEstWr/BBs=
+X-Received: by 2002:a1c:e90f:: with SMTP id q15mr4075402wmc.175.1627392767449;
+ Tue, 27 Jul 2021 06:32:47 -0700 (PDT)
 MIME-Version: 1.0
-From:   Tom Yan <tom.ty89@gmail.com>
-Date:   Tue, 27 Jul 2021 19:18:55 +0800
-Message-ID: <CAGnHSEkt4xLAO_T9KNw2xGjjvC4y=E0LjX-iAACUktuCy0J7gw@mail.gmail.com>
-Subject: [nft] Regarding `tcp flags` (and a potential bug)
-To:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+References: <CAA5aLPirA-gNiYRCoQR6-2fP80ESvvXKu7f0bVPT80FFxua6=g@mail.gmail.com>
+ <17a7e7ed-f324-2a94-5f82-18c3850de6a@netfilter.org> <CAA5aLPgQj8wEbawg8u=UqJedTPWCdK5WiizwCpNxMp7Vg=-JgA@mail.gmail.com>
+ <e38ddbe-a47-efb1-e56f-457f5e426b18@netfilter.org>
+In-Reply-To: <e38ddbe-a47-efb1-e56f-457f5e426b18@netfilter.org>
+From:   Akshat Kakkar <akshat.1984@gmail.com>
+Date:   Tue, 27 Jul 2021 19:02:35 +0530
+Message-ID: <CAA5aLPgowRWm7JZm02LCGeOPz4E_dO+8FCCag+8aO4HDeLUQFQ@mail.gmail.com>
+Subject: Re: Nf_nat_h323 module not working with Panasonic VCs
+To:     Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc:     NetFilter <netfilter-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi all,
+Hi Jozsef,
 
-I'm a bit uncertain how `tcp flags` works exactly. I once thought `tcp
-flags syn` checks whether "syn and only syn is set", but after tests,
-it looks more like it checks only whether "syn is set" (and it appears
-that the right expression for the former is `tcp flags == syn`):
+For the VC which is working (i.e. VC2, IP:172.16.1.120) following are
+the generated debug log:
 
-# nft add rule meh tcp_flags 'tcp flags syn'
-# nft add rule meh tcp_flags 'tcp flags ! syn'
-# nft add rule meh tcp_flags 'tcp flags == syn'
-# nft add rule meh tcp_flags 'tcp flags != syn'
-# nft list table meh
-table ip meh {
-    chain tcp_flags {
-        tcp flags syn
-        tcp flags ! syn
-        tcp flags == syn
-        tcp flags != syn
-    }
-}
+[Jul27 17:29] nf_nat_q931: expect H.245 172.16.1.100:0->172.16.1.120:5516
+[  +0.249944] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5506
+[  +0.000021] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5507
+[  +0.003265] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5508
+[  +0.000011] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5509
+[  +0.007606] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5506
+[  +0.000012] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5507
+[  +0.000010] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5506
+[  +0.000004] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5507
+[  +0.004337] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5508
+[  +0.000010] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5509
+[  +0.000007] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5508
+[  +0.000007] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5509
+[  +0.006028] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5510
+[  +0.000011] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5511
+[  +0.001171] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5510
+[  +0.000008] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5511
+[  +0.000006] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5510
+[  +0.000003] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5511
+[  +0.003261] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5512
+[  +0.000011] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5513
+[  +0.000006] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5512
+[  +0.000003] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5513
+[  +0.007889] nf_nat_h323: expect RTP 172.16.1.100:0->172.16.1.120:5512
+[  +0.000012] nf_nat_h323: expect RTCP 172.16.1.100:0->172.16.1.120:5513
 
-Then I test the above respectively with a flag mask:
 
-# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) syn'
-# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) ! syn'
-# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) == syn'
-# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) != syn'
-# nft list table meh
-table ip meh {
-    chain tcp_flags {
-        tcp flags & (fin | syn | rst | ack) syn
-        tcp flags & (fin | syn | rst | ack) ! syn
-        tcp flags syn / fin,syn,rst,ack
-        tcp flags syn / fin,syn,rst,ack
-    }
-}
+However, for the panasonic VC1 i.e. the VC which is having issue,
+there are no debug log generated. absolutely nothing.
 
-I don't suppose the mask in the first two rules would matter. And with
-`tcp flags syn / fin,syn,rst,ack`, I assume it would be false when
-"syn is cleared and/or any/all of fin/rst/ack is/are set"?
-
-Also, as you can see, for the last two rules, `nft` interpreted them
-as an identical rule, which I assume to be a bug. These does NOT seem
-to workaround it either:
-
-# nft flush chain meh tcp_flags
-# nft add rule meh tcp_flags 'tcp flags == syn / fin,syn,rst,ack'
-# nft add rule meh tcp_flags 'tcp flags != syn / fin,syn,rst,ack'
-# nft list table meh
-table ip meh {
-    chain tcp_flags {
-        tcp flags syn / fin,syn,rst,ack
-        tcp flags syn / fin,syn,rst,ack
-    }
-}
-
-I'm not sure if `! --syn` in iptables (legacy) is affected by this as
-well. Anyway, I'm doing the following for now as a workaround:
-
-# nft flush chain meh tcp_flags
-# nft add rule meh tcp_flags 'tcp flags ! syn reject with tcp reset'
-# nft add rule meh tcp_flags 'tcp flags { fin, rst, ack } reject with tcp reset'
-# nft list table meh
-table ip meh {
-    chain tcp_flags {
-        tcp flags ! syn reject with tcp reset
-        # syn: 1, other bits: not checked
-        tcp flags { fin, rst, ack } reject with tcp reset
-        # syn: 1, fin: 0, rst: 0, ack: 0, other bits: not checked
-        ct state != invalid accept
-    }
-}
-
-Are the comments in above correct? Are any of the assumptions in this
-email incorrect?
-
-As a side question, is it even possible that any packet will be
-considered `invalid` with (syn: 1, fin: 0, rst: 0, ack: 0)?
-
-Thanks in advance!
-
-Regards,
-Tom
+On Mon, Jul 26, 2021 at 1:13 PM Jozsef Kadlecsik <kadlec@netfilter.org> wrote:
+>
+> On Mon, 26 Jul 2021, Akshat Kakkar wrote:
+>
+> > MCU is using IP only to dial to VC1 and not hostname.
+> >
+> > I went through packet capture and find everything in line with the
+> > standard. Just that it is sending "CS : Call Proceeding" packet which
+> > is an optional packet but it is part of standard.
+> > I can share pcap file if needed.
+>
+> Could you enable dynamic debugging in the kernel and enable it for the
+> nf_conntrack_h323 module? Then please repeate the testing with the
+> working and not working VCs and send the generated kernel debug log
+> messages.
+>
+> Best regards,
+> Jozsef
+> > On Mon, Jul 26, 2021 at 2:11 AM Jozsef Kadlecsik <kadlec@netfilter.org> wrote:
+> > >
+> > > Hello,
+> > >
+> > > On Sat, 24 Jul 2021, Akshat Kakkar wrote:
+> > >
+> > > > I have 2 vc endpoints VC1 (Make:Panasonic, IP:10.1.1.11),
+> > > > VC2(make:Polycom,IP: 10.1.1.12) and 1 MCU (172.16.1.100).
+> > > >
+> > > > There is a Linux firewall between VCs and MCU.
+> > > >
+> > > > There is one to one nat configured for these 2 VCs (10.1.1.11  <-->
+> > > > 172.16.1.110, 10.1.1.12  <--> 172.16.1.120)
+> > > > There is no natting for MCU IP as it is routable.
+> > > >
+> > > > nf_nat_h323 and nf_conntrack_h323 module is enabled in the firewall.
+> > > >
+> > > > When VC1 and VC2 initiate call to MCU, everything works fine. Video
+> > > > call is successful for both VC1 and VC2. h245 IP address for tcp in
+> > > > h225: CS connect packet is correctly replaced by the natted IP.
+> > > >
+> > > > However, when there is a dial out from MCU to VCs (i.e. MCU initiate
+> > > > call to the natted IP (i.e. 172.16.1.110 and 172.16.1.120 of VCs),
+> > > > natting works fine but h245 IP address for tcp in h225:CS is replaced
+> > > > correctly only for VC2 and not for VC1. For VC1, it is still its
+> > > > actual IP (i.e. 10.1.1.12 and not 172.16.1.120).
+> > > >
+> > > > Because of this, video call is successful only with VC2 and not with
+> > > > VC1, when initiated from MCU. I tried with another panasonic VC
+> > > > hardware, there was no change.
+> > > >
+> > > > Further packet dump analysis showed that for VC1, there are 3 h225
+> > > > packets (setup, call proceeding and alert) before Connect message but
+> > > > for VC2 there are only 2 h225 packets (setup and alert) before connect
+> > > > message.
+> > > >
+> > > > Is there a bug in nf_nat_h323 module or am I missing something?
+> > >
+> > > It can be a bug/incompatibility with the H.323 implementation in the
+> > > Panasonic device. However, first I'd make sure the MCU does not use
+> > > hostname for VC1 instead of its IP address. Hostnames in the calls are not
+> > > supported.
+> > >
+> > > Best regards,
+> > > Jozsef
+> > > -
+> > > E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+> > > PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+> > > Address : Wigner Research Centre for Physics
+> > >           H-1525 Budapest 114, POB. 49, Hungary
+> >
+>
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+> PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+> Address : Wigner Research Centre for Physics
+>           H-1525 Budapest 114, POB. 49, Hungary
