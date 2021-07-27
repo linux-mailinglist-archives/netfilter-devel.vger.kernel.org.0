@@ -2,85 +2,87 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393F13D7352
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jul 2021 12:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93EF3D743A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jul 2021 13:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236195AbhG0KfX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 27 Jul 2021 06:35:23 -0400
-Received: from smtp-out.kfki.hu ([148.6.0.48]:44739 "EHLO smtp-out.kfki.hu"
+        id S236455AbhG0LWp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 27 Jul 2021 07:22:45 -0400
+Received: from smtp-out.kfki.hu ([148.6.0.48]:46465 "EHLO smtp-out.kfki.hu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236104AbhG0KfU (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:35:20 -0400
+        id S236446AbhG0LWo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 27 Jul 2021 07:22:44 -0400
+X-Greylist: delayed 316 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Jul 2021 07:22:44 EDT
 Received: from localhost (localhost [127.0.0.1])
-        by smtp2.kfki.hu (Postfix) with ESMTP id E6DE2CC010A;
-        Tue, 27 Jul 2021 12:35:18 +0200 (CEST)
+        by smtp2.kfki.hu (Postfix) with ESMTP id 4442ACC00FD;
+        Tue, 27 Jul 2021 13:17:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        blackhole.kfki.hu; h=mime-version:x-mailer:message-id:date:date
+        :from:from:received:received:received; s=20151130; t=1627384645;
+         x=1629199046; bh=0PizZSNgjI/X7nOPtGz9s4rfcHAdWp+gvLtgH6zSceo=; b=
+        CZammEXJ4cikYtvYRn4A9F8xBprKx3t5VE+C1eiDyWoJbkVqp1NIdIjbbK5IIdD1
+        rauasMtdV2nZPVKyKcZoSRYUc1H9ij/3SIwJmq0AvZGm/2hFXRVkNVm1jJJZ1RCt
+        s5RWorIR1fxiajlvMJphb3/72cI9XsAnMF7FxEHYEjQ=
 X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
 Received: from smtp2.kfki.hu ([127.0.0.1])
         by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Tue, 27 Jul 2021 12:35:16 +0200 (CEST)
-Received: from ix.szhk.kfki.hu (wdc11.wdc.kfki.hu [148.6.200.11])
-        (Authenticated sender: kadlecsik.jozsef@wigner.hu)
-        by smtp2.kfki.hu (Postfix) with ESMTPSA id B6819CC0108;
-        Tue, 27 Jul 2021 12:35:16 +0200 (CEST)
-Received: by ix.szhk.kfki.hu (Postfix, from userid 1000)
-        id 885EA180579; Tue, 27 Jul 2021 12:35:16 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by ix.szhk.kfki.hu (Postfix) with ESMTP id 83C0018050A;
-        Tue, 27 Jul 2021 12:35:16 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 12:35:16 +0200 (CEST)
+        with ESMTP; Tue, 27 Jul 2021 13:17:25 +0200 (CEST)
+Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
+        by smtp2.kfki.hu (Postfix) with ESMTP id 538CBCC00F4;
+        Tue, 27 Jul 2021 13:17:25 +0200 (CEST)
+Received: by blackhole.kfki.hu (Postfix, from userid 1000)
+        id 48B073412EC; Tue, 27 Jul 2021 13:17:25 +0200 (CEST)
 From:   Jozsef Kadlecsik <kadlec@netfilter.org>
-To:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: [ANNOUNCE] ipset 7.13 released
-Message-ID: <f5d9071-7558-17a-9cd1-6ac0922710@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 0/1] ipset patch for the nf tree
+Date:   Tue, 27 Jul 2021 13:17:24 +0200
+Message-Id: <20210727111725.14013-1-kadlec@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+Hi Pablo,
 
-I'm happy to announce ipset 7.13 - 7.12 was released but not announced due 
-to additional fixes required in two patches.
-
-Thanks to Pablo for the ipset to nftables translation infrastructure!
-
-Userspace changes:
-7.13
-  - When parsing protocols by number, do not check it in /etc/protocols.
-  - Add missing hunk to patch "Allow specifying protocols by number"
-
-7.12
-  - Allow specifying protocols by number (Haw Loeung)
-  - Fix example in ipset.8 manpage discovered by Pablo Neira Ayuso.
-  - tests: add tests ipset to nftables (Pablo Neira Ayuso)
-  - add ipset to nftables translation infrastructure (Pablo Neira Ayuso)
-  - lib: Detach restore routine from parser (Pablo Neira Ayuso)
-  - lib: split parser from command execution (Pablo Neira Ayuso)
-  - Fix patch "Parse port before trying by service name"
-
-Kernel part changes:
-7.13
-  - Limit the maximal range of consecutive elements to add/delete fix
-
-7.12
-  - Limit the maximal range of consecutive elements to add/delete
-  - Backport "netfilter: use nfnetlink_unicast()"
-  - Backport "netfilter: nfnetlink: consolidate callback type"
-  - Backport "netfilter: nfnetlink: add struct nfnl_info and
-    pass it to callbacks"
-  - Backport "netfilter: add helper function to set up the
-    nfnetlink header and use it"
-
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+Please apply the next patch to the nf tree. Brad Spengler reported that
+huge range of consecutive elements could result soft lockup errors due
+to the long execution time. The patch limits and enforces the maximal siz=
+e
+of such ranges.
 
 Best regards,
 Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+
+The following changes since commit 832df96d5f957d42fd9eb9660519a0c51fe853=
+8e:
+
+  Merge branch 'sctp-pmtu-probe' (2021-07-25 23:06:21 +0100)
+
+are available in the Git repository at:
+
+  git://blackhole.kfki.hu/nf 97b5fa905d232f300fd
+
+for you to fetch changes up to 97b5fa905d232f300fd943c320932dd0523727ee:
+
+  netfilter: ipset: Limit the maximal range of consecutive elements to ad=
+d/delete (2021-07-27 12:59:38 +0200)
+
+----------------------------------------------------------------
+Jozsef Kadlecsik (1):
+      netfilter: ipset: Limit the maximal range of consecutive elements t=
+o add/delete
+
+ include/linux/netfilter/ipset/ip_set.h       |  3 +++
+ net/netfilter/ipset/ip_set_hash_ip.c         |  8 +++++++-
+ net/netfilter/ipset/ip_set_hash_ipmark.c     | 10 +++++++++-
+ net/netfilter/ipset/ip_set_hash_ipport.c     |  3 +++
+ net/netfilter/ipset/ip_set_hash_ipportip.c   |  3 +++
+ net/netfilter/ipset/ip_set_hash_ipportnet.c  |  3 +++
+ net/netfilter/ipset/ip_set_hash_net.c        | 11 ++++++++++-
+ net/netfilter/ipset/ip_set_hash_netiface.c   | 10 +++++++++-
+ net/netfilter/ipset/ip_set_hash_netnet.c     | 16 +++++++++++++++-
+ net/netfilter/ipset/ip_set_hash_netport.c    | 11 ++++++++++-
+ net/netfilter/ipset/ip_set_hash_netportnet.c | 16 +++++++++++++++-
+ 11 files changed, 87 insertions(+), 7 deletions(-)
