@@ -2,372 +2,137 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700A53D7439
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jul 2021 13:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663D13D742C
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jul 2021 13:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236461AbhG0LWo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 27 Jul 2021 07:22:44 -0400
-Received: from smtp-out.kfki.hu ([148.6.0.48]:54663 "EHLO smtp-out.kfki.hu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236455AbhG0LWo (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:22:44 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.kfki.hu (Postfix) with ESMTP id 7149CCC00F4;
-        Tue, 27 Jul 2021 13:17:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:references:in-reply-to
-        :x-mailer:message-id:date:date:from:from:received:received
-        :received; s=20151130; t=1627384645; x=1629199046; bh=Sug07HAIBV
-        eVby7B83Ra4qbu8PNYv87W2F/4byFvA9g=; b=RwMI/gKs4poKOTTT/wPgnOnJ74
-        cfeSFB5zLO2bcUE5gr+E6151aS21JdgBvybNfFxIFq+TH7+ldBpNtCydlMNo6PIP
-        RokhDBgf7t39f1gsQCzi2HS6TlN1oLVZlmnyqp7KGIFsgtFTIwgAJujUPbfoPkTz
-        zh90XRrSe1EdPAh2k=
-X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
-        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Tue, 27 Jul 2021 13:17:25 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-        by smtp2.kfki.hu (Postfix) with ESMTP id 53BD6CC00F6;
-        Tue, 27 Jul 2021 13:17:25 +0200 (CEST)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id 4D4C53412ED; Tue, 27 Jul 2021 13:17:25 +0200 (CEST)
-From:   Jozsef Kadlecsik <kadlec@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 1/1] netfilter: ipset: Limit the maximal range of consecutive elements to add/delete
-Date:   Tue, 27 Jul 2021 13:17:25 +0200
-Message-Id: <20210727111725.14013-2-kadlec@netfilter.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210727111725.14013-1-kadlec@netfilter.org>
-References: <20210727111725.14013-1-kadlec@netfilter.org>
+        id S236326AbhG0LTJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 27 Jul 2021 07:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236284AbhG0LTI (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Tue, 27 Jul 2021 07:19:08 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB50DC061757;
+        Tue, 27 Jul 2021 04:19:08 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id e5so15438361ljp.6;
+        Tue, 27 Jul 2021 04:19:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=1JX+ZuxpFYJrHa2C/X3TLcDrsbZOOIKz4FHeTxuU2/k=;
+        b=kwk6OU2heV4rRnyasqjIsQ69eFLv9M2vvZ/jDt4lHvD3Fk+UiOn86sH7RCKRG8tfN9
+         sNMwFlJOWbFA6scJNdLHO2aq0jKBABLAGIBl63VEefqDwZHaTUFvpg5Z46qqeT3b8NmN
+         qncw1cg/2hufOVdC3Dl2I4FjX9eZmR9W+IhxCZEbx4ZJ5Qta5Fli0jQGTsc6hiDyigQF
+         M682vwa6AajPtVVPtQSOagCd6yI0W3uk3xkKO63jBLaTSHNMOnIp+7VSaME16mKe8EE+
+         7uckdGSvCJpWV2ps6cFQ/a6apUKsd69qg29yJq4zAo50CSg6CkpUJ8HUnPQf4wEunuEJ
+         XocQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=1JX+ZuxpFYJrHa2C/X3TLcDrsbZOOIKz4FHeTxuU2/k=;
+        b=faAG6PT7WChtpSQQEbPOTu73qEpgBQmJyrNcI8j3/1trM5AXx2V9l/Mge8hk3sYDuf
+         wuxPychfd4zp9aNdwaQ1vnvCcw9mvOvQTygV/9MpkCRYcToqTR/lPVD+YCp6i3vjD1Ms
+         qXxdCBGNQHyYGaBepwzAx98jpWD8QgJINDq6tkFIkV2jhXjqfA/2HXDl81Xygo94vJL+
+         DxBglsLOPY8BmIdcLgGQJHjclbyeofEhVX4i0hr0cs2CEkT1LU48GtDjQGlmjGLvBAHK
+         W1awahrKt+FIX4aCraoXAL/dP+zKA7JnpVeAG3nYQg6kHj9gPr4FHNFp6Og6RL59Zu7F
+         crzA==
+X-Gm-Message-State: AOAM533ewpyHz2FXuzoZSjC+MwobmAb2Fdl29C4U370dLtq64jJTLUtd
+        fo6GJ2db1GQFge7PtInD8MTMDp3b+e/yYQ287eFUqHcQroF+HA==
+X-Google-Smtp-Source: ABdhPJwn8vcjiWXzipe41ro8SRuckcaXGs1Q2QWjqodFlnrqJwk3ghht43mrnmBJbIa3zYJDTgd0NKfpAXlCYYn+7IM=
+X-Received: by 2002:a05:651c:896:: with SMTP id d22mr15434670ljq.242.1627384746360;
+ Tue, 27 Jul 2021 04:19:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From:   Tom Yan <tom.ty89@gmail.com>
+Date:   Tue, 27 Jul 2021 19:18:55 +0800
+Message-ID: <CAGnHSEkt4xLAO_T9KNw2xGjjvC4y=E0LjX-iAACUktuCy0J7gw@mail.gmail.com>
+Subject: [nft] Regarding `tcp flags` (and a potential bug)
+To:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The range size of consecutive elements were not limited. Thus one could
-define a huge range which may result soft lockup errors due to the long
-execution time. Now the range size is limited to 2^20 entries.
+Hi all,
 
-Reported-by: Brad Spengler <spender@grsecurity.net>
-Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
----
- include/linux/netfilter/ipset/ip_set.h       |  3 +++
- net/netfilter/ipset/ip_set_hash_ip.c         |  8 +++++++-
- net/netfilter/ipset/ip_set_hash_ipmark.c     | 10 +++++++++-
- net/netfilter/ipset/ip_set_hash_ipport.c     |  3 +++
- net/netfilter/ipset/ip_set_hash_ipportip.c   |  3 +++
- net/netfilter/ipset/ip_set_hash_ipportnet.c  |  3 +++
- net/netfilter/ipset/ip_set_hash_net.c        | 11 ++++++++++-
- net/netfilter/ipset/ip_set_hash_netiface.c   | 10 +++++++++-
- net/netfilter/ipset/ip_set_hash_netnet.c     | 16 +++++++++++++++-
- net/netfilter/ipset/ip_set_hash_netport.c    | 11 ++++++++++-
- net/netfilter/ipset/ip_set_hash_netportnet.c | 16 +++++++++++++++-
- 11 files changed, 87 insertions(+), 7 deletions(-)
+I'm a bit uncertain how `tcp flags` works exactly. I once thought `tcp
+flags syn` checks whether "syn and only syn is set", but after tests,
+it looks more like it checks only whether "syn is set" (and it appears
+that the right expression for the former is `tcp flags == syn`):
 
-diff --git a/include/linux/netfilter/ipset/ip_set.h b/include/linux/netfi=
-lter/ipset/ip_set.h
-index 10279c4830ac..ada1296c87d5 100644
---- a/include/linux/netfilter/ipset/ip_set.h
-+++ b/include/linux/netfilter/ipset/ip_set.h
-@@ -196,6 +196,9 @@ struct ip_set_region {
- 	u32 elements;		/* Number of elements vs timeout */
- };
-=20
-+/* Max range where every element is added/deleted in one step */
-+#define IPSET_MAX_RANGE		(1<<20)
-+
- /* The max revision number supported by any set type + 1 */
- #define IPSET_REVISION_MAX	9
-=20
-diff --git a/net/netfilter/ipset/ip_set_hash_ip.c b/net/netfilter/ipset/i=
-p_set_hash_ip.c
-index d1bef23fd4f5..ef7457c68c7b 100644
---- a/net/netfilter/ipset/ip_set_hash_ip.c
-+++ b/net/netfilter/ipset/ip_set_hash_ip.c
-@@ -132,8 +132,11 @@ hash_ip4_uadt(struct ip_set *set, struct nlattr *tb[=
-],
- 		ret =3D ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP_TO], &ip_to);
- 		if (ret)
- 			return ret;
--		if (ip > ip_to)
-+		if (ip > ip_to) {
-+			if (ip_to =3D=3D 0)
-+				return -IPSET_ERR_HASH_ELEM;
- 			swap(ip, ip_to);
-+		}
- 	} else if (tb[IPSET_ATTR_CIDR]) {
- 		u8 cidr =3D nla_get_u8(tb[IPSET_ATTR_CIDR]);
-=20
-@@ -144,6 +147,9 @@ hash_ip4_uadt(struct ip_set *set, struct nlattr *tb[]=
-,
-=20
- 	hosts =3D h->netmask =3D=3D 32 ? 1 : 2 << (32 - h->netmask - 1);
-=20
-+	if (((u64)ip_to - ip + 1)/hosts > IPSET_MAX_RANGE)
-+		return -ERANGE;
-+
- 	if (retried) {
- 		ip =3D ntohl(h->next.ip);
- 		e.ip =3D htonl(ip);
-diff --git a/net/netfilter/ipset/ip_set_hash_ipmark.c b/net/netfilter/ips=
-et/ip_set_hash_ipmark.c
-index 18346d18aa16..153de3457423 100644
---- a/net/netfilter/ipset/ip_set_hash_ipmark.c
-+++ b/net/netfilter/ipset/ip_set_hash_ipmark.c
-@@ -121,6 +121,8 @@ hash_ipmark4_uadt(struct ip_set *set, struct nlattr *=
-tb[],
-=20
- 	e.mark =3D ntohl(nla_get_be32(tb[IPSET_ATTR_MARK]));
- 	e.mark &=3D h->markmask;
-+	if (e.mark =3D=3D 0 && e.ip =3D=3D 0)
-+		return -IPSET_ERR_HASH_ELEM;
-=20
- 	if (adt =3D=3D IPSET_TEST ||
- 	    !(tb[IPSET_ATTR_IP_TO] || tb[IPSET_ATTR_CIDR])) {
-@@ -133,8 +135,11 @@ hash_ipmark4_uadt(struct ip_set *set, struct nlattr =
-*tb[],
- 		ret =3D ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP_TO], &ip_to);
- 		if (ret)
- 			return ret;
--		if (ip > ip_to)
-+		if (ip > ip_to) {
-+			if (e.mark =3D=3D 0 && ip_to =3D=3D 0)
-+				return -IPSET_ERR_HASH_ELEM;
- 			swap(ip, ip_to);
-+		}
- 	} else if (tb[IPSET_ATTR_CIDR]) {
- 		u8 cidr =3D nla_get_u8(tb[IPSET_ATTR_CIDR]);
-=20
-@@ -143,6 +148,9 @@ hash_ipmark4_uadt(struct ip_set *set, struct nlattr *=
-tb[],
- 		ip_set_mask_from_to(ip, ip_to, cidr);
- 	}
-=20
-+	if (((u64)ip_to - ip + 1) > IPSET_MAX_RANGE)
-+		return -ERANGE;
-+
- 	if (retried)
- 		ip =3D ntohl(h->next.ip);
- 	for (; ip <=3D ip_to; ip++) {
-diff --git a/net/netfilter/ipset/ip_set_hash_ipport.c b/net/netfilter/ips=
-et/ip_set_hash_ipport.c
-index e1ca11196515..7303138e46be 100644
---- a/net/netfilter/ipset/ip_set_hash_ipport.c
-+++ b/net/netfilter/ipset/ip_set_hash_ipport.c
-@@ -173,6 +173,9 @@ hash_ipport4_uadt(struct ip_set *set, struct nlattr *=
-tb[],
- 			swap(port, port_to);
- 	}
-=20
-+	if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
-+		return -ERANGE;
-+
- 	if (retried)
- 		ip =3D ntohl(h->next.ip);
- 	for (; ip <=3D ip_to; ip++) {
-diff --git a/net/netfilter/ipset/ip_set_hash_ipportip.c b/net/netfilter/i=
-pset/ip_set_hash_ipportip.c
-index ab179e064597..334fb1ad0e86 100644
---- a/net/netfilter/ipset/ip_set_hash_ipportip.c
-+++ b/net/netfilter/ipset/ip_set_hash_ipportip.c
-@@ -180,6 +180,9 @@ hash_ipportip4_uadt(struct ip_set *set, struct nlattr=
- *tb[],
- 			swap(port, port_to);
- 	}
-=20
-+	if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
-+		return -ERANGE;
-+
- 	if (retried)
- 		ip =3D ntohl(h->next.ip);
- 	for (; ip <=3D ip_to; ip++) {
-diff --git a/net/netfilter/ipset/ip_set_hash_ipportnet.c b/net/netfilter/=
-ipset/ip_set_hash_ipportnet.c
-index 8f075b44cf64..b293aa1ff258 100644
---- a/net/netfilter/ipset/ip_set_hash_ipportnet.c
-+++ b/net/netfilter/ipset/ip_set_hash_ipportnet.c
-@@ -246,6 +246,9 @@ hash_ipportnet4_uadt(struct ip_set *set, struct nlatt=
-r *tb[],
- 		ip_set_mask_from_to(ip, ip_to, cidr);
- 	}
-=20
-+	if (((u64)ip_to - ip + 1)*(port_to - port + 1) > IPSET_MAX_RANGE)
-+		return -ERANGE;
-+
- 	port_to =3D port =3D ntohs(e.port);
- 	if (tb[IPSET_ATTR_PORT_TO]) {
- 		port_to =3D ip_set_get_h16(tb[IPSET_ATTR_PORT_TO]);
-diff --git a/net/netfilter/ipset/ip_set_hash_net.c b/net/netfilter/ipset/=
-ip_set_hash_net.c
-index c1a11f041ac6..1422739d9aa2 100644
---- a/net/netfilter/ipset/ip_set_hash_net.c
-+++ b/net/netfilter/ipset/ip_set_hash_net.c
-@@ -140,7 +140,7 @@ hash_net4_uadt(struct ip_set *set, struct nlattr *tb[=
-],
- 	ipset_adtfn adtfn =3D set->variant->adt[adt];
- 	struct hash_net4_elem e =3D { .cidr =3D HOST_MASK };
- 	struct ip_set_ext ext =3D IP_SET_INIT_UEXT(set);
--	u32 ip =3D 0, ip_to =3D 0;
-+	u32 ip =3D 0, ip_to =3D 0, ipn, n =3D 0;
- 	int ret;
-=20
- 	if (tb[IPSET_ATTR_LINENO])
-@@ -188,6 +188,15 @@ hash_net4_uadt(struct ip_set *set, struct nlattr *tb=
-[],
- 		if (ip + UINT_MAX =3D=3D ip_to)
- 			return -IPSET_ERR_HASH_RANGE;
- 	}
-+	ipn =3D ip;
-+	do {
-+		ipn =3D ip_set_range_to_cidr(ipn, ip_to, &e.cidr);
-+		n++;
-+	} while (ipn++ < ip_to);
-+
-+	if (n > IPSET_MAX_RANGE)
-+		return -ERANGE;
-+
- 	if (retried)
- 		ip =3D ntohl(h->next.ip);
- 	do {
-diff --git a/net/netfilter/ipset/ip_set_hash_netiface.c b/net/netfilter/i=
-pset/ip_set_hash_netiface.c
-index ddd51c2e1cb3..9810f5bf63f5 100644
---- a/net/netfilter/ipset/ip_set_hash_netiface.c
-+++ b/net/netfilter/ipset/ip_set_hash_netiface.c
-@@ -202,7 +202,7 @@ hash_netiface4_uadt(struct ip_set *set, struct nlattr=
- *tb[],
- 	ipset_adtfn adtfn =3D set->variant->adt[adt];
- 	struct hash_netiface4_elem e =3D { .cidr =3D HOST_MASK, .elem =3D 1 };
- 	struct ip_set_ext ext =3D IP_SET_INIT_UEXT(set);
--	u32 ip =3D 0, ip_to =3D 0;
-+	u32 ip =3D 0, ip_to =3D 0, ipn, n =3D 0;
- 	int ret;
-=20
- 	if (tb[IPSET_ATTR_LINENO])
-@@ -256,6 +256,14 @@ hash_netiface4_uadt(struct ip_set *set, struct nlatt=
-r *tb[],
- 	} else {
- 		ip_set_mask_from_to(ip, ip_to, e.cidr);
- 	}
-+	ipn =3D ip;
-+	do {
-+		ipn =3D ip_set_range_to_cidr(ipn, ip_to, &e.cidr);
-+		n++;
-+	} while (ipn++ < ip_to);
-+
-+	if (n > IPSET_MAX_RANGE)
-+		return -ERANGE;
-=20
- 	if (retried)
- 		ip =3D ntohl(h->next.ip);
-diff --git a/net/netfilter/ipset/ip_set_hash_netnet.c b/net/netfilter/ips=
-et/ip_set_hash_netnet.c
-index 6532f0505e66..3d09eefe998a 100644
---- a/net/netfilter/ipset/ip_set_hash_netnet.c
-+++ b/net/netfilter/ipset/ip_set_hash_netnet.c
-@@ -168,7 +168,8 @@ hash_netnet4_uadt(struct ip_set *set, struct nlattr *=
-tb[],
- 	struct hash_netnet4_elem e =3D { };
- 	struct ip_set_ext ext =3D IP_SET_INIT_UEXT(set);
- 	u32 ip =3D 0, ip_to =3D 0;
--	u32 ip2 =3D 0, ip2_from =3D 0, ip2_to =3D 0;
-+	u32 ip2 =3D 0, ip2_from =3D 0, ip2_to =3D 0, ipn;
-+	u64 n =3D 0, m =3D 0;
- 	int ret;
-=20
- 	if (tb[IPSET_ATTR_LINENO])
-@@ -244,6 +245,19 @@ hash_netnet4_uadt(struct ip_set *set, struct nlattr =
-*tb[],
- 	} else {
- 		ip_set_mask_from_to(ip2_from, ip2_to, e.cidr[1]);
- 	}
-+	ipn =3D ip;
-+	do {
-+		ipn =3D ip_set_range_to_cidr(ipn, ip_to, &e.cidr[0]);
-+		n++;
-+	} while (ipn++ < ip_to);
-+	ipn =3D ip2_from;
-+	do {
-+		ipn =3D ip_set_range_to_cidr(ipn, ip2_to, &e.cidr[1]);
-+		m++;
-+	} while (ipn++ < ip2_to);
-+
-+	if (n*m > IPSET_MAX_RANGE)
-+		return -ERANGE;
-=20
- 	if (retried) {
- 		ip =3D ntohl(h->next.ip[0]);
-diff --git a/net/netfilter/ipset/ip_set_hash_netport.c b/net/netfilter/ip=
-set/ip_set_hash_netport.c
-index ec1564a1cb5a..09cf72eb37f8 100644
---- a/net/netfilter/ipset/ip_set_hash_netport.c
-+++ b/net/netfilter/ipset/ip_set_hash_netport.c
-@@ -158,7 +158,8 @@ hash_netport4_uadt(struct ip_set *set, struct nlattr =
-*tb[],
- 	ipset_adtfn adtfn =3D set->variant->adt[adt];
- 	struct hash_netport4_elem e =3D { .cidr =3D HOST_MASK - 1 };
- 	struct ip_set_ext ext =3D IP_SET_INIT_UEXT(set);
--	u32 port, port_to, p =3D 0, ip =3D 0, ip_to =3D 0;
-+	u32 port, port_to, p =3D 0, ip =3D 0, ip_to =3D 0, ipn;
-+	u64 n =3D 0;
- 	bool with_ports =3D false;
- 	u8 cidr;
- 	int ret;
-@@ -235,6 +236,14 @@ hash_netport4_uadt(struct ip_set *set, struct nlattr=
- *tb[],
- 	} else {
- 		ip_set_mask_from_to(ip, ip_to, e.cidr + 1);
- 	}
-+	ipn =3D ip;
-+	do {
-+		ipn =3D ip_set_range_to_cidr(ipn, ip_to, &cidr);
-+		n++;
-+	} while (ipn++ < ip_to);
-+
-+	if (n*(port_to - port + 1) > IPSET_MAX_RANGE)
-+		return -ERANGE;
-=20
- 	if (retried) {
- 		ip =3D ntohl(h->next.ip);
-diff --git a/net/netfilter/ipset/ip_set_hash_netportnet.c b/net/netfilter=
-/ipset/ip_set_hash_netportnet.c
-index 0e91d1e82f1c..19bcdb3141f6 100644
---- a/net/netfilter/ipset/ip_set_hash_netportnet.c
-+++ b/net/netfilter/ipset/ip_set_hash_netportnet.c
-@@ -182,7 +182,8 @@ hash_netportnet4_uadt(struct ip_set *set, struct nlat=
-tr *tb[],
- 	struct hash_netportnet4_elem e =3D { };
- 	struct ip_set_ext ext =3D IP_SET_INIT_UEXT(set);
- 	u32 ip =3D 0, ip_to =3D 0, p =3D 0, port, port_to;
--	u32 ip2_from =3D 0, ip2_to =3D 0, ip2;
-+	u32 ip2_from =3D 0, ip2_to =3D 0, ip2, ipn;
-+	u64 n =3D 0, m =3D 0;
- 	bool with_ports =3D false;
- 	int ret;
-=20
-@@ -284,6 +285,19 @@ hash_netportnet4_uadt(struct ip_set *set, struct nla=
-ttr *tb[],
- 	} else {
- 		ip_set_mask_from_to(ip2_from, ip2_to, e.cidr[1]);
- 	}
-+	ipn =3D ip;
-+	do {
-+		ipn =3D ip_set_range_to_cidr(ipn, ip_to, &e.cidr[0]);
-+		n++;
-+	} while (ipn++ < ip_to);
-+	ipn =3D ip2_from;
-+	do {
-+		ipn =3D ip_set_range_to_cidr(ipn, ip2_to, &e.cidr[1]);
-+		m++;
-+	} while (ipn++ < ip2_to);
-+
-+	if (n*m*(port_to - port + 1) > IPSET_MAX_RANGE)
-+		return -ERANGE;
-=20
- 	if (retried) {
- 		ip =3D ntohl(h->next.ip[0]);
---=20
-2.20.1
+# nft add rule meh tcp_flags 'tcp flags syn'
+# nft add rule meh tcp_flags 'tcp flags ! syn'
+# nft add rule meh tcp_flags 'tcp flags == syn'
+# nft add rule meh tcp_flags 'tcp flags != syn'
+# nft list table meh
+table ip meh {
+    chain tcp_flags {
+        tcp flags syn
+        tcp flags ! syn
+        tcp flags == syn
+        tcp flags != syn
+    }
+}
 
+Then I test the above respectively with a flag mask:
+
+# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) syn'
+# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) ! syn'
+# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) == syn'
+# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) != syn'
+# nft list table meh
+table ip meh {
+    chain tcp_flags {
+        tcp flags & (fin | syn | rst | ack) syn
+        tcp flags & (fin | syn | rst | ack) ! syn
+        tcp flags syn / fin,syn,rst,ack
+        tcp flags syn / fin,syn,rst,ack
+    }
+}
+
+I don't suppose the mask in the first two rules would matter. And with
+`tcp flags syn / fin,syn,rst,ack`, I assume it would be false when
+"syn is cleared and/or any/all of fin/rst/ack is/are set"?
+
+Also, as you can see, for the last two rules, `nft` interpreted them
+as an identical rule, which I assume to be a bug. These does NOT seem
+to workaround it either:
+
+# nft flush chain meh tcp_flags
+# nft add rule meh tcp_flags 'tcp flags == syn / fin,syn,rst,ack'
+# nft add rule meh tcp_flags 'tcp flags != syn / fin,syn,rst,ack'
+# nft list table meh
+table ip meh {
+    chain tcp_flags {
+        tcp flags syn / fin,syn,rst,ack
+        tcp flags syn / fin,syn,rst,ack
+    }
+}
+
+I'm not sure if `! --syn` in iptables (legacy) is affected by this as
+well. Anyway, I'm doing the following for now as a workaround:
+
+# nft flush chain meh tcp_flags
+# nft add rule meh tcp_flags 'tcp flags ! syn reject with tcp reset'
+# nft add rule meh tcp_flags 'tcp flags { fin, rst, ack } reject with tcp reset'
+# nft list table meh
+table ip meh {
+    chain tcp_flags {
+        tcp flags ! syn reject with tcp reset
+        # syn: 1, other bits: not checked
+        tcp flags { fin, rst, ack } reject with tcp reset
+        # syn: 1, fin: 0, rst: 0, ack: 0, other bits: not checked
+        ct state != invalid accept
+    }
+}
+
+Are the comments in above correct? Are any of the assumptions in this
+email incorrect?
+
+As a side question, is it even possible that any packet will be
+considered `invalid` with (syn: 1, fin: 0, rst: 0, ack: 0)?
+
+Thanks in advance!
+
+Regards,
+Tom
