@@ -2,38 +2,38 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9103D8CB4
-	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Jul 2021 13:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FC33D8E19
+	for <lists+netfilter-devel@lfdr.de>; Wed, 28 Jul 2021 14:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhG1LZA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 28 Jul 2021 07:25:00 -0400
-Received: from smtp-out.kfki.hu ([148.6.0.45]:34473 "EHLO smtp-out.kfki.hu"
+        id S234759AbhG1MoR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 28 Jul 2021 08:44:17 -0400
+Received: from smtp-out.kfki.hu ([148.6.0.48]:60277 "EHLO smtp-out.kfki.hu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234521AbhG1LZA (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 28 Jul 2021 07:25:00 -0400
+        id S235797AbhG1MoR (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Wed, 28 Jul 2021 08:44:17 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by smtp0.kfki.hu (Postfix) with ESMTP id 4B1CD67400CB;
-        Wed, 28 Jul 2021 13:24:54 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
-        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Wed, 28 Jul 2021 13:24:52 +0200 (CEST)
+        by smtp2.kfki.hu (Postfix) with ESMTP id 168C9CC00F6;
+        Wed, 28 Jul 2021 14:44:13 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP; Wed, 28 Jul 2021 14:44:10 +0200 (CEST)
 Received: from ix.szhk.kfki.hu (wdc11.wdc.kfki.hu [148.6.200.11])
         (Authenticated sender: kadlecsik.jozsef@wigner.hu)
-        by smtp0.kfki.hu (Postfix) with ESMTPSA id 05CE567400CA;
-        Wed, 28 Jul 2021 13:24:52 +0200 (CEST)
+        by smtp2.kfki.hu (Postfix) with ESMTPSA id CC0E9CC00F5;
+        Wed, 28 Jul 2021 14:44:10 +0200 (CEST)
 Received: by ix.szhk.kfki.hu (Postfix, from userid 1000)
-        id CE85B180580; Wed, 28 Jul 2021 13:24:51 +0200 (CEST)
+        id B7E20180580; Wed, 28 Jul 2021 14:44:10 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by ix.szhk.kfki.hu (Postfix) with ESMTP id C8E38180514;
-        Wed, 28 Jul 2021 13:24:51 +0200 (CEST)
-Date:   Wed, 28 Jul 2021 13:24:51 +0200 (CEST)
+        by ix.szhk.kfki.hu (Postfix) with ESMTP id B2663180087;
+        Wed, 28 Jul 2021 14:44:10 +0200 (CEST)
+Date:   Wed, 28 Jul 2021 14:44:10 +0200 (CEST)
 From:   Jozsef Kadlecsik <kadlec@netfilter.org>
 To:     Jan Engelhardt <jengelh@inai.de>
 cc:     netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 Subject: Re: [ANNOUNCE] ipset 7.13 released
 In-Reply-To: <2233nn0-11ns-4o5s-r629-n3n7p0q7r223@vanv.qr>
-Message-ID: <e0fc986b-b0f4-b6a1-876f-d4d07bb2dada@netfilter.org>
+Message-ID: <fa47f565-f7ea-1b98-718a-6c4251e1cdf@netfilter.org>
 References: <f5d9071-7558-17a-9cd1-6ac0922710@netfilter.org> <2233nn0-11ns-4o5s-r629-n3n7p0q7r223@vanv.qr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -49,10 +49,7 @@ On Wed, 28 Jul 2021, Jan Engelhardt wrote:
 > >to additional fixes required in two patches.
 > 
 > Did you really try building that?
-
-I always build and run the testsuite before an announcement. Could not 
-detect any problem.
- 
+> 
 > [   19s] Making all in src
 > [   19s] make[2]: Entering directory '/home/abuild/rpmbuild/BUILD/ipset-7.13/src'
 > [   19s] gcc -DHAVE_CONFIG_H -I. -I..    -I../include  -std=gnu99  -O2 -DNDEBUG -O2 -Wall -D_FORTIFY_SOURCE=2 -fstack-protector-strong -funwind-tables -fasynchr
@@ -70,7 +67,7 @@ detect any problem.
 > 
 > Function not exported, hence link failure.
 
-I'll look into the problem.
+Ohh right, got it. I'm going to release the next version today. 
 
 Best regards,
 Jozsef
