@@ -2,84 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D043DD2B4
-	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Aug 2021 11:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7473DD477
+	for <lists+netfilter-devel@lfdr.de>; Mon,  2 Aug 2021 13:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbhHBJNF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 2 Aug 2021 05:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55358 "EHLO
+        id S232553AbhHBLGI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 2 Aug 2021 07:06:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232670AbhHBJNE (ORCPT
+        with ESMTP id S232147AbhHBLGI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 2 Aug 2021 05:13:04 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B79C06175F
-        for <netfilter-devel@vger.kernel.org>; Mon,  2 Aug 2021 02:12:55 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1mAU0D-0002dh-E5; Mon, 02 Aug 2021 11:12:54 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH conntrack-tools 4/4] conntrack: add shorthand mnemonic for UNREPLIED
-Date:   Mon,  2 Aug 2021 11:12:31 +0200
-Message-Id: <20210802091231.1486-5-fw@strlen.de>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210802091231.1486-1-fw@strlen.de>
-References: <20210802091231.1486-1-fw@strlen.de>
+        Mon, 2 Aug 2021 07:06:08 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3E0C06175F
+        for <netfilter-devel@vger.kernel.org>; Mon,  2 Aug 2021 04:05:58 -0700 (PDT)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1mAVlb-0005eM-9r; Mon, 02 Aug 2021 13:05:55 +0200
+Date:   Mon, 2 Aug 2021 13:05:55 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH] ebtables: Dump atomic waste
+Message-ID: <20210802110555.GW3673@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+References: <20210730103715.20501-1-phil@nwl.cc>
+ <20210802090404.GA1252@salvia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802090404.GA1252@salvia>
+Sender:  <n0-1@orbyte.nwl.cc>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-conntrack tool prints [UNREPLIED] if a conntrack entry lacks the
-SEEN_REPLY bit.  Accept this as '-u' argument too.
+On Mon, Aug 02, 2021 at 11:04:04AM +0200, Pablo Neira Ayuso wrote:
+> Hi Phil,
+> 
+> On Fri, Jul 30, 2021 at 12:37:15PM +0200, Phil Sutter wrote:
+> > With ebtables-nft.8 now educating people about the missing
+> > functionality, get rid of atomic remains in source code. This eliminates
+> > mostly comments except for --atomic-commit which was treated as alias of
+> > --init-table. People not using the latter are probably trying to
+> > atomic-commit from an atomic-file which in turn is not supported, so no
+> > point keeping it.
+> 
+> That's fine.
+> 
+> If there's any need in the future for emulating this in the future, it
+> should be possible to map atomic-save to ebtables-save and
+> atomic-commit to ebtables-restore.
 
-If requested, mask is set to SEEN_REPLY and value remains 0 (bit not set).
+I had considered that, but the binary format of atomic-file drove me
+off: If we can't support existing atomic-files easily, we better deny
+unless someone has a strong argument to do it. And then I'd try to
+support it fully, so it's not a half-ass solution with a catch. :)
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- src/conntrack.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> Anyway, this one of the exotic options in ebtables that makes it
+> different from ip,ip6,arptables. Given there are better tools now that
+> are aligned with the more orthodox approach, this should be OK.
 
-diff --git a/src/conntrack.c b/src/conntrack.c
-index cc564a2b4b1b..ef7f604c9e97 100644
---- a/src/conntrack.c
-+++ b/src/conntrack.c
-@@ -1199,6 +1199,7 @@ parse_parameter(const char *arg, unsigned int *status, int parse_type)
- static void
- parse_parameter_mask(const char *arg, unsigned int *status, unsigned int *mask, int parse_type)
- {
-+	static const char unreplied[] = "UNREPLIED";
- 	unsigned int *value;
- 	const char *comma;
- 	bool negated;
-@@ -1215,6 +1216,12 @@ parse_parameter_mask(const char *arg, unsigned int *status, unsigned int *mask,
- 
- 		value = negated ? mask : status;
- 
-+		if (!negated && strncmp(arg, unreplied, strlen(unreplied)) == 0) {
-+			*mask |= IPS_SEEN_REPLY;
-+			arg = comma+1;
-+			continue;
-+		}
-+
- 		if (!do_parse_parameter(arg, comma-arg, value, parse_type))
- 			exit_error(PARAMETER_PROBLEM,"Bad parameter `%s'", arg);
- 		arg = comma+1;
-@@ -1225,6 +1232,11 @@ parse_parameter_mask(const char *arg, unsigned int *status, unsigned int *mask,
- 		arg++;
- 	value = negated ? mask : status;
- 
-+	if (!negated && strncmp(arg, unreplied, strlen(unreplied)) == 0) {
-+		*mask |= IPS_SEEN_REPLY;
-+		return;
-+	}
-+
- 	if (strlen(arg) == 0
- 	    || !do_parse_parameter(arg, strlen(arg),
- 		    value, parse_type))
--- 
-2.31.1
+Let's hope most users went with the familiar save/restore approach
+instead of opening a whole new can for ebtables alone.
 
+Thanks, Phil
