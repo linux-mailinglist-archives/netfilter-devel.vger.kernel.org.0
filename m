@@ -2,197 +2,64 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EA63E11D4
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Aug 2021 12:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D143E120B
+	for <lists+netfilter-devel@lfdr.de>; Thu,  5 Aug 2021 12:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240050AbhHEKDH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 5 Aug 2021 06:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37062 "EHLO
+        id S240268AbhHEKH3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 5 Aug 2021 06:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240008AbhHEKDH (ORCPT
+        with ESMTP id S240244AbhHEKH2 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:03:07 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B068C061765
-        for <netfilter-devel@vger.kernel.org>; Thu,  5 Aug 2021 03:02:53 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1mBaDD-0002WD-Ui; Thu, 05 Aug 2021 12:02:51 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next v2] netfilter: nf_queue: move hookfn registration out of struct net
-Date:   Thu,  5 Aug 2021 12:02:43 +0200
-Message-Id: <20210805100243.21249-1-fw@strlen.de>
-X-Mailer: git-send-email 2.31.1
+        Thu, 5 Aug 2021 06:07:28 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8F4C0613C1
+        for <netfilter-devel@vger.kernel.org>; Thu,  5 Aug 2021 03:07:14 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id b133so8152797ybg.4
+        for <netfilter-devel@vger.kernel.org>; Thu, 05 Aug 2021 03:07:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=IXiF0cE8iLdsKXBHXuqgd6kWlwigyuOCyyGf/zSHAKo=;
+        b=N4JQzB/TQYMsOrVKOT8tU9KVRLB1ISAkwBJfAoilwERlu6Mr+9l6ZSzln2lp9j3BF8
+         HmjguZaIz+ywTXve7jnvisXPNElev5mGnjR5DS1CsDyeE9nJvEgRaSDXmX6r4cVYrxD/
+         FhbWjv+n+jsBEVBfu9QnPf/YQrfZ94TS3ZDuOXHgwpjNqbCE5jZ048/znIeRF84tZmzr
+         mS33sbNLpQ1HsWkr2TqjkIZcnnk8pxGHQCqLhjuDyfuV77PoZJ/D+GMPzRoG5m2nvavP
+         h2/TwM6nrHTpW24ba+ZokKKosPY1zhjKXUoBm1vhKzaeaV2Gl+A7KrdmpCvcU0c3GcWb
+         dC1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=IXiF0cE8iLdsKXBHXuqgd6kWlwigyuOCyyGf/zSHAKo=;
+        b=jm5ADRqWmc4auU7G8LNtuZKQxRaYZhlJL211SIxLoGLMvMD7kUFxpZP5CXeQcXzY8d
+         Km2Re0mRGGDIE1GMPMoPfpOdSl2wYmW7BEppcS1qriHKdLjhgW8fRkhrKpEOU75q8Wmq
+         AuUuRi+souUwmiRpsTqeZCLyWYC52dPQfJM4orWYeieEjG4AEDTnsUIXRngAKUzDSYqn
+         Nhy1v1qZ3gaw3rksy9D8tf4CDfBJd7tOU55ZzP8xen6kQDEm3JEU9X/K5dPVghoLmyil
+         ykG4RwLmCvH+a0uMBb+6fqbzcKJkMQ2HMNUXUdOECqGj2JjQEHs5cFDcI/rrUsnCbzRo
+         dViA==
+X-Gm-Message-State: AOAM530TghBsUi+OPsPYl688Gn02/O5FtReFgH8i0ue0slgDkXZld9//
+        rHuaCWo96LqYPxbJUcraN0XVT74qZ+gZD/a9vY4=
+X-Google-Smtp-Source: ABdhPJy+jYVbQCLe3Y4ssJ1si9np9C81cec6pvZXWlg2nihOVOyoHV+uNqTPQq9AZX7/B9izO05U2uMGSf+QylzBMnM=
+X-Received: by 2002:a25:ed08:: with SMTP id k8mr5073538ybh.494.1628158034147;
+ Thu, 05 Aug 2021 03:07:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:7010:330b:b029:db:4f3a:6691 with HTTP; Thu, 5 Aug 2021
+ 03:07:13 -0700 (PDT)
+Reply-To: rihabmanyang07@yahoo.com
+From:   Rihab Manyang <diamakaire48@gmail.com>
+Date:   Thu, 5 Aug 2021 11:07:13 +0100
+Message-ID: <CAJq20Oka6zEQq8y=jPmfu8iwjbs0MqBMk6mdaW+UaS4ZPWwodQ@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This was done to detect when the pernet->init() function was not called
-yet, by checking if net->nf.queue_handler is NULL.
-
-Once the nfnetlink_queue module is active, all struct net pointers
-contain the same address.  So place this back in nf_queue.c.
-
-Handle the 'netns error unwind' test by checking nfnl_queue_net for a
-NULL pointer and add a comment for this.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- v2: avoid unused-variable warning in __nf_queue().
-
- include/net/netfilter/nf_queue.h |  4 ++--
- include/net/netns/netfilter.h    |  1 -
- net/netfilter/nf_queue.c         | 19 +++++++++----------
- net/netfilter/nfnetlink_queue.c  | 15 +++++++++++++--
- 4 files changed, 24 insertions(+), 15 deletions(-)
-
-diff --git a/include/net/netfilter/nf_queue.h b/include/net/netfilter/nf_queue.h
-index e770bba00066..9eed51e920e8 100644
---- a/include/net/netfilter/nf_queue.h
-+++ b/include/net/netfilter/nf_queue.h
-@@ -33,8 +33,8 @@ struct nf_queue_handler {
- 	void		(*nf_hook_drop)(struct net *net);
- };
- 
--void nf_register_queue_handler(struct net *net, const struct nf_queue_handler *qh);
--void nf_unregister_queue_handler(struct net *net);
-+void nf_register_queue_handler(const struct nf_queue_handler *qh);
-+void nf_unregister_queue_handler(void);
- void nf_reinject(struct nf_queue_entry *entry, unsigned int verdict);
- 
- void nf_queue_entry_get_refs(struct nf_queue_entry *entry);
-diff --git a/include/net/netns/netfilter.h b/include/net/netns/netfilter.h
-index 15e2b13fb0c0..986a2a9cfdfa 100644
---- a/include/net/netns/netfilter.h
-+++ b/include/net/netns/netfilter.h
-@@ -12,7 +12,6 @@ struct netns_nf {
- #if defined CONFIG_PROC_FS
- 	struct proc_dir_entry *proc_netfilter;
- #endif
--	const struct nf_queue_handler __rcu *queue_handler;
- 	const struct nf_logger __rcu *nf_loggers[NFPROTO_NUMPROTO];
- #ifdef CONFIG_SYSCTL
- 	struct ctl_table_header *nf_log_dir_header;
-diff --git a/net/netfilter/nf_queue.c b/net/netfilter/nf_queue.c
-index bbd1209694b8..4903da82dc04 100644
---- a/net/netfilter/nf_queue.c
-+++ b/net/netfilter/nf_queue.c
-@@ -21,6 +21,8 @@
- 
- #include "nf_internals.h"
- 
-+static const struct nf_queue_handler __rcu *nf_queue_handler;
-+
- /*
-  * Hook for nfnetlink_queue to register its queue handler.
-  * We do this so that most of the NFQUEUE code can be modular.
-@@ -29,20 +31,18 @@
-  * receives, no matter what.
-  */
- 
--/* return EBUSY when somebody else is registered, return EEXIST if the
-- * same handler is registered, return 0 in case of success. */
--void nf_register_queue_handler(struct net *net, const struct nf_queue_handler *qh)
-+void nf_register_queue_handler(const struct nf_queue_handler *qh)
- {
- 	/* should never happen, we only have one queueing backend in kernel */
--	WARN_ON(rcu_access_pointer(net->nf.queue_handler));
--	rcu_assign_pointer(net->nf.queue_handler, qh);
-+	WARN_ON(rcu_access_pointer(nf_queue_handler));
-+	rcu_assign_pointer(nf_queue_handler, qh);
- }
- EXPORT_SYMBOL(nf_register_queue_handler);
- 
- /* The caller must flush their queue before this */
--void nf_unregister_queue_handler(struct net *net)
-+void nf_unregister_queue_handler(void)
- {
--	RCU_INIT_POINTER(net->nf.queue_handler, NULL);
-+	RCU_INIT_POINTER(nf_queue_handler, NULL);
- }
- EXPORT_SYMBOL(nf_unregister_queue_handler);
- 
-@@ -116,7 +116,7 @@ void nf_queue_nf_hook_drop(struct net *net)
- 	const struct nf_queue_handler *qh;
- 
- 	rcu_read_lock();
--	qh = rcu_dereference(net->nf.queue_handler);
-+	qh = rcu_dereference(nf_queue_handler);
- 	if (qh)
- 		qh->nf_hook_drop(net);
- 	rcu_read_unlock();
-@@ -157,12 +157,11 @@ static int __nf_queue(struct sk_buff *skb, const struct nf_hook_state *state,
- {
- 	struct nf_queue_entry *entry = NULL;
- 	const struct nf_queue_handler *qh;
--	struct net *net = state->net;
- 	unsigned int route_key_size;
- 	int status;
- 
- 	/* QUEUE == DROP if no one is waiting, to be safe. */
--	qh = rcu_dereference(net->nf.queue_handler);
-+	qh = rcu_dereference(nf_queue_handler);
- 	if (!qh)
- 		return -ESRCH;
- 
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index f774de0fc24f..4c3fbaaeb103 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -951,6 +951,16 @@ static void nfqnl_nf_hook_drop(struct net *net)
- 	struct nfnl_queue_net *q = nfnl_queue_pernet(net);
- 	int i;
- 
-+	/* This function is also called on net namespace error unwind,
-+	 * when pernet_ops->init() failed and ->exit() functions of the
-+	 * previous pernet_ops gets called.
-+	 *
-+	 * This may result in a call to nfqnl_nf_hook_drop() before
-+	 * struct nfnl_queue_net was allocated.
-+	 */
-+	if (!q)
-+		return;
-+
- 	for (i = 0; i < INSTANCE_BUCKETS; i++) {
- 		struct nfqnl_instance *inst;
- 		struct hlist_head *head = &q->instance_table[i];
-@@ -1502,7 +1512,6 @@ static int __net_init nfnl_queue_net_init(struct net *net)
- 			&nfqnl_seq_ops, sizeof(struct iter_state)))
- 		return -ENOMEM;
- #endif
--	nf_register_queue_handler(net, &nfqh);
- 	return 0;
- }
- 
-@@ -1511,7 +1520,6 @@ static void __net_exit nfnl_queue_net_exit(struct net *net)
- 	struct nfnl_queue_net *q = nfnl_queue_pernet(net);
- 	unsigned int i;
- 
--	nf_unregister_queue_handler(net);
- #ifdef CONFIG_PROC_FS
- 	remove_proc_entry("nfnetlink_queue", net->nf.proc_netfilter);
- #endif
-@@ -1555,6 +1563,8 @@ static int __init nfnetlink_queue_init(void)
- 		goto cleanup_netlink_subsys;
- 	}
- 
-+	nf_register_queue_handler(&nfqh);
-+
- 	return status;
- 
- cleanup_netlink_subsys:
-@@ -1568,6 +1578,7 @@ static int __init nfnetlink_queue_init(void)
- 
- static void __exit nfnetlink_queue_fini(void)
- {
-+	nf_unregister_queue_handler();
- 	unregister_netdevice_notifier(&nfqnl_dev_notifier);
- 	nfnetlink_subsys_unregister(&nfqnl_subsys);
- 	netlink_unregister_notifier(&nfqnl_rtnl_notifier);
 -- 
-2.31.1
 
+Hello,
+
+i am trying to reach you hope this message get to
+you.from Rihab Manyang
