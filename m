@@ -2,134 +2,64 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FB33E5A94
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Aug 2021 14:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23243E5B0A
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 Aug 2021 15:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241005AbhHJM77 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 10 Aug 2021 08:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        id S241230AbhHJNVW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 10 Aug 2021 09:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239188AbhHJM77 (ORCPT
+        with ESMTP id S241208AbhHJNVQ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 10 Aug 2021 08:59:59 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3175CC0613D3;
-        Tue, 10 Aug 2021 05:59:37 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id m9so28921624ljp.7;
-        Tue, 10 Aug 2021 05:59:37 -0700 (PDT)
+        Tue, 10 Aug 2021 09:21:16 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C736C06179B
+        for <netfilter-devel@vger.kernel.org>; Tue, 10 Aug 2021 06:20:51 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id f6so1598267vso.5
+        for <netfilter-devel@vger.kernel.org>; Tue, 10 Aug 2021 06:20:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=C8ukQa3sXo+DBl8G/r0rlRb+zkXrtXj0fbs8AcpdmLM=;
-        b=BeR0m3pZrkVng8z/cHE1HhRzPFWun7v6JeIPJr7i2Y0ic0pnr5hNFoZdBlYDJL0Xg+
-         RoM7hPyLnx0zqG27UL1O7qbP3yuUFooPWRR77qltiO/ij40qu7ZMsF8Mpa0Lw+/jdrQ/
-         fji0Tzfl/hUi1cU9j/u0iptIowVN2aNGLtqe7WzwL58Tu4aI83G5mGeJBzxrO7GkyjdE
-         wR4IB0POHiMTq6k2wTVyjghI9zGVJPRxWwmb7PbulzaU3YcwvLAUZvZSDEApQVWyvvp8
-         sawq7BSsw+rr64tuzNRMlSJQdgFQB68FAg3Kkq7vHCcApuV0zocldjj0uPpVts2MAh7j
-         1h9w==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=2tvLhkad0w+Mh63WhnFJkmRFgYsLXsJmUqGVjzUAFIo=;
+        b=ZLiKrmHxm+0RpnFs548UQSGlnJ0IYtZsRHJHRlzsDnbhBjF9HsZvtCabjhSQoOTGqN
+         UW0zCD/UM0Kp6aHuVqVHTo1lOoK3qs7mMIGp0T5AMnq7Ha+DC+dX1aNWU/Mlgn8VC83D
+         8StTS/w3U8UjC7KeZOQVMUQcAVPvj8soy7hdPsg+gZ0piR/1ZhMyLhagLG2M3DkbBnM5
+         MTzpscDAeHapCos77cclASkO19uAVc55CpNc0sVJlGhLgO2Up2GXg95i++LBglMQ2X49
+         sMXhgseIrMBPlvhgzr3NUg0ceExsv2Zg9Ap/7rufRqeXTGeduCuQprCnPXiy58RWx4JF
+         /1ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=C8ukQa3sXo+DBl8G/r0rlRb+zkXrtXj0fbs8AcpdmLM=;
-        b=fjeSbIHsOI9jEWIwwTHn4CtpOLUJ3Jxy8jbsV6wNlq3pjxCStOOgtTp+uF3gMsrjGr
-         Q7Xu6koICRGM/8NaYvzFOzBvsUgIjsiIBWHBJ3O8NrjJ7PpHy41WjPXthRdsopyOaodO
-         K5YkMJQN+IflPtuL/4KNoqwWH1uZuYGibIhzYYAJ8F5a+EmRpCw0MMHfnluH+IwQarE6
-         rZNz8egvY2x+SWxTt8d7+9DI/zpV+dXP93ye6Di3OJsTx3ZPMoW79XAQ/4xYTFLmGB0b
-         0uxJclebv+f5tbaAPS09Iw7oVV/mGYuQEFhiI9SmdsmXUE2su5zZyG1DECpntROGqvHm
-         Lb3w==
-X-Gm-Message-State: AOAM531IjXpLRn0Oh/jMO56gYoBo4gK/4C34oCgZlmrI4x1z4YkAdPWp
-        7qaZ2Wqmw24A78CqV5tuGqc=
-X-Google-Smtp-Source: ABdhPJyXKs6dOhzi+KmIRhTXSLCqmlcLAcEQglehQFPDp/eginYv8FRijzR7lGhqlXzh/oYaSjmoog==
-X-Received: by 2002:a2e:8250:: with SMTP id j16mr19645493ljh.164.1628600375545;
-        Tue, 10 Aug 2021 05:59:35 -0700 (PDT)
-Received: from localhost.localdomain ([46.235.67.232])
-        by smtp.gmail.com with ESMTPSA id m12sm2039397lfh.182.2021.08.10.05.59.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 05:59:35 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net
-Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+649e339fa6658ee623d3@syzkaller.appspotmail.com
-Subject: [PATCH v2] netfilter: protect nft_ct_pcpu_template_refcnt with mutex
-Date:   Tue, 10 Aug 2021 15:59:20 +0300
-Message-Id: <20210810125920.23187-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210810125523.15312-1-paskripkin@gmail.com>
-References: <20210810125523.15312-1-paskripkin@gmail.com>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=2tvLhkad0w+Mh63WhnFJkmRFgYsLXsJmUqGVjzUAFIo=;
+        b=GcBxq+KfgKxXwTZ1CQblP3sgCYhIETclOztqLh/JxgbJK/K9oHvMxn+8aJ7lFisBZ1
+         G+zllMHyjOqK9K/f9O2SWsDMWz3A8pyaBh0b71ZivKdlSc/9AUUUryFzBfhDeekvzrpr
+         ziAqxwpqYc7E8V35u7tOcD5J7sHvpt0cHVfExfIMzEzPzoMnFpdTmZ/bcX5p5TuyLiTE
+         3P6ccLxbS98oO8qBMjpUqadoCjtgodJc86qeO4+9YwEAmFLaLZ4XXN4fLZcRC9L5Jk+F
+         HxrQXIeHFSydHINL7grUp1Kh9stLdAn2DnAz88cdI59hRlc72yoIUgx5J/KK1Rp/qc5/
+         OcGw==
+X-Gm-Message-State: AOAM531h8gwynHAgJ0HSVteE4Du6Sg+R0/KGf+1XJUk71fJPp0Ugubuo
+        gAWCfVw5aAF1I6wYGAZjpYrGLC0XACLR77pbBsM=
+X-Google-Smtp-Source: ABdhPJyGGFKPlYVBYIkp2Fi8022J2wcSfHXo56eDrtYBYTSh/4uu2+vnKQkhV6jcjKFDrNlsyHIYJ42j913Zj682D0g=
+X-Received: by 2002:a67:1c05:: with SMTP id c5mr21491931vsc.25.1628601650651;
+ Tue, 10 Aug 2021 06:20:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: immeublesourou@gmail.com
+Received: by 2002:ab0:3903:0:0:0:0:0 with HTTP; Tue, 10 Aug 2021 06:20:50
+ -0700 (PDT)
+From:   John Kumor <owo219901@gmail.com>
+Date:   Wed, 11 Aug 2021 01:20:50 +1200
+X-Google-Sender-Auth: AsqBD_WUz7VOsELMeo1Sz_4-Ix4
+Message-ID: <CAHdg_cQugsfMGK96btnC9fmMNkKkW1L_SDUkEbyUi5U2Sq4ong@mail.gmail.com>
+Subject: Urgent
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Syzbot hit use-after-free in nf_tables_dump_sets. The problem was in
-missing lock protection for nft_ct_pcpu_template_refcnt.
-
-Before commit f102d66b335a ("netfilter: nf_tables: use dedicated
-mutex to guard transactions") all transactions were serialized by global
-mutex, but then global mutex was changed to local per netnamespace
-commit_mutex.
-
-This change causes use-after-free bug, when 2 netnamespaces concurently
-changing nft_ct_pcpu_template_refcnt without proper locking. Fix it by
-adding nft_ct_pcpu_mutex and protect all nft_ct_pcpu_template_refcnt
-changes with it.
-
-Fixes: f102d66b335a ("netfilter: nf_tables: use dedicated mutex to guard transactions")
-Reported-and-tested-by: syzbot+649e339fa6658ee623d3@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
-
-Changes in v2:
-	Fixed typo in title: netfiler -> netfilter
-
----
- net/netfilter/nft_ct.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
-index 337e22d8b40b..99b1de14ff7e 100644
---- a/net/netfilter/nft_ct.c
-+++ b/net/netfilter/nft_ct.c
-@@ -41,6 +41,7 @@ struct nft_ct_helper_obj  {
- #ifdef CONFIG_NF_CONNTRACK_ZONES
- static DEFINE_PER_CPU(struct nf_conn *, nft_ct_pcpu_template);
- static unsigned int nft_ct_pcpu_template_refcnt __read_mostly;
-+static DEFINE_MUTEX(nft_ct_pcpu_mutex);
- #endif
- 
- static u64 nft_ct_get_eval_counter(const struct nf_conn_counter *c,
-@@ -525,8 +526,10 @@ static void __nft_ct_set_destroy(const struct nft_ctx *ctx, struct nft_ct *priv)
- #endif
- #ifdef CONFIG_NF_CONNTRACK_ZONES
- 	case NFT_CT_ZONE:
-+		mutex_lock(&nft_ct_pcpu_mutex);
- 		if (--nft_ct_pcpu_template_refcnt == 0)
- 			nft_ct_tmpl_put_pcpu();
-+		mutex_unlock(&nft_ct_pcpu_mutex);
- 		break;
- #endif
- 	default:
-@@ -564,9 +567,13 @@ static int nft_ct_set_init(const struct nft_ctx *ctx,
- #endif
- #ifdef CONFIG_NF_CONNTRACK_ZONES
- 	case NFT_CT_ZONE:
--		if (!nft_ct_tmpl_alloc_pcpu())
-+		mutex_lock(&nft_ct_pcpu_mutex);
-+		if (!nft_ct_tmpl_alloc_pcpu()) {
-+			mutex_unlock(&nft_ct_pcpu_mutex);
- 			return -ENOMEM;
-+		}
- 		nft_ct_pcpu_template_refcnt++;
-+		mutex_unlock(&nft_ct_pcpu_mutex);
- 		len = sizeof(u16);
- 		break;
- #endif
--- 
-2.32.0
-
+My dear,
+Greetings! I trust that all is well with you and your family. Did you
+receive my previous email?
+Regards
+John Kumor.
