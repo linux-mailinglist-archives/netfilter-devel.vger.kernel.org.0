@@ -2,88 +2,113 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E1A3E9B12
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Aug 2021 00:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684C83E9B10
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Aug 2021 00:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232680AbhHKWyE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 11 Aug 2021 18:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
+        id S232678AbhHKWxy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 11 Aug 2021 18:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbhHKWyE (ORCPT
+        with ESMTP id S232434AbhHKWxy (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 11 Aug 2021 18:54:04 -0400
+        Wed, 11 Aug 2021 18:53:54 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037F9C061765
-        for <netfilter-devel@vger.kernel.org>; Wed, 11 Aug 2021 15:53:40 -0700 (PDT)
-Received: from localhost ([::1]:56310 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03524C061765
+        for <netfilter-devel@vger.kernel.org>; Wed, 11 Aug 2021 15:53:29 -0700 (PDT)
+Received: from localhost ([::1]:56298 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mDx6Q-0005Pc-Ek; Thu, 12 Aug 2021 00:53:38 +0200
+        id 1mDx6F-0005Oz-So; Thu, 12 Aug 2021 00:53:27 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 1/3] tests: json_echo: Print errors to stderr
-Date:   Thu, 12 Aug 2021 00:53:25 +0200
-Message-Id: <20210811225327.26229-1-phil@nwl.cc>
+Subject: [nft PATCH 2/3] tests: monitor: Print errors to stderr
+Date:   Thu, 12 Aug 2021 00:53:26 +0200
+Message-Id: <20210811225327.26229-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210811225327.26229-1-phil@nwl.cc>
+References: <20210811225327.26229-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Apart from the obvious, this fixes exit_dump() which tried to dump the
-wrong variable ('out' instead of 'obj') and missed that json.dumps()
-doesn't print but just returns a string. Make it call exit_err() to
-share some code, which changes the prefix from 'FAIL' to 'Error' as a
-side-effect.
+While being at it, introduce die() to error and exit. But don't use it
+everywhere to prepare for continuing on errors.
 
-While being at it, fix for a syntax warning with newer Python in
-unrelated code.
-
-Fixes: bb32d8db9a125 ("JSON: Add support for echo option")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/json_echo/run-test.py | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ tests/monitor/run-tests.sh | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/tests/json_echo/run-test.py b/tests/json_echo/run-test.py
-index 36a377ac95eec..a6bdfc61afd7b 100755
---- a/tests/json_echo/run-test.py
-+++ b/tests/json_echo/run-test.py
-@@ -95,25 +95,25 @@ add_quota = { "add": {
- # helper functions
+diff --git a/tests/monitor/run-tests.sh b/tests/monitor/run-tests.sh
+index 1fe613c7bc301..c30c328ca6e1e 100755
+--- a/tests/monitor/run-tests.sh
++++ b/tests/monitor/run-tests.sh
+@@ -9,15 +9,22 @@ mydiff() {
+ 	diff -w -I '^# ' "$@"
+ }
  
- def exit_err(msg):
--    print("Error: %s" %msg)
-+    print("Error: %s" %msg, file=sys.stderr)
-     sys.exit(1)
+-if [ "$(id -u)" != "0" ] ; then
+-	echo "this requires root!"
++err() {
++	echo "$*" >&2
++}
++
++die() {
++	err "$*"
+ 	exit 1
++}
++
++if [ "$(id -u)" != "0" ] ; then
++	die "this requires root!"
+ fi
  
- def exit_dump(e, obj):
--    print("FAIL: {}".format(e))
--    print("Output was:")
--    json.dumps(out, sort_keys = True, indent = 4, separators = (',', ': '))
--    sys.exit(1)
-+    msg = "{}\n".format(e)
-+    msg += "Output was:\n"
-+    msg += json.dumps(obj, sort_keys = True, indent = 4, separators = (',', ': '))
-+    exit_err(msg)
+ testdir=$(mktemp -d)
+ if [ ! -d $testdir ]; then
+-	echo "Failed to create test directory" >&2
+-	exit 1
++	die "Failed to create test directory"
+ fi
+ trap 'rm -rf $testdir; $nft flush ruleset' EXIT
  
- def do_flush():
-     rc, out, err = nftables.json_cmd({ "nftables": [flush_ruleset] })
--    if not rc is 0:
-+    if rc != 0:
-         exit_err("flush ruleset failed: {}".format(err))
- 
- def do_command(cmd):
-     if not type(cmd) is list:
-         cmd = [cmd]
-     rc, out, err = nftables.json_cmd({ "nftables": cmd })
--    if not rc is 0:
-+    if rc != 0:
-         exit_err("command failed: {}".format(err))
-     return out
- 
+@@ -67,7 +74,7 @@ monitor_run_test() {
+ 		cat $command_file
+ 	}
+ 	$nft -f $command_file || {
+-		echo "nft command failed!"
++		err "nft command failed!"
+ 		kill $monitor_pid
+ 		wait >/dev/null 2>&1
+ 		exit 1
+@@ -77,8 +84,8 @@ monitor_run_test() {
+ 	wait >/dev/null 2>&1
+ 	$test_json && json_output_filter $monitor_output
+ 	if ! mydiff -q $monitor_output $output_file >/dev/null 2>&1; then
+-		echo "monitor output differs!"
+-		mydiff -u $output_file $monitor_output
++		err "monitor output differs!"
++		mydiff -u $output_file $monitor_output >&2
+ 		exit 1
+ 	fi
+ 	rm $command_file
+@@ -94,12 +101,12 @@ echo_run_test() {
+ 		cat $command_file
+ 	}
+ 	$nft -nn -e -f $command_file >$echo_output || {
+-		echo "nft command failed!"
++		err "nft command failed!"
+ 		exit 1
+ 	}
+ 	if ! mydiff -q $echo_output $output_file >/dev/null 2>&1; then
+-		echo "echo output differs!"
+-		mydiff -u $output_file $echo_output
++		err "echo output differs!"
++		mydiff -u $output_file $echo_output >&2
+ 		exit 1
+ 	fi
+ 	rm $command_file
 -- 
 2.32.0
 
