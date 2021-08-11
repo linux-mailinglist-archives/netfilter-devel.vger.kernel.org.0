@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41073E997A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 11 Aug 2021 22:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E1A3E9B12
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Aug 2021 00:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbhHKUOu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 11 Aug 2021 16:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
+        id S232680AbhHKWyE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 11 Aug 2021 18:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232085AbhHKUOt (ORCPT
+        with ESMTP id S232434AbhHKWyE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 11 Aug 2021 16:14:49 -0400
+        Wed, 11 Aug 2021 18:54:04 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3979EC061765
-        for <netfilter-devel@vger.kernel.org>; Wed, 11 Aug 2021 13:14:25 -0700 (PDT)
-Received: from localhost ([::1]:55978 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037F9C061765
+        for <netfilter-devel@vger.kernel.org>; Wed, 11 Aug 2021 15:53:40 -0700 (PDT)
+Received: from localhost ([::1]:56310 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mDucH-0003zb-4x; Wed, 11 Aug 2021 22:14:21 +0200
+        id 1mDx6Q-0005Pc-Ek; Thu, 12 Aug 2021 00:53:38 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH] iptables-test: Make netns spawning more robust
-Date:   Wed, 11 Aug 2021 22:14:20 +0200
-Message-Id: <20210811201420.5996-1-phil@nwl.cc>
+Subject: [nft PATCH 1/3] tests: json_echo: Print errors to stderr
+Date:   Thu, 12 Aug 2021 00:53:25 +0200
+Message-Id: <20210811225327.26229-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -32,83 +32,58 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On systems without unshare Python module, try to call unshare binary
-with oneself as parameters.
+Apart from the obvious, this fixes exit_dump() which tried to dump the
+wrong variable ('out' instead of 'obj') and missed that json.dumps()
+doesn't print but just returns a string. Make it call exit_err() to
+share some code, which changes the prefix from 'FAIL' to 'Error' as a
+side-effect.
 
+While being at it, fix for a syntax warning with newer Python in
+unrelated code.
+
+Fixes: bb32d8db9a125 ("JSON: Add support for echo option")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables-test.py | 37 ++++++++++++++++++++++++++++++-------
- 1 file changed, 30 insertions(+), 7 deletions(-)
+ tests/json_echo/run-test.py | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/iptables-test.py b/iptables-test.py
-index ca5efb1b6670b..90e07feed3658 100755
---- a/iptables-test.py
-+++ b/iptables-test.py
-@@ -304,6 +304,31 @@ def show_missing():
+diff --git a/tests/json_echo/run-test.py b/tests/json_echo/run-test.py
+index 36a377ac95eec..a6bdfc61afd7b 100755
+--- a/tests/json_echo/run-test.py
++++ b/tests/json_echo/run-test.py
+@@ -95,25 +95,25 @@ add_quota = { "add": {
+ # helper functions
  
-     print('\n'.join(missing))
+ def exit_err(msg):
+-    print("Error: %s" %msg)
++    print("Error: %s" %msg, file=sys.stderr)
+     sys.exit(1)
  
-+def spawn_netns():
-+    # prefer unshare module
-+    try:
-+        import unshare
-+        unshare.unshare(unshare.CLONE_NEWNET)
-+        return True
-+    except:
-+        pass
-+
-+    # sledgehammer style:
-+    # - call ourselves prefixed by 'unshare -n' if found
-+    # - pass extra --no-netns parameter to avoid another recursion
-+    try:
-+        import shutil
-+
-+        unshare = shutil.which("unshare")
-+        if unshare is None:
-+            return False
-+
-+        sys.argv.append("--no-netns")
-+        os.execv(unshare, [unshare, "-n", sys.executable] + sys.argv)
-+    except:
-+        pass
-+
-+    return False
+ def exit_dump(e, obj):
+-    print("FAIL: {}".format(e))
+-    print("Output was:")
+-    json.dumps(out, sort_keys = True, indent = 4, separators = (',', ': '))
+-    sys.exit(1)
++    msg = "{}\n".format(e)
++    msg += "Output was:\n"
++    msg += json.dumps(obj, sort_keys = True, indent = 4, separators = (',', ': '))
++    exit_err(msg)
  
- #
- # main
-@@ -323,6 +348,8 @@ def main():
-                         help='Test iptables-over-nftables')
-     parser.add_argument('-N', '--netns', action='store_true',
-                         help='Test netnamespace path')
-+    parser.add_argument('--no-netns', action='store_true',
-+                        help='Do not run testsuite in own network namespace')
-     args = parser.parse_args()
+ def do_flush():
+     rc, out, err = nftables.json_cmd({ "nftables": [flush_ruleset] })
+-    if not rc is 0:
++    if rc != 0:
+         exit_err("flush ruleset failed: {}".format(err))
  
-     #
-@@ -341,6 +368,9 @@ def main():
-         print("You need to be root to run this, sorry")
-         return
+ def do_command(cmd):
+     if not type(cmd) is list:
+         cmd = [cmd]
+     rc, out, err = nftables.json_cmd({ "nftables": cmd })
+-    if not rc is 0:
++    if rc != 0:
+         exit_err("command failed: {}".format(err))
+     return out
  
-+    if not args.netns and not args.no_netns and not spawn_netns():
-+        print("Cannot run in own namespace, connectivity might break")
-+
-     if not args.host:
-         os.putenv("XTABLES_LIBDIR", os.path.abspath(EXTENSIONS_PATH))
-         os.putenv("PATH", "%s/iptables:%s" % (os.path.abspath(os.path.curdir),
-@@ -366,13 +396,6 @@ def main():
-                      if i.endswith('.t')]
-         file_list.sort()
- 
--    if not args.netns:
--        try:
--            import unshare
--            unshare.unshare(unshare.CLONE_NEWNET)
--        except:
--            print("Cannot run in own namespace, connectivity might break")
--
-     for filename in file_list:
-         file_tests, file_passed = run_test_file(filename, args.netns)
-         if file_tests:
 -- 
 2.32.0
 
