@@ -2,104 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893053EB4F9
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Aug 2021 14:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE7A3EB5EC
+	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Aug 2021 15:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239092AbhHMMCO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 13 Aug 2021 08:02:14 -0400
-Received: from relais-inet.orange.com ([80.12.70.35]:60740 "EHLO
-        relais-inet.orange.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhHMMCN (ORCPT
+        id S239559AbhHMNDX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 13 Aug 2021 09:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235482AbhHMNDW (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 13 Aug 2021 08:02:13 -0400
-X-Greylist: delayed 424 seconds by postgrey-1.27 at vger.kernel.org; Fri, 13 Aug 2021 08:02:13 EDT
-Received: from opfednr03.francetelecom.fr (unknown [xx.xx.xx.67])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by opfednr24.francetelecom.fr (ESMTP service) with ESMTPS id 4GmMRk29qJz1y78
-        for <netfilter-devel@vger.kernel.org>; Fri, 13 Aug 2021 13:54:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=orange.com;
-        s=ORANGE001; t=1628855682;
-        bh=r5eC+0cVAPjZXzXG0BUhgzHuku5yk94qi6VYdGa4hIs=;
-        h=From:Subject:To:Message-ID:Date:MIME-Version:Content-Type:
-         Content-Transfer-Encoding;
-        b=ryka0KFLsj2VGPqGTE/sppFX87ScCmxYrHsn2Sw1EoGJKIw1jFmbotMvPWP/lr824
-         nfOcAN3uCzd9znvPuYs6Ts0tXEacHZ2iO6zqb5N1sfp9fWROLo63lpimAkeOjv0ZeF
-         KZmk6bKCwoUZO9g3qqiJis0tuWssDR/kIY1lp1hTRS7s6VYUSvtan+id0DGtfDQ9+e
-         bOOQGW38Cj8hI2SU4JVNHFzlxgf0qtWD9j8d3Kgqg/AcM2c2Vu4OUN8mClzhTLFzlq
-         s8dY2yNOKK4TJsYDunj9w6vjScApm2T1IKVZOlO2EYXij2CkL+qc7sB+XpT9Rmdo6y
-         9ZAVhcppc3Lvg==
-Received: from Exchangemail-eme3.itn.ftgroup (unknown [xx.xx.50.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by opfednr03.francetelecom.fr (ESMTP service) with ESMTPS id 4GmMRk1ZrRzDq80
-        for <netfilter-devel@vger.kernel.org>; Fri, 13 Aug 2021 13:54:42 +0200 (CEST)
-Received: from [10.193.4.89] (10.114.50.248) by exchange-eme3.itn.ftgroup
- (10.114.50.14) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 13 Aug
- 2021 13:54:42 +0200
-From:   <alexandre.ferrieux@orange.com>
-Subject: nfnetlink_queue -- why linear lookup ?
-To:     <netfilter-devel@vger.kernel.org>
-Message-ID: <11790_1628855682_61165D82_11790_25_1_3f865faa-9fd8-40aa-6e49-5d85dd596b5b@orange.com>
-Date:   Fri, 13 Aug 2021 13:55:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 13 Aug 2021 09:03:22 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC39C061756
+        for <netfilter-devel@vger.kernel.org>; Fri, 13 Aug 2021 06:02:55 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id r19-20020a0568301353b029050aa53c3801so11960154otq.2
+        for <netfilter-devel@vger.kernel.org>; Fri, 13 Aug 2021 06:02:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=yNtI+g0dkhOWw8P0kwQy9goK97NgLeUnKMKQx/7woBQ=;
+        b=LgA+9oWMkt7aSGb0WM7PRVbmydceKF9sVNtmlBGkEkff9wPa/yi2s9h10fRYZ3SRpr
+         PMMmE8hJudsFHS/TQEwS4a2ZRhxuHkuDvVG2tdG8U5lv4jgM+Uonn8AWxz0auL9DCJQI
+         hSWizedazk4j/ou3yuQHukhZJsCtCdrSd/QlzXXrH/N/NR/WC4TPV2QNbgn5TEk5eSPy
+         eqxnz4bM8zlyQppUUR031DAeomaqn06mqyXKf6gx9T0+YttFTvcus+ZZ60TEhGYkJFkD
+         MfXaO2n5FiWbN/mCCayhsWxKzh1JkSJjd6Qqp3jUdpTfVcAWhh/j+dn2yDzbmicDYHCB
+         MoVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=yNtI+g0dkhOWw8P0kwQy9goK97NgLeUnKMKQx/7woBQ=;
+        b=M3kiiUHhxiP8l9KuRBSLwkqLqBlCyIpNqMGWpT/RzRRA4KlqbojBLLP0U7B752sJYZ
+         7GshdDuxGtc7pbbGXbORKnFrFP7Fw1+IZr/SxDFYCzXaPlgIxxN0yP/uCsRTwY5MEt2g
+         GVOOjOdKLj9BMUNsqDTXQA3NUtpoJYGDyw7o+ZBCjfMFoSW86rufwBKV6K08qIeHtwfH
+         67g1lkbJzasfCpTIUr00ATFWDL/xM8Svaz87mNBz7qMsUJMJIc1MaXQb3lLylAZL2lo0
+         6gHAqVgyVvgjGqkm5RkFitWOJzuWOcO5Z/R8u0mifEBX+ewRMs+PfmTKUTEcHPxEHgtc
+         Zb9g==
+X-Gm-Message-State: AOAM533xmhqOfptL14y7CRgKpzdg6PEnpNbB+WaD+2BlIMmgM6O1U5tq
+        agfn2yLnhI2Tn9tJ7LMGpwO2lq3rgLcbnKdBQ64=
+X-Google-Smtp-Source: ABdhPJwNjS41xfA9c/QYZSKaz4ZlMis3ftzwsB8Zcw/UemnCd4FyScaMvp6zvratFlUfPqLmpB7nmKjaYXSaNA3AjDg=
+X-Received: by 2002:a05:6830:2b25:: with SMTP id l37mr2041304otv.324.1628859775305;
+ Fri, 13 Aug 2021 06:02:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.114.50.248]
+Received: by 2002:a9d:7b55:0:0:0:0:0 with HTTP; Fri, 13 Aug 2021 06:02:54
+ -0700 (PDT)
+Reply-To: sara2abdel@gmail.com
+From:   Sarah Abdel <achiamand1@gmail.com>
+Date:   Fri, 13 Aug 2021 15:02:54 +0200
+Message-ID: <CAEdXvdATkW13t-sRZ1AaZ1DMxR7izSHJ+PqBO+KrAbAM0=Do_A@mail.gmail.com>
+Subject: Good day
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
 Hello,
 
-In nfnetlink_queue.c, when receiving a verdict for a packet, its entry in the 
-queue is looked up linearly:
+My name is Mrs.Sarah Abdel,I want to donate my fund $ 8.6 million USD
+to you on charity name to help the poor People.
 
-   find_dequeue_entry(struct nfqnl_instance *queue, unsigned int id)
-   {
-     ...
-     list_for_each_entry(i, &queue->queue_list, list) {
-       if (i->id == id) {
-         entry = i;
-         break;
-       }
-     }
-     ...
-   }
+As soon as I read from you I will give you more details on how to
+achieve this goal and get this fund transferred into your bank
+account.
 
-As a result, in a situation of "highly asynchronous" verdicts, i.e. when we want 
-some packets to linger in the queue for some time before reinjection, the mere 
-existence of a large number of such "old packets" may incur a nonnegligible cost 
-to the system.
-
-So I'm wondering: why is the list implemented as a simple linked list instead of 
-an array directly indexed by the id (like file descriptors) ?
-
-Indeed, the list has a configured max size, the passed id can be bound-checked, 
-discarded entries can simply hold a NULL, and id reuse is userspace's 
-responsibility. So it looks like the array would yield constant-time lookup with 
-no extra risk.
-
-What am I missing ?
-
-Thans in advance,
-
--Alex
-
-_________________________________________________________________________________________________________________________
-
-Ce message et ses pieces jointes peuvent contenir des informations confidentielles ou privilegiees et ne doivent donc
-pas etre diffuses, exploites ou copies sans autorisation. Si vous avez recu ce message par erreur, veuillez le signaler
-a l'expediteur et le detruire ainsi que les pieces jointes. Les messages electroniques etant susceptibles d'alteration,
-Orange decline toute responsabilite si ce message a ete altere, deforme ou falsifie. Merci.
-
-This message and its attachments may contain confidential or privileged information that may be protected by law;
-they should not be distributed, used or copied without authorisation.
-If you have received this email in error, please notify the sender and delete this message and its attachments.
-As emails may be altered, Orange is not liable for messages that have been modified, changed or falsified.
-Thank you.
-
+Thanks have a nice day,
+Mrs.Sarah Abdel
