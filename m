@@ -2,69 +2,72 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE7A3EB5EC
-	for <lists+netfilter-devel@lfdr.de>; Fri, 13 Aug 2021 15:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97463EC354
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 Aug 2021 16:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239559AbhHMNDX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 13 Aug 2021 09:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
+        id S233510AbhHNOgy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 14 Aug 2021 10:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235482AbhHMNDW (ORCPT
+        with ESMTP id S229924AbhHNOgy (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 13 Aug 2021 09:03:22 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC39C061756
-        for <netfilter-devel@vger.kernel.org>; Fri, 13 Aug 2021 06:02:55 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id r19-20020a0568301353b029050aa53c3801so11960154otq.2
-        for <netfilter-devel@vger.kernel.org>; Fri, 13 Aug 2021 06:02:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=yNtI+g0dkhOWw8P0kwQy9goK97NgLeUnKMKQx/7woBQ=;
-        b=LgA+9oWMkt7aSGb0WM7PRVbmydceKF9sVNtmlBGkEkff9wPa/yi2s9h10fRYZ3SRpr
-         PMMmE8hJudsFHS/TQEwS4a2ZRhxuHkuDvVG2tdG8U5lv4jgM+Uonn8AWxz0auL9DCJQI
-         hSWizedazk4j/ou3yuQHukhZJsCtCdrSd/QlzXXrH/N/NR/WC4TPV2QNbgn5TEk5eSPy
-         eqxnz4bM8zlyQppUUR031DAeomaqn06mqyXKf6gx9T0+YttFTvcus+ZZ60TEhGYkJFkD
-         MfXaO2n5FiWbN/mCCayhsWxKzh1JkSJjd6Qqp3jUdpTfVcAWhh/j+dn2yDzbmicDYHCB
-         MoVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=yNtI+g0dkhOWw8P0kwQy9goK97NgLeUnKMKQx/7woBQ=;
-        b=M3kiiUHhxiP8l9KuRBSLwkqLqBlCyIpNqMGWpT/RzRRA4KlqbojBLLP0U7B752sJYZ
-         7GshdDuxGtc7pbbGXbORKnFrFP7Fw1+IZr/SxDFYCzXaPlgIxxN0yP/uCsRTwY5MEt2g
-         GVOOjOdKLj9BMUNsqDTXQA3NUtpoJYGDyw7o+ZBCjfMFoSW86rufwBKV6K08qIeHtwfH
-         67g1lkbJzasfCpTIUr00ATFWDL/xM8Svaz87mNBz7qMsUJMJIc1MaXQb3lLylAZL2lo0
-         6gHAqVgyVvgjGqkm5RkFitWOJzuWOcO5Z/R8u0mifEBX+ewRMs+PfmTKUTEcHPxEHgtc
-         Zb9g==
-X-Gm-Message-State: AOAM533xmhqOfptL14y7CRgKpzdg6PEnpNbB+WaD+2BlIMmgM6O1U5tq
-        agfn2yLnhI2Tn9tJ7LMGpwO2lq3rgLcbnKdBQ64=
-X-Google-Smtp-Source: ABdhPJwNjS41xfA9c/QYZSKaz4ZlMis3ftzwsB8Zcw/UemnCd4FyScaMvp6zvratFlUfPqLmpB7nmKjaYXSaNA3AjDg=
-X-Received: by 2002:a05:6830:2b25:: with SMTP id l37mr2041304otv.324.1628859775305;
- Fri, 13 Aug 2021 06:02:55 -0700 (PDT)
+        Sat, 14 Aug 2021 10:36:54 -0400
+Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78D7C061764
+        for <netfilter-devel@vger.kernel.org>; Sat, 14 Aug 2021 07:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=hxgCfkyvkHXr5M1jhrqmy0y0ZkkavGQmyp/M2esVA34=; b=utvbdtjV1I+j6uTz46Xw6dwLYL
+        ev/je8llUYDPi7lxTzBhVaU/ulVLukv8JlmkAAB3V5AjgUjzAHaVrFRNLhMmNviL/CBtLdr9j2356
+        J/dmJXamotJ3+m+NcjcZVf4Gw2emP01c+OyJIykBJfMg63lt9/l3DUWmuIby0RivJUmYGgZkVm87j
+        cOcl2PidqnAvsl+bz81KSOdMYx/nzx8au3T/aPiJ/7kv8eH/KS8xGACWjdIZ476MVhdSSp68RBC+m
+        TCQ1Mt5MO7SQ0/WgngTlzKt2IzdVWn0qZNckkdPyHREW4ytJTLpfdbcA8iCbfDA05VAl3HaYQ0KD8
+        513C/WJg==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.92)
+        (envelope-from <jeremy@azazel.net>)
+        id 1mEulp-0006IU-Vx; Sat, 14 Aug 2021 15:36:22 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH] libxt_ACCOUNT_cl: correct LDFLAGS variable name.
+Date:   Sat, 14 Aug 2021 15:33:59 +0100
+Message-Id: <20210814143359.4582-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:a9d:7b55:0:0:0:0:0 with HTTP; Fri, 13 Aug 2021 06:02:54
- -0700 (PDT)
-Reply-To: sara2abdel@gmail.com
-From:   Sarah Abdel <achiamand1@gmail.com>
-Date:   Fri, 13 Aug 2021 15:02:54 +0200
-Message-ID: <CAEdXvdATkW13t-sRZ1AaZ1DMxR7izSHJ+PqBO+KrAbAM0=Do_A@mail.gmail.com>
-Subject: Good day
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
+The LT library name is libxt_ACCOUNT_cl.la, so the variable should be
+`libxt_ACCOUNT_cl_la_LDFLAGS`.
 
-My name is Mrs.Sarah Abdel,I want to donate my fund $ 8.6 million USD
-to you on charity name to help the poor People.
+Fixes: 81ab0b9586e6 ("libxt_ACCOUNT_cl: drop padding holes from struct ipt_ACCOUNT_context")
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ extensions/ACCOUNT/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-As soon as I read from you I will give you more details on how to
-achieve this goal and get this fund transferred into your bank
-account.
+diff --git a/extensions/ACCOUNT/Makefile.am b/extensions/ACCOUNT/Makefile.am
+index e55a6b9bcbef..65a956697b20 100644
+--- a/extensions/ACCOUNT/Makefile.am
++++ b/extensions/ACCOUNT/Makefile.am
+@@ -9,6 +9,6 @@ sbin_PROGRAMS = iptaccount
+ iptaccount_LDADD = libxt_ACCOUNT_cl.la
+ 
+ lib_LTLIBRARIES = libxt_ACCOUNT_cl.la
+-libxt_ACCOUNT_cl_LDFLAGS = -version-info 1:0:0
++libxt_ACCOUNT_cl_la_LDFLAGS = -version-info 1:0:0
+ 
+ man_MANS = iptaccount.8
+-- 
+2.30.2
 
-Thanks have a nice day,
-Mrs.Sarah Abdel
