@@ -2,123 +2,70 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B943F2428
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Aug 2021 02:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D233F28BD
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Aug 2021 10:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237020AbhHTApH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 19 Aug 2021 20:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44800 "EHLO
+        id S232622AbhHTI53 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 20 Aug 2021 04:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236411AbhHTApG (ORCPT
+        with ESMTP id S232354AbhHTI53 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 19 Aug 2021 20:45:06 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13ACDC061575;
-        Thu, 19 Aug 2021 17:44:30 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id q2so7518071pgt.6;
-        Thu, 19 Aug 2021 17:44:30 -0700 (PDT)
+        Fri, 20 Aug 2021 04:57:29 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E75C061756
+        for <netfilter-devel@vger.kernel.org>; Fri, 20 Aug 2021 01:56:51 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 22so10164796qkg.2
+        for <netfilter-devel@vger.kernel.org>; Fri, 20 Aug 2021 01:56:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=mru2aAZhlzaUY/DrSDbPFG1xG59cnFQ9kByAf+CKxao=;
-        b=TKF5VEjfsBL3RlYuiD3YFQZ84YGaYuZwzQGc2O3VCtQM6x6sv8PnRJG2huU0LKAL4y
-         qAlxyadFiAmSDI9PNzsgT0CbjSuWJDMh7WMmSD/iXgHLGS0wqimRt+azoywk3rQABSjv
-         nbyYTsD/DRngXuIAZhQDo4S3Qr8fSDU1FYVUJRGMjy2q0Me+ELf5FRibSThFH//b9xmI
-         0eqtrJPd7jRDRf0F/h2KI5f0snzOipE2rDSluKwKqwsH2RWwLDkjqkvW97/O1hz6/NpW
-         W20qTWjgm+TC+2clPntXE+dXzdta1DEloNczyqR/OzNLeJCkjhXF3wrNvxKMh280ci89
-         wlSQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=WuDQPRa1pRZEmgy3rMsrN6WxMhN/6RZwdTFnT+vP0Q4=;
+        b=G7smMfYk4UBHAsUPhqJZbEFr8qDNpZWIket+twtjdEmOqAXhZL7yjEE/IpQMzvQUPt
+         QR29nSYh8fgF9c1mqyyWBhkNGSRhMT4bRV2u4N/lgfiqvzHHk0gFV5lenaTyBmvb0qP4
+         52alSTmfRic0D+bse7Rt1YrSR2vMHCdrXdIOTyikxKW58wddDl75hhQ0Gu9qPJRhD9QY
+         WIDdicne1aTE/xQp59cz9fwyJl7FIvS5gwmONaSoMCdDq/dxJmsWpB0AqWnh1II5uk+2
+         n8xxAtHpBO1Ce/YeZHGsKgL6Q4w5bOJT/hX4z2vbIgaeIoM4Utc5QOs7aElCRFLXIgUp
+         BkVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=mru2aAZhlzaUY/DrSDbPFG1xG59cnFQ9kByAf+CKxao=;
-        b=MLAGGrCE4Iik41F7d8p/dJHqD/GvSr6QNtCGyS5c84v4ZCE7sMKvNy9oLkynLkwSgO
-         zM6sNQh7pqFMxP8wgW8OLoN77yEz5F7wJ4E9cOvPW936rVXCQKigsLWbZymiGOzg8zs/
-         W1BGsUpSSemJfaeJwx0JBEKutcb8mh9CmY7GIFPPK04zwEjBIWja1rmT2svbAxzzpvt8
-         rxcSVHzPFq8KBgzNCtbNcFube8jiAdNTahzzKjJziFQD9kOWwjR0YCrIgIBbD3VKY0Xo
-         2Xv6Emazccak+15q3d8Imlck1Lrou91TBhJxbP59qxFkURQnn4umiRSHroLxEcEKWpi9
-         fCQQ==
-X-Gm-Message-State: AOAM5308wed0r8U2Zzlm3a2SxaZd4HZRZDdKIj44NlC0h6j/SJe3jAU6
-        Pw9iIGp9QQfKawfPKty3hyE=
-X-Google-Smtp-Source: ABdhPJwTGCChxWC26jG1D7oswHP+QZodK8LdAgQYvEyKAJ7PJFdFOOP4Q+DfK3edraQTp4VQxoAbQg==
-X-Received: by 2002:a65:4682:: with SMTP id h2mr16608280pgr.409.1629420268905;
-        Thu, 19 Aug 2021 17:44:28 -0700 (PDT)
-Received: from [192.168.43.134] ([49.32.150.144])
-        by smtp.gmail.com with ESMTPSA id e26sm4729539pfj.46.2021.08.19.17.44.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 17:44:28 -0700 (PDT)
-Subject: Re: [ANNOUNCE] nftables 1.0.0 release
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter <netfilter@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>
-Cc:     lwn@lwn.net
-References: <20210819173626.GA1776@salvia>
-From:   Amish <anon.amish@gmail.com>
-Message-ID: <ffc4dd4e-bbb1-0380-2cf2-7053fc3ab39c@gmail.com>
-Date:   Fri, 20 Aug 2021 06:14:24 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=WuDQPRa1pRZEmgy3rMsrN6WxMhN/6RZwdTFnT+vP0Q4=;
+        b=IJN7f1WguIhSQPU/5kzRdQcr+c6+JTWOFPEWgCxCaVDxGFBXNeRi8YzW4L2bq9OqmN
+         2vijc7fBxNAJIFoIPUug8Gr2piE9eOa2MFbuHZsx4eBdOQ04AR1nJXO4unSAfIGdP6vs
+         bFSOZTqplvxje4W7j5uqyxgRAXc7MMA0ksyBMvbqoBg6TTLgzY6aWyHT5qN3O3SiQ92a
+         Zlc2fsjtWQZIsX1+EthOexMxgQpNv846cy7Cr+OquUR3fw31Z2+Py6BZEp/0ZLy/dE4Z
+         WmtgyOFWKAIJyPr0C/3o/E81sghXBIf8O5VCTDW9uy+fKaucx7TGs2LBjqvkDR2GpJbr
+         Ideg==
+X-Gm-Message-State: AOAM5308KK+zuyuglecV6Ziqteq8kawoiKPcypzxLyaOa3lXk1nwkWYi
+        FuvuPtX0aIDFh2EY90RV+9s1Pm89rQR8LHKwFwE=
+X-Google-Smtp-Source: ABdhPJym+rBPiWbEPAqgBuWdwoYUq4QUgEOw+HRA9djVKOaNfR/xcwIEge7qSmjmZ8MsdgM13OyRljsi0UED2PDja5A=
+X-Received: by 2002:a37:846:: with SMTP id 67mr7952028qki.167.1629449811030;
+ Fri, 20 Aug 2021 01:56:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210819173626.GA1776@salvia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Received: by 2002:ac8:5184:0:0:0:0:0 with HTTP; Fri, 20 Aug 2021 01:56:50
+ -0700 (PDT)
+Reply-To: geomic123@yahoo.com
+From:   George Micheal <philipowiredu77@gmail.com>
+Date:   Fri, 20 Aug 2021 09:56:50 +0100
+Message-ID: <CAGkcCGEHQYp00dVFqg3J3UoneVG7AprNMiftkuTSLMt0zqYR0Q@mail.gmail.com>
+Subject: Waiting for response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+-- 
+Dear Sir/Madam
 
-On 19/08/21 11:06 pm, Pablo Neira Ayuso wrote:
-> * Allow to combine jhash, symhash and numgen expressions with the
->    queue statement, to fan out packets to userspace queues via
->    nfnetlink_queue.
->
->    ... queue to symhash mod 65536
->    ... queue flags bypass to numgen inc mod 65536
->    ... queue to jhash oif . meta mark mod 32
->
->    You can also combine it with maps, to select the userspace queue
->    based on any other singleton key or concatenations:
->
->    ... queue flags bypass to oifname map { "eth0" : 0, "ppp0" : 2, "eth1" : 2 }
+My name is Mr George Michael,i am the Personal Aid to former
+President Baba Yahya Abdul-Aziz Jemus Jammeh the Republic of Gambia in
+west Africa, who is currently in exile with his farmily. I have been
+trying on how to get in touch with you over an important issue
+concerning a project that will be profitable. I anticipate hearing
+from you for more details.
 
-I upgraded from nftables 0.9.9 to 1.0.0 (Arch Linux).
-
-Earlier I had this statement which used to work in nftables 0.9.9:
-
-define ips_queue = 0
-add rule ip foo snortips queue num $ips_queue bypass
-
-And it gave error in nftables 1.0.0:
-
-Aug 20 05:51:00 amish nft[3540]: /etc/nftables4.conf:19:49-54: Error: 
-syntax error, unexpected bypass, expecting -
-Aug 20 05:51:00 amish nft[3540]: add rule ip foo snortips queue num 
-$ips_queue bypass
-
-So I changed the rule to:
-define ips_queue = 0
-add rule ip foo snortips queue flags bypass num $ips_queue
-
-But it still gave me error:
-
-Aug 20 05:54:51 amish nft[3649]: /etc/nftables4.conf:19:61-61: Error: 
-syntax error, unexpected newline, expecting -
-Aug 20 05:54:51 amish nft[3649]: add rule ip foo snortips queue flags 
-bypass num $ips_queue
-
-
-Then I replaced $ips_queue directly with 0 (zero), and it worked.
-
-add rule ip foo snortips queue flags bypass num 0
-
-So why isn't nftables allowing defined variable?
-
-It used to work till nft 0.9.9
-
-Regards,
-
-Amish
-
+Yours faithfully
+Mr George Michael
