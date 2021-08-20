@@ -2,70 +2,107 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D233F28BD
-	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Aug 2021 10:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A433F29A8
+	for <lists+netfilter-devel@lfdr.de>; Fri, 20 Aug 2021 11:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbhHTI53 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 20 Aug 2021 04:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42412 "EHLO
+        id S235321AbhHTJ7Q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 20 Aug 2021 05:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbhHTI53 (ORCPT
+        with ESMTP id S234846AbhHTJ7Q (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 20 Aug 2021 04:57:29 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E75C061756
-        for <netfilter-devel@vger.kernel.org>; Fri, 20 Aug 2021 01:56:51 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 22so10164796qkg.2
-        for <netfilter-devel@vger.kernel.org>; Fri, 20 Aug 2021 01:56:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=WuDQPRa1pRZEmgy3rMsrN6WxMhN/6RZwdTFnT+vP0Q4=;
-        b=G7smMfYk4UBHAsUPhqJZbEFr8qDNpZWIket+twtjdEmOqAXhZL7yjEE/IpQMzvQUPt
-         QR29nSYh8fgF9c1mqyyWBhkNGSRhMT4bRV2u4N/lgfiqvzHHk0gFV5lenaTyBmvb0qP4
-         52alSTmfRic0D+bse7Rt1YrSR2vMHCdrXdIOTyikxKW58wddDl75hhQ0Gu9qPJRhD9QY
-         WIDdicne1aTE/xQp59cz9fwyJl7FIvS5gwmONaSoMCdDq/dxJmsWpB0AqWnh1II5uk+2
-         n8xxAtHpBO1Ce/YeZHGsKgL6Q4w5bOJT/hX4z2vbIgaeIoM4Utc5QOs7aElCRFLXIgUp
-         BkVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=WuDQPRa1pRZEmgy3rMsrN6WxMhN/6RZwdTFnT+vP0Q4=;
-        b=IJN7f1WguIhSQPU/5kzRdQcr+c6+JTWOFPEWgCxCaVDxGFBXNeRi8YzW4L2bq9OqmN
-         2vijc7fBxNAJIFoIPUug8Gr2piE9eOa2MFbuHZsx4eBdOQ04AR1nJXO4unSAfIGdP6vs
-         bFSOZTqplvxje4W7j5uqyxgRAXc7MMA0ksyBMvbqoBg6TTLgzY6aWyHT5qN3O3SiQ92a
-         Zlc2fsjtWQZIsX1+EthOexMxgQpNv846cy7Cr+OquUR3fw31Z2+Py6BZEp/0ZLy/dE4Z
-         WmtgyOFWKAIJyPr0C/3o/E81sghXBIf8O5VCTDW9uy+fKaucx7TGs2LBjqvkDR2GpJbr
-         Ideg==
-X-Gm-Message-State: AOAM5308KK+zuyuglecV6Ziqteq8kawoiKPcypzxLyaOa3lXk1nwkWYi
-        FuvuPtX0aIDFh2EY90RV+9s1Pm89rQR8LHKwFwE=
-X-Google-Smtp-Source: ABdhPJym+rBPiWbEPAqgBuWdwoYUq4QUgEOw+HRA9djVKOaNfR/xcwIEge7qSmjmZ8MsdgM13OyRljsi0UED2PDja5A=
-X-Received: by 2002:a37:846:: with SMTP id 67mr7952028qki.167.1629449811030;
- Fri, 20 Aug 2021 01:56:51 -0700 (PDT)
+        Fri, 20 Aug 2021 05:59:16 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F39C061575
+        for <netfilter-devel@vger.kernel.org>; Fri, 20 Aug 2021 02:58:38 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1mH1IJ-0002UN-QU; Fri, 20 Aug 2021 11:58:35 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>, Amish <anon.amish@gmail.com>
+Subject: [PATCH nft] parser: permit symbolic defines for 'queue num' again
+Date:   Fri, 20 Aug 2021 11:58:31 +0200
+Message-Id: <20210820095831.7948-1-fw@strlen.de>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <ffc4dd4e-bbb1-0380-2cf2-7053fc3ab39c@gmail.com>
+References: <ffc4dd4e-bbb1-0380-2cf2-7053fc3ab39c@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:ac8:5184:0:0:0:0:0 with HTTP; Fri, 20 Aug 2021 01:56:50
- -0700 (PDT)
-Reply-To: geomic123@yahoo.com
-From:   George Micheal <philipowiredu77@gmail.com>
-Date:   Fri, 20 Aug 2021 09:56:50 +0100
-Message-ID: <CAGkcCGEHQYp00dVFqg3J3UoneVG7AprNMiftkuTSLMt0zqYR0Q@mail.gmail.com>
-Subject: Waiting for response
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+WHen I simplified the parser to restrict 'queue num' I forgot that
+instead of range and immediate value its also allowed to pass in
+a symbolic constant, e.g.
+
+define myq = 0
+add rule ... 'queue num $myq bypass'
+
+Allow those as well and add a test case for this.
+
+Fixes: 767f0af82a389 ("parser: restrict queue num expressiveness")
+Reported-by: Amish <anon.amish@gmail.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ src/parser_bison.y                                         | 1 +
+ tests/shell/testcases/nft-f/0012different_defines_0        | 7 +++++++
+ .../testcases/nft-f/dumps/0012different_defines_0.nft      | 5 +++++
+ 3 files changed, 13 insertions(+)
+
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index 2634b90c559b..2c96ea69d0b2 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -3793,6 +3793,7 @@ queue_stmt_arg		:	QUEUENUM	queue_stmt_expr_simple
+ 
+ queue_stmt_expr_simple	:	integer_expr
+ 			|	range_rhs_expr
++			|	symbol_expr
+ 			;
+ 
+ queue_stmt_expr		:	numgen_expr
+diff --git a/tests/shell/testcases/nft-f/0012different_defines_0 b/tests/shell/testcases/nft-f/0012different_defines_0
+index 0bdbd1b5f147..fe22858791a1 100755
+--- a/tests/shell/testcases/nft-f/0012different_defines_0
++++ b/tests/shell/testcases/nft-f/0012different_defines_0
+@@ -14,6 +14,8 @@ define d_ipv4_2 = 10.0.0.2
+ define d_ipv6 = fe0::1
+ define d_ipv6_2 = fe0::2
+ define d_ports = 100-222
++define d_qnum = 0
++define d_qnumr = 1-42
+ 
+ table inet t {
+ 	chain c {
+@@ -29,6 +31,11 @@ table inet t {
+ 		ip daddr . meta iif vmap { \$d_ipv4 . \$d_iif : accept }
+ 		tcp dport \$d_ports
+ 		udp dport vmap { \$d_ports : accept }
++		tcp dport 1 tcp sport 1 meta oifname \"foobar\" queue num \$d_qnum bypass
++		tcp dport 1 tcp sport 1 meta oifname \"foobar\" queue num \$d_qnumr
++		tcp dport 1 tcp sport 1 meta oifname \"foobar\" queue flags bypass,fanout num \$d_qnumr
++		tcp dport 1 tcp sport 1 meta oifname \"foobar\" queue to symhash mod 2
++		tcp dport 1 tcp sport 1 meta oifname \"foobar\" queue flags bypass to jhash tcp dport . tcp sport mod 4
+ 	}
+ }"
+ 
+diff --git a/tests/shell/testcases/nft-f/dumps/0012different_defines_0.nft b/tests/shell/testcases/nft-f/dumps/0012different_defines_0.nft
+index 28094387ebed..e690f322436d 100644
+--- a/tests/shell/testcases/nft-f/dumps/0012different_defines_0.nft
++++ b/tests/shell/testcases/nft-f/dumps/0012different_defines_0.nft
+@@ -12,5 +12,10 @@ table inet t {
+ 		ip daddr . iif vmap { 10.0.0.0 . "lo" : accept }
+ 		tcp dport 100-222
+ 		udp dport vmap { 100-222 : accept }
++		tcp sport 1 tcp dport 1 oifname "foobar" queue flags bypass num 0
++		tcp sport 1 tcp dport 1 oifname "foobar" queue num 1-42
++		tcp sport 1 tcp dport 1 oifname "foobar" queue flags bypass,fanout num 1-42
++		tcp sport 1 tcp dport 1 oifname "foobar" queue to symhash mod 2
++		tcp sport 1 tcp dport 1 oifname "foobar" queue flags bypass to jhash tcp dport . tcp sport mod 4
+ 	}
+ }
 -- 
-Dear Sir/Madam
+2.31.1
 
-My name is Mr George Michael,i am the Personal Aid to former
-President Baba Yahya Abdul-Aziz Jemus Jammeh the Republic of Gambia in
-west Africa, who is currently in exile with his farmily. I have been
-trying on how to get in touch with you over an important issue
-concerning a project that will be profitable. I anticipate hearing
-from you for more details.
-
-Yours faithfully
-Mr George Michael
