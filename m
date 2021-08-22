@@ -2,43 +2,43 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CFF3F4083
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9E23F4084
 	for <lists+netfilter-devel@lfdr.de>; Sun, 22 Aug 2021 18:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbhHVQjA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 22 Aug 2021 12:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
+        id S229460AbhHVQjB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 22 Aug 2021 12:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbhHVQjA (ORCPT
+        with ESMTP id S229802AbhHVQjA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 22 Aug 2021 12:39:00 -0400
 Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 033F4C061575
-        for <netfilter-devel@vger.kernel.org>; Sun, 22 Aug 2021 09:38:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2B7C061757
+        for <netfilter-devel@vger.kernel.org>; Sun, 22 Aug 2021 09:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=G61pZmWvkV7PSJQk3C4UqwjkyHNyHqlCY5MoHKL5MC8=; b=g4UVRL99bS1r9KP1iuXV0i46T6
-        gSZZTesOoKxlPPH18ovHhlnbbmhCwuBTKhrDEaGxBKNIY2sSWP8SieHhzb2HIBADYHPKPlwONEaBO
-        cZGnewjoV/Kvx6h6EipAMQ9nJ1+1E1ZIGpfsZMmpRdOZ4BEMUXHQLXcZSc2mkSQ8e3Q1IM7yx0Nj0
-        VbfeJbuvoKwSS6rXK2NBXU0gnkak/6nHTe/VDcoorRqfuupz+QAhnVhliE77TLC6g7lifaj25O2tK
-        N+zF+9fkbSd7xW+0PE6S54LrV1il7e+jIt1ftibMoAPf1yJtAYoObg7XofhIiINdVvsAmW4v/Qq7S
-        eZcNn2Xw==;
+        bh=G+ZtOPIuxMDge10ZwTzoAUGfHvb31rrk9qj+1ONc3H0=; b=qppKYWlMjAkgOuJkDYKR3l7DjB
+        W+cs/ZWLEy0Ad4kNx98IG4zIowv5rI7ulH04CrYlz0CIs5TK4k9AzWgr2G0GANde4Z9ln5pqxIy3O
+        Nd2Nr/nMQv0lebbXNQ+E/qqYn4Yhb3JcypGETTWHbiNPdK7co0RVVij3eWbBHBltFu//O9UeJBEER
+        gKgTo08wt7MuuEfubldpwxofSo5I5XbWIrejXboz2zYmqutd5Obecu7r0S4SDowv6OA78TD1bjqc8
+        MN4b/nZOaQd5v5ascu4nr8RDJ4Npuncd2WcOpLxtIe+oXINkoGA9RYHoMRKGfW2KnJ4bxcJZ8efhr
+        BN3bN4wQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mHqUC-008Q2I-3M; Sun, 22 Aug 2021 17:38:16 +0100
+        id 1mHqUC-008Q2I-Ax; Sun, 22 Aug 2021 17:38:16 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Jan Engelhardt <jengelh@inai.de>
 Cc:     =?UTF-8?q?Grzegorz=20Kuczy=C5=84ski?= 
         <grzegorz.kuczynski@interia.eu>,
         Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons 1/8] build: bump minimum supported kernel version from 4.15 to 4.16.
-Date:   Sun, 22 Aug 2021 17:35:49 +0100
-Message-Id: <20210822163556.693925-2-jeremy@azazel.net>
+Subject: [PATCH xtables-addons 2/8] xt_condition: use sizeof_field macro to size variable name.
+Date:   Sun, 22 Aug 2021 17:35:50 +0100
+Message-Id: <20210822163556.693925-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210822163556.693925-1-jeremy@azazel.net>
 References: <20210822163556.693925-1-jeremy@azazel.net>
@@ -51,27 +51,27 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The next two commits make use of a function and macro that were
-introduced in 4.16.
+4.16 introduced a macro for getting the size of a struct member, so
+let's use it.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- configure.ac | 2 +-
+ extensions/xt_condition.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/configure.ac b/configure.ac
-index 76129245f5c1..9705d750750e 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -61,7 +61,7 @@ if test -n "$kbuilddir"; then
- 			echo "WARNING: That kernel version is not officially supported yet. Continue at own luck.";
- 		elif test "$kmajor" -eq 5 -a "$kminor" -ge 0; then
- 			:
--		elif test "$kmajor" -eq 4 -a "$kminor" -ge 15; then
-+		elif test "$kmajor" -eq 4 -a "$kminor" -ge 16; then
- 			:
- 		else
- 			echo "WARNING: That kernel version is not officially supported.";
+diff --git a/extensions/xt_condition.c b/extensions/xt_condition.c
+index 8227c5d13f1a..c2c48670c788 100644
+--- a/extensions/xt_condition.c
++++ b/extensions/xt_condition.c
+@@ -55,7 +55,7 @@ struct condition_variable {
+ 	struct proc_dir_entry *status_proc;
+ 	unsigned int refcount;
+ 	bool enabled;
+-	char name[sizeof(((struct xt_condition_mtinfo *)NULL)->name)];
++	char name[sizeof_field(struct xt_condition_mtinfo, name)];
+ };
+ 
+ /* proc_lock is a user context only semaphore used for write access */
 -- 
 2.32.0
 
