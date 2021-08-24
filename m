@@ -2,71 +2,124 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E683F5C23
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Aug 2021 12:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51143F5C34
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Aug 2021 12:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236305AbhHXK3b (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 24 Aug 2021 06:29:31 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:43066 "EHLO
+        id S236205AbhHXKig (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 24 Aug 2021 06:38:36 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:43158 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236287AbhHXK3a (ORCPT
+        with ESMTP id S236289AbhHXKie (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:29:30 -0400
+        Tue, 24 Aug 2021 06:38:34 -0400
 Received: from netfilter.org (unknown [78.30.35.141])
-        by mail.netfilter.org (Postfix) with ESMTPSA id F397D600C7;
-        Tue, 24 Aug 2021 12:27:51 +0200 (CEST)
-Date:   Tue, 24 Aug 2021 12:28:40 +0200
+        by mail.netfilter.org (Postfix) with ESMTPSA id AA9826024F;
+        Tue, 24 Aug 2021 12:29:12 +0200 (CEST)
+Date:   Tue, 24 Aug 2021 12:30:01 +0200
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     Duncan Roe <duncan_roe@optusnet.com.au>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH libnetfilter_queue v4 3/4] build: doc: VPATH builds work
- again
-Message-ID: <20210824102840.GA30322@salvia>
+Subject: Re: [PATCH libnetfilter_queue v4 2/4] build: doc: can choose what to
+ build and install
+Message-ID: <20210824103001.GB30322@salvia>
 References: <20210822041442.8394-1-duncan_roe@optusnet.com.au>
- <20210822041442.8394-3-duncan_roe@optusnet.com.au>
+ <20210822041442.8394-2-duncan_roe@optusnet.com.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210822041442.8394-3-duncan_roe@optusnet.com.au>
+In-Reply-To: <20210822041442.8394-2-duncan_roe@optusnet.com.au>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 02:14:41PM +1000, Duncan Roe wrote:
-> Also get make distcleancheck to pass (only applies to VPATH builds).
-
-Not sure I follow. What commit broke this?
-
-Why does this need a separated patch?
-
+On Sun, Aug 22, 2021 at 02:14:40PM +1000, Duncan Roe wrote:
+> Update doxygen/Makefile.am to build and install man pages and html documentation
+> conditionally. Involves configure.ac and doxygen.cfg.in, see below.
+> 
+> CONFIGURE.AC
+> 
+> Update `configure --help` to list non-default documentation options, as do most
+> packages (i.e. list non-defaults). 3 listed options:
+> 1. --enable-html-doc
+> 2. --disable-man-pages
+> 3. --without-doxygen
+> Option 3 overrides 1 & 2: e.g. if you have --without-doxygen but not
+> --disable-man-pages you get:
+>   WARNING: Doxygen disabled - man pages will not be built
+> doxygen is not run if no documentation is requested.
+> 
+> Configure command                  Installed package size (KB)
+> ========= =======                  ========= ======= ==== ====
+> ./configure --without-doxygen       176
+> ./configure --disable-man-pages     176
+> ./configure                         300
+> ./configure --enable-html-doc      1460
+> ./configure --enable-html-doc\
+> 	    --disable-man-pages    1340
+> 
+> Do some extra re-ordering for clarity. Also for clarity, since this is
+> linux-only, re-work test commands to look mode modern.
+> 
+> DOXYGEN.CFG.IN
+> 
+> HTML and man page generation are both conditional.
+> 
 > Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
 > ---
->  doxygen/Makefile.am | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  configure.ac        | 76 +++++++++++++++++++++++++++++++--------------
+>  doxygen.cfg.in      |  3 +-
+>  doxygen/Makefile.am | 11 ++++++-
+>  3 files changed, 64 insertions(+), 26 deletions(-)
 > 
-> diff --git a/doxygen/Makefile.am b/doxygen/Makefile.am
-> index 37ed7aa..e788843 100644
-> --- a/doxygen/Makefile.am
-> +++ b/doxygen/Makefile.am
-> @@ -9,7 +9,7 @@ doxyfile.stamp: $(doc_srcs) Makefile.am
->  # If so, sibling src directory will be empty:
->  # move it out of the way and symlink the real one while we run doxygen.
->  	[ -f ../src/Makefile.in ] || \
-> -{ set -x; cd ..; mv src src.distcheck; ln -s $(top_srcdir)/src; }
-> +{ set -x; cd ..; mv src src.distcheck; ln -s $(abs_top_srcdir)/src; }
+> diff --git a/configure.ac b/configure.ac
+> index 0fe754c..376d4ff 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -10,9 +10,42 @@ AM_INIT_AUTOMAKE([-Wall foreign subdir-objects
+>  	tar-pax no-dist-gzip dist-bzip2 1.6])
+>  m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 >  
->  	cd ..; doxygen doxygen.cfg >/dev/null
+> +case "$host" in
+> +*-*-linux* | *-*-uclinux*) ;;
+> +*) AC_MSG_ERROR([Linux only, dude!]);;
+> +esac
+
+This update is unnecessary, please avoid unnecessary changes in your
+updates, it makes it harder to review.
+
+>  dnl kernel style compile messages
+>  m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 >  
-> @@ -228,7 +228,7 @@ CLEANFILES = doxyfile.stamp
->  
->  all-local: doxyfile.stamp
->  clean-local:
-> -	rm -rf $(top_srcdir)/doxygen/man $(top_srcdir)/doxygen/html
-> +	rm -rf man html
->  install-data-local:
->  if BUILD_MAN
->  	mkdir -p $(DESTDIR)$(mandir)/man3
-> -- 
-> 2.17.5
-> 
+> +AC_ARG_WITH([doxygen], [AS_HELP_STRING([--without-doxygen],
+> +	    [Don't run doxygen (to create documentation)])],
+> +	    [with_doxygen="$withval"], [with_doxygen=yes])
+> +
+> +AC_ARG_ENABLE([html-doc],
+> +	      AS_HELP_STRING([--enable-html-doc], [Enable html documentation]),
+> +	      [], [enable_html_doc=no])
+> +AS_IF([test "$with_doxygen" = no -a "$enable_html_doc" = yes], [
+> +	AC_MSG_WARN([Doxygen disabled - html documentation will not be built])
+> +	enable_html_doc=no
+> +])
+> +AM_CONDITIONAL([BUILD_HTML], [test "$enable_html_doc" = yes])
+> +AS_IF([test "$enable_html_doc" = yes],
+> +	[AC_SUBST(GEN_HTML, YES)],
+> +	[AC_SUBST(GEN_HTML, NO)])
+> +
+> +AC_ARG_ENABLE([man-pages],
+> +	      AS_HELP_STRING([--disable-man-pages], [Disable man page documentation]),
+> +	      [], [enable_man_pages=yes])
+> +AS_IF([test "$with_doxygen" = no -a "$enable_man_pages" = yes], [
+> +	AC_MSG_WARN([Doxygen disabled - man pages will not be built])
+> +	enable_man_pages=no
+> +])
+> +AM_CONDITIONAL([BUILD_MAN], [test "$enable_man_pages" = yes])
+> +AS_IF([test "$enable_man_pages" = yes],
+> +	[AC_SUBST(GEN_MAN, YES)],
+> +	[AC_SUBST(GEN_MAN, NO)])
+
+Moving this block is also not necessary. Please, don't move code
+around while you're updating it, it makes it harder to review.
+
+Thanks.
