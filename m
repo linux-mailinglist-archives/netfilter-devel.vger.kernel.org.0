@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE2C3FA75D
+	by mail.lfdr.de (Postfix) with ESMTP id C7E3C3FA75E
 	for <lists+netfilter-devel@lfdr.de>; Sat, 28 Aug 2021 21:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhH1Tlf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S230316AbhH1Tlf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Sat, 28 Aug 2021 15:41:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhH1Tle (ORCPT
+        with ESMTP id S230452AbhH1Tle (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 28 Aug 2021 15:41:34 -0400
 Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7C7C0613D9
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6572C061796
         for <netfilter-devel@vger.kernel.org>; Sat, 28 Aug 2021 12:40:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Cf+xTkIYyI5H93QtwazoFQ+zepqhsotuoVP2bW1cRQc=; b=oGeF9W324CNoWONTjUdwPTRI3G
-        k7uQ89i8QsPZYKs7WjgjoOdK2iB/OQuL/eyvNAgUk+Whygg3HtR2l5d92K3+GR1LoK4dHQ3QQZ4DM
-        iJfQbwGQuUwPBzt9lI+SdTm4TLTUAAwnhStu8Xnm9URzUOsdgFmTSJpe6pITgq4j/Q55l6otjgn8U
-        rzEYQW5nCaFLXEkES7+WBk5BJyfxTHNTi1eEa5pd6TS2OBqAKnqowAHFOzfsDlqyYdbPCwZP8gZNF
-        01hlNSG/tfTIIYuoxLrn58ee/R60Yc8HrEmOOpYsEcB4IYQ4/h0xn4/aOy5N5prfj39VrgSZ06kum
-        4rmRPA4A==;
+        bh=RgEmlKQwQFo0a5kmP9bcOkPnLTMEQT4g1i/qrmeYDfs=; b=gb5oZGXVoGqN/Cof5Iaoj3VZze
+        HgVRtCKoPy00kP50yOwRrezTiNlLEvu2lS0kgXYcw333l2OtbhFOW5EyA7R+z08N8Z0nFT3POCOR6
+        734IA7AncWjBN/CJ9GIMWq9bZQz9r0LwWgvpUDpvFHEJXKWHPtqiHWyaFeVcDVZXiq21WWbmMI4Ea
+        11yw2hxmma/WCCdvMIF1Qgs7pSM9336iBgmByXNhSI/IK35esaXFtbAYVHdLuAb0LtHezwL2S6jD6
+        3gMu8BqbyblizvvmWXFjni1qJnvq+FzDjFb1CPnUO5FDwHRUog8csgjr0Ufn0XTfIsAnu3KkYoCQ1
+        2obW1B9A==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mK4C1-00FeN7-El; Sat, 28 Aug 2021 20:40:41 +0100
+        id 1mK4C1-00FeN7-Ia; Sat, 28 Aug 2021 20:40:41 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH libnetfilter_log 1/6] Add doxygen directory to .gitignore.
-Date:   Sat, 28 Aug 2021 20:38:19 +0100
-Message-Id: <20210828193824.1288478-2-jeremy@azazel.net>
+Subject: [PATCH libnetfilter_log 2/6] build: remove references to non-existent man-pages.
+Date:   Sat, 28 Aug 2021 20:38:20 +0100
+Message-Id: <20210828193824.1288478-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210828193824.1288478-1-jeremy@azazel.net>
 References: <20210828193824.1288478-1-jeremy@azazel.net>
@@ -51,20 +51,24 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- .gitignore | 1 +
- 1 file changed, 1 insertion(+)
+ Makefile.am | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/.gitignore b/.gitignore
-index f4938e98d7e9..5eaabe38a514 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -13,5 +13,6 @@ Makefile.in
- /configure
- /libtool
+diff --git a/Makefile.am b/Makefile.am
+index 9a1cbcb481f4..2a9cdd826dae 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -2,9 +2,7 @@ SUBDIRS	= include src utils
  
-+/doxygen/
- /doxygen.cfg
- /*.pc
+ ACLOCAL_AMFLAGS = -I m4
+ 
+-EXTRA_DIST = $(man_MANS) Make_global.am
+-
+-man_MANS = #nfnetlink_log.3 nfnetlink_log.7
++EXTRA_DIST = Make_global.am
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = libnetfilter_log.pc
 -- 
 2.33.0
 
