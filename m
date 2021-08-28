@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2170B3FA75F
-	for <lists+netfilter-devel@lfdr.de>; Sat, 28 Aug 2021 21:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D01B3FA762
+	for <lists+netfilter-devel@lfdr.de>; Sat, 28 Aug 2021 21:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhH1Tlg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 28 Aug 2021 15:41:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43052 "EHLO
+        id S231207AbhH1Tlh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 28 Aug 2021 15:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbhH1Tle (ORCPT
+        with ESMTP id S231258AbhH1Tle (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 28 Aug 2021 15:41:34 -0400
 Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2EEC06179A
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8FCC0617A8
         for <netfilter-devel@vger.kernel.org>; Sat, 28 Aug 2021 12:40:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=1NWa/yfYBgbEj5zv1rQHeyh1V4YOWng6X75oclEj0LY=; b=fH71zSCQW6HXn0Mizkr7/Q7Rnv
-        5D+vaYDLuxuA3ms4Ip4/w4cTxAIsoG2L0jTADL4JihAaHWRLjQfILapzzCDcFvANDl2jhIQeMI41/
-        mJv2GrvuF3A1ZCHzWDFY+tBwgPTzss4eRSHR8aAwhGX39GV80O9PlryRq30t/BXXB8dunm93hbDAX
-        SbOafKi+Cn7YtOzRgo6HDLFlGrC1VqKOlsjwIe7w4Y1GIIR+WbXQoj51Xr2gc9Vuk0Te1gJ7oLuYE
-        lofMCWqgKLzpqxrplR4avowH5pOComvg+3r5KbgMjnGDj6nz6YbZOHJzieAmjMaNBTT2x6xPFsaBE
-        k3W8JCMQ==;
+        bh=ZLHdj073IKs2CD6qqtSTiTkwHNeRVduZamF51rCd2BQ=; b=EVRUa/r0zVDZbqsBGGU0rjaSUh
+        7A19PO6dR8Q/NwyoxtLG6uRM0xxFOcgSXQAL5MQfZ+TNKAiy6zijL8CTlVev7fJwflM//neLoQbFx
+        dT2NHZZRzQGaRwcItrKE+Ev1Ai5ZUwAmtg+jqffdiY2KNlB7BNf2bRHVB3Aku7ty9ULdMRfznWG9r
+        +Ej5Itj5jWdVE9MRfk2qOHF5Mn5+dvIGWaBQTp9BcBCUWoF1ySkT5LzSVcRTiXr+ew4QAzsaNc5Fj
+        YxY0I1fiCZHNe4CDdogxhpc39/Dca2nt0fxxvWr6Km2fV9p17EwE4QswO4+fHKn7H4eJtjGwbdXk6
+        GdZdWesQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mK4C1-00FeN7-L7; Sat, 28 Aug 2021 20:40:41 +0100
+        id 1mK4C1-00FeN7-PV; Sat, 28 Aug 2021 20:40:41 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH libnetfilter_log 3/6] doc: fix typo's in example.
-Date:   Sat, 28 Aug 2021 20:38:21 +0100
-Message-Id: <20210828193824.1288478-4-jeremy@azazel.net>
+Subject: [PATCH libnetfilter_log 4/6] src: use calloc instead of malloc + memset.
+Date:   Sat, 28 Aug 2021 20:38:22 +0100
+Message-Id: <20210828193824.1288478-5-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210828193824.1288478-1-jeremy@azazel.net>
 References: <20210828193824.1288478-1-jeremy@azazel.net>
@@ -49,30 +49,59 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Use the right group number in nflog_bind_group example.
-
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/libnetfilter_log.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ src/libipulog_compat.c | 3 +--
+ src/libnetfilter_log.c | 6 ++----
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
+diff --git a/src/libipulog_compat.c b/src/libipulog_compat.c
+index 2d5b23a25c88..99cd86622d9b 100644
+--- a/src/libipulog_compat.c
++++ b/src/libipulog_compat.c
+@@ -90,12 +90,11 @@ struct ipulog_handle *ipulog_create_handle(uint32_t gmask,
+ 	struct ipulog_handle *h;
+ 	unsigned int group = gmask2group(gmask);
+ 
+-	h = malloc(sizeof(*h)+PAYLOAD_SIZE);
++	h = calloc(1, sizeof(*h)+PAYLOAD_SIZE);
+ 	if (! h) {
+ 		ipulog_errno = IPULOG_ERR_HANDLE;
+ 		return NULL;
+ 	}
+-	memset(h, 0, sizeof(*h));
+ 	h->nfulh = nflog_open();
+ 	if (!h->nfulh)
+ 		goto out_free;
 diff --git a/src/libnetfilter_log.c b/src/libnetfilter_log.c
-index 567049ccfb37..339f286f36bc 100644
+index 339f286f36bc..7d37570e70cb 100644
 --- a/src/libnetfilter_log.c
 +++ b/src/libnetfilter_log.c
-@@ -182,10 +182,10 @@ struct nfnl_handle *nflog_nfnlh(struct nflog_handle *h)
-  *
-  * Here's a little code snippet that binds to the group 100:
-  * \verbatim
--	printf("binding this socket to group 0\n");
--	qh = nflog_bind_group(h, 0);
-+	printf("binding this socket to group 100\n");
-+	qh = nflog_bind_group(h, 100);
- 	if (!qh) {
--		fprintf(stderr, "no handle for grup 0\n");
-+		fprintf(stderr, "no handle for group 100\n");
- 		exit(1);
- 	}
+@@ -238,11 +238,10 @@ struct nflog_handle *nflog_open_nfnl(struct nfnl_handle *nfnlh)
+ 	struct nflog_handle *h;
+ 	int err;
+ 
+-	h = malloc(sizeof(*h));
++	h = calloc(1, sizeof(*h));
+ 	if (!h)
+ 		return NULL;
+ 
+-	memset(h, 0, sizeof(*h));
+ 	h->nfnlh = nfnlh;
+ 
+ 	h->nfnlssh = nfnl_subsys_open(h->nfnlh, NFNL_SUBSYS_ULOG, 
+@@ -398,11 +397,10 @@ nflog_bind_group(struct nflog_handle *h, uint16_t num)
+ 	if (find_gh(h, num))
+ 		return NULL;
+ 	
+-	gh = malloc(sizeof(*gh));
++	gh = calloc(1, sizeof(*gh));
+ 	if (!gh)
+ 		return NULL;
+ 
+-	memset(gh, 0, sizeof(*gh));
+ 	gh->h = h;
+ 	gh->id = num;
  
 -- 
 2.33.0
