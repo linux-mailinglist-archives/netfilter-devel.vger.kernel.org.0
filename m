@@ -2,47 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680233FB373
-	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Aug 2021 11:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566AB3FB382
+	for <lists+netfilter-devel@lfdr.de>; Mon, 30 Aug 2021 12:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhH3JzY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 30 Aug 2021 05:55:24 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:42866 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhH3JzV (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 30 Aug 2021 05:55:21 -0400
-Received: from netfilter.org (unknown [78.30.35.141])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 0C5CA60143;
-        Mon, 30 Aug 2021 11:53:28 +0200 (CEST)
-Date:   Mon, 30 Aug 2021 11:54:23 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf 0/3] netfilter: conntrack: switch to siphash
-Message-ID: <20210830095423.GA22849@salvia>
-References: <20210826135422.31063-1-fw@strlen.de>
+        id S236021AbhH3KBA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 30 Aug 2021 06:01:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235950AbhH3KBA (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 30 Aug 2021 06:01:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E554C61076;
+        Mon, 30 Aug 2021 10:00:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630317606;
+        bh=EMljaQJ/hYz+7LPscSCU+AIZGZsC/CcVGaugvSVLMYc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ht8nB33CL+upu/rtmYLJGGCN0HvYAQKlDEqDN1gf6bySRRgpSb1h574JlC2d7ucjY
+         PoGG8SqwErd8ff50oKYrcV6OHFC24PtVrY2Qd1IiFL4fsTi1GfImS0HweVEmglSGIm
+         aTi1pD+iRaXOlMgViUW1bU6igsXfXa4aCoZ/uF7TPL4MeCP6ikfJEbL4UrROol1Tbs
+         ptqF5SGPYHVMZkaQAteXsPF43/idjXcW7xAs87roxNE+InvTlKHnMNms6ufkl7Q/3k
+         IMtKkQlo+6pP2CEwx62WtHeZWSGwS2bebz6nknPkCtl0AiPAsg4mJUs32cLoX8WFYL
+         W1kgbdF8eaeFg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D8BB260A6C;
+        Mon, 30 Aug 2021 10:00:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210826135422.31063-1-fw@strlen.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 1/8] netfilter: ecache: remove one indent level
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163031760688.27483.14106552894924526730.git-patchwork-notify@kernel.org>
+Date:   Mon, 30 Aug 2021 10:00:06 +0000
+References: <20210830093852.21654-2-pablo@netfilter.org>
+In-Reply-To: <20210830093852.21654-2-pablo@netfilter.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, kuba@kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 03:54:18PM +0200, Florian Westphal wrote:
-> Two recent commits switched inet rt and nexthop exception
-> hashes from jhash to siphash.
+Hello:
+
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Mon, 30 Aug 2021 11:38:45 +0200 you wrote:
+> From: Florian Westphal <fw@strlen.de>
 > 
-> If those two spots are problematic then conntrack is affected
-> as well, so switch voer to siphash too.
+> nf_conntrack_eventmask_report and nf_ct_deliver_cached_events shared
+> most of their code.  This unifies the layout by changing
 > 
-> While at it, add a hard upper limit on chain lengths and reject
-> insertion if this is hit.
+>  if (nf_ct_is_confirmed(ct)) {
+>    foo
+>  }
+> 
+> [...]
 
-Applied, thanks.
+Here is the summary with links:
+  - [net-next,1/8] netfilter: ecache: remove one indent level
+    https://git.kernel.org/netdev/net-next/c/478374a3c15f
+  - [net-next,2/8] netfilter: ecache: remove another indent level
+    https://git.kernel.org/netdev/net-next/c/9291f0902d0c
+  - [net-next,3/8] netfilter: ecache: add common helper for nf_conntrack_eventmask_report
+    https://git.kernel.org/netdev/net-next/c/b3afdc175863
+  - [net-next,4/8] netfilter: ecache: prepare for event notifier merge
+    https://git.kernel.org/netdev/net-next/c/b86c0e6429da
+  - [net-next,5/8] netfilter: ecache: remove nf_exp_event_notifier structure
+    https://git.kernel.org/netdev/net-next/c/bd1431db0b81
+  - [net-next,6/8] netfilter: ctnetlink: missing counters and timestamp in nfnetlink_{log,queue}
+    https://git.kernel.org/netdev/net-next/c/6c89dac5b985
+  - [net-next,7/8] netfilter: x_tables: handle xt_register_template() returning an error value
+    https://git.kernel.org/netdev/net-next/c/7bc416f14716
+  - [net-next,8/8] netfilter: add netfilter hooks to SRv6 data plane
+    https://git.kernel.org/netdev/net-next/c/7a3f5b0de364
 
-I've taken this 3/3 version:
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210826135422.31063-5-fw@strlen.de/
+
