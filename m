@@ -2,119 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68B03FDE22
-	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Sep 2021 16:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA193FE225
+	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Sep 2021 20:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbhIAO6p (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 1 Sep 2021 10:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
+        id S1344210AbhIASMs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 1 Sep 2021 14:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbhIAO6p (ORCPT
+        with ESMTP id S1345043AbhIASMq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 1 Sep 2021 10:58:45 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC8CC061575
-        for <netfilter-devel@vger.kernel.org>; Wed,  1 Sep 2021 07:57:48 -0700 (PDT)
-Received: from localhost ([::1]:44838 helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1mLRgP-0007jY-5H; Wed, 01 Sep 2021 16:57:45 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH] parser_json: Fix error reporting for invalid syntax
-Date:   Wed,  1 Sep 2021 16:58:19 +0200
-Message-Id: <20210901145819.22567-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.33.0
+        Wed, 1 Sep 2021 14:12:46 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7701C061760
+        for <netfilter-devel@vger.kernel.org>; Wed,  1 Sep 2021 11:11:49 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id a25so590846vso.5
+        for <netfilter-devel@vger.kernel.org>; Wed, 01 Sep 2021 11:11:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=2joGkq8i8C5vglZO1FYNTlWqLyr4vSiCXKQYXBVnv4Q=;
+        b=fC9hcX//9hp1uMHwhUu30uIOkmBqDnqktwjUtt0dMT1OrVEtLfzFOTJN/MOgBc4gbk
+         7M4CRGXeXNvt8B1I9FNxfm05PfQ9ISAYsjGdlo4e6qQhGnFRdgfelCYWKXkz9ry0doZA
+         YkddNcRHMattZSVKsc6cAG5COrJBUCJuVi+fHOjO0JRwsVOeT+/ugHzmD/YkEeLoE9I3
+         W04CWZ1Im+AXPNOr1rlXDUA3pNZZCwKT80LiFMDVPWWR526AkC2X2NoOsFo8kvIJv0je
+         4eNq3vLjj0qJpRaN5vfxZc3DRSFj9grX7L/mFyjCjPTB3WJZEyD78O9+KOQTrfnkR7NE
+         C6Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=2joGkq8i8C5vglZO1FYNTlWqLyr4vSiCXKQYXBVnv4Q=;
+        b=N977UTszMJHyo9OzWhj5fMo252vb8Q3KZCcLwUhrgvMxywoK+4H+uXXIFQM//56iOK
+         htbejlKDIUhgpWpa6C1wcJXuE0eYPOhqYc2k1p80q63RJ4vTzz7f0oYuavp48sqrOSwg
+         sSA8HVGKHgftJ9q8e/MLWaZ4iY8aWgWW+YoUCiiJKvTwhkv4ECAaHerIbrpeeZkHDLP/
+         jKr+fbDyhGHv5lYuOWxbm5eiguZfm3lGsB34DC1YBCkz/M1LmwFxYzCdBIZZ6TiLK+eV
+         H7fUZVNHLTm1d035HpFl1zfmBm584sxMpGy5ARc56HrVSfy/FNo1v8tcW40USeOLwC0W
+         aYeQ==
+X-Gm-Message-State: AOAM531L+KaLKMwfsyzeJkUopZZCBySLBwEnmQ4TH8roVTtmoDBeuz/M
+        aeq1291WA7unGEIG2VQN6cpRyjc4TKplUO9VWaw=
+X-Google-Smtp-Source: ABdhPJwiEbnYLv7f2RnKYDK6MZHOqm2sX6mhOBQTqcYKXOfc5SbKfEDHccmM3wJ+zupXFWNQS3aJPYj5WNB/mvlkd0Q=
+X-Received: by 2002:a67:2e46:: with SMTP id u67mr677594vsu.56.1630519908748;
+ Wed, 01 Sep 2021 11:11:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab0:740d:0:0:0:0:0 with HTTP; Wed, 1 Sep 2021 11:11:48 -0700 (PDT)
+From:   CorisBank International <corisbankintlbf@gmail.com>
+Date:   Wed, 1 Sep 2021 11:11:48 -0700
+Message-ID: <CA+25hwz0afgYcU9E_j5xKhdmUoGDrSM_ueYzhLyn0TCOP=-Q0A@mail.gmail.com>
+Subject: CORISBANK INTERNATIONAL OFFICIAL NOTIFICATION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Errors emitted by the JSON parser caused BUG() in erec_print() due to
-input descriptor values being bogus.
+Att: Client
 
-Due to lack of 'include' support, JSON parser uses a single input
-descriptor only and it lived inside the json_ctx object on stack of
-nft_parse_json_*() functions.
 
-By the time errors are printed though, that scope is not valid anymore.
-Move the static input descriptor object to avoid this.
+CORISBANK INTERNATIONAL URGENT NOTIFICATION
 
-Fixes: 586ad210368b7 ("libnftables: Implement JSON parser")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- src/parser_json.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+Notification / Notification/ Notification
 
-diff --git a/src/parser_json.c b/src/parser_json.c
-index 666aa2fcc9ec3..3cd21175b2364 100644
---- a/src/parser_json.c
-+++ b/src/parser_json.c
-@@ -44,7 +44,6 @@
- #define CTX_F_CONCAT	(1 << 8)	/* inside concat_expr */
- 
- struct json_ctx {
--	struct input_descriptor indesc;
- 	struct nft_ctx *nft;
- 	struct list_head *msgs;
- 	struct list_head *cmds;
-@@ -107,11 +106,12 @@ static struct stmt *json_parse_stmt(struct json_ctx *ctx, json_t *root);
- /* parsing helpers */
- 
- const struct location *int_loc = &internal_location;
-+static struct input_descriptor json_indesc;
- 
- static void json_lib_error(struct json_ctx *ctx, json_error_t *err)
- {
- 	struct location loc = {
--		.indesc = &ctx->indesc,
-+		.indesc = &json_indesc,
- 		.line_offset = err->position - err->column,
- 		.first_line = err->line,
- 		.last_line = err->line,
-@@ -3923,16 +3923,15 @@ int nft_parse_json_buffer(struct nft_ctx *nft, const char *buf,
- 			  struct list_head *msgs, struct list_head *cmds)
- {
- 	struct json_ctx ctx = {
--		.indesc = {
--			.type = INDESC_BUFFER,
--			.data = buf,
--		},
- 		.nft = nft,
- 		.msgs = msgs,
- 		.cmds = cmds,
- 	};
- 	int ret;
- 
-+	json_indesc.type = INDESC_BUFFER;
-+	json_indesc.data = buf;
-+
- 	parser_init(nft, nft->state, msgs, cmds, nft->top_scope);
- 	nft->json_root = json_loads(buf, 0, NULL);
- 	if (!nft->json_root)
-@@ -3951,10 +3950,6 @@ int nft_parse_json_filename(struct nft_ctx *nft, const char *filename,
- 			    struct list_head *msgs, struct list_head *cmds)
- {
- 	struct json_ctx ctx = {
--		.indesc = {
--			.type = INDESC_FILE,
--			.name = filename,
--		},
- 		.nft = nft,
- 		.msgs = msgs,
- 		.cmds = cmds,
-@@ -3962,6 +3957,9 @@ int nft_parse_json_filename(struct nft_ctx *nft, const char *filename,
- 	json_error_t err;
- 	int ret;
- 
-+	json_indesc.type = INDESC_FILE;
-+	json_indesc.name = filename;
-+
- 	parser_init(nft, nft->state, msgs, cmds, nft->top_scope);
- 	nft->json_root = json_load_file(filename, 0, &err);
- 	if (!nft->json_root)
--- 
-2.33.0
+Note, We are writing to inform you officially that Finally the Central
+Bank Financial Authority have approved to transfer your $8.2Million
+which was signed by late Mrs Rose Banneth the COVID.19 victim to
+transfer to you, Late Mrs Rose Banneth the France Lady contacted us to
+transfer her fund in our bank to you for Orphanage work before she
+died by the COVID.19
+and as it is now, you will receive your fund through our corresponding
+bank in Dubai [Emirate Investment Bank ] for security reason. Please
+you should reconfirm your details to receive the $8.2Million.
 
+Name, Country, Address, occupations, Age, Telephone number, account
+Details so that we can immediately forward to the World Bank to
+transfer the fund.
+You are advised to comply on timely manner to permit this esteem bank
+transfer your fund as scheduled.
+
+We look forward to serving you better
+Your Financial Comfort Is A Priority
+Thank you for choosing Corisbank International.
+
+Sincerely,
+
+----
+
+Mr Diakarya Ouattara
+Managing Director
+Bank Coris
+Burkina Faso
++226 556 163 37
+financial_bf_info@accountant.com
