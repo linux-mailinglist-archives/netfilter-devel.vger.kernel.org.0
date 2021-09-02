@@ -2,92 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA193FE225
-	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Sep 2021 20:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A2D3FEAE8
+	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Sep 2021 11:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344210AbhIASMs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 1 Sep 2021 14:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53872 "EHLO
+        id S244608AbhIBJAu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 2 Sep 2021 05:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345043AbhIASMq (ORCPT
+        with ESMTP id S233507AbhIBJAt (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:12:46 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7701C061760
-        for <netfilter-devel@vger.kernel.org>; Wed,  1 Sep 2021 11:11:49 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id a25so590846vso.5
-        for <netfilter-devel@vger.kernel.org>; Wed, 01 Sep 2021 11:11:49 -0700 (PDT)
+        Thu, 2 Sep 2021 05:00:49 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CC2C061575
+        for <netfilter-devel@vger.kernel.org>; Thu,  2 Sep 2021 01:59:51 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id d5so910278pjx.2
+        for <netfilter-devel@vger.kernel.org>; Thu, 02 Sep 2021 01:59:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=2joGkq8i8C5vglZO1FYNTlWqLyr4vSiCXKQYXBVnv4Q=;
-        b=fC9hcX//9hp1uMHwhUu30uIOkmBqDnqktwjUtt0dMT1OrVEtLfzFOTJN/MOgBc4gbk
-         7M4CRGXeXNvt8B1I9FNxfm05PfQ9ISAYsjGdlo4e6qQhGnFRdgfelCYWKXkz9ry0doZA
-         YkddNcRHMattZSVKsc6cAG5COrJBUCJuVi+fHOjO0JRwsVOeT+/ugHzmD/YkEeLoE9I3
-         W04CWZ1Im+AXPNOr1rlXDUA3pNZZCwKT80LiFMDVPWWR526AkC2X2NoOsFo8kvIJv0je
-         4eNq3vLjj0qJpRaN5vfxZc3DRSFj9grX7L/mFyjCjPTB3WJZEyD78O9+KOQTrfnkR7NE
-         C6Vw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=56LumSd/LtVT1dfooNRXlAa2IhmhLirzjFW031hhRAk=;
+        b=IYIwbIXO0nBpbNgdSMrti81QVE2n179f+ZWQ80i2iCIOem9pLN/JTTg9t7iGznTe6C
+         qv79zY0svkzO2AsImiItazppXuhTtVeUQVeFtJy8QTc7CPjbP8ws9TSmNgAOQvEM6cJ/
+         WDyyc3N1SbjQLXvUAh5I+LTk9zuxXhPa0sNLPG5UjCbSvA9NLhuJGKKzZfH9He5A43HB
+         6uu+gHuy2UzltPcUDqwntHsgAh2fK9JtFBNbj9TUSPuRC25Il4d4DrWSmhws/1smq/eI
+         zt5+ClvSsfESsp7lJ0LhOQESt0OhiMjI+hc64Q3fqlWIMh+Y1JxsBt4sRECiKknTjHAE
+         ZWRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=2joGkq8i8C5vglZO1FYNTlWqLyr4vSiCXKQYXBVnv4Q=;
-        b=N977UTszMJHyo9OzWhj5fMo252vb8Q3KZCcLwUhrgvMxywoK+4H+uXXIFQM//56iOK
-         htbejlKDIUhgpWpa6C1wcJXuE0eYPOhqYc2k1p80q63RJ4vTzz7f0oYuavp48sqrOSwg
-         sSA8HVGKHgftJ9q8e/MLWaZ4iY8aWgWW+YoUCiiJKvTwhkv4ECAaHerIbrpeeZkHDLP/
-         jKr+fbDyhGHv5lYuOWxbm5eiguZfm3lGsB34DC1YBCkz/M1LmwFxYzCdBIZZ6TiLK+eV
-         H7fUZVNHLTm1d035HpFl1zfmBm584sxMpGy5ARc56HrVSfy/FNo1v8tcW40USeOLwC0W
-         aYeQ==
-X-Gm-Message-State: AOAM531L+KaLKMwfsyzeJkUopZZCBySLBwEnmQ4TH8roVTtmoDBeuz/M
-        aeq1291WA7unGEIG2VQN6cpRyjc4TKplUO9VWaw=
-X-Google-Smtp-Source: ABdhPJwiEbnYLv7f2RnKYDK6MZHOqm2sX6mhOBQTqcYKXOfc5SbKfEDHccmM3wJ+zupXFWNQS3aJPYj5WNB/mvlkd0Q=
-X-Received: by 2002:a67:2e46:: with SMTP id u67mr677594vsu.56.1630519908748;
- Wed, 01 Sep 2021 11:11:48 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=56LumSd/LtVT1dfooNRXlAa2IhmhLirzjFW031hhRAk=;
+        b=Wc9JJ2iiu2DjY+3X3xUDbphqmdSRJxRs4VjB1EvSSVUflbaRJSoB61/VDAEdXqTp5q
+         bDhl8d4cB9SibB5RoeH1GsKCkxWr/K5XARP9cpj51WROJpYFomep2qE47jCIx62f4Zhn
+         m3pG9IlWtrsle3Zp6Ym7oQTnZffUYKbBw/R77TDJD+FxwVXGoggqRM7cz+D/x5gpyEtD
+         DBU4N9MA7nRAjGidCxTUhgXDjgCGdqO1Mrh7Xbj5kgdodnB98YJOsLIlCKz6tg33CTH/
+         ZS8L+BwVTAB7fcOtbcJJnTx1wSdklbSrNNypZN3AMkyrFQNYk9wGAgrHKxa43kf4X4pH
+         wDYA==
+X-Gm-Message-State: AOAM532AOfJok9CUy104iWxzgQtzgarn9YUfkWq73orYvAGcZ6zopILA
+        lAhCjSySCexXNi9Uh5p5QeXGPqAzIXg=
+X-Google-Smtp-Source: ABdhPJxEKLLS3UeIGmflIfeXCbkfTt+hWVbVYhH5jVwe426LdP7RnReMbNcLCotKI+3wB6SsdFkQgg==
+X-Received: by 2002:a17:90b:120a:: with SMTP id gl10mr2660402pjb.234.1630573191409;
+        Thu, 02 Sep 2021 01:59:51 -0700 (PDT)
+Received: from slk1.local.net (n49-192-82-34.sun3.vic.optusnet.com.au. [49.192.82.34])
+        by smtp.gmail.com with ESMTPSA id s14sm1884719pgf.4.2021.09.02.01.59.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 01:59:50 -0700 (PDT)
+Sender: Duncan Roe <duncan.roe2@gmail.com>
+From:   Duncan Roe <duncan_roe@optusnet.com.au>
+To:     pablo@netfilter.org
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [PATCH libnetfilter_log 0/1] build: doc: `make` generates requested documentation
+Date:   Thu,  2 Sep 2021 18:59:44 +1000
+Message-Id: <20210902085945.22099-1-duncan_roe@optusnet.com.au>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: by 2002:ab0:740d:0:0:0:0:0 with HTTP; Wed, 1 Sep 2021 11:11:48 -0700 (PDT)
-From:   CorisBank International <corisbankintlbf@gmail.com>
-Date:   Wed, 1 Sep 2021 11:11:48 -0700
-Message-ID: <CA+25hwz0afgYcU9E_j5xKhdmUoGDrSM_ueYzhLyn0TCOP=-Q0A@mail.gmail.com>
-Subject: CORISBANK INTERNATIONAL OFFICIAL NOTIFICATION
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Att: Client
+This patch mirrors all the documentation-related build changes in
+libnetfilter_queue, including
+https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210828033508.15618-5-duncan_roe@optusnet.com.au/
+which is not yet applied at time of writing.
+Because all the changes are applied at once, the diffs are cleaner, f.i.
+configure.ac has one changed line and 3 blocks of insertions.
 
+Duncan Roe (1):
+  build: doc: `make` generates requested documentation
 
-CORISBANK INTERNATIONAL URGENT NOTIFICATION
+ .gitignore                               |  2 +-
+ Makefile.am                              |  2 +-
+ autogen.sh                               |  8 ++++
+ configure.ac                             | 58 +++++++++++++++++++++++-
+ doxygen/Makefile.am                      | 39 ++++++++++++++++
+ doxygen.cfg.in => doxygen/doxygen.cfg.in |  9 ++--
+ 6 files changed, 111 insertions(+), 7 deletions(-)
+ create mode 100644 doxygen/Makefile.am
+ rename doxygen.cfg.in => doxygen/doxygen.cfg.in (76%)
 
-Notification / Notification/ Notification
+-- 
+2.17.5
 
-Note, We are writing to inform you officially that Finally the Central
-Bank Financial Authority have approved to transfer your $8.2Million
-which was signed by late Mrs Rose Banneth the COVID.19 victim to
-transfer to you, Late Mrs Rose Banneth the France Lady contacted us to
-transfer her fund in our bank to you for Orphanage work before she
-died by the COVID.19
-and as it is now, you will receive your fund through our corresponding
-bank in Dubai [Emirate Investment Bank ] for security reason. Please
-you should reconfirm your details to receive the $8.2Million.
-
-Name, Country, Address, occupations, Age, Telephone number, account
-Details so that we can immediately forward to the World Bank to
-transfer the fund.
-You are advised to comply on timely manner to permit this esteem bank
-transfer your fund as scheduled.
-
-We look forward to serving you better
-Your Financial Comfort Is A Priority
-Thank you for choosing Corisbank International.
-
-Sincerely,
-
-----
-
-Mr Diakarya Ouattara
-Managing Director
-Bank Coris
-Burkina Faso
-+226 556 163 37
-financial_bf_info@accountant.com
