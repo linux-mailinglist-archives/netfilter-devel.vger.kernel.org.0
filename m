@@ -2,112 +2,59 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47ED03FED08
-	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Sep 2021 13:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6E83FF305
+	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Sep 2021 20:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233831AbhIBLel (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 2 Sep 2021 07:34:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34711 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230256AbhIBLel (ORCPT
+        id S1346712AbhIBSMl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 2 Sep 2021 14:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229939AbhIBSMl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 2 Sep 2021 07:34:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630582422;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0IkJJbZarL//uauAt3uDY9E0KiRtiDoJT6xqsdLvpMU=;
-        b=cfDvxqNBGd3zak56JNpoHLCMxEcdUysvi/em0M30th5fih9GS5f+t5KWID2BL9lPGaqzuL
-        3ZTpxlec51sM3JtXqEMV/kEi3qaC1htnd2aRmkCyU+SmNbCr99cis8ct1DcKAHuy61wGnt
-        RF0/3En/mDSLziWzxFSu7gIG9olRRNs=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-233-NMvh2nQXMNe61uM2EkhUTg-1; Thu, 02 Sep 2021 07:33:41 -0400
-X-MC-Unique: NMvh2nQXMNe61uM2EkhUTg-1
-Received: by mail-wr1-f72.google.com with SMTP id p10-20020a5d68ca000000b001552bf8b9daso427349wrw.22
-        for <netfilter-devel@vger.kernel.org>; Thu, 02 Sep 2021 04:33:41 -0700 (PDT)
+        Thu, 2 Sep 2021 14:12:41 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E75C061575
+        for <netfilter-devel@vger.kernel.org>; Thu,  2 Sep 2021 11:11:42 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id q17so4252315edv.2
+        for <netfilter-devel@vger.kernel.org>; Thu, 02 Sep 2021 11:11:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=qPgU/uEznGEzlEYVBULdnxB0ISdYbu49BAdtGVTSdVkU0FZAX4YuR1ZA0/xf97V905
+         8t28PDKZpT/E786y/nx/KfofF62fRBGc8Vn4SliucCioYYEFL1O/UQf4iX+rMaE8vwpc
+         NeTaddN1/Qr4BaETgo8cQQppMrgMlFLP82wlKAxs+iIoi6Q5lNhtwVbUbyVAGkWQED7c
+         kmV6fZtq+rauKCVhu5OF+6zm8Bw27ArV53GM0JOE65jfHIwdq/tvdVEbBysw4RyZzNSU
+         P8PCXsoKTMhNBkERpkNjYJp8pojbRb27KqNm+J40fxQaE+He7fyA2w9k0zcVLvgaoXNx
+         D6jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0IkJJbZarL//uauAt3uDY9E0KiRtiDoJT6xqsdLvpMU=;
-        b=Cwgp5niaUv/IT0VYJxD7RyTp/2F+ZocOmr86UD9oHSOoUFjyo8y/gqWawguyFOqV4W
-         o3ATkkdmyJ5v5Fd9u3xhzcyJtBPMXdVqQdHvwxiQaCHQBL8r7FvpxzrVcWIJmy3aHZz+
-         J5fDmu9eSrBhXSnAz8PBUwin2IFEouMUwh2m1agkKWyrSrBifLJ5zh6QJpGrUAFP4d4i
-         f0x42BN/rv2NE0qLmy4wzssbnbe8HsJOir7zNfLP4b7c41fGGFv/GO0a0yOtE5Bs0jCB
-         P7gunKqTlSS2TM+8AXKa+vidfT/puzxbe31mJlzsswtgKabaizP90I9JiffVzClZoqao
-         UcXg==
-X-Gm-Message-State: AOAM531mqbgIdILAN2xaGTbfvNiaIMuxc8JBZvdn2R9MSYZOinoh2TFi
-        JOoW4zndiAQh7KSqUDOStomKHG3Yoa7ozN8Jc+D3oFynoNailXOLa7Hb90hiLlQTKkrnyssa9MD
-        wB6euQldGUNTIvFguQrC099O1Sl2t0HEal5PzPnb6r+vbN9eWY4Y817+hVwN+JZyyLAYZL/1gva
-        a8jg==
-X-Received: by 2002:adf:82a9:: with SMTP id 38mr3203338wrc.82.1630582420312;
-        Thu, 02 Sep 2021 04:33:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxG0DhqeDcX52kq4UIGDPPaUY//mLQOulpufVedU1sem+lTagMsXeEnMRTKdsrfyrPnODsyzA==
-X-Received: by 2002:adf:82a9:: with SMTP id 38mr3203313wrc.82.1630582420102;
-        Thu, 02 Sep 2021 04:33:40 -0700 (PDT)
-Received: from localhost ([185.112.167.33])
-        by smtp.gmail.com with ESMTPSA id t5sm1621638wra.95.2021.09.02.04.33.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 04:33:39 -0700 (PDT)
-From:   =?UTF-8?q?=C5=A0t=C4=9Bp=C3=A1n=20N=C4=9Bmec?= <snemec@redhat.com>
-To:     netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH iptables] Fix a few doc typos
-Date:   Thu,  2 Sep 2021 13:33:59 +0200
-Message-Id: <20210902113359.2369296-1-snemec@redhat.com>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=CLoNMy77joOgPG+fNt7ZOAOWLFSvSRc5Nxbyvv3419jvWI6ih2shhCzz3ef6ItHwMW
+         PAssX+fVhjtPH0DqsUP0ZklR+mED8dFOVbdNRhUxuoAjHSWyODWoIuToK9R6MhE7pAFQ
+         y9tdCbdv/2UJvPxKcZaWo8JC496sA40n2AtcsUps5C+gPy8WjVxBCuWm80drj7hkaHgH
+         YWPO3EcxDq1f96aij1YI/UJPQUr8EV/vT/OONNkUSaSTHcosZbJfWEsw6SGUlumdGtkB
+         ztHRVUy8r1cYNl+VL66OYPt+jcX+hs2+iU0/mAxYNzjS6MYv5uoncFY+2w3g+SKlbm/e
+         oorQ==
+X-Gm-Message-State: AOAM532DgMLCO6cT6opKySZOYMEFh+H9mL1BQ2W1OCTY36yBocGNAJ+g
+        1FlOUa04jve/Lv0rFitSxQQXFZlXdWZo8Bx4+ds=
+X-Google-Smtp-Source: ABdhPJyxQL05b1WDcLMGAw4nnSO7PBskLbpggFr09UMe1nrpdGH2ZGCQT7adUd4zhFnCAdnzmbmhF5bkGwl8clHMd/I=
+X-Received: by 2002:aa7:d04a:: with SMTP id n10mr4779391edo.12.1630606301022;
+ Thu, 02 Sep 2021 11:11:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6402:14d:0:0:0:0 with HTTP; Thu, 2 Sep 2021 11:11:40
+ -0700 (PDT)
+From:   justice mboyo <justicemboyo@gmail.com>
+Date:   Thu, 2 Sep 2021 18:11:40 +0000
+Message-ID: <CAKJ6M1WbG6L=fPpD3kf5+MojvXFtf51YZegAtqnTX4EuJsxmzQ@mail.gmail.com>
+Subject: Hi.. l am still waiting for your Email response,did you receive my
+ first email to you,Please with all due respect can i trust you? Yours
+ Sincerely, Mr.Justice Mboyo.(Esq)
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Štěpán Němec <snemec@redhat.com>
----
- extensions/libxt_devgroup.man | 2 +-
- iptables/xtables-monitor.8.in | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/extensions/libxt_devgroup.man b/extensions/libxt_devgroup.man
-index 4a66c9fe2635..480ee3512188 100644
---- a/extensions/libxt_devgroup.man
-+++ b/extensions/libxt_devgroup.man
-@@ -1,4 +1,4 @@
--Match device group of a packets incoming/outgoing interface.
-+Match device group of a packet's incoming/outgoing interface.
- .TP
- [\fB!\fP] \fB\-\-src\-group\fP \fIname\fP
- Match device group of incoming device
-diff --git a/iptables/xtables-monitor.8.in b/iptables/xtables-monitor.8.in
-index b647a79eb64e..a7f22c0d8c08 100644
---- a/iptables/xtables-monitor.8.in
-+++ b/iptables/xtables-monitor.8.in
-@@ -51,9 +51,9 @@ The second line dumps information about the packet. Incoming interface
- and packet headers such as source and destination addresses are shown.
- 
- The third line shows that the packet completed traversal of the raw table
--PREROUTING chain, and is returning, followed by use the chain policy to make accept/drop
-+PREROUTING chain, and is returning, followed by use of the chain policy to make accept/drop
- decision (the example shows accept being applied).
--The fifth line shows that the packet leaves the filter INPUT chain, i.e., no rules in the filter tables
-+The fifth line shows that the packet leaves the filter INPUT chain, i.e., no rules in the filter table's
- INPUT chain matched the packet.
- It then got DROPPED by the policy of the INPUT table, as shown by line six.
- The last line shows another packet arriving \-\- the packet id is different.
-@@ -81,7 +81,7 @@ by three base hooks INPUT, FORWARD and OUTPUT.  The iptables-nftables tools all
- chains automatically when needed, so this is expected when a table was not yet initialized or when it is
- re-created from scratch by iptables-nftables-restore.  Line five shows a new user-defined chain (TCP)
- being added, followed by addition a few rules. the last line shows that a new ruleset generation has
--become active, i.e., the rule set changes are now active.  This also lists the process id and the programs name.
-+become active, i.e., the rule set changes are now active.  This also lists the process id and the program name.
- .SH LIMITATIONS
- .B xtables-monitor
- only works with rules added using iptables-nftables, rules added using
-
-base-commit: e438b9766fcc86d9847312ff05f1d1dac61acf1f
--- 
-2.33.0
 
