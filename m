@@ -2,87 +2,71 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C6C401E37
-	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Sep 2021 18:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB8A401E50
+	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Sep 2021 18:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243932AbhIFQ1o (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 6 Sep 2021 12:27:44 -0400
-Received: from smtp-out.kfki.hu ([148.6.0.48]:38065 "EHLO smtp-out.kfki.hu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243691AbhIFQ1n (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:27:43 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.kfki.hu (Postfix) with ESMTP id 17DF6CC00FD;
-        Mon,  6 Sep 2021 18:26:37 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
-        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Mon,  6 Sep 2021 18:26:34 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-        by smtp2.kfki.hu (Postfix) with ESMTP id D1CDBCC00FC;
-        Mon,  6 Sep 2021 18:26:34 +0200 (CEST)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id C8F8D340D60; Mon,  6 Sep 2021 18:26:34 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by blackhole.kfki.hu (Postfix) with ESMTP id C4B2B340D5D;
-        Mon,  6 Sep 2021 18:26:34 +0200 (CEST)
-Date:   Mon, 6 Sep 2021 18:26:34 +0200 (CEST)
-From:   Jozsef Kadlecsik <kadlec@netfilter.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: [PATCH 1/1] netfilter: ipset: Fix oversized kvmalloc() calls
-Message-ID: <4591ee34-aa44-92d-51a8-22e8be5db20@netfilter.org>
+        id S244137AbhIFQbW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 6 Sep 2021 12:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243918AbhIFQbW (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Mon, 6 Sep 2021 12:31:22 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7D7C061575
+        for <netfilter-devel@vger.kernel.org>; Mon,  6 Sep 2021 09:30:17 -0700 (PDT)
+Received: from localhost ([::1]:42346 helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1mNHVf-0008Ee-U4; Mon, 06 Sep 2021 18:30:15 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 1/7] tests: iptables-test: Fix missing chain case
+Date:   Mon,  6 Sep 2021 18:30:32 +0200
+Message-Id: <20210906163038.15381-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The commit 
+If a chain line was really missing, Python complained about reference
+before assignment of 'chain_array' variable. While being at it, reuse
+print_error() function for reporting and allow to continue with the next
+input file instead of exiting.
 
-commit 7661809d493b426e979f39ab512e3adf41fbcc69
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jul 14 09:45:49 2021 -0700
-
-    mm: don't allow oversized kvmalloc() calls
-
-limits the max allocatable memory via kvmalloc() to MAX_INT. Apply the
-same limit in ipset.
-
-Reported-by: syzbot+3493b1873fb3ea827986@syzkaller.appspotmail.com
-Reported-by: syzbot+2b8443c35458a617c904@syzkaller.appspotmail.com
-Reported-by: syzbot+ee5cb15f4a0e85e0d54e@syzkaller.appspotmail.com
-Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- net/netfilter/ipset/ip_set_hash_gen.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ iptables-test.py | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/ip_set_hash_gen.h
-index 6186358eac7c..6e391308431d 100644
---- a/net/netfilter/ipset/ip_set_hash_gen.h
-+++ b/net/netfilter/ipset/ip_set_hash_gen.h
-@@ -130,11 +130,11 @@ htable_size(u8 hbits)
- {
- 	size_t hsize;
+diff --git a/iptables-test.py b/iptables-test.py
+index 90e07feed3658..01966f916957b 100755
+--- a/iptables-test.py
++++ b/iptables-test.py
+@@ -215,6 +215,7 @@ def run_test_file(filename, netns):
+     tests = 0
+     passed = 0
+     table = ""
++    chain_array = []
+     total_test_passed = True
  
--	/* We must fit both into u32 in jhash and size_t */
-+	/* We must fit both into u32 in jhash and INT_MAX in kvmalloc_node() */
- 	if (hbits > 31)
- 		return 0;
- 	hsize = jhash_size(hbits);
--	if ((((size_t)-1) - sizeof(struct htable)) / sizeof(struct hbucket *)
-+	if ((INT_MAX - sizeof(struct htable)) / sizeof(struct hbucket *)
- 	    < hsize)
- 		return 0;
+     if netns:
+@@ -249,8 +250,10 @@ def run_test_file(filename, netns):
+             continue
  
+         if len(chain_array) == 0:
+-            print("broken test, missing chain, leaving")
+-            sys.exit()
++            print_error("broken test, missing chain",
++                        filename = filename, lineno = lineno)
++            total_test_passed = False
++            break
+ 
+         test_passed = True
+         tests += 1
 -- 
-2.20.1
+2.33.0
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
