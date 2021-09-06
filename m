@@ -2,73 +2,101 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CAA64015E3
-	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Sep 2021 07:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F8B40180B
+	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Sep 2021 10:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238706AbhIFF0O (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 6 Sep 2021 01:26:14 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:53074 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238267AbhIFF0O (ORCPT
+        id S240430AbhIFIca (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 6 Sep 2021 04:32:30 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:39126 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230161AbhIFIca (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 6 Sep 2021 01:26:14 -0400
-Received: by mail-io1-f71.google.com with SMTP id e18-20020a6b7312000000b005be766a70dbso4383441ioh.19
-        for <netfilter-devel@vger.kernel.org>; Sun, 05 Sep 2021 22:25:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=ZvVDoBv3IAH8y1S0lXBguVVm08g+13BDGKyt9/bor9Y=;
-        b=jBOd2GmvijOHRNdrdClEpQkKDQZlPsoGoGDqmAMG9tGFBaYyIWlSdm8il2iL60UTci
-         eZfDXez1GuuNySAKKJwSLdnpWHdGotCdbjbIq1iBCcr5WIMS+tWb7OulD9ys7WGuTpHw
-         CxNS2CaXGfcWXTDHYN/MF0SzgOERCDMFLufQHuhzZKLds4Iqs4S8Aa1V/ygj9bL/fE6Q
-         iFNovBljIGeHyNHOUCZBPkqRhrxI3mFwND3ZJe546CM65tYIRvDTzJYrcmLZEz31VUgc
-         7OxLLFOoGyvPmVWi7Yv0rnJq/RhbQ+y2jeQ0KDBcons2Wuvblbrf2av4KkQJtYJ7PsIp
-         y7rA==
-X-Gm-Message-State: AOAM532wATO8sAU7tCH/b49xDgY0bsVoHzgQ6mzD2T/Cvo8tOmbtq4vK
-        eTKQUe4JYGaDnFl2o/Lkz1hCDdQzjfccPh6opc3KTSZ5Nn1x
-X-Google-Smtp-Source: ABdhPJzd449QRHh060sSTuNCXAhTIrwXmTA69htRCTu+gj5HcaUCJCrRFnuZykGCC4UYH518hB/hhMO85JbepGiR6Qh7k2AHNNjo
+        Mon, 6 Sep 2021 04:32:30 -0400
+Received: from localhost.localdomain (unknown [78.30.35.141])
+        by mail.netfilter.org (Postfix) with ESMTPSA id D13DC60011
+        for <netfilter-devel@vger.kernel.org>; Mon,  6 Sep 2021 10:30:20 +0200 (CEST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft] meta: skip -T for hour and date format
+Date:   Mon,  6 Sep 2021 10:31:19 +0200
+Message-Id: <20210906083119.1628-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:294b:: with SMTP id p72mr9242294jap.0.1630905907569;
- Sun, 05 Sep 2021 22:25:07 -0700 (PDT)
-Date:   Sun, 05 Sep 2021 22:25:07 -0700
-In-Reply-To: <000000000000ed8c0a05cb1ff6d8@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000486b8b05cb4cdf5c@google.com>
-Subject: Re: [syzbot] WARNING: kmalloc bug in nf_tables_newset
-From:   syzbot <syzbot+cd43695a64bcd21b8596@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, coreteam@netfilter.org,
-        davem@davemloft.net, eric.dumazet@gmail.com, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org, w@1wt.eu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-syzbot has bisected this issue to:
+If -T is used:
 
-commit 7661809d493b426e979f39ab512e3adf41fbcc69
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jul 14 16:45:49 2021 +0000
+- meta hour displays the hours in seconds based on your
+- meta time displays the UNIX time since 1970 in nanoseconds.
 
-    mm: don't allow oversized kvmalloc() calls
+Better, skip -T for these two datatypes and use the formatted output
+instead, ie.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15f767b1300000
-start commit:   a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17f767b1300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13f767b1300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7860a0536ececf0c
-dashboard link: https://syzkaller.appspot.com/bug?extid=cd43695a64bcd21b8596
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13281b33300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1077b4b9300000
+- meta hour "00:00:20"
+- meta time "1970-01-01 01:00:01"
 
-Reported-by: syzbot+cd43695a64bcd21b8596@syzkaller.appspotmail.com
-Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+Fixes: f8f32deda31d ("meta: Introduce new conditions 'time', 'day' and 'hour'")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/meta.c | 33 +++++++++------------------------
+ 1 file changed, 9 insertions(+), 24 deletions(-)
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/src/meta.c b/src/meta.c
+index fdbeba26291a..bdd10269569d 100644
+--- a/src/meta.c
++++ b/src/meta.c
+@@ -388,27 +388,17 @@ static void date_type_print(const struct expr *expr, struct output_ctx *octx)
+ 	/* Convert from nanoseconds to seconds */
+ 	tstamp /= 1000000000L;
+ 
+-	if (!nft_output_seconds(octx)) {
+-		/* Obtain current tm, to add tm_gmtoff to the timestamp */
+-		cur_tm = localtime((time_t *) &tstamp);
++	/* Obtain current tm, to add tm_gmtoff to the timestamp */
++	cur_tm = localtime((time_t *) &tstamp);
+ 
+-		if (cur_tm)
+-			tstamp += cur_tm->tm_gmtoff;
+-
+-		if ((tm = gmtime((time_t *) &tstamp)) != NULL &&
+-			strftime(timestr, sizeof(timestr) - 1, "%F %T", tm))
+-			nft_print(octx, "\"%s\"", timestr);
+-		else
+-			nft_print(octx, "Error converting timestamp to printed time");
+-
+-		return;
+-	}
++	if (cur_tm)
++		tstamp += cur_tm->tm_gmtoff;
+ 
+-	/*
+-	 * Do our own printing. The default print function will print in
+-	 * nanoseconds, which is ugly.
+-	 */
+-	nft_print(octx, "%" PRIu64, tstamp);
++	if ((tm = gmtime((time_t *) &tstamp)) != NULL &&
++	     strftime(timestr, sizeof(timestr) - 1, "%F %T", tm))
++		nft_print(octx, "\"%s\"", timestr);
++	else
++		nft_print(octx, "Error converting timestamp to printed time");
+ }
+ 
+ static time_t parse_iso_date(const char *sym)
+@@ -498,11 +488,6 @@ static void hour_type_print(const struct expr *expr, struct output_ctx *octx)
+ 	struct tm *cur_tm;
+ 	time_t ts;
+ 
+-	if (nft_output_seconds(octx)) {
+-		expr_basetype(expr)->print(expr, octx);
+-		return;
+-	}
+-
+ 	/* Obtain current tm, so that we can add tm_gmtoff */
+ 	ts = time(NULL);
+ 	cur_tm = localtime(&ts);
+-- 
+2.20.1
+
