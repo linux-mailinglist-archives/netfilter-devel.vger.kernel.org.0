@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F8B40180B
-	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Sep 2021 10:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55ED2401825
+	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Sep 2021 10:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240430AbhIFIca (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 6 Sep 2021 04:32:30 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:39126 "EHLO
+        id S240463AbhIFIlI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 6 Sep 2021 04:41:08 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:39142 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhIFIca (ORCPT
+        with ESMTP id S230161AbhIFIlH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 6 Sep 2021 04:32:30 -0400
+        Mon, 6 Sep 2021 04:41:07 -0400
 Received: from localhost.localdomain (unknown [78.30.35.141])
-        by mail.netfilter.org (Postfix) with ESMTPSA id D13DC60011
-        for <netfilter-devel@vger.kernel.org>; Mon,  6 Sep 2021 10:30:20 +0200 (CEST)
+        by mail.netfilter.org (Postfix) with ESMTPSA id 742C260011
+        for <netfilter-devel@vger.kernel.org>; Mon,  6 Sep 2021 10:38:57 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] meta: skip -T for hour and date format
-Date:   Mon,  6 Sep 2021 10:31:19 +0200
-Message-Id: <20210906083119.1628-1-pablo@netfilter.org>
+Subject: [PATCH nft] doc: Missing NFT_CTX_OUTPUT_NUMERIC_SYMBOL in libnftables documentation
+Date:   Mon,  6 Sep 2021 10:39:58 +0200
+Message-Id: <20210906083958.1976-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -27,76 +27,27 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If -T is used:
+Add NFT_CTX_OUTPUT_NUMERIC_SYMBOL to libnftables.adoc to keep it in sync
+with the nftables/libnftables.h header.
 
-- meta hour displays the hours in seconds based on your
-- meta time displays the UNIX time since 1970 in nanoseconds.
-
-Better, skip -T for these two datatypes and use the formatted output
-instead, ie.
-
-- meta hour "00:00:20"
-- meta time "1970-01-01 01:00:01"
-
-Fixes: f8f32deda31d ("meta: Introduce new conditions 'time', 'day' and 'hour'")
+Fixes: 685a06447ee4 ("doc: libnftables.adoc misc cleanups")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/meta.c | 33 +++++++++------------------------
- 1 file changed, 9 insertions(+), 24 deletions(-)
+ doc/libnftables.adoc | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/src/meta.c b/src/meta.c
-index fdbeba26291a..bdd10269569d 100644
---- a/src/meta.c
-+++ b/src/meta.c
-@@ -388,27 +388,17 @@ static void date_type_print(const struct expr *expr, struct output_ctx *octx)
- 	/* Convert from nanoseconds to seconds */
- 	tstamp /= 1000000000L;
- 
--	if (!nft_output_seconds(octx)) {
--		/* Obtain current tm, to add tm_gmtoff to the timestamp */
--		cur_tm = localtime((time_t *) &tstamp);
-+	/* Obtain current tm, to add tm_gmtoff to the timestamp */
-+	cur_tm = localtime((time_t *) &tstamp);
- 
--		if (cur_tm)
--			tstamp += cur_tm->tm_gmtoff;
--
--		if ((tm = gmtime((time_t *) &tstamp)) != NULL &&
--			strftime(timestr, sizeof(timestr) - 1, "%F %T", tm))
--			nft_print(octx, "\"%s\"", timestr);
--		else
--			nft_print(octx, "Error converting timestamp to printed time");
--
--		return;
--	}
-+	if (cur_tm)
-+		tstamp += cur_tm->tm_gmtoff;
- 
--	/*
--	 * Do our own printing. The default print function will print in
--	 * nanoseconds, which is ugly.
--	 */
--	nft_print(octx, "%" PRIu64, tstamp);
-+	if ((tm = gmtime((time_t *) &tstamp)) != NULL &&
-+	     strftime(timestr, sizeof(timestr) - 1, "%F %T", tm))
-+		nft_print(octx, "\"%s\"", timestr);
-+	else
-+		nft_print(octx, "Error converting timestamp to printed time");
- }
- 
- static time_t parse_iso_date(const char *sym)
-@@ -498,11 +488,6 @@ static void hour_type_print(const struct expr *expr, struct output_ctx *octx)
- 	struct tm *cur_tm;
- 	time_t ts;
- 
--	if (nft_output_seconds(octx)) {
--		expr_basetype(expr)->print(expr, octx);
--		return;
--	}
--
- 	/* Obtain current tm, so that we can add tm_gmtoff */
- 	ts = time(NULL);
- 	cur_tm = localtime(&ts);
+diff --git a/doc/libnftables.adoc b/doc/libnftables.adoc
+index ce4a361b84cc..3abb95957505 100644
+--- a/doc/libnftables.adoc
++++ b/doc/libnftables.adoc
+@@ -93,6 +93,7 @@ enum {
+         NFT_CTX_OUTPUT_NUMERIC_TIME   = (1 << 10),
+         NFT_CTX_OUTPUT_NUMERIC_ALL    = (NFT_CTX_OUTPUT_NUMERIC_PROTO |
+                                          NFT_CTX_OUTPUT_NUMERIC_PRIO  |
++                                         NFT_CTX_OUTPUT_NUMERIC_SYMBOL |
+                                          NFT_CTX_OUTPUT_NUMERIC_TIME),
+         NFT_CTX_OUTPUT_TERSE          = (1 << 11),
+ };
 -- 
 2.20.1
 
