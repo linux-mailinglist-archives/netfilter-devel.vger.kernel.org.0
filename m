@@ -2,51 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF0F407105
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Sep 2021 20:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7B4407359
+	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Sep 2021 00:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbhIJSlI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 10 Sep 2021 14:41:08 -0400
-Received: from kirsty.vergenet.net ([202.4.237.240]:36788 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhIJSlI (ORCPT
+        id S230210AbhIJW2B (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 10 Sep 2021 18:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhIJW2A (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 10 Sep 2021 14:41:08 -0400
-Received: from madeliefje.horms.nl (tulip.horms.nl [83.161.246.101])
-        by kirsty.vergenet.net (Postfix) with ESMTPA id 3A27E25AF0D;
-        Sat, 11 Sep 2021 04:39:55 +1000 (AEST)
-Received: by madeliefje.horms.nl (Postfix, from userid 7100)
-        id 8971241CD; Fri, 10 Sep 2021 20:39:53 +0200 (CEST)
-Date:   Fri, 10 Sep 2021 20:39:53 +0200
-From:   Simon Horman <horms@verge.net.au>
-To:     Andrea Claudi <aclaudi@redhat.com>
-Cc:     netfilter-devel@vger.kernel.org, ja@ssi.bg
-Subject: Re: [PATCH nf] ipvs: check that ip_vs_conn_tab_bits is between 8 and
- 20
-Message-ID: <20210910183953.GB19514@vergenet.net>
-References: <86eabeb9dd62aebf1e2533926fdd13fed48bab1f.1631289960.git.aclaudi@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86eabeb9dd62aebf1e2533926fdd13fed48bab1f.1631289960.git.aclaudi@redhat.com>
-Organisation: Horms Solutions BV
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Fri, 10 Sep 2021 18:28:00 -0400
+X-Greylist: delayed 139 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 10 Sep 2021 15:26:48 PDT
+Received: from mxd1.seznam.cz (mxd1.seznam.cz [IPv6:2a02:598:a::78:210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614BBC061574
+        for <netfilter-devel@vger.kernel.org>; Fri, 10 Sep 2021 15:26:48 -0700 (PDT)
+Received: from email.seznam.cz
+        by email-smtpc13a.ko.seznam.cz (email-smtpc13a.ko.seznam.cz [10.53.11.135])
+        id 455a59105b3fb15445cbf2ff;
+        Sat, 11 Sep 2021 00:26:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cz; s=beta;
+        t=1631312806; bh=qGpZ93tC47u8NjKwWZiPmmGB3V/DX8Z68HYjpn7lnYg=;
+        h=Received:From:To:Subject:Date:Message-Id:Mime-Version:X-Mailer:
+         Content-Type:Content-Transfer-Encoding;
+        b=XLS32njg/2dX7b3Gon+WWGTIaCr871n2byp1CKZ3XrHQ4TY1vwOHvPzg5OsKsNCLE
+         G1Ncx1NFgY0657NG/YTRe+iv0oUXfb+v3gTp3qQC2YzeA8fh5M7Hvobg/wr6cYWyJO
+         laSOHH/iDtGi15Os4JGwWEa+KXukFVdHAmMvJ9oY=
+Received: from unknown ([::ffff:176.114.242.3])
+        by email.seznam.cz (szn-ebox-5.0.79) with HTTP;
+        Sat, 11 Sep 2021 00:24:23 +0200 (CEST)
+From:   <kaskada@email.cz>
+To:     <netfilter-devel@vger.kernel.org>
+Subject: module ipp2p (xtables) for ip6tables? No such file or directory...
+Date:   Sat, 11 Sep 2021 00:24:23 +0200 (CEST)
+Message-Id: <Tj.aVNM.6d2PRLDYSwa.1XEziN@seznam.cz>
+Mime-Version: 1.0 (szn-mime-2.1.14)
+X-Mailer: szn-ebox-5.0.79
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 06:08:39PM +0200, Andrea Claudi wrote:
-> ip_vs_conn_tab_bits may be provided by the user through the
-> conn_tab_bits module parameter. If this value is greater than 31, or
-> less than 0, the shift operator used to derive tab_size causes undefined
-> behaviour.
-> 
-> Fix this checking ip_vs_conn_tab_bits value to be in the range specified
-> in ipvs Kconfig. If not, simply use default value.
-> 
-> Fixes: 6f7edb4881bf ("IPVS: Allow boot time change of hash size")
-> Reported-by: Yi Chen <yiche@redhat.com>
-> Signed-off-by: Andrea Claudi <aclaudi@redhat.com>
+Hello forum,
 
-Acked-by: Simon Horman <horms@verge.net.au>
+I`m trying to use this ip6tables rule (similar I`m used to use in iptables=
+):
 
+ip6tables -t mangle -A PREROUTING -m ipp2p --dc -j ACCEPT
+
+But I get only this error:
+
+ip6tables v1.8.4 (legacy): Couldn't load match `ipp2p':No such file or dir=
+ectory
+Try `ip6tables -h' or 'ip6tables --help' for more information.
+
+I`m running pkg-xtables-addons-debian-3.18-1 (compiled from sources) on De=
+bian 10 and iptables variant works as expected:
+iptables -m ipp2p --help
+iptables v1.8.4
+Usage: iptables -[ACD] chain rule-specification [options]
+...
+
+What am I doing wrong, please? Or it seems ip6tables are not supported by =
+ipp2p module?
+
+Thank you, Pep.
