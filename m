@@ -2,49 +2,55 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F92940C786
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Sep 2021 16:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF6740C7AF
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Sep 2021 16:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237847AbhIOOfl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 15 Sep 2021 10:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32900 "EHLO
+        id S237970AbhIOOsE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 15 Sep 2021 10:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237528AbhIOOfl (ORCPT
+        with ESMTP id S232242AbhIOOsE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 15 Sep 2021 10:35:41 -0400
+        Wed, 15 Sep 2021 10:48:04 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441F9C061574;
-        Wed, 15 Sep 2021 07:34:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A42BC061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 15 Sep 2021 07:46:45 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1mQVzL-0005gG-JQ; Wed, 15 Sep 2021 16:34:15 +0200
-Date:   Wed, 15 Sep 2021 16:34:15 +0200
+        (envelope-from <fw@breakpoint.cc>)
+        id 1mQWBQ-0005k7-3k; Wed, 15 Sep 2021 16:46:44 +0200
 From:   Florian Westphal <fw@strlen.de>
-To:     youling 257 <youling257@gmail.com>
-Cc:     Florian Westphal <fw@strlen.de>, pablo@netfilter.org,
-        netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next 09/10] netfilter: x_tables: never register
- tables by default
-Message-ID: <20210915143415.GA20414@breakpoint.cc>
-References: <20210811084908.14744-10-pablo@netfilter.org>
- <20210915095116.14686-1-youling257@gmail.com>
- <20210915095650.GG25110@breakpoint.cc>
- <CAOzgRdb_Agb=vNcAc=TDjyB_vSjB8Jua_TPtWYcXZF0G3+pRAg@mail.gmail.com>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf 0/2] netfilter: nf_nat_masquerade: don't block rtnl lock
+Date:   Wed, 15 Sep 2021 16:46:37 +0200
+Message-Id: <20210915144639.25024-1-fw@strlen.de>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOzgRdb_Agb=vNcAc=TDjyB_vSjB8Jua_TPtWYcXZF0G3+pRAg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-youling 257 <youling257@gmail.com> wrote:
-> record video screenshot, http://s7tu.com/images/2021/09/15/chBnr0.jpg
+nf_nat_masquerade registers conntrack notifiers to early-expire
+conntracks that have been using the downed device/removed address.
 
-Looks like its running 'iptables -t raw -L' at time of crash,
-but this works fine here.
+With large number of disappearing devices (ppp), iterating the table
+for every notification blocks the rtnl lock for multiple seconds.
 
-Can you send me your .config and tell me which kernel version
-this is exactly?
+This change unconditionally defers the walk to the system work queue
+so that rtnl lock is not blocked longer than needed.
+
+This is not a regression, the notifier and cleanup walk have existed
+since the functionality was added more than 20 years ago.
+
+Florian Westphal (2):
+  netfilter: nf_nat_masquerade: make async masq_inet6_event handling
+    generic
+  netfilter: nf_nat_masquerade: defer conntrack walk to work queue
+
+ net/netfilter/nf_nat_masquerade.c | 168 +++++++++++++++++-------------
+ 1 file changed, 97 insertions(+), 71 deletions(-)
+
+-- 
+2.32.0
+
