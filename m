@@ -2,218 +2,72 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C409414DBC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Sep 2021 18:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BACE8415253
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Sep 2021 23:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236321AbhIVQIS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Sep 2021 12:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52174 "EHLO
+        id S237802AbhIVVFv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Sep 2021 17:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbhIVQIR (ORCPT
+        with ESMTP id S237812AbhIVVFp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:08:17 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27BCC061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 22 Sep 2021 09:06:47 -0700 (PDT)
-Received: from localhost ([::1]:59552 helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1mT4li-0006PS-2D; Wed, 22 Sep 2021 18:06:46 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 4/4] nft: Delete builtin chains compatibly
-Date:   Wed, 22 Sep 2021 18:06:32 +0200
-Message-Id: <20210922160632.15635-5-phil@nwl.cc>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210922160632.15635-1-phil@nwl.cc>
-References: <20210922160632.15635-1-phil@nwl.cc>
+        Wed, 22 Sep 2021 17:05:45 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2461C061756
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Sep 2021 14:04:14 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id 73so14652994qki.4
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Sep 2021 14:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=ijKrByR1/KtEp2Ut8Wj0vMi00kBZm/A/r1gPwOEYZIg=;
+        b=BAOKSPHIhTE7JigSclXus+jJ1kNL8ics+Pg0rEnP+ebpTVh2+qU+AUKjsqXG0/zCqu
+         H/YMq6AgyP4kWJRe7WyE7qydtoC2BIIGupm1dgufMMb7A6J/kOd6ziS6BAP/ItJ58eKO
+         br8Ozq3eikGhXV/7zngBscUFVGAIaY02qqNblxprNVAJvy4njcoB9jZBDO9NGMFJ4bAy
+         jDdy9s/pHXsMns5LWLoOlNyryAi4VFhF7YQjUE3GXAMIYH4oipKibKtNe5PP+4hywIe0
+         +fnEhxbIFYBCMN+Z9UDSOWDDS7+d+bNlXLnONuH9IcK4cORgRSMiV5LGZTskduhQqpK3
+         5xKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=ijKrByR1/KtEp2Ut8Wj0vMi00kBZm/A/r1gPwOEYZIg=;
+        b=NJmsBk4PxblwJflh86aHQknuUXDDEKZ1y+c0DrBudbqEY+t3clM4vhDtyoIGZPlVZt
+         9cj84RAcuMZQ9eekjjPP8A9fpQCBIbb9bFK8Y3OPK20SrNLRm3GWkpolZZUAEkVzaL5G
+         jqVwhpsoI9J4doBLr9n18NOAmEnUgj1JMhQZQ0EgtsrlSFfdG5MKd+R6DF31wARhlzbK
+         PC6WGNA6kNyiOFMb1maQ8fAnfsrN1b7ydh2MbnRdXomTtQ5sN/kMP+MbGIzbk+0f2PMc
+         a2SsvZwN10jYMZSJDYBNDZB2Sf35YxPTLCmJMY0/ZKTh0PA5X28/j79FplyWNly7/Scn
+         oKKQ==
+X-Gm-Message-State: AOAM530wDoKrRFW/irANNDX6tSbTR6ZSHcMqAY1GbEG3+TzvEcCY1UPx
+        oLFxUbw1nfvFPpN+wp4MrIbzpMRlcThplYUAJo0=
+X-Google-Smtp-Source: ABdhPJwmrAIbGdz9BviSOHy6qOJ8mbG8Pj/ADRJ5wdO5mRLVz83jTgvLf4/yeI7sxO1dP9cc3p5a2JiBT70aO4CY/rw=
+X-Received: by 2002:a25:cd89:: with SMTP id d131mr1431503ybf.542.1632344654026;
+ Wed, 22 Sep 2021 14:04:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: okalapab@gmail.com
+Received: by 2002:a05:7110:8224:b0:f6:e178:3ae6 with HTTP; Wed, 22 Sep 2021
+ 14:04:13 -0700 (PDT)
+From:   Aisha Al-Qaddafi <aisha.gdaff21@gmail.com>
+Date:   Wed, 22 Sep 2021 22:04:13 +0100
+X-Google-Sender-Auth: Db5LnAy1VKCWAJk-1dh4-AGq-CA
+Message-ID: <CAP_P75Sd-xrs3-AjczVhnk+MZcaWM4vv7kKTgP_ZpVJkek1CPQ@mail.gmail.com>
+Subject: My Dear Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Attempting to delete all chains if --delete-chain is called without
-argument has unwanted side-effects especially legacy iptables users are
-not aware of and won't expect:
-
-* Non-default policies are ignored, a previously dropping firewall may
-  start accepting traffic.
-
-* The kernel refuses to remove non-empty chains, causing program abort
-  even if no user-defined chain exists.
-
-Fix this by requiring a rule cache in that situation and make builtin
-chain deletion depend on its policy and number of rules. Since this may
-change concurrently, check again when having to refresh the transaction.
-
-Also, hide builtin chains from verbose output - their creation is
-implicit, so treat their removal as implicit, too.
-
-When deleting a specific chain, do not allow to skip the job though.
-Otherwise deleting a builtin chain which is still in use will succeed
-although not executed.
-
-Fixes: 61e85e3192dea ("iptables-nft: allow removal of empty builtin chains")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/nft-cmd.c                            |  2 +-
- iptables/nft.c                                | 39 +++++++++++++++----
- .../shell/testcases/chain/0005base-delete_0   | 34 ++++++++++++++++
- 3 files changed, 66 insertions(+), 9 deletions(-)
- create mode 100755 iptables/tests/shell/testcases/chain/0005base-delete_0
-
-diff --git a/iptables/nft-cmd.c b/iptables/nft-cmd.c
-index 2d874bd41e8f6..fcd01bd02831c 100644
---- a/iptables/nft-cmd.c
-+++ b/iptables/nft-cmd.c
-@@ -220,7 +220,7 @@ int nft_cmd_chain_del(struct nft_handle *h, const char *chain,
- 	/* This triggers nft_bridge_chain_postprocess() when fetching the
- 	 * rule cache.
- 	 */
--	if (h->family == NFPROTO_BRIDGE)
-+	if (h->family == NFPROTO_BRIDGE || !chain)
- 		nft_cache_level_set(h, NFT_CL_RULES, cmd);
- 	else
- 		nft_cache_level_set(h, NFT_CL_CHAINS, cmd);
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 381061473047f..dc1f5160eb983 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -1838,26 +1838,46 @@ int nft_chain_restore(struct nft_handle *h, const char *chain, const char *table
- 
- struct chain_del_data {
- 	struct nft_handle	*handle;
-+	const char		*chain;
- 	bool			verbose;
- };
- 
-+static bool nft_may_delete_chain(struct nftnl_chain *c)
-+{
-+	if (nftnl_chain_is_set(c, NFTNL_CHAIN_POLICY) &&
-+	    nftnl_chain_get_u32(c, NFTNL_CHAIN_POLICY) != NF_ACCEPT)
-+		return false;
-+
-+	return nftnl_rule_lookup_byindex(c, 0) == NULL;
-+}
-+
- static int __nft_chain_del(struct nft_chain *nc, void *data)
- {
- 	struct chain_del_data *d = data;
- 	struct nftnl_chain *c = nc->nftnl;
- 	struct nft_handle *h = d->handle;
-+	bool builtin = nft_chain_builtin(c);
-+	struct obj_update *obj;
-+	int ret = 0;
- 
--	if (d->verbose)
-+	if (d->verbose && !builtin)
- 		fprintf(stdout, "Deleting chain `%s'\n",
- 			nftnl_chain_get_str(c, NFTNL_CHAIN_NAME));
- 
- 
- 	/* XXX This triggers a fast lookup from the kernel. */
- 	nftnl_chain_unset(c, NFTNL_CHAIN_HANDLE);
--	if (!batch_chain_add(h, NFT_COMPAT_CHAIN_DEL, c))
-+	obj = batch_chain_add(h, NFT_COMPAT_CHAIN_DEL, c);
-+	if (!obj)
- 		return -1;
- 
--	if (nft_chain_builtin(c)) {
-+	if (builtin) {
-+		obj->skip = !nft_may_delete_chain(c);
-+		if (obj->skip && d->chain) {
-+			/* complain if explicitly requested */
-+			errno = EBUSY;
-+			ret = -1;
-+		}
- 		*nc->base_slot = NULL;
- 	}
- 
-@@ -1866,14 +1886,15 @@ static int __nft_chain_del(struct nft_chain *nc, void *data)
- 
- 	nft_chain_list_del(nc);
- 	nft_chain_free(nc);
--	return 0;
-+	return ret;
- }
- 
- int nft_chain_del(struct nft_handle *h, const char *chain,
--		       const char *table, bool verbose)
-+		  const char *table, bool verbose)
- {
- 	struct chain_del_data d = {
- 		.handle = h,
-+		.chain = chain,
- 		.verbose = verbose,
- 	};
- 	struct nft_chain *c;
-@@ -1889,8 +1910,6 @@ int nft_chain_del(struct nft_handle *h, const char *chain,
- 		}
- 
- 		ret = __nft_chain_del(c, &d);
--		if (ret == -2)
--			errno = EINVAL;
- 		goto out;
- 	}
- 
-@@ -2744,10 +2763,14 @@ static void nft_refresh_transaction(struct nft_handle *h)
- 
- 			n->skip = !nft_chain_find(h, tablename, chainname);
- 			break;
-+		case NFT_COMPAT_CHAIN_DEL:
-+			if (!nftnl_chain_get(n->chain, NFTNL_CHAIN_HOOKNUM))
-+				break;
-+			n->skip = !nft_may_delete_chain(n->chain);
-+			break;
- 		case NFT_COMPAT_TABLE_ADD:
- 		case NFT_COMPAT_CHAIN_ADD:
- 		case NFT_COMPAT_CHAIN_ZERO:
--		case NFT_COMPAT_CHAIN_DEL:
- 		case NFT_COMPAT_CHAIN_USER_FLUSH:
- 		case NFT_COMPAT_CHAIN_UPDATE:
- 		case NFT_COMPAT_CHAIN_RENAME:
-diff --git a/iptables/tests/shell/testcases/chain/0005base-delete_0 b/iptables/tests/shell/testcases/chain/0005base-delete_0
-new file mode 100755
-index 0000000000000..033a28191d115
---- /dev/null
-+++ b/iptables/tests/shell/testcases/chain/0005base-delete_0
-@@ -0,0 +1,34 @@
-+#!/bin/bash -x
-+
-+$XT_MULTI iptables -N foo || exit 1
-+$XT_MULTI iptables -P FORWARD DROP || exit 1
-+$XT_MULTI iptables -X || exit 1
-+$XT_MULTI iptables -X foo && exit 1
-+
-+# indefinite -X fails if a non-empty user-defined chain exists
-+$XT_MULTI iptables -N foo
-+$XT_MULTI iptables -N bar
-+$XT_MULTI iptables -A bar -j ACCEPT
-+$XT_MULTI iptables -X && exit 1
-+$XT_MULTI iptables -D bar -j ACCEPT
-+$XT_MULTI iptables -X || exit 1
-+
-+# make sure OUTPUT chain is created by iptables-nft
-+$XT_MULTI iptables -A OUTPUT -j ACCEPT || exit 1
-+$XT_MULTI iptables -D OUTPUT -j ACCEPT || exit 1
-+
-+case $XT_MULTI in
-+*xtables-nft-multi)
-+	# must not delete chain FORWARD, its policy is not ACCEPT
-+	$XT_MULTI iptables -X FORWARD && exit 1
-+	nft list chain ip filter FORWARD || exit 1
-+	# this should evict chain OUTPUT
-+	$XT_MULTI iptables -X OUTPUT || exit 1
-+	nft list chain ip filter OUTPUT && exit 1
-+	;;
-+*)
-+	$XT_MULTI iptables -X FORWARD && exit 1
-+	$XT_MULTI iptables -X OUTPUT && exit 1
-+	;;
-+esac
-+exit 0
--- 
-2.33.0
-
+Assalamu alaikum,
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological,
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children. I have investment funds
+worth Twenty Seven Million Five Hundred Thousand United State Dollar
+($27.500.000.00 ) and i need a trusted  investment Manager/Partner
+because of my current refugee status, however, I am interested in you
+for investment project assistance in your country. If you are willing
+to handle this project on my behalf kindly reply urgently to enable me
+to provide you more information about the investment
+funds.
+Best Regards
