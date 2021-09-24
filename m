@@ -2,237 +2,145 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75D2417D9E
-	for <lists+netfilter-devel@lfdr.de>; Sat, 25 Sep 2021 00:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9EE417E65
+	for <lists+netfilter-devel@lfdr.de>; Sat, 25 Sep 2021 01:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346124AbhIXWNK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 Sep 2021 18:13:10 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:49768 "EHLO
+        id S232123AbhIXXrm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 24 Sep 2021 19:47:42 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:50098 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232281AbhIXWNE (ORCPT
+        with ESMTP id S229669AbhIXXrl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 Sep 2021 18:13:04 -0400
+        Fri, 24 Sep 2021 19:47:41 -0400
 Received: from localhost.localdomain (unknown [78.30.35.141])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 5C71763EBF;
-        Sat, 25 Sep 2021 00:10:08 +0200 (CEST)
+        by mail.netfilter.org (Postfix) with ESMTPSA id 791EF60098
+        for <netfilter-devel@vger.kernel.org>; Sat, 25 Sep 2021 01:44:45 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net 15/15] netfilter: conntrack: serialize hash resizes and cleanups
-Date:   Sat, 25 Sep 2021 00:11:13 +0200
-Message-Id: <20210924221113.348767-16-pablo@netfilter.org>
+Subject: [PATCH nf,v3 1/2] netfilter: nf_tables: add position handle in event notification
+Date:   Sat, 25 Sep 2021 01:46:01 +0200
+Message-Id: <20210924234602.5553-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210924221113.348767-1-pablo@netfilter.org>
-References: <20210924221113.348767-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+Add position handle to allow to identify the rule location from netlink
+events. Otherwise, userspace cannot incrementally update a userspace
+cache through monitoring events.
 
-Syzbot was able to trigger the following warning [1]
+Skip handle dump if the rule has been either inserted (at the beginning
+of the ruleset) or appended (at the end of the ruleset), the
+NLM_F_APPEND netlink flag is sufficient in these two cases.
 
-No repro found by syzbot yet but I was able to trigger similar issue
-by having 2 scripts running in parallel, changing conntrack hash sizes,
-and:
+Handle NLM_F_REPLACE and NLM_F_APPEND since the rule replacement
+expansion appends it after the specified rule handle.
 
-for j in `seq 1 1000` ; do unshare -n /bin/true >/dev/null ; done
-
-It would take more than 5 minutes for net_namespace structures
-to be cleaned up.
-
-This is because nf_ct_iterate_cleanup() has to restart everytime
-a resize happened.
-
-By adding a mutex, we can serialize hash resizes and cleanups
-and also make get_next_corpse() faster by skipping over empty
-buckets.
-
-Even without resizes in the picture, this patch considerably
-speeds up network namespace dismantles.
-
-[1]
-INFO: task syz-executor.0:8312 can't die for more than 144 seconds.
-task:syz-executor.0  state:R  running task     stack:25672 pid: 8312 ppid:  6573 flags:0x00004006
-Call Trace:
- context_switch kernel/sched/core.c:4955 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6236
- preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:6408
- preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
- __local_bh_enable_ip+0x109/0x120 kernel/softirq.c:390
- local_bh_enable include/linux/bottom_half.h:32 [inline]
- get_next_corpse net/netfilter/nf_conntrack_core.c:2252 [inline]
- nf_ct_iterate_cleanup+0x15a/0x450 net/netfilter/nf_conntrack_core.c:2275
- nf_conntrack_cleanup_net_list+0x14c/0x4f0 net/netfilter/nf_conntrack_core.c:2469
- ops_exit_list+0x10d/0x160 net/core/net_namespace.c:171
- setup_net+0x639/0xa30 net/core/net_namespace.c:349
- copy_net_ns+0x319/0x760 net/core/net_namespace.c:470
- create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
- unshare_nsproxy_namespaces+0xc1/0x1f0 kernel/nsproxy.c:226
- ksys_unshare+0x445/0x920 kernel/fork.c:3128
- __do_sys_unshare kernel/fork.c:3202 [inline]
- __se_sys_unshare kernel/fork.c:3200 [inline]
- __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3200
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f63da68e739
-RSP: 002b:00007f63d7c05188 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
-RAX: ffffffffffffffda RBX: 00007f63da792f80 RCX: 00007f63da68e739
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000040000000
-RBP: 00007f63da6e8cc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f63da792f80
-R13: 00007fff50b75d3f R14: 00007f63d7c05300 R15: 0000000000022000
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/27:
- #0: ffffffff8b980020 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
-2 locks held by kworker/u4:2/153:
- #0: ffff888010c69138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010c69138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff888010c69138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
- #0: ffff888010c69138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:634 [inline]
- #0: ffff888010c69138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:661 [inline]
- #0: ffff888010c69138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2268
- #1: ffffc9000140fdb0 ((kfence_timer).work){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2272
-1 lock held by systemd-udevd/2970:
-1 lock held by in:imklog/6258:
- #0: ffff88807f970ff0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:990
-3 locks held by kworker/1:6/8158:
-1 lock held by syz-executor.0/8312:
-2 locks held by kworker/u4:13/9320:
-1 lock held by syz-executor.5/10178:
-1 lock held by syz-executor.4/10217:
-
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
+Fixes: 96518518cc41 ("netfilter: add nftables")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_conntrack_core.c | 70 ++++++++++++++++---------------
- 1 file changed, 37 insertions(+), 33 deletions(-)
+v3: handle NLM_F_REPLACE as NLM_F_APPEND.
+    display no handle on plan add commands (!list_is_last).
 
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 97b91d62589d..770a63103c7a 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -74,6 +74,9 @@ static __read_mostly struct kmem_cache *nf_conntrack_cachep;
- static DEFINE_SPINLOCK(nf_conntrack_locks_all_lock);
- static __read_mostly bool nf_conntrack_locks_all;
- 
-+/* serialize hash resizes and nf_ct_iterate_cleanup */
-+static DEFINE_MUTEX(nf_conntrack_mutex);
-+
- #define GC_SCAN_INTERVAL	(120u * HZ)
- #define GC_SCAN_MAX_DURATION	msecs_to_jiffies(10)
- 
-@@ -2263,28 +2266,31 @@ get_next_corpse(int (*iter)(struct nf_conn *i, void *data),
- 	spinlock_t *lockp;
- 
- 	for (; *bucket < nf_conntrack_htable_size; (*bucket)++) {
-+		struct hlist_nulls_head *hslot = &nf_conntrack_hash[*bucket];
-+
-+		if (hlist_nulls_empty(hslot))
-+			continue;
-+
- 		lockp = &nf_conntrack_locks[*bucket % CONNTRACK_LOCKS];
- 		local_bh_disable();
- 		nf_conntrack_lock(lockp);
--		if (*bucket < nf_conntrack_htable_size) {
--			hlist_nulls_for_each_entry(h, n, &nf_conntrack_hash[*bucket], hnnode) {
--				if (NF_CT_DIRECTION(h) != IP_CT_DIR_REPLY)
--					continue;
--				/* All nf_conn objects are added to hash table twice, one
--				 * for original direction tuple, once for the reply tuple.
--				 *
--				 * Exception: In the IPS_NAT_CLASH case, only the reply
--				 * tuple is added (the original tuple already existed for
--				 * a different object).
--				 *
--				 * We only need to call the iterator once for each
--				 * conntrack, so we just use the 'reply' direction
--				 * tuple while iterating.
--				 */
--				ct = nf_ct_tuplehash_to_ctrack(h);
--				if (iter(ct, data))
--					goto found;
--			}
-+		hlist_nulls_for_each_entry(h, n, hslot, hnnode) {
-+			if (NF_CT_DIRECTION(h) != IP_CT_DIR_REPLY)
-+				continue;
-+			/* All nf_conn objects are added to hash table twice, one
-+			 * for original direction tuple, once for the reply tuple.
-+			 *
-+			 * Exception: In the IPS_NAT_CLASH case, only the reply
-+			 * tuple is added (the original tuple already existed for
-+			 * a different object).
-+			 *
-+			 * We only need to call the iterator once for each
-+			 * conntrack, so we just use the 'reply' direction
-+			 * tuple while iterating.
-+			 */
-+			ct = nf_ct_tuplehash_to_ctrack(h);
-+			if (iter(ct, data))
-+				goto found;
- 		}
- 		spin_unlock(lockp);
- 		local_bh_enable();
-@@ -2302,26 +2308,20 @@ get_next_corpse(int (*iter)(struct nf_conn *i, void *data),
- static void nf_ct_iterate_cleanup(int (*iter)(struct nf_conn *i, void *data),
- 				  void *data, u32 portid, int report)
+ net/netfilter/nf_tables_api.c | 34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
+
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index b9546defdc28..085783b14075 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -2866,8 +2866,7 @@ static int nf_tables_fill_rule_info(struct sk_buff *skb, struct net *net,
+ 				    u32 flags, int family,
+ 				    const struct nft_table *table,
+ 				    const struct nft_chain *chain,
+-				    const struct nft_rule *rule,
+-				    const struct nft_rule *prule)
++				    const struct nft_rule *rule, u64 handle)
  {
--	unsigned int bucket = 0, sequence;
-+	unsigned int bucket = 0;
- 	struct nf_conn *ct;
+ 	struct nlmsghdr *nlh;
+ 	const struct nft_expr *expr, *next;
+@@ -2887,9 +2886,8 @@ static int nf_tables_fill_rule_info(struct sk_buff *skb, struct net *net,
+ 			 NFTA_RULE_PAD))
+ 		goto nla_put_failure;
  
- 	might_sleep();
- 
--	for (;;) {
--		sequence = read_seqcount_begin(&nf_conntrack_generation);
--
--		while ((ct = get_next_corpse(iter, data, &bucket)) != NULL) {
--			/* Time to push up daises... */
-+	mutex_lock(&nf_conntrack_mutex);
-+	while ((ct = get_next_corpse(iter, data, &bucket)) != NULL) {
-+		/* Time to push up daises... */
- 
--			nf_ct_delete(ct, portid, report);
--			nf_ct_put(ct);
--			cond_resched();
--		}
--
--		if (!read_seqcount_retry(&nf_conntrack_generation, sequence))
--			break;
--		bucket = 0;
-+		nf_ct_delete(ct, portid, report);
-+		nf_ct_put(ct);
-+		cond_resched();
+-	if (event != NFT_MSG_DELRULE && prule) {
+-		if (nla_put_be64(skb, NFTA_RULE_POSITION,
+-				 cpu_to_be64(prule->handle),
++	if (event != NFT_MSG_DELRULE && handle) {
++		if (nla_put_be64(skb, NFTA_RULE_POSITION, cpu_to_be64(handle),
+ 				 NFTA_RULE_PAD))
+ 			goto nla_put_failure;
  	}
-+	mutex_unlock(&nf_conntrack_mutex);
- }
+@@ -2925,7 +2923,10 @@ static void nf_tables_rule_notify(const struct nft_ctx *ctx,
+ 				  const struct nft_rule *rule, int event)
+ {
+ 	struct nftables_pernet *nft_net = nft_pernet(ctx->net);
++	const struct nft_rule *prule;
+ 	struct sk_buff *skb;
++	u64 handle = 0;
++	u16 flags = 0;
+ 	int err;
  
- struct iter_data {
-@@ -2557,8 +2557,10 @@ int nf_conntrack_hash_resize(unsigned int hashsize)
- 	if (!hash)
- 		return -ENOMEM;
+ 	if (!ctx->report &&
+@@ -2936,9 +2937,18 @@ static void nf_tables_rule_notify(const struct nft_ctx *ctx,
+ 	if (skb == NULL)
+ 		goto err;
  
-+	mutex_lock(&nf_conntrack_mutex);
- 	old_size = nf_conntrack_htable_size;
- 	if (old_size == hashsize) {
-+		mutex_unlock(&nf_conntrack_mutex);
- 		kvfree(hash);
- 		return 0;
- 	}
-@@ -2598,6 +2600,8 @@ int nf_conntrack_hash_resize(unsigned int hashsize)
- 	nf_conntrack_all_unlock();
- 	local_bh_enable();
- 
-+	mutex_unlock(&nf_conntrack_mutex);
++	if (event == NFT_MSG_NEWRULE &&
++	    !list_is_first(&rule->list, &ctx->chain->rules) &&
++	    !list_is_last(&rule->list, &ctx->chain->rules)) {
++		prule = list_prev_entry(rule, list);
++		handle = prule->handle;
++	}
++	if (ctx->flags & (NLM_F_APPEND | NLM_F_REPLACE))
++		flags |= NLM_F_APPEND;
 +
- 	synchronize_net();
- 	kvfree(old_hash);
- 	return 0;
+ 	err = nf_tables_fill_rule_info(skb, ctx->net, ctx->portid, ctx->seq,
+-				       event, 0, ctx->family, ctx->table,
+-				       ctx->chain, rule, NULL);
++				       event, flags, ctx->family, ctx->table,
++				       ctx->chain, rule, handle);
+ 	if (err < 0) {
+ 		kfree_skb(skb);
+ 		goto err;
+@@ -2964,6 +2974,7 @@ static int __nf_tables_dump_rules(struct sk_buff *skb,
+ 	struct net *net = sock_net(skb->sk);
+ 	const struct nft_rule *rule, *prule;
+ 	unsigned int s_idx = cb->args[0];
++	u64 handle;
+ 
+ 	prule = NULL;
+ 	list_for_each_entry_rcu(rule, &chain->rules, list) {
+@@ -2975,12 +2986,17 @@ static int __nf_tables_dump_rules(struct sk_buff *skb,
+ 			memset(&cb->args[1], 0,
+ 					sizeof(cb->args) - sizeof(cb->args[0]));
+ 		}
++		if (prule)
++			handle = prule->handle;
++		else
++			handle = 0;
++
+ 		if (nf_tables_fill_rule_info(skb, net, NETLINK_CB(cb->skb).portid,
+ 					cb->nlh->nlmsg_seq,
+ 					NFT_MSG_NEWRULE,
+ 					NLM_F_MULTI | NLM_F_APPEND,
+ 					table->family,
+-					table, chain, rule, prule) < 0)
++					table, chain, rule, handle) < 0)
+ 			return 1;
+ 
+ 		nl_dump_check_consistent(cb, nlmsg_hdr(skb));
+@@ -3143,7 +3159,7 @@ static int nf_tables_getrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 
+ 	err = nf_tables_fill_rule_info(skb2, net, NETLINK_CB(skb).portid,
+ 				       info->nlh->nlmsg_seq, NFT_MSG_NEWRULE, 0,
+-				       family, table, chain, rule, NULL);
++				       family, table, chain, rule, 0);
+ 	if (err < 0)
+ 		goto err_fill_rule_info;
+ 
 -- 
 2.30.2
 
