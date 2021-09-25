@@ -2,62 +2,55 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E27C41847E
-	for <lists+netfilter-devel@lfdr.de>; Sat, 25 Sep 2021 22:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965DA41847F
+	for <lists+netfilter-devel@lfdr.de>; Sat, 25 Sep 2021 22:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhIYUrn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 25 Sep 2021 16:47:43 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:51736 "EHLO
+        id S229904AbhIYUsG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 25 Sep 2021 16:48:06 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:51758 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbhIYUrm (ORCPT
+        with ESMTP id S229934AbhIYUsF (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 25 Sep 2021 16:47:42 -0400
+        Sat, 25 Sep 2021 16:48:05 -0400
 Received: from localhost.localdomain (unknown [78.30.35.141])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 96BC363EB9
-        for <netfilter-devel@vger.kernel.org>; Sat, 25 Sep 2021 22:44:44 +0200 (CEST)
+        by mail.netfilter.org (Postfix) with ESMTPSA id D2AB763EB1
+        for <netfilter-devel@vger.kernel.org>; Sat, 25 Sep 2021 22:45:07 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH 3/3] tests: monitor: update insert and replace commands
-Date:   Sat, 25 Sep 2021 22:45:59 +0200
-Message-Id: <20210925204559.22699-3-pablo@netfilter.org>
+Subject: [PATCH nft] evaluate: provide a hint on missing dynamic flag
+Date:   Sat, 25 Sep 2021 22:46:25 +0200
+Message-Id: <20210925204625.22803-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210925204559.22699-1-pablo@netfilter.org>
-References: <20210925204559.22699-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Adjust test after these two kernel fixes:
-
-("netfilter: nf_tables: reverse order in rule replacement expansion")
-("netfilter: nf_tables: add position handle in event notification")
+Provide a hint to users if they forget to set on the dynamic flag, if
+such set is updated from the packet path.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- tests/monitor/testcases/simple.t | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/evaluate.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/tests/monitor/testcases/simple.t b/tests/monitor/testcases/simple.t
-index 78fd6616eb07..2d9c92de25dd 100644
---- a/tests/monitor/testcases/simple.t
-+++ b/tests/monitor/testcases/simple.t
-@@ -14,12 +14,12 @@ O -
- J {"add": {"rule": {"family": "ip", "table": "t", "chain": "c", "handle": 0, "expr": [{"match": {"op": "==", "left": {"payload": {"protocol": "tcp", "field": "dport"}}, "right": {"set": [22, 80, 443]}}}, {"accept": null}]}}}
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 8ebc75617b1c..a0c67fb0e213 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -3598,6 +3598,11 @@ static int stmt_evaluate_set(struct eval_ctx *ctx, struct stmt *stmt)
+ 		return expr_error(ctx->msgs, stmt->set.set,
+ 				  "Expression does not refer to a set");
  
- I insert rule ip t c counter accept
--O add rule ip t c counter packets 0 bytes 0 accept
-+O insert rule ip t c counter packets 0 bytes 0 accept
- J {"add": {"rule": {"family": "ip", "table": "t", "chain": "c", "handle": 0, "expr": [{"counter": {"packets": 0, "bytes": 0}}, {"accept": null}]}}}
- 
- I replace rule ip t c handle 2 accept comment "foo bar"
--O add rule ip t c accept comment "foo bar"
- O delete rule ip t c handle 2
-+O add rule ip t c handle 5 accept comment "foo bar"
- J {"add": {"rule": {"family": "ip", "table": "t", "chain": "c", "handle": 0, "comment": "foo bar", "expr": [{"accept": null}]}}}
- J {"delete": {"rule": {"family": "ip", "table": "t", "chain": "c", "handle": 0, "expr": [{"accept": null}]}}}
- 
++	if (!(stmt->set.set->set->flags & NFT_SET_EVAL))
++		return expr_error(ctx->msgs, stmt->set.set,
++				  "%s does not allow for dynamic updates, add 'flags dynamic' to your set declaration",
++				  stmt->set.set->set->flags & NFT_SET_MAP ? "map" : "set");
++
+ 	if (stmt_evaluate_arg(ctx, stmt,
+ 			      stmt->set.set->set->key->dtype,
+ 			      stmt->set.set->set->key->len,
 -- 
 2.30.2
 
