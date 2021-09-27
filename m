@@ -2,1094 +2,158 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38483419716
-	for <lists+netfilter-devel@lfdr.de>; Mon, 27 Sep 2021 17:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDB241972F
+	for <lists+netfilter-devel@lfdr.de>; Mon, 27 Sep 2021 17:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbhI0PFQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 27 Sep 2021 11:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234956AbhI0PFP (ORCPT
+        id S234917AbhI0PHM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 27 Sep 2021 11:07:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25834 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234975AbhI0PHL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 27 Sep 2021 11:05:15 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD2DC061575
-        for <netfilter-devel@vger.kernel.org>; Mon, 27 Sep 2021 08:03:37 -0700 (PDT)
-Received: from localhost ([::1]:43502 helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1mUsAK-0005fa-1t; Mon, 27 Sep 2021 17:03:36 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 12/12] nft: Merge xtables-arp-standalone.c into xtables-standalone.c
-Date:   Mon, 27 Sep 2021 17:03:16 +0200
-Message-Id: <20210927150316.11516-13-phil@nwl.cc>
+        Mon, 27 Sep 2021 11:07:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632755133;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=s4G2O1nJFkNJ8gZZwP18XCjwQfh2FfR8MZUb9ilZ8P0=;
+        b=I6pJqbCYyXB9D11STBFFVMPMV0TBh4B7D/Z0SOQOWeUFXaQSHOx8K+l7d+bd+dZAcRPfth
+        aQh8BVizg7Gk2ZW0/9DycWOAtWw/r6tvWOsxVS3Lp9OwvgOMuaLSgiqZ+ZzleeFpm9AGLA
+        VYqskMqOk8Pv6/5Ch6sQ3iCU9wVXobM=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-JFjBAFhUN46HjmAyyn42ig-1; Mon, 27 Sep 2021 11:05:31 -0400
+X-MC-Unique: JFjBAFhUN46HjmAyyn42ig-1
+Received: by mail-ed1-f72.google.com with SMTP id m20-20020aa7c2d4000000b003d1add00b8aso18194378edp.0
+        for <netfilter-devel@vger.kernel.org>; Mon, 27 Sep 2021 08:05:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s4G2O1nJFkNJ8gZZwP18XCjwQfh2FfR8MZUb9ilZ8P0=;
+        b=yBD4aFTHrssMeZCva1DRrj05HysBCM8KfEwdMOTJHkLsx3mN/0Boq0oxwV7xLowGDe
+         1FdmNw+U8klcppPo5yngCCwHYgEjIXg8/Yj/MD3O565NN5/f4dQUFC2yBWSJGGGLra07
+         txIcKoAB98Bj9H8k5RTTvQ0bkWVEFyvkGU+HV4dMFHm5ymbK0kcrnewV3aX+G6MzCrDn
+         4hWvGpZclUK1DIoY2Yd09qia9ALYLwvR6mwfCnxY4/pxPtl0Yvfum4wGRQQb1lbCq56h
+         okXtw5E3xWCdPeb6ixPBrrT54L8iCKkDHtdRZRgBemWXz2iDHLbNq+M9FZDSdvyh9nC6
+         JcHA==
+X-Gm-Message-State: AOAM5331h9t017v2TYY0l7Nz0CUGvJhw/oHUBF4KPBbf0PPAfFnR5+cW
+        y1Lm9VZkcxWrjBd2ry8p2mZPNUFoXfaub491xaOTf9X/BFlWpEgouf3mUAPriQt3UZTr+wtov72
+        OW8LkWCcTo8FeEASVHFQZrJsNEuvwMmrJmx44BcXCypENHcgFca8C3rvOKlm2jEqvcqOOLVfuZX
+        ZHag==
+X-Received: by 2002:a17:906:c18d:: with SMTP id g13mr545526ejz.518.1632755130312;
+        Mon, 27 Sep 2021 08:05:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJFB8kUv946Z9sMxEQhsnVNAQ7n1vitNgtARk6dX6VUN38B51c9Iz8WB8hEF4KZEqhWjXLrQ==
+X-Received: by 2002:a17:906:c18d:: with SMTP id g13mr545500ejz.518.1632755130064;
+        Mon, 27 Sep 2021 08:05:30 -0700 (PDT)
+Received: from localhost ([185.112.167.40])
+        by smtp.gmail.com with ESMTPSA id w11sm11051386edl.12.2021.09.27.08.05.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Sep 2021 08:05:29 -0700 (PDT)
+From:   =?UTF-8?q?=C5=A0t=C4=9Bp=C3=A1n=20N=C4=9Bmec?= <snemec@redhat.com>
+To:     netfilter-devel@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH conntrack-tools] conntrack.8: minor copy edit
+Date:   Mon, 27 Sep 2021 17:06:01 +0200
+Message-Id: <20210927150601.3131400-1-snemec@redhat.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210927150316.11516-1-phil@nwl.cc>
-References: <20210927150316.11516-1-phil@nwl.cc>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-By declaring the relevant family_ops callbacks for arptables, the code
-becomes ready to just use do_commandx() instead of a dedicated parser.
-
-As a side-effect, this enables a bunch of new features in arptables-nft:
-
-* Support '-C' command
-* Support '-S' command
-* Support rule indexes just like xtables, e.g. in '-I' or '-R' commands
-* Reject chain names starting with '!'
-* Support '-c N,M' counter syntax
-
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Štěpán Němec <snemec@redhat.com>
 ---
- iptables/Makefile.am              |   2 +-
- iptables/nft-arp.c                |  95 ++++-
- iptables/xtables-arp-standalone.c |  63 ---
- iptables/xtables-arp.c            | 638 +-----------------------------
- iptables/xtables-restore.c        |   2 +-
- iptables/xtables-standalone.c     |  19 +-
- iptables/xtables.c                |  41 +-
- 7 files changed, 169 insertions(+), 691 deletions(-)
- delete mode 100644 iptables/xtables-arp-standalone.c
+ conntrack.8 | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/iptables/Makefile.am b/iptables/Makefile.am
-index f789521042f87..0258264c4c705 100644
---- a/iptables/Makefile.am
-+++ b/iptables/Makefile.am
-@@ -37,7 +37,7 @@ xtables_nft_multi_SOURCES += xtables-save.c xtables-restore.c \
- 				xtables-standalone.c xtables.c nft.c \
- 				nft-shared.c nft-ipv4.c nft-ipv6.c nft-arp.c \
- 				xtables-monitor.c nft-cache.c \
--				xtables-arp-standalone.c xtables-arp.c \
-+				xtables-arp.c \
- 				nft-bridge.c nft-cmd.c nft-chain.c \
- 				xtables-eb-standalone.c xtables-eb.c \
- 				xtables-eb-translate.c \
-diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
-index b37ffbb592023..32eb91add4f1e 100644
---- a/iptables/nft-arp.c
-+++ b/iptables/nft-arp.c
-@@ -617,7 +617,8 @@ static void nft_arp_post_parse(int command,
- 	cs->arp.counters.pcnt = args->pcnt_cnt;
- 	cs->arp.counters.bcnt = args->bcnt_cnt;
- 
--	if (command & (CMD_REPLACE | CMD_INSERT | CMD_DELETE | CMD_APPEND)) {
-+	if (command & (CMD_REPLACE | CMD_INSERT |
-+			CMD_DELETE | CMD_APPEND | CMD_CHECK)) {
- 		if (!(cs->options & OPT_DESTINATION))
- 			args->dhostnetworkmask = "0.0.0.0/0";
- 		if (!(cs->options & OPT_SOURCE))
-@@ -702,6 +703,94 @@ static void nft_arp_init_cs(struct iptables_command_state *cs)
- 	cs->arp.arp.arhrd_mask = 65535;
- }
- 
-+static int
-+nft_arp_add_entry(struct nft_handle *h,
-+		  const char *chain, const char *table,
-+		  struct iptables_command_state *cs,
-+		  struct xtables_args *args, bool verbose,
-+		  bool append, int rulenum)
-+{
-+	unsigned int i, j;
-+	int ret = 1;
-+
-+	for (i = 0; i < args->s.naddrs; i++) {
-+		cs->arp.arp.src.s_addr = args->s.addr.v4[i].s_addr;
-+		cs->arp.arp.smsk.s_addr = args->s.mask.v4[i].s_addr;
-+		for (j = 0; j < args->d.naddrs; j++) {
-+			cs->arp.arp.tgt.s_addr = args->d.addr.v4[j].s_addr;
-+			cs->arp.arp.tmsk.s_addr = args->d.mask.v4[j].s_addr;
-+			if (append) {
-+				ret = nft_cmd_rule_append(h, chain, table, cs, NULL,
-+						          verbose);
-+			} else {
-+				ret = nft_cmd_rule_insert(h, chain, table, cs,
-+						          rulenum, verbose);
-+			}
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static int
-+nft_arp_delete_entry(struct nft_handle *h,
-+		     const char *chain, const char *table,
-+		     struct iptables_command_state *cs,
-+		     struct xtables_args *args, bool verbose)
-+{
-+	unsigned int i, j;
-+	int ret = 1;
-+
-+	for (i = 0; i < args->s.naddrs; i++) {
-+		cs->arp.arp.src.s_addr = args->s.addr.v4[i].s_addr;
-+		cs->arp.arp.smsk.s_addr = args->s.mask.v4[i].s_addr;
-+		for (j = 0; j < args->d.naddrs; j++) {
-+			cs->arp.arp.tgt.s_addr = args->d.addr.v4[j].s_addr;
-+			cs->arp.arp.tmsk.s_addr = args->d.mask.v4[j].s_addr;
-+			ret = nft_cmd_rule_delete(h, chain, table, cs, verbose);
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static int
-+nft_arp_check_entry(struct nft_handle *h,
-+		    const char *chain, const char *table,
-+		    struct iptables_command_state *cs,
-+		    struct xtables_args *args, bool verbose)
-+{
-+	unsigned int i, j;
-+	int ret = 1;
-+
-+	for (i = 0; i < args->s.naddrs; i++) {
-+		cs->arp.arp.src.s_addr = args->s.addr.v4[i].s_addr;
-+		cs->arp.arp.smsk.s_addr = args->s.mask.v4[i].s_addr;
-+		for (j = 0; j < args->d.naddrs; j++) {
-+			cs->arp.arp.tgt.s_addr = args->d.addr.v4[j].s_addr;
-+			cs->arp.arp.tmsk.s_addr = args->d.mask.v4[j].s_addr;
-+			ret = nft_cmd_rule_check(h, chain, table, cs, verbose);
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static int
-+nft_arp_replace_entry(struct nft_handle *h,
-+		      const char *chain, const char *table,
-+		      struct iptables_command_state *cs,
-+		      struct xtables_args *args, bool verbose,
-+		      int rulenum)
-+{
-+	cs->arp.arp.src.s_addr = args->s.addr.v4->s_addr;
-+	cs->arp.arp.tgt.s_addr = args->d.addr.v4->s_addr;
-+	cs->arp.arp.smsk.s_addr = args->s.mask.v4->s_addr;
-+	cs->arp.arp.tmsk.s_addr = args->d.mask.v4->s_addr;
-+
-+	return nft_cmd_rule_replace(h, chain, table, cs, rulenum, verbose);
-+}
-+
- struct nft_family_ops nft_family_ops_arp = {
- 	.add			= nft_arp_add,
- 	.is_same		= nft_arp_is_same,
-@@ -718,4 +807,8 @@ struct nft_family_ops nft_family_ops_arp = {
- 	.init_cs		= nft_arp_init_cs,
- 	.clear_cs		= nft_clear_iptables_command_state,
- 	.parse_target		= nft_ipv46_parse_target,
-+	.add_entry		= nft_arp_add_entry,
-+	.delete_entry		= nft_arp_delete_entry,
-+	.check_entry		= nft_arp_check_entry,
-+	.replace_entry		= nft_arp_replace_entry,
- };
-diff --git a/iptables/xtables-arp-standalone.c b/iptables/xtables-arp-standalone.c
-deleted file mode 100644
-index 82db3f3801c10..0000000000000
---- a/iptables/xtables-arp-standalone.c
-+++ /dev/null
-@@ -1,63 +0,0 @@
--/*
-- * Author: Paul.Russell@rustcorp.com.au and mneuling@radlogic.com.au
-- *
-- * Based on the ipchains code by Paul Russell and Michael Neuling
-- *
-- * (C) 2000-2002 by the netfilter coreteam <coreteam@netfilter.org>:
-- * 		    Paul 'Rusty' Russell <rusty@rustcorp.com.au>
-- * 		    Marc Boucher <marc+nf@mbsi.ca>
-- * 		    James Morris <jmorris@intercode.com.au>
-- * 		    Harald Welte <laforge@gnumonks.org>
-- * 		    Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-- *
-- *	arptables -- IP firewall administration for kernels with
-- *	firewall table (aimed for the 2.3 kernels)
-- *
-- *	See the accompanying manual page arptables(8) for information
-- *	about proper usage of this program.
-- *
-- *	This program is free software; you can redistribute it and/or modify
-- *	it under the terms of the GNU General Public License as published by
-- *	the Free Software Foundation; either version 2 of the License, or
-- *	(at your option) any later version.
-- *
-- *	This program is distributed in the hope that it will be useful,
-- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
-- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- *	GNU General Public License for more details.
-- *
-- *	You should have received a copy of the GNU General Public License
-- *	along with this program; if not, write to the Free Software
-- *	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <errno.h>
--#include <string.h>
--#include <xtables.h>
--#include "nft.h"
--#include <linux/netfilter_arp/arp_tables.h>
--
--#include "xtables-multi.h"
--
--int xtables_arp_main(int argc, char *argv[])
--{
--	int ret;
--	char *table = "filter";
--	struct nft_handle h;
--
--	nft_init_arp(&h, "arptables");
--
--	ret = do_commandarp(&h, argc, argv, &table, false);
--	if (ret)
--		ret = nft_commit(&h);
--
--	nft_fini(&h);
--	xtables_fini();
--
--	if (!ret)
--		fprintf(stderr, "arptables: %s\n", nft_strerror(errno));
--
--	exit(!ret);
--}
-diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
-index de7c381788a37..cca19438a877e 100644
---- a/iptables/xtables-arp.c
-+++ b/iptables/xtables-arp.c
-@@ -30,35 +30,23 @@
- #include "config.h"
- #include <getopt.h>
- #include <string.h>
--#include <netdb.h>
--#include <errno.h>
- #include <stdio.h>
- #include <stdlib.h>
--#include <inttypes.h>
--#include <dlfcn.h>
--#include <ctype.h>
--#include <stdarg.h>
--#include <limits.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <sys/wait.h>
--#include <net/if.h>
--#include <netinet/ether.h>
--#include <iptables.h>
- #include <xtables.h>
- 
- #include "xshared.h"
- 
- #include "nft.h"
- #include "nft-arp.h"
--#include <linux/netfilter_arp/arp_tables.h>
- 
- static struct option original_opts[] = {
- 	{ "append", 1, 0, 'A' },
- 	{ "delete", 1, 0,  'D' },
-+	{ "check", 1, 0,  'C'},
- 	{ "insert", 1, 0,  'I' },
- 	{ "replace", 1, 0,  'R' },
- 	{ "list", 2, 0,  'L' },
-+	{ "list-rules", 2, 0,  'S'},
- 	{ "flush", 2, 0,  'F' },
- 	{ "zero", 2, 0,  'Z' },
- 	{ "new-chain", 1, 0,  'N' },
-@@ -101,22 +89,13 @@ static void printhelp(const struct xtables_rule_match *m);
- struct xtables_globals arptables_globals = {
- 	.option_offset		= 0,
- 	.program_version	= PACKAGE_VERSION,
--	.optstring		= OPTSTRING_COMMON "R:S::" "h::l:nv" /* "m:" */,
-+	.optstring		= OPTSTRING_COMMON "C:R:S::" "h::l:nv" /* "m:" */,
- 	.orig_opts		= original_opts,
- 	.exit_err		= xtables_exit_error,
- 	.compat_rev		= nft_compatible_revision,
- 	.print_help		= printhelp,
- };
- 
--static void
--exit_tryhelp(int status)
--{
--	fprintf(stderr, "Try `%s -h' or '%s --help' for more information.\n",
--		arptables_globals.program_name,
--		arptables_globals.program_version);
--	exit(status);
--}
--
- static void
- printhelp(const struct xtables_rule_match *m)
- {
-@@ -124,10 +103,12 @@ printhelp(const struct xtables_rule_match *m)
- 	int i;
- 
- 	printf("%s v%s\n\n"
--"Usage: %s -[AD] chain rule-specification [options]\n"
--"       %s -[RI] chain rulenum rule-specification [options]\n"
-+"Usage: %s -[ACD] chain rule-specification [options]\n"
-+"       %s -I chain [rulenum] rule-specification [options]\n"
-+"       %s -R chain rulenum rule-specification [options]\n"
- "       %s -D chain rulenum [options]\n"
--"       %s -[LFZ] [chain] [options]\n"
-+"       %s -[LS] [chain [rulenum]] [options]\n"
-+"       %s -[FZ] [chain] [options]\n"
- "       %s -[NX] chain\n"
- "       %s -E old-chain-name new-chain-name\n"
- "       %s -P chain target [options]\n"
-@@ -141,11 +122,14 @@ printhelp(const struct xtables_rule_match *m)
- 	       arptables_globals.program_name,
- 	       arptables_globals.program_name,
- 	       arptables_globals.program_name,
-+	       arptables_globals.program_name,
-+	       arptables_globals.program_name,
- 	       arptables_globals.program_name);
- 	printf(
- "Commands:\n"
- "Either long or short options are allowed.\n"
- "  --append  -A chain		Append to chain\n"
-+"  --check   -C chain		Check for the existence of a rule\n"
- "  --delete  -D chain		Delete matching rule from chain\n"
- "  --delete  -D chain rulenum\n"
- "				Delete rule rulenum (1 = first) from chain\n"
-@@ -153,9 +137,13 @@ printhelp(const struct xtables_rule_match *m)
- "				Insert in chain as rulenum (default 1=first)\n"
- "  --replace -R chain rulenum\n"
- "				Replace rule rulenum (1 = first) in chain\n"
--"  --list    -L [chain]		List the rules in a chain or all chains\n"
-+"  --list    -L [chain [rulenum]]\n"
-+"				List the rules in a chain or all chains\n"
-+"  --list-rules -S [chain [rulenum]]\n"
-+"				Print the rules in a chain or all chains\n"
- "  --flush   -F [chain]		Delete all rules in  chain or all chains\n"
--"  --zero    -Z [chain]		Zero counters in chain or all chains\n"
-+"  --zero    -Z [chain [rulenum]]\n"
-+"				Zero counters in chain or all chains\n"
- "  --new     -N chain		Create a new user-defined chain\n"
- "  --delete-chain\n"
- "            -X [chain]		Delete a user-defined chain\n"
-@@ -210,134 +198,6 @@ printhelp(const struct xtables_rule_match *m)
- 	}
- }
- 
--static int
--check_inverse(const char option[], int *invert, int *optidx, int argc)
--{
--	if (option && strcmp(option, "!") == 0) {
--		if (*invert)
--			xtables_error(PARAMETER_PROBLEM,
--				      "Multiple `!' flags not allowed");
--		*invert = true;
--		if (optidx) {
--			*optidx = *optidx+1;
--			if (argc && *optidx > argc)
--				xtables_error(PARAMETER_PROBLEM,
--					      "no argument following `!'");
--		}
--
--		return true;
--	}
--	return false;
--}
--
--static int
--list_entries(struct nft_handle *h, const char *chain, const char *table,
--	     int rulenum, int verbose, int numeric, int expanded,
--	     int linenumbers)
--{
--	unsigned int format;
--
--	format = FMT_OPTIONS;
--	if (!verbose)
--		format |= FMT_NOCOUNTS;
--	else
--		format |= FMT_VIA;
--
--	if (numeric)
--		format |= FMT_NUMERIC;
--
--	if (!expanded)
--		format |= FMT_KILOMEGAGIGA;
--
--	if (linenumbers)
--		format |= FMT_LINENUMBERS;
--
--	return nft_cmd_rule_list(h, chain, table, rulenum, format);
--}
--
--static int
--append_entry(struct nft_handle *h,
--	     const char *chain,
--	     const char *table,
--	     struct iptables_command_state *cs,
--	     int rulenum,
--	     unsigned int nsaddrs,
--	     const struct in_addr saddrs[],
--	     const struct in_addr smasks[],
--	     unsigned int ndaddrs,
--	     const struct in_addr daddrs[],
--	     const struct in_addr dmasks[],
--	     bool verbose, bool append)
--{
--	unsigned int i, j;
--	int ret = 1;
--
--	for (i = 0; i < nsaddrs; i++) {
--		cs->arp.arp.src.s_addr = saddrs[i].s_addr;
--		cs->arp.arp.smsk.s_addr = smasks[i].s_addr;
--		for (j = 0; j < ndaddrs; j++) {
--			cs->arp.arp.tgt.s_addr = daddrs[j].s_addr;
--			cs->arp.arp.tmsk.s_addr = dmasks[j].s_addr;
--			if (append) {
--				ret = nft_cmd_rule_append(h, chain, table, cs, NULL,
--						      verbose);
--			} else {
--				ret = nft_cmd_rule_insert(h, chain, table, cs,
--						      rulenum, verbose);
--			}
--		}
--	}
--
--	return ret;
--}
--
--static int
--replace_entry(const char *chain,
--	      const char *table,
--	      struct iptables_command_state *cs,
--	      unsigned int rulenum,
--	      const struct in_addr *saddr,
--	      const struct in_addr *smask,
--	      const struct in_addr *daddr,
--	      const struct in_addr *dmask,
--	      bool verbose, struct nft_handle *h)
--{
--	cs->arp.arp.src.s_addr = saddr->s_addr;
--	cs->arp.arp.tgt.s_addr = daddr->s_addr;
--	cs->arp.arp.smsk.s_addr = smask->s_addr;
--	cs->arp.arp.tmsk.s_addr = dmask->s_addr;
--
--	return nft_cmd_rule_replace(h, chain, table, cs, rulenum, verbose);
--}
--
--static int
--delete_entry(const char *chain,
--	     const char *table,
--	     struct iptables_command_state *cs,
--	     unsigned int nsaddrs,
--	     const struct in_addr saddrs[],
--	     const struct in_addr smasks[],
--	     unsigned int ndaddrs,
--	     const struct in_addr daddrs[],
--	     const struct in_addr dmasks[],
--	     bool verbose, struct nft_handle *h)
--{
--	unsigned int i, j;
--	int ret = 1;
--
--	for (i = 0; i < nsaddrs; i++) {
--		cs->arp.arp.src.s_addr = saddrs[i].s_addr;
--		cs->arp.arp.smsk.s_addr = smasks[i].s_addr;
--		for (j = 0; j < ndaddrs; j++) {
--			cs->arp.arp.tgt.s_addr = daddrs[j].s_addr;
--			cs->arp.arp.tmsk.s_addr = dmasks[j].s_addr;
--			ret = nft_cmd_rule_delete(h, chain, table, cs, verbose);
--		}
--	}
--
--	return ret;
--}
--
- int nft_init_arp(struct nft_handle *h, const char *pname)
- {
- 	arptables_globals.program_name = pname;
-@@ -358,467 +218,3 @@ int nft_init_arp(struct nft_handle *h, const char *pname)
- 
- 	return 0;
- }
--
--int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
--		  bool restore)
--{
--	struct iptables_command_state cs = {
--		.jumpto = "",
--		.arp.arp = {
--			.arhln = 6,
--			.arhln_mask = 255,
--			.arhrd = htons(ARPHRD_ETHER),
--			.arhrd_mask = 65535,
--		},
--	};
--	struct nft_xt_cmd_parse p = {
--		.table = *table,
--	};
--	struct xtables_args args = {
--		.family = h->family,
--	};
--	int invert = 0;
--	int ret = 1;
--	struct xtables_target *t;
--
--	/* re-set optind to 0 in case do_command gets called
--	 * a second time */
--	optind = 0;
--
--	for (t = xtables_targets; t; t = t->next) {
--		t->tflags = 0;
--		t->used = 0;
--	}
--
--	/* Suppress error messages: we may add new options if we
--	    demand-load a protocol. */
--	opterr = 0;
--
--	opts = xt_params->orig_opts;
--	while ((cs.c = getopt_long(argc, argv, xt_params->optstring,
--					   opts, NULL)) != -1) {
--		switch (cs.c) {
--			/*
--			 * Command selection
--			 */
--		case 'A':
--			add_command(&p.command, CMD_APPEND, CMD_NONE,
--				    invert);
--			p.chain = optarg;
--			break;
--
--		case 'D':
--			add_command(&p.command, CMD_DELETE, CMD_NONE,
--				    invert);
--			p.chain = optarg;
--			if (xs_has_arg(argc, argv)) {
--				p.rulenum = parse_rulenumber(argv[optind++]);
--				p.command = CMD_DELETE_NUM;
--			}
--			break;
--
--		case 'R':
--			add_command(&p.command, CMD_REPLACE, CMD_NONE,
--				    invert);
--			p.chain = optarg;
--			if (xs_has_arg(argc, argv))
--				p.rulenum = parse_rulenumber(argv[optind++]);
--			else
--				xtables_error(PARAMETER_PROBLEM,
--					      "-%c requires a rule number",
--					      cmd2char(CMD_REPLACE));
--			break;
--
--		case 'I':
--			add_command(&p.command, CMD_INSERT, CMD_NONE,
--				    invert);
--			p.chain = optarg;
--			if (xs_has_arg(argc, argv))
--				p.rulenum = parse_rulenumber(argv[optind++]);
--			else p.rulenum = 1;
--			break;
--
--		case 'L':
--			add_command(&p.command, CMD_LIST, CMD_ZERO,
--				    invert);
--			if (optarg) p.chain = optarg;
--			else if (xs_has_arg(argc, argv))
--				p.chain = argv[optind++];
--			break;
--
--		case 'F':
--			add_command(&p.command, CMD_FLUSH, CMD_NONE,
--				    invert);
--			if (optarg) p.chain = optarg;
--			else if (xs_has_arg(argc, argv))
--				p.chain = argv[optind++];
--			break;
--
--		case 'Z':
--			add_command(&p.command, CMD_ZERO, CMD_LIST,
--				    invert);
--			if (optarg) p.chain = optarg;
--			else if (xs_has_arg(argc, argv))
--				p.chain = argv[optind++];
--			break;
--
--		case 'N':
--			if (optarg && *optarg == '-')
--				xtables_error(PARAMETER_PROBLEM,
--					      "chain name not allowed to start "
--					      "with `-'\n");
--			if (xtables_find_target(optarg, XTF_TRY_LOAD))
--				xtables_error(PARAMETER_PROBLEM,
--						"chain name may not clash "
--						"with target name\n");
--			add_command(&p.command, CMD_NEW_CHAIN, CMD_NONE,
--				    invert);
--			p.chain = optarg;
--			break;
--
--		case 'X':
--			add_command(&p.command, CMD_DELETE_CHAIN, CMD_NONE,
--				    invert);
--			if (optarg) p.chain = optarg;
--			else if (xs_has_arg(argc, argv))
--				p.chain = argv[optind++];
--			break;
--
--		case 'E':
--			add_command(&p.command, CMD_RENAME_CHAIN, CMD_NONE,
--				    invert);
--			p.chain = optarg;
--			if (xs_has_arg(argc, argv))
--				p.newname = argv[optind++];
--			else
--				xtables_error(PARAMETER_PROBLEM,
--					      "-%c requires old-chain-name and "
--					      "new-chain-name",
--					      cmd2char(CMD_RENAME_CHAIN));
--			break;
--
--		case 'P':
--			add_command(&p.command, CMD_SET_POLICY, CMD_NONE,
--				    invert);
--			p.chain = optarg;
--			if (xs_has_arg(argc, argv))
--				p.policy = argv[optind++];
--			else
--				xtables_error(PARAMETER_PROBLEM,
--					      "-%c requires a chain and a policy",
--					      cmd2char(CMD_SET_POLICY));
--			break;
--
--		case 'h':
--			if (!optarg)
--				optarg = argv[optind];
--
--			xt_params->print_help(NULL);
--			p.command = CMD_NONE;
--			break;
--		case 's':
--			check_inverse(optarg, &invert, &optind, argc);
--			set_option(&cs.options, OPT_SOURCE, &args.invflags,
--				   invert);
--			args.shostnetworkmask = argv[optind-1];
--			break;
--
--		case 'd':
--			check_inverse(optarg, &invert, &optind, argc);
--			set_option(&cs.options, OPT_DESTINATION, &args.invflags,
--				   invert);
--			args.dhostnetworkmask = argv[optind-1];
--			break;
--
--		case 2:/* src-mac */
--			check_inverse(optarg, &invert, &optind, argc);
--			set_option(&cs.options, OPT_S_MAC, &args.invflags,
--				   invert);
--			args.src_mac = argv[optind - 1];
--			break;
--
--		case 3:/* dst-mac */
--			check_inverse(optarg, &invert, &optind, argc);
--			set_option(&cs.options, OPT_D_MAC, &args.invflags,
--				   invert);
--			args.dst_mac = argv[optind - 1];
--			break;
--
--		case 'l':/* hardware length */
--			check_inverse(optarg, &invert, &optind, argc);
--			set_option(&cs.options, OPT_H_LENGTH, &args.invflags,
--				   invert);
--			args.arp_hlen = argv[optind - 1];
--			break;
--
--		case 8: /* was never supported, not even in arptables-legacy */
--			xtables_error(PARAMETER_PROBLEM, "not supported");
--		case 4:/* opcode */
--			check_inverse(optarg, &invert, &optind, argc);
--			set_option(&cs.options, OPT_OPCODE, &args.invflags,
--				   invert);
--			args.arp_opcode = argv[optind - 1];
--			break;
--
--		case 5:/* h-type */
--			check_inverse(optarg, &invert, &optind, argc);
--			set_option(&cs.options, OPT_H_TYPE, &args.invflags,
--				   invert);
--			args.arp_htype = argv[optind - 1];
--			break;
--
--		case 6:/* proto-type */
--			check_inverse(optarg, &invert, &optind, argc);
--			set_option(&cs.options, OPT_P_TYPE, &args.invflags,
--				   invert);
--			args.arp_ptype = argv[optind - 1];
--			break;
--
--		case 'j':
--			set_option(&cs.options, OPT_JUMP, &args.invflags,
--				   invert);
--			command_jump(&cs, optarg);
--			break;
--
--		case 'i':
--			check_inverse(optarg, &invert, &optind, argc);
--			set_option(&cs.options, OPT_VIANAMEIN, &args.invflags,
--				   invert);
--			xtables_parse_interface(argv[optind-1],
--						args.iniface,
--						args.iniface_mask);
--			break;
--
--		case 'o':
--			check_inverse(optarg, &invert, &optind, argc);
--			set_option(&cs.options, OPT_VIANAMEOUT, &args.invflags,
--				   invert);
--			xtables_parse_interface(argv[optind-1],
--						args.outiface,
--						args.outiface_mask);
--			break;
--
--		case 'v':
--			if (!p.verbose)
--				set_option(&cs.options, OPT_VERBOSE,
--					   &args.invflags, invert);
--			p.verbose++;
--			break;
--
--		case 'm': /* ignored by arptables-legacy */
--			break;
--		case 'n':
--			set_option(&cs.options, OPT_NUMERIC, &args.invflags,
--				   invert);
--			break;
--
--		case 't':
--			if (invert)
--				xtables_error(PARAMETER_PROBLEM,
--					      "unexpected ! flag before --table");
--			/* ignore this option.
--			 * arptables-legacy parses it, but libarptc doesn't use it.
--			 * arptables only has a 'filter' table anyway.
--			 */
--			break;
--
--		case 'V':
--			if (invert)
--				printf("Not %s ;-)\n", arptables_globals.program_version);
--			else
--				printf("%s v%s (nf_tables)\n",
--				       arptables_globals.program_name,
--				       arptables_globals.program_version);
--			exit(0);
--
--		case '0':
--			set_option(&cs.options, OPT_LINENUMBERS, &args.invflags,
--				   invert);
--			break;
--
--		case 'M':
--			//modprobe = optarg;
--			break;
--
--		case 'c':
--
--			set_option(&cs.options, OPT_COUNTERS, &args.invflags,
--				   invert);
--			args.pcnt = optarg;
--			if (xs_has_arg(argc, argv))
--				args.bcnt = argv[optind++];
--			else
--				xtables_error(PARAMETER_PROBLEM,
--					      "-%c requires packet and byte counter",
--					      opt2char(OPT_COUNTERS));
--
--			if (sscanf(args.pcnt, "%llu", &cs.arp.counters.pcnt) != 1)
--			xtables_error(PARAMETER_PROBLEM,
--				"-%c packet counter not numeric",
--				opt2char(OPT_COUNTERS));
--
--			if (sscanf(args.bcnt, "%llu", &cs.arp.counters.bcnt) != 1)
--				xtables_error(PARAMETER_PROBLEM,
--					      "-%c byte counter not numeric",
--					      opt2char(OPT_COUNTERS));
--
--			break;
--
--
--		case 1: /* non option */
--			if (optarg[0] == '!' && optarg[1] == '\0') {
--				if (invert)
--					xtables_error(PARAMETER_PROBLEM,
--						      "multiple consecutive ! not"
--						      " allowed");
--				invert = true;
--				optarg[0] = '\0';
--				continue;
--			}
--			printf("Bad argument `%s'\n", optarg);
--			exit_tryhelp(2);
--
--		default:
--			if (cs.target) {
--				xtables_option_tpcall(cs.c, argv,
--						      invert, cs.target, &cs.arp);
--			}
--			break;
--		}
--		invert = false;
--	}
--
--	if (cs.target)
--		xtables_option_tfcall(cs.target);
--
--	if (optind < argc)
--		xtables_error(PARAMETER_PROBLEM,
--			      "unknown arguments found on commandline");
--	if (invert)
--		xtables_error(PARAMETER_PROBLEM,
--			      "nothing appropriate following !");
--
--	h->ops->post_parse(p.command, &cs, &args);
--
--	if (p.command == CMD_REPLACE && (args.s.naddrs != 1 || args.d.naddrs != 1))
--		xtables_error(PARAMETER_PROBLEM, "Replacement rule does not "
--						 "specify a unique address");
--
--	if (p.chain && strlen(p.chain) > ARPT_FUNCTION_MAXNAMELEN)
--		xtables_error(PARAMETER_PROBLEM,
--				"chain name `%s' too long (must be under %i chars)",
--				p.chain, ARPT_FUNCTION_MAXNAMELEN);
--
--	if (p.command == CMD_APPEND
--	    || p.command == CMD_DELETE
--	    || p.command == CMD_INSERT
--	    || p.command == CMD_REPLACE) {
--		if (strcmp(p.chain, "PREROUTING") == 0
--		    || strcmp(p.chain, "INPUT") == 0) {
--			/* -o not valid with incoming packets. */
--			if (cs.options & OPT_VIANAMEOUT)
--				xtables_error(PARAMETER_PROBLEM,
--					      "Can't use -%c with %s\n",
--					      opt2char(OPT_VIANAMEOUT),
--					      p.chain);
--		}
--
--		if (strcmp(p.chain, "POSTROUTING") == 0
--		    || strcmp(p.chain, "OUTPUT") == 0) {
--			/* -i not valid with outgoing packets */
--			if (cs.options & OPT_VIANAMEIN)
--				xtables_error(PARAMETER_PROBLEM,
--						"Can't use -%c with %s\n",
--						opt2char(OPT_VIANAMEIN),
--						p.chain);
--		}
--	}
--
--	switch (p.command) {
--	case CMD_APPEND:
--		ret = append_entry(h, p.chain, p.table, &cs, 0,
--				   args.s.naddrs, args.s.addr.v4, args.s.mask.v4,
--				   args.d.naddrs, args.d.addr.v4, args.d.mask.v4,
--				   cs.options&OPT_VERBOSE, true);
--		break;
--	case CMD_DELETE:
--		ret = delete_entry(p.chain, p.table, &cs,
--				   args.s.naddrs, args.s.addr.v4, args.s.mask.v4,
--				   args.d.naddrs, args.d.addr.v4, args.d.mask.v4,
--				   cs.options&OPT_VERBOSE, h);
--		break;
--	case CMD_DELETE_NUM:
--		ret = nft_cmd_rule_delete_num(h, p.chain, p.table, p.rulenum - 1, p.verbose);
--		break;
--	case CMD_REPLACE:
--		ret = replace_entry(p.chain, p.table, &cs, p.rulenum - 1,
--				    args.s.addr.v4, args.s.mask.v4, args.d.addr.v4, args.d.mask.v4,
--				    cs.options&OPT_VERBOSE, h);
--		break;
--	case CMD_INSERT:
--		ret = append_entry(h, p.chain, p.table, &cs, p.rulenum - 1,
--				   args.s.naddrs, args.s.addr.v4, args.s.mask.v4,
--				   args.d.naddrs, args.d.addr.v4, args.d.mask.v4,
--				   cs.options&OPT_VERBOSE, false);
--		break;
--	case CMD_LIST:
--		ret = list_entries(h, p.chain, p.table,
--				   p.rulenum,
--				   cs.options&OPT_VERBOSE,
--				   cs.options&OPT_NUMERIC,
--				   /*cs.options&OPT_EXPANDED*/0,
--				   cs.options&OPT_LINENUMBERS);
--		break;
--	case CMD_FLUSH:
--		ret = nft_cmd_rule_flush(h, p.chain, p.table, cs.options & OPT_VERBOSE);
--		break;
--	case CMD_ZERO:
--		ret = nft_cmd_chain_zero_counters(h, p.chain, p.table,
--					      cs.options & OPT_VERBOSE);
--		break;
--	case CMD_LIST|CMD_ZERO:
--		ret = list_entries(h, p.chain, p.table, p.rulenum,
--				   cs.options&OPT_VERBOSE,
--				   cs.options&OPT_NUMERIC,
--				   /*cs.options&OPT_EXPANDED*/0,
--				   cs.options&OPT_LINENUMBERS);
--		if (ret)
--			ret = nft_cmd_chain_zero_counters(h, p.chain, p.table,
--						      cs.options & OPT_VERBOSE);
--		break;
--	case CMD_NEW_CHAIN:
--		ret = nft_cmd_chain_user_add(h, p.chain, p.table);
--		break;
--	case CMD_DELETE_CHAIN:
--		ret = nft_cmd_chain_del(h, p.chain, p.table,
--					cs.options & OPT_VERBOSE);
--		break;
--	case CMD_RENAME_CHAIN:
--		ret = nft_cmd_chain_user_rename(h, p.chain, p.table, p.newname);
--		break;
--	case CMD_SET_POLICY:
--		ret = nft_cmd_chain_set(h, p.table, p.chain, p.policy, NULL);
--		if (ret < 0)
--			xtables_error(PARAMETER_PROBLEM, "Wrong policy `%s'\n",
--				      p.policy);
--		break;
--	case CMD_NONE:
--		break;
--	default:
--		/* We should never reach this... */
--		exit_tryhelp(2);
--	}
--
--	free(args.s.addr.v4);
--	free(args.s.mask.v4);
--	free(args.d.addr.v4);
--	free(args.d.mask.v4);
--
--	nft_clear_iptables_command_state(&cs);
--	xtables_free_opts(1);
--
--/*	if (p.verbose > 1)
--		dump_entries(*handle);*/
--
--	return ret;
--}
-diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index 86dcede395e07..aa8b397f29ac7 100644
---- a/iptables/xtables-restore.c
-+++ b/iptables/xtables-restore.c
-@@ -451,7 +451,7 @@ int xtables_eb_restore_main(int argc, char *argv[])
- static const struct nft_xt_restore_cb arp_restore_cb = {
- 	.commit		= nft_commit,
- 	.table_flush	= nft_cmd_table_flush,
--	.do_command	= do_commandarp,
-+	.do_command	= do_commandx,
- 	.chain_set	= nft_cmd_chain_set,
- 	.chain_restore  = nft_cmd_chain_restore,
- };
-diff --git a/iptables/xtables-standalone.c b/iptables/xtables-standalone.c
-index 19d663b02348c..5482a85689d79 100644
---- a/iptables/xtables-standalone.c
-+++ b/iptables/xtables-standalone.c
-@@ -68,9 +68,17 @@ xtables_main(int family, const char *progname, int argc, char *argv[])
- 	}
- 	xt_params->program_name = progname;
- #if defined(ALL_INCLUSIVE) || defined(NO_SHARED_LIBS)
--	init_extensions();
--	init_extensions4();
--	init_extensions6();
-+	switch (family) {
-+	case NFPROTO_IPV4:
-+	case NFPROTO_IPV6:
-+		init_extensions();
-+		init_extensions4();
-+		init_extensions6();
-+		break;
-+	case NFPROTO_ARP:
-+		init_extensionsa();
-+		break;
-+	}
- #endif
- 
- 	if (nft_init(&h, family) < 0) {
-@@ -107,3 +115,8 @@ int xtables_ip6_main(int argc, char *argv[])
- {
- 	return xtables_main(NFPROTO_IPV6, "ip6tables", argc, argv);
- }
-+
-+int xtables_arp_main(int argc, char *argv[])
-+{
-+	return xtables_main(NFPROTO_ARP, "arptables", argc, argv);
-+}
-diff --git a/iptables/xtables.c b/iptables/xtables.c
-index dc67affc19dbe..64590b4329ec6 100644
---- a/iptables/xtables.c
-+++ b/iptables/xtables.c
-@@ -36,11 +36,13 @@
- #include <stdarg.h>
- #include <limits.h>
- #include <unistd.h>
-+#include <netinet/ether.h>
- #include <iptables.h>
- #include <xtables.h>
- #include <fcntl.h>
- #include "xshared.h"
- #include "nft-shared.h"
-+#include "nft-arp.h"
- #include "nft.h"
- 
- static struct option original_opts[] = {
-@@ -485,13 +487,50 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
- 			break;
- #endif
- 
-+		case 2:/* src-mac */
-+			set_option(&cs->options, OPT_S_MAC, &args->invflags,
-+				   invert);
-+			args->src_mac = optarg;
-+			break;
-+
-+		case 3:/* dst-mac */
-+			set_option(&cs->options, OPT_D_MAC, &args->invflags,
-+				   invert);
-+			args->dst_mac = optarg;
-+			break;
-+
-+		case 'l':/* hardware length */
-+			set_option(&cs->options, OPT_H_LENGTH, &args->invflags,
-+				   invert);
-+			args->arp_hlen = optarg;
-+			break;
-+
-+		case 8: /* was never supported, not even in arptables-legacy */
-+			xtables_error(PARAMETER_PROBLEM, "not supported");
-+		case 4:/* opcode */
-+			set_option(&cs->options, OPT_OPCODE, &args->invflags,
-+				   invert);
-+			args->arp_opcode = optarg;
-+			break;
-+
-+		case 5:/* h-type */
-+			set_option(&cs->options, OPT_H_TYPE, &args->invflags,
-+				   invert);
-+			args->arp_htype = optarg;
-+			break;
-+
-+		case 6:/* proto-type */
-+			set_option(&cs->options, OPT_P_TYPE, &args->invflags,
-+				   invert);
-+			args->arp_ptype = optarg;
-+			break;
-+
- 		case 'j':
- 			set_option(&cs->options, OPT_JUMP, &args->invflags,
- 				   invert);
- 			command_jump(cs, optarg);
- 			break;
- 
--
- 		case 'i':
- 			if (*optarg == '\0')
- 				xtables_error(PARAMETER_PROBLEM,
+diff --git a/conntrack.8 b/conntrack.8
+index a14cca6f6480..de1cac2bebac 100644
+--- a/conntrack.8
++++ b/conntrack.8
+@@ -26,7 +26,7 @@ conntrack \- command line interface for netfilter connection tracking
+ .br
+ .BR "conntrack -R file"
+ .SH DESCRIPTION
+-The \fBconntrack\fP utilty provides a full featured userspace interface to the
++The \fBconntrack\fP utility provides a full-featured userspace interface to the
+ Netfilter connection tracking system that is intended to replace the old
+ /proc/net/ip_conntrack interface. This tool can be used to search, list,
+ inspect and maintain the connection tracking subsystem of the Linux kernel.
+@@ -121,12 +121,12 @@ timestamp available since 2.6.38 (you can enable it via the \fBsysctl(8)\fP
+ key \fBnet.netfilter.nf_conntrack_timestamp\fP).
+ The labels output option tells \fBconntrack\fP to show the names of connection
+ tracking labels that might be present.
+-The userspace output options tells if the event has been triggered by a process.
++The userspace output option tells if the event has been triggered by a process.
+ .TP
+ .BI "-e, --event-mask " "[ALL|NEW|UPDATES|DESTROY][,...]"
+ Set the bitmask of events that are to be generated by the in-kernel ctnetlink
+ event code.  Using this parameter, you can reduce the event messages generated
+-by the kernel to those types to those that you are actually interested in.
++by the kernel to the types that you are actually interested in.
+ .
+ This option can only be used in conjunction with "\-E, \-\-event".
+ .TP
+@@ -135,7 +135,7 @@ Set the Netlink socket buffer size in bytes. This option is useful if the
+ command line tool reports ENOBUFS errors. If you do not pass this option, the
+ default value available at \fBsysctl(8)\fP key \fBnet.core.rmem_default\fP is
+ used. The tool reports this problem if your process is too slow to handle all
+-the event messages or, in other words, if the amount of events are big enough
++the event messages or, in other words, if the amount of events is big enough
+ to overrun the socket buffer. Note that using a big buffer reduces the chances
+ to hit ENOBUFS, however, this results in more memory consumption.
+ .
+@@ -163,7 +163,7 @@ one specified as argument.
+ Specify layer four (TCP, UDP, ...) protocol.
+ .TP
+ .BI "-f, --family " "PROTO"
+-Specify layer three (ipv4, ipv6) protocol
++Specify layer three (ipv4, ipv6) protocol.
+ This option is only required in conjunction with "\-L, \-\-dump". If this
+ option is not passed, the default layer 3 protocol will be IPv4.
+ .TP
+@@ -181,12 +181,11 @@ comparision. In "\-\-create" mode, the mask is ignored.
+ Specify a conntrack label.
+ This option is only available in conjunction with "\-L, \-\-dump",
+ "\-E, \-\-event", "\-U \-\-update" or "\-D \-\-delete".
+-Match entries whose labels match at least those specified.
+-Use multiple \-l commands to specify multiple labels that need to be set.
+-Match entries whose labels matches at least those specified as arguments.
++Match entries whose labels include those specified as arguments.
++Use multiple \-l options to specify multiple labels that need to be set.
+ .TP
+ .BI "--label-add " "LABEL"
+-Specify the conntrack label to add to to the selected conntracks.
++Specify the conntrack label to add to the selected conntracks.
+ This option is only available in conjunction with "\-I, \-\-create" or
+ "\-U, \-\-update".
+ .TP
+@@ -395,7 +394,7 @@ Show source NAT connections
+ Show connection events together with the timestamp
+ .TP
+ .B conntrack \-D \-s 1.2.3.4
+-Delete all flow whose source address is 1.2.3.4
++Delete all flows whose source address is 1.2.3.4
+ .TP
+ .B conntrack \-U \-s 1.2.3.4 \-m 1
+ Set connmark to 1 of all the flows whose source address is 1.2.3.4
+@@ -417,8 +416,8 @@ See
+ Jay Schulist, Patrick McHardy, Harald Welte and Pablo Neira Ayuso wrote the
+ kernel-level "ctnetlink" interface that is used by the conntrack tool.
+ .PP
+-Pablo Neira Ayuso wrote and maintain the conntrack tool, Harald Welte added
+-support for conntrack based accounting counters.
++Pablo Neira Ayuso wrote and maintains the conntrack tool, Harald Welte added
++support for conntrack-based accounting counters.
+ .PP
+ Man page written by Harald Welte <laforge@netfilter.org> and
+ Pablo Neira Ayuso <pablo@netfilter.org>.
+
+base-commit: ee2d35899a2768489c8705fe1a9e72731813e6d2
 -- 
 2.33.0
 
