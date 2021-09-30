@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F62D41DBEF
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Sep 2021 16:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D0641DBF1
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Sep 2021 16:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351734AbhI3OH0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 30 Sep 2021 10:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58698 "EHLO
+        id S1351774AbhI3OHh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 30 Sep 2021 10:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351633AbhI3OHZ (ORCPT
+        with ESMTP id S1351633AbhI3OHg (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 30 Sep 2021 10:07:25 -0400
+        Thu, 30 Sep 2021 10:07:36 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F66C06176A
-        for <netfilter-devel@vger.kernel.org>; Thu, 30 Sep 2021 07:05:43 -0700 (PDT)
-Received: from localhost ([::1]:51738 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BEFC06176A
+        for <netfilter-devel@vger.kernel.org>; Thu, 30 Sep 2021 07:05:54 -0700 (PDT)
+Received: from localhost ([::1]:51750 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mVwgv-0007SZ-M7; Thu, 30 Sep 2021 16:05:41 +0200
+        id 1mVwh6-0007T8-Gz; Thu, 30 Sep 2021 16:05:52 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 13/17] xtables: arptables doesn't warn about empty interface
-Date:   Thu, 30 Sep 2021 16:04:15 +0200
-Message-Id: <20210930140419.6170-14-phil@nwl.cc>
+Subject: [iptables PATCH v2 14/17] xtables: arptables accepts but ignores '-m'
+Date:   Thu, 30 Sep 2021 16:04:16 +0200
+Message-Id: <20210930140419.6170-15-phil@nwl.cc>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210930140419.6170-1-phil@nwl.cc>
 References: <20210930140419.6170-1-phil@nwl.cc>
@@ -34,45 +34,41 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The empty string passed as interface name is simply ignored. Calling
-xtables_parse_interface() with an empty string is safe.
-
-Note that arptables-legacy seems not to ignore inverted empty
-interfacess, they appear in '-L' output as such:
-
-| -j ACCEPT -i * ! -o * , pcnt=0 -- bcnt=0
-
-Yet they don't appear in arptables-save output. Given that inverted "any
-interface" will never match, there's probably no point in sticking to
-this inconsistency.
+Without this patch, arptables-nft would complain about an unknown
+option.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ iptables/xtables-arp.c | 2 +-
+ iptables/xtables.c     | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
+index cca19438a877e..212b5f1347206 100644
+--- a/iptables/xtables-arp.c
++++ b/iptables/xtables-arp.c
+@@ -89,7 +89,7 @@ static void printhelp(const struct xtables_rule_match *m);
+ struct xtables_globals arptables_globals = {
+ 	.option_offset		= 0,
+ 	.program_version	= PACKAGE_VERSION,
+-	.optstring		= OPTSTRING_COMMON "C:R:S::" "h::l:nv" /* "m:" */,
++	.optstring		= OPTSTRING_COMMON "C:R:S::" "h::l:m:nv",
+ 	.orig_opts		= original_opts,
+ 	.exit_err		= xtables_exit_error,
+ 	.compat_rev		= nft_compatible_revision,
 diff --git a/iptables/xtables.c b/iptables/xtables.c
-index 23d7d29169ca0..5b5c875dc3a6c 100644
+index 5b5c875dc3a6c..b8c4e2737a96a 100644
 --- a/iptables/xtables.c
 +++ b/iptables/xtables.c
-@@ -533,7 +533,7 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
+@@ -575,6 +575,8 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
  			break;
  
- 		case 'i':
--			if (*optarg == '\0')
-+			if (*optarg == '\0' && h->family != NFPROTO_ARP)
- 				xtables_error(PARAMETER_PROBLEM,
- 					"Empty interface is likely to be "
- 					"undesired");
-@@ -545,7 +545,7 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
+ 		case 'm':
++			if (h->family == NFPROTO_ARP)
++				break;
+ 			command_match(cs, invert);
  			break;
  
- 		case 'o':
--			if (*optarg == '\0')
-+			if (*optarg == '\0' && h->family != NFPROTO_ARP)
- 				xtables_error(PARAMETER_PROBLEM,
- 					"Empty interface is likely to be "
- 					"undesired");
 -- 
 2.33.0
 
