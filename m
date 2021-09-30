@@ -2,151 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FD341DF5D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Sep 2021 18:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9143B41DFD3
+	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Sep 2021 19:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352237AbhI3QoN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 30 Sep 2021 12:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352244AbhI3QoJ (ORCPT
+        id S1347032AbhI3ROi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 30 Sep 2021 13:14:38 -0400
+Received: from bmailout3.hostsharing.net ([176.9.242.62]:45939 "EHLO
+        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346857AbhI3ROi (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 30 Sep 2021 12:44:09 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3B2C06176E
-        for <netfilter-devel@vger.kernel.org>; Thu, 30 Sep 2021 09:42:26 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id 10so4686096uae.10
-        for <netfilter-devel@vger.kernel.org>; Thu, 30 Sep 2021 09:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/T9drlD1s9vO6lHEMs4LJzmDo2MKXEHBXvFYaWoQWpk=;
-        b=MVXGXX3aLHvdEWHCf5XJGaFOufs/PEmNG+RYEO4oTx+QozBBJXVYJaBnJtUB4vE17v
-         l7qyXFAJCbEctdu3sv0yFCoBaT709anRfXTrWJ9LhTtNNTeF1B+O3pLHqUy2QAPvnPSf
-         3IecToNi2HT6Pa8coT6aXrgI9wtYa7BmAid9HW8X8cKcp6oEqxD6jn+NQAgIAJ/uIR8C
-         IIBDMRIctM/mMB+N6Sj6bvfiXlKmuXxbPXR4GO4hFEN9lvqP5/jfJ8FGLJzKy6wn7oVo
-         2mk7x+YQ0Nx9H6ldMnQifpIRNZg0XeefD1+q8eWUCCxe1+/MmkhbycjtfATlCNeof1ow
-         TbpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/T9drlD1s9vO6lHEMs4LJzmDo2MKXEHBXvFYaWoQWpk=;
-        b=k2JydWqvVemuWTw1z/oEgaRNdJBdlDsQ6OfU/LskREEywFzXA8etQKxJuAzEUmDehR
-         Ymb4A8/Kkga2+UTAfw0dQMJ2/0oZWc3aITPNm2hG+UDKVD8rMvjNtvcw9t3lK3p4DVIO
-         mKP1+Xc1Xn/742J5djlSJM0tpDdwDVX3RETLOdTjP+sYeMY5pS3cwAcxcnOlpJMaLqdQ
-         /0UmwGtwdcjpVk/5Zwnb7rKCiN4s5d44a6Im92Rc0tj3QQoemGMGNmeqV53hrD2MldXp
-         5z4MGKz0XVmIu4q7L1oOB/GZges6+r9mO2tGDgNhdtp1GOpK0ibJxy+muahH2/qSsUXh
-         YKQQ==
-X-Gm-Message-State: AOAM5326Yza/+KdQPWtyA4AT81koFOP2R1exLq0aV5+09ppb/PKb4nQV
-        5gU0l1gMFxUDUCaE9agKuLFyK+gO2Llt/DnqI7U=
-X-Google-Smtp-Source: ABdhPJyNAXlGgykPpoSQORoXm4LRDDlaCMAD8cIdikco7Ac1uwVB1jZIpGBr3/yozFCMZ2mvQhCbDywUDvBawknotr0=
-X-Received: by 2002:ab0:5602:: with SMTP id y2mr6742362uaa.120.1633020145964;
- Thu, 30 Sep 2021 09:42:25 -0700 (PDT)
+        Thu, 30 Sep 2021 13:14:38 -0400
+X-Greylist: delayed 37216 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Sep 2021 13:14:37 EDT
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout3.hostsharing.net (Postfix) with ESMTPS id DFCF2100B09E0;
+        Thu, 30 Sep 2021 19:12:53 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id BE73C182995; Thu, 30 Sep 2021 19:12:53 +0200 (CEST)
+Date:   Thu, 30 Sep 2021 19:12:53 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, kadlec@netfilter.org, fw@strlen.de,
+        ast@kernel.org, edumazet@google.com, tgraf@suug.ch,
+        nevola@gmail.com, john.fastabend@gmail.com, willemb@google.com
+Subject: Re: [PATCH nf-next v5 0/6] Netfilter egress hook
+Message-ID: <20210930171253.GA13673@wunner.de>
+References: <20210928095538.114207-1-pablo@netfilter.org>
+ <e4f1700c-c299-7091-1c23-60ec329a5b8d@iogearbox.net>
+ <YVVk/C6mb8O3QMPJ@salvia>
+ <3973254b-9afb-72d5-7bf1-59edfcf39a58@iogearbox.net>
+ <YVWBpsC4kvMuMQsc@salvia>
+ <20210930072835.791085f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Received: by 2002:a59:ab2e:0:b0:22d:7f44:603a with HTTP; Thu, 30 Sep 2021
- 09:42:25 -0700 (PDT)
-Reply-To: irenezakari24@gmail.com
-From:   Irene zakari <irenezakari88@gmail.com>
-Date:   Thu, 30 Sep 2021 09:42:25 -0700
-Message-ID: <CAFT8PFEAnoqXLbEA5pwcgwfbNhA5PiV3sHmraOZdm3n24J86mw@mail.gmail.com>
-Subject: PLEASE I NEED YOUR HELP
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930072835.791085f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello   ..
+On Thu, Sep 30, 2021 at 07:28:35AM -0700, Jakub Kicinski wrote:
+> On Thu, 30 Sep 2021 11:21:42 +0200 Pablo Neira Ayuso wrote:
+> > this is stuffing one more bit into the skbuff
+> 
+> The lifetime of this information is constrained, can't it be a percpu
+> flag, like xmit_more?
 
-How do you do over there? I hope you are doing well?
+Hm, can't an skb be queued and processed later on a different cpu?
+E.g. what about fragments?
 
-My name is Irene. (24 years), i am single, from Gambia, the only child
-of late Eng. Bernard Bakary Zakaria. the Director of Bajam Enterprise
-(Building Construction Company in The Gambia) also the CEO of Bernard
-Import and Export (GAMBIA).
+That would rule out a percpu flag, leaving a flag in struct sk_buff
+as the only option.
 
-As a matter of fact my mother died when i was barely 4 years old
-according to my late father and because of the type of love he had for
-my mother made him to remain UN-married till he left the ghost..
+Thanks,
 
-So after the death of my father as a result of assassinate, his brother (My
-Uncle) who is the purchasing and marketing sale manager of my late
-fathers company named (Mr. James Tokunbo Oriade Zakaria) wanted to
-convert all the properties and resources of my late father into his
-which i quarreled with him and it made him to lay his anger on me to
-the extent of hiring an assassins to kill me but to God be the glory i
-succeeded by making a way to Burkina faso for my dear life.
-Honestly i do live a fearful life even here in Burkina faso because of
-those Assassins coming after me .
-
-I would want to live and study in your country for my better future.
-because my father same blood brother wanted to force me into undecided
-marriage, just for me to leave my father home and went and live with
-another man I never know as he want to occupied all my father home
-and maybe to sold it as my father no longer alive, I'm the only child
-daughter my father born, '' but he don't know that i am not
-interesting in any of my father properties or early marriage for now,
-because i still have future to think about and to focus on my studies
-first as i was doing my first year in the University before the death
-of my father.
-
-Actually what I want to discuss with you is about my personal issue
-concern funds my late father deposited in a bank outside my country,
-worth $4.5 million united state dollars. i need your assistance to
-receive and invest this funds in your country.
-
-Please help me, I am sincere to you and I want to be member of your
-family as well if you wouldn't mind to accept me and lead me to better
-future in your country.
-
-All the documents the bank issue to my father during time of deposit
-is with me now.
-I already notify the bank on phone about the death of my father and
-they are surprise for the news and accept that my father is their good
-customer.
-I will be happy if this money can be invested in any business of your
-choice and it will be under your control till i finished my education,
-also I'm assuring you good relationship and I am ready to discuss the
-amount of money to give you from this money for your help.
-
-Therefore, I shall give you the bank contact and other necessary
-information in my next email if you will only promise me that you will
-not/never betray and disclosed this matter to anybody, because, this
-money is the only hope i have for survival on earth since I have lost
-my parents.
-
-Moreover I have the FUND PLACEMENT CERTIFICATE and the DEATH
-CERTIFICATE here with me, but before I give you further information, i
-will like to know your full data
-
-1. Full Name: ........................
-2. Address: ..................
-3. Nationality: ........... Sex................
-4. Age:........... Date of Birth:................
-5. Occupation:...................
-.....
-6. Phone: ........... Fax:.........................
-7. State of Origin: .......Country:..............
-8. Occupation:...................
-................
-9. Marital status........... E-mail address's: ............
-10. Scan copy of your ID card or Driving License/Photo:............
-DECLARATION:
-
-so that i will be fully sure that i am not trusting the wrong person.
-and it will also give me the mind to send you the bank contact for you
-to communicate with them for more verification about this money. and
-to know you more better.
-
-Meanwhile, you can reach me through my pastor,his name is Pastor Paul
-any time you call, tell him that you want to speak with me because
-right now i am living in the church here in Burkina faso and i don't
-want to stay here any longer,
-send for me to speak with you his phone number is this(+226 75213646)
-
-I will stop here and i will be waiting for your reply and feel free
-ask any thing you want to know about me.
-Please help me, I would be highly appreciated
-Have nice day.
-From Irene
+Lukas
