@@ -2,110 +2,77 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD3C41E282
-	for <lists+netfilter-devel@lfdr.de>; Thu, 30 Sep 2021 22:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46C941E45E
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Oct 2021 00:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240840AbhI3UGK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 30 Sep 2021 16:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
+        id S1349422AbhI3XAH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 30 Sep 2021 19:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhI3UGJ (ORCPT
+        with ESMTP id S1349441AbhI3XAE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 30 Sep 2021 16:06:09 -0400
-Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E293AC06176A
-        for <netfilter-devel@vger.kernel.org>; Thu, 30 Sep 2021 13:04:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=S7vUbsn6H0QabcpbQhcK78PriOSUzWFNhHAOMSo/DhQ=; b=jiW/8t80C+M9CHSBe0SMfmD8oe
-        uGDztkDyA8BmHEbllkGoFPc8S2MDeTcxtuV6SSgpUDVDEOkIsEFxr6488PbQpfbxrHp7IdFSAJnH0
-        jA2TooKvunKyKFwur9AFrT0GGe3SCCqTzgY+Wy8nmG3GYvVYykVNp20qMafq/nbg5o4cNC7O2Yhby
-        VMqQjQ65T/5D8tZmoBIxdC+9vkyWN9cp6T8SokjCCIIqc9meJj9IWTMu0WLa6ZSduoLknZ1nNtrFY
-        khlB/6UZKPcwbv7adfNtj4jG6+juckjN1uFJ1CubAWJvqWexkt1f/AnzlREo+5WKoHS+sbE0lhPbj
-        yBfn2y7Q==;
-Received: from [2001:8b0:fb7d:d6d7:feb3:bcff:fe5e:42c3] (helo=azazel.net)
-        by kadath.azazel.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <jeremy@azazel.net>)
-        id 1mW2I1-001LHM-Ok; Thu, 30 Sep 2021 21:04:21 +0100
-Date:   Thu, 30 Sep 2021 21:04:20 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Netfilter Core Team <coreteam@netfilter.org>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
-        Kyle Bowman <kbowman@cloudflare.com>,
-        Alex Forster <aforster@cloudflare.com>,
-        Cloudflare Kernel Team <kernel-team@cloudflare.com>
-Subject: Re: [PATCH 1/3] extensions: libtxt_NFLOG: use nft built-in logging
- instead of xt_NFLOG
-Message-ID: <YVYYRCDylFqmFlWC@azazel.net>
-References: <20210809194243.53370-1-kbowman@cloudflare.com>
- <YVVkN0ZNs5I+tKG+@azazel.net>
+        Thu, 30 Sep 2021 19:00:04 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38C9C061777
+        for <netfilter-devel@vger.kernel.org>; Thu, 30 Sep 2021 15:58:20 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id m3so31022751lfu.2
+        for <netfilter-devel@vger.kernel.org>; Thu, 30 Sep 2021 15:58:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=AnIUtRQtDgk3YDJAatwz+LXUKRWPbctJNdAprjwvZ5o=;
+        b=R1PvQpCeIannjSb6Yh+ydpk75/C6o8mEtPAzmgaEHIE8+GwbHjyaz9wpB+8x12xrLC
+         5QzliCelgl2NI0J6eAvviXY6NAb0fddKOwm8F0zluWIgQVcCljaROD5vrmiDeSlDLGsK
+         xJB49pSfVQy8S3Pu4kCVcQeq6ZMoa/xhFaIxFdweO35gr4XDAjaXA+zoW+1iWxDz8mxI
+         TYIETMUD6inxlylZ2+5HXNoU+Ej3Yy1phQDEHgefTc6SLcco5OC3x4iNwsBqiDMPoP+P
+         pOk7Fq1FEKBsQAGNBYAce970oQL9Ja1ScWCdUauoISN5YYshWUwov1jp5zGqcxSOFPv4
+         8viw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=AnIUtRQtDgk3YDJAatwz+LXUKRWPbctJNdAprjwvZ5o=;
+        b=qQSESy+A2MSYt7GDbcA0LMdOMS3dyVkB+yXyvf9kUYqDZCnQoTA+aTnbedabA08cPo
+         p1MaQUXlqCv3W+9Xp1tRHnHr83AiZ7hpO+uK5S1t0uKqm+GfQ6sudmSc27qrlIlZrhrQ
+         5ZKgesmP176CfOiqqDYQi6vrOGFk3I6s89dYR3iZEfK/Egc82c4EOjTXjB6ISc0B0VGf
+         gxMLmrLUE+xE1DYE/xqa0QpO2nAWT80Q1Sxm9EsslBRJeYATapwBhuhHir2ICpkBi8HO
+         6UhTY8I4dcMtPbe1eL4pixrdYa2b9A1AnTcflykyJWjhmUZJT7lW1kVGsSs1ZgBcTWhC
+         rKlg==
+X-Gm-Message-State: AOAM5331vQB6X4NmDE/S5q0v7DK6+uveMHaVx8tV4t2sJM12RaYOCuoV
+        lktNojS3Uqn9gIvk80wvN6lmXNG2/89B27KhOuc=
+X-Google-Smtp-Source: ABdhPJyp0GckkyoQimIbcF3/K7wY5JuxQheNi1bdL6NpxgoMO9RxiMuiJeEbVByK85pFkO1bkngH1qS9zgmfyJF8Wlc=
+X-Received: by 2002:ac2:4d91:: with SMTP id g17mr1289553lfe.597.1633042698767;
+ Thu, 30 Sep 2021 15:58:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zyIJzBT/xElbnYmt"
-Content-Disposition: inline
-In-Reply-To: <YVVkN0ZNs5I+tKG+@azazel.net>
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:feb3:bcff:fe5e:42c3
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+Received: by 2002:a05:6512:5d8:0:0:0:0 with HTTP; Thu, 30 Sep 2021 15:58:17
+ -0700 (PDT)
+Reply-To: southwestloanco59@gmail.com
+From:   SOUTHWESTLOANCO <saniabdullahinng2020@gmail.com>
+Date:   Thu, 30 Sep 2021 15:58:17 -0700
+Message-ID: <CA+3X9TxOgUnr17iBEDQumHTT-4sD=94e7Kczm3G2MdEDopz6kQ@mail.gmail.com>
+Subject: Dear owner,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+-- 
+Good day,
+          Do you need a loan ? We offer any kind of loan to repay in
+6months with just 2% interest
 
---zyIJzBT/xElbnYmt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Kindly Reply with below information
 
-On 2021-09-30, at 08:16:07 +0100, Jeremy Sowden wrote:
-> On 2021-08-09, at 14:42:41 -0500, Kyle Bowman wrote:
-> > Replaces the use of xt_NFLOG with the nft built-in log statement.
-> >
-> > This additionally adds support for using longer log prefixes of 128
-> > characters in size. Until now NFLOG has truncated the log-prefix to
-> > the 64-character limit supported by iptables-legacy. We now use the
-> > struct xtables_target's udata member to store the longer
-> > 128-character prefix supported by iptables-nft.
-> >
-> > Signed-off-by: Kyle Bowman <kbowman@cloudflare.com>
-> > Signed-off-by: Alex Forster <aforster@cloudflare.com>
-> > Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
->
-> Hi Core Team,
->
-> It's been the better part of two months since this patch series was
-> posted and there has been no feedback.  I was wondering if one of you
-> might be in a position to review it in the not too distant future.  I
-> see that it is delegated to Pablo in Patchwork, but then so is every-
-> thing else. :)
+NAME...............
+ADDRESS..........
+OCCUPATION....
+AGE...................
+PHONE..............
+AMOUNT NEEDED......
 
-Having asked for feedback, I've spotted a bug. :)  Will fix and send out
-v2.
+Regards
 
-J.
+Contact  Mr Gary Edward +13182955380
 
---zyIJzBT/xElbnYmt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmFWGD0ACgkQKYasCr3x
-BA0R4g//djyfxfBSTBd6nTRlvaYsoxjrcbg9ylWV/QXzsHuwmrRRhQy3KrlobhEa
-OP7xBPqMjA2sZ5XSQLFzgFSDuobeBBHmKO3hkwqregVr9G7cGXiEGo088yHduIIP
-x9VzwIKwJckGRpUqBR1j6rQhGAq1Onw+JNsdP5VvP/YHLi2dQ6KyTwRZmgAuoy9A
-3NZBJN9IYf966Ssb5e0MAR9LbdPmuN/YwZDFSE1qy0kEzjb56o/yDMUqrIJFKtTA
-fCZt2DQURI7xkBFOJIOAVw9XNYPy5XzVyHFlNpH9ZoTsuh6eHXQmMkc8h/mYudt6
-s4jTw2w/OW/HqK6CjxEidM0FU4ZvhQA5j7Y1vcyQ1ry7sRxinPZTi9uvSr0eAKNg
-nJNWetoi5LYwWcCW3pIZzLLT6mb0rR1rMpzm2ua8CL/ch/RV99PJNArqbqqMyWIu
-R4PWZlx6FWFHN5QlwF8eKkvweDdAxMAWixvwK07D5AGu8gEgQkcQKt7wmBO4mPT6
-J3w+B3qZC/OIuDZvfUwFqVYMYWkdLv8s3dZYWWcEMCb+fmemOa+AjCS00MlzBIQl
-WRTSHVXh7Sbv2h3hZTbdN3zQaTyOKh7cjLNyAHLpvW3cZtP7KzZlbxDrkT6tL0uG
-lno/bbNHlRBbVNXPyY3fPmdX22YUm0mfwgABDtaTcEWVWscMJmA=
-=HmPn
------END PGP SIGNATURE-----
-
---zyIJzBT/xElbnYmt--
+Remittance Department southwestloanco59@gmail.com
