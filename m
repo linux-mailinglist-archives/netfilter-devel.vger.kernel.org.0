@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF09641F380
+	by mail.lfdr.de (Postfix) with ESMTP id 091BE41F37E
 	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Oct 2021 19:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbhJARrY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S229654AbhJARrY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Fri, 1 Oct 2021 13:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43638 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355106AbhJARrY (ORCPT
+        with ESMTP id S229642AbhJARrX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 1 Oct 2021 13:47:24 -0400
+        Fri, 1 Oct 2021 13:47:23 -0400
 Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E51DC06177F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD15C061775
         for <netfilter-devel@vger.kernel.org>; Fri,  1 Oct 2021 10:45:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,24 +21,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=+h56Sy0+UdoWEiItUs4F4I3Zcaqfu9wn35hlVLRMAOg=; b=BXRRXT+ROn4ewEte77K6vEgkaT
-        BKlCINUz3A6oTQ7FuMPWnay1iO0MgfFnKcx6B+c1m5aVqXpSbKYaBc+r/LdKCWyW9KDXSjgymU/KK
-        PAITkpa0NlWeWRN8P9iNjHbwZNxJE8SXZIIbl1YemQLWFI0sqwn67ufpcx7dSzC/DEvdsxcUlP/Q/
-        xGXO+d3xrzqhO55jECHZMulIcy0SHoSXN3JRL46XszeCqxe3JWuX/DgiphTUwFzwUibHvl2bBiuGy
-        sbLSV9uUvvgQw0xtwz5HV9MH+O5Hy/0pBuQfyAqtjUDE/KkkAabSAYs7w9aF8wHu27e4VthxE+GHc
-        mh14ZqUA==;
+        bh=+xxHYrElmh87SRZkPTXXk1VW0QMjjj+6mCW9qHprG5E=; b=NqQ77BpVaqhure5983r/Mx/uJx
+        h9qDCn7Hu0dMwXBYZV8fjVUrPQYfBAQmfWEJX6Mt+p1do8HAZAebUSLARwq4FqzLFbW1JQ4lEuQtt
+        BuxwU+d9HE/HoYWy4NnBwNAO8x4gwnQZvxx9AbTwnGlkAMCh939pyz0H61NAxoTYuWOApeoMlgzv3
+        uMw04JfHdze9dVemywrJfTMokQtYWLJlATIsAsU+4vHvHPCE4kySaaCPwnZ6Y3KO6ZbobWXJXuQ9G
+        B9+K6P8NvCeSgrL9UU05HHbnn0hO4eESht2ZwqTLZtdchRf0e58Ee8Fz9OOne7mA8TghJwEoUL4uj
+        LNddPfMA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mWMbH-002RLP-8K; Fri, 01 Oct 2021 18:45:35 +0100
+        id 1mWMbH-002RLP-Gd; Fri, 01 Oct 2021 18:45:35 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc:     Kyle Bowman <kbowman@cloudflare.com>,
         Alex Forster <aforster@cloudflare.com>,
         Cloudflare Kernel Team <kernel-team@cloudflare.com>
-Subject: [PATCH iptables v2 6/8] extensions: libxt_NFLOG: remove extra space when saving targets with prefixes
-Date:   Fri,  1 Oct 2021 18:41:40 +0100
-Message-Id: <20211001174142.1267726-7-jeremy@azazel.net>
+Subject: [PATCH iptables v2 7/8] build: replace `AM_PROG_LIBTOOL` and `AC_DISABLE_STATIC` with `LT_INIT`
+Date:   Fri,  1 Oct 2021 18:41:41 +0100
+Message-Id: <20211001174142.1267726-8-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211001174142.1267726-1-jeremy@azazel.net>
 References: <20211001174142.1267726-1-jeremy@azazel.net>
@@ -51,48 +51,29 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When printing out NFLOG targets an extra space was inserted between
-`--nflog-prefix` and the prefix itself:
+`AM_PROG_LIBTOOL` is superseded by `LT_INIT`, which also accepts options
+to control the defaults for creating shared or static libraries.
 
-  $ sudo /usr/sbin/iptables -A INPUT -j NFLOG --nflog-prefix test
-  $ sudo /usr/sbin/iptables-save | grep NFLOG
-  -A INPUT -j NFLOG --nflog-prefix  test
-                                  ^^
-Fixes: 73866357e4a7 ("iptables: do not print trailing whitespaces")
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- extensions/libxt_NFLOG.c | 2 +-
- extensions/libxt_NFLOG.t | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ configure.ac | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/extensions/libxt_NFLOG.c b/extensions/libxt_NFLOG.c
-index 2b78e27808f8..6137a68f8cd2 100644
---- a/extensions/libxt_NFLOG.c
-+++ b/extensions/libxt_NFLOG.c
-@@ -83,7 +83,7 @@ static void NFLOG_check(struct xt_fcheck_call *cb)
- static void nflog_print(const struct xt_nflog_info *info, char *prefix)
- {
- 	if (info->prefix[0] != '\0') {
--		printf(" %snflog-prefix ", prefix);
-+		printf(" %snflog-prefix", prefix);
- 		xtables_save_string(info->prefix);
- 	}
- 	if (info->group)
-diff --git a/extensions/libxt_NFLOG.t b/extensions/libxt_NFLOG.t
-index 13bbf2bfc5a5..561ec8c77650 100644
---- a/extensions/libxt_NFLOG.t
-+++ b/extensions/libxt_NFLOG.t
-@@ -14,8 +14,8 @@
- -j NFLOG --nflog-size 4294967295;=;OK
- -j NFLOG --nflog-size 4294967296;;FAIL
- -j NFLOG --nflog-size -1;;FAIL
---j NFLOG --nflog-prefix  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;=;OK
---j NFLOG --nflog-prefix  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;-j NFLOG --nflog-prefix  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;OK
-+-j NFLOG --nflog-prefix xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;=;OK
-+-j NFLOG --nflog-prefix xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;-j NFLOG --nflog-prefix xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;OK
- -j NFLOG --nflog-threshold 1;=;OK
- # ERROR: line 13 (should fail: iptables -A INPUT -j NFLOG --nflog-threshold 0
- # -j NFLOG --nflog-threshold 0;;FAIL
+diff --git a/configure.ac b/configure.ac
+index 00ae60c5cfa1..86c67194825f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -12,9 +12,8 @@ AC_PROG_INSTALL
+ AM_INIT_AUTOMAKE([-Wall])
+ AC_PROG_CC
+ AM_PROG_CC_C_O
+-AC_DISABLE_STATIC
+ m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+-AM_PROG_LIBTOOL
++LT_INIT([disable-static])
+ 
+ AC_ARG_WITH([kernel],
+ 	AS_HELP_STRING([--with-kernel=PATH],
 -- 
 2.33.0
 
