@@ -2,77 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943D44253A6
-	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Oct 2021 15:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29F44253E7
+	for <lists+netfilter-devel@lfdr.de>; Thu,  7 Oct 2021 15:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbhJGNIf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 7 Oct 2021 09:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233197AbhJGNIe (ORCPT
+        id S233197AbhJGNWA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 7 Oct 2021 09:22:00 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:39457 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232893AbhJGNWA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:08:34 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFB4C061570
-        for <netfilter-devel@vger.kernel.org>; Thu,  7 Oct 2021 06:06:40 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id h3so5617675pgb.7
-        for <netfilter-devel@vger.kernel.org>; Thu, 07 Oct 2021 06:06:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=pxAJfWIgVd64n+QeFsmNwc6CX3KtWrCuEuUZH5Q9H00=;
-        b=HAGR2faQgE5rggMhfoSU7MSEOZvDT3T+iXjOsPqHr8wR82LIoSFzsCMS/uUoNq9Uj7
-         828K0vp3QYnHk6RGPKaezw8Tpxoid2lTkSIEI5ldH7cOm/qca16RPWS5ixyq/Qhw/CDF
-         gPdpBb4R2s6E2HUbWqyHdGnhDFgFY8AHp0dgqiywJtuJ8tPPYknpmq1W2CFK1ayZ6pvS
-         xLjKqSKjJl3PGR1yEPPJet2enm8UlpfDPS9OTwJ+LA9lAJqxJzFSqBU10nrlRb4GxH0F
-         C/7Vfjsegp43gEuW9TVBe3x9vDzc3b5Jt7FwYsHNOwOgNcHUus7UVD+H2r3fIuVkNKJy
-         8HiQ==
+        Thu, 7 Oct 2021 09:22:00 -0400
+Received: by mail-il1-f200.google.com with SMTP id g1-20020a056e02130100b00258dfe95241so3911350ilr.6
+        for <netfilter-devel@vger.kernel.org>; Thu, 07 Oct 2021 06:20:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=pxAJfWIgVd64n+QeFsmNwc6CX3KtWrCuEuUZH5Q9H00=;
-        b=lEXWrB9KBX9SAySJZHGYOkLvdCta2ndA2xm/epzrD2D6kvniOdIyzri+lG8ckCQbi/
-         SfinzZ+pjSQ0XiVHUWmPHeI/vZ4V95TXmv6/YzBfHDAEhP7Ru8kqUwDJUybtLn60ByJt
-         GGKWgguctNLWhYH3RqVWXMFAph6cTwF10e52A5fzhXHiVISGx/yZuMfxnQfFjh+DAur6
-         hAoOrRPFTD2xg55aQH2KO1n28XFL7EOfW5i1+pkwKFnIdyaXohJDpiQlTylp4sdZWETj
-         NAiok5CvbCbD1hjvZF4PT6bjhunx4jfx7C4pSBUEJjetFN8wxViimlxJug8tGm0XMVOH
-         2NFQ==
-X-Gm-Message-State: AOAM5325P5Dm9cXoUpjg+ZRtAAxPGTR2/MF5zxy9ZGPJcRIxaGYg7cfB
-        KVo5uBgBe8+wX0mDDW9kHvx5WiGG8FH/uqg9mjw=
-X-Google-Smtp-Source: ABdhPJzpb2zF8nkZjVIxxzHSyASlvUQzuHh/yNj6zEYUwaVCqqWyAqwLhg7Hjnn0utRffVtNGKcGDHnEr8vZid1p9c4=
-X-Received: by 2002:a63:dc42:: with SMTP id f2mr3326945pgj.152.1633611999773;
- Thu, 07 Oct 2021 06:06:39 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ta8TFCyBY1gpWCj21ajzUB9frfUQOUQio86Er8sxqeo=;
+        b=iGwPxnHCA2HxYmX5d7jkkpyq2K6CwaDddwsDQ9e6uFU2JbuniXCB9MmAv2gqvAeDI6
+         Kjqy4Ii5GcWAjsnzrw8DCtVqSP32TKz0M7L+Ab9CWcfJZa452GF6FocwdV/TAkZBWy+C
+         mIjHxr3ZVi6GliROawFWHB08/bQxVXGNegq3nmNcvrRArEWMwAbtDm+irAgO28Vc+Tg5
+         Z6GI1a881KkPj6fdw1sQ3oxcxmUM9JuwYE1pccUS1EE5ulREjc9Vb3HJZ561Pc4Vwyv1
+         Pmibc3GNBpPDYBCdXalojU/1Xxqd2psdzhD9NCXxPzLIf+ZXYZ759YgErpGPjPCq3Wsm
+         8mGg==
+X-Gm-Message-State: AOAM531iOo6nvOWSaVMeUWWaOfTZZZKYqtZyQLLRm6qF6U6LFXSG2o6s
+        k1SptT3RWagjWwJsT8+ZwOwlyv8pDNudPnDM/kAgnLU9b/vi
+X-Google-Smtp-Source: ABdhPJxX+LmOXMIhLmy2MtMP/zvk5EDCKJa7XQPxqftj0hiiK6+wuzEnrRmw2/+EERMeZYDiNCg0lWg48DkTd7v/EVqDJLrP+z0T
 MIME-Version: 1.0
-Received: by 2002:a05:6a06:1891:b0:46b:b1a1:af94 with HTTP; Thu, 7 Oct 2021
- 06:06:39 -0700 (PDT)
-Reply-To: lydiawright836@gmail.com
-From:   LYDIA WRIGHT <harrydav828@gmail.com>
-Date:   Thu, 7 Oct 2021 16:06:39 +0300
-Message-ID: <CAKKtfnJZnK+zGb-0KGi8Wpp99kcj_zbcdp_PdA0mDG3RF5Awzw@mail.gmail.com>
-Subject: Hello friend
-To:     undisclosed-recipients:;
+X-Received: by 2002:a05:6e02:c2e:: with SMTP id q14mr3187493ilg.109.1633612806720;
+ Thu, 07 Oct 2021 06:20:06 -0700 (PDT)
+Date:   Thu, 07 Oct 2021 06:20:06 -0700
+In-Reply-To: <0000000000000845ce05c9222d57@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000b920e05cdc31f01@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in nf_tables_dump_sets
+From:   syzbot <syzbot+8cc940a9689599e10587@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Greetings dear,
+syzbot suspects this issue was fixed by commit:
 
-My name is Lydia A. Wright, and I'm from Akron, Ohio. The U.S.A, This
-message will most likely surprise you. I'm dying of cancer, which I
-was diagnosed with around two years ago, and I'm recovering from a
-stroke that has made walking difficult.
+commit a499b03bf36b0c2e3b958a381d828678ab0ffc5e
+Author: Florian Westphal <fw@strlen.de>
+Date:   Mon Sep 13 12:42:33 2021 +0000
 
- Mr. L=C3=A9vi Wright, my husband, passed away in mid-March 2011 from a
-heart attack. I'll be having surgery soon.  I only have a few years
-left in this world, my late spouse has  $10.5 million as a family
-valuable, which I intend to gift to charity.
+    netfilter: nf_tables: unlink table before deleting it
 
-For more information, please contact me at (lydiawright836@gmail.com)
-. Thank you sincerely!
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13018e98b00000
+start commit:   f9be84db09d2 net: bonding: bond_alb: Remove the dependency..
+git tree:       net-next
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8075b2614f3db143
+dashboard link: https://syzkaller.appspot.com/bug?extid=8cc940a9689599e10587
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fbb98e300000
 
-Mrs. Lydia A. Wright
-Rosalind Ct, Akron, Ohio, U.S.A
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: netfilter: nf_tables: unlink table before deleting it
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
