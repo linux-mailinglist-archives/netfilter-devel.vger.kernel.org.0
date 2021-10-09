@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD58427980
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Oct 2021 13:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA8F42797E
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Oct 2021 13:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbhJILoa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 9 Oct 2021 07:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
+        id S232865AbhJILo3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 9 Oct 2021 07:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232907AbhJILo0 (ORCPT
+        with ESMTP id S232908AbhJILo0 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 9 Oct 2021 07:44:26 -0400
 Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F33C061570
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720CBC061767
         for <netfilter-devel@vger.kernel.org>; Sat,  9 Oct 2021 04:42:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=mpgTInp0RTyDZ+zdoHPCstp63IsqhLUGT79LRzQMuJU=; b=dRV1euU8JIMIZkRf7OJFP3EHV2
-        sGJt4vzPfTHpDQ7l5bHSdevuY3NSiVBu+URWfQ4eyUNF5WtwVPsk9rkyCYuTlZ7n2E+qWhGnhg79Z
-        0Wu72dzSWVrDh6YQ3VcbSispK3iawCOuKbdfS6P2+2LByxtOVX3hFU9Mng9Oowe76G6cXRL8AEcAZ
-        a5r5fnAwUTR4mzszt/dDvLxITO5sxqXrijSpX7C7efMkN/olXUDZPEGjkl/LIkaqI0zk1DGDHVsnz
-        RR3fUG3egqW0LGFw26CfCIja3XxVWL4EmhV3hVIideTQIB5kc8DVRfGBcLIFo867fabCX4B0Ehja+
-        AS933GIQ==;
+        bh=zRfDeteTJeoNUe+EXf9y/AHrwnZImBH0v3K/qVu6XbI=; b=IGPqEEJrjlmMhfoInIu4SiVnIU
+        xQKFvnhX38J5lK/xf7Cm/z0T1jeQYoo6uGnxd4/iMWKh/KBxfBKsJNXujYZ+9yvCuD+wJtRqyXslT
+        XXfk1LZEaaoSMB5qSwv8ah623QZUfPSx17JSpr5LU4ygW1JDgyBdYbf7GnCL/e9wuayUeOjPshI3V
+        b+RnNGMGB+EReprOS7x58/OeSDkywXAZF0ts3KyQaHhBGkO2fd3uK99PC9cpJ+VTGS/NYaZ2jePH8
+        WKfreNUMxnmVAF2RBJh1lyBSsCwmGwD1FwTiFCfD7QtRQ1O0vvzzJ/wnX+W52v7STs4dPsUE8TELl
+        TkWK6jSg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mZAkF-00BfRm-My
+        id 1mZAkF-00BfRm-Pw
         for netfilter-devel@vger.kernel.org; Sat, 09 Oct 2021 12:42:27 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [libnetfilter_log PATCH 6/9] build: remove `-dynamic` when linking check progs
-Date:   Sat,  9 Oct 2021 12:38:36 +0100
-Message-Id: <20211009113839.2765382-7-jeremy@azazel.net>
+Subject: [libnetfilter_log PATCH 7/9] build: replace `AM_PROG_LIBTOOL` and `AC_DISABLE_STATIC` with `LT_INIT`
+Date:   Sat,  9 Oct 2021 12:38:37 +0100
+Message-Id: <20211009113839.2765382-8-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211009113839.2765382-1-jeremy@azazel.net>
 References: <20211009113839.2765382-1-jeremy@azazel.net>
@@ -49,35 +49,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The `-dynamic` flag is only meaningful for Darwin.
+`AM_PROG_LIBTOOL` is superseded by `LT_INIT`, which also accepts options
+to control the defaults for creating shared or static libraries.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- utils/Makefile.am | 3 ---
- 1 file changed, 3 deletions(-)
+ configure.ac | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/utils/Makefile.am b/utils/Makefile.am
-index 7b9d479382ea..94afb26180ed 100644
---- a/utils/Makefile.am
-+++ b/utils/Makefile.am
-@@ -4,11 +4,9 @@ check_PROGRAMS = nfulnl_test nf-log
+diff --git a/configure.ac b/configure.ac
+index 1723426aa0c4..1dc9bc7847fa 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -14,8 +14,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
  
- nfulnl_test_SOURCES = nfulnl_test.c
- nfulnl_test_LDADD = ../src/libnetfilter_log.la
--nfulnl_test_LDFLAGS = -dynamic
+ AC_PROG_CC
+ AM_PROG_CC_C_O
+-AC_DISABLE_STATIC
+-AM_PROG_LIBTOOL
++LT_INIT([disable_static])
+ AC_PROG_INSTALL
+ AC_PROG_LN_S
  
- nf_log_SOURCES  = nf-log.c
- nf_log_LDADD    = ../src/libnetfilter_log.la $(LIBMNL_LIBS)
--nf_log_LDFLAGS  = -dynamic
- nf_log_CPPFLAGS = $(AM_CPPFLAGS) $(LIBMNL_CFLAGS)
- if BUILD_NFCT
- nf_log_LDADD    += $(LIBNETFILTER_CONNTRACK_LIBS)
-@@ -20,5 +18,4 @@ check_PROGRAMS += ulog_test
- 
- ulog_test_SOURCES = ulog_test.c
- ulog_test_LDADD   = ../src/libnetfilter_log_libipulog.la
--ulog_test_LDFLAGS = -dynamic
- endif
 -- 
 2.33.0
 
