@@ -2,50 +2,35 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A634294A8
-	for <lists+netfilter-devel@lfdr.de>; Mon, 11 Oct 2021 18:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25E5429995
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Oct 2021 01:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbhJKQgU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 11 Oct 2021 12:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232468AbhJKQgU (ORCPT
+        id S235523AbhJKXCv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 11 Oct 2021 19:02:51 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:39260 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235499AbhJKXCu (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 11 Oct 2021 12:36:20 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5ADC06161C
-        for <netfilter-devel@vger.kernel.org>; Mon, 11 Oct 2021 09:34:19 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1mZyFk-0002Ct-SF; Mon, 11 Oct 2021 18:34:16 +0200
-Date:   Mon, 11 Oct 2021 18:34:16 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     =?utf-8?B?xaB0xJtww6FuIE7Em21lYw==?= <snemec@redhat.com>
-Cc:     netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH nft 1/2] doc: libnftables-json: make the example valid
- JSON
-Message-ID: <20211011163416.GA1668@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        =?utf-8?B?xaB0xJtww6FuIE7Em21lYw==?= <snemec@redhat.com>,
-        netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-References: <20211011115905.1456177-1-snemec@redhat.com>
+        Mon, 11 Oct 2021 19:02:50 -0400
+Received: from netfilter.org (unknown [78.30.35.141])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 8396D63EEE;
+        Tue, 12 Oct 2021 00:59:13 +0200 (CEST)
+Date:   Tue, 12 Oct 2021 01:00:39 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Jeremy Sowden <jeremy@azazel.net>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [libnetfilter_log PATCH 0/8] Build fixes
+Message-ID: <YWTCF/rc+SAfNw6o@salvia>
+References: <20211009113839.2765382-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211011115905.1456177-1-snemec@redhat.com>
-Sender:  <n0-1@orbyte.nwl.cc>
+In-Reply-To: <20211009113839.2765382-1-jeremy@azazel.net>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Štěpán,
+On Sat, Oct 09, 2021 at 12:38:30PM +0100, Jeremy Sowden wrote:
+> An assortment of autotools and pkg-config updates.
 
-On Mon, Oct 11, 2021 at 01:59:04PM +0200, Štěpán Němec wrote:
-> Add missing comma between array elements.
-
-Applied (after folding the two commits into one), thanks!
-
-Cheers, Phil
+Series applied, thanks.
