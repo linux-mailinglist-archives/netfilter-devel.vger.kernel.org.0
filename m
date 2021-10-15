@@ -2,80 +2,97 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A0042EFA6
-	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Oct 2021 13:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96EE342F0EE
+	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Oct 2021 14:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234139AbhJOL1l (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 15 Oct 2021 07:27:41 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:48672 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234195AbhJOL1l (ORCPT
+        id S238914AbhJOMaI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 15 Oct 2021 08:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238917AbhJOM3b (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:27:41 -0400
-Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 7CE0A60098;
-        Fri, 15 Oct 2021 13:23:54 +0200 (CEST)
-Date:   Fri, 15 Oct 2021 13:25:29 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: Re: [iptables PATCH v2 00/17] Eliminate dedicated arptables-nft
- parser
-Message-ID: <YWllKW6PmE9FJHhn@salvia>
-References: <20210930140419.6170-1-phil@nwl.cc>
- <YWiZacKr4s3mkdhU@salvia>
- <20211015110124.GL1668@orbyte.nwl.cc>
+        Fri, 15 Oct 2021 08:29:31 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8AEC061764
+        for <netfilter-devel@vger.kernel.org>; Fri, 15 Oct 2021 05:27:24 -0700 (PDT)
+Received: from localhost ([::1]:33896 helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1mbMJ1-0002W3-9A; Fri, 15 Oct 2021 14:27:23 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH v3 00/13] Eliminate dedicated arptables-nft parser
+Date:   Fri, 15 Oct 2021 14:25:55 +0200
+Message-Id: <20211015122608.12474-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211015110124.GL1668@orbyte.nwl.cc>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 01:01:24PM +0200, Phil Sutter wrote:
-> Hi Pablo,
-> 
-> On Thu, Oct 14, 2021 at 10:56:09PM +0200, Pablo Neira Ayuso wrote:
-> > On Thu, Sep 30, 2021 at 04:04:02PM +0200, Phil Sutter wrote:
-> > > Commandline parsing was widely identical with iptables and ip6tables.
-> > > This series adds the necessary code-changes to unify the parsers into a
-> > > common one.
-> > > 
-> > > Changes since v1:
-> > > - Fix patch 12, the parser has to check existence of proto_parse
-> > >   callback before dereferencing it. Otherwise arptables-nft segfaults if
-> > >   '-p' option is given.
-> > 
-> > LGTM.
-> 
-> Thanks for your review!
-> 
-> > > - Patches 13-17 add all the arptables quirks to restore compatibility
-> > >   with arptables-legacy. I didn't consider them important enough to push
-> > >   them unless someone complains. Yet breaking existing scripts is bad
-> > >   indeed. Please consider them RFC: If you consider (one of) them not
-> > >   important, please NACk and I will drop them before pushing.
-> > 
-> > For patch 13-16, you could display a warning for people to fix their
-> > scripts, so this particular (strange) behaviour in some cases can be
-> > dropped (at least, 13-15 look like left-over/bugs). For the
-> > check_inverse logic, I'd suggest to display a warning too, this is
-> > what it was done in iptables time ago to address this inconsistency.
-> 
-> I wonder how likely it is for someone to rely upon the behaviour. I can
-> imagine a script passing an empty interface name and expecting the
-> argument to be ignored (patch 13). Though what are the odds someone
-> actually calls arptables with '-m something' (patch 14) or a bogus table
-> name (patch 15)?
+Commandline parsing was widely identical with iptables and ip6tables.
+This series adds the necessary code-changes to unify the parsers into a
+common one.
 
-I think this is a leftover/bug that has been there for long time.
+Changes since v2:
+- Drop quirks for ignoring bogus table names and '-m' options, they
+  likely just hide bugs.
+- Rewrite empty interface name quirk patch, make arptables-nft print
+  iptables' error message as warning to notify users.
+- Integrate intrapositioned negation support into the final merge patch
+  and revive iptables' old warning to notify users.
 
-> > I'd probably keep back patch 17/17, the max chain name length was
-> > reduced by when the revision field was introduced and this resulted in
-> > no issue being reported.
-> 
-> If that's OK with you, I would turn the empty interface name error into
-> a warning for arptables-nft, reintroduce the warning for intrapositioned
-> negations and drop the remaining quirks as they are likely hiding a bug.
+Changes since v1:
+- Fix patch 12, the parser has to check existence of proto_parse
+  callback before dereferencing it. Otherwise arptables-nft segfaults if
+  '-p' option is given.
+- Patches 13-17 add all the arptables quirks to restore compatibility
+  with arptables-legacy. I didn't consider them important enough to push
+  them unless someone complains. Yet breaking existing scripts is bad
+  indeed. Please consider them RFC: If you consider (one of) them not
+  important, please NACk and I will drop them before pushing.
 
-Agreed.
+Phil Sutter (13):
+  nft: Introduce builtin_tables_lookup()
+  xshared: Store optstring in xtables_globals
+  nft-shared: Introduce init_cs family ops callback
+  xtables: Simplify addr_mask freeing
+  nft: Add family ops callbacks wrapping different nft_cmd_* functions
+  xtables-standalone: Drop version number from init errors
+  libxtables: Introduce xtables_globals print_help callback
+  arptables: Use standard data structures when parsing
+  nft-arp: Introduce post_parse callback
+  nft-shared: Make nft_check_xt_legacy() family agnostic
+  xtables: Derive xtables_globals from family
+  xtables: arptables accepts empty interface names
+  nft: Merge xtables-arp-standalone.c into xtables-standalone.c
+
+ include/xtables.h                 |   2 +
+ iptables/Makefile.am              |   2 +-
+ iptables/nft-arp.c                | 252 +++++++++-
+ iptables/nft-ipv4.c               |  93 ++++
+ iptables/nft-ipv6.c               | 104 +++++
+ iptables/nft-shared.c             |   5 +
+ iptables/nft-shared.h             |  24 +
+ iptables/nft.c                    |  19 +-
+ iptables/nft.h                    |   2 +-
+ iptables/xshared.h                |   2 +
+ iptables/xtables-arp-standalone.c |  65 ---
+ iptables/xtables-arp.c            | 749 +-----------------------------
+ iptables/xtables-eb-translate.c   |   1 -
+ iptables/xtables-eb.c             |   7 +-
+ iptables/xtables-monitor.c        |   2 +-
+ iptables/xtables-multi.h          |   3 +
+ iptables/xtables-restore.c        |   9 +-
+ iptables/xtables-save.c           |   6 +-
+ iptables/xtables-standalone.c     |  54 ++-
+ iptables/xtables-translate.c      |   7 +-
+ iptables/xtables.c                | 348 ++++++--------
+ 21 files changed, 706 insertions(+), 1050 deletions(-)
+ delete mode 100644 iptables/xtables-arp-standalone.c
+
+-- 
+2.33.0
+
