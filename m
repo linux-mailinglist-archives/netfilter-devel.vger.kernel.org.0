@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0833E42F0EB
-	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Oct 2021 14:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D69742F0DF
+	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Oct 2021 14:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238870AbhJOMaF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 15 Oct 2021 08:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
+        id S238966AbhJOM3O (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 15 Oct 2021 08:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238894AbhJOM3Y (ORCPT
+        with ESMTP id S238942AbhJOM3C (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:29:24 -0400
+        Fri, 15 Oct 2021 08:29:02 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD00C06176C
-        for <netfilter-devel@vger.kernel.org>; Fri, 15 Oct 2021 05:27:13 -0700 (PDT)
-Received: from localhost ([::1]:33884 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2684EC061570
+        for <netfilter-devel@vger.kernel.org>; Fri, 15 Oct 2021 05:26:56 -0700 (PDT)
+Received: from localhost ([::1]:33866 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mbMIq-0002V8-Dq; Fri, 15 Oct 2021 14:27:12 +0200
+        id 1mbMIY-0002Ud-KK; Fri, 15 Oct 2021 14:26:54 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v3 02/13] xshared: Store optstring in xtables_globals
-Date:   Fri, 15 Oct 2021 14:25:57 +0200
-Message-Id: <20211015122608.12474-3-phil@nwl.cc>
+Subject: [iptables PATCH v3 03/13] nft-shared: Introduce init_cs family ops callback
+Date:   Fri, 15 Oct 2021 14:25:58 +0200
+Message-Id: <20211015122608.12474-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211015122608.12474-1-phil@nwl.cc>
 References: <20211015122608.12474-1-phil@nwl.cc>
@@ -34,114 +34,89 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Preparing for a common option parser, store the string of options for
-each family inside the respective xtables_globals object. The
-array of long option definitions sitting in there already indicates it's
-the right place.
-
-While being at it, drop '-m' support from arptables-nft.
+Arptables sets a few defaults in struct iptables_command_state upon
+initialization. Introduce a callback to do that.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- include/xtables.h      | 1 +
- iptables/xshared.h     | 2 ++
- iptables/xtables-arp.c | 4 ++--
- iptables/xtables-eb.c  | 5 +++--
- iptables/xtables.c     | 4 ++--
- 5 files changed, 10 insertions(+), 6 deletions(-)
+ iptables/nft-arp.c    |  9 +++++++++
+ iptables/nft-shared.h |  1 +
+ iptables/xtables.c    | 12 +++++++-----
+ 3 files changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/include/xtables.h b/include/xtables.h
-index e51f4bfda318a..c872a04220867 100644
---- a/include/xtables.h
-+++ b/include/xtables.h
-@@ -420,6 +420,7 @@ struct xtables_globals
- {
- 	unsigned int option_offset;
- 	const char *program_name, *program_version;
-+	const char *optstring;
- 	struct option *orig_opts;
- 	struct option *opts;
- 	void (*exit_err)(enum xtables_exittype status, const char *msg, ...) __attribute__((noreturn, format(printf,2,3)));
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 823894f94b841..b59116ac49747 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -68,6 +68,8 @@ struct xtables_globals;
- struct xtables_rule_match;
- struct xtables_target;
+diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
+index 2a9387a18dffe..fbaf1a6d52184 100644
+--- a/iptables/nft-arp.c
++++ b/iptables/nft-arp.c
+@@ -546,6 +546,14 @@ static void nft_arp_save_chain(const struct nftnl_chain *c, const char *policy)
+ 	printf(":%s %s\n", chain, policy ?: "-");
+ }
  
-+#define OPTSTRING_COMMON "-:A:C:D:E:F::I:L::M:N:P:VX::Z::" "c:d:i:j:o:p:s:t:"
++static void nft_arp_init_cs(struct iptables_command_state *cs)
++{
++	cs->arp.arp.arhln = 6;
++	cs->arp.arp.arhln_mask = 255;
++	cs->arp.arp.arhrd = htons(ARPHRD_ETHER);
++	cs->arp.arp.arhrd_mask = 65535;
++}
 +
- /* define invflags which won't collide with IPT ones */
- #define IPT_INV_SRCDEVADDR	0x0080
- #define IPT_INV_TGTDEVADDR	0x0100
-diff --git a/iptables/xtables-arp.c b/iptables/xtables-arp.c
-index 1d132bdf23546..a028ac340cba0 100644
---- a/iptables/xtables-arp.c
-+++ b/iptables/xtables-arp.c
-@@ -100,6 +100,7 @@ extern void xtables_exit_error(enum xtables_exittype status, const char *msg, ..
- struct xtables_globals arptables_globals = {
- 	.option_offset		= 0,
- 	.program_version	= PACKAGE_VERSION,
-+	.optstring		= OPTSTRING_COMMON "R:S::" "h::l:nv" /* "m:" */,
- 	.orig_opts		= original_opts,
- 	.exit_err		= xtables_exit_error,
- 	.compat_rev		= nft_compatible_revision,
-@@ -444,8 +445,7 @@ int do_commandarp(struct nft_handle *h, int argc, char *argv[], char **table,
- 	opterr = 0;
- 
- 	opts = xt_params->orig_opts;
--	while ((c = getopt_long(argc, argv,
--	   "-A:D:R:I:L::M:F::Z::N:X::E:P:Vh::o:p:s:d:j:l:i:vnt:m:c:",
-+	while ((c = getopt_long(argc, argv, xt_params->optstring,
- 					   opts, NULL)) != -1) {
- 		switch (c) {
- 			/*
-diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index 1ed6bcd8a7877..3f58754d14cee 100644
---- a/iptables/xtables-eb.c
-+++ b/iptables/xtables-eb.c
-@@ -220,6 +220,7 @@ extern void xtables_exit_error(enum xtables_exittype status, const char *msg, ..
- struct xtables_globals ebtables_globals = {
- 	.option_offset 		= 0,
- 	.program_version	= PACKAGE_VERSION,
-+	.optstring		= OPTSTRING_COMMON "h",
- 	.orig_opts		= ebt_original_options,
- 	.exit_err		= xtables_exit_error,
- 	.compat_rev		= nft_compatible_revision,
-@@ -732,8 +733,8 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
- 	opterr = false;
- 
- 	/* Getopt saves the day */
--	while ((c = getopt_long(argc, argv,
--	   "-A:D:C:I:N:E:X::L::Z::F::P:Vhi:o:j:c:p:s:d:t:M:", opts, NULL)) != -1) {
-+	while ((c = getopt_long(argc, argv, xt_params->optstring,
-+					opts, NULL)) != -1) {
- 		cs.c = c;
- 		switch (c) {
- 
+ struct nft_family_ops nft_family_ops_arp = {
+ 	.add			= nft_arp_add,
+ 	.is_same		= nft_arp_is_same,
+@@ -559,6 +567,7 @@ struct nft_family_ops nft_family_ops_arp = {
+ 	.save_chain		= nft_arp_save_chain,
+ 	.post_parse		= NULL,
+ 	.rule_to_cs		= nft_rule_to_iptables_command_state,
++	.init_cs		= nft_arp_init_cs,
+ 	.clear_cs		= nft_clear_iptables_command_state,
+ 	.parse_target		= nft_ipv46_parse_target,
+ };
+diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
+index cc8f3a79b369e..71094a28e73de 100644
+--- a/iptables/nft-shared.h
++++ b/iptables/nft-shared.h
+@@ -106,6 +106,7 @@ struct nft_family_ops {
+ 			   struct xtables_args *args);
+ 	void (*parse_match)(struct xtables_match *m, void *data);
+ 	void (*parse_target)(struct xtables_target *t, void *data);
++	void (*init_cs)(struct iptables_command_state *cs);
+ 	void (*rule_to_cs)(struct nft_handle *h, const struct nftnl_rule *r,
+ 			   struct iptables_command_state *cs);
+ 	void (*clear_cs)(struct iptables_command_state *cs);
 diff --git a/iptables/xtables.c b/iptables/xtables.c
-index 0a700e0847400..c17cf7aec6178 100644
+index c17cf7aec6178..092edaaf89224 100644
 --- a/iptables/xtables.c
 +++ b/iptables/xtables.c
-@@ -89,6 +89,7 @@ void xtables_exit_error(enum xtables_exittype status, const char *msg, ...) __at
- struct xtables_globals xtables_globals = {
- 	.option_offset = 0,
- 	.program_version = PACKAGE_VERSION,
-+	.optstring = OPTSTRING_COMMON "R:S::W::" "46bfg:h::m:nvw::x",
- 	.orig_opts = original_opts,
- 	.exit_err = xtables_exit_error,
- 	.compat_rev = nft_compatible_revision,
-@@ -455,8 +456,7 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
- 	opterr = 0;
+@@ -433,10 +433,6 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
+ 	bool invert = false;
+ 	int wait = 0;
  
- 	opts = xt_params->orig_opts;
--	while ((cs->c = getopt_long(argc, argv,
--	   "-:A:C:D:R:I:L::S::M:F::Z::N:X::E:P:Vh::o:p:s:d:j:i:fbvw::W::nt:m:xc:g:46",
-+	while ((cs->c = getopt_long(argc, argv, xt_params->optstring,
- 					   opts, NULL)) != -1) {
- 		switch (cs->c) {
- 			/*
+-	memset(cs, 0, sizeof(*cs));
+-	cs->jumpto = "";
+-	cs->argv = argv;
+-
+ 	/* re-set optind to 0 in case do_command4 gets called
+ 	 * a second time */
+ 	optind = 0;
+@@ -912,11 +908,17 @@ int do_commandx(struct nft_handle *h, int argc, char *argv[], char **table,
+ 		.table		= *table,
+ 		.restore	= restore,
+ 	};
+-	struct iptables_command_state cs;
++	struct iptables_command_state cs = {
++		.jumpto = "",
++		.argv = argv,
++	};
+ 	struct xtables_args args = {
+ 		.family = h->family,
+ 	};
+ 
++	if (h->ops->init_cs)
++		h->ops->init_cs(&cs);
++
+ 	do_parse(h, argc, argv, &p, &cs, &args);
+ 
+ 	switch (p.command) {
 -- 
 2.33.0
 
