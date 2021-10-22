@@ -2,90 +2,73 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51124376CA
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Oct 2021 14:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D50437C36
+	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Oct 2021 19:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhJVMXq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 22 Oct 2021 08:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbhJVMXq (ORCPT
+        id S233617AbhJVRs3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 22 Oct 2021 13:48:29 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:41773 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233524AbhJVRs3 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 22 Oct 2021 08:23:46 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB831C061766
-        for <netfilter-devel@vger.kernel.org>; Fri, 22 Oct 2021 05:21:28 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id w19so897954edd.2
-        for <netfilter-devel@vger.kernel.org>; Fri, 22 Oct 2021 05:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=EabbjzyBCsHP1Pqryzjhoy0dM3xlyxLmmpO8ACgMTo8=;
-        b=iDBYg9YrnTPGUE9ntQhS8gNjN5kXz2brVPOgzjamsdoY3NFKRSTYY7v6mcYNMMBH8A
-         LmoPkglTBfODBPZTtjpOSkhPrzucUN+LY95mZkFn0uFsMC/g9ZnTdTAg3iRhleU54+Ly
-         UUnu5VJRAufIj0ftTSw9xVJcUaO6LYfHdrYBFrrOBY5jdYTLspbjNTkQV3hL9FTdpL6U
-         gnMtUtVit71HoRO6EL3zh1jjPzp2BYqJHh3TWO8Pb7Dzh3jbYTWzXAFaQcAoWQr0o1++
-         Y2DgacTLkuYeDSa9IJ+so2vzi3pQ9cpLxbLqkMNF5eGbf6voAFsNY/BS0xj8U+lLxI+1
-         pwVA==
+        Fri, 22 Oct 2021 13:48:29 -0400
+Received: by mail-io1-f70.google.com with SMTP id f13-20020a5ec60d000000b005ddbc52304dso3694580iok.8
+        for <netfilter-devel@vger.kernel.org>; Fri, 22 Oct 2021 10:46:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=EabbjzyBCsHP1Pqryzjhoy0dM3xlyxLmmpO8ACgMTo8=;
-        b=VIbkynZFssHhp1x/hKIc0UHii8fuAsyJYthjyx1ENoK3zZwnQx5Nxxb6sN5Yt+62j4
-         1PzOz8kQ2+rJSfLfUCi8ZjOznk4IIaYbxMsrDgABkptwhWA+33UOxiXOKAtfDnHZ8iW6
-         /JhYwEGd4NvaZ4ZCXk3RsmHzACZKF7r3jM4Cwdx8+Kx1POPg+0p0yBXbUcCiksODigrB
-         KV0S8j3aq91Kwmaw9Pc2nplqgNwdHxrLIihy0kcg4Mwgqebcz2fn2ngKTa10hrDk3Oys
-         Qj+Aat4FUUzSlNR71w6X3T2MA7Za7L0IGkQBTEJbvaAJ5Pfxap3leqGa5NYvenpepRhB
-         ziuQ==
-X-Gm-Message-State: AOAM533LN+Hd9tneRVgS2MeXg9xTVK84RQxwcOx1GSEdWdOicf1J5wkn
-        z6xNBW+QvYg261CHmzYccbLXYIamfewOgPUnVvo=
-X-Google-Smtp-Source: ABdhPJyp+hB+apY1Uc7kYdOQK0wEJ7f1Eg9vsYRvIinNZytefkRpO2TWoBD7K2Q/+A8/kLV3Jp84lM0TWqPW2QqNdSs=
-X-Received: by 2002:a17:906:1359:: with SMTP id x25mr15153396ejb.145.1634905285742;
- Fri, 22 Oct 2021 05:21:25 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=RrHw7TXIiKdbLCANwDy+z6xoVa/oNS++wThBTPoL/HI=;
+        b=nC21KYBhV+J/FVqY0f6cBNFF9fMeSjL2wzYQtmv5Z9Y7ga3hYNN9bfrZYA1uIsRzag
+         9CDUVlqZ7wfWIW7xfdq2uthqEV5W0qcrdyDzgrbRgrXYbfO1+JNI6dcK0X1ETEUA3L8t
+         CRJxroL43kFCq2AUbxn5TH8c8HGxBxXqtFbmePKJATkU10uBI6TT6bk8fD8Kdu25RLN3
+         mN7q9fvoiHYpifDbiASFKtO/BKm7JMaCO2kfCkKg/VhDFzhrMl/BZ6z+qjUX1Cem0WF1
+         Xx/0ZoV+dbnuIASmiEhaExu+LjDGGE90ipqVm0xsh9IXeojM+bNy1HIrN/GirYl89G89
+         vzcQ==
+X-Gm-Message-State: AOAM533A6FzeBtRy+rG7hA+W/6EFUF+n8qnIM2QkztPgj0Ib/XXZWkIG
+        TYJ2MoiAzUmLQeVeX0OG5IRNRsIMdIRsSwoiL2DlYMjkaAD+
+X-Google-Smtp-Source: ABdhPJw6yIyVEJmLjE1guEYATik6TF0vOCw3Equ1/PA4QM9pbSE29jYpfR05Jxmp4ZyNReAsLF56PiiTgLjL0LdBc1iIHrhEq66t
 MIME-Version: 1.0
-Received: by 2002:a17:907:7fa7:0:0:0:0 with HTTP; Fri, 22 Oct 2021 05:21:24
- -0700 (PDT)
-Reply-To: bahadur.rayanby@gmail.com
-From:   Ryan Bahadur <dr.philposman7@gmail.com>
-Date:   Fri, 22 Oct 2021 05:21:24 -0700
-Message-ID: <CAMOT=VRSsB0UOohcvnGUsc3agyCNeSs8AwR7XoB26_CCjGd8Dg@mail.gmail.com>
-Subject: CAN I TRUST YOU
-To:     undisclosed-recipients:;
+X-Received: by 2002:a02:a60a:: with SMTP id c10mr796118jam.139.1634924771381;
+ Fri, 22 Oct 2021 10:46:11 -0700 (PDT)
+Date:   Fri, 22 Oct 2021 10:46:11 -0700
+In-Reply-To: <000000000000bab70f05b563a6cc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003b942305cef496a2@google.com>
+Subject: Re: [syzbot] WARNING in port100_send_frame_async/usb_submit_urb
+From:   syzbot <syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, edumazet@google.com,
+        eli.billauer@gmail.com, fw@strlen.de, gregkh@linuxfoundation.org,
+        gustavoars@kernel.org, hdanton@sina.com, ingrassia@epigenesys.com,
+        k.kozlowski.k@gmail.com, kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com, thierry.escande@collabora.com,
+        tiwai@suse.de
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
--- 
-Greetings,
+syzbot suspects this issue was fixed by commit:
 
-Firstly, I apologize for encroaching into your privacy in this manner
-as it may seem unethical though it is a matter of great importance.
+commit e9edc188fc76499b0b9bd60364084037f6d03773
+Author: Eric Dumazet <edumazet@google.com>
+Date:   Fri Sep 17 22:15:56 2021 +0000
 
-I am Mr.Ryan Bahadur, I work with Cayman National Bank (Cayman Islands).
+    netfilter: conntrack: serialize hash resizes and cleanups
 
-I am contacting you because my status would not permit me to do this
-alone as it is concerning our customer and an investment placed under
-our bank's management over 5 years ago.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1633b4b0b00000
+start commit:   c84e1efae022 Merge tag 'asm-generic-fixes-5.10-2' of git:/..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7be70951fca93701
+dashboard link: https://syzkaller.appspot.com/bug?extid=dbec6695a6565a9c6bc0
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c607f1500000
 
-I have a proposal I would love to discuss with you which will be very
-beneficial to both of us. It's regarding my late client who has a huge
-deposit with my bank.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-He is from your country and shares the same last name with you.
+#syz fix: netfilter: conntrack: serialize hash resizes and cleanups
 
-I want to seek your consent to present you as the next of kin to my
-late client who died and left a huge deposit with my bank.
-
-I would respectfully request that you keep the contents of this mail
-confidential and respect the integrity of the information you come by
-as a result of this mail.
-
-Please kindly get back to me for more details if I can TRUST YOU.{
-bahadur.rayanby@gmail.com}
-
-Regards
-Mr.Ryan Bahadur
-Treasury and Deposit Management,
-Cayman National Bank Cayman Islands.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
