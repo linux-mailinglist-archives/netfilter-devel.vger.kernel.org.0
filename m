@@ -2,73 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D50437C36
-	for <lists+netfilter-devel@lfdr.de>; Fri, 22 Oct 2021 19:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7D3438832
+	for <lists+netfilter-devel@lfdr.de>; Sun, 24 Oct 2021 12:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233617AbhJVRs3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 22 Oct 2021 13:48:29 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:41773 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233524AbhJVRs3 (ORCPT
+        id S230021AbhJXKLI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 24 Oct 2021 06:11:08 -0400
+Received: from bizcloud-marathonoil.com ([128.199.179.130]:60024 "EHLO
+        bizcloud-marathonoil.com" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229463AbhJXKLH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 22 Oct 2021 13:48:29 -0400
-Received: by mail-io1-f70.google.com with SMTP id f13-20020a5ec60d000000b005ddbc52304dso3694580iok.8
-        for <netfilter-devel@vger.kernel.org>; Fri, 22 Oct 2021 10:46:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=RrHw7TXIiKdbLCANwDy+z6xoVa/oNS++wThBTPoL/HI=;
-        b=nC21KYBhV+J/FVqY0f6cBNFF9fMeSjL2wzYQtmv5Z9Y7ga3hYNN9bfrZYA1uIsRzag
-         9CDUVlqZ7wfWIW7xfdq2uthqEV5W0qcrdyDzgrbRgrXYbfO1+JNI6dcK0X1ETEUA3L8t
-         CRJxroL43kFCq2AUbxn5TH8c8HGxBxXqtFbmePKJATkU10uBI6TT6bk8fD8Kdu25RLN3
-         mN7q9fvoiHYpifDbiASFKtO/BKm7JMaCO2kfCkKg/VhDFzhrMl/BZ6z+qjUX1Cem0WF1
-         Xx/0ZoV+dbnuIASmiEhaExu+LjDGGE90ipqVm0xsh9IXeojM+bNy1HIrN/GirYl89G89
-         vzcQ==
-X-Gm-Message-State: AOAM533A6FzeBtRy+rG7hA+W/6EFUF+n8qnIM2QkztPgj0Ib/XXZWkIG
-        TYJ2MoiAzUmLQeVeX0OG5IRNRsIMdIRsSwoiL2DlYMjkaAD+
-X-Google-Smtp-Source: ABdhPJw6yIyVEJmLjE1guEYATik6TF0vOCw3Equ1/PA4QM9pbSE29jYpfR05Jxmp4ZyNReAsLF56PiiTgLjL0LdBc1iIHrhEq66t
+        Sun, 24 Oct 2021 06:11:07 -0400
+X-Greylist: delayed 934 seconds by postgrey-1.27 at vger.kernel.org; Sun, 24 Oct 2021 06:11:07 EDT
+Received: from [5.135.230.141] (bizcloud-marathonoil.com [IPv6:::1])
+        by bizcloud-marathonoil.com (Postfix) with ESMTP id 8119E828F4
+        for <netfilter-devel@vger.kernel.org>; Sun, 24 Oct 2021 09:50:05 +0000 (UTC)
+Reply-To: luisfernandezconsultant@gmail.com
+From:   Luis Fernandez <luisfernandezfirm@consultant.com>
+To:     netfilter-devel@vger.kernel.org
+Subject: Re:Urgent Response
+Date:   24 Oct 2021 02:50:05 -0700
+Message-ID: <20211024025005.5D6AE36C163601E8@consultant.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:a60a:: with SMTP id c10mr796118jam.139.1634924771381;
- Fri, 22 Oct 2021 10:46:11 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 10:46:11 -0700
-In-Reply-To: <000000000000bab70f05b563a6cc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003b942305cef496a2@google.com>
-Subject: Re: [syzbot] WARNING in port100_send_frame_async/usb_submit_urb
-From:   syzbot <syzbot+dbec6695a6565a9c6bc0@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, edumazet@google.com,
-        eli.billauer@gmail.com, fw@strlen.de, gregkh@linuxfoundation.org,
-        gustavoars@kernel.org, hdanton@sina.com, ingrassia@epigenesys.com,
-        k.kozlowski.k@gmail.com, kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com, thierry.escande@collabora.com,
-        tiwai@suse.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Good day,
 
-commit e9edc188fc76499b0b9bd60364084037f6d03773
-Author: Eric Dumazet <edumazet@google.com>
-Date:   Fri Sep 17 22:15:56 2021 +0000
+I have an investment proposal that I would like to discuss with 
+you. I await your urgent response so that I will explain more 
+regarding this awesome Investment Opportunity.
 
-    netfilter: conntrack: serialize hash resizes and cleanups
+Regards,
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1633b4b0b00000
-start commit:   c84e1efae022 Merge tag 'asm-generic-fixes-5.10-2' of git:/..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7be70951fca93701
-dashboard link: https://syzkaller.appspot.com/bug?extid=dbec6695a6565a9c6bc0
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c607f1500000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: netfilter: conntrack: serialize hash resizes and cleanups
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Luis Fernandez
