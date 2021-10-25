@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42CE43A62D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 25 Oct 2021 23:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D66743A62C
+	for <lists+netfilter-devel@lfdr.de>; Mon, 25 Oct 2021 23:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbhJYVxH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S233819AbhJYVxH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Mon, 25 Oct 2021 17:53:07 -0400
-Received: from mail.netfilter.org ([217.70.188.207]:43558 "EHLO
+Received: from mail.netfilter.org ([217.70.188.207]:43560 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhJYVxD (ORCPT
+        with ESMTP id S233701AbhJYVxD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 25 Oct 2021 17:53:03 -0400
 Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id C116063F4D
-        for <netfilter-devel@vger.kernel.org>; Mon, 25 Oct 2021 23:48:52 +0200 (CEST)
+        by mail.netfilter.org (Postfix) with ESMTPSA id 38D6463F50
+        for <netfilter-devel@vger.kernel.org>; Mon, 25 Oct 2021 23:48:53 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 3/4] cache: honor filter in set listing commands
-Date:   Mon, 25 Oct 2021 23:50:31 +0200
-Message-Id: <20211025215032.1073625-3-pablo@netfilter.org>
+Subject: [PATCH nft 4/4] cache: honor table in set filtering
+Date:   Mon, 25 Oct 2021 23:50:32 +0200
+Message-Id: <20211025215032.1073625-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211025215032.1073625-1-pablo@netfilter.org>
 References: <20211025215032.1073625-1-pablo@netfilter.org>
@@ -29,28 +29,29 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Fetch table, set and set elements only for set listing commands, e.g.
-nft list set inet filter ipv4_bogons.
+Check if table mismatch, in case the same set name is used in different
+tables.
 
 Fixes: 635ee1cad8aa ("cache: filter out sets and maps that are not requested")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/cache.c | 2 ++
- 1 file changed, 2 insertions(+)
+ src/cache.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/src/cache.c b/src/cache.c
-index 3cbf99e8e124..691e8131c494 100644
+index 691e8131c494..f62c9b96f528 100644
 --- a/src/cache.c
 +++ b/src/cache.c
-@@ -146,6 +146,8 @@ static unsigned int evaluate_cache_list(struct nft_ctx *nft, struct cmd *cmd,
- 		}
- 		if (nft_output_terse(&nft->output))
- 			flags |= (NFT_CACHE_FULL & ~NFT_CACHE_SETELEM);
-+		else if (filter->table && filter->set)
-+			flags |= NFT_CACHE_TABLE | NFT_CACHE_SET | NFT_CACHE_SETELEM;
- 		else
- 			flags |= NFT_CACHE_FULL;
- 		break;
+@@ -377,7 +377,8 @@ static int set_cache_cb(struct nftnl_set *nls, void *arg)
+ 		return -1;
+ 
+ 	if (ctx->filter && ctx->filter->set &&
+-	    (strcmp(ctx->filter->set, set->handle.set.name))) {
++	    (strcmp(ctx->filter->table, set->handle.table.name) ||
++	     strcmp(ctx->filter->set, set->handle.set.name))) {
+ 		set_free(set);
+ 		return 0;
+ 	}
 -- 
 2.30.2
 
