@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0997844043A
+	by mail.lfdr.de (Postfix) with ESMTP id 80C5B44043B
 	for <lists+netfilter-devel@lfdr.de>; Fri, 29 Oct 2021 22:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhJ2Umy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S230070AbhJ2Umy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Fri, 29 Oct 2021 16:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhJ2Umq (ORCPT
+        with ESMTP id S230253AbhJ2Umr (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 29 Oct 2021 16:42:46 -0400
+        Fri, 29 Oct 2021 16:42:47 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:fb7d:d6d6:e0:4cff:fe83:e514])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA3FC061570
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926F3C061767
         for <netfilter-devel@vger.kernel.org>; Fri, 29 Oct 2021 13:40:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=CikqITi6V0h61qBIWZIWpY2vwZRdr7UosJyYQeYj9t4=; b=WxuGDa93yNntM337Gox06q3joO
-        55KBj8Ci414uZB+Xb4oj2qcMrEUYgA16viPJ3Cv18BKbl8I1g2VdoMjF1U8akUbdKAtABm5CGTiQ+
-        zALYlzNGweSFJXpTMA6HTDEjcJN8OkV8mAZ9ODl0NEc2srTVm9IRw5+tjNbeY7IcetQFaOGeDnCSY
-        MJJZKQ09j5QaLO2FBMzKc4BPas7AJF0Bpjx3j1seKe/1eJKyPmM8Nl9/KLY7d1KLWt86E5p01OMpQ
-        o2wSJHvAoYsr8MO+YNH2ExNcB0PAnk6WGGxZcoou/Gm+qbE3aUoMztl2sITVc1tW5aU0CeRXh5QJM
-        8OjEVlNw==;
+        bh=WMLNYCdgvHhxiAWw6Qp2xt5WnQ0337jRvmojQmzQrDg=; b=k7I7VJiY+hEmIlehwYN3IwldlU
+        9hLsvbbO9A0GW2lTKnytUirMm4meBXp8dT/daQ0f4X9L5NoOQsKnL2CVUbVhsb+VkroshMLJ0OrzZ
+        Y4JO6kAx2oEk7qvgXGax+YgvzuOdIkG+cqVQLvV/A2cibBtlZDrgMAcfMhF4jlb+7dtpGSdRaS4Gz
+        InbTWL2jl2vqBIwy8OrsBfTuxNSf2Soz4z3Gf5V1ANHtGrfMQHxuqhEffplABHvJ8dvaZXobcWTBj
+        5sqyT0p161VScW8MSq4ZbEUSyx8ngE8dS2WVxanjso5nax5KOkM4+1TTsMeii6sO0JiOBSOnjpjNz
+        u/JKIWrA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=ulthar.scientificgames.com)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mgYfb-009Imx-6w; Fri, 29 Oct 2021 21:40:11 +0100
+        id 1mgYfb-009Imx-9i; Fri, 29 Oct 2021 21:40:11 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [nft PATCH v2 2/3] parser: add `limit_rate_pkts` and `limit_rate_bytes` rules
-Date:   Fri, 29 Oct 2021 21:40:08 +0100
-Message-Id: <20211029204009.954315-3-jeremy@azazel.net>
+Subject: [nft PATCH v2 3/3] parser: extend limit syntax
+Date:   Fri, 29 Oct 2021 21:40:09 +0100
+Message-Id: <20211029204009.954315-4-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211029204009.954315-1-jeremy@azazel.net>
 References: <20211029204009.954315-1-jeremy@azazel.net>
@@ -49,242 +49,147 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Factor the `N / time-unit` and `N byte-unit / time-unit` expressions
-from limit expressions out into separate `limit_rate_pkts` and
-`limit_rate_bytes` rules respectively.
+The documentation describes the syntax of limit statements thus:
+
+  limit rate [over] packet_number / TIME_UNIT [burst packet_number packets]
+  limit rate [over] byte_number BYTE_UNIT / TIME_UNIT [burst byte_number BYTE_UNIT]
+
+  TIME_UNIT := second | minute | hour | day
+  BYTE_UNIT := bytes | kbytes | mbytes
+
+From this one might infer that a limit may be specified by any of the
+following:
+
+  limit rate 1048576/second
+  limit rate 1048576 mbytes/second
+
+  limit rate 1048576 / second
+  limit rate 1048576 mbytes / second
+
+However, the last does not currently parse:
+
+  $ sudo /usr/sbin/nft add filter input limit rate 1048576 mbytes / second
+  Error: wrong rate format
+  add filter input limit rate 1048576 mbytes / second
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Extend the `limit_rate_bytes` parser rule to support it, and add some
+new Python test-cases.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/datatype.h |   4 ++
- src/parser_bison.y | 121 ++++++++++++++++++++++-----------------------
- 2 files changed, 63 insertions(+), 62 deletions(-)
+ src/parser_bison.y           |  5 +++++
+ tests/py/any/limit.t         |  5 +++++
+ tests/py/any/limit.t.json    | 39 ++++++++++++++++++++++++++++++++++++
+ tests/py/any/limit.t.payload | 13 ++++++++++++
+ 4 files changed, 62 insertions(+)
 
-diff --git a/include/datatype.h b/include/datatype.h
-index 448be57fbc7f..7ddd3566d459 100644
---- a/include/datatype.h
-+++ b/include/datatype.h
-@@ -309,6 +309,10 @@ extern struct error_record *rate_parse(const struct location *loc,
- extern struct error_record *data_unit_parse(const struct location *loc,
- 					    const char *str, uint64_t *rate);
- 
-+struct limit_rate {
-+	uint64_t rate, unit;
-+};
-+
- extern void expr_chain_export(const struct expr *e, char *chain);
- 
- #endif /* NFTABLES_DATATYPE_H */
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 3acd80317456..cf1e139d42f3 100644
+index cf1e139d42f3..65fd35a36cde 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -186,6 +186,7 @@ int nft_lex(void *, void *, void *);
- 	struct handle_spec	handle_spec;
- 	struct position_spec	position_spec;
- 	struct prio_spec	prio_spec;
-+	struct limit_rate	limit_rate;
- }
- 
- %token TOKEN_EOF 0		"end of file"
-@@ -607,6 +608,9 @@ int nft_lex(void *, void *, void *);
- %token IN			"in"
- %token OUT			"out"
- 
-+%type <limit_rate>		limit_rate_pkts
-+%type <limit_rate>		limit_rate_bytes
-+
- %type <string>			identifier type_identifier string comment_spec
- %destructor { xfree($$); }	identifier type_identifier string comment_spec
- 
-@@ -3145,42 +3149,31 @@ log_flag_tcp		:	SEQUENCE
+@@ -3268,6 +3268,11 @@ limit_rate_bytes	:	NUM     STRING
+ 				$$.rate = rate * $1;
+ 				$$.unit = unit;
  			}
- 			;
- 
--limit_stmt		:	LIMIT	RATE	limit_mode	NUM	SLASH	time_unit	limit_burst_pkts	close_scope_limit
-+limit_stmt		:	LIMIT	RATE	limit_mode	limit_rate_pkts	limit_burst_pkts	close_scope_limit
- 	    		{
--				if ($7 == 0) {
--					erec_queue(error(&@7, "limit burst must be > 0"),
-+				if ($5 == 0) {
-+					erec_queue(error(&@5, "limit burst must be > 0"),
- 						   state->msgs);
- 					YYERROR;
- 				}
- 				$$ = limit_stmt_alloc(&@$);
--				$$->limit.rate	= $4;
--				$$->limit.unit	= $6;
--				$$->limit.burst	= $7;
-+				$$->limit.rate	= $4.rate;
-+				$$->limit.unit	= $4.unit;
-+				$$->limit.burst	= $5;
- 				$$->limit.type	= NFT_LIMIT_PKTS;
- 				$$->limit.flags = $3;
- 			}
--			|	LIMIT	RATE	limit_mode	NUM	STRING	limit_burst_bytes	close_scope_limit
-+			|	LIMIT	RATE	limit_mode	limit_rate_bytes	limit_burst_bytes	close_scope_limit
- 			{
--				struct error_record *erec;
--				uint64_t rate, unit;
--
--				if ($6 == 0) {
--					erec_queue(error(&@6, "limit burst must be > 0"),
-+				if ($5 == 0) {
-+					erec_queue(error(&@5, "limit burst must be > 0"),
- 						   state->msgs);
- 					YYERROR;
- 				}
--
--				erec = rate_parse(&@$, $5, &rate, &unit);
--				xfree($5);
--				if (erec != NULL) {
--					erec_queue(erec, state->msgs);
--					YYERROR;
--				}
--
- 				$$ = limit_stmt_alloc(&@$);
--				$$->limit.rate	= rate * $4;
--				$$->limit.unit	= unit;
--				$$->limit.burst	= $6;
-+				$$->limit.rate	= $4.rate;
-+				$$->limit.unit	= $4.unit;
-+				$$->limit.burst	= $5;
- 				$$->limit.type	= NFT_LIMIT_PKT_BYTES;
- 				$$->limit.flags = $3;
- 			}
-@@ -3250,10 +3243,33 @@ limit_burst_pkts	:	/* empty */			{ $$ = 5; }
- 			|	BURST	NUM	PACKETS		{ $$ = $2; }
- 			;
- 
-+limit_rate_pkts		:	NUM     SLASH	time_unit
++			|	limit_bytes SLASH time_unit
 +			{
 +				$$.rate = $1;
 +				$$.unit = $3;
 +			}
-+			;
-+
- limit_burst_bytes	:	/* empty */			{ $$ = 5; }
- 			|	BURST	limit_bytes		{ $$ = $2; }
  			;
  
-+limit_rate_bytes	:	NUM     STRING
-+			{
-+				struct error_record *erec;
-+				uint64_t rate, unit;
-+
-+				erec = rate_parse(&@$, $2, &rate, &unit);
-+				xfree($2);
-+				if (erec != NULL) {
-+					erec_queue(erec, state->msgs);
-+					YYERROR;
-+				}
-+				$$.rate = rate * $1;
-+				$$.unit = unit;
-+			}
-+			;
-+
  limit_bytes		:	NUM	BYTES		{ $$ = $1; }
- 			|	NUM	STRING
- 			{
-@@ -4283,44 +4299,34 @@ set_elem_stmt		:	COUNTER	close_scope_counter
- 				$$->counter.packets = $3;
- 				$$->counter.bytes = $5;
- 			}
--			|	LIMIT   RATE    limit_mode      NUM     SLASH   time_unit       limit_burst_pkts	close_scope_limit
-+			|	LIMIT   RATE    limit_mode      limit_rate_pkts       limit_burst_pkts	close_scope_limit
- 			{
--				if ($7 == 0) {
--					erec_queue(error(&@7, "limit burst must be > 0"),
-+				if ($5 == 0) {
-+					erec_queue(error(&@5, "limit burst must be > 0"),
- 						   state->msgs);
- 					YYERROR;
- 				}
- 				$$ = limit_stmt_alloc(&@$);
--				$$->limit.rate  = $4;
--				$$->limit.unit  = $6;
--				$$->limit.burst = $7;
-+				$$->limit.rate  = $4.rate;
-+				$$->limit.unit  = $4.unit;
-+				$$->limit.burst = $5;
- 				$$->limit.type  = NFT_LIMIT_PKTS;
- 				$$->limit.flags = $3;
- 			}
--			|       LIMIT   RATE    limit_mode      NUM     STRING  limit_burst_bytes	close_scope_limit
-+			|       LIMIT   RATE    limit_mode      limit_rate_bytes  limit_burst_bytes	close_scope_limit
- 			{
--				struct error_record *erec;
--				uint64_t rate, unit;
--
--				if ($6 == 0) {
-+				if ($5 == 0) {
- 					erec_queue(error(&@6, "limit burst must be > 0"),
- 						   state->msgs);
- 					YYERROR;
- 				}
--				erec = rate_parse(&@$, $5, &rate, &unit);
--				xfree($5);
--				if (erec != NULL) {
--					erec_queue(erec, state->msgs);
--					YYERROR;
--				}
--
- 				$$ = limit_stmt_alloc(&@$);
--				$$->limit.rate  = rate * $4;
--				$$->limit.unit  = unit;
--				$$->limit.burst = $6;
-+				$$->limit.rate  = $4.rate;
-+				$$->limit.unit  = $4.unit;
-+				$$->limit.burst = $5;
- 				$$->limit.type  = NFT_LIMIT_PKT_BYTES;
- 				$$->limit.flags = $3;
--                        }
-+			}
- 			|	CT	COUNT	NUM	close_scope_ct
- 			{
- 				$$ = connlimit_stmt_alloc(&@$);
-@@ -4553,34 +4559,25 @@ ct_obj_alloc		:	/* empty */
- 			}
- 			;
+diff --git a/tests/py/any/limit.t b/tests/py/any/limit.t
+index 0110e77f2e85..86e8d43009b9 100644
+--- a/tests/py/any/limit.t
++++ b/tests/py/any/limit.t
+@@ -25,6 +25,11 @@ limit rate 10230 mbytes/second;ok
+ limit rate 1023000 mbytes/second;ok
+ limit rate 512 kbytes/second burst 5 packets;fail
  
--limit_config		:	RATE	limit_mode	NUM	SLASH	time_unit	limit_burst_pkts
-+limit_config		:	RATE	limit_mode	limit_rate_pkts	limit_burst_pkts
- 			{
- 				struct limit *limit;
++limit rate 1 bytes / second;ok;limit rate 1 bytes/second
++limit rate 1 kbytes / second;ok;limit rate 1 kbytes/second
++limit rate 1 mbytes / second;ok;limit rate 1 mbytes/second
++limit rate 1 gbytes / second;fail
++
+ limit rate 1025 bytes/second burst 512 bytes;ok
+ limit rate 1025 kbytes/second burst 1023 kbytes;ok
+ limit rate 1025 mbytes/second burst 1025 kbytes;ok
+diff --git a/tests/py/any/limit.t.json b/tests/py/any/limit.t.json
+index 8bab7e3d79b4..b41ae60a3bd6 100644
+--- a/tests/py/any/limit.t.json
++++ b/tests/py/any/limit.t.json
+@@ -125,6 +125,45 @@
+     }
+ ]
  
- 				limit = &$<obj>0->limit;
--				limit->rate	= $3;
--				limit->unit	= $5;
--				limit->burst	= $6;
-+				limit->rate	= $3.rate;
-+				limit->unit	= $3.unit;
-+				limit->burst	= $4;
- 				limit->type	= NFT_LIMIT_PKTS;
- 				limit->flags	= $2;
- 			}
--			|	RATE	limit_mode	NUM	STRING	limit_burst_bytes
-+			|	RATE	limit_mode	limit_rate_bytes	limit_burst_bytes
- 			{
- 				struct limit *limit;
--				struct error_record *erec;
--				uint64_t rate, unit;
--
--				erec = rate_parse(&@$, $4, &rate, &unit);
--				xfree($4);
--				if (erec != NULL) {
--					erec_queue(erec, state->msgs);
--					YYERROR;
--				}
++# limit rate 1 bytes / second
++[
++    {
++        "limit": {
++            "burst": 5,
++            "burst_unit": "bytes",
++            "per": "second",
++            "rate": 1,
++            "rate_unit": "bytes"
++        }
++    }
++]
++
++# limit rate 1 kbytes / second
++[
++    {
++        "limit": {
++            "burst": 5,
++            "burst_unit": "bytes",
++            "per": "second",
++            "rate": 1,
++            "rate_unit": "kbytes"
++        }
++    }
++]
++
++# limit rate 1 mbytes / second
++[
++    {
++        "limit": {
++            "burst": 5,
++            "burst_unit": "bytes",
++            "per": "second",
++            "rate": 1,
++            "rate_unit": "mbytes"
++        }
++    }
++]
++
+ # limit rate 1025 bytes/second burst 512 bytes
+ [
+     {
+diff --git a/tests/py/any/limit.t.payload b/tests/py/any/limit.t.payload
+index dc6cea9b2846..3bd85f4ebf45 100644
+--- a/tests/py/any/limit.t.payload
++++ b/tests/py/any/limit.t.payload
+@@ -46,6 +46,19 @@ ip test-ip4 output
+ ip test-ip4 output
+   [ limit rate 1072693248000/second burst 5 type bytes flags 0x0 ]
  
- 				limit = &$<obj>0->limit;
--				limit->rate	= rate * $3;
--				limit->unit	= unit;
--				limit->burst	= $5;
-+				limit->rate	= $3.rate;
-+				limit->unit	= $3.unit;
-+				limit->burst	= $4;
- 				limit->type	= NFT_LIMIT_PKT_BYTES;
- 				limit->flags	= $2;
- 			}
++# limit rate 1 bytes / second
++ip
++  [ limit rate 1/second burst 5 type bytes flags 0x0 ]
++
++# limit rate 1 kbytes / second
++ip
++  [ limit rate 1024/second burst 5 type bytes flags 0x0 ]
++
++# limit rate 1 mbytes / second
++ip
++  [ limit rate 1048576/second burst 5 type bytes flags 0x0 ]
++
++
+ # limit rate 1025 bytes/second burst 512 bytes
+ ip test-ip4 output
+   [ limit rate 1025/second burst 512 type bytes flags 0x0 ]
 -- 
 2.33.0
 
