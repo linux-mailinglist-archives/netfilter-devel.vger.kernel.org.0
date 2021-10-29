@@ -2,121 +2,74 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9CC440320
-	for <lists+netfilter-devel@lfdr.de>; Fri, 29 Oct 2021 21:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F5B44043C
+	for <lists+netfilter-devel@lfdr.de>; Fri, 29 Oct 2021 22:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhJ2T2G (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 29 Oct 2021 15:28:06 -0400
-Received: from ink.ssi.bg ([178.16.128.7]:56431 "EHLO ink.ssi.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230287AbhJ2T2F (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 29 Oct 2021 15:28:05 -0400
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id 81BBD3C09BA;
-        Fri, 29 Oct 2021 22:25:32 +0300 (EEST)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.16.1/8.16.1) with ESMTP id 19TJPRVa026763;
-        Fri, 29 Oct 2021 22:25:29 +0300
-Date:   Fri, 29 Oct 2021 22:25:27 +0300 (EEST)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     yangxingwu <xingwu.yang@gmail.com>
-cc:     Simon Horman <horms@verge.net.au>, pablo@netfilter.org,
-        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, legend050709@qq.com
-Subject: Re: [PATCH v2] ipvs: Fix reuse connection if RS weight is 0
-In-Reply-To: <20211029032604.5432-1-xingwu.yang@gmail.com>
-Message-ID: <8bdab9e0-3bd4-c37-94e9-ca1f74883356@ssi.bg>
-References: <20211029032604.5432-1-xingwu.yang@gmail.com>
+        id S230215AbhJ2Umz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 29 Oct 2021 16:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230271AbhJ2Umr (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Fri, 29 Oct 2021 16:42:47 -0400
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:fb7d:d6d6:e0:4cff:fe83:e514])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C63C061766
+        for <netfilter-devel@vger.kernel.org>; Fri, 29 Oct 2021 13:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=TFBH5NYDgdObM1+sYwFQWIWZZqYTJTeyMihjktMVDPc=; b=QuMTksyhpo2Ibx8DK6NtJZREqY
+        pWpLSpHDnLNBIxXlcGStJrj9fyi5s4+Own+JuiWghRUCj1UKrAcFeSR4Mo9t4Ne3+qiUOtLB6Agk3
+        skj7dGEI7aKAEhyMu6U65rmdI18nZw8NxNutfCNi+dXGAY4kK9MKq8bTITa8hdbm7V8OTcc3foDp/
+        rnETDik0HXp8DCiXgSU6sX9L4czesHCZsoXpLQFPtgd0Ly7/HA4OiXz7InaEcvPJGM35peFRKKp2J
+        LltNVnEwbaU5Hu8mGwfsD3xEHEgim/bC/nZS7hsvNNwaFBejYCrOJn/C6/hFe1ztjXzfE//mEomBY
+        2I14z2QA==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=ulthar.scientificgames.com)
+        by kadath.azazel.net with esmtp (Exim 4.94.2)
+        (envelope-from <jeremy@azazel.net>)
+        id 1mgYfa-009Imx-Ut; Fri, 29 Oct 2021 21:40:10 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [nft PATCH v2 0/3] parser: refactor and extend limit rate rules
+Date:   Fri, 29 Oct 2021 21:40:06 +0100
+Message-Id: <20211029204009.954315-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+The first two patches introduce new rules to deduplicate the code for
+parsing `limit rate` expressions and make it easier to extend the
+syntax.
 
-	Hello,
+The third patch extends the syntax to handle expressions like `limit
+rate 1 mbytes / second`, which are not currently supported.
 
-On Fri, 29 Oct 2021, yangxingwu wrote:
+Changes since v1:
 
-> Since commit dc7b3eb900aa ("ipvs: Fix reuse connection if real server is
-> dead"), new connections to dead servers are redistributed immediately to
-> new servers.
-> 
-> Then commit d752c3645717 ("ipvs: allow rescheduling of new connections when
-> port reuse is detected") disable expire_nodest_conn if conn_reuse_mode is
-> 0. And new connection may be distributed to a real server with weight 0.
+ * add patches 1 & 2 in order to simplify the new rule added in patch 3.
 
-	Can you better explain in commit message that we are changing 
-expire_nodest_conn to work even for reused connections when
-conn_reuse_mode=0 but without affecting the controlled/persistent
-connections during the grace period while server is with weight=0.
+Jeremy Sowden (3):
+  parser: add new `limit_bytes` rule
+  parser: add `limit_rate_pkts` and `limit_rate_bytes` rules
+  parser: extend limit syntax
 
-	Even if you target -next trees adding commit d752c3645717
-as Fixes line would be a good idea. Make sure the tree is specified
-after the v3 tag.
+ include/datatype.h           |   4 +
+ src/parser_bison.y           | 141 ++++++++++++++++++-----------------
+ tests/py/any/limit.t         |   5 ++
+ tests/py/any/limit.t.json    |  39 ++++++++++
+ tests/py/any/limit.t.payload |  13 ++++
+ 5 files changed, 134 insertions(+), 68 deletions(-)
 
-> Co-developed-by: Chuanqi Liu <legend050709@qq.com>
-> Signed-off-by: Chuanqi Liu <legend050709@qq.com>
-> Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
-> ---
->  Documentation/networking/ipvs-sysctl.rst | 3 +--
->  net/netfilter/ipvs/ip_vs_core.c          | 7 ++++---
->  2 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
-> index 2afccc63856e..1cfbf1add2fc 100644
-> --- a/Documentation/networking/ipvs-sysctl.rst
-> +++ b/Documentation/networking/ipvs-sysctl.rst
-> @@ -37,8 +37,7 @@ conn_reuse_mode - INTEGER
->  
->  	0: disable any special handling on port reuse. The new
->  	connection will be delivered to the same real server that was
-> -	servicing the previous connection. This will effectively
-> -	disable expire_nodest_conn.
-> +	servicing the previous connection.
->  
->  	bit 1: enable rescheduling of new connections when it is safe.
->  	That is, whenever expire_nodest_conn and for TCP sockets, when
-> diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-> index 128690c512df..374f4b0b7080 100644
-> --- a/net/netfilter/ipvs/ip_vs_core.c
-> +++ b/net/netfilter/ipvs/ip_vs_core.c
-> @@ -2042,14 +2042,15 @@ ip_vs_in(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, int
->  			     ipvs, af, skb, &iph);
->  
->  	conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
-> -	if (conn_reuse_mode && !iph.fragoffs && is_new_conn(skb, &iph) && cp) {
-> +	if (!iph.fragoffs && is_new_conn(skb, &iph) && cp) {
+-- 
+2.33.0
 
-	It is even better to move the !cp->control check above:
-
-	if (!iph.fragoffs && is_new_conn(skb, &iph) && cp && !cp->control) {
-
-	Then is not needed in is_new_conn_expected() anymore.
-
->  		bool old_ct = false, resched = false;
-
-	And now you can move conn_reuse_mode here:
-
-		int conn_reuse_mode = sysctl_conn_reuse_mode(ipvs);
-
->  		if (unlikely(sysctl_expire_nodest_conn(ipvs)) && cp->dest &&
-> -		    unlikely(!atomic_read(&cp->dest->weight))) {
-> +		    unlikely(!atomic_read(&cp->dest->weight)) && !cp->control) {
->  			resched = true;
->  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
-> -		} else if (is_new_conn_expected(cp, conn_reuse_mode)) {
-> +		} else if (conn_reuse_mode &&
-> +			   is_new_conn_expected(cp, conn_reuse_mode)) {
->  			old_ct = ip_vs_conn_uses_old_conntrack(cp, skb);
->  			if (!atomic_read(&cp->n_control)) {
->  				resched = true;
-> -- 
-> 2.30.2
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
