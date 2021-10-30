@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7348440A73
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 19:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADD3440A68
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 19:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhJ3RNp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Oct 2021 13:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
+        id S230188AbhJ3RNM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Oct 2021 13:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbhJ3RNo (ORCPT
+        with ESMTP id S229863AbhJ3RNM (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Oct 2021 13:13:44 -0400
+        Sat, 30 Oct 2021 13:13:12 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:fb7d:d6d6:e0:4cff:fe83:e514])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64193C061570
-        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 10:11:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A545C061570
+        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 10:10:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=f39ym8luh+rm6LBp0IoSBcs9OC7a4hkrT1F7OEz1C0E=; b=lA6uRypkutOo34yb7F+inelg9a
-        14Aplb+73VYaHGbmFv9vxbMp8P5hH8FU7OiuUkOFzdWYs/7rWFhsTjsvS7So0oDn9s1/GuMOsXP38
-        tJvhx/O4UgjPtyhqBDo2KtackDKBgfbuiI0vSynL+ZnGYKxQHbFLR22MeaZMiWQc1YQkxMi/UNxUt
-        UlWTGA3RqFxXnSBSzCMSEtO5r/HU9sErSurI8CRhxaffifv82Dob1rpypJMCRMgWA/j2Ee7CvM+WG
-        /gH2lLjMxAnsRJ4k7IS/+c1sly0SReer4m1UAoArgTAux+VaHGi6lUfX63r/1zcs3HANTg+L72yzK
-        XB8aP1jQ==;
+        bh=1/ww1tM9G1Bdrqq43bg4EZaBAsCHHojr9kMW0gSbYM4=; b=nGWloWL85sSvDgEUwpm8P7J3RR
+        F+KdLRBKa7Hlf264a0N3arICg6Sm1yVB2yTvNN6TPhU8PDS432p/jk7yD4LY7P2w/MK3FO48jrDy2
+        z2NNXKiL3bn4aYOlChaZEFXTImKH+fWqfMT4rVmGKPVT399YMxARmS+GGD7pX6/F9yppKOdVIkd4a
+        ZkrsYSQjcUdlt0pdYjopjw5WgcfSElaTBWJaHpmOmGlABFD2zAX3snAIvkc4/ngkP9hB/mW/4/vLD
+        8ZsXsZOwd3fALnGq6ffIKJx5eeAMsJ34+0E2rjts4tD+kO/AaUc11ZqYby2XjfJXuKDWI7H0i2COD
+        p7ZoLHSw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=ulthar.scientificgames.com)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mgrTA-00AFgT-4D
+        id 1mgrTA-00AFgT-9o
         for netfilter-devel@vger.kernel.org; Sat, 30 Oct 2021 17:44:36 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 16/26] output: DBI: fix deprecation warnings.
-Date:   Sat, 30 Oct 2021 17:44:22 +0100
-Message-Id: <20211030164432.1140896-17-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 17/26] output: DBI: fix string truncation warnings
+Date:   Sat, 30 Oct 2021 17:44:23 +0100
+Message-Id: <20211030164432.1140896-18-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211030164432.1140896-1-jeremy@azazel.net>
 References: <20211030164432.1140896-1-jeremy@azazel.net>
@@ -49,52 +49,103 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Switch to re-entrant libdbi functions.
+Replace `strncpy` with `snprintf` and `memcpy`.
+
+Remove intermediate buffer.
+
+Ensure that `dst` is properly initialized if `dbi_conn_quote_string_copy`
+returns an error.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/dbi/ulogd_output_DBI.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ output/dbi/ulogd_output_DBI.c | 46 +++++++++++++++--------------------
+ 1 file changed, 20 insertions(+), 26 deletions(-)
 
 diff --git a/output/dbi/ulogd_output_DBI.c b/output/dbi/ulogd_output_DBI.c
-index 23cc9c8fb492..461aed4bddb6 100644
+index 461aed4bddb6..babaf58a9a56 100644
 --- a/output/dbi/ulogd_output_DBI.c
 +++ b/output/dbi/ulogd_output_DBI.c
-@@ -29,6 +29,8 @@
- #define DEBUGP(x, args...)
- #endif
+@@ -91,15 +91,6 @@ static struct config_keyset dbi_kset = {
+ #define dbtype_ce(x)	(x->ces[DB_CE_NUM+6])
  
-+static dbi_inst libdbi_instance;
-+
- struct dbi_instance {
- 	struct db_instance db_inst;
  
-@@ -195,14 +197,14 @@ static int open_db_dbi(struct ulogd_pluginstance *upi)
- 
- 	ulogd_log(ULOGD_ERROR, "Opening connection for db type %s\n",
- 		  dbtype);
--	driver = dbi_driver_open(dbtype);
-+	driver = dbi_driver_open_r(dbtype, libdbi_instance);
- 	if (driver == NULL) {
- 		ulogd_log(ULOGD_ERROR, "unable to load driver for db type %s\n",
- 			  dbtype);
- 		close_db_dbi(upi);
- 		return -1;
- 	}
--	pi->dbh = dbi_conn_new(dbtype);
-+	pi->dbh = dbi_conn_new_r(dbtype, libdbi_instance);
- 	if (pi->dbh == NULL) {
- 		ulogd_log(ULOGD_ERROR, "unable to initialize db type %s\n",
- 			  dbtype);
-@@ -320,7 +322,7 @@ void __attribute__ ((constructor)) init(void);
- 
- void init(void)
+-/* lower-cases s in place */
+-static void str_tolower(char *s)
+-{
+-	while(*s) {
+-		*s = tolower(*s);
+-		s++;
+-	}
+-}
+-
+ /* find out which columns the table has */
+ static int get_columns_dbi(struct ulogd_pluginstance *upi)
  {
--	dbi_initialize(NULL);
-+	dbi_initialize_r(NULL, &libdbi_instance);
+@@ -139,25 +130,26 @@ static int get_columns_dbi(struct ulogd_pluginstance *upi)
+ 		return -ENOMEM;
+ 	}
  
- 	ulogd_register_plugin(&dbi_plugin);
+-	for (ui=1; ui<=upi->input.num_keys; ui++) {
+-		char buf[ULOGD_MAX_KEYLEN+1];
+-		char *underscore;
+-		const char* field_name = dbi_result_get_field_name(pi->result, ui);
++	for (ui = 1; ui <= upi->input.num_keys; ui++) {
++		const char *field_name = dbi_result_get_field_name(pi->result, ui);
++		char *cp;
+ 
+ 		if (!field_name)
+ 			break;
+ 
+-		/* replace all underscores with dots */
+-		strncpy(buf, field_name, ULOGD_MAX_KEYLEN);
+-		while ((underscore = strchr(buf, '_')))
+-			*underscore = '.';
++		snprintf(upi->input.keys[ui - 1].name,
++			 sizeof(upi->input.keys[ui - 1].name),
++			 "%s", field_name);
+ 
+-		str_tolower(buf);
++		/* down-case and replace all underscores with dots */
++		for (cp = upi->input.keys[ui - 1].name; *cp; cp++) {
++			if (*cp == '_')
++				*cp = '.';
++			else
++				*cp = tolower(*cp);
++		}
+ 
+-		DEBUGP("field '%s' found: ", buf);
+-
+-		/* add it to list of input keys */
+-		strncpy(upi->input.keys[ui-1].name, buf, ULOGD_MAX_KEYLEN);
++		DEBUGP("field '%s' found: ", upi->input.keys[ui - 1].name);
+ 	}
+ 
+ 	/* ID is a sequence */
+@@ -245,18 +237,20 @@ static int escape_string_dbi(struct ulogd_pluginstance *upi,
+ 	}
+ 
+ 	ret = dbi_conn_quote_string_copy(pi->dbh, src, &newstr);
+-	if (ret <= 2)
++	if (ret == 0) {
++		*dst = '\0';
+ 		return 0;
++	}
+ 
+ 	/* dbi_conn_quote_string_copy returns a quoted string,
+ 	 * but __interp_db already quotes the string
+ 	 * So we return a string without the quotes
+ 	 */
+-	strncpy(dst,newstr+1,ret-2);
+-	dst[ret-2] = '\0';
++	memcpy(dst, newstr + 1, ret - 2);
++	dst[ret - 2] = '\0';
+ 	free(newstr);
+ 
+-	return (ret-2);
++	return ret - 2;
  }
+ 
+ static int execute_dbi(struct ulogd_pluginstance *upi,
 -- 
 2.33.0
 
