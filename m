@@ -2,44 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72C0440A29
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 18:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E7A440A3E
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 18:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbhJ3QNC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Oct 2021 12:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44910 "EHLO
+        id S229845AbhJ3QrH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Oct 2021 12:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhJ3QNC (ORCPT
+        with ESMTP id S229694AbhJ3QrG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Oct 2021 12:13:02 -0400
+        Sat, 30 Oct 2021 12:47:06 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:fb7d:d6d6:e0:4cff:fe83:e514])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED63C061570
-        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 09:10:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E17C061570
+        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 09:44:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Oxp+ke0fKNjW8dn65S7FadTgS1aRnkqIdanBCAGAHoE=; b=tOl0Ky38oyL5A6Wzt9bsDSNIfz
-        WdFDimcjncNYhtrtFdjObWVciSGfUmCO1S2Whk9T0/CR4hVak6L/RyXUDqrMXvtZGgmsSh4gXU/Yr
-        jOokyboEpmZNL0BHNncfzJQzu6zFBHku9G7a6D+rg1RoYUOAYwIsL7GHes3zS7sLMYA1l2sgapHdA
-        qF6Ko9Rb/omn5zOkF6GWzDVAapyuL2qNioESmygRw8Eirwo8JmBnA6fcNJ9ob8i/4n/vW4l9u5e2O
-        I/LG8uXARFRdXsNHedZO937fQHmyismF7n034F3ZpTPRIILJFgvlJVCgjoiTcTzfT31hEYusGV+yF
-        NIMuqfMA==;
+        bh=noLnrR5kaSdgDAlN01Ak+XD5otRtlVus/1xolOhhrbw=; b=d8RUVCWlE1vGT3zrgwZXcvBFFK
+        YVxj/WP3kPqdgNi6CTyHidXu1u7grWwKGepLwwz7+rOePYFbRgSJANSbfUk70sqpxdyi0BJam+Mq7
+        tBvuIiBstJ8aRcs5trTpD/PTR68WRulrmUAMe339cl2DaoJBL0tXZo/hr0abZnSWD1d5M/04t5GAk
+        +olzlNz1owTAIh0XQPDcyS1AkMTntuckYXw3EnlyNwllHqUy0u1Froy2+7CW7hXxZfAipcDqfpxbT
+        EUB/k4HncV9l93BJMKabBFjagfgiOa9Uk4BcemIh7zvhGnnpjrCTpazAF30eK9jGs5P1oklqZtARS
+        nTArPf8A==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=ulthar.scientificgames.com)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mgqng-00AFQk-Hq
-        for netfilter-devel@vger.kernel.org; Sat, 30 Oct 2021 17:01:44 +0100
+        id 1mgrT7-00AFgT-Uw
+        for netfilter-devel@vger.kernel.org; Sat, 30 Oct 2021 17:44:33 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 13/13] build: bump autoconf version to 2.71
-Date:   Sat, 30 Oct 2021 17:01:41 +0100
-Message-Id: <20211030160141.1132819-14-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 00/26] Compiler Warning Fixes
+Date:   Sat, 30 Oct 2021 17:44:06 +0100
+Message-Id: <20211030164432.1140896-1-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211030160141.1132819-1-jeremy@azazel.net>
-References: <20211030160141.1132819-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
@@ -49,23 +47,63 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- configure.ac | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Patch 1 adds the `format` GCC attribute to ulogd_log.
+Patches 2-5 fix the format errors revealed by the patch 1.
+Patches 6-8 fix fall-through warnings.
+Patches 9-10 are flow-control improvements related to patch 8.
+Patch 11 replaces malloc+memset with calloc.
+Patches 12-14 fix string-truncation warnings.
+Patch 15 fixes a possible unaligned pointer access.
+Patch 16 fixes DBI deprecation warnings.
+Patches 17-20 fix more truncation warnings.
+Patch 21 adds error-checking to sqlite SQL preparation.
+Patches 22-26 fix more truncation and format warnings.
 
-diff --git a/configure.ac b/configure.ac
-index ea245dae3796..8d18cc6eb7fb 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -1,6 +1,6 @@
- dnl Process this file with autoconf to produce a configure script.
- AC_INIT([ulogd], [2.0.7])
--AC_PREREQ([2.50])
-+AC_PREREQ([2.71])
- AC_CONFIG_AUX_DIR([build-aux])
- AM_INIT_AUTOMAKE([-Wall foreign tar-pax no-dist-gzip dist-bzip2 1.10b subdir-objects])
- AC_CONFIG_HEADERS([config.h])
+Jeremy Sowden (26):
+  include: add format attribute to __ulogd_log declaration
+  ulog: remove empty log-line
+  ulog: fix order of log arguments
+  ulog: correct log specifiers
+  output: IPFIX: correct format-specifiers.
+  jhash: add "fall through" comments to switch cases.
+  db: add missing `break` to switch-case.
+  filter: HWHDR: replace `switch` with `if`.
+  filter: HWHDR: re-order KEY_RAW_MAC checks.
+  filter: HWHDR: remove zero-initialization of MAC type.
+  Replace malloc+memset with calloc
+  filter: PWSNIFF: replace malloc+strncpy with strndup.
+  input: UNIXSOCK: stat socket-path first before creating the socket.
+  input: UNIXSOCK: fix possible truncation of socket path
+  input: UNIXSOCK: prevent unaligned pointer access.
+  output: DBI: fix deprecation warnings.
+  output: DBI: fix string truncation warnings
+  output: MYSQL: Fix string truncation warning
+  output: PGSQL: Fix string truncation warning
+  output: SQLITE3: Fix string truncation warnings and possible buffer
+    overruns.
+  output: SQLITE3: catch errors creating SQL statement
+  util: db: fix possible string truncation.
+  output: JSON: fix output of GMT offset.
+  output: JSON: fix printf truncation warnings.
+  output: JSON: optimize appending of newline to output.
+  output: JSON: fix possible truncation of socket path
+
+ filter/ulogd_filter_HWHDR.c           | 54 +++++++++++-------------
+ filter/ulogd_filter_PWSNIFF.c         | 26 ++++++------
+ include/ulogd/jhash.h                 | 24 +++++------
+ include/ulogd/ulogd.h                 |  3 +-
+ input/packet/ulogd_inppkt_UNIXSOCK.c  | 55 +++++++++++++-----------
+ output/dbi/ulogd_output_DBI.c         | 60 ++++++++++++---------------
+ output/ipfix/ipfix.c                  |  4 +-
+ output/ipfix/ulogd_output_IPFIX.c     |  7 ++--
+ output/mysql/ulogd_output_MYSQL.c     | 19 ++++-----
+ output/pgsql/ulogd_output_PGSQL.c     | 19 ++++-----
+ output/sqlite3/ulogd_output_SQLITE3.c | 58 +++++++++++++-------------
+ output/ulogd_output_JSON.c            | 42 ++++++++++---------
+ src/ulogd.c                           |  6 +--
+ util/db.c                             | 24 +++++------
+ 14 files changed, 192 insertions(+), 209 deletions(-)
+
 -- 
 2.33.0
 
