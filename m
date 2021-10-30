@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C303440A41
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6EC440A42
 	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 18:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhJ3QrI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Oct 2021 12:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
+        id S230049AbhJ3QrJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Oct 2021 12:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbhJ3QrG (ORCPT
+        with ESMTP id S230075AbhJ3QrH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Oct 2021 12:47:06 -0400
+        Sat, 30 Oct 2021 12:47:07 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:fb7d:d6d6:e0:4cff:fe83:e514])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799CDC061766
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80772C061767
         for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 09:44:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=PO1hu21z0Ig1MiIZaHaHk5csfBnO0KhJXvOBfeHt3d4=; b=eyqORwwzfjfAaIgBVex3zxbzNW
-        QaUxngM77fth8uOZrnTkcIfeKs4hnYRWxoI0v24fFUl+clTN5PZ6AYHbBjCmjKaQhkJZygAHX/cXY
-        Qt6GFeQWHZehQJrlWwN53eNW1nG7IRwqQ+lLVPmm+F8odyB+ZKKteNOkiDj2V8WLvnopkdyvN4d06
-        RStHxtQbybxu14VuODGkAeCxxKh8iYxYTpKUpyrHvwuCZ2BGJAgGwcSmBdk2mJCdCiLM5nzx8BRVQ
-        WuP8jmIND7gB10VQZ/ofc+GjLBc39HMGEOGnHNFL1bRy8kQB3upAGvma4YLMTHHVqaybKSd1EhYCr
-        Y8Lr/yfQ==;
+        bh=9167Olj9Rgfx+iSaXyD5QS+BJpF6nFLTihPvt08TfSE=; b=BpZ/WtyjhEENQY3Qa8yheqHE1m
+        pFvi5d8IVOH8T7WCc1/duT5xtUSlD1ZpgcQSNSCCoCmL7gnN00xMaWtA+0wXvnakzcvQ2w99fWpum
+        kepyVG6Sur3X2bO0KuCjEx+Vbnj/rQr5Wdp5NY5rCC1Le7loi3HQzt4nyg7oFTMyGfLSeq4/k3pxQ
+        4rEGQkRK0c0hFtmdqkFtoPsqXlQVzbgNeaiP2r1qFW0vTICYJjUSY2J83DoCXSVx2HzQwp7el6ITM
+        XErnhxwRkl4453Hax3sgyt26CZYfqn7bFhBYF9DIagmHu03n3YYBQn4EaSkp8ZEMJHv37E1PQxPn4
+        v8c/lpUA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=ulthar.scientificgames.com)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mgrT8-00AFgT-A7
+        id 1mgrT8-00AFgT-Iw
         for netfilter-devel@vger.kernel.org; Sat, 30 Oct 2021 17:44:34 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 04/26] ulog: correct log specifiers
-Date:   Sat, 30 Oct 2021 17:44:10 +0100
-Message-Id: <20211030164432.1140896-5-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 05/26] output: IPFIX: correct format-specifiers.
+Date:   Sat, 30 Oct 2021 17:44:11 +0100
+Message-Id: <20211030164432.1140896-6-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211030164432.1140896-1-jeremy@azazel.net>
 References: <20211030164432.1140896-1-jeremy@azazel.net>
@@ -51,39 +51,41 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- input/packet/ulogd_inppkt_UNIXSOCK.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ output/ipfix/ulogd_output_IPFIX.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/input/packet/ulogd_inppkt_UNIXSOCK.c b/input/packet/ulogd_inppkt_UNIXSOCK.c
-index 39944bf5cdb1..f97c2e174b2d 100644
---- a/input/packet/ulogd_inppkt_UNIXSOCK.c
-+++ b/input/packet/ulogd_inppkt_UNIXSOCK.c
-@@ -18,6 +18,7 @@
-  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+diff --git a/output/ipfix/ulogd_output_IPFIX.c b/output/ipfix/ulogd_output_IPFIX.c
+index 5b5900363853..508d5f4974fc 100644
+--- a/output/ipfix/ulogd_output_IPFIX.c
++++ b/output/ipfix/ulogd_output_IPFIX.c
+@@ -198,7 +198,8 @@ static int send_msgs(struct ulogd_pluginstance *pi)
+ 	struct ipfix_priv *priv = (struct ipfix_priv *) &pi->private;
+ 	struct llist_head *curr, *tmp;
+ 	struct ipfix_msg *msg;
+-	int ret = ULOGD_IRET_OK, sent;
++	int ret = ULOGD_IRET_OK;
++	ssize_t sent;
  
-+#include <inttypes.h>
- #include <unistd.h>
- #include <stdlib.h>
- #include <netinet/ether.h>
-@@ -633,7 +634,7 @@ static int unixsock_instance_read_cb(int fd, unsigned int what, void *param)
- 		if (packet_sig != ULOGD_SOCKET_MARK) {
- 			ulogd_log(ULOGD_ERROR,
- 				"ulogd2: invalid packet marked received "
--				"(read %lx, expected %lx), closing socket.\n",
-+				"(read %" PRIx32 ", expected %" PRIx32 "), closing socket.\n",
- 				packet_sig, ULOGD_SOCKET_MARK);
- 			_disconnect_client(ui);
- 			return -1;
-@@ -663,7 +664,7 @@ static int unixsock_instance_read_cb(int fd, unsigned int what, void *param)
- 			}
+ 	llist_for_each_prev(curr, &priv->list) {
+ 		msg = llist_entry(curr, struct ipfix_msg, link);
+@@ -212,7 +213,7 @@ static int send_msgs(struct ulogd_pluginstance *pi)
  
- 		} else {
--			ulogd_log(ULOGD_DEBUG, "  We have %d bytes, but need %d. Requesting more\n",
-+			ulogd_log(ULOGD_DEBUG, "  We have %u bytes, but need %zu. Requesting more\n",
- 					ui->unixsock_buf_avail, needed_len + sizeof(uint32_t));
- 			return 0;
- 		}
+ 		/* TODO handle short send() for other protocols */
+ 		if ((size_t) sent < ipfix_msg_len(msg))
+-			ulogd_log(ULOGD_ERROR, "short send: %d < %d\n",
++			ulogd_log(ULOGD_ERROR, "short send: %zd < %zu\n",
+ 					sent, ipfix_msg_len(msg));
+ 	}
+ 
+@@ -242,7 +243,7 @@ static int ipfix_ufd_cb(int fd, unsigned what, void *arg)
+ 			ulogd_log(ULOGD_INFO, "connection reset by peer\n");
+ 			ulogd_unregister_fd(&priv->ufd);
+ 		} else
+-			ulogd_log(ULOGD_INFO, "unexpected data (%d bytes)\n", nread);
++			ulogd_log(ULOGD_INFO, "unexpected data (%zd bytes)\n", nread);
+ 	}
+ 
+ 	return 0;
 -- 
 2.33.0
 
