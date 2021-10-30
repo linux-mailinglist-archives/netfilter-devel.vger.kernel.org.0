@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E513440A3D
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 18:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C303440A41
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 18:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhJ3QrH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Oct 2021 12:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
+        id S229879AbhJ3QrI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Oct 2021 12:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbhJ3QrG (ORCPT
+        with ESMTP id S230061AbhJ3QrG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 30 Oct 2021 12:47:06 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:fb7d:d6d6:e0:4cff:fe83:e514])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687C7C061746
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799CDC061766
         for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 09:44:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=sxURAdyI3uDTOS5xqRBKINg72Q9a33k6WIb54ylTI/k=; b=GVr0ST2OUxxPUU1re3QS27HvOm
-        4IcCQ+095eOKfiCBdNjYJDp/SKgAIV517fdYx59labBwiC3E7NdtX7XYknKcJs1ryaiEAN7YLpA9Q
-        oiUmaMEbdY1H/Sg8FzkYVWYGA2V3Aq8zAxDG/0HqB4cbV4vtnUOWQkl9J2XSGVuaxKIdgp8ME45vU
-        2OdXFak7yTj78YeB88MMkgO5nQTYWuoLS0CC2IGauFtcEKyoqzxYmzcCz5HW5CHHOndC5uhgQCO45
-        j/Ky+LAu0Y4Wn0BnaBBtRL8HwH80MMOvXGAygpSch9Svd/tgq0r9ERijA/QK0eDYioWuPwFRm/gAb
-        qie5APag==;
+        bh=PO1hu21z0Ig1MiIZaHaHk5csfBnO0KhJXvOBfeHt3d4=; b=eyqORwwzfjfAaIgBVex3zxbzNW
+        QaUxngM77fth8uOZrnTkcIfeKs4hnYRWxoI0v24fFUl+clTN5PZ6AYHbBjCmjKaQhkJZygAHX/cXY
+        Qt6GFeQWHZehQJrlWwN53eNW1nG7IRwqQ+lLVPmm+F8odyB+ZKKteNOkiDj2V8WLvnopkdyvN4d06
+        RStHxtQbybxu14VuODGkAeCxxKh8iYxYTpKUpyrHvwuCZ2BGJAgGwcSmBdk2mJCdCiLM5nzx8BRVQ
+        WuP8jmIND7gB10VQZ/ofc+GjLBc39HMGEOGnHNFL1bRy8kQB3upAGvma4YLMTHHVqaybKSd1EhYCr
+        Y8Lr/yfQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=ulthar.scientificgames.com)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mgrT8-00AFgT-77
+        id 1mgrT8-00AFgT-A7
         for netfilter-devel@vger.kernel.org; Sat, 30 Oct 2021 17:44:34 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 03/26] ulog: fix order of log arguments
-Date:   Sat, 30 Oct 2021 17:44:09 +0100
-Message-Id: <20211030164432.1140896-4-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 04/26] ulog: correct log specifiers
+Date:   Sat, 30 Oct 2021 17:44:10 +0100
+Message-Id: <20211030164432.1140896-5-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211030164432.1140896-1-jeremy@azazel.net>
 References: <20211030164432.1140896-1-jeremy@azazel.net>
@@ -51,22 +51,39 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/ulogd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ input/packet/ulogd_inppkt_UNIXSOCK.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/src/ulogd.c b/src/ulogd.c
-index a31b35592a87..97da4fc0018f 100644
---- a/src/ulogd.c
-+++ b/src/ulogd.c
-@@ -1569,7 +1569,7 @@ int main(int argc, char* argv[])
- 	if (daemonize){
- 		if (daemon(0, 0) < 0) {
- 			ulogd_log(ULOGD_FATAL, "can't daemonize: %s (%d)\n",
--				  errno, strerror(errno));
-+				  strerror(errno), errno);
- 			warn_and_exit(daemonize);
+diff --git a/input/packet/ulogd_inppkt_UNIXSOCK.c b/input/packet/ulogd_inppkt_UNIXSOCK.c
+index 39944bf5cdb1..f97c2e174b2d 100644
+--- a/input/packet/ulogd_inppkt_UNIXSOCK.c
++++ b/input/packet/ulogd_inppkt_UNIXSOCK.c
+@@ -18,6 +18,7 @@
+  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+ 
++#include <inttypes.h>
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <netinet/ether.h>
+@@ -633,7 +634,7 @@ static int unixsock_instance_read_cb(int fd, unsigned int what, void *param)
+ 		if (packet_sig != ULOGD_SOCKET_MARK) {
+ 			ulogd_log(ULOGD_ERROR,
+ 				"ulogd2: invalid packet marked received "
+-				"(read %lx, expected %lx), closing socket.\n",
++				"(read %" PRIx32 ", expected %" PRIx32 "), closing socket.\n",
+ 				packet_sig, ULOGD_SOCKET_MARK);
+ 			_disconnect_client(ui);
+ 			return -1;
+@@ -663,7 +664,7 @@ static int unixsock_instance_read_cb(int fd, unsigned int what, void *param)
+ 			}
+ 
+ 		} else {
+-			ulogd_log(ULOGD_DEBUG, "  We have %d bytes, but need %d. Requesting more\n",
++			ulogd_log(ULOGD_DEBUG, "  We have %u bytes, but need %zu. Requesting more\n",
+ 					ui->unixsock_buf_avail, needed_len + sizeof(uint32_t));
+ 			return 0;
  		}
- 	}
 -- 
 2.33.0
 
