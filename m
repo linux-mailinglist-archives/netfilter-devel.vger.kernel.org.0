@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097BF440A21
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 18:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE903440A28
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 18:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbhJ3QEV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Oct 2021 12:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
+        id S229835AbhJ3QM6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Oct 2021 12:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231977AbhJ3QER (ORCPT
+        with ESMTP id S229578AbhJ3QM5 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Oct 2021 12:04:17 -0400
+        Sat, 30 Oct 2021 12:12:57 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:fb7d:d6d6:e0:4cff:fe83:e514])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FFAC061203
-        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 09:01:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049B2C061570
+        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 09:10:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=+ApNzPpUYMtb5MT3GiTEJ7ggEHwonEePWX3DoGg8t1s=; b=IM/S0Dxt2/IGHVEb4MIIjxYwP7
-        Y61iYUAwK4v6wgCL0dIKxng1eFAXufr/M/fk6li7tbkVHhhCpKIDykzoT026Ckzx2ac3eUVGClKlW
-        suERB7yMSZQ52YzfNqK+wL/olPRalzMyMjmsfHpmZZx8rnt82/TDQx8+OTaIMX5Ukl0giY62u0i8o
-        exe9AL7uphrYzF+VCpdxeNjVQarnoM4Y2eyuhzUTdtUbCL7GybL4674b8igQHwwmTSDRz7aaR5nAO
-        OHJfJOvuIDBp6Ot5AcQqNBf6pUT05QWyHQ4Ef84Xk2ltlL0PK8auly/rvVdrVMYBaP6Phmb4e3EGu
-        l0gais1Q==;
+        bh=on9Mz1qBLf0tJIxHN7ckh4NNpOa1xC195pPpb+Uk/0c=; b=iBCA7vvRO7qubdt/BYLVMs4OFo
+        ioaf/SXIWgxe3K+8C0nuQ1yzB/+ohRs6yl2TP+bkGET+RaqG5DKNFaJQPy3+ss7XnlpjK1YW0ufti
+        yKQUSBRs9mZe2Ir0GTqzYGpl6GBQlIRc1Zr8lDUXAz6LqObhqFWxw70qAcssXe4Sx1TspiW6uI5G9
+        1nTG9dsQAmDVxo72Ux6Duk8bSkIdkFz8fZjsmXk80FVs9NgPMfrQjrzf23wxQyiUJukydupHD2xTa
+        1jefFW9OvFYDa5NPPXABUbEA6qOsZNzbkZL39Kl2WG3hwUzfvT1BLLW7iINsOCtRmTkxPb1S2Cwt5
+        kC58pdXg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=ulthar.scientificgames.com)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mgqng-00AFQk-6r
+        id 1mgqng-00AFQk-9e
         for netfilter-devel@vger.kernel.org; Sat, 30 Oct 2021 17:01:44 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 09/13] build: move library dependencies from LDFLAGS to LIBADD
-Date:   Sat, 30 Oct 2021 17:01:37 +0100
-Message-Id: <20211030160141.1132819-10-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 10/13] build: update obsolete autoconf macros
+Date:   Sat, 30 Oct 2021 17:01:38 +0100
+Message-Id: <20211030160141.1132819-11-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211030160141.1132819-1-jeremy@azazel.net>
 References: <20211030160141.1132819-1-jeremy@azazel.net>
@@ -49,70 +49,50 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Delete some commented out variables.
+`AC_CONFIG_HEADER` has been superseded by `+AC_CONFIG_HEADERS`.
 
-Move definitions of some variables related to conditionally built
-libraries into the related conditionals.
+`AC_PROG_LIBTOOL` has been superseded by `LT_INIT`.
+
+`AC_DISABLE_STATIC` can be replaced by an argument to `LT_INIT`.
+
+`AC_HEADER_STDC` is obsolete.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- input/flow/Makefile.am   |  8 +++-----
- input/packet/Makefile.am | 19 ++++++++++---------
- 2 files changed, 13 insertions(+), 14 deletions(-)
+ configure.ac | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/input/flow/Makefile.am b/input/flow/Makefile.am
-index 2171a0cd80c8..a556b4e4cb90 100644
---- a/input/flow/Makefile.am
-+++ b/input/flow/Makefile.am
-@@ -2,10 +2,8 @@ include $(top_srcdir)/Make_global.am
+diff --git a/configure.ac b/configure.ac
+index f7d6b50c47f5..2dfeee6aa4cb 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -3,7 +3,7 @@ AC_INIT([ulogd], [2.0.7])
+ AC_PREREQ([2.50])
+ AC_CONFIG_AUX_DIR([build-aux])
+ AM_INIT_AUTOMAKE([-Wall foreign tar-pax no-dist-gzip dist-bzip2 1.10b subdir-objects])
+-AC_CONFIG_HEADER([config.h])
++AC_CONFIG_HEADERS([config.h])
+ AC_CONFIG_MACRO_DIR([m4])
  
- AM_CPPFLAGS += ${LIBNETFILTER_CONNTRACK_CFLAGS}
+ m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+@@ -14,8 +14,7 @@ dnl Checks for programs.
+ AC_PROG_MAKE_SET
+ AC_PROG_CC
+ AC_PROG_INSTALL
+-AC_DISABLE_STATIC
+-AC_PROG_LIBTOOL
++LT_INIT([disable_static])
  
--pkglib_LTLIBRARIES = ulogd_inpflow_NFCT.la # ulogd_inpflow_IPFIX.la
-+pkglib_LTLIBRARIES = ulogd_inpflow_NFCT.la
+ dnl Checks for libraries.
+ AC_SEARCH_LIBS([dlopen], [dl], [libdl_LIBS="$LIBS"; LIBS=""])
+@@ -23,7 +22,6 @@ AC_SUBST([libdl_LIBS])
  
- ulogd_inpflow_NFCT_la_SOURCES = ulogd_inpflow_NFCT.c
--ulogd_inpflow_NFCT_la_LDFLAGS = -avoid-version -module $(LIBNETFILTER_CONNTRACK_LIBS)
--
--#ulogd_inpflow_IPFIX_la_SOURCES = ulogd_inpflow_IPFIX.c
--#ulogd_inpflow_IPFIX_la_LDFLAGS = -avoid-version -module
-+ulogd_inpflow_NFCT_la_LDFLAGS = -avoid-version -module
-+ulogd_inpflow_NFCT_la_LIBADD  = $(LIBNETFILTER_CONNTRACK_LIBS)
-diff --git a/input/packet/Makefile.am b/input/packet/Makefile.am
-index daf374a65917..3aa01112084e 100644
---- a/input/packet/Makefile.am
-+++ b/input/packet/Makefile.am
-@@ -4,20 +4,21 @@ AM_CPPFLAGS += ${LIBNETFILTER_LOG_CFLAGS}
+ dnl Checks for header files.
+ AC_HEADER_DIRENT
+-AC_HEADER_STDC
+ AC_CHECK_HEADERS(fcntl.h unistd.h)
  
- pkglib_LTLIBRARIES = ulogd_inppkt_UNIXSOCK.la
- 
-+ulogd_inppkt_UNIXSOCK_la_SOURCES = ulogd_inppkt_UNIXSOCK.c
-+ulogd_inppkt_UNIXSOCK_la_LDFLAGS = -avoid-version -module
-+
- if BUILD_ULOG
- pkglib_LTLIBRARIES += ulogd_inppkt_ULOG.la
-+
-+ulogd_inppkt_ULOG_la_SOURCES = ulogd_inppkt_ULOG.c
-+ulogd_inppkt_ULOG_la_LDFLAGS = -avoid-version -module
-+ulogd_inppkt_ULOG_la_LIBADD = ../../libipulog/libipulog.la
- endif
- 
- if BUILD_NFLOG
- pkglib_LTLIBRARIES += ulogd_inppkt_NFLOG.la
--endif
- 
- ulogd_inppkt_NFLOG_la_SOURCES = ulogd_inppkt_NFLOG.c
--ulogd_inppkt_NFLOG_la_LDFLAGS = -avoid-version -module $(LIBNETFILTER_LOG_LIBS)
--
--ulogd_inppkt_ULOG_la_SOURCES = ulogd_inppkt_ULOG.c
--ulogd_inppkt_ULOG_la_LDFLAGS = -avoid-version -module
--ulogd_inppkt_ULOG_la_LIBADD = ../../libipulog/libipulog.la
--
--ulogd_inppkt_UNIXSOCK_la_SOURCES = ulogd_inppkt_UNIXSOCK.c
--ulogd_inppkt_UNIXSOCK_la_LDFLAGS = -avoid-version -module
-+ulogd_inppkt_NFLOG_la_LDFLAGS = -avoid-version -module
-+ulogd_inppkt_NFLOG_la_LIBADD  = $(LIBNETFILTER_LOG_LIBS)
-+endif
+ dnl Checks for typedefs, structures, and compiler characteristics.
 -- 
 2.33.0
 
