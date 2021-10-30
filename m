@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26344440A71
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 19:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BC3440A6E
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 19:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhJ3RNh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Oct 2021 13:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
+        id S230400AbhJ3RN3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Oct 2021 13:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhJ3RNh (ORCPT
+        with ESMTP id S230470AbhJ3RN3 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Oct 2021 13:13:37 -0400
+        Sat, 30 Oct 2021 13:13:29 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:fb7d:d6d6:e0:4cff:fe83:e514])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D612C061570
-        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 10:11:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7B5C061570
+        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 10:10:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=BiwUdH7lXOd0Rzogy1liG2GpCkaBFtDzGBsHmco0e1Y=; b=TgTEq9xvhpT6bANTxFhyFALDOL
-        lWd1/rjIm/IpQmxs4AXFsOawft2pnJAdcMoY8RvKR7fUMblbZdYEw98qTjzQ2OvvZYUUWUYCl3d2p
-        fgyHmJZ5d4XJDkvNzN8jCCDGWbsS2GMqPYcC9JuSITqQWBT/SofRQ6SS28PL8cHyvgPbh8Tr0YI0F
-        VOy4ix8nffuFazWW4eijjvtZBuncd9F2grcHJHdvKo0a1eavvWe+SRkLiSs3yx5/GygsLeyjCsq0R
-        rD8YIwK+HNEJmmkqU2Q25HVbUJ9v+3Y55guIjdM+N6r4+xQkzwairDjavpZhA7qwb8BhHO8aWbCLW
-        KQbkghDQ==;
+        bh=Evo1lJOvyGT8ovCo1QYIajPDG0GQwr81uNTdqbdtaQM=; b=f/4f/pXzRrqOfVcDoRCOtpGWe8
+        VCq69ZzXqt+XL4AsI2VS95o+HwHVywrS4U3xww/CPL3sctPU962mfkqc1Yjl/wDPAX29uBLqFK5M8
+        1q8xMLemjiV1BVKHuR8duMllIwivXzEKvUFizFt7KKZm9vJBJdWPamJb/Eqv/P+kbOzNPbzWc8Oaj
+        AkcHPb0GVfFDfOGJAglom2wYSGzmA0KV5YzigsKrYyAOkJbRW9aIWGkkBctvrNyOegHXiMmEFY7U/
+        1qZ6yzP6GQkHaCZiwQBXQskee8Xi0LgDPhAgbeX1J4b1swxeZHZP7XAHgYUdWHewvlE88c1WOlpFS
+        V+6cVR1A==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=ulthar.scientificgames.com)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mgrTB-00AFgT-28
+        id 1mgrTB-00AFgT-6N
         for netfilter-devel@vger.kernel.org; Sat, 30 Oct 2021 17:44:37 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 23/26] output: JSON: fix output of GMT offset.
-Date:   Sat, 30 Oct 2021 17:44:29 +0100
-Message-Id: <20211030164432.1140896-24-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 24/26] output: JSON: fix printf truncation warnings.
+Date:   Sat, 30 Oct 2021 17:44:30 +0100
+Message-Id: <20211030164432.1140896-25-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211030164432.1140896-1-jeremy@azazel.net>
 References: <20211030164432.1140896-1-jeremy@azazel.net>
@@ -49,8 +49,9 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-`gmt_offset` is a `long int`.  Use `labs` and update the format-specifier
-to match.
+Mod gmt offset by 86400 to give the compiler a hint.
+
+Make date-time buffer big enough to fit all integer values.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
@@ -58,20 +59,26 @@ Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/output/ulogd_output_JSON.c b/output/ulogd_output_JSON.c
-index 6edfa902efaf..621333261733 100644
+index 621333261733..6c61eb144135 100644
 --- a/output/ulogd_output_JSON.c
 +++ b/output/ulogd_output_JSON.c
-@@ -303,10 +303,10 @@ static int json_interp(struct ulogd_pluginstance *upi)
- 		t = localtime_r(&now, &result);
- 		if (unlikely(*opi->cached_tz = '\0' || t->tm_gmtoff != opi->cached_gmtoff)) {
+@@ -269,7 +269,7 @@ static int json_interp_file(struct ulogd_pluginstance *upi, char *buf)
+ 	return ULOGD_IRET_OK;
+ }
+ 
+-#define MAX_LOCAL_TIME_STRING 38
++#define MAX_LOCAL_TIME_STRING 80
+ 
+ static int json_interp(struct ulogd_pluginstance *upi)
+ {
+@@ -305,8 +305,8 @@ static int json_interp(struct ulogd_pluginstance *upi)
  			snprintf(opi->cached_tz, sizeof(opi->cached_tz),
--				 "%c%02d%02d",
-+				 "%c%02ld%02ld",
+ 				 "%c%02ld%02ld",
  				 t->tm_gmtoff > 0 ? '+' : '-',
--				 abs(t->tm_gmtoff) / 60 / 60,
--				 abs(t->tm_gmtoff) / 60 % 60);
-+				 labs(t->tm_gmtoff) / 60 / 60,
-+				 labs(t->tm_gmtoff) / 60 % 60);
+-				 labs(t->tm_gmtoff) / 60 / 60,
+-				 labs(t->tm_gmtoff) / 60 % 60);
++				 labs(t->tm_gmtoff) % 86400 / 60 / 60,
++				 labs(t->tm_gmtoff) % 86400 / 60 % 60);
  		}
  
  		if (pp_is_valid(inp, opi->usec_idx)) {
