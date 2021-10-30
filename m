@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892BA440A6B
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 19:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB3F440A67
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 19:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhJ3RNV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Oct 2021 13:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
+        id S230123AbhJ3RNJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Oct 2021 13:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbhJ3RNU (ORCPT
+        with ESMTP id S229863AbhJ3RNI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Oct 2021 13:13:20 -0400
+        Sat, 30 Oct 2021 13:13:08 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:fb7d:d6d6:e0:4cff:fe83:e514])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890C7C061570
-        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 10:10:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDF2C061570
+        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 10:10:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=6iAYycDQZIWps/uFOG2PqC+kOkFt5+Ijz7RPGEdnDTc=; b=TdHlKxQPKH3PGNNAIbSdYdXDps
-        NMX0n72V8gdAq55EVnhpBlqv4wY9nsSj6d8msGlWPNRbV1gNC3zm8yCQF0RP0l8WUv8g9qLDMqZBh
-        UXxhiki32/XjuOmZj9rjZFrWT99eahDXgtXxpONIGqcDudZO4bflGvhuvXWAt++OlBoEEyKUa+ccT
-        GsPaleTdVOJuEETxbTus4LwV1KhME1la5UJ10tDc/A08bFj5eqNlvouWWHEkgvvqsep1lLpuGia1j
-        DS0ooqG2u44FyN1Bjl9255jfz9EUKYdVz3bFuO1Eh1KcvDCjitWdeDwW2OYsW673OgNxqCHT58NWj
-        olGWdwhQ==;
+        bh=x73y1mbw3WGFoL3pEhh4auiua5LnQS+c66HxqxTbjN4=; b=NvVdcSeaDYNUQ5nM6+UzgwyyEv
+        9carLBepoUOt7p0gy5G7bRAtSW7snW5G/TfyNotOW1rtaVD+2zXuVYDFwNNLIb32o3SQ+MZw65DSH
+        SUnSr/dXhSa7dl4Qts4mrEbLCs5rhpCxPwRRs1V/l50zbnbtdQQLFHxncBmwppw+eixcjKnCxU9wp
+        asEHi7GGZGg3IepjpWIXmLHwF+d7rLvIAxgk+b0+SL/q/+8Fbqq1yiXJ2WPfEFf9zFgG3ELlqF3QT
+        hKIqNlVPyFdljXGdqy1NF/ZRNb6SDYshyO+X2q5FNQey30np6cwmfxXo2PeEhwn6MSLlwrh99Omfa
+        ARMFkmLA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=ulthar.scientificgames.com)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mgrT9-00AFgT-K4
+        id 1mgrT9-00AFgT-Sh
         for netfilter-devel@vger.kernel.org; Sat, 30 Oct 2021 17:44:35 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 14/26] input: UNIXSOCK: fix possible truncation of socket path
-Date:   Sat, 30 Oct 2021 17:44:20 +0100
-Message-Id: <20211030164432.1140896-15-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 15/26] input: UNIXSOCK: prevent unaligned pointer access.
+Date:   Sat, 30 Oct 2021 17:44:21 +0100
+Message-Id: <20211030164432.1140896-16-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211030164432.1140896-1-jeremy@azazel.net>
 References: <20211030164432.1140896-1-jeremy@azazel.net>
@@ -49,49 +49,77 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Verify that the path is short enough, and replace `strncpy` with `strcpy`.
+`struct ulogd_unixsock_packet_t` is packed, so taking the address of its
+`struct iphdr payload` member may yield an unaligned pointer value.
+Copy it to a local variable instead.
+
+Remove a couple of stray semicolons.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- input/packet/ulogd_inppkt_UNIXSOCK.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ input/packet/ulogd_inppkt_UNIXSOCK.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/input/packet/ulogd_inppkt_UNIXSOCK.c b/input/packet/ulogd_inppkt_UNIXSOCK.c
-index d88609f203c4..af2fbeca1f4c 100644
+index af2fbeca1f4c..f7611189363c 100644
 --- a/input/packet/ulogd_inppkt_UNIXSOCK.c
 +++ b/input/packet/ulogd_inppkt_UNIXSOCK.c
-@@ -475,10 +475,19 @@ static int handle_packet(struct ulogd_pluginstance *upi, struct ulogd_unixsock_p
- static int _create_unix_socket(const char *unix_path)
+@@ -371,7 +371,7 @@ struct ulogd_unixsock_option_t  {
+ static int handle_packet(struct ulogd_pluginstance *upi, struct ulogd_unixsock_packet_t *pkt, uint16_t total_len)
  {
- 	int ret = -1;
--	struct sockaddr_un server_sock;
-+	struct sockaddr_un server_sock = { .sun_family = AF_UNIX };
- 	int s;
- 	struct stat st_dummy;
+ 	char *data = NULL;
+-	struct iphdr *ip;
++	struct iphdr ip = pkt->payload;
+ 	struct ulogd_key *ret = upi->output.keys;
+ 	uint8_t oob_family;
+ 	uint16_t payload_len;
+@@ -387,22 +387,22 @@ static int handle_packet(struct ulogd_pluginstance *upi, struct ulogd_unixsock_p
  
-+	if (sizeof(server_sock.sun_path) <= strlen(unix_path)) {
-+		ulogd_log(ULOGD_ERROR,
-+			  "ulogd2: unix socket path '%s' too long\n",
-+			  unix_path);
-+		return -1;
-+	}
-+
-+	strcpy(server_sock.sun_path, unix_path);
-+
- 	if (stat(unix_path, &st_dummy) == 0 && st_dummy.st_size > 0) {
- 		ulogd_log(ULOGD_ERROR,
- 			  "ulogd2: unix socket '%s' already exists\n",
-@@ -493,10 +502,6 @@ static int _create_unix_socket(const char *unix_path)
- 		return -1;
+ 	payload_len = ntohs(pkt->payload_length);
+ 
+-	ip = &pkt->payload;
+-	if (ip->version == 4)
++	if (ip.version == 4)
+ 		oob_family = AF_INET;
+-	else if (ip->version == 6)
++	else if (ip.version == 6)
+ 		oob_family = AF_INET6;
+-	else oob_family = 0;
++	else
++		oob_family = 0;
+ 
+ 	okey_set_u8(&ret[UNIXSOCK_KEY_OOB_FAMILY], oob_family);
+-	okey_set_ptr(&ret[UNIXSOCK_KEY_RAW_PCKT], ip);
++	okey_set_ptr(&ret[UNIXSOCK_KEY_RAW_PCKT], &ip);
+ 	okey_set_u32(&ret[UNIXSOCK_KEY_RAW_PCKTLEN], payload_len);
+ 
+ 	/* options */
+ 	if (total_len > payload_len + sizeof(uint16_t)) {
+ 		/* option starts at the next aligned address after the payload */
+ 		new_offset = USOCK_ALIGN(payload_len);
+-		options_start = (void*)ip + new_offset;
++		options_start = (char *) &ip + new_offset;
+ 		data = options_start;
+ 		total_len -= (options_start - (char*)pkt);
+ 
+@@ -460,7 +460,7 @@ static int handle_packet(struct ulogd_pluginstance *upi, struct ulogd_unixsock_p
+ 						"ulogd2: unknown option %d\n",
+ 						option_number);
+ 				break;
+-			};
++			}
+ 		}
  	}
  
--	server_sock.sun_family = AF_UNIX;
--	strncpy(server_sock.sun_path, unix_path, sizeof(server_sock.sun_path));
--	server_sock.sun_path[sizeof(server_sock.sun_path)-1] = '\0';
--
- 	ret = bind(s, (struct sockaddr *)&server_sock, sizeof(server_sock));
- 	if (ret < 0) {
- 		ulogd_log(ULOGD_ERROR,
+@@ -674,7 +674,7 @@ static int unixsock_instance_read_cb(int fd, unsigned int what, void *param)
+ 		}
+ 
+ 		/* handle_packet has shifted data in buffer */
+-	};
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.33.0
 
