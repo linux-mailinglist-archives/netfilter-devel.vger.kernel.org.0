@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC9A440A1F
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 18:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A1C440A1B
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 18:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhJ3QET (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Oct 2021 12:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
+        id S230086AbhJ3QES (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Oct 2021 12:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbhJ3QER (ORCPT
+        with ESMTP id S231199AbhJ3QER (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 30 Oct 2021 12:04:17 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:fb7d:d6d6:e0:4cff:fe83:e514])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB7FC061205
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37935C061714
         for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 09:01:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=ZsLo62ZgK42eAqd1ICirjS1rL67Lvl8P5jhqIqPc7Qg=; b=cddvb9yhkMK5Z2KjAl05D4hD7t
-        KqFbB/wEdzaBgxWMci10L4JpoAL3VxHWGJ4pnfCPTNVpEfQPBsA8hRwreuOFR0hse0aqW9+hQNPdP
-        jTeTHRsdC6Jfv/7v+jHp1vBfiYuVDVNhr8c8aL3Ki4QQWBfZZGtdT5cQiO8A8gxUGJiOlXQpkkuzz
-        zcSHffqd4t4ul+iw9Uc9sMXtp9EgOu5qKJ3L1GT39sreJe8DnDZeSwwlnvreBsWanFwvyhQSrgKA7
-        hthDI2wSoCVgU8p3ifNL1MOFKH8g3iw6urRbgfSPaWi4nAQabv42GKat/MdTglqUkX/VtSCcJRxZ9
-        5AsavUYA==;
+        bh=d7YYeVwYLvmoNjdOTzGlNW70LUbZrOQu9H8r0+vayQw=; b=MRq6IQVh/ZPZoqEerVodKB2Co6
+        GKOlPiRKSYf7cyvYYBYn8mcIyU1F7Yk6LS4V0h6pKbHFsaBQnrtr0HmvdaRk2R0VCLz3jdwUpAmcg
+        wQVuJlDnJq59WFtHa3Oa3pTG8NbkQwSFpeLokts/xIu0IXu3nradiX6FmBk+r9cKff4wNZX35rDNv
+        R30epl/qhFZX8NM/jfwE6z4lRwPthNj0O0zBMvZ2SiMprKiVMzx9qozLRkPq2ZbC3EfQObxW9Bunb
+        gjFBLD+3oGt3FvC63AMURe5Bo+xVgq9Zw0rI+8CRmBkSwK7UQMr0fU31dlMvY7JhlU2eSEwdLEAa1
+        J6OhDJLQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=ulthar.scientificgames.com)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mgqnf-00AFQk-Or
+        id 1mgqnf-00AFQk-RW
         for netfilter-devel@vger.kernel.org; Sat, 30 Oct 2021 17:01:43 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 04/13] build: remove empty filter sub-directory
-Date:   Sat, 30 Oct 2021 17:01:32 +0100
-Message-Id: <20211030160141.1132819-5-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 05/13] build: move cpp flag to the only Makefile.am file where it's needed
+Date:   Sat, 30 Oct 2021 17:01:33 +0100
+Message-Id: <20211030160141.1132819-6-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211030160141.1132819-1-jeremy@azazel.net>
 References: <20211030160141.1132819-1-jeremy@azazel.net>
@@ -49,42 +49,40 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The only file in filter/packet2flow is an empty Makefile.am.  Remove it.
-
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- configure.ac                   | 2 +-
- filter/Makefile.am             | 2 +-
- filter/packet2flow/Makefile.am | 0
- 3 files changed, 2 insertions(+), 2 deletions(-)
- delete mode 100644 filter/packet2flow/Makefile.am
+ configure.ac    | 2 +-
+ src/Makefile.am | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index e341ad12a159..4e502171292e 100644
+index 4e502171292e..1d795bad325d 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -177,7 +177,7 @@ AC_CONFIG_FILES(include/Makefile include/ulogd/Makefile include/libipulog/Makefi
- 	  include/linux/netfilter_ipv4/Makefile libipulog/Makefile \
- 	  input/Makefile input/packet/Makefile input/flow/Makefile \
- 	  input/sum/Makefile \
--	  filter/Makefile filter/raw2packet/Makefile filter/packet2flow/Makefile \
-+	  filter/Makefile filter/raw2packet/Makefile \
- 	  output/Makefile output/pcap/Makefile output/mysql/Makefile output/pgsql/Makefile output/sqlite3/Makefile \
- 	  output/dbi/Makefile output/ipfix/Makefile \
- 	  src/Makefile Makefile)
-diff --git a/filter/Makefile.am b/filter/Makefile.am
-index 875850b8ae90..c2755ecb7c49 100644
---- a/filter/Makefile.am
-+++ b/filter/Makefile.am
-@@ -1,4 +1,4 @@
--SUBDIRS = raw2packet packet2flow
-+SUBDIRS = raw2packet
+@@ -157,7 +157,7 @@ AC_ARG_WITH([ulogd2libdir],
+         [ulogd2libdir="${libdir}/ulogd"])
+ AC_SUBST([ulogd2libdir])
  
- AM_CPPFLAGS = -I$(top_srcdir)/include ${LIBNFNETLINK_CFLAGS}
+-regular_CFLAGS="-Wall -Wextra -Wno-unused-parameter -DULOGD2_LIBDIR=\\\"\${ulogd2libdir}\\\"";
++regular_CFLAGS="-Wall -Wextra -Wno-unused-parameter";
+ AC_SUBST([regular_CFLAGS])
+ 
+ dnl AC_SUBST(DATABASE_DIR)
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 998e776a8079..e1d45aee4b6c 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -1,7 +1,8 @@
+ 
+ AM_CPPFLAGS = -I$(top_srcdir)/include \
+-	      -DULOGD_CONFIGFILE="\"$(sysconfdir)/ulogd.conf\"" \
+-	      -DULOGD_LOGFILE_DEFAULT="\"$(localstatedir)/log/ulogd.log\""
++	      -DULOGD_CONFIGFILE='"$(sysconfdir)/ulogd.conf"' \
++	      -DULOGD_LOGFILE_DEFAULT='"$(localstatedir)/log/ulogd.log"' \
++	      -DULOGD2_LIBDIR='"$(ulogd2libdir)"'
  AM_CFLAGS = ${regular_CFLAGS}
-diff --git a/filter/packet2flow/Makefile.am b/filter/packet2flow/Makefile.am
-deleted file mode 100644
-index e69de29bb2d1..000000000000
+ 
+ sbin_PROGRAMS = ulogd
 -- 
 2.33.0
 
