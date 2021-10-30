@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2352440A6D
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 19:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865A6440A65
+	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 19:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbhJ3RN0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Oct 2021 13:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
+        id S229793AbhJ3RND (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 30 Oct 2021 13:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbhJ3RN0 (ORCPT
+        with ESMTP id S229788AbhJ3RND (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Oct 2021 13:13:26 -0400
+        Sat, 30 Oct 2021 13:13:03 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:fb7d:d6d6:e0:4cff:fe83:e514])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168FEC061570
-        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 10:10:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79C7C061570
+        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 10:10:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=An35OZztWQ8E5cfOE34E9MFys0c7CYVIuG4W353XS6E=; b=QS6vovYBEqAvNCF8iXcAwpbpTu
-        33ruxJfDhgljMNOVi9RE+SuZTAmAQJkTOvGXjepfG//xAdcCEitUqTe1wys/fMb6j5dQNshPXO56A
-        fpmpgrgPx36JQtxLw4iXT5zqx2qCoimrNb2paoRrAas0uZh2lr/n57+c6zbbEWIb0knGhA3djHs+W
-        iyNwCpsPdpx2YFu8ZINg80edOsYE7dNgJ9E9vg7X6iu4ZrMq+IWsUQAaDXZwaEqvVeyOSvvVWn/Z5
-        d9LwEgIMVdSB4jBqC4sXeIVSzLrXW6KpkS3FSlzvgwNMk4bVsYBMu1doKpdsD8oUM696uuseOitfP
-        jd3tHydA==;
+        bh=8hvgyFjNe3fI2zhBYXFuQbvNeCpzqJoLHeFqlSuNMqM=; b=UjHzCB/9BmteefYAaYCGKrTaf8
+        X7jBlV8WVP5TB/D/k5Q1v2qMFn0WwaXoiODvopcc4zEpN/ts9rIlSvSKVlXfZQO13M23EXft3Usnk
+        jWesgsYV2yPnun+EA7oNGIpZ47rntgbLdgL8Q6j4GRCsdba4z7JQzRyDH346lx54gZjwwiv2p9Cd2
+        aVEvj0B6c7TbQVZx4nlV95xNeLFI6eHe3t9mNXKCYoBv24zo4V3+tyjGIkxsJ7dvRM4s7P+kx2uoi
+        qQiq0NApZf976u9PuzvZFqZAsvKz3BvGncC2xcera6OzAIoBmW/VQSVoVFNc9V9/HrtS0DnvlhAl6
+        x2tECy8A==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae] helo=ulthar.scientificgames.com)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mgrTA-00AFgT-Cg
+        id 1mgrTA-00AFgT-Fp
         for netfilter-devel@vger.kernel.org; Sat, 30 Oct 2021 17:44:36 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 18/26] output: MYSQL: Fix string truncation warning
-Date:   Sat, 30 Oct 2021 17:44:24 +0100
-Message-Id: <20211030164432.1140896-19-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 19/26] output: PGSQL: Fix string truncation warning
+Date:   Sat, 30 Oct 2021 17:44:25 +0100
+Message-Id: <20211030164432.1140896-20-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211030164432.1140896-1-jeremy@azazel.net>
 References: <20211030164432.1140896-1-jeremy@azazel.net>
@@ -55,38 +55,38 @@ Remove superfluous intermediate buffer.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/mysql/ulogd_output_MYSQL.c | 13 ++++++-------
+ output/pgsql/ulogd_output_PGSQL.c | 13 ++++++-------
  1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/output/mysql/ulogd_output_MYSQL.c b/output/mysql/ulogd_output_MYSQL.c
-index 66151feb4939..946498d4d2fe 100644
---- a/output/mysql/ulogd_output_MYSQL.c
-+++ b/output/mysql/ulogd_output_MYSQL.c
-@@ -135,18 +135,17 @@ static int get_columns_mysql(struct ulogd_pluginstance *upi)
+diff --git a/output/pgsql/ulogd_output_PGSQL.c b/output/pgsql/ulogd_output_PGSQL.c
+index f5a2823a7e1d..c20ca605fb52 100644
+--- a/output/pgsql/ulogd_output_PGSQL.c
++++ b/output/pgsql/ulogd_output_PGSQL.c
+@@ -190,18 +190,17 @@ static int get_columns_pgsql(struct ulogd_pluginstance *upi)
  	}
  
- 	for (i = 0; (field = mysql_fetch_field(result)); i++) {
+ 	for (i = 0; i < PQntuples(pi->pgres); i++) {
 -		char buf[ULOGD_MAX_KEYLEN+1];
  		char *underscore;
  
 +		snprintf(upi->input.keys[i].name,
 +			 sizeof(upi->input.keys[i].name),
-+			 "%s", field->name);
++			 "%s", PQgetvalue(pi->pgres, i, 0));
  		/* replace all underscores with dots */
--		strncpy(buf, field->name, ULOGD_MAX_KEYLEN);
+-		strncpy(buf, PQgetvalue(pi->pgres, i, 0), ULOGD_MAX_KEYLEN);
 -		while ((underscore = strchr(buf, '_')))
 +		for (underscore = upi->input.keys[i].name;
 +		     (underscore = strchr(underscore, '_')); )
  			*underscore = '.';
  
--		DEBUGP("field '%s' found\n", buf);
+-		DEBUGP("field '%s' found: ", buf);
 -
 -		/* add it to list of input keys */
 -		strncpy(upi->input.keys[i].name, buf, ULOGD_MAX_KEYLEN);
 +		DEBUGP("field '%s' found\n", upi->input.keys[i].name);
  	}
- 	/* MySQL Auto increment ... ID :) */
- 	upi->input.keys[0].flags |= ULOGD_KEYF_INACTIVE;
+ 
+ 	/* ID (starting by '.') is a sequence */
 -- 
 2.33.0
 
