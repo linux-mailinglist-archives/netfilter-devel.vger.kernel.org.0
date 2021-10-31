@@ -2,58 +2,91 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E60441027
-	for <lists+netfilter-devel@lfdr.de>; Sun, 31 Oct 2021 19:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 284BE441064
+	for <lists+netfilter-devel@lfdr.de>; Sun, 31 Oct 2021 20:10:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhJaSSl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 31 Oct 2021 14:18:41 -0400
-Received: from mailgate.kemenperin.go.id ([202.47.80.142]:51760 "EHLO
-        mailgate.kemenperin.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbhJaSSh (ORCPT
+        id S230262AbhJaTN3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 31 Oct 2021 15:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhJaTN2 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 31 Oct 2021 14:18:37 -0400
-X-Greylist: delayed 1946 seconds by postgrey-1.27 at vger.kernel.org; Sun, 31 Oct 2021 14:18:25 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 5C56C828694;
-        Mon,  1 Nov 2021 00:39:29 +0700 (WIB)
-Received: from mailgate.kemenperin.go.id ([127.0.0.1])
-        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Tuljp_J1Cdlq; Mon,  1 Nov 2021 00:39:28 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mailgate.kemenperin.go.id (Postfix) with ESMTP id ADDE58286A9;
-        Mon,  1 Nov 2021 00:39:19 +0700 (WIB)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mailgate.kemenperin.go.id ADDE58286A9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kemenperin.go.id;
-        s=3298A942-BBC6-11E3-B333-483736368EC2; t=1635701959;
-        bh=+tje3x5yIAM91gcZZJ8xoRjx6IuR+B3ePoXPCKu2mgI=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=I9X5S/EXkVkRluX+ZSit7NFR+OW43BqhWaImhHOVukb3qOg4mxQL0FOzHiQQ0QWtu
-         KQa7Ki4CUyShQL6tKlHQ2sju9QbGIAAqzmfnY9543e4CcsCf3fTpzVOzH7DFyJ+n2N
-         pbIsYLFs1Y2zkQa1+kK/NYR2sChScl7lzgpXIyKs=
-X-Virus-Scanned: amavisd-new at kemenperin.go.id
-Received: from mailgate.kemenperin.go.id ([127.0.0.1])
-        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id yX4BRpdxBRqw; Mon,  1 Nov 2021 00:39:19 +0700 (WIB)
-Received: from mailgate.kemenperin.go.id (mailgate.kemenperin.go.id [10.1.0.89])
-        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 047EB8286A0;
-        Mon,  1 Nov 2021 00:39:10 +0700 (WIB)
-Date:   Mon, 1 Nov 2021 00:39:09 +0700 (WIB)
-From:   Manuel Franco <silitonga@kemenperin.go.id>
-Reply-To: Manuel Franco <manuelfrancospende1@gmail.com>
-Message-ID: <1813105855.326067.1635701949890.JavaMail.zimbra@kemenperin.go.id>
-Subject: 2,000,000.00 Euro
+        Sun, 31 Oct 2021 15:13:28 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87633C061570;
+        Sun, 31 Oct 2021 12:10:56 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1mhGE9-00013B-JV; Sun, 31 Oct 2021 20:10:45 +0100
+Date:   Sun, 31 Oct 2021 20:10:45 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?iso-8859-15?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next v1 5/6] net: netfilter: Add unstable CT
+ lookup helper for XDP and TC-BPF
+Message-ID: <20211031191045.GA19266@breakpoint.cc>
+References: <20211030144609.263572-1-memxor@gmail.com>
+ <20211030144609.263572-6-memxor@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.1.0.89]
-Thread-Index: Rc07z4zuj7w66chiYJCRC031ZEpyeA==
-Thread-Topic: 2,000,000.00 Euro
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211030144609.263572-6-memxor@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> This change adds conntrack lookup helpers using the unstable kfunc call
+> interface for the XDP and TC-BPF hooks.
+> 
+> Also add acquire/release functions (randomly returning NULL), and also
+> exercise the RET_PTR_TO_BTF_ID_OR_NULL path so that BPF program caller
+> has to check for NULL before dereferencing the pointer, for the TC hook.
+> These will be used in selftest.
+> 
+> Export get_net_ns_by_id and btf_type_by_id as nf_conntrack needs to call
+> them.
 
+It would be good to get a summary on how this is useful.
 
--- 
-You have a donation of 2,000,000.00 Euro.Get back to me now so we can proceed.
+I tried to find a use case but I could not.
+Entry will time out soon once packets stop appearing, so it can't be
+used for stack bypass.  Is it for something else?  If so, what?
+
+For UDP it will work to let a packet pass through classic forward
+path once in a while, but this will not work for tcp, depending
+on conntrack settings (lose mode, liberal pickup etc. pp).
+
+> +/* Unstable Kernel Helpers for XDP hook */
+> +static struct nf_conn *__bpf_nf_ct_lookup(struct net *net,
+> +					  struct bpf_sock_tuple *bpf_tuple,
+> +					  u32 tuple_len, u8 protonum,
+> +					  u64 netns_id, u64 flags)
+> +{
+> +	struct nf_conntrack_tuple_hash *hash;
+> +	struct nf_conntrack_tuple tuple;
+> +
+> +	if (flags != IP_CT_DIR_ORIGINAL && flags != IP_CT_DIR_REPLY)
+> +		return ERR_PTR(-EINVAL);
+
+The flags argument is not needed.
+
+> +	tuple.dst.dir = flags;
+
+.dir can be 0, its not used by nf_conntrack_find_get().
+
+> +	hash = nf_conntrack_find_get(net, &nf_ct_zone_dflt, &tuple);
+
+Ok, so default zone. Depending on meaning of "unstable helper" this
+is ok and can be changed in incompatible way later.
