@@ -2,65 +2,58 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9399E440AB0
-	for <lists+netfilter-devel@lfdr.de>; Sat, 30 Oct 2021 19:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E60441027
+	for <lists+netfilter-devel@lfdr.de>; Sun, 31 Oct 2021 19:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhJ3Ro6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 30 Oct 2021 13:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbhJ3Ro5 (ORCPT
+        id S231185AbhJaSSl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 31 Oct 2021 14:18:41 -0400
+Received: from mailgate.kemenperin.go.id ([202.47.80.142]:51760 "EHLO
+        mailgate.kemenperin.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbhJaSSh (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 30 Oct 2021 13:44:57 -0400
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F214FC061570
-        for <netfilter-devel@vger.kernel.org>; Sat, 30 Oct 2021 10:42:26 -0700 (PDT)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id 93B805872AC41; Sat, 30 Oct 2021 19:42:25 +0200 (CEST)
+        Sun, 31 Oct 2021 14:18:37 -0400
+X-Greylist: delayed 1946 seconds by postgrey-1.27 at vger.kernel.org; Sun, 31 Oct 2021 14:18:25 EDT
 Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id 8FC656168E381;
-        Sat, 30 Oct 2021 19:42:25 +0200 (CEST)
-Date:   Sat, 30 Oct 2021 19:42:25 +0200 (CEST)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     Jeremy Sowden <jeremy@azazel.net>
-cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [ulogd2 PATCH 15/26] input: UNIXSOCK: prevent unaligned pointer
- access.
-In-Reply-To: <20211030164432.1140896-16-jeremy@azazel.net>
-Message-ID: <5op325n6-6077-p0n2-r33o-npr9905n47s3@vanv.qr>
-References: <20211030164432.1140896-1-jeremy@azazel.net> <20211030164432.1140896-16-jeremy@azazel.net>
-User-Agent: Alpine 2.25 (LSU 592 2021-09-18)
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 5C56C828694;
+        Mon,  1 Nov 2021 00:39:29 +0700 (WIB)
+Received: from mailgate.kemenperin.go.id ([127.0.0.1])
+        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Tuljp_J1Cdlq; Mon,  1 Nov 2021 00:39:28 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id ADDE58286A9;
+        Mon,  1 Nov 2021 00:39:19 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mailgate.kemenperin.go.id ADDE58286A9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kemenperin.go.id;
+        s=3298A942-BBC6-11E3-B333-483736368EC2; t=1635701959;
+        bh=+tje3x5yIAM91gcZZJ8xoRjx6IuR+B3ePoXPCKu2mgI=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=I9X5S/EXkVkRluX+ZSit7NFR+OW43BqhWaImhHOVukb3qOg4mxQL0FOzHiQQ0QWtu
+         KQa7Ki4CUyShQL6tKlHQ2sju9QbGIAAqzmfnY9543e4CcsCf3fTpzVOzH7DFyJ+n2N
+         pbIsYLFs1Y2zkQa1+kK/NYR2sChScl7lzgpXIyKs=
+X-Virus-Scanned: amavisd-new at kemenperin.go.id
+Received: from mailgate.kemenperin.go.id ([127.0.0.1])
+        by localhost (mailgate.kemenperin.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id yX4BRpdxBRqw; Mon,  1 Nov 2021 00:39:19 +0700 (WIB)
+Received: from mailgate.kemenperin.go.id (mailgate.kemenperin.go.id [10.1.0.89])
+        by mailgate.kemenperin.go.id (Postfix) with ESMTP id 047EB8286A0;
+        Mon,  1 Nov 2021 00:39:10 +0700 (WIB)
+Date:   Mon, 1 Nov 2021 00:39:09 +0700 (WIB)
+From:   Manuel Franco <silitonga@kemenperin.go.id>
+Reply-To: Manuel Franco <manuelfrancospende1@gmail.com>
+Message-ID: <1813105855.326067.1635701949890.JavaMail.zimbra@kemenperin.go.id>
+Subject: 2,000,000.00 Euro
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.1.0.89]
+Thread-Index: Rc07z4zuj7w66chiYJCRC031ZEpyeA==
+Thread-Topic: 2,000,000.00 Euro
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
 
-On Saturday 2021-10-30 18:44, Jeremy Sowden wrote:
 
->`struct ulogd_unixsock_packet_t` is packed, so taking the address of its
->`struct iphdr payload` member may yield an unaligned pointer value.
-
-That may not be a problem. Dereferencing through a pointer to
-a packed struct generates very pessimistic code even when there is no
-padding internally:
-
-» cat >>x.cpp <<-EOF
-struct ethhdr { unsigned long long a, b; } __attribute__((packed));
-unsigned long f(const struct ethhdr *p) { return p->b; }
-EOF
-» sparc64-linux-gcc -c x.cpp -O2
-» objdump -d x.o
-_Z1fPK6ethhdr:
-        save %sp, -144, %sp
-        stx %i0, [%fp+2039]
-        ldx [%fp+2039], %i0
-        ldub [%i0+15], %i2
-        ldub [%i0+14], %i1
-        sllx %i1, 8, %i1
-        or %i1, %i2, %i2
-        ldub [%i0+13], %i3
-...
-
+-- 
+You have a donation of 2,000,000.00 Euro.Get back to me now so we can proceed.
