@@ -2,144 +2,85 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E03442112
-	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Nov 2021 20:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34B3442130
+	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Nov 2021 20:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhKATwc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 1 Nov 2021 15:52:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35820 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229692AbhKATwb (ORCPT
+        id S230233AbhKAUBK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 1 Nov 2021 16:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhKAUBJ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 1 Nov 2021 15:52:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635796197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qqc178qZXVlRBTkSP0Y4vQlYfIbVccbQXGvB2hKE2bQ=;
-        b=Hte8Sl8ZxkVsb7GvAr17GBppIZdeUck9yV9UO2Y7jGKQkhMWbKlzQ+gx3qCI7sx/ooQKr5
-        lVDUJwAJ0H4oM7WJd0/8M3fTfkiT3Qy+qYcO0dGXxP+3UZwLkaUAz2mr9WM9ZuSZzHhh+h
-        oxzZEC0yKoeUpanFdC4e0dkfyZGAcHw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-sO93PObJOUi1tI5J0kB7BQ-1; Mon, 01 Nov 2021 15:49:56 -0400
-X-MC-Unique: sO93PObJOUi1tI5J0kB7BQ-1
-Received: by mail-ed1-f71.google.com with SMTP id x13-20020a05640226cd00b003dd4720703bso16587103edd.8
-        for <netfilter-devel@vger.kernel.org>; Mon, 01 Nov 2021 12:49:56 -0700 (PDT)
+        Mon, 1 Nov 2021 16:01:09 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C138BC061714
+        for <netfilter-devel@vger.kernel.org>; Mon,  1 Nov 2021 12:58:35 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id x19so7030901ljm.11
+        for <netfilter-devel@vger.kernel.org>; Mon, 01 Nov 2021 12:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Fe/aZN9ue9KozALOQA+hq2WE0Sy0mJAm2I9Vpvo2xL8=;
+        b=SZnp07ZNJ2HeiprzyiQqICo9aMhHEKwS+yOVDF4e6DuBcWjcxh0RNymNcstg6zUXI8
+         zcITZN3BLmYUhRwTNzATr+DrfG+FE9DNnxHZQ/xNKNuMhd/JDjdOGR4/qhOZM5uJS+bk
+         SfCbVj+qhCnItGWGMWLM80OLXBAh/ni3Xs+M510ex/33zXmac27hByGYD2ySCUUi5W8A
+         yuQc60BRVRXedjlDzksEePvDL7DLxp1seVZ3Uicl8oHREl3LAmutCrXhoe/eiQ4ZuKb7
+         NZfFr3iNkyyDun4H0XwAuAw2pYTt4cjFxdV+2BC4YPvdWrCKEKF+1Jo6c9r91Ch5e+q1
+         FyFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=qqc178qZXVlRBTkSP0Y4vQlYfIbVccbQXGvB2hKE2bQ=;
-        b=5YGm2ytRGnqEDV++IYOpkSZgxCFuV+JSifTmkRLKynw58501C4MrrMlo8EY4hXfSJs
-         fu0vrzuKFpRpt1xvci+AAv/GZR4aHnXN4UH6Ps80JT8NESxLPMyYI6KuE3AJPi2vl5mJ
-         9rUxqaoOWm4ZLJVzFfSzLC2ANHa33CYumukSnSM42KoqiLpazaLTcDzt0oRp6j0kBXdK
-         8fFDLLhrRia5WlNzSsFAlN74XecbQii/Ijbk5MWMwGjgDcAqNrref7OFVjQcANW5h6Cg
-         j+CLy2fVAf19penJFmg8pCG5y1L2U1ETE2wpW0RVxTi4BVyASk7NpZ/DLJU9T/CLkDGY
-         X1Kw==
-X-Gm-Message-State: AOAM531ruOxLIBH+snfvztieKw6liQsTw4P0gH+zrXmW29IFH42U8QGg
-        jy/gvggHgRqWk8Q/+PIK6U2Z2W1rrAYqrQa8bFkzoqE4cO/AsAFS+xkzka/bq7yWLwqpuHp8pVS
-        hkJhptLZuc/gmP9IAQxAhYctuWtX+
-X-Received: by 2002:a50:8744:: with SMTP id 4mr43744781edv.100.1635796195598;
-        Mon, 01 Nov 2021 12:49:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwgHydV0CV/xhpm8QAcsGfvxbZrz1g8h+fAKTtFLxBddFuMKEdw4igXKgtcQv3rCUwkr499hA==
-X-Received: by 2002:a50:8744:: with SMTP id 4mr43744738edv.100.1635796195291;
-        Mon, 01 Nov 2021 12:49:55 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id t6sm9565835edj.27.2021.11.01.12.49.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Nov 2021 12:49:54 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 30EE4180248; Mon,  1 Nov 2021 20:49:54 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Florian Westphal <fw@strlen.de>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next v1 5/6] net: netfilter: Add unstable CT
- lookup helper for XDP and TC-BPF
-In-Reply-To: <20211031191045.GA19266@breakpoint.cc>
-References: <20211030144609.263572-1-memxor@gmail.com>
- <20211030144609.263572-6-memxor@gmail.com>
- <20211031191045.GA19266@breakpoint.cc>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 01 Nov 2021 20:49:54 +0100
-Message-ID: <87y2677j19.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Fe/aZN9ue9KozALOQA+hq2WE0Sy0mJAm2I9Vpvo2xL8=;
+        b=GkoMYVoTFjkuT8OsXzAq/JPpq/WpOIQUa0OgV8PSzK4NcVVk1GHy6peV4r+5O/CKgy
+         lGNZsIs/shSmeJM2aVetQctZ1rps5nUUsAECzMht71QpLgS1AJvZLBZtvOPehllVw1W4
+         zN83MhHm2NLJNwBl7s6mp3apRHBqtp4LeklWIcNUHCCiac5Haeo74T7hh/37Mg9CEyXF
+         5CFsrleoV+3tkH2d6KuQexshWY8SMSwIe9fxmfSt1dGpPEmqvfoh9vzHVSTauXVAi1ER
+         hzEP0T2xqp28ZQV3XElyiM6FP/XiuoDFnXg5ySV4b0ibCOW2d1EkkSy94a7zbea4N0j9
+         fe2Q==
+X-Gm-Message-State: AOAM533rlvb1jRLYkK/4QGRZjELts6MmiUpfU20Wqja0FmIo44/eiXrE
+        tVGcIMfrt4jH8hR1r7+crd13iRD9NPt/Sr2noSI=
+X-Google-Smtp-Source: ABdhPJymW7kgOMEsjjsaAMq0Vy+xqRBJfAUZqPDFq1B0mskizklZ5712q6fuynJFtHhGK8OLO6vKnqiYlVW1JLJKY70=
+X-Received: by 2002:a05:651c:208:: with SMTP id y8mr5616457ljn.100.1635796713911;
+ Mon, 01 Nov 2021 12:58:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: by 2002:a05:6512:3044:0:0:0:0 with HTTP; Mon, 1 Nov 2021 12:58:33
+ -0700 (PDT)
+Reply-To: jennehkandeh@yahoo.com
+From:   Jenneh Kandeh <ec8894831@gmail.com>
+Date:   Mon, 1 Nov 2021 12:58:33 -0700
+Message-ID: <CAJT13=mn290gW45DL6yipKUdK+kzuVw5duYQVS22rJ-1v3op0g@mail.gmail.com>
+Subject: Re: Regarding Of My Late Father's Fund $10,200,000
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Florian Westphal <fw@strlen.de> writes:
+dear,
 
-> Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->> This change adds conntrack lookup helpers using the unstable kfunc call
->> interface for the XDP and TC-BPF hooks.
->> 
->> Also add acquire/release functions (randomly returning NULL), and also
->> exercise the RET_PTR_TO_BTF_ID_OR_NULL path so that BPF program caller
->> has to check for NULL before dereferencing the pointer, for the TC hook.
->> These will be used in selftest.
->> 
->> Export get_net_ns_by_id and btf_type_by_id as nf_conntrack needs to call
->> them.
->
-> It would be good to get a summary on how this is useful.
->
-> I tried to find a use case but I could not.
-> Entry will time out soon once packets stop appearing, so it can't be
-> used for stack bypass.  Is it for something else?  If so, what?
+I got your contact through the internet due to serious searching for a
+reliable personality.  I am Jenneh Kandeh from FreeTown Capital of
+Sierra Leone.
 
-I think Maxim's use case was to implement a SYN proxy in XDP, where the
-XDP program just needs to answer the question "do I have state for this
-flow already". For TCP flows terminating on the local box this can be
-done via a socket lookup, but for a middlebox, a conntrack lookup is
-useful. Maxim, please correct me if I got your use case wrong.
+Time of opposed to the government of President Ahmad Tejan Kebbah the
+ex-leader since 21st November 2005 But I am current residing in
+Porto-Novo Benin due to war of my country, my mother killed on
+04/01/2002 for Sierra Leone civilian war my father decided to change
+another residence country with me because I am only child for my
+family bad news that my father passed away on 25/11/2018. During the
+war, My father made a lot of money through the illegal sales of
+Diamonds. To the tune of $10,200,000.
 
-> For UDP it will work to let a packet pass through classic forward
-> path once in a while, but this will not work for tcp, depending
-> on conntrack settings (lose mode, liberal pickup etc. pp).
+This money is currently and secretly kept in ECOWAS security company
+here in Benin, but because of the political turmoil which still exists
+here in Africa, I can not invest the money by myself, hence am
+soliciting your help to help me take these funds into your custody and
+also advise me on how to invest it.
 
-The idea is certainly to follow up with some kind of 'update' helper. At
-a minimum a "keep this entry alive" update, but potentially more
-complicated stuff as well. Details TBD, input welcome :)
-
->> +/* Unstable Kernel Helpers for XDP hook */
->> +static struct nf_conn *__bpf_nf_ct_lookup(struct net *net,
->> +					  struct bpf_sock_tuple *bpf_tuple,
->> +					  u32 tuple_len, u8 protonum,
->> +					  u64 netns_id, u64 flags)
->> +{
->> +	struct nf_conntrack_tuple_hash *hash;
->> +	struct nf_conntrack_tuple tuple;
->> +
->> +	if (flags != IP_CT_DIR_ORIGINAL && flags != IP_CT_DIR_REPLY)
->> +		return ERR_PTR(-EINVAL);
->
-> The flags argument is not needed.
->
->> +	tuple.dst.dir = flags;
->
-> .dir can be 0, its not used by nf_conntrack_find_get().
->
->> +	hash = nf_conntrack_find_get(net, &nf_ct_zone_dflt, &tuple);
->
-> Ok, so default zone. Depending on meaning of "unstable helper" this
-> is ok and can be changed in incompatible way later.
-
-I'm not sure about the meaning of "unstable" either, TBH, but in either
-case I'd rather avoid changing things if we don't have to, so I think
-adding the zone as an argument from the get-go may be better...
-
--Toke
-
+I want to add here that if agreed 35% of the total worth of the fund
+will be yours minus your total expenses incurred during the clearing
+of the fund in
+Porto Novo Benin that 35% I would like to invest on heavy duty
+agricultural equipment and earth moving machines to enable me go into
+a full scale mechanized farming. l wait to hear from you
