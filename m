@@ -2,85 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34B3442130
-	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Nov 2021 20:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E378442338
+	for <lists+netfilter-devel@lfdr.de>; Mon,  1 Nov 2021 23:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhKAUBK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 1 Nov 2021 16:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhKAUBJ (ORCPT
+        id S232113AbhKAWSZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 1 Nov 2021 18:18:25 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:59198 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231855AbhKAWSO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 1 Nov 2021 16:01:09 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C138BC061714
-        for <netfilter-devel@vger.kernel.org>; Mon,  1 Nov 2021 12:58:35 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id x19so7030901ljm.11
-        for <netfilter-devel@vger.kernel.org>; Mon, 01 Nov 2021 12:58:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Fe/aZN9ue9KozALOQA+hq2WE0Sy0mJAm2I9Vpvo2xL8=;
-        b=SZnp07ZNJ2HeiprzyiQqICo9aMhHEKwS+yOVDF4e6DuBcWjcxh0RNymNcstg6zUXI8
-         zcITZN3BLmYUhRwTNzATr+DrfG+FE9DNnxHZQ/xNKNuMhd/JDjdOGR4/qhOZM5uJS+bk
-         SfCbVj+qhCnItGWGMWLM80OLXBAh/ni3Xs+M510ex/33zXmac27hByGYD2ySCUUi5W8A
-         yuQc60BRVRXedjlDzksEePvDL7DLxp1seVZ3Uicl8oHREl3LAmutCrXhoe/eiQ4ZuKb7
-         NZfFr3iNkyyDun4H0XwAuAw2pYTt4cjFxdV+2BC4YPvdWrCKEKF+1Jo6c9r91Ch5e+q1
-         FyFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Fe/aZN9ue9KozALOQA+hq2WE0Sy0mJAm2I9Vpvo2xL8=;
-        b=GkoMYVoTFjkuT8OsXzAq/JPpq/WpOIQUa0OgV8PSzK4NcVVk1GHy6peV4r+5O/CKgy
-         lGNZsIs/shSmeJM2aVetQctZ1rps5nUUsAECzMht71QpLgS1AJvZLBZtvOPehllVw1W4
-         zN83MhHm2NLJNwBl7s6mp3apRHBqtp4LeklWIcNUHCCiac5Haeo74T7hh/37Mg9CEyXF
-         5CFsrleoV+3tkH2d6KuQexshWY8SMSwIe9fxmfSt1dGpPEmqvfoh9vzHVSTauXVAi1ER
-         hzEP0T2xqp28ZQV3XElyiM6FP/XiuoDFnXg5ySV4b0ibCOW2d1EkkSy94a7zbea4N0j9
-         fe2Q==
-X-Gm-Message-State: AOAM533rlvb1jRLYkK/4QGRZjELts6MmiUpfU20Wqja0FmIo44/eiXrE
-        tVGcIMfrt4jH8hR1r7+crd13iRD9NPt/Sr2noSI=
-X-Google-Smtp-Source: ABdhPJymW7kgOMEsjjsaAMq0Vy+xqRBJfAUZqPDFq1B0mskizklZ5712q6fuynJFtHhGK8OLO6vKnqiYlVW1JLJKY70=
-X-Received: by 2002:a05:651c:208:: with SMTP id y8mr5616457ljn.100.1635796713911;
- Mon, 01 Nov 2021 12:58:33 -0700 (PDT)
+        Mon, 1 Nov 2021 18:18:14 -0400
+Received: from localhost.localdomain (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id EA91663F4E;
+        Mon,  1 Nov 2021 23:13:45 +0100 (CET)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
+Subject: [PATCH net 0/2] Netfilter/IPVS fixes for net
+Date:   Mon,  1 Nov 2021 23:15:26 +0100
+Message-Id: <20211101221528.236114-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:a05:6512:3044:0:0:0:0 with HTTP; Mon, 1 Nov 2021 12:58:33
- -0700 (PDT)
-Reply-To: jennehkandeh@yahoo.com
-From:   Jenneh Kandeh <ec8894831@gmail.com>
-Date:   Mon, 1 Nov 2021 12:58:33 -0700
-Message-ID: <CAJT13=mn290gW45DL6yipKUdK+kzuVw5duYQVS22rJ-1v3op0g@mail.gmail.com>
-Subject: Re: Regarding Of My Late Father's Fund $10,200,000
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-dear,
+Hi,
 
-I got your contact through the internet due to serious searching for a
-reliable personality.  I am Jenneh Kandeh from FreeTown Capital of
-Sierra Leone.
+The following patchset contains Netfilter/IPVS fixes for net:
 
-Time of opposed to the government of President Ahmad Tejan Kebbah the
-ex-leader since 21st November 2005 But I am current residing in
-Porto-Novo Benin due to war of my country, my mother killed on
-04/01/2002 for Sierra Leone civilian war my father decided to change
-another residence country with me because I am only child for my
-family bad news that my father passed away on 25/11/2018. During the
-war, My father made a lot of money through the illegal sales of
-Diamonds. To the tune of $10,200,000.
+1) Fix mac address UAF reported by KASAN in nfnetlink_queue,
+   from Florian Westphal.
 
-This money is currently and secretly kept in ECOWAS security company
-here in Benin, but because of the political turmoil which still exists
-here in Africa, I can not invest the money by myself, hence am
-soliciting your help to help me take these funds into your custody and
-also advise me on how to invest it.
+2) Autoload genetlink IPVS on demand, from Thomas Weissschuh.
 
-I want to add here that if agreed 35% of the total worth of the fund
-will be yours minus your total expenses incurred during the clearing
-of the fund in
-Porto Novo Benin that 35% I would like to invest on heavy duty
-agricultural equipment and earth moving machines to enable me go into
-a full scale mechanized farming. l wait to hear from you
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 64222515138e43da1fcf288f0289ef1020427b87:
+
+  Merge tag 'drm-fixes-2021-10-22' of git://anongit.freedesktop.org/drm/drm (2021-10-21 19:06:08 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git HEAD
+
+for you to fetch changes up to 2199f562730dd1382946e0a2532afc38cd444129:
+
+  ipvs: autoload ipvs on genl access (2021-10-22 14:10:17 +0200)
+
+----------------------------------------------------------------
+Florian Westphal (1):
+      netfilter: nfnetlink_queue: fix OOB when mac header was cleared
+
+Thomas Weißschuh (1):
+      ipvs: autoload ipvs on genl access
+
+ net/netfilter/ipvs/ip_vs_ctl.c  | 2 ++
+ net/netfilter/nfnetlink_queue.c | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
