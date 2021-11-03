@@ -2,65 +2,138 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B424448AA
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Nov 2021 19:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3483D444926
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Nov 2021 20:46:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhKCS4b (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 Nov 2021 14:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhKCS4b (ORCPT
+        id S230363AbhKCTtT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Nov 2021 15:49:19 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:35742 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230172AbhKCTtT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 Nov 2021 14:56:31 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788CAC061714
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 Nov 2021 11:53:54 -0700 (PDT)
-Received: from localhost ([::1]:51428 helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1miLOS-0005n1-6I; Wed, 03 Nov 2021 19:53:52 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH 2/2] selftests: nft_nat: Simplify port shadow notrack test
-Date:   Wed,  3 Nov 2021 19:53:43 +0100
-Message-Id: <20211103185343.28421-3-phil@nwl.cc>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211103185343.28421-1-phil@nwl.cc>
-References: <20211103185343.28421-1-phil@nwl.cc>
+        Wed, 3 Nov 2021 15:49:19 -0400
+Received: from localhost.localdomain (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 72C546079F
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 Nov 2021 20:44:46 +0100 (CET)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft] src: raw payload match and mangle on inner header / payload data
+Date:   Wed,  3 Nov 2021 20:46:37 +0100
+Message-Id: <20211103194637.114623-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The second rule in prerouting chain was probably a leftover: The router
-listens on veth0, so not tracking connections via that interface is
-sufficient. Likewise, the rule in output chain can be limited to that
-interface as well.
+This patch adds support to match on inner header / payload data:
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+ # nft add rule x y @ih,32,32 0x14000000 counter
+
+you can also mangle payload data:
+
+ # nft add rule x y @ih,32,32 set 0x14000000 counter
+
+This update triggers a checksum update at the layer 4 header via
+csum_flags, mangling odd bytes is also aligned to 16-bits.
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- tools/testing/selftests/netfilter/nft_nat.sh | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ include/proto.h         | 1 +
+ src/evaluate.c          | 3 +++
+ src/netlink_linearize.c | 5 +++--
+ src/parser_bison.y      | 2 ++
+ src/proto.c             | 1 +
+ src/scanner.l           | 1 +
+ 6 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/netfilter/nft_nat.sh b/tools/testing/selftests/netfilter/nft_nat.sh
-index 905c033db74dc..c62e4e26252c1 100755
---- a/tools/testing/selftests/netfilter/nft_nat.sh
-+++ b/tools/testing/selftests/netfilter/nft_nat.sh
-@@ -818,11 +818,10 @@ table $family raw {
- 	chain prerouting {
- 		type filter hook prerouting priority -300; policy accept;
- 		meta iif veth0 udp dport 1405 notrack
--		udp dport 1405 notrack
+diff --git a/include/proto.h b/include/proto.h
+index 580e409028bc..a04240a5de81 100644
+--- a/include/proto.h
++++ b/include/proto.h
+@@ -18,6 +18,7 @@ enum proto_bases {
+ 	PROTO_BASE_LL_HDR,
+ 	PROTO_BASE_NETWORK_HDR,
+ 	PROTO_BASE_TRANSPORT_HDR,
++	PROTO_BASE_INNER_HDR,
+ 	__PROTO_BASE_MAX
+ };
+ #define PROTO_BASE_MAX		(__PROTO_BASE_MAX - 1)
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 6a8c396f33c4..a268b3cb9ee2 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -2446,6 +2446,9 @@ static bool stmt_evaluate_payload_need_csum(const struct expr *payload)
+ {
+ 	const struct proto_desc *desc;
+ 
++	if (payload->payload.base == PROTO_BASE_INNER_HDR)
++		return true;
++
+ 	desc = payload->payload.desc;
+ 
+ 	return desc && desc->checksum_key;
+diff --git a/src/netlink_linearize.c b/src/netlink_linearize.c
+index 454b9ba3fbc7..111102fd4334 100644
+--- a/src/netlink_linearize.c
++++ b/src/netlink_linearize.c
+@@ -1028,8 +1028,9 @@ static void netlink_gen_payload_stmt(struct netlink_linearize_ctx *ctx,
+ 		nftnl_expr_set_u32(nle, NFTNL_EXPR_PAYLOAD_CSUM_OFFSET,
+ 				   csum_off / BITS_PER_BYTE);
  	}
- 	chain output {
- 		type filter hook output priority -300; policy accept;
--		udp sport 1405 notrack
-+		meta oif veth0 udp sport 1405 notrack
- 	}
- }
- EOF
+-	if (expr->payload.base == PROTO_BASE_NETWORK_HDR && desc &&
+-	    payload_needs_l4csum_update_pseudohdr(expr, desc))
++	if ((expr->payload.base == PROTO_BASE_NETWORK_HDR && desc &&
++	     payload_needs_l4csum_update_pseudohdr(expr, desc)) ||
++	    expr->payload.base == PROTO_BASE_INNER_HDR)
+ 		nftnl_expr_set_u32(nle, NFTNL_EXPR_PAYLOAD_FLAGS,
+ 				   NFT_PAYLOAD_L4CSUM_PSEUDOHDR);
+ 
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index 65fd35a36cde..eb89a58989e2 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -318,6 +318,7 @@ int nft_lex(void *, void *, void *);
+ %token LL_HDR			"ll"
+ %token NETWORK_HDR		"nh"
+ %token TRANSPORT_HDR		"th"
++%token INNER_HDR		"ih"
+ 
+ %token BRIDGE			"bridge"
+ 
+@@ -5260,6 +5261,7 @@ payload_raw_expr	:	AT	payload_base_spec	COMMA	NUM	COMMA	NUM
+ payload_base_spec	:	LL_HDR		{ $$ = PROTO_BASE_LL_HDR; }
+ 			|	NETWORK_HDR	{ $$ = PROTO_BASE_NETWORK_HDR; }
+ 			|	TRANSPORT_HDR	{ $$ = PROTO_BASE_TRANSPORT_HDR; }
++			|	INNER_HDR	{ $$ = PROTO_BASE_INNER_HDR; }
+ 			;
+ 
+ eth_hdr_expr		:	ETHER	eth_hdr_field	close_scope_eth
+diff --git a/src/proto.c b/src/proto.c
+index 2b61e0ba47fd..2a8ca63f3c46 100644
+--- a/src/proto.c
++++ b/src/proto.c
+@@ -35,6 +35,7 @@ const char *proto_base_tokens[] = {
+ 	[PROTO_BASE_LL_HDR]		= "ll",
+ 	[PROTO_BASE_NETWORK_HDR]	= "nh",
+ 	[PROTO_BASE_TRANSPORT_HDR]	= "th",
++	[PROTO_BASE_INNER_HDR]		= "ih",
+ };
+ 
+ const struct proto_hdr_template proto_unknown_template =
+diff --git a/src/scanner.l b/src/scanner.l
+index 6cc7778dd85e..5d263f9dc8b1 100644
+--- a/src/scanner.l
++++ b/src/scanner.l
+@@ -414,6 +414,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "ll"			{ return LL_HDR; }
+ "nh"			{ return NETWORK_HDR; }
+ "th"			{ return TRANSPORT_HDR; }
++"ih"			{ return INNER_HDR; }
+ 
+ "bridge"		{ return BRIDGE; }
+ 
 -- 
-2.33.0
+2.30.2
 
