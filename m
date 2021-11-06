@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913F3447088
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 21:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88485447084
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 21:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235098AbhKFVBK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 6 Nov 2021 17:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32788 "EHLO
+        id S235093AbhKFVAs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 6 Nov 2021 17:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhKFVBJ (ORCPT
+        with ESMTP id S229723AbhKFVAs (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 6 Nov 2021 17:01:09 -0400
+        Sat, 6 Nov 2021 17:00:48 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E02C061570
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 13:58:28 -0700 (PDT)
-Received: from localhost ([::1]:58770 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD70C061570
+        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 13:58:06 -0700 (PDT)
+Received: from localhost ([::1]:58746 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mjSle-00046v-MH; Sat, 06 Nov 2021 21:58:26 +0100
+        id 1mjSlI-00045l-Qa; Sat, 06 Nov 2021 21:58:04 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 09/10] nft-shared: Drop unused function print_proto()
-Date:   Sat,  6 Nov 2021 21:57:55 +0100
-Message-Id: <20211106205756.14529-10-phil@nwl.cc>
+Subject: [iptables PATCH 10/10] xshared: Make load_proto() static
+Date:   Sat,  6 Nov 2021 21:57:56 +0100
+Message-Id: <20211106205756.14529-11-phil@nwl.cc>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211106205756.14529-1-phil@nwl.cc>
 References: <20211106205756.14529-1-phil@nwl.cc>
@@ -34,55 +34,40 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The last users vanished back in 2013. There is identical code in
-save_rule_details(), but with only a single user there's not much point
-in keeping the function.
+The last outside users vanished ten years ago.
 
-Fixes: cdc78b1d6bd7b ("nft: convert rule into a command state structure")
+Fixes: 449cdd6bcc8d1 ("src: combine default_command functions")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-shared.c | 15 ---------------
- iptables/nft-shared.h |  1 -
- 2 files changed, 16 deletions(-)
+ iptables/xshared.c | 2 +-
+ iptables/xshared.h | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
-index a6a79c8cda084..b281ba2987cc3 100644
---- a/iptables/nft-shared.c
-+++ b/iptables/nft-shared.c
-@@ -373,21 +373,6 @@ static void nft_parse_match(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
- 		ctx->h->ops->parse_match(match, ctx->cs);
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 37ea71068b69c..a1ca2b0fd7e3e 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -107,7 +107,7 @@ static bool should_load_proto(struct iptables_command_state *cs)
+ 	return !cs->proto_used;
  }
  
--void print_proto(uint16_t proto, int invert)
--{
--	const struct protoent *pent = getprotobynumber(proto);
--
--	if (invert)
--		printf("! ");
--
--	if (pent) {
--		printf("-p %s ", pent->p_name);
--		return;
--	}
--
--	printf("-p %u ", proto);
--}
--
- void get_cmp_data(struct nftnl_expr *e, void *data, size_t dlen, bool *inv)
+-struct xtables_match *load_proto(struct iptables_command_state *cs)
++static struct xtables_match *load_proto(struct iptables_command_state *cs)
  {
- 	uint32_t len;
-diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
-index de684374ef9e0..bcf8486eb44c4 100644
---- a/iptables/nft-shared.h
-+++ b/iptables/nft-shared.h
-@@ -158,7 +158,6 @@ bool is_same_interfaces(const char *a_iniface, const char *a_outiface,
- int parse_meta(struct nftnl_expr *e, uint8_t key, char *iniface,
- 		unsigned char *iniface_mask, char *outiface,
- 		unsigned char *outiface_mask, uint8_t *invflags);
--void print_proto(uint16_t proto, int invert);
- void get_cmp_data(struct nftnl_expr *e, void *data, size_t dlen, bool *inv);
- void nft_rule_to_iptables_command_state(struct nft_handle *h,
- 					const struct nftnl_rule *r,
+ 	if (!should_load_proto(cs))
+ 		return NULL;
+diff --git a/iptables/xshared.h b/iptables/xshared.h
+index 757940090dd69..060c62ef0b5ca 100644
+--- a/iptables/xshared.h
++++ b/iptables/xshared.h
+@@ -166,7 +166,6 @@ extern void print_extension_helps(const struct xtables_target *,
+ 	const struct xtables_rule_match *);
+ extern int command_default(struct iptables_command_state *,
+ 	struct xtables_globals *, bool invert);
+-extern struct xtables_match *load_proto(struct iptables_command_state *);
+ extern int subcmd_main(int, char **, const struct subcommand *);
+ extern void xs_init_target(struct xtables_target *);
+ extern void xs_init_match(struct xtables_match *);
 -- 
 2.33.0
 
