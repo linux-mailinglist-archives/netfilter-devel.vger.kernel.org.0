@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C20447085
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 21:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E335D44708D
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 21:58:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbhKFVAx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 6 Nov 2021 17:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
+        id S234327AbhKFVBh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 6 Nov 2021 17:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhKFVAx (ORCPT
+        with ESMTP id S229723AbhKFVBg (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 6 Nov 2021 17:00:53 -0400
+        Sat, 6 Nov 2021 17:01:36 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70D8C061570
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 13:58:11 -0700 (PDT)
-Received: from localhost ([::1]:58752 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C120C061570
+        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 13:58:55 -0700 (PDT)
+Received: from localhost ([::1]:58800 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mjSlO-000467-7V; Sat, 06 Nov 2021 21:58:10 +0100
+        id 1mjSm5-00048b-Mi; Sat, 06 Nov 2021 21:58:53 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 05/10] xshared: Share save_ipv{4,6}_addr() with legacy
-Date:   Sat,  6 Nov 2021 21:57:51 +0100
-Message-Id: <20211106205756.14529-6-phil@nwl.cc>
+Subject: [iptables PATCH 06/10] xshared: Share print_rule_details() with legacy
+Date:   Sat,  6 Nov 2021 21:57:52 +0100
+Message-Id: <20211106205756.14529-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211106205756.14529-1-phil@nwl.cc>
 References: <20211106205756.14529-1-phil@nwl.cc>
@@ -34,317 +34,239 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-While being at it, make save_ipv4_addr() accept an in_addr* as mask -
-mask_to_str() needs it anyway.
+Have to pass pointer to counters directly since different fields are
+being used for some reason.
+
+Since proto_to_name() is not used outside of xshared.c anymore, make it
+static.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/ip6tables.c | 29 ++++------------------
- iptables/iptables.c  | 36 +++-------------------------
- iptables/nft-ipv4.c  | 43 ++-------------------------------
- iptables/nft-ipv6.c  | 20 ----------------
- iptables/xshared.c   | 57 ++++++++++++++++++++++++++++++++++++++++++++
- iptables/xshared.h   |  4 ++++
- 6 files changed, 70 insertions(+), 119 deletions(-)
+ iptables/ip6tables.c  | 21 ++-------------------
+ iptables/iptables.c   | 21 ++-------------------
+ iptables/nft-ipv4.c   |  4 ++--
+ iptables/nft-ipv6.c   |  5 ++---
+ iptables/nft-shared.c | 27 ---------------------------
+ iptables/nft-shared.h |  4 ----
+ iptables/xshared.c    | 27 ++++++++++++++++++++++++++-
+ iptables/xshared.h    |  4 +++-
+ 8 files changed, 37 insertions(+), 76 deletions(-)
 
 diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index eacbf704f9769..5c118626a5d23 100644
+index 5c118626a5d23..e0cc4e898fe6a 100644
 --- a/iptables/ip6tables.c
 +++ b/iptables/ip6tables.c
-@@ -738,27 +738,6 @@ static int print_match_save(const struct xt_entry_match *e,
- 	return 0;
- }
+@@ -329,25 +329,8 @@ print_firewall(const struct ip6t_entry *fw,
  
--/* Print a given ip including mask if necessary. */
--static void print_ip(const char *prefix, const struct in6_addr *ip,
--		     const struct in6_addr *mask, int invert)
--{
--	char buf[51];
--	int l = xtables_ip6mask_to_cidr(mask);
--
--	if (l == 0 && !invert)
--		return;
--
--	printf("%s %s %s",
--		invert ? " !" : "",
--		prefix,
--		inet_ntop(AF_INET6, ip, buf, sizeof buf));
--
--	if (l == -1)
--		printf("/%s", inet_ntop(AF_INET6, mask, buf, sizeof buf));
--	else
--		printf("/%d", l);
--}
--
- /* We want this to be readable, so only print out necessary fields.
-  * Because that's the kind of world I want to live in.
-  */
-@@ -776,11 +755,11 @@ void print_rule6(const struct ip6t_entry *e,
- 	printf("-A %s", chain);
+ 	t = ip6t_get_target((struct ip6t_entry *)fw);
  
- 	/* Print IP part. */
--	print_ip("-s", &(e->ipv6.src), &(e->ipv6.smsk),
--			e->ipv6.invflags & IP6T_INV_SRCIP);
-+	save_ipv6_addr('s', &e->ipv6.src, &e->ipv6.smsk,
-+		       e->ipv6.invflags & IP6T_INV_SRCIP);
+-	if (format & FMT_LINENUMBERS)
+-		printf(FMT("%-4u ", "%u "), num);
+-
+-	if (!(format & FMT_NOCOUNTS)) {
+-		xtables_print_num(fw->counters.pcnt, format);
+-		xtables_print_num(fw->counters.bcnt, format);
+-	}
+-
+-	if (!(format & FMT_NOTARGET))
+-		printf(FMT("%-9s ", "%s "), targname);
+-
+-	fputc(fw->ipv6.invflags & XT_INV_PROTO ? '!' : ' ', stdout);
+-	{
+-		const char *pname = proto_to_name(fw->ipv6.proto, format&FMT_NUMERIC);
+-		if (pname)
+-			printf(FMT("%-5s", "%s "), pname);
+-		else
+-			printf(FMT("%-5hu", "%hu "), fw->ipv6.proto);
+-	}
++	print_rule_details(num, &fw->counters, targname, fw->ipv6.proto,
++			   fw->ipv6.flags, fw->ipv6.invflags, format);
  
--	print_ip("-d", &(e->ipv6.dst), &(e->ipv6.dmsk),
--			e->ipv6.invflags & IP6T_INV_DSTIP);
-+	save_ipv6_addr('d', &e->ipv6.dst, &e->ipv6.dmsk,
-+		       e->ipv6.invflags & IP6T_INV_DSTIP);
- 
- 	save_rule_details(e->ipv6.iniface, e->ipv6.iniface_mask,
- 			  e->ipv6.outiface, e->ipv6.outiface_mask,
+ 	if (format & FMT_OPTIONS) {
+ 		if (format & FMT_NOTABLE)
 diff --git a/iptables/iptables.c b/iptables/iptables.c
-index 85fb7bdcd0ca1..0d8beb04c0f99 100644
+index 0d8beb04c0f99..29da40b1328d4 100644
 --- a/iptables/iptables.c
 +++ b/iptables/iptables.c
-@@ -738,36 +738,6 @@ static int print_match_save(const struct xt_entry_match *e,
- 	return 0;
- }
+@@ -322,25 +322,8 @@ print_firewall(const struct ipt_entry *fw,
+ 	t = ipt_get_target((struct ipt_entry *)fw);
+ 	flags = fw->ip.flags;
  
--/* Print a given ip including mask if necessary. */
--static void print_ip(const char *prefix, uint32_t ip,
--		     uint32_t mask, int invert)
--{
--	uint32_t bits, hmask = ntohl(mask);
--	int i;
+-	if (format & FMT_LINENUMBERS)
+-		printf(FMT("%-4u ", "%u "), num);
 -
--	if (!mask && !ip && !invert)
--		return;
--
--	printf("%s %s %u.%u.%u.%u",
--		invert ? " !" : "",
--		prefix,
--		IP_PARTS(ip));
--
--	if (mask == 0xFFFFFFFFU) {
--		printf("/32");
--		return;
+-	if (!(format & FMT_NOCOUNTS)) {
+-		xtables_print_num(fw->counters.pcnt, format);
+-		xtables_print_num(fw->counters.bcnt, format);
 -	}
 -
--	i    = 32;
--	bits = 0xFFFFFFFEU;
--	while (--i >= 0 && hmask != bits)
--		bits <<= 1;
--	if (i >= 0)
--		printf("/%u", i);
--	else
--		printf("/%u.%u.%u.%u", IP_PARTS(mask));
--}
+-	if (!(format & FMT_NOTARGET))
+-		printf(FMT("%-9s ", "%s "), targname);
 -
- /* We want this to be readable, so only print out necessary fields.
-  * Because that's the kind of world I want to live in.
-  */
-@@ -785,10 +755,10 @@ void print_rule4(const struct ipt_entry *e,
- 	printf("-A %s", chain);
+-	fputc(fw->ip.invflags & XT_INV_PROTO ? '!' : ' ', stdout);
+-	{
+-		const char *pname = proto_to_name(fw->ip.proto, format&FMT_NUMERIC);
+-		if (pname)
+-			printf(FMT("%-5s", "%s "), pname);
+-		else
+-			printf(FMT("%-5hu", "%hu "), fw->ip.proto);
+-	}
++	print_rule_details(num, &fw->counters, targname, fw->ip.proto,
++			   fw->ip.flags, fw->ip.invflags, format);
  
- 	/* Print IP part. */
--	print_ip("-s", e->ip.src.s_addr,e->ip.smsk.s_addr,
--			e->ip.invflags & IPT_INV_SRCIP);
-+	save_ipv4_addr('s', &e->ip.src, &e->ip.smsk,
-+		       e->ip.invflags & IPT_INV_SRCIP);
- 
--	print_ip("-d", e->ip.dst.s_addr, e->ip.dmsk.s_addr,
-+	save_ipv4_addr('d', &e->ip.dst, &e->ip.dmsk,
- 			e->ip.invflags & IPT_INV_DSTIP);
- 
- 	save_rule_details(e->ip.iniface, e->ip.iniface_mask,
+ 	if (format & FMT_OPTIONS) {
+ 		if (format & FMT_NOTABLE)
 diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
-index 39d6e61232cdb..dcc009cf67a81 100644
+index dcc009cf67a81..6b044642bd775 100644
 --- a/iptables/nft-ipv4.c
 +++ b/iptables/nft-ipv4.c
-@@ -134,32 +134,6 @@ static void get_frag(struct nft_xt_ctx *ctx, struct nftnl_expr *e, bool *inv)
- 	ctx->flags &= ~NFT_XT_CTX_BITWISE;
- }
+@@ -246,8 +246,8 @@ static void nft_ipv4_print_rule(struct nft_handle *h, struct nftnl_rule *r,
  
--static const char *mask_to_str(uint32_t mask)
--{
--	static char mask_str[INET_ADDRSTRLEN];
--	uint32_t bits, hmask = ntohl(mask);
--	struct in_addr mask_addr = {
--		.s_addr = mask,
--	};
--	int i;
--
--	if (mask == 0xFFFFFFFFU) {
--		sprintf(mask_str, "32");
--		return mask_str;
--	}
--
--	i    = 32;
--	bits = 0xFFFFFFFEU;
--	while (--i >= 0 && hmask != bits)
--		bits <<= 1;
--	if (i >= 0)
--		sprintf(mask_str, "%u", i);
--	else
--		inet_ntop(AF_INET, &mask_addr, mask_str, sizeof(mask_str));
--
--	return mask_str;
--}
--
- static void nft_ipv4_parse_meta(struct nft_xt_ctx *ctx, struct nftnl_expr *e,
- 				void *data)
- {
-@@ -295,26 +269,13 @@ static void nft_ipv4_print_rule(struct nft_handle *h, struct nftnl_rule *r,
- 	nft_clear_iptables_command_state(&cs);
- }
+ 	nft_rule_to_iptables_command_state(h, r, &cs);
  
--static void save_ipv4_addr(char letter, const struct in_addr *addr,
--			   uint32_t mask, int invert)
--{
--	char addrbuf[INET_ADDRSTRLEN];
--
--	if (!mask && !invert && !addr->s_addr)
--		return;
--
--	printf("%s -%c %s/%s", invert ? " !" : "", letter,
--	       inet_ntop(AF_INET, addr, addrbuf, sizeof(addrbuf)),
--	       mask_to_str(mask));
--}
--
- static void nft_ipv4_save_rule(const void *data, unsigned int format)
- {
- 	const struct iptables_command_state *cs = data;
- 
--	save_ipv4_addr('s', &cs->fw.ip.src, cs->fw.ip.smsk.s_addr,
-+	save_ipv4_addr('s', &cs->fw.ip.src, &cs->fw.ip.smsk,
- 		       cs->fw.ip.invflags & IPT_INV_SRCIP);
--	save_ipv4_addr('d', &cs->fw.ip.dst, cs->fw.ip.dmsk.s_addr,
-+	save_ipv4_addr('d', &cs->fw.ip.dst, &cs->fw.ip.dmsk,
- 		       cs->fw.ip.invflags & IPT_INV_DSTIP);
- 
- 	save_rule_details(cs->fw.ip.iniface, cs->fw.ip.iniface_mask,
+-	print_rule_details(&cs, cs.jumpto, cs.fw.ip.flags,
+-			   cs.fw.ip.invflags, cs.fw.ip.proto, num, format);
++	print_rule_details(num, &cs.counters, cs.jumpto, cs.fw.ip.proto,
++			   cs.fw.ip.flags, cs.fw.ip.invflags, format);
+ 	print_fragment(cs.fw.ip.flags, cs.fw.ip.invflags, format);
+ 	print_ifaces(cs.fw.ip.iniface, cs.fw.ip.outiface, cs.fw.ip.invflags,
+ 		     format);
 diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
-index 0c73cedd71c96..0b35e0457a067 100644
+index 0b35e0457a067..cb83f9e132e24 100644
 --- a/iptables/nft-ipv6.c
 +++ b/iptables/nft-ipv6.c
-@@ -224,26 +224,6 @@ static void nft_ipv6_print_rule(struct nft_handle *h, struct nftnl_rule *r,
- 	nft_clear_iptables_command_state(&cs);
+@@ -198,9 +198,8 @@ static void nft_ipv6_print_rule(struct nft_handle *h, struct nftnl_rule *r,
+ 
+ 	nft_rule_to_iptables_command_state(h, r, &cs);
+ 
+-	print_rule_details(&cs, cs.jumpto, cs.fw6.ipv6.flags,
+-			   cs.fw6.ipv6.invflags, cs.fw6.ipv6.proto,
+-			   num, format);
++	print_rule_details(num, &cs.counters, cs.jumpto, cs.fw6.ipv6.proto,
++			   cs.fw6.ipv6.flags, cs.fw6.ipv6.invflags, format);
+ 	if (format & FMT_OPTIONS) {
+ 		if (format & FMT_NOTABLE)
+ 			fputs("opt ", stdout);
+diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
+index 168c224627fd0..eb0070075d9eb 100644
+--- a/iptables/nft-shared.c
++++ b/iptables/nft-shared.c
+@@ -758,33 +758,6 @@ void print_header(unsigned int format, const char *chain, const char *pol,
+ 	printf("\n");
  }
  
--static void save_ipv6_addr(char letter, const struct in6_addr *addr,
--			   const struct in6_addr *mask,
--			   int invert)
+-void print_rule_details(const struct iptables_command_state *cs,
+-			const char *targname, uint8_t flags,
+-			uint8_t invflags, uint8_t proto,
+-			unsigned int num, unsigned int format)
 -{
--	char addr_str[INET6_ADDRSTRLEN];
--	int l = xtables_ip6mask_to_cidr(mask);
+-	if (format & FMT_LINENUMBERS)
+-		printf(FMT("%-4u ", "%u "), num);
 -
--	if (!invert && l == 0)
--		return;
+-	if (!(format & FMT_NOCOUNTS)) {
+-		xtables_print_num(cs->counters.pcnt, format);
+-		xtables_print_num(cs->counters.bcnt, format);
+-	}
 -
--	printf("%s -%c %s",
--		invert ? " !" : "", letter,
--		inet_ntop(AF_INET6, addr, addr_str, sizeof(addr_str)));
+-	if (!(format & FMT_NOTARGET))
+-		printf(FMT("%-9s ", "%s "), targname ? targname : "");
 -
--	if (l == -1)
--		printf("/%s", inet_ntop(AF_INET6, mask, addr_str, sizeof(addr_str)));
--	else
--		printf("/%d", l);
+-	fputc(invflags & XT_INV_PROTO ? '!' : ' ', stdout);
+-	{
+-		const char *pname =
+-			proto_to_name(proto, format&FMT_NUMERIC);
+-		if (pname)
+-			printf(FMT("%-5s", "%s "), pname);
+-		else
+-			printf(FMT("%-5hu", "%hu "), proto);
+-	}
 -}
 -
- static void nft_ipv6_save_rule(const void *data, unsigned int format)
+ void nft_ipv46_save_chain(const struct nftnl_chain *c, const char *policy)
  {
- 	const struct iptables_command_state *cs = data;
+ 	const char *chain = nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
+diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
+index cac5757ff0708..e18df20d9fc38 100644
+--- a/iptables/nft-shared.h
++++ b/iptables/nft-shared.h
+@@ -167,10 +167,6 @@ void nft_clear_iptables_command_state(struct iptables_command_state *cs);
+ void print_header(unsigned int format, const char *chain, const char *pol,
+ 		  const struct xt_counters *counters, bool basechain,
+ 		  uint32_t refs, uint32_t entries);
+-void print_rule_details(const struct iptables_command_state *cs,
+-			const char *targname, uint8_t flags,
+-			uint8_t invflags, uint8_t proto,
+-			unsigned int num, unsigned int format);
+ void print_matches_and_target(struct iptables_command_state *cs,
+ 			      unsigned int format);
+ void nft_ipv46_save_chain(const struct nftnl_chain *c, const char *policy);
 diff --git a/iptables/xshared.c b/iptables/xshared.c
-index db701ead4811f..3e06960fcf015 100644
+index 3e06960fcf015..7f2e1a32914b0 100644
 --- a/iptables/xshared.c
 +++ b/iptables/xshared.c
-@@ -9,6 +9,7 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
-+#include <arpa/inet.h>
- #include <sys/file.h>
- #include <sys/socket.h>
- #include <sys/un.h>
-@@ -578,6 +579,42 @@ void print_ipv4_addresses(const struct ipt_entry *fw, unsigned int format)
- 	       ipv4_addr_to_string(&fw->ip.dst, &fw->ip.dmsk, format));
+@@ -48,7 +48,7 @@ void print_extension_helps(const struct xtables_target *t,
+ 	}
  }
  
-+static const char *mask_to_str(const struct in_addr *mask)
+-const char *
++static const char *
+ proto_to_name(uint16_t proto, int nolookup)
+ {
+ 	unsigned int i;
+@@ -999,6 +999,31 @@ void parse_chain(const char *chainname)
+ 				      "Invalid chain name `%s'", chainname);
+ }
+ 
++void print_rule_details(unsigned int linenum, const struct xt_counters *ctrs,
++			const char *targname, uint8_t proto, uint8_t flags,
++			uint8_t invflags, unsigned int format)
 +{
-+	uint32_t bits, hmask = ntohl(mask->s_addr);
-+	static char mask_str[INET_ADDRSTRLEN];
-+	int i;
++	const char *pname = proto_to_name(proto, format&FMT_NUMERIC);
 +
-+	if (mask->s_addr == 0xFFFFFFFFU) {
-+		sprintf(mask_str, "32");
-+		return mask_str;
++	if (format & FMT_LINENUMBERS)
++		printf(FMT("%-4u ", "%u "), linenum);
++
++	if (!(format & FMT_NOCOUNTS)) {
++		xtables_print_num(ctrs->pcnt, format);
++		xtables_print_num(ctrs->bcnt, format);
 +	}
 +
-+	i    = 32;
-+	bits = 0xFFFFFFFEU;
-+	while (--i >= 0 && hmask != bits)
-+		bits <<= 1;
-+	if (i >= 0)
-+		sprintf(mask_str, "%u", i);
++	if (!(format & FMT_NOTARGET))
++		printf(FMT("%-9s ", "%s "), targname ? targname : "");
++
++	fputc(invflags & XT_INV_PROTO ? '!' : ' ', stdout);
++
++	if (pname)
++		printf(FMT("%-5s", "%s "), pname);
 +	else
-+		inet_ntop(AF_INET, mask, mask_str, sizeof(mask_str));
-+
-+	return mask_str;
++		printf(FMT("%-5hu", "%hu "), proto);
 +}
 +
-+void save_ipv4_addr(char letter, const struct in_addr *addr,
-+		    const struct in_addr *mask, int invert)
-+{
-+	char addrbuf[INET_ADDRSTRLEN];
-+
-+	if (!mask->s_addr && !invert && !addr->s_addr)
-+		return;
-+
-+	printf("%s -%c %s/%s", invert ? " !" : "", letter,
-+	       inet_ntop(AF_INET, addr, addrbuf, sizeof(addrbuf)),
-+	       mask_to_str(mask));
-+}
-+
- static const char *ipv6_addr_to_string(const struct in6_addr *addr,
- 				       const struct in6_addr *mask,
- 				       unsigned int format)
-@@ -612,6 +649,26 @@ void print_ipv6_addresses(const struct ip6t_entry *fw6, unsigned int format)
- 				   &fw6->ipv6.dmsk, format));
- }
- 
-+void save_ipv6_addr(char letter, const struct in6_addr *addr,
-+		    const struct in6_addr *mask, int invert)
-+{
-+	int l = xtables_ip6mask_to_cidr(mask);
-+	char addr_str[INET6_ADDRSTRLEN];
-+
-+	if (!invert && l == 0)
-+		return;
-+
-+	printf("%s -%c %s",
-+		invert ? " !" : "", letter,
-+		inet_ntop(AF_INET6, addr, addr_str, sizeof(addr_str)));
-+
-+	if (l == -1)
-+		printf("/%s", inet_ntop(AF_INET6, mask,
-+					addr_str, sizeof(addr_str)));
-+	else
-+		printf("/%d", l);
-+}
-+
- /* Luckily, IPT_INV_VIA_IN and IPT_INV_VIA_OUT
-  * have the same values as IP6T_INV_VIA_IN and IP6T_INV_VIA_OUT
-  * so this function serves for both iptables and ip6tables */
+ void save_rule_details(const char *iniface, unsigned const char *iniface_mask,
+ 		       const char *outiface, unsigned const char *outiface_mask,
+ 		       uint16_t proto, int frag, uint8_t invflags)
 diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 484ade126404c..46ad5a2962c71 100644
+index 46ad5a2962c71..9f0fa1438bdd3 100644
 --- a/iptables/xshared.h
 +++ b/iptables/xshared.h
-@@ -222,7 +222,11 @@ const char *ipv4_addr_to_string(const struct in_addr *addr,
- 				const struct in_addr *mask,
- 				unsigned int format);
- void print_ipv4_addresses(const struct ipt_entry *fw, unsigned int format);
-+void save_ipv4_addr(char letter, const struct in_addr *addr,
-+		    const struct in_addr *mask, int invert);
- void print_ipv6_addresses(const struct ip6t_entry *fw6, unsigned int format);
-+void save_ipv6_addr(char letter, const struct in6_addr *addr,
-+		    const struct in6_addr *mask, int invert);
+@@ -164,7 +164,6 @@ enum {
  
- void print_ifaces(const char *iniface, const char *outiface, uint8_t invflags,
- 		  unsigned int format);
+ extern void print_extension_helps(const struct xtables_target *,
+ 	const struct xtables_rule_match *);
+-extern const char *proto_to_name(uint16_t, int);
+ extern int command_default(struct iptables_command_state *,
+ 	struct xtables_globals *, bool invert);
+ extern struct xtables_match *load_proto(struct iptables_command_state *);
+@@ -246,6 +245,9 @@ void parse_chain(const char *chainname);
+ void generic_opt_check(int command, int options);
+ char opt2char(int option);
+ 
++void print_rule_details(unsigned int linenum, const struct xt_counters *ctrs,
++			const char *targname, uint8_t proto, uint8_t flags,
++			uint8_t invflags, unsigned int format);
+ void save_rule_details(const char *iniface, unsigned const char *iniface_mask,
+ 		       const char *outiface, unsigned const char *outiface_mask,
+ 		       uint16_t proto, int frag, uint8_t invflags);
 -- 
 2.33.0
 
