@@ -2,97 +2,103 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E6B446E41
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 15:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E3A446EDF
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 17:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbhKFOQd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 6 Nov 2021 10:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
+        id S234519AbhKFQUy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 6 Nov 2021 12:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhKFOQd (ORCPT
+        with ESMTP id S232053AbhKFQUx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 6 Nov 2021 10:16:33 -0400
+        Sat, 6 Nov 2021 12:20:53 -0400
 Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDEBC061570
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 07:13:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7A7C061570
+        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 09:18:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=ybVUpTOEimRbGi0r2y+/yCYBqAdnIxyDWLtyjX3N5cI=; b=tYY9hNfY5wdaUsCPHabruGx1Go
-        25cj0rVrxI/H46sW75Nl31VUkNWbiaJqOXImfHUwIMdJUxLgFqw0tCvR6FCgyrc81hc2XI9FW7n0y
-        Z5Ha7JmpMH+kqcH40lsbPhKb4TlSsRDUClNzZiJixxMeBfGc2c2MbdnnUezTZyiMWhwb+9d78iqdm
-        JGY3Gnw1f9EgGoUXgPhcmNiQLgH7NbDe7NqiG2pUqCyyFwkGzruRo216SDzRgqw4Zglo7z0wz+Mf6
-        KCg1RDnIpfSpn/M54nLLgsOPZEclZtSBDE8oN/3RKTLzPuDf45IDbX/fgwaigpQTlnk/6OhDdNDWB
-        jb2hwptw==;
-Received: from ec2-18-200-185-153.eu-west-1.compute.amazonaws.com ([18.200.185.153] helo=azazel.net)
-        by kadath.azazel.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
+        bh=3lpzVWqTCvH+LZb8sNEKpBkgget8DHnN2giBwN3JnJI=; b=MHrFVuILE+Wdh8OKDlxsF8FAU6
+        44VbnWk7hNa2zcHVWL9iYpCymJWpQvWZ2EkkMLD+99H0yZxOvvsY5TxJ5fS9WEaDZ9pYpMoxqjR+B
+        1PAZz8qvBy1BUrM8iiQ2+bhj+k2JpGRqPQdpbxXoqRHTrLbT7i+A4El+ehpiAOMCda1uxdRGdlUbp
+        Hk9u4n9dfmkWJnNZCt/b0mjreqZ5+JY2e0GhN/nQmjWBypKQQ1jVSOwHvrIWJmZvE8nFLR3FpPxBE
+        B5zZuDRaKdxi31/e8L1JFbZeI3+5x8Crpoi+UPBSRnI4t8gG473+nvqYJu0Df+5PAjA01ZsJayyia
+        N43OF5+Q==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mjMS3-004ja3-U5; Sat, 06 Nov 2021 14:13:48 +0000
-Date:   Sat, 6 Nov 2021 14:13:43 +0000
+        id 1mjOOQ-004loO-9n
+        for netfilter-devel@vger.kernel.org; Sat, 06 Nov 2021 16:18:10 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Jan Engelhardt <jengelh@inai.de>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [ulogd2 PATCH 15/26] input: UNIXSOCK: prevent unaligned pointer
- access.
-Message-ID: <YYaNl0X8whnnZuqI@azazel.net>
-References: <20211030164432.1140896-1-jeremy@azazel.net>
- <20211030164432.1140896-16-jeremy@azazel.net>
- <5op325n6-6077-p0n2-r33o-npr9905n47s3@vanv.qr>
+To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [ulogd2 PATCH v2 00/13] Build Improvements
+Date:   Sat,  6 Nov 2021 16:17:47 +0000
+Message-Id: <20211106161759.128364-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1cmxNxUMxEsIsR/W"
-Content-Disposition: inline
-In-Reply-To: <5op325n6-6077-p0n2-r33o-npr9905n47s3@vanv.qr>
-X-SA-Exim-Connect-IP: 18.200.185.153
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
 X-SA-Exim-Mail-From: jeremy@azazel.net
 X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Some tidying and autotools updates and fixes.
 
---1cmxNxUMxEsIsR/W
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Changes since v1:
 
-On 2021-10-30, at 19:42:25 +0200, Jan Engelhardt wrote:
-> On Saturday 2021-10-30 18:44, Jeremy Sowden wrote:
-> >`struct ulogd_unixsock_packet_t` is packed, so taking the address of its
-> >`struct iphdr payload` member may yield an unaligned pointer value.
->
-> That may not be a problem. Dereferencing through a pointer to
-> a packed struct generates very pessimistic code even when there is no
-> padding internally:
+  * ignore `.dirstamp` anywhere;
+  * fix `--disable-static`;
+  * drop `AC_PREREQ` bump.
 
-Having taken another look at this, I've adopted different approach to
-pacify the compiler: the pointer is only actually dereferenced to read
-one member (`ip->version`), so I shall replace the local pointer
-variable with an `ip_version` variable instead.
+Jeremy Sowden (12):
+  gitignore: add Emacs artefacts
+  gitignore: ignore .dirstamp
+  build: remove unused Makefile fragment
+  build: remove empty filter sub-directory
+  build: move cpp flag to the only Makefile.am file where it's needed
+  build: add Make_global.am for common flags and include it where
+    necessary
+  build: use `dist_man_MANS`
+  build: only conditionally enter sub-directories containing optional
+    code
+  build: move library dependencies from LDFLAGS to LIBADD
+  build: update obsolete autoconf macros
+  build: quote and reformat some autoconf macro arguments
+  build: reformat autoconf AC_ARG_WITH, AC_ARG_ENABLE and related macros
 
-J.
+ .gitignore                     |   5 +-
+ Make_global.am                 |   2 +
+ Makefile.am                    |  11 +-
+ Rules.make.in                  |  43 -------
+ configure.ac                   | 226 ++++++++++++++-------------------
+ filter/Makefile.am             |   7 +-
+ filter/packet2flow/Makefile.am |   0
+ filter/raw2packet/Makefile.am  |   4 +-
+ include/libipulog/Makefile.am  |   1 -
+ include/ulogd/Makefile.am      |   1 -
+ input/Makefile.am              |   9 +-
+ input/flow/Makefile.am         |  14 +-
+ input/packet/Makefile.am       |  23 ++--
+ input/sum/Makefile.am          |   9 +-
+ libipulog/Makefile.am          |   4 +-
+ output/Makefile.am             |  41 +++++-
+ output/dbi/Makefile.am         |   8 +-
+ output/ipfix/Makefile.am       |   3 +-
+ output/mysql/Makefile.am       |   7 +-
+ output/pcap/Makefile.am        |   8 +-
+ output/pgsql/Makefile.am       |   8 +-
+ output/sqlite3/Makefile.am     |   7 +-
+ src/Makefile.am                |   8 +-
+ 23 files changed, 189 insertions(+), 260 deletions(-)
+ create mode 100644 Make_global.am
+ delete mode 100644 Rules.make.in
+ delete mode 100644 filter/packet2flow/Makefile.am
 
---1cmxNxUMxEsIsR/W
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.33.0
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmGGjZcACgkQKYasCr3x
-BA1guhAAyuF/Fs7cH4/Hq8qbIz/rDuc/0PedxFnbTU+31qBuFQaXx113VSNdbvp6
-V5dU5+fXV8ShTE397/H5KAfqEsDX5YC7hdPCU53aG/BpAKWdCZbxNyaWuVuiUH8j
-+mNcEDOlWpRaiRanTB05fSqsRhhOuWkRM72F9S8GcwXErbP7iCmqTdb2/Eh2zRfy
-+hZOGodfxmtRfqris32uph0g9TXXodJi9ePGAZuUAADirb9zwU9ODDZLtaLlCd/I
-v+3sERU9zBdH1ZPllfGexah2GWYIZIE5UHFnYrD7w2OU1TuwQqZkeIIznQ5AGVw/
-TogT84jv3FU13h0ldI6f6E/y5/SeWFzNIY7LZntehJq0Oug7wTHB41XPk+yw2jY4
-jF0+n87zMd9nrMwLzlzwFbmEvnIHeOFlwNL5BVKZf4pRg85CLdT2nvRbXd5mjBUX
-MjENkiS5IZ8gV7U2iPlt2Y120JXh3m3nXO1K6ABDL0jGRx0UujKhrE2+Oo1tXE0i
-XTLhJffx/OGgsW0ZEhvmu5yHDTti9bRhFWY6/FsVjGbvG6eeECpsGI1hM0MMrF71
-kIckLgx8FhL3gcMcc+M75OubyoG54LXWtanKimfFkHaIWOUTFGuKEaMfO+pGYh2x
-e0uiQwX+RdJKyQZ0WXqh1OZyUT+CNQoEYpTmJG3d0Xvp3TUggzs=
-=bLu7
------END PGP SIGNATURE-----
-
---1cmxNxUMxEsIsR/W--
