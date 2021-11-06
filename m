@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4EB446F13
+	by mail.lfdr.de (Postfix) with ESMTP id EB0F9446F15
 	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 17:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234636AbhKFQwx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 6 Nov 2021 12:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35072 "EHLO
+        id S232468AbhKFQw4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 6 Nov 2021 12:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234627AbhKFQwt (ORCPT
+        with ESMTP id S234628AbhKFQwt (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 6 Nov 2021 12:52:49 -0400
 Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91DEC061714
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E927FC061746
         for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 09:50:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=oE0/xAUXUuNf1rPDQv9lkhHluFN/a3gRjJvvF+caPks=; b=TmAFHrFkZfu+rkMFxfHGD7svM9
-        /WByFai6M6/xGXt1NkNcMiT+unKO1gBg0UtJCLpefy5OC6HKHHuNwkH+UzaO4MQZZvKXWmNJhRzTI
-        OfnAGgAW/VFivsu+hz8CLK+3V2K2DGEdeKTWt58mj0ULoF28CwY6SCHJW1mddBuxPlWX7Mr9aM3I/
-        O57i1C69LebeJo+NQZW9+E8KkOPieoNLFOTgxNWv9atJHA6n4PuDVt0Tf8IkN1dEvCss5P+qJ26EA
-        jH96b2r+hD/XDZUDWUVsyn1jFi6aNdCX6cBiEk7UBjVZODG+IOpL8xISFBKXuYH8Fk6Nd/EBwR1Wz
-        o2oDjlLQ==;
+        bh=sxURAdyI3uDTOS5xqRBKINg72Q9a33k6WIb54ylTI/k=; b=pC6li+MVjC3ljXsk5o79uJc4gh
+        jS1tqQEGwxpE7WkNFGo5ebxs1jq9t17K7yKEpMr6TBPBl1c7yJxnCA7mpYIgjA1qJXm6I9CR//KJg
+        AqNWLe3a5atvvWU5Ishon9VPHBQO7SR9vERTw8WSVV4msY7H6UqfuwYArV3cenmXPPw8JESnsUYB4
+        bZPm9SkFbAkuTz4SRawlT3yDtQnPlvEoDvqoQyez2QR9JYxBfpUTxGlU1T9dvmp63r9meXE0xf0pV
+        D3QBs28bHCCoPrdGITU6ASJq2ZfB08Vm2iRIpvCz49BUBp0FhNwPfwvetFHSDCLY2TZbZVDe6olhv
+        BbmW01dg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mjOtJ-004m1E-4x
+        id 1mjOtJ-004m1E-8C
         for netfilter-devel@vger.kernel.org; Sat, 06 Nov 2021 16:50:05 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v2 02/27] ulog: remove empty log-line
-Date:   Sat,  6 Nov 2021 16:49:28 +0000
-Message-Id: <20211106164953.130024-3-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v2 03/27] ulog: fix order of log arguments
+Date:   Sat,  6 Nov 2021 16:49:29 +0000
+Message-Id: <20211106164953.130024-4-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211106164953.130024-1-jeremy@azazel.net>
 References: <20211106164953.130024-1-jeremy@azazel.net>
@@ -51,20 +51,21 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/ulogd.c | 1 -
- 1 file changed, 1 deletion(-)
+ src/ulogd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/ulogd.c b/src/ulogd.c
-index 9cd64e8e19b2..a31b35592a87 100644
+index a31b35592a87..97da4fc0018f 100644
 --- a/src/ulogd.c
 +++ b/src/ulogd.c
-@@ -965,7 +965,6 @@ static int create_stack(const char *option)
- 		load_all_plugins();
- 
- 	if (!buf) {
--		ulogd_log(ULOGD_ERROR, "");
- 		ret = -ENOMEM;
- 		goto out_buf;
+@@ -1569,7 +1569,7 @@ int main(int argc, char* argv[])
+ 	if (daemonize){
+ 		if (daemon(0, 0) < 0) {
+ 			ulogd_log(ULOGD_FATAL, "can't daemonize: %s (%d)\n",
+-				  errno, strerror(errno));
++				  strerror(errno), errno);
+ 			warn_and_exit(daemonize);
+ 		}
  	}
 -- 
 2.33.0
