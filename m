@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455FC44708C
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 21:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F34447087
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 21:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbhKFVBc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 6 Nov 2021 17:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
+        id S232211AbhKFVBG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 6 Nov 2021 17:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234327AbhKFVBb (ORCPT
+        with ESMTP id S229723AbhKFVBF (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 6 Nov 2021 17:01:31 -0400
+        Sat, 6 Nov 2021 17:01:05 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF99EC061570
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 13:58:49 -0700 (PDT)
-Received: from localhost ([::1]:58794 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43E2C061570
+        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 13:58:22 -0700 (PDT)
+Received: from localhost ([::1]:58764 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mjSm0-00048I-CH; Sat, 06 Nov 2021 21:58:48 +0100
+        id 1mjSlZ-00046i-8u; Sat, 06 Nov 2021 21:58:21 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 07/10] xshared: Share print_fragment() with legacy
-Date:   Sat,  6 Nov 2021 21:57:53 +0100
-Message-Id: <20211106205756.14529-8-phil@nwl.cc>
+Subject: [iptables PATCH 08/10] xshared: Share print_header() with legacy iptables
+Date:   Sat,  6 Nov 2021 21:57:54 +0100
+Message-Id: <20211106205756.14529-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211106205756.14529-1-phil@nwl.cc>
 References: <20211106205756.14529-1-phil@nwl.cc>
@@ -34,167 +34,412 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Also add a fake mode to make it suitable for ip6tables. This is required
-because IPT_F_FRAG value clashes with IP6T_F_PROTO, so ip6tables rules
-might seem to have IPT_F_FRAG bit set.
+Legacy iptables fetches the relevant data via libiptc before calling the
+shared routine which merely prints data as requested.
 
-While being at it, drop the local variable 'flags' from
-print_firewall().
+Drop the 'basechain' parameter, instead make sure a policy name is
+passed only with base chains. Since the function is not shared with
+ebtables (which uses a very rudimental header instead), this is safe.
+
+In order to support legacy iptables' checking of iptc_get_references()
+return code (printing an error message instead of the reference count),
+make refs parameter signed and print the error message if it's negative.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/ip6tables.c |  8 +-------
- iptables/iptables.c  | 10 +---------
- iptables/nft-ipv4.c  | 15 +--------------
- iptables/nft-ipv6.c  |  6 +-----
- iptables/xshared.c   | 18 ++++++++++++++++++
- iptables/xshared.h   |  3 +++
- 6 files changed, 25 insertions(+), 35 deletions(-)
+ iptables/ip6tables.c  | 64 ++++++++-----------------------------------
+ iptables/iptables.c   | 64 ++++++++-----------------------------------
+ iptables/nft-arp.c    |  7 ++---
+ iptables/nft-bridge.c |  2 +-
+ iptables/nft-shared.c | 44 -----------------------------
+ iptables/nft-shared.h |  7 ++---
+ iptables/nft.c        |  6 ++--
+ iptables/xshared.c    | 46 +++++++++++++++++++++++++++++++
+ iptables/xshared.h    |  3 ++
+ 9 files changed, 82 insertions(+), 161 deletions(-)
 
 diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index e0cc4e898fe6a..3d304d441c10a 100644
+index 3d304d441c10a..5a64566eecd2a 100644
 --- a/iptables/ip6tables.c
 +++ b/iptables/ip6tables.c
-@@ -332,13 +332,7 @@ print_firewall(const struct ip6t_entry *fw,
- 	print_rule_details(num, &fw->counters, targname, fw->ipv6.proto,
- 			   fw->ipv6.flags, fw->ipv6.invflags, format);
- 
--	if (format & FMT_OPTIONS) {
--		if (format & FMT_NOTABLE)
--			fputs("opt ", stdout);
--		fputc(' ', stdout); /* Invert flag of FRAG */
--		fputc(' ', stdout); /* -f */
--		fputc(' ', stdout);
--	}
-+	print_fragment(fw->ipv6.flags, fw->ipv6.invflags, format, true);
- 
- 	print_ifaces(fw->ipv6.iniface, fw->ipv6.outiface,
- 		     fw->ipv6.invflags, format);
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index 29da40b1328d4..12a5423ec271d 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -311,7 +311,6 @@ print_firewall(const struct ipt_entry *fw,
- {
- 	struct xtables_target *target, *tg;
- 	const struct xt_entry_target *t;
--	uint8_t flags;
- 
- 	if (!iptc_is_chain(targname, handle))
- 		target = xtables_find_target(targname, XTF_TRY_LOAD);
-@@ -320,18 +319,11 @@ print_firewall(const struct ipt_entry *fw,
- 		         XTF_LOAD_MUST_SUCCEED);
- 
- 	t = ipt_get_target((struct ipt_entry *)fw);
--	flags = fw->ip.flags;
- 
- 	print_rule_details(num, &fw->counters, targname, fw->ip.proto,
- 			   fw->ip.flags, fw->ip.invflags, format);
- 
--	if (format & FMT_OPTIONS) {
--		if (format & FMT_NOTABLE)
--			fputs("opt ", stdout);
--		fputc(fw->ip.invflags & IPT_INV_FRAG ? '!' : '-', stdout);
--		fputc(flags & IPT_F_FRAG ? 'f' : '-', stdout);
--		fputc(' ', stdout);
--	}
-+	print_fragment(fw->ip.flags, fw->ip.invflags, format, false);
- 
- 	print_ifaces(fw->ip.iniface, fw->ip.outiface, fw->ip.invflags, format);
- 
-diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
-index 6b044642bd775..f36260980e829 100644
---- a/iptables/nft-ipv4.c
-+++ b/iptables/nft-ipv4.c
-@@ -226,19 +226,6 @@ static void nft_ipv4_parse_immediate(const char *jumpto, bool nft_goto,
- 		cs->fw.ip.flags |= IPT_F_GOTO;
+@@ -233,56 +233,6 @@ static int is_exthdr(uint16_t proto)
+ 		proto == IPPROTO_DSTOPTS);
  }
  
--static void print_fragment(unsigned int flags, unsigned int invflags,
--			   unsigned int format)
+-static void
+-print_header(unsigned int format, const char *chain, struct xtc_handle *handle)
 -{
--	if (!(format & FMT_OPTIONS))
--		return;
+-	struct xt_counters counters;
+-	const char *pol = ip6tc_get_policy(chain, &counters, handle);
+-	printf("Chain %s", chain);
+-	if (pol) {
+-		printf(" (policy %s", pol);
+-		if (!(format & FMT_NOCOUNTS)) {
+-			fputc(' ', stdout);
+-			xtables_print_num(counters.pcnt, (format|FMT_NOTABLE));
+-			fputs("packets, ", stdout);
+-			xtables_print_num(counters.bcnt, (format|FMT_NOTABLE));
+-			fputs("bytes", stdout);
+-		}
+-		printf(")\n");
+-	} else {
+-		unsigned int refs;
+-		if (!ip6tc_get_references(&refs, chain, handle))
+-			printf(" (ERROR obtaining refs)\n");
+-		else
+-			printf(" (%u references)\n", refs);
+-	}
 -
--	if (format & FMT_NOTABLE)
--		fputs("opt ", stdout);
--	fputc(invflags & IPT_INV_FRAG ? '!' : '-', stdout);
--	fputc(flags & IPT_F_FRAG ? 'f' : '-', stdout);
--	fputc(' ', stdout);
+-	if (format & FMT_LINENUMBERS)
+-		printf(FMT("%-4s ", "%s "), "num");
+-	if (!(format & FMT_NOCOUNTS)) {
+-		if (format & FMT_KILOMEGAGIGA) {
+-			printf(FMT("%5s ","%s "), "pkts");
+-			printf(FMT("%5s ","%s "), "bytes");
+-		} else {
+-			printf(FMT("%8s ","%s "), "pkts");
+-			printf(FMT("%10s ","%s "), "bytes");
+-		}
+-	}
+-	if (!(format & FMT_NOTARGET))
+-		printf(FMT("%-9s ","%s "), "target");
+-	fputs(" prot ", stdout);
+-	if (format & FMT_OPTIONS)
+-		fputs("opt", stdout);
+-	if (format & FMT_VIA) {
+-		printf(FMT(" %-6s ","%s "), "in");
+-		printf(FMT("%-6s ","%s "), "out");
+-	}
+-	printf(FMT(" %-19s ","%s "), "source");
+-	printf(FMT(" %-19s "," %s "), "destination");
+-	printf("\n");
 -}
 -
- static void nft_ipv4_print_rule(struct nft_handle *h, struct nftnl_rule *r,
- 				unsigned int num, unsigned int format)
- {
-@@ -248,7 +235,7 @@ static void nft_ipv4_print_rule(struct nft_handle *h, struct nftnl_rule *r,
+-
+ static int
+ print_match(const struct xt_entry_match *m,
+ 	    const struct ip6t_ip6 *ip,
+@@ -662,8 +612,18 @@ list_entries(const xt_chainlabel chain, int rulenum, int verbose, int numeric,
  
- 	print_rule_details(num, &cs.counters, cs.jumpto, cs.fw.ip.proto,
- 			   cs.fw.ip.flags, cs.fw.ip.invflags, format);
--	print_fragment(cs.fw.ip.flags, cs.fw.ip.invflags, format);
-+	print_fragment(cs.fw.ip.flags, cs.fw.ip.invflags, format, false);
- 	print_ifaces(cs.fw.ip.iniface, cs.fw.ip.outiface, cs.fw.ip.invflags,
- 		     format);
- 	print_ipv4_addresses(&cs.fw, format);
-diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
-index cb83f9e132e24..132130880a43a 100644
---- a/iptables/nft-ipv6.c
-+++ b/iptables/nft-ipv6.c
-@@ -200,11 +200,7 @@ static void nft_ipv6_print_rule(struct nft_handle *h, struct nftnl_rule *r,
+ 		if (found) printf("\n");
  
- 	print_rule_details(num, &cs.counters, cs.jumpto, cs.fw6.ipv6.proto,
- 			   cs.fw6.ipv6.flags, cs.fw6.ipv6.invflags, format);
--	if (format & FMT_OPTIONS) {
--		if (format & FMT_NOTABLE)
--			fputs("opt ", stdout);
--		fputs("   ", stdout);
+-		if (!rulenum)
+-		    print_header(format, this, handle);
++		if (!rulenum) {
++			struct xt_counters counters;
++			unsigned int urefs;
++			const char *pol;
++			int refs = - 1;
++
++			pol = ip6tc_get_policy(this, &counters, handle);
++			if (!pol && ip6tc_get_references(&urefs, this, handle))
++				refs = urefs;
++
++			print_header(format, this, pol, &counters, refs, 0);
++		}
+ 		i = ip6tc_first_rule(this, handle);
+ 
+ 		num = 0;
+diff --git a/iptables/iptables.c b/iptables/iptables.c
+index 12a5423ec271d..ac51c612d92f2 100644
+--- a/iptables/iptables.c
++++ b/iptables/iptables.c
+@@ -224,56 +224,6 @@ iptables_exit_error(enum xtables_exittype status, const char *msg, ...)
+ /* Christophe Burki wants `-p 6' to imply `-m tcp'.  */
+ 
+ 
+-static void
+-print_header(unsigned int format, const char *chain, struct xtc_handle *handle)
+-{
+-	struct xt_counters counters;
+-	const char *pol = iptc_get_policy(chain, &counters, handle);
+-	printf("Chain %s", chain);
+-	if (pol) {
+-		printf(" (policy %s", pol);
+-		if (!(format & FMT_NOCOUNTS)) {
+-			fputc(' ', stdout);
+-			xtables_print_num(counters.pcnt, (format|FMT_NOTABLE));
+-			fputs("packets, ", stdout);
+-			xtables_print_num(counters.bcnt, (format|FMT_NOTABLE));
+-			fputs("bytes", stdout);
+-		}
+-		printf(")\n");
+-	} else {
+-		unsigned int refs;
+-		if (!iptc_get_references(&refs, chain, handle))
+-			printf(" (ERROR obtaining refs)\n");
+-		else
+-			printf(" (%u references)\n", refs);
 -	}
-+	print_fragment(cs.fw6.ipv6.flags, cs.fw6.ipv6.invflags, format, true);
- 	print_ifaces(cs.fw6.ipv6.iniface, cs.fw6.ipv6.outiface,
- 		     cs.fw6.ipv6.invflags, format);
- 	print_ipv6_addresses(&cs.fw6, format);
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 7f2e1a32914b0..e8c8939cf8e3e 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -669,6 +669,24 @@ void save_ipv6_addr(char letter, const struct in6_addr *addr,
- 		printf("/%d", l);
+-
+-	if (format & FMT_LINENUMBERS)
+-		printf(FMT("%-4s ", "%s "), "num");
+-	if (!(format & FMT_NOCOUNTS)) {
+-		if (format & FMT_KILOMEGAGIGA) {
+-			printf(FMT("%5s ","%s "), "pkts");
+-			printf(FMT("%5s ","%s "), "bytes");
+-		} else {
+-			printf(FMT("%8s ","%s "), "pkts");
+-			printf(FMT("%10s ","%s "), "bytes");
+-		}
+-	}
+-	if (!(format & FMT_NOTARGET))
+-		printf(FMT("%-9s ","%s "), "target");
+-	fputs(" prot ", stdout);
+-	if (format & FMT_OPTIONS)
+-		fputs("opt", stdout);
+-	if (format & FMT_VIA) {
+-		printf(FMT(" %-6s ","%s "), "in");
+-		printf(FMT("%-6s ","%s "), "out");
+-	}
+-	printf(FMT(" %-19s ","%s "), "source");
+-	printf(FMT(" %-19s "," %s "), "destination");
+-	printf("\n");
+-}
+-
+-
+ static int
+ print_match(const struct xt_entry_match *m,
+ 	    const struct ipt_ip *ip,
+@@ -652,8 +602,18 @@ list_entries(const xt_chainlabel chain, int rulenum, int verbose, int numeric,
+ 
+ 		if (found) printf("\n");
+ 
+-		if (!rulenum)
+-			print_header(format, this, handle);
++		if (!rulenum) {
++			struct xt_counters counters;
++			unsigned int urefs;
++			const char *pol;
++			int refs = -1;
++
++			pol = iptc_get_policy(this, &counters, handle);
++			if (!pol && iptc_get_references(&urefs, this, handle))
++				refs = urefs;
++
++			print_header(format, this, pol, &counters, refs, 0);
++		}
+ 		i = iptc_first_rule(this, handle);
+ 
+ 		num = 0;
+diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
+index b7536e61a255f..b211a30937db3 100644
+--- a/iptables/nft-arp.c
++++ b/iptables/nft-arp.c
+@@ -308,11 +308,10 @@ static void nft_arp_parse_payload(struct nft_xt_ctx *ctx,
+ static void nft_arp_print_header(unsigned int format, const char *chain,
+ 				 const char *pol,
+ 				 const struct xt_counters *counters,
+-				 bool basechain, uint32_t refs,
+-				 uint32_t entries)
++				 int refs, uint32_t entries)
+ {
+ 	printf("Chain %s", chain);
+-	if (basechain && pol) {
++	if (pol) {
+ 		printf(" (policy %s", pol);
+ 		if (!(format & FMT_NOCOUNTS)) {
+ 			fputc(' ', stdout);
+@@ -323,7 +322,7 @@ static void nft_arp_print_header(unsigned int format, const char *chain,
+ 		}
+ 		printf(")\n");
+ 	} else {
+-		printf(" (%u references)\n", refs);
++		printf(" (%d references)\n", refs);
+ 	}
  }
  
-+void print_fragment(unsigned int flags, unsigned int invflags,
-+		    unsigned int format, bool fake)
+diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
+index cc2a48dbf7741..5cde302c4f189 100644
+--- a/iptables/nft-bridge.c
++++ b/iptables/nft-bridge.c
+@@ -534,7 +534,7 @@ static void nft_bridge_print_table_header(const char *tablename)
+ static void nft_bridge_print_header(unsigned int format, const char *chain,
+ 				    const char *pol,
+ 				    const struct xt_counters *counters,
+-				    bool basechain, uint32_t refs, uint32_t entries)
++				    int refs, uint32_t entries)
+ {
+ 	printf("Bridge chain: %s, entries: %u, policy: %s\n",
+ 	       chain, entries, pol ?: "RETURN");
+diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
+index eb0070075d9eb..a6a79c8cda084 100644
+--- a/iptables/nft-shared.c
++++ b/iptables/nft-shared.c
+@@ -714,50 +714,6 @@ void nft_clear_iptables_command_state(struct iptables_command_state *cs)
+ 	}
+ }
+ 
+-void print_header(unsigned int format, const char *chain, const char *pol,
+-		  const struct xt_counters *counters, bool basechain,
+-		  uint32_t refs, uint32_t entries)
+-{
+-	printf("Chain %s", chain);
+-	if (basechain) {
+-		printf(" (policy %s", pol);
+-		if (!(format & FMT_NOCOUNTS)) {
+-			fputc(' ', stdout);
+-			xtables_print_num(counters->pcnt, (format|FMT_NOTABLE));
+-			fputs("packets, ", stdout);
+-			xtables_print_num(counters->bcnt, (format|FMT_NOTABLE));
+-			fputs("bytes", stdout);
+-		}
+-		printf(")\n");
+-	} else {
+-		printf(" (%u references)\n", refs);
+-	}
+-
+-	if (format & FMT_LINENUMBERS)
+-		printf(FMT("%-4s ", "%s "), "num");
+-	if (!(format & FMT_NOCOUNTS)) {
+-		if (format & FMT_KILOMEGAGIGA) {
+-			printf(FMT("%5s ","%s "), "pkts");
+-			printf(FMT("%5s ","%s "), "bytes");
+-		} else {
+-			printf(FMT("%8s ","%s "), "pkts");
+-			printf(FMT("%10s ","%s "), "bytes");
+-		}
+-	}
+-	if (!(format & FMT_NOTARGET))
+-		printf(FMT("%-9s ","%s "), "target");
+-	fputs(" prot ", stdout);
+-	if (format & FMT_OPTIONS)
+-		fputs("opt", stdout);
+-	if (format & FMT_VIA) {
+-		printf(FMT(" %-6s ","%s "), "in");
+-		printf(FMT("%-6s ","%s "), "out");
+-	}
+-	printf(FMT(" %-19s ","%s "), "source");
+-	printf(FMT(" %-19s "," %s "), "destination");
+-	printf("\n");
+-}
+-
+ void nft_ipv46_save_chain(const struct nftnl_chain *c, const char *policy)
+ {
+ 	const char *chain = nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
+diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
+index e18df20d9fc38..de684374ef9e0 100644
+--- a/iptables/nft-shared.h
++++ b/iptables/nft-shared.h
+@@ -94,8 +94,8 @@ struct nft_family_ops {
+ 	void (*print_table_header)(const char *tablename);
+ 	void (*print_header)(unsigned int format, const char *chain,
+ 			     const char *pol,
+-			     const struct xt_counters *counters, bool basechain,
+-			     uint32_t refs, uint32_t entries);
++			     const struct xt_counters *counters,
++			     int refs, uint32_t entries);
+ 	void (*print_rule)(struct nft_handle *h, struct nftnl_rule *r,
+ 			   unsigned int num, unsigned int format);
+ 	void (*save_rule)(const void *data, unsigned int format);
+@@ -164,9 +164,6 @@ void nft_rule_to_iptables_command_state(struct nft_handle *h,
+ 					const struct nftnl_rule *r,
+ 					struct iptables_command_state *cs);
+ void nft_clear_iptables_command_state(struct iptables_command_state *cs);
+-void print_header(unsigned int format, const char *chain, const char *pol,
+-		  const struct xt_counters *counters, bool basechain,
+-		  uint32_t refs, uint32_t entries);
+ void print_matches_and_target(struct iptables_command_state *cs,
+ 			      unsigned int format);
+ void nft_ipv46_save_chain(const struct nftnl_chain *c, const char *policy);
+diff --git a/iptables/nft.c b/iptables/nft.c
+index 282d417f3bc85..887c735b3f6e6 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -2398,7 +2398,6 @@ static void __nft_print_header(struct nft_handle *h,
+ {
+ 	struct nftnl_chain *c = nc->nftnl;
+ 	const char *chain_name = nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
+-	bool basechain = !!nftnl_chain_get(c, NFTNL_CHAIN_HOOKNUM);
+ 	uint32_t refs = nftnl_chain_get_u32(c, NFTNL_CHAIN_USE);
+ 	uint32_t entries = nft_rule_count(h, c);
+ 	struct xt_counters ctrs = {
+@@ -2407,11 +2406,12 @@ static void __nft_print_header(struct nft_handle *h,
+ 	};
+ 	const char *pname = NULL;
+ 
+-	if (nftnl_chain_is_set(c, NFTNL_CHAIN_POLICY))
++	if (nftnl_chain_get(c, NFTNL_CHAIN_HOOKNUM) &&
++	    nftnl_chain_is_set(c, NFTNL_CHAIN_POLICY))
+ 		pname = policy_name[nftnl_chain_get_u32(c, NFTNL_CHAIN_POLICY)];
+ 
+ 	h->ops->print_header(format, chain_name, pname,
+-			&ctrs, basechain, refs - entries, entries);
++			     &ctrs, refs - entries, entries);
+ }
+ 
+ struct nft_rule_list_cb_data {
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index e8c8939cf8e3e..37ea71068b69c 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -547,6 +547,52 @@ void debug_print_argv(struct argv_store *store)
+ }
+ #endif
+ 
++void print_header(unsigned int format, const char *chain, const char *pol,
++		  const struct xt_counters *counters,
++		  int refs, uint32_t entries)
 +{
-+	if (!(format & FMT_OPTIONS))
-+		return;
-+
-+	if (format & FMT_NOTABLE)
-+		fputs("opt ", stdout);
-+
-+	if (fake) {
-+		fputs("  ", stdout);
++	printf("Chain %s", chain);
++	if (pol) {
++		printf(" (policy %s", pol);
++		if (!(format & FMT_NOCOUNTS)) {
++			fputc(' ', stdout);
++			xtables_print_num(counters->pcnt, (format|FMT_NOTABLE));
++			fputs("packets, ", stdout);
++			xtables_print_num(counters->bcnt, (format|FMT_NOTABLE));
++			fputs("bytes", stdout);
++		}
++		printf(")\n");
++	} else if (refs < 0) {
++		printf(" (ERROR obtaining refs)\n");
 +	} else {
-+		fputc(invflags & IPT_INV_FRAG ? '!' : '-', stdout);
-+		fputc(flags & IPT_F_FRAG ? 'f' : '-', stdout);
++		printf(" (%d references)\n", refs);
 +	}
-+	fputc(' ', stdout);
++
++	if (format & FMT_LINENUMBERS)
++		printf(FMT("%-4s ", "%s "), "num");
++	if (!(format & FMT_NOCOUNTS)) {
++		if (format & FMT_KILOMEGAGIGA) {
++			printf(FMT("%5s ","%s "), "pkts");
++			printf(FMT("%5s ","%s "), "bytes");
++		} else {
++			printf(FMT("%8s ","%s "), "pkts");
++			printf(FMT("%10s ","%s "), "bytes");
++		}
++	}
++	if (!(format & FMT_NOTARGET))
++		printf(FMT("%-9s ","%s "), "target");
++	fputs(" prot ", stdout);
++	if (format & FMT_OPTIONS)
++		fputs("opt", stdout);
++	if (format & FMT_VIA) {
++		printf(FMT(" %-6s ","%s "), "in");
++		printf(FMT("%-6s ","%s "), "out");
++	}
++	printf(FMT(" %-19s ","%s "), "source");
++	printf(FMT(" %-19s "," %s "), "destination");
++	printf("\n");
 +}
 +
- /* Luckily, IPT_INV_VIA_IN and IPT_INV_VIA_OUT
-  * have the same values as IP6T_INV_VIA_IN and IP6T_INV_VIA_OUT
-  * so this function serves for both iptables and ip6tables */
+ const char *ipv4_addr_to_string(const struct in_addr *addr,
+ 				const struct in_addr *mask,
+ 				unsigned int format)
 diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 9f0fa1438bdd3..48f314cac8f45 100644
+index 48f314cac8f45..757940090dd69 100644
 --- a/iptables/xshared.h
 +++ b/iptables/xshared.h
-@@ -232,6 +232,9 @@ void print_ifaces(const char *iniface, const char *outiface, uint8_t invflags,
- void save_iface(char letter, const char *iface,
- 		const unsigned char *mask, int invert);
- 
-+void print_fragment(unsigned int flags, unsigned int invflags,
-+		    unsigned int format, bool fake);
-+
- void command_match(struct iptables_command_state *cs, bool invert);
- const char *xt_parse_target(const char *targetname);
- void command_jump(struct iptables_command_state *cs, const char *jumpto);
+@@ -220,6 +220,9 @@ void debug_print_argv(struct argv_store *store);
+ const char *ipv4_addr_to_string(const struct in_addr *addr,
+ 				const struct in_addr *mask,
+ 				unsigned int format);
++void print_header(unsigned int format, const char *chain, const char *pol,
++		  const struct xt_counters *counters,
++		  int refs, uint32_t entries);
+ void print_ipv4_addresses(const struct ipt_entry *fw, unsigned int format);
+ void save_ipv4_addr(char letter, const struct in_addr *addr,
+ 		    const struct in_addr *mask, int invert);
 -- 
 2.33.0
 
