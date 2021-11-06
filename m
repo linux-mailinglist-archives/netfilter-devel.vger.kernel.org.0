@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49D1446F3C
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 18:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F45D446F47
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 18:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234655AbhKFRRc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 6 Nov 2021 13:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
+        id S234669AbhKFRRx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 6 Nov 2021 13:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231328AbhKFRRc (ORCPT
+        with ESMTP id S234665AbhKFRRw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 6 Nov 2021 13:17:32 -0400
+        Sat, 6 Nov 2021 13:17:52 -0400
 Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BFFC061570
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 10:14:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6B5C061570
+        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 10:15:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=lvLJl34V0eM1gJJTEKqj2eYwZlA5FUYN9t/oms6+r9s=; b=tQ1P/Q7R9ewR/tCTr4EDMhi4lD
-        bIvdwxiJkPuAqh0in8nrq8Z+9eHj+hq9b7tv7HeADhYlVRwvxJQSzMp3xUviz50J8M3mRdqz4DBs+
-        5F0IcF7mUZkcurGybabojyKO/WrSeGRU5xyZ6uXCMRwn8JZq7SMXEBCWo8xRHsRUYJRArDxqPa3uy
-        KK1izp5OreeLHqs10PKQRfITGcsJQ9HxqKIVNZvjt5NaWfvWIHN/JcszoNS/Uw66oTcFCZcl8yGy9
-        vjfTENVjeaf20NPlfxusjM+ydQMhrCFPduqI/tlaMyYGjOTVpibjbFIZZ5tu+tQiwVswQP8+c75gB
-        HDbyYhhA==;
+        bh=An35OZztWQ8E5cfOE34E9MFys0c7CYVIuG4W353XS6E=; b=uDfjE5Uxzi81pZGDjeHRJ/fTD9
+        AR4VUyMDbpMtxMyT1FChl4Fi0zjIzCxvrr+q4dZ1JwymMghXNu2LhKRztsDRc1Gbq/zEC8LUtHNHF
+        rZVBLb57f+ebFQPTo7DOPpZCZXgSUFEycl82+paSL0EL+JnfOKeMvzmhbEoffkkybRRhL9w0kISKr
+        zBtdHpmNmJzuiYZ299Wj9F1FZkVgSzZgPe/jcVXq5gVUtUD5WgNdLI8EKvInCDd3hzwpfSeqcjdU6
+        3qWbhhaYLOdLjMDESTM7dZrnLIVXKAaHnQ8n6cTUKuM//QwihGDTJTrGmY2jYx4gBO4f3XSlFB+G4
+        Nl8cf3nw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mjOtK-004m1E-IN
+        id 1mjOtK-004m1E-Mg
         for netfilter-devel@vger.kernel.org; Sat, 06 Nov 2021 16:50:06 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v2 17/27] output: DBI: fix string truncation warnings
-Date:   Sat,  6 Nov 2021 16:49:43 +0000
-Message-Id: <20211106164953.130024-18-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v2 18/27] output: MYSQL: Fix string truncation warning
+Date:   Sat,  6 Nov 2021 16:49:44 +0000
+Message-Id: <20211106164953.130024-19-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211106164953.130024-1-jeremy@azazel.net>
 References: <20211106164953.130024-1-jeremy@azazel.net>
@@ -49,101 +49,44 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Replace `strncpy` with `snprintf` and `memcpy`.
+Replace `strncpy` with `snprintf`.
 
 Remove superfluous intermediate buffer.
 
-Ensure that `dst` is properly initialized if `dbi_conn_quote_string_copy`
-returns an error.
-
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/dbi/ulogd_output_DBI.c | 44 +++++++++++++++--------------------
- 1 file changed, 19 insertions(+), 25 deletions(-)
+ output/mysql/ulogd_output_MYSQL.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/output/dbi/ulogd_output_DBI.c b/output/dbi/ulogd_output_DBI.c
-index 461aed4bddb6..b3e523df778c 100644
---- a/output/dbi/ulogd_output_DBI.c
-+++ b/output/dbi/ulogd_output_DBI.c
-@@ -91,15 +91,6 @@ static struct config_keyset dbi_kset = {
- #define dbtype_ce(x)	(x->ces[DB_CE_NUM+6])
- 
- 
--/* lower-cases s in place */
--static void str_tolower(char *s)
--{
--	while(*s) {
--		*s = tolower(*s);
--		s++;
--	}
--}
--
- /* find out which columns the table has */
- static int get_columns_dbi(struct ulogd_pluginstance *upi)
- {
-@@ -140,24 +131,25 @@ static int get_columns_dbi(struct ulogd_pluginstance *upi)
+diff --git a/output/mysql/ulogd_output_MYSQL.c b/output/mysql/ulogd_output_MYSQL.c
+index 66151feb4939..946498d4d2fe 100644
+--- a/output/mysql/ulogd_output_MYSQL.c
++++ b/output/mysql/ulogd_output_MYSQL.c
+@@ -135,18 +135,17 @@ static int get_columns_mysql(struct ulogd_pluginstance *upi)
  	}
  
- 	for (ui=1; ui<=upi->input.num_keys; ui++) {
+ 	for (i = 0; (field = mysql_fetch_field(result)); i++) {
 -		char buf[ULOGD_MAX_KEYLEN+1];
--		char *underscore;
--		const char* field_name = dbi_result_get_field_name(pi->result, ui);
-+		const char *field_name = dbi_result_get_field_name(pi->result, ui);
-+		char *cp;
+ 		char *underscore;
  
- 		if (!field_name)
- 			break;
- 
--		/* replace all underscores with dots */
--		strncpy(buf, field_name, ULOGD_MAX_KEYLEN);
++		snprintf(upi->input.keys[i].name,
++			 sizeof(upi->input.keys[i].name),
++			 "%s", field->name);
+ 		/* replace all underscores with dots */
+-		strncpy(buf, field->name, ULOGD_MAX_KEYLEN);
 -		while ((underscore = strchr(buf, '_')))
--			*underscore = '.';
-+		snprintf(upi->input.keys[ui - 1].name,
-+			 sizeof(upi->input.keys[ui - 1].name),
-+			 "%s", field_name);
++		for (underscore = upi->input.keys[i].name;
++		     (underscore = strchr(underscore, '_')); )
+ 			*underscore = '.';
  
--		str_tolower(buf);
-+		/* down-case and replace all underscores with dots */
-+		for (cp = upi->input.keys[ui - 1].name; *cp; cp++) {
-+			if (*cp == '_')
-+				*cp = '.';
-+			else
-+				*cp = tolower(*cp);
-+		}
- 
--		DEBUGP("field '%s' found: ", buf);
+-		DEBUGP("field '%s' found\n", buf);
 -
 -		/* add it to list of input keys */
--		strncpy(upi->input.keys[ui-1].name, buf, ULOGD_MAX_KEYLEN);
-+		DEBUGP("field '%s' found: ", upi->input.keys[ui - 1].name);
+-		strncpy(upi->input.keys[i].name, buf, ULOGD_MAX_KEYLEN);
++		DEBUGP("field '%s' found\n", upi->input.keys[i].name);
  	}
- 
- 	/* ID is a sequence */
-@@ -245,18 +237,20 @@ static int escape_string_dbi(struct ulogd_pluginstance *upi,
- 	}
- 
- 	ret = dbi_conn_quote_string_copy(pi->dbh, src, &newstr);
--	if (ret <= 2)
-+	if (ret == 0) {
-+		*dst = '\0';
- 		return 0;
-+	}
- 
- 	/* dbi_conn_quote_string_copy returns a quoted string,
- 	 * but __interp_db already quotes the string
- 	 * So we return a string without the quotes
- 	 */
--	strncpy(dst,newstr+1,ret-2);
--	dst[ret-2] = '\0';
-+	memcpy(dst, newstr + 1, ret - 2);
-+	dst[ret - 2] = '\0';
- 	free(newstr);
- 
--	return (ret-2);
-+	return ret - 2;
- }
- 
- static int execute_dbi(struct ulogd_pluginstance *upi,
+ 	/* MySQL Auto increment ... ID :) */
+ 	upi->input.keys[0].flags |= ULOGD_KEYF_INACTIVE;
 -- 
 2.33.0
 
