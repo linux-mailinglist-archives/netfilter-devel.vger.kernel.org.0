@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7E8446F3A
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 18:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B78446F41
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 18:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbhKFRR2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 6 Nov 2021 13:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
+        id S234642AbhKFRRm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 6 Nov 2021 13:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234654AbhKFRR2 (ORCPT
+        with ESMTP id S234657AbhKFRRl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 6 Nov 2021 13:17:28 -0400
+        Sat, 6 Nov 2021 13:17:41 -0400
 Received: from kadath.azazel.net (kadath.azazel.net [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B05C061570
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 10:14:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535D7C061570
+        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 10:15:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=X+zb1KbYhD84XrsaTFDh0X/PKejQwGbCKuaDxrYdhKQ=; b=azcTWzKdRKYObF0QI6QSw8T3c1
-        vXEJjwsb/auJH0ZhQPCaARXtVQSxOwmS77tdHZG9WhPzJyUSgtkjH0wzkaFskWyGJ6QYdnJRe2JzE
-        GljoJOQNnQIQQ7DzwU8bQ7290On6LBv9F+TZJeZ2LBROgqOqC3RzKyrEwVq8IftMlea8/hAUxh8RC
-        MB/EqQebXqIqxjbZW/WZoljMutgzyfcIsHBentlMQlFJdvecgNNxLyspClUFM9C3kBxvnbku3alRO
-        wRuav7FJhhE/cX8EsnEF7x8UlqC7IAN4fc8QWhTBO7X/1vu7HSLTMhX2kBscR5ET2bsWoeuymgJmz
-        GCrYSXhQ==;
+        bh=f39ym8luh+rm6LBp0IoSBcs9OC7a4hkrT1F7OEz1C0E=; b=GPZL+b7o57SV8I3W7916D8eCe/
+        apP+4jdzZ+/BvKPVbPDUgDWlwjW7uMablrz1u4lFlKxh0O8HTbk1QgMHQwmk1TFE8mbrCcqG6AeT0
+        Cl0a5Qt7HDGQ5+na4oBH6/NZZWUlQqX54fKHOalSeUGtfYfOXxJttDg4UpLxGbK8lXwHALyoD2I0+
+        0x/bDDu7Ihj0EVoWCOGtcqkpo5wYP1d4BikQ3yWDf06lZv4rsRuAVoYV0pUicWKaaNNehmeWoUFNk
+        QwavNnpVsyklsawojIZSpT8Hzt4s042DgGiLxwKmYoE7QKpfPmSkimX++Ubfc1HYPEg7UXTwk7BfT
+        2BD8lhfw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mjOtK-004m1E-DE
+        id 1mjOtK-004m1E-Fx
         for netfilter-devel@vger.kernel.org; Sat, 06 Nov 2021 16:50:06 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v2 15/27] input: UNIXSOCK: prevent unaligned pointer access
-Date:   Sat,  6 Nov 2021 16:49:41 +0000
-Message-Id: <20211106164953.130024-16-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v2 16/27] output: DBI: fix deprecation warnings
+Date:   Sat,  6 Nov 2021 16:49:42 +0000
+Message-Id: <20211106164953.130024-17-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211106164953.130024-1-jeremy@azazel.net>
 References: <20211106164953.130024-1-jeremy@azazel.net>
@@ -49,78 +49,51 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-`struct ulogd_unixsock_packet_t` is packed, so taking the address of its
-`struct iphdr payload` member may yield an unaligned pointer value.  We
-only actually dereference the pointer to get the IP version, so replace
-the pointer with a version variable and elsewhere use `pkt.payload`
-directly.
-
-Remove a couple of stray semicolons.
+Switch to re-entrant libdbi functions.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- input/packet/ulogd_inppkt_UNIXSOCK.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ output/dbi/ulogd_output_DBI.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/input/packet/ulogd_inppkt_UNIXSOCK.c b/input/packet/ulogd_inppkt_UNIXSOCK.c
-index f318250f1fe1..09003450df4c 100644
---- a/input/packet/ulogd_inppkt_UNIXSOCK.c
-+++ b/input/packet/ulogd_inppkt_UNIXSOCK.c
-@@ -371,7 +371,7 @@ struct ulogd_unixsock_option_t  {
- static int handle_packet(struct ulogd_pluginstance *upi, struct ulogd_unixsock_packet_t *pkt, uint16_t total_len)
- {
- 	char *data = NULL;
--	struct iphdr *ip;
-+	unsigned int ip_version = pkt->payload.version;
- 	struct ulogd_key *ret = upi->output.keys;
- 	uint8_t oob_family;
- 	uint16_t payload_len;
-@@ -387,22 +387,22 @@ static int handle_packet(struct ulogd_pluginstance *upi, struct ulogd_unixsock_p
+diff --git a/output/dbi/ulogd_output_DBI.c b/output/dbi/ulogd_output_DBI.c
+index 23cc9c8fb492..461aed4bddb6 100644
+--- a/output/dbi/ulogd_output_DBI.c
++++ b/output/dbi/ulogd_output_DBI.c
+@@ -29,6 +29,8 @@
+ #define DEBUGP(x, args...)
+ #endif
  
- 	payload_len = ntohs(pkt->payload_length);
++static dbi_inst libdbi_instance;
++
+ struct dbi_instance {
+ 	struct db_instance db_inst;
  
--	ip = &pkt->payload;
--	if (ip->version == 4)
-+	if (ip_version == 4)
- 		oob_family = AF_INET;
--	else if (ip->version == 6)
-+	else if (ip_version == 6)
- 		oob_family = AF_INET6;
--	else oob_family = 0;
-+	else
-+		oob_family = 0;
+@@ -195,14 +197,14 @@ static int open_db_dbi(struct ulogd_pluginstance *upi)
  
- 	okey_set_u8(&ret[UNIXSOCK_KEY_OOB_FAMILY], oob_family);
--	okey_set_ptr(&ret[UNIXSOCK_KEY_RAW_PCKT], ip);
-+	okey_set_ptr(&ret[UNIXSOCK_KEY_RAW_PCKT], &pkt->payload);
- 	okey_set_u32(&ret[UNIXSOCK_KEY_RAW_PCKTLEN], payload_len);
- 
- 	/* options */
- 	if (total_len > payload_len + sizeof(uint16_t)) {
- 		/* option starts at the next aligned address after the payload */
- 		new_offset = USOCK_ALIGN(payload_len);
--		options_start = (void*)ip + new_offset;
-+		options_start = (void*)&pkt->payload + new_offset;
- 		data = options_start;
- 		total_len -= (options_start - (char*)pkt);
- 
-@@ -460,7 +460,7 @@ static int handle_packet(struct ulogd_pluginstance *upi, struct ulogd_unixsock_p
- 						"ulogd2: unknown option %d\n",
- 						option_number);
- 				break;
--			};
-+			}
- 		}
+ 	ulogd_log(ULOGD_ERROR, "Opening connection for db type %s\n",
+ 		  dbtype);
+-	driver = dbi_driver_open(dbtype);
++	driver = dbi_driver_open_r(dbtype, libdbi_instance);
+ 	if (driver == NULL) {
+ 		ulogd_log(ULOGD_ERROR, "unable to load driver for db type %s\n",
+ 			  dbtype);
+ 		close_db_dbi(upi);
+ 		return -1;
  	}
+-	pi->dbh = dbi_conn_new(dbtype);
++	pi->dbh = dbi_conn_new_r(dbtype, libdbi_instance);
+ 	if (pi->dbh == NULL) {
+ 		ulogd_log(ULOGD_ERROR, "unable to initialize db type %s\n",
+ 			  dbtype);
+@@ -320,7 +322,7 @@ void __attribute__ ((constructor)) init(void);
  
-@@ -666,7 +666,7 @@ static int unixsock_instance_read_cb(int fd, unsigned int what, void *param)
- 		}
+ void init(void)
+ {
+-	dbi_initialize(NULL);
++	dbi_initialize_r(NULL, &libdbi_instance);
  
- 		/* handle_packet has shifted data in buffer */
--	};
-+	}
- 
- 	return 0;
+ 	ulogd_register_plugin(&dbi_plugin);
  }
 -- 
 2.33.0
