@@ -2,68 +2,187 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C516D447086
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 21:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A519944708A
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Nov 2021 21:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbhKFVA7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 6 Nov 2021 17:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S234291AbhKFVBV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 6 Nov 2021 17:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhKFVA6 (ORCPT
+        with ESMTP id S229723AbhKFVBU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 6 Nov 2021 17:00:58 -0400
+        Sat, 6 Nov 2021 17:01:20 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CE6C061570
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 13:58:17 -0700 (PDT)
-Received: from localhost ([::1]:58758 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C87C061570
+        for <netfilter-devel@vger.kernel.org>; Sat,  6 Nov 2021 13:58:39 -0700 (PDT)
+Received: from localhost ([::1]:58782 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mjSlT-00046Q-L5; Sat, 06 Nov 2021 21:58:15 +0100
+        id 1mjSlp-00047h-L1; Sat, 06 Nov 2021 21:58:37 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 00/10] Share more code with legacy
-Date:   Sat,  6 Nov 2021 21:57:46 +0100
-Message-Id: <20211106205756.14529-1-phil@nwl.cc>
+Subject: [iptables PATCH 01/10] xshared: Merge and share parse_chain()
+Date:   Sat,  6 Nov 2021 21:57:47 +0100
+Message-Id: <20211106205756.14529-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211106205756.14529-1-phil@nwl.cc>
+References: <20211106205756.14529-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This series populates xshared.c with more code for use by both nft and
-legacy variants. A prerequisite for this is to change how output
-separating whitespace is printed (the old space before or after arg
-issue). Patch 2 does this and paves the way for patches 3-8. Patches 9
-and 10 finish with a bit of cleanup.
+Have a common routine to perform chain name checks, combining all
+variants' requirements.
 
-Phil Sutter (10):
-  xshared: Merge and share parse_chain()
-  nft: Change whitespace printing in save_rule callback
-  xshared: Share print_iface() function
-  xshared: Share save_rule_details() with legacy
-  xshared: Share save_ipv{4,6}_addr() with legacy
-  xshared: Share print_rule_details() with legacy
-  xshared: Share print_fragment() with legacy
-  xshared: Share print_header() with legacy iptables
-  nft-shared: Drop unused function print_proto()
-  xshared: Make load_proto() static
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/ip6tables.c | 26 --------------------------
+ iptables/iptables.c  | 25 -------------------------
+ iptables/xshared.c   | 24 ++++++++++++++++++++++++
+ iptables/xshared.h   |  1 +
+ iptables/xtables.c   |  9 +--------
+ 5 files changed, 26 insertions(+), 59 deletions(-)
 
- iptables/ip6tables.c  | 197 ++++-------------------------------
- iptables/iptables.c   | 210 ++++----------------------------------
- iptables/nft-arp.c    |   8 +-
- iptables/nft-bridge.c |  12 ++-
- iptables/nft-ipv4.c   |  75 ++------------
- iptables/nft-ipv6.c   |  37 ++-----
- iptables/nft-shared.c | 155 ++--------------------------
- iptables/nft-shared.h |  18 +---
- iptables/nft.c        |  10 +-
- iptables/xshared.c    | 231 +++++++++++++++++++++++++++++++++++++++++-
- iptables/xshared.h    |  22 +++-
- iptables/xtables.c    |   9 +-
- 12 files changed, 337 insertions(+), 647 deletions(-)
-
+diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
+index e967c040fd3c9..ec0ae759875e7 100644
+--- a/iptables/ip6tables.c
++++ b/iptables/ip6tables.c
+@@ -233,32 +233,6 @@ static int is_exthdr(uint16_t proto)
+ 		proto == IPPROTO_DSTOPTS);
+ }
+ 
+-static void
+-parse_chain(const char *chainname)
+-{
+-	const char *ptr;
+-
+-	if (strlen(chainname) >= XT_EXTENSION_MAXNAMELEN)
+-		xtables_error(PARAMETER_PROBLEM,
+-			   "chain name `%s' too long (must be under %u chars)",
+-			   chainname, XT_EXTENSION_MAXNAMELEN);
+-
+-	if (*chainname == '-' || *chainname == '!')
+-		xtables_error(PARAMETER_PROBLEM,
+-			   "chain name not allowed to start "
+-			   "with `%c'\n", *chainname);
+-
+-	if (xtables_find_target(chainname, XTF_TRY_LOAD))
+-		xtables_error(PARAMETER_PROBLEM,
+-			   "chain name may not clash "
+-			   "with target name\n");
+-
+-	for (ptr = chainname; *ptr; ptr++)
+-		if (isspace(*ptr))
+-			xtables_error(PARAMETER_PROBLEM,
+-				   "Invalid chain name `%s'", chainname);
+-}
+-
+ static void
+ print_header(unsigned int format, const char *chain, struct xtc_handle *handle)
+ {
+diff --git a/iptables/iptables.c b/iptables/iptables.c
+index b925f0892e0d5..246526a55a3c9 100644
+--- a/iptables/iptables.c
++++ b/iptables/iptables.c
+@@ -223,31 +223,6 @@ iptables_exit_error(enum xtables_exittype status, const char *msg, ...)
+ 
+ /* Christophe Burki wants `-p 6' to imply `-m tcp'.  */
+ 
+-static void
+-parse_chain(const char *chainname)
+-{
+-	const char *ptr;
+-
+-	if (strlen(chainname) >= XT_EXTENSION_MAXNAMELEN)
+-		xtables_error(PARAMETER_PROBLEM,
+-			   "chain name `%s' too long (must be under %u chars)",
+-			   chainname, XT_EXTENSION_MAXNAMELEN);
+-
+-	if (*chainname == '-' || *chainname == '!')
+-		xtables_error(PARAMETER_PROBLEM,
+-			   "chain name not allowed to start "
+-			   "with `%c'\n", *chainname);
+-
+-	if (xtables_find_target(chainname, XTF_TRY_LOAD))
+-		xtables_error(PARAMETER_PROBLEM,
+-			   "chain name may not clash "
+-			   "with target name\n");
+-
+-	for (ptr = chainname; *ptr; ptr++)
+-		if (isspace(*ptr))
+-			xtables_error(PARAMETER_PROBLEM,
+-				   "Invalid chain name `%s'", chainname);
+-}
+ 
+ static void
+ print_header(unsigned int format, const char *chain, struct xtc_handle *handle)
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 2d3ef679fd765..bd545d6b31908 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -892,3 +892,27 @@ set_option(unsigned int *options, unsigned int option, u_int16_t *invflg,
+ 		*invflg |= inverse_for_options[i];
+ 	}
+ }
++
++void parse_chain(const char *chainname)
++{
++	const char *ptr;
++
++	if (strlen(chainname) >= XT_EXTENSION_MAXNAMELEN)
++		xtables_error(PARAMETER_PROBLEM,
++			      "chain name `%s' too long (must be under %u chars)",
++			      chainname, XT_EXTENSION_MAXNAMELEN);
++
++	if (*chainname == '-' || *chainname == '!')
++		xtables_error(PARAMETER_PROBLEM,
++			      "chain name not allowed to start with `%c'\n",
++			      *chainname);
++
++	if (xtables_find_target(chainname, XTF_TRY_LOAD))
++		xtables_error(PARAMETER_PROBLEM,
++			      "chain name may not clash with target name\n");
++
++	for (ptr = chainname; *ptr; ptr++)
++		if (isspace(*ptr))
++			xtables_error(PARAMETER_PROBLEM,
++				      "Invalid chain name `%s'", chainname);
++}
+diff --git a/iptables/xshared.h b/iptables/xshared.h
+index b59116ac49747..6d6acbca13da2 100644
+--- a/iptables/xshared.h
++++ b/iptables/xshared.h
+@@ -235,6 +235,7 @@ char cmd2char(int option);
+ void add_command(unsigned int *cmd, const int newcmd,
+ 		 const int othercmds, int invert);
+ int parse_rulenumber(const char *rule);
++void parse_chain(const char *chainname);
+ 
+ void generic_opt_check(int command, int options);
+ char opt2char(int option);
+diff --git a/iptables/xtables.c b/iptables/xtables.c
+index 5c69af7e0f1f0..32b93d2bfc8cd 100644
+--- a/iptables/xtables.c
++++ b/iptables/xtables.c
+@@ -424,14 +424,7 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
+ 			break;
+ 
+ 		case 'N':
+-			if (optarg && (*optarg == '-' || *optarg == '!'))
+-				xtables_error(PARAMETER_PROBLEM,
+-					   "chain name not allowed to start "
+-					   "with `%c'\n", *optarg);
+-			if (xtables_find_target(optarg, XTF_TRY_LOAD))
+-				xtables_error(PARAMETER_PROBLEM,
+-					   "chain name may not clash "
+-					   "with target name\n");
++			parse_chain(optarg);
+ 			add_command(&p->command, CMD_NEW_CHAIN, CMD_NONE,
+ 				    invert);
+ 			p->chain = optarg;
 -- 
 2.33.0
 
