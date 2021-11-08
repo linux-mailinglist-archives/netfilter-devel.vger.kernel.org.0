@@ -2,68 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D9C447F05
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Nov 2021 12:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9564F447F1A
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Nov 2021 12:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239278AbhKHLkw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 8 Nov 2021 06:40:52 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:47200 "EHLO
+        id S236850AbhKHLsd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 Nov 2021 06:48:33 -0500
+Received: from mail.netfilter.org ([217.70.188.207]:47222 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239279AbhKHLkv (ORCPT
+        with ESMTP id S231401AbhKHLsd (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 8 Nov 2021 06:40:51 -0500
-Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 47E73606AE
-        for <netfilter-devel@vger.kernel.org>; Mon,  8 Nov 2021 12:36:08 +0100 (CET)
+        Mon, 8 Nov 2021 06:48:33 -0500
+Received: from netfilter.org (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 60D396063C;
+        Mon,  8 Nov 2021 12:43:50 +0100 (CET)
+Date:   Mon, 8 Nov 2021 12:45:45 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH conntrack-tools] conntrackd: do not include conntrack ID in hashtable cmp
-Date:   Mon,  8 Nov 2021 12:37:58 +0100
-Message-Id: <20211108113758.112916-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
+To:     Ken-ichirou MATSUZAWA <chamas@h4.dion.ne.jp>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH libnf-log] src: add conntrack ID to XML output
+Message-ID: <YYkN6Xh2dfDLQDVA@salvia>
+References: <YWTKdTsedRgM6Lgh@salvia>
+ <20211012043912.18513-1-chamas@h4.dion.ne.jp>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211012043912.18513-1-chamas@h4.dion.ne.jp>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Depending on your conntrackd configuration, events might get lost,
-leaving stuck entries in the cache forever. Skip checking the conntrack
-ID to allow for lazy cleanup by when a new entry that represented by the
-same tuple.
+On Tue, Oct 12, 2021 at 01:39:14PM +0900, Ken-ichirou MATSUZAWA wrote:
+> This patch enables to add conntrack ID as `ctid' element to XML output. Users
+> could identify conntrack entries by this ID from another conntrack output.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- src/cache-ct.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+Applied, thanks.
 
-diff --git a/src/cache-ct.c b/src/cache-ct.c
-index fe01e165516c..f56e450e6cf2 100644
---- a/src/cache-ct.c
-+++ b/src/cache-ct.c
-@@ -90,21 +90,12 @@ cache_ct_hash(const void *data, const struct hashtable *table)
- 	return ret;
- }
- 
--/* master conntrack of expectations have no ID */
--static inline int
--cache_ct_cmp_id(const struct nf_conntrack *ct1, const struct nf_conntrack *ct2)
--{
--	return nfct_attr_is_set(ct2, ATTR_ID) ?
--	       nfct_get_attr_u32(ct1, ATTR_ID) == nfct_get_attr_u32(ct2, ATTR_ID) : 1;
--}
--
- static int cache_ct_cmp(const void *data1, const void *data2)
- {
- 	const struct cache_object *obj = data1;
- 	const struct nf_conntrack *ct = data2;
- 
--	return nfct_cmp(obj->ptr, ct, NFCT_CMP_ORIG) &&
--	       cache_ct_cmp_id(obj->ptr, ct);
-+	return nfct_cmp(obj->ptr, ct, NFCT_CMP_ORIG);
- }
- 
- static void *cache_ct_alloc(void)
--- 
-2.30.2
-
+Please follow up to address comments from Jeremy regarding your ulogd2
+patches.
