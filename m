@@ -2,59 +2,37 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112A2447DE3
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Nov 2021 11:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D777447DE6
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 Nov 2021 11:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236594AbhKHK2e (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 8 Nov 2021 05:28:34 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:46754 "EHLO
+        id S235206AbhKHK3J (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 Nov 2021 05:29:09 -0500
+Received: from mail.netfilter.org ([217.70.188.207]:46770 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238098AbhKHK2Z (ORCPT
+        with ESMTP id S237552AbhKHK2s (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 8 Nov 2021 05:28:25 -0500
+        Mon, 8 Nov 2021 05:28:48 -0500
 Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id DF7146063C;
-        Mon,  8 Nov 2021 11:23:41 +0100 (CET)
-Date:   Mon, 8 Nov 2021 11:25:36 +0100
+        by mail.netfilter.org (Postfix) with ESMTPSA id 2A3166063C;
+        Mon,  8 Nov 2021 11:24:05 +0100 (CET)
+Date:   Mon, 8 Nov 2021 11:25:59 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org, dsahern@kernel.org,
-        Eugene Crosser <crosser@average.org>,
-        Lahav Schlesinger <lschlesinger@drivenets.com>
-Subject: Re: [PATCH nf] selftests: netfilter: add a vrf+conntrack testcase
-Message-ID: <YYj7IJVgKAibNl3G@salvia>
-References: <20211018123813.17248-1-fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf] selftests: netfilter: extend nfqueue tests to cover
+ vrf device
+Message-ID: <YYj7N5Hppz3I2mAp@salvia>
+References: <20211020162537.11361-1-fw@strlen.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211018123813.17248-1-fw@strlen.de>
+In-Reply-To: <20211020162537.11361-1-fw@strlen.de>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 02:38:13PM +0200, Florian Westphal wrote:
-> Rework the reproducer for the vrf+conntrack regression reported
-> by Eugene into a selftest and also add a test for ip masquerading
-> that Lahav fixed recently.
-> 
-> With net or net-next tree, the first test fails and the latter
-> two pass.
-> 
-> With 09e856d54bda5f28 ("vrf: Reset skb conntrack connection on VRF rcv")
-> reverted first test passes but the last two fail.
-> 
-> A proper fix needs more work, for time being a revert seems to be
-> the best choice, snat/masquerade did not work before the fix.
+On Wed, Oct 20, 2021 at 06:25:37PM +0200, Florian Westphal wrote:
+> VRF device calls the output/postrouting hooks so packet should be seeon
+> with oifname tvrf and once with eth0.
 
 Applied, thanks.
-
-> Link: https://lore.kernel.org/netdev/378ca299-4474-7e9a-3d36-2350c8c98995@gmail.com/T/#m95358a31810df7392f541f99d187227bc75c9963
-> Reported-by: Eugene Crosser <crosser@average.org>
-> Cc: Lahav Schlesinger <lschlesinger@drivenets.com>
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
->  Lahav, it would be nice if you could check if this
->  is a correct test of the scenario that you fixed with
->  09e856d54bda5f28. Thanks!
-
-No news from Lahav.
