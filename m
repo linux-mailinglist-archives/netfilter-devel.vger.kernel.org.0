@@ -2,27 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5AB44AC94
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Nov 2021 12:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435CD44AC9D
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Nov 2021 12:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245740AbhKIL2r (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 9 Nov 2021 06:28:47 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:50246 "EHLO
+        id S230492AbhKILdU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 9 Nov 2021 06:33:20 -0500
+Received: from mail.netfilter.org ([217.70.188.207]:50284 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245747AbhKIL2q (ORCPT
+        with ESMTP id S245760AbhKILdT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 9 Nov 2021 06:28:46 -0500
+        Tue, 9 Nov 2021 06:33:19 -0500
 Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 8CB9560056
-        for <netfilter-devel@vger.kernel.org>; Tue,  9 Nov 2021 12:24:01 +0100 (CET)
+        by mail.netfilter.org (Postfix) with ESMTPSA id 87395607F6
+        for <netfilter-devel@vger.kernel.org>; Tue,  9 Nov 2021 12:28:33 +0100 (CET)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft,v4 3/3] cache: missing family in cache filtering
-Date:   Tue,  9 Nov 2021 12:25:24 +0100
-Message-Id: <20211109112524.201758-3-pablo@netfilter.org>
+Subject: [PATCH nft,v5 3/3] cache: missing family in cache filtering
+Date:   Tue,  9 Nov 2021 12:30:28 +0100
+Message-Id: <20211109113028.205658-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211109112524.201758-1-pablo@netfilter.org>
-References: <20211109112524.201758-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -35,7 +33,7 @@ Fixes: 3f1d3912c3a6 ("cache: filter out tables that are not requested")
 Fixes: 635ee1cad8aa ("cache: filter out sets and maps that are not requested")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v4: new in this series.
+v5: incorrect test in cache_init_tables (use of && instead of ||)
 
  include/cache.h |  1 +
  src/cache.c     | 12 ++++++++----
@@ -54,7 +52,7 @@ index cdf1f4fbf6f7..120a1b8d91b5 100644
  		const char	*set;
  	} list;
 diff --git a/src/cache.c b/src/cache.c
-index fb4137bc17a6..ac7d8b26a642 100644
+index fb4137bc17a6..facec093dd77 100644
 --- a/src/cache.c
 +++ b/src/cache.c
 @@ -194,14 +194,16 @@ static unsigned int evaluate_cache_list(struct nft_ctx *nft, struct cmd *cmd,
@@ -91,7 +89,7 @@ index fb4137bc17a6..ac7d8b26a642 100644
  
  		if (filter && filter->list.table &&
 -		    (strcmp(filter->list.table, table->handle.table.name))) {
-+		    (filter->list.family != table->handle.family &&
++		    (filter->list.family != table->handle.family ||
 +		     strcmp(filter->list.table, table->handle.table.name))) {
  			table_free(table);
  			continue;
