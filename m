@@ -2,99 +2,93 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D06944F263
-	for <lists+netfilter-devel@lfdr.de>; Sat, 13 Nov 2021 10:56:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F7C44F533
+	for <lists+netfilter-devel@lfdr.de>; Sat, 13 Nov 2021 21:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235773AbhKMJ7m (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 13 Nov 2021 04:59:42 -0500
-Received: from mg.ssi.bg ([193.238.174.37]:34048 "EHLO mg.ssi.bg"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235742AbhKMJ7l (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 13 Nov 2021 04:59:41 -0500
-Received: from mg.ssi.bg (localhost [127.0.0.1])
-        by mg.ssi.bg (Proxmox) with ESMTP id 5186B147CC;
-        Sat, 13 Nov 2021 11:56:47 +0200 (EET)
-Received: from ink.ssi.bg (unknown [193.238.174.40])
-        by mg.ssi.bg (Proxmox) with ESMTP id 99AAB14762;
-        Sat, 13 Nov 2021 11:56:46 +0200 (EET)
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id 7434E3C0332;
-        Sat, 13 Nov 2021 11:56:39 +0200 (EET)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.16.1/8.16.1) with ESMTP id 1AD9ubAJ016028;
-        Sat, 13 Nov 2021 11:56:37 +0200
-Date:   Sat, 13 Nov 2021 11:56:36 +0200 (EET)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     GuoYong Zheng <zhenggy@chinatelecom.cn>
-cc:     lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Simon Horman <horms@verge.net.au>, pablo@netfilter.org,
-        netdev@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ipvs: remove unused variable for ip_vs_new_dest
-In-Reply-To: <1636112380-11040-1-git-send-email-zhenggy@chinatelecom.cn>
-Message-ID: <25e945b7-9027-43cb-f79c-573fdce42a26@ssi.bg>
-References: <1636112380-11040-1-git-send-email-zhenggy@chinatelecom.cn>
+        id S233692AbhKMUQH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 13 Nov 2021 15:16:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232383AbhKMUQG (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 13 Nov 2021 15:16:06 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70421C061766
+        for <netfilter-devel@vger.kernel.org>; Sat, 13 Nov 2021 12:13:13 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id t18so33130391edd.8
+        for <netfilter-devel@vger.kernel.org>; Sat, 13 Nov 2021 12:13:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=WeOVAkz9Du/PMbvz3f0ckve3VeQzpJMgdKgUBtKRVbo=;
+        b=LOeH8jTFwbeLbz6kb6PDHesu907Ohj4Dm0F3Ik8g8IFuDq96D/1DNSCHlxH1vcuqOz
+         2Pw0P3beNhUDkeZvItnb81y4ncmd2ckqpEH8YR0w2ASwJtBmuKHuUO2+GX1nUsMMgTYf
+         QMxUWq7REDPHcj+vMwKRc9prEzEfC1+6NUHmFibKT2ZaFFMIsbR9vUUKBaJ62DMyhskE
+         V3cfO5Z6NZSlKGRQGH7ojrBflqPAP/i3cyPYT+MCyG4D0TtHHY2pYX4qauHfVg03S222
+         btO6AS7FRlZ7QamIBj3MDwVdctr9P2mdc/zOQ0RLFtTeSAnuOIca7bqZ+5W7mbFb2AMH
+         /YhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=WeOVAkz9Du/PMbvz3f0ckve3VeQzpJMgdKgUBtKRVbo=;
+        b=F/hxH560n5lIxPuMvycQ6mIAFWol+XRjd7RIcfaLEyqgown8XfOE2s7UkC8Jv4wtb8
+         v2uQS2dddMmAoIkXKVBLO843VMwzYtSKBDtiBpnnqKXAVIAVfKnjDtrI59ilhbERjfiX
+         YqBXYLvF4VOWh/Z/dqDI60Ipnmc31d2l8yMhM+70bzJM1zwaCFxvHJBmfXJKvIstdWkS
+         Fat/17pSbTehjk5ljsI+Q4J5ppIFRiO44orgT7a3pKTaP3PFqJxpkyLTTf0XqqLfB4o6
+         6DKBzZXToVMrqFQtoi/vOgwcmRv3aAd5Derhm8QU8hNqu0gyEQ6xiYaZ3cWNwYqeWPzi
+         JLNQ==
+X-Gm-Message-State: AOAM533zxwntVzEGCg9Zb4Knn+Dvx0w03SWu4AQGTvyXAX9ERgiP3Moy
+        nwdzPA7BEO5x4BvjORjpkVXIV7zeijnm4MZiftI=
+X-Google-Smtp-Source: ABdhPJynTBUydjJzVVWK9HPsOWTP79GZCRDeAAtUKvv82jBzppSeUkz4SEmqqFncSKL+qZ0QL4az7qruWAD42riC/qE=
+X-Received: by 2002:a05:6402:16cd:: with SMTP id r13mr7504702edx.264.1636834391913;
+ Sat, 13 Nov 2021 12:13:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Reply-To: lilianchrstph@gmail.com
+Sender: aishacoulibaly40@gmail.com
+Received: by 2002:a17:906:5487:0:0:0:0 with HTTP; Sat, 13 Nov 2021 12:13:11
+ -0800 (PST)
+From:   Miss lilian christoph <lilianchristophe.0@gmail.com>
+Date:   Sat, 13 Nov 2021 21:13:11 +0100
+X-Google-Sender-Auth: NPlLRNqrwaCVyb5gSXQWv9_7-_M
+Message-ID: <CAN3BMJ5BV039FBeTs_P3ziWOYQmbVZ660mrKC5fc4qvgJ4hw9Q@mail.gmail.com>
+Subject: Are you available?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+-- 
+Are you available?
 
-	Hello,
+My name is Miss. Lilian Christophe I am a Canadian,
 
-On Fri, 5 Nov 2021, GuoYong Zheng wrote:
+I will like to request your services to be my partner,investor to
+support me transfer and manage my funds by investing in a profit
+investment and 30% of the money for you.
 
-> The dest variable is not used after ip_vs_new_dest anymore in
-> ip_vs_add_dest, do not need pass it to ip_vs_new_dest, remove it.
-> 
-> Signed-off-by: GuoYong Zheng <zhenggy@chinatelecom.cn>
 
-	Looks good to me for -next, thanks!
+I have a reasonable sum that I inherited from my late father, late Dr.
+Dan Christophe, the amount of $10.5 Million dollars
+presently with the with the bank.
 
-Acked-by: Julian Anastasov <ja@ssi.bg>
+Below is the main reason why I am communicating with you.
 
-> ---
->  net/netfilter/ipvs/ip_vs_ctl.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-> index e62b40b..494399d 100644
-> --- a/net/netfilter/ipvs/ip_vs_ctl.c
-> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
-> @@ -959,8 +959,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
->   *	Create a destination for the given service
->   */
->  static int
-> -ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest,
-> -	       struct ip_vs_dest **dest_p)
-> +ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
->  {
->  	struct ip_vs_dest *dest;
->  	unsigned int atype, i;
-> @@ -1020,8 +1019,6 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
->  	spin_lock_init(&dest->stats.lock);
->  	__ip_vs_update_dest(svc, dest, udest, 1);
->  
-> -	*dest_p = dest;
-> -
->  	LeaveFunction(2);
->  	return 0;
->  
-> @@ -1095,7 +1092,7 @@ static void ip_vs_trash_cleanup(struct netns_ipvs *ipvs)
->  		/*
->  		 * Allocate and initialize the dest structure
->  		 */
-> -		ret = ip_vs_new_dest(svc, udest, &dest);
-> +		ret = ip_vs_new_dest(svc, udest);
->  	}
->  	LeaveFunction(2);
->  
-> -- 
-> 1.8.3.1
+(1) Provide a new empty bank account which this Fund will be
+transferred into, in case you do not want us to use your
+personal account.
 
-Regards
+(2) To serve as guardian of this fund as the bank insisted that its
+agreement with my late father that I should provide a foreign partner
+before the fund could be released.
 
---
-Julian Anastasov <ja@ssi.bg>
+(3) To make arrangements for me to come over to your country,settle
+down and start a new life after the transfer of this money to your
+country.
 
+I will like to stop for now until I hear from you, have a great day.
+
+Yours Faithful
+
+Lilian Christophe.
