@@ -2,85 +2,131 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA5C44F1F5
-	for <lists+netfilter-devel@lfdr.de>; Sat, 13 Nov 2021 08:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D25344F234
+	for <lists+netfilter-devel@lfdr.de>; Sat, 13 Nov 2021 09:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233750AbhKMHQP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 13 Nov 2021 02:16:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
+        id S230482AbhKMItA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 13 Nov 2021 03:49:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhKMHQO (ORCPT
+        with ESMTP id S235726AbhKMIs7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 13 Nov 2021 02:16:14 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6059BC061766
-        for <netfilter-devel@vger.kernel.org>; Fri, 12 Nov 2021 23:13:22 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id g14so46863737edz.2
-        for <netfilter-devel@vger.kernel.org>; Fri, 12 Nov 2021 23:13:22 -0800 (PST)
+        Sat, 13 Nov 2021 03:48:59 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BCAC06127A
+        for <netfilter-devel@vger.kernel.org>; Sat, 13 Nov 2021 00:46:07 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id d27so19753918wrb.6
+        for <netfilter-devel@vger.kernel.org>; Sat, 13 Nov 2021 00:46:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Hu2ZB1euoLzJY+I63Uh/+Kij0UsVokvOFJBcm1hwiI4=;
-        b=U82333JESU6zfwBRbMDwA2XSfL3hCtw2FFWLOlT6tejSCWdRdZLJcNFQW4JZjQlY/8
-         arWGKqXi2J+nxx0lKWyk/YJPTvGKHzsFwfoqGfu/KtGNa05YCQCkdlipchN3pRdSpm/z
-         Nd7lyQFez4Kb9lpHaHCyxN4LPn7R5S3r7opFXa7IbjAfcQvKo6ulLNYInwKBAY3Sdmxi
-         jJylrvzRn/AJ/rSjzLbUlwzUuIRO38I6Hge1dM13lZo7zyWYirmAJhpkCS656LqQ1Pgf
-         Bz4OGkhhLMEv2850Qkh99fFqcRjYAhHudvEKL2vnSRWZC6cxhJxBiZqIDue6LiC6Ubi2
-         8EXQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZtDnCZ/w/psJS2PRIihRoZb3eaeTQIwGDkZv2udShjk=;
+        b=li607doaPUCb/xWMTz67AL9GZ9Pb3MRIpM7Nw+vkpA6TVMXwAwH8herBsCby7Q591x
+         YDu522PWnbNiiQv160pBddkTsiC1+K8+ZWgsb6AhQKeFPTjFhSYLqcFzoKGtLigEuREw
+         8DmvXcZI4YVT7kmxEU4myncpmY2OYZyDrRQ3ZHMTcA2ETAbZuSkK3EiPIUdQPz0LUCeu
+         40QKhHdNfdCrpi8z8sz0DYjgZaJ+dPNqKc9WRH+rvJ+lOUrepLgmQc5VIEn0fABJ3gTQ
+         IZ2J05SlDJpOlGkVDkd9VuTNIiASVG1RD6dI35WR72/pvipKffRI2JDl8SCLCoF766g4
+         4rkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Hu2ZB1euoLzJY+I63Uh/+Kij0UsVokvOFJBcm1hwiI4=;
-        b=XOobeUAIA7mc83sdiKrY7LiSVDg5uTAdq5AgYQHV4iqGNogh7iBg2Y0gRInGbMJz78
-         dRAzopVhMM9GfU5AeHte1iOIid4ERjG2+ZZ1VrGSzk6ewvbNZOUYah6uSPzesg287is1
-         4+n078kRhQqx+7X/VcOqn/zL4aFf/NM/KgQb8sgrpvjA8sNvF3WcN/q5FeX06ZeSswd7
-         rML+AIVqGkTY9Xgm4oVjfSzD+DFsDA2zBpsXulc4JpfPNSjKa4A5kS/N/I92joFtv4GQ
-         HotwE+ju6eQuMLoFIXYh0jYoA9TJb5nx9bguvhH/Kgmtzk10Fd7UZVYBGqQuCssJsWUu
-         PVOQ==
-X-Gm-Message-State: AOAM530Ku37WaYvKGexbC/BHW/LQQVN0xN4wSzWkhKszUwtcyyP9hMG+
-        VZfL8PLJVqPFe9CcRGntmlfwqhKzs087RTtKsyo=
-X-Google-Smtp-Source: ABdhPJxjHFW5NX6oabJHKnfnRphVIHQosIxMOiilkoJmZPs3akcISuR2fW39xxbpunppXbUVDZRo+PeZs8k/iYCcKwA=
-X-Received: by 2002:a17:906:270e:: with SMTP id z14mr27119898ejc.414.1636787600881;
- Fri, 12 Nov 2021 23:13:20 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZtDnCZ/w/psJS2PRIihRoZb3eaeTQIwGDkZv2udShjk=;
+        b=TdigM6NwG3eAHZN07OslKIMSHWU7Bp5ZNCsOIjqFwp2BtgnVLp9NMjr5MeqJevtQlR
+         Ca5vb5gMxGTTFxT0vKf3z73t3eS5JUZNogbNYf88xpb6Y5312bebSgV8lFk1/ughIVPE
+         eHYdjWIEOCUvl3c3/NdyT6W1TsvCzVkAac+hqAyPdQKzOcXmaTxKd0SNhXhF2nnLn9Ri
+         5cStpVPSFwRZLa8OI2UvsAy6mQAzrXWZIlqfMdqCVcA7IXFl3NHvKFaCM80m4Ojysc+z
+         S1FIHfy3DECtw9bNPDDnhHuhs8zClUFnJbWzSrSBKnR1HcI8Mg+X6v81fYmhGBZQBFpy
+         1yzQ==
+X-Gm-Message-State: AOAM530YygubjSYnKOFE3oZYTDsF7zqRtdLELD0xprdy02OvPiiY86Cd
+        hr81sHtcTB1NtTfAW75/DeDyvA==
+X-Google-Smtp-Source: ABdhPJzfL02HdsRzG4Og/K2JWrEAxZfcZ6YSER9KY6jul7/fUwjNjtVbk7TR191IUwRViXJNdLACrQ==
+X-Received: by 2002:adf:cf05:: with SMTP id o5mr27250298wrj.325.1636793165247;
+        Sat, 13 Nov 2021 00:46:05 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:90b:17fa:42f:1e9c? ([2a01:e34:ed2f:f020:90b:17fa:42f:1e9c])
+        by smtp.googlemail.com with ESMTPSA id y6sm8480147wrh.18.2021.11.13.00.46.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Nov 2021 00:46:04 -0800 (PST)
+Subject: Re: 32bit x86 build broken (was: Re: [GIT PULL] Networking for
+ 5.16-rc1)
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        David Miller <davem@davemloft.net>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        linux-can@vger.kernel.org
+References: <20211111163301.1930617-1-kuba@kernel.org>
+ <163667214755.13198.7575893429746378949.pr-tracker-bot@kernel.org>
+ <20211111174654.3d1f83e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAHk-=wiNEdrLirAbHwJvmp_s2Kjjd5eV680hTZnbBT2gXK4QbQ@mail.gmail.com>
+ <20211112063355.16cb9d3b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <9999b559abecea2eeb72b0b6973a31fcd39087c1.camel@linux.intel.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <be9c603b-26a6-fb33-07d9-7aae8f9bf644@linaro.org>
+Date:   Sat, 13 Nov 2021 09:46:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:ab4:944f:0:0:0:0:0 with HTTP; Fri, 12 Nov 2021 23:13:20
- -0800 (PST)
-Reply-To: mariaelisabethdonation@outlook.com
-From:   Maria-Elisabeth Schaeffler <kayejar07@gmail.com>
-Date:   Fri, 12 Nov 2021 23:13:20 -0800
-Message-ID: <CADYczinx_Vof20H_zVt75LkJ5otWxifK4Qz03atbOsaS8kNQXg@mail.gmail.com>
-Subject: SPENDE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <9999b559abecea2eeb72b0b6973a31fcd39087c1.camel@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
---=20
+On 12/11/2021 16:04, Srinivas Pandruvada wrote:
+> On Fri, 2021-11-12 at 06:33 -0800, Jakub Kicinski wrote:
+>> On Thu, 11 Nov 2021 18:48:43 -0800 Linus Torvalds wrote:
+>>> On Thu, Nov 11, 2021 at 5:46 PM Jakub Kicinski <kuba@kernel.org>
+>>> wrote:
+>>>> Rafael, Srinivas, we're getting 32 bit build failures after pulling
+>>>> back
+>>>> from Linus today.
+>>>>
+>>>> make[1]: *** [/home/nipa/net/Makefile:1850: drivers] Error 2
+>>>> make: *** [Makefile:219: __sub-make] Error 2
+>>>> ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:
+>>>> In function ‘send_mbox_cmd’:
+>>>> ../drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c:7
+>>>> 9:37: error: implicit declaration of function ‘readq’; did you mean
+>>>> ‘readl’? [-Werror=implicit-function-declaration]
+>>>>    79 |                         *cmd_resp = readq((void __iomem *)
+>>>> (proc_priv->mmio_base + MBOX_OFFSET_DATA));
+>>>>       |                                     ^~~~~
+>>>>       |                                     readl  
+>>>
+>>> Gaah.
+>>>
+>>> The trivial fix is *probably* just a simple
+>>
+>> To be sure - are you planning to wait for the fix to come via 
+>> the usual path?  We can hold applying new patches to net on the 
+>> off chance that you'd apply the fix directly and we can fast 
+>> forward again :) 
+>>
+>> Not that 32bit x86 matters all that much in practice, it's just 
+>> for preventing new errors (64b divs, mostly) from sneaking in.
+>>
+>> I'm guessing Rafeal may be AFK for the independence day weekend.
+> He was off, but not sure if he is back. I requested Daniel to send PULL
+> request for
+> https://lore.kernel.org/lkml/a22a1eeb-c7a0-74c1-46e2-0a7bada73520@infradead.org/T/
+
+FYI
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d9c8e52ff9e84ff1a406330f9ea4de7c5eb40282
 
 
---=20
-Hallo,
-Ich bin Maria Elisabeth Schaeffler, eine deutsche Unternehmerin, Investorin
-und CEO der Schaeffler Gruppe. Ich bin einer der Eigent=C3=BCmer der Schaef=
-fler
-Gruppe. Ich habe 25 Prozent meines pers=C3=B6nlichen Verm=C3=B6gens f=C3=BC=
-r wohlt=C3=A4tige
-Zwecke gespendet. Und ich habe auch versprochen, die restlichen 25% in
-diesem Jahr 2021 an Individual zu verschenken. Ich habe mich entschlossen,
-2.000.000,00 Euro an Sie zu spenden. Wenn Sie an meiner Spende interessiert
-sind, kontaktieren Sie mich bitte f=C3=BCr weitere Informationen.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Sie k=C3=B6nnen auch =C3=BCber den untenstehenden Link mehr =C3=BCber mich =
-lesen
-
-https://en.wikipedia.org/wiki/Maria-Elisabeth_Schaeffler
-
-Mit freundlichen Gr=C3=BC=C3=9Fen,
-Frau Maria Elisabeth Schaeffler,
-CEO der
-Schaeffler-Gruppe.
-E-Mail: mariaelisabethdonation@outlook.com
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
