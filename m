@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DEE44F86B
-	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Nov 2021 15:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F21844F869
+	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Nov 2021 15:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhKNOSJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 14 Nov 2021 09:18:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44370 "EHLO
+        id S235918AbhKNORw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 14 Nov 2021 09:17:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236116AbhKNOSH (ORCPT
+        with ESMTP id S236035AbhKNORw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 14 Nov 2021 09:18:07 -0500
+        Sun, 14 Nov 2021 09:17:52 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE71C061746
-        for <netfilter-devel@vger.kernel.org>; Sun, 14 Nov 2021 06:15:02 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1849C061746
+        for <netfilter-devel@vger.kernel.org>; Sun, 14 Nov 2021 06:14:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=ezdX1ljJ0+CjfteV1LQXMBs75rvR0pzvIcVBz8RA5d0=; b=ssSf/L+HR/z/PV97UnPjs43IKe
-        q5UqCEkPaYcqEjGKtaBRkS99Mb5RX/Bh8FYYcfPlf/BwRHWsvjyYN9/8TdqBkTEc+ypF+V4/Ol09G
-        DiOiN9z9axBWsM8EWfsIXzx9BxZ30aYmrmAxQ+Q1h8/cGKDFvphRpudqkbWQO1ykhmLDu1oYW5/9h
-        cwE5ZcVYsOt1qiiZCwtOksKFLFyYx6E5nK2Mwgk5TXkcIoN9mDnJWCiWp+XSbHLJMpmXetCbWjrdN
-        N7E015u2mpbIVsR6CspJhC0wUIErgKitGjASsI7m2c49QJl0cA0Yr42wgH0EDuGLsPjKxOfIDVpns
-        LqK0tTng==;
+        bh=pfwn6kKS4nRhw5/CI/7ddcIrwcQMX0JLwFGSwKsq4zs=; b=AENC7GvChFSIzhWEnXWsitImtc
+        VB8jMEoyCWJzT8rwdVibJGzpOCTrdSfMXkWNkAbAxvuVccln0d2RVWyvFxixM/9JUDMv/0dP1acLE
+        kGO1r6RNCOKqpPELiwpi4GAnEgiFKyTq2qLWAyM0cIqJjVNskw7i576Fgo6cv0YDYRiTRuYqdJDXO
+        ZF6d3UEiLul/eRfCtGIJ6eg3wW7XILt3VMnrtxGIF7n77LiOEtBq+he9j/y9muBGD3atOghl/ECMy
+        Ue6W2YVT4EaQ5MdVnGJLWZVaJSH7VOfd2FcHd+QnUTMKzBhX5czq+1BIaIOLQEH7N6yD9rO99VNJ4
+        zdhYpjyA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mmG4G-00Cdsh-Aa
+        id 1mmG4G-00Cdsh-Gi
         for netfilter-devel@vger.kernel.org; Sun, 14 Nov 2021 14:01:12 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 10/16] build: delete commented-out code
-Date:   Sun, 14 Nov 2021 14:00:52 +0000
-Message-Id: <20211114140058.752394-11-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 11/16] build: use correct automake variable for library dependencies
+Date:   Sun, 14 Nov 2021 14:00:53 +0000
+Message-Id: <20211114140058.752394-12-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211114140058.752394-1-jeremy@azazel.net>
 References: <20211114140058.752394-1-jeremy@azazel.net>
@@ -49,30 +49,38 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-There are a few of commented-out variable definitions left over from
-the introduction of Automake.  Remove them.
+A couple of library dependencies are specified in `_LDFLAGS` variables.
+They are supposed to be specified in `_LIBADD` variables.  Move them.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- input/flow/Makefile.am | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ input/flow/Makefile.am   | 3 ++-
+ input/packet/Makefile.am | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/input/flow/Makefile.am b/input/flow/Makefile.am
-index 2171a0cd80c8..fc95bdb85af8 100644
+index fc95bdb85af8..a556b4e4cb90 100644
 --- a/input/flow/Makefile.am
 +++ b/input/flow/Makefile.am
-@@ -2,10 +2,7 @@ include $(top_srcdir)/Make_global.am
- 
- AM_CPPFLAGS += ${LIBNETFILTER_CONNTRACK_CFLAGS}
- 
--pkglib_LTLIBRARIES = ulogd_inpflow_NFCT.la # ulogd_inpflow_IPFIX.la
-+pkglib_LTLIBRARIES = ulogd_inpflow_NFCT.la
+@@ -5,4 +5,5 @@ AM_CPPFLAGS += ${LIBNETFILTER_CONNTRACK_CFLAGS}
+ pkglib_LTLIBRARIES = ulogd_inpflow_NFCT.la
  
  ulogd_inpflow_NFCT_la_SOURCES = ulogd_inpflow_NFCT.c
- ulogd_inpflow_NFCT_la_LDFLAGS = -avoid-version -module $(LIBNETFILTER_CONNTRACK_LIBS)
--
--#ulogd_inpflow_IPFIX_la_SOURCES = ulogd_inpflow_IPFIX.c
--#ulogd_inpflow_IPFIX_la_LDFLAGS = -avoid-version -module
+-ulogd_inpflow_NFCT_la_LDFLAGS = -avoid-version -module $(LIBNETFILTER_CONNTRACK_LIBS)
++ulogd_inpflow_NFCT_la_LDFLAGS = -avoid-version -module
++ulogd_inpflow_NFCT_la_LIBADD  = $(LIBNETFILTER_CONNTRACK_LIBS)
+diff --git a/input/packet/Makefile.am b/input/packet/Makefile.am
+index 5c95e0576e00..3aa01112084e 100644
+--- a/input/packet/Makefile.am
++++ b/input/packet/Makefile.am
+@@ -19,5 +19,6 @@ if BUILD_NFLOG
+ pkglib_LTLIBRARIES += ulogd_inppkt_NFLOG.la
+ 
+ ulogd_inppkt_NFLOG_la_SOURCES = ulogd_inppkt_NFLOG.c
+-ulogd_inppkt_NFLOG_la_LDFLAGS = -avoid-version -module $(LIBNETFILTER_LOG_LIBS)
++ulogd_inppkt_NFLOG_la_LDFLAGS = -avoid-version -module
++ulogd_inppkt_NFLOG_la_LIBADD  = $(LIBNETFILTER_LOG_LIBS)
+ endif
 -- 
 2.33.0
 
