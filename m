@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D979244F84A
-	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Nov 2021 15:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A13944F84E
+	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Nov 2021 15:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234137AbhKNOEi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 14 Nov 2021 09:04:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41408 "EHLO
+        id S233961AbhKNOFI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 14 Nov 2021 09:05:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229862AbhKNOEX (ORCPT
+        with ESMTP id S233638AbhKNOE0 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 14 Nov 2021 09:04:23 -0500
+        Sun, 14 Nov 2021 09:04:26 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758ACC061200
-        for <netfilter-devel@vger.kernel.org>; Sun, 14 Nov 2021 06:01:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432EBC061767
+        for <netfilter-devel@vger.kernel.org>; Sun, 14 Nov 2021 06:01:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=YJDSq1MJxHJnZOnSwJU9fqNASWGAwk7dqrG5WCKbr5o=; b=pZHdPkMG4EDU5Xc8p2VItlTi5c
-        hI9oIlyFJvULBEj5IZr3+AGQdKT9D5iZ5dAwIk+e2VMyNE023LHmNk0QGjs9NgVFdApS1TKZhjIyX
-        uRjs/tZmsMrIo3xdmHPKkAiyvVhmkenaFl/UGmFZfBZ5KQ/0iVeMsXa4QCogGnX0Z1GD7FA2CcpNA
-        S4VhUDrlDsWCjtks3wXt7bCX+s8y4DTJqJdel+9MU0gJg5Wck0g6nmGElC2eEWIj5rZ/QYk17YiqZ
-        ZcIWmN+8D/jLDg39102RtfuVBMOz+TJgvTxYcQAs5PdTbMHBDA0hbw6Wu8qOHFAOM12GWwUSho4pU
-        RoA42wYw==;
+        bh=2cG2kbJoxCdqgMLOiGDaI7VMPqLqlgie6AEtJKwSrYE=; b=LwlT2tugbCBVHDA1mcgGYe1EdF
+        1AWDg6JNjW/B+Ff2+erZsCjn0RP5iViBvVJRK0yf2bpl9WLUL0cihsNt/w6OY2Booi3fNV2PcjgQy
+        2FhJ44bsRRx+ZRapblLZKIZap2+vFwjyPj10G/L33tGlYH1YhSNAWkb6QqOyk9gteafDiVoXQN9U7
+        dzeqoEhUqZmVRhTfs2CsV5KpNlgzmbOEPakJLE05kdSPaZeCMCfeCzLqwoel6cvFV1Jz3pwf4P4j4
+        cA4PxJBiiMEkv1BPoOA+LYluWWNX2g8odZ5mwhtX6RMk2bFbytYihgsEMhFsskA2tMrnCdHSwkoU5
+        plklG05w==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mmG4E-00Cdsh-JD
+        id 1mmG4E-00Cdsh-Or
         for netfilter-devel@vger.kernel.org; Sun, 14 Nov 2021 14:01:10 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 01/16] gitignore: add Emacs artefacts
-Date:   Sun, 14 Nov 2021 14:00:43 +0000
-Message-Id: <20211114140058.752394-2-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 02/16] gitignore: ignore .dirstamp
+Date:   Sun, 14 Nov 2021 14:00:44 +0000
+Message-Id: <20211114140058.752394-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211114140058.752394-1-jeremy@azazel.net>
 References: <20211114140058.752394-1-jeremy@azazel.net>
@@ -49,22 +49,27 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+It's created by automake while making sure that build directories (utils/
+and utils/.deps/, in this case) exist if the `subdir-objects` option is
+enabled.
+
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- .gitignore | 3 +++
- 1 file changed, 3 insertions(+)
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/.gitignore b/.gitignore
-index 0ff56cfe0423..3f218218dfc9 100644
+index 3f218218dfc9..3eb592245c0d 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -1,3 +1,6 @@
-+*~
-+.\#*
-+\#*\#
- # global
- *.la
+@@ -6,6 +6,7 @@
  *.lo
+ *.o
+ .deps/
++.dirstamp
+ .libs/
+ Makefile
+ Makefile.in
 -- 
 2.33.0
 
