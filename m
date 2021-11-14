@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8F244F8DA
-	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Nov 2021 16:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123FF44F8F2
+	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Nov 2021 17:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbhKNPzo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 14 Nov 2021 10:55:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
+        id S234584AbhKNQRt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 14 Nov 2021 11:17:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235283AbhKNPzk (ORCPT
+        with ESMTP id S234572AbhKNQRn (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 14 Nov 2021 10:55:40 -0500
+        Sun, 14 Nov 2021 11:17:43 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DBCC061202
-        for <netfilter-devel@vger.kernel.org>; Sun, 14 Nov 2021 07:52:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09FBC061746
+        for <netfilter-devel@vger.kernel.org>; Sun, 14 Nov 2021 08:14:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=2BcfBtMqBIE1iOXoL475HL8Ops6pZ2KT+Qb2/Z3xa1Y=; b=iVGvHv1V5g7QCPBP/qfEM1icba
-        nhVlrAYQY66KTXj17ocAcOqgwzbQcVRP19Y0X2QTfO4jITg+bParQbmk/MzTpjp75uInyLtGtE5lr
-        4b1lQtHaktwR+03ptRn1Zpns1LQ1VKtL0CX1o+aaSpOmgx+yd9AjglRBYZ1nq/iYJEuASaOneyiBB
-        sYbRUREP2cogBSAOzfLSC4Lugcd8y1jIvqQXrle5SBIc0GeWrTyNhYyKTaasWw3Cb8LUmORvkeYg4
-        dcvE/1SwTenKWB9+moG8eXcMXsTVhOdQpD+WrgzFzGIcNKA18q+K2x13W46qCBbpE5rWCJc7dfGki
-        cgMyo+Ow==;
+        bh=ezdX1ljJ0+CjfteV1LQXMBs75rvR0pzvIcVBz8RA5d0=; b=p3a0McIlrhsEL9Uonkjncn/ci0
+        zw6laxsdAJgheLSCYrcw9qnrMgYN4MHRFmYu/2uLPXulywazoJdPogsJpE191rqSHDD8a+gO1OT/c
+        cNsmzVz9YMzA9InnUTMurbkcO0snzEXYqdUDh4Zj/YvL/9qk/AxfDko1AfeneHtU4QqDaszAhm8PN
+        fllOqaZqkM8+fwsB4LDugjhE4flGvT2zOjKqRNMdIFvcWwOZhG3mcwrsGfAeGVVWwbjdHazt+jtJg
+        j28jHAzpiHdDoJ2gjeJiiQmbzXtpaqlQhgAfBUcGOcPxLy8CjeYLCMGoDYf6OpWDx/rW7cK1KigEp
+        fzCFwAPg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mmHo9-00CfJ1-AS
+        id 1mmHo9-00CfJ1-DS
         for netfilter-devel@vger.kernel.org; Sun, 14 Nov 2021 15:52:41 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v4 09/15] build: group `*_la_*` variables with their libraries
-Date:   Sun, 14 Nov 2021 15:52:25 +0000
-Message-Id: <20211114155231.793594-10-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v4 10/15] build: delete commented-out code
+Date:   Sun, 14 Nov 2021 15:52:26 +0000
+Message-Id: <20211114155231.793594-11-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211114155231.793594-1-jeremy@azazel.net>
 References: <20211114155231.793594-1-jeremy@azazel.net>
@@ -49,49 +49,30 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Move the `_SOURCES`, `_LIBADD` and `_LDFLAGS` variables for each
-input-packet library alongside the matching `.la` definition.  In
-particular, move the `NFLOG` and `ULOG` variables inside the
-conditionals controlling whether the libraries get built.
+There are a few of commented-out variable definitions left over from
+the introduction of Automake.  Remove them.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- input/packet/Makefile.am | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ input/flow/Makefile.am | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/input/packet/Makefile.am b/input/packet/Makefile.am
-index daf374a65917..5c95e0576e00 100644
---- a/input/packet/Makefile.am
-+++ b/input/packet/Makefile.am
-@@ -4,20 +4,20 @@ AM_CPPFLAGS += ${LIBNETFILTER_LOG_CFLAGS}
+diff --git a/input/flow/Makefile.am b/input/flow/Makefile.am
+index 2171a0cd80c8..fc95bdb85af8 100644
+--- a/input/flow/Makefile.am
++++ b/input/flow/Makefile.am
+@@ -2,10 +2,7 @@ include $(top_srcdir)/Make_global.am
  
- pkglib_LTLIBRARIES = ulogd_inppkt_UNIXSOCK.la
+ AM_CPPFLAGS += ${LIBNETFILTER_CONNTRACK_CFLAGS}
  
-+ulogd_inppkt_UNIXSOCK_la_SOURCES = ulogd_inppkt_UNIXSOCK.c
-+ulogd_inppkt_UNIXSOCK_la_LDFLAGS = -avoid-version -module
-+
- if BUILD_ULOG
- pkglib_LTLIBRARIES += ulogd_inppkt_ULOG.la
-+
-+ulogd_inppkt_ULOG_la_SOURCES = ulogd_inppkt_ULOG.c
-+ulogd_inppkt_ULOG_la_LDFLAGS = -avoid-version -module
-+ulogd_inppkt_ULOG_la_LIBADD = ../../libipulog/libipulog.la
- endif
+-pkglib_LTLIBRARIES = ulogd_inpflow_NFCT.la # ulogd_inpflow_IPFIX.la
++pkglib_LTLIBRARIES = ulogd_inpflow_NFCT.la
  
- if BUILD_NFLOG
- pkglib_LTLIBRARIES += ulogd_inppkt_NFLOG.la
--endif
- 
- ulogd_inppkt_NFLOG_la_SOURCES = ulogd_inppkt_NFLOG.c
- ulogd_inppkt_NFLOG_la_LDFLAGS = -avoid-version -module $(LIBNETFILTER_LOG_LIBS)
+ ulogd_inpflow_NFCT_la_SOURCES = ulogd_inpflow_NFCT.c
+ ulogd_inpflow_NFCT_la_LDFLAGS = -avoid-version -module $(LIBNETFILTER_CONNTRACK_LIBS)
 -
--ulogd_inppkt_ULOG_la_SOURCES = ulogd_inppkt_ULOG.c
--ulogd_inppkt_ULOG_la_LDFLAGS = -avoid-version -module
--ulogd_inppkt_ULOG_la_LIBADD = ../../libipulog/libipulog.la
--
--ulogd_inppkt_UNIXSOCK_la_SOURCES = ulogd_inppkt_UNIXSOCK.c
--ulogd_inppkt_UNIXSOCK_la_LDFLAGS = -avoid-version -module
-+endif
+-#ulogd_inpflow_IPFIX_la_SOURCES = ulogd_inpflow_IPFIX.c
+-#ulogd_inpflow_IPFIX_la_LDFLAGS = -avoid-version -module
 -- 
 2.33.0
 
