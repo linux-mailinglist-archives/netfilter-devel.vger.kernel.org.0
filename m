@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C49544F86D
-	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Nov 2021 15:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2E844F868
+	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Nov 2021 15:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236073AbhKNOSO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 14 Nov 2021 09:18:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
+        id S233961AbhKNORw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 14 Nov 2021 09:17:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbhKNOSN (ORCPT
+        with ESMTP id S236147AbhKNORm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 14 Nov 2021 09:18:13 -0500
+        Sun, 14 Nov 2021 09:17:42 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC84AC061767
-        for <netfilter-devel@vger.kernel.org>; Sun, 14 Nov 2021 06:15:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D933DC061746
+        for <netfilter-devel@vger.kernel.org>; Sun, 14 Nov 2021 06:14:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=bYIQTA4SMrV3RiFmqhU7m2VxDYgQ3RMfnoe4g1RHe+4=; b=Qvu5rQew8vLn9Rj8iT2quePxNb
-        bR3VgnHjL8q2u/3ONkypgrqeJ18b6+JAMh76f+km8EUAiimFEjJJfm54UeET6XfWTvemU0MZ7u+P5
-        hoeGMX6AR+DrS9nHD7E7gEFJMxvSBFTZ0p9tBYlyxC9BqOR2CWYZJS8k0uqRwd8zRabn2y+wskXQ6
-        kgqDM8MsS3V4doPNLF7VkTcSPTgKFatX0FkDyYQQa6HhHVDbopyvpPX7mA5aLs5FimhlKdSZEjA7K
-        7k6mj+2bbQL2gAevFmGvDfsatyBR8mibuXvmsY5GuErVclZu7UVLTY4gko2tvFFkSV/xP3oMHydAu
-        jKB3cEYQ==;
+        bh=ONepf3pISGvyVbAbbX5ppobFRD13w2Y1xOwvn42GVr4=; b=j95jf7exJvNR3P6Ozs9afMYYj3
+        9D0ciguiACLiwTMYQn9z4fwLSDG1GFwMgM2GIlHBLvdi8Uj6lvJg53smTkMJj5DUaqfJKhjqMOTHh
+        XgKj9xD+Ciw9/R2pPe5+eYX0e6HiSObZn59+hiXyOElBpVTpORl8zBHzMhwS3b7EjlQgqMLDLGmLo
+        9Usk3koL+eC4FZehZpFKjXSZpg/jZb+/pRwvSf3zS2X44pVqilVbjwyJvb62sbfDnzde7O6uL6XGz
+        xuQN0fu0GQDhmRYgZtZl1qORnjS33NCunXwz9oYHA0vav+/i8st+Jc79WF0ENYebgA1T033my6HXw
+        xil4yyZw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mmG4G-00Cdsh-Mj
+        id 1mmG4G-00Cdsh-Sr
         for netfilter-devel@vger.kernel.org; Sun, 14 Nov 2021 14:01:12 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 12/16] build: update obsolete autoconf macros
-Date:   Sun, 14 Nov 2021 14:00:54 +0000
-Message-Id: <20211114140058.752394-13-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 13/16] build: remove commented-out code
+Date:   Sun, 14 Nov 2021 14:00:55 +0000
+Message-Id: <20211114140058.752394-14-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211114140058.752394-1-jeremy@azazel.net>
 References: <20211114140058.752394-1-jeremy@azazel.net>
@@ -49,50 +49,37 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-`AC_CONFIG_HEADER` has been superseded by `AC_CONFIG_HEADERS`.
-
-`AC_PROG_LIBTOOL` has been superseded by `LT_INIT`.
-
-`AC_DISABLE_STATIC` can be replaced by an argument to `LT_INIT`.
-
-`AC_HEADER_STDC` is obsolete.
+There are a couple of blocks of macros in configure.ac which were
+commented out in 2006.  Remove them.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- configure.ac | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ configure.ac | 12 ------------
+ 1 file changed, 12 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index f7d6b50c47f5..b88c7a6d7708 100644
+index b88c7a6d7708..268cd10de2da 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3,7 +3,7 @@ AC_INIT([ulogd], [2.0.7])
- AC_PREREQ([2.50])
- AC_CONFIG_AUX_DIR([build-aux])
- AM_INIT_AUTOMAKE([-Wall foreign tar-pax no-dist-gzip dist-bzip2 1.10b subdir-objects])
--AC_CONFIG_HEADER([config.h])
-+AC_CONFIG_HEADERS([config.h])
- AC_CONFIG_MACRO_DIR([m4])
+@@ -155,18 +155,6 @@ AC_ARG_WITH([ulogd2libdir],
+         [ulogd2libdir="${libdir}/ulogd"])
+ AC_SUBST([ulogd2libdir])
  
- m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
-@@ -14,8 +14,7 @@ dnl Checks for programs.
- AC_PROG_MAKE_SET
- AC_PROG_CC
- AC_PROG_INSTALL
--AC_DISABLE_STATIC
--AC_PROG_LIBTOOL
-+LT_INIT([disable-static])
- 
- dnl Checks for libraries.
- AC_SEARCH_LIBS([dlopen], [dl], [libdl_LIBS="$LIBS"; LIBS=""])
-@@ -23,7 +22,6 @@ AC_SUBST([libdl_LIBS])
- 
- dnl Checks for header files.
- AC_HEADER_DIRENT
--AC_HEADER_STDC
- AC_CHECK_HEADERS(fcntl.h unistd.h)
- 
- dnl Checks for typedefs, structures, and compiler characteristics.
+-dnl AC_SUBST(DATABASE_DIR)
+-dnl AC_SUBST(DATABASE_LIB)
+-dnl AC_SUBST(DATABASE_LIB_DIR)
+-dnl AC_SUBST(DB_DEF)
+-dnl AC_SUBST(EXTRA_MYSQL_DEF)
+-dnl AC_SUBST(EXTRA_PGSQL_DEF)
+-
+-dnl AC_SUBST(DATABASE_DRIVERS)
+-
+-dnl AM_CONDITIONAL(HAVE_MYSQL, test x$mysqldir != x)
+-dnl AM_CONDITIONAL(HAVE_PGSQL, test x$pgsqldir != x)
+-
+ AC_CONFIG_FILES(include/Makefile include/ulogd/Makefile include/libipulog/Makefile \
+ 	  include/linux/Makefile include/linux/netfilter/Makefile \
+ 	  include/linux/netfilter_ipv4/Makefile libipulog/Makefile \
 -- 
 2.33.0
 
