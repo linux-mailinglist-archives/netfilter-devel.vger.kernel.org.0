@@ -2,130 +2,113 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F5544F7BD
-	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Nov 2021 12:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EACA44F846
+	for <lists+netfilter-devel@lfdr.de>; Sun, 14 Nov 2021 15:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235762AbhKNMCG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 14 Nov 2021 07:02:06 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:60844 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235895AbhKNMCE (ORCPT
+        id S232277AbhKNOEX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 14 Nov 2021 09:04:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229725AbhKNOEN (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 14 Nov 2021 07:02:04 -0500
-Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 91FC56063B
-        for <netfilter-devel@vger.kernel.org>; Sun, 14 Nov 2021 12:57:06 +0100 (CET)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH conntrack-tools 3/3] conntrack: use libmnl for listing conntrack table
-Date:   Sun, 14 Nov 2021 12:59:05 +0100
-Message-Id: <20211114115905.608546-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211114115905.608546-1-pablo@netfilter.org>
-References: <20211114115905.608546-1-pablo@netfilter.org>
+        Sun, 14 Nov 2021 09:04:13 -0500
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0932C061746
+        for <netfilter-devel@vger.kernel.org>; Sun, 14 Nov 2021 06:01:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=zNkx4FmWX8/ElWt8zYlP8hTZ005/S5g38VQ7p+QrZRs=; b=sK/msRlut+uF8jdpolWbme+s2m
+        2kHWwQDvUIBpn4Rh2QdP3MY3x4fNkUd8MguYM+jOPFFpSe5z/Pi0LVydiVOErMEgdMQkg6V94u2bG
+        QeBS3R3JRLUS6Kh8f2GydD+QHGVH+vmAApgfhCcER/dIUa9/d2adAMcjOb8Aae25IHL8f+zmJTdvI
+        F0V12l3wcm2hgvkGxniefU3gzS44J8IkExG2OV8zJ+UsH3worhoAosvNAsjSS6Gep84C0Q6nfMp6K
+        geS3kCVOCG8tOjc2WrhUwN8bDqmUwhm0yb1Ly//8+KNHe+sO9lIGLKD54n1U+elR9L9jHtYy3nqCF
+        CZ7uF8MQ==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.94.2)
+        (envelope-from <jeremy@azazel.net>)
+        id 1mmG4B-00Cdsh-TO
+        for netfilter-devel@vger.kernel.org; Sun, 14 Nov 2021 14:01:10 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [ulogd2 PATCH v3 00/16] Build Improvements
+Date:   Sun, 14 Nov 2021 14:00:42 +0000
+Message-Id: <20211114140058.752394-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Use libmnl and libnetfilter_conntrack mnl helpers to dump the conntrack
-table entries.
+Some tidying and autotools updates and fixes.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- src/conntrack.c | 36 ++++++++++++++++--------------------
- 1 file changed, 16 insertions(+), 20 deletions(-)
+Changes since v2:
 
-diff --git a/src/conntrack.c b/src/conntrack.c
-index 7d9eddb0f5d1..5bd3cb56b641 100644
---- a/src/conntrack.c
-+++ b/src/conntrack.c
-@@ -2451,6 +2451,9 @@ nfct_mnl_dump(uint16_t subsys, uint16_t type, mnl_cb_t cb,
- 
- 	nlh = nfct_mnl_nlmsghdr_put(buf, subsys, type, family);
- 
-+	if (filter_dump)
-+		nfct_nlmsg_build_filter(nlh, filter_dump);
-+
- 	res = mnl_socket_sendto(sock.mnl, nlh, nlh->nlmsg_len);
- 	if (res < 0)
- 		return res;
-@@ -3216,32 +3219,23 @@ static int do_command_ct(const char *progname, struct ct_cmd *cmd)
- 
- 	switch(cmd->command) {
- 	case CT_LIST:
--		if (cmd->type == CT_TABLE_DYING) {
--			if (nfct_mnl_socket_open(0) < 0)
--				exit_error(OTHER_PROBLEM, "Can't open handler");
-+		if (nfct_mnl_socket_open(0) < 0)
-+			exit_error(OTHER_PROBLEM, "Can't open handler");
- 
-+		if (cmd->type == CT_TABLE_DYING) {
- 			res = nfct_mnl_dump(NFNL_SUBSYS_CTNETLINK,
- 					    IPCTNL_MSG_CT_GET_DYING,
- 					    mnl_nfct_dump_cb, cmd, NULL);
--
- 			nfct_mnl_socket_close();
- 			break;
- 		} else if (cmd->type == CT_TABLE_UNCONFIRMED) {
--			if (nfct_mnl_socket_open(0) < 0)
--				exit_error(OTHER_PROBLEM, "Can't open handler");
--
- 			res = nfct_mnl_dump(NFNL_SUBSYS_CTNETLINK,
- 					    IPCTNL_MSG_CT_GET_UNCONFIRMED,
- 					    mnl_nfct_dump_cb, cmd, NULL);
--
- 			nfct_mnl_socket_close();
- 			break;
- 		}
- 
--		cth = nfct_open(CONNTRACK, 0);
--		if (!cth)
--			exit_error(OTHER_PROBLEM, "Can't open handler");
--
- 		if (cmd->options & CT_COMPARISON &&
- 		    cmd->options & CT_OPT_ZERO)
- 			exit_error(PARAMETER_PROBLEM, "Can't use -z with "
-@@ -3249,8 +3243,6 @@ static int do_command_ct(const char *progname, struct ct_cmd *cmd)
- 
- 		nfct_filter_init(cmd);
- 
--		nfct_callback_register(cth, NFCT_T_ALL, dump_cb, cmd);
--
- 		filter_dump = nfct_filter_dump_create();
- 		if (filter_dump == NULL)
- 			exit_error(OTHER_PROBLEM, "OOM");
-@@ -3268,11 +3260,15 @@ static int do_command_ct(const char *progname, struct ct_cmd *cmd)
- 						  NFCT_FILTER_DUMP_STATUS,
- 						  &cmd->tmpl.filter_status_kernel);
- 		}
--		if (cmd->options & CT_OPT_ZERO)
--			res = nfct_query(cth, NFCT_Q_DUMP_FILTER_RESET,
--					filter_dump);
--		else
--			res = nfct_query(cth, NFCT_Q_DUMP_FILTER, filter_dump);
-+		if (cmd->options & CT_OPT_ZERO) {
-+			res = nfct_mnl_dump(NFNL_SUBSYS_CTNETLINK,
-+					    IPCTNL_MSG_CT_GET_CTRZERO,
-+					    mnl_nfct_dump_cb, cmd, filter_dump);
-+		} else {
-+			res = nfct_mnl_dump(NFNL_SUBSYS_CTNETLINK,
-+					    IPCTNL_MSG_CT_GET,
-+					    mnl_nfct_dump_cb, cmd, filter_dump);
-+		}
- 
- 		nfct_filter_dump_destroy(filter_dump);
- 
-@@ -3281,7 +3277,7 @@ static int do_command_ct(const char *progname, struct ct_cmd *cmd)
- 			fflush(stdout);
- 		}
- 
--		nfct_close(cth);
-+		nfct_mnl_socket_close();
- 		break;
- 
- 	case EXP_LIST:
+  * more detailed commit-messages for most patches;
+  * a number of the patches have been broken up or restructured
+    for easier review;
+  * patch 14, which removes a number of `AC_SUBST` calls, is new.
+
+Changes since v1:
+
+  * ignore `.dirstamp` anywhere;
+  * fix `--disable-static`;
+  * drop `AC_PREREQ` bump.
+
+Jeremy Sowden (16):
+  gitignore: add Emacs artefacts
+  gitignore: ignore .dirstamp
+  build: remove unused Makefile fragment
+  build: remove empty filter sub-directory
+  build: move CPP `-D` flag.
+  build: add Make_global.am for common flags
+  build: use `dist_man_MANS` to declare man-pages
+  build: skip sub-directories containing disabled plugins
+  build: group `*_la_*` variables with their libraries
+  build: delete commented-out code
+  build: use correct automake variable for library dependencies
+  build: update obsolete autoconf macros
+  build: remove commented-out code
+  build: remove unnecessary `AC_SUBST` calls
+  build: quote autoconf macro arguments
+  build: use `AS_IF` consistently in configure.ac
+
+ .gitignore                     |   5 +-
+ Make_global.am                 |   2 +
+ Makefile.am                    |  11 +-
+ Rules.make.in                  |  43 ------
+ acinclude.m4                   |  13 --
+ configure.ac                   | 241 ++++++++++++++-------------------
+ filter/Makefile.am             |   7 +-
+ filter/packet2flow/Makefile.am |   0
+ filter/raw2packet/Makefile.am  |   4 +-
+ include/libipulog/Makefile.am  |   1 -
+ include/ulogd/Makefile.am      |   1 -
+ input/Makefile.am              |   9 +-
+ input/flow/Makefile.am         |  14 +-
+ input/packet/Makefile.am       |  23 ++--
+ input/sum/Makefile.am          |   9 +-
+ libipulog/Makefile.am          |   4 +-
+ output/Makefile.am             |  35 ++++-
+ output/dbi/Makefile.am         |   8 +-
+ output/ipfix/Makefile.am       |   3 +-
+ output/mysql/Makefile.am       |   7 +-
+ output/pcap/Makefile.am        |   8 +-
+ output/pgsql/Makefile.am       |   8 +-
+ output/sqlite3/Makefile.am     |   7 +-
+ src/Makefile.am                |   8 +-
+ 24 files changed, 194 insertions(+), 277 deletions(-)
+ create mode 100644 Make_global.am
+ delete mode 100644 Rules.make.in
+ delete mode 100644 filter/packet2flow/Makefile.am
+
 -- 
-2.30.2
+2.33.0
 
