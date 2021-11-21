@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4E345865A
-	for <lists+netfilter-devel@lfdr.de>; Sun, 21 Nov 2021 21:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F91D458656
+	for <lists+netfilter-devel@lfdr.de>; Sun, 21 Nov 2021 21:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233089AbhKUUo5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 21 Nov 2021 15:44:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232930AbhKUUo4 (ORCPT
-        <rfc822;netfilter-devel@vger.kernel.org>);
+        id S231524AbhKUUo4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Sun, 21 Nov 2021 15:44:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231284AbhKUUoz (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Sun, 21 Nov 2021 15:44:55 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4F3C06174A
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91490C061574
         for <netfilter-devel@vger.kernel.org>; Sun, 21 Nov 2021 12:41:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=0UtzhUaOBtyrnyy3mKZVtkzz0ztQvQhzn5O/MkDmSI0=; b=DTAcE2dzciu52eMIwz6D5giTCL
-        VtbfYDoVZ6V3Z4AwS14GCOZyKzbIJiyQ5Y00ZAI9M09osVFst+pQN3h5VSnGslDzLfYtb0zgnKvBL
-        1N8vxrzVmow5+FaW7XmgaA9JhmURXc6gbsEFvg4em/4Bi1pTnaGmJnF9aCpgfnA13wEx+pUZKlJ7z
-        Rlqh93+9y9fiF04rlA6WZkjhiHrwuMq6z9GUay/1A5DQBBigRriqnn5cCKMgZVovRpJ99E9Rn8GLQ
-        /gtgmeXbfLOtSTkfg05WVuzVoNZ6YoITePD/dwdOFcc8Hh40e029E+wHGo5AwZh8eKmiaEWpfBOTz
-        M8YakBNA==;
+        bh=rYtJUMdSa9fSrfppjW961Q/Ptv3WFOPynYa297e9/RM=; b=V2LtlyjC5eBess5uhzMGQzQRrk
+        emv0+O4jBl25dwJJqyVZHQh7GUplCVP1BqOzqjlwNakHVMOGSh8U1+5UAN6mHTB4rLp8+nLp+KFhE
+        IKWobV+3+yIu5fcm41+oeJMVs+x/duE+talQD58WfDR2JYu+L7gu8MyqtURWcrW5rUkAb29U7Ru98
+        IsRDrkTtNBe2+4Ewt+Q4tuzPm8eL4QlfntVBef2u0AsuEb1hNi7ZtFzNsvSCX0lrvD6dJE4zmDjl5
+        5N28MHFk1mM4yD4V9jzYq8iWR9EztzIzm5GKVvC10OAYUWfRC5LZqtxHmbqYwkZpyYtJ+XoaWJPWX
+        zI1+4Smg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1motel-0025lK-4A
+        id 1motel-0025lK-6V
         for netfilter-devel@vger.kernel.org; Sun, 21 Nov 2021 20:41:47 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 1/5] include: add `format` attribute to `__ulogd_log` declaration
-Date:   Sun, 21 Nov 2021 20:41:35 +0000
-Message-Id: <20211121204139.2218387-2-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 2/5] ulogd: remove empty log-line
+Date:   Sun, 21 Nov 2021 20:41:36 +0000
+Message-Id: <20211121204139.2218387-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211121204139.2218387-1-jeremy@azazel.net>
 References: <20211121204139.2218387-1-jeremy@azazel.net>
@@ -49,32 +49,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-`__ulogd_log` takes a printf-style format string and matching arguments.
-Add the gcc `format` attribute to its declaration in order to allow the
-compiler to type-check the function arguments against the specifiers in
-the format string.
+There is a `strdup` at the beginning of `create_stack`.  If it fails, an
+empty log-line is printed.  It's not useful, so remove it.  This is
+consistent with the error-handling of the `malloc` which immediately
+follows it.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/ulogd/ulogd.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ src/ulogd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/ulogd/ulogd.h b/include/ulogd/ulogd.h
-index 1636a8caa854..a487c8e70e37 100644
---- a/include/ulogd/ulogd.h
-+++ b/include/ulogd/ulogd.h
-@@ -299,8 +299,9 @@ void ulogd_register_plugin(struct ulogd_plugin *me);
- /* allocate a new ulogd_key */
- struct ulogd_key *alloc_ret(const uint16_t type, const char*);
+diff --git a/src/ulogd.c b/src/ulogd.c
+index 9cd64e8e19b2..a31b35592a87 100644
+--- a/src/ulogd.c
++++ b/src/ulogd.c
+@@ -965,7 +965,6 @@ static int create_stack(const char *option)
+ 		load_all_plugins();
  
--/* write a message to the daemons' logfile */
--void __ulogd_log(int level, char *file, int line, const char *message, ...);
-+/* write a message to the daemon's logfile */
-+void __ulogd_log(int level, char *file, int line, const char *message, ...)
-+	__attribute__((format(printf, 4, 5)));
- /* macro for logging including filename and line number */
- #define ulogd_log(level, format, args...) \
- 	__ulogd_log(level, __FILE__, __LINE__, format, ## args)
+ 	if (!buf) {
+-		ulogd_log(ULOGD_ERROR, "");
+ 		ret = -ENOMEM;
+ 		goto out_buf;
+ 	}
 -- 
 2.33.0
 
