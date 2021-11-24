@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABA245D037
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B87C45D04A
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344133AbhKXWsD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 17:48:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
+        id S1346037AbhKXWsf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 17:48:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245619AbhKXWsA (ORCPT
+        with ESMTP id S245475AbhKXWsf (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:48:00 -0500
+        Wed, 24 Nov 2021 17:48:35 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04397C061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:44:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0755C061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:45:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=6DeriJC9ToutIxYShYBrIiqaFs1BSOfIJICtIUZo6vM=; b=KbwEvt+E+WZxqA2kz2HTw3H1JP
-        cUW95HMYnB7p8Jx43cJW1bxwL+6zVFP6GtETntKUoC4N17Ym2FPO7Zm13RhFMTdWFDGLdpnKS+tuq
-        4Bnf3rye1wimzDCJRdMnEQO46nEplVVDZRdULCrXjfH91ROjWjyO0ImF9zpAZ6QKQPZRna7KSNPEP
-        KSDv1bj7+nCQ2qBXx1p0UR3d8P62DR0EklfinSaLLlrYLXHwDHKVuD1XkDLsk/BnwS0Rejtrzo72Z
-        rCzl2ot6HULBpftt4IyOa4Nrm6wBtdEXVRKeX1aDSOUneF7G0g6HQrrs/OTOyHlgMWPgoYG+sz0yQ
-        d/Fz7RHQ==;
+        bh=nLjZoZWvYBnW/f7fYHs5AqTcpS1Fyhwvk5e+Qhzvfa4=; b=Tbf9ilfUQHyAQP5akSYtLR+x3h
+        eXc9SudqnnAwKGDrlkZt/s4TCd7Ens3FcRYsgw9srgPq0XlbODfvfC3dX5H0B5+V/VMLzw6bks+4G
+        Kay5JP+KVDQU3l+uMMixx4PKIyGW/6pDbfOnJiWzD2YtP+EXQZCABwLJ2jkhsezyPeOr4Lcq9qixy
+        BQ3hMtNbfLoFMAqzhIAf+Q8mmZyvD7yjUXZ2AvCGPuT+R6wMEod2HA/hlxLY1PTnBNCM2trI6iqrl
+        sWz53rgfVcNf8X/SfYT3bo9L94KabxIhK22f8+pPy/BJOhka779KZw1OawT1zefxkgv6sduqf8s/Q
+        83eMvdcA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mq0h9-00563U-9l
+        id 1mq0h9-00563U-E5
         for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:51 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 21/32] output: SQLITE3: improve mapping of DB columns to fields
-Date:   Wed, 24 Nov 2021 22:24:24 +0000
-Message-Id: <20211124222444.2597311-30-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 22/30] db: improve formatting of insert statement
+Date:   Wed, 24 Nov 2021 22:24:25 +0000
+Message-Id: <20211124222444.2597311-31-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124222444.2597311-1-jeremy@azazel.net>
 References: <20211124222444.2597311-1-jeremy@azazel.net>
@@ -49,80 +49,73 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Currently, we copy the column-name to a buffer, iterate over it to
-replace the underscores with full-stops, using `strchr` from the start
-of the buffer on each iteration, then copy the buffer to the field's
-`name` member.
+`sql_createstmt` contains a variable `stmt_val` which points to the end
+of the SQL already written, at which the next chunk should be appended.
+Hitherto, this was assigned after every write:
 
-Apart from the inefficiency, `strncpy` is used to do the copies, which
-leads gcc to complain:
+  sprintf(stmt_val, ...);
+  stmt_val = mi->stmt + strlen(mi->stmt);
 
-  ulogd_output_SQLITE3.c:341:17: warning: `strncpy` output may be truncated copying 31 bytes from a string of length 31
-
-Furthermore, the buffer is not initialized, which means that there is
-also a possible buffer overrun if the column-name is too long, since
-`strncpy` will not append a NUL.
-
-Instead, copy the column-name directly to the field using `snprintf`,
-and run `strchr` from the last underscore on each iteration.
+However, since `sprintf` returns the number of bytes written, we can
+avoid the repeated `strlen` calls by incrementing `stmt_val` by the
+return-value of `sprintf`.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/sqlite3/ulogd_output_SQLITE3.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ util/db.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/output/sqlite3/ulogd_output_SQLITE3.c b/output/sqlite3/ulogd_output_SQLITE3.c
-index da1c09f08047..e3040a8a2fac 100644
---- a/output/sqlite3/ulogd_output_SQLITE3.c
-+++ b/output/sqlite3/ulogd_output_SQLITE3.c
-@@ -303,9 +303,6 @@ static int
- sqlite3_init_db(struct ulogd_pluginstance *pi)
- {
- 	struct sqlite3_priv *priv = (void *)pi->private;
--	char buf[ULOGD_MAX_KEYLEN + 1];
--	char *underscore;
--	struct field *f;
- 	sqlite3_stmt *schema_stmt;
- 	int col, num_cols;
+diff --git a/util/db.c b/util/db.c
+index f0711146867f..2dbe0db2fbfe 100644
+--- a/util/db.c
++++ b/util/db.c
+@@ -67,7 +67,6 @@ static int sql_createstmt(struct ulogd_pluginstance *upi)
+ 	unsigned int i;
+ 	char *table = table_ce(upi->config_kset).u.string;
+ 	char *procedure = procedure_ce(upi->config_kset).u.string;
+-	char *stmt_val = NULL;
  
-@@ -325,24 +322,27 @@ sqlite3_init_db(struct ulogd_pluginstance *pi)
- 	}
+ 	if (mi->stmt)
+ 		free(mi->stmt);
+@@ -96,20 +95,21 @@ static int sql_createstmt(struct ulogd_pluginstance *upi)
+ 	if (strncasecmp(procedure,"INSERT", strlen("INSERT")) == 0 &&
+ 	    (procedure[strlen("INSERT")] == '\0' ||
+ 			procedure[strlen("INSERT")] == ' ')) {
++		char *stmt_val = mi->stmt;
+ 		char buf[ULOGD_MAX_KEYLEN];
+ 		char *underscore;
  
- 	for (col = 0; col < num_cols; col++) {
--		strncpy(buf, sqlite3_column_name(schema_stmt, col), ULOGD_MAX_KEYLEN);
+ 		if(procedure[6] == '\0') {
+ 			/* procedure == "INSERT" */
+ 			if (mi->schema)
+-				sprintf(mi->stmt, "insert into %s.%s (", mi->schema, table);
++				stmt_val += sprintf(stmt_val,
++						    "insert into %s.%s (",
++						    mi->schema, table);
+ 			else
+-				sprintf(mi->stmt, "insert into %s (", table);
+-		}
+-		else
+-			sprintf(mi->stmt, "%s (", procedure);
 -
--		/* replace all underscores with dots */
--		while ((underscore = strchr(buf, '_')) != NULL)
--			*underscore = '.';
--
--		DEBUGP("field '%s' found\n", buf);
-+		struct field *f;
-+		char *underscore;
+-		stmt_val = mi->stmt + strlen(mi->stmt);
++				stmt_val += sprintf(stmt_val,
++						    "insert into %s (", table);
++		} else
++			stmt_val += sprintf(stmt_val, "%s (", procedure);
  
- 		/* prepend it to the linked list */
- 		if ((f = calloc(1, sizeof(struct field))) == NULL) {
- 			ulogd_log(ULOGD_ERROR, "SQLITE3: out of memory\n");
- 			return -1;
+ 		for (i = 0; i < upi->input.num_keys; i++) {
+ 			if (upi->input.keys[i].flags & ULOGD_KEYF_INACTIVE)
+@@ -118,8 +118,7 @@ static int sql_createstmt(struct ulogd_pluginstance *upi)
+ 			strncpy(buf, upi->input.keys[i].name, ULOGD_MAX_KEYLEN);	
+ 			while ((underscore = strchr(buf, '.')))
+ 				*underscore = '_';
+-			sprintf(stmt_val, "%s,", buf);
+-			stmt_val = mi->stmt + strlen(mi->stmt);
++			stmt_val += sprintf(stmt_val, "%s,", buf);
  		}
--		strncpy(f->name, buf, ULOGD_MAX_KEYLEN);
-+		snprintf(f->name, sizeof(f->name),
-+			 "%s", sqlite3_column_name(schema_stmt, col));
-+
-+		/* replace all underscores with dots */
-+		for (underscore = f->name;
-+		     (underscore = strchr(underscore, '_')) != NULL; )
-+			*underscore = '.';
-+
-+		DEBUGP("field '%s' found\n", f->name);
+ 		*(stmt_val - 1) = ')';
  
--		if ((f->key = ulogd_find_key(pi, buf)) == NULL) {
-+		if ((f->key = ulogd_find_key(pi, f->name)) == NULL) {
- 			ulogd_log(ULOGD_ERROR,
--				  "SQLITE3: unknown input key: %s\n", buf);
-+				  "SQLITE3: unknown input key: %s\n", f->name);
- 			free(f);
- 			return -1;
- 		}
 -- 
 2.33.0
 
