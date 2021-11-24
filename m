@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B47345D003
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C54245D00C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344168AbhKXW2C (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 17:28:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
+        id S1344384AbhKXW2J (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 17:28:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235257AbhKXW2A (ORCPT
+        with ESMTP id S1344009AbhKXW2A (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Wed, 24 Nov 2021 17:28:00 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF52C06173E
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90184C06174A
         for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:24:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=uJPyc8Um7TiptWK8LwD+zUMbwdgd+J05Ge9aSnvU6xU=; b=LTkPe496+DQ1nJAAOCKM1fTSwu
-        Z+nFVK33Sk1rru9ncS3HlAmXn4e0A1FABo5yH+uhw4eYZHvrLZRJDI07LZ5xvtt8AlFClxyOUJE2y
-        XC5i7NXdFY2WCwGZmku63DRb2bRYUstWUsr5J1FJRQa6ixGa/ISdQVsXRP3svoYMQxqKEtb5rMl7r
-        qzZ0z7q9gqkoPg9M3S2O8vVVDTUD9l/7gWI43Jl1MA3NthokLSqvWj1fe4F1e52glOJu8Q7Zscf/5
-        V3iUCqCWrN6SlN15XSbeZ2HEqklWiY9zeewZZgJKy9sGZiaCCx8Fyr/nxtknXedBfrrZ2N+qrOV20
-        FJlYnyvg==;
+        bh=Amt29jxp87u6n/DjPlkhLKoZyc5pkmCe89FsGOlwNpQ=; b=oJOJLygX2H5+pPwH7fTD9gQny2
+        2+cVkiWY92KZfXjVa72JNUJe0nr2spPyybyReGs7+mhlut0oXXwQ5zUaxgCfeSGOJ1lAAs22b+/TM
+        Ljn4agkXiMlQ9vUPyS+GLbPVXqsvyR1o3ACYthSZPw8tSZ2phoBx2Z7HjZSrIGcQJc0a8NbLAmFr4
+        DCL8yiSW9UtdhvL0/lNGPmZ0vspMuD0CjBIsYnbHtCE+mZBfcFGfEMfjidOHO+A05bE089BvFTc48
+        C24MvShUaTWCftyhuyWutrp8pXvH4+OjRyFi09wIXg/ut0dyfbU/R37GRSJlJnv+fZTRvbb7TZX3s
+        PSM/bA3Q==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mq0h6-00563U-9x
+        id 1mq0h6-00563U-DT
         for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:48 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 01/32] jhash: add "fall through" comments to switch cases
-Date:   Wed, 24 Nov 2021 22:23:56 +0000
-Message-Id: <20211124222444.2597311-2-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 02/32] db: add missing `break` to switch case
+Date:   Wed, 24 Nov 2021 22:23:57 +0000
+Message-Id: <20211124222444.2597311-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124222444.2597311-1-jeremy@azazel.net>
 References: <20211124222444.2597311-1-jeremy@azazel.net>
@@ -49,50 +49,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-gcc warns about undocumented fall-throughs in switches.  In this case,
-the fall-throughs are intended, so add commnts to indicate this to the
-compiler.
+When formatting DB queries, if we get a input key of type `RAW`, we log
+a message indicating that `RAW` is unsupported, then fall through to the
+default case, which logs another message that the key type is unknown.
+Add the missing `break` statement to prevent the fall-through.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/ulogd/jhash.h | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ util/db.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/ulogd/jhash.h b/include/ulogd/jhash.h
-index 38b87801a795..e5ca287e7e58 100644
---- a/include/ulogd/jhash.h
-+++ b/include/ulogd/jhash.h
-@@ -66,18 +66,18 @@ static inline u32 jhash(const void *key, u32 length, u32 initval)
- 
- 	c += length;
- 	switch (len) {
--	case 11: c += ((u32)k[10]<<24);
--	case 10: c += ((u32)k[9]<<16);
--	case 9 : c += ((u32)k[8]<<8);
--	case 8 : b += ((u32)k[7]<<24);
--	case 7 : b += ((u32)k[6]<<16);
--	case 6 : b += ((u32)k[5]<<8);
--	case 5 : b += k[4];
--	case 4 : a += ((u32)k[3]<<24);
--	case 3 : a += ((u32)k[2]<<16);
--	case 2 : a += ((u32)k[1]<<8);
--	case 1 : a += k[0];
--	};
-+	case 11: c += ((u32)k[10]<<24);	// fall through
-+	case 10: c += ((u32)k[9]<<16);	// fall through
-+	case 9 : c += ((u32)k[8]<<8);	// fall through
-+	case 8 : b += ((u32)k[7]<<24);	// fall through
-+	case 7 : b += ((u32)k[6]<<16);	// fall through
-+	case 6 : b += ((u32)k[5]<<8);	// fall through
-+	case 5 : b += k[4];		// fall through
-+	case 4 : a += ((u32)k[3]<<24);	// fall through
-+	case 3 : a += ((u32)k[2]<<16);	// fall through
-+	case 2 : a += ((u32)k[1]<<8);	// fall through
-+	case 1 : a += k[0];		// fall through
-+	}
- 
- 	__jhash_mix(a,b,c);
- 
+diff --git a/util/db.c b/util/db.c
+index c9aec418e9ed..f0711146867f 100644
+--- a/util/db.c
++++ b/util/db.c
+@@ -388,6 +388,7 @@ static void __format_query_db(struct ulogd_pluginstance *upi, char *start)
+ 		case ULOGD_RET_RAW:
+ 			ulogd_log(ULOGD_NOTICE,
+ 				"Unsupported RAW type is unsupported in SQL output");
++			break;
+ 		default:
+ 			ulogd_log(ULOGD_NOTICE,
+ 				"unknown type %d for %s\n",
 -- 
 2.33.0
 
