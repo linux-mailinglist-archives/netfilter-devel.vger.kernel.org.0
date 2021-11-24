@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0259B45CADD
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 18:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068A945CAE2
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 18:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237889AbhKXR1e (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 12:27:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60890 "EHLO
+        id S237908AbhKXR1j (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 12:27:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237938AbhKXR1W (ORCPT
+        with ESMTP id S237938AbhKXR1j (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:27:22 -0500
+        Wed, 24 Nov 2021 12:27:39 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F8AC06173E
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 09:24:13 -0800 (PST)
-Received: from localhost ([::1]:44886 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D05C061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 09:24:29 -0800 (PST)
+Received: from localhost ([::1]:44904 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mpw0B-000191-95; Wed, 24 Nov 2021 18:24:11 +0100
+        id 1mpw0R-0001AG-PB; Wed, 24 Nov 2021 18:24:27 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 07/15] datatype: Fix size of time_type
-Date:   Wed, 24 Nov 2021 18:22:43 +0100
-Message-Id: <20211124172251.11539-8-phil@nwl.cc>
+Subject: [nft PATCH 08/15] ct: Fix ct label value parser
+Date:   Wed, 24 Nov 2021 18:22:44 +0100
+Message-Id: <20211124172251.11539-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124172251.11539-1-phil@nwl.cc>
 References: <20211124172251.11539-1-phil@nwl.cc>
@@ -34,49 +34,38 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Used by 'ct expiration', time_type is supposed to be 32bits. Passing a
-64bits variable to constant_expr_alloc() causes the value to be always
-zero on Big Endian.
+Size of array to export the bit value into was eight times too large, so
+on Big Endian the data written into the data reg was always zero.
 
-Fixes: 0974fa84f162a ("datatype: seperate time parsing/printing from time_type")
+Fixes: 2fcce8b0677b3 ("ct: connlabel matching support")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/datatype.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ src/ct.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/src/datatype.c b/src/datatype.c
-index a06c39960fa0c..b2e667cef2c62 100644
---- a/src/datatype.c
-+++ b/src/datatype.c
-@@ -1068,6 +1068,7 @@ static struct error_record *time_type_parse(struct parse_ctx *ctx,
- 					    struct expr **res)
+diff --git a/src/ct.c b/src/ct.c
+index 2218ecc7a684d..6049157198ad9 100644
+--- a/src/ct.c
++++ b/src/ct.c
+@@ -176,7 +176,7 @@ static struct error_record *ct_label_type_parse(struct parse_ctx *ctx,
  {
- 	struct error_record *erec;
-+	uint32_t s32;
- 	uint64_t s;
+ 	const struct symbolic_constant *s;
+ 	const struct datatype *dtype;
+-	uint8_t data[CT_LABEL_BIT_SIZE];
++	uint8_t data[CT_LABEL_BIT_SIZE / BITS_PER_BYTE];
+ 	uint64_t bit;
+ 	mpz_t value;
  
- 	erec = time_parse(&sym->location, sym->identifier, &s);
-@@ -1077,9 +1078,10 @@ static struct error_record *time_type_parse(struct parse_ctx *ctx,
- 	if (s > UINT32_MAX)
- 		return error(&sym->location, "value too large");
+@@ -211,8 +211,7 @@ static struct error_record *ct_label_type_parse(struct parse_ctx *ctx,
+ 	mpz_export_data(data, value, BYTEORDER_HOST_ENDIAN, sizeof(data));
  
-+	s32 = s;
- 	*res = constant_expr_alloc(&sym->location, &time_type,
- 				   BYTEORDER_HOST_ENDIAN,
--				   sizeof(uint32_t) * BITS_PER_BYTE, &s);
-+				   sizeof(uint32_t) * BITS_PER_BYTE, &s32);
+ 	*res = constant_expr_alloc(&sym->location, dtype,
+-				   dtype->byteorder, sizeof(data),
+-				   data);
++				   dtype->byteorder, CT_LABEL_BIT_SIZE, data);
+ 	mpz_clear(value);
  	return NULL;
  }
- 
-@@ -1088,7 +1090,7 @@ const struct datatype time_type = {
- 	.name		= "time",
- 	.desc		= "relative time",
- 	.byteorder	= BYTEORDER_HOST_ENDIAN,
--	.size		= 8 * BITS_PER_BYTE,
-+	.size		= 4 * BITS_PER_BYTE,
- 	.basetype	= &integer_type,
- 	.print		= time_type_print,
- 	.json		= time_type_json,
 -- 
 2.33.0
 
