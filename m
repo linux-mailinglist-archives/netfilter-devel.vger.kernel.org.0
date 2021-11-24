@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C8345CAD1
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 18:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EAB45CAD5
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 18:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237231AbhKXR01 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 12:26:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60646 "EHLO
+        id S237253AbhKXR0n (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 12:26:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237309AbhKXR0Z (ORCPT
+        with ESMTP id S237252AbhKXR0m (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:26:25 -0500
+        Wed, 24 Nov 2021 12:26:42 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6200CC061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 09:23:15 -0800 (PST)
-Received: from localhost ([::1]:44838 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427BBC061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 09:23:32 -0800 (PST)
+Received: from localhost ([::1]:44856 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mpvzF-00016H-Na; Wed, 24 Nov 2021 18:23:13 +0100
+        id 1mpvzW-00017d-HT; Wed, 24 Nov 2021 18:23:30 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 5/7] data_reg: Respect each value's size
-Date:   Wed, 24 Nov 2021 18:22:40 +0100
-Message-Id: <20211124172242.11402-6-phil@nwl.cc>
+Subject: [libnftnl PATCH 6/7] include: Introduce and publish struct nftnl_set_desc
+Date:   Wed, 24 Nov 2021 18:22:41 +0100
+Message-Id: <20211124172242.11402-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124172242.11402-1-phil@nwl.cc>
 References: <20211124172242.11402-1-phil@nwl.cc>
@@ -34,111 +34,72 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-To consistently print reg->val fields on different architectures, length
-of data in each field is relevant, because nftables simply casts u32
-fields to the desired size value.
-
-Prepare nftnl_data_reg_value_snprintf_default() to accept a u8 array
-holding each rev->val field's size. This is compatible to data in struct
-nftnl_set's 'desc' field.
-
-Introduce print_data() which prints the relevant bytes of a given
-reg->val field depending on data and host byte order, skipping leading
-zeroes while doing so.
+This embedded struct in struct nftnl_set holds useful info about data in
+elements. Export it to users for later use as parameter to API
+functions.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/expr/data_reg.c | 61 +++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 51 insertions(+), 10 deletions(-)
+ include/libnftnl/set.h | 10 ++++++++++
+ include/set.h          | 10 ++--------
+ 2 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/src/expr/data_reg.c b/src/expr/data_reg.c
-index 289443b47f9d6..6cbf0c4860cda 100644
---- a/src/expr/data_reg.c
-+++ b/src/expr/data_reg.c
-@@ -24,24 +24,64 @@
- #include <libnftnl/rule.h>
- #include "internal.h"
+diff --git a/include/libnftnl/set.h b/include/libnftnl/set.h
+index 958bbc9065f67..d19635716b581 100644
+--- a/include/libnftnl/set.h
++++ b/include/libnftnl/set.h
+@@ -7,6 +7,7 @@
+ #include <sys/types.h>
  
-+/* return true if running on Big Endian */
-+static bool host_is_be(void)
-+{
-+	const unsigned int i = 1;
-+
-+	return !*(uint8_t *)&i;
-+}
-+
-+static int
-+print_data(char *buf, size_t size, uint8_t *data, size_t len, bool nbo)
-+{
-+	int ret, offset = 0, j, start = 0, end = len, inc = 1;
-+
-+	/* on Little Endian with data in host byte order, reverse direction */
-+	if (!nbo && !host_is_be()) {
-+		start = len - 1;
-+		end = -1;
-+		inc = -1;
-+	}
-+
-+	/* skip over leading nul bytes */
-+	for (j = start; j != end - inc && !data[j]; j += inc)
-+		;
-+
-+	/* print all remaining bytes with leading zero */
-+	for (; j != end; j += inc) {
-+		ret = snprintf(buf + offset, size, "%.2x", data[j]);
-+		SNPRINTF_BUFFER_SIZE(ret, size, offset);
-+	}
-+	return offset;
-+}
-+
- static int
- nftnl_data_reg_value_snprintf_default(char *buf, size_t remain,
- 				      const union nftnl_data_reg *reg,
--				      uint32_t flags, uint16_t byteorder_bits)
-+				      uint32_t flags, uint16_t byteorder_bits,
-+				      const uint8_t *lengths)
- {
--	const char *pfx = flags & DATA_F_NOPFX ? "" : "0x";
-+	uint8_t lengths_fallback = reg->len;
-+	const uint8_t *lenp = lengths;
- 	int offset = 0, ret, i;
--	uint32_t value;
+ #include <libnftnl/common.h>
++#include <linux/netfilter/nf_tables.h>
  
-+	if (!lengths || !lengths[0])
-+		lenp = &lengths_fallback;
+ #ifdef __cplusplus
+ extern "C" {
+@@ -38,6 +39,15 @@ enum nftnl_set_attr {
+ };
+ #define NFTNL_SET_MAX (__NFTNL_SET_MAX - 1)
  
-+	for (i = 0; i * 4 < reg->len; i += div_round_up(*lenp++, 4)) {
- 
--	for (i = 0; i < div_round_up(reg->len, sizeof(uint32_t)); i++) {
--		if (byteorder_bits & (1 << i))
--			value = ntohl(reg->val[i]);
--		else
--			value = reg->val[i];
-+		if (!(flags & DATA_F_NOPFX)) {
-+			ret = snprintf(buf + offset, remain, "0x");
-+			SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-+		}
++struct nftnl_set_desc {
++	uint32_t	size;
++	uint32_t	byteorder;
++	uint8_t		field_len[NFT_REG32_COUNT];
++	uint8_t		field_count;
++	uint8_t		data_len[NFT_REG32_COUNT];
++	uint8_t		data_count;
++};
 +
-+		ret = print_data(buf + offset, remain,
-+				 (uint8_t *)(reg->val + i),
-+				 *lenp, byteorder_bits & (1 << i));
-+		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
+ struct nftnl_set;
  
--		ret = snprintf(buf + offset, remain, "%s%.8x ", pfx, value);
-+		ret = snprintf(buf + offset, remain, " ");
- 		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
- 	}
+ struct nftnl_set *nftnl_set_alloc(void);
+diff --git a/include/set.h b/include/set.h
+index a9f6225401a4e..42e761a2a22bf 100644
+--- a/include/set.h
++++ b/include/set.h
+@@ -2,6 +2,7 @@
+ #define _LIBNFTNL_SET_INTERNAL_H_
  
-@@ -77,7 +117,8 @@ int nftnl_data_reg_snprintf(char *buf, size_t size,
- 	case DATA_VALUE:
- 		return nftnl_data_reg_value_snprintf_default(buf, size,
- 							     reg, flags,
--							     byteorder_bits);
-+							     byteorder_bits,
-+							     NULL);
- 	case DATA_VERDICT:
- 	case DATA_CHAIN:
- 		return nftnl_data_reg_verdict_snprintf_def(buf, size,
+ #include <linux/netfilter/nf_tables.h>
++#include <libnftnl/set.h>
+ 
+ struct nftnl_set {
+ 	struct list_head	head;
+@@ -23,14 +24,7 @@ struct nftnl_set {
+ 	} user;
+ 	uint32_t		id;
+ 	enum nft_set_policies	policy;
+-	struct {
+-		uint32_t	size;
+-		uint32_t	byteorder;
+-		uint8_t		field_len[NFT_REG32_COUNT];
+-		uint8_t		field_count;
+-		uint8_t		data_len[NFT_REG32_COUNT];
+-		uint8_t		data_count;
+-	} desc;
++	struct nftnl_set_desc	desc;
+ 	struct list_head	element_list;
+ 
+ 	uint32_t		flags;
 -- 
 2.33.0
 
