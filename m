@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CF245D007
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6E545D008
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343984AbhKXW2H (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S1344203AbhKXW2H (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Wed, 24 Nov 2021 17:28:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344084AbhKXW2B (ORCPT
+        with ESMTP id S1344119AbhKXW2C (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:28:01 -0500
+        Wed, 24 Nov 2021 17:28:02 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEE4C061758
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4974C061759
         for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:24:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=X7t6qzt0h2nvMcKH4tuvSFbzWyUx2mABGHa9D3wJbcU=; b=fy8y/mUFJLsmYCdngE4ItBBkA6
-        507xnTHE1MGF0hz/0jcFbON454aavcxw0sqho04I3XZ7kdg8kEzcOvlmUsfnfiFhJ/ImB8cW5JHPW
-        +bm02ovRIncPPGIXxYs4YOdb0/dHy+56z5IOUWtETylk8FIkHXqR7LHr4JVyAmktCrugakvnWd9v1
-        b+CIw2x1Fkr2fivB/S/3jju8JC5H08V+ETCKnCDcp3AMt/YsLiU6pXB2JBtkgt3T/r+v40ICLyI5G
-        xBvpfisIwzkDP+4rlbUxpgTLRhdXeCkdok7nxArI8JIIS9NB4nZWsO/0FSAECYqw3e75E9pk0+wEG
-        uoi0J9Og==;
+        bh=5I1eE3B2Uuqo9fdmhPD2H+nzQLZ4N18Y0s73qGoIs3Y=; b=il5LLNY/CsHtFRY9KrVTWDtofE
+        bCz3LFZRew69FIVnH2JF8Nii+ObnNq+FbahTAfbjwk/DqXZ8GiyhnDr/de60yz4zpcD8BQBuVafiG
+        EQz5a3cDTWe8Ba5LraPxWZ2cHUsGCm429tJha4i6XI6qt2Z7maopC8wFkOct1KdNKsbgCKOzWvD2B
+        8NaW+VutMBiLxH+bx9cjWw36/EAOK2dOWbAJzsgWzzYYvKU+3kGBlUKjf81rVPnXR8M6dy4VvAjEG
+        HAqyoQ3BImW6AgK5wH+yTxZOJAGCPPieQF0d0rx/9b48jCeg/08jKfIjPEDguWSarICoLxNmmfNtx
+        R+ovZVmA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mq0h6-00563U-Se
-        for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:48 +0000
+        id 1mq0h6-00563U-VK
+        for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:49 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 07/32] filter: PWSNIFF: replace malloc+strncpy with strndup
-Date:   Wed, 24 Nov 2021 22:24:02 +0000
-Message-Id: <20211124222444.2597311-8-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 08/32] input: UNIXSOCK: remove stat of socket-path
+Date:   Wed, 24 Nov 2021 22:24:03 +0000
+Message-Id: <20211124222444.2597311-9-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124222444.2597311-1-jeremy@azazel.net>
 References: <20211124222444.2597311-1-jeremy@azazel.net>
@@ -49,64 +49,68 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-There are a couple of instances of allocating memory with `malloc`,
-followed by copying a string to it with `strncpy` and adding an explicit
-assignment of `\0` to terminate the string.  Replace them with
-`strndup`.
+When creating the UNIX socket, there is a TOCTOU race between the
+stat(2) and bind(2) calls, and if the path is already bound, the bind(2)
+call will fail in any case.  Remove the stat(2) call.
 
-Add an enum to name indices of output keys.
+Tidy up a couple of error message.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- filter/ulogd_filter_PWSNIFF.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ input/packet/ulogd_inppkt_UNIXSOCK.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
-diff --git a/filter/ulogd_filter_PWSNIFF.c b/filter/ulogd_filter_PWSNIFF.c
-index 934ff0e09c4f..ef9e02115d84 100644
---- a/filter/ulogd_filter_PWSNIFF.c
-+++ b/filter/ulogd_filter_PWSNIFF.c
-@@ -35,10 +35,14 @@
- #define DEBUGP(format, args...)
- #endif
+diff --git a/input/packet/ulogd_inppkt_UNIXSOCK.c b/input/packet/ulogd_inppkt_UNIXSOCK.c
+index 86ab590073d8..3f3abc3a0b77 100644
+--- a/input/packet/ulogd_inppkt_UNIXSOCK.c
++++ b/input/packet/ulogd_inppkt_UNIXSOCK.c
+@@ -477,12 +477,11 @@ static int _create_unix_socket(const char *unix_path)
+ 	int ret = -1;
+ 	struct sockaddr_un server_sock;
+ 	int s;
+-	struct stat st_dummy;
  
+ 	s = socket(AF_UNIX, SOCK_STREAM, 0);
+ 	if (s < 0) {
+ 		ulogd_log(ULOGD_ERROR,
+-				"ulogd2: could not create unix socket\n");
++			  "ulogd2: could not create unix socket\n");
+ 		return -1;
+ 	}
+ 
+@@ -490,19 +489,11 @@ static int _create_unix_socket(const char *unix_path)
+ 	strncpy(server_sock.sun_path, unix_path, sizeof(server_sock.sun_path));
+ 	server_sock.sun_path[sizeof(server_sock.sun_path)-1] = '\0';
+ 
+-	if (stat(unix_path, &st_dummy) == 0 && st_dummy.st_size > 0) {
+-		ulogd_log(ULOGD_ERROR,
+-				"ulogd2: unix socket \'%s\' already exists\n",
+-				unix_path);
+-		close(s);
+-		return -1;
+-	}
 -
- #define PORT_POP3	110
- #define PORT_FTP	21
- 
-+enum pwsniff_output_keys {
-+	PWSNIFF_OUT_KEY_USER,
-+	PWSNIFF_OUT_KEY_PASS,
-+};
-+
- static uint16_t pwsniff_ports[] = {
- 	PORT_POP3,
- 	PORT_FTP,
-@@ -116,21 +120,17 @@ static int interp_pwsniff(struct ulogd_pluginstance *pi)
- 
- 	if (len) {
- 		char *ptr;
--		ptr = (char *) malloc(len+1);
-+		ptr = strndup((char *)begp, len);
- 		if (!ptr)
- 			return ULOGD_IRET_ERR;
--		strncpy(ptr, (char *)begp, len);
--		ptr[len] = '\0';
--		okey_set_ptr(&ret[0], ptr);
-+		okey_set_ptr(&ret[PWSNIFF_OUT_KEY_USER], ptr);
+ 	ret = bind(s, (struct sockaddr *)&server_sock, sizeof(server_sock));
+ 	if (ret < 0) {
+ 		ulogd_log(ULOGD_ERROR,
+-				"ulogd2: could not bind to unix socket \'%s\'\n",
+-				server_sock.sun_path);
++			  "ulogd2: could not bind to unix socket '%s'\n",
++			  server_sock.sun_path);
+ 		close(s);
+ 		return -1;
  	}
- 	if (pw_len) {
- 		char *ptr;
--		ptr = (char *) malloc(pw_len+1);
-+		ptr = strndup((char *)pw_begp, pw_len);
- 		if (!ptr)
- 			return ULOGD_IRET_ERR;
--		strncpy(ptr, (char *)pw_begp, pw_len);
--		ptr[pw_len] = '\0';
--		okey_set_ptr(&ret[1], ptr);
-+		okey_set_ptr(&ret[PWSNIFF_OUT_KEY_PASS], ptr);
+@@ -510,8 +501,8 @@ static int _create_unix_socket(const char *unix_path)
+ 	ret = listen(s, 10);
+ 	if (ret < 0) {
+ 		ulogd_log(ULOGD_ERROR,
+-				"ulogd2: could not bind to unix socket \'%s\'\n",
+-				server_sock.sun_path);
++			  "ulogd2: could not listen to unix socket '%s'\n",
++			  server_sock.sun_path);
+ 		close(s);
+ 		return -1;
  	}
- 	return ULOGD_IRET_OK;
- }
 -- 
 2.33.0
 
