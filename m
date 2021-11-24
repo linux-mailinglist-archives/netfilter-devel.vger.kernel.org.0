@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D455445D03A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A4945D04C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343507AbhKXWsJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 17:48:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49494 "EHLO
+        id S242257AbhKXWsn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 17:48:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244645AbhKXWsI (ORCPT
+        with ESMTP id S1348862AbhKXWsm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:48:08 -0500
+        Wed, 24 Nov 2021 17:48:42 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E35C061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:44:58 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D050C061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:45:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=boTbZSMkjfDyb2lcl+6LCjVcfVD9RLBEcZFjLZrj7O4=; b=N7Bu9NXSAm/Vn3+ea6edDnSSKa
-        cuu4G6pjZhdDgV5aevZ+gvgDGVx7CobCIXJc9HEup2Kck+vdpotMH2pZeHN6ssiT/IyIFMuLOqkj5
-        iJUZAy1HNFyWDc7Exlw/1m5uFAc58PD+ZjoEs4VmmYPqfa4XOsk3xqKo107EXvyINQVwZ5NXMD0Lz
-        rheaAmvZ2sh4ihjGfL4MXv08oxJyebtZPlWBiiIXrqW+2OGWSWCiYhy81JXEdbbEdk0Ol2JO+0GkE
-        gFuptVhknDBaAJLKmrCcGpKW7d/x9PepCFcoPSR6Qd/3NyxX+QMacBruQTaC11wCf1Ig5s+q+N+F5
-        CScF0Pxg==;
+        bh=GXyQP3Ce3W7vJMWbnZpGxiQlMW9Oz8rbMnJaCwq7a7U=; b=AgjfcBboyvOZwCMn67Gzxgh5Qh
+        j3zfmMboBvs83jEtUKhhJc3Dr1zyuZlgF5BU8lLu28upGHmt+lgmYoZsarQS3SUUrx2ZWNR47FEXQ
+        q4ZwZiyfUnr7vERFzyblq5rRVJ4XjOjEcp1jT/xVD7JwrMkScgs/RQPRXkc5kxHaZ7+Dw02pteUNg
+        TS+kceTITVLBTUgZQNK0wSoToq0fKQdNUuJY4mq+NG6tRdjkjsaJXJ+hn6L/+4FatchHmbABsxYZJ
+        onfET2FYUt2gLzn5ZK3axo2pJs1GSEwusQzvDlI/0A6X6ojTmBhQ5AkXYH650f/aHGKOUKjhZ6vR2
+        uMP6RBnA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mq0h8-00563U-8S
+        id 1mq0h8-00563U-BB
         for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:50 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 17/30] output: SQLITE3: fix memory-leak in error-handling
-Date:   Wed, 24 Nov 2021 22:24:16 +0000
-Message-Id: <20211124222444.2597311-22-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 18/32] output: SQLITE3: fix possible buffer overruns
+Date:   Wed, 24 Nov 2021 22:24:17 +0000
+Message-Id: <20211124222444.2597311-23-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124222444.2597311-1-jeremy@azazel.net>
 References: <20211124222444.2597311-1-jeremy@azazel.net>
@@ -49,33 +49,46 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When mapping DB column names to input-keys, if we cannot find a key to
-match a column, the newly allocated `struct field` is leaked.  Free it,
-and log an error message.
+There is a an off-by-one error in the size of some of the buffers used
+to hold key-names.  The maximum length of a name is `ULOGD_MAX_KEYLEN`,
+and so declare the buffers with size `ULOGD_MAX_KEYLEN + 1`.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/sqlite3/ulogd_output_SQLITE3.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ output/sqlite3/ulogd_output_SQLITE3.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/output/sqlite3/ulogd_output_SQLITE3.c b/output/sqlite3/ulogd_output_SQLITE3.c
-index 554b1b34488c..41aeeec27854 100644
+index 20ceb3b5d6e2..554b1b34488c 100644
 --- a/output/sqlite3/ulogd_output_SQLITE3.c
 +++ b/output/sqlite3/ulogd_output_SQLITE3.c
-@@ -342,8 +342,12 @@ sqlite3_init_db(struct ulogd_pluginstance *pi)
- 		}
- 		strncpy(f->name, buf, ULOGD_MAX_KEYLEN);
+@@ -48,7 +48,7 @@
  
--		if ((f->key = ulogd_find_key(pi, buf)) == NULL)
-+		if ((f->key = ulogd_find_key(pi, buf)) == NULL) {
-+			ulogd_log(ULOGD_ERROR,
-+				  "SQLITE3: unknown input key: %s\n", buf);
-+			free(f);
- 			return -1;
-+		}
+ struct field {
+ 	TAILQ_ENTRY(field) link;
+-	char name[ULOGD_MAX_KEYLEN];
++	char name[ULOGD_MAX_KEYLEN + 1];
+ 	struct ulogd_key *key;
+ };
  
- 		TAILQ_INSERT_TAIL(&priv->fields, f, link);
- 	}
+@@ -214,7 +214,7 @@ sqlite3_createstmt(struct ulogd_pluginstance *pi)
+ {
+ 	struct sqlite3_priv *priv = (void *)pi->private;
+ 	struct field *f;
+-	char buf[ULOGD_MAX_KEYLEN];
++	char buf[ULOGD_MAX_KEYLEN + 1];
+ 	char *underscore;
+ 	char *stmt_pos;
+ 	int i, cols = 0;
+@@ -305,7 +305,7 @@ static int
+ sqlite3_init_db(struct ulogd_pluginstance *pi)
+ {
+ 	struct sqlite3_priv *priv = (void *)pi->private;
+-	char buf[ULOGD_MAX_KEYLEN];
++	char buf[ULOGD_MAX_KEYLEN + 1];
+ 	char *underscore;
+ 	struct field *f;
+ 	sqlite3_stmt *schema_stmt;
 -- 
 2.33.0
 
