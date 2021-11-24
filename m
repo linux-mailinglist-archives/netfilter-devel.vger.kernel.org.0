@@ -2,121 +2,90 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C920C45CAD4
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 18:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB0345CAE3
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 18:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237266AbhKXR0g (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 12:26:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
+        id S237938AbhKXR1p (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 12:27:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237252AbhKXR0g (ORCPT
+        with ESMTP id S237252AbhKXR1o (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:26:36 -0500
+        Wed, 24 Nov 2021 12:27:44 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91447C061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 09:23:26 -0800 (PST)
-Received: from localhost ([::1]:44850 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02396C061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 09:24:35 -0800 (PST)
+Received: from localhost ([::1]:44910 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mpvzQ-000171-S4; Wed, 24 Nov 2021 18:23:24 +0100
+        id 1mpw0X-0001B5-9g; Wed, 24 Nov 2021 18:24:33 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 2/7] set: Introduce NFTNL_SET_DESC_BYTEORDER
+Subject: [nft PATCH 01/15] tests/py: Avoid duplicate records in *.got files
 Date:   Wed, 24 Nov 2021 18:22:37 +0100
-Message-Id: <20211124172242.11402-3-phil@nwl.cc>
+Message-Id: <20211124172251.11539-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211124172242.11402-1-phil@nwl.cc>
-References: <20211124172242.11402-1-phil@nwl.cc>
+In-Reply-To: <20211124172251.11539-1-phil@nwl.cc>
+References: <20211124172251.11539-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This attribute allows to specify byteorder of data stored in this set's
-elements.
-
-In general, elements make use of up to three nftnl_data_reg unions: one
-for the key, one for the data (with maps) and one for key_end (with
-concatenated ranges). Byteorder of key and key_end is always identical.
-
-To represent byteorder of a data_reg, 16bits are needed: each marking
-whether the field at same position in 'val' array is network or host
-byteorder. So for storing elements' data byteorder, a single 32bit
-variable is sufficient.
+If payloads don't contain family-specific bits, they may sit in a single
+*.payload file for all tested families. In such case, nft-test.py will
+consequently write dissenting payloads into a single *.got file. To
+avoid the duplicate entries, check if a matching record exists already
+before writing it out.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- include/libnftnl/set.h | 1 +
- include/set.h          | 1 +
- src/set.c              | 8 ++++++++
- 3 files changed, 10 insertions(+)
+ tests/py/nft-test.py | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/include/libnftnl/set.h b/include/libnftnl/set.h
-index e2e5795aa9b40..1ffb6c415260d 100644
---- a/include/libnftnl/set.h
-+++ b/include/libnftnl/set.h
-@@ -32,6 +32,7 @@ enum nftnl_set_attr {
- 	NFTNL_SET_DESC_CONCAT,
- 	NFTNL_SET_EXPR,
- 	NFTNL_SET_EXPRESSIONS,
-+	NFTNL_SET_DESC_BYTEORDER,
- 	__NFTNL_SET_MAX
- };
- #define NFTNL_SET_MAX (__NFTNL_SET_MAX - 1)
-diff --git a/include/set.h b/include/set.h
-index 55018b6b9ba95..816bd24faf651 100644
---- a/include/set.h
-+++ b/include/set.h
-@@ -25,6 +25,7 @@ struct nftnl_set {
- 	enum nft_set_policies	policy;
- 	struct {
- 		uint32_t	size;
-+		uint32_t	byteorder;
- 		uint8_t		field_len[NFT_REG32_COUNT];
- 		uint8_t		field_count;
- 	} desc;
-diff --git a/src/set.c b/src/set.c
-index c46f8277ff687..651eaf5503dee 100644
---- a/src/set.c
-+++ b/src/set.c
-@@ -99,6 +99,7 @@ void nftnl_set_unset(struct nftnl_set *s, uint16_t attr)
- 	case NFTNL_SET_DESC_CONCAT:
- 	case NFTNL_SET_TIMEOUT:
- 	case NFTNL_SET_GC_INTERVAL:
-+	case NFTNL_SET_DESC_BYTEORDER:
- 		break;
- 	case NFTNL_SET_USERDATA:
- 		xfree(s->user.data);
-@@ -128,6 +129,7 @@ static uint32_t nftnl_set_validate[NFTNL_SET_MAX + 1] = {
- 	[NFTNL_SET_DESC_SIZE]	= sizeof(uint32_t),
- 	[NFTNL_SET_TIMEOUT]		= sizeof(uint64_t),
- 	[NFTNL_SET_GC_INTERVAL]	= sizeof(uint32_t),
-+	[NFTNL_SET_DESC_BYTEORDER]	= sizeof(uint32_t),
- };
+diff --git a/tests/py/nft-test.py b/tests/py/nft-test.py
+index f8f9341c11515..04dac8d77b25f 100755
+--- a/tests/py/nft-test.py
++++ b/tests/py/nft-test.py
+@@ -809,17 +809,26 @@ def rule_add(rule, filename, lineno, force_all_family_option, filename_path):
+             if state == "ok" and not payload_check(table_payload_expected,
+                                                    payload_log, cmd):
+                 error += 1
+-                gotf = open("%s.got" % payload_path, 'a')
++
++                try:
++                    gotf = open("%s.got" % payload_path)
++                    gotf_payload_expected = payload_find_expected(gotf, rule[0])
++                    gotf.close()
++                except:
++                    gotf_payload_expected = None
+                 payload_log.seek(0, 0)
+-                gotf.write("# %s\n" % rule[0])
+-                while True:
+-                    line = payload_log.readline()
+-                    if line == "":
+-                        break
+-                    gotf.write(line)
+-                gotf.close()
+-                print_warning("Wrote payload for rule %s" % rule[0],
+-                              gotf.name, 1)
++                if not payload_check(gotf_payload_expected, payload_log, cmd):
++                    gotf = open("%s.got" % payload_path, 'a')
++                    payload_log.seek(0, 0)
++                    gotf.write("# %s\n" % rule[0])
++                    while True:
++                        line = payload_log.readline()
++                        if line == "":
++                            break
++                        gotf.write(line)
++                    gotf.close()
++                    print_warning("Wrote payload for rule %s" % rule[0],
++                                  gotf.name, 1)
  
- EXPORT_SYMBOL(nftnl_set_set_data);
-@@ -216,6 +218,9 @@ int nftnl_set_set_data(struct nftnl_set *s, uint16_t attr, const void *data,
- 		expr = (void *)data;
- 		list_add(&expr->head, &s->expr_list);
- 		break;
-+	case NFTNL_SET_DESC_BYTEORDER:
-+		s->desc.byteorder = *(uint32_t *)data;
-+		break;
- 	}
- 	s->flags |= (1 << attr);
- 	return 0;
-@@ -310,6 +315,9 @@ const void *nftnl_set_get_data(const struct nftnl_set *s, uint16_t attr,
- 		list_for_each_entry(expr, &s->expr_list, head)
- 			break;
- 		return expr;
-+	case NFTNL_SET_DESC_BYTEORDER:
-+		*data_len = sizeof(uint32_t);
-+		return &s->desc.byteorder;
- 	}
- 	return NULL;
- }
+             # Check for matching ruleset listing
+             numeric_proto_old = nftables.set_numeric_proto_output(True)
 -- 
 2.33.0
 
