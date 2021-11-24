@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DF345D058
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EB045D050
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352035AbhKXWtH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 17:49:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
+        id S1348982AbhKXWsv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 17:48:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351917AbhKXWtH (ORCPT
+        with ESMTP id S243822AbhKXWsv (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:49:07 -0500
+        Wed, 24 Nov 2021 17:48:51 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFA5C061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:45:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8384C061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:45:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=CHFK3CZ7POuQ8FdeS1Jn8TEQtydjYrQg3d7bj0/mNc0=; b=Rn1WFS4neN0X10dl0lEwBQTnL/
-        Gr2BCY4ItK4gfmljqPdDQj7s5XVxhUEqnJT3QudUlOGmaVwb8EGuHW4ypObiL2TnLBnx4nFPkg9SR
-        51WslKSI3JFiVFjwaADvZKlMgsDoqnbZZA6Yf6GoeNXCWMGFinFCVYflRbHH9qTkdSS7acDe0hXj7
-        FHCcTQTmm3Vu12BrRwcnlAR5Lkx8AqBNX7QiXvMwmIfabfCC8qYbyuuEkmmf5jGZiNB3eRstNawgu
-        BNTVe/NOI8+qT7qteh2rUH8Sr4J7KgKc1PPSAJCoIGyyq0FXDV1NklvLZGP4TTMQLY5w74oTO58te
-        IA7TdjCg==;
+        bh=2/d6kpBXtZYTowDxvc+tgm14/7VVksAz7H7+Titifd4=; b=DfY5YW9g93CalUjYSN9rXzST95
+        CM9CcPIg1WF0eWqrCh4uxtsss6PsrqtkEmKkqnC/vhAcKf7jxLVKBUVjqQ++PeaowYIQiiHm3v0HF
+        f2sNpHJCkeRnoRquF8Aq2C7cFupLffva22+eTatTie7gqcRfp75NsDt4iFb5jikWTXkdUnufjBBje
+        qQnW+sms2b1Ipukq76ve0td81jq9ADNWriaNw0c6xKOewc2pW4W0u6EwAaoYTO2pZFC1HGRfMpFfZ
+        SXiSQ0XcufrqLbopuLo0j8ZIcIGxYufUWwwxdngN14q2LT5sR7Oz8WgbA12t8gALoECqeyVns32JR
+        knFfWgDg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mq0h7-00563U-Ip
+        id 1mq0h7-00563U-Nb
         for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:49 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 14/30] output: MYSQL: improve mapping of DB columns to input-keys
-Date:   Wed, 24 Nov 2021 22:24:10 +0000
-Message-Id: <20211124222444.2597311-16-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 15/32] output: MYSQL: improve mapping of DB columns to input-keys
+Date:   Wed, 24 Nov 2021 22:24:11 +0000
+Message-Id: <20211124222444.2597311-17-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124222444.2597311-1-jeremy@azazel.net>
 References: <20211124222444.2597311-1-jeremy@azazel.net>
@@ -49,21 +49,21 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hitherto, we copied the column-name to a buffer, iterated over it to
+Currently, we copy the column-name to a buffer, iterate over it to
 replace the underscores with full-stops, using `strchr` from the start
-of the buffer on each iteration, then copied the buffer to the
-input-key's `name` field.
+of the buffer on each iteration, then copy the buffer to the input-key's
+`name` member.
 
-Apart from the inefficiency, `strncpy` was used to do the copies, which
-led gcc to complain:
+Apart from the inefficiency, `strncpy` is used to do the copies, which
+leads gcc to complain:
 
   ulogd_output_MYSQL.c:149:17: warning: `strncpy` output may be truncated copying 31 bytes from a string of length 31
 
-Furthermore, the buffer was not initialized, which meant that there was
-also a possible buffer overrun if the column-name was too long, since
-`strncpy` would not append a NUL.
+Furthermore, the buffer is not initialized, which means that there is
+also a possible buffer overrun if the column-name is too long, since
+`strncpy` will not append a NUL.
 
-Instead, we now copy the column-name directly to the input-key using
+Instead, copy the column-name directly to the input-key using
 `snprintf`, and run `strchr` from the last underscore on each iteration.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
