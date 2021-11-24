@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD8F45D056
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2941545D049
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343941AbhKXWtD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 17:49:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
+        id S1347800AbhKXWsd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 17:48:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245389AbhKXWtD (ORCPT
+        with ESMTP id S1346037AbhKXWsd (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:49:03 -0500
+        Wed, 24 Nov 2021 17:48:33 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD1AC061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:45:53 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5EDC061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:45:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=LIB1Y5NShiZoXG+gz4+Wf1m9shwTYx851IbuJyvlwXU=; b=WxQfHk1dfyzxeya+jnBjMYN02X
-        RyFbsutCEtqOJBP1lE90q423NlMF0LJToZHzfFoohyXSbxTn86Sl9lY9nyXDjLkOIPpqjzzfdouxd
-        8wovylfn+YWkB4lwUb9S6LyGodx2AYdIHiTzWJVdmUxq41LgOhNyIsETcgRIavIHLwM+XvJg/Uket
-        JdOocbZhIJqiBvxrwd0DvDz9rM/01qR4uvJpSBeqHkCXjJYl2RQRL0yKNDfZ8wD1dvksIxHBSAHRw
-        HFknoAPj6N7P5v+U6n/G67AXyMzVLCw9hQgJ3lB0DNP6QU5QZFHg5jwJ/npJjFmSCDhEvsPxonpT+
-        KbzKLwZw==;
+        bh=QAaVH8Bv6AvhYDfKHiw3jNqfN3emI88hEll8l1Laocc=; b=AlkbUPxSRcZ7FblEkl5nRR65dc
+        JyE5QGg4Ea8dJ92kxWFrC34GgR+pZa8lDclFW7NkKBoV4q3Cpw+djmlfFFgQlmZGgpJVswnii2o8U
+        n/pT2cKQ77YOmG6O0KwfaCtenpzAyuotY26I22jDwwZWrvV6wHw4FFq0MuJWOtFXoD1JGlz5BptNm
+        Ud4lqtEpCH+ymXMhSfiuB7SUleqfY/THYtAHiKGL7rXHzHzpfx1S/hwBtTZdbHCpgdCP7BnbDbsvO
+        Rs3zLHf15P/AXwJQDpLk+4aNHHKhH7CiKufoLYPQYswV9QjmwrTzLdaxjdEya5NXkIQsu05ULQTZs
+        FN05pfCg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mq0hB-00563U-36
+        id 1mq0hB-00563U-79
         for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:53 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 30/30] output: IPFIX: remove compiler attribute macros
-Date:   Wed, 24 Nov 2021 22:24:41 +0000
-Message-Id: <20211124222444.2597311-47-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 30/32] output: JSON: optimize appending of newline to output
+Date:   Wed, 24 Nov 2021 22:24:42 +0000
+Message-Id: <20211124222444.2597311-48-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124222444.2597311-1-jeremy@azazel.net>
 References: <20211124222444.2597311-1-jeremy@azazel.net>
@@ -49,89 +49,33 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The ipfix.h header includes three macros which expand to compiler attributes.
-Presumably, at some point the definitions were one branch of an if-else
-preprocessor conditional where the definitions in the other branch expanded to
-nothing.  This is no longer the case.  Only one of the macros (`__packed`) is
-used and the raw attribute is used elsewhere in the code-base.  Remove the
-macros.
+We have `buflen` available.  We can remove `strncat` and assign the characters
+directly, without traversing the whole buffer.
+
+Fixes a compiler warning:
+
+  logd_output_JSON.c:407:9: warning: `strncat` specified bound 1 equals source length
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/ulogd/ulogd.h | 5 -----
- output/ipfix/ipfix.c  | 2 --
- output/ipfix/ipfix.h  | 8 ++++----
- 3 files changed, 4 insertions(+), 11 deletions(-)
+ output/ulogd_output_JSON.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/ulogd/ulogd.h b/include/ulogd/ulogd.h
-index a487c8e70e37..092d9f521a70 100644
---- a/include/ulogd/ulogd.h
-+++ b/include/ulogd/ulogd.h
-@@ -28,11 +28,6 @@
+diff --git a/output/ulogd_output_JSON.c b/output/ulogd_output_JSON.c
+index 6af872c64391..f60bd6ea51da 100644
+--- a/output/ulogd_output_JSON.c
++++ b/output/ulogd_output_JSON.c
+@@ -404,8 +404,8 @@ static int json_interp(struct ulogd_pluginstance *upi)
+ 		return ULOGD_IRET_ERR;
+ 	}
+ 	buf = tmp;
+-	strncat(buf, "\n", 1);
+-	buflen++;
++	buf[buflen++] = '\n';
++	buf[buflen]   = '\0';
  
- /* types without length */
- #define ULOGD_RET_NONE		0x0000
--#define __packed		__attribute__((packed))
--#define __noreturn		__attribute__((noreturn))
--#define __cold			__attribute__((cold))
--
--#define __packed		__attribute__((packed))
- 
- #define ULOGD_RET_INT8		0x0001
- #define ULOGD_RET_INT16		0x0002
-diff --git a/output/ipfix/ipfix.c b/output/ipfix/ipfix.c
-index b2719fd1d8a3..e0b3440e1d1a 100644
---- a/output/ipfix/ipfix.c
-+++ b/output/ipfix/ipfix.c
-@@ -8,8 +8,6 @@
- /* These forward declarations are needed since ulogd.h doesn't like to be the first */
- #include <ulogd/linuxlist.h>
- 
--#define __packed		__attribute__((packed))
--
- #include "ipfix.h"
- 
- #include <ulogd/ulogd.h>
-diff --git a/output/ipfix/ipfix.h b/output/ipfix/ipfix.h
-index 93945fbd562b..b0f3ae64740f 100644
---- a/output/ipfix/ipfix.h
-+++ b/output/ipfix/ipfix.h
-@@ -19,7 +19,7 @@ struct ipfix_hdr {
- 	uint32_t seqno;
- 	uint32_t oid;				/* Observation Domain ID */
- 	uint8_t data[];
--} __packed;
-+} __attribute__((packed));
- 
- #define IPFIX_HDRLEN		sizeof(struct ipfix_hdr)
- 
-@@ -32,7 +32,7 @@ struct ipfix_templ_hdr {
- 	uint16_t tid;
- 	uint16_t cnt;
- 	uint8_t data[];
--} __packed;
-+} __attribute__((packed));
- 
- #define IPFIX_TEMPL_HDRLEN(nfields)	sizeof(struct ipfix_templ_hdr) + (sizeof(uint16_t) * 2 * nfields)
- 
-@@ -42,7 +42,7 @@ struct ipfix_set_hdr {
- 	uint16_t id;
- 	uint16_t len;
- 	uint8_t data[];
--} __packed;
-+} __attribute__((packed));
- 
- #define IPFIX_SET_HDRLEN		sizeof(struct ipfix_set_hdr)
- 
-@@ -67,7 +67,7 @@ struct vy_ipfix_data {
- 	uint16_t dport;
- 	uint8_t l4_proto;
- 	uint32_t aid;				/* Application ID */
--} __packed;
-+} __attribute__((packed));
- 
- #define VY_IPFIX_SID		256
- 
+ 	if (opi->mode == JSON_MODE_FILE)
+ 		return json_interp_file(upi, buf);
 -- 
 2.33.0
 
