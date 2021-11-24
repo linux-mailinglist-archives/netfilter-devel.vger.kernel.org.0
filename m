@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F260A45D03C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFB245D044
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245619AbhKXWsN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 17:48:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49512 "EHLO
+        id S1345819AbhKXWs1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 17:48:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345074AbhKXWsM (ORCPT
+        with ESMTP id S1345477AbhKXWs1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:48:12 -0500
+        Wed, 24 Nov 2021 17:48:27 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5164DC061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:45:02 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E5DC061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:45:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=uN5cwDuVwhDH8mtj9OGQ5nsS1wkDnpUOigqeSVCswgA=; b=rRpVl5AjW6gxwYCkVdz+udqJn9
-        sT8253bW2040nB1Mo6GAEIgXhr7k5K/ts/UA12LIOyXaCnXOxEErh3pwqQJTsuuIwyxCeUT3H3FXv
-        rm3QEF+6UqW2xeJsvzZXlv6c5e+s4xKBzKZCOWILz29Tfdu7A4npZhVgoAx4Gb4UbquPpbK7qWgiS
-        vc6UojVv/ojpSN4j+M1PK2yr3vUvMbK7r2A69Ip75ne1GfEJFj04qxJcSnojBnEiVqNxT2n6ADKk0
-        DdrQQTbcUisjWpIzdr/lOzCvrEpQyI/MhCSPtHT0FvQqncKT6zSt3XVeK1PjCtyzjwFNy7nHdV8sm
-        0sX2UDOA==;
+        bh=O3F2qM0cpdAn4I5/l4MW1gDhk2alS4YlJVZ/5rVPSUE=; b=iSQjLSqIPNk0affcDrwLxFJNpz
+        zlktZ+14EB4LG6tObLfeoBEDNh3LYSsCuMYI/zWiAhku4zF2jPzKkIt7W7dmTpeFimXVBPmN+l9Nf
+        3v0j73FPACAYx1C0aC/x3BsLXoKX+mtFXFrhsSRkZ+mpPOEZ32pA6/lrEuJpwYRoW4AduY4IJEZq3
+        wpGCG23tPuyMcNEw4Wtz8un3DaBzysyuceVKHYoGaJd49rtRKWhGwAIEad56zsqLGhiXFV9hzRtgm
+        IGv0In2BE8ztJgDCUkbdMyFRnjxViS/vBFJs7Z8cr+bj5XzD0FgzKiBqAdFx3qc+gYMZLT8Nobz3u
+        Zwwht8Vg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mq0hA-00563U-Fc
+        id 1mq0hA-00563U-Jd
         for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:52 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 27/32] output: JSON: fix output of GMT offset
-Date:   Wed, 24 Nov 2021 22:24:35 +0000
-Message-Id: <20211124222444.2597311-41-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 27/30] output: JSON: fix possible leak in error-handling.
+Date:   Wed, 24 Nov 2021 22:24:36 +0000
+Message-Id: <20211124222444.2597311-42-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124222444.2597311-1-jeremy@azazel.net>
 References: <20211124222444.2597311-1-jeremy@azazel.net>
@@ -49,51 +49,66 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The compiler has two sets of complaints.  Firstly, `t->tm_gmtoffset` is
-a `long int`, but it is being passed to `abs`, which leads to warnings
-such as:
+The `realloc` extending the buffer containing the JSON to allow us to
+insert a final new-line may fail.  Therefore, we need to assign the
+return-value to a temporary variable or we will not able to free the
+existing buffer on error.
 
-  ulogd_output_JSON.c:308:34: warning: absolute value function `abs` given an argument of type `long int` but has parameter of type `int` which may cause truncation of value
-
-Secondly, it can't verify that the hour value derived from the offset
-will in fact fit into `%02d`, thus:
-
-  ulogd_output_JSON.c:306:37: warning: `%02d` directive output may be truncated writing between 2 and 6 bytes into a region of size 5
-
-To remedy these, we now mod the offset by 86,400 and assign it to an `int`
-before deriving the hour and minute values.
-
-We also change the format-specifier for the hour value to `%+03d` which
-causes a sign to be printed even if the value is positive, thus allowing
-us not to specify the sign explicitly and to drop the `abs` call for the
-hour value.
+Use the correct type for `buflen`.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/ulogd_output_JSON.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ output/ulogd_output_JSON.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/output/ulogd_output_JSON.c b/output/ulogd_output_JSON.c
-index 6edfa902efaf..f5c065dd062a 100644
+index d949df6bb530..6af872c64391 100644
 --- a/output/ulogd_output_JSON.c
 +++ b/output/ulogd_output_JSON.c
-@@ -302,11 +302,12 @@ static int json_interp(struct ulogd_pluginstance *upi)
- 			now = time(NULL);
- 		t = localtime_r(&now, &result);
- 		if (unlikely(*opi->cached_tz = '\0' || t->tm_gmtoff != opi->cached_gmtoff)) {
-+			int gmtoff   = t->tm_gmtoff % 86400;
-+			int gmtoff_h = gmtoff / 3600;
-+			int gmtoff_m = abs(gmtoff) / 60 % 60;
-+
- 			snprintf(opi->cached_tz, sizeof(opi->cached_tz),
--				 "%c%02d%02d",
--				 t->tm_gmtoff > 0 ? '+' : '-',
--				 abs(t->tm_gmtoff) / 60 / 60,
--				 abs(t->tm_gmtoff) / 60 % 60);
-+				 "%+03d%02d", gmtoff_h, gmtoff_m);
- 		}
+@@ -275,8 +275,8 @@ static int json_interp(struct ulogd_pluginstance *upi)
+ {
+ 	struct json_priv *opi = (struct json_priv *) &upi->private;
+ 	unsigned int i;
+-	char *buf;
+-	int buflen;
++	char *buf, *tmp;
++	size_t buflen;
+ 	json_t *msg;
  
- 		if (pp_is_valid(inp, opi->usec_idx)) {
+ 	msg = json_object();
+@@ -338,8 +338,6 @@ static int json_interp(struct ulogd_pluginstance *upi)
+ 		json_object_set_new(msg, "dvc", json_string(dvc));
+ 	}
+ 
+-
+-
+ 	for (i = 0; i < upi->input.num_keys; i++) {
+ 		struct ulogd_key *key = upi->input.keys[i].u.source;
+ 		char *field_name;
+@@ -392,7 +390,6 @@ static int json_interp(struct ulogd_pluginstance *upi)
+ 		}
+ 	}
+ 
+-
+ 	buf = json_dumps(msg, 0);
+ 	json_decref(msg);
+ 	if (buf == NULL) {
+@@ -400,11 +397,13 @@ static int json_interp(struct ulogd_pluginstance *upi)
+ 		return ULOGD_IRET_ERR;
+ 	}
+ 	buflen = strlen(buf);
+-	buf = realloc(buf, sizeof(char)*(buflen+2));
+-	if (buf == NULL) {
++	tmp = realloc(buf, buflen + sizeof("\n"));
++	if (tmp == NULL) {
++		free(buf);
+ 		ulogd_log(ULOGD_ERROR, "Could not create message\n");
+ 		return ULOGD_IRET_ERR;
+ 	}
++	buf = tmp;
+ 	strncat(buf, "\n", 1);
+ 	buflen++;
+ 
 -- 
 2.33.0
 
