@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EF145D05C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA85245D051
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245389AbhKXWtQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 17:49:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
+        id S1350236AbhKXWsx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 17:48:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352121AbhKXWtP (ORCPT
+        with ESMTP id S1343941AbhKXWsx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:49:15 -0500
+        Wed, 24 Nov 2021 17:48:53 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77165C061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:46:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3ECC061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:45:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=q0vWQf5+Ff6xEdZUMSxT6djQe8InMjjFrnjBcb/aUUY=; b=rusJVvNd2Jj+K3JNbEBptW5vs4
-        9KxzQSmuBzULcllRpy+1RQDpLxrCP+pQpi9otNoQgDTaT7Pir9oG+tMc6wTyaAwcvqV1jRst14QRX
-        h7qtQEF3apb3MLmajsAoEMbyfJoNNFFzYTI7kYf/vLU78O56ZvMlB05NT3VQH25YpmguLINI+LcLZ
-        oaa/h2mVSEtFooYcM2IZhz0M03CNlWdyWmTmKz2gaOiCAALc4gZ7qlNWzuwJdY5VcQQxECm2/Fq3l
-        Jok9GE5m+P9hCOBW60etc47Grn5rfYvo5O/vt32i1J5mCtBB34GinGGuHsbUzvMYQzbE3uw+m++aG
-        82zF2Tfg==;
+        bh=iRoMO6lyX9AyWadDoszAOhKqDXMQJiUCKOzVckiJQKM=; b=dQ4CSlX27NtrZtDWZ3O+5AjUt7
+        lCW1LCvzZKGToxPugPqPJRaY/Z5Jgc7R/9TRxOzemHzwnHnG0Am9BwU0zR5N8XA09U2fjcIM8fiEK
+        cGPqWwoHlx/0w1YA+v1ACWMAXqfef3WBuuND/ckAA10bU7kzTTHicEqI3PwkJACtWfD0GBfSv7NZC
+        KJv5ziUxQn6me0DrAvHdgTBRhaRfddUjvMCcIws2cWPwk2iFjOg8cgpC4fn7idgC7H5gz9wOfNo6j
+        wtfIxH0CXH7O2d4V2dP+K6aAnASCAL+QyTZ1MCWSRZ730ArVMKK1YNk4V+3nqkwhnbDP6bZs+XOCr
+        XIzOOmBA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mq0h9-00563U-Sg
-        for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:51 +0000
+        id 1mq0hA-00563U-0b
+        for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:52 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 23/32] output: SQLITE3: catch errors creating SQL statement
-Date:   Wed, 24 Nov 2021 22:24:28 +0000
-Message-Id: <20211124222444.2597311-34-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 24/32] db: improve formatting of insert statement
+Date:   Wed, 24 Nov 2021 22:24:29 +0000
+Message-Id: <20211124222444.2597311-35-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124222444.2597311-1-jeremy@azazel.net>
 References: <20211124222444.2597311-1-jeremy@azazel.net>
@@ -49,61 +49,73 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-`sqlite3_createstmt` returns non-zero on error, but the return-value was
-being ignored.  Change the calling code to check the return-value, log
-an error message and propagate the error.
+`sql_createstmt` contains a variable `stmt_val` which points to the end
+of the SQL already written, where the next chunk should be appended.
+Currently, this is assigned after every write:
+
+  sprintf(stmt_val, ...);
+  stmt_val = mi->stmt + strlen(mi->stmt);
+
+However, since `sprintf` returns the number of bytes written, increment
+`stmt_val` by the return-value of `sprintf` in order to avoid the
+repeated `strlen` calls.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/sqlite3/ulogd_output_SQLITE3.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ util/db.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/output/sqlite3/ulogd_output_SQLITE3.c b/output/sqlite3/ulogd_output_SQLITE3.c
-index c61694a51d47..c03018155a6b 100644
---- a/output/sqlite3/ulogd_output_SQLITE3.c
-+++ b/output/sqlite3/ulogd_output_SQLITE3.c
-@@ -104,11 +104,14 @@ add_row(struct ulogd_pluginstance *pi)
- 		ret = sqlite3_finalize(priv->p_stmt);
- 		priv->p_stmt = NULL;
+diff --git a/util/db.c b/util/db.c
+index f0711146867f..2dbe0db2fbfe 100644
+--- a/util/db.c
++++ b/util/db.c
+@@ -67,7 +67,6 @@ static int sql_createstmt(struct ulogd_pluginstance *upi)
+ 	unsigned int i;
+ 	char *table = table_ce(upi->config_kset).u.string;
+ 	char *procedure = procedure_ce(upi->config_kset).u.string;
+-	char *stmt_val = NULL;
  
--		if (ret == SQLITE_SCHEMA)
--			sqlite3_createstmt(pi);
--		else {
-+		if (ret != SQLITE_SCHEMA) {
- 			ulogd_log(ULOGD_ERROR, "SQLITE3: step: %s\n",
--					  sqlite3_errmsg(priv->dbh));
-+				  sqlite3_errmsg(priv->dbh));
-+			goto err_reset;
-+		}
-+		if (sqlite3_createstmt(pi) < 0) {
-+			ulogd_log(ULOGD_ERROR,
-+				  "SQLITE3: Could not create statement.\n");
- 			goto err_reset;
+ 	if (mi->stmt)
+ 		free(mi->stmt);
+@@ -96,20 +95,21 @@ static int sql_createstmt(struct ulogd_pluginstance *upi)
+ 	if (strncasecmp(procedure,"INSERT", strlen("INSERT")) == 0 &&
+ 	    (procedure[strlen("INSERT")] == '\0' ||
+ 			procedure[strlen("INSERT")] == ' ')) {
++		char *stmt_val = mi->stmt;
+ 		char buf[ULOGD_MAX_KEYLEN];
+ 		char *underscore;
+ 
+ 		if(procedure[6] == '\0') {
+ 			/* procedure == "INSERT" */
+ 			if (mi->schema)
+-				sprintf(mi->stmt, "insert into %s.%s (", mi->schema, table);
++				stmt_val += sprintf(stmt_val,
++						    "insert into %s.%s (",
++						    mi->schema, table);
+ 			else
+-				sprintf(mi->stmt, "insert into %s (", table);
+-		}
+-		else
+-			sprintf(mi->stmt, "%s (", procedure);
+-
+-		stmt_val = mi->stmt + strlen(mi->stmt);
++				stmt_val += sprintf(stmt_val,
++						    "insert into %s (", table);
++		} else
++			stmt_val += sprintf(stmt_val, "%s (", procedure);
+ 
+ 		for (i = 0; i < upi->input.num_keys; i++) {
+ 			if (upi->input.keys[i].flags & ULOGD_KEYF_INACTIVE)
+@@ -118,8 +118,7 @@ static int sql_createstmt(struct ulogd_pluginstance *upi)
+ 			strncpy(buf, upi->input.keys[i].name, ULOGD_MAX_KEYLEN);	
+ 			while ((underscore = strchr(buf, '.')))
+ 				*underscore = '_';
+-			sprintf(stmt_val, "%s,", buf);
+-			stmt_val = mi->stmt + strlen(mi->stmt);
++			stmt_val += sprintf(stmt_val, "%s,", buf);
  		}
- 	}
-@@ -250,8 +253,8 @@ sqlite3_createstmt(struct ulogd_pluginstance *pi)
- 	sqlite3_prepare(priv->dbh, priv->stmt, -1, &priv->p_stmt, 0);
- 	if (priv->p_stmt == NULL) {
- 		ulogd_log(ULOGD_ERROR, "SQLITE3: prepare: %s\n",
--				  sqlite3_errmsg(priv->dbh));
--		return 1;
-+			  sqlite3_errmsg(priv->dbh));
-+		return -1;
- 	}
+ 		*(stmt_val - 1) = ')';
  
- 	DEBUGP("statement prepared.\n");
-@@ -387,7 +390,10 @@ sqlite3_start(struct ulogd_pluginstance *pi)
- 	}
- 
- 	/* create and prepare the actual insert statement */
--	sqlite3_createstmt(pi);
-+	if (sqlite3_createstmt(pi) < 0) {
-+		ulogd_log(ULOGD_ERROR, "SQLITE3: Could not create statement.\n");
-+		return -1;
-+	}
- 
- 	return 0;
- }
 -- 
 2.33.0
 
