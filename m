@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E432245D055
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D940945D05D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351786AbhKXWtB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 17:49:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49734 "EHLO
+        id S1352051AbhKXWtS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 17:49:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245389AbhKXWtB (ORCPT
+        with ESMTP id S1352121AbhKXWtR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:49:01 -0500
+        Wed, 24 Nov 2021 17:49:17 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36345C061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:45:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C7BC061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:46:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=czn9kCCeuSMZKvzrm+yXw4O0UC7YcfuC5W+X8RFYqH8=; b=mmFWCoCb5+LkAXs0n0C4zn7E+r
-        AwB7jAxkhRTbXjgaIaps4Tq44NHwLOfot6FT/ikVwQIcds67vNDjXvF9QeKr96E36JNiiLvLNjrB7
-        anEgIBYcvaMpEjJYibZLT2fCc8gwor5Kxp8sHue/JX0qWALSutq3QOpg6OPJ72pVJ5ayfrQ+iyOsD
-        Qx1aabQc87XpYtj6pKRqqBN4zJBYct0dDbIpnM2YLmK08YCQ9cIBnGY4otYdQI+PZdofVG/60MY3z
-        JZNzwijPW/IkvcduG7idTXI0jsS9tDKhO0hpMZ2LvAWvvURAMSOXB7MnOomyJrGxiYgAftslfd8MC
-        BGyLV/+w==;
+        bh=uN5cwDuVwhDH8mtj9OGQ5nsS1wkDnpUOigqeSVCswgA=; b=ox0QuRCIF+sve/IGes2r4THxgm
+        7d5W0iIb4+8w8dP4ZiD2KmJrfK7otCjUB0DZLDyKxbZO0ojgo/efLlZREtcgC720wUBpK6WR5+c2y
+        T0kNTqi1BEmueVtR3zdGOTPNblHiyWYsmWw4HHAUw1oMDcXQkuNA4jXV9N7mlqWLfBU/xJLmnRvs1
+        muY4AqhxLSvVJj7Y/FB03ZwdKFEIFFmFiaZSU9piMtPsIdmoRMgNFYpNfyg6frsWUztBQh7a1hBHJ
+        nW6827NmtWODm6W1TJ36At1uJDCvPAA9gcyfOy7UmbXsgyJKNt59tgCqFyz1C9M8iHKGrNlNnE7WA
+        JoUVa60Q==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mq0hA-00563U-5s
+        id 1mq0hA-00563U-8K
         for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:52 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 25/32] db: improve mapping of input-keys to DB columns
-Date:   Wed, 24 Nov 2021 22:24:31 +0000
-Message-Id: <20211124222444.2597311-37-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 25/30] output: JSON: fix output of GMT offset
+Date:   Wed, 24 Nov 2021 22:24:32 +0000
+Message-Id: <20211124222444.2597311-38-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124222444.2597311-1-jeremy@azazel.net>
 References: <20211124222444.2597311-1-jeremy@azazel.net>
@@ -49,61 +49,51 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Currently, we copy the key-name to a buffer, iterate over it to replace
-the full-stops with underscores, using `strchr` from the start of the
-buffer on each iteration, then append the buffer to the SQL statement.
+The compiler has two sets of complaints.  Firstly, `t->tm_gmtoffset` is
+a `long int`, but it is being passed to `abs`, which leads to warnings
+such as:
 
-Apart from the inefficiency, `strncpy` is used to do the copies, which
-leads gcc to complain:
+  ulogd_output_JSON.c:308:34: warning: absolute value function `abs` given an argument of type `long int` but has parameter of type `int` which may cause truncation of value
 
-  ../../util/db.c:118:25: warning: `strncpy` output may be truncated copying 31 bytes from a string of length 31
+Secondly, it can't verify that the hour value derived from the offset
+will in fact fit into `%02d`, thus:
 
-Furthermore, the buffer is one character too short and so there is the
-possibility of overruns.
+  ulogd_output_JSON.c:306:37: warning: `%02d` directive output may be truncated writing between 2 and 6 bytes into a region of size 5
 
-Instead, append the key-name directly to the statement using `sprintf`,
-and run `strchr` from the last underscore on each iteration.
+To remedy these, we now mod the offset by 86,400 and assign it to an `int`
+before deriving the hour and minute values.
+
+We also change the format-specifier for the hour value to `%+03d` which
+causes a sign to be printed even if the value is positive, thus allowing
+us not to specify the sign explicitly and to drop the `abs` call for the
+hour value.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- util/db.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ output/ulogd_output_JSON.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/util/db.c b/util/db.c
-index 2dbe0db2fbfe..339e39ef4797 100644
---- a/util/db.c
-+++ b/util/db.c
-@@ -96,8 +96,6 @@ static int sql_createstmt(struct ulogd_pluginstance *upi)
- 	    (procedure[strlen("INSERT")] == '\0' ||
- 			procedure[strlen("INSERT")] == ' ')) {
- 		char *stmt_val = mi->stmt;
--		char buf[ULOGD_MAX_KEYLEN];
--		char *underscore;
- 
- 		if(procedure[6] == '\0') {
- 			/* procedure == "INSERT" */
-@@ -112,13 +110,18 @@ static int sql_createstmt(struct ulogd_pluginstance *upi)
- 			stmt_val += sprintf(stmt_val, "%s (", procedure);
- 
- 		for (i = 0; i < upi->input.num_keys; i++) {
-+			char *underscore;
+diff --git a/output/ulogd_output_JSON.c b/output/ulogd_output_JSON.c
+index 6edfa902efaf..f5c065dd062a 100644
+--- a/output/ulogd_output_JSON.c
++++ b/output/ulogd_output_JSON.c
+@@ -302,11 +302,12 @@ static int json_interp(struct ulogd_pluginstance *upi)
+ 			now = time(NULL);
+ 		t = localtime_r(&now, &result);
+ 		if (unlikely(*opi->cached_tz = '\0' || t->tm_gmtoff != opi->cached_gmtoff)) {
++			int gmtoff   = t->tm_gmtoff % 86400;
++			int gmtoff_h = gmtoff / 3600;
++			int gmtoff_m = abs(gmtoff) / 60 % 60;
 +
- 			if (upi->input.keys[i].flags & ULOGD_KEYF_INACTIVE)
- 				continue;
- 
--			strncpy(buf, upi->input.keys[i].name, ULOGD_MAX_KEYLEN);	
--			while ((underscore = strchr(buf, '.')))
-+			underscore = stmt_val;
-+
-+			stmt_val += sprintf(stmt_val, "%s,",
-+					    upi->input.keys[i].name);
-+
-+			while ((underscore = strchr(underscore, '.')))
- 				*underscore = '_';
--			stmt_val += sprintf(stmt_val, "%s,", buf);
+ 			snprintf(opi->cached_tz, sizeof(opi->cached_tz),
+-				 "%c%02d%02d",
+-				 t->tm_gmtoff > 0 ? '+' : '-',
+-				 abs(t->tm_gmtoff) / 60 / 60,
+-				 abs(t->tm_gmtoff) / 60 % 60);
++				 "%+03d%02d", gmtoff_h, gmtoff_m);
  		}
- 		*(stmt_val - 1) = ')';
  
+ 		if (pp_is_valid(inp, opi->usec_idx)) {
 -- 
 2.33.0
 
