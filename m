@@ -2,107 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02EB45CACB
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 18:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF26145CAD6
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 18:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236518AbhKXR0J (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 12:26:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60556 "EHLO
+        id S237321AbhKXR0x (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 12:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236761AbhKXR0D (ORCPT
+        with ESMTP id S237252AbhKXR0w (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:26:03 -0500
+        Wed, 24 Nov 2021 12:26:52 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19B4C061714
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 09:22:53 -0800 (PST)
-Received: from localhost ([::1]:44814 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1903DC061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 09:23:43 -0800 (PST)
+Received: from localhost ([::1]:44862 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mpvyt-000151-3V; Wed, 24 Nov 2021 18:22:51 +0100
+        id 1mpvzh-000183-CV; Wed, 24 Nov 2021 18:23:41 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnftnl PATCH 3/7] set: Introduce NFTNL_SET_DESC_CONCAT_DATA
+Subject: [nft PATCH 02/15] exthdr: Fix for segfault with unknown exthdr
 Date:   Wed, 24 Nov 2021 18:22:38 +0100
-Message-Id: <20211124172242.11402-4-phil@nwl.cc>
+Message-Id: <20211124172251.11539-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211124172242.11402-1-phil@nwl.cc>
-References: <20211124172242.11402-1-phil@nwl.cc>
+In-Reply-To: <20211124172251.11539-1-phil@nwl.cc>
+References: <20211124172251.11539-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Analogous to NFTNL_SET_DESC_CONCAT, introduce a data structure
-describing individual data lengths of elements' concatenated data
-fields.
+Unknown exthdr type with NFT_EXTHDR_F_PRESENT flag set caused
+NULL-pointer deref. Fix this by moving the conditional exthdr.desc deref
+atop the function and use the result in all cases.
 
+Fixes: e02bd59c4009b ("exthdr: Implement existence check")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- include/libnftnl/set.h | 1 +
- include/set.h          | 2 ++
- src/set.c              | 8 ++++++++
- 3 files changed, 11 insertions(+)
+ src/exthdr.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/include/libnftnl/set.h b/include/libnftnl/set.h
-index 1ffb6c415260d..958bbc9065f67 100644
---- a/include/libnftnl/set.h
-+++ b/include/libnftnl/set.h
-@@ -33,6 +33,7 @@ enum nftnl_set_attr {
- 	NFTNL_SET_EXPR,
- 	NFTNL_SET_EXPRESSIONS,
- 	NFTNL_SET_DESC_BYTEORDER,
-+	NFTNL_SET_DESC_CONCAT_DATA,
- 	__NFTNL_SET_MAX
- };
- #define NFTNL_SET_MAX (__NFTNL_SET_MAX - 1)
-diff --git a/include/set.h b/include/set.h
-index 816bd24faf651..a9f6225401a4e 100644
---- a/include/set.h
-+++ b/include/set.h
-@@ -28,6 +28,8 @@ struct nftnl_set {
- 		uint32_t	byteorder;
- 		uint8_t		field_len[NFT_REG32_COUNT];
- 		uint8_t		field_count;
-+		uint8_t		data_len[NFT_REG32_COUNT];
-+		uint8_t		data_count;
- 	} desc;
- 	struct list_head	element_list;
+diff --git a/src/exthdr.c b/src/exthdr.c
+index 22a08b0c9c2bf..7a29e63d4d536 100644
+--- a/src/exthdr.c
++++ b/src/exthdr.c
+@@ -46,6 +46,9 @@ static const struct exthdr_desc *exthdr_find_desc(enum exthdr_desc_id desc_id)
  
-diff --git a/src/set.c b/src/set.c
-index 651eaf5503dee..e793282175eb5 100644
---- a/src/set.c
-+++ b/src/set.c
-@@ -100,6 +100,7 @@ void nftnl_set_unset(struct nftnl_set *s, uint16_t attr)
- 	case NFTNL_SET_TIMEOUT:
- 	case NFTNL_SET_GC_INTERVAL:
- 	case NFTNL_SET_DESC_BYTEORDER:
-+	case NFTNL_SET_DESC_CONCAT_DATA:
- 		break;
- 	case NFTNL_SET_USERDATA:
- 		xfree(s->user.data);
-@@ -221,6 +222,10 @@ int nftnl_set_set_data(struct nftnl_set *s, uint16_t attr, const void *data,
- 	case NFTNL_SET_DESC_BYTEORDER:
- 		s->desc.byteorder = *(uint32_t *)data;
- 		break;
-+	case NFTNL_SET_DESC_CONCAT_DATA:
-+		memcpy(&s->desc.data_len, data, data_len);
-+		while (s->desc.data_len[++s->desc.data_count]);
-+		break;
+ static void exthdr_expr_print(const struct expr *expr, struct output_ctx *octx)
+ {
++	const char *name = expr->exthdr.desc ?
++		expr->exthdr.desc->name : "unknown-exthdr";
++
+ 	if (expr->exthdr.op == NFT_EXTHDR_OP_TCPOPT) {
+ 		/* Offset calculation is a bit hacky at this point.
+ 		 * There might be a tcp option one day with another
+@@ -65,14 +68,14 @@ static void exthdr_expr_print(const struct expr *expr, struct output_ctx *octx)
+ 			return;
+ 		}
+ 
+-		nft_print(octx, "tcp option %s", expr->exthdr.desc->name);
++		nft_print(octx, "tcp option %s", name);
+ 		if (expr->exthdr.flags & NFT_EXTHDR_F_PRESENT)
+ 			return;
+ 		if (offset)
+ 			nft_print(octx, "%d", offset);
+ 		nft_print(octx, " %s", expr->exthdr.tmpl->token);
+ 	} else if (expr->exthdr.op == NFT_EXTHDR_OP_IPV4) {
+-		nft_print(octx, "ip option %s", expr->exthdr.desc->name);
++		nft_print(octx, "ip option %s", name);
+ 		if (expr->exthdr.flags & NFT_EXTHDR_F_PRESENT)
+ 			return;
+ 		nft_print(octx, " %s", expr->exthdr.tmpl->token);
+@@ -83,10 +86,9 @@ static void exthdr_expr_print(const struct expr *expr, struct output_ctx *octx)
+ 		nft_print(octx, " %s", expr->exthdr.tmpl->token);
+ 	} else {
+ 		if (expr->exthdr.flags & NFT_EXTHDR_F_PRESENT)
+-			nft_print(octx, "exthdr %s", expr->exthdr.desc->name);
++			nft_print(octx, "exthdr %s", name);
+ 		else {
+-			nft_print(octx, "%s %s",
+-				  expr->exthdr.desc ? expr->exthdr.desc->name : "unknown-exthdr",
++			nft_print(octx, "%s %s", name,
+ 				  expr->exthdr.tmpl->token);
+ 		}
  	}
- 	s->flags |= (1 << attr);
- 	return 0;
-@@ -318,6 +323,9 @@ const void *nftnl_set_get_data(const struct nftnl_set *s, uint16_t attr,
- 	case NFTNL_SET_DESC_BYTEORDER:
- 		*data_len = sizeof(uint32_t);
- 		return &s->desc.byteorder;
-+	case NFTNL_SET_DESC_CONCAT_DATA:
-+		*data_len = s->desc.data_count;
-+		return s->desc.data_len;
- 	}
- 	return NULL;
- }
 -- 
 2.33.0
 
