@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0261B45D033
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:44:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB2E45D05E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244221AbhKXWrz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 17:47:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49430 "EHLO
+        id S1352124AbhKXWtU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 17:49:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbhKXWry (ORCPT
+        with ESMTP id S1352164AbhKXWtU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:47:54 -0500
+        Wed, 24 Nov 2021 17:49:20 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48863C061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:44:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA4BC061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:46:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=eGWgaplH3FIHP4w4H8+GZB3MrwnUUT5HGYzRLjTy/BI=; b=VwK/XVmlI4g6SKplYJOiYzphIJ
-        ZKRmSCiNKXeD2wH/lFSp0bYjJbRIzF7QO16LbNeI725+Hxv3A/afeiV3E9jFmU8uPkjM3lsrB6WgR
-        SLAeeZi+PjfEimsQPWQYChRW3J5osW2bJ+v38Eow4GEn8I8QeDCiXMnFxInkHkVc90GUc2dzr2H7W
-        H4kmrNaS0R0NqdreDTa9krYcdswpYoaZVmiVCbGgpC9I5Vpld/53TWA8ELxyj7vYechhOwAAN8PeM
-        429qYVYwJc6a65dvfSnYwhMM/GY2M2T9I4fRgqamRiUC4Wy6N/JdS8e0yF334WPmRq17Od/7XSy3z
-        5if5UPXQ==;
+        bh=a41YbP+R04R0BDB1NJ1n48WqLUOZgA/3HMs/5OJTkk4=; b=SXF9sYocreEgGmzdz0uMNrp/vb
+        ySO46hiX5TYMH7GYsIPc1uBrnFKNV5dyu3oCw3AumSdm99TR76MI2brkmRoMzo9wve2KQvKAFa9A/
+        hxdhph9Tzrz+g9aNZyfhZyxRzNQEIW0yqeJWZMnyphJVs5pRNgzKWF5iqXOMIY5V9KXUWHg8kTf/j
+        rv39bNl5YrnGJHJvm6qvEi8KRBzs4+M+9OzyuiTSsXFedHDV7b2m9KuCTlublg+y7bsAS+hz3L072
+        FTDrCx7oU3mGr9AURKA/nf4fNDdivgP3nRRxkTpPXlZeYYzdjVNv41FeOz4ZJfK37eMUp3W4sOU1g
+        iA8LCWrw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mq0h7-00563U-VD
-        for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:49 +0000
+        id 1mq0h8-00563U-1j
+        for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:50 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 16/32] output: PGSQL: improve mapping of DB columns to input-keys
-Date:   Wed, 24 Nov 2021 22:24:13 +0000
-Message-Id: <20211124222444.2597311-19-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 16/30] output: SQLITE3: fix possible buffer overruns
+Date:   Wed, 24 Nov 2021 22:24:14 +0000
+Message-Id: <20211124222444.2597311-20-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124222444.2597311-1-jeremy@azazel.net>
 References: <20211124222444.2597311-1-jeremy@azazel.net>
@@ -49,58 +49,46 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Currently, we copy the column-name to a buffer, iterate over it to
-replace the underscores with full-stops, using `strchr` from the start
-of the buffer on each iteration, then copy the buffer to the input-key's
-`name` member.
-
-Apart from the inefficiency, `strncpy` is used to do the copies, which
-leads gcc to complain:
-
-  ulogd_output_PGSQL.c:204:17: warning: `strncpy` output may be truncated copying 31 bytes from a string of length 31
-
-Furthermore, the buffer is not initialized, which means that there is
-also a possible buffer overrun if the column-name is too long, since
-`strncpy` will not append a NUL.
-
-Instead, copy the column-name directly to the input-key using
-`snprintf`, and run `strchr` from the last underscore on each iteration.
+There is a an off-by-one error in the size of some of the buffers used
+to hold key-names.  The maximum length of a name is `ULOGD_MAX_KEYLEN`,
+and so the buffer size should be be `ULOGD_MAX_KEYLEN + 1`.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/pgsql/ulogd_output_PGSQL.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ output/sqlite3/ulogd_output_SQLITE3.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/output/pgsql/ulogd_output_PGSQL.c b/output/pgsql/ulogd_output_PGSQL.c
-index f5a2823a7e1d..71d94031ac4e 100644
---- a/output/pgsql/ulogd_output_PGSQL.c
-+++ b/output/pgsql/ulogd_output_PGSQL.c
-@@ -190,18 +190,18 @@ static int get_columns_pgsql(struct ulogd_pluginstance *upi)
- 	}
+diff --git a/output/sqlite3/ulogd_output_SQLITE3.c b/output/sqlite3/ulogd_output_SQLITE3.c
+index 20ceb3b5d6e2..554b1b34488c 100644
+--- a/output/sqlite3/ulogd_output_SQLITE3.c
++++ b/output/sqlite3/ulogd_output_SQLITE3.c
+@@ -48,7 +48,7 @@
  
- 	for (i = 0; i < PQntuples(pi->pgres); i++) {
--		char buf[ULOGD_MAX_KEYLEN+1];
- 		char *underscore;
+ struct field {
+ 	TAILQ_ENTRY(field) link;
+-	char name[ULOGD_MAX_KEYLEN];
++	char name[ULOGD_MAX_KEYLEN + 1];
+ 	struct ulogd_key *key;
+ };
  
-+		snprintf(upi->input.keys[i].name,
-+			 sizeof(upi->input.keys[i].name),
-+			 "%s", PQgetvalue(pi->pgres, i, 0));
-+
- 		/* replace all underscores with dots */
--		strncpy(buf, PQgetvalue(pi->pgres, i, 0), ULOGD_MAX_KEYLEN);
--		while ((underscore = strchr(buf, '_')))
-+		for (underscore = upi->input.keys[i].name;
-+		     (underscore = strchr(underscore, '_')); )
- 			*underscore = '.';
- 
--		DEBUGP("field '%s' found: ", buf);
--
--		/* add it to list of input keys */
--		strncpy(upi->input.keys[i].name, buf, ULOGD_MAX_KEYLEN);
-+		DEBUGP("field '%s' found\n", upi->input.keys[i].name);
- 	}
- 
- 	/* ID (starting by '.') is a sequence */
+@@ -214,7 +214,7 @@ sqlite3_createstmt(struct ulogd_pluginstance *pi)
+ {
+ 	struct sqlite3_priv *priv = (void *)pi->private;
+ 	struct field *f;
+-	char buf[ULOGD_MAX_KEYLEN];
++	char buf[ULOGD_MAX_KEYLEN + 1];
+ 	char *underscore;
+ 	char *stmt_pos;
+ 	int i, cols = 0;
+@@ -305,7 +305,7 @@ static int
+ sqlite3_init_db(struct ulogd_pluginstance *pi)
+ {
+ 	struct sqlite3_priv *priv = (void *)pi->private;
+-	char buf[ULOGD_MAX_KEYLEN];
++	char buf[ULOGD_MAX_KEYLEN + 1];
+ 	char *underscore;
+ 	struct field *f;
+ 	sqlite3_stmt *schema_stmt;
 -- 
 2.33.0
 
