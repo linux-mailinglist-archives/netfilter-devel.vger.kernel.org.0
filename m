@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FCC445CAEE
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 18:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0F145CAEC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 18:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240975AbhKXR2X (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 12:28:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32900 "EHLO
+        id S242668AbhKXR2N (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 12:28:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbhKXR2X (ORCPT
+        with ESMTP id S242741AbhKXR2M (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:28:23 -0500
+        Wed, 24 Nov 2021 12:28:12 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8615EC061574
-        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 09:25:13 -0800 (PST)
-Received: from localhost ([::1]:44960 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53746C061574
+        for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 09:25:02 -0800 (PST)
+Received: from localhost ([::1]:44944 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1mpw19-0001EE-Po; Wed, 24 Nov 2021 18:25:11 +0100
+        id 1mpw0y-0001DG-KX; Wed, 24 Nov 2021 18:25:00 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 03/15] mnl: Fix for missing info in rule dumps
-Date:   Wed, 24 Nov 2021 18:22:39 +0100
-Message-Id: <20211124172251.11539-4-phil@nwl.cc>
+Subject: [nft PATCH 04/15] src: Fix payload statement mask on Big Endian
+Date:   Wed, 24 Nov 2021 18:22:40 +0100
+Message-Id: <20211124172251.11539-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124172251.11539-1-phil@nwl.cc>
 References: <20211124172251.11539-1-phil@nwl.cc>
@@ -34,40 +34,31 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Commit 0e52cab1e64ab improved error reporting by adding rule's table and
-chain names to netlink message directly, prefixed by their location
-info. This in turn caused netlink dumps of the rule to not contain table
-and chain name anymore. Fix this by inserting the missing info before
-dumping and remove it afterwards to not cause duplicated entries in
-netlink message.
+The mask used to select bits to keep must be exported in the same
+byteorder as the payload statement itself, also the length of the
+exported data must match the number of bytes extracted earlier.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/netlink_linearize.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ src/evaluate.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/src/netlink_linearize.c b/src/netlink_linearize.c
-index 111102fd43346..34a6e1a941b56 100644
---- a/src/netlink_linearize.c
-+++ b/src/netlink_linearize.c
-@@ -1673,5 +1673,16 @@ void netlink_linearize_rule(struct netlink_ctx *ctx,
- 		nftnl_udata_buf_free(udata);
- 	}
+diff --git a/src/evaluate.c b/src/evaluate.c
+index eebd992159a11..49fb8f84fe76b 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -2556,9 +2556,9 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
+ 	mpz_clear(ff);
  
--	netlink_dump_rule(lctx->nlr, ctx);
-+	if (ctx->nft->debug_mask & NFT_DEBUG_NETLINK) {
-+		nftnl_rule_set_str(lctx->nlr, NFTNL_RULE_TABLE,
-+				   rule->handle.table.name);
-+		if (rule->handle.chain.name)
-+			nftnl_rule_set_str(lctx->nlr, NFTNL_RULE_CHAIN,
-+					   rule->handle.chain.name);
-+
-+		netlink_dump_rule(lctx->nlr, ctx);
-+
-+		nftnl_rule_unset(lctx->nlr, NFTNL_RULE_CHAIN);
-+		nftnl_rule_unset(lctx->nlr, NFTNL_RULE_TABLE);
-+	}
- }
+ 	assert(sizeof(data) * BITS_PER_BYTE >= masklen);
+-	mpz_export_data(data, bitmask, BYTEORDER_HOST_ENDIAN, sizeof(data));
++	mpz_export_data(data, bitmask, payload->byteorder, payload_byte_size);
+ 	mask = constant_expr_alloc(&payload->location, expr_basetype(payload),
+-				   BYTEORDER_HOST_ENDIAN, masklen, data);
++				   payload->byteorder, masklen, data);
+ 	mpz_clear(bitmask);
+ 
+ 	payload_bytes = payload_expr_alloc(&payload->location, NULL, 0);
 -- 
 2.33.0
 
