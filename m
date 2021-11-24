@@ -2,192 +2,123 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA5E45B1AC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 03:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF4745B15C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 02:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237636AbhKXCGl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 23 Nov 2021 21:06:41 -0500
-Received: from sonic306-28.consmr.mail.ne1.yahoo.com ([66.163.189.90]:46234
-        "EHLO sonic306-28.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229774AbhKXCGk (ORCPT
+        id S237446AbhKXBx3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 23 Nov 2021 20:53:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236264AbhKXBx2 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 23 Nov 2021 21:06:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1637719411; bh=IIKa//ZfOf9ldI+2RZhwihcRPJzmFh5O4/PZDXiqrxo=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=PmEsScGDT56QiN+Jy0pLLGWnyKN/gxJNzyhhd6aK3mRYlCg73q0c9rwol/PA/5QNmZZrs8OwZfgaO37mdxg0V4fjz15kfxwtcKEJDh+75IDWTyrTBO3u6hs9kxW5Z0vRtPMUcWMQKBiYTU5IyFpBkiT/58d4bWNAxWwPYnST3qR1gN5OP2IN77JU9xK1JxhBF7LHzY1G2Y9e0HuyLBd1RZwklhIWJOGv4hRald+W0e5RrWL81YGjPUbxSLNUoCPqxS9ERupUW2f65ctbSz30DYdtloPxOi2dvPO9//HihtPZ2Z2l6sNx48LQGfh3ebYCgjDKsJZDPI9M91ojIjpkXA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1637719411; bh=Kk3ubQbKAXNodGGFZb4TOQ/XxT7hCHClgdl+jbCiNKf=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=hraTilyCEzf3Xz1/kMyToHIaVcszJP3eHqQjv2dQJ6YIKwHp7DffGV2AMA4yQSYZ7QN5ETsT8VowS4tdEbkh3++cYGFS9LFR4YMKWydNPlURkN8JUvzQ+jT94yHJB6oVSIvoxE/flx1ElvjiAihZ50VXZBUGU8hQt2kYzyPsNSHvYIrck1Jzdy2Y/GuPcBbGU1d5WOoA/FbeN6c8rFumUQ9dOJcCsJBEy50sOCS1ka1SVvYPbn81UZRMm3wz96MFXTbF22EqqDqpjFVCkcB7iyO+Hez6fYOVc7wOIdrDnL1+xkKuwt/mhOnCXhX7PjojQk2L3iJrGLgtAY384u/ktA==
-X-YMail-OSG: xgUVGOkVM1nXHxEhPw3sY.j_OYRqsPJ_Huiuktw0vgRcbjLDak49Y_LL6lx24O0
- TSqN1kqHycB3BvTPaG7wX3RoKQy3FMuo82MJNTaitTth_VmKUIYsXOEfWQnLy0YJCPUh8I35jHfd
- J4ZVfuNqjumX_KtVFVb6NMpG7e7nLkdJtE0bkbKG2xvCKGgMNI9OfVjCtlGx_7mA1KshGe7x9vUE
- K.5.8ozChTGi._V87HIYJBr6vD8njc5eX1z6w15rFSTgETPuC8wpzLZZK0DPIwsBSVd_GC4xjZNj
- W1T.Y2kYFr6BLkPf0H31S_cpiUE88HlzAv.5jmm.cmbye.z95.HPsV17ANiBMxD1CnlJEM_R.z1u
- 9csz7U54Fkqy9.7bdojv0i4hc8.EHOCvujS9.nnHngPkN7qdER1HoFMKCPjC_nAIKBYL3rWtpJyL
- zaEQEng0RQDUu0ViFd_EnqFDIHTHb8k_Wl.xvt4g.MrSbvLCVouSNkD9eeWA1szXUUlYuYs4Mj5z
- VpEOjsIn8PzkYEs6fM6X9MDeUUU_6gtKWn7P6rZfF975aK5EYOVXoxHXG56jGKZYGReRFK76C0h6
- Y0A2QqWJwOqHfn_naJe3HYTCWlx7qpT.7F.zB1zQfMZ4_vNGdTiuMyG2Osu5xpzoxXo6gmBYtZCY
- R35Y0pUwhKp4IWxAimSx3Da7ol_yiQT6WNwitJz5gX8kv_DwtWLJnSBeYe0pSiccJJeD5HxjOEM4
- 1GdOYdV2BhRN1C1GgTBBx1JaFC7uHdgprTAbq7ndUWhugaF2ngRIISPP5zDFn_yB7DpoYvawXuuS
- .6IXhgOk.ANumooQJm3RQYwy9nrJb.lqWbNZ5BdsdTqUqO4o6I_0K6ko7wn39vQcJjN7HMJAZOBa
- QO5VtuIjSgmp2CkMpN2YJfP4KjOsjPqx2tehPWt3nAOEe0pTpDtqoW.UEZ5O0QS4XMx.oHmgkyxN
- PuC.UJbv6lC_8do6t5rCL.ZJJKyRfNtIJOVbo3PywFyQ98yHoCqEiaUnvw2zULc91TWJWrlMOhes
- CMWoEyc2tph.PfkOk54h215zmGpMdgvsWFbSM65cLtlv0yAhN8ze7_1ZTSlboKEYzGOGqBQ2PALM
- QqlO2WdmkocVV5eUd.e66rykwn_fggIuzayEN1zx8Np0V9ZXeVCqa8dFPO4TOKqqz6PavqCLmWyW
- M1fYpBAq4B1AOVUv1fex3xiRE798h_8PTSv2YpCLts3Q8WDLaiVnMqQ5cG3jj5PNUTXiaWyf8TW9
- 51POf8kr7xElrzvntsRoUTX31lU0C4r6GvPqKeGV5BWUw__FBSPtDf_j7K_pdPE9.BBgigfr45s1
- bvOtgyGc46a.0AZxpeRBTSkwnbBkegjYTkqOzp0gsAYwuYcbgvDLVFEFKltqYBPw3Jk_2_RYfgkX
- ShIHrKXaj4TJr_hyHNfVwWNWCnX.2sH6ELK_Pmx4txwtq.bqofX_6SgzcSALI9_9w0NkgPP6WyMz
- cVfGlEF5M2s8qFu9g28jA_AT8pXN3ymunfJ45uAFS_tDg..0pfz46mv11CwtXFVH8RO3HfjrefeC
- gGKimdYrpfZ1FJaGVouF7VP_ZhOMMfixYrSZ.o.MLjae_0iAT3likas0bYQ5ucAfv8pqTgUE.YqP
- jYYzIKCGuT6FY0AZLhRRNEr1bg9mHbbj7dMNncrssaMCSrch7uaa1PefuGE9A2EnqI_sKGUx6tK4
- or7plbTstSE90mr08RwTRe1p26WRHpzwHUvQXGm34vNKNEX6ratDTSNLkKUs1Mg9yzFhf9qAoiAF
- nSLbW5KotBRfBcz85mXrU0vA6xD7ZN_gxn9XTjfQWa.umOmAvR9u2ap8Qb0snHSNtMED.eV.YvyH
- UPERgDFVmMELHa5MNQAY4IxXBHj6.rw34KC9J8XPK_s1ZPt7xdqAh1LERUk3ZNURtf0XpsTmHRUm
- 0iMrqW6vI3ltV.EO4Xf1IVGVrLx6GV7d2KN8FYb.zPeqB7sBfknMNOS1xubHMgL2yASuqHf1zD_m
- Tk6dzvl_1uODOP2HIlavmCNclsLBn2QLsQ7TNE2USUWVzZxjZlrEpg3Uw_enI2kjkYfREXuG0QoH
- rkX3hhy5GqZyfsbx7nvh89jqVnEeC1sG.BD3Npdiuu5gliRGBQWH5nWmovj.cXaOmZKyxjP2hQlA
- 2K5sB8oeIZLyDvEp4iYRq8mPvWWkA1URTR9AM1E0GYsoewADPKf3Bnj1IW1HugA0PxSwYaznr_Yd
- TQuh8jPbULIdvMCz4KduFd4Q0gEIgDszYxtGt9afKFtsiIXZ.p7TDvwDQNG72D74O5A--
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Wed, 24 Nov 2021 02:03:31 +0000
-Received: by kubenode514.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 6a5ec7ba15e43f08e83dd45ef02c9b3f;
-          Wed, 24 Nov 2021 02:03:25 +0000 (UTC)
-From:   Casey Schaufler <casey@schaufler-ca.com>
-To:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     casey@schaufler-ca.com, linux-audit@redhat.com,
-        keescook@chromium.org, john.johansen@canonical.com,
-        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
-        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: [PATCH v30 18/28] LSM: security_secid_to_secctx in netlink netfilter
-Date:   Tue, 23 Nov 2021 17:43:22 -0800
-Message-Id: <20211124014332.36128-19-casey@schaufler-ca.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211124014332.36128-1-casey@schaufler-ca.com>
-References: <20211124014332.36128-1-casey@schaufler-ca.com>
+        Tue, 23 Nov 2021 20:53:28 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD87DC061574
+        for <netfilter-devel@vger.kernel.org>; Tue, 23 Nov 2021 17:50:19 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id e144so1153548iof.3
+        for <netfilter-devel@vger.kernel.org>; Tue, 23 Nov 2021 17:50:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Rpgt1bJx8K373EVrKSGqHg1nd3sdDbwlVU3RtQXZzCo=;
+        b=n3v9liDUoZl2y72kkAi+SyGDGubctq1blUKcI3SaWokBXS83KMDr9A9TDA5zzOYHB3
+         1L3w7bMIMVVbct38Jbg5dnEyUoCtQ1Xor1oMWiI+dFK5qsqphnvSsTYfe82JJG3Zwbq0
+         5dHuOii9Mvy4otvs+CUZlXtjVmoa14TZXPSFu5ecuE7KJTrDFSWMaxv9tgDKY3iYLpbq
+         wae+RgRBXkKlPUtz3hX72d+xxhL5285p5HxFRYCk6F/YDM78eQlplQKNqTzKikz1SSF7
+         R+OlqZPYEGxo0caySiIQoJljJ63TMIAwKv56dgMCsqbckyKIjPP8iixHlgJgHqC1Jnji
+         ohkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=Rpgt1bJx8K373EVrKSGqHg1nd3sdDbwlVU3RtQXZzCo=;
+        b=oShTqbs1t8Zr0WeiqHJuQx9dH+5SOhrl4itIWO73MqsFEfkRowwusOIVQGsAxTLnpl
+         a9rZ5IORWCCUeXnUoA9keUDLv0HHeTjdDD+gKQCRq2CEQSgUpZWZ/hHYh739++UOqBcf
+         HZ661iI1SKBkU9Le4dx0aH0e0AZLGeRQF67JCt2Fza2SUi4EEfiTbptqch41bxzYAiAU
+         GbGZJ6ZNkBjSNdwUYDmc6IN2Lf1rbZcrujEDe+3Pv0txGVJePhZWNXCLHo+fKP0lMQwX
+         PzzRnKLI+J110Yu2im2YYsf2EMczejtLwzka1fqk3y+Q7Fc0gPrExz8BTk1PGdiLDLHA
+         5n4Q==
+X-Gm-Message-State: AOAM531OAbNTjbcFQ/gCsvWj3t/B5CANmfSNJKlcXt2XnNeaQSgxzhjm
+        JHTvR1C81Py07xjTD0ymqOJ3ki8vNGHUXb60EP4=
+X-Google-Smtp-Source: ABdhPJzhtY80pJRTDVruD5NXd2Q+v2xKFVgKaWy/YZyFuYW8g5sy9DvwLG0zSEfTtZOcds1m9paUaaWUmJlfLNThdyw=
+X-Received: by 2002:a05:6638:130f:: with SMTP id r15mr11540295jad.19.1637718619021;
+ Tue, 23 Nov 2021 17:50:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: annabelardelean@gmail.com
+Received: by 2002:a92:2a07:0:0:0:0:0 with HTTP; Tue, 23 Nov 2021 17:50:18
+ -0800 (PST)
+From:   Ms Nadia Emaan <mrsnadiaemaan52@gmail.com>
+Date:   Wed, 24 Nov 2021 01:50:18 +0000
+X-Google-Sender-Auth: hVYEIKz-rjVn7aufurlxeL4KyZU
+Message-ID: <CANe==ryDggrgSPixJZH+ktd-AmFs1+0aAqMbJSdMTEL-uhQCwg@mail.gmail.com>
+Subject: May the peace of God be with You.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Change netlink netfilter interfaces to use lsmcontext
-pointers, and remove scaffolding.
+May God Bless you Beloved =E2=80=8BFriend,
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: John Johansen <john.johansen@canonical.com>
-Acked-by: Paul Moore <paul@paul-moore.com>
-Acked-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-Cc: netdev@vger.kernel.org
-Cc: netfilter-devel@vger.kernel.org
----
- net/netfilter/nfnetlink_queue.c | 37 +++++++++++++--------------------
- 1 file changed, 14 insertions(+), 23 deletions(-)
+I am contacting you through this means because I need your urgent
+assistance and also help me to carry a charity project in your
+country. I found your email address as a true child of God for past
+few days now that I have been praying to know if you are really the
+chosen one for this great charity project, according to God's
+direction, after all prayers I am convinced, and I have decided to
+contact you. Please, i want you use the funds for the Lord's work,
+with confidence, read and respond now.
 
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index f19897b3cf39..69343275c54b 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -301,15 +301,13 @@ static int nfqnl_put_sk_uidgid(struct sk_buff *skb, struct sock *sk)
- 	return -1;
- }
- 
--static u32 nfqnl_get_sk_secctx(struct sk_buff *skb, char **secdata)
-+static void nfqnl_get_sk_secctx(struct sk_buff *skb, struct lsmcontext *context)
- {
--	u32 seclen = 0;
- #if IS_ENABLED(CONFIG_NETWORK_SECMARK)
- 	struct lsmblob blob;
--	struct lsmcontext context = { };
- 
- 	if (!skb || !sk_fullsock(skb->sk))
--		return 0;
-+		return;
- 
- 	read_lock_bh(&skb->sk->sk_callback_lock);
- 
-@@ -318,14 +316,12 @@ static u32 nfqnl_get_sk_secctx(struct sk_buff *skb, char **secdata)
- 		 * blob. security_secid_to_secctx() will know which security
- 		 * module to use to create the secctx.  */
- 		lsmblob_init(&blob, skb->secmark);
--		security_secid_to_secctx(&blob, &context);
--		*secdata = context.context;
-+		security_secid_to_secctx(&blob, context);
- 	}
- 
- 	read_unlock_bh(&skb->sk->sk_callback_lock);
--	seclen = context.len;
- #endif
--	return seclen;
-+	return;
- }
- 
- static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
-@@ -397,12 +393,10 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 	struct net_device *indev;
- 	struct net_device *outdev;
- 	struct nf_conn *ct = NULL;
-+	struct lsmcontext context = { };
- 	enum ip_conntrack_info ctinfo;
- 	struct nfnl_ct_hook *nfnl_ct;
- 	bool csum_verify;
--	struct lsmcontext scaff; /* scaffolding */
--	char *secdata = NULL;
--	u32 seclen = 0;
- 
- 	size = nlmsg_total_size(sizeof(struct nfgenmsg))
- 		+ nla_total_size(sizeof(struct nfqnl_msg_packet_hdr))
-@@ -470,9 +464,9 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 	}
- 
- 	if ((queue->flags & NFQA_CFG_F_SECCTX) && entskb->sk) {
--		seclen = nfqnl_get_sk_secctx(entskb, &secdata);
--		if (seclen)
--			size += nla_total_size(seclen);
-+		nfqnl_get_sk_secctx(entskb, &context);
-+		if (context.len)
-+			size += nla_total_size(context.len);
- 	}
- 
- 	skb = alloc_skb(size, GFP_ATOMIC);
-@@ -602,7 +596,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 	    nfqnl_put_sk_uidgid(skb, entskb->sk) < 0)
- 		goto nla_put_failure;
- 
--	if (seclen && nla_put(skb, NFQA_SECCTX, seclen, secdata))
-+	if (context.len &&
-+	    nla_put(skb, NFQA_SECCTX, context.len, context.context))
- 		goto nla_put_failure;
- 
- 	if (ct && nfnl_ct->build(skb, ct, ctinfo, NFQA_CT, NFQA_CT_INFO) < 0)
-@@ -630,10 +625,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 	}
- 
- 	nlh->nlmsg_len = skb->len;
--	if (seclen) {
--		lsmcontext_init(&scaff, secdata, seclen, 0);
--		security_release_secctx(&scaff);
--	}
-+	if (context.len)
-+		security_release_secctx(&context);
- 	return skb;
- 
- nla_put_failure:
-@@ -641,10 +634,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 	kfree_skb(skb);
- 	net_err_ratelimited("nf_queue: error creating packet message\n");
- nlmsg_failure:
--	if (seclen) {
--		lsmcontext_init(&scaff, secdata, seclen, 0);
--		security_release_secctx(&scaff);
--	}
-+	if (context.len)
-+		security_release_secctx(&context);
- 	return NULL;
- }
- 
--- 
-2.31.1
 
+My name is  Ms. Nadia Emman F., a widow, but currently based in West
+Africa since my life with my late husband, who was a businessman in
+this country before dying some years ago. We were married to many
+years without a child. He died after a brief illness that lasted only
+six days and I myself have been suffering from an ovarian cancer
+disease. At this moment I am about to finish the race in this way
+because the disease has reached a very bad stage, without any family
+member and without children. I hope you do not expose or betray this
+trust and I am sure that I am about to trust you for the mutual
+benefit of orphans and the less privileged. I have some funds that I
+inherited from my late husband, the total sum of ($ 12,500,000.00)
+deposited at a bank here in Burkina Faso. After knowing my current
+state of health, I decided to trust you with this fund, believing that
+you will use it in the way I will instruct here.
+
+
+you will use this $12.5 Million for public benefit as follows;
+
+1. Establish An Orphanage Home To Help The Orphanages Children.
+2. Build A Hospital To Help The Poor.
+3. Build A Nursing Home For Elderly People Need Care & Meal.
+
+You will named them after my late husband.Therefore, I need you to
+help me and claim this money and use it for charities, for orphanages
+and provide justice and help to the poor, needy and to promote the
+words of God and the effort to maintain the house of God, according to
+the bible in the book of. Jeremiah 22: 15-16, without minding our
+different religions.
+
+It will be a pleasure to compensate with 40% percent of the total
+money for your effort in handling the transaction, while 60% of the
+money will go to charity project.
+
+All I need from you is sincerity and ability to complete the task of
+God without any failure. It will be my pleasure to see that the bank
+has finally released and transferred the fund to your bank account in
+the country, even before I die here in the hospital, due to my current
+state of health, everything must be processed as soon as possible.
+
+I am waiting for your immediate response, if you are only interested
+in obtaining more details about the transaction and execution of this
+humanitarian project for the glory and honor of God.
+
+Sorry if you received this letter in your spam, is due to recent
+connection/network error here in the country.
+
+Please I am waiting for your urgent reply now.
+
+May God Bless you,
+Ms. Nadia Emman F.
