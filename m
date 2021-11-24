@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C54245D00C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB25645D004
+	for <lists+netfilter-devel@lfdr.de>; Wed, 24 Nov 2021 23:24:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344384AbhKXW2J (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 24 Nov 2021 17:28:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44994 "EHLO
+        id S1343906AbhKXW2E (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 24 Nov 2021 17:28:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344009AbhKXW2A (ORCPT
+        with ESMTP id S1343961AbhKXW2A (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Wed, 24 Nov 2021 17:28:00 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90184C06174A
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4E2C061746
         for <netfilter-devel@vger.kernel.org>; Wed, 24 Nov 2021 14:24:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Amt29jxp87u6n/DjPlkhLKoZyc5pkmCe89FsGOlwNpQ=; b=oJOJLygX2H5+pPwH7fTD9gQny2
-        2+cVkiWY92KZfXjVa72JNUJe0nr2spPyybyReGs7+mhlut0oXXwQ5zUaxgCfeSGOJ1lAAs22b+/TM
-        Ljn4agkXiMlQ9vUPyS+GLbPVXqsvyR1o3ACYthSZPw8tSZ2phoBx2Z7HjZSrIGcQJc0a8NbLAmFr4
-        DCL8yiSW9UtdhvL0/lNGPmZ0vspMuD0CjBIsYnbHtCE+mZBfcFGfEMfjidOHO+A05bE089BvFTc48
-        C24MvShUaTWCftyhuyWutrp8pXvH4+OjRyFi09wIXg/ut0dyfbU/R37GRSJlJnv+fZTRvbb7TZX3s
-        PSM/bA3Q==;
+        bh=s4uihXR8SLCY9oUFCpw68HCOYp4JfyKXWeofmfGLfZQ=; b=QnHvUYUAvDhSmqYUR3l0UTEVS6
+        goVdvyeJEjiYDcOSSzx2Kqqb9AYQgQccpdPubY1izf0wzXlXURhAe7Pj5d3cKW+LLGqPY1tOLjHcq
+        jsxWwHHuLQn0MpMU3OVfOzinkfoA2JBOWFdk6C7bBPrulrJYOt+bc/RCITwBPCuMQdGd+JRXqtMvU
+        678kwJCWi0Tzpr9Wq3H2/umB20Fu6v/cpO9FlQMFTbHoKARaSTFyFFDaer9myEVyCLlxq12KRLw15
+        KlLidfUI18Lu8nkGwvdCHuv//q70QF+hzBoP4JReMfdy7Gt7VS+2hhNIFhMscJCw++saaJPSisPJn
+        A1a9eDEg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mq0h6-00563U-DT
+        id 1mq0h6-00563U-GB
         for netfilter-devel@vger.kernel.org; Wed, 24 Nov 2021 22:24:48 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v3 02/32] db: add missing `break` to switch case
-Date:   Wed, 24 Nov 2021 22:23:57 +0000
-Message-Id: <20211124222444.2597311-3-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v3 03/32] filter: HWHDR: simplify flow-control
+Date:   Wed, 24 Nov 2021 22:23:58 +0000
+Message-Id: <20211124222444.2597311-4-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211124222444.2597311-1-jeremy@azazel.net>
 References: <20211124222444.2597311-1-jeremy@azazel.net>
@@ -49,28 +49,70 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When formatting DB queries, if we get a input key of type `RAW`, we log
-a message indicating that `RAW` is unsupported, then fall through to the
-default case, which logs another message that the key type is unknown.
-Add the missing `break` statement to prevent the fall-through.
+The `interp_mac2str` function concludes with a `switch` followed by a
+`return` statement.
+
+The `switch` has one case falling through to a default:
+
+  switch (expr) {
+  case X:
+    // ... X code ...
+  default:
+    // ... default code ...
+  }
+
+This is equivalent to the simpler and more readily comprehensible:
+
+  if (expr == X) {
+    // ... X code ...
+  }
+  // ... default code ...
+
+Replace the former with the latter.
+
+Doing so makes it obvious that the following `return` statement is never
+reached.  Remove it.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- util/db.c | 1 +
- 1 file changed, 1 insertion(+)
+ filter/ulogd_filter_HWHDR.c | 24 +++++++++++-------------
+ 1 file changed, 11 insertions(+), 13 deletions(-)
 
-diff --git a/util/db.c b/util/db.c
-index c9aec418e9ed..f0711146867f 100644
---- a/util/db.c
-+++ b/util/db.c
-@@ -388,6 +388,7 @@ static void __format_query_db(struct ulogd_pluginstance *upi, char *start)
- 		case ULOGD_RET_RAW:
- 			ulogd_log(ULOGD_NOTICE,
- 				"Unsupported RAW type is unsupported in SQL output");
-+			break;
- 		default:
- 			ulogd_log(ULOGD_NOTICE,
- 				"unknown type %d for %s\n",
+diff --git a/filter/ulogd_filter_HWHDR.c b/filter/ulogd_filter_HWHDR.c
+index 10c95c4e9bb0..d756d35577f0 100644
+--- a/filter/ulogd_filter_HWHDR.c
++++ b/filter/ulogd_filter_HWHDR.c
+@@ -207,19 +207,17 @@ static int interp_mac2str(struct ulogd_pluginstance *pi)
+ 		okey_set_u16(&ret[KEY_MAC_TYPE], type);
+ 	}
+ 
+-	switch (type) {
+-		case ARPHRD_ETHER:
+-			parse_ethernet(ret, inp);
+-		default:
+-			if (!pp_is_valid(inp, KEY_RAW_MAC))
+-				return ULOGD_IRET_OK;
+-			/* convert raw header to string */
+-			return parse_mac2str(ret,
+-					    ikey_get_ptr(&inp[KEY_RAW_MAC]),
+-					    KEY_MAC_ADDR,
+-					    ikey_get_u16(&inp[KEY_RAW_MACLEN]));
+-	}
+-	return ULOGD_IRET_OK;
++	if (type == ARPHRD_ETHER)
++		parse_ethernet(ret, inp);
++
++	if (!pp_is_valid(inp, KEY_RAW_MAC))
++		return ULOGD_IRET_OK;
++
++	/* convert raw header to string */
++	return parse_mac2str(ret,
++			     ikey_get_ptr(&inp[KEY_RAW_MAC]),
++			     KEY_MAC_ADDR,
++			     ikey_get_u16(&inp[KEY_RAW_MACLEN]));
+ }
+ 
+ 
 -- 
 2.33.0
 
