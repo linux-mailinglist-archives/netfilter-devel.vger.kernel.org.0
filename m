@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F294746320D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Nov 2021 12:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 167ED463201
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Nov 2021 12:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236839AbhK3LS3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 30 Nov 2021 06:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
+        id S231690AbhK3LSJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 30 Nov 2021 06:18:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235176AbhK3LS3 (ORCPT
+        with ESMTP id S234329AbhK3LSI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 30 Nov 2021 06:18:29 -0500
+        Tue, 30 Nov 2021 06:18:08 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729EDC061574
-        for <netfilter-devel@vger.kernel.org>; Tue, 30 Nov 2021 03:15:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078DBC061574
+        for <netfilter-devel@vger.kernel.org>; Tue, 30 Nov 2021 03:14:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=1VpApnz9g4f87qFdjIovcLRoOamQFNZJt9o/E64jh7k=; b=LKcN4YeAYJ/4jiDYFljE8wvp8j
-        Y6+6LZLcd6V06zMg2u+3Qj4jASWtdoGAgCEqFAahjtwpKt76xlb3cnxeOYxzxiwrJbVP/TpLeXz5R
-        XsDTYvdOy/1M9QhxXNPUpNbm8x1Wr97d8qtVXtoWht9iEBZnxPyK/KzsR9aLkoTYc2hZGDeYEXG6O
-        dUqCGQx68z9fkh4BI2V9g/GU8PF21qT4KdmJZD0A1q95OTdjgPFQ7yOHN+633GjikRWKc06DA9+Yn
-        6/vDMnILBRAM8A6pYb7UJVI4M7qn7HONu7c4/ua2TqxyOiR/pXaULkNSZ6kLNRMFDIkC/YLT6rrd3
-        J/Kg8S3g==;
+        bh=Fi1VGtKOWMHxLn0ZCrS2o9p9rHnh9GOI7NIN+chDxhs=; b=AhPGPA14R9nY89YPKyRX1t+sKg
+        lR+4nI3fxxZpr1lQlSZNmi5pVoNZI+P1+CGTri7tyxbN2vyyh800I596fM6jjnJITGeC0khw1W+I3
+        ehre9to5i8lcbbO4gqp3tIIBNApYeoh75IESYYAMeyz1FeH7bbspBArjfEoD+serE1grdV7chqwPH
+        11L9mgjFl9C+w/w4RVsS1tf1YXsIX4Pvrtx6Z/3JGikFxWOTNZ5mOaTi3BvbH9Ldgf7qajLce/kOh
+        qvAo6iilQLst6dJXuSaQI6PqRQVXg+5dqeLZFb+PrIOdCwZdHuC+Dm6JkunK0ZeT4BBY7rcjB4Qop
+        nTpDZ9+A==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1ms0ns-00Awwr-2V
+        id 1ms0ns-00Awwr-5T
         for netfilter-devel@vger.kernel.org; Tue, 30 Nov 2021 10:56:04 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v4 12/32] output: DBI: improve mapping of DB columns to input-keys
-Date:   Tue, 30 Nov 2021 10:55:40 +0000
-Message-Id: <20211130105600.3103609-13-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v4 13/32] output: DBI: fix NUL-termination of escaped SQL string
+Date:   Tue, 30 Nov 2021 10:55:41 +0000
+Message-Id: <20211130105600.3103609-14-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211130105600.3103609-1-jeremy@azazel.net>
 References: <20211130105600.3103609-1-jeremy@azazel.net>
@@ -49,88 +49,47 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Currently, we copy the column-name to a buffer, iterate over it to
-replace the underscores with full-stops, using `strchr` from the start
-of the buffer on each iteration, iterate over it a second time to
-lower-case all letters, and finally copy the buffer to the input-key's
-`name` member.
+On error, `dbi_conn_quote_string_copy` returns zero.  In this case, we
+need to set `*dst` to NUL.  Handle a return-value of `2` as normal
+below.  `1` is never returned.
 
-In addition to being inefficient, `strncpy` is used to do the copies,
-which leads gcc to complain:
-
-  ulogd_output_DBI.c:160:17: warning: `strncpy` output may be truncated copying 31 bytes from a string of length 31
-
-Furthermore, the buffer is not initialized, which means that there is
-also a possible buffer overrun if the column-name is too long, since
-`strncpy` will not append a NUL.
-
-Instead, copy the column-name directly to the input-key using
-`snprintf`, and then iterate over it once to replace underscores and
-lower-case letters.
+Replace `strncpy` with `memcpy`: using `strncpy` is nearly always a
+mistake, and we don't need its special behaviour here.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/dbi/ulogd_output_DBI.c | 34 +++++++++++++---------------------
- 1 file changed, 13 insertions(+), 21 deletions(-)
+ output/dbi/ulogd_output_DBI.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/output/dbi/ulogd_output_DBI.c b/output/dbi/ulogd_output_DBI.c
-index b4a5bacd156f..fff9abc57ff6 100644
+index fff9abc57ff6..57e3058036d9 100644
 --- a/output/dbi/ulogd_output_DBI.c
 +++ b/output/dbi/ulogd_output_DBI.c
-@@ -91,15 +91,6 @@ static struct config_keyset dbi_kset = {
- #define dbtype_ce(x)	(x->ces[DB_CE_NUM+6])
- 
- 
--/* lower-cases s in place */
--static void str_tolower(char *s)
--{
--	while(*s) {
--		*s = tolower(*s);
--		s++;
--	}
--}
--
- /* find out which columns the table has */
- static int get_columns_dbi(struct ulogd_pluginstance *upi)
- {
-@@ -140,24 +131,25 @@ static int get_columns_dbi(struct ulogd_pluginstance *upi)
+@@ -236,18 +236,20 @@ static int escape_string_dbi(struct ulogd_pluginstance *upi,
  	}
  
- 	for (ui=1; ui<=upi->input.num_keys; ui++) {
--		char buf[ULOGD_MAX_KEYLEN+1];
--		char *underscore;
--		const char* field_name = dbi_result_get_field_name(pi->result, ui);
-+		const char *field_name = dbi_result_get_field_name(pi->result, ui);
-+		char *cp;
+ 	ret = dbi_conn_quote_string_copy(pi->dbh, src, &newstr);
+-	if (ret <= 2)
++	if (ret == 0) {
++		*dst = '\0';
+ 		return 0;
++	}
  
- 		if (!field_name)
- 			break;
+ 	/* dbi_conn_quote_string_copy returns a quoted string,
+ 	 * but __interp_db already quotes the string
+ 	 * So we return a string without the quotes
+ 	 */
+-	strncpy(dst,newstr+1,ret-2);
+-	dst[ret-2] = '\0';
++	memcpy(dst, newstr + 1, ret - 2);
++	dst[ret - 2] = '\0';
+ 	free(newstr);
  
--		/* replace all underscores with dots */
--		strncpy(buf, field_name, ULOGD_MAX_KEYLEN);
--		while ((underscore = strchr(buf, '_')))
--			*underscore = '.';
--
--		str_tolower(buf);
-+		snprintf(upi->input.keys[ui - 1].name,
-+			 sizeof(upi->input.keys[ui - 1].name),
-+			 "%s", field_name);
+-	return (ret-2);
++	return ret - 2;
+ }
  
--		DEBUGP("field '%s' found: ", buf);
-+		/* down-case and replace all underscores with dots */
-+		for (cp = upi->input.keys[ui - 1].name; *cp; cp++) {
-+			if (*cp == '_')
-+				*cp = '.';
-+			else
-+				*cp = tolower(*cp);
-+		}
- 
--		/* add it to list of input keys */
--		strncpy(upi->input.keys[ui-1].name, buf, ULOGD_MAX_KEYLEN);
-+		DEBUGP("field '%s' found: ", upi->input.keys[ui - 1].name);
- 	}
- 
- 	/* ID is a sequence */
+ static int execute_dbi(struct ulogd_pluginstance *upi,
 -- 
 2.33.0
 
