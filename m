@@ -2,42 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED0D46319D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Nov 2021 11:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AD24631A0
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Nov 2021 11:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236476AbhK3K71 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 30 Nov 2021 05:59:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
+        id S236444AbhK3K73 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 30 Nov 2021 05:59:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbhK3K7Y (ORCPT
+        with ESMTP id S236453AbhK3K70 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 30 Nov 2021 05:59:24 -0500
+        Tue, 30 Nov 2021 05:59:26 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23D7C061574
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99801C061748
         for <netfilter-devel@vger.kernel.org>; Tue, 30 Nov 2021 02:56:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=L2ZclW0d8d3WpQG0ClX0mkdqREdqWZ8NC9PqLbbvdJ0=; b=bUp/go0B6Tw3qje3VfEqKthe9C
-        oRRDv69E8cK60teU2qy1paZLKpFs4VPs300FCVhYoDLzVbxOr+Q6K0q6pENa+Ppe3srvY8B+VsEzQ
-        cBtMW0F3KGLbo0S/JnvcCBJgqjnAuiShe1vV47QXhFmJcUizxfbouQ1tVApZn07RMJKoY3vVeq26i
-        gmenT0qD/uiollNUqWcgp7H0BLbuuZOPbH2p5n9N/3zllhZsaqsl/SwPKPMlOCMmIrDFN5sEr4FbG
-        DkuBe8ApOR1ZvgUPtmYymr1brStbV3orCQgMlwgP+limQTF5z6bOAYpbIHofMXZRWXd4X6ko9Biyk
-        lO4rsu4w==;
+        bh=uJPyc8Um7TiptWK8LwD+zUMbwdgd+J05Ge9aSnvU6xU=; b=HhmC4UW5Wi1pXHwsYVezG3bbII
+        7U3vdn19fSPlMRnRu3R/6d7Jj9QLxC65UL/ilckSn8eBH2O6KXoSSGXQ/F9pNrGXtr1fpjPDjfmjX
+        0wrxu+hePGsxUlFeAlr0glrYqpcZYqNWOV0GvzE8RTfxHmuGaH3NzsWMbvickv6/HISO3xF9stM2C
+        f+b+1LrJIRY1LaQAlGFmgMysDdGWQPk1RcRZHmeMKcAJEPasSPdebcJGgRFnkaZZ1c5+OQ7+cgL+I
+        I5Ti+2X3IjBRfPpgCgjU9imiZ+uXuw4piDvBcPofgFLm4khluuKMD/FSpJiVFphmBL5+Io0mi+M2E
+        Z/XVW8ZA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1ms0nq-00Awwr-Ud
+        id 1ms0nr-00Awwr-2Y
         for netfilter-devel@vger.kernel.org; Tue, 30 Nov 2021 10:56:03 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v4 00/32] Fixes for compiler warnings
-Date:   Tue, 30 Nov 2021 10:55:28 +0000
-Message-Id: <20211130105600.3103609-1-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v4 01/32] jhash: add "fall through" comments to switch cases
+Date:   Tue, 30 Nov 2021 10:55:29 +0000
+Message-Id: <20211130105600.3103609-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211130105600.3103609-1-jeremy@azazel.net>
+References: <20211130105600.3103609-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
@@ -47,85 +49,50 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch-set fixes all the warnings reported by gcc 11.
+gcc warns about undocumented fall-throughs in switches.  In this case,
+the fall-throughs are intended, so add commnts to indicate this to the
+compiler.
 
-Most of the warnings concern fall-throughs in switches, possibly
-problematic uses of functions like `strncpy` and `strncat` and possible
-truncation of output by `sprintf` and its siblings.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ include/ulogd/jhash.h | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-Some of the patches fix bugs revealed by warnings, some tweak code to
-avoid warnings, others fix or improve things I noticed while looking at
-the warnings.
-
-Changes since v3:
-
-  * When publishing v3 I accidentally sent out two different versions of the
-    patch-set under one cover-letter.  There are no code-changes in v4: it just
-    omits the earlier superseded patches.
-  
-Changes since v2:
-
-  * the first four patches of v2 have been merged;
-  * some of the v2 patches have been broken up into more, smaller parts;
-  * more detailed commit messages;
-  * patches 14 and 17 are new.
-
-Changes since v1:
-
-  * patch 13: stat of socket removed;
-  * patch 15: `struct iphdr` pointer removed;
-  * patch 27 is new.
-
-Jeremy Sowden (32):
-  jhash: add "fall through" comments to switch cases
-  db: add missing `break` to switch case
-  filter: HWHDR: simplify flow-control
-  filter: HWHDR: re-order KEY_RAW_MAC checks
-  filter: HWHDR: remove zero-initialization of MAC type
-  Replace malloc+memset with calloc
-  filter: PWSNIFF: replace malloc+strncpy with strndup
-  input: UNIXSOCK: remove stat of socket-path
-  input: UNIXSOCK: fix possible truncation of socket path
-  input: UNIXSOCK: prevent unaligned pointer access
-  output: DBI: fix deprecation warnings
-  output: DBI: improve mapping of DB columns to input-keys
-  output: DBI: fix NUL-termination of escaped SQL string
-  output: DBI: fix configuration of DB connection
-  output: MYSQL: improve mapping of DB columns to input-keys
-  output: PGSQL: improve mapping of DB columns to input-keys
-  output: PGSQL: fix non-`connstring` configuration of DB connection
-  output: SQLITE3: fix possible buffer overruns
-  output: SQLITE3: fix memory-leak in error-handling
-  output: SQLITE3: improve formatting of insert statement
-  output: SQLITE3: improve mapping of DB columns to fields
-  output: SQLITE3: improve mapping of fields to DB columns
-  output: SQLITE3: catch errors creating SQL statement
-  db: improve formatting of insert statement
-  db: improve mapping of input-keys to DB columns
-  db: simplify initialization of ring-buffer
-  output: JSON: fix output of GMT offset
-  output: JSON: increase time-stamp buffer size
-  output: JSON: fix possible leak in error-handling.
-  output: JSON: optimize appending of newline to output
-  output: JSON: fix possible truncation of socket path
-  output: IPFIX: remove compiler attribute macros
-
- filter/ulogd_filter_HWHDR.c           | 54 ++++++++---------
- filter/ulogd_filter_PWSNIFF.c         | 18 +++---
- include/ulogd/jhash.h                 | 24 ++++----
- include/ulogd/ulogd.h                 |  5 --
- input/packet/ulogd_inppkt_UNIXSOCK.c  | 46 +++++++--------
- output/dbi/ulogd_output_DBI.c         | 84 +++++++++++++--------------
- output/ipfix/ipfix.c                  |  6 +-
- output/ipfix/ipfix.h                  |  8 +--
- output/mysql/ulogd_output_MYSQL.c     | 20 +++----
- output/pgsql/ulogd_output_PGSQL.c     | 64 ++++++++------------
- output/sqlite3/ulogd_output_SQLITE3.c | 71 +++++++++++-----------
- output/ulogd_output_JSON.c            | 45 +++++++-------
- src/ulogd.c                           |  3 +-
- util/db.c                             | 36 ++++++------
- 14 files changed, 223 insertions(+), 261 deletions(-)
-
+diff --git a/include/ulogd/jhash.h b/include/ulogd/jhash.h
+index 38b87801a795..e5ca287e7e58 100644
+--- a/include/ulogd/jhash.h
++++ b/include/ulogd/jhash.h
+@@ -66,18 +66,18 @@ static inline u32 jhash(const void *key, u32 length, u32 initval)
+ 
+ 	c += length;
+ 	switch (len) {
+-	case 11: c += ((u32)k[10]<<24);
+-	case 10: c += ((u32)k[9]<<16);
+-	case 9 : c += ((u32)k[8]<<8);
+-	case 8 : b += ((u32)k[7]<<24);
+-	case 7 : b += ((u32)k[6]<<16);
+-	case 6 : b += ((u32)k[5]<<8);
+-	case 5 : b += k[4];
+-	case 4 : a += ((u32)k[3]<<24);
+-	case 3 : a += ((u32)k[2]<<16);
+-	case 2 : a += ((u32)k[1]<<8);
+-	case 1 : a += k[0];
+-	};
++	case 11: c += ((u32)k[10]<<24);	// fall through
++	case 10: c += ((u32)k[9]<<16);	// fall through
++	case 9 : c += ((u32)k[8]<<8);	// fall through
++	case 8 : b += ((u32)k[7]<<24);	// fall through
++	case 7 : b += ((u32)k[6]<<16);	// fall through
++	case 6 : b += ((u32)k[5]<<8);	// fall through
++	case 5 : b += k[4];		// fall through
++	case 4 : a += ((u32)k[3]<<24);	// fall through
++	case 3 : a += ((u32)k[2]<<16);	// fall through
++	case 2 : a += ((u32)k[1]<<8);	// fall through
++	case 1 : a += k[0];		// fall through
++	}
+ 
+ 	__jhash_mix(a,b,c);
+ 
 -- 
 2.33.0
 
