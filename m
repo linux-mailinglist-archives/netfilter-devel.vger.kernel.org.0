@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D31463207
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Nov 2021 12:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F07463205
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Nov 2021 12:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236526AbhK3LSS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 30 Nov 2021 06:18:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37900 "EHLO
+        id S234673AbhK3LSP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 30 Nov 2021 06:18:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236342AbhK3LSS (ORCPT
+        with ESMTP id S236580AbhK3LSO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 30 Nov 2021 06:18:18 -0500
+        Tue, 30 Nov 2021 06:18:14 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293A7C061746
-        for <netfilter-devel@vger.kernel.org>; Tue, 30 Nov 2021 03:14:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87486C061574
+        for <netfilter-devel@vger.kernel.org>; Tue, 30 Nov 2021 03:14:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=WUJ2xAfW8IqMiE8BM2+0Z28oXR7HuaWVA7FYSqtX/G8=; b=mIfiTLSDnBIG6U+uOtRCrNMfZ5
-        9H/6vmPLJMn5vVkLOsxMg5KbfvDCDIpRY/1CeXRWKx3MJIdiW1wYuI5P+0Ni0Qmqyt2/vzD+8yBkA
-        X/c1c0zQAi93wdrZ2J5AxG3Sl9C/s24OwTHJHIjhn5rcJv4r723SInobPiqDrOlSTPzvm/b7Jlw45
-        Yx/VEbMtNB/q8knwlzZHorv6FX1S+pi31pDu7V0yL6DetOK7lBGlMgsQg8/TTX2p9XG1RQqGCls8t
-        PY2puCAq3vqdDE3CZSnJt6MrftZHsnUusoxzvYB0f4HOHCTyAXrXgOhZxaXINTcLvOluDmbpIGkJH
-        x8q3Smew==;
+        bh=GXyQP3Ce3W7vJMWbnZpGxiQlMW9Oz8rbMnJaCwq7a7U=; b=rKJg1vo12odb93lzUpqqQCGlJC
+        3fPak45mnVLDmoT3sJcFTGRZGIym+RlCdyidsDzi/K19BlnFTplirniBC3YHQdq3pWq5sKYmTSVLb
+        tDDlkAxOeqlkCg5apmunHNJkzHYn3prnIt3ErhM5zT7Xyh2Rn6XcJBv5+pSs3nHU76GRb5RbENnHh
+        zAWA56zuO2JfKX1lIUGN4THATV5gUxua78jBTZ6AkjdC3dT12+kVGHVSTQoaoNLf18oH31ohIclyG
+        a0NJSkQmZSzsWYdr67EF9a2fT+m7zSIEqmsq7MC+WKMGcflGt3emibWe9bF615M0AKyMXV3KPXV6J
+        8la12sLQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1ms0ns-00Awwr-IG
+        id 1ms0ns-00Awwr-MJ
         for netfilter-devel@vger.kernel.org; Tue, 30 Nov 2021 10:56:04 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v4 17/32] output: PGSQL: fix non-`connstring` configuration of DB connection
-Date:   Tue, 30 Nov 2021 10:55:45 +0000
-Message-Id: <20211130105600.3103609-18-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v4 18/32] output: SQLITE3: fix possible buffer overruns
+Date:   Tue, 30 Nov 2021 10:55:46 +0000
+Message-Id: <20211130105600.3103609-19-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211130105600.3103609-1-jeremy@azazel.net>
 References: <20211130105600.3103609-1-jeremy@azazel.net>
@@ -49,89 +49,46 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In `open_db_pgsql`, we test whether various config-settings are defined
-by comparing their string values to `NULL`.  However, the `u.string`
-member of `struct config_entry` is an array, not a pointer, so it is
-never `NULL`.  Instead, check whether the string is empty.
-
-Use a pointer to the end of the `connstr` buffer and `sprintf`, rather
-than repeated `strcat`s.
+There is a an off-by-one error in the size of some of the buffers used
+to hold key-names.  The maximum length of a name is `ULOGD_MAX_KEYLEN`,
+and so declare the buffers with size `ULOGD_MAX_KEYLEN + 1`.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/pgsql/ulogd_output_PGSQL.c | 44 ++++++++++++-------------------
- 1 file changed, 17 insertions(+), 27 deletions(-)
+ output/sqlite3/ulogd_output_SQLITE3.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/output/pgsql/ulogd_output_PGSQL.c b/output/pgsql/ulogd_output_PGSQL.c
-index 71d94031ac4e..b52023273bc6 100644
---- a/output/pgsql/ulogd_output_PGSQL.c
-+++ b/output/pgsql/ulogd_output_PGSQL.c
-@@ -232,48 +232,38 @@ static int open_db_pgsql(struct ulogd_pluginstance *upi)
- 	char *schema = NULL;
- 	char pgbuf[128];
+diff --git a/output/sqlite3/ulogd_output_SQLITE3.c b/output/sqlite3/ulogd_output_SQLITE3.c
+index 20ceb3b5d6e2..554b1b34488c 100644
+--- a/output/sqlite3/ulogd_output_SQLITE3.c
++++ b/output/sqlite3/ulogd_output_SQLITE3.c
+@@ -48,7 +48,7 @@
  
--	if (!connstr) {
--		char *server = host_ce(upi->config_kset).u.string;
--		unsigned int port = port_ce(upi->config_kset).u.value;
--		char *user = user_ce(upi->config_kset).u.string;
--		char *pass = pass_ce(upi->config_kset).u.string;
--		char *db = db_ce(upi->config_kset).u.string;
-+	if (!connstr[0]) {
-+		char         *server = host_ce(upi->config_kset).u.string;
-+		unsigned int  port   = port_ce(upi->config_kset).u.value;
-+		char         *user   = user_ce(upi->config_kset).u.string;
-+		char         *pass   = pass_ce(upi->config_kset).u.string;
-+		char         *db     = db_ce  (upi->config_kset).u.string;
-+		char         *cp;
- 		/* 80 is more than what we need for the fixed parts below */
- 		len = 80 + strlen(user) + strlen(db);
+ struct field {
+ 	TAILQ_ENTRY(field) link;
+-	char name[ULOGD_MAX_KEYLEN];
++	char name[ULOGD_MAX_KEYLEN + 1];
+ 	struct ulogd_key *key;
+ };
  
- 		/* hostname and  and password are the only optionals */
--		if (server)
-+		if (server[0])
- 			len += strlen(server);
--		if (pass)
-+		if (pass[0])
- 			len += strlen(pass);
- 		if (port)
- 			len += 20;
- 
--		connstr = (char *) malloc(len);
-+		cp = connstr = malloc(len);
- 		if (!connstr)
- 			return -ENOMEM;
--		connstr[0] = '\0';
- 
--		if (server && strlen(server) > 0) {
--			strcpy(connstr, " host=");
--			strcat(connstr, server);
--		}
-+		if (server[0])
-+			cp += sprintf(cp, "host=%s ", server);
- 
--		if (port) {
--			char portbuf[20];
--			snprintf(portbuf, sizeof(portbuf), " port=%u", port);
--			strcat(connstr, portbuf);
--		}
-+		if (port)
-+			cp += sprintf(cp, "port=%u ", port);
- 
--		strcat(connstr, " dbname=");
--		strcat(connstr, db);
--		strcat(connstr, " user=");
--		strcat(connstr, user);
-+		cp += sprintf(cp, "dbname=%s user=%s", db, user);
- 
--		if (pass) {
--			strcat(connstr, " password=");
--			strcat(connstr, pass);
--		}
-+		if (pass[0])
-+			cp += sprintf(cp, " password=%s", pass);
- 	}
- 	pi->dbh = PQconnectdb(connstr);
- 	if (PQstatus(pi->dbh) != CONNECTION_OK) {
+@@ -214,7 +214,7 @@ sqlite3_createstmt(struct ulogd_pluginstance *pi)
+ {
+ 	struct sqlite3_priv *priv = (void *)pi->private;
+ 	struct field *f;
+-	char buf[ULOGD_MAX_KEYLEN];
++	char buf[ULOGD_MAX_KEYLEN + 1];
+ 	char *underscore;
+ 	char *stmt_pos;
+ 	int i, cols = 0;
+@@ -305,7 +305,7 @@ static int
+ sqlite3_init_db(struct ulogd_pluginstance *pi)
+ {
+ 	struct sqlite3_priv *priv = (void *)pi->private;
+-	char buf[ULOGD_MAX_KEYLEN];
++	char buf[ULOGD_MAX_KEYLEN + 1];
+ 	char *underscore;
+ 	struct field *f;
+ 	sqlite3_stmt *schema_stmt;
 -- 
 2.33.0
 
