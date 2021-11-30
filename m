@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B197146320A
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Nov 2021 12:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BA9463216
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Nov 2021 12:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236424AbhK3LSY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 30 Nov 2021 06:18:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
+        id S235962AbhK3LSl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 30 Nov 2021 06:18:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235176AbhK3LSX (ORCPT
+        with ESMTP id S237685AbhK3LSl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 30 Nov 2021 06:18:23 -0500
+        Tue, 30 Nov 2021 06:18:41 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094F9C061574
-        for <netfilter-devel@vger.kernel.org>; Tue, 30 Nov 2021 03:15:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A017C061574
+        for <netfilter-devel@vger.kernel.org>; Tue, 30 Nov 2021 03:15:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=sn0iRpgzZvU+CpjrzxUzsqmp/WocOoxP8tBjqd38NeI=; b=evsG14O3iXQjUsRgHZSnGlevkr
-        ekEZ9BRQGAUMDDtLm7D4OjDzWTWhOYhLfJculi/UXoQ5spL5vxg4e5V7csuegxAU0XxbHU54quyrI
-        +/7as7CIBbMQGiYckXdNOp/f/Xn/pn7kKST0Ie2ixWfQqgcXvk2VNBDQM2uMHKiDWKJhoPXm5Vj1G
-        YM2Cz02y4ANOJAoeOlbpajbUl2YZCQC+XV2bJeG2lnzF5j9wrXZAFIBXEsB1zlz4ErHhajiha/UR9
-        Y/kpQgrp1DZpfswl4+kVKAuXAflLjHNDMneZgfTdgqPNWAsyGoQmVCjzidpZesXlB2CC5pzUiMi7/
-        rsly5yYg==;
+        bh=O3F2qM0cpdAn4I5/l4MW1gDhk2alS4YlJVZ/5rVPSUE=; b=m16uTcr/oEsxLGRsF5rdQoZi67
+        fYEZCMFcTG/EHRqgckJgTX/6rYsXVW+X6WF32Y2UQZAc8pV8dRvy9avklAUPxkdM2J4pfeAuh7sBB
+        MiXBmQwwmRsJ36HpjXtaRnWW6CHcfNO2TLZvFYI/PFf1fUe5q4aqOX2rTBgOmn3/FhKIk6ae7sNmB
+        WgPHh1C3e42m2RvimxA/FfxVgrC+MRBVj0ftfVfKazqsqCbWhcx6zPKJj10C2YCnXRaa8yrP5bECP
+        OWNbuH7c8j9j1hlG3vspfsMWq1CKuTdbAnRW42/ek8DBE4uy59+kuuVnuiy5k9OixkjEdH3TCP2rL
+        mHXOsUxg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1ms0nt-00Awwr-KH
+        id 1ms0nt-00Awwr-NW
         for netfilter-devel@vger.kernel.org; Tue, 30 Nov 2021 10:56:05 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH v4 28/32] output: JSON: increase time-stamp buffer size
-Date:   Tue, 30 Nov 2021 10:55:56 +0000
-Message-Id: <20211130105600.3103609-29-jeremy@azazel.net>
+Subject: [ulogd2 PATCH v4 29/32] output: JSON: fix possible leak in error-handling.
+Date:   Tue, 30 Nov 2021 10:55:57 +0000
+Message-Id: <20211130105600.3103609-30-jeremy@azazel.net>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211130105600.3103609-1-jeremy@azazel.net>
 References: <20211130105600.3103609-1-jeremy@azazel.net>
@@ -49,34 +49,66 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The output buffer for date-times is of sufficient size provided that we
-don't get oversized integer values for any of the fields, which is a
-reasonable assumption.  However, the compiler complains about possible
-truncation, e.g.:
+The `realloc` extending the buffer containing the JSON to allow us to
+insert a final new-line may fail.  Therefore, we need to assign the
+return-value to a temporary variable or we will not able to free the
+existing buffer on error.
 
-  ulogd_output_JSON.c:314:65: warning: `%06u` directive output may be truncated writing between 6 and 10 bytes into a region of size between 0 and 18
-  ulogd_output_JSON.c:313:25: note: `snprintf` output between 27 and 88 bytes into a destination of size 38
-
-Fix the warnings by increasing the buffer size.
+Use the correct type for `buflen`.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/ulogd_output_JSON.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ output/ulogd_output_JSON.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/output/ulogd_output_JSON.c b/output/ulogd_output_JSON.c
-index f5c065dd062a..d949df6bb530 100644
+index d949df6bb530..6af872c64391 100644
 --- a/output/ulogd_output_JSON.c
 +++ b/output/ulogd_output_JSON.c
-@@ -269,7 +269,7 @@ static int json_interp_file(struct ulogd_pluginstance *upi, char *buf)
- 	return ULOGD_IRET_OK;
- }
- 
--#define MAX_LOCAL_TIME_STRING 38
-+#define MAX_LOCAL_TIME_STRING 80
- 
- static int json_interp(struct ulogd_pluginstance *upi)
+@@ -275,8 +275,8 @@ static int json_interp(struct ulogd_pluginstance *upi)
  {
+ 	struct json_priv *opi = (struct json_priv *) &upi->private;
+ 	unsigned int i;
+-	char *buf;
+-	int buflen;
++	char *buf, *tmp;
++	size_t buflen;
+ 	json_t *msg;
+ 
+ 	msg = json_object();
+@@ -338,8 +338,6 @@ static int json_interp(struct ulogd_pluginstance *upi)
+ 		json_object_set_new(msg, "dvc", json_string(dvc));
+ 	}
+ 
+-
+-
+ 	for (i = 0; i < upi->input.num_keys; i++) {
+ 		struct ulogd_key *key = upi->input.keys[i].u.source;
+ 		char *field_name;
+@@ -392,7 +390,6 @@ static int json_interp(struct ulogd_pluginstance *upi)
+ 		}
+ 	}
+ 
+-
+ 	buf = json_dumps(msg, 0);
+ 	json_decref(msg);
+ 	if (buf == NULL) {
+@@ -400,11 +397,13 @@ static int json_interp(struct ulogd_pluginstance *upi)
+ 		return ULOGD_IRET_ERR;
+ 	}
+ 	buflen = strlen(buf);
+-	buf = realloc(buf, sizeof(char)*(buflen+2));
+-	if (buf == NULL) {
++	tmp = realloc(buf, buflen + sizeof("\n"));
++	if (tmp == NULL) {
++		free(buf);
+ 		ulogd_log(ULOGD_ERROR, "Could not create message\n");
+ 		return ULOGD_IRET_ERR;
+ 	}
++	buf = tmp;
+ 	strncat(buf, "\n", 1);
+ 	buflen++;
+ 
 -- 
 2.33.0
 
