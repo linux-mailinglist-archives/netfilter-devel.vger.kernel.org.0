@@ -2,41 +2,64 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC10464E8C
-	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Dec 2021 14:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCAC84650BE
+	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Dec 2021 16:03:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349507AbhLANNk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 1 Dec 2021 08:13:40 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:53842 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244690AbhLANNj (ORCPT
+        id S239205AbhLAPHM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 1 Dec 2021 10:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240647AbhLAPG4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 1 Dec 2021 08:13:39 -0500
-Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id B0497605C1;
-        Wed,  1 Dec 2021 14:07:59 +0100 (CET)
-Date:   Wed, 1 Dec 2021 14:10:13 +0100
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
+        Wed, 1 Dec 2021 10:06:56 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A23C061757
+        for <netfilter-devel@vger.kernel.org>; Wed,  1 Dec 2021 07:03:35 -0800 (PST)
+Received: from localhost ([::1]:35166 helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1msR8w-00068C-2q; Wed, 01 Dec 2021 16:03:34 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft 0/3] netlink_delinearize cleanups
-Message-ID: <Yad0NcCxBgserhOp@salvia>
-References: <20211201115956.13252-1-fw@strlen.de>
+Subject: [nft PATCH 0/5] Reduce cache overhead a bit
+Date:   Wed,  1 Dec 2021 16:02:53 +0100
+Message-Id: <20211201150258.18436-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211201115956.13252-1-fw@strlen.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Dec 01, 2021 at 12:59:53PM +0100, Florian Westphal wrote:
-> No indended behavioural changes here.
-> binop postprocessing has been extended a lot and in a few places
-> things only work because expr->map and expr->left alias to the same
-> location.
+Comparing performance of various commands with equivalent iptables ones
+I noticed that nftables fetches data from kernel it doesn't need in some
+cases. For instance, listing one table was slowed down by a large other
+table.
 
-LGTM.
+Since there is already code to filter data added to cache, make use of
+that and craft GET requests to kernel a bit further so it returns only
+what is needed.
 
-We should add more type sanitization to expressions at some point, the
-risk is that this might break a few things not covered by tests though.
+This series is not entirely complete, e.g. objects are still fetched as
+before. It rather converts some low hanging fruits.
+
+Phil Sutter (5):
+  cache: Filter tables on kernel side
+  cache: Filter rule list on kernel side
+  cache: Filter chain list on kernel side
+  cache: Filter set list on server side
+  cache: Support filtering for a specific flowtable
+
+ include/cache.h                               |   1 +
+ include/mnl.h                                 |  14 +-
+ include/netlink.h                             |   3 +-
+ src/cache.c                                   | 188 ++++++++++--------
+ src/mnl.c                                     |  91 +++++++--
+ src/netlink.c                                 |  15 +-
+ tests/shell/testcases/listing/0020flowtable_0 |  51 ++++-
+ 7 files changed, 247 insertions(+), 116 deletions(-)
+
+-- 
+2.33.0
+
