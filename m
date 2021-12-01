@@ -2,116 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD42464C97
-	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Dec 2021 12:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C954464D02
+	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Dec 2021 12:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239426AbhLALdr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 1 Dec 2021 06:33:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
+        id S242649AbhLALiM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 1 Dec 2021 06:38:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233238AbhLALdf (ORCPT
+        with ESMTP id S1348974AbhLALiL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 1 Dec 2021 06:33:35 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D40BC061574
-        for <netfilter-devel@vger.kernel.org>; Wed,  1 Dec 2021 03:30:12 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1msNoQ-000569-Tc; Wed, 01 Dec 2021 12:30:10 +0100
-Date:   Wed, 1 Dec 2021 12:30:10 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft 0/8] mptcp subtype option match support
-Message-ID: <20211201113010.GC2315@breakpoint.cc>
-References: <20211119152847.18118-1-fw@strlen.de>
- <YZzpy9bk4AFahSVI@salvia>
- <20211123133742.GN6326@breakpoint.cc>
- <Yaabbty7g8XyeMs/@salvia>
+        Wed, 1 Dec 2021 06:38:11 -0500
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDCCC061574
+        for <netfilter-devel@vger.kernel.org>; Wed,  1 Dec 2021 03:34:50 -0800 (PST)
+Received: by mail-ua1-x932.google.com with SMTP id r15so48228684uao.3
+        for <netfilter-devel@vger.kernel.org>; Wed, 01 Dec 2021 03:34:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=l4J9Z+m4hmgZbWtQHlC70w1zjUmiI7wjClCwm6dHAnY=;
+        b=i2V5FkSmW8JJUsruI2pAs4w+DMRLwn9G8earDbjyAYCnorcl10ARbPFh94IEPIIBrk
+         x2zK4wB5iSt/0fKT3Qa2v/dglq7FNqwoUvngzN04imhpGByO/G+bRR2rOG8nigIqQRSZ
+         uJ7IZD+0tFGCnC3768Q18rnkL6ee+/rcKnaE6v8lMuP9M9xis+KBtxuS84c4wAqi568f
+         x8hFfxLN7Zg+EEgOXgjtMjZaaihnyJ0jJ3/DQUV2CRJD9F4+/iLufJVk0FIqA/dXiFnA
+         5mEBX0mw8dIGUdMv/Y4WJ2MJskAHCmNcQ5YUStJEdSgbzKlCbODn8Fy4Lo9pENpWxt78
+         tBbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=l4J9Z+m4hmgZbWtQHlC70w1zjUmiI7wjClCwm6dHAnY=;
+        b=6A5QBQj3j7a9BzYdb9vHX9u7QMh9iQ5lIJfuTX81nZxtK2/rKuS+hb2gekaoyN622f
+         S4Og4zogxtdsNTzLsMslsJv3uELAbO60R/mAZ+oEOMTePKEvWcF+gjsUWvS5QM1/L0RY
+         aRojGSY/6/Mj85W72P4XUbdozBAdPOpmpMXGMC8OQZLpW6b+PRgB0yGUU7N9zbsZ5vFq
+         VaAL/BzNYbDPck1o9yck9YS2svDxL/RK2WbdPiTGr8aB4H/+cdwMhY6BHAeJ18UsjVrE
+         M9/cn5nWHK0Kl1DG8lG3glGGiQajX8luSjup3/IAhE1ZPBN10OZogmf/tlK0n6RUMSEe
+         haCg==
+X-Gm-Message-State: AOAM532cwOzKs/olijykMQyP4pXZdJji/q4lTHVgYBHhai13XN5LeGFB
+        v2AzBKFHMUNLUURrk3UJzSroe18FN1UnlaSwX/U=
+X-Google-Smtp-Source: ABdhPJyw3N6aGW66KGqsfPPk88uaqbjbgnPAdWBm5jKIw+u1tSsRamrWLOLmPMIRykYP45aiJPuSYGxJyThNoDxVrnE=
+X-Received: by 2002:a67:63c4:: with SMTP id x187mr5931014vsb.69.1638358489713;
+ Wed, 01 Dec 2021 03:34:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <Yaabbty7g8XyeMs/@salvia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: unitednationawardwinner@gmail.com
+Received: by 2002:ab0:6c55:0:0:0:0:0 with HTTP; Wed, 1 Dec 2021 03:34:49 -0800 (PST)
+From:   "Mrs. Orgil Baatar" <mrs.orgilbaatar21@gmail.com>
+Date:   Wed, 1 Dec 2021 03:34:49 -0800
+X-Google-Sender-Auth: QsIpCXtJPD1-3W-jrrVcCWuaUiU
+Message-ID: <CAJ4dHaTFrOgkc1oQCjpEacupA88S4AzS-qTu4iRMNcnMC4zm+w@mail.gmail.com>
+Subject: Your long awaited part payment of $2.5.000.00Usd
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> On Tue, Nov 23, 2021 at 02:37:42PM +0100, Florian Westphal wrote:
-> > Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > > On Fri, Nov 19, 2021 at 04:28:39PM +0100, Florian Westphal wrote:
-> > > > Because the subtype is only 4 bits in size the exthdr
-> > > > delinearization needs a fixup to remove the binop added by the
-> > > > evaluation step.
-> > > 
-> > > By the bitwise operation to take the 4 bits you can infer this refers to
-> > > mptcp, but it might be good to store in the rule userdata area that this
-> > > expression refers to mptcp as a suggestion to userspace when
-> > > delinearizing the rule.
-> > 
-> > Why?  Userspace has all info: its a tcp option, we have the tcp option
-> > number (mptcp) and a 4 bit field which matches the template field.
-> > 
-> > There is no guesswork here.
-> 
-> OK, thanks for explaining.
+Attention: Beneficiary, Your long awaited part payment of
+$2.5.000.00Usd (TWO MILLION FIVE Hundred Thousand United State
+Dollars) is ready for immediate release to you, and it was
+electronically credited into an ATM Visa Card for easy delivery.
 
-I can add a commet before pushing this out.
+Your new Payment Reference No.- 6363836,
+Pin Code No: 1787
+Your Certificate of Merit Payment No: 05872,
 
-All mptcp suboptions have this 4bit identifier at the same location,
-so
+Your Names: |
+Address: |
 
-'tcp option == mptcp' always allows to take those 4 bit to identify
-the next subheader.
+Person to Contact:MR KELLY HALL the Director of the International
+Audit unit ATM Payment Center,
 
-The only caveat is that some suboptions have different sizes depending
-on the option length field, this will get more complicated once matching
-on those is added (we will need to take moer dependencies into account).
+Email: uba-bf@e-ubabf.com
+TELEPHONE: +226 64865611 You can whatsApp the bank
 
-> > > > One remaining usablility problem is the lack of mnemonics for the
-> > > > subtype, i.e. something like:
-> > > > 
-> > > > static const struct symbol_table mptcp_subtype_tbl = {
-> > > >        .base           = BASE_DECIMAL,
-> > > >        .symbols        = {
-> > > >                SYMBOL("mp-capable",    0),
-> > > >                SYMBOL("mp-join",       1),
-> > > >                SYMBOL("dss",           2),
-> > > >                SYMBOL("add-addr",      3),
-> > > >                SYMBOL("remove-addr",   4),
-> > > >                SYMBOL("mp-prio",       5),
-> > > >                SYMBOL("mp-fail",       6),
-> > > >                SYMBOL("mp-fastclose",  7),
-> > > >                SYMBOL("mp-tcprst",     8),
-> > > >                SYMBOL_LIST_END
-> > > >        },
-> > > > 
-> > > > ... but this would need addition of yet another data type.
-> > > >
-> > > > Use of implicit/context-dependent symbol table would
-> > > > be preferrable, I will look into this next.
-> > > 
-> > > Could you develop your idea?
-> > 
-> > No idea, I have not thought about it at all.  I do not want
-> > to add a new data type for this.
-> > 
-> > One way is to just extend the scanner with even more keywords.
-> > I tought I could annotate the eval context with 'saw mptcp'
-> > and then use that when trying to resolve the symbol expressions.
-> > 
-> > No idea if that works and no idea how much hassle that is.
-> 
-> You can probably use a string in the parser for these types, then
-> invoke the symbol_table lookup from the parser to fetch the value?
-
-Current solution I'm working on adds a phony integer type, similar
-to the 'hex output' one.
-
-Delinearization needs to do some extra steps to override the integer
-again though.
-
-I will share some draft patches soon.
+Regards.
+Mrs ORGIL BAATAR
