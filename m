@@ -2,61 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DE14662BC
-	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Dec 2021 12:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFC146645A
+	for <lists+netfilter-devel@lfdr.de>; Thu,  2 Dec 2021 14:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357417AbhLBLx1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 2 Dec 2021 06:53:27 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:47320 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346623AbhLBLxS (ORCPT
+        id S1358199AbhLBNPl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 2 Dec 2021 08:15:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346737AbhLBNPW (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 2 Dec 2021 06:53:18 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=cuibixuan@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UzAd3ah_1638445791;
-Received: from 30.43.84.45(mailfrom:cuibixuan@linux.alibaba.com fp:SMTPD_---0UzAd3ah_1638445791)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 02 Dec 2021 19:49:53 +0800
-Message-ID: <7ef20c24-efcc-2103-0727-3933b0f9b3a3@linux.alibaba.com>
-Date:   Thu, 2 Dec 2021 19:49:51 +0800
+        Thu, 2 Dec 2021 08:15:22 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D3BC0613D7
+        for <netfilter-devel@vger.kernel.org>; Thu,  2 Dec 2021 05:11:47 -0800 (PST)
+Received: from localhost ([::1]:37956 helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1mslsH-0001VW-6K; Thu, 02 Dec 2021 14:11:45 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nft PATCH v2 0/5] Reduce cache overhead a bit
+Date:   Thu,  2 Dec 2021 14:11:31 +0100
+Message-Id: <20211202131136.29242-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.1.1
-Subject: Re: [PATCH -next] mm: delete oversized WARN_ON() in kvmalloc() calls
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, leon@kernel.org, w@1wt.eu,
-        keescook@chromium.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-References: <1638410784-48646-1-git-send-email-cuibixuan@linux.alibaba.com>
- <20211201192643.ecb0586e0d53bf8454c93669@linux-foundation.org>
- <10cb0382-012b-5012-b664-c29461ce4de8@linux.alibaba.com>
- <20211201202905.b9892171e3f5b9a60f9da251@linux-foundation.org>
-From:   Bixuan Cui <cuibixuan@linux.alibaba.com>
-In-Reply-To: <20211201202905.b9892171e3f5b9a60f9da251@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Second try after a quick review and some testing:
 
-在 2021/12/2 下午12:29, Andrew Morton 写道:
-> Thanks, that's helpful.
->
-> Let's bring all these to the attention of the relevant developers.
->
-> If the consensus is "the code's fine, the warning is bogus" then let's
-> consider retiring the warning.
->
-> If the consensus is otherwise then hopefully they will fix their stuff!
+- Tested with stable kernels v4.4.293 and v4.9.291: This series does not
+  change any of the shell tests' results. The changes are supposedly
+  bug- and feature-compatible.
 
-Ok,thanks for your advice :-)
+- Upon error return from kernel, check errno to make sure it is really
+  ENOENT which is expected instead of ignoring any error with non-dump
+  requests.
 
+Phil Sutter (5):
+  cache: Filter tables on kernel side
+  cache: Filter rule list on kernel side
+  cache: Filter chain list on kernel side
+  cache: Filter set list on server side
+  cache: Support filtering for a specific flowtable
 
-Thanks,
+ include/cache.h                               |   1 +
+ include/mnl.h                                 |  14 +-
+ include/netlink.h                             |   3 +-
+ src/cache.c                                   | 188 ++++++++++--------
+ src/mnl.c                                     |  93 +++++++--
+ src/netlink.c                                 |  15 +-
+ tests/shell/testcases/listing/0020flowtable_0 |  51 ++++-
+ 7 files changed, 248 insertions(+), 117 deletions(-)
 
-Bixuan Cui
+-- 
+2.33.0
 
