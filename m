@@ -2,100 +2,51 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CD04684A4
-	for <lists+netfilter-devel@lfdr.de>; Sat,  4 Dec 2021 13:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964744685E5
+	for <lists+netfilter-devel@lfdr.de>; Sat,  4 Dec 2021 16:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384859AbhLDMI7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 4 Dec 2021 07:08:59 -0500
-Received: from dehost.average.org ([88.198.2.197]:39798 "EHLO
-        dehost.average.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355048AbhLDMI6 (ORCPT
+        id S236002AbhLDP0u (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 4 Dec 2021 10:26:50 -0500
+Received: from sv7068.xserver.jp ([183.181.97.69]:53922 "EHLO
+        sv7068.xserver.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344813AbhLDP0t (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 4 Dec 2021 07:08:58 -0500
-Received: from [IPV6:2a02:8106:1:6800:625a:a812:a95b:4e26] (unknown [IPv6:2a02:8106:1:6800:625a:a812:a95b:4e26])
-        by dehost.average.org (Postfix) with ESMTPSA id F40883947BCB;
-        Sat,  4 Dec 2021 13:05:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
-        t=1638619530; bh=PKvViDPLORg8+bSALvhEW+x4Yg2bTIx4EYamFFaB5Ls=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=E6qRlXYJnIzEOqt3afQYrKbsT9f+GM+nhZTeF1IW+wwmG+iDtzmKSltfU7/KfYifw
-         HNWk6z+SCAy5ypmEqg6n0Wb/aVqB7iizSn/PPDNIf1a8XmJjNdhq/T6HsNUvGbREhi
-         6Iqi6iDbUX8G7khpE6ZmNZv64s/MIkF2+rg1nC0g=
-Message-ID: <9d66247c-51c5-b2d9-584b-0422c99d08bd@average.org>
-Date:   Sat, 4 Dec 2021 13:05:21 +0100
+        Sat, 4 Dec 2021 10:26:49 -0500
+X-Greylist: delayed 394 seconds by postgrey-1.27 at vger.kernel.org; Sat, 04 Dec 2021 10:26:49 EST
+Received: from virusgw7001.xserver.jp (virusgw7001.xserver.jp [183.181.97.243])
+        by sv7068.xserver.jp (Postfix) with ESMTP id 2DA771026CE4F6
+        for <netfilter-devel@vger.kernel.org>; Sun,  5 Dec 2021 00:16:49 +0900 (JST)
+Received: from sv7068.xserver.jp (183.181.97.69)
+ by virusgw7001.xserver.jp (F-Secure/fsigk_smtp/521/virusgw7001.xserver.jp);
+ Sun, 05 Dec 2021 00:16:49 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/521/virusgw7001.xserver.jp)
+Received: by sv7068.xserver.jp (Postfix, from userid 20085)
+        id 2AE3A102C90C7D; Sun,  5 Dec 2021 00:16:49 +0900 (JST)
+To:     netfilter-devel@vger.kernel.org
+Subject: =?UTF-8?B?44GK5ZWP44GE5ZCI44KP44Gb44GC44KK44GM44Go44GG44GU44GW44GE44G+?=  =?UTF-8?B?44GZ?=
+Date:   Sat, 4 Dec 2021 15:16:49 +0000
+From:   petapeta <serin.yonezawa@petapetainc.com>
+Reply-To: serin.yonezawa@petapetainc.com
+Message-ID: <ZSl73DX4UO5KJXVSYIMkDcUq4GtQXyTU9Mhiq8O82DE@petapetainc.com>
+X-Mailer: PHPMailer 6.5.0 (https://github.com/PHPMailer/PHPMailer)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: Meaning of "." (dot) in netfilter
-Content-Language: en-US
-To:     netfilter@vger.kernel.org,
-        Netfilter Development <netfilter-devel@vger.kernel.org>
-References: <CAK3NTRAQE7UD9_0EuzyS0UGQ_s++Dg_hbZPXscHBrStnGJHGjw@mail.gmail.com>
- <YascpztWuzJgKRgq@slk1.local.net>
-From:   Eugene Crosser <crosser@average.org>
-In-Reply-To: <YascpztWuzJgKRgq@slk1.local.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------uukmFQYdyBQKr4UI5wrf5b8x"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------uukmFQYdyBQKr4UI5wrf5b8x
-Content-Type: multipart/mixed; boundary="------------j7oSEXizHa9bkn0a3PHQ0Xyd";
- protected-headers="v1"
-From: Eugene Crosser <crosser@average.org>
-To: netfilter@vger.kernel.org,
- Netfilter Development <netfilter-devel@vger.kernel.org>
-Message-ID: <9d66247c-51c5-b2d9-584b-0422c99d08bd@average.org>
-Subject: Re: Meaning of "." (dot) in netfilter
-References: <CAK3NTRAQE7UD9_0EuzyS0UGQ_s++Dg_hbZPXscHBrStnGJHGjw@mail.gmail.com>
- <YascpztWuzJgKRgq@slk1.local.net>
-In-Reply-To: <YascpztWuzJgKRgq@slk1.local.net>
+❤️ Alice want to meet you! Click Here: http://bit.do/fSMvk?6pt ❤️ 様
 
---------------j7oSEXizHa9bkn0a3PHQ0Xyd
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+お問い合わせありがとうございます。
 
-Hi Duncan,
+内容を確認し、通常2営業日以内にこちらからご連絡させていただきます。
 
-On 04/12/2021 08:45, Duncan Roe wrote:
+今しばらくお待ち下さい。
 
-> "." is the symbol for concatenation. It's been missing from the man pag=
-e
-> forever.
->=20
-> I was going to submit a patch to add "." but wasn't really sure when yo=
-u could
-> use it so I never did.
 
-It is my understanding that the only use for concatenation is to define
-composite value for the key in a `map` / `vmap` or the element in a `set`=
-=2E Maybe
-someone more knowledgeable can correct me.
 
-Regards,
+---
+PetaPeta,inc.
+米沢詩琳
 
-Eugene
-
---------------j7oSEXizHa9bkn0a3PHQ0Xyd--
-
---------------uukmFQYdyBQKr4UI5wrf5b8x
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEnAziRJw3ydIzIkaHfKQHw5GdRYwFAmGrWYEACgkQfKQHw5Gd
-RYxItAf/Vk8vU7PeochVHAGIJyWPB7H6JfW/tOr+y9lVYTK1IqO6DynynbwaYrIj
-nYZHAhYeuRWF+QQuKSOqBcYQbfZUq6pxMVQr2MVDD8JFk00soTmor97KPnJknWlQ
-FsOgG8xCderRfJB/YfAFfxm2CbGB5QwTxlGGkAojbfb1AEhhAW7fSRrU5/UsQ8WV
-noEKua3fdpvNuWxRLJ56QHFU5FZ8uSZ0y3egoMx6ybKlByly1m6k9tMXQhejGy/W
-MnAdpqrI2yw8HT2wUazQ32Awsnj3HxdsijP5fWiA0YBPge3QErc6LK7maWWAvInf
-owmi5w6qrdPRT2zTqUfsuipEAiyIdg==
-=09Fz
------END PGP SIGNATURE-----
-
---------------uukmFQYdyBQKr4UI5wrf5b8x--
