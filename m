@@ -2,111 +2,51 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978E946DF65
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Dec 2021 01:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB49946DF7D
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Dec 2021 01:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241465AbhLIA1G (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 8 Dec 2021 19:27:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238328AbhLIA1G (ORCPT
+        id S231770AbhLIAfb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 8 Dec 2021 19:35:31 -0500
+Received: from mail.netfilter.org ([217.70.188.207]:41972 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229884AbhLIAfb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 8 Dec 2021 19:27:06 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE05C061746
-        for <netfilter-devel@vger.kernel.org>; Wed,  8 Dec 2021 16:23:34 -0800 (PST)
-Received: from localhost ([::1]:58566 helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1mv7Dg-0004u7-Cc; Thu, 09 Dec 2021 01:23:32 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
+        Wed, 8 Dec 2021 19:35:31 -0500
+Received: from netfilter.org (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id C9ADD605BA;
+        Thu,  9 Dec 2021 01:29:34 +0100 (CET)
+Date:   Thu, 9 Dec 2021 01:31:53 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Florian Westphal <fw@strlen.de>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 6/6] iptables-*-restore: Drop pointless line reference
-Date:   Thu,  9 Dec 2021 01:22:57 +0100
-Message-Id: <20211209002257.21467-7-phil@nwl.cc>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211209002257.21467-1-phil@nwl.cc>
-References: <20211209002257.21467-1-phil@nwl.cc>
+Subject: Re: [PATCH nft 0/4] second batch of typeof fixes
+Message-ID: <YbFOeQqyiSrzfejb@salvia>
+References: <20211207151659.5507-1-fw@strlen.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211207151659.5507-1-fw@strlen.de>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-There's no need to mention the offending line number in error message
-when calling xtables_error() with a status of PARAMETER_PROBLEM as that
-will cause a call to xtables_exit_tryhelp() which in turn prints "Error
-occurred at line: N".
+On Tue, Dec 07, 2021 at 04:16:55PM +0100, Florian Westphal wrote:
+> This series makes typeof-sets work in corner cases such as
+> 
+> set s4 { typeof frag frag-off }
+> set s8 { typeof ip version }
+> 
+> frag frag-off @s4 accept
+> ip version @s8
+> 
+> Due to the shift/mask expressions needed to cope with these
+> delinearization can't figure out the correct payload/exthdr templates
+> and nft lists this as:
+> 
+> (frag unknown & 0xfff8 [invalid type]) >> 3 == @s4
+> (ip l4proto & pfsync) >> 4 == @s8
+> 
+> With this series, the mask/shift expressions are removed and
+> nft can print them in a readable way.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/ip6tables.c  | 4 ++--
- iptables/iptables.c   | 4 ++--
- iptables/xtables-eb.c | 4 ++--
- iptables/xtables.c    | 4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index 68ecb9982ab73..950ae94d326ea 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -1013,8 +1013,8 @@ int do_command6(int argc, char *argv[], char **table,
- 					   "unexpected ! flag before --table");
- 			if (restore && table_set)
- 				xtables_error(PARAMETER_PROBLEM,
--					      "The -t option (seen in line %u) cannot be used in %s.\n",
--					      line, xt_params->program_name);
-+					      "The -t option cannot be used in %s.\n",
-+					      xt_params->program_name);
- 			*table = optarg;
- 			table_set = true;
- 			break;
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index a09709bc59c35..82bd1c8c08d1e 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -995,8 +995,8 @@ int do_command4(int argc, char *argv[], char **table,
- 					   "unexpected ! flag before --table");
- 			if (restore && table_set)
- 				xtables_error(PARAMETER_PROBLEM,
--					      "The -t option (seen in line %u) cannot be used in %s.\n",
--					      line, xt_params->program_name);
-+					      "The -t option cannot be used in %s.\n",
-+					      xt_params->program_name);
- 			*table = optarg;
- 			table_set = true;
- 			break;
-diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index 5ac122971c644..382b108ed0fc7 100644
---- a/iptables/xtables-eb.c
-+++ b/iptables/xtables-eb.c
-@@ -895,8 +895,8 @@ print_zero:
- 			ebt_check_option2(&flags, OPT_TABLE);
- 			if (restore && table_set)
- 				xtables_error(PARAMETER_PROBLEM,
--					      "The -t option (seen in line %u) cannot be used in %s.\n",
--					      line, xt_params->program_name);
-+					      "The -t option cannot be used in %s.\n",
-+					      xt_params->program_name);
- 			if (!nft_table_builtin_find(h, optarg))
- 				xtables_error(VERSION_PROBLEM,
- 					      "table '%s' does not exist",
-diff --git a/iptables/xtables.c b/iptables/xtables.c
-index 6bbd3642d66db..e6f22e3f41d05 100644
---- a/iptables/xtables.c
-+++ b/iptables/xtables.c
-@@ -513,8 +513,8 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
- 					   "unexpected ! flag before --table");
- 			if (p->restore && table_set)
- 				xtables_error(PARAMETER_PROBLEM,
--					      "The -t option (seen in line %u) cannot be used in %s.\n",
--					      line, xt_params->program_name);
-+					      "The -t option cannot be used in %s.\n",
-+					      xt_params->program_name);
- 			if (!nft_table_builtin_find(h, optarg))
- 				xtables_error(VERSION_PROBLEM,
- 					      "table '%s' does not exist",
--- 
-2.33.0
-
+LGTM, thanks
