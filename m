@@ -2,59 +2,66 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4438F46F303
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Dec 2021 19:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4011C46F308
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Dec 2021 19:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238039AbhLIS34 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 9 Dec 2021 13:29:56 -0500
-Received: from dehost.average.org ([88.198.2.197]:49804 "EHLO
-        dehost.average.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhLIS34 (ORCPT
+        id S243302AbhLISaD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 9 Dec 2021 13:30:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243297AbhLISaD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 9 Dec 2021 13:29:56 -0500
+        Thu, 9 Dec 2021 13:30:03 -0500
+Received: from dehost.average.org (dehost.average.org [IPv6:2a01:4f8:130:53eb::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64561C061746
+        for <netfilter-devel@vger.kernel.org>; Thu,  9 Dec 2021 10:26:29 -0800 (PST)
 Received: from wncross.lan (unknown [IPv6:2a02:8106:1:6800:300b:b575:41c4:b71a])
-        by dehost.average.org (Postfix) with ESMTPA id E6F38394FB1B
-        for <netfilter-devel@vger.kernel.org>; Thu,  9 Dec 2021 19:26:20 +0100 (CET)
+        by dehost.average.org (Postfix) with ESMTPA id 38B99394FB26;
+        Thu,  9 Dec 2021 19:26:26 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
-        t=1639074381; bh=Y1QYsGzrEJ9JEaI+/AH5oFCEC/On2PsosBmn+rqJwyo=;
-        h=From:To:Subject:Date:From;
-        b=MRSYFp05Q1JlOPwv4hNb8UqbjbgCNDpB1GRdxTwsmdKSch1HkkioRxmOr9FCgoNmz
-         1nEpcpCOunJMLAEaeknVf9AVgADwDWZKWjjcHqVbwIMSmRaZ9WqH8etdI069BsV1Or
-         PttmxVZ8TnvV6UflrJ7Xl+DKpfYJtbnN95l5bDOI=
+        t=1639074386; bh=97jqR+AthCllV/GVlLRXrRkqaWSvadPFZS09xZfqapM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KkuyW4VIdT2OJkeCar7d1t4jYWYhIVem4KUt0VVQWC95JtEZUcPw6HXdVMWTbqoZD
+         ZVtPmc2StGAKl/nny+VlhKWUY3c07swK34ovph2sK5r1lgJItcgkY0gGNENG4SgKia
+         G6s1/KnQyEYj48TjiEorU3nNX+aKJ6rhfoCcQCCs=
 From:   Eugene Crosser <crosser@average.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft v2 0/2] Improve handling of errors from mnl* functions"
-Date:   Thu,  9 Dec 2021 19:26:05 +0100
-Message-Id: <20211209182607.18550-1-crosser@average.org>
+Cc:     Eugene Crosser <crosser@average.org>
+Subject: [PATCH nft v2 1/2] Use abort() in case of netlink_abi_error
+Date:   Thu,  9 Dec 2021 19:26:06 +0100
+Message-Id: <20211209182607.18550-2-crosser@average.org>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211209182607.18550-1-crosser@average.org>
+References: <20211209182607.18550-1-crosser@average.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-   Version 2 of the patchset
+Library functions should not use exit(), application that uses the
+library may contain error handling path, that cannot be executed if
+library functions calls exit(). For truly fatal errors, using abort() is
+more acceptable than exit().
 
-Libnftables does not handle errors that libmnl functions may return
-properly:
+Signed-off-by: Eugene Crosser <crosser@average.org>
+---
+ src/netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-1. Retriable errors indicated by errno=EINTR are not retried, but
-   rather treted as fatal.
-2. Instead of reporting the error to the caller, functions call
-   exit() on error, which terminates the caller process.
-
-This patch set partly addresses the second point, by calling
-abort() instead of exit() on ABI error, that will at least give
-more information to the sysadmin than quiet termination of a
-process.
-
-It attempts to properly address the first point, by introducing
-retry logic when mnl_socket_recvfrom() or mnl_cb_run() return
--1 with errno=EINTR.
-
-It would be desirable to fully address the second point at some
-future time, though it requires some redesign of the code structure.
-
-  [PATCH nft v2 1/2] Use abort() in case of netlink_abi_error
-  [PATCH nft v2 2/2] Handle retriable errors from mnl functions
+diff --git a/src/netlink.c b/src/netlink.c
+index 359d801c..c25a7e79 100644
+--- a/src/netlink.c
++++ b/src/netlink.c
+@@ -59,7 +59,7 @@ void __noreturn __netlink_abi_error(const char *file, int line,
+ {
+ 	fprintf(stderr, "E: Contact urgently your Linux kernel vendor. "
+ 		"Netlink ABI is broken: %s:%d %s\n", file, line, reason);
+-	exit(NFT_EXIT_FAILURE);
++	abort();
+ }
+ 
+ int netlink_io_error(struct netlink_ctx *ctx, const struct location *loc,
+-- 
+2.32.0
 
