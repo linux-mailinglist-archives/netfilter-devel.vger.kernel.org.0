@@ -2,34 +2,31 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4011C46F308
+	by mail.lfdr.de (Postfix) with ESMTP id AB44346F309
 	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Dec 2021 19:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243302AbhLISaD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 9 Dec 2021 13:30:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243297AbhLISaD (ORCPT
+        id S243297AbhLISaE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 9 Dec 2021 13:30:04 -0500
+Received: from dehost.average.org ([88.198.2.197]:49808 "EHLO
+        dehost.average.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243257AbhLISaD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Thu, 9 Dec 2021 13:30:03 -0500
-Received: from dehost.average.org (dehost.average.org [IPv6:2a01:4f8:130:53eb::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64561C061746
-        for <netfilter-devel@vger.kernel.org>; Thu,  9 Dec 2021 10:26:29 -0800 (PST)
 Received: from wncross.lan (unknown [IPv6:2a02:8106:1:6800:300b:b575:41c4:b71a])
-        by dehost.average.org (Postfix) with ESMTPA id 38B99394FB26;
-        Thu,  9 Dec 2021 19:26:26 +0100 (CET)
+        by dehost.average.org (Postfix) with ESMTPA id D4F26394FB2D;
+        Thu,  9 Dec 2021 19:26:28 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
-        t=1639074386; bh=97jqR+AthCllV/GVlLRXrRkqaWSvadPFZS09xZfqapM=;
+        t=1639074388; bh=M0JfwGc6PMjalbUpgfaK7VacfFW8X1n9Oa6zbZdOnnY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KkuyW4VIdT2OJkeCar7d1t4jYWYhIVem4KUt0VVQWC95JtEZUcPw6HXdVMWTbqoZD
-         ZVtPmc2StGAKl/nny+VlhKWUY3c07swK34ovph2sK5r1lgJItcgkY0gGNENG4SgKia
-         G6s1/KnQyEYj48TjiEorU3nNX+aKJ6rhfoCcQCCs=
+        b=lNNNbEYVcyR51JJUb8Zn3EgS4ZXp3IDuV3QBaBib3mYRsLu2WA0ApSaq4QhVBImAd
+         BV1ho11eXO+Zhu5PZZtJCZUG3RCVa5JyxZSoPH6b10tcM21FqAL3LvpD9tZYwUJmls
+         oRBDSpTCFKlxrj+TxIvgNxYslAzqsFFBAalb0SWQ=
 From:   Eugene Crosser <crosser@average.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Eugene Crosser <crosser@average.org>
-Subject: [PATCH nft v2 1/2] Use abort() in case of netlink_abi_error
-Date:   Thu,  9 Dec 2021 19:26:06 +0100
-Message-Id: <20211209182607.18550-2-crosser@average.org>
+Subject: [PATCH nft v2 2/2] Handle retriable errors from mnl functions
+Date:   Thu,  9 Dec 2021 19:26:07 +0100
+Message-Id: <20211209182607.18550-3-crosser@average.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211209182607.18550-1-crosser@average.org>
 References: <20211209182607.18550-1-crosser@average.org>
@@ -39,29 +36,90 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Library functions should not use exit(), application that uses the
-library may contain error handling path, that cannot be executed if
-library functions calls exit(). For truly fatal errors, using abort() is
-more acceptable than exit().
+rc == -1 and errno == EINTR mean:
+
+mnl_socket_recvfrom() - blindly rerun the function
+mnl_cb_run()          - restart dump request from scratch
+
+This commit introduces handling of both these conditions
 
 Signed-off-by: Eugene Crosser <crosser@average.org>
 ---
- src/netlink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/iface.c | 37 ++++++++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 13 deletions(-)
 
-diff --git a/src/netlink.c b/src/netlink.c
-index 359d801c..c25a7e79 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -59,7 +59,7 @@ void __noreturn __netlink_abi_error(const char *file, int line,
- {
- 	fprintf(stderr, "E: Contact urgently your Linux kernel vendor. "
- 		"Netlink ABI is broken: %s:%d %s\n", file, line, reason);
--	exit(NFT_EXIT_FAILURE);
-+	abort();
+diff --git a/src/iface.c b/src/iface.c
+index d0e1834c..5ecc087d 100644
+--- a/src/iface.c
++++ b/src/iface.c
+@@ -59,14 +59,14 @@ static int data_cb(const struct nlmsghdr *nlh, void *data)
+ 	return MNL_CB_OK;
  }
  
- int netlink_io_error(struct netlink_ctx *ctx, const struct location *loc,
+-void iface_cache_update(void)
++static int __iface_cache_update(void)
+ {
+ 	char buf[MNL_SOCKET_BUFFER_SIZE];
+ 	struct mnl_socket *nl;
+ 	struct nlmsghdr *nlh;
+ 	struct rtgenmsg *rt;
+ 	uint32_t seq, portid;
+-	int ret;
++	int ret = -1;
+ 
+ 	nlh = mnl_nlmsg_put_header(buf);
+ 	nlh->nlmsg_type	= RTM_GETLINK;
+@@ -77,28 +77,39 @@ void iface_cache_update(void)
+ 
+ 	nl = mnl_socket_open(NETLINK_ROUTE);
+ 	if (nl == NULL)
+-		netlink_init_error();
++		return -1;
+ 
+ 	if (mnl_socket_bind(nl, 0, MNL_SOCKET_AUTOPID) < 0)
+-		netlink_init_error();
++		goto close_and_return;
+ 
+ 	portid = mnl_socket_get_portid(nl);
+ 
+ 	if (mnl_socket_sendto(nl, nlh, nlh->nlmsg_len) < 0)
+-		netlink_init_error();
++		goto close_and_return;
+ 
+-	ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
+-	while (ret > 0) {
+-		ret = mnl_cb_run(buf, ret, seq, portid, data_cb, NULL);
+-		if (ret <= MNL_CB_STOP)
++	do {
++		do ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
++		while (ret == -1 && errno == EINTR);
++		if (ret == -1)
+ 			break;
+-		ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
+-	}
+-	if (ret == -1)
+-		netlink_init_error();
++		ret = mnl_cb_run(buf, ret, seq, portid, data_cb, NULL);
++	} while (ret > MNL_CB_STOP);
+ 
++close_and_return:
+ 	mnl_socket_close(nl);
+ 
++	return ret;
++}
++
++void iface_cache_update(void)
++{
++	int ret;
++
++	do ret = __iface_cache_update();
++	while (ret == -1 && errno == EINTR);
++	if (ret == -1)
++		netlink_init_error();
++
+ 	iface_cache_init = true;
+ }
+ 
 -- 
 2.32.0
 
