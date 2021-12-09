@@ -2,124 +2,67 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB44346F309
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Dec 2021 19:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A4646F409
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Dec 2021 20:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243297AbhLISaE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 9 Dec 2021 13:30:04 -0500
-Received: from dehost.average.org ([88.198.2.197]:49808 "EHLO
-        dehost.average.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243257AbhLISaD (ORCPT
+        id S230410AbhLITjZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 9 Dec 2021 14:39:25 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:47408 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhLITjX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 9 Dec 2021 13:30:03 -0500
-Received: from wncross.lan (unknown [IPv6:2a02:8106:1:6800:300b:b575:41c4:b71a])
-        by dehost.average.org (Postfix) with ESMTPA id D4F26394FB2D;
-        Thu,  9 Dec 2021 19:26:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
-        t=1639074388; bh=M0JfwGc6PMjalbUpgfaK7VacfFW8X1n9Oa6zbZdOnnY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lNNNbEYVcyR51JJUb8Zn3EgS4ZXp3IDuV3QBaBib3mYRsLu2WA0ApSaq4QhVBImAd
-         BV1ho11eXO+Zhu5PZZtJCZUG3RCVa5JyxZSoPH6b10tcM21FqAL3LvpD9tZYwUJmls
-         oRBDSpTCFKlxrj+TxIvgNxYslAzqsFFBAalb0SWQ=
-From:   Eugene Crosser <crosser@average.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Eugene Crosser <crosser@average.org>
-Subject: [PATCH nft v2 2/2] Handle retriable errors from mnl functions
-Date:   Thu,  9 Dec 2021 19:26:07 +0100
-Message-Id: <20211209182607.18550-3-crosser@average.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211209182607.18550-1-crosser@average.org>
-References: <20211209182607.18550-1-crosser@average.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 9 Dec 2021 14:39:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 9D144CE27F4;
+        Thu,  9 Dec 2021 19:35:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 113F7C341CB;
+        Thu,  9 Dec 2021 19:35:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1639078546;
+        bh=3Y6sSFhQC6zE/Ent9Dbju/+ZfZjUqmHxioM8+U3W42U=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=f2WlktgMywCTKzyIIcW2CS6FmU8GJMWn1v1ZLvvhkjI8+QgyuBd+KRy2Pc3F/5FSU
+         dRijOqESZz/F08TOgFMipp3kAFFMq6y6boMXd56AqpEgY2595LvI7JrhVEB/DrlWEE
+         5vNKcdWo5BkI6qDzBtAMcgMMID3FmW47fVWjgfhkTz1uHhDFwtqcQowYUqb4sSIgy/
+         PzreDnftvNnvoUVnvFcet9IJeo5JrXb8QYDIihyEtPwMmJqz7PhK+K9QLmbmXsT3zO
+         dR+B3vTc+atkmj3lIb2Lkl7WqFIBRJNqI1oNniHeaHDUVdOCctfJeHIS2ZcR60iPnS
+         BJdDJtbAHMA3Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EDAEB60A37;
+        Thu,  9 Dec 2021 19:35:45 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for 5.16-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211209172032.610738-1-kuba@kernel.org>
+References: <20211209172032.610738-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211209172032.610738-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.16-rc5
+X-PR-Tracked-Commit-Id: 04ec4e6250e5f58b525b08f3dca45c7d7427620e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ded746bfc94398d2ee9de315a187677b207b2004
+Message-Id: <163907854596.11961.15478565326988801668.pr-tracker-bot@kernel.org>
+Date:   Thu, 09 Dec 2021 19:35:45 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        linux-can@vger.kernel.org
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-rc == -1 and errno == EINTR mean:
+The pull request you sent on Thu,  9 Dec 2021 09:20:32 -0800:
 
-mnl_socket_recvfrom() - blindly rerun the function
-mnl_cb_run()          - restart dump request from scratch
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.16-rc5
 
-This commit introduces handling of both these conditions
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ded746bfc94398d2ee9de315a187677b207b2004
 
-Signed-off-by: Eugene Crosser <crosser@average.org>
----
- src/iface.c | 37 ++++++++++++++++++++++++-------------
- 1 file changed, 24 insertions(+), 13 deletions(-)
+Thank you!
 
-diff --git a/src/iface.c b/src/iface.c
-index d0e1834c..5ecc087d 100644
---- a/src/iface.c
-+++ b/src/iface.c
-@@ -59,14 +59,14 @@ static int data_cb(const struct nlmsghdr *nlh, void *data)
- 	return MNL_CB_OK;
- }
- 
--void iface_cache_update(void)
-+static int __iface_cache_update(void)
- {
- 	char buf[MNL_SOCKET_BUFFER_SIZE];
- 	struct mnl_socket *nl;
- 	struct nlmsghdr *nlh;
- 	struct rtgenmsg *rt;
- 	uint32_t seq, portid;
--	int ret;
-+	int ret = -1;
- 
- 	nlh = mnl_nlmsg_put_header(buf);
- 	nlh->nlmsg_type	= RTM_GETLINK;
-@@ -77,28 +77,39 @@ void iface_cache_update(void)
- 
- 	nl = mnl_socket_open(NETLINK_ROUTE);
- 	if (nl == NULL)
--		netlink_init_error();
-+		return -1;
- 
- 	if (mnl_socket_bind(nl, 0, MNL_SOCKET_AUTOPID) < 0)
--		netlink_init_error();
-+		goto close_and_return;
- 
- 	portid = mnl_socket_get_portid(nl);
- 
- 	if (mnl_socket_sendto(nl, nlh, nlh->nlmsg_len) < 0)
--		netlink_init_error();
-+		goto close_and_return;
- 
--	ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
--	while (ret > 0) {
--		ret = mnl_cb_run(buf, ret, seq, portid, data_cb, NULL);
--		if (ret <= MNL_CB_STOP)
-+	do {
-+		do ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
-+		while (ret == -1 && errno == EINTR);
-+		if (ret == -1)
- 			break;
--		ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
--	}
--	if (ret == -1)
--		netlink_init_error();
-+		ret = mnl_cb_run(buf, ret, seq, portid, data_cb, NULL);
-+	} while (ret > MNL_CB_STOP);
- 
-+close_and_return:
- 	mnl_socket_close(nl);
- 
-+	return ret;
-+}
-+
-+void iface_cache_update(void)
-+{
-+	int ret;
-+
-+	do ret = __iface_cache_update();
-+	while (ret == -1 && errno == EINTR);
-+	if (ret == -1)
-+		netlink_init_error();
-+
- 	iface_cache_init = true;
- }
- 
 -- 
-2.32.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
