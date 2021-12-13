@@ -2,112 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DDD4731FD
-	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Dec 2021 17:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D39BF473391
+	for <lists+netfilter-devel@lfdr.de>; Mon, 13 Dec 2021 19:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240934AbhLMQkJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 13 Dec 2021 11:40:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
+        id S240609AbhLMSI0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 13 Dec 2021 13:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240928AbhLMQkI (ORCPT
+        with ESMTP id S238767AbhLMSI0 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 13 Dec 2021 11:40:08 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D21C06173F;
-        Mon, 13 Dec 2021 08:40:08 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id x131so15373914pfc.12;
-        Mon, 13 Dec 2021 08:40:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dRRexe2kuoBv0Y2m9PN9mpB/UFD4YUanEyofcXNpoew=;
-        b=Iwkjo1XS88e5vWIVAtU889jEf+umB8ztxpHnp4p43LVbZ5A3GSFMUN/dgU0F8Oqgzl
-         uociatJU+Uj/I+HgFnXY/n0n3gksaRtLlsKduJqP/pIw+8h9fsCXlaDtjU+b0JS0bNhn
-         7QzhXJiypPL1KUf56JZ6AIquEN7Onha2m9Gq1/GzhN837gQHs8BRCoho+2Pu+uy6Y6p2
-         BiWTJGPNhHaHlTscaHUOQzsky+XgInaIRk34WTWNmybI3R7EMP+XBkYNp0UAw5GwzJQp
-         vW25quxW05oGzUGcW4ehTySG91XvED99p521vXsaopGCjYYig3AgaBS2GWPNOLhKKQBI
-         5oRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dRRexe2kuoBv0Y2m9PN9mpB/UFD4YUanEyofcXNpoew=;
-        b=kSOma//YfrL3cMJIdLzfVAJnWnTkpfcnTjfvExlLsQTa4lvsKhJfhHVrVJBRKF8YtK
-         oXpo1ZDZhWI+UbX4SLaxkpGWzTp5u7ItPXgqtscDqljZZtFsg6NRvDLPpVnD7oYKaWnj
-         lq4acxK+liGi3WoNR5NQMoEfc0RHpoaoCdLXxCJSrw766JrJqS/RbkA/6G7+QFrN5vfm
-         t++19HvvBFNf0v+Ij+3LZJYGOI/pVTue09CBngN7E9Wp+WkFVRASc0afFn9BhpAPy5hI
-         Cjj7BCShaWjW2jM5RrnLaaMS2l2R1sz3kvPF5OXafxe97ii6o4DHQ44GwgTqwu9J6VY/
-         34Ew==
-X-Gm-Message-State: AOAM53380lrDL/FzgugTcKcvS4L73jbSAYIfbWlguDpDKKg2BQxq7OV5
-        /pgkqhmQTptb+zRQNtFD0rxmN1kLyxd98w==
-X-Google-Smtp-Source: ABdhPJx/RsSqWhYBDbljOA4qI6XMHTKT8SPVyEPu30XndeOXdfiudCok5hRgYwh+QX/XqsqcA2Nzbg==
-X-Received: by 2002:a65:6819:: with SMTP id l25mr11463268pgt.506.1639413607703;
-        Mon, 13 Dec 2021 08:40:07 -0800 (PST)
-Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:84ea:43e5:6ccb:fc65])
-        by smtp.gmail.com with ESMTPSA id 78sm1556239pgg.85.2021.12.13.08.40.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Dec 2021 08:40:07 -0800 (PST)
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
-        Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Subject: [PATCH net-next 2/2] netfilter: nf_nat_masquerade: add netns refcount tracker to masq_dev_work
-Date:   Mon, 13 Dec 2021 08:40:00 -0800
-Message-Id: <20211213164000.3241266-2-eric.dumazet@gmail.com>
-X-Mailer: git-send-email 2.34.1.173.g76aa8bc2d0-goog
-In-Reply-To: <20211213164000.3241266-1-eric.dumazet@gmail.com>
-References: <20211213164000.3241266-1-eric.dumazet@gmail.com>
+        Mon, 13 Dec 2021 13:08:26 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA20C061574
+        for <netfilter-devel@vger.kernel.org>; Mon, 13 Dec 2021 10:08:25 -0800 (PST)
+Received: from localhost ([::1]:58964 helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1mwpkN-0004Iy-FV; Mon, 13 Dec 2021 19:08:23 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH v2 0/6] Some more code de-duplication
+Date:   Mon, 13 Dec 2021 19:07:41 +0100
+Message-Id: <20211213180747.20707-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+No change in patches 1, 2, 4 and 6 since v1.
 
-If compiled with CONFIG_NET_NS_REFCNT_TRACKER=y,
-using put_net_track() in iterate_cleanup_work()
-and netns_tracker_alloc() in nf_nat_masq_schedule()
-might help us finding netns refcount imbalances.
+Patch 3 moves exit_tryhelp() into xshared.c instead of libxtables. Since
+basic_exit_err() can't call it from there, its body is merged into the
+latter in patch 5. Since both functions overlap in parts, this is just
+about two printf() calls.
 
-Signed-off-by: Eric Dumazet <edumazet@google.com>
----
- net/netfilter/nf_nat_masquerade.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Phil Sutter (6):
+  xshared: Share print_match_save() between legacy ip*tables
+  xshared: Share a common printhelp function
+  xshared: Share exit_tryhelp()
+  xtables_globals: Introduce program_variant
+  libxtables: Extend basic_exit_err()
+  iptables-*-restore: Drop pointless line reference
 
-diff --git a/net/netfilter/nf_nat_masquerade.c b/net/netfilter/nf_nat_masquerade.c
-index acd73f717a0883d791fc351851a98bac4144705f..e32fac374608576d6237f80b1bff558e9453585a 100644
---- a/net/netfilter/nf_nat_masquerade.c
-+++ b/net/netfilter/nf_nat_masquerade.c
-@@ -12,6 +12,7 @@
- struct masq_dev_work {
- 	struct work_struct work;
- 	struct net *net;
-+	netns_tracker ns_tracker;
- 	union nf_inet_addr addr;
- 	int ifindex;
- 	int (*iter)(struct nf_conn *i, void *data);
-@@ -82,7 +83,7 @@ static void iterate_cleanup_work(struct work_struct *work)
- 
- 	nf_ct_iterate_cleanup_net(w->net, w->iter, (void *)w, 0, 0);
- 
--	put_net(w->net);
-+	put_net_track(w->net, &w->ns_tracker);
- 	kfree(w);
- 	atomic_dec(&masq_worker_count);
- 	module_put(THIS_MODULE);
-@@ -119,6 +120,7 @@ static void nf_nat_masq_schedule(struct net *net, union nf_inet_addr *addr,
- 		INIT_WORK(&w->work, iterate_cleanup_work);
- 		w->ifindex = ifindex;
- 		w->net = net;
-+		netns_tracker_alloc(net, &w->ns_tracker, gfp_flags);
- 		w->iter = iter;
- 		if (addr)
- 			w->addr = *addr;
+ include/xtables.h      |   2 +-
+ iptables/ip6tables.c   | 154 ++---------------------------------------
+ iptables/iptables.c    | 154 ++---------------------------------------
+ iptables/xshared.c     | 143 ++++++++++++++++++++++++++++++++++++++
+ iptables/xshared.h     |   5 ++
+ iptables/xtables-arp.c |   3 +-
+ iptables/xtables-eb.c  |   7 +-
+ iptables/xtables.c     | 132 +++--------------------------------
+ libxtables/xtables.c   |  20 +++++-
+ 9 files changed, 194 insertions(+), 426 deletions(-)
+
 -- 
-2.34.1.173.g76aa8bc2d0-goog
+2.33.0
 
