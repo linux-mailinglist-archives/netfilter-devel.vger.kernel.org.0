@@ -2,42 +2,58 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4098476680
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Dec 2021 00:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2560476683
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Dec 2021 00:28:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhLOX1X (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 15 Dec 2021 18:27:23 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:56518 "EHLO
+        id S232032AbhLOX2j (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 15 Dec 2021 18:28:39 -0500
+Received: from mail.netfilter.org ([217.70.188.207]:56534 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhLOX1X (ORCPT
+        with ESMTP id S229482AbhLOX2j (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 15 Dec 2021 18:27:23 -0500
+        Wed, 15 Dec 2021 18:28:39 -0500
 Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 102C360022;
-        Thu, 16 Dec 2021 00:24:53 +0100 (CET)
-Date:   Thu, 16 Dec 2021 00:27:18 +0100
+        by mail.netfilter.org (Postfix) with ESMTPSA id F0C98607E0;
+        Thu, 16 Dec 2021 00:26:08 +0100 (CET)
+Date:   Thu, 16 Dec 2021 00:28:34 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     Duncan Roe <duncan_roe@optusnet.com.au>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH libnetfilter_queue] build: doc: Warn user if html docs
- will be missing diagrams
-Message-ID: <Ybp51ify8OtcAESi@salvia>
-References: <20211201003938.4220-1-duncan_roe@optusnet.com.au>
+Subject: Re: [PATCH libnetfilter_queue] build: doc: Update build_man.sh for
+ doxygen 1.9.2
+Message-ID: <Ybp6IlQAlAFVSdjQ@salvia>
+References: <20211207224502.16008-1-duncan_roe@optusnet.com.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211201003938.4220-1-duncan_roe@optusnet.com.au>
+In-Reply-To: <20211207224502.16008-1-duncan_roe@optusnet.com.au>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Dec 01, 2021 at 11:39:38AM +1100, Duncan Roe wrote:
-> libnetfilter_queue is unique among the netfilter libraries in having a
-> module hierarchy.
-> If 'dot' is available, Doxygen will make an interactive diagram for a module
-> with a child or a parent, allowing users to conveniently move up and down the
-> hierarchy.
-> Update configure to output a warning if 'dot' is not installed and html was
-> requested.
+A bit more details on this one? It's just a cosmetic issue?
 
-Applied, thanks
+On Wed, Dec 08, 2021 at 09:45:02AM +1100, Duncan Roe wrote:
+> Cater for bold line number in del_def_at_lines()
+> 
+> Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
+> ---
+>  doxygen/build_man.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/doxygen/build_man.sh b/doxygen/build_man.sh
+> index 852c7b8..c68876c 100755
+> --- a/doxygen/build_man.sh
+> +++ b/doxygen/build_man.sh
+> @@ -96,7 +96,7 @@ fix_double_blanks(){
+>  del_def_at_lines(){
+>    linnum=1
+>    while [ $linnum -ne 0 ]
+> -  do mygrep "^Definition at line [[:digit:]]* of file" $target
+> +  do mygrep '^Definition at line (\\fB)?[[:digit:]]*(\\fP)? of file' $target
+>      [ $linnum -eq 0 ] || delete_lines $(($linnum - 1)) $linnum
+>    done
+>  }
+> -- 
+> 2.17.5
+> 
