@@ -2,39 +2,39 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C774772BE
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Dec 2021 14:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0EB4772C8
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Dec 2021 14:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237315AbhLPNKh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 16 Dec 2021 08:10:37 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:58278 "EHLO
+        id S237322AbhLPNMg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 16 Dec 2021 08:12:36 -0500
+Received: from mail.netfilter.org ([217.70.188.207]:58310 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237313AbhLPNKh (ORCPT
+        with ESMTP id S237321AbhLPNMf (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 16 Dec 2021 08:10:37 -0500
+        Thu, 16 Dec 2021 08:12:35 -0500
 Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id CC922625C5;
-        Thu, 16 Dec 2021 14:08:07 +0100 (CET)
-Date:   Thu, 16 Dec 2021 14:10:32 +0100
+        by mail.netfilter.org (Postfix) with ESMTPSA id C69BE605BA;
+        Thu, 16 Dec 2021 14:10:04 +0100 (CET)
+Date:   Thu, 16 Dec 2021 14:12:29 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org, Vitaly Zuevsky <vzuevsky@ns1.com>
-Subject: Re: [PATCH nf] netfilter: ctnetlink: remove expired entries first
-Message-ID: <Ybs6yD5tDeV4GzWO@salvia>
-References: <20211209163926.25563-1-fw@strlen.de>
+To:     Phil Sutter <phil@nwl.cc>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH v3 0/6] Some more code de-duplication
+Message-ID: <Ybs7PVP5W5V8X2nx@salvia>
+References: <20211216125840.385-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211209163926.25563-1-fw@strlen.de>
+In-Reply-To: <20211216125840.385-1-phil@nwl.cc>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Dec 09, 2021 at 05:39:26PM +0100, Florian Westphal wrote:
-> When dumping conntrack table to userspace via ctnetlink, check if the ct has
-> already expired before doing any of the 'skip' checks.
+On Thu, Dec 16, 2021 at 01:58:34PM +0100, Phil Sutter wrote:
+> No change in patches 1 to 3 and 6.
 > 
-> This expires dead entries faster.
-> /proc handler also removes outdated entries first.
+> Patch 4 is new: Extend program_version field with variant string instead
+> of introducing a separate field. This made patch 5 a bit smaller, due to
+> less differences between basic_exit_err() and xtables_exit_error().
 
-Applied, thanks
+LGTM, thanks
