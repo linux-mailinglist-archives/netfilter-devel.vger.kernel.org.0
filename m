@@ -2,89 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F42476789
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Dec 2021 02:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2294770C3
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Dec 2021 12:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbhLPBuP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 15 Dec 2021 20:50:15 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:59192 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhLPBuO (ORCPT
+        id S233048AbhLPLmx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 16 Dec 2021 06:42:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233331AbhLPLmm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 15 Dec 2021 20:50:14 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7754AB82270;
-        Thu, 16 Dec 2021 01:50:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 19147C36AE3;
-        Thu, 16 Dec 2021 01:50:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639619412;
-        bh=xRCi2BjmOz49Fn05BPlL8EHRVcVN25KewWgzQ2EVIvI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=GMwpnzryTgq93dYa4GbaXRYIKVmBCeIoa2V/K8p5sh8kiyQUX+9GUYFZXwzQJyGQq
-         BXjZWvrv4qUF4/GZF675R+9LI6gy11ton0cCphhLbD9zX7e8UiMfJNoif+DoghY9yQ
-         RdSk7abImJEMkRIkIQul4JuhYwpJMzXpWYA5bn+ROgr02GB5w5Z1G/limHfVYCoTrP
-         C2CRS+MdLmnOXIqRmky8Kv3i8Uf5t9V3uKf7ToJuBYsMEp3wJPEFfn7N+cMJ2SSr/D
-         owPwo+sR78ZioWXk0e+tyEaSQwhrCnjNuROrOtylAtw/1JTKIDvVdffJiqXb9I7Syf
-         rk6NVZjoWjXOw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E311E609F5;
-        Thu, 16 Dec 2021 01:50:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 16 Dec 2021 06:42:42 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E969C061377
+        for <netfilter-devel@vger.kernel.org>; Thu, 16 Dec 2021 03:42:40 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id q72so34714048iod.12
+        for <netfilter-devel@vger.kernel.org>; Thu, 16 Dec 2021 03:42:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=xre5um49Rnqa1tZMCD58Cd6UlD4MleswKAp3tzt2gjo=;
+        b=XAiY5JQCbKhUV3kfV68NxknTY8076aQ+jZiIG+NNSnrj8SbWsLA5ZyVis9Hv7MDsX5
+         Wp1aJ8rEmDfQ1U3vhA+W5Q6fUW0sQxhqwaHiosPbQFbyYijHt4Icvm/T0vEK5/kKmBc+
+         QqELCOAj0es+5TzRQyWwGBhwQGehjbOewfhMN3/S4hQw7QoR6Y3+tDzh1TbUcqm1TT9t
+         NYT2/qpfB6ahTcpnyVYoBu/0br0EmuZ66fyA68h0ieuZcBkGcxPgfheRqd2GHCJMPyzP
+         6QgpFUXd/uCVTtz1/hZUUGudKd9Q0ZImcSJeB1tjd8lIsCPvJkt1eKVnbTcB60Kk9v0/
+         CoRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=xre5um49Rnqa1tZMCD58Cd6UlD4MleswKAp3tzt2gjo=;
+        b=C+6XwwsgcasG68JIT7UZMwuvN6bQ/oPxd6bjgsH5YkMZwY9gypFnBhrthNBLtjIHnd
+         3iYrxayB6CVHc1Mot5+Hv+iFIONV3uyZBGz8U4uo7cnxLaKZMIfQsj1/ZCIGOcmqPieP
+         rWtyIl4l+x6Mm95RAfxG0nSAMW1YF3sIfJGr0/gxBjiu+AW/i3Mei/wvZ27sdskNamLY
+         TkE5xYq8bfivV0F2S1+bvJPqxdR69tpUPWrrGiGJP+AiF3JgbVxGgxKv524EUdVmHFf3
+         ixa1Em69hjJ4ot/sCEKdl0fvj4FWxXmOtZRfILv7AweRctPfzH3KU3QHEuJwlXdUf9e0
+         bABw==
+X-Gm-Message-State: AOAM532Qe3zfoAgiIvbLbtMyr4ZvYZQFjVzQKFjxRnEBsTv0TbwLD2XS
+        mNlyTIceKUMOSfgRL/JbPNcgf6jNI//7Rs+t/mXypYLG3XI=
+X-Google-Smtp-Source: ABdhPJxzAaV5DauAecsJzqBWmheSvDxk3ghiLfb6YRovClVg4kL4yUlGwYUFAnV+1q8jYrfo3AT6l8iJutzsg/2jTPA=
+X-Received: by 2002:a05:622a:1d4:: with SMTP id t20mr16497208qtw.84.1639654948506;
+ Thu, 16 Dec 2021 03:42:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH nf-next 1/7] ipvs: remove unused variable for ip_vs_new_dest
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163961941192.15023.123221288094192092.git-patchwork-notify@kernel.org>
-Date:   Thu, 16 Dec 2021 01:50:11 +0000
-References: <20211215234911.170741-2-pablo@netfilter.org>
-In-Reply-To: <20211215234911.170741-2-pablo@netfilter.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, kuba@kernel.org
+Received: by 2002:a05:622a:199c:0:0:0:0 with HTTP; Thu, 16 Dec 2021 03:42:28
+ -0800 (PST)
+Reply-To: selviasantiago1@gmail.com
+From:   Selvia Santiago <mariamatinez119@gmail.com>
+Date:   Thu, 16 Dec 2021 11:42:28 +0000
+Message-ID: <CAONDhKOtxcgjB1YEPd0RXNOVbbQ8k-9k32v_cdFxEKFzk62kJg@mail.gmail.com>
+Subject: Urgent
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (master)
-by Pablo Neira Ayuso <pablo@netfilter.org>:
-
-On Thu, 16 Dec 2021 00:49:05 +0100 you wrote:
-> From: GuoYong Zheng <zhenggy@chinatelecom.cn>
-> 
-> The dest variable is not used after ip_vs_new_dest anymore in
-> ip_vs_add_dest, do not need pass it to ip_vs_new_dest, remove it.
-> 
-> Signed-off-by: GuoYong Zheng <zhenggy@chinatelecom.cn>
-> Acked-by: Julian Anastasov <ja@ssi.bg>
-> Acked-by: Simon Horman <horms@verge.net.au>
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> 
-> [...]
-
-Here is the summary with links:
-  - [nf-next,1/7] ipvs: remove unused variable for ip_vs_new_dest
-    https://git.kernel.org/netdev/net-next/c/fc5e0352ccb5
-  - [nf-next,2/7] netfilter: conntrack: Use memset_startat() to zero struct nf_conn
-    https://git.kernel.org/netdev/net-next/c/4be1dbb75c3d
-  - [nf-next,3/7] netfilter: nf_queue: remove leftover synchronize_rcu
-    https://git.kernel.org/netdev/net-next/c/c5fc837bf934
-  - [nf-next,4/7] netfilter: ctnetlink: remove useless type conversion to bool
-    https://git.kernel.org/netdev/net-next/c/632cb151ca53
-  - [nf-next,5/7] netfilter: nft_fwd_netdev: Support egress hook
-    https://git.kernel.org/netdev/net-next/c/f87b9464d152
-  - [nf-next,6/7] netfilter: bridge: add support for pppoe filtering
-    https://git.kernel.org/netdev/net-next/c/28b78ecffea8
-  - [nf-next,7/7] netfilter: conntrack: Remove useless assignment statements
-    https://git.kernel.org/netdev/net-next/c/284ca7647c67
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Urgent
 
+I am Mrs. Selvia Santiago from Abidjan, Cote D'Ivoire, I am a widow
+suffering from long time illness (Cancer), there is funds I inherited
+from my late loving husband Mr. Santiago Carlos, the sum of (US$2.7
+Million Dollars) which he deposited in bank before his death, I need a
+honest and Faithful person that can use these funds for humanity work.
 
+I took this decision because I don't have any child that will inherit
+this money and I don't want a situation where this money will be used
+in an ungodly way. That is why I am taking this decision, and my
+doctor has confirmed to me that I have less than two weeks to live,
+having known my condition I decided to donate this fund to a charity
+or individual that will utilize this money to assist the poor and the
+needy in accordance to my instructions.
+
+I want you to use 70% of this funds for orphanages, school, church,
+widows, propagating the word and other humanity works,The remaining
+30% should be yours for your efforts as the new beneficiary.
+
+Please if you would be able to use these funds for humanity work
+kindly reply me. As soon as I have received your response, I will give
+you further directives on how you are to go about the claims of the
+said funds.
+
+Remain blessed.
+Mrs Selvia Santiago.
