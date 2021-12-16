@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AE2477951
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Dec 2021 17:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFD94779FB
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Dec 2021 18:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhLPQhb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 16 Dec 2021 11:37:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
+        id S235683AbhLPRFX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 16 Dec 2021 12:05:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbhLPQhb (ORCPT
+        with ESMTP id S235758AbhLPRFW (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 16 Dec 2021 11:37:31 -0500
+        Thu, 16 Dec 2021 12:05:22 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37536C061574
-        for <netfilter-devel@vger.kernel.org>; Thu, 16 Dec 2021 08:37:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9296DC061574
+        for <netfilter-devel@vger.kernel.org>; Thu, 16 Dec 2021 09:05:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
         To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
         Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
         In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=WjQimTst4Y+8mdCYKGS64aM/dXtiJAPlR1rJtGM7J4I=; b=gBGE5D667f6ErzRgd8n04I+WQ4
-        kWp2IYdrkkQZQEhvVTZxDGn/+HXjXPTYOAVEzSeBcXXJewNrdDuDrnT6Dfl6o1EwWRp9mslBmLkDV
-        94SFF3Bb2gq8mH0uG0m7g1mTHU1cTTs9WuFaruarkqOtWlc6TF734EjV+0Q9hrrwFatvzuI4j1GYr
-        2vzoWSvoWtDruWbckSr+leXl1jsYCJ8gmaYQWKcaAfWHqAl/k/x/cKqod9/FOBcJA/GbAWZ8b1omd
-        gLsoi7sZtrIKCZs/i+iIAvPZ+o/TUjlcUfAJ+qO+lhdhKJshEpwKH6DG5DsIm+NDK0y/EbvYdgtto
-        2BniqOkw==;
+        bh=c10O0xx/CYDJh9aKdFzbYmZBPg4cw/SaWpMogVESPVA=; b=W63uvgPKGXGydakR0ZQOOR/+7d
+        MBDix/kjerZwvWoKvJcKmF0stZjWKiW34OPQ8dUXPztfWxx5Qfd9nAW0FenfEq3v/5nBWSHPxa6Ay
+        4xBOEh0uW2Foj0bSw+MB8J7CKCfWWrt5uo5IwRxDzEtwnrfz3YXTJKfq/PivMtSHJpryFTP7HLJYq
+        Qht9zEomjvigJJ0v6Q6Fem/ovoLWGDvC4KnAr1+CzNn9ch8i7zhfyyF2Lb1Sjw9/2nHuPw+y9GZcf
+        MjIU9gPfEr0m0IqAFq4cvo+z/a3OF0O2GlWGOtZPr9LFwZ6++5pV6WXcCPG9Zh55dTORjlRlAJmuN
+        c0eTf0mg==;
 Received: from ulthar.dreamlands ([192.168.96.2] helo=ulthar.dreamlands.azazel.net)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mxtl1-009VFY-76
-        for netfilter-devel@vger.kernel.org; Thu, 16 Dec 2021 16:37:27 +0000
+        id 1mxuC0-009WE2-4p
+        for netfilter-devel@vger.kernel.org; Thu, 16 Dec 2021 17:05:20 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [nft PATCH] build: remove scanner.c and parser_bison.c with `maintainer-clean`
-Date:   Thu, 16 Dec 2021 16:37:20 +0000
-Message-Id: <20211216163720.180125-1-jeremy@azazel.net>
+Subject: [conntrack-tools PATCH 0/3] bison & flex autotools updates
+Date:   Thu, 16 Dec 2021 17:05:10 +0000
+Message-Id: <20211216170513.180579-1-jeremy@azazel.net>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -47,31 +47,19 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-automake recommends shipping the output of bison and lex in distribution
-tar-balls and runs bison and lex during `make dist` (this has the
-advantage that end-users don't need to have bison or lex installed to
-compile the software).  Accordingly, automake also recommends removing
-these files with `make maintainer-clean` and generates rules to do so.
-Therefore, remove scanner.c and parser_bison.c from `CLEANFILES`.
+The first two patches bring the use of bison and flex and their
+generated files more into line with the recommendations of automake.
+The third fixes an autoconf deprecation warning.
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- src/Makefile.am | 2 --
- 1 file changed, 2 deletions(-)
+Jeremy Sowden (3):
+  build: only require bison and flex if the generated files do not exist
+  build: remove MAINTAINERCLEANFILES
+  build: replace `AM_PROG_LEX` with `AC_PROG_LEX`
 
-diff --git a/src/Makefile.am b/src/Makefile.am
-index 01c12c81bce7..6ab0752337b2 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -2,8 +2,6 @@ include $(top_srcdir)/Make_global.am
- 
- sbin_PROGRAMS = nft
- 
--CLEANFILES = scanner.c parser_bison.c
--
- AM_CPPFLAGS = -I$(top_srcdir)/include
- AM_CPPFLAGS += -DDEFAULT_INCLUDE_PATH="\"${sysconfdir}\"" \
- 		${LIBMNL_CFLAGS} ${LIBNFTNL_CFLAGS}
+ configure.ac    | 6 +++---
+ src/Makefile.am | 1 -
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
 -- 
 2.34.1
 
