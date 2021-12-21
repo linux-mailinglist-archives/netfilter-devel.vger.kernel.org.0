@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4292E47C781
+	by mail.lfdr.de (Postfix) with ESMTP id D7B3247C783
 	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Dec 2021 20:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241808AbhLUThS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S241813AbhLUThS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Tue, 21 Dec 2021 14:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33870 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241812AbhLUThQ (ORCPT
+        with ESMTP id S241809AbhLUThQ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 21 Dec 2021 14:37:16 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1C9C06173F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10B1C061401
         for <netfilter-devel@vger.kernel.org>; Tue, 21 Dec 2021 11:37:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=+lefcZ5U4pD4d7rkH7+80+jww5y/sFFK9Nd8XFSHgJk=; b=fojAcc+BMYRHYqIpOR5lZzuXi2
-        VMVExfPV+SegA+FVgljRABXw/eJs5YL5BqXB/l8vDC9a9/wyfr6wOM0HZLseQI3jFiApA8va4qIeF
-        Fz4RO+m0+Fw6mDYxyTn3ZKKrsZ0KCuTxwdEiGc+d+zb3xA90f/ouueHWF3rlF6gL3CSDwg58b11wI
-        h3OplJNf030ZD40gu2SG/U3uIf9vTVFE4ZeWkQURy7EoH2eH796cGdJ8ytvzNjPkHhNIzA9gGhh6I
-        6uzJbvEu1y3swb5pGodjzOG+8k0mDIF7e9yoVEqNxZYaf21D9hwfsh2Z52S3F19qfvv7sQloNzDAk
-        DCA7lQhg==;
+        bh=4Gzuu/dBA+kKL7rj2Tle08HxJbwjT/QJCOuf5HCrwLc=; b=dgPXfQw5zxLhkJjx83kBh88s21
+        cAoSdbFojhOzPPv9WsPJtDQdw1P/I3TwsSOb/l/a/2y/vNQyOqj08H4RToubtn5KHA/uZjB3HfkJ9
+        B62R8Tt5bnHWbTpuAc/AEdTSoDjtuCMMqhXp4OL0jLjULWm+6xfSmwp/3Vw9o1Azb+VgeDuCHOMwS
+        wl9ZKx3y6PySWVLHh+iJDKmeOv0hBqaP2i0s001/31DAaDK9ivy17+BexXmenzpHgVhtRqzujDkGH
+        +ej9td7xBghvUUnpEHh8eLQkO5HotRanYDzeX5WlK8XH92ONGdyNWuuOyx4UmfllhCdKaEKwHnp5W
+        t6O3xW3w==;
 Received: from ulthar.dreamlands ([192.168.96.2] helo=ulthar.dreamlands.azazel.net)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mzkwj-0019T9-Kl
+        id 1mzkwj-0019T9-ND
         for netfilter-devel@vger.kernel.org; Tue, 21 Dec 2021 19:37:13 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [nft PATCH 01/11] tests: py: fix inet/sets.t netdev payload
-Date:   Tue, 21 Dec 2021 19:36:47 +0000
-Message-Id: <20211221193657.430866-2-jeremy@azazel.net>
+Subject: [nft PATCH 02/11] tests: py: fix inet/ip.t payloads
+Date:   Tue, 21 Dec 2021 19:36:48 +0000
+Message-Id: <20211221193657.430866-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211221193657.430866-1-jeremy@azazel.net>
 References: <20211221193657.430866-1-jeremy@azazel.net>
@@ -49,31 +49,44 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The netdev payload for one of the inet/sets.t tests was cut-and-pasted
-from the inet payload without being properly updated.
+In one of the bridge payloads, the wrong command is given to load the
+protocol.
+
+The leading comment for one of the netdev payload includes a redundant
+payload dependency.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- tests/py/inet/sets.t.payload.netdev | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tests/py/inet/ip.t.payload.bridge | 2 +-
+ tests/py/inet/ip.t.payload.netdev | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tests/py/inet/sets.t.payload.netdev b/tests/py/inet/sets.t.payload.netdev
-index 9d6f6bbd62b1..e31aeb9274e6 100644
---- a/tests/py/inet/sets.t.payload.netdev
-+++ b/tests/py/inet/sets.t.payload.netdev
-@@ -15,9 +15,9 @@ netdev test-netdev ingress
-   [ immediate reg 0 accept ]
- 
- # ip saddr . ip daddr . tcp dport @set3 accept
--inet 
--  [ meta load nfproto => reg 1 ]
--  [ cmp eq reg 1 0x00000002 ]
-+netdev
+diff --git a/tests/py/inet/ip.t.payload.bridge b/tests/py/inet/ip.t.payload.bridge
+index a422ed76c2de..57dbc9eb42e7 100644
+--- a/tests/py/inet/ip.t.payload.bridge
++++ b/tests/py/inet/ip.t.payload.bridge
+@@ -3,7 +3,7 @@ __set%d test-bridge 3
+ __set%d test-bridge 0
+ 	element 01010101 02020202 fecafeca 0000feca  : 0 [end]
+ bridge test-bridge input
+-  [ payload load 2b @ link header + 12 => reg 1 ]
 +  [ meta load protocol => reg 1 ]
-+  [ cmp eq reg 1 0x00000008 ]
-   [ meta load l4proto => reg 1 ]
-   [ cmp eq reg 1 0x00000006 ]
+   [ cmp eq reg 1 0x00000008 ]
    [ payload load 4b @ network header + 12 => reg 1 ]
+   [ payload load 4b @ network header + 16 => reg 9 ]
+diff --git a/tests/py/inet/ip.t.payload.netdev b/tests/py/inet/ip.t.payload.netdev
+index 38ed0ad316e4..f11225396d35 100644
+--- a/tests/py/inet/ip.t.payload.netdev
++++ b/tests/py/inet/ip.t.payload.netdev
+@@ -12,7 +12,7 @@ netdev test-netdev ingress
+   [ payload load 6b @ link header + 6 => reg 10 ]
+   [ lookup reg 1 set __set%d ]
+ 
+-# meta protocol ip ip saddr . ip daddr . ether saddr { 1.1.1.1 . 2.2.2.2 . ca:fe:ca:fe:ca:fe }
++# ip saddr . ip daddr . ether saddr { 1.1.1.1 . 2.2.2.2 . ca:fe:ca:fe:ca:fe }
+ __set%d test-netdev 3
+ __set%d test-netdev 0
+ 	element 01010101 02020202 fecafeca 0000feca  : 0 [end]
 -- 
 2.34.1
 
