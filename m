@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B3C47C788
-	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Dec 2021 20:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C061147C785
+	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Dec 2021 20:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241817AbhLUThU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 21 Dec 2021 14:37:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33888 "EHLO
+        id S241814AbhLUThT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 21 Dec 2021 14:37:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241818AbhLUThR (ORCPT
+        with ESMTP id S241815AbhLUThR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 21 Dec 2021 14:37:17 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF692C061759
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0458C061751
         for <netfilter-devel@vger.kernel.org>; Tue, 21 Dec 2021 11:37:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=1280cVmI7gRTiMj2WWMoXHU8YptUjTNRxcxHc7Ytvn4=; b=djX2NzgD2BoEzdkX/IrA7tpDLu
-        vNE3u8h2OY3bszGz0GfNu/zb/qjnduVKUyl6pNKlSLnWjDOmmc92S8l/DU4Znrzh4HjhfXx6+QjWk
-        Lua9CSyWElHOeVxHl8Z531bxBBUvAbad4A7mn3gOdFhd8+6lJF/HKtLZUrWbYC9nLbr3cQCm+fPXJ
-        s2ZalZa4D+vFjbVgAboeIMnhxMTBszkSNh9ybmHuGq4/t94wCGLYte48llGpj+VIdVbYge1WDLX3j
-        3nkNKq/CX1BGc8+SAvqk9nD7zreu7ZTyKIZUTY242luKsJmNmhew7mkxjjvnhpJE7QK78kRBl6+/v
-        k1Q4MJGA==;
+        bh=jAFXjaQLRNRSyjnWppIhtTA92QjaB1xVw2ehcR4tdqs=; b=hv99stZTVknzX72/zMx8W5VfVA
+        T62RP199GxCXzyt53+jhfmGlfqfDzh/kzHsjZkdZFVCvxsfkKoxh8HsyQxQcBvXePhGHxZ2cn/Cca
+        vUVqGK4bO14ZP56dGrVGO2UfEAc0Tpopz0rL5QMq8RyB38kz7wj1aCzCZ+JftRuq/2WMa2HsxMgA5
+        w4jUc15uIT1frtY60sHJ1Gm6u2tDh0sNf6Jm/lLAzjiqulbbad9wuHJx6sTGlD2D+49py98BiVNMY
+        DuAf9XYe1FQnR2qLSHM6mrPaJEHn3fYOrcl6BTRBV+Nm0H7rRCpYn+oZyulDIkzeSbMWqgiudIznT
+        oSa0CHzw==;
 Received: from ulthar.dreamlands ([192.168.96.2] helo=ulthar.dreamlands.azazel.net)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1mzkwk-0019T9-3v
+        id 1mzkwk-0019T9-6L
         for netfilter-devel@vger.kernel.org; Tue, 21 Dec 2021 19:37:14 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [nft PATCH 07/11] src: simplify logic governing storing payload dependencies
-Date:   Tue, 21 Dec 2021 19:36:53 +0000
-Message-Id: <20211221193657.430866-8-jeremy@azazel.net>
+Subject: [nft PATCH 08/11] src: add a helper that returns a payload dependency for a particular base
+Date:   Tue, 21 Dec 2021 19:36:54 +0000
+Message-Id: <20211221193657.430866-9-jeremy@azazel.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211221193657.430866-1-jeremy@azazel.net>
 References: <20211221193657.430866-1-jeremy@azazel.net>
@@ -49,88 +49,113 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-There are several places where we check whether `ctx->pdctx.pbase`
-equal to `PROTO_BASE_INVALID` and don't bother trying to free the
-dependency if so.  However, these checks are redundant.
-
-In `payload_match_expand` and `trace_gen_stmts`, we skip a call to
-`payload_dependency_kill`, but that calls `payload_dependency_exists` to check a
-dependency exists before doing anything else.
-
-In `ct_meta_common_postprocess`, we skip an open-coded equivalent to
-`payload_dependency_kill` which performs some different checks, but the
-first is the same: a call to `payload_dependency_exists`.
-
-Therefore, we can drop the redundant checks and simplify the flow-
-control in the functions.
+Currently, with only one base and dependency stored this is superfluous,
+but it will become more useful when the next commit adds support for
+storing a payload for every base.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/netlink.c             | 13 ++++---------
- src/netlink_delinearize.c | 17 ++++-------------
- 2 files changed, 8 insertions(+), 22 deletions(-)
+ include/payload.h         |  2 ++
+ src/netlink_delinearize.c |  4 +++-
+ src/payload.c             | 31 +++++++++++++++++++++++++++----
+ 3 files changed, 32 insertions(+), 5 deletions(-)
 
-diff --git a/src/netlink.c b/src/netlink.c
-index 5aad865955db..15b8878eb488 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -1939,16 +1939,11 @@ next:
- 		if (payload_is_stacked(desc, rel))
- 			b--;
- 
--		if (lhs->flags & EXPR_F_PROTOCOL &&
--		    pctx->pbase == PROTO_BASE_INVALID) {
-+		/* Don't strip 'icmp type' from payload dump. */
-+		if (pctx->icmp_type == 0)
-+			payload_dependency_kill(pctx, lhs, ctx->family);
-+		if (lhs->flags & EXPR_F_PROTOCOL)
- 			payload_dependency_store(pctx, stmt, b);
--		} else {
--			/* Don't strip 'icmp type' from payload dump. */
--			if (pctx->icmp_type == 0)
--				payload_dependency_kill(pctx, lhs, ctx->family);
--			if (lhs->flags & EXPR_F_PROTOCOL)
--				payload_dependency_store(pctx, stmt, b);
--		}
- 
- 		goto next;
- 	}
+diff --git a/include/payload.h b/include/payload.h
+index 8bc3fb9a8a54..10ae9fe4f9c5 100644
+--- a/include/payload.h
++++ b/include/payload.h
+@@ -47,6 +47,8 @@ extern void payload_dependency_store(struct payload_dep_ctx *ctx,
+ 				     enum proto_bases base);
+ extern bool payload_dependency_exists(const struct payload_dep_ctx *ctx,
+ 				      enum proto_bases base);
++extern struct stmt *payload_dependency_get(struct payload_dep_ctx *ctx,
++					   enum proto_bases base);
+ extern void payload_dependency_release(struct payload_dep_ctx *ctx);
+ extern void payload_dependency_kill(struct payload_dep_ctx *ctx,
+ 				    struct expr *expr, unsigned int family);
 diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index 36ead8029691..fd81e07151c2 100644
+index fd81e07151c2..2a62b309be1d 100644
 --- a/src/netlink_delinearize.c
 +++ b/src/netlink_delinearize.c
-@@ -1899,16 +1899,10 @@ static void payload_match_expand(struct rule_pp_ctx *ctx,
- 		 * kill it later on if made redundant by a higher layer
- 		 * payload expression.
- 		 */
--		if (ctx->pdctx.pbase == PROTO_BASE_INVALID &&
--		    expr->op == OP_EQ &&
--		    left->flags & EXPR_F_PROTOCOL) {
-+		payload_dependency_kill(&ctx->pdctx, nexpr->left,
-+					ctx->pctx.family);
-+		if (expr->op == OP_EQ && left->flags & EXPR_F_PROTOCOL)
- 			payload_dependency_store(&ctx->pdctx, nstmt, base);
--		} else {
--			payload_dependency_kill(&ctx->pdctx, nexpr->left,
--						ctx->pctx.family);
--			if (expr->op == OP_EQ && left->flags & EXPR_F_PROTOCOL)
--				payload_dependency_store(&ctx->pdctx, nstmt, base);
--		}
- 	}
- 	list_del(&ctx->stmt->list);
- 	stmt_free(ctx->stmt);
-@@ -2125,10 +2119,7 @@ static void ct_meta_common_postprocess(struct rule_pp_ctx *ctx,
+@@ -2060,11 +2060,13 @@ static bool meta_may_dependency_kill(struct payload_dep_ctx *ctx,
+ 				     const struct expr *expr)
+ {
+ 	uint8_t l4proto, nfproto = NFPROTO_UNSPEC;
+-	struct expr *dep = ctx->pdep->expr;
++	struct expr *dep;
  
- 		relational_expr_pctx_update(&ctx->pctx, expr);
+ 	if (ctx->pbase != PROTO_BASE_NETWORK_HDR)
+ 		return true;
  
--		if (ctx->pdctx.pbase == PROTO_BASE_INVALID &&
--		    left->flags & EXPR_F_PROTOCOL) {
--			payload_dependency_store(&ctx->pdctx, ctx->stmt, base);
--		} else if (ctx->pdctx.pbase < PROTO_BASE_TRANSPORT_HDR) {
-+		if (ctx->pdctx.pbase < PROTO_BASE_TRANSPORT_HDR) {
- 			if (payload_dependency_exists(&ctx->pdctx, base) &&
- 			    meta_may_dependency_kill(&ctx->pdctx,
- 						     ctx->pctx.family, expr))
++	dep = payload_dependency_get(ctx, PROTO_BASE_NETWORK_HDR)->expr;
++
+ 	if (__meta_dependency_may_kill(dep, &nfproto))
+ 		return true;
+ 
+diff --git a/src/payload.c b/src/payload.c
+index 576eb149f71d..902b318ae23a 100644
+--- a/src/payload.c
++++ b/src/payload.c
+@@ -631,6 +631,27 @@ bool payload_dependency_exists(const struct payload_dep_ctx *ctx,
+ 	       (ctx->pbase == base || (base == PROTO_BASE_TRANSPORT_HDR && ctx->pbase == base + 1));
+ }
+ 
++/**
++ * payload_dependency_get - return a payload dependency if available
++ * @ctx: payload dependency context
++ * @base: payload protocol base
++ *
++ * If we have seen a protocol key payload expression for this base, we return
++ * it.
++ */
++struct stmt *payload_dependency_get(struct payload_dep_ctx *ctx,
++				    enum proto_bases base)
++{
++	if (ctx->pbase == base)
++		return ctx->pdep;
++
++	if (base == PROTO_BASE_TRANSPORT_HDR &&
++	    ctx->pbase == PROTO_BASE_INNER_HDR)
++		return ctx->pdep;
++
++	return NULL;
++}
++
+ void payload_dependency_release(struct payload_dep_ctx *ctx)
+ {
+ 	list_del(&ctx->pdep->list);
+@@ -661,7 +682,7 @@ static uint8_t icmp_dep_to_type(enum icmp_hdr_field_type t)
+ 
+ static bool payload_may_dependency_kill_icmp(struct payload_dep_ctx *ctx, struct expr *expr)
+ {
+-	const struct expr *dep = ctx->pdep->expr;
++	const struct expr *dep = payload_dependency_get(ctx, expr->payload.base)->expr;
+ 	uint8_t icmp_type;
+ 
+ 	icmp_type = expr->payload.tmpl->icmp_dep;
+@@ -678,9 +699,11 @@ static bool payload_may_dependency_kill_icmp(struct payload_dep_ctx *ctx, struct
+ 
+ static bool payload_may_dependency_kill_ll(struct payload_dep_ctx *ctx, struct expr *expr)
+ {
+-	const struct expr *dep = ctx->pdep->expr;
++	const struct expr *dep = payload_dependency_get(ctx, expr->payload.base)->expr;
+ 
+-	/* Never remove a 'vlan type 0x...' expression, they are never added implicitly */
++	/* Never remove a 'vlan type 0x...' expression, they are never added
++	 * implicitly
++	 */
+ 	if (dep->left->payload.desc == &proto_vlan)
+ 		return false;
+ 
+@@ -697,7 +720,7 @@ static bool payload_may_dependency_kill_ll(struct payload_dep_ctx *ctx, struct e
+ static bool payload_may_dependency_kill(struct payload_dep_ctx *ctx,
+ 					unsigned int family, struct expr *expr)
+ {
+-	struct expr *dep = ctx->pdep->expr;
++	struct expr *dep = payload_dependency_get(ctx, expr->payload.base)->expr;
+ 
+ 	/* Protocol key payload expression at network base such as 'ip6 nexthdr'
+ 	 * need to be left in place since it implicitly restricts matching to
 -- 
 2.34.1
 
