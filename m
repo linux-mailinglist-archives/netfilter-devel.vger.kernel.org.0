@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21F447F050
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Dec 2021 18:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA3747F054
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Dec 2021 18:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353287AbhLXRS1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 Dec 2021 12:18:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
+        id S1353290AbhLXRS4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 24 Dec 2021 12:18:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhLXRS0 (ORCPT
+        with ESMTP id S229539AbhLXRS4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 Dec 2021 12:18:26 -0500
+        Fri, 24 Dec 2021 12:18:56 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5F3C061401
-        for <netfilter-devel@vger.kernel.org>; Fri, 24 Dec 2021 09:18:26 -0800 (PST)
-Received: from localhost ([::1]:59090 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F5CC061401
+        for <netfilter-devel@vger.kernel.org>; Fri, 24 Dec 2021 09:18:55 -0800 (PST)
+Received: from localhost ([::1]:59098 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1n0oD2-0004wB-Fu; Fri, 24 Dec 2021 18:18:24 +0100
+        id 1n0oDW-0004xK-5k; Fri, 24 Dec 2021 18:18:54 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 03/11] xtables: Move struct nft_xt_cmd_parse to xshared.h
-Date:   Fri, 24 Dec 2021 18:17:46 +0100
-Message-Id: <20211224171754.14210-4-phil@nwl.cc>
+Subject: [iptables PATCH 04/11] xtables: Pass xtables_args to check_empty_interface()
+Date:   Fri, 24 Dec 2021 18:17:47 +0100
+Message-Id: <20211224171754.14210-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211224171754.14210-1-phil@nwl.cc>
 References: <20211224171754.14210-1-phil@nwl.cc>
@@ -34,145 +34,53 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Preparing for shared use with legacy variants, move it to "neutral
-ground" and give it a more generic name.
+It holds the accessed family field as well and is more generic than
+nft_handle.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-shared.h           | 14 +-------------
- iptables/xshared.h              | 12 ++++++++++++
- iptables/xtables-eb-translate.c |  4 ++--
- iptables/xtables-translate.c    |  8 ++++----
- iptables/xtables.c              |  4 ++--
- 5 files changed, 21 insertions(+), 21 deletions(-)
+ iptables/xtables.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
-index bcf8486eb44c4..4948aef761d10 100644
---- a/iptables/nft-shared.h
-+++ b/iptables/nft-shared.h
-@@ -210,20 +210,8 @@ struct xtables_args {
- 	unsigned long long pcnt_cnt, bcnt_cnt;
- };
- 
--struct nft_xt_cmd_parse {
--	unsigned int			command;
--	unsigned int			rulenum;
--	char				*table;
--	const char			*chain;
--	const char			*newname;
--	const char			*policy;
--	bool				restore;
--	int				verbose;
--	bool				xlate;
--};
--
- void do_parse(struct nft_handle *h, int argc, char *argv[],
--	      struct nft_xt_cmd_parse *p, struct iptables_command_state *cs,
-+	      struct xt_cmd_parse *p, struct iptables_command_state *cs,
- 	      struct xtables_args *args);
- 
- struct nftnl_chain_list;
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 2c05b0d7c4ace..dde94b7335f6a 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -262,4 +262,16 @@ int print_match_save(const struct xt_entry_match *e, const void *ip);
- void xtables_printhelp(const struct xtables_rule_match *matches);
- void exit_tryhelp(int status, int line) __attribute__((noreturn));
- 
-+struct xt_cmd_parse {
-+	unsigned int			command;
-+	unsigned int			rulenum;
-+	char				*table;
-+	const char			*chain;
-+	const char			*newname;
-+	const char			*policy;
-+	bool				restore;
-+	int				verbose;
-+	bool				xlate;
-+};
-+
- #endif /* IPTABLES_XSHARED_H */
-diff --git a/iptables/xtables-eb-translate.c b/iptables/xtables-eb-translate.c
-index a6c86b6531e3f..86177024ec703 100644
---- a/iptables/xtables-eb-translate.c
-+++ b/iptables/xtables-eb-translate.c
-@@ -152,7 +152,7 @@ static void print_ebt_cmd(int argc, char *argv[])
- 	printf("\n");
- }
- 
--static int nft_rule_eb_xlate_add(struct nft_handle *h, const struct nft_xt_cmd_parse *p,
-+static int nft_rule_eb_xlate_add(struct nft_handle *h, const struct xt_cmd_parse *p,
- 				 const struct iptables_command_state *cs, bool append)
- {
- 	struct xt_xlate *xl = xt_xlate_alloc(10240);
-@@ -191,7 +191,7 @@ static int do_commandeb_xlate(struct nft_handle *h, int argc, char *argv[], char
- 	int selected_chain = -1;
- 	struct xtables_rule_match *xtrm_i;
- 	struct ebt_match *match;
--	struct nft_xt_cmd_parse p = {
-+	struct xt_cmd_parse p = {
- 		.table          = *table,
-         };
- 
-diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
-index e2948c5009dd6..9d312b244657e 100644
---- a/iptables/xtables-translate.c
-+++ b/iptables/xtables-translate.c
-@@ -150,7 +150,7 @@ const char *family2str[] = {
- };
- 
- static int nft_rule_xlate_add(struct nft_handle *h,
--			      const struct nft_xt_cmd_parse *p,
-+			      const struct xt_cmd_parse *p,
- 			      const struct iptables_command_state *cs,
- 			      bool append)
- {
-@@ -186,11 +186,11 @@ err_out:
- 	return ret;
- }
- 
--static int xlate(struct nft_handle *h, struct nft_xt_cmd_parse *p,
-+static int xlate(struct nft_handle *h, struct xt_cmd_parse *p,
- 		 struct iptables_command_state *cs,
- 		 struct xtables_args *args, bool append,
- 		 int (*cb)(struct nft_handle *h,
--			   const struct nft_xt_cmd_parse *p,
-+			   const struct xt_cmd_parse *p,
- 			   const struct iptables_command_state *cs,
- 			   bool append))
- {
-@@ -248,7 +248,7 @@ static int do_command_xlate(struct nft_handle *h, int argc, char *argv[],
- 			    char **table, bool restore)
- {
- 	int ret = 0;
--	struct nft_xt_cmd_parse p = {
-+	struct xt_cmd_parse p = {
- 		.table		= *table,
- 		.restore	= restore,
- 		.xlate		= true,
 diff --git a/iptables/xtables.c b/iptables/xtables.c
-index ac864eb24a35e..837b399aba5b3 100644
+index 837b399aba5b3..db0cec2461741 100644
 --- a/iptables/xtables.c
 +++ b/iptables/xtables.c
-@@ -187,7 +187,7 @@ static void check_inverse(struct nft_handle *h, const char option[],
+@@ -145,14 +145,14 @@ list_rules(struct nft_handle *h, const char *chain, const char *table,
+ 	return nft_cmd_rule_list_save(h, chain, table, rulenum, counters);
  }
  
- void do_parse(struct nft_handle *h, int argc, char *argv[],
--	      struct nft_xt_cmd_parse *p, struct iptables_command_state *cs,
-+	      struct xt_cmd_parse *p, struct iptables_command_state *cs,
- 	      struct xtables_args *args)
+-static void check_empty_interface(struct nft_handle *h, const char *arg)
++static void check_empty_interface(struct xtables_args *args, const char *arg)
  {
- 	struct xtables_match *m;
-@@ -699,7 +699,7 @@ int do_commandx(struct nft_handle *h, int argc, char *argv[], char **table,
- 		bool restore)
- {
- 	int ret = 1;
--	struct nft_xt_cmd_parse p = {
-+	struct xt_cmd_parse p = {
- 		.table		= *table,
- 		.restore	= restore,
- 	};
+ 	const char *msg = "Empty interface is likely to be undesired";
+ 
+ 	if (*arg != '\0')
+ 		return;
+ 
+-	if (h->family != NFPROTO_ARP)
++	if (args->family != NFPROTO_ARP)
+ 		xtables_error(PARAMETER_PROBLEM, msg);
+ 
+ 	fprintf(stderr, "%s", msg);
+@@ -460,7 +460,7 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
+ 			break;
+ 
+ 		case 'i':
+-			check_empty_interface(h, optarg);
++			check_empty_interface(args, optarg);
+ 			check_inverse(h, optarg, &invert, &optind, argc);
+ 			set_option(&cs->options, OPT_VIANAMEIN,
+ 				   &args->invflags, invert);
+@@ -470,7 +470,7 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
+ 			break;
+ 
+ 		case 'o':
+-			check_empty_interface(h, optarg);
++			check_empty_interface(args, optarg);
+ 			check_inverse(h, optarg, &invert, &optind, argc);
+ 			set_option(&cs->options, OPT_VIANAMEOUT,
+ 				   &args->invflags, invert);
 -- 
 2.34.1
 
