@@ -2,65 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3361D47F000
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Dec 2021 17:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C41C247F057
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Dec 2021 18:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353147AbhLXQHh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 Dec 2021 11:07:37 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:44632 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353145AbhLXQHg (ORCPT
+        id S231466AbhLXRTM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 24 Dec 2021 12:19:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhLXRTM (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 Dec 2021 11:07:36 -0500
-Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 6EB77607C4;
-        Fri, 24 Dec 2021 17:04:59 +0100 (CET)
-Date:   Fri, 24 Dec 2021 17:07:30 +0100
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
+        Fri, 24 Dec 2021 12:19:12 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D51F9C061401
+        for <netfilter-devel@vger.kernel.org>; Fri, 24 Dec 2021 09:19:11 -0800 (PST)
+Received: from localhost ([::1]:59106 helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1n0oDm-0004yQ-6C; Fri, 24 Dec 2021 18:19:10 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf-next] netfilter: exthdr: add support for tcp option
- removal
-Message-ID: <YcXwQpTpRwe5XvZP@salvia>
-References: <20211220143247.554667-1-fw@strlen.de>
- <YcO5tQz5ImOxtZLx@salvia>
+Subject: [iptables PATCH 00/11] Share do_parse() between nft and legacy
+Date:   Fri, 24 Dec 2021 18:17:43 +0100
+Message-Id: <20211224171754.14210-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YcO5tQz5ImOxtZLx@salvia>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Dec 23, 2021 at 12:50:17AM +0100, Pablo Neira Ayuso wrote:
-> On Mon, Dec 20, 2021 at 03:32:47PM +0100, Florian Westphal wrote:
-> > This allows to replace a tcp option with nop padding to selectively disable
-> > a particular tcp option.
-> > 
-> > Optstrip mode is chosen when userspace passes the exthdr expression with
-> > neither a source nor a destination register attribute.
-> > 
-> > This is identical to xtables TCPOPTSTRIP extension.
-> 
-> Is it worth to retain the bitmap approach?
+Patch 1 removes remains of an unused (and otherwise dropped) feature,
+yet the change is necessary for the following ones. Patches 2-6 prepare
+for patch 7 which moves do_parse() to xshared.c. Patches 8 and 9 prepare
+for use of do_parse() from legacy code, Patches 10 and 11 finally drop
+legacy ip(6)tables' rule parsing code.
 
-Probably a new nested attribute to store the list of types that you
-would like to strip:
+Merry Xmas!
 
-        NFTA_EXTHDR_TYPES
-         NFTA_EXTHDR_TYPE
-         NFTA_EXTHDR_TYPE
+Phil Sutter (11):
+  xtables: Drop xtables' family on demand feature
+  xtables: Pull table validity check out of do_parse()
+  xtables: Move struct nft_xt_cmd_parse to xshared.h
+  xtables: Pass xtables_args to check_empty_interface()
+  xtables: Pass xtables_args to check_inverse()
+  xtables: Do not pass nft_handle to do_parse()
+  xshared: Move do_parse to shared space
+  xshared: Store parsed wait and wait_interval in xtables_args
+  nft: Move proto_parse and post_parse callbacks to xshared
+  iptables: Use xtables' do_parse() function
+  ip6tables: Use the shared do_parse, too
 
-From the kernel, you could build a bitmap (just like TCPOPTSTRIP)
-based on this list.
+ iptables/ip6tables.c            | 499 ++---------------------
+ iptables/iptables.c             | 484 ++--------------------
+ iptables/nft-ipv4.c             |  59 +--
+ iptables/nft-ipv6.c             |  76 +---
+ iptables/nft-shared.h           |  49 ---
+ iptables/xshared.c              | 684 ++++++++++++++++++++++++++++++++
+ iptables/xshared.h              |  66 +++
+ iptables/xtables-eb-translate.c |   4 +-
+ iptables/xtables-translate.c    |  13 +-
+ iptables/xtables.c              | 573 +-------------------------
+ 10 files changed, 839 insertions(+), 1668 deletions(-)
 
-From the dump path, you can iterate over the bitmap to check for
-bitset to build this nest.
+-- 
+2.34.1
 
-> > Signed-off-by: Florian Westphal <fw@strlen.de>
-> > ---
-> >  proposed userspace syntax is:
-> > 
-> >  nft add rule f in delete tcp option sack-perm
-> 
->    nft add rule f in tcp option reset sack-perm,...
