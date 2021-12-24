@@ -2,69 +2,67 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41C247F057
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Dec 2021 18:19:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E5247F04F
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Dec 2021 18:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhLXRTM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 Dec 2021 12:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
+        id S1344149AbhLXRSX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 24 Dec 2021 12:18:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhLXRTM (ORCPT
+        with ESMTP id S229539AbhLXRSV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 Dec 2021 12:19:12 -0500
+        Fri, 24 Dec 2021 12:18:21 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D51F9C061401
-        for <netfilter-devel@vger.kernel.org>; Fri, 24 Dec 2021 09:19:11 -0800 (PST)
-Received: from localhost ([::1]:59106 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20B3C061401
+        for <netfilter-devel@vger.kernel.org>; Fri, 24 Dec 2021 09:18:20 -0800 (PST)
+Received: from localhost ([::1]:59088 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1n0oDm-0004yQ-6C; Fri, 24 Dec 2021 18:19:10 +0100
+        id 1n0oCx-0004w5-5r; Fri, 24 Dec 2021 18:18:19 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 00/11] Share do_parse() between nft and legacy
-Date:   Fri, 24 Dec 2021 18:17:43 +0100
-Message-Id: <20211224171754.14210-1-phil@nwl.cc>
+Subject: [iptables PATCH 01/11] xtables: Drop xtables' family on demand feature
+Date:   Fri, 24 Dec 2021 18:17:44 +0100
+Message-Id: <20211224171754.14210-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20211224171754.14210-1-phil@nwl.cc>
+References: <20211224171754.14210-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Patch 1 removes remains of an unused (and otherwise dropped) feature,
-yet the change is necessary for the following ones. Patches 2-6 prepare
-for patch 7 which moves do_parse() to xshared.c. Patches 8 and 9 prepare
-for use of do_parse() from legacy code, Patches 10 and 11 finally drop
-legacy ip(6)tables' rule parsing code.
+This conditional h->family assignment was added by commit 3f7877e6be987
+("xtables-restore: add -4 and -6 support") with the intention to support
+something like 'xtables-restore -6 <ip6tables.dump', i.e. having
+family-agnostic commands which accept flags to set the family. Yet
+commit be70918eab26e ("xtables: rename xt-multi binaries to -nft,
+-legacy") removed support for such command names back in 2018 and nobody
+has complained so far. Therefore drop this leftover as it makes
+do_parse() more generic.
 
-Merry Xmas!
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/xtables.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Phil Sutter (11):
-  xtables: Drop xtables' family on demand feature
-  xtables: Pull table validity check out of do_parse()
-  xtables: Move struct nft_xt_cmd_parse to xshared.h
-  xtables: Pass xtables_args to check_empty_interface()
-  xtables: Pass xtables_args to check_inverse()
-  xtables: Do not pass nft_handle to do_parse()
-  xshared: Move do_parse to shared space
-  xshared: Store parsed wait and wait_interval in xtables_args
-  nft: Move proto_parse and post_parse callbacks to xshared
-  iptables: Use xtables' do_parse() function
-  ip6tables: Use the shared do_parse, too
-
- iptables/ip6tables.c            | 499 ++---------------------
- iptables/iptables.c             | 484 ++--------------------
- iptables/nft-ipv4.c             |  59 +--
- iptables/nft-ipv6.c             |  76 +---
- iptables/nft-shared.h           |  49 ---
- iptables/xshared.c              | 684 ++++++++++++++++++++++++++++++++
- iptables/xshared.h              |  66 +++
- iptables/xtables-eb-translate.c |   4 +-
- iptables/xtables-translate.c    |  13 +-
- iptables/xtables.c              | 573 +-------------------------
- 10 files changed, 839 insertions(+), 1668 deletions(-)
-
+diff --git a/iptables/xtables.c b/iptables/xtables.c
+index 57bec76c31fb3..5c48bd94644f3 100644
+--- a/iptables/xtables.c
++++ b/iptables/xtables.c
+@@ -657,10 +657,6 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
+ 		xtables_error(PARAMETER_PROBLEM,
+ 			   "nothing appropriate following !");
+ 
+-	/* Set only if required, needed by xtables-restore */
+-	if (h->family == AF_UNSPEC)
+-		h->family = args->family;
+-
+ 	h->ops->post_parse(p->command, cs, args);
+ 
+ 	if (p->command == CMD_REPLACE &&
 -- 
 2.34.1
 
