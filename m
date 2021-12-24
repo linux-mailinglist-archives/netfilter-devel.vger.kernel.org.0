@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0F447F053
-	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Dec 2021 18:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E1147F055
+	for <lists+netfilter-devel@lfdr.de>; Fri, 24 Dec 2021 18:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353289AbhLXRSx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 24 Dec 2021 12:18:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60130 "EHLO
+        id S1353291AbhLXRTB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 24 Dec 2021 12:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhLXRSv (ORCPT
+        with ESMTP id S229539AbhLXRTB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 24 Dec 2021 12:18:51 -0500
+        Fri, 24 Dec 2021 12:19:01 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F49CC061401
-        for <netfilter-devel@vger.kernel.org>; Fri, 24 Dec 2021 09:18:50 -0800 (PST)
-Received: from localhost ([::1]:59096 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28325C061401
+        for <netfilter-devel@vger.kernel.org>; Fri, 24 Dec 2021 09:19:01 -0800 (PST)
+Received: from localhost ([::1]:59102 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1n0oDQ-0004xF-RF; Fri, 24 Dec 2021 18:18:48 +0100
+        id 1n0oDb-0004xn-FC; Fri, 24 Dec 2021 18:18:59 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 09/11] nft: Move proto_parse and post_parse callbacks to xshared
-Date:   Fri, 24 Dec 2021 18:17:52 +0100
-Message-Id: <20211224171754.14210-10-phil@nwl.cc>
+Subject: [iptables PATCH 10/11] iptables: Use xtables' do_parse() function
+Date:   Fri, 24 Dec 2021 18:17:53 +0100
+Message-Id: <20211224171754.14210-11-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211224171754.14210-1-phil@nwl.cc>
 References: <20211224171754.14210-1-phil@nwl.cc>
@@ -34,340 +34,572 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-They are not nft-variant-specific and may therefore be shared with
-legacy.
+To do so, a few conversions are needed:
+
+- Make use of xt_params->optstring
+- Make use of xt_params->print_help callback
+- Switch to using a proto_parse callback
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-ipv4.c |  59 +--------------------
- iptables/nft-ipv6.c |  76 +-------------------------
- iptables/xshared.c  | 126 ++++++++++++++++++++++++++++++++++++++++++++
- iptables/xshared.h  |   9 ++++
- 4 files changed, 139 insertions(+), 131 deletions(-)
+ iptables/iptables.c | 484 +++-----------------------------------------
+ iptables/xshared.c  |   3 +
+ 2 files changed, 36 insertions(+), 451 deletions(-)
 
-diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
-index f36260980e829..2588babd395a5 100644
---- a/iptables/nft-ipv4.c
-+++ b/iptables/nft-ipv4.c
-@@ -274,61 +274,6 @@ static void nft_ipv4_save_rule(const void *data, unsigned int format)
- 				&cs->fw, format);
- }
+diff --git a/iptables/iptables.c b/iptables/iptables.c
+index 7dc4cbc1c9c22..d1bc73f5a2021 100644
+--- a/iptables/iptables.c
++++ b/iptables/iptables.c
+@@ -87,21 +87,12 @@ static struct option original_opts[] = {
+ struct xtables_globals iptables_globals = {
+ 	.option_offset = 0,
+ 	.program_version = PACKAGE_VERSION " (legacy)",
++	.optstring = OPTSTRING_COMMON "R:S::W::" "46bfg:h::m:nvw::x",
+ 	.orig_opts = original_opts,
+ 	.compat_rev = xtables_compatible_revision,
++	.print_help = xtables_printhelp,
+ };
  
--static void nft_ipv4_proto_parse(struct iptables_command_state *cs,
--				 struct xtables_args *args)
+-#define opts iptables_globals.opts
+-#define prog_name iptables_globals.program_name
+-#define prog_vers iptables_globals.program_version
+-
+-static void
+-exit_printhelp(const struct xtables_rule_match *matches)
 -{
--	cs->fw.ip.proto = args->proto;
--	cs->fw.ip.invflags = args->invflags;
+-	xtables_printhelp(matches);
+-	exit(0);
 -}
 -
--static void nft_ipv4_post_parse(int command,
--				struct iptables_command_state *cs,
--				struct xtables_args *args)
--{
--	cs->fw.ip.flags = args->flags;
--	/* We already set invflags in proto_parse, but we need to refresh it
--	 * to include new parsed options.
--	 */
--	cs->fw.ip.invflags = args->invflags;
+ /*
+  *	All functions starting with "parse" should succeed, otherwise
+  *	the program fails.
+@@ -699,10 +690,21 @@ generate_entry(const struct ipt_entry *fw,
+ int do_command4(int argc, char *argv[], char **table,
+ 		struct xtc_handle **handle, bool restore)
+ {
++	struct xt_cmd_parse p = {
++		.table		= *table,
++		.restore	= restore,
++		.line		= line,
++		.proto_parse	= ipv4_proto_parse,
++		.post_parse	= ipv4_post_parse,
++	};
+ 	struct iptables_command_state cs = {
+ 		.jumpto	= "",
+ 		.argv	= argv,
+ 	};
++	struct xtables_args args = {
++		.family = AF_INET,
++		.wait_interval.tv_sec = 1,
++	};
+ 	struct ipt_entry *e = NULL;
+ 	unsigned int nsaddrs = 0, ndaddrs = 0;
+ 	struct in_addr *saddrs = NULL, *smasks = NULL;
+@@ -710,433 +712,30 @@ int do_command4(int argc, char *argv[], char **table,
+ 	struct timeval wait_interval = {
+ 		.tv_sec = 1,
+ 	};
+-	bool wait_interval_set = false;
+ 	int verbose = 0;
+ 	int wait = 0;
+ 	const char *chain = NULL;
+-	const char *shostnetworkmask = NULL, *dhostnetworkmask = NULL;
+ 	const char *policy = NULL, *newname = NULL;
+ 	unsigned int rulenum = 0, command = 0;
+-	const char *pcnt = NULL, *bcnt = NULL;
+ 	int ret = 1;
+-	struct xtables_match *m;
+-	struct xtables_rule_match *matchp;
+-	struct xtables_target *t;
+-	unsigned long long cnt;
+-	bool table_set = false;
+-	uint16_t invflags = 0;
+-	bool invert = false;
 -
--	memcpy(cs->fw.ip.iniface, args->iniface, IFNAMSIZ);
--	memcpy(cs->fw.ip.iniface_mask,
--	       args->iniface_mask, IFNAMSIZ*sizeof(unsigned char));
+-	/* re-set optind to 0 in case do_command4 gets called
+-	 * a second time */
+-	optind = 0;
 -
--	memcpy(cs->fw.ip.outiface, args->outiface, IFNAMSIZ);
--	memcpy(cs->fw.ip.outiface_mask,
--	       args->outiface_mask, IFNAMSIZ*sizeof(unsigned char));
+-	/* clear mflags in case do_command4 gets called a second time
+-	 * (we clear the global list of all matches for security)*/
+-	for (m = xtables_matches; m; m = m->next)
+-		m->mflags = 0;
 -
--	if (args->goto_set)
--		cs->fw.ip.flags |= IPT_F_GOTO;
--
--	cs->counters.pcnt = args->pcnt_cnt;
--	cs->counters.bcnt = args->bcnt_cnt;
--
--	if (command & (CMD_REPLACE | CMD_INSERT |
--			CMD_DELETE | CMD_APPEND | CMD_CHECK)) {
--		if (!(cs->options & OPT_DESTINATION))
--			args->dhostnetworkmask = "0.0.0.0/0";
--		if (!(cs->options & OPT_SOURCE))
--			args->shostnetworkmask = "0.0.0.0/0";
+-	for (t = xtables_targets; t; t = t->next) {
+-		t->tflags = 0;
+-		t->used = 0;
 -	}
 -
--	if (args->shostnetworkmask)
--		xtables_ipparse_multiple(args->shostnetworkmask,
--					 &args->s.addr.v4, &args->s.mask.v4,
--					 &args->s.naddrs);
--	if (args->dhostnetworkmask)
--		xtables_ipparse_multiple(args->dhostnetworkmask,
--					 &args->d.addr.v4, &args->d.mask.v4,
--					 &args->d.naddrs);
+-	/* Suppress error messages: we may add new options if we
+-           demand-load a protocol. */
+-	opterr = 0;
+-	opts = xt_params->orig_opts;
+-	while ((cs.c = getopt_long(argc, argv,
+-	   "-:A:C:D:R:I:L::S::M:F::Z::N:X::E:P:Vh::o:p:s:d:j:i:fbvw::W::nt:m:xc:g:46",
+-					   opts, NULL)) != -1) {
+-		switch (cs.c) {
+-			/*
+-			 * Command selection
+-			 */
+-		case 'A':
+-			add_command(&command, CMD_APPEND, CMD_NONE, invert);
+-			chain = optarg;
+-			break;
 -
--	if ((args->s.naddrs > 1 || args->d.naddrs > 1) &&
--	    (cs->fw.ip.invflags & (IPT_INV_SRCIP | IPT_INV_DSTIP)))
--		xtables_error(PARAMETER_PROBLEM,
--			      "! not allowed with multiple"
--			      " source or destination IP addresses");
--}
+-		case 'C':
+-			add_command(&command, CMD_CHECK, CMD_NONE, invert);
+-			chain = optarg;
+-			break;
 -
- static void xlate_ipv4_addr(const char *selector, const struct in_addr *addr,
- 			    const struct in_addr *mask,
- 			    bool inv, struct xt_xlate *xl)
-@@ -510,8 +455,8 @@ struct nft_family_ops nft_family_ops_ipv4 = {
- 	.print_rule		= nft_ipv4_print_rule,
- 	.save_rule		= nft_ipv4_save_rule,
- 	.save_chain		= nft_ipv46_save_chain,
--	.proto_parse		= nft_ipv4_proto_parse,
--	.post_parse		= nft_ipv4_post_parse,
-+	.proto_parse		= ipv4_proto_parse,
-+	.post_parse		= ipv4_post_parse,
- 	.parse_target		= nft_ipv46_parse_target,
- 	.rule_to_cs		= nft_rule_to_iptables_command_state,
- 	.clear_cs		= nft_clear_iptables_command_state,
-diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
-index 132130880a43a..6d288112abbfa 100644
---- a/iptables/nft-ipv6.c
-+++ b/iptables/nft-ipv6.c
-@@ -236,78 +236,6 @@ static void nft_ipv6_save_rule(const void *data, unsigned int format)
- 				&cs->fw6, format);
- }
+-		case 'D':
+-			add_command(&command, CMD_DELETE, CMD_NONE, invert);
+-			chain = optarg;
+-			if (xs_has_arg(argc, argv)) {
+-				rulenum = parse_rulenumber(argv[optind++]);
+-				command = CMD_DELETE_NUM;
+-			}
+-			break;
+-
+-		case 'R':
+-			add_command(&command, CMD_REPLACE, CMD_NONE, invert);
+-			chain = optarg;
+-			if (xs_has_arg(argc, argv))
+-				rulenum = parse_rulenumber(argv[optind++]);
+-			else
+-				xtables_error(PARAMETER_PROBLEM,
+-					   "-%c requires a rule number",
+-					   cmd2char(CMD_REPLACE));
+-			break;
+-
+-		case 'I':
+-			add_command(&command, CMD_INSERT, CMD_NONE, invert);
+-			chain = optarg;
+-			if (xs_has_arg(argc, argv))
+-				rulenum = parse_rulenumber(argv[optind++]);
+-			else rulenum = 1;
+-			break;
+-
+-		case 'L':
+-			add_command(&command, CMD_LIST,
+-				    CMD_ZERO | CMD_ZERO_NUM, invert);
+-			if (optarg) chain = optarg;
+-			else if (xs_has_arg(argc, argv))
+-				chain = argv[optind++];
+-			if (xs_has_arg(argc, argv))
+-				rulenum = parse_rulenumber(argv[optind++]);
+-			break;
+-
+-		case 'S':
+-			add_command(&command, CMD_LIST_RULES,
+-				    CMD_ZERO|CMD_ZERO_NUM, invert);
+-			if (optarg) chain = optarg;
+-			else if (xs_has_arg(argc, argv))
+-				chain = argv[optind++];
+-			if (xs_has_arg(argc, argv))
+-				rulenum = parse_rulenumber(argv[optind++]);
+-			break;
+-
+-		case 'F':
+-			add_command(&command, CMD_FLUSH, CMD_NONE, invert);
+-			if (optarg) chain = optarg;
+-			else if (xs_has_arg(argc, argv))
+-				chain = argv[optind++];
+-			break;
+-
+-		case 'Z':
+-			add_command(&command, CMD_ZERO, CMD_LIST|CMD_LIST_RULES,
+-				    invert);
+-			if (optarg) chain = optarg;
+-			else if (xs_has_arg(argc, argv))
+-				chain = argv[optind++];
+-			if (xs_has_arg(argc, argv)) {
+-				rulenum = parse_rulenumber(argv[optind++]);
+-				command = CMD_ZERO_NUM;
+-			}
+-			break;
+-
+-		case 'N':
+-			parse_chain(optarg);
+-			add_command(&command, CMD_NEW_CHAIN, CMD_NONE, invert);
+-			chain = optarg;
+-			break;
+-
+-		case 'X':
+-			add_command(&command, CMD_DELETE_CHAIN, CMD_NONE,
+-				    invert);
+-			if (optarg) chain = optarg;
+-			else if (xs_has_arg(argc, argv))
+-				chain = argv[optind++];
+-			break;
+-
+-		case 'E':
+-			add_command(&command, CMD_RENAME_CHAIN, CMD_NONE,
+-				    invert);
+-			chain = optarg;
+-			if (xs_has_arg(argc, argv))
+-				newname = argv[optind++];
+-			else
+-				xtables_error(PARAMETER_PROBLEM,
+-					   "-%c requires old-chain-name and "
+-					   "new-chain-name",
+-					    cmd2char(CMD_RENAME_CHAIN));
+-			break;
+-
+-		case 'P':
+-			add_command(&command, CMD_SET_POLICY, CMD_NONE,
+-				    invert);
+-			chain = optarg;
+-			if (xs_has_arg(argc, argv))
+-				policy = argv[optind++];
+-			else
+-				xtables_error(PARAMETER_PROBLEM,
+-					   "-%c requires a chain and a policy",
+-					   cmd2char(CMD_SET_POLICY));
+-			break;
+-
+-		case 'h':
+-			if (!optarg)
+-				optarg = argv[optind];
+-
+-			/* iptables -p icmp -h */
+-			if (!cs.matches && cs.protocol)
+-				xtables_find_match(cs.protocol,
+-					XTF_TRY_LOAD, &cs.matches);
+-
+-			exit_printhelp(cs.matches);
+-
+-			/*
+-			 * Option selection
+-			 */
+-		case 'p':
+-			set_option(&cs.options, OPT_PROTOCOL, &invflags,
+-				   invert);
+-
+-			/* Canonicalize into lower case */
+-			for (cs.protocol = optarg; *cs.protocol; cs.protocol++)
+-				*cs.protocol = tolower(*cs.protocol);
+-
+-			cs.protocol = optarg;
+-			cs.fw.ip.proto = xtables_parse_protocol(cs.protocol);
+-
+-			if (cs.fw.ip.proto == 0 && (invflags & XT_INV_PROTO))
+-				xtables_error(PARAMETER_PROBLEM,
+-					   "rule would never match protocol");
+-			break;
+-
+-		case 's':
+-			set_option(&cs.options, OPT_SOURCE, &invflags, invert);
+-			shostnetworkmask = optarg;
+-			break;
+-
+-		case 'd':
+-			set_option(&cs.options, OPT_DESTINATION, &invflags,
+-				   invert);
+-			dhostnetworkmask = optarg;
+-			break;
+-
+-#ifdef IPT_F_GOTO
+-		case 'g':
+-			set_option(&cs.options, OPT_JUMP, &invflags, invert);
+-			cs.fw.ip.flags |= IPT_F_GOTO;
+-			cs.jumpto = xt_parse_target(optarg);
+-			break;
+-#endif
+-
+-		case 'j':
+-			set_option(&cs.options, OPT_JUMP, &invflags, invert);
+-			command_jump(&cs, optarg);
+-			break;
+-
+-
+-		case 'i':
+-			if (*optarg == '\0')
+-				xtables_error(PARAMETER_PROBLEM,
+-					"Empty interface is likely to be "
+-					"undesired");
+-			set_option(&cs.options, OPT_VIANAMEIN, &invflags,
+-				   invert);
+-			xtables_parse_interface(optarg,
+-					cs.fw.ip.iniface,
+-					cs.fw.ip.iniface_mask);
+-			break;
+-
+-		case 'o':
+-			if (*optarg == '\0')
+-				xtables_error(PARAMETER_PROBLEM,
+-					"Empty interface is likely to be "
+-					"undesired");
+-			set_option(&cs.options, OPT_VIANAMEOUT, &invflags,
+-				   invert);
+-			xtables_parse_interface(optarg,
+-					cs.fw.ip.outiface,
+-					cs.fw.ip.outiface_mask);
+-			break;
+-
+-		case 'f':
+-			set_option(&cs.options, OPT_FRAGMENT, &invflags,
+-				   invert);
+-			cs.fw.ip.flags |= IPT_F_FRAG;
+-			break;
+-
+-		case 'v':
+-			if (!verbose)
+-				set_option(&cs.options, OPT_VERBOSE,
+-					   &invflags, invert);
+-			verbose++;
+-			break;
+-
+-		case 'w':
+-			if (restore) {
+-				xtables_error(PARAMETER_PROBLEM,
+-					      "You cannot use `-w' from "
+-					      "iptables-restore");
+-			}
+-			wait = parse_wait_time(argc, argv);
+-			break;
  
--/* These are invalid numbers as upper layer protocol */
--static int is_exthdr(uint16_t proto)
--{
--	return (proto == IPPROTO_ROUTING ||
--		proto == IPPROTO_FRAGMENT ||
--		proto == IPPROTO_AH ||
--		proto == IPPROTO_DSTOPTS);
--}
+-		case 'W':
+-			if (restore) {
+-				xtables_error(PARAMETER_PROBLEM,
+-					      "You cannot use `-W' from "
+-					      "iptables-restore");
+-			}
+-			parse_wait_interval(argc, argv, &wait_interval);
+-			wait_interval_set = true;
+-			break;
 -
--static void nft_ipv6_proto_parse(struct iptables_command_state *cs,
--				 struct xtables_args *args)
--{
--	cs->fw6.ipv6.proto = args->proto;
--	cs->fw6.ipv6.invflags = args->invflags;
+-		case 'm':
+-			command_match(&cs, invert);
+-			break;
 -
--	if (is_exthdr(cs->fw6.ipv6.proto)
--	    && (cs->fw6.ipv6.invflags & XT_INV_PROTO) == 0)
--		fprintf(stderr,
--			"Warning: never matched protocol: %s. "
--			"use extension match instead.\n",
--			cs->protocol);
--}
+-		case 'n':
+-			set_option(&cs.options, OPT_NUMERIC, &invflags,
+-				   invert);
+-			break;
 -
--static void nft_ipv6_post_parse(int command, struct iptables_command_state *cs,
--				struct xtables_args *args)
--{
--	cs->fw6.ipv6.flags = args->flags;
--	/* We already set invflags in proto_parse, but we need to refresh it
--	 * to include new parsed options.
--	 */
--	cs->fw6.ipv6.invflags = args->invflags;
+-		case 't':
+-			if (invert)
+-				xtables_error(PARAMETER_PROBLEM,
+-					   "unexpected ! flag before --table");
+-			if (restore && table_set)
+-				xtables_error(PARAMETER_PROBLEM,
+-					      "The -t option cannot be used in %s.\n",
+-					      xt_params->program_name);
+-			*table = optarg;
+-			table_set = true;
+-			break;
 -
--	memcpy(cs->fw6.ipv6.iniface, args->iniface, IFNAMSIZ);
--	memcpy(cs->fw6.ipv6.iniface_mask,
--	       args->iniface_mask, IFNAMSIZ*sizeof(unsigned char));
+-		case 'x':
+-			set_option(&cs.options, OPT_EXPANDED, &invflags,
+-				   invert);
+-			break;
 -
--	memcpy(cs->fw6.ipv6.outiface, args->outiface, IFNAMSIZ);
--	memcpy(cs->fw6.ipv6.outiface_mask,
--	       args->outiface_mask, IFNAMSIZ*sizeof(unsigned char));
+-		case 'V':
+-			if (invert)
+-				printf("Not %s ;-)\n", prog_vers);
+-			else
+-				printf("%s v%s\n",
+-				       prog_name, prog_vers);
+-			exit(0);
 -
--	if (args->goto_set)
--		cs->fw6.ipv6.flags |= IP6T_F_GOTO;
+-		case '0':
+-			set_option(&cs.options, OPT_LINENUMBERS, &invflags,
+-				   invert);
+-			break;
 -
--	cs->fw6.counters.pcnt = args->pcnt_cnt;
--	cs->fw6.counters.bcnt = args->bcnt_cnt;
+-		case 'M':
+-			xtables_modprobe_program = optarg;
+-			break;
 -
--	if (command & (CMD_REPLACE | CMD_INSERT |
--			CMD_DELETE | CMD_APPEND | CMD_CHECK)) {
--		if (!(cs->options & OPT_DESTINATION))
--			args->dhostnetworkmask = "::0/0";
--		if (!(cs->options & OPT_SOURCE))
--			args->shostnetworkmask = "::0/0";
+-		case 'c':
+-
+-			set_option(&cs.options, OPT_COUNTERS, &invflags,
+-				   invert);
+-			pcnt = optarg;
+-			bcnt = strchr(pcnt + 1, ',');
+-			if (bcnt)
+-			    bcnt++;
+-			if (!bcnt && xs_has_arg(argc, argv))
+-				bcnt = argv[optind++];
+-			if (!bcnt)
+-				xtables_error(PARAMETER_PROBLEM,
+-					"-%c requires packet and byte counter",
+-					opt2char(OPT_COUNTERS));
+-
+-			if (sscanf(pcnt, "%llu", &cnt) != 1)
+-				xtables_error(PARAMETER_PROBLEM,
+-					"-%c packet counter not numeric",
+-					opt2char(OPT_COUNTERS));
+-			cs.fw.counters.pcnt = cnt;
+-
+-			if (sscanf(bcnt, "%llu", &cnt) != 1)
+-				xtables_error(PARAMETER_PROBLEM,
+-					"-%c byte counter not numeric",
+-					opt2char(OPT_COUNTERS));
+-			cs.fw.counters.bcnt = cnt;
+-			break;
+-
+-		case '4':
+-			/* This is indeed the IPv4 iptables */
+-			break;
+-
+-		case '6':
+-			/* This is not the IPv6 ip6tables */
+-			if (line != -1)
+-				return 1; /* success: line ignored */
+-			fprintf(stderr, "This is the IPv4 version of iptables.\n");
+-			exit_tryhelp(2, line);
+-
+-		case 1: /* non option */
+-			if (optarg[0] == '!' && optarg[1] == '\0') {
+-				if (invert)
+-					xtables_error(PARAMETER_PROBLEM,
+-						   "multiple consecutive ! not"
+-						   " allowed");
+-				invert = true;
+-				optarg[0] = '\0';
+-				continue;
+-			}
+-			fprintf(stderr, "Bad argument `%s'\n", optarg);
+-			exit_tryhelp(2, line);
+-
+-		default:
+-			if (command_default(&cs, &iptables_globals, invert))
+-				/* cf. ip6tables.c */
+-				continue;
+-			break;
+-		}
+-		invert = false;
 -	}
 -
--	if (args->shostnetworkmask)
--		xtables_ip6parse_multiple(args->shostnetworkmask,
--					  &args->s.addr.v6,
--					  &args->s.mask.v6,
--					  &args->s.naddrs);
--	if (args->dhostnetworkmask)
--		xtables_ip6parse_multiple(args->dhostnetworkmask,
--					  &args->d.addr.v6,
--					  &args->d.mask.v6,
--					  &args->d.naddrs);
--
--	if ((args->s.naddrs > 1 || args->d.naddrs > 1) &&
--	    (cs->fw6.ipv6.invflags & (IP6T_INV_SRCIP | IP6T_INV_DSTIP)))
+-	if (!wait && wait_interval_set)
 -		xtables_error(PARAMETER_PROBLEM,
--			      "! not allowed with multiple"
--			      " source or destination IP addresses");
--}
+-			      "--wait-interval only makes sense with --wait\n");
 -
- static void xlate_ipv6_addr(const char *selector, const struct in6_addr *addr,
- 			    const struct in6_addr *mask,
- 			    int invert, struct xt_xlate *xl)
-@@ -495,8 +423,8 @@ struct nft_family_ops nft_family_ops_ipv6 = {
- 	.print_rule		= nft_ipv6_print_rule,
- 	.save_rule		= nft_ipv6_save_rule,
- 	.save_chain		= nft_ipv46_save_chain,
--	.proto_parse		= nft_ipv6_proto_parse,
--	.post_parse		= nft_ipv6_post_parse,
-+	.proto_parse		= ipv6_proto_parse,
-+	.post_parse		= ipv6_post_parse,
- 	.parse_target		= nft_ipv46_parse_target,
- 	.rule_to_cs		= nft_rule_to_iptables_command_state,
- 	.clear_cs		= nft_clear_iptables_command_state,
+-	if (strcmp(*table, "nat") == 0 &&
+-	    ((policy != NULL && strcmp(policy, "DROP") == 0) ||
+-	    (cs.jumpto != NULL && strcmp(cs.jumpto, "DROP") == 0)))
+-		xtables_error(PARAMETER_PROBLEM,
+-			"\nThe \"nat\" table is not intended for filtering, "
+-		        "the use of DROP is therefore inhibited.\n\n");
+-
+-	for (matchp = cs.matches; matchp; matchp = matchp->next)
+-		xtables_option_mfcall(matchp->match);
+-	if (cs.target != NULL)
+-		xtables_option_tfcall(cs.target);
+-
+-	/* Fix me: must put inverse options checking here --MN */
+-
+-	if (optind < argc)
+-		xtables_error(PARAMETER_PROBLEM,
+-			   "unknown arguments found on commandline");
+-	if (!command)
+-		xtables_error(PARAMETER_PROBLEM, "no command specified");
+-	if (invert)
+-		xtables_error(PARAMETER_PROBLEM,
+-			   "nothing appropriate following !");
+-
+-	cs.fw.ip.invflags = invflags;
+-
+-	if (command & (CMD_REPLACE | CMD_INSERT | CMD_DELETE | CMD_APPEND | CMD_CHECK)) {
+-		if (!(cs.options & OPT_DESTINATION))
+-			dhostnetworkmask = "0.0.0.0/0";
+-		if (!(cs.options & OPT_SOURCE))
+-			shostnetworkmask = "0.0.0.0/0";
+-	}
+-
+-	if (shostnetworkmask)
+-		xtables_ipparse_multiple(shostnetworkmask, &saddrs,
+-					 &smasks, &nsaddrs);
+-
+-	if (dhostnetworkmask)
+-		xtables_ipparse_multiple(dhostnetworkmask, &daddrs,
+-					 &dmasks, &ndaddrs);
+-
+-	if ((nsaddrs > 1 || ndaddrs > 1) &&
+-	    (cs.fw.ip.invflags & (IPT_INV_SRCIP | IPT_INV_DSTIP)))
+-		xtables_error(PARAMETER_PROBLEM, "! not allowed with multiple"
+-			   " source or destination IP addresses");
+-
+-	if (command == CMD_REPLACE && (nsaddrs != 1 || ndaddrs != 1))
+-		xtables_error(PARAMETER_PROBLEM, "Replacement rule does not "
+-			   "specify a unique address");
+-
+-	generic_opt_check(command, cs.options);
++	do_parse(argc, argv, &p, &cs, &args);
++
++	command		= p.command;
++	chain		= p.chain;
++	*table		= p.table;
++	rulenum		= p.rulenum;
++	policy		= p.policy;
++	newname		= p.newname;
++	verbose		= p.verbose;
++	wait		= args.wait;
++	wait_interval	= args.wait_interval;
++	nsaddrs		= args.s.naddrs;
++	ndaddrs		= args.d.naddrs;
++	saddrs		= args.s.addr.v4;
++	daddrs		= args.d.addr.v4;
++	smasks		= args.s.mask.v4;
++	dmasks		= args.d.mask.v4;
+ 
+ 	/* Attempt to acquire the xtables lock */
+ 	if (!restore)
+@@ -1160,26 +759,6 @@ int do_command4(int argc, char *argv[], char **table,
+ 	    || command == CMD_CHECK
+ 	    || command == CMD_INSERT
+ 	    || command == CMD_REPLACE) {
+-		if (strcmp(chain, "PREROUTING") == 0
+-		    || strcmp(chain, "INPUT") == 0) {
+-			/* -o not valid with incoming packets. */
+-			if (cs.options & OPT_VIANAMEOUT)
+-				xtables_error(PARAMETER_PROBLEM,
+-					   "Can't use -%c with %s\n",
+-					   opt2char(OPT_VIANAMEOUT),
+-					   chain);
+-		}
+-
+-		if (strcmp(chain, "POSTROUTING") == 0
+-		    || strcmp(chain, "OUTPUT") == 0) {
+-			/* -i not valid with outgoing packets */
+-			if (cs.options & OPT_VIANAMEIN)
+-				xtables_error(PARAMETER_PROBLEM,
+-					   "Can't use -%c with %s\n",
+-					   opt2char(OPT_VIANAMEIN),
+-					   chain);
+-		}
+-
+ 		if (cs.target && iptc_is_chain(cs.jumpto, *handle)) {
+ 			fprintf(stderr,
+ 				"Warning: using chain %s, not extension\n",
+@@ -1317,6 +896,9 @@ int do_command4(int argc, char *argv[], char **table,
+ 	case CMD_SET_POLICY:
+ 		ret = iptc_set_policy(chain, policy, cs.options&OPT_COUNTERS ? &cs.fw.counters : NULL, *handle);
+ 		break;
++	case CMD_NONE:
++	/* do_parse ignored the line (eg: -4 with ip6tables-restore) */
++		break;
+ 	default:
+ 		/* We should never reach this... */
+ 		exit_tryhelp(2, line);
 diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 021402ea6165e..1993c89541527 100644
+index 1993c89541527..1bce6715c3a9a 100644
 --- a/iptables/xshared.c
 +++ b/iptables/xshared.c
-@@ -1813,3 +1813,129 @@ void do_parse(int argc, char *argv[],
- 		}
- 	}
- }
-+
-+void ipv4_proto_parse(struct iptables_command_state *cs,
-+		      struct xtables_args *args)
-+{
-+	cs->fw.ip.proto = args->proto;
-+	cs->fw.ip.invflags = args->invflags;
-+}
-+
-+/* These are invalid numbers as upper layer protocol */
-+static int is_exthdr(uint16_t proto)
-+{
-+	return (proto == IPPROTO_ROUTING ||
-+		proto == IPPROTO_FRAGMENT ||
-+		proto == IPPROTO_AH ||
-+		proto == IPPROTO_DSTOPTS);
-+}
-+
-+void ipv6_proto_parse(struct iptables_command_state *cs,
-+		      struct xtables_args *args)
-+{
-+	cs->fw6.ipv6.proto = args->proto;
-+	cs->fw6.ipv6.invflags = args->invflags;
-+
-+	if (is_exthdr(cs->fw6.ipv6.proto)
-+	    && (cs->fw6.ipv6.invflags & XT_INV_PROTO) == 0)
-+		fprintf(stderr,
-+			"Warning: never matched protocol: %s. "
-+			"use extension match instead.\n",
-+			cs->protocol);
-+}
-+
-+void ipv4_post_parse(int command, struct iptables_command_state *cs,
-+		     struct xtables_args *args)
-+{
-+	cs->fw.ip.flags = args->flags;
-+	/* We already set invflags in proto_parse, but we need to refresh it
-+	 * to include new parsed options.
-+	 */
-+	cs->fw.ip.invflags = args->invflags;
-+
-+	memcpy(cs->fw.ip.iniface, args->iniface, IFNAMSIZ);
-+	memcpy(cs->fw.ip.iniface_mask,
-+	       args->iniface_mask, IFNAMSIZ*sizeof(unsigned char));
-+
-+	memcpy(cs->fw.ip.outiface, args->outiface, IFNAMSIZ);
-+	memcpy(cs->fw.ip.outiface_mask,
-+	       args->outiface_mask, IFNAMSIZ*sizeof(unsigned char));
-+
-+	if (args->goto_set)
-+		cs->fw.ip.flags |= IPT_F_GOTO;
-+
-+	cs->counters.pcnt = args->pcnt_cnt;
-+	cs->counters.bcnt = args->bcnt_cnt;
-+
-+	if (command & (CMD_REPLACE | CMD_INSERT |
-+			CMD_DELETE | CMD_APPEND | CMD_CHECK)) {
-+		if (!(cs->options & OPT_DESTINATION))
-+			args->dhostnetworkmask = "0.0.0.0/0";
-+		if (!(cs->options & OPT_SOURCE))
-+			args->shostnetworkmask = "0.0.0.0/0";
-+	}
-+
-+	if (args->shostnetworkmask)
-+		xtables_ipparse_multiple(args->shostnetworkmask,
-+					 &args->s.addr.v4, &args->s.mask.v4,
-+					 &args->s.naddrs);
-+	if (args->dhostnetworkmask)
-+		xtables_ipparse_multiple(args->dhostnetworkmask,
-+					 &args->d.addr.v4, &args->d.mask.v4,
-+					 &args->d.naddrs);
-+
-+	if ((args->s.naddrs > 1 || args->d.naddrs > 1) &&
-+	    (cs->fw.ip.invflags & (IPT_INV_SRCIP | IPT_INV_DSTIP)))
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "! not allowed with multiple"
-+			      " source or destination IP addresses");
-+}
-+
-+void ipv6_post_parse(int command, struct iptables_command_state *cs,
-+		     struct xtables_args *args)
-+{
-+	cs->fw6.ipv6.flags = args->flags;
-+	/* We already set invflags in proto_parse, but we need to refresh it
-+	 * to include new parsed options.
-+	 */
-+	cs->fw6.ipv6.invflags = args->invflags;
-+
-+	memcpy(cs->fw6.ipv6.iniface, args->iniface, IFNAMSIZ);
-+	memcpy(cs->fw6.ipv6.iniface_mask,
-+	       args->iniface_mask, IFNAMSIZ*sizeof(unsigned char));
-+
-+	memcpy(cs->fw6.ipv6.outiface, args->outiface, IFNAMSIZ);
-+	memcpy(cs->fw6.ipv6.outiface_mask,
-+	       args->outiface_mask, IFNAMSIZ*sizeof(unsigned char));
-+
-+	if (args->goto_set)
-+		cs->fw6.ipv6.flags |= IP6T_F_GOTO;
-+
-+	cs->fw6.counters.pcnt = args->pcnt_cnt;
-+	cs->fw6.counters.bcnt = args->bcnt_cnt;
-+
-+	if (command & (CMD_REPLACE | CMD_INSERT |
-+			CMD_DELETE | CMD_APPEND | CMD_CHECK)) {
-+		if (!(cs->options & OPT_DESTINATION))
-+			args->dhostnetworkmask = "::0/0";
-+		if (!(cs->options & OPT_SOURCE))
-+			args->shostnetworkmask = "::0/0";
-+	}
-+
-+	if (args->shostnetworkmask)
-+		xtables_ip6parse_multiple(args->shostnetworkmask,
-+					  &args->s.addr.v6,
-+					  &args->s.mask.v6,
-+					  &args->s.naddrs);
-+	if (args->dhostnetworkmask)
-+		xtables_ip6parse_multiple(args->dhostnetworkmask,
-+					  &args->d.addr.v6,
-+					  &args->d.mask.v6,
-+					  &args->d.naddrs);
-+
-+	if ((args->s.naddrs > 1 || args->d.naddrs > 1) &&
-+	    (cs->fw6.ipv6.invflags & (IP6T_INV_SRCIP | IP6T_INV_DSTIP)))
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "! not allowed with multiple"
-+			      " source or destination IP addresses");
-+}
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 6ac1330537731..296b3510226f3 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -319,4 +319,13 @@ void do_parse(int argc, char *argv[],
- 	      struct xt_cmd_parse *p, struct iptables_command_state *cs,
- 	      struct xtables_args *args);
+@@ -1864,8 +1864,11 @@ void ipv4_post_parse(int command, struct iptables_command_state *cs,
+ 	if (args->goto_set)
+ 		cs->fw.ip.flags |= IPT_F_GOTO;
  
-+void ipv4_proto_parse(struct iptables_command_state *cs,
-+		      struct xtables_args *args);
-+void ipv6_proto_parse(struct iptables_command_state *cs,
-+		      struct xtables_args *args);
-+void ipv4_post_parse(int command, struct iptables_command_state *cs,
-+		     struct xtables_args *args);
-+void ipv6_post_parse(int command, struct iptables_command_state *cs,
-+		     struct xtables_args *args);
-+
- #endif /* IPTABLES_XSHARED_H */
++	/* nft-variants use cs->counters, legacy uses cs->fw.counters */
+ 	cs->counters.pcnt = args->pcnt_cnt;
+ 	cs->counters.bcnt = args->bcnt_cnt;
++	cs->fw.counters.pcnt = args->pcnt_cnt;
++	cs->fw.counters.bcnt = args->bcnt_cnt;
+ 
+ 	if (command & (CMD_REPLACE | CMD_INSERT |
+ 			CMD_DELETE | CMD_APPEND | CMD_CHECK)) {
 -- 
 2.34.1
 
