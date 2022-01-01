@@ -2,131 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A814B48272C
-	for <lists+netfilter-devel@lfdr.de>; Sat,  1 Jan 2022 11:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 024A7482755
+	for <lists+netfilter-devel@lfdr.de>; Sat,  1 Jan 2022 11:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbiAAKEk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 1 Jan 2022 05:04:40 -0500
-Received: from mga07.intel.com ([134.134.136.100]:26025 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229624AbiAAKEk (ORCPT <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 1 Jan 2022 05:04:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1641031480; x=1672567480;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yNHXNBtjjqAVJb76i919G1PmmPUXGG2WzOs+akbi2go=;
-  b=MB/KEo3ruOOg9T/+O1GL5zPdZx2sOrkv91O/N/2N8GONq34fO16mNRxf
-   5/MH5SFqGeCcuWW9CorUudkScOZuBcyNpIS+gmBsq4mMbfLF41mGUOujT
-   ZOzpyCWoLWJGGNq/yVqTN/taKsYSgNSysvRXoSxJTzXS9jFeiCJOe6aD7
-   ULBKUurk4wucOb6INb94ABJBAqu8M5p2Lz1HmrjwwlypGh29FKINKtQrP
-   OP58scqS9p2QsniGhXqDy+zaGGsTS9T3diPFbjEYxyHcjCcgcqwZ2zj7k
-   x1ZCGrrTim2JVcJ7uCcd0uVn33WMS26CzZJwrgWXUbfy/12gjwqxNUdeM
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10214"; a="305242521"
-X-IronPort-AV: E=Sophos;i="5.88,253,1635231600"; 
-   d="scan'208";a="305242521"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2022 02:04:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,253,1635231600"; 
-   d="scan'208";a="471136875"
-Received: from lkp-server01.sh.intel.com (HELO e357b3ef1427) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 01 Jan 2022 02:04:36 -0800
-Received: from kbuild by e357b3ef1427 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1n3bFb-000CL2-QD; Sat, 01 Jan 2022 10:04:35 +0000
-Date:   Sat, 1 Jan 2022 18:03:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH bpf-next v5 1/9] kernel: Add kallsyms_on_each_symbol
- variant for single module
-Message-ID: <202201011858.vOPCCeDV-lkp@intel.com>
-References: <20211230023705.3860970-2-memxor@gmail.com>
+        id S232257AbiAAKln (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 1 Jan 2022 05:41:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229624AbiAAKlm (ORCPT
+        <rfc822;netfilter-devel@vger.kernel.org>);
+        Sat, 1 Jan 2022 05:41:42 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A83CC061574;
+        Sat,  1 Jan 2022 02:41:42 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id l10-20020a17090a384a00b001b22190e075so27540488pjf.3;
+        Sat, 01 Jan 2022 02:41:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=dhFaFNGf9P/hgzfpigNOAcNefTeR7Csml9+Bh/hdy/w=;
+        b=Yt8vNYQAAK95dzSgvlKhcBmDDOtr4TluB8u8Suf0cAfKFGkIFSrcywDheRENkVtl1C
+         feMPrIST4BkRD3M3Jh+ivCTkwkvZntvSGK1nMHzccNJmEndN/X+4a+mCOlDMW/4mHlKP
+         gM50SyXCIbcfIaNgZseMM2vWVa/2VzSrJoKPKe3MoXX7qfu96Li1k5VwL8Q9ZPGWgAFp
+         1cPlXKOdKRpe1x0f6+eO00pvr2vgAWQ7g512jLwvrA1CGa2EeexywA7L6sSa7x03I2sD
+         CoDYQUQafVCG0qGsPQB6182eNNufA3EqbDckSaVEnDKCGtN2DOMAOtEWmafJ3RPe95u/
+         eIDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=dhFaFNGf9P/hgzfpigNOAcNefTeR7Csml9+Bh/hdy/w=;
+        b=MAn0Hev2ZxWTGLkY/7VmOePZOOOGPTHhnEFMWgudZ/8FAtWH5fK43mNHcLY0zK55NS
+         WY1/XX7Dd9G50zMZkIFp8kgZFp9JZfpWt/bh9Iw/9ntJIMIiwOSgDRzsatS8sa1eOGKC
+         iJe5J98euFVz+vQ4GIIYpP8LFsC5aAgxCK6t6+H5pRTu4LoPBzcLjPvqeCavKX8Pvc+w
+         ieNXvd0d2MN+adtlhwlc0ywW+pMg4t/5xEfwI+EsOeaZ9s0p96xIsBOoTRoM2xOzXANf
+         4vXe+FqhPHo9RFfIYNtXcp18J8kfhSACB2oDvYioOtoOJDYve71SBOsWMGCTg8jfNVT2
+         /SeA==
+X-Gm-Message-State: AOAM533VycrdEyouDl3AUbtshtwaQGQqbbLB9SdWWIR/TpbEnBGjenbM
+        lZ5jgL2TZZ2HYcP+hA32BIc=
+X-Google-Smtp-Source: ABdhPJwKFj6Gf9cfMCCy9natrauGoSUadaQ0dhQMb5jpbldxd0YnaG1stPeSGzsI8XGvIIK3waH7NA==
+X-Received: by 2002:a17:903:124f:b0:149:a740:d8bc with SMTP id u15-20020a170903124f00b00149a740d8bcmr9393324plh.79.1641033702226;
+        Sat, 01 Jan 2022 02:41:42 -0800 (PST)
+Received: from [192.168.0.153] ([143.244.48.136])
+        by smtp.gmail.com with ESMTPSA id m13sm27022455pgt.22.2022.01.01.02.41.34
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Sat, 01 Jan 2022 02:41:42 -0800 (PST)
+Message-ID: <61d02fe6.1c69fb81.1bc40.c0ed@mx.google.com>
+From:   hyaibe56@gmail.com
+X-Google-Original-From: suport.prilend@gmail.com
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211230023705.3860970-2-memxor@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: RE:
+To:     Recipients <suport.prilend@gmail.com>
+Date:   Sat, 01 Jan 2022 12:41:17 +0200
+Reply-To: andres.stemmet1@gmail.com
+X-Mailer: TurboMailer 2
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Kumar,
+I want to confide in you to finalize this transaction of mutual benefits. I=
+t may seem strange to you, but it is real. This is a transaction that has n=
+o risk at all, due process shall be followed and it shall be carried out un=
+der the ambit of the financial laws. Being the Chief Financial Officer, BP =
+Plc. I want to trust and put in your care Eighteen Million British Pounds S=
+terling, The funds were acquired from an over-invoiced payment from a past =
+contract executed in one of my departments. I can't successfully achieve th=
+is transaction without presenting you as foreign contractor who will provid=
+e a bank account to receive the funds.
 
-Thank you for the patch! Perhaps something to improve:
+Documentation for the claim of the funds will be legally processed and docu=
+mented, so I will need your full cooperation on this matter for our mutual =
+benefits. We will discuss details if you are interested to work with me to =
+secure this funds. I will appreciate your prompt response in every bit of o=
+ur communication. Stay Blessed and Stay Safe.
 
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/0day-ci/linux/commits/Kumar-Kartikeya-Dwivedi/Introduce-unstable-CT-lookup-helpers/20211230-103958
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: ia64-randconfig-s031-20211230 (https://download.01.org/0day-ci/archive/20220101/202201011858.vOPCCeDV-lkp@intel.com/config)
-compiler: ia64-linux-gcc (GCC) 11.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://github.com/0day-ci/linux/commit/25d6b438335605e4e002f7afde50a3eaf17a0b6c
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Kumar-Kartikeya-Dwivedi/Introduce-unstable-CT-lookup-helpers/20211230-103958
-        git checkout 25d6b438335605e4e002f7afde50a3eaf17a0b6c
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=ia64 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Best Regards
 
 
-sparse warnings: (new ones prefixed by >>)
-   kernel/module.c:2762:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct mod_kallsyms [noderef] __rcu *kallsyms @@     got void * @@
-   kernel/module.c:2762:23: sparse:     expected struct mod_kallsyms [noderef] __rcu *kallsyms
-   kernel/module.c:2762:23: sparse:     got void *
->> kernel/module.c:4510:18: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct mod_kallsyms *kallsyms @@     got struct mod_kallsyms [noderef] __rcu *kallsyms @@
-   kernel/module.c:4510:18: sparse:     expected struct mod_kallsyms *kallsyms
-   kernel/module.c:4510:18: sparse:     got struct mod_kallsyms [noderef] __rcu *kallsyms
-   kernel/module.c:2764:12: sparse: sparse: dereference of noderef expression
-   kernel/module.c:2765:12: sparse: sparse: dereference of noderef expression
-   kernel/module.c:2767:12: sparse: sparse: dereference of noderef expression
-   kernel/module.c:2768:12: sparse: sparse: dereference of noderef expression
-   kernel/module.c:2777:18: sparse: sparse: dereference of noderef expression
-   kernel/module.c:2778:35: sparse: sparse: dereference of noderef expression
-   kernel/module.c:2779:20: sparse: sparse: dereference of noderef expression
-   kernel/module.c:2784:32: sparse: sparse: dereference of noderef expression
-   kernel/module.c:2787:45: sparse: sparse: dereference of noderef expression
+Tel: +44 7537 185910
+Andres  Stemmet
+Email: andres.stemmet1@gmail.com  =
 
-vim +4510 kernel/module.c
+Chief financial officer
+BP Petroleum p.l.c.
 
-  4499	
-  4500	int module_kallsyms_on_each_symbol(struct module *mod,
-  4501					   int (*fn)(void *, const char *,
-  4502						     struct module *, unsigned long),
-  4503					   void *data)
-  4504	{
-  4505		struct mod_kallsyms *kallsyms;
-  4506		int ret = 0;
-  4507	
-  4508		mutex_lock(&module_mutex);
-  4509		/* We hold module_mutex: no need for rcu_dereference_sched */
-> 4510		kallsyms = mod->kallsyms;
-  4511		if (mod->state != MODULE_STATE_UNFORMED)
-  4512			ret = __module_kallsyms_on_each_symbol(kallsyms, mod, fn, data);
-  4513		mutex_unlock(&module_mutex);
-  4514	
-  4515		return ret;
-  4516	}
-  4517	
+                                                                           =
+                        Copyright =A9 1996-2021
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
