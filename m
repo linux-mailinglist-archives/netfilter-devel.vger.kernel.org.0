@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B409F486BA7
-	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Jan 2022 22:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5EF486BA8
+	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Jan 2022 22:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244098AbiAFVKK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S244106AbiAFVKK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Thu, 6 Jan 2022 16:10:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244106AbiAFVKI (ORCPT
+        with ESMTP id S244117AbiAFVKI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Thu, 6 Jan 2022 16:10:08 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19139C06118C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8C2C061245
         for <netfilter-devel@vger.kernel.org>; Thu,  6 Jan 2022 13:10:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=XZ+pb5JvRWX33ZPuycOfL/TpTWmQOHbEXluTnGpvE6Y=; b=biErvRXL9/7CkPgC1qY23lE2IV
-        HpkvjAPLKrdXkSS+EfZgRwSEIjxzi/We1+lswryX/l6dGluxg5M2ShyQykr+TOVnLvRWhKOXQoyrC
-        0hd9olsbEvW+V4ZGUEN7j7HRDoRveLOF93BpFosi873hTCNd+9vkXwppNmMgpUb/aRiQlwmIyNf0q
-        qUAYXtg90kwtQ+GF6f8XQvtvFGHYgEgq+aiRXLeAIL/HhU85RN/JqPyZyjTQmZVasfkTwfGNAcJ/S
-        Wb80Mi/aceIWJw6mEHFC7+ZUK8daJZIfRaMZhp0xPcH7N7BBU/Yj/HrR5MdmHGva7SFRVjfcRNFnq
-        8EmD1vkQ==;
+        bh=Km3TOzF07pZkfzf/onNGHKWzM4QfXqQbDIBWVG9UJkg=; b=YY5ZJr+Uex3+ElLcGZPn27WHgt
+        XsZy02MAPM2JScnEOFfYCMr2H058uGG8mGWdNmOlJvHHZ7XkuEwwg6hcMrhEA3klwcdin3cuW19FP
+        wPnzHQx0iL2P5Jz/A26n2eTE/YPl66i16tmCtk/8TR1M7EIqB95llYma1ZxCJP7Mn/Px9McCfJEeg
+        tSHt6yZKd2t3GR1WII05kaXG+RLzYcrXqK7Z3cOXGIWzUu5+RHN4+uYd5D5HFCn9URaXYZ7zqICS2
+        TDFphiv4jLbNEQizRrMcFYMMBLgPAaPagy3raP3QXw0xVoseLXYadm/GlT9OKBrIbhmz1kSu6iQhm
+        8zeuJwrA==;
 Received: from ulthar.dreamlands ([192.168.96.2] helo=ulthar.dreamlands.azazel.net)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1n5a1O-00H0N6-E0
+        id 1n5a1O-00H0N6-J6
         for netfilter-devel@vger.kernel.org; Thu, 06 Jan 2022 21:10:06 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 06/10] build: if `--enable-dbi` is `yes` abort if DBI is not found
-Date:   Thu,  6 Jan 2022 21:09:33 +0000
-Message-Id: <20220106210937.1676554-7-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 07/10] build: if `--enable-mysql` is `yes` abort if MySQL is not found
+Date:   Thu,  6 Jan 2022 21:09:34 +0000
+Message-Id: <20220106210937.1676554-8-jeremy@azazel.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220106210937.1676554-1-jeremy@azazel.net>
 References: <20220106210937.1676554-1-jeremy@azazel.net>
@@ -49,34 +49,31 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If DBI support has been explicitly requested, abort if it is not
+If MySQL support has been explicitly requested, abort if it is not
 available.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- configure.ac | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ configure.ac | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/configure.ac b/configure.ac
-index df6fa543e81f..b6b44de888ec 100644
+index b6b44de888ec..67f489c22433 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -171,8 +171,13 @@ AM_CONDITIONAL([HAVE_SQLITE3], [test "x$libsqlite3_LIBS" != "x"])
+@@ -156,6 +156,12 @@ AS_IF([test "x$enable_mysql" != "xno"], [
  
- AC_ARG_ENABLE([dbi],
-               [AS_HELP_STRING([--enable-dbi], [Enable DBI output plugin [default=test]])])
--AS_IF([test "x$enable_dbi" != "xno"],
--      [PKG_CHECK_MODULES([libdbi], [dbi], [], [:])])
-+AS_IF([test "x$enable_dbi" != "xno"], [
-+  PKG_CHECK_MODULES([libdbi], [dbi], [], [
-+    AS_IF([test "x$enable_dbi" = "xyes"], [
-+      AC_MSG_ERROR([$libdbi_PKG_ERRORS])
+     ])
+ 
++    AS_IF([test "x$libmysqlclient_LIBS" = "x"], [
++      AS_IF([test "x$enable_mysql" = "xyes"], [
++        AC_MSG_ERROR([libmysqlclient not found])
++      ])
 +    ])
-+  ])
-+])
- AS_IF([test "x$libdbi_LIBS" != "x"], [enable_dbi=yes], [enable_dbi=no])
- AM_CONDITIONAL([HAVE_DBI], [test "x$libdbi_LIBS" != "x"])
++
+   ])
  
+ ])
 -- 
 2.34.1
 
