@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FF6486BAA
-	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Jan 2022 22:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 984F0486BB1
+	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Jan 2022 22:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244126AbiAFVKL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 6 Jan 2022 16:10:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35764 "EHLO
+        id S244140AbiAFVNR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 6 Jan 2022 16:13:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244122AbiAFVKI (ORCPT
+        with ESMTP id S244131AbiAFVNQ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 6 Jan 2022 16:10:08 -0500
+        Thu, 6 Jan 2022 16:13:16 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EAFC061212
-        for <netfilter-devel@vger.kernel.org>; Thu,  6 Jan 2022 13:10:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E7EC061245
+        for <netfilter-devel@vger.kernel.org>; Thu,  6 Jan 2022 13:13:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Oh+SauqZIdYQJd24jqpAHlTODbnzlNJwcoFW8b0W1cc=; b=lnFos5tV+rWQJsDO99Bi1545gz
-        PExA/inWuXIRFNJlUopfGrTQ9IfzzyTfCWn1kSXB3sV3axM7TS02nOkOc53dxCShL8IPqm3lH7xMa
-        m+nv6I/WmsvhvYUJ0raBsXPc6YcPAuitj+EIvB7pQNaiK5jBBVq2MRV5VNOl1pI6RDanKa6xsCDcQ
-        FNG9LYJmOemS3eM8f7z8UvTgqG9tnNL3SfUPth/LElXdpR29R76DbvKr8aXl3SwU1guXr4xHkIBRT
-        i0j0UOqbOO+Xesi0auXYtPnOuhM+LXHRKFU38d2OheBUt4Zn2aHwUawDdEKIt9/x9XlfOU7SgU7/1
-        ED2lIdGw==;
+        bh=YeaT7lPnI0JcTOrGmW5HgtySOqpyXTJUh19uufgD/AU=; b=deMyhMIvm3efXiDSzjQAklznHC
+        OBNv6gS2Iej3a6C/Deyi6Z29Vk47vJLcj44UmdonTZSM5Np+zQPK6gVd0DzJF6dWdCfjW1KxaBzIn
+        afl7fMWDnHTeKdzTInA/55DIolpx3zGsfYa932RDvmlBT3eec5r/ljcfTlSIsWKWcGNAgYRLclhLb
+        iIkbuYORuRBrtFVpDebYbF9KVsNdqiXfcNIPK3d2yzccC76z6rvvY8B1oK8UECiy9wwacJIeYk1DJ
+        +yjAohwEztCo+7F+lEgERAuNM0t1N5BB9whhOVpJd9AvFAPgoeWTVULMPV53RYQWmUK83vm6vUQ2P
+        hA9goT2w==;
 Received: from ulthar.dreamlands ([192.168.96.2] helo=ulthar.dreamlands.azazel.net)
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1n5a1O-00H0N6-Pr
+        id 1n5a1O-00H0N6-Sq
         for netfilter-devel@vger.kernel.org; Thu, 06 Jan 2022 21:10:06 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [ulogd2 PATCH 09/10] build: if `--enable-pgsql` is `yes` abort if libpq is not found
-Date:   Thu,  6 Jan 2022 21:09:36 +0000
-Message-Id: <20220106210937.1676554-10-jeremy@azazel.net>
+Subject: [ulogd2 PATCH 10/10] build: if `--enable-sqlite3` is `yes` abort if libsqlite3 is not found
+Date:   Thu,  6 Jan 2022 21:09:37 +0000
+Message-Id: <20220106210937.1676554-11-jeremy@azazel.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220106210937.1676554-1-jeremy@azazel.net>
 References: <20220106210937.1676554-1-jeremy@azazel.net>
@@ -49,31 +49,34 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If PostgreSQL support has been explicitly requested, abort if it is not
+If SQLITE3 support has been explicitly requested, abort if it is not
 available.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- configure.ac | 6 ++++++
- 1 file changed, 6 insertions(+)
+ configure.ac | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 4d65d234be69..fd033164b872 100644
+index fd033164b872..1469f0f253d7 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -104,6 +104,12 @@ AS_IF([test "x$enable_pgsql" != "xno"], [
-       AC_MSG_RESULT([no])
-     ])
+@@ -176,8 +176,13 @@ AM_CONDITIONAL([HAVE_MYSQL], [test "x$libmysqlclient_LIBS" != "x"])
  
-+    AS_IF([test "x$libpq_LIBS" = "x"], [
-+      AS_IF([test "x$enable_pgsql" = "xyes"], [
-+        AC_MSG_ERROR([libpq not found])
-+      ])
+ AC_ARG_ENABLE([sqlite3],
+               [AS_HELP_STRING([--enable-sqlite3], [Enable SQLITE3 output plugin [default=test]])])
+-AS_IF([test "x$enable_sqlite3" != "xno"],
+-      [PKG_CHECK_MODULES([libsqlite3], [sqlite3], [], [:])])
++AS_IF([test "x$enable_sqlite3" != "xno"], [
++  PKG_CHECK_MODULES([libsqlite3], [sqlite3], [], [
++    AS_IF([test "x$enable_sqlite3" = "xyes"], [
++      AC_MSG_ERROR([$libsqlite3_PKG_ERRORS])
 +    ])
-+
-   ])
++  ])
++])
+ AS_IF([test "x$libsqlite3_LIBS" != "x"], [enable_sqlite3=yes], [enable_sqlite3=no])
+ AM_CONDITIONAL([HAVE_SQLITE3], [test "x$libsqlite3_LIBS" != "x"])
  
- ])
 -- 
 2.34.1
 
