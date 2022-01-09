@@ -2,37 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E01488A7E
-	for <lists+netfilter-devel@lfdr.de>; Sun,  9 Jan 2022 17:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66769488CD8
+	for <lists+netfilter-devel@lfdr.de>; Sun,  9 Jan 2022 23:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234744AbiAIQWZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 9 Jan 2022 11:22:25 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:41540 "EHLO
+        id S237286AbiAIWbf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 9 Jan 2022 17:31:35 -0500
+Received: from mail.netfilter.org ([217.70.188.207]:41964 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234018AbiAIQWZ (ORCPT
+        with ESMTP id S237278AbiAIWbf (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 9 Jan 2022 11:22:25 -0500
+        Sun, 9 Jan 2022 17:31:35 -0500
 Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 69B62607C1;
-        Sun,  9 Jan 2022 17:19:34 +0100 (CET)
-Date:   Sun, 9 Jan 2022 17:22:19 +0100
+        by mail.netfilter.org (Postfix) with ESMTPSA id 42ECB62BD8;
+        Sun,  9 Jan 2022 23:28:44 +0100 (CET)
+Date:   Sun, 9 Jan 2022 23:31:29 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Aaron Thompson <dev@aaront.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [conntrack-tools PATCH] conntrackd: cthelper: ssdp: Fix parsing
- of IPv6 M-SEARCH requests.
-Message-ID: <YdsLu/KbgJ6ZfJhO@salvia>
-References: <0101017e389aaaf3-3e2018c8-b439-403f-ba4c-0900581f733c-000000@us-west-2.amazonses.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
+        kuba@kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH] netfilter: conntrack: Use max() instead of doing it
+ manually
+Message-ID: <YdtiQdssBCOwAxyX@salvia>
+References: <20211225171241.119887-1-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0101017e389aaaf3-3e2018c8-b439-403f-ba4c-0900581f733c-000000@us-west-2.amazonses.com>
+In-Reply-To: <20211225171241.119887-1-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sat, Jan 08, 2022 at 07:32:47AM +0000, Aaron Thompson wrote:
-> Use the already correctly determined transport header offset instead of
-> assuming that the packet is IPv4.
+On Sun, Dec 26, 2021 at 01:12:41AM +0800, Jiapeng Chong wrote:
+> Fix following coccicheck warning:
+> 
+> ./include/net/netfilter/nf_conntrack.h:282:16-17: WARNING opportunity
+> for max().
 
-Applied, thanks
+Applied to nf-next.
