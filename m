@@ -2,121 +2,37 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F36488A75
-	for <lists+netfilter-devel@lfdr.de>; Sun,  9 Jan 2022 17:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E01488A7E
+	for <lists+netfilter-devel@lfdr.de>; Sun,  9 Jan 2022 17:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235991AbiAIQLi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 9 Jan 2022 11:11:38 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:41390 "EHLO
+        id S234744AbiAIQWZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 9 Jan 2022 11:22:25 -0500
+Received: from mail.netfilter.org ([217.70.188.207]:41540 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235992AbiAIQLg (ORCPT
+        with ESMTP id S234018AbiAIQWZ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 9 Jan 2022 11:11:36 -0500
-Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 3F50C6428E
-        for <netfilter-devel@vger.kernel.org>; Sun,  9 Jan 2022 17:08:47 +0100 (CET)
+        Sun, 9 Jan 2022 11:22:25 -0500
+Received: from netfilter.org (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 69B62607C1;
+        Sun,  9 Jan 2022 17:19:34 +0100 (CET)
+Date:   Sun, 9 Jan 2022 17:22:19 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH 14/14] netfilter: nft_meta: cancel register tracking after meta update
-Date:   Sun,  9 Jan 2022 17:11:26 +0100
-Message-Id: <20220109161126.83917-15-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220109161126.83917-1-pablo@netfilter.org>
-References: <20220109161126.83917-1-pablo@netfilter.org>
+To:     Aaron Thompson <dev@aaront.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [conntrack-tools PATCH] conntrackd: cthelper: ssdp: Fix parsing
+ of IPv6 M-SEARCH requests.
+Message-ID: <YdsLu/KbgJ6ZfJhO@salvia>
+References: <0101017e389aaaf3-3e2018c8-b439-403f-ba4c-0900581f733c-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0101017e389aaaf3-3e2018c8-b439-403f-ba4c-0900581f733c-000000@us-west-2.amazonses.com>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The meta expression might mangle the packet metadata, cancel register
-tracking since any metadata in the registers is stale.
+On Sat, Jan 08, 2022 at 07:32:47AM +0000, Aaron Thompson wrote:
+> Use the already correctly determined transport header offset instead of
+> assuming that the packet is IPv4.
 
-Finer grain register tracking cancellation by inspecting the meta type
-on the register is also possible.
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/bridge/netfilter/nft_meta_bridge.c | 20 ++++++++++++++++++++
- net/netfilter/nft_meta.c               | 20 ++++++++++++++++++++
- 2 files changed, 40 insertions(+)
-
-diff --git a/net/bridge/netfilter/nft_meta_bridge.c b/net/bridge/netfilter/nft_meta_bridge.c
-index 97805ec424c1..c1ef9cc89b78 100644
---- a/net/bridge/netfilter/nft_meta_bridge.c
-+++ b/net/bridge/netfilter/nft_meta_bridge.c
-@@ -100,6 +100,25 @@ static const struct nft_expr_ops nft_meta_bridge_get_ops = {
- 	.dump		= nft_meta_get_dump,
- };
- 
-+static bool nft_meta_bridge_set_reduce(struct nft_regs_track *track,
-+				       const struct nft_expr *expr)
-+{
-+	int i;
-+
-+	for (i = 0; i < NFT_REG32_NUM; i++) {
-+		if (!track->regs[i].selector)
-+			continue;
-+
-+		if (track->regs[i].selector->ops != &nft_meta_bridge_get_ops)
-+			continue;
-+
-+		track->regs[i].selector = NULL;
-+		track->regs[i].bitwise = NULL;
-+	}
-+
-+	return false;
-+}
-+
- static const struct nft_expr_ops nft_meta_bridge_set_ops = {
- 	.type		= &nft_meta_bridge_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_meta)),
-@@ -107,6 +126,7 @@ static const struct nft_expr_ops nft_meta_bridge_set_ops = {
- 	.init		= nft_meta_set_init,
- 	.destroy	= nft_meta_set_destroy,
- 	.dump		= nft_meta_set_dump,
-+	.reduce		= nft_meta_bridge_set_reduce,
- 	.validate	= nft_meta_set_validate,
- };
- 
-diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
-index 40fe48fcf9d0..5ab4df56c945 100644
---- a/net/netfilter/nft_meta.c
-+++ b/net/netfilter/nft_meta.c
-@@ -788,6 +788,25 @@ static const struct nft_expr_ops nft_meta_get_ops = {
- 	.offload	= nft_meta_get_offload,
- };
- 
-+static bool nft_meta_set_reduce(struct nft_regs_track *track,
-+				const struct nft_expr *expr)
-+{
-+	int i;
-+
-+	for (i = 0; i < NFT_REG32_NUM; i++) {
-+		if (!track->regs[i].selector)
-+			continue;
-+
-+		if (track->regs[i].selector->ops != &nft_meta_get_ops)
-+			continue;
-+
-+		track->regs[i].selector = NULL;
-+		track->regs[i].bitwise = NULL;
-+	}
-+
-+	return false;
-+}
-+
- static const struct nft_expr_ops nft_meta_set_ops = {
- 	.type		= &nft_meta_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_meta)),
-@@ -795,6 +814,7 @@ static const struct nft_expr_ops nft_meta_set_ops = {
- 	.init		= nft_meta_set_init,
- 	.destroy	= nft_meta_set_destroy,
- 	.dump		= nft_meta_set_dump,
-+	.reduce		= nft_meta_set_reduce,
- 	.validate	= nft_meta_set_validate,
- };
- 
--- 
-2.30.2
-
+Applied, thanks
