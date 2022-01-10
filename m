@@ -2,122 +2,70 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B2D488D38
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jan 2022 00:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D97488D78
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jan 2022 01:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237489AbiAIXRX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 9 Jan 2022 18:17:23 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:42292 "EHLO
+        id S234363AbiAJAWO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 9 Jan 2022 19:22:14 -0500
+Received: from mail.netfilter.org ([217.70.188.207]:42586 "EHLO
         mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237479AbiAIXRL (ORCPT
+        with ESMTP id S231976AbiAJAWO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 9 Jan 2022 18:17:11 -0500
-Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 1D8AC64692;
-        Mon, 10 Jan 2022 00:14:19 +0100 (CET)
+        Sun, 9 Jan 2022 19:22:14 -0500
+Received: from netfilter.org (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id E96516428F;
+        Mon, 10 Jan 2022 01:19:22 +0100 (CET)
+Date:   Mon, 10 Jan 2022 01:22:08 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net-next 32/32] netfilter: nft_meta: cancel register tracking after meta update
-Date:   Mon, 10 Jan 2022 00:16:40 +0100
-Message-Id: <20220109231640.104123-33-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220109231640.104123-1-pablo@netfilter.org>
-References: <20220109231640.104123-1-pablo@netfilter.org>
+To:     Jeremy Sowden <jeremy@azazel.net>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [ulogd2 PATCH v4 00/32] Fixes for compiler warnings
+Message-ID: <Ydt8MDizCy1PNDQl@salvia>
+References: <20211130105600.3103609-1-jeremy@azazel.net>
+ <Ya6MyhseW80+w0FY@salvia>
+ <YdM8BYK5U+CMU+ow@salvia>
+ <YdYgPpxjhPP7IsiO@azazel.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <YdYgPpxjhPP7IsiO@azazel.net>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The meta expression might mangle the packet metadata, cancel register
-tracking since any metadata in the registers is stale.
+On Wed, Jan 05, 2022 at 10:48:30PM +0000, Jeremy Sowden wrote:
+> From e45879a7ea5529c26f369c297295332143ee8420 Mon Sep 17 00:00:00 2001
+> From: Jeremy Sowden <jeremy@azazel.net>
+> Date: Wed, 5 Jan 2022 22:37:21 +0000
+> Subject: [PATCH] output: SQLITE3: remove unused variable
+> 
+> There's local variable left over from a previous tidy-up.  Remove it.
 
-Finer grain register tracking cancellation by inspecting the meta type
-on the register is also possible.
+Applied, thanks
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/bridge/netfilter/nft_meta_bridge.c | 20 ++++++++++++++++++++
- net/netfilter/nft_meta.c               | 20 ++++++++++++++++++++
- 2 files changed, 40 insertions(+)
+> Fixes: 67b0be90f16f ("output: SQLITE3: improve mapping of fields to DB columns")
+> Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+> ---
+>  output/sqlite3/ulogd_output_SQLITE3.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/output/sqlite3/ulogd_output_SQLITE3.c b/output/sqlite3/ulogd_output_SQLITE3.c
+> index 51eab782cc9d..0a9ad67edcff 100644
+> --- a/output/sqlite3/ulogd_output_SQLITE3.c
+> +++ b/output/sqlite3/ulogd_output_SQLITE3.c
+> @@ -320,7 +320,6 @@ sqlite3_init_db(struct ulogd_pluginstance *pi)
+>  	}
+>  
+>  	for (col = 0; col < num_cols; col++) {
+> -		char *underscore;
+>  		struct field *f;
+>  
+>  		/* prepend it to the linked list */
+> -- 
+> 2.34.1
+> 
 
-diff --git a/net/bridge/netfilter/nft_meta_bridge.c b/net/bridge/netfilter/nft_meta_bridge.c
-index 97805ec424c1..c1ef9cc89b78 100644
---- a/net/bridge/netfilter/nft_meta_bridge.c
-+++ b/net/bridge/netfilter/nft_meta_bridge.c
-@@ -100,6 +100,25 @@ static const struct nft_expr_ops nft_meta_bridge_get_ops = {
- 	.dump		= nft_meta_get_dump,
- };
- 
-+static bool nft_meta_bridge_set_reduce(struct nft_regs_track *track,
-+				       const struct nft_expr *expr)
-+{
-+	int i;
-+
-+	for (i = 0; i < NFT_REG32_NUM; i++) {
-+		if (!track->regs[i].selector)
-+			continue;
-+
-+		if (track->regs[i].selector->ops != &nft_meta_bridge_get_ops)
-+			continue;
-+
-+		track->regs[i].selector = NULL;
-+		track->regs[i].bitwise = NULL;
-+	}
-+
-+	return false;
-+}
-+
- static const struct nft_expr_ops nft_meta_bridge_set_ops = {
- 	.type		= &nft_meta_bridge_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_meta)),
-@@ -107,6 +126,7 @@ static const struct nft_expr_ops nft_meta_bridge_set_ops = {
- 	.init		= nft_meta_set_init,
- 	.destroy	= nft_meta_set_destroy,
- 	.dump		= nft_meta_set_dump,
-+	.reduce		= nft_meta_bridge_set_reduce,
- 	.validate	= nft_meta_set_validate,
- };
- 
-diff --git a/net/netfilter/nft_meta.c b/net/netfilter/nft_meta.c
-index 40fe48fcf9d0..5ab4df56c945 100644
---- a/net/netfilter/nft_meta.c
-+++ b/net/netfilter/nft_meta.c
-@@ -788,6 +788,25 @@ static const struct nft_expr_ops nft_meta_get_ops = {
- 	.offload	= nft_meta_get_offload,
- };
- 
-+static bool nft_meta_set_reduce(struct nft_regs_track *track,
-+				const struct nft_expr *expr)
-+{
-+	int i;
-+
-+	for (i = 0; i < NFT_REG32_NUM; i++) {
-+		if (!track->regs[i].selector)
-+			continue;
-+
-+		if (track->regs[i].selector->ops != &nft_meta_get_ops)
-+			continue;
-+
-+		track->regs[i].selector = NULL;
-+		track->regs[i].bitwise = NULL;
-+	}
-+
-+	return false;
-+}
-+
- static const struct nft_expr_ops nft_meta_set_ops = {
- 	.type		= &nft_meta_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_meta)),
-@@ -795,6 +814,7 @@ static const struct nft_expr_ops nft_meta_set_ops = {
- 	.init		= nft_meta_set_init,
- 	.destroy	= nft_meta_set_destroy,
- 	.dump		= nft_meta_set_dump,
-+	.reduce		= nft_meta_set_reduce,
- 	.validate	= nft_meta_set_validate,
- };
- 
--- 
-2.30.2
+
 
