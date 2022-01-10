@@ -2,75 +2,140 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0314D489894
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jan 2022 13:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A528D48999A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jan 2022 14:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245450AbiAJM2i (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 10 Jan 2022 07:28:38 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:43744 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245449AbiAJM2f (ORCPT
+        id S231575AbiAJNMi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 10 Jan 2022 08:12:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230486AbiAJNMK (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 10 Jan 2022 07:28:35 -0500
-Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id E7A1C64291
-        for <netfilter-devel@vger.kernel.org>; Mon, 10 Jan 2022 13:25:42 +0100 (CET)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH net-next] netfilter: nf_tables: fix compile warnings
-Date:   Mon, 10 Jan 2022 13:28:08 +0100
-Message-Id: <20220110122808.272697-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
+        Mon, 10 Jan 2022 08:12:10 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4989FC061212
+        for <netfilter-devel@vger.kernel.org>; Mon, 10 Jan 2022 05:12:10 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id g26so44145211lfv.11
+        for <netfilter-devel@vger.kernel.org>; Mon, 10 Jan 2022 05:12:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=STst/NZz7XpLuhkw/fjT1YooCLQUEgoChj9j28RAYfs=;
+        b=mnIX6amkQvq8BBb7pAnWkTRiLjet3lPJw/S/EIy7XNYq/S1ARvQ9ss99Q2vTtoU3Hz
+         QgolKO/OT0MOVBLUwcpqLuPKtYBQ5FCgwf3gTGC5g209FKggWInC70sOrIhBYvjNp5VM
+         ikNK+slpoAiyigF4FvTQ2b6i7fRybmZyeoV65lih3yWbWLXZ/ar+Od/2TrhAqp26A98i
+         gaNBgSlCAIUVJ5eMwEdhlDopa6T6vOS4lIXcnzkPG/Y0kPFnN6qA//5BKP1lSNCrZFcq
+         36SWq/Q7ossWmu8/Ff1DblON8X/xnXTVqcfsK/W2X1Nla9WNbeAZyEyzVQFir3qRwsCq
+         3MxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=STst/NZz7XpLuhkw/fjT1YooCLQUEgoChj9j28RAYfs=;
+        b=bDqqzlWQQVulSAZmaU5WThGmn/LEn9t87CmsjMZipq3+nzV8tCqqIM/0NihMcsQKuP
+         NfAmMDdoVM9MX1mf1hlPCVp+I39uDgVf91rbw9qGRBTAyvfyAMU9NLq7+8mjrq6HUID1
+         dyEzDBVtBXJOibe4uX0IhBwWGmz50mLRwGenR+58yyqlFjkPGQpRYEA0e7jQTJ+cWWs6
+         GYbprkxck2qPdblA6xc6LRqWeMwrwvcv3VNgN+yzbK9aQopKniPzwBnQG6ALNO7S1W0/
+         kPXbbloUtIXlDTrEwwWrIriRO1Wv/sO+fLVOBeAS+rP3aoRiM7K+k4dq5UzCVPxjkCwd
+         SLGA==
+X-Gm-Message-State: AOAM531shmvPFpH4NDTdC10QMmAnTz/C/t+iiuXxQCkPgBlfcyedZixq
+        8ggiZ+gq0i57qYVvdsoNmYvgV7FEvOVqd6mFjWk=
+X-Google-Smtp-Source: ABdhPJye+idxnHm5OW5T3L+6TixK0pZnxQlYwBSpwB8WutsJKk2VupGL6dHzWJKvk245kFOTzphnO6bzAVXLNeDUFqs=
+X-Received: by 2002:a05:651c:1507:: with SMTP id e7mr43402386ljf.159.1641820327906;
+ Mon, 10 Jan 2022 05:12:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6504:15d1:0:0:0:0 with HTTP; Mon, 10 Jan 2022 05:12:07
+ -0800 (PST)
+Reply-To: gtbank107@yahoo.com
+From:   Barr Robert Richter <westernunion.benin982@gmail.com>
+Date:   Mon, 10 Jan 2022 14:12:07 +0100
+Message-ID: <CAP=nHBJbFxj8M3OBE=5H_3j9+u=d3iQoQA+NpCDo0UE7vXwZ9w@mail.gmail.com>
+Subject: Contact GT Bank-Benin to receive your transfer amount of $18.5m US Dollars.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Remove unused variable and fix missing initialization.
+Attn,Dear
+I need you to know that the fear of the LORD is
+the beginning of wisdom, and knowledge of the Holy One is
+understanding. As power of God Most High. And This is the confidence
+we have in approaching God, that if we ask anything according to his
+will, he hears us. I will make you know that Slow and steady wins the race.
+It is your turn to receive your overdue compensation funds total
+amount $18.5Milion  USD.
+I actualized that you will receive your transfer today without any more delay
+No More fee OK, Believe me , I am your Attorney standing here on your favor.
+I just concluded conversation with the Gt Bank Director, Mrs Mary Gate
+And She told me that your transfer is ready today
 
->> net/netfilter/nf_tables_api.c:8266:6: warning: variable 'i' set but not used [-Wunused-but-set-variable]
-           int i;
-               ^
->> net/netfilter/nf_tables_api.c:8277:4: warning: variable 'data_size' is uninitialized when used here [-Wuninitialized]
-                           data_size += sizeof(*prule) + rule->dlen;
-                           ^~~~~~~~~
-   net/netfilter/nf_tables_api.c:8262:30: note: initialize the variable 'data_size' to silence this warning
-           unsigned int size, data_size;
+So the Bank Asked you to contact them immediately by re-confirming
+your Bank details asap.
+Because this is the Only thing holding this transfer
+If you did not trust me and Mrs Mary Gate,Who Else will you Trust?
+For we are the ones trying to protect your funds here
+and make sure that your funds is secure.
+So Promisingly, I am here to assure you, that Grate Miracle is coming on
+your way, and this funds total amount of $18.500,000 is your
+compensation, entitlement inheritance overdue funds on your name.
+Which you cannot let anything delay you from receiving your funds now,
 
-Fixes: 2c865a8a28a1 ("netfilter: nf_tables: add rule blob layout")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-Please, directly apply this fix to net-next.
+Finally i advised you to try your possible best and contact Gt Bank Benin
+once you get this message to receive your transfer $18.5 USD today.
+I know that a journey of thousand miles begins with a single step.
+Always put your best foot forward
+Try as hard as you can, God give you best.
+take my advice and follow the due process of your payment, the
+transfer will be released to
+you smoothly without any hitches or hindrance.
 
- net/netfilter/nf_tables_api.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Contact DR.MRS MARY GATE, Director Gt bank-Benin to receive your
+transfer amount of $18.5m US Dollars
+It was deposited and registered to your name this morning.
+Contact the Bank now to know when they will transfer to your
+country today
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index eb12fc9b803d..1f80a1fae63b 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -8260,18 +8260,16 @@ static int nf_tables_commit_chain_prepare(struct net *net, struct nft_chain *cha
- {
- 	const struct nft_expr *expr, *last;
- 	struct nft_regs_track track = {};
--	unsigned int size, data_size;
-+	unsigned int size, data_size = 0;
- 	void *data, *data_boundary;
- 	struct nft_rule_dp *prule;
- 	struct nft_rule *rule;
--	int i;
- 
- 	/* already handled or inactive chain? */
- 	if (chain->blob_next || !nft_is_active_next(net, chain))
- 		return 0;
- 
- 	rule = list_entry(&chain->rules, struct nft_rule, list);
--	i = 0;
- 
- 	list_for_each_entry_continue(rule, &chain->rules, list) {
- 		if (nft_is_active_next(net, rule)) {
--- 
-2.30.2
+Email id: gtbank107@yahoo.com
+Tel/mobile, +229 99069872
+Contact person, Mrs Mary Gate,Director Gt bank-Benin.
+Among the blind the one-eyed man is king
 
+As you sow, so you shall reap, i want you to receive your funds
+Best things in life are free
+Send to her your Bank Details as i listed here.
+
+Your account name-------------
+Your Bank Name----------------
+Account Number----------
+your Bank address----------
+Country-----------
+Your private phone number---------
+Routing Numbers-------------
+Swift Code-----------
+
+Note, Your funds is %100 Percent ready for
+transfer.
+Everything you do remember that Good things come to those who wait.
+I have done this work for you with my personally effort, Honesty is
+the best policy.
+now your transfer is currently deposited with paying bank this morning.
+It is by the grace of God that I received Christ, having known the truth.
+I had no choice than to do what is lawful and justice in the
+sight of God for eternal life and in the sight of man for witness of
+God & His Mercies and glory upon my life.
+
+send this needed bank details to the bank today, so that you receive
+your transfer today as
+it is available for your confirmation today.
+Please do your best as a serious person and send the fee urgent, Note
+that this transfer of $18.500.000 M USD is a Gift from God to Bless
+you.
+
+If you did not contact the bank urgent, finally the Bank will release
+your transfer of $18.500.000M USD to  Mr. David Bollen as your
+representative.
+So not allow another to claim your Money.
+Thanks For your Understanding.
+
+Barr Robert Richter, UN Attorney At Law Court-Benin
