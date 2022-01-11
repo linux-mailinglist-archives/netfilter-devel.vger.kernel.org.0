@@ -2,579 +2,299 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56F048B556
-	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Jan 2022 19:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0624948B792
+	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Jan 2022 20:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350234AbiAKSHG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 11 Jan 2022 13:07:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        id S237785AbiAKTo7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 11 Jan 2022 14:44:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345273AbiAKSGb (ORCPT
+        with ESMTP id S237858AbiAKTo5 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 11 Jan 2022 13:06:31 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D52BC03325A;
-        Tue, 11 Jan 2022 10:05:27 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id t18so8907944plg.9;
-        Tue, 11 Jan 2022 10:05:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dcb+0ImpXn2QBxgA9dEdyoEqHG0SXOELXRtYsq6KA8s=;
-        b=aC53ana5pE8sjWVVI0YzRPtDLFwop0pyARfv4JVn2a23ILiBtU1mH/HIWcRF29kVBk
-         TWh2I/IhGlyvlnRjLt7GZU/tiVc700sY7R2OwibuNtI/8hO4F7FUnjQpmffuIIhSawVV
-         Mwx6ghC7idY1R5gVGhnYVHXMGXXSvWB6hOJ8etp6QKKUyxmIbwQvkC/5NtS7qPlZdmoc
-         OtayXJarEyLnlvsWPUdY70Zl9w5yiQezLuFQaxYKfCALYhCLpaZRYNTM6ILuS5cRxMMO
-         xp0Z+fk9HKppiMQVNudQ5ULMcEXpjrS7pg4ft3RhT0TUdLM8WUIBSxOeMEjwuq7wuTAA
-         JRPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dcb+0ImpXn2QBxgA9dEdyoEqHG0SXOELXRtYsq6KA8s=;
-        b=mCsVVA6G9a2veyQsEazhwQQf2Wu8rjHDYu/KwRxZqwf+s8WIcMtzgbN722qTntZeq5
-         7V3piYUaeN6kpZ2R4N0uLXDqa5Tc9V8517W4OJjQIKY7UNu1oikmZtZifsPG4Q7j/EPA
-         f4lZrgHv3F2qFjMs52yD9vxJOu5GlCapAcZl1x/9NSwIGBfHOjIPP9DXZHhDofyfhifX
-         D/MtSvF1as9pgfPE9/JMTPBkvSR0whBOtdwQaQWWI298Cd7UJYEE2B55KjsOMcJvV2O/
-         T+D6LRRgy5l7LPAXFIXiL/IkR/Rp/X5Y07S2QLCvvDngczJybw/47u25qebMjPjPnpd+
-         XxwQ==
-X-Gm-Message-State: AOAM530zYxKlrbBZtDDVzM5SFb1K5W3g+XEM+IBijf13UK0YrZBYfW9E
-        4bQ0J5Gd2X+Ta60vofRByrUqvpRRUkWCtA==
-X-Google-Smtp-Source: ABdhPJwLiJh9r4CKqkhKbumNXzYv8QqcWvZvC6vq9oSJhxg1BM/trknzW7jrn6Lehblq9wCSMadyKw==
-X-Received: by 2002:a63:450c:: with SMTP id s12mr5035169pga.84.1641924326514;
-        Tue, 11 Jan 2022 10:05:26 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:502e:73f4:8af1:9522])
-        by smtp.gmail.com with ESMTPSA id p15sm11085858pfh.86.2022.01.11.10.05.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jan 2022 10:05:26 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Tue, 11 Jan 2022 14:44:57 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9BCC06173F
+        for <netfilter-devel@vger.kernel.org>; Tue, 11 Jan 2022 11:44:57 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1n7N4g-0008Rk-Dk; Tue, 11 Jan 2022 20:44:54 +0100
+Date:   Tue, 11 Jan 2022 20:44:54 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     Eyal Birger <eyal.birger@gmail.com>
+Cc:     Florian Westphal <fw@strlen.de>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [PATCH bpf-next v7 10/10] selftests/bpf: Add test for race in btf_try_get_module
-Date:   Tue, 11 Jan 2022 23:34:28 +0530
-Message-Id: <20220111180428.931466-11-memxor@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220111180428.931466-1-memxor@gmail.com>
-References: <20220111180428.931466-1-memxor@gmail.com>
+        netfilter-devel@vger.kernel.org, Karel Rericha <karel@maxtel.cz>,
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Subject: Re: [PATCH nf-next] netfilter: conntrack: allow to tune gc behavior
+Message-ID: <20220111194454.GF32500@breakpoint.cc>
+References: <20211121170514.2595-1-fw@strlen.de>
+ <YZzrgVYskeXzLuM5@salvia>
+ <20211123133045.GM6326@breakpoint.cc>
+ <YaaYK9i2hixxbs70@salvia>
+ <20211201112454.GA2315@breakpoint.cc>
+ <CAHsH6Gs9wX7-_DS8MA8QQZEFzzP1A2AMhAeqMcSOLda2GE_-5Q@mail.gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=18149; h=from:subject; bh=zshjPp83912NeLg9Mv0IQBqeiGLYQxp30dm+Z8HQ+SY=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBh3cak6+fNtJ2b3929WUwzqvj3s5tVkFvZ3Fx3ASu4 UjHOokCJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYd3GpAAKCRBM4MiGSL8RygawEA CNexF7D2MArlWIPo/gnHbpTiyoEfi0N3HxLdoCZmlG8uW/oUQk0eREnfhn5LZjMORTNcJCvsXQkjGk OI5xpvLV9pABgm4ukaHojCiEVg983CepKV/ZbS9NCtOqO+ljPqWMzBXt+hUKWJAh3XGvFlt9YlTFQo s7lYcHA9GVBcOkrHG/xxB9JJ+W78S7l4oHE8JuFH1gJ68fQN9tAFFm/QjxDQjNlEsRT2AAEc0/0cbK t06Kg+vw5mkDLCwC2YtB4Pg7Tty7w+jkq2CZAEh5eTIsFo8DeqRRxrDODT7uOl9QV3Ipt85A8jAxrk 8fdvBdJONIIgmoApE2eN53yCmiFarkJUx4E6mtrwj27Yt0bFdkf4KRoN4432hk0SnZCT700zB42Wsq ji1/q56tOgQAY6fQJvjzubridixHL51LHY2iws/dxWzPb5vezk/OC8WRteTKR/e46wMYPz44NE9Ndt 3LV6nB1TZA7I4Zn6R6G40+IDi1DzJycsGN1wK76uOTqyombotxEcOv7H2sq7s8xVrQdM1FBogGvB8q hwmWC/a61Q8M/kU3bhpWbvycPMBaNXEskQEF12OcEhl53t82LeAwgAPJGcBY4+2jPu21+swT9gA2h5 Htt+hpf5s2YI6KMqLt9JWCH4OUeCrBwR0vF34LdfUspM+/OrwcErwPyQydAg==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHsH6Gs9wX7-_DS8MA8QQZEFzzP1A2AMhAeqMcSOLda2GE_-5Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This adds a complete test case to ensure we never take references to
-modules not in MODULE_STATE_LIVE, which can lead to UAF, and it also
-ensures we never access btf->kfunc_set_tab in an inconsistent state.
+Eyal Birger <eyal.birger@gmail.com> wrote:
 
-The test uses userfaultfd to artificially widen the race.
+Hi Eyal,
 
-When run on an unpatched kernel, it leads to the following splat:
+> > AFAICS we may now schedule next run for 'right now' even though that
+> > would not find any expired entries (they might all have a timeout of
+> > 19s). Next round would reap no entries, then resched again immediately
+> >
+> > (the nf_ct_is_expired_next_run expire count assumes next run is in
+> >  20s, not before).
+> >
+> > This would burn cycles for 19s before those entries can be expired.
+> >
+> > Not sure how to best avoid this, perhaps computing the remaining avg timeout
+> > of the nf_ct_is_expired_next_run() candidates would help?
+> 
+> At least for us - where our load is mostly constant - using an avg
+> seems like a good approach.
 
-[root@(none) bpf]# ./test_progs -t bpf_mod_race/ksym
-[   55.498171] BUG: unable to handle page fault for address: fffffbfff802548b                                                                      [   55.499206] #PF: supervisor read access in kernel mode
-[   55.499855] #PF: error_code(0x0000) - not-present page
-[   55.500555] PGD a4fa9067 P4D a4fa9067 PUD a4fa5067 PMD 1b44067 PTE 0
-[   55.501499] Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
-[   55.502195] CPU: 0 PID: 83 Comm: kworker/0:2 Tainted: G           OE     5.16.0-rc4+ #151                                                       [   55.503388] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ArchLinux 1.15.0-1 04/01/2014
-[   55.504777] Workqueue: events bpf_prog_free_deferred
-[   55.505563] RIP: 0010:kasan_check_range+0x184/0x1d0
-[   55.506363] Code: 12 83 e0 07 48 39 d0 7d 8a 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df
-<80> 38 00 74 f2 e9 39 ff ff ff b8 01 00 00 00 c3 48 29 c3 48 89 da
-[   55.509140] RSP: 0018:ffff88800560fcf0 EFLAGS: 00010282
-[   55.509977] RAX: fffffbfff802548b RBX: fffffbfff802548c RCX: ffffffff9337b6ba
-[   55.511096] RDX: fffffbfff802548c RSI: 0000000000000004 RDI: ffffffffc012a458
-[   55.512143] RBP: fffffbfff802548b R08: 0000000000000001 R09: ffffffffc012a45b
-[   55.513228] R10: fffffbfff802548b R11: 0000000000000001 R12: ffff888001b5f598
-[   55.514332] R13: ffff888004f49ac8 R14: 0000000000000000 R15: ffff888092449400
-[   55.515418] FS:  0000000000000000(0000) GS:ffff888092400000(0000) knlGS:0000000000000000
-[   55.516705] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   55.517560] CR2: fffffbfff802548b CR3: 0000000007c10006 CR4: 0000000000770ef0
+I gave avg a shot, here it is.
+This restarts the gc worker whenever it ran for too long, just like
+before, but this time there is also an inital limit on events/s
+generated per cycle.
 
-[   55.518672] PKRU: 55555554
-[   55.519022] Call Trace:
-[   55.519483]  <TASK>
-[   55.519884]  module_put.part.0+0x2a/0x180
-[   55.520642]  bpf_prog_free_deferred+0x129/0x2e0
-[   55.521478]  process_one_work+0x4fa/0x9e0
-[   55.522122]  ? pwq_dec_nr_in_flight+0x100/0x100
-[   55.522878]  ? rwlock_bug.part.0+0x60/0x60
-[   55.523551]  worker_thread+0x2eb/0x700
-[   55.524176]  ? __kthread_parkme+0xd8/0xf0
-[   55.524853]  ? process_one_work+0x9e0/0x9e0
-[   55.525544]  kthread+0x23a/0x270
-[   55.526088]  ? set_kthread_struct+0x80/0x80
-[   55.526798]  ret_from_fork+0x1f/0x30
-[   55.527413]  </TASK>
-[   55.527813] Modules linked in: bpf_testmod(OE) crc32_pclmul(E) intel_rapl_msr(E) intel_rapl_common(E) rapl(E) ghash_clmulni_intel(E) crct10dif_pclmul(E) crc32c_intel(E) serio_raw(E) [last unloaded: bpf_testmod]
-[   55.530846] CR2: fffffbfff802548b
-[   55.531341] ---[ end trace 1af41803c054ad6d ]---
-[   55.532136] RIP: 0010:kasan_check_range+0x184/0x1d0
-[   55.532918] Code: 12 83 e0 07 48 39 d0 7d 8a 41 bb 01 00 00 00 5b 5d 44 89 d8 41 5c c3 48 85 d2 74 ed 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 df <80> 38 00 74 f2 e9 39 ff ff ff b8 01 00 00 00 c3 48 29 c3 48 89 da
-[   55.535887] RSP: 0018:ffff88800560fcf0 EFLAGS: 00010282
-[   55.536711] RAX: fffffbfff802548b RBX: fffffbfff802548c RCX: ffffffff9337b6ba
-[   55.537821] RDX: fffffbfff802548c RSI: 0000000000000004 RDI: ffffffffc012a458
-[   55.538899] RBP: fffffbfff802548b R08: 0000000000000001 R09: ffffffffc012a45b
-[   55.539928] R10: fffffbfff802548b R11: 0000000000000001 R12: ffff888001b5f598
-[   55.541021] R13: ffff888004f49ac8 R14: 0000000000000000 R15: ffff888092449400
-[   55.542108] FS:  0000000000000000(0000) GS:ffff888092400000(0000) knlGS:0000000000000000
-[   55.543260]CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   55.544136] CR2: fffffbfff802548b CR3: 0000000007c10006 CR4: 0000000000770ef0
-[   55.545317] PKRU: 55555554
-[   55.545671] note: kworker/0:2[83] exited with preempt_count 1
+Next run is done based on the average (non-expired) timeouts.
+There is an inital bias towards large values, this is to avoid a
+immediate scan if there are just a few entries (users might have
+lowered e.g. udp timeout to 1 second).
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+For Karels use case I fear that its not enough and sysctl patch
+is still superior (provided default tuneables were changed).
+
+Karel, Eyal, it would be nice if you could have a look or test this
+is a more realistic scenario than my synflood one.
+
+From 0ce5d16de93e0d33435734b3f267fd591572dcec Mon Sep 17 00:00:00 2001
+From: Florian Westphal <fw@strlen.de>
+Date: Mon, 8 Nov 2021 12:32:03 +0100
+Subject: [RFC] netfilter: conntrack: revisit gc autotuning
+
+Please don't apply yet, contains a few stats+pr_debug that should
+not be needed.
+
+as of commit 4608fdfc07e1
+("netfilter: conntrack: collect all entries in one cycle")
+conntrack gc was changed to run every 2 minutes.
+
+On systems where conntrack hash table is set to large value,
+almost all evictions happen from gc worker rather than the packet
+path due to hash table distribution.
+
+This causes netlink event overflows when the events are collected.
+
+This change collects average expiry of scanned entries and
+reschedules to the average value, within 1 to 60 second interval.
+
+To avoid event overflows, add upper threshold and ratelimit
+to avoid this.  If more entries have to be evicted, reschedule
+and restart 1 jiffy into the future.
+
+Reported-by: Karel Rericha <karel@maxtel.cz>
+Cc: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Cc: Eyal Birger <eyal.birger@gmail.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/bpf/test_run.c                            |   2 +
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   4 +
- tools/testing/selftests/bpf/config            |   1 +
- .../selftests/bpf/prog_tests/bpf_mod_race.c   | 230 ++++++++++++++++++
- .../selftests/bpf/progs/bpf_mod_race.c        | 100 ++++++++
- .../selftests/bpf/progs/kfunc_call_race.c     |  14 ++
- tools/testing/selftests/bpf/progs/ksym_race.c |  13 +
- 7 files changed, 364 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_mod_race.c
- create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_race.c
- create mode 100644 tools/testing/selftests/bpf/progs/ksym_race.c
+ net/netfilter/nf_conntrack_core.c | 102 +++++++++++++++++++++++++-----
+ 1 file changed, 85 insertions(+), 17 deletions(-)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 93ba56507240..3a5bf8ad834d 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -172,6 +172,8 @@ int noinline bpf_fentry_test1(int a)
- {
- 	return a + 1;
- }
-+EXPORT_SYMBOL_GPL(bpf_fentry_test1);
-+ALLOW_ERROR_INJECTION(bpf_fentry_test1, ERRNO);
- 
- int noinline bpf_fentry_test2(int a, u64 b)
- {
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index c0805d0d753f..bdbacf5adcd2 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -118,6 +118,8 @@ static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
- 	.check_set = &bpf_testmod_check_kfunc_ids,
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index 894a325d39f2..e7778218fa7c 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -67,6 +67,10 @@ EXPORT_SYMBOL_GPL(nf_conntrack_hash);
+ struct conntrack_gc_work {
+ 	struct delayed_work	dwork;
+ 	u32			next_bucket;
++	u32			avg_timeout;
++	u32			start_time;
++	u32			resched;
++	u32			expired;
+ 	bool			exiting;
+ 	bool			early_drop;
  };
+@@ -78,9 +82,24 @@ static __read_mostly bool nf_conntrack_locks_all;
+ /* serialize hash resizes and nf_ct_iterate_cleanup */
+ static DEFINE_MUTEX(nf_conntrack_mutex);
  
-+extern int bpf_fentry_test1(int a);
+-#define GC_SCAN_INTERVAL	(120u * HZ)
++#define GC_SCAN_INTERVAL_MAX	(60ul * HZ)
++#define GC_SCAN_INTERVAL_MIN	(1ul * HZ)
 +
- static int bpf_testmod_init(void)
++/* clamp timeouts to this value (TCP unacked) */
++#define GC_SCAN_INTERVAL_CLAMP	(300ul * HZ)
++
++/* large initial bias so that we don't scan often just because we have
++ * three entries with a 1s timeout.
++ */
++#define GC_SCAN_INTERVAL_INIT	INT_MAX
++
+ #define GC_SCAN_MAX_DURATION	msecs_to_jiffies(10)
+ 
++#define CT_SINGLE_EVENT_SIZE	164	/* estimated size in byte of single event */
++
++/* inital throttling, about 8mb/s of event data */
++#define GC_SCAN_EXPIRED_MAX	(8 * 1024 * 1024 / CT_SINGLE_EVENT_SIZE / HZ)
++
+ #define MIN_CHAINLEN	8u
+ #define MAX_CHAINLEN	(32u - MIN_CHAINLEN)
+ 
+@@ -1421,16 +1440,30 @@ static bool gc_worker_can_early_drop(const struct nf_conn *ct)
+ 
+ static void gc_worker(struct work_struct *work)
  {
- 	int ret;
-@@ -125,6 +127,8 @@ static int bpf_testmod_init(void)
- 	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_testmod_kfunc_set);
- 	if (ret < 0)
- 		return ret;
-+	if (bpf_fentry_test1(0) < 0)
-+		return -EINVAL;
- 	return sysfs_create_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
+-	unsigned long end_time = jiffies + GC_SCAN_MAX_DURATION;
+ 	unsigned int i, hashsz, nf_conntrack_max95 = 0;
+-	unsigned long next_run = GC_SCAN_INTERVAL;
++	u32 end_time, start_time = nfct_time_stamp;
+ 	struct conntrack_gc_work *gc_work;
++	unsigned int expired_count = 0;
++	unsigned long next_run;
++	s32 delta_time;
++
+ 	gc_work = container_of(work, struct conntrack_gc_work, dwork.work);
+ 
+ 	i = gc_work->next_bucket;
+ 	if (gc_work->early_drop)
+ 		nf_conntrack_max95 = nf_conntrack_max / 100u * 95u;
+ 
++	if (i == 0) {
++		gc_work->avg_timeout = GC_SCAN_INTERVAL_INIT;
++		gc_work->start_time = start_time;
++		gc_work->resched = 0;
++		gc_work->expired = 0;
++	}
++
++	next_run = gc_work->avg_timeout;
++
++	end_time = start_time + GC_SCAN_MAX_DURATION;
++
+ 	do {
+ 		struct nf_conntrack_tuple_hash *h;
+ 		struct hlist_nulls_head *ct_hash;
+@@ -1447,6 +1480,7 @@ static void gc_worker(struct work_struct *work)
+ 
+ 		hlist_nulls_for_each_entry_rcu(h, n, &ct_hash[i], hnnode) {
+ 			struct nf_conntrack_net *cnet;
++			unsigned long expires;
+ 			struct net *net;
+ 
+ 			tmp = nf_ct_tuplehash_to_ctrack(h);
+@@ -1456,11 +1490,30 @@ static void gc_worker(struct work_struct *work)
+ 				continue;
+ 			}
+ 
++			if (expired_count > GC_SCAN_EXPIRED_MAX) {
++				rcu_read_unlock();
++
++				gc_work->next_bucket = i;
++				gc_work->avg_timeout = next_run;
++				gc_work->resched++;
++
++				delta_time = nfct_time_stamp - gc_work->start_time;
++
++				next_run = delta_time < GC_SCAN_INTERVAL_MIN;
++				goto early_exit;
++			}
++
+ 			if (nf_ct_is_expired(tmp)) {
+ 				nf_ct_gc_expired(tmp);
++				expired_count++;
++				gc_work->expired++;
+ 				continue;
+ 			}
+ 
++			expires = clamp(nf_ct_expires(tmp), GC_SCAN_INTERVAL_MIN, GC_SCAN_INTERVAL_CLAMP);
++			next_run += expires;
++			next_run /= 2u;
++
+ 			if (nf_conntrack_max95 == 0 || gc_worker_skip_ct(tmp))
+ 				continue;
+ 
+@@ -1478,8 +1531,11 @@ static void gc_worker(struct work_struct *work)
+ 				continue;
+ 			}
+ 
+-			if (gc_worker_can_early_drop(tmp))
++			if (gc_worker_can_early_drop(tmp)) {
+ 				nf_ct_kill(tmp);
++				expired_count++;
++				gc_work->expired++;
++			}
+ 
+ 			nf_ct_put(tmp);
+ 		}
+@@ -1492,33 +1548,45 @@ static void gc_worker(struct work_struct *work)
+ 		cond_resched();
+ 		i++;
+ 
+-		if (time_after(jiffies, end_time) && i < hashsz) {
++		delta_time = nfct_time_stamp - end_time;
++		if (delta_time > 0 && i < hashsz) {
++			gc_work->avg_timeout = next_run;
+ 			gc_work->next_bucket = i;
++			gc_work->resched++;
+ 			next_run = 0;
+-			break;
++			goto early_exit;
+ 		}
+ 	} while (i < hashsz);
+ 
++	gc_work->next_bucket = 0;
++
++	next_run = clamp(next_run, GC_SCAN_INTERVAL_MIN, GC_SCAN_INTERVAL_MAX);
++
++	delta_time = max_t(s32, nfct_time_stamp - gc_work->start_time, 1);
++	if (next_run > (unsigned long)delta_time)
++		next_run -= delta_time;
++	else
++		next_run = 1;
++
++early_exit:
+ 	if (gc_work->exiting)
+ 		return;
+ 
+-	/*
+-	 * Eviction will normally happen from the packet path, and not
+-	 * from this gc worker.
+-	 *
+-	 * This worker is only here to reap expired entries when system went
+-	 * idle after a busy period.
+-	 */
+-	if (next_run) {
++	cond_resched();
++
++	if (next_run)
+ 		gc_work->early_drop = false;
+-		gc_work->next_bucket = 0;
+-	}
++
++	gc_work->resched++;
++	if (next_run > 1)
++		pr_debug("next run in %u ms expired %u in %u ms, re-sched count %u\n", jiffies_to_msecs(next_run), gc_work->expired, jiffies_to_msecs(delta_time), gc_work->resched - 1);
++
+ 	queue_delayed_work(system_power_efficient_wq, &gc_work->dwork, next_run);
  }
  
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 32d80e77e910..763db63a3890 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -52,3 +52,4 @@ CONFIG_NETFILTER=y
- CONFIG_NF_DEFRAG_IPV4=y
- CONFIG_NF_DEFRAG_IPV6=y
- CONFIG_NF_CONNTRACK=y
-+CONFIG_USERFAULTFD=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c b/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c
-new file mode 100644
-index 000000000000..d43f548c572c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c
-@@ -0,0 +1,230 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <unistd.h>
-+#include <pthread.h>
-+#include <sys/mman.h>
-+#include <stdatomic.h>
-+#include <test_progs.h>
-+#include <sys/syscall.h>
-+#include <linux/module.h>
-+#include <linux/userfaultfd.h>
-+
-+#include "ksym_race.skel.h"
-+#include "bpf_mod_race.skel.h"
-+#include "kfunc_call_race.skel.h"
-+
-+/* This test crafts a race between btf_try_get_module and do_init_module, and
-+ * checks whether btf_try_get_module handles the invocation for a well-formed
-+ * but uninitialized module correctly. Unless the module has completed its
-+ * initcalls, the verifier should fail the program load and return ENXIO.
-+ *
-+ * userfaultfd is used to trigger a fault in an fmod_ret program, and make it
-+ * sleep, then the BPF program is loaded and the return value from verifier is
-+ * inspected. After this, the userfaultfd is closed so that the module loading
-+ * thread makes forward progress, and fmod_ret injects an error so that the
-+ * module load fails and it is freed.
-+ *
-+ * If the verifier succeeded in loading the supplied program, it will end up
-+ * taking reference to freed module, and trigger a crash when the program fd
-+ * is closed later. This is true for both kfuncs and ksyms. In both cases,
-+ * the crash is triggered inside bpf_prog_free_deferred, when module reference
-+ * is finally released.
-+ */
-+
-+struct test_config {
-+	const char *str_open;
-+	void *(*bpf_open_and_load)();
-+	void (*bpf_destroy)(void *);
-+};
-+
-+enum test_state {
-+	_TS_INVALID,
-+	TS_MODULE_LOAD,
-+	TS_MODULE_LOAD_FAIL,
-+};
-+
-+static _Atomic enum test_state state = _TS_INVALID;
-+
-+static int sys_finit_module(int fd, const char *param_values, int flags)
-+{
-+	return syscall(__NR_finit_module, fd, param_values, flags);
-+}
-+
-+static int sys_delete_module(const char *name, unsigned int flags)
-+{
-+	return syscall(__NR_delete_module, name, flags);
-+}
-+
-+static int load_module(const char *mod)
-+{
-+	int ret, fd;
-+
-+	fd = open("bpf_testmod.ko", O_RDONLY);
-+	if (fd < 0)
-+		return fd;
-+
-+	ret = sys_finit_module(fd, "", 0);
-+	close(fd);
-+	if (ret < 0)
-+		return ret;
-+	return 0;
-+}
-+
-+static void *load_module_thread(void *p)
-+{
-+
-+	if (!ASSERT_NEQ(load_module("bpf_testmod.ko"), 0, "load_module_thread must fail"))
-+		atomic_store(&state, TS_MODULE_LOAD);
-+	else
-+		atomic_store(&state, TS_MODULE_LOAD_FAIL);
-+	return p;
-+}
-+
-+static int sys_userfaultfd(int flags)
-+{
-+	return syscall(__NR_userfaultfd, flags);
-+}
-+
-+static int test_setup_uffd(void *fault_addr)
-+{
-+	struct uffdio_register uffd_register = {};
-+	struct uffdio_api uffd_api = {};
-+	int uffd;
-+
-+	uffd = sys_userfaultfd(O_CLOEXEC);
-+	if (uffd < 0)
-+		return -errno;
-+
-+	uffd_api.api = UFFD_API;
-+	uffd_api.features = 0;
-+	if (ioctl(uffd, UFFDIO_API, &uffd_api)) {
-+		close(uffd);
-+		return -1;
-+	}
-+
-+	uffd_register.range.start = (unsigned long)fault_addr;
-+	uffd_register.range.len = 4096;
-+	uffd_register.mode = UFFDIO_REGISTER_MODE_MISSING;
-+	if (ioctl(uffd, UFFDIO_REGISTER, &uffd_register)) {
-+		close(uffd);
-+		return -1;
-+	}
-+	return uffd;
-+}
-+
-+static void test_bpf_mod_race_config(const struct test_config *config)
-+{
-+	void *fault_addr, *skel_fail;
-+	struct bpf_mod_race *skel;
-+	struct uffd_msg uffd_msg;
-+	pthread_t load_mod_thrd;
-+	_Atomic int *blockingp;
-+	int uffd, ret;
-+
-+	fault_addr = mmap(0, 4096, PROT_READ, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	if (!ASSERT_NEQ(fault_addr, MAP_FAILED, "mmap for uffd registration"))
-+		return;
-+
-+	if (!ASSERT_OK(sys_delete_module("bpf_testmod", 0), "unload bpf_testmod"))
-+		goto end_mmap;
-+
-+	skel = bpf_mod_race__open();
-+	if (!ASSERT_OK_PTR(skel, "bpf_mod_kfunc_race__open"))
-+		goto end_module;
-+
-+	skel->rodata->bpf_mod_race_config.tgid = getpid();
-+	skel->rodata->bpf_mod_race_config.inject_error = -4242;
-+	skel->rodata->bpf_mod_race_config.fault_addr = fault_addr;
-+	if (!ASSERT_OK(bpf_mod_race__load(skel), "bpf_mod___load"))
-+		goto end_destroy;
-+	blockingp = (_Atomic int *)&skel->bss->bpf_blocking;
-+
-+	if (!ASSERT_OK(bpf_mod_race__attach(skel), "bpf_mod_kfunc_race__attach"))
-+		goto end_destroy;
-+
-+	uffd = test_setup_uffd(fault_addr);
-+	if (!ASSERT_GE(uffd, 0, "userfaultfd open + register address"))
-+		goto end_destroy;
-+
-+	if (!ASSERT_OK(pthread_create(&load_mod_thrd, NULL, load_module_thread, NULL),
-+		       "load module thread"))
-+		goto end_uffd;
-+
-+	/* Now, we either fail loading module, or block in bpf prog, spin to find out */
-+	while (!atomic_load(&state) && !atomic_load(blockingp))
-+		;
-+	if (!ASSERT_EQ(state, _TS_INVALID, "module load should block"))
-+		goto end_join;
-+	if (!ASSERT_EQ(*blockingp, 1, "module load blocked")) {
-+		pthread_kill(load_mod_thrd, SIGKILL);
-+		goto end_uffd;
-+	}
-+
-+	/* We might have set bpf_blocking to 1, but may have not blocked in
-+	 * bpf_copy_from_user. Read userfaultfd descriptor to verify that.
-+	 */
-+	if (!ASSERT_EQ(read(uffd, &uffd_msg, sizeof(uffd_msg)), sizeof(uffd_msg),
-+		       "read uffd block event"))
-+		goto end_join;
-+	if (!ASSERT_EQ(uffd_msg.event, UFFD_EVENT_PAGEFAULT, "read uffd event is pagefault"))
-+		goto end_join;
-+
-+	/* We know that load_mod_thrd is blocked in the fmod_ret program, the
-+	 * module state is still MODULE_STATE_COMING because mod->init hasn't
-+	 * returned. This is the time we try to load a program calling kfunc and
-+	 * check if we get ENXIO from verifier.
-+	 */
-+	skel_fail = config->bpf_open_and_load();
-+	ret = errno;
-+	if (!ASSERT_EQ(skel_fail, NULL, config->str_open)) {
-+		/* Close uffd to unblock load_mod_thrd */
-+		close(uffd);
-+		uffd = -1;
-+		while (atomic_load(blockingp) != 2)
-+			;
-+		ASSERT_OK(kern_sync_rcu(), "kern_sync_rcu");
-+		config->bpf_destroy(skel_fail);
-+		goto end_join;
-+
-+	}
-+	ASSERT_EQ(ret, ENXIO, "verifier returns ENXIO");
-+	ASSERT_EQ(skel->data->res_try_get_module, false, "btf_try_get_module == false");
-+
-+	close(uffd);
-+	uffd = -1;
-+end_join:
-+	pthread_join(load_mod_thrd, NULL);
-+	if (uffd < 0)
-+		ASSERT_EQ(atomic_load(&state), TS_MODULE_LOAD_FAIL, "load_mod_thrd success");
-+end_uffd:
-+	if (uffd >= 0)
-+		close(uffd);
-+end_destroy:
-+	bpf_mod_race__destroy(skel);
-+	ASSERT_OK(kern_sync_rcu(), "kern_sync_rcu");
-+end_module:
-+	sys_delete_module("bpf_testmod", 0);
-+	ASSERT_OK(load_module("bpf_testmod.ko"), "restore bpf_testmod");
-+end_mmap:
-+	munmap(fault_addr, 4096);
-+	atomic_store(&state, _TS_INVALID);
-+}
-+
-+static const struct test_config ksym_config = {
-+	.str_open = "ksym_race__open_and_load",
-+	.bpf_open_and_load = (void *)ksym_race__open_and_load,
-+	.bpf_destroy = (void *)ksym_race__destroy,
-+};
-+
-+static const struct test_config kfunc_config = {
-+	.str_open = "kfunc_call_race__open_and_load",
-+	.bpf_open_and_load = (void *)kfunc_call_race__open_and_load,
-+	.bpf_destroy = (void *)kfunc_call_race__destroy,
-+};
-+
-+void serial_test_bpf_mod_race(void)
-+{
-+	if (test__start_subtest("ksym (used_btfs UAF)"))
-+		test_bpf_mod_race_config(&ksym_config);
-+	if (test__start_subtest("kfunc (kfunc_btf_tab UAF)"))
-+		test_bpf_mod_race_config(&kfunc_config);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_mod_race.c b/tools/testing/selftests/bpf/progs/bpf_mod_race.c
-new file mode 100644
-index 000000000000..82a5c6c6ba83
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_mod_race.c
-@@ -0,0 +1,100 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+const volatile struct {
-+	/* thread to activate trace programs for */
-+	pid_t tgid;
-+	/* return error from __init function */
-+	int inject_error;
-+	/* uffd monitored range start address */
-+	void *fault_addr;
-+} bpf_mod_race_config = { -1 };
-+
-+int bpf_blocking = 0;
-+int res_try_get_module = -1;
-+
-+static __always_inline bool check_thread_id(void)
-+{
-+	struct task_struct *task = bpf_get_current_task_btf();
-+
-+	return task->tgid == bpf_mod_race_config.tgid;
-+}
-+
-+/* The trace of execution is something like this:
-+ *
-+ * finit_module()
-+ *   load_module()
-+ *     prepare_coming_module()
-+ *       notifier_call(MODULE_STATE_COMING)
-+ *         btf_parse_module()
-+ *         btf_alloc_id()		// Visible to userspace at this point
-+ *         list_add(btf_mod->list, &btf_modules)
-+ *     do_init_module()
-+ *       freeinit = kmalloc()
-+ *       ret = mod->init()
-+ *         bpf_prog_widen_race()
-+ *           bpf_copy_from_user()
-+ *             ...<sleep>...
-+ *       if (ret < 0)
-+ *         ...
-+ *         free_module()
-+ * return ret
-+ *
-+ * At this point, module loading thread is blocked, we now load the program:
-+ *
-+ * bpf_check
-+ *   add_kfunc_call/check_pseudo_btf_id
-+ *     btf_try_get_module
-+ *       try_get_module_live == false
-+ *     return -ENXIO
-+ *
-+ * Without the fix (try_get_module_live in btf_try_get_module):
-+ *
-+ * bpf_check
-+ *   add_kfunc_call/check_pseudo_btf_id
-+ *     btf_try_get_module
-+ *       try_get_module == true
-+ *     <store module reference in btf_kfunc_tab or used_btf array>
-+ *   ...
-+ * return fd
-+ *
-+ * Now, if we inject an error in the blocked program, our module will be freed
-+ * (going straight from MODULE_STATE_COMING to MODULE_STATE_GOING).
-+ * Later, when bpf program is freed, it will try to module_put already freed
-+ * module. This is why try_get_module_live returns false if mod->state is not
-+ * MODULE_STATE_LIVE.
-+ */
-+
-+SEC("fmod_ret.s/bpf_fentry_test1")
-+int BPF_PROG(widen_race, int a, int ret)
-+{
-+	char dst;
-+
-+	if (!check_thread_id())
-+		return 0;
-+	/* Indicate that we will attempt to block */
-+	bpf_blocking = 1;
-+	bpf_copy_from_user(&dst, 1, bpf_mod_race_config.fault_addr);
-+	return bpf_mod_race_config.inject_error;
-+}
-+
-+SEC("fexit/do_init_module")
-+int BPF_PROG(fexit_init_module, struct module *mod, int ret)
-+{
-+	if (!check_thread_id())
-+		return 0;
-+	/* Indicate that we finished blocking */
-+	bpf_blocking = 2;
-+	return 0;
-+}
-+
-+SEC("fexit/btf_try_get_module")
-+int BPF_PROG(fexit_module_get, const struct btf *btf, struct module *mod)
-+{
-+	res_try_get_module = !!mod;
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/kfunc_call_race.c b/tools/testing/selftests/bpf/progs/kfunc_call_race.c
-new file mode 100644
-index 000000000000..4e8fed75a4e0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/kfunc_call_race.c
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+extern void bpf_testmod_test_mod_kfunc(int i) __ksym;
-+
-+SEC("tc")
-+int kfunc_call_fail(struct __sk_buff *ctx)
-+{
-+	bpf_testmod_test_mod_kfunc(0);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/ksym_race.c b/tools/testing/selftests/bpf/progs/ksym_race.c
-new file mode 100644
-index 000000000000..def97f2fed90
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/ksym_race.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+extern int bpf_testmod_ksym_percpu __ksym;
-+
-+SEC("tc")
-+int ksym_fail(struct __sk_buff *ctx)
-+{
-+	return *(int *)bpf_this_cpu_ptr(&bpf_testmod_ksym_percpu);
-+}
-+
-+char _license[] SEC("license") = "GPL";
+ static void conntrack_gc_work_init(struct conntrack_gc_work *gc_work)
+ {
+-	INIT_DEFERRABLE_WORK(&gc_work->dwork, gc_worker);
++	INIT_DELAYED_WORK(&gc_work->dwork, gc_worker);
+ 	gc_work->exiting = false;
+ }
+ 
 -- 
 2.34.1
 
