@@ -2,29 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F1748B04F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Jan 2022 16:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D0148B046
+	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Jan 2022 16:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244061AbiAKPE7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 11 Jan 2022 10:04:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
+        id S243519AbiAKPEh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 11 Jan 2022 10:04:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243955AbiAKPE6 (ORCPT
+        with ESMTP id S240338AbiAKPEg (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 11 Jan 2022 10:04:58 -0500
+        Tue, 11 Jan 2022 10:04:36 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDE5C06173F
-        for <netfilter-devel@vger.kernel.org>; Tue, 11 Jan 2022 07:04:57 -0800 (PST)
-Received: from localhost ([::1]:59126 helo=xic)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAF7C06173F
+        for <netfilter-devel@vger.kernel.org>; Tue, 11 Jan 2022 07:04:36 -0800 (PST)
+Received: from localhost ([::1]:59116 helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1n7Ihj-0007VZ-2C; Tue, 11 Jan 2022 16:04:55 +0100
+        id 1n7IhN-0007UV-NC; Tue, 11 Jan 2022 16:04:33 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 10/11] iptables: Use xtables' do_parse() function
-Date:   Tue, 11 Jan 2022 16:04:28 +0100
-Message-Id: <20220111150429.29110-11-phil@nwl.cc>
+Subject: [iptables PATCH v2 11/11] ip6tables: Use the shared do_parse, too
+Date:   Tue, 11 Jan 2022 16:04:29 +0100
+Message-Id: <20220111150429.29110-12-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220111150429.29110-1-phil@nwl.cc>
 References: <20220111150429.29110-1-phil@nwl.cc>
@@ -34,38 +34,35 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-To do so, a few conversions are needed:
-
-- Make use of xt_params->optstring
-- Make use of xt_params->print_help callback
-- Switch to using a proto_parse callback
+Same change as with iptables, merely have to set IP6T_F_PROTO flag in
+ipv6_proto_parse().
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
 Changes since v1:
 - Adjust to introduced struct xt_cmd_parse_ops.
 ---
- iptables/iptables.c | 487 ++++----------------------------------------
- iptables/xshared.c  |   3 +
- 2 files changed, 39 insertions(+), 451 deletions(-)
+ iptables/ip6tables.c | 502 ++++---------------------------------------
+ iptables/xshared.c   |   4 +
+ 2 files changed, 40 insertions(+), 466 deletions(-)
 
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index 7dc4cbc1c9c22..26486ad51c7bb 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -87,21 +87,12 @@ static struct option original_opts[] = {
- struct xtables_globals iptables_globals = {
+diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
+index b4604f83cf8a4..0a6ce8ee0c1a2 100644
+--- a/iptables/ip6tables.c
++++ b/iptables/ip6tables.c
+@@ -90,21 +90,12 @@ static struct option original_opts[] = {
+ struct xtables_globals ip6tables_globals = {
  	.option_offset = 0,
  	.program_version = PACKAGE_VERSION " (legacy)",
-+	.optstring = OPTSTRING_COMMON "R:S::W::" "46bfg:h::m:nvw::x",
++	.optstring = OPTSTRING_COMMON "R:S::W::" "46bg:h::m:nvw::x",
  	.orig_opts = original_opts,
  	.compat_rev = xtables_compatible_revision,
 +	.print_help = xtables_printhelp,
  };
  
--#define opts iptables_globals.opts
--#define prog_name iptables_globals.program_name
--#define prog_vers iptables_globals.program_version
+-#define opts ip6tables_globals.opts
+-#define prog_name ip6tables_globals.program_name
+-#define prog_vers ip6tables_globals.program_version
 -
 -static void
 -exit_printhelp(const struct xtables_rule_match *matches)
@@ -77,13 +74,29 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
  /*
   *	All functions starting with "parse" should succeed, otherwise
   *	the program fails.
-@@ -699,10 +690,24 @@ generate_entry(const struct ipt_entry *fw,
- int do_command4(int argc, char *argv[], char **table,
+@@ -114,15 +105,6 @@ exit_printhelp(const struct xtables_rule_match *matches)
+  *	return global static data.
+ */
+ 
+-/* These are invalid numbers as upper layer protocol */
+-static int is_exthdr(uint16_t proto)
+-{
+-	return (proto == IPPROTO_ROUTING ||
+-		proto == IPPROTO_FRAGMENT ||
+-		proto == IPPROTO_AH ||
+-		proto == IPPROTO_DSTOPTS);
+-}
+-
+ static int
+ print_match(const struct xt_entry_match *m,
+ 	    const struct ip6t_ip6 *ip,
+@@ -714,10 +696,24 @@ generate_entry(const struct ip6t_entry *fw,
+ int do_command6(int argc, char *argv[], char **table,
  		struct xtc_handle **handle, bool restore)
  {
 +	struct xt_cmd_parse_ops cmd_parse_ops = {
-+		.proto_parse	= ipv4_proto_parse,
-+		.post_parse	= ipv4_post_parse,
++		.proto_parse	= ipv6_proto_parse,
++		.post_parse	= ipv6_post_parse,
 +	};
 +	struct xt_cmd_parse p = {
 +		.table		= *table,
@@ -96,19 +109,17 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
  		.argv	= argv,
  	};
 +	struct xtables_args args = {
-+		.family = AF_INET,
++		.family = AF_INET6,
 +		.wait_interval.tv_sec = 1,
 +	};
- 	struct ipt_entry *e = NULL;
+ 	struct ip6t_entry *e = NULL;
  	unsigned int nsaddrs = 0, ndaddrs = 0;
- 	struct in_addr *saddrs = NULL, *smasks = NULL;
-@@ -710,433 +715,30 @@ int do_command4(int argc, char *argv[], char **table,
+ 	struct in6_addr *saddrs = NULL, *daddrs = NULL;
+@@ -728,437 +724,28 @@ int do_command6(int argc, char *argv[], char **table,
  	struct timeval wait_interval = {
- 		.tv_sec = 1,
+ 		.tv_sec	= 1,
  	};
 -	bool wait_interval_set = false;
- 	int verbose = 0;
- 	int wait = 0;
  	const char *chain = NULL;
 -	const char *shostnetworkmask = NULL, *dhostnetworkmask = NULL;
  	const char *policy = NULL, *newname = NULL;
@@ -123,11 +134,11 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -	uint16_t invflags = 0;
 -	bool invert = false;
 -
--	/* re-set optind to 0 in case do_command4 gets called
+-	/* re-set optind to 0 in case do_command6 gets called
 -	 * a second time */
 -	optind = 0;
 -
--	/* clear mflags in case do_command4 gets called a second time
+-	/* clear mflags in case do_command6 gets called a second time
 -	 * (we clear the global list of all matches for security)*/
 -	for (m = xtables_matches; m; m = m->next)
 -		m->mflags = 0;
@@ -140,9 +151,10 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -	/* Suppress error messages: we may add new options if we
 -           demand-load a protocol. */
 -	opterr = 0;
+-
 -	opts = xt_params->orig_opts;
 -	while ((cs.c = getopt_long(argc, argv,
--	   "-:A:C:D:R:I:L::S::M:F::Z::N:X::E:P:Vh::o:p:s:d:j:i:fbvw::W::nt:m:xc:g:46",
+-	   "-:A:C:D:R:I:L::S::M:F::Z::N:X::E:P:Vh::o:p:s:d:j:i:bvw::W::nt:m:xc:g:46",
 -					   opts, NULL)) != -1) {
 -		switch (cs.c) {
 -			/*
@@ -198,7 +210,7 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -
 -		case 'S':
 -			add_command(&command, CMD_LIST_RULES,
--				    CMD_ZERO|CMD_ZERO_NUM, invert);
+-				    CMD_ZERO | CMD_ZERO_NUM, invert);
 -			if (optarg) chain = optarg;
 -			else if (xs_has_arg(argc, argv))
 -				chain = argv[optind++];
@@ -263,15 +275,15 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -					   "-%c requires a chain and a policy",
 -					   cmd2char(CMD_SET_POLICY));
 -			break;
- 
+-
 -		case 'h':
 -			if (!optarg)
 -				optarg = argv[optind];
 -
--			/* iptables -p icmp -h */
+-			/* ip6tables -p icmp -h */
 -			if (!cs.matches && cs.protocol)
--				xtables_find_match(cs.protocol,
--					XTF_TRY_LOAD, &cs.matches);
+-				xtables_find_match(cs.protocol, XTF_TRY_LOAD,
+-					&cs.matches);
 -
 -			exit_printhelp(cs.matches);
 -
@@ -287,11 +299,19 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -				*cs.protocol = tolower(*cs.protocol);
 -
 -			cs.protocol = optarg;
--			cs.fw.ip.proto = xtables_parse_protocol(cs.protocol);
+-			cs.fw6.ipv6.proto = xtables_parse_protocol(cs.protocol);
+-			cs.fw6.ipv6.flags |= IP6T_F_PROTO;
 -
--			if (cs.fw.ip.proto == 0 && (invflags & XT_INV_PROTO))
+-			if (cs.fw6.ipv6.proto == 0 && (invflags & XT_INV_PROTO))
 -				xtables_error(PARAMETER_PROBLEM,
 -					   "rule would never match protocol");
+-
+-			if (is_exthdr(cs.fw6.ipv6.proto)
+-			    && (invflags & XT_INV_PROTO) == 0)
+-				fprintf(stderr,
+-					"Warning: never matched protocol: %s. "
+-					"use extension match instead.\n",
+-					cs.protocol);
 -			break;
 -
 -		case 's':
@@ -305,10 +325,10 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -			dhostnetworkmask = optarg;
 -			break;
 -
--#ifdef IPT_F_GOTO
+-#ifdef IP6T_F_GOTO
 -		case 'g':
 -			set_option(&cs.options, OPT_JUMP, &invflags, invert);
--			cs.fw.ip.flags |= IPT_F_GOTO;
+-			cs.fw6.ipv6.flags |= IP6T_F_GOTO;
 -			cs.jumpto = xt_parse_target(optarg);
 -			break;
 -#endif
@@ -318,7 +338,7 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -			command_jump(&cs, optarg);
 -			break;
 -
--
+ 
 -		case 'i':
 -			if (*optarg == '\0')
 -				xtables_error(PARAMETER_PROBLEM,
@@ -327,8 +347,8 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -			set_option(&cs.options, OPT_VIANAMEIN, &invflags,
 -				   invert);
 -			xtables_parse_interface(optarg,
--					cs.fw.ip.iniface,
--					cs.fw.ip.iniface_mask);
+-					cs.fw6.ipv6.iniface,
+-					cs.fw6.ipv6.iniface_mask);
 -			break;
 -
 -		case 'o':
@@ -339,14 +359,8 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -			set_option(&cs.options, OPT_VIANAMEOUT, &invflags,
 -				   invert);
 -			xtables_parse_interface(optarg,
--					cs.fw.ip.outiface,
--					cs.fw.ip.outiface_mask);
--			break;
--
--		case 'f':
--			set_option(&cs.options, OPT_FRAGMENT, &invflags,
--				   invert);
--			cs.fw.ip.flags |= IPT_F_FRAG;
+-					cs.fw6.ipv6.outiface,
+-					cs.fw6.ipv6.outiface_mask);
 -			break;
 -
 -		case 'v':
@@ -360,7 +374,7 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -			if (restore) {
 -				xtables_error(PARAMETER_PROBLEM,
 -					      "You cannot use `-w' from "
--					      "iptables-restore");
+-					      "ip6tables-restore");
 -			}
 -			wait = parse_wait_time(argc, argv);
 -			break;
@@ -369,7 +383,7 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -			if (restore) {
 -				xtables_error(PARAMETER_PROBLEM,
 -					      "You cannot use `-W' from "
--					      "iptables-restore");
+-					      "ip6tables-restore");
 -			}
 -			parse_wait_interval(argc, argv, &wait_interval);
 -			wait_interval_set = true;
@@ -380,8 +394,7 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -			break;
 -
 -		case 'n':
--			set_option(&cs.options, OPT_NUMERIC, &invflags,
--				   invert);
+-			set_option(&cs.options, OPT_NUMERIC, &invflags, invert);
 -			break;
 -
 -		case 't':
@@ -437,25 +450,25 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -				xtables_error(PARAMETER_PROBLEM,
 -					"-%c packet counter not numeric",
 -					opt2char(OPT_COUNTERS));
--			cs.fw.counters.pcnt = cnt;
+-			cs.fw6.counters.pcnt = cnt;
 -
 -			if (sscanf(bcnt, "%llu", &cnt) != 1)
 -				xtables_error(PARAMETER_PROBLEM,
 -					"-%c byte counter not numeric",
 -					opt2char(OPT_COUNTERS));
--			cs.fw.counters.bcnt = cnt;
+-			cs.fw6.counters.bcnt = cnt;
 -			break;
 -
 -		case '4':
--			/* This is indeed the IPv4 iptables */
--			break;
--
--		case '6':
--			/* This is not the IPv6 ip6tables */
+-			/* This is not the IPv4 iptables */
 -			if (line != -1)
 -				return 1; /* success: line ignored */
--			fprintf(stderr, "This is the IPv4 version of iptables.\n");
+-			fprintf(stderr, "This is the IPv6 version of ip6tables.\n");
 -			exit_tryhelp(2, line);
+-
+-		case '6':
+-			/* This is indeed the IPv6 ip6tables */
+-			break;
 -
 -		case 1: /* non option */
 -			if (optarg[0] == '!' && optarg[1] == '\0') {
@@ -471,8 +484,12 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -			exit_tryhelp(2, line);
 -
 -		default:
--			if (command_default(&cs, &iptables_globals, invert))
--				/* cf. ip6tables.c */
+-			if (command_default(&cs, &ip6tables_globals, invert))
+-				/*
+-				 * If new options were loaded, we must retry
+-				 * getopt immediately and not allow
+-				 * invert=false to be executed.
+-				 */
 -				continue;
 -			break;
 -		}
@@ -506,25 +523,25 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -		xtables_error(PARAMETER_PROBLEM,
 -			   "nothing appropriate following !");
 -
--	cs.fw.ip.invflags = invflags;
+-	cs.fw6.ipv6.invflags = invflags;
 -
 -	if (command & (CMD_REPLACE | CMD_INSERT | CMD_DELETE | CMD_APPEND | CMD_CHECK)) {
 -		if (!(cs.options & OPT_DESTINATION))
--			dhostnetworkmask = "0.0.0.0/0";
+-			dhostnetworkmask = "::0/0";
 -		if (!(cs.options & OPT_SOURCE))
--			shostnetworkmask = "0.0.0.0/0";
+-			shostnetworkmask = "::0/0";
 -	}
 -
 -	if (shostnetworkmask)
--		xtables_ipparse_multiple(shostnetworkmask, &saddrs,
--					 &smasks, &nsaddrs);
+-		xtables_ip6parse_multiple(shostnetworkmask, &saddrs,
+-					  &smasks, &nsaddrs);
 -
 -	if (dhostnetworkmask)
--		xtables_ipparse_multiple(dhostnetworkmask, &daddrs,
--					 &dmasks, &ndaddrs);
+-		xtables_ip6parse_multiple(dhostnetworkmask, &daddrs,
+-					  &dmasks, &ndaddrs);
 -
 -	if ((nsaddrs > 1 || ndaddrs > 1) &&
--	    (cs.fw.ip.invflags & (IPT_INV_SRCIP | IPT_INV_DSTIP)))
+-	    (cs.fw6.ipv6.invflags & (IP6T_INV_SRCIP | IP6T_INV_DSTIP)))
 -		xtables_error(PARAMETER_PROBLEM, "! not allowed with multiple"
 -			   " source or destination IP addresses");
 -
@@ -546,14 +563,14 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 +	wait_interval	= args.wait_interval;
 +	nsaddrs		= args.s.naddrs;
 +	ndaddrs		= args.d.naddrs;
-+	saddrs		= args.s.addr.v4;
-+	daddrs		= args.d.addr.v4;
-+	smasks		= args.s.mask.v4;
-+	dmasks		= args.d.mask.v4;
++	saddrs		= args.s.addr.v6;
++	daddrs		= args.d.addr.v6;
++	smasks		= args.s.mask.v6;
++	dmasks		= args.d.mask.v6;
  
  	/* Attempt to acquire the xtables lock */
  	if (!restore)
-@@ -1160,26 +762,6 @@ int do_command4(int argc, char *argv[], char **table,
+@@ -1182,26 +769,6 @@ int do_command6(int argc, char *argv[], char **table,
  	    || command == CMD_CHECK
  	    || command == CMD_INSERT
  	    || command == CMD_REPLACE) {
@@ -577,12 +594,12 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
 -					   chain);
 -		}
 -
- 		if (cs.target && iptc_is_chain(cs.jumpto, *handle)) {
+ 		if (cs.target && ip6tc_is_chain(cs.jumpto, *handle)) {
  			fprintf(stderr,
  				"Warning: using chain %s, not extension\n",
-@@ -1317,6 +899,9 @@ int do_command4(int argc, char *argv[], char **table,
+@@ -1337,6 +904,9 @@ int do_command6(int argc, char *argv[], char **table,
  	case CMD_SET_POLICY:
- 		ret = iptc_set_policy(chain, policy, cs.options&OPT_COUNTERS ? &cs.fw.counters : NULL, *handle);
+ 		ret = ip6tc_set_policy(chain, policy, cs.options&OPT_COUNTERS ? &cs.fw6.counters : NULL, *handle);
  		break;
 +	case CMD_NONE:
 +	/* do_parse ignored the line (eg: -4 with ip6tables-restore) */
@@ -591,21 +608,20 @@ index 7dc4cbc1c9c22..26486ad51c7bb 100644
  		/* We should never reach this... */
  		exit_tryhelp(2, line);
 diff --git a/iptables/xshared.c b/iptables/xshared.c
-index a3985d458c5f8..8d94fcd592453 100644
+index 8d94fcd592453..c5a93290be427 100644
 --- a/iptables/xshared.c
 +++ b/iptables/xshared.c
-@@ -1864,8 +1864,11 @@ void ipv4_post_parse(int command, struct iptables_command_state *cs,
- 	if (args->goto_set)
- 		cs->fw.ip.flags |= IPT_F_GOTO;
+@@ -1836,6 +1836,10 @@ void ipv6_proto_parse(struct iptables_command_state *cs,
+ 	cs->fw6.ipv6.proto = args->proto;
+ 	cs->fw6.ipv6.invflags = args->invflags;
  
-+	/* nft-variants use cs->counters, legacy uses cs->fw.counters */
- 	cs->counters.pcnt = args->pcnt_cnt;
- 	cs->counters.bcnt = args->bcnt_cnt;
-+	cs->fw.counters.pcnt = args->pcnt_cnt;
-+	cs->fw.counters.bcnt = args->bcnt_cnt;
- 
- 	if (command & (CMD_REPLACE | CMD_INSERT |
- 			CMD_DELETE | CMD_APPEND | CMD_CHECK)) {
++	/* this is needed for ip6tables-legacy only */
++	args->flags |= IP6T_F_PROTO;
++	cs->fw6.ipv6.flags |= IP6T_F_PROTO;
++
+ 	if (is_exthdr(cs->fw6.ipv6.proto)
+ 	    && (cs->fw6.ipv6.invflags & XT_INV_PROTO) == 0)
+ 		fprintf(stderr,
 -- 
 2.34.1
 
