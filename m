@@ -2,626 +2,210 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D0148B046
-	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Jan 2022 16:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2492A48B529
+	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Jan 2022 19:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243519AbiAKPEh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 11 Jan 2022 10:04:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36516 "EHLO
+        id S1345743AbiAKSF6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 11 Jan 2022 13:05:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240338AbiAKPEg (ORCPT
+        with ESMTP id S1350398AbiAKSFJ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 11 Jan 2022 10:04:36 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAF7C06173F
-        for <netfilter-devel@vger.kernel.org>; Tue, 11 Jan 2022 07:04:36 -0800 (PST)
-Received: from localhost ([::1]:59116 helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1n7IhN-0007UV-NC; Tue, 11 Jan 2022 16:04:33 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 11/11] ip6tables: Use the shared do_parse, too
-Date:   Tue, 11 Jan 2022 16:04:29 +0100
-Message-Id: <20220111150429.29110-12-phil@nwl.cc>
+        Tue, 11 Jan 2022 13:05:09 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17D2C06175C;
+        Tue, 11 Jan 2022 10:04:56 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id g5so9262592plo.12;
+        Tue, 11 Jan 2022 10:04:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=djsNTpuyk+egjmhMtDXT1SCwXnpdzz5VxfkJIjUvmIs=;
+        b=DcJSX2muaO2OxNRfJLuM7VPOXC4gMpcBNEc8sb/+/AawZWbMpGPiiajC7mg3qvkS1S
+         JKNJ3yK0+JWbO74FPWBVs9jt87O83R0Vwpo90WW0H4sFsHaUwqMPvxSIh8Bb4Y0F28JV
+         MTxDw32es/a82gByQr2IvAiDCxmDrD8/c7OUKApv5wTFejcZRVhrKDRB4EE8Ab0w46NJ
+         rhRnM5NebJXvknGyUE6P4YbNVIVyKRi4oApE9SypNy+rNZnKnkCHmJ80OFyTnd5tDP49
+         4uNadLu7V7UQTmTvFbw//5m/XE9yDyGFHq3IMJhXo4rtwFEkZ+QZpUdCJf2MASUniJWS
+         ij5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=djsNTpuyk+egjmhMtDXT1SCwXnpdzz5VxfkJIjUvmIs=;
+        b=zKjHmXLuSPaUf4CRdEBRX6xvE1rpqIWpIU+QzQEAZ1Gn1gFexuSewwGI3EgO8RVGKb
+         ZgZukAiPywrHZvfVGE+hHCFXRuSGp75X6wwuZht8IIg7qQaK/HaZfsaUFjvqShyK2L/z
+         dPnR6p2OT+7iuHP11zIeUHsTW09RzHlyWsDHm5MKVoz3Lec1aP3tbYMajudMfHCgfr7I
+         2AXonLut99VmyhGMeFOIIvudssRxccQ/YUMFVNV5ec0JZ0MMzg6KXMrTccg39gUC0vUw
+         USSE0jGNx89QK/+VCcI/HJeX4Q49J+ph0OVM2gsvKzvmxKD12Pc9pBgS6a8EbI1NBi2I
+         tPEw==
+X-Gm-Message-State: AOAM5332wJY65AvgITHWhpzd3pqPZOd0WpEn+VgKzSDp03sXbGgKF146
+        ID5SlvaDhYBpfMF/FaPLUHATy6k4CsHAXw==
+X-Google-Smtp-Source: ABdhPJz6D4sQIOY1mZbjZZExYcGQynGW20i4/hFBZPUv9/CWYq5WbdWxV6P3dT24xhcDAslMNUM4Ew==
+X-Received: by 2002:a63:3fcd:: with SMTP id m196mr1285647pga.168.1641924295879;
+        Tue, 11 Jan 2022 10:04:55 -0800 (PST)
+Received: from localhost ([2405:201:6014:d064:502e:73f4:8af1:9522])
+        by smtp.gmail.com with ESMTPSA id m3sm5092706pfa.183.2022.01.11.10.04.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jan 2022 10:04:55 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: [PATCH bpf-next v7 00/10] Introduce unstable CT lookup helpers
+Date:   Tue, 11 Jan 2022 23:34:18 +0530
+Message-Id: <20220111180428.931466-1-memxor@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220111150429.29110-1-phil@nwl.cc>
-References: <20220111150429.29110-1-phil@nwl.cc>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6796; h=from:subject; bh=rIWND0XdTlB8jROZtBH2YOsY12pFU6pmftF856PeGpA=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBh3caiTFRYJ9KAK93mSgp51C6DIxhTNf/HsS/8NG04 AImSM9iJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYd3GogAKCRBM4MiGSL8RyqW7D/ 9evGLWRO6wOGw9aEHCIjxU2I+mNOEt+cqEQbZdiQVxPf5tzWhKeQJduT5Ukz1CiXr5UhhIkFQ/dJ0K mHL5L8XFuLOPSDsPFZYMo6RZPI7YCaDW6F87EQsoP1k7bX/z9wYFxaSR15531UrHlzUHeR6WBuHYZ2 EM+9i5mKI0/8SxvAQiKnDn4eoVHsOKbJ+mPxRU4OokaeFbByHLq2c/KQ0kY0O3f5JugUDixnA0bxyq U6PRZSwGPFOxXY5vDCtYg3czV3UiasNPi9IQBM42EVZuwBAsg0q5z8/Eu+kTZW30GHYX1xLHGBd2vs VS/hN016cK+cHFV1/rn2ojE0QByqyFeLfSIK4PBa0LdK1jFp7g1DGpu9AQjPA3/v40bnrRln4g6t75 ubJU6MXIPiwh1XNY0OpGflvvhSvKOcfspB1avnyKby95Emc5ot7b8EeHGWRgWINJsBglDxd7gX8oiW jUWQ/v4xhZyLYsyjIpPgI+DcqNQ9CxVclUJOcAsqtYwfaEQH77a6raNB6o37dLW4gz0bDdPaHDFGiw 7s4a22xCmcSUw++LCGXhm4Vltta2ArOdGqsNDKD70qXW66dBDuVOzBMcyyQXQjDTl16z8v5c3XAEly G7R6yOoOTNwwJaseY0CNZfHjRtEKYTraCI5tcVEHkdWfECLlxvLOgJIPHeaw==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Same change as with iptables, merely have to set IP6T_F_PROTO flag in
-ipv6_proto_parse().
+This series adds unstable conntrack lookup helpers using BPF kfunc support.  The
+patch adding the lookup helper is based off of Maxim's recent patch to aid in
+rebasing their series on top of this, all adjusted to work with module kfuncs [0].
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
-Changes since v1:
-- Adjust to introduced struct xt_cmd_parse_ops.
----
- iptables/ip6tables.c | 502 ++++---------------------------------------
- iptables/xshared.c   |   4 +
- 2 files changed, 40 insertions(+), 466 deletions(-)
+  [0]: https://lore.kernel.org/bpf/20211019144655.3483197-8-maximmi@nvidia.com
 
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index b4604f83cf8a4..0a6ce8ee0c1a2 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -90,21 +90,12 @@ static struct option original_opts[] = {
- struct xtables_globals ip6tables_globals = {
- 	.option_offset = 0,
- 	.program_version = PACKAGE_VERSION " (legacy)",
-+	.optstring = OPTSTRING_COMMON "R:S::W::" "46bg:h::m:nvw::x",
- 	.orig_opts = original_opts,
- 	.compat_rev = xtables_compatible_revision,
-+	.print_help = xtables_printhelp,
- };
- 
--#define opts ip6tables_globals.opts
--#define prog_name ip6tables_globals.program_name
--#define prog_vers ip6tables_globals.program_version
--
--static void
--exit_printhelp(const struct xtables_rule_match *matches)
--{
--	xtables_printhelp(matches);
--	exit(0);
--}
--
- /*
-  *	All functions starting with "parse" should succeed, otherwise
-  *	the program fails.
-@@ -114,15 +105,6 @@ exit_printhelp(const struct xtables_rule_match *matches)
-  *	return global static data.
- */
- 
--/* These are invalid numbers as upper layer protocol */
--static int is_exthdr(uint16_t proto)
--{
--	return (proto == IPPROTO_ROUTING ||
--		proto == IPPROTO_FRAGMENT ||
--		proto == IPPROTO_AH ||
--		proto == IPPROTO_DSTOPTS);
--}
--
- static int
- print_match(const struct xt_entry_match *m,
- 	    const struct ip6t_ip6 *ip,
-@@ -714,10 +696,24 @@ generate_entry(const struct ip6t_entry *fw,
- int do_command6(int argc, char *argv[], char **table,
- 		struct xtc_handle **handle, bool restore)
- {
-+	struct xt_cmd_parse_ops cmd_parse_ops = {
-+		.proto_parse	= ipv6_proto_parse,
-+		.post_parse	= ipv6_post_parse,
-+	};
-+	struct xt_cmd_parse p = {
-+		.table		= *table,
-+		.restore	= restore,
-+		.line		= line,
-+		.ops		= &cmd_parse_ops,
-+	};
- 	struct iptables_command_state cs = {
- 		.jumpto	= "",
- 		.argv	= argv,
- 	};
-+	struct xtables_args args = {
-+		.family = AF_INET6,
-+		.wait_interval.tv_sec = 1,
-+	};
- 	struct ip6t_entry *e = NULL;
- 	unsigned int nsaddrs = 0, ndaddrs = 0;
- 	struct in6_addr *saddrs = NULL, *daddrs = NULL;
-@@ -728,437 +724,28 @@ int do_command6(int argc, char *argv[], char **table,
- 	struct timeval wait_interval = {
- 		.tv_sec	= 1,
- 	};
--	bool wait_interval_set = false;
- 	const char *chain = NULL;
--	const char *shostnetworkmask = NULL, *dhostnetworkmask = NULL;
- 	const char *policy = NULL, *newname = NULL;
- 	unsigned int rulenum = 0, command = 0;
--	const char *pcnt = NULL, *bcnt = NULL;
- 	int ret = 1;
--	struct xtables_match *m;
--	struct xtables_rule_match *matchp;
--	struct xtables_target *t;
--	unsigned long long cnt;
--	bool table_set = false;
--	uint16_t invflags = 0;
--	bool invert = false;
--
--	/* re-set optind to 0 in case do_command6 gets called
--	 * a second time */
--	optind = 0;
--
--	/* clear mflags in case do_command6 gets called a second time
--	 * (we clear the global list of all matches for security)*/
--	for (m = xtables_matches; m; m = m->next)
--		m->mflags = 0;
--
--	for (t = xtables_targets; t; t = t->next) {
--		t->tflags = 0;
--		t->used = 0;
--	}
--
--	/* Suppress error messages: we may add new options if we
--           demand-load a protocol. */
--	opterr = 0;
--
--	opts = xt_params->orig_opts;
--	while ((cs.c = getopt_long(argc, argv,
--	   "-:A:C:D:R:I:L::S::M:F::Z::N:X::E:P:Vh::o:p:s:d:j:i:bvw::W::nt:m:xc:g:46",
--					   opts, NULL)) != -1) {
--		switch (cs.c) {
--			/*
--			 * Command selection
--			 */
--		case 'A':
--			add_command(&command, CMD_APPEND, CMD_NONE, invert);
--			chain = optarg;
--			break;
--
--		case 'C':
--			add_command(&command, CMD_CHECK, CMD_NONE, invert);
--			chain = optarg;
--			break;
--
--		case 'D':
--			add_command(&command, CMD_DELETE, CMD_NONE, invert);
--			chain = optarg;
--			if (xs_has_arg(argc, argv)) {
--				rulenum = parse_rulenumber(argv[optind++]);
--				command = CMD_DELETE_NUM;
--			}
--			break;
--
--		case 'R':
--			add_command(&command, CMD_REPLACE, CMD_NONE, invert);
--			chain = optarg;
--			if (xs_has_arg(argc, argv))
--				rulenum = parse_rulenumber(argv[optind++]);
--			else
--				xtables_error(PARAMETER_PROBLEM,
--					   "-%c requires a rule number",
--					   cmd2char(CMD_REPLACE));
--			break;
--
--		case 'I':
--			add_command(&command, CMD_INSERT, CMD_NONE, invert);
--			chain = optarg;
--			if (xs_has_arg(argc, argv))
--				rulenum = parse_rulenumber(argv[optind++]);
--			else rulenum = 1;
--			break;
--
--		case 'L':
--			add_command(&command, CMD_LIST,
--				    CMD_ZERO | CMD_ZERO_NUM, invert);
--			if (optarg) chain = optarg;
--			else if (xs_has_arg(argc, argv))
--				chain = argv[optind++];
--			if (xs_has_arg(argc, argv))
--				rulenum = parse_rulenumber(argv[optind++]);
--			break;
--
--		case 'S':
--			add_command(&command, CMD_LIST_RULES,
--				    CMD_ZERO | CMD_ZERO_NUM, invert);
--			if (optarg) chain = optarg;
--			else if (xs_has_arg(argc, argv))
--				chain = argv[optind++];
--			if (xs_has_arg(argc, argv))
--				rulenum = parse_rulenumber(argv[optind++]);
--			break;
--
--		case 'F':
--			add_command(&command, CMD_FLUSH, CMD_NONE, invert);
--			if (optarg) chain = optarg;
--			else if (xs_has_arg(argc, argv))
--				chain = argv[optind++];
--			break;
--
--		case 'Z':
--			add_command(&command, CMD_ZERO, CMD_LIST|CMD_LIST_RULES,
--				    invert);
--			if (optarg) chain = optarg;
--			else if (xs_has_arg(argc, argv))
--				chain = argv[optind++];
--			if (xs_has_arg(argc, argv)) {
--				rulenum = parse_rulenumber(argv[optind++]);
--				command = CMD_ZERO_NUM;
--			}
--			break;
--
--		case 'N':
--			parse_chain(optarg);
--			add_command(&command, CMD_NEW_CHAIN, CMD_NONE, invert);
--			chain = optarg;
--			break;
--
--		case 'X':
--			add_command(&command, CMD_DELETE_CHAIN, CMD_NONE,
--				    invert);
--			if (optarg) chain = optarg;
--			else if (xs_has_arg(argc, argv))
--				chain = argv[optind++];
--			break;
--
--		case 'E':
--			add_command(&command, CMD_RENAME_CHAIN, CMD_NONE,
--				    invert);
--			chain = optarg;
--			if (xs_has_arg(argc, argv))
--				newname = argv[optind++];
--			else
--				xtables_error(PARAMETER_PROBLEM,
--					   "-%c requires old-chain-name and "
--					   "new-chain-name",
--					    cmd2char(CMD_RENAME_CHAIN));
--			break;
--
--		case 'P':
--			add_command(&command, CMD_SET_POLICY, CMD_NONE,
--				    invert);
--			chain = optarg;
--			if (xs_has_arg(argc, argv))
--				policy = argv[optind++];
--			else
--				xtables_error(PARAMETER_PROBLEM,
--					   "-%c requires a chain and a policy",
--					   cmd2char(CMD_SET_POLICY));
--			break;
--
--		case 'h':
--			if (!optarg)
--				optarg = argv[optind];
--
--			/* ip6tables -p icmp -h */
--			if (!cs.matches && cs.protocol)
--				xtables_find_match(cs.protocol, XTF_TRY_LOAD,
--					&cs.matches);
--
--			exit_printhelp(cs.matches);
--
--			/*
--			 * Option selection
--			 */
--		case 'p':
--			set_option(&cs.options, OPT_PROTOCOL, &invflags,
--				   invert);
--
--			/* Canonicalize into lower case */
--			for (cs.protocol = optarg; *cs.protocol; cs.protocol++)
--				*cs.protocol = tolower(*cs.protocol);
--
--			cs.protocol = optarg;
--			cs.fw6.ipv6.proto = xtables_parse_protocol(cs.protocol);
--			cs.fw6.ipv6.flags |= IP6T_F_PROTO;
--
--			if (cs.fw6.ipv6.proto == 0 && (invflags & XT_INV_PROTO))
--				xtables_error(PARAMETER_PROBLEM,
--					   "rule would never match protocol");
--
--			if (is_exthdr(cs.fw6.ipv6.proto)
--			    && (invflags & XT_INV_PROTO) == 0)
--				fprintf(stderr,
--					"Warning: never matched protocol: %s. "
--					"use extension match instead.\n",
--					cs.protocol);
--			break;
--
--		case 's':
--			set_option(&cs.options, OPT_SOURCE, &invflags, invert);
--			shostnetworkmask = optarg;
--			break;
--
--		case 'd':
--			set_option(&cs.options, OPT_DESTINATION, &invflags,
--				   invert);
--			dhostnetworkmask = optarg;
--			break;
--
--#ifdef IP6T_F_GOTO
--		case 'g':
--			set_option(&cs.options, OPT_JUMP, &invflags, invert);
--			cs.fw6.ipv6.flags |= IP6T_F_GOTO;
--			cs.jumpto = xt_parse_target(optarg);
--			break;
--#endif
--
--		case 'j':
--			set_option(&cs.options, OPT_JUMP, &invflags, invert);
--			command_jump(&cs, optarg);
--			break;
--
- 
--		case 'i':
--			if (*optarg == '\0')
--				xtables_error(PARAMETER_PROBLEM,
--					"Empty interface is likely to be "
--					"undesired");
--			set_option(&cs.options, OPT_VIANAMEIN, &invflags,
--				   invert);
--			xtables_parse_interface(optarg,
--					cs.fw6.ipv6.iniface,
--					cs.fw6.ipv6.iniface_mask);
--			break;
--
--		case 'o':
--			if (*optarg == '\0')
--				xtables_error(PARAMETER_PROBLEM,
--					"Empty interface is likely to be "
--					"undesired");
--			set_option(&cs.options, OPT_VIANAMEOUT, &invflags,
--				   invert);
--			xtables_parse_interface(optarg,
--					cs.fw6.ipv6.outiface,
--					cs.fw6.ipv6.outiface_mask);
--			break;
--
--		case 'v':
--			if (!verbose)
--				set_option(&cs.options, OPT_VERBOSE,
--					   &invflags, invert);
--			verbose++;
--			break;
--
--		case 'w':
--			if (restore) {
--				xtables_error(PARAMETER_PROBLEM,
--					      "You cannot use `-w' from "
--					      "ip6tables-restore");
--			}
--			wait = parse_wait_time(argc, argv);
--			break;
--
--		case 'W':
--			if (restore) {
--				xtables_error(PARAMETER_PROBLEM,
--					      "You cannot use `-W' from "
--					      "ip6tables-restore");
--			}
--			parse_wait_interval(argc, argv, &wait_interval);
--			wait_interval_set = true;
--			break;
--
--		case 'm':
--			command_match(&cs, invert);
--			break;
--
--		case 'n':
--			set_option(&cs.options, OPT_NUMERIC, &invflags, invert);
--			break;
--
--		case 't':
--			if (invert)
--				xtables_error(PARAMETER_PROBLEM,
--					   "unexpected ! flag before --table");
--			if (restore && table_set)
--				xtables_error(PARAMETER_PROBLEM,
--					      "The -t option cannot be used in %s.\n",
--					      xt_params->program_name);
--			*table = optarg;
--			table_set = true;
--			break;
--
--		case 'x':
--			set_option(&cs.options, OPT_EXPANDED, &invflags,
--				   invert);
--			break;
--
--		case 'V':
--			if (invert)
--				printf("Not %s ;-)\n", prog_vers);
--			else
--				printf("%s v%s\n",
--				       prog_name, prog_vers);
--			exit(0);
--
--		case '0':
--			set_option(&cs.options, OPT_LINENUMBERS, &invflags,
--				   invert);
--			break;
--
--		case 'M':
--			xtables_modprobe_program = optarg;
--			break;
--
--		case 'c':
--
--			set_option(&cs.options, OPT_COUNTERS, &invflags,
--				   invert);
--			pcnt = optarg;
--			bcnt = strchr(pcnt + 1, ',');
--			if (bcnt)
--			    bcnt++;
--			if (!bcnt && xs_has_arg(argc, argv))
--				bcnt = argv[optind++];
--			if (!bcnt)
--				xtables_error(PARAMETER_PROBLEM,
--					"-%c requires packet and byte counter",
--					opt2char(OPT_COUNTERS));
--
--			if (sscanf(pcnt, "%llu", &cnt) != 1)
--				xtables_error(PARAMETER_PROBLEM,
--					"-%c packet counter not numeric",
--					opt2char(OPT_COUNTERS));
--			cs.fw6.counters.pcnt = cnt;
--
--			if (sscanf(bcnt, "%llu", &cnt) != 1)
--				xtables_error(PARAMETER_PROBLEM,
--					"-%c byte counter not numeric",
--					opt2char(OPT_COUNTERS));
--			cs.fw6.counters.bcnt = cnt;
--			break;
--
--		case '4':
--			/* This is not the IPv4 iptables */
--			if (line != -1)
--				return 1; /* success: line ignored */
--			fprintf(stderr, "This is the IPv6 version of ip6tables.\n");
--			exit_tryhelp(2, line);
--
--		case '6':
--			/* This is indeed the IPv6 ip6tables */
--			break;
--
--		case 1: /* non option */
--			if (optarg[0] == '!' && optarg[1] == '\0') {
--				if (invert)
--					xtables_error(PARAMETER_PROBLEM,
--						   "multiple consecutive ! not"
--						   " allowed");
--				invert = true;
--				optarg[0] = '\0';
--				continue;
--			}
--			fprintf(stderr, "Bad argument `%s'\n", optarg);
--			exit_tryhelp(2, line);
--
--		default:
--			if (command_default(&cs, &ip6tables_globals, invert))
--				/*
--				 * If new options were loaded, we must retry
--				 * getopt immediately and not allow
--				 * invert=false to be executed.
--				 */
--				continue;
--			break;
--		}
--		invert = false;
--	}
--
--	if (!wait && wait_interval_set)
--		xtables_error(PARAMETER_PROBLEM,
--			      "--wait-interval only makes sense with --wait\n");
--
--	if (strcmp(*table, "nat") == 0 &&
--	    ((policy != NULL && strcmp(policy, "DROP") == 0) ||
--	    (cs.jumpto != NULL && strcmp(cs.jumpto, "DROP") == 0)))
--		xtables_error(PARAMETER_PROBLEM,
--			"\nThe \"nat\" table is not intended for filtering, "
--		        "the use of DROP is therefore inhibited.\n\n");
--
--	for (matchp = cs.matches; matchp; matchp = matchp->next)
--		xtables_option_mfcall(matchp->match);
--	if (cs.target != NULL)
--		xtables_option_tfcall(cs.target);
--
--	/* Fix me: must put inverse options checking here --MN */
--
--	if (optind < argc)
--		xtables_error(PARAMETER_PROBLEM,
--			   "unknown arguments found on commandline");
--	if (!command)
--		xtables_error(PARAMETER_PROBLEM, "no command specified");
--	if (invert)
--		xtables_error(PARAMETER_PROBLEM,
--			   "nothing appropriate following !");
--
--	cs.fw6.ipv6.invflags = invflags;
--
--	if (command & (CMD_REPLACE | CMD_INSERT | CMD_DELETE | CMD_APPEND | CMD_CHECK)) {
--		if (!(cs.options & OPT_DESTINATION))
--			dhostnetworkmask = "::0/0";
--		if (!(cs.options & OPT_SOURCE))
--			shostnetworkmask = "::0/0";
--	}
--
--	if (shostnetworkmask)
--		xtables_ip6parse_multiple(shostnetworkmask, &saddrs,
--					  &smasks, &nsaddrs);
--
--	if (dhostnetworkmask)
--		xtables_ip6parse_multiple(dhostnetworkmask, &daddrs,
--					  &dmasks, &ndaddrs);
--
--	if ((nsaddrs > 1 || ndaddrs > 1) &&
--	    (cs.fw6.ipv6.invflags & (IP6T_INV_SRCIP | IP6T_INV_DSTIP)))
--		xtables_error(PARAMETER_PROBLEM, "! not allowed with multiple"
--			   " source or destination IP addresses");
--
--	if (command == CMD_REPLACE && (nsaddrs != 1 || ndaddrs != 1))
--		xtables_error(PARAMETER_PROBLEM, "Replacement rule does not "
--			   "specify a unique address");
--
--	generic_opt_check(command, cs.options);
-+	do_parse(argc, argv, &p, &cs, &args);
-+
-+	command		= p.command;
-+	chain		= p.chain;
-+	*table		= p.table;
-+	rulenum		= p.rulenum;
-+	policy		= p.policy;
-+	newname		= p.newname;
-+	verbose		= p.verbose;
-+	wait		= args.wait;
-+	wait_interval	= args.wait_interval;
-+	nsaddrs		= args.s.naddrs;
-+	ndaddrs		= args.d.naddrs;
-+	saddrs		= args.s.addr.v6;
-+	daddrs		= args.d.addr.v6;
-+	smasks		= args.s.mask.v6;
-+	dmasks		= args.d.mask.v6;
- 
- 	/* Attempt to acquire the xtables lock */
- 	if (!restore)
-@@ -1182,26 +769,6 @@ int do_command6(int argc, char *argv[], char **table,
- 	    || command == CMD_CHECK
- 	    || command == CMD_INSERT
- 	    || command == CMD_REPLACE) {
--		if (strcmp(chain, "PREROUTING") == 0
--		    || strcmp(chain, "INPUT") == 0) {
--			/* -o not valid with incoming packets. */
--			if (cs.options & OPT_VIANAMEOUT)
--				xtables_error(PARAMETER_PROBLEM,
--					   "Can't use -%c with %s\n",
--					   opt2char(OPT_VIANAMEOUT),
--					   chain);
--		}
--
--		if (strcmp(chain, "POSTROUTING") == 0
--		    || strcmp(chain, "OUTPUT") == 0) {
--			/* -i not valid with outgoing packets */
--			if (cs.options & OPT_VIANAMEIN)
--				xtables_error(PARAMETER_PROBLEM,
--					   "Can't use -%c with %s\n",
--					   opt2char(OPT_VIANAMEIN),
--					   chain);
--		}
--
- 		if (cs.target && ip6tc_is_chain(cs.jumpto, *handle)) {
- 			fprintf(stderr,
- 				"Warning: using chain %s, not extension\n",
-@@ -1337,6 +904,9 @@ int do_command6(int argc, char *argv[], char **table,
- 	case CMD_SET_POLICY:
- 		ret = ip6tc_set_policy(chain, policy, cs.options&OPT_COUNTERS ? &cs.fw6.counters : NULL, *handle);
- 		break;
-+	case CMD_NONE:
-+	/* do_parse ignored the line (eg: -4 with ip6tables-restore) */
-+		break;
- 	default:
- 		/* We should never reach this... */
- 		exit_tryhelp(2, line);
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 8d94fcd592453..c5a93290be427 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -1836,6 +1836,10 @@ void ipv6_proto_parse(struct iptables_command_state *cs,
- 	cs->fw6.ipv6.proto = args->proto;
- 	cs->fw6.ipv6.invflags = args->invflags;
- 
-+	/* this is needed for ip6tables-legacy only */
-+	args->flags |= IP6T_F_PROTO;
-+	cs->fw6.ipv6.flags |= IP6T_F_PROTO;
-+
- 	if (is_exthdr(cs->fw6.ipv6.proto)
- 	    && (cs->fw6.ipv6.invflags & XT_INV_PROTO) == 0)
- 		fprintf(stderr,
+To enable returning a reference to struct nf_conn, the verifier is extended to
+support reference tracking for PTR_TO_BTF_ID, and kfunc is extended with support
+for working as acquire/release functions, similar to existing BPF helpers. kfunc
+returning pointer (limited to PTR_TO_BTF_ID in the kernel) can also return a
+PTR_TO_BTF_ID_OR_NULL now, typically needed when acquiring a resource can fail.
+kfunc can also receive PTR_TO_CTX and PTR_TO_MEM (with some limitations) as
+arguments now. There is also support for passing a mem, len pair as argument
+to kfunc now. In such cases, passing pointer to unsized type (void) is also
+permitted.
+
+Please see individual commits for details.
+
+NOTE: [0] and [1] are needed to make BPF CI green for this series.
+
+ [0]: https://github.com/libbpf/libbpf/pull/437
+ [1]: https://github.com/kernel-patches/vmtest/pull/59
+
+Changelog:
+----------
+v6 -> v7:
+v6: https://lore.kernel.org/bpf/20220102162115.1506833-1-memxor@gmail.com
+
+ * Drop try_module_get_live patch, use flag in btf_module struct (Alexei)
+ * Add comments and expand commit message detailing why we have to concatenate
+   and sort vmlinux kfunc BTF ID sets (Alexei)
+ * Use bpf_testmod for testing btf_try_get_module race (Alexei)
+ * Use bpf_prog_type for both btf_kfunc_id_set_contains and
+   register_btf_kfunc_id_set calls (Alexei)
+ * In case of module set registration, directly assign set (Alexei)
+ * Add CONFIG_USERFAULTFD=y to selftest config
+ * Fix other nits
+
+v5 -> v6:
+v5: https://lore.kernel.org/bpf/20211230023705.3860970-1-memxor@gmail.com
+
+ * Fix for a bug in btf_try_get_module leading to use-after-free
+ * Drop *kallsyms_on_each_symbol loop, reinstate register_btf_kfunc_id_set (Alexei)
+ * btf_free_kfunc_set_tab now takes struct btf, and handles resetting tab to NULL
+ * Check return value btf_name_by_offset for param_name
+ * Instead of using tmp_set, use btf->kfunc_set_tab directly, and simplify cleanup
+
+v4 -> v5:
+v4: https://lore.kernel.org/bpf/20211217015031.1278167-1-memxor@gmail.com
+
+ * Move nf_conntrack helpers code to its own separate file (Toke, Pablo)
+ * Remove verifier callbacks, put btf_id_sets in struct btf (Alexei)
+  * Convert the in-kernel users away from the old API
+ * Change len__ prefix convention to __sz suffix (Alexei)
+ * Drop parent_ref_obj_id patch (Alexei)
+
+v3 -> v4:
+v3: https://lore.kernel.org/bpf/20211210130230.4128676-1-memxor@gmail.com
+
+ * Guard unstable CT helpers with CONFIG_DEBUG_INFO_BTF_MODULES
+ * Move addition of prog_test test kfuncs to selftest commit
+ * Move negative kfunc tests to test_verifier suite
+ * Limit struct nesting depth to 4, which should be enough for now
+
+v2 -> v3:
+v2: https://lore.kernel.org/bpf/20211209170929.3485242-1-memxor@gmail.com
+
+ * Fix build error for !CONFIG_BPF_SYSCALL (Patchwork)
+
+RFC v1 -> v2:
+v1: https://lore.kernel.org/bpf/20211030144609.263572-1-memxor@gmail.com
+
+ * Limit PTR_TO_MEM support to pointer to scalar, or struct with scalars (Alexei)
+ * Use btf_id_set for checking acquire, release, ret type null (Alexei)
+ * Introduce opts struct for CT helpers, move int err parameter to it
+ * Add l4proto as parameter to CT helper's opts, remove separate tcp/udp helpers
+ * Add support for mem, len argument pair to kfunc
+ * Allow void * as pointer type for mem, len argument pair
+ * Extend selftests to cover new additions to kfuncs
+ * Copy ref_obj_id to PTR_TO_BTF_ID dst_reg on btf_struct_access, test it
+ * Fix other misc nits, bugs, and expand commit messages
+
+Kumar Kartikeya Dwivedi (10):
+  bpf: Fix UAF due to race between btf_try_get_module and load_module
+  bpf: Populate kfunc BTF ID sets in struct btf
+  bpf: Remove check_kfunc_call callback and old kfunc BTF ID API
+  bpf: Introduce mem, size argument pair support for kfunc
+  bpf: Add reference tracking support to kfunc
+  net/netfilter: Add unstable CT lookup helpers for XDP and TC-BPF
+  selftests/bpf: Add test for unstable CT lookup API
+  selftests/bpf: Add test_verifier support to fixup kfunc call insns
+  selftests/bpf: Extend kfunc selftests
+  selftests/bpf: Add test for race in btf_try_get_module
+
+ include/linux/bpf.h                           |   8 -
+ include/linux/bpf_verifier.h                  |   7 +
+ include/linux/btf.h                           |  82 ++--
+ include/linux/btf_ids.h                       |  13 +-
+ include/net/netfilter/nf_conntrack_bpf.h      |  23 ++
+ kernel/bpf/btf.c                              | 375 ++++++++++++++++--
+ kernel/bpf/verifier.c                         | 197 +++++----
+ net/bpf/test_run.c                            | 150 ++++++-
+ net/core/filter.c                             |   1 -
+ net/core/net_namespace.c                      |   1 +
+ net/ipv4/bpf_tcp_ca.c                         |  22 +-
+ net/ipv4/tcp_bbr.c                            |  18 +-
+ net/ipv4/tcp_cubic.c                          |  17 +-
+ net/ipv4/tcp_dctcp.c                          |  18 +-
+ net/netfilter/Makefile                        |   5 +
+ net/netfilter/nf_conntrack_bpf.c              | 257 ++++++++++++
+ net/netfilter/nf_conntrack_core.c             |   8 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  21 +-
+ tools/testing/selftests/bpf/config            |   5 +
+ .../selftests/bpf/prog_tests/bpf_mod_race.c   | 230 +++++++++++
+ .../testing/selftests/bpf/prog_tests/bpf_nf.c |  48 +++
+ .../selftests/bpf/prog_tests/kfunc_call.c     |   6 +
+ .../selftests/bpf/progs/bpf_mod_race.c        | 100 +++++
+ .../selftests/bpf/progs/kfunc_call_race.c     |  14 +
+ .../selftests/bpf/progs/kfunc_call_test.c     |  52 ++-
+ tools/testing/selftests/bpf/progs/ksym_race.c |  13 +
+ .../testing/selftests/bpf/progs/test_bpf_nf.c | 105 +++++
+ tools/testing/selftests/bpf/test_verifier.c   |  28 ++
+ tools/testing/selftests/bpf/verifier/calls.c  |  75 ++++
+ 29 files changed, 1685 insertions(+), 214 deletions(-)
+ create mode 100644 include/net/netfilter/nf_conntrack_bpf.h
+ create mode 100644 net/netfilter/nf_conntrack_bpf.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_mod_race.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_race.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ksym_race.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_bpf_nf.c
+
 -- 
 2.34.1
 
