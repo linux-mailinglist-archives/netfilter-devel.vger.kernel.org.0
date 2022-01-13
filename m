@@ -2,92 +2,84 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B4F48E059
-	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jan 2022 23:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEF148E06D
+	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jan 2022 23:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238003AbiAMWgB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 13 Jan 2022 17:36:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
+        id S238026AbiAMWi4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 13 Jan 2022 17:38:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235281AbiAMWgA (ORCPT
+        with ESMTP id S235420AbiAMWiz (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 13 Jan 2022 17:36:00 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B41C061574;
-        Thu, 13 Jan 2022 14:36:00 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id j27so1151158pgj.3;
-        Thu, 13 Jan 2022 14:36:00 -0800 (PST)
+        Thu, 13 Jan 2022 17:38:55 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBB9C061574
+        for <netfilter-devel@vger.kernel.org>; Thu, 13 Jan 2022 14:38:55 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id i30so1156907pgl.0
+        for <netfilter-devel@vger.kernel.org>; Thu, 13 Jan 2022 14:38:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5wMgPxnCW3lehf/aD8F6oiMEHPNP42N5iWx4rfgZFL4=;
-        b=PmgdI80v1X1TnsGb4hKz8oDwMz08xt8OgAYEs/BpfflSL+sMzlFggHCGI1TGMQg2qS
-         6+/gli9MXi1Luueje4lazUFfiuadkeLW2L3PYt1oTyy2CAoilfw1euvaYt4lFmIyttaZ
-         +4MLMcNT+vLTY0D2MTxfVZDlz9RCPKgioOweo/jaXFlnO5JXglg1hj9L1mDHKRTRY0B8
-         gNi9NycvPGTuA7reXUCBePESYON6D1oU8srXTMdTx1d6Xy1eotSJeGerj18aMgdWbmMd
-         av6t8Z59cppFbxjNB1HRaFS23zWAxJsB7RtOnwQSVcpXbShI3pack4sYfZiHX4jNUXZG
-         QRvw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=YbEI3Q/NEjCtDTVCV1jkA7nYNYBH/Wfa2wk3IkVyJko=;
+        b=TZSnmiKfh8lQHyoHB+yllzvEmA18to6wFnOGKYs0poMgePC/IzPQirrR4ktwaDnvqN
+         6MtgeXCy1yK/vlfiGBEgBcEWSdlaZhy13ZGg8bropI5LiWLT69uDg3RLIG4RAEnMei/e
+         OLsKu4ckBojbKLqXja5eQdc78QuplSbLUeUuR4YwQsmoJKPsmqAxP6kAsKKrhO2uloGx
+         jgBW3DLRyjuJTQuba5a1bywPT+79uteTY7MRR7+lTs5pNJAoJHK8njIEoPRz5bJHtGc4
+         HFHciKQwdRnv9OQdv5RacscrcPdsiz56D1dXGcQrq4Bp8NviqIrfWkgUqnbc+T36lHWO
+         JWDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5wMgPxnCW3lehf/aD8F6oiMEHPNP42N5iWx4rfgZFL4=;
-        b=vJVZJ0WwHs2+c57zKk+6Zgvqi3v7LTbvoFLJBhXJ01rK+zj40KbRBl1yNbbK+kKL0s
-         lYJcejbg9a/kwDi93kCkxmXj1HTfTD5DvJnLfS720v75mycJT6/nwS6gqZ2Ta7BhfuI0
-         LxbF4dcIL8THkgWnvUkkU9/Dpkxz13mbF8Q2+/GE85vZVGVTkfr6TxJAXb0ESZ9Bc5r3
-         /+HhMl2OdB/VC24GFx1GXt/7oDN0+aPnHFAyImBLg1hNWoIDBqcTR3MOPUVyhIcKGHzc
-         Vi+nlWPlxUm/oXqqt+Bgp0UZAfvwTTQLElgx4Pfp5CIgjtYT40Cjh2inoW200j6mFXM4
-         dUEw==
-X-Gm-Message-State: AOAM5332B1AZoBkrwPyQauKe/xGUmC7km2JymSQz6OaMykevN3OxGlEI
-        a6R2c1OWhkOh2iBzJwD4UUQ=
-X-Google-Smtp-Source: ABdhPJy6lIyDsCCRGHC224n2GBJJt1B3S0cMAUxPsmE8tuwGvPhuVopd45aoClszjbW+yZiszJm6vg==
-X-Received: by 2002:a63:91c4:: with SMTP id l187mr4989464pge.34.1642113359688;
-        Thu, 13 Jan 2022 14:35:59 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:5547])
-        by smtp.gmail.com with ESMTPSA id il18sm2029418pjb.45.2022.01.13.14.35.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jan 2022 14:35:59 -0800 (PST)
-Date:   Thu, 13 Jan 2022 14:35:57 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next v7 07/10] selftests/bpf: Add test for unstable
- CT lookup API
-Message-ID: <20220113223557.45d5czezncjwekge@ast-mbp.dhcp.thefacebook.com>
-References: <20220111180428.931466-1-memxor@gmail.com>
- <20220111180428.931466-8-memxor@gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=YbEI3Q/NEjCtDTVCV1jkA7nYNYBH/Wfa2wk3IkVyJko=;
+        b=DCpLoxNq/hzTkfjv28EVhPOAyn6fA/4N4w0chojq5bQlge+H2YD9OsAPPqiWsI7BPU
+         fxRsWCDpAL6AUtzmxhUk7cYzjeLYy/g8HRQLW3rl2WKw4qwTJZ9VVDuJ2RKgdF9L2SBY
+         ssxy+xKSq0fgSrBmO1pVzMEgliLYmcqp3hq7A6cMYveoKL9PrqMFaGAkEOv7B5H8TbF3
+         wMJIVN/7hclXsubDJ1hjE+aTn3i+TFQzR4hiUWWGoc8JmjL0Wzzbest1fkaLQl1Bw3uT
+         vsCRbTANIt/URsXhV1YDhdMpSo+cJQla/eQ4JSUjXfV1rQIZZ0x4kjJDmHhij1d/5gor
+         RoAw==
+X-Gm-Message-State: AOAM533FlUab0QO07SDFtoOnkk7F95RdwAXi4Pq6sJ1ysf+C2L55qyLu
+        IJVaQ3Q8zrlTx3Pwy4hlkGUjbRA84Z8qiTLzAk4=
+X-Google-Smtp-Source: ABdhPJxV+CDcXMAaoBlObNCE+WkBdJZDSsiMXXJxSU4qLOl+5GP7wjtV5hGVQqePL03Cw94D/ZrqizECvr4TNYXN3v8=
+X-Received: by 2002:a05:6a00:26c5:b0:4bd:4ad6:9c71 with SMTP id
+ p5-20020a056a0026c500b004bd4ad69c71mr6167765pfw.45.1642113535225; Thu, 13 Jan
+ 2022 14:38:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220111180428.931466-8-memxor@gmail.com>
+Received: by 2002:a05:6a10:f38c:0:0:0:0 with HTTP; Thu, 13 Jan 2022 14:38:54
+ -0800 (PST)
+Reply-To: mchristophdaniel@gmail.com
+From:   Marcus Galois <marcus.galois@gmail.com>
+Date:   Thu, 13 Jan 2022 23:38:54 +0100
+Message-ID: <CANqBaXWLwHBNoawbz2tGySxar8jn5q2OzEiG-GjWCyVh=aJu6w@mail.gmail.com>
+Subject: Good News Finally.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 11:34:25PM +0530, Kumar Kartikeya Dwivedi wrote:
-> +
-> +#define nf_ct_test(func, ctx)                                                  \
-> +	({                                                                     \
-> +		struct bpf_ct_opts opts_def = { .l4proto = IPPROTO_TCP,        \
-> +						.netns_id = -1 };              \
-> +		struct bpf_sock_tuple bpf_tuple;                               \
-> +		struct nf_conn *ct;                                            \
-> +		__builtin_memset(&bpf_tuple, 0, sizeof(bpf_tuple.ipv4));       \
-> +		ct = func(ctx, NULL, 0, &opts_def, sizeof(opts_def));          \
+Hello friend.
 
-Have you tried converting the macro to static always_inline
-and passing func as a pointer to a function?
-The first argument 'ctx' is different, but if you prototype it
-in this static inline as (*fn)(void *ctx)
-and type case it later in nf_skb/xdp_ct_test() that should still work?
+You might find it so difficult to remember me, though it is indeed a
+very long time, I am much delighted to contact you again after a long
+period of time, I remember you despite circumstances that made things
+not worked out as we projected then. I want to inform you that the
+transaction we're doing together then finally worked out and I decided
+to contact you and to let you know because of your tremendous effort
+to make things work out then.
+
+Meanwhile I must inform you that I'm presently in Caribbean Island for
+numerous business negotiation with some partners. with my sincere
+heart i have decided to compensate you with USD$900,000 for your
+dedication then on our transaction, you tried so much that period and
+I appreciated your effort. I wrote a cheque/check on your name, as
+soon as you receive it, you let me know.
+
+Contact my secretary now on his email: mchristophdaniel@gmail.com
+Name: Mr. Christoph Daniel
+
+You are to forward to him your Name........ Address.......,Phone
+number......for shipment/dispatch of the cheque/Check to you
+
+Regards,
+Mr. Marcus Galois
