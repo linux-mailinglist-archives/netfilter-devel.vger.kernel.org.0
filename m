@@ -2,48 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD8248F90D
-	for <lists+netfilter-devel@lfdr.de>; Sat, 15 Jan 2022 20:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB5948F9DB
+	for <lists+netfilter-devel@lfdr.de>; Sun, 16 Jan 2022 01:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbiAOT3l (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 15 Jan 2022 14:29:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbiAOT3k (ORCPT
+        id S233936AbiAPAFG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 15 Jan 2022 19:05:06 -0500
+Received: from ec2-13-115-114-132.ap-northeast-1.compute.amazonaws.com ([13.115.114.132]:42554
+        "EHLO mail.gunma-suigai-risk.jp" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231448AbiAPAFE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 15 Jan 2022 14:29:40 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACAEC061574
-        for <netfilter-devel@vger.kernel.org>; Sat, 15 Jan 2022 11:29:40 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1n8ok6-00075y-AG; Sat, 15 Jan 2022 20:29:38 +0100
-Date:   Sat, 15 Jan 2022 20:29:38 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Jeremy Sowden <jeremy@azazel.net>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [nft PATCH v2 0/5] Store multiple payload dependencies
-Message-ID: <20220115192938.GD25474@breakpoint.cc>
-References: <20220115182709.1999424-1-jeremy@azazel.net>
+        Sat, 15 Jan 2022 19:05:04 -0500
+Received: from Unknown (unknown [191.36.189.139])
+        by mail.gunma-suigai-risk.jp (Postfix) with ESMTPA id 3CDDD17D4045;
+        Sat, 15 Jan 2022 21:21:10 +0000 (UTC)
+Message-ID: <A3A61043489CB271ADA8E15D5919755D@sodd>
+Reply-To: "Fredrik Elvebakk" <fcresswell9@gmail.com>
+From:   "Fredrik Elvebakk" <investment@dnb.no>
+Subject: Re:
+Date:   Sat, 15 Jan 2022 13:21:05 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220115182709.1999424-1-jeremy@azazel.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain;
+        format=flowed;
+        charset="windows-1251";
+        reply-type=original
+Content-Transfer-Encoding: 8BIT
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Windows Live Mail 16.4.3528.331
+X-MimeOLE: Produced By Microsoft MimeOLE V16.4.3528.331
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Jeremy Sowden <jeremy@azazel.net> wrote:
-> Patch 1 fixes a mistake in a Python test-case.
+Hello
 
-Sorry, I fat-fingered this when mangling your patch to delete the
-duplicated content.
+Kindly get back to me for an important 
+discussion
 
-96 test files, 96 files passed, 1887 unit tests,
-0 error, 0 warning
-
-... Can't remember ever seeing all test cases pass with 0 warnings.
-
-Applied, thanks a lot!
+Best regards
+Fredrik Elvebakk
