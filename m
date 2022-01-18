@@ -2,80 +2,112 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670F8492648
-	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Jan 2022 14:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A694928AD
+	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Jan 2022 15:46:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239123AbiARNAe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 18 Jan 2022 08:00:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36060 "EHLO
+        id S241091AbiAROqF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 18 Jan 2022 09:46:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239292AbiARNAd (ORCPT
+        with ESMTP id S238083AbiAROqC (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 18 Jan 2022 08:00:33 -0500
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F648C061747
-        for <netfilter-devel@vger.kernel.org>; Tue, 18 Jan 2022 05:00:33 -0800 (PST)
-Received: by mail-vk1-xa33.google.com with SMTP id w206so12375013vkd.10
-        for <netfilter-devel@vger.kernel.org>; Tue, 18 Jan 2022 05:00:33 -0800 (PST)
+        Tue, 18 Jan 2022 09:46:02 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCBEC06161C
+        for <netfilter-devel@vger.kernel.org>; Tue, 18 Jan 2022 06:46:01 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id u5so13469307ilq.9
+        for <netfilter-devel@vger.kernel.org>; Tue, 18 Jan 2022 06:46:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=kt7BSYvG+rr2bLEECwLOEMCvBVZotJIk44/4XcKD9H0=;
-        b=oIAPvRrwyQK9z6AQAojxDeGAhXY+r2o1UmC6sFh8E/FwQr9mstQDRr/1NSvmGRtcCX
-         /w1QS+uNfbLsvQZX7xX+9sz3uC6D4RoCWaXbANnoA2dUrPepMcqirC5k6HNVS1fFqE0Z
-         mmnlRUiL8Xw3KIyLVLMGnExCwsSQFeIKh8JW3bqp1bYt9+tHsadbHk4RvmOHNK7Sl5QN
-         8VSQkuo3Tc4LhDddKs1B1xacb1x98ojXw9qcgRZeTdxEnzHjo/CWLLbARksjq/KHcz6i
-         aR29itdUv3X9HyWbgkBUkSe9JOKQ7x5gCFvVaYAAUeR/IrssS1C3mXYec7clwDkIPtov
-         CL+g==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=/WxInfrKGc7y2VA0cyOEt2NUpnfM44pn0Uxn8y3qOcc=;
+        b=nikIQgJ+0+dlCEvagX1fZfX376c6fgCdUV2GlTpa412dLjTTawQ62IyQCp8G9WaymE
+         aW5nupOgSPOsfGFvYFRo8BgDQrgUSiFeKGXV5N0tYzyC2o1svD4B2x/DNpAkGhMPn1xi
+         WLLQAqeLwBKUWh04mjDJV23l7UBQlHULsURtRprY7EyFqXSuB3I9MKFrfalLpJW0aX7O
+         ZCTlxL6nBSKQrURnIcV2UuApUlwbDjaVF/X2pkNNkspGNN4r7dj+k8b/nZwvWn0/ZjQt
+         XCUM/IJ6ZbvLrS6JYyCp6a3ng1vVKmLppH0M9/3wL/5zKDLazxHzXonTcQ+LCvpoxncF
+         2aEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=kt7BSYvG+rr2bLEECwLOEMCvBVZotJIk44/4XcKD9H0=;
-        b=tJTcw+2mxE34I5c4G3Ye3B/cE6XJf37avnTuZF4dFkt/pRgV0NcfJRfUAF/23MBc7C
-         D8iRIN+sZKegKDs/gn7sUrAHrNmeopAiYsAC/dEa5IS+02Gn2DCkxDt8+4ISMI9sXUlT
-         xbehLmRDmd+Mc3dUGSdG4RGTul9o6+xN3qve0eG3aGKqlYtPJgJIb4IBObFo+gznogRG
-         /tn0TFV+emlovjLGOWHucuO//mG9RBcpEahRd056rGLvmRBR8Cm7WUdGMtUfg9rvfNJC
-         A6SU9OxpjYU+ZFZoL//W7eU/1pfTxSryFWTuAw322UqJckJQsBJCRLpcqEp8CGq1ZLQ8
-         eSLg==
-X-Gm-Message-State: AOAM533bihYPdvXK073JrcQY0+ieQ7tVl/bmWS3h5ipWMpaTV6XtPL80
-        8B2VSjHONMyl+sMloMHt1dJFOYFmjad7vTMWmcY=
-X-Google-Smtp-Source: ABdhPJxU0Mgz8nglAQGJWvQd5fZGyHw86cgkNwVsJrkRauzIVzFmr7WCj4QJVEymoxx51zJjSdHqWP82BjKwyfLYnRA=
-X-Received: by 2002:a05:6122:1808:: with SMTP id ay8mr10188346vkb.36.1642510832144;
- Tue, 18 Jan 2022 05:00:32 -0800 (PST)
+         :subject:to:content-transfer-encoding;
+        bh=/WxInfrKGc7y2VA0cyOEt2NUpnfM44pn0Uxn8y3qOcc=;
+        b=Cvy1/0KmLTcotOrS/VJdW5pYIBQoy7ynjFBa8OeB2JC1/vsqBc709NTbqdszjwosr3
+         X6aNYxbSuGUhBunR6eB8CTLFmBY8v9W8QUpP/9UVe/+gz0B6ee58Ru1dBhLnuhubd6dm
+         N6lMQd7kOBt3HPe30Rxs762+oYdlVL+jel0ifHNY7CQm0lc6hHNnPeKD9WIL3H/3cF1r
+         zq1Eg2m+iw+NhWgLuM/trdQlt0AIrA5/saO/kmq5+cg4xYu2xaMJHBkIwTO0cwf3zG6N
+         T2kQ4MNviLMo//y55QoRi6mHrYurb92qmtV/1VqF/rMIEgZDkmrySyfhw2cXYF/apjmU
+         gOtA==
+X-Gm-Message-State: AOAM531Ac8P0hUkLFYt+U51mUOyhqkekggDOJkyvuNUk29P5utIbMtgE
+        LFvI5BXCEQCU4K20tXPbkMGjR0ltyVRxMNDp6iQ=
+X-Google-Smtp-Source: ABdhPJw4oCeYcT9KAkl+VmAGFWQg3akZIZysE1bJcdZ0cVn3zjJCh7MGhIhGsVOgNXs4+Hde9FbwQpxABl+0wuuBpPk=
+X-Received: by 2002:a05:6e02:1a0a:: with SMTP id s10mr14116846ild.260.1642517161233;
+ Tue, 18 Jan 2022 06:46:01 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:ab0:3793:0:0:0:0:0 with HTTP; Tue, 18 Jan 2022 05:00:31
+Received: by 2002:a05:6e02:156e:0:0:0:0 with HTTP; Tue, 18 Jan 2022 06:46:00
  -0800 (PST)
-Reply-To: mohsheikhalhamed@gmail.com
-From:   bratikox <bratikox@gmail.com>
-Date:   Tue, 18 Jan 2022 14:00:31 +0100
-Message-ID: <CAFuXTSx6Lu9odoPCd=RZLGBtKNFkTY9wS0ub46GZpRb2p6+pYQ@mail.gmail.com>
-Subject: Salam Alaikum /ADIA LOAN OFFER
+Reply-To: abrahammorrison443@gmail.com
+From:   Abraham Morrison <awochambers004@gmail.com>
+Date:   Tue, 18 Jan 2022 06:46:00 -0800
+Message-ID: <CAH2diS41T1ec3yvVWUBUnV-tjJM-=d-anOqmB3DZ_ezZAfm7jg@mail.gmail.com>
+Subject: Good day!
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Salam Alaikum,
+Prosz=C4=99 o uwag=C4=99,
 
-We are a United Arab Emirates based investment company known as Abu
-Dhabi Investment Authority working on expanding its portfolio globally
-and financing projects.
+Jestem Pan Abraham Morrison, Jak si=C4=99 masz, mam nadziej=C4=99, =C5=BCe =
+jeste=C5=9B
+zdrowy i zdrowy? Informuj=C4=99, =C5=BCe uda=C5=82o mi si=C4=99 zako=C5=84c=
+zy=C4=87 transakcj=C4=99 z
+pomoc=C4=85 nowego partnera z Indii i teraz =C5=9Brodki zosta=C5=82y przela=
+ne do
+Indii na konto bankowe nowego partnera.
 
-We are offering Corporate and Personal Loan at 3.5% Interest Rate for
-a duration of 5 to 10 years.
+W mi=C4=99dzyczasie zdecydowa=C5=82em si=C4=99 zrekompensowa=C4=87 ci sum=
+=C4=99 500 000 $
+(tylko pi=C4=99=C4=87set tysi=C4=99cy dolar=C3=B3w ameryka=C5=84skich) z po=
+wodu twoich
+wcze=C5=9Bniejszych wysi=C5=82k=C3=B3w, chocia=C5=BC mnie rozczarowa=C5=82e=
+=C5=9B. Niemniej jednak
+bardzo si=C4=99 ciesz=C4=99 z pomy=C5=9Blnego zako=C5=84czenia transakcji b=
+ez =C5=BCadnego
+problemu i dlatego postanowi=C5=82em zrekompensowa=C4=87 Ci kwot=C4=99 500 =
+000 $,
+aby=C5=9B podzieli=C5=82 si=C4=99 ze mn=C4=85 rado=C5=9Bci=C4=85.
 
-Please get back to us on Email: mohsheikhalhamed@gmail.com ,if you are
-interested for further embellishment.
+Radz=C4=99 skontaktowa=C4=87 si=C4=99 z moj=C4=85 sekretark=C4=85 w sprawie=
+ karty bankomatowej
+o warto=C5=9Bci 500 000,00 $, kt=C3=B3r=C4=85 zachowa=C5=82em dla Ciebie. S=
+kontaktuj si=C4=99 z
+ni=C4=85 teraz bez zw=C5=82oki.
 
-We also pay 2% commission to brokers who introduce project owners for
-finance or other opportunities.
+Imi=C4=99: Linda Koffi
+E-mail: koffilinda785@gmail.com
 
 
- Yours truly,
- Hamed Mohammad
- (Personal Assistant)
- Abu Dhabi Investment Authority
- 211 Corniche, P.O Box 3600
- Abu Dhabi,United Arab Emirates
+Uprzejmie potwierd=C5=BA jej nast=C4=99puj=C4=85ce informacje:
+
+Twoje pe=C5=82ne imi=C4=99:........
+Tw=C3=B3j adres:..........
+Tw=C3=B3j kraj:..........
+Tw=C3=B3j wiek:.........
+Tw=C3=B3j zaw=C3=B3d:..........
+Tw=C3=B3j numer telefonu kom=C3=B3rkowego:..........
+Tw=C3=B3j paszport lub prawo jazdy:........
+
+Pami=C4=99taj, =C5=BCe je=C5=9Bli nie prze=C5=9Blesz jej powy=C5=BCszych in=
+formacji
+kompletnych, nie wyda ci karty bankomatowej, poniewa=C5=BC musi si=C4=99
+upewni=C4=87, =C5=BCe to ty. Popro=C5=9B j=C4=85, aby przes=C5=82a=C5=82a C=
+i =C5=82=C4=85czn=C4=85 sum=C4=99 (500 000
+USD) karty bankomatowej, kt=C3=B3r=C4=85 dla Ciebie zachowa=C5=82em.
+
+Z wyrazami szacunku,
+
+Pan Abraham Morrison
