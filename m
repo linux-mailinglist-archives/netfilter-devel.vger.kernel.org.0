@@ -2,83 +2,71 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4389F4959A5
-	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Jan 2022 07:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B644495CEE
+	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Jan 2022 10:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378593AbiAUGAP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 21 Jan 2022 01:00:15 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:50988 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378591AbiAUGAO (ORCPT
+        id S232790AbiAUJik (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 21 Jan 2022 04:38:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231992AbiAUJij (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 21 Jan 2022 01:00:14 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4BC7D6165F;
-        Fri, 21 Jan 2022 06:00:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A853FC340EB;
-        Fri, 21 Jan 2022 06:00:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642744813;
-        bh=OkxqSMomD+eZSwlh0Qt8ft62eBo5XMh8yi1DQLm7R4A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=QhjN3CI5wF5D7/9Rbh5m/a/0EeK2n6XGSXINhpcUbK1lnavq1ecZRWCVSMVknIgKI
-         Wf38Rv2369+3YcbEyW3Q2HKIS7JZ8wraLw9w6mG5IAdWUO/QXKSki5bK+tOgiDayrD
-         FEDwASpstSLygiIVsd8oQEKfpoR/4aImdUB4myRXfY7hyQdcUJoGcHXRmPWOK9tgOZ
-         Nx7FyhRTVuVtNs1Kv7xewFVkgQL1ORN2Y67tMmkuK56QXlYL3+rBzAtHWidztWfEOY
-         UIngWIL9UPLD0KHI3EniIJZ69XIpwlxXiavE68GX6sOsNMAXlyunaGyzXEMWGv5pKn
-         Bx6Jp1jIjSztQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 857A3F6079E;
-        Fri, 21 Jan 2022 06:00:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 21 Jan 2022 04:38:39 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430C9C061574
+        for <netfilter-devel@vger.kernel.org>; Fri, 21 Jan 2022 01:38:39 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id l64-20020a9d1b46000000b005983a0a8aaaso11093957otl.3
+        for <netfilter-devel@vger.kernel.org>; Fri, 21 Jan 2022 01:38:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=LajiFNcMtgFcWXh5iLRnsTRJ8bUFpVeATfxrrXLFdnY=;
+        b=h39xJ3cwm98No4OXNlKgy1y/ZSu+5XjvY4vVpBoZL80Y/EpLuAcqu+AFP8+ywMUtKo
+         uq+zo0e9zuQ+7+ffsMDN2GHrnhkzK91MadBtMibFO3hkcHGi39H+sFQi9GgPNuOEZqHF
+         iYdU6LM7Dtp00ZB+jifM+amXWWj9Wfy6DoeegOmbT2Dut/EzFESj87HfJTe1OrFqkdwm
+         3EYboilpjqNgQdlDBMM4LI1jg+sa+Qnr5lEXuiJmMzn7VyAWX0yIf1tskO5qowikvvCo
+         RhLOQyDQLHRtSO+j4LNMFbHUnhBCLB00mbC6FQqTFsP9QyQqlD3ExQgUw+2hIdtP5zCA
+         xw5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=LajiFNcMtgFcWXh5iLRnsTRJ8bUFpVeATfxrrXLFdnY=;
+        b=oZFpO5koSqrLNfulDDePjQGZQDysitgGsrHI/lsKV57g5Yfkj1BLwxO4foF0CLkhSb
+         OT0JCjCLQE0g6X601li5YLzK0cKLUjWySitplrH7ul5NKIty9IQ/w1mceQnjkCF6bx4K
+         d5bGRIV9v7feAPZdhbllqVIn4o0nVpfdslumSGivkVzywtvkgU2u8bqhh246BjO2RgHU
+         8+4uxYnf+AFOIqDAGLhDJViAYVov/2OwqbscQHHKD6HA5mwRgPGgDxTKjGovZzNCtY0u
+         ElJPvSxvCMSvl0xOvonFZ0GkiAUO1LFg56QTlypXsJdIgWiNJW9W2UORvYrWTL0e0nrH
+         D3Rg==
+X-Gm-Message-State: AOAM532voqXp/QtNp/yk/Bu5yw12PgGQWs9+V2XVMwTtFivooAL3Mi83
+        9lWm2DoYwgym6ELbzB/dtEjCETSmZnzJu04+PhU=
+X-Google-Smtp-Source: ABdhPJyKrFJH26A+hUrAot3b3JeKT2+B99FxCsDKxOcRfNPkeLVxvjAdwvIC+w5moSrpsoGqYPxZ3t2tOSFkw93pusI=
+X-Received: by 2002:a05:6830:1be9:: with SMTP id k9mr2191283otb.217.1642757918668;
+ Fri, 21 Jan 2022 01:38:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/5] netfilter: nf_conntrack_netbios_ns: fix helper module
- alias
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164274481354.1814.13819247077372009518.git-patchwork-notify@kernel.org>
-Date:   Fri, 21 Jan 2022 06:00:13 +0000
-References: <20220120125212.991271-2-pablo@netfilter.org>
-In-Reply-To: <20220120125212.991271-2-pablo@netfilter.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, kuba@kernel.org
+Received: by 2002:a05:6830:3115:0:0:0:0 with HTTP; Fri, 21 Jan 2022 01:38:38
+ -0800 (PST)
+Reply-To: willyalade@yahoo.com
+From:   Willy Alade <willyalad58@gmail.com>
+Date:   Fri, 21 Jan 2022 09:38:38 +0000
+Message-ID: <CAMsqXeFpUAYMHcB4aSO3skQiumAryBCbAvit+jJZ7PLu_S-F5A@mail.gmail.com>
+Subject: Good News
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello:
+Hello Dear.
 
-This series was applied to netdev/net.git (master)
-by Pablo Neira Ayuso <pablo@netfilter.org>:
+Greeting Dear friend,How are you doing today.
+Please i was directed by Barrister Mark Nestor to deliver an ATM card
+worth 750.000.000 Dollars directly to you for your past efforts before
+he left for his vacation to England.
 
-On Thu, 20 Jan 2022 13:52:08 +0100 you wrote:
-> From: Florian Westphal <fw@strlen.de>
-> 
-> The helper gets registered as 'netbios-ns', not netbios_ns.
-> Intentionally not adding a fixes-tag because i don't want this to go to
-> stable. This wasn't noticed for a very long time so no so no need to risk
-> regressions.
-> 
-> [...]
+I will give you further information concerning how you will get your
+ATM card through the Ace courier Delivery company service.
 
-Here is the summary with links:
-  - [net,1/5] netfilter: nf_conntrack_netbios_ns: fix helper module alias
-    https://git.kernel.org/netdev/net/c/0e906607b9c5
-  - [net,2/5] netfilter: nf_tables: remove unused variable
-    https://git.kernel.org/netdev/net/c/cf46eacbc156
-  - [net,3/5] netfilter: nf_tables: set last expression in register tracking area
-    https://git.kernel.org/netdev/net/c/fe75e84a8fe1
-  - [net,4/5] netfilter: nft_connlimit: memleak if nf_ct_netns_get() fails
-    https://git.kernel.org/netdev/net/c/7d70984a1ad4
-  - [net,5/5] netfilter: conntrack: don't increment invalid counter on NF_REPEAT
-    https://git.kernel.org/netdev/net/c/830af2eba403
+I will be waiting to hear from you.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Barr Willy Alade Esq
