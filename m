@@ -2,71 +2,111 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B644495CEE
-	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Jan 2022 10:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3786D496347
+	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Jan 2022 17:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232790AbiAUJik (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 21 Jan 2022 04:38:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34924 "EHLO
+        id S1381394AbiAUQ5I (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 21 Jan 2022 11:57:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231992AbiAUJij (ORCPT
+        with ESMTP id S1380361AbiAUQ46 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 21 Jan 2022 04:38:39 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430C9C061574
-        for <netfilter-devel@vger.kernel.org>; Fri, 21 Jan 2022 01:38:39 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id l64-20020a9d1b46000000b005983a0a8aaaso11093957otl.3
-        for <netfilter-devel@vger.kernel.org>; Fri, 21 Jan 2022 01:38:39 -0800 (PST)
+        Fri, 21 Jan 2022 11:56:58 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA4DC061778;
+        Fri, 21 Jan 2022 08:55:55 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id s127so14386942oig.2;
+        Fri, 21 Jan 2022 08:55:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=LajiFNcMtgFcWXh5iLRnsTRJ8bUFpVeATfxrrXLFdnY=;
-        b=h39xJ3cwm98No4OXNlKgy1y/ZSu+5XjvY4vVpBoZL80Y/EpLuAcqu+AFP8+ywMUtKo
-         uq+zo0e9zuQ+7+ffsMDN2GHrnhkzK91MadBtMibFO3hkcHGi39H+sFQi9GgPNuOEZqHF
-         iYdU6LM7Dtp00ZB+jifM+amXWWj9Wfy6DoeegOmbT2Dut/EzFESj87HfJTe1OrFqkdwm
-         3EYboilpjqNgQdlDBMM4LI1jg+sa+Qnr5lEXuiJmMzn7VyAWX0yIf1tskO5qowikvvCo
-         RhLOQyDQLHRtSO+j4LNMFbHUnhBCLB00mbC6FQqTFsP9QyQqlD3ExQgUw+2hIdtP5zCA
-         xw5A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=X1prsGZ36V3LEOTvvkMgk2CqZfwnDb5j2wczkknGbpY=;
+        b=M7T75cltulYZ8dLhgYXj6Dqlc+gxskyEj1qidzGRzta8A7Ws3Zr9QSTdP2w/UtNCH7
+         1QfX8VMaNiOeO+aJ43N06CEVr1qHaj21QOWCh66A0Szq1y/o6Oho0NI9zlUO9u8pGT59
+         EtP8QRnBXkMWCZlGNXKyV/jcv7iIlxRmyq2P2drG6x93IlqH8s6xSoTS+N5MiAShuOnK
+         SlwWVtPdq0Td7Ppi3b0Y9dJHAl1tIlUGE7SGv5WstOM27x3MWNCgph2FW0eLWUqoCkHb
+         AHjTTNndE/ulSBROV/tV651tAmVP3ndCfgP7y8g9poS1Z2rpgmJo+BmCTYa/riabA7NJ
+         VVwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=LajiFNcMtgFcWXh5iLRnsTRJ8bUFpVeATfxrrXLFdnY=;
-        b=oZFpO5koSqrLNfulDDePjQGZQDysitgGsrHI/lsKV57g5Yfkj1BLwxO4foF0CLkhSb
-         OT0JCjCLQE0g6X601li5YLzK0cKLUjWySitplrH7ul5NKIty9IQ/w1mceQnjkCF6bx4K
-         d5bGRIV9v7feAPZdhbllqVIn4o0nVpfdslumSGivkVzywtvkgU2u8bqhh246BjO2RgHU
-         8+4uxYnf+AFOIqDAGLhDJViAYVov/2OwqbscQHHKD6HA5mwRgPGgDxTKjGovZzNCtY0u
-         ElJPvSxvCMSvl0xOvonFZ0GkiAUO1LFg56QTlypXsJdIgWiNJW9W2UORvYrWTL0e0nrH
-         D3Rg==
-X-Gm-Message-State: AOAM532voqXp/QtNp/yk/Bu5yw12PgGQWs9+V2XVMwTtFivooAL3Mi83
-        9lWm2DoYwgym6ELbzB/dtEjCETSmZnzJu04+PhU=
-X-Google-Smtp-Source: ABdhPJyKrFJH26A+hUrAot3b3JeKT2+B99FxCsDKxOcRfNPkeLVxvjAdwvIC+w5moSrpsoGqYPxZ3t2tOSFkw93pusI=
-X-Received: by 2002:a05:6830:1be9:: with SMTP id k9mr2191283otb.217.1642757918668;
- Fri, 21 Jan 2022 01:38:38 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=X1prsGZ36V3LEOTvvkMgk2CqZfwnDb5j2wczkknGbpY=;
+        b=pqq4I2WsK6LMCR52KFx3dYLimgloQDgMER59HG7/85zl9r0CumgBCR9XpWGYnxW04M
+         +LXHBkyU9no/epRg0UwbBmX2Osw93MMJQRUMJA22mQdry/HoFo/10nklRvmIHk8DQTVK
+         MYQXYzldlvZfHMkXSufHv172uwqOBuSIfZSPKcvPfw4OJwTflqLTsgx4jhQMkPqDmKeo
+         13dGJNjInHukhacbSnjanQLzhdAfdrWBqBDmUtafm9gxX2HnWHEgucQG/eaKoIpcdO2J
+         R8CAQhyFE9S9MLmdH/L+lCjSjfjZc2sgCKFTDTXlvRp10aY2dG0sXts4C7sYofjx5cwM
+         bKeQ==
+X-Gm-Message-State: AOAM532XaQykolbg6b6pXgEVh8HrGOJxLnrIJJV+/+RYZE6QvLO7WPzY
+        EMrGlN6Jl2ST5Z9P6i1Adm0=
+X-Google-Smtp-Source: ABdhPJz8BK3W/Oh4kBRyv2FuNLqsoZfq+UPcczheQf1w5dq3RrySWoTvNPIRVTRDXq4pSGHlxozTVA==
+X-Received: by 2002:a54:4097:: with SMTP id i23mr1255843oii.115.1642784154379;
+        Fri, 21 Jan 2022 08:55:54 -0800 (PST)
+Received: from thinkpad.localdomain ([2804:14d:5cd1:5d03:cf72:4317:3105:f6e5])
+        by smtp.gmail.com with ESMTPSA id y8sm1089271oou.23.2022.01.21.08.55.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jan 2022 08:55:54 -0800 (PST)
+From:   Luiz Sampaio <sampaio.ime@gmail.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Luiz Sampaio <sampaio.ime@gmail.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH 28/31] net: netfilter: changing LED_* from enum led_brightness to actual value
+Date:   Fri, 21 Jan 2022 13:54:33 -0300
+Message-Id: <20220121165436.30956-29-sampaio.ime@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220121165436.30956-1-sampaio.ime@gmail.com>
+References: <20220121165436.30956-1-sampaio.ime@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6830:3115:0:0:0:0 with HTTP; Fri, 21 Jan 2022 01:38:38
- -0800 (PST)
-Reply-To: willyalade@yahoo.com
-From:   Willy Alade <willyalad58@gmail.com>
-Date:   Fri, 21 Jan 2022 09:38:38 +0000
-Message-ID: <CAMsqXeFpUAYMHcB4aSO3skQiumAryBCbAvit+jJZ7PLu_S-F5A@mail.gmail.com>
-Subject: Good News
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello Dear.
+The enum led_brightness, which contains the declaration of LED_OFF,
+LED_ON, LED_HALF and LED_FULL is obsolete, as the led class now supports
+max_brightness.
+---
+ net/netfilter/xt_LED.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Greeting Dear friend,How are you doing today.
-Please i was directed by Barrister Mark Nestor to deliver an ATM card
-worth 750.000.000 Dollars directly to you for your past efforts before
-he left for his vacation to England.
+diff --git a/net/netfilter/xt_LED.c b/net/netfilter/xt_LED.c
+index 0371c387b0d1..eb66e12c7ff7 100644
+--- a/net/netfilter/xt_LED.c
++++ b/net/netfilter/xt_LED.c
+@@ -54,7 +54,7 @@ led_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ 		led_trigger_blink_oneshot(&ledinternal->netfilter_led_trigger,
+ 					  &led_delay, &led_delay, 1);
+ 	else
+-		led_trigger_event(&ledinternal->netfilter_led_trigger, LED_FULL);
++		led_trigger_event(&ledinternal->netfilter_led_trigger, 255);
+ 
+ 	/* If there's a positive delay, start/update the timer */
+ 	if (ledinfo->delay > 0) {
+@@ -63,7 +63,7 @@ led_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ 
+ 	/* Otherwise if there was no delay given, blink as fast as possible */
+ 	} else if (ledinfo->delay == 0) {
+-		led_trigger_event(&ledinternal->netfilter_led_trigger, LED_OFF);
++		led_trigger_event(&ledinternal->netfilter_led_trigger, 0);
+ 	}
+ 
+ 	/* else the delay is negative, which means switch on and stay on */
+@@ -76,7 +76,7 @@ static void led_timeout_callback(struct timer_list *t)
+ 	struct xt_led_info_internal *ledinternal = from_timer(ledinternal, t,
+ 							      timer);
+ 
+-	led_trigger_event(&ledinternal->netfilter_led_trigger, LED_OFF);
++	led_trigger_event(&ledinternal->netfilter_led_trigger, 0);
+ }
+ 
+ static struct xt_led_info_internal *led_trigger_lookup(const char *name)
+-- 
+2.34.1
 
-I will give you further information concerning how you will get your
-ATM card through the Ace courier Delivery company service.
-
-I will be waiting to hear from you.
-
-Barr Willy Alade Esq
