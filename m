@@ -2,62 +2,97 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E4B497D96
-	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Jan 2022 12:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE37497E52
+	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Jan 2022 12:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237195AbiAXLEC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 24 Jan 2022 06:04:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237184AbiAXLEB (ORCPT
+        id S237944AbiAXLyf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 24 Jan 2022 06:54:35 -0500
+Received: from mail.netfilter.org ([217.70.188.207]:44836 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbiAXLye (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 24 Jan 2022 06:04:01 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E51AC06173B
-        for <netfilter-devel@vger.kernel.org>; Mon, 24 Jan 2022 03:04:01 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id n8so8007770lfq.4
-        for <netfilter-devel@vger.kernel.org>; Mon, 24 Jan 2022 03:04:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=RX2ie8bHtt/VqK+ChRDhdhuvcMsTZWD+uYYojRjhC+U=;
-        b=F/LgXxmkZVDS+M2FxCMVnqpOEivlAUs2g3SrLj2I91UEGM8zL9ahRy8uQ3iCSM+JhG
-         162EfI3ZLyXckC9ymxTnzxj3Wb41N1BozRAaIAOKGFs5djjRYbSzJkuJv76eQxg56vub
-         OtaE6GcJdVg3+itPyIo+fewQZn0cuBY9TJefC/c6JC7okGF4wIsJI3EJsrkH8cz5qs1K
-         81+ncwMYxaTWNuMLTbVas2QEFHwCcG81I521doOPbyHzH2UgbxizYtQHMBadu2SMR6q2
-         Zit5SQaV8pknCcXLX+PmV59VeFH8CTnH6702NpMkDcSrXZxQw4TgqCIYjtnr1M+V1ly2
-         Exkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=RX2ie8bHtt/VqK+ChRDhdhuvcMsTZWD+uYYojRjhC+U=;
-        b=ljeK73oVL1EiXLU8mSKuBj16ra/QtN1aN4iSabEIfkdeo+XRAxCPJJI5m2EuoqSxpb
-         TlnBMjmzqvN0uwz9Nj7jwvAUCGAFi4AjBLg1d6kI4KDJu6AcXCR/vKvSOtcyaOPUHUiJ
-         1M7+uw6xQfpYn+iNMSnQvNmR1v5G7L59HjwdnZReiczMmo5gF5CFqn5m3nxwXA2gWVJ4
-         vAipnG2G6ySlJKOK5dgE4D4bRuOG8k8phqOuvJMdelznY8AlReVonAO8cv9yzPDcX29x
-         rA22qyCQ9nR2eWAaWv3wmQwJJyVRi1LaIIudMQ8fhrxFuChiR1ay+OYhe2mGikOtvLEQ
-         P9dw==
-X-Gm-Message-State: AOAM530rny2YJxz2R2RbibtL0oYiT4f0e5f4WOLbxpC+TgRFOfXwXkrL
-        phET9G4u20vnkJU1LgjV54fdUw1MZm8Xp5csGy0=
-X-Google-Smtp-Source: ABdhPJyBNdF5l8NQiqGG0Z4jHPqCWn609Fe6tKSBLQvUPLo8LkMxdUAyvP9qAOdzl2uf8Eqyj9FxYJVJkah8ET2V2rM=
-X-Received: by 2002:a19:8c4a:: with SMTP id i10mr12202872lfj.537.1643022239702;
- Mon, 24 Jan 2022 03:03:59 -0800 (PST)
+        Mon, 24 Jan 2022 06:54:34 -0500
+Received: from netfilter.org (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 955BE60013;
+        Mon, 24 Jan 2022 12:51:32 +0100 (CET)
+Date:   Mon, 24 Jan 2022 12:54:30 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     kai zhang <zhangkaiheb@126.com>
+Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: fix duplicate logs of iptables TRACE target
+Message-ID: <Ye6TdpcBXlgmo16g@salvia>
+References: <20220124053732.55985-1-zhangkaiheb@126.com>
 MIME-Version: 1.0
-Received: by 2002:a2e:a54c:0:0:0:0:0 with HTTP; Mon, 24 Jan 2022 03:03:59
- -0800 (PST)
-Reply-To: hegginskate7@gmail.com
-From:   Heggings kate <heggins35@gmail.com>
-Date:   Mon, 24 Jan 2022 11:03:59 +0000
-Message-ID: <CAH=nmxZox2Mwa83V9C8-yuHRd7DGOD0tXp+p-uOF5r0uE1DSOg@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220124053732.55985-1-zhangkaiheb@126.com>
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-w5xkdsO2emzDtm0sIGvDvGxkdGVtIMOWbm5layBlZ3kgZS1tYWlsdCwgc8O8cmfFkXNlbiBzesO8
-a3PDqWdlbSB2YW4gdsOhbGFzesOhcmENCkthdGllIEvDtnN6w7Zuw7ZtDQo=
+On Mon, Jan 24, 2022 at 05:37:32AM +0000, kai zhang wrote:
+> Below configuration, mangle,filter and security tables have no rule:
+
+Yes, but there are loaded in your iptables-legacy environment.
+In iptables-nft this will not happen.
+
+> # iptables -t raw -I PREROUTING 1 -p tcp --dport 22 -j TRACE
+> # sysctl net.netfilter.nf_log.2=nf_log_ipv4
+> 
+> There are 5 logs for incoming ssh packet:
+> 
+> kernel: [ 7018.727278] TRACE: raw:PREROUTING:policy:2 IN=enp9s0 ...
+> kernel: [ 7018.727304] TRACE: mangle:PREROUTING:policy:1 IN=enp9s0 ...
+> kernel: [ 7018.727327] TRACE: mangle:INPUT:policy:1 IN=enp9s0 ...
+> kernel: [ 7018.727343] TRACE: filter:INPUT:policy:1 IN=enp9s0 ...
+> kernel: [ 7018.727359] TRACE: security:INPUT:policy:1 IN=enp9s0 ...
+
+tracing was not designed to display every registered table/chain even
+if it has not rules.
+
+> Signed-off-by: kai zhang <zhangkaiheb@126.com>
+> ---
+>  net/ipv4/netfilter/ip_tables.c  | 4 +++-
+>  net/ipv6/netfilter/ip6_tables.c | 4 +++-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
+> index 2ed7c58b4..5f0e6096e 100644
+> --- a/net/ipv4/netfilter/ip_tables.c
+> +++ b/net/ipv4/netfilter/ip_tables.c
+> @@ -304,9 +304,11 @@ ipt_do_table(void *priv,
+>  
+>  #if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
+>  		/* The packet is traced: log it */
+> -		if (unlikely(skb->nf_trace))
+> +		if (unlikely(skb->nf_trace)) {
+>  			trace_packet(state->net, skb, hook, state->in,
+>  				     state->out, table->name, private, e);
+> +			nf_reset_trace(skb);
+> +		}
+>  #endif
+>  		/* Standard target? */
+>  		if (!t->u.kernel.target->target) {
+> diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
+> index 2d816277f..ae842a835 100644
+> --- a/net/ipv6/netfilter/ip6_tables.c
+> +++ b/net/ipv6/netfilter/ip6_tables.c
+> @@ -327,9 +327,11 @@ ip6t_do_table(void *priv, struct sk_buff *skb,
+>  
+>  #if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
+>  		/* The packet is traced: log it */
+> -		if (unlikely(skb->nf_trace))
+> +		if (unlikely(skb->nf_trace)) {
+>  			trace_packet(state->net, skb, hook, state->in,
+>  				     state->out, table->name, private, e);
+> +			nf_reset_trace(skb);
+> +		}
+>  #endif
+>  		/* Standard target? */
+>  		if (!t->u.kernel.target->target) {
+> -- 
+> 2.30.2
+> 
