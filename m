@@ -2,92 +2,100 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE19497235
-	for <lists+netfilter-devel@lfdr.de>; Sun, 23 Jan 2022 15:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5AE4978C9
+	for <lists+netfilter-devel@lfdr.de>; Mon, 24 Jan 2022 07:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236806AbiAWOqA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 23 Jan 2022 09:46:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233563AbiAWOqA (ORCPT
+        id S241536AbiAXGGR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 24 Jan 2022 01:06:17 -0500
+Received: from mail-m963.mail.126.com ([123.126.96.3]:7284 "EHLO
+        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbiAXGGQ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 23 Jan 2022 09:46:00 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30C5C06173B
-        for <netfilter-devel@vger.kernel.org>; Sun, 23 Jan 2022 06:45:59 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1nBe7y-0001T0-CK; Sun, 23 Jan 2022 15:45:58 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf] selftests: netfilter: reduce zone stress test running time
-Date:   Sun, 23 Jan 2022 15:45:54 +0100
-Message-Id: <20220123144554.567444-1-fw@strlen.de>
-X-Mailer: git-send-email 2.34.1
+        Mon, 24 Jan 2022 01:06:16 -0500
+X-Greylist: delayed 1843 seconds by postgrey-1.27 at vger.kernel.org; Mon, 24 Jan 2022 01:06:15 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=XYu6s
+        9Db7kDwGgFtgnHeOa8tOqzXQ7vZNh8M1bSmULw=; b=JPMQa4nMmlGb2AOLV6dyy
+        aXWejwP88CrSyDPM4TwpN4We9MmD/jU6Q3hLkXJByvXD5kTZgXPdWeUBafnU1YV6
+        UsbdeZPtC5/vNuxlOLhNfyHTe++KFHIbG0zM2/G7+p9p3tDV/7stxOQOVBeoY56s
+        uRCqo/GeDCQ7bLSky4cyC0=
+Received: from firebird.. (unknown [222.128.181.171])
+        by smtp8 (Coremail) with SMTP id NORpCgAHetyAOu5hNla1Aw--.1441S2;
+        Mon, 24 Jan 2022 13:34:57 +0800 (CST)
+From:   kai zhang <zhangkaiheb@126.com>
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kai zhang <zhangkaiheb@126.com>
+Subject: [PATCH] net: fix duplicate logs of iptables TRACE target
+Date:   Mon, 24 Jan 2022 05:34:55 +0000
+Message-Id: <20220124053455.55858-1-zhangkaiheb@126.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: NORpCgAHetyAOu5hNla1Aw--.1441S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Kr4xuF1xKFyDGw18tr43Wrg_yoW8Cw47pF
+        98Kas8trs3Xr4jyFs7X3WUAr1rGwsxJrZxGFy3A34rKw4DtrWjga1Skryava1IvrsIgFW5
+        XFWYvr4Yyws8Cw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zirb15UUUUU=
+X-Originating-IP: [222.128.181.171]
+X-CM-SenderInfo: x2kd0wxndlxvbe6rjloofrz/1tbi2QGS-lpEDTKOcgAAsp
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This selftests needs almost 3 minutes to complete, reduce the
-insertes zones to 1000.  Test now completes in about 20 seconds.
+Below configuration, mangle,filter and security tables have no rule:
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
+There are 5 logs for incoming ssh packet:
+
+kernel: [ 7018.727278] TRACE: raw:PREROUTING:policy:2 IN=enp9s0 ...
+kernel: [ 7018.727304] TRACE: mangle:PREROUTING:policy:1 IN=enp9s0 ...
+kernel: [ 7018.727327] TRACE: mangle:INPUT:policy:1 IN=enp9s0 ...
+kernel: [ 7018.727343] TRACE: filter:INPUT:policy:1 IN=enp9s0 ...
+kernel: [ 7018.727359] TRACE: security:INPUT:policy:1 IN=enp9s0 ...
+
+Signed-off-by: kai zhang <zhangkaiheb@126.com>
 ---
- tools/testing/selftests/netfilter/nft_zones_many.sh | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ net/ipv4/netfilter/ip_tables.c  | 4 +++-
+ net/ipv6/netfilter/ip6_tables.c | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/netfilter/nft_zones_many.sh b/tools/testing/selftests/netfilter/nft_zones_many.sh
-index 04633119b29a..5a8db0b48928 100755
---- a/tools/testing/selftests/netfilter/nft_zones_many.sh
-+++ b/tools/testing/selftests/netfilter/nft_zones_many.sh
-@@ -9,7 +9,7 @@ ns="ns-$sfx"
- # Kselftest framework requirement - SKIP code is 4.
- ksft_skip=4
+diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
+index 2ed7c58b4..5f0e6096e 100644
+--- a/net/ipv4/netfilter/ip_tables.c
++++ b/net/ipv4/netfilter/ip_tables.c
+@@ -304,9 +304,11 @@ ipt_do_table(void *priv,
  
--zones=20000
-+zones=2000
- have_ct_tool=0
- ret=0
+ #if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
+ 		/* The packet is traced: log it */
+-		if (unlikely(skb->nf_trace))
++		if (unlikely(skb->nf_trace)) {
+ 			trace_packet(state->net, skb, hook, state->in,
+ 				     state->out, table->name, private, e);
++			nf_reset_trace(skb);
++		}
+ #endif
+ 		/* Standard target? */
+ 		if (!t->u.kernel.target->target) {
+diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
+index 2d816277f..ae842a835 100644
+--- a/net/ipv6/netfilter/ip6_tables.c
++++ b/net/ipv6/netfilter/ip6_tables.c
+@@ -327,9 +327,11 @@ ip6t_do_table(void *priv, struct sk_buff *skb,
  
-@@ -75,10 +75,10 @@ EOF
- 
- 	while [ $i -lt $max_zones ]; do
- 		local start=$(date +%s%3N)
--		i=$((i + 10000))
-+		i=$((i + 1000))
- 		j=$((j + 1))
- 		# nft rule in output places each packet in a different zone.
--		dd if=/dev/zero of=/dev/stdout bs=8k count=10000 2>/dev/null | ip netns exec "$ns" socat STDIN UDP:127.0.0.1:12345,sourceport=12345
-+		dd if=/dev/zero of=/dev/stdout bs=8k count=1000 2>/dev/null | ip netns exec "$ns" socat STDIN UDP:127.0.0.1:12345,sourceport=12345
- 		if [ $? -ne 0 ] ;then
- 			ret=1
- 			break
-@@ -86,7 +86,7 @@ EOF
- 
- 		stop=$(date +%s%3N)
- 		local duration=$((stop-start))
--		echo "PASS: added 10000 entries in $duration ms (now $i total, loop $j)"
-+		echo "PASS: added 1000 entries in $duration ms (now $i total, loop $j)"
- 	done
- 
- 	if [ $have_ct_tool -eq 1 ]; then
-@@ -128,11 +128,11 @@ test_conntrack_tool() {
- 			break
- 		fi
- 
--		if [ $((i%10000)) -eq 0 ];then
-+		if [ $((i%1000)) -eq 0 ];then
- 			stop=$(date +%s%3N)
- 
- 			local duration=$((stop-start))
--			echo "PASS: added 10000 entries in $duration ms (now $i total)"
-+			echo "PASS: added 1000 entries in $duration ms (now $i total)"
- 			start=$stop
- 		fi
- 	done
+ #if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
+ 		/* The packet is traced: log it */
+-		if (unlikely(skb->nf_trace))
++		if (unlikely(skb->nf_trace)) {
+ 			trace_packet(state->net, skb, hook, state->in,
+ 				     state->out, table->name, private, e);
++			nf_reset_trace(skb);
++		}
+ #endif
+ 		/* Standard target? */
+ 		if (!t->u.kernel.target->target) {
 -- 
-2.34.1
+2.30.2
 
