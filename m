@@ -2,147 +2,179 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687D949F471
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jan 2022 08:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BC649F56F
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jan 2022 09:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346878AbiA1He1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 28 Jan 2022 02:34:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346875AbiA1He0 (ORCPT
+        id S235055AbiA1Ija (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 28 Jan 2022 03:39:30 -0500
+Received: from dehost.average.org ([88.198.2.197]:54634 "EHLO
+        dehost.average.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231660AbiA1Ija (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 28 Jan 2022 02:34:26 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9451AC061714;
-        Thu, 27 Jan 2022 23:34:26 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id o64so5739971pjo.2;
-        Thu, 27 Jan 2022 23:34:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SyLy03L5E+1xwc8EXhn4C+jar44ebU6XLc4ynxHGN9A=;
-        b=hs0ZieHX3P+Ur5/kTsSmPWc89YJS76x2Xe8NYGWDN42s3r3hatnAXzyhC6OlelmxKm
-         +Zze13DIudgceBjft27kPy1d7D7FkojbV+bqxR/QFDA97JNquJGy6XxjcfJZX6kZKcpf
-         WiH4JG19XI6xi276Op0qAlFst8dFTVa5oGEF1Pt6ccAsNu+OPODcCE8bcrCQ1y97unji
-         mh7C3BQUvVsW7WYzuqu/jzJK8YjhJtUcCHpvCbM8gLXaVxY/vgKDH4KIs1LCqi6Nao2t
-         S57+xncbg2MVKUAyrHXYilaFuRUmlXXzIIYF/WIe4UaibIf1ZJQAzb/k2fn7SzQlmMkQ
-         lUog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SyLy03L5E+1xwc8EXhn4C+jar44ebU6XLc4ynxHGN9A=;
-        b=qBP0TW7lD35BHLpkP125QUl7SrXmhVfKTyiuSWR71shVOfQLg0y7LfpxpGHTDyaR1b
-         0XrCgOYXDFQgyeRDSFivKx+qAhDyk1/aKnWaJy8IWh9600mNc6ovf7CXe5cGSBvZ1lsN
-         VeIwZ7UdCo3EUaIyIal0cHXgF8FP3XMsITdyD5WmsIiFIZ5aTx+gxiQtkeea2dWEhP49
-         jWCV+oDSPGaxEi0h6XyRJOMHxIaEk2TSFBeo2gruHM7JGGp9YdYHJazZH9NuU9ZG3LWa
-         A60D5WTLGfLZ8nMNpEGdIVBN4Wxv4rhWjtjLGaa1wKjMi+L2Ql4CGiuIFOdK8jVNOXAv
-         NBXg==
-X-Gm-Message-State: AOAM530ezODD604rfakCawd5lEo8MhoTH4LepZTKCNENgCJFo3bj9QJ1
-        POqQBVHfb+bRwlD55U1noXI=
-X-Google-Smtp-Source: ABdhPJxvcDEt15uVKbvRMB+R9pm2JYVGpkpqB9V8hVegbJbYZJKACnh87ITvYs0yF8GDZTmHWNtGyQ==
-X-Received: by 2002:a17:90b:118d:: with SMTP id gk13mr8553381pjb.119.1643355266232;
-        Thu, 27 Jan 2022 23:34:26 -0800 (PST)
-Received: from localhost.localdomain ([43.132.141.8])
-        by smtp.gmail.com with ESMTPSA id q17sm8548846pfu.160.2022.01.27.23.34.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jan 2022 23:34:25 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: imagedong@tencent.com
-To:     dsahern@kernel.org, kuba@kernel.org
-Cc:     rostedt@goodmis.org, mingo@redhat.com, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, pablo@netfilter.org, kadlec@netfilter.org,
-        fw@strlen.de, imagedong@tencent.com, edumazet@google.com,
-        alobakin@pm.me, paulb@nvidia.com, keescook@chromium.org,
-        talalahmad@google.com, haokexin@gmail.com, memxor@gmail.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        cong.wang@bytedance.com, mengensun@tencent.com
-Subject: [PATCH v3 net-next 7/7] net: udp: use kfree_skb_reason() in __udp_queue_rcv_skb()
-Date:   Fri, 28 Jan 2022 15:33:19 +0800
-Message-Id: <20220128073319.1017084-8-imagedong@tencent.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220128073319.1017084-1-imagedong@tencent.com>
-References: <20220128073319.1017084-1-imagedong@tencent.com>
+        Fri, 28 Jan 2022 03:39:30 -0500
+X-Greylist: delayed 50359 seconds by postgrey-1.27 at vger.kernel.org; Fri, 28 Jan 2022 03:39:30 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
+        t=1643359169; bh=qIYwo8DTK7/rtUneg3e0ZuzkkHmcqHQ/TEkFnBtd1hY=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=U+kCCUrFUUpISl/46BLz39gDK9edbQdl7Plmd1H/1hITo1W27QxdzKoGh4j8O7nig
+         qPQ1K6XSRcLAW7zukB0UyVxg3ZfZoh0y40ykhCMTX75rSS6+2zHbn52W3x+XYK6Ax4
+         glSjZ5HYD47UZ/bI2b/gqwE9/IxGGIJpb46jczqM=
+Received: from [IPV6:2a02:8106:1:6800:9825:f04d:cafa:872c] (unknown [IPv6:2a02:8106:1:6800:9825:f04d:cafa:872c])
+        by dehost.average.org (Postfix) with ESMTPSA id D10453A0DA43;
+        Fri, 28 Jan 2022 09:39:28 +0100 (CET)
+Message-ID: <890e77c9-f65d-ad5c-3640-f9268dc419f5@average.org>
+Date:   Fri, 28 Jan 2022 09:39:21 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Subject: Re: [PATCH nftables,v2] iface: handle EINTR case when creating the
+ cache
+Content-Language: en-US
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+References: <20220127230629.573287-1-pablo@netfilter.org>
+From:   Eugene Crosser <crosser@average.org>
+In-Reply-To: <20220127230629.573287-1-pablo@netfilter.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------WiOqf08jWz25Zpk2ewlzi5CT"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Menglong Dong <imagedong@tencent.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------WiOqf08jWz25Zpk2ewlzi5CT
+Content-Type: multipart/mixed; boundary="------------XejaiyxZM9kXmwzwYWD2Qv9Z";
+ protected-headers="v1"
+From: Eugene Crosser <crosser@average.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter-devel@vger.kernel.org
+Message-ID: <890e77c9-f65d-ad5c-3640-f9268dc419f5@average.org>
+Subject: Re: [PATCH nftables,v2] iface: handle EINTR case when creating the
+ cache
+References: <20220127230629.573287-1-pablo@netfilter.org>
+In-Reply-To: <20220127230629.573287-1-pablo@netfilter.org>
 
-Replace kfree_skb() with kfree_skb_reason() in __udp_queue_rcv_skb().
-Following new drop reasons are introduced:
+--------------XejaiyxZM9kXmwzwYWD2Qv9Z
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-SKB_DROP_REASON_SOCKET_RCVBUFF
-SKB_DROP_REASON_PROTO_MEM
+Reviewed-by: Eugene Crosser <crosser@average.org>
 
-Signed-off-by: Menglong Dong <imagedong@tencent.com>
----
- include/linux/skbuff.h     |  5 +++++
- include/trace/events/skb.h |  2 ++
- net/ipv4/udp.c             | 10 +++++++---
- 3 files changed, 14 insertions(+), 3 deletions(-)
+On 28/01/2022 00:06, Pablo Neira Ayuso wrote:
+> If interface netlink dump is interrupted, then retry.
+>=20
+> Before this patch, the netlink socket is reopened to drop stale dump
+> messages, instead empty the netlink queue and retry.
+>=20
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> ---
+> v2: immediately return on non-eintr error (instead of breaking the loop=
+),
+>     per Eugene Crosser.
+>=20
+>  src/iface.c | 50 ++++++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 38 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/src/iface.c b/src/iface.c
+> index d0e1834ca82f..c0642e0cc397 100644
+> --- a/src/iface.c
+> +++ b/src/iface.c
+> @@ -59,13 +59,13 @@ static int data_cb(const struct nlmsghdr *nlh, void=
+ *data)
+>  	return MNL_CB_OK;
+>  }
+> =20
+> -void iface_cache_update(void)
+> +static int iface_mnl_talk(struct mnl_socket *nl, uint32_t portid)
+>  {
+>  	char buf[MNL_SOCKET_BUFFER_SIZE];
+> -	struct mnl_socket *nl;
+>  	struct nlmsghdr *nlh;
+>  	struct rtgenmsg *rt;
+> -	uint32_t seq, portid;
+> +	bool eintr =3D false;
+> +	uint32_t seq;
+>  	int ret;
+> =20
+>  	nlh =3D mnl_nlmsg_put_header(buf);
+> @@ -75,6 +75,38 @@ void iface_cache_update(void)
+>  	rt =3D mnl_nlmsg_put_extra_header(nlh, sizeof(struct rtgenmsg));
+>  	rt->rtgen_family =3D AF_PACKET;
+> =20
+> +	if (mnl_socket_sendto(nl, nlh, nlh->nlmsg_len) < 0)
+> +		return -1;
+> +
+> +	ret =3D mnl_socket_recvfrom(nl, buf, sizeof(buf));
+> +	while (ret > 0) {
+> +		ret =3D mnl_cb_run(buf, ret, seq, portid, data_cb, NULL);
+> +		if (ret =3D=3D 0)
+> +			break;
+> +		if (ret < 0) {
+> +			if (errno !=3D EINTR)
+> +				return ret;
+> +
+> +			/* process all pending messages before reporting EINTR */
+> +			eintr =3D true;
+> +		}
+> +		ret =3D mnl_socket_recvfrom(nl, buf, sizeof(buf));
+> +	}
+> +
+> +	if (eintr) {
+> +		ret =3D -1;
+> +		errno =3D EINTR;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +void iface_cache_update(void)
+> +{
+> +	struct mnl_socket *nl;
+> +	uint32_t portid;
+> +	int ret;
+> +
+>  	nl =3D mnl_socket_open(NETLINK_ROUTE);
+>  	if (nl =3D=3D NULL)
+>  		netlink_init_error();
+> @@ -84,16 +116,10 @@ void iface_cache_update(void)
+> =20
+>  	portid =3D mnl_socket_get_portid(nl);
+> =20
+> -	if (mnl_socket_sendto(nl, nlh, nlh->nlmsg_len) < 0)
+> -		netlink_init_error();
+> +	do {
+> +		ret =3D iface_mnl_talk(nl, portid);
+> +	} while (ret < 0 && errno =3D=3D EINTR);
+> =20
+> -	ret =3D mnl_socket_recvfrom(nl, buf, sizeof(buf));
+> -	while (ret > 0) {
+> -		ret =3D mnl_cb_run(buf, ret, seq, portid, data_cb, NULL);
+> -		if (ret <=3D MNL_CB_STOP)
+> -			break;
+> -		ret =3D mnl_socket_recvfrom(nl, buf, sizeof(buf));
+> -	}
+>  	if (ret =3D=3D -1)
+>  		netlink_init_error();
+> =20
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 4e55321e2fc2..2390f6e230fb 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -341,6 +341,11 @@ enum skb_drop_reason {
- 						  */
- 	SKB_DROP_REASON_XFRM_POLICY,	/* xfrm policy check failed */
- 	SKB_DROP_REASON_IP_NOPROTO,	/* no support for IP protocol */
-+	SKB_DROP_REASON_SOCKET_RCVBUFF,	/* socket receive buff is full */
-+	SKB_DROP_REASON_PROTO_MEM,	/* proto memory limition, such as
-+					 * udp packet drop out of
-+					 * udp_memory_allocated.
-+					 */
- 	SKB_DROP_REASON_MAX,
- };
- 
-diff --git a/include/trace/events/skb.h b/include/trace/events/skb.h
-index 985e481c092d..cfcfd26399f7 100644
---- a/include/trace/events/skb.h
-+++ b/include/trace/events/skb.h
-@@ -25,6 +25,8 @@
- 	   UNICAST_IN_L2_MULTICAST)				\
- 	EM(SKB_DROP_REASON_XFRM_POLICY, XFRM_POLICY)		\
- 	EM(SKB_DROP_REASON_IP_NOPROTO, IP_NOPROTO)		\
-+	EM(SKB_DROP_REASON_SOCKET_RCVBUFF, SOCKET_RCVBUFF)	\
-+	EM(SKB_DROP_REASON_PROTO_MEM, PROTO_MEM)		\
- 	EMe(SKB_DROP_REASON_MAX, MAX)
- 
- #undef EM
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index e295f7f38398..1f756bb0bb1f 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2093,16 +2093,20 @@ static int __udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
- 	rc = __udp_enqueue_schedule_skb(sk, skb);
- 	if (rc < 0) {
- 		int is_udplite = IS_UDPLITE(sk);
-+		int drop_reason;
- 
- 		/* Note that an ENOMEM error is charged twice */
--		if (rc == -ENOMEM)
-+		if (rc == -ENOMEM) {
- 			UDP_INC_STATS(sock_net(sk), UDP_MIB_RCVBUFERRORS,
- 					is_udplite);
--		else
-+			drop_reason = SKB_DROP_REASON_SOCKET_RCVBUFF;
-+		} else {
- 			UDP_INC_STATS(sock_net(sk), UDP_MIB_MEMERRORS,
- 				      is_udplite);
-+			drop_reason = SKB_DROP_REASON_PROTO_MEM;
-+		}
- 		UDP_INC_STATS(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
--		kfree_skb(skb);
-+		kfree_skb_reason(skb, drop_reason);
- 		trace_udp_fail_queue_rcv_skb(rc, sk);
- 		return -1;
- 	}
--- 
-2.34.1
 
+--------------XejaiyxZM9kXmwzwYWD2Qv9Z--
+
+--------------WiOqf08jWz25Zpk2ewlzi5CT
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEnAziRJw3ydIzIkaHfKQHw5GdRYwFAmHzq7kACgkQfKQHw5Gd
+RYyVcQgArrAQIoaeYAvgx+DohlTqy+d+Kcx23bJ3VuLZq5w1bu07HrCfFniylVXb
+wYWJdHZtGLkwtLVZpo0VjtkGFB+E1qrPyCuYWTC7o5FEZJzybWIzOq6QX1cYcNCQ
+OkIxs+uHKMKFDAXtRQFlOFNm6rs3G3fTCHnJ8YMyI/5doa3RYnBF3t/2UyZIXLMs
+Lez5tEhiEwUQOjg5UOQ18UbgC6Skt49w0l2S7wmCOKw5AiDlz6WaDfnI/IHsvCwK
+3uEmzPzNQXH5VKlxk5ERuKDQuPVz3MZjWQDZjRwOzbrTDrZK9HcgK5rR78hE0UhY
+hL1c4Qm3cZZ5UYn9YOW4wMsZNirknQ==
+=EERG
+-----END PGP SIGNATURE-----
+
+--------------WiOqf08jWz25Zpk2ewlzi5CT--
