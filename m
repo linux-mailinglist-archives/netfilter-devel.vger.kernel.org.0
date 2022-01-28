@@ -2,160 +2,85 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34BF4A01FC
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jan 2022 21:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6638C4A03CF
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jan 2022 23:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233513AbiA1UhL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 28 Jan 2022 15:37:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43182 "EHLO
+        id S1343818AbiA1Wh2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 28 Jan 2022 17:37:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbiA1UhL (ORCPT
+        with ESMTP id S239508AbiA1Wh1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 28 Jan 2022 15:37:11 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CE8C061714
-        for <netfilter-devel@vger.kernel.org>; Fri, 28 Jan 2022 12:37:11 -0800 (PST)
-Received: from localhost ([::1]:59154 helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1nDXzX-000123-Fp; Fri, 28 Jan 2022 21:37:07 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] iptables-restore: Support for extra debug output
-Date:   Fri, 28 Jan 2022 21:37:00 +0100
-Message-Id: <20220128203700.27071-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220128203700.27071-1-phil@nwl.cc>
-References: <20220128203700.27071-1-phil@nwl.cc>
+        Fri, 28 Jan 2022 17:37:27 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE0DC06173B
+        for <netfilter-devel@vger.kernel.org>; Fri, 28 Jan 2022 14:37:27 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id a8so7464260pfa.6
+        for <netfilter-devel@vger.kernel.org>; Fri, 28 Jan 2022 14:37:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=r4uL6sckAnaCJM6MEQaHZL7fDy5zSQzjqi9SEPfLKhw=;
+        b=dszuC7yri95VKP+Ud+ZKfQNMj1w5mW7jfbr2i7eR8uKGD18oDlLs+CuE10Iym61mzx
+         Zap9AOU4WQTDiiOD3pTHg/PAu6+vhECrVq3r5hxU4fiDhSSCOBA6W3ozkTJGjWmnTXPc
+         pjXzydSXIQrtMDswrO8GaqkEd/ZyazCuLrbU+rdnX6K2uh752lJdU5MlYUAgUX2iddMZ
+         lAf8a5YDh8JIqIJMv2tpU1njWu6A+Qib0XqNr8wWORDniWIsDhNYbN9w6iRS7RnveJY5
+         BYHzTlwvCqDn/Ehai3FVeXr9nbhQqSgi1COmTOdJ33iEh6nmv1EwCq/StUKvrGZhb07V
+         7Cvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=r4uL6sckAnaCJM6MEQaHZL7fDy5zSQzjqi9SEPfLKhw=;
+        b=E7CZspnGs++kuCxxaD1jwAOw9rO61YRwGajZVuPDhp2r86ajZtHjLnXrcInTUqxBBl
+         t2jejpECLqMiWK/f/FXS0Xa1Bbzx8PAykpYy2gatZgCrepMOrz9Bptp+PZXd495sou0B
+         +5TXri6gvlSZnwz2b+5xPvi09/rFasGVeoWMXHx246HVyrDcseO8t0ROqwLL9oaS9IFh
+         9VneHcgVXqLs1jx7ZXcdzB1qCo+gfN8l6E3ujJga6v5t1q0gV47MDLuyIOKqltbXlwE6
+         p4zK313tTZt0RZW6lhYU/k9eQEWEE1+sFUL3rSxtMb67Rh/4T4BP6pDFxvWmsGFPhPwO
+         +kuQ==
+X-Gm-Message-State: AOAM5323EXvkM3Dnc0+hpNg7dDpDsAGdxBwgv6TxAQZ0N3FeqlME6Dx0
+        qjddEAmPGEKWFC3E+YKOgZkHzjzw48EC2D3L/78=
+X-Google-Smtp-Source: ABdhPJxNpE6+6lL0/7U0bKS7SIt/9zFj+FlSSmfAdAcjvBybiyLKZ3r9sQKTl+eEBFev8TbDvVex0m//J0sklqUS4bA=
+X-Received: by 2002:a65:51cd:: with SMTP id i13mr8195519pgq.412.1643409447018;
+ Fri, 28 Jan 2022 14:37:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6a10:4416:0:0:0:0 with HTTP; Fri, 28 Jan 2022 14:37:26
+ -0800 (PST)
+Reply-To: mualixx22@gmail.com
+From:   MR MUSSA ALI <mussaalixxx11@gmail.com>
+Date:   Fri, 28 Jan 2022 14:37:26 -0800
+Message-ID: <CACWseW=oCjeiT3xzR3mEY5gaCaGPMpjH3v-SfjTkYj1oeq389g@mail.gmail.com>
+Subject: Urgent Reply
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Treat --verbose just like iptables itself, increasing debug level with
-number of invocations.
+Dear  friend,
 
-To propagate the level into do_command() callback, insert virtual '-v'
-flags into rule lines.
+I know this means of communication may not be morally right to you as
+a person but I also have had a great thought about it and I have come
+to this conclusion which I am about to share with you.
 
-The only downside of this is that simple verbose output is changed and
-now also prints the rules as they are added - which would be useful if
-the lines contained the chain they apply to.
+INTRODUCTION: I am a assistance  and in one way or the other was hoping
+you will cooperate with me as a partner in a project of transferring
+an abandoned fund of a late customer of the bank worth of $18,000,000
+(Eighteen Million Dollars US).
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/iptables-restore.8.in                           | 1 +
- iptables/iptables-restore.c                              | 6 +++++-
- .../shell/testcases/ipt-restore/0014-verbose-restore_0   | 9 ++++++---
- iptables/xtables-restore.c                               | 6 +++++-
- 4 files changed, 17 insertions(+), 5 deletions(-)
+This will be disbursed or shared between the both of us in these
+percentages, 55% for me and 45% for you. Contact me immediately if
+that is alright for you so that we can enter in agreement before we
+start processing for the transfer of the funds. If you are satisfied
+with this proposal, please provide the below details for the Mutual
+Confidential Agreement:
 
-diff --git a/iptables/iptables-restore.8.in b/iptables/iptables-restore.8.in
-index b4b62f92740d1..883da998b0f7e 100644
---- a/iptables/iptables-restore.8.in
-+++ b/iptables/iptables-restore.8.in
-@@ -54,6 +54,7 @@ Only parse and construct the ruleset, but do not commit it.
- .TP
- \fB\-v\fP, \fB\-\-verbose\fP
- Print additional debug info during ruleset processing.
-+Specify multiple times to increase debug level.
- .TP
- \fB\-V\fP, \fB\-\-version\fP
- Print the program version number.
-diff --git a/iptables/iptables-restore.c b/iptables/iptables-restore.c
-index a3efb067d3d90..3c0a238917ecd 100644
---- a/iptables/iptables-restore.c
-+++ b/iptables/iptables-restore.c
-@@ -114,7 +114,7 @@ ip46tables_restore_main(const struct iptables_restore_cb *cb,
- 				counters = 1;
- 				break;
- 			case 'v':
--				verbose = 1;
-+				verbose++;
- 				break;
- 			case 'V':
- 				printf("%s v%s\n",
-@@ -317,11 +317,15 @@ ip46tables_restore_main(const struct iptables_restore_cb *cb,
- 			char *pcnt = NULL;
- 			char *bcnt = NULL;
- 			char *parsestart = buffer;
-+			int i;
- 
- 			add_argv(&av_store, argv[0], 0);
- 			add_argv(&av_store, "-t", 0);
- 			add_argv(&av_store, curtable, 0);
- 
-+			for (i = 0; !noflush && i < verbose; i++)
-+				add_argv(&av_store, "-v", 0);
-+
- 			tokenize_rule_counters(&parsestart, &pcnt, &bcnt, line);
- 			if (counters && pcnt && bcnt) {
- 				add_argv(&av_store, "--set-counters", 0);
-diff --git a/iptables/tests/shell/testcases/ipt-restore/0014-verbose-restore_0 b/iptables/tests/shell/testcases/ipt-restore/0014-verbose-restore_0
-index fc8559c5bac9e..5daf7a78a5334 100755
---- a/iptables/tests/shell/testcases/ipt-restore/0014-verbose-restore_0
-+++ b/iptables/tests/shell/testcases/ipt-restore/0014-verbose-restore_0
-@@ -33,6 +33,7 @@ Flushing chain \`bar'
- Flushing chain \`foo'
- Deleting chain \`bar'
- Deleting chain \`foo'
-+ACCEPT  all opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0
- Flushing chain \`PREROUTING'
- Flushing chain \`INPUT'
- Flushing chain \`OUTPUT'
-@@ -41,6 +42,7 @@ Flushing chain \`natbar'
- Flushing chain \`natfoo'
- Deleting chain \`natbar'
- Deleting chain \`natfoo'
-+ACCEPT  all opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0
- Flushing chain \`PREROUTING'
- Flushing chain \`OUTPUT'
- Flushing chain \`rawfoo'
-@@ -58,9 +60,10 @@ Flushing chain \`OUTPUT'
- Flushing chain \`secfoo'
- Deleting chain \`secfoo'"
- 
--for ipt in iptables-restore ip6tables-restore; do
--	diff -u -Z <(echo "$EXPECT") <($XT_MULTI $ipt -v <<< "$DUMP")
--done
-+EXPECT6=$(sed -e 's/0\.0\.0\.0/::/g' -e 's/opt --/opt   /' <<< "$EXPECT")
-+
-+diff -u -Z <(echo "$EXPECT") <($XT_MULTI iptables-restore -v <<< "$DUMP")
-+diff -u -Z <(echo "$EXPECT6") <($XT_MULTI ip6tables-restore -v <<< "$DUMP")
- 
- DUMP="*filter
- :baz - [0:0]
-diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index 8ca2abffa5d36..f5aabf3cc1944 100644
---- a/iptables/xtables-restore.c
-+++ b/iptables/xtables-restore.c
-@@ -206,11 +206,15 @@ static void xtables_restore_parse_line(struct nft_handle *h,
- 		char *pcnt = NULL;
- 		char *bcnt = NULL;
- 		char *parsestart = buffer;
-+		int i;
- 
- 		add_argv(&state->av_store, xt_params->program_name, 0);
- 		add_argv(&state->av_store, "-t", 0);
- 		add_argv(&state->av_store, state->curtable->name, 0);
- 
-+		for (i = 0; !h->noflush && i < verbose; i++)
-+			add_argv(&state->av_store, "-v", 0);
-+
- 		tokenize_rule_counters(&parsestart, &pcnt, &bcnt, line);
- 		if (counters && pcnt && bcnt) {
- 			add_argv(&state->av_store, "--set-counters", 0);
-@@ -309,7 +313,7 @@ xtables_restore_main(int family, const char *progname, int argc, char *argv[])
- 				counters = 1;
- 				break;
- 			case 'v':
--				verbose = 1;
-+				verbose++;
- 				break;
- 			case 'V':
- 				printf("%s v%s\n", prog_name, prog_vers);
--- 
-2.34.1
+1. Full Name and Address
+2. Occupation and Country of Origin
+3. Telephone Number
 
+I wait for your response so that we can commence on this project as
+soon as possible.
+
+Regards,
+Mr. Mussa  Ali
