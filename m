@@ -2,80 +2,57 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383544A4113
-	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Jan 2022 12:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2773D4A44BA
+	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Jan 2022 12:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358886AbiAaLB6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 31 Jan 2022 06:01:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
+        id S1358458AbiAaLcP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 31 Jan 2022 06:32:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358672AbiAaLBA (ORCPT
+        with ESMTP id S1379455AbiAaLaU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 31 Jan 2022 06:01:00 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BEACC06178A
-        for <netfilter-devel@vger.kernel.org>; Mon, 31 Jan 2022 02:59:47 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id n17so16345962iod.4
-        for <netfilter-devel@vger.kernel.org>; Mon, 31 Jan 2022 02:59:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=FANIUiWvB3mdY3zLX2DODg2pUIL5eGT5wlydl6jYk40=;
-        b=OjUeAkMVzEddLMMo5PnTCjKyhCs1ageGmC5+cFdXpsSEtg6JbUDTvXCRmwfTUCSofJ
-         slj36zZmhn3J4uwPw0DJBjnv3hUS5m+nEauuYDUNcCWjc1f+d0I+yOjKIUc0Pgz+j5Ue
-         rRdRGfWkjcSXGfwT+M+UDneKFOQe0c6aLr+5TauC2FupNgb1qyGc5yiIkJ8k0NAmHZhf
-         anrjd59/OgrastnWs4ZkrvFaIDjw5pd3eh107tNZ/TuMjnW3micCxNZKM2MDkg13GKwm
-         O5Q6tfm8j18o2CLpoCl1kG865M+uxrSOQqgPJI+OJu79ECke4sTf94bEwDsB5fZLVwuG
-         tdrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=FANIUiWvB3mdY3zLX2DODg2pUIL5eGT5wlydl6jYk40=;
-        b=ygXj6cBP2KbjUoL3lNwS29Vc7Mg6yaKOmaOdCfdqwZIVOda8g+70/acIKPiQ5cit4g
-         ZDRDxQh8uuVPgx6e+7avyQuefEkKsKgOS1g/6DO2euC6OFZemvSD5Yvt7iMx6w+6lash
-         Ss7ireDnWeySKYXeOs990v7OyCwZz2RO9cMraKndpehmb2B2QOQaYTqtQkMLqg8cJzxP
-         gv+jLu1F+Ijd0njjJA5esijEuGg7cSXhCYzeNeWo48SlNliyg+9HS4UxRv7ebwEl4OkD
-         HzxCwYHh1TFuXaGAj0izIHZBLb3iegGhpfSv4dSj+xYRx4N9K5HfMLg3Io4/vthTB4oP
-         uXyg==
-X-Gm-Message-State: AOAM53087a+wuY7RwZjRlhYJJzI0myMgW0SyKCr00MxH9NcqwaTn2Iwy
-        kjfI4us48aWM9SP/2jr2+ll7tQDulsV4ugIEB5g=
-X-Google-Smtp-Source: ABdhPJx07OLMUPeEc0ImjaiJBKF2Mcc3ZmsWTIoSvX2FNfz03c1HE0RFqesREnjvPqYHKyL/ALkhu5ugV57XI3T5t/k=
-X-Received: by 2002:a6b:441a:: with SMTP id r26mr10856124ioa.211.1643626786286;
- Mon, 31 Jan 2022 02:59:46 -0800 (PST)
+        Mon, 31 Jan 2022 06:30:20 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B4DC0617BF
+        for <netfilter-devel@vger.kernel.org>; Mon, 31 Jan 2022 03:20:52 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1nEUjq-0004l4-83; Mon, 31 Jan 2022 12:20:50 +0100
+Date:   Mon, 31 Jan 2022 12:20:50 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     Pham Thanh Tuyen <phamtyn@gmail.com>
+Cc:     netfilter-devel <netfilter-devel@vger.kernel.org>
+Subject: Re: PROBLEM: Injected conntrack lost helper
+Message-ID: <20220131112050.GQ25922@breakpoint.cc>
+References: <f9fb5616-0b37-d76b-74e5-53751d473432@gmail.com>
+ <3f416429-b1be-b51a-c4ef-6274def33258@iogearbox.net>
+ <0f4edf58-7b4e-05e8-3f13-d34819b8d5db@gmail.com>
 MIME-Version: 1.0
-Reply-To: daniellakyle60@gmail.com
-Sender: drdanielmorris11111@gmail.com
-Received: by 2002:a05:6638:1248:0:0:0:0 with HTTP; Mon, 31 Jan 2022 02:59:45
- -0800 (PST)
-From:   Mrs daniell akyle <daniellakyle60@gmail.com>
-Date:   Mon, 31 Jan 2022 11:59:45 +0100
-X-Google-Sender-Auth: xE_x512-NJSetLeK1z_d90RC9Q0
-Message-ID: <CAKFcj-P8h0HeDMtZZnog7Sh8cFMKV7095BN2fQnUMpCGPgmhFg@mail.gmail.com>
-Subject: Ahoj
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0f4edf58-7b4e-05e8-3f13-d34819b8d5db@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Pozdravy
-Jmenuji se pan=C3=AD Daniella Kyleov=C3=A1, je mi 58 let
-Filip=C3=ADny. V sou=C4=8Dasn=C3=A9 dob=C4=9B jsem hospitalizov=C3=A1n na F=
-ilip=C3=ADn=C3=A1ch, kde jsem
-podstupuje l=C3=A9=C4=8Dbu akutn=C3=ADho karcinomu j=C3=ADcnu. jsem um=C3=
-=ADraj=C3=ADc=C3=AD,
-vdova, kter=C3=A1 se rozhodla darovat =C4=8D=C3=A1st sv=C3=A9ho majetku spo=
-lehliv=C3=A9 osob=C4=9B
-kter=C3=A1 tyto pen=C3=ADze pou=C5=BEije na pomoc chud=C3=BDm a m=C3=A9n=C4=
-=9B privilegovan=C3=BDm. Chci
-poskytnout dar ve v=C3=BD=C5=A1i 3 700 000 =C2=A3 na sirotky nebo charitati=
-vn=C3=AD organizace
-ve va=C5=A1=C3=AD oblasti. Zvl=C3=A1dne=C5=A1 to? Pokud jste ochotni tuto n=
-ab=C3=ADdku p=C5=99ijmout
-a ud=C4=9Blejte p=C5=99esn=C4=9B tak, jak v=C3=A1m =C5=99=C3=ADk=C3=A1m, pa=
-k se mi vra=C5=A5te pro dal=C5=A1=C3=AD vysv=C4=9Btlen=C3=AD.
-pozdravy
-Pan=C3=AD Daniella Kyleov=C3=A1
+Pham Thanh Tuyen <phamtyn@gmail.com> wrote:
+
+[ moving to netfilter-devel ]
+
+> > > My name is Pham Thanh Tuyen. I found a bug related to the ctnetlink
+> > > and conntrack subsystems. Details are as follows:
+> > > 
+> > > 1. Summary: Injected conntrack lost helper
+> > > 
+> > > 2. Description: When a conntrack whose helper is injected from
+> > > userspace, the ctnetlink creates helper for it but NAT then loses
+> > > the helper in case the user defined helper explicitly with CT
+> > > target.
+
+Hmm.  If you insert a conntrack entry from userspace, it will already
+be confirmed, so nat rules will have no effect, and template CT rules
+are irrelevant wrt. to the helper, as extension can only be created if
+the conntrack is not in the hash yet.
+
+Can you describe the steps to reproduce this bug?
