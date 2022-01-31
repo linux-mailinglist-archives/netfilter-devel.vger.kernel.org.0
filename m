@@ -2,76 +2,91 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA6E4A4E79
-	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Jan 2022 19:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1D34A5245
+	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Jan 2022 23:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238324AbiAaSf4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 31 Jan 2022 13:35:56 -0500
-Received: from mail.redfish-solutions.com ([45.33.216.244]:33798 "EHLO
-        mail.redfish-solutions.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1356632AbiAaSf4 (ORCPT
+        id S233080AbiAaWWz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 31 Jan 2022 17:22:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229658AbiAaWWy (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 31 Jan 2022 13:35:56 -0500
-Received: from smtpclient.apple (macbook3.redfish-solutions.com [192.168.3.4])
-        (authenticated bits=0)
-        by mail.redfish-solutions.com (8.16.1/8.16.1) with ESMTPSA id 20VIZp39275976
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jan 2022 11:35:51 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.40.0.1.81\))
-Subject: Re: [PATCH v2 1/1] xt_ECHO, xt_TARPIT: make properly conditional on
- IPv6
-From:   Philip Prindeville <philipp_subx@redfish-solutions.com>
-In-Reply-To: <Yfgq6qWKgTV9NEkg@azazel.net>
-Date:   Mon, 31 Jan 2022 11:35:51 -0700
-Cc:     Jan Engelhardt <jengelh@inai.de>, netfilter-devel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <6961516B-8252-404F-B302-33E39EEBC9F3@redfish-solutions.com>
-References: <20210926195734.702772-1-philipp@redfish-solutions.com>
- <5s32r847-4op5-70s2-7o9n-4968n7rso321@vanv.qr>
- <05A51779-4B94-49BA-B1B8-6CA5BE695D80@redfish-solutions.com>
- <Yfe48T7Nxpzp20wL@azazel.net>
- <E7F7FB17-246B-4EFF-9449-FE1764F9816E@redfish-solutions.com>
- <Yfgq6qWKgTV9NEkg@azazel.net>
-To:     Jeremy Sowden <jeremy@azazel.net>
-X-Mailer: Apple Mail (2.3693.40.0.1.81)
-X-Scanned-By: MIMEDefang 2.85 on 192.168.4.3
+        Mon, 31 Jan 2022 17:22:54 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE50BC06173B
+        for <netfilter-devel@vger.kernel.org>; Mon, 31 Jan 2022 14:22:54 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id x193so29751351oix.0
+        for <netfilter-devel@vger.kernel.org>; Mon, 31 Jan 2022 14:22:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=RcCyF58LaRxi/j1nHAT0ApLeXmQ9s66f3iMVqhPacvY=;
+        b=IncZYNxz5/GjFNdLOn725dmdn013BZqWkg5z/C0u23YjcNZQXsH5xXBCr7HV1Gmis2
+         RF0bLbahF2yhBJ9w742QOTtUrQgCt0fDJeGnTZYQQsqoJ9qCgKY1Tm0vuEJ9kxO/Cx77
+         BHlV//nJSHhR0WzQBNDlAEbOLrygNdB5t0SwGufT7uS48ocJcXwnyzLzljRdXQQpS4Y1
+         37D9j5k8v/uB0sapxHNrzmyiAstvSayNKv/uO+cdCgPaKKrMpD24PQXz/JRmUnmzE7Ty
+         6RI0ef5Z9iZsAbX3o1JGEw8EhMjKFo6p5janOpGukfKsCsENOR9zxXf/JZvxX81mmNMt
+         HA8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=RcCyF58LaRxi/j1nHAT0ApLeXmQ9s66f3iMVqhPacvY=;
+        b=1wWoeLC1JQMMuAZVk6cJ2JlWjcZeEUeA/xdi3KDfndmTtVMDv9ckLJxpqoayjruPew
+         sHIfFORMxn2ia5d0huONBTQIVlGJu9qRk30IGlyFn8U8AurUHSojhGq6mbeXvsluQq6y
+         1pcNjY/H+nl5w2xil0nbvjxN2jTc9RKLBQ/2dJYrvJb0idHcWV5X5A7ld2JkGAcANfKV
+         dYwD2C7wJmg/nz37fbWBMFUvfoNlCII2aeqfNeGDkDIim1VyE47sQaHBW9w82ueH5CCI
+         RZgvmpmvSx4C3Omm8iijwY/akCZOG6sYCPj5o9gldb+qfCC84/AOQjkw1dlLIP+oYEjP
+         5PiA==
+X-Gm-Message-State: AOAM532nj6FzqQQRKbVb0ROdTr/vaS2CtC+bbKCsJaifbxtxk+PTA+Bw
+        pG5h8FtSwkVZeL7dh7m0SW/1JwHXtHzcyCtZxGQ=
+X-Google-Smtp-Source: ABdhPJyjdCwPd4PfZodpKvqbO6emQ+SkTYTQyfNzekZhvHUIwObIIbT+SxMo657P1Sn57kO005c2pGHTdHe7fPZxvgg=
+X-Received: by 2002:a05:6808:7cc:: with SMTP id f12mr14465470oij.143.1643667774081;
+ Mon, 31 Jan 2022 14:22:54 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a4a:c30d:0:0:0:0:0 with HTTP; Mon, 31 Jan 2022 14:22:53
+ -0800 (PST)
+Reply-To: westerunion909@gmail.com
+From:   "Antonia Lloyd." <anthonylloydatmxxx04@gmail.com>
+Date:   Mon, 31 Jan 2022 14:22:53 -0800
+Message-ID: <CAExPwBAFWC43sdJpThRzZ10PTExuziYtGkEw157wQDELwf80Rg@mail.gmail.com>
+Subject: Dear Email ID Owner.(USD$4000 IMF COMPENSATION FUND TO PICK UP TODAY).
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Dear Email ID Owner.
 
+The IMF is compensating all the email address that was funds as one of
+the ward win Victims and your email address and your name is among the
+listed one of approved to pay the sum of $3.6 million U.S Dollars. We
+have concluded to effect your own payment through Western Union Money
+Transfer for easy pick-up of those funds in good condition,$4000 twice
+daily,till the $3.6 million is completely transferred to you.We now
+need your information where we will be sending the funds,such
+as;Receiver name(Your full Name)address and phone number.Contact
+Western Union agent with this Email: ( westerunion995@gmail.com  ) for
+your payment fund.
 
-> On Jan 31, 2022, at 11:31 AM, Jeremy Sowden <jeremy@azazel.net> wrote:
-> 
-> On 2022-01-31, at 11:27:25 -0700, Philip Prindeville wrote:
->> On Jan 31, 2022, at 3:24 AM, Jeremy Sowden <jeremy@azazel.net> wrote:
->>> On 2022-01-30, at 21:53:26 -0700, Philip Prindeville wrote:
->>>> On Sep 28, 2021, at 3:43 AM, Jan Engelhardt <jengelh@inai.de> wrote:
->>>>> [snip]
->>>> 
->>>> Did this get merged?
->>> 
->>> It did.  It's currently at the tip of master.
->> 
->> Did we change repo sites?  I'm not seeing it here:
->> 
->> https://sourceforge.net/p/xtables-addons/xtables-addons/ci/e3ae438e2e23f0849c756604a4518315e097ad62/log/?path=/extensions/xt_ECHO.c
-> 
-> Yes:
-> 
->  https://inai.de/projects/xtables-addons/
-> 
-> J.
+Ms.Maria Zatto
+E-mail:westerunion995@gmail.com
+Telephone: +229 682 97 169
 
+Contact Ms.Maria,immediately you get this mail through western union
+email address above to enable her speed-up.your payment and release
+the $4000 dollars MTCN today for you to pick up the payment OK.
 
-That would do it.
+You are expected to provide us with the details as prescribed below to
+enable safe and easy release of your funds today.
 
-When is 3.19 or 4.0 due out?
+(1)Your Full name:
+(2)Your Phone number:
+(3)Your Country:
+(4)Your Age:
 
-Thanks,
-
--Philip
-
+Thank you,
+Dr.Antonia Lloyd.
+Contact Dir.Western Union Money Transfer,
+Cotonou-Benin Republic.
