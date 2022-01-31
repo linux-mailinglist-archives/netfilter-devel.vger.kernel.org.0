@@ -2,67 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AFF4A33FC
-	for <lists+netfilter-devel@lfdr.de>; Sun, 30 Jan 2022 05:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E8E4A3D34
+	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Jan 2022 06:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348550AbiA3EjQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 29 Jan 2022 23:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239515AbiA3EjO (ORCPT
+        id S231447AbiAaFLF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 31 Jan 2022 00:11:05 -0500
+Received: from mail.redfish-solutions.com ([45.33.216.244]:33794 "EHLO
+        mail.redfish-solutions.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230185AbiAaFLF (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 29 Jan 2022 23:39:14 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55ACFC06173B
-        for <netfilter-devel@vger.kernel.org>; Sat, 29 Jan 2022 20:39:14 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id p5so30375670ybd.13
-        for <netfilter-devel@vger.kernel.org>; Sat, 29 Jan 2022 20:39:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
-        b=SjzYYAeHT+gf032YjbOewqu+Khkaft+gBxjHgXj2xaPHmqHnTbl8AjW7TuU8xspZf4
-         gNv8V9fbAjr26vzJiWhyEQp8kc6udgBODVDj3ObFxaPhza/ucwN9IkdyL3QA9Xg4142O
-         GxDa8IBq889If8XIFyV+0kTrVXSd9S4+GZJw/Sqr1DOeWhbekF+gmcycxwG9oTZx2NQe
-         D1PQ4jT7DfcxzVkFRYl5KzQXBjZ5GPNMIOJHsEMJBU1NSy01xVM8iwTPP6J5FCdiYmob
-         o0/sjMn6NHdh7XH70kDQreEFlD/Oyz5RI1CsUQmCUCApCQ7O8ugVzJkoWXOZZIyKZuLw
-         mRXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
-        b=XPwRNnoEUGUCD/Tg7T0nH4Ly9VHYUcLAp6keRu58Bhoz4sfPJoll7SQUw4O7a0Iutc
-         rbz93KBw0y4SMua2HyUmH8M9GS4UaAcWqdcskwOZ7QDbH4xmkkKS+Q3Jnp8JkRej7ohM
-         o3+C1x1lhxrZc4c/0ze1LG2/Kg2etlCcrrmzGTW9/TuCnvGjfE9L8FnyKaRmSpSalaDY
-         zTyZnhxmUaaie0E0bk+5PzFR3xvhx68dj7BCuR8BUm60mn0g6SFi1ZxZ/mtx9/QCn8Zo
-         Cp+9wgyiUTFjLa99A/GvM1KBDRn6idVBTs4DMunF3mxWCfKTVkbGMUMyf32YC8fJNd92
-         vLQg==
-X-Gm-Message-State: AOAM533vBOS2kK3wT8hGlkM8cZIVx42pY5WbhTJ5cenDUMAuB5gVY+Sq
-        02V0+VM9EW/tnKgMjLGRLIcuurlZpxfvI7MI970=
-X-Google-Smtp-Source: ABdhPJwNCcYg8nHx9R4MZn+MMwhcAF5CAEDRf+TGwkz/pZGDR/LB3y4VsBVdfgMi60fJUO/N84sqlebimqKgDS0eSR8=
-X-Received: by 2002:a25:af52:: with SMTP id c18mr1512711ybj.19.1643517553259;
- Sat, 29 Jan 2022 20:39:13 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a05:7010:2312:b0:201:cd76:102e with HTTP; Sat, 29 Jan 2022
- 20:39:12 -0800 (PST)
-Reply-To: mrs.bill.chantalone01@gmail.com
-From:   "Mrs.Bill.Chantal" <grassroot309@gmail.com>
-Date:   Sun, 30 Jan 2022 05:39:12 +0100
-Message-ID: <CAO3iUMBb9OGbxso=arwoy6nyAStBDCHF9UJzyfgW_cMhoAsf6A@mail.gmail.com>
-Subject: Hello....
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 31 Jan 2022 00:11:05 -0500
+X-Greylist: delayed 1055 seconds by postgrey-1.27 at vger.kernel.org; Mon, 31 Jan 2022 00:11:05 EST
+Received: from smtpclient.apple (macbook3.redfish-solutions.com [192.168.3.4])
+        (authenticated bits=0)
+        by mail.redfish-solutions.com (8.16.1/8.16.1) with ESMTPSA id 20V4rQmv271807
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 30 Jan 2022 21:53:26 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.40.0.1.81\))
+Subject: Re: [PATCH v2 1/1] xt_ECHO, xt_TARPIT: make properly conditional on
+ IPv6
+From:   Philip Prindeville <philipp_subx@redfish-solutions.com>
+In-Reply-To: <5s32r847-4op5-70s2-7o9n-4968n7rso321@vanv.qr>
+Date:   Sun, 30 Jan 2022 21:53:26 -0700
+Cc:     netfilter-devel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <05A51779-4B94-49BA-B1B8-6CA5BE695D80@redfish-solutions.com>
+References: <20210926195734.702772-1-philipp@redfish-solutions.com>
+ <5s32r847-4op5-70s2-7o9n-4968n7rso321@vanv.qr>
+To:     Jan Engelhardt <jengelh@inai.de>
+X-Mailer: Apple Mail (2.3693.40.0.1.81)
+X-Scanned-By: MIMEDefang 2.85 on 192.168.4.3
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-You have been compensated with the sum of 9.5 million dollars in this
-united nation the payment will be issue into atm visa  card and send
-to you from the santander bank we need your address and your
-Whatsapp number  + 1 6465853907  this my email.ID
-( mrs.bill.chantal.roland@gmail.com )  contact  me
+Did this get merged?
 
-Thanks my
+Last commit I saw was:
 
-mrs bill chantal
+commit c90ecf4320289e2567f2b6dee0c6c21d9d51b145
+Author: Jeff Carlson <jeff@ultimateevil.org>
+Date:   Sun Aug 15 18:59:25 2021 -0700
+
+    pknock:  added UDP options to help and made whitespace consistent
+
+
+Thanks
+
+
+> On Sep 28, 2021, at 3:43 AM, Jan Engelhardt <jengelh@inai.de> wrote:
+> 
+> On Sunday 2021-09-26 21:57, Philip Prindeville wrote:
+> 
+>> From: Philip Prindeville <philipp@redfish-solutions.com>
+>> 
+>> Not all modules compile equally well when CONFIG_IPv6 is disabled.
+>> 
+>> 	{
+>> 		.name       = "ECHO",
+>> 		.revision   = 0,
+>> -		.family     = NFPROTO_IPV6,
+>> +		.family     = NFPROTO_IPV4,
+>> 		.proto      = IPPROTO_UDP,
+>> 		.table      = "filter",
+>> -		.target     = echo_tg6,
+>> +		.target     = echo_tg4,
+>> 		.me         = THIS_MODULE,
+>> 	},
+>> +#ifdef WITH_IPV6
+> 
+> I put the original order back, makes the diff smaller.
+> So added.
+> 
+
