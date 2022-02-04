@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B474A9D40
-	for <lists+netfilter-devel@lfdr.de>; Fri,  4 Feb 2022 18:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52D84A9D44
+	for <lists+netfilter-devel@lfdr.de>; Fri,  4 Feb 2022 18:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235338AbiBDRAL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 4 Feb 2022 12:00:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
+        id S1376648AbiBDRA0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 4 Feb 2022 12:00:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233140AbiBDRAL (ORCPT
+        with ESMTP id S1376704AbiBDRAZ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 4 Feb 2022 12:00:11 -0500
+        Fri, 4 Feb 2022 12:00:25 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07CEC061714
-        for <netfilter-devel@vger.kernel.org>; Fri,  4 Feb 2022 09:00:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8378DC06173E
+        for <netfilter-devel@vger.kernel.org>; Fri,  4 Feb 2022 09:00:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=oYwQvU3Pw9c8nQOATLApDJ618FRz4vc7ZTDJ+/tSaS0=; b=WzzDDcS3qXETSDyOaFHd/TFYEp
-        XSiKctBoklizZp0yvuzelGbfGWzZYE/XsV1d8EJpBEi6lSCHK4YF0A+GebJDnBHCoB73iuj83OCHA
-        C0lPb2eCzBnSb1UxKLxRWEJcoEr9BeqLEY9FkK9LlvWxTif4yAIHjf/lLDh4S3bAdivro2mIuVpwz
-        IH4rGOF0z7hf+o1cD4n0MGgnXilvRByyptnL+0vZSSyhxcoS4yMLDuF2UEZd0UA7Yo6EPbY5HS3Je
-        zLp9KssZPaE6wZGSwYpsDnoWbn0dCUB80YYzBfjP7dL8Cvlkp6JfI1LrubWxFoC5pfmWVpK9KGff0
-        Tdc6QaJw==;
+        bh=rYAhaes7m7qrwOIMpIf8kdxO9uEeIT+SldhskDed+10=; b=RPolL+1DdCVtM0BajqUl9k8wlC
+        SpsTkWRDy110WOqBKzegpZyunaY5Nidl+NYyjDnynz3W/HOvuJ0snx4t4DAql8nbqb/GIV+k29yAb
+        BknqP0/0rgjazV/CYtX1P+YhODpBC2Y0hhq9MQQVZruPOkKJfAkU+bAhhxaWdYG3N60r+5fvT+jwp
+        vHkx4Qhmzl/DcHHjDd0dqAxHzOORn+xFvv93m6JBV+B0Oh9lBSvmEWtyMnIEPIpnhgiaCXtLnfW3N
+        KSDLw6Kyc3Xn70c0sqgHV8MteIOcl9CoGy7Dtu5Pdy/SA3ybvtBfPseePDVJP5R/zN60tWoxd7pM4
+        WYmjsDKA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1nG1wN-00049L-SI; Fri, 04 Feb 2022 18:00:07 +0100
+        id 1nG1wd-0004AJ-SQ; Fri, 04 Feb 2022 18:00:23 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/4] ebtables: Support verbose mode
-Date:   Fri,  4 Feb 2022 17:59:59 +0100
-Message-Id: <20220204170001.27198-2-phil@nwl.cc>
+Subject: [iptables PATCH 3/4] nft: Add debug output to table creation
+Date:   Fri,  4 Feb 2022 18:00:00 +0100
+Message-Id: <20220204170001.27198-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220204170001.27198-1-phil@nwl.cc>
 References: <20220204170001.27198-1-phil@nwl.cc>
@@ -46,150 +46,61 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Accept '-v' flag in both ebtables-nft and ebtables-nft-restore. Mostly
-interesting because it allows for netlink debug output when specified
-multiple times.
+This at least allows to inspect how tables are created on demand.
+Also requires setting NFTNL_TABLE_FAMILY for clean output.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/ebtables-nft.8    |  6 ++++++
- iptables/xtables-eb.c      | 25 ++++++++++++++++++-------
- iptables/xtables-restore.c |  8 ++++++--
- 3 files changed, 30 insertions(+), 9 deletions(-)
+ iptables/nft.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/iptables/ebtables-nft.8 b/iptables/ebtables-nft.8
-index 08e9766f2cc74..d75aae240bc05 100644
---- a/iptables/ebtables-nft.8
-+++ b/iptables/ebtables-nft.8
-@@ -307,6 +307,12 @@ of the ebtables kernel table.
- Replace the current table data by the initial table data.
- .SS MISCELLANOUS COMMANDS
- .TP
-+.B "-v, --verbose"
-+Verbose mode.
-+For appending, insertion, deletion and replacement, this causes
-+detailed information on the rule or rules to be printed. \fB\-v\fP may be
-+specified multiple times to possibly emit more detailed debug statements.
-+.TP
- .B "-V, --version"
- Show the version of the ebtables userspace program.
- .TP
-diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index 060e06c57a481..1e5b50ba5b0ab 100644
---- a/iptables/xtables-eb.c
-+++ b/iptables/xtables-eb.c
-@@ -195,6 +195,7 @@ struct option ebt_original_options[] =
- 	{ "out-interface"  , required_argument, 0, 'o' },
- 	{ "out-if"         , required_argument, 0, 'o' },
- 	{ "version"        , no_argument      , 0, 'V' },
-+	{ "verbose"        , no_argument      , 0, 'v' },
- 	{ "help"           , no_argument      , 0, 'h' },
- 	{ "jump"           , required_argument, 0, 'j' },
- 	{ "set-counters"   , required_argument, 0, 'c' },
-@@ -219,7 +220,7 @@ struct option ebt_original_options[] =
- struct xtables_globals ebtables_globals = {
- 	.option_offset 		= 0,
- 	.program_version	= PACKAGE_VERSION " (nf_tables)",
--	.optstring		= OPTSTRING_COMMON "h",
-+	.optstring		= OPTSTRING_COMMON "hv",
- 	.orig_opts		= ebt_original_options,
- 	.compat_rev		= nft_compatible_revision,
- };
-@@ -325,6 +326,7 @@ static void print_help(const struct xtables_target *t,
- "          pcnt bcnt           : set the counters of the to be added rule\n"
- "--modprobe -M program         : try to insert modules using this program\n"
- "--concurrent                  : use a file lock to support concurrent scripts\n"
-+"--verbose -v                  : verbose mode\n"
- "--version -V                  : print package version\n\n"
- "Environment variable:\n"
- /*ATOMIC_ENV_VARIABLE "          : if set <FILE> (see above) will equal its value"*/
-@@ -726,6 +728,9 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
- 	struct ebt_match *match;
- 	bool table_set = false;
+diff --git a/iptables/nft.c b/iptables/nft.c
+index 301d6c342f982..041e1b8ccd3e5 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -657,6 +657,7 @@ static int nft_table_builtin_add(struct nft_handle *h,
+ 	if (t == NULL)
+ 		return -1;
  
-+	/* avoid cumulating verbosity with ebtables-restore */
-+	h->verbose = 0;
++	nftnl_table_set_u32(t, NFTNL_TABLE_FAMILY, h->family);
+ 	nftnl_table_set_str(t, NFTNL_TABLE_NAME, _t->name);
+ 
+ 	ret = batch_table_add(h, NFT_COMPAT_TABLE_ADD, t) ? 0 : - 1;
+@@ -2242,6 +2243,7 @@ static int __nft_table_flush(struct nft_handle *h, const char *table, bool exist
+ 	if (t == NULL)
+ 		return -1;
+ 
++	nftnl_table_set_u32(t, NFTNL_TABLE_FAMILY, h->family);
+ 	nftnl_table_set_str(t, NFTNL_TABLE_NAME, table);
+ 
+ 	obj = batch_table_add(h, NFT_COMPAT_TABLE_FLUSH, t);
+@@ -2832,6 +2834,18 @@ error:
+ 	return ret;
+ }
+ 
++static void nft_table_print_debug(struct nft_handle *h,
++				  struct nftnl_table *t, struct nlmsghdr *nlh)
++{
++	if (h->verbose > 1) {
++		nftnl_table_fprintf(stdout, t, 0, 0);
++		fprintf(stdout, "\n");
++	}
++	if (h->verbose > 2)
++		mnl_nlmsg_fprintf(stdout, nlh, nlh->nlmsg_len,
++				  sizeof(struct nfgenmsg));
++}
 +
- 	/* prevent getopt to spoil our error reporting */
- 	optind = 0;
- 	opterr = false;
-@@ -854,6 +859,10 @@ print_zero:
- 				optind++;
- 			}
- 			break;
-+		case 'v': /* verbose */
-+			flags |= OPT_VERBOSE;
-+			h->verbose++;
-+			break;
- 		case 'V': /* Version */
- 			if (OPT_COMMANDS)
- 				xtables_error(PARAMETER_PROBLEM,
-@@ -1146,24 +1155,26 @@ print_zero:
- 		}
- 	} else if (command == 'L') {
- 		ret = list_rules(h, chain, *table, rule_nr,
--				 0,
-+				 flags & OPT_VERBOSE,
- 				 0,
- 				 /*flags&OPT_EXPANDED*/0,
- 				 flags&LIST_N,
- 				 flags&LIST_C);
- 	}
- 	if (flags & OPT_ZERO) {
--		ret = nft_cmd_chain_zero_counters(h, chain, *table, 0);
-+		ret = nft_cmd_chain_zero_counters(h, chain, *table,
-+						  flags & OPT_VERBOSE);
- 	} else if (command == 'F') {
--		ret = nft_cmd_rule_flush(h, chain, *table, 0);
-+		ret = nft_cmd_rule_flush(h, chain, *table, flags & OPT_VERBOSE);
- 	} else if (command == 'A') {
--		ret = append_entry(h, chain, *table, &cs, 0, 0, true);
-+		ret = append_entry(h, chain, *table, &cs, 0,
-+				   flags & OPT_VERBOSE, true);
- 	} else if (command == 'I') {
- 		ret = append_entry(h, chain, *table, &cs, rule_nr - 1,
--				   0, false);
-+				   flags & OPT_VERBOSE, false);
- 	} else if (command == 'D') {
- 		ret = delete_entry(h, chain, *table, &cs, rule_nr - 1,
--				   rule_nr_end, 0);
-+				   rule_nr_end, flags & OPT_VERBOSE);
- 	} /*else if (replace->command == 'C') {
- 		ebt_change_counters(replace, new_entry, rule_nr, rule_nr_end, &(new_entry->cnt_surplus), chcounter);
- 		if (ebt_errormsg[0] != '\0')
-diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index f5aabf3cc1944..81b25a43c9a04 100644
---- a/iptables/xtables-restore.c
-+++ b/iptables/xtables-restore.c
-@@ -417,6 +417,7 @@ static const struct nft_xt_restore_cb ebt_restore_cb = {
+ static void nft_compat_table_batch_add(struct nft_handle *h, uint16_t type,
+ 				       uint16_t flags, uint32_t seq,
+ 				       struct nftnl_table *table)
+@@ -2841,6 +2855,7 @@ static void nft_compat_table_batch_add(struct nft_handle *h, uint16_t type,
+ 	nlh = nftnl_table_nlmsg_build_hdr(nftnl_batch_buffer(h->batch),
+ 					type, h->family, flags, seq);
+ 	nftnl_table_nlmsg_build_payload(nlh, table);
++	nft_table_print_debug(h, table, nlh);
+ }
  
- static const struct option ebt_restore_options[] = {
- 	{.name = "noflush", .has_arg = 0, .val = 'n'},
-+	{.name = "verbose", .has_arg = 0, .val = 'v'},
- 	{ 0 }
- };
- 
-@@ -430,15 +431,18 @@ int xtables_eb_restore_main(int argc, char *argv[])
- 	struct nft_handle h;
- 	int c;
- 
--	while ((c = getopt_long(argc, argv, "n",
-+	while ((c = getopt_long(argc, argv, "nv",
- 				ebt_restore_options, NULL)) != -1) {
- 		switch(c) {
- 		case 'n':
- 			noflush = 1;
- 			break;
-+		case 'v':
-+			verbose++;
-+			break;
- 		default:
- 			fprintf(stderr,
--				"Usage: ebtables-restore [ --noflush ]\n");
-+				"Usage: ebtables-restore [ --verbose ] [ --noflush ]\n");
- 			exit(1);
- 			break;
- 		}
+ static void nft_compat_set_batch_add(struct nft_handle *h, uint16_t type,
 -- 
 2.34.1
 
