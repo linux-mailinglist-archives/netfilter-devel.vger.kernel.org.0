@@ -2,33 +2,33 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BD14AC82A
-	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Feb 2022 19:03:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C544AC84D
+	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Feb 2022 19:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236058AbiBGSCc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 7 Feb 2022 13:02:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
+        id S234029AbiBGSKb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 7 Feb 2022 13:10:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243143AbiBGR75 (ORCPT
+        with ESMTP id S1378369AbiBGSCl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 7 Feb 2022 12:59:57 -0500
+        Mon, 7 Feb 2022 13:02:41 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 04061C0401DF
-        for <netfilter-devel@vger.kernel.org>; Mon,  7 Feb 2022 09:59:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 08031C0401E0
+        for <netfilter-devel@vger.kernel.org>; Mon,  7 Feb 2022 10:02:41 -0800 (PST)
 Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 45E35601C0;
-        Mon,  7 Feb 2022 18:59:52 +0100 (CET)
-Date:   Mon, 7 Feb 2022 18:59:54 +0100
+        by mail.netfilter.org (Postfix) with ESMTPSA id 4D639601C0;
+        Mon,  7 Feb 2022 19:02:36 +0100 (CET)
+Date:   Mon, 7 Feb 2022 19:02:37 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     Phil Sutter <phil@nwl.cc>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [iptables PATCH 1/4] nft: Set NFTNL_CHAIN_FAMILY in new chains
-Message-ID: <YgFeGpsoHO4wjGU0@salvia>
-References: <20220204170001.27198-1-phil@nwl.cc>
+Subject: Re: [iptables PATCH 1/2] nft: Use verbose flag to toggle debug output
+Message-ID: <YgFevUBNBFagWjMx@salvia>
+References: <20220128203700.27071-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220204170001.27198-1-phil@nwl.cc>
+In-Reply-To: <20220128203700.27071-1-phil@nwl.cc>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -38,97 +38,136 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Series LGTM, thanks
-
-On Fri, Feb 04, 2022 at 05:59:58PM +0100, Phil Sutter wrote:
-> Kernel doesn't need it, but debug output improves significantly. Before
-> this patch:
+On Fri, Jan 28, 2022 at 09:36:59PM +0100, Phil Sutter wrote:
+> Copy legacy iptables' behaviour, printing debug output if verbose flag
+> is given more than once.
 > 
-> | # iptables-nft -vv -A INPUT
-> | [...]
-> | unknown filter INPUT use 0 type filter hook unknown prio 0 policy accept packets 0 bytes 0
-> | [...]
-> 
-> and after:
-> 
-> | # iptables-nft -vv -A INPUT
-> | [...]
-> | ip filter INPUT use 0 type filter hook input prio 0 policy accept packets 0 bytes 0
-> | [...]
-> 
-> While being at it, make nft_chain_builtin_alloc() take only the builtin
-> table's name as parameter - it's the only field it accesses.
+> Since nft debug output applies to netlink messages which are not created
+> until nft_action() phase, carrying verbose value is non-trivial -
+> introduce a field in struct nft_handle for that.
 > 
 > Signed-off-by: Phil Sutter <phil@nwl.cc>
 > ---
->  iptables/nft.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+>  iptables/nft-shared.h |  1 -
+>  iptables/nft.c        | 38 ++++++++++++++++++++------------------
+>  iptables/nft.h        |  1 +
+>  iptables/xtables.c    |  1 +
+>  4 files changed, 22 insertions(+), 19 deletions(-)
 > 
+> diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
+> index c3241f4b8c726..d4222ae05adc3 100644
+> --- a/iptables/nft-shared.h
+> +++ b/iptables/nft-shared.h
+> @@ -13,7 +13,6 @@
+>  #include "xshared.h"
+>  
+>  #ifdef DEBUG
+> -#define NLDEBUG
+>  #define DEBUG_DEL
+>  #endif
+>  
 > diff --git a/iptables/nft.c b/iptables/nft.c
-> index 7cc6ca5258150..301d6c342f982 100644
+> index b5de687c5c4cd..ae41384fe8180 100644
 > --- a/iptables/nft.c
 > +++ b/iptables/nft.c
-> @@ -665,7 +665,7 @@ static int nft_table_builtin_add(struct nft_handle *h,
+> @@ -926,15 +926,16 @@ void nft_fini(struct nft_handle *h)
+>  	mnl_socket_close(h->nl);
 >  }
 >  
->  static struct nftnl_chain *
-> -nft_chain_builtin_alloc(const struct builtin_table *table,
-> +nft_chain_builtin_alloc(int family, const char *tname,
->  			const struct builtin_chain *chain, int policy)
+> -static void nft_chain_print_debug(struct nftnl_chain *c, struct nlmsghdr *nlh)
+> +static void nft_chain_print_debug(struct nft_handle *h,
+> +				  struct nftnl_chain *c, struct nlmsghdr *nlh)
 >  {
->  	struct nftnl_chain *c;
-> @@ -674,7 +674,8 @@ nft_chain_builtin_alloc(const struct builtin_table *table,
->  	if (c == NULL)
->  		return NULL;
+> -#ifdef NLDEBUG
+> -	char tmp[1024];
+> -
+> -	nftnl_chain_snprintf(tmp, sizeof(tmp), c, 0, 0);
+> -	printf("DEBUG: chain: %s\n", tmp);
+> -	mnl_nlmsg_fprintf(stdout, nlh, nlh->nlmsg_len, sizeof(struct nfgenmsg));
+> -#endif
+> +	if (h->verbose > 1) {
+> +		nftnl_chain_fprintf(stdout, c, 0, 0);
+> +		fprintf(stdout, "\n");
+> +	}
+> +	if (h->verbose > 2)
+> +		mnl_nlmsg_fprintf(stdout, nlh, nlh->nlmsg_len,
+> +				  sizeof(struct nfgenmsg));
+
+OK, so -v is netlink byte printing and -vv means print netlink message
+too. LGTM.
+
+I'd mention this in the commit description before applying.
+
+>  }
 >  
-> -	nftnl_chain_set_str(c, NFTNL_CHAIN_TABLE, table->name);
-> +	nftnl_chain_set_u32(c, NFTNL_CHAIN_FAMILY, family);
-> +	nftnl_chain_set_str(c, NFTNL_CHAIN_TABLE, tname);
->  	nftnl_chain_set_str(c, NFTNL_CHAIN_NAME, chain->name);
->  	nftnl_chain_set_u32(c, NFTNL_CHAIN_HOOKNUM, chain->hook);
->  	nftnl_chain_set_u32(c, NFTNL_CHAIN_PRIO, chain->prio);
-> @@ -693,7 +694,7 @@ static void nft_chain_builtin_add(struct nft_handle *h,
+>  static struct nftnl_chain *nft_chain_new(struct nft_handle *h,
+> @@ -1386,15 +1387,16 @@ int add_log(struct nftnl_rule *r, struct iptables_command_state *cs)
+>  	return 0;
+>  }
+>  
+> -static void nft_rule_print_debug(struct nftnl_rule *r, struct nlmsghdr *nlh)
+> +static void nft_rule_print_debug(struct nft_handle *h,
+> +				 struct nftnl_rule *r, struct nlmsghdr *nlh)
 >  {
->  	struct nftnl_chain *c;
+> -#ifdef NLDEBUG
+> -	char tmp[1024];
+> -
+> -	nftnl_rule_snprintf(tmp, sizeof(tmp), r, 0, 0);
+> -	printf("DEBUG: rule: %s\n", tmp);
+> -	mnl_nlmsg_fprintf(stdout, nlh, nlh->nlmsg_len, sizeof(struct nfgenmsg));
+> -#endif
+> +	if (h->verbose > 1) {
+> +		nftnl_rule_fprintf(stdout, r, 0, 0);
+> +		fprintf(stdout, "\n");
+> +	}
+> +	if (h->verbose > 2)
+> +		mnl_nlmsg_fprintf(stdout, nlh, nlh->nlmsg_len,
+> +				  sizeof(struct nfgenmsg));
+>  }
 >  
-> -	c = nft_chain_builtin_alloc(table, chain, NF_ACCEPT);
-> +	c = nft_chain_builtin_alloc(h->family, table->name, chain, NF_ACCEPT);
->  	if (c == NULL)
->  		return;
+>  int add_counters(struct nftnl_rule *r, uint64_t packets, uint64_t bytes)
+> @@ -2698,7 +2700,7 @@ static void nft_compat_chain_batch_add(struct nft_handle *h, uint16_t type,
+>  	nlh = nftnl_chain_nlmsg_build_hdr(nftnl_batch_buffer(h->batch),
+>  					type, h->family, flags, seq);
+>  	nftnl_chain_nlmsg_build_payload(nlh, chain);
+> -	nft_chain_print_debug(chain, nlh);
+> +	nft_chain_print_debug(h, chain, nlh);
+>  }
 >  
-> @@ -959,7 +960,7 @@ static struct nftnl_chain *nft_chain_new(struct nft_handle *h,
->  	_c = nft_chain_builtin_find(_t, chain);
->  	if (_c != NULL) {
->  		/* This is a built-in chain */
-> -		c = nft_chain_builtin_alloc(_t, _c, policy);
-> +		c = nft_chain_builtin_alloc(h->family, _t->name, _c, policy);
->  		if (c == NULL)
->  			return NULL;
->  	} else {
-> @@ -1999,6 +2000,7 @@ int nft_chain_user_add(struct nft_handle *h, const char *chain, const char *tabl
->  	if (c == NULL)
->  		return 0;
+>  static void nft_compat_rule_batch_add(struct nft_handle *h, uint16_t type,
+> @@ -2710,7 +2712,7 @@ static void nft_compat_rule_batch_add(struct nft_handle *h, uint16_t type,
+>  	nlh = nftnl_rule_nlmsg_build_hdr(nftnl_batch_buffer(h->batch),
+>  				       type, h->family, flags, seq);
+>  	nftnl_rule_nlmsg_build_payload(nlh, rule);
+> -	nft_rule_print_debug(rule, nlh);
+> +	nft_rule_print_debug(h, rule, nlh);
+>  }
 >  
-> +	nftnl_chain_set_u32(c, NFTNL_CHAIN_FAMILY, h->family);
->  	nftnl_chain_set_str(c, NFTNL_CHAIN_TABLE, table);
->  	nftnl_chain_set_str(c, NFTNL_CHAIN_NAME, chain);
->  	if (h->family == NFPROTO_BRIDGE)
-> @@ -2029,6 +2031,7 @@ int nft_chain_restore(struct nft_handle *h, const char *chain, const char *table
->  		if (!c)
->  			return 0;
+>  static void batch_obj_del(struct nft_handle *h, struct obj_update *o)
+> diff --git a/iptables/nft.h b/iptables/nft.h
+> index 4c78f761e1c4b..fd116c2e3e198 100644
+> --- a/iptables/nft.h
+> +++ b/iptables/nft.h
+> @@ -109,6 +109,7 @@ struct nft_handle {
+>  	int8_t			config_done;
+>  	struct list_head	cmd_list;
+>  	bool			cache_init;
+> +	int			verbose;
 >  
-> +		nftnl_chain_set_u32(c, NFTNL_CHAIN_FAMILY, h->family);
->  		nftnl_chain_set_str(c, NFTNL_CHAIN_TABLE, table);
->  		nftnl_chain_set_str(c, NFTNL_CHAIN_NAME, chain);
->  		created = true;
-> @@ -2190,6 +2193,7 @@ int nft_chain_user_rename(struct nft_handle *h,const char *chain,
->  	if (c == NULL)
->  		return 0;
+>  	/* meta data, for error reporting */
+>  	struct {
+> diff --git a/iptables/xtables.c b/iptables/xtables.c
+> index 051d5c7b7f98b..c44b39acdcd97 100644
+> --- a/iptables/xtables.c
+> +++ b/iptables/xtables.c
+> @@ -163,6 +163,7 @@ int do_commandx(struct nft_handle *h, int argc, char *argv[], char **table,
+>  		h->ops->init_cs(&cs);
 >  
-> +	nftnl_chain_set_u32(c, NFTNL_CHAIN_FAMILY, h->family);
->  	nftnl_chain_set_str(c, NFTNL_CHAIN_TABLE, table);
->  	nftnl_chain_set_str(c, NFTNL_CHAIN_NAME, newname);
->  	nftnl_chain_set_u64(c, NFTNL_CHAIN_HANDLE, handle);
+>  	do_parse(argc, argv, &p, &cs, &args);
+> +	h->verbose = p.verbose;
+>  
+>  	if (!nft_table_builtin_find(h, p.table))
+>  		xtables_error(VERSION_PROBLEM,
 > -- 
 > 2.34.1
 > 
