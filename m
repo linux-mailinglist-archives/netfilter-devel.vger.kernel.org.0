@@ -2,115 +2,251 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7024ABF7F
-	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Feb 2022 14:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D494AC001
+	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Feb 2022 14:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbiBGMiw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 7 Feb 2022 07:38:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49562 "EHLO
+        id S1385758AbiBGNt0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 7 Feb 2022 08:49:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387650AbiBGLl1 (ORCPT
+        with ESMTP id S1449025AbiBGNP1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 7 Feb 2022 06:41:27 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B167C03E93D;
-        Mon,  7 Feb 2022 03:40:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DF4160DBF;
-        Mon,  7 Feb 2022 11:40:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B98DAC340F0;
-        Mon,  7 Feb 2022 11:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644234010;
-        bh=LurCH/FgOiyF5tRrbMdN+klo1M8jNPBO4OqOYHEWz0k=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mYdEQ5TF4K7TDhfDM0t+ipH+GXJwozzx0b4HKEOm8Z/3jLqExCl+JPAeTL4j2PQRk
-         x8saaTkchxeQDBGwtUh65hlYDWvYkhYAhj+PHdVZNzRIaY+15cLzK3Asv6p5uIGiRG
-         mY9zSav585jh+RV2u+Hijtn5/2UREuxXG3DwS8StLuBQHEo7XhWA411IJiiAUJPYml
-         +cRQimmc5+FIAmTJaNlQTEx7hcdDlTuL49rn8Dn0/cEaPjTwEnQK6JUPZFAhRWWCru
-         E6xFayawpyctWduU1zQtfo5m3xqOY2+S5beS8Bj3VrQJj6CWW4VToyVD7chq/vduE9
-         t/WTmeyG25Y2w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9E069E6BB3D;
-        Mon,  7 Feb 2022 11:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 7 Feb 2022 08:15:27 -0500
+X-Greylist: delayed 428 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 07 Feb 2022 05:15:26 PST
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38DB1C043181
+        for <netfilter-devel@vger.kernel.org>; Mon,  7 Feb 2022 05:15:26 -0800 (PST)
+Received: from localhost.localdomain (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id D6C2060027
+        for <netfilter-devel@vger.kernel.org>; Mon,  7 Feb 2022 14:08:13 +0100 (CET)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next,v2] netfilter: nft_cmp: optimize comparison for 16-bytes
+Date:   Mon,  7 Feb 2022 14:08:13 +0100
+Message-Id: <20220207130813.40906-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 net-next 0/7] net: use kfree_skb_reason() for ip/udp packet
- receive
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164423401064.10014.14060566984987490532.git-patchwork-notify@kernel.org>
-Date:   Mon, 07 Feb 2022 11:40:10 +0000
-References: <20220205074739.543606-1-imagedong@tencent.com>
-In-Reply-To: <20220205074739.543606-1-imagedong@tencent.com>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     dsahern@kernel.org, kuba@kernel.org, rostedt@goodmis.org,
-        mingo@redhat.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
-        pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        edumazet@google.com, alobakin@pm.me, ast@kernel.org,
-        imagedong@tencent.com, pabeni@redhat.com, keescook@chromium.org,
-        talalahmad@google.com, haokexin@gmail.com,
-        ilias.apalodimas@linaro.org, memxor@gmail.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        paulb@nvidia.com, cong.wang@bytedance.com, mengensun@tencent.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello:
+Allow up to 16-byte comparisons with a new cmp fast version. Use two
+64-bit words and calculate the mask representing the bits to be
+compared. Make sure the comparison is 64-bit aligned and avoid
+out-of-bound memory access.
 
-This series was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v2: this version adds a new cmp fast variant for two reasons:
+    - unaligned u32 cmp using v1 patch cmp fast result in using slow cmp.
+      ie. NFT_REG32_01, NFT_REG32_03, ... use slow cmp.
+    - register NFT_REG32_13, NFT_REG32_14 and NFT_REG32_15 always use
+      slow cmp for u32 cmp.
 
-On Sat,  5 Feb 2022 15:47:32 +0800 you wrote:
-> From: Menglong Dong <imagedong@tencent.com>
-> 
-> In this series patches, kfree_skb() is replaced with kfree_skb_reason()
-> during ipv4 and udp4 packet receiving path, and following drop reasons
-> are introduced:
-> 
-> SKB_DROP_REASON_SOCKET_FILTER
-> SKB_DROP_REASON_NETFILTER_DROP
-> SKB_DROP_REASON_OTHERHOST
-> SKB_DROP_REASON_IP_CSUM
-> SKB_DROP_REASON_IP_INHDR
-> SKB_DROP_REASON_IP_RPFILTER
-> SKB_DROP_REASON_UNICAST_IN_L2_MULTICAST
-> SKB_DROP_REASON_XFRM_POLICY
-> SKB_DROP_REASON_IP_NOPROTO
-> SKB_DROP_REASON_SOCKET_RCVBUFF
-> SKB_DROP_REASON_PROTO_MEM
-> 
-> [...]
+Although this version adds more code compare to v1, the numbers I
+obtained here show that the results are similar results compared to v1:
+This version shows only slightly better numbers for cmp u32 fast vs cmp
+fast u128 being slightly slower.
 
-Here is the summary with links:
-  - [v4,net-next,1/7] net: skb_drop_reason: add document for drop reasons
-    https://git.kernel.org/netdev/net-next/c/88590b369354
-  - [v4,net-next,2/7] net: netfilter: use kfree_drop_reason() for NF_DROP
-    https://git.kernel.org/netdev/net-next/c/2df3041ba3be
-  - [v4,net-next,3/7] net: ipv4: use kfree_skb_reason() in ip_rcv_core()
-    https://git.kernel.org/netdev/net-next/c/33cba42985c8
-  - [v4,net-next,4/7] net: ipv4: use kfree_skb_reason() in ip_rcv_finish_core()
-    https://git.kernel.org/netdev/net-next/c/c1f166d1f7ee
-  - [v4,net-next,5/7] net: ipv4: use kfree_skb_reason() in ip_protocol_deliver_rcu()
-    https://git.kernel.org/netdev/net-next/c/10580c479190
-  - [v4,net-next,6/7] net: udp: use kfree_skb_reason() in udp_queue_rcv_one_skb()
-    https://git.kernel.org/netdev/net-next/c/1379a92d38e3
-  - [v4,net-next,7/7] net: udp: use kfree_skb_reason() in __udp_queue_rcv_skb()
-    https://git.kernel.org/netdev/net-next/c/08d4c0370c40
+ include/net/netfilter/nf_tables_core.h |   8 ++
+ net/netfilter/nf_tables_core.c         |  16 ++++
+ net/netfilter/nft_cmp.c                | 103 ++++++++++++++++++++++++-
+ 3 files changed, 125 insertions(+), 2 deletions(-)
 
-You are awesome, thank you!
+diff --git a/include/net/netfilter/nf_tables_core.h b/include/net/netfilter/nf_tables_core.h
+index b6fb1fdff9b2..a397454ae3a2 100644
+--- a/include/net/netfilter/nf_tables_core.h
++++ b/include/net/netfilter/nf_tables_core.h
+@@ -42,6 +42,13 @@ struct nft_cmp_fast_expr {
+ 	bool			inv;
+ };
+ 
++struct nft_cmp16_fast_expr {
++	struct nft_data		data;
++	struct nft_data		mask;
++	u8			sreg;
++	bool			inv;
++};
++
+ struct nft_immediate_expr {
+ 	struct nft_data		data;
+ 	u8			dreg;
+@@ -59,6 +66,7 @@ static inline u32 nft_cmp_fast_mask(unsigned int len)
+ }
+ 
+ extern const struct nft_expr_ops nft_cmp_fast_ops;
++extern const struct nft_expr_ops nft_cmp16_fast_ops;
+ 
+ struct nft_payload {
+ 	enum nft_payload_bases	base:8;
+diff --git a/net/netfilter/nf_tables_core.c b/net/netfilter/nf_tables_core.c
+index 36e73f9828c5..c6c05b2412c4 100644
+--- a/net/netfilter/nf_tables_core.c
++++ b/net/netfilter/nf_tables_core.c
+@@ -67,6 +67,20 @@ static void nft_cmp_fast_eval(const struct nft_expr *expr,
+ 	regs->verdict.code = NFT_BREAK;
+ }
+ 
++static void nft_cmp16_fast_eval(const struct nft_expr *expr,
++				struct nft_regs *regs)
++{
++	const struct nft_cmp16_fast_expr *priv = nft_expr_priv(expr);
++	const u64 *reg_data = (const u64 *)&regs->data[priv->sreg];
++	const u64 *mask = (const u64 *)&priv->mask;
++	const u64 *data = (const u64 *)&priv->data;
++
++	if (((reg_data[0] & mask[0]) == data[0] &&
++	    ((reg_data[1] & mask[1]) == data[1])) ^ priv->inv)
++		return;
++	regs->verdict.code = NFT_BREAK;
++}
++
+ static noinline void __nft_trace_verdict(struct nft_traceinfo *info,
+ 					 const struct nft_chain *chain,
+ 					 const struct nft_regs *regs)
+@@ -225,6 +239,8 @@ nft_do_chain(struct nft_pktinfo *pkt, void *priv)
+ 		nft_rule_dp_for_each_expr(expr, last, rule) {
+ 			if (expr->ops == &nft_cmp_fast_ops)
+ 				nft_cmp_fast_eval(expr, &regs);
++			else if (expr->ops == &nft_cmp16_fast_ops)
++				nft_cmp16_fast_eval(expr, &regs);
+ 			else if (expr->ops == &nft_bitwise_fast_ops)
+ 				nft_bitwise_fast_eval(expr, &regs);
+ 			else if (expr->ops != &nft_payload_fast_ops ||
+diff --git a/net/netfilter/nft_cmp.c b/net/netfilter/nft_cmp.c
+index 47b6d05f1ae6..66b6bf75b317 100644
+--- a/net/netfilter/nft_cmp.c
++++ b/net/netfilter/nft_cmp.c
+@@ -272,12 +272,104 @@ const struct nft_expr_ops nft_cmp_fast_ops = {
+ 	.offload	= nft_cmp_fast_offload,
+ };
+ 
++static u32 nft_cmp_mask(u32 bitlen)
++{
++	return (__force u32)cpu_to_le32(~0U >> (sizeof(u32) * BITS_PER_BYTE - bitlen));
++}
++
++static void nft_cmp16_fast_mask(struct nft_data *data, unsigned int bitlen)
++{
++	int len = bitlen / BITS_PER_BYTE;
++	int i, words = len / sizeof(u32);
++
++	for (i = 0; i < words; i++) {
++		data->data[i] = 0xffffffff;
++		bitlen -= sizeof(u32) * BITS_PER_BYTE;
++	}
++
++	if (len % sizeof(u32))
++		data->data[i++] = nft_cmp_mask(bitlen);
++
++	for (; i < 4; i++)
++		data->data[i] = 0;
++}
++
++static int nft_cmp16_fast_init(const struct nft_ctx *ctx,
++			       const struct nft_expr *expr,
++			       const struct nlattr * const tb[])
++{
++	struct nft_cmp16_fast_expr *priv = nft_expr_priv(expr);
++	struct nft_data_desc desc;
++	int err;
++
++	err = nft_data_init(NULL, &priv->data, sizeof(priv->data), &desc,
++			    tb[NFTA_CMP_DATA]);
++	if (err < 0)
++		return err;
++
++	WARN_ON_ONCE(desc.len != sizeof(priv->data));
++
++	err = nft_parse_register_load(tb[NFTA_CMP_SREG], &priv->sreg, desc.len);
++	if (err < 0)
++		return err;
++
++	nft_cmp16_fast_mask(&priv->mask, desc.len * BITS_PER_BYTE);
++	priv->inv = ntohl(nla_get_be32(tb[NFTA_CMP_OP])) != NFT_CMP_EQ;
++
++	return 0;
++}
++
++static int nft_cmp16_fast_offload(struct nft_offload_ctx *ctx,
++				  struct nft_flow_rule *flow,
++				  const struct nft_expr *expr)
++{
++	const struct nft_cmp16_fast_expr *priv = nft_expr_priv(expr);
++	struct nft_cmp_expr cmp = {
++		.data	= priv->data,
++		.sreg	= priv->sreg,
++		.len	= sizeof(priv->data),
++		.op	= priv->inv ? NFT_CMP_NEQ : NFT_CMP_EQ,
++	};
++
++	return __nft_cmp_offload(ctx, flow, &cmp);
++}
++
++static int nft_cmp16_fast_dump(struct sk_buff *skb, const struct nft_expr *expr)
++{
++	const struct nft_cmp16_fast_expr *priv = nft_expr_priv(expr);
++	enum nft_cmp_ops op = priv->inv ? NFT_CMP_NEQ : NFT_CMP_EQ;
++
++	if (nft_dump_register(skb, NFTA_CMP_SREG, priv->sreg))
++		goto nla_put_failure;
++	if (nla_put_be32(skb, NFTA_CMP_OP, htonl(op)))
++		goto nla_put_failure;
++
++	if (nft_data_dump(skb, NFTA_CMP_DATA, &priv->data,
++			  NFT_DATA_VALUE, sizeof(priv->data)) < 0)
++		goto nla_put_failure;
++	return 0;
++
++nla_put_failure:
++	return -1;
++}
++
++
++const struct nft_expr_ops nft_cmp16_fast_ops = {
++	.type		= &nft_cmp_type,
++	.size		= NFT_EXPR_SIZE(sizeof(struct nft_cmp16_fast_expr)),
++	.eval		= NULL,	/* inlined */
++	.init		= nft_cmp16_fast_init,
++	.dump		= nft_cmp16_fast_dump,
++	.offload	= nft_cmp16_fast_offload,
++};
++
+ static const struct nft_expr_ops *
+ nft_cmp_select_ops(const struct nft_ctx *ctx, const struct nlattr * const tb[])
+ {
+ 	struct nft_data_desc desc;
+ 	struct nft_data data;
+ 	enum nft_cmp_ops op;
++	u8 sreg;
+ 	int err;
+ 
+ 	if (tb[NFTA_CMP_SREG] == NULL ||
+@@ -306,9 +398,16 @@ nft_cmp_select_ops(const struct nft_ctx *ctx, const struct nlattr * const tb[])
+ 	if (desc.type != NFT_DATA_VALUE)
+ 		goto err1;
+ 
+-	if (desc.len <= sizeof(u32) && (op == NFT_CMP_EQ || op == NFT_CMP_NEQ))
+-		return &nft_cmp_fast_ops;
++	sreg = ntohl(nla_get_be32(tb[NFTA_CMP_SREG]));
+ 
++	if (op == NFT_CMP_EQ || op == NFT_CMP_NEQ) {
++		if (desc.len <= sizeof(u32))
++			return &nft_cmp_fast_ops;
++		else if (desc.len <= sizeof(data) &&
++			 ((sreg >= NFT_REG_1 && sreg <= NFT_REG_4) ||
++			  (sreg >= NFT_REG32_00 && sreg <= NFT_REG32_12 && sreg % 2 == 0)))
++			return &nft_cmp16_fast_ops;
++	}
+ 	return &nft_cmp_ops;
+ err1:
+ 	nft_data_release(&data, desc.type);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.30.2
 
