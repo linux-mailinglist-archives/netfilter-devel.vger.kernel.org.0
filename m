@@ -2,105 +2,51 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D42044AC0F0
-	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Feb 2022 15:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4134AC0EA
+	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Feb 2022 15:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240192AbiBGOSD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 7 Feb 2022 09:18:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
+        id S237570AbiBGOSC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 7 Feb 2022 09:18:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1389012AbiBGNvA (ORCPT
+        with ESMTP id S1390301AbiBGN5W (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 7 Feb 2022 08:51:00 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B9EC043181
-        for <netfilter-devel@vger.kernel.org>; Mon,  7 Feb 2022 05:50:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=rlQZPR9ILOYJuCf2aAXEjwK+v9g2SqN1RBfxrRrdEuA=; b=Woc6ML/ANC2VwW0s3vCXFDNiPH
-        F3v98WP7eR/vWl2UlWcQpD6i4D7raWbtp1mC0xv8+xykpFuObrdVZPlD62SucjuMwXu7GLSr1GxiS
-        /1gJHxdrohjftW7TKsxmcjaF5/729qwxSnPerEAXmaG89Nn1s1/vSAI8nHQcn1khLD55xinsuZ1GD
-        KE0odKIrN9JvKWLwnzYPwY7X2TC/bQKvOSMZ1cxKVnXVed3C/u4etky19/DRyV8JTWplnnutqmHsF
-        QuzR0feJRNJd3gcXQX2bhBczXadNzeo1iabhkm6CvkpugPcqIRI+F4tgc33eQzXpBrCJE+YeocDp5
-        U41InnJQ==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1nH4Pv-0007f7-GX; Mon, 07 Feb 2022 14:50:55 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
+        Mon, 7 Feb 2022 08:57:22 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2A7C03FEDE
+        for <netfilter-devel@vger.kernel.org>; Mon,  7 Feb 2022 05:57:02 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1nH4Vf-0007KN-2n; Mon, 07 Feb 2022 14:56:51 +0100
+Date:   Mon, 7 Feb 2022 14:56:51 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     Pierre Ducroquet <pducroquet@entrouvert.com>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnetfilter_conntrack PATCH 2/2] tests: Add simple tests to TESTS variable
-Date:   Mon,  7 Feb 2022 14:50:48 +0100
-Message-Id: <20220207135048.17147-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220207135048.17147-1-phil@nwl.cc>
-References: <20220207135048.17147-1-phil@nwl.cc>
+Subject: Re: [Patch] document nft statements undefine/redefine
+Message-ID: <20220207135651.GC25000@breakpoint.cc>
+References: <17129011.jtLeUFmENV@entrouvert-pierred>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <17129011.jtLeUFmENV@entrouvert-pierred>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This way, 'make check' and 'make distcheck' call them. Omit
-ct_stress/ct_events_reliable, they require root.
+Pierre Ducroquet <pducroquet@entrouvert.com> wrote:
+> I found out that two statements, undefine and redefine, have been added to the 
+> nft language a while ago (2018) but not documented then.
+> Cf. https://patchwork.ozlabs.org/project/netfilter-devel/patch/
+> 3622208.jy4NlOniyd@voxel/
+> 
+> The attached patch adds a basic documentation of this feature.
 
-For test_connlabel to find qa-connlabel.conf during 'make distcheck',
-use of 'srcdir' env variable is needed. Add this as a third option to
-not break existing use-cases.
-
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- tests/Makefile.am      | 2 ++
- tests/test_connlabel.c | 8 ++++++++
- 2 files changed, 10 insertions(+)
-
-diff --git a/tests/Makefile.am b/tests/Makefile.am
-index 56c78d9424326..16fbe6a77aa6d 100644
---- a/tests/Makefile.am
-+++ b/tests/Makefile.am
-@@ -5,6 +5,8 @@ check_PROGRAMS = test_api test_filter test_connlabel ct_stress \
- 
- EXTRA_DIST = qa-connlabel.conf
- 
-+TESTS = test_api test_filter test_connlabel
-+
- test_api_SOURCES = test_api.c
- test_api_LDADD = ../src/libnetfilter_conntrack.la
- 
-diff --git a/tests/test_connlabel.c b/tests/test_connlabel.c
-index 99b1171857db3..f6f222b309a84 100644
---- a/tests/test_connlabel.c
-+++ b/tests/test_connlabel.c
-@@ -1,4 +1,5 @@
- #include <assert.h>
-+#include <limits.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <time.h>
-@@ -60,6 +61,13 @@ int main(void)
- 	l = nfct_labelmap_new("qa-connlabel.conf");
- 	if (!l)
- 		l = nfct_labelmap_new("tests/qa-connlabel.conf");
-+	if (!l) {
-+		char testconf[PATH_MAX];
-+
-+		snprintf(testconf, PATH_MAX,
-+			 "%s/qa-connlabel.conf", getenv("srcdir"));
-+		l = nfct_labelmap_new(testconf);
-+	}
- 	assert(l);
- 	puts("qa-connlabel.conf:");
- 	dump_map(l);
--- 
-2.34.1
-
+Applied, thanks.
