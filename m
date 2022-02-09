@@ -2,36 +2,38 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530A84AEF0E
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Feb 2022 11:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 115884AEFDD
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Feb 2022 12:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbiBIKPp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 9 Feb 2022 05:15:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
+        id S229702AbiBILRD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 9 Feb 2022 06:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbiBIKPo (ORCPT
+        with ESMTP id S229448AbiBILQ7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 9 Feb 2022 05:15:44 -0500
+        Wed, 9 Feb 2022 06:16:59 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D712E088F9B;
-        Wed,  9 Feb 2022 02:12:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8B4C2E0888EE;
+        Wed,  9 Feb 2022 02:11:49 -0800 (PST)
 Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id ADBE7601BF;
-        Wed,  9 Feb 2022 11:08:30 +0100 (CET)
-Date:   Wed, 9 Feb 2022 11:08:37 +0100
+        by mail.netfilter.org (Postfix) with ESMTPSA id CC1D4601B3;
+        Wed,  9 Feb 2022 11:08:15 +0100 (CET)
+Date:   Wed, 9 Feb 2022 11:08:23 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Stefano Brivio <sbrivio@redhat.com>
-Cc:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
-Subject: Re: [PATCH nf] selftests: netfilter: fix exit value for
- nft_concat_range
-Message-ID: <YgOSpXdxuZ07zJH4@salvia>
-References: <20220209082551.894541-1-liuhangbin@gmail.com>
- <20220209105735.5cefed1d@elisabeth>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
+        netfilter-devel@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH net] netfilter: xt_socket: fix a typo in
+ socket_mt_destroy()
+Message-ID: <YgOSl4b7skcUBmxJ@salvia>
+References: <20220209023043.3469254-1-eric.dumazet@gmail.com>
+ <20220209092907.GE25000@breakpoint.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220209105735.5cefed1d@elisabeth>
+In-Reply-To: <20220209092907.GE25000@breakpoint.cc>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -41,22 +43,15 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 10:57:35AM +0100, Stefano Brivio wrote:
-> On Wed,  9 Feb 2022 16:25:51 +0800
-> Hangbin Liu <liuhangbin@gmail.com> wrote:
-> 
-> > When the nft_concat_range test failed, it exit 1 in the code
-> > specifically.
+On Wed, Feb 09, 2022 at 10:29:07AM +0100, Florian Westphal wrote:
+> Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> > From: Eric Dumazet <edumazet@google.com>
 > > 
-> > But when part of, or all of the test passed, it will failed the
-> > [ ${passed} -eq 0 ] check and thus exit with 1, which is the same
-> > exit value with failure result. Fix it by exit 0 when passed is not 0.
+> > Calling nf_defrag_ipv4_disable() instead of nf_defrag_ipv6_disable()
+> > was probably not the intent.
 > 
-> Oops, right, thanks for fixing this!
->  
-> > Fixes: 611973c1e06f ("selftests: netfilter: Introduce tests for sets with range concatenation")
-> > Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> Indeed, thanks for catching this.
 > 
-> Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
+> Reviewed-by: Florian Westphal <fw@strlen.de>
 
 Applied, thanks
