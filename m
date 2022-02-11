@@ -2,85 +2,73 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E6F4B2821
-	for <lists+netfilter-devel@lfdr.de>; Fri, 11 Feb 2022 15:42:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7FC4B2B7A
+	for <lists+netfilter-devel@lfdr.de>; Fri, 11 Feb 2022 18:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350950AbiBKOmB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 11 Feb 2022 09:42:01 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41646 "EHLO
+        id S1351949AbiBKRMd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 11 Feb 2022 12:12:33 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240287AbiBKOmB (ORCPT
+        with ESMTP id S242158AbiBKRMc (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 11 Feb 2022 09:42:01 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B214188;
-        Fri, 11 Feb 2022 06:41:59 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1926961F5F;
-        Fri, 11 Feb 2022 14:41:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 528B0C340E9;
-        Fri, 11 Feb 2022 14:41:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644590518;
-        bh=RY+RiJqGo1HMpzgN9TFSdlD9X2lbkG4RDXWfubFeNzQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=COnpToWE0ntRobHtXfkns9r+udoebeeWlHmKqECJGBNny/lQbM8vqpX+8MArBTpcw
-         uIhq4YjX0NSm0345Iq8RK+8+hsL/PbFkCIWq27Rdh9iSi5JA+u0GkiIk8XqP/SEhjk
-         LBsIAx6hEt0zq2IF3iC6kGZx6phCVX2s/LVyWccUwRFoIkUOp5/exo3BJmLr/xbX2N
-         zdffmTh95iNgWDI+0Nk7Ttjpq5I4o2fb/2Ii+u6XPHKhP5nW1uvpOVzBEFdRMGzXRR
-         MokPDO2UuCRjjyj9LD2AbCtK0KqBGKEvr3KzoDvGqhU67nMlBnblLU0bqiRx38HKEQ
-         B1e/PVDvASN9w==
-Date:   Fri, 11 Feb 2022 09:41:57 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Yi Chen <yiche@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        kadlec@netfilter.org, davem@davemloft.net,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.16 05/52] netfilter: nf_conntrack_netbios_ns:
- fix helper module alias
-Message-ID: <YgZ1tYtQ4jdb7Z4I@sashalap>
-References: <20220203202947.2304-1-sashal@kernel.org>
- <20220203202947.2304-5-sashal@kernel.org>
- <20220203134622.5964eb15@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20220203222319.GB14142@breakpoint.cc>
+        Fri, 11 Feb 2022 12:12:32 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315B72E8
+        for <netfilter-devel@vger.kernel.org>; Fri, 11 Feb 2022 09:12:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=ziJWJz40s6QsX13iaXocu5J9yMwCUaOYTMSoS4CU1a0=; b=gEBp98MVqi8VrgcIkf3tI5ir+l
+        umMj7kVAJCCnAgokOyNoGU030pV0B8/13wnndIxpok8mn8FK3vPZnQM4ke8ZU2iSQbpn42EhxkGhO
+        W1jzxI7GSHx5UJm5KEz385NFjThKpCzi9hgYjJH4zTcQcPGfYC1WvjIrsLDALlwsxKB32R1OztV+N
+        pRMCT1VkDZ6R/I5TP39WwE4LW87cAAHimJPmAzmzD3q0rc6rRpeyhNdMzuvvY5N7ngX1PSsd9q5E1
+        NyvpaA0ebvCMihiMUsPj0AXu3HLNUK9ilcCQs3NPp/sAgwkrYMPgEToiweVtmlwNAL49SnStE/cRy
+        LyXFnlrg==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1nIZTB-0006UD-GY; Fri, 11 Feb 2022 18:12:29 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 0/2] Improve error messages for unsupported extensions
+Date:   Fri, 11 Feb 2022 18:12:09 +0100
+Message-Id: <20220211171211.26484-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20220203222319.GB14142@breakpoint.cc>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Feb 03, 2022 at 11:23:19PM +0100, Florian Westphal wrote:
->Jakub Kicinski <kuba@kernel.org> wrote:
->> On Thu,  3 Feb 2022 15:28:59 -0500 Sasha Levin wrote:
->> > Intentionally not adding a fixes-tag because i don't want this to go to
->> > stable.
->>
->> Ekhm. ;)
->
->Seems there is no way to hide fixes from stable guys :-)
->
->Seriously, I don't think there is anything going to break here because
->'modinfo nfct-helper-netbios_ns' and 'modinfo nfct-helper-netbios-ns'
->return same module.
->
->OTOH, this was noticed by pure coincidence; I don't think its
->important to have it in stable.
+Failure to load an extension leads to iptables cmdline parser
+complaining about any extension options instead of the extension itself.
+This is at least misleading.
 
-I'll drop it, thanks :)
+This series eliminates the odd error message and instead adds a warning
+if a requested extension is not available at all in kernel.
+
+Things are a bit complicated due to the fact that newer kernels not
+necessarily support revision 0 of all extensions. So change iptables
+first to only register revision 0 if no higher one was accepted earlier.
+This allows for a "not even revision 0 is supported" logic.
+
+Phil Sutter (2):
+  libxtables: Register only the highest revision extension
+  Improve error messages for unsupported extensions
+
+ iptables/nft.c       | 12 +++++++++---
+ libxtables/xtables.c | 17 ++++++++++++++---
+ 2 files changed, 23 insertions(+), 6 deletions(-)
 
 -- 
-Thanks,
-Sasha
+2.34.1
+
