@@ -2,42 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A49F4B36A4
-	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Feb 2022 17:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE174B36A2
+	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Feb 2022 17:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235563AbiBLQ7B (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S236958AbiBLQ7B (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Sat, 12 Feb 2022 11:59:01 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35880 "EHLO
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbiBLQ7B (ORCPT
+        with ESMTP id S235563AbiBLQ7B (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 12 Feb 2022 11:59:01 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF312409F
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EABB240A0
         for <netfilter-devel@vger.kernel.org>; Sat, 12 Feb 2022 08:58:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=fymNo3Q+PGrmF1MIMhuXwlek8EtmGMn1L3vWb9ZD9to=; b=CN6ikRj+R/FuKKN1CFbhaG5HpM
-        +ZU69EmHtND4LK8biAZl3gFpq8GaVAcWEvrXVqd09JxzVUPbNhzzjdX8hF3LbO6LOaJN8rEZdkYND
-        zT9bXYx9LpPTq04UrCMhLPSUOgbLfGnyOnrPQk5q5maXvgFBc6Dw8KiDwpvvPNjDsk3anCXLX+h5n
-        2nfk/KVY6rPk0XTK1AZzmSjcyt25BDQZwBQw+/lqybiNcc0aDCqWu8CpytwCsxQIDYZjHcirg29GZ
-        2t/S9iS29TkYWIMHwKYCgiwpusruvWkFEswLvk6ruVCQUwxHqDSlLNVIP63lCxODArJ73rGse//Rm
-        EZvXnQDQ==;
+        bh=13pX//UZEYhK0YkSWP9HaA4DiHcFUGg/o/QQFvLxOEs=; b=c6g7thVLP2Pa18S/LX4a+mQWF+
+        MgytH1HOPVTR5o+2G00BSMyJWruVyjnfqRFAalFmA4abD21OKdocOgd+8hWlf2jyuIbzECKSiuvHL
+        tmr4iCGCLehQHGI+0U1tvKgZVI8miCKyxgMh7mlzUaTtwRkGeW5cLthSFlG7FiH2/UOQReVg6UN9w
+        p/rb4Du7N9gaOCMCyFSpyubFFmqfXcIyCjg+FEk0Vh2FzTgSmj7VuVEgTSgOjJeFw9/Rz6Y7czD/R
+        Po8pa8Nr+L1KlhUs84jUQNQXZRYXRgC90GtIKHBGvtOKl+G2A83J0MdH0H8LR5NS26It5yC4QTJST
+        LvdFJJ+A==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1nIvjZ-001xVU-4g
+        id 1nIvjZ-001xVU-8H
         for netfilter-devel@vger.kernel.org; Sat, 12 Feb 2022 16:58:53 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [iptables PATCH 0/4] Re-enable NFLOG tests
-Date:   Sat, 12 Feb 2022 16:58:28 +0000
-Message-Id: <20220212165832.2452695-1-jeremy@azazel.net>
+Subject: [iptables PATCH 1/4] tests: iptables-test: rename variable
+Date:   Sat, 12 Feb 2022 16:58:29 +0000
+Message-Id: <20220212165832.2452695-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220212165832.2452695-1-jeremy@azazel.net>
+References: <20220212165832.2452695-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
@@ -53,28 +55,57 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Some of the NFLOG tests were disabled when iptables-nft was changed to
-use nft's nflog implementation, because nft doesn't support
-`--nflog-range`.  This patch-set builds on Phil's recent work to support
-different test results for -legacy and -nft in order to re-enable those
-tests.
+"Splitted" hasn't been current since the seventeenth century.  Replace it with
+"tokens".
 
-* Patch 1 renames a variable.
-* Patches 2 & 3 add support for a new test result where the iptables
-  command succeeds, but dumping the rule does not give the expected
-  output.
-* Patch 4 re-enables the tests.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ iptables-test.py | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-Jeremy Sowden (4):
-  tests: iptables-test: rename variable
-  tests: add `NOMATCH` test result
-  tests: support explicit variant test result
-  tests: NFLOG: enable `--nflog-range` tests
-
- extensions/libxt_NFLOG.t | 12 +++----
- iptables-test.py         | 72 ++++++++++++++++++++++++++--------------
- 2 files changed, 53 insertions(+), 31 deletions(-)
-
+diff --git a/iptables-test.py b/iptables-test.py
+index b49afcab3c40..91c77e3dc0e0 100755
+--- a/iptables-test.py
++++ b/iptables-test.py
+@@ -107,20 +107,20 @@ def run_test(iptables, rule, rule_save, res, filename, lineno, netns):
+             return -1
+ 
+     matching = 0
+-    splitted = iptables.split(" ")
+-    if len(splitted) == 2:
+-        if splitted[1] == '-4':
++    tokens = iptables.split(" ")
++    if len(tokens) == 2:
++        if tokens[1] == '-4':
+             command = IPTABLES_SAVE
+-        elif splitted[1] == '-6':
++        elif tokens[1] == '-6':
+             command = IP6TABLES_SAVE
+-    elif len(splitted) == 1:
+-        if splitted[0] == IPTABLES:
++    elif len(tokens) == 1:
++        if tokens[0] == IPTABLES:
+             command = IPTABLES_SAVE
+-        elif splitted[0] == IP6TABLES:
++        elif tokens[0] == IP6TABLES:
+             command = IP6TABLES_SAVE
+-        elif splitted[0] == ARPTABLES:
++        elif tokens[0] == ARPTABLES:
+             command = ARPTABLES_SAVE
+-        elif splitted[0] == EBTABLES:
++        elif tokens[0] == EBTABLES:
+             command = EBTABLES_SAVE
+ 
+     command = EXECUTABLE + " " + command
+@@ -128,7 +128,7 @@ def run_test(iptables, rule, rule_save, res, filename, lineno, netns):
+     if netns:
+             command = "ip netns exec ____iptables-container-test " + command
+ 
+-    args = splitted[1:]
++    args = tokens[1:]
+     proc = subprocess.Popen(command, shell=True,
+                             stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 -- 
 2.34.1
 
