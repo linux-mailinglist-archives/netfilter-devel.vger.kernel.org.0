@@ -2,91 +2,84 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F754B36A3
-	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Feb 2022 17:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3DD4B386C
+	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Feb 2022 23:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbiBLQ7C (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 12 Feb 2022 11:59:02 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35888 "EHLO
+        id S232199AbiBLWnU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 12 Feb 2022 17:43:20 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236933AbiBLQ7B (ORCPT
+        with ESMTP id S232186AbiBLWnU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 12 Feb 2022 11:59:01 -0500
-Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5888B240A4
-        for <netfilter-devel@vger.kernel.org>; Sat, 12 Feb 2022 08:58:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=XVzUxXMMl2LrUlB1aMm6/tX5jO0DLHjxjozatXOXI/w=; b=pdlv+OnMIdWJTQHpBV9hZt98QA
-        ayc+yIxp8A4AukvxAnO48f6ibo9efVWxPSq5hAXP9OBLhiGRUvt7DV2YyQqlyMgrV4vUqMQwLxgA9
-        GixKuFkIXysef1XK+CDMc+ZfjWKWg6pX2ihWM5qL2boBYIFNyfn9gf1Kgvd0+H+1/isKWDWdR/xEA
-        QIDKul7cjEhTVMCZLXnZt4MRDvxCDDDqDSN2uqVG/84yqRCho2pxo/vKASqgd6EDgze92NwbveMkV
-        uXjLB15t0eziI2p4L10VEGo09vHTxaccnJfSVnCRI+2E2gMjTkX6DhWAZ2dUcNKv2oCmM1KWEGfZm
-        VuZSFTJw==;
-Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
-        by kadath.azazel.net with esmtp (Exim 4.94.2)
-        (envelope-from <jeremy@azazel.net>)
-        id 1nIvjZ-001xVU-HI
-        for netfilter-devel@vger.kernel.org; Sat, 12 Feb 2022 16:58:53 +0000
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [iptables PATCH 4/4] tests: NFLOG: enable `--nflog-range` tests
-Date:   Sat, 12 Feb 2022 16:58:32 +0000
-Message-Id: <20220212165832.2452695-5-jeremy@azazel.net>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220212165832.2452695-1-jeremy@azazel.net>
-References: <20220212165832.2452695-1-jeremy@azazel.net>
+        Sat, 12 Feb 2022 17:43:20 -0500
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1236A23BD6
+        for <netfilter-devel@vger.kernel.org>; Sat, 12 Feb 2022 14:43:16 -0800 (PST)
+Received: by mail-il1-f199.google.com with SMTP id g15-20020a92520f000000b002bec6a02012so3073722ilb.18
+        for <netfilter-devel@vger.kernel.org>; Sat, 12 Feb 2022 14:43:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Qndx5/xlMDuMFsAiyXYtZiMwVkwJVHOfIbITY7SRWJQ=;
+        b=ivBIpFV02cRWXUWnDUXkaN38jIFkA94sTF40I7in2DBr8slxdMfEhTLunwd9jbhIGg
+         Mpfh2Fwmr1TI7SEEiJG+VoLVEPS5KUYPsyWPkJSGUVxm9nwRkgDRdyM89Hw0I9HyX/EL
+         uFF8/AYk7lb8ZfnjRLHUzksX9Umhu+Ftr8OkGM+JPMfyEznQWGwMFEobMayiRrRKf2F4
+         toT2yOZPGqNnQaqhpm40CJg4XhEILTKahDKsPGkmTGmJojw34seGHIoSQ21ZSA55GfxK
+         8tkFYDfz0imtAT4oZ7jZbCr51WSNnPhSCqvwVSzsRqLhacxj1gC8QltXfWJV43oSDTOM
+         xQiA==
+X-Gm-Message-State: AOAM5303etekOmRkOc2lyDs+MULDWEuzBrW7aiH2+UqA/phPx9JzjUTy
+        reYvudepywllnfr/FLwn18GAHzT07FXQpRynImt2u/+QCI82
+X-Google-Smtp-Source: ABdhPJyYJiru2zx+c/KVjgt1xGFubXKCnNkIk4JRjg/rcylmahzVP9hbqgP6bfAIgw0MItzt6bpF6kOvtY69glToznfqQq+iuQ/5
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6e02:1806:: with SMTP id a6mr3393462ilv.272.1644705795363;
+ Sat, 12 Feb 2022 14:43:15 -0800 (PST)
+Date:   Sat, 12 Feb 2022 14:43:15 -0800
+In-Reply-To: <0000000000004c57c005b0fc4114@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b15b3505d7d9e8ca@google.com>
+Subject: Re: [syzbot] INFO: task hung in usb_get_descriptor
+From:   syzbot <syzbot+31ae6d17d115e980fd14@syzkaller.appspotmail.com>
+To:     brouer@redhat.com, coreteam@netfilter.org, davem@davemloft.net,
+        edumazet@google.com, eman.mohamed@rofaidarealestate.com,
+        gregkh@linuxfoundation.org, gustavoars@kernel.org,
+        hdanton@sina.com, ingrassia@epigenesys.com, johan@kernel.org,
+        kaber@trash.net, kadlec@blackhole.kfki.hu,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        mathias.nyman@linux.intel.com, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        skhan@linuxfoundation.org, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-iptables-legacy and iptable-nft have different results for these tests.
-Now that it is possible to specify the expected results correctly, we
-can enable the tests.
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- extensions/libxt_NFLOG.t | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+commit 363eaa3a450abb4e63bd6e3ad79d1f7a0f717814
+Author: Shuah Khan <skhan@linuxfoundation.org>
+Date:   Tue Mar 30 01:36:51 2021 +0000
 
-diff --git a/extensions/libxt_NFLOG.t b/extensions/libxt_NFLOG.t
-index 561ec8c77650..25f332ae16b6 100644
---- a/extensions/libxt_NFLOG.t
-+++ b/extensions/libxt_NFLOG.t
-@@ -3,12 +3,12 @@
- -j NFLOG --nflog-group 65535;=;OK
- -j NFLOG --nflog-group 65536;;FAIL
- -j NFLOG --nflog-group 0;-j NFLOG;OK
--# `--nflog-range` is broken and only supported by xtables-legacy.  It
--# has been superseded by `--nflog--group`.
--# -j NFLOG --nflog-range 1;=;OK
--# -j NFLOG --nflog-range 4294967295;=;OK
--# -j NFLOG --nflog-range 4294967296;;FAIL
--# -j NFLOG --nflog-range -1;;FAIL
-+# `--nflog-range` is broken and only supported by xtables-legacy.
-+# It has been superseded by `--nflog--group`.
-+-j NFLOG --nflog-range 1;=;OK;LEGACY;NOMATCH
-+-j NFLOG --nflog-range 4294967295;=;OK;LEGACY;NOMATCH
-+-j NFLOG --nflog-range 4294967296;;FAIL
-+-j NFLOG --nflog-range -1;;FAIL
- -j NFLOG --nflog-size 0;=;OK
- -j NFLOG --nflog-size 1;=;OK
- -j NFLOG --nflog-size 4294967295;=;OK
--- 
-2.34.1
+    usbip: synchronize event handler with sysfs code paths
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1616e872700000
+start commit:   4fa56ad0d12e Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=144ecdb0be3abc07
+dashboard link: https://syzkaller.appspot.com/bug?extid=31ae6d17d115e980fd14
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12548d11d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13ec77e9d00000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: usbip: synchronize event handler with sysfs code paths
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
