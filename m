@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED4A4B4FD3
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Feb 2022 13:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 018AC4B4FD5
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Feb 2022 13:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352819AbiBNMQa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 14 Feb 2022 07:16:30 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49454 "EHLO
+        id S1352797AbiBNMQf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 14 Feb 2022 07:16:35 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352797AbiBNMQ3 (ORCPT
+        with ESMTP id S1352854AbiBNMQe (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 14 Feb 2022 07:16:29 -0500
+        Mon, 14 Feb 2022 07:16:34 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A520C62
-        for <netfilter-devel@vger.kernel.org>; Mon, 14 Feb 2022 04:16:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F309488A9
+        for <netfilter-devel@vger.kernel.org>; Mon, 14 Feb 2022 04:16:26 -0800 (PST)
 Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id C514F601BB
-        for <netfilter-devel@vger.kernel.org>; Mon, 14 Feb 2022 13:15:48 +0100 (CET)
+        by mail.netfilter.org (Postfix) with ESMTPSA id C61EB601C1
+        for <netfilter-devel@vger.kernel.org>; Mon, 14 Feb 2022 13:15:56 +0100 (CET)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 1/2] examples: add libnftables example program
-Date:   Mon, 14 Feb 2022 13:16:12 +0100
-Message-Id: <20220214121613.311530-2-pablo@netfilter.org>
+Subject: [PATCH nft 2/2] examples: load ruleset from JSON
+Date:   Mon, 14 Feb 2022 13:16:13 +0100
+Message-Id: <20220214121613.311530-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220214121613.311530-1-pablo@netfilter.org>
 References: <20220214121613.311530-1-pablo@netfilter.org>
@@ -37,54 +37,85 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Create an example folder to add example source code files to show how to
-use libnftables. Add first example program using the buffer API.
+Add an example to load a ruleset file expressed in JSON.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- configure.ac          |  1 +
- examples/Makefile.am  |  3 +++
- examples/nft-buffer.c | 34 ++++++++++++++++++++++++++++++++++
- 3 files changed, 38 insertions(+)
- create mode 100644 examples/Makefile.am
- create mode 100644 examples/nft-buffer.c
+ examples/Makefile.am      |  3 ++-
+ examples/json-ruleset.nft | 43 +++++++++++++++++++++++++++++++++++++++
+ examples/nft-json-file.c  | 30 +++++++++++++++++++++++++++
+ 3 files changed, 75 insertions(+), 1 deletion(-)
+ create mode 100644 examples/json-ruleset.nft
+ create mode 100644 examples/nft-json-file.c
 
-diff --git a/configure.ac b/configure.ac
-index 503883f28c66..d321c960562b 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -145,6 +145,7 @@ AC_CONFIG_FILES([					\
- 		files/osf/Makefile			\
- 		doc/Makefile				\
- 		py/Makefile				\
-+		examples/Makefile			\
- 		])
- AC_OUTPUT
- 
 diff --git a/examples/Makefile.am b/examples/Makefile.am
-new file mode 100644
-index 000000000000..dd637fe31340
---- /dev/null
+index dd637fe31340..c972170d3fdc 100644
+--- a/examples/Makefile.am
 +++ b/examples/Makefile.am
-@@ -0,0 +1,3 @@
-+noinst_PROGRAMS	= nft-buffer
-+
-+LDADD = $(top_builddir)/src/libnftables.la
-diff --git a/examples/nft-buffer.c b/examples/nft-buffer.c
+@@ -1,3 +1,4 @@
+-noinst_PROGRAMS	= nft-buffer
++noinst_PROGRAMS	= nft-buffer		\
++		  nft-json-file
+ 
+ LDADD = $(top_builddir)/src/libnftables.la
+diff --git a/examples/json-ruleset.nft b/examples/json-ruleset.nft
 new file mode 100644
-index 000000000000..1c4b1e041d75
+index 000000000000..acea1786649a
 --- /dev/null
-+++ b/examples/nft-buffer.c
-@@ -0,0 +1,34 @@
-+/* gcc nft-buffer.c -o nft-buffer -lnftables */
++++ b/examples/json-ruleset.nft
+@@ -0,0 +1,43 @@
++{
++  "nftables": [
++    {
++      "flush": {
++        "ruleset": {
++          "family": "ip"
++        }
++      }
++    },
++    {
++      "table": {
++        "family": "ip",
++        "name": "x"
++      }
++    },
++    {
++      "chain": {
++        "family": "ip",
++        "table": "x",
++        "name": "y",
++        "type": "filter",
++        "hook": "input",
++        "prio": 0,
++        "policy": "accept"
++      }
++    },
++    {
++      "rule": {
++        "family": "ip",
++        "table": "x",
++        "chain": "y",
++        "expr": [
++          {
++            "counter": {
++              "packets": 0,
++              "bytes": 0
++            }
++          }
++        ]
++      }
++    }
++  ]
++}
+diff --git a/examples/nft-json-file.c b/examples/nft-json-file.c
+new file mode 100644
+index 000000000000..0c832f22e206
+--- /dev/null
++++ b/examples/nft-json-file.c
+@@ -0,0 +1,30 @@
++/* gcc nft-json-file.c -o nft-json-file -lnftables */
 +#include <stdlib.h>
 +#include <nftables/libnftables.h>
-+
-+const char ruleset[] =
-+	"flush ruleset;"
-+	"add table x;"
-+	"add chain x y { type filter hook input priority 0; };"
-+	"add rule x y counter;";
 +
 +int main(void)
 +{
@@ -97,8 +128,10 @@ index 000000000000..1c4b1e041d75
 +		return EXIT_FAILURE;
 +	}
 +
++	nft_ctx_output_set_flags(ctx, NFT_CTX_OUTPUT_JSON);
++
 +	/* create ruleset: all commands in the buffer are atomically applied */
-+	err = nft_run_cmd_from_buffer(ctx, ruleset);
++	err = nft_run_cmd_from_filename(ctx, "json-ruleset.nft");
 +	if (err < 0)
 +		fprintf(stderr, "failed to run nftables command\n");
 +
