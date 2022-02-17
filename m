@@ -2,94 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B0B4BAE0A
-	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Feb 2022 01:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B9D4BB3D7
+	for <lists+netfilter-devel@lfdr.de>; Fri, 18 Feb 2022 09:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbiBRAGN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 17 Feb 2022 19:06:13 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:48362 "EHLO
+        id S231489AbiBRID2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 18 Feb 2022 03:03:28 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbiBRAFl (ORCPT
+        with ESMTP id S231416AbiBRID1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 17 Feb 2022 19:05:41 -0500
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3B3FB24F29;
-        Thu, 17 Feb 2022 16:05:14 -0800 (PST)
-Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id F2C8960028;
-        Fri, 18 Feb 2022 01:04:30 +0100 (CET)
-Date:   Fri, 18 Feb 2022 01:05:11 +0100
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Cc:     Paul Blakey <paulb@nvidia.com>, dev@openvswitch.org,
-        netdev@vger.kernel.org, Jamal Hadi Salim <jhs@mojatatu.com>,
-        davem@davemloft.net, Jiri Pirko <jiri@nvidia.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netfilter-devel@vger.kernel.org,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Oz Shlomo <ozsh@nvidia.com>, Vlad Buslov <vladbu@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>,
-        Ariel Levkovich <lariel@nvidia.com>, coreteam@netfilter.org
-Subject: Re: [PATCH net 1/1] net/sched: act_ct: Fix flow table lookup failure
- with no originating ifindex
-Message-ID: <Yg7itx2dt4rIa24W@salvia>
-References: <20220217093424.23601-1-paulb@nvidia.com>
- <Yg5Tz5ucVAI3zOTs@salvia>
- <20220217232708.yhigtv2ssrlfsexs@t14s.localdomain>
- <Yg7gWIrIlGDDiVer@salvia>
+        Fri, 18 Feb 2022 03:03:27 -0500
+Received: from fjxxll.cn (unknown [IPv6:240e:37a:2bb:f700:211:32ff:fe2c:a785])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D37E29B9E9;
+        Fri, 18 Feb 2022 00:03:11 -0800 (PST)
+Received: from Unknown (unknown [103.210.28.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by fjxxll.cn (Postfix) with ESMTPSA id C4D7D7663A6F;
+        Thu, 17 Feb 2022 21:16:23 +0800 (CST)
+Message-ID: <4540F6A5AE7A54E73B3E77CA2E8ADF91@orrqr>
+Reply-To: "Fredrik Elvebakk" <fcresswell9@gmail.com>
+From:   "Fredrik Elvebakk" <investment@dnb.no>
+Subject: Re:
+Date:   Thu, 17 Feb 2022 05:16:20 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Yg7gWIrIlGDDiVer@salvia>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain;
+        format=flowed;
+        charset="windows-1251";
+        reply-type=original
+Content-Transfer-Encoding: 8BIT
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Windows Live Mail 16.4.3528.331
+X-MimeOLE: Produced By Microsoft MimeOLE V16.4.3528.331
+X-Spam-Status: Yes, score=7.6 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,MISSING_HEADERS,
+        RDNS_NONE,REPLYTO_WITHOUT_TO_CC,SPF_HELO_NONE,SPF_SOFTFAIL,
+        STOX_REPLY_TYPE,T_SCC_BODY_TEXT_LINE,XPRIO autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.4 STOX_REPLY_TYPE No description available.
+        *  1.0 MISSING_HEADERS Missing To: header
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [fcresswell9[at]gmail.com]
+        *  0.7 SPF_SOFTFAIL SPF: sender does not match SPF record (softfail)
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  1.6 REPLYTO_WITHOUT_TO_CC No description available.
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.8 RDNS_NONE Delivered to internal network by a host with no rDNS
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+        *  0.0 XPRIO Has X-Priority header
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Feb 18, 2022 at 12:55:07AM +0100, Pablo Neira Ayuso wrote:
-> On Thu, Feb 17, 2022 at 08:27:08PM -0300, Marcelo Ricardo Leitner wrote:
-> > On Thu, Feb 17, 2022 at 02:55:27PM +0100, Pablo Neira Ayuso wrote:
-> > > On Thu, Feb 17, 2022 at 11:34:24AM +0200, Paul Blakey wrote:
-> > > > After cited commit optimizted hw insertion, flow table entries are
-> > > > populated with ifindex information which was intended to only be used
-> > > > for HW offload. This tuple ifindex is hashed in the flow table key, so
-> > > > it must be filled for lookup to be successful. But tuple ifindex is only
-> > > > relevant for the netfilter flowtables (nft), so it's not filled in
-> > > > act_ct flow table lookup, resulting in lookup failure, and no SW
-> > > > offload and no offload teardown for TCP connection FIN/RST packets.
-> > > > 
-> > > > To fix this, allow flow tables that don't hash the ifindex.
-> > > > Netfilter flow tables will keep using ifindex for a more specific
-> > > > offload, while act_ct will not.
-> > > 
-> > > Using iif == zero should be enough to specify not set?
-> > 
-> > You mean, when searching, if search input iif == zero, to simply not
-> > check it? That seems dangerous somehow.
-> 
-> dev_new_index() does not allocate ifindex as zero.
-> 
-> Anyway, @Paul: could you add a tc_ifidx field instead in the union
-> right after __hash instead to fix 9795ded7f924?
+Hello,
 
-I mean this incomplete patch below:
+Am Fredrik Elvebakk an Investment Manager from Norway. I wish to solicit 
+your interest in an investment project that is currently ongoing in my 
+company (DNB); It is a short term investment with good returns. Simply 
+reply for me to confirm the validity of your email so i shall give you 
+comprehensive details about the project.
 
-diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
-index a3647fadf1cc..d4fa4f716f68 100644
---- a/include/net/netfilter/nf_flow_table.h
-+++ b/include/net/netfilter/nf_flow_table.h
-@@ -142,6 +142,7 @@ struct flow_offload_tuple {
-                        u8              h_source[ETH_ALEN];
-                        u8              h_dest[ETH_ALEN];
-                } out;
-+               u32                     tc_ifidx;
-        };
- };
-
-You will need to update nf_flow_rule_match() to set key->meta.ingress_ifindex to
-use tc_ifidx if it is set to non-zero value.
+Best Regards,
+Fredrik Elvebakk
+Business Consultant
