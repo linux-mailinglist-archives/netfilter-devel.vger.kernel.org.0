@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5925D4BC89D
-	for <lists+netfilter-devel@lfdr.de>; Sat, 19 Feb 2022 14:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCA14BC8A2
+	for <lists+netfilter-devel@lfdr.de>; Sat, 19 Feb 2022 14:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232284AbiBSN3d (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 19 Feb 2022 08:29:33 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40296 "EHLO
+        id S236131AbiBSN34 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 19 Feb 2022 08:29:56 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231440AbiBSN3d (ORCPT
+        with ESMTP id S234261AbiBSN3z (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 19 Feb 2022 08:29:33 -0500
+        Sat, 19 Feb 2022 08:29:55 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B706E4E1
-        for <netfilter-devel@vger.kernel.org>; Sat, 19 Feb 2022 05:29:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39227D282
+        for <netfilter-devel@vger.kernel.org>; Sat, 19 Feb 2022 05:29:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=evWmwDDjD0ZeRsnjt1fwPPGrQSAuqBDNbXIvbdwE9gg=; b=QoDDQC5Qc6UDsbF2C2MI1ly47M
-        LR7DJGFUpWbWE+8+cMENzEKMwWSOD2+MddSjGimUEOLxct5QGQoicKIroWIINi85+k9zZmDineHQY
-        L9qv1Kkdg9J94ZEfjhN+v4gec8bjGkaKhIUgHV8/siP5KriyqRoa+80n/ZLwIwrvoFdzu8llPR2aL
-        BEA0B0Nc+LsqNKcr6+QGdPw2ioiMUfQHahplwFmcVNIE3oXRM+o+zUs2L86iWFgSwKNeuw6VMeRsG
-        pbzCDKvvCKt4qE4f1ED896FX1zF+VkdjmyqH5lMZgbL+wtKGJrBDq6AOasGDU3AGQrLAnkRVdIMAa
-        ZJaS25KQ==;
+        bh=kD1k7yOzB+Ru4FpDXJ7PxkxL4GDItNjuQIjuM8tOdLM=; b=PnHchn9Ko2Uy5Ax7mqo8sK77qZ
+        ZUOfH8fYiCNXcAtfRfB+1r/xI2NKRoEvOSJKXbgj8sYlgThgUKSLMws89kFGQhaZDkkwGJQa+X8mf
+        qCqgaJFOsLS1nnNvYd2p0FOp55NQfbbujoQpGNYN2Pd+1qJ80sVIqrDk0Nqf7uA1cB2EF6fVpbZgc
+        dj4fs7LErvM3Jf/rn0pCPsPPEop23KFafAWdO4ms3Syxp1mKfjhitWkIeY/NFfPA3gAwjT3hAokMU
+        Dx6zu7rmXRVYX9SU53SlEOEp+igHjEOuDj87dWBZbgLg2lLXx/qNN0jAPOK2B8nj1XPHE5wbEfD8p
+        tnKg3rTQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1nLPnV-0002YB-Cb; Sat, 19 Feb 2022 14:29:13 +0100
+        id 1nLPnq-0002Zi-K4; Sat, 19 Feb 2022 14:29:35 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 01/26] tests: py: Test connlimit statement
-Date:   Sat, 19 Feb 2022 14:27:49 +0100
-Message-Id: <20220219132814.30823-2-phil@nwl.cc>
+Subject: [nft PATCH 02/26] scanner: Move 'maps' keyword into list cmd scope
+Date:   Sat, 19 Feb 2022 14:27:50 +0100
+Message-Id: <20220219132814.30823-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220219132814.30823-1-phil@nwl.cc>
 References: <20220219132814.30823-1-phil@nwl.cc>
@@ -51,69 +51,35 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This wasn't covered at all.
+This was missed when introducing SCANSTATE_CMD_LIST, no other command
+operates on "maps".
 
+Fixes: 6a24ffb04642e ("scanner: add list cmd parser scope")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/py/any/ct.t         |  3 +++
- tests/py/any/ct.t.json    | 19 +++++++++++++++++++
- tests/py/any/ct.t.payload |  8 ++++++++
- 3 files changed, 30 insertions(+)
+ src/scanner.l | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tests/py/any/ct.t b/tests/py/any/ct.t
-index 8b8e68ab7361a..f73fa4e7aedbe 100644
---- a/tests/py/any/ct.t
-+++ b/tests/py/any/ct.t
-@@ -144,3 +144,6 @@ ct set invalid original 42;fail
- ct set invalid 42;fail
- 
- notrack;ok
-+
-+ct count 3;ok
-+ct count over 3;ok
-diff --git a/tests/py/any/ct.t.json b/tests/py/any/ct.t.json
-index 6684963b6609c..a2a06025992c7 100644
---- a/tests/py/any/ct.t.json
-+++ b/tests/py/any/ct.t.json
-@@ -1502,3 +1502,22 @@
-     }
- ]
- 
-+# ct count 3
-+[
-+    {
-+        "ct count": {
-+            "val": 3
-+        }
-+    }
-+]
-+
-+# ct count over 3
-+[
-+    {
-+        "ct count": {
-+            "inv": true,
-+            "val": 3
-+        }
-+    }
-+]
-+
-diff --git a/tests/py/any/ct.t.payload b/tests/py/any/ct.t.payload
-index 733276e196f20..ed868e53277d9 100644
---- a/tests/py/any/ct.t.payload
-+++ b/tests/py/any/ct.t.payload
-@@ -508,3 +508,11 @@ ip6
-   [ bitwise reg 1 = ( reg 1 & 0x00000020 ) ^ 0x00000000 ]
-   [ cmp eq reg 1 0x00000000 ]
- 
-+# ct count 3
-+ip test-ip4 output
-+  [ connlimit count 3 flags 0 ]
-+
-+# ct count over 3
-+ip test-ip4 output
-+  [ connlimit count 3 flags 1 ]
-+
+diff --git a/src/scanner.l b/src/scanner.l
+index 7dcc45c2fd505..ce78fcd6fa995 100644
+--- a/src/scanner.l
++++ b/src/scanner.l
+@@ -286,7 +286,6 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "set"			{ return SET; }
+ "element"		{ return ELEMENT; }
+ "map"			{ return MAP; }
+-"maps"			{ return MAPS; }
+ "flowtable"		{ return FLOWTABLE; }
+ "handle"		{ return HANDLE; }
+ "ruleset"		{ return RULESET; }
+@@ -353,6 +352,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 	"meters"		{ return METERS; }
+ 	"flowtables"		{ return FLOWTABLES; }
+ 	"limits"		{ return LIMITS; }
++	"maps"			{ return MAPS; }
+ 	"secmarks"		{ return SECMARKS; }
+ 	"synproxys"		{ return SYNPROXYS; }
+ 	"hooks"			{ return HOOKS; }
 -- 
 2.34.1
 
