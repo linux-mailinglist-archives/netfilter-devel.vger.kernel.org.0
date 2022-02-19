@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E834BC89B
-	for <lists+netfilter-devel@lfdr.de>; Sat, 19 Feb 2022 14:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0744BC8A8
+	for <lists+netfilter-devel@lfdr.de>; Sat, 19 Feb 2022 14:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239776AbiBSN3Q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 19 Feb 2022 08:29:16 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38722 "EHLO
+        id S238397AbiBSNaX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 19 Feb 2022 08:30:23 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234934AbiBSN3P (ORCPT
+        with ESMTP id S238175AbiBSNaX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 19 Feb 2022 08:29:15 -0500
+        Sat, 19 Feb 2022 08:30:23 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A644A5714B
-        for <netfilter-devel@vger.kernel.org>; Sat, 19 Feb 2022 05:28:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF89A88B32
+        for <netfilter-devel@vger.kernel.org>; Sat, 19 Feb 2022 05:30:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=uL6g0h9gi7vYSSim405/82f0Dxlpsb6ss6zduLBlqR8=; b=i75RwShghnyvHyNUq+tBYFF63K
-        cWUhfYow/PCs89c6je4Gsu/WW+DcKPupKzl4xKZWc8HtwZZLBadUHMfpIdGD1fG3hBwv+I7VRsiS/
-        4C6mKTDCQJuoK5mZ2AB8szxfG+It0RS/h6J0OMgK1falshIL5n/WgBg7A/rVfgMZCgT4xHoVKWx66
-        49UByz7sUSahENGupWwBoomWJpJMokKz29814uLYe/50atEIr0xXZlMtzfQ2WjLBIRtkYJIWxX6S4
-        nTFuPSuEuS7vC/MbNzxZAASf2vR1dDS56JYOmjSqD5xVE6ZiWVF+p4gORuNzpV/KLsRbxqYJGHDzh
-        uGGtA+6Q==;
+        bh=EIESz+jYuXkXbEGjlbvGIN+K1xD54DEfl7lIzJGzqJQ=; b=Sko9sYaDmKEZYF5SDOyYu6e/dR
+        bmN4dI5D2Zy+xzKeNXqH4tQAMIZ4E8tq0XMhrmYSknM9ypsoit/647GpZHnHJ4+RYSd2C7iuRBGxc
+        OPGTzB84SVwlPLAdG56cts/mQnCOrbd3LXBNxj9kTJWmIKGMtHf6gC4UdUSoVnGvXXDbb7AWjwYyl
+        yojOVyzsAgtK/5J1sWqWNvqlY3yUX4Uf1IglQrbUi8pRJWRyqY0WsLeEYpl6jcESQWvuLwAPmknFf
+        bspcb9b2VpQMoLdzJFX0cnF3uNwsxM4FcUsO3yngvEFLpA05h2cQ8kB4pnxLoUcqPvKD7h67jmXM4
+        /jYPQXdw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1nLPnC-0002XK-WF; Sat, 19 Feb 2022 14:28:55 +0100
+        id 1nLPoI-0002ca-2E; Sat, 19 Feb 2022 14:30:02 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 23/26] scanner: nat: Move to own scope
-Date:   Sat, 19 Feb 2022 14:28:11 +0100
-Message-Id: <20220219132814.30823-24-phil@nwl.cc>
+Subject: [nft PATCH 24/26] scanner: at: Move to own scope
+Date:   Sat, 19 Feb 2022 14:28:12 +0100
+Message-Id: <20220219132814.30823-25-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220219132814.30823-1-phil@nwl.cc>
 References: <20220219132814.30823-1-phil@nwl.cc>
@@ -51,140 +51,120 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Unify nat, masquerade and redirect statements, they widely share their
-syntax.
-
-Note the workaround of adding "prefix" to SCANSTATE_IP. This is required
-to fix for 'snat ip prefix ...' style expressions.
+Modification of raw TCP option rule is a bit more complicated to avoid
+pushing tcp_hdr_option_type into the introduced scope by accident.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
  include/parser.h   |  1 +
- src/parser_bison.y | 13 +++++++------
- src/scanner.l      | 21 ++++++++++++---------
- 3 files changed, 20 insertions(+), 15 deletions(-)
+ src/parser_bison.y | 15 ++++++++-------
+ src/scanner.l      |  9 ++++++---
+ 3 files changed, 15 insertions(+), 10 deletions(-)
 
 diff --git a/include/parser.h b/include/parser.h
-index 79eadc0d7e52f..0ff0ecfbad9ac 100644
+index 0ff0ecfbad9ac..0dcc30be64780 100644
 --- a/include/parser.h
 +++ b/include/parser.h
-@@ -74,6 +74,7 @@ enum startcond_type {
- 	PARSER_SC_EXPR_UDPLITE,
- 
- 	PARSER_SC_STMT_LOG,
-+	PARSER_SC_STMT_NAT,
- 	PARSER_SC_STMT_REJECT,
- 	PARSER_SC_STMT_SYNPROXY,
- };
+@@ -31,6 +31,7 @@ struct parser_state {
+ enum startcond_type {
+ 	PARSER_SC_BEGIN,
+ 	PARSER_SC_ARP,
++	PARSER_SC_AT,
+ 	PARSER_SC_CT,
+ 	PARSER_SC_COUNTER,
+ 	PARSER_SC_ETH,
 diff --git a/src/parser_bison.y b/src/parser_bison.y
-index eca51617e1713..679579fc75742 100644
+index 679579fc75742..c6f5d4947356c 100644
 --- a/src/parser_bison.y
 +++ b/src/parser_bison.y
-@@ -952,6 +952,7 @@ close_scope_list	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_CMD_LIST); }
- close_scope_limit	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_LIMIT); };
- close_scope_mh		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_MH); };
- close_scope_monitor	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_CMD_MONITOR); };
-+close_scope_nat		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_STMT_NAT); };
- close_scope_numgen	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_NUMGEN); };
- close_scope_osf		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_OSF); };
- close_scope_policy	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_POLICY); };
-@@ -2839,12 +2840,12 @@ stmt			:	verdict_stmt
- 			|	meta_stmt
- 			|	log_stmt	close_scope_log
- 			|	reject_stmt	close_scope_reject
--			|	nat_stmt
-+			|	nat_stmt	close_scope_nat
- 			|	tproxy_stmt
- 			|	queue_stmt
- 			|	ct_stmt
--			|	masq_stmt
--			|	redir_stmt
-+			|	masq_stmt	close_scope_nat
-+			|	redir_stmt	close_scope_nat
- 			|	dup_stmt
- 			|	fwd_stmt
- 			|	set_stmt
-@@ -4764,8 +4765,8 @@ keyword_expr		:	ETHER   close_scope_eth { $$ = symbol_value(&@$, "ether"); }
- 			|	IP6	close_scope_ip6 { $$ = symbol_value(&@$, "ip6"); }
- 			|	VLAN	close_scope_vlan { $$ = symbol_value(&@$, "vlan"); }
- 			|	ARP	close_scope_arp { $$ = symbol_value(&@$, "arp"); }
--			|	DNAT			{ $$ = symbol_value(&@$, "dnat"); }
--			|	SNAT			{ $$ = symbol_value(&@$, "snat"); }
-+			|	DNAT	close_scope_nat	{ $$ = symbol_value(&@$, "dnat"); }
-+			|	SNAT	close_scope_nat	{ $$ = symbol_value(&@$, "snat"); }
- 			|	ECN			{ $$ = symbol_value(&@$, "ecn"); }
- 			|	RESET	close_scope_reset	{ $$ = symbol_value(&@$, "reset"); }
- 			|	ORIGINAL		{ $$ = symbol_value(&@$, "original"); }
-@@ -4854,7 +4855,7 @@ primary_rhs_expr	:	symbol_expr		{ $$ = $1; }
- 							 BYTEORDER_HOST_ENDIAN,
- 							 sizeof(data) * BITS_PER_BYTE, &data);
- 			}
--			|	REDIRECT
-+			|	REDIRECT	close_scope_nat
+@@ -928,6 +928,7 @@ opt_newline		:	NEWLINE
+ 
+ close_scope_ah		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_AH); };
+ close_scope_arp		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_ARP); };
++close_scope_at		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_AT); };
+ close_scope_comp	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_EXPR_COMP); };
+ close_scope_ct		: { scanner_pop_start_cond(nft->scanner, PARSER_SC_CT); };
+ close_scope_counter	: { scanner_pop_start_cond(nft->scanner, PARSER_SC_COUNTER); };
+@@ -4041,7 +4042,7 @@ set_ref_expr		:	set_ref_symbol_expr
+ 			|	variable_expr
+ 			;
+ 
+-set_ref_symbol_expr	:	AT	identifier
++set_ref_symbol_expr	:	AT	identifier	close_scope_at
  			{
- 				uint8_t data = ICMP_REDIRECT;
- 				$$ = constant_expr_alloc(&@$, &icmp_type_type,
+ 				$$ = symbol_expr_alloc(&@$, SYMBOL_SET,
+ 						       current_scope(state),
+@@ -5014,11 +5015,11 @@ meta_stmt		:	META	meta_key	SET	stmt_expr
+ 			{
+ 				$$ = notrack_stmt_alloc(&@$);
+ 			}
+-			|	FLOW	OFFLOAD	AT string
++			|	FLOW	OFFLOAD	AT string	close_scope_at
+ 			{
+ 				$$ = flow_offload_stmt_alloc(&@$, $4);
+ 			}
+-			|	FLOW	ADD	AT string
++			|	FLOW	ADD	AT string	close_scope_at
+ 			{
+ 				$$ = flow_offload_stmt_alloc(&@$, $4);
+ 			}
+@@ -5291,7 +5292,7 @@ payload_expr		:	payload_raw_expr
+ 			|	th_hdr_expr
+ 			;
+ 
+-payload_raw_expr	:	AT	payload_base_spec	COMMA	NUM	COMMA	NUM
++payload_raw_expr	:	AT	payload_base_spec	COMMA	NUM	COMMA	NUM	close_scope_at
+ 			{
+ 				$$ = payload_expr_alloc(&@$, NULL, 0);
+ 				payload_init_raw($$, $2, $4, $6);
+@@ -5533,10 +5534,10 @@ tcp_hdr_expr		:	TCP	tcp_hdr_field
+ 			{
+ 				$$ = tcpopt_expr_alloc(&@$, $3.kind, $3.field);
+ 			}
+-			|	TCP	OPTION	AT tcp_hdr_option_type	COMMA	NUM	COMMA	NUM
++			|	TCP	OPTION	AT	close_scope_at	tcp_hdr_option_type	COMMA	NUM	COMMA	NUM
+ 			{
+-				$$ = tcpopt_expr_alloc(&@$, $4, 0);
+-				tcpopt_init_raw($$, $4, $6, $8, 0);
++				$$ = tcpopt_expr_alloc(&@$, $5, 0);
++				tcpopt_init_raw($$, $5, $7, $9, 0);
+ 			}
+ 			;
+ 
 diff --git a/src/scanner.l b/src/scanner.l
-index b885f84523b97..078bcc7084eba 100644
+index 078bcc7084eba..8d4907dc1fdfe 100644
 --- a/src/scanner.l
 +++ b/src/scanner.l
-@@ -240,6 +240,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
- %s SCANSTATE_EXPR_UDPLITE
- 
- %s SCANSTATE_STMT_LOG
-+%s SCANSTATE_STMT_NAT
- %s SCANSTATE_STMT_REJECT
- %s SCANSTATE_STMT_SYNPROXY
- 
-@@ -403,7 +404,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+@@ -197,6 +197,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ %option warn
+ %option stack
+ %s SCANSTATE_ARP
++%s SCANSTATE_AT
+ %s SCANSTATE_CT
+ %s SCANSTATE_COUNTER
+ %s SCANSTATE_ETH
+@@ -283,7 +284,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "/"			{ return SLASH; }
+ "-"			{ return DASH; }
+ "*"			{ return ASTERISK; }
+-"@"			{ return AT; }
++"@"			{ scanner_push_start_cond(yyscanner, SCANSTATE_AT); return AT; }
+ "$"			{ return '$'; }
+ "="			{ return '='; }
+ "vmap"			{ return VMAP; }
+@@ -456,8 +457,10 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 	"port"			{ return PORT; }
  }
  
- "log"			{ scanner_push_start_cond(yyscanner, SCANSTATE_STMT_LOG); return LOG; }
--"prefix"		{ return PREFIX; }
-+<SCANSTATE_STMT_LOG,SCANSTATE_STMT_NAT,SCANSTATE_IP>"prefix"		{ return PREFIX; }
- <SCANSTATE_STMT_LOG>{
- 	"snaplen"		{ return SNAPLEN; }
- 	"queue-threshold"	{ return QUEUE_THRESHOLD; }
-@@ -444,13 +445,16 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
- 	"icmpx"			{ return ICMPX; }
- }
- 
--"snat"			{ return SNAT; }
--"dnat"			{ return DNAT; }
--"masquerade"		{ return MASQUERADE; }
--"redirect"		{ return REDIRECT; }
-+"snat"			{ scanner_push_start_cond(yyscanner, SCANSTATE_STMT_NAT); return SNAT; }
-+"dnat"			{ scanner_push_start_cond(yyscanner, SCANSTATE_STMT_NAT); return DNAT; }
-+"masquerade"		{ scanner_push_start_cond(yyscanner, SCANSTATE_STMT_NAT); return MASQUERADE; }
-+"redirect"		{ scanner_push_start_cond(yyscanner, SCANSTATE_STMT_NAT); return REDIRECT; }
- "random"		{ return RANDOM; }
--"fully-random"		{ return FULLY_RANDOM; }
--"persistent"		{ return PERSISTENT; }
-+<SCANSTATE_STMT_NAT>{
-+	"fully-random"		{ return FULLY_RANDOM; }
-+	"persistent"		{ return PERSISTENT; }
-+	"port"			{ return PORT; }
+-"ll"			{ return LL_HDR; }
+-"nh"			{ return NETWORK_HDR; }
++<SCANSTATE_AT>{
++	"ll"			{ return LL_HDR; }
++	"nh"			{ return NETWORK_HDR; }
 +}
+ "th"			{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_TH); return TRANSPORT_HDR; }
  
- "ll"			{ return LL_HDR; }
- "nh"			{ return NETWORK_HDR; }
-@@ -614,7 +618,6 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
- <SCANSTATE_CT,SCANSTATE_EXPR_DCCP,SCANSTATE_SCTP,SCANSTATE_TCP,SCANSTATE_EXPR_TH,SCANSTATE_EXPR_UDP,SCANSTATE_EXPR_UDPLITE>{
- 	"dport"			{ return DPORT; }
- }
--"port"			{ return PORT; }
- 
- "tcp"			{ scanner_push_start_cond(yyscanner, SCANSTATE_TCP); return TCP; }
- 
-@@ -668,7 +671,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
- "rt0"			{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_RT); return RT0; }
- "rt2"			{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_RT); return RT2; }
- "srh"			{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_RT); return RT4; }
--"addr"			{ return ADDR; }
-+<SCANSTATE_EXPR_RT,SCANSTATE_STMT_NAT>"addr"			{ return ADDR; }
- 
- "hbh"			{ scanner_push_start_cond(yyscanner, SCANSTATE_EXPR_HBH); return HBH; }
- 
+ "bridge"		{ return BRIDGE; }
 -- 
 2.34.1
 
