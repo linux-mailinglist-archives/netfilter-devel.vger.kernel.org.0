@@ -2,73 +2,153 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBC84BCF9B
-	for <lists+netfilter-devel@lfdr.de>; Sun, 20 Feb 2022 16:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA1A4BD098
+	for <lists+netfilter-devel@lfdr.de>; Sun, 20 Feb 2022 19:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244231AbiBTPrg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 20 Feb 2022 10:47:36 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60154 "EHLO
+        id S244423AbiBTSFJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 20 Feb 2022 13:05:09 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240987AbiBTPrg (ORCPT
+        with ESMTP id S238456AbiBTSFH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 20 Feb 2022 10:47:36 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630104614A
-        for <netfilter-devel@vger.kernel.org>; Sun, 20 Feb 2022 07:47:14 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id m3so18524833eda.10
-        for <netfilter-devel@vger.kernel.org>; Sun, 20 Feb 2022 07:47:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ymEpgIXl54yuSlZg88NLeYK1RJf0YDtYgXWD/9J1GQ0=;
-        b=BH1U/LOKMPUv+nd6x4x34GdR6o4d4iBacQ787GaNHnf6vNx/SP+64cxyBXH9UZcLj/
-         Hje1N9cY/gMnwyJVjFdTZKD6Z8XPkRQxuErf/XPjej8bGUqauW4vd5YL5ZaKR//G43GC
-         amu7QvUO9oS7sfFuAIxGiBrGIveI3z5B96dFlnNewcFFC3y1fPRQHFf28c2F2BwZuI5r
-         gR+X/xluV/0BPyD+je0HlzE7RpWLUjUzOEYcyfS5+jzL2yfa3Ul33pOvGsaLggCW6s6h
-         oScm2xbpYX4BF+I22cB8rq10aawat8OY9DPpG+FnMEH69i7TqUD3TBcL8KVxKHC0WHXg
-         vULw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ymEpgIXl54yuSlZg88NLeYK1RJf0YDtYgXWD/9J1GQ0=;
-        b=Mxwft+OPW7XjqK6sH9OiUboc3ctwvhFXA00DiCnaSduFy1ezG/VBK0ZXe8qC9O15OO
-         WAhDhzAXKBhlmkkzgFbsD30lQ4naOB5IfmFF0xai5+TI1E2N4Cbuu76A53dEZOSMV+dE
-         hwHVVKOC45RfiQh02TToOfNNczz1IXz7nT+IeNQZTY8rAQ3B+GgyvrGLldvSXwi36Imi
-         GTm0f18h1hJqPLDL0AJQwvtNzoRWlgz+XeRafKel6yeTvXKUkBuCtCod1dCVWQw47Vdz
-         NwVD7IkOVLhmzO+uW2Z1syywQRoG03Dp2Rcyn9RJDIbOEG9LhI9z0eJyR3ad+waLyl6k
-         CJlA==
-X-Gm-Message-State: AOAM532roa++FMyuCG1vBGH0dQzmpBVbtQW83umLF9WGJzscWhamK/LR
-        UbjW+SGLKTEH6zLcjfCVPdZv1mw3ll4QCK6to5g=
-X-Google-Smtp-Source: ABdhPJw8ZJhY/kVcFchs7dUtktlFgvpEkXNrPFby/a4LOApXaZl8XaXKh2SidvFcd6ZIdiO+OYZ8y31dj8VcrvqrLws=
-X-Received: by 2002:a05:6402:4245:b0:410:ee7d:8f0b with SMTP id
- g5-20020a056402424500b00410ee7d8f0bmr17414544edb.295.1645372032952; Sun, 20
- Feb 2022 07:47:12 -0800 (PST)
+        Sun, 20 Feb 2022 13:05:07 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 36BD4527FA;
+        Sun, 20 Feb 2022 10:04:41 -0800 (PST)
+Received: from netfilter.org (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 204EB60212;
+        Sun, 20 Feb 2022 19:03:47 +0100 (CET)
+Date:   Sun, 20 Feb 2022 19:04:38 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Paul Blakey <paulb@nvidia.com>
+Cc:     dev@openvswitch.org, netdev@vger.kernel.org,
+        Jamal Hadi Salim <jhs@mojatatu.com>, davem@davemloft.net,
+        Jiri Pirko <jiri@nvidia.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Oz Shlomo <ozsh@nvidia.com>, Vlad Buslov <vladbu@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
+        Ariel Levkovich <lariel@nvidia.com>, coreteam@netfilter.org
+Subject: Re: [PATCH net v2 1/1] net/sched: act_ct: Fix flow table lookup
+ failure with no originating ifindex
+Message-ID: <YhKCtlpgJlliT9Bc@salvia>
+References: <20220220093226.15042-1-paulb@nvidia.com>
 MIME-Version: 1.0
-Received: by 2002:a54:38c1:0:0:0:0:0 with HTTP; Sun, 20 Feb 2022 07:47:12
- -0800 (PST)
-Reply-To: fatibaro01@yahoo.com
-From:   Fatimah Baro <imanosose@gmail.com>
-Date:   Sun, 20 Feb 2022 16:47:12 +0100
-Message-ID: <CAFEyOE7-qdYqVbyiqaWGnoopOjGnDhopvJU26gRgorooitZWZA@mail.gmail.com>
-Subject: Business invitation
-To:     imanosose <imanosose@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.8 required=5.0 tests=ADVANCE_FEE_3_NEW,BAYES_50,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: multipart/mixed; boundary="Yv3p7b7MXYtnjMmu"
+Content-Disposition: inline
+In-Reply-To: <20220220093226.15042-1-paulb@nvidia.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Greetings from Burkina Faso,
-Please pardon me if my request offend your person; I need you to stand
-as my foreign partner for investment in your country. Please reply
-immediately if you are interested, so that I can give you more
-information.
-Fatimah Baro
+
+--Yv3p7b7MXYtnjMmu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+
+Hi Paul,
+
+On Sun, Feb 20, 2022 at 11:32:26AM +0200, Paul Blakey wrote:
+> After cited commit optimizted hw insertion, flow table entries are
+> populated with ifindex information which was intended to only be used
+> for HW offload. This tuple ifindex is hashed in the flow table key, so
+> it must be filled for lookup to be successful. But tuple ifindex is only
+> relevant for the netfilter flowtables (nft), so it's not filled in
+> act_ct flow table lookup, resulting in lookup failure, and no SW
+> offload and no offload teardown for TCP connection FIN/RST packets.
+> 
+> To fix this, remove ifindex from hash, and allow lookup without
+> the ifindex. Act ct will lookup without the ifindex filled.
+
+I think it is good to add FLOW_OFFLOAD_XMIT_TC (instead of relying on
+FLOW_OFFLOAD_XMIT_UNSPEC), this allows for more tc specific fields in
+the future.
+
+See attached patch.
+
+Thanks.
+
+--Yv3p7b7MXYtnjMmu
+Content-Type: text/x-diff; charset=utf-8
+Content-Disposition: attachment; filename="x.patch"
+
+diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
+index a3647fadf1cc..97bc24efe744 100644
+--- a/include/net/netfilter/nf_flow_table.h
++++ b/include/net/netfilter/nf_flow_table.h
+@@ -96,6 +96,7 @@ enum flow_offload_xmit_type {
+ 	FLOW_OFFLOAD_XMIT_NEIGH,
+ 	FLOW_OFFLOAD_XMIT_XFRM,
+ 	FLOW_OFFLOAD_XMIT_DIRECT,
++	FLOW_OFFLOAD_XMIT_TC,
+ };
+ 
+ #define NF_FLOW_TABLE_ENCAP_MAX		2
+@@ -142,6 +143,9 @@ struct flow_offload_tuple {
+ 			u8		h_source[ETH_ALEN];
+ 			u8		h_dest[ETH_ALEN];
+ 		} out;
++		struct {
++			u32		iifidx;
++		} tc;
+ 	};
+ };
+ 
+diff --git a/net/netfilter/nf_flow_table_offload.c b/net/netfilter/nf_flow_table_offload.c
+index b561e0a44a45..fc4265acd9c4 100644
+--- a/net/netfilter/nf_flow_table_offload.c
++++ b/net/netfilter/nf_flow_table_offload.c
+@@ -110,7 +110,11 @@ static int nf_flow_rule_match(struct nf_flow_match *match,
+ 		nf_flow_rule_lwt_match(match, tun_info);
+ 	}
+ 
+-	key->meta.ingress_ifindex = tuple->iifidx;
++	if (tuple->xmit_type == FLOW_OFFLOAD_XMIT_TC)
++		key->meta.ingress_ifindex = tuple->tc.iifidx;
++	else
++		key->meta.ingress_ifindex = tuple->iifidx;
++
+ 	mask->meta.ingress_ifindex = 0xffffffff;
+ 
+ 	if (tuple->encap_num > 0 && !(tuple->in_vlan_ingress & BIT(0)) &&
+diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
+index f99247fc6468..d6bbce68c957 100644
+--- a/net/sched/act_ct.c
++++ b/net/sched/act_ct.c
+@@ -361,6 +361,13 @@ static void tcf_ct_flow_table_put(struct tcf_ct_params *params)
+ 	}
+ }
+ 
++static void tcf_ct_flow_tc_ifidx(struct flow_offload *entry,
++				 struct nf_conn_act_ct_ext *act_ct_ext, u8 dir)
++{
++	entry->entry->tuplehash[dir].tuple->xmit_type = FLOW_OFFLOAD_XMIT_TC;
++	entry->tuplehash[dir].tuple.tc.iifidx = act_ct_ext->ifindex[dir];
++}
++
+ static void tcf_ct_flow_table_add(struct tcf_ct_flow_table *ct_ft,
+ 				  struct nf_conn *ct,
+ 				  bool tcp)
+@@ -385,10 +392,8 @@ static void tcf_ct_flow_table_add(struct tcf_ct_flow_table *ct_ft,
+ 
+ 	act_ct_ext = nf_conn_act_ct_ext_find(ct);
+ 	if (act_ct_ext) {
+-		entry->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.iifidx =
+-			act_ct_ext->ifindex[IP_CT_DIR_ORIGINAL];
+-		entry->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.iifidx =
+-			act_ct_ext->ifindex[IP_CT_DIR_REPLY];
++		tcf_ct_flow_tc_ifidx(entry, act_ct_ext, FLOW_OFFLOAD_DIR_ORIGINAL);
++		tcf_ct_flow_tc_ifidx(entry, act_ct_ext, FLOW_OFFLOAD_DIR_REPLY);
+ 	}
+ 
+ 	err = flow_offload_add(&ct_ft->nf_ft, entry);
+
+--Yv3p7b7MXYtnjMmu--
