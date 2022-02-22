@@ -2,102 +2,157 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAF64BF583
-	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Feb 2022 11:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 874844BFC08
+	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Feb 2022 16:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbiBVKKp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 22 Feb 2022 05:10:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
+        id S230362AbiBVPMN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 22 Feb 2022 10:12:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230445AbiBVKKX (ORCPT
+        with ESMTP id S232033AbiBVPMN (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 22 Feb 2022 05:10:23 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C4A128DC5
-        for <netfilter-devel@vger.kernel.org>; Tue, 22 Feb 2022 02:09:39 -0800 (PST)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1nMS6z-0000p6-6U; Tue, 22 Feb 2022 11:09:37 +0100
-Date:   Tue, 22 Feb 2022 11:09:37 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Jeremy Sowden <jeremy@azazel.net>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [iptables PATCH 2/4] tests: add `NOMATCH` test result
-Message-ID: <YhS2YfX3LduDhIFS@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Jeremy Sowden <jeremy@azazel.net>,
-        Netfilter Devel <netfilter-devel@vger.kernel.org>
-References: <20220212165832.2452695-1-jeremy@azazel.net>
- <20220212165832.2452695-3-jeremy@azazel.net>
- <YgooaU4M6ju9++Cy@orbyte.nwl.cc>
- <YhI9xcXbHhjkc+ya@ulthar.dreamlands>
+        Tue, 22 Feb 2022 10:12:13 -0500
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam08on2074.outbound.protection.outlook.com [40.107.102.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E63F114745
+        for <netfilter-devel@vger.kernel.org>; Tue, 22 Feb 2022 07:11:47 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FL1UDzg7wpnthbxWfFxGhHJTzHSeTCRaG135z+4ePAn/4b0KNMBUGYs4HcIyRtxlew9PXt+pGjQZ3ku1tUZRgZeIMBeAFCgeUXlJIjz5cGpULf0KW0YCUSa/32yLpCNbnC9ueUNpovwoB0qDjmI1SI0QvKSt+aZ9O2OOdcgVpGhk2KzENCGVKf3xY78P4jswDzcD44Qmr3KQeoRukalrxG9Fo08GNMihQGQpXDcF4elB08uUERk4SsZPeZF8QZrFCGyvoXqvW29mt0dncHAPjocdKZQmA3+uHO9mR2s5pVzOsuY6Rtyr11h7GBGWu2KKHn8pb95iO4wuWMvxWbtLbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=C+tMp7FFuiT89nUWNnZaZgDATVkThnAtN171mf2rods=;
+ b=nAPnyCD9dg1LQc56indEvffHEP6fIdD0aYMOzrFH/U0YmpcF/YpnVUafJWZWHTcQB2W6YtFp7P35ejoXmfauj5Aaeijg6b3WCN73W2L8PWvMdWa+wiROlgUpHcKidmLooFb8f4MaHXYf40EGXHUvehXMb2VY6+C8Z/JMMPuv6FiP081voPzFl0SAMsp4taEgZbLRfW77qsrppjEIKtnz8CJJtC9tU2e4Rl1oBY9ogmP/Ze/UD7Ty07o3xdHBGAg7KJLRtoarB7FXgXoXV4c1SarHzL26z3AUhDcf6s3ueQY9shJL7gyVNdDcJg9sA0VZAljzudQd4z71Jb1da1IBpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.234) smtp.rcpttodomain=netfilter.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C+tMp7FFuiT89nUWNnZaZgDATVkThnAtN171mf2rods=;
+ b=rQ04DYIEJqLhCpFbENcSzCe5kR+Uol/yj9ds+p6Xo8A0dNvMhKhlHpbqCILyyPq6YJWWfRt24g8M9zD5pCiUKL5qF6StQ0Wecb4mizIMw/Y3XPbEdTzb2HvAjYGfq6stfB7OCCaxFTrlSQMMTVL0KXoDTSwYJZt8YgwtqQzBtugk/LgoDObKVrif13B0p8RYD3aNyQobwDTSRTwnPztrfPfTeBKtyh97l1+6HdGifMC5X4Nif/hLjKGocn7ncIn5mz4LQE0ysMiR+XAFZS8MYRNZmEQEeCAMvdRLDFFFGZ11Y/JSeknufa8Ue65cXFvJgK/9QSuyiEGT3jkD0C4Aqw==
+Received: from DM6PR11CA0067.namprd11.prod.outlook.com (2603:10b6:5:14c::44)
+ by LV2PR12MB5824.namprd12.prod.outlook.com (2603:10b6:408:176::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.15; Tue, 22 Feb
+ 2022 15:11:45 +0000
+Received: from DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:14c:cafe::8c) by DM6PR11CA0067.outlook.office365.com
+ (2603:10b6:5:14c::44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.16 via Frontend
+ Transport; Tue, 22 Feb 2022 15:11:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.234)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.234 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.234; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (12.22.5.234) by
+ DM6NAM11FT024.mail.protection.outlook.com (10.13.172.159) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4995.15 via Frontend Transport; Tue, 22 Feb 2022 15:11:44 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by DRHQMAIL101.nvidia.com
+ (10.27.9.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 22 Feb
+ 2022 15:10:43 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.9; Tue, 22 Feb 2022
+ 07:10:41 -0800
+Received: from vdi.nvidia.com (10.127.8.14) by mail.nvidia.com (10.129.68.8)
+ with Microsoft SMTP Server id 15.2.986.9 via Frontend Transport; Tue, 22 Feb
+ 2022 07:10:39 -0800
+From:   Vlad Buslov <vladbu@nvidia.com>
+To:     <netfilter-devel@vger.kernel.org>
+CC:     <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>,
+        <ozsh@nvidia.com>, <paulb@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>
+Subject: [PATCH net-next 0/8] Conntrack offload debuggability improvements
+Date:   Tue, 22 Feb 2022 17:09:55 +0200
+Message-ID: <20220222151003.2136934-1-vladbu@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YhI9xcXbHhjkc+ya@ulthar.dreamlands>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 00248f24-ebc8-4bf5-9935-08d9f615a392
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5824:EE_
+X-Microsoft-Antispam-PRVS: <LV2PR12MB582459C0098B8BDD6398331BA03B9@LV2PR12MB5824.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JLHQpS2sz13uaYMxQ9gVwflEqWQ8LZ/XE8Ur34iNk2k06piW7Ytl7MUM527kWMCvIrILFcscNsSrteTE4yDOgOUUHSqvtkZPgGqrdIJEZLaVCi+PW9cJ7FEWgMotgB298Gd81oZmosdOQmi2MXZR0jwWbyoxnJ4N/3Cqj3qAvrYiaB6YN+IfeMjq2qkSuqk9/epr+x9mZzyt3FJuwKKRZqZNNS4GyA6xZ8QhVffKcONdPM3tqFcU9wVo2XFnpgwVZgI9sjA4PO77bidonwho15pL0Pi22tBqm6otZuYoKshgKBfQXKhQEKwgbnXjJdKYqeQ+qduxar/bqO7ir0kzO8Jn2LPfYtCTL/mhRiHKiwqj3HHHLviWLw/Ysm6/yMc0o5ava8Uw4VdGPHqG/cGGrdBeNmhwlA2XIoWUTs2DjNfyRjPP6wFihej38rwf+fW5fhLvpoecLs0u2U+rZ3bafMTSZWSQzTg0aiNfiO4dozMMevwoXPQlqyjyZygXHS52fgmdIBNbKwhK0LzUWNq1P+pUnGwgpIuwHcuXcObaGwQnRz6fG/ooCGnzmLdhKeG2qvvUn+39gc46YIGozxyExZ0ZE8qvSFTcf6wNew5E4j+nyTtjxuFlu7WVnbQHvYDB4XKS4HgpKwzbur3r839ZqF0X8qDIdSbMsTwdVmIzO4KTwU7G1kGVxtzofLvUV15XqtBcTd0/qBEr3jOW4WaJww==
+X-Forefront-Antispam-Report: CIP:12.22.5.234;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230001)(4636009)(36840700001)(46966006)(40470700004)(8936002)(47076005)(356005)(5660300002)(36756003)(81166007)(6666004)(40460700003)(2906002)(7696005)(36860700001)(82310400004)(8676002)(86362001)(316002)(70206006)(70586007)(83380400001)(26005)(2616005)(336012)(426003)(186003)(508600001)(1076003)(6916009)(107886003)(4326008)(54906003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2022 15:11:44.7113
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 00248f24-ebc8-4bf5-9935-08d9f615a392
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.234];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5824
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Jeremy,
+Current conntrack offload implementation doesn't provide much visibility
+and control over offload code. The code just schedules asynchronous
+offload tasks on dedicated workqueues without regard of current queue
+size even when scheduled task will only be processed after significant
+delay and might be no longer needed.
 
-On Sun, Feb 20, 2022 at 01:10:29PM +0000, Jeremy Sowden wrote:
-> On 2022-02-14, at 11:01:13 +0100, Phil Sutter wrote:
-> > On Sat, Feb 12, 2022 at 04:58:30PM +0000, Jeremy Sowden wrote:
-> > > Currently, there are two supported test results: `OK` and `FAIL`.
-> > > It is expected that either the iptables command fails, or it
-> > > succeeds and dumping the rule has the correct output.  However, it
-> > > is possible that the command may succeed but the output may not be
-> > > correct.  Add a `NOMATCH` result to cover this outcome.
-> >
-> > Hmm. Wouldn't it make sense to extend the scope of LEGACY/NFT keywords
-> > to output checks as well instead of introducing a new one? I think we
-> > could cover expected output that way by duplicating the test case with
-> > different expected output instead of marking it as unspecific "may
-> > produce garbage".
-> 
-> Something like the following?  One reason why I went with the `NOMATCH`
-> result is that in the two divergent test-cases, there is no -nft output
-> to match.  We can make that work by just using the empty string as the
-> alternative output since that will match anything.  I don't think it's
-> ideal, but it's simpler than overhauling the matching code for what is a
-> rare corner case.
+Improve the debuggability situation by implementing following new
+functionality:
 
-Thanks for compiling the patch. What I had in mind was to merge result
-checks of failing rule with output mismatch, but I realize this would
-likely turn into a mess.
+- Sysctls for current total count of offloaded flow and
+  user-configurable maximum. Capping the amount of offloaded flows can
+  be useful for the allocations of hardware resources.
 
-[...]
-> In the case of tests which have no output to match, we leave the last
-> field empty:
-> 
->   -j EXAMPLE-TARGET --example-option;=;OK;LEGACY;
+- Sysctls for current total of workqueue tasks for nf_ft_offload_add,
+  nf_ft_offload_del and nf_ft_offload_stats queues. Also, allow setting
+  maximum of total allowed concurrent 'add' tasks. This allows
+  visibility for flow offload delay due to system scheduling offload
+  tasks faster than driver/hardware can process them and allows setting
+  some bound on the delay (for example, in case of short-lived
+  connections user might prefer to skip offloading of flow that will be
+  only be offloaded in 10 seconds). Note that the flow can still be
+  offloaded afterwards via 'refresh' mechanism if both total hardware
+  count and workqueue count are reduced below limits.
 
-A non-empty rule leading to empty output is a bug, IMHO.
+- Tracepoints in offload code. These are primary targeted to facilitate
+  writing BPF helpers for some common debug scenarios (creating
+  histogram of latency between scheduling flow offload and processing
+  the task, dynamic difference between new offloads and deletions,
+  etc.).
 
-[...]
-> --- a/extensions/libxt_NFLOG.t
-> +++ b/extensions/libxt_NFLOG.t
-> @@ -5,8 +5,8 @@
->  -j NFLOG --nflog-group 0;-j NFLOG;OK
->  # `--nflog-range` is broken and only supported by xtables-legacy.
->  # It has been superseded by `--nflog--group`.
-> --j NFLOG --nflog-range 1;=;OK;LEGACY;NOMATCH
-> --j NFLOG --nflog-range 4294967295;=;OK;LEGACY;NOMATCH
-> +-j NFLOG --nflog-range 1;=;OK;LEGACY;
-> +-j NFLOG --nflog-range 4294967295;=;OK;LEGACY;
+Vlad Buslov (8):
+  net/sched: act_ct: set 'net' pointer when creating new nf_flow_table
+  netfilter: introduce total count of hw offloaded flow table entries
+  netfilter: introduce max count of hw offloaded flow table entries
+  netfilter: introduce total count of hw offload 'add' workqueue tasks
+  netfilter: introduce max count of hw offload 'add' workqueue tasks
+  netfilter: introduce total count of hw offload 'del' workqueue tasks
+  netfilter: introduce total count of hw offload 'stats' wq tasks
+  netfilter: flowtable: add hardware offload tracepoints
 
-The crucial detail here is that an expected output of "-j NFLOG" is
-trivial and str::find() won't complain about extra output.
+ include/net/netfilter/nf_flow_table.h       |  9 ++++
+ include/net/netns/nftables.h                |  6 +++
+ net/netfilter/nf_conntrack_standalone.c     | 56 +++++++++++++++++++++
+ net/netfilter/nf_flow_table_core.c          | 33 +++++++++++-
+ net/netfilter/nf_flow_table_offload.c       | 43 ++++++++++++----
+ net/netfilter/nf_flow_table_offload_trace.h | 48 ++++++++++++++++++
+ net/sched/act_ct.c                          |  5 +-
+ 7 files changed, 186 insertions(+), 14 deletions(-)
+ create mode 100644 net/netfilter/nf_flow_table_offload_trace.h
 
-Given that we're discussing corner cases and what I had in mind has its
-own downsides, I guess the status quo is fine at least for now. Sorry
-for the fuss!
-
-Cheers, Phil
+-- 
+2.31.1
 
