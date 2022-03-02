@@ -2,47 +2,93 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D6D4CA8C9
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Mar 2022 16:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A214CA8EB
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Mar 2022 16:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243360AbiCBPHB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Mar 2022 10:07:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
+        id S240742AbiCBPTG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Mar 2022 10:19:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235010AbiCBPHB (ORCPT
+        with ESMTP id S233839AbiCBPTE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Mar 2022 10:07:01 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D7FCA701
-        for <netfilter-devel@vger.kernel.org>; Wed,  2 Mar 2022 07:06:18 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1nPQYS-0003ed-7H; Wed, 02 Mar 2022 16:06:16 +0100
-Date:   Wed, 2 Mar 2022 16:06:16 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Phil Sutter <phil@nwl.cc>, Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [iptables PATCH 0/2] Improve error messages for unsupported
- extensions
-Message-ID: <20220302150616.GC8249@breakpoint.cc>
-References: <20220211171211.26484-1-phil@nwl.cc>
- <Yh+ErK+pGFu4I+3U@orbyte.nwl.cc>
+        Wed, 2 Mar 2022 10:19:04 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FCE21803
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Mar 2022 07:18:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=lzZPVVEwq4U1DjaQbfzMIJk68TCAsJZWydYWGUBj1BM=; b=To3nSclQvcvltKE2EQlsi0Cqpx
+        YKhjd9i8iz/XpWQ039DemzyQ1ax4Sgit7m+BrkOxP9T4/hxWoz1U+SLekddZ3N2vY8RlhCibqqPmT
+        4COHAFZftSHgQzi0el9s+hrZ4jC947A5ecDkX7J88Uyz0nKIhy2fHRxUJbKqhn+oNvy8126MlzLzQ
+        qrLC9jQwwLDKegZqdr2Eg6ZmVjrp8xptneKYpYoJ8ZS829FxCBWbf2efsJmTRX1He4KNTBr43B9Sz
+        NRsFJ7lJwDJAl3js+acJw8ZMPssRlsESo+Snq3s1LiUQ0YUgLuYE0roTCBSjzzWijl59Vivhhp3Cw
+        pfBdQ9Lw==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1nPQk7-00034F-9e; Wed, 02 Mar 2022 16:18:19 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 0/4] Speed up iptables-nft-save
+Date:   Wed,  2 Mar 2022 16:18:03 +0100
+Message-Id: <20220302151807.12185-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yh+ErK+pGFu4I+3U@orbyte.nwl.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Phil Sutter <phil@nwl.cc> wrote:
-> *bump*
+OpenShift tends to create huge rulesets[*] and consequently wonders why
+iptables is slow. Anyway, iptables-nft-save really does odd things:
 
-Looks good to me.  Feel free to push this if it passes the tests on
-a normal distro kernel.
+* For each jump target, it checks if such extension exists, despite
+  already knowing whether the target is a chain or not. This is solved
+  in patch 2, with patch 1 preparing nft_parse_immediate() to make the
+  change simpler.
+
+* Every l4proto match causes a call to getprotobynumber() which in turn
+  opens /etc/protocols. One could cache the lookups, but preferring the
+  builtin fallback list of protocol names and numbers is much simpler.
+  Do that in patch 3, aligning said list with /etc/protocols to not
+  change output unexpectedly.
+
+[*] I have a "real-life" dump adding 50k chains and 130k rules. Dumping
+    it to /dev/null took 45s on my testing VM, with these patches
+    applied I'm down to 2.7s.
+
+The last patch is fallout from the above, simplifying family ops
+callbacks a bit given that there is only a single *tables_command_state
+struct left.
+
+Phil Sutter (4):
+  nft: Simplify immediate parsing
+  nft: Speed up immediate parsing
+  xshared: Prefer xtables_chain_protos lookup over getprotoent
+  nft: Don't pass command state opaque to family ops callbacks
+
+ iptables/nft-arp.c    | 32 ++++++------------
+ iptables/nft-bridge.c | 55 +++++++++++++------------------
+ iptables/nft-ipv4.c   | 40 ++++++++---------------
+ iptables/nft-ipv6.c   | 40 ++++++++---------------
+ iptables/nft-shared.c | 75 ++++++++++++++++++++-----------------------
+ iptables/nft-shared.h | 35 ++++++++++----------
+ iptables/nft.c        |  4 +--
+ iptables/nft.h        |  2 +-
+ iptables/xshared.c    |  8 ++---
+ libxtables/xtables.c  | 19 ++++-------
+ 10 files changed, 126 insertions(+), 184 deletions(-)
+
+-- 
+2.34.1
+
