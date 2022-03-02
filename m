@@ -2,45 +2,66 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEBA4CA29A
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Mar 2022 11:59:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1F04CA3C8
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Mar 2022 12:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbiCBK75 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Mar 2022 05:59:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43544 "EHLO
+        id S233951AbiCBLdP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Mar 2022 06:33:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234663AbiCBK74 (ORCPT
+        with ESMTP id S236912AbiCBLdO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Mar 2022 05:59:56 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACAF96E4FF
-        for <netfilter-devel@vger.kernel.org>; Wed,  2 Mar 2022 02:59:10 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1nPMhI-0001xE-2k; Wed, 02 Mar 2022 11:59:08 +0100
-Date:   Wed, 2 Mar 2022 11:59:08 +0100
-From:   Florian Westphal <fw@strlen.de>
+        Wed, 2 Mar 2022 06:33:14 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 96398205E2
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Mar 2022 03:32:29 -0800 (PST)
+Received: from netfilter.org (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 0B657625DD;
+        Wed,  2 Mar 2022 12:30:57 +0100 (CET)
+Date:   Wed, 2 Mar 2022 12:32:24 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     Florian Westphal <fw@strlen.de>
 Cc:     netfilter-devel <netfilter-devel@vger.kernel.org>,
-        pablo@netfilter.org, kadlec@netfilter.org, hmmsjan@kpnplanet.nl
+        kadlec@netfilter.org, hmmsjan@kpnplanet.nl
 Subject: Re: TCP connection fails in a asymmetric routing situation
-Message-ID: <20220302105908.GA5852@breakpoint.cc>
+Message-ID: <Yh9VyPluvrmNQWUz@salvia>
 References: <20220225123030.GK28705@breakpoint.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <20220225123030.GK28705@breakpoint.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Florian Westphal <fw@strlen.de> wrote:
+Hi Florian,
+
+On Fri, Feb 25, 2022 at 01:30:30PM +0100, Florian Westphal wrote:
+> https://bugzilla.redhat.com/show_bug.cgi?id=2051413
+> 
+> Gist is:
+> as of 878aed8db324bec64f3c3f956e64d5ae7375a5de
+> (" netfilter: nat: force port remap to prevent shadowing well-known
+>  port"), tcp connections won't get established with asymmetric routing
+> setups.
+> 
+> Workaround: Block conntrack for  LAN-LAN2 traffic by
+> iptables  -t raw -A PREROUTING -j CT --notrack
+> Or: echo 0 > /proc/sys/net/netfilter/nf_conntrack_tcp_loose
+> 
+> I'd guess that is because conntrack picks up the flow on syn-ack rather
+> than syn, snat check then thinks that source port is < 16384 and dest
+> port is large, so we do port rewrite but we do it on syn-ack and
+> connection cannot complete because client and server have different
+> views of the source ports involved.
+> 
+> Question is on how this can be prevented. I see a few solutions:
+> 
 > 1. Change ct->local_origin to "ct->no_srcremap" (or a new status bit)
 > that indicates that this should not have src remap done, just like we
 > do for locally generated connections.
@@ -58,76 +79,8 @@ Florian Westphal <fw@strlen.de> wrote:
 > 
 > I would go for 2) unless you have a better suggestion/idea.
 
-Something like this:
+Conntrack needs to see traffic in both directions, otherwise it is
+pickup the state from the middle from time to time (part of the
+history is lost for us).
 
-diff --git a/include/uapi/linux/netfilter/nf_conntrack_common.h b/include/uapi/linux/netfilter/nf_conntrack_common.h
---- a/include/uapi/linux/netfilter/nf_conntrack_common.h
-+++ b/include/uapi/linux/netfilter/nf_conntrack_common.h
-@@ -118,15 +118,19 @@ enum ip_conntrack_status {
- 	IPS_HW_OFFLOAD_BIT = 15,
- 	IPS_HW_OFFLOAD = (1 << IPS_HW_OFFLOAD_BIT),
- 
-+	/* Connection started mid-transfer, origin/reply might be inversed */
-+	IPS_MID_STREAM_BIT = 16,
-+	IPS_MID_STREAM = (1 << IPS_MID_STREAM_BIT),
-+
- 	/* Be careful here, modifying these bits can make things messy,
- 	 * so don't let users modify them directly.
- 	 */
- 	IPS_UNCHANGEABLE_MASK = (IPS_NAT_DONE_MASK | IPS_NAT_MASK |
- 				 IPS_EXPECTED | IPS_CONFIRMED | IPS_DYING |
- 				 IPS_SEQ_ADJUST | IPS_TEMPLATE | IPS_UNTRACKED |
--				 IPS_OFFLOAD | IPS_HW_OFFLOAD),
-+				 IPS_OFFLOAD | IPS_HW_OFFLOAD | IPS_MID_STREAM_BIT),
- 
--	__IPS_MAX_BIT = 16,
-+	__IPS_MAX_BIT = 17,
- };
- 
- /* Connection tracking event types */
-diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
---- a/net/netfilter/nf_conntrack_proto_tcp.c
-+++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -537,6 +537,8 @@ static bool tcp_in_window(struct nf_conn *ct,
- 			 * its history is lost for us.
- 			 * Let's try to use the data from the packet.
- 			 */
-+			set_bit(IPS_MID_STREAM_BIT, &ct->status);
-+
- 			sender->td_end = end;
- 			swin = win << sender->td_scale;
- 			sender->td_maxwin = (swin == 0 ? 1 : swin);
-@@ -816,6 +818,8 @@ static noinline bool tcp_new(struct nf_conn *ct, const struct sk_buff *skb,
- 		 * its history is lost for us.
- 		 * Let's try to use the data from the packet.
- 		 */
-+		set_bit(IPS_MID_STREAM_BIT, &ct->status);
-+
- 		ct->proto.tcp.seen[0].td_end =
- 			segment_seq_plus_len(ntohl(th->seq), skb->len,
- 					     dataoff, th);
-diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
---- a/net/netfilter/nf_nat_core.c
-+++ b/net/netfilter/nf_nat_core.c
-@@ -545,6 +545,12 @@ get_unique_tuple(struct nf_conntrack_tuple *tuple,
- 
- 	zone = nf_ct_zone(ct);
- 
-+	if (unlikely(test_bit(IPS_MID_STREAM_BIT, &ct->status))) {
-+		/* Can't NAT if connection was picked up mid-stream (e.g. tcp) */
-+		*tuple = *orig_tuple;
-+		return;
-+	}
-+
- 	if (maniptype == NF_NAT_MANIP_SRC &&
- 	    !random_port &&
- 	    !ct->local_origin)
-@@ -781,7 +787,7 @@ nf_nat_inet_fn(void *priv, struct sk_buff *skb,
- 			unsigned int ret;
- 			int i;
- 
--			if (!e)
-+			if (!e || unlikely(test_bit(IPS_MID_STREAM_BIT, &ct->status)))
- 				goto null_bind;
- 
- 			for (i = 0; i < e->num_hook_entries; i++) {
+What am I missing here?
