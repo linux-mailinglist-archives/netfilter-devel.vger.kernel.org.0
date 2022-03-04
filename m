@@ -2,94 +2,85 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2684CD41C
-	for <lists+netfilter-devel@lfdr.de>; Fri,  4 Mar 2022 13:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7394CD50D
+	for <lists+netfilter-devel@lfdr.de>; Fri,  4 Mar 2022 14:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbiCDMQu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 4 Mar 2022 07:16:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
+        id S230372AbiCDNUq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 4 Mar 2022 08:20:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbiCDMQu (ORCPT
+        with ESMTP id S233410AbiCDNUp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 4 Mar 2022 07:16:50 -0500
+        Fri, 4 Mar 2022 08:20:45 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A493EB88
-        for <netfilter-devel@vger.kernel.org>; Fri,  4 Mar 2022 04:16:01 -0800 (PST)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1nQ6ql-0003s3-SB; Fri, 04 Mar 2022 13:15:59 +0100
-Date:   Fri, 4 Mar 2022 13:15:59 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81EE4FC40
+        for <netfilter-devel@vger.kernel.org>; Fri,  4 Mar 2022 05:19:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=i7g/a+0EKBAYr6DmNi9+T/2BUnj8tPrR/VRdHlyyJRk=; b=dOAbM6OsfFe9P3wvO6e7HmrkX4
+        bGdRjOuX+yhKtC8fniEzs+XceVlNEx/nOh4DR0DCHKFS0/8IaHs3lAsPe3VSl35S+Oxd+Q/xCGWvl
+        HipnO+BEqauTgnGOD9/ziPkieAhuBIvdWA7kQeaEOVWnDhueSqgfQTooiQ8afljpIGLiFD1AbupQG
+        lnSRFoqA994BRAWgF+Ck63GcJz750MTnMUG1z372tXIWa59c8fgSG8flK+6jV7/wDQ/nV2GMwgswo
+        j5kZrsdybvukuQUwmlyIlrxxiHkcFntm9Iy33qgC9KXieFgWg2pbmaeL5OoYKjXNcdEeMn/JR8460
+        yFy5LsUQ==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1nQ7qe-0004Vz-4o; Fri, 04 Mar 2022 14:19:56 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] misspell: Avoid segfault with anonymous chains
-Message-ID: <YiIC/zbFfMTcsuNb@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-References: <20220304103711.23355-1-phil@nwl.cc>
- <YiHz+bNsLvFjkPit@salvia>
+Subject: [iptables RFC 0/2] Speed up restoring huge rulesets
+Date:   Fri,  4 Mar 2022 14:19:42 +0100
+Message-Id: <20220304131944.30801-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YiHz+bNsLvFjkPit@salvia>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, Mar 04, 2022 at 12:11:53PM +0100, Pablo Neira Ayuso wrote:
-> Hi Phil,
-> 
-> On Fri, Mar 04, 2022 at 11:37:11AM +0100, Phil Sutter wrote:
-> > When trying to add a rule which contains an anonymous chain to a
-> > non-existent chain, string_misspell_update() is called with a NULL
-> > string because the anonymous chain has no name. Avoid this by making the
-> > function NULL-pointer tolerant.
-> > 
-> > c330152b7f777 ("src: support for implicit chain bindings")
-> > 
-> > Signed-off-by: Phil Sutter <phil@nwl.cc>
-> > ---
-> >  src/misspell.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/src/misspell.c b/src/misspell.c
-> > index 6536d7557a445..f213a240005e6 100644
-> > --- a/src/misspell.c
-> > +++ b/src/misspell.c
-> > @@ -80,8 +80,8 @@ int string_misspell_update(const char *a, const char *b,
-> >  {
-> >  	unsigned int len_a, len_b, max_len, min_len, distance, threshold;
-> >  
-> > -	len_a = strlen(a);
-> > -	len_b = strlen(b);
-> > +	len_a = a ? strlen(a) : 0;
-> > +	len_b = b ? strlen(b) : 0;
-> 
-> string_distance() assumes non-NULL too.
+Spinning further on my OpenShift sample ruleset with 50k chains and 130k
+rules (of which 90k jump to a chain), I discovered old work in a local
+branch which surprisingly worked and is contained in patch 1:
 
-Which is called from string_misspell_update() only which with my patch
-returns early due to 'max_len <= 1'.
+Cache target lookup results if they failed. This speeds up the logic to
+determine whether the rule's target is a chain for consecutive rules
+jumping to that same chain. The cache does not care about table names,
+but that's fine: If a given chain name is not an extension, that holds
+for all chains of the same name in all tables.
 
-> probably shortcircuit chain_lookup_fuzzy() earlier since h->chain.name
-> is always NULL, to avoid the useless loop.
+Patch 2 goes even further by populating that cache from declared chains
+in the parsed dump file. This is potentially problematic because it
+effectively disables the chain name and extension clash check (which
+didn't exist in nft-variant and was a warning only in legacy), and it
+does that for all tables. So in theory, one could create a chain named
+LOG in nat table and expect to still be able to use LOG target in filter
+table. With patch 2 applied, the restore will fail.
 
-Fine with me, too! What about allocating a name for the anonymous chain
-instead? I guess similar treatment as with sets would make sense. Might
-also help with netlink debug output:
+I still find the series feasible despite its problems: The performance
+improvement is immense (see numbers in patches) and it breaks only
+corner-cases which are likely unintended anyway.
 
-| # nft --debug=netlink insert rule inet x y 'goto { accept; }'
-| inet (null) (null) use 0
-| inet x
-|   [ immediate reg 0 accept ]
-| 
-|   inet x y
-|     [ immediate reg 0 goto ]
-| [...]
+Phil Sutter (2):
+  libxtables: Implement notargets hash table
+  libxtables: Boost rule target checks by announcing chain names
 
-Thanks, Phil
+ include/xtables.h           |  3 ++
+ iptables/iptables-restore.c |  1 +
+ iptables/xtables-restore.c  |  1 +
+ libxtables/xtables.c        | 84 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 89 insertions(+)
+
+-- 
+2.34.1
+
