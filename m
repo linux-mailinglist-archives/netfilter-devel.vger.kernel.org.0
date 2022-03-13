@@ -2,35 +2,39 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D31E4D7138
-	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Mar 2022 23:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B554D73F3
+	for <lists+netfilter-devel@lfdr.de>; Sun, 13 Mar 2022 10:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbiCLWEe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 12 Mar 2022 17:04:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
+        id S234127AbiCMJZD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 13 Mar 2022 05:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232766AbiCLWEb (ORCPT
+        with ESMTP id S231891AbiCMJZD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 12 Mar 2022 17:04:31 -0500
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9C6B8D0492;
-        Sat, 12 Mar 2022 14:03:24 -0800 (PST)
-Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id BD70E62FFA;
-        Sat, 12 Mar 2022 23:01:14 +0100 (CET)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net 3/3] netfilter: nf_tables: disable register tracking
-Date:   Sat, 12 Mar 2022 23:03:15 +0100
-Message-Id: <20220312220315.64531-4-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220312220315.64531-1-pablo@netfilter.org>
-References: <20220312220315.64531-1-pablo@netfilter.org>
+        Sun, 13 Mar 2022 05:25:03 -0400
+X-Greylist: delayed 463 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 13 Mar 2022 01:23:55 PST
+Received: from nodachi.mjopr.nl (nodachi.mjopr.nl [31.210.16.215])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BBA10216E
+        for <netfilter-devel@vger.kernel.org>; Sun, 13 Mar 2022 01:23:55 -0800 (PST)
+Received: from [192.168.2.164] (unknown [143.176.158.61])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander)
+        by nodachi.mjopr.nl (Postfix) with ESMTPSA id E6CF71FF5C
+        for <netfilter-devel@vger.kernel.org>; Sun, 13 Mar 2022 10:16:10 +0100 (CET)
+Message-ID: <b054d06e-4d79-27d9-cbeb-5c9822453ba7@users.sourceforge.net>
+Date:   Sun, 13 Mar 2022 10:16:09 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Content-Language: en-US
+To:     netfilter-devel@vger.kernel.org
+From:   Pander <pander@users.sourceforge.net>
+Subject: Xtables-addons URL issues
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_05,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -38,42 +42,30 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The register tracking infrastructure is incomplete, it might lead to
-generating incorrect ruleset bytecode, disable it by now given we are
-late in the release process.
+Hi all, ej,
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Here are some URL issues for xtables-addons. Page 
+https://inai.de/projects/xtables-addons/geoip.php
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index c86748b3873b..d71a33ae39b3 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -8260,6 +8260,12 @@ void nf_tables_trans_destroy_flush_work(void)
- }
- EXPORT_SYMBOL_GPL(nf_tables_trans_destroy_flush_work);
- 
-+static bool nft_expr_reduce(struct nft_regs_track *track,
-+			    const struct nft_expr *expr)
-+{
-+	return false;
-+}
-+
- static int nf_tables_commit_chain_prepare(struct net *net, struct nft_chain *chain)
- {
- 	const struct nft_expr *expr, *last;
-@@ -8307,8 +8313,7 @@ static int nf_tables_commit_chain_prepare(struct net *net, struct nft_chain *cha
- 		nft_rule_for_each_expr(expr, last, rule) {
- 			track.cur = expr;
- 
--			if (expr->ops->reduce &&
--			    expr->ops->reduce(&track, expr)) {
-+			if (nft_expr_reduce(&track, expr)) {
- 				expr = track.cur;
- 				continue;
- 			}
--- 
-2.30.2
+1) Has link 
+https://build.opensuse.org/package/files?package=xtables-geoip&project=security%3Anetfilter 
+which is broken, please fix if possible.
+
+2) Link http://marc.info/?l=netfilter&m=130375362317626&w=2 redirects to 
+https://marc.info/?l=netfilter&m=130375362317626&w=2 so better use that 
+link as  it is HTTPS.
+
+3) Link https://inai.de/about redirects to https://inai.de/about/ which 
+is a minor fix. This is in the footer and applies to all pages for this 
+website.
+
+4) Link http://people.netfilter.org/acidfu/geoip/howto/ redirects to 
+https://people.netfilter.org/acidfu/geoip/howto/ so also better to use.
+
+See also 
+https://validator.w3.org/checklink?uri=https%3A%2F%2Finai.de%2Fprojects%2Fxtables-addons%2Fgeoip.php
+
+Thanks,
+
+Pander
 
