@@ -2,27 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE644D8AAE
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Mar 2022 18:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB424D8AB6
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Mar 2022 18:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243161AbiCNRYh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 14 Mar 2022 13:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
+        id S233523AbiCNRYi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 14 Mar 2022 13:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243274AbiCNRYd (ORCPT
+        with ESMTP id S243285AbiCNRYe (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 14 Mar 2022 13:24:33 -0400
+        Mon, 14 Mar 2022 13:24:34 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A90282E0AF
-        for <netfilter-devel@vger.kernel.org>; Mon, 14 Mar 2022 10:23:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 698E430F79
+        for <netfilter-devel@vger.kernel.org>; Mon, 14 Mar 2022 10:23:24 -0700 (PDT)
 Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 6EA4F62FEA
+        by mail.netfilter.org (Postfix) with ESMTPSA id E029362FFE
         for <netfilter-devel@vger.kernel.org>; Mon, 14 Mar 2022 18:21:07 +0100 (CET)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,v3 08/14] netfilter: nft_hash: track register operations
-Date:   Mon, 14 Mar 2022 18:23:07 +0100
-Message-Id: <20220314172313.63348-9-pablo@netfilter.org>
+Subject: [PATCH nf-next,v3 09/14] netfilter: nft_immediate: cancel register tracking for data destination register
+Date:   Mon, 14 Mar 2022 18:23:08 +0100
+Message-Id: <20220314172313.63348-10-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220314172313.63348-1-pablo@netfilter.org>
 References: <20220314172313.63348-1-pablo@netfilter.org>
@@ -37,87 +37,46 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Check if the destination register already contains the data that this
-osf expression performs. Always cancel register tracking for jhash since
-this requires tracking multiple source registers in case of
-concatenations. Perform register tracking (without bitwise) for symhash
-since input does not come from source register.
+The immediate expression might clobber existing data on the registers,
+cancel register tracking for the destination register.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
 v3: no changes
 
- net/netfilter/nft_hash.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ net/netfilter/nft_immediate.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/net/netfilter/nft_hash.c b/net/netfilter/nft_hash.c
-index f829f5289e16..e5631e88b285 100644
---- a/net/netfilter/nft_hash.c
-+++ b/net/netfilter/nft_hash.c
-@@ -165,6 +165,16 @@ static int nft_jhash_dump(struct sk_buff *skb,
- 	return -1;
+diff --git a/net/netfilter/nft_immediate.c b/net/netfilter/nft_immediate.c
+index d0f67d325bdf..b80f7b507349 100644
+--- a/net/netfilter/nft_immediate.c
++++ b/net/netfilter/nft_immediate.c
+@@ -223,6 +223,17 @@ static bool nft_immediate_offload_action(const struct nft_expr *expr)
+ 	return false;
  }
  
-+static bool nft_jhash_reduce(struct nft_regs_track *track,
-+			     const struct nft_expr *expr)
++static bool nft_immediate_reduce(struct nft_regs_track *track,
++				 const struct nft_expr *expr)
 +{
-+	const struct nft_jhash *priv = nft_expr_priv(expr);
++	const struct nft_immediate_expr *priv = nft_expr_priv(expr);
 +
-+	nft_reg_track_cancel(track, priv->dreg, sizeof(u32));
++	if (priv->dreg != NFT_REG_VERDICT)
++		nft_reg_track_cancel(track, priv->dreg, priv->dlen);
 +
 +	return false;
 +}
 +
- static int nft_symhash_dump(struct sk_buff *skb,
- 			    const struct nft_expr *expr)
- {
-@@ -185,6 +195,30 @@ static int nft_symhash_dump(struct sk_buff *skb,
- 	return -1;
- }
- 
-+static bool nft_symhash_reduce(struct nft_regs_track *track,
-+			       const struct nft_expr *expr)
-+{
-+	struct nft_symhash *priv = nft_expr_priv(expr);
-+	struct nft_symhash *symhash;
-+
-+	if (!nft_reg_track_cmp(track, expr, priv->dreg)) {
-+		nft_reg_track_update(track, expr, priv->dreg, sizeof(u32));
-+		return false;
-+	}
-+
-+	symhash = nft_expr_priv(track->regs[priv->dreg].selector);
-+	if (priv->offset != symhash->offset ||
-+	    priv->modulus != symhash->modulus) {
-+		nft_reg_track_update(track, expr, priv->dreg, sizeof(u32));
-+		return false;
-+	}
-+
-+	if (!track->regs[priv->dreg].bitwise)
-+		return true;
-+
-+	return false;
-+}
-+
- static struct nft_expr_type nft_hash_type;
- static const struct nft_expr_ops nft_jhash_ops = {
- 	.type		= &nft_hash_type,
-@@ -192,6 +226,7 @@ static const struct nft_expr_ops nft_jhash_ops = {
- 	.eval		= nft_jhash_eval,
- 	.init		= nft_jhash_init,
- 	.dump		= nft_jhash_dump,
-+	.reduce		= nft_jhash_reduce,
+ static const struct nft_expr_ops nft_imm_ops = {
+ 	.type		= &nft_imm_type,
+ 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_immediate_expr)),
+@@ -233,6 +244,7 @@ static const struct nft_expr_ops nft_imm_ops = {
+ 	.destroy	= nft_immediate_destroy,
+ 	.dump		= nft_immediate_dump,
+ 	.validate	= nft_immediate_validate,
++	.reduce		= nft_immediate_reduce,
+ 	.offload	= nft_immediate_offload,
+ 	.offload_action	= nft_immediate_offload_action,
  };
- 
- static const struct nft_expr_ops nft_symhash_ops = {
-@@ -200,6 +235,7 @@ static const struct nft_expr_ops nft_symhash_ops = {
- 	.eval		= nft_symhash_eval,
- 	.init		= nft_symhash_init,
- 	.dump		= nft_symhash_dump,
-+	.reduce		= nft_symhash_reduce,
- };
- 
- static const struct nft_expr_ops *
 -- 
 2.30.2
 
