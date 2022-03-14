@@ -2,139 +2,79 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEB64D8AB1
-	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Mar 2022 18:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7B84D8FE7
+	for <lists+netfilter-devel@lfdr.de>; Mon, 14 Mar 2022 23:54:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243274AbiCNRYj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 14 Mar 2022 13:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
+        id S238415AbiCNWz4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 14 Mar 2022 18:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243277AbiCNRYg (ORCPT
+        with ESMTP id S237538AbiCNWzz (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 14 Mar 2022 13:24:36 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2C7AD34BBD
-        for <netfilter-devel@vger.kernel.org>; Mon, 14 Mar 2022 10:23:26 -0700 (PDT)
-Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id DA3C863000
-        for <netfilter-devel@vger.kernel.org>; Mon, 14 Mar 2022 18:21:09 +0100 (CET)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,v3 14/14] netfilter: nft_exthdr: add reduce support
-Date:   Mon, 14 Mar 2022 18:23:13 +0100
-Message-Id: <20220314172313.63348-15-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220314172313.63348-1-pablo@netfilter.org>
-References: <20220314172313.63348-1-pablo@netfilter.org>
+        Mon, 14 Mar 2022 18:55:55 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC61113EAD;
+        Mon, 14 Mar 2022 15:54:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E6BBDB80E83;
+        Mon, 14 Mar 2022 22:54:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DCA0C340E9;
+        Mon, 14 Mar 2022 22:54:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647298481;
+        bh=NKyyDGoQqJeis8/QLo7gKyhbf8RrHnii74dSpqBoldo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Prn2BJhDfjCBNqcaTyLhkYrySAwFJhz9qEZozPch2QbN5Uae9EqqCztFm8Tw09Bt/
+         DtqC96bswREOLv2OmYmBECA0nySiIwrK8KJDZs6VGntX6M4M3iXqdSRRFrC3V/J448
+         pFOg/2jjDcLCx4D+NWIGwPZPZ+SwC67W5e5EGd6izY/Oq2NrW8gQucUlbzfL+cMa38
+         /989DBrtVNlbR+Au9J1YK3zm6v7DnKxNdogIcmCTLenTJnpntn9gQKJtMQSxxRWIuC
+         IkeCl+kqSatbOEsJfV1S3adDyxRuUFf9bG6UyTOfFU/A9LOaBtk3nSAGcOBgFPeNM0
+         A05/JkN0XkCIg==
+Date:   Mon, 14 Mar 2022 15:54:40 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH net 0/3] Netfilter fixes for net
+Message-ID: <20220314155440.33149b87@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20220312220315.64531-1-pablo@netfilter.org>
+References: <20220312220315.64531-1-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+On Sat, 12 Mar 2022 23:03:12 +0100 Pablo Neira Ayuso wrote:
+> 1) Revert port remap to mitigate shadowing service ports, this is causing
+>    problems in existing setups and this mitigation can be achieved with
+>    explicit ruleset, eg.
+> 
+> 	... tcp sport < 16386 tcp dport >= 32768 masquerade random
+> 
+>   This patches provided a built-in policy similar to the one described above.
+> 
+> 2) Disable register tracking infrastructure in nf_tables. Florian reported
+>    two issues:
+> 
+>    - Existing expressions with no implemented .reduce interface
+>      that causes data-store on register should cancel the tracking.
+>    - Register clobbering might be possible storing data on registers that
+>      are larger than 32-bits.
+> 
+>    This might lead to generating incorrect ruleset bytecode. These two
+>    issues are scheduled to be addressed in the next release cycle.
 
-Check if we can elide the load. Cancel if the new candidate
-isn't identical to previous store.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-v3: new in this series
-
- net/netfilter/nft_exthdr.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/net/netfilter/nft_exthdr.c b/net/netfilter/nft_exthdr.c
-index d2b9378164bb..22c3e05b52db 100644
---- a/net/netfilter/nft_exthdr.c
-+++ b/net/netfilter/nft_exthdr.c
-@@ -603,12 +603,40 @@ static int nft_exthdr_dump_strip(struct sk_buff *skb, const struct nft_expr *exp
- 	return nft_exthdr_dump_common(skb, priv);
- }
- 
-+static bool nft_exthdr_reduce(struct nft_regs_track *track,
-+			       const struct nft_expr *expr)
-+{
-+	const struct nft_exthdr *priv = nft_expr_priv(expr);
-+	const struct nft_exthdr *exthdr;
-+
-+	if (!nft_reg_track_cmp(track, expr, priv->dreg)) {
-+		nft_reg_track_update(track, expr, priv->dreg, priv->len);
-+		return false;
-+	}
-+
-+	exthdr = nft_expr_priv(track->regs[priv->dreg].selector);
-+	if (priv->type != exthdr->type ||
-+	    priv->op != exthdr->op ||
-+	    priv->flags != exthdr->flags ||
-+	    priv->offset != exthdr->offset ||
-+	    priv->len != exthdr->len) {
-+		nft_reg_track_update(track, expr, priv->dreg, priv->len);
-+		return false;
-+	}
-+
-+	if (!track->regs[priv->dreg].bitwise)
-+		return true;
-+
-+	return nft_expr_reduce_bitwise(track, expr);
-+}
-+
- static const struct nft_expr_ops nft_exthdr_ipv6_ops = {
- 	.type		= &nft_exthdr_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_exthdr)),
- 	.eval		= nft_exthdr_ipv6_eval,
- 	.init		= nft_exthdr_init,
- 	.dump		= nft_exthdr_dump,
-+	.reduce		= nft_exthdr_reduce,
- };
- 
- static const struct nft_expr_ops nft_exthdr_ipv4_ops = {
-@@ -617,6 +645,7 @@ static const struct nft_expr_ops nft_exthdr_ipv4_ops = {
- 	.eval		= nft_exthdr_ipv4_eval,
- 	.init		= nft_exthdr_ipv4_init,
- 	.dump		= nft_exthdr_dump,
-+	.reduce		= nft_exthdr_reduce,
- };
- 
- static const struct nft_expr_ops nft_exthdr_tcp_ops = {
-@@ -625,6 +654,7 @@ static const struct nft_expr_ops nft_exthdr_tcp_ops = {
- 	.eval		= nft_exthdr_tcp_eval,
- 	.init		= nft_exthdr_init,
- 	.dump		= nft_exthdr_dump,
-+	.reduce		= nft_exthdr_reduce,
- };
- 
- static const struct nft_expr_ops nft_exthdr_tcp_set_ops = {
-@@ -633,6 +663,7 @@ static const struct nft_expr_ops nft_exthdr_tcp_set_ops = {
- 	.eval		= nft_exthdr_tcp_set_eval,
- 	.init		= nft_exthdr_tcp_set_init,
- 	.dump		= nft_exthdr_dump_set,
-+	.reduce		= NFT_REDUCE_READONLY,
- };
- 
- static const struct nft_expr_ops nft_exthdr_tcp_strip_ops = {
-@@ -641,6 +672,7 @@ static const struct nft_expr_ops nft_exthdr_tcp_strip_ops = {
- 	.eval		= nft_exthdr_tcp_strip_eval,
- 	.init		= nft_exthdr_tcp_strip_init,
- 	.dump		= nft_exthdr_dump_strip,
-+	.reduce		= NFT_REDUCE_READONLY,
- };
- 
- static const struct nft_expr_ops nft_exthdr_sctp_ops = {
-@@ -649,6 +681,7 @@ static const struct nft_expr_ops nft_exthdr_sctp_ops = {
- 	.eval		= nft_exthdr_sctp_eval,
- 	.init		= nft_exthdr_init,
- 	.dump		= nft_exthdr_dump,
-+	.reduce		= nft_exthdr_reduce,
- };
- 
- static const struct nft_expr_ops *
--- 
-2.30.2
-
+Minor nit for the future - it'd still be useful to have Fixes tags even
+for reverts or current release fixes so that lowly backporters (myself
+included) do not have to dig into history to double confirm patches
+are not needed in the production kernels we maintain. Thanks!
