@@ -2,33 +2,38 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA874D975E
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Mar 2022 10:15:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C101C4D98A5
+	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Mar 2022 11:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346451AbiCOJQi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 15 Mar 2022 05:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
+        id S1345367AbiCOKYd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 15 Mar 2022 06:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346394AbiCOJQe (ORCPT
+        with ESMTP id S1347006AbiCOKYc (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 15 Mar 2022 05:16:34 -0400
+        Tue, 15 Mar 2022 06:24:32 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2EA274D9D8;
-        Tue, 15 Mar 2022 02:15:23 -0700 (PDT)
-Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id A6D626301A;
-        Tue, 15 Mar 2022 10:13:03 +0100 (CET)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B88E32612C
+        for <netfilter-devel@vger.kernel.org>; Tue, 15 Mar 2022 03:23:19 -0700 (PDT)
+Received: from netfilter.org (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 249686300F;
+        Tue, 15 Mar 2022 11:21:00 +0100 (CET)
+Date:   Tue, 15 Mar 2022 11:23:16 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH nf-next 6/6] netfilter: bridge: clean up some inconsistent indenting
-Date:   Tue, 15 Mar 2022 10:15:13 +0100
-Message-Id: <20220315091513.66544-7-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220315091513.66544-1-pablo@netfilter.org>
-References: <20220315091513.66544-1-pablo@netfilter.org>
+To:     Vlad Buslov <vladbu@nvidia.com>
+Cc:     netfilter-devel@vger.kernel.org, kadlec@netfilter.org,
+        fw@strlen.de, ozsh@nvidia.com, paulb@nvidia.com
+Subject: Re: [PATCH net-next 2/8] netfilter: introduce total count of hw
+ offloaded flow table entries
+Message-ID: <YjBpFDc+rOqhSPrW@salvia>
+References: <20220222151003.2136934-1-vladbu@nvidia.com>
+ <20220222151003.2136934-3-vladbu@nvidia.com>
+ <YiZ9fQ8oMSOn5Su2@salvia>
+ <87o82bug3d.fsf@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87o82bug3d.fsf@nvidia.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -38,33 +43,58 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Sat, Mar 12, 2022 at 08:56:49PM +0200, Vlad Buslov wrote:
+[...]
+> Hi Pablo,
+> 
+> Thanks for reviewing my code and sorry for the late reply.
+> 
+> We explored the approach you propose and found several issues with it.
+> First, the nice benefit of implementation in this patch is that having
+> counter increment in flow_offload_add() (and test in following patch)
+> completely avoids spamming the workqueue when the limit is reached which
+> is an important concern for slower embedded DPU cores. Second, it is not
+> possible to change it when IPS_HW_OFFLOAD_BIT is set at the very end of
+> flow_offload_work_add() function because in following patch we need to
+> verify that counter is in user-specified limit before attempting
+> offload. Third, changing the counter in wq tasks makes it hard to
+> balance correctly. Consider following cases:
+> 
+> - flow_offload_work_add() can be called arbitrary amount of times per
+>   flow due to refresh logic. However, any such flow is still deleted
+>   only once.
+> 
+> - flow_offload_work_del() can be called for flows that were never
+>   actually offloaded (it is called for flows that have NF_FLOW_HW bit
+>   that is unconditionally set before attempting to schedule offload task
+>   on wq).
+>
+> Counter balancing issues could maybe be solved by carefully
+> conditionally changing it based on current value IPS_HW_OFFLOAD_BIT, but
+> spamming the workqueue can't be prevented for such design.
+>
+> > That also moves the atomic would be away from the packet path.
+> 
+> I understand your concern. However, note that this atomic is normally
+> changed once for adding offloaded flow and once for removing it. The
+> code path is only executed per-packet in error cases where flow has
+> failed to offload and refresh is called repeatedly for same flow.
 
-Eliminate the follow smatch warning:
+Thanks for explaining.
 
-net/bridge/netfilter/nf_conntrack_bridge.c:385 nf_ct_bridge_confirm()
-warn: inconsistent indenting.
+There used to be in the code a list of pending flows to be offloaded.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/bridge/netfilter/nf_conntrack_bridge.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think it would be possible to restore such list and make it per-cpu,
+the idea is to add a new field to the flow_offload structure to
+annotate the cpu that needs to deal with this flow (same cpu deals
+with add/del/stats). The cpu field is set at flow creation time.
 
-diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
-index fdbed3158555..4a79d25c6391 100644
---- a/net/bridge/netfilter/nf_conntrack_bridge.c
-+++ b/net/bridge/netfilter/nf_conntrack_bridge.c
-@@ -380,7 +380,7 @@ static unsigned int nf_ct_bridge_confirm(struct sk_buff *skb)
- 		protoff = skb_network_offset(skb) + ip_hdrlen(skb);
- 		break;
- 	case htons(ETH_P_IPV6): {
--		 unsigned char pnum = ipv6_hdr(skb)->nexthdr;
-+		unsigned char pnum = ipv6_hdr(skb)->nexthdr;
- 		__be16 frag_off;
- 
- 		protoff = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &pnum,
--- 
-2.30.2
+Once there is one item, add work to the workqueue to that cpu.
+Meanwhile the workqueue does not have a chance, we keep adding more
+items to the workqueue.
 
+The workqueue handler then zaps the list of pending flows to be
+offloaded, it might have more than one single item in the list.
+
+So instead of three workqueues, we only have one. Scalability is
+achieved by fanning out flows over CPUs.
