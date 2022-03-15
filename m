@@ -2,72 +2,96 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE374D9ADA
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Mar 2022 13:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEF04D9C21
+	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Mar 2022 14:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243065AbiCOMGw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 15 Mar 2022 08:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44358 "EHLO
+        id S1348639AbiCON1v (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 15 Mar 2022 09:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238555AbiCOMGw (ORCPT
+        with ESMTP id S238908AbiCON1u (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 15 Mar 2022 08:06:52 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A814A52E75
-        for <netfilter-devel@vger.kernel.org>; Tue, 15 Mar 2022 05:05:40 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1nU5vm-0000Am-Ca
-        for netfilter-devel@vger.kernel.org; Tue, 15 Mar 2022 13:05:38 +0100
-Date:   Tue, 15 Mar 2022 13:05:38 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     netfilter-devel <netfilter-devel@vger.kernel.org>
-Subject: [RFC] conntrack event framework speedup
-Message-ID: <20220315120538.GB16569@breakpoint.cc>
+        Tue, 15 Mar 2022 09:27:50 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294FD3464B
+        for <netfilter-devel@vger.kernel.org>; Tue, 15 Mar 2022 06:26:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=p9UOxez9TPbBI5cmkzjKTLHNk6mj5nWyX8OgaZxFt+M=; b=T30YDlVW2H4fssNNPjp1vXctb/
+        IRV9tl+DoJlq92PM9cRTqhXM455+/C8kT5yNIG6kppW1dMfJtXpElqCM6+iKQpPPXu7ZDbJ12q5yW
+        2ixSfL4PhwYkMOBNlD/ygXaqE5C1eIRxmc4gMr5UKh4/6ppPvKS92u8T12QP3zuurqXTj7wwgWueO
+        OnFJZLLVw9XLBCkJoxvP9lqi7PjU/jNPZEgvvqT+N2/rag3QyeRXiLYZmLlM1XmRwvYVj5W7nJRJl
+        gdyUiFTVfhncs255rrdrLWdoR047oByBcQEnNN+qMP939ec01tw46Kc2rrR+jAEIkDYTjgkF/JeSC
+        LwItkhZQ==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1nU7C9-0000rt-KT; Tue, 15 Mar 2022 14:26:37 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org,
+        Etienne <champetier.etienne@gmail.com>
+Subject: [iptables PATCH 0/5] Fixes for static builds
+Date:   Tue, 15 Mar 2022 14:26:14 +0100
+Message-Id: <20220315132619.20256-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
+This series formally submits a slightly modified version of the patch
+attached to nfbz#1593 in patch 3. In addition to that:
 
-Due to net.netfilter.nf_conntrack_events=1 we eat some uncessesary
-overhead:
+Patch 1 is pure collateral and unrelated to the remaining series.
 
-1. allocation of new conntrack entries needs to alloc ct->ext
-2. inverse for deletion/free.
-3. Because the ctnetlink module is typically active, each packet will
-   end up calling __nf_conntrack_eventmask_report via nf_confirm() and
-   then in ctnetlink only to find that we have no listeners
-   (and we can't call nfnetlink_has_listeners() from conntrack because
-    that would yield a dependency of conntrack to nfnetlink).
+Patch 2 simplifies the compile-time conditional init-calls a bit. Done
+before the actual fix to avoid adding #ifdefs only to remove them again
+in the same series.
 
-I would propose to add minimal conntrack specific code
-to nfnetlink, namely, to add bind()(/unbind() calls that inc/dec a
-counter for each ctnetlink event listener/socket.
-If counter becomes nonzero, flip a bit in struct net.
+Patch 3 Fixes static builds of arp- and ebtables-nft, kindly provided by
+Ettiene and slightly adjusted by me.
 
-This would allow us to do the following:
+Patch 4 holds a mini-review of the resulting init_extensions*() call
+sites.
 
-add new net.netfilter.nf_conntrack_events default mode: 2, autodetect.
-in nfnetlink bind, inc pernet counter when event group is bound.
-in nfnetlink unbind, dec pernet counter when event group is unbound.
-in init_conntrack() allocate the event cache extension only if
- a) nf_conntrack_events == 1, or
- b) nf_conntrack_events == 2 and pernet counter is nonzero.
+Patch 5 fixes shell testsuite for use with static builds.
 
-Extend nf_confirm() to check of the pernet counter before
-call to __nf_conntrack_eventmask_report().
+Etienne (1):
+  xtables: Call init_extensions{,a,b}() for static builds
 
-If nobody spots a problem with this idea I'd start to work on
-a prototype.
+Phil Sutter (4):
+  libxtables: Fix for warning in xtables_ipmask_to_numeric
+  Simplify static build extension loading
+  nft: Review static extension loading
+  tests: shell: Fix 0004-return-codes_0 for static builds
 
-Thanks.
+ include/xtables.h                                  |  9 +++++++++
+ iptables/ip6tables-standalone.c                    |  3 ---
+ iptables/iptables-restore.c                        |  4 ----
+ iptables/iptables-save.c                           |  4 ----
+ iptables/iptables-standalone.c                     |  2 --
+ .../shell/testcases/iptables/0004-return-codes_0   |  2 +-
+ iptables/xtables-arp.c                             |  4 +---
+ iptables/xtables-eb.c                              |  4 +---
+ iptables/xtables-monitor.c                         |  4 ++--
+ iptables/xtables-restore.c                         | 10 ++++++----
+ iptables/xtables-save.c                            | 10 ++++++----
+ iptables/xtables-standalone.c                      | 10 ++++++----
+ iptables/xtables-translate.c                       | 14 ++++++++------
+ libxtables/xtables.c                               |  2 +-
+ 14 files changed, 41 insertions(+), 41 deletions(-)
+
+-- 
+2.34.1
+
