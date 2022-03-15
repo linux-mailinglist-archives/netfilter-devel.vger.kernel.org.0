@@ -2,76 +2,102 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B92F4D903D
-	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Mar 2022 00:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C97FE4D9759
+	for <lists+netfilter-devel@lfdr.de>; Tue, 15 Mar 2022 10:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241405AbiCNXTg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 14 Mar 2022 19:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
+        id S1346426AbiCOJQf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 15 Mar 2022 05:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343659AbiCNXTf (ORCPT
+        with ESMTP id S1346117AbiCOJQd (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 14 Mar 2022 19:19:35 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1493EAB1;
-        Mon, 14 Mar 2022 16:18:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 77DCDB8105A;
-        Mon, 14 Mar 2022 23:18:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06D44C340E9;
-        Mon, 14 Mar 2022 23:18:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647299901;
-        bh=rjNcPAQdK0WB+3bxsp1cff4tqXm1d3KBODgmzGOot4Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=du+XF+j8lGCTXYbsWNazkOCMTHw6lItUGxxC3XD8pAnICdVnLLWb0cotH1Wm2pOp0
-         Z6wo+gqT2e/IA4PCEcb29fWEsyZAsJw3ywWprx79K/P8mskU96g8Ed8+nIaLevJBCY
-         8xwE/2RebjrJTVN9GcykiCCBWK6DN09j5YBk3RlTSlavPzrlEe2EkuMBl03b//1cZ4
-         mTLZCe0s0ThngRttLSpT2rAfOIifHJMDDUY39/1s7L73DH5R8uijnlTKBKZ15ALntQ
-         xej3Vao29q2WrVcEaUiA3L2EMZ4odgvB9ND8bEEj7/CcLuckEJyaqMXpPoErgBXOEC
-         mepq3EM2cPUKA==
-Date:   Mon, 14 Mar 2022 16:18:20 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net 0/3] Netfilter fixes for net
-Message-ID: <20220314161820.1c783f28@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20220314230719.GA16569@breakpoint.cc>
-References: <20220312220315.64531-1-pablo@netfilter.org>
-        <20220314155440.33149b87@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20220314230719.GA16569@breakpoint.cc>
+        Tue, 15 Mar 2022 05:16:33 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 405564BBAF;
+        Tue, 15 Mar 2022 02:15:21 -0700 (PDT)
+Received: from localhost.localdomain (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 431D862FFF;
+        Tue, 15 Mar 2022 10:12:58 +0100 (CET)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
+Subject: [PATCH nf-next 0/6] Netfilter updates for net-next
+Date:   Tue, 15 Mar 2022 10:15:07 +0100
+Message-Id: <20220315091513.66544-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, 15 Mar 2022 00:07:19 +0100 Florian Westphal wrote:
-> Jakub Kicinski <kuba@kernel.org> wrote:
-> > Minor nit for the future - it'd still be useful to have Fixes tags even
-> > for reverts or current release fixes so that lowly backporters (myself
-> > included) do not have to dig into history to double confirm patches
-> > are not needed in the production kernels we maintain. Thanks!  
-> 
-> Understood, will do so next time.
-> 
-> For the record, the tags would have been:
-> 
-> Fixes: 878aed8db324 ("netfilter: nat: force port remap to prevent shadowing well-known ports")
-> Fixes: 4a6fbdd801e8 ("netfilter: conntrack: tag conntracks picked up in local out hook")
-> Fixes: 12e4ecfa244b ("netfilter: nf_tables: add register tracking infrastructure")
-> 
-> ... all were merged v5.17-rc1 onwards.
+Hi,
 
-Thanks!
+The following patchset contains Netfilter updates for net-next:
+
+1) Revert CHECKSUM_UNNECESSARY for UDP packet from conntrack.
+
+2) Reject unsupported families when creating tables, from Phil Sutter.
+
+3) GRE support for the flowtable, from Toshiaki Makita.
+
+4) Add GRE offload support for act_ct, also from Toshiaki.
+
+5) Update mlx5 driver to support for GRE flowtable offload,
+   from Toshiaki Makita.
+
+6) Oneliner to clean up incorrect indentation in nf_conntrack_bridge,
+   from Jiapeng Chong.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git
+
+Special request of mine: Would it be possible to merge net into net-next?
+
+Many thanks
+
+----------------------------------------------------------------
+
+The following changes since commit ef132dc40a28e07ba10b707b505781ffca46b97f:
+
+  Merge branch 'nfc-llcp-cleanups' (2022-03-03 10:43:37 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git HEAD
+
+for you to fetch changes up to 334ff12284fc56bdc5af6d310c6381d96906f5a0:
+
+  netfilter: bridge: clean up some inconsistent indenting (2022-03-07 12:42:37 +0100)
+
+----------------------------------------------------------------
+Florian Westphal (1):
+      Revert "netfilter: conntrack: mark UDP zero checksum as CHECKSUM_UNNECESSARY"
+
+Jiapeng Chong (1):
+      netfilter: bridge: clean up some inconsistent indenting
+
+Phil Sutter (1):
+      netfilter: nf_tables: Reject tables of unsupported family
+
+Toshiaki Makita (3):
+      netfilter: flowtable: Support GRE
+      act_ct: Support GRE offload
+      net/mlx5: Support GRE conntrack offload
+
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c |  21 ++--
+ net/bridge/netfilter/nf_conntrack_bridge.c         |   2 +-
+ net/netfilter/nf_conntrack_proto_udp.c             |   4 +-
+ net/netfilter/nf_flow_table_core.c                 |  10 +-
+ net/netfilter/nf_flow_table_ip.c                   |  62 +++++++++--
+ net/netfilter/nf_flow_table_offload.c              |  22 ++--
+ net/netfilter/nf_tables_api.c                      |  27 +++++
+ net/netfilter/nft_flow_offload.c                   |  13 +++
+ net/sched/act_ct.c                                 | 115 ++++++++++++++++-----
+ 9 files changed, 223 insertions(+), 53 deletions(-)
