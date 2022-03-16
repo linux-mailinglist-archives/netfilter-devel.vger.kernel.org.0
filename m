@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1654DB789
-	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Mar 2022 18:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC9A4DB78B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Mar 2022 18:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354392AbiCPRqH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 16 Mar 2022 13:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36764 "EHLO
+        id S1344405AbiCPRqT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 16 Mar 2022 13:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344405AbiCPRqH (ORCPT
+        with ESMTP id S237760AbiCPRqS (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 16 Mar 2022 13:46:07 -0400
+        Wed, 16 Mar 2022 13:46:18 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E781531370
-        for <netfilter-devel@vger.kernel.org>; Wed, 16 Mar 2022 10:44:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D1F43EEC
+        for <netfilter-devel@vger.kernel.org>; Wed, 16 Mar 2022 10:45:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=xlKh2LhBnMhR4PAAUOtdGnToZWL/AC1w+IyZZpCxY5Y=; b=DXRXmR62Le1hiroP2ER3hiKYdy
-        poWMhAA5hTb/Rji7REi7+gg3HS5/GO9q6srqwVq73YRJejGtNk+GAn9SNHl6T/IJ1Gk/Kjr+21vlP
-        7y9EGGTeOtMMGQ2QTwwjQFWkU4aowL4wjJX+t1GmraY/T5GV+vFFqMvtwtD8ooGM4x2DH2JBcWM39
-        VDv6/rBbdrCS6XWtB55VBYxOnTUCaxBAqkg1DEdQLIfqNyXY4v1UUjQpSRTNpLgYHJXtEmVHVg2DX
-        ChaiQx6A9MbhIfDLK5v1LVbRFDD9xG49My+gIj+6luh5l+J9D/wKt9BIJyBMZCtKIuQexcDgMQTzF
-        0orkTGiQ==;
+        bh=RJkl32HwgTJxMFH92/IjtRlj9H/TKM/+aQI/CkctzYk=; b=XPQtw8mGVN/cjM3TZ3zElRAs/L
+        LHgryZkI4RQ3PEcc0JNFPLG/WRlljIS5nrfD/9pF77Qpk+kKt4mnjYdh6APX3L6Zp0qox1rOyeZGb
+        PURH2dv3q8AVOreDYr+7RmfOcUMHqIaRxnglau1iIQbnDpEIZMhPJN4QrNdQpQ4AB3FO8SGG84F9N
+        C7oZKFl8KphGKvGz52e15AOZpY9BB3Kc/4lAigpL5mGMEW99++3Tkc6nmcBEqVwB5pIC5JcMc6+HQ
+        76UN5qe2pvyOWLxwuXRgcaT8R1prg79PfUViFyAQBQNs9IeVq6C/gXoCymZu4HsO8Nvu8pDj7FAIE
+        6Z3PKI3g==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1nUXhb-0000OT-Cy; Wed, 16 Mar 2022 18:44:51 +0100
+        id 1nUXhl-0000QD-VQ; Wed, 16 Mar 2022 18:45:02 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 1/3] nft: Reject standard targets as chain names when restoring
-Date:   Wed, 16 Mar 2022 18:44:41 +0100
-Message-Id: <20220316174443.1930-2-phil@nwl.cc>
+Subject: [iptables PATCH 2/3] libxtables: Implement notargets hash table
+Date:   Wed, 16 Mar 2022 18:44:42 +0100
+Message-Id: <20220316174443.1930-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220316174443.1930-1-phil@nwl.cc>
 References: <20220316174443.1930-1-phil@nwl.cc>
@@ -51,72 +51,136 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Reuse parse_chain() called from do_parse() for '-N' and rename it for a
-better description of what it does.
-
-Note that by itself, this patch will likely kill iptables-restore
-performance for big rulesets due to the extra extension lookup for chain
-lines. A following patch announcing those chains to libxtables will
-alleviate that.
+Target lookup is relatively costly due to the filesystem access. Avoid
+this overhead in huge rulesets which contain many chain jumps by caching
+the failed lookups into a hashtable for later.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xshared.c         | 4 ++--
- iptables/xshared.h         | 2 +-
- iptables/xtables-restore.c | 5 +----
- 3 files changed, 4 insertions(+), 7 deletions(-)
+ libxtables/xtables.c | 75 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 75 insertions(+)
 
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 43321d3b5358c..00828c8ae87d9 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -1031,7 +1031,7 @@ set_option(unsigned int *options, unsigned int option, u_int16_t *invflg,
+diff --git a/libxtables/xtables.c b/libxtables/xtables.c
+index 094cbd87ec1ed..49790046a79d8 100644
+--- a/libxtables/xtables.c
++++ b/libxtables/xtables.c
+@@ -49,6 +49,7 @@
+ #include <linux/netfilter_ipv4/ip_tables.h>
+ #include <linux/netfilter_ipv6/ip6_tables.h>
+ #include <libiptc/libxtc.h>
++#include <libiptc/linux_list.h>
+ 
+ #ifndef NO_SHARED_LIBS
+ #include <dlfcn.h>
+@@ -255,6 +256,71 @@ static void dlreg_free(void)
+ }
+ #endif
+ 
++struct notarget {
++	struct hlist_node node;
++	char name[];
++};
++
++#define NOTARGET_HSIZE	512
++static struct hlist_head notargets[NOTARGET_HSIZE];
++
++static void notargets_hlist_init(void)
++{
++	int i;
++
++	for (i = 0; i < NOTARGET_HSIZE; i++)
++		INIT_HLIST_HEAD(&notargets[i]);
++}
++
++static void notargets_hlist_free(void)
++{
++	struct hlist_node *pos, *n;
++	struct notarget *cur;
++	int i;
++
++	for (i = 0; i < NOTARGET_HSIZE; i++) {
++		hlist_for_each_entry_safe(cur, pos, n, &notargets[i], node) {
++			hlist_del(&cur->node);
++			free(cur);
++		}
++	}
++}
++
++static uint32_t djb_hash(const char *key)
++{
++	uint32_t i, hash = 5381;
++
++	for (i = 0; i < strlen(key); i++)
++		hash = ((hash << 5) + hash) + key[i];
++
++	return hash;
++}
++
++static struct notarget *notargets_hlist_lookup(const char *name)
++{
++	uint32_t key = djb_hash(name) % NOTARGET_HSIZE;
++	struct hlist_node *node;
++	struct notarget *cur;
++
++	hlist_for_each_entry(cur, node, &notargets[key], node) {
++		if (!strcmp(name, cur->name))
++			return cur;
++	}
++	return NULL;
++}
++
++static void notargets_hlist_insert(const char *name)
++{
++	struct notarget *cur;
++
++	if (!name)
++		return;
++
++	cur = xtables_malloc(sizeof(*cur) + strlen(name) + 1);
++	strcpy(cur->name, name);
++	hlist_add_head(&cur->node, &notargets[djb_hash(name) % NOTARGET_HSIZE]);
++}
++
+ void xtables_init(void)
+ {
+ 	/* xtables cannot be used with setuid in a safe way. */
+@@ -284,6 +350,8 @@ void xtables_init(void)
+ 		return;
  	}
+ 	xtables_libdir = XTABLES_LIBDIR;
++
++	notargets_hlist_init();
  }
  
--void parse_chain(const char *chainname)
-+void assert_valid_chain_name(const char *chainname)
- {
- 	const char *ptr;
+ void xtables_fini(void)
+@@ -291,6 +359,7 @@ void xtables_fini(void)
+ #ifndef NO_SHARED_LIBS
+ 	dlreg_free();
+ #endif
++	notargets_hlist_free();
+ }
  
-@@ -1412,7 +1412,7 @@ void do_parse(int argc, char *argv[],
- 			break;
+ void xtables_set_nfproto(uint8_t nfproto)
+@@ -829,6 +898,10 @@ xtables_find_target(const char *name, enum xtables_tryload tryload)
+ 	    || strcmp(name, XTC_LABEL_QUEUE) == 0
+ 	    || strcmp(name, XTC_LABEL_RETURN) == 0)
+ 		name = "standard";
++	/* known non-target? */
++	else if (notargets_hlist_lookup(name) &&
++		 tryload != XTF_LOAD_MUST_SUCCEED)
++		return NULL;
  
- 		case 'N':
--			parse_chain(optarg);
-+			assert_valid_chain_name(optarg);
- 			add_command(&p->command, CMD_NEW_CHAIN, CMD_NONE,
- 				    invert);
- 			p->chain = optarg;
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 0de0e12e5a922..ca761ee7246ad 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -244,7 +244,7 @@ char cmd2char(int option);
- void add_command(unsigned int *cmd, const int newcmd,
- 		 const int othercmds, int invert);
- int parse_rulenumber(const char *rule);
--void parse_chain(const char *chainname);
-+void assert_valid_chain_name(const char *chainname);
+ 	/* Trigger delayed initialization */
+ 	for (dptr = &xtables_pending_targets; *dptr; ) {
+@@ -894,6 +967,8 @@ xtables_find_target(const char *name, enum xtables_tryload tryload)
  
- void generic_opt_check(int command, int options);
- char opt2char(int option);
-diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index 81b25a43c9a04..c94770a0175eb 100644
---- a/iptables/xtables-restore.c
-+++ b/iptables/xtables-restore.c
-@@ -155,10 +155,7 @@ static void xtables_restore_parse_line(struct nft_handle *h,
- 				   "%s: line %u chain name invalid\n",
- 				   xt_params->program_name, line);
+ 	if (ptr)
+ 		ptr->used = 1;
++	else
++		notargets_hlist_insert(name);
  
--		if (strlen(chain) >= XT_EXTENSION_MAXNAMELEN)
--			xtables_error(PARAMETER_PROBLEM,
--				   "Invalid chain name `%s' (%u chars max)",
--				   chain, XT_EXTENSION_MAXNAMELEN - 1);
-+		assert_valid_chain_name(chain);
- 
- 		policy = strtok(NULL, " \t\n");
- 		DEBUGP("line %u, policy '%s'\n", line, policy);
+ 	return ptr;
+ }
 -- 
 2.34.1
 
