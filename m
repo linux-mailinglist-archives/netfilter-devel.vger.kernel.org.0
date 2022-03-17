@@ -2,39 +2,30 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1728B4DC261
-	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Mar 2022 10:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1BB4DC5E9
+	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Mar 2022 13:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbiCQJPD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 17 Mar 2022 05:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        id S233613AbiCQMlA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 17 Mar 2022 08:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbiCQJPD (ORCPT
+        with ESMTP id S229757AbiCQMk7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 17 Mar 2022 05:15:03 -0400
+        Thu, 17 Mar 2022 08:40:59 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 54DF1ECDA9
-        for <netfilter-devel@vger.kernel.org>; Thu, 17 Mar 2022 02:13:46 -0700 (PDT)
-Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 20A1862BD3;
-        Thu, 17 Mar 2022 10:11:19 +0100 (CET)
-Date:   Thu, 17 Mar 2022 10:13:43 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 054D3E7F42
+        for <netfilter-devel@vger.kernel.org>; Thu, 17 Mar 2022 05:39:41 -0700 (PDT)
+Received: from localhost.localdomain (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 6DB0E60743
+        for <netfilter-devel@vger.kernel.org>; Thu, 17 Mar 2022 13:37:14 +0100 (CET)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [RFC] conntrack event framework speedup
-Message-ID: <YjL7x3huUZVAKE2y@salvia>
-References: <20220315120538.GB16569@breakpoint.cc>
- <YjEFXmDfNN6k63+H@salvia>
- <20220315214121.GA9936@breakpoint.cc>
- <YjEK9RsgJuONGyTI@salvia>
- <20220315220748.GC9936@breakpoint.cc>
- <YjGp7pPqw8EzACDL@salvia>
- <20220316121846.GD9936@breakpoint.cc>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf 1/2] netfilter: nf_tables: registers should not go over NFT_REG32_NUM
+Date:   Thu, 17 Mar 2022 13:39:36 +0100
+Message-Id: <20220317123937.21345-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220316121846.GD9936@breakpoint.cc>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -44,78 +35,70 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Mar 16, 2022 at 01:18:46PM +0100, Florian Westphal wrote:
-> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > > Hmmm, I don't think that will work.  The -j CT thing can be used to
-> > > enable event reporting (including the event type) for particular flows
-> > > only.
-> > 
-> > IIRC, it allows to filter what events are of your interest in a global
-> > fashion.
-> > 
-> > > E.g. users might do:
-> > > 
-> > > nf_conntrack_events=0
-> > > and then only enable destroy events for tcp traffic on port 22, 80, 443
-> > > (arbitrary example).
-> > > 
-> > > If I bump the listen-count, then they will see event reports for
-> > > for udp timeouts and everything else.
-> > 
-> > Are you sure? -j CT sets on the event mask. The explicit -j CT rules
-> > means userspace want to listen to events, but only those that you
-> > specified. So it is the same as having a userspace process to listen,
-> > but the global filtering applies.
-> 
-> The filtering isn't global, its per flow.  Provided
-> nf_conntrack_events=0, then only flows where the first packet matched
-> a -j CT rule will generate events, AND only those events that were
-> specified in its event mask.
-> 
-> So, flows that did not match any CT rule never generate an event, and,
-> therefore, changes to the kernel should not auto-add the extension for
-> them.
-> 
-> I don't see how that mechanism can be preserved without the ability to
-> set nf_conntrack_events=0.
-> 
-> When a new conntrack is generated, the test is (in current kernels):
-> 
-> 'add the event cache extension if the template has an event cache
->  extension OR if the sysctl is enabled'.
-> 
-> So, changing it to
-> 'add the event cache extension if the template has an event cache
->  extension OR if we have a listener' is not the same, unfortunately.
-> 
-> > My understanding is that the listen-count tells that packets should
-> > follow ct netlink event path.
-> 
-> Yes, thats correct, it tells kernel there is an active subscriber for
-> events.
-> 
-> > What am I missing?
-> 
-> I can't tell the following two cases apart:
-> 
-> 1. templates are active and user wants events ONLY for the chosen flow,
->    e.g. tcp.
-> 2. templates are active and user wants only particular events for the
->    chosen flows, but all events for the rest.
-> 
-> 
-> 1) is done by templates + setting the sysctl to 0.
-> 2) is done by templates + setting the sysctl to 1.
-> 
-> With 'assume 1 if listener active', we can only provide functionality of 2).
-> 
-> I finished testing of a prototype and it appears that functionality is ok,
-> I've pushed this here:
-> https://git.breakpoint.cc/cgit/fw/nf-next.git/log/?h=nf_ct_events_02
-> 
-> (only the top-most 4 changes are relevant).
+Bail out in case userspace uses registers over maximum number of register.
 
-Thanks for explaining.
+Fixes: 49499c3e6e18 ("netfilter: nf_tables: switch registers to 32 bit addressing")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_tables_api.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-One more question: Why do we need the nf_conntrack_events=2? What is
-the reason to not use this as default (ie. 1)?
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index d71a33ae39b3..829ecd310ae6 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -9275,17 +9275,24 @@ int nft_parse_u32_check(const struct nlattr *attr, int max, u32 *dest)
+ }
+ EXPORT_SYMBOL_GPL(nft_parse_u32_check);
+ 
+-static unsigned int nft_parse_register(const struct nlattr *attr)
++static unsigned int nft_parse_register(const struct nlattr *attr, u32 *preg)
+ {
+ 	unsigned int reg;
+ 
+ 	reg = ntohl(nla_get_be32(attr));
++	if (reg >= NFT_REG32_NUM)
++		return -ERANGE;
++
+ 	switch (reg) {
+ 	case NFT_REG_VERDICT...NFT_REG_4:
+-		return reg * NFT_REG_SIZE / NFT_REG32_SIZE;
++		*preg = reg * NFT_REG_SIZE / NFT_REG32_SIZE;
++		break;
+ 	default:
+-		return reg + NFT_REG_SIZE / NFT_REG32_SIZE - NFT_REG32_00;
++		*preg = reg + NFT_REG_SIZE / NFT_REG32_SIZE - NFT_REG32_00;
++		break;
+ 	}
++
++	return 0;
+ }
+ 
+ /**
+@@ -9327,7 +9334,10 @@ int nft_parse_register_load(const struct nlattr *attr, u8 *sreg, u32 len)
+ 	u32 reg;
+ 	int err;
+ 
+-	reg = nft_parse_register(attr);
++	err = nft_parse_register(attr, &reg);
++	if (err < 0)
++		return err;
++
+ 	err = nft_validate_register_load(reg, len);
+ 	if (err < 0)
+ 		return err;
+@@ -9382,7 +9392,10 @@ int nft_parse_register_store(const struct nft_ctx *ctx,
+ 	int err;
+ 	u32 reg;
+ 
+-	reg = nft_parse_register(attr);
++	err = nft_parse_register(attr, &reg);
++	if (err < 0)
++		return err;
++
+ 	err = nft_validate_register_store(ctx, reg, data, type, len);
+ 	if (err < 0)
+ 		return err;
+-- 
+2.30.2
+
