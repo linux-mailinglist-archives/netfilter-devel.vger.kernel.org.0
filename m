@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF51E4E719C
-	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Mar 2022 11:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF9F4E71A3
+	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Mar 2022 11:50:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241781AbiCYKvt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 25 Mar 2022 06:51:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
+        id S1350532AbiCYKwW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 25 Mar 2022 06:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352220AbiCYKvq (ORCPT
+        with ESMTP id S1350623AbiCYKwV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 25 Mar 2022 06:51:46 -0400
+        Fri, 25 Mar 2022 06:52:21 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FE2369C0
-        for <netfilter-devel@vger.kernel.org>; Fri, 25 Mar 2022 03:50:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A356CC527
+        for <netfilter-devel@vger.kernel.org>; Fri, 25 Mar 2022 03:50:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=HkrW2kMcsPQ2aIowPqzq4BuxaSAUVQZN9sNO5jQ9kGk=; b=JSU0XXWIGS7g/92vpZ1Vnm9XlU
-        NuQpNsKkfZSCW8QmQK9CdRm9W5fxt0q37sFWFtEC8QZeIymDlZ5++Tt6PNltL+vkn6A8yy8B6Czxy
-        a5NE8IXkRzTR5dBtR41uJtUSPGueZdaiY1hVmz8zR66aORaki3jRyC4ABvBdJrDn93LxnedoL6+3m
-        y7V1KVtU52vdSC3lV0/GhD0DGSQIJLNOb0pL4Zh/vxDtnCU3tAYuT+mCQVPPqG9mVGaw+dNXQoAjq
-        Fp8t1MwNR50qWOWUtCa8SgtU9+QRAkSgyJc2uE6gSSxL84qm856BgNjvWBBSeqJ6F2XufaQywbcB9
-        lglYL6vw==;
+        bh=a8nqq7Hysg+kbBp1hoJnYHEtbG4N5bBlPRy5AkGClNA=; b=W6Kbpf4Tq3cERBjMWaPCL8WbLN
+        WfrcNF9/gVxc+5I7YcwHOmrAeJw0AxtJeCeR3NeYyishUE9xhU73kEkYMvtpXFxMBRlb4vVGOoW8m
+        zfE1DgiXDqelvWxeGvRNDz3xuZemPZTEbFIXihOV4ptI1LUssVxbll9/SM+9+peCXHYkaV6O+9aPh
+        0gEFNkJc96v6TdA4ovDkYaiOBm4sqmYmXLK37Owi8F3vd+YeNFFOJMhY0ZwxENLZxP6vQjPR4X5R3
+        Kg9hQm2uof6RGYFS4wM07bO7GtfLVLpCUvyOaIa9uPW8W9B88mnr3s0Df9R21jO01GZ4ynoRIU8i5
+        cJP+tOZQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1nXhW8-0007y0-Ej; Fri, 25 Mar 2022 11:50:04 +0100
+        id 1nXhWo-00081D-P2; Fri, 25 Mar 2022 11:50:46 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [conntrack-tools PATCH 2/8] cache: Fix features array allocation
-Date:   Fri, 25 Mar 2022 11:49:57 +0100
-Message-Id: <20220325105003.26621-3-phil@nwl.cc>
+Subject: [conntrack-tools PATCH 3/8] Fix potential buffer overrun in snprintf() calls
+Date:   Fri, 25 Mar 2022 11:49:58 +0100
+Message-Id: <20220325105003.26621-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220325105003.26621-1-phil@nwl.cc>
 References: <20220325105003.26621-1-phil@nwl.cc>
@@ -51,34 +51,47 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-struct cache::features is of type struct cache_feature **, allocate and
-populate accordingly.
+When consecutively printing into the same buffer at increasing offset,
+reduce buffer size passed to snprintf() to not defeat its size checking.
 
-Fixes: ad31f852c3454 ("initial import of the conntrack daemon to Netfilter SVN")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/cache.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/process.c | 2 +-
+ src/queue.c   | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/src/cache.c b/src/cache.c
-index 79a024f8b6bb0..9bc8d0f5bf34a 100644
---- a/src/cache.c
-+++ b/src/cache.c
-@@ -69,12 +69,12 @@ struct cache *cache_create(const char *name, enum cache_type type,
+diff --git a/src/process.c b/src/process.c
+index 3ddad5ffa7959..08598eeae84de 100644
+--- a/src/process.c
++++ b/src/process.c
+@@ -84,7 +84,7 @@ void fork_process_dump(int fd)
+ 	int size = 0;
  
- 	memcpy(c->feature_type, feature_type, sizeof(feature_type));
+ 	list_for_each_entry(this, &process_list, head) {
+-		size += snprintf(buf+size, sizeof(buf),
++		size += snprintf(buf + size, sizeof(buf) - size,
+ 				 "PID=%u type=%s\n",
+ 				 this->pid,
+ 				 this->type < CTD_PROC_MAX ?
+diff --git a/src/queue.c b/src/queue.c
+index 76425b18495b5..e94dc7c45d1fd 100644
+--- a/src/queue.c
++++ b/src/queue.c
+@@ -69,12 +69,12 @@ void queue_stats_show(int fd)
+ 	int size = 0;
+ 	char buf[512];
  
--	c->features = malloc(sizeof(struct cache_feature) * j);
-+	c->features = malloc(sizeof(struct cache_feature *) * j);
- 	if (!c->features) {
- 		free(c);
- 		return NULL;
- 	}
--	memcpy(c->features, feature_array, sizeof(struct cache_feature) * j);
-+	memcpy(c->features, feature_array, sizeof(struct cache_feature *) * j);
- 	c->num_features = j;
+-	size += snprintf(buf+size, sizeof(buf),
++	size += snprintf(buf + size, sizeof(buf) - size,
+ 			 "allocated queue nodes:\t\t%12u\n\n",
+ 			 qobjects_num);
  
- 	c->extra_offset = size;
+ 	list_for_each_entry(this, &queue_list, list) {
+-		size += snprintf(buf+size, sizeof(buf),
++		size += snprintf(buf + size, sizeof(buf) - size,
+ 				 "queue %s:\n"
+ 				 "current elements:\t\t%12u\n"
+ 				 "maximum elements:\t\t%12u\n"
 -- 
 2.34.1
 
