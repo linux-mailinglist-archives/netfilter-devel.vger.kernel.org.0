@@ -2,89 +2,99 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A77714E7C5C
-	for <lists+netfilter-devel@lfdr.de>; Sat, 26 Mar 2022 01:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0499E4E804F
+	for <lists+netfilter-devel@lfdr.de>; Sat, 26 Mar 2022 11:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbiCYRlE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 25 Mar 2022 13:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33618 "EHLO
+        id S232278AbiCZKLI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 26 Mar 2022 06:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbiCYRlE (ORCPT
+        with ESMTP id S230031AbiCZKLI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 25 Mar 2022 13:41:04 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4804D12926D
-        for <netfilter-devel@vger.kernel.org>; Fri, 25 Mar 2022 10:39:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=ijQt67gp01YJPbklirLcr/P/dRJObkSi+s2WAnuuPJA=; b=GiMuU08XKXiOtP86U5NGdpMoKM
-        wcC/JbWr9Z7OhpnVNPFjKGYYHeMt7CIXqtZ36UKB2guvC9/edJ/9ibYULjHNtxAnJH/hMfpNOyx9w
-        hcjMaK6Xsme6ttQ0Ey3iCAofh6OBD9NAUT53eUhjA2ub3HS5Arn6i4URoivyA7oDn2CsrvhypPR0x
-        ldImuyacrWPS1eclvcq4xmMQjIgJ7+4/nZ9XhlFcQMEIXSgukwP4tM0y/IbKlca2I7ckcuN5TTLWf
-        JWWOLl9RpVUzLA7EAvRL8Dq55MjmKUWNnyCNv/UZ394FnDC/nxLr5p9N/o8XVXlrMnLssi7SJbTxm
-        /42DdFfA==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1nXnpU-0004M8-8C; Fri, 25 Mar 2022 18:34:28 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [libnfnetlink PATCH 2/2] libnfnetlink: Check getsockname() return code
-Date:   Fri, 25 Mar 2022 18:34:26 +0100
-Message-Id: <20220325173426.11493-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220325173426.11493-1-phil@nwl.cc>
-References: <20220325173426.11493-1-phil@nwl.cc>
+        Sat, 26 Mar 2022 06:11:08 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0721EC71
+        for <netfilter-devel@vger.kernel.org>; Sat, 26 Mar 2022 03:09:32 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id d5so17126012lfj.9
+        for <netfilter-devel@vger.kernel.org>; Sat, 26 Mar 2022 03:09:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:from
+         :subject:content-transfer-encoding;
+        bh=Ejr7KK2dxrBOHlmLiNOb8ne6WScstQky9HgutUHWOUQ=;
+        b=FmNDXDuWteODlWclsl1imluf5pz7soJ6LS3b2Hgm1kHVvTB+5QWaRhwcN/jLiHt2xK
+         qJ928iXPBLl4pMjKzVeNaMJobQEnqhBFGgSY9EYDDMa2ccL9qDnBWgn2iIUNsSkL1BFa
+         f6ukdvHw075VtFNcITkUWVQ+3SBiUtpelvjcw3VTLTbAqSAXRMXkr6DP9Hbx9CKPJIqL
+         ghujZIWiTCfgz9aDSIU+fTz8mfodow7UrJMxDzsKA8+QSOATU5WSuSXDrIr7W8gKZPPl
+         o71WYSCdg+gxw1haarAl2yXqaMkbfZHURgH6cGwcQV3g79wYa2J7QHE08m3TC0+rllDQ
+         c9zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:from:subject:content-transfer-encoding;
+        bh=Ejr7KK2dxrBOHlmLiNOb8ne6WScstQky9HgutUHWOUQ=;
+        b=CD1ApoWSaBbx9RI/QdIW5RUimzJ4/i/VwKt69hEKLCkoLuVF9OWpFibAnlFtydBmPZ
+         fzMXMml+elzZDN9pQXdBZWEZbPLURzmEv+agCFJLMIiAIfLAIcEyIz7HNEO3LZypkUJH
+         y0afDH2W8ntpaaDpOMRqD/qZ2healFRPdGgMFpWgfZcUCh2bFq/KtMhISrsm428UkYj7
+         s9pOg/xLgVlDc3aasPhPMHYnIEud9HWgjbiBYAzOEVgnxi+39hET9S4EFYct0pWPu4Cj
+         XQz3b7QR6Ufx3sk/kr4Rwid/kW0wdI+vtaloWJ7643TB12YWhbGW7mjUTgq2VxmaJtJ3
+         9Uww==
+X-Gm-Message-State: AOAM530fMfWIa8Ckb5WEx/QkYWktQPvK69tLmTG0+obfUAIhmL1D4diD
+        Hs1SEF6A3HNtIcrApYE97v4w9xXo4lM=
+X-Google-Smtp-Source: ABdhPJwzr3Dl/mx20ndWEISySTeeczW6nlN4zfK9s2GwLiMKJ7WS2EfgRVdou3CIVOg03sn284/lgQ==
+X-Received: by 2002:a05:6512:1387:b0:44a:2d7b:adca with SMTP id p7-20020a056512138700b0044a2d7badcamr11261958lfa.680.1648289369338;
+        Sat, 26 Mar 2022 03:09:29 -0700 (PDT)
+Received: from [192.168.1.40] (91-159-150-194.elisa-laajakaista.fi. [91.159.150.194])
+        by smtp.gmail.com with ESMTPSA id h21-20020a0565123c9500b0044a34642bf4sm1011791lfv.7.2022.03.26.03.09.27
+        for <netfilter-devel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Mar 2022 03:09:28 -0700 (PDT)
+Message-ID: <fabde324-383a-622c-7e69-32c9b2d06191@gmail.com>
+Date:   Sat, 26 Mar 2022 12:09:26 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Content-Language: en-US
+To:     netfilter-devel@vger.kernel.org
+From:   Topi Miettinen <toiwoton@gmail.com>
+Subject: Support for loading firewall rules with cgroup(v2) expressions early
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The function may return -1 (and set errno). Assume it will leave
-addr_len value unchanged, so checking is necessary to not hide the
-error.
+Hi,
 
-Fixes: 4248314d40187 ("nfnl: fix compilation warning with gcc-4.7")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- src/libnfnetlink.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+I'd like to use cgroupv2 expressions in firewall rules. But since the 
+rules are loaded very early in the boot, the expressions are rejected 
+since the target cgroups are not realized until much later.
 
-diff --git a/src/libnfnetlink.c b/src/libnfnetlink.c
-index 1cb6a820fee3d..667e5ef8f82a5 100644
---- a/src/libnfnetlink.c
-+++ b/src/libnfnetlink.c
-@@ -210,7 +210,8 @@ struct nfnl_handle *nfnl_open(void)
- 	nfnlh->peer.nl_family = AF_NETLINK;
- 
- 	addr_len = sizeof(nfnlh->local);
--	getsockname(nfnlh->fd, (struct sockaddr *)&nfnlh->local, &addr_len);
-+	if (getsockname(nfnlh->fd, (struct sockaddr *)&nfnlh->local, &addr_len))
-+		goto err_close;
- 	if (addr_len != sizeof(nfnlh->local)) {
- 		errno = EINVAL;
- 		goto err_close;
-@@ -231,7 +232,8 @@ struct nfnl_handle *nfnl_open(void)
- 
- 	/* use getsockname to get the netlink pid that the kernel assigned us */
- 	addr_len = sizeof(nfnlh->local);
--	getsockname(nfnlh->fd, (struct sockaddr *)&nfnlh->local, &addr_len);
-+	if (getsockname(nfnlh->fd, (struct sockaddr *)&nfnlh->local, &addr_len))
-+		goto err_close;
- 	if (addr_len != sizeof(nfnlh->local)) {
- 		errno = EINVAL;
- 		goto err_close;
--- 
-2.34.1
+Would it be possible to add new cgroupv2 expressions which defer the 
+check until actual use? For example, 'cgroupv2name' (like iifname etc.) 
+would check the cgroup path string at rule use time?
 
+Another possibility would be to hook into cgroup directory creation 
+logic in kernel so that when the cgroup is created, part of the path 
+checks are performed or something else which would allow non-existent 
+cgroups to be used. Then the NFT syntax would not need changing, but the 
+expressions would "just work" even when loaded early.
+
+Indirection through sets ('socket cgroupv2 level @lvl @cgname drop') 
+might work in some cases, but it would need support from cgroup manager 
+like systemd which would manage the sets. This would also probably not 
+be scalable to unprivileged users or containers.
+
+This also applies to old cgroup (v1) expression but that's probably not 
+worth improving anymore.
+
+Related work on systemd side:
+https://github.com/systemd/systemd/issues/22527
+
+-Topi
