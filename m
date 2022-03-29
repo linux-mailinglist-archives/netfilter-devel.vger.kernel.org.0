@@ -2,30 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B07B4EA9F7
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Mar 2022 11:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4190F4EACC0
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Mar 2022 13:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234367AbiC2JCa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Mar 2022 05:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
+        id S236143AbiC2MAo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Mar 2022 08:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234371AbiC2JC3 (ORCPT
+        with ESMTP id S236157AbiC2MAi (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Mar 2022 05:02:29 -0400
+        Tue, 29 Mar 2022 08:00:38 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 13956209A64
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Mar 2022 02:00:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7E083DE8A
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Mar 2022 04:58:49 -0700 (PDT)
 Received: from localhost.localdomain (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id 2C58963032
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Mar 2022 10:57:35 +0200 (CEST)
+        by mail.netfilter.org (Postfix) with ESMTPSA id E35926302B
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Mar 2022 13:55:36 +0200 (CEST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft,v2 4/4] optimize: Restore optimization for raw payload expressions
-Date:   Tue, 29 Mar 2022 11:00:41 +0200
-Message-Id: <20220329090041.1156012-4-pablo@netfilter.org>
+Subject: [PATCH nft] tests: py: add inet/vmap tests
+Date:   Tue, 29 Mar 2022 13:58:44 +0200
+Message-Id: <20220329115844.1163197-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220329090041.1156012-1-pablo@netfilter.org>
-References: <20220329090041.1156012-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -37,110 +35,267 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This patch reverts d0f14b5337e7 ("optimize: do not merge raw payload
-expressions") after adding support for concatenation with variable
-length TYPE_INTEGER.
+Add a few tests with concatenations including raw and integer type
+expressions.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v2: new in this series
+ tests/py/inet/vmap.t                |  10 ++
+ tests/py/inet/vmap.t.json           | 144 ++++++++++++++++++++++++++++
+ tests/py/inet/vmap.t.payload        |  34 +++++++
+ tests/py/inet/vmap.t.payload.netdev |  34 +++++++
+ 4 files changed, 222 insertions(+)
+ create mode 100644 tests/py/inet/vmap.t
+ create mode 100644 tests/py/inet/vmap.t.json
+ create mode 100644 tests/py/inet/vmap.t.payload
+ create mode 100644 tests/py/inet/vmap.t.payload.netdev
 
- src/optimize.c                                |  3 --
- .../optimizations/dumps/merge_vmap_raw.nft    | 31 ++++++++++++++++++
- .../testcases/optimizations/merge_vmap_raw    | 32 +++++++++++++++++++
- 3 files changed, 63 insertions(+), 3 deletions(-)
- create mode 100644 tests/shell/testcases/optimizations/dumps/merge_vmap_raw.nft
- create mode 100755 tests/shell/testcases/optimizations/merge_vmap_raw
-
-diff --git a/src/optimize.c b/src/optimize.c
-index 7a268c452226..4ad25fab6be4 100644
---- a/src/optimize.c
-+++ b/src/optimize.c
-@@ -40,9 +40,6 @@ static bool __expr_cmp(const struct expr *expr_a, const struct expr *expr_b)
- 
- 	switch (expr_a->etype) {
- 	case EXPR_PAYLOAD:
--		/* disable until concatenation with integer works. */
--		if (expr_a->payload.is_raw || expr_b->payload.is_raw)
--			return false;
- 		if (expr_a->payload.base != expr_b->payload.base)
- 			return false;
- 		if (expr_a->payload.offset != expr_b->payload.offset)
-diff --git a/tests/shell/testcases/optimizations/dumps/merge_vmap_raw.nft b/tests/shell/testcases/optimizations/dumps/merge_vmap_raw.nft
+diff --git a/tests/py/inet/vmap.t b/tests/py/inet/vmap.t
 new file mode 100644
-index 000000000000..18847116eb50
+index 000000000000..0ac6e561b554
 --- /dev/null
-+++ b/tests/shell/testcases/optimizations/dumps/merge_vmap_raw.nft
-@@ -0,0 +1,31 @@
-+table inet x {
-+	chain nat_dns_dnstc {
-+		meta l4proto udp redirect to :5300
-+		drop
-+	}
++++ b/tests/py/inet/vmap.t
+@@ -0,0 +1,10 @@
++:input;type filter hook input priority 0
++:ingress;type filter hook ingress device lo priority 0
++:egress;type filter hook egress device lo priority 0
 +
-+	chain nat_dns_this_5301 {
-+		meta l4proto udp redirect to :5301
-+		drop
-+	}
++*inet;test-inet;input
++*netdev;test-netdev;ingress,egress
 +
-+	chain nat_dns_saturn_5301 {
-+		meta nfproto ipv4 meta l4proto udp dnat ip to 240.0.1.2:5301
-+		drop
-+	}
-+
-+	chain nat_dns_saturn_5302 {
-+		meta nfproto ipv4 meta l4proto udp dnat ip to 240.0.1.2:5302
-+		drop
-+	}
-+
-+	chain nat_dns_saturn_5303 {
-+		meta nfproto ipv4 meta l4proto udp dnat ip to 240.0.1.2:5303
-+		drop
-+	}
-+
-+	chain nat_dns_acme {
-+		udp length . @th,160,128 vmap { 47-63 . 0xe373135363130333131303735353203 : goto nat_dns_dnstc, 62-78 . 0xe31393032383939353831343037320e : goto nat_dns_this_5301, 62-78 . 0xe31363436323733373931323934300e : goto nat_dns_saturn_5301, 62-78 . 0xe32393535373539353636383732310e : goto nat_dns_saturn_5302, 62-78 . 0xe38353439353637323038363633390e : goto nat_dns_saturn_5303 }
-+		drop
-+	}
-+}
-diff --git a/tests/shell/testcases/optimizations/merge_vmap_raw b/tests/shell/testcases/optimizations/merge_vmap_raw
-new file mode 100755
-index 000000000000..f3dc0721b94f
++iifname . ip protocol . th dport vmap { "eth0" . tcp . 22 : accept, "eth1" . udp . 67 : drop };ok;iifname . ip protocol . th dport vmap { "eth0" . 6 . 22 : accept, "eth1" . 17 . 67 : drop }
++ip saddr . @ih,32,32 { 1.1.1.1 . 0x14, 2.2.2.2 . 0x1e };ok
++udp length . @th,160,128 vmap { 47-63 . 0xe373135363130333131303735353203 : accept };ok
+diff --git a/tests/py/inet/vmap.t.json b/tests/py/inet/vmap.t.json
+new file mode 100644
+index 000000000000..37472cc629fd
 --- /dev/null
-+++ b/tests/shell/testcases/optimizations/merge_vmap_raw
-@@ -0,0 +1,32 @@
-+#!/bin/bash
-+
-+set -e
-+
-+RULESET="table inet x {
-+	chain nat_dns_dnstc     { meta l4proto udp redirect to :5300 ; drop ; }
-+        chain nat_dns_this_5301 { meta l4proto udp redirect to :5301 ; drop ; }
-+        chain nat_dns_saturn_5301  { meta nfproto ipv4 meta l4proto udp dnat to 240.0.1.2:5301 ; drop ; }
-+        chain nat_dns_saturn_5302  { meta nfproto ipv4 meta l4proto udp dnat to 240.0.1.2:5302 ; drop ; }
-+        chain nat_dns_saturn_5303  { meta nfproto ipv4 meta l4proto udp dnat to 240.0.1.2:5303 ; drop ; }
-+
-+        chain nat_dns_acme {
-+                udp length 47-63 @th,160,128 0x0e373135363130333131303735353203 \
-+                        goto nat_dns_dnstc
-+
-+                udp length 62-78 @th,160,128 0x0e31393032383939353831343037320e \
-+                        goto nat_dns_this_5301
-+
-+                udp length 62-78 @th,160,128 0x0e31363436323733373931323934300e \
-+                        goto nat_dns_saturn_5301
-+
-+                udp length 62-78 @th,160,128 0x0e32393535373539353636383732310e \
-+                        goto nat_dns_saturn_5302
-+
-+                udp length 62-78 @th,160,128 0x0e38353439353637323038363633390e \
-+                        goto nat_dns_saturn_5303
-+
-+                drop
++++ b/tests/py/inet/vmap.t.json
+@@ -0,0 +1,144 @@
++# iifname . ip protocol . th dport vmap { "eth0" . tcp . 22 : accept, "eth1" . udp . 67 : drop }
++[
++    {
++        "vmap": {
++            "data": {
++                "set": [
++                    [
++                        {
++                            "concat": [
++                                "eth0",
++                                6,
++                                22
++                            ]
++                        },
++                        {
++                            "accept": null
++                        }
++                    ],
++                    [
++                        {
++                            "concat": [
++                                "eth1",
++                                17,
++                                67
++                            ]
++                        },
++                        {
++                            "drop": null
++                        }
++                    ]
++                ]
++            },
++            "key": {
++                "concat": [
++                    {
++                        "meta": {
++                            "key": "iifname"
++                        }
++                    },
++                    {
++                        "payload": {
++                            "field": "protocol",
++                            "protocol": "ip"
++                        }
++                    },
++                    {
++                        "payload": {
++                            "field": "dport",
++                            "protocol": "th"
++                        }
++                    }
++                ]
++            }
 +        }
-+}"
++    }
++]
 +
-+$NFT -o -f - <<< $RULESET
++# ip saddr . @ih,32,32 { 1.1.1.1 . 0x14, 2.2.2.2 . 0x1e }
++[
++    {
++        "match": {
++            "left": {
++                "concat": [
++                    {
++                        "payload": {
++                            "field": "saddr",
++                            "protocol": "ip"
++                        }
++                    },
++                    {
++                        "payload": {
++                            "base": "ih",
++                            "len": 32,
++                            "offset": 32
++                        }
++                    }
++                ]
++            },
++            "op": "==",
++            "right": {
++                "set": [
++                    {
++                        "concat": [
++                            "1.1.1.1",
++                            20
++                        ]
++                    },
++                    {
++                        "concat": [
++                            "2.2.2.2",
++                            30
++                        ]
++                    }
++                ]
++            }
++        }
++    }
++]
++
++# udp length . @th,160,128 vmap { 47-63 . 0xe373135363130333131303735353203 : accept }
++[
++    {
++        "vmap": {
++            "data": {
++                "set": [
++                    [
++                        {
++                            "concat": [
++                                {
++                                    "range": [
++                                        47,
++                                        63
++                                    ]
++                                },
++                                "0xe373135363130333131303735353203"
++                            ]
++                        },
++                        {
++                            "accept": null
++                        }
++                    ]
++                ]
++            },
++            "key": {
++                "concat": [
++                    {
++                        "payload": {
++                            "field": "length",
++                            "protocol": "udp"
++                        }
++                    },
++                    {
++                        "payload": {
++                            "base": "th",
++                            "len": 128,
++                            "offset": 160
++                        }
++                    }
++                ]
++            }
++        }
++    }
++]
++
+diff --git a/tests/py/inet/vmap.t.payload b/tests/py/inet/vmap.t.payload
+new file mode 100644
+index 000000000000..29ec846deb2e
+--- /dev/null
++++ b/tests/py/inet/vmap.t.payload
+@@ -0,0 +1,34 @@
++# iifname . ip protocol . th dport vmap { "eth0" . tcp . 22 : accept, "eth1" . udp . 67 : drop }
++__map%d test-inet b size 2
++__map%d test-inet 0
++	element 30687465 00000000 00000000 00000000 00000006 00001600  : accept 0 [end]	element 31687465 00000000 00000000 00000000 00000011 00004300  : drop 0 [end]
++inet test-inet input
++  [ meta load nfproto => reg 1 ]
++  [ cmp eq reg 1 0x00000002 ]
++  [ meta load iifname => reg 1 ]
++  [ payload load 1b @ network header + 9 => reg 2 ]
++  [ payload load 2b @ transport header + 2 => reg 13 ]
++  [ lookup reg 1 set __map%d dreg 0 ]
++
++# ip saddr . @ih,32,32 { 1.1.1.1 . 0x14, 2.2.2.2 . 0x1e }
++__set%d test-inet 3 size 2
++__set%d test-inet 0
++        element 01010101 14000000  : 0 [end]    element 02020202 1e000000  : 0 [end]
++inet test-inet input
++  [ meta load nfproto => reg 1 ]
++  [ cmp eq reg 1 0x00000002 ]
++  [ payload load 4b @ network header + 12 => reg 1 ]
++  [ payload load 4b @ inner header + 4 => reg 9 ]
++  [ lookup reg 1 set __set%d ]
++
++# udp length . @th,160,128 vmap { 47-63 . 0xe373135363130333131303735353203 : accept }
++__map%d x 8f size 1
++__map%d x 0
++	element 00002f00 3531370e 33303136 37303131 03323535  - 00003f00 3531370e 33303136 37303131 03323535  : accept 0 [end]
++inet x y
++  [ meta load l4proto => reg 1 ]
++  [ cmp eq reg 1 0x00000011 ]
++  [ payload load 2b @ transport header + 4 => reg 1 ]
++  [ payload load 16b @ transport header + 20 => reg 9 ]
++  [ lookup reg 1 set __map%d dreg 0 ]
++
+diff --git a/tests/py/inet/vmap.t.payload.netdev b/tests/py/inet/vmap.t.payload.netdev
+new file mode 100644
+index 000000000000..3f51bb33054a
+--- /dev/null
++++ b/tests/py/inet/vmap.t.payload.netdev
+@@ -0,0 +1,34 @@
++# iifname . ip protocol . th dport vmap { "eth0" . tcp . 22 : accept, "eth1" . udp . 67 : drop }
++__map%d test-netdev b size 2
++__map%d test-netdev 0
++	element 30687465 00000000 00000000 00000000 00000006 00001600  : accept 0 [end]	element 31687465 00000000 00000000 00000000 00000011 00004300  : drop 0 [end]
++netdev test-netdev ingress
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ meta load iifname => reg 1 ]
++  [ payload load 1b @ network header + 9 => reg 2 ]
++  [ payload load 2b @ transport header + 2 => reg 13 ]
++  [ lookup reg 1 set __map%d dreg 0 ]
++
++# ip saddr . @ih,32,32 { 1.1.1.1 . 0x14, 2.2.2.2 . 0x1e }
++__set%d test-netdev 3 size 2
++__set%d test-netdev 0
++	element 01010101 14000000  : 0 [end]	element 02020202 1e000000  : 0 [end]
++netdev test-netdev ingress
++  [ meta load protocol => reg 1 ]
++  [ cmp eq reg 1 0x00000008 ]
++  [ payload load 4b @ network header + 12 => reg 1 ]
++  [ payload load 4b @ inner header + 4 => reg 9 ]
++  [ lookup reg 1 set __set%d ]
++
++# udp length . @th,160,128 vmap { 47-63 . 0xe373135363130333131303735353203 : accept }
++__map%d test-netdev 8f size 1
++__map%d test-netdev 0
++	element 00002f00 3531370e 33303136 37303131 03323535  - 00003f00 3531370e 33303136 37303131 03323535  : accept 0 [end]
++netdev test-netdev ingress
++  [ meta load l4proto => reg 1 ]
++  [ cmp eq reg 1 0x00000011 ]
++  [ payload load 2b @ transport header + 4 => reg 1 ]
++  [ payload load 16b @ transport header + 20 => reg 9 ]
++  [ lookup reg 1 set __map%d dreg 0 ]
++
 -- 
 2.30.2
 
