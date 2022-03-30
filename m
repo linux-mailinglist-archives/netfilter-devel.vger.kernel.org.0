@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3294EC8FD
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Mar 2022 17:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77994EC8FC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Mar 2022 17:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348483AbiC3QBS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 30 Mar 2022 12:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
+        id S1347877AbiC3QBO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 30 Mar 2022 12:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343762AbiC3QBR (ORCPT
+        with ESMTP id S1343762AbiC3QBM (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 30 Mar 2022 12:01:17 -0400
+        Wed, 30 Mar 2022 12:01:12 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BF923154
-        for <netfilter-devel@vger.kernel.org>; Wed, 30 Mar 2022 08:59:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7C423154
+        for <netfilter-devel@vger.kernel.org>; Wed, 30 Mar 2022 08:59:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=cJDGn2snYgUOpWsDNq3tnBI9nef1oW2j7PBMlaU6Svo=; b=qVDqwPzhzB+1pw7X/FCf4RnUE0
-        FRlWpUOgdPZCjxCnjcVJwZDoIHsU7urCiDBKf61LVPPsJHy7elPTnGQXfCFtQ1D3I/0UI+TKj7Y+3
-        AojKglWe3QRYIpvvCOcV9ouOydm5riMpeFjfKp4OcsD37SHjo8ywq46/hnCdFi3x/P5CmVP7pj07V
-        n3PO9M59mBGSK9FRdmX6eKLDbi9TZdmq0OsKd1FYX1G+Ts1rFgCl8A+Lu+lsoXtgYSbS70XrX1dhk
-        /JMUpnw4Ewyj6Bn+X8E3EB78rtdlNPmE5V8pVHWW3HVOgndJMtTt3fXHmgBab/gToTdLTsmzO+JKz
-        Fi/5KVLw==;
+        bh=oq1B4RnFimMmZV6xVCfj4y8xYnJPAlVEBP/CGkTFH2o=; b=hjGmUF6Kpn9I7Gwu6EuoD1azFc
+        HaVGe37x1TCDfVXHrf5nGujDLs8rouSdxDO1Q/jjcGKWkMkbS2nmOQBuhm+2Uz6vZzsS/C0gUpswY
+        KMdR8MwqW8RkAL+f3fZOSSG+gzlX8hNq7o/ZgRs7tyRVuAdGNJORnUK4rKN8aL7EpqH9V7AyrFOnu
+        J7iA9l/NX8hP7zRKmsOZaKHhSQ5OfMhy+taPJrrsbtc2k/WxqmFqNKbruV5gX3vKUcw4rTC36omXh
+        iMs2OrDW2JjA6Sv1AG0ltbbLTrPQ2dOywdXeP9Sd+FTQNxqXqiuuqu387ypwrq9NO32MhAMnt6gmX
+        vBVDEU8g==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1nZajK-0004Yn-OT; Wed, 30 Mar 2022 17:59:30 +0200
+        id 1nZajF-0004XX-Eq; Wed, 30 Mar 2022 17:59:25 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 4/9] extensions: ipt_DNAT: Merge v1/v2 print/save code
-Date:   Wed, 30 Mar 2022 17:58:46 +0200
-Message-Id: <20220330155851.13249-5-phil@nwl.cc>
+Subject: [iptables PATCH 5/9] extensions: ipt_DNAT: Combine xlate functions also
+Date:   Wed, 30 Mar 2022 17:58:47 +0200
+Message-Id: <20220330155851.13249-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330155851.13249-1-phil@nwl.cc>
 References: <20220330155851.13249-1-phil@nwl.cc>
@@ -51,175 +51,136 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Turn print_range() function into sprint_range() so it becomes more
-versatile. Make it accept the new nf_nat_range2 data structure and
-make v1 callers convert their nf_nat_ipv4_multi_range_compat structs
-to that.
-This allows to introduce an inner __DNAT_print() which acts for v1 and
-v2 and prints either 'print' or 'save' syntax.
+Make use of the new sprint_range() to introduce a common inner function
+for both v1 and v2 xlate functions.
+
+Also abort translation with shifted port ranges to not hide the missing
+feature in nftables.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libipt_DNAT.c | 111 ++++++++++++++++-----------------------
- 1 file changed, 46 insertions(+), 65 deletions(-)
+ extensions/libipt_DNAT.c | 88 ++++++++++------------------------------
+ 1 file changed, 21 insertions(+), 67 deletions(-)
 
 diff --git a/extensions/libipt_DNAT.c b/extensions/libipt_DNAT.c
-index 2a7b1bc4ec0a6..b72437d5e92f2 100644
+index b72437d5e92f2..9a179919f522d 100644
 --- a/extensions/libipt_DNAT.c
 +++ b/extensions/libipt_DNAT.c
-@@ -9,6 +9,15 @@
- #include <linux/netfilter_ipv4/ip_tables.h>
- #include <linux/netfilter/nf_nat.h>
- 
-+#define TO_IPV4_MRC(ptr) ((const struct nf_nat_ipv4_multi_range_compat *)(ptr))
-+#define RANGE2_INIT_FROM_IPV4_MRC(ptr) {			\
-+	.flags		= TO_IPV4_MRC(ptr)->range[0].flags,	\
-+	.min_addr.ip	= TO_IPV4_MRC(ptr)->range[0].min_ip,	\
-+	.max_addr.ip	= TO_IPV4_MRC(ptr)->range[0].max_ip,	\
-+	.min_proto	= TO_IPV4_MRC(ptr)->range[0].min,	\
-+	.max_proto	= TO_IPV4_MRC(ptr)->range[0].max,	\
-+};
-+
- enum {
- 	O_TO_DEST = 0,
- 	O_RANDOM,
-@@ -206,51 +215,55 @@ static void DNAT_fcheck(struct xt_fcheck_call *cb)
- 			      "Shifted portmap ranges not supported with this kernel");
+@@ -266,47 +266,36 @@ static void DNAT_save(const void *ip, const struct xt_entry_target *target)
+ 	__DNAT_print(&range, true);
  }
  
--static void print_range(const struct nf_nat_ipv4_range *r)
-+static char *sprint_range(const struct nf_nat_range2 *r)
+-static void print_range_xlate(const struct nf_nat_ipv4_range *r,
+-			struct xt_xlate *xl)
++static int __DNAT_xlate(struct xt_xlate *xl, const struct nf_nat_range2 *r)
  {
 -	if (r->flags & NF_NAT_RANGE_MAP_IPS) {
 -		struct in_addr a;
-+	static char buf[INET_ADDRSTRLEN * 2 + 1 + 6 * 3];
++	char *range_str = sprint_range(r);
++	const char *sep = " ";
  
 -		a.s_addr = r->min_ip;
--		printf("%s", xtables_ipaddr_to_numeric(&a));
+-		xt_xlate_add(xl, "%s", xtables_ipaddr_to_numeric(&a));
 -		if (r->max_ip != r->min_ip) {
 -			a.s_addr = r->max_ip;
--			printf("-%s", xtables_ipaddr_to_numeric(&a));
+-			xt_xlate_add(xl, "-%s", xtables_ipaddr_to_numeric(&a));
 -		}
-+	if (r->flags & NF_NAT_RANGE_MAP_IPS) {
-+		sprintf(buf, "%s", xtables_ipaddr_to_numeric(&r->min_addr.in));
-+		if (memcmp(&r->min_addr, &r->max_addr, sizeof(r->min_addr)))
-+			sprintf(buf + strlen(buf), "-%s",
-+				xtables_ipaddr_to_numeric(&r->max_addr.in));
-+	} else {
-+		buf[0] = '\0';
++	/* shifted portmap ranges are not supported by nftables */
++	if (r->flags & NF_NAT_RANGE_PROTO_OFFSET)
++		return 0;
++
++	xt_xlate_add(xl, "dnat");
++	if (strlen(range_str))
++		xt_xlate_add(xl, " to %s", range_str);
++	if (r->flags & NF_NAT_RANGE_PROTO_RANDOM) {
++		xt_xlate_add(xl, "%srandom", sep);
++		sep = ",";
  	}
- 	if (r->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
--		printf(":");
--		printf("%hu", ntohs(r->min.tcp.port));
+-	if (r->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
+-		xt_xlate_add(xl, ":%hu", ntohs(r->min.tcp.port));
 -		if (r->max.tcp.port != r->min.tcp.port)
--			printf("-%hu", ntohs(r->max.tcp.port));
-+		sprintf(buf + strlen(buf), ":%hu",
-+			ntohs(r->min_proto.tcp.port));
-+		if (r->max_proto.tcp.port != r->min_proto.tcp.port)
-+			sprintf(buf + strlen(buf), "-%hu",
-+				ntohs(r->max_proto.tcp.port));
-+		if (r->flags & NF_NAT_RANGE_PROTO_OFFSET)
-+			sprintf(buf + strlen(buf), "/%hu",
-+				ntohs(r->base_proto.tcp.port));
+-			xt_xlate_add(xl, "-%hu", ntohs(r->max.tcp.port));
++	if (r->flags & NF_NAT_RANGE_PERSISTENT) {
++		xt_xlate_add(xl, "%spersistent", sep);
++		sep = ",";
  	}
-+	return buf;
-+}
-+
-+static void __DNAT_print(const struct nf_nat_range2 *r, bool save)
-+{
-+	const char *dashdash = save ? "--" : "";
-+
-+	printf(" %s%s", save ? "--to-destination " : "to:", sprint_range(r));
-+	if (r->flags & NF_NAT_RANGE_PROTO_RANDOM)
-+		printf(" %srandom", dashdash);
-+	if (r->flags & NF_NAT_RANGE_PERSISTENT)
-+		printf(" %spersistent", dashdash);
++	return 1;
  }
  
- static void DNAT_print(const void *ip, const struct xt_entry_target *target,
-                        int numeric)
+ static int DNAT_xlate(struct xt_xlate *xl,
+ 		      const struct xt_xlate_tg_params *params)
  {
 -	const struct nf_nat_ipv4_multi_range_compat *mr =
--				(const void *)target->data;
+-			(const void *)params->target->data;
+-	bool sep_need = false;
+-	const char *sep = " ";
 -
--	printf(" to:");
--	print_range(mr->range);
--	if (mr->range->flags & NF_NAT_RANGE_PROTO_RANDOM)
--		printf(" random");
--	if (mr->range->flags & NF_NAT_RANGE_PERSISTENT)
--		printf(" persistent");
-+	struct nf_nat_range2 range = RANGE2_INIT_FROM_IPV4_MRC(target->data);
-+
-+	__DNAT_print(&range, false);
+-	xt_xlate_add(xl, "dnat to ");
+-	print_range_xlate(mr->range, xl);
+-	if (mr->range->flags & NF_NAT_RANGE_PROTO_RANDOM) {
+-		xt_xlate_add(xl, " random");
+-		sep_need = true;
+-	}
+-	if (mr->range->flags & NF_NAT_RANGE_PERSISTENT) {
+-		if (sep_need)
+-			sep = ",";
+-		xt_xlate_add(xl, "%spersistent", sep);
+-	}
++	struct nf_nat_range2 range =
++		RANGE2_INIT_FROM_IPV4_MRC(params->target->data);
+ 
+-	return 1;
++	return __DNAT_xlate(xl, &range);
  }
  
- static void DNAT_save(const void *ip, const struct xt_entry_target *target)
- {
--	const struct nf_nat_ipv4_multi_range_compat *mr =
--				(const void *)target->data;
--
--	printf(" --to-destination ");
--	print_range(mr->range);
--	if (mr->range->flags & NF_NAT_RANGE_PROTO_RANDOM)
--		printf(" --random");
--	if (mr->range->flags & NF_NAT_RANGE_PERSISTENT)
--		printf(" --persistent");
-+	struct nf_nat_range2 range = RANGE2_INIT_FROM_IPV4_MRC(target->data);
-+
-+	__DNAT_print(&range, true);
+ static void DNAT_parse_v2(struct xt_option_call *cb)
+@@ -336,45 +325,10 @@ static void DNAT_save_v2(const void *ip, const struct xt_entry_target *target)
+ 	__DNAT_print((const void *)target->data, true);
  }
  
- static void print_range_xlate(const struct nf_nat_ipv4_range *r,
-@@ -312,47 +325,15 @@ static void DNAT_fcheck_v2(struct xt_fcheck_call *cb)
- 		range->flags |= NF_NAT_RANGE_PROTO_RANDOM;
- }
- 
--static void print_range_v2(const struct nf_nat_range2 *range)
+-static void print_range_xlate_v2(const struct nf_nat_range2 *range,
+-			      struct xt_xlate *xl)
 -{
 -	if (range->flags & NF_NAT_RANGE_MAP_IPS) {
--		printf("%s", xtables_ipaddr_to_numeric(&range->min_addr.in));
+-		xt_xlate_add(xl, "%s", xtables_ipaddr_to_numeric(&range->min_addr.in));
 -		if (memcmp(&range->min_addr, &range->max_addr,
--			   sizeof(range->min_addr)))
--			printf("-%s", xtables_ipaddr_to_numeric(&range->max_addr.in));
+-			   sizeof(range->min_addr))) {
+-			xt_xlate_add(xl, "-%s", xtables_ipaddr_to_numeric(&range->max_addr.in));
+-		}
 -	}
 -	if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
--		printf(":");
--		printf("%hu", ntohs(range->min_proto.tcp.port));
+-		xt_xlate_add(xl, ":%hu", ntohs(range->min_proto.tcp.port));
 -		if (range->max_proto.tcp.port != range->min_proto.tcp.port)
--			printf("-%hu", ntohs(range->max_proto.tcp.port));
+-			xt_xlate_add(xl, "-%hu", ntohs(range->max_proto.tcp.port));
 -		if (range->flags & NF_NAT_RANGE_PROTO_OFFSET)
--			printf("/%hu", ntohs(range->base_proto.tcp.port));
+-			xt_xlate_add(xl, ";%hu", ntohs(range->base_proto.tcp.port));
 -	}
 -}
 -
- static void DNAT_print_v2(const void *ip, const struct xt_entry_target *target,
-                        int numeric)
+ static int DNAT_xlate_v2(struct xt_xlate *xl,
+ 		      const struct xt_xlate_tg_params *params)
  {
--	const struct nf_nat_range2 *range = (const void *)target->data;
+-	const struct nf_nat_range2 *range = (const void *)params->target->data;
+-	bool sep_need = false;
+-	const char *sep = " ";
 -
--	printf(" to:");
--	print_range_v2(range);
--	if (range->flags & NF_NAT_RANGE_PROTO_RANDOM)
--		printf(" random");
--	if (range->flags & NF_NAT_RANGE_PERSISTENT)
--		printf(" persistent");
-+	__DNAT_print((const void *)target->data, false);
+-	xt_xlate_add(xl, "dnat to ");
+-	print_range_xlate_v2(range, xl);
+-	if (range->flags & NF_NAT_RANGE_PROTO_RANDOM) {
+-		xt_xlate_add(xl, " random");
+-		sep_need = true;
+-	}
+-	if (range->flags & NF_NAT_RANGE_PERSISTENT) {
+-		if (sep_need)
+-			sep = ",";
+-		xt_xlate_add(xl, "%spersistent", sep);
+-	}
+-
+-	return 1;
++	return __DNAT_xlate(xl, (const void *)params->target->data);
  }
  
- static void DNAT_save_v2(const void *ip, const struct xt_entry_target *target)
- {
--	const struct nf_nat_range2 *range = (const void *)target->data;
--
--	printf(" --to-destination ");
--	print_range_v2(range);
--	if (range->flags & NF_NAT_RANGE_PROTO_RANDOM)
--		printf(" --random");
--	if (range->flags & NF_NAT_RANGE_PERSISTENT)
--		printf(" --persistent");
-+	__DNAT_print((const void *)target->data, true);
- }
- 
- static void print_range_xlate_v2(const struct nf_nat_range2 *range,
+ static struct xtables_target dnat_tg_reg[] = {
 -- 
 2.34.1
 
