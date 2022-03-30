@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 014DE4EC8FE
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Mar 2022 17:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934AF4EC8F8
+	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Mar 2022 17:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348486AbiC3QBY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 30 Mar 2022 12:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34842 "EHLO
+        id S238058AbiC3QA6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 30 Mar 2022 12:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343762AbiC3QBY (ORCPT
+        with ESMTP id S1347877AbiC3QA6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 30 Mar 2022 12:01:24 -0400
+        Wed, 30 Mar 2022 12:00:58 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D9023154
-        for <netfilter-devel@vger.kernel.org>; Wed, 30 Mar 2022 08:59:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2720BD5
+        for <netfilter-devel@vger.kernel.org>; Wed, 30 Mar 2022 08:59:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=+ir/YKLwfZ8gKcEgRtEUkr2g3wesq5JwkdHuFRdcctU=; b=d0aAUkLv1WzXayO3GZSHWlZEou
-        iB8oxldEtwo5xqLXt8MLaaLOVdKOnEhToXlLwg+JsG+aK1WzxReqiZfJqlgrXj4vRL025+b6ed2pD
-        LSfs17CGO3XQGj6z8XuhPGuWoy5+9ZRfoQ+3k6g3YKYrGmCK7PWWJ/OWnLNVGy6Qi7aB3ttYvWg1R
-        7Lmkbkz1lsDV/nYXlLDAnvW9n2ymlvONeLhEF4uDxWkJzBwfIVAsIVbVGHKN7vy1msoRak9SvJPrx
-        ep/7oVSWVBUZIGkjSfsIC6Vde+DUUlkbDv76O4N8D2uEkIrqd1/8CtYrNfmEIJKZwz1A//MevJDAu
-        UIE9artw==;
+        bh=Yb0bQEObbvFMgJtN9lLx5aEkoL/WQQyFl/fSw8cBPmM=; b=KwRst3GLptNPSvvwIkfwx3+vnA
+        x4/xdTygPLNW+r3QdXq2fOzwZHBlJZm5RziOHWP/kZm4fN3OnOL4JSjmcnV50GU5oQOworP30H3rq
+        q6DrAxArewmGLhNXhO1kmwHqYZJArXEK4p4I4LQYH7juQYL8+ZCQoaKipDk/4r+vusx6Wb65d6Tox
+        8RfPUTzAVeV+pjwbtDO4i9xuRKUyWlqjadKthUiPK6el03lIoyjZmKwzBm+Cnv/Wwb34yb7j+lgGD
+        TNTAddTOTgvrDKkIEPTnuPEArpmnlmu/TTthnj6TmkECZb0r/mr0OM8FnC2fgVxdyvvcf8wG8QCU2
+        0yg9WNlg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1nZajQ-0004Ys-2f; Wed, 30 Mar 2022 17:59:36 +0200
+        id 1nZaiz-0004XH-HJ; Wed, 30 Mar 2022 17:59:09 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 7/9] extensions: Merge IPv4 and IPv6 DNAT targets
-Date:   Wed, 30 Mar 2022 17:58:49 +0200
-Message-Id: <20220330155851.13249-8-phil@nwl.cc>
+Subject: [iptables PATCH 8/9] extensions: Merge REDIRECT into DNAT
+Date:   Wed, 30 Mar 2022 17:58:50 +0200
+Message-Id: <20220330155851.13249-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220330155851.13249-1-phil@nwl.cc>
 References: <20220330155851.13249-1-phil@nwl.cc>
@@ -51,890 +51,767 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Make parse_to() family-aware so it serves for both IPv4 and IPv6. Have a
-core _DNAT_parse() function which parses into the most modern
-(nf_nat_range2) data structure and a bunch of wrappers to copy into
-legacy data structures if needed. Treat other callbacks analogous.
+Code is very similar, join them to reuse parsing code at least.
+
+As a side-effect, this enables parsing of service names for ports in
+DNAT.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libip6t_DNAT.c      | 402 ---------------------------------
- extensions/libip6t_DNAT.txlate |  11 -
- extensions/libipt_DNAT.txlate  |  14 --
- extensions/libxt_DNAT.c        | 222 ++++++++++++++----
- extensions/libxt_DNAT.txlate   |  35 +++
- 5 files changed, 216 insertions(+), 468 deletions(-)
- delete mode 100644 extensions/libip6t_DNAT.c
- delete mode 100644 extensions/libip6t_DNAT.txlate
- delete mode 100644 extensions/libipt_DNAT.txlate
- create mode 100644 extensions/libxt_DNAT.txlate
+ extensions/GNUmakefile.in          |   4 +-
+ extensions/libip6t_REDIRECT.c      | 170 ----------------------------
+ extensions/libip6t_REDIRECT.t      |   6 -
+ extensions/libip6t_REDIRECT.txlate |   5 -
+ extensions/libipt_DNAT.t           |   2 +
+ extensions/libipt_REDIRECT.c       | 174 -----------------------------
+ extensions/libipt_REDIRECT.t       |   6 -
+ extensions/libipt_REDIRECT.txlate  |   5 -
+ extensions/libxt_DNAT.c            | 169 +++++++++++++++++++++++++---
+ extensions/libxt_REDIRECT.t        |   9 ++
+ extensions/libxt_REDIRECT.txlate   |  17 +++
+ 11 files changed, 186 insertions(+), 381 deletions(-)
+ delete mode 100644 extensions/libip6t_REDIRECT.c
+ delete mode 100644 extensions/libip6t_REDIRECT.t
+ delete mode 100644 extensions/libip6t_REDIRECT.txlate
+ delete mode 100644 extensions/libipt_REDIRECT.c
+ delete mode 100644 extensions/libipt_REDIRECT.t
+ delete mode 100644 extensions/libipt_REDIRECT.txlate
+ create mode 100644 extensions/libxt_REDIRECT.t
+ create mode 100644 extensions/libxt_REDIRECT.txlate
 
-diff --git a/extensions/libip6t_DNAT.c b/extensions/libip6t_DNAT.c
+diff --git a/extensions/GNUmakefile.in b/extensions/GNUmakefile.in
+index 956ccb38b2ab9..6dad4e02481bd 100644
+--- a/extensions/GNUmakefile.in
++++ b/extensions/GNUmakefile.in
+@@ -42,7 +42,7 @@ endif
+ pfx_build_mod := $(patsubst ${srcdir}/libxt_%.c,%,$(sort $(wildcard ${srcdir}/libxt_*.c)))
+ @ENABLE_NFTABLES_TRUE@ pfb_build_mod := $(patsubst ${srcdir}/libebt_%.c,%,$(sort $(wildcard ${srcdir}/libebt_*.c)))
+ @ENABLE_NFTABLES_TRUE@ pfa_build_mod := $(patsubst ${srcdir}/libarpt_%.c,%,$(sort $(wildcard ${srcdir}/libarpt_*.c)))
+-pfx_symlinks  := NOTRACK state
++pfx_symlinks  := NOTRACK state REDIRECT
+ @ENABLE_IPV4_TRUE@ pf4_build_mod := $(patsubst ${srcdir}/libipt_%.c,%,$(sort $(wildcard ${srcdir}/libipt_*.c)))
+ @ENABLE_IPV6_TRUE@ pf6_build_mod := $(patsubst ${srcdir}/libip6t_%.c,%,$(sort $(wildcard ${srcdir}/libip6t_*.c)))
+ pfx_build_mod := $(filter-out @blacklist_modules@ @blacklist_x_modules@,${pfx_build_mod})
+@@ -130,6 +130,8 @@ libxt_NOTRACK.so: libxt_CT.so
+ 	ln -fs $< $@
+ libxt_state.so: libxt_conntrack.so
+ 	ln -fs $< $@
++libxt_REDIRECT.so: libxt_DNAT.so
++	ln -fs $< $@
+ 
+ # Need the LIBADDs in iptables/Makefile.am too for libxtables_la_LIBADD
+ xt_RATEEST_LIBADD   = -lm
+diff --git a/extensions/libip6t_REDIRECT.c b/extensions/libip6t_REDIRECT.c
 deleted file mode 100644
-index d51994c09e7f2..0000000000000
---- a/extensions/libip6t_DNAT.c
+index 8e04d2cd33d50..0000000000000
+--- a/extensions/libip6t_REDIRECT.c
 +++ /dev/null
-@@ -1,402 +0,0 @@
+@@ -1,170 +0,0 @@
 -/*
 - * Copyright (c) 2011 Patrick McHardy <kaber@trash.net>
 - *
-- * Based on Rusty Russell's IPv4 DNAT target. Development of IPv6 NAT
+- * Based on Rusty Russell's IPv4 REDIRECT target. Development of IPv6 NAT
 - * funded by Astaro.
 - */
 -
 -#include <stdio.h>
--#include <netdb.h>
 -#include <string.h>
 -#include <stdlib.h>
 -#include <xtables.h>
--#include <iptables.h>
 -#include <limits.h> /* INT_MAX in ip_tables.h */
 -#include <linux/netfilter_ipv6/ip6_tables.h>
 -#include <linux/netfilter/nf_nat.h>
 -
 -enum {
--	O_TO_DEST = 0,
+-	O_TO_PORTS = 0,
 -	O_RANDOM,
--	O_PERSISTENT,
--	F_TO_DEST   = 1 << O_TO_DEST,
+-	F_TO_PORTS = 1 << O_TO_PORTS,
 -	F_RANDOM   = 1 << O_RANDOM,
 -};
 -
--static void DNAT_help(void)
+-static void REDIRECT_help(void)
 -{
 -	printf(
--"DNAT target options:\n"
--" --to-destination [<ipaddr>[-<ipaddr>]][:port[-port]]\n"
--"				Address to map destination to.\n"
--"[--random] [--persistent]\n");
+-"REDIRECT target options:\n"
+-" --to-ports <port>[-<port>]\n"
+-"				Port (range) to map to.\n"
+-" [--random]\n");
 -}
 -
--static void DNAT_help_v2(void)
--{
--	printf(
--"DNAT target options:\n"
--" --to-destination [<ipaddr>[-<ipaddr>]][:port[-port[/port]]]\n"
--"				Address to map destination to.\n"
--"[--random] [--persistent]\n");
--}
--
--static const struct xt_option_entry DNAT_opts[] = {
--	{.name = "to-destination", .id = O_TO_DEST, .type = XTTYPE_STRING,
--	 .flags = XTOPT_MAND},
+-static const struct xt_option_entry REDIRECT_opts[] = {
+-	{.name = "to-ports", .id = O_TO_PORTS, .type = XTTYPE_STRING},
 -	{.name = "random", .id = O_RANDOM, .type = XTTYPE_NONE},
--	{.name = "persistent", .id = O_PERSISTENT, .type = XTTYPE_NONE},
 -	XTOPT_TABLEEND,
 -};
 -
--/* Ranges expected in network order. */
+-/* Parses ports */
 -static void
--parse_to(const char *orig_arg, int portok, struct nf_nat_range2 *range, int rev)
+-parse_ports(const char *arg, struct nf_nat_range *range)
 -{
--	char *arg, *start, *end = NULL, *colon = NULL, *dash, *error;
--	const struct in6_addr *ip;
+-	char *end = "";
+-	unsigned int port, maxport;
 -
--	arg = xtables_strdup(orig_arg);
+-	range->flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
 -
--	start = strchr(arg, '[');
--	if (start == NULL) {
--		start = arg;
--		/* Lets assume one colon is port information. Otherwise its an IPv6 address */
--		colon = strchr(arg, ':');
--		if (colon && strchr(colon+1, ':'))
--			colon = NULL;
+-	if (!xtables_strtoui(arg, &end, &port, 0, UINT16_MAX) &&
+-	    (port = xtables_service_to_port(arg, NULL)) == (unsigned)-1)
+-		xtables_param_act(XTF_BAD_VALUE, "REDIRECT", "--to-ports", arg);
+-
+-	switch (*end) {
+-	case '\0':
+-		range->min_proto.tcp.port
+-			= range->max_proto.tcp.port
+-			= htons(port);
+-		return;
+-	case '-':
+-		if (!xtables_strtoui(end + 1, NULL, &maxport, 0, UINT16_MAX) &&
+-		    (maxport = xtables_service_to_port(end + 1, NULL)) == (unsigned)-1)
+-			break;
+-
+-		if (maxport < port)
+-			break;
+-
+-		range->min_proto.tcp.port = htons(port);
+-		range->max_proto.tcp.port = htons(maxport);
+-		return;
+-	default:
+-		break;
 -	}
--	else {
--		start++;
--		end = strchr(start, ']');
--		if (end == NULL)
--			xtables_error(PARAMETER_PROBLEM,
--				      "Invalid address format");
--
--		*end = '\0';
--		colon = strchr(end + 1, ':');
--	}
--
--	if (colon) {
--		int port;
--
--		if (!portok)
--			xtables_error(PARAMETER_PROBLEM,
--				   "Need TCP, UDP, SCTP or DCCP with port specification");
--
--		range->flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
--
--		port = atoi(colon+1);
--		if (port <= 0 || port > 65535)
--			xtables_error(PARAMETER_PROBLEM,
--				   "Port `%s' not valid\n", colon+1);
--
--		error = strchr(colon+1, ':');
--		if (error)
--			xtables_error(PARAMETER_PROBLEM,
--				   "Invalid port:port syntax - use dash\n");
--
--		dash = strchr(colon, '-');
--		if (!dash) {
--			range->min_proto.tcp.port
--				= range->max_proto.tcp.port
--				= htons(port);
--		} else {
--			int maxport;
--
--			maxport = atoi(dash + 1);
--			if (maxport <= 0 || maxport > 65535)
--				xtables_error(PARAMETER_PROBLEM,
--					   "Port `%s' not valid\n", dash+1);
--			if (maxport < port)
--				/* People are stupid. */
--				xtables_error(PARAMETER_PROBLEM,
--					   "Port range `%s' funky\n", colon+1);
--			range->min_proto.tcp.port = htons(port);
--			range->max_proto.tcp.port = htons(maxport);
--
--			if (rev >= 2) {
--				char *slash = strchr(dash, '/');
--				if (slash) {
--					int baseport;
--
--					baseport = atoi(slash + 1);
--					if (baseport <= 0 || baseport > 65535)
--						xtables_error(PARAMETER_PROBLEM,
--								 "Port `%s' not valid\n", slash+1);
--					range->flags |= NF_NAT_RANGE_PROTO_OFFSET;
--					range->base_proto.tcp.port = htons(baseport);
--				}
--			}
--		}
--		/* Starts with colon or [] colon? No IP info...*/
--		if (colon == arg || colon == arg+2) {
--			free(arg);
--			return;
--		}
--		*colon = '\0';
--	}
--
--	range->flags |= NF_NAT_RANGE_MAP_IPS;
--	dash = strchr(start, '-');
--	if (colon && dash && dash > colon)
--		dash = NULL;
--
--	if (dash)
--		*dash = '\0';
--
--	ip = xtables_numeric_to_ip6addr(start);
--	if (!ip)
--		xtables_error(PARAMETER_PROBLEM, "Bad IP address \"%s\"\n",
--			      start);
--	range->min_addr.in6 = *ip;
--	if (dash) {
--		ip = xtables_numeric_to_ip6addr(dash + 1);
--		if (!ip)
--			xtables_error(PARAMETER_PROBLEM, "Bad IP address \"%s\"\n",
--				      dash+1);
--		range->max_addr.in6 = *ip;
--	} else
--		range->max_addr = range->min_addr;
--
--	free(arg);
--	return;
+-	xtables_param_act(XTF_BAD_VALUE, "REDIRECT", "--to-ports", arg);
 -}
 -
--static void _DNAT_parse(struct xt_option_call *cb,
--		struct nf_nat_range2 *range, int rev)
+-static void REDIRECT_parse(struct xt_option_call *cb)
 -{
 -	const struct ip6t_entry *entry = cb->xt_entry;
+-	struct nf_nat_range *range = (void *)(*cb->target)->data;
 -	int portok;
 -
--	if (entry->ipv6.proto == IPPROTO_TCP ||
--	    entry->ipv6.proto == IPPROTO_UDP ||
--	    entry->ipv6.proto == IPPROTO_SCTP ||
--	    entry->ipv6.proto == IPPROTO_DCCP ||
--	    entry->ipv6.proto == IPPROTO_ICMP)
+-	if (entry->ipv6.proto == IPPROTO_TCP
+-	    || entry->ipv6.proto == IPPROTO_UDP
+-	    || entry->ipv6.proto == IPPROTO_SCTP
+-	    || entry->ipv6.proto == IPPROTO_DCCP
+-	    || entry->ipv6.proto == IPPROTO_ICMP)
 -		portok = 1;
 -	else
 -		portok = 0;
 -
 -	xtables_option_parse(cb);
 -	switch (cb->entry->id) {
--	case O_TO_DEST:
--		parse_to(cb->arg, portok, range, rev);
+-	case O_TO_PORTS:
+-		if (!portok)
+-			xtables_error(PARAMETER_PROBLEM,
+-				   "Need TCP, UDP, SCTP or DCCP with port specification");
+-		parse_ports(cb->arg, range);
+-		if (cb->xflags & F_RANDOM)
+-			range->flags |= NF_NAT_RANGE_PROTO_RANDOM;
 -		break;
--	case O_PERSISTENT:
--		range->flags |= NF_NAT_RANGE_PERSISTENT;
+-	case O_RANDOM:
+-		if (cb->xflags & F_TO_PORTS)
+-			range->flags |= NF_NAT_RANGE_PROTO_RANDOM;
 -		break;
 -	}
 -}
 -
--static void DNAT_parse(struct xt_option_call *cb)
+-static void REDIRECT_print(const void *ip, const struct xt_entry_target *target,
+-                           int numeric)
 -{
--	struct nf_nat_range *range_v1 = (void *)cb->data;
--	struct nf_nat_range2 range = {};
+-	const struct nf_nat_range *range = (const void *)target->data;
 -
--	memcpy(&range, range_v1, sizeof(*range_v1));
--	_DNAT_parse(cb, &range, 1);
--	memcpy(range_v1, &range, sizeof(*range_v1));
--}
--
--static void DNAT_parse_v2(struct xt_option_call *cb)
--{
--	_DNAT_parse(cb, (struct nf_nat_range2 *)cb->data, 2);
--}
--
--static void _DNAT_fcheck(struct xt_fcheck_call *cb, unsigned int *flags)
--{
--	static const unsigned int f = F_TO_DEST | F_RANDOM;
--
--	if ((cb->xflags & f) == f)
--		*flags |= NF_NAT_RANGE_PROTO_RANDOM;
--}
--
--static void DNAT_fcheck(struct xt_fcheck_call *cb)
--{
--	_DNAT_fcheck(cb, &((struct nf_nat_range *)cb->data)->flags);
--}
--
--static void DNAT_fcheck_v2(struct xt_fcheck_call *cb)
--{
--	_DNAT_fcheck(cb, &((struct nf_nat_range2 *)cb->data)->flags);
--}
--
--static void print_range(const struct nf_nat_range2 *range, int rev)
--{
--	if (range->flags & NF_NAT_RANGE_MAP_IPS) {
--		if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED)
--			printf("[");
--		printf("%s", xtables_ip6addr_to_numeric(&range->min_addr.in6));
--		if (memcmp(&range->min_addr, &range->max_addr,
--			   sizeof(range->min_addr)))
--			printf("-%s", xtables_ip6addr_to_numeric(&range->max_addr.in6));
--		if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED)
--			printf("]");
--	}
 -	if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
--		printf(":");
+-		printf(" redir ports ");
 -		printf("%hu", ntohs(range->min_proto.tcp.port));
 -		if (range->max_proto.tcp.port != range->min_proto.tcp.port)
 -			printf("-%hu", ntohs(range->max_proto.tcp.port));
--		if (rev >= 2 && (range->flags & NF_NAT_RANGE_PROTO_OFFSET))
--			printf("/%hu", ntohs(range->base_proto.tcp.port));
+-		if (range->flags & NF_NAT_RANGE_PROTO_RANDOM)
+-			printf(" random");
 -	}
 -}
 -
--static void _DNAT_print(const struct nf_nat_range2 *range, int rev)
+-static void REDIRECT_save(const void *ip, const struct xt_entry_target *target)
 -{
--	printf(" to:");
--	print_range(range, rev);
--	if (range->flags & NF_NAT_RANGE_PROTO_RANDOM)
--		printf(" random");
--	if (range->flags & NF_NAT_RANGE_PERSISTENT)
--		printf(" persistent");
--}
+-	const struct nf_nat_range *range = (const void *)target->data;
 -
--static void DNAT_print(const void *ip, const struct xt_entry_target *target,
--                       int numeric)
--{
--	const struct nf_nat_range *range_v1 = (const void *)target->data;
--	struct nf_nat_range2 range = {};
--
--	memcpy(&range, range_v1, sizeof(*range_v1));
--	_DNAT_print(&range, 1);
--}
--
--static void DNAT_print_v2(const void *ip, const struct xt_entry_target *target,
--                          int numeric)
--{
--	_DNAT_print((const struct nf_nat_range2 *)target->data, 2);
--}
--
--static void _DNAT_save(const struct nf_nat_range2 *range, int rev)
--{
--	printf(" --to-destination ");
--	print_range(range, rev);
--	if (range->flags & NF_NAT_RANGE_PROTO_RANDOM)
--		printf(" --random");
--	if (range->flags & NF_NAT_RANGE_PERSISTENT)
--		printf(" --persistent");
--}
--
--static void DNAT_save(const void *ip, const struct xt_entry_target *target)
--{
--	const struct nf_nat_range *range_v1 = (const void *)target->data;
--	struct nf_nat_range2 range = {};
--
--	memcpy(&range, range_v1, sizeof(*range_v1));
--	_DNAT_save(&range, 1);
--}
--
--static void DNAT_save_v2(const void *ip, const struct xt_entry_target *target)
--{
--	_DNAT_save((const struct nf_nat_range2 *)target->data, 2);
--}
--
--static void print_range_xlate(const struct nf_nat_range2 *range,
--			      struct xt_xlate *xl, int rev)
--{
--	bool proto_specified = range->flags & NF_NAT_RANGE_PROTO_SPECIFIED;
--
--	if (range->flags & NF_NAT_RANGE_MAP_IPS) {
--		xt_xlate_add(xl, "%s%s%s",
--			     proto_specified ? "[" : "",
--			     xtables_ip6addr_to_numeric(&range->min_addr.in6),
--			     proto_specified ? "]" : "");
--
--		if (memcmp(&range->min_addr, &range->max_addr,
--			   sizeof(range->min_addr))) {
--			xt_xlate_add(xl, "-%s%s%s",
--				     proto_specified ? "[" : "",
--				     xtables_ip6addr_to_numeric(&range->max_addr.in6),
--				     proto_specified ? "]" : "");
--		}
--	}
--	if (proto_specified) {
--		xt_xlate_add(xl, ":%hu", ntohs(range->min_proto.tcp.port));
--
+-	if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
+-		printf(" --to-ports ");
+-		printf("%hu", ntohs(range->min_proto.tcp.port));
 -		if (range->max_proto.tcp.port != range->min_proto.tcp.port)
--			xt_xlate_add(xl, "-%hu",
+-			printf("-%hu", ntohs(range->max_proto.tcp.port));
+-		if (range->flags & NF_NAT_RANGE_PROTO_RANDOM)
+-			printf(" --random");
+-	}
+-}
+-
+-static int REDIRECT_xlate(struct xt_xlate *xl,
+-			  const struct xt_xlate_tg_params *params)
+-{
+-	const struct nf_nat_range *range = (const void *)params->target->data;
+-
+-	if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
+-		xt_xlate_add(xl, "redirect to :%hu",
+-			   ntohs(range->min_proto.tcp.port));
+-		if (range->max_proto.tcp.port != range->min_proto.tcp.port)
+-			xt_xlate_add(xl, "-%hu ",
 -				   ntohs(range->max_proto.tcp.port));
--	}
--}
--
--static int _DNAT_xlate(struct xt_xlate *xl,
--		      const struct nf_nat_range2 *range, int rev)
--{
--	bool sep_need = false;
--	const char *sep = " ";
--
--	xt_xlate_add(xl, "dnat to ");
--	print_range_xlate(range, xl, rev);
--	if (range->flags & NF_NAT_RANGE_PROTO_RANDOM) {
--		xt_xlate_add(xl, " random");
--		sep_need = true;
--	}
--	if (range->flags & NF_NAT_RANGE_PERSISTENT) {
--		if (sep_need)
--			sep = ",";
--		xt_xlate_add(xl, "%spersistent", sep);
+-		if (range->flags & NF_NAT_RANGE_PROTO_RANDOM)
+-			xt_xlate_add(xl, " random ");
 -	}
 -
 -	return 1;
 -}
 -
--static int DNAT_xlate(struct xt_xlate *xl,
--		      const struct xt_xlate_tg_params *params)
--{
--	const struct nf_nat_range *range_v1 = (const void *)params->target->data;
--	struct nf_nat_range2 range = {};
--
--	memcpy(&range, range_v1, sizeof(*range_v1));
--	_DNAT_xlate(xl, &range, 1);
--
--	return 1;
--}
--
--static int DNAT_xlate_v2(struct xt_xlate *xl,
--		      const struct xt_xlate_tg_params *params)
--{
--	_DNAT_xlate(xl, (const struct nf_nat_range2 *)params->target->data, 2);
--
--	return 1;
--}
--
--static struct xtables_target dnat_tg_reg[] = {
--	{
--		.name		= "DNAT",
--		.version	= XTABLES_VERSION,
--		.family		= NFPROTO_IPV6,
--		.revision	= 1,
--		.size		= XT_ALIGN(sizeof(struct nf_nat_range)),
--		.userspacesize	= XT_ALIGN(sizeof(struct nf_nat_range)),
--		.help		= DNAT_help,
--		.print		= DNAT_print,
--		.save		= DNAT_save,
--		.x6_parse	= DNAT_parse,
--		.x6_fcheck	= DNAT_fcheck,
--		.x6_options	= DNAT_opts,
--		.xlate		= DNAT_xlate,
--	},
--	{
--		.name		= "DNAT",
--		.version	= XTABLES_VERSION,
--		.family		= NFPROTO_IPV6,
--		.revision	= 2,
--		.size		= XT_ALIGN(sizeof(struct nf_nat_range2)),
--		.userspacesize	= XT_ALIGN(sizeof(struct nf_nat_range2)),
--		.help		= DNAT_help_v2,
--		.print		= DNAT_print_v2,
--		.save		= DNAT_save_v2,
--		.x6_parse	= DNAT_parse_v2,
--		.x6_fcheck	= DNAT_fcheck_v2,
--		.x6_options	= DNAT_opts,
--		.xlate		= DNAT_xlate_v2,
--	},
+-static struct xtables_target redirect_tg_reg = {
+-	.name		= "REDIRECT",
+-	.version	= XTABLES_VERSION,
+-	.family		= NFPROTO_IPV6,
+-	.size		= XT_ALIGN(sizeof(struct nf_nat_range)),
+-	.userspacesize	= XT_ALIGN(sizeof(struct nf_nat_range)),
+-	.help		= REDIRECT_help,
+-	.x6_parse	= REDIRECT_parse,
+-	.print		= REDIRECT_print,
+-	.save		= REDIRECT_save,
+-	.x6_options	= REDIRECT_opts,
+-	.xlate		= REDIRECT_xlate,
 -};
 -
 -void _init(void)
 -{
--	xtables_register_targets(dnat_tg_reg, ARRAY_SIZE(dnat_tg_reg));
+-	xtables_register_target(&redirect_tg_reg);
 -}
-diff --git a/extensions/libip6t_DNAT.txlate b/extensions/libip6t_DNAT.txlate
+diff --git a/extensions/libip6t_REDIRECT.t b/extensions/libip6t_REDIRECT.t
 deleted file mode 100644
-index 03c4caf7e87c4..0000000000000
---- a/extensions/libip6t_DNAT.txlate
+index a0fb0ed19a5ea..0000000000000
+--- a/extensions/libip6t_REDIRECT.t
 +++ /dev/null
-@@ -1,11 +0,0 @@
--ip6tables-translate -t nat -A prerouting -i eth1 -p tcp --dport 8080 -j DNAT --to-destination [fec0::1234]:80
--nft add rule ip6 nat prerouting iifname "eth1" tcp dport 8080 counter dnat to [fec0::1234]:80
--
--ip6tables-translate -t nat -A prerouting -p tcp -j DNAT --to-destination [fec0::1234]:1-20
--nft add rule ip6 nat prerouting meta l4proto tcp counter dnat to [fec0::1234]:1-20
--
--ip6tables-translate -t nat -A prerouting -p tcp -j DNAT --to-destination [fec0::1234]:80 --persistent
--nft add rule ip6 nat prerouting meta l4proto tcp counter dnat to [fec0::1234]:80 persistent
--
--ip6tables-translate -t nat -A prerouting -p tcp -j DNAT --to-destination [fec0::1234]:80 --random --persistent
--nft add rule ip6 nat prerouting meta l4proto tcp counter dnat to [fec0::1234]:80 random,persistent
-diff --git a/extensions/libipt_DNAT.txlate b/extensions/libipt_DNAT.txlate
+@@ -1,6 +0,0 @@
+-:PREROUTING,OUTPUT
+-*nat
+--p tcp -j REDIRECT --to-ports 42;=;OK
+--p udp -j REDIRECT --to-ports 42-1234;=;OK
+--p tcp -j REDIRECT --to-ports 42-1234 --random;=;OK
+--j REDIRECT --to-ports 42;;FAIL
+diff --git a/extensions/libip6t_REDIRECT.txlate b/extensions/libip6t_REDIRECT.txlate
 deleted file mode 100644
-index e88314d9dba59..0000000000000
---- a/extensions/libipt_DNAT.txlate
+index 209f67a4235f9..0000000000000
+--- a/extensions/libip6t_REDIRECT.txlate
 +++ /dev/null
-@@ -1,14 +0,0 @@
--iptables-translate -t nat -A prerouting -p tcp -o eth0 -j DNAT --to-destination 1.2.3.4
--nft add rule ip nat prerouting oifname "eth0" ip protocol tcp counter dnat to 1.2.3.4
+@@ -1,5 +0,0 @@
+-ip6tables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT --to-ports 8080
+-nft add rule ip6 nat prerouting tcp dport 80 counter redirect to :8080
 -
--iptables-translate -t nat -A prerouting -p tcp -d 15.45.23.67 --dport 80 -j DNAT --to-destination 192.168.1.1-192.168.1.10
--nft add rule ip nat prerouting ip daddr 15.45.23.67 tcp dport 80 counter dnat to 192.168.1.1-192.168.1.10
+-ip6tables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT --to-ports 8080 --random
+-nft add rule ip6 nat prerouting tcp dport 80 counter redirect to :8080 random
+diff --git a/extensions/libipt_DNAT.t b/extensions/libipt_DNAT.t
+index 1c4413b9b3bb5..eb187bc91053b 100644
+--- a/extensions/libipt_DNAT.t
++++ b/extensions/libipt_DNAT.t
+@@ -13,4 +13,6 @@
+ -p tcp -j DNAT --to-destination 1.1.1.1:1000-2000/65535;=;OK
+ -p tcp -j DNAT --to-destination 1.1.1.1:1000-2000/0;;FAIL
+ -p tcp -j DNAT --to-destination 1.1.1.1:1000-2000/65536;;FAIL
++-p tcp -j DNAT --to-destination 1.1.1.1:ssh;-p tcp -j DNAT --to-destination 1.1.1.1:22;OK
++-p tcp -j DNAT --to-destination 1.1.1.1:ftp-data;-p tcp -j DNAT --to-destination 1.1.1.1:20;OK
+ -j DNAT;;FAIL
+diff --git a/extensions/libipt_REDIRECT.c b/extensions/libipt_REDIRECT.c
+deleted file mode 100644
+index 7850306f5fe25..0000000000000
+--- a/extensions/libipt_REDIRECT.c
++++ /dev/null
+@@ -1,174 +0,0 @@
+-#include <stdio.h>
+-#include <string.h>
+-#include <stdlib.h>
+-#include <xtables.h>
+-#include <limits.h> /* INT_MAX in ip_tables.h */
+-#include <linux/netfilter_ipv4/ip_tables.h>
+-#include <linux/netfilter/nf_nat.h>
 -
--iptables-translate -t nat -A prerouting -p tcp -o eth0 -j DNAT --to-destination 1.2.3.4:1-1023
--nft add rule ip nat prerouting oifname "eth0" ip protocol tcp counter dnat to 1.2.3.4:1-1023
+-enum {
+-	O_TO_PORTS = 0,
+-	O_RANDOM,
+-	F_TO_PORTS = 1 << O_TO_PORTS,
+-	F_RANDOM   = 1 << O_RANDOM,
+-};
 -
--iptables-translate -t nat -A prerouting -p tcp -o eth0 -j DNAT --to-destination 1.2.3.4 --random
--nft add rule ip nat prerouting oifname "eth0" ip protocol tcp counter dnat to 1.2.3.4 random
+-static void REDIRECT_help(void)
+-{
+-	printf(
+-"REDIRECT target options:\n"
+-" --to-ports <port>[-<port>]\n"
+-"				Port (range) to map to.\n"
+-" [--random]\n");
+-}
 -
--iptables-translate -t nat -A prerouting -p tcp -o eth0 -j DNAT --to-destination 1.2.3.4 --random --persistent
--nft add rule ip nat prerouting oifname "eth0" ip protocol tcp counter dnat to 1.2.3.4 random,persistent
+-static const struct xt_option_entry REDIRECT_opts[] = {
+-	{.name = "to-ports", .id = O_TO_PORTS, .type = XTTYPE_STRING},
+-	{.name = "random", .id = O_RANDOM, .type = XTTYPE_NONE},
+-	XTOPT_TABLEEND,
+-};
+-
+-static void REDIRECT_init(struct xt_entry_target *t)
+-{
+-	struct nf_nat_ipv4_multi_range_compat *mr = (struct nf_nat_ipv4_multi_range_compat *)t->data;
+-
+-	/* Actually, it's 0, but it's ignored at the moment. */
+-	mr->rangesize = 1;
+-}
+-
+-/* Parses ports */
+-static void
+-parse_ports(const char *arg, struct nf_nat_ipv4_multi_range_compat *mr)
+-{
+-	char *end = "";
+-	unsigned int port, maxport;
+-
+-	mr->range[0].flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
+-
+-	if (!xtables_strtoui(arg, &end, &port, 0, UINT16_MAX) &&
+-	    (port = xtables_service_to_port(arg, NULL)) == (unsigned)-1)
+-		xtables_param_act(XTF_BAD_VALUE, "REDIRECT", "--to-ports", arg);
+-
+-	switch (*end) {
+-	case '\0':
+-		mr->range[0].min.tcp.port
+-			= mr->range[0].max.tcp.port
+-			= htons(port);
+-		return;
+-	case '-':
+-		if (!xtables_strtoui(end + 1, NULL, &maxport, 0, UINT16_MAX) &&
+-		    (maxport = xtables_service_to_port(end + 1, NULL)) == (unsigned)-1)
+-			break;
+-
+-		if (maxport < port)
+-			break;
+-
+-		mr->range[0].min.tcp.port = htons(port);
+-		mr->range[0].max.tcp.port = htons(maxport);
+-		return;
+-	default:
+-		break;
+-	}
+-	xtables_param_act(XTF_BAD_VALUE, "REDIRECT", "--to-ports", arg);
+-}
+-
+-static void REDIRECT_parse(struct xt_option_call *cb)
+-{
+-	const struct ipt_entry *entry = cb->xt_entry;
+-	struct nf_nat_ipv4_multi_range_compat *mr = (void *)(*cb->target)->data;
+-	int portok;
+-
+-	if (entry->ip.proto == IPPROTO_TCP
+-	    || entry->ip.proto == IPPROTO_UDP
+-	    || entry->ip.proto == IPPROTO_SCTP
+-	    || entry->ip.proto == IPPROTO_DCCP
+-	    || entry->ip.proto == IPPROTO_ICMP)
+-		portok = 1;
+-	else
+-		portok = 0;
+-
+-	xtables_option_parse(cb);
+-	switch (cb->entry->id) {
+-	case O_TO_PORTS:
+-		if (!portok)
+-			xtables_error(PARAMETER_PROBLEM,
+-				   "Need TCP, UDP, SCTP or DCCP with port specification");
+-		parse_ports(cb->arg, mr);
+-		if (cb->xflags & F_RANDOM)
+-			mr->range[0].flags |= NF_NAT_RANGE_PROTO_RANDOM;
+-		break;
+-	case O_RANDOM:
+-		if (cb->xflags & F_TO_PORTS)
+-			mr->range[0].flags |= NF_NAT_RANGE_PROTO_RANDOM;
+-		break;
+-	}
+-}
+-
+-static void REDIRECT_print(const void *ip, const struct xt_entry_target *target,
+-                           int numeric)
+-{
+-	const struct nf_nat_ipv4_multi_range_compat *mr = (const void *)target->data;
+-	const struct nf_nat_ipv4_range *r = &mr->range[0];
+-
+-	if (r->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
+-		printf(" redir ports ");
+-		printf("%hu", ntohs(r->min.tcp.port));
+-		if (r->max.tcp.port != r->min.tcp.port)
+-			printf("-%hu", ntohs(r->max.tcp.port));
+-		if (mr->range[0].flags & NF_NAT_RANGE_PROTO_RANDOM)
+-			printf(" random");
+-	}
+-}
+-
+-static void REDIRECT_save(const void *ip, const struct xt_entry_target *target)
+-{
+-	const struct nf_nat_ipv4_multi_range_compat *mr = (const void *)target->data;
+-	const struct nf_nat_ipv4_range *r = &mr->range[0];
+-
+-	if (r->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
+-		printf(" --to-ports ");
+-		printf("%hu", ntohs(r->min.tcp.port));
+-		if (r->max.tcp.port != r->min.tcp.port)
+-			printf("-%hu", ntohs(r->max.tcp.port));
+-		if (mr->range[0].flags & NF_NAT_RANGE_PROTO_RANDOM)
+-			printf(" --random");
+-	}
+-}
+-
+-static int REDIRECT_xlate(struct xt_xlate *xl,
+-			  const struct xt_xlate_tg_params *params)
+-{
+-	const struct nf_nat_ipv4_multi_range_compat *mr =
+-		(const void *)params->target->data;
+-	const struct nf_nat_ipv4_range *r = &mr->range[0];
+-
+-	if (r->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
+-		xt_xlate_add(xl, "redirect to :%hu", ntohs(r->min.tcp.port));
+-		if (r->max.tcp.port != r->min.tcp.port)
+-			xt_xlate_add(xl, "-%hu ", ntohs(r->max.tcp.port));
+-		if (mr->range[0].flags & NF_NAT_RANGE_PROTO_RANDOM)
+-			xt_xlate_add(xl, " random ");
+-	}
+-
+-	return 1;
+-}
+-
+-static struct xtables_target redirect_tg_reg = {
+-	.name		= "REDIRECT",
+-	.version	= XTABLES_VERSION,
+-	.family		= NFPROTO_IPV4,
+-	.size		= XT_ALIGN(sizeof(struct nf_nat_ipv4_multi_range_compat)),
+-	.userspacesize	= XT_ALIGN(sizeof(struct nf_nat_ipv4_multi_range_compat)),
+-	.help		= REDIRECT_help,
+-	.init		= REDIRECT_init,
+- 	.x6_parse	= REDIRECT_parse,
+-	.print		= REDIRECT_print,
+-	.save		= REDIRECT_save,
+-	.x6_options	= REDIRECT_opts,
+-	.xlate		= REDIRECT_xlate,
+-};
+-
+-void _init(void)
+-{
+-	xtables_register_target(&redirect_tg_reg);
+-}
+diff --git a/extensions/libipt_REDIRECT.t b/extensions/libipt_REDIRECT.t
+deleted file mode 100644
+index a0fb0ed19a5ea..0000000000000
+--- a/extensions/libipt_REDIRECT.t
++++ /dev/null
+@@ -1,6 +0,0 @@
+-:PREROUTING,OUTPUT
+-*nat
+--p tcp -j REDIRECT --to-ports 42;=;OK
+--p udp -j REDIRECT --to-ports 42-1234;=;OK
+--p tcp -j REDIRECT --to-ports 42-1234 --random;=;OK
+--j REDIRECT --to-ports 42;;FAIL
+diff --git a/extensions/libipt_REDIRECT.txlate b/extensions/libipt_REDIRECT.txlate
+deleted file mode 100644
+index 815bb7714138d..0000000000000
+--- a/extensions/libipt_REDIRECT.txlate
++++ /dev/null
+@@ -1,5 +0,0 @@
+-iptables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT --to-ports 8080
+-nft add rule ip nat prerouting tcp dport 80 counter redirect to :8080
+-
+-iptables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT --to-ports 8080 --random
+-nft add rule ip nat prerouting tcp dport 80 counter redirect to :8080 random
 diff --git a/extensions/libxt_DNAT.c b/extensions/libxt_DNAT.c
-index 9a179919f522d..83ff95b0013c7 100644
+index 83ff95b0013c7..754e244e0dbe6 100644
 --- a/extensions/libxt_DNAT.c
 +++ b/extensions/libxt_DNAT.c
-@@ -1,3 +1,10 @@
-+/*
-+ * Copyright (c) 2011 Patrick McHardy <kaber@trash.net>
-+ *
-+ * Based on Rusty Russell's IPv4 DNAT target. Development of IPv6 NAT
-+ * funded by Astaro.
-+ */
+@@ -28,10 +28,12 @@
+ 
+ enum {
+ 	O_TO_DEST = 0,
++	O_TO_PORTS,
+ 	O_RANDOM,
+ 	O_PERSISTENT,
+-	F_TO_DEST = 1 << O_TO_DEST,
+-	F_RANDOM  = 1 << O_RANDOM,
++	F_TO_DEST  = 1 << O_TO_DEST,
++	F_TO_PORTS = 1 << O_TO_PORTS,
++	F_RANDOM   = 1 << O_RANDOM,
+ };
+ 
+ static void DNAT_help(void)
+@@ -52,6 +54,15 @@ static void DNAT_help_v2(void)
+ "[--random] [--persistent]\n");
+ }
+ 
++static void REDIRECT_help(void)
++{
++	printf(
++"REDIRECT target options:\n"
++" --to-ports <port>[-<port>]\n"
++"				Port (range) to map to.\n"
++" [--random]\n");
++}
 +
- #include <stdio.h>
- #include <netdb.h>
- #include <string.h>
-@@ -7,6 +14,7 @@
- #include <limits.h> /* INT_MAX in ip_tables.h */
- #include <arpa/inet.h>
- #include <linux/netfilter_ipv4/ip_tables.h>
-+#include <linux/netfilter_ipv6/ip6_tables.h>
- #include <linux/netfilter/nf_nat.h>
+ static const struct xt_option_entry DNAT_opts[] = {
+ 	{.name = "to-destination", .id = O_TO_DEST, .type = XTTYPE_STRING,
+ 	 .flags = XTOPT_MAND},
+@@ -60,6 +71,12 @@ static const struct xt_option_entry DNAT_opts[] = {
+ 	XTOPT_TABLEEND,
+ };
  
- #define TO_IPV4_MRC(ptr) ((const struct nf_nat_ipv4_multi_range_compat *)(ptr))
-@@ -119,18 +127,36 @@ parse_ports(const char *arg, bool portok, struct nf_nat_range2 *range)
- 
- /* Ranges expected in network order. */
++static const struct xt_option_entry REDIRECT_opts[] = {
++	{.name = "to-ports", .id = O_TO_PORTS, .type = XTTYPE_STRING},
++	{.name = "random", .id = O_RANDOM, .type = XTTYPE_NONE},
++	XTOPT_TABLEEND,
++};
++
+ /* Parses ports */
  static void
--parse_to(const char *orig_arg, bool portok, struct nf_nat_range2 *range)
-+parse_to(const char *orig_arg, bool portok,
-+	 struct nf_nat_range2 *range, int family)
- {
--	char *arg, *colon, *dash;
-+	char *arg, *start, *end, *colon, *dash;
+ parse_ports(const char *arg, bool portok, struct nf_nat_range2 *range)
+@@ -73,9 +90,12 @@ parse_ports(const char *arg, bool portok, struct nf_nat_range2 *range)
  
- 	arg = xtables_strdup(orig_arg);
--	colon = strchr(arg, ':');
-+	start = strchr(arg, '[');
-+	if (!start) {
-+		start = arg;
-+		/* Lets assume one colon is port information.
-+		 * Otherwise its an IPv6 address */
-+		colon = strchr(arg, ':');
-+		if (colon && strchr(colon + 1, ':'))
-+			colon = NULL;
-+	} else {
-+		start++;
-+		end = strchr(start, ']');
-+		if (end == NULL || family == AF_INET)
+ 	range->flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
+ 
+-	if (!xtables_strtoui(arg, &end, &port, 1, UINT16_MAX))
+-		xtables_error(PARAMETER_PROBLEM,
+-			      "Port `%s' not valid", arg);
++	if (!xtables_strtoui(arg, &end, &port, 1, UINT16_MAX)) {
++		port = xtables_service_to_port(arg, NULL);
++		if (port == (unsigned)-1)
 +			xtables_error(PARAMETER_PROBLEM,
-+				      "Invalid address format");
-+
-+		*end = '\0';
-+		colon = strchr(end + 1, ':');
++				      "Port `%s' not valid", arg);
 +	}
  
- 	if (colon) {
- 		parse_ports(colon + 1, portok, range);
- 
--		/* Starts with a colon? No IP info...*/
--		if (colon == arg) {
-+		/* Starts with colon or [] colon? No IP info...*/
-+		if (colon == arg || colon == arg + 2) {
- 			free(arg);
- 			return;
- 		}
-@@ -138,20 +164,20 @@ parse_to(const char *orig_arg, bool portok, struct nf_nat_range2 *range)
+ 	switch (*end) {
+ 	case '\0':
+@@ -94,10 +114,12 @@ parse_ports(const char *arg, bool portok, struct nf_nat_range2 *range)
+ 			      "Garbage after port value: `%s'", end);
  	}
  
- 	range->flags |= NF_NAT_RANGE_MAP_IPS;
--	dash = strchr(arg, '-');
-+	dash = strchr(start, '-');
- 	if (colon && dash && dash > colon)
- 		dash = NULL;
- 
- 	if (dash)
- 		*dash = '\0';
- 
--	if (!inet_pton(AF_INET, arg, &range->min_addr))
-+	if (!inet_pton(family, start, &range->min_addr))
+-	if (!xtables_strtoui(arg, &end, &maxport, 1, UINT16_MAX))
+-		xtables_error(PARAMETER_PROBLEM,
+-			      "Port `%s' not valid", arg);
+-
++	if (!xtables_strtoui(arg, &end, &maxport, 1, UINT16_MAX)) {
++		maxport = xtables_service_to_port(arg, NULL);
++		if (maxport == (unsigned)-1)
++			xtables_error(PARAMETER_PROBLEM,
++				      "Port `%s' not valid", arg);
++	}
+ 	if (maxport < port)
+ 		/* People are stupid. */
  		xtables_error(PARAMETER_PROBLEM,
--			      "Bad IP address \"%s\"\n", arg);
-+			      "Bad IP address \"%s\"", arg);
- 	if (dash) {
--		if (!inet_pton(AF_INET, dash + 1, &range->max_addr))
-+		if (!inet_pton(family, dash + 1, &range->max_addr))
- 			xtables_error(PARAMETER_PROBLEM,
--				      "Bad IP address \"%s\"\n", dash + 1);
-+				      "Bad IP address \"%s\"", dash + 1);
- 	} else {
- 		range->max_addr = range->min_addr;
+@@ -117,9 +139,12 @@ parse_ports(const char *arg, bool portok, struct nf_nat_range2 *range)
+ 			      "Garbage after port range: `%s'", end);
  	}
-@@ -160,7 +186,7 @@ parse_to(const char *orig_arg, bool portok, struct nf_nat_range2 *range)
- }
  
- static void __DNAT_parse(struct xt_option_call *cb, __u16 proto,
--			 struct nf_nat_range2 *range)
-+			 struct nf_nat_range2 *range, int family)
- {
- 	bool portok = proto == IPPROTO_TCP ||
- 		      proto == IPPROTO_UDP ||
-@@ -171,7 +197,7 @@ static void __DNAT_parse(struct xt_option_call *cb, __u16 proto,
- 	xtables_option_parse(cb);
- 	switch (cb->entry->id) {
+-	if (!xtables_strtoui(arg, &end, &baseport, 1, UINT16_MAX))
+-		xtables_error(PARAMETER_PROBLEM,
+-			      "Port `%s' not valid", arg);
++	if (!xtables_strtoui(arg, &end, &baseport, 1, UINT16_MAX)) {
++		baseport = xtables_service_to_port(arg, NULL);
++		if (baseport == (unsigned)-1)
++			xtables_error(PARAMETER_PROBLEM,
++				      "Port `%s' not valid", arg);
++	}
+ 
+ 	range->flags |= NF_NAT_RANGE_PROTO_OFFSET;
+ 	range->base_proto.tcp.port = htons(baseport);
+@@ -199,6 +224,9 @@ static void __DNAT_parse(struct xt_option_call *cb, __u16 proto,
  	case O_TO_DEST:
--		parse_to(cb->arg, portok, range);
-+		parse_to(cb->arg, portok, range, family);
+ 		parse_to(cb->arg, portok, range, family);
  		break;
++	case O_TO_PORTS:
++		parse_ports(cb->arg, portok, range);
++		break;
  	case O_PERSISTENT:
  		range->flags |= NF_NAT_RANGE_PERSISTENT;
-@@ -185,7 +211,7 @@ static void DNAT_parse(struct xt_option_call *cb)
- 	const struct ipt_entry *entry = cb->xt_entry;
- 	struct nf_nat_range2 range = {};
- 
--	__DNAT_parse(cb, entry->ip.proto, &range);
-+	__DNAT_parse(cb, entry->ip.proto, &range, AF_INET);
- 
- 	switch (cb->entry->id) {
+ 		break;
+@@ -217,6 +245,8 @@ static void DNAT_parse(struct xt_option_call *cb)
  	case O_TO_DEST:
-@@ -200,32 +226,45 @@ static void DNAT_parse(struct xt_option_call *cb)
- 	}
- }
+ 		mr->range->min_ip = range.min_addr.ip;
+ 		mr->range->max_ip = range.max_addr.ip;
++		/* fall through */
++	case O_TO_PORTS:
+ 		mr->range->min = range.min_proto;
+ 		mr->range->max = range.max_proto;
+ 		/* fall through */
+@@ -228,9 +258,13 @@ static void DNAT_parse(struct xt_option_call *cb)
  
--static void DNAT_fcheck(struct xt_fcheck_call *cb)
-+static void __DNAT_fcheck(struct xt_fcheck_call *cb, unsigned int *flags)
- {
- 	static const unsigned int f = F_TO_DEST | F_RANDOM;
--	struct nf_nat_ipv4_multi_range_compat *mr = cb->data;
- 
- 	if ((cb->xflags & f) == f)
--		mr->range[0].flags |= NF_NAT_RANGE_PROTO_RANDOM;
-+		*flags |= NF_NAT_RANGE_PROTO_RANDOM;
-+}
-+
-+static void DNAT_fcheck(struct xt_fcheck_call *cb)
-+{
-+	struct nf_nat_ipv4_multi_range_compat *mr = cb->data;
- 
- 	mr->rangesize = 1;
- 
- 	if (mr->range[0].flags & NF_NAT_RANGE_PROTO_OFFSET)
- 		xtables_error(PARAMETER_PROBLEM,
- 			      "Shifted portmap ranges not supported with this kernel");
-+
-+	__DNAT_fcheck(cb, &mr->range[0].flags);
- }
- 
--static char *sprint_range(const struct nf_nat_range2 *r)
-+static char *sprint_range(const struct nf_nat_range2 *r, int family)
- {
--	static char buf[INET_ADDRSTRLEN * 2 + 1 + 6 * 3];
-+	bool brackets = family == AF_INET6 &&
-+			r->flags & NF_NAT_RANGE_PROTO_SPECIFIED;
-+	static char buf[INET6_ADDRSTRLEN * 2 + 3 + 6 * 3] = "";
- 
- 	if (r->flags & NF_NAT_RANGE_MAP_IPS) {
--		sprintf(buf, "%s", xtables_ipaddr_to_numeric(&r->min_addr.in));
--		if (memcmp(&r->min_addr, &r->max_addr, sizeof(r->min_addr)))
--			sprintf(buf + strlen(buf), "-%s",
--				xtables_ipaddr_to_numeric(&r->max_addr.in));
--	} else {
--		buf[0] = '\0';
-+		if (brackets)
-+			strcat(buf, "[");
-+		inet_ntop(family, &r->min_addr,
-+			  buf + strlen(buf), INET6_ADDRSTRLEN);
-+		if (memcmp(&r->min_addr, &r->max_addr, sizeof(r->min_addr))) {
-+			strcat(buf, "-");
-+			inet_ntop(family, &r->max_addr,
-+				  buf + strlen(buf), INET6_ADDRSTRLEN);
-+		}
-+		if (brackets)
-+			strcat(buf, "]");
- 	}
- 	if (r->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
- 		sprintf(buf + strlen(buf), ":%hu",
-@@ -240,11 +279,12 @@ static char *sprint_range(const struct nf_nat_range2 *r)
- 	return buf;
- }
- 
--static void __DNAT_print(const struct nf_nat_range2 *r, bool save)
-+static void __DNAT_print(const struct nf_nat_range2 *r, bool save, int family)
- {
- 	const char *dashdash = save ? "--" : "";
- 
--	printf(" %s%s", save ? "--to-destination " : "to:", sprint_range(r));
-+	printf(" %s%s", save ? "--to-destination " : "to:",
-+	       sprint_range(r, family));
- 	if (r->flags & NF_NAT_RANGE_PROTO_RANDOM)
- 		printf(" %srandom", dashdash);
- 	if (r->flags & NF_NAT_RANGE_PERSISTENT)
-@@ -256,19 +296,20 @@ static void DNAT_print(const void *ip, const struct xt_entry_target *target,
- {
- 	struct nf_nat_range2 range = RANGE2_INIT_FROM_IPV4_MRC(target->data);
- 
--	__DNAT_print(&range, false);
-+	__DNAT_print(&range, false, AF_INET);
- }
- 
- static void DNAT_save(const void *ip, const struct xt_entry_target *target)
- {
- 	struct nf_nat_range2 range = RANGE2_INIT_FROM_IPV4_MRC(target->data);
- 
--	__DNAT_print(&range, true);
-+	__DNAT_print(&range, true, AF_INET);
- }
- 
--static int __DNAT_xlate(struct xt_xlate *xl, const struct nf_nat_range2 *r)
-+static int
-+__DNAT_xlate(struct xt_xlate *xl, const struct nf_nat_range2 *r, int family)
- {
--	char *range_str = sprint_range(r);
-+	char *range_str = sprint_range(r, family);
- 	const char *sep = " ";
- 
- 	/* shifted portmap ranges are not supported by nftables */
-@@ -295,40 +336,109 @@ static int DNAT_xlate(struct xt_xlate *xl,
- 	struct nf_nat_range2 range =
- 		RANGE2_INIT_FROM_IPV4_MRC(params->target->data);
- 
--	return __DNAT_xlate(xl, &range);
-+	return __DNAT_xlate(xl, &range, AF_INET);
- }
- 
- static void DNAT_parse_v2(struct xt_option_call *cb)
- {
- 	const struct ipt_entry *entry = cb->xt_entry;
- 
--	__DNAT_parse(cb, entry->ip.proto, cb->data);
-+	__DNAT_parse(cb, entry->ip.proto, cb->data, AF_INET);
- }
- 
- static void DNAT_fcheck_v2(struct xt_fcheck_call *cb)
+ static void __DNAT_fcheck(struct xt_fcheck_call *cb, unsigned int *flags)
  {
 -	static const unsigned int f = F_TO_DEST | F_RANDOM;
--	struct nf_nat_range2 *range = cb->data;
--
++	static const unsigned int redir_f = F_TO_PORTS | F_RANDOM;
++	static const unsigned int dnat_f = F_TO_DEST | F_RANDOM;
++
+ 
 -	if ((cb->xflags & f) == f)
--		range->flags |= NF_NAT_RANGE_PROTO_RANDOM;
-+	__DNAT_fcheck(cb, &((struct nf_nat_range2 *)cb->data)->flags);
- }
- 
- static void DNAT_print_v2(const void *ip, const struct xt_entry_target *target,
-                        int numeric)
- {
--	__DNAT_print((const void *)target->data, false);
-+	__DNAT_print((const void *)target->data, false, AF_INET);
- }
- 
- static void DNAT_save_v2(const void *ip, const struct xt_entry_target *target)
- {
--	__DNAT_print((const void *)target->data, true);
-+	__DNAT_print((const void *)target->data, true, AF_INET);
- }
- 
- static int DNAT_xlate_v2(struct xt_xlate *xl,
--		      const struct xt_xlate_tg_params *params)
-+			  const struct xt_xlate_tg_params *params)
- {
--	return __DNAT_xlate(xl, (const void *)params->target->data);
-+	return __DNAT_xlate(xl, (const void *)params->target->data, AF_INET);
-+}
 +
-+static void DNAT_parse6(struct xt_option_call *cb)
++	if ((cb->xflags & redir_f) == redir_f ||
++	    (cb->xflags & dnat_f) == dnat_f)
+ 		*flags |= NF_NAT_RANGE_PROTO_RANDOM;
+ }
+ 
+@@ -441,6 +475,84 @@ static int DNAT_xlate6_v2(struct xt_xlate *xl,
+ 	return __DNAT_xlate(xl, (const void *)params->target->data, AF_INET6);
+ }
+ 
++static void __REDIRECT_print(const struct nf_nat_range2 *range, bool save)
 +{
-+	const struct ip6t_entry *entry = cb->xt_entry;
-+	struct nf_nat_range *range_v1 = (void *)cb->data;
-+	struct nf_nat_range2 range = {};
++	char *range_str = sprint_range(range, AF_INET);
++	const char *dashdash = save ? "--" : "";
 +
-+	memcpy(&range, range_v1, sizeof(*range_v1));
-+	__DNAT_parse(cb, entry->ipv6.proto, &range, AF_INET6);
-+	memcpy(range_v1, &range, sizeof(*range_v1));
++	if (strlen(range_str))
++		/* range_str starts with colon, skip over them */
++		printf(" %s %s", save ? "--to-ports" : "redir ports",
++		       range_str + 1);
++	if (range->flags & NF_NAT_RANGE_PROTO_RANDOM)
++		printf(" %srandom", dashdash);
 +}
 +
-+static void DNAT_fcheck6(struct xt_fcheck_call *cb)
++static int __REDIRECT_xlate(struct xt_xlate *xl,
++			    const struct nf_nat_range2 *range)
 +{
-+	struct nf_nat_range *range = (void *)cb->data;
++	char *range_str = sprint_range(range, AF_INET);
 +
-+	if (range->flags & NF_NAT_RANGE_PROTO_OFFSET)
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "Shifted portmap ranges not supported with this kernel");
++	xt_xlate_add(xl, "redirect");
++	if (strlen(range_str))
++		xt_xlate_add(xl, " to %s", range_str);
++	if (range->flags & NF_NAT_RANGE_PROTO_RANDOM)
++		xt_xlate_add(xl, " random");
 +
-+	__DNAT_fcheck(cb, &range->flags);
++	return 1;
 +}
 +
-+static void DNAT_print6(const void *ip, const struct xt_entry_target *target,
-+			int numeric)
++static void REDIRECT_print(const void *ip, const struct xt_entry_target *target,
++                           int numeric)
++{
++	struct nf_nat_range2 range = RANGE2_INIT_FROM_IPV4_MRC(target->data);
++
++	__REDIRECT_print(&range, false);
++}
++
++static void REDIRECT_save(const void *ip, const struct xt_entry_target *target)
++{
++	struct nf_nat_range2 range = RANGE2_INIT_FROM_IPV4_MRC(target->data);
++
++	__REDIRECT_print(&range, true);
++}
++
++static int REDIRECT_xlate(struct xt_xlate *xl,
++			   const struct xt_xlate_tg_params *params)
++{
++	struct nf_nat_range2 range =
++		RANGE2_INIT_FROM_IPV4_MRC(params->target->data);
++
++	return __REDIRECT_xlate(xl, &range);
++}
++
++static void REDIRECT_print6(const void *ip, const struct xt_entry_target *target,
++                            int numeric)
 +{
 +	struct nf_nat_range2 range = {};
 +
 +	memcpy(&range, (const void *)target->data, sizeof(struct nf_nat_range));
-+	__DNAT_print(&range, true, AF_INET6);
++	__REDIRECT_print(&range, false);
 +}
 +
-+static void DNAT_save6(const void *ip, const struct xt_entry_target *target)
++static void REDIRECT_save6(const void *ip, const struct xt_entry_target *target)
 +{
 +	struct nf_nat_range2 range = {};
 +
 +	memcpy(&range, (const void *)target->data, sizeof(struct nf_nat_range));
-+	__DNAT_print(&range, true, AF_INET6);
++	__REDIRECT_print(&range, true);
 +}
 +
-+static int DNAT_xlate6(struct xt_xlate *xl,
-+		       const struct xt_xlate_tg_params *params)
++static int REDIRECT_xlate6(struct xt_xlate *xl,
++			   const struct xt_xlate_tg_params *params)
 +{
 +	struct nf_nat_range2 range = {};
 +
 +	memcpy(&range, (const void *)params->target->data,
 +	       sizeof(struct nf_nat_range));
-+	return __DNAT_xlate(xl, &range, AF_INET6);
++	return __REDIRECT_xlate(xl, &range);
 +}
 +
-+static void DNAT_parse6_v2(struct xt_option_call *cb)
-+{
-+	const struct ip6t_entry *entry = cb->xt_entry;
-+
-+	__DNAT_parse(cb, entry->ipv6.proto, cb->data, AF_INET6);
-+}
-+
-+static void DNAT_print6_v2(const void *ip, const struct xt_entry_target *target,
-+			   int numeric)
-+{
-+	__DNAT_print((const void *)target->data, true, AF_INET6);
-+}
-+
-+static void DNAT_save6_v2(const void *ip, const struct xt_entry_target *target)
-+{
-+	__DNAT_print((const void *)target->data, true, AF_INET6);
-+}
-+
-+static int DNAT_xlate6_v2(struct xt_xlate *xl,
-+			  const struct xt_xlate_tg_params *params)
-+{
-+	return __DNAT_xlate(xl, (const void *)params->target->data, AF_INET6);
- }
- 
  static struct xtables_target dnat_tg_reg[] = {
-@@ -347,6 +457,21 @@ static struct xtables_target dnat_tg_reg[] = {
+ 	{
+ 		.name		= "DNAT",
+@@ -457,6 +569,21 @@ static struct xtables_target dnat_tg_reg[] = {
  		.x6_options	= DNAT_opts,
  		.xlate		= DNAT_xlate,
  	},
 +	{
-+		.name		= "DNAT",
++		.name		= "REDIRECT",
 +		.version	= XTABLES_VERSION,
-+		.family		= NFPROTO_IPV6,
-+		.revision	= 1,
-+		.size		= XT_ALIGN(sizeof(struct nf_nat_range)),
-+		.userspacesize	= XT_ALIGN(sizeof(struct nf_nat_range)),
-+		.help		= DNAT_help,
-+		.print		= DNAT_print6,
-+		.save		= DNAT_save6,
-+		.x6_parse	= DNAT_parse6,
-+		.x6_fcheck	= DNAT_fcheck6,
-+		.x6_options	= DNAT_opts,
-+		.xlate		= DNAT_xlate6,
++		.family		= NFPROTO_IPV4,
++		.revision	= 0,
++		.size		= XT_ALIGN(sizeof(struct nf_nat_ipv4_multi_range_compat)),
++		.userspacesize	= XT_ALIGN(sizeof(struct nf_nat_ipv4_multi_range_compat)),
++		.help		= REDIRECT_help,
++		.print		= REDIRECT_print,
++		.save		= REDIRECT_save,
++		.x6_parse	= DNAT_parse,
++		.x6_fcheck	= DNAT_fcheck,
++		.x6_options	= REDIRECT_opts,
++		.xlate		= REDIRECT_xlate,
 +	},
  	{
  		.name		= "DNAT",
  		.version	= XTABLES_VERSION,
-@@ -362,6 +487,21 @@ static struct xtables_target dnat_tg_reg[] = {
+@@ -472,6 +599,20 @@ static struct xtables_target dnat_tg_reg[] = {
  		.x6_options	= DNAT_opts,
- 		.xlate		= DNAT_xlate_v2,
+ 		.xlate		= DNAT_xlate6,
  	},
 +	{
-+		.name		= "DNAT",
++		.name		= "REDIRECT",
 +		.version	= XTABLES_VERSION,
 +		.family		= NFPROTO_IPV6,
-+		.revision	= 2,
-+		.size		= XT_ALIGN(sizeof(struct nf_nat_range2)),
-+		.userspacesize	= XT_ALIGN(sizeof(struct nf_nat_range2)),
-+		.help		= DNAT_help_v2,
-+		.print		= DNAT_print6_v2,
-+		.save		= DNAT_save6_v2,
-+		.x6_parse	= DNAT_parse6_v2,
-+		.x6_fcheck	= DNAT_fcheck_v2,
-+		.x6_options	= DNAT_opts,
-+		.xlate		= DNAT_xlate6_v2,
++		.size		= XT_ALIGN(sizeof(struct nf_nat_range)),
++		.userspacesize	= XT_ALIGN(sizeof(struct nf_nat_range)),
++		.help		= REDIRECT_help,
++		.print		= REDIRECT_print6,
++		.save		= REDIRECT_save6,
++		.x6_parse	= DNAT_parse6,
++		.x6_fcheck	= DNAT_fcheck6,
++		.x6_options	= REDIRECT_opts,
++		.xlate		= REDIRECT_xlate6,
 +	},
- };
- 
- void _init(void)
-diff --git a/extensions/libxt_DNAT.txlate b/extensions/libxt_DNAT.txlate
+ 	{
+ 		.name		= "DNAT",
+ 		.version	= XTABLES_VERSION,
+diff --git a/extensions/libxt_REDIRECT.t b/extensions/libxt_REDIRECT.t
 new file mode 100644
-index 0000000000000..a65976562ef53
+index 0000000000000..3f0b8a6000445
 --- /dev/null
-+++ b/extensions/libxt_DNAT.txlate
-@@ -0,0 +1,35 @@
-+iptables-translate -t nat -A prerouting -p tcp -o eth0 -j DNAT --to-destination 1.2.3.4
-+nft add rule ip nat prerouting oifname "eth0" ip protocol tcp counter dnat to 1.2.3.4
++++ b/extensions/libxt_REDIRECT.t
+@@ -0,0 +1,9 @@
++:PREROUTING,OUTPUT
++*nat
++-p tcp -j REDIRECT --to-ports 42;=;OK
++-p udp -j REDIRECT --to-ports 42-1234;=;OK
++-p tcp -j REDIRECT --to-ports 42-1234 --random;=;OK
++-p tcp -j REDIRECT --to-ports 42-1234/567;;FAIL
++-p tcp -j REDIRECT --to-ports ssh;-p tcp -j REDIRECT --to-ports 22;OK
++-p tcp -j REDIRECT --to-ports ftp-data;-p tcp -j REDIRECT --to-ports 20;OK
++-j REDIRECT --to-ports 42;;FAIL
+diff --git a/extensions/libxt_REDIRECT.txlate b/extensions/libxt_REDIRECT.txlate
+new file mode 100644
+index 0000000000000..c7375c614f50a
+--- /dev/null
++++ b/extensions/libxt_REDIRECT.txlate
+@@ -0,0 +1,17 @@
++iptables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT
++nft add rule ip nat prerouting tcp dport 80 counter redirect
 +
-+iptables-translate -t nat -A prerouting -p tcp -d 15.45.23.67 --dport 80 -j DNAT --to-destination 192.168.1.1-192.168.1.10
-+nft add rule ip nat prerouting ip daddr 15.45.23.67 tcp dport 80 counter dnat to 192.168.1.1-192.168.1.10
++iptables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT --to-ports 8080
++nft add rule ip nat prerouting tcp dport 80 counter redirect to :8080
 +
-+iptables-translate -t nat -A prerouting -p tcp -o eth0 -j DNAT --to-destination 1.2.3.4:1-1023
-+nft add rule ip nat prerouting oifname "eth0" ip protocol tcp counter dnat to 1.2.3.4:1-1023
++iptables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT --to-ports 8080 --random
++nft add rule ip nat prerouting tcp dport 80 counter redirect to :8080 random
 +
-+iptables-translate -t nat -A prerouting -p tcp -o eth0 -j DNAT --to-destination 1.2.3.4 --random
-+nft add rule ip nat prerouting oifname "eth0" ip protocol tcp counter dnat to 1.2.3.4 random
++ip6tables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT
++nft add rule ip6 nat prerouting tcp dport 80 counter redirect
 +
-+iptables-translate -t nat -A prerouting -p tcp -o eth0 -j DNAT --to-destination 1.2.3.4 --random --persistent
-+nft add rule ip nat prerouting oifname "eth0" ip protocol tcp counter dnat to 1.2.3.4 random,persistent
++ip6tables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT --to-ports 8080
++nft add rule ip6 nat prerouting tcp dport 80 counter redirect to :8080
 +
-+ip6tables-translate -t nat -A prerouting -p tcp --dport 8080 -j DNAT --to-destination fec0::1234
-+nft add rule ip6 nat prerouting tcp dport 8080 counter dnat to fec0::1234
-+
-+ip6tables-translate -t nat -A prerouting -p tcp --dport 8080 -j DNAT --to-destination fec0::1234-fec0::2000
-+nft add rule ip6 nat prerouting tcp dport 8080 counter dnat to fec0::1234-fec0::2000
-+
-+ip6tables-translate -t nat -A prerouting -i eth1 -p tcp --dport 8080 -j DNAT --to-destination [fec0::1234]:80
-+nft add rule ip6 nat prerouting iifname "eth1" tcp dport 8080 counter dnat to [fec0::1234]:80
-+
-+ip6tables-translate -t nat -A prerouting -p tcp -j DNAT --to-destination [fec0::1234]:1-20
-+nft add rule ip6 nat prerouting meta l4proto tcp counter dnat to [fec0::1234]:1-20
-+
-+ip6tables-translate -t nat -A prerouting -p tcp -j DNAT --to-destination [fec0::1234-fec0::2000]:1-20
-+nft add rule ip6 nat prerouting meta l4proto tcp counter dnat to [fec0::1234-fec0::2000]:1-20
-+
-+ip6tables-translate -t nat -A prerouting -p tcp -j DNAT --to-destination [fec0::1234]:80 --persistent
-+nft add rule ip6 nat prerouting meta l4proto tcp counter dnat to [fec0::1234]:80 persistent
-+
-+ip6tables-translate -t nat -A prerouting -p tcp -j DNAT --to-destination [fec0::1234]:80 --random --persistent
-+nft add rule ip6 nat prerouting meta l4proto tcp counter dnat to [fec0::1234]:80 random,persistent
++ip6tables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT --to-ports 8080 --random
++nft add rule ip6 nat prerouting tcp dport 80 counter redirect to :8080 random
 -- 
 2.34.1
 
