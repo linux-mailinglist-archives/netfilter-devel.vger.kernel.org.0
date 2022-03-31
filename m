@@ -2,135 +2,113 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE814ED782
-	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Mar 2022 12:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915024ED79D
+	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Mar 2022 12:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234472AbiCaKGD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 31 Mar 2022 06:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
+        id S234521AbiCaKON (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 31 Mar 2022 06:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234469AbiCaKGD (ORCPT
+        with ESMTP id S233269AbiCaKOM (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 31 Mar 2022 06:06:03 -0400
+        Thu, 31 Mar 2022 06:14:12 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E947AD5EA3
-        for <netfilter-devel@vger.kernel.org>; Thu, 31 Mar 2022 03:04:14 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1nZrf2-00060H-H6; Thu, 31 Mar 2022 12:04:12 +0200
-Date:   Thu, 31 Mar 2022 12:04:12 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAC31EECC
+        for <netfilter-devel@vger.kernel.org>; Thu, 31 Mar 2022 03:12:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=aVQajcebSY7nfGHP5e44P0EilFAR9OHJ6ZMHjysFkYA=; b=cUmCim+HRu5CPSXP2xlYRnYoUy
+        MolmGkn3LcWAKIj0WKcNBZx086LCkqgUrdpNsLSkb7B6QTuUaBH1COiFD01gKWOZ8LSma1mgClKUm
+        y2LGS2VZ15SALgzanRqTUEN8NpI7TQjPk7SdzK8ZJwwNu7zzayCP/rUEx+e7Chh3+VvoVmrToMW6U
+        UoAEv1ke6VtJKjesAEenYTKBY2aZMQ5avCU+dgs7M1qVxq+rDBY6Uz8UWLGKW8G+y/OejjbRgBpR3
+        +ixBgwlLXSAhrr4zP93r3GmWVOWDJQg1Zhp3hhK/GokDY9KW7W7NzRfUvx6w6rgVuMQTY7OqzW0UJ
+        RmkN/KDQ==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1nZrmy-00066T-Cp; Thu, 31 Mar 2022 12:12:24 +0200
 From:   Phil Sutter <phil@nwl.cc>
-To:     Jan Engelhardt <jengelh@inai.de>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [iptables PATCH 9/9] extensions: DNAT: Support service names in
- all spots
-Message-ID: <YkV8nIURQHbWNJ4W@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-References: <20220330155851.13249-1-phil@nwl.cc>
- <20220330155851.13249-10-phil@nwl.cc>
- <89qp85o0-704s-5280-sqp6-s71so14n7487@vanv.qr>
- <YkTEM8r6tv+fkOOK@orbyte.nwl.cc>
- <935op3q3-s38p-674r-1n2n-8spr98o7s37@vanv.qr>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>
+Subject: [iptables PATCH v2 0/9] extensions: Merge *_DNAT and *_REDIRECT
+Date:   Thu, 31 Mar 2022 12:12:02 +0200
+Message-Id: <20220331101211.10099-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <935op3q3-s38p-674r-1n2n-8spr98o7s37@vanv.qr>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Mar 31, 2022 at 02:19:51AM +0200, Jan Engelhardt wrote:
-> On Wednesday 2022-03-30 22:57, Phil Sutter wrote:
-> >> >+-p tcp -j DNAT --to-destination 1.1.1.1:echo-ftp-data/ssh;-p tcp -j DNAT --to-destination 1.1.1.1:7-20/22;OK
-> >> 
-> >> This looks dangerous. It is why I originally never allowed service names in
-> >> port ranges that use dash as the range character.
-> >
-> >Guess if someone is able to manipulate /etc/services, any service names
-> >are problematic, not just in ranges.
-> 
-> Well, pretty much anyone has a shot at manipulating this file. File a
-> port registration with IANA, and when your distro updates the file,
-> eventually there is a chance of messing up firewall configs,
-> worldwide.
-> 
-> Other than that, thanks to nsswitch, the service list can also be in
-> LDAP or so, and then all that's needed is a disgruntled LDAP admin
-> who dislikes the firewall admin.
-> 
-> >Another potential problem I didn't have in mind though is that 'a-b'
-> >could mean [a; b] or [a-b] assuming that all three exist. But I haven't
-> >found a valid example in my /etc/services, yet. :)
-> 
-> I found 25 at once!
-> 
-> 914c :: 914c-g :: g-talk
-> ads :: ads-s :: s-openmail
-> bctp :: bctp-server :: server-find
-> cis :: cis-secure :: secure-mqtt
-> connect :: connect-server :: server-find
-> docker :: docker-s :: s-openmail
-> documentum :: documentum-s :: s-openmail
-> domain :: domain-s :: s-openmail
-> dtp :: dtp-net :: net-device
-> genie :: genie-lm :: lm-mon
-> linktest :: linktest-s :: s-openmail
-> mailbox :: mailbox-lm :: lm-mon
-> mbap :: mbap-s :: s-openmail
-> ns :: ns-server :: server-find
-> plato :: plato-lm :: lm-mon
-> rmonitor :: rmonitor-secure :: secure-mqtt
-> sentinel :: sentinel-lm :: lm-mon
-> sitewatch :: sitewatch-s :: s-openmail
-> spss :: spss-lm :: lm-mon
-> sql :: sql-net :: net-device
-> tacacs :: tacacs-ds :: ds-slp
-> tl1 :: tl1-lv :: lv-auth
-> trim :: trim-ice :: ice-router
-> wnn6 :: wnn6-ds :: ds-slp
-> wsdapi :: wsdapi-s :: s-openmail
+Second try, without fancy service name parsing in ranges this time.
+Instead, mention support for names outside of ranges in extensions man
+page.
 
-Your /etc/services seems to be much larger than mine, many of those
-don't exist in my case.
+Other changes since v1:
+- Fixed for garbage in output when listing multiple DNAT rules (due to
+  missing reinit of a static buffer.
+- Drop of last patch revealed a crash bug in service name parser.
+- Do not allow service names in ranges' upper boundary.
+- More test cases.
 
-> To be read as: "wsdapi-s-openmail" is ambiguous, because
-> it allows for two interpretations (and all four port names are in
-> /etc/services):
-> 
-> 	[wsdapi]-[s-openmail]
-> 	[wsdapi-s]-[openmail]
+Phil Sutter (9):
+  man: DNAT: Describe shifted port range feature
+  Revert "libipt_[SD]NAT: avoid false error about multiple destinations
+    specified"
+  extensions: ipt_DNAT: Merge v1 and v2 parsers
+  extensions: ipt_DNAT: Merge v1/v2 print/save code
+  extensions: ipt_DNAT: Combine xlate functions also
+  extensions: DNAT: Rename from libipt to libxt
+  extensions: Merge IPv4 and IPv6 DNAT targets
+  extensions: Merge REDIRECT into DNAT
+  extensions: man: Document service name support in DNAT and REDIRECT
 
-OK. My code preferred the latter, checking if the former is possible is
-a poor workaround. The only difference it makes is rules get rejected
-instead of changing behaviour silently.
+ extensions/GNUmakefile.in          |   4 +-
+ extensions/libip6t_DNAT.c          | 409 ------------------
+ extensions/libip6t_DNAT.t          |   4 +
+ extensions/libip6t_DNAT.txlate     |  11 -
+ extensions/libip6t_REDIRECT.c      | 170 --------
+ extensions/libip6t_REDIRECT.t      |   6 -
+ extensions/libip6t_REDIRECT.txlate |   5 -
+ extensions/libip6t_SNAT.c          |   9 +-
+ extensions/libipt_DNAT.c           | 507 ----------------------
+ extensions/libipt_DNAT.t           |   4 +
+ extensions/libipt_DNAT.txlate      |  14 -
+ extensions/libipt_REDIRECT.c       | 174 --------
+ extensions/libipt_REDIRECT.t       |   6 -
+ extensions/libipt_REDIRECT.txlate  |   5 -
+ extensions/libipt_SNAT.c           |   3 -
+ extensions/libxt_DNAT.c            | 650 +++++++++++++++++++++++++++++
+ extensions/libxt_DNAT.man          |   7 +-
+ extensions/libxt_DNAT.txlate       |  35 ++
+ extensions/libxt_REDIRECT.man      |   1 +
+ extensions/libxt_REDIRECT.t        |  16 +
+ extensions/libxt_REDIRECT.txlate   |  26 ++
+ 21 files changed, 746 insertions(+), 1320 deletions(-)
+ delete mode 100644 extensions/libip6t_DNAT.c
+ delete mode 100644 extensions/libip6t_DNAT.txlate
+ delete mode 100644 extensions/libip6t_REDIRECT.c
+ delete mode 100644 extensions/libip6t_REDIRECT.t
+ delete mode 100644 extensions/libip6t_REDIRECT.txlate
+ delete mode 100644 extensions/libipt_DNAT.c
+ delete mode 100644 extensions/libipt_DNAT.txlate
+ delete mode 100644 extensions/libipt_REDIRECT.c
+ delete mode 100644 extensions/libipt_REDIRECT.t
+ delete mode 100644 extensions/libipt_REDIRECT.txlate
+ create mode 100644 extensions/libxt_DNAT.c
+ create mode 100644 extensions/libxt_DNAT.txlate
+ create mode 100644 extensions/libxt_REDIRECT.t
+ create mode 100644 extensions/libxt_REDIRECT.txlate
 
-> >> The "solution" would be to use : as the range character, but that would require
-> >> a new --dport option for reasons of command-line compatibility.
-> >
-> >Well, we could allow both (a-b with numeric a and b only) and use it in
-> >output only if non-numeric was requested.
-> 
-> Given I'm seeing "914c" in the IANA list (leading digits always stand
-> out from the crowd, e.g. you don't normally see them in UNIX
-> usernames either), I won't hold my breath that no one would try to
-> register "914-915".
+-- 
+2.34.1
 
-That's an interesting point: "914c" is not usable in iptables. The code
-tries strtoul which succeeds for "914", "c" is then rejected as illegal
-remainder. To fix that, we had to consult getservbyname() first which is
-a performance hit. Guess the whole "support users with bad number
-memory" game is best effort, only.
-
-I'll submit a v2 without the experimental "names in ranges" patch in a
-minute.
-
-Thanks, Phil
