@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 300484ED79F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Mar 2022 12:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72744ED79C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Mar 2022 12:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234524AbiCaKOZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 31 Mar 2022 06:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43920 "EHLO
+        id S234512AbiCaKOJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 31 Mar 2022 06:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233269AbiCaKOX (ORCPT
+        with ESMTP id S233269AbiCaKOH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 31 Mar 2022 06:14:23 -0400
+        Thu, 31 Mar 2022 06:14:07 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA662B251
-        for <netfilter-devel@vger.kernel.org>; Thu, 31 Mar 2022 03:12:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A909A1EECC
+        for <netfilter-devel@vger.kernel.org>; Thu, 31 Mar 2022 03:12:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=oq1B4RnFimMmZV6xVCfj4y8xYnJPAlVEBP/CGkTFH2o=; b=oeDmLtDmxFzp9A5M5sw2e/hXxo
-        R5pXgweZIZIwjEjR+bq4WlGL1mXbf3CeM3pQHpf9bR0Lpr8LRJaUbjn13GSlogNvV5AZhaJ+S3Xqk
-        6SXZMgV/ta8BtLzq38+5D138qDczRrqltth7yWKb0jpD8JYtmgSWMSO0aM5henumM+s55o/bgtQaz
-        1t188Vh6nRRaEmr4wWhW/vhAGtM9jixCzn2XhSuDc7E21yqhI3fnxKH0J7bYhHEmA48WIH0dHBQp0
-        bchKEAnqc6Xkdm6/pNC0x+Q0uouyJNkusawb4FWrhjNhE5puxolv2gL5N5UzIlsR3nOww6WSMrI7e
-        Dp1eeZ3g==;
+        bh=WAaEfp1BdZkp4E6xjSKRIfIA0AnPtB1TSuslBJqwMSs=; b=nR6a/2qCgzl1BMsfXWmwQUPrFv
+        v256eMmXIZfT2+3cUjdCGw0Sx3JexIftv/PSpx372DQn9Bl14a+k8DDxRgfpt24Myaen8dDp5pUD8
+        FeRZDoPSOla1rerB/sfDc5ZuKxOHwel7M5Q3ZdTZclandesrgB2yBpU4nR+P1mi8F0A1IqaRJFmJk
+        d7OYLJmE/EBgPtKa0fD2fywUYHMP8g2XjiOx3Sj1eVLkwQXPJzeMOtsg+Qnin9DHF2wuz41xy/V8C
+        kFQ1bSvPVbDJ2TbCUwSj+KTPJX1ztNEBCpiZmViK+WkWCaEpWdkT1MAuk4s9+GERDLSwoRjIgxfaH
+        iOHg9kUA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1nZrn9-00067H-1i; Thu, 31 Mar 2022 12:12:35 +0200
+        id 1nZrmt-00066A-2X; Thu, 31 Mar 2022 12:12:19 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables PATCH v2 5/9] extensions: ipt_DNAT: Combine xlate functions also
-Date:   Thu, 31 Mar 2022 12:12:07 +0200
-Message-Id: <20220331101211.10099-6-phil@nwl.cc>
+Subject: [iptables PATCH v2 6/9] extensions: DNAT: Rename from libipt to libxt
+Date:   Thu, 31 Mar 2022 12:12:08 +0200
+Message-Id: <20220331101211.10099-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220331101211.10099-1-phil@nwl.cc>
 References: <20220331101211.10099-1-phil@nwl.cc>
@@ -51,136 +51,19 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Make use of the new sprint_range() to introduce a common inner function
-for both v1 and v2 xlate functions.
-
-Also abort translation with shifted port ranges to not hide the missing
-feature in nftables.
+Prepare for merge of libipt and libip6t DNAT extensions, allow for
+better code review.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libipt_DNAT.c | 88 ++++++++++------------------------------
- 1 file changed, 21 insertions(+), 67 deletions(-)
+ extensions/{libipt_DNAT.c => libxt_DNAT.c} | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename extensions/{libipt_DNAT.c => libxt_DNAT.c} (100%)
 
-diff --git a/extensions/libipt_DNAT.c b/extensions/libipt_DNAT.c
-index b72437d5e92f2..9a179919f522d 100644
---- a/extensions/libipt_DNAT.c
-+++ b/extensions/libipt_DNAT.c
-@@ -266,47 +266,36 @@ static void DNAT_save(const void *ip, const struct xt_entry_target *target)
- 	__DNAT_print(&range, true);
- }
- 
--static void print_range_xlate(const struct nf_nat_ipv4_range *r,
--			struct xt_xlate *xl)
-+static int __DNAT_xlate(struct xt_xlate *xl, const struct nf_nat_range2 *r)
- {
--	if (r->flags & NF_NAT_RANGE_MAP_IPS) {
--		struct in_addr a;
-+	char *range_str = sprint_range(r);
-+	const char *sep = " ";
- 
--		a.s_addr = r->min_ip;
--		xt_xlate_add(xl, "%s", xtables_ipaddr_to_numeric(&a));
--		if (r->max_ip != r->min_ip) {
--			a.s_addr = r->max_ip;
--			xt_xlate_add(xl, "-%s", xtables_ipaddr_to_numeric(&a));
--		}
-+	/* shifted portmap ranges are not supported by nftables */
-+	if (r->flags & NF_NAT_RANGE_PROTO_OFFSET)
-+		return 0;
-+
-+	xt_xlate_add(xl, "dnat");
-+	if (strlen(range_str))
-+		xt_xlate_add(xl, " to %s", range_str);
-+	if (r->flags & NF_NAT_RANGE_PROTO_RANDOM) {
-+		xt_xlate_add(xl, "%srandom", sep);
-+		sep = ",";
- 	}
--	if (r->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
--		xt_xlate_add(xl, ":%hu", ntohs(r->min.tcp.port));
--		if (r->max.tcp.port != r->min.tcp.port)
--			xt_xlate_add(xl, "-%hu", ntohs(r->max.tcp.port));
-+	if (r->flags & NF_NAT_RANGE_PERSISTENT) {
-+		xt_xlate_add(xl, "%spersistent", sep);
-+		sep = ",";
- 	}
-+	return 1;
- }
- 
- static int DNAT_xlate(struct xt_xlate *xl,
- 		      const struct xt_xlate_tg_params *params)
- {
--	const struct nf_nat_ipv4_multi_range_compat *mr =
--			(const void *)params->target->data;
--	bool sep_need = false;
--	const char *sep = " ";
--
--	xt_xlate_add(xl, "dnat to ");
--	print_range_xlate(mr->range, xl);
--	if (mr->range->flags & NF_NAT_RANGE_PROTO_RANDOM) {
--		xt_xlate_add(xl, " random");
--		sep_need = true;
--	}
--	if (mr->range->flags & NF_NAT_RANGE_PERSISTENT) {
--		if (sep_need)
--			sep = ",";
--		xt_xlate_add(xl, "%spersistent", sep);
--	}
-+	struct nf_nat_range2 range =
-+		RANGE2_INIT_FROM_IPV4_MRC(params->target->data);
- 
--	return 1;
-+	return __DNAT_xlate(xl, &range);
- }
- 
- static void DNAT_parse_v2(struct xt_option_call *cb)
-@@ -336,45 +325,10 @@ static void DNAT_save_v2(const void *ip, const struct xt_entry_target *target)
- 	__DNAT_print((const void *)target->data, true);
- }
- 
--static void print_range_xlate_v2(const struct nf_nat_range2 *range,
--			      struct xt_xlate *xl)
--{
--	if (range->flags & NF_NAT_RANGE_MAP_IPS) {
--		xt_xlate_add(xl, "%s", xtables_ipaddr_to_numeric(&range->min_addr.in));
--		if (memcmp(&range->min_addr, &range->max_addr,
--			   sizeof(range->min_addr))) {
--			xt_xlate_add(xl, "-%s", xtables_ipaddr_to_numeric(&range->max_addr.in));
--		}
--	}
--	if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
--		xt_xlate_add(xl, ":%hu", ntohs(range->min_proto.tcp.port));
--		if (range->max_proto.tcp.port != range->min_proto.tcp.port)
--			xt_xlate_add(xl, "-%hu", ntohs(range->max_proto.tcp.port));
--		if (range->flags & NF_NAT_RANGE_PROTO_OFFSET)
--			xt_xlate_add(xl, ";%hu", ntohs(range->base_proto.tcp.port));
--	}
--}
--
- static int DNAT_xlate_v2(struct xt_xlate *xl,
- 		      const struct xt_xlate_tg_params *params)
- {
--	const struct nf_nat_range2 *range = (const void *)params->target->data;
--	bool sep_need = false;
--	const char *sep = " ";
--
--	xt_xlate_add(xl, "dnat to ");
--	print_range_xlate_v2(range, xl);
--	if (range->flags & NF_NAT_RANGE_PROTO_RANDOM) {
--		xt_xlate_add(xl, " random");
--		sep_need = true;
--	}
--	if (range->flags & NF_NAT_RANGE_PERSISTENT) {
--		if (sep_need)
--			sep = ",";
--		xt_xlate_add(xl, "%spersistent", sep);
--	}
--
--	return 1;
-+	return __DNAT_xlate(xl, (const void *)params->target->data);
- }
- 
- static struct xtables_target dnat_tg_reg[] = {
+diff --git a/extensions/libipt_DNAT.c b/extensions/libxt_DNAT.c
+similarity index 100%
+rename from extensions/libipt_DNAT.c
+rename to extensions/libxt_DNAT.c
 -- 
 2.34.1
 
