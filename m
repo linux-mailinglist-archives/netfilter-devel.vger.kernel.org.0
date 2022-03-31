@@ -2,48 +2,33 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 663754ED79B
-	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Mar 2022 12:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7334EDAD6
+	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Mar 2022 15:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234499AbiCaKOD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 31 Mar 2022 06:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43822 "EHLO
+        id S236985AbiCaNsw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 31 Mar 2022 09:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233269AbiCaKOD (ORCPT
+        with ESMTP id S236991AbiCaNst (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 31 Mar 2022 06:14:03 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640DA1EECC
-        for <netfilter-devel@vger.kernel.org>; Thu, 31 Mar 2022 03:12:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=yrr62dhrSbcuIiN1tzF+GxzvNJmYPdB4e7rSICvPnIw=; b=OiTiPTMFRmuXINEujnAq3Bm9Wt
-        ek6eAGmWpVjCCnESOzPrwD2ACSH2IG5h0fh5dzhbcM9AoNJREk4bevhrh5jT9WPFvmPyi18YZPD5O
-        mhggGGusLEfQrM3/uGKzWrhU0L9KGiA21+2F0zd3aAxKAyQyy4npw3PMn+4dioBvuG3xBvkYg4JJ2
-        O5OS51SJTnTqeUAla5F6zoLWUMW/8R8wMWuyFgL7IQ9+18i2lnT7vLG5vtUBezSZnm2CzEEy+sLv3
-        s1kFuUw8cNA/88g1p56yxK/F2BE7kyenDyRLmbeEqWTRM7gGNihTHe8kY0jGAHtMmjCQNEotSiHOq
-        7BNzZrog==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1nZrmn-000664-Nq; Thu, 31 Mar 2022 12:12:13 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables PATCH v2 9/9] extensions: man: Document service name support in DNAT and REDIRECT
-Date:   Thu, 31 Mar 2022 12:12:11 +0200
-Message-Id: <20220331101211.10099-10-phil@nwl.cc>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220331101211.10099-1-phil@nwl.cc>
-References: <20220331101211.10099-1-phil@nwl.cc>
+        Thu, 31 Mar 2022 09:48:49 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA2010CF02
+        for <netfilter-devel@vger.kernel.org>; Thu, 31 Mar 2022 06:47:00 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1nZv8c-0001bD-IT; Thu, 31 Mar 2022 15:46:58 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf-next] selftests: netfilter: add fib expression forward test case
+Date:   Thu, 31 Mar 2022 15:46:52 +0200
+Message-Id: <20220331134652.3202-1-fw@strlen.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,40 +36,82 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Unless as part of a range, service names may be used. Point this out to
-avoid confusion.
+Its now possible to use fib expression in the forward chain (where both
+the input and output interfaces are known).
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Add a simple test case for this.
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- extensions/libxt_DNAT.man     | 2 ++
- extensions/libxt_REDIRECT.man | 1 +
- 2 files changed, 3 insertions(+)
+ tools/testing/selftests/netfilter/nft_fib.sh | 50 ++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-diff --git a/extensions/libxt_DNAT.man b/extensions/libxt_DNAT.man
-index e044c8216fc09..12d334af5a479 100644
---- a/extensions/libxt_DNAT.man
-+++ b/extensions/libxt_DNAT.man
-@@ -21,6 +21,8 @@ will be modified.
- If \fBbaseport\fP is given, the difference of the original destination port and
- its value is used as offset into the mapping port range. This allows to create
- shifted portmap ranges and is available since kernel version 4.18.
-+For a single port or \fIbaseport\fP, a service name as listed in
-+\fB/etc/services\fP may be used.
- .TP
- \fB\-\-random\fP
- If option
-diff --git a/extensions/libxt_REDIRECT.man b/extensions/libxt_REDIRECT.man
-index 28d4d10b79046..10305597f87a3 100644
---- a/extensions/libxt_REDIRECT.man
-+++ b/extensions/libxt_REDIRECT.man
-@@ -16,6 +16,7 @@ This specifies a destination port or range of ports to use: without
- this, the destination port is never altered.  This is only valid
- if the rule also specifies one of the following protocols:
- \fBtcp\fP, \fBudp\fP, \fBdccp\fP or \fBsctp\fP.
-+For a single port, a service name as listed in \fB/etc/services\fP may be used.
- .TP
- \fB\-\-random\fP
- If option
+diff --git a/tools/testing/selftests/netfilter/nft_fib.sh b/tools/testing/selftests/netfilter/nft_fib.sh
+index 695a1958723f..fd76b69635a4 100755
+--- a/tools/testing/selftests/netfilter/nft_fib.sh
++++ b/tools/testing/selftests/netfilter/nft_fib.sh
+@@ -66,6 +66,20 @@ table inet filter {
+ EOF
+ }
+ 
++load_pbr_ruleset() {
++	local netns=$1
++
++ip netns exec ${netns} nft -f /dev/stdin <<EOF
++table inet filter {
++	chain forward {
++		type filter hook forward priority raw;
++		fib saddr . iif oif gt 0 accept
++		log drop
++	}
++}
++EOF
++}
++
+ load_ruleset_count() {
+ 	local netns=$1
+ 
+@@ -219,4 +233,40 @@ sleep 2
+ ip netns exec ${ns1} ping -c 3 -q 1c3::c01d > /dev/null
+ check_fib_counter 3 ${nsrouter} 1c3::c01d || exit 1
+ 
++# delete all rules
++ip netns exec ${ns1} nft flush ruleset
++ip netns exec ${ns2} nft flush ruleset
++ip netns exec ${nsrouter} nft flush ruleset
++
++ip -net ${ns1} addr add 10.0.1.99/24 dev eth0
++ip -net ${ns1} addr add dead:1::99/64 dev eth0
++
++ip -net ${ns1} addr del 10.0.2.99/24 dev eth0
++ip -net ${ns1} addr del dead:2::99/64 dev eth0
++
++ip -net ${nsrouter} addr del dead:2::1/64 dev veth0
++
++# ... pbr ruleset for the router, check iif+oif.
++load_pbr_ruleset ${nsrouter}
++if [ $? -ne 0 ] ; then
++	echo "SKIP: Could not load fib forward ruleset"
++	exit $ksft_skip
++fi
++
++ip -net ${nsrouter} rule add from all table 128
++ip -net ${nsrouter} rule add from all iif veth0 table 129
++ip -net ${nsrouter} route add table 128 to 10.0.1.0/24 dev veth0
++ip -net ${nsrouter} route add table 129 to 10.0.2.0/24 dev veth1
++
++# drop main ipv4 table
++ip -net ${nsrouter} -4 rule delete table main
++
++test_ping 10.0.2.99 dead:2::99
++if [ $? -ne 0 ] ; then
++	ip -net ${nsrouter} nft list ruleset
++	echo "FAIL: fib mismatch in pbr setup"
++	exit 1
++fi
++
++echo "PASS: fib expression forward check with policy based routing"
+ exit 0
 -- 
-2.34.1
+2.35.1
 
