@@ -2,94 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4474EE289
-	for <lists+netfilter-devel@lfdr.de>; Thu, 31 Mar 2022 22:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE59A4EEBB3
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Apr 2022 12:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241350AbiCaUWG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 31 Mar 2022 16:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
+        id S1344953AbiDAKmp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 1 Apr 2022 06:42:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235080AbiCaUWF (ORCPT
+        with ESMTP id S1344948AbiDAKmp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 31 Mar 2022 16:22:05 -0400
-X-Greylist: delayed 79645 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 31 Mar 2022 13:20:15 PDT
-Received: from lim106.truehost.cloud (lim106.truehost.cloud [145.239.3.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41C31BD98C
-        for <netfilter-devel@vger.kernel.org>; Thu, 31 Mar 2022 13:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mediafocusonafrica.org; s=default; h=Content-Transfer-Encoding:Content-Type
-        :MIME-Version:Message-ID:Subject:From:To:Date:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=vPc+rKOAlO5McWbe0GxQmTWAo4TIWgqMC4l/G2G/tuM=; b=NtsVbjO/FPT/SFN8KAliHXWx36
-        O7+I8DKXrshckl6fLbzHMFRu1mCWo9PCcRV+glhvca3lJaI0RiDGuTemgywHyGMuSzx/Y4Ewj0qFo
-        VzjpQyLZsZUQDbDLaK75a6uDckdx5d6SmEmwgA+hC07bs6KeyGAcXcGQGYtt/YQZXSMQ01dyU0nz3
-        Djd66hzFcLdnrgTbxAl9VynFNPjRljE5Sq8mnL2q1wfKASDHLtnba416UWSiX71rA6W05497w0mjH
-        vaBr7qMEXieke+l0T/VvuPAjNmSzed6IlIkSsonsNckNlc6mXEwrGM8PFyo4XKV1SHETwkutKkGWH
-        n00jby2Q==;
-Received: from [145.239.3.48] (port=43416 helo=mediafocusonafrica.org)
-        by lim106.truehost.cloud with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <website@mediafocusonafrica.org>)
-        id 1nZgYd-0007fj-6L
-        for netfilter-devel@vger.kernel.org; Wed, 30 Mar 2022 22:12:49 +0000
-Date:   Wed, 30 Mar 2022 22:12:48 +0000
-To:     netfilter-devel@vger.kernel.org
-From:   Media Focus Africa <website@mediafocusonafrica.org>
-Subject: Media Focus Africa Autoresponse
-Message-ID: <hLTmcHsRZUGzB6jyx9mey2483qKxa87EKnEOdf9GKQ@mediafocusonafrica.org>
-X-Mailer: PHPMailer 6.5.0 (https://github.com/PHPMailer/PHPMailer)
+        Fri, 1 Apr 2022 06:42:45 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE20C103DA0;
+        Fri,  1 Apr 2022 03:40:55 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id a1so3591582wrh.10;
+        Fri, 01 Apr 2022 03:40:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=ZXjr35ZteUA9cEWV/UbslxEAKr8SJWVJnre3hF4Zsy8=;
+        b=pS02gleyzkk52m7GJzgAvR71BKhIiY3DOZA9DyxvHiaxSKl3OiXMoIzU9u8Jnx+HoJ
+         8BDlRnbTRE5pDnlCbRtoyTFQb8hd1l9m7hjoRr8E1dKYOHbDOUszeduAm9eVkgzl6g2j
+         8Ew7XzfyywsmEQ0zgQTaUMh0pempKiXYa36wciogXdpQQ9as9ZUBA0gMLsausv8wB10G
+         UC/RbBVHlZIahiSQ+t02ptZL9YSsd3RQfoQGFq4wuKzFD0zWZjgWKVEoIvJJT9CxNMYv
+         fLucQGIJW65EphtowK67ARL6RDwswTJi+vgTzzWqhKwvkjIpknUh4lfWXfGpZcmjMnor
+         PUFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=ZXjr35ZteUA9cEWV/UbslxEAKr8SJWVJnre3hF4Zsy8=;
+        b=xvw5RVyEvTekoSYli9wkTpVRQFC3S/jUT+58zd/+Cz76Tqn+B6uwweBROlTXDmokvF
+         f16ak0VUWGSe6JbiFk6XPdZheKFlh2JQ9KVgraWCcV5nKDFjL8Lbl+SzO3HDDtEZqD3f
+         6IHc+5yNCXKBi4OBIaeWDwWD//ejvJDLrDfw/TmsfvmPFm+eREFZejQVmfXHqMHApIIq
+         YnxI78JmD3WZKs8FuG/ZCVVwmtJ533lr6h8bot7j1U4wumGOih5FMvp0lBHTx7c9WyZl
+         fKQDqgVj7H0X8qiYcIAlnxYJa1Fe8lVSo9cMO+buVoZVKdaQ/lod/5cE4Q0dr9Ub/Y9P
+         D9iA==
+X-Gm-Message-State: AOAM533TABDaEVr168b6hnG7p2g/wmHNdJmdyVpRaPdDPsb1qcyl8ySp
+        PX+y144lNFjXtnv+uEywZagJ6S2diGOqtZYm
+X-Google-Smtp-Source: ABdhPJwLvfh11SzHH2AVZnsm5e1A1We8PDM/qM/tKhCFQgTKooaSX3XUb//GflIVqmuUDHd7Br7C5A==
+X-Received: by 2002:a05:6000:186c:b0:205:3479:ad85 with SMTP id d12-20020a056000186c00b002053479ad85mr7434568wri.54.1648809654253;
+        Fri, 01 Apr 2022 03:40:54 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id j17-20020a05600c1c1100b0038e389ab62esm10053958wms.9.2022.04.01.03.40.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Apr 2022 03:40:53 -0700 (PDT)
+To:     pablo@netfilter.org
+Cc:     Network Development <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Subject: Conntrack offload and ingress_ifindex
+Message-ID: <e4ba278d-3308-ada8-d4ab-4d3a6c489216@gmail.com>
+Date:   Fri, 1 Apr 2022 11:40:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - lim106.truehost.cloud
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mediafocusonafrica.org
-X-Get-Message-Sender-Via: lim106.truehost.cloud: authenticated_id: website@mediafocusonafrica.org
-X-Authenticated-Sender: lim106.truehost.cloud: website@mediafocusonafrica.org
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-From-Rewrite: unmodified, already matched
-X-Spam-Status: Yes, score=6.6 required=5.0 tests=BAYES_60,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,DOS_RCVD_IP_TWICE_B,
-        SHORT_SHORTNER,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  1.5 BAYES_60 BODY: Bayes spam probability is 60 to 80%
-        *      [score: 0.7166]
-        *  3.3 DOS_RCVD_IP_TWICE_B Received from the same IP twice in a row
-        *      (only one external relay)
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.0 SHORT_SHORTNER Short body with little more than a link to a
-        *      shortener
-X-Spam-Level: ******
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi 💌 You have unread messages (4) from Vanessa! Read now: https://clck.ru/edbTE?e2r2 💌,
+Pablo,
 
-Thank you for contacting us. We will get back to you shortly.
+When developing a conntrack offload driver, I was quite surprised to find
+ that CT entries passed to the driver's flow-block callback (as registered
+ with nf_flow_table_offload_add_cb()) include a match on ingress_ifindex,
+ with mask 0xffffffff and key 0.  This is especially confusing as AIUI 0 is
+ not a valid ifindex.
+From reading the calling code, looking at git logs etc, I can't determine
+ the intended semantics of this match; could you clarify what (if anything)
+ drivers are expected to do with it?
+(Looking at other drivers it appears that e.g. mlx5e simply ignores it, as
+ its test for `key & mask` in mlx5_tc_ct_set_tuple_match() will be false.)
 
-
-
-Kind regards,
-Media Focus Africa
-
--- 
-This e-mail was sent from Media Focus Africa (https://mediafocusonafrica.org)
-
+-ed
