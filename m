@@ -2,36 +2,36 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C97324EF0C1
-	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Apr 2022 16:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B344EF53D
+	for <lists+netfilter-devel@lfdr.de>; Fri,  1 Apr 2022 17:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245130AbiDAOiz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 1 Apr 2022 10:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
+        id S1350035AbiDAPNN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 1 Apr 2022 11:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348468AbiDAOe3 (ORCPT
+        with ESMTP id S1350469AbiDAOrg (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 1 Apr 2022 10:34:29 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3675BC7;
-        Fri,  1 Apr 2022 07:32:39 -0700 (PDT)
+        Fri, 1 Apr 2022 10:47:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633BF2A33B4;
+        Fri,  1 Apr 2022 07:37:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A7A92B82507;
-        Fri,  1 Apr 2022 14:32:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97D25C340EE;
-        Fri,  1 Apr 2022 14:32:35 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3B22460AC0;
+        Fri,  1 Apr 2022 14:37:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DC36C2BBE4;
+        Fri,  1 Apr 2022 14:37:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648823557;
-        bh=WavI65MpFwEQGdn/j9IXFin7URnvZ2VluOujiSBnhx4=;
+        s=k20201202; t=1648823845;
+        bh=BTG9HqnzVlKHLqAi6MY/c0gxJeBRn2dJggkfhomvigY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YWw3W69L/2KT8xt5rogRPtmXru3E9iYUuuBsn2oVWwYyXGdDcDvx5w+yet+iTcTZF
-         F9ZKtt/V0yEpU0yn8i8N/2BSa1u7PnduaLb6AzP9KBQpSiUQ/Sj+j6BsOQH4+yg7hk
-         uu0DucVGAN4eHRIddaNa920hDLPEG+6wbL0PPYqQVP+WGWvj9NdN3lB5xs8RNTT29L
-         HA54DceESGyVdnBOs9U//Hjj8Id7OOZbFlfnxo110PRsAD846wCD1aeZDdQ75t9YNn
-         Zhb+D8newc/3ibYyFo2rqLLDYVu7auSsCA1bgpAKGxt0/JiPbhShLTT3KHBwl0e+/u
-         Uhp8I0cvuHJpA==
+        b=LpFjLixLjqRhFhTpwg+hzQiWwVVRf/E8gaJe7RnjzGpusZ3OlLAAaRQj+jQ6Lisa7
+         aqHRSkwEyUtt1AFCetGuMcdYdTwGf0LlrA0lttUJfDew8npG4nBmzVwCsNIWCQDLpQ
+         zUlYpFupFrl8ruM3fRO0zr8UYQJcYss/qaNNA+nKd6ZqnlAlW4cvGoCtRI91uUHi8d
+         /0vdjHUXYlt/ZRJwN3WP+1bnJVHPAd50rvjEA0tvZR/xPayAkULN8KMrfB+tPRaAmR
+         VAcb/O4G8mPzVuWC+XJz2iEg6cFs9mCo6O+DgHBUW7KHgXRf2wj5hxpfnFlFEoIazd
+         TdEXVp7Tjnk0A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>, Karel Rericha <karel@maxtel.cz>,
@@ -42,12 +42,12 @@ Cc:     Florian Westphal <fw@strlen.de>, Karel Rericha <karel@maxtel.cz>,
         davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 143/149] netfilter: conntrack: revisit gc autotuning
-Date:   Fri,  1 Apr 2022 10:25:30 -0400
-Message-Id: <20220401142536.1948161-143-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.16 103/109] netfilter: conntrack: revisit gc autotuning
+Date:   Fri,  1 Apr 2022 10:32:50 -0400
+Message-Id: <20220401143256.1950537-103-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220401142536.1948161-1-sashal@kernel.org>
-References: <20220401142536.1948161-1-sashal@kernel.org>
+In-Reply-To: <20220401143256.1950537-1-sashal@kernel.org>
+References: <20220401143256.1950537-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -96,10 +96,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 68 insertions(+), 17 deletions(-)
 
 diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index bf1e17c678f1..7552e1e9fd62 100644
+index 7f7997460764..4045169ff47a 100644
 --- a/net/netfilter/nf_conntrack_core.c
 +++ b/net/netfilter/nf_conntrack_core.c
-@@ -67,6 +67,8 @@ EXPORT_SYMBOL_GPL(nf_conntrack_hash);
+@@ -66,6 +66,8 @@ EXPORT_SYMBOL_GPL(nf_conntrack_hash);
  struct conntrack_gc_work {
  	struct delayed_work	dwork;
  	u32			next_bucket;
@@ -108,7 +108,7 @@ index bf1e17c678f1..7552e1e9fd62 100644
  	bool			exiting;
  	bool			early_drop;
  };
-@@ -78,8 +80,19 @@ static __read_mostly bool nf_conntrack_locks_all;
+@@ -77,8 +79,19 @@ static __read_mostly bool nf_conntrack_locks_all;
  /* serialize hash resizes and nf_ct_iterate_cleanup */
  static DEFINE_MUTEX(nf_conntrack_mutex);
  
@@ -129,7 +129,7 @@ index bf1e17c678f1..7552e1e9fd62 100644
  
  #define MIN_CHAINLEN	8u
  #define MAX_CHAINLEN	(32u - MIN_CHAINLEN)
-@@ -1421,16 +1434,28 @@ static bool gc_worker_can_early_drop(const struct nf_conn *ct)
+@@ -1420,16 +1433,28 @@ static bool gc_worker_can_early_drop(const struct nf_conn *ct)
  
  static void gc_worker(struct work_struct *work)
  {
@@ -160,7 +160,7 @@ index bf1e17c678f1..7552e1e9fd62 100644
  	do {
  		struct nf_conntrack_tuple_hash *h;
  		struct hlist_nulls_head *ct_hash;
-@@ -1447,6 +1472,7 @@ static void gc_worker(struct work_struct *work)
+@@ -1446,6 +1471,7 @@ static void gc_worker(struct work_struct *work)
  
  		hlist_nulls_for_each_entry_rcu(h, n, &ct_hash[i], hnnode) {
  			struct nf_conntrack_net *cnet;
@@ -168,7 +168,7 @@ index bf1e17c678f1..7552e1e9fd62 100644
  			struct net *net;
  
  			tmp = nf_ct_tuplehash_to_ctrack(h);
-@@ -1456,11 +1482,29 @@ static void gc_worker(struct work_struct *work)
+@@ -1455,11 +1481,29 @@ static void gc_worker(struct work_struct *work)
  				continue;
  			}
  
@@ -198,7 +198,7 @@ index bf1e17c678f1..7552e1e9fd62 100644
  			if (nf_conntrack_max95 == 0 || gc_worker_skip_ct(tmp))
  				continue;
  
-@@ -1478,8 +1522,10 @@ static void gc_worker(struct work_struct *work)
+@@ -1477,8 +1521,10 @@ static void gc_worker(struct work_struct *work)
  				continue;
  			}
  
@@ -210,7 +210,7 @@ index bf1e17c678f1..7552e1e9fd62 100644
  
  			nf_ct_put(tmp);
  		}
-@@ -1492,33 +1538,38 @@ static void gc_worker(struct work_struct *work)
+@@ -1491,33 +1537,38 @@ static void gc_worker(struct work_struct *work)
  		cond_resched();
  		i++;
  
