@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6A04F14D2
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E454F14DA
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344763AbiDDMbN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 4 Apr 2022 08:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
+        id S1344658AbiDDMby (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 4 Apr 2022 08:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344222AbiDDMbM (ORCPT
+        with ESMTP id S1344853AbiDDMbx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 4 Apr 2022 08:31:12 -0400
+        Mon, 4 Apr 2022 08:31:53 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A4225280
-        for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:29:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F4F25281
+        for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:29:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=ThFC+nFqZWIg/sgI1KUnUaL2+RIP8NKFqYvlFXqaRhI=; b=GFnu4XkYfAN7L9RkCEylcfuXKH
-        RBplG3qHjQfv1HDkwZaIfl35jBwmOfZnL/yuOqwJSGTpXo4mQCEQGC1m0A4ozOuSHrH2rUSYTtPnq
-        dREmmPXiM6pkCRjp2j9g8Y5mInjZCiTKVUcQ0XNeYemlndFT+o1eWsTkeN2jIEv1KtYACH57OHLwJ
-        eK1u+php+KSkzCtA1MkQXj4jfEXkr0/ZdHyBGP4zZFdQxs47lBCvlgw35wJ6OWjnIk2Vi/d/xfQjp
-        vwJk69e6FwoPXUIaYBGDZYWlSCVGTIJ3/S0GPRGLFZGS4drUqni5IrLwGE9TlYE70BH+BIF1zo/Q8
-        5z2vjQng==;
+        bh=LFdwA9QZ+BfGCS3iw8+7OE1WK/yS0qVi1cLOIJs2mCo=; b=qnb3sH1vJS0JRpPFJI2536zrEh
+        /1h1hQH90OS67TIOx1r06NJ7YYfYNyXUsN62ayo2EyLUkpcNmZjwvqlZ6eO5Uz5k3Ba3U7+9KZgsI
+        DsiQdJRKODodNidH057qYNPjU8eWif+7nOqBIz8Mb82myGDvcZIO0XyqZE2lHcz/HyjdjTitdwJ1l
+        UfxEe/ia/BAVI+AZCijmmtJWi8NIwphvFFfaHaehPtjIpYzuuiGY6+J8k5tiBTAMcEejGW001jThz
+        QstKrMJ4navG/QzhV/KpleOD8rAng3ITgoG+672zt/qilYt9c2l7WiCaq/x9/HsT/YHtFmbPwpZYR
+        XUE1RIGQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1nbLbK-007FTC-S0; Mon, 04 Apr 2022 13:14:30 +0100
+        id 1nbLbK-007FTC-VJ; Mon, 04 Apr 2022 13:14:31 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc:     Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>
-Subject: [nft PATCH v4 25/32] netlink_delinearize: refactor stmt_payload_binop_postprocess
-Date:   Mon,  4 Apr 2022 13:14:03 +0100
-Message-Id: <20220404121410.188509-26-jeremy@azazel.net>
+Subject: [nft PATCH v4 26/32] netlink_delinearize: add support for processing variable payload statement arguments
+Date:   Mon,  4 Apr 2022 13:14:04 +0100
+Message-Id: <20220404121410.188509-27-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220404121410.188509-1-jeremy@azazel.net>
 References: <20220404121410.188509-1-jeremy@azazel.net>
@@ -55,66 +55,83 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We are about to add support for a new payload binop that needs to be
-post-processed, so move the contents of the two major cases (I and II)
-into separate functions to keep the function size reasonable.
+If a user uses a variable payload expression in a payload statement, the
+structure of the statement value is not handled by the existing
+statement postprocessing function, so we need to extend it.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/netlink_delinearize.c | 191 +++++++++++++++++++++-----------------
- 1 file changed, 108 insertions(+), 83 deletions(-)
+ src/netlink_delinearize.c | 85 ++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 79 insertions(+), 6 deletions(-)
 
 diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index 8f19594a1633..4036646d57ac 100644
+index 4036646d57ac..e7042d6ae940 100644
 --- a/src/netlink_delinearize.c
 +++ b/src/netlink_delinearize.c
-@@ -2862,6 +2862,110 @@ static void stmt_payload_binop_pp(struct rule_pp_ctx *ctx, struct expr *binop)
+@@ -2862,7 +2862,7 @@ static void stmt_payload_binop_pp(struct rule_pp_ctx *ctx, struct expr *binop)
  	}
  }
  
-+static bool stmt_payload_binop_postprocess_i(struct rule_pp_ctx *ctx)
+-static bool stmt_payload_binop_postprocess_i(struct rule_pp_ctx *ctx)
++static bool stmt_payload_binop_postprocess_i_a(struct rule_pp_ctx *ctx)
+ {
+ 	struct expr *expr, *binop, *payload, *value, *mask;
+ 	struct stmt *stmt = ctx->stmt;
+@@ -2916,6 +2916,67 @@ static bool stmt_payload_binop_postprocess_i(struct rule_pp_ctx *ctx)
+ 	return true;
+ }
+ 
++static bool stmt_payload_binop_postprocess_i_b(struct rule_pp_ctx *ctx)
 +{
-+	struct expr *expr, *binop, *payload, *value, *mask;
++	struct expr *expr, *payload, *mask, *xor;
 +	struct stmt *stmt = ctx->stmt;
++	unsigned int shift;
 +	mpz_t tmp, bitmask;
 +
 +	expr = stmt->payload.val;
 +
-+	if (expr->op != OP_OR)
++	if (expr->op != OP_XOR)
 +		return false;
 +
-+	value = expr->right;
-+	if (value->etype != EXPR_VALUE)
++	if (expr->left->etype != EXPR_BINOP)
 +		return false;
 +
-+	binop = expr->left;
-+	if (binop->op != OP_AND)
++	if (expr->left->op != OP_AND)
 +		return false;
 +
-+	payload = binop->left;
-+	if (payload->etype != EXPR_PAYLOAD)
-+		return false;
++	if (expr->right->etype == EXPR_UNARY) {
++		/*
++		 * If the payload value was originally in a different byte-order
++		 * from the payload expression, there will be a byte-order
++		 * conversion to remove.
++		 */
++		xor = expr_get(expr->right->arg);
++		expr_free(expr->right);
++		expr->right = xor;
++	} else
++		xor = expr->right;
 +
-+	if (!payload_expr_cmp(stmt->payload.expr, payload))
-+		return false;
-+
-+	mask = binop->right;
-+	if (mask->etype != EXPR_VALUE)
-+		return false;
++	mask    = expr->left->right;
++	payload = expr->left->left;
 +
 +	mpz_init(tmp);
 +	mpz_set(tmp, mask->value);
 +
 +	mpz_init_bitmask(bitmask, payload->len);
 +	mpz_xor(bitmask, bitmask, mask->value);
-+	mpz_xor(bitmask, bitmask, value->value);
 +	mpz_set(mask->value, bitmask);
 +	mpz_clear(bitmask);
 +
-+	binop_postprocess(ctx, expr, &expr->left);
-+	if (!payload_is_known(payload))
++	if (payload_expr_trim(payload, mask, &ctx->pctx, &shift))
++		payload_match_postprocess(ctx, expr->left, payload);
++
++	if (!payload_is_known(payload)) {
 +		mpz_set(mask->value, tmp);
-+	else {
++	} else {
++		if (shift) {
++			expr->right = expr_get(xor->left);
++			expr_free(xor);
++		}
 +		expr_free(stmt->payload.expr);
 +		stmt->payload.expr = expr_get(payload);
 +		stmt->payload.val = expr_get(expr->right);
@@ -122,170 +139,58 @@ index 8f19594a1633..4036646d57ac 100644
 +	}
 +
 +	mpz_clear(tmp);
-+
 +	return true;
 +}
 +
-+static bool stmt_payload_binop_postprocess_ii(struct rule_pp_ctx *ctx)
-+{
-+	struct expr *expr, *payload, *value;
-+	struct stmt *stmt = ctx->stmt;
-+	mpz_t bitmask;
-+
-+	expr = stmt->payload.val;
-+
-+	value = expr->right;
-+	if (value->etype != EXPR_VALUE)
-+		return false;
-+
-+	switch (expr->op) {
-+	case OP_AND: /* IIa */
-+		payload = expr->left;
-+		mpz_init_bitmask(bitmask, payload->len);
-+		mpz_xor(bitmask, bitmask, value->value);
-+		mpz_set(value->value, bitmask);
-+		mpz_clear(bitmask);
-+		break;
-+	case OP_OR: /* IIb */
-+		break;
-+	default: /* No idea */
-+		return false;
-+	}
-+
-+	stmt_payload_binop_pp(ctx, expr);
-+	if (!payload_is_known(expr->left))
-+		return false;
-+
-+	expr_free(stmt->payload.expr);
-+
-+	switch (expr->op) {
-+	case OP_AND:
-+		/* Mask was used to match payload, i.e.
-+		 * user asked to set zero value.
-+		 */
-+		mpz_set_ui(value->value, 0);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	stmt->payload.expr = expr_get(expr->left);
-+	stmt->payload.val = expr_get(expr->right);
-+	expr_free(expr);
-+
-+	return true;
-+}
-+
- /**
-  * stmt_payload_binop_postprocess - decode payload set binop
-  *
-@@ -2906,9 +3010,8 @@ static void stmt_payload_binop_pp(struct rule_pp_ctx *ctx, struct expr *binop)
-  */
- static void stmt_payload_binop_postprocess(struct rule_pp_ctx *ctx)
+ static bool stmt_payload_binop_postprocess_ii(struct rule_pp_ctx *ctx)
  {
--	struct expr *expr, *binop, *payload, *value, *mask;
-+	struct expr *expr;
- 	struct stmt *stmt = ctx->stmt;
--	mpz_t bitmask;
- 
- 	expr = stmt->payload.val;
- 
-@@ -2916,93 +3019,15 @@ static void stmt_payload_binop_postprocess(struct rule_pp_ctx *ctx)
- 		return;
+ 	struct expr *expr, *payload, *value;
+@@ -2983,21 +3044,30 @@ static bool stmt_payload_binop_postprocess_ii(struct rule_pp_ctx *ctx)
+  * and a mask to clear the real payload offset/length.
+  *
+  * So check if we have one of the following binops:
+- * I)
++ *
++ * Ia)
+  *           binop (|)
+  *       binop(&)   value/set
+  * payload   value(mask)
+  *
+- * This is the normal case, the | RHS is the value the user wants
+- * to set, the & RHS is the mask value that discards bits we need
++ * This is the normal constant case, the | RHS is the value the user
++ * wants to set, the & RHS is the mask value that discards bits we need
+  * to clear but retains everything unrelated to the set operation.
+  *
++ * Ib)
++ *         binop (^)
++ *       binop(&)   value/set
++ * payload   value(mask)
++ *
++ * The user wants to set a variable payload argument.  The ^ RHS is the
++ * variable expression.  The mask is as above.
++ *
+  * IIa)
+  *     binop (&)
+  * payload   mask
+  *
+  * User specified a zero set value -- netlink bitwise decoding
+- * discarded the redundant "| 0" part.  This is identical to I),
++ * discarded the redundant "| 0" part.  This is identical to Ia),
+  * we can just set value to 0 after we inferred the real payload size.
+  *
+  * IIb)
+@@ -3020,7 +3090,10 @@ static void stmt_payload_binop_postprocess(struct rule_pp_ctx *ctx)
  
  	switch (expr->left->etype) {
--	case EXPR_BINOP: {/* I? */
--		mpz_t tmp;
--
--		if (expr->op != OP_OR)
--			return;
--
--		value = expr->right;
--		if (value->etype != EXPR_VALUE)
--			return;
--
--		binop = expr->left;
--		if (binop->op != OP_AND)
--			return;
--
--		payload = binop->left;
--		if (payload->etype != EXPR_PAYLOAD)
--			return;
--
--		if (!payload_expr_cmp(stmt->payload.expr, payload))
-+	case EXPR_BINOP: /* I? */
-+		if (stmt_payload_binop_postprocess_i(ctx))
+ 	case EXPR_BINOP: /* I? */
+-		if (stmt_payload_binop_postprocess_i(ctx))
++		if (stmt_payload_binop_postprocess_i_a(ctx))
++			return;
++
++		if (stmt_payload_binop_postprocess_i_b(ctx))
  			return;
  
--		mask = binop->right;
--		if (mask->etype != EXPR_VALUE)
--			return;
--
--		mpz_init(tmp);
--		mpz_set(tmp, mask->value);
--
--		mpz_init_bitmask(bitmask, payload->len);
--		mpz_xor(bitmask, bitmask, mask->value);
--		mpz_xor(bitmask, bitmask, value->value);
--		mpz_set(mask->value, bitmask);
--		mpz_clear(bitmask);
--
--		binop_postprocess(ctx, expr, &expr->left);
--		if (!payload_is_known(payload)) {
--			mpz_set(mask->value, tmp);
--			mpz_clear(tmp);
--			return;
--		}
--
--		mpz_clear(tmp);
--		expr_free(stmt->payload.expr);
--		stmt->payload.expr = expr_get(payload);
--		stmt->payload.val = expr_get(expr->right);
--		expr_free(expr);
- 		break;
--	}
- 	case EXPR_PAYLOAD: /* II? */
--		value = expr->right;
--		if (value->etype != EXPR_VALUE)
-+		if (stmt_payload_binop_postprocess_ii(ctx))
- 			return;
- 
--		switch (expr->op) {
--		case OP_AND: /* IIa */
--			payload = expr->left;
--			mpz_init_bitmask(bitmask, payload->len);
--			mpz_xor(bitmask, bitmask, value->value);
--			mpz_set(value->value, bitmask);
--			mpz_clear(bitmask);
--			break;
--		case OP_OR: /* IIb */
--			break;
--		default: /* No idea */
--			return;
--		}
--
--		stmt_payload_binop_pp(ctx, expr);
--		if (!payload_is_known(expr->left))
--			return;
--
--		expr_free(stmt->payload.expr);
--
--		switch (expr->op) {
--		case OP_AND:
--			/* Mask was used to match payload, i.e.
--			 * user asked to set zero value.
--			 */
--			mpz_set_ui(value->value, 0);
--			break;
--		default:
--			break;
--		}
--
--		stmt->payload.expr = expr_get(expr->left);
--		stmt->payload.val = expr_get(expr->right);
--		expr_free(expr);
- 		break;
- 	default: /* No idea */
  		break;
 -- 
 2.35.1
