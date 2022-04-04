@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA3B4F1492
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E404F14D6
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242908AbiDDMQe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 4 Apr 2022 08:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
+        id S1344222AbiDDMbQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 4 Apr 2022 08:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242228AbiDDMQa (ORCPT
+        with ESMTP id S1344658AbiDDMbP (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 4 Apr 2022 08:16:30 -0400
+        Mon, 4 Apr 2022 08:31:15 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B141D13E1A
-        for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:14:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE28725284
+        for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:29:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=D/gQayupct7m/WsP+v7KGZGrFUC6u+ydwTf1BxJLdbc=; b=sUdmGSWnLEy3qOumrfhCYF4i5g
-        UrS+QYUWd/v6QxsBq6etI/aMF77fk8JGU04ijgvOxI/7Y4r4PSz9ZmfhRBUBlSLQDPXGKrDAr/CYO
-        FLbzoEZl/t//itqD07canflJnHlYPYNhlbPiYLYjRvU+E2uso4vBLP/iTVv1GzOFpc+DmSBNjUki/
-        RDM3Alw/DTgNk4iMHyA5Vhye9zrUvGZ4OAVKtkVXMNMj0ugXfyuznIrBC5Xnua/AIwg41NE5m1AEJ
-        p1T9EbD++CndZHNTzKVnR0IgXFExr/Tnh5IJtCkNYR+F1xVigNR71iHS/mdoVGK2Mrxja8p1qIoyh
-        zlMezj4g==;
+        bh=Tg+7WgOj/uwJRt8ZHOSQ+L3AZ15AkKLVsv5kl94W8xo=; b=jYpGlMhPssR1y7SRSWpim1YtMS
+        hoDL9iGGq+CYEgbOk84XxJ1zIVlq2/SEDQTcTM/RQ9uP74uLtyvWJTJ8j5PL51ItkTnt1bMxeCHaS
+        dCNIBL4L3tv5dhMFW9Izm5WNZrQ1lCTI4tMzKyPrfSYbWPGZwzygVd/x+nKDjB/zjLjQlTr68meXF
+        ufb+XibzV1MjY31UbB/wT70nqHtWlDNG5X51f/wyxIzk6DJxkMye3TWsDJnMCMs+S6quIHVtMAe5e
+        uvnnIy59drBU/aVsoV2jVRm0iqUeKMoXMp2n07NhExQCQonAOYdKMe6SfTuiLOlmKV/+/DYh/rSP3
+        7SbL+rUw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1nbLbJ-007FTC-7K; Mon, 04 Apr 2022 13:14:29 +0100
+        id 1nbLbJ-007FTC-Ap; Mon, 04 Apr 2022 13:14:29 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc:     Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>
-Subject: [nft PATCH v4 09/32] netlink_delinearize: add postprocessing for payload binops
-Date:   Mon,  4 Apr 2022 13:13:47 +0100
-Message-Id: <20220404121410.188509-10-jeremy@azazel.net>
+Subject: [nft PATCH v4 10/32] netlink_delinearize: correct type and byte-order of shifts
+Date:   Mon,  4 Apr 2022 13:13:48 +0100
+Message-Id: <20220404121410.188509-11-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220404121410.188509-1-jeremy@azazel.net>
 References: <20220404121410.188509-1-jeremy@azazel.net>
@@ -55,74 +55,37 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If a user uses a payload expression as a statement argument:
-
-  nft add rule t c meta mark set ip dscp lshift 2 or 0x10
-
-we may need to undo munging during delinearization.
+Shifts are of integer type and in HBO.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/netlink_delinearize.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ src/netlink_delinearize.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index 733977bc526d..12624db4c3a5 100644
+index 12624db4c3a5..8b010fe4d168 100644
 --- a/src/netlink_delinearize.c
 +++ b/src/netlink_delinearize.c
-@@ -2454,6 +2454,42 @@ static void relational_binop_postprocess(struct rule_pp_ctx *ctx,
- 	}
- }
+@@ -2618,8 +2618,17 @@ static void expr_postprocess(struct rule_pp_ctx *ctx, struct expr **exprp)
+ 		}
+ 		expr_postprocess(ctx, &expr->right);
  
-+static bool payload_binop_postprocess(struct rule_pp_ctx *ctx,
-+				      struct expr **exprp)
-+{
-+	struct expr *expr = *exprp;
-+
-+	if (expr->op != OP_RSHIFT)
-+		return false;
-+
-+	if (expr->left->etype == EXPR_UNARY) {
-+		/*
-+		 * If the payload value was originally in a different byte-order
-+		 * from the payload expression, there will be a byte-order
-+		 * conversion to remove.
-+		 */
-+		struct expr *left = expr_get(expr->left->arg);
-+		expr_free(expr->left);
-+		expr->left = left;
-+	}
-+
-+	if (expr->left->etype != EXPR_BINOP || expr->left->op != OP_AND)
-+		return false;
-+
-+	if (expr->left->left->etype != EXPR_PAYLOAD)
-+		return false;
-+
-+	expr_set_type(expr->right, &integer_type,
-+		      BYTEORDER_HOST_ENDIAN);
-+	expr_postprocess(ctx, &expr->right);
-+
-+	binop_postprocess(ctx, expr, &expr->left);
-+	*exprp = expr_get(expr->left);
-+	expr_free(expr);
-+
-+	return true;
-+}
-+
- static struct expr *string_wildcard_expr_alloc(struct location *loc,
- 					       const struct expr *mask,
- 					       const struct expr *expr)
-@@ -2566,6 +2602,9 @@ static void expr_postprocess(struct rule_pp_ctx *ctx, struct expr **exprp)
- 		expr_set_type(expr, expr->arg->dtype, !expr->arg->byteorder);
- 		break;
- 	case EXPR_BINOP:
-+		if (payload_binop_postprocess(ctx, exprp))
+-		expr_set_type(expr, expr->left->dtype,
+-			      expr->left->byteorder);
++		switch (expr->op) {
++		case OP_LSHIFT:
++		case OP_RSHIFT:
++			expr_set_type(expr, &integer_type,
++				      BYTEORDER_HOST_ENDIAN);
 +			break;
++		default:
++			expr_set_type(expr, expr->left->dtype,
++				      expr->left->byteorder);
++		}
 +
- 		expr_postprocess(ctx, &expr->left);
- 		switch (expr->op) {
- 		case OP_LSHIFT:
+ 		break;
+ 	case EXPR_RELATIONAL:
+ 		switch (expr->left->etype) {
 -- 
 2.35.1
 
