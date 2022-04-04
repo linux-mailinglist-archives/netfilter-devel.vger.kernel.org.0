@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6008D4F1491
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9EC4F148E
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241227AbiDDMQd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 4 Apr 2022 08:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
+        id S243321AbiDDMQc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 4 Apr 2022 08:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242127AbiDDMQa (ORCPT
+        with ESMTP id S242097AbiDDMQ1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 4 Apr 2022 08:16:30 -0400
+        Mon, 4 Apr 2022 08:16:27 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6406513D34
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E6713D1F
         for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=e4tdn+El4S3PHWhh+cQiADiArdU5P+ZxjOYnOSiPDkc=; b=EBfS8PKBV3Nk3WTIgjEOM95HlD
-        rQF4rfrqfSUA8SzP9cNDJKXCBqQiHMGStO68/SLMk9bvWYy1BvcppFIkKlUefON93mJ08zWCl/ZKk
-        Hah9DHW55eZq4KFrT3oSIuQW5WIavF9/L+6S9Q4tT2/GPlS1VBvietGbeD/4wVWKBxSQdpQAkAaPx
-        /cBn4hfrM5bhCFKiK+O4T/yap95zpG/nne9UwO5+HtjFF0iTVjPjYWM6n3ncp3XJiZjUcqBmTGtJp
-        HU29d0vrxpXdYtwA9WNm2eZbiobcLrtgCwFYU5ymaAx8ufn0W1WGDzcj2u0DHecvon+vAO59lQ1HR
-        udIyemkQ==;
+        bh=8BC5+YiS6uLPGVXIR8GTlsrQVm2G6lIMbjHK+n4zBKc=; b=NSQ1gHmBwWtfkrE5fvoaEVUU3+
+        RMv/rxJltsR9liSiR2lROUWwrMB5bmEmMYIPcoosUe8chnvuV2zlrW2bujk0DnPCVKh3E6jVE1PRp
+        3ySHxykPhufBsDY5UHrgQl3wfR1WccP+ApD5nRletq94/k2nXLUi2lxYE6DeAU4Vs6gx3hAuNCTQL
+        o2LJzZ/q5jjIK6QL+LrT0YvuhI6oBRMz9g8a+jCT79VJrKF3PUow4YoRziyYVTFxIpcFMOaeFcL6i
+        tAXg1DaP8i3mNHbBlJaxpWNIODCKVA+UXyMqTlxu5xmrLS/0/O/dxiosCE9Zq5lP2JtwNe2KzDUyS
+        Rza0KIwQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1nbLbI-007FTC-TF; Mon, 04 Apr 2022 13:14:28 +0100
+        id 1nbLbI-007FTC-Vc; Mon, 04 Apr 2022 13:14:29 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc:     Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>
-Subject: [nft PATCH v4 05/32] ct: support `NULL` symbol-tables when looking up labels
-Date:   Mon,  4 Apr 2022 13:13:43 +0100
-Message-Id: <20220404121410.188509-6-jeremy@azazel.net>
+Subject: [nft PATCH v4 06/32] include: update nf_tables.h
+Date:   Mon,  4 Apr 2022 13:13:44 +0100
+Message-Id: <20220404121410.188509-7-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220404121410.188509-1-jeremy@azazel.net>
 References: <20220404121410.188509-1-jeremy@azazel.net>
@@ -55,33 +55,114 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If the symbol-table passed to `ct_label2str` is `NULL`, return `NULL`.
+Bump it to 5.17-rc7.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/ct.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ include/linux/netfilter/nf_tables.h | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
-diff --git a/src/ct.c b/src/ct.c
-index e246d3039240..8c9ae7b0e04a 100644
---- a/src/ct.c
-+++ b/src/ct.c
-@@ -148,10 +148,11 @@ const char *ct_label2str(const struct symbol_table *ct_label_tbl,
- {
- 	const struct symbolic_constant *s;
+diff --git a/include/linux/netfilter/nf_tables.h b/include/linux/netfilter/nf_tables.h
+index 75df968d231b..466fd3f4447c 100644
+--- a/include/linux/netfilter/nf_tables.h
++++ b/include/linux/netfilter/nf_tables.h
+@@ -164,7 +164,10 @@ enum nft_hook_attributes {
+  */
+ enum nft_table_flags {
+ 	NFT_TABLE_F_DORMANT	= 0x1,
++	NFT_TABLE_F_OWNER	= 0x2,
+ };
++#define NFT_TABLE_F_MASK	(NFT_TABLE_F_DORMANT | \
++				 NFT_TABLE_F_OWNER)
  
--	for (s = ct_label_tbl->symbols; s->identifier; s++) {
--		if (value == s->value)
--			return s->identifier;
--	}
-+	if (ct_label_tbl != NULL)
-+		for (s = ct_label_tbl->symbols; s->identifier; s++) {
-+			if (value == s->value)
-+				return s->identifier;
-+		}
+ /**
+  * enum nft_table_attributes - nf_tables table netlink attributes
+@@ -173,6 +176,7 @@ enum nft_table_flags {
+  * @NFTA_TABLE_FLAGS: bitmask of enum nft_table_flags (NLA_U32)
+  * @NFTA_TABLE_USE: number of chains in this table (NLA_U32)
+  * @NFTA_TABLE_USERDATA: user data (NLA_BINARY)
++ * @NFTA_TABLE_OWNER: owner of this table through netlink portID (NLA_U32)
+  */
+ enum nft_table_attributes {
+ 	NFTA_TABLE_UNSPEC,
+@@ -182,6 +186,7 @@ enum nft_table_attributes {
+ 	NFTA_TABLE_HANDLE,
+ 	NFTA_TABLE_PAD,
+ 	NFTA_TABLE_USERDATA,
++	NFTA_TABLE_OWNER,
+ 	__NFTA_TABLE_MAX
+ };
+ #define NFTA_TABLE_MAX		(__NFTA_TABLE_MAX - 1)
+@@ -748,11 +753,13 @@ enum nft_dynset_attributes {
+  * @NFT_PAYLOAD_LL_HEADER: link layer header
+  * @NFT_PAYLOAD_NETWORK_HEADER: network header
+  * @NFT_PAYLOAD_TRANSPORT_HEADER: transport header
++ * @NFT_PAYLOAD_INNER_HEADER: inner header / payload
+  */
+ enum nft_payload_bases {
+ 	NFT_PAYLOAD_LL_HEADER,
+ 	NFT_PAYLOAD_NETWORK_HEADER,
+ 	NFT_PAYLOAD_TRANSPORT_HEADER,
++	NFT_PAYLOAD_INNER_HEADER,
+ };
  
- 	return NULL;
- }
+ /**
+@@ -891,7 +898,8 @@ enum nft_meta_keys {
+ 	NFT_META_OIF,
+ 	NFT_META_IIFNAME,
+ 	NFT_META_OIFNAME,
+-	NFT_META_IIFTYPE,
++	NFT_META_IFTYPE,
++#define NFT_META_IIFTYPE	NFT_META_IFTYPE
+ 	NFT_META_OIFTYPE,
+ 	NFT_META_SKUID,
+ 	NFT_META_SKGID,
+@@ -918,6 +926,7 @@ enum nft_meta_keys {
+ 	NFT_META_TIME_HOUR,
+ 	NFT_META_SDIF,
+ 	NFT_META_SDIFNAME,
++	__NFT_META_IIFTYPE,
+ };
+ 
+ /**
+@@ -1013,6 +1022,7 @@ enum nft_rt_attributes {
+  *
+  * @NFTA_SOCKET_KEY: socket key to match
+  * @NFTA_SOCKET_DREG: destination register
++ * @NFTA_SOCKET_LEVEL: cgroups2 ancestor level (only for cgroupsv2)
+  */
+ enum nft_socket_attributes {
+ 	NFTA_SOCKET_UNSPEC,
+@@ -1029,6 +1039,7 @@ enum nft_socket_attributes {
+  * @NFT_SOCKET_TRANSPARENT: Value of the IP(V6)_TRANSPARENT socket option
+  * @NFT_SOCKET_MARK: Value of the socket mark
+  * @NFT_SOCKET_WILDCARD: Whether the socket is zero-bound (e.g. 0.0.0.0 or ::0)
++ * @NFT_SOCKET_CGROUPV2: Match on cgroups version 2
+  */
+ enum nft_socket_keys {
+ 	NFT_SOCKET_TRANSPARENT,
+@@ -1188,6 +1199,21 @@ enum nft_counter_attributes {
+ };
+ #define NFTA_COUNTER_MAX	(__NFTA_COUNTER_MAX - 1)
+ 
++/**
++ * enum nft_last_attributes - nf_tables last expression netlink attributes
++ *
++ * @NFTA_LAST_SET: last update has been set, zero means never updated (NLA_U32)
++ * @NFTA_LAST_MSECS: milliseconds since last update (NLA_U64)
++ */
++enum nft_last_attributes {
++	NFTA_LAST_UNSPEC,
++	NFTA_LAST_SET,
++	NFTA_LAST_MSECS,
++	NFTA_LAST_PAD,
++	__NFTA_LAST_MAX
++};
++#define NFTA_LAST_MAX	(__NFTA_LAST_MAX - 1)
++
+ /**
+  * enum nft_log_attributes - nf_tables log expression netlink attributes
+  *
 -- 
 2.35.1
 
