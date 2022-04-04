@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 331CD4F1493
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6008D4F1491
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242228AbiDDMQf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 4 Apr 2022 08:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56720 "EHLO
+        id S241227AbiDDMQd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 4 Apr 2022 08:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242407AbiDDMQb (ORCPT
+        with ESMTP id S242127AbiDDMQa (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 4 Apr 2022 08:16:31 -0400
+        Mon, 4 Apr 2022 08:16:30 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2BD13D43
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6406513D34
         for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=P2f+wC1M2JRL8r3nyGaLcYjmx+gCj7V+d9tdnWG9i0Y=; b=AD5qelBLgZDuD+iADj7uDwHTRc
-        YnCWfZ9olaHBMT2K/xkZmBDlEK8wEojQCmHsGV9MRKWcAq/iH19ikyCgRDIzXpfsOtxgDYFwyTL23
-        V+DJ095msrvzLPSUhYGVTjSB7Ie2KUypA4DHoxkbn6RxxbBWZKz0B3IMao9elOz7p3fSPm3ZEb24m
-        JGwkYtUXD0bOj0lVOOe/wzUSkXEqjTKaS+JV8W4hsdc7hNiFHYwLYWQ8FvoocLM/v6lmX83jvvdS4
-        d6mbbIF5sFUhFL/B1vGSxqN4Y5DlPlecrOW8xVG4bv1Ns6U+9YMcYMSit7KJtFtcr29KqiIV9+lx+
-        bzC1IV9w==;
+        bh=e4tdn+El4S3PHWhh+cQiADiArdU5P+ZxjOYnOSiPDkc=; b=EBfS8PKBV3Nk3WTIgjEOM95HlD
+        rQF4rfrqfSUA8SzP9cNDJKXCBqQiHMGStO68/SLMk9bvWYy1BvcppFIkKlUefON93mJ08zWCl/ZKk
+        Hah9DHW55eZq4KFrT3oSIuQW5WIavF9/L+6S9Q4tT2/GPlS1VBvietGbeD/4wVWKBxSQdpQAkAaPx
+        /cBn4hfrM5bhCFKiK+O4T/yap95zpG/nne9UwO5+HtjFF0iTVjPjYWM6n3ncp3XJiZjUcqBmTGtJp
+        HU29d0vrxpXdYtwA9WNm2eZbiobcLrtgCwFYU5ymaAx8ufn0W1WGDzcj2u0DHecvon+vAO59lQ1HR
+        udIyemkQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1nbLbI-007FTC-QH; Mon, 04 Apr 2022 13:14:28 +0100
+        id 1nbLbI-007FTC-TF; Mon, 04 Apr 2022 13:14:28 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc:     Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>
-Subject: [nft PATCH v4 04/32] datatype: support `NULL` symbol-tables when printing constants
-Date:   Mon,  4 Apr 2022 13:13:42 +0100
-Message-Id: <20220404121410.188509-5-jeremy@azazel.net>
+Subject: [nft PATCH v4 05/32] ct: support `NULL` symbol-tables when looking up labels
+Date:   Mon,  4 Apr 2022 13:13:43 +0100
+Message-Id: <20220404121410.188509-6-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220404121410.188509-1-jeremy@azazel.net>
 References: <20220404121410.188509-1-jeremy@azazel.net>
@@ -55,47 +55,33 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If the symbol-table passed to `symbol_constant_print` is `NULL`, fall
-back to printing the expression's base-type.
+If the symbol-table passed to `ct_label2str` is `NULL`, return `NULL`.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/datatype.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ src/ct.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/src/datatype.c b/src/datatype.c
-index b2e667cef2c6..668823b6c7b1 100644
---- a/src/datatype.c
-+++ b/src/datatype.c
-@@ -185,7 +185,7 @@ void symbolic_constant_print(const struct symbol_table *tbl,
- 			     struct output_ctx *octx)
+diff --git a/src/ct.c b/src/ct.c
+index e246d3039240..8c9ae7b0e04a 100644
+--- a/src/ct.c
++++ b/src/ct.c
+@@ -148,10 +148,11 @@ const char *ct_label2str(const struct symbol_table *ct_label_tbl,
  {
- 	unsigned int len = div_round_up(expr->len, BITS_PER_BYTE);
--	const struct symbolic_constant *s;
-+	const struct symbolic_constant *s = NULL;
- 	uint64_t val = 0;
+ 	const struct symbolic_constant *s;
  
- 	/* Export the data in the correct byteorder for comparison */
-@@ -193,12 +193,14 @@ void symbolic_constant_print(const struct symbol_table *tbl,
- 	mpz_export_data(constant_data_ptr(val, expr->len), expr->value,
- 			expr->byteorder, len);
- 
--	for (s = tbl->symbols; s->identifier != NULL; s++) {
--		if (val == s->value)
--			break;
+-	for (s = ct_label_tbl->symbols; s->identifier; s++) {
+-		if (value == s->value)
+-			return s->identifier;
 -	}
-+	if (tbl != NULL)
-+		for (s = tbl->symbols; s->identifier != NULL; s++) {
-+			if (val == s->value)
-+				break;
++	if (ct_label_tbl != NULL)
++		for (s = ct_label_tbl->symbols; s->identifier; s++) {
++			if (value == s->value)
++				return s->identifier;
 +		}
  
--	if (s->identifier == NULL || nft_output_numeric_symbol(octx))
-+	if (s == NULL || s->identifier == NULL ||
-+	    nft_output_numeric_symbol(octx))
- 		return expr_basetype(expr)->print(expr, octx);
- 
- 	nft_print(octx, quotes ? "\"%s\"" : "%s", s->identifier);
+ 	return NULL;
+ }
 -- 
 2.35.1
 
