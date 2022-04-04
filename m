@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A80144F148C
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 331CD4F1493
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242950AbiDDMQc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 4 Apr 2022 08:16:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
+        id S242228AbiDDMQf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 4 Apr 2022 08:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242000AbiDDMQ1 (ORCPT
+        with ESMTP id S242407AbiDDMQb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 4 Apr 2022 08:16:27 -0400
+        Mon, 4 Apr 2022 08:16:31 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2672213D03
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2BD13D43
         for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=3WcZJPGQD0DJZmsmzl2xxAPXagzo7127gW1n6UrBCns=; b=ShJyDMht+ezLsO9UgHTLthHyim
-        0EodEmjKP3UbiHyjbm6sCx9K8Vb1ZrJTj5AjUbL/N4uh2DdGAVoTjzkSpKKLykAIQYM9jpX7gTm5L
-        /JONZbiSKu18aU4WuWJ6/a14hfSww+G1K/AUUTzeUgLmOUwJKOzIqUggrGR0z/PNsdXZ+vKxF5loK
-        LsfNSv/1ylICf36dlKquWo6rINYDzftlEHHx8ey6Swy/NFbmcOGxKvHoz9zGDW6GTzIId9nEHI/AG
-        ABY9n4Tmw5Wj9ul8Pv8nOaAfJwDGndD3pxBgFN1Ts4l4YtPUZnXApufJq2dTrHCd+k79saC+3Jn8j
-        HIpyig9A==;
+        bh=P2f+wC1M2JRL8r3nyGaLcYjmx+gCj7V+d9tdnWG9i0Y=; b=AD5qelBLgZDuD+iADj7uDwHTRc
+        YnCWfZ9olaHBMT2K/xkZmBDlEK8wEojQCmHsGV9MRKWcAq/iH19ikyCgRDIzXpfsOtxgDYFwyTL23
+        V+DJ095msrvzLPSUhYGVTjSB7Ie2KUypA4DHoxkbn6RxxbBWZKz0B3IMao9elOz7p3fSPm3ZEb24m
+        JGwkYtUXD0bOj0lVOOe/wzUSkXEqjTKaS+JV8W4hsdc7hNiFHYwLYWQ8FvoocLM/v6lmX83jvvdS4
+        d6mbbIF5sFUhFL/B1vGSxqN4Y5DlPlecrOW8xVG4bv1Ns6U+9YMcYMSit7KJtFtcr29KqiIV9+lx+
+        bzC1IV9w==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1nbLbI-007FTC-NY; Mon, 04 Apr 2022 13:14:28 +0100
+        id 1nbLbI-007FTC-QH; Mon, 04 Apr 2022 13:14:28 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc:     Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>
-Subject: [nft PATCH v4 03/32] src: move `byteorder_names` array
-Date:   Mon,  4 Apr 2022 13:13:41 +0100
-Message-Id: <20220404121410.188509-4-jeremy@azazel.net>
+Subject: [nft PATCH v4 04/32] datatype: support `NULL` symbol-tables when printing constants
+Date:   Mon,  4 Apr 2022 13:13:42 +0100
+Message-Id: <20220404121410.188509-5-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220404121410.188509-1-jeremy@azazel.net>
 References: <20220404121410.188509-1-jeremy@azazel.net>
@@ -55,57 +55,47 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-It's useful for debugging, so move it out of evaluate.c to make it
-available elsewhere.
+If the symbol-table passed to `symbol_constant_print` is `NULL`, fall
+back to printing the expression's base-type.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/datatype.h | 6 ++++++
- src/evaluate.c     | 7 +------
- 2 files changed, 7 insertions(+), 6 deletions(-)
+ src/datatype.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/include/datatype.h b/include/datatype.h
-index 0b90a33e4e64..8d774a91e350 100644
---- a/include/datatype.h
-+++ b/include/datatype.h
-@@ -119,6 +119,12 @@ enum byteorder {
- 	BYTEORDER_BIG_ENDIAN,
- };
+diff --git a/src/datatype.c b/src/datatype.c
+index b2e667cef2c6..668823b6c7b1 100644
+--- a/src/datatype.c
++++ b/src/datatype.c
+@@ -185,7 +185,7 @@ void symbolic_constant_print(const struct symbol_table *tbl,
+ 			     struct output_ctx *octx)
+ {
+ 	unsigned int len = div_round_up(expr->len, BITS_PER_BYTE);
+-	const struct symbolic_constant *s;
++	const struct symbolic_constant *s = NULL;
+ 	uint64_t val = 0;
  
-+static const char *const byteorder_names[] = {
-+	[BYTEORDER_INVALID]             = "invalid",
-+	[BYTEORDER_HOST_ENDIAN]         = "host endian",
-+	[BYTEORDER_BIG_ENDIAN]          = "big endian",
-+};
-+
- struct expr;
+ 	/* Export the data in the correct byteorder for comparison */
+@@ -193,12 +193,14 @@ void symbolic_constant_print(const struct symbol_table *tbl,
+ 	mpz_export_data(constant_data_ptr(val, expr->len), expr->value,
+ 			expr->byteorder, len);
  
- /**
-diff --git a/src/evaluate.c b/src/evaluate.c
-index 04d42b800103..be493f85010c 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -27,6 +27,7 @@
- #include <net/if.h>
- #include <errno.h>
+-	for (s = tbl->symbols; s->identifier != NULL; s++) {
+-		if (val == s->value)
+-			break;
+-	}
++	if (tbl != NULL)
++		for (s = tbl->symbols; s->identifier != NULL; s++) {
++			if (val == s->value)
++				break;
++		}
  
-+#include <datatype.h>
- #include <expression.h>
- #include <statement.h>
- #include <netlink.h>
-@@ -40,12 +41,6 @@
+-	if (s->identifier == NULL || nft_output_numeric_symbol(octx))
++	if (s == NULL || s->identifier == NULL ||
++	    nft_output_numeric_symbol(octx))
+ 		return expr_basetype(expr)->print(expr, octx);
  
- static int expr_evaluate(struct eval_ctx *ctx, struct expr **expr);
- 
--static const char * const byteorder_names[] = {
--	[BYTEORDER_INVALID]		= "invalid",
--	[BYTEORDER_HOST_ENDIAN]		= "host endian",
--	[BYTEORDER_BIG_ENDIAN]		= "big endian",
--};
--
- #define chain_error(ctx, s1, fmt, args...) \
- 	__stmt_binary_error(ctx, &(s1)->location, NULL, fmt, ## args)
- #define monitor_error(ctx, s1, fmt, args...) \
+ 	nft_print(octx, quotes ? "\"%s\"" : "%s", s->identifier);
 -- 
 2.35.1
 
