@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB644F14C9
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2801D4F14CE
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344310AbiDDMaU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 4 Apr 2022 08:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
+        id S1345277AbiDDMao (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 4 Apr 2022 08:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344528AbiDDMaM (ORCPT
+        with ESMTP id S1344614AbiDDMaj (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 4 Apr 2022 08:30:12 -0400
+        Mon, 4 Apr 2022 08:30:39 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2079A3D1DB
-        for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:28:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808BFEF
+        for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:28:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=fQTUbiFVmKB2fUp9toOez0Ypq+tsxfWnV4ALUlUJMDw=; b=JWJhiTN74J8z43CTwQqgDZTu4z
-        7GV3S8mebq5N1/dBfCG7O3kGrld8sFYUMxWReENdzJ3BL2snYm9vMjBhsB/i+bzOnas7c7SNLFTRs
-        vtgFw8yElUWjuwCoOS3zcJitowqWEWb+yf74ScvpajPAfefZdt4nezQbAgcgOccie1v6omItlN7CE
-        zwQyMyBVJlJkEta+uvlH5iNUPf3qOh1zf4p3IB8wvVtc91FB4mUDEaflmCmlsFhj+0cH1nFMWadUL
-        iRyirWayOAda4y2Xe7AJhxxBBK1NcsHSA8Ra6OvSANyEMwfzaZh1TWgbF3Z7PJjg+pwUGGETLzhnX
-        h4WKt55Q==;
+        bh=dGANMoLUiBoDR4tUxANRQxbmRZe+tWeuRphxWaYUy40=; b=uN22rsTs1ZLf99jJlBuoT85uCT
+        N8sOmdIKeYhd2wzO4kB996R8bq1zcJvAcsNDZFV29F/aWmOM9ftQnINKs6nlk/ceO/yWV3GAC9jaZ
+        VyI5dknORMlL8tKpvfqll4aNTOXWBVMZ2eYsyVypAIxfhvBG/YrRU/ZfLE8Wv4isnlzBx0BTxfGUj
+        t+Z0tYjS/GEWDLBW+6JC5Xvn34Kc116YIJixGGN3IwfUEVRakTmLJshXMZNTYqK4uBg6EeFxSxxEY
+        xTMq+liaCTFTLfnN9cRZ8b95pm9QBaeQ/LfiKuhef2N7pAPgfpWqo0eo4GRv8hsp5/mWlcMTdaIfT
+        N4KSavZg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1nbLbJ-007FTC-WE; Mon, 04 Apr 2022 13:14:30 +0100
+        id 1nbLbK-007FTC-4n; Mon, 04 Apr 2022 13:14:30 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc:     Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>
-Subject: [nft PATCH v4 16/32] tests: shell: add test-cases for ct and packet mark payload expressions
-Date:   Mon,  4 Apr 2022 13:13:54 +0100
-Message-Id: <20220404121410.188509-17-jeremy@azazel.net>
+Subject: [nft PATCH v4 17/32] tests: py: add test-cases for ct and packet mark payload expressions
+Date:   Mon,  4 Apr 2022 13:13:55 +0100
+Message-Id: <20220404121410.188509-18-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220404121410.188509-1-jeremy@azazel.net>
 References: <20220404121410.188509-1-jeremy@azazel.net>
@@ -60,272 +60,431 @@ packet mark to a value derived from a payload works correctly.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- tests/shell/testcases/chains/0040mark_binop_2         | 11 +++++++++++
- tests/shell/testcases/chains/0040mark_binop_3         | 11 +++++++++++
- tests/shell/testcases/chains/0040mark_binop_4         | 11 +++++++++++
- tests/shell/testcases/chains/0040mark_binop_5         | 11 +++++++++++
- tests/shell/testcases/chains/0040mark_binop_6         | 11 +++++++++++
- tests/shell/testcases/chains/0040mark_binop_7         | 11 +++++++++++
- tests/shell/testcases/chains/0040mark_binop_8         | 11 +++++++++++
- tests/shell/testcases/chains/0040mark_binop_9         | 11 +++++++++++
- .../shell/testcases/chains/dumps/0040mark_binop_2.nft |  6 ++++++
- .../shell/testcases/chains/dumps/0040mark_binop_3.nft |  6 ++++++
- .../shell/testcases/chains/dumps/0040mark_binop_4.nft |  6 ++++++
- .../shell/testcases/chains/dumps/0040mark_binop_5.nft |  6 ++++++
- .../shell/testcases/chains/dumps/0040mark_binop_6.nft |  6 ++++++
- .../shell/testcases/chains/dumps/0040mark_binop_7.nft |  6 ++++++
- .../shell/testcases/chains/dumps/0040mark_binop_8.nft |  6 ++++++
- .../shell/testcases/chains/dumps/0040mark_binop_9.nft |  6 ++++++
- 16 files changed, 136 insertions(+)
- create mode 100755 tests/shell/testcases/chains/0040mark_binop_2
- create mode 100755 tests/shell/testcases/chains/0040mark_binop_3
- create mode 100755 tests/shell/testcases/chains/0040mark_binop_4
- create mode 100755 tests/shell/testcases/chains/0040mark_binop_5
- create mode 100755 tests/shell/testcases/chains/0040mark_binop_6
- create mode 100755 tests/shell/testcases/chains/0040mark_binop_7
- create mode 100755 tests/shell/testcases/chains/0040mark_binop_8
- create mode 100755 tests/shell/testcases/chains/0040mark_binop_9
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_2.nft
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_3.nft
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_4.nft
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_5.nft
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_6.nft
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_7.nft
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_8.nft
- create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_9.nft
+ tests/py/ip/ct.t            |  2 ++
+ tests/py/ip/ct.t.json       | 58 ++++++++++++++++++++++++++++++++++++
+ tests/py/ip/ct.t.payload    | 18 +++++++++++
+ tests/py/ip/meta.t          |  3 ++
+ tests/py/ip/meta.t.json     | 59 +++++++++++++++++++++++++++++++++++++
+ tests/py/ip/meta.t.payload  | 18 +++++++++++
+ tests/py/ip6/ct.t           |  6 ++++
+ tests/py/ip6/ct.t.json      | 58 ++++++++++++++++++++++++++++++++++++
+ tests/py/ip6/ct.t.payload   | 17 +++++++++++
+ tests/py/ip6/meta.t         |  3 ++
+ tests/py/ip6/meta.t.json    | 58 ++++++++++++++++++++++++++++++++++++
+ tests/py/ip6/meta.t.payload | 18 +++++++++++
+ 12 files changed, 318 insertions(+)
+ create mode 100644 tests/py/ip6/ct.t
+ create mode 100644 tests/py/ip6/ct.t.json
+ create mode 100644 tests/py/ip6/ct.t.payload
 
-diff --git a/tests/shell/testcases/chains/0040mark_binop_2 b/tests/shell/testcases/chains/0040mark_binop_2
-new file mode 100755
-index 000000000000..94ebe976c987
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_binop_2
-@@ -0,0 +1,11 @@
-+#!/bin/bash
+diff --git a/tests/py/ip/ct.t b/tests/py/ip/ct.t
+index a387863e0d8e..cfd9859c26b3 100644
+--- a/tests/py/ip/ct.t
++++ b/tests/py/ip/ct.t
+@@ -28,3 +28,5 @@ meta mark set ct original saddr . meta mark map { 1.1.1.1 . 0x00000014 : 0x00000
+ meta mark set ct original ip saddr . meta mark map { 1.1.1.1 . 0x00000014 : 0x0000001e };ok
+ ct original saddr . meta mark { 1.1.1.1 . 0x00000014 };fail
+ ct original ip saddr . meta mark { 1.1.1.1 . 0x00000014 };ok
++ct mark set ip dscp lshift 2 or 0x10;ok;ct mark set ip dscp << 2 | 16
++ct mark set ip dscp lshift 26 or 0x10;ok;ct mark set ip dscp << 26 | 16
+diff --git a/tests/py/ip/ct.t.json b/tests/py/ip/ct.t.json
+index 3288413f8f3f..d0df36f1d060 100644
+--- a/tests/py/ip/ct.t.json
++++ b/tests/py/ip/ct.t.json
+@@ -325,3 +325,61 @@
+         }
+     }
+ ]
 +
-+set -e
++# ct mark set ip dscp lshift 2 or 0x10
++[
++    {
++        "mangle": {
++            "key": {
++                "ct": {
++                    "key": "mark"
++                }
++            },
++            "value": {
++                "|": [
++                    {
++                        "<<": [
++                            {
++                                "payload": {
++                                    "field": "dscp",
++                                    "protocol": "ip"
++                                }
++                            },
++                            2
++                        ]
++                    },
++                    16
++                ]
++            }
++        }
++    }
++]
 +
-+RULESET="
-+  add table t
-+  add chain t c { type filter hook output priority filter; }
-+  add rule t c ct mark set ip dscp lshift 2 or 0x10
-+"
++# ct mark set ip dscp lshift 26 or 0x10
++[
++    {
++        "mangle": {
++            "key": {
++                "ct": {
++                    "key": "mark"
++                }
++            },
++            "value": {
++                "|": [
++                    {
++                        "<<": [
++                            {
++                                "payload": {
++                                    "field": "dscp",
++                                    "protocol": "ip"
++                                }
++                            },
++                            26
++                        ]
++                    },
++                    16
++                ]
++            }
++        }
++    }
++]
+diff --git a/tests/py/ip/ct.t.payload b/tests/py/ip/ct.t.payload
+index 49f06a8401f5..b2aed170833e 100644
+--- a/tests/py/ip/ct.t.payload
++++ b/tests/py/ip/ct.t.payload
+@@ -84,3 +84,21 @@ ip
+   [ ct load src_ip => reg 1 , dir original ]
+   [ meta load mark => reg 9 ]
+   [ lookup reg 1 set __set%d ]
 +
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/0040mark_binop_3 b/tests/shell/testcases/chains/0040mark_binop_3
-new file mode 100755
-index 000000000000..b491565ca573
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_binop_3
-@@ -0,0 +1,11 @@
-+#!/bin/bash
++# ct mark set ip dscp lshift 2 or 0x10
++ip test-ip4 output
++  [ payload load 1b @ network header + 1 => reg 1 ]
++  [ bitwise reg 1 = ( reg 1 & 0x000000fc ) ^ 0x00000000 ]
++  [ bitwise reg 1 = ( reg 1 >> 0x00000002 ) ]
++  [ bitwise reg 1 = ( reg 1 << 0x00000002 ) ]
++  [ bitwise reg 1 = ( reg 1 & 0x000000ef ) ^ 0x00000010 ]
++  [ ct set mark with reg 1 ]
 +
-+set -e
++# ct mark set ip dscp lshift 26 or 0x10
++ip
++  [ payload load 1b @ network header + 1 => reg 1 ]
++  [ bitwise reg 1 = ( reg 1 & 0x000000fc ) ^ 0x00000000 ]
++  [ bitwise reg 1 = ( reg 1 >> 0x00000002 ) ]
++  [ bitwise reg 1 = ( reg 1 << 0x0000001a ) ]
++  [ bitwise reg 1 = ( reg 1 & 0xffffffef ) ^ 0x00000010 ]
++  [ ct set mark with reg 1 ]
+diff --git a/tests/py/ip/meta.t b/tests/py/ip/meta.t
+index 5a05923a1ce1..3b6d82a0bc28 100644
+--- a/tests/py/ip/meta.t
++++ b/tests/py/ip/meta.t
+@@ -15,3 +15,6 @@ meta obrname "br0";fail
+ 
+ meta sdif "lo" accept;ok
+ meta sdifname != "vrf1" accept;ok
 +
-+RULESET="
-+  add table t
-+  add chain t c { type filter hook input priority filter; }
-+  add rule t c meta mark set ip dscp lshift 2 or 0x10
-+"
++meta mark set ip dscp lshift 2 or 0x10;ok;meta mark set ip dscp << 2 | 16
++meta mark set ip dscp lshift 26 or 0x10;ok;meta mark set ip dscp << 26 | 16
+diff --git a/tests/py/ip/meta.t.json b/tests/py/ip/meta.t.json
+index 3df31ce381fc..b82388dd31a8 100644
+--- a/tests/py/ip/meta.t.json
++++ b/tests/py/ip/meta.t.json
+@@ -156,3 +156,62 @@
+         }
+     }
+ ]
 +
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/0040mark_binop_4 b/tests/shell/testcases/chains/0040mark_binop_4
-new file mode 100755
-index 000000000000..adc5f25ba930
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_binop_4
-@@ -0,0 +1,11 @@
-+#!/bin/bash
++# meta mark set ip dscp lshift 2 or 0x10
++[
++    {
++        "mangle": {
++            "key": {
++                "meta": {
++                    "key": "mark"
++                }
++            },
++            "value": {
++                "|": [
++                    {
++                        "<<": [
++                            {
++                                "payload": {
++                                    "field": "dscp",
++                                    "protocol": "ip"
++                                }
++                            },
++                            2
++                        ]
++                    },
++                    16
++                ]
++            }
++        }
++    }
++]
 +
-+set -e
 +
-+RULESET="
-+  add table t
-+  add chain t c { type filter hook output priority filter; }
-+  add rule t c ct mark set ip dscp lshift 26 or 0x10
-+"
++# meta mark set ip dscp lshift 26 or 0x10
++[
++    {
++        "mangle": {
++            "key": {
++                "meta": {
++                    "key": "mark"
++                }
++            },
++            "value": {
++                "|": [
++                    {
++                        "<<": [
++                            {
++                                "payload": {
++                                    "field": "dscp",
++                                    "protocol": "ip"
++                                }
++                            },
++                            26
++                        ]
++                    },
++                    16
++                ]
++            }
++        }
++    }
++]
+diff --git a/tests/py/ip/meta.t.payload b/tests/py/ip/meta.t.payload
+index afde5cc13ac5..49d8330272f6 100644
+--- a/tests/py/ip/meta.t.payload
++++ b/tests/py/ip/meta.t.payload
+@@ -51,3 +51,21 @@ ip test-ip4 input
+   [ cmp eq reg 1 0x00000011 ]
+   [ payload load 2b @ transport header + 2 => reg 1 ]
+   [ cmp eq reg 1 0x00004300 ]
 +
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/0040mark_binop_5 b/tests/shell/testcases/chains/0040mark_binop_5
-new file mode 100755
-index 000000000000..286b7b1fc7f9
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_binop_5
-@@ -0,0 +1,11 @@
-+#!/bin/bash
++# meta mark set ip dscp lshift 2 or 0x10
++ip test-ip4 input
++  [ payload load 1b @ network header + 1 => reg 1 ]
++  [ bitwise reg 1 = ( reg 1 & 0x000000fc ) ^ 0x00000000 ]
++  [ bitwise reg 1 = ( reg 1 >> 0x00000002 ) ]
++  [ bitwise reg 1 = ( reg 1 << 0x00000002 ) ]
++  [ bitwise reg 1 = ( reg 1 & 0x000000ef ) ^ 0x00000010 ]
++  [ meta set mark with reg 1 ]
 +
-+set -e
-+
-+RULESET="
-+  add table t
-+  add chain t c { type filter hook input priority filter; }
-+  add rule t c meta mark set ip dscp lshift 26 or 0x10
-+"
-+
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/0040mark_binop_6 b/tests/shell/testcases/chains/0040mark_binop_6
-new file mode 100755
-index 000000000000..9ea82952ef24
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_binop_6
-@@ -0,0 +1,11 @@
-+#!/bin/bash
-+
-+set -e
-+
-+RULESET="
-+  add table ip6 t
-+  add chain ip6 t c { type filter hook output priority filter; }
-+  add rule ip6 t c ct mark set ip6 dscp lshift 2 or 0x10
-+"
-+
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/0040mark_binop_7 b/tests/shell/testcases/chains/0040mark_binop_7
-new file mode 100755
-index 000000000000..ff9cfb55ac3e
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_binop_7
-@@ -0,0 +1,11 @@
-+#!/bin/bash
-+
-+set -e
-+
-+RULESET="
-+  add table ip6 t
-+  add chain ip6 t c { type filter hook input priority filter; }
-+  add rule ip6 t c meta mark set ip6 dscp lshift 2 or 0x10
-+"
-+
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/0040mark_binop_8 b/tests/shell/testcases/chains/0040mark_binop_8
-new file mode 100755
-index 000000000000..b348ee9367df
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_binop_8
-@@ -0,0 +1,11 @@
-+#!/bin/bash
-+
-+set -e
-+
-+RULESET="
-+  add table ip6 t
-+  add chain ip6 t c { type filter hook output priority filter; }
-+  add rule ip6 t c ct mark set ip6 dscp lshift 26 or 0x10
-+"
-+
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/0040mark_binop_9 b/tests/shell/testcases/chains/0040mark_binop_9
-new file mode 100755
-index 000000000000..d19447d42b22
---- /dev/null
-+++ b/tests/shell/testcases/chains/0040mark_binop_9
-@@ -0,0 +1,11 @@
-+#!/bin/bash
-+
-+set -e
-+
-+RULESET="
-+  add table ip6 t
-+  add chain ip6 t c { type filter hook input priority filter; }
-+  add rule ip6 t c meta mark set ip6 dscp lshift 26 or 0x10
-+"
-+
-+$NFT -f - <<< "$RULESET"
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_binop_2.nft b/tests/shell/testcases/chains/dumps/0040mark_binop_2.nft
++# meta mark set ip dscp lshift 26 or 0x10
++ip
++  [ payload load 1b @ network header + 1 => reg 1 ]
++  [ bitwise reg 1 = ( reg 1 & 0x000000fc ) ^ 0x00000000 ]
++  [ bitwise reg 1 = ( reg 1 >> 0x00000002 ) ]
++  [ bitwise reg 1 = ( reg 1 << 0x0000001a ) ]
++  [ bitwise reg 1 = ( reg 1 & 0xffffffef ) ^ 0x00000010 ]
++  [ meta set mark with reg 1 ]
+diff --git a/tests/py/ip6/ct.t b/tests/py/ip6/ct.t
 new file mode 100644
-index 000000000000..7dc274f4e6a3
+index 000000000000..0a141ffaf961
 --- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_binop_2.nft
++++ b/tests/py/ip6/ct.t
 @@ -0,0 +1,6 @@
-+table ip t {
-+	chain c {
-+		type filter hook output priority filter; policy accept;
-+		ct mark set ip dscp << 2 | 16
-+	}
-+}
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_binop_3.nft b/tests/shell/testcases/chains/dumps/0040mark_binop_3.nft
++:output;type filter hook output priority 0
++
++*ip6;test-ip6;output
++
++ct mark set ip6 dscp lshift 2 or 0x10;ok;ct mark set ip6 dscp << 2 | 16
++ct mark set ip6 dscp lshift 26 or 0x10;ok;ct mark set ip6 dscp << 26 | 16
+diff --git a/tests/py/ip6/ct.t.json b/tests/py/ip6/ct.t.json
 new file mode 100644
-index 000000000000..c484f7a54948
+index 000000000000..7739e131343e
 --- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_binop_3.nft
-@@ -0,0 +1,6 @@
-+table ip t {
-+	chain c {
-+		type filter hook input priority filter; policy accept;
-+		meta mark set ip dscp << 2 | 16
-+	}
-+}
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_binop_4.nft b/tests/shell/testcases/chains/dumps/0040mark_binop_4.nft
++++ b/tests/py/ip6/ct.t.json
+@@ -0,0 +1,58 @@
++# ct mark set ip6 dscp lshift 2 or 0x10
++[
++    {
++        "mangle": {
++            "key": {
++                "ct": {
++                    "key": "mark"
++                }
++            },
++            "value": {
++                "|": [
++                    {
++                        "<<": [
++                            {
++                                "payload": {
++                                    "field": "dscp",
++                                    "protocol": "ip6"
++                                }
++                            },
++                            2
++                        ]
++                    },
++                    16
++                ]
++            }
++        }
++    }
++]
++
++# ct mark set ip6 dscp lshift 26 or 0x10
++[
++    {
++        "mangle": {
++            "key": {
++                "ct": {
++                    "key": "mark"
++                }
++            },
++            "value": {
++                "|": [
++                    {
++                        "<<": [
++                            {
++                                "payload": {
++                                    "field": "dscp",
++                                    "protocol": "ip6"
++                                }
++                            },
++                            26
++                        ]
++                    },
++                    16
++                ]
++            }
++        }
++    }
++]
++
+diff --git a/tests/py/ip6/ct.t.payload b/tests/py/ip6/ct.t.payload
 new file mode 100644
-index 000000000000..1bebea1683bc
+index 000000000000..580c8d8d5712
 --- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_binop_4.nft
-@@ -0,0 +1,6 @@
-+table ip t {
-+	chain c {
-+		type filter hook output priority filter; policy accept;
-+		ct mark set ip dscp << 26 | 16
-+	}
-+}
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_binop_5.nft b/tests/shell/testcases/chains/dumps/0040mark_binop_5.nft
-new file mode 100644
-index 000000000000..787c6cdd9231
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_binop_5.nft
-@@ -0,0 +1,6 @@
-+table ip t {
-+	chain c {
-+		type filter hook input priority filter; policy accept;
-+		meta mark set ip dscp << 26 | 16
-+	}
-+}
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_binop_6.nft b/tests/shell/testcases/chains/dumps/0040mark_binop_6.nft
-new file mode 100644
-index 000000000000..53940eaf2ea4
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_binop_6.nft
-@@ -0,0 +1,6 @@
-+table ip6 t {
-+	chain c {
-+		type filter hook output priority filter; policy accept;
-+		ct mark set ip6 dscp << 2 | 16
-+	}
-+}
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_binop_7.nft b/tests/shell/testcases/chains/dumps/0040mark_binop_7.nft
-new file mode 100644
-index 000000000000..35e12a0af66d
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_binop_7.nft
-@@ -0,0 +1,6 @@
-+table ip6 t {
-+	chain c {
-+		type filter hook input priority filter; policy accept;
-+		meta mark set ip6 dscp << 2 | 16
-+	}
-+}
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_binop_8.nft b/tests/shell/testcases/chains/dumps/0040mark_binop_8.nft
-new file mode 100644
-index 000000000000..f9f16c2491d4
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_binop_8.nft
-@@ -0,0 +1,6 @@
-+table ip6 t {
-+	chain c {
-+		type filter hook output priority filter; policy accept;
-+		ct mark set ip6 dscp << 26 | 16
-+	}
-+}
-diff --git a/tests/shell/testcases/chains/dumps/0040mark_binop_9.nft b/tests/shell/testcases/chains/dumps/0040mark_binop_9.nft
-new file mode 100644
-index 000000000000..03c69c3f7cd2
---- /dev/null
-+++ b/tests/shell/testcases/chains/dumps/0040mark_binop_9.nft
-@@ -0,0 +1,6 @@
-+table ip6 t {
-+	chain c {
-+		type filter hook input priority filter; policy accept;
-+		meta mark set ip6 dscp << 26 | 16
-+	}
-+}
++++ b/tests/py/ip6/ct.t.payload
+@@ -0,0 +1,17 @@
++# ct mark set ip6 dscp lshift 2 or 0x10
++ip6 test-ip6 output
++  [ payload load 2b @ network header + 0 => reg 1 ]
++  [ bitwise reg 1 = ( reg 1 & 0x0000c00f ) ^ 0x00000000 ]
++  [ bitwise reg 1 = ( reg 1 >> 0x00000006 ) ]
++  [ bitwise reg 1 = ( reg 1 << 0x00000002 ) ]
++  [ bitwise reg 1 = ( reg 1 & 0x00000fef ) ^ 0x00000010 ]
++  [ ct set mark with reg 1 ]
++
++# ct mark set ip6 dscp lshift 26 or 0x10
++ip6 test-ip6 output
++  [ payload load 2b @ network header + 0 => reg 1 ]
++  [ bitwise reg 1 = ( reg 1 & 0x0000c00f ) ^ 0x00000000 ]
++  [ bitwise reg 1 = ( reg 1 >> 0x00000006 ) ]
++  [ bitwise reg 1 = ( reg 1 << 0x0000001a ) ]
++  [ bitwise reg 1 = ( reg 1 & 0xffffffef ) ^ 0x00000010 ]
++  [ ct set mark with reg 1 ]
+diff --git a/tests/py/ip6/meta.t b/tests/py/ip6/meta.t
+index 471e14811975..90d588580a43 100644
+--- a/tests/py/ip6/meta.t
++++ b/tests/py/ip6/meta.t
+@@ -14,3 +14,6 @@ meta protocol ip6 udp dport 67;ok;udp dport 67
+ 
+ meta sdif "lo" accept;ok
+ meta sdifname != "vrf1" accept;ok
++
++meta mark set ip6 dscp lshift 2 or 0x10;ok;meta mark set ip6 dscp << 2 | 16
++meta mark set ip6 dscp lshift 26 or 0x10;ok;meta mark set ip6 dscp << 26 | 16
+diff --git a/tests/py/ip6/meta.t.json b/tests/py/ip6/meta.t.json
+index 351320d70f7c..5bd8b07bbc90 100644
+--- a/tests/py/ip6/meta.t.json
++++ b/tests/py/ip6/meta.t.json
+@@ -194,3 +194,61 @@
+         }
+     }
+ ]
++
++# meta mark set ip6 dscp lshift 2 or 0x10
++[
++    {
++        "mangle": {
++            "key": {
++                "meta": {
++                    "key": "mark"
++                }
++            },
++            "value": {
++                "|": [
++                    {
++                        "<<": [
++                            {
++                                "payload": {
++                                    "field": "dscp",
++                                    "protocol": "ip6"
++                                }
++                            },
++                            2
++                        ]
++                    },
++                    16
++                ]
++            }
++        }
++    }
++]
++
++# meta mark set ip6 dscp lshift 26 or 0x10
++[
++    {
++        "mangle": {
++            "key": {
++                "meta": {
++                    "key": "mark"
++                }
++            },
++            "value": {
++                "|": [
++                    {
++                        "<<": [
++                            {
++                                "payload": {
++                                    "field": "dscp",
++                                    "protocol": "ip6"
++                                }
++                            },
++                            26
++                        ]
++                    },
++                    16
++                ]
++            }
++        }
++    }
++]
+diff --git a/tests/py/ip6/meta.t.payload b/tests/py/ip6/meta.t.payload
+index 0e3db6ba07f9..49d7b42b0179 100644
+--- a/tests/py/ip6/meta.t.payload
++++ b/tests/py/ip6/meta.t.payload
+@@ -60,3 +60,21 @@ ip6 test-ip6 input
+   [ cmp eq reg 1 0x00000011 ]
+   [ payload load 2b @ transport header + 2 => reg 1 ]
+   [ cmp eq reg 1 0x00004300 ]
++
++# meta mark set ip6 dscp lshift 2 or 0x10
++ip6 test-ip6 input
++  [ payload load 2b @ network header + 0 => reg 1 ]
++  [ bitwise reg 1 = ( reg 1 & 0x0000c00f ) ^ 0x00000000 ]
++  [ bitwise reg 1 = ( reg 1 >> 0x00000006 ) ]
++  [ bitwise reg 1 = ( reg 1 << 0x00000002 ) ]
++  [ bitwise reg 1 = ( reg 1 & 0x00000fef ) ^ 0x00000010 ]
++  [ meta set mark with reg 1 ]
++
++# meta mark set ip6 dscp lshift 26 or 0x10
++ip6 test-ip6 input
++  [ payload load 2b @ network header + 0 => reg 1 ]
++  [ bitwise reg 1 = ( reg 1 & 0x0000c00f ) ^ 0x00000000 ]
++  [ bitwise reg 1 = ( reg 1 >> 0x00000006 ) ]
++  [ bitwise reg 1 = ( reg 1 << 0x0000001a ) ]
++  [ bitwise reg 1 = ( reg 1 & 0xffffffef ) ^ 0x00000010 ]
++  [ meta set mark with reg 1 ]
 -- 
 2.35.1
 
