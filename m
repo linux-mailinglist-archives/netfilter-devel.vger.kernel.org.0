@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0394F14E0
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A04C4F14C5
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344971AbiDDMcB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 4 Apr 2022 08:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57296 "EHLO
+        id S244752AbiDDMaI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 4 Apr 2022 08:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345118AbiDDMb7 (ORCPT
+        with ESMTP id S1344310AbiDDMaH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 4 Apr 2022 08:31:59 -0400
+        Mon, 4 Apr 2022 08:30:07 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 436B62529A
-        for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:30:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4023DDD6
+        for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:28:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=WfV1SGtGk5R4tCCmJjmmMmgfNFwAHsSFPDC1ZWHZH+A=; b=XlNSDFzHpTb2q1ZjnBh7weA5QJ
-        +EDVnlbFsHX8R5stJCTveprVPD+fdX4qJmcYB9Nh4/jZ9UwhwVo3dpcW07TjJSDNk3qSJZmSm0VZ+
-        xwR+Efvhx+eFj5m/beUioETHPr/1ktz5rBeA99g7mcDADaIb/pbpyDZEckz1VLrwUMEM4UzdI5VMK
-        BMgyccicUww2ZGtH884F8EKOFp3+9W/X7e9WOd7Fwubi/zSCeJVk7MsrB1k4yTfmccbiCFLUO4jbY
-        MSiKS7Tn7ou0QQ0iYsNVC5bMIyz98J9FhrRDbeuXZLQwB3IG6VNy8G0WBGw4sBt18mcvoTOk+Nd+j
-        jopVwBSA==;
+        bh=rNand+ginhhoENHhXtZlwL//K3nk/Jm+EkZPK1QMU7Y=; b=eTwMrvc1FxD1KVEkb2efoxPGvZ
+        XITF1rN8eP29ornvkLSZGHSivdGBnCwmqd9MkzP+Mm1VGdNl9S0Ql1Q+cyIcfqMnZ+eLSDWgXU/FB
+        xClOwcENxbOTrJyH2pWTjeUz+DdNeh3SLGtfIeJt8ScmNoqv6hJhtfjNIJaQhNZbFOt2b37jf/Vrc
+        XFlirLFZjHNYZfZqTFqGK1Y89ovQyM50Slh/fVpLNqJAaBcyQHdIm8DUBrQl6Plckzn9QgpLRASLz
+        8fAa9gEBKmZL0Ev57zmZ0QX8Cq36gWwcBX0ofvmEISnrLailQ+PQOxKnWYe5m01Dirsh8EMnPrXXC
+        2KzIKPiw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1nbLbJ-007FTC-Nl; Mon, 04 Apr 2022 13:14:29 +0100
+        id 1nbLbJ-007FTC-Sx; Mon, 04 Apr 2022 13:14:29 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc:     Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>
-Subject: [nft PATCH v4 14/32] evaluate: relax type-checking for integer arguments in mark statements
-Date:   Mon,  4 Apr 2022 13:13:52 +0100
-Message-Id: <20220404121410.188509-15-jeremy@azazel.net>
+Subject: [nft PATCH v4 15/32] tests: shell: rename some test-cases
+Date:   Mon,  4 Apr 2022 13:13:53 +0100
+Message-Id: <20220404121410.188509-16-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220404121410.188509-1-jeremy@azazel.net>
 References: <20220404121410.188509-1-jeremy@azazel.net>
@@ -55,36 +55,85 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In order to be able to set ct and meta marks to values derived from
-payload expressions, we need to relax the requirement that the type of
-the statement argument must match that of the statement key.  Instead,
-we require that the base-type of the argument is integer and that the
-argument is small enough to fit.
+The `0040mark_shift_?` tests are testing not just shifts, but binops
+more generally, so name them accordingly.
+
+Change the priorities of the chains to match the type.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/evaluate.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ .../testcases/chains/{0040mark_shift_0 => 0040mark_binop_0}     | 2 +-
+ .../testcases/chains/{0040mark_shift_1 => 0040mark_binop_1}     | 2 +-
+ .../chains/dumps/{0040mark_shift_0.nft => 0040mark_binop_0.nft} | 2 +-
+ .../chains/dumps/{0040mark_shift_1.nft => 0040mark_binop_1.nft} | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+ rename tests/shell/testcases/chains/{0040mark_shift_0 => 0040mark_binop_0} (68%)
+ rename tests/shell/testcases/chains/{0040mark_shift_1 => 0040mark_binop_1} (70%)
+ rename tests/shell/testcases/chains/dumps/{0040mark_shift_0.nft => 0040mark_binop_0.nft} (58%)
+ rename tests/shell/testcases/chains/dumps/{0040mark_shift_1.nft => 0040mark_binop_1.nft} (64%)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index ee4da5a2b889..f975dd197de3 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -2393,8 +2393,12 @@ static int __stmt_evaluate_arg(struct eval_ctx *ctx, struct stmt *stmt,
- 					 "expression has type %s with length %d",
- 					 dtype->desc, (*expr)->dtype->desc,
- 					 (*expr)->len);
--	else if ((*expr)->dtype->type != TYPE_INTEGER &&
--		 !datatype_equal((*expr)->dtype, dtype))
-+
-+	if ((dtype->type == TYPE_MARK &&
-+	     !datatype_equal(datatype_basetype(dtype), datatype_basetype((*expr)->dtype))) ||
-+	    (dtype->type != TYPE_MARK &&
-+	     (*expr)->dtype->type != TYPE_INTEGER &&
-+	     !datatype_equal((*expr)->dtype, dtype)))
- 		return stmt_binary_error(ctx, *expr, stmt,		/* verdict vs invalid? */
- 					 "datatype mismatch: expected %s, "
- 					 "expression has type %s",
+diff --git a/tests/shell/testcases/chains/0040mark_shift_0 b/tests/shell/testcases/chains/0040mark_binop_0
+similarity index 68%
+rename from tests/shell/testcases/chains/0040mark_shift_0
+rename to tests/shell/testcases/chains/0040mark_binop_0
+index ef3dccfa049a..4280e33ac45a 100755
+--- a/tests/shell/testcases/chains/0040mark_shift_0
++++ b/tests/shell/testcases/chains/0040mark_binop_0
+@@ -4,7 +4,7 @@ set -e
+ 
+ RULESET="
+   add table t
+-  add chain t c { type filter hook output priority mangle; }
++  add chain t c { type filter hook output priority filter; }
+   add rule t c oif lo ct mark set (meta mark | 0x10) << 8
+ "
+ 
+diff --git a/tests/shell/testcases/chains/0040mark_shift_1 b/tests/shell/testcases/chains/0040mark_binop_1
+similarity index 70%
+rename from tests/shell/testcases/chains/0040mark_shift_1
+rename to tests/shell/testcases/chains/0040mark_binop_1
+index b609f5ef10ad..7e71f3eb43a8 100755
+--- a/tests/shell/testcases/chains/0040mark_shift_1
++++ b/tests/shell/testcases/chains/0040mark_binop_1
+@@ -4,7 +4,7 @@ set -e
+ 
+ RULESET="
+   add table t
+-  add chain t c { type filter hook input priority mangle; }
++  add chain t c { type filter hook input priority filter; }
+   add rule t c iif lo ct mark & 0xff 0x10 meta mark set ct mark >> 8
+ "
+ 
+diff --git a/tests/shell/testcases/chains/dumps/0040mark_shift_0.nft b/tests/shell/testcases/chains/dumps/0040mark_binop_0.nft
+similarity index 58%
+rename from tests/shell/testcases/chains/dumps/0040mark_shift_0.nft
+rename to tests/shell/testcases/chains/dumps/0040mark_binop_0.nft
+index 52d59d2c6da4..fc0a600a4dbe 100644
+--- a/tests/shell/testcases/chains/dumps/0040mark_shift_0.nft
++++ b/tests/shell/testcases/chains/dumps/0040mark_binop_0.nft
+@@ -1,6 +1,6 @@
+ table ip t {
+ 	chain c {
+-		type filter hook output priority mangle; policy accept;
++		type filter hook output priority filter; policy accept;
+ 		oif "lo" ct mark set (meta mark | 0x00000010) << 8
+ 	}
+ }
+diff --git a/tests/shell/testcases/chains/dumps/0040mark_shift_1.nft b/tests/shell/testcases/chains/dumps/0040mark_binop_1.nft
+similarity index 64%
+rename from tests/shell/testcases/chains/dumps/0040mark_shift_1.nft
+rename to tests/shell/testcases/chains/dumps/0040mark_binop_1.nft
+index 56ec8dc766ca..dbaacefb93c7 100644
+--- a/tests/shell/testcases/chains/dumps/0040mark_shift_1.nft
++++ b/tests/shell/testcases/chains/dumps/0040mark_binop_1.nft
+@@ -1,6 +1,6 @@
+ table ip t {
+ 	chain c {
+-		type filter hook input priority mangle; policy accept;
++		type filter hook input priority filter; policy accept;
+ 		iif "lo" ct mark & 0x000000ff == 0x00000010 meta mark set ct mark >> 8
+ 	}
+ }
 -- 
 2.35.1
 
