@@ -2,44 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E06E84F1460
-	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A6B4F148F
+	for <lists+netfilter-devel@lfdr.de>; Mon,  4 Apr 2022 14:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbiDDMIc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 4 Apr 2022 08:08:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38938 "EHLO
+        id S242930AbiDDMQb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 4 Apr 2022 08:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236869AbiDDMI0 (ORCPT
+        with ESMTP id S241909AbiDDMQ0 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 4 Apr 2022 08:08:26 -0400
+        Mon, 4 Apr 2022 08:16:26 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512D43DA61
-        for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:06:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6262511C2D
+        for <netfilter-devel@vger.kernel.org>; Mon,  4 Apr 2022 05:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=7y2adnOkir0FaL/gNIRALlSBxnY1d9TpGCPzRTo0gBQ=; b=sMa9fQSU6kBj84C53FrMvq0kzF
-        NpmiKYEpmHrI1MsXsjg6ZVhrTFy2eUbSAqkFynwKuPk0RiPR0bvEFg1XBqrJ5bc8acf7qkQkA7RxR
-        PV4p4Si7KV5pQzE7482Yt1AfNGelyXui6RTv4fDt68movGzlESt7sRWTITR43++V9C9laHOh9KTfY
-        5oBXBnvT2udaidTd8qmK1r97G71eEZwk8ChW7xr4noM5rovQ0Q+ZAl9cUoQeSmM+8P38QnWECJvnK
-        aotKl4ja4pdd7BiMVX5d4e9PZdAYQ9H92k7Vf49ChqpPy4Xf30YpSOqUX7V+MuuTb553IewW2DGGN
-        940EvImA==;
+        bh=oX+KGUwztOyoMN7ts7TT1Jqdy/OQg9uT0Km7jO55Fn0=; b=M9okte8BM9AEjVOcmZDkhwRCfB
+        EEjeaqL1Yw7o24VaZVcLYp4PNQQJ2aZs7dTaerHfp3XVL5EwdNGbgAp4KBr1Yok4ZUZ6Iv7dMoER0
+        dEsKqaaphszc2JONmpAgAPtkbKzpo2NrQj8NPffGfMV0im9ih8CpvlVpydHcHxDB0s4SgwA0oSuya
+        LvgWKQ6jQR0Ar0WqYFEeCGYBxKtdLLNZNgEWdr7Itr2KclX1alNtz/acL87hYJleJAOkV/UQD/Ikf
+        RFp7Wp154uXKkRFOxQ7+3Ev0yBd4wBWANLdZQqQYEaQ0wGIVT0doHdw3v2MvKolbklzvPKZLc6vXg
+        SoyDoWFA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1nbLTY-007FNA-Fx
-        for netfilter-devel@vger.kernel.org; Mon, 04 Apr 2022 13:06:28 +0100
+        id 1nbLbI-007FTC-BC; Mon, 04 Apr 2022 13:14:28 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [libnftnl PATCH v2 9/9] tests: bitwise: add tests for new boolean operations
-Date:   Mon,  4 Apr 2022 13:06:23 +0100
-Message-Id: <20220404120623.188439-10-jeremy@azazel.net>
+Cc:     Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>
+Subject: [nft PATCH v4 00/32] Extend values assignable to packet marks and payload fields
+Date:   Mon,  4 Apr 2022 13:13:38 +0100
+Message-Id: <20220404121410.188509-1-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220404120623.188439-1-jeremy@azazel.net>
-References: <20220404120623.188439-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
@@ -55,141 +53,244 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We already have tests for mask-and-xor operations with constant RHS
-operands.  Add tests for new operations with variable RHS operands.
+This patch-set extends the types of value which can be assigned to
+packet marks and payload fields.  The original motivation for these
+changes was Kevin Darbyshire-Bryant's wish to be able to set the
+conntrack mark to a bitwise expression derived from a DSCP value:
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- tests/nft-expr_bitwise-test.c | 109 ++++++++++++++++++++++++++++++++++
- 1 file changed, 109 insertions(+)
+  https://lore.kernel.org/netfilter-devel/20191203160652.44396-1-ldir@darbyshire-bryant.me.uk/#r
 
-diff --git a/tests/nft-expr_bitwise-test.c b/tests/nft-expr_bitwise-test.c
-index 5e7e277a5081..b613d7d70d49 100644
---- a/tests/nft-expr_bitwise-test.c
-+++ b/tests/nft-expr_bitwise-test.c
-@@ -209,6 +209,103 @@ static void test_rshift(void)
- 	test_shift(NFT_BITWISE_RSHIFT);
- }
- 
-+static void cmp_nftnl_expr_bool(const char *opname,
-+				const struct nftnl_expr *rule_a,
-+				const struct nftnl_expr *rule_b)
-+{
-+	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_DREG) !=
-+	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_DREG))
-+		print_err(opname, "Expr BITWISE_DREG mismatches");
-+	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_SREG) !=
-+	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_SREG))
-+		print_err(opname, "Expr BITWISE_SREG mismatches");
-+	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_SREG2) !=
-+	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_SREG2))
-+		print_err(opname, "Expr BITWISE_SREG2 mismatches");
-+	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_OP) !=
-+	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_OP))
-+		print_err(opname, "Expr BITWISE_OP mismatches");
-+	if (nftnl_expr_get_u16(rule_a, NFTNL_EXPR_BITWISE_LEN) !=
-+	    nftnl_expr_get_u16(rule_b, NFTNL_EXPR_BITWISE_LEN))
-+		print_err(opname, "Expr BITWISE_LEN mismatches");
-+	if (nftnl_expr_get_u16(rule_a, NFTNL_EXPR_BITWISE_NBITS) !=
-+	    nftnl_expr_get_u16(rule_b, NFTNL_EXPR_BITWISE_NBITS))
-+		print_err(opname, "Expr BITWISE_NBITS mismatches");
-+}
-+
-+static void test_bool(enum nft_bitwise_ops op)
-+{
-+	struct nftnl_rule *a, *b;
-+	struct nftnl_expr *ex;
-+	struct nlmsghdr *nlh;
-+	char buf[4096];
-+	struct nftnl_expr_iter *iter_a, *iter_b;
-+	struct nftnl_expr *rule_a, *rule_b;
-+	const char *opname =
-+		op == NFT_BITWISE_AND ? "and" :
-+		op == NFT_BITWISE_OR  ? "or"  : "xor";
-+
-+	a = nftnl_rule_alloc();
-+	b = nftnl_rule_alloc();
-+	if (a == NULL || b == NULL)
-+		print_err(opname, "OOM");
-+	ex = nftnl_expr_alloc("bitwise");
-+	if (ex == NULL)
-+		print_err(opname, "OOM");
-+
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_SREG, 0x12345678);
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_SREG2, 0x90abcdef);
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_DREG, 0x78123456);
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_OP, op);
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_LEN, 0x56781234);
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_NBITS, 0x11223344);
-+
-+	nftnl_rule_add_expr(a, ex);
-+
-+	nlh = nftnl_rule_nlmsg_build_hdr(buf, NFT_MSG_NEWRULE, AF_INET, 0, 1234);
-+	nftnl_rule_nlmsg_build_payload(nlh, a);
-+
-+	if (nftnl_rule_nlmsg_parse(nlh, b) < 0)
-+		print_err(opname, "parsing problems");
-+
-+	iter_a = nftnl_expr_iter_create(a);
-+	iter_b = nftnl_expr_iter_create(b);
-+	if (iter_a == NULL || iter_b == NULL)
-+		print_err(opname, "OOM");
-+
-+	rule_a = nftnl_expr_iter_next(iter_a);
-+	rule_b = nftnl_expr_iter_next(iter_b);
-+	if (rule_a == NULL || rule_b == NULL)
-+		print_err(opname, "OOM");
-+
-+	if (nftnl_expr_iter_next(iter_a) != NULL ||
-+	    nftnl_expr_iter_next(iter_b) != NULL)
-+		print_err(opname, "More 1 expr.");
-+
-+	nftnl_expr_iter_destroy(iter_a);
-+	nftnl_expr_iter_destroy(iter_b);
-+
-+	cmp_nftnl_expr_bool(opname, rule_a, rule_b);
-+
-+	nftnl_rule_free(a);
-+	nftnl_rule_free(b);
-+}
-+
-+static void test_and(void)
-+{
-+	test_bool(NFT_BITWISE_AND);
-+}
-+
-+static void test_or(void)
-+{
-+	test_bool(NFT_BITWISE_OR);
-+}
-+
-+static void test_xor(void)
-+{
-+	test_bool(NFT_BITWISE_XOR);
-+}
-+
- int main(int argc, char *argv[])
- {
- 	test_mask_xor();
-@@ -223,6 +320,18 @@ int main(int argc, char *argv[])
- 	if (!test_ok)
- 		exit(EXIT_FAILURE);
- 
-+	test_and();
-+	if (!test_ok)
-+		exit(EXIT_FAILURE);
-+
-+	test_or();
-+	if (!test_ok)
-+		exit(EXIT_FAILURE);
-+
-+	test_xor();
-+	if (!test_ok)
-+		exit(EXIT_FAILURE);
-+
- 	printf("%s: \033[32mOK\e[0m\n", argv[0]);
- 	return EXIT_SUCCESS;
- }
+For example:
+
+  nft add rule t c ct mark set ip dscp lshift 26 or 0x10
+
+In principle, examples like this can be implemented solely by changes to
+user space.  However, in some cases the payload munging leads to the
+generation of multi-byte binops in host byte-order which are not
+correctly eliminated during delinearization: the easiest way to fix this
+was to pass the bit-length of these expressions to and from the kernel.
+
+One of the changes required for this example is to relax the requirement
+that when assigning a non-integer rvalue, its data-type must match that
+of the lvalue.  I have been conservative in relaxing this: for an lvalue
+of mark type, any rvalue with integer base-type may be assigned.  I did
+try allowing the assignment of any rvalue of integer base-type to any
+lvalue of integer base-type, but doing so caused test failures which
+were sufficiently obscure that I decided wait and see if the patch-set
+in its current form is positively received before spending time
+diagnosing and fixing them.
+
+Other examples came up in later discussion, such as:
+
+  nft add rule t c ct mark set ct mark and 0xffff0000 or meta mark and 0xffff
+
+and most recently:
+
+  nft add rule t c ct mark set ct mark or ip dscp or 0x200
+
+These require boolean bitwise operations with two variable operands.
+Hitherto, the kernel has required that AND, OR and XOR operations be
+converted in user space to mask-and-xor operations on one register and
+two immediate values.  The related kernel space patch-set, however, adds
+support for performing these operations directly on one register and an
+immediate value, or on two registers.  This patch-set extends nftables
+to make use of this functionality.
+
+The patch-set is structured as follows.
+
+  * Patch 1 adds a .gitignore file for examples/.
+  * Patches 2-5 make some changes which I found helpful when adding
+    debugging output.
+  * Patch 6 updates the nf_tables.h kernel UAPI header to 5.17-rc7.
+  * Patches 7-14 add support for assignments which do not require
+    bitwise operations with variable RHS operands.
+  * Patches 15-17 add tests for these.
+  * Patches 18-30 add support for assignments which do require binops
+    with variable RHS.
+  * Patches 31-32 add tests for these.
+
+Changes since v3
+
+  * Patches 1-6 are new.
+  * When I first posted a version of this work two years ago, the main
+    focus was the changes necessary to implement binops with variable
+    RHS operands.  My intention was to post the remaining changes,
+    including support for assigning expressions of one type to those of
+    another, separately.  The problem with this approach was that it led
+    to rather contrived test-cases which in turn obscured the intended
+    uses of the patch-set.  On this occasion, therefore, I have sent
+    everything at once, and patches 7-17 are new.
+  * In the previous versions, the variable RHS binops were still
+    implemented as mask-and-xor operations, but the mask and xor values
+    could be passed in registers.  Thus, in patches 18-30, the
+    linearization and delinearization have been substantially reworked,
+    and a number of other fixes have also been added.
+
+For reference, v3 may be found here:
+
+  https://lore.kernel.org/netfilter-devel/20200303094844.26694-1-jeremy@azazel.net/#r
+
+Jeremy Sowden (32):
+  examples: add .gitignore file
+  include: add missing `#include`
+  src: move `byteorder_names` array
+  datatype: support `NULL` symbol-tables when printing constants
+  ct: support `NULL` symbol-tables when looking up labels
+  include: update nf_tables.h
+  include: add new bitwise bit-length attribute to nf_tables.h
+  netlink: send bit-length of bitwise binops to kernel
+  netlink_delinearize: add postprocessing for payload binops
+  netlink_delinearize: correct type and byte-order of shifts
+  netlink_delinearize: correct length of right bitwise operand
+  payload: set byte-order when completing expression
+  evaluate: support shifts larger than the width of the left operand
+  evaluate: relax type-checking for integer arguments in mark statements
+  tests: shell: rename some test-cases
+  tests: shell: add test-cases for ct and packet mark payload
+    expressions
+  tests: py: add test-cases for ct and packet mark payload expressions
+  include: add new bitwise boolean attributes to nf_tables.h
+  evaluate: don't eval unary arguments
+  evaluate: prevent nested byte-order conversions
+  evaluate: don't clobber binop lengths
+  evaluate: insert byte-order conversions for expressions between 9 and
+    15 bits
+  evaluate: set eval context to leftmost bitwise operand
+  netlink_delinearize: fix typo
+  netlink_delinearize: refactor stmt_payload_binop_postprocess
+  netlink_delinearize: add support for processing variable payload
+    statement arguments
+  netlink: rename bitwise operation functions
+  netlink: support (de)linearization of new bitwise boolean operations
+  parser_json: allow RHS ct, meta and payload expressions
+  evaluate: allow binop expressions with variable right-hand operands
+  tests: shell: add tests for binops with variable RHS operands
+  tests: py: add tests for binops with variable RHS operands
+
+ examples/.gitignore                           |   5 +
+ include/datatype.h                            |   7 +
+ include/linux/netfilter/nf_tables.h           |  49 ++-
+ src/ct.c                                      |   9 +-
+ src/datatype.c                                |  14 +-
+ src/evaluate.c                                | 101 +++--
+ src/netlink_delinearize.c                     | 408 +++++++++++++-----
+ src/netlink_linearize.c                       |  66 ++-
+ src/parser_json.c                             |   8 +-
+ src/payload.c                                 |   1 +
+ tests/py/any/ct.t                             |   1 +
+ tests/py/any/ct.t.json                        |  37 ++
+ tests/py/any/ct.t.payload                     |   9 +
+ tests/py/inet/meta.t                          |   1 +
+ tests/py/inet/meta.t.json                     |  37 ++
+ tests/py/inet/meta.t.payload                  |   9 +
+ tests/py/ip/ct.t                              |   3 +
+ tests/py/ip/ct.t.json                         |  94 ++++
+ tests/py/ip/ct.t.payload                      |  29 ++
+ tests/py/ip/ip.t                              |   2 +
+ tests/py/ip/ip.t.json                         |  77 +++-
+ tests/py/ip/ip.t.payload                      |  28 ++
+ tests/py/ip/ip.t.payload.bridge               |  32 ++
+ tests/py/ip/ip.t.payload.inet                 |  32 ++
+ tests/py/ip/ip.t.payload.netdev               |  32 ++
+ tests/py/ip/meta.t                            |   3 +
+ tests/py/ip/meta.t.json                       |  59 +++
+ tests/py/ip/meta.t.payload                    |  18 +
+ tests/py/ip6/ct.t                             |   7 +
+ tests/py/ip6/ct.t.json                        |  93 ++++
+ tests/py/ip6/ct.t.payload                     |  31 ++
+ tests/py/ip6/ip6.t                            |   2 +
+ tests/py/ip6/ip6.t.json                       |  76 ++++
+ tests/py/ip6/ip6.t.payload.inet               |  34 ++
+ tests/py/ip6/ip6.t.payload.ip6                |  30 ++
+ tests/py/ip6/meta.t                           |   3 +
+ tests/py/ip6/meta.t.json                      |  58 +++
+ tests/py/ip6/meta.t.payload                   |  20 +
+ .../{0040mark_shift_0 => 0040mark_binop_0}    |   2 +-
+ .../{0040mark_shift_1 => 0040mark_binop_1}    |   2 +-
+ .../shell/testcases/chains/0040mark_binop_10  |  11 +
+ .../shell/testcases/chains/0040mark_binop_11  |  11 +
+ .../shell/testcases/chains/0040mark_binop_12  |  11 +
+ .../shell/testcases/chains/0040mark_binop_13  |  11 +
+ tests/shell/testcases/chains/0040mark_binop_2 |  11 +
+ tests/shell/testcases/chains/0040mark_binop_3 |  11 +
+ tests/shell/testcases/chains/0040mark_binop_4 |  11 +
+ tests/shell/testcases/chains/0040mark_binop_5 |  11 +
+ tests/shell/testcases/chains/0040mark_binop_6 |  11 +
+ tests/shell/testcases/chains/0040mark_binop_7 |  11 +
+ tests/shell/testcases/chains/0040mark_binop_8 |  11 +
+ tests/shell/testcases/chains/0040mark_binop_9 |  11 +
+ .../testcases/chains/0044payload_binop_0      |  11 +
+ .../testcases/chains/0044payload_binop_1      |  11 +
+ .../testcases/chains/0044payload_binop_2      |  11 +
+ .../testcases/chains/0044payload_binop_3      |  11 +
+ .../testcases/chains/0044payload_binop_4      |  11 +
+ .../testcases/chains/0044payload_binop_5      |  11 +
+ ...0mark_shift_0.nft => 0040mark_binop_0.nft} |   2 +-
+ ...0mark_shift_1.nft => 0040mark_binop_1.nft} |   2 +-
+ .../chains/dumps/0040mark_binop_10.nft        |   6 +
+ .../chains/dumps/0040mark_binop_11.nft        |   6 +
+ .../chains/dumps/0040mark_binop_12.nft        |   6 +
+ .../chains/dumps/0040mark_binop_13.nft        |   6 +
+ .../chains/dumps/0040mark_binop_2.nft         |   6 +
+ .../chains/dumps/0040mark_binop_3.nft         |   6 +
+ .../chains/dumps/0040mark_binop_4.nft         |   6 +
+ .../chains/dumps/0040mark_binop_5.nft         |   6 +
+ .../chains/dumps/0040mark_binop_6.nft         |   6 +
+ .../chains/dumps/0040mark_binop_7.nft         |   6 +
+ .../chains/dumps/0040mark_binop_8.nft         |   6 +
+ .../chains/dumps/0040mark_binop_9.nft         |   6 +
+ .../chains/dumps/0044payload_binop_0.nft      |   6 +
+ .../chains/dumps/0044payload_binop_1.nft      |   6 +
+ .../chains/dumps/0044payload_binop_2.nft      |   6 +
+ .../chains/dumps/0044payload_binop_3.nft      |   6 +
+ .../chains/dumps/0044payload_binop_4.nft      |   6 +
+ .../chains/dumps/0044payload_binop_5.nft      |   6 +
+ 78 files changed, 1660 insertions(+), 179 deletions(-)
+ create mode 100644 examples/.gitignore
+ create mode 100644 tests/py/ip6/ct.t
+ create mode 100644 tests/py/ip6/ct.t.json
+ create mode 100644 tests/py/ip6/ct.t.payload
+ rename tests/shell/testcases/chains/{0040mark_shift_0 => 0040mark_binop_0} (68%)
+ rename tests/shell/testcases/chains/{0040mark_shift_1 => 0040mark_binop_1} (70%)
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_10
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_11
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_12
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_13
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_2
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_3
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_4
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_5
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_6
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_7
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_8
+ create mode 100755 tests/shell/testcases/chains/0040mark_binop_9
+ create mode 100755 tests/shell/testcases/chains/0044payload_binop_0
+ create mode 100755 tests/shell/testcases/chains/0044payload_binop_1
+ create mode 100755 tests/shell/testcases/chains/0044payload_binop_2
+ create mode 100755 tests/shell/testcases/chains/0044payload_binop_3
+ create mode 100755 tests/shell/testcases/chains/0044payload_binop_4
+ create mode 100755 tests/shell/testcases/chains/0044payload_binop_5
+ rename tests/shell/testcases/chains/dumps/{0040mark_shift_0.nft => 0040mark_binop_0.nft} (58%)
+ rename tests/shell/testcases/chains/dumps/{0040mark_shift_1.nft => 0040mark_binop_1.nft} (64%)
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_10.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_11.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_12.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_13.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_2.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_3.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_4.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_5.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_6.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_7.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_8.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0040mark_binop_9.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0044payload_binop_0.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0044payload_binop_1.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0044payload_binop_2.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0044payload_binop_3.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0044payload_binop_4.nft
+ create mode 100644 tests/shell/testcases/chains/dumps/0044payload_binop_5.nft
+
 -- 
 2.35.1
 
