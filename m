@@ -2,74 +2,104 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8574F3F38
-	for <lists+netfilter-devel@lfdr.de>; Tue,  5 Apr 2022 22:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4084F45C7
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Apr 2022 00:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237166AbiDEOJj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 5 Apr 2022 10:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
+        id S234743AbiDEOJW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 5 Apr 2022 10:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386845AbiDEM6M (ORCPT
+        with ESMTP id S1356252AbiDELz3 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 5 Apr 2022 08:58:12 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D515DF956D
-        for <netfilter-devel@vger.kernel.org>; Tue,  5 Apr 2022 05:02:39 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1nbhtO-0004VZ-BD; Tue, 05 Apr 2022 14:02:38 +0200
-Date:   Tue, 5 Apr 2022 14:02:38 +0200
-From:   Florian Westphal <fw@strlen.de>
+        Tue, 5 Apr 2022 07:55:29 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBD62314E
+        for <netfilter-devel@vger.kernel.org>; Tue,  5 Apr 2022 04:15:25 -0700 (PDT)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1nbh9f-0002mY-Ik; Tue, 05 Apr 2022 13:15:23 +0200
+Date:   Tue, 5 Apr 2022 13:15:23 +0200
+From:   Phil Sutter <phil@nwl.cc>
 To:     Lukas Straub <lukasstraub2@web.de>
-Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+Cc:     netfilter-devel@vger.kernel.org
 Subject: Re: meta time broken
-Message-ID: <20220405120238.GF12048@breakpoint.cc>
+Message-ID: <Ykwky1PfNwYfPyRR@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Lukas Straub <lukasstraub2@web.de>, netfilter-devel@vger.kernel.org
 References: <20220405011705.1257ac40@gecko>
  <20220405013128.0bb907e2@gecko>
- <20220405111645.GB12048@breakpoint.cc>
- <20220405114115.33c7d5d0@gecko>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220405114115.33c7d5d0@gecko>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220405013128.0bb907e2@gecko>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Lukas Straub <lukasstraub2@web.de> wrote:
-> On Tue, 5 Apr 2022 13:16:45 +0200
-> Florian Westphal <fw@strlen.de> wrote:
+Hi Lukas,
+
+On Tue, Apr 05, 2022 at 01:31:28AM +0000, Lukas Straub wrote:
+> On Tue, 5 Apr 2022 01:17:05 +0000
+> Lukas Straub <lukasstraub2@web.de> wrote:
 > 
-> > Lukas Straub <lukasstraub2@web.de> wrote:
-> > > Hmm, after staring at the code for a bit. I could imagine it's due to
-> > > time_t being 32 bit on my platform and nftables trying to stuff a unix
-> > > timstamp with nanosecond resolution in it...  
+> > Hello Everyone,
+> > I want to set up a rule that matches as long as the current time (/time
+> > of packet reception) is smaller than a given unix timestamp. However
+> > the whole "meta time" expression seems to be broken. I can't get it to
+> > work with either a unix timestamp or iso time. What's weird is that
+> > after setting the rule and listing it again, it will always display a
+> > date around 1970 instead of whatever was entered.
 > > 
-> > Will you send a patch?
+> > Reproducer:
+> > nft "add chain inet filter prg_policy; flush chain inet filter prg_policy; add rule inet filter prg_policy meta time < $(date --date='now + 2 hours' '+%s') accept"
+> > nft list chain inet filter prg_policy
+> > 
+> > Reproducer 2:
+> > nft "add chain inet filter prg_policy; flush chain inet filter prg_policy; add rule inet filter prg_policy meta time \"2022-04-01 01:00\" - \"2022-04-10 01:00\" accept"
+> > nft list chain inet filter prg_policy
+> > 
+> > nftables v1.0.2 (Lester Gooch)
+> > Linux usbrouter 5.10.0-13-armmp #1 SMP Debian 5.10.106-1 (2022-03-17) armv7l GNU/Linux
+> > 
+> > Regards,
+> > Lukas Straub
+> > 
 > 
-> Yes, I already sent one. The mailing list seems to be a bit flacky, did
-> you get it?
+> Hmm, after staring at the code for a bit. I could imagine it's due to
+> time_t being 32 bit on my platform and nftables trying to stuff a unix
+> timstamp with nanosecond resolution in it...
 
-No, but its in patchwork.  Patch gives following warning:
+Thanks for the report. Can you try this patch?
 
-meta.c:449:56: warning: comparison of integer expressions of different
-signedness: 'uint64_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
-  449 |         if ((tstamp = parse_iso_date(sym->identifier)) != -1)
+------------------------8<-----------------------------
+--- a/src/meta.c
++++ b/src/meta.c
+@@ -405,7 +405,7 @@ static void date_type_print(const struct expr *expr, struct output_ctx *octx)
+                nft_print(octx, "Error converting timestamp to printed time");
+ }
+ 
+-static time_t parse_iso_date(const char *sym)
++static uint64_t parse_iso_date(const char *sym)
+ {
+        struct tm tm, *cur_tm;
+        time_t ts;
+@@ -444,9 +444,9 @@ static struct error_record *date_type_parse(struct parse_ctx *ctx,
+                                            struct expr **res)
+ {
+        const char *endptr = sym->identifier;
+-       time_t tstamp;
++       uint64_t tstamp;
+ 
+-       if ((tstamp = parse_iso_date(sym->identifier)) != -1)
++       if ((tstamp = parse_iso_date(sym->identifier)) != (uint64_t)-1)
+                goto success;
+ 
+        tstamp = strtoul(sym->identifier, (char **) &endptr, 10);
+------------------------8<-----------------------------
 
-
-Would you mind sending a v2?
-
-I'd suggest to change parse_iso_date() to split return value and
-converted value, for example:
-
-static time_t parse_iso_date(const char *sym)
-->
-static bool parse_iso_data(uint64_t *res, const char *sym)
-
-or similar.
+Thanks, Phil
