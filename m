@@ -2,57 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9244F545C
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Apr 2022 06:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49F44F5462
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Apr 2022 06:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241019AbiDFEtN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 6 Apr 2022 00:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
+        id S235024AbiDFEty (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 6 Apr 2022 00:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444343AbiDEWVE (ORCPT
+        with ESMTP id S1581724AbiDEXkl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 5 Apr 2022 18:21:04 -0400
-Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D87276
-        for <netfilter-devel@vger.kernel.org>; Tue,  5 Apr 2022 13:47:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=GF9pVey4GOSbJSHjPnHizS4JcVdW1NogAJadg+1oYLM=; b=qu8mdlm8tWh9fPGAM/T+XBtc1w
-        mgYqdQH4bAQNAzeuQI2lP3IIzqAv9N53I/QHA/U0JFrnHuT2/JTIrSKxCfSf/jw3Q1C72Ub/LShYC
-        LUpdM6mndJ/Qf5XWkH+nux2n71C7CJxYMGhaUk1XO8dzbMx2S/mkdXSMwkSgYnLkaUMh6oeOSKxRD
-        Gcu1+dTRf/dV67wMNnYy8ICN6VVnNG0hjEVTWpbuhFdLXm54wK2gwBOR/eTn/6/Y8bIz0brvZeoGv
-        ESPmAzU9JHZxtG2pqmH8KYhOmOjomtmelhBT3rk2o7xfS50YhN9whUSQO98nEa3vQyQoGDhTF5PIS
-        Wd1DkllQ==;
-Received: from [2001:8b0:fb7d:d6d7:f47b:9ff:fe41:7a71] (helo=azazel.net)
-        by kadath.azazel.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <jeremy@azazel.net>)
-        id 1nbq5h-008PVm-JI; Tue, 05 Apr 2022 21:47:53 +0100
-Date:   Tue, 5 Apr 2022 21:47:52 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [nf-next PATCH v2 1/5] netfilter: bitwise: keep track of
- bit-length of expressions
-Message-ID: <Ykyq+JE0/nTM/de0@azazel.net>
-References: <20220404120417.188410-1-jeremy@azazel.net>
- <20220404120417.188410-2-jeremy@azazel.net>
- <20220405112850.GE12048@breakpoint.cc>
+        Tue, 5 Apr 2022 19:40:41 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 64B2A1C7F11
+        for <netfilter-devel@vger.kernel.org>; Tue,  5 Apr 2022 15:00:22 -0700 (PDT)
+Received: from netfilter.org (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 8925463850;
+        Tue,  5 Apr 2022 23:56:41 +0200 (CEST)
+Date:   Wed, 6 Apr 2022 00:00:19 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Topi Miettinen <toiwoton@gmail.com>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: Support for loading firewall rules with cgroup(v2) expressions
+ early
+Message-ID: <Yky787OF8/FdnIPr@salvia>
+References: <fabde324-383a-622c-7e69-32c9b2d06191@gmail.com>
+ <YkDXwaPwYf8NgKT+@salvia>
+ <418f6461-4504-4707-5ec2-61227af2ad27@gmail.com>
+ <YkHOuprHwwuXjWrm@salvia>
+ <5b850d67-92c1-9ece-99d2-390e8a5731b3@gmail.com>
+ <YkOF0LyDSqKX6ERe@salvia>
+ <YkPGJRUAuaLKrA0I@salvia>
+ <bcb8f1c4-177a-c9a4-4da4-cc594ca91f91@gmail.com>
+ <6786df44-49de-3d35-2c16-030e6290d19d@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kxiQ6lrF9coAupSL"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220405112850.GE12048@breakpoint.cc>
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:f47b:9ff:fe41:7a71
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6786df44-49de-3d35-2c16-030e6290d19d@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,53 +48,84 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+On Sun, Apr 03, 2022 at 09:32:11PM +0300, Topi Miettinen wrote:
+> On 2.4.2022 11.12, Topi Miettinen wrote:
+> > On 30.3.2022 5.53, Pablo Neira Ayuso wrote:
+> > > On Wed, Mar 30, 2022 at 12:25:25AM +0200, Pablo Neira Ayuso wrote:
+> > > > On Tue, Mar 29, 2022 at 09:20:25PM +0300, Topi Miettinen wrote:
+> > > [...]
+> > > > You could define a ruleset that describes the policy following the
+> > > > cgroupsv2 hierarchy. Something like this:
+> > > > 
+> > > >   table inet filter {
+> > > >          map dict_cgroup_level_1 {
+> > > >                  type cgroupsv2 : verdict;
+> > > >                  elements = { "system.slice" : jump system_slice }
+> > > >          }
+> > > > 
+> > > >          map dict_cgroup_level_2 {
+> > > >                  type cgroupsv2 : verdict;
+> > > >                  elements = {
+> > > > "system.slice/systemd-timesyncd.service" : jump
+> > > > systemd_timesyncd }
+> > > >          }
+> > > > 
+> > > >          chain systemd_timesyncd {
+> > > >                  # systemd-timesyncd policy
+> > > >          }
+> > > > 
+> > > >          chain system_slice {
+> > > >                  socket cgroupv2 level 2 vmap @dict_cgroup_level_2
+> > > >                  # policy for system.slice process
+> > > >          }
+> > > > 
+> > > >          chain input {
+> > > >                  type filter hook input priority filter; policy drop;
+> > > 
+> > > This example should use the output chain instead:
+> > > 
+> > >            chain output {
+> > >                    type filter hook output priority filter; policy drop;
+> > > 
+> > >  From the input chain, the packet relies on early demux to have access
+> > > to the socket.
+> > > 
+> > > The idea would be to filter out outgoing traffic and rely on conntrack
+> > > for (established) input traffic.
+> > 
+> > Is it really so that 'socket cgroupv2' can't be used on input side at
+> > all? At least 'ss' can display the cgroup for listening sockets
+> > correctly, so the cgroup information should be available somewhere:
+> > 
+> > $ ss -lt --cgroup
+> > State    Recv-Q   Send-Q       Local Address:Port       Peer
+> > Address:Port   Process
+> > LISTEN   0        4096                  *%lo:ssh                   *:*
+> >      cgroup:/system.slice/ssh.socket
+> 
+> Also 'meta skuid' doesn't seem to work in input filters. It would have been
+> simple to use 'meta skuid < 1000' to simulate 'system.slice' vs.
+> 'user.slice' cgroups.
+> 
+> If this is intentional, the manual page should make this much clearer.
 
---kxiQ6lrF9coAupSL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It is not yet described in nft(8) unfortunately, but
+iptables-extensions(8) says:
 
-On 2022-04-05, at 13:28:50 +0200, Florian Westphal wrote:
-> Jeremy Sowden <jeremy@azazel.net> wrote:
-> > Some bitwise operations are generated in user space when munging
-> > paylod expressions.  During delinearization, user space attempts to
-> > eliminate these operations.  However, it does this before deducing
-> > the byte-order or the correct length in bits of the operands, which
-> > means that it doesn't always handle multi-byte host-endian
-> > operations correctly.  Therefore, add support for storing the
-> > bit-length of the expression, even though the kernel doesn't use it,
-> > in order to be able to pass it back to user space.
->=20
-> Can rule udata be used for this, or is that too much work?
-> The udata infra is already used to store comments and it would not
-> need kernel changes.
+ IMPORTANT: when being used in the INPUT chain, the cgroup matcher is currently only
+       of limited functionality, meaning it will only match on packets that are processed
+       for local sockets through early socket demuxing. Therefore, general usage on the INPUT
+       chain is not advised unless the implications are well understood.
 
-It wouldn't be straightforward.  Expression udata might make more sense
-than adding a new bitwise attribute, but that doesn't currently exist.
-Would it be worth adding?  I seem to recall considering something along
-those lines for passing type information with expressions as a way to
-implement casting.
+> There's no warning and the kernel doesn't reject the useless input rules.
+> 
+> I think it should be possible to do filtering on input side based on the
+> socket properties (UID, GID, cgroup). Especially with UDP, it should be
+> possible to drop all packets if the listening process is not OK.
 
-J.
+Everything is possible, it's not yet implemented though.
 
---kxiQ6lrF9coAupSL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmJMqvgACgkQKYasCr3x
-BA1GFQ/+IwR8MgK3Zz7QJQy/lFqxb7KEzNxwfUEHZsWvybKWH/dGanpoPY+VVcGk
-rQGxJtXE39q6i1kQEXsFokJ3wuihGD18FiDE1J32iDaipETCiUixc2ByFgdNEfQP
-kDiJZgu/sFoySFrExYaK74igCXnv48Ax4K82PfpmRCmqJuMAJ4oUR/3aSLp3XN1M
-+TaIKA1sgXmuNDNDIbB0Op+HmID0fubaRSJiDckpaeez8IVgpsn4wILoemQiIGEa
-flb6USCJnKAAf1u1j/KKZg6QjM2hrDsVid5BUYFKGaS9WeUmHtGDvVCBx3rMGy+/
-3cNS/ralX/6boXnW6qPAI9uDrAyR9AClp+b1v7HPzA5OCbrYAS3+fOzRLN2vTb0z
-QfTe4sAvaJUCQp+XG9Ig9+I3L1nJXqrMA/hxa/tPu8r1YUohjiVRlLknalSDnYPH
-o5KvzjcUz/j0Y0+EHXtACiCaqJp2j3Xi1bDcPbFMn49/G0qIb7Q5TPow552aOr7A
-H27jF8IoZ55EqBjHC8nRRc0AuadztEuduOvTzc6I4uDkLB1qWZ8bfN6gYtvPhiIy
-uZe6xJOFJ7MdyGpqc3NmoWEpjy1gXqtUmYS6zXUW1Iv6weH4QMYDEZfFMpia+6ax
-RK9oq+LngInI+KU9RLnKpwOVXyJWJVNNjOapZ4dY22B8fSx4SsI=
-=4YLn
------END PGP SIGNATURE-----
-
---kxiQ6lrF9coAupSL--
+> My use case is that I need to open ports for Steam games (TCP and UDP ports
+> 27015-27030) but I don't want to make them available for system services or
+> any other apps besides Steam games. SELinux SECMARKs and TE rules for
+> sockets help me here but there are other problems.
