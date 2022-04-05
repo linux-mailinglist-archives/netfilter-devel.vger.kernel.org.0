@@ -2,131 +2,72 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CFC4F44AA
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Apr 2022 00:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D4E4F47BF
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Apr 2022 01:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236876AbiDEOJb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 5 Apr 2022 10:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40972 "EHLO
+        id S232324AbiDEVU2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 5 Apr 2022 17:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239661AbiDENyn (ORCPT
+        with ESMTP id S1384142AbiDEPOx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 5 Apr 2022 09:54:43 -0400
+        Tue, 5 Apr 2022 11:14:53 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE7BBD2CD;
-        Tue,  5 Apr 2022 05:55:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309C7A7750
+        for <netfilter-devel@vger.kernel.org>; Tue,  5 Apr 2022 06:28:54 -0700 (PDT)
 Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
         (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1nbiiq-0003dp-DO; Tue, 05 Apr 2022 14:55:48 +0200
-Date:   Tue, 5 Apr 2022 14:55:48 +0200
-From:   Phil Sutter <phil@netfilter.org>
-To:     netfilter <netfilter@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>
-Cc:     netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org,
-        lwn@lwn.net
-Subject: [ANNOUNCE] libmnl 1.0.5 release
-Message-ID: <Ykw8VBenlUgEVPvl@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@netfilter.org>,
-        netfilter <netfilter@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org,
-        lwn@lwn.net
+        id 1nbjEq-0003xu-Bp; Tue, 05 Apr 2022 15:28:52 +0200
+Date:   Tue, 5 Apr 2022 15:28:52 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Lukas Straub <lukasstraub2@web.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft] meta time: use uint64_t instead of time_t
+Message-ID: <YkxEFBVsHnC738pA@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Lukas Straub <lukasstraub2@web.de>, netfilter-devel@vger.kernel.org
+References: <20220405101016.855221490@web.de>
+ <20220405101026.867817071@web.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="FgAyCt4XeABDY93x"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20220405101026.867817071@web.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+On Tue, Apr 05, 2022 at 10:41:14AM +0000, Lukas Straub wrote:
+> time_t may be 32 bit on some platforms and thus can't fit a timestamp
+> with nanoseconds resolution. This causes overflows and ultimatively
+> breaks meta time expressions on such platforms.
+> 
+> Fix this by using uint64_t instead.
+> 
+> Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1567
+> Fixes: f8f32deda31df597614d9f1f64ffb0c0320f4d54 
+> ("meta: Introduce new conditions 'time', 'day' and 'hour'")
+> Signed-off-by: Lukas Straub <lukasstraub2@web.de>
+> 
+> Index: b/src/meta.c
+> ===================================================================
+> --- a/src/meta.c
+> +++ b/src/meta.c
+> @@ -444,7 +444,7 @@ static struct error_record *date_type_pa
+>  					    struct expr **res)
+>  {
+>  	const char *endptr = sym->identifier;
+> -	time_t tstamp;
+> +	uint64_t tstamp;
+>  
+>  	if ((tstamp = parse_iso_date(sym->identifier)) != -1)
 
---FgAyCt4XeABDY93x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Doesn't this introduce a warning due to signed/unsigned comparison?
 
-Hi!
+I guess you'll have to cast -1 to uint64_t as well.
 
-The Netfilter project proudly presents:
-
-        libmnl 1.0.5
-
-This release contains new features:
-
-* Two new examples:
-  * rtnl-neigh-dump, dumping ARP cache
-  * rtnl-addr-add, adding an IP address to an interface
-* MNL_SOCKET_DUMP_SIZE define, holding a recommended buffer size for
-  netlink dumps
-
-... and fixes:
-
-* nfct-daemon example compile error with musl libc
-* Compiler warning when passing a const 'cb_ctl_array' to mnl_cb_run2()
-* Typo in rtnl-addr-dump example
-* Valgrind warnings due to uninitialized padding in netlink messages
-* Misc fixes in doxygen documentation
-* Misc build system fixes
-
-You can download this new release from:
-
-https://netfilter.org/projects/libmnl/downloads.html#libmnl-1.0.5
-
-Check out the doxygen documentation at:
-
-https://netfilter.org/projects/libmnl/doxygen/html/
-
-In case of bugs and feature requests, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling!
-
---FgAyCt4XeABDY93x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-libmnl-1.0.5.txt"
-
-Duncan Roe (5):
-      nlmsg: Fix a missing doxygen section trailer
-      build: doc: "make" builds & installs a full set of man pages
-      build: doc: get rid of the need for manual updating of Makefile
-      build: If doxygen is not available, be sure to report "doxygen: no" to ./configure
-      src: doc: Fix messed-up Netlink message batch diagram
-
-Fernando Fernandez Mancera (1):
-      src: fix doxygen function documentation
-
-Florian Westphal (1):
-      libmnl: zero attribute padding
-
-Guillaume Nault (1):
-      callback: mark cb_ctl_array 'const' in mnl_cb_run2()
-
-Kylie McClain (1):
-      examples: nfct-daemon: Fix test building on musl libc
-
-Laura Garcia Liebana (4):
-      examples: add arp cache dump example
-      examples: fix neigh max attributes
-      examples: fix print line format
-      examples: reduce LOCs during neigh attributes validation
-
-Pablo Neira Ayuso (3):
-      doxygen: remove EXPORT_SYMBOL from the output
-      include: add MNL_SOCKET_DUMP_SIZE definition
-      build: libmnl 1.0.5 release
-
-Petr Vorel (1):
-      examples: Add rtnl-addr-add.c
-
-Stephen Hemminger (1):
-      examples: rtnl-addr-dump: fix typo
-
-igo95862 (1):
-      doxygen: Fixed link to the git source tree on the website.
-
-
---FgAyCt4XeABDY93x--
+Cheers, Phil
