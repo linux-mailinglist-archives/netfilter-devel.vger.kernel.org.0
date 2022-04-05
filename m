@@ -2,87 +2,111 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F8C4F47BE
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Apr 2022 01:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9244F545C
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Apr 2022 06:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbiDEVU0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 5 Apr 2022 17:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44612 "EHLO
+        id S241019AbiDFEtN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 6 Apr 2022 00:49:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356749AbiDEUXn (ORCPT
+        with ESMTP id S1444343AbiDEWVE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 5 Apr 2022 16:23:43 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D014EEDF1F;
-        Tue,  5 Apr 2022 13:10:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 87680B81FCC;
-        Tue,  5 Apr 2022 20:10:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 38856C385A5;
-        Tue,  5 Apr 2022 20:10:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649189412;
-        bh=fN+tF5XtErveJG8cBvd3ijJXtwZIIyWQAU/05y/BfnA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=sjlRAsmEt18Mkb/47At1qXQhpPmJnh6sDtOq76R7gZsf6pXZPLSMtBcL7p3ZRb7Ug
-         Z3+tHZsRt7wCc1wsdTPFuGfJ+7ZInSaTiG4xj+vyhaiAQ30BqrIEpbACdhpHGdmlAo
-         FDip7giRtclSkH274A+YiJEoXVYMPqWEQ7gueT37o4D8f0wkd+6CtohXopf/TzsA4p
-         LoadczN/YpIso9J+eKtIw7iDXVYV8XcMT1LUI1DYr9YLm5onWgqm3xarUFgYsr2DpB
-         EcZPMDnq7tBIt7HhPIJIHvJaDwBzW5A34CIWv6aI+aUXk3dSWtvRTShksJ6Y1gD9Yt
-         KbpFMiEg1rQ+A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1B7FEE6D402;
-        Tue,  5 Apr 2022 20:10:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 5 Apr 2022 18:21:04 -0400
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D87276
+        for <netfilter-devel@vger.kernel.org>; Tue,  5 Apr 2022 13:47:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=GF9pVey4GOSbJSHjPnHizS4JcVdW1NogAJadg+1oYLM=; b=qu8mdlm8tWh9fPGAM/T+XBtc1w
+        mgYqdQH4bAQNAzeuQI2lP3IIzqAv9N53I/QHA/U0JFrnHuT2/JTIrSKxCfSf/jw3Q1C72Ub/LShYC
+        LUpdM6mndJ/Qf5XWkH+nux2n71C7CJxYMGhaUk1XO8dzbMx2S/mkdXSMwkSgYnLkaUMh6oeOSKxRD
+        Gcu1+dTRf/dV67wMNnYy8ICN6VVnNG0hjEVTWpbuhFdLXm54wK2gwBOR/eTn/6/Y8bIz0brvZeoGv
+        ESPmAzU9JHZxtG2pqmH8KYhOmOjomtmelhBT3rk2o7xfS50YhN9whUSQO98nEa3vQyQoGDhTF5PIS
+        Wd1DkllQ==;
+Received: from [2001:8b0:fb7d:d6d7:f47b:9ff:fe41:7a71] (helo=azazel.net)
+        by kadath.azazel.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <jeremy@azazel.net>)
+        id 1nbq5h-008PVm-JI; Tue, 05 Apr 2022 21:47:53 +0100
+Date:   Tue, 5 Apr 2022 21:47:52 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [nf-next PATCH v2 1/5] netfilter: bitwise: keep track of
+ bit-length of expressions
+Message-ID: <Ykyq+JE0/nTM/de0@azazel.net>
+References: <20220404120417.188410-1-jeremy@azazel.net>
+ <20220404120417.188410-2-jeremy@azazel.net>
+ <20220405112850.GE12048@breakpoint.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/2] netfilter: bitwise: fix reduce comparisons
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164918941210.23958.7861571827921966644.git-patchwork-notify@kernel.org>
-Date:   Tue, 05 Apr 2022 20:10:12 +0000
-References: <20220405100923.7231-2-pablo@netfilter.org>
-In-Reply-To: <20220405100923.7231-2-pablo@netfilter.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, kuba@kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kxiQ6lrF9coAupSL"
+Content-Disposition: inline
+In-Reply-To: <20220405112850.GE12048@breakpoint.cc>
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:f47b:9ff:fe41:7a71
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello:
 
-This series was applied to netdev/net.git (master)
-by Pablo Neira Ayuso <pablo@netfilter.org>:
+--kxiQ6lrF9coAupSL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue,  5 Apr 2022 12:09:22 +0200 you wrote:
-> From: Jeremy Sowden <jeremy@azazel.net>
-> 
-> The `nft_bitwise_reduce` and `nft_bitwise_fast_reduce` functions should
-> compare the bitwise operation in `expr` with the tracked operation
-> associated with the destination register of `expr`.  However, instead of
-> being called on `expr` and `track->regs[priv->dreg].selector`,
-> `nft_expr_priv` is called on `expr` twice, so both reduce functions
-> return true even when the operations differ.
-> 
-> [...]
+On 2022-04-05, at 13:28:50 +0200, Florian Westphal wrote:
+> Jeremy Sowden <jeremy@azazel.net> wrote:
+> > Some bitwise operations are generated in user space when munging
+> > paylod expressions.  During delinearization, user space attempts to
+> > eliminate these operations.  However, it does this before deducing
+> > the byte-order or the correct length in bits of the operands, which
+> > means that it doesn't always handle multi-byte host-endian
+> > operations correctly.  Therefore, add support for storing the
+> > bit-length of the expression, even though the kernel doesn't use it,
+> > in order to be able to pass it back to user space.
+>=20
+> Can rule udata be used for this, or is that too much work?
+> The udata infra is already used to store comments and it would not
+> need kernel changes.
 
-Here is the summary with links:
-  - [net,1/2] netfilter: bitwise: fix reduce comparisons
-    https://git.kernel.org/netdev/net/c/31818213170c
-  - [net,2/2] netfilter: nf_tables: memcg accounting for dynamically allocated objects
-    https://git.kernel.org/netdev/net/c/42193ffd79bd
+It wouldn't be straightforward.  Expression udata might make more sense
+than adding a new bitwise attribute, but that doesn't currently exist.
+Would it be worth adding?  I seem to recall considering something along
+those lines for passing type information with expressions as a way to
+implement casting.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+J.
 
+--kxiQ6lrF9coAupSL
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmJMqvgACgkQKYasCr3x
+BA1GFQ/+IwR8MgK3Zz7QJQy/lFqxb7KEzNxwfUEHZsWvybKWH/dGanpoPY+VVcGk
+rQGxJtXE39q6i1kQEXsFokJ3wuihGD18FiDE1J32iDaipETCiUixc2ByFgdNEfQP
+kDiJZgu/sFoySFrExYaK74igCXnv48Ax4K82PfpmRCmqJuMAJ4oUR/3aSLp3XN1M
++TaIKA1sgXmuNDNDIbB0Op+HmID0fubaRSJiDckpaeez8IVgpsn4wILoemQiIGEa
+flb6USCJnKAAf1u1j/KKZg6QjM2hrDsVid5BUYFKGaS9WeUmHtGDvVCBx3rMGy+/
+3cNS/ralX/6boXnW6qPAI9uDrAyR9AClp+b1v7HPzA5OCbrYAS3+fOzRLN2vTb0z
+QfTe4sAvaJUCQp+XG9Ig9+I3L1nJXqrMA/hxa/tPu8r1YUohjiVRlLknalSDnYPH
+o5KvzjcUz/j0Y0+EHXtACiCaqJp2j3Xi1bDcPbFMn49/G0qIb7Q5TPow552aOr7A
+H27jF8IoZ55EqBjHC8nRRc0AuadztEuduOvTzc6I4uDkLB1qWZ8bfN6gYtvPhiIy
+uZe6xJOFJ7MdyGpqc3NmoWEpjy1gXqtUmYS6zXUW1Iv6weH4QMYDEZfFMpia+6ax
+RK9oq+LngInI+KU9RLnKpwOVXyJWJVNNjOapZ4dY22B8fSx4SsI=
+=4YLn
+-----END PGP SIGNATURE-----
+
+--kxiQ6lrF9coAupSL--
