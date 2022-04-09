@@ -2,110 +2,97 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFCB4FA7EB
-	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Apr 2022 15:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C504FA8C5
+	for <lists+netfilter-devel@lfdr.de>; Sat,  9 Apr 2022 15:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbiDINED (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 9 Apr 2022 09:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38164 "EHLO
+        id S242287AbiDINyi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 9 Apr 2022 09:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239112AbiDINEB (ORCPT
+        with ESMTP id S242264AbiDINya (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 9 Apr 2022 09:04:01 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0292A5490
-        for <netfilter-devel@vger.kernel.org>; Sat,  9 Apr 2022 06:01:52 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id k21so19279184lfe.4
-        for <netfilter-devel@vger.kernel.org>; Sat, 09 Apr 2022 06:01:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=sPchgaxnfSyXEXR9AVPYGRPwIotpOS2AIb9QbaROQN0=;
-        b=iuCCDvI3uvtSHbNStVxgb4gfeWatquG2AjjTi8Nkysbs3rc5n/CwbAq+zymO0z00XT
-         GuR3j14fVubKkY6geZH9i6zwXpolq03L/zR44ma+5t+p9iTp2gmrHlD6VW1qoXC3Th/f
-         nk5IvPdprcKjacF1prLiXkTnD10oMGYti2yVvogCsLmPnYriukZN/Yt5ocv21dtpD0zI
-         ZpNWsocWk8W3WJan93KNWZLRJ+Kazpj+Kh1/xEBGNcapVS28F4XGJ96xddG40oDT0/jv
-         vPWT1FRZb/jEw22aaQLq5a17zK/KilYQbwMuyE5e26wHiIP1LKjaON7zwVgvNdJi0D0M
-         qq1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=sPchgaxnfSyXEXR9AVPYGRPwIotpOS2AIb9QbaROQN0=;
-        b=ZD7RXveYShrSVqXXvp1s4GAbz8mXSdMkhglKz85xJvsKMLOQy6h7DPWdizzN7M9cN3
-         Fls2170FQsgkkqehwpD5IaxQVFQcJznmDIzDtqq9Rl9hCy4/PpjN/hEs3brTulRPxXE/
-         3aCRLqLsXeQOXMdrZTHvR29di5iCN2byC3c7eihvEH3+sRuvNSxDzpchnJqSmOcfX5zr
-         jCAKZhYIAyLuQl4TaX7QsRelmNSxezsBUhm9dtY6z9zx4UXpjTzhPIexL0u8dBXGYRXE
-         DZ8cAoc3NF0+edYdwI2EQejzUeGTTF9GSmjAlMk8XxWhlW6PIQzxHQah/viq+0XiaLSn
-         C4Zw==
-X-Gm-Message-State: AOAM531aHaukbTx57AqcsDrEtquBNXXoMBcoy9OgH3TPFcBp150/gw3E
-        d7rsTepCBel+NjTK6i1Rdt1eAN5fnrQ=
-X-Google-Smtp-Source: ABdhPJxy13o3E7orBcjfOVUClfr1pRRJBr2VcpZj8n4hEwZD7+jQssKcI25D3jXhFAR5mn7g1Y2Nxw==
-X-Received: by 2002:a05:6512:3082:b0:44a:6dc3:3 with SMTP id z2-20020a056512308200b0044a6dc30003mr14647458lfd.663.1649509310411;
-        Sat, 09 Apr 2022 06:01:50 -0700 (PDT)
-Received: from [192.168.1.38] (91-159-150-194.elisa-laajakaista.fi. [91.159.150.194])
-        by smtp.gmail.com with ESMTPSA id be31-20020a05651c171f00b0024b50f426c3sm438499ljb.17.2022.04.09.06.01.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Apr 2022 06:01:49 -0700 (PDT)
-Message-ID: <430e61df-8126-f18e-0ecd-6c946dd54229@gmail.com>
-Date:   Sat, 9 Apr 2022 16:01:48 +0300
+        Sat, 9 Apr 2022 09:54:30 -0400
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542839D4DC
+        for <netfilter-devel@vger.kernel.org>; Sat,  9 Apr 2022 06:52:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=OgpJDcCU7PgEp884+TVVv67RiRD5Y7PLQVzwNdahVmU=; b=TgbOLkZtK727zprlQJs0i0+H8U
+        mWJ6HwKMAutVbKE/zohWjaQWPUkdycTW1vpxp8Yadamm2uULwVX7xEigcYMpr0BnYQXaV9TOeXjuB
+        veEFOwg+3p9F6dRVv8k2L9UkOEt8EdMTPJjP2RCJKO+AsKG/bx+xr6fcdsq91FbdKh64RPgWg40W8
+        hVza22hh4O3Jg3ymGaEtu1KqWtbhcAaVq+ld3ibVUWRp4NbqETP+4+x9/IDhVWvkvuYx7ncntzEUN
+        xltxSKncZ93kHcxIU2atf1j4hdjnbc3F7VRYXCLbQ7XXBeL3xAtRXx02Qg+yWrB5u6tUy+V8L7oNI
+        hxc21fWw==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.94.2)
+        (envelope-from <jeremy@azazel.net>)
+        id 1ndBVj-00CMwq-M1
+        for netfilter-devel@vger.kernel.org; Sat, 09 Apr 2022 14:52:19 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [nf-next PATCH v3 0/3] netfilter: bitwise: support boolean operations with variable RHS operands
+Date:   Sat,  9 Apr 2022 14:52:10 +0100
+Message-Id: <20220409135213.1450058-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] doc: Document that kernel may accept unimplemented
- expressions
-Content-Language: en-US
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-References: <20220409094402.22567-1-toiwoton@gmail.com>
- <20220409095152.GA19371@breakpoint.cc>
- <9277ac40-4175-62b3-d777-bdfa9434d187@gmail.com>
- <20220409102216.GF19371@breakpoint.cc>
- <f926a231-6224-f6ca-841f-8a56531b33f8@gmail.com>
- <20220409114240.GG19371@breakpoint.cc>
-From:   Topi Miettinen <toiwoton@gmail.com>
-In-Reply-To: <20220409114240.GG19371@breakpoint.cc>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 9.4.2022 14.42, Florian Westphal wrote:
-> Topi Miettinen <toiwoton@gmail.com> wrote:
->> Would it be possible to add such checks in the future?
-> 
-> We could add socket skuid, socket skgid, its not hard.
+Currently bitwise boolean operations (AND, OR and XOR) can only have one
+variable operand.  They are converted in user space into mask-and-xor
+operations on one register and two immediate values which are evaluated
+by the kernel.  We add support for evaluating these operations directly
+in kernel space on one register and either an immediate value or a
+second register.
 
-That would be nice. Could the syntax still remain 'meta skuid' even 
-though the credentials come from a socket for compatibility?
+We also add support for keeping track of the bit-length of boolean
+expressions since this can be useful to user space during
+delinearization.
 
->> Note that the kernel may accept expressions without errors even if it
->> doesn't implement the feature. For example, input chain filters using
->> expressions such as *meta skuid*, *meta skgid*, *meta cgroup* or
-> 
-> Those can not be made to work.
-> 
->> *socket cgroupv2* are silently accepted but they don't work reliably
-> 
-> socket should work, at least for tcp and udp.
-> The cgroupv2 is buggy.  I sent a patch, feel free to test it.
+* Patch 1 adds support for keeping track of the bit-length of
+  boolean expressions.
+* Patch 2 renames functions and an enum constant related to the current
+  mask-and-xor implementation in anticipation of adding support for
+  directly evaluating AND, OR and XOR operations.
+* Patch 3 adds support for directly evaluating AND, OR and XOR
+  operations.
 
-Once the patch is applied, the warnings in manual page wrt. cgroupv2 
-would only apply to old kernels. How about the following:
+Changes since v2
 
-Note that different kernel versions may accept expressions without 
-errors even if they don't implement the feature. For example, input 
-chain filters using expressions such as *meta skuid*, *meta skgid*, 
-*meta cgroup* or *socket cgroupv2* are silently accepted but they may 
-not work reliably or at all.
+  * Increase size of `nbits` to `u16` and correct checking of maximum
+    value (`U8_MAX * BITS_PER_BYTE`).
 
--Topi
+Changes since v1
+
+  * Patch 1 was new.
+  * In v1, all boolean operations were still expected to be
+    mask-and-xor operations, but the mask and xor values could be
+    passed in registers.
+
+Jeremy Sowden (3):
+  netfilter: bitwise: keep track of bit-length of expressions
+  netfilter: bitwise: rename some boolean operation functions
+  netfilter: bitwise: add support for doing AND, OR and XOR directly
+
+ include/uapi/linux/netfilter/nf_tables.h |  21 ++-
+ net/netfilter/nft_bitwise.c              | 174 +++++++++++++++++++----
+ 2 files changed, 166 insertions(+), 29 deletions(-)
+
+-- 
+2.35.1
+
