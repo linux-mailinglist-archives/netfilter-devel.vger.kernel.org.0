@@ -2,44 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D350B4FADD4
-	for <lists+netfilter-devel@lfdr.de>; Sun, 10 Apr 2022 14:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0213E4FAE67
+	for <lists+netfilter-devel@lfdr.de>; Sun, 10 Apr 2022 17:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238603AbiDJMaD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 10 Apr 2022 08:30:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
+        id S232277AbiDJPTC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 10 Apr 2022 11:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbiDJMaD (ORCPT
+        with ESMTP id S235030AbiDJPTB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 10 Apr 2022 08:30:03 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD4A35AAF
-        for <netfilter-devel@vger.kernel.org>; Sun, 10 Apr 2022 05:27:49 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1ndWfU-0003n3-00; Sun, 10 Apr 2022 14:27:48 +0200
-Date:   Sun, 10 Apr 2022 14:27:47 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Jeremy Sowden <jeremy@azazel.net>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [libnetfilter_log PATCH] doc: correct non-native solecism
-Message-ID: <20220410122747.GA5623@breakpoint.cc>
-References: <20220410121046.1856691-1-jeremy@azazel.net>
+        Sun, 10 Apr 2022 11:19:01 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 67CFE2980A
+        for <netfilter-devel@vger.kernel.org>; Sun, 10 Apr 2022 08:16:49 -0700 (PDT)
+Received: from netfilter.org (unknown [78.30.32.163])
+        by mail.netfilter.org (Postfix) with ESMTPSA id C2C0A63004;
+        Sun, 10 Apr 2022 17:12:49 +0200 (CEST)
+Date:   Sun, 10 Apr 2022 17:16:44 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Topi Miettinen <toiwoton@gmail.com>
+Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH] doc: Document that kernel may accept unimplemented
+ expressions
+Message-ID: <YlL03ME01hrQOKJV@salvia>
+References: <20220409094402.22567-1-toiwoton@gmail.com>
+ <20220409095152.GA19371@breakpoint.cc>
+ <9277ac40-4175-62b3-d777-bdfa9434d187@gmail.com>
+ <20220409102216.GF19371@breakpoint.cc>
+ <f926a231-6224-f6ca-841f-8a56531b33f8@gmail.com>
+ <20220409114240.GG19371@breakpoint.cc>
+ <430e61df-8126-f18e-0ecd-6c946dd54229@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220410121046.1856691-1-jeremy@azazel.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <430e61df-8126-f18e-0ecd-6c946dd54229@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Jeremy Sowden <jeremy@azazel.net> wrote:
-> The native usage is "... allows one to ...", not "... allows to ...".
+On Sat, Apr 09, 2022 at 04:01:48PM +0300, Topi Miettinen wrote:
+> On 9.4.2022 14.42, Florian Westphal wrote:
+> > Topi Miettinen <toiwoton@gmail.com> wrote:
+> > > Would it be possible to add such checks in the future?
+> > 
+> > We could add socket skuid, socket skgid, its not hard.
+> 
+> That would be nice. Could the syntax still remain 'meta skuid' even though
+> the credentials come from a socket for compatibility?
+> 
+> > > Note that the kernel may accept expressions without errors even if it
+> > > doesn't implement the feature. For example, input chain filters using
+> > > expressions such as *meta skuid*, *meta skgid*, *meta cgroup* or
+> > 
+> > Those can not be made to work.
+> > 
+> > > *socket cgroupv2* are silently accepted but they don't work reliably
+> > 
+> > socket should work, at least for tcp and udp.
+> > The cgroupv2 is buggy.  I sent a patch, feel free to test it.
+> 
+> Once the patch is applied, the warnings in manual page wrt. cgroupv2 would
+> only apply to old kernels. How about the following:
+> 
+> Note that different kernel versions may accept expressions without errors
+> even if they don't implement the feature. For example, input chain filters
+> using expressions such as *meta skuid*, *meta skgid*, *meta cgroup* or
+> *socket cgroupv2* are silently accepted but they may not work reliably or at
+> all.
 
-applied, thank you.
+Wrt this fix, it will be passed to -stable.
+
+Regarding general use of socket match from input: Probably more
+documentation on what kind of sockets early demux is actually being
+attached to might help understand how this is working.
