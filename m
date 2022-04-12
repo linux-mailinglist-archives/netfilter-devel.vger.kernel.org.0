@@ -2,60 +2,53 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D804FDFFD
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Apr 2022 14:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E739A4FDF7B
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Apr 2022 14:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351671AbiDLMGn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 12 Apr 2022 08:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
+        id S1351725AbiDLMLd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 12 Apr 2022 08:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354618AbiDLMEl (ORCPT
+        with ESMTP id S1354716AbiDLMKV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 12 Apr 2022 08:04:41 -0400
-Received: from smtp-42aa.mail.infomaniak.ch (smtp-42aa.mail.infomaniak.ch [IPv6:2001:1600:4:17::42aa])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9E25D5C3
-        for <netfilter-devel@vger.kernel.org>; Tue, 12 Apr 2022 04:07:26 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Kd2xQ5bZGzMpvCG;
-        Tue, 12 Apr 2022 13:07:22 +0200 (CEST)
+        Tue, 12 Apr 2022 08:10:21 -0400
+Received: from smtp-bc08.mail.infomaniak.ch (smtp-bc08.mail.infomaniak.ch [IPv6:2001:1600:4:17::bc08])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7308982D36
+        for <netfilter-devel@vger.kernel.org>; Tue, 12 Apr 2022 04:12:32 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Kd33L5xM1zMprpV;
+        Tue, 12 Apr 2022 13:12:30 +0200 (CEST)
 Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Kd2xQ1jKlzljsTj;
-        Tue, 12 Apr 2022 13:07:21 +0200 (CEST)
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Kd33L2CSkzlhMCQ;
+        Tue, 12 Apr 2022 13:12:30 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-        s=20191114; t=1649761642;
-        bh=hdT0n/yGB+udShZ9jh7ougx0uizMRtCIzzMECKwb6I0=;
+        s=20191114; t=1649761950;
+        bh=bZYdW/tm5O312A9NSRRHYt/TwJO5MHrCuiyBeQhEYJs=;
         h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-        b=Ov765teFETg9CKi7Sr2LidqlCCNWHCI3wIFdpxdr/yBg71su8fgyE2Aq42iMtlUle
-         poGNb4mgJNbdWVo5QPE5mi/0M4+nW2nYWB1TldCSY5vu3eIM2EoaP7HF+1N29RnJql
-         oEH7oGTMu7DbyGIdqbQRIRxXH21PCBUmhFMKZz44=
-Message-ID: <0e5afeaf-0569-d0b5-b701-0f611d103732@digikod.net>
-Date:   Tue, 12 Apr 2022 13:07:39 +0200
+        b=IvnE3N6f00aDiZ2pmCgA763PDaKbUTjgpp1nKbskBjmK7gMVauHaApwNTQLYS32qO
+         fcykJwt363hiwwd9xd6niS3L21iGgnb/49pOa1rvcQTvX89me3JnLLRvVD6deuUhJe
+         y0Q2hIVUveb5nBJ5xmIYlQkH0qBd4aqgj3i4CZl8=
+Message-ID: <638ae3c4-09cd-2eaf-858b-4909f2a9cdcc@digikod.net>
+Date:   Tue, 12 Apr 2022 13:12:48 +0200
 MIME-Version: 1.0
 User-Agent: 
 Content-Language: en-US
-To:     Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
-        willemdebruijn.kernel@gmail.com
-Cc:     linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+To:     Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+Cc:     willemdebruijn.kernel@gmail.com,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
         netfilter-devel@vger.kernel.org, yusongping@huawei.com,
         artem.kuzin@huawei.com, anton.sirazetdinov@huawei.com
 References: <20220309134459.6448-1-konstantin.meskhidze@huawei.com>
- <20220309134459.6448-4-konstantin.meskhidze@huawei.com>
- <bc44f11f-0eaa-a5f6-c5dc-1d36570f1be1@digikod.net>
- <6535183b-5fad-e3a9-1350-d22122205be6@huawei.com>
- <92d498f0-c598-7413-6b7c-d19c5aec6cab@digikod.net>
- <cb30248d-a8ae-c366-2c9f-2ab0fe44cc9a@huawei.com>
- <90a20548-39f6-6e84-efb1-8ef3ad992255@digikod.net>
- <212ac1b3-b78b-4030-1f3d-f5cd1001bb7d@huawei.com>
+ <20220309134459.6448-7-konstantin.meskhidze@huawei.com>
 From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Subject: Re: [RFC PATCH v4 03/15] landlock: landlock_find/insert_rule
- refactoring (TCP port 0)
-In-Reply-To: <212ac1b3-b78b-4030-1f3d-f5cd1001bb7d@huawei.com>
+Subject: Re: [RFC PATCH v4 06/15] landlock: landlock_add_rule syscall
+ refactoring
+In-Reply-To: <20220309134459.6448-7-konstantin.meskhidze@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -63,34 +56,147 @@ List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
 
-On 23/03/2022 09:41, Konstantin Meskhidze wrote:
+On 09/03/2022 14:44, Konstantin Meskhidze wrote:
+> Landlock_add_rule syscall was refactored to support new
+> rule types in future Landlock versions. Add_rule_path_beneath()
+> helper was added to support current filesystem rules. It is called
+> by the switch case.
 > 
+> Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+> ---
 > 
-> 3/22/2022 4:24 PM, Mickaël Salaün пишет:
->>
-
-[...]
->> The remaining question is: should we need to accept 0 as a valid TCP 
->> port? Can it be used? How does the kernel handle it?
+> Changes since v3:
+> * Split commit.
+> * Refactoring landlock_add_rule syscall.
 > 
->   I agree that must be a check for port 0 in add_rule_net_service(), 
-> cause unlike most port numbers, port 0 is a reserved port in TCP/IP 
-> networking, meaning that it should not be used in TCP or UDP messages.
-> Also network traffic sent across the internet to hosts listening on port 
-> 0 might be generated from network attackers or accidentally by 
-> applications programmed incorrectly.
-> Source: https://www.lifewire.com/port-0-in-tcp-and-udp-818145
+> ---
+>   security/landlock/syscalls.c | 95 ++++++++++++++++++++----------------
+>   1 file changed, 53 insertions(+), 42 deletions(-)
+> 
+> diff --git a/security/landlock/syscalls.c b/security/landlock/syscalls.c
+> index 5931b666321d..8c0f6165fe3a 100644
+> --- a/security/landlock/syscalls.c
+> +++ b/security/landlock/syscalls.c
+> @@ -274,54 +274,13 @@ static int get_path_from_fd(const s32 fd, struct path *const path)
+>   	return err;
+>   }
+> 
+> -/**
+> - * sys_landlock_add_rule - Add a new rule to a ruleset
+> - *
+> - * @ruleset_fd: File descriptor tied to the ruleset that should be extended
+> - *		with the new rule.
+> - * @rule_type: Identify the structure type pointed to by @rule_attr (only
+> - *             LANDLOCK_RULE_PATH_BENEATH for now).
+> - * @rule_attr: Pointer to a rule (only of type &struct
+> - *             landlock_path_beneath_attr for now).
+> - * @flags: Must be 0.
+> - *
+> - * This system call enables to define a new rule and add it to an existing
+> - * ruleset.
+> - *
+> - * Possible returned errors are:
+> - *
+> - * - EOPNOTSUPP: Landlock is supported by the kernel but disabled at boot time;
+> - * - EINVAL: @flags is not 0, or inconsistent access in the rule (i.e.
+> - *   &landlock_path_beneath_attr.allowed_access is not a subset of the rule's
+> - *   accesses);
+> - * - ENOMSG: Empty accesses (e.g. &landlock_path_beneath_attr.allowed_access);
+> - * - EBADF: @ruleset_fd is not a file descriptor for the current thread, or a
+> - *   member of @rule_attr is not a file descriptor as expected;
+> - * - EBADFD: @ruleset_fd is not a ruleset file descriptor, or a member of
+> - *   @rule_attr is not the expected file descriptor type (e.g. file open
+> - *   without O_PATH);
+> - * - EPERM: @ruleset_fd has no write access to the underlying ruleset;
+> - * - EFAULT: @rule_attr inconsistency.
+> - */
+> -SYSCALL_DEFINE4(landlock_add_rule,
+> -		const int, ruleset_fd, const enum landlock_rule_type, rule_type,
+> -		const void __user *const, rule_attr, const __u32, flags)
+> +static int add_rule_path_beneath(const int ruleset_fd, const void *const rule_attr)
+>   {
+>   	struct landlock_path_beneath_attr path_beneath_attr;
+>   	struct path path;
+>   	struct landlock_ruleset *ruleset;
+>   	int res, err;
+> 
+> -	if (!landlock_initialized)
+> -		return -EOPNOTSUPP;
+> -
+> -	/* No flag for now. */
+> -	if (flags)
+> -		return -EINVAL;
+> -
+> -	if (rule_type != LANDLOCK_RULE_PATH_BENEATH)
+> -		return -EINVAL;
+> -
+>   	/* Copies raw user space buffer, only one type for now. */
+>   	res = copy_from_user(&path_beneath_attr, rule_attr,
+>   			sizeof(path_beneath_attr));
+> @@ -367,6 +326,58 @@ SYSCALL_DEFINE4(landlock_add_rule,
+>   	return err;
+>   }
+> 
+> +/**
+> + * sys_landlock_add_rule - Add a new rule to a ruleset
+> + *
+> + * @ruleset_fd: File descriptor tied to the ruleset that should be extended
+> + *		with the new rule.
+> + * @rule_type: Identify the structure type pointed to by @rule_attr (only
+> + *             LANDLOCK_RULE_PATH_BENEATH for now).
+> + * @rule_attr: Pointer to a rule (only of type &struct
+> + *             landlock_path_beneath_attr for now).
+> + * @flags: Must be 0.
+> + *
+> + * This system call enables to define a new rule and add it to an existing
+> + * ruleset.
+> + *
+> + * Possible returned errors are:
+> + *
+> + * - EOPNOTSUPP: Landlock is supported by the kernel but disabled at boot time;
+> + * - EINVAL: @flags is not 0, or inconsistent access in the rule (i.e.
+> + *   &landlock_path_beneath_attr.allowed_access is not a subset of the rule's
+> + *   accesses);
+> + * - ENOMSG: Empty accesses (e.g. &landlock_path_beneath_attr.allowed_access);
+> + * - EBADF: @ruleset_fd is not a file descriptor for the current thread, or a
+> + *   member of @rule_attr is not a file descriptor as expected;
+> + * - EBADFD: @ruleset_fd is not a ruleset file descriptor, or a member of
+> + *   @rule_attr is not the expected file descriptor type (e.g. file open
+> + *   without O_PATH);
+> + * - EPERM: @ruleset_fd has no write access to the underlying ruleset;
+> + * - EFAULT: @rule_attr inconsistency.
+> + */
+> +SYSCALL_DEFINE4(landlock_add_rule,
+> +		const int, ruleset_fd, const enum landlock_rule_type, rule_type,
+> +		const void __user *const, rule_attr, const __u32, flags)
+> +{
+> +	int err;
+> +
+> +	if (!landlock_initialized)
+> +		return -EOPNOTSUPP;
+> +
+> +	/* No flag for now. */
+> +	if (flags)
+> +		return -EINVAL;
 
-OK, so denying this port by default without a way to allow it should not 
-be an issue. I guess an -EINVAL error would make sense when trying to 
-allow this port. This should be documented in a comment (with a link to 
-the RFC/section) and a dedicated test should check that behavior.
+As you can see in my yesterday patch, the get_ruleset_from_fd() call 
+should be here.
 
-What is the behavior of firewalls (e.g. Netfiler) when trying to filter 
-port 0?
 
-This doesn't seem to be settle though: 
-https://www.austingroupbugs.net/view.php?id=1068
-
-Interesting article: 
-https://z3r0trust.medium.com/socket-programming-the-bizarre-tcp-ip-port-0-saga-fcfbc0e0a276
+> +
+> +	switch (rule_type) {
+> +	case LANDLOCK_RULE_PATH_BENEATH:
+> +		err = add_rule_path_beneath(ruleset_fd, rule_attr);
+> +		break;
+> +	default:
+> +		err = -EINVAL;
+> +	}
+> +	return err;
+> +}
+> +
+>   /* Enforcement */
+> 
+>   /**
+> --
+> 2.25.1
+> 
