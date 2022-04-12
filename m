@@ -2,107 +2,82 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CE54FDC0C
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Apr 2022 13:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296EC4FDC10
+	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Apr 2022 13:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241776AbiDLKME (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 12 Apr 2022 06:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        id S1353594AbiDLKMJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 12 Apr 2022 06:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1389767AbiDLJYI (ORCPT
+        with ESMTP id S1357517AbiDLJ7S (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 12 Apr 2022 05:24:08 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2143956227;
-        Tue, 12 Apr 2022 01:38:37 -0700 (PDT)
-Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4KczYz579yz67Zy6;
-        Tue, 12 Apr 2022 16:35:19 +0800 (CST)
-Received: from [10.122.132.241] (10.122.132.241) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2375.24; Tue, 12 Apr 2022 10:38:34 +0200
-Message-ID: <5a229249-fd4a-76ee-ec94-5f29ca3a245c@huawei.com>
-Date:   Tue, 12 Apr 2022 11:38:33 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [RFC PATCH v4 08/15] landlock: add support network rules
-Content-Language: ru
-To:     =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-CC:     <willemdebruijn.kernel@gmail.com>,
-        <linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
-        <artem.kuzin@huawei.com>, <anton.sirazetdinov@huawei.com>
-References: <20220309134459.6448-1-konstantin.meskhidze@huawei.com>
- <20220309134459.6448-9-konstantin.meskhidze@huawei.com>
- <06f9ca1f-6e92-9d71-4097-e43b2f77b937@digikod.net>
- <8e279be2-5092-ad34-2f8d-ca77ee5a10fd@huawei.com>
- <6f9d82ed-081e-a6e4-5876-6af7db180ba1@digikod.net>
-From:   Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-In-Reply-To: <6f9d82ed-081e-a6e4-5876-6af7db180ba1@digikod.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.122.132.241]
-X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
- fraeml704-chm.china.huawei.com (10.206.15.53)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 12 Apr 2022 05:59:18 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net (zg8tmty1ljiyny4xntqumjca.icoremail.net [165.227.154.27])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 7E17744760;
+        Tue, 12 Apr 2022 02:02:02 -0700 (PDT)
+Received: from 102.localdomain (unknown [59.61.78.232])
+        by app1 (Coremail) with SMTP id xjNnewBHTPjGP1ViXEIHAA--.194S2;
+        Tue, 12 Apr 2022 17:00:55 +0800 (CST)
+From:   Pengcheng Yang <yangpc@wangsu.com>
+To:     Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>,
+        lvs-devel@vger.kernel.org
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, Pengcheng Yang <yangpc@wangsu.com>
+Subject: [PATCH nf] ipvs: correctly print the memory size of ip_vs_conn_tab
+Date:   Tue, 12 Apr 2022 17:00:31 +0800
+Message-Id: <1649754031-18627-1-git-send-email-yangpc@wangsu.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: xjNnewBHTPjGP1ViXEIHAA--.194S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gr4kWrWDKF13tF43KFWUXFb_yoWfCwb_ZF
+        9FvF1Ygr48ZrWDAw15Zan3XFWkJw48AFn3XF97XFWUt34UGw1I9as7Xr9Y9r43Kw4DtryU
+        C3yktry3u342gjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wA2ocxC64kI
+        II0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7
+        xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28E
+        F7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F4
+        0EFcxC0VAKzVAqx4xG6I80ewAv7VACjcxG62k0Y48FwI0_Cr0_Gr1UMcIj6x8ErcxFaVAv
+        8VW8GwAv7VCY1x0262k0Y48FwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2
+        IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8uwCF04k20xvY
+        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26ryUZr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
+        ZFpf9x0JU_PE-UUUUU=
+X-CM-SenderInfo: p1dqw1nf6zt0xjvxhudrp/
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+The memory size of ip_vs_conn_tab changed after we use hlist
+instead of list.
 
+Fixes: 731109e78415 ("ipvs: use hlist instead of list")
+Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
+---
+ net/netfilter/ipvs/ip_vs_conn.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-4/11/2022 7:20 PM, Mickaël Salaün пишет:
-> 
-> On 11/04/2022 15:44, Konstantin Meskhidze wrote:
->>
->>
->> 4/8/2022 7:30 PM, Mickaël Salaün пишет:
-> 
-> [...]
-> 
-> 
->>>>   struct landlock_ruleset *landlock_create_ruleset(const struct 
->>>> landlock_access_mask *access_mask_set)
->>>>   {
->>>>       struct landlock_ruleset *new_ruleset;
->>>>
->>>>       /* Informs about useless ruleset. */
->>>> -    if (!access_mask_set->fs)
->>>> +    if (!access_mask_set->fs && !access_mask_set->net)
->>>>           return ERR_PTR(-ENOMSG);
->>>>       new_ruleset = create_ruleset(1);
->>>> -    if (!IS_ERR(new_ruleset))
->>>
->>> This is better:
->>>
->>> if (IS_ERR(new_ruleset))
->>>      return new_ruleset;
->>> if (access_mask_set->fs)
->>> ...
->>
->>    I dont get this condition. Do you mean that we return new_ruleset
->> anyway no matter what the masks's values are? So its possible to have 
->> 0 masks values, is't it?
-> 
-> No, the logic is correct but it would be simpler to exit as soon as 
-> there is a ruleset error, you don't need to duplicate 
-> "IS_ERR(new_ruleset) &&":
-> 
-> if (IS_ERR(new_ruleset))
->      return new_ruleset;
-> if (access_mask_set->fs)
->      landlock_set_fs_access_mask(new_ruleset, access_mask_set, 0);
-> if (access_mask_set->net)
->      landlock_set_net_access_mask(new_ruleset, access_mask_set, 0);
-> return new_ruleset;
-> 
-   Ok. I got it. Thank you.
-> .
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index 2c467c4..e886c74 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -1495,7 +1495,7 @@ int __init ip_vs_conn_init(void)
+ 	pr_info("Connection hash table configured "
+ 		"(size=%d, memory=%ldKbytes)\n",
+ 		ip_vs_conn_tab_size,
+-		(long)(ip_vs_conn_tab_size*sizeof(struct list_head))/1024);
++		(long)(ip_vs_conn_tab_size*sizeof(struct hlist_head))/1024);
+ 	IP_VS_DBG(0, "Each connection entry needs %zd bytes at least\n",
+ 		  sizeof(struct ip_vs_conn));
+ 
+-- 
+1.8.3.1
+
