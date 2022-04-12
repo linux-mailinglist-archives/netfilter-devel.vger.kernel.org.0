@@ -2,49 +2,31 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D62D94FE7F6
-	for <lists+netfilter-devel@lfdr.de>; Tue, 12 Apr 2022 20:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912254FEA7E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Apr 2022 01:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236905AbiDLSan convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 12 Apr 2022 14:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
+        id S229942AbiDLXY4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 12 Apr 2022 19:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231543AbiDLSan (ORCPT
+        with ESMTP id S229947AbiDLXY0 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 12 Apr 2022 14:30:43 -0400
-X-Greylist: delayed 607 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Apr 2022 11:28:24 PDT
-Received: from localhost.localdomain (mail.redfish-solutions.com [45.33.216.244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF2851331
-        for <netfilter-devel@vger.kernel.org>; Tue, 12 Apr 2022 11:28:24 -0700 (PDT)
-Received: from smtpclient.apple (macbook3.redfish-solutions.com [192.168.3.4])
-        (authenticated bits=0)
-        by localhost.localdomain (8.16.1/8.16.1) with ESMTPSA id 23CIIA1g721895
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Apr 2022 12:18:10 -0600
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.80.82.1.1\))
-Subject: Re: [PATCH v2 1/1] xt_ECHO, xt_TARPIT: make properly conditional on
- IPv6
-From:   Philip Prindeville <philipp_subx@redfish-solutions.com>
-In-Reply-To: <E3987215-778D-416E-B692-4C0C5C6FE536@redfish-solutions.com>
-Date:   Tue, 12 Apr 2022 12:18:09 -0600
-Cc:     Jeremy Sowden <jeremy@azazel.net>, netfilter-devel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <6B9350FD-9052-460F-8AA2-7211B1DF3DAF@redfish-solutions.com>
-References: <20210926195734.702772-1-philipp@redfish-solutions.com>
- <5s32r847-4op5-70s2-7o9n-4968n7rso321@vanv.qr>
- <05A51779-4B94-49BA-B1B8-6CA5BE695D80@redfish-solutions.com>
- <Yfe48T7Nxpzp20wL@azazel.net>
- <E7F7FB17-246B-4EFF-9449-FE1764F9816E@redfish-solutions.com>
- <Yfgq6qWKgTV9NEkg@azazel.net>
- <6961516B-8252-404F-B302-33E39EEBC9F3@redfish-solutions.com>
- <o9236r6-q17s-4p97-r8o0-rnr66543s30@vanv.qr>
- <E3987215-778D-416E-B692-4C0C5C6FE536@redfish-solutions.com>
-To:     Jan Engelhardt <jengelh@inai.de>
-X-Mailer: Apple Mail (2.3696.80.82.1.1)
-X-Scanned-By: MIMEDefang 2.85 on 192.168.4.3
+        Tue, 12 Apr 2022 19:24:26 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2F176D0AAC
+        for <netfilter-devel@vger.kernel.org>; Tue, 12 Apr 2022 15:11:37 -0700 (PDT)
+Date:   Wed, 13 Apr 2022 00:11:32 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Jo-Philipp Wich <jo@mein.io>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [RFC PATCH] datatype: accept abbrevs and ignore case on parsing
+ symbolic constants
+Message-ID: <YlX5FJaOOyYHUpbg@salvia>
+References: <20220411080822.1801117-1-jo@mein.io>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220411080822.1801117-1-jo@mein.io>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -54,28 +36,107 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Hi,
 
+On Mon, Apr 11, 2022 at 10:08:22AM +0200, Jo-Philipp Wich wrote:
+> Currently nftables does not accept abbreviated or lowercased weekday
+> names as claimed in the nftables wiki [1]. This is due to the fact that
+> symbolic_constant_parse() performs a strict equality check of the given
+> constant value against the list of potential choices.
+> 
+> In order to implement the behaviour described by the wiki - which seems
+> useful and intuitive in general - adjust the constant parsing function
+> to to perform a case-insensitive prefix match of the user supplied value
+> against the choice list.
+> 
+> The modified code does not check uniqueness of the prefix value, it will
+> simply return the first matching item, but it will ensure to reject an
+> empty string value.
+> 
+> 1: https://wiki.nftables.org/wiki-nftables/index.php/Matching_packet_metainformation#Matching_by_time
+> 
+> Signed-off-by: Jo-Philipp Wich <jo@mein.io>
+> ---
+>  src/datatype.c              |  5 +++--
+>  tests/py/any/meta.t         |  4 ++++
+>  tests/py/any/meta.t.payload | 18 ++++++++++++++++++
+>  3 files changed, 25 insertions(+), 2 deletions(-)
+> 
+> diff --git a/src/datatype.c b/src/datatype.c
+> index 2e31c858..ce4a8aa8 100644
+> --- a/src/datatype.c
+> +++ b/src/datatype.c
+> @@ -149,9 +149,10 @@ struct error_record *symbolic_constant_parse(struct parse_ctx *ctx,
+>  	const struct symbolic_constant *s;
+>  	const struct datatype *dtype;
+>  	struct error_record *erec;
+> +	size_t idlen;
+>  
+> -	for (s = tbl->symbols; s->identifier != NULL; s++) {
+> -		if (!strcmp(sym->identifier, s->identifier))
 
-> On Feb 1, 2022, at 11:22 AM, Philip Prindeville <philipp_subx@redfish-solutions.com> wrote:
-> 
-> 
-> 
->> On Feb 1, 2022, at 10:32 AM, Jan Engelhardt <jengelh@inai.de> wrote:
->> 
->> 
->> On Monday 2022-01-31 19:35, Philip Prindeville wrote:
->>> 
->>> That would do it.
->>> When is 3.19 or 4.0 due out?
->> 
->> No particular plans, therefore I tagged 3.19 for your enjoyment.
-> 
-> 
-> Cheers.
-> 
-> Rebuilding the packaging for openwrt now.
-> 
+I'd suggest to add a flag for this:
 
+DTYPE_F_ICASE
 
-Update: stalled on getting the package maintainer for openwrt to approve my version bump PR.
+and set it on for the time datatype, I'd prefer to narrow down this
+feature to this specific case and extend it to more usecases
+progressively.
 
+Would you send another patch version?
+
+Thanks!
+
+> +	for (s = tbl->symbols, idlen = strlen(sym->identifier); s->identifier != NULL; s++) {
+> +		if (idlen > 0 && !strncasecmp(sym->identifier, s->identifier, idlen))
+>  			break;
+>  	}
+>  
+> diff --git a/tests/py/any/meta.t b/tests/py/any/meta.t
+> index 12fabb79..4f130e7d 100644
+> --- a/tests/py/any/meta.t
+> +++ b/tests/py/any/meta.t
+> @@ -212,7 +212,11 @@ meta time < "2022-07-01 11:00:00" accept;ok
+>  meta time > "2022-07-01 11:00:00" accept;ok
+>  meta day "Saturday" drop;ok
+>  meta day 6 drop;ok;meta day "Saturday" drop
+> +meta day "saturday" drop;ok;meta day "Saturday" drop
+> +meta day "Sat" drop;ok;meta day "Saturday" drop
+> +meta day "sat" drop;ok;meta day "Saturday" drop
+>  meta day "Satturday" drop;fail
+> +meta day "" drop;fail
+>  meta hour "17:00" drop;ok
+>  meta hour "17:00:00" drop;ok;meta hour "17:00" drop
+>  meta hour "17:00:01" drop;ok
+> diff --git a/tests/py/any/meta.t.payload b/tests/py/any/meta.t.payload
+> index 16dc1211..b43c43c4 100644
+> --- a/tests/py/any/meta.t.payload
+> +++ b/tests/py/any/meta.t.payload
+> @@ -1023,6 +1023,24 @@ ip test-ip4 input
+>    [ cmp eq reg 1 0x00000006 ]
+>    [ immediate reg 0 drop ]
+>  
+> +# meta day "saturday" drop
+> +ip test-ip4 input
+> +  [ meta load day => reg 1 ]
+> +  [ cmp eq reg 1 0x00000006 ]
+> +  [ immediate reg 0 drop ]
+> +
+> +# meta day "Sat" drop
+> +ip test-ip4 input
+> +  [ meta load day => reg 1 ]
+> +  [ cmp eq reg 1 0x00000006 ]
+> +  [ immediate reg 0 drop ]
+> +
+> +# meta day "sat" drop
+> +ip test-ip4 input
+> +  [ meta load day => reg 1 ]
+> +  [ cmp eq reg 1 0x00000006 ]
+> +  [ immediate reg 0 drop ]
+> +
+>  # meta day 6 drop
+>  ip test-ip4 input
+>    [ meta load day => reg 1 ]
+> -- 
+> 2.35.1
+> 
