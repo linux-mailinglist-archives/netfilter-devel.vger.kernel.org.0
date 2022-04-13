@@ -2,102 +2,82 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E41604FEC84
-	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Apr 2022 03:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6153D4FF2E0
+	for <lists+netfilter-devel@lfdr.de>; Wed, 13 Apr 2022 11:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbiDMBwB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 12 Apr 2022 21:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
+        id S234177AbiDMJHq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 13 Apr 2022 05:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbiDMBv6 (ORCPT
+        with ESMTP id S229960AbiDMJHq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 12 Apr 2022 21:51:58 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 51CF024085
-        for <netfilter-devel@vger.kernel.org>; Tue, 12 Apr 2022 18:49:38 -0700 (PDT)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     fw@strlen.de
-Subject: [PATCH nft,v6 8/8] src: restore interval sets work with string datatypes
-Date:   Wed, 13 Apr 2022 03:49:30 +0200
-Message-Id: <20220413014930.410728-9-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220413014930.410728-1-pablo@netfilter.org>
-References: <20220413014930.410728-1-pablo@netfilter.org>
+        Wed, 13 Apr 2022 05:07:46 -0400
+Received: from mail.strongswan.org (sitav-80046.hsr.ch [152.96.80.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DE129CAA;
+        Wed, 13 Apr 2022 02:05:24 -0700 (PDT)
+Received: from think.home (67.36.7.85.dynamic.wline.res.cust.swisscom.ch [85.7.36.67])
+        by mail.strongswan.org (Postfix) with ESMTPSA id CB9ED40260;
+        Wed, 13 Apr 2022 11:05:22 +0200 (CEST)
+Message-ID: <5572c06750a388056001d1b460d5e67c18fa2836.camel@strongswan.org>
+Subject: Re: [PATCH nf] netfilter: Update ip6_route_me_harder to consider L3
+ domain
+From:   Martin Willi <martin@strongswan.org>
+To:     David Ahern <dsahern@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Date:   Wed, 13 Apr 2022 11:05:22 +0200
+In-Reply-To: <a64e1342-c953-40c5-2afb-0e9654e7d002@kernel.org>
+References: <20220412074639.1963131-1-martin@strongswan.org>
+         <a64e1342-c953-40c5-2afb-0e9654e7d002@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Switch byteorder of string datatypes to host byteorder.
+Hi David,
 
-Partial revert of ("src: make interval sets work with string datatypes")
-otherwise new interval code complains with conflicting intervals.
+> > @@ -39,6 +38,13 @@ int ip6_route_me_harder(struct net *net, struct
+> > sock *sk_partial, struct sk_buff
+> >  	};
+> >  	int err;
+> >  
+> > +	if (sk && sk->sk_bound_dev_if)
+> > +		fl6.flowi6_oif = sk->sk_bound_dev_if;
+> > +	else if (strict)
+> > +		fl6.flowi6_oif = dev->ifindex;
+> > +	else
+> > +		fl6.flowi6_oif = l3mdev_master_ifindex(dev);
+> 
+> For top of tree, this is now fl6.flowi6_l3mdev
 
-testcases/sets/sets_with_ifnames passes fine again.
+Ah, I see, missed that.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- src/expression.c | 8 ++------
- src/intervals.c  | 6 ++++++
- 2 files changed, 8 insertions(+), 6 deletions(-)
+Given that IPv4 should be converted to flowi4_l3mdev as well (?), what
+about:
 
-diff --git a/src/expression.c b/src/expression.c
-index 5d879b535990..deb649e1847b 100644
---- a/src/expression.c
-+++ b/src/expression.c
-@@ -1442,11 +1442,7 @@ void range_expr_value_low(mpz_t rop, const struct expr *expr)
- {
- 	switch (expr->etype) {
- 	case EXPR_VALUE:
--		mpz_set(rop, expr->value);
--		if (expr->byteorder == BYTEORDER_HOST_ENDIAN &&
--		    expr_basetype(expr)->type == TYPE_STRING)
--			mpz_switch_byteorder(rop, expr->len / BITS_PER_BYTE);
--		return;
-+		return mpz_set(rop, expr->value);
- 	case EXPR_PREFIX:
- 		return range_expr_value_low(rop, expr->prefix);
- 	case EXPR_RANGE:
-@@ -1466,7 +1462,7 @@ void range_expr_value_high(mpz_t rop, const struct expr *expr)
- 
- 	switch (expr->etype) {
- 	case EXPR_VALUE:
--		return range_expr_value_low(rop, expr);
-+		return mpz_set(rop, expr->value);
- 	case EXPR_PREFIX:
- 		range_expr_value_low(rop, expr->prefix);
- 		assert(expr->len >= expr->prefix_len);
-diff --git a/src/intervals.c b/src/intervals.c
-index f672d0aac573..451bc4dd4dd4 100644
---- a/src/intervals.c
-+++ b/src/intervals.c
-@@ -25,6 +25,9 @@ static void setelem_expr_to_range(struct expr *expr)
- 	case EXPR_PREFIX:
- 		mpz_init(rop);
- 		mpz_bitmask(rop, expr->key->len - expr->key->prefix_len);
-+		if (expr_basetype(expr)->type == TYPE_STRING)
-+			mpz_switch_byteorder(expr->key->prefix->value, expr->len / BITS_PER_BYTE);
-+
- 		mpz_ior(rop, rop, expr->key->prefix->value);
- 	        mpz_export_data(data, rop, expr->key->prefix->byteorder,
- 				expr->key->prefix->len / BITS_PER_BYTE);
-@@ -40,6 +43,9 @@ static void setelem_expr_to_range(struct expr *expr)
- 		expr->key = key;
- 		break;
- 	case EXPR_VALUE:
-+		if (expr_basetype(expr)->type == TYPE_STRING)
-+			mpz_switch_byteorder(expr->key->value, expr->len / BITS_PER_BYTE);
-+
- 		key = range_expr_alloc(&expr->location,
- 				       expr_clone(expr->key),
- 				       expr_get(expr->key));
--- 
-2.30.2
+ * Keep the IPv6 patch in this form, as this allows stable to pick it
+   up as-is
+ * I'll add a follow-up patch, which converts both to flowi[46]_l3mdev
+
+This would avoid some noise for a separate stable patch, but let me
+know what you prefer.
+
+>  and dev is only needed here so make this:
+> 	fl6.flowi6_l3mdev = l3mdev_master_ifindex(skb_dst(skb)->dev);
+
+Actually it is used in that "strict" branch, this is why I've added
+"dev" as a local variable. I guess that is still needed
+with flowi6_l3mdev?
+
+Thanks,
+Martin
 
