@@ -2,42 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6BC501918
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Apr 2022 18:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1B4502624
+	for <lists+netfilter-devel@lfdr.de>; Fri, 15 Apr 2022 09:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241507AbiDNQxj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 14 Apr 2022 12:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
+        id S1350986AbiDOHYT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 15 Apr 2022 03:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343911AbiDNQxU (ORCPT
+        with ESMTP id S1348207AbiDOHYS (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 14 Apr 2022 12:53:20 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CFCD13BAC1
-        for <netfilter-devel@vger.kernel.org>; Thu, 14 Apr 2022 09:22:27 -0700 (PDT)
-Date:   Thu, 14 Apr 2022 18:22:24 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] intervals: Simplify element sanity checks
-Message-ID: <YlhKQHpyME9YLIK3@salvia>
-References: <20220414113924.15553-1-phil@nwl.cc>
+        Fri, 15 Apr 2022 03:24:18 -0400
+Received: from zeeaster.vergenet.net (zeeaster.vergenet.net [206.189.110.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCFA9D052;
+        Fri, 15 Apr 2022 00:21:49 -0700 (PDT)
+Received: from madeliefje.horms.nl (2a02-a44a-2918-403-201-8eff-fe22-8fea.fixed6.kpn.net [IPv6:2a02:a44a:2918:403:201:8eff:fe22:8fea])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by zeeaster.vergenet.net (Postfix) with ESMTPSA id 35DA1200CD;
+        Fri, 15 Apr 2022 07:21:48 +0000 (UTC)
+Received: by madeliefje.horms.nl (Postfix, from userid 7100)
+        id EA12335A8; Fri, 15 Apr 2022 09:21:47 +0200 (CEST)
+Date:   Fri, 15 Apr 2022 09:21:47 +0200
+From:   Simon Horman <horms@verge.net.au>
+To:     Pengcheng Yang <yangpc@wangsu.com>
+Cc:     Julian Anastasov <ja@ssi.bg>, lvs-devel@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf] ipvs: correctly print the memory size of
+ ip_vs_conn_tab
+Message-ID: <YlkdC1/AnuRCdhnv@vergenet.net>
+References: <1649754031-18627-1-git-send-email-yangpc@wangsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220414113924.15553-1-phil@nwl.cc>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <1649754031-18627-1-git-send-email-yangpc@wangsu.com>
+Organisation: Horms Solutions BV
+X-Virus-Scanned: clamav-milter 0.103.5 at zeeaster
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Apr 14, 2022 at 01:39:24PM +0200, Phil Sutter wrote:
-> Since setelem_delete() assigns to 'prev' pointer only if it doesn't have
-> EXPR_F_REMOVE flag set, there is no need to check that flag in called
-> functions.
+On Tue, Apr 12, 2022 at 05:00:31PM +0800, Pengcheng Yang wrote:
+> The memory size of ip_vs_conn_tab changed after we use hlist
+> instead of list.
+> 
+> Fixes: 731109e78415 ("ipvs: use hlist instead of list")
+> Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
 
-Applied, thanks
+Acked-by: Simon Horman <horms@verge.net.au>
+
+> ---
+>  net/netfilter/ipvs/ip_vs_conn.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+> index 2c467c4..e886c74 100644
+> --- a/net/netfilter/ipvs/ip_vs_conn.c
+> +++ b/net/netfilter/ipvs/ip_vs_conn.c
+> @@ -1495,7 +1495,7 @@ int __init ip_vs_conn_init(void)
+>  	pr_info("Connection hash table configured "
+>  		"(size=%d, memory=%ldKbytes)\n",
+>  		ip_vs_conn_tab_size,
+> -		(long)(ip_vs_conn_tab_size*sizeof(struct list_head))/1024);
+> +		(long)(ip_vs_conn_tab_size*sizeof(struct hlist_head))/1024);
+>  	IP_VS_DBG(0, "Each connection entry needs %zd bytes at least\n",
+>  		  sizeof(struct ip_vs_conn));
+>  
+> -- 
+> 1.8.3.1
+> 
