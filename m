@@ -2,147 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FA5504EAC
-	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Apr 2022 12:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47538504EC6
+	for <lists+netfilter-devel@lfdr.de>; Mon, 18 Apr 2022 12:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236280AbiDRKMU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 18 Apr 2022 06:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
+        id S237699AbiDRKX5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 18 Apr 2022 06:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237602AbiDRKMS (ORCPT
+        with ESMTP id S237669AbiDRKXs (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 18 Apr 2022 06:12:18 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B639D17E30
-        for <netfilter-devel@vger.kernel.org>; Mon, 18 Apr 2022 03:09:37 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1ngOK8-0008Qp-8C; Mon, 18 Apr 2022 12:09:36 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft 2/2] tests: add concat test case with integer base type subkey
-Date:   Mon, 18 Apr 2022 12:09:24 +0200
-Message-Id: <20220418100924.5669-3-fw@strlen.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220418100924.5669-1-fw@strlen.de>
-References: <20220418100924.5669-1-fw@strlen.de>
+        Mon, 18 Apr 2022 06:23:48 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 80A8E1209A
+        for <netfilter-devel@vger.kernel.org>; Mon, 18 Apr 2022 03:21:09 -0700 (PDT)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     sbrivio@redhat.com
+Subject: [PATCH nf] netfilter: nft_set_rbtree: overlap detection with element re-addition after deletion
+Date:   Mon, 18 Apr 2022 12:21:05 +0200
+Message-Id: <20220418102105.826027-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- tests/shell/testcases/maps/dumps/typeof_maps_0.nft | 6 ++++++
- tests/shell/testcases/maps/typeof_maps_0           | 6 ++++++
- tests/shell/testcases/sets/dumps/typeof_sets_0.nft | 9 +++++++++
- tests/shell/testcases/sets/typeof_sets_0           | 9 +++++++++
- 4 files changed, 30 insertions(+)
+This patch fixes spurious EEXIST errors.
 
-diff --git a/tests/shell/testcases/maps/dumps/typeof_maps_0.nft b/tests/shell/testcases/maps/dumps/typeof_maps_0.nft
-index ea411335cbd4..a5c0a60927a7 100644
---- a/tests/shell/testcases/maps/dumps/typeof_maps_0.nft
-+++ b/tests/shell/testcases/maps/dumps/typeof_maps_0.nft
-@@ -20,11 +20,17 @@ table inet t {
- 		elements = { "eth0" . tcp . 22 : accept }
- 	}
+Extend d2df92e98a34 ("netfilter: nft_set_rbtree: handle element
+re-addition after deletion") to deal with elements with same end flags
+in the same transation.
+
+Reset the overlap flag as described by 7c84d41416d8 ("netfilter:
+nft_set_rbtree: Detect partial overlaps on insertion").
+
+Fixes: 7c84d41416d8 ("netfilter: nft_set_rbtree: Detect partial overlaps on insertion")
+Fixes: d2df92e98a34 ("netfilter: nft_set_rbtree: handle element re-addition after deletion")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+This bug is triggered since the new code to online interval automerging
+of addition and deletions with an existing kernel set.
+
+https://lore.kernel.org/netfilter-devel/20220412144711.93354-1-pablo@netfilter.org/
+
+ net/netfilter/nft_set_rbtree.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
+index d600a566da32..7325bee7d144 100644
+--- a/net/netfilter/nft_set_rbtree.c
++++ b/net/netfilter/nft_set_rbtree.c
+@@ -349,7 +349,11 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
+ 				*ext = &rbe->ext;
+ 				return -EEXIST;
+ 			} else {
+-				p = &parent->rb_left;
++				overlap = false;
++				if (nft_rbtree_interval_end(rbe))
++					p = &parent->rb_left;
++				else
++					p = &parent->rb_right;
+ 			}
+ 		}
  
-+	map m5 {
-+		typeof ipsec in reqid . iifname : verdict
-+		elements = { 23 . "eth0" : accept }
-+	}
-+
- 	chain c {
- 		ct mark set osf name map @m1
- 		meta mark set vlan id map @m2
- 		meta mark set ip saddr . ip daddr map @m3
- 		iifname . ip protocol . th dport vmap @m4
- 		iifname . ip protocol . th dport vmap { "eth0" . tcp . 22 : accept, "eth1" . udp . 67 : drop }
-+		ipsec in reqid . iifname vmap @m5
- 	}
- }
-diff --git a/tests/shell/testcases/maps/typeof_maps_0 b/tests/shell/testcases/maps/typeof_maps_0
-index 1014d8115fd9..5cf5dddeb1d6 100755
---- a/tests/shell/testcases/maps/typeof_maps_0
-+++ b/tests/shell/testcases/maps/typeof_maps_0
-@@ -27,12 +27,18 @@ EXPECTED="table inet t {
- 		elements = { eth0 . tcp . 22 : accept }
- 	}
- 
-+	map m5 {
-+		typeof ipsec in reqid . meta iifname : verdict
-+		elements = { 23 . eth0 : accept }
-+	}
-+
- 	chain c {
- 		ct mark set osf name map @m1
- 		ether type vlan meta mark set vlan id map @m2
- 		meta mark set ip saddr . ip daddr map @m3
- 		iifname . ip protocol . th dport vmap @m4
- 		iifname . ip protocol . th dport vmap { \"eth0\" . tcp . 22 : accept, \"eth1\" . udp . 67 : drop }
-+		ipsec in reqid . meta iifname vmap @m5
- 	}
- }"
- 
-diff --git a/tests/shell/testcases/sets/dumps/typeof_sets_0.nft b/tests/shell/testcases/sets/dumps/typeof_sets_0.nft
-index e397a6345462..68b4dcc56e9a 100644
---- a/tests/shell/testcases/sets/dumps/typeof_sets_0.nft
-+++ b/tests/shell/testcases/sets/dumps/typeof_sets_0.nft
-@@ -45,6 +45,11 @@ table inet t {
- 			     15 }
- 	}
- 
-+	set s10 {
-+		typeof iifname . ip saddr . ipsec in reqid
-+		elements = { "eth0" . 10.1.1.2 . 42 }
-+	}
-+
- 	chain c1 {
- 		osf name @s1 accept
- 	}
-@@ -76,4 +81,8 @@ table inet t {
- 	chain c9 {
- 		ip hdrlength @s9 accept
- 	}
-+
-+	chain c10 {
-+		iifname . ip saddr . ipsec in reqid @s10 accept
-+	}
- }
-diff --git a/tests/shell/testcases/sets/typeof_sets_0 b/tests/shell/testcases/sets/typeof_sets_0
-index be906cdcc842..5fc6a1214729 100755
---- a/tests/shell/testcases/sets/typeof_sets_0
-+++ b/tests/shell/testcases/sets/typeof_sets_0
-@@ -50,6 +50,11 @@ EXPECTED="table inet t {
- 		elements = { 0, 1, 2, 3, 4, 15 }
- 	}
- 
-+	set s10 {
-+		typeof meta iifname . ip saddr . ipsec in reqid
-+		elements = { \"eth0\" . 10.1.1.2 . 42 }
-+	}
-+
- 	chain c1 {
- 		osf name @s1 accept
- 	}
-@@ -81,6 +86,10 @@ EXPECTED="table inet t {
- 	chain c9 {
- 		ip hdrlength @s9 accept
- 	}
-+
-+	chain c10 {
-+		meta iifname . ip saddr . ipsec in reqid @s10 accept
-+	}
- }"
- 
- set -e
 -- 
-2.35.1
+2.30.2
 
