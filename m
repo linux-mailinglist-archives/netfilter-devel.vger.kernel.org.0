@@ -2,51 +2,61 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26964506790
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Apr 2022 11:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502EE506F53
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Apr 2022 15:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbiDSJVJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 19 Apr 2022 05:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47118 "EHLO
+        id S1352875AbiDSNx5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 19 Apr 2022 09:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbiDSJVI (ORCPT
+        with ESMTP id S1353152AbiDSNwa (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 19 Apr 2022 05:21:08 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A858826AFB
-        for <netfilter-devel@vger.kernel.org>; Tue, 19 Apr 2022 02:18:26 -0700 (PDT)
-Date:   Tue, 19 Apr 2022 11:18:23 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nf-next v4 00/10] netfilter: conntrack: remove percpu
- lists
-Message-ID: <Yl5+X5PAGRONMruH@salvia>
-References: <20220411110125.4854-1-fw@strlen.de>
+        Tue, 19 Apr 2022 09:52:30 -0400
+Received: from mail.strongswan.org (sitav-80046.hsr.ch [152.96.80.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D65B3D1E5;
+        Tue, 19 Apr 2022 06:47:14 -0700 (PDT)
+Received: from think.home (67.36.7.85.dynamic.wline.res.cust.swisscom.ch [85.7.36.67])
+        by mail.strongswan.org (Postfix) with ESMTPSA id 12A16406A2;
+        Tue, 19 Apr 2022 15:47:12 +0200 (CEST)
+From:   Martin Willi <martin@strongswan.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        David Ahern <dsahern@kernel.org>
+Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH nf v2 0/2] netfilter: Fix/update mangled packet re-routing within VRF domains
+Date:   Tue, 19 Apr 2022 15:46:59 +0200
+Message-Id: <20220419134701.153090-1-martin@strongswan.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220411110125.4854-1-fw@strlen.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 01:01:15PM +0200, Florian Westphal wrote:
-> This series removes the unconfirmed and dying percpu lists.
-> 
-> Dying list is replaced by pernet list, only used when reliable event
-> delivery mode was requested.
-> 
-> Unconfirmed list is replaced by a generation id for the conntrack
-> extesions, to detect when pointers to external objects (timeout policy,
-> helper, ...) has gone stale.
-> 
-> An alternative to the genid would be to always take references on
-> such external objects, let me know if that is the preferred solution.
+The first patch fixes re-routing of IPv6 packets mangled by Netfilter 
+rules to consider the layer 3 VRF domain. The second patch updates both 
+IPv4 and IPv6 re-routing to use the recently added l3mdev flow key instead
+of abusing the oif flow key to select the L3 domain.
 
-Pushed it out to nf-next, thanks
+These patches have been explicitly split up to allow stable to pick up the
+first patch as-is.
+
+Changes in v2:
+- Add a second patch to migrate IPv4/6 re-routing to l3mdev flow key
+
+Martin Willi (2):
+  netfilter: Update ip6_route_me_harder to consider L3 domain
+  netfilter: Use l3mdev flow key when re-routing mangled packets
+
+ net/ipv4/netfilter.c | 3 +--
+ net/ipv6/netfilter.c | 9 +++++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+-- 
+2.25.1
+
