@@ -2,33 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D233B50DC0D
-	for <lists+netfilter-devel@lfdr.de>; Mon, 25 Apr 2022 11:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002C150DC60
+	for <lists+netfilter-devel@lfdr.de>; Mon, 25 Apr 2022 11:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240658AbiDYJM7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 25 Apr 2022 05:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35510 "EHLO
+        id S232611AbiDYJVB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 25 Apr 2022 05:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241506AbiDYJMq (ORCPT
+        with ESMTP id S241566AbiDYJTm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 25 Apr 2022 05:12:46 -0400
+        Mon, 25 Apr 2022 05:19:42 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 41F8BCAB99;
-        Mon, 25 Apr 2022 02:09:42 -0700 (PDT)
-Date:   Mon, 25 Apr 2022 11:09:38 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CB86122513;
+        Mon, 25 Apr 2022 02:16:35 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Martin Willi <martin@strongswan.org>
-Cc:     Florian Westphal <fw@strlen.de>, David Ahern <dsahern@kernel.org>,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH nf v2 1/2] netfilter: Update ip6_route_me_harder to
- consider L3 domain
-Message-ID: <YmZlUvXJ7LYoIXio@salvia>
-References: <20220419134701.153090-1-martin@strongswan.org>
- <20220419134701.153090-2-martin@strongswan.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
+Subject: [PATCH net 0/4] Netfilter fixes for net
+Date:   Mon, 25 Apr 2022 11:16:27 +0200
+Message-Id: <20220425091631.109320-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220419134701.153090-2-martin@strongswan.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -37,12 +32,55 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 03:47:00PM +0200, Martin Willi wrote:
-> The commit referenced below fixed packet re-routing if Netfilter mangles
-> a routing key property of a packet and the packet is routed in a VRF L3
-> domain. The fix, however, addressed IPv4 re-routing, only.
-> 
-> This commit applies the same behavior for IPv6. While at it, untangle
-> the nested ternary operator to make the code more readable.
+Hi,
 
-Applied to nf.git
+The following patchset contains Netfilter fixes for net:
+
+1) Fix incorrect printing of memory size of IPVS connection hash table,
+   from Pengcheng Yang.
+
+2) Fix spurious EEXIST errors in nft_set_rbtree.
+
+3) Remove leftover empty flowtable file, from  Rongguang Wei.
+
+4) Fix ip6_route_me_harder() with vrf driver, from Martin Willi.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 4cf35a2b627a020fe1a6b6fc7a6a12394644e474:
+
+  net: mscc: ocelot: fix broken IP multicast flooding (2022-04-19 10:33:33 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git HEAD
+
+for you to fetch changes up to 8ddffdb9442a9d60b4a6e679ac48d7d21403a674:
+
+  netfilter: Update ip6_route_me_harder to consider L3 domain (2022-04-25 11:09:20 +0200)
+
+----------------------------------------------------------------
+Martin Willi (1):
+      netfilter: Update ip6_route_me_harder to consider L3 domain
+
+Pablo Neira Ayuso (1):
+      netfilter: nft_set_rbtree: overlap detection with element re-addition after deletion
+
+Pengcheng Yang (1):
+      ipvs: correctly print the memory size of ip_vs_conn_tab
+
+Rongguang Wei (1):
+      netfilter: flowtable: Remove the empty file
+
+ net/ipv4/netfilter/nf_flow_table_ipv4.c |  0
+ net/ipv6/netfilter.c                    | 10 ++++++++--
+ net/netfilter/ipvs/ip_vs_conn.c         |  2 +-
+ net/netfilter/nft_set_rbtree.c          |  6 +++++-
+ 4 files changed, 14 insertions(+), 4 deletions(-)
+ delete mode 100644 net/ipv4/netfilter/nf_flow_table_ipv4.c
