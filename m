@@ -2,52 +2,43 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAD4511DB9
-	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Apr 2022 20:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6620511F2F
+	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Apr 2022 20:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240013AbiD0Plp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 27 Apr 2022 11:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60276 "EHLO
+        id S239823AbiD0Pby (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 27 Apr 2022 11:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239792AbiD0Plp (ORCPT
+        with ESMTP id S239819AbiD0Pbx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 27 Apr 2022 11:41:45 -0400
-X-Greylist: delayed 588 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 27 Apr 2022 08:38:23 PDT
-Received: from chinatelecom.cn (prt-mail.chinatelecom.cn [42.123.76.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9A8F329C85
-        for <netfilter-devel@vger.kernel.org>; Wed, 27 Apr 2022 08:38:21 -0700 (PDT)
-HMM_SOURCE_IP: 172.18.0.188:52588.987386712
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-101.229.163.22 (unknown [172.18.0.188])
-        by chinatelecom.cn (HERMES) with SMTP id CA6C528009F;
-        Wed, 27 Apr 2022 23:28:28 +0800 (CST)
-X-189-SAVE-TO-SEND: wenxu@chinatelecom.cn
-Received: from  ([172.18.0.188])
-        by app0023 with ESMTP id c270346b438b42a5ba29139fc5006161 for pablo@netfilter.org;
-        Wed, 27 Apr 2022 23:28:29 CST
-X-Transaction-ID: c270346b438b42a5ba29139fc5006161
-X-Real-From: wenxu@chinatelecom.cn
-X-Receive-IP: 172.18.0.188
-X-MEDUSA-Status: 0
-Sender: wenxu@chinatelecom.cn
-Message-ID: <42afa9bb-e265-33e7-c0dc-75d40689ade1@chinatelecom.cn>
-Date:   Wed, 27 Apr 2022 23:28:16 +0800
+        Wed, 27 Apr 2022 11:31:53 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400C144937C
+        for <netfilter-devel@vger.kernel.org>; Wed, 27 Apr 2022 08:28:41 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1njjao-00034I-Cv; Wed, 27 Apr 2022 17:28:38 +0200
+Date:   Wed, 27 Apr 2022 17:28:38 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Topi Miettinen <toiwoton@gmail.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH] netfilter: nft_socket: socket expressions for GID & UID
+Message-ID: <20220427152838.GC9849@breakpoint.cc>
+References: <20220420185447.10199-1-toiwoton@gmail.com>
+ <5a292abd-7f2e-728f-5594-86d85fbd1c00@gmail.com>
+ <20220425223421.GA14400@breakpoint.cc>
+ <ab7923f2-d1e7-ce61-5df8-c05778ef3ebd@gmail.com>
+ <20220427054820.GB9849@breakpoint.cc>
+ <YmjqN7KtWFMGbiJ9@salvia>
+ <b0389581-cf28-13fe-6444-0840958b757a@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH nf-next] nf_flow_table_offload: offload the vlan encap in
- the flowtable
-Content-Language: en-US
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-References: <1649169515-4337-1-git-send-email-wenx05124561@163.com>
- <YmlO009uqhJNnBq7@salvia>
-From:   wenxu <wenxu@chinatelecom.cn>
-In-Reply-To: <YmlO009uqhJNnBq7@salvia>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b0389581-cf28-13fe-6444-0840958b757a@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,108 +46,74 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Topi Miettinen <toiwoton@gmail.com> wrote:
+> On 27.4.2022 10.01, Pablo Neira Ayuso wrote:
+> > On Wed, Apr 27, 2022 at 07:48:20AM +0200, Florian Westphal wrote:
+> > > Topi Miettinen <toiwoton@gmail.com> wrote:
+> > > > On 26.4.2022 1.34, Florian Westphal wrote:
+> > > > > Topi Miettinen <toiwoton@gmail.com> wrote:
+> > > > > > On 20.4.2022 21.54, Topi Miettinen wrote:
+> > > > > > > Add socket expressions for checking GID or UID of the originating
+> > > > > > > socket. These work also on input side, unlike meta skuid/skgid.
+> > > > > > 
+> > > > > > Unfortunately, there's a reproducible kernel BUG when closing a local
+> > > > > > connection:
+> > > > > > 
+> > > > > > Apr 25 21:18:13 kernel:
+> > > > > > ==================================================================
+> > > > > > Apr 25 21:18:13 kernel: BUG: KASAN: null-ptr-deref in
+> > > > > > nf_sk_lookup_slow_v6+0x45b/0x590 [nf_socket_ipv6]
+> > > > > 
+> > > > > You can pass this to scripts/faddr2line to get the location of the null deref.
+> > > > 
+> > > > Didn't work,
+> > > 
+> > > ?
+> > > 
+> > > You pass the object file and the nf_sk_lookup_slow_v6+0x45b/0x590 info.
+> > > I can't do it for you because I lack the object file and the exact
+> > > source code.
+> > > 
+> 
+> $ faddr2line nf_socket_ipv6.ko nf_sk_lookup_slow_v6+0x45b/0x590
+> bad symbol size: base: 0x0000000000000000 end: 0x0000000000000000
+> $ faddr2line nf_socket_ipv6.o nf_sk_lookup_slow_v6+0x45b/0x590
+> bad symbol size: base: 0x0000000000000000 end: 0x0000000000000000
+> $ faddr2line nf_socket_ipv6.mod nf_sk_lookup_slow_v6+0x45b/0x590
+> readelf: Error: nf_socket_ipv6.mod: Failed to read file header
+> size: nf_socket_ipv6.mod: file format not recognized
+> nm: nf_socket_ipv6.mod: file format not recognized
+> size: nf_socket_ipv6.mod: file format not recognized
+> nm: nf_socket_ipv6.mod: file format not recognized
+> no match for nf_sk_lookup_slow_v6+0x45b/0x590
+> $ faddr2line nf_socket_ipv6.mod.o nf_sk_lookup_slow_v6+0x45b/0x590
+> no match for nf_sk_lookup_slow_v6+0x45b/0x590
+> $ faddr2line vmlinux nf_sk_lookup_slow_v6+0x45b/0x590
+> no match for nf_sk_lookup_slow_v6+0x45b/0x590
+> 
+> > > > net/ipv6/netfilter/nf_socket_ipv6.c:
+> > > > 
+> > > > static struct sock *
+> > > > nf_socket_get_sock_v6(struct net *net, struct sk_buff *skb, int doff,
+> > > >                        const u8 protocol,
+> > > >                        const struct in6_addr *saddr, const struct in6_addr
+> > > > *daddr,
+> > > >                        const __be16 sport, const __be16 dport,
+> > > >                        const struct net_device *in)
+> > > > {
+> > > >          switch (protocol) {
+> > > >          case IPPROTO_TCP:
+> > > >                  return inet6_lookup(net, &tcp_hashinfo, skb, doff,
+> > > >                                      saddr, sport, daddr, dport,
+> > > >                                      in->ifindex);
+> > > 
+> > > What does that rule look like?  Seems like no input interface is
+> > > available, seems like a bug in existing code?
+> > 
+> > nft_socket_eval() assumes it always run from input path.
 
-On 2022/4/27 22:10, Pablo Neira Ayuso wrote:
-> On Tue, Apr 05, 2022 at 10:38:35AM -0400, wenx05124561@163.com wrote:
->> From: wenxu <wenxu@chinatelecom.cn>
->>
->> This patch put the vlan dev process in the FLOW_OFFLOAD_XMIT_DIRECT
->> mode. Xmit the packet with vlan can offload to the real dev directly.
->>
->> It can support all kinds of VLAN dev path:
->> br0.100-->br0(vlan filter enable)-->eth
->> br0(vlan filter enable)-->eth
->> br0(vlan filter disable)-->eth.100-->eth
-> I assume this eth is a bridge port.
+Oof, there is no restriction.
+I don't think we can make it illegal now, so probably best to check for
+indev != NULL first.
 
-Yes it is. And it also can support the case without bridge as following.
-
-eth.100-->eth.
-
->
->> The packet xmit and recv offload to the 'eth' in both original and
->> reply direction.
-> This is an enhancement or fix?
-It's an enhancement and  it make the vlan packet can offload through the real dev.
->
-> Is this going to work for VLAN + PPP?
->
-> Would you update tools/testing/selftests/netfilter/nft_flowtable.sh to
-> cover bridge filtering usecase? It could be done in a follow up patch.
-I will do for both  if this patch reivew ok .
->
->> Signed-off-by: wenxu <wenxu@chinatelecom.cn>
->> ---
->>  net/netfilter/nf_flow_table_ip.c | 19 +++++++++++++++++++
->>  net/netfilter/nft_flow_offload.c |  7 +++++--
->>  2 files changed, 24 insertions(+), 2 deletions(-)
->>
->> diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
->> index 32c0eb1..99ae2550 100644
->> --- a/net/netfilter/nf_flow_table_ip.c
->> +++ b/net/netfilter/nf_flow_table_ip.c
->> @@ -282,6 +282,23 @@ static bool nf_flow_skb_encap_protocol(const struct sk_buff *skb, __be16 proto,
->>  	return false;
->>  }
->>  
->> +static void nf_flow_encap_push(struct sk_buff *skb,
->> +			       struct flow_offload_tuple_rhash *tuplehash)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < tuplehash->tuple.encap_num; i++) {
->> +		switch (tuplehash->tuple.encap[i].proto) {
->> +		case htons(ETH_P_8021Q):
->> +		case htons(ETH_P_8021AD):
->> +			skb_vlan_push(skb,
->> +				      tuplehash->tuple.encap[i].proto,
->> +				      tuplehash->tuple.encap[i].id);
->> +			break;
->> +		}
->> +	}
->> +}
->> +
->>  static void nf_flow_encap_pop(struct sk_buff *skb,
->>  			      struct flow_offload_tuple_rhash *tuplehash)
->>  {
->> @@ -403,6 +420,7 @@ static unsigned int nf_flow_queue_xmit(struct net *net, struct sk_buff *skb,
->>  		ret = NF_STOLEN;
->>  		break;
->>  	case FLOW_OFFLOAD_XMIT_DIRECT:
->> +		nf_flow_encap_push(skb, &flow->tuplehash[!dir]);
->>  		ret = nf_flow_queue_xmit(state->net, skb, tuplehash, ETH_P_IP);
->>  		if (ret == NF_DROP)
->>  			flow_offload_teardown(flow);
->> @@ -659,6 +677,7 @@ static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
->>  		ret = NF_STOLEN;
->>  		break;
->>  	case FLOW_OFFLOAD_XMIT_DIRECT:
->> +		nf_flow_encap_push(skb, &flow->tuplehash[!dir]);
->>  		ret = nf_flow_queue_xmit(state->net, skb, tuplehash, ETH_P_IPV6);
->>  		if (ret == NF_DROP)
->>  			flow_offload_teardown(flow);
->> diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
->> index 900d48c..f9837c9 100644
->> --- a/net/netfilter/nft_flow_offload.c
->> +++ b/net/netfilter/nft_flow_offload.c
->> @@ -119,12 +119,15 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
->>  				info->indev = NULL;
->>  				break;
->>  			}
->> -			info->outdev = path->dev;
->>  			info->encap[info->num_encaps].id = path->encap.id;
->>  			info->encap[info->num_encaps].proto = path->encap.proto;
->>  			info->num_encaps++;
->> -			if (path->type == DEV_PATH_PPPOE)
->> +			if (path->type == DEV_PATH_PPPOE) {
->> +				info->outdev = path->dev;
->>  				memcpy(info->h_dest, path->encap.h_dest, ETH_ALEN);
->> +			}
->> +			if (path->type == DEV_PATH_VLAN)
->> +				info->xmit_type = FLOW_OFFLOAD_XMIT_DIRECT;
->>  			break;
->>  		case DEV_PATH_BRIDGE:
->>  			if (is_zero_ether_addr(info->h_source))
->> -- 
->> 1.8.3.1
->>
+I'll send a patch.
