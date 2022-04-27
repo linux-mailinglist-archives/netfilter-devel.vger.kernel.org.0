@@ -2,70 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B62315120EC
-	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Apr 2022 20:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A05511ED3
+	for <lists+netfilter-devel@lfdr.de>; Wed, 27 Apr 2022 20:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239742AbiD0Pgu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 27 Apr 2022 11:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39952 "EHLO
+        id S240159AbiD0Ppr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 27 Apr 2022 11:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239755AbiD0Pgt (ORCPT
+        with ESMTP id S240280AbiD0Ppq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 27 Apr 2022 11:36:49 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A10EF338B5
-        for <netfilter-devel@vger.kernel.org>; Wed, 27 Apr 2022 08:33:37 -0700 (PDT)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf] netfilter: nft_socket: allow socket expression from prerouting and input only
-Date:   Wed, 27 Apr 2022 17:33:33 +0200
-Message-Id: <20220427153333.18424-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
+        Wed, 27 Apr 2022 11:45:46 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184613F8B2
+        for <netfilter-devel@vger.kernel.org>; Wed, 27 Apr 2022 08:42:22 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1njjo3-0003HU-VM; Wed, 27 Apr 2022 17:42:20 +0200
+Date:   Wed, 27 Apr 2022 17:42:19 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Topi Miettinen <toiwoton@gmail.com>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH] netfilter: nft_socket: socket expressions for GID & UID
+Message-ID: <20220427154219.GD9849@breakpoint.cc>
+References: <20220420185447.10199-1-toiwoton@gmail.com>
+ <5a292abd-7f2e-728f-5594-86d85fbd1c00@gmail.com>
+ <20220425223421.GA14400@breakpoint.cc>
+ <ab7923f2-d1e7-ce61-5df8-c05778ef3ebd@gmail.com>
+ <20220427054820.GB9849@breakpoint.cc>
+ <YmjqN7KtWFMGbiJ9@salvia>
+ <b0389581-cf28-13fe-6444-0840958b757a@gmail.com>
+ <YmlhokhnOxG8tD7R@salvia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YmlhokhnOxG8tD7R@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Just like xt_socket.
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> Looks like skb->sk is NULL? Patch attached.
 
-Fixes: 554ced0a6e29 ("netfilter: nf_tables: add support for native socket matching")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nft_socket.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
+> index 6d9e8e0a3a7d..d6da68a3b739 100644
+> --- a/net/netfilter/nft_socket.c
+> +++ b/net/netfilter/nft_socket.c
+> @@ -59,21 +59,27 @@ static void nft_socket_eval(const struct nft_expr *expr,
+>  			    const struct nft_pktinfo *pkt)
+>  {
+>  	const struct nft_socket *priv = nft_expr_priv(expr);
+> +	u32 *dest = &regs->data[priv->dreg];
+>  	struct sk_buff *skb = pkt->skb;
+> +	const struct net_device *dev;
+>  	struct sock *sk = skb->sk;
+> -	u32 *dest = &regs->data[priv->dreg];
+>  
+>  	if (sk && !net_eq(nft_net(pkt), sock_net(sk)))
+>  		sk = NULL;
+>  
+> -	if (!sk)
+> +	if (nft_hook(pkt) == NF_INET_LOCAL_OUT)
+> +		dev = nft_out(pkt);
+> +	else
+> +		dev = nft_in(pkt);
 
-diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
-index 6d9e8e0a3a7d..963a09fd7174 100644
---- a/net/netfilter/nft_socket.c
-+++ b/net/netfilter/nft_socket.c
-@@ -184,6 +184,14 @@ static int nft_socket_init(const struct nft_ctx *ctx,
- 					NULL, NFT_DATA_VALUE, len);
- }
- 
-+static int nft_socket_validate(const struct nft_ctx *ctx,
-+			       const struct nft_expr *expr,
-+			       const struct nft_data **data)
-+{
-+	return nft_chain_validate_hooks(ctx->chain, (1 << NF_INET_PRE_ROUTING) |
-+						    (1 << NF_INET_LOCAL_IN));
-+}
-+
- static int nft_socket_dump(struct sk_buff *skb,
- 			   const struct nft_expr *expr)
- {
-@@ -230,6 +238,7 @@ static const struct nft_expr_ops nft_socket_ops = {
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_socket)),
- 	.eval		= nft_socket_eval,
- 	.init		= nft_socket_init,
-+	.validate	= nft_socket_validate,
- 	.dump		= nft_socket_dump,
- 	.reduce		= nft_socket_reduce,
- };
--- 
-2.30.2
+I think its better to just NFT_BREAK for NF_INET_LOCAL_OUT && skb->sk == NULL,
+I don't see how nf_sk_lookup_slow_.() could provide meaningful result
+here, they assume packet header daddr/dport are the local, not the
+remote addresses.
 
+Or, check nft_in(pkt) == NULL || !sk -> BREAK, whatever seems simpler to
+you.
