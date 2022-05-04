@@ -2,78 +2,73 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9838519CC1
-	for <lists+netfilter-devel@lfdr.de>; Wed,  4 May 2022 12:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B17A519D01
+	for <lists+netfilter-devel@lfdr.de>; Wed,  4 May 2022 12:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236531AbiEDKUt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 4 May 2022 06:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33824 "EHLO
+        id S239616AbiEDKiS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 4 May 2022 06:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbiEDKUr (ORCPT
+        with ESMTP id S231491AbiEDKiR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 4 May 2022 06:20:47 -0400
-X-Greylist: delayed 657 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 04 May 2022 03:17:09 PDT
-Received: from mail.aperture-lab.de (mail.aperture-lab.de [IPv6:2a01:4f8:c2c:665b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0CA1EACB;
-        Wed,  4 May 2022 03:17:09 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E10F54116B;
-        Wed,  4 May 2022 12:06:02 +0200 (CEST)
-Date:   Wed, 4 May 2022 12:06:00 +0200
-From:   Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
-To:     Kevin Mitchell <kevmitch@arista.com>
-Cc:     Matthias Schiffer <mschiffer@universe-factory.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev@vger.kernel.org, gal@nvidia.com,
-        bridge@lists.linux-foundation.org, Florian Westphal <fw@strlen.de>,
-        linux-kernel@vger.kernel.org,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [Bridge] [PATCH v2 0/1] UDP traceroute packets with no checksum
-Message-ID: <YnJQCIKgriI3kjFc@sellars>
-References: <20220405235117.269511-1-kevmitch@arista.com>
+        Wed, 4 May 2022 06:38:17 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839BC1402B
+        for <netfilter-devel@vger.kernel.org>; Wed,  4 May 2022 03:34:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=k/5nq5OWrGUUp9MWEnnBIGq6ICHj0WAU3+jY4ALbvik=; b=PZLlczyqTIFCm4U3nPYBLpSq5L
+        300P0UP/J+rRBYL05FJ2iurhLM0dJPlZl6Jj1sHfkPzOvf8G9f6zVrqc8W03VqbkNrxIBeGXis6tw
+        yAThe1KmJlq9GuX/naqo7NJ3OqLUWu2w5bYiiAQ9CuBw9N50/0qYChyYsaufHnPROVqAWVptpGIsp
+        7lqkdgfA80fsUIIPy+xLiDvtuRSIDnomNny5XTpR3PKC9+0SdtZ2UyV451W3cRIfecvm17BXXxZuI
+        4Yx5Ocu+qERUSjSfnmbap6KjlDUDk08F3Rd3x+Lqk+RYSPbEEjQJ6pJSuB8lQ0Oh30Wz8mW42gucZ
+        7aEm7VCA==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1nmCLA-0008Pj-VQ; Wed, 04 May 2022 12:34:40 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 0/4] Some misc fixes
+Date:   Wed,  4 May 2022 12:34:12 +0200
+Message-Id: <20220504103416.19712-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220405235117.269511-1-kevmitch@arista.com>
-X-Last-TLS-Session-Version: TLSv1.3
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Apr 05, 2022 at 04:51:15PM -0700, Kevin Mitchell via Bridge wrote:
-> This is v2 of https://lkml.org/lkml/2022/1/14/1060
-> 
-> That patch was discovered to cause problems with UDP tunnels as
-> described here:
-> 
-> https://lore.kernel.org/netdev/7eed8111-42d7-63e1-d289-346a596fc933@nvidia.com/
-> 
-> This version addresses the issue by instead explicitly handling zero UDP
-> checksum in the nf_reject_verify_csum() helper function.
-> 
-> Unlike the previous patch, this one only allows zero UDP checksum in
-> IPv4. I discovered that the non-netfilter IPv6 path would indeed drop
-> zero UDP checksum packets, so it's probably best to remain consistent.
+Fix and improve DNAT printing routines, add some missing bits to
+extension man page and further improve extension loading for
+unprivileged users.
 
-Are you sure that a UDP zero checksum is not working for IPv6
-packets? We are using it here without any issues with VXLAN
-tunnels.
+Phil Sutter (4):
+  extensions: DNAT: Merge core printing functions
+  man: *NAT: Review --random* option descriptions
+  extensions: LOG: Document --log-macdecode in man page
+  nft: Fix EPERM handling for extensions without rev 0
 
-Yes, the original RFC did not allow UDP zero checksums in IPv6
-packets, but I believe this has changed:
+ extensions/libxt_DNAT.c                       | 58 +++++++++----------
+ extensions/libxt_DNAT.man                     |  4 +-
+ extensions/libxt_LOG.man                      |  3 +
+ extensions/libxt_MASQUERADE.man               | 10 +---
+ extensions/libxt_REDIRECT.man                 |  4 +-
+ extensions/libxt_SNAT.man                     |  8 +--
+ iptables/nft.c                                | 14 +++--
+ .../testcases/iptables/0008-unprivileged_0    |  6 ++
+ 8 files changed, 52 insertions(+), 55 deletions(-)
 
-https://www.rfc-editor.org/rfc/rfc6936
-(https://www.ietf.org/archive/id/draft-ietf-6man-udpzero-01.html)
+-- 
+2.34.1
 
-Regards, Linus
