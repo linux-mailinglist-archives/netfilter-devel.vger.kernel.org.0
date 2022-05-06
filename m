@@ -2,129 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 694D051C9B9
-	for <lists+netfilter-devel@lfdr.de>; Thu,  5 May 2022 21:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206EB51D6DF
+	for <lists+netfilter-devel@lfdr.de>; Fri,  6 May 2022 13:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345160AbiEET6F (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 5 May 2022 15:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
+        id S1391449AbiEFLpT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 6 May 2022 07:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241858AbiEET6E (ORCPT
+        with ESMTP id S1391443AbiEFLpS (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 5 May 2022 15:58:04 -0400
-Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D605F246
-        for <netfilter-devel@vger.kernel.org>; Thu,  5 May 2022 12:54:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        Fri, 6 May 2022 07:45:18 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6751560D88
+        for <netfilter-devel@vger.kernel.org>; Fri,  6 May 2022 04:41:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=V+EvXpjFHGRYLjAjCh8Hz6j/QX5AkmnOIbQQZxbcb5c=; b=cVgaTqhUmHsdYNDrpN7fVBa6kP
-        4vq0WrJYm0mwt7P8YwF1OLk+dF1Ow/rT9RYeJa7xdsg/HkRMGTPbo0mArAwChffuVEshJu9wGYEPZ
-        yfVWgeLKFU/6UgPP6hWOSrcqAACVl5b9ct+jPpNRH6pI4Si4ho1mHGqDR7XTN68lu45TYkTFsYCo3
-        EuLrQCJK7rnmAM5ttgOr9O5TSHccI/V+s4HgUZ8m0SXzBQs7O6Uop+RxVLh/2/6n8/9eITEonzQGQ
-        EXnRyAp2/hlbf5TGwkT3N4G50jvwQK9p12XiWIXSwjhiAfPcpp6Dsx/wZWPxIBQwd1vMIPFkSqbV/
-        nhlX3/mA==;
-Received: from [2001:8b0:fb7d:d6d7:f47b:9ff:fe41:7a71] (helo=azazel.net)
-        by kadath.azazel.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <jeremy@azazel.net>)
-        id 1nmhYK-000C9H-IC; Thu, 05 May 2022 20:54:20 +0100
-Date:   Thu, 5 May 2022 20:54:19 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [nf-next PATCH v2 1/5] netfilter: bitwise: keep track of
- bit-length of expressions
-Message-ID: <YnQra+9MlkfNYSrC@azazel.net>
-References: <20220404120417.188410-1-jeremy@azazel.net>
- <20220404120417.188410-2-jeremy@azazel.net>
- <20220405112850.GE12048@breakpoint.cc>
- <Ykyq+JE0/nTM/de0@azazel.net>
- <20220406031244.GA18470@breakpoint.cc>
+        bh=x3GnwGsRUTIrikXgCWGKAInp6G/o2KMfTQPe8EFS7zg=; b=oQxTCq6Q7vWSqcoDvkCQ/pwv53
+        q6wHKXLe/iDkzYCfbDsJlnJnHvO402Skh92kakmfkFEG8ynPeNaZZkY94Bz7gH+qCPmsMn/jd2HB1
+        wsAdaiFMBh5LOX2NEPemSkCMcQaZ5cLl+/mbcJ8SGX/QE0j8v50qky8mdQI6RKonPxCaWhaB9r5Dk
+        Ru9re5ICBiJ/lJ2qyr/zze0lm/3hXBfKK0tRTFEKFixMIrPA9B09kz3SZI6NM8Ko+b5PvxXasXImz
+        uK3xQSkxxuzGpxLq3xQx4CBZKGBE4LrJI0EDW1IbrVPPMEZxJ6xADR5rNfhPDqdqvCixUvysVenqB
+        Q+ivPI8w==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1nmwL0-0005qz-Qn; Fri, 06 May 2022 13:41:34 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 0/5] Restore libxtables ABI compatibility
+Date:   Fri,  6 May 2022 13:40:59 +0200
+Message-Id: <20220506114104.7344-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220406031244.GA18470@breakpoint.cc>
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:f47b:9ff:fe41:7a71
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 2022-04-06, at 05:12:44 +0200, Florian Westphal wrote:
-> Jeremy Sowden <jeremy@azazel.net> wrote:
-> > It wouldn't be straightforward.  Expression udata might make more sense
-> > than adding a new bitwise attribute, but that doesn't currently exist.
-> > Would it be worth adding?  I seem to recall considering something along
-> > those lines for passing type information with expressions as a way to
-> > implement casting.
-> 
-> Had not thought of casting, good point.
-> Given bitwise needs to be touched anyway to get the second register
-> operations I think the proposed patch isn't too bad.
+First three patches eliminate the 'print_help' callback added to
+struct xtables_globals by making xtables_printhelp() do the right thing
+for arptables as well. Due to the shared parser there are only a few
+distinct options left anyway. While doing so, help output is aligned
+with legacy arptables which prints all extensions' help texts even if
+not requested for.
 
-Cool.
+Patch four changes how the different optstrings are passed to the shared
+parser. Via central storage in xshared.h and a helper function which
+maps from afinfo->family value, struct xtables_global's 'optstring'
+field may be dropped again.
 
-> For casts and other use cases (including bitlen), I think its
-> not needed to add special udata for expressions, as userspace can't
-> zap them selectively.
-> 
-> We already do something similar for sets (to embed 'typeof' info
-> for key and data).
-> 
-> Probably extend nftnl_udata_rule_types in libnftnl to add a
-> NFTNL_UDATA_RULE_EXPR_INFO.
-> 
-> NFTNL_UDATA_RULE_EXPR_INFO would be nested and contain
-> expression specific (nested) attributes.
-> 
-> i.e., if you have something like
-> 
-> meta mark -> reg 1
-> binop reg1 &= 0x0000ffff
-> ct mark -> reg 2
-> binop and reg1 &= reg2  // ulen 16
-> 
-> Then rule udata would have:
-> NFTNL_UDATA_RULE_EXPR_INFO (nested)
->    type 4 (nested, 4 refers to the last expression above,
->  	   type '0' is reserved).
->       type 1 // nla_u32  -> for binop, 1 is 'len', it would be
->                defined privately in src/bitwise.c
-> END
-> 
-> because only expression 4 needs annotations, so we don't waste
-> space for expressions that do not need extra data.
-> 
-> We could reserve a few nested numbers for things that might make sense
-> for all (or many) expresssions, e.g. 'cast to type x'.
-> 
-> We could of course place expr specific structs in there too but so
-> far we managed to avoid this and it would be not-so-nice to break
-> nft userspace when listing a ruleset added by an older version.
-> 
-> Probably could extend struct netlink_linearize_ctx with a memory
-> blob pointer that netlink_linearize_rule()/netlink_gen_stmt() can use
-> to add extra data.
-> 
-> My problem is that its a lot of (userspace) code for something that can
-> easily be done by a small kernel patch such as this one and so far we
-> don't have a real need for something like this.
+The last patch just undoes the "fix" to struct xtables_pprot. It is not
+a problem which may occur during run-time and the compiler complains if
+code changes would trigger the bug.
 
-Yes, quite.
+Phil Sutter (5):
+  extensions: MARK: Drop extra newline at end of help
+  xshared: Move arp_opcodes into shared space
+  xshared: Extend xtables_printhelp() for arptables
+  libxtables: Drop xtables_globals 'optstring' field
+  libxtables: Revert change to struct xtables_pprot
 
-If you're happy passing the bit-length through the kernel, how about the
-rest of the series?  I'm pretty sure there's some debatable choices in
-there too. :)
+ extensions/libarpt_mangle.c |   1 -
+ extensions/libxt_MARK.c     |   3 +-
+ include/xtables.h           |   4 +-
+ iptables/ip6tables.c        |   2 -
+ iptables/iptables.c         |   2 -
+ iptables/nft-arp.c          |  22 ++------
+ iptables/nft-arp.h          |   7 ---
+ iptables/xshared.c          |  84 ++++++++++++++++++++++++----
+ iptables/xshared.h          |   7 ++-
+ iptables/xtables-arp.c      | 106 ------------------------------------
+ iptables/xtables-eb.c       |   3 +-
+ iptables/xtables-monitor.c  |   1 -
+ iptables/xtables.c          |   3 -
+ 13 files changed, 86 insertions(+), 159 deletions(-)
+ delete mode 100644 iptables/nft-arp.h
 
-J.
+-- 
+2.34.1
+
