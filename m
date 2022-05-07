@@ -2,114 +2,152 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CF851D6EB
-	for <lists+netfilter-devel@lfdr.de>; Fri,  6 May 2022 13:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2654451E6C1
+	for <lists+netfilter-devel@lfdr.de>; Sat,  7 May 2022 13:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1389129AbiEFLrW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 6 May 2022 07:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
+        id S1446309AbiEGMD0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 7 May 2022 08:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379127AbiEFLrV (ORCPT
+        with ESMTP id S1356300AbiEGMD0 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 6 May 2022 07:47:21 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBB958E40
-        for <netfilter-devel@vger.kernel.org>; Fri,  6 May 2022 04:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        Sat, 7 May 2022 08:03:26 -0400
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C886C4832D
+        for <netfilter-devel@vger.kernel.org>; Sat,  7 May 2022 04:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=MVeGn8L9996nMM545lU0kubnBepYVB6e9n/mjKfpYEY=; b=HBI7GGWYxWI4gSktyMkty69jl4
-        YXt53+5gbIoimQutYoApnmn9dG5Q3qXYEvlFsZQMXWBD5HTumUGVQyBqJM1SIrj6k4vN4ZRL9HO7Z
-        8ftX2NxI+lDrLF9+/XP6n9Gworp5qqv3lyeg8Fvsv7+haxswhRhinueJCuOu8R042VWz1rLfJwzag
-        c+A1URuxzjmXmztf0XfJgWZ4zar6KMj69MfwMbuIgmUH9vUuPDE6kJKePqJZUTHoRWIAaoF6cHg4o
-        807Pv/QtqXxaZKTMyLTdopVZId5bJfgIG6LngVaoDjQkzOIuamO6pzSlKFMZ7rijdfT9bV4WLNoRA
-        A3xOxsHg==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1nmwMz-0005sS-H6; Fri, 06 May 2022 13:43:37 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 4/4] nft: Fix EPERM handling for extensions without rev 0
-Date:   Fri,  6 May 2022 13:43:28 +0200
-Message-Id: <20220506114328.9739-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220504103416.19712-5-phil@nwl.cc>
-References: <20220504103416.19712-5-phil@nwl.cc>
+        bh=wd08hI0riFBkJfeQULoDfCs4SrHjUMi8faXj3M/WjMM=; b=l/i6WI6PgenkjiGW5uwpCDKgon
+        +QPSqgPQ0dz81AGuMrAW7bIFwZ77EgKl6zY24Jtw8Q9nB4/xBhwiO/H7f41HgNTklYOVq5ODosYs3
+        XJ2B+YaWoisCVPPzJpLVuxocgOHMVEE4DmmzmsX8F61OPEz1jbIkaIq+BpKcrS8aiGLCull60Ur5v
+        zG5X0G+mILf2crnu9Sj18zb2OJjyqhTmiAhsKIXQbLY9hkiw7RcrlYIZAvcshBHDutLJ3R1oQVBvU
+        Dc1fTjb3QBDVct+epUci7ZApnQEbxNGqo03PB2QOaVGDmpUqdqqNYdZJuOrTp+r6J9jsIH27+nc2N
+        bh6tVjig==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.94.2)
+        (envelope-from <jeremy@azazel.net>)
+        id 1nnJ60-0025Kn-L2; Sat, 07 May 2022 12:59:36 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH xtables-addons 1/2] doc: fix some typos in man-pages
+Date:   Sat,  7 May 2022 12:59:23 +0100
+Message-Id: <20220507115924.3590034-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Treating revision 0 as compatible in EPERM case works fine as long as
-there is a revision 0 of that extension defined in DSO. Fix the code for
-others: Extend the EPERM handling to all revisions and keep the existing
-warning for revision 0.
+libxt_ACCOUNT.man:     'accouting' -> 'accounting'
+libxt_DELUDE.man:      'belive' -> 'believe'
+libxt_DHCPMAC.man:     'allow to' -> 'allow one to'
+libxt_SYSRQ.man:       'allows to' -> 'allows one to'
+libxt_ipv4options.man: 'allows to' -> 'allows one to'
+libxt_psd.man:         'non-priviliged' -> 'non-privileged'
 
-Fixes: 17534cb18ed0a ("Improve error messages for unsupported extensions")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
-Changes since v1:
-- Drop useless error message.
----
- iptables/nft.c                                        | 11 +++++++----
- .../shell/testcases/iptables/0008-unprivileged_0      |  6 ++++++
- 2 files changed, 13 insertions(+), 4 deletions(-)
+ extensions/ACCOUNT/libxt_ACCOUNT.man |  2 +-
+ extensions/libxt_DELUDE.man          |  2 +-
+ extensions/libxt_DHCPMAC.man         |  2 +-
+ extensions/libxt_SYSRQ.man           | 12 ++++++------
+ extensions/libxt_ipv4options.man     |  2 +-
+ extensions/libxt_psd.man             |  2 +-
+ 6 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 4ab59b12d00b1..21dfbd32540e0 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -3551,15 +3551,18 @@ int nft_compatible_revision(const char *name, uint8_t rev, int opt)
- err:
- 	mnl_socket_close(nl);
- 
--	/* pretend revision 0 is valid -
-+	/* ignore EPERM and errors for revision 0 -
- 	 * this is required for printing extension help texts as user, also
- 	 * helps error messaging on unavailable kernel extension */
--	if (ret < 0 && rev == 0) {
--		if (errno != EPERM)
-+	if (ret < 0) {
-+		if (errno == EPERM)
-+			return 1;
-+		if (rev == 0) {
- 			fprintf(stderr,
- 				"Warning: Extension %s revision 0 not supported, missing kernel module?\n",
- 				name);
--		return 1;
-+			return 1;
-+		}
- 	}
- 
- 	return ret < 0 ? 0 : 1;
-diff --git a/iptables/tests/shell/testcases/iptables/0008-unprivileged_0 b/iptables/tests/shell/testcases/iptables/0008-unprivileged_0
-index 43e3bc8721dbd..983531fef4720 100755
---- a/iptables/tests/shell/testcases/iptables/0008-unprivileged_0
-+++ b/iptables/tests/shell/testcases/iptables/0008-unprivileged_0
-@@ -35,6 +35,12 @@ let "rc+=$?"
- grep_or_rc "DNAT target options:" <<< "$out"
- let "rc+=$?"
- 
-+# TEE has no revision 0
-+out=$(run $XT_MULTI iptables -j TEE --help)
-+let "rc+=$?"
-+grep_or_rc "TEE target options:" <<< "$out"
-+let "rc+=$?"
-+
- out=$(run $XT_MULTI iptables -p tcp -j DNAT --help)
- let "rc+=$?"
- grep_or_rc "tcp match options:" <<< "$out"
+diff --git a/extensions/ACCOUNT/libxt_ACCOUNT.man b/extensions/ACCOUNT/libxt_ACCOUNT.man
+index 1772c3084d59..33c1b74aa56c 100644
+--- a/extensions/ACCOUNT/libxt_ACCOUNT.man
++++ b/extensions/ACCOUNT/libxt_ACCOUNT.man
+@@ -1,7 +1,7 @@
+ The ACCOUNT target is a high performance accounting system for large
+ local networks. It allows per-IP accounting in whole prefixes of IPv4
+ addresses with size of up to /8 without the need to add individual
+-accouting rule for each IP address.
++accounting rule for each IP address.
+ .PP
+ The ACCOUNT is designed to be queried for data every second or at
+ least every ten seconds. It is written as kernel module to handle high
+diff --git a/extensions/libxt_DELUDE.man b/extensions/libxt_DELUDE.man
+index 6b90e0831ccf..a15be9011c4c 100644
+--- a/extensions/libxt_DELUDE.man
++++ b/extensions/libxt_DELUDE.man
+@@ -2,4 +2,4 @@
+ The DELUDE target will reply to a SYN packet with SYN-ACK, and to all other
+ packets with an RST. This will terminate the connection much like REJECT, but
+ network scanners doing TCP half-open discovery can be spoofed to make them
+-belive the port is open rather than closed/filtered.
++believe the port is open rather than closed/filtered.
+diff --git a/extensions/libxt_DHCPMAC.man b/extensions/libxt_DHCPMAC.man
+index c5677824427e..8a20f05b6b93 100644
+--- a/extensions/libxt_DHCPMAC.man
++++ b/extensions/libxt_DHCPMAC.man
+@@ -1,7 +1,7 @@
+ .PP
+ In conjunction with ebtables, DHCPMAC can be used to completely change all MAC
+ addresses from and to a VMware-based virtual machine. This is needed because
+-VMware does not allow to set a non-VMware MAC address before an operating
++VMware does not allow one to set a non-VMware MAC address before an operating
+ system is booted (and the MAC be changed with `ip link set eth0 address
+ aa:bb..`).
+ .TP
+diff --git a/extensions/libxt_SYSRQ.man b/extensions/libxt_SYSRQ.man
+index 29944b917e2f..d7b3da0684df 100644
+--- a/extensions/libxt_SYSRQ.man
++++ b/extensions/libxt_SYSRQ.man
+@@ -1,10 +1,10 @@
+ .PP
+-The SYSRQ target allows to remotely trigger sysrq on the local machine over the
+-network. This can be useful when vital parts of the machine hang, for example
+-an oops in a filesystem causing locks to be not released and processes to get
+-stuck as a result \(em if still possible, use /proc/sysrq-trigger. Even when
+-processes are stuck, interrupts are likely to be still processed, and as such,
+-sysrq can be triggered through incoming network packets.
++The SYSRQ target allows one to remotely trigger sysrq on the local machine over
++the network. This can be useful when vital parts of the machine hang, for
++example an oops in a filesystem causing locks to be not released and processes
++to get stuck as a result \(em if still possible, use /proc/sysrq-trigger. Even
++when processes are stuck, interrupts are likely to be still processed, and as
++such, sysrq can be triggered through incoming network packets.
+ .PP
+ The xt_SYSRQ implementation uses a salted hash and a sequence number to prevent
+ network sniffers from either guessing the password or replaying earlier
+diff --git a/extensions/libxt_ipv4options.man b/extensions/libxt_ipv4options.man
+index 8c16e71d8cb7..9c93eeb2b248 100644
+--- a/extensions/libxt_ipv4options.man
++++ b/extensions/libxt_ipv4options.man
+@@ -1,5 +1,5 @@
+ .PP
+-The "ipv4options" module allows to match against a set of IPv4 header options.
++The "ipv4options" module allows one to match against a set of IPv4 header options.
+ .TP
+ \fB\-\-flags\fP [\fB!\fP]\fIsymbol\fP[\fB,\fP[\fB!\fP]\fIsymbol...\fP]
+ Specify the options that shall appear or not appear in the header. Each
+diff --git a/extensions/libxt_psd.man b/extensions/libxt_psd.man
+index 5777dbf804dc..91e33887a464 100644
+--- a/extensions/libxt_psd.man
++++ b/extensions/libxt_psd.man
+@@ -16,4 +16,4 @@ possible port scan subsequence.
+ Weight of the packet with privileged (<=1024) destination port.
+ .TP
+ \fB\-\-psd\-hi\-ports\-weight\fP \fIweight\fP
+-Weight of the packet with non-priviliged destination port.
++Weight of the packet with non-privileged destination port.
 -- 
-2.34.1
+2.35.1
 
