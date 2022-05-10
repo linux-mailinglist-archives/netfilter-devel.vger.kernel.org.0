@@ -2,171 +2,162 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1F252154F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 10 May 2022 14:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCDB5218B7
+	for <lists+netfilter-devel@lfdr.de>; Tue, 10 May 2022 15:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241677AbiEJM2E (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 10 May 2022 08:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49578 "EHLO
+        id S243662AbiEJNjm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 10 May 2022 09:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241708AbiEJM0B (ORCPT
+        with ESMTP id S244885AbiEJNiK (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 10 May 2022 08:26:01 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D1465AFAFD;
-        Tue, 10 May 2022 05:22:04 -0700 (PDT)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org
-Subject: [PATCH net-next 17/17] netfilter: conntrack: skip verification of zero UDP checksum
-Date:   Tue, 10 May 2022 14:21:50 +0200
-Message-Id: <20220510122150.92533-18-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220510122150.92533-1-pablo@netfilter.org>
-References: <20220510122150.92533-1-pablo@netfilter.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 10 May 2022 09:38:10 -0400
+Received: from chinatelecom.cn (prt-mail.chinatelecom.cn [42.123.76.226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 250AB71DA1
+        for <netfilter-devel@vger.kernel.org>; Tue, 10 May 2022 06:26:34 -0700 (PDT)
+HMM_SOURCE_IP: 172.18.0.188:35710.709638799
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-101.229.162.92 (unknown [172.18.0.188])
+        by chinatelecom.cn (HERMES) with SMTP id D90E62800AB;
+        Tue, 10 May 2022 21:26:26 +0800 (CST)
+X-189-SAVE-TO-SEND: wenxu@chinatelecom.cn
+Received: from  ([172.18.0.188])
+        by app0023 with ESMTP id 576a25bd87b344a58895424864a3c790 for pablo@netfilter.org;
+        Tue, 10 May 2022 21:26:27 CST
+X-Transaction-ID: 576a25bd87b344a58895424864a3c790
+X-Real-From: wenxu@chinatelecom.cn
+X-Receive-IP: 172.18.0.188
+X-MEDUSA-Status: 0
+Sender: wenxu@chinatelecom.cn
+From:   wenxu@chinatelecom.cn
+To:     pablo@netfilter.org
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nf-next PATCH] nf_flow_table_offload: offload the PPPoE encap in the flowtable
+Date:   Tue, 10 May 2022 09:26:16 -0400
+Message-Id: <1652189176-49750-1-git-send-email-wenxu@chinatelecom.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Kevin Mitchell <kevmitch@arista.com>
+From: wenxu <wenxu@chinatelecom.cn>
 
-The checksum is optional for UDP packets. However nf_reject would
-previously require a valid checksum to elicit a response such as
-ICMP_DEST_UNREACH.
+This patch put the pppoe process in the FLOW_OFFLOAD_XMIT_DIRECT
+mode. Xmit the packet with PPPoE can offload to the underlay device
+directly.
 
-Add some logic to nf_reject_verify_csum to determine if a UDP packet has
-a zero checksum and should therefore not be verified.
+It can support all kinds of VLAN dev path:
+pppoe-->eth
+pppoe-->br0.100-->br0(vlan filter enable)-->eth
+pppoe-->eth.100-->eth
 
-Signed-off-by: Kevin Mitchell <kevmitch@arista.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+The packet xmit and recv offload to the 'eth' in both original and
+reply direction.
+
+Signed-off-by: wenxu <wenxu@chinatelecom.cn>
 ---
- include/net/netfilter/nf_reject.h   | 21 +++++++++++++++++----
- net/ipv4/netfilter/nf_reject_ipv4.c | 10 +++++++---
- net/ipv6/netfilter/nf_reject_ipv6.c |  4 ++--
- 3 files changed, 26 insertions(+), 9 deletions(-)
+This patch based on the following one: nf_flow_table_offload: offload the vlan encap in the flowtable
+http://patchwork.ozlabs.org/project/netfilter-devel/patch/1649169515-4337-1-git-send-email-wenx05124561@163.com/
 
-diff --git a/include/net/netfilter/nf_reject.h b/include/net/netfilter/nf_reject.h
-index 9051c3a0c8e7..7c669792fb9c 100644
---- a/include/net/netfilter/nf_reject.h
-+++ b/include/net/netfilter/nf_reject.h
-@@ -5,12 +5,28 @@
- #include <linux/types.h>
- #include <uapi/linux/in.h>
+ include/net/netfilter/nf_flow_table.h | 34 ++++++++++++++++++++++++++++++++++
+ net/netfilter/nf_flow_table_ip.c      |  3 +++
+ net/netfilter/nft_flow_offload.c      | 10 +++-------
+ 3 files changed, 40 insertions(+), 7 deletions(-)
+
+diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
+index 64daafd..8be369c 100644
+--- a/include/net/netfilter/nf_flow_table.h
++++ b/include/net/netfilter/nf_flow_table.h
+@@ -319,6 +319,40 @@ int nf_flow_rule_route_ipv6(struct net *net, const struct flow_offload *flow,
+ int nf_flow_table_offload_init(void);
+ void nf_flow_table_offload_exit(void);
  
--static inline bool nf_reject_verify_csum(__u8 proto)
-+static inline bool nf_reject_verify_csum(struct sk_buff *skb, int dataoff,
-+					  __u8 proto)
++static inline int nf_flow_ppoe_push(struct sk_buff *skb, u16 id)
++{
++	struct ppp_hdr {
++		struct pppoe_hdr hdr;
++		__be16 proto;
++	} *ph;
++	int data_len = skb->len + 2;
++	__be16 proto;
++
++	if (skb_cow_head(skb, PPPOE_SES_HLEN))
++		return -1;
++
++	if (skb->protocol == htons(ETH_P_IP))
++		proto = htons(PPP_IP);
++	else if (skb->protocol == htons(ETH_P_IPV6))
++		proto = htons(PPP_IPV6);
++	else
++		return -1;
++
++	__skb_push(skb, PPPOE_SES_HLEN);
++	skb_reset_network_header(skb);
++
++	ph = (struct ppp_hdr *)(skb->data);
++	ph->hdr.ver  = 1;
++	ph->hdr.type = 1;
++	ph->hdr.code = 0;
++	ph->hdr.sid  = htons(id);
++	ph->hdr.length = htons(data_len);
++	ph->proto = proto;
++	skb->protocol = htons(ETH_P_PPP_SES);
++
++	return 0;
++}
++
+ static inline __be16 nf_flow_pppoe_proto(const struct sk_buff *skb)
  {
- 	/* Skip protocols that don't use 16-bit one's complement checksum
- 	 * of the entire payload.
- 	 */
- 	switch (proto) {
-+		/* Protocols with optional checksums. */
-+		case IPPROTO_UDP: {
-+			const struct udphdr *udp_hdr;
-+			struct udphdr _udp_hdr;
-+
-+			udp_hdr = skb_header_pointer(skb, dataoff,
-+						     sizeof(_udp_hdr),
-+						     &_udp_hdr);
-+			if (!udp_hdr || udp_hdr->check)
-+				return true;
-+
-+			return false;
-+		}
-+		case IPPROTO_GRE:
-+
- 		/* Protocols with other integrity checks. */
- 		case IPPROTO_AH:
- 		case IPPROTO_ESP:
-@@ -19,9 +35,6 @@ static inline bool nf_reject_verify_csum(__u8 proto)
- 		/* Protocols with partial checksums. */
- 		case IPPROTO_UDPLITE:
- 		case IPPROTO_DCCP:
--
--		/* Protocols with optional checksums. */
--		case IPPROTO_GRE:
- 			return false;
+ 	__be16 proto;
+diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
+index 99ae2550..d1c0d95 100644
+--- a/net/netfilter/nf_flow_table_ip.c
++++ b/net/netfilter/nf_flow_table_ip.c
+@@ -295,6 +295,9 @@ static void nf_flow_encap_push(struct sk_buff *skb,
+ 				      tuplehash->tuple.encap[i].proto,
+ 				      tuplehash->tuple.encap[i].id);
+ 			break;
++		case htons(ETH_P_PPP_SES):
++			nf_flow_ppoe_push(skb, tuplehash->tuple.encap[i].id);
++			break;
+ 		}
  	}
- 	return true;
-diff --git a/net/ipv4/netfilter/nf_reject_ipv4.c b/net/ipv4/netfilter/nf_reject_ipv4.c
-index 4eed5afca392..918c61fda0f3 100644
---- a/net/ipv4/netfilter/nf_reject_ipv4.c
-+++ b/net/ipv4/netfilter/nf_reject_ipv4.c
-@@ -80,6 +80,7 @@ struct sk_buff *nf_reject_skb_v4_unreach(struct net *net,
- 	struct iphdr *niph;
- 	struct icmphdr *icmph;
- 	unsigned int len;
-+	int dataoff;
- 	__wsum csum;
- 	u8 proto;
- 
-@@ -99,10 +100,11 @@ struct sk_buff *nf_reject_skb_v4_unreach(struct net *net,
- 	if (pskb_trim_rcsum(oldskb, ntohs(ip_hdr(oldskb)->tot_len)))
- 		return NULL;
- 
-+	dataoff = ip_hdrlen(oldskb);
- 	proto = ip_hdr(oldskb)->protocol;
- 
- 	if (!skb_csum_unnecessary(oldskb) &&
--	    nf_reject_verify_csum(proto) &&
-+	    nf_reject_verify_csum(oldskb, dataoff, proto) &&
- 	    nf_ip_checksum(oldskb, hook, ip_hdrlen(oldskb), proto))
- 		return NULL;
- 
-@@ -311,6 +313,7 @@ EXPORT_SYMBOL_GPL(nf_send_reset);
- void nf_send_unreach(struct sk_buff *skb_in, int code, int hook)
- {
- 	struct iphdr *iph = ip_hdr(skb_in);
-+	int dataoff = ip_hdrlen(skb_in);
- 	u8 proto = iph->protocol;
- 
- 	if (iph->frag_off & htons(IP_OFFSET))
-@@ -320,12 +323,13 @@ void nf_send_unreach(struct sk_buff *skb_in, int code, int hook)
- 	    nf_reject_fill_skb_dst(skb_in) < 0)
- 		return;
- 
--	if (skb_csum_unnecessary(skb_in) || !nf_reject_verify_csum(proto)) {
-+	if (skb_csum_unnecessary(skb_in) ||
-+	    !nf_reject_verify_csum(skb_in, dataoff, proto)) {
- 		icmp_send(skb_in, ICMP_DEST_UNREACH, code, 0);
- 		return;
- 	}
- 
--	if (nf_ip_checksum(skb_in, hook, ip_hdrlen(skb_in), proto) == 0)
-+	if (nf_ip_checksum(skb_in, hook, dataoff, proto) == 0)
- 		icmp_send(skb_in, ICMP_DEST_UNREACH, code, 0);
  }
- EXPORT_SYMBOL_GPL(nf_send_unreach);
-diff --git a/net/ipv6/netfilter/nf_reject_ipv6.c b/net/ipv6/netfilter/nf_reject_ipv6.c
-index dffeaaaadcde..f61d4f18e1cf 100644
---- a/net/ipv6/netfilter/nf_reject_ipv6.c
-+++ b/net/ipv6/netfilter/nf_reject_ipv6.c
-@@ -31,7 +31,7 @@ static bool nf_reject_v6_csum_ok(struct sk_buff *skb, int hook)
- 	if (thoff < 0 || thoff >= skb->len || (fo & htons(~0x7)) != 0)
- 		return false;
+diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
+index f9837c9..eea8637 100644
+--- a/net/netfilter/nft_flow_offload.c
++++ b/net/netfilter/nft_flow_offload.c
+@@ -122,12 +122,9 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
+ 			info->encap[info->num_encaps].id = path->encap.id;
+ 			info->encap[info->num_encaps].proto = path->encap.proto;
+ 			info->num_encaps++;
+-			if (path->type == DEV_PATH_PPPOE) {
+-				info->outdev = path->dev;
++			if (path->type == DEV_PATH_PPPOE)
+ 				memcpy(info->h_dest, path->encap.h_dest, ETH_ALEN);
+-			}
+-			if (path->type == DEV_PATH_VLAN)
+-				info->xmit_type = FLOW_OFFLOAD_XMIT_DIRECT;
++			info->xmit_type = FLOW_OFFLOAD_XMIT_DIRECT;
+ 			break;
+ 		case DEV_PATH_BRIDGE:
+ 			if (is_zero_ether_addr(info->h_source))
+@@ -155,8 +152,7 @@ static void nft_dev_path_info(const struct net_device_path_stack *stack,
+ 			break;
+ 		}
+ 	}
+-	if (!info->outdev)
+-		info->outdev = info->indev;
++	info->outdev = info->indev;
  
--	if (!nf_reject_verify_csum(proto))
-+	if (!nf_reject_verify_csum(skb, thoff, proto))
- 		return true;
+ 	info->hw_outdev = info->indev;
  
- 	return nf_ip6_checksum(skb, hook, thoff, proto) == 0;
-@@ -388,7 +388,7 @@ static bool reject6_csum_ok(struct sk_buff *skb, int hook)
- 	if (thoff < 0 || thoff >= skb->len || (fo & htons(~0x7)) != 0)
- 		return false;
- 
--	if (!nf_reject_verify_csum(proto))
-+	if (!nf_reject_verify_csum(skb, thoff, proto))
- 		return true;
- 
- 	return nf_ip6_checksum(skb, hook, thoff, proto) == 0;
 -- 
-2.30.2
+1.8.3.1
 
