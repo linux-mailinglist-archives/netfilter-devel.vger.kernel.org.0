@@ -2,231 +2,73 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BE75254EB
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 May 2022 20:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C8052564B
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 May 2022 22:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357706AbiELSe1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 12 May 2022 14:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39932 "EHLO
+        id S1358323AbiELUS7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 12 May 2022 16:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357607AbiELSe0 (ORCPT
+        with ESMTP id S1358320AbiELUS6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 12 May 2022 14:34:26 -0400
-X-Greylist: delayed 597 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 12 May 2022 11:34:24 PDT
-Received: from maja (passt.top [88.198.0.164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C1566AFE
-        for <netfilter-devel@vger.kernel.org>; Thu, 12 May 2022 11:34:23 -0700 (PDT)
-Received: by maja (Postfix, from userid 1000)
-        id E28F25A0796; Thu, 12 May 2022 20:34:21 +0200 (CEST)
-From:   Stefano Brivio <sbrivio@redhat.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf] nft_set_rbtree: Move clauses for expired nodes, last active node as leaf
-Date:   Thu, 12 May 2022 20:34:21 +0200
-Message-Id: <20220512183421.712556-1-sbrivio@redhat.com>
-X-Mailer: git-send-email 2.35.1
+        Thu, 12 May 2022 16:18:58 -0400
+Received: from mail.pekanbaru.go.id (mail.pekanbaru.go.id [103.131.245.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D21E20F4E6;
+        Thu, 12 May 2022 13:18:57 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.pekanbaru.go.id (Postfix) with ESMTP id E580498AE1F;
+        Thu, 12 May 2022 10:45:49 +0700 (WIB)
+Received: from mail.pekanbaru.go.id ([127.0.0.1])
+        by localhost (mail.pekanbaru.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id v9oRoA4gY-hz; Thu, 12 May 2022 10:45:49 +0700 (WIB)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.pekanbaru.go.id (Postfix) with ESMTP id B298298AE12;
+        Thu, 12 May 2022 10:45:46 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.pekanbaru.go.id B298298AE12
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pekanbaru.go.id;
+        s=EA5C5C9E-4206-11EC-835B-1ADACEA726A0; t=1652327146;
+        bh=WgQd2bW8hb2KeIDNbeIeW1Bb4lp6m29iibMhAQT/egc=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=QbvL7fY1eBcm7Yx5218z6spz8bNOMItg4B7x6g0iD5Y4JK1pHvWXuclNTrb6hTcj5
+         DcYUdLcaxNajl3b0HfBTeatJqGShThVAPOSHjj4/DuZzcKqHHtDOEZl1WzePpCxmHi
+         zp+nO0MGcj/7Qj53OAHA47tph5gHf4dT41j5I/Ze9xX317h01N8edkY7g2wuU0fznl
+         QtLvjeC14Abcdl3zS/SICCNI1yyuJjy7fN87EcVSeEWkII/v6z2n/PaoIj6i/wm9oA
+         O29Ct/NLm2uigMprLo5Sf+D0pwL1gi812PWBx15HfEMp8B/SuVxsitnflOUIQeMNHH
+         3/uyCmq1dofjw==
+X-Virus-Scanned: amavisd-new at mail.pekanbaru.go.id
+Received: from mail.pekanbaru.go.id ([127.0.0.1])
+        by localhost (mail.pekanbaru.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id vu7PhdbKXOso; Thu, 12 May 2022 10:45:46 +0700 (WIB)
+Received: from [192.168.15.101] (unknown [41.79.219.176])
+        by mail.pekanbaru.go.id (Postfix) with ESMTPSA id 06D6196C991;
+        Thu, 12 May 2022 10:45:37 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_SUSPICIOUS_NTLD,
-        FROM_SUSPICIOUS_NTLD_FP,FSL_HELO_NON_FQDN_1,
-        HEADER_FROM_DIFFERENT_DOMAINS,HELO_NO_DOMAIN,SPF_NONE,
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Awaiting your response 
+To:     Recipients <waterproject@pekanbaru.go.id>
+From:   waterproject@pekanbaru.go.id
+Date:   Thu, 12 May 2022 04:45:29 +0100
+Reply-To: test@hostnextdoor.com
+Message-Id: <20220512034538.06D6196C991@mail.pekanbaru.go.id>
+X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_BL_SPAMCOP_NET,
+        RCVD_IN_SBL,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In the overlap detection performed as part of the insertion operation,
-we have to skip nodes that are not active in the current generation or
-expired. This was done by adding several conditions in overlap decision
-clauses, which made it hard to check for correctness, and debug the
-actual issue this patch is fixing.
+Hi =
 
-Consolidate these conditions into a single clause, so that we can
-proceed with debugging and fixing the following issue.
 
-Case b3. described in comments covers the insertion of a start
-element after an existing end, as a leaf. If all the descendants of
-a given element are inactive, functionally, for the purposes of
-overlap detection, we still have to treat this as a leaf, but we don't.
+Did you get my previous email? I have attempted over 3 times to open up com=
+munication with you. Please acknowledge if you receive this email. =
 
-If, in the same transaction, we remove a start element to the right,
-remove an end element to the left, and add a start element to the right
-of an existing, active end element, we don't hit case b3. For example:
 
-- existing intervals: 1-2, 3-5, 6-7
-- transaction: delete 3-5, insert 4-5
-
-node traversal might happen as follows:
-- 2 (active end)
-- 5 (inactive end)
-- 3 (inactive start)
-
-when we add 4 as start element, we should simply consider 2 as
-preceding end, and consider it as a leaf, because interval 3-5 has been
-deleted. If we don't, we'll report an overlap because we forgot about
-this.
-
-Add an additional flag which is set as we find an active end, and reset
-it if we find an active start (to the left). If we finish the traversal
-with this flag set, it means we need to functionally consider the
-previous active end as a leaf, and allow insertion instead of reporting
-overlap.
-
-Reported-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Fixes: 7c84d41416d8 ("netfilter: nft_set_rbtree: Detect partial overlaps on insertion")
-Signed-off-by: Stefano Brivio <sbrivio@redhat.com>
----
- net/netfilter/nft_set_rbtree.c | 92 ++++++++++++++++++++--------------
- 1 file changed, 54 insertions(+), 38 deletions(-)
-
-diff --git a/net/netfilter/nft_set_rbtree.c b/net/netfilter/nft_set_rbtree.c
-index 7325bee7d144..dc2184bbe722 100644
---- a/net/netfilter/nft_set_rbtree.c
-+++ b/net/netfilter/nft_set_rbtree.c
-@@ -222,6 +222,7 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 	bool overlap = false, dup_end_left = false, dup_end_right = false;
- 	struct nft_rbtree *priv = nft_set_priv(set);
- 	u8 genmask = nft_genmask_next(net);
-+	bool last_left_node_is_end = false;
- 	struct nft_rbtree_elem *rbe;
- 	struct rb_node *parent, **p;
- 	int d;
-@@ -287,80 +288,95 @@ static int __nft_rbtree_insert(const struct net *net, const struct nft_set *set,
- 		d = memcmp(nft_set_ext_key(&rbe->ext),
- 			   nft_set_ext_key(&new->ext),
- 			   set->klen);
--		if (d < 0) {
-+
-+		if (d < 0)
- 			p = &parent->rb_left;
-+		else if (d > 0)
-+			p = &parent->rb_right;
-+		else if (nft_rbtree_interval_end(rbe))
-+			p = &parent->rb_left;
-+		else
-+			p = &parent->rb_right;
- 
-+		/* There might be inactive elements in the tree: ignore them by
-+		 * traversing them without affecting flags.
-+		 *
-+		 * We need to reset the dup_end_left and dup_end_right flags,
-+		 * though, because those only apply to adjacent nodes.
-+		 */
-+		if (!nft_set_elem_active(&rbe->ext, genmask) ||
-+		    nft_set_elem_expired(&rbe->ext)) {
-+			dup_end_left = dup_end_right = false;
-+			continue;
-+		}
-+
-+		if (d < 0) {
- 			if (nft_rbtree_interval_start(new)) {
--				if (nft_rbtree_interval_end(rbe) &&
--				    nft_set_elem_active(&rbe->ext, genmask) &&
--				    !nft_set_elem_expired(&rbe->ext) && !*p)
--					overlap = false;
-+				/* See case b3. described above.
-+				 *
-+				 * If this is not a leaf, but all nodes below
-+				 * this one are inactive, except for a leaf, we
-+				 * still have to consider it a leaf for the
-+				 * purposes of overlap detection.
-+				 *
-+				 * Set last_left_node_is_end if this is not a
-+				 * leaf and an active end element, and reset it
-+				 * if we find an active start element to the
-+				 * left.
-+				 *
-+				 * If we end the traversal with this flag set,
-+				 * this node is a leaf for the purposes of case
-+				 * b3., and no overlap will be reported.
-+				 */
-+				if (nft_rbtree_interval_end(rbe)) {
-+					if (!*p)
-+						overlap = false;
-+					else
-+						last_left_node_is_end = true;
-+				} else {
-+					last_left_node_is_end = false;
-+				}
- 			} else {
-+
- 				if (dup_end_left && !*p)
- 					return -ENOTEMPTY;
- 
--				overlap = nft_rbtree_interval_end(rbe) &&
--					  nft_set_elem_active(&rbe->ext,
--							      genmask) &&
--					  !nft_set_elem_expired(&rbe->ext);
--
-+				overlap = nft_rbtree_interval_end(rbe);
- 				if (overlap) {
- 					dup_end_right = true;
- 					continue;
- 				}
- 			}
- 		} else if (d > 0) {
--			p = &parent->rb_right;
--
- 			if (nft_rbtree_interval_end(new)) {
- 				if (dup_end_right && !*p)
- 					return -ENOTEMPTY;
- 
--				overlap = nft_rbtree_interval_end(rbe) &&
--					  nft_set_elem_active(&rbe->ext,
--							      genmask) &&
--					  !nft_set_elem_expired(&rbe->ext);
--
-+				overlap = nft_rbtree_interval_end(rbe);
- 				if (overlap) {
- 					dup_end_left = true;
- 					continue;
- 				}
--			} else if (nft_set_elem_active(&rbe->ext, genmask) &&
--				   !nft_set_elem_expired(&rbe->ext)) {
-+			} else {
- 				overlap = nft_rbtree_interval_end(rbe);
- 			}
- 		} else {
- 			if (nft_rbtree_interval_end(rbe) &&
- 			    nft_rbtree_interval_start(new)) {
--				p = &parent->rb_left;
--
--				if (nft_set_elem_active(&rbe->ext, genmask) &&
--				    !nft_set_elem_expired(&rbe->ext))
--					overlap = false;
-+				overlap = false;
- 			} else if (nft_rbtree_interval_start(rbe) &&
- 				   nft_rbtree_interval_end(new)) {
--				p = &parent->rb_right;
--
--				if (nft_set_elem_active(&rbe->ext, genmask) &&
--				    !nft_set_elem_expired(&rbe->ext))
--					overlap = false;
--			} else if (nft_set_elem_active(&rbe->ext, genmask) &&
--				   !nft_set_elem_expired(&rbe->ext)) {
-+				overlap = false;
-+			} else {
- 				*ext = &rbe->ext;
- 				return -EEXIST;
--			} else {
--				overlap = false;
--				if (nft_rbtree_interval_end(rbe))
--					p = &parent->rb_left;
--				else
--					p = &parent->rb_right;
- 			}
- 		}
- 
- 		dup_end_left = dup_end_right = false;
- 	}
- 
--	if (overlap)
-+	if (overlap && !last_left_node_is_end)
- 		return -ENOTEMPTY;
- 
- 	rb_link_node_rcu(&new->node, parent, p);
--- 
-2.35.1
-
+Regards
+Morten Friis
