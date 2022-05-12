@@ -2,117 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDFB524A5E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 May 2022 12:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B32A524CD8
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 May 2022 14:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352653AbiELKdy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 12 May 2022 06:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34364 "EHLO
+        id S1345192AbiELMaU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 12 May 2022 08:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352660AbiELKdx (ORCPT
+        with ESMTP id S234099AbiELMaT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 12 May 2022 06:33:53 -0400
-Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2F29D223876;
-        Thu, 12 May 2022 03:33:51 -0700 (PDT)
-Received: from mg.ssi.bg (localhost [127.0.0.1])
-        by mg.ssi.bg (Proxmox) with ESMTP id 27B1F100AB;
-        Thu, 12 May 2022 13:33:50 +0300 (EEST)
-Received: from ink.ssi.bg (unknown [193.238.174.40])
-        by mg.ssi.bg (Proxmox) with ESMTP id B8C77100A6;
-        Thu, 12 May 2022 13:33:48 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id 806553C07D0;
-        Thu, 12 May 2022 13:33:44 +0300 (EEST)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.16.1/8.16.1) with ESMTP id 24CAXdov049309;
-        Thu, 12 May 2022 13:33:40 +0300
-Date:   Thu, 12 May 2022 13:33:39 +0300 (EEST)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-cc:     Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Menglong Dong <imagedong@tencent.com>,
-        Jiang Biao <benbjiang@tencent.com>,
-        Hao Peng <flyingpeng@tencent.com>
-Subject: Re: [PATCH net-next v2] net: ipvs: randomize starting destination
- of RR/WRR scheduler
-In-Reply-To: <CADxym3aREm=ZPucm=C6ZRnPbQJMvCxkcnKge2EAcy-Rs0CTtfg@mail.gmail.com>
-Message-ID: <bb1d68e0-de27-985f-19b-208fb546a0b1@ssi.bg>
-References: <20220510074301.480941-1-imagedong@tencent.com> <8983fedf-5095-59a4-b4b3-83f1864be055@ssi.bg> <CADxym3aREm=ZPucm=C6ZRnPbQJMvCxkcnKge2EAcy-Rs0CTtfg@mail.gmail.com>
+        Thu, 12 May 2022 08:30:19 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF80218
+        for <netfilter-devel@vger.kernel.org>; Thu, 12 May 2022 05:30:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=6DPS/8MMdW7Eg6Ti8ToqBUQx+jheuoZtc8O9CQLHTUE=; b=bbnX6fzJGFlSlfMxeyFHZ/u22O
+        vhpou7SCn3+BbYMzlsEJbyxXnCyXoCmy4tomhknoqQ8DdFOw9k69H2QPZ6Fr19XsSJA5yzahTgTzp
+        qQ7fDdI2chHlLwkhfFxtwVG+y0HsT/eTQPrUIM4oB3ymZNYn/63uFQU0YwPgGh5DFN9Z9Eqp+qRww
+        2booTCIRMBgwfMmI86mXcVDpydvRlaQFTlLrCTbqi7vH04oRL6FC/0p1zmacrX1VusA/8E75eVHww
+        9Qgeij6YAH+hwbKGT1bzOlByIY6oJmzYHu4fXnQc4nFPGBSFKmrk5TyOgw2kLx/QTI2t5MMPBIoKo
+        YUg3ZIsA==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1np7xR-0000wJ-8Y; Thu, 12 May 2022 14:30:17 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nf-next PATCH v2 0/2] nf_tables: Export rule optimizer results to user space
+Date:   Thu, 12 May 2022 14:30:01 +0200
+Message-Id: <20220512123003.29903-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Changes since v1:
+- Fixed two bugs in patch 2.
 
-	Hello,
+While transforming rules into binary blob, code checks if certain
+expressions may be omitted. Any bugs in this code might lead to very
+subtle breakage of firewall rulesets, so a way of asserting optimizer
+correctness is highly necessary.
 
-On Thu, 12 May 2022, Menglong Dong wrote:
+This series achieves this in the most minimal way by annotating omitted
+expressions with a flag. Integrated into libnftnl print output,
+testsuites in user space may verify optimizer effect and assert
+correctness.
 
-> Yeah, WLC and MH are excellent schedulers. As for SH, my
-> fellows' feedback says that it doesn't work well. In fact, it's their
-> fault, they just forget to enable port hash and just use the
-> default ip hash. With my direction, this case is solved by sh.
-> 
-> Now, I'm not sure if this feature is necessary. Maybe someone
-> needs it? Such as someone, who need RR/WRR and a random
-> start......
+First patch introduces an expression flags attribute, second patch
+implements the annotation itself.
 
-	If there is some more clever way to add randomness.
-The problem is that random start should be applied after
-initial configuration only. But there is no clear point between
-where configuration is completed and when service starts.
-This is not bad for RR but is bad for WRR.
+Phil Sutter (2):
+  netfilter: nf_tables: Introduce expression flags
+  netfilter: nf_tables: Annotate reduced expressions
 
-	One way would be the user tool to add dests in random
-order. IIRC, this should not affect setups with backup servers
-as long as they share the same set of real servers, i.e.
-order in svc->destinations does not matter for SYNC but
-the real servers should be present in all directors.
+ include/net/netfilter/nf_tables.h        |  1 +
+ include/uapi/linux/netfilter/nf_tables.h |  8 ++++++++
+ net/netfilter/nf_tables_api.c            | 12 ++++++++++--
+ 3 files changed, 19 insertions(+), 2 deletions(-)
 
-	Another option would be __ip_vs_update_dest() to
-use list_add_rcu() or list_add_tail_rcu() per dest depending
-on some switch that enables random ordering for the svc.
-But it will affect only schedulers that do not order
-later the dests. So, it should help for RR, WRR (random
-order per same weight). In this case, scheduler's code
-is not affected.
-
-	For RR, the scheduler does not use weights and
-dests are usually not updated. But for WRR the weights
-can be changed and this affects order of selection without
-changing the order in svc->destinations.
-
-	OTOH, WRR is a scheduler that can support frequent
-update of dest weights. This is not true for MH which can
-easily change only between 0 and some fixed weight without
-changing its table. As result, ip_vs_wrr_dest_changed()
-can be called frequently even after the initial configuration,
-at the same time while packets are scheduled.
-
-	When you mentioned that ip_vs_wrr_gcd_weight() is
-slow, I see that ip_vs_wrr_dest_changed() can be improved
-to reduce the time while holding the lock. May be
-in separate patch we can call ip_vs_wrr_gcd_weight() and
-ip_vs_wrr_max_weight() before the spin_lock_bh() by using
-two new tmp vars.
-
-> Anyway, I have made a V3 according to your advice. I can
-> send it with any positive reply :/
-
-	You can use [RFC tag] for this, so that we can
-at least review it and further decide what can be done.
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
+-- 
+2.34.1
 
