@@ -2,159 +2,85 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F01615252AA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 May 2022 18:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018D55252F8
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 May 2022 18:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356505AbiELQe7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 12 May 2022 12:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        id S1356073AbiELQsA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 12 May 2022 12:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356522AbiELQez (ORCPT
+        with ESMTP id S1356669AbiELQr6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 12 May 2022 12:34:55 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A5F267C20;
-        Thu, 12 May 2022 09:34:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 71959B829F0;
-        Thu, 12 May 2022 16:34:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E9ACC385B8;
-        Thu, 12 May 2022 16:34:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652373292;
-        bh=rKK4g1rn/Rdh5TkC2xdx5a2+qdGbLS4V/bDKfwdxafk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MhTn2KTmFLaw6BEaUPz2uAkBHPJDSIK0JWo/GBOXSzhXfrtt+BOZhwvsB37J/qpjL
-         n9l2JgiWwHU143CMm7CiyUm1WalWn8wzHFOc0ZzGjmTL/UTFrOKxi4o8Jdd6sKZ+Px
-         wb3Lc/1qk3zCEddVEl4dh2cj9RHlWCSjFuTjSon9iExw1bOk2OxHyb2TvtwrL4f58K
-         ZTXINuzdyJZlsdjabqEXcSXsxCGD949h3qwPUTi963eGDBvHJ9nztcz9y1Zvw3pHKv
-         hNJ4kJ/VXd3sqVAftonfK16r+63znDz0IMsOAYnxHyeax6Gl4iWAhhGtqL98DoTNvW
-         F6twU+r+md39g==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        pabeni@redhat.com, pablo@netfilter.org, fw@strlen.de,
-        netfilter-devel@vger.kernel.org, lorenzo.bianconi@redhat.com,
-        brouer@redhat.com, toke@redhat.com, memxor@gmail.com
-Subject: [PATCH v2 bpf-next 2/2] selftests/bpf: add selftest for bpf_ct_refresh_timeout kfunc
-Date:   Thu, 12 May 2022 18:34:11 +0200
-Message-Id: <4841edea5de2ce5898092c057f61d45dec3d9a34.1652372970.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <cover.1652372970.git.lorenzo@kernel.org>
-References: <cover.1652372970.git.lorenzo@kernel.org>
+        Thu, 12 May 2022 12:47:58 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52FB24F208
+        for <netfilter-devel@vger.kernel.org>; Thu, 12 May 2022 09:47:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=61OJLQocLbNJmpma96rxHPDfgZJoPVBQNATvAcxYuAk=; b=eO2MQx3mOkTmZz+lzS9xQUmUUo
+        p85CWkvXcUA2bJW03D+dI2QkpoPbia6t8sJYY7pem442BSbMl/4mYS+BxYkM7fZUkoXLk7xDt08fc
+        wetAPExl5hMYbV8JP7pxjc9zT0MLQpMxRHiCGg+YsiQKfOG1G3FkUvgBKRdLUy4T52IWNOsWhSxyW
+        Cnz1YQEgRak17bzd+6oqudQlEwIbGAizu9bTs/OUS+sRRmMKbb5F+OPM07vCeXm9Kz+QSvNLqil3H
+        v3W8+hEcNsYQbF8kJgRtcZOnpBO3FAGuwmhBI15FiIH+k7wbeIDGb9hc6NXDpf5J64mJ4Z1L/HDt3
+        krmxaZ3A==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1npByl-0004Q9-BS; Thu, 12 May 2022 18:47:55 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nf-next PATCH v3 0/4] nf_tables: Export rule optimizer results to user space
+Date:   Thu, 12 May 2022 18:47:37 +0200
+Message-Id: <20220512164741.31440-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Install a new ct entry in order to perform a successful lookup and
-test bpf_ct_refresh_timeout kfunc helper.
+Changes since v2:
+- New patches 1 and 2
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/bpf_nf.c | 10 +++++++++
- .../testing/selftests/bpf/progs/test_bpf_nf.c | 22 +++++++++++++++++++
- 2 files changed, 32 insertions(+)
+Changes since v1:
+- Fixed two bugs in patch 2.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-index dd30b1e3a67c..285687d2f7b3 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-@@ -18,6 +18,13 @@ void test_bpf_nf_ct(int mode)
- 		.repeat = 1,
- 	);
- 
-+	/* Flush previous nft ct entries */
-+	ASSERT_OK(system("conntrack -F"), "flush ct entries");
-+	/* Let's create a nft ct entry to perform lookup */
-+	ASSERT_OK(system("conntrack -I -s 1.1.1.1 -d 2.2.2.2 --protonum 6  \
-+			  --state ESTABLISHED --timeout 3600 --sport 12345 \
-+			  --dport 1000 --zone 0"), "create ct entry");
-+
- 	skel = test_bpf_nf__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "test_bpf_nf__open_and_load"))
- 		return;
-@@ -39,6 +46,9 @@ void test_bpf_nf_ct(int mode)
- 	ASSERT_EQ(skel->bss->test_enonet_netns_id, -ENONET, "Test ENONET for bad but valid netns_id");
- 	ASSERT_EQ(skel->bss->test_enoent_lookup, -ENOENT, "Test ENOENT for failed lookup");
- 	ASSERT_EQ(skel->bss->test_eafnosupport, -EAFNOSUPPORT, "Test EAFNOSUPPORT for invalid len__tuple");
-+	ASSERT_EQ(skel->bss->test_succ_lookup, 0, "Test for successful lookup");
-+	ASSERT_EQ(skel->bss->test_delta_timeout, 10, "Test for ct timeout update");
-+
- end:
- 	test_bpf_nf__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-index f00a9731930e..3eb36679a0b5 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <vmlinux.h>
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
- 
- #define EAFNOSUPPORT 97
- #define EPROTO 71
-@@ -8,6 +9,8 @@
- #define EINVAL 22
- #define ENOENT 2
- 
-+extern unsigned long CONFIG_HZ __kconfig;
-+
- int test_einval_bpf_tuple = 0;
- int test_einval_reserved = 0;
- int test_einval_netns_id = 0;
-@@ -16,6 +19,8 @@ int test_eproto_l4proto = 0;
- int test_enonet_netns_id = 0;
- int test_enoent_lookup = 0;
- int test_eafnosupport = 0;
-+int test_succ_lookup = 0;
-+u32 test_delta_timeout = 0;
- 
- struct nf_conn;
- 
-@@ -31,6 +36,7 @@ struct nf_conn *bpf_xdp_ct_lookup(struct xdp_md *, struct bpf_sock_tuple *, u32,
- struct nf_conn *bpf_skb_ct_lookup(struct __sk_buff *, struct bpf_sock_tuple *, u32,
- 				  struct bpf_ct_opts___local *, u32) __ksym;
- void bpf_ct_release(struct nf_conn *) __ksym;
-+void bpf_ct_refresh_timeout(struct nf_conn *, u32) __ksym;
- 
- static __always_inline void
- nf_ct_test(struct nf_conn *(*func)(void *, struct bpf_sock_tuple *, u32,
-@@ -99,6 +105,22 @@ nf_ct_test(struct nf_conn *(*func)(void *, struct bpf_sock_tuple *, u32,
- 		bpf_ct_release(ct);
- 	else
- 		test_eafnosupport = opts_def.error;
-+
-+	bpf_tuple.ipv4.saddr = 0x01010101; /* src IP 1.1.1.1 */
-+	bpf_tuple.ipv4.daddr = 0x02020202; /* dst IP 2.2.2.2 */
-+	bpf_tuple.ipv4.sport = bpf_htons(12345); /* src port */
-+	bpf_tuple.ipv4.dport = bpf_htons(1000);  /* dst port */
-+	ct = func(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
-+		  sizeof(opts_def));
-+	if (ct) {
-+		/* update ct entry timeout */
-+		bpf_ct_refresh_timeout(ct, 10000);
-+		test_delta_timeout = ct->timeout - bpf_jiffies64();
-+		test_delta_timeout /= CONFIG_HZ;
-+		bpf_ct_release(ct);
-+	} else {
-+		test_succ_lookup = opts_def.error;
-+	}
- }
- 
- SEC("xdp")
+While transforming rules into binary blob, code checks if certain
+expressions may be omitted. Any bugs in this code might lead to very
+subtle breakage of firewall rulesets, so a way of asserting optimizer
+correctness is highly necessary.
+
+This series achieves this in the most minimal way by annotating omitted
+expressions with a flag. Integrated into libnftnl print output,
+testsuites in user space may verify optimizer effect and assert
+correctness.
+
+First patch prepares for a blob-specific variant of struct nft_expr
+which is smaller than the original. Second patch introduces this
+variant. Third patch extends structy nft_expr by a new field and finally
+fourth patch populates it.
+
+Phil Sutter (4):
+  netfilter: nf_tables: Store net size in nft_expr_ops::size
+  netfilter: nf_tables: Introduce struct nft_expr_dp
+  netfilter: nf_tables: Introduce expression flags
+  netfilter: nf_tables: Annotate reduced expressions
+
+ include/net/netfilter/nf_tables.h        | 13 ++++++--
+ include/uapi/linux/netfilter/nf_tables.h |  8 +++++
+ net/netfilter/nf_tables_api.c            | 42 ++++++++++++++++--------
+ 3 files changed, 48 insertions(+), 15 deletions(-)
+
 -- 
-2.35.3
+2.34.1
 
