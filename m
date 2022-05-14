@@ -2,117 +2,79 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F355270B9
-	for <lists+netfilter-devel@lfdr.de>; Sat, 14 May 2022 12:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543F952730F
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 May 2022 18:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbiENKkL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 14 May 2022 06:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34306 "EHLO
+        id S232727AbiENQmj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 14 May 2022 12:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbiENKkK (ORCPT
+        with ESMTP id S234299AbiENQmh (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 14 May 2022 06:40:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364152EE;
-        Sat, 14 May 2022 03:40:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B8C3860DE0;
-        Sat, 14 May 2022 10:40:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91419C340EE;
-        Sat, 14 May 2022 10:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652524808;
-        bh=4B87Dg5JEAiRvyLZbJTaN/WeL9pNY+QGuStUoeJtY1g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dPtKMtXNytmIKKo1oUxAIsPREfJ317GRHL/kAOcQykFNOokYbXVLJvD2DUKO7kNFj
-         +RJGfPYl5sJzSAPS7UoKXXQjuvLA9DvNdJRzmjqlJUTMEVp8z4R/9rVP0d1u2jNU08
-         4vmzlBI41/Plw1krjFHj/HxjUzM3DFQZ7v9jjtojXs9GX91Z7+9izAO9Fm8rAmoqG9
-         F9QSguVrQnfuhtcvXxV9Oryu0EcudMhy7JUeIJcboLnIfyP4l8yCmvzDEuefoQsNnq
-         jAqt/FfHwvCAyJ1GRWrHb8fixqWaHB8rrGtPVJTjs/pEzNu87MpkW9/dvXgIujuCkC
-         JyNhlBi3g5Pjg==
-Date:   Sat, 14 May 2022 12:40:04 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add selftest for
- bpf_ct_refresh_timeout kfunc
-Message-ID: <Yn+HBKbo5eoYBPzj@lore-desk>
-References: <cover.1652372970.git.lorenzo@kernel.org>
- <4841edea5de2ce5898092c057f61d45dec3d9a34.1652372970.git.lorenzo@kernel.org>
- <CAADnVQKys77rY+FLkGJwdmdww+h2pGosx08RxVvYwwkjZLSwEQ@mail.gmail.com>
+        Sat, 14 May 2022 12:42:37 -0400
+Received: from mail1.systemli.org (mail1.systemli.org [IPv6:2a11:7980:3::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D196EDF2C
+        for <netfilter-devel@vger.kernel.org>; Sat, 14 May 2022 09:42:36 -0700 (PDT)
+From:   Nick Hainke <vincent@systemli.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
+        s=default; t=1652546011;
+        bh=X4H17jH84dYJuM3OAWRba5KEFaDj6w9pcvgLkWroFfI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EsVSoPFc7lEewz8NrT/IamGN76K0mvAcUOeUp2gE8j8llvwxBI15uStek79u+B5zR
+         jGnirqyxQhzwmiB9T/LjVQFpvAW/8L5leIApfxw43JkGlulfraHVg0k56VcG2mReVL
+         l4NZ4cIRuhoFId1tkMjABuVi0YQXy/rVsZEnpyUPbxQIzGPrG4l91R5gOx4qcBzPut
+         nJRuNSO78UkCbWLlJpJ14WxCXcE5o61dCLk6KM/SKjZKJIAdoySDU9x8uS+jMKCz/J
+         KLiodhSsIlAzskyNNcHPJWv9J9AruvF8D0Yup3Zk0M7Ghkz3VHh+BQplI0DfOurVT9
+         EsmeLelVbp2rQ==
+To:     netfilter-devel@vger.kernel.org
+Cc:     Nick Hainke <vincent@systemli.org>
+Subject: [PATCH iptables 1/2] xtables: fix compilation with musl
+Date:   Sat, 14 May 2022 18:33:24 +0200
+Message-Id: <20220514163325.54266-1-vincent@systemli.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4yjOvuKC16P+H2Ce"
-Content-Disposition: inline
-In-Reply-To: <CAADnVQKys77rY+FLkGJwdmdww+h2pGosx08RxVvYwwkjZLSwEQ@mail.gmail.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Only include <linux/if_ether.h> if glibc is used.
 
---4yjOvuKC16P+H2Ce
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes errors in the form of:
+In file included from /home/nick/openwrt/staging_dir/toolchain-aarch64_cortex-a53_gcc-11.2.0_musl/include/netinet/ether.h:8,
+                 from xtables.c:2238:
+/home/nick/openwrt/staging_dir/toolchain-aarch64_cortex-a53_gcc-11.2.0_musl/include/netinet/if_ether.h:115:8: error: redefinition of 'struct ethhdr'
+  115 | struct ethhdr {
+      |        ^~~~~~
+In file included from xtables.c:48:
+/home/nick/openwrt/build_dir/target-aarch64_cortex-a53_musl/linux-mediatek_mt7622/linux-5.15.38/user_headers/include/linux/if_ether.h:168:8: note: originally defined here
+  168 | struct ethhdr {
+      |        ^~~~~~
+make[5]: *** [Makefile:471: libxtables_la-xtables.lo] Error 1
 
-> On Thu, May 12, 2022 at 9:34 AM Lorenzo Bianconi <lorenzo@kernel.org> wro=
-te:
-> >
-> > Install a new ct entry in order to perform a successful lookup and
-> > test bpf_ct_refresh_timeout kfunc helper.
-> >
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
->=20
-> CI is failing:
-> test_bpf_nf_ct:FAIL:flush ct entries unexpected error: 32512 (errno 2)
-> test_bpf_nf_ct:FAIL:create ct entry unexpected error: 32512 (errno 2)
->=20
-> Please follow the links from patchwork for details.
+Signed-off-by: Nick Hainke <vincent@systemli.org>
+---
+ libxtables/xtables.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Hi Alexei,
+diff --git a/libxtables/xtables.c b/libxtables/xtables.c
+index 96fd783a..1eb22209 100644
+--- a/libxtables/xtables.c
++++ b/libxtables/xtables.c
+@@ -45,7 +45,9 @@
+ 
+ #include <xtables.h>
+ #include <limits.h> /* INT_MAX in ip_tables.h/ip6_tables.h */
++#if defined(__GLIBC__)
+ #include <linux/if_ether.h> /* ETH_ALEN */
++#endif
+ #include <linux/netfilter_ipv4/ip_tables.h>
+ #include <linux/netfilter_ipv6/ip6_tables.h>
+ #include <libiptc/libxtc.h>
+-- 
+2.36.1
 
-tests failed because conntrack is not installed on the system:
-
-2022-05-14T00:12:09.0799053Z sh: line 1: conntrack: command not found
-
-Is it ok to just skip the test if conntrack is not installed on the system
-or do you prefer to directly send netlink messages to ct in order to add a
-new ct entry?
-
-Regards,
-Lorenzo
-
---4yjOvuKC16P+H2Ce
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYn+HAwAKCRA6cBh0uS2t
-rKTbAP9DKc0/cw1Wwk0okYUArRS3CB76jUusRG+O1E/vh6PHwgD/U4jnv/4OqKe/
-I2lAS247dHiSVbyUHgdqAqdNvs+FfQU=
-=jA6b
------END PGP SIGNATURE-----
-
---4yjOvuKC16P+H2Ce--
