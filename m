@@ -2,76 +2,109 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E475D52730E
-	for <lists+netfilter-devel@lfdr.de>; Sat, 14 May 2022 18:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09A5527311
+	for <lists+netfilter-devel@lfdr.de>; Sat, 14 May 2022 18:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbiENQmi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 14 May 2022 12:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60132 "EHLO
+        id S234322AbiENQmn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 14 May 2022 12:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232727AbiENQmh (ORCPT
+        with ESMTP id S234291AbiENQml (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 14 May 2022 12:42:37 -0400
-X-Greylist: delayed 536 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 14 May 2022 09:42:32 PDT
-Received: from mail1.systemli.org (mail1.systemli.org [IPv6:2a11:7980:3::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04ACBC90
-        for <netfilter-devel@vger.kernel.org>; Sat, 14 May 2022 09:42:31 -0700 (PDT)
-From:   Nick Hainke <vincent@systemli.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
-        s=default; t=1652546012;
-        bh=6TAVRkpkmPtc5PFEsIJF/CNoa4h4IDdK4CtPfIVRcBo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JxMCj2XzCfWYfYHVgy6TSW0H73clO+u8RxABlWGb25v/3rZ+VRFz7LKoye1NYnLUQ
-         P0tCu3WbHAARIR/91OQJpP0pIAbWwpUU0xmEp+W1NTovpNmrRSW9G+uVBzi2mflKrQ
-         E1+Y0BXZXJLkZosILDlhXaiRX8EEEMDB9OWvCUciPjH3rhzOoFB/1/PVlxIDtSyqNN
-         G8WVA8NpnQPLKp+o4OuIG/5Js3oGU0FbfbFVU7KW+X6/Q6E7udBp1yk2gH8V9s1dDa
-         hzb/eJFZtrmBiVrAbUYWs9ThK+/d/0xDKUo7p1Xw0x3f/u6AwAnfY9DlFmAV6W5toF
-         qVwykaeFCqd2w==
-To:     netfilter-devel@vger.kernel.org
-Cc:     Nick Hainke <vincent@systemli.org>
-Subject: [PATCH iptables 2/2] xshared: fix compilation with musl
-Date:   Sat, 14 May 2022 18:33:25 +0200
-Message-Id: <20220514163325.54266-2-vincent@systemli.org>
-In-Reply-To: <20220514163325.54266-1-vincent@systemli.org>
-References: <20220514163325.54266-1-vincent@systemli.org>
+        Sat, 14 May 2022 12:42:41 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39046BC90;
+        Sat, 14 May 2022 09:42:40 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id m1so9513104qkn.10;
+        Sat, 14 May 2022 09:42:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YzZf4CIuSRuke7K8PFWObNccQOsJydtLLune2imVRSY=;
+        b=FsOBk/p91UfFDfai2dq8nks2do3hbcpTnl2zoi3Nzvcp1EftU2RJm9UYxZq0pluxRO
+         cVmy2PNmM33l8NgA2st1vLMsI82IAFxJNa92hAzO6sF/oUUAmxAw7biD1NBieeup7fSW
+         uNYtqiHeVwB0c5tE/csK098NomIywxATHjnKsCPjAQaaNfRijGENelwTuZxt7LZhWVhe
+         +PUQ8iowoTCatBW9nD8BPpl+F3suZxwJeyPr7iKVox6QHnXPoVbSBtaqRsU9adG+xupT
+         LUIeqZy+7ADhXLmpjh84PtNUe9CnvMH8Lu48iRAoFmelB2cJeD409EM0PVeE3v+HXTcx
+         2JqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YzZf4CIuSRuke7K8PFWObNccQOsJydtLLune2imVRSY=;
+        b=3B+uDjTquCzjtwTuCj89sdVY2iEUpLuWcLrLxKWOCwJ/7fDHmXdQk3IXtZwHlGKfOw
+         IdBj9ejj5+2ifd7EnXuE2in6rxDS59pPs2k4wIQK6IR6fAcRiW2Vny303yJ7RsuOJGS9
+         QW87Z2+qsgufG+9TvYmzitLLELAWuDTeMmhqfiyza2O5mgKC4zoa3sLGO6WCYLT8BRX/
+         Ftwvt6DCTfe7mIayKXmdA1e6iE90oRRwWrt4d198m2qPq9rCyUxu6Df6sF+qixFYcA2V
+         hEMql8bFvG6+SIHlxq7waAzWBEHxaRrS8GEUha73hQAgJrdgAH8QcEIWBJLD0vYQmOVo
+         8yBw==
+X-Gm-Message-State: AOAM530etPJxMXd9nrxly0UVDHzPy2UUx9o1wPZO71chAyIgsCJF0X3R
+        AdYhrT3K6EFrXs4GJBxE6eW8hT+LWVJZn3BodVCM62fK
+X-Google-Smtp-Source: ABdhPJzb0fPyN12Vpt3BNTHN4hsFSpw9Y14g/udGKRMAXLfR3PgjoqFQSybkueB/7tA6k/v+rL3UBLDswnDszpZxJFM=
+X-Received: by 2002:a05:620a:919:b0:69f:e373:3de8 with SMTP id
+ v25-20020a05620a091900b0069fe3733de8mr7176608qkv.27.1652546559287; Sat, 14
+ May 2022 09:42:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1652372970.git.lorenzo@kernel.org> <4841edea5de2ce5898092c057f61d45dec3d9a34.1652372970.git.lorenzo@kernel.org>
+ <CAADnVQKys77rY+FLkGJwdmdww+h2pGosx08RxVvYwwkjZLSwEQ@mail.gmail.com> <Yn+HBKbo5eoYBPzj@lore-desk>
+In-Reply-To: <Yn+HBKbo5eoYBPzj@lore-desk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 14 May 2022 09:42:28 -0700
+Message-ID: <CAADnVQJbOZAg-nGrVutwCA5r=VATXVOXD5Y2EtbfkZHtCsrBbg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add selftest for
+ bpf_ct_refresh_timeout kfunc
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Gcc complains about missing types. Include <sys/types.h> to fix it.
+On Sat, May 14, 2022 at 3:40 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>
+> > On Thu, May 12, 2022 at 9:34 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> > >
+> > > Install a new ct entry in order to perform a successful lookup and
+> > > test bpf_ct_refresh_timeout kfunc helper.
+> > >
+> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> >
+> > CI is failing:
+> > test_bpf_nf_ct:FAIL:flush ct entries unexpected error: 32512 (errno 2)
+> > test_bpf_nf_ct:FAIL:create ct entry unexpected error: 32512 (errno 2)
+> >
+> > Please follow the links from patchwork for details.
+>
+> Hi Alexei,
+>
+> tests failed because conntrack is not installed on the system:
+>
+> 2022-05-14T00:12:09.0799053Z sh: line 1: conntrack: command not found
+>
+> Is it ok to just skip the test if conntrack is not installed on the system
+> or do you prefer to directly send netlink messages to ct in order to add a
+> new ct entry?
 
-Fixes errors in the form of:
-In file included from xtables-legacy-multi.c:5:
-xshared.h:83:56: error: unknown type name 'u_int16_t'; did you mean 'uint16_t'?
-   83 | set_option(unsigned int *options, unsigned int option, u_int16_t *invflg,
-      |                                                        ^~~~~~~~~
-      |                                                        uint16_t
-make[6]: *** [Makefile:712: xtables_legacy_multi-xtables-legacy-multi.o] Error 1
-
-Signed-off-by: Nick Hainke <vincent@systemli.org>
----
- iptables/xshared.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 14568bb0..9d2fef90 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -4,6 +4,7 @@
- #include <limits.h>
- #include <stdbool.h>
- #include <stdint.h>
-+#include <sys/types.h>
- #include <netinet/in.h>
- #include <net/if.h>
- #include <linux/netfilter_arp/arp_tables.h>
--- 
-2.36.1
-
+It will take a long time to update x86 and s390 images.
+Maybe we should add a kfunc that creates a ct entry?
