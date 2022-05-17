@@ -2,44 +2,43 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 412E552AA35
-	for <lists+netfilter-devel@lfdr.de>; Tue, 17 May 2022 20:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E929152AA34
+	for <lists+netfilter-devel@lfdr.de>; Tue, 17 May 2022 20:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352002AbiEQSMr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 17 May 2022 14:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32930 "EHLO
+        id S1344365AbiEQSM3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 17 May 2022 14:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351997AbiEQSMa (ORCPT
+        with ESMTP id S1351942AbiEQSM1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 17 May 2022 14:12:30 -0400
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B888A51580
+        Tue, 17 May 2022 14:12:27 -0400
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130985132A
         for <netfilter-devel@vger.kernel.org>; Tue, 17 May 2022 11:12:22 -0700 (PDT)
-Received: by mail-io1-f69.google.com with SMTP id s129-20020a6b2c87000000b00657c1a3b52fso12832192ios.21
+Received: by mail-io1-f71.google.com with SMTP id d7-20020a0566022d4700b0065aa0c91f27so12898247iow.14
         for <netfilter-devel@vger.kernel.org>; Tue, 17 May 2022 11:12:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Aw7uWPlnCQDdmui5m+mgLu0Iob0U3Ta9YLf8ADEdGks=;
-        b=7lVqk7ANvsRLnilPWJIMxFHYCrnbiIybKDS81J6/YIT1tHvqaiQ32fgVSKNdNX3oqL
-         NobsocOJuzUeUeJvLx+zRuB1bb5J3pTSswC6YQlERAZJMrBn/RGryQ0O1znisggzWy5b
-         K2vZvHb9X/aWnmcIeSbxsSjV+60IK/VWD7aKjw/q9PLVd0AkfD33efuQoMBi6+fI65VN
-         diZ4ww+ylWjN0owYqZaab6mGzMo7rdYccGnRuC9BA6fIyxglUUIIL2yiZDS+jeLoD93M
-         6NLZUsI0Lgc0A3bAzTKCIUbGwBN8Z7j+Sl0zX3WWkg46JquHtxxBaxEsBZZtHprG3sDG
-         6HiQ==
-X-Gm-Message-State: AOAM530ZIuI4lZklG+AFK60q7oPfRQPgEUQi/HvtASVdcS0WKNN5BGEa
-        dxNsR7/+P+cznDTcFQLrM/NPBrixcc0LeURJrc6r5BZVoFg0
-X-Google-Smtp-Source: ABdhPJwCK5cHV8+sYepbR7Oy12L/Z261cSXDMON3P5HSx+Jeog9skRf1vYsCOtMs3VE/paQpDoTurjsh+fZRvYSM0UnByonVKa5J
+        bh=2SsZ2ZnxG5ZHDadCbewwN19Op2p0c/n0nLkBUlfR4vg=;
+        b=lP547bC6MI0kZJBQYoBMTdM+4bXwc2mSboLHtmKTfVGYzbvEq2AHVpsZlrfEnUcOI4
+         Bn5nWnupZLwwPPOsW+5ObPcqkJ6MhUlsfPueI/KOaugaBmEgGSI7XNTO0c/Sq0a9CEzy
+         I5RA9qe1QlRgTKJMZ6Lb2E2DfXj1/x9tgYqLLXZauMNLZjCreMySzPQxbbPoZo3bBNcQ
+         RWz8538cv6NrUPX9oGShrkuJPX8X6mjOdazp1ncfPBCdnQC+9jgQwUoMsD4ZrAY0mdMI
+         +8HPiXmY6OEIziJT6Ne7eSOiKSfh6JL00uAQEfwDIihGki0JItY1rVCAQK/iNkbDqdsu
+         mQ1Q==
+X-Gm-Message-State: AOAM5316POKPIRuJydEmgbdJIrKfV8P24G2Dqy68d5LBisGhbiyV1JwH
+        UVJAH/b6HTrP/4lJAuy3owV6o6oh/Srj7+aaIkoAY497rh5Y
+X-Google-Smtp-Source: ABdhPJwcnaHdiWL01/DHKvxOr0NKEflr4qJALuXhXs/4Hbw/fL+3YOfdtmmi4/0tM0ETEpBEZHEJQTfMiRBya4qQtEIvOzvq2kAK
 MIME-Version: 1.0
-X-Received: by 2002:a02:c898:0:b0:32e:120b:cdf9 with SMTP id
- m24-20020a02c898000000b0032e120bcdf9mr9000904jao.158.1652811141946; Tue, 17
- May 2022 11:12:21 -0700 (PDT)
+X-Received: by 2002:a02:234a:0:b0:32a:f07c:e8 with SMTP id u71-20020a02234a000000b0032af07c00e8mr12249927jau.87.1652811141389;
+ Tue, 17 May 2022 11:12:21 -0700 (PDT)
 Date:   Tue, 17 May 2022 11:12:21 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ff239c05df391402@google.com>
-Subject: [syzbot] WARNING in nfnetlink_unbind
-From:   syzbot <syzbot+afd2d80e495f96049571@syzkaller.appspotmail.com>
+Message-ID: <000000000000f6a32905df3914e1@google.com>
+Subject: [syzbot] UBSAN: array-index-out-of-bounds in nfnetlink_unbind
+From:   syzbot <syzbot+4903218f7fba0a2d6226@syzkaller.appspotmail.com>
 To:     ali.abdallah@suse.com, coreteam@netfilter.org, davem@davemloft.net,
         edumazet@google.com, fw@strlen.de, kadlec@netfilter.org,
         kuba@kernel.org, linux-kernel@vger.kernel.org,
@@ -61,14 +60,14 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    f7b88d9ae91e Merge tag 'linux-can-next-for-5.19-20220516' ..
+HEAD commit:    d887ae3247e0 octeontx2-pf: Remove unnecessary synchronize_..
 git tree:       net-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14f791aef00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c05eee2efc702eed
-dashboard link: https://syzkaller.appspot.com/bug?extid=afd2d80e495f96049571
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=118621f1f00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b1aab282dc5dd920
+dashboard link: https://syzkaller.appspot.com/bug?extid=4903218f7fba0a2d6226
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13ba8ae9f00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13ef1295f00000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c775bef00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1428ee59f00000
 
 The issue was bisected to:
 
@@ -78,53 +77,50 @@ Date:   Mon Apr 25 13:15:41 2022 +0000
 
     netfilter: nfnetlink: allow to detect if ctnetlink listeners exist
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13cb5bbef00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=102b5bbef00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17cb5bbef00000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14885b35f00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16885b35f00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12885b35f00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+afd2d80e495f96049571@syzkaller.appspotmail.com
+Reported-by: syzbot+4903218f7fba0a2d6226@syzkaller.appspotmail.com
 Fixes: 2794cdb0b97b ("netfilter: nfnetlink: allow to detect if ctnetlink listeners exist")
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 3600 at net/netfilter/nfnetlink.c:703 nfnetlink_unbind net/netfilter/nfnetlink.c:703 [inline]
-WARNING: CPU: 0 PID: 3600 at net/netfilter/nfnetlink.c:703 nfnetlink_unbind+0x357/0x3b0 net/netfilter/nfnetlink.c:694
-Modules linked in:
-CPU: 0 PID: 3600 Comm: syz-executor186 Not tainted 5.18.0-rc6-syzkaller-01545-gf7b88d9ae91e #0
+================================================================================
+UBSAN: array-index-out-of-bounds in net/netfilter/nfnetlink.c:697:28
+index 10 is out of range for type 'int [10]'
+CPU: 1 PID: 3606 Comm: syz-executor222 Not tainted 5.18.0-rc6-syzkaller-01525-gd887ae3247e0 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:nfnetlink_unbind net/netfilter/nfnetlink.c:703 [inline]
-RIP: 0010:nfnetlink_unbind+0x357/0x3b0 net/netfilter/nfnetlink.c:694
-Code: f9 48 c7 c2 00 0d d8 8a be b7 02 00 00 48 c7 c7 60 0d d8 8a c6 05 91 3d 14 06 01 e8 38 36 9b 01 e9 6e fd ff ff e8 09 66 e8 f9 <0f> 0b 41 c7 04 24 ff ff ff ff e9 9d fe ff ff e8 a5 7a 34 fa e9 dd
-RSP: 0018:ffffc90002e8fcf8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801bd11d80 RSI: ffffffff8790d397 RDI: 0000000000000003
-RBP: ffffffff90947640 R08: 0000000000000000 R09: ffffc90002e8fc37
-R10: ffffffff8790d1e8 R11: 0000000000000001 R12: ffff8880230b4d20
-R13: ffff88814c73b000 R14: ffff888016aab518 R15: ffff888016aab000
-FS:  0000555557248300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020001280 CR3: 000000001f866000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- netlink_setsockopt+0x932/0xda0 net/netlink/af_netlink.c:1661
- __sys_setsockopt+0x2db/0x6a0 net/socket.c:2227
- __do_sys_setsockopt net/socket.c:2238 [inline]
- __se_sys_setsockopt net/socket.c:2235 [inline]
- __x64_sys_setsockopt+0xba/0x150 net/socket.c:2235
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ ubsan_epilogue+0xb/0x50 lib/ubsan.c:151
+ __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:283
+ nfnetlink_unbind+0x38c/0x3b0 net/netfilter/nfnetlink.c:697
+ netlink_release+0xa8f/0x1db0 net/netlink/af_netlink.c:773
+ __sock_release+0xcd/0x280 net/socket.c:650
+ sock_close+0x18/0x20 net/socket.c:1365
+ __fput+0x277/0x9d0 fs/file_table.c:317
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:37 [inline]
+ do_exit+0xaff/0x2a00 kernel/exit.c:795
+ do_group_exit+0xd2/0x2f0 kernel/exit.c:925
+ __do_sys_exit_group kernel/exit.c:936 [inline]
+ __se_sys_exit_group kernel/exit.c:934 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:934
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f37f8e5faf9
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffef051fc88 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f37f8e5faf9
-RDX: 0000000000000002 RSI: 000000000000010e RDI: 0000000000000003
-RBP: 00007f37f8e23ca0 R08: 0000000000000004 R09: 0000000000000000
-R10: 0000000020001280 R11: 0000000000000246 R12: 00007f37f8e23d30
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+RIP: 0033:0x7f23ae868639
+Code: Unable to access opcode bytes at RIP 0x7f23ae86860f.
+RSP: 002b:00007ffe9dd00178 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007f23ae8dc270 RCX: 00007f23ae868639
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f23ae8dc270
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
  </TASK>
+================================================================================
 
 
 ---
