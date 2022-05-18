@@ -2,37 +2,28 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E3452BBED
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 May 2022 16:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB9A52BD0C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 May 2022 16:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbiERMtf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 18 May 2022 08:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
+        id S237017AbiERMvj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 18 May 2022 08:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236684AbiERMte (ORCPT
+        with ESMTP id S236984AbiERMvi (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 18 May 2022 08:49:34 -0400
+        Wed, 18 May 2022 08:51:38 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DF1F318DAC3
-        for <netfilter-devel@vger.kernel.org>; Wed, 18 May 2022 05:49:33 -0700 (PDT)
-Date:   Wed, 18 May 2022 14:49:30 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 768DF9FE4
+        for <netfilter-devel@vger.kernel.org>; Wed, 18 May 2022 05:51:37 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH] netfilter: nf_tables: restrict expression reduction to
- first expression
-Message-ID: <YoTrWqp77oeC72Cs@salvia>
-References: <20220518100842.1950-1-pablo@netfilter.org>
- <YoTPlIBany/aRvtK@orbyte.nwl.cc>
- <YoTSHls/on1S+/4N@salvia>
- <YoTbJTDxuQ131EDG@orbyte.nwl.cc>
- <20220518114807.GE4316@breakpoint.cc>
- <YoTl2oM6xiRg2/N8@salvia>
- <20220518123814.GF4316@breakpoint.cc>
+To:     netfilter-devel@vger.kernel.org
+Cc:     fw@strlen.de, phil@nwl.cc
+Subject: [PATCH nf] netfilter: nf_tables: disable expression reduction infra
+Date:   Wed, 18 May 2022 14:51:34 +0200
+Message-Id: <20220518125134.193358-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220518123814.GF4316@breakpoint.cc>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
         RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=no autolearn_force=no version=3.4.6
@@ -42,44 +33,47 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, May 18, 2022 at 02:38:14PM +0200, Florian Westphal wrote:
-> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > > This all seems fragile to me, with huge potential to add subtle bugs
-> > > that will be hard to track down.
-> > 
-> > We can expose flags to indicate that an expression is reduced and
-> > expressions that are prefetched.
-> > 
-> > New test infrastructure will help to catch bugs, more selftests and
-> > userspace validation of bytecode through exposed flags.
-> > 
-> > It would be good not to re-fetch data into register that is already
-> > there.
-> 
-> I wonder if we should explore doing this from userspace only, i.e.
-> provide hints to kernel which expressions should be dropped in a given
-> chain.
-> 
-> Thats more transparent and would permit to reshuffle expressions,
-> e.g. first add all 'load instructions' and then do the comparisions
-> register opererations.
-> 
-> Kind of reverse approach to what you and Phil are doing, instead of
-> eliding expressions in the data path representation based on in-kernel
-> logic and a debug infra that annotates 'soft off' expressions, annotate
-> them in userspace and then tell kernel what it can discard.
-> 
-> Downside is that userspace would have to delete+re-add entire chain to
-> keep the 'elide' as-is.
+Either userspace or kernelspace need to pre-fetch keys inconditionally
+before comparisons for this to work. Otherwise, register tracking data
+is misleading and it might result in reducing expressions which are not
+yet registers.
 
-Problem is incremental ruleset updates, we'd go back to iptables way
-(dump ruleset, rework, reload).
+First expression is also guaranteed to be evaluated always, therefore,
+since some expression, eg. nft_meta for certain keys to break before
+comparison. Other expressions such as nft_socket rely on packet
+evaluation for the socket object, otherwise break before the comparison,
+in this case tracking should be canceled.
 
-> With proposed scheme, we will have to patch kernel and then tell users
-> that they must upgrade kernel or risk that their ruelset is incorrect.
-> 
-> With userspace approach, we could slowly extend nft and add explicit
-> optimization flags to the commandline tool, with default of re-fetch.
+This patch disables this infrastructure by now.
 
-I would revisit to enable expression reduction for keys that do not
-depend on datapath data by canceling tracking in such case.
+Fixes: b2d306542ff9 ("netfilter: nf_tables: do not reduce read-only expressions")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_tables_api.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
+
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 16c3a39689f4..a096b9fbbbdf 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -8342,16 +8342,7 @@ EXPORT_SYMBOL_GPL(nf_tables_trans_destroy_flush_work);
+ static bool nft_expr_reduce(struct nft_regs_track *track,
+ 			    const struct nft_expr *expr)
+ {
+-	if (!expr->ops->reduce) {
+-		pr_warn_once("missing reduce for expression %s ",
+-			     expr->ops->type->name);
+-		return false;
+-	}
+-
+-	if (nft_reduce_is_readonly(expr))
+-		return false;
+-
+-	return expr->ops->reduce(track, expr);
++	return false;
+ }
+ 
+ static int nf_tables_commit_chain_prepare(struct net *net, struct nft_chain *chain)
+-- 
+2.30.2
+
