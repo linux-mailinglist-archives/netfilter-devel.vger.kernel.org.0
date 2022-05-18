@@ -2,144 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB0A52BD76
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 May 2022 16:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C8952BD2C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 May 2022 16:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237348AbiERMr1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 18 May 2022 08:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
+        id S237292AbiERMoU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 18 May 2022 08:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237295AbiERMpx (ORCPT
+        with ESMTP id S237295AbiERMoH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 18 May 2022 08:45:53 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3042215D31A
-        for <netfilter-devel@vger.kernel.org>; Wed, 18 May 2022 05:42:18 -0700 (PDT)
-Date:   Wed, 18 May 2022 14:33:04 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org,
-        fw@strlen.de
+        Wed, 18 May 2022 08:44:07 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B9C1AEC70
+        for <netfilter-devel@vger.kernel.org>; Wed, 18 May 2022 05:38:18 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1nrIwQ-0000lR-VI; Wed, 18 May 2022 14:38:15 +0200
+Date:   Wed, 18 May 2022 14:38:14 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+        netfilter-devel@vger.kernel.org
 Subject: Re: [PATCH] netfilter: nf_tables: restrict expression reduction to
  first expression
-Message-ID: <YoTngK20lMg53JOy@salvia>
+Message-ID: <20220518123814.GF4316@breakpoint.cc>
 References: <20220518100842.1950-1-pablo@netfilter.org>
  <YoTPlIBany/aRvtK@orbyte.nwl.cc>
  <YoTSHls/on1S+/4N@salvia>
  <YoTbJTDxuQ131EDG@orbyte.nwl.cc>
- <YoTk5VKX98itwUQo@salvia>
+ <20220518114807.GE4316@breakpoint.cc>
+ <YoTl2oM6xiRg2/N8@salvia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YoTk5VKX98itwUQo@salvia>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <YoTl2oM6xiRg2/N8@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, May 18, 2022 at 02:21:59PM +0200, Pablo Neira Ayuso wrote:
-> On Wed, May 18, 2022 at 01:40:21PM +0200, Phil Sutter wrote:
-> > On Wed, May 18, 2022 at 01:01:50PM +0200, Pablo Neira Ayuso wrote:
-> > > On Wed, May 18, 2022 at 12:51:00PM +0200, Phil Sutter wrote:
-> > > > Hi,
-> > > > 
-> > > > On Wed, May 18, 2022 at 12:08:42PM +0200, Pablo Neira Ayuso wrote:
-> > > > > Either userspace or kernelspace need to pre-fetch keys inconditionally
-> > > > > before comparisons for this to work. Otherwise, register tracking data
-> > > > > is misleading and it might result in reducing expressions which are not
-> > > > > yet registers.
-> > > > > 
-> > > > > First expression is guaranteed to be evaluated always, therefore, keep
-> > > > > tracking registers and restrict reduction to first expression.
-> > > > > 
-> > > > > Fixes: b2d306542ff9 ("netfilter: nf_tables: do not reduce read-only expressions")
-> > > > > Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> > > > > ---
-> > > > > @Phil, you mentioned about a way to simplify this patch, I don't see how,
-> > > > > just let me know.
-> > > > 
-> > > > Not a big one. Instead of:
-> > > > 
-> > > > |	if (nft_expr_reduce(&track, expr)) {
-> > > > |		if (reduce) {
-> > > > |			reduce = false;
-> > > > |			expr = track.cur;
-> > > > |			continue;
-> > > > |		}
-> > > > |	} else if (reduce) {
-> > > > |		reduce = false;
-> > > > |	}
-> > > > 
-> > > > One could do:
-> > > > 
-> > > > |	if (nft_expr_reduce(&track, expr) && reduce) {
-> > > > |		reduce = false;
-> > > > |		expr = track.cur;
-> > > > |		continue;
-> > > > |	}
-> > > > |	reduce = false;
-> > > 
-> > > I'll send v2 using this idiom.
-> > > 
-> > > > Regarding later pre-fetching, one should distinguish between expressions
-> > > > that (may) set verdict register and those that don't. There are pitfalls
-> > > > though, e.g. error conditions handled that way.
-> > > > 
-> > > > Maybe introduce a new nft_expr_type field and set reduce like so:
-> > > > 
-> > > > | reduce = reduce && expr->ops->type->reduce;
-> > > 
-> > > Could you elaborate?
-> > 
-> > Well, an expression which may set verdict register to NFT_BREAK should
-> > prevent reduction of later expressions in same rule as it may stop rule
-> > evaluation at run-time. This is obvious for nft_cmp, but nft_meta is
-> > also a candidate: NFT_META_IFTYPE causes NFT_BREAK if pkt->skb->dev is
-> > NULL. The optimizer must not assume later expressions are evaluated.
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> > This all seems fragile to me, with huge potential to add subtle bugs
+> > that will be hard to track down.
 > 
-> How many other expression are breaking when fetching the key?
+> We can expose flags to indicate that an expression is reduced and
+> expressions that are prefetched.
 > 
-> > A first step might be said nft_expr_type field indicating a given
-> > expression might stop expression evaluation. Therefore:
-> > 
-> > | reduce = reduce && expr->ops->type->reduce;
-> > 
-> > would continue expression reduction if not already stopped and the
-> > current expression doesn't end it.
-> > 
-> > Taking nft_meta as example again:
-> > 
-> > * Behaviour changes based on nft_expr_type::select_ops result
-> > * Some keys are guaranteed to not stop expression evaluation:
-> >   NFT_META_LEN for instance will always just fetch skb->len. So
-> >   introduce a callback instead:
-> >
-> > | bool nft_expr_ops::may_break(const struct nft_expr *expr);
-> >
-> > Then "ask" the expression whether it may change verdict register:
-> > 
-> > | reduce = reduce && expr->ops->may_break(expr);
-> > 
-> > With nft_meta_get_ops, we'd have:
-> > 
-> > | bool nft_meta_get_may_break(const struct nft_expr *expr)
-> > | {
-> > | 	switch (nft_expr_priv(expr)->key) {
-> > | 	case NFT_META_LEN:
-> > | 	case NFT_META_PROTOCOL::
-> > | 	[...]
-> > | 		return false;
-> > | 	case NFT_META_IFTYPE:
-> > | 	[...]
-> > | 		return true;
-> > | 	}
-> > | }
+> New test infrastructure will help to catch bugs, more selftests and
+> userspace validation of bytecode through exposed flags.
 > 
-> And simply remove that NFT_BREAK and set a value that will not ever
-> match via nft_cmp?
+> It would be good not to re-fetch data into register that is already
+> there.
 
-Canceling tracking of keys that might break is probably a more simple
-solution.
+I wonder if we should explore doing this from userspace only, i.e.
+provide hints to kernel which expressions should be dropped in a given
+chain.
+
+Thats more transparent and would permit to reshuffle expressions,
+e.g. first add all 'load instructions' and then do the comparisions
+register opererations.
+
+Kind of reverse approach to what you and Phil are doing, instead of
+eliding expressions in the data path representation based on in-kernel
+logic and a debug infra that annotates 'soft off' expressions, annotate
+them in userspace and then tell kernel what it can discard.
+
+Downside is that userspace would have to delete+re-add entire chain to
+keep the 'elide' as-is.
+
+With proposed scheme, we will have to patch kernel and then tell users
+that they must upgrade kernel or risk that their ruelset is incorrect.
+
+With userspace approach, we could slowly extend nft and add explicit
+optimization flags to the commandline tool, with default of re-fetch.
