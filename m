@@ -2,93 +2,159 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDDF52C730
-	for <lists+netfilter-devel@lfdr.de>; Thu, 19 May 2022 01:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E8452C994
+	for <lists+netfilter-devel@lfdr.de>; Thu, 19 May 2022 04:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbiERXBL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 18 May 2022 19:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
+        id S231757AbiESCH3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 18 May 2022 22:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbiERXA4 (ORCPT
+        with ESMTP id S229929AbiESCH2 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 18 May 2022 19:00:56 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F02EE3E
-        for <netfilter-devel@vger.kernel.org>; Wed, 18 May 2022 16:00:54 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-2fedd26615cso40090377b3.7
-        for <netfilter-devel@vger.kernel.org>; Wed, 18 May 2022 16:00:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
-        b=m737Nqvc/KIg6gxq4zKsjcACSEPn+xcdgSxVPjita4ziZ+Xh8PgDEoP9rnBTvGzOTk
-         z64JSD5gGTA4JOaTz/Lm4HzMQ+hhOr7rvR5o2L04f0ly6joq4F8ShUT5YKvBD5CSa9jx
-         qjPACLUncz4281k0vPHtHxJn56k6QNSzC08CSmTju7J0KRM0tXYntMi8z2keA248GDiz
-         KruU0ZugdGIanyCL1KIN7CWDV9/R3PoDFh9KaE5/uHUdNhT/S3pT/8U2ilhlAXtOJPHa
-         Gihg053sD6ZKxvMPNoxmZFNKqAyv5DO0jzvcFzvblWf/vSTa1LNS64XXExGG34VFSo2R
-         4xcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=mZ3wqB4NmL7z6lpFr/h15h1rYqsZKafJnUpMVahbEPg=;
-        b=oJU7aKtBEWzZqHe04UrO+M6wgKtk7m1ydnMZPSHRt+UFPPnNDmm5HUH/vc/fzAEImR
-         6BUbDVVg5wJAEiQGtr20cWiEaw7o/xpOngLsa6Y7T4K/CRSKLU9zIyCC30lCPEAy8CXD
-         yUAljaD3YWkkKcSIcnEEmlK96MlHMzzp1UFgrZ+zn0dwSAqteQLrbmQ+777qmBk3o/nI
-         m4WjRdZ3q+UxLeZxus6QMDK/G2b+jdbM0gw+85ogSFUJ2Dqm1zxfLHQB6ac1VUtLKJfv
-         7rAP+ZVB4Unlyzc1NmtVjBbvhbj3UchhxLkEMp8WKZSaBCsaObX1MOo2XL/5EVFfvErg
-         fACA==
-X-Gm-Message-State: AOAM530FvritePutBre0ovDvXp/xTOGO3g5dmQnVnSNMPPQEMjMa4RxM
-        kRA2McmLVDQvU2TQJ8BHgVK6b7d2PGjccdUAoNM=
-X-Google-Smtp-Source: ABdhPJxNvBBmU64IRJMsNa0tB8WN6c26E7xASM5cp+9eoH629euZwdQpN5agfvXg8Hv859+QtIAylruVf29GfOV0Efg=
-X-Received: by 2002:a0d:c0c6:0:b0:2ff:bb2:1065 with SMTP id
- b189-20020a0dc0c6000000b002ff0bb21065mr1966684ywd.512.1652914854112; Wed, 18
- May 2022 16:00:54 -0700 (PDT)
+        Wed, 18 May 2022 22:07:28 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F58E3D48C;
+        Wed, 18 May 2022 19:07:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1652926047; x=1684462047;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NW+eRlcG/MgejbNpwgfiiUoBffsK8joi9+Ij1lE+c0g=;
+  b=TVJVLxCh2JBXSzjW0ZI/68mgaIxlfD/t2cm4xnIqBx7GYAXxdJMsoEvQ
+   m2rqrYUpo5va5C2SY6EeXOdUn08tAeor5WlZewdwSSrbU8tXzMbG1fKlv
+   glGoCa7Mxi37BkMrUeNMjPllO5ZQK6kQvfqfUWrBiWp+iPvMMyKp4FE3I
+   r5MWwBwTqHpmM1vu5p5ei/qraVEOICvwpePF5O321NewWuILq6tddYQ1V
+   +d/fJZtaFD8VwAIyUHxq8LA5NSVOjyHr0dmYZeJwLRFD3yAnpAjAS3lKq
+   WClKUZSRw5wOYB4yHkNpsxPuBMocdNY9DXZzchdcRQc8Vivdg8VjUTrjb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10351"; a="252497346"
+X-IronPort-AV: E=Sophos;i="5.91,236,1647327600"; 
+   d="scan'208";a="252497346"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2022 19:07:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,236,1647327600"; 
+   d="scan'208";a="523825043"
+Received: from lkp-server02.sh.intel.com (HELO 242b25809ac7) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 18 May 2022 19:07:22 -0700
+Received: from kbuild by 242b25809ac7 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nrVZR-0002w5-Sy;
+        Thu, 19 May 2022 02:07:21 +0000
+Date:   Thu, 19 May 2022 10:06:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        pablo@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
+        memxor@gmail.com
+Subject: Re: [PATCH v3 bpf-next 4/5] net: netfilter: add kfunc helper to add
+ a new ct entry
+Message-ID: <202205191006.OH1ukt9R-lkp@intel.com>
+References: <40e7ce4b79c86c46e5fbf22e9cafb51b9172da19.1652870182.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a05:7000:7143:0:0:0:0 with HTTP; Wed, 18 May 2022 16:00:53
- -0700 (PDT)
-Reply-To: tonywenn@asia.com
-From:   Tony Wen <weboutloock4@gmail.com>
-Date:   Thu, 19 May 2022 07:00:53 +0800
-Message-ID: <CAE2_YrCtgfqs+8hO2xiCFT0shc5zmp=YrfnsNtFvNjd-K9oh0A@mail.gmail.com>
-Subject: engage
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <40e7ce4b79c86c46e5fbf22e9cafb51b9172da19.1652870182.git.lorenzo@kernel.org>
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:112e listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4753]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [weboutloock4[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [weboutloock4[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.4 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Can I engage your services?
+Hi Lorenzo,
+
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Lorenzo-Bianconi/net-netfilter-add-kfunc-helper-to-update-ct-timeout/20220518-184654
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: s390-defconfig (https://download.01.org/0day-ci/archive/20220519/202205191006.OH1ukt9R-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/7427419a3d3ae771c69eed7318a9b5f5d582b488
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Lorenzo-Bianconi/net-netfilter-add-kfunc-helper-to-update-ct-timeout/20220518-184654
+        git checkout 7427419a3d3ae771c69eed7318a9b5f5d582b488
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=s390 SHELL=/bin/bash net/netfilter/
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> net/netfilter/nf_conntrack_bpf.c:99:1: warning: no previous prototype for '__bpf_nf_ct_alloc_entry' [-Wmissing-prototypes]
+      99 | __bpf_nf_ct_alloc_entry(struct net *net, struct bpf_sock_tuple *bpf_tuple,
+         | ^~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/__bpf_nf_ct_alloc_entry +99 net/netfilter/nf_conntrack_bpf.c
+
+    97	
+    98	struct nf_conn *
+  > 99	__bpf_nf_ct_alloc_entry(struct net *net, struct bpf_sock_tuple *bpf_tuple,
+   100				u32 tuple_len, u8 protonum, s32 netns_id, u32 timeout)
+   101	{
+   102		struct nf_conntrack_tuple otuple, rtuple;
+   103		struct nf_conn *ct;
+   104		int err;
+   105	
+   106		if (unlikely(netns_id < BPF_F_CURRENT_NETNS))
+   107			return ERR_PTR(-EINVAL);
+   108	
+   109		err = bpf_nf_ct_tuple_parse(bpf_tuple, tuple_len, protonum,
+   110					    IP_CT_DIR_ORIGINAL, &otuple);
+   111		if (err < 0)
+   112			return ERR_PTR(err);
+   113	
+   114		err = bpf_nf_ct_tuple_parse(bpf_tuple, tuple_len, protonum,
+   115					    IP_CT_DIR_REPLY, &rtuple);
+   116		if (err < 0)
+   117			return ERR_PTR(err);
+   118	
+   119		if (netns_id >= 0) {
+   120			net = get_net_ns_by_id(net, netns_id);
+   121			if (unlikely(!net))
+   122				return ERR_PTR(-ENONET);
+   123		}
+   124	
+   125		ct = nf_conntrack_alloc(net, &nf_ct_zone_dflt, &otuple, &rtuple,
+   126					GFP_ATOMIC);
+   127		if (IS_ERR(ct))
+   128			goto out;
+   129	
+   130		ct->timeout = timeout * HZ + jiffies;
+   131		ct->status |= IPS_CONFIRMED;
+   132	
+   133		memset(&ct->proto, 0, sizeof(ct->proto));
+   134		if (protonum == IPPROTO_TCP)
+   135			ct->proto.tcp.state = TCP_CONNTRACK_ESTABLISHED;
+   136	
+   137		err = nf_conntrack_hash_check_insert(ct);
+   138		if (err < 0) {
+   139			nf_conntrack_free(ct);
+   140			ct = ERR_PTR(err);
+   141		}
+   142	out:
+   143		if (netns_id >= 0)
+   144			put_net(net);
+   145	
+   146		return ct;
+   147	}
+   148	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
