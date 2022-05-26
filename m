@@ -2,30 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A6353550F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 May 2022 22:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CBE535528
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 May 2022 22:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235852AbiEZUs6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 26 May 2022 16:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47526 "EHLO
+        id S1345246AbiEZUyY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 26 May 2022 16:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348865AbiEZUs5 (ORCPT
+        with ESMTP id S1349152AbiEZUyV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 26 May 2022 16:48:57 -0400
+        Thu, 26 May 2022 16:54:21 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 19388E64DF
-        for <netfilter-devel@vger.kernel.org>; Thu, 26 May 2022 13:48:56 -0700 (PDT)
-Date:   Thu, 26 May 2022 22:48:53 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DAE2FE8B8C;
+        Thu, 26 May 2022 13:54:15 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [nf PATCH] netfilter: nft_limit: Clone packet limits' cost value
-Message-ID: <Yo/ntUD4NIWTxqnE@salvia>
-References: <20220524125001.25881-1-phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+        pabeni@redhat.com
+Subject: [PATCH net 0/2] Netfilter fixes for net
+Date:   Thu, 26 May 2022 22:54:09 +0200
+Message-Id: <20220526205411.315136-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220524125001.25881-1-phil@nwl.cc>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -35,8 +34,41 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, May 24, 2022 at 02:50:01PM +0200, Phil Sutter wrote:
-> When cloning a packet-based limit expression, copy the cost value as
-> well. Otherwise the new limit is not functional anymore.
+Hi,
 
-Applied, thanks
+The following patchset contains Netfilter fixes for net:
+
+1) Fix UAF when creating non-stateful expression in set.
+
+2) Set limit cost when cloning expression accordingly, from Phil Sutter.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 6c465408a7709cf180cde7569e141191b67a175c:
+
+  dt-bindings: net: adin: Fix adi,phy-output-clock description syntax (2022-05-25 22:03:45 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git HEAD
+
+for you to fetch changes up to 558254b0b602b8605d7246a10cfeb584b1fcabfc:
+
+  netfilter: nft_limit: Clone packet limits' cost value (2022-05-26 22:50:34 +0200)
+
+----------------------------------------------------------------
+Pablo Neira Ayuso (1):
+      netfilter: nf_tables: disallow non-stateful expression in sets earlier
+
+Phil Sutter (1):
+      netfilter: nft_limit: Clone packet limits' cost value
+
+ net/netfilter/nf_tables_api.c | 19 ++++++++++---------
+ net/netfilter/nft_limit.c     |  2 ++
+ 2 files changed, 12 insertions(+), 9 deletions(-)
