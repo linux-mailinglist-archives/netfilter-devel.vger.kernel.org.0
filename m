@@ -2,114 +2,83 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76997534807
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 May 2022 03:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16A553480E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 May 2022 03:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239750AbiEZBXF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 25 May 2022 21:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49134 "EHLO
+        id S232124AbiEZB0D (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 25 May 2022 21:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbiEZBXE (ORCPT
+        with ESMTP id S230018AbiEZB0C (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 25 May 2022 21:23:04 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5D76EC4F;
-        Wed, 25 May 2022 18:23:03 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id h186so134810pgc.3;
-        Wed, 25 May 2022 18:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0nqWB/LSEwThisZLz/wW12YmDGCojhBcUDE6LDvsPV0=;
-        b=ThWslwVu5+xITBYy/y8OV9wmC80QfQLOPsP221cWT9FtRu11K+uu5ur4UCa6BSs37c
-         gjW4chHRLzLmEoOgPnM7YRFM3upFuJ7bOpXUQGrzJthaTPlYSk9YxCUz6sQ0KT2/vbRN
-         6xB+2TH+7fqVtDQXrhgFgmKp+3jaTSWJ984J60cuzPl6MPsYpbGsn2wB6JbgGIiA9jN+
-         0CiIZv5m2X7qFNzAw0D2kI2krSHwqarAOY21kq7s214vTOW5RWIzc+TxVskjXED/cMTv
-         /91609019Ln4SoO2hMoJKtforPWi1s+aMl/pDU+EDyZmmRJuMdp5ilqKwZFW3uvdfHyK
-         TQWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0nqWB/LSEwThisZLz/wW12YmDGCojhBcUDE6LDvsPV0=;
-        b=KVv4rD3Yt06MvPhGXK9ERWdYtaqAesMtMHRIKJXSd5l6mHibK91hgQHKAP5sPrOGMr
-         kLxDuY3RfFr8g9UUKkziQwrqm/UNQSILRcc1t4XSFltU2bhYDCjlerp94r6eddZ820iZ
-         34AgYVqAJh1cT58Km3ZM8bQ+ZEmUkLGikNcpbiFsIMTgPMNr2/4zIKswVos01h6lDSPb
-         YP1wGy2UyIfBxHcG4YCk9ZKCpNohrAJdE9s8fpCx5l9Zmhs9tBEYVbNnhstup/bONARW
-         ws8vsULQsNm6woh9cVgBgS7+fonsNW8zZP5fP6XjxYdgnecANrP+0re099j7dVKXUh8i
-         f3Ww==
-X-Gm-Message-State: AOAM533rcyGCT7srlyjm9YlxtwwhaSxNVPuaGgucnf0QmhV4risNv0WK
-        R4aPtJHk1o5w9iJ8vACLDm0=
-X-Google-Smtp-Source: ABdhPJwqevSetUTrgBGV0OADIxks6YW6FZUIO9P2LGG3VCfy3/qJHDrjU0rOXV9e8n2rgmzRL8McRw==
-X-Received: by 2002:a63:6cc7:0:b0:3f6:ba59:1bcc with SMTP id h190-20020a636cc7000000b003f6ba591bccmr25222379pgc.188.1653528182711;
-        Wed, 25 May 2022 18:23:02 -0700 (PDT)
-Received: from localhost ([2405:6580:97e0:3100:ae94:2ee7:59a:4846])
-        by smtp.gmail.com with ESMTPSA id e9-20020a170902ef4900b0015e8d4eb1c1sm66497plx.11.2022.05.25.18.23.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 May 2022 18:23:01 -0700 (PDT)
-Date:   Thu, 26 May 2022 10:22:59 +0900
-From:   Benjamin Poirier <benjamin.poirier@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next v8 09/10] selftests/bpf: Extend kfunc selftests
-Message-ID: <Yo7Wc2xGyuq/1tq1@d3>
-References: <20220114163953.1455836-1-memxor@gmail.com>
- <20220114163953.1455836-10-memxor@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220114163953.1455836-10-memxor@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 25 May 2022 21:26:02 -0400
+Received: from chinatelecom.cn (prt-mail.chinatelecom.cn [42.123.76.228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 048C96EC4F
+        for <netfilter-devel@vger.kernel.org>; Wed, 25 May 2022 18:26:01 -0700 (PDT)
+HMM_SOURCE_IP: 172.18.0.218:58134.1258804910
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-101.229.165.111 (unknown [172.18.0.218])
+        by chinatelecom.cn (HERMES) with SMTP id 8635D28012E;
+        Thu, 26 May 2022 09:25:58 +0800 (CST)
+X-189-SAVE-TO-SEND: +wenxu@chinatelecom.cn
+Received: from  ([172.18.0.218])
+        by app0025 with ESMTP id a35c366cd14944749a77384eca4a7d54 for pablo@netfilter.org;
+        Thu, 26 May 2022 09:25:59 CST
+X-Transaction-ID: a35c366cd14944749a77384eca4a7d54
+X-Real-From: wenxu@chinatelecom.cn
+X-Receive-IP: 172.18.0.218
+X-MEDUSA-Status: 0
+Sender: wenxu@chinatelecom.cn
+From:   wenxu@chinatelecom.cn
+To:     pablo@netfilter.org, sven.auhagen@voleatech.de
+Cc:     netfilter-devel@vger.kernel.org, wenxu@chinatelecom.cn
+Subject: [PATCH nf-next 1/2] netfilter: flowtable: fix nft_flow_route miss FLOWI_FLAG_ANYSRC flag
+Date:   Wed, 25 May 2022 21:25:45 -0400
+Message-Id: <1653528346-5266-1-git-send-email-wenxu@chinatelecom.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 2022-01-14 22:09 +0530, Kumar Kartikeya Dwivedi wrote:
-> Use the prog_test kfuncs to test the referenced PTR_TO_BTF_ID kfunc
-> support, and PTR_TO_CTX, PTR_TO_MEM argument passing support. Also
-> testing the various failure cases for invalid kfunc prototypes.
-> 
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  net/bpf/test_run.c                            | 129 +++++++++++++++++-
->  .../selftests/bpf/prog_tests/kfunc_call.c     |   6 +
->  .../selftests/bpf/progs/kfunc_call_test.c     |  52 ++++++-
->  tools/testing/selftests/bpf/verifier/calls.c  |  75 ++++++++++
->  4 files changed, 258 insertions(+), 4 deletions(-)
-> 
+From: wenxu <wenxu@chinatelecom.cn>
 
-It looks like this patch broke building the bpf tests:
+The nf_flow_tabel get route through ip_route_output_key.
+When the saddr is not local one, the FLOWI_FLAG_ANYSRC
+flag should be setten. Without this flag, the route lookup
+for other_dst will failed.
 
-tools/testing/selftests/bpf$ make
-  CLNG-BPF [test_maps] kfunc_call_test.o
-progs/kfunc_call_test.c:13:46: error: declaration of 'struct prog_test_pass1' will not be visible outside of this function [-Werror,-Wvisibility]
-extern void bpf_kfunc_call_test_pass1(struct prog_test_pass1 *p) __ksym;
-                                             ^
+Fixes: 3412e1641828 (netfilter: flowtable: nft_flow_route use more data for reverse route)
+Signed-off-by: wenxu <wenxu@chinatelecom.cn>
+---
+ net/netfilter/nft_flow_offload.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The only definition of struct prog_test_pass1 that I see is in
-net/bpf/test_run.c. How is this supposed to work?
+diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
+index a16cf47..20e5f37 100644
+--- a/net/netfilter/nft_flow_offload.c
++++ b/net/netfilter/nft_flow_offload.c
+@@ -237,6 +237,7 @@ static int nft_flow_route(const struct nft_pktinfo *pkt,
+ 		fl.u.ip4.flowi4_iif = this_dst->dev->ifindex;
+ 		fl.u.ip4.flowi4_tos = RT_TOS(ip_hdr(pkt->skb)->tos);
+ 		fl.u.ip4.flowi4_mark = pkt->skb->mark;
++		fl.u.ip4.flowi4_flags = FLOWI_FLAG_ANYSRC;
+ 		break;
+ 	case NFPROTO_IPV6:
+ 		fl.u.ip6.daddr = ct->tuplehash[dir].tuple.src.u3.in6;
+@@ -245,6 +246,7 @@ static int nft_flow_route(const struct nft_pktinfo *pkt,
+ 		fl.u.ip6.flowi6_iif = this_dst->dev->ifindex;
+ 		fl.u.ip6.flowlabel = ip6_flowinfo(ipv6_hdr(pkt->skb));
+ 		fl.u.ip6.flowi6_mark = pkt->skb->mark;
++		fl.u.ip6.flowi6_flags = FLOWI_FLAG_ANYSRC;
+ 		break;
+ 	}
+ 
+-- 
+1.8.3.1
 
-
-commit 87091063df5d ("selftests/bpf: Add test for unstable CT lookup
-API") from the same series added a similar problem in
-progs/test_bpf_nf.c:
-
-progs/test_bpf_nf.c:31:21: error: variable has incomplete type 'struct bpf_ct_opts'
-        struct bpf_ct_opts opts_def = { .l4proto = IPPROTO_TCP, .netns_id = -1 };
-                           ^
