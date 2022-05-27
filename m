@@ -2,92 +2,76 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7B5535E24
-	for <lists+netfilter-devel@lfdr.de>; Fri, 27 May 2022 12:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E589A536367
+	for <lists+netfilter-devel@lfdr.de>; Fri, 27 May 2022 15:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350925AbiE0KZS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 27 May 2022 06:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
+        id S1352675AbiE0No5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 27 May 2022 09:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234079AbiE0KZS (ORCPT
+        with ESMTP id S1349721AbiE0Noy (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 27 May 2022 06:25:18 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE78461295
-        for <netfilter-devel@vger.kernel.org>; Fri, 27 May 2022 03:25:16 -0700 (PDT)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     sbrivio@redhat.com, fw@strlen.de
-Subject: [PATCH nf] netfilter: nf_tables: sanitize nft_set_desc_concat_parse()
-Date:   Fri, 27 May 2022 12:25:10 +0200
-Message-Id: <20220527102510.333650-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
+        Fri, 27 May 2022 09:44:54 -0400
+X-Greylist: delayed 9261 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 May 2022 06:44:53 PDT
+Received: from mail.composit.net (mail.composit.net [195.49.185.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BD85849251
+        for <netfilter-devel@vger.kernel.org>; Fri, 27 May 2022 06:44:53 -0700 (PDT)
+Received: from mail.composit.net (localhost.localdomain [127.0.0.1])
+        by mail.composit.net (Proxmox) with ESMTP id 97EA0389C1B;
+        Fri, 27 May 2022 14:06:50 +0300 (MSK)
+Received: from mail.composit.net (mail.composit.local [192.168.101.14])
+        by mail.composit.net (Proxmox) with SMTP id 69B79390E22;
+        Fri, 27 May 2022 14:06:50 +0300 (MSK)
+Received: from [192.168.1.105] (Unknown [197.234.219.23])
+        by mail.composit.net with ESMTPSA
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256)
+        ; Fri, 27 May 2022 14:06:51 +0300
+Message-ID: <B653E154-A637-4B0D-AEFD-D6885CA8C9CB@mail.composit.net>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Greetings From Ukraine.  
+To:     Recipients <heiss@dnet.it>
+From:   "Kostiantyn Chichkov" <heiss@dnet.it>
+Date:   Fri, 27 May 2022 12:06:29 +0100
+Reply-To: kostiantync@online.ee
+X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_SBL,RCVD_IN_SORBS_WEB,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  1.3 RCVD_IN_BL_SPAMCOP_NET RBL: Received via a relay in
+        *      bl.spamcop.net
+        *      [Blocked - see <https://www.spamcop.net/bl.shtml?195.49.185.119>]
+        *  1.5 RCVD_IN_SORBS_WEB RBL: SORBS: sender is an abusable web server
+        *      [197.234.219.23 listed in dnsbl.sorbs.net]
+        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *      [197.234.219.23 listed in zen.spamhaus.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 SPF_NONE SPF: sender does not publish an SPF Record
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [195.49.185.119 listed in bl.score.senderscore.com]
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add several sanity checks for nft_set_desc_concat_parse():
+Good Morning,
 
-- validate desc->field_count not larger than desc->field_len array.
-- field length cannot be larger than desc->field_len (ie. U8_MAX)
-- total length of the concatenation cannot be larger than register array.
+We are Kostiantyn Chychkov and Maryna Chudnovska from Ukraine, we need your service, we have gone through your profile and we will like to work with you on an important service that needs urgent attention due to the ongoing war in our country. Kindly acknowledge this inquiry as soon as possible for a detailed discussion about the service.
 
-Joint work with Florian Westphal.
+Thank you.
 
-Fixes: f3a2181e16f1 ("netfilter: nf_tables: Support for sets with multiple ranged fields")
-Reported-by: <zhangziming.zzm@antgroup.com>
-Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Yours expectantly,
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index f4f1d0a2da43..0c7a755dfabb 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -4243,8 +4243,11 @@ static int nft_set_desc_concat_parse(const struct nlattr *attr,
- 				     struct nft_set_desc *desc)
- {
- 	struct nlattr *tb[NFTA_SET_FIELD_MAX + 1];
--	u32 len;
--	int err;
-+	u32 len, total = 0;
-+	int err, i;
-+
-+	if (desc->field_count >= ARRAY_SIZE(desc->field_len))
-+		return -E2BIG;
- 
- 	err = nla_parse_nested_deprecated(tb, NFTA_SET_FIELD_MAX, attr,
- 					  nft_concat_policy, NULL);
-@@ -4255,12 +4258,17 @@ static int nft_set_desc_concat_parse(const struct nlattr *attr,
- 		return -EINVAL;
- 
- 	len = ntohl(nla_get_be32(tb[NFTA_SET_FIELD_LEN]));
--
--	if (len * BITS_PER_BYTE / 32 > NFT_REG32_COUNT)
-+	if (len > U8_MAX)
- 		return -E2BIG;
- 
- 	desc->field_len[desc->field_count++] = len;
- 
-+	for (i = 0; i < desc->field_count; i++)
-+		total += desc->field_len[i];
-+
-+	if (total > U8_MAX || total * BITS_PER_BYTE / 32 > NFT_REG32_COUNT)
-+		return -E2BIG;
-+
- 	return 0;
- }
- 
--- 
-2.30.2
+Kostiantyn Chichkov & Ms. Maryna Chudnovska,
+From Ukraine.
+
 
