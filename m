@@ -2,110 +2,165 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 021F7538494
-	for <lists+netfilter-devel@lfdr.de>; Mon, 30 May 2022 17:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448115385E6
+	for <lists+netfilter-devel@lfdr.de>; Mon, 30 May 2022 18:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237890AbiE3PQ6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 30 May 2022 11:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54330 "EHLO
+        id S234832AbiE3QJO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 30 May 2022 12:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238301AbiE3PQg (ORCPT
+        with ESMTP id S241568AbiE3QJJ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 30 May 2022 11:16:36 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B59B47AF1
-        for <netfilter-devel@vger.kernel.org>; Mon, 30 May 2022 07:16:52 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id j16so2374298ilk.8
-        for <netfilter-devel@vger.kernel.org>; Mon, 30 May 2022 07:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=XJqXgw0Qi4Ge6Q57wB4GlvotoYnhUuSq68y9152a6AE=;
-        b=Lpl6uIHb/CUKBxaRsaZ6qp/Z90iHvECzKfKO6KapKsd+X++aqtVGKj4nud9t9YOOjR
-         mSUD934dwewAuu7nwpFLF2urLZmfkAx/XCloMnYVh/79qXX9bflRK4hiR/JhWJciNKl0
-         kHmvmw41AiMzQx0yyvpXZ+QFybWrdqFaOmYIaEKgiwDFX9ZAzkzKyw4dbdCpD14gxLHw
-         ngns3k/JMJSrpufV+3dobpw92aWWiulY/nUxo0/Mekd3EZ2Y7kxFFy3NX6bGIlBNURgq
-         4Ye6yXP5vsTCqNqup9C6FeiRejGBfvkdObdRNxELoD9Cby8VqNphL2oCtq/Zdt6APd4O
-         2aPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=XJqXgw0Qi4Ge6Q57wB4GlvotoYnhUuSq68y9152a6AE=;
-        b=Tlbt0k+jXcpjAqJKM8Aq4eXjxZqURAWqda7YNvJNm0QdZgCNE7lwOaMbYXG76sa8Xv
-         g4/GWcz5qMm+qh+jjAMwNZ2zPadVOtgVl4EIVONFriFocoOrtxeUeJ7IfrtXXN/TvlrE
-         3GNZ0HdbYSkWY8YNvOD7iDR+g77NfWcpFmQxpU4axACpxO3Q6AkGKLorm7h3gzsmNKBy
-         Jx1ThBUBc1r/r2ND8GwuoO97Q43EJE06PYJ6CNnm98T1zOIH7CxubjxSLguS50FeW3/K
-         laxDv4NLo4wj5JBb0PXdexkAMzfzqGGHvELyC9FkmG36ecq01sFd/gpnlaoCBdPtcPVE
-         FEkA==
-X-Gm-Message-State: AOAM532iL16igIKGU0Z0nwsZ/YIMTUOUKaEoYltbSUwNBkggNv+JZA+u
-        RGPjiQZMVHC7PsOqfEXpoDYw13wRj/iEbLbta6g=
-X-Google-Smtp-Source: ABdhPJzoaioOXcTz1TIMGdBOX4OiQu8GzAayVCziCp/mdWdOA5BywNDbmP7YOcFaMhDclDneo+y4SuNS4IDNXHzQNTo=
-X-Received: by 2002:a05:6e02:1245:b0:2d3:a86e:c587 with SMTP id
- j5-20020a056e02124500b002d3a86ec587mr2629094ilq.274.1653920211583; Mon, 30
- May 2022 07:16:51 -0700 (PDT)
+        Mon, 30 May 2022 12:09:09 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 226C46B00B
+        for <netfilter-devel@vger.kernel.org>; Mon, 30 May 2022 09:09:06 -0700 (PDT)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf 1/2] netfilter: nf_tables: double hook unregistration in netns path
+Date:   Mon, 30 May 2022 18:09:00 +0200
+Message-Id: <20220530160901.3731-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:a05:6622:f06:0:0:0:0 with HTTP; Mon, 30 May 2022 07:16:50
- -0700 (PDT)
-Reply-To: barristerbenjamin221@gmail.com
-From:   Attorney Amadou <koadaidrissa1@gmail.com>
-Date:   Mon, 30 May 2022 07:16:50 -0700
-Message-ID: <CAOh7+P-Zuro85N8Y9XOMAr-7nG=3VLLfxScij0FSYKGayQL_dw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-Spam-Status: Yes, score=7.7 required=5.0 tests=BAYES_99,BAYES_999,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:144 listed in]
-        [list.dnswl.org]
-        *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
-        *      [score: 1.0000]
-        *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
-        *      [score: 1.0000]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [koadaidrissa1[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [barristerbenjamin221[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [koadaidrissa1[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-SGVsbG8gZGVhciBmcmllbmQuDQoNClBsZWFzZSBJIHdpbGwgbG92ZSB0byBkaXNjdXNzIHNvbWV0
-aGluZyB2ZXJ5IGltcG9ydGFudCB3aXRoIHlvdSwgSQ0Kd2lsbCBhcHByZWNpYXRlIGl0IGlmIHlv
-dSBncmFudCBtZSBhdWRpZW5jZS4NCg0KU2luY2VyZWx5Lg0KQmFycmlzdGVyIEFtYWRvdSBCZW5q
-YW1pbiBFc3EuDQouLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
-Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4NCuimquaEm+OB
-quOCi+WPi+S6uuOAgeOBk+OCk+OBq+OBoeOBr+OAgg0KDQrnp4Hjga/jgYLjgarjgZ/jgajpnZ7l
-uLjjgavph43opoHjgarjgZPjgajjgavjgaTjgYTjgaboqbHjgZflkIjjgYbjga7jgYzlpKflpb3j
-gY3jgafjgZnjgIHjgYLjgarjgZ/jgYznp4HjgavogbTooYbjgpLkuI7jgYjjgabjgY/jgozjgozj
-gbDnp4Hjga/jgZ3jgozjgpLmhJ/orJ3jgZfjgb7jgZnjgIINCg0K5b+D44GL44KJ44CCDQrjg5Dj
-g6rjgrnjgr/jg7zjgqLjg57jg4njgqXjg5njg7Pjgrjjg6Pjg5/jg7NFc3HjgIINCg==
+__nft_release_hooks() is called from pre_netns exit path which
+unregisters the hooks, then the NETDEV_UNREGISTER event is triggered
+which unregisters the hooks again.
+
+[  565.221461] WARNING: CPU: 18 PID: 193 at net/netfilter/core.c:495 __nf_unregister_net_hook+0x247/0x270
+[...]
+[  565.246890] CPU: 18 PID: 193 Comm: kworker/u64:1 Tainted: G            E     5.18.0-rc7+ #27
+[  565.253682] Workqueue: netns cleanup_net
+[  565.257059] RIP: 0010:__nf_unregister_net_hook+0x247/0x270
+[...]
+[  565.297120] Call Trace:
+[  565.300900]  <TASK>
+[  565.304683]  nf_tables_flowtable_event+0x16a/0x220 [nf_tables]
+[  565.308518]  raw_notifier_call_chain+0x63/0x80
+[  565.312386]  unregister_netdevice_many+0x54f/0xb50
+
+Unregister and destroy netdev hook from netns pre_exit via kfree_rcu
+so the NETDEV_UNREGISTER path see unregistered hooks.
+
+Fixes: 767d1216bff8 ("netfilter: nftables: fix possible UAF over chains from packet path in netns")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_tables_api.c | 54 ++++++++++++++++++++++++++---------
+ 1 file changed, 41 insertions(+), 13 deletions(-)
+
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 2c6c956c7bbc..7c9eb8e42ea6 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -222,12 +222,18 @@ static int nft_netdev_register_hooks(struct net *net,
+ }
+ 
+ static void nft_netdev_unregister_hooks(struct net *net,
+-					struct list_head *hook_list)
++					struct list_head *hook_list,
++					bool release_netdev)
+ {
+-	struct nft_hook *hook;
++	struct nft_hook *hook, *next;
+ 
+-	list_for_each_entry(hook, hook_list, list)
++	list_for_each_entry_safe(hook, next, hook_list, list) {
+ 		nf_unregister_net_hook(net, &hook->ops);
++		if (release_netdev) {
++			list_del(&hook->list);
++			kfree_rcu(hook, rcu);
++		}
++	}
+ }
+ 
+ static int nf_tables_register_hook(struct net *net,
+@@ -253,9 +259,10 @@ static int nf_tables_register_hook(struct net *net,
+ 	return nf_register_net_hook(net, &basechain->ops);
+ }
+ 
+-static void nf_tables_unregister_hook(struct net *net,
+-				      const struct nft_table *table,
+-				      struct nft_chain *chain)
++static void __nf_tables_unregister_hook(struct net *net,
++					const struct nft_table *table,
++					struct nft_chain *chain,
++					bool release_netdev)
+ {
+ 	struct nft_base_chain *basechain;
+ 	const struct nf_hook_ops *ops;
+@@ -270,11 +277,19 @@ static void nf_tables_unregister_hook(struct net *net,
+ 		return basechain->type->ops_unregister(net, ops);
+ 
+ 	if (nft_base_chain_netdev(table->family, basechain->ops.hooknum))
+-		nft_netdev_unregister_hooks(net, &basechain->hook_list);
++		nft_netdev_unregister_hooks(net, &basechain->hook_list,
++					    release_netdev);
+ 	else
+ 		nf_unregister_net_hook(net, &basechain->ops);
+ }
+ 
++static void nf_tables_unregister_hook(struct net *net,
++				      const struct nft_table *table,
++				      struct nft_chain *chain)
++{
++	return __nf_tables_unregister_hook(net, table, chain, false);
++}
++
+ static void nft_trans_commit_list_add_tail(struct net *net, struct nft_trans *trans)
+ {
+ 	struct nftables_pernet *nft_net = nft_pernet(net);
+@@ -7291,13 +7306,25 @@ static void nft_unregister_flowtable_hook(struct net *net,
+ 				    FLOW_BLOCK_UNBIND);
+ }
+ 
+-static void nft_unregister_flowtable_net_hooks(struct net *net,
+-					       struct list_head *hook_list)
++static void __nft_unregister_flowtable_net_hooks(struct net *net,
++						 struct list_head *hook_list,
++					         bool release_netdev)
+ {
+-	struct nft_hook *hook;
++	struct nft_hook *hook, *next;
+ 
+-	list_for_each_entry(hook, hook_list, list)
++	list_for_each_entry_safe(hook, next, hook_list, list) {
+ 		nf_unregister_net_hook(net, &hook->ops);
++		if (release_netdev) {
++			list_del(&hook->list);
++			kfree_rcu(hook);
++		}
++	}
++}
++
++static void nft_unregister_flowtable_net_hooks(struct net *net,
++					       struct list_head *hook_list)
++{
++	__nft_unregister_flowtable_net_hooks(net, hook_list, false);
+ }
+ 
+ static int nft_register_flowtable_net_hooks(struct net *net,
+@@ -9741,9 +9768,10 @@ static void __nft_release_hook(struct net *net, struct nft_table *table)
+ 	struct nft_chain *chain;
+ 
+ 	list_for_each_entry(chain, &table->chains, list)
+-		nf_tables_unregister_hook(net, table, chain);
++		__nf_tables_unregister_hook(net, table, chain, true);
+ 	list_for_each_entry(flowtable, &table->flowtables, list)
+-		nft_unregister_flowtable_net_hooks(net, &flowtable->hook_list);
++		__nft_unregister_flowtable_net_hooks(net, &flowtable->hook_list,
++						     true);
+ }
+ 
+ static void __nft_release_hooks(struct net *net)
+-- 
+2.30.2
+
