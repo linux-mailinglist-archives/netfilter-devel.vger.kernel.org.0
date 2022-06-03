@@ -2,86 +2,203 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C76153C977
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Jun 2022 13:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EB553DB8C
+	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Jun 2022 15:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244058AbiFCLd4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 3 Jun 2022 07:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59626 "EHLO
+        id S243466AbiFEN2K (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 5 Jun 2022 09:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244008AbiFCLdz (ORCPT
+        with ESMTP id S243794AbiFEN2J (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 3 Jun 2022 07:33:55 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957791D302
-        for <netfilter-devel@vger.kernel.org>; Fri,  3 Jun 2022 04:33:54 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id f23-20020a7bcc17000000b003972dda143eso6197604wmh.3
-        for <netfilter-devel@vger.kernel.org>; Fri, 03 Jun 2022 04:33:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=PaEzrm9U0WjJMxkE+zbw8yGRv0uhjcRl9sFl9vmbKpk=;
-        b=EWFovaa+4VchWKdamHt9DH8/OQTrNKeNvK5rCmI6nUroDcxfYvo+FLeSLGjF7oh0+4
-         3OCOX+w3qAwkj6XIPMLC7CFYpkeZI5HIVg1OGop/whsHosI2uyxzLcJe6Hp35gHeRW/b
-         UlOxt6ROJmI0nL4XaTDsTUrTv5nuondIGyoUkjy9w+mmew1beH8HMycCpzsaIMsUQ4JX
-         waEEfh4XyFdgspSK/38qToJ32C79KylD54H8LVBKRr/t2S2LrkxAJt03GTC41pin6T9T
-         8FxkXHdotGTqFI5tX8Am+EBg54CzhMw4ZaIS5iIH7YhnEFDptU1krDXXnKcNn9qhU3Cl
-         huOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=PaEzrm9U0WjJMxkE+zbw8yGRv0uhjcRl9sFl9vmbKpk=;
-        b=22SJRxfMk2Qlu4nCfk+wxPxnYEjc9g4TRutHtqLv/GTjepXpKuFdzlquyKWLMJVHgf
-         sMWq002FCV8T38yj/sERaYukrR8/42Gn5AV9Yc4F7z/tiMHtMnI2F6E7j9XXHXugMt2t
-         ZmjNGCjCcHANg29LQPiVJ1LfqwSqorXcz8pyjWTaGfQjZO9thL4tAr+gbqqUtA/B8wN6
-         c+bSeuIc/xttUpBItXisE7HdJgQLVD8zJOL5FfBz2P3theXMFXvkoXvDYAqj0DJoO2F5
-         aLKGhFLy+5ZkVTi42IbWIYf0oJlzDPPVbuH6gtdPS/EaWxndA1kWYmlBS+CmRkObI4hm
-         ecNQ==
-X-Gm-Message-State: AOAM533zQByZzqjYbG6w9Uhi1AC4JsPRSyZzNrp+lRtBOzqZCgpDvfPm
-        ulKOuVpMIxAdkoIy812+xP3psf24+2/b4By+Mt4=
-X-Google-Smtp-Source: ABdhPJwol/A0N4M7AbOZAdlxWrgqkaS+Pz92low/NSQYymgaE/l7iFdSCBGjx960Sl4APqb8sP/EHo6f8iE72Z+WVvk=
-X-Received: by 2002:a05:600c:1c9f:b0:397:7ac4:b29c with SMTP id
- k31-20020a05600c1c9f00b003977ac4b29cmr8015785wms.155.1654256033146; Fri, 03
- Jun 2022 04:33:53 -0700 (PDT)
+        Sun, 5 Jun 2022 09:28:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 438532AE8
+        for <netfilter-devel@vger.kernel.org>; Sun,  5 Jun 2022 06:28:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1654435682;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zfQ0ypq+NeFcKywD7FFoFTLtx+A+cwLw3ABPEfWM7NI=;
+        b=YP6fhhPKP5afR9rXXPLI8tAQsYdjE8FEdAn0Vrz1wnIXLWRrhpT6056KqeY7alr8jScyI/
+        JQ6MJXpvxc2I5WjJ1jAC2wwJ+eMn92tnmyloA/q+m09Xo2+IOtAr6bgRIOT2c02saJHvUk
+        j7ktad8lmK4szRnBFL0E0smYItLOpJU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-26-LtaF2AEQOhmB2DBhvv8cAw-1; Sun, 05 Jun 2022 09:27:59 -0400
+X-MC-Unique: LtaF2AEQOhmB2DBhvv8cAw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 52C4D80159B;
+        Sun,  5 Jun 2022 13:27:59 +0000 (UTC)
+Received: from maya.cloud.tilaa.com (unknown [10.40.208.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F368A40CFD0A;
+        Sun,  5 Jun 2022 13:27:58 +0000 (UTC)
+Date:   Fri, 3 Jun 2022 15:04:45 +0200
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf] nft_set_rbtree: Move clauses for expired nodes, last
+ active node as leaf
+Message-ID: <20220603150445.3d797c87@elisabeth>
+In-Reply-To: <YpdKM/mArNz/vh/m@salvia>
+References: <20220512183421.712556-1-sbrivio@redhat.com>
+        <YoKVFRR1gggECpiZ@salvia>
+        <20220517145709.08694803@elisabeth>
+        <20220520174524.439b5fa2@elisabeth>
+        <YouhUq09zfcflOnz@salvia>
+        <20220525141507.69c37709@elisabeth>
+        <YpdKM/mArNz/vh/m@salvia>
+Organization: Red Hat
 MIME-Version: 1.0
-Received: by 2002:a5d:64ed:0:0:0:0:0 with HTTP; Fri, 3 Jun 2022 04:33:52 -0700 (PDT)
-Reply-To: markwillima00@gmail.com
-From:   Mark <mariamabdul888@gmail.com>
-Date:   Fri, 3 Jun 2022 04:33:52 -0700
-Message-ID: <CAP9xyD1z22Q94ya1SEwH9x1LvC2cXjo1R2JYHEeVLAtE_MKttw@mail.gmail.com>
-Subject: Re: Greetings!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.11.54.1
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
+On Wed, 1 Jun 2022 13:15:08 +0200
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 
-Good day,
+> On Wed, May 25, 2022 at 02:15:07PM +0200, Stefano Brivio wrote:
+> > On Mon, 23 May 2022 16:59:30 +0200
+> > Pablo Neira Ayuso <pablo@netfilter.org> wrote:  
+> [...]
+> > > Another possibility? Maintain two trees, one for the existing
+> > > generation (this is read-only) and another for the next generation
+> > > (insertion/removals are performed on it), then swap them when commit
+> > > happens?  
+> > 
+> > It sounded like a good idea and I actually started sketching it, but
+> > there's one fundamental issue: it doesn't help with overlap detection
+> > because we also want to check insertions that will be part of the live
+> > copy. If, within one transaction, you delete and create elements, the
+> > "dirty" copy is still dirty for the purposes of overlaps.  
+> 
+> Updates on the copy could be done without using the deactivate/active
+> logic since it is not exposed to the packet path. Then, you use the
+> copy (next generation of the datastructure) to check for overlaps? We
+> need keep pointer to two sets in the rbtree private data area, the
+> generation ID would point to the current set that is being used from
+> the packet path. The stale tree is released from the commit phase (see
+> below).
 
-The HSBC Bank is a financial institution in United Kingdom. We
-promotes long-term,sustainable and broad-based economic growth in
-developing and emerging countries by providing financial support like
-loans and investment to large, small and
-medium-sized companies (SMEs) as well as fast-growing enterprises
-which in turn helps to create secure and permanent jobs and reduce
-poverty.
+Oh, right, I guess that would work. But at a first glance it looks more
+complicated than the other idea:
 
-If you need fund to promotes your business, project(Project Funding),
-Loan, planning, budgeting and expansion of your business(s) , do not
-hesitate to indicate your interest as we are here to serve you better
-by granting your request.
+> > For the lookup, that might help. Is it worth it right now, though? At
+> > the moment I would go back and try to get overlap detection work
+> > properly, at least, with my previous idea.  
+> 
+> If your idea is still in planning phase, could you summarize again the
+> idea? You mentioned about using gc you mentioned, if it is more simple
+> than my proposal, then it should be good to go too.
 
+...hmm, no, forget about gc, that was flawed. I'm just "walking" the
+tree (going through elements as a list, instead of descending it),
+noting down closest left and right elements to what we're inserting,
+and check it with similar criteria to what we already have (but much
+simpler, because we don't have to infer anything from what might be in
+other leaves/nodes).
 
-Thank you
-Mr:Mark
+That is, if you have elements 3 (start), 5 (end), 7 (start), 8 (end),
+and you're inserting 6 as a start, we'll end up the tree walk with 5
+(end) on the left and 7 (start) on the right, so we know it's not
+overlapping.
+
+If you insert 4 (as start or end), we know we have 3 and 5 around, so
+it overlaps.
+
+It's essentially the same as it is now, just dropping a lot of corner
+cases and changing the way we go through the tree.
+
+I kind of implemented it, I still need a bit to make it working.
+
+> > > pipapo has similar requirements, currently it is relying on a
+> > > workqueue to make some postprocess after the commit phase. At the
+> > > expense of consuming more memory.  
+> > 
+> > Well, it keeps two copies already: all the insertions and removals are
+> > done on the dirty copy. The two problems we have there are:
+> > 
+> > - the clean copy might also contain inactive elements (because on a
+> >   "commit" operation the API doesn't guarantee that all inserted
+> >   elements are active), so we need to check for those during lookup,
+> >   which is quite heavy (in my tests that was 4% of the clock cycles
+> >   needed for lookup in a set with 30 000 "port, protocol" entries)
+> > 
+> > - on every _activate() call, we also need to commit the dirty copy onto
+> >   a clean one, instead of having one commit per transaction (because if
+> >   there's a newly activated item, we need to see it from the lookup),
+> >   so every transaction translates to a number of commit operations for
+> >   the back-end.
+> > 
+> >   That also makes things a bit complicated and it might very well be
+> >   related to point 3. below
+> > 
+> > ...there's no actual workqueue: garbage collection (for timed out
+> > entries) only happens on commit, I don't see a particular problem with
+> > it.
+> > 
+> > I think both issues would be solved if we had a more natural API, that
+> > is, having a single call to the back-end implementing a commit
+> > operation, instead of separately activating single entries. I don't
+> > know how complicated this change would be.  
+> 
+> It should be possible to add a ->commit operation to set->ops, then
+> call it at the end of the commit phase, ie. iterate over the list of
+> existing sets in the table and call set->ops->commit().
+
+That sounds good, but when would we call it? Can it be independent of
+the userspace version? Could we then obsolete the "activate" operation
+(of course, by implementing commit() in all the sets)?
+
+> > From a set back-end perspective it looks trivial (pipapo would be
+> > greatly simplified, hash would also need to keep two copies but we
+> > would remove some complexity by getting rid of some checks).
+> >   
+> > > > In the perspective of getting rid of it, I think we need:
+> > > > 
+> > > > 1. some "introductory" documentation for nft_set_pipapo -- I just
+> > > >    got back to it (drawing some diagrams first...)
+> > > > 
+> > > > 2. to understand if the performance gap in the few (maybe not
+> > > >    reasonable) cases where nft_set_rbtree matches faster than
+> > > >    nft_set_pipapo is acceptable. Summary:
+> > > >      https://lore.kernel.org/netfilter-devel/be7d4e51603633e7b88e4b0dde54b25a3e5a018b.1583598508.git.sbrivio@redhat.com/    
+> > > 
+> > > IIRC pipapo was not too far behind from rbtree for a few scenarios.  
+> > 
+> > Perhaps it would be good enough (minus points 1. and 3. here) to start
+> > offering it as a default option (the change is trivial, setting
+> > NFT_PIPAPO_MIN_FIELDS to 1) and see if regressions are reported (actually,
+> > I doubt it).
+> >   
+> > > > 3. a solution for https://bugzilla.netfilter.org/show_bug.cgi?id=1583,
+> > > >    it's an atomicity issue which has little to do with nft_set_pipapo
+> > > >    structures themselves, but I couldn't figure out the exact issue
+> > > >    yet. I'm struggling to find the time for it, so if somebody wants to
+> > > >    give it a try, I'd be more than happy to reassign it...    
+> > > 
+> > > OK, a different problem, related to pipapo.  
+> > 
+> > Yes, I included it here because I wouldn't offer pipapo as rbtree
+> > replacement as long as that issue is there.  
+> 
+> Makes sense, thanks for explaining.
+> 
+
+-- 
+Stefano
+
