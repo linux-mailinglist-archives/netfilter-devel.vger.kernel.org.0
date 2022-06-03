@@ -2,137 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F51753C3F8
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Jun 2022 07:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C76153C977
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Jun 2022 13:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236565AbiFCFIu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 3 Jun 2022 01:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
+        id S244058AbiFCLd4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 3 Jun 2022 07:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233341AbiFCFIt (ORCPT
+        with ESMTP id S244008AbiFCLdz (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 3 Jun 2022 01:08:49 -0400
-Received: from mail1.systemli.org (mail1.systemli.org [93.190.126.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E21732048
-        for <netfilter-devel@vger.kernel.org>; Thu,  2 Jun 2022 22:08:44 -0700 (PDT)
-Message-ID: <eab33b47-5d3a-f1b8-45e6-d0025d9acf76@systemli.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
-        s=default; t=1654232921;
-        bh=x8xkdxNh1b2HKr9V6VaiCiCSJSxM87c4A8e5vj3jNBo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Kfm077aC5rR4c25KDFOHQ3jGvAcrQd3Ta0l8a+oR2wV0NvlEq3ZBrsO3kSYWMhdaT
-         gaxy+GhrLgUipBkkjgmjsHIQPjvV75fKcSPsWIJi1J3klxJTujFJl4EB0LZcPbqrAm
-         UV5keEzcdZA4gBL52aaocLqlt5mBAVfnu/i1WIATHgSyvJB7a66XjvaExiLWf/cIw9
-         s20S9Vn3Ro+a4dPdjyo4AThcqHv4CiW76/AM9zJkvk9+GVBSslaAt1AwLnS4YU6knE
-         2xof0mWuV/P1Nd75OjpBl1K5FbiHenyUTDvBR/8XjMfUIsqRJPopzxVH2Q41hkYktm
-         73FHa0Qvab6dQ==
-Date:   Fri, 3 Jun 2022 07:08:24 +0200
+        Fri, 3 Jun 2022 07:33:55 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957791D302
+        for <netfilter-devel@vger.kernel.org>; Fri,  3 Jun 2022 04:33:54 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id f23-20020a7bcc17000000b003972dda143eso6197604wmh.3
+        for <netfilter-devel@vger.kernel.org>; Fri, 03 Jun 2022 04:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=PaEzrm9U0WjJMxkE+zbw8yGRv0uhjcRl9sFl9vmbKpk=;
+        b=EWFovaa+4VchWKdamHt9DH8/OQTrNKeNvK5rCmI6nUroDcxfYvo+FLeSLGjF7oh0+4
+         3OCOX+w3qAwkj6XIPMLC7CFYpkeZI5HIVg1OGop/whsHosI2uyxzLcJe6Hp35gHeRW/b
+         UlOxt6ROJmI0nL4XaTDsTUrTv5nuondIGyoUkjy9w+mmew1beH8HMycCpzsaIMsUQ4JX
+         waEEfh4XyFdgspSK/38qToJ32C79KylD54H8LVBKRr/t2S2LrkxAJt03GTC41pin6T9T
+         8FxkXHdotGTqFI5tX8Am+EBg54CzhMw4ZaIS5iIH7YhnEFDptU1krDXXnKcNn9qhU3Cl
+         huOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=PaEzrm9U0WjJMxkE+zbw8yGRv0uhjcRl9sFl9vmbKpk=;
+        b=22SJRxfMk2Qlu4nCfk+wxPxnYEjc9g4TRutHtqLv/GTjepXpKuFdzlquyKWLMJVHgf
+         sMWq002FCV8T38yj/sERaYukrR8/42Gn5AV9Yc4F7z/tiMHtMnI2F6E7j9XXHXugMt2t
+         ZmjNGCjCcHANg29LQPiVJ1LfqwSqorXcz8pyjWTaGfQjZO9thL4tAr+gbqqUtA/B8wN6
+         c+bSeuIc/xttUpBItXisE7HdJgQLVD8zJOL5FfBz2P3theXMFXvkoXvDYAqj0DJoO2F5
+         aLKGhFLy+5ZkVTi42IbWIYf0oJlzDPPVbuH6gtdPS/EaWxndA1kWYmlBS+CmRkObI4hm
+         ecNQ==
+X-Gm-Message-State: AOAM533zQByZzqjYbG6w9Uhi1AC4JsPRSyZzNrp+lRtBOzqZCgpDvfPm
+        ulKOuVpMIxAdkoIy812+xP3psf24+2/b4By+Mt4=
+X-Google-Smtp-Source: ABdhPJwol/A0N4M7AbOZAdlxWrgqkaS+Pz92low/NSQYymgaE/l7iFdSCBGjx960Sl4APqb8sP/EHo6f8iE72Z+WVvk=
+X-Received: by 2002:a05:600c:1c9f:b0:397:7ac4:b29c with SMTP id
+ k31-20020a05600c1c9f00b003977ac4b29cmr8015785wms.155.1654256033146; Fri, 03
+ Jun 2022 04:33:53 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [iptables PATCH] libxtables: Unexport init_extensions*()
- declarations
-Content-Language: en-US
-To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Cc:     Jan Engelhardt <jengelh@inai.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-References: <20220602182412.4630-1-phil@nwl.cc>
-From:   Nick <vincent@systemli.org>
-In-Reply-To: <20220602182412.4630-1-phil@nwl.cc>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a5d:64ed:0:0:0:0:0 with HTTP; Fri, 3 Jun 2022 04:33:52 -0700 (PDT)
+Reply-To: markwillima00@gmail.com
+From:   Mark <mariamabdul888@gmail.com>
+Date:   Fri, 3 Jun 2022 04:33:52 -0700
+Message-ID: <CAP9xyD1z22Q94ya1SEwH9x1LvC2cXjo1R2JYHEeVLAtE_MKttw@mail.gmail.com>
+Subject: Re: Greetings!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Thanks. You can also put my whole Name: Nick Hainke <vincent@systemli.org>.
-I will test it again. :) I had a longer discussion with another OpenWrt 
-member, why everything is done in OpenWrt as it is. Not sure what will 
-happen in future with firewall3.
+Hello,
 
-Bests
-Nick
+Good day,
 
-On 6/2/22 20:24, Phil Sutter wrote:
-> The functions are used for static builds to initialize extensions after
-> libxtables init. Regular library users should not need them, but the
-> empty declarations introduced in #else case (and therefore present in
-> user's env) may clash with existing symbol names.
->
-> Avoid problems and guard the whole block declaring the function
-> prototypes and mangling extensions' _init functions by XTABLES_INTERNAL.
->
-> Reported-by: Nick <vincent@systemli.org>
-> Fixes: 6c689b639cf8e ("Simplify static build extension loading")
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
-> ---
->   include/xtables.h | 44 ++++++++++++++++++++++----------------------
->   1 file changed, 22 insertions(+), 22 deletions(-)
->
-> diff --git a/include/xtables.h b/include/xtables.h
-> index c2694b7b28886..f1937f3ea0530 100644
-> --- a/include/xtables.h
-> +++ b/include/xtables.h
-> @@ -585,27 +585,6 @@ static inline void xtables_print_mark_mask(unsigned int mark,
->   	xtables_print_val_mask(mark, mask, NULL);
->   }
->   
-> -#if defined(ALL_INCLUSIVE) || defined(NO_SHARED_LIBS)
-> -#	ifdef _INIT
-> -#		undef _init
-> -#		define _init _INIT
-> -#	endif
-> -	extern void init_extensions(void);
-> -	extern void init_extensions4(void);
-> -	extern void init_extensions6(void);
-> -	extern void init_extensionsa(void);
-> -	extern void init_extensionsb(void);
-> -#else
-> -#	define _init __attribute__((constructor)) _INIT
-> -#	define EMPTY_FUNC_DEF(x) static inline void x(void) {}
-> -	EMPTY_FUNC_DEF(init_extensions)
-> -	EMPTY_FUNC_DEF(init_extensions4)
-> -	EMPTY_FUNC_DEF(init_extensions6)
-> -	EMPTY_FUNC_DEF(init_extensionsa)
-> -	EMPTY_FUNC_DEF(init_extensionsb)
-> -#	undef EMPTY_FUNC_DEF
-> -#endif
-> -
->   extern const struct xtables_pprot xtables_chain_protos[];
->   extern uint16_t xtables_parse_protocol(const char *s);
->   
-> @@ -663,9 +642,30 @@ void xtables_announce_chain(const char *name);
->   #		define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))
->   #	endif
->   
-> +#if defined(ALL_INCLUSIVE) || defined(NO_SHARED_LIBS)
-> +#	ifdef _INIT
-> +#		undef _init
-> +#		define _init _INIT
-> +#	endif
-> +	extern void init_extensions(void);
-> +	extern void init_extensions4(void);
-> +	extern void init_extensions6(void);
-> +	extern void init_extensionsa(void);
-> +	extern void init_extensionsb(void);
-> +#else
-> +#	define _init __attribute__((constructor)) _INIT
-> +#	define EMPTY_FUNC_DEF(x) static inline void x(void) {}
-> +	EMPTY_FUNC_DEF(init_extensions)
-> +	EMPTY_FUNC_DEF(init_extensions4)
-> +	EMPTY_FUNC_DEF(init_extensions6)
-> +	EMPTY_FUNC_DEF(init_extensionsa)
-> +	EMPTY_FUNC_DEF(init_extensionsb)
-> +#	undef EMPTY_FUNC_DEF
-> +#endif
-> +
->   extern void _init(void);
->   
-> -#endif
-> +#endif /* XTABLES_INTERNAL */
->   
->   #ifdef __cplusplus
->   } /* extern "C" */
+The HSBC Bank is a financial institution in United Kingdom. We
+promotes long-term,sustainable and broad-based economic growth in
+developing and emerging countries by providing financial support like
+loans and investment to large, small and
+medium-sized companies (SMEs) as well as fast-growing enterprises
+which in turn helps to create secure and permanent jobs and reduce
+poverty.
+
+If you need fund to promotes your business, project(Project Funding),
+Loan, planning, budgeting and expansion of your business(s) , do not
+hesitate to indicate your interest as we are here to serve you better
+by granting your request.
+
+
+Thank you
+Mr:Mark
