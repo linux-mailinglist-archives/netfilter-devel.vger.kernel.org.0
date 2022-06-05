@@ -2,141 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9488F53CA75
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Jun 2022 15:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD2D53DE19
+	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Jun 2022 21:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243393AbiFCNLL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 3 Jun 2022 09:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
+        id S237899AbiFETnw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 5 Jun 2022 15:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbiFCNLK (ORCPT
+        with ESMTP id S230370AbiFETnv (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 3 Jun 2022 09:11:10 -0400
-Received: from mail1.systemli.org (mail1.systemli.org [IPv6:2a11:7980:3::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7522F017
-        for <netfilter-devel@vger.kernel.org>; Fri,  3 Jun 2022 06:11:06 -0700 (PDT)
-Message-ID: <ed67442e-883c-fd20-5641-c053fa315e78@systemli.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
-        s=default; t=1654261863;
-        bh=Ejmb4Z0Kvwwho303WUu7+5ARVcsLCuKAfRQw+/bgw0Q=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=vw/nMADIMGKT8/YzBz99lStb01pgMsghg103MV4Tf/slFYDSPHeUrOHphbcSoewDN
-         Zn4jBRQW145FZsBXgT2PmDFIiy2NGpD7dGYhw+e1xdroUh8kB6/AdvE9XhaAc3T/q0
-         Q3FGTzdT126F37HZjl2AEkXCnpk+F+8MTN8nJCyShdA3AWsy9fPGTpT9r7MObLqm2F
-         gez9VN0rbK2MReJrslD4H0ODUkporQjwg79wsK3FQC/WIK0Ol4V6IWqvLtTJaalrUr
-         DjKqDXZQGd50bWY3+s6/d4kqXsEdXi+0YXAADkjbHUDJNBRYWijuNZpoNAXGuJK+ip
-         dHDbtu+jMUenA==
-Date:   Fri, 3 Jun 2022 15:10:45 +0200
+        Sun, 5 Jun 2022 15:43:51 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFEF17043
+        for <netfilter-devel@vger.kernel.org>; Sun,  5 Jun 2022 12:43:49 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id e11so11170490pfj.5
+        for <netfilter-devel@vger.kernel.org>; Sun, 05 Jun 2022 12:43:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=scottdw2-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=W4VeMa0Zos14TPlaDO2JItiAP9LPIsQcURvu//dXRlg=;
+        b=BYeLE+SXluk7j6tlBhicnYmkvyXurbq2qb8lnl98ET2R818Z4MVLxzn4RsJUfSHz57
+         k+nZ2NwYwpBvpwZuAncuAoKI6SgRYJ9cdqcK3DlMNeayPOtNMYOAuIGuCgKHNm0I7Trn
+         GmQMWj2XMpZz3V494juMz/165HPTOk0n83QQ0036f4sS1e43CrW4v20yw+EFHV2PGzwt
+         Hx2RLKQb7qVScUB8vY2H1CrRrY8TUbbg9LyupYei2MoqO0USv4WLNm4+tCQG0dOqEQl8
+         IUqO0dw5MJg+GjwPHQngTqX38tNH7QUvgZ9uUJrR4C1Ay5mFxLW4VQO+DJ5Z6ufZapbI
+         7SWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=W4VeMa0Zos14TPlaDO2JItiAP9LPIsQcURvu//dXRlg=;
+        b=ZL0rvNonRe1JN+fqm3Pndj75oTD6IuAF4YV39iXvPn/raYBq/ijZ/Ux3nUUktSKJC5
+         xhtdYOVK925a/0juE9RcEBjzqTUow1lT5yEqGpj/D/sX0cRpmKEMAIeleoH6kFVuBz/r
+         JrC/SFAEF3K8Y2JRJHm6p5ScdjCM+0YSSLw0I/aZpi9UHsswWQIYpRzLOuSJyoEHPW11
+         0sT/isfRm9PqFTP6K0TS9ElokpyUrepDeuheZXIDqnP7PK1uMvVzyuA1AL0yHm00z6KK
+         dK7YLXObGRMxGN2FxqgERwThVzQamH85L12jKG0c7v90l0ADGCqBlFX81Cltae+6Vm02
+         mpxg==
+X-Gm-Message-State: AOAM533ZS61UbgbiYrxrGy2wrI6IWE8TKcJuE9LUYR523xmv02PHF6AS
+        VP9Ip2i38zHRIE8rkyJptHv3SbryoB+08jVNVe0Ipxm5bA2MIw==
+X-Google-Smtp-Source: ABdhPJzh4nwnszr1neAnVLvbU68I9J8WpVOViFrmXO7PCIknEyIUgs60aGWmRG5chQuYfBWxi8mGnG+V2tiDwtz0n5Q=
+X-Received: by 2002:a05:6a00:cca:b0:51b:ed40:b08a with SMTP id
+ b10-20020a056a000cca00b0051bed40b08amr11098788pfv.19.1654458229047; Sun, 05
+ Jun 2022 12:43:49 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [iptables PATCH] libxtables: Unexport init_extensions*()
- declarations
-Content-Language: en-US
-From:   Nick <vincent@systemli.org>
-To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Cc:     Jan Engelhardt <jengelh@inai.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-References: <20220602182412.4630-1-phil@nwl.cc>
- <eab33b47-5d3a-f1b8-45e6-d0025d9acf76@systemli.org>
-In-Reply-To: <eab33b47-5d3a-f1b8-45e6-d0025d9acf76@systemli.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+From:   Scott Wisniewski <scott@scottdw2.com>
+Date:   Sun, 5 Jun 2022 12:43:37 -0700
+Message-ID: <CAO=7uoa2_4+soqK+9k+BJ4AjCbL3T7xQxNtKZ_VgRYi3ZpXb8Q@mail.gmail.com>
+Subject: Expired Cert
+To:     netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The patch works for me. Thanks.
+Just a quick heads up, it looks like the cert used by
 
-Bests
-Nick
+bugzilla.netfilter.org
+and
+people.netfilter.org
 
-On 6/3/22 07:08, Nick wrote:
-> Thanks. You can also put my whole Name: Nick Hainke 
-> <vincent@systemli.org>.
-> I will test it again. :) I had a longer discussion with another 
-> OpenWrt member, why everything is done in OpenWrt as it is. Not sure 
-> what will happen in future with firewall3.
->
-> Bests
-> Nick
->
-> On 6/2/22 20:24, Phil Sutter wrote:
->> The functions are used for static builds to initialize extensions after
->> libxtables init. Regular library users should not need them, but the
->> empty declarations introduced in #else case (and therefore present in
->> user's env) may clash with existing symbol names.
->>
->> Avoid problems and guard the whole block declaring the function
->> prototypes and mangling extensions' _init functions by XTABLES_INTERNAL.
->>
->> Reported-by: Nick <vincent@systemli.org>
->> Fixes: 6c689b639cf8e ("Simplify static build extension loading")
->> Signed-off-by: Phil Sutter <phil@nwl.cc>
->> ---
->>   include/xtables.h | 44 ++++++++++++++++++++++----------------------
->>   1 file changed, 22 insertions(+), 22 deletions(-)
->>
->> diff --git a/include/xtables.h b/include/xtables.h
->> index c2694b7b28886..f1937f3ea0530 100644
->> --- a/include/xtables.h
->> +++ b/include/xtables.h
->> @@ -585,27 +585,6 @@ static inline void 
->> xtables_print_mark_mask(unsigned int mark,
->>       xtables_print_val_mask(mark, mask, NULL);
->>   }
->>   -#if defined(ALL_INCLUSIVE) || defined(NO_SHARED_LIBS)
->> -#    ifdef _INIT
->> -#        undef _init
->> -#        define _init _INIT
->> -#    endif
->> -    extern void init_extensions(void);
->> -    extern void init_extensions4(void);
->> -    extern void init_extensions6(void);
->> -    extern void init_extensionsa(void);
->> -    extern void init_extensionsb(void);
->> -#else
->> -#    define _init __attribute__((constructor)) _INIT
->> -#    define EMPTY_FUNC_DEF(x) static inline void x(void) {}
->> -    EMPTY_FUNC_DEF(init_extensions)
->> -    EMPTY_FUNC_DEF(init_extensions4)
->> -    EMPTY_FUNC_DEF(init_extensions6)
->> -    EMPTY_FUNC_DEF(init_extensionsa)
->> -    EMPTY_FUNC_DEF(init_extensionsb)
->> -#    undef EMPTY_FUNC_DEF
->> -#endif
->> -
->>   extern const struct xtables_pprot xtables_chain_protos[];
->>   extern uint16_t xtables_parse_protocol(const char *s);
->>   @@ -663,9 +642,30 @@ void xtables_announce_chain(const char *name);
->>   #        define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))
->>   #    endif
->>   +#if defined(ALL_INCLUSIVE) || defined(NO_SHARED_LIBS)
->> +#    ifdef _INIT
->> +#        undef _init
->> +#        define _init _INIT
->> +#    endif
->> +    extern void init_extensions(void);
->> +    extern void init_extensions4(void);
->> +    extern void init_extensions6(void);
->> +    extern void init_extensionsa(void);
->> +    extern void init_extensionsb(void);
->> +#else
->> +#    define _init __attribute__((constructor)) _INIT
->> +#    define EMPTY_FUNC_DEF(x) static inline void x(void) {}
->> +    EMPTY_FUNC_DEF(init_extensions)
->> +    EMPTY_FUNC_DEF(init_extensions4)
->> +    EMPTY_FUNC_DEF(init_extensions6)
->> +    EMPTY_FUNC_DEF(init_extensionsa)
->> +    EMPTY_FUNC_DEF(init_extensionsb)
->> +#    undef EMPTY_FUNC_DEF
->> +#endif
->> +
->>   extern void _init(void);
->>   -#endif
->> +#endif /* XTABLES_INTERNAL */
->>     #ifdef __cplusplus
->>   } /* extern "C" */
+Expired back on 6/3. You might want to rotate the cert.
+
+-Scott
