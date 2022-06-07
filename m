@@ -2,132 +2,100 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C6E53F9D0
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jun 2022 11:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C8353FA6D
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Jun 2022 11:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237159AbiFGJbQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Jun 2022 05:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
+        id S234041AbiFGJz0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 Jun 2022 05:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239625AbiFGJbM (ORCPT
+        with ESMTP id S233223AbiFGJxT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 Jun 2022 05:31:12 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9808FE64F6
-        for <netfilter-devel@vger.kernel.org>; Tue,  7 Jun 2022 02:31:02 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id a21-20020a9d4715000000b0060bfaac6899so3746346otf.12
-        for <netfilter-devel@vger.kernel.org>; Tue, 07 Jun 2022 02:31:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ohM259uqobJqtM7gttWurWj7P+4iDfPJquHax95olDY=;
-        b=D45nP2xucmF7mdZXM6MCVE9VCxDN10F6UZb+EqrI+cxcV7FKkxVza1IRzovdQZmgux
-         8b70wqH27wLvZ+nd72g+FthvnrTbujoeMbD0iKzgGDmG9fyY/TElRY1gza0y2wRsnQiA
-         7ppMv6tVVpUuMda2YpQ9jsukLtG/eK9DYrAZLdH7TzWlJrAXBCpU6dVkgkywvCcvzFeq
-         TmAvPmzfzM4rNVm870KJH5p32Bin4xJyyYYWTLCc061ZMHEj4TGD8k4MibEJoiEFl4mU
-         m8S3J6iLVyIezcVyFZbH2Luv2YsfKC147sW3lSOXRaVcFIcCQ74UKr5ZelpwN5RMBUts
-         Ea3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=ohM259uqobJqtM7gttWurWj7P+4iDfPJquHax95olDY=;
-        b=FfMrdAnIOLpjsb2wByMnaoNAzPuxDrl7l4gMYqBBeQkUx0BT3LdsCC7tnB3e1r2Z2w
-         aGUShsuajUv4Dsr5onV0MeN5Mu51rnzusPMC0yvksWz3ce5utYFS8LQcHYt6XUWh0aQW
-         zRMaEmLAUWP/yC79JvrRP75nffdiSxkMLGJDcUpPQkx06RIcJsgQ25HmYdGjX8ko6A2b
-         H0TJk49hzfkHcOqQ/vZ52ZnA6i94r2M4xlXi78P1wqSV17UmNgwvhnvAwTiAsLlhRBY+
-         k6o0xesdUVvwKLgqnmpQjtDV2mRryFehy/I6F+R9j7154qKr2fyeJsXGxOKYTcdT6D+i
-         aVGQ==
-X-Gm-Message-State: AOAM533VVpt/DPgXta9aPQGqD01xMHnwlh/pLB6hS1sOdmZ0OV8p+jgy
-        eD1PsSnN3Yuai4fYlvfi8jUdfEAs89u0erHJwFg=
-X-Google-Smtp-Source: ABdhPJz3JFF8WALQ4shzhlviloQJ5bfRJgdtS8RmoLdgf4KAHxFIzfy4g91o6naaEJvh7R8t/kxCT+OVtK9R/I8EUJo=
-X-Received: by 2002:a05:6830:919:b0:60a:fe63:e321 with SMTP id
- v25-20020a056830091900b0060afe63e321mr11499334ott.227.1654594261948; Tue, 07
- Jun 2022 02:31:01 -0700 (PDT)
+        Tue, 7 Jun 2022 05:53:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37952443C2;
+        Tue,  7 Jun 2022 02:53:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D4275B81E7A;
+        Tue,  7 Jun 2022 09:53:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20CFFC385A5;
+        Tue,  7 Jun 2022 09:53:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1654595595;
+        bh=rJi6JVdPD/Vt/We2v1o6pGUM/NCh4V1zqrJdX8XVc70=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e0wyeJe4RRlXeal6Z+sLvUSf07W46/lpY6YL0a8z4AiDNG4AmZk72dxRJO5pXe/nH
+         rcokZ7hkDqXoV8wvVobZNFkL+0PDaWy/E63G54sg5t3Oe8gDxuK6GdR797fW1f6q7A
+         nHZfl7A88UZu+l/wLic1uX2Eh7/kX5snYFBNc6Wo=
+Date:   Tue, 7 Jun 2022 11:53:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ajay Kaher <akaher@vmware.com>
+Cc:     stable@vger.kernel.org, pablo@netfilter.org, kadlec@netfilter.org,
+        fw@strlen.de, davem@davemloft.net, netfilter-devel@vger.kernel.org,
+        srivatsab@vmware.com, srivatsa@csail.mit.edu, amakhalov@vmware.com,
+        anishs@vmware.com, vsirnapalli@vmware.com, er.ajay.kaher@gmail.com
+Subject: Re: [PATCH v4.9.y] netfilter: nf_tables: disallow non-stateful
+ expression in sets earlier
+Message-ID: <Yp8gBchJD3gQvUM7@kroah.com>
+References: <1654575921-2590-1-git-send-email-akaher@vmware.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6358:99a5:b0:a2:a1fa:9308 with HTTP; Tue, 7 Jun 2022
- 02:31:01 -0700 (PDT)
-Reply-To: robertbaileys_spende@aol.com
-From:   Robert Baileys <mercymiji.j@gmail.com>
-Date:   Tue, 7 Jun 2022 11:31:01 +0200
-Message-ID: <CAAD1zOZGOcSi9Z7VW=B-EdmyT-uRH7fKV+zh=fgOJtjsbZByfQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1654575921-2590-1-git-send-email-akaher@vmware.com>
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:32b listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [mercymiji.j[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.3 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  0.6 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
---=20
-Hallo, lieber Beg=C3=BCnstigter,
+On Tue, Jun 07, 2022 at 09:55:21AM +0530, Ajay Kaher wrote:
+> From: Pablo Neira Ayuso <pablo@netfilter.org>
+> 
+> commit 520778042ccca019f3ffa136dd0ca565c486cedd upstream.
+> 
+> Since 3e135cd499bf ("netfilter: nft_dynset: dynamic stateful expression
+> instantiation"), it is possible to attach stateful expressions to set
+> elements.
+> 
+> cd5125d8f518 ("netfilter: nf_tables: split set destruction in deactivate
+> and destroy phase") introduces conditional destruction on the object to
+> accomodate transaction semantics.
+> 
+> nft_expr_init() calls expr->ops->init() first, then check for
+> NFT_STATEFUL_EXPR, this stills allows to initialize a non-stateful
+> lookup expressions which points to a set, which might lead to UAF since
+> the set is not properly detached from the set->binding for this case.
+> Anyway, this combination is non-sense from nf_tables perspective.
+> 
+> This patch fixes this problem by checking for NFT_STATEFUL_EXPR before
+> expr->ops->init() is called.
+> 
+> The reporter provides a KASAN splat and a poc reproducer (similar to
+> those autogenerated by syzbot to report use-after-free errors). It is
+> unknown to me if they are using syzbot or if they use similar automated
+> tool to locate the bug that they are reporting.
+> 
+> For the record, this is the KASAN splat.
+> 
+> [   85.431824] ==================================================================
+> [   85.432901] BUG: KASAN: use-after-free in nf_tables_bind_set+0x81b/0xa20
+> [   85.433825] Write of size 8 at addr ffff8880286f0e98 by task poc/776
+> [   85.434756]
+> [   85.434999] CPU: 1 PID: 776 Comm: poc Tainted: G        W         5.18.0+ #2
+> [   85.436023] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+> 
+> Fixes: 0b2d8a7b638b ("netfilter: nf_tables: add helper functions for expression handling")
+> Reported-and-tested-by: Aaron Adams <edg-e@nccgroup.com>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> [Ajay: Regenerated the patch for v4.9.y]
+> Signed-off-by: Ajay Kaher <akaher@vmware.com>
 
-Sie haben diese E-Mail von der Robert Bailey Foundation erhalten. Ich
-bin ein pensionierter Regierungsangestellter aus Harlem und ein
-Powerball-Lotterie-Jackpot-Gewinner von 343,8 Millionen Dollar. Ich
-bin der gr=C3=B6=C3=9Fte Jackpot-Gewinner in der Geschichte der New York Lo=
-ttery
-in Amerika. Ich habe diesen Wettbewerb am 27. Oktober 2018 gewonnen
-und m=C3=B6chte Ihnen mitteilen, dass Google in Kooperation mit Microsoft
-Ihre "E-Mail-Adresse" f=C3=BCr meine Anfrage hat und diese 3.000.000,00
-Millionen Euro kosten wird. Ich spende diese 3 Millionen Euro an Sie,
-um auch Wohlt=C3=A4tigkeitsorganisationen und armen Menschen in Ihrer
-Gemeinde zu helfen, damit wir die Welt zu einem besseren Ort f=C3=BCr alle
-machen k=C3=B6nnen. Bitte besuchen Sie die folgende Website f=C3=BCr weiter=
-e
-Informationen, damit Sie diesen 3 Mio. EUR Ausgaben nicht skeptisch
-gegen=C3=BCberstehen.
-https://nypost.com/2018/11/14/meet-the-winner-of-the-biggest-lottery-jackpo=
-t-in-new-york-history/Sie
-Weitere Best=C3=A4tigungen kann ich auch auf meinem Youtube suchen:
-https://www.youtube.com/watch?v=3DH5vT18Ysavc
-Bitte antworten Sie mir per E-Mail (robertbaileys_spende@aol.com).
-Sie m=C3=BCssen diese E-Mail sofort beantworten, damit die =C3=BCberweisend=
-e
-Bank mit dem Erhalt dieser Spende in H=C3=B6he von 3.000.000,00 Millionen
-Euro beginnen kann.
-Bitte kontaktieren Sie die untenstehende E-Mail-Adresse f=C3=BCr weitere
-Informationen, damit Sie diese Spende von der =C3=BCberweisenden Bank
-erhalten k=C3=B6nnen. E-Mail: robertbaileys_spende@aol.com
+Both now queued up, thanks.
 
-Gr=C3=BC=C3=9Fe,
-Robert Bailey
-* * * * * * * * * * * * * * * *
-
-Powerball-Jackpot-Gewinner
-E-Mail: robertbaileys_spende@aol.com
+greg k-h
