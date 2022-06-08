@@ -2,152 +2,61 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D298154280F
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jun 2022 09:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C81542802
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Jun 2022 09:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233573AbiFHHcC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 8 Jun 2022 03:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        id S231317AbiFHHcQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 8 Jun 2022 03:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354857AbiFHGTw (ORCPT
+        with ESMTP id S1356501AbiFHG0n (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 8 Jun 2022 02:19:52 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1B565F80
-        for <netfilter-devel@vger.kernel.org>; Tue,  7 Jun 2022 23:18:46 -0700 (PDT)
-Date:   Wed, 8 Jun 2022 08:18:44 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Mikhail Sennikovsky <mikhail.sennikovskii@ionos.com>
-Cc:     netfilter-devel@vger.kernel.org, mikhail.sennikovsky@gmail.com
-Subject: Re: [PATCH 1/1] conntrack: use same modifier socket for bulk ops
-Message-ID: <YqA/RNP5jQzIRpon@salvia>
-References: <20220602163429.52490-1-mikhail.sennikovskii@ionos.com>
- <20220602163429.52490-2-mikhail.sennikovskii@ionos.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220602163429.52490-2-mikhail.sennikovskii@ionos.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        Wed, 8 Jun 2022 02:26:43 -0400
+X-Greylist: delayed 40627 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Jun 2022 23:26:41 PDT
+Received: from yodobashi.com (unknown [117.50.183.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 090E51115
+        for <netfilter-devel@vger.kernel.org>; Tue,  7 Jun 2022 23:26:40 -0700 (PDT)
+Sender: info@yodobashi.com
+Date:   Wed, 8 Jun 2022 14:26:27 +0800
+From:   "yodobashi" <admin@yodobashi.com>
+To:     <netfilter-devel@vger.kernel.org>
+Subject: =?gb2312?B?peilyaXQpbelyaXDpcils6Xgo7qhuKSqv82YlMfpiPOhuaXRpbml7w==?=
+        =?gb2312?B?qWClyYnkuPykzt9CvWo=?=
+Message-ID: <20220608142641780160@yodobashi.com>
+X-mailer: Foxmail 6, 13, 102, 15 [cn]
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="gb2312"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=1.6 required=5.0 tests=BAYES_50,RDNS_NONE,SPF_FAIL,
+        SPF_HELO_FAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Mikhail,
+ofah9qH2obikqr/NmJTH6Yjzobml0aW5pe+pYKXJieS4/KTO30K9aqH2ofah9g0Ko6iks6TOpeGp
+YKXrpM+hosXk0MWMn9PDpM6loqXJpeyluaTHxeTQxaS1pOykxqSkpN6kuaOpDQoNCqSqv82YlKTO
+pKq/zZiUx+mI84nkuPzK1r5BpK2k8qSqpLOkyqSkpN6kt6S/oaMNCsTayN2kzqS0tF/VSqTypKru
+iqSkpKSkv6S3pN6kuaGjDQqjqKXRpbml76lgpcmkz6Gise3KvqS3pMakqqTqpN6ku6Tzo6kNCg0K
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0NCqG+ieS4/Iydz/OkzrvhhlSl0aW5pe+pYKXJob8NCrvhhlRJRKGhOqGhbmV0ZmlsdGVyLWRl
+dmVsQHZnZXIua2VybmVsLm9yZw0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0KofGJ5Lj8pLWk7KS/pKq/zZiUx+mI8yANCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQrr
+itSSt6y6xQ0KyNXW0KTOpLTfQr1qz8jritSSt6y6xQ0KDQqktLXH5WjH6YjzpM+hos/C05uhuKSq
+v82YlIyf08Ol2qlgpbihuaSrpOmktLRf1Uqkr6TApLWkpKGjDQoNCqiLpKq/zZiUjJ/Tw6XaqWCl
+uA0KaHR0cHM6Ly9zLnlhbS5jb20vQWRiSzcNCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCqH5pLOkzqXhqWCl68TayN2ky9DEpKKk
+v6TqpM6kyqSkiPa6z6TPoaKkqsrWyv2kx6S5pKyhoqXopcml0KW3P6XJpcOlyD+ls6XgpKqGlqSk
+us+k76S7t5m/2qTY1sG8saS030K9aqTypKruiqSkpKSkv6S3pN6kuaGjDQoNCqSzpM6l4algpeuk
+z6GixeTQxYyf08OkzqWipcml7KW5pMfF5NDFpLWk7KTGpKSk3qS5oaMNCqSqytbK/aTypKqS7KSx
+pKSkv6S3pN6kuaSsoaKks6TOpeGpYKXrpM7E2sjdpMukxKSkpMakzqSqhpakpLrPpO+ku6TPz8LT
+m6TO30K9as/IpN6kx6Sq7oqkpKSkpL+kt6TepLmhow0KDQql6KXJpdClt6XJpcOlyKWzpeAgpKqG
+lqSkus+k76S7t5m/2g0KRW1haWw6IGluZm9AeW9kb2Jhc2hpLmNvbQ0KDQoNCkNvcHlyaWdodDIw
+MjIgWW9kb2Jhc2hpIENhbWVyYSBDby4sTHRkLg0K
 
-On Thu, Jun 02, 2022 at 06:34:29PM +0200, Mikhail Sennikovsky wrote:
-> For bulk ct entry loads (with -R option) reusing the same mnl
-> modifier socket for all entries results in reduction of entries
-> creation time, which becomes especially signifficant when loading
-> tens of thouthand of entries.
-> 
-> Signed-off-by: Mikhail Sennikovsky <mikhail.sennikovskii@ionos.com>
-> ---
->  src/conntrack.c | 31 +++++++++++++++++++++++++------
->  1 file changed, 25 insertions(+), 6 deletions(-)
-> 
-> diff --git a/src/conntrack.c b/src/conntrack.c
-> index 27e2bea..be8690b 100644
-> --- a/src/conntrack.c
-> +++ b/src/conntrack.c
-> @@ -71,6 +71,7 @@
->  struct nfct_mnl_socket {
->  	struct mnl_socket	*mnl;
->  	uint32_t		portid;
-> +	uint32_t		events;
->  };
->  
->  static struct nfct_mnl_socket _sock;
-> @@ -2441,6 +2442,7 @@ static int nfct_mnl_socket_open(struct nfct_mnl_socket *socket,
->  		return -1;
->  	}
->  	socket->portid = mnl_socket_get_portid(socket->mnl);
-> +	socket->events = events;
->  
->  	return 0;
->  }
-> @@ -2470,6 +2472,25 @@ static void nfct_mnl_socket_close(const struct nfct_mnl_socket *sock)
->  	mnl_socket_close(sock->mnl);
->  }
->  
-> +static int nfct_mnl_socket_check_open(struct nfct_mnl_socket *socket,
-> +				       unsigned int events)
-> +{
-> +	if (socket->mnl != NULL) {
-> +		assert(events == socket->events);
-> +		return 0;
-> +	}
-> +
-> +	return nfct_mnl_socket_open(socket, events);
-> +}
-> +
-> +static void nfct_mnl_socket_check_close(struct nfct_mnl_socket *sock)
-> +{
-> +	if (sock->mnl) {
-> +		nfct_mnl_socket_close(sock);
-> +		memset(sock, 0, sizeof(*sock));
-> +	}
-> +}
-> +
->  static int __nfct_mnl_dump(struct nfct_mnl_socket *sock,
->  			   const struct nlmsghdr *nlh, mnl_cb_t cb, void *data)
->  {
-> @@ -3383,19 +3404,17 @@ static int do_command_ct(const char *progname, struct ct_cmd *cmd,
->  		break;
->  
->  	case CT_UPDATE:
-> -		if (nfct_mnl_socket_open(modifier_sock, 0) < 0)
-> +		if (nfct_mnl_socket_check_open(modifier_sock, 0) < 0)
->  			exit_error(OTHER_PROBLEM, "Can't open handler");
->  
->  		nfct_filter_init(cmd);
->  		res = nfct_mnl_dump(sock, NFNL_SUBSYS_CTNETLINK,
->  				    IPCTNL_MSG_CT_GET, mnl_nfct_update_cb,
->  				    cmd, NULL);
-> -
-> -		nfct_mnl_socket_close(modifier_sock);
->  		break;
->  
->  	case CT_DELETE:
-> -		if (nfct_mnl_socket_open(modifier_sock, 0) < 0)
-> +		if (nfct_mnl_socket_check_open(modifier_sock, 0) < 0)
 
-No events needed anymore?
-
-nfct_mnl_socket_check_open() is now only used by CT_UPDATE and CT_DELETE,
-right?
-
->  			exit_error(OTHER_PROBLEM, "Can't open handler");
->  
->  		nfct_filter_init(cmd);
-> @@ -3418,8 +3437,6 @@ static int do_command_ct(const char *progname, struct ct_cmd *cmd,
->  				    cmd, filter_dump);
->  
->  		nfct_filter_dump_destroy(filter_dump);
-> -
-> -		nfct_mnl_socket_close(modifier_sock);
->  		break;
->  
->  	case EXP_DELETE:
-> @@ -3857,6 +3874,7 @@ static const char *ct_unsupp_cmd_file(const struct ct_cmd *cmd)
->  int main(int argc, char *argv[])
->  {
->  	struct nfct_mnl_socket *sock = &_sock;
-> +	struct nfct_mnl_socket *modifier_sock = &_modifier_sock;
->  	struct ct_cmd *cmd, *next;
->  	LIST_HEAD(cmd_list);
->  	int res = 0;
-> @@ -3900,6 +3918,7 @@ int main(int argc, char *argv[])
->  		free(cmd);
->  	}
->  	nfct_mnl_socket_close(sock);
-> +	nfct_mnl_socket_check_close(modifier_sock);
->  
->  	return res < 0 ? EXIT_FAILURE : EXIT_SUCCESS;
->  }
-> -- 
-> 2.25.1
-> 
