@@ -2,234 +2,89 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E5A54529C
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jun 2022 19:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E175455D2
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jun 2022 22:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237847AbiFIRFu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 9 Jun 2022 13:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33632 "EHLO
+        id S232101AbiFIUmd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 9 Jun 2022 16:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234872AbiFIRFu (ORCPT
+        with ESMTP id S229573AbiFIUmb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 9 Jun 2022 13:05:50 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F34DB0D0E
-        for <netfilter-devel@vger.kernel.org>; Thu,  9 Jun 2022 10:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=ESc8weCYn4XYDNPLHl6WOE4zGhCK2F5Eo11Kvl8toYE=; b=JCEGi1+MH8M1Kx3tso2QnTfR8s
-        3DOuKkqKztN2sEmkhdwe4F3t8VCcBdSeWZDEyrXp8TIaoHgmEBrbPbpJcuZLqtQbAG8MqS3eogi4k
-        dG0/BddiI14h/XgpO/tjiQs5cQ4beHnpni7s05cT2S9OoLwc5NBAunwr6BzowcgBKWrUifmby2Sx6
-        ww72NVCjgAlEVzbLCHR2wDGf9sryatLXQdbJ8WMDOHGMHpmSZV0u4hx1z2HKlda1B+3xQBubSTw1l
-        rRH1zi2NmKt61TLAhIXdMO+J71LWlvQfaNc8YPcL8WfC27Rt9xe0eg0WkusNa1NkxlxPyOhsZRdpz
-        MClVEI0w==;
-Received: from localhost ([::1] helo=minime)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1nzLbM-0005uG-Cw
-        for netfilter-devel@vger.kernel.org; Thu, 09 Jun 2022 19:05:44 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] xshared: Make some functions static
-Date:   Thu,  9 Jun 2022 19:05:39 +0200
-Message-Id: <20220609170539.14769-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220609170539.14769-1-phil@nwl.cc>
-References: <20220609170539.14769-1-phil@nwl.cc>
+        Thu, 9 Jun 2022 16:42:31 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C826C65D7
+        for <netfilter-devel@vger.kernel.org>; Thu,  9 Jun 2022 13:42:30 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id fu3so48251832ejc.7
+        for <netfilter-devel@vger.kernel.org>; Thu, 09 Jun 2022 13:42:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pinCqkHhOsM0rP86bVTT4Mpf5FeZH1dHs9IpUk4Nxrg=;
+        b=iXB1AsniZjdLP/S67L85Jg9bdpQlnBzGSX0Km+VB1F9mkDmgL2+WMsDbUzCzySHc/t
+         GaAsP/yJWurkv/3HIrLUC7TjZJ0pqCdU+vtBBVRthVDoDL0X54Dk0GyYxLmREGpMXxyo
+         +B85S0AvI+9BxiUpDzZG10acpNjGIPoNO+cKOrYyT6s0kaE8UFpLyqEy7QJaPa4tPoyc
+         VN0WzOW/diJSjl0QAn3BcFJXW9J49gxpKIm0uisPkPO7EYnK98kS6MlU7EZgDsVQ+zHX
+         fb2DkoLpW3O4+TZVyYcYS3qkLDDhHCYLf5Y67pPhP9RoBn6WDpFl8pEf1LXBWHV0OXRf
+         68tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pinCqkHhOsM0rP86bVTT4Mpf5FeZH1dHs9IpUk4Nxrg=;
+        b=RFvaz+JvC6GBN79BJI04/vZH2ORXZsTMPJoEYs6cELXc8ERboSRswzZLdi9wppbRMD
+         ugaYJWz4fUzef5P9XJu4VwMruV2vPESoV2PSsjk3ctlnQ0nRbbtL5/k0Iyfis2vXnipY
+         Kfqm9PM0bz/SA6lCwJFIB6Z2itWjHov7sVP1aHL72NqouTx0fAWWMwqmgz2PsQXvE2Ke
+         tuOHeQA71ZCavhSxHN1JKizAFVp40Yb4FZLc420whqUJlY8L2nU078DImDY4pRTNlpGq
+         ciBqm6+6Q8Duxman4uOBkM1YGpbO7dQOeQ+7DJis3T2I6eevLAUfw5bn0uWypF4OdEYJ
+         6FNg==
+X-Gm-Message-State: AOAM533mwodlKMC/RDYM+OVCKTAqG8fhZYOmM60KjIk+jkgFCYlBug4K
+        KluXgFps2sMV8cSvR8FaYZVf6N4o6JPNmw==
+X-Google-Smtp-Source: ABdhPJwh3XOvlWy0qt77fNg2+oOEXyt7Ffuc0JRcslv4HlNtAhCPKOXmesH6Dm9v3uLE3amOLOB/+A==
+X-Received: by 2002:a17:906:e2d2:b0:704:81fe:3152 with SMTP id gr18-20020a170906e2d200b0070481fe3152mr37592406ejb.411.1654807348870;
+        Thu, 09 Jun 2022 13:42:28 -0700 (PDT)
+Received: from msennikovskii4.fkb.profitbricks.net (ip5f5bf473.dynamic.kabel-deutschland.de. [95.91.244.115])
+        by smtp.gmail.com with ESMTPSA id hz14-20020a1709072cee00b00708e906faecsm10856246ejc.124.2022.06.09.13.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jun 2022 13:42:28 -0700 (PDT)
+From:   Mikhail Sennikovsky <mikhail.sennikovskii@ionos.com>
+To:     netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        mikhail.sennikovsky@gmail.com
+Cc:     Mikhail Sennikovsky <mikhail.sennikovskii@ionos.com>
+Subject: [PATCH v2 0/1] Reusing modifier socket for bulk ct loads
+Date:   Thu,  9 Jun 2022 22:41:41 +0200
+Message-Id: <20220609204142.54700-1-mikhail.sennikovskii@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-With all ip(6)tables variants using the same do_parse() function, quite
-a bunch of functions are not used outside of xshared.c anymore. Make them
-static.
+Hi Pablo & all,
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/xshared.c | 30 +++++++++++++++++-------------
- iptables/xshared.h | 21 ---------------------
- 2 files changed, 17 insertions(+), 34 deletions(-)
+Here is the updated patch to use the same mnl modifier socket
+for all operation in bulk ct loads, with removed
+nfct_mnl_socket.events field as we discussed.
 
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 9b5e5b5bddc27..bd4e10225de95 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -39,8 +39,8 @@ char *arp_opcodes[] =
-  * to the commandline, and see expected results. So we call help for all
-  * specified matches and targets.
-  */
--void print_extension_helps(const struct xtables_target *t,
--    const struct xtables_rule_match *m)
-+static void print_extension_helps(const struct xtables_target *t,
-+				  const struct xtables_rule_match *m)
- {
- 	for (; t != NULL; t = t->next) {
- 		if (t->used) {
-@@ -129,8 +129,8 @@ static struct xtables_match *load_proto(struct iptables_command_state *cs)
- 			  cs->options & OPT_NUMERIC, &cs->matches);
- }
- 
--int command_default(struct iptables_command_state *cs,
--		    struct xtables_globals *gl, bool invert)
-+static int command_default(struct iptables_command_state *cs,
-+			   struct xtables_globals *gl, bool invert)
- {
- 	struct xtables_rule_match *matchp;
- 	struct xtables_match *m;
-@@ -789,7 +789,7 @@ void save_iface(char letter, const char *iface,
- 	}
- }
- 
--void command_match(struct iptables_command_state *cs, bool invert)
-+static void command_match(struct iptables_command_state *cs, bool invert)
- {
- 	struct option *opts = xt_params->opts;
- 	struct xtables_match *m;
-@@ -827,7 +827,7 @@ void command_match(struct iptables_command_state *cs, bool invert)
- 	xt_params->opts = opts;
- }
- 
--const char *xt_parse_target(const char *targetname)
-+static const char *xt_parse_target(const char *targetname)
- {
- 	const char *ptr;
- 
-@@ -889,7 +889,7 @@ void command_jump(struct iptables_command_state *cs, const char *jumpto)
- 	xt_params->opts = opts;
- }
- 
--char cmd2char(int option)
-+static char cmd2char(int option)
- {
- 	/* cmdflags index corresponds with position of bit in CMD_* values */
- 	static const char cmdflags[] = { 'I', 'D', 'D', 'R', 'A', 'L', 'F', 'Z',
-@@ -905,8 +905,8 @@ char cmd2char(int option)
- 	return cmdflags[i];
- }
- 
--void add_command(unsigned int *cmd, const int newcmd,
--		 const int othercmds, int invert)
-+static void add_command(unsigned int *cmd, const int newcmd,
-+			const int othercmds, int invert)
- {
- 	if (invert)
- 		xtables_error(PARAMETER_PROBLEM, "unexpected '!' flag");
-@@ -917,7 +917,7 @@ void add_command(unsigned int *cmd, const int newcmd,
- }
- 
- /* Can't be zero. */
--int parse_rulenumber(const char *rule)
-+static int parse_rulenumber(const char *rule)
- {
- 	unsigned int rulenum;
- 
-@@ -928,6 +928,10 @@ int parse_rulenumber(const char *rule)
- 	return rulenum;
- }
- 
-+#define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
-+static const char optflags[]
-+= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c', 'f', 2, 3, 'l', 4, 5, 6 };
-+
- /* Table of legal combinations of commands and options.  If any of the
-  * given commands make an option legal, that option is legal (applies to
-  * CMD_LIST and CMD_ZERO only).
-@@ -957,7 +961,7 @@ static const char commands_v_options[NUMBER_OF_CMD][NUMBER_OF_OPT] =
- /*CHECK*/     {'x',' ',' ',' ',' ',' ','x',' ',' ','x','x',' ',' ',' ',' ',' ',' ',' '},
- };
- 
--void generic_opt_check(int command, int options)
-+static void generic_opt_check(int command, int options)
- {
- 	int i, j, legal = 0;
- 
-@@ -992,7 +996,7 @@ void generic_opt_check(int command, int options)
- 	}
- }
- 
--char opt2char(int option)
-+static char opt2char(int option)
- {
- 	const char *ptr;
- 
-@@ -1024,7 +1028,7 @@ static const int inverse_for_options[NUMBER_OF_OPT] =
- /* 6 */ IPT_INV_PROTO,
- };
- 
--void
-+static void
- set_option(unsigned int *options, unsigned int option, uint16_t *invflg,
- 	   bool invert)
- {
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 2498e32d39e03..1d6b9bf4ee9b7 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -39,10 +39,6 @@ enum {
- 	OPT_P_TYPE	= 1 << 17,
- };
- 
--#define NUMBER_OF_OPT	ARRAY_SIZE(optflags)
--static const char optflags[]
--= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c', 'f', 2, 3, 'l', 4, 5, 6 };
--
- enum {
- 	CMD_NONE		= 0,
- 	CMD_INSERT		= 1 << 0,
-@@ -79,10 +75,6 @@ struct xtables_target;
- #define IPT_INV_ARPOP		0x0400
- #define IPT_INV_ARPHRD		0x0800
- 
--void
--set_option(unsigned int *options, unsigned int option, uint16_t *invflg,
--	   bool invert);
--
- /**
-  * xtables_afinfo - protocol family dependent information
-  * @kmod:		kernel module basename (e.g. "ip_tables")
-@@ -164,10 +156,6 @@ enum {
- 	XT_OPTION_OFFSET_SCALE = 256,
- };
- 
--extern void print_extension_helps(const struct xtables_target *,
--	const struct xtables_rule_match *);
--extern int command_default(struct iptables_command_state *,
--	struct xtables_globals *, bool invert);
- extern int subcmd_main(int, char **, const struct subcommand *);
- extern void xs_init_target(struct xtables_target *);
- extern void xs_init_match(struct xtables_match *);
-@@ -239,19 +227,10 @@ void save_iface(char letter, const char *iface,
- void print_fragment(unsigned int flags, unsigned int invflags,
- 		    unsigned int format, bool fake);
- 
--void command_match(struct iptables_command_state *cs, bool invert);
--const char *xt_parse_target(const char *targetname);
- void command_jump(struct iptables_command_state *cs, const char *jumpto);
- 
--char cmd2char(int option);
--void add_command(unsigned int *cmd, const int newcmd,
--		 const int othercmds, int invert);
--int parse_rulenumber(const char *rule);
- void assert_valid_chain_name(const char *chainname);
- 
--void generic_opt_check(int command, int options);
--char opt2char(int option);
--
- void print_rule_details(unsigned int linenum, const struct xt_counters *ctrs,
- 			const char *targname, uint8_t proto, uint8_t flags,
- 			uint8_t invflags, unsigned int format);
+Any further feedback/suggestions are welcome.
+
+Regards,
+Mikhail
+
+Mikhail Sennikovsky (1):
+  conntrack: use same modifier socket for bulk ops
+
+ src/conntrack.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
+
 -- 
-2.34.1
+2.25.1
 
