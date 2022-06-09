@@ -2,90 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265D4544965
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jun 2022 12:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C5D54529D
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jun 2022 19:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235039AbiFIKnF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 9 Jun 2022 06:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
+        id S1343936AbiFIRFw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 9 Jun 2022 13:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234990AbiFIKnF (ORCPT
+        with ESMTP id S234872AbiFIRFw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 9 Jun 2022 06:43:05 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F3B1AA177
-        for <netfilter-devel@vger.kernel.org>; Thu,  9 Jun 2022 03:43:03 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id u23so37355461lfc.1
-        for <netfilter-devel@vger.kernel.org>; Thu, 09 Jun 2022 03:43:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=koGb0MBlbBVE37T844y20HE32Byp30OQI/NXD9+cy0A=;
-        b=X3imRqWhjcRnVumZpsjb1iiy7Aei1k+pqyoziATQrq6115MLrUVmneEkEWrv49fJ4e
-         6QzvHL6+GFOyD0rtl47D7RpKYpAgpzTYGbR9+wC1opyer2rcBhvl7ov7hJpUJq8SXyRH
-         lAjdTxyrn+rmVM6LgJUPzeI5gNwGGPfr9CEAqrjlpUqYLoFLN1NEJ+ucWAty93ZEW9Je
-         V8YphCxdVOxI1fcUuedlb567mE0E+Dy7WA5ZruvJ24h9E4nw0rEr/dhKwF5cSjafcJ/6
-         Pgtn3hdvhusDkSvlWolPzYgUmx0DwNZ67+wB/oXbcoMS8QM2oZEc15+J8g5vym7ADizL
-         wVCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=koGb0MBlbBVE37T844y20HE32Byp30OQI/NXD9+cy0A=;
-        b=BMmKk4iYqR3u3UBz6CsmsCVHmPE+1E6ownGeuQrk0/agegLsY7IqKPtNCioR9FOj5Q
-         XlQYxdRnkRwjVEi4RmmAiaYrFQY1pAH2euquf/s0wvVZzbXvdK9NhXnRBD53vp3HENkb
-         bjLh0lMZWmmJtr//x9O04eHEltsUhmP5eW1zqaHxQ7SKhNOwxepMry5/mt9eD7bXTg36
-         0bHuBujMZuuLi6K/Gq/O6Odi5974w08QaHFOWYu8nPluWU1BPF3+vFApThamIWAMOMuW
-         yP+H6wAgLpfWqiVxeHXesHJsTB825qe6yNpoVjdL4NFwoYaSkpurDBXFUJw3PL/f+kWH
-         wmsw==
-X-Gm-Message-State: AOAM531uHoVGoANM8WtfhtMUWBIX7UeBAgP5ZGUQ7w5cl7ZXytiX8cZu
-        EPLoWjMrtG34WUfvcZhDPCzB23Mm9L5Nr5BhHzRISA==
-X-Google-Smtp-Source: ABdhPJyRqlWcmqZocQFbTqEUiBtvmgYj0yHEwbHXYxkElAjfzsibvTguRhaC62pYBT+5RoppidyEhkqJIfypwVOWpg8=
-X-Received: by 2002:a05:6512:c23:b0:479:3233:e377 with SMTP id
- z35-20020a0565120c2300b004793233e377mr14749474lfu.684.1654771381729; Thu, 09
- Jun 2022 03:43:01 -0700 (PDT)
+        Thu, 9 Jun 2022 13:05:52 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7326EC3D2B
+        for <netfilter-devel@vger.kernel.org>; Thu,  9 Jun 2022 10:05:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=YVgPjMEgBQwLRB8ypbSSk+OFkSMbxhWHJJzZ/eJkuQw=; b=qZRPPnpntS2SGynmA+L0Cn6dZg
+        dUV2egbmjyyClp5AiVPF+D0o9Caxmur+KqXgvakwbmxyzB1qCDFKJAJgsYuzbTYdIPVBIpPAHpEyW
+        /Vo8f3in82SWJTUcVgVOd57WMrS8jX2THBlW0TL3aVNDaZSijqITsFzt38EUdry0q+OLKYF19/Mv7
+        f7bx2O+rhzEnABuB2WJD6klVwR0nkTnITD8D1tP/XfF5XQl+khulNgtd5rwR4pxEqlyqbuO06f2Fr
+        7TUBAMaTrrndbK3Yq43uf5QmcAT6X3QCGzcexiKRqIzArRTUiFgJlEZvNsBOZ7oFZKrfEeL6Tttzb
+        3hMJTXXA==;
+Received: from localhost ([::1] helo=minime)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1nzLbR-0005uL-QK
+        for netfilter-devel@vger.kernel.org; Thu, 09 Jun 2022 19:05:49 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 1/2] iptables-legacy: Drop redundant include of xtables-multi.h
+Date:   Thu,  9 Jun 2022 19:05:38 +0200
+Message-Id: <20220609170539.14769-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20220602163429.52490-1-mikhail.sennikovskii@ionos.com>
- <20220602163429.52490-2-mikhail.sennikovskii@ionos.com> <YqA/RNP5jQzIRpon@salvia>
- <CALHVEJZbcASEfTn4Qc0uAf6PpHLZZb_wHgfmMsjdEkaLSRHyQA@mail.gmail.com>
- <YqCDSFZkF9v+Ki8j@salvia> <YqCFrd8SDwnHr+rE@salvia> <CALHVEJZ1X+yige_5=daMGfjPcFjQeFmeb2RCDW1=_hSk7eR+wA@mail.gmail.com>
- <YqHJhO6K15gzqLnV@salvia>
-In-Reply-To: <YqHJhO6K15gzqLnV@salvia>
-From:   Mikhail Sennikovsky <mikhail.sennikovskii@ionos.com>
-Date:   Thu, 9 Jun 2022 12:42:50 +0200
-Message-ID: <CALHVEJbUpxPJ0fSfcyynEkfiTrnvSR_zfrkLPm_0iiOBMr+Tog@mail.gmail.com>
-Subject: Re: [PATCH 1/1] conntrack: use same modifier socket for bulk ops
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, mikhail.sennikovsky@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Sure, let me remove it then and submit an updated patch here.
+The header is included unconditionally first, so no point in doing it a
+second time of ENABLE_NFTABLES is defined.
 
-Thanks,
-Mikhail
+Fixes: be70918eab26e ("xtables: rename xt-multi binaries to -nft, -legacy")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/xtables-legacy-multi.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-On Thu, 9 Jun 2022 at 12:20, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
->
-> Hi,
->
-> On Wed, Jun 08, 2022 at 04:16:34PM +0200, Mikhail Sennikovsky wrote:
-> > Hi Pablo,
-> >
-> > Then I misunderstood you, my bad.
-> > Yes, _check is never used for events, and the socket->events is not
-> > used anywhere except the assert(events == socket->events); assertion
-> > check which I found useful as a sanity check for potential future uses
-> > of the nfct_mnl_socket_check_open.
-> > If you find it unneeded however, I'm fine with removing it.
->
-> If not used now for this usecase, I'd prefer if you remove it.
+diff --git a/iptables/xtables-legacy-multi.c b/iptables/xtables-legacy-multi.c
+index 3b7905ff76b13..2c71931551b5c 100644
+--- a/iptables/xtables-legacy-multi.c
++++ b/iptables/xtables-legacy-multi.c
+@@ -14,10 +14,6 @@
+ #include "ip6tables-multi.h"
+ #endif
+ 
+-#ifdef ENABLE_NFTABLES
+-#include "xtables-multi.h"
+-#endif
+-
+ static const struct subcommand multi_subcommands[] = {
+ #ifdef ENABLE_IPV4
+ 	{"iptables",            iptables_main},
+-- 
+2.34.1
+
