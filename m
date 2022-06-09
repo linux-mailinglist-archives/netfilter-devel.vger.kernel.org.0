@@ -2,52 +2,55 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B57E6544865
-	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jun 2022 12:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1235448A7
+	for <lists+netfilter-devel@lfdr.de>; Thu,  9 Jun 2022 12:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbiFIKJe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 9 Jun 2022 06:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
+        id S235539AbiFIKU6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 9 Jun 2022 06:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242937AbiFIKJb (ORCPT
+        with ESMTP id S229933AbiFIKU5 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 9 Jun 2022 06:09:31 -0400
-X-Greylist: delayed 431 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 09 Jun 2022 03:09:28 PDT
-Received: from lit711.phy.lolipop.jp (lit711.phy.lolipop.jp [118.27.125.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38FF1C92A
-        for <netfilter-devel@vger.kernel.org>; Thu,  9 Jun 2022 03:09:28 -0700 (PDT)
-Received: by lit711.phy.lolipop.jp (Postfix, from userid 995)
-        id 0DE508257E38; Thu,  9 Jun 2022 19:02:16 +0900 (JST)
-To:     netfilter-devel@vger.kernel.org
-Subject: carta =?ISO-2022-JP?B?GyRCQXc/LjQwTjslYSE8GyhC?=
- =?ISO-2022-JP?B?GyRCJWsbKEI=?=
-X-PHP-Originating-Script: 1010132:contact_send.php
-From:   carta@lit711.phy.lolipop.jp,
-        =?ISO-2022-JP?B?GyRCJCpMZCQkOWckbyQ7JWEhPCVrJVUlKSE8JWAbKEI=?=@lit711.phy.lolipop.jp
+        Thu, 9 Jun 2022 06:20:57 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6EEDD366AB
+        for <netfilter-devel@vger.kernel.org>; Thu,  9 Jun 2022 03:20:56 -0700 (PDT)
+Date:   Thu, 9 Jun 2022 12:20:52 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Mikhail Sennikovsky <mikhail.sennikovskii@ionos.com>
+Cc:     netfilter-devel@vger.kernel.org, mikhail.sennikovsky@gmail.com
+Subject: Re: [PATCH 1/1] conntrack: use same modifier socket for bulk ops
+Message-ID: <YqHJhO6K15gzqLnV@salvia>
+References: <20220602163429.52490-1-mikhail.sennikovskii@ionos.com>
+ <20220602163429.52490-2-mikhail.sennikovskii@ionos.com>
+ <YqA/RNP5jQzIRpon@salvia>
+ <CALHVEJZbcASEfTn4Qc0uAf6PpHLZZb_wHgfmMsjdEkaLSRHyQA@mail.gmail.com>
+ <YqCDSFZkF9v+Ki8j@salvia>
+ <YqCFrd8SDwnHr+rE@salvia>
+ <CALHVEJZ1X+yige_5=daMGfjPcFjQeFmeb2RCDW1=_hSk7eR+wA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
-Content-Transfer-Encoding: 7bit
-Message-Id: <20220609100216.0DE508257E38@lit711.phy.lolipop.jp>
-Date:   Thu,  9 Jun 2022 19:02:16 +0900 (JST)
-X-Spam-Status: No, score=4.1 required=5.0 tests=BAYES_50,FROM_EXCESS_BASE64,
-        RCVD_IN_VALIDITY_RPBL,SHORT_SHORTNER,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CALHVEJZ1X+yige_5=daMGfjPcFjQeFmeb2RCDW1=_hSk7eR+wA@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
-X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-お問い合わせありがとうございました。
+Hi,
 
-■ お名前 : ? Have you ever tried this sex game before? GIVE IT A TRY: https://sweetkitty22.page.link/eNh4?kbk3q ?　様
+On Wed, Jun 08, 2022 at 04:16:34PM +0200, Mikhail Sennikovsky wrote:
+> Hi Pablo,
+> 
+> Then I misunderstood you, my bad.
+> Yes, _check is never used for events, and the socket->events is not
+> used anywhere except the assert(events == socket->events); assertion
+> check which I found useful as a sanity check for potential future uses
+> of the nfct_mnl_socket_check_open.
+> If you find it unneeded however, I'm fine with removing it.
 
-■ メールアドレス : netfilter-devel@vger.kernel.org
-
-■ 電話番号 : 978365332093
-
-■ 内容 : 
-
-f658ww
+If not used now for this usecase, I'd prefer if you remove it.
