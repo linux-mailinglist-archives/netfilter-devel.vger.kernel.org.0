@@ -2,43 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CBF54739B
+	by mail.lfdr.de (Postfix) with ESMTP id ABD9354739A
 	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jun 2022 12:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbiFKKIH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 11 Jun 2022 06:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42592 "EHLO
+        id S229668AbiFKKH4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 11 Jun 2022 06:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbiFKKIF (ORCPT
+        with ESMTP id S229821AbiFKKH4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 11 Jun 2022 06:08:05 -0400
+        Sat, 11 Jun 2022 06:07:56 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAFFC08
-        for <netfilter-devel@vger.kernel.org>; Sat, 11 Jun 2022 03:08:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0C7C08
+        for <netfilter-devel@vger.kernel.org>; Sat, 11 Jun 2022 03:07:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=vwmBWFnTXo3AZ5j+8Bhcny2MacDuWeOw0cttPVib+XU=; b=nuluOrqJnipZIcB+iaD2SN7NXj
-        H5paDb7NGU64ZWR/yz9inRd5pUZxC8qmLd/HrfHP4VuFRCnM2ZSvJt30FN1+xVyEPWGcn8Po1Z+zY
-        A0wXgYC2Lw2A9TFABi1/F2Mnk0BJaDkrMh6NgLICJz9uX/aSL2Y4bnHuQl8qsZOj3y0qW8PRMTpdT
-        5vM+GYUNM6VKlVas8SyWWoZlgx3WKr1bk0OlP6WNkC08hG0wkiA1OYD0lRrLAAyKg3y+1Zo4kwuMG
-        kKaDk58yblgQQLwone3Jghze3A5tkxE3hZW0/Qe7wLzH2epfL5yT2AjFlRWsQYrzqn4pbxiSxfth+
-        RhqIC19A==;
+        bh=fBM9JNPyYNTfif3jYrsKEZF+KJBwn27fzoqJ/hvvz4A=; b=oIZaTblodHqY0R8AvkhKns7lA6
+        kg4C204/jaa7AE4VQWCPSKr446COELPR2qmkC4m8pCrkobIhljWCDfqskuVec5ecY41munWJmvq87
+        5AJLQxfT2ypKzPfSxm4rzIWEpoUM0nUdml6L7T05P34TE19ZbfS+Xy0mRCkIpMrp8li+XUnUCxEJU
+        SMY14YykkscZ7+muC+Jhulg7JXl31WoxKn6UntgOh1+d1kgbN3leBUiTXPVsgD+u8qGJyCDnweS9J
+        5pGM/bs/Sd9eXcWj2BGJHNn0xYK3duIS6fPJbo23u4JK4X2RWzj+mK9qS7WV6F1Uly+Dw12yC/rPC
+        hlWvFOjw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1nzy2E-00061s-4G; Sat, 11 Jun 2022 12:08:02 +0200
+        id 1nzy23-00061e-46; Sat, 11 Jun 2022 12:07:51 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jan Engelhardt <jengelh@inai.de>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 0/2] Review xtables.h vs. xshared.h
-Date:   Sat, 11 Jun 2022 12:07:40 +0200
-Message-Id: <20220611100742.4888-1-phil@nwl.cc>
+Subject: [iptables PATCH 1/2] libxtables: Move struct xtables_afinfo into xtables.h
+Date:   Sat, 11 Jun 2022 12:07:41 +0200
+Message-Id: <20220611100742.4888-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220611100742.4888-1-phil@nwl.cc>
+References: <20220611100742.4888-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -50,37 +52,125 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-I didn't like how libxtables has to include xshared.h from iptables code
-base, this series eliminates this:
+The library "owns" this structure and maintains 'afinfo' pointer to
+instances of it. With libxt_set, there's even an extension making use of
+the data.
 
-* struct xtables_afinfo is used to hold family-specific configuration.
-  There are static const instances in libxtables and
-  xtables_set_nfproto() mangles the public 'afinfo' pointer. This is all
-  libxtables code, so move the struct definition and pointer declaration
-  into xtables.h (patch 1).
+To avoid impact on library users, guard it by XTABLES_INTERNAL.
 
-* XT_OPTION_OFFSET_SCALE is the base distance between different
-  extensions' offset values. It is mostly used by libxtables when
-  merging options and referenced by xshared.c for sanity checking only.
-  Patch 2 moves it into xtables.h (and turns the single value enum into
-  a define).
+To eliminate the xshared.h include by libxt_set, DEBUGP has to be
+redefined. Other extensions have similar defines, fix this later.
 
-To avoid impact on external libxtables users, guard both changes above
-by XTABLES_INTERNAL. Without access to xshared.h, external extensions
-can't have made use of afinfo or XT_OPTION_OFFSET_SCALE yet.
-
-Phil Sutter (2):
-  libxtables: Move struct xtables_afinfo into xtables.h
-  libxtables: Define XT_OPTION_OFFSET_SCALE in xtables.h
-
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
  extensions/libxt_set.c |  6 ++++++
  extensions/libxt_set.h |  1 -
- include/xtables.h      | 25 +++++++++++++++++++++++++
- iptables/xshared.h     | 26 --------------------------
- libxtables/xtables.c   |  1 -
- libxtables/xtoptions.c |  1 -
- 6 files changed, 31 insertions(+), 29 deletions(-)
+ include/xtables.h      | 22 ++++++++++++++++++++++
+ iptables/xshared.h     | 22 ----------------------
+ 4 files changed, 28 insertions(+), 23 deletions(-)
 
+diff --git a/extensions/libxt_set.c b/extensions/libxt_set.c
+index 16921023a22f8..a2137ab1eb180 100644
+--- a/extensions/libxt_set.c
++++ b/extensions/libxt_set.c
+@@ -22,6 +22,12 @@
+ #include <linux/netfilter/xt_set.h>
+ #include "libxt_set.h"
+ 
++#ifdef DEBUG
++#define DEBUGP(x, args...) fprintf(stderr, x, ## args)
++#else
++#define DEBUGP(x, args...)
++#endif
++
+ /* Revision 0 */
+ 
+ static void
+diff --git a/extensions/libxt_set.h b/extensions/libxt_set.h
+index ad895a7504d9d..597bf7ebe575a 100644
+--- a/extensions/libxt_set.h
++++ b/extensions/libxt_set.h
+@@ -6,7 +6,6 @@
+ #include <sys/types.h>
+ #include <sys/socket.h>
+ #include <errno.h>
+-#include "../iptables/xshared.h"
+ 
+ static int
+ get_version(unsigned *version)
+diff --git a/include/xtables.h b/include/xtables.h
+index f1937f3ea0530..b8d8372d0e498 100644
+--- a/include/xtables.h
++++ b/include/xtables.h
+@@ -665,6 +665,28 @@ void xtables_announce_chain(const char *name);
+ 
+ extern void _init(void);
+ 
++/**
++ * xtables_afinfo - protocol family dependent information
++ * @kmod:		kernel module basename (e.g. "ip_tables")
++ * @proc_exists:	file which exists in procfs when module already loaded
++ * @libprefix:		prefix of .so library name (e.g. "libipt_")
++ * @family:		nfproto family
++ * @ipproto:		used by setsockopt (e.g. IPPROTO_IP)
++ * @so_rev_match:	optname to check revision support of match
++ * @so_rev_target:	optname to check revision support of target
++ */
++struct xtables_afinfo {
++	const char *kmod;
++	const char *proc_exists;
++	const char *libprefix;
++	uint8_t family;
++	uint8_t ipproto;
++	int so_rev_match;
++	int so_rev_target;
++};
++
++extern const struct xtables_afinfo *afinfo;
++
+ #endif /* XTABLES_INTERNAL */
+ 
+ #ifdef __cplusplus
+diff --git a/iptables/xshared.h b/iptables/xshared.h
+index 1d6b9bf4ee9b7..1fdc760a32442 100644
+--- a/iptables/xshared.h
++++ b/iptables/xshared.h
+@@ -75,26 +75,6 @@ struct xtables_target;
+ #define IPT_INV_ARPOP		0x0400
+ #define IPT_INV_ARPHRD		0x0800
+ 
+-/**
+- * xtables_afinfo - protocol family dependent information
+- * @kmod:		kernel module basename (e.g. "ip_tables")
+- * @proc_exists:	file which exists in procfs when module already loaded
+- * @libprefix:		prefix of .so library name (e.g. "libipt_")
+- * @family:		nfproto family
+- * @ipproto:		used by setsockopt (e.g. IPPROTO_IP)
+- * @so_rev_match:	optname to check revision support of match
+- * @so_rev_target:	optname to check revision support of target
+- */
+-struct xtables_afinfo {
+-	const char *kmod;
+-	const char *proc_exists;
+-	const char *libprefix;
+-	uint8_t family;
+-	uint8_t ipproto;
+-	int so_rev_match;
+-	int so_rev_target;
+-};
+-
+ /* trick for ebtables-compat, since watchers are targets */
+ struct ebt_match {
+ 	struct ebt_match			*next;
+@@ -187,8 +167,6 @@ int parse_counters(const char *string, struct xt_counters *ctr);
+ bool tokenize_rule_counters(char **bufferp, char **pcnt, char **bcnt, int line);
+ bool xs_has_arg(int argc, char *argv[]);
+ 
+-extern const struct xtables_afinfo *afinfo;
+-
+ #define MAX_ARGC	255
+ struct argv_store {
+ 	int argc;
 -- 
 2.34.1
 
