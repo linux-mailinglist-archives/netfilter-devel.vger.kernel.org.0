@@ -2,121 +2,94 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62676547399
-	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jun 2022 12:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C8F547771
+	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jun 2022 22:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbiFKKIA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 11 Jun 2022 06:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
+        id S231681AbiFKULY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 11 Jun 2022 16:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbiFKKH7 (ORCPT
+        with ESMTP id S229846AbiFKULX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 11 Jun 2022 06:07:59 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB3BC16
-        for <netfilter-devel@vger.kernel.org>; Sat, 11 Jun 2022 03:07:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Ax64YxzISIvtDVzbvI66PxM8gbyRl8FaCxomypLILfY=; b=jY0TaKkqsL6yXMA5RZLJobNF65
-        p9yer+RrRpLlinCk9J7Hy5KxRvAqbUoeAxsoLvT8BuEm60wczypS/8zBQpGRsaVFR8bcXjhMlZ1OZ
-        auwKd+3mI7S2LJdUGsNWDItNACsYtwOA8yg+UmoeWj3mwuT4oAd6dA4OTHYDysC0jCNv4VFZLpIKJ
-        92FeZrNTOfpk54ALMIVkQlHUEmc+uN9JCY97CXYxDAZod5Fu0C3NsDIDOe48ltjFKlOczXMfBBqaS
-        Il3mKB5WjPebbK/jfqD8eBNfkFl6phwseZiFH5D8HiHErk3pil3P6+9FEM6dB+KUvVKUN7Y2ww1/a
-        IZ9Yn79Q==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1nzy28-00061l-FQ; Sat, 11 Jun 2022 12:07:56 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jan Engelhardt <jengelh@inai.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] libxtables: Define XT_OPTION_OFFSET_SCALE in xtables.h
-Date:   Sat, 11 Jun 2022 12:07:42 +0200
-Message-Id: <20220611100742.4888-3-phil@nwl.cc>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220611100742.4888-1-phil@nwl.cc>
-References: <20220611100742.4888-1-phil@nwl.cc>
+        Sat, 11 Jun 2022 16:11:23 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB1F50E2E;
+        Sat, 11 Jun 2022 13:11:22 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id n18so1978987plg.5;
+        Sat, 11 Jun 2022 13:11:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZiH4TRfnRyLIeMYFGZRSlq6I0QJI5DZKCK6Q6FfZ+dI=;
+        b=TroryHdp+Mh9Uxb/90OFg6dcmzsKzod+wGc0iByUCHTEejhEVJ2mQ8oEQBGpxAr8uP
+         GBUAuuDvcSClS8i5iCy+aaKgBuNTldlUQa06bj86DAhLFI4NbDfrIqn9xhHhwm3QL4cz
+         WpWUhY3APEsZHxoVtj6a2VS66IyRMNp6uoICdYUet4kYWtMEqDdD+GoskpCIlX4QzGrN
+         9HmNYEAPKPsPEQM9d/sy4IwO1qRziE5PYSYkc1JHhcAONpzES1eguad1/GGREPILDaEG
+         xZmDj0GS6kGLCRzzfDoscUij4FzffnI9f0FbdcSlXs3D6mqk3gWZjiitcs4DF9CBHWVG
+         QBOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZiH4TRfnRyLIeMYFGZRSlq6I0QJI5DZKCK6Q6FfZ+dI=;
+        b=CDW5PjuT91mq7tRumCm43+WWAexvOhXsDW5vdwbQsAebQmLzE6MfyS591SwTkxhvNq
+         YsCLMtVO1u3GwIKiVfY1jaxSCvTEKgXoIn9knjYELyJoeLEqMoTKD1jSdZQsxyIn7txY
+         bd8I3PbvRheC4RTcWin+77uDuYQZNKOG3FpGzWUltQ0ALVYxfvEaw4/5StsxPLddb2tN
+         kfeOm22M28G3CTvjHtf02kr6IlVt875vd3xnVf7qiqd2uF70S7NjgtCVeEviyKrQPa3o
+         1STUMCJPm/uuuXhmaG1g8OgDJev4HdpoH8rO1Nb7Wg+Pwo7DMOvimDNNaYobodh4veJ2
+         JOzA==
+X-Gm-Message-State: AOAM533/9IxKB7PP/EfqyaISVZV/kVatHNc+KaRuQH/+mYpjjqhFm971
+        U6q+EfzmX1TSOwOIhBKtLVCLFtqAqcw=
+X-Google-Smtp-Source: ABdhPJyhptHUrnDjl1evG9JYHqVjnDS7ugr+WiBysKcwjuWyzOqHZ1dVrLcUWIaPvIG1lSeiEwXTQQ==
+X-Received: by 2002:a17:902:ceca:b0:166:3418:5267 with SMTP id d10-20020a170902ceca00b0016634185267mr50810227plg.136.1654978281465;
+        Sat, 11 Jun 2022 13:11:21 -0700 (PDT)
+Received: from macbook-pro-3.dhcp.thefacebook.com ([2620:10d:c090:400::4:93e3])
+        by smtp.gmail.com with ESMTPSA id a13-20020a62e20d000000b0051c2fc79aa8sm2029560pfi.91.2022.06.11.13.11.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Jun 2022 13:11:20 -0700 (PDT)
+Date:   Sat, 11 Jun 2022 13:11:17 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        pablo@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
+        memxor@gmail.com, yhs@fb.com
+Subject: Re: [PATCH v4 bpf-next 00/14] net: netfilter: add kfunc helper to
+ update ct timeout
+Message-ID: <20220611201117.euqca7rgn5wydlwk@macbook-pro-3.dhcp.thefacebook.com>
+References: <cover.1653600577.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1653600577.git.lorenzo@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This is the last symbol in xshared.h used by libxtables, move it over.
-Again, treat this as "implementation detail" and hence put it behind
-XTABLES_INTERNAL-curtains.
+On Thu, May 26, 2022 at 11:34:48PM +0200, Lorenzo Bianconi wrote:
+> Changes since v3:
+> - split bpf_xdp_ct_add in bpf_xdp_ct_alloc/bpf_skb_ct_alloc and
+>   bpf_ct_insert_entry
+> - add verifier code to properly populate/configure ct entry
+> - improve selftests
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- include/xtables.h      | 3 +++
- iptables/xshared.h     | 4 ----
- libxtables/xtables.c   | 1 -
- libxtables/xtoptions.c | 1 -
- 4 files changed, 3 insertions(+), 6 deletions(-)
+Kumar, Lorenzo,
 
-diff --git a/include/xtables.h b/include/xtables.h
-index b8d8372d0e498..9eba4f619d351 100644
---- a/include/xtables.h
-+++ b/include/xtables.h
-@@ -687,6 +687,9 @@ struct xtables_afinfo {
- 
- extern const struct xtables_afinfo *afinfo;
- 
-+/* base offset of merged extensions' consecutive options */
-+#define XT_OPTION_OFFSET_SCALE	256
-+
- #endif /* XTABLES_INTERNAL */
- 
- #ifdef __cplusplus
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index 1fdc760a32442..1a019a7c04882 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -132,10 +132,6 @@ struct subcommand {
- 	mainfunc_t main;
- };
- 
--enum {
--	XT_OPTION_OFFSET_SCALE = 256,
--};
--
- extern int subcmd_main(int, char **, const struct subcommand *);
- extern void xs_init_target(struct xtables_target *);
- extern void xs_init_match(struct xtables_match *);
-diff --git a/libxtables/xtables.c b/libxtables/xtables.c
-index 0638f9271c601..dc645162973f0 100644
---- a/libxtables/xtables.c
-+++ b/libxtables/xtables.c
-@@ -64,7 +64,6 @@
- #endif
- #include <getopt.h>
- #include "iptables/internal.h"
--#include "xshared.h"
- 
- #define NPROTO	255
- 
-diff --git a/libxtables/xtoptions.c b/libxtables/xtoptions.c
-index 9d3ac5c8066cb..8174a560ec4df 100644
---- a/libxtables/xtoptions.c
-+++ b/libxtables/xtoptions.c
-@@ -21,7 +21,6 @@
- #include <arpa/inet.h>
- #include <netinet/ip.h>
- #include "xtables.h"
--#include "xshared.h"
- #ifndef IPTOS_NORMALSVC
- #	define IPTOS_NORMALSVC 0
- #endif
--- 
-2.34.1
-
+are you planning on sending v5 ?
+The patches 1-5 look good.
+Patch 6 is questionable as Florian pointed out.
+What is the motivation to allow writes into ct->status?
+The selftest doesn't do that anyway.
+Patch 7 (acquire-release pairs) is too narrow.
+The concept of a pair will not work well. There could be two acq funcs and one release.
+Please think of some other mechanism. Maybe type based? BTF?
+Or encode that info into type name? or some other way.
