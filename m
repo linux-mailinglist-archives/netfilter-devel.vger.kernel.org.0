@@ -2,146 +2,85 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E0A5466DD
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Jun 2022 14:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CBF54739B
+	for <lists+netfilter-devel@lfdr.de>; Sat, 11 Jun 2022 12:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236639AbiFJMwY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 10 Jun 2022 08:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
+        id S230158AbiFKKIH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 11 Jun 2022 06:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbiFJMwV (ORCPT
+        with ESMTP id S229821AbiFKKIF (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 10 Jun 2022 08:52:21 -0400
-X-Greylist: delayed 456 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 10 Jun 2022 05:52:14 PDT
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A46732ECC;
-        Fri, 10 Jun 2022 05:52:11 -0700 (PDT)
-Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay12.hostedemail.com (Postfix) with ESMTP id 06E07121083;
-        Fri, 10 Jun 2022 12:44:30 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 08E1F2002A;
-        Fri, 10 Jun 2022 12:44:18 +0000 (UTC)
-Message-ID: <cd59f3eab3d2b4f069f4ebf169b33307eaa9e50d.camel@perches.com>
-Subject: Re: [PATCH 00/12] Clang -Wformat warning fixes
-From:   Joe Perches <joe@perches.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bill Wendling <morbo@google.com>
-Cc:     Jan Engelhardt <jengelh@inai.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bill Wendling <isanbard@gmail.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Jan Kara <jack@suse.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Ross Philipson <ross.philipson@oracle.com>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        linux-edac@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-mm@kvack.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, Networking <netdev@vger.kernel.org>,
-        alsa-devel@alsa-project.org,
-        clang-built-linux <llvm@lists.linux.dev>
-Date:   Fri, 10 Jun 2022 05:44:18 -0700
-In-Reply-To: <YqLUn3RdZ9HAKZKu@kroah.com>
-References: <20220609221702.347522-1-morbo@google.com>
-         <20220609152527.4ad7862d4126e276e6f76315@linux-foundation.org>
-         <CAGG=3QXDt9AeCQOAp1311POFRSByJru4=Q=oFiQn3u2iZYk2_w@mail.gmail.com>
-         <nssn2ps-6n86-nqq6-9039-72847760nnq@vanv.qr>
-         <CAGG=3QU0XJhQKJXLMayOkQSiF2yjBi2p2TEZ9KNTzU5mmye-gg@mail.gmail.com>
-         <YqLUn3RdZ9HAKZKu@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.1-0ubuntu1 
+        Sat, 11 Jun 2022 06:08:05 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAFFC08
+        for <netfilter-devel@vger.kernel.org>; Sat, 11 Jun 2022 03:08:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=vwmBWFnTXo3AZ5j+8Bhcny2MacDuWeOw0cttPVib+XU=; b=nuluOrqJnipZIcB+iaD2SN7NXj
+        H5paDb7NGU64ZWR/yz9inRd5pUZxC8qmLd/HrfHP4VuFRCnM2ZSvJt30FN1+xVyEPWGcn8Po1Z+zY
+        A0wXgYC2Lw2A9TFABi1/F2Mnk0BJaDkrMh6NgLICJz9uX/aSL2Y4bnHuQl8qsZOj3y0qW8PRMTpdT
+        5vM+GYUNM6VKlVas8SyWWoZlgx3WKr1bk0OlP6WNkC08hG0wkiA1OYD0lRrLAAyKg3y+1Zo4kwuMG
+        kKaDk58yblgQQLwone3Jghze3A5tkxE3hZW0/Qe7wLzH2epfL5yT2AjFlRWsQYrzqn4pbxiSxfth+
+        RhqIC19A==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1nzy2E-00061s-4G; Sat, 11 Jun 2022 12:08:02 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jan Engelhardt <jengelh@inai.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 0/2] Review xtables.h vs. xshared.h
+Date:   Sat, 11 Jun 2022 12:07:40 +0200
+Message-Id: <20220611100742.4888-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 08E1F2002A
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Stat-Signature: r8ecgxf89uwg9qffzdumnqfsj56kpo1p
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19T013fSZHIO4BR28mlFWzRzi2PPI2hbJs=
-X-HE-Tag: 1654865058-93434
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Fri, 2022-06-10 at 07:20 +0200, Greg Kroah-Hartman wrote:
-> On Thu, Jun 09, 2022 at 04:16:16PM -0700, Bill Wendling wrote:
-> > On Thu, Jun 9, 2022 at 4:03 PM Jan Engelhardt <jengelh@inai.de> wrote:
-> > > On Friday 2022-06-10 00:49, Bill Wendling wrote:
-> > > > On Thu, Jun 9, 2022 at 3:25 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > > > > On Thu,  9 Jun 2022 22:16:19 +0000 Bill Wendling <morbo@google.com> wrote:
-> > > > > 
-> > > > > > This patch set fixes some clang warnings when -Wformat is enabled.
-> > > > > 
-> > > > > tldr:
-> > > > > 
-> > > > > -       printk(msg);
-> > > > > +       printk("%s", msg);
-> > > > > 
-> > > > > Otherwise these changes are a
-> > > > > useless consumer of runtime resources.
+I didn't like how libxtables has to include xshared.h from iptables code
+base, this series eliminates this:
 
-> > > > Calling a "printf" style function is already insanely expensive.
+* struct xtables_afinfo is used to hold family-specific configuration.
+  There are static const instances in libxtables and
+  xtables_set_nfproto() mangles the public 'afinfo' pointer. This is all
+  libxtables code, so move the struct definition and pointer declaration
+  into xtables.h (patch 1).
 
-I expect the printk code itself dominates, not the % scan cost.
+* XT_OPTION_OFFSET_SCALE is the base distance between different
+  extensions' offset values. It is mostly used by libxtables when
+  merging options and referenced by xshared.c for sanity checking only.
+  Patch 2 moves it into xtables.h (and turns the single value enum into
+  a define).
 
-> > > Perhaps you can split vprintk_store in the middle (after the call to
-> > > vsnprintf), and offer the second half as a function of its own (e.g.
-> > > "puts"). Then the tldr could be
-> > > 
-> > > - printk(msg);
-> > > + puts(msg);
-> > 
-> > That might be a nice compromise. Andrew, what do you think?
-> 
-> You would need to do that for all of the dev_printk() variants, so I
-> doubt that would ever be all that useful as almost no one should be
-> using a "raw" printk() these days.
+To avoid impact on external libxtables users, guard both changes above
+by XTABLES_INTERNAL. Without access to xshared.h, external extensions
+can't have made use of afinfo or XT_OPTION_OFFSET_SCALE yet.
 
-True.  The kernel has ~20K variants like that.
+Phil Sutter (2):
+  libxtables: Move struct xtables_afinfo into xtables.h
+  libxtables: Define XT_OPTION_OFFSET_SCALE in xtables.h
 
-$ git grep -P '\b(?:(?:\w+_){1,3}(?:alert|emerg|crit|err|warn|notice|info|cont|debug|dbg)|printk)\s*\(".*"\s*\)\s*;' | wc -l
-21160
+ extensions/libxt_set.c |  6 ++++++
+ extensions/libxt_set.h |  1 -
+ include/xtables.h      | 25 +++++++++++++++++++++++++
+ iptables/xshared.h     | 26 --------------------------
+ libxtables/xtables.c   |  1 -
+ libxtables/xtoptions.c |  1 -
+ 6 files changed, 31 insertions(+), 29 deletions(-)
 
-That doesn't include the ~3K uses like
-
-#define foo "bar"
-	printk(foo);
-
-$ git grep -P '\b(?:(?:\w+_){1,3}(?:alert|emerg|crit|err|warn|info|notice|debug|dbg|cont)|printk)\s*\((?:\s*\w+){1,3}\s*\)\s*;'|wc -l
-2922
-
-There are apparently only a few hundred uses of variants like:
-
-	printk("%s", foo)
-
-$ git grep -P '\b(?:(?:\w+_){1,3}(?:alert|emerg|crit|err|warn|info|notice|debug|dbg|cont)|printk)\s*\(\s*"%s(?:\\n)?"\s*,\s*(?:".*"|\w+)\s*\)\s*;' | wc -l
-305
-
-unless I screwed up my greps (which of course is quite possible)
+-- 
+2.34.1
 
