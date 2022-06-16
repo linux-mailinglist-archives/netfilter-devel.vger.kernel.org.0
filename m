@@ -2,72 +2,80 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EA054DF0F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jun 2022 12:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C827354DF1A
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Jun 2022 12:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbiFPK1f (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 16 Jun 2022 06:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
+        id S1376658AbiFPK3I (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 16 Jun 2022 06:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbiFPK1f (ORCPT
+        with ESMTP id S229494AbiFPK3H (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 16 Jun 2022 06:27:35 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245D1238
-        for <netfilter-devel@vger.kernel.org>; Thu, 16 Jun 2022 03:27:33 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1o1mip-0006DA-AK; Thu, 16 Jun 2022 12:27:31 +0200
-Date:   Thu, 16 Jun 2022 12:27:31 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] intervals: Do not sort cached set elements over and
- over again
-Message-ID: <YqsFkwU/369O5vxQ@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-References: <20220615173329.8595-1-phil@nwl.cc>
- <Yqo0q2gh/NSE1QwC@salvia>
+        Thu, 16 Jun 2022 06:29:07 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745715DA65
+        for <netfilter-devel@vger.kernel.org>; Thu, 16 Jun 2022 03:29:00 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id c4so1498649lfj.12
+        for <netfilter-devel@vger.kernel.org>; Thu, 16 Jun 2022 03:29:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=lLG88JCPgF7Yhflf4FNi4GQedsSNMbwmPtgneUr9Mu0=;
+        b=b4J3bZRs/alFl9SEuRqXaWDcje6GhrIjPYFFLyOKbAtnasbAByul4uymP+yv1sTGEl
+         iT8KKDPQi58E8ln2kcpmbIY+6+16VAJD/Xfy+vGH36iOfaDOI5CSKdvdWcSCviJwbDxh
+         gOosbpUiwoMuqm70nKvBmcE8qP7wElJwTBTqfD+BM/CXWxZQngoyI/RLLHcY+hncFwAH
+         /e4DuJ/C/MjWKTTfrSnIVya4QjWCJzBy0MNA86Mgvs3rKbznMir1JUEmIGS1k9ZbLq8v
+         BejSbraVWZTk7SFp0090KlTNRmzc8jVY5yu7w+62pifDIyLvYQM+BCaOi9Uspy4R6KnE
+         ergw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=lLG88JCPgF7Yhflf4FNi4GQedsSNMbwmPtgneUr9Mu0=;
+        b=jPxMnySo/V2l8Cm9HnkdHj2GnkgiLgQ37tiA5TU34gNeps+MBi+SESYppXjT4BO4dZ
+         22LivvBew0zFv83TBJW77LzrmxInFayxRtz4bYGq/ue9eYzMyoZeyDQkzGh6ulJm3aLO
+         la62VPMpU8DqypsoQrZtX2MIg+9UqeU8e17MBnk0mwYZyeotTJegGakpXjQgxOrLZO9G
+         hPxgsmVProOG3ohzpk4J67W5NFBgDeIxi28BjsS0ufqVWnNhMUdbsO5LvKgAmRCq/afO
+         E/Kthl1pb5RTaGwi420OeYL5YqD71FTNnepzevaoGvIbY0SWtioqslxDuaVUjPUGhStl
+         5jkA==
+X-Gm-Message-State: AJIora+OqyHODg0jkFZwiWTmURHt2z3mKf5XF3xn+o4HHiw2+maAgnSn
+        21OpxdFDm08EtAsJhY8mV9GBiM+f80vBdo2ckJw=
+X-Google-Smtp-Source: AGRyM1sihOJ6y2QIJguLWTCgajj1CnWCUPCK0NdatndYj9qVJ33e8+Su3UXy7HKJyqqaOzxyLB0Ku6u7W1DsQB3s6fQ=
+X-Received: by 2002:a05:6512:2e7:b0:478:f55e:f490 with SMTP id
+ m7-20020a05651202e700b00478f55ef490mr2224930lfq.486.1655375338656; Thu, 16
+ Jun 2022 03:28:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yqo0q2gh/NSE1QwC@salvia>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Received: by 2002:a05:6520:28c2:b0:1f3:cf5:e20d with HTTP; Thu, 16 Jun 2022
+ 03:28:57 -0700 (PDT)
+Reply-To: clmloans9@gmail.com
+From:   MR ANTHONY EDWARD <bashirusman02021@gmail.com>
+Date:   Thu, 16 Jun 2022 11:28:57 +0100
+Message-ID: <CAGOBX5ZEzS0=cvWe8d15dyJB5HrXyiE+CR62wjS8_dXLKBdrgg@mail.gmail.com>
+Subject: DARLEHENSANGEBOT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 09:36:11PM +0200, Pablo Neira Ayuso wrote:
-> On Wed, Jun 15, 2022 at 07:33:29PM +0200, Phil Sutter wrote:
-> > When adding element(s) to a non-empty set, code merged the two lists and
-> > sorted the result. With many individual 'add element' commands this
-> > causes substantial overhead. Make use of the fact that
-> > existing_set->init is sorted already, sort only the list of new elements
-> > and use list_splice_sorted() to merge the two sorted lists.
-> > 
-> > A test case adding ~25k elements in individual commands completes in
-> > about 1/4th of the time with this patch applied.
-> 
-> Good.
-> 
-> Do you still like the idea of coalescing set element commands whenever
-> possible?
+--=20
+Ben=C3=B6tigen Sie ein Gesch=C3=A4ftsdarlehen oder ein Darlehen jeglicher A=
+rt?
+Wenn ja, kontaktieren Sie uns
 
-Does it mess with error reporting? If not, I don't see a downside of
-doing it.
-
-With regards to the problem at hand, it seems like a feature to escape
-the actual problem. Please keep in mind that my patch's improvement from
-~4min down to ~1min is pretty lousy given that v1.0.1 completed the same
-task in 0.3s.
-
-IMHO the whole overlap detection/auto merging should happen as commit
-preparation and not per command.
-
-Cheers, Phil
+*Vollst=C3=A4ndiger Name:
+* Ben=C3=B6tigte Menge:
+*Leihdauer:
+*Mobiltelefon:
+*Land:
