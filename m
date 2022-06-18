@@ -2,124 +2,60 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 987435501D0
-	for <lists+netfilter-devel@lfdr.de>; Sat, 18 Jun 2022 04:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA22550284
+	for <lists+netfilter-devel@lfdr.de>; Sat, 18 Jun 2022 05:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbiFRCAv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 17 Jun 2022 22:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        id S229767AbiFRDgJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 17 Jun 2022 23:36:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238105AbiFRCAu (ORCPT
+        with ESMTP id S229600AbiFRDgI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 17 Jun 2022 22:00:50 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209F66B7CF
-        for <netfilter-devel@vger.kernel.org>; Fri, 17 Jun 2022 19:00:49 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id h34-20020a17090a29a500b001eb01527d9eso4717218pjd.3
-        for <netfilter-devel@vger.kernel.org>; Fri, 17 Jun 2022 19:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:date:to:cc:subject:message-id:reply-to:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Qgtj6G9oJfTjzkLDgbvMlJZMzhvJVp3tqlZJlNbzVCg=;
-        b=KkPloncU19lc586C6a4Fr8aRrS1s9N6i5HkmwXG3buXZR49D5Ej1UnUZbQUSyd+xoU
-         kWanRWUSbXISqoFysOnzHHQTKYVpeEKYREFfZiLO79LZPikongw40nTYugPdAzB1JinZ
-         0uGEAOiotZSaT9BPB2pnVBlzQz1bddPhM4fqYqQdZqmCh9ZOxh5MQLxQwMCvdjAiHOKE
-         w/vwL+o9P0kUz/RMFw3dE5rFhVw8Itz3NaW7NtIm7PrwztochqI73fKJFC+xSFb4BEga
-         41sH/d8stVi4D9bIzpivtmuTxf1pzgrhc1aKWnJP6z240R5OGeB6xFBB+6MbwEl4byJ5
-         s1Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :reply-to:mail-followup-to:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Qgtj6G9oJfTjzkLDgbvMlJZMzhvJVp3tqlZJlNbzVCg=;
-        b=fGNcdos/IUcLFsMswIp9Ec17ugQiH9AIEEUrtWBB5eKYKwfW76mRS/XSE6ZqXdExR0
-         dWHAaB9XG2OthdAleOXZZebFOtcangN+A9GZCEs4kEllkYbGfz57SAfTy/t2S349hTFR
-         S3ZPe/vJxneNgXUnySwYVUpkmXuU9npviac7Tj/AaGgjtvP8B+sszO+Fnj6f/RQdZ8z+
-         3ldcHh9zNdypjuhfxLz1QLoK9sRD98iE5E7xehnC3pwNHBKikza/z//DhWGdhZw3uu76
-         UbdJXU4pORUHVXYGk2EYJ4igbefE+e6OlWOePkWoqOuVrtZ8Ar6ZgvaaJ/HnrCSIj+PQ
-         +cUg==
-X-Gm-Message-State: AJIora9B4coJSnYEs6vsHpwannbOAYu+BCMrq3TrQYM6Ej+DNEbfqodn
-        HN08eVP3jalPzImZkNeeNL3CKvr5VIE=
-X-Google-Smtp-Source: AGRyM1u/RvgJUwbnm9ZxnlorwvlsDaaG/7QOMqhGnIKDrnexKOZbYUtTFJp3aDY678sWSJqm8dEMzg==
-X-Received: by 2002:a17:90b:4b02:b0:1e2:ff51:272a with SMTP id lx2-20020a17090b4b0200b001e2ff51272amr13686380pjb.56.1655517648554;
-        Fri, 17 Jun 2022 19:00:48 -0700 (PDT)
-Received: from slk15.local.net (n110-23-108-30.sun3.vic.optusnet.com.au. [110.23.108.30])
-        by smtp.gmail.com with ESMTPSA id h189-20020a62dec6000000b0050dc762813csm4376002pfg.22.2022.06.17.19.00.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jun 2022 19:00:47 -0700 (PDT)
-Sender: Duncan Roe <duncan.roe2@gmail.com>
-From:   Duncan Roe <duncan_roe@optusnet.com.au>
-X-Google-Original-From: Duncan Roe <dunc@slk15.local.net>
-Date:   Sat, 18 Jun 2022 12:00:44 +1000
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Netfilter Development <netfilter-devel@vger.kernel.org>,
-        Florian Westphal <fw@strlen.de>
-Subject: Re: [PATCH libnetfilter_queue v4] src: eliminate packet copy when
- constructing struct pktbuff
-Message-ID: <Yq0xzEkd7SF+vUwO@slk15.local.net>
-Reply-To: duncan_roe@optusnet.com.au
-Mail-Followup-To: Pablo Neira Ayuso <pablo@netfilter.org>,
-        Netfilter Development <netfilter-devel@vger.kernel.org>,
-        Florian Westphal <fw@strlen.de>
-References: <20220328024821.9927-1-duncan_roe@optusnet.com.au>
+        Fri, 17 Jun 2022 23:36:08 -0400
+X-Greylist: delayed 576 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 17 Jun 2022 20:36:07 PDT
+Received: from s421-102.kagoya.net (s421-102.kagoya.net [133.18.34.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A8EC3B2A5
+        for <netfilter-devel@vger.kernel.org>; Fri, 17 Jun 2022 20:36:06 -0700 (PDT)
+Received: by s421-102.kagoya.net (Postfix, from userid 439908)
+        id 5B64DC07E6; Sat, 18 Jun 2022 12:26:28 +0900 (JST)
+To:     netfilter-devel@vger.kernel.org
+Subject: =?UTF-8?B?44Ko44O844K544Kz44O844Od44Os44O844K344On44Oz44CQ6Ieq5YuV6L+U?=  =?UTF-8?B?5L+h44Oh44O844Or44CRICLjgZ3jga7ku5Yi?=
+Date:   Sat, 18 Jun 2022 03:26:28 +0000
+From:   =?UTF-8?B?44Ko44O844K544Kz44O844Od44Os44O844K344On44Oz?= 
+        <info@acecorp.co.jp>
+Reply-To: info@acecorp.co.jp
+Message-ID: <1dNvuPklff18ek7PtaauPd6UGp1lFMDTxl3sZqyhhw@www.acecorp.co.jp>
+X-Mailer: PHPMailer 6.6.0 (https://github.com/PHPMailer/PHPMailer)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220328024821.9927-1-duncan_roe@optusnet.com.au>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=3.9 required=5.0 tests=BAYES_99,BAYES_999,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
+💛 Adrianne just viewed your profile! Click here: https://queen22.page.link/photos?i4fka 💛様
+この度はお問い合わせ頂き誠にありがとうございます。
+下記お客様がご入力された内容になります。ご確認くださいませ。
 
-On Mon, Mar 28, 2022 at 01:48:21PM +1100, Duncan Roe wrote:
-> To avoid a copy, the new code takes advantage of the fact that the netfilter
-> netlink queue never returns multipart messages.
-> This means that the buffer space following that callback data is available for
-> packet expansion when mangling.
->
-> nfq_cb_run() is a new nfq-specific callback runqueue for netlink messages.
-> The principal function of nfq_cb_run() is to pass to the called function what is
-> the length of free space after the packet.
->
-> pktb_setup is a new function to initialise a new struct pkt_buff.
->
-> pktb_head_size() is a new function to return the amount of memory to reserve
-> for a new struct pkt_buff.
->
-> nfq_cb_t is a new typedef for the function called by nfq_cb_run()
-> [c.f. mnl_cb_t / mnl_cb_run].
->
-> examples/nf-queue.c is updated to demonstrate the new API.
->
-> Signed-off-by: Duncan Roe <duncan_roe@optusnet.com.au>
-> ---
-> v4:
-> New functions have man pages / html doc
-> struct pkt_buff remains opaque
-> pktb_populate renamed pktb_setup
-[...]
+お名前：
+💛 Adrianne just viewed your profile! Click here: https://queen22.page.link/photos?i4fka 💛
 
-This patch locks in that the netfilter queue will never batch multiple packets:
-is that a problem?
+住所：
+r8rw9m
 
-If you like I could send a v5 documenting that programs that hold on to multiple
-packets should [continue to] use mnl_cb_run / pktb_alloc / pktb_free.
+電話番号：
+297761804404
 
-Re documentation: of course I would like to rework it to replace "deprecated"
-with e.g. "old interface". There would be a section comparing the old and new
-interfaces. I would rather not have to write in that section that the old
-interface is faster (but can't mangle).
+年齢：
+0kbloa
 
-If you apply this patch, the old interface would no longer be faster.
 
-Cheers ... Duncan.
+-- 
+このメールは エースコーポレーション (http://www.acecorp.co.jp) のお問い合わせフォームから送信されました
+
