@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 075555512DD
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jun 2022 10:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7585512D1
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jun 2022 10:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239654AbiFTIce (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Jun 2022 04:32:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
+        id S239644AbiFTIch (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 Jun 2022 04:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239769AbiFTIc3 (ORCPT
+        with ESMTP id S239825AbiFTIcb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 Jun 2022 04:32:29 -0400
+        Mon, 20 Jun 2022 04:32:31 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C24EF12A95
-        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jun 2022 01:32:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0247E12A96
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jun 2022 01:32:29 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 16/18] optimize: assume verdict is same when rules have no verdict
-Date:   Mon, 20 Jun 2022 10:32:13 +0200
-Message-Id: <20220620083215.1021238-17-pablo@netfilter.org>
+Subject: [PATCH nft 17/18] optimize: limit statement is not supported yet
+Date:   Mon, 20 Jun 2022 10:32:14 +0200
+Message-Id: <20220620083215.1021238-18-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220620083215.1021238-1-pablo@netfilter.org>
 References: <20220620083215.1021238-1-pablo@netfilter.org>
@@ -34,60 +34,52 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Revert support for limit statement, the limit statement is stateful and
+it applies a ratelimit per rule, transformation for merging rules with
+the limit statement needs to use anonymous sets with statements.
+
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/optimize.c                                        |  3 ++-
- .../testcases/optimizations/dumps/merge_reject.nft    |  6 ++++++
- tests/shell/testcases/optimizations/merge_reject      | 11 +++++++++++
- 3 files changed, 19 insertions(+), 1 deletion(-)
+ src/optimize.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
 diff --git a/src/optimize.c b/src/optimize.c
-index e4508fa5116a..c6b85d74d302 100644
+index c6b85d74d302..2340ef466fc0 100644
 --- a/src/optimize.c
 +++ b/src/optimize.c
-@@ -944,7 +944,8 @@ static enum stmt_types merge_stmt_type(const struct optimize_ctx *ctx)
- 		}
- 	}
- 
--	return STMT_INVALID;
-+	/* actually no verdict, this assumes rules have the same verdict. */
-+	return STMT_VERDICT;
- }
- 
- static void merge_rules(const struct optimize_ctx *ctx,
-diff --git a/tests/shell/testcases/optimizations/dumps/merge_reject.nft b/tests/shell/testcases/optimizations/dumps/merge_reject.nft
-index 9a13e2b96faa..c29ad6d5648b 100644
---- a/tests/shell/testcases/optimizations/dumps/merge_reject.nft
-+++ b/tests/shell/testcases/optimizations/dumps/merge_reject.nft
-@@ -5,3 +5,9 @@ table ip x {
- 		ip daddr 172.30.254.252 tcp dport 3306 counter packets 0 bytes 0 reject with tcp reset
- 	}
- }
-+table ip6 x {
-+	chain y {
-+		meta l4proto . ip6 daddr . tcp dport { tcp . aaaa::3 . 8080, tcp . aaaa::2 . 3306, tcp . aaaa::4 . 3306 } counter packets 0 bytes 0 reject
-+		ip6 daddr aaaa::5 tcp dport 3306 counter packets 0 bytes 0 reject with tcp reset
-+	}
-+}
-diff --git a/tests/shell/testcases/optimizations/merge_reject b/tests/shell/testcases/optimizations/merge_reject
-index 497e8f64dc5d..c0ef9cacbbf0 100755
---- a/tests/shell/testcases/optimizations/merge_reject
-+++ b/tests/shell/testcases/optimizations/merge_reject
-@@ -13,3 +13,14 @@ RULESET="table ip x {
- }"
- 
- $NFT -o -f - <<< $RULESET
-+
-+RULESET="table ip6 x {
-+	chain y {
-+		meta l4proto tcp ip6 daddr aaaa::2 tcp dport 3306 counter packets 0 bytes 0 reject
-+		meta l4proto tcp ip6 daddr aaaa::3 tcp dport 8080 counter packets 0 bytes 0 reject
-+		meta l4proto tcp ip6 daddr aaaa::4 tcp dport 3306 counter packets 0 bytes 0 reject
-+		meta l4proto tcp ip6 daddr aaaa::5 tcp dport 3306 counter packets 0 bytes 0 reject with tcp reset
-+	}
-+}"
-+
-+$NFT -o -f - <<< $RULESET
+@@ -197,14 +197,6 @@ static bool __stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b,
+ 		    expr_b->etype == EXPR_MAP)
+ 			return __expr_cmp(expr_a->map, expr_b->map);
+ 		break;
+-	case STMT_LIMIT:
+-		if (stmt_a->limit.rate != stmt_b->limit.rate ||
+-		    stmt_a->limit.unit != stmt_b->limit.unit ||
+-		    stmt_a->limit.burst != stmt_b->limit.burst ||
+-		    stmt_a->limit.type != stmt_b->limit.type ||
+-		    stmt_a->limit.flags != stmt_b->limit.flags)
+-			return false;
+-		break;
+ 	case STMT_LOG:
+ 		if (stmt_a->log.snaplen != stmt_b->log.snaplen ||
+ 		    stmt_a->log.group != stmt_b->log.group ||
+@@ -322,7 +314,6 @@ static bool stmt_type_find(struct optimize_ctx *ctx, const struct stmt *stmt)
+ 	case STMT_VERDICT:
+ 	case STMT_COUNTER:
+ 	case STMT_NOTRACK:
+-	case STMT_LIMIT:
+ 	case STMT_LOG:
+ 	case STMT_NAT:
+ 	case STMT_REJECT:
+@@ -367,9 +358,6 @@ static int rule_collect_stmts(struct optimize_ctx *ctx, struct rule *rule)
+ 		case STMT_COUNTER:
+ 		case STMT_NOTRACK:
+ 			break;
+-		case STMT_LIMIT:
+-			memcpy(&clone->limit, &stmt->limit, sizeof(clone->limit));
+-			break;
+ 		case STMT_LOG:
+ 			memcpy(&clone->log, &stmt->log, sizeof(clone->log));
+ 			if (stmt->log.prefix)
 -- 
 2.30.2
 
