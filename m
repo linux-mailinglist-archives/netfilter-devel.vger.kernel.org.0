@@ -2,29 +2,31 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C983551F7B
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jun 2022 16:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55905551F8E
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jun 2022 16:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbiFTO5c (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Jun 2022 10:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
+        id S240103AbiFTO5g (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 Jun 2022 10:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242820AbiFTO5J (ORCPT
+        with ESMTP id S242925AbiFTO5K (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 Jun 2022 10:57:09 -0400
+        Mon, 20 Jun 2022 10:57:10 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C1325294
-        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jun 2022 07:17:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FDD25297
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jun 2022 07:17:42 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1o3IDg-00052N-AD; Mon, 20 Jun 2022 16:17:36 +0200
+        id 1o3IDk-00052V-FS; Mon, 20 Jun 2022 16:17:40 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf 0/2] netfilter: fix two nf_dup bugs with egress hook
-Date:   Mon, 20 Jun 2022 16:17:29 +0200
-Message-Id: <20220620141731.7362-1-fw@strlen.de>
+Cc:     Florian Westphal <fw@strlen.de>, Eric Garver <eric@garver.life>
+Subject: [PATCH nf 1/2] netfilter: nf_dup_netdev: do not push mac header a second time
+Date:   Mon, 20 Jun 2022 16:17:30 +0200
+Message-Id: <20220620141731.7362-2-fw@strlen.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220620141731.7362-1-fw@strlen.de>
+References: <20220620141731.7362-1-fw@strlen.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
@@ -36,21 +38,68 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We need to be more careful now that nf_dup is exposed to new
-egress hook.
+Eric reports skb_under_panic when using dup/fwd via bond+egress hook.
+Before pushing mac header, we should make sure that we're called from
+ingress to put back what was pulled earlier.
 
-When called from egress hook, we need to skip push of mac header,
-this is only ok for ingress invocation.
+In egress case, the MAC header is already there; we should leave skb
+alone.
 
-Also add a  recursion counter to prevent re-entry into the expression.
+While at it be more careful here: skb might have been altered and
+headroom reduced, so add a skb_cow() before so that headroom is
+increased if necessary.
 
-Florian Westphal (2):
-  netfilter: nf_dup_netdev: do not push mac header a second time
-  netfilter: nf_dup_netdev: add and use recursion counter
+nf_do_netdev_egress() assumes skb ownership (it normally ends with
+a call to dev_queue_xmit), so we must free the packet on error.
 
- net/netfilter/nf_dup_netdev.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+Fixes: f87b9464d152 ("netfilter: nft_fwd_netdev: Support egress hook")
+Reported-by: Eric Garver <eric@garver.life>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nf_dup_netdev.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
+diff --git a/net/netfilter/nf_dup_netdev.c b/net/netfilter/nf_dup_netdev.c
+index 7873bd1389c3..13b7f6a66086 100644
+--- a/net/netfilter/nf_dup_netdev.c
++++ b/net/netfilter/nf_dup_netdev.c
+@@ -13,10 +13,16 @@
+ #include <net/netfilter/nf_tables_offload.h>
+ #include <net/netfilter/nf_dup_netdev.h>
+ 
+-static void nf_do_netdev_egress(struct sk_buff *skb, struct net_device *dev)
++static void nf_do_netdev_egress(struct sk_buff *skb, struct net_device *dev,
++				enum nf_dev_hooks hook)
+ {
+-	if (skb_mac_header_was_set(skb))
++	if (hook == NF_NETDEV_INGRESS && skb_mac_header_was_set(skb)) {
++		if (skb_cow_head(skb, skb->mac_len)) {
++			kfree_skb(skb);
++			return;
++		}
+ 		skb_push(skb, skb->mac_len);
++	}
+ 
+ 	skb->dev = dev;
+ 	skb_clear_tstamp(skb);
+@@ -33,7 +39,7 @@ void nf_fwd_netdev_egress(const struct nft_pktinfo *pkt, int oif)
+ 		return;
+ 	}
+ 
+-	nf_do_netdev_egress(pkt->skb, dev);
++	nf_do_netdev_egress(pkt->skb, dev, nft_hook(pkt));
+ }
+ EXPORT_SYMBOL_GPL(nf_fwd_netdev_egress);
+ 
+@@ -48,7 +54,7 @@ void nf_dup_netdev_egress(const struct nft_pktinfo *pkt, int oif)
+ 
+ 	skb = skb_clone(pkt->skb, GFP_ATOMIC);
+ 	if (skb)
+-		nf_do_netdev_egress(skb, dev);
++		nf_do_netdev_egress(skb, dev, nft_hook(pkt));
+ }
+ EXPORT_SYMBOL_GPL(nf_dup_netdev_egress);
+ 
 -- 
 2.35.1
 
