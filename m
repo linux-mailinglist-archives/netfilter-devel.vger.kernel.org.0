@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E075512D8
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jun 2022 10:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60AF5512CB
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jun 2022 10:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239442AbiFTIcd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Jun 2022 04:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48550 "EHLO
+        id S239850AbiFTIcb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 Jun 2022 04:32:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239644AbiFTIc3 (ORCPT
+        with ESMTP id S239634AbiFTIc2 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 Jun 2022 04:32:29 -0400
+        Mon, 20 Jun 2022 04:32:28 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7C27012A9C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7B92612A88
         for <netfilter-devel@vger.kernel.org>; Mon, 20 Jun 2022 01:32:26 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 05/18] optimize: fix reject statement
-Date:   Mon, 20 Jun 2022 10:32:02 +0200
-Message-Id: <20220620083215.1021238-6-pablo@netfilter.org>
+Subject: [PATCH nft 06/18] optimize: fix verdict map merging
+Date:   Mon, 20 Jun 2022 10:32:03 +0200
+Message-Id: <20220620083215.1021238-7-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220620083215.1021238-1-pablo@netfilter.org>
 References: <20220620083215.1021238-1-pablo@netfilter.org>
@@ -34,94 +34,53 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add missing code to the statement collection routine. Compare reject
-expressions when available. Add tests/shell.
+Skip comparison when collecting the statement and building the rule vs
+statement matrix. Compare verdict type when merging rules.
 
-Fixes: fb298877ece2 ("src: add ruleset optimization infrastructure")
+When infering rule mergers, honor the STMT_VERDICT with map (ie. vmap).
+
+Fixes: 561aa3cfa8da ("optimize: merge verdict maps with same lookup key")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/optimize.c                                | 19 ++++++++++++++++---
- .../optimizations/dumps/merge_reject.nft      |  7 +++++++
- .../testcases/optimizations/merge_reject      | 15 +++++++++++++++
- 3 files changed, 38 insertions(+), 3 deletions(-)
- create mode 100644 tests/shell/testcases/optimizations/dumps/merge_reject.nft
- create mode 100755 tests/shell/testcases/optimizations/merge_reject
+ src/optimize.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/src/optimize.c b/src/optimize.c
-index 94242ee5f490..427625846484 100644
+index 427625846484..747282b4d7f4 100644
 --- a/src/optimize.c
 +++ b/src/optimize.c
-@@ -178,13 +178,19 @@ static bool __stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b,
- 			return false;
+@@ -139,6 +139,9 @@ static bool __stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b,
+ 	case STMT_NOTRACK:
  		break;
- 	case STMT_REJECT:
--		if (stmt_a->reject.expr || stmt_b->reject.expr)
--			return false;
--
- 		if (stmt_a->reject.family != stmt_b->reject.family ||
- 		    stmt_a->reject.type != stmt_b->reject.type ||
- 		    stmt_a->reject.icmp_code != stmt_b->reject.icmp_code)
- 			return false;
-+
-+		if (!!stmt_a->reject.expr ^ !!stmt_b->reject.expr)
-+			return false;
-+
-+		if (!stmt_a->reject.expr)
-+			return true;
-+
-+		if (__expr_cmp(stmt_a->reject.expr, stmt_b->reject.expr))
-+			return false;
- 		break;
- 	case STMT_NAT:
- 		if (stmt_a->nat.type != stmt_b->nat.type ||
-@@ -304,6 +310,13 @@ static int rule_collect_stmts(struct optimize_ctx *ctx, struct rule *rule)
- 			clone->nat.flags = stmt->nat.flags;
- 			clone->nat.type_flags = stmt->nat.type_flags;
- 			break;
-+		case STMT_REJECT:
-+			if (stmt->reject.expr)
-+				clone->reject.expr = expr_get(stmt->reject.expr);
-+			clone->reject.type = stmt->reject.type;
-+			clone->reject.icmp_code = stmt->reject.icmp_code;
-+			clone->reject.family = stmt->reject.family;
+ 	case STMT_VERDICT:
++		if (!fully_compare)
 +			break;
- 		default:
- 			xfree(clone);
++
+ 		expr_a = stmt_a->expr;
+ 		expr_b = stmt_b->expr;
+ 
+@@ -276,10 +279,6 @@ static int rule_collect_stmts(struct optimize_ctx *ctx, struct rule *rule)
+ 		if (stmt_type_find(ctx, stmt))
  			continue;
-diff --git a/tests/shell/testcases/optimizations/dumps/merge_reject.nft b/tests/shell/testcases/optimizations/dumps/merge_reject.nft
-new file mode 100644
-index 000000000000..9a13e2b96faa
---- /dev/null
-+++ b/tests/shell/testcases/optimizations/dumps/merge_reject.nft
-@@ -0,0 +1,7 @@
-+table ip x {
-+	chain y {
-+		ip daddr 172.30.33.70 tcp dport 3306 counter packets 0 bytes 0 drop
-+		meta l4proto . ip daddr . tcp dport { tcp . 172.30.238.117 . 8080, tcp . 172.30.33.71 . 3306, tcp . 172.30.254.251 . 3306 } counter packets 0 bytes 0 reject
-+		ip daddr 172.30.254.252 tcp dport 3306 counter packets 0 bytes 0 reject with tcp reset
-+	}
-+}
-diff --git a/tests/shell/testcases/optimizations/merge_reject b/tests/shell/testcases/optimizations/merge_reject
-new file mode 100755
-index 000000000000..497e8f64dc5d
---- /dev/null
-+++ b/tests/shell/testcases/optimizations/merge_reject
-@@ -0,0 +1,15 @@
-+#!/bin/bash
-+
-+set -e
-+
-+RULESET="table ip x {
-+	chain y {
-+		meta l4proto tcp ip daddr 172.30.33.70 tcp dport 3306 counter packets 0 bytes 0 drop
-+		meta l4proto tcp ip daddr 172.30.33.71 tcp dport 3306 counter packets 0 bytes 0 reject
-+		meta l4proto tcp ip daddr 172.30.238.117 tcp dport 8080 counter packets 0 bytes 0 reject
-+		meta l4proto tcp ip daddr 172.30.254.251 tcp dport 3306 counter packets 0 bytes 0 reject
-+		meta l4proto tcp ip daddr 172.30.254.252 tcp dport 3306 counter packets 0 bytes 0 reject with tcp reset
-+	}
-+}"
-+
-+$NFT -o -f - <<< $RULESET
+ 
+-		if (stmt->ops->type == STMT_VERDICT &&
+-		    stmt->expr->etype == EXPR_MAP)
+-			continue;
+-
+ 		/* No refcounter available in statement objects, clone it to
+ 		 * to store in the array of selectors.
+ 		 */
+@@ -999,6 +998,10 @@ static int chain_optimize(struct nft_ctx *nft, struct list_head *rules)
+ 			case STMT_EXPRESSION:
+ 				merge[k].stmt[merge[k].num_stmts++] = m;
+ 				break;
++			case STMT_VERDICT:
++				if (ctx->stmt_matrix[i][m]->expr->etype == EXPR_MAP)
++					merge[k].stmt[merge[k].num_stmts++] = m;
++				break;
+ 			default:
+ 				break;
+ 			}
 -- 
 2.30.2
 
