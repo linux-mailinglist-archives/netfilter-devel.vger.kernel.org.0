@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1413C5512D5
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jun 2022 10:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257EF5512CF
+	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jun 2022 10:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239820AbiFTIca (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Jun 2022 04:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48462 "EHLO
+        id S239502AbiFTIcc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 Jun 2022 04:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239605AbiFTIc0 (ORCPT
+        with ESMTP id S239442AbiFTIc2 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 Jun 2022 04:32:26 -0400
+        Mon, 20 Jun 2022 04:32:28 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9ABB12A96
-        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jun 2022 01:32:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7A14712A81
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jun 2022 01:32:24 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 03/18] optimize: do not print stateful information
-Date:   Mon, 20 Jun 2022 10:32:00 +0200
-Message-Id: <20220620083215.1021238-4-pablo@netfilter.org>
+Subject: [PATCH nft 04/18] optimize: remove comment after merging
+Date:   Mon, 20 Jun 2022 10:32:01 +0200
+Message-Id: <20220620083215.1021238-5-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220620083215.1021238-1-pablo@netfilter.org>
 References: <20220620083215.1021238-1-pablo@netfilter.org>
@@ -34,54 +34,50 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Do not print stateful information such as counters which are likely set
-to zero.
+Remove rule comment after merging rules, let the user decide if they want
+to reintroduce the comment in the ruleset file.
 
-Before this patch:
-
-  Merging:
-  packets.conf:10:3-29:                 ip protocol  4 counter drop
-  packets.conf:11:3-29:                 ip protocol 41 counter drop
-  packets.conf:12:3-29:                 ip protocol 47 counter drop
-  into:
-          ip protocol { 4, 41, 47 } counter packets 0 bytes 0 drop
-                                            ^^^^^^^^^^^^^^^^^
-After:
-
-  Merging:
-  packets.conf:10:3-29:                 ip protocol  4 counter drop
-  packets.conf:11:3-29:                 ip protocol 41 counter drop
-  packets.conf:12:3-29:                 ip protocol 47 counter drop
-  into:
-          ip protocol { 4, 41, 47 } counter drop
+Update optimizations/merge_stmt test.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/optimize.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ src/optimize.c                                  | 5 +++++
+ tests/shell/testcases/optimizations/merge_stmts | 6 +++---
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/src/optimize.c b/src/optimize.c
-index 543d3ca5a9c7..b19a8b553555 100644
+index b19a8b553555..94242ee5f490 100644
 --- a/src/optimize.c
 +++ b/src/optimize.c
-@@ -873,6 +873,8 @@ static void merge_rules(const struct optimize_ctx *ctx,
+@@ -873,6 +873,11 @@ static void merge_rules(const struct optimize_ctx *ctx,
  		assert(0);
  	}
  
-+        octx->flags |= NFT_CTX_OUTPUT_STATELESS;
++	if (ctx->rule[from]->comment) {
++		xfree(ctx->rule[from]->comment);
++		ctx->rule[from]->comment = NULL;
++	}
 +
+         octx->flags |= NFT_CTX_OUTPUT_STATELESS;
+ 
  	fprintf(octx->error_fp, "Merging:\n");
- 	rule_optimize_print(octx, ctx->rule[from]);
+diff --git a/tests/shell/testcases/optimizations/merge_stmts b/tests/shell/testcases/optimizations/merge_stmts
+index 0c35636efaa9..ec7a9dd6b554 100755
+--- a/tests/shell/testcases/optimizations/merge_stmts
++++ b/tests/shell/testcases/optimizations/merge_stmts
+@@ -4,9 +4,9 @@ set -e
  
-@@ -885,6 +887,8 @@ static void merge_rules(const struct optimize_ctx *ctx,
- 	fprintf(octx->error_fp, "into:\n\t");
- 	rule_print(ctx->rule[from], octx);
- 	fprintf(octx->error_fp, "\n");
-+
-+        octx->flags &= ~NFT_CTX_OUTPUT_STATELESS;
- }
+ RULESET="table ip x {
+ 	chain y {
+-		ip daddr 192.168.0.1 counter accept
+-		ip daddr 192.168.0.2 counter accept
+-		ip daddr 192.168.0.3 counter accept
++		ip daddr 192.168.0.1 counter accept comment "test1"
++		ip daddr 192.168.0.2 counter accept comment "test2"
++		ip daddr 192.168.0.3 counter accept comment "test3"
+ 	}
+ }"
  
- static bool stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b)
 -- 
 2.30.2
 
