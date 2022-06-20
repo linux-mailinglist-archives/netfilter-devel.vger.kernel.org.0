@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1345512CC
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0635512CD
 	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jun 2022 10:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239415AbiFTIc1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Jun 2022 04:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48448 "EHLO
+        id S239448AbiFTIc2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 20 Jun 2022 04:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239445AbiFTIcZ (ORCPT
+        with ESMTP id S239515AbiFTIcZ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 20 Jun 2022 04:32:25 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8EFF312A88
-        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jun 2022 01:32:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8FC2E12A95
+        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jun 2022 01:32:23 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 01/18] optimize: do not compare relational expression rhs when collecting statements
-Date:   Mon, 20 Jun 2022 10:31:58 +0200
-Message-Id: <20220620083215.1021238-2-pablo@netfilter.org>
+Subject: [PATCH nft 02/18] optimize: do not merge rules with set reference in rhs
+Date:   Mon, 20 Jun 2022 10:31:59 +0200
+Message-Id: <20220620083215.1021238-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220620083215.1021238-1-pablo@netfilter.org>
 References: <20220620083215.1021238-1-pablo@netfilter.org>
@@ -34,101 +34,115 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When building the statement matrix, do not compare expression right hand
-side, otherwise bogus mismatches might occur.
+Otherwise set reference ends up included in an anonymous set, as an
+element, which is not supported.
 
-The fully compared flag is set on when comparing rules to look for
-possible mergers.
-
-Fixes: 3f36cc6c3dcd ("optimize: do not merge unsupported statement expressions")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/optimize.c | 39 +++++++++++++++++++++------------------
- 1 file changed, 21 insertions(+), 18 deletions(-)
+ src/optimize.c                                | 10 ++++++
+ .../optimizations/dumps/skip_merge.nft        | 23 +++++++++++++
+ .../shell/testcases/optimizations/skip_merge  | 34 +++++++++++++++++++
+ 3 files changed, 67 insertions(+)
+ create mode 100644 tests/shell/testcases/optimizations/dumps/skip_merge.nft
+ create mode 100755 tests/shell/testcases/optimizations/skip_merge
 
 diff --git a/src/optimize.c b/src/optimize.c
-index 3a3049d43690..a2a4e587e125 100644
+index a2a4e587e125..543d3ca5a9c7 100644
 --- a/src/optimize.c
 +++ b/src/optimize.c
-@@ -105,7 +105,8 @@ static bool stmt_expr_supported(const struct expr *expr)
+@@ -105,6 +105,12 @@ static bool stmt_expr_supported(const struct expr *expr)
  	return false;
  }
  
--static bool __stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b)
-+static bool __stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b,
-+			   bool fully_compare)
- {
- 	struct expr *expr_a, *expr_b;
- 
-@@ -117,9 +118,11 @@ static bool __stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b)
- 		expr_a = stmt_a->expr;
- 		expr_b = stmt_b->expr;
- 
--		if (!stmt_expr_supported(expr_a) ||
--		    !stmt_expr_supported(expr_b))
--			return false;
-+		if (fully_compare) {
-+			if (!stmt_expr_supported(expr_a) ||
-+			    !stmt_expr_supported(expr_b))
-+				return false;
-+		}
- 
- 		return __expr_cmp(expr_a->left, expr_b->left);
- 	case STMT_COUNTER:
-@@ -237,24 +240,12 @@ static bool stmt_verdict_eq(const struct stmt *stmt_a, const struct stmt *stmt_b
- 	return false;
- }
- 
--static bool stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b)
--{
--	if (!stmt_a && !stmt_b)
--		return true;
--	else if (!stmt_a)
--		return false;
--	else if (!stmt_b)
--		return false;
--
--	return __stmt_type_eq(stmt_a, stmt_b);
--}
--
- static bool stmt_type_find(struct optimize_ctx *ctx, const struct stmt *stmt)
- {
- 	uint32_t i;
- 
- 	for (i = 0; i < ctx->num_stmts; i++) {
--		if (__stmt_type_eq(stmt, ctx->stmt[i]))
-+		if (__stmt_type_eq(stmt, ctx->stmt[i], false))
- 			return true;
- 	}
- 
-@@ -321,7 +312,7 @@ static int cmd_stmt_find_in_stmt_matrix(struct optimize_ctx *ctx, struct stmt *s
- 	uint32_t i;
- 
- 	for (i = 0; i < ctx->num_stmts; i++) {
--		if (__stmt_type_eq(stmt, ctx->stmt[i]))
-+		if (__stmt_type_eq(stmt, ctx->stmt[i], false))
- 			return i;
- 	}
- 	/* should not ever happen. */
-@@ -886,6 +877,18 @@ static void merge_rules(const struct optimize_ctx *ctx,
- 	fprintf(octx->error_fp, "\n");
- }
- 
-+static bool stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b)
++static bool expr_symbol_set(const struct expr *expr)
 +{
-+	if (!stmt_a && !stmt_b)
-+		return true;
-+	else if (!stmt_a)
-+		return false;
-+	else if (!stmt_b)
-+		return false;
-+
-+	return __stmt_type_eq(stmt_a, stmt_b, true);
++	return expr->right->etype == EXPR_SYMBOL &&
++	       expr->right->symtype == SYMBOL_SET;
 +}
 +
- static bool rules_eq(const struct optimize_ctx *ctx, int i, int j)
+ static bool __stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b,
+ 			   bool fully_compare)
  {
- 	uint32_t k;
+@@ -122,6 +128,10 @@ static bool __stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b,
+ 			if (!stmt_expr_supported(expr_a) ||
+ 			    !stmt_expr_supported(expr_b))
+ 				return false;
++
++			if (expr_symbol_set(expr_a) ||
++			    expr_symbol_set(expr_b))
++				return false;
+ 		}
+ 
+ 		return __expr_cmp(expr_a->left, expr_b->left);
+diff --git a/tests/shell/testcases/optimizations/dumps/skip_merge.nft b/tests/shell/testcases/optimizations/dumps/skip_merge.nft
+new file mode 100644
+index 000000000000..9c10b74b4be2
+--- /dev/null
++++ b/tests/shell/testcases/optimizations/dumps/skip_merge.nft
+@@ -0,0 +1,23 @@
++table inet filter {
++	set udp_accepted {
++		type inet_service
++		elements = { 500, 4500 }
++	}
++
++	set tcp_accepted {
++		type inet_service
++		elements = { 80, 443 }
++	}
++
++	chain udp_input {
++		udp dport 1-128 accept
++		udp dport @udp_accepted accept
++		udp dport 53 accept
++	}
++
++	chain tcp_input {
++		tcp dport { 1-128, 8888-9999 } accept
++		tcp dport @tcp_accepted accept
++		tcp dport 1024-65535 accept
++	}
++}
+diff --git a/tests/shell/testcases/optimizations/skip_merge b/tests/shell/testcases/optimizations/skip_merge
+new file mode 100755
+index 000000000000..8af976cac56d
+--- /dev/null
++++ b/tests/shell/testcases/optimizations/skip_merge
+@@ -0,0 +1,34 @@
++#!/bin/bash
++
++set -e
++
++RULESET="table inet filter {
++    set udp_accepted {
++        type inet_service;
++        elements = {
++            isakmp, ipsec-nat-t
++        }
++    }
++
++    set tcp_accepted {
++        type inet_service;
++        elements = {
++            http, https
++        }
++    }
++
++    chain udp_input {
++        udp dport 1-128 accept
++        udp dport @udp_accepted accept
++        udp dport domain accept
++    }
++
++    chain tcp_input {
++        tcp dport 1-128 accept
++        tcp dport 8888-9999 accept
++        tcp dport @tcp_accepted accept
++        tcp dport 1024-65535 accept
++    }
++}"
++
++$NFT -o -f - <<< $RULESET
 -- 
 2.30.2
 
