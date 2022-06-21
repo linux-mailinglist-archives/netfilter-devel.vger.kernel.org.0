@@ -2,93 +2,137 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 485B3552454
-	for <lists+netfilter-devel@lfdr.de>; Mon, 20 Jun 2022 20:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F49552CBB
+	for <lists+netfilter-devel@lfdr.de>; Tue, 21 Jun 2022 10:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239909AbiFTS6S (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 20 Jun 2022 14:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
+        id S229569AbiFUIXV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 21 Jun 2022 04:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236360AbiFTS6R (ORCPT
+        with ESMTP id S229468AbiFUIXV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 20 Jun 2022 14:58:17 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9AD10DE
-        for <netfilter-devel@vger.kernel.org>; Mon, 20 Jun 2022 11:58:15 -0700 (PDT)
-Received: from localhost (unknown [83.148.33.151])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 382D1F4F758;
-        Mon, 20 Jun 2022 20:58:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1655751489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=50KQXQrYGixw6cuzqBruy6RRnic0+aalmXbgeUxVvpw=;
-        b=KHedDCuEhV2KK70AiPrHMhudApxj4SfCUQtAl//ZYuXU2IgSP2awN0JdEh+y9Oy3b7h8GW
-        CcYLTtx/AbFukTI+43gLkV+fAA4ESEVCZLy9AZivvi8dzkQKWU87TX8GzrZHR2l44ZT8Rz
-        hD17uipMTn/Zn5/7YZf2BgiK6CT55TI=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Loganaden Velvindron <logan@cyberstorm.mu>
-Subject: [PATCH] src: proto: support DF, LE, VA for DSCP
-Date:   Mon, 20 Jun 2022 20:58:07 +0200
-Message-Id: <20220620185807.968658-1-oleksandr@natalenko.name>
-X-Mailer: git-send-email 2.36.1
+        Tue, 21 Jun 2022 04:23:21 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C266065DF;
+        Tue, 21 Jun 2022 01:23:19 -0700 (PDT)
+Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LRzvL5WcZz683Pb;
+        Tue, 21 Jun 2022 16:19:26 +0800 (CST)
+Received: from lhreml745-chm.china.huawei.com (10.201.108.195) by
+ fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 21 Jun 2022 10:23:17 +0200
+Received: from mscphis00759.huawei.com (10.123.66.134) by
+ lhreml745-chm.china.huawei.com (10.201.108.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 21 Jun 2022 09:23:16 +0100
+From:   Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+To:     <mic@digikod.net>
+CC:     <willemdebruijn.kernel@gmail.com>,
+        <linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
+        <anton.sirazetdinov@huawei.com>
+Subject: [PATCH v6 00/17] Network support for Landlock
+Date:   Tue, 21 Jun 2022 16:22:56 +0800
+Message-ID: <20220621082313.3330667-1-konstantin.meskhidze@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.123.66.134]
+X-ClientProxiedBy: mscpeml500001.china.huawei.com (7.188.26.142) To
+ lhreml745-chm.china.huawei.com (10.201.108.195)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add a couple of aliases for well-known DSCP values.
+Hi,
+This is a new V6 patch related to Landlock LSM network confinement.
+It is based on the latest landlock-wip branch on top of v5.19-rc2:
+https://git.kernel.org/pub/scm/linux/kernel/git/mic/linux.git/log/?h=landlock-wip
 
-As per RFC 4594, add "df" as an alias of "cs0" with 0x00 value.
+It brings refactoring of previous patch version V5:
+    - Fixes some logic errors and typos.
+    - Adds additional FIXTURE_VARIANT and FIXTURE_VARIANT_ADD helpers
+    to support both ip4 and ip6 families and shorten seltests' code.
+    - Makes TCP sockets confinement support optional in sandboxer demo.
+    - Formats the code with clang-format-14
 
-As per RFC 5865, add "va" for VOICE-ADMIT with 0x2c value.
+All test were run in QEMU evironment and compiled with
+ -static flag.
+ 1. network_test: 18/18 tests passed.
+ 2. base_test: 7/7 tests passed.
+ 3. fs_test: 59/59 tests passed.
+ 4. ptrace_test: 8/8 tests passed.
 
-As per RFC 8622, add "le" for Lower-Effort with 0x01 value.
+Still have issue with base_test were compiled without -static flag
+(landlock-wip branch without network support)
+1. base_test: 6/7 tests passed.
+ Error:
+ #  RUN           global.inconsistent_attr ...
+ # base_test.c:54:inconsistent_attr:Expected ENOMSG (42) == errno (22)
+ # inconsistent_attr: Test terminated by assertion
+ #          FAIL  global.inconsistent_attr
+not ok 1 global.inconsistent_attr
 
-tc-cake(8) in diffserv8 mode would benefit from having "le" alias since
-it corresponds to "Tin 0".
+LCOV - code coverage report:
+            Hit  Total  Coverage
+Lines:      952  1010    94.3 %
+Functions:  79   82      96.3 %
 
-Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
----
- src/proto.c | 3 +++
- 1 file changed, 3 insertions(+)
+Previous versions:
+v5: https://lore.kernel.org/linux-security-module/20220516152038.39594-1-konstantin.meskhidze@huawei.com
+v4: https://lore.kernel.org/linux-security-module/20220309134459.6448-1-konstantin.meskhidze@huawei.com/
+v3: https://lore.kernel.org/linux-security-module/20220124080215.265538-1-konstantin.meskhidze@huawei.com/
+v2: https://lore.kernel.org/linux-security-module/20211228115212.703084-1-konstantin.meskhidze@huawei.com/
+v1: https://lore.kernel.org/linux-security-module/20211210072123.386713-1-konstantin.meskhidze@huawei.com/
 
-diff --git a/src/proto.c b/src/proto.c
-index a013a00d..84555b9e 100644
---- a/src/proto.c
-+++ b/src/proto.c
-@@ -684,7 +684,9 @@ static const struct symbol_table dscp_type_tbl = {
- 		SYMBOL("cs5",	0x28),
- 		SYMBOL("cs6",	0x30),
- 		SYMBOL("cs7",	0x38),
-+		SYMBOL("df",	0x00),
- 		SYMBOL("be",	0x00),
-+		SYMBOL("le",	0x01),
- 		SYMBOL("af11",	0x0a),
- 		SYMBOL("af12",	0x0c),
- 		SYMBOL("af13",	0x0e),
-@@ -697,6 +699,7 @@ static const struct symbol_table dscp_type_tbl = {
- 		SYMBOL("af41",	0x22),
- 		SYMBOL("af42",	0x24),
- 		SYMBOL("af43",	0x26),
-+		SYMBOL("va",	0x2c),
- 		SYMBOL("ef",	0x2e),
- 		SYMBOL_LIST_END
- 	},
--- 
-2.36.1
+Konstantin Meskhidze (17):
+  landlock: renames access mask
+  landlock: refactors landlock_find/insert_rule
+  landlock: refactors merge and inherit functions
+  landlock: moves helper functions
+  landlock: refactors helper functions
+  landlock: refactors landlock_add_rule syscall
+  landlock: user space API network support
+  landlock: adds support network rules
+  landlock: implements TCP network hooks
+  seltests/landlock: moves helper function
+  seltests/landlock: adds tests for bind() hooks
+  seltests/landlock: adds tests for connect() hooks
+  seltests/landlock: adds AF_UNSPEC family test
+  seltests/landlock: adds rules overlapping test
+  seltests/landlock: adds ruleset expanding test
+  seltests/landlock: adds invalid input data test
+  samples/landlock: adds network demo
+
+ include/uapi/linux/landlock.h               |  49 ++
+ samples/landlock/sandboxer.c                | 118 ++-
+ security/landlock/Kconfig                   |   1 +
+ security/landlock/Makefile                  |   2 +
+ security/landlock/fs.c                      | 162 +---
+ security/landlock/limits.h                  |   8 +-
+ security/landlock/net.c                     | 155 ++++
+ security/landlock/net.h                     |  26 +
+ security/landlock/ruleset.c                 | 448 +++++++++--
+ security/landlock/ruleset.h                 |  91 ++-
+ security/landlock/setup.c                   |   2 +
+ security/landlock/syscalls.c                | 168 +++--
+ tools/testing/selftests/landlock/common.h   |  10 +
+ tools/testing/selftests/landlock/config     |   4 +
+ tools/testing/selftests/landlock/fs_test.c  |  10 -
+ tools/testing/selftests/landlock/net_test.c | 774 ++++++++++++++++++++
+ 16 files changed, 1737 insertions(+), 291 deletions(-)
+ create mode 100644 security/landlock/net.c
+ create mode 100644 security/landlock/net.h
+ create mode 100644 tools/testing/selftests/landlock/net_test.c
+
+--
+2.25.1
 
