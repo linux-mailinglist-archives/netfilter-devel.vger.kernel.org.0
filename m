@@ -2,94 +2,99 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6299C553E9F
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Jun 2022 00:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C98553EC3
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Jun 2022 00:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354743AbiFUWhV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 21 Jun 2022 18:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39436 "EHLO
+        id S229753AbiFUW5B (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 21 Jun 2022 18:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354561AbiFUWhU (ORCPT
+        with ESMTP id S235689AbiFUW5A (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 21 Jun 2022 18:37:20 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B69326DF
-        for <netfilter-devel@vger.kernel.org>; Tue, 21 Jun 2022 15:37:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655851038; x=1687387038;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qD2U96q+G+j9whYN0j6fuwqInLH36zjhWVl011UOIV4=;
-  b=b9SGIbYB3eAmkNPoCKxaH0VvTbJQxf1dzTuglZIosfh7cg92W3tG3fBp
-   9gHOIIj4v54h//xq7AGrLExZ+T/86CdORyP+ET4TVBWFxCZ8RA5dAly9s
-   G+aiGADcInymbOCbXuVkJ8GFjVSy1GND0GDxcYz8zZm2Gt6JNXg6pi+7q
-   2UCRKbjOhUz7g4LdszRMseDSx5YhspE91lEz5he0MjhlPvN9bWGP4MHnB
-   lCgD7/bQV2Luox50F4ixKwU35rQhxYsKf3st4Gg2KNXMWVJJ1aI2hLuIy
-   cPh7N9PPmcMeWc6tzA7L/Ufj5sjvE/N//6KEufwRigkZC4dkD2d4FEK3D
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="263289494"
-X-IronPort-AV: E=Sophos;i="5.92,210,1650956400"; 
-   d="scan'208";a="263289494"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2022 15:37:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,210,1650956400"; 
-   d="scan'208";a="833794367"
-Received: from lkp-server02.sh.intel.com (HELO a67cc04a5eeb) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 21 Jun 2022 15:37:17 -0700
-Received: from kbuild by a67cc04a5eeb with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1o3mUm-0000VQ-N5;
-        Tue, 21 Jun 2022 22:37:16 +0000
-Date:   Wed, 22 Jun 2022 06:36:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Florian Westphal <fw@strlen.de>
-Subject: Re: [PATCH nf-next 3/3] netfilter: h323: merge nat hook pointers
- into one
-Message-ID: <202206220643.5qOb2por-lkp@intel.com>
-References: <20220621105057.24394-4-fw@strlen.de>
+        Tue, 21 Jun 2022 18:57:00 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CD82E6BD
+        for <netfilter-devel@vger.kernel.org>; Tue, 21 Jun 2022 15:56:55 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id u12so30482914eja.8
+        for <netfilter-devel@vger.kernel.org>; Tue, 21 Jun 2022 15:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aALlbnDntCx/aSqNdMoHI5xHLUojK1Pkmom0HVwgdXo=;
+        b=Pfs9w3eR4UUt/Ng5AhtSYMU8b5R00or5NJ0B4W3oc5VgtPLIl8nBq3g7WQNYGfUjfU
+         DrFH03vmfZ9q/f+Pxx8pNjV+NluFObttIx6ZBkpHhnOnU3HRWxe8NHMLIL030K3Q8T76
+         5yaY6QyB0bEkiu4EXD4w1GAC3cqZaPdRnDSuZFkd3DUVz4X0nCbgSsIt5KpvBU289Ap6
+         2I0MVb6AM+eDsdUMD/0M3ZJpGZt6S/BhGtN/fJ7oKE+FQkqXGt0ZSsN8M/ksft7v2bm4
+         2nsitx8+XEQwX6vLh95++3KeKvfHC7unEydAgazn8dPWY9o4w4ydeAE41WHyEMw5RiSO
+         DZQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aALlbnDntCx/aSqNdMoHI5xHLUojK1Pkmom0HVwgdXo=;
+        b=23aRFb7QjaqhR94IDuOz1mxfiFqHuW80GfIN7QQyGpOmeg5fg/voC687svK0uvoxTX
+         J830OBUVzRyYPB68elqBeWWE8ZKA794EMbzG1pz81BRlkSgup7uF9mAEky2chWOHHDHy
+         cquOD6/2oeMuP+mNlI5cW9/6zvjgopt9+3nwYiqlSpnCYK9kwg5pLYmj1QFSRkcNpkVZ
+         NeGVjsdS0lyNoSQhh9hFp6fp749TBJxXrtXgIyG7JVG//AXgir/uD0U1yW/mwNqGFaVH
+         yUx8CGF38qI4ecMsWAyqpKG/d6qGkmIIarwnzklpT9LKla/Tkx1cGmRTHO745lVcqHmt
+         3Z4Q==
+X-Gm-Message-State: AJIora/FafyhWAqoAls6DpyftXMpvC2RSu5qYzHcWpOUk+wAAvMnQHeW
+        oXiGQrzAwpI0RkLSPBKubZtWVz2C32EtpQ==
+X-Google-Smtp-Source: AGRyM1siq00oaMXxVYlbgmEwYG92B/m3Ih5b8MmKj/g7sYL7RAJ6wGLo2QxXg8MWEgiq+KTuO6qDWA==
+X-Received: by 2002:a17:907:7f0f:b0:722:d5b2:8736 with SMTP id qf15-20020a1709077f0f00b00722d5b28736mr342089ejc.279.1655852214071;
+        Tue, 21 Jun 2022 15:56:54 -0700 (PDT)
+Received: from msennikovskii4.fkb.profitbricks.net (ip5f5bf48a.dynamic.kabel-deutschland.de. [95.91.244.138])
+        by smtp.gmail.com with ESMTPSA id z12-20020a50e68c000000b004358c3bfb4csm4540118edm.31.2022.06.21.15.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jun 2022 15:56:53 -0700 (PDT)
+From:   Mikhail Sennikovsky <mikhail.sennikovskii@ionos.com>
+To:     netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        mikhail.sennikovsky@gmail.com
+Cc:     Mikhail Sennikovsky <mikhail.sennikovskii@ionos.com>
+Subject: [PATCH 0/3] conntrack: -A command implementation
+Date:   Wed, 22 Jun 2022 00:55:44 +0200
+Message-Id: <20220621225547.69349-1-mikhail.sennikovskii@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220621105057.24394-4-fw@strlen.de>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Florian,
+Hi Pablo & all,
 
-I love your patch! Yet something to improve:
+As discussed, here is the implementation for the -A command.
 
-[auto build test ERROR on nf-next/master]
+The -A command works exactly the same way as -I except that it
+does not fail if the ct entry already exists.
+This command is useful for the batched ct loads to not abort if
+some entries being applied exist.
+    
+The ct entry dump in the "save" format is now switched to use the
+-A command as well for the generated output.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Florian-Westphal/netfilter-conntrack-sparse-annotations/20220621-185333
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git master
-config: x86_64-rhel-8.3-func (https://download.01.org/0day-ci/archive/20220622/202206220643.5qOb2por-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/39109262d79a0c05cd090ebd94819babdf6d39a6
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Florian-Westphal/netfilter-conntrack-sparse-annotations/20220621-185333
-        git checkout 39109262d79a0c05cd090ebd94819babdf6d39a6
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+Regards,
+Mikhail
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Mikhail Sennikovsky (3):
+  conntrack: introduce new -A command
+  conntrack.8: man update for -A command support
+  tests/conntrack: -A command support
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
->> ERROR: modpost: "get_h225_addr" [net/ipv4/netfilter/nf_nat_h323.ko] undefined!
+ conntrack.8                       | 11 ++++++--
+ src/conntrack.c                   | 35 ++++++++++++++++++-----
+ tests/conntrack/testsuite/08stdin | 47 ++++++++++++++++++++++++++++++-
+ tests/conntrack/testsuite/10add   | 42 +++++++++++++++++++++++++++
+ 4 files changed, 124 insertions(+), 11 deletions(-)
+ create mode 100644 tests/conntrack/testsuite/10add
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.25.1
+
