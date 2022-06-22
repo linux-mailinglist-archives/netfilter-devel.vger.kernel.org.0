@@ -2,34 +2,61 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD967554DB2
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Jun 2022 16:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5CE554E8B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Jun 2022 17:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358511AbiFVOoP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Jun 2022 10:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42508 "EHLO
+        id S1358990AbiFVPE4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Jun 2022 11:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359007AbiFVOoJ (ORCPT
+        with ESMTP id S1359040AbiFVPEV (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 Jun 2022 10:44:09 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E2512ACB
-        for <netfilter-devel@vger.kernel.org>; Wed, 22 Jun 2022 07:44:06 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1o41aM-0004fY-F7; Wed, 22 Jun 2022 16:44:02 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH nf] netfilter: nf_tables: avoid skb access on nf_stolen
-Date:   Wed, 22 Jun 2022 16:43:57 +0200
-Message-Id: <20220622144357.20162-1-fw@strlen.de>
-X-Mailer: git-send-email 2.35.1
+        Wed, 22 Jun 2022 11:04:21 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A443E3EABF
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Jun 2022 08:04:20 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 68so10907113pgb.10
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Jun 2022 08:04:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=vhZEVnaGNBjosB86GDUW8b2wHjB/+QU31bPXl36TqFE=;
+        b=fedxHvpvYGaAl1C0u3mJS1WoqvPB0oNNv7icLw40leErOjShqlvVem53l7VAdJ6upZ
+         L9z5WDHmzLExverqd2Mlj95gGjQNvvfXGnx/i35Q2Ukq7ibfZ94eDaBTK5a+fKxCwP9O
+         nRqYHOUWNZbkQn4UDeTvF4NpuW50CznfhSBqvOQCWCJHDLNswJAJnAsJ8jsQqPdE4jnq
+         COrGXKAi62bwJ046zRD4eFm00hgqMY3inLGwy6XN2qkeNHYLqNbYEBgBhwM15vCVcLdM
+         zu151re4CU2NRmtTbOO+KWSATgrrIcFFv7vuukzb8K7ulGrwY+Hhv/D6dxqdTnZkPpNA
+         PZ3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=vhZEVnaGNBjosB86GDUW8b2wHjB/+QU31bPXl36TqFE=;
+        b=flWjBQeZr5DHXK82aFFS+npOqGbhVKO4BI2+K/PtvWVcLaf+lhZNCjmcEK+9lMCX71
+         q5Zd/LZmVueb54HVIn2PQrbyi6+7GYTB4RSP48psrUy40z7+GeqrNs8bvxfhkssfsZBW
+         z1zBp5UloPgLMX3w/tXybL5pH8cEmEdepcUdhbb33820SBT0fzzJ+9fCJcfkt5tg/Wid
+         oWDMhKlhAe1U2sGnklMpZNBNrbmwRHkgtYuDCLisi/fLmMKbe0NZjepr8nz1LU3qU+vV
+         WMvQelV32OI7UShbk1gs+NH/+zHetRmVeeY3r401ByigKYr3A7hfbIVae3sj1E6sSL2d
+         K5Vg==
+X-Gm-Message-State: AJIora9xCaNJDWUO8AbpbsHlwzwGgfahvQObOm6/DWig4BRikSByFemt
+        PNb7g+5NJAx8hFuztPI6qHdpo6qFfAQMBshtBng=
+X-Google-Smtp-Source: AGRyM1tystIslg9uNVcUOMzYR8GYNz8Amo4b63MeZP0gXSY5EfclQ79Nr4WF60Irm+FNisTL7itfLErKePPDvZ9Q4yo=
+X-Received: by 2002:a05:6a00:225a:b0:525:4d37:6b30 with SMTP id
+ i26-20020a056a00225a00b005254d376b30mr1469916pfu.83.1655910260294; Wed, 22
+ Jun 2022 08:04:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+Received: by 2002:a17:903:2308:b0:16a:1b3f:f74b with HTTP; Wed, 22 Jun 2022
+ 08:04:19 -0700 (PDT)
+Reply-To: sales0212@asonmedsystemsinc.com
+From:   Prasad Ronni <lerwickfinance7@gmail.com>
+Date:   Wed, 22 Jun 2022 16:04:19 +0100
+Message-ID: <CAFkto5smHNaF1-vVzk=Z1eS16uFFKvVSRfL+KNTa=bLCi1i03g@mail.gmail.com>
+Subject: Service Needed.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_40,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,242 +64,11 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When verdict is NF_STOLEN, the skb might have been freed.
-
-When tracing is enabled, this can result in a use-after-free:
-1. access to skb->nf_trace
-2. access to skb->mark
-3. computation of trace id
-4. dump of packet payload
-
-To avoid 1, keep a cached copy of skb->nf_trace in the
-trace state struct.
-Refresh this copy whenever verdict is != STOLEN.
-
-Avoid 2 by skipping skb->mark access if verdict is STOLEN.
-
-3 is avoided by precomputing the trace id.
-
-Only dump the packet when verdict is not "STOLEN".
-
-Reported-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- include/net/netfilter/nf_tables.h | 16 ++++++-----
- net/netfilter/nf_tables_core.c    | 24 ++++++++++++++---
- net/netfilter/nf_tables_trace.c   | 44 +++++++++++++++++--------------
- 3 files changed, 55 insertions(+), 29 deletions(-)
-
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 279ae0fff7ad..5c4e5a96a984 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -1338,24 +1338,28 @@ void nft_unregister_flowtable_type(struct nf_flowtable_type *type);
- /**
-  *	struct nft_traceinfo - nft tracing information and state
-  *
-+ *	@trace: other struct members are initialised
-+ *	@nf_trace: copy of skb->nf_trace before rule evaluation
-+ *	@type: event type (enum nft_trace_types)
-+ *	@skbid: hash of skb to be used as trace id
-+ *	@packet_dumped: packet headers sent in a previous traceinfo message
-  *	@pkt: pktinfo currently processed
-  *	@basechain: base chain currently processed
-  *	@chain: chain currently processed
-  *	@rule:  rule that was evaluated
-  *	@verdict: verdict given by rule
-- *	@type: event type (enum nft_trace_types)
-- *	@packet_dumped: packet headers sent in a previous traceinfo message
-- *	@trace: other struct members are initialised
-  */
- struct nft_traceinfo {
-+	bool				trace;
-+	bool				nf_trace;
-+	bool				packet_dumped;
-+	enum nft_trace_types		type:8;
-+	u32				skbid;
- 	const struct nft_pktinfo	*pkt;
- 	const struct nft_base_chain	*basechain;
- 	const struct nft_chain		*chain;
- 	const struct nft_rule_dp	*rule;
- 	const struct nft_verdict	*verdict;
--	enum nft_trace_types		type;
--	bool				packet_dumped;
--	bool				trace;
- };
- 
- void nft_trace_init(struct nft_traceinfo *info, const struct nft_pktinfo *pkt,
-diff --git a/net/netfilter/nf_tables_core.c b/net/netfilter/nf_tables_core.c
-index 53f40e473855..3ddce24ac76d 100644
---- a/net/netfilter/nf_tables_core.c
-+++ b/net/netfilter/nf_tables_core.c
-@@ -25,9 +25,7 @@ static noinline void __nft_trace_packet(struct nft_traceinfo *info,
- 					const struct nft_chain *chain,
- 					enum nft_trace_types type)
- {
--	const struct nft_pktinfo *pkt = info->pkt;
--
--	if (!info->trace || !pkt->skb->nf_trace)
-+	if (!info->trace || !info->nf_trace)
- 		return;
- 
- 	info->chain = chain;
-@@ -42,11 +40,24 @@ static inline void nft_trace_packet(struct nft_traceinfo *info,
- 				    enum nft_trace_types type)
- {
- 	if (static_branch_unlikely(&nft_trace_enabled)) {
-+		const struct nft_pktinfo *pkt = info->pkt;
-+
-+		info->nf_trace = pkt->skb->nf_trace;
- 		info->rule = rule;
- 		__nft_trace_packet(info, chain, type);
- 	}
- }
- 
-+static inline void nft_trace_copy_nftrace(struct nft_traceinfo *info)
-+{
-+	if (static_branch_unlikely(&nft_trace_enabled)) {
-+		const struct nft_pktinfo *pkt = info->pkt;
-+
-+		if (info->trace)
-+			info->nf_trace = pkt->skb->nf_trace;
-+	}
-+}
-+
- static void nft_bitwise_fast_eval(const struct nft_expr *expr,
- 				  struct nft_regs *regs)
- {
-@@ -85,6 +96,7 @@ static noinline void __nft_trace_verdict(struct nft_traceinfo *info,
- 					 const struct nft_chain *chain,
- 					 const struct nft_regs *regs)
- {
-+	const struct nft_pktinfo *pkt = info->pkt;
- 	enum nft_trace_types type;
- 
- 	switch (regs->verdict.code) {
-@@ -92,8 +104,13 @@ static noinline void __nft_trace_verdict(struct nft_traceinfo *info,
- 	case NFT_RETURN:
- 		type = NFT_TRACETYPE_RETURN;
- 		break;
-+	case NF_STOLEN:
-+		type = NFT_TRACETYPE_RULE;
-+		/* can't access skb->nf_trace; use copy */
-+		break;
- 	default:
- 		type = NFT_TRACETYPE_RULE;
-+		info->nf_trace = pkt->skb->nf_trace;
- 		break;
- 	}
- 
-@@ -254,6 +271,7 @@ nft_do_chain(struct nft_pktinfo *pkt, void *priv)
- 		switch (regs.verdict.code) {
- 		case NFT_BREAK:
- 			regs.verdict.code = NFT_CONTINUE;
-+			nft_trace_copy_nftrace(&info);
- 			continue;
- 		case NFT_CONTINUE:
- 			nft_trace_packet(&info, chain, rule,
-diff --git a/net/netfilter/nf_tables_trace.c b/net/netfilter/nf_tables_trace.c
-index 5041725423c2..1163ba9c1401 100644
---- a/net/netfilter/nf_tables_trace.c
-+++ b/net/netfilter/nf_tables_trace.c
-@@ -7,7 +7,7 @@
- #include <linux/module.h>
- #include <linux/static_key.h>
- #include <linux/hash.h>
--#include <linux/jhash.h>
-+#include <linux/siphash.h>
- #include <linux/if_vlan.h>
- #include <linux/init.h>
- #include <linux/skbuff.h>
-@@ -25,22 +25,6 @@
- DEFINE_STATIC_KEY_FALSE(nft_trace_enabled);
- EXPORT_SYMBOL_GPL(nft_trace_enabled);
- 
--static int trace_fill_id(struct sk_buff *nlskb, struct sk_buff *skb)
--{
--	__be32 id;
--
--	/* using skb address as ID results in a limited number of
--	 * values (and quick reuse).
--	 *
--	 * So we attempt to use as many skb members that will not
--	 * change while skb is with netfilter.
--	 */
--	id = (__be32)jhash_2words(hash32_ptr(skb), skb_get_hash(skb),
--				  skb->skb_iif);
--
--	return nla_put_be32(nlskb, NFTA_TRACE_ID, id);
--}
--
- static int trace_fill_header(struct sk_buff *nlskb, u16 type,
- 			     const struct sk_buff *skb,
- 			     int off, unsigned int len)
-@@ -186,6 +170,7 @@ void nft_trace_notify(struct nft_traceinfo *info)
- 	struct nlmsghdr *nlh;
- 	struct sk_buff *skb;
- 	unsigned int size;
-+	u32 mark = 0;
- 	u16 event;
- 
- 	if (!nfnetlink_has_listeners(nft_net(pkt), NFNLGRP_NFTRACE))
-@@ -229,7 +214,7 @@ void nft_trace_notify(struct nft_traceinfo *info)
- 	if (nla_put_be32(skb, NFTA_TRACE_TYPE, htonl(info->type)))
- 		goto nla_put_failure;
- 
--	if (trace_fill_id(skb, pkt->skb))
-+	if (nla_put_u32(skb, NFTA_TRACE_ID, info->skbid))
- 		goto nla_put_failure;
- 
- 	if (nla_put_string(skb, NFTA_TRACE_CHAIN, info->chain->name))
-@@ -249,16 +234,24 @@ void nft_trace_notify(struct nft_traceinfo *info)
- 	case NFT_TRACETYPE_RULE:
- 		if (nft_verdict_dump(skb, NFTA_TRACE_VERDICT, info->verdict))
- 			goto nla_put_failure;
-+
-+		/* pkt->skb undefined iff NF_STOLEN, disable dump */
-+		if (info->verdict->code == NF_STOLEN)
-+			info->packet_dumped = true;
-+		else
-+			mark = pkt->skb->mark;
-+
- 		break;
- 	case NFT_TRACETYPE_POLICY:
-+		mark = pkt->skb->mark;
-+
- 		if (nla_put_be32(skb, NFTA_TRACE_POLICY,
- 				 htonl(info->basechain->policy)))
- 			goto nla_put_failure;
- 		break;
- 	}
- 
--	if (pkt->skb->mark &&
--	    nla_put_be32(skb, NFTA_TRACE_MARK, htonl(pkt->skb->mark)))
-+	if (mark && nla_put_be32(skb, NFTA_TRACE_MARK, htonl(mark)))
- 		goto nla_put_failure;
- 
- 	if (!info->packet_dumped) {
-@@ -283,9 +276,20 @@ void nft_trace_init(struct nft_traceinfo *info, const struct nft_pktinfo *pkt,
- 		    const struct nft_verdict *verdict,
- 		    const struct nft_chain *chain)
- {
-+	static siphash_key_t trace_key __read_mostly;
-+	struct sk_buff *skb = pkt->skb;
-+
- 	info->basechain = nft_base_chain(chain);
- 	info->trace = true;
-+	info->nf_trace = pkt->skb->nf_trace;
- 	info->packet_dumped = false;
- 	info->pkt = pkt;
- 	info->verdict = verdict;
-+
-+	net_get_random_once(&trace_key, sizeof(trace_key));
-+
-+	info->skbid = (u32)siphash_3u32(hash32_ptr(skb),
-+					skb_get_hash(skb),
-+					skb->skb_iif,
-+					&trace_key);
- }
 -- 
-2.35.1
+Hi,
 
+Are you currently open to work as our executive company representative
+on contractual basis working remotely? If yes, we will be happy to
+share more details. Looking forward to your response.
+
+Regards,
