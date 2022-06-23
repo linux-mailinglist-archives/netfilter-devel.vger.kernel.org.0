@@ -2,86 +2,98 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8F0558621
-	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Jun 2022 20:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3A05587ED
+	for <lists+netfilter-devel@lfdr.de>; Thu, 23 Jun 2022 20:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233882AbiFWSIt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 23 Jun 2022 14:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47626 "EHLO
+        id S229997AbiFWS4d (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 23 Jun 2022 14:56:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236665AbiFWSIO (ORCPT
+        with ESMTP id S237389AbiFWSqs (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 23 Jun 2022 14:08:14 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2727CBB01D
-        for <netfilter-devel@vger.kernel.org>; Thu, 23 Jun 2022 10:19:41 -0700 (PDT)
-Date:   Thu, 23 Jun 2022 19:19:36 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft 2/2,v2] intervals: Do not sort cached set elements
- over and over again
-Message-ID: <YrSgqN1mkVOUZdZa@salvia>
-References: <20220616090446.275985-1-pablo@netfilter.org>
- <20220616090446.275985-2-pablo@netfilter.org>
- <YrSPQJy7+IjLeQvA@orbyte.nwl.cc>
- <YrSSDGNNSbrHCKdf@salvia>
- <YrST/2ypRG/KACfz@orbyte.nwl.cc>
+        Thu, 23 Jun 2022 14:46:48 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE77EF4D1
+        for <netfilter-devel@vger.kernel.org>; Thu, 23 Jun 2022 10:50:22 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id o10so73754edi.1
+        for <netfilter-devel@vger.kernel.org>; Thu, 23 Jun 2022 10:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=El2zY+AGRKNqanFs/RqCIauGn5w2+Cy5YscyKIjvhgc=;
+        b=LIvrDBUKmaiP23tC8iK+/aL5lWfCRUgVNwhWMbUpN0gmKUMOwsPl80xDtLKGBQA4Kw
+         PWblklDwhz5rs/cHATj3TIJZrHDRaLsZaDueBdpGCHosWc7IOeq1PtzzCzfYeneqWiIA
+         t64ap3mrUhNDN0wTj+Gw0ehByQPIH3dQnkk0zpSxKaARoFepBMpKt6VeC1Y+9FgjcZb5
+         7M8kwaZEqlw3LTYv4GWf0g25vJrgo2n8+hQCHJM0H1ef8qCQFIAlOuF7YKLtdih6Vkb2
+         m4KoXvtrwnaEQHSoWdGOspuvhQQUOM7Z9406NSITK99ol7yPcIjttrmJsDjVISd+te5X
+         ZMyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=El2zY+AGRKNqanFs/RqCIauGn5w2+Cy5YscyKIjvhgc=;
+        b=uLpJ8XEj2tYw2rUmuefNM7vmtrozCieI3/iYD+KOxR8+P55VlIvHI7PcTv+qC3u1PI
+         fNidIOSuFd60s5u5WjjdHC35AWzCNieX79otLRR4rkBs/kT/19rh7/oOnF27u5O53+aN
+         jE9WJfZlUEGj9WY6x6yeCvR2kqHmdzSfun7MNKxN+t5QmIqsAO+/ZwNz2ccYYmuVkApo
+         4BfUQ+FawRES5ocnXMdDJQtLgVnT3uesUL2q10pr06HwpUY3mTbukM4+4BUJcloVRf1/
+         p8XrxFh7NTsiTYSriwgr03O6gLyv7jkvczwdsh6CJLtTWpSr3HzySmnmkuzG3n8gy74Q
+         2pOQ==
+X-Gm-Message-State: AJIora+xJg6daovuzV02eXeQTnLZk2zmL6W0CxYpUvMztv7S8ZGRskpX
+        7FYoWl3SzKtYVbf9O/U2IznH8LmVBgnx3A==
+X-Google-Smtp-Source: AGRyM1tqMaURlL53LeS3UhXvzULSEsUgmALJO/xz1ic1h22lh4pfkEMSMpCyH50EneGyzLcYFTF3Kw==
+X-Received: by 2002:aa7:c846:0:b0:431:6c7b:26af with SMTP id g6-20020aa7c846000000b004316c7b26afmr12131666edt.123.1656006619652;
+        Thu, 23 Jun 2022 10:50:19 -0700 (PDT)
+Received: from msennikovskii4.fkb.profitbricks.net (ip5f5bf48a.dynamic.kabel-deutschland.de. [95.91.244.138])
+        by smtp.gmail.com with ESMTPSA id o9-20020aa7c7c9000000b004356e90d13esm119891eds.83.2022.06.23.10.50.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jun 2022 10:50:18 -0700 (PDT)
+From:   Mikhail Sennikovsky <mikhail.sennikovskii@ionos.com>
+To:     netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        mikhail.sennikovsky@gmail.com
+Cc:     Mikhail Sennikovsky <mikhail.sennikovskii@ionos.com>
+Subject: [PATCH 0/6] conntrack: fixes for handling unknown protocols
+Date:   Thu, 23 Jun 2022 19:49:54 +0200
+Message-Id: <20220623175000.49259-1-mikhail.sennikovskii@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YrST/2ypRG/KACfz@orbyte.nwl.cc>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 06:25:35PM +0200, Phil Sutter wrote:
-> On Thu, Jun 23, 2022 at 06:17:16PM +0200, Pablo Neira Ayuso wrote:
-> > On Thu, Jun 23, 2022 at 06:05:20PM +0200, Phil Sutter wrote:
-> > > On Thu, Jun 16, 2022 at 11:04:46AM +0200, Pablo Neira Ayuso wrote:
-> > > > From: Phil Sutter <phil@nwl.cc>
-> > > > 
-> > > > When adding element(s) to a non-empty set, code merged the two lists and
-> > > > sorted the result. With many individual 'add element' commands this
-> > > > causes substantial overhead. Make use of the fact that
-> > > > existing_set->init is sorted already, sort only the list of new elements
-> > > > and use list_splice_sorted() to merge the two sorted lists.
-> > > > 
-> > > > Add set_sort_splice() and use it for set element overlap detection and
-> > > > automerge.
-> > > > 
-> > > > A test case adding ~25k elements in individual commands completes in
-> > > > about 1/4th of the time with this patch applied.
-> > > > 
-> > > > Joint work with Pablo.
-> > > > 
-> > > > Fixes: 3da9643fb9ff9 ("intervals: add support to automerge with kernel elements")
-> > > > Signed-off-by: Phil Sutter <phil@nwl.cc>
-> > > > Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-> > > 
-> > > Thanks for picking it up, I missed the automerge code being very
-> > > similar.
-> > > 
-> > > I worked on a patch to move the whole set adjustment to a separate step
-> > > after evaluating commands, but it's a bit larger effort as it requires
-> > > to combine overlap detection, auto merge and element deletion. With
-> > > simple appending new elements in eval phase and reacting upon
-> > > EXPR_F_KERNEL and EXPR_F_REMOVE flags, I guess it's possible to update
-> > > the whole set in one go.
-> > 
-> > You mean, appending if they come in order as in your test ruleset? Not
-> > sure what you are suggesting.
-> 
-> It was merely loud thinking - combining repeated 'add element' commands
-> is fine with me for avoiding the problem. I have an alternative in mind
-> where added elements are appended to the set without EXPR_F_KERNEL and
-> removed ones also with EXPR_F_REMOVE. So after nft_evaluate() one could
-> do all the overlap detection / auto merging / element removing once for
-> each changed set.
+Hi Pablo & all,
 
-I have pushed out this coalesce approach to tackle this regression.
-Feel free to revisit this approach.
+Here is a set of fixes and test cases for handling ct entries of
+protocols unknown to the conntrack tool.
+The six commits are organized in a way: a commit with a testcase
+showing an issue, followed by a commit fixing the issue.
+
+Comments/suggestions are very welcome as always.
+
+Regards,
+Mikhail
+
+Mikhail Sennikovsky (6):
+  tests/conntrack: ct create for unknown protocols
+  conntrack: set reply l4 proto for unknown protocol
+  tests/conntrack: invalid protocol values
+  conntrack: fix protocol number parsing
+  tests/conntrack: ct -o save for unknown protocols
+  conntrack: fix -o save dump for unknown protocols
+
+ extensions/libct_proto_unknown.c    | 11 ++++++++++
+ src/conntrack.c                     | 33 ++++++++++++++++++++++++++---
+ tests/conntrack/testsuite/00create  | 32 ++++++++++++++++++++++++++++
+ tests/conntrack/testsuite/09dumpopt | 26 +++++++++++++++++++++++
+ 4 files changed, 99 insertions(+), 3 deletions(-)
+
+-- 
+2.25.1
+
