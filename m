@@ -2,30 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D1F55C47A
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Jun 2022 14:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0DE55CC0D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Jun 2022 15:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233588AbiF0Ki1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 27 Jun 2022 06:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
+        id S233125AbiF0LD1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 27 Jun 2022 07:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbiF0Ki0 (ORCPT
+        with ESMTP id S232983AbiF0LDZ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 27 Jun 2022 06:38:26 -0400
+        Mon, 27 Jun 2022 07:03:25 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F04346262
-        for <netfilter-devel@vger.kernel.org>; Mon, 27 Jun 2022 03:38:25 -0700 (PDT)
-Date:   Mon, 27 Jun 2022 12:38:22 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CA6A663B1
+        for <netfilter-devel@vger.kernel.org>; Mon, 27 Jun 2022 04:03:24 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft 1/2] intervals: fix crash when trying to remove
- element in empty set
-Message-ID: <YrmInpd8xmDJx3d4@salvia>
-References: <20220623180951.86277-1-pablo@netfilter.org>
+Subject: [PATCH nft] segtree: fix map listing with interface wildcard
+Date:   Mon, 27 Jun 2022 13:03:21 +0200
+Message-Id: <20220627110321.227867-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220623180951.86277-1-pablo@netfilter.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -35,7 +32,74 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 08:09:50PM +0200, Pablo Neira Ayuso wrote:
-> The set deletion routine expects an initialized set, otherwise it crashes.
+ # nft -f - <<'EOF'
+ table inet filter {
+    chain INPUT {
+        iifname vmap {
+            "eth0" : jump input_lan,
+            "wg*" : jump input_vpn
+        }
+    }
+    chain input_lan {}
+    chain input_vpn {}
+ }
+ EOF
+ # nft list ruleset
+ nft: segtree.c:578: interval_map_decompose: Assertion `low->len / 8 > 0' failed.
 
-This series are now in master.
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1617
+Fixes: 5e393ea1fc0a ("segtree: add string "range" reversal support")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/segtree.c                                         |  2 +-
+ .../shell/testcases/sets/dumps/sets_with_ifnames.nft  | 11 +++++++++++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/src/segtree.c b/src/segtree.c
+index f9cac373a5f0..c36497ce6253 100644
+--- a/src/segtree.c
++++ b/src/segtree.c
+@@ -575,7 +575,7 @@ void interval_map_decompose(struct expr *set)
+ 
+ 		if (!mpz_cmp_ui(range, 0)) {
+ 			if (expr_basetype(low)->type == TYPE_STRING)
+-				mpz_switch_byteorder(expr_value(low)->value, low->len / BITS_PER_BYTE);
++				mpz_switch_byteorder(expr_value(low)->value, expr_value(low)->len / BITS_PER_BYTE);
+ 			low->flags |= EXPR_F_KERNEL;
+ 			compound_expr_add(set, expr_get(low));
+ 		} else if (range_is_prefix(range) && !mpz_cmp_ui(p, 0)) {
+diff --git a/tests/shell/testcases/sets/dumps/sets_with_ifnames.nft b/tests/shell/testcases/sets/dumps/sets_with_ifnames.nft
+index 6b073ae2d090..77a8baf58cef 100644
+--- a/tests/shell/testcases/sets/dumps/sets_with_ifnames.nft
++++ b/tests/shell/testcases/sets/dumps/sets_with_ifnames.nft
+@@ -29,11 +29,19 @@ table inet testifsets {
+ 			     12.2.2.0/24 . "abcdef*" }
+ 	}
+ 
++	map map_wild {
++		type ifname : verdict
++		flags interval
++		elements = { "abcdef*" : jump do_nothing,
++			     "eth0" : jump do_nothing }
++	}
++
+ 	chain v4icmp {
+ 		iifname @simple counter packets 0 bytes 0
+ 		iifname @simple_wild counter packets 0 bytes 0
+ 		iifname { "eth0", "abcdef0" } counter packets 0 bytes 0
+ 		iifname { "abcdef*", "eth0" } counter packets 0 bytes 0
++		iifname vmap @map_wild
+ 	}
+ 
+ 	chain v4icmpc {
+@@ -48,4 +56,7 @@ table inet testifsets {
+ 		ip protocol icmp jump v4icmp
+ 		ip protocol icmp goto v4icmpc
+ 	}
++
++	chain do_nothing {
++	}
+ }
+-- 
+2.30.2
+
