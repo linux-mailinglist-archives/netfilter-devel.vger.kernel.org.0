@@ -2,31 +2,32 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0279D55EAB5
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Jun 2022 19:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9983D55EAD1
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Jun 2022 19:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbiF1RNI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 Jun 2022 13:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
+        id S229702AbiF1RRK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 Jun 2022 13:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbiF1RNH (ORCPT
+        with ESMTP id S229450AbiF1RRJ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 Jun 2022 13:13:07 -0400
+        Tue, 28 Jun 2022 13:17:09 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 655DFC30
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jun 2022 10:13:06 -0700 (PDT)
-Date:   Tue, 28 Jun 2022 19:13:02 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5461C2ED6E
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Jun 2022 10:17:09 -0700 (PDT)
+Date:   Tue, 28 Jun 2022 19:17:06 +0200
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     Daniel =?utf-8?Q?Gr=C3=B6ber?= <dxld@darkboxed.org>
 Cc:     netfilter-devel@vger.kernel.org
 Subject: Re: [PATCH nftables] Allow resetting the include search path
-Message-ID: <Yrs2nn/amfnaUDk8@salvia>
+Message-ID: <Yrs3kkbc4z5AMF+W@salvia>
 References: <20220627222304.93139-1-dxld@darkboxed.org>
+ <Yrs2nn/amfnaUDk8@salvia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220627222304.93139-1-dxld@darkboxed.org>
+In-Reply-To: <Yrs2nn/amfnaUDk8@salvia>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -36,63 +37,32 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+On Tue, Jun 28, 2022 at 07:13:05PM +0200, Pablo Neira Ayuso wrote:
+> Hi,
+> 
+> On Tue, Jun 28, 2022 at 12:23:04AM +0200, Daniel Gröber wrote:
+> > Currently there is no way to disable searching in DEFAULT_INCLUDE_PATH
+> > first. This is needed when testing nftables configurations spanning
+> > multiple files without overwriting the globally installed ones.
+> 
+> You can do
+> 
+> # cat x.nft
+> include "./z.nft"
+> # cat z.nft
+> add table x
+> 
+> then:
+> 
+> # nft -f x.nft
+> 
+> using ./ at the beginning of the path overrides DEFAULT_INCLUDE_PATH.
 
-On Tue, Jun 28, 2022 at 12:23:04AM +0200, Daniel Gröber wrote:
-> Currently there is no way to disable searching in DEFAULT_INCLUDE_PATH
-> first. This is needed when testing nftables configurations spanning
-> multiple files without overwriting the globally installed ones.
-
-You can do
+Absolute path also overrides DEFAULT_INCLUDE_PATH:
 
 # cat x.nft
-include "./z.nft"
-# cat z.nft
-add table x
+include "/foo/z.nft"
 
-then:
+search_in_include_path() deals with this in scanner.l.
 
-# nft -f x.nft
-
-using ./ at the beginning of the path overrides DEFAULT_INCLUDE_PATH.
-
-Is this what you are searching for?
-
-> ---
->  doc/nft.txt | 4 ++--
->  src/main.c  | 4 +++-
->  2 files changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/doc/nft.txt b/doc/nft.txt
-> index f7a53ac9..f04c3e20 100644
-> --- a/doc/nft.txt
-> +++ b/doc/nft.txt
-> @@ -55,8 +55,8 @@ understanding of their meaning. You can get information about options by running
->  
->  *-I*::
->  *--includepath directory*::
-> -	Add the directory 'directory' to the list of directories to be searched for included files. This
-> -	option may be specified multiple times.
-> +	Append a directory to the end of the search path for the *include* statement. If the empty
-> +	string is passed the list is reset. This option may be specified multiple times.
->  
->  *-c*::
->  *--check*::
-> diff --git a/src/main.c b/src/main.c
-> index 9bd25db8..f5dd3dba 100644
-> --- a/src/main.c
-> +++ b/src/main.c
-> @@ -411,7 +411,9 @@ int main(int argc, char * const *argv)
->  			interactive = true;
->  			break;
->  		case OPT_INCLUDEPATH:
-> -			if (nft_ctx_add_include_path(nft, optarg)) {
-> +			if (strcmp(optarg, "") == 0) {
-> +				nft_ctx_clear_include_paths(nft);
-> +			} else if (nft_ctx_add_include_path(nft, optarg)) {
->  				fprintf(stderr,
->  					"Failed to add include path '%s'\n",
->  					optarg);
-> -- 
-> 2.30.2
-> 
+Relative path also overrides DEFAULT_INCLUDE_PATH.
