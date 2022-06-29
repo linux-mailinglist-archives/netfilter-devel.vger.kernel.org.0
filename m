@@ -2,82 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1960C560BEF
-	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Jun 2022 23:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934D3560BAB
+	for <lists+netfilter-devel@lfdr.de>; Wed, 29 Jun 2022 23:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbiF2VrK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 29 Jun 2022 17:47:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
+        id S230422AbiF2VVu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 29 Jun 2022 17:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbiF2VrJ (ORCPT
+        with ESMTP id S230364AbiF2VVs (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 29 Jun 2022 17:47:09 -0400
+        Wed, 29 Jun 2022 17:21:48 -0400
+X-Greylist: delayed 76 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Jun 2022 14:21:47 PDT
 Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D9639B81
-        for <netfilter-devel@vger.kernel.org>; Wed, 29 Jun 2022 14:47:08 -0700 (PDT)
-Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
-        by m0050093.ppops.net-00190b01. (8.17.1.5/8.17.1.5) with ESMTP id 25TIXmUv004627;
-        Wed, 29 Jun 2022 22:20:28 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0A11A064
+        for <netfilter-devel@vger.kernel.org>; Wed, 29 Jun 2022 14:21:47 -0700 (PDT)
+Received: from pps.filterd (m0050095.ppops.net [127.0.0.1])
+        by m0050095.ppops.net-00190b01. (8.17.1.5/8.17.1.5) with ESMTP id 25TKUEnS032045;
+        Wed, 29 Jun 2022 22:21:41 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=jan2016.eng;
- bh=f53tief5gqGXiN3msU3lovXy1q5+UZaoVVhW+yBHipQ=;
- b=UmBdIvKlWiBpyqKvdbNkeJ/m34yP5UcRyCeC3ZKRic7XzpmRVF5HGlq1WTFXLK+DY+GH
- VnptdVZ9pjzQHDYOV/zqxg3PlO8gSrgONQZQzAqr9rNLSXWryRN1Ah+oOyuCzmh8XXPs
- EPd0+e3WHe6aTKML3oIH/+vyIbIT9wIIVnNPRGwMF7cD7ofzzNhY7KrPnp3LKUbqK8uE
- Ja6VK5JQE1cz8IEHP+dihnHRY2rfUmg5fe93Iyr2vrZhHUSNfrSCAB341AAiyMVqVch6
- JxlfcCOmVfMLQEtCP1GPE4g3eQGIok9NqB9DxvEDe3v6LHOLnolLVQvkeBkLbMhd1ap0 AQ== 
-Received: from prod-mail-ppoint5 (prod-mail-ppoint5.akamai.com [184.51.33.60] (may be forged))
-        by m0050093.ppops.net-00190b01. (PPS) with ESMTPS id 3h0q6bu0gk-1
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=jan2016.eng;
+ bh=EEMKFfKFKc5h88yx6GJ5XjjaSLB7eJSVkypWhloPIac=;
+ b=Lu9FGlrJcawjUe+0yExpLupBm4mYrZBM6fV3y0kGOGMyQjDLcoU3ETWWWxGphaQ7hy8o
+ 3vLGChsLR8cYKMqwwVMYEjkgsCef5zRPKAtYkjQtIx8EkJ86sFTMoXXF5UUcxgSPsSMX
+ e0SS2soApsXIk5KgT66MdlJTJ+onfhAoV5Ir19erh7G+5yPZOnMj5MIrRHUT7KtsFOSN
+ Y83CpH1huVGTYQlqkoqUKAR2BQhpbJvMPo+hpNhBfp7TFPgHe5Lt12Thwx8gspveuKk5
+ KO2t9f58YMfY20PaUvy4NDVjo7cuTJ2BTevGZZ0K86UDsubf3HLFoV0BH6j+NlMI4SC3 Jg== 
+Received: from prod-mail-ppoint6 (prod-mail-ppoint6.akamai.com [184.51.33.61] (may be forged))
+        by m0050095.ppops.net-00190b01. (PPS) with ESMTPS id 3h035c5t5x-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jun 2022 22:20:27 +0100
-Received: from pps.filterd (prod-mail-ppoint5.akamai.com [127.0.0.1])
-        by prod-mail-ppoint5.akamai.com (8.17.1.5/8.17.1.5) with ESMTP id 25TGRsbP011922;
-        Wed, 29 Jun 2022 14:20:22 -0700
-Received: from email.msg.corp.akamai.com ([172.27.123.57])
-        by prod-mail-ppoint5.akamai.com (PPS) with ESMTPS id 3gx0b9xvdm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jun 2022 14:20:22 -0700
-Received: from usma1ex-dag3mb6.msg.corp.akamai.com (172.27.123.54) by
- usma1ex-dag4mb8.msg.corp.akamai.com (172.27.91.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.986.26; Wed, 29 Jun 2022 17:20:21 -0400
+        Wed, 29 Jun 2022 22:21:41 +0100
+Received: from pps.filterd (prod-mail-ppoint6.akamai.com [127.0.0.1])
+        by prod-mail-ppoint6.akamai.com (8.17.1.5/8.17.1.5) with ESMTP id 25TJDFfe002929;
+        Wed, 29 Jun 2022 17:21:40 -0400
+Received: from email.msg.corp.akamai.com ([172.27.91.22])
+        by prod-mail-ppoint6.akamai.com (PPS) with ESMTPS id 3gwwpwy5r3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jun 2022 17:21:39 -0400
 Received: from usma1ex-dag4mb1.msg.corp.akamai.com (172.27.91.20) by
- usma1ex-dag3mb6.msg.corp.akamai.com (172.27.123.54) with Microsoft SMTP
- Server (TLS) id 15.0.1497.36; Wed, 29 Jun 2022 17:20:20 -0400
+ usma1ex-dag4mb8.msg.corp.akamai.com (172.27.91.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.26; Wed, 29 Jun 2022 17:21:39 -0400
 Received: from bos-lhvuce.bos01.corp.akamai.com (172.28.220.70) by
  usma1ex-dag4mb1.msg.corp.akamai.com (172.27.91.20) with Microsoft SMTP Server
- id 15.2.986.26 via Frontend Transport; Wed, 29 Jun 2022 17:20:20 -0400
+ id 15.2.986.26 via Frontend Transport; Wed, 29 Jun 2022 17:21:39 -0400
 Received: by bos-lhvuce.bos01.corp.akamai.com (Postfix, from userid 35863)
-        id EED5115F504; Wed, 29 Jun 2022 17:20:20 -0400 (EDT)
+        id 7D17D15F504; Wed, 29 Jun 2022 17:21:39 -0400 (EDT)
 From:   Vishwanath Pai <vpai@akamai.com>
 To:     <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>
 CC:     Vishwanath Pai <vpai@akamai.com>, <johunt@akamai.com>,
         <netfilter-devel@vger.kernel.org>
-Subject: [PATCH 6/6] netfilter: ipset: Update the man page to include netmask/bitmask options
-Date:   Wed, 29 Jun 2022 17:19:02 -0400
-Message-ID: <20220629211902.3045703-7-vpai@akamai.com>
+Subject: [PATCH] netfilter: ipset: ipset list may return wrong member count on bitmap types
+Date:   Wed, 29 Jun 2022 17:21:07 -0400
+Message-ID: <20220629212109.3045794-1-vpai@akamai.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220629211902.3045703-1-vpai@akamai.com>
-References: <20220629211902.3045703-1-vpai@akamai.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-06-29_22,2022-06-28_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- adultscore=0 mlxlogscore=999 bulkscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2204290000
- definitions=main-2206290074
-X-Proofpoint-ORIG-GUID: WmdpTZT8OSAJCBePh4GGOybdjw1ifBkt
-X-Proofpoint-GUID: WmdpTZT8OSAJCBePh4GGOybdjw1ifBkt
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ spamscore=0 mlxscore=0 adultscore=0 suspectscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2204290000 definitions=main-2206290074
+X-Proofpoint-GUID: 5mdvLdJ6E9QU0vxl6Cfcs37gMhcrE2vc
+X-Proofpoint-ORIG-GUID: 5mdvLdJ6E9QU0vxl6Cfcs37gMhcrE2vc
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-06-29_22,2022-06-28_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
- clxscore=1015 bulkscore=0 malwarescore=0 adultscore=0 priorityscore=1501
- mlxlogscore=999 phishscore=0 impostorscore=0 mlxscore=0 suspectscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ spamscore=0 phishscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2204290000
  definitions=main-2206290074
 X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -90,93 +86,121 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We added bitmask support to hash:ip and added both netmask and bitmask
-to hash:net,net and hash:ip,port
+We fixed a similar problem before in commit 7f4f7dd4417d ("netfilter:
+ipset: ipset list may return wrong member count for set with timeout").
+The same issue exists in ip_set_bitmap_gen.h as well.
 
+Test case:
+
+$ ipset create test bitmap:ip range 10.0.0.0/8 netmask 24 timeout 5
+$ ipset add test 10.0.0.0
+$ ipset add test 10.255.255.255
+$ sleep 5s
+
+$ ipset list test
+Name: test
+Type: bitmap:ip
+Revision: 3
+Header: range 10.0.0.0-10.255.255.255 netmask 24 timeout 5
+Size in memory: 532568
+References: 0
+Number of entries: 2
+Members:
+
+We return "Number of entries: 2" but no members are listed. That is
+because when we run mtype_head the garbage collector hasn't run yet, but
+mtype_list checks and cleans up members with expired timeout. To avoid
+this we can run mtype_expire before printing the number of elements in
+mytype_head().
+
+Reviewed-by: Joshua Hunt <johunt@akamai.com>
 Signed-off-by: Vishwanath Pai <vpai@akamai.com>
 ---
- src/ipset.8 | 33 ++++++++++++++++++++++++++++++---
- 1 file changed, 30 insertions(+), 3 deletions(-)
+ net/netfilter/ipset/ip_set_bitmap_gen.h | 46 ++++++++++++++++++-------
+ 1 file changed, 34 insertions(+), 12 deletions(-)
 
-diff --git a/src/ipset.8 b/src/ipset.8
-index 269b9b5..f9a880b 100644
---- a/src/ipset.8
-+++ b/src/ipset.8
-@@ -524,7 +524,7 @@ The \fBhash:ip\fR set type uses a hash to store IP host addresses (default) or
- network addresses. Zero valued IP address cannot be stored in a \fBhash:ip\fR
- type of set.
- .PP
--\fICREATE\-OPTIONS\fR := [ \fBfamily\fR { \fBinet\fR | \fBinet6\fR } ] [ \fBhashsize\fR \fIvalue\fR ] [ \fBmaxelem\fR \fIvalue\fR ] [ \fBbucketsize\fR \fIvalue\fR ] [ \fBnetmask\fP \fIcidr\fP ] [ \fBtimeout\fR \fIvalue\fR ] [ \fBcounters\fP ] [ \fBcomment\fP ] [ \fBskbinfo\fP ]
-+\fICREATE\-OPTIONS\fR := [ \fBfamily\fR { \fBinet\fR | \fBinet6\fR } ] [ \fBhashsize\fR \fIvalue\fR ] [ \fBmaxelem\fR \fIvalue\fR ] [ \fBbucketsize\fR \fIvalue\fR ] [ \fBnetmask\fP \fIcidr\fP ] [ \fBbitmask\fP \fImask\fP ] [ \fBtimeout\fR \fIvalue\fR ] [ \fBcounters\fP ] [ \fBcomment\fP ] [ \fBskbinfo\fP ]
- .PP
- \fIADD\-ENTRY\fR := \fIipaddr\fR
- .PP
-@@ -549,6 +549,9 @@ ipset create foo hash:ip netmask 30
- ipset add foo 192.168.1.0/24
- .IP 
- ipset test foo 192.168.1.2
-+.TP
-+\fBbitmask\fP \fImask\fP
-+This works similar to \fBnetmask\fP but it will accept any valid IPv4/v6 address. It does not have to be a valid netmask.
- .SS hash:mac
- The \fBhash:mac\fR set type uses a hash to store MAC addresses. Zero valued MAC addresses cannot be stored in a \fBhash:mac\fR
- type of set. For matches on destination MAC addresses, see COMMENTS below.
-@@ -648,7 +651,7 @@ over the second, so a nomatch entry could be potentially be ineffective if a mor
- first parameter existed with a suitable second parameter.
- Network address with zero prefix size cannot be stored in this type of set.
- .PP
--\fICREATE\-OPTIONS\fR := [ \fBfamily\fR { \fBinet\fR | \fBinet6\fR } ] [ \fBhashsize\fR \fIvalue\fR ] [ \fBmaxelem\fR \fIvalue\fR ] [ \fBbucketsize\fR \fIvalue\fR ] [ \fBtimeout\fR \fIvalue\fR ] [ \fBcounters\fP ] [ \fBcomment\fP ] [ \fBskbinfo\fP ]
-+\fICREATE\-OPTIONS\fR := [ \fBfamily\fR { \fBinet\fR | \fBinet6\fR } ] [ \fBhashsize\fR \fIvalue\fR ] [ \fBmaxelem\fR \fIvalue\fR ] [ \fBbucketsize\fR \fIvalue\fR ] [ \fBnetmask\fP \fIcidr\fP ] [ \fBbitmask\fP \fImask\fP ] [ \fBtimeout\fR \fIvalue\fR ] [ \fBcounters\fP ] [ \fBcomment\fP ] [ \fBskbinfo\fP ]
- .PP
- \fIADD\-ENTRY\fR := \fInetaddr\fR,\fInetaddr\fR
- .PP
-@@ -680,6 +683,18 @@ values added to the first parameter of the set. The number of secondary prefixes
- further increases this as the list of secondary prefixes is traversed per primary
- prefix.
- .PP
-+Optional \fBcreate\fR options:
-+.TP
-+\fBnetmask\fP \fIcidr\fP
-+When the optional \fBnetmask\fP parameter specified, network addresses will be
-+stored in the set instead of IP host addresses. The \fIcidr\fP prefix value must be
-+between 1\-32 for IPv4 and between 1\-128 for IPv6. An IP address will be in the set
-+if the network address, which is resulted by masking the address with the netmask,
-+can be found in the set.
-+.TP
-+\fBbitmask\fP \fImask\fP
-+This works similar to \fBnetmask\fP but it will accept any valid IPv4/v6 address. It does not have to be a valid netmask.
-+.PP
- Example:
- .IP
- ipset create foo hash:net,net
-@@ -701,7 +716,7 @@ The \fBhash:ip,port\fR set type uses a hash to store IP address and port number
- The port number is interpreted together with a protocol (default TCP) and zero
- protocol number cannot be used.
- .PP
--\fICREATE\-OPTIONS\fR := [ \fBfamily\fR { \fBinet\fR | \fBinet6\fR } ] [ \fBhashsize\fR \fIvalue\fR ] [ \fBmaxelem\fR \fIvalue\fR ] [ \fBbucketsize\fR \fIvalue\fR ] [ \fBtimeout\fR \fIvalue\fR ] [ \fBcounters\fP ] [ \fBcomment\fP ] [ \fBskbinfo\fP ]
-+\fICREATE\-OPTIONS\fR := [ \fBfamily\fR { \fBinet\fR | \fBinet6\fR } ] [ \fBhashsize\fR \fIvalue\fR ] [ \fBmaxelem\fR \fIvalue\fR ] [ \fBbucketsize\fR \fIvalue\fR ] [ \fBnetmask\fP \fIcidr\fP ] [ \fBbitmask\fP \fImask\fP ] [ \fBtimeout\fR \fIvalue\fR ] [ \fBcounters\fP ] [ \fBcomment\fP ] [ \fBskbinfo\fP ]
- .PP
- \fIADD\-ENTRY\fR := \fIipaddr\fR,[\fIproto\fR:]\fIport\fR
- .PP
-@@ -741,6 +756,18 @@ The \fBhash:ip,port\fR type of sets require
- two \fBsrc\fR/\fBdst\fR parameters of the \fBset\fR match and \fBSET\fR
- target kernel modules.
- .PP
-+Optional \fBcreate\fR options:
-+.TP
-+\fBnetmask\fP \fIcidr\fP
-+When the optional \fBnetmask\fP parameter specified, network addresses will be
-+stored in the set instead of IP host addresses. The \fIcidr\fP prefix value must be
-+between 1\-32 for IPv4 and between 1\-128 for IPv6. An IP address will be in the set
-+if the network address, which is resulted by masking the address with the netmask,
-+can be found in the set.
-+.TP
-+\fBbitmask\fP \fImask\fP
-+This works similar to \fBnetmask\fP but it will accept any valid IPv4/v6 address. It does not have to be a valid netmask.
-+.PP
- Examples:
- .IP 
- ipset create foo hash:ip,port
+diff --git a/net/netfilter/ipset/ip_set_bitmap_gen.h b/net/netfilter/ipset/ip_set_bitmap_gen.h
+index 26ab0e9612d8..dd871305bd6e 100644
+--- a/net/netfilter/ipset/ip_set_bitmap_gen.h
++++ b/net/netfilter/ipset/ip_set_bitmap_gen.h
+@@ -28,6 +28,7 @@
+ #define mtype_del		IPSET_TOKEN(MTYPE, _del)
+ #define mtype_list		IPSET_TOKEN(MTYPE, _list)
+ #define mtype_gc		IPSET_TOKEN(MTYPE, _gc)
++#define mtype_expire		IPSET_TOKEN(MTYPE, _expire)
+ #define mtype			MTYPE
+ 
+ #define get_ext(set, map, id)	((map)->extensions + ((set)->dsize * (id)))
+@@ -88,13 +89,44 @@ mtype_memsize(const struct mtype *map, size_t dsize)
+ 	       map->elements * dsize;
+ }
+ 
++/* We should grab set->lock before calling this function */
++static void
++mtype_expire(struct ip_set *set)
++{
++	struct mtype *map = set->data;
++	void *x;
++	u32 id;
++
++	for (id = 0; id < map->elements; id++)
++		if (mtype_gc_test(id, map, set->dsize)) {
++			x = get_ext(set, map, id);
++			if (ip_set_timeout_expired(ext_timeout(x, set))) {
++				clear_bit(id, map->members);
++				ip_set_ext_destroy(set, x);
++				set->elements--;
++			}
++		}
++}
++
+ static int
+ mtype_head(struct ip_set *set, struct sk_buff *skb)
+ {
+ 	const struct mtype *map = set->data;
+ 	struct nlattr *nested;
+-	size_t memsize = mtype_memsize(map, set->dsize) + set->ext_size;
++	size_t memsize;
++
++	/* If any members have expired, set->elements will be wrong,
++	 * mytype_expire function will update it with the right count.
++	 * set->elements can still be incorrect in the case of a huge set
++	 * because elements can timeout during set->list().
++	 */
++	if (SET_WITH_TIMEOUT(set)) {
++		spin_lock_bh(&set->lock);
++		mtype_expire(set);
++		spin_unlock_bh(&set->lock);
++	}
+ 
++	memsize = mtype_memsize(map, set->dsize) + set->ext_size;
+ 	nested = nla_nest_start(skb, IPSET_ATTR_DATA);
+ 	if (!nested)
+ 		goto nla_put_failure;
+@@ -266,22 +298,12 @@ mtype_gc(struct timer_list *t)
+ {
+ 	struct mtype *map = from_timer(map, t, gc);
+ 	struct ip_set *set = map->set;
+-	void *x;
+-	u32 id;
+ 
+ 	/* We run parallel with other readers (test element)
+ 	 * but adding/deleting new entries is locked out
+ 	 */
+ 	spin_lock_bh(&set->lock);
+-	for (id = 0; id < map->elements; id++)
+-		if (mtype_gc_test(id, map, set->dsize)) {
+-			x = get_ext(set, map, id);
+-			if (ip_set_timeout_expired(ext_timeout(x, set))) {
+-				clear_bit(id, map->members);
+-				ip_set_ext_destroy(set, x);
+-				set->elements--;
+-			}
+-		}
++	mtype_expire(set);
+ 	spin_unlock_bh(&set->lock);
+ 
+ 	map->gc.expires = jiffies + IPSET_GC_PERIOD(set->timeout) * HZ;
 -- 
 2.25.1
 
