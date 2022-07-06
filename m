@@ -2,221 +2,306 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C26568BC8
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Jul 2022 16:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2CF568D16
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Jul 2022 17:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233167AbiGFOwj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 6 Jul 2022 10:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40690 "EHLO
+        id S233830AbiGFPbQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 6 Jul 2022 11:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233542AbiGFOw2 (ORCPT
+        with ESMTP id S233795AbiGFPbL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 6 Jul 2022 10:52:28 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA7925C7E;
-        Wed,  6 Jul 2022 07:52:26 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1o96O8-0004rG-6N; Wed, 06 Jul 2022 16:52:24 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     regressions@lists.linux.dev, <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH nf v3] netfilter: conntrack: fix crash due to confirmed bit load reordering
-Date:   Wed,  6 Jul 2022 16:50:04 +0200
-Message-Id: <20220706145004.22355-1-fw@strlen.de>
+        Wed, 6 Jul 2022 11:31:11 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3331EC57;
+        Wed,  6 Jul 2022 08:31:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 64834B81D93;
+        Wed,  6 Jul 2022 15:31:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB824C341C8;
+        Wed,  6 Jul 2022 15:31:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657121467;
+        bh=Z4jm9HYnjTDaIJzWkTxE02HWzcZimkwrxhl4fDPJ6vM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=S5tQvx7nwFNt3QEPxmIFwtloxbVgH3kZYxb/uVvkd5HzGtNJ3YCQDdreiworaxynD
+         g863nC95cljxyWjUm0iQDwOy+CvW88SETDb7ahElr7rrsO+R7d9hYxdtgkZY7mtnKN
+         JtUviCUsSfnMUDhTq7s7eJT44E9Iab+7DBPynkCcp3zdLFR8CATdnS9rNAl6QjYMiy
+         AO9qmMbpmnz4DoUbAl6A7rBXUBdXT7gmLIbQUJhj2V1cf8U5tKGS9AWWA6RIMGeDFA
+         bS5UfWGxnYeuH6ElPMiPfVMBGtAgAiuCIpH96L0oN0gwxS2kTknwAefVCZ9aKAhV05
+         lBa1QyCSsuoYQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>, kadlec@netfilter.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.18 08/22] netfilter: nf_tables: avoid skb access on nf_stolen
+Date:   Wed,  6 Jul 2022 11:30:26 -0400
+Message-Id: <20220706153041.1597639-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220706124007.GB7996@breakpoint.cc>
-References: <20220706124007.GB7996@breakpoint.cc>
+In-Reply-To: <20220706153041.1597639-1-sashal@kernel.org>
+References: <20220706153041.1597639-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Kajetan Puchalski reports crash on ARM, with backtrace of:
+From: Florian Westphal <fw@strlen.de>
 
-__nf_ct_delete_from_lists
-nf_ct_delete
-early_drop
-__nf_conntrack_alloc
+[ Upstream commit e34b9ed96ce3b06c79bf884009b16961ca478f87 ]
 
-Unlike atomic_inc_not_zero, refcount_inc_not_zero is not a full barrier.
-conntrack uses SLAB_TYPESAFE_BY_RCU, i.e. it is possible that a 'newly'
-allocated object is still in use on another CPU:
+When verdict is NF_STOLEN, the skb might have been freed.
 
-CPU1						CPU2
-						encounter 'ct' during hlist walk
- delete_from_lists
- refcount drops to 0
- kmem_cache_free(ct);
- __nf_conntrack_alloc() // returns same object
-						refcount_inc_not_zero(ct); /* might fail */
+When tracing is enabled, this can result in a use-after-free:
+1. access to skb->nf_trace
+2. access to skb->mark
+3. computation of trace id
+4. dump of packet payload
 
-						/* If set, ct is public/in the hash table */
-						test_bit(IPS_CONFIRMED_BIT, &ct->status);
+To avoid 1, keep a cached copy of skb->nf_trace in the
+trace state struct.
+Refresh this copy whenever verdict is != STOLEN.
 
-In case CPU1 already set refcount back to 1, refcount_inc_not_zero()
-will succeed.
+Avoid 2 by skipping skb->mark access if verdict is STOLEN.
 
-The expected possibilities for a CPU that obtained the object 'ct'
-(but no reference so far) are:
+3 is avoided by precomputing the trace id.
 
-1. refcount_inc_not_zero() fails.  CPU2 ignores the object and moves to
-   the next entry in the list.  This happens for objects that are about
-   to be free'd, that have been free'd, or that have been reallocated
-   by __nf_conntrack_alloc(), but where the refcount has not been
-   increased back to 1 yet.
+Only dump the packet when verdict is not "STOLEN".
 
-2. refcount_inc_not_zero() succeeds. CPU2 checks the CONFIRMED bit
-   in ct->status.  If set, the object is public/in the table.
-
-   If not, the object must be skipped; CPU2 calls nf_ct_put() to
-   un-do the refcount increment and moves to the next object.
-
-Parallel deletion from the hlists is prevented by a
-'test_and_set_bit(IPS_DYING_BIT, &ct->status);' check, i.e. only one
-cpu will do the unlink, the other one will only drop its reference count.
-
-Because refcount_inc_not_zero is not a full barrier, CPU2 may try to
-delete an object that is not on any list:
-
-1. refcount_inc_not_zero() successful (refcount inited to 1 on other CPU)
-2. CONFIRMED test also successful (load was reordered or zeroing
-   of ct->status not yet visible)
-3. delete_from_lists unlinks entry not on the hlist, because
-   IPS_DYING_BIT is 0 (already cleared).
-
-2) is already wrong: CPU2 will handle a partially initited object
-that is supposed to be private to CPU1.
-
-Add needed barriers when refcount_inc_not_zero() is successful.
-
-It also inserts a smp_wmb() before the refcount is set to 1 during
-allocation.
-
-Because other CPU might still 'see' the object, refcount_set(1)
-"resurrects" the object, so we need to make sure that other CPUs will
-also observe the right contents.  In particular, the CONFIRMED bit test
-must only pass once the object is fully initialised and either in the
-hash or about to be inserted (with locks held to delay possible unlink from
-early_drop or gc worker).
-
-I did not change flow_offload_alloc(), as far as I can see it should call
-refcount_inc(), not refcount_inc_not_zero(): the ct object is attached to
-the skb so its refcount should be >= 1 in all cases.
-
-v2: prefer smp_acquire__after_ctrl_dep to smp_rmb (Will Deacon).
-v3: keep smp_acquire__after_ctrl_dep close to refcount_inc_not_zero call
-    add comment in nf_conntrack_netlink, no control dependency there
-    due to locks.
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Reported-by: Kajetan Puchalski <kajetan.puchalski@arm.com>
-Diagnosed-by: Will Deacon <will@kernel.org>
-Fixes: 719774377622 ("netfilter: conntrack: convert to refcount_t api")
+Reported-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_core.c       | 22 ++++++++++++++++++++++
- net/netfilter/nf_conntrack_netlink.c    |  1 +
- net/netfilter/nf_conntrack_standalone.c |  3 +++
- 3 files changed, 26 insertions(+)
+ include/net/netfilter/nf_tables.h | 16 ++++++-----
+ net/netfilter/nf_tables_core.c    | 24 ++++++++++++++---
+ net/netfilter/nf_tables_trace.c   | 44 +++++++++++++++++--------------
+ 3 files changed, 55 insertions(+), 29 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 082a2fd8d85b..369aeabb94fe 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -729,6 +729,9 @@ static void nf_ct_gc_expired(struct nf_conn *ct)
- 	if (!refcount_inc_not_zero(&ct->ct_general.use))
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 279ae0fff7ad..5c4e5a96a984 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -1338,24 +1338,28 @@ void nft_unregister_flowtable_type(struct nf_flowtable_type *type);
+ /**
+  *	struct nft_traceinfo - nft tracing information and state
+  *
++ *	@trace: other struct members are initialised
++ *	@nf_trace: copy of skb->nf_trace before rule evaluation
++ *	@type: event type (enum nft_trace_types)
++ *	@skbid: hash of skb to be used as trace id
++ *	@packet_dumped: packet headers sent in a previous traceinfo message
+  *	@pkt: pktinfo currently processed
+  *	@basechain: base chain currently processed
+  *	@chain: chain currently processed
+  *	@rule:  rule that was evaluated
+  *	@verdict: verdict given by rule
+- *	@type: event type (enum nft_trace_types)
+- *	@packet_dumped: packet headers sent in a previous traceinfo message
+- *	@trace: other struct members are initialised
+  */
+ struct nft_traceinfo {
++	bool				trace;
++	bool				nf_trace;
++	bool				packet_dumped;
++	enum nft_trace_types		type:8;
++	u32				skbid;
+ 	const struct nft_pktinfo	*pkt;
+ 	const struct nft_base_chain	*basechain;
+ 	const struct nft_chain		*chain;
+ 	const struct nft_rule_dp	*rule;
+ 	const struct nft_verdict	*verdict;
+-	enum nft_trace_types		type;
+-	bool				packet_dumped;
+-	bool				trace;
+ };
+ 
+ void nft_trace_init(struct nft_traceinfo *info, const struct nft_pktinfo *pkt,
+diff --git a/net/netfilter/nf_tables_core.c b/net/netfilter/nf_tables_core.c
+index 53f40e473855..3ddce24ac76d 100644
+--- a/net/netfilter/nf_tables_core.c
++++ b/net/netfilter/nf_tables_core.c
+@@ -25,9 +25,7 @@ static noinline void __nft_trace_packet(struct nft_traceinfo *info,
+ 					const struct nft_chain *chain,
+ 					enum nft_trace_types type)
+ {
+-	const struct nft_pktinfo *pkt = info->pkt;
+-
+-	if (!info->trace || !pkt->skb->nf_trace)
++	if (!info->trace || !info->nf_trace)
  		return;
  
-+	/* load ->status after refcount increase */
-+	smp_acquire__after_ctrl_dep();
+ 	info->chain = chain;
+@@ -42,11 +40,24 @@ static inline void nft_trace_packet(struct nft_traceinfo *info,
+ 				    enum nft_trace_types type)
+ {
+ 	if (static_branch_unlikely(&nft_trace_enabled)) {
++		const struct nft_pktinfo *pkt = info->pkt;
 +
- 	if (nf_ct_should_gc(ct))
- 		nf_ct_kill(ct);
++		info->nf_trace = pkt->skb->nf_trace;
+ 		info->rule = rule;
+ 		__nft_trace_packet(info, chain, type);
+ 	}
+ }
  
-@@ -795,6 +798,9 @@ __nf_conntrack_find_get(struct net *net, const struct nf_conntrack_zone *zone,
- 		 */
- 		ct = nf_ct_tuplehash_to_ctrack(h);
- 		if (likely(refcount_inc_not_zero(&ct->ct_general.use))) {
-+			/* re-check key after refcount */
-+			smp_acquire__after_ctrl_dep();
++static inline void nft_trace_copy_nftrace(struct nft_traceinfo *info)
++{
++	if (static_branch_unlikely(&nft_trace_enabled)) {
++		const struct nft_pktinfo *pkt = info->pkt;
 +
- 			if (likely(nf_ct_key_equal(h, tuple, zone, net)))
- 				goto found;
++		if (info->trace)
++			info->nf_trace = pkt->skb->nf_trace;
++	}
++}
++
+ static void nft_bitwise_fast_eval(const struct nft_expr *expr,
+ 				  struct nft_regs *regs)
+ {
+@@ -85,6 +96,7 @@ static noinline void __nft_trace_verdict(struct nft_traceinfo *info,
+ 					 const struct nft_chain *chain,
+ 					 const struct nft_regs *regs)
+ {
++	const struct nft_pktinfo *pkt = info->pkt;
+ 	enum nft_trace_types type;
  
-@@ -1387,6 +1393,9 @@ static unsigned int early_drop_list(struct net *net,
- 		if (!refcount_inc_not_zero(&tmp->ct_general.use))
+ 	switch (regs->verdict.code) {
+@@ -92,8 +104,13 @@ static noinline void __nft_trace_verdict(struct nft_traceinfo *info,
+ 	case NFT_RETURN:
+ 		type = NFT_TRACETYPE_RETURN;
+ 		break;
++	case NF_STOLEN:
++		type = NFT_TRACETYPE_RULE;
++		/* can't access skb->nf_trace; use copy */
++		break;
+ 	default:
+ 		type = NFT_TRACETYPE_RULE;
++		info->nf_trace = pkt->skb->nf_trace;
+ 		break;
+ 	}
+ 
+@@ -254,6 +271,7 @@ nft_do_chain(struct nft_pktinfo *pkt, void *priv)
+ 		switch (regs.verdict.code) {
+ 		case NFT_BREAK:
+ 			regs.verdict.code = NFT_CONTINUE;
++			nft_trace_copy_nftrace(&info);
  			continue;
+ 		case NFT_CONTINUE:
+ 			nft_trace_packet(&info, chain, rule,
+diff --git a/net/netfilter/nf_tables_trace.c b/net/netfilter/nf_tables_trace.c
+index 5041725423c2..1163ba9c1401 100644
+--- a/net/netfilter/nf_tables_trace.c
++++ b/net/netfilter/nf_tables_trace.c
+@@ -7,7 +7,7 @@
+ #include <linux/module.h>
+ #include <linux/static_key.h>
+ #include <linux/hash.h>
+-#include <linux/jhash.h>
++#include <linux/siphash.h>
+ #include <linux/if_vlan.h>
+ #include <linux/init.h>
+ #include <linux/skbuff.h>
+@@ -25,22 +25,6 @@
+ DEFINE_STATIC_KEY_FALSE(nft_trace_enabled);
+ EXPORT_SYMBOL_GPL(nft_trace_enabled);
  
-+		/* load ->ct_net and ->status after refcount increase */
-+		smp_acquire__after_ctrl_dep();
+-static int trace_fill_id(struct sk_buff *nlskb, struct sk_buff *skb)
+-{
+-	__be32 id;
+-
+-	/* using skb address as ID results in a limited number of
+-	 * values (and quick reuse).
+-	 *
+-	 * So we attempt to use as many skb members that will not
+-	 * change while skb is with netfilter.
+-	 */
+-	id = (__be32)jhash_2words(hash32_ptr(skb), skb_get_hash(skb),
+-				  skb->skb_iif);
+-
+-	return nla_put_be32(nlskb, NFTA_TRACE_ID, id);
+-}
+-
+ static int trace_fill_header(struct sk_buff *nlskb, u16 type,
+ 			     const struct sk_buff *skb,
+ 			     int off, unsigned int len)
+@@ -186,6 +170,7 @@ void nft_trace_notify(struct nft_traceinfo *info)
+ 	struct nlmsghdr *nlh;
+ 	struct sk_buff *skb;
+ 	unsigned int size;
++	u32 mark = 0;
+ 	u16 event;
+ 
+ 	if (!nfnetlink_has_listeners(nft_net(pkt), NFNLGRP_NFTRACE))
+@@ -229,7 +214,7 @@ void nft_trace_notify(struct nft_traceinfo *info)
+ 	if (nla_put_be32(skb, NFTA_TRACE_TYPE, htonl(info->type)))
+ 		goto nla_put_failure;
+ 
+-	if (trace_fill_id(skb, pkt->skb))
++	if (nla_put_u32(skb, NFTA_TRACE_ID, info->skbid))
+ 		goto nla_put_failure;
+ 
+ 	if (nla_put_string(skb, NFTA_TRACE_CHAIN, info->chain->name))
+@@ -249,16 +234,24 @@ void nft_trace_notify(struct nft_traceinfo *info)
+ 	case NFT_TRACETYPE_RULE:
+ 		if (nft_verdict_dump(skb, NFTA_TRACE_VERDICT, info->verdict))
+ 			goto nla_put_failure;
 +
- 		/* kill only if still in same netns -- might have moved due to
- 		 * SLAB_TYPESAFE_BY_RCU rules.
- 		 *
-@@ -1536,6 +1545,9 @@ static void gc_worker(struct work_struct *work)
- 			if (!refcount_inc_not_zero(&tmp->ct_general.use))
- 				continue;
- 
-+			/* load ->status after refcount increase */
-+			smp_acquire__after_ctrl_dep();
++		/* pkt->skb undefined iff NF_STOLEN, disable dump */
++		if (info->verdict->code == NF_STOLEN)
++			info->packet_dumped = true;
++		else
++			mark = pkt->skb->mark;
 +
- 			if (gc_worker_skip_ct(tmp)) {
- 				nf_ct_put(tmp);
- 				continue;
-@@ -1775,6 +1787,16 @@ init_conntrack(struct net *net, struct nf_conn *tmpl,
- 	if (!exp)
- 		__nf_ct_try_assign_helper(ct, tmpl, GFP_ATOMIC);
- 
-+	/* Other CPU might have obtained a pointer to this object before it was
-+	 * released.  Because refcount is 0, refcount_inc_not_zero() will fail.
-+	 *
-+	 * After refcount_set(1) it will succeed; ensure that zeroing of
-+	 * ct->status and the correct ct->net pointer are visible; else other
-+	 * core might observe CONFIRMED bit which means the entry is valid and
-+	 * in the hash table, but its not (anymore).
-+	 */
-+	smp_wmb();
+ 		break;
+ 	case NFT_TRACETYPE_POLICY:
++		mark = pkt->skb->mark;
 +
- 	/* Now it is going to be associated with an sk_buff, set refcount to 1. */
- 	refcount_set(&ct->ct_general.use, 1);
+ 		if (nla_put_be32(skb, NFTA_TRACE_POLICY,
+ 				 htonl(info->basechain->policy)))
+ 			goto nla_put_failure;
+ 		break;
+ 	}
  
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 722af5e309ba..f5905b5201a7 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -1203,6 +1203,7 @@ ctnetlink_dump_table(struct sk_buff *skb, struct netlink_callback *cb)
- 					   hnnode) {
- 			ct = nf_ct_tuplehash_to_ctrack(h);
- 			if (nf_ct_is_expired(ct)) {
-+				/* need to defer nf_ct_kill() until lock is released */
- 				if (i < ARRAY_SIZE(nf_ct_evict) &&
- 				    refcount_inc_not_zero(&ct->ct_general.use))
- 					nf_ct_evict[i++] = ct;
-diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
-index 6ad7bbc90d38..05895878610c 100644
---- a/net/netfilter/nf_conntrack_standalone.c
-+++ b/net/netfilter/nf_conntrack_standalone.c
-@@ -306,6 +306,9 @@ static int ct_seq_show(struct seq_file *s, void *v)
- 	if (unlikely(!refcount_inc_not_zero(&ct->ct_general.use)))
- 		return 0;
+-	if (pkt->skb->mark &&
+-	    nla_put_be32(skb, NFTA_TRACE_MARK, htonl(pkt->skb->mark)))
++	if (mark && nla_put_be32(skb, NFTA_TRACE_MARK, htonl(mark)))
+ 		goto nla_put_failure;
  
-+	/* load ->status after refcount increase */
-+	smp_acquire__after_ctrl_dep();
+ 	if (!info->packet_dumped) {
+@@ -283,9 +276,20 @@ void nft_trace_init(struct nft_traceinfo *info, const struct nft_pktinfo *pkt,
+ 		    const struct nft_verdict *verdict,
+ 		    const struct nft_chain *chain)
+ {
++	static siphash_key_t trace_key __read_mostly;
++	struct sk_buff *skb = pkt->skb;
 +
- 	if (nf_ct_should_gc(ct)) {
- 		nf_ct_kill(ct);
- 		goto release;
+ 	info->basechain = nft_base_chain(chain);
+ 	info->trace = true;
++	info->nf_trace = pkt->skb->nf_trace;
+ 	info->packet_dumped = false;
+ 	info->pkt = pkt;
+ 	info->verdict = verdict;
++
++	net_get_random_once(&trace_key, sizeof(trace_key));
++
++	info->skbid = (u32)siphash_3u32(hash32_ptr(skb),
++					skb_get_hash(skb),
++					skb->skb_iif,
++					&trace_key);
+ }
 -- 
 2.35.1
 
