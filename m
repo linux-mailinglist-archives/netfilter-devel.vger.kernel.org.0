@@ -2,36 +2,36 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D38568D35
-	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Jul 2022 17:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CD1568D39
+	for <lists+netfilter-devel@lfdr.de>; Wed,  6 Jul 2022 17:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbiGFPbP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 6 Jul 2022 11:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
+        id S234119AbiGFPda (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 6 Jul 2022 11:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233796AbiGFPbL (ORCPT
+        with ESMTP id S234140AbiGFPch (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 6 Jul 2022 11:31:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5B61EEE6;
-        Wed,  6 Jul 2022 08:31:10 -0700 (PDT)
+        Wed, 6 Jul 2022 11:32:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD4A29804;
+        Wed,  6 Jul 2022 08:32:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DA0AC61FDD;
-        Wed,  6 Jul 2022 15:31:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3270C385A5;
-        Wed,  6 Jul 2022 15:31:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 15F8561FF1;
+        Wed,  6 Jul 2022 15:32:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C78CAC341CD;
+        Wed,  6 Jul 2022 15:32:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657121469;
-        bh=ZWyNL/PLV0KBvNJrAWbcNjFGF/dSsbZ4x/okfB1xgSk=;
+        s=k20201202; t=1657121536;
+        bh=GqYSiyEiYN54B9KbL1CA43tpPPB30YDlNdA9ZXdKhCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EKR8OejCcF+4qjF7yC1r8uvZuBpI568iyRQKP3fcJcnksfQSTUO7ap52V6DnkS56a
-         rat1ijcttwnK0McpfGLmi3dCghxk61Vf6F2Be1gAmEJ4pKpl8K+Jhnj2JjX8/bPGZD
-         knurJdv3v6ZBFy3ZWTyee19XZNJ3XGl4PztrSwz7tQyjQ89m9ekhlNKehHxg5S5RSM
-         V83wB3yPshFmT0nxpXWktlsRsqLcAqzgZJsrqI31NANLu2k28x0QJHvMEtJUWuTK9a
-         CtEFa5yu910lciWuBultyvhD/uobXYisNB7PNbCFe4nVSC2c6+/fHYo4F9vrV7gnZz
-         MY7lj8HVV7yBw==
+        b=uPiuXQ1OciCptQAm8NurlZ6qSbq6OIbjM7n07vbeq6RAIb0WlmXf+Be8xuwXL5hx/
+         jUUBtf/dJ6LErVGST4VNWuVfaaNecJRDe381ScXi2t0kcWLRi947IRjF0Junckyi4k
+         8Cs542HP9nXu617vNAG8HU8Q62iF7S9zi2p90HEesorfj8ArCJ60nf2WRUyfj/D0Rf
+         NBsp3qTpr3cyBK846wks3WtAT0Kekw+fMFFtDwJHKiCioEcWC4uBht+G/n6cHrkMiY
+         x93nUcs52V5l9ZYwgQbnU1gG3oFZQ9lFE3n3rHmD0spHycZgOva5V65t1phVz8rwB0
+         Ewn8BAo/E1Mzw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>,
@@ -42,12 +42,12 @@ Cc:     Florian Westphal <fw@strlen.de>,
         edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         bridge@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 09/22] netfilter: br_netfilter: do not skip all hooks with 0 priority
-Date:   Wed,  6 Jul 2022 11:30:27 -0400
-Message-Id: <20220706153041.1597639-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 07/18] netfilter: br_netfilter: do not skip all hooks with 0 priority
+Date:   Wed,  6 Jul 2022 11:31:42 -0400
+Message-Id: <20220706153153.1598076-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220706153041.1597639-1-sashal@kernel.org>
-References: <20220706153041.1597639-1-sashal@kernel.org>
+In-Reply-To: <20220706153153.1598076-1-sashal@kernel.org>
+References: <20220706153153.1598076-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -127,7 +127,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 18 insertions(+), 3 deletions(-)
 
 diff --git a/net/bridge/br_netfilter_hooks.c b/net/bridge/br_netfilter_hooks.c
-index 4fd882686b04..ff4779036649 100644
+index 68c0d0f92890..10a2c7bca719 100644
 --- a/net/bridge/br_netfilter_hooks.c
 +++ b/net/bridge/br_netfilter_hooks.c
 @@ -1012,9 +1012,24 @@ int br_nf_hook_thresh(unsigned int hook, struct net *net,
