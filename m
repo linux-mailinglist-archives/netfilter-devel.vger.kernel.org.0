@@ -2,98 +2,161 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C20574730
-	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Jul 2022 10:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68A0575188
+	for <lists+netfilter-devel@lfdr.de>; Thu, 14 Jul 2022 17:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236421AbiGNIh4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 14 Jul 2022 04:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
+        id S237379AbiGNPQF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 14 Jul 2022 11:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236489AbiGNIhP (ORCPT
+        with ESMTP id S232135AbiGNPQE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 14 Jul 2022 04:37:15 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAC6402C2
-        for <netfilter-devel@vger.kernel.org>; Thu, 14 Jul 2022 01:37:13 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id bf9so1597566lfb.13
-        for <netfilter-devel@vger.kernel.org>; Thu, 14 Jul 2022 01:37:13 -0700 (PDT)
+        Thu, 14 Jul 2022 11:16:04 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B850DE8E;
+        Thu, 14 Jul 2022 08:16:03 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id g1so2807267edb.12;
+        Thu, 14 Jul 2022 08:16:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=eOKhIHPUU5qPTZbjyQcWfvRUY0zDAP8hnIUzGBjF2Jn5DfdNsbEWN2bt7ALPYmKFVp
-         Dxr1gDHkbIBW6Zt+nHPJYVynuk8AW0yQZ/Zbg6Hs/Db/0s9SnaRXX8dPxs4FUxGCTJqt
-         PUYZva9zdBfTCaw+ACjLsUUgRvbYiV1yKAF3EhOBh+YW55bYBsAw2vjNobpxCrdB648X
-         A9Vj0WSfJubet8viXTg/I9X1Zmn6KwP7YNCJiSogQMOb5VTL9XQBYGsxHSC28kklqMwQ
-         Xqm1mx/as6lOSd/UexvuUJPMkR0uIfSfLSUsGSd7SP6mXh7BeziDYVk18AfHAMhcFado
-         ZNLA==
+        h=from:date:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=oI7lmGca+toUm4ZWMa5XQfNQqVbbESkf3BrNPAtrMII=;
+        b=Ejda51ia8PRknUgSAK7emz2//RircokgfWr+i6dRLVuO6FtI69rY1lqUC9Ta4Zho8x
+         FYd+/tGA2zrm4U9Zuj8+FD5WD72oFXVhiuNy+JcT7ltlfjt5OO90tEL1hv4J2q5y73bI
+         rL9A52+hPey36subBOjdFoB+f8dPaWXLtj8/tadtGy1W0gx6guwucxD5FNsCSS1eC8TP
+         3/fyzUxyD67iymhl3k1zHPmON2HQZZt3W7T8vebsyvGLOI3kAxpDQn173VOEBPL93ftK
+         DWPHmLNOpAbMKKbffhWV1+QN4enCmVbu1jn6azJeWM5uQhgBkcLVvX3S80a4GupmOWw1
+         rgKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=DU7iFhb4w/tkRCPjQ11ka+NtdWOJSS/sCTn8EkQsq/1CWyAj3h0sksOzuD1lqymVI4
-         IMgbHDarLGg7snfglmRufU+ZdVl1yHmGiEdwbf90c3yseYjMUONyS32y0irvAo+APOb7
-         qPreq1SInUTFT786puo+F45XlIUX0ypmX0r//C/uNjJrBknvF5PowKFciwIThsGqGT1z
-         O+75J02tKbIwUkKcVrYDgAkSt70pFPVidccHKARNg3E6CchM2nuBvE/1l80Vm6LAwSCX
-         F1a6mCLUKYzWcehibT+ygkUDouif6UrJKiEt0PWWE2yhW16A77sFB6GkmMsT0+zZKtL7
-         FI7g==
-X-Gm-Message-State: AJIora9A8TOMt/VIu15zYskUPuF8w5HzFyaEGEi7Wfenia2liYbjZlIi
-        R925GHmKRnf3gPQQQsP3IQPLXfTGgB7MHarOtfo=
-X-Google-Smtp-Source: AGRyM1suH6kpL0bxxrdPqBdRw7fjg6QmbYsIJ5KtUWeYknhIH8CIkHpjEQ1bnLxbFcENJg0E8wYhVlYhJeESVTPizkI=
-X-Received: by 2002:a05:6512:12c8:b0:489:efbf:18d1 with SMTP id
- p8-20020a05651212c800b00489efbf18d1mr4734610lfg.192.1657787832538; Thu, 14
- Jul 2022 01:37:12 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=oI7lmGca+toUm4ZWMa5XQfNQqVbbESkf3BrNPAtrMII=;
+        b=wlvyC8V0H68s+A8OfD09//dddS8lXODE29ex/08iCbXpAfIR79ICJWihBCkicT2LG5
+         2luOjdD5n4IfHBcVrFp2ZtgsT1dHlyqdU+wYExxRP6lM93Zzts3WLnW0hySn7zvkE/4m
+         jRySuTqRmG5roAMXnp49DhBjcdZ9cArmymUKap9mVUESOQ/QTbKySN9vioY0xILhk4Bq
+         /6ktZwPtrgTzK6gfh25dzAKxkqEpsgFkXk0fssCnoSkx41NSv7fb2RuwbH9m9rkWPCoY
+         qDWe3g4BarjzofwwuDthHOcvDXoszq7cbDYFOCUoGDWroqZwYaSc37QOSfxOKyEV+Zx1
+         R55w==
+X-Gm-Message-State: AJIora+DwySLPqOVHXG7KdiAMaYDKX03ZR6h/ydYXt/e5tikLBODtCNv
+        4Fsg6Qp7zCIAHD0E7G1Kv3w=
+X-Google-Smtp-Source: AGRyM1tSMIUGzFu5xvfDtbcr0unqUo7guIFXtL+nx/hK8ueisxLVKYPx4SyUH6gxSlI9Y00A2zBkiw==
+X-Received: by 2002:aa7:db50:0:b0:43a:6319:e2bc with SMTP id n16-20020aa7db50000000b0043a6319e2bcmr12994540edt.237.1657811762092;
+        Thu, 14 Jul 2022 08:16:02 -0700 (PDT)
+Received: from debian ([156.146.33.241])
+        by smtp.gmail.com with ESMTPSA id 6-20020a170906318600b006f3ef214e27sm812664ejy.141.2022.07.14.08.15.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jul 2022 08:16:01 -0700 (PDT)
+From:   Mathias Lark <mathiaslark@gmail.com>
+X-Google-Original-From: Mathias Lark <mathias.lark@gmail.com>
+Date:   Thu, 14 Jul 2022 17:13:58 +0200
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, pabeni@redhat.com, pablo@netfilter.org,
+        kadlec@netfilter.org, fw@strlen.de, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: [PATCH net-next] improve handling of ICMP_EXT_ECHO icmp type
+Message-ID: <20220714151358.GA16615@debian>
 MIME-Version: 1.0
-Received: by 2002:a2e:9041:0:0:0:0:0 with HTTP; Thu, 14 Jul 2022 01:37:11
- -0700 (PDT)
-Reply-To: abdwabbomaddahm@gmail.com
-From:   Abdwabbo Maddah <abdwabbomaddah746@gmail.com>
-Date:   Thu, 14 Jul 2022 09:37:11 +0100
-Message-ID: <CAFC-3icPrpmNqEMcqzAOFvzCPc-r5yv89mNAZ9SsCQvcOZ=+9g@mail.gmail.com>
-Subject: Get back to me... URGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:12f listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4900]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [abdwabbomaddah746[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [abdwabbomaddah746[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Introduce a helper for icmp type checking - icmp_is_valid_type.
+
+There is a number of code paths handling ICMP packets. To check
+icmp type validity, some of those code paths perform the check
+`type <= NR_ICMP_TYPES`. Since the introduction of ICMP_EXT_ECHO
+and ICMP_EXT_ECHOREPLY (RFC 8335), this check is no longer correct.
+
+To fix this inconsistency and avoid further problems with future
+ICMP types, the patch inserts the icmp_is_valid_type helper
+wherever it is required.
+
+Signed-off-by: Mathias Lark <mathias.lark@gmail.com>
+---
+ include/uapi/linux/icmp.h               | 5 +++++
+ net/ipv4/icmp.c                         | 8 +++-----
+ net/netfilter/nf_conntrack_proto_icmp.c | 4 +---
+ 3 files changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/include/uapi/linux/icmp.h b/include/uapi/linux/icmp.h
+index 163c0998aec9..ad736a24f0c8 100644
+--- a/include/uapi/linux/icmp.h
++++ b/include/uapi/linux/icmp.h
+@@ -159,4 +159,9 @@ struct icmp_ext_echo_iio {
+ 		} addr;
+ 	} ident;
+ };
++
++static inline bool icmp_is_valid_type(__u8 type)
++{
++	return type <= NR_ICMP_TYPES || type == ICMP_EXT_ECHO || type == ICMP_EXT_ECHOREPLY;
++}
+ #endif /* _UAPI_LINUX_ICMP_H */
+diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
+index 236debd9fded..686f3133370f 100644
+--- a/net/ipv4/icmp.c
++++ b/net/ipv4/icmp.c
+@@ -273,7 +273,7 @@ EXPORT_SYMBOL(icmp_global_allow);
+ 
+ static bool icmpv4_mask_allow(struct net *net, int type, int code)
+ {
+-	if (type > NR_ICMP_TYPES)
++	if (!icmp_is_valid_type(type))
+ 		return true;
+ 
+ 	/* Don't limit PMTU discovery. */
+@@ -661,7 +661,7 @@ void __icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info,
+ 			 *	Assume any unknown ICMP type is an error. This
+ 			 *	isn't specified by the RFC, but think about it..
+ 			 */
+-			if (*itp > NR_ICMP_TYPES ||
++			if (!icmp_is_valid_type(*itp) ||
+ 			    icmp_pointers[*itp].error)
+ 				goto out;
+ 		}
+@@ -1225,12 +1225,10 @@ int icmp_rcv(struct sk_buff *skb)
+ 	}
+ 
+ 	/*
+-	 *	18 is the highest 'known' ICMP type. Anything else is a mystery
+-	 *
+ 	 *	RFC 1122: 3.2.2  Unknown ICMP messages types MUST be silently
+ 	 *		  discarded.
+ 	 */
+-	if (icmph->type > NR_ICMP_TYPES) {
++	if (!icmp_is_valid_type(icmph->type)) {
+ 		reason = SKB_DROP_REASON_UNHANDLED_PROTO;
+ 		goto error;
+ 	}
+diff --git a/net/netfilter/nf_conntrack_proto_icmp.c b/net/netfilter/nf_conntrack_proto_icmp.c
+index b38b7164acd5..ba4462c393be 100644
+--- a/net/netfilter/nf_conntrack_proto_icmp.c
++++ b/net/netfilter/nf_conntrack_proto_icmp.c
+@@ -225,12 +225,10 @@ int nf_conntrack_icmpv4_error(struct nf_conn *tmpl,
+ 	}
+ 
+ 	/*
+-	 *	18 is the highest 'known' ICMP type. Anything else is a mystery
+-	 *
+ 	 *	RFC 1122: 3.2.2  Unknown ICMP messages types MUST be silently
+ 	 *		  discarded.
+ 	 */
+-	if (icmph->type > NR_ICMP_TYPES) {
++	if (!icmp_is_valid_type(icmph->type)) {
+ 		icmp_error_log(skb, state, "invalid icmp type");
+ 		return -NF_ACCEPT;
+ 	}
 -- 
-Dear,
-I had sent you a mail but i don't think you received it that's why am
-writing you again.It is important you get back to me as soon as you
-can.
-Abd-Wabbo Maddah
+2.36.1
+
