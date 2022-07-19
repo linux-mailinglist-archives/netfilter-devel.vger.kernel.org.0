@@ -2,105 +2,191 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 263DF57A0B5
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Jul 2022 16:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EF957A372
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Jul 2022 17:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232355AbiGSOJP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 19 Jul 2022 10:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
+        id S237532AbiGSPrl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 19 Jul 2022 11:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238559AbiGSOIK (ORCPT
+        with ESMTP id S236955AbiGSPrk (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 19 Jul 2022 10:08:10 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B01754644;
-        Tue, 19 Jul 2022 06:24:50 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id ez10so27108542ejc.13;
-        Tue, 19 Jul 2022 06:24:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4cFR1T4lbutWstXHmbM2dbPlJKpl1mp7S3Dg2sFTtXY=;
-        b=bbvbU9/VIBfx8nTpUA08RgMOwLrYN9HNlmwCvNPx3ADsuPEraxeXetEdoNY6GFL6EY
-         s6vdpPwfgPxk9mla4Adjxc+ggy4+svDCCpRk4s8QRSMCOOYAzv8hvxYCCAPb31jTCZZA
-         0JQXOWx7lnB7l0GvXBwc15wNzlgtZNZvihvXK1gZcDRS6dOxWwLeC4bVlRr3ALuHDVCY
-         m2LJB9rq+bl6cLvE9xi4WvjFnEPFsjOESzKACF7w+phWjF4XY2BRhQjzhmyBlC3+b6b+
-         /ekAkGhtxF4euSC4usgkZigfoLb7ktf/51TKeE4xICpooZliJ0e0HrbMSP8puWz2SDKx
-         hjpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4cFR1T4lbutWstXHmbM2dbPlJKpl1mp7S3Dg2sFTtXY=;
-        b=qurnwsfa081EX/LaGZmcC5jwQGVxpDYGnIRtw5Y1AqHCVezisVBtXpj12TwLwY9A+F
-         Fi3VWhVym8M4TlO1wQLE2yvuyKFq5TO2HpuGSA580njMvWtjXGoAd4HTvOKeazdQdXVq
-         CWxxyBUERadAlpItLr+93xoOJ/pn3SIOEYr5to5Rzn8BkxHm/mMyQKn5pYfPUDBUV7M7
-         22NAz3HxhoPfIwo5VeGCu2TjY1/AXFEUpnJwWcaWBdzm7eP8aS/R8gSQ1zTprCaaiF6o
-         TL9JmGfO0HHUKZDfmFzOPaYfx1RuWlS/gxuMM+Mfqrs0EqJTMTd5raJ4DaA4Kd34zsRF
-         DM4Q==
-X-Gm-Message-State: AJIora/aaaMJNQUqYh9VOW1LySYlcOrAgTXA8Fck5MO/xEdIUzdgJNFt
-        RRYgObiLjicMpUAWAgyZXUJss7+994eepQ==
-X-Google-Smtp-Source: AGRyM1vG4GsrYNk4GaXnjMHks9prfDbdxx0xwxUPmUidxm41ZHQsI7i0HioiZdrrGaxqlF5aXzKOEw==
-X-Received: by 2002:a17:907:a0c6:b0:72e:ea7d:6a98 with SMTP id hw6-20020a170907a0c600b0072eea7d6a98mr21068836ejc.140.1658237088740;
-        Tue, 19 Jul 2022 06:24:48 -0700 (PDT)
-Received: from localhost (icdhcp-1-189.epfl.ch. [128.178.116.189])
-        by smtp.gmail.com with ESMTPSA id gt2-20020a170906f20200b0072b342ad997sm6619764ejb.199.2022.07.19.06.24.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jul 2022 06:24:48 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: [PATCH bpf-next v6 13/13] selftests/bpf: Fix test_verifier failed test in unprivileged mode
-Date:   Tue, 19 Jul 2022 15:24:30 +0200
-Message-Id: <20220719132430.19993-14-memxor@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220719132430.19993-1-memxor@gmail.com>
-References: <20220719132430.19993-1-memxor@gmail.com>
+        Tue, 19 Jul 2022 11:47:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E7A5C54673
+        for <netfilter-devel@vger.kernel.org>; Tue, 19 Jul 2022 08:47:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658245658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NOQSnYNWtNwKVsCZ4mVNAS7O6pjyrN18QYcF00yAN0U=;
+        b=NR5168nQ+61tBqgSqeQ2SpbeOF3v06lTPXcU7AUG7pekqR6ZZheVNBEU/pu7lJUxlQxA/D
+        OiDMK6FQq9TeqBIPspgaeTUErGBpzloW7y4XzuAVhDtoXndARnsgT8nNQF+9tMRTAqfvFF
+        qcnFZkOdigZY50ulzZI13AyO8bkNFPA=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-16-Pk0rJFgZOuS7J821r44EVw-1; Tue, 19 Jul 2022 11:47:28 -0400
+X-MC-Unique: Pk0rJFgZOuS7J821r44EVw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A664C29AA3BC;
+        Tue, 19 Jul 2022 15:47:28 +0000 (UTC)
+Received: from maya.cloud.tilaa.com (unknown [10.40.208.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4FCFA492C3B;
+        Tue, 19 Jul 2022 15:47:28 +0000 (UTC)
+Date:   Tue, 19 Jul 2022 17:47:25 +0200
+From:   Stefano Brivio <sbrivio@redhat.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf] nft_set_rbtree: Switch to node list walk for overlap
+ detection
+Message-ID: <20220719174725.31999b32@elisabeth>
+In-Reply-To: <YtFL8OWnViZGma3g@salvia>
+References: <20220614010704.1416375-1-sbrivio@redhat.com>
+        <Yrnh2lqhvvzrT2ii@salvia>
+        <20220702015510.08ee9401@elisabeth>
+        <YsQmS4+qdFz8s+sN@salvia>
+        <20220706231242.492ba5d1@elisabeth>
+        <YtFL8OWnViZGma3g@salvia>
+Organization: Red Hat
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1029; i=memxor@gmail.com; h=from:subject; bh=avUxAzVXxTSlvvIczCgkt5Bck8b2xRF1My3q7b4wHho=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBi1rBmQgxaln2kgyqBnUL/mSLBYQq2oZzyQ+9iPSWL 0uAGw62JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYtawZgAKCRBM4MiGSL8RynoeEA CoG6hQ7m9ddUrYrkaVr449xHtXW2oF1Uip9faZAIF8vjZUaonnLZ8zdr6A9SnpK2YbOQbLxg3p1Uo/ EBIGiIYNB8faI1xi6DAmLkGsr59JcKzMULymFpXH3zhG63W/MaRjJYJcfilx6Tx0Qj8EFEvUNzmkaP S93WupfXvvf8VF/OXZCD182SN5tpnN7z1DVKIVJjppfv3AcFdqvE9FfJrvMwDUUY7CbSerHvHbJxrD 7YDjtNE5bYqTCmeMfli+R7mn9yG56ZAcgLJ0giqXbYh44NBGakzwdW5VE0AhYsi0AU19estFcQH2g6 8eqHqTm/QFhEiAewcS8JDy/RRRYgUGQjKOqGpJTMDVINtuEM4EJXS1qLS4nzN1iZa7KROus8R04YIT IE6yWiXQsgdpal+JhJxIFFdGkyQjMHQ6CgP6TdssFyJKoBjbAJLvGa/CmWiVB3SUOgnTJbv0wZlHkT cRMEOX6ADpm3XWLTR7U8zmtGS3UTblqq83uSc4A7DfQGRhwddvLgQeIs/Su8/SOwaV/qeklgt9Ey8C fRzFTPkTeK8k5PHtxuK3D3WVCI/PSUN+ogwrD52lkNNLGIvJ2LGRYTrTRW+e6zvh1knooxKpJtOcdi DPL0NzvhNaySzZBkBF1z8DNPJLdnVagZPntus7elq2Q8FkqDAT9A4GDOSjnw==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Loading the BTF won't be permitted without privileges, hence only test
-for privileged mode by setting the prog type. This makes the
-test_verifier show 0 failures when unprivileged BPF is enabled.
+On Fri, 15 Jul 2022 13:13:52 +0200
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 
-Fixes: 4118e9e9def ("selftest/bpf: Test for use-after-free bug fix in inline_bpf_loop")
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/testing/selftests/bpf/verifier/bpf_loop_inline.c | 1 +
- 1 file changed, 1 insertion(+)
+> On Wed, Jul 06, 2022 at 11:12:42PM +0200, Stefano Brivio wrote:
+> > On Tue, 5 Jul 2022 13:53:47 +0200
+> > Pablo Neira Ayuso <pablo@netfilter.org> wrote:  
+> [...]
+> > This simplifies the handling of those cases, we wouldn't need all those
+> > clauses anymore, but I really think that the existing problem comes from
+> > the fact we can *not* descend the tree just by selecting key values.  
+> 
+> Thanks for explaining.
+> 
+> The traversal rbtree via rb_first() and rb_next() is like an ordered
+> linear list walk, maybe it is possible to reduce the number of
+> elements to find an overlap?
+> 
+> I'm attaching an incremental patch on top of yours, idea is:
+> 
+> 1) find the closest element whose key is less than the new element
+>    by descending the tree. This provides the first node to walk.
 
-diff --git a/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c b/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-index 2d0023659d88..a535d41dc20d 100644
---- a/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-+++ b/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-@@ -251,6 +251,7 @@
- 	.expected_insns = { PSEUDO_CALL_INSN() },
- 	.unexpected_insns = { HELPER_CALL_INSN() },
- 	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
- 	.func_info = { { 0, MAIN_TYPE }, { 16, CALLBACK_TYPE } },
- 	.func_info_cnt = 2,
- 	BTF_TYPES
+I think this is almost correct, but we need to modify it slightly.
+Consider this tree:
+
+      A: 1 (s, a)
+       /        \
+      /          \
+B: 1 (s, i)    C: 3 (e, i)
+
+where, again, 's': starts, 'e': ends, 'a': active, 'i': inactive. Nodes
+are additionally named.
+
+We want to insert 2 as a start element, and 'first' in your patch
+becomes leaf B, "1 (s, i)" -- not the A node, "1 (s, a)".
+
+Now, depending on the red-black tree insertion implementation (I didn't
+bother to check, I guess it should be independent), in the list walk,
+A might come before or after B.
+
+If B is before A, fine, we'll meet A and mark it as "rbe_le" (closest
+from left).
+
+If A comes before B, we won't meet A, and we won't have a closest
+element from the left. This affects the overlapping decision.
+
+The only ambiguity here is represented by elements having the same key,
+and a set of such elements is allowed in the tree iff at most one is
+active. So we just need to avoid replacing an active "first" by an
+inactive node with the same key. Eventually, we'll visit all the nodes
+having the same keys, if any:
+
+> +	parent = NULL;
+> +	p = &priv->root.rb_node;
+> +	while (*p != NULL) {
+> +		parent = *p;
+> +		rbe = rb_entry(parent, struct nft_rbtree_elem, node);
+> +		d = nft_rbtree_cmp(set, rbe, new);
+> +
+> +		if (d < 0)
+> +			p = &parent->rb_left;
+> +		else if (d > 0) {
+> +			first = &rbe->node;
+
+			if (!first || nft_rbtree_cmp(set, rbe, first) ||
+			    nft_set_elem_expired(&first->ext)) ||
+			    !nft_set_elem_active(&first->ext, genmask))
+				first = &rbe->node;
+
+> +			p = &parent->rb_right;
+> +		} else {
+> +			first = &rbe->node;
+
+...and the same here. Maybe we should re-introduce the "expired or
+inactive" helper.
+
+> +			if (nft_rbtree_interval_end(rbe))
+> +				p = &parent->rb_left;
+> +			else
+> +				p = &parent->rb_right;
+> +		}
+> +	}
+> +
+> +	if (!first)
+> +		first = rb_first(&priv->root);
+
+> 2) annotate closest active element that is less than the new element,
+>    walking over the ordered list.
+
+The description looks correct to me, but I'm not sure why you add a
+break here:
+
+> -		if (d <= 0 && (!rbe_le || nft_rbtree_cmp(set, rbe, rbe_le) > 0))
+> +		/* annotate element coming before new element. */
+> +		if (d < 0 && (!rbe_le || nft_rbtree_cmp(set, rbe, rbe_le) > 0)) {
+>  			rbe_le = rbe;
+> +			break;
+> +		}
+
+we should stop here iff rbe_ge is already set, right? Otherwise we are
+skipping step 3) below.
+
+> 3) annotate closest active element that is more than the new element,
+>    Stop walking the ordered list.
+> 
+> 4) if new element is an exact match, then EEXIST.
+> 
+> 5) if new element is end and closest less than element is end, or
+>    if new element is start and closest less than element is start, or
+>    if new element is end and closest more than element is end,
+>    Then ENOTEMPTY.
+> 
+> Inactive/expired elements are skipped while walking the ordered linear
+> list as usual.
+> 
+> With this incremental patch, I don't observe longer time to load
+> interval sets.
+
+Everything else looks good to me, thanks a lot, I hope we're finally
+sorting this for good :)
+
 -- 
-2.34.1
+Stefano
 
