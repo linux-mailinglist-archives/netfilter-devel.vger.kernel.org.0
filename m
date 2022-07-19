@@ -2,34 +2,34 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE6C579810
-	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Jul 2022 13:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4980157A256
+	for <lists+netfilter-devel@lfdr.de>; Tue, 19 Jul 2022 16:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237427AbiGSLAD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 19 Jul 2022 07:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        id S239898AbiGSOtl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 19 Jul 2022 10:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237393AbiGSLAB (ORCPT
+        with ESMTP id S238887AbiGSOtI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 19 Jul 2022 07:00:01 -0400
-X-Greylist: delayed 742 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Jul 2022 03:59:57 PDT
+        Tue, 19 Jul 2022 10:49:08 -0400
+X-Greylist: delayed 1805 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Jul 2022 07:48:51 PDT
 Received: from mail.velocitynet.com.au (mail.velocitynet.com.au [203.55.137.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 89F1D402F7;
-        Tue, 19 Jul 2022 03:59:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F94826F0;
+        Tue, 19 Jul 2022 07:48:47 -0700 (PDT)
 Received: from webmail.emailme.com.au (webmail.velocitynet.com.au [203.31.48.148])
-        by mail.velocitynet.com.au (Postfix) with ESMTP id 38B53600EE;
-        Tue, 19 Jul 2022 20:47:14 +1000 (EST)
+        by mail.velocitynet.com.au (Postfix) with ESMTP id 5FC24601AF;
+        Tue, 19 Jul 2022 23:54:03 +1000 (EST)
 MIME-Version: 1.0
-Date:   Tue, 19 Jul 2022 20:17:12 +1000
+Date:   Tue, 19 Jul 2022 23:24:01 +1000
 From:   Unilever Supply Chain <info@unileverrotterdamgroup.com>
 To:     undisclosed-recipients:;
 Subject: Request for Quotation
 Reply-To: purchasing@unilevergroups.nl
-Message-ID: <b72f7a21bc6dc4394f956e8ec9a3e3a2@mail.velocitynet.com.au>
+Message-ID: <93cd410831c80da502bf30bbe21ce50a@mail.velocitynet.com.au>
 X-Sender: info@unileverrotterdamgroup.com
 User-Agent: RoundCube Webmail/0.3.1
 Content-Type: multipart/mixed;
-        boundary="=_dc0a885dd2208fc8eecc8e10efee175b"
+        boundary="=_40705491fc0224d8a419d0cf0d9cfc39"
 X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_50,SPF_HELO_PASS,
         SPF_SOFTFAIL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Level: *
@@ -39,9 +39,10 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
---=_dc0a885dd2208fc8eecc8e10efee175b
+--=_40705491fc0224d8a419d0cf0d9cfc39
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset=UTF-8
+
 
 
 Good day,
@@ -58,7 +59,7 @@ Please we are looking forward to receive your best offer
 
 Kind Regards/Vriendelijke Groeten
 Mr.Ibrahim Bakker
---=_dc0a885dd2208fc8eecc8e10efee175b
+--=_40705491fc0224d8a419d0cf0d9cfc39
 Content-Transfer-Encoding: base64
 Content-Type: application/pdf; charset=binary; charset=UTF-8;
  name="Request for Quotation.pdf";
@@ -2437,7 +2438,7 @@ MDAgbiAKMDAwMDA3NzQzOSAwMDAwMCBuIAowMDAwMDc4MTY2IDAwMDAwIG4gCjAwMDAwNzg3MjUg
 MDAwMDAgbiAKdHJhaWxlcgo8PCAvU2l6ZSA1MSAvUm9vdCAxIDAgUiAvSW5mbyAyIDAgUgovSUQg
 Wzw0QTJDOTdBMkYyNjNGRUUxMjBGMDUyQkEwMDZCMUUxQT48NEEyQzk3QTJGMjYzRkVFMTIwRjA1
 MkJBMDA2QjFFMUE+XQo+PgpzdGFydHhyZWYKMTM0MDEyCiUlRU9GCg==
---=_dc0a885dd2208fc8eecc8e10efee175b
+--=_40705491fc0224d8a419d0cf0d9cfc39
 Content-Transfer-Encoding: base64
 Content-Type: application/pdf; charset=binary; charset=UTF-8;
  name="Parts Specification.pdf";
@@ -2939,5 +2940,5 @@ ZWF0aW9uRGF0ZShEOjIwMjIwNTIzMTk1MTAwKzAyJzAwJyk+PgplbmRvYmoKeHJlZgowIDMKMDAw
 MDAwMDAwMCA2NTUzNSBmIAowMDAwMDI3ODAyIDAwMDAwIG4gCjAwMDAwMjc4NTMgMDAwMDAgbiAK
 dHJhaWxlcgo8PC9JRFs8YTJiMDM2YTY0NmZjYmU1MDEwYmE3YWNhMjQ1ZTc0OWE+IDxhMmIwMzZh
 NjQ2ZmNiZTUwMTBiYTdhY2EyNDVlNzQ5YT5dL1NpemUgMz4+CnN0YXJ0eHJlZgoxMDUKJSVFT0YK
---=_dc0a885dd2208fc8eecc8e10efee175b--
+--=_40705491fc0224d8a419d0cf0d9cfc39--
 
