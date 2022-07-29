@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3B5584E21
-	for <lists+netfilter-devel@lfdr.de>; Fri, 29 Jul 2022 11:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B794584E24
+	for <lists+netfilter-devel@lfdr.de>; Fri, 29 Jul 2022 11:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233098AbiG2JiH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 29 Jul 2022 05:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
+        id S232892AbiG2Jid (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 29 Jul 2022 05:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbiG2JiG (ORCPT
+        with ESMTP id S235263AbiG2Jid (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 29 Jul 2022 05:38:06 -0400
+        Fri, 29 Jul 2022 05:38:33 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D52D65FAEC
-        for <netfilter-devel@vger.kernel.org>; Fri, 29 Jul 2022 02:38:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2407A4F674
+        for <netfilter-devel@vger.kernel.org>; Fri, 29 Jul 2022 02:38:30 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH RFC 1/3] src: add string API support
-Date:   Fri, 29 Jul 2022 11:37:56 +0200
-Message-Id: <20220729093758.3349-1-pablo@netfilter.org>
+Subject: [PATCH libnftnl RFC 1/3] src: add string API support
+Date:   Fri, 29 Jul 2022 11:38:21 +0200
+Message-Id: <20220729093823.3441-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
