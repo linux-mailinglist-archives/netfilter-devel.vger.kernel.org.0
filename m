@@ -2,43 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90079589309
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Aug 2022 22:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EEE589304
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 Aug 2022 22:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237992AbiHCUNu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 Aug 2022 16:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57492 "EHLO
+        id S237264AbiHCUNp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 Aug 2022 16:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237795AbiHCUNt (ORCPT
+        with ESMTP id S233695AbiHCUNo (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 Aug 2022 16:13:49 -0400
+        Wed, 3 Aug 2022 16:13:44 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0104E86B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF684A811
         for <netfilter-devel@vger.kernel.org>; Wed,  3 Aug 2022 13:13:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20190108; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20190108; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=AVTUQUvh7mSJcvKrOHCi3BonNvqPm0cXBXEvEVgdhe0=; b=VoZUm+VYeCXbZzbByH9HDCtt8q
-        IvJw5R88SCiVtXvY6t4xGcHJJacvOIFrfKS3Xr1eBoTB3V6ub/527p4/X09PSpiao+wT3LXR+FkMh
-        142Gtem4Mvzl1qF3SrcORldiN0TWr9pFf+ZYQJrApbW9Mck7SKGbmtiBXRN3BktxrGDadSCdYVyTv
-        8p9Sb4bI9n/OL7APr06KJn+UAymHl1+S0XUdbBCW+E8M9FYaL2ZuQRJBV5d3I78zBf8xR9Vms/6Vh
-        N3TQP8bqSOs09s7/gq10wbYTb2jmf7usrs8G+KoDEi+mv9p30RvzND8AZ9diqoxkMTF7VXnsRKpW/
-        cjZtoeKQ==;
+        bh=Y962I2VJlzPrVPmLuORkzm6ZYil9gCw9ZbXs5TAHYmU=; b=B7j45gBSubh3vNdhk6DAV4mDCT
+        KfjUjuagdUR+7mfirJ5dcIpAkuzecDLU4Bvldk3sYDBqu1y+JpzjWhnZ6xulB6pvbmBG/II/wkeyD
+        skSNXpWaLt/mltHgTk7mZy7xD4FivHwkbJkhhejSvrDcXkTEGUPeiwHV/UFzYBGp561CjoGEkULEI
+        Ggng4l+syklFPZ7nr2o2y7/5Wkxs60FuDYY1J9IS6tdgOsEKeG5tj3kewEKQCHW+E9lyX4RySD6/Y
+        ooQ8IpjhjUe8Ov5GGy8KFZi6d2ncLj8tTaGatMHKTlE03Z2fwvhh3RDbnXmhHAOmLsXyXU6iG/RdA
+        zqqXJniw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1oJKkJ-001Fnp-L0; Wed, 03 Aug 2022 21:13:35 +0100
+        id 1oJKkJ-001Fnp-QI; Wed, 03 Aug 2022 21:13:35 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc:     Mark Mentovai <mark@mentovai.com>,
         Duncan Roe <duncan_roe@optusnet.com.au>
-Subject: [PATCH libmnl 0/6] Doxygen Build Improvements
-Date:   Wed,  3 Aug 2022 21:12:41 +0100
-Message-Id: <20220803201247.3057365-1-jeremy@azazel.net>
+Subject: [PATCH libmnl 1/6] build: add `make dist` tar-balls to .gitignore
+Date:   Wed,  3 Aug 2022 21:12:42 +0100
+Message-Id: <20220803201247.3057365-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220803201247.3057365-1-jeremy@azazel.net>
+References: <20220803201247.3057365-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
@@ -53,37 +55,21 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-These changes were prompted by Mark Mentovai's request to remove a hard-coded
-`/bin/bash` path from the rule that creates the man-page sym-links.  Hitherto,
-the doxygen Makefile has jumped through a number of hoops to make sure
-everything works with `make distcheck` and parallel builds.  This patch-set
-makes some doxygen config changes that obviate the need for them, fixes a bug in
-`make clean`, updates .gitignore and moves the shell-script out of the Makefile
-into a separate file for ease of maintenance.  In the process, the hard-coded
-`/bin/bash` is removed.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ .gitignore | 2 ++
+ 1 file changed, 2 insertions(+)
 
-One thing I have left is the setting of `-p` when running the shell-script.  The
-comment reads "`bash -p` prevents import of functions from the environment".
-Why is this a problem?
-
-Jeremy Sowden (6):
-  build: add `make dist` tar-balls to .gitignore
-  doc: add .gitignore for Doxygen artefacts
-  doc: change `INPUT` doxygen setting to `@top_srcdir@`
-  doc: move doxygen config file into doxygen directory
-  doc: move man-page sym-link shell-script into a separate file
-  doc: fix doxygen `clean-local` rule
-
- .gitignore                               |  3 +-
- configure.ac                             | 15 ++++++-
- doxygen/.gitignore                       |  4 ++
- doxygen/Makefile.am                      | 53 +++---------------------
- doxygen.cfg.in => doxygen/doxygen.cfg.in |  4 +-
- doxygen/finalize_manpages.sh             | 40 ++++++++++++++++++
- 6 files changed, 67 insertions(+), 52 deletions(-)
- create mode 100644 doxygen/.gitignore
- rename doxygen.cfg.in => doxygen/doxygen.cfg.in (91%)
- create mode 100644 doxygen/finalize_manpages.sh
-
+diff --git a/.gitignore b/.gitignore
+index 9a7d86c78ae2..0276c98fb3a5 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -17,3 +17,5 @@ Makefile.in
+ 
+ /doxygen.cfg
+ /libmnl.pc
++
++/libmnl-*.tar.bz2
 -- 
 2.35.1
+
