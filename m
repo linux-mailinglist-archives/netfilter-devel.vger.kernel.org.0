@@ -2,351 +2,135 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBD158B0FA
-	for <lists+netfilter-devel@lfdr.de>; Fri,  5 Aug 2022 23:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDA058B285
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Aug 2022 00:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236727AbiHEVAw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 5 Aug 2022 17:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
+        id S241427AbiHEW4f (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 5 Aug 2022 18:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbiHEVAv (ORCPT
+        with ESMTP id S241366AbiHEW4d (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 5 Aug 2022 17:00:51 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8710211801
-        for <netfilter-devel@vger.kernel.org>; Fri,  5 Aug 2022 14:00:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659733250; x=1691269250;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=pfPMewAFb0FGzQ8SL+D3mNiix6xPuFhXJ6vN3pwVduo=;
-  b=nKWaD5ewudzlia9WGV5ywk4tR27OSYQYPsodu3+sJj8bWJ5NZ2sz0c2Y
-   vLCk++3BRQ8wmrnhNlUwp30ROypN0TgYCMQzdIXKnaP/kScIThV4F38wC
-   EJZDHzcvEh8EfojwX2XzzEAeDUxAxpbeAZsvzvyMVmkSH4AT6I0cL2Fl0
-   eUOdFfcflfJ/+yc3CkqH20+oHENL6xTwze3InzIXibAlDSjIxTq0aYhyq
-   Bnyp4n9ZxUQS1bAwehGN351eTYzacTPKM7PKIkZW10KDTGIOCLVK98TFN
-   s5wWZ3zbXqXLRoZdhLmXShrQtrGnDlzcPSiDXo3ESKEp6aUqUVyWuqe3q
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10430"; a="290298044"
-X-IronPort-AV: E=Sophos;i="5.93,216,1654585200"; 
-   d="scan'208";a="290298044"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2022 14:00:50 -0700
-X-IronPort-AV: E=Sophos;i="5.93,216,1654585200"; 
-   d="scan'208";a="849448961"
-Received: from jekeller-desk.amr.corp.intel.com (HELO jekeller-desk.jekeller.internal) ([10.166.241.7])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2022 14:00:49 -0700
-From:   Jacob Keller <jacob.e.keller@intel.com>
-To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Cc:     Duncan Roe <duncan_roe@optusnet.com.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jacob Keller <jacob.e.keller@intel.com>
-Subject: [PATCH libmnl v2 2/2] libmnl: add support for signed types
-Date:   Fri,  5 Aug 2022 14:00:40 -0700
-Message-Id: <20220805210040.2827875-2-jacob.e.keller@intel.com>
-X-Mailer: git-send-email 2.37.1.208.ge72d93e88cb2
-In-Reply-To: <20220805210040.2827875-1-jacob.e.keller@intel.com>
-References: <20220805210040.2827875-1-jacob.e.keller@intel.com>
+        Fri, 5 Aug 2022 18:56:33 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6C6120AA;
+        Fri,  5 Aug 2022 15:56:32 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id d139so2945573iof.4;
+        Fri, 05 Aug 2022 15:56:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=6aTUnPtbLiDNZOmm7ZJHJEmqOdom7rZsShr5BudS8+Q=;
+        b=hX4XqTnWUynlWrF+u8zPv9/McHO5uzg29MxGU75VaDjXXmd94Xz0U9YKlvX/zdRGsa
+         x75jhbeXOwALVyDEOAzscIesbFnzy9c/yDVhKdWZFLxnYZG9lXX2KcG3e3JheT5Ee26l
+         w2hvkyQAvpUGDbVvsq3jWRZ4MA4ucXz83Kmiwl6vA0xGpYh4wdzZM3/3bw254s5YjZC0
+         rsna4cwlgpBhU+XFGhBkvB2DrBCZoCuKRwBmIJYORNDaK38zsSlbs4sl1pXxh6hLRpCh
+         5ulWPlxGTmLuuOPa7kcQrCvfhuFcNZ73+MmsdpNlr2+T856HU+ERQSVUeJldQTxzbsN1
+         Xlvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=6aTUnPtbLiDNZOmm7ZJHJEmqOdom7rZsShr5BudS8+Q=;
+        b=CnL8lhVe2uGI3JvzQuMiRvqAxqkNm6xpQHrp7V7O+7LNAK8/k+bHu+gNEGQPMWI6oz
+         1QXTr0IEzpp3ehXDW6hUUzaCx1WeGolzZiSDeahj3z/7iZF1RGGuJfNT7qT2/u0O9VtQ
+         oQBViuwJqBNV08AxucBTaAaQqFWH7U0vd67AJDZFtqExaxBIs+uUmXpbE1z7/67lYTk7
+         rGzj0uSx4eFdsUlwTyHK3SXiokCfxCgc20+thaBHqjfHuRLia+lUVZLS/BcbtJUSbFw8
+         1uAkslZ1bAAZz65w6MDFQcmKGxVB3q/a+gKI3hKS+ifX579xpi7W0LDE2kmY+Ne9kbTQ
+         6/+g==
+X-Gm-Message-State: ACgBeo3eAi6MRQpxHdzNEwkPCXnEtfrb0xdi3brBs2kvjrermndLH6GJ
+        Kz4VN/aa0aYsR4ndtTz/PUClZhvIS1s1g3veFAdB+VSh
+X-Google-Smtp-Source: AA6agR6MJBFV30kggXjBciLw1N20HUZUrzC3XwFJPgBObA70KlFFBX9l3ZmlHogoX1FMf/008T1JgavgG76JmBSrvlQ=
+X-Received: by 2002:a02:2403:0:b0:342:9303:cafb with SMTP id
+ f3-20020a022403000000b003429303cafbmr3992525jaa.231.1659740192165; Fri, 05
+ Aug 2022 15:56:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220725085130.11553-1-memxor@gmail.com>
+In-Reply-To: <20220725085130.11553-1-memxor@gmail.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Sat, 6 Aug 2022 00:55:55 +0200
+Message-ID: <CAP01T740E3SmW98hxooFwiB6zZ58wV2iQSTJZg-zKNYWg+x1Ow@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] net: netfilter: Remove ifdefs for code shared by
+ BPF and ctnetlink
+To:     bpf@vger.kernel.org
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-libmnl has get and put functions for unsigned integer types. It lacks
-support for the signed variations. On some level this is technically
-sufficient. A user could use the unsigned variations and then cast to a
-signed value at use. However, this makes resulting code in the application
-more difficult to follow. Introduce signed variations of the integer get
-and put functions.
+On Mon, 25 Jul 2022 at 10:51, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>
+> The current ifdefry for code shared by the BPF and ctnetlink side looks
+> ugly. As per Pablo's request, simplify this by unconditionally compiling
+> in the code. This can be revisited when the shared code between the two
+> grows further.
+>
+> Suggested-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
 
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
----
- include/libmnl/libmnl.h |  16 ++++
- src/attr.c              | 194 +++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 209 insertions(+), 1 deletion(-)
+Pablo, presumably this needs your ack before it can be applied, as it
+is marked Needs Ack in patchwork.
 
-diff --git a/include/libmnl/libmnl.h b/include/libmnl/libmnl.h
-index 4bd0b92e8742..6c37cd532a3d 100644
---- a/include/libmnl/libmnl.h
-+++ b/include/libmnl/libmnl.h
-@@ -92,6 +92,10 @@ extern uint8_t mnl_attr_get_u8(const struct nlattr *attr);
- extern uint16_t mnl_attr_get_u16(const struct nlattr *attr);
- extern uint32_t mnl_attr_get_u32(const struct nlattr *attr);
- extern uint64_t mnl_attr_get_u64(const struct nlattr *attr);
-+extern int8_t mnl_attr_get_s8(const struct nlattr *attr);
-+extern int16_t mnl_attr_get_s16(const struct nlattr *attr);
-+extern int32_t mnl_attr_get_s32(const struct nlattr *attr);
-+extern int64_t mnl_attr_get_s64(const struct nlattr *attr);
- extern const char *mnl_attr_get_str(const struct nlattr *attr);
- 
- /* TLV attribute putters */
-@@ -100,6 +104,10 @@ extern void mnl_attr_put_u8(struct nlmsghdr *nlh, uint16_t type, uint8_t data);
- extern void mnl_attr_put_u16(struct nlmsghdr *nlh, uint16_t type, uint16_t data);
- extern void mnl_attr_put_u32(struct nlmsghdr *nlh, uint16_t type, uint32_t data);
- extern void mnl_attr_put_u64(struct nlmsghdr *nlh, uint16_t type, uint64_t data);
-+extern void mnl_attr_put_s8(struct nlmsghdr *nlh, uint16_t type, int8_t data);
-+extern void mnl_attr_put_s16(struct nlmsghdr *nlh, uint16_t type, int16_t data);
-+extern void mnl_attr_put_s32(struct nlmsghdr *nlh, uint16_t type, int32_t data);
-+extern void mnl_attr_put_s64(struct nlmsghdr *nlh, uint16_t type, int64_t data);
- extern void mnl_attr_put_str(struct nlmsghdr *nlh, uint16_t type, const char *data);
- extern void mnl_attr_put_strz(struct nlmsghdr *nlh, uint16_t type, const char *data);
- 
-@@ -109,6 +117,10 @@ extern bool mnl_attr_put_u8_check(struct nlmsghdr *nlh, size_t buflen, uint16_t
- extern bool mnl_attr_put_u16_check(struct nlmsghdr *nlh, size_t buflen, uint16_t type, uint16_t data);
- extern bool mnl_attr_put_u32_check(struct nlmsghdr *nlh, size_t buflen, uint16_t type, uint32_t data);
- extern bool mnl_attr_put_u64_check(struct nlmsghdr *nlh, size_t buflen, uint16_t type, uint64_t data);
-+extern bool mnl_attr_put_s8_check(struct nlmsghdr *nlh, size_t buflen, uint16_t type, int8_t data);
-+extern bool mnl_attr_put_s16_check(struct nlmsghdr *nlh, size_t buflen, uint16_t type, int16_t data);
-+extern bool mnl_attr_put_s32_check(struct nlmsghdr *nlh, size_t buflen, uint16_t type, int32_t data);
-+extern bool mnl_attr_put_s64_check(struct nlmsghdr *nlh, size_t buflen, uint16_t type, int64_t data);
- extern bool mnl_attr_put_str_check(struct nlmsghdr *nlh, size_t buflen, uint16_t type, const char *data);
- extern bool mnl_attr_put_strz_check(struct nlmsghdr *nlh, size_t buflen, uint16_t type, const char *data);
- 
-@@ -127,6 +139,10 @@ enum mnl_attr_data_type {
- 	MNL_TYPE_U16,
- 	MNL_TYPE_U32,
- 	MNL_TYPE_U64,
-+	MNL_TYPE_S8,
-+	MNL_TYPE_S16,
-+	MNL_TYPE_S32,
-+	MNL_TYPE_S64,
- 	MNL_TYPE_STRING,
- 	MNL_TYPE_FLAG,
- 	MNL_TYPE_MSECS,
-diff --git a/src/attr.c b/src/attr.c
-index 20d48a370524..2f31ecbe8f7a 100644
---- a/src/attr.c
-+++ b/src/attr.c
-@@ -203,6 +203,10 @@ static const size_t mnl_attr_data_type_len[MNL_TYPE_MAX] = {
- 	[MNL_TYPE_U16]		= sizeof(uint16_t),
- 	[MNL_TYPE_U32]		= sizeof(uint32_t),
- 	[MNL_TYPE_U64]		= sizeof(uint64_t),
-+	[MNL_TYPE_S8]		= sizeof(int8_t),
-+	[MNL_TYPE_S16]		= sizeof(int16_t),
-+	[MNL_TYPE_S32]		= sizeof(int32_t),
-+	[MNL_TYPE_S64]		= sizeof(int64_t),
- 	[MNL_TYPE_MSECS]	= sizeof(uint64_t),
- };
- 
-@@ -390,7 +394,55 @@ EXPORT_SYMBOL uint64_t mnl_attr_get_u64(const struct nlattr *attr)
- }
- 
- /**
-- * mnl_attr_get_str - get pointer to string attribute
-+ * mnl_attr_get_s8 - get 8-bit signed integer attribute payload
-+ * \param attr pointer to netlink attribute
-+ *
-+ * \return 8-bit value of the attribute payload
-+ */
-+EXPORT_SYMBOL int8_t mnl_attr_get_s8(const struct nlattr *attr)
-+{
-+	return *((int8_t *)mnl_attr_get_payload(attr));
-+}
-+
-+/**
-+ * mnl_attr_get_s16 - get 16-bit signed integer attribute payload
-+ * \param attr pointer to netlink attribute
-+ *
-+ * \return 16-bit value of the attribute payload
-+ */
-+EXPORT_SYMBOL int16_t mnl_attr_get_s16(const struct nlattr *attr)
-+{
-+	return *((int16_t *)mnl_attr_get_payload(attr));
-+}
-+
-+/**
-+ * mnl_attr_get_s32 - get 32-bit signed integer attribute payload
-+ * \param attr pointer to netlink attribute
-+ *
-+ * \return 32-bit value of the attribute payload
-+ */
-+EXPORT_SYMBOL int32_t mnl_attr_get_s32(const struct nlattr *attr)
-+{
-+	return *((int32_t *)mnl_attr_get_payload(attr));
-+}
-+
-+/**
-+ * mnl_attr_get_s64 - get 64-bit signed integer attribute payload
-+ * \param attr pointer to netlink attribute
-+ *
-+ * This function reads the 64-bit nlattr payload in an alignment safe manner.
-+ *
-+ * \return 64-bit value of the attribute payload
-+ */
-+EXPORT_SYMBOL int64_t mnl_attr_get_s64(const struct nlattr *attr)
-+{
-+	int64_t tmp;
-+	memcpy(&tmp, mnl_attr_get_payload(attr), sizeof(tmp));
-+	return tmp;
-+}
-+
-+/**
-+  * mnl_attr_get_str - get pointer to string attribute
-  * \param attr pointer to netlink attribute
-  *
-  * \return string pointer of the attribute payload
-@@ -487,6 +539,66 @@ EXPORT_SYMBOL void mnl_attr_put_u64(struct nlmsghdr *nlh, uint16_t type,
- 	mnl_attr_put(nlh, type, sizeof(uint64_t), &data);
- }
- 
-+/**
-+ * mnl_attr_put_s8 - add 8-bit signed integer attribute to netlink message
-+ * \param nlh pointer to the netlink message
-+ * \param type netlink attribute type
-+ * \param data 8-bit signed integer data that is stored by the new attribute
-+ *
-+ * This function updates the length field of the Netlink message (nlmsg_len)
-+ * by adding the size (header + payload) of the new attribute.
-+ */
-+EXPORT_SYMBOL void mnl_attr_put_s8(struct nlmsghdr *nlh, uint16_t type,
-+				   int8_t data)
-+{
-+	mnl_attr_put(nlh, type, sizeof(int8_t), &data);
-+}
-+
-+/**
-+ * mnl_attr_put_s16 - add 16-bit signed integer attribute to netlink message
-+ * \param nlh pointer to the netlink message
-+ * \param type netlink attribute type
-+ * \param data 16-bit signed integer data that is stored by the new attribute
-+ *
-+ * This function updates the length field of the Netlink message (nlmsg_len)
-+ * by adding the size (header + payload) of the new attribute.
-+ */
-+EXPORT_SYMBOL void mnl_attr_put_s16(struct nlmsghdr *nlh, uint16_t type,
-+				    int16_t data)
-+{
-+	mnl_attr_put(nlh, type, sizeof(int16_t), &data);
-+}
-+
-+/**
-+ * mnl_attr_put_s32 - add 32-bit signed integer attribute to netlink message
-+ * \param nlh pointer to the netlink message
-+ * \param type netlink attribute type
-+ * \param data 32-bit signed integer data that is stored by the new attribute
-+ *
-+ * This function updates the length field of the Netlink message (nlmsg_len)
-+ * by adding the size (header + payload) of the new attribute.
-+ */
-+EXPORT_SYMBOL void mnl_attr_put_s32(struct nlmsghdr *nlh, uint16_t type,
-+				    int32_t data)
-+{
-+	mnl_attr_put(nlh, type, sizeof(int32_t), &data);
-+}
-+
-+/**
-+ * mnl_attr_put_s64 - add 64-bit signed integer attribute to netlink message
-+ * \param nlh pointer to the netlink message
-+ * \param type netlink attribute type
-+ * \param data 64-bit signed integer data that is stored by the new attribute
-+ *
-+ * This function updates the length field of the Netlink message (nlmsg_len)
-+ * by adding the size (header + payload) of the new attribute.
-+ */
-+EXPORT_SYMBOL void mnl_attr_put_s64(struct nlmsghdr *nlh, uint16_t type,
-+				    int64_t data)
-+{
-+	mnl_attr_put(nlh, type, sizeof(int64_t), &data);
-+}
-+
- /**
-  * mnl_attr_put_str - add string attribute to netlink message
-  * \param nlh  pointer to the netlink message
-@@ -647,6 +759,86 @@ EXPORT_SYMBOL bool mnl_attr_put_u64_check(struct nlmsghdr *nlh, size_t buflen,
- 	return mnl_attr_put_check(nlh, buflen, type, sizeof(uint64_t), &data);
- }
- 
-+/**
-+ * mnl_attr_put_s8_check - add 8-bit signed int attribute to netlink message
-+ * \param nlh pointer to the netlink message
-+ * \param buflen size of buffer which stores the message
-+ * \param type netlink attribute type
-+ * \param data 8-bit signed integer data that is stored by the new attribute
-+ *
-+ * This function first checks that the data can be added to the message
-+ * (fits into the buffer) and then updates the length field of the Netlink
-+ * message (nlmsg_len) by adding the size (header + payload) of the new
-+ * attribute.
-+ *
-+ * \return true if the attribute could be added, false otherwise
-+ */
-+EXPORT_SYMBOL bool mnl_attr_put_s8_check(struct nlmsghdr *nlh, size_t buflen,
-+					 uint16_t type, int8_t data)
-+{
-+	return mnl_attr_put_check(nlh, buflen, type, sizeof(data), &data);
-+}
-+
-+/**
-+ * mnl_attr_put_s16_check - add 16-bit signed int attribute to netlink message
-+ * \param nlh pointer to the netlink message
-+ * \param buflen size of buffer which stores the message
-+ * \param type netlink attribute type
-+ * \param data 16-bit signed integer data that is stored by the new attribute
-+ *
-+ * This function first checks that the data can be added to the message
-+ * (fits into the buffer) and then updates the length field of the Netlink
-+ * message (nlmsg_len) by adding the size (header + payload) of the new
-+ * attribute.
-+ *
-+ * \return true if the attribute could be added, false otherwise
-+ */
-+EXPORT_SYMBOL bool mnl_attr_put_s16_check(struct nlmsghdr *nlh, size_t buflen,
-+					  uint16_t type, int16_t data)
-+{
-+	return mnl_attr_put_check(nlh, buflen, type, sizeof(data), &data);
-+}
-+
-+/**
-+ * mnl_attr_put_s32_check - add 32-bit signed int attribute to netlink message
-+ * \param nlh pointer to the netlink message
-+ * \param buflen size of buffer which stores the message
-+ * \param type netlink attribute type
-+ * \param data 32-bit signed integer data that is stored by the new attribute
-+ *
-+ * This function first checks that the data can be added to the message
-+ * (fits into the buffer) and then updates the length field of the Netlink
-+ * message (nlmsg_len) by adding the size (header + payload) of the new
-+ * attribute.
-+ *
-+ * \return true if the attribute could be added, false otherwise
-+ */
-+EXPORT_SYMBOL bool mnl_attr_put_s32_check(struct nlmsghdr *nlh, size_t buflen,
-+					  uint16_t type, int32_t data)
-+{
-+	return mnl_attr_put_check(nlh, buflen, type, sizeof(data), &data);
-+}
-+
-+/**
-+ * mnl_attr_put_s64_check - add 64-bit signed int attribute to netlink message
-+ * \param nlh pointer to the netlink message
-+ * \param buflen size of buffer which stores the message
-+ * \param type netlink attribute type
-+ * \param data 64-bit signed integer data that is stored by the new attribute
-+ *
-+ * This function first checks that the data can be added to the message
-+ * (fits into the buffer) and then updates the length field of the Netlink
-+ * message (nlmsg_len) by adding the size (header + payload) of the new
-+ * attribute.
-+ *
-+ * \return true if the attribute could be added, false otherwise
-+ */
-+EXPORT_SYMBOL bool mnl_attr_put_s64_check(struct nlmsghdr *nlh, size_t buflen,
-+					  uint16_t type, int64_t data)
-+{
-+	return mnl_attr_put_check(nlh, buflen, type, sizeof(data), &data);
-+}
-+
- /**
-  * mnl_attr_put_str_check - add string attribute to netlink message
-  * \param nlh  pointer to the netlink message
--- 
-2.37.1.208.ge72d93e88cb2
-
+>  include/net/netfilter/nf_conntrack_core.h | 6 ------
+>  net/netfilter/nf_conntrack_core.c         | 6 ------
+>  2 files changed, 12 deletions(-)
+>
+> diff --git a/include/net/netfilter/nf_conntrack_core.h b/include/net/netfilter/nf_conntrack_core.h
+> index 3cd3a6e631aa..b2b9de70d9f4 100644
+> --- a/include/net/netfilter/nf_conntrack_core.h
+> +++ b/include/net/netfilter/nf_conntrack_core.h
+> @@ -86,10 +86,6 @@ extern spinlock_t nf_conntrack_expect_lock;
+>
+>  /* ctnetlink code shared by both ctnetlink and nf_conntrack_bpf */
+>
+> -#if (IS_BUILTIN(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) || \
+> -    (IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES) || \
+> -    IS_ENABLED(CONFIG_NF_CT_NETLINK))
+> -
+>  static inline void __nf_ct_set_timeout(struct nf_conn *ct, u64 timeout)
+>  {
+>         if (timeout > INT_MAX)
+> @@ -101,6 +97,4 @@ int __nf_ct_change_timeout(struct nf_conn *ct, u64 cta_timeout);
+>  void __nf_ct_change_status(struct nf_conn *ct, unsigned long on, unsigned long off);
+>  int nf_ct_change_status_common(struct nf_conn *ct, unsigned int status);
+>
+> -#endif
+> -
+>  #endif /* _NF_CONNTRACK_CORE_H */
+> diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+> index 66a0aa8dbc3b..afe02772c010 100644
+> --- a/net/netfilter/nf_conntrack_core.c
+> +++ b/net/netfilter/nf_conntrack_core.c
+> @@ -2787,10 +2787,6 @@ int nf_conntrack_init_net(struct net *net)
+>         return ret;
+>  }
+>
+> -#if (IS_BUILTIN(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) || \
+> -    (IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES) || \
+> -    IS_ENABLED(CONFIG_NF_CT_NETLINK))
+> -
+>  /* ctnetlink code shared by both ctnetlink and nf_conntrack_bpf */
+>
+>  int __nf_ct_change_timeout(struct nf_conn *ct, u64 timeout)
+> @@ -2846,5 +2842,3 @@ int nf_ct_change_status_common(struct nf_conn *ct, unsigned int status)
+>         return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(nf_ct_change_status_common);
+> -
+> -#endif
+> --
+> 2.34.1
+>
