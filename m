@@ -2,34 +2,34 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E133E58B686
-	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Aug 2022 17:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3477F58B687
+	for <lists+netfilter-devel@lfdr.de>; Sat,  6 Aug 2022 17:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbiHFPiX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 6 Aug 2022 11:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
+        id S232957AbiHFPj0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 6 Aug 2022 11:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbiHFPiW (ORCPT
+        with ESMTP id S230114AbiHFPjZ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 6 Aug 2022 11:38:22 -0400
-Received: from smtp.smtpout.orange.fr (smtp07.smtpout.orange.fr [80.12.242.129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 77A55B499
-        for <netfilter-devel@vger.kernel.org>; Sat,  6 Aug 2022 08:38:21 -0700 (PDT)
+        Sat, 6 Aug 2022 11:39:25 -0400
+Received: from smtp.smtpout.orange.fr (smtp09.smtpout.orange.fr [80.12.242.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FB5B499
+        for <netfilter-devel@vger.kernel.org>; Sat,  6 Aug 2022 08:39:24 -0700 (PDT)
 Received: from pop-os.home ([90.11.190.129])
         by smtp.orange.fr with ESMTPA
-        id KLlIo37cWbJVVKLlIo44vm; Sat, 06 Aug 2022 17:30:50 +0200
+        id KLtao3ADLbJVVKLtao45Tg; Sat, 06 Aug 2022 17:39:23 +0200
 X-ME-Helo: pop-os.home
 X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sat, 06 Aug 2022 17:30:50 +0200
+X-ME-Date: Sat, 06 Aug 2022 17:39:23 +0200
 X-ME-IP: 90.11.190.129
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
 Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [RESEND PATCH] netfilter: Fix a typo in a comment
-Date:   Sat,  6 Aug 2022 17:30:47 +0200
-Message-Id: <ad0d4d6fc856ace94130a0e6ab60c9a297f0a87d.1659799260.git.christophe.jaillet@wanadoo.fr>
+Subject: [RESEND (v2) PATCH] netfilter: Fix a typo in a comment
+Date:   Sat,  6 Aug 2022 17:39:20 +0200
+Message-Id: <ad1d4dafc856ace9613050e6ac60c9f297f0a87d.1659799260.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -53,6 +53,9 @@ Resend including the netfilter maintainers.
 Does MAINTAINERS need some adjustement?
   ./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats --nol include/uapi/linux/netfilter_ipv6/ip6t_LOG.h
 doesn't find anything.
+
+(this a second resend. The Message-Id was the same as the initial message and
+it puzzled ML. Sorry for the noise)
 ---
  include/uapi/linux/netfilter_ipv6/ip6t_LOG.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
