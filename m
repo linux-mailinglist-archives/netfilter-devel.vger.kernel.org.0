@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DABBA58E1AE
-	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Aug 2022 23:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BD758E1AC
+	for <lists+netfilter-devel@lfdr.de>; Tue,  9 Aug 2022 23:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229447AbiHIVSh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 9 Aug 2022 17:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49244 "EHLO
+        id S229455AbiHIVSi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 9 Aug 2022 17:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbiHIVSR (ORCPT
+        with ESMTP id S229479AbiHIVSS (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 9 Aug 2022 17:18:17 -0400
+        Tue, 9 Aug 2022 17:18:18 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 122C352FD4
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EBE9152E7E
         for <netfilter-devel@vger.kernel.org>; Tue,  9 Aug 2022 14:18:17 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 1/2] optimize: merging concatenation is unsupported
-Date:   Tue,  9 Aug 2022 23:18:11 +0200
-Message-Id: <20220809211812.749217-2-pablo@netfilter.org>
+Subject: [PATCH nft 2/2] optimize: check for mergeable rules
+Date:   Tue,  9 Aug 2022 23:18:12 +0200
+Message-Id: <20220809211812.749217-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220809211812.749217-1-pablo@netfilter.org>
 References: <20220809211812.749217-1-pablo@netfilter.org>
@@ -34,58 +34,104 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Existing concatenation cannot be merge at this stage, skip them
-otherwise this assertion is hit:
-
- nft: optimize.c:434: rule_build_stmt_matrix_stmts: Assertion `k >= 0' failed
-
-Extend existing test to cover this.
+Rules that are equal need to have at least one mergeable statement.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/optimize.c                                                | 4 ++++
- .../testcases/optimizations/dumps/merge_stmts_concat.nft      | 1 +
- tests/shell/testcases/optimizations/merge_stmts_concat        | 1 +
- 3 files changed, 6 insertions(+)
+ src/optimize.c                                | 28 ++++++++++++++++++-
+ .../optimizations/dumps/not_mergeable.nft     | 12 ++++++++
+ .../testcases/optimizations/not_mergeable     | 16 +++++++++++
+ 3 files changed, 55 insertions(+), 1 deletion(-)
+ create mode 100644 tests/shell/testcases/optimizations/dumps/not_mergeable.nft
+ create mode 100755 tests/shell/testcases/optimizations/not_mergeable
 
 diff --git a/src/optimize.c b/src/optimize.c
-index 2340ef466fc0..419a37f2bb20 100644
+index 419a37f2bb20..ea067f80bce0 100644
 --- a/src/optimize.c
 +++ b/src/optimize.c
-@@ -352,6 +352,10 @@ static int rule_collect_stmts(struct optimize_ctx *ctx, struct rule *rule)
- 				clone->ops = &unsupported_stmt_ops;
- 				break;
- 			}
-+			if (stmt->expr->left->etype == EXPR_CONCAT) {
-+				clone->ops = &unsupported_stmt_ops;
-+				break;
-+			}
- 		case STMT_VERDICT:
- 			clone->expr = expr_get(stmt->expr);
- 			break;
-diff --git a/tests/shell/testcases/optimizations/dumps/merge_stmts_concat.nft b/tests/shell/testcases/optimizations/dumps/merge_stmts_concat.nft
-index 6dbfff2e15fc..15cfa7e85c33 100644
---- a/tests/shell/testcases/optimizations/dumps/merge_stmts_concat.nft
-+++ b/tests/shell/testcases/optimizations/dumps/merge_stmts_concat.nft
-@@ -1,5 +1,6 @@
- table ip x {
- 	chain y {
- 		iifname . ip saddr . ip daddr { "eth1" . 1.1.1.1 . 2.2.2.3, "eth1" . 1.1.1.2 . 2.2.2.4, "eth2" . 1.1.1.3 . 2.2.2.5 } accept
-+		ip protocol . th dport { tcp . 22, udp . 67 }
- 	}
+@@ -1011,15 +1011,41 @@ static bool stmt_type_eq(const struct stmt *stmt_a, const struct stmt *stmt_b)
+ 	return __stmt_type_eq(stmt_a, stmt_b, true);
  }
-diff --git a/tests/shell/testcases/optimizations/merge_stmts_concat b/tests/shell/testcases/optimizations/merge_stmts_concat
-index 941e9a5aa822..623fdff9a649 100755
---- a/tests/shell/testcases/optimizations/merge_stmts_concat
-+++ b/tests/shell/testcases/optimizations/merge_stmts_concat
-@@ -7,6 +7,7 @@ RULESET="table ip x {
- 		meta iifname eth1 ip saddr 1.1.1.1 ip daddr 2.2.2.3 accept
- 		meta iifname eth1 ip saddr 1.1.1.2 ip daddr 2.2.2.4 accept
- 		meta iifname eth2 ip saddr 1.1.1.3 ip daddr 2.2.2.5 accept
-+		ip protocol . th dport { tcp . 22, udp . 67 }
- 	}
- }"
  
++static bool stmt_is_mergeable(const struct stmt *stmt)
++{
++	if (!stmt)
++		return false;
++
++	switch (stmt->ops->type) {
++	case STMT_VERDICT:
++		if (stmt->expr->etype == EXPR_MAP)
++			return true;
++		break;
++	case STMT_EXPRESSION:
++	case STMT_NAT:
++		return true;
++	default:
++		break;
++	}
++
++	return false;
++}
++
+ static bool rules_eq(const struct optimize_ctx *ctx, int i, int j)
+ {
+-	uint32_t k;
++	uint32_t k, mergeable = 0;
+ 
+ 	for (k = 0; k < ctx->num_stmts; k++) {
++		if (stmt_is_mergeable(ctx->stmt_matrix[i][k]))
++			mergeable++;
++
+ 		if (!stmt_type_eq(ctx->stmt_matrix[i][k], ctx->stmt_matrix[j][k]))
+ 			return false;
+ 	}
+ 
++	if (mergeable == 0)
++		return false;
++
+ 	return true;
+ }
+ 
+diff --git a/tests/shell/testcases/optimizations/dumps/not_mergeable.nft b/tests/shell/testcases/optimizations/dumps/not_mergeable.nft
+new file mode 100644
+index 000000000000..08b2b58f66c3
+--- /dev/null
++++ b/tests/shell/testcases/optimizations/dumps/not_mergeable.nft
+@@ -0,0 +1,12 @@
++table ip x {
++	chain t1 {
++	}
++
++	chain t2 {
++	}
++
++	chain y {
++		counter packets 0 bytes 0 jump t1
++		counter packets 0 bytes 0 jump t2
++	}
++}
+diff --git a/tests/shell/testcases/optimizations/not_mergeable b/tests/shell/testcases/optimizations/not_mergeable
+new file mode 100755
+index 000000000000..25635cdd653d
+--- /dev/null
++++ b/tests/shell/testcases/optimizations/not_mergeable
+@@ -0,0 +1,16 @@
++#!/bin/bash
++
++set -e
++
++RULESET="table ip x {
++	chain t1 {
++	}
++	chain t2 {
++	}
++	chain y {
++		counter jump t1
++		counter jump t2
++	}
++}"
++
++$NFT -o -f - <<< $RULESET
 -- 
 2.30.2
 
