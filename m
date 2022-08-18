@@ -2,118 +2,74 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71038597DC3
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Aug 2022 07:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45538597E6B
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 Aug 2022 08:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243032AbiHRFAX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 18 Aug 2022 01:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
+        id S243574AbiHRGLZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 18 Aug 2022 02:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbiHRFAV (ORCPT
+        with ESMTP id S243561AbiHRGLY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 18 Aug 2022 01:00:21 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF5893521;
-        Wed, 17 Aug 2022 22:00:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 28360B81FC7;
-        Thu, 18 Aug 2022 05:00:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C5C46C433D6;
-        Thu, 18 Aug 2022 05:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660798817;
-        bh=ZkCiJD8d64W4BrQyucUgzkoAUyBXdh3zCp0YdfFpLsI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mtUoiOciYpJMR34qH+V3MZ0jcsGLvtw39KciOKZMbpjnn2Vna7sqyTNkmO5sitcje
-         Ka7DiuSgk1nf71TgDOVRcya/jbrcqheqJAhem7HTDO953iQf3gBSdwhq7+O5hryPob
-         vuGyDoaR2thN7KIC0QfLR04dT26Nk2ce5wtGI2VPuk8fSjZWx7LOWo8+umZ0v9elJh
-         8KusaHconsOja+d4ZwiplJagoXPp7RDfyAIGyy0A7wxpW3w69JYv/mnvsvPzqLSFFh
-         r39WVwnNEHlb4C7oz5hSv/r4HuCr3DqFaFOr7aTemo8eiPdTYUJ81dtOx5yTEjNsxU
-         jVmEn4A16fcbA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A8833C4166F;
-        Thu, 18 Aug 2022 05:00:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 18 Aug 2022 02:11:24 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D678FD64
+        for <netfilter-devel@vger.kernel.org>; Wed, 17 Aug 2022 23:11:23 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id fy5so1405897ejc.3
+        for <netfilter-devel@vger.kernel.org>; Wed, 17 Aug 2022 23:11:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:sender:reply-to:mime-version:from
+         :to:cc;
+        bh=kcf3o5XEy3Spgi736o8P093dNGs5kHqMxZj7oJ3pSsw=;
+        b=Tx4Ycu0eXQVrVrvcrgrXjwwmtmY2Z3hbFrZsffiNngJOK+XDwh0cl/qtjnDhiGL81Q
+         OibB1V4dtEk7tU5PV5WvElB7AiQnoAUolWWVBWMVJ2tNCgnaMQWwJ5mDdlBk6AC2zgQ4
+         e8pPRM71As/4/Abyec+1Y8PVIcUwos3vCnl5XlOOFs9+Q9deO8qi96azIozC+X02ayWP
+         pdRB2vZ7nN+Tey8vka4asa3zUHjKVyJCmkEQ9do7mvFhR3wDzH9xYOtTzyqMH8olvAV6
+         gzVKoNY8SrC7jjI9PcVZxG3h17wp1Un+Pcl3az2QitlPv0knsAfcjSUVeFZQqRWBpfU8
+         35JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:sender:reply-to:mime-version
+         :x-gm-message-state:from:to:cc;
+        bh=kcf3o5XEy3Spgi736o8P093dNGs5kHqMxZj7oJ3pSsw=;
+        b=USzAGC1Y5nYZVXwqL3rRtNslkJxm14pHc+7SwWLTYZ5VNpoLWs/BZNvs5mKYlA7k4D
+         8U2eG3suIRvHsOvkJBRbsrAi4t6KZLpK6A0+pHP5lZp6rZeC8eEoF2cUX8k6PGlE1fL9
+         TSsGOxVQ3b6S9ZxMprPb25A04ChxrH0iKx1PKB8dIt7vosl9PY3xqKpaaIyuE2kAzWhG
+         Y+fBoESxoZzFWrk44Uz7JY1yKMOnGrdilc+VE0BOYZvBpLCoSb0mHnoKA5lOuoXvezbm
+         1RuuNvahuJywp+0/8oMZDqfYwf/4770gqECQnU/Ub97BAPyn505Jw1UOtSV19JZxSmlH
+         oBOg==
+X-Gm-Message-State: ACgBeo31NvWyYiIWFiLH0KoLoqyFmORWTpOXvVR0J+iVnb1xtvXE84WF
+        2s81riYq2Ybu8rJ5t6mEG8NQrhWQ0dzKrgOt4oA=
+X-Google-Smtp-Source: AA6agR5lCtc6hXnyNEJE78ATAbXd+lvOiAH1SEPKAL5dtixN6XgcMSmsaGvLxU1FRYPlUa9nlYwZQLGEAfYQZqitELU=
+X-Received: by 2002:a17:906:4795:b0:733:1d3:3d33 with SMTP id
+ cw21-20020a170906479500b0073301d33d33mr982586ejc.200.1660803081775; Wed, 17
+ Aug 2022 23:11:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 01/17] netfilter: nf_tables: use READ_ONCE and WRITE_ONCE
- for shared generation id access
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166079881768.30070.17888086152925379966.git-patchwork-notify@kernel.org>
-Date:   Thu, 18 Aug 2022 05:00:17 +0000
-References: <20220817140015.25843-2-fw@strlen.de>
-In-Reply-To: <20220817140015.25843-2-fw@strlen.de>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, pabeni@redhat.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Reply-To: pmrsnancy@gmail.com
+Sender: miss.douglasegobia19@gmail.com
+Received: by 2002:a17:906:9c93:0:0:0:0 with HTTP; Wed, 17 Aug 2022 23:11:21
+ -0700 (PDT)
+From:   "Mrs. Nancy Peters" <mrsnancypeters4@gmail.com>
+Date:   Wed, 17 Aug 2022 23:11:21 -0700
+X-Google-Sender-Auth: Yifh-wh0XDS4mIJjQ3tgHpN3Lvg
+Message-ID: <CABkf4qUMBOTgtJV94vSPS8RxifVfJ9QqX-eqDG0-1VXh45osRg@mail.gmail.com>
+Subject: RE: URGENT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net.git (master)
-by Florian Westphal <fw@strlen.de>:
-
-On Wed, 17 Aug 2022 15:59:59 +0200 you wrote:
-> From: Pablo Neira Ayuso <pablo@netfilter.org>
-> 
-> The generation ID is bumped from the commit path while holding the
-> mutex, however, netlink dump operations rely on RCU.
-> 
-> This patch also adds missing cb->base_eq initialization in
-> nf_tables_dump_set().
-> 
-> [...]
-
-Here is the summary with links:
-  - [net,01/17] netfilter: nf_tables: use READ_ONCE and WRITE_ONCE for shared generation id access
-    https://git.kernel.org/netdev/net/c/340027832828
-  - [net,02/17] netfilter: nf_tables: disallow NFTA_SET_ELEM_KEY_END with NFT_SET_ELEM_INTERVAL_END flag
-    https://git.kernel.org/netdev/net/c/4963674c2e71
-  - [net,03/17] netfilter: nf_tables: possible module reference underflow in error path
-    https://git.kernel.org/netdev/net/c/c485c35ff678
-  - [net,04/17] netfilter: nf_ct_sane: remove pseudo skb linearization
-    https://git.kernel.org/netdev/net/c/a664375da76c
-  - [net,05/17] netfilter: nf_ct_h323: cap packet size at 64k
-    https://git.kernel.org/netdev/net/c/f3e124c36f70
-  - [net,06/17] netfilter: nf_ct_ftp: prefer skb_linearize
-    https://git.kernel.org/netdev/net/c/c783a29c7e59
-  - [net,07/17] netfilter: nf_ct_irc: cap packet search space to 4k
-    https://git.kernel.org/netdev/net/c/976bf59c69cd
-  - [net,08/17] netfilter: nf_tables: fix scheduling-while-atomic splat
-    https://git.kernel.org/netdev/net/c/2024439bd5ce
-  - [net,09/17] netfilter: nfnetlink: re-enable conntrack expectation events
-    https://git.kernel.org/netdev/net/c/0b2f3212b551
-  - [net,10/17] netfilter: nf_tables: really skip inactive sets when allocating name
-    https://git.kernel.org/netdev/net/c/271c5ca826e0
-  - [net,11/17] netfilter: nf_tables: validate NFTA_SET_ELEM_OBJREF based on NFT_SET_OBJECT flag
-    https://git.kernel.org/netdev/net/c/5a2f3dc31811
-  - [net,12/17] netfilter: nf_tables: NFTA_SET_ELEM_KEY_END requires concat and interval flags
-    https://git.kernel.org/netdev/net/c/88cccd908d51
-  - [net,13/17] netfilter: nf_tables: disallow NFT_SET_ELEM_CATCHALL and NFT_SET_ELEM_INTERVAL_END
-    https://git.kernel.org/netdev/net/c/fc0ae524b5fd
-  - [net,14/17] netfilter: nf_tables: check NFT_SET_CONCAT flag if field_count is specified
-    https://git.kernel.org/netdev/net/c/1b6345d4160e
-  - [net,15/17] netfilter: conntrack: NF_CONNTRACK_PROCFS should no longer default to y
-    https://git.kernel.org/netdev/net/c/aa5762c34213
-  - [net,16/17] testing: selftests: nft_flowtable.sh: use random netns names
-    https://git.kernel.org/netdev/net/c/b71b7bfeac38
-  - [net,17/17] testing: selftests: nft_flowtable.sh: rework test to detect offload failure
-    https://git.kernel.org/netdev/net/c/c8550b9077d2
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+An email was sent to you sometime last week with the expectation of
+receiving a return email from you, but to my surprise, you never
+bothered to reply. Please reply for further explanation.
