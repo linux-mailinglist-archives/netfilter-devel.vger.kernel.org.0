@@ -2,68 +2,72 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BB059B2FB
-	for <lists+netfilter-devel@lfdr.de>; Sun, 21 Aug 2022 11:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB4D59B304
+	for <lists+netfilter-devel@lfdr.de>; Sun, 21 Aug 2022 12:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbiHUJpF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 21 Aug 2022 05:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
+        id S229976AbiHUKBV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 21 Aug 2022 06:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbiHUJpF (ORCPT
+        with ESMTP id S229718AbiHUKBU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 21 Aug 2022 05:45:05 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684511F639
-        for <netfilter-devel@vger.kernel.org>; Sun, 21 Aug 2022 02:45:04 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1oPhVq-0003Xc-9k; Sun, 21 Aug 2022 11:44:58 +0200
-Date:   Sun, 21 Aug 2022 11:44:58 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, abhishek.shah@columbia.edu
-Subject: Re: [PATCH nf] netfilter: nf_tables: make table handle allocation
- per-netns friendly
-Message-ID: <20220821094458.GC11586@breakpoint.cc>
-References: <20220821085939.571378-1-pablo@netfilter.org>
+        Sun, 21 Aug 2022 06:01:20 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CAD7A2497F
+        for <netfilter-devel@vger.kernel.org>; Sun, 21 Aug 2022 03:01:16 -0700 (PDT)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf 1/2] netfilter: nft_payload: report ERANGE for too long offset and length
+Date:   Sun, 21 Aug 2022 12:01:07 +0200
+Message-Id: <20220821100108.713955-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220821085939.571378-1-pablo@netfilter.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> mutex is per-netns, move table_netns to the pernet area.
-> 
-> *read-write* to 0xffffffff883a01e8 of 8 bytes by task 6542 on cpu 0:
->  nf_tables_newtable+0x6dc/0xc00 net/netfilter/nf_tables_api.c:1221
->  nfnetlink_rcv_batch net/netfilter/nfnetlink.c:513 [inline]
->  nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
->  nfnetlink_rcv+0xa6a/0x13a0 net/netfilter/nfnetlink.c:652
->  netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
->  netlink_unicast+0x652/0x730 net/netlink/af_netlink.c:1345
->  netlink_sendmsg+0x643/0x740 net/netlink/af_netlink.c:1921
->  sock_sendmsg_nosec net/socket.c:705 [inline]
->  sock_sendmsg net/socket.c:725 [inline]
->  ____sys_sendmsg+0x348/0x4c0 net/socket.c:2413
->  ___sys_sendmsg net/socket.c:2467 [inline]
->  __sys_sendmsg+0x159/0x1f0 net/socket.c:2496
->  __do_sys_sendmsg net/socket.c:2505 [inline]
->  __se_sys_sendmsg net/socket.c:2503 [inline]
->  __x64_sys_sendmsg+0x47/0x50 net/socket.c:2503
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0x90 arch/x86/entry/c
-> 
-> Fixes: f102d66b335a ("netfilter: nf_tables: use dedicated mutex to guard transactions")
+Instead of offset and length are truncation to u8, report ERANGE.
 
-Ah, that makes sense.
+Fixes: 96518518cc41 ("netfilter: add nftables")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nft_payload.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Reviewed-by: Florian Westphal <fw@strlen.de>
+diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
+index 2e7ac007cb30..4fee67abfe2c 100644
+--- a/net/netfilter/nft_payload.c
++++ b/net/netfilter/nft_payload.c
+@@ -833,6 +833,7 @@ nft_payload_select_ops(const struct nft_ctx *ctx,
+ {
+ 	enum nft_payload_bases base;
+ 	unsigned int offset, len;
++	int err;
+ 
+ 	if (tb[NFTA_PAYLOAD_BASE] == NULL ||
+ 	    tb[NFTA_PAYLOAD_OFFSET] == NULL ||
+@@ -859,8 +860,13 @@ nft_payload_select_ops(const struct nft_ctx *ctx,
+ 	if (tb[NFTA_PAYLOAD_DREG] == NULL)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	offset = ntohl(nla_get_be32(tb[NFTA_PAYLOAD_OFFSET]));
+-	len    = ntohl(nla_get_be32(tb[NFTA_PAYLOAD_LEN]));
++	err = nft_parse_u32_check(tb[NFTA_PAYLOAD_OFFSET], U8_MAX, &offset);
++	if (err < 0)
++		return ERR_PTR(err);
++
++	err = nft_parse_u32_check(tb[NFTA_PAYLOAD_LEN], U8_MAX, &len);
++	if (err < 0)
++		return ERR_PTR(err);
+ 
+ 	if (len <= 4 && is_power_of_2(len) && IS_ALIGNED(offset, len) &&
+ 	    base != NFT_PAYLOAD_LL_HEADER && base != NFT_PAYLOAD_INNER_HEADER)
+-- 
+2.30.2
+
