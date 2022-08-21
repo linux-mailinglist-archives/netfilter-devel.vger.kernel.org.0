@@ -2,59 +2,58 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CE559AFE7
-	for <lists+netfilter-devel@lfdr.de>; Sat, 20 Aug 2022 21:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DC059B2D3
+	for <lists+netfilter-devel@lfdr.de>; Sun, 21 Aug 2022 10:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbiHTTWE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 20 Aug 2022 15:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
+        id S230165AbiHUIpi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 21 Aug 2022 04:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbiHTTWD (ORCPT
+        with ESMTP id S230092AbiHUIpR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 20 Aug 2022 15:22:03 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B7F2CDD5
-        for <netfilter-devel@vger.kernel.org>; Sat, 20 Aug 2022 12:22:02 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1oPU2h-0007uZ-QE; Sat, 20 Aug 2022 21:21:59 +0200
-Date:   Sat, 20 Aug 2022 21:21:59 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Balazs Scheidler <bazsi77@gmail.com>
-Cc:     Florian Westphal <fw@strlen.de>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Shell Chen <xierch@gmail.com>
-Subject: Re: [PATCH nf] nefilter: nft_tproxy: restrict to prerouting hook
-Message-ID: <20220820192159.GA27967@breakpoint.cc>
-References: <CAAqMkDxLzFZ9YT-DiRh5cVQRha=JzZ+8RYcmkcn8iinrucA+GA@mail.gmail.com>
- <20220820155406.84029-1-fw@strlen.de>
- <CAKcfE+ZnxmsecpZe5V3jmBT9W6UC52UjDBt78L7jMK9ujHn3wA@mail.gmail.com>
+        Sun, 21 Aug 2022 04:45:17 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3AC0D2317F
+        for <netfilter-devel@vger.kernel.org>; Sun, 21 Aug 2022 01:45:15 -0700 (PDT)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf] netfilter: nf_tables: disallow updates of implicit chain
+Date:   Sun, 21 Aug 2022 10:45:09 +0200
+Message-Id: <20220821084509.541907-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKcfE+ZnxmsecpZe5V3jmBT9W6UC52UjDBt78L7jMK9ujHn3wA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Balazs Scheidler <bazsi77@gmail.com> wrote:
-> I think this is not correct. TPROXY can be used from output as well to
-> divert locally generated traffic. I didn't look into the output null
-> reference case posted earlier but that's also a use case to redirect local
-> output to a proxy.
+Updates on existing implicit chain make no sense, disallow this.
 
-Are you sure?
+Fixes: d0e2c7de92c7 ("netfilter: nf_tables: add NFT_CHAIN_BINDING")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/netfilter/nf_tables_api.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-The upstreamed TPROXY doesn't support this.
-xt_TPROXY sets:
-  .hooks          = 1 << NF_INET_PRE_ROUTING,
-
-and the backend code assumes that the inout device in the hook state is
-available, which is only guaranteed in prerouting and input hooks.
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 62cfb0e31c40..dff2b5851bbb 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -2574,6 +2574,9 @@ static int nf_tables_newchain(struct sk_buff *skb, const struct nfnl_info *info,
+ 	nft_ctx_init(&ctx, net, skb, info->nlh, family, table, chain, nla);
+ 
+ 	if (chain != NULL) {
++		if (chain->flags & NFT_CHAIN_BINDING)
++			return -EINVAL;
++
+ 		if (info->nlh->nlmsg_flags & NLM_F_EXCL) {
+ 			NL_SET_BAD_ATTR(extack, attr);
+ 			return -EEXIST;
+-- 
+2.30.2
 
