@@ -2,60 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 412685A6248
-	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Aug 2022 13:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6651D5A645E
+	for <lists+netfilter-devel@lfdr.de>; Tue, 30 Aug 2022 15:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbiH3Lmm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 30 Aug 2022 07:42:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
+        id S230159AbiH3NHQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 30 Aug 2022 09:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbiH3LmK (ORCPT
+        with ESMTP id S229802AbiH3NHO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 30 Aug 2022 07:42:10 -0400
+        Tue, 30 Aug 2022 09:07:14 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A9AA1D59
-        for <netfilter-devel@vger.kernel.org>; Tue, 30 Aug 2022 04:40:31 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1oSzbY-0003VM-Cf; Tue, 30 Aug 2022 13:40:28 +0200
-Date:   Tue, 30 Aug 2022 13:40:28 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52613AF4A3
+        for <netfilter-devel@vger.kernel.org>; Tue, 30 Aug 2022 06:07:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:
+        Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=rQnl5LpWdBTP8IHCdy0wYXGl2o1U058n1HUUINmGwls=; b=TY2dF3jws2k/w2XV4V862dh0UG
+        d4il5A0EkB8GeyaQW+v5gjZ7o8UpSjxxr0TYGYykjGIqfTaeYLRMOpdswqEVushzlj6LpJoDEsgJZ
+        iLSNGUGpgVDM8jzpocoVwzh4/nHL/iIzn6YquPt6t/7saYLINps2yzSrHq+6fWxjMV41fq2ZH48PC
+        2h/UbfPxY1kuoPIVzrg+zGGJgMatsyZ9FyTdPjSzbj9vxRsvj0/2eoNoVT/0WAqNdeAro1vX6mbNm
+        +yzjrzua7Rn3chlJGV+oKpC/Qklm4f5BECc5cQSnOco0Rgr8j0dmaqL1Me2c+2EApZP/EhxtsnUw6
+        u0TVa7qA==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1oT0xN-0004S1-2k; Tue, 30 Aug 2022 15:07:05 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] doc: nft.8: Extend limit statement's burst value info
-Message-ID: <Yw33LIfkSd4rEQHI@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-References: <20220826131431.19696-1-phil@nwl.cc>
- <Yw32VzsENzRJ0kpn@salvia>
+Cc:     netfilter-devel@vger.kernel.org,
+        =?UTF-8?q?Fran=C3=A7ois=20Rigault?= <frigo@amadeus.com>
+Subject: [nft PATCH] erec: Dump locations' expressions only if set
+Date:   Tue, 30 Aug 2022 15:06:59 +0200
+Message-Id: <20220830130659.32084-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yw32VzsENzRJ0kpn@salvia>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Aug 30, 2022 at 01:36:55PM +0200, Pablo Neira Ayuso wrote:
-> On Fri, Aug 26, 2022 at 03:14:31PM +0200, Phil Sutter wrote:
-> > Describe how the burst value influences the kernel module's token
-> > bucket in each of the two modes.
-> > 
-> > Signed-off-by: Phil Sutter <phil@nwl.cc>
-> > ---
-> > Looking at the code, maybe one should make byte-based limit burst
-> > default to either zero or four times the rate value instead of the
-> > seemingly arbitrary 5 bytes.
-> 
-> This is a bug, let me have a look and then you follow up to update the
-> manpage, OK?
+Calling netlink_dump_expr() with a NULL pointer leads to segfault within
+libnftnl. Internal ("fake") locations such as 'netlink_location' don't
+have an expression assigned so expect this and skip the call. Simple
+reproducer (list ruleset with netlink debugging as non-root):
 
-ACK, thanks!
+| $ nft -d netlink list ruleset
 
-Cheers, Phil
+Reported-by: François Rigault <frigo@amadeus.com>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ src/erec.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/erec.c b/src/erec.c
+index a4b93fb0d0d61..aebb8632583a1 100644
+--- a/src/erec.c
++++ b/src/erec.c
+@@ -170,6 +170,8 @@ void erec_print(struct output_ctx *octx, const struct error_record *erec,
+ 		fprintf(f, "%s\n", erec->msg);
+ 		for (l = 0; l < (int)erec->num_locations; l++) {
+ 			loc = &erec->locations[l];
++			if (!loc->nle)
++				continue;
+ 			netlink_dump_expr(loc->nle, f, debug_mask);
+ 		}
+ 		return;
+-- 
+2.34.1
+
