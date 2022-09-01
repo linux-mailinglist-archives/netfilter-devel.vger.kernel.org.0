@@ -2,101 +2,101 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7125A8F88
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Sep 2022 09:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677F95A8F7B
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Sep 2022 09:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233710AbiIAHPC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Sep 2022 03:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
+        id S233592AbiIAHNR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Sep 2022 03:13:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233714AbiIAHOb (ORCPT
+        with ESMTP id S233599AbiIAHM7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Sep 2022 03:14:31 -0400
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [IPv6:2001:738:5001::48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B05CB114C60;
-        Thu,  1 Sep 2022 00:14:24 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.kfki.hu (Postfix) with ESMTP id DBD36CC00FE;
-        Thu,  1 Sep 2022 09:06:06 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
-        by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Thu,  1 Sep 2022 09:06:04 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-        by smtp2.kfki.hu (Postfix) with ESMTP id 96B81CC00FF;
-        Thu,  1 Sep 2022 09:06:03 +0200 (CEST)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-        id 90DC13431DF; Thu,  1 Sep 2022 09:06:03 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by blackhole.kfki.hu (Postfix) with ESMTP id 8F2813431DE;
-        Thu,  1 Sep 2022 09:06:03 +0200 (CEST)
-Date:   Thu, 1 Sep 2022 09:06:03 +0200 (CEST)
-From:   Jozsef Kadlecsik <kadlec@netfilter.org>
-To:     Kees Cook <keescook@chromium.org>
-cc:     Jakub Kicinski <kuba@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, Petr Machata <petrm@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] netlink: Bounds-check struct nlmsgerr creation
-In-Reply-To: <20220901064858.1417126-1-keescook@chromium.org>
-Message-ID: <5aad4860-b1c3-d78f-583d-26281626a49@netfilter.org>
-References: <20220901064858.1417126-1-keescook@chromium.org>
+        Thu, 1 Sep 2022 03:12:59 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096541243D2;
+        Thu,  1 Sep 2022 00:12:53 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1oTeNf-0000Wx-Ot; Thu, 01 Sep 2022 09:12:51 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netdev@vger.kernel.org>
+Cc:     davem@davemloft.net, netfilter-devel@vger.kernel.org,
+        kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        Florian Westphal <fw@strlen.de>
+Subject: [PATCH net 0/4] netfilter: bug fixes for net
+Date:   Thu,  1 Sep 2022 09:12:34 +0200
+Message-Id: <20220901071238.3044-1-fw@strlen.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+Hello,
 
-On Wed, 31 Aug 2022, Kees Cook wrote:
+This patchset contains netfilter related fixes for the net tree.
 
-> For 32-bit systems, it might be possible to wrap lnmsgerr content
-> lengths beyond SIZE_MAX. Explicitly test for all overflows, and mark the
-> memcpy() as being unable to internally diagnose overflows.
-> 
-> This also excludes netlink from the coming runtime bounds check on
-> memcpy(), since it's an unusual case of open-coded sizing and
-> allocation. Avoid this future run-time warning:
-> 
->   memcpy: detected field-spanning write (size 32) of single field "&errmsg->msg" at net/netlink/af_netlink.c:2447 (size 16)
-> 
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-> Cc: Florian Westphal <fw@strlen.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: syzbot <syzkaller@googlegroups.com>
-> Cc: netfilter-devel@vger.kernel.org
-> Cc: coreteam@netfilter.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> v2: Rebased to -next
-> v1: https://lore.kernel.org/lkml/20220901030610.1121299-3-keescook@chromium.org
-> ---
->  net/netlink/af_netlink.c | 81 +++++++++++++++++++++++++---------------
->  1 file changed, 51 insertions(+), 30 deletions(-)
+1. Fix IP address check in irc DCC conntrack helper, this should check
+   the opposite direction rather than the destination address of the
+   packets' direction, from David Leadbeater.
 
-Could you add back the net/netfilter/ipset/ip_set_core.c part? Thanks!
+2. bridge netfilter needs to drop dst references, from Harsh Modi.
+   This was fine back in the day the code was originally written,
+   but nowadays various tunnels can pre-set metadata dsts on packets.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+3. Remove nf_conntrack_helper sysctl and the modparam toggle, users
+   need to explicitily assign the helpers to use via nftables or
+   iptables.  Conntrack helpers, by design, may be used to add dynamic
+   port redirections to internal machines, so its necessary to restrict
+   which hosts/peers are allowed to use them.
+   The auto-assign-for-everything mechanism has been in "please don't do this"
+   territory since 2012.  From Pablo.
+
+4. Fix a memory leak in the netdev hook error unwind path, also from Pablo.
+
+----------------------------------------------------------------
+The following changes since commit 13a9d08c296228d18289de60b83792c586e1d073:
+
+  net: lan966x: improve error handle in lan966x_fdma_rx_get_frame() (2022-08-30 23:18:17 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git 
+
+for you to fetch changes up to 0efe125cfb99e6773a7434f3463f7c2fa28f3a43:
+
+  netfilter: nf_conntrack_irc: Fix forged IP logic (2022-09-01 02:01:56 +0200)
+
+----------------------------------------------------------------
+David Leadbeater (1):
+      netfilter: nf_conntrack_irc: Fix forged IP logic
+
+Harsh Modi (1):
+      netfilter: br_netfilter: Drop dst references before setting.
+
+Pablo Neira Ayuso (2):
+      netfilter: remove nf_conntrack_helper sysctl and modparam toggles
+      netfilter: nf_tables: clean up hook list when offload flags check fails
+
+ include/net/netfilter/nf_conntrack.h               |  2 -
+ include/net/netns/conntrack.h                      |  1 -
+ net/bridge/br_netfilter_hooks.c                    |  2 +
+ net/bridge/br_netfilter_ipv6.c                     |  1 +
+ net/netfilter/nf_conntrack_core.c                  |  7 +-
+ net/netfilter/nf_conntrack_helper.c                | 80 +++-------------------
+ net/netfilter/nf_conntrack_irc.c                   |  5 +-
+ net/netfilter/nf_conntrack_netlink.c               |  5 --
+ net/netfilter/nf_conntrack_standalone.c            | 10 ---
+ net/netfilter/nf_tables_api.c                      |  4 +-
+ net/netfilter/nft_ct.c                             |  3 -
+ .../selftests/netfilter/nft_conntrack_helper.sh    | 36 +++++++---
+ 12 files changed, 46 insertions(+), 110 deletions(-)
+-- 
+2.35.1
+
