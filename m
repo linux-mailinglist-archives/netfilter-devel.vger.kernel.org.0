@@ -2,88 +2,114 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 628095B034C
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Sep 2022 13:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4DC5B06DE
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Sep 2022 16:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbiIGLkW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 7 Sep 2022 07:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
+        id S229999AbiIGOdF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 7 Sep 2022 10:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230140AbiIGLkV (ORCPT
+        with ESMTP id S230293AbiIGOcT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 7 Sep 2022 07:40:21 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84AE5AA3C;
-        Wed,  7 Sep 2022 04:40:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7E662B81C3A;
-        Wed,  7 Sep 2022 11:40:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 38967C433B5;
-        Wed,  7 Sep 2022 11:40:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662550816;
-        bh=ZipAUKhkMK4uqs0aKuUhw4vWX2PNxeuRAeySr0yurBc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JWJNfIW2iECfIF7z3A2Vhj7jHsQ6yZU8wV2HQg5uNI5FP1N0+4eVCNXpsRe4eCwjy
-         HZL7gZXoXOvKu0TSlCXP5R/X4Su4LOZ7HkiAOY6kE2QcfcZDV+5W3H1BHTfRTsZpcO
-         OScPrU7gfEyMToVEdl/ZQTAkseV0NW/BE0CmdeqqoPjdYSdI9OMnX5i3AZQttYDElL
-         UH+4lGTLx2JDfUu2gV/2yHfEa0fLaU9d7xkdWzLZjFseR1eOjqcupA+L9n3tAjujI2
-         y3uF7oC/l/kw/cYmR5ylSunxpBim+QjHgIUbAmoY/o0XWxtAJharJ3vp+2x3ZzeJnQ
-         JQg782x3B3OHQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 205A4E1CABE;
-        Wed,  7 Sep 2022 11:40:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 7 Sep 2022 10:32:19 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B85B2745
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Sep 2022 07:32:11 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id t5so19955787edc.11
+        for <netfilter-devel@vger.kernel.org>; Wed, 07 Sep 2022 07:32:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date;
+        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
+        b=F9yMmaIgSJ7x+iStBVtJEVNXfuHmNuRwH0oeGQZVEKjdO6DhdtNMd/isOm61Mbr/sg
+         xfKr3XSywaIr4UtWLvFYPLTvFzJ7h/Hm2dTXLAIBAXs8GSUGrRcaGfrF44kItgvLNssI
+         mdCrrU6xo0k06TKggYMVy8FOcAbkBgo1wC5PjqDsVEhsblNCO7wJZs+Uz3UyfKMq66jc
+         LBZlB+02LZPjcLDn2rXew+EJosOoyYb0qI+DEdM9Q7gGpQpAuWFiAiGu2xaPJNPE8Z0z
+         1dPz+Ukvd+R1N2c6VsiSc8mvEG74skD4zo8WmW09cr/Ve033R6BY3xgueFtUzfnE1WmC
+         UQAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
+        b=gL2U4r2ZO2xYTYnRx2ESwYJBJU0gGveeny6nsqdYZrzlP2KojBEe/6uRf4VBBo4j7S
+         tUaLqD3lEqzGn4kMThYu15USLwUq81kevY+VzC8tMkwKZcFzBMlW5wwVI7BH52OnzGLN
+         k4NbaD+JpkpxUHptnl9nHoXimswYJ3TIdCUnG7waZx84Rb+4RXbPPWo8fMQx4/ksLX1i
+         57ADnuLFWgv3lghh+TYP7VtsdyvO7RQ8mzcs86hMkH1uSujko/rntTPTeMt1JKeXou87
+         twQQhgkNs637O5YvRSQFCfpVO0sh3NS6XJUPnmXk2R+9spG8lyp0mUtoHhj/GkHwfCzv
+         OH9Q==
+X-Gm-Message-State: ACgBeo1AVJDFwzLwXqC4HuUkajFfela1R/qZfFd5pOIBNvuHdrXMM+OL
+        BW5jUbY0QTP10Awduz91+E4QyqGGry2mFNNnsy4=
+X-Google-Smtp-Source: AA6agR4uPOOUp+ayJg7njU0xYMAyBPmGFYJGRdL33Bi7R249qZwUmqVQ08qkjiR05GuTGJWJL9HGuiFQ37xnsFlHbf4=
+X-Received: by 2002:aa7:db8b:0:b0:44e:5ce1:f29a with SMTP id
+ u11-20020aa7db8b000000b0044e5ce1f29amr3424831edt.109.1662561128989; Wed, 07
+ Sep 2022 07:32:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] netlink: add range checks for network byte
- integers
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166255081612.11275.13176862997747782016.git-patchwork-notify@kernel.org>
-Date:   Wed, 07 Sep 2022 11:40:16 +0000
-References: <20220905100937.11459-1-fw@strlen.de>
-In-Reply-To: <20220905100937.11459-1-fw@strlen.de>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        edumazet@google.com, kuba@kernel.org, davem@davemloft.net,
-        pabeni@redhat.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Received: by 2002:a54:3fc4:0:0:0:0:0 with HTTP; Wed, 7 Sep 2022 07:32:07 -0700 (PDT)
+Reply-To: lumar.casey@outlook.com
+From:   LUMAR CASEY <miriankushrat@gmail.com>
+Date:   Wed, 7 Sep 2022 16:32:07 +0200
+Message-ID: <CAO4StN3iFKypeHLByNWR98VPw-8s6UHDJYgBRpLm-4kdPR=60w@mail.gmail.com>
+Subject: ATTENTION/PROPOSAL
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=6.8 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM,UNDISC_MONEY,UPPERCASE_75_100 autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:543 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [miriankushrat[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 UPPERCASE_75_100 message body is 75-100% uppercase
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  0.2 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  0.0 ADVANCE_FEE_4_NEW_MONEY Advance Fee fraud and lots of money
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello:
+ATTENTION
 
-This series was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
+BUSINESS PARTNER,
 
-On Mon,  5 Sep 2022 12:09:35 +0200 you wrote:
-> NLA_POLICY_MAX() can be used to let netlink core validate that the given
-> integer attribute is within the given min-max interval.
-> 
-> Add NLA_POLICY_MAX_BE to allow similar range check on unsigned integers
-> when those are in network byte order (big endian).
-> 
-> First patch adds the netlink change, second patch adds one user.
-> 
-> [...]
+I AM LUMAR CASEY WORKING WITH AN INSURANCE FINANCIAL INSTITUTE, WITH
+MY POSITION AND PRIVILEGES I WAS ABLE TO SOURCE OUT AN OVER DUE
+PAYMENT OF 12.8 MILLION POUNDS THAT IS NOW SECURED WITH A SHIPPING
+DIPLOMATIC OUTLET.
 
-Here is the summary with links:
-  - [net-next,1/2] netlink: introduce NLA_POLICY_MAX_BE
-    https://git.kernel.org/netdev/net-next/c/08724ef69907
-  - [net-next,2/2] netfilter: nft_payload: reject out-of-range attributes via policy
-    https://git.kernel.org/netdev/net-next/c/e7af210e6dd0
+I AM SEEKING YOUR PARTNERSHIP TO RECEIVE THIS CONSIGNMENT AS AS MY
+PARTNER TO INVEST THIS FUND INTO A PROSPEROUS INVESTMENT VENTURE IN
+YOUR COUNTRY.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I AWAIT YOUR REPLY TO ENABLE US PROCEED WITH THIS BUSINESS PARTNERSHIP TOGETHER.
 
+REGARDS,
 
+LUMAR CASEY
