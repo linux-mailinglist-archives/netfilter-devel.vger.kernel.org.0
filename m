@@ -2,114 +2,101 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4DC5B06DE
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Sep 2022 16:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B915B08C2
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Sep 2022 17:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbiIGOdF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 7 Sep 2022 10:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+        id S229749AbiIGPle (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 7 Sep 2022 11:41:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbiIGOcT (ORCPT
+        with ESMTP id S229611AbiIGPld (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 7 Sep 2022 10:32:19 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B85B2745
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Sep 2022 07:32:11 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id t5so19955787edc.11
-        for <netfilter-devel@vger.kernel.org>; Wed, 07 Sep 2022 07:32:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date;
-        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
-        b=F9yMmaIgSJ7x+iStBVtJEVNXfuHmNuRwH0oeGQZVEKjdO6DhdtNMd/isOm61Mbr/sg
-         xfKr3XSywaIr4UtWLvFYPLTvFzJ7h/Hm2dTXLAIBAXs8GSUGrRcaGfrF44kItgvLNssI
-         mdCrrU6xo0k06TKggYMVy8FOcAbkBgo1wC5PjqDsVEhsblNCO7wJZs+Uz3UyfKMq66jc
-         LBZlB+02LZPjcLDn2rXew+EJosOoyYb0qI+DEdM9Q7gGpQpAuWFiAiGu2xaPJNPE8Z0z
-         1dPz+Ukvd+R1N2c6VsiSc8mvEG74skD4zo8WmW09cr/Ve033R6BY3xgueFtUzfnE1WmC
-         UQAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=UTPjlhWN0j/3cl0uibj9IdU3K9tIHCNTd74bAPWV+BQ=;
-        b=gL2U4r2ZO2xYTYnRx2ESwYJBJU0gGveeny6nsqdYZrzlP2KojBEe/6uRf4VBBo4j7S
-         tUaLqD3lEqzGn4kMThYu15USLwUq81kevY+VzC8tMkwKZcFzBMlW5wwVI7BH52OnzGLN
-         k4NbaD+JpkpxUHptnl9nHoXimswYJ3TIdCUnG7waZx84Rb+4RXbPPWo8fMQx4/ksLX1i
-         57ADnuLFWgv3lghh+TYP7VtsdyvO7RQ8mzcs86hMkH1uSujko/rntTPTeMt1JKeXou87
-         twQQhgkNs637O5YvRSQFCfpVO0sh3NS6XJUPnmXk2R+9spG8lyp0mUtoHhj/GkHwfCzv
-         OH9Q==
-X-Gm-Message-State: ACgBeo1AVJDFwzLwXqC4HuUkajFfela1R/qZfFd5pOIBNvuHdrXMM+OL
-        BW5jUbY0QTP10Awduz91+E4QyqGGry2mFNNnsy4=
-X-Google-Smtp-Source: AA6agR4uPOOUp+ayJg7njU0xYMAyBPmGFYJGRdL33Bi7R249qZwUmqVQ08qkjiR05GuTGJWJL9HGuiFQ37xnsFlHbf4=
-X-Received: by 2002:aa7:db8b:0:b0:44e:5ce1:f29a with SMTP id
- u11-20020aa7db8b000000b0044e5ce1f29amr3424831edt.109.1662561128989; Wed, 07
- Sep 2022 07:32:08 -0700 (PDT)
+        Wed, 7 Sep 2022 11:41:33 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B60FA9C04;
+        Wed,  7 Sep 2022 08:41:31 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1oVxB6-00065E-Mv; Wed, 07 Sep 2022 17:41:24 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netdev@vger.kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        <netfilter-devel@vger.kernel.org>, Florian Westphal <fw@strlen.de>
+Subject: [PATCH net-next 0/8] netfilter: patches for net-next
+Date:   Wed,  7 Sep 2022 17:41:02 +0200
+Message-Id: <20220907154110.8898-1-fw@strlen.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Received: by 2002:a54:3fc4:0:0:0:0:0 with HTTP; Wed, 7 Sep 2022 07:32:07 -0700 (PDT)
-Reply-To: lumar.casey@outlook.com
-From:   LUMAR CASEY <miriankushrat@gmail.com>
-Date:   Wed, 7 Sep 2022 16:32:07 +0200
-Message-ID: <CAO4StN3iFKypeHLByNWR98VPw-8s6UHDJYgBRpLm-4kdPR=60w@mail.gmail.com>
-Subject: ATTENTION/PROPOSAL
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.8 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM,UNDISC_MONEY,UPPERCASE_75_100 autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:543 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [miriankushrat[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 UPPERCASE_75_100 message body is 75-100% uppercase
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  0.2 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.0 ADVANCE_FEE_4_NEW_MONEY Advance Fee fraud and lots of money
-X-Spam-Level: ******
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-ATTENTION
+The following set contains changes for your *net-next* tree:
 
-BUSINESS PARTNER,
+- make conntrack ignore packets that are delayed (containing
+  data already acked).  The current behaviour to flag them as INVALID
+  causes more harm than good, let them pass so peer can send an
+  immediate ACK for the most recent sequence number.
+- make conntrack recognize when both peers have sent 'invalid' FINs:
+  This helps cleaning out stale connections faster for those cases where
+  conntrack is no longer in sync with the actual connection state.
+- Now that DECNET is gone, we don't need to reserve space for DECNET
+  related information.
+- compact common 'find a free port number for the new inbound
+  connection' code and move it to a helper, then cap number of tries
+  the new helper will make until it gives up.
+- replace various instances of strlcpy with strscpy, from Wolfram Sang.
 
-I AM LUMAR CASEY WORKING WITH AN INSURANCE FINANCIAL INSTITUTE, WITH
-MY POSITION AND PRIVILEGES I WAS ABLE TO SOURCE OUT AN OVER DUE
-PAYMENT OF 12.8 MILLION POUNDS THAT IS NOW SECURED WITH A SHIPPING
-DIPLOMATIC OUTLET.
+----------------------------------------------------------------
+The following changes since commit 016eb59012b576f5a7b7b415d757717dc8cb3c6b:
 
-I AM SEEKING YOUR PARTNERSHIP TO RECEIVE THIS CONSIGNMENT AS AS MY
-PARTNER TO INVEST THIS FUND INTO A PROSPEROUS INVESTMENT VENTURE IN
-YOUR COUNTRY.
+  Merge branch 'macsec-offload-mlx5' (2022-09-07 14:02:09 +0100)
 
-I AWAIT YOUR REPLY TO ENABLE US PROCEED WITH THIS BUSINESS PARTNERSHIP TOGETHER.
+are available in the Git repository at:
 
-REGARDS,
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git 
 
-LUMAR CASEY
+for you to fetch changes up to adda60cc2bb0fa46bed004070f29f90db96afbb3:
+
+  netfilter: nat: avoid long-running port range loop (2022-09-07 16:46:04 +0200)
+
+----------------------------------------------------------------
+Florian Westphal (7):
+      netfilter: conntrack: prepare tcp_in_window for ternary return value
+      netfilter: conntrack: ignore overly delayed tcp packets
+      netfilter: conntrack: remove unneeded indent level
+      netfilter: conntrack: reduce timeout when receiving out-of-window fin or rst
+      netfilter: remove NFPROTO_DECNET
+      netfilter: nat: move repetitive nat port reserve loop to a helper
+      netfilter: nat: avoid long-running port range loop
+
+Wolfram Sang (1):
+      netfilter: move from strlcpy with unused retval to strscpy
+
+ include/net/netfilter/nf_nat_helper.h  |   1 +
+ include/uapi/linux/netfilter.h         |   2 +
+ net/ipv4/netfilter/nf_nat_h323.c       |  60 +-----
+ net/netfilter/ipset/ip_set_core.c      |   4 +-
+ net/netfilter/ipvs/ip_vs_ctl.c         |   8 +-
+ net/netfilter/nf_conntrack_proto_tcp.c | 321 +++++++++++++++++++++------------
+ net/netfilter/nf_log.c                 |   4 +-
+ net/netfilter/nf_nat_amanda.c          |  14 +-
+ net/netfilter/nf_nat_ftp.c             |  17 +-
+ net/netfilter/nf_nat_helper.c          |  31 ++++
+ net/netfilter/nf_nat_irc.c             |  16 +-
+ net/netfilter/nf_nat_sip.c             |  14 +-
+ net/netfilter/nf_tables_api.c          |   2 +-
+ net/netfilter/nft_osf.c                |   2 +-
+ net/netfilter/x_tables.c               |  20 +-
+ net/netfilter/xt_RATEEST.c             |   2 +-
+ 16 files changed, 266 insertions(+), 252 deletions(-)
+
