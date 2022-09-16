@@ -2,50 +2,40 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E65DA5BA1C3
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Sep 2022 22:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B912E5BA78B
+	for <lists+netfilter-devel@lfdr.de>; Fri, 16 Sep 2022 09:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbiIOUUH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 15 Sep 2022 16:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
+        id S230077AbiIPHjI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 16 Sep 2022 03:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbiIOUUH (ORCPT
+        with ESMTP id S230119AbiIPHjG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 15 Sep 2022 16:20:07 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DBF5F99C;
-        Thu, 15 Sep 2022 13:20:06 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1oYvLA-0001hi-EZ; Thu, 15 Sep 2022 22:20:04 +0200
-Date:   Thu, 15 Sep 2022 22:20:04 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [PATCH] netfilter: nf_tables: fix percpu memory leak at
- nf_tables_addchain()
-Message-ID: <20220915202004.GB4385@breakpoint.cc>
-References: <41e415f2-3ca4-8e8a-a4b5-5044e7043131@I-love.SAKURA.ne.jp>
+        Fri, 16 Sep 2022 03:39:06 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CF8F7A1D74
+        for <netfilter-devel@vger.kernel.org>; Fri, 16 Sep 2022 00:39:03 -0700 (PDT)
+Date:   Fri, 16 Sep 2022 09:38:59 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Fernando Fernandez Mancera <ffmancera@riseup.net>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft] json: add secmark object reference support
+Message-ID: <YyQoE4/1O1IFh3Vf@salvia>
+References: <20220910075948.58810-1-ffmancera@riseup.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <41e415f2-3ca4-8e8a-a4b5-5044e7043131@I-love.SAKURA.ne.jp>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220910075948.58810-1-ffmancera@riseup.net>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp> wrote:
-> It seems to me that percpu memory for chain stats started leaking since
-> commit 3bc158f8d0330f0a ("netfilter: nf_tables: map basechain priority to
-> hardware priority") when nft_chain_offload_priority() returned an error.
+On Sat, Sep 10, 2022 at 09:59:48AM +0200, Fernando Fernandez Mancera wrote:
+> The secmark object reference requires a json parser function and it was
+> missing. In addition, extends the shell testcases.
 
-Also applied, thanks.
+Applied, thanks
