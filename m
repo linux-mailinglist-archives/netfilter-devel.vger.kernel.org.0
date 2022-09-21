@@ -2,109 +2,99 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3565A5BFCC0
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Sep 2022 13:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E0F5BFCEF
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Sep 2022 13:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbiIULHp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 21 Sep 2022 07:07:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
+        id S229528AbiIULZW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 21 Sep 2022 07:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbiIULHp (ORCPT
+        with ESMTP id S229512AbiIULZU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 21 Sep 2022 07:07:45 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6102587095
-        for <netfilter-devel@vger.kernel.org>; Wed, 21 Sep 2022 04:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=eAWi4m8bZFggpMxERVt1ZGRyH0AxXuKxpQjBB1y3oG4=; b=Uk/mJbLYo8Lj0MXvgqvNxwpq6K
-        A+BI99zQw1vDRXuA02wYiSYcq64oQ77FqwSv4eiq9qARHIsTjpn8dA+vBTs/366lEEr28i76Ck0CM
-        2/6Jn2r+2zhDs+83Ge22fJcHvodknfVFCg/XNd2im6ql1rLk9hJ1fFq3vCOVRdIzzymKwW7qcqSw6
-        Ui9Z+/kGtUqEHRtFB9VQfh2yYiba4QuFACcL1T3USe8CZuNRNvgeZQW0M01LWVPMAAguQIMWktpUK
-        Tz99BU9xs4eJ3yj8Nndi4sxBBnqHTglPYLfsy7NFMqT/oYNXImQ0iW+otaCB/MvmCCwg+8XIn/b42
-        DszKvD2Q==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1oaxZs-0003zc-0C; Wed, 21 Sep 2022 13:07:40 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Florian Westphal <fwestpha@redhat.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        netfilter-devel@vger.kernel.org
-Subject: [nf PATCH v2] netfilter: nft_fib: Fix for rpath check with VRF devices
-Date:   Wed, 21 Sep 2022 13:07:31 +0200
-Message-Id: <20220921110731.26465-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.34.1
+        Wed, 21 Sep 2022 07:25:20 -0400
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F7973332
+        for <netfilter-devel@vger.kernel.org>; Wed, 21 Sep 2022 04:25:19 -0700 (PDT)
+Received: by mail-vk1-xa31.google.com with SMTP id v192so2979071vkv.7
+        for <netfilter-devel@vger.kernel.org>; Wed, 21 Sep 2022 04:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date;
+        bh=hNjCnErblRwAyAj6FlkKQb2JciLGQqPu0wp0kKsDJDg=;
+        b=Rgb8Rko5mdgN/Em5VsD/PzqgLEKxkJX+8cevHYig88xgzh0Us38EHPI2AWipgs5/sb
+         +wDU1/UIQ7iQTOd1ji2joLpdi6W4wyJaZDCV+BZ2ddfpmZhBlZTi1XzX6EvPiHpidlg+
+         blbstW2tUWzP5FQseJ4F45OFFhboD4OfWZ2nFm6k7dKTeKuO3zqI7oUTFWIprD7L9KBr
+         yv0/Y/1bPnJaPkCVGPPoapgODBrPGK9Cg2RP55TgAkiWbF740h50xEcX7i0Bu0984Wxw
+         VK3FuQMoJSY+/1M38gVanh0tTYplOQ2z4er2hgVnk36yCwz16tdakfpTXI7BndVv6peS
+         V8Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=hNjCnErblRwAyAj6FlkKQb2JciLGQqPu0wp0kKsDJDg=;
+        b=dvhrqm2KTGtyLifH/gDANl3o6liNOStrDuyIzgZIm6EzohKVqJjvqdpHJixBFOqLp6
+         Ekmx8w25+CVfRHYSpfIfA3OD0ECNqem1genS/RzQVZLM0gs9K8BQ0khRT5ssRR4O8H0w
+         yRjoTMnrHILybxITWEEzWQ4miTlRDXXYpa72rviTIWzHr4tZbHqaAUWY92BW5UV6r+Ld
+         L+dC7qnnvQTxTlpX9AHFlAxfiaQ5MNyy7ZG1Q1aRPS6DMcRkv28gwrRz0c22Q+DEg4IS
+         usuaavmigCOyJbJzWDCBe5QlkCy++J6OOHO/ts6InFoUj0GaBHq8o6/m5odfvFhl4WGe
+         y5cg==
+X-Gm-Message-State: ACrzQf2J0rdt/jOWA26DrJtoaxjfk8SvKI+sBShPTeBNtQPVsSJ9CdWK
+        b4IE37mEUuS/DI+AfWbQlxPY+1QPX9aHp5ZFIiQ=
+X-Google-Smtp-Source: AMsMyM4WvNWArcz5FY2Pwx43Yhj9EHXgGfrlEKMjOTnUMqPQbYJZqnSEydwTKhph1KbDw/xgqNk3cXfGSvBlc8OHUng=
+X-Received: by 2002:a1f:1704:0:b0:3a3:7b3b:a5d1 with SMTP id
+ 4-20020a1f1704000000b003a37b3ba5d1mr5694160vkx.3.1663759518620; Wed, 21 Sep
+ 2022 04:25:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:ab0:4545:0:0:0:0:0 with HTTP; Wed, 21 Sep 2022 04:25:18
+ -0700 (PDT)
+Reply-To: michellegoodman035@gmail.com
+From:   Michelle Goodman <michellegoodman001@gmail.com>
+Date:   Wed, 21 Sep 2022 11:25:18 +0000
+Message-ID: <CA+jr58q=KrGpp2U4daOGJkLCFPMh3nqFWFEJiA7PxU82OjBYgQ@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:a31 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [michellegoodman001[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [michellegoodman035[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [michellegoodman001[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  3.0 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Analogous to commit b575b24b8eee3 ("netfilter: Fix rpfilter
-dropping vrf packets by mistake") but for nftables fib expression:
-Add special treatment of VRF devices so that typical reverse path
-filtering via 'fib saddr . iif oif' expression works as expected.
-
-Fixes: f6d0cbcf09c50 ("netfilter: nf_tables: add fib expression")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
-Changes since v1:
-- Move flowi6_oif initialization into nft_fib6_flowi_init() function as
-  suggested by fw.
----
- net/ipv4/netfilter/nft_fib_ipv4.c | 3 +++
- net/ipv6/netfilter/nft_fib_ipv6.c | 6 +++++-
- 2 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/net/ipv4/netfilter/nft_fib_ipv4.c b/net/ipv4/netfilter/nft_fib_ipv4.c
-index b75cac69bd7e6..7ade04ff972d7 100644
---- a/net/ipv4/netfilter/nft_fib_ipv4.c
-+++ b/net/ipv4/netfilter/nft_fib_ipv4.c
-@@ -83,6 +83,9 @@ void nft_fib4_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 	else
- 		oif = NULL;
- 
-+	if (priv->flags & NFTA_FIB_F_IIF)
-+		fl4.flowi4_oif = l3mdev_master_ifindex_rcu(oif);
-+
- 	if (nft_hook(pkt) == NF_INET_PRE_ROUTING &&
- 	    nft_fib_is_loopback(pkt->skb, nft_in(pkt))) {
- 		nft_fib_store_result(dest, priv, nft_in(pkt));
-diff --git a/net/ipv6/netfilter/nft_fib_ipv6.c b/net/ipv6/netfilter/nft_fib_ipv6.c
-index 8970d0b4faeb4..1d7e520d9966c 100644
---- a/net/ipv6/netfilter/nft_fib_ipv6.c
-+++ b/net/ipv6/netfilter/nft_fib_ipv6.c
-@@ -41,6 +41,9 @@ static int nft_fib6_flowi_init(struct flowi6 *fl6, const struct nft_fib *priv,
- 	if (ipv6_addr_type(&fl6->daddr) & IPV6_ADDR_LINKLOCAL) {
- 		lookup_flags |= RT6_LOOKUP_F_IFACE;
- 		fl6->flowi6_oif = get_ifindex(dev ? dev : pkt->skb->dev);
-+	} else if ((priv->flags & NFTA_FIB_F_IIF) &&
-+		   (netif_is_l3_master(dev) || netif_is_l3_slave(dev))) {
-+		fl6->flowi6_oif = dev->ifindex;
- 	}
- 
- 	if (ipv6_addr_type(&fl6->saddr) & IPV6_ADDR_UNICAST)
-@@ -197,7 +200,8 @@ void nft_fib6_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 	if (rt->rt6i_flags & (RTF_REJECT | RTF_ANYCAST | RTF_LOCAL))
- 		goto put_rt_err;
- 
--	if (oif && oif != rt->rt6i_idev->dev)
-+	if (oif && oif != rt->rt6i_idev->dev &&
-+	    l3mdev_master_ifindex_rcu(rt->rt6i_idev->dev) != oif->ifindex)
- 		goto put_rt_err;
- 
- 	nft_fib_store_result(dest, priv, rt->rt6i_idev->dev);
--- 
-2.34.1
-
+TWVyaGFiYSB1bWFyxLFtIG1lc2FqxLFtxLEgYWxtxLHFn3PEsW7EsXpkxLFyLg0KaMSxemzEsSBj
+ZXZhcGxhcmEgaWh0aXlhY8SxbSB2YXINCg0Kw4dvayB0ZcWfZWtrw7xybGVyLg0KTWljaGVsbGUN
+Cg==
