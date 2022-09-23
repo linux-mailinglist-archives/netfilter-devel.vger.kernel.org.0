@@ -2,72 +2,97 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7326E5E7BF4
-	for <lists+netfilter-devel@lfdr.de>; Fri, 23 Sep 2022 15:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E795E7C7D
+	for <lists+netfilter-devel@lfdr.de>; Fri, 23 Sep 2022 16:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbiIWNfW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 23 Sep 2022 09:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
+        id S229963AbiIWOHF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 23 Sep 2022 10:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbiIWNfT (ORCPT
+        with ESMTP id S229549AbiIWOHE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 23 Sep 2022 09:35:19 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A934997ECC;
-        Fri, 23 Sep 2022 06:35:17 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1obipk-0005LV-7v; Fri, 23 Sep 2022 15:35:12 +0200
-Date:   Fri, 23 Sep 2022 15:35:12 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Florian Westphal <fw@strlen.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, vbabka@suse.cz,
-        akpm@linux-foundation.org, urezki@gmail.com,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Martin Zaharinov <micron10@gmail.com>
-Subject: Re: [PATCH mm] mm: fix BUG with kvzalloc+GFP_ATOMIC
-Message-ID: <20220923133512.GE22541@breakpoint.cc>
-References: <20220923103858.26729-1-fw@strlen.de>
- <Yy20toVrIktiMSvH@dhcp22.suse.cz>
+        Fri, 23 Sep 2022 10:07:04 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D485013D1E7
+        for <netfilter-devel@vger.kernel.org>; Fri, 23 Sep 2022 07:07:02 -0700 (PDT)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1objKW-0002Ws-Hj; Fri, 23 Sep 2022 16:07:00 +0200
+Date:   Fri, 23 Sep 2022 16:07:00 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH iptables-nft] nft: track each register individually
+Message-ID: <Yy29hCuiKtr9Rnap@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+References: <20220923121708.839-1-fw@strlen.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yy20toVrIktiMSvH@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220923121708.839-1-fw@strlen.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Michal Hocko <mhocko@suse.com> wrote:
-> On Fri 23-09-22 12:38:58, Florian Westphal wrote:
-> > Martin Zaharinov reports BUG() in mm land for 5.19.10 kernel:
-> >  kernel BUG at mm/vmalloc.c:2437!
-> >  invalid opcode: 0000 [#1] SMP
-> >  CPU: 28 PID: 0 Comm: swapper/28 Tainted: G        W  O      5.19.9 #1
-> >  [..]
-> >  RIP: 0010:__get_vm_area_node+0x120/0x130
-> >   __vmalloc_node_range+0x96/0x1e0
-> >   kvmalloc_node+0x92/0xb0
-> >   bucket_table_alloc.isra.0+0x47/0x140
-> >   rhashtable_try_insert+0x3a4/0x440
-> >   rhashtable_insert_slow+0x1b/0x30
-> >  [..]
-> > 
-> > bucket_table_alloc uses kvzallocGPF_ATOMIC).  If kmalloc fails, this now
-> > falls through to vmalloc and hits code paths that assume GFP_KERNEL.
-> > 
-> > Revert the problematic change and stay with slab allocator.
+On Fri, Sep 23, 2022 at 02:17:08PM +0200, Florian Westphal wrote:
+> Instead of assuming only one register is used, track all 16 regs
+> individually.
 > 
-> Why don't you simply fix the caller?
+> This avoids need for the 'PREV_PAYLOAD' hack and also avoids the need to
+> clear out old flags:
+> 
+> When we see that register 'x' will be written to, that register state is
+> reset automatically.
+> 
+> Existing dissector decodes
+> ip saddr 1.2.3.4 meta l4proto tcp
+> ... as
+> -s 6.0.0.0 -p tcp
+> 
+> iptables-nft -s 1.2.3.4 -p tcp is decoded correctly because the expressions
+> are ordered like:
+> 
+> meta l4proto tcp ip saddr 1.2.3.4
+>                                                                                                                                                                                                                    |
+> ... and 'meta l4proto' did clear the PAYLOAD flag.
+> 
+> The simpler fix is:
+> 		ctx->flags &= ~NFT_XT_CTX_PAYLOAD;
+> 
+> in nft_parse_cmp(), but that breaks dissection of '1-42', because
+> the second compare ('cmp lte 42') will not find the
+> payload expression anymore.
+> 
+> Link: https://lore.kernel.org/netfilter-devel/20220922143544.GA22541@breakpoint.cc/T/#t
+> Signed-off-by: Florian Westphal <fw@strlen.de>
 
-Uh, not following?
+Reviewed-by: Phil Sutter <phil@nwl.cc>
 
-kvzalloc(GFP_ATOMIC) was perfectly fine, is this illegal again?
+Just a typo spotted:
 
-I can revert 93f976b5190df32793908d49165f78e67fcb66cf instead
-but that change is from 2018.
+[...]
+> @@ -883,7 +933,17 @@ static void nft_parse_transport(struct nft_xt_ctx *ctx,
+>  	nftnl_expr_get(e, NFTNL_EXPR_CMP_DATA, &len);
+>  	op = nftnl_expr_get_u32(e, NFTNL_EXPR_CMP_OP);
+>  
+> -	switch(ctx->payload.offset) {
+> +	reg = nftnl_expr_get_u32(e, NFTNL_EXPR_CMP_SREG);
+> +	sreg = nft_xt_ctx_get_sreg(ctx, reg);
+> +	if (!sreg)
+> +		return;
+> +
+> +	if (sreg->type != NFT_XT_REG_PAYLOAD) {
+> +		ctx->errmsg = "sgreg not payload";
+                               ^^^^^
+> +		return;
+> +	}
+> +
+> +	switch(sreg->payload.offset) {
+>  	case 0: /* th->sport */
+>  		switch (len) {
+>  		case 2: /* load sport only */
