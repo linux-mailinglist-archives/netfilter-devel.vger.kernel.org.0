@@ -2,169 +2,141 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7DB5EE929
-	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Sep 2022 00:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FBB5EE961
+	for <lists+netfilter-devel@lfdr.de>; Thu, 29 Sep 2022 00:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbiI1WJY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 28 Sep 2022 18:09:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41450 "EHLO
+        id S233186AbiI1WdC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 28 Sep 2022 18:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232439AbiI1WJX (ORCPT
+        with ESMTP id S231577AbiI1WdB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 28 Sep 2022 18:09:23 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5C05B6D55
-        for <netfilter-devel@vger.kernel.org>; Wed, 28 Sep 2022 15:09:21 -0700 (PDT)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 4/4] src: display (inner) tag in --debug=proto-ctx
-Date:   Thu, 29 Sep 2022 00:09:14 +0200
-Message-Id: <20220928220914.1486-4-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220928220914.1486-1-pablo@netfilter.org>
-References: <20220928220914.1486-1-pablo@netfilter.org>
+        Wed, 28 Sep 2022 18:33:01 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0169F543F0
+        for <netfilter-devel@vger.kernel.org>; Wed, 28 Sep 2022 15:32:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=7FvEwTCt9PZ+huxw1mDmNpN6zZDjCz7y9RI7gjI0ATQ=; b=ZHIDn98QIJVYOKy6j+iG2hEPlF
+        Nto5ZlUnyiembHZVdmPDxuGiWx3vzELRTVCu/7vMeMOUUjxhFxu9gRsOkG4w9ulCfkuSMj0sPK7tK
+        7e3nIbwtefynlBkN8hWE5I8i/4vylFrf5nZTEOXom7T2ltgMlbOtummO9JgmqQx3nDxXHV8pVKtjg
+        vSSIw2xyIMVm0iUddNkmsIZlmn+/xh5h4VbB1SlPkofputt1hES5rADLuKaQzJgz1i9p5z+fo5ZfM
+        xkmTxW4BeN4QmmCP8YlM342PwRVDBHESncZs8pgKuOs0rFZ2Rey21EjH6Z6xjS+jeO92t3poYhsPR
+        CohONBag==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1odfbt-0005IQ-8E; Thu, 29 Sep 2022 00:32:57 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nft PATCH] monitor: Sanitize startup race condition
+Date:   Thu, 29 Sep 2022 00:32:48 +0200
+Message-Id: <20220928223248.25933-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-For easier debugging, add decoration on protocol context:
+During startup, 'nft monitor' first fetches the current ruleset and then
+keeps this cache up to date based on received events. This is racey, as
+any ruleset changes in between the initial fetch and the socket opening
+are not recognized.
 
- # nft --debug=proto-ctx add rule netdev x y udp dport 4789 vxlan ip protocol icmp counter
- update link layer protocol context (inner):
-  link layer          : netdev <-
-  network layer       : none
-  transport layer     : none
-  payload data        : none
+This script demonstrates the problem:
 
- update network layer protocol context (inner):
-  link layer          : netdev
-  network layer       : ip <-
-  transport layer     : none
-  payload data        : none
+| #!/bin/bash
+|
+| while true; do
+| 	nft flush ruleset
+| 	iptables-nft -A FORWARD
+| done &
+| maniploop=$!
+|
+| trap "kill $maniploop; kill \$!; wait" EXIT
+|
+| while true; do
+| 	nft monitor rules >/dev/null &
+| 	sleep 0.2
+| 	kill $!
+| done
 
- update network layer protocol context (inner):
-  link layer          : netdev
-  network layer       : ip <-
-  transport layer     : none
-  payload data        : none
+If the table add event is missed, the rule add event callback fails to
+deserialize the rule and calls abort().
 
- update transport layer protocol context (inner):
-  link layer          : netdev
-  network layer       : ip
-  transport layer     : icmp <-
-  payload data        : none
+Avoid the inconvenient program exit by returning NULL from
+netlink_delinearize_rule() instead of aborting and make callers check
+the return value.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- include/proto.h           | 3 ++-
- src/evaluate.c            | 4 ++--
- src/netlink.c             | 2 +-
- src/netlink_delinearize.c | 4 ++--
- src/proto.c               | 7 +++++--
- 5 files changed, 12 insertions(+), 8 deletions(-)
+ src/cache.c               | 1 +
+ src/monitor.c             | 5 +++++
+ src/netlink_delinearize.c | 5 ++++-
+ 3 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/include/proto.h b/include/proto.h
-index 2af887bcd126..162924f6df29 100644
---- a/include/proto.h
-+++ b/include/proto.h
-@@ -190,6 +190,7 @@ extern const struct proto_desc *proto_dev_desc(uint16_t type);
- struct proto_ctx {
- 	unsigned int			debug_mask;
- 	uint8_t				family;
-+	bool				inner;
- 	union {
- 		struct {
- 			uint8_t			type;
-@@ -209,7 +210,7 @@ struct proto_ctx {
- };
+diff --git a/src/cache.c b/src/cache.c
+index f790f995e07b0..85de970f76448 100644
+--- a/src/cache.c
++++ b/src/cache.c
+@@ -598,6 +598,7 @@ static int list_rule_cb(struct nftnl_rule *nlr, void *data)
  
- extern void proto_ctx_init(struct proto_ctx *ctx, unsigned int family,
--			   unsigned int debug_mask);
-+			   unsigned int debug_mask, bool inner);
- extern void proto_ctx_update(struct proto_ctx *ctx, enum proto_bases base,
- 			     const struct location *loc,
- 			     const struct proto_desc *desc);
-diff --git a/src/evaluate.c b/src/evaluate.c
-index eff1cffafb0b..9f4f9fe459f2 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -4562,8 +4562,8 @@ static int rule_evaluate(struct eval_ctx *ctx, struct rule *rule,
- 	struct stmt *stmt, *tstmt = NULL;
- 	struct error_record *erec;
+ 	netlink_dump_rule(nlr, ctx);
+ 	rule = netlink_delinearize_rule(ctx, nlr);
++	assert(rule);
+ 	list_add_tail(&rule->list, &ctx->list);
  
--	proto_ctx_init(&ctx->_pctx[0], rule->handle.family, ctx->nft->debug_mask);
--	proto_ctx_init(&ctx->_pctx[1], rule->handle.family, ctx->nft->debug_mask);
-+	proto_ctx_init(&ctx->_pctx[0], rule->handle.family, ctx->nft->debug_mask, false);
-+	proto_ctx_init(&ctx->_pctx[1], rule->handle.family, ctx->nft->debug_mask, true);
- 	memset(&ctx->ectx, 0, sizeof(ctx->ectx));
+ 	return 0;
+diff --git a/src/monitor.c b/src/monitor.c
+index 7fa92ebfb0f3a..a6b30a18cfd25 100644
+--- a/src/monitor.c
++++ b/src/monitor.c
+@@ -551,6 +551,10 @@ static int netlink_events_rule_cb(const struct nlmsghdr *nlh, int type,
  
- 	ctx->rule = rule;
-diff --git a/src/netlink.c b/src/netlink.c
-index 799cf9b8ebef..e38bacf3ac3f 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -1995,7 +1995,7 @@ static void trace_print_packet(const struct nftnl_trace *nlt,
- 				 meta_expr_alloc(&netlink_location,
- 						 NFT_META_OIF), octx);
- 
--	proto_ctx_init(&ctx, nftnl_trace_get_u32(nlt, NFTNL_TRACE_FAMILY), 0);
-+	proto_ctx_init(&ctx, nftnl_trace_get_u32(nlt, NFTNL_TRACE_FAMILY), 0, false);
- 	ll_desc = ctx.protocol[PROTO_BASE_LL_HDR].desc;
- 	if ((ll_desc == &proto_inet || ll_desc  == &proto_netdev) &&
- 	    nftnl_trace_is_set(nlt, NFTNL_TRACE_NFPROTO)) {
+ 	nlr = netlink_rule_alloc(nlh);
+ 	r = netlink_delinearize_rule(monh->ctx, nlr);
++	if (!r) {
++		fprintf(stderr, "W: Received event for an unknown table.\n");
++		goto out_free_nlr;
++	}
+ 	nlr_for_each_set(nlr, rule_map_decompose_cb, NULL,
+ 			 &monh->ctx->nft->cache);
+ 	cmd = netlink_msg2cmd(type, nlh->nlmsg_flags);
+@@ -587,6 +591,7 @@ static int netlink_events_rule_cb(const struct nlmsghdr *nlh, int type,
+ 		break;
+ 	}
+ 	rule_free(r);
++out_free_nlr:
+ 	nftnl_rule_free(nlr);
+ 	return MNL_CB_OK;
+ }
 diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index 36a7d63071ff..b46cdf808f38 100644
+index 0da6cc78f94fa..e8b9724cbac94 100644
 --- a/src/netlink_delinearize.c
 +++ b/src/netlink_delinearize.c
-@@ -3177,8 +3177,8 @@ static void rule_parse_postprocess(struct netlink_parse_ctx *ctx, struct rule *r
- 	struct expr *expr;
+@@ -3195,7 +3195,10 @@ struct rule *netlink_delinearize_rule(struct netlink_ctx *ctx,
+ 	pctx->rule = rule_alloc(&netlink_location, &h);
+ 	pctx->table = table_cache_find(&ctx->nft->cache.table_cache,
+ 				       h.table.name, h.family);
+-	assert(pctx->table != NULL);
++	if (!pctx->table) {
++		errno = ENOENT;
++		return NULL;
++	}
  
- 	memset(&rctx, 0, sizeof(rctx));
--	proto_ctx_init(&rctx._dl[0].pctx, rule->handle.family, ctx->debug_mask);
--	proto_ctx_init(&rctx._dl[1].pctx, NFPROTO_BRIDGE, ctx->debug_mask);
-+	proto_ctx_init(&rctx._dl[0].pctx, rule->handle.family, ctx->debug_mask, false);
-+	proto_ctx_init(&rctx._dl[1].pctx, NFPROTO_BRIDGE, ctx->debug_mask, true);
+ 	pctx->rule->comment = nftnl_rule_get_comment(nlr);
  
- 	list_for_each_entry_safe(stmt, next, &rule->stmts, list) {
- 		enum stmt_types type = stmt->ops->type;
-diff --git a/src/proto.c b/src/proto.c
-index bd14d1160697..13b681d4d26a 100644
---- a/src/proto.c
-+++ b/src/proto.c
-@@ -176,7 +176,9 @@ static void proto_ctx_debug(const struct proto_ctx *ctx, enum proto_bases base,
- 			pr_debug(" %s", ctx->stacked_ll[i]->name);
- 	}
- 
--	pr_debug("update %s protocol context:\n", proto_base_names[base]);
-+	pr_debug("update %s protocol context%s:\n",
-+		 proto_base_names[base], ctx->inner ? " (inner)" : "");
-+
- 	for (i = PROTO_BASE_LL_HDR; i <= PROTO_BASE_MAX; i++) {
- 		pr_debug(" %-20s: %s",
- 			 proto_base_names[i],
-@@ -197,7 +199,7 @@ static void proto_ctx_debug(const struct proto_ctx *ctx, enum proto_bases base,
-  * @debug_mask:	display debugging information
-  */
- void proto_ctx_init(struct proto_ctx *ctx, unsigned int family,
--		    unsigned int debug_mask)
-+		    unsigned int debug_mask, bool inner)
- {
- 	const struct hook_proto_desc *h = &hook_proto_desc[family];
- 
-@@ -205,6 +207,7 @@ void proto_ctx_init(struct proto_ctx *ctx, unsigned int family,
- 	ctx->family = family;
- 	ctx->protocol[h->base].desc = h->desc;
- 	ctx->debug_mask = debug_mask;
-+	ctx->inner = inner;
- 
- 	proto_ctx_debug(ctx, h->base, debug_mask);
- }
 -- 
-2.30.2
+2.34.1
 
