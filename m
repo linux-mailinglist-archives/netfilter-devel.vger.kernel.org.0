@@ -2,44 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D8C5F1C08
-	for <lists+netfilter-devel@lfdr.de>; Sat,  1 Oct 2022 13:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CF85F209C
+	for <lists+netfilter-devel@lfdr.de>; Sun,  2 Oct 2022 01:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbiJALv3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 1 Oct 2022 07:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36894 "EHLO
+        id S229596AbiJAXjX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 1 Oct 2022 19:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbiJALv2 (ORCPT
+        with ESMTP id S229461AbiJAXjW (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 1 Oct 2022 07:51:28 -0400
+        Sat, 1 Oct 2022 19:39:22 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DFB399C3
-        for <netfilter-devel@vger.kernel.org>; Sat,  1 Oct 2022 04:51:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36C02CE35
+        for <netfilter-devel@vger.kernel.org>; Sat,  1 Oct 2022 16:39:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=CI2xTrH0B/FZO0y9QQE1xcgHnAsIxzZ15+V+puvP+us=; b=Q2KspCR+QWG4uOquYqXnF1mMh2
-        2GppEUxjrY4vYE/LJU5ZloLb6GDEz2hWS2LsWbsjNKsnYV+s2vh95VeRX2SDUSyvkUmFfQMe8Dh1C
-        Jb8vZJ7z8SaWdG8+e37+tRrHOisiZGgqEZId+g8+Hl5Mi4e9+b6jTyaN5zKrWQjvqusLGDGaCejJR
-        6UdBjsp8NnwRbgPxirrLN5dr9ETw5o/ibsFc/H+FeLOAq927E7jX8FCKcwUhLJKz96VaZGTOtFtcv
-        CfxFEdjDsKnqKLhbihDddTv/g7v1dXg0L7yeTY4NCTkmo+a5ZU6UXEqxOcs/D7f+wZRGl0cCAOvCc
-        uZcEL2Xg==;
+        bh=6zHBykh5Iuxc64Mz7XFTejex3CjuBDMZa5olLZMG0Es=; b=BxOvdAJVHzyXWpxIT1X6v1TotI
+        4L9Rptwt/MI54ASRsSKiZ+nXaPw3scMxM3j0/dfSaixem1xt3i6GgWUX/1FUJ7RYeEGLwxaf8faCl
+        KwKHUaaAeChbRW+wM9nWcj4B7Tf31zyeP7DRFG4lkv9/VB9fSxtK2ibXBkjMTQrs5Bd+/Gd1mI1/2
+        n84C4cp6Mj65hGWkh6Sbo1pkvtQ5fptmZQmhR/Qrks2gz//cMtTMxETOgoAUbDOzTHqhiX26Hfi1E
+        krBo+dvdkkcALqCNpa3oWQbp4YJp3h/4DLaUi+/ptq+Yb0kYq5UucIIE05+cYOu9Vx0rt7OnBE9oR
+        9lnuUsEA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1oeb1h-0007bK-Bq
-        for netfilter-devel@vger.kernel.org; Sat, 01 Oct 2022 13:51:25 +0200
+        id 1oem4m-0004qL-4Q
+        for netfilter-devel@vger.kernel.org; Sun, 02 Oct 2022 01:39:20 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] extensions: among: Fix for use with ebtables-restore
-Date:   Sat,  1 Oct 2022 13:51:11 +0200
-Message-Id: <20221001115111.23923-2-phil@nwl.cc>
+Subject: [iptables PATCH 1/3] extensions: libebt_stp: Eliminate duplicate space in output
+Date:   Sun,  2 Oct 2022 01:39:04 +0200
+Message-Id: <20221001233906.5386-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221001115111.23923-1-phil@nwl.cc>
-References: <20221001115111.23923-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -51,54 +49,31 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When restoring multiple rules which use among match, new size may be
-smaller than the old one which caused invalid writes by the memcpy()
-call. Expect this and realloc the match only if it needs to grow. Also
-use realloc instead of freeing and allocating from scratch.
+No need for print_range() to print a trailing whitespace, caller does
+this already.
 
-Fixes: 26753888720d8 ("nft: bridge: Rudimental among extension support")
+Fixes: fd8d7d7e5d911 ("ebtables-nft: add stp match")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libebt_among.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ extensions/libebt_stp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/extensions/libebt_among.c b/extensions/libebt_among.c
-index c607a775539d3..1eab201984408 100644
---- a/extensions/libebt_among.c
-+++ b/extensions/libebt_among.c
-@@ -119,7 +119,6 @@ static int bramong_parse(int c, char **argv, int invert,
- 		 struct xt_entry_match **match)
+diff --git a/extensions/libebt_stp.c b/extensions/libebt_stp.c
+index 3e9e24474eb61..41059baae7078 100644
+--- a/extensions/libebt_stp.c
++++ b/extensions/libebt_stp.c
+@@ -146,9 +146,9 @@ static int parse_range(const char *portstring, void *lower, void *upper,
+ static void print_range(unsigned int l, unsigned int u)
  {
- 	struct nft_among_data *data = (struct nft_among_data *)(*match)->data;
--	struct xt_entry_match *new_match;
- 	bool have_ip, dst = false;
- 	size_t new_size, cnt;
- 	struct stat stats;
-@@ -170,18 +169,17 @@ static int bramong_parse(int c, char **argv, int invert,
- 	new_size *= sizeof(struct nft_among_pair);
- 	new_size += XT_ALIGN(sizeof(struct xt_entry_match)) +
- 			sizeof(struct nft_among_data);
--	new_match = xtables_calloc(1, new_size);
--	memcpy(new_match, *match, (*match)->u.match_size);
--	new_match->u.match_size = new_size;
+ 	if (l == u)
+-		printf("%u ", l);
++		printf("%u", l);
+ 	else
+-		printf("%u:%u ", l, u);
++		printf("%u:%u", l, u);
+ }
  
--	data = (struct nft_among_data *)new_match->data;
-+	if (new_size > (*match)->u.match_size) {
-+		*match = xtables_realloc(*match, new_size);
-+		(*match)->u.match_size = new_size;
-+		data = (struct nft_among_data *)(*match)->data;
-+	}
-+
- 	have_ip = nft_among_pairs_have_ip(optarg);
- 	poff = nft_among_prepare_data(data, dst, cnt, invert, have_ip);
- 	parse_nft_among_pairs(data->pairs + poff, optarg, cnt, have_ip);
- 
--	free(*match);
--	*match = new_match;
--
- 	if (c == AMONG_DST_F || c == AMONG_SRC_F) {
- 		munmap(argv, flen);
- 		close(fd);
+ static int
 -- 
 2.34.1
 
