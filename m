@@ -2,43 +2,43 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B49555F5DB5
-	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Oct 2022 02:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB8D5F5DBD
+	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Oct 2022 02:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbiJFA2h (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 5 Oct 2022 20:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52520 "EHLO
+        id S229712AbiJFA25 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 5 Oct 2022 20:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbiJFA23 (ORCPT
+        with ESMTP id S229544AbiJFA24 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 5 Oct 2022 20:28:29 -0400
+        Wed, 5 Oct 2022 20:28:56 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E739582D13
-        for <netfilter-devel@vger.kernel.org>; Wed,  5 Oct 2022 17:28:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47D282D13
+        for <netfilter-devel@vger.kernel.org>; Wed,  5 Oct 2022 17:28:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=RmV1Ibk4MkJ7Qkkw2qC+nVeDABlK/En6oJyoS7YRE7c=; b=S8CrPqXrqiaeucX9DEU61ylsA1
-        qb+Yuv5ZavtaNtu4rM0KaXerwnBO4YVF2yJh+NCB10YjeoAsmIZqydtloqoL1A2iabp81r9SmJBLy
-        LsCTP0/LCObOhlMbwL1r1ZLXg5cFTrldtUgItecYgDwp0uIc1bxklhzeE3ACW1YjCRhEGZTPXZSxH
-        JihXNmtuE3nEkzdEMo8esL8tvaLSZyTS9+2M+bpn+5ghWj5aKEJnrxgRH0pbvMxToRLuxln+rJ7UA
-        CcRbxiigEHNjslNvjYJ1jSNTjhOQJmwQ0fMEXinJSyNRL43ANhHvWQMxKsAwCVckjzd3LG68a2AwK
-        1kAmqFJQ==;
+        bh=e9XMQGTUntkfSXbsWAanZQxruRDrHurCQ1SyOFloES8=; b=L+kzP2wNY2tZKRe7QC7qZT20MX
+        nOBhRi6YbHwnfM0P1NF9BMtPJLmkeMaKMUoMzSA7QMTg/GqLS+AKvT/BgK0xOGKY2y5Jt3183+WKv
+        vImsg184yWUHIUd5Cb1b17cWeIuh7q110L3uL+9TtI5I3Sz1vdyGa41LtPAIBMEkfAPn9su9CSB3U
+        qzXEA4TjlMapOaqrbXrR0CiqfZMq43QcQjOOGgIsHXj/4tWjgfe9XxQIaV/hbUZ8ReIKmSAXHoPAQ
+        p5jTiJHjhrwy9Yy3HtQ8eqkROOX8GxY6zFcgH6W8HS1pqhrrxZWDmIOUC3KDmQ46AUm7VOsGF0dwF
+        /mLJCaGQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1ogEkK-0001wa-K0; Thu, 06 Oct 2022 02:28:16 +0200
+        id 1ogEkv-0001yz-Lj; Thu, 06 Oct 2022 02:28:53 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>,
         Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables PATCH 02/12] tests: iptables-test: Cover for obligatory -j CONTINUE in ebtables
-Date:   Thu,  6 Oct 2022 02:27:52 +0200
-Message-Id: <20221006002802.4917-3-phil@nwl.cc>
+Subject: [iptables PATCH 03/12] tests: *.t: Fix expected output for simple calls
+Date:   Thu,  6 Oct 2022 02:27:53 +0200
+Message-Id: <20221006002802.4917-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221006002802.4917-1-phil@nwl.cc>
 References: <20221006002802.4917-1-phil@nwl.cc>
@@ -53,30 +53,61 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Unlike iptables, ebtables includes the default rule target in output.
-Instead of adding it to every rule in ebtables tests, add special casing
-to the testscript checking if the expected rule output contains a target
-already and adding the default one if not.
+These minimal extension uses print in more detailed form. Track this,
+the output is desired.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables-test.py | 3 +++
- 1 file changed, 3 insertions(+)
+ extensions/libebt_log.t     | 2 +-
+ extensions/libebt_nflog.t   | 2 +-
+ extensions/libip6t_REJECT.t | 2 +-
+ extensions/libipt_REJECT.t  | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/iptables-test.py b/iptables-test.py
-index 89220f29fe552..ac4f37c614452 100755
---- a/iptables-test.py
-+++ b/iptables-test.py
-@@ -323,6 +323,9 @@ STDERR_IS_TTY = sys.stderr.isatty()
-             else:
-                 rule_save = chain + " " + item[1]
- 
-+            if iptables == EBTABLES and rule_save.find('-j') < 0:
-+                rule_save += " -j CONTINUE"
-+
-             res = item[2].rstrip()
-             if res != "OK":
-                 rule = chain + " -t " + table + " " + item[0]
+diff --git a/extensions/libebt_log.t b/extensions/libebt_log.t
+index f7116c417b0ab..e6adbd3b44380 100644
+--- a/extensions/libebt_log.t
++++ b/extensions/libebt_log.t
+@@ -1,5 +1,5 @@
+ :INPUT,FORWARD,OUTPUT
+---log;=;OK
++--log;--log-level notice;OK
+ --log-level crit;=;OK
+ --log-level 1;--log-level alert;OK
+ --log-level emerg --log-ip --log-arp --log-ip6;=;OK
+diff --git a/extensions/libebt_nflog.t b/extensions/libebt_nflog.t
+index f867df303fa95..e98d8f5fdb9d6 100644
+--- a/extensions/libebt_nflog.t
++++ b/extensions/libebt_nflog.t
+@@ -1,5 +1,5 @@
+ :INPUT,FORWARD,OUTPUT
+---nflog;=;OK
++--nflog;--nflog-group 1;OK
+ --nflog-group 42;=;OK
+ --nflog-range 42;--nflog-group 1 --nflog-range 42 -j CONTINUE;OK
+ --nflog-threshold 100 --nflog-prefix foo;--nflog-prefix "foo" --nflog-group 1 --nflog-threshold 100 -j CONTINUE;OK
+diff --git a/extensions/libip6t_REJECT.t b/extensions/libip6t_REJECT.t
+index d2b337d7ebdeb..8294f0bb77b29 100644
+--- a/extensions/libip6t_REJECT.t
++++ b/extensions/libip6t_REJECT.t
+@@ -1,5 +1,5 @@
+ :INPUT,FORWARD,OUTPUT
+--j REJECT;=;OK
++-j REJECT;-j REJECT --reject-with icmp6-port-unreachable;OK
+ # manpage for IPv6 variant of REJECT does not show up for some reason?
+ -j REJECT --reject-with icmp6-no-route;=;OK
+ -j REJECT --reject-with icmp6-adm-prohibited;=;OK
+diff --git a/extensions/libipt_REJECT.t b/extensions/libipt_REJECT.t
+index 5b26b1076b5b2..3f69a72994955 100644
+--- a/extensions/libipt_REJECT.t
++++ b/extensions/libipt_REJECT.t
+@@ -1,5 +1,5 @@
+ :INPUT,FORWARD,OUTPUT
+--j REJECT;=;OK
++-j REJECT;-j REJECT --reject-with icmp-port-unreachable;OK
+ -j REJECT --reject-with icmp-net-unreachable;=;OK
+ -j REJECT --reject-with icmp-host-unreachable;=;OK
+ -j REJECT --reject-with icmp-port-unreachable;=;OK
 -- 
 2.34.1
 
