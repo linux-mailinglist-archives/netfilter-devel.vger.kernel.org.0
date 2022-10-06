@@ -2,44 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FAA5F5D8B
-	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Oct 2022 02:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A055F5DBC
+	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Oct 2022 02:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbiJFANg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 5 Oct 2022 20:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
+        id S229567AbiJFA24 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 5 Oct 2022 20:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbiJFANf (ORCPT
+        with ESMTP id S229544AbiJFA2z (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 5 Oct 2022 20:13:35 -0400
+        Wed, 5 Oct 2022 20:28:55 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0FA3340D
-        for <netfilter-devel@vger.kernel.org>; Wed,  5 Oct 2022 17:13:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5ED82D19
+        for <netfilter-devel@vger.kernel.org>; Wed,  5 Oct 2022 17:28:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=4KMcOmTGYrw/nb9DYyhThJP8eqPo0btt4e1hYIZmLAM=; b=NxLct6A9Og8c8rTRfq8afmi4bi
-        MObEUUwqyz8XYUV/fD6hQJIzxmLPLg3IY8uYaX5OKGqwPQTb613emTqdGs24G3C73c912cvqSTGd6
-        uCwjfiUFPdXsKaXiTv9RGvkbqrjBi9oyRbprSFTHkxixT9TS5NGPpUoFNTR6FjtVX9FFQx+uKKQ5D
-        CEqlBNUZ/XsNQZ6KmWmaOja8PYm+q9/om2ljAghVyq0+9NuWFknfMbnINXPQILddcD6CAxSMlA3fJ
-        VIXQXjX5SPyXVbilPury6+8nK4luQr0pWz8A56LGeLrMe0X/+K6Y2we0x+/1Z2DrQ5XIC904Bcz1N
-        LmW2tphA==;
+        bh=CT5bKDJQjIUQmUwx8dGEa7o5BNPSGSvIL9P+3m7/iGQ=; b=bfyTxC2LdffvL61SExoxzA40f4
+        /0QKP2EjS876YXkPRqW24NZIvcNFT3X2Fq+QFLhDCnpqanSaSIhCpYKlOh8kTG2EvJEdHXApnhGrT
+        uua9ANHvnpb7WNxWYlGBRM0a2z7uH8HhuefJ606plHHWOxctC3ShUNwnzRBCSw4FnpL1sKcBJUqQa
+        EXvP27XlkRKO6L/sn9P1FPXaZBOFs3L7fmZh0L+oNVI/9mOZJeOUnVbxqmbdaeXfalQnWVdLYeDaL
+        mS9Lyb4k1mrk1y15fVeghnPxeXTR0qkiEBfR6NWc/EAPXUlSTNk+mWAZYw+OQNXrctPYpLJu7fkXw
+        Mj9rY6RA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1ogEW5-0001mq-47
-        for netfilter-devel@vger.kernel.org; Thu, 06 Oct 2022 02:13:33 +0200
+        id 1ogEkq-0001yg-BK; Thu, 06 Oct 2022 02:28:48 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] tests: shell: Fix expected ebtables log target output
-Date:   Thu,  6 Oct 2022 02:13:19 +0200
-Message-Id: <20221006001319.24644-2-phil@nwl.cc>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jan Engelhardt <jengelh@inai.de>
+Subject: [iptables PATCH 00/12] Speed up iptables-tests.py
+Date:   Thu,  6 Oct 2022 02:27:50 +0200
+Message-Id: <20221006002802.4917-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221006001319.24644-1-phil@nwl.cc>
-References: <20221006001319.24644-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -51,49 +51,76 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Forgot to update shell testsuite when removing empty --log-prefix
-options.
+I had this in mind for a while now and finally got around to do it: When
+testing an extensions/*.t file with iptables-tests.py, act in a "batch"
+mode applying all rules at once and checking the expected output in one
+go, thereby reducing the overhead per test file to a single
+iptables-restore and iptables-save call each. This was a bit optimistic,
+but the result is still significant - on my rather slow testing VM, a
+full iptables-tests.py run completes in ~7min instead of ~30min (yes,
+it's slow).
 
-Fixes: 9cdb52d655608 ("extensions: libebt_log: Avoid empty log-prefix in output")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- .../shell/testcases/ebtables/0002-ebtables-save-restore_0     | 4 ++--
- .../shell/testcases/ebtables/0003-ebtables-restore-defaults_0 | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+See patch 1 for the implementation details. As a side-effect, rule
+existence checking became much stricter, so the remaining patches in
+this series deal with eliminating those differences:
 
-diff --git a/iptables/tests/shell/testcases/ebtables/0002-ebtables-save-restore_0 b/iptables/tests/shell/testcases/ebtables/0002-ebtables-save-restore_0
-index 0537f5677c5d5..1091a4e80bebe 100755
---- a/iptables/tests/shell/testcases/ebtables/0002-ebtables-save-restore_0
-+++ b/iptables/tests/shell/testcases/ebtables/0002-ebtables-save-restore_0
-@@ -91,13 +91,13 @@ DUMP='*filter
- -A foo -p IPv6 --ip6-dst feed:babe::/64 -j ACCEPT
- -A foo -p IPv6 --ip6-proto tcp -j ACCEPT
- -A foo --limit 100/sec --limit-burst 42 -j ACCEPT
---A foo --log-level notice --log-prefix "" -j CONTINUE
-+-A foo --log-level notice -j CONTINUE
- -A foo -j mark --mark-set 0x23 --mark-target ACCEPT
- -A foo --nflog-group 1 -j CONTINUE
- -A foo --pkttype-type multicast -j ACCEPT
- -A foo --stp-type config -j ACCEPT
- -A foo -p Length --802_3-sap 0x23 --limit 100/sec --limit-burst 5 -j ACCEPT
---A foo --pkttype-type multicast --log-level notice --log-prefix "" -j CONTINUE
-+-A foo --pkttype-type multicast --log-level notice -j CONTINUE
- -A foo --pkttype-type multicast --limit 100/sec --limit-burst 5 -j ACCEPT
- *nat
- :PREROUTING ACCEPT
-diff --git a/iptables/tests/shell/testcases/ebtables/0003-ebtables-restore-defaults_0 b/iptables/tests/shell/testcases/ebtables/0003-ebtables-restore-defaults_0
-index 63891c1bb731a..7554ef8571511 100755
---- a/iptables/tests/shell/testcases/ebtables/0003-ebtables-restore-defaults_0
-+++ b/iptables/tests/shell/testcases/ebtables/0003-ebtables-restore-defaults_0
-@@ -24,7 +24,7 @@ EXPECT='*filter
- -A FORWARD --limit 100/sec --limit-burst 42 -j ACCEPT
- -A FORWARD --limit 1000/sec --limit-burst 5 -j ACCEPT
- -A FORWARD --log-level notice --log-prefix "foobar" -j CONTINUE
---A FORWARD --log-level notice --log-prefix "" -j CONTINUE'
-+-A FORWARD --log-level notice -j CONTINUE'
- 
- $XT_MULTI ebtables --init-table
- $XT_MULTI ebtables-restore <<<$DUMP
+* Patch 2 avoids having to add '-j CONTINUE' to almost all ebtables
+  rules.
+* Patches 3-10 adjust expected output to reality, mostly adding content
+  the script didn't care about since the old 'output.find(<rule>)'
+  worked fine as long as the output *started* like '<rule>'.
+* Patch 11 Changes output by omitting an obvious default value, so a
+  real functional change.
+* Patch 12 drops another default value (from NFQUEUE target) I'm not
+  sure we should keep.
+
+So patches are roughly sorted by my confidence in correctness. Please
+have (at least) a close look at the last two, I don't want to break
+iptables for anyone just to keep test files small.
+
+Phil Sutter (12):
+  tests: iptables-test: Implement fast test mode
+  tests: iptables-test: Cover for obligatory -j CONTINUE in ebtables
+  tests: *.t: Fix expected output for simple calls
+  tests: *.t: Fix for hexadecimal output
+  tests: libebt_redirect.t: Plain redirect prints with trailing
+    whitespace
+  tests: libxt_length.t: Fix odd use-case output
+  tests: libxt_recent.t: Add missing default values
+  tests: libxt_tos.t, libxt_TOS.t: Add missing masks in output
+  tests: libebt_vlan.t: Drop trailing whitespace from rules
+  tests: libxt_connlimit.t: Add missing --connlimit-saddr
+  extensions: Do not print all-one's netmasks
+  extensions: NFQUEUE: Do not print default queue number 0
+
+ extensions/libebt_log.t      |   2 +-
+ extensions/libebt_nflog.t    |   2 +-
+ extensions/libebt_redirect.t |   2 +-
+ extensions/libebt_vlan.t     |   4 +-
+ extensions/libip6t_NETMAP.c  |   2 +-
+ extensions/libip6t_REJECT.t  |   2 +-
+ extensions/libipt_NETMAP.c   |   2 +-
+ extensions/libipt_REJECT.t   |   2 +-
+ extensions/libxt_CONNMARK.c  |  32 ++++--
+ extensions/libxt_CONNMARK.t  |   4 +-
+ extensions/libxt_DSCP.t      |   2 +-
+ extensions/libxt_MARK.c      |   4 +-
+ extensions/libxt_MARK.t      |   2 +-
+ extensions/libxt_NFQUEUE.c   |  27 ++---
+ extensions/libxt_NFQUEUE.t   |   4 +-
+ extensions/libxt_TOS.t       |  12 +--
+ extensions/libxt_connlimit.c |   8 +-
+ extensions/libxt_connlimit.t |  20 ++--
+ extensions/libxt_connmark.t  |   4 +-
+ extensions/libxt_dscp.t      |   2 +-
+ extensions/libxt_length.t    |   2 +-
+ extensions/libxt_mark.t      |   2 +-
+ extensions/libxt_recent.c    |  45 ++++----
+ extensions/libxt_recent.t    |  14 +--
+ extensions/libxt_tos.t       |   8 +-
+ iptables-test.py             | 200 ++++++++++++++++++++++++++++++++++-
+ 26 files changed, 317 insertions(+), 93 deletions(-)
+
 -- 
 2.34.1
 
