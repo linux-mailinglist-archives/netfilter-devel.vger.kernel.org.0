@@ -2,89 +2,131 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6095FC57D
-	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Oct 2022 14:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2933D5FC842
+	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Oct 2022 17:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbiJLMkU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 12 Oct 2022 08:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
+        id S229586AbiJLPT3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 12 Oct 2022 11:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbiJLMkT (ORCPT
+        with ESMTP id S230029AbiJLPTD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 12 Oct 2022 08:40:19 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56D77B2AA;
-        Wed, 12 Oct 2022 05:40:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 16BBECE1B2D;
-        Wed, 12 Oct 2022 12:40:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3A028C433D7;
-        Wed, 12 Oct 2022 12:40:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665578415;
-        bh=xjMgXIvqMwoitiYdM8Fd/wo6GXLsZu3oIGa2mxFKVdc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=UeSFF4TXZ4U1/LZR3QcjxuULfGHhLIiBQ9dF0O5b6OAOGzwV6D0b/Ccv91sQLlbex
-         DrdEMIc5bzvo0tXz+oniOPGTKfW554ffB4nX+B0VxcT7c8UxaG7NQ1KWJD+lEwIRt9
-         wxhsINqZfp5bdnCQDOgVlQ0Z5EWghTt8/3ZaNxWHLbzNI1YZZss084cwB8CwVG7pZy
-         EjoEqee2ko24QJcEQFu8Emm9NEi/4aD31nCzISju7VUpcuztgwOn54YXySFPDrUMAd
-         j1fvYvIaHnYRdkD6GRwAnhjLuhj7QEjQ3WWxosXxQHY4P8Sco3iTviCHAPIh4PnQwQ
-         fVL9yM51VOm7g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 19D5FE21EC5;
-        Wed, 12 Oct 2022 12:40:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 12 Oct 2022 11:19:03 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8575E0719
+        for <netfilter-devel@vger.kernel.org>; Wed, 12 Oct 2022 08:19:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=3VeGInfRAtmbD4jFgirHULsgvH07ZvMNx8/9sS/QVMM=; b=URkLslV3jEzLy38Rot30RzYJZ6
+        tOtTmfGVfcJ7iYdyqJDH+G30KNXJ9JuSbAL0AJ77CYtwzuOzAuX0EYZWFJ9lItW9t6bsv9f0pxE2X
+        VSa5LTw7WA/3Cptr4QqIaj9rztUNwa2Ks3yp4aFI9rB1q03LIU3mrNOvBLb1aQxMEMYCm+uEC+8gj
+        YSvf3xCmHSqp91P6d7Kxj1Zv/moGD1D/s1zB3197Cago7OaR+EkMveldsg/uh+I+dJvLG47zofBFg
+        ItrnK01mwwbgoVDBAW0cHfbVznOFdETgBeFZ/Y8s5jhe40wpG/f8Y2oEKwIXX/CQX2xJ6vCeBa60w
+        yCwECYsQ==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1oidVb-0002pr-7o; Wed, 12 Oct 2022 17:18:59 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Jan Engelhardt <jengelh@inai.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Subject: [iptables PATCH v2 00/12] Speed up iptables-test.py
+Date:   Wed, 12 Oct 2022 17:17:50 +0200
+Message-Id: <20221012151802.11339-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/3] selftests: netfilter: Test reverse path filtering
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166557841510.32004.6740633560901619092.git-patchwork-notify@kernel.org>
-Date:   Wed, 12 Oct 2022 12:40:15 +0000
-References: <20221012121902.27738-2-fw@strlen.de>
-In-Reply-To: <20221012121902.27738-2-fw@strlen.de>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netdev@vger.kernel.org, pabeni@redhat.com, edumazet@google.com,
-        davem@davemloft.net, kuba@kernel.org,
-        netfilter-devel@vger.kernel.org, phil@nwl.cc, gnault@redhat.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello:
+Changes since v1:
+- Add fallout NFQUEUE patch 1
+- Adjust iptables-test.py enhancement as suggested by Jan, details in
+  patch 2
+- Avoid changing what extensions print, this is a separate discussion -
+  instead update expected output accordingly
 
-This series was applied to netdev/net.git (master)
-by Florian Westphal <fw@strlen.de>:
+Original cover letter text:
 
-On Wed, 12 Oct 2022 14:19:00 +0200 you wrote:
-> From: Phil Sutter <phil@nwl.cc>
-> 
-> Test reverse path (filter) matches in iptables, ip6tables and nftables.
-> Both with a regular interface and a VRF.
-> 
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
-> Reviewed-by: Guillaume Nault <gnault@redhat.com>
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> 
-> [...]
+I had this in mind for a while now and finally got around to do it: When
+testing an extensions/*.t file with iptables-tests.py, act in a "batch"
+mode applying all rules at once and checking the expected output in one
+go, thereby reducing the overhead per test file to a single
+iptables-restore and iptables-save call each. This was a bit optimistic,
+but the result is still significant - on my rather slow testing VM, a
+full iptables-tests.py run completes in ~7min instead of ~30min (yes,
+it's slow).
 
-Here is the summary with links:
-  - [net,1/3] selftests: netfilter: Test reverse path filtering
-    https://git.kernel.org/netdev/net/c/6e31ce831c63
-  - [net,2/3] netfilter: rpfilter/fib: Populate flowic_l3mdev field
-    https://git.kernel.org/netdev/net/c/acc641ab95b6
-  - [net,3/3] selftests: netfilter: Fix nft_fib.sh for all.rp_filter=1
-    https://git.kernel.org/netdev/net/c/6a91e7270936
+See patch 1 for the implementation details. As a side-effect, rule
+existence checking became much stricter, so the remaining patches in
+this series deal with eliminating those differences:
 
-You are awesome, thank you!
+* Patch 2 avoids having to add '-j CONTINUE' to almost all ebtables
+  rules.
+* Patches 3-10 adjust expected output to reality, mostly adding content
+  the script didn't care about since the old 'output.find(<rule>)'
+  worked fine as long as the output *started* like '<rule>'.
+* Patch 11 Changes output by omitting an obvious default value, so a
+  real functional change.
+* Patch 12 drops another default value (from NFQUEUE target) I'm not
+  sure we should keep.
+
+So patches are roughly sorted by my confidence in correctness. Please
+have (at least) a close look at the last two, I don't want to break
+iptables for anyone just to keep test files small.
+
+Phil Sutter (12):
+  extensions: NFQUEUE: Document queue-balance limitation
+  tests: iptables-test: Implement fast test mode
+  tests: iptables-test: Cover for obligatory -j CONTINUE in ebtables
+  tests: *.t: Fix expected output for simple calls
+  tests: *.t: Fix for hexadecimal output
+  tests: libebt_redirect.t: Plain redirect prints with trailing
+    whitespace
+  tests: libxt_length.t: Fix odd use-case output
+  tests: libxt_recent.t: Add missing default values
+  tests: libxt_tos.t, libxt_TOS.t: Add missing masks in output
+  tests: libebt_vlan.t: Drop trailing whitespace from rules
+  tests: libxt_connlimit.t: Add missing default values
+  tests: *.t: Add missing all-one's netmasks to expected output
+
+ extensions/libebt_log.t      |   2 +-
+ extensions/libebt_nflog.t    |   2 +-
+ extensions/libebt_redirect.t |   2 +-
+ extensions/libebt_vlan.t     |   4 +-
+ extensions/libip6t_NETMAP.t  |   2 +-
+ extensions/libip6t_REJECT.t  |   2 +-
+ extensions/libipt_NETMAP.t   |   2 +-
+ extensions/libipt_REJECT.t   |   2 +-
+ extensions/libxt_CONNMARK.t  |   8 +-
+ extensions/libxt_DSCP.t      |   2 +-
+ extensions/libxt_MARK.t      |   4 +-
+ extensions/libxt_NFQUEUE.c   |   2 +-
+ extensions/libxt_NFQUEUE.man |   2 +
+ extensions/libxt_NFQUEUE.t   |   7 +-
+ extensions/libxt_TOS.t       |  12 +--
+ extensions/libxt_connlimit.t |  12 +--
+ extensions/libxt_connmark.t  |   4 +-
+ extensions/libxt_dscp.t      |   2 +-
+ extensions/libxt_length.t    |   2 +-
+ extensions/libxt_mark.t      |   2 +-
+ extensions/libxt_recent.t    |   4 +-
+ extensions/libxt_tos.t       |   8 +-
+ iptables-test.py             | 163 ++++++++++++++++++++++++++++++++++-
+ 23 files changed, 207 insertions(+), 45 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
