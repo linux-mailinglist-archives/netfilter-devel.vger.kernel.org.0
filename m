@@ -2,58 +2,37 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA195FC435
-	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Oct 2022 13:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16FD5FC529
+	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Oct 2022 14:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbiJLLOD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 12 Oct 2022 07:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
+        id S229807AbiJLMTc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 12 Oct 2022 08:19:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbiJLLNq (ORCPT
+        with ESMTP id S229711AbiJLMTb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 12 Oct 2022 07:13:46 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB62AC1D99;
-        Wed, 12 Oct 2022 04:13:45 -0700 (PDT)
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4MnVM12bWSz688Cb;
-        Wed, 12 Oct 2022 19:10:53 +0800 (CST)
-Received: from lhrpeml500004.china.huawei.com (7.191.163.9) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2375.31; Wed, 12 Oct 2022 13:13:42 +0200
-Received: from [10.122.132.241] (10.122.132.241) by
- lhrpeml500004.china.huawei.com (7.191.163.9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 12 Oct 2022 12:13:42 +0100
-Message-ID: <534c5a0b-4c78-0524-a145-200ae3dea368@huawei.com>
-Date:   Wed, 12 Oct 2022 14:13:41 +0300
+        Wed, 12 Oct 2022 08:19:31 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB0BBEFA0;
+        Wed, 12 Oct 2022 05:19:27 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1oiahi-0002eU-DS; Wed, 12 Oct 2022 14:19:18 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netdev@vger.kernel.org>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        <netfilter-devel@vger.kernel.org>, Florian Westphal <fw@strlen.de>
+Subject: [PATCH net 0/3] netfilter fixes for net
+Date:   Wed, 12 Oct 2022 14:18:59 +0200
+Message-Id: <20221012121902.27738-1-fw@strlen.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH v7 02/18] landlock: refactor
- landlock_find_rule/insert_rule
-Content-Language: ru
-To:     =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-CC:     <willemdebruijn.kernel@gmail.com>, <gnoack3000@gmail.com>,
-        <linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
-        <hukeping@huawei.com>, <anton.sirazetdinov@huawei.com>
-References: <20220829170401.834298-1-konstantin.meskhidze@huawei.com>
- <20220829170401.834298-3-konstantin.meskhidze@huawei.com>
- <431e5311-7072-3a20-af75-d81907b22d61@digikod.net>
- <1ba8c972-1b81-dd85-c24b-83525511083e@huawei.com>
- <01283d8a-3319-af3c-7139-466fe22ca8e4@digikod.net>
-From:   "Konstantin Meskhidze (A)" <konstantin.meskhidze@huawei.com>
-In-Reply-To: <01283d8a-3319-af3c-7139-466fe22ca8e4@digikod.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.122.132.241]
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500004.china.huawei.com (7.191.163.9)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,64 +40,45 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Hello,
 
+This series from Phil Sutter for the *net* tree fixes a problem with a change
+from the 6.1 development phase: the change to nft_fib should have used
+the more recent flowic_l3mdev field.  Pointed out by Guillaume Nault.
+This also makes the older iptables module follow the same pattern.
 
-10/12/2022 1:06 PM, Mickaël Salaün пишет:
-> 
-> On 12/10/2022 10:37, Konstantin Meskhidze (A) wrote:
->> 
->> 
->> 9/6/2022 11:07 AM, Mickaël Salaün пишет:
->>> Good to see such clean commit!
->>>
->>> On 29/08/2022 19:03, Konstantin Meskhidze wrote:
->>>> Adds a new landlock_key union and landlock_id structure to support
->>>> a socket port rule type. Refactors landlock_insert_rule() and
->>>> landlock_find_rule() to support coming network modifications.
->>>
->>>> This patch also adds is_object_pointer() and get_root() helpers.
->>>
->>> Please explain a bit what these helpers do.
->>>
->>>
->>>> Now adding or searching a rule in a ruleset depends on a landlock id
->>>> argument provided in refactored functions mentioned above.
->>>
->>> More explanation:
->>> A struct landlock_id identifies a unique entry in a ruleset: either a
->>> kernel object (e.g inode) or a typed data (e.g. TCP port). There is one
->>> red-black tree per key type.
->>>
->>>>
->>>> Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
->>>
->>> Because most changes come from
->>> https://git.kernel.org/mic/c/8f4104b3dc59e7f110c9b83cdf034d010a2d006f
->>> and
->>> https://git.kernel.org/mic/c/7d6cf40a6f81adf607ad3cc17aaa11e256beeea4
->>> you can append
->>> Co-developed-by: Mickaël Salaün <mic@digikod.net>
->> 
->>     Do I need to add Co-developed-by: Mickaël Salaün <mic@digikod.net>
->>     and Signed-off-by: Mickaël Salaün <mic@digikod.net> or just
->>     Co-developed-by: Mickaël Salaün <mic@digikod.net> ????
->> 
->>     Cause Submiting patches article says:
->>     https://www.kernel.org/doc/html/latest/process/submitting-patches.html
->> 
->>     "...Since Co-developed-by: denotes authorship, every Co-developed-by:
->> must be immediately followed by a Signed-off-by: of the associated
->> co-author...."
->> 
->>     Is this correct signing for this patch:
->> 
->>     Co-developed-by: Mickaël Salaün <mic@digikod.net>
->>     Signed-off-by: Mickaël Salaün <mic@digikod.net>
->>     Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-> 
-> Because I'll merge your patches in my tree, I'll add my Signed-off-by to
-> all patches. You can then just add Co-developed-by after your
-> Signed-off-by for this one and I'll add the rest.
+Also add selftest case and avoid test failure in nft_fib.sh when the
+host environment has set rp_filter=1.
 
-   Ok. I got it. Thanks for the explaning.
-> .
+Please consider pulling this from
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git master
+
+----------------------------------------------------------------
+The following changes since commit 739cfa34518ef3a6789f5f77239073972a387359:
+
+  net/mlx5: Make ASO poll CQ usable in atomic context (2022-10-12 09:16:05 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git master
+
+for you to fetch changes up to 6a91e7270936c5a504af7e0a197d7021e169d281:
+
+  selftests: netfilter: Fix nft_fib.sh for all.rp_filter=1 (2022-10-12 14:08:15 +0200)
+
+----------------------------------------------------------------
+Phil Sutter (3):
+      selftests: netfilter: Test reverse path filtering
+      netfilter: rpfilter/fib: Populate flowic_l3mdev field
+      selftests: netfilter: Fix nft_fib.sh for all.rp_filter=1
+
+ net/ipv4/netfilter/ipt_rpfilter.c            |   2 +-
+ net/ipv4/netfilter/nft_fib_ipv4.c            |   2 +-
+ net/ipv6/netfilter/ip6t_rpfilter.c           |   9 +-
+ net/ipv6/netfilter/nft_fib_ipv6.c            |   5 +-
+ tools/testing/selftests/netfilter/Makefile   |   2 +-
+ tools/testing/selftests/netfilter/nft_fib.sh |   1 +
+ tools/testing/selftests/netfilter/rpath.sh   | 147 +++++++++++++++++++++++++++
+ 7 files changed, 156 insertions(+), 12 deletions(-)
+ create mode 100755 tools/testing/selftests/netfilter/rpath.sh
