@@ -2,43 +2,43 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCB75FC846
-	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Oct 2022 17:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00B75FC844
+	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Oct 2022 17:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbiJLPTp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 12 Oct 2022 11:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43498 "EHLO
+        id S229585AbiJLPTg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 12 Oct 2022 11:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbiJLPTY (ORCPT
+        with ESMTP id S229864AbiJLPTL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 12 Oct 2022 11:19:24 -0400
+        Wed, 12 Oct 2022 11:19:11 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CE5DD8B8
-        for <netfilter-devel@vger.kernel.org>; Wed, 12 Oct 2022 08:19:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A907E312D
+        for <netfilter-devel@vger.kernel.org>; Wed, 12 Oct 2022 08:19:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=jiaZEu+/b5ANA3LdDxyNu8/eAc6uph000iI4kmzYLiw=; b=keM9TEhGj5xqjXnzXXWp4kr7GU
-        E+8FiIDlwQIZaDHkDrhiATtC0/OOiukTkKccQbB5LVG3MhnBBzywUG166J2ZC2VlQ2xsOaVqlFqID
-        KUkVWCzAgpZCr+efLl4qpRxroh0wq6ZwQifTMeezYhGRpbvHyjVnmlbVqijte16PpNS8kFFAshCIe
-        JIU9JXzEKmY7uHdxsOG0kGXVeJIqgvKKZFWk+TJBj0KZUZZok1oKxjSRKL2v8wAeix2fvgWl0p648
-        65z6mLz5pRiFnnEuD0jSkg9i6/22TrmMCHII4OOezUdjZpRIVKM5BEajSw9+5YTG07nlU1G2ZH12u
-        htyPi/gQ==;
+        bh=BHG43aALjjoJdJ33U/T/j9QOU0VyKdlXOQD0yID+HSw=; b=XdaVyBlze68tuFfsEWLNJbns4M
+        YKDAafZwdFzWTqgFNEzGmwmOtTsFPrGxAjcpxxFxXzwNax1ENjN2Q1cWqRTeLTQTTl/WZZsriWJFJ
+        oxmOrR4ELC4QR8Q1BDUHXRmrEViY9Ha4EE42bocNsBS2OXDziC+cRm9e9rycr6wKvsgHZWJTETfiH
+        dcjFour2C3R6tuWIp/fnEhSElMIcUAgBedATaQiuL3O0w7q+Eq8BAE3PgwwQqF/Pxa5mG5kCtezy5
+        xgGYUpGMEqvwevMJ2witf+DCKae6/omJq/F+LOYTrgRsLSBS1kXz0mg28+nTelU7YFSi7ZZDM6Urx
+        puj0FXVA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1oidVr-0002qq-3R; Wed, 12 Oct 2022 17:19:15 +0200
+        id 1oidVg-0002qN-HP; Wed, 12 Oct 2022 17:19:04 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Jan Engelhardt <jengelh@inai.de>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
-Subject: [iptables PATCH v2 06/12] tests: libebt_redirect.t: Plain redirect prints with trailing whitespace
-Date:   Wed, 12 Oct 2022 17:17:56 +0200
-Message-Id: <20221012151802.11339-7-phil@nwl.cc>
+Subject: [iptables PATCH v2 07/12] tests: libxt_length.t: Fix odd use-case output
+Date:   Wed, 12 Oct 2022 17:17:57 +0200
+Message-Id: <20221012151802.11339-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221012151802.11339-1-phil@nwl.cc>
 References: <20221012151802.11339-1-phil@nwl.cc>
@@ -53,24 +53,27 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Eliminating the trailing whitespace is non-trivial due to how ebtables
-extension printing works, so just update the test case instead.
+Specifying the lower boundary suffixed by colon is an undocumented
+feature. Explicitly printing the upper boundary in that case seems sane.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libebt_redirect.t | 2 +-
+ extensions/libxt_length.t | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/extensions/libebt_redirect.t b/extensions/libebt_redirect.t
-index 23858afa3b588..58492b7968153 100644
---- a/extensions/libebt_redirect.t
-+++ b/extensions/libebt_redirect.t
-@@ -1,4 +1,4 @@
- :PREROUTING
- *nat
---j redirect;=;OK
-+-j redirect ;=;OK
- -j redirect --redirect-target RETURN;=;OK
+diff --git a/extensions/libxt_length.t b/extensions/libxt_length.t
+index 0b6624ee069f6..8b70fc317485c 100644
+--- a/extensions/libxt_length.t
++++ b/extensions/libxt_length.t
+@@ -2,7 +2,7 @@
+ -m length --length 1;=;OK
+ -m length --length :2;-m length --length 0:2;OK
+ -m length --length 0:3;=;OK
+--m length --length 4:;=;OK
++-m length --length 4:;-m length --length 4:65535;OK
+ -m length --length 0:65535;=;OK
+ -m length ! --length 0:65535;=;OK
+ -m length --length 0:65536;;FAIL
 -- 
 2.34.1
 
