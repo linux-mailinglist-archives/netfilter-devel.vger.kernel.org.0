@@ -2,43 +2,43 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D00B75FC844
-	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Oct 2022 17:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DACD65FC83E
+	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Oct 2022 17:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbiJLPTg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 12 Oct 2022 11:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43296 "EHLO
+        id S229967AbiJLPTQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 12 Oct 2022 11:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbiJLPTL (ORCPT
+        with ESMTP id S229984AbiJLPSv (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 12 Oct 2022 11:19:11 -0400
+        Wed, 12 Oct 2022 11:18:51 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A907E312D
-        for <netfilter-devel@vger.kernel.org>; Wed, 12 Oct 2022 08:19:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C6FDFB7B
+        for <netfilter-devel@vger.kernel.org>; Wed, 12 Oct 2022 08:18:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=BHG43aALjjoJdJ33U/T/j9QOU0VyKdlXOQD0yID+HSw=; b=XdaVyBlze68tuFfsEWLNJbns4M
-        YKDAafZwdFzWTqgFNEzGmwmOtTsFPrGxAjcpxxFxXzwNax1ENjN2Q1cWqRTeLTQTTl/WZZsriWJFJ
-        oxmOrR4ELC4QR8Q1BDUHXRmrEViY9Ha4EE42bocNsBS2OXDziC+cRm9e9rycr6wKvsgHZWJTETfiH
-        dcjFour2C3R6tuWIp/fnEhSElMIcUAgBedATaQiuL3O0w7q+Eq8BAE3PgwwQqF/Pxa5mG5kCtezy5
-        xgGYUpGMEqvwevMJ2witf+DCKae6/omJq/F+LOYTrgRsLSBS1kXz0mg28+nTelU7YFSi7ZZDM6Urx
-        puj0FXVA==;
+        bh=ZPEs5ya1sJNh76paaNBB3cIubNWwziK/VIlPLZ62VPw=; b=Cx2N8/Vp9DkOju6ib6TOzvcCAM
+        oEThXGknaBR9vghLgkWoQm01vsbhm+GYN9ez2AHSKk+N8N19PskoZwA0g9/FiNigotU1ERF2JjPPD
+        u3tmSWEUSXoOG43pUTDVEogFJiBwC88deHakLfxQJI2CMqsmJQE5TYAuM6/YjcZ9k2T/Vs6oEXW+P
+        GtlqyxxXTJKJvcWh1P8g2S8zr6g52PMEUJyJJTB3XagSXD1+GPsNj0KmGz6Fd2bh5C6+jtm/HSuxu
+        rZXIATXMbuNt9ikyy6JQ2PRY/RC2oq5GEwC7MLlQTtLBTtCx1Vx69EmLAO4iYQ2WwdY1wpkkhPX1Q
+        OjdXtnAw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1oidVg-0002qN-HP; Wed, 12 Oct 2022 17:19:04 +0200
+        id 1oidVF-0002pC-WB; Wed, 12 Oct 2022 17:18:38 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Jan Engelhardt <jengelh@inai.de>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
-Subject: [iptables PATCH v2 07/12] tests: libxt_length.t: Fix odd use-case output
-Date:   Wed, 12 Oct 2022 17:17:57 +0200
-Message-Id: <20221012151802.11339-8-phil@nwl.cc>
+Subject: [iptables PATCH v2 08/12] tests: libxt_recent.t: Add missing default values
+Date:   Wed, 12 Oct 2022 17:17:58 +0200
+Message-Id: <20221012151802.11339-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221012151802.11339-1-phil@nwl.cc>
 References: <20221012151802.11339-1-phil@nwl.cc>
@@ -53,27 +53,29 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Specifying the lower boundary suffixed by colon is an undocumented
-feature. Explicitly printing the upper boundary in that case seems sane.
+The extensions always prints --name, --mask and (default) --rsource
+options.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libxt_length.t | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ extensions/libxt_recent.t | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/extensions/libxt_length.t b/extensions/libxt_length.t
-index 0b6624ee069f6..8b70fc317485c 100644
---- a/extensions/libxt_length.t
-+++ b/extensions/libxt_length.t
-@@ -2,7 +2,7 @@
- -m length --length 1;=;OK
- -m length --length :2;-m length --length 0:2;OK
- -m length --length 0:3;=;OK
---m length --length 4:;=;OK
-+-m length --length 4:;-m length --length 4:65535;OK
- -m length --length 0:65535;=;OK
- -m length ! --length 0:65535;=;OK
- -m length --length 0:65536;;FAIL
+diff --git a/extensions/libxt_recent.t b/extensions/libxt_recent.t
+index 9a83918ea5835..cf23aabc6e63b 100644
+--- a/extensions/libxt_recent.t
++++ b/extensions/libxt_recent.t
+@@ -1,8 +1,8 @@
+ :INPUT,FORWARD,OUTPUT
+--m recent --set;=;OK
++-m recent --set;-m recent --set --name DEFAULT --mask 255.255.255.255 --rsource;OK
+ -m recent --rcheck --hitcount 8 --name foo --mask 255.255.255.255 --rsource;=;OK
+ -m recent --rcheck --hitcount 12 --name foo --mask 255.255.255.255 --rsource;=;OK
+--m recent --update --rttl;=;OK
++-m recent --update --rttl;-m recent --update --rttl --name DEFAULT --mask 255.255.255.255 --rsource;OK
+ -m recent --set --rttl;;FAIL
+ -m recent --rcheck --hitcount 999 --name foo --mask 255.255.255.255 --rsource;;FAIL
+ # nonsensical, but all should load successfully:
 -- 
 2.34.1
 
