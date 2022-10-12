@@ -2,43 +2,43 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D02C15FC845
-	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Oct 2022 17:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6225FC83C
+	for <lists+netfilter-devel@lfdr.de>; Wed, 12 Oct 2022 17:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbiJLPTn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 12 Oct 2022 11:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
+        id S230052AbiJLPTF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 12 Oct 2022 11:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbiJLPTU (ORCPT
+        with ESMTP id S230060AbiJLPSm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 12 Oct 2022 11:19:20 -0400
+        Wed, 12 Oct 2022 11:18:42 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B770E312E
-        for <netfilter-devel@vger.kernel.org>; Wed, 12 Oct 2022 08:19:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8217E313B
+        for <netfilter-devel@vger.kernel.org>; Wed, 12 Oct 2022 08:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=p21sk5rynnJORZ1qJ1gWHsXmBRHS+GM/4n6aYNC41Go=; b=DS8CDCkcQP0PAO0DhZirBKBRxa
-        YQDEAV9CSXRVWI9wS+DLL3l6TF8WwHOq3DFjYS1hAIohZNOGtghCzp2yZ0+Bac0Ow1a8T8PKqwh38
-        WM2EZBDJXzt7Wh+jgoPm/waMP008PTvqDiIaaa/jhS0FEukHzOKKf2N52avFHrl3rRdpMYX5pEk1R
-        WASu0ePOlS0CDYA9HFI/WU4uH/FQK8Ste9IfA9ZSw7LPcAlWUO98DDtYsrwHZxWVUOybL0N3gOv8P
-        M5v3LpGFALTDlwe6Womj7Lzrv6abqZyKb3e9ZDbvW9kIMntN5pdWQ+vO4sJE+f77lCuFf7mpO3tGC
-        JNMhHN4Q==;
+        bh=UwN7/OgpvIP9fqjDCtw1cPTASScbPuai8xDexPQYqZs=; b=OL6F+t4C/YBol/7EzSdRT4SoTm
+        5IFN5vu4Zc0ijiFAPD0s7E/O2AhAWUKUbrJ0G7xahGWDuC1NHEa0sa26eao6Cb1Girm68rbjzrfCs
+        nnq0S/6BiNvu4UROr0/RMxUIIyJBOG0/4b10wa38jCuehxc2JQX5+uG8j2pUsoEoPlRVi6tLE1+Kl
+        Ng8vOBtu89AWmFD9li06eEI6kcKWcMj7yF56T0kipWXAyTgXs3/oXRvadZcVRWUA6cEsmSvOnfkZz
+        WWpoJim8H9x16sY+bEbYzxYFLI/CXW+JtChbxK678DGUm5TaWWuCuP+VxGm8PSBGpQKbxHClw89Ni
+        DA+YNLCg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1oidVl-0002qj-QP; Wed, 12 Oct 2022 17:19:09 +0200
+        id 1oidV5-0002ox-Cs; Wed, 12 Oct 2022 17:18:27 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Jan Engelhardt <jengelh@inai.de>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>
-Subject: [iptables PATCH v2 11/12] tests: libxt_connlimit.t: Add missing default values
-Date:   Wed, 12 Oct 2022 17:18:01 +0200
-Message-Id: <20221012151802.11339-12-phil@nwl.cc>
+Subject: [iptables PATCH v2 12/12] tests: *.t: Add missing all-one's netmasks to expected output
+Date:   Wed, 12 Oct 2022 17:18:02 +0200
+Message-Id: <20221012151802.11339-13-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221012151802.11339-1-phil@nwl.cc>
 References: <20221012151802.11339-1-phil@nwl.cc>
@@ -53,36 +53,64 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This extension always prints --connlimit-mask and (the default)
---connlimit-saddr options.
-
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libxt_connlimit.t | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ extensions/libip6t_NETMAP.t | 2 +-
+ extensions/libipt_NETMAP.t  | 2 +-
+ extensions/libxt_CONNMARK.t | 8 ++++----
+ extensions/libxt_MARK.t     | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/extensions/libxt_connlimit.t b/extensions/libxt_connlimit.t
-index c7ea61e95fbc8..366cea745c653 100644
---- a/extensions/libxt_connlimit.t
-+++ b/extensions/libxt_connlimit.t
-@@ -1,11 +1,11 @@
+diff --git a/extensions/libip6t_NETMAP.t b/extensions/libip6t_NETMAP.t
+index 043562d261243..79d47bf649720 100644
+--- a/extensions/libip6t_NETMAP.t
++++ b/extensions/libip6t_NETMAP.t
+@@ -1,4 +1,4 @@
+ :PREROUTING,INPUT,OUTPUT,POSTROUTING
+ *nat
+ -j NETMAP --to dead::/64;=;OK
+--j NETMAP --to dead::beef;=;OK
++-j NETMAP --to dead::beef;-j NETMAP --to dead::beef/128;OK
+diff --git a/extensions/libipt_NETMAP.t b/extensions/libipt_NETMAP.t
+index 31924b985cd6f..0de856f057d7d 100644
+--- a/extensions/libipt_NETMAP.t
++++ b/extensions/libipt_NETMAP.t
+@@ -1,4 +1,4 @@
+ :PREROUTING,INPUT,OUTPUT,POSTROUTING
+ *nat
+ -j NETMAP --to 1.2.3.0/24;=;OK
+--j NETMAP --to 1.2.3.4;=;OK
++-j NETMAP --to 1.2.3.4;-j NETMAP --to 1.2.3.4/32;OK
+diff --git a/extensions/libxt_CONNMARK.t b/extensions/libxt_CONNMARK.t
+index 79a838fefaa14..c9b2b4a504416 100644
+--- a/extensions/libxt_CONNMARK.t
++++ b/extensions/libxt_CONNMARK.t
+@@ -1,7 +1,7 @@
+ :PREROUTING,FORWARD,OUTPUT,POSTROUTING
+ *mangle
+--j CONNMARK --restore-mark;=;OK
+--j CONNMARK --save-mark;=;OK
+--j CONNMARK --save-mark --nfmask 0xfffffff --ctmask 0xffffffff;-j CONNMARK --save-mark;OK
+--j CONNMARK --restore-mark --nfmask 0xfffffff --ctmask 0xffffffff;-j CONNMARK --restore-mark;OK
++-j CONNMARK --restore-mark;-j CONNMARK --restore-mark --nfmask 0xffffffff --ctmask 0xffffffff;OK
++-j CONNMARK --save-mark;-j CONNMARK --save-mark --nfmask 0xffffffff --ctmask 0xffffffff;OK
++-j CONNMARK --save-mark --nfmask 0xfffffff --ctmask 0xffffffff;=;OK
++-j CONNMARK --restore-mark --nfmask 0xfffffff --ctmask 0xffffffff;=;OK
+ -j CONNMARK;;FAIL
+diff --git a/extensions/libxt_MARK.t b/extensions/libxt_MARK.t
+index 2902a14f06742..ae026dbbce59f 100644
+--- a/extensions/libxt_MARK.t
++++ b/extensions/libxt_MARK.t
+@@ -1,7 +1,7 @@
  :INPUT,FORWARD,OUTPUT
---m connlimit --connlimit-upto 0;=;OK
---m connlimit --connlimit-upto 4294967295;=;OK
---m connlimit --connlimit-upto 4294967296;;FAIL
-+-m connlimit --connlimit-upto 0;-m connlimit --connlimit-upto 0 --connlimit-mask 32 --connlimit-saddr;OK
-+-m connlimit --connlimit-upto 4294967295 --connlimit-mask 32 --connlimit-saddr;=;OK
-+-m connlimit --connlimit-upto 4294967296 --connlimit-mask 32 --connlimit-saddr;;FAIL
- -m connlimit --connlimit-upto -1;;FAIL
---m connlimit --connlimit-above 0;=;OK
---m connlimit --connlimit-above 4294967295;=;OK
---m connlimit --connlimit-above 4294967296;;FAIL
-+-m connlimit --connlimit-above 0;-m connlimit --connlimit-above 0 --connlimit-mask 32 --connlimit-saddr;OK
-+-m connlimit --connlimit-above 4294967295 --connlimit-mask 32 --connlimit-saddr;=;OK
-+-m connlimit --connlimit-above 4294967296 --connlimit-mask 32 --connlimit-saddr;;FAIL
- -m connlimit --connlimit-above -1;;FAIL
- -m connlimit --connlimit-upto 1 --conlimit-above 1;;FAIL
- -m connlimit --connlimit-above 10 --connlimit-saddr;-m connlimit --connlimit-above 10 --connlimit-mask 32 --connlimit-saddr;OK
+ -j MARK --set-xmark 0xfeedcafe/0xfeedcafe;=;OK
+--j MARK --set-xmark 0x0;=;OK
+--j MARK --set-xmark 4294967295;-j MARK --set-xmark 0xffffffff;OK
++-j MARK --set-xmark 0x0;-j MARK --set-xmark 0x0/0xffffffff;OK
++-j MARK --set-xmark 4294967295;-j MARK --set-xmark 0xffffffff/0xffffffff;OK
+ -j MARK --set-xmark 4294967296;;FAIL
+ -j MARK --set-xmark -1;;FAIL
+ -j MARK;;FAIL
 -- 
 2.34.1
 
