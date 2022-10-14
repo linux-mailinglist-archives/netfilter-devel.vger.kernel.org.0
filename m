@@ -2,33 +2,46 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7F65FEB76
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Oct 2022 11:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCDC5FF593
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Oct 2022 23:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbiJNJVg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Oct 2022 05:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40222 "EHLO
+        id S229766AbiJNVrf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 14 Oct 2022 17:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbiJNJVf (ORCPT
+        with ESMTP id S230110AbiJNVrJ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Oct 2022 05:21:35 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BC11BE1E4
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Oct 2022 02:21:33 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1ojGsk-0008TZ-5W; Fri, 14 Oct 2022 11:21:30 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next] netfilter: conntrack: use siphash_4u64
-Date:   Fri, 14 Oct 2022 11:21:21 +0200
-Message-Id: <20221014092121.2994-1-fw@strlen.de>
-X-Mailer: git-send-email 2.37.3
+        Fri, 14 Oct 2022 17:47:09 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04CD1DDDFE
+        for <netfilter-devel@vger.kernel.org>; Fri, 14 Oct 2022 14:46:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=ETkplRSZJztA/0s3BWoKxptSv4geRq+jhhmxptBTQrg=; b=fjyOjj9hB3loFQg4rqUdy7Tses
+        Ryxbh4D7CaKd+xoWhim4KW9SG8ghudMRab3YN2hNRX70XEfiFyrzrMPVWoSf5TyTXpekYG6n4qU1s
+        4jjsNvjnVvTZgFyUMN8TYbtkzNGGv/qhcljPmqo5/WayfugtwjFSUvO804qBW4fPWI9eyN+aa1TUn
+        cpejsQi5OgHDVMNG6dwlwD2JTjJBNogCpIpMERGqN+1nx1LBzEENZ+MhkpVd48Kdti+0isoSxOTlf
+        EZVsDutmkuKFBI1g7VEqrxrU5OcSfR2Oq6y2mTYGgX0pE/9qnFu0a65B5BowebCBM2KZwhGljlWuF
+        jPJzJ1LQ==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1ojSVX-0000aI-MS; Fri, 14 Oct 2022 23:46:19 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nf-next PATCH 0/2] Support resetting rules' state
+Date:   Fri, 14 Oct 2022 23:45:57 +0200
+Message-Id: <20221014214559.22254-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -36,61 +49,65 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This function is used for every packet. siphash_4u64 is
-about 25% faster compared to buffer+memset+siphash_unaligned as
-reported by perf-diff.
+In order to "zero" a rule (in the 'iptables -Z' sense), users had to
+dump (parts of) the ruleset in stateless form and restore it again after
+removing the dumped parts.
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/netfilter/nf_conntrack_core.c | 31 +++++++++++++------------------
- 1 file changed, 13 insertions(+), 18 deletions(-)
+Introduce a simpler method to reset any stateful elements of a rule or
+all rules of a chain/table/family. Affects both counter and quota
+expressions.
 
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index f97bda06d2a9..48c0c146cef1 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -211,28 +211,23 @@ static u32 hash_conntrack_raw(const struct nf_conntrack_tuple *tuple,
- 			      unsigned int zoneid,
- 			      const struct net *net)
- {
--	struct {
--		struct nf_conntrack_man src;
--		union nf_inet_addr dst_addr;
--		unsigned int zone;
--		u32 net_mix;
--		u16 dport;
--		u16 proto;
--	} __aligned(SIPHASH_ALIGNMENT) combined;
-+	u64 a, b, c, d;
- 
- 	get_random_once(&nf_conntrack_hash_rnd, sizeof(nf_conntrack_hash_rnd));
- 
--	memset(&combined, 0, sizeof(combined));
--
- 	/* The direction must be ignored, so handle usable members manually. */
--	combined.src = tuple->src;
--	combined.dst_addr = tuple->dst.u3;
--	combined.zone = zoneid;
--	combined.net_mix = net_hash_mix(net);
--	combined.dport = (__force __u16)tuple->dst.u.all;
--	combined.proto = tuple->dst.protonum;
--
--	return (u32)siphash(&combined, sizeof(combined), &nf_conntrack_hash_rnd);
-+	a = (u64)tuple->src.u3.all[0] << 32 | tuple->src.u3.all[1];
-+	b = (u64)tuple->src.u3.all[2] << 32 | tuple->src.u3.all[3];
-+
-+	c = (u64)tuple->dst.u3.all[0] << 32 | tuple->dst.u3.all[1];
-+	d = (u64)tuple->dst.u3.all[1] << 32 | tuple->dst.u3.all[2];
-+
-+	a ^= (__force __u64)tuple->dst.u.all;
-+	b += tuple->dst.protonum;
-+	c ^= net_hash_mix(net);
-+	d += zoneid;
-+
-+	return (u32)siphash_4u64(a, b, c, d, &nf_conntrack_hash_rnd);
- }
- 
- static u32 scale_hash(u32 hash)
+Phil Sutter (2):
+  netfilter: nf_tables: Extend nft_expr_ops::dump callback parameters
+  netfilter: nf_tables: Introduce NFT_MSG_GETRULE_RESET
+
+ include/net/netfilter/nf_tables.h        |  5 ++-
+ include/net/netfilter/nft_fib.h          |  2 +-
+ include/net/netfilter/nft_meta.h         |  4 +-
+ include/net/netfilter/nft_reject.h       |  3 +-
+ include/uapi/linux/netfilter/nf_tables.h |  1 +
+ net/ipv4/netfilter/nft_dup_ipv4.c        |  3 +-
+ net/ipv6/netfilter/nft_dup_ipv6.c        |  3 +-
+ net/netfilter/nf_tables_api.c            | 49 ++++++++++++++++--------
+ net/netfilter/nft_bitwise.c              |  6 ++-
+ net/netfilter/nft_byteorder.c            |  3 +-
+ net/netfilter/nft_cmp.c                  |  9 +++--
+ net/netfilter/nft_compat.c               |  9 +++--
+ net/netfilter/nft_connlimit.c            |  3 +-
+ net/netfilter/nft_counter.c              |  5 ++-
+ net/netfilter/nft_ct.c                   |  6 ++-
+ net/netfilter/nft_dup_netdev.c           |  3 +-
+ net/netfilter/nft_dynset.c               |  7 ++--
+ net/netfilter/nft_exthdr.c               |  9 +++--
+ net/netfilter/nft_fib.c                  |  2 +-
+ net/netfilter/nft_flow_offload.c         |  3 +-
+ net/netfilter/nft_fwd_netdev.c           |  6 ++-
+ net/netfilter/nft_hash.c                 |  4 +-
+ net/netfilter/nft_immediate.c            |  3 +-
+ net/netfilter/nft_last.c                 |  3 +-
+ net/netfilter/nft_limit.c                |  5 ++-
+ net/netfilter/nft_log.c                  |  3 +-
+ net/netfilter/nft_lookup.c               |  3 +-
+ net/netfilter/nft_masq.c                 |  3 +-
+ net/netfilter/nft_meta.c                 |  5 ++-
+ net/netfilter/nft_nat.c                  |  3 +-
+ net/netfilter/nft_numgen.c               |  6 ++-
+ net/netfilter/nft_objref.c               |  6 ++-
+ net/netfilter/nft_osf.c                  |  3 +-
+ net/netfilter/nft_payload.c              |  6 ++-
+ net/netfilter/nft_queue.c                |  6 ++-
+ net/netfilter/nft_quota.c                |  5 ++-
+ net/netfilter/nft_range.c                |  3 +-
+ net/netfilter/nft_redir.c                |  3 +-
+ net/netfilter/nft_reject.c               |  3 +-
+ net/netfilter/nft_rt.c                   |  2 +-
+ net/netfilter/nft_socket.c               |  2 +-
+ net/netfilter/nft_synproxy.c             |  3 +-
+ net/netfilter/nft_tproxy.c               |  2 +-
+ net/netfilter/nft_tunnel.c               |  2 +-
+ net/netfilter/nft_xfrm.c                 |  2 +-
+ 45 files changed, 146 insertions(+), 81 deletions(-)
+
 -- 
-2.37.3
+2.34.1
 
