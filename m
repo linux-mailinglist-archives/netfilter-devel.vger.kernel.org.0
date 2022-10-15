@@ -2,145 +2,128 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E815FF7E2
-	for <lists+netfilter-devel@lfdr.de>; Sat, 15 Oct 2022 03:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD985FF9BA
+	for <lists+netfilter-devel@lfdr.de>; Sat, 15 Oct 2022 13:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbiJOBgd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Oct 2022 21:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49184 "EHLO
+        id S229633AbiJOLDQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 15 Oct 2022 07:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbiJOBgd (ORCPT
+        with ESMTP id S229618AbiJOLDQ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Oct 2022 21:36:33 -0400
-Received: from novek.ru (unknown [213.148.174.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400DB7E831;
-        Fri, 14 Oct 2022 18:36:28 -0700 (PDT)
-Received: from [192.168.0.18] (unknown [37.228.234.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by novek.ru (Postfix) with ESMTPSA id 95D22504EAC;
-        Sat, 15 Oct 2022 04:32:22 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 novek.ru 95D22504EAC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=novek.ru; s=mail;
-        t=1665797544; bh=kgterR90022MeqVawPfrmSN5YtUXZMrRRA+Z0EeYaA8=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=QbOQiVMdgL8Nzgqj9hen6WCkmVaEpc/PzWucGxW+F4ZmK25wh7DeGGjiBPR9AaO6O
-         UZOE5JYzs+GGcO+jgR1U8KtzkmqF/dfUiVkqUncH3qiCPbV/O1Wf7WzJo/VudRP/nX
-         rb0HQYRLPksDmCt/6mFCxIW4WbIEqlbqKutaG8pM=
-Message-ID: <3a0c7699-231b-9339-7195-9c7536474054@novek.ru>
-Date:   Sat, 15 Oct 2022 02:35:52 +0100
+        Sat, 15 Oct 2022 07:03:16 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972464F6A7
+        for <netfilter-devel@vger.kernel.org>; Sat, 15 Oct 2022 04:03:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=mjsM4VEoCNGGbjKrq37QNrLk4gbaUfZGHx9G8mESysc=; b=CiYDj36XHsPrP3Izt5NOaMQwRm
+        WRfZpayLwVfQHBbJjoOv44TX3rAB3WpLYwlm7R5tZA4RsvePxiu2wFEeHqbaG2aWJojNG0uA90FU0
+        VUNP1YJMgu9JZGI17Za/z8XnT2q7Qy0bNIuUQ1lUEwlXfdnmeh09FE8iB+08qNebr/yDOsre4VPNB
+        fMuc6k+BMcS264+lDjCp5BBy0dEH6PDJQ2wnJcwwgGKQZWyhXi2IsGLhsaO+1eAAzfcRW8J8seVbV
+        9tdzrwfFrmgclwJsf4vl1x21DD0+OGI46w+4OSe7aqWLdcD7IOoM4PYX3yyHchGLFYR8zzLW+PfBn
+        sQp9wwwg==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1ojewi-000791-Vm
+        for netfilter-devel@vger.kernel.org; Sat, 15 Oct 2022 13:03:13 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 1/2] tests: Adjust testsuite return codes to automake guidelines
+Date:   Sat, 15 Oct 2022 13:02:55 +0200
+Message-Id: <20221015110256.15921-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: bridge:fragmented packets dropped by bridge
-Content-Language: en-US
-To:     Vyacheslav Salnikov <snordicstr16@gmail.com>,
-        netfilter-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <CACzz7uzbSVpLu8iqBYXTULr2aUW_9FDdkEVozK+r-BiM2rMukw@mail.gmail.com>
-From:   Vadim Fedorenko <vfedorenko@novek.ru>
-In-Reply-To: <CACzz7uzbSVpLu8iqBYXTULr2aUW_9FDdkEVozK+r-BiM2rMukw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On 07.10.2022 12:21, Vyacheslav Salnikov wrote:
-> Hi.
-> 
-> I switched from kernel versions 4.9 to 5.15 and found that the MTU on
-> the interfaces in the bridge does not change.
-> For example:
-> I have the following bridge:
-> bridge      interface
-> br0          sw1
->                 sw2
->                 sw3
-> 
-> And I change with ifconfig MTU.
-> I see that br0 sw1..sw3 has changed MTU from 1500 -> 1982.
-> 
-> But if i send a ping through these interfaces, I get 1500(I added
-> prints for output)
-> I investigated the code and found the reason:
-> The following commit came in the new kernel:
-> https://github.com/torvalds/linux/commit/ac6627a28dbfb5d96736544a00c3938fa7ea6dfb
-> 
-> And the behavior of the MTU setting has changed:
->>
->> Kernel 4.9:
->> if (net->ipv4.sysctl_ip_fwd_use_pmtu ||
->>     ip_mtu_locked(dst) ||
->>     !forwarding)  <--- True
->> return dst_mtu(dst) <--- 1982
->>
->>
->> / 'forwarding = true' case should always honour route mtu /
->> mtu = dst_metric_raw(dst, RTAX_MTU);
->> if (mtu)
->> return mtu;
-> 
-> 
-> 
-> Kernel 5.15:
->>
->> if (READ_ONCE(net->ipv4.sysctl_ip_fwd_use_pmtu) ||
->>     ip_mtu_locked(dst) ||
->>     !forwarding) { <--- True
->> mtu = rt->rt_pmtu;  <--- 0
->> if (mtu && time_before(jiffies, rt->dst.expires)) <-- False
->> goto out;
->> }
->>
->> / 'forwarding = true' case should always honour route mtu /
->> mtu = dst_metric_raw(dst, RTAX_MTU); <---- 1500
->> if (mtu) <--- True
->> goto out;
-> 
-> As I see from the code in the end takes mtu from br_dst_default_metrics
->> static const u32 br_dst_default_metrics[RTAX_MAX] = {
->> [RTAX_MTU - 1] = 1500,
->> };
-> 
-> Why is rt_pmtu now used instead of dst_mtu?
-> Why is forwarding = False called with dst_metric_raw?
-> Maybe we should add processing when mtu = rt->rt_pmtu == 0?
-> Could this be an error?
-> 
+As per the manual[1]:
 
-Can you share kernel configs for both versions? Actually only one config value
-is needed - CONFIG_BRIDGE_NETFILTER.
+"When no test protocol is in use, an exit status of 0 from a test script
+will denote a success, an exit status of 77 a skipped test, an exit
+status of 99 a hard error, and any other exit status will denote a
+failure."
 
-It will help me investigate the issue.
+[1] https://www.gnu.org/software/automake/manual/html_node/Scripts_002dbased-Testsuites.html
 
-> 
-> I found a thread discussing a similar problem. It suggested porting
-> the next patch:
-> Signed-off-by: Rundong Ge <rdong.ge@gmail.com>
-> ---
->   include/net/ip.h | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/net/ip.h b/include/net/ip.h
-> index 29d89de..0512de3 100644
-> --- a/include/net/ip.h
-> +++ b/include/net/ip.h
-> @@ -450,6 +450,8 @@ static inline unsigned int
-> ip_dst_mtu_maybe_forward(const struct dst_entry *dst,
->   static inline unsigned int ip_skb_dst_mtu(struct sock *sk,
->      const struct sk_buff *skb)
->   {
-> + if ((skb_dst(skb)->flags & DST_FAKE_RTABLE) && skb->dev)
-> + return min(skb->dev->mtu, IP_MAX_MTU);
->    if (!sk || !sk_fullsock(sk) || ip_sk_use_pmtu(sk)) {
->    bool forwarding = IPCB(skb)->flags & IPSKB_FORWARDED;
-> 
-> 
-> Why was this patch not accepted in the end?
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables-test.py                  | 2 +-
+ iptables/tests/shell/run-tests.sh | 4 +++-
+ xlate-test.py                     | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/iptables-test.py b/iptables-test.py
+index dc031c2b60450..de1e1e95fda55 100755
+--- a/iptables-test.py
++++ b/iptables-test.py
+@@ -579,7 +579,7 @@ STDERR_IS_TTY = sys.stderr.isatty()
+ 
+     if os.getuid() != 0:
+         print("You need to be root to run this, sorry", file=sys.stderr)
+-        return
++        return 77
+ 
+     if not args.netns and not args.no_netns and not spawn_netns():
+         print("Cannot run in own namespace, connectivity might break",
+diff --git a/iptables/tests/shell/run-tests.sh b/iptables/tests/shell/run-tests.sh
+index 7878760fdcc4d..e89f642c516d0 100755
+--- a/iptables/tests/shell/run-tests.sh
++++ b/iptables/tests/shell/run-tests.sh
+@@ -21,7 +21,6 @@ EOF
+ 
+ msg_error() {
+         echo "E: $1 ..." >&2
+-        exit 1
+ }
+ 
+ msg_warn() {
+@@ -34,10 +33,12 @@ msg_info() {
+ 
+ if [ "$(id -u)" != "0" ] ; then
+         msg_error "this requires root!"
++        exit 77
+ fi
+ 
+ if [ ! -d "$TESTDIR" ] ; then
+         msg_error "missing testdir $TESTDIR"
++        exit 99
+ fi
+ 
+ # support matching repeated pattern in SINGLE check below
+@@ -76,6 +77,7 @@ while [ -n "$1" ]; do
+ 		;;
+ 	*)
+ 		msg_error "unknown parameter '$1'"
++		exit 99
+ 		;;
+ 	esac
+ done
+diff --git a/xlate-test.py b/xlate-test.py
+index 03bef7e2e5934..9c590f7ebf05e 100755
+--- a/xlate-test.py
++++ b/xlate-test.py
+@@ -110,7 +110,7 @@ xtables_nft_multi = 'xtables-nft-multi'
+                 tests, passed, failed, errors = run_test(args.test, payload)
+         except IOError:
+             print(red("Error: ") + "test file does not exist", file=sys.stderr)
+-            return -1
++            return 99
+     else:
+         files, tests, passed, failed, errors = load_test_files()
+ 
+-- 
+2.34.1
 
