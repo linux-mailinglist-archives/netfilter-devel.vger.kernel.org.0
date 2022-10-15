@@ -2,42 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD985FF9BA
-	for <lists+netfilter-devel@lfdr.de>; Sat, 15 Oct 2022 13:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5737A5FF9B9
+	for <lists+netfilter-devel@lfdr.de>; Sat, 15 Oct 2022 13:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbiJOLDQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 15 Oct 2022 07:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43274 "EHLO
+        id S229607AbiJOLDL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 15 Oct 2022 07:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbiJOLDQ (ORCPT
+        with ESMTP id S229618AbiJOLDK (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 15 Oct 2022 07:03:16 -0400
+        Sat, 15 Oct 2022 07:03:10 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972464F6A7
-        for <netfilter-devel@vger.kernel.org>; Sat, 15 Oct 2022 04:03:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE724F6A5
+        for <netfilter-devel@vger.kernel.org>; Sat, 15 Oct 2022 04:03:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=mjsM4VEoCNGGbjKrq37QNrLk4gbaUfZGHx9G8mESysc=; b=CiYDj36XHsPrP3Izt5NOaMQwRm
-        WRfZpayLwVfQHBbJjoOv44TX3rAB3WpLYwlm7R5tZA4RsvePxiu2wFEeHqbaG2aWJojNG0uA90FU0
-        VUNP1YJMgu9JZGI17Za/z8XnT2q7Qy0bNIuUQ1lUEwlXfdnmeh09FE8iB+08qNebr/yDOsre4VPNB
-        fMuc6k+BMcS264+lDjCp5BBy0dEH6PDJQ2wnJcwwgGKQZWyhXi2IsGLhsaO+1eAAzfcRW8J8seVbV
-        9tdzrwfFrmgclwJsf4vl1x21DD0+OGI46w+4OSe7aqWLdcD7IOoM4PYX3yyHchGLFYR8zzLW+PfBn
-        sQp9wwwg==;
+        bh=qkFXmVdOsWwadp0BpU/zAMHvyziDqeFRF2bEi/5GLyU=; b=ihsi6GcOB4RY7hGIl8QU9izM6E
+        /Rptgbro9HhF5vgR+abRLo0H+M+bit61jbXN6qJFdYwmShlTgTazW9/P534ckENRvmmX2Hry9qO5S
+        RHByxy3lpLTAYJ9KPfc0gQRiwZyrToPCUrYDsvAA11fnCn0qU4cNBcrui+Jwjc8CJwUqK77Rv09kY
+        3ICWeIAYOHrqAhPW/3WpfrNIQPigSbxOherEcY58gNFFMexpgmsC5WseQzQbhTNdP43iwO/cPUxVr
+        duq8c22L5Ss1MawnbDCyv2yaXFEGs40DAKFhGBhZ4kQS9OV8umGPpn5f9QIcsoA+xNLjTmj1m3ts6
+        RSEzLsKg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1ojewi-000791-Vm
-        for netfilter-devel@vger.kernel.org; Sat, 15 Oct 2022 13:03:13 +0200
+        id 1ojewc-00078t-K9
+        for netfilter-devel@vger.kernel.org; Sat, 15 Oct 2022 13:03:07 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 1/2] tests: Adjust testsuite return codes to automake guidelines
-Date:   Sat, 15 Oct 2022 13:02:55 +0200
-Message-Id: <20221015110256.15921-1-phil@nwl.cc>
+Subject: [iptables PATCH 2/2] Makefile.am: Integrate testsuites
+Date:   Sat, 15 Oct 2022 13:02:56 +0200
+Message-Id: <20221015110256.15921-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221015110256.15921-1-phil@nwl.cc>
+References: <20221015110256.15921-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -49,81 +51,74 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-As per the manual[1]:
-
-"When no test protocol is in use, an exit status of 0 from a test script
-will denote a success, an exit status of 77 a skipped test, an exit
-status of 99 a hard error, and any other exit status will denote a
-failure."
-
-[1] https://www.gnu.org/software/automake/manual/html_node/Scripts_002dbased-Testsuites.html
+Support calling 'make check' in topdir to run all three testsuites.
+While updating .gitignore, also add 'configure~' my autotools create and
+the tags file.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables-test.py                  | 2 +-
- iptables/tests/shell/run-tests.sh | 4 +++-
- xlate-test.py                     | 2 +-
- 3 files changed, 5 insertions(+), 3 deletions(-)
+ .gitignore                | 12 ++++++++++++
+ Makefile.am               |  2 ++
+ extensions/GNUmakefile.in |  5 ++++-
+ 3 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/iptables-test.py b/iptables-test.py
-index dc031c2b60450..de1e1e95fda55 100755
---- a/iptables-test.py
-+++ b/iptables-test.py
-@@ -579,7 +579,7 @@ STDERR_IS_TTY = sys.stderr.isatty()
+diff --git a/.gitignore b/.gitignore
+index a206fb4870bc8..ec4e44cad8aa7 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -20,6 +20,7 @@ Makefile.in
+ /build-aux/
+ /config.*
+ /configure
++/configure~
+ /libtool
+ /stamp-h1
+ /iptables/iptables-apply.8
+@@ -29,3 +30,14 @@ Makefile.in
  
-     if os.getuid() != 0:
-         print("You need to be root to run this, sorry", file=sys.stderr)
--        return
-+        return 77
+ # vim/nano swap file
+ *.swp
++
++/tags
++
++# make check results
++/test-suite.log
++/iptables-test.py.log
++/iptables-test.py.trs
++/xlate-test.py.log
++/xlate-test.py.trs
++iptables/tests/shell/run-tests.sh.log
++iptables/tests/shell/run-tests.sh.trs
+diff --git a/Makefile.am b/Makefile.am
+index 799bf8b81c74a..4574b55e2433d 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -31,3 +31,5 @@ endif
  
-     if not args.netns and not args.no_netns and not spawn_netns():
-         print("Cannot run in own namespace, connectivity might break",
-diff --git a/iptables/tests/shell/run-tests.sh b/iptables/tests/shell/run-tests.sh
-index 7878760fdcc4d..e89f642c516d0 100755
---- a/iptables/tests/shell/run-tests.sh
-+++ b/iptables/tests/shell/run-tests.sh
-@@ -21,7 +21,6 @@ EOF
+ config.status: extensions/GNUmakefile.in \
+ 	include/xtables-version.h.in
++
++TESTS = xlate-test.py iptables-test.py iptables/tests/shell/run-tests.sh
+diff --git a/extensions/GNUmakefile.in b/extensions/GNUmakefile.in
+index 3c68f8decd13f..f20ea4fd95eae 100644
+--- a/extensions/GNUmakefile.in
++++ b/extensions/GNUmakefile.in
+@@ -79,7 +79,7 @@ targets_install :=
  
- msg_error() {
-         echo "E: $1 ..." >&2
--        exit 1
- }
+ .SECONDARY:
  
- msg_warn() {
-@@ -34,10 +33,12 @@ msg_info() {
+-.PHONY: all install uninstall clean distclean FORCE
++.PHONY: all install uninstall clean distclean FORCE check
  
- if [ "$(id -u)" != "0" ] ; then
-         msg_error "this requires root!"
-+        exit 77
- fi
+ all: ${targets}
  
- if [ ! -d "$TESTDIR" ] ; then
-         msg_error "missing testdir $TESTDIR"
-+        exit 99
- fi
+@@ -307,3 +307,6 @@ matches.man: .initext.dd .initextb.dd .initexta.dd .initext4.dd .initext6.dd $(w
  
- # support matching repeated pattern in SINGLE check below
-@@ -76,6 +77,7 @@ while [ -n "$1" ]; do
- 		;;
- 	*)
- 		msg_error "unknown parameter '$1'"
-+		exit 99
- 		;;
- 	esac
- done
-diff --git a/xlate-test.py b/xlate-test.py
-index 03bef7e2e5934..9c590f7ebf05e 100755
---- a/xlate-test.py
-+++ b/xlate-test.py
-@@ -110,7 +110,7 @@ xtables_nft_multi = 'xtables-nft-multi'
-                 tests, passed, failed, errors = run_test(args.test, payload)
-         except IOError:
-             print(red("Error: ") + "test file does not exist", file=sys.stderr)
--            return -1
-+            return 99
-     else:
-         files, tests, passed, failed, errors = load_test_files()
- 
+ targets.man: .initext.dd .initextb.dd .initexta.dd .initext4.dd .initext6.dd $(wildcard ${srcdir}/lib*.man)
+ 	$(call man_run,$(call ex_targets,${pfx_build_mod} ${pfb_build_mod} ${pfa_build_mod} ${pf4_build_mod} ${pf6_build_mod} ${pfx_symlinks}))
++
++# empty check target to satisfy 'make check' in topdir
++check:
 -- 
 2.34.1
 
