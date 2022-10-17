@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25327600D6C
-	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Oct 2022 13:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D812600D69
+	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Oct 2022 13:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbiJQLE3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 17 Oct 2022 07:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
+        id S230186AbiJQLE2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 17 Oct 2022 07:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbiJQLEW (ORCPT
+        with ESMTP id S230193AbiJQLEW (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 17 Oct 2022 07:04:22 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 393562DA
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9E86CF1
         for <netfilter-devel@vger.kernel.org>; Mon, 17 Oct 2022 04:04:20 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft,v2 09/16] tests: py: add gre tests
-Date:   Mon, 17 Oct 2022 13:04:01 +0200
-Message-Id: <20221017110408.742223-10-pablo@netfilter.org>
+Subject: [PATCH nft,v2 10/16] doc: add gre matching expression
+Date:   Mon, 17 Oct 2022 13:04:02 +0200
+Message-Id: <20221017110408.742223-11-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221017110408.742223-1-pablo@netfilter.org>
 References: <20221017110408.742223-1-pablo@netfilter.org>
@@ -33,126 +33,55 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Document new vxlan matching expression. This includes support for
+matching the encapsulated ethernet frame layer 3 and 4 headers.
+
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- tests/py/inet/gre.t         | 22 +++++++++++
- tests/py/inet/gre.t.payload | 78 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 100 insertions(+)
- create mode 100644 tests/py/inet/gre.t
- create mode 100644 tests/py/inet/gre.t.payload
+ doc/payload-expression.txt | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/tests/py/inet/gre.t b/tests/py/inet/gre.t
-new file mode 100644
-index 000000000000..a3e046a1aea5
---- /dev/null
-+++ b/tests/py/inet/gre.t
-@@ -0,0 +1,22 @@
-+:input;type filter hook input priority 0
-+:ingress;type filter hook ingress device lo priority 0
-+:egress;type filter hook egress device lo priority 0
+diff --git a/doc/payload-expression.txt b/doc/payload-expression.txt
+index c80198878c1a..86e364713953 100644
+--- a/doc/payload-expression.txt
++++ b/doc/payload-expression.txt
+@@ -532,6 +532,36 @@ compression Parameter Index |
+ integer (16 bit)
+ |============================
+ 
++GRE HEADER EXPRESSION
++~~~~~~~~~~~~~~~~~~~~~~~
++[verse]
++*gre* {*flags* | *version* | *protocol*}
++*gre* *ip* {*version* | *hdrlength* | *dscp* | *ecn* | *length* | *id* | *frag-off* | *ttl* | *protocol* | *checksum* | *saddr* | *daddr* }
++*gre* *ip6* {*version* | *dscp* | *ecn* | *flowlabel* | *length* | *nexthdr* | *hoplimit* | *saddr* | *daddr*}
 +
-+*ip;test-ip4;input
-+*ip6;test-ip6;input
-+*inet;test-inet;input
-+*netdev;test-netdev;ingress,egress
++The gre expression is used to match on the gre header fields. This expression
++also allows to match on the IPv4 or IPv6 packet within the gre header.
 +
-+gre version 0;ok
-+gre ip saddr 10.141.11.2;ok
-+gre ip saddr 10.141.11.0/24;ok
-+gre ip protocol 1;ok
-+gre udp sport 8888;ok
-+gre icmp type echo-reply;ok
-+gre ether saddr 62:87:4d:d6:19:05;fail
-+gre vlan id 10;fail
-+gre ip dscp 0x02;ok
-+gre ip dscp 0x02;ok
-+gre ip saddr . gre ip daddr { 1.2.3.4 . 4.3.2.1 };ok
++.GRE header expression
++[options="header"]
++|==================
++|Keyword| Description| Type
++|flags|
++checksum, routing, key, sequence and strict source route flags|
++integer (5 bit)
++|version|
++gre version field, 0 for GRE and 1 for PPTP|
++integer (3 bit)
++|protocol|
++EtherType of encapsulated packet|
++integer (16 bit)
++|==================
 +
-+gre ip saddr set 1.2.3.4;fail
-diff --git a/tests/py/inet/gre.t.payload b/tests/py/inet/gre.t.payload
-new file mode 100644
-index 000000000000..333133ede415
---- /dev/null
-+++ b/tests/py/inet/gre.t.payload
-@@ -0,0 +1,78 @@
-+# gre version 0
-+ip test-ip4 input
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x0000002f ]
-+  [ payload load 1b @ transport header + 1 => reg 1 ]
-+  [ bitwise reg 1 = ( reg 1 & 0x00000007 ) ^ 0x00000000 ]
-+  [ cmp eq reg 1 0x00000000 ]
++.Matching inner IPv4 destination address encapsulated in gre
++------------------------------------------------------------
++netdev filter ingress gre ip daddr 9.9.9.9 counter
++------------------------------------------------------------
 +
-+# gre ip saddr 10.141.11.2
-+ip test-ip4 input
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x0000002f ]
-+  [ inner type 3 hdrsize 4 flags c [ meta load protocol => reg 1 ] ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ inner type 3 hdrsize 4 flags c [ payload load 4b @ network header + 12 => reg 1 ] ]
-+  [ cmp eq reg 1 0x020b8d0a ]
-+
-+# gre ip saddr 10.141.11.0/24
-+ip test-ip4 input
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x0000002f ]
-+  [ inner type 3 hdrsize 4 flags c [ meta load protocol => reg 1 ] ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ inner type 3 hdrsize 4 flags c [ payload load 3b @ network header + 12 => reg 1 ] ]
-+  [ cmp eq reg 1 0x000b8d0a ]
-+
-+# gre ip protocol 1
-+ip test-ip4 input
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x0000002f ]
-+  [ inner type 3 hdrsize 4 flags c [ meta load protocol => reg 1 ] ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ inner type 3 hdrsize 4 flags c [ payload load 1b @ network header + 9 => reg 1 ] ]
-+  [ cmp eq reg 1 0x00000001 ]
-+
-+# gre udp sport 8888
-+ip test-ip4 input
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x0000002f ]
-+  [ inner type 3 hdrsize 4 flags c [ meta load l4proto => reg 1 ] ]
-+  [ cmp eq reg 1 0x00000011 ]
-+  [ inner type 3 hdrsize 4 flags c [ payload load 2b @ transport header + 0 => reg 1 ] ]
-+  [ cmp eq reg 1 0x0000b822 ]
-+
-+# gre icmp type echo-reply
-+ip test-ip4 input
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x0000002f ]
-+  [ inner type 3 hdrsize 4 flags c [ meta load protocol => reg 1 ] ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ inner type 3 hdrsize 4 flags c [ meta load l4proto => reg 1 ] ]
-+  [ cmp eq reg 1 0x00000001 ]
-+  [ inner type 3 hdrsize 4 flags c [ payload load 1b @ transport header + 0 => reg 1 ] ]
-+  [ cmp eq reg 1 0x00000000 ]
-+
-+# gre ip dscp 0x02
-+ip test-ip4 input
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x0000002f ]
-+  [ inner type 3 hdrsize 4 flags c [ meta load protocol => reg 1 ] ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ inner type 3 hdrsize 4 flags c [ payload load 1b @ network header + 1 => reg 1 ] ]
-+  [ bitwise reg 1 = ( reg 1 & 0x000000fc ) ^ 0x00000000 ]
-+  [ cmp eq reg 1 0x00000008 ]
-+
-+# gre ip saddr . gre ip daddr { 1.2.3.4 . 4.3.2.1 }
-+__set%d test-ip4 3 size 1
-+__set%d test-ip4 0
-+	element 04030201 01020304  : 0 [end]
-+ip test-ip4 input
-+  [ meta load l4proto => reg 1 ]
-+  [ cmp eq reg 1 0x0000002f ]
-+  [ inner type 3 hdrsize 4 flags c [ meta load protocol => reg 1 ] ]
-+  [ cmp eq reg 1 0x00000008 ]
-+  [ inner type 3 hdrsize 4 flags c [ payload load 4b @ network header + 12 => reg 1 ] ]
-+  [ inner type 3 hdrsize 4 flags c [ payload load 4b @ network header + 16 => reg 9 ] ]
-+  [ lookup reg 1 set __set%d ]
-+
+ VXLAN HEADER EXPRESSION
+ ~~~~~~~~~~~~~~~~~~~~~~~
+ [verse]
 -- 
 2.30.2
 
