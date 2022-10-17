@@ -2,123 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5737A5FF9B9
-	for <lists+netfilter-devel@lfdr.de>; Sat, 15 Oct 2022 13:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3463F600D5A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Oct 2022 13:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbiJOLDL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 15 Oct 2022 07:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        id S229909AbiJQLEF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 17 Oct 2022 07:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbiJOLDK (ORCPT
+        with ESMTP id S231195AbiJQLDn (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 15 Oct 2022 07:03:10 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE724F6A5
-        for <netfilter-devel@vger.kernel.org>; Sat, 15 Oct 2022 04:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=qkFXmVdOsWwadp0BpU/zAMHvyziDqeFRF2bEi/5GLyU=; b=ihsi6GcOB4RY7hGIl8QU9izM6E
-        /Rptgbro9HhF5vgR+abRLo0H+M+bit61jbXN6qJFdYwmShlTgTazW9/P534ckENRvmmX2Hry9qO5S
-        RHByxy3lpLTAYJ9KPfc0gQRiwZyrToPCUrYDsvAA11fnCn0qU4cNBcrui+Jwjc8CJwUqK77Rv09kY
-        3ICWeIAYOHrqAhPW/3WpfrNIQPigSbxOherEcY58gNFFMexpgmsC5WseQzQbhTNdP43iwO/cPUxVr
-        duq8c22L5Ss1MawnbDCyv2yaXFEGs40DAKFhGBhZ4kQS9OV8umGPpn5f9QIcsoA+xNLjTmj1m3ts6
-        RSEzLsKg==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1ojewc-00078t-K9
-        for netfilter-devel@vger.kernel.org; Sat, 15 Oct 2022 13:03:07 +0200
-From:   Phil Sutter <phil@nwl.cc>
+        Mon, 17 Oct 2022 07:03:43 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CCE8A113E
+        for <netfilter-devel@vger.kernel.org>; Mon, 17 Oct 2022 04:03:41 -0700 (PDT)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] Makefile.am: Integrate testsuites
-Date:   Sat, 15 Oct 2022 13:02:56 +0200
-Message-Id: <20221015110256.15921-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221015110256.15921-1-phil@nwl.cc>
-References: <20221015110256.15921-1-phil@nwl.cc>
+Subject: [PATCH nf-next,v5 0/7] nf_tables inner tunnel header match support
+Date:   Mon, 17 Oct 2022 13:03:28 +0200
+Message-Id: <20221017110335.742076-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Support calling 'make check' in topdir to run all three testsuites.
-While updating .gitignore, also add 'configure~' my autotools create and
-the tags file.
+Hi,
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- .gitignore                | 12 ++++++++++++
- Makefile.am               |  2 ++
- extensions/GNUmakefile.in |  5 ++++-
- 3 files changed, 18 insertions(+), 1 deletion(-)
+This is version 5 for this patchset.
 
-diff --git a/.gitignore b/.gitignore
-index a206fb4870bc8..ec4e44cad8aa7 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -20,6 +20,7 @@ Makefile.in
- /build-aux/
- /config.*
- /configure
-+/configure~
- /libtool
- /stamp-h1
- /iptables/iptables-apply.8
-@@ -29,3 +30,14 @@ Makefile.in
- 
- # vim/nano swap file
- *.swp
-+
-+/tags
-+
-+# make check results
-+/test-suite.log
-+/iptables-test.py.log
-+/iptables-test.py.trs
-+/xlate-test.py.log
-+/xlate-test.py.trs
-+iptables/tests/shell/run-tests.sh.log
-+iptables/tests/shell/run-tests.sh.trs
-diff --git a/Makefile.am b/Makefile.am
-index 799bf8b81c74a..4574b55e2433d 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -31,3 +31,5 @@ endif
- 
- config.status: extensions/GNUmakefile.in \
- 	include/xtables-version.h.in
-+
-+TESTS = xlate-test.py iptables-test.py iptables/tests/shell/run-tests.sh
-diff --git a/extensions/GNUmakefile.in b/extensions/GNUmakefile.in
-index 3c68f8decd13f..f20ea4fd95eae 100644
---- a/extensions/GNUmakefile.in
-+++ b/extensions/GNUmakefile.in
-@@ -79,7 +79,7 @@ targets_install :=
- 
- .SECONDARY:
- 
--.PHONY: all install uninstall clean distclean FORCE
-+.PHONY: all install uninstall clean distclean FORCE check
- 
- all: ${targets}
- 
-@@ -307,3 +307,6 @@ matches.man: .initext.dd .initextb.dd .initexta.dd .initext4.dd .initext6.dd $(w
- 
- targets.man: .initext.dd .initextb.dd .initexta.dd .initext4.dd .initext6.dd $(wildcard ${srcdir}/lib*.man)
- 	$(call man_run,$(call ex_targets,${pfx_build_mod} ${pfb_build_mod} ${pfa_build_mod} ${pf4_build_mod} ${pf6_build_mod} ${pfx_symlinks}))
-+
-+# empty check target to satisfy 'make check' in topdir
-+check:
--- 
-2.34.1
+The inner expression provides a packet parser for the tunneled packet
+which uses a userspace description of the expected inner headers. Then,
+the inner expression (only payload and meta supported at this stage) is
+used to match on the inner header protocol fields, using the new link,
+network and transport offsets as well as inner metadata.
+
+This patchset adds support for VxLAN, Geneve, GRE and IPIP.
+
+Changes in this v5:
+
+Patch #1 skip if GRE_ROUTING flag is set
+Patch #2 no changes
+Patch #3 use absolute inner offsets
+         restrict tunnel header offset to GRE and UDP.
+         set ctx->llproto to outer ethertype to fix NFT_META_PROTOCOL semantics.
+Patch #4 no changes
+Patch #5 no changes
+Patch #6 no changes
+Patch #7 new in the series: set tunnel header offset to GRE header.
+
+Pablo Neira Ayuso (7):
+  netfilter: nft_payload: access GRE payload via inner offset
+  netfilter: nft_payload: access ipip payload for inner offset
+  netfilter: nft_inner: support for inner tunnel header matching
+  netfilter: nft_inner: add percpu inner context
+  netfilter: nft_meta: add inner match support
+  netfilter: nft_inner: add geneve support
+  netfilter: nft_inner: set tunnel offset to GRE header offset
+
+ include/net/netfilter/nf_tables.h        |   6 +
+ include/net/netfilter/nf_tables_core.h   |  25 ++
+ include/net/netfilter/nft_meta.h         |   6 +
+ include/uapi/linux/netfilter/nf_tables.h |  27 ++
+ net/netfilter/Makefile                   |   3 +-
+ net/netfilter/nf_tables_api.c            |  37 +++
+ net/netfilter/nf_tables_core.c           |   1 +
+ net/netfilter/nft_inner.c                | 384 +++++++++++++++++++++++
+ net/netfilter/nft_meta.c                 |  62 ++++
+ net/netfilter/nft_payload.c              | 124 +++++++-
+ 10 files changed, 673 insertions(+), 2 deletions(-)
+ create mode 100644 net/netfilter/nft_inner.c
+
+--
+2.30.2
 
