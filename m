@@ -2,25 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3463F600D5A
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADB7600D5B
 	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Oct 2022 13:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbiJQLEF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S229916AbiJQLEF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Mon, 17 Oct 2022 07:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbiJQLDn (ORCPT
+        with ESMTP id S231196AbiJQLDn (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 17 Oct 2022 07:03:43 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CCE8A113E
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CC89810C8
         for <netfilter-devel@vger.kernel.org>; Mon, 17 Oct 2022 04:03:41 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,v5 0/7] nf_tables inner tunnel header match support
-Date:   Mon, 17 Oct 2022 13:03:28 +0200
-Message-Id: <20221017110335.742076-1-pablo@netfilter.org>
+Subject: [PATCH nf-next,v5 1/7] netfilter: nft_payload: access GRE payload via inner offset
+Date:   Mon, 17 Oct 2022 13:03:29 +0200
+Message-Id: <20221017110335.742076-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221017110335.742076-1-pablo@netfilter.org>
+References: <20221017110335.742076-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -31,52 +33,66 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+Parse GRE v0 packets to properly set up inner offset, this allow for
+matching on inner headers.
 
-This is version 5 for this patchset.
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v5: skip if GRE_ROUTING flag is set.
 
-The inner expression provides a packet parser for the tunneled packet
-which uses a userspace description of the expected inner headers. Then,
-the inner expression (only payload and meta supported at this stage) is
-used to match on the inner header protocol fields, using the new link,
-network and transport offsets as well as inner metadata.
+ net/netfilter/nft_payload.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-This patchset adds support for VxLAN, Geneve, GRE and IPIP.
-
-Changes in this v5:
-
-Patch #1 skip if GRE_ROUTING flag is set
-Patch #2 no changes
-Patch #3 use absolute inner offsets
-         restrict tunnel header offset to GRE and UDP.
-         set ctx->llproto to outer ethertype to fix NFT_META_PROTOCOL semantics.
-Patch #4 no changes
-Patch #5 no changes
-Patch #6 no changes
-Patch #7 new in the series: set tunnel header offset to GRE header.
-
-Pablo Neira Ayuso (7):
-  netfilter: nft_payload: access GRE payload via inner offset
-  netfilter: nft_payload: access ipip payload for inner offset
-  netfilter: nft_inner: support for inner tunnel header matching
-  netfilter: nft_inner: add percpu inner context
-  netfilter: nft_meta: add inner match support
-  netfilter: nft_inner: add geneve support
-  netfilter: nft_inner: set tunnel offset to GRE header offset
-
- include/net/netfilter/nf_tables.h        |   6 +
- include/net/netfilter/nf_tables_core.h   |  25 ++
- include/net/netfilter/nft_meta.h         |   6 +
- include/uapi/linux/netfilter/nf_tables.h |  27 ++
- net/netfilter/Makefile                   |   3 +-
- net/netfilter/nf_tables_api.c            |  37 +++
- net/netfilter/nf_tables_core.c           |   1 +
- net/netfilter/nft_inner.c                | 384 +++++++++++++++++++++++
- net/netfilter/nft_meta.c                 |  62 ++++
- net/netfilter/nft_payload.c              | 124 +++++++-
- 10 files changed, 673 insertions(+), 2 deletions(-)
- create mode 100644 net/netfilter/nft_inner.c
-
---
+diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
+index 99d971fc54ad..c2ab64e12f79 100644
+--- a/net/netfilter/nft_payload.c
++++ b/net/netfilter/nft_payload.c
+@@ -19,6 +19,7 @@
+ /* For layer 4 checksum field offset. */
+ #include <linux/tcp.h>
+ #include <linux/udp.h>
++#include <net/gre.h>
+ #include <linux/icmpv6.h>
+ #include <linux/ip.h>
+ #include <linux/ipv6.h>
+@@ -100,6 +101,37 @@ static int __nft_payload_inner_offset(struct nft_pktinfo *pkt)
+ 		pkt->inneroff = thoff + __tcp_hdrlen(th);
+ 		}
+ 		break;
++	case IPPROTO_GRE: {
++		u32 offset = sizeof(struct gre_base_hdr), version;
++		struct gre_base_hdr *gre, _gre;
++
++		gre = skb_header_pointer(pkt->skb, thoff, sizeof(_gre), &_gre);
++		if (!gre)
++			return -1;
++
++		version = gre->flags & GRE_VERSION;
++		switch (version) {
++		case GRE_VERSION_0:
++			if (gre->flags & GRE_ROUTING)
++				return -1;
++
++			if (gre->flags & GRE_CSUM) {
++				offset += sizeof_field(struct gre_full_hdr, csum) +
++					  sizeof_field(struct gre_full_hdr, reserved1);
++			}
++			if (gre->flags & GRE_KEY)
++				offset += sizeof_field(struct gre_full_hdr, key);
++
++			if (gre->flags & GRE_SEQ)
++				offset += sizeof_field(struct gre_full_hdr, seq);
++			break;
++		default:
++			return -1;
++		}
++
++		pkt->inneroff = thoff + offset;
++		}
++		break;
+ 	default:
+ 		return -1;
+ 	}
+-- 
 2.30.2
 
