@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE086173CE
-	for <lists+netfilter-devel@lfdr.de>; Thu,  3 Nov 2022 02:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FD36173D2
+	for <lists+netfilter-devel@lfdr.de>; Thu,  3 Nov 2022 02:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbiKCBl0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Nov 2022 21:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
+        id S229971AbiKCBlp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Nov 2022 21:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbiKCBlZ (ORCPT
+        with ESMTP id S229459AbiKCBlp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Nov 2022 21:41:25 -0400
+        Wed, 2 Nov 2022 21:41:45 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD4E1114D
-        for <netfilter-devel@vger.kernel.org>; Wed,  2 Nov 2022 18:41:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3DD1114D
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Nov 2022 18:41:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=kh0nCX/DnvyXSwKLzlshCoK3MKacGAWhUMR5ByFnhI0=; b=QtvqB92LQAjE/HlX00aVWk0qx3
-        ZfNl90QjzG5g9TmgG8PIZaNghDb2z8Z2mj0Mnm27prbSdJAGYAbr/OCIXufc7ND5aIOXJdF9ZBjHZ
-        Am3p93oWr93KAwn9OejGnO40fqjhnwQB9dhSc4y+EAxvSZvv8CV/G+JxWGPo+qfG6BusShvxxrRru
-        3wqd5/cyLyAa6ZWB147vnWoEuOy0gQiMWpfIurrxpyPdDa5eDg8/IncYoanTjV3iIZ+a7tstgXTAA
-        m4h2NP4rKw940gqgXIdY0nUQnvAWkXDAN1/x7raDRT7O3WpooNttZWUcjbCLUR6tANMG5GcXBYI2m
-        27kqLzxg==;
+        bh=cUXPK4jT//tReTpFGuZKUuyW2nm4214ayvTd18O4hOM=; b=TCfasnxnd4GoD3KSQKJmC4N+OF
+        qyVqbDVEauMkHKFvT2bdtBRJluyy1LLaETZk6yXiHHKQx/Jue/GMFZ01OOXCm4VFPscxlGGdl4rTc
+        xGXtK2vFZqLKwH8FmNxUwLWRlaGT76JBgkqP/jdEJnqppqpYAVF9bTta26uAoNBik9Zenxx0vQndo
+        oWkE+du+WX/2OD/9mYQSsGx3IhehWlyIeOD0uPPtCxK8kGlusj6/Y9Gd/96hETZEMjlHOpAPiJMM8
+        MuB8mBcXP79J5O1ZQ35kdx/VaaTBlyCZUox2YarD6wzTlusRRl2opb0cc4FJIc4vrBZCGR15nTbi2
+        Ar0QnLqw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1oqPEP-0005Fm-P5
-        for netfilter-devel@vger.kernel.org; Thu, 03 Nov 2022 02:41:21 +0100
+        id 1oqPEl-0005Gu-0m
+        for netfilter-devel@vger.kernel.org; Thu, 03 Nov 2022 02:41:43 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/6] extensions: *NAT: Drop NF_NAT_RANGE_PROTO_RANDOM* flag checks
-Date:   Thu,  3 Nov 2022 02:41:09 +0100
-Message-Id: <20221103014113.10851-3-phil@nwl.cc>
+Subject: [iptables PATCH 3/6] extensions: DNAT: Use __DNAT_xlate for REDIRECT, too
+Date:   Thu,  3 Nov 2022 02:41:10 +0100
+Message-Id: <20221103014113.10851-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221103014113.10851-1-phil@nwl.cc>
 References: <20221103014113.10851-1-phil@nwl.cc>
@@ -51,230 +51,107 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-SNAT, DNAT and REDIRECT extensions tried to prevent
-NF_NAT_RANGE_PROTO_RANDOM flag from being set if no port or address was
-also given.
-
-With SNAT and DNAT, this is not possible as the respective
---to-destination or --to-source parameters are mandatory anyway.
-
-Looking at the kernel code, doing so with REDIRECT seems harmless.
-Moreover, nftables supports 'redirect random' without specifying a
-port-range.
+Make the common function a bit more versatile and give it a more
+generic name, then use it for REDIRECT target, too.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libip6t_SNAT.c        | 20 +++++---------------
- extensions/libipt_SNAT.c         | 16 ++++++----------
- extensions/libxt_DNAT.c          | 28 ++++------------------------
- extensions/libxt_REDIRECT.t      |  1 +
- extensions/libxt_REDIRECT.txlate |  3 +++
- 5 files changed, 19 insertions(+), 49 deletions(-)
+ extensions/libxt_DNAT.c | 33 +++++++++++----------------------
+ 1 file changed, 11 insertions(+), 22 deletions(-)
 
-diff --git a/extensions/libip6t_SNAT.c b/extensions/libip6t_SNAT.c
-index 4fe272b262a3d..8bf7b035f84b6 100644
---- a/extensions/libip6t_SNAT.c
-+++ b/extensions/libip6t_SNAT.c
-@@ -20,9 +20,6 @@ enum {
- 	O_RANDOM,
- 	O_RANDOM_FULLY,
- 	O_PERSISTENT,
--	F_TO_SRC       = 1 << O_TO_SRC,
--	F_RANDOM       = 1 << O_RANDOM,
--	F_RANDOM_FULLY = 1 << O_RANDOM_FULLY,
- };
- 
- static void SNAT_help(void)
-@@ -166,19 +163,13 @@ static void SNAT_parse(struct xt_option_call *cb)
- 	case O_PERSISTENT:
- 		range->flags |= NF_NAT_RANGE_PERSISTENT;
- 		break;
--	}
--}
--
--static void SNAT_fcheck(struct xt_fcheck_call *cb)
--{
--	static const unsigned int f = F_TO_SRC | F_RANDOM;
--	static const unsigned int r = F_TO_SRC | F_RANDOM_FULLY;
--	struct nf_nat_range *range = cb->data;
--
--	if ((cb->xflags & f) == f)
-+	case O_RANDOM:
- 		range->flags |= NF_NAT_RANGE_PROTO_RANDOM;
--	if ((cb->xflags & r) == r)
-+		break;
-+	case O_RANDOM_FULLY:
- 		range->flags |= NF_NAT_RANGE_PROTO_RANDOM_FULLY;
-+		break;
-+	}
- }
- 
- static void print_range(const struct nf_nat_range *range)
-@@ -295,7 +286,6 @@ static struct xtables_target snat_tg_reg = {
- 	.userspacesize	= XT_ALIGN(sizeof(struct nf_nat_range)),
- 	.help		= SNAT_help,
- 	.x6_parse	= SNAT_parse,
--	.x6_fcheck	= SNAT_fcheck,
- 	.print		= SNAT_print,
- 	.save		= SNAT_save,
- 	.x6_options	= SNAT_opts,
-diff --git a/extensions/libipt_SNAT.c b/extensions/libipt_SNAT.c
-index 211a20bc45bfe..9c8cdb46a1585 100644
---- a/extensions/libipt_SNAT.c
-+++ b/extensions/libipt_SNAT.c
-@@ -13,9 +13,6 @@ enum {
- 	O_RANDOM,
- 	O_RANDOM_FULLY,
- 	O_PERSISTENT,
--	F_TO_SRC       = 1 << O_TO_SRC,
--	F_RANDOM       = 1 << O_RANDOM,
--	F_RANDOM_FULLY = 1 << O_RANDOM_FULLY,
- };
- 
- static void SNAT_help(void)
-@@ -141,20 +138,19 @@ static void SNAT_parse(struct xt_option_call *cb)
- 	case O_PERSISTENT:
- 		mr->range->flags |= NF_NAT_RANGE_PERSISTENT;
- 		break;
-+	case O_RANDOM:
-+		mr->range->flags |= NF_NAT_RANGE_PROTO_RANDOM;
-+		break;
-+	case O_RANDOM_FULLY:
-+		mr->range->flags |= NF_NAT_RANGE_PROTO_RANDOM_FULLY;
-+		break;
- 	}
- }
- 
- static void SNAT_fcheck(struct xt_fcheck_call *cb)
- {
--	static const unsigned int f = F_TO_SRC | F_RANDOM;
--	static const unsigned int r = F_TO_SRC | F_RANDOM_FULLY;
- 	struct nf_nat_ipv4_multi_range_compat *mr = cb->data;
- 
--	if ((cb->xflags & f) == f)
--		mr->range->flags |= NF_NAT_RANGE_PROTO_RANDOM;
--	if ((cb->xflags & r) == r)
--		mr->range->flags |= NF_NAT_RANGE_PROTO_RANDOM_FULLY;
--
- 	mr->rangesize = 1;
- }
- 
 diff --git a/extensions/libxt_DNAT.c b/extensions/libxt_DNAT.c
-index 7bfefc7961fac..af44518798aef 100644
+index af44518798aef..9b94062512c09 100644
 --- a/extensions/libxt_DNAT.c
 +++ b/extensions/libxt_DNAT.c
-@@ -31,9 +31,6 @@ enum {
- 	O_TO_PORTS,
- 	O_RANDOM,
- 	O_PERSISTENT,
--	F_TO_DEST  = 1 << O_TO_DEST,
--	F_TO_PORTS = 1 << O_TO_PORTS,
--	F_RANDOM   = 1 << O_RANDOM,
- };
- 
- static void DNAT_help(void)
-@@ -229,6 +226,9 @@ static void __DNAT_parse(struct xt_option_call *cb, __u16 proto,
- 	case O_PERSISTENT:
- 		range->flags |= NF_NAT_RANGE_PERSISTENT;
- 		break;
-+	case O_RANDOM:
-+		range->flags |= NF_NAT_RANGE_PROTO_RANDOM;
-+		break;
- 	}
+@@ -338,7 +338,8 @@ static void DNAT_save(const void *ip, const struct xt_entry_target *target)
  }
  
-@@ -250,21 +250,12 @@ static void DNAT_parse(struct xt_option_call *cb)
- 		mr->range->max = range.max_proto;
- 		/* fall through */
- 	case O_PERSISTENT:
-+	case O_RANDOM:
- 		mr->range->flags |= range.flags;
- 		break;
- 	}
+ static int
+-__DNAT_xlate(struct xt_xlate *xl, const struct nf_nat_range2 *r, int family)
++__NAT_xlate(struct xt_xlate *xl, const struct nf_nat_range2 *r,
++	     int family, const char *tgt)
+ {
+ 	char *range_str = sprint_range(r, family);
+ 	const char *sep = " ";
+@@ -347,7 +348,7 @@ __DNAT_xlate(struct xt_xlate *xl, const struct nf_nat_range2 *r, int family)
+ 	if (r->flags & NF_NAT_RANGE_PROTO_OFFSET)
+ 		return 0;
+ 
+-	xt_xlate_add(xl, "dnat");
++	xt_xlate_add(xl, tgt);
+ 	if (strlen(range_str))
+ 		xt_xlate_add(xl, " to %s", range_str);
+ 	if (r->flags & NF_NAT_RANGE_PROTO_RANDOM) {
+@@ -367,7 +368,7 @@ static int DNAT_xlate(struct xt_xlate *xl,
+ 	struct nf_nat_range2 range =
+ 		RANGE2_INIT_FROM_IPV4_MRC(params->target->data);
+ 
+-	return __DNAT_xlate(xl, &range, AF_INET);
++	return __NAT_xlate(xl, &range, AF_INET, "dnat");
  }
  
--static void __DNAT_fcheck(struct xt_fcheck_call *cb, unsigned int *flags)
--{
--	static const unsigned int redir_f = F_TO_PORTS | F_RANDOM;
--	static const unsigned int dnat_f = F_TO_DEST | F_RANDOM;
--
--	if ((cb->xflags & redir_f) == redir_f ||
--	    (cb->xflags & dnat_f) == dnat_f)
--		*flags |= NF_NAT_RANGE_PROTO_RANDOM;
+ static void DNAT_parse_v2(struct xt_option_call *cb)
+@@ -391,7 +392,8 @@ static void DNAT_save_v2(const void *ip, const struct xt_entry_target *target)
+ static int DNAT_xlate_v2(struct xt_xlate *xl,
+ 			  const struct xt_xlate_tg_params *params)
+ {
+-	return __DNAT_xlate(xl, (const void *)params->target->data, AF_INET);
++	return __NAT_xlate(xl, (const void *)params->target->data,
++			   AF_INET, "dnat");
+ }
+ 
+ static void DNAT_parse6(struct xt_option_call *cb)
+@@ -438,7 +440,7 @@ static int DNAT_xlate6(struct xt_xlate *xl,
+ 
+ 	memcpy(&range, (const void *)params->target->data,
+ 	       sizeof(struct nf_nat_range));
+-	return __DNAT_xlate(xl, &range, AF_INET6);
++	return __NAT_xlate(xl, &range, AF_INET6, "dnat");
+ }
+ 
+ static void DNAT_parse6_v2(struct xt_option_call *cb)
+@@ -462,21 +464,8 @@ static void DNAT_save6_v2(const void *ip, const struct xt_entry_target *target)
+ static int DNAT_xlate6_v2(struct xt_xlate *xl,
+ 			  const struct xt_xlate_tg_params *params)
+ {
+-	return __DNAT_xlate(xl, (const void *)params->target->data, AF_INET6);
 -}
 -
- static void DNAT_fcheck(struct xt_fcheck_call *cb)
- {
- 	struct nf_nat_ipv4_multi_range_compat *mr = cb->data;
-@@ -274,8 +265,6 @@ static void DNAT_fcheck(struct xt_fcheck_call *cb)
- 	if (mr->range[0].flags & NF_NAT_RANGE_PROTO_OFFSET)
- 		xtables_error(PARAMETER_PROBLEM,
- 			      "Shifted portmap ranges not supported with this kernel");
--
--	__DNAT_fcheck(cb, &mr->range[0].flags);
- }
- 
- static char *sprint_range(const struct nf_nat_range2 *r, int family)
-@@ -388,11 +377,6 @@ static void DNAT_parse_v2(struct xt_option_call *cb)
- 	__DNAT_parse(cb, entry->ip.proto, cb->data, AF_INET);
- }
- 
--static void DNAT_fcheck_v2(struct xt_fcheck_call *cb)
+-static int __REDIRECT_xlate(struct xt_xlate *xl,
+-			    const struct nf_nat_range2 *range)
 -{
--	__DNAT_fcheck(cb, &((struct nf_nat_range2 *)cb->data)->flags);
--}
+-	char *range_str = sprint_range(range, AF_INET);
 -
- static void DNAT_print_v2(const void *ip, const struct xt_entry_target *target,
-                        int numeric)
- {
-@@ -428,8 +412,6 @@ static void DNAT_fcheck6(struct xt_fcheck_call *cb)
- 	if (range->flags & NF_NAT_RANGE_PROTO_OFFSET)
- 		xtables_error(PARAMETER_PROBLEM,
- 			      "Shifted portmap ranges not supported with this kernel");
+-	xt_xlate_add(xl, "redirect");
+-	if (strlen(range_str))
+-		xt_xlate_add(xl, " to %s", range_str);
+-	if (range->flags & NF_NAT_RANGE_PROTO_RANDOM)
+-		xt_xlate_add(xl, " random");
 -
--	__DNAT_fcheck(cb, &range->flags);
+-	return 1;
++	return __NAT_xlate(xl, (const void *)params->target->data,
++			   AF_INET6, "dnat");
  }
  
- static void DNAT_print6(const void *ip, const struct xt_entry_target *target,
-@@ -619,7 +601,6 @@ static struct xtables_target dnat_tg_reg[] = {
- 		.print		= DNAT_print_v2,
- 		.save		= DNAT_save_v2,
- 		.x6_parse	= DNAT_parse_v2,
--		.x6_fcheck	= DNAT_fcheck_v2,
- 		.x6_options	= DNAT_opts,
- 		.xlate		= DNAT_xlate_v2,
- 	},
-@@ -634,7 +615,6 @@ static struct xtables_target dnat_tg_reg[] = {
- 		.print		= DNAT_print6_v2,
- 		.save		= DNAT_save6_v2,
- 		.x6_parse	= DNAT_parse6_v2,
--		.x6_fcheck	= DNAT_fcheck_v2,
- 		.x6_options	= DNAT_opts,
- 		.xlate		= DNAT_xlate6_v2,
- 	},
-diff --git a/extensions/libxt_REDIRECT.t b/extensions/libxt_REDIRECT.t
-index f607dd0a12c51..362efa8428ed4 100644
---- a/extensions/libxt_REDIRECT.t
-+++ b/extensions/libxt_REDIRECT.t
-@@ -14,3 +14,4 @@
- -p tcp -j REDIRECT --to-ports ftp-ssh;;FAIL
- -p tcp -j REDIRECT --to-ports 10-ssh;;FAIL
- -j REDIRECT --to-ports 42;;FAIL
-+-j REDIRECT --random;=;OK
-diff --git a/extensions/libxt_REDIRECT.txlate b/extensions/libxt_REDIRECT.txlate
-index 2c536495b35a2..36419a46bb366 100644
---- a/extensions/libxt_REDIRECT.txlate
-+++ b/extensions/libxt_REDIRECT.txlate
-@@ -16,6 +16,9 @@ nft add rule ip nat prerouting tcp dport 80 counter redirect to :10-22
- iptables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT --to-ports 8080 --random
- nft add rule ip nat prerouting tcp dport 80 counter redirect to :8080 random
+ static void REDIRECT_print(const void *ip, const struct xt_entry_target *target,
+@@ -500,7 +489,7 @@ static int REDIRECT_xlate(struct xt_xlate *xl,
+ 	struct nf_nat_range2 range =
+ 		RANGE2_INIT_FROM_IPV4_MRC(params->target->data);
  
-+iptables-translate -t nat -A prerouting -j REDIRECT --random
-+nft add rule ip nat prerouting counter redirect random
-+
- ip6tables-translate -t nat -A prerouting -p tcp --dport 80 -j REDIRECT
- nft add rule ip6 nat prerouting tcp dport 80 counter redirect
+-	return __REDIRECT_xlate(xl, &range);
++	return __NAT_xlate(xl, &range, AF_INET, "redirect");
+ }
  
+ static void REDIRECT_print6(const void *ip, const struct xt_entry_target *target,
+@@ -527,7 +516,7 @@ static int REDIRECT_xlate6(struct xt_xlate *xl,
+ 
+ 	memcpy(&range, (const void *)params->target->data,
+ 	       sizeof(struct nf_nat_range));
+-	return __REDIRECT_xlate(xl, &range);
++	return __NAT_xlate(xl, &range, AF_INET6, "redirect");
+ }
+ 
+ static struct xtables_target dnat_tg_reg[] = {
 -- 
 2.38.0
 
