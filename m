@@ -2,88 +2,74 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 015AB61F112
-	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Nov 2022 11:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 498FA61F402
+	for <lists+netfilter-devel@lfdr.de>; Mon,  7 Nov 2022 14:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbiKGKrL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 7 Nov 2022 05:47:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50418 "EHLO
+        id S231903AbiKGNJB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 7 Nov 2022 08:09:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231616AbiKGKrG (ORCPT
+        with ESMTP id S231864AbiKGNJA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 7 Nov 2022 05:47:06 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3172F17E33;
-        Mon,  7 Nov 2022 02:47:06 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1667818024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qnhu/C4/dTNGh+9YxTAUPF0AHXOgpdZiA4TofS1TDao=;
-        b=m8gFAB2FYV5B4BIkkbSCrPl5kngI1vwmC89wOqBJ/q73+RRLDUvN8153YBd0ancpYaUudU
-        +fTzmJoLwRrrXw9ulhVtc41yRIMLNrOmB9kVLUOAn2xwOs861TQYPTmwfVqoXOpGOLsPn5
-        hNBacxD9XN6Mi6tXS/NIbwjqzso2C6oqm6/L/mt2cpmfqfHELnCL8o8Pn38Ir7+eD8OVqk
-        Lj3kRr5Ls1MIF7+wsJc3Ym/BQIZf8UhWrd8aE7FpoY/qhjIfIvELeoa8/ZXUqY5eKhjinO
-        ZF4FT08X0F8jeyihKYji9kBCreFY8X9nEznXEcECfWmIcYVRm4zXH9JmYOmiiQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1667818024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qnhu/C4/dTNGh+9YxTAUPF0AHXOgpdZiA4TofS1TDao=;
-        b=bzVvnuX1mysTSSrkmkIGsLumN3FZV+biUwiIDeLZdScudMhEXojJ3c4U7ytkUdHNPdLCjD
-        NbhAMzPLE4OU4lBA==
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Julia Lawall <Julia.Lawall@inria.fr>, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        drbd-dev@lists.linbit.com, linux-bluetooth@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-media@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, lvs-devel@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] treewide: timers: Use timer_shutdown*() before
- freeing timers
-In-Reply-To: <20221106223256.4bbdb018@rorschach.local.home>
-References: <20221106223256.4bbdb018@rorschach.local.home>
-Date:   Mon, 07 Nov 2022 11:47:04 +0100
-Message-ID: <87pmdzvy6v.ffs@tglx>
+        Mon, 7 Nov 2022 08:09:00 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB23193C8
+        for <netfilter-devel@vger.kernel.org>; Mon,  7 Nov 2022 05:08:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=ONzzm1UZMzXilSikcTfeFsVaa16oOatbYJXZ7ldMxwA=; b=doJPh4xYz37vYwQZ3HQgXRRhT2
+        9WGRpkoCx25OPZG11aen8EH9yoZeVVnJwZmuL4KTamaCJiiXzcLbnrgM5sWWWct/5EhUqqHhtkC4G
+        Z71p3Lm7R6nwNszkPbVqc738F6v6LKRryj3x596G4eF4XHbu/uwOvShNItGmpkifNBwKvgMYAmQnw
+        LMPL3ne4ABw7o9oOL0EzaR66dHXL1FtuiIhWEasZzTs0PB7Elidy3AXJLbS+e1xGdx85VfMVFU+RI
+        FJ4EDo1oidWhWyTog7uDHohjlI+FZrLomqQuzJhy1Tj0d8xmud5MyMA8/+AyP5Vcd5AaLpC1GvHHR
+        bB1SnXGg==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1os1s2-0002hN-3f
+        for netfilter-devel@vger.kernel.org; Mon, 07 Nov 2022 14:08:58 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 0/3] Extend xlate-test to replay results
+Date:   Mon,  7 Nov 2022 14:08:40 +0100
+Message-Id: <20221107130843.8024-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Linus,
+If nftables has libxtables support, it will utilize the .xlate callbacks
+to print compat expressions in native nftables syntax. Users may miss
+the fact that what they're seeing is not the reality and assume they may
+manipulate (including store and reload) the ruleset using nftables. This
+wasn't a big deal if iptables-nft understood all the translations
+libxtables offers.
 
-On Sun, Nov 06 2022 at 22:32, Steven Rostedt wrote:
-> As discussed here:
->
->   https://lore.kernel.org/all/20221106212427.739928660@goodmis.org/
+To start catching up on this, add an optional replay mode to
+xlate-test.py checking if what was translated is correctly parsed back
+into the original input (or at least a semantical equivalent).
 
-Please hold off. It's only nits, but tip has documented rules and random
-pull requests are not making them go away.
+Patches 1 and 2 are prep work, patch 3 has the gory details.
 
-Thanks,
+Phil Sutter (3):
+  tests: xlate-test: Cleanup file reading loop
+  tests: xlate-test.py: Introduce run_proc()
+  tests: xlate-test: Replay results for reverse direction testing
 
-        tglx
+ xlate-test.py | 212 +++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 184 insertions(+), 28 deletions(-)
+
+-- 
+2.38.0
+
