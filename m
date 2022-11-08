@@ -2,98 +2,88 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE87621665
-	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Nov 2022 15:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E956219C0
+	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Nov 2022 17:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbiKHO1N (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 8 Nov 2022 09:27:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        id S233963AbiKHQta (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 8 Nov 2022 11:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234379AbiKHO0p (ORCPT
+        with ESMTP id S232035AbiKHQt3 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 8 Nov 2022 09:26:45 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54F111A11
-        for <netfilter-devel@vger.kernel.org>; Tue,  8 Nov 2022 06:25:31 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id r18so13511053pgr.12
-        for <netfilter-devel@vger.kernel.org>; Tue, 08 Nov 2022 06:25:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
-        b=dj7L8L4Tt3T52fNCiLgU1wmk4q3GKw+FgtxNNdpNZejQJQ1k3Xi+uLyqI46mZtlAe9
-         HLOA9P1jXmiTZuSDq5pdxRxdF0a/HoEZnGcKQ3YQ37POKm1J5RjeTmEaXOGvNGsQ/aCd
-         x8X3wRq447BygztmxjMMFJOJydFOJUOGXobl/qzDVFAJS2xNGHdVGGQVxwZyaR/NBt0/
-         bE+cdHmQ/pyeyXGzJcY+3ABqxwuM8e+fvQz2jyAv1cJHWTFyjffI5j3/3Sk+yOdlf96H
-         6ymXuWHpJpL3yt30UdlgfE5yAEKuZaLtj9+SPJvm7HvWfCahTeKPqye7UyLe1WT7erj+
-         Thwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
-        b=aQARRuc4tDE6/pr8eLbg/j36V17ybIm7XnO7fNamXWLrTfK+bSHfSYGWnVl26kzjzU
-         lJ/6Whesu5lWVzEWMEA/y6FCWPIos9QlFNLFYdaUOl5Zji4D9l2rxR4GctDRMvuV/wyt
-         CWGkOK7DGvIJ+Ohdkj9qxkn2IT6PQlK3eOg3KIfgYBibNzYHejoQM7wkV5Jethi7fMmz
-         wj35DONPmgvbXUiVTf22Vw0PIHslMHL6Es4CP77iCslSYxdDydD9omM2yH16ENBz8jyJ
-         SQWQqmPwUEm8ntoZRMw6XCZwOa1NmKIPOyzTKByIkw4rosEgyOZbd096tdWHGJb4ovWv
-         NXYQ==
-X-Gm-Message-State: ACrzQf2BcwwzG10E5fmU94g2jLi9gCv8jwebkmCdfLC6EwSvwDBHM99d
-        e+2KaU4AaTCPyhB0yjPbbwGAnfnFVdsrz/kTK4M=
-X-Google-Smtp-Source: AMsMyM5/o8Tv1jtvv5i5ish68BM3WfS9X9eqWOTVG2elMlgZjohDVk/23K/5zEIB58o7eHSGPzDyTC5sLFDQxOS4ibc=
-X-Received: by 2002:a63:2c8b:0:b0:41c:5f9e:a1d6 with SMTP id
- s133-20020a632c8b000000b0041c5f9ea1d6mr47624667pgs.601.1667917531062; Tue, 08
- Nov 2022 06:25:31 -0800 (PST)
+        Tue, 8 Nov 2022 11:49:29 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E071057B54
+        for <netfilter-devel@vger.kernel.org>; Tue,  8 Nov 2022 08:49:27 -0800 (PST)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1osRmv-0003ZB-MK; Tue, 08 Nov 2022 17:49:25 +0100
+Date:   Tue, 8 Nov 2022 17:49:25 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [nf-next PATCH 0/2] Support resetting rules' state
+Message-ID: <Y2qIlYGKGxysxkFN@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+References: <20221014214559.22254-1-phil@nwl.cc>
+ <Y1fOAZkQU8u81mPf@salvia>
 MIME-Version: 1.0
-Received: by 2002:a05:7300:5388:b0:85:81c6:896c with HTTP; Tue, 8 Nov 2022
- 06:25:29 -0800 (PST)
-Reply-To: mr.abraham022@gmail.com
-From:   "Mr.Abraham" <davidkekeli11@gmail.com>
-Date:   Tue, 8 Nov 2022 14:25:29 +0000
-Message-ID: <CAPBO+FLUDBD86dHQM6-TOwtKbf996Qz13VQWrvY27T9ETbCTEA@mail.gmail.com>
-Subject: Greeting
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:533 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4719]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [mr.abraham022[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [davidkekeli11[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [davidkekeli11[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y1fOAZkQU8u81mPf@salvia>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-My Greeting, Did you receive the letter i sent to you. Please answer me.
-Regard, Mr.Abraham
+Hi Pablo,
+
+On Tue, Oct 25, 2022 at 01:52:33PM +0200, Pablo Neira Ayuso wrote:
+> On Fri, Oct 14, 2022 at 11:45:57PM +0200, Phil Sutter wrote:
+> > In order to "zero" a rule (in the 'iptables -Z' sense), users had to
+> > dump (parts of) the ruleset in stateless form and restore it again after
+> > removing the dumped parts.
+> > 
+> > Introduce a simpler method to reset any stateful elements of a rule or
+> > all rules of a chain/table/family. Affects both counter and quota
+> > expressions.
+> 
+> Patchset LGTM.
+> 
+> For the record, we agreed on the workshop to extend this to:
+> 
+> - add support for this command to table, chain and set objects too.
+> - validate that nft syntax is consistent from userspace with other
+>   existing commands (for example, list).
+
+Looking into this, I wonder if it might cause confusion with regards to
+stateful objects:
+
+My original patch implements:
+
+- reset rule [<fam>] <table> <chain> handle <num>
+- reset rules [<fam>]
+- reset rules table [<fam>] <table>
+- reset rules chain [<fam>] <table> <chain>
+
+This is relatively consistent with list command, which (e.g.) has:
+
+- list set [<fam>] <table> <set>
+- list sets [<fam>]
+- list sets table [<fam>] <table>
+
+IIRC, your request at NFWS was to introduce something like:
+
+- reset table (for 'reset rules table')
+- reset chain (for 'reset rules chain')
+
+But the first one may seem like resetting *all* state of a table,
+including named quotas, counters, etc. while in fact it only resets
+state in rules.
+
+Cheers, Phil
