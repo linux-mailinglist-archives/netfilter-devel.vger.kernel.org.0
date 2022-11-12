@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AE16265F5
-	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Nov 2022 01:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C976265F9
+	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Nov 2022 01:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbiKLAVU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 11 Nov 2022 19:21:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
+        id S229830AbiKLAVn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 11 Nov 2022 19:21:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233581AbiKLAVT (ORCPT
+        with ESMTP id S234004AbiKLAVl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 11 Nov 2022 19:21:19 -0500
+        Fri, 11 Nov 2022 19:21:41 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945C31F620
-        for <netfilter-devel@vger.kernel.org>; Fri, 11 Nov 2022 16:21:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37619326F9
+        for <netfilter-devel@vger.kernel.org>; Fri, 11 Nov 2022 16:21:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=GM1egIFVtEJ3lByNK01gDn13O0XsDv0n/Jl5ZKaEDJA=; b=N8OsDmkWoksU2O5T4DAjk46Xui
-        xvvPuETyHvAoTcJfixNtm6vrVx/wXJ5Y8m8TbfcVDXRwpWCnCLeWDqhhYxxvEkovBaUBAKlNR3qfr
-        lN3CGqXs+BPCF32ii5s3yLMlHGg05KsWExHrnqNo3vXZB+l09cEDu9wJl0DsgeuJcjRvujm2Z8G0K
-        lbdhWVLdjMGWyD/DUa7fVN3596L2adzv5ZyWzgp1tab+J6Kx8L7/xhBnbbCx3mzTwc1hcOMbESNvR
-        yhUGUwBpb0uiXQaPpbLFH4+McgrgDjyApDz+SvXmVfl+MhERmv0p0w7kdplO67T7j8FSFTos0lnsN
-        /5kN53Qw==;
+        bh=kbFPFLttbn6v1XkusNuXu3NVNoHx3aduNGragfIJ4kk=; b=MbNT3T9HLg9V2znrusmzGTSVSo
+        lGHbHOPOFezd4Uw0eQoEAP4neSErOVdR8wF1iLYCGelno0XqstaTj1A4XdhpqEd3WCYxkDtn5Jw1M
+        JYdih7WIWJx9Zdh+jlne9JFSfniKlmC0dRG+xPqIQU/FtoEuHoA/jY/Y5ZXrGy7bkdYhhGXTE4Ig6
+        VNRyWv+Z3zwaawcbPnL6rlFqmV3Di6Kq/5GUivUPbcUgoFfTiT8va1mDcTnTUMS5ytYaKSKD+qA+g
+        z0tMQVEOIhxL2XeV8LNwG4lOCbY2XS+2ouDHyXjgkk7xk4BKbINPJQcEIPYRUUSXFDZCpBS0RsffC
+        6p4zNwcw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1oteGp-00022e-UA
-        for netfilter-devel@vger.kernel.org; Sat, 12 Nov 2022 01:21:16 +0100
+        id 1oteHC-00023n-Hf
+        for netfilter-devel@vger.kernel.org; Sat, 12 Nov 2022 01:21:38 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 4/7] extensions: libebt_ip: Include kernel header
-Date:   Sat, 12 Nov 2022 01:20:53 +0100
-Message-Id: <20221112002056.31917-5-phil@nwl.cc>
+Subject: [iptables PATCH 5/7] extensions: libebt_arp, libebt_ip: Use xtables_ipparse_any()
+Date:   Sat, 12 Nov 2022 01:20:54 +0100
+Message-Id: <20221112002056.31917-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221112002056.31917-1-phil@nwl.cc>
 References: <20221112002056.31917-1-phil@nwl.cc>
@@ -51,95 +51,273 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Update the local copy of linux/netfilter_bridge/ebt_ip.h and include it
-instead of keeping the local copy of struct ebt_ip_info et al.
+The libxtables function covers all formerly supported inputs (and more).
+The extended libebt_arp.t passes before and after this patch.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libebt_ip.c                  | 32 +------------------------
- include/linux/netfilter_bridge/ebt_ip.h | 15 +++++++++---
- 2 files changed, 13 insertions(+), 34 deletions(-)
+ extensions/libebt_arp.c | 89 ++++-------------------------------------
+ extensions/libebt_arp.t |  3 ++
+ extensions/libebt_ip.c  | 86 +++++----------------------------------
+ 3 files changed, 21 insertions(+), 157 deletions(-)
 
+diff --git a/extensions/libebt_arp.c b/extensions/libebt_arp.c
+index d5035b956cc15..63a953d4637da 100644
+--- a/extensions/libebt_arp.c
++++ b/extensions/libebt_arp.c
+@@ -87,91 +87,17 @@ static void brarp_print_help(void)
+ #define OPT_MAC_D  0x40
+ #define OPT_GRAT   0x80
+ 
+-static int undot_ip(char *ip, unsigned char *ip2)
+-{
+-	char *p, *q, *end;
+-	long int onebyte;
+-	int i;
+-	char buf[20];
+-
+-	strncpy(buf, ip, sizeof(buf) - 1);
+-
+-	p = buf;
+-	for (i = 0; i < 3; i++) {
+-		if ((q = strchr(p, '.')) == NULL)
+-			return -1;
+-		*q = '\0';
+-		onebyte = strtol(p, &end, 10);
+-		if (*end != '\0' || onebyte > 255 || onebyte < 0)
+-			return -1;
+-		ip2[i] = (unsigned char)onebyte;
+-		p = q + 1;
+-	}
+-
+-	onebyte = strtol(p, &end, 10);
+-	if (*end != '\0' || onebyte > 255 || onebyte < 0)
+-		return -1;
+-	ip2[3] = (unsigned char)onebyte;
+-
+-	return 0;
+-}
+-
+-static int ip_mask(char *mask, unsigned char *mask2)
+-{
+-	char *end;
+-	long int bits;
+-	uint32_t mask22;
+-
+-	if (undot_ip(mask, mask2)) {
+-		/* not the /a.b.c.e format, maybe the /x format */
+-		bits = strtol(mask, &end, 10);
+-		if (*end != '\0' || bits > 32 || bits < 0)
+-			return -1;
+-		if (bits != 0) {
+-			mask22 = htonl(0xFFFFFFFF << (32 - bits));
+-			memcpy(mask2, &mask22, 4);
+-		} else {
+-			mask22 = 0xFFFFFFFF;
+-			memcpy(mask2, &mask22, 4);
+-		}
+-	}
+-	return 0;
+-}
+-
+-static void ebt_parse_ip_address(char *address, uint32_t *addr, uint32_t *msk)
+-{
+-	char *p;
+-
+-	/* first the mask */
+-	if ((p = strrchr(address, '/')) != NULL) {
+-		*p = '\0';
+-		if (ip_mask(p + 1, (unsigned char *)msk)) {
+-			xtables_error(PARAMETER_PROBLEM,
+-				      "Problem with the IP mask '%s'", p + 1);
+-			return;
+-		}
+-	} else
+-		*msk = 0xFFFFFFFF;
+-
+-	if (undot_ip(address, (unsigned char *)addr)) {
+-		xtables_error(PARAMETER_PROBLEM,
+-			      "Problem with the IP address '%s'", address);
+-		return;
+-	}
+-	*addr = *addr & *msk;
+-}
+-
+ static int
+ brarp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	    const void *entry, struct xt_entry_match **match)
+ {
+ 	struct ebt_arp_info *arpinfo = (struct ebt_arp_info *)(*match)->data;
++	struct in_addr *ipaddr, ipmask;
+ 	long int i;
+ 	char *end;
+-	uint32_t *addr;
+-	uint32_t *mask;
+ 	unsigned char *maddr;
+ 	unsigned char *mmask;
++	unsigned int ipnr;
+ 
+ 	switch (c) {
+ 	case ARP_OPCODE:
+@@ -231,24 +157,25 @@ brarp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 
+ 	case ARP_IP_S:
+ 	case ARP_IP_D:
++		xtables_ipparse_any(optarg, &ipaddr, &ipmask, &ipnr);
+ 		if (c == ARP_IP_S) {
+ 			EBT_CHECK_OPTION(flags, OPT_IP_S);
+-			addr = &arpinfo->saddr;
+-			mask = &arpinfo->smsk;
++			arpinfo->saddr = ipaddr->s_addr;
++			arpinfo->smsk = ipmask.s_addr;
+ 			arpinfo->bitmask |= EBT_ARP_SRC_IP;
+ 		} else {
+ 			EBT_CHECK_OPTION(flags, OPT_IP_D);
+-			addr = &arpinfo->daddr;
+-			mask = &arpinfo->dmsk;
++			arpinfo->daddr = ipaddr->s_addr;
++			arpinfo->dmsk = ipmask.s_addr;
+ 			arpinfo->bitmask |= EBT_ARP_DST_IP;
+ 		}
++		free(ipaddr);
+ 		if (invert) {
+ 			if (c == ARP_IP_S)
+ 				arpinfo->invflags |= EBT_ARP_SRC_IP;
+ 			else
+ 				arpinfo->invflags |= EBT_ARP_DST_IP;
+ 		}
+-		ebt_parse_ip_address(optarg, addr, mask);
+ 		break;
+ 	case ARP_MAC_S:
+ 	case ARP_MAC_D:
+diff --git a/extensions/libebt_arp.t b/extensions/libebt_arp.t
+index 14ff0f097cfd8..96fbce906107c 100644
+--- a/extensions/libebt_arp.t
++++ b/extensions/libebt_arp.t
+@@ -6,6 +6,9 @@
+ -p ARP ! --arp-ip-dst 1.2.3.4;-p ARP --arp-ip-dst ! 1.2.3.4 -j CONTINUE;OK
+ -p ARP --arp-ip-src ! 0.0.0.0;=;OK
+ -p ARP --arp-ip-dst ! 0.0.0.0/8;=;OK
++-p ARP --arp-ip-src ! 1.2.3.4/32;-p ARP --arp-ip-src ! 1.2.3.4;OK
++-p ARP --arp-ip-src ! 1.2.3.4/255.255.255.0;-p ARP --arp-ip-src ! 1.2.3.0/24;OK
++-p ARP --arp-ip-src ! 1.2.3.4/255.0.255.255;-p ARP --arp-ip-src ! 1.0.3.4/255.0.255.255;OK
+ -p ARP --arp-mac-src 00:de:ad:be:ef:00;=;OK
+ -p ARP --arp-mac-dst de:ad:be:ef:00:00/ff:ff:ff:ff:00:00;=;OK
+ -p ARP --arp-gratuitous;=;OK
 diff --git a/extensions/libebt_ip.c b/extensions/libebt_ip.c
-index 51649ffb3c305..8413a5aa8dd57 100644
+index 8413a5aa8dd57..d13e83c06895d 100644
 --- a/extensions/libebt_ip.c
 +++ b/extensions/libebt_ip.c
-@@ -20,40 +20,10 @@
- #include <netdb.h>
- #include <inttypes.h>
- #include <xtables.h>
-+#include <linux/netfilter_bridge/ebt_ip.h>
+@@ -164,80 +164,6 @@ parse_port_range(const char *protocol, const char *portstring, uint16_t *ports)
+ }
  
- #include "libxt_icmp.h"
- 
--#define EBT_IP_SOURCE 0x01
--#define EBT_IP_DEST 0x02
--#define EBT_IP_TOS 0x04
--#define EBT_IP_PROTO 0x08
--#define EBT_IP_SPORT 0x10
--#define EBT_IP_DPORT 0x20
--#define EBT_IP_ICMP 0x40
--#define EBT_IP_IGMP 0x80
--#define EBT_IP_MASK (EBT_IP_SOURCE | EBT_IP_DEST | EBT_IP_TOS | EBT_IP_PROTO |\
--		     EBT_IP_SPORT | EBT_IP_DPORT | EBT_IP_ICMP | EBT_IP_IGMP)
+ /* original code from ebtables: useful_functions.c */
+-static int undot_ip(char *ip, unsigned char *ip2)
+-{
+-	char *p, *q, *end;
+-	long int onebyte;
+-	int i;
+-	char buf[20];
 -
--struct ebt_ip_info {
--	__be32 saddr;
--	__be32 daddr;
--	__be32 smsk;
--	__be32 dmsk;
--	__u8  tos;
--	__u8  protocol;
--	__u8  bitmask;
--	__u8  invflags;
--	union {
--		__u16 sport[2];
--		__u8 icmp_type[2];
--		__u8 igmp_type[2];
--	};
--	union {
--		__u16 dport[2];
--		__u8 icmp_code[2];
--	};
--};
+-	strncpy(buf, ip, sizeof(buf) - 1);
 -
- #define IP_SOURCE	'1'
- #define IP_DEST		'2'
- #define IP_EBT_TOS	'3' /* include/bits/in.h seems to already define IP_TOS */
-diff --git a/include/linux/netfilter_bridge/ebt_ip.h b/include/linux/netfilter_bridge/ebt_ip.h
-index c4bbc41b0ea47..ae5d4d1084188 100644
---- a/include/linux/netfilter_bridge/ebt_ip.h
-+++ b/include/linux/netfilter_bridge/ebt_ip.h
-@@ -23,8 +23,10 @@
- #define EBT_IP_PROTO 0x08
- #define EBT_IP_SPORT 0x10
- #define EBT_IP_DPORT 0x20
-+#define EBT_IP_ICMP 0x40
-+#define EBT_IP_IGMP 0x80
- #define EBT_IP_MASK (EBT_IP_SOURCE | EBT_IP_DEST | EBT_IP_TOS | EBT_IP_PROTO |\
-- EBT_IP_SPORT | EBT_IP_DPORT )
-+		     EBT_IP_SPORT | EBT_IP_DPORT | EBT_IP_ICMP | EBT_IP_IGMP)
- #define EBT_IP_MATCH "ip"
+-	p = buf;
+-	for (i = 0; i < 3; i++) {
+-		if ((q = strchr(p, '.')) == NULL)
+-			return -1;
+-		*q = '\0';
+-		onebyte = strtol(p, &end, 10);
+-		if (*end != '\0' || onebyte > 255 || onebyte < 0)
+-			return -1;
+-		ip2[i] = (unsigned char)onebyte;
+-		p = q + 1;
+-	}
+-
+-	onebyte = strtol(p, &end, 10);
+-	if (*end != '\0' || onebyte > 255 || onebyte < 0)
+-		return -1;
+-	ip2[3] = (unsigned char)onebyte;
+-
+-	return 0;
+-}
+-
+-static int ip_mask(char *mask, unsigned char *mask2)
+-{
+-	char *end;
+-	long int bits;
+-	uint32_t mask22;
+-
+-	if (undot_ip(mask, mask2)) {
+-		/* not the /a.b.c.e format, maybe the /x format */
+-		bits = strtol(mask, &end, 10);
+-		if (*end != '\0' || bits > 32 || bits < 0)
+-			return -1;
+-		if (bits != 0) {
+-			mask22 = htonl(0xFFFFFFFF << (32 - bits));
+-			memcpy(mask2, &mask22, 4);
+-		} else {
+-			mask22 = 0xFFFFFFFF;
+-			memcpy(mask2, &mask22, 4);
+-		}
+-	}
+-	return 0;
+-}
+-
+-static void ebt_parse_ip_address(char *address, uint32_t *addr, uint32_t *msk)
+-{
+-	char *p;
+-
+-	/* first the mask */
+-	if ((p = strrchr(address, '/')) != NULL) {
+-		*p = '\0';
+-		if (ip_mask(p + 1, (unsigned char *)msk)) {
+-			xtables_error(PARAMETER_PROBLEM,
+-				      "Problem with the IP mask '%s'", p + 1);
+-			return;
+-		}
+-	} else
+-		*msk = 0xFFFFFFFF;
+-
+-	if (undot_ip(address, (unsigned char *)addr)) {
+-		xtables_error(PARAMETER_PROBLEM,
+-			      "Problem with the IP address '%s'", address);
+-		return;
+-	}
+-	*addr = *addr & *msk;
+-}
+-
+ static char *parse_range(const char *str, unsigned int res[])
+ {
+ 	char *next;
+@@ -355,18 +281,26 @@ brip_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	   const void *entry, struct xt_entry_match **match)
+ {
+ 	struct ebt_ip_info *info = (struct ebt_ip_info *)(*match)->data;
++	struct in_addr *ipaddr, ipmask;
++	unsigned int ipnr;
  
- /* the same values are used for the invflags */
-@@ -37,8 +39,15 @@ struct ebt_ip_info {
- 	__u8  protocol;
- 	__u8  bitmask;
- 	__u8  invflags;
--	__u16 sport[2];
--	__u16 dport[2];
-+	union {
-+		__u16 sport[2];
-+		__u8 icmp_type[2];
-+		__u8 igmp_type[2];
-+	};
-+	union {
-+		__u16 dport[2];
-+		__u8 icmp_code[2];
-+	};
- };
- 
- #endif
+ 	switch (c) {
+ 	case IP_SOURCE:
+ 		if (invert)
+ 			info->invflags |= EBT_IP_SOURCE;
+-		ebt_parse_ip_address(optarg, &info->saddr, &info->smsk);
++		xtables_ipparse_any(optarg, &ipaddr, &ipmask, &ipnr);
++		info->saddr = ipaddr->s_addr;
++		info->smsk = ipmask.s_addr;
++		free(ipaddr);
+ 		info->bitmask |= EBT_IP_SOURCE;
+ 		break;
+ 	case IP_DEST:
+ 		if (invert)
+ 			info->invflags |= EBT_IP_DEST;
+-		ebt_parse_ip_address(optarg, &info->daddr, &info->dmsk);
++		xtables_ipparse_any(optarg, &ipaddr, &ipmask, &ipnr);
++		info->daddr = ipaddr->s_addr;
++		info->dmsk = ipmask.s_addr;
++		free(ipaddr);
+ 		info->bitmask |= EBT_IP_DEST;
+ 		break;
+ 	case IP_SPORT:
 -- 
 2.38.0
 
