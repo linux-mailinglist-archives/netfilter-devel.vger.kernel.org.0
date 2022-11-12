@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8306265FA
-	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Nov 2022 01:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BE66265F8
+	for <lists+netfilter-devel@lfdr.de>; Sat, 12 Nov 2022 01:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234163AbiKLAVr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 11 Nov 2022 19:21:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
+        id S231911AbiKLAVg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 11 Nov 2022 19:21:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234004AbiKLAVq (ORCPT
+        with ESMTP id S229830AbiKLAVf (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 11 Nov 2022 19:21:46 -0500
+        Fri, 11 Nov 2022 19:21:35 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2783F074
-        for <netfilter-devel@vger.kernel.org>; Fri, 11 Nov 2022 16:21:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C494ED2E0
+        for <netfilter-devel@vger.kernel.org>; Fri, 11 Nov 2022 16:21:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=OgYkTBRmCIgtUTHEwzgViOtBvjtRPGuls3RDvhus+v8=; b=YN2ZA7iRW1gXmo3WT6xjh5y+ci
-        Ib3YxNhRYV3Olmieu94DSr/9gzHTTqdF2L1yzhm0baiYafCqWXlz1e5T3/txj2DUeJHvNYCdoPnTI
-        IAR2QSygSckSGqivvsP0UdMLT7tWXeB0tSyMzwmmeIRoNIUqJretAzJyRZZMvvXocdQVG/osxVq43
-        aMv6nZuLhO+dqnYjg1rS7Ycubj3G9zU+egL3CcCvnsHHJ+6vSHZeudyaQfS3ql3C8kQbBIfC0e47K
-        HtXvXGbgOAAKkyTD0s7i8FD1M9AAvSOYcQKz3292yRoowMlmnVd0/nn3IYbrSAPmeuzs++TvtWJDI
-        HgbrYTPw==;
+        bh=MFIsgMzAkQdR3TkWjWNpG0Hf2lZ9gq0YMmYQHmRz0lY=; b=UyVeHrZKZ1Gu5/91nXvD+hgRgQ
+        KQ6qYXFi81GrEvcHy/gYLtG3YRkuagzAHVqQ3jg+cdcF/bsG5I/3IjGfnu7jwhpb/3DkR3OR56gZA
+        QlOhxPLF+HYeMtxSsVZ4XrfAtu5ZMxDgh1GWlYieGOXr/GixZdMms9yQS3pND3uIhrpvOICge877+
+        J1hj4wTl3TuVd02nCuddcDHtYS/JGW1YTTP4mj0TfgKvTQAzW+kO7cmb7z/I6qm4FQzklJvvQuqNO
+        Svs+zqJIXtKumf6kx5IJdv2omYGsJnRrEk1LFyOgpHJ8Myt+duoleJfcvWQwcr4CGzkfxLxqlP3cp
+        dRmr+Fhg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1oteHH-000247-Tv
-        for netfilter-devel@vger.kernel.org; Sat, 12 Nov 2022 01:21:44 +0100
+        id 1oteH7-00023W-53
+        for netfilter-devel@vger.kernel.org; Sat, 12 Nov 2022 01:21:33 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 1/7] xshared: Share make_delete_mask() between ip{,6}tables
-Date:   Sat, 12 Nov 2022 01:20:50 +0100
-Message-Id: <20221112002056.31917-2-phil@nwl.cc>
+Subject: [iptables PATCH 2/7] nft-shared: Introduce port_match_single_to_range()
+Date:   Sat, 12 Nov 2022 01:20:51 +0100
+Message-Id: <20221112002056.31917-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221112002056.31917-1-phil@nwl.cc>
 References: <20221112002056.31917-1-phil@nwl.cc>
@@ -51,199 +51,169 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Function bodies were mostly identical, the only difference being the use
-of struct ipt_entry or ip6t_entry for size calculation. Pass this value
-via parameter to make them fully identical.
+The same algorithm was present four times, outsource it. Also use
+max()/min() macros for a more readable boundary notation.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/ip6tables.c | 38 ++------------------------------------
- iptables/iptables.c  | 38 ++------------------------------------
- iptables/xshared.c   | 34 ++++++++++++++++++++++++++++++++++
- iptables/xshared.h   |  4 ++++
- 4 files changed, 42 insertions(+), 72 deletions(-)
+ iptables/nft-shared.c | 130 ++++++++++++------------------------------
+ 1 file changed, 37 insertions(+), 93 deletions(-)
 
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index 75984cc1bcdd8..ae2670357264b 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -277,40 +277,6 @@ insert_entry(const xt_chainlabel chain,
- 	return ret;
+diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
+index 996cff996c151..e5e3ac0bada56 100644
+--- a/iptables/nft-shared.c
++++ b/iptables/nft-shared.c
+@@ -747,6 +747,35 @@ static void nft_parse_tcp_range(struct nft_xt_ctx *ctx,
+ 	}
  }
  
--static unsigned char *
--make_delete_mask(const struct xtables_rule_match *matches,
--		 const struct xtables_target *target)
--{
--	/* Establish mask for comparison */
--	unsigned int size;
--	const struct xtables_rule_match *matchp;
--	unsigned char *mask, *mptr;
--
--	size = sizeof(struct ip6t_entry);
--	for (matchp = matches; matchp; matchp = matchp->next)
--		size += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
--
--	mask = xtables_calloc(1, size
--			 + XT_ALIGN(sizeof(struct xt_entry_target))
--			 + target->size);
--
--	memset(mask, 0xFF, sizeof(struct ip6t_entry));
--	mptr = mask + sizeof(struct ip6t_entry);
--
--	for (matchp = matches; matchp; matchp = matchp->next) {
--		memset(mptr, 0xFF,
--		       XT_ALIGN(sizeof(struct xt_entry_match))
--		       + matchp->match->userspacesize);
--		mptr += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
--	}
--
--	memset(mptr, 0xFF,
--	       XT_ALIGN(sizeof(struct xt_entry_target))
--	       + target->userspacesize);
--
--	return mask;
--}
--
- static int
- delete_entry(const xt_chainlabel chain,
- 	     struct ip6t_entry *fw,
-@@ -329,7 +295,7 @@ delete_entry(const xt_chainlabel chain,
- 	int ret = 1;
- 	unsigned char *mask;
- 
--	mask = make_delete_mask(matches, target);
-+	mask = make_delete_mask(matches, target, sizeof(*fw));
- 	for (i = 0; i < nsaddrs; i++) {
- 		fw->ipv6.src = saddrs[i];
- 		fw->ipv6.smsk = smasks[i];
-@@ -359,7 +325,7 @@ check_entry(const xt_chainlabel chain, struct ip6t_entry *fw,
- 	int ret = 1;
- 	unsigned char *mask;
- 
--	mask = make_delete_mask(matches, target);
-+	mask = make_delete_mask(matches, target, sizeof(fw));
- 	for (i = 0; i < nsaddrs; i++) {
- 		fw->ipv6.src = saddrs[i];
- 		fw->ipv6.smsk = smasks[i];
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index e5207ba106057..591ec17886562 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -276,40 +276,6 @@ insert_entry(const xt_chainlabel chain,
- 	return ret;
- }
- 
--static unsigned char *
--make_delete_mask(const struct xtables_rule_match *matches,
--		 const struct xtables_target *target)
--{
--	/* Establish mask for comparison */
--	unsigned int size;
--	const struct xtables_rule_match *matchp;
--	unsigned char *mask, *mptr;
--
--	size = sizeof(struct ipt_entry);
--	for (matchp = matches; matchp; matchp = matchp->next)
--		size += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
--
--	mask = xtables_calloc(1, size
--			 + XT_ALIGN(sizeof(struct xt_entry_target))
--			 + target->size);
--
--	memset(mask, 0xFF, sizeof(struct ipt_entry));
--	mptr = mask + sizeof(struct ipt_entry);
--
--	for (matchp = matches; matchp; matchp = matchp->next) {
--		memset(mptr, 0xFF,
--		       XT_ALIGN(sizeof(struct xt_entry_match))
--		       + matchp->match->userspacesize);
--		mptr += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
--	}
--
--	memset(mptr, 0xFF,
--	       XT_ALIGN(sizeof(struct xt_entry_target))
--	       + target->userspacesize);
--
--	return mask;
--}
--
- static int
- delete_entry(const xt_chainlabel chain,
- 	     struct ipt_entry *fw,
-@@ -328,7 +294,7 @@ delete_entry(const xt_chainlabel chain,
- 	int ret = 1;
- 	unsigned char *mask;
- 
--	mask = make_delete_mask(matches, target);
-+	mask = make_delete_mask(matches, target, sizeof(*fw));
- 	for (i = 0; i < nsaddrs; i++) {
- 		fw->ip.src.s_addr = saddrs[i].s_addr;
- 		fw->ip.smsk.s_addr = smasks[i].s_addr;
-@@ -358,7 +324,7 @@ check_entry(const xt_chainlabel chain, struct ipt_entry *fw,
- 	int ret = 1;
- 	unsigned char *mask;
- 
--	mask = make_delete_mask(matches, target);
-+	mask = make_delete_mask(matches, target, sizeof(*fw));
- 	for (i = 0; i < nsaddrs; i++) {
- 		fw->ip.src.s_addr = saddrs[i].s_addr;
- 		fw->ip.smsk.s_addr = smasks[i].s_addr;
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index 695157896d521..0beacee61d487 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -2000,3 +2000,37 @@ void ipv6_post_parse(int command, struct iptables_command_state *cs,
- 			      "! not allowed with multiple"
- 			      " source or destination IP addresses");
- }
-+
-+unsigned char *
-+make_delete_mask(const struct xtables_rule_match *matches,
-+		 const struct xtables_target *target,
-+		 size_t entry_size)
++static void port_match_single_to_range(__u16 *ports, __u8 *invflags,
++				       uint8_t op, int port, __u8 invflag)
 +{
-+	/* Establish mask for comparison */
-+	unsigned int size = entry_size;
-+	const struct xtables_rule_match *matchp;
-+	unsigned char *mask, *mptr;
++	if (port < 0)
++		return;
 +
-+	for (matchp = matches; matchp; matchp = matchp->next)
-+		size += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
-+
-+	mask = xtables_calloc(1, size
-+			 + XT_ALIGN(sizeof(struct xt_entry_target))
-+			 + target->size);
-+
-+	memset(mask, 0xFF, entry_size);
-+	mptr = mask + entry_size;
-+
-+	for (matchp = matches; matchp; matchp = matchp->next) {
-+		memset(mptr, 0xFF,
-+		       XT_ALIGN(sizeof(struct xt_entry_match))
-+		       + matchp->match->userspacesize);
-+		mptr += XT_ALIGN(sizeof(struct xt_entry_match)) + matchp->match->size;
++	switch (op) {
++	case NFT_CMP_NEQ:
++		*invflags |= invflag;
++		/* fallthrough */
++	case NFT_CMP_EQ:
++		ports[0] = port;
++		ports[1] = port;
++		break;
++	case NFT_CMP_LT:
++		ports[1] = max(port - 1, 1);
++		break;
++	case NFT_CMP_LTE:
++		ports[1] = port;
++		break;
++	case NFT_CMP_GT:
++		ports[0] = min(port + 1, UINT16_MAX);
++		break;
++	case NFT_CMP_GTE:
++		ports[0] = port;
++		break;
 +	}
-+
-+	memset(mptr, 0xFF,
-+	       XT_ALIGN(sizeof(struct xt_entry_target))
-+	       + target->userspacesize);
-+
-+	return mask;
 +}
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index f43c28f519a9c..bfae4b4e1b5d3 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -293,4 +293,8 @@ void ipv6_post_parse(int command, struct iptables_command_state *cs,
- extern char *arp_opcodes[];
- #define ARP_NUMOPCODES 9
- 
-+unsigned char *make_delete_mask(const struct xtables_rule_match *matches,
-+				const struct xtables_target *target,
-+				size_t entry_size);
 +
- #endif /* IPTABLES_XSHARED_H */
+ static void nft_parse_udp(struct nft_xt_ctx *ctx,
+ 			  struct iptables_command_state *cs,
+ 			  int sport, int dport,
+@@ -757,52 +786,10 @@ static void nft_parse_udp(struct nft_xt_ctx *ctx,
+ 	if (!udp)
+ 		return;
+ 
+-	if (sport >= 0) {
+-		switch (op) {
+-		case NFT_CMP_NEQ:
+-			udp->invflags |= XT_UDP_INV_SRCPT;
+-			/* fallthrough */
+-		case NFT_CMP_EQ:
+-			udp->spts[0] = sport;
+-			udp->spts[1] = sport;
+-			break;
+-		case NFT_CMP_LT:
+-			udp->spts[1] = sport > 1 ? sport - 1 : 1;
+-			break;
+-		case NFT_CMP_LTE:
+-			udp->spts[1] = sport;
+-			break;
+-		case NFT_CMP_GT:
+-			udp->spts[0] = sport < 0xffff ? sport + 1 : 0xffff;
+-			break;
+-		case NFT_CMP_GTE:
+-			udp->spts[0] = sport;
+-			break;
+-		}
+-	}
+-	if (dport >= 0) {
+-		switch (op) {
+-		case NFT_CMP_NEQ:
+-			udp->invflags |= XT_UDP_INV_DSTPT;
+-			/* fallthrough */
+-		case NFT_CMP_EQ:
+-			udp->dpts[0] = dport;
+-			udp->dpts[1] = dport;
+-			break;
+-		case NFT_CMP_LT:
+-			udp->dpts[1] = dport > 1 ? dport - 1 : 1;
+-			break;
+-		case NFT_CMP_LTE:
+-			udp->dpts[1] = dport;
+-			break;
+-		case NFT_CMP_GT:
+-			udp->dpts[0] = dport < 0xffff ? dport + 1 : 0xffff;
+-			break;
+-		case NFT_CMP_GTE:
+-			udp->dpts[0] = dport;
+-			break;
+-		}
+-	}
++	port_match_single_to_range(udp->spts, &udp->invflags,
++				   op, sport, XT_UDP_INV_SRCPT);
++	port_match_single_to_range(udp->dpts, &udp->invflags,
++				   op, dport, XT_UDP_INV_DSTPT);
+ }
+ 
+ static void nft_parse_tcp(struct nft_xt_ctx *ctx,
+@@ -815,53 +802,10 @@ static void nft_parse_tcp(struct nft_xt_ctx *ctx,
+ 	if (!tcp)
+ 		return;
+ 
+-	if (sport >= 0) {
+-		switch (op) {
+-		case NFT_CMP_NEQ:
+-			tcp->invflags |= XT_TCP_INV_SRCPT;
+-			/* fallthrough */
+-		case NFT_CMP_EQ:
+-			tcp->spts[0] = sport;
+-			tcp->spts[1] = sport;
+-			break;
+-		case NFT_CMP_LT:
+-			tcp->spts[1] = sport > 1 ? sport - 1 : 1;
+-			break;
+-		case NFT_CMP_LTE:
+-			tcp->spts[1] = sport;
+-			break;
+-		case NFT_CMP_GT:
+-			tcp->spts[0] = sport < 0xffff ? sport + 1 : 0xffff;
+-			break;
+-		case NFT_CMP_GTE:
+-			tcp->spts[0] = sport;
+-			break;
+-		}
+-	}
+-
+-	if (dport >= 0) {
+-		switch (op) {
+-		case NFT_CMP_NEQ:
+-			tcp->invflags |= XT_TCP_INV_DSTPT;
+-			/* fallthrough */
+-		case NFT_CMP_EQ:
+-			tcp->dpts[0] = dport;
+-			tcp->dpts[1] = dport;
+-			break;
+-		case NFT_CMP_LT:
+-			tcp->dpts[1] = dport > 1 ? dport - 1 : 1;
+-			break;
+-		case NFT_CMP_LTE:
+-			tcp->dpts[1] = dport;
+-			break;
+-		case NFT_CMP_GT:
+-			tcp->dpts[0] = dport < 0xffff ? dport + 1 : 0xffff;
+-			break;
+-		case NFT_CMP_GTE:
+-			tcp->dpts[0] = dport;
+-			break;
+-		}
+-	}
++	port_match_single_to_range(tcp->spts, &tcp->invflags,
++				   op, sport, XT_TCP_INV_SRCPT);
++	port_match_single_to_range(tcp->dpts, &tcp->invflags,
++				   op, dport, XT_TCP_INV_DSTPT);
+ }
+ 
+ static void nft_parse_th_port(struct nft_xt_ctx *ctx,
 -- 
 2.38.0
 
