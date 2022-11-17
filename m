@@ -2,371 +2,325 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A1E62E3CA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Nov 2022 19:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A399F62E4BD
+	for <lists+netfilter-devel@lfdr.de>; Thu, 17 Nov 2022 19:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240338AbiKQSIY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 17 Nov 2022 13:08:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47468 "EHLO
+        id S240737AbiKQSr5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 17 Nov 2022 13:47:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240343AbiKQSIU (ORCPT
+        with ESMTP id S240595AbiKQSru (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 17 Nov 2022 13:08:20 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DE582200
-        for <netfilter-devel@vger.kernel.org>; Thu, 17 Nov 2022 10:08:12 -0800 (PST)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1ovjJ4-0001vE-W9; Thu, 17 Nov 2022 19:08:11 +0100
-Date:   Thu, 17 Nov 2022 19:08:10 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>
-Subject: Re: [nf-next RFC] netfilter: nf_tables: Compatibility interface for
- nft_rule
-Message-ID: <Y3Z4ihfhBPKzN/Dl@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>
-References: <20221104221827.30335-1-phil@nwl.cc>
- <Y3J7BD0hxG5BEMkz@salvia>
+        Thu, 17 Nov 2022 13:47:50 -0500
+Received: from smtp-bc0e.mail.infomaniak.ch (smtp-bc0e.mail.infomaniak.ch [IPv6:2001:1600:4:17::bc0e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A332F8756B
+        for <netfilter-devel@vger.kernel.org>; Thu, 17 Nov 2022 10:47:48 -0800 (PST)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4NCpdn59QZzMqMpv;
+        Thu, 17 Nov 2022 19:41:01 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4NCpdm6ym8zMppYx;
+        Thu, 17 Nov 2022 19:41:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+        s=20191114; t=1668710461;
+        bh=vVRpFKzQtqfkyjaOnej22IcnUL9qZNir+4epNtYIy1s=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=oYMvzfLhEb3zhXGq4LwXet6GehJYbWRnXc4rwsmyl6NqqGF06G9kEEVjnDq7N5Gk5
+         5fu9pPPGoblhVtpU0gec8jb1Cu5esyMErYDdC9EnTmajOctltwamEQnJ521/pzrnaM
+         lb+NuyVdWy0lP4Tz3JPau1iqICFtpeOiNE6KCa4k=
+Message-ID: <94ed4212-c093-9c5c-089f-e9e4097e5bd6@digikod.net>
+Date:   Thu, 17 Nov 2022 19:41:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y3J7BD0hxG5BEMkz@salvia>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: 
+Subject: Re: [PATCH v8 01/12] landlock: Make ruleset's access masks more
+ generic
+Content-Language: en-US
+To:     Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+Cc:     willemdebruijn.kernel@gmail.com, gnoack3000@gmail.com,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, artem.kuzin@huawei.com
+References: <20221021152644.155136-1-konstantin.meskhidze@huawei.com>
+ <20221021152644.155136-2-konstantin.meskhidze@huawei.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+In-Reply-To: <20221021152644.155136-2-konstantin.meskhidze@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
 
-On Mon, Nov 14, 2022 at 06:29:40PM +0100, Pablo Neira Ayuso wrote:
-> Hi Phil,
+On 21/10/2022 17:26, Konstantin Meskhidze wrote:
+> To support network type rules, this modification renames ruleset's
+> access masks and modifies it's type to access_masks_t. This patch
+> adds filesystem helper functions to add and get filesystem mask.
 > 
-> Comments below.
+> Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+> ---
 > 
-> On Fri, Nov 04, 2022 at 11:18:27PM +0100, Phil Sutter wrote:
-> > Accept extra expressions from user space which should replace active
-> > one(s) when the rule is being dumped. Each of those expressions
-> > specifies the index of the first expression to replace, the number of
-> > consecutive expressions it replaces and a blob of data to dump. While
-> > the latter should adhere to the expected NFTA_LIST_ELEM content format,
-> > the kernel actually treats it as opaque data and therefore may not even
-> > support the expression type being dumped.
-> > 
-> > The practical application of this is to enable iptables-nft to use
-> > native nftables expressions while still maintaining compatibility
-> > towards older versions not expecting (or correctly parsing) them.
-> > 
-> > Here's the effect in practice with a customized iptables-nft. First add
-> > a rule with two matches that had been converted already, netlink dump
-> > shows the native expressions used:
-> > 
-> > | # iptables-nft -vv -A FORWARD -m limit --limit 3/hour -m mark --mark 0x23/0x42
-> > |   all opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0   limit: avg 3/hour burst 5 mark match 0x23/0x42
-> > | table filter ip flags 0 use 0 handle 0
-> > | ip filter FORWARD use 0 type filter hook forward prio 0 policy accept packets 0 bytes 0
-> > | ip filter FORWARD
-> > |   [ limit rate 3/hour burst 5 type packets flags 0x0 ]
-> > |   [ meta load mark => reg 1 ]
-> > |   [ bitwise reg 1 = ( reg 1 & 0x00000042 ) ^ 0x00000000 ]
-> > |   [ cmp eq reg 1 0x00000023 ]
-> > |   [ counter pkts 0 bytes 0 ]
-> > 
-> > Listing the rule shows how the previously attached compat expressions
-> > replaced the native code in output:
-> > 
-> > | # iptables-nft -vv -S
-> > | ip filter FORWARD 2
-> > |   [ match name limit rev 0 ]
-> > |   [ match name mark rev 1 ]
-> > |   [ counter pkts 0 bytes 0 ]
-> > |
-> > | -P INPUT ACCEPT -c 0 0
-> > | -P FORWARD ACCEPT -c 0 0
-> > | -P OUTPUT ACCEPT -c 0 0
-> > | -A FORWARD -m limit --limit 3/hour -m mark --mark 0x23/0x42 -c 0 0
-> > 
-> > Note also how the rule is correctly interpreted since iptables-nft
-> > continues to support the legacy limit and mark match extensions.
-> > 
-> > This patch should have relatively low impact if not in use: struct
-> > nft_rule increases by one pointer which has to be checked upon dumping
-> > or freeing of the rule.
-> > 
-> > Disclaimer: This is not the much simpler "attach the rule as text" we
-> > discussed, but I would like to at least propose it since it works for
-> > existing releases.
+> Changes since v7:
+> * Refactors commit message.
 > 
-> I prefer this "structured" representation than resorting to using the
-> userdata area to store a string.
+> Changes since v6:
+> * Adds a new access_masks_t for struct ruleset.
+> * Renames landlock_set_fs_access_mask() to landlock_add_fs_access_mask()
+>    because it OR values.
+> * Makes landlock_add_fs_access_mask() more resilient incorrect values.
+> * Refactors landlock_get_fs_access_mask().
 > 
-> > Signed-off-by: Phil Sutter <phil@nwl.cc>
-> > ---
-> >  include/net/netfilter/nf_tables.h        |   8 ++
-> >  include/uapi/linux/netfilter/nf_tables.h |  18 ++++
-> >  net/netfilter/nf_tables_api.c            | 129 ++++++++++++++++++++++-
-> >  3 files changed, 153 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-> > index cdb7db9b0e252..cf00753b1446e 100644
-> > --- a/include/net/netfilter/nf_tables.h
-> > +++ b/include/net/netfilter/nf_tables.h
-> > @@ -939,6 +939,13 @@ struct nft_expr_ops {
-> >  	void				*data;
-> >  };
-> >  
-> > +struct nft_compat_expr {
-> > +        int pos;
-> > +        int len;
-> > +        int dlen;
-> > +        void *data;
-> > +};
-> > +
-> >  /**
-> >   *	struct nft_rule - nf_tables rule
-> >   *
-> > @@ -951,6 +958,7 @@ struct nft_expr_ops {
-> >   */
-> >  struct nft_rule {
-> >  	struct list_head		list;
-> > +	struct nft_compat_expr		*compat_exprs;
-> >  	u64				handle:42,
-> >  					genmask:2,
-> >  					dlen:12,
-> > diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
-> > index 466fd3f4447c2..c8c0f1b2bd395 100644
-> > --- a/include/uapi/linux/netfilter/nf_tables.h
-> > +++ b/include/uapi/linux/netfilter/nf_tables.h
-> > @@ -278,15 +278,33 @@ enum nft_rule_compat_flags {
-> >   *
-> >   * @NFTA_RULE_COMPAT_PROTO: numeric value of handled protocol (NLA_U32)
-> >   * @NFTA_RULE_COMPAT_FLAGS: bitmask of enum nft_rule_compat_flags (NLA_U32)
-> > + * @NFTA_RULE_COMPAT_EXPRESSIONS: Replacement expressions in dumps (NLA_NESTED)
-> >   */
-> >  enum nft_rule_compat_attributes {
-> >  	NFTA_RULE_COMPAT_UNSPEC,
-> >  	NFTA_RULE_COMPAT_PROTO,
-> >  	NFTA_RULE_COMPAT_FLAGS,
-> > +	NFTA_RULE_COMPAT_EXPRESSIONS,
-> >  	__NFTA_RULE_COMPAT_MAX
-> >  };
-> >  #define NFTA_RULE_COMPAT_MAX	(__NFTA_RULE_COMPAT_MAX - 1)
-> >  
-> > +/**
-> > + * enum nft_rule_compat_expression - compat expression data
-> > + *
-> > + * @NFTA_RULE_COMPAT_EXPR_POS: index of expression this replaces (NLA_U32)
-> > + * @NFTA_RULE_COMPAT_EXPR_LEN: number of expressions this replaces (NLA_U32)
-> > + * @NFTA_RULE_COMPAT_EXPR_INFO: expression blob to dump (NLA_BINARY)
-> > + */
-> > +enum nft_rule_compat_expression {
-> > +	NFTA_RULE_COMPAT_EXPR_UNSPEC,
-> > +	NFTA_RULE_COMPAT_EXPR_POS,
-> > +	NFTA_RULE_COMPAT_EXPR_LEN,
-> > +	NFTA_RULE_COMPAT_EXPR_INFO,
-> > +	__NFTA_RULE_COMPAT_EXPR_MAX
-> > +};
+> Changes since v6:
+> * Adds a new access_masks_t for struct ruleset.
+> * Renames landlock_set_fs_access_mask() to landlock_add_fs_access_mask()
+>    because it OR values.
+> * Makes landlock_add_fs_access_mask() more resilient incorrect values.
+> * Refactors landlock_get_fs_access_mask().
 > 
-> Is this extra metainformation really required? I mean, this position
-> and length mapping wrt. native representation.
+> Changes since v5:
+> * Changes access_mask_t to u32.
+> * Formats code with clang-format-14.
 > 
-> Why not simply use the NFTA_RULE_COMPAT_EXPRESSIONS to dump the rule
-> fully using the xt blobs instead?
+> Changes since v4:
+> * Deletes struct landlock_access_mask.
 > 
-> That is, the rule is expressed using native expressions, but the
-> original output using the blob dump is also available.
+> Changes since v3:
+> * Splits commit.
+> * Adds get_mask, set_mask helpers for filesystem.
+> * Adds new struct landlock_access_mask.
+> 
+> ---
+>   security/landlock/fs.c       | 10 +++++-----
+>   security/landlock/limits.h   |  1 +
+>   security/landlock/ruleset.c  | 17 +++++++++--------
+>   security/landlock/ruleset.h  | 35 +++++++++++++++++++++++++++++++----
+>   security/landlock/syscalls.c |  7 ++++---
+>   5 files changed, 50 insertions(+), 20 deletions(-)
+> 
+> diff --git a/security/landlock/fs.c b/security/landlock/fs.c
+> index adcea0fe7e68..0d57c6479d29 100644
+> --- a/security/landlock/fs.c
+> +++ b/security/landlock/fs.c
+> @@ -178,9 +178,9 @@ int landlock_append_fs_rule(struct landlock_ruleset *const ruleset,
+>   		return -EINVAL;
+> 
+>   	/* Transforms relative access rights to absolute ones. */
+> -	access_rights |=
+> -		LANDLOCK_MASK_ACCESS_FS &
+> -		~(ruleset->fs_access_masks[0] | ACCESS_INITIALLY_DENIED);
+> +	access_rights |= LANDLOCK_MASK_ACCESS_FS &
+> +			 ~(landlock_get_fs_access_mask(ruleset, 0) |
+> +			   ACCESS_INITIALLY_DENIED);
+>   	object = get_inode_object(d_backing_inode(path->dentry));
+>   	if (IS_ERR(object))
+>   		return PTR_ERR(object);
+> @@ -294,7 +294,7 @@ get_handled_accesses(const struct landlock_ruleset *const domain)
+>   	size_t layer_level;
+> 
+>   	for (layer_level = 0; layer_level < domain->num_layers; layer_level++)
+> -		access_dom |= domain->fs_access_masks[layer_level];
+> +		access_dom |= landlock_get_fs_access_mask(domain, layer_level);
+>   	return access_dom & LANDLOCK_MASK_ACCESS_FS;
 
-My intention was to keep impact low by selectively replacing only those
-expressions which break compatibility. Your idea is interesting though,
-as it largely simplifies rule dumping and at the same time allows for
-more flexibility.
+You can remove `& LANDLOCK_MASK_ACCESS_FS` here because it is now part 
+of landlock_get_fs_access_mask().
 
-Of course we can't "just" represent a rule in xt blobs only, some things
-are not supported (e.g. ebtables among match). But attaching native
-expressions to the compat expressions list is a simple workaround.
 
-> > +#define NFTA_RULE_COMPAT_EXPR_MAX	(__NFTA_RULE_COMPAT_EXPR_MAX - 1)
-> > +
-> >  /**
-> >   * enum nft_set_flags - nf_tables set flags
-> >   *
-> > diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-> > index a0653a8dfa827..3a867a52bc3ad 100644
-> > --- a/net/netfilter/nf_tables_api.c
-> > +++ b/net/netfilter/nf_tables_api.c
-> > @@ -16,6 +16,7 @@
-> >  #include <linux/netfilter.h>
-> >  #include <linux/netfilter/nfnetlink.h>
-> >  #include <linux/netfilter/nf_tables.h>
-> > +#include <linux/netfilter/nf_tables_compat.h>
-> >  #include <net/netfilter/nf_flow_table.h>
-> >  #include <net/netfilter/nf_tables_core.h>
-> >  #include <net/netfilter/nf_tables.h>
-> > @@ -2992,6 +2993,36 @@ static const struct nla_policy nft_rule_policy[NFTA_RULE_MAX + 1] = {
-> >  	[NFTA_RULE_CHAIN_ID]	= { .type = NLA_U32 },
-> >  };
-> >  
-> > +static int nft_rule_dump_compat_exprs(struct sk_buff *skb,
-> > +				      const struct nft_rule *rule)
-> > +{
-> > +	const struct nft_compat_expr *cur = rule->compat_exprs;
-> > +	const struct nft_expr *expr, *next;
-> > +	int expr_idx = -1, skip = 0;
-> > +
-> > +	nft_rule_for_each_expr(expr, next, rule) {
-> > +		expr_idx++;
-> > +
-> > +		if (skip) {
-> > +			skip--;
-> > +			continue;
-> > +		}
-> > +
-> > +		if (!cur->len || expr_idx != cur->pos) {
-> > +			if (nft_expr_dump(skb, NFTA_LIST_ELEM, expr) < 0)
-> > +				return -1;
-> > +			continue;
-> > +		}
-> > +
-> > +		if (nla_put(skb, NFTA_LIST_ELEM, cur->dlen, cur->data) < 0)
-> > +			return -1;
-> > +
-> > +		skip = cur->len - 1;
-> > +		cur++;
-> > +	}
-> > +	return 0;
-> > +}
-> > +
-> >  static int nf_tables_fill_rule_info(struct sk_buff *skb, struct net *net,
-> >  				    u32 portid, u32 seq, int event,
-> >  				    u32 flags, int family,
-> > @@ -3029,9 +3060,14 @@ static int nf_tables_fill_rule_info(struct sk_buff *skb, struct net *net,
-> >  	list = nla_nest_start_noflag(skb, NFTA_RULE_EXPRESSIONS);
-> >  	if (list == NULL)
-> >  		goto nla_put_failure;
-> > -	nft_rule_for_each_expr(expr, next, rule) {
-> > -		if (nft_expr_dump(skb, NFTA_LIST_ELEM, expr) < 0)
-> > +	if (rule->compat_exprs) {
-> > +		if (nft_rule_dump_compat_exprs(skb, rule) < 0)
-> >  			goto nla_put_failure;
-> > +	} else {
-> > +		nft_rule_for_each_expr(expr, next, rule) {
-> > +			if (nft_expr_dump(skb, NFTA_LIST_ELEM, expr) < 0)
-> > +				goto nla_put_failure;
-> > +		}
-> >  	}
+>   }
 > 
-> Instead of one-or-another, dump both native and xt representation?
+> @@ -336,7 +336,7 @@ init_layer_masks(const struct landlock_ruleset *const domain,
+>   			 * access rights.
+>   			 */
+>   			if (BIT_ULL(access_bit) &
+> -			    (domain->fs_access_masks[layer_level] |
+> +			    (landlock_get_fs_access_mask(domain, layer_level) |
+>   			     ACCESS_INITIALLY_DENIED)) {
+>   				(*layer_masks)[access_bit] |=
+>   					BIT_ULL(layer_level);
+> diff --git a/security/landlock/limits.h b/security/landlock/limits.h
+> index 82288f0e9e5e..bafb3b8dc677 100644
+> --- a/security/landlock/limits.h
+> +++ b/security/landlock/limits.h
+> @@ -21,6 +21,7 @@
+>   #define LANDLOCK_LAST_ACCESS_FS		LANDLOCK_ACCESS_FS_TRUNCATE
+>   #define LANDLOCK_MASK_ACCESS_FS		((LANDLOCK_LAST_ACCESS_FS << 1) - 1)
+>   #define LANDLOCK_NUM_ACCESS_FS		__const_hweight64(LANDLOCK_MASK_ACCESS_FS)
+> +#define LANDLOCK_SHIFT_ACCESS_FS	0
 > 
-> So userspace can fall back to use compat_exprs if it fails to decode
-> the native representation?
-
-IMO the crucial benefit of the proposed solution is to fix for existing
-iptables binaries. Maintaining this with your "dump both" idea means the
-kernel would dump the compat_exprs as "regular" ones and the actual ones
-in a new attribute. New user space could fiddle this apart again, old
-user space would ignore the extra data. Does that sound feasible to you?
-
-> >  	nla_nest_end(skb, list);
-> >  
-> > @@ -3318,6 +3354,15 @@ static void nf_tables_rule_destroy(const struct nft_ctx *ctx,
-> >  		nf_tables_expr_destroy(ctx, expr);
-> >  		expr = next;
-> >  	}
-> > +	if (rule->compat_exprs) {
-> > +		struct nft_compat_expr *cur = rule->compat_exprs;
-> > +
-> > +		while (cur->len) {
-> > +			kfree(cur->data);
-> > +			cur++;
-> > +		}
-> > +		kfree(rule->compat_exprs);
-> > +	}
-> >  	kfree(rule);
-> >  }
-> >  
-> > @@ -3385,12 +3430,83 @@ static struct nft_rule *nft_rule_lookup_byid(const struct net *net,
-> >  
-> >  #define NFT_RULE_MAXEXPRS	128
-> >  
-> > +static const struct nla_policy
-> > +nft_rule_compat_expression_policy[NFTA_RULE_COMPAT_EXPR_MAX + 1] = {
-> > +	[NFTA_RULE_COMPAT_EXPR_POS]	= { .type = NLA_U32 },
-> > +	[NFTA_RULE_COMPAT_EXPR_LEN]	= { .type = NLA_U32 },
-> > +	[NFTA_RULE_COMPAT_EXPR_INFO]	= { .type = NLA_BINARY },
-> > +};
-> > +
-> > +static struct nft_compat_expr *
-> > +nft_parse_compat_exprs_nla(const struct nlattr *nla)
-> > +{
-> > +	struct nft_compat_expr *compat_exprs, *cur;
-> > +	int idx = 0, num_exprs = 0;
-> > +	struct nlattr *tmp;
-> > +	int err, rem;
-> > +
-> > +	nla = nla_find_nested(nla, NFTA_RULE_COMPAT_EXPRESSIONS);
-> > +	if (!nla)
-> > +		return NULL;
-> > +
-> > +	nla_for_each_nested(tmp, nla, rem)
-> > +		num_exprs++;
-> > +
-> > +	if (!num_exprs)
-> > +		return NULL;
-> > +
-> > +	compat_exprs = kvmalloc_array(num_exprs + 1,
-> > +				      sizeof(*compat_exprs), GFP_KERNEL);
-> > +	if (!compat_exprs)
-> > +		return ERR_PTR(-ENOMEM);
-> > +
-> > +	cur = compat_exprs;
-> > +	nla_for_each_nested(tmp, nla, rem) {
-> > +		struct nlattr *tb[NFTA_RULE_COMPAT_EXPR_MAX + 1];
-> > +		int err;
-> > +
-> > +		if (idx >= NFT_RULE_MAXEXPRS)
-> > +			return ERR_PTR(-ENOMEM);
-> > +
-> > +		err = nla_parse_nested_deprecated(tb, NFTA_RULE_COMPAT_EXPR_MAX,
-> > +						  tmp, nft_rule_compat_expression_policy, NULL);
-> > +		if (err < 0)
-> > +			return ERR_PTR(err);
-> > +
-> > +		if (!tb[NFTA_RULE_COMPAT_EXPR_POS] ||
-> > +		    !tb[NFTA_RULE_COMPAT_EXPR_LEN] ||
-> > +		    !tb[NFTA_RULE_COMPAT_EXPR_INFO]) {
-> > +			err = -EINVAL;
-> > +			goto out_free;
-> > +		}
-> > +
-> > +		cur->pos = nla_get_u32(tb[NFTA_RULE_COMPAT_EXPR_POS]);
-> > +		cur->len = nla_get_u32(tb[NFTA_RULE_COMPAT_EXPR_LEN]);
-> > +		cur->dlen = nla_len(tb[NFTA_RULE_COMPAT_EXPR_INFO]);
-> > +		cur->data = kvmalloc(cur->dlen, GFP_KERNEL);
-> > +		if (!cur->data) {
-> > +			err = -ENOMEM;
-> > +			goto out_free;
-> > +		}
-> > +
-> > +		nla_memcpy(cur->data,
-> > +			   tb[NFTA_RULE_COMPAT_EXPR_INFO], cur->dlen);
-> > +		cur++;
-> > +	}
-> > +	cur->len = 0;
-> > +	return compat_exprs;
-> > +out_free:
-> > +	kfree(compat_exprs);
-> > +	return ERR_PTR(err);
-> > +}
+>   /* clang-format on */
 > 
-> Probably move this code to nft_compat.c?
+> diff --git a/security/landlock/ruleset.c b/security/landlock/ruleset.c
+> index 996484f98bfd..1f3188b4e313 100644
+> --- a/security/landlock/ruleset.c
+> +++ b/security/landlock/ruleset.c
+> @@ -29,7 +29,7 @@ static struct landlock_ruleset *create_ruleset(const u32 num_layers)
+>   	struct landlock_ruleset *new_ruleset;
+> 
+>   	new_ruleset =
+> -		kzalloc(struct_size(new_ruleset, fs_access_masks, num_layers),
+> +		kzalloc(struct_size(new_ruleset, access_masks, num_layers),
+>   			GFP_KERNEL_ACCOUNT);
+>   	if (!new_ruleset)
+>   		return ERR_PTR(-ENOMEM);
+> @@ -40,7 +40,7 @@ static struct landlock_ruleset *create_ruleset(const u32 num_layers)
+>   	/*
+>   	 * hierarchy = NULL
+>   	 * num_rules = 0
+> -	 * fs_access_masks[] = 0
+> +	 * access_masks[] = 0
+>   	 */
+>   	return new_ruleset;
+>   }
+> @@ -55,7 +55,7 @@ landlock_create_ruleset(const access_mask_t fs_access_mask)
+>   		return ERR_PTR(-ENOMSG);
+>   	new_ruleset = create_ruleset(1);
+>   	if (!IS_ERR(new_ruleset))
+> -		new_ruleset->fs_access_masks[0] = fs_access_mask;
+> +		landlock_add_fs_access_mask(new_ruleset, fs_access_mask, 0);
+>   	return new_ruleset;
+>   }
+> 
+> @@ -117,11 +117,12 @@ static void build_check_ruleset(void)
+>   		.num_rules = ~0,
+>   		.num_layers = ~0,
+>   	};
+> -	typeof(ruleset.fs_access_masks[0]) fs_access_mask = ~0;
+> +	typeof(ruleset.access_masks[0]) access_masks = ~0;
+> 
+>   	BUILD_BUG_ON(ruleset.num_rules < LANDLOCK_MAX_NUM_RULES);
+>   	BUILD_BUG_ON(ruleset.num_layers < LANDLOCK_MAX_NUM_LAYERS);
+> -	BUILD_BUG_ON(fs_access_mask < LANDLOCK_MASK_ACCESS_FS);
+> +	BUILD_BUG_ON(access_masks <
+> +		     (LANDLOCK_MASK_ACCESS_FS << LANDLOCK_SHIFT_ACCESS_FS));
+>   }
+> 
+>   /**
+> @@ -281,7 +282,7 @@ static int merge_ruleset(struct landlock_ruleset *const dst,
+>   		err = -EINVAL;
+>   		goto out_unlock;
+>   	}
+> -	dst->fs_access_masks[dst->num_layers - 1] = src->fs_access_masks[0];
+> +	dst->access_masks[dst->num_layers - 1] = src->access_masks[0];
+> 
+>   	/* Merges the @src tree. */
+>   	rbtree_postorder_for_each_entry_safe(walker_rule, next_rule, &src->root,
+> @@ -340,8 +341,8 @@ static int inherit_ruleset(struct landlock_ruleset *const parent,
+>   		goto out_unlock;
+>   	}
+>   	/* Copies the parent layer stack and leaves a space for the new layer. */
+> -	memcpy(child->fs_access_masks, parent->fs_access_masks,
+> -	       flex_array_size(parent, fs_access_masks, parent->num_layers));
+> +	memcpy(child->access_masks, parent->access_masks,
+> +	       flex_array_size(parent, access_masks, parent->num_layers));
+> 
+>   	if (WARN_ON_ONCE(!parent->hierarchy)) {
+>   		err = -EINVAL;
+> diff --git a/security/landlock/ruleset.h b/security/landlock/ruleset.h
+> index d43231b783e4..f2ad932d396c 100644
+> --- a/security/landlock/ruleset.h
+> +++ b/security/landlock/ruleset.h
+> @@ -25,6 +25,11 @@ static_assert(BITS_PER_TYPE(access_mask_t) >= LANDLOCK_NUM_ACCESS_FS);
+>   /* Makes sure for_each_set_bit() and for_each_clear_bit() calls are OK. */
+>   static_assert(sizeof(unsigned long) >= sizeof(access_mask_t));
+> 
+> +/* Ruleset access masks. */
+> +typedef u16 access_masks_t;
+> +/* Makes sure all ruleset access rights can be stored. */
+> +static_assert(BITS_PER_TYPE(access_masks_t) >= LANDLOCK_NUM_ACCESS_FS);
+> +
+>   typedef u16 layer_mask_t;
+>   /* Makes sure all layers can be checked. */
+>   static_assert(BITS_PER_TYPE(layer_mask_t) >= LANDLOCK_MAX_NUM_LAYERS);
+> @@ -110,7 +115,7 @@ struct landlock_ruleset {
+>   		 * section.  This is only used by
+>   		 * landlock_put_ruleset_deferred() when @usage reaches zero.
+>   		 * The fields @lock, @usage, @num_rules, @num_layers and
+> -		 * @fs_access_masks are then unused.
+> +		 * @access_masks are then unused.
+>   		 */
+>   		struct work_struct work_free;
+>   		struct {
+> @@ -137,7 +142,7 @@ struct landlock_ruleset {
+>   			 */
+>   			u32 num_layers;
+>   			/**
+> -			 * @fs_access_masks: Contains the subset of filesystem
+> +			 * @access_masks: Contains the subset of filesystem
+>   			 * actions that are restricted by a ruleset.  A domain
+>   			 * saves all layers of merged rulesets in a stack
+>   			 * (FAM), starting from the first layer to the last
+> @@ -148,13 +153,13 @@ struct landlock_ruleset {
+>   			 * layers are set once and never changed for the
+>   			 * lifetime of the ruleset.
+>   			 */
+> -			access_mask_t fs_access_masks[];
+> +			access_masks_t access_masks[];
+>   		};
+>   	};
+>   };
+> 
+>   struct landlock_ruleset *
+> -landlock_create_ruleset(const access_mask_t fs_access_mask);
+> +landlock_create_ruleset(const access_mask_t access_mask);
+> 
+>   void landlock_put_ruleset(struct landlock_ruleset *const ruleset);
+>   void landlock_put_ruleset_deferred(struct landlock_ruleset *const ruleset);
+> @@ -177,4 +182,26 @@ static inline void landlock_get_ruleset(struct landlock_ruleset *const ruleset)
+>   		refcount_inc(&ruleset->usage);
+>   }
+> 
+> +static inline void
+> +landlock_add_fs_access_mask(struct landlock_ruleset *const ruleset,
+> +			    const access_mask_t fs_access_mask,
+> +			    const u16 layer_level)
+> +{
+> +	access_mask_t fs_mask = fs_access_mask & LANDLOCK_MASK_ACCESS_FS;
+> +
+> +	/* Should already be checked in sys_landlock_create_ruleset(). */
+> +	WARN_ON_ONCE(fs_access_mask != fs_mask);
+> +	// TODO: Add tests to check "|=" and not "="
 
-I left it there to avoid dealing with module dependencies, but yeah. :)
+This todo should be done and removed. No more todos must remain.
 
-Thanks, Phil
+
+> +	ruleset->access_masks[layer_level] |=
+> +		(fs_mask << LANDLOCK_SHIFT_ACCESS_FS);
+> +}
+> +
+> +static inline access_mask_t
+> +landlock_get_fs_access_mask(const struct landlock_ruleset *const ruleset,
+> +			    const u16 layer_level)
+> +{
+> +	return (ruleset->access_masks[layer_level] >>
+> +		LANDLOCK_SHIFT_ACCESS_FS) &
+> +	       LANDLOCK_MASK_ACCESS_FS;
+> +}
+>   #endif /* _SECURITY_LANDLOCK_RULESET_H */
+> diff --git a/security/landlock/syscalls.c b/security/landlock/syscalls.c
+> index 245cc650a4dc..71aca7f990bc 100644
+> --- a/security/landlock/syscalls.c
+> +++ b/security/landlock/syscalls.c
+> @@ -346,10 +346,11 @@ SYSCALL_DEFINE4(landlock_add_rule, const int, ruleset_fd,
+>   	}
+>   	/*
+>   	 * Checks that allowed_access matches the @ruleset constraints
+> -	 * (ruleset->fs_access_masks[0] is automatically upgraded to 64-bits).
+> +	 * (ruleset->access_masks[0] is automatically upgraded to 64-bits).
+>   	 */
+> -	if ((path_beneath_attr.allowed_access | ruleset->fs_access_masks[0]) !=
+> -	    ruleset->fs_access_masks[0]) {
+> +	if ((path_beneath_attr.allowed_access |
+> +	     landlock_get_fs_access_mask(ruleset, 0)) !=
+> +	    landlock_get_fs_access_mask(ruleset, 0)) {
+>   		err = -EINVAL;
+>   		goto out_put_ruleset;
+>   	}
+> --
+> 2.25.1
+> 
+
+I'll send a patch to be applied after this one.
