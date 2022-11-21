@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EAA632FD2
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 244F4632FD5
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbiKUW1o (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 21 Nov 2022 17:27:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39374 "EHLO
+        id S231693AbiKUW1q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 21 Nov 2022 17:27:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231675AbiKUW1k (ORCPT
+        with ESMTP id S231696AbiKUW1m (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 21 Nov 2022 17:27:40 -0500
+        Mon, 21 Nov 2022 17:27:42 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FB8F5B9
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AEC2DF35
         for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:27:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=jG4vU6x+Lbbsbc2n/bNmUM7B/fewdV/zv7RDoVEpwso=; b=kcJz2TWWQMTvZsPA2d7IJKaXWF
-        H709T9Empjz0FEbsKfx/aIS37KaX/7GMLKTBxKglrQzWIFDLYZsIghQBvS2zEg32hbqRLrz9swqqo
-        ozM4dRffhhWN3I2UM3PtFashlOReqTdjEupTARlgc9hNyuiE0w/dE/4rJ88IhsuFyC9DBGgnBtn8u
-        IrSf84qSiMWHrjzrjvmJ+aqKXK0mUskaDQLE0znMZUyu5t3gPapdCm+t9GLyb7db3nkNOoo2aqvw4
-        49fIuZ4tyLlFqH9KZFL92j0Hy7lZXozg40VMJgiTflIwZuSUQwTlUueyZSP2QcPC6KcWeeDOson0J
-        OdGJKc3A==;
+        bh=7xpPga0HslgUhSwPU2dE+FYHACNRGMh4x81kni2XThA=; b=iAWaDOCY1cwvOmjpeooy0pwodv
+        esesgV6zzxT4dSCZDctOOEMUQWTQJGK/puscKWRD/hRz+B1S9KYFdnU5Zy4G7prGzN/vEdGy4JKXf
+        GMSffw13BZGODSbkFus+gU46oZmN73WGp8l0ApEF93GRm4ATLjVhovk73OmAOIIajXM3cW/k317Dq
+        +GRUXpAIPBam7DliiLtb/jacmCAdHT5PgsHtbzTJ+fEEDy4nyYXrGIx4anFKgzrhrMXwgF96Y/zZC
+        fKklUIlyxAbK+KnHn/B4cs2G8FeU+FaiOmSOnJyNpuLD4hPomrt6+vy6Ke77plvXsCJjGwKWhBC18
+        +SXMgaWA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1oxFGC-005LgP-Ab
+        id 1oxFGC-005LgP-EN
         for netfilter-devel@vger.kernel.org; Mon, 21 Nov 2022 22:27:28 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 04/34] db: fix back-log capacity checks
-Date:   Mon, 21 Nov 2022 22:25:41 +0000
-Message-Id: <20221121222611.3914559-5-jeremy@azazel.net>
+Subject: [PATCH ulogd2 05/34] build: add checks to configure.ac
+Date:   Mon, 21 Nov 2022 22:25:42 +0000
+Message-Id: <20221121222611.3914559-6-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221121222611.3914559-1-jeremy@azazel.net>
 References: <20221121222611.3914559-1-jeremy@azazel.net>
@@ -54,68 +54,80 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Previously, when adding queries to the back-log, the memory usage is
-incremented and decremented by the size of the query structure and the
-length of the SQL statement, `sizeof(struct db_stmt) + len`.  However,
-when checking whether there was available capacity to add a new query,
-the struct size was ignored.  Amend the check to include the struct
-size, and also account for the NUL that terminates the SQL.
+Autoscan complains about a number of missing function, header and type
+checks.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- util/db.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ configure.ac | 47 ++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 44 insertions(+), 3 deletions(-)
 
-diff --git a/util/db.c b/util/db.c
-index c1d24365239f..ebd9f152ed83 100644
---- a/util/db.c
-+++ b/util/db.c
-@@ -404,14 +404,17 @@ static void __format_query_db(struct ulogd_pluginstance *upi, char *start)
- static int __add_to_backlog(struct ulogd_pluginstance *upi, const char *stmt, unsigned int len)
- {
- 	struct db_instance *di = (struct db_instance *) &upi->private;
-+	unsigned int query_size;
- 	struct db_stmt *query;
+diff --git a/configure.ac b/configure.ac
+index 6ee29ce321d0..07c45cfb7b27 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -22,17 +22,58 @@ AC_SUBST([libdl_LIBS])
  
- 	/* check if we are using backlog */
- 	if (di->backlog_memcap == 0)
- 		return 0;
+ dnl Checks for header files.
+ AC_HEADER_DIRENT
+-AC_CHECK_HEADERS([fcntl.h unistd.h])
++AC_CHECK_HEADER_STDBOOL
++AC_CHECK_HEADERS([arpa/inet.h  \
++                  fcntl.h      \
++                  inttypes.h   \
++                  netdb.h      \
++                  netinet/in.h \
++                  stdint.h     \
++                  sys/param.h  \
++                  sys/socket.h \
++                  sys/time.h   \
++                  syslog.h     \
++                  unistd.h])
  
-+	query_size = sizeof(*query) + len + 1;
-+
- 	/* check len against backlog */
--	if (len + di->backlog_memusage > di->backlog_memcap) {
-+	if (query_size + di->backlog_memcap - di->backlog_memusage) {
- 		if (di->backlog_full == 0)
- 			ulogd_log(ULOGD_ERROR,
- 				  "Backlog is full starting to reject events.\n");
-@@ -419,7 +422,7 @@ static int __add_to_backlog(struct ulogd_pluginstance *upi, const char *stmt, un
- 		return -1;
- 	}
+ dnl Checks for typedefs, structures, and compiler characteristics.
+ AC_C_CONST
+-AC_TYPE_SIZE_T
++AC_C_INLINE
+ AC_STRUCT_TM
+ AC_SYS_LARGEFILE
++AC_TYPE_INT8_T
++AC_TYPE_INT16_T
++AC_TYPE_INT32_T
++AC_TYPE_INT64_T
++AC_TYPE_PID_T
++AC_TYPE_SIZE_T
++AC_TYPE_SSIZE_T
++AC_TYPE_UID_T
++AC_TYPE_UINT8_T
++AC_TYPE_UINT16_T
++AC_TYPE_UINT32_T
++AC_TYPE_UINT64_T
  
--	query = malloc(sizeof(struct db_stmt));
-+	query = malloc(sizeof(*query));
- 	if (query == NULL)
- 		return -1;
+ dnl Checks for library functions.
++AC_FUNC_CHOWN
++AC_FUNC_MALLOC
++AC_FUNC_REALLOC
+ AC_FUNC_VPRINTF
+-AC_CHECK_FUNCS([socket strerror])
++AC_CHECK_FUNCS([alarm        \
++                ftruncate    \
++                gethostname  \
++                gettimeofday \
++                localtime_r  \
++                memmove      \
++                memset       \
++                select       \
++                socket       \
++                strcasecmp   \
++                strchr       \
++                strdup       \
++                strerror     \
++                strncasecmp  \
++                strndup      \
++                strtoul])
  
-@@ -431,7 +434,7 @@ static int __add_to_backlog(struct ulogd_pluginstance *upi, const char *stmt, un
- 		return -1;
- 	}
- 
--	di->backlog_memusage += len + sizeof(struct db_stmt);
-+	di->backlog_memusage += query_size;
- 	di->backlog_full = 0;
- 
- 	llist_add_tail(&query->list, &di->backlog);
-@@ -489,7 +492,7 @@ static int __treat_backlog(struct ulogd_pluginstance *upi)
- 			di->driver->close_db(upi);
- 			return _init_reconnect(upi);
- 		} else {
--			di->backlog_memusage -= query->len + sizeof(struct db_stmt);
-+			di->backlog_memusage -= sizeof(*query) + query->len + 1;
- 			llist_del(&query->list);
- 			free(query->stmt);
- 			free(query);
+ AC_SEARCH_LIBS([pthread_create], [pthread], [libpthread_LIBS="$LIBS"; LIBS=""])
+ AC_SUBST([libpthread_LIBS])
 -- 
 2.35.1
 
