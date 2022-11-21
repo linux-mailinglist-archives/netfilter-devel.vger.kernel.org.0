@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F27B8632FD0
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:27:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467E6632FD3
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbiKUW1l (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 21 Nov 2022 17:27:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
+        id S231675AbiKUW1p (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 21 Nov 2022 17:27:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbiKUW1k (ORCPT
+        with ESMTP id S231678AbiKUW1k (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 21 Nov 2022 17:27:40 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C847E02C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC0EDF97
         for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:27:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=7ViKe8Osu4SApu0xaM0xPM2WuyCLUBlu70yZHewCPXQ=; b=akgExUxtuPNz5DQHSJSAn4La/h
-        xGFdzVEbOkUDTY2/C8HR0o3hFckcVnXkqlQeLpQb4Bt2NVvgTu+XxI68VxeWisfm7Jt63aSMyiP4F
-        PPw1RJ/hlKsDE5e7Taj/+hAJM+97qmL8vbRyM8WgHtm57soGQQMMRLBMsNO1ETQMTaIPHuePYFMdD
-        ZPHLu0nzFH4y+LvJMDH8k1Ko5jnheYk0Ry6a02BRqBP1TZty1Gi8MjfDX2VVhSPovwkSZQbjOEWvx
-        EYtTwh5AFP8FDNojPP9XnmYaKDMeAhzA/B0IOxmwYHkGmYKX8XxaEDH+Vh1cLwMTtbsHa6XWPHltk
-        CPqII59A==;
+        bh=FlQ9Jrlj9K0rNd7YBqYiZ+nBicTB8yIxOIaqIRskgKE=; b=PDQ8fibF3qYdWBOEe8ML3Hsi39
+        7993bCoLFkd6Nj/8ygdr5cSrij0I3hzYA5slkxHJq69hTM99AgGw1ITP9tmkQEjkesbJrKsxia3ol
+        DzIO+iXT6P4BnvrBDDvgiQphK3z8hZ7r8gH+t2A36jhllcujLNvl3sajdPnZegNM8vfb937vxxJ0Y
+        d4aLl/r+SgbVveKL+U9auAP5qN86lyMeNIFHJ8jy3nBmMci/rFfeGwTu5m9kEVZkYNrNZ8W8Sr7Xy
+        j8XyJD6Mcy5KWqzHYLLsYBC6PXw0Z9LxXeME14OlFCnOZuEbR/SU930+ZQv2ek3btSubCLEAXtKLu
+        kdJK+giA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1oxFGC-005LgP-ID
+        id 1oxFGC-005LgP-MX
         for netfilter-devel@vger.kernel.org; Mon, 21 Nov 2022 22:27:28 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 06/34] src: remove some trailing white space
-Date:   Mon, 21 Nov 2022 22:25:43 +0000
-Message-Id: <20221121222611.3914559-7-jeremy@azazel.net>
+Subject: [PATCH ulogd2 07/34] src: remove zero-valued config-key fields
+Date:   Mon, 21 Nov 2022 22:25:44 +0000
+Message-Id: <20221121222611.3914559-8-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221121222611.3914559-1-jeremy@azazel.net>
 References: <20221121222611.3914559-1-jeremy@azazel.net>
@@ -54,768 +54,665 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Struct members are zero-initialized as a matter of course.
+
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/dbi/ulogd_output_DBI.c         | 26 +++++-----
- output/mysql/ulogd_output_MYSQL.c     | 24 ++++-----
- output/pcap/ulogd_output_PCAP.c       | 18 +++----
- output/pgsql/ulogd_output_PGSQL.c     | 34 ++++++------
- output/sqlite3/ulogd_output_SQLITE3.c | 18 +++----
- src/ulogd.c                           | 74 +++++++++++++--------------
- util/db.c                             |  8 +--
- 7 files changed, 101 insertions(+), 101 deletions(-)
+ filter/ulogd_filter_MARK.c           |  3 --
+ include/ulogd/db.h                   |  1 -
+ input/flow/ulogd_inpflow_NFCT.c      | 14 ---------
+ input/packet/ulogd_inppkt_NFLOG.c    | 19 ------------
+ input/packet/ulogd_inppkt_ULOG.c     | 44 ++++++++++++----------------
+ input/packet/ulogd_inppkt_UNIXSOCK.c |  5 ----
+ input/sum/ulogd_inpflow_NFACCT.c     |  5 ----
+ output/dbi/ulogd_output_DBI.c        |  4 ---
+ output/ipfix/ulogd_output_IPFIX.c    |  2 --
+ output/pcap/ulogd_output_PCAP.c      |  2 --
+ output/pgsql/ulogd_output_PGSQL.c    |  5 ----
+ output/ulogd_output_GPRINT.c         |  7 +----
+ output/ulogd_output_GRAPHITE.c       |  3 --
+ output/ulogd_output_JSON.c           | 13 +-------
+ output/ulogd_output_LOGEMU.c         |  2 --
+ output/ulogd_output_NACCT.c          |  5 +---
+ output/ulogd_output_OPRINT.c         |  5 +---
+ output/ulogd_output_SYSLOG.c         | 16 +++++-----
+ output/ulogd_output_XML.c            |  5 ----
+ src/ulogd.c                          |  2 --
+ 20 files changed, 30 insertions(+), 132 deletions(-)
 
+diff --git a/filter/ulogd_filter_MARK.c b/filter/ulogd_filter_MARK.c
+index 149725d92574..94343a2b6b5b 100644
+--- a/filter/ulogd_filter_MARK.c
++++ b/filter/ulogd_filter_MARK.c
+@@ -35,13 +35,10 @@ static struct config_keyset libulog_kset = {
+ 		[MARK_MARK] = {
+ 			.key 	 = "mark",
+ 			.type 	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 		[MARK_MASK] = {
+ 			.key 	 = "mask",
+ 			.type 	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = 0xffffffff,
+ 		},
+ 
+diff --git a/include/ulogd/db.h b/include/ulogd/db.h
+index 9f9e96d6e077..bf62f236d772 100644
+--- a/include/ulogd/db.h
++++ b/include/ulogd/db.h
+@@ -90,7 +90,6 @@ struct db_instance {
+ 		{						\
+ 			.key = "backlog_memcap",		\
+ 			.type = CONFIG_TYPE_INT,		\
+-			.u.value = 0,				\
+ 		},						\
+ 		{						\
+ 			.key = "backlog_oneshot_requests",	\
+diff --git a/input/flow/ulogd_inpflow_NFCT.c b/input/flow/ulogd_inpflow_NFCT.c
+index 899b7e3b8039..76250f2a9982 100644
+--- a/input/flow/ulogd_inpflow_NFCT.c
++++ b/input/flow/ulogd_inpflow_NFCT.c
+@@ -83,71 +83,57 @@ static struct config_keyset nfct_kset = {
+ 		{
+ 			.key	 = "pollinterval",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 		{
+ 			.key	 = "hash_enable",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = 1,
+ 		},
+ 		{
+ 			.key	 = "hash_buckets",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = HTABLE_SIZE,
+ 		},
+ 		{
+ 			.key	 = "hash_max_entries",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = MAX_ENTRIES,
+ 		},
+ 		{
+ 			.key	 = "event_mask",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = EVENT_MASK,
+ 		},
+ 		{
+ 			.key	 = "netlink_socket_buffer_size",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = 0,
+ 		},
+ 		{
+ 			.key	 = "netlink_socket_buffer_maxsize",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = 0,
+ 		},
+ 		{
+ 			.key	 = "netlink_resync_timeout",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = 60,
+ 		},
+ 		{
+ 			.key	 = "reliable",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 		{
+ 			.key	 = "accept_src_filter",
+ 			.type	 = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 		},
+ 		{
+ 			.key	 = "accept_dst_filter",
+ 			.type	 = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 		},
+ 		{
+ 			.key	 = "accept_proto_filter",
+ 			.type	 = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 		},
+ 	},
+ };
+diff --git a/input/packet/ulogd_inppkt_NFLOG.c b/input/packet/ulogd_inppkt_NFLOG.c
+index 4fdeb12886cc..e197a705cb4d 100644
+--- a/input/packet/ulogd_inppkt_NFLOG.c
++++ b/input/packet/ulogd_inppkt_NFLOG.c
+@@ -45,69 +45,50 @@ static struct config_keyset libulog_kset = {
+ 		{
+ 			.key 	 = "bufsize",
+ 			.type 	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = NFLOG_BUFSIZE_DEFAULT,
+ 		},
+ 		{
+ 			.key	 = "group",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = NFLOG_GROUP_DEFAULT,
+ 		},
+ 		{
+ 			.key	 = "unbind",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = 1,
+ 		},
+ 		{
+ 			.key	 = "bind",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 
+ 		{
+ 			.key	 = "seq_local",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 		{
+ 			.key	 = "seq_global",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 		{
+ 			.key	 = "numeric_label",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 		{
+ 			.key     = "netlink_socket_buffer_size",
+ 			.type    = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 		{
+ 			.key     = "netlink_socket_buffer_maxsize",
+ 			.type    = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 		{
+ 			.key     = "netlink_qthreshold",
+ 			.type    = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 		{
+ 			.key     = "netlink_qtimeout",
+ 			.type    = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 		{
+ 			.key     = "attach_conntrack",
+diff --git a/input/packet/ulogd_inppkt_ULOG.c b/input/packet/ulogd_inppkt_ULOG.c
+index 45ffc8b57ac4..bc271dbfd0b1 100644
+--- a/input/packet/ulogd_inppkt_ULOG.c
++++ b/input/packet/ulogd_inppkt_ULOG.c
+@@ -37,31 +37,25 @@ struct ulog_input {
+ static struct config_keyset libulog_kset = {
+ 	.num_ces = 4,
+ 	.ces = {
+-	{
+-		.key 	 = "bufsize",
+-		.type 	 = CONFIG_TYPE_INT,
+-		.options = CONFIG_OPT_NONE,
+-		.u.value = ULOGD_BUFSIZE_DEFAULT,
+-	},
+-	{
+-		.key	 = "nlgroup",
+-		.type	 = CONFIG_TYPE_INT,
+-		.options = CONFIG_OPT_NONE,
+-		.u.value = ULOGD_NLGROUP_DEFAULT,
+-	},
+-	{
+-		.key	 = "rmem",
+-		.type	 = CONFIG_TYPE_INT,
+-		.options = CONFIG_OPT_NONE,
+-		.u.value = ULOGD_RMEM_DEFAULT,
+-	},
+-	{
+-		.key	 = "numeric_label",
+-		.type	 = CONFIG_TYPE_INT,
+-		.options = CONFIG_OPT_NONE,
+-		.u.value = 0,
+-	},
+-
++		{
++			.key 	 = "bufsize",
++			.type 	 = CONFIG_TYPE_INT,
++			.u.value = ULOGD_BUFSIZE_DEFAULT,
++		},
++		{
++			.key	 = "nlgroup",
++			.type	 = CONFIG_TYPE_INT,
++			.u.value = ULOGD_NLGROUP_DEFAULT,
++		},
++		{
++			.key	 = "rmem",
++			.type	 = CONFIG_TYPE_INT,
++			.u.value = ULOGD_RMEM_DEFAULT,
++		},
++		{
++			.key	 = "numeric_label",
++			.type	 = CONFIG_TYPE_INT,
++		},
+ 	}
+ };
+ enum ulog_keys {
+diff --git a/input/packet/ulogd_inppkt_UNIXSOCK.c b/input/packet/ulogd_inppkt_UNIXSOCK.c
+index f1d15348ccb3..0ce599bd9b84 100644
+--- a/input/packet/ulogd_inppkt_UNIXSOCK.c
++++ b/input/packet/ulogd_inppkt_UNIXSOCK.c
+@@ -290,30 +290,25 @@ static struct config_keyset libunixsock_kset = {
+ 		{
+ 			.key 	 = "socket_path",
+ 			.type 	 = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.string = UNIXSOCK_UNIXPATH_DEFAULT,
+ 		},
+ 		{
+ 			.key 	 = "bufsize",
+ 			.type 	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = UNIXSOCK_BUFSIZE_DEFAULT,
+ 		},
+ 		{
+ 			.key 	 = "perms",
+ 			.type 	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = UNIXSOCK_PERMS_DEFAULT,
+ 		},
+ 		{
+ 			.key 	 = "owner",
+ 			.type 	 = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 		},
+ 		{
+ 			.key 	 = "group",
+ 			.type 	 = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 		},
+ 	},
+ };
+diff --git a/input/sum/ulogd_inpflow_NFACCT.c b/input/sum/ulogd_inpflow_NFACCT.c
+index b022e6373406..539fb67f5863 100644
+--- a/input/sum/ulogd_inpflow_NFACCT.c
++++ b/input/sum/ulogd_inpflow_NFACCT.c
+@@ -38,20 +38,15 @@ static struct config_keyset nfacct_kset = {
+ 		{
+ 			.key	 = "pollinterval",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		},
+ 		{
+ 			.key	 = "zerocounter",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.value = 1,
+ 		},
+ 		{
+ 			.key	 = "timestamp",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u.value = 0,
+ 		}
+ 	},
+ 	.num_ces = 3,
 diff --git a/output/dbi/ulogd_output_DBI.c b/output/dbi/ulogd_output_DBI.c
-index 88af7a1473c3..1a623e14c41a 100644
+index 1a623e14c41a..5639125dde1f 100644
 --- a/output/dbi/ulogd_output_DBI.c
 +++ b/output/dbi/ulogd_output_DBI.c
-@@ -4,8 +4,8 @@
-  * layer
-  *
-  * (C) 2000-2008 by Pierre Chifflier <chifflier@inl.fr>
-- * This software is distributed under the terms of GNU GPL 
-- * 
-+ * This software is distributed under the terms of GNU GPL
-+ *
-  * This plugin is based on the PostgreSQL plugin made by Harald Welte.
-  *
-  */
-@@ -44,23 +44,23 @@ static struct config_keyset dbi_kset = {
- 	.num_ces = DB_CE_NUM + 7,
- 	.ces = {
- 		DB_CES,
--		{ 
--			.key = "db", 
-+		{
-+			.key = "db",
+@@ -52,7 +52,6 @@ static struct config_keyset dbi_kset = {
+ 		{
+ 			.key = "host",
  			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_MANDATORY,
+-			.options = CONFIG_OPT_NONE,
  		},
  		{
--			.key = "host", 
-+			.key = "host",
+ 			.key = "user",
+@@ -62,17 +61,14 @@ static struct config_keyset dbi_kset = {
+ 		{
+ 			.key = "pass",
  			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_NONE,
- 		},
--		{ 
--			.key = "user", 
-+		{
-+			.key = "user",
- 			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_MANDATORY,
+-			.options = CONFIG_OPT_NONE,
  		},
  		{
--			.key = "pass", 
-+			.key = "pass",
- 			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_NONE,
- 		},
-@@ -70,13 +70,13 @@ static struct config_keyset dbi_kset = {
- 			.options = CONFIG_OPT_NONE,
+ 			.key = "port",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
  		},
  		{
--			.key = "schema", 
-+			.key = "schema",
+ 			.key = "schema",
  			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_NONE,
+-			.options = CONFIG_OPT_NONE,
  			.u.string = "public",
  		},
--		{ 
--			.key = "dbtype", 
-+		{
-+			.key = "dbtype",
- 			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_MANDATORY,
- 		},
-@@ -291,8 +291,8 @@ static int configure_dbi(struct ulogd_pluginstance *upi,
- 	return ulogd_db_configure(upi, stack);
- }
- 
--static struct ulogd_plugin dbi_plugin = { 
--	.name 		= "DBI", 
-+static struct ulogd_plugin dbi_plugin = {
-+	.name 		= "DBI",
- 	.input 		= {
- 		.keys	= NULL,
- 		.num_keys = 0,
-diff --git a/output/mysql/ulogd_output_MYSQL.c b/output/mysql/ulogd_output_MYSQL.c
-index 9727e303f2c5..dc49a2ae4e5b 100644
---- a/output/mysql/ulogd_output_MYSQL.c
-+++ b/output/mysql/ulogd_output_MYSQL.c
-@@ -5,7 +5,7 @@
-  * (C) 2000-2005 by Harald Welte <laforge@gnumonks.org>
-  *
-  *  This program is free software; you can redistribute it and/or modify
-- *  it under the terms of the GNU General Public License version 2 
-+ *  it under the terms of the GNU General Public License version 2
-  *  as published by the Free Software Foundation
-  *
-  *  This program is distributed in the hope that it will be useful,
-@@ -64,22 +64,22 @@ static struct config_keyset kset_mysql = {
- 	.ces = {
- 		DB_CES,
  		{
--			.key = "db", 
-+			.key = "db",
- 			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_MANDATORY,
+diff --git a/output/ipfix/ulogd_output_IPFIX.c b/output/ipfix/ulogd_output_IPFIX.c
+index 4863d008562e..13d170108375 100644
+--- a/output/ipfix/ulogd_output_IPFIX.c
++++ b/output/ipfix/ulogd_output_IPFIX.c
+@@ -53,12 +53,10 @@ static const struct config_keyset ipfix_kset = {
+ 		{
+ 			.key = "oid",
+ 			.type = CONFIG_TYPE_INT,
+-			.u.value = 0
  		},
  		{
--			.key = "host", 
-+			.key = "host",
+ 			.key = "host",
  			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_MANDATORY,
+-			.u.string = ""
  		},
  		{
--			.key = "user", 
-+			.key = "user",
- 			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_MANDATORY,
- 		},
- 		{
--			.key = "pass", 
-+			.key = "pass",
- 			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_MANDATORY,
- 		},
-@@ -107,7 +107,7 @@ static int get_columns_mysql(struct ulogd_pluginstance *upi)
- 		return -1;
- 	}
- 
--	result = mysql_list_fields(mi->dbh, 
-+	result = mysql_list_fields(mi->dbh,
- 				   table_ce(upi->config_kset).u.string, NULL);
- 	if (!result) {
- 		ulogd_log(ULOGD_ERROR, "error in list_fields(): %s\n",
-@@ -176,7 +176,7 @@ static int open_db_mysql(struct ulogd_pluginstance *upi)
- 	char *db = db_ce(upi->config_kset).u.string;
- #ifdef MYSQL_OPT_RECONNECT
- 	my_bool trueval = 1;
--#endif 
-+#endif
- 
- 	mi->dbh = mysql_init(NULL);
- 	if (!mi->dbh) {
-@@ -185,20 +185,20 @@ static int open_db_mysql(struct ulogd_pluginstance *upi)
- 	}
- 
- 	if (connect_timeout)
--		mysql_options(mi->dbh, MYSQL_OPT_CONNECT_TIMEOUT, 
-+		mysql_options(mi->dbh, MYSQL_OPT_CONNECT_TIMEOUT,
- 			      (const char *) &connect_timeout);
- #ifdef MYSQL_OPT_RECONNECT
- #  if defined(MYSQL_VERSION_ID) && (MYSQL_VERSION_ID >= 50019)
- 	mysql_options(mi->dbh, MYSQL_OPT_RECONNECT, &trueval);
- #  endif
--#endif 
-+#endif
- 
- 	if (!mysql_real_connect(mi->dbh, server, user, pass, db, port, NULL, 0)) {
- 		ulogd_log(ULOGD_ERROR, "can't connect to db: %s\n",
- 			  mysql_error(mi->dbh));
- 		return -1;
- 	}
--		
-+
- #ifdef MYSQL_OPT_RECONNECT
- #  if defined(MYSQL_VERSION_ID) && (MYSQL_VERSION_ID < 50019)
- 	mysql_options(mi->dbh, MYSQL_OPT_RECONNECT, &trueval);
-@@ -263,7 +263,7 @@ static struct ulogd_plugin plugin_mysql = {
- 	.input = {
- 		.keys = NULL,
- 		.num_keys = 0,
--		.type = ULOGD_DTYPE_PACKET | ULOGD_DTYPE_FLOW, 
-+		.type = ULOGD_DTYPE_PACKET | ULOGD_DTYPE_FLOW,
- 	},
- 	.output = {
- 		.type = ULOGD_DTYPE_SINK,
-@@ -280,7 +280,7 @@ static struct ulogd_plugin plugin_mysql = {
- 
- void __attribute__ ((constructor)) init(void);
- 
--void init(void) 
-+void init(void)
- {
- 	ulogd_register_plugin(&plugin_mysql);
- }
+ 			.key = "port",
 diff --git a/output/pcap/ulogd_output_PCAP.c b/output/pcap/ulogd_output_PCAP.c
-index e7798f20c8fc..6640087f55a5 100644
+index 6640087f55a5..c125ffcd2a8f 100644
 --- a/output/pcap/ulogd_output_PCAP.c
 +++ b/output/pcap/ulogd_output_PCAP.c
-@@ -5,7 +5,7 @@
-  * (C) 2002-2005 by Harald Welte <laforge@gnumonks.org>
-  *
-  *  This program is free software; you can redistribute it and/or modify
-- *  it under the terms of the GNU General Public License version 2 
-+ *  it under the terms of the GNU General Public License version 2
-  *  as published by the Free Software Foundation
-  *
-  *  This program is distributed in the hope that it will be useful,
-@@ -91,14 +91,14 @@ struct pcap_sf_pkthdr {
- static struct config_keyset pcap_kset = {
- 	.num_ces = 2,
- 	.ces = {
--		{ 
--			.key = "file", 
--			.type = CONFIG_TYPE_STRING, 
-+		{
-+			.key = "file",
-+			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_NONE,
+@@ -94,13 +94,11 @@ static struct config_keyset pcap_kset = {
+ 		{
+ 			.key = "file",
+ 			.type = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
  			.u = { .string = ULOGD_PCAP_DEFAULT },
  		},
--		{ 
--			.key = "sync", 
-+		{
-+			.key = "sync",
+ 		{
+ 			.key = "sync",
  			.type = CONFIG_TYPE_INT,
- 			.options = CONFIG_OPT_NONE,
+-			.options = CONFIG_OPT_NONE,
  			.u = { .value = ULOGD_PCAP_SYNC_DEFAULT },
-@@ -112,7 +112,7 @@ struct pcap_instance {
- 
- struct intr_id {
- 	char* name;
--	unsigned int id;		
-+	unsigned int id;
- };
- 
- #define INTR_IDS 	7
-@@ -242,11 +242,11 @@ static int append_create_outfile(struct ulogd_pluginstance *upi)
- 	} else {
- 		pi->of = fopen(filename, "a");
- 		if (!pi->of) {
--			ulogd_log(ULOGD_ERROR, "can't open pcap file %s: %s\n", 
-+			ulogd_log(ULOGD_ERROR, "can't open pcap file %s: %s\n",
- 				filename,
- 				strerror(errno));
- 			return -EPERM;
--		}		
-+		}
- 	}
- 
- 	return 0;
+ 		},
+ 	},
 diff --git a/output/pgsql/ulogd_output_PGSQL.c b/output/pgsql/ulogd_output_PGSQL.c
-index 04c266510a40..6f3cde61a312 100644
+index 6f3cde61a312..1890cb574a95 100644
 --- a/output/pgsql/ulogd_output_PGSQL.c
 +++ b/output/pgsql/ulogd_output_PGSQL.c
-@@ -2,9 +2,9 @@
-  *
-  * ulogd output plugin for logging to a PGSQL database
-  *
-- * (C) 2000-2005 by Harald Welte <laforge@gnumonks.org> 
-- * This software is distributed under the terms of GNU GPL 
-- * 
-+ * (C) 2000-2005 by Harald Welte <laforge@gnumonks.org>
-+ * This software is distributed under the terms of GNU GPL
-+ *
-  * This plugin is based on the MySQL plugin made by Harald Welte.
-  * The support PostgreSQL were made by Jakab Laszlo.
-  *
-@@ -41,23 +41,23 @@ static struct config_keyset pgsql_kset = {
- 	.num_ces = DB_CE_NUM + 7,
- 	.ces = {
- 		DB_CES,
--		{ 
--			.key = "db", 
-+		{
-+			.key = "db",
+@@ -49,7 +49,6 @@ static struct config_keyset pgsql_kset = {
+ 		{
+ 			.key = "host",
  			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_MANDATORY,
+-			.options = CONFIG_OPT_NONE,
  		},
  		{
--			.key = "host", 
-+			.key = "host",
+ 			.key = "user",
+@@ -59,23 +58,19 @@ static struct config_keyset pgsql_kset = {
+ 		{
+ 			.key = "pass",
  			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_NONE,
- 		},
--		{ 
--			.key = "user", 
-+		{
-+			.key = "user",
- 			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_MANDATORY,
+-			.options = CONFIG_OPT_NONE,
  		},
  		{
--			.key = "pass", 
-+			.key = "pass",
- 			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_NONE,
- 		},
-@@ -67,7 +67,7 @@ static struct config_keyset pgsql_kset = {
- 			.options = CONFIG_OPT_NONE,
+ 			.key = "port",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
  		},
  		{
--			.key = "schema", 
-+			.key = "schema",
+ 			.key = "schema",
  			.type = CONFIG_TYPE_STRING,
- 			.options = CONFIG_OPT_NONE,
+-			.options = CONFIG_OPT_NONE,
  			.u.string = "public",
-@@ -94,7 +94,7 @@ static struct config_keyset pgsql_kset = {
- static int pgsql_namespace(struct ulogd_pluginstance *upi)
- {
- 	struct pgsql_instance *pi = (struct pgsql_instance *) upi->private;
--	char pgbuf[strlen(PGSQL_HAVE_NAMESPACE_TEMPLATE) + 
-+	char pgbuf[strlen(PGSQL_HAVE_NAMESPACE_TEMPLATE) +
- 		   strlen(schema_ce(upi->config_kset).u.string) + 1];
- 
- 	if (!pi->dbh)
-@@ -103,7 +103,7 @@ static int pgsql_namespace(struct ulogd_pluginstance *upi)
- 	sprintf(pgbuf, PGSQL_HAVE_NAMESPACE_TEMPLATE,
- 		schema_ce(upi->config_kset).u.string);
- 	ulogd_log(ULOGD_DEBUG, "%s\n", pgbuf);
--	
-+
- 	pi->pgres = PQexec(pi->dbh, pgbuf);
- 	if (!pi->pgres) {
- 		ulogd_log(ULOGD_DEBUG, "\n result false");
-@@ -126,7 +126,7 @@ static int pgsql_namespace(struct ulogd_pluginstance *upi)
- 	}
- 
- 	PQclear(pi->pgres);
--	
-+
- 	return 0;
- }
- 
-@@ -141,7 +141,7 @@ static int get_columns_pgsql(struct ulogd_pluginstance *upi)
- {
- 	struct pgsql_instance *pi = (struct pgsql_instance *) upi->private;
- 	char pgbuf[strlen(PGSQL_GETCOLUMN_TEMPLATE_SCHEMA)
--		   + strlen(table_ce(upi->config_kset).u.string) 
-+		   + strlen(table_ce(upi->config_kset).u.string)
- 		   + strlen(pi->db_inst.schema) + 2];
- 	int i;
- 
-@@ -303,7 +303,7 @@ static int open_db_pgsql(struct ulogd_pluginstance *upi)
- static int escape_string_pgsql(struct ulogd_pluginstance *upi,
- 			       char *dst, const char *src, unsigned int len)
- {
--	return PQescapeString(dst, src, strlen(src)); 
-+	return PQescapeString(dst, src, strlen(src));
- }
- 
- static int execute_pgsql(struct ulogd_pluginstance *upi,
-@@ -342,8 +342,8 @@ static int configure_pgsql(struct ulogd_pluginstance *upi,
- 	return ulogd_db_configure(upi, stack);
- }
- 
--static struct ulogd_plugin pgsql_plugin = { 
--	.name 		= "PGSQL", 
-+static struct ulogd_plugin pgsql_plugin = {
-+	.name 		= "PGSQL",
- 	.input 		= {
- 		.keys	= NULL,
- 		.num_keys = 0,
-diff --git a/output/sqlite3/ulogd_output_SQLITE3.c b/output/sqlite3/ulogd_output_SQLITE3.c
-index 0a9ad67edcff..8dd7cec586cf 100644
---- a/output/sqlite3/ulogd_output_SQLITE3.c
-+++ b/output/sqlite3/ulogd_output_SQLITE3.c
-@@ -4,7 +4,7 @@
-  * (C) 2005 by Ben La Monica <ben.lamonica@gmail.com>
-  *
-  *  This program is free software; you can redistribute it and/or modify
-- *  it under the terms of the GNU General Public License version 2 
-+ *  it under the terms of the GNU General Public License version 2
-  *  as published by the Free Software Foundation
-  *
-  *  This program is distributed in the hope that it will be useful,
-@@ -15,7 +15,7 @@
-  *  You should have received a copy of the GNU General Public License
-  *  along with this program; if not, write to the Free Software
-  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-- * 
-+ *
-  *  This module has been adapted from the ulogd_MYSQL.c written by
-  *  Harald Welte <laforge@gnumonks.org>
-  *  Alex Janssen <alex@ynfonatic.de>
-@@ -24,7 +24,7 @@
-  *  at http://www.pojo.us/ulogd/
-  *
-  *  2005-02-09 Harald Welte <laforge@gnumonks.org>:
-- *  	- port to ulogd-1.20 
-+ *  	- port to ulogd-1.20
-  *
-  *  2006-10-09 Holger Eitzenberger <holger@my-eitzenberger.de>
-  *  	- port to ulogd-2.00
-@@ -160,11 +160,11 @@ sqlite3_interp(struct ulogd_pluginstance *pi)
- 		case ULOGD_RET_INT64:
- 			ret = sqlite3_bind_int(priv->p_stmt, i, k_ret->u.value.i64);
- 			break;
--			
-+
- 		case ULOGD_RET_UINT8:
- 			ret = sqlite3_bind_int(priv->p_stmt, i, k_ret->u.value.ui8);
- 			break;
--			
-+
- 		case ULOGD_RET_UINT16:
- 			ret = sqlite3_bind_int(priv->p_stmt, i, k_ret->u.value.ui16);
- 			break;
-@@ -205,7 +205,7 @@ sqlite3_interp(struct ulogd_pluginstance *pi)
- 
-  err_bind:
- 	ulogd_log(ULOGD_ERROR, "SQLITE: bind: %s\n", sqlite3_errmsg(priv->dbh));
--	
-+
- 	return ULOGD_IRET_ERR;
- }
- 
-@@ -418,8 +418,8 @@ sqlite3_stop(struct ulogd_pluginstance *pi)
- 	return 0;
- }
- 
--static struct ulogd_plugin sqlite3_plugin = { 
--	.name = "SQLITE3", 
-+static struct ulogd_plugin sqlite3_plugin = {
-+	.name = "SQLITE3",
- 	.input = {
- 		.type = ULOGD_DTYPE_PACKET | ULOGD_DTYPE_FLOW,
+ 		},
+ 		{
+ 			.key = "connstring",
+ 			.type = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 		},
  	},
-@@ -438,7 +438,7 @@ static struct ulogd_plugin sqlite3_plugin = {
- static void init(void) __attribute__((constructor));
- 
- static void
--init(void) 
-+init(void)
- {
- 	ulogd_register_plugin(&sqlite3_plugin);
- }
+ };
+diff --git a/output/ulogd_output_GPRINT.c b/output/ulogd_output_GPRINT.c
+index aedd08e980f7..72365dd87cc1 100644
+--- a/output/ulogd_output_GPRINT.c
++++ b/output/ulogd_output_GPRINT.c
+@@ -51,20 +51,15 @@ static struct config_keyset gprint_kset = {
+ 		[GPRINT_CONF_FILENAME] = {
+ 			.key = "file",
+ 			.type = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+-			.u = {.string = ULOGD_GPRINT_DEFAULT },
++			.u = { .string = ULOGD_GPRINT_DEFAULT },
+ 		},
+ 		[GPRINT_CONF_SYNC] = {
+ 			.key = "sync",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u = { .value = 0 },
+ 		},
+ 		[GPRINT_CONF_TIMESTAMP] = {
+ 			.key = "timestamp",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u = { .value = 0 },
+ 		},
+ 	},
+ };
+diff --git a/output/ulogd_output_GRAPHITE.c b/output/ulogd_output_GRAPHITE.c
+index 5328f8e95572..28280b200544 100644
+--- a/output/ulogd_output_GRAPHITE.c
++++ b/output/ulogd_output_GRAPHITE.c
+@@ -67,17 +67,14 @@ static struct config_keyset graphite_kset = {
+ 		{
+ 			.key = "host",
+ 			.type = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 		},
+ 		{
+ 			.key = "port",
+ 			.type = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 		},
+ 		{
+ 			.key = "prefix",
+ 			.type = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 		},
+ 	},
+ };
+diff --git a/output/ulogd_output_JSON.c b/output/ulogd_output_JSON.c
+index 700abc25e5ea..59aab305e545 100644
+--- a/output/ulogd_output_JSON.c
++++ b/output/ulogd_output_JSON.c
+@@ -87,26 +87,20 @@ static struct config_keyset json_kset = {
+ 		[JSON_CONF_FILENAME] = {
+ 			.key = "file",
+ 			.type = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+-			.u = {.string = ULOGD_JSON_DEFAULT },
++			.u = { .string = ULOGD_JSON_DEFAULT },
+ 		},
+ 		[JSON_CONF_SYNC] = {
+ 			.key = "sync",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u = { .value = 0 },
+ 		},
+ 		[JSON_CONF_TIMESTAMP] = {
+ 			.key = "timestamp",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u = { .value = 1 },
+ 		},
+ 		[JSON_CONF_EVENTV1] = {
+ 			.key = "eventv1",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u = { .value = 0 },
+ 		},
+ 		[JSON_CONF_DEVICE] = {
+ 			.key = "device",
+@@ -117,25 +111,20 @@ static struct config_keyset json_kset = {
+ 		[JSON_CONF_BOOLEAN_LABEL] = {
+ 			.key = "boolean_label",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u = { .value = 0 },
+ 		},
+ 		[JSON_CONF_MODE] = {
+ 			.key = "mode",
+ 			.type = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 			.u = { .string = "file" },
+ 		},
+ 		[JSON_CONF_HOST] = {
+ 			.key = "host",
+ 			.type = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 			.u = { .string = "127.0.0.1" },
+ 		},
+ 		[JSON_CONF_PORT] = {
+ 			.key = "port",
+ 			.type = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 			.u = { .string = "12345" },
+ 		},
+ 	},
+diff --git a/output/ulogd_output_LOGEMU.c b/output/ulogd_output_LOGEMU.c
+index cfcfab734746..c20ba1852be8 100644
+--- a/output/ulogd_output_LOGEMU.c
++++ b/output/ulogd_output_LOGEMU.c
+@@ -64,13 +64,11 @@ static struct config_keyset logemu_kset = {
+ 		{
+ 			.key 	 = "file",
+ 			.type	 = CONFIG_TYPE_STRING,
+-			.options = CONFIG_OPT_NONE,
+ 			.u	 = { .string = ULOGD_LOGEMU_DEFAULT },
+ 		},
+ 		{
+ 			.key	 = "sync",
+ 			.type	 = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+ 			.u	 = { .value = ULOGD_LOGEMU_SYNC_DEFAULT },
+ 		},
+ 	},
+diff --git a/output/ulogd_output_NACCT.c b/output/ulogd_output_NACCT.c
+index d369c7a87315..7f5d1c5ecbf2 100644
+--- a/output/ulogd_output_NACCT.c
++++ b/output/ulogd_output_NACCT.c
+@@ -163,14 +163,11 @@ static struct config_keyset nacct_kset = {
+ 		{
+ 			.key = "file", 
+ 			.type = CONFIG_TYPE_STRING, 
+-			.options = CONFIG_OPT_NONE,
+-			.u = {.string = NACCT_FILE_DEFAULT },
++			.u = { .string = NACCT_FILE_DEFAULT },
+ 		},
+ 		{
+ 			.key = "sync",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u = { .value = 0 },
+ 		},
+ 	},
+ };
+diff --git a/output/ulogd_output_OPRINT.c b/output/ulogd_output_OPRINT.c
+index 6fde445ed1e4..265103a04719 100644
+--- a/output/ulogd_output_OPRINT.c
++++ b/output/ulogd_output_OPRINT.c
+@@ -105,14 +105,11 @@ static struct config_keyset oprint_kset = {
+ 		{
+ 			.key = "file", 
+ 			.type = CONFIG_TYPE_STRING, 
+-			.options = CONFIG_OPT_NONE,
+-			.u = {.string = ULOGD_OPRINT_DEFAULT },
++			.u = { .string = ULOGD_OPRINT_DEFAULT },
+ 		},
+ 		{
+ 			.key = "sync",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u = { .value = 0 },
+ 		},
+ 	},
+ };
+diff --git a/output/ulogd_output_SYSLOG.c b/output/ulogd_output_SYSLOG.c
+index 9777f0fe9185..675db7daf16d 100644
+--- a/output/ulogd_output_SYSLOG.c
++++ b/output/ulogd_output_SYSLOG.c
+@@ -49,16 +49,14 @@ static struct config_keyset syslog_kset = {
+ 	.num_ces = 2,
+ 	.ces = {
+ 		{
+-		.key = "facility", 
+-		.type = CONFIG_TYPE_STRING, 
+-		.options = CONFIG_OPT_NONE, 
+-		.u = { .string = SYSLOG_FACILITY_DEFAULT } 
++			.key = "facility",
++			.type = CONFIG_TYPE_STRING,
++			.u = { .string = SYSLOG_FACILITY_DEFAULT }
+ 		},
+-		{ 
+-		.key = "level", 
+-		.type = CONFIG_TYPE_STRING,
+-		.options = CONFIG_OPT_NONE, 
+-		.u = { .string = SYSLOG_LEVEL_DEFAULT }
++		{
++			.key = "level",
++			.type = CONFIG_TYPE_STRING,
++			.u = { .string = SYSLOG_LEVEL_DEFAULT }
+ 		},
+ 	},
+ };
+diff --git a/output/ulogd_output_XML.c b/output/ulogd_output_XML.c
+index 44af596dc2bc..512293c506ae 100644
+--- a/output/ulogd_output_XML.c
++++ b/output/ulogd_output_XML.c
+@@ -75,20 +75,15 @@ static struct config_keyset xml_kset = {
+ 		[CFG_XML_DIR] = {
+ 			.key = "directory", 
+ 			.type = CONFIG_TYPE_STRING, 
+-			.options = CONFIG_OPT_NONE,
+ 			.u = { .string = ULOGD_XML_DEFAULT_DIR },
+ 		},
+ 		[CFG_XML_SYNC] = {
+ 			.key = "sync",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u = { .value = 0 },
+ 		},
+ 		[CFG_XML_STDOUT] = {
+ 			.key = "stdout",
+ 			.type = CONFIG_TYPE_INT,
+-			.options = CONFIG_OPT_NONE,
+-			.u = { .value = 0 },
+ 		},
+ 	},
+ };
 diff --git a/src/ulogd.c b/src/ulogd.c
-index 8ea9793ec0fb..cdb5c689ab36 100644
+index cdb5c689ab36..ec0745e63169 100644
 --- a/src/ulogd.c
 +++ b/src/ulogd.c
-@@ -7,7 +7,7 @@
-  * (C) 2013 Chris Boot <bootc@bootc.net>
-  *
-  *  This program is free software; you can redistribute it and/or modify
-- *  it under the terms of the GNU General Public License version 2 
-+ *  it under the terms of the GNU General Public License version 2
-  *  as published by the Free Software Foundation
-  *
-  *  This program is distributed in the hope that it will be useful,
-@@ -71,7 +71,7 @@
- #ifdef DEBUG
- #define DEBUGP(format, args...) fprintf(stderr, format, ## args)
- #else
--#define DEBUGP(format, args...) 
-+#define DEBUGP(format, args...)
- #endif
- 
- #define COPYRIGHT \
-@@ -143,7 +143,7 @@ static struct config_keyset ulogd_kset = {
- 			.u.parser = &load_plugin,
+@@ -133,7 +133,6 @@ static struct config_keyset ulogd_kset = {
+ 		{
+ 			.key = "logfile",
+ 			.type = CONFIG_TYPE_CALLBACK,
+-			.options = CONFIG_OPT_NONE,
+ 			.u.parser = &logfile_open,
  		},
  		{
--			.key = "loglevel", 
-+			.key = "loglevel",
+@@ -145,7 +144,6 @@ static struct config_keyset ulogd_kset = {
+ 		{
+ 			.key = "loglevel",
  			.type = CONFIG_TYPE_INT,
- 			.options = CONFIG_OPT_NONE,
+-			.options = CONFIG_OPT_NONE,
  			.u.value = ULOGD_NOTICE,
-@@ -253,7 +253,7 @@ int ulogd_wildcard_inputkeys(struct ulogd_pluginstance *upi)
- 
- 
- /***********************************************************************
-- * PLUGIN MANAGEMENT 
-+ * PLUGIN MANAGEMENT
-  ***********************************************************************/
- 
- /* try to lookup a registered plugin for a given name */
-@@ -325,7 +325,7 @@ void get_plugin_infos(struct ulogd_plugin *me)
- 			switch (me->config_kset->ces[i].type) {
- 				case CONFIG_TYPE_STRING:
- 					printf("String");
--					printf(", Default: %s", 
-+					printf(", Default: %s",
- 					       me->config_kset->ces[i].u.string);
- 					break;
- 				case CONFIG_TYPE_INT:
-@@ -340,7 +340,7 @@ void get_plugin_infos(struct ulogd_plugin *me)
- 					printf("Unknown");
- 					break;
- 			}
--			if (me->config_kset->ces[i].options == 
-+			if (me->config_kset->ces[i].options ==
- 						CONFIG_OPT_MANDATORY) {
- 				printf(", Mandatory");
- 			}
-@@ -353,7 +353,7 @@ void get_plugin_infos(struct ulogd_plugin *me)
- 			printf("\tNo statically defined keys\n");
- 		} else {
- 			for(i = 0; i < me->input.num_keys; i++) {
--				char *tstring = 
-+				char *tstring =
- 					type_to_string(me->input.keys[i].type);
- 				printf("\tKey: %s (%s",
- 				       me->input.keys[i].name,
-@@ -391,8 +391,8 @@ void get_plugin_infos(struct ulogd_plugin *me)
- /* the function called by all plugins for registering themselves */
- void ulogd_register_plugin(struct ulogd_plugin *me)
- {
--	if (strcmp(me->version, VERSION)) { 
--		ulogd_log(ULOGD_NOTICE, 
-+	if (strcmp(me->version, VERSION)) {
-+		ulogd_log(ULOGD_NOTICE,
- 			  "plugin `%s' has incompatible version %s\n",
- 			  me->name,
- 			  me->version);
-@@ -588,7 +588,7 @@ static void ulogd_clean_results(struct ulogd_pluginstance *pi)
- 	/* iterate through plugin stack */
- 	llist_for_each_entry(cur, &pi->stack->list, list) {
- 		unsigned int i;
--		
-+
- 		/* iterate through input keys of pluginstance */
- 		for (i = 0; i < cur->output.num_keys; i++) {
- 			struct ulogd_key *key = &cur->output.keys[i];
-@@ -614,7 +614,7 @@ void ulogd_propagate_results(struct ulogd_pluginstance *pi)
- 	/* iterate over remaining plugin stack */
- 	llist_for_each_entry_continue(cur, &pi->stack->list, list) {
- 		int ret;
--		
-+
- 		ret = cur->plugin->interp(cur);
- 		switch (ret) {
- 		case ULOGD_IRET_ERR:
-@@ -656,7 +656,7 @@ pluginstance_alloc_init(struct ulogd_plugin *pl, char *pi_id,
- 	if (pl->config_kset) {
- 		size += sizeof(struct config_keyset);
- 		if (pl->config_kset->num_ces)
--			size += pl->config_kset->num_ces * 
-+			size += pl->config_kset->num_ces *
- 						sizeof(struct config_entry);
- 	}
- 	size += pl->input.num_keys * sizeof(struct ulogd_key);
-@@ -681,9 +681,9 @@ pluginstance_alloc_init(struct ulogd_plugin *pl, char *pi_id,
- 		ptr += sizeof(struct config_keyset);
- 		pi->config_kset->num_ces = pl->config_kset->num_ces;
- 		if (pi->config_kset->num_ces) {
--			ptr += pi->config_kset->num_ces 
-+			ptr += pi->config_kset->num_ces
- 						* sizeof(struct config_entry);
--			memcpy(pi->config_kset->ces, pl->config_kset->ces, 
-+			memcpy(pi->config_kset->ces, pl->config_kset->ces,
- 			       pi->config_kset->num_ces
- 						* sizeof(struct config_entry));
- 		}
-@@ -694,16 +694,16 @@ pluginstance_alloc_init(struct ulogd_plugin *pl, char *pi_id,
- 	if (pl->input.num_keys) {
- 		pi->input.num_keys = pl->input.num_keys;
- 		pi->input.keys = ptr;
--		memcpy(pi->input.keys, pl->input.keys, 
-+		memcpy(pi->input.keys, pl->input.keys,
- 		       pl->input.num_keys * sizeof(struct ulogd_key));
- 		ptr += pl->input.num_keys * sizeof(struct ulogd_key);
- 	}
--	
-+
- 	/* copy input keys */
- 	if (pl->output.num_keys) {
- 		pi->output.num_keys = pl->output.num_keys;
- 		pi->output.keys = ptr;
--		memcpy(pi->output.keys, pl->output.keys, 
-+		memcpy(pi->output.keys, pl->output.keys,
- 		       pl->output.num_keys * sizeof(struct ulogd_key));
- 	}
- 
-@@ -799,12 +799,12 @@ create_stack_resolve_keys(struct ulogd_pluginstance_stack *stack)
- 
- 	/* pre-configuration pass */
- 	llist_for_each_entry_reverse(pi_cur, &stack->list, list) {
--		ulogd_log(ULOGD_DEBUG, "traversing plugin `%s'\n", 
-+		ulogd_log(ULOGD_DEBUG, "traversing plugin `%s'\n",
- 			  pi_cur->plugin->name);
- 		/* call plugin to tell us which keys it requires in
- 		 * given configuration */
- 		if (pi_cur->plugin->configure) {
--			int ret = pi_cur->plugin->configure(pi_cur, 
-+			int ret = pi_cur->plugin->configure(pi_cur,
- 							    stack);
- 			if (ret < 0) {
- 				ulogd_log(ULOGD_ERROR, "error during "
-@@ -838,7 +838,7 @@ create_stack_resolve_keys(struct ulogd_pluginstance_stack *stack)
- 
- 		if (&pi_prev->list == &stack->list) {
- 			/* this is the last one in the stack */
--			if (!(pi_cur->plugin->input.type 
-+			if (!(pi_cur->plugin->input.type
- 						& ULOGD_DTYPE_SOURCE)) {
- 				ulogd_log(ULOGD_ERROR, "first plugin in stack "
- 					  "has to be source plugin\n");
-@@ -856,7 +856,7 @@ create_stack_resolve_keys(struct ulogd_pluginstance_stack *stack)
- 					  pi_cur->plugin->name,
- 					  pi_prev->plugin->name);
- 			}
--	
-+
- 			for (j = 0; j < pi_cur->input.num_keys; j++) {
- 				struct ulogd_key *okey;
- 				struct ulogd_key *ikey = &pi_cur->input.keys[j];
-@@ -866,7 +866,7 @@ create_stack_resolve_keys(struct ulogd_pluginstance_stack *stack)
- 				if (ikey->flags & ULOGD_KEYF_INACTIVE)
- 					continue;
- 
--				if (ikey->u.source) { 
-+				if (ikey->u.source) {
- 					ulogd_log(ULOGD_ERROR, "input key `%s' "
- 						  "already has source\n",
- 						  ikey->name);
-@@ -874,7 +874,7 @@ create_stack_resolve_keys(struct ulogd_pluginstance_stack *stack)
- 					return -EINVAL;
- 				}
- 
--				okey = find_okey_in_stack(ikey->name, 
-+				okey = find_okey_in_stack(ikey->name,
- 							  stack, pi_cur);
- 				if (!okey) {
- 					if (ikey->flags & ULOGD_KEYF_OPTIONAL)
-@@ -942,7 +942,7 @@ static int create_stack_start_instances(struct ulogd_pluginstance_stack *stack)
- 		if (!pluginstance_started(pi)) {
- 			ret = pi->plugin->start(pi);
- 			if (ret < 0) {
--				ulogd_log(ULOGD_ERROR, 
-+				ulogd_log(ULOGD_ERROR,
- 					  "error starting `%s'\n",
- 					  pi->id);
- 				return ret;
-@@ -998,7 +998,7 @@ static int create_stack(const char *option)
- 		strncpy(pi_id, tok, ULOGD_MAX_KEYLEN-1);
- 		pi_id[equals-tok] = '\0';
- 		plname = equals+1;
--	
-+
- 		/* find matching plugin */
- 		pl = find_plugin(plname);
- 		if (!pl) {
-@@ -1012,16 +1012,16 @@ static int create_stack(const char *option)
- 		/* allocate */
- 		pi = pluginstance_alloc_init(pl, pi_id, stack);
- 		if (!pi) {
--			ulogd_log(ULOGD_ERROR, 
-+			ulogd_log(ULOGD_ERROR,
- 				  "unable to allocate pluginstance for %s\n",
- 				  pi_id);
- 			ret = -ENOMEM;
- 			goto out;
- 		}
--	
-+
- 		/* FIXME: call constructor routine from end to beginning,
- 		 * fix up input/output keys */
--			
-+
- 		ulogd_log(ULOGD_DEBUG, "pushing `%s' on stack\n", pl->name);
- 		llist_add_tail(&pi->list, &stack->list);
- 	}
-@@ -1052,7 +1052,7 @@ out_stack:
- out_buf:
- 	return ret;
- }
--	
-+
- 
- static void ulogd_main_loop(void)
- {
-@@ -1089,7 +1089,7 @@ static int logfile_open(const char *name)
- 	} else {
- 		logfile = fopen(ulogd_logfile, "a");
- 		if (!logfile) {
--			fprintf(stderr, "ERROR: can't open logfile '%s': %s\n", 
-+			fprintf(stderr, "ERROR: can't open logfile '%s': %s\n",
- 				name, strerror(errno));
- 			exit(2);
- 		}
-@@ -1410,7 +1410,7 @@ static void sigterm_handler_task(int signal)
- static void signal_handler_task(int signal)
- {
- 	ulogd_log(ULOGD_NOTICE, "signal received, calling pluginstances\n");
--	
-+
- 	switch (signal) {
- 	case SIGHUP:
- 		/* reopen logfile */
-@@ -1418,12 +1418,12 @@ static void signal_handler_task(int signal)
- 			fclose(logfile);
- 			logfile = fopen(ulogd_logfile, "a");
-  			if (!logfile) {
--				fprintf(stderr, 
--					"ERROR: can't open logfile %s: %s\n", 
-+				fprintf(stderr,
-+					"ERROR: can't open logfile %s: %s\n",
- 					ulogd_logfile, strerror(errno));
- 				sigterm_handler_task(signal);
- 			}
--	
-+
- 		}
- 		break;
- 	default:
-@@ -1494,7 +1494,7 @@ int main(int argc, char* argv[])
- 		default:
- 		case '?':
- 			if (isprint(optopt))
--				fprintf(stderr, "Unknown option `-%c'.\n", 
-+				fprintf(stderr, "Unknown option `-%c'.\n",
- 					optopt);
- 			else
- 				fprintf(stderr, "Unknown option character "
-@@ -1591,7 +1591,7 @@ int main(int argc, char* argv[])
- 	}
- 
- 	if (llist_empty(&ulogd_pi_stacks)) {
--		ulogd_log(ULOGD_FATAL, 
-+		ulogd_log(ULOGD_FATAL,
- 			  "not even a single working plugin stack\n");
- 		warn_and_exit(daemonize);
- 	}
-@@ -1642,7 +1642,7 @@ int main(int argc, char* argv[])
- 	signal(SIGUSR2, &signal_handler);
- 	set_scheduler();
- 
--	ulogd_log(ULOGD_INFO, 
-+	ulogd_log(ULOGD_INFO,
- 		  "initialization finished, entering main loop\n");
- 
- 	ulogd_main_loop();
-diff --git a/util/db.c b/util/db.c
-index ebd9f152ed83..dab66216e07d 100644
---- a/util/db.c
-+++ b/util/db.c
-@@ -10,7 +10,7 @@
-  *           (C) 2008,2013 Eric Leblond <eric@regit.org>
-  *
-  *  This program is free software; you can redistribute it and/or modify
-- *  it under the terms of the GNU General Public License version 2 
-+ *  it under the terms of the GNU General Public License version 2
-  *  as published by the Free Software Foundation
-  *
-  *  This program is distributed in the hope that it will be useful,
-@@ -21,7 +21,7 @@
-  *  You should have received a copy of the GNU General Public License
-  *  along with this program; if not, write to the Free Software
-  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-- * 
-+ *
-  */
- 
- #include <unistd.h>
-@@ -170,7 +170,7 @@ int ulogd_db_configure(struct ulogd_pluginstance *upi,
- 	ret = di->driver->get_columns(upi);
- 	if (ret < 0)
- 		ulogd_log(ULOGD_ERROR, "error in get_columns\n");
--	
-+
- 	/* Close database, since ulogd core could just call configure
- 	 * but abort during input key resolving routines.  configure
- 	 * doesn't have a destructor... */
-@@ -315,7 +315,7 @@ static int _init_reconnect(struct ulogd_pluginstance *upi)
- 	/* Disable plugin permanently */
- 	ulogd_log(ULOGD_ERROR, "permanently disabling plugin\n");
- 	di->interp = &disabled_interp_db;
--	
-+
- 	return 0;
- }
- 
+ 		},
+ 		{
 -- 
 2.35.1
 
