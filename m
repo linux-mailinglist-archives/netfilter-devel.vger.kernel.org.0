@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1DC63300A
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 206FF633019
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbiKUW5L (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 21 Nov 2022 17:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52442 "EHLO
+        id S231869AbiKUW6a (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 21 Nov 2022 17:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbiKUW5K (ORCPT
+        with ESMTP id S231947AbiKUW6Y (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 21 Nov 2022 17:57:10 -0500
+        Mon, 21 Nov 2022 17:58:24 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF6BC75AE
-        for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:57:09 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B9CA3433
+        for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:58:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=ieYUiwMzqGCMHiktm9MQ0rFPNckn4Ke6RPrvf23nkLA=; b=GD1ZuPtUsrowmisGdlUu7VKLDS
-        q7QIaGZXQZCWLQdmevS79nzxRHkO2RN4ql+NplYLGL22z9ErgHpysyV9VNRESmdRwGCDRsyi3BikP
-        anfr3syjPAaqWnCjKRjQ0/3K+nu0WPm8Q+wlEQoIT4JhHlApiv+uMsXpzsL0XNXy88YwQ+5fu35+a
-        2FehTCgU/ckKLmWJoV6qWLUs1ppprgQiDLKyybDW7NwBb8K3oHtsrmzp4719klPN05s4+aNt2Z28l
-        IIaWWFANzJJwnCcg0hFiK3aT8RydDBJIhS7vgV4TZ0ASA1PfIzANxxw4N/cck1jBAmmRURbgZMCJ0
-        Ze9g9osg==;
+        bh=VzIh1Gp3IUthCvqNk808Mk4cB7rwG2OLPSCM/NNf+9w=; b=VAR+aK/kdks+grE9nKaLL2WSn9
+        l9HNo8LU5A1UBL22GE6g8xA8mMDZQQ+qiqFKIoKTFkICNXhEJygJ1NSyx/iNikllksJpfFRYgWhjE
+        JMW2Q4CyZSYz6o6jPalIpFdTGzTE96j76S90icSTLDNI3UtLcxHLECJuCUX4GelF5uUjOlcl1UDCn
+        a3yetmmQWN9nAl7UJyPeTJxrYe/jboe+nocKBq126EtpLa+7CUoBbrSjOHyot3s0cSubxEeUtc/Zl
+        H50s8YppQiUS4FER7dXia7XHJvKFAVho2yprDcZk9hhVarM2EzddYzNTzhJv0dgtZADxsvPHfYqym
+        Z8rH1WeA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1oxFGE-005LgP-45
+        id 1oxFGE-005LgP-8j
         for netfilter-devel@vger.kernel.org; Mon, 21 Nov 2022 22:27:30 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 17/34] db: change return type of two functions to `void`
-Date:   Mon, 21 Nov 2022 22:25:54 +0000
-Message-Id: <20221121222611.3914559-18-jeremy@azazel.net>
+Subject: [PATCH ulogd2 18/34] db: open-code `_loop_reconnect_db`
+Date:   Mon, 21 Nov 2022 22:25:55 +0000
+Message-Id: <20221121222611.3914559-19-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221121222611.3914559-1-jeremy@azazel.net>
 References: <20221121222611.3914559-1-jeremy@azazel.net>
@@ -54,91 +54,60 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-`_stop_db` and `_loop_reconnect_db` always return successfully.  Change
-the return types and remove error-checking from callers.
+Now that `_loop_reconnect_db` returns `void`, it can be reduced to
+`while (open_db fails) sleep 1 second`, so remove the function altogther
+and open code the simplified while-loop.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- util/db.c | 24 +++++++++---------------
- 1 file changed, 9 insertions(+), 15 deletions(-)
+ util/db.c | 21 +++------------------
+ 1 file changed, 3 insertions(+), 18 deletions(-)
 
 diff --git a/util/db.c b/util/db.c
-index cd9ebef077dd..0514a87e0759 100644
+index 0514a87e0759..afa86a3f137b 100644
 --- a/util/db.c
 +++ b/util/db.c
-@@ -43,7 +43,7 @@ static int _interp_db_init(struct ulogd_pluginstance *upi);
- static int _interp_db_main(struct ulogd_pluginstance *upi);
- static int _interp_db_disabled(struct ulogd_pluginstance *upi);
- static int _reconnect_db(struct ulogd_pluginstance *upi);
--static int _stop_db(struct ulogd_pluginstance *upi);
-+static void _stop_db(struct ulogd_pluginstance *upi);
- 
- static char *_format_key(char *key);
- static int _create_sql_stmt(struct ulogd_pluginstance *upi);
-@@ -56,7 +56,7 @@ static int _process_backlog(struct ulogd_pluginstance *upi);
+@@ -56,7 +56,6 @@ static int _process_backlog(struct ulogd_pluginstance *upi);
  
  static int _add_to_ring(struct ulogd_pluginstance *upi, struct db_instance *di);
  static void *_process_ring(void *arg);
--static int _loop_reconnect_db(struct ulogd_pluginstance *upi);
-+static void _loop_reconnect_db(struct ulogd_pluginstance *upi);
+-static void _loop_reconnect_db(struct ulogd_pluginstance *upi);
  
  int
  ulogd_db_configure(struct ulogd_pluginstance *upi,
-@@ -378,7 +378,7 @@ _reconnect_db(struct ulogd_pluginstance *upi)
- 	return 0;
- }
- 
--static int
-+static void
- _stop_db(struct ulogd_pluginstance *upi)
- {
- 	struct db_instance *di = (struct db_instance *) upi->private;
-@@ -397,7 +397,6 @@ _stop_db(struct ulogd_pluginstance *upi)
- 		pthread_mutex_destroy(&di->ring.mutex);
- 		di->ring.ring = NULL;
- 	}
--	return 0;
- }
- 
- static char *
-@@ -695,14 +694,10 @@ _process_ring(void *gdi)
+@@ -694,10 +693,11 @@ _process_ring(void *gdi)
  		while (*wr_place == RING_QUERY_READY) {
  			if (di->driver->execute(upi, wr_place + 1,
  						strlen(wr_place + 1)) < 0) {
--				if (_loop_reconnect_db(upi) != 0) {
--					/* loop has failed on unrecoverable error */
--					ulogd_log(ULOGD_ERROR,
--						  "permanently disabling plugin\n");
--					di->interp = &_interp_db_disabled;
--					return NULL;
--				} else /* try to re run query */
--					continue;
-+				_loop_reconnect_db(upi);
-+				/* try to re run query */
-+				continue;
-+
+-				_loop_reconnect_db(upi);
++				di->driver->close_db(upi);
++				while (di->driver->open_db(upi) < 0)
++					sleep(1);
+ 				/* try to re run query */
+ 				continue;
+-
  			}
  			*wr_place = RING_NO_QUERY;
  			di->ring.rd_item++;
-@@ -717,7 +712,7 @@ _process_ring(void *gdi)
+@@ -711,18 +711,3 @@ _process_ring(void *gdi)
+ 
  	return NULL;
  }
- 
--static int
-+static void
- _loop_reconnect_db(struct ulogd_pluginstance * upi)
- {
- 	struct db_instance *di = (struct db_instance *) &upi->private;
-@@ -727,8 +722,7 @@ _loop_reconnect_db(struct ulogd_pluginstance * upi)
- 		if (di->driver->open_db(upi) < 0) {
- 			sleep(1);
- 		} else {
--			return 0;
-+			return;
- 		}
- 	}
--	return 0;
- }
+-
+-static void
+-_loop_reconnect_db(struct ulogd_pluginstance * upi)
+-{
+-	struct db_instance *di = (struct db_instance *) &upi->private;
+-
+-	di->driver->close_db(upi);
+-	while (1) {
+-		if (di->driver->open_db(upi) < 0) {
+-			sleep(1);
+-		} else {
+-			return;
+-		}
+-	}
+-}
 -- 
 2.35.1
 
