@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C94D633009
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:57:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF75F633010
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231908AbiKUW5H (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 21 Nov 2022 17:57:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52416 "EHLO
+        id S229476AbiKUW5x (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 21 Nov 2022 17:57:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbiKUW5H (ORCPT
+        with ESMTP id S229687AbiKUW5v (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 21 Nov 2022 17:57:07 -0500
+        Mon, 21 Nov 2022 17:57:51 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7365EC72EF
-        for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:57:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F7F7646
+        for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:57:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=dt9SHU/ICrC9rVS8P9C3Swsm92aiEbnhOGfh40ouLVo=; b=pNwOSmWgfFpkLS7S4NZzQ8xjcT
-        xkdhND2UCEmxZwCoaDL+uqyjlo5MULX6p79CXmf/l/4MNO53GCDa9crRKOjiseUnvCMEO4+1ODPHM
-        8GH1tH13ZH17+RNKtXYOUOqzlY89pMz/Fj1mX9CVY0sYqttgzTCNcpIFyNAYnsdbD/DmsmnO376E0
-        RbhgqxTcQygtMA5Uswhym1G7Jz6vIVaFEPIBaEGx109QCLxK93Nk5aduMbOzMPdTHUl+BGwDe8/GJ
-        5bCDUVEtnRpHr7F1vu01HYJr0/3hwrE+7hYGkm1liNCSdLIYz8af8JTXyIFz37uGnpuCrxeTnkL2x
-        BubrOwKw==;
+        bh=siqED/1CHnBajSfA8J66f7ue7A425WILCYaAqWXVGuI=; b=BLAGWImQLEsddAKsRikLQAGv6H
+        yeF2nNDb62yqi7og8RY8GnlXIIVXQPEbzHkp7vjXVPgPcabQHeiC+OGHD9DXV92PAJC42VhZgSDGT
+        Lv1PCT2DECNqknlLxnInu0hERbsH10o5kIckaLj40YH74rmEZ3FtniQluok9Ye8F96JWIEgs45B2c
+        pdvN3l9veWxHS4unHa0du6R8euQTLgutdRTaeTbAk5EH5o4rRtAdZHvlF8XQvpqY4A6DLcX4DuEk1
+        +z8rTIRPvCHN5l/5dh5N3HgrieTpGHKdjpxgYk4sWwG+CHGl33KaM6j/FzGvu620yZdJM03R74scl
+        sMf98Q9g==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1oxFGE-005LgP-Lz
+        id 1oxFGE-005LgP-QK
         for netfilter-devel@vger.kernel.org; Mon, 21 Nov 2022 22:27:30 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 22/34] db: refactor ring-buffer
-Date:   Mon, 21 Nov 2022 22:25:59 +0000
-Message-Id: <20221121222611.3914559-23-jeremy@azazel.net>
+Subject: [PATCH ulogd2 23/34] db: refactor backlog
+Date:   Mon, 21 Nov 2022 22:26:00 +0000
+Message-Id: <20221121222611.3914559-24-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221121222611.3914559-1-jeremy@azazel.net>
 References: <20221121222611.3914559-1-jeremy@azazel.net>
@@ -54,265 +54,180 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
- * Rename some fields.
- * Use `uint32_t` consistently for all sizes and indices.
- * Move thread ID into the ring structure.
- * Replace status flag with a count of in-use elements.
+Move the backlog fields into a separate structure along the same lines
+as the ring-buffer.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/ulogd/db.h |  25 ++++++------
- util/db.c          | 100 +++++++++++++++++++++++++--------------------
- 2 files changed, 68 insertions(+), 57 deletions(-)
+ include/ulogd/db.h | 18 +++++++++++++-----
+ util/db.c          | 44 ++++++++++++++++++++++----------------------
+ 2 files changed, 35 insertions(+), 27 deletions(-)
 
 diff --git a/include/ulogd/db.h b/include/ulogd/db.h
-index 7c0649583f1d..ebf4f42917c3 100644
+index ebf4f42917c3..fc3b15ef0e0f 100644
 --- a/include/ulogd/db.h
 +++ b/include/ulogd/db.h
-@@ -27,22 +27,22 @@ struct db_driver {
+@@ -45,6 +45,18 @@ struct db_stmt_ring {
  
  };
  
--enum {
--	RING_NO_QUERY,
--	RING_QUERY_READY,
--};
--
- struct db_stmt_ring {
--	/* Ring buffer: 1 status byte + string */
--	char *ring; /* pointer to the ring */
--	uint32_t size; /* size of ring buffer in element */
--	int length; /* length of one ring buffer element */
--	uint32_t wr_item; /* write item in ring buffer */
--	uint32_t rd_item; /* read item in ring buffer */
--	char *wr_place;
++struct db_stmt_backlog {
 +
-+	char *elems; /* Buffer containing `size` strings of `length` bytes */
++	struct llist_head items;
 +
-+	uint32_t size; /* No. of elements in ring buffer */
-+	uint32_t used; /* No. of elements in ring buffer in use */
-+	uint32_t length; /* Length of one element in ring buffer */
-+	uint32_t wr_idx; /* Index of next element to write in ring buffer */
-+	uint32_t rd_idx; /* Index of next element to read in ring buffer */
++	unsigned int memcap;
++	unsigned int memusage;
++	unsigned int oneshot;
 +
-+	pthread_t thread_id;
- 	pthread_cond_t cond;
- 	pthread_mutex_t mutex;
++	int full;
 +
- 	int full;
++};
 +
- };
- 
  struct db_stmt {
-@@ -60,7 +60,6 @@ struct db_instance {
- 	struct db_driver *driver;
+ 	char *stmt;
+ 	int len;
+@@ -61,11 +73,7 @@ struct db_instance {
  	/* DB ring buffer */
  	struct db_stmt_ring ring;
--	pthread_t db_thread_id;
  	/* Backlog system */
- 	unsigned int backlog_memcap;
- 	unsigned int backlog_memusage;
+-	unsigned int backlog_memcap;
+-	unsigned int backlog_memusage;
+-	unsigned int backlog_oneshot;
+-	unsigned char backlog_full;
+-	struct llist_head backlog;
++	struct db_stmt_backlog backlog;
+ };
+ 
+ #define RECONNECT_DEFAULT	2
 diff --git a/util/db.c b/util/db.c
-index ee6dfb6b5a2a..8a870846332b 100644
+index 8a870846332b..89c81d8d1dc5 100644
 --- a/util/db.c
 +++ b/util/db.c
-@@ -63,8 +63,10 @@ static int _process_backlog(struct ulogd_pluginstance *upi);
+@@ -259,7 +259,7 @@ _interp_db_init(struct ulogd_pluginstance *upi)
  
- static int _configure_ring(struct ulogd_pluginstance *upi);
- static int _start_ring(struct ulogd_pluginstance *upi);
--static int _add_to_ring(struct ulogd_pluginstance *upi, struct db_instance *di);
-+static int _add_to_ring(struct ulogd_pluginstance *upi);
- static void *_process_ring(void *arg);
-+static char *_get_ring_elem(struct db_stmt_ring *r, uint32_t i);
-+static void _incr_ring_used(struct db_stmt_ring *r, int incr);
- 
- int
- ulogd_db_configure(struct ulogd_pluginstance *upi,
-@@ -182,17 +184,16 @@ ulogd_db_signal(struct ulogd_pluginstance *upi, int signal)
- 	case SIGTERM:
- 	case SIGINT:
- 		if (di->ring.size) {
--			int s = pthread_cancel(di->db_thread_id);
-+			int s = pthread_cancel(di->ring.thread_id);
- 			if (s != 0) {
- 				ulogd_log(ULOGD_ERROR,
--					  "Can't cancel injection thread\n");
-+					  "Can't cancel ring-processing thread\n");
- 				break;
- 			}
--			s = pthread_join(di->db_thread_id, NULL);
-+			s = pthread_join(di->ring.thread_id, NULL);
- 			if (s != 0) {
- 				ulogd_log(ULOGD_ERROR,
--					  "Error waiting for injection thread"
--					  "cancelation\n");
-+					  "Error waiting for ring-processing thread cancellation\n");
- 			}
+ 	if (di->reconnect && di->reconnect > time(NULL)) {
+ 		/* store entry to backlog if it is active */
+-		if (di->backlog_memcap && !di->backlog_full) {
++		if (di->backlog.memcap && !di->backlog.full) {
+ 			_bind_sql_stmt(upi, di->stmt);
+ 			_add_to_backlog(upi, di->stmt, strlen(di->stmt));
  		}
- 		break;
-@@ -293,7 +294,7 @@ _interp_db_main(struct ulogd_pluginstance *upi)
+@@ -268,7 +268,7 @@ _interp_db_init(struct ulogd_pluginstance *upi)
+ 
+ 	if (di->driver->open_db(upi) < 0) {
+ 		ulogd_log(ULOGD_ERROR, "can't establish database connection\n");
+-		if (di->backlog_memcap && !di->backlog_full) {
++		if (di->backlog.memcap && !di->backlog.full) {
+ 			_bind_sql_stmt(upi, di->stmt);
+ 			_add_to_backlog(upi, di->stmt, strlen(di->stmt));
+ 		}
+@@ -302,7 +302,7 @@ _interp_db_main(struct ulogd_pluginstance *upi)
+ 	_bind_sql_stmt(upi, di->stmt);
+ 
+ 	/* if backup log is not empty we add current query to it */
+-	if (!llist_empty(&di->backlog)) {
++	if (!llist_empty(&di->backlog.items)) {
+ 		int ret = _add_to_backlog(upi, di->stmt, strlen(di->stmt));
+ 		if (ret == 0) {
+ 			if (_process_backlog(upi) < 0)
+@@ -623,27 +623,27 @@ _configure_backlog(struct ulogd_pluginstance *upi)
+ {
  	struct db_instance *di = (struct db_instance *) &upi->private;
  
- 	if (di->ring.size) {
--		if (_add_to_ring(upi, di) < 0)
-+		if (_add_to_ring(upi) < 0)
- 			return ULOGD_IRET_ERR;
- 		return ULOGD_IRET_OK;
- 	}
-@@ -372,11 +373,11 @@ _stop_db(struct ulogd_pluginstance *upi)
- 		di->stmt = NULL;
- 	}
- 	if (di->ring.size > 0) {
--		pthread_cancel(di->db_thread_id);
--		free(di->ring.ring);
-+		pthread_cancel(di->ring.thread_id);
- 		pthread_cond_destroy(&di->ring.cond);
- 		pthread_mutex_destroy(&di->ring.mutex);
--		di->ring.ring = NULL;
-+		free(di->ring.elems);
-+		di->ring.elems = NULL;
- 	}
- }
+-	INIT_LLIST_HEAD(&di->backlog);
++	INIT_LLIST_HEAD(&di->backlog.items);
  
-@@ -743,18 +744,17 @@ _start_ring(struct ulogd_pluginstance *upi)
+-	di->backlog_memusage = 0;
+-	di->backlog_memcap = backlog_memcap_ce(upi->config_kset).u.value;
+-	di->backlog_full = 0;
++	di->backlog.memusage = 0;
++	di->backlog.memcap = backlog_memcap_ce(upi->config_kset).u.value;
++	di->backlog.full = 0;
+ 
+-	if (di->backlog_memcap == 0)
++	if (di->backlog.memcap == 0)
  		return 0;
  
- 	/* allocate */
--	di->ring.ring = calloc(di->ring.size, sizeof(char) * di->ring.length);
--	if (di->ring.ring == NULL)
-+	di->ring.elems = calloc(di->ring.size, di->ring.length);
-+	if (di->ring.elems == NULL)
+ 	if (ringsize_ce(upi->config_kset).u.value) {
+ 		ulogd_log(ULOGD_ERROR,
+ 			  "Ring buffer has precedence over backlog\n");
+-		di->backlog_memcap = 0;
++		di->backlog.memcap = 0;
+ 		return 0;
+ 	}
+ 
+-	di->backlog_oneshot = backlog_oneshot_ce(upi->config_kset).u.value;
+-	if (di->backlog_oneshot <= 2) {
++	di->backlog.oneshot = backlog_oneshot_ce(upi->config_kset).u.value;
++	if (di->backlog.oneshot <= 2) {
+ 		ulogd_log(ULOGD_ERROR,
+ 			  "backlog_oneshot_requests must be > 2 to be effective. Setting it to 3.\n");
+-		di->backlog_oneshot = 3;
++		di->backlog.oneshot = 3;
+ 	}
+ 
+ 	return 0;
+@@ -658,17 +658,17 @@ _add_to_backlog(struct ulogd_pluginstance *upi,
+ 	struct db_stmt *query;
+ 
+ 	/* check if we are using backlog */
+-	if (di->backlog_memcap == 0)
++	if (di->backlog.memcap == 0)
+ 		return 0;
+ 
+ 	query_size = sizeof(*query) + len + 1;
+ 
+ 	/* check len against backlog */
+-	if (query_size + di->backlog_memcap - di->backlog_memusage) {
+-		if (di->backlog_full == 0)
++	if (query_size + di->backlog.memcap - di->backlog.memusage) {
++		if (!di->backlog.full)
+ 			ulogd_log(ULOGD_ERROR,
+ 				  "Backlog is full starting to reject events.\n");
+-		di->backlog_full = 1;
++		di->backlog.full = 1;
  		return -1;
--	di->ring.wr_place = di->ring.ring;
-+	di->ring.wr_idx = di->ring.rd_idx = di->ring.used = 0;
- 	ulogd_log(ULOGD_NOTICE,
--		  "Allocating %d elements of size %d for ring\n",
-+		  "Allocating %" PRIu32 " elements of size %" PRIu32 " for ring\n",
- 		  di->ring.size, di->ring.length);
- 
- 	/* init start of query for each element */
- 	for(i = 0; i < di->ring.size; i++)
--		strcpy(di->ring.ring + di->ring.length * i + 1,
--		       di->stmt);
-+		strcpy(_get_ring_elem(&di->ring, i), di->stmt);
- 
- 	/* init cond & mutex */
- 	ret = pthread_cond_init(&di->ring.cond, NULL);
-@@ -765,7 +765,7 @@ _start_ring(struct ulogd_pluginstance *upi)
- 		goto cond_error;
- 
- 	/* create thread */
--	ret = pthread_create(&di->db_thread_id, NULL, _process_ring, upi);
-+	ret = pthread_create(&di->ring.thread_id, NULL, _process_ring, upi);
- 	if (ret != 0)
- 		goto mutex_error;
- 
-@@ -776,66 +776,78 @@ mutex_error:
- cond_error:
- 	pthread_cond_destroy(&di->ring.cond);
- alloc_error:
--	free(di->ring.ring);
-+	free(di->ring.elems);
- 
- 	return -1;
- }
- 
- static int
--_add_to_ring(struct ulogd_pluginstance *upi, struct db_instance *di)
-+_add_to_ring(struct ulogd_pluginstance *upi)
- {
--	if (*di->ring.wr_place == RING_QUERY_READY) {
--		if (di->ring.full == 0) {
-+	struct db_instance *di = (struct db_instance *) &upi->private;
-+
-+	if (di->ring.used == di->ring.size) {
-+		if (!di->ring.full) {
- 			ulogd_log(ULOGD_ERROR, "No place left in ring\n");
- 			di->ring.full = 1;
- 		}
- 		return ULOGD_IRET_OK;
--	} else if (di->ring.full) {
-+	}
-+
-+	if (di->ring.full) {
- 		ulogd_log(ULOGD_NOTICE, "Recovered some place in ring\n");
- 		di->ring.full = 0;
  	}
--	_bind_sql_stmt(upi, di->ring.wr_place + 1);
--	*di->ring.wr_place = RING_QUERY_READY;
-+
-+	_bind_sql_stmt(upi, _get_ring_elem(&di->ring, di->ring.wr_idx));
-+	_incr_ring_used(&di->ring, 1);
-+
- 	pthread_cond_signal(&di->ring.cond);
--	di->ring.wr_item ++;
--	di->ring.wr_place += di->ring.length;
--	if (di->ring.wr_item == di->ring.size) {
--		di->ring.wr_item = 0;
--		di->ring.wr_place = di->ring.ring;
--	}
- 	return ULOGD_IRET_OK;
- }
  
- static void *
--_process_ring(void *gdi)
-+_process_ring(void *arg)
+@@ -684,10 +684,10 @@ _add_to_backlog(struct ulogd_pluginstance *upi,
+ 		return -1;
+ 	}
+ 
+-	di->backlog_memusage += query_size;
+-	di->backlog_full = 0;
++	di->backlog.memusage += query_size;
++	di->backlog.full = 0;
+ 
+-	llist_add_tail(&query->list, &di->backlog);
++	llist_add_tail(&query->list, &di->backlog.items);
+ 
+ 	return 0;
+ }
+@@ -696,7 +696,7 @@ static int
+ _process_backlog(struct ulogd_pluginstance *upi)
  {
--	struct ulogd_pluginstance *upi = gdi;
-+	struct ulogd_pluginstance *upi = arg;
  	struct db_instance *di = (struct db_instance *) &upi->private;
--	char *wr_place;
+-	int i = di->backlog_oneshot;
++	int i = di->backlog.oneshot;
+ 	struct db_stmt *query;
+ 	struct db_stmt *nquery;
  
--	wr_place = di->ring.ring;
- 	pthread_mutex_lock(&di->ring.mutex);
- 	while(1) {
- 		/* wait cond */
- 		pthread_cond_wait(&di->ring.cond, &di->ring.mutex);
--		while (*wr_place == RING_QUERY_READY) {
--			if (di->driver->execute(upi, wr_place + 1,
--						strlen(wr_place + 1)) < 0) {
-+		while (di->ring.used > 0) {
-+			char *stmt = _get_ring_elem(&di->ring, di->ring.rd_idx);
-+
-+			if (di->driver->execute(upi, stmt,
-+						strlen(stmt)) < 0) {
-+
- 				di->driver->close_db(upi);
- 				while (di->driver->open_db(upi) < 0)
- 					sleep(1);
- 				/* try to re run query */
- 				continue;
- 			}
--			*wr_place = RING_NO_QUERY;
--			di->ring.rd_item++;
--			if (di->ring.rd_item == di->ring.size) {
--				di->ring.rd_item = 0;
--				wr_place = di->ring.ring;
--			} else
--				wr_place += di->ring.length;
-+
-+			_incr_ring_used(&di->ring, -1);
- 		}
- 	}
+@@ -704,13 +704,13 @@ _process_backlog(struct ulogd_pluginstance *upi)
+ 	if (di->reconnect && di->reconnect > time(NULL))
+ 		return 0;
  
- 	return NULL;
- }
-+
-+static char *
-+_get_ring_elem(struct db_stmt_ring *r, uint32_t i)
-+{
-+	return &r->elems[i * r->length];
-+}
-+
-+static void
-+_incr_ring_used(struct db_stmt_ring *r, int incr)
-+{
-+	uint32_t *idx = incr > 0 ? &r->wr_idx : &r->rd_idx;
-+
-+	*idx = (*idx + 1) % r->size;
-+
-+	r->used += incr;
-+}
+-	llist_for_each_entry_safe(query, nquery, &di->backlog, list) {
++	llist_for_each_entry_safe(query, nquery, &di->backlog.items, list) {
+ 		if (di->driver->execute(upi, query->stmt, query->len) < 0) {
+ 			/* error occur, database connexion need to be closed */
+ 			di->driver->close_db(upi);
+ 			return _reconnect_db(upi);
+ 		} else {
+-			di->backlog_memusage -= sizeof(*query) + query->len + 1;
++			di->backlog.memusage -= sizeof(*query) + query->len + 1;
+ 			llist_del(&query->list);
+ 			free(query->stmt);
+ 			free(query);
 -- 
 2.35.1
 
