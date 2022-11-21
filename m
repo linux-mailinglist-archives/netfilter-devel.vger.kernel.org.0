@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E69C633021
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D13633011
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbiKUW6w (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 21 Nov 2022 17:58:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54116 "EHLO
+        id S231475AbiKUW54 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 21 Nov 2022 17:57:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbiKUW6u (ORCPT
+        with ESMTP id S231927AbiKUW5x (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 21 Nov 2022 17:58:50 -0500
+        Mon, 21 Nov 2022 17:57:53 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5382F383
-        for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:58:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB31DF91
+        for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:57:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Wpdcwffk2/sqTd2hhZaeL1ieIWpf5w+DMnE4wbkGqBk=; b=ZPBF33KLgxzyVgTEHI7nEmq8oU
-        Z/0H74t9THSuh2PL2ALSL3Mc2FhoXRnlTHtwa4gBMUPAauHmm/gVhgmAV3lpjnjfq85JJWA69NVz1
-        JB6Ax7Lpprlp+Ic7nDESCkWrZpRT76eFvSkitZuizss5vi/aix2dliCEQWquTsaV/vpJXdEzH8kd7
-        /GOHBfzGgaUHEJoAE820tMWiBDAq12MUdst66ZuOxsa94A8lKM1FNNINYg/O+jhBONxkP48ogg2Km
-        lzCy8cGp5H9wb2FKpk3VfMn7RJyiQHk13M0A2YJERqji2vjDJQf2ZzVbIu08SH8/vQ0XAxosSn0lo
-        8jB/KoMQ==;
+        bh=zgNYzdjj32yueE4gnK03LoU+h3kmqBliZfhO1c8YME4=; b=PsOL0USOn6xBa+bFVYIojkiSM1
+        IX6CuwFM4WWAVGFC3gW/YMb2qIQ5WAlxMxnBH6gxKeKdZlk6kzfgjONkO7X44zYxLgF4rln/Y4gRY
+        cxL1JTUr9lqxeVlhBp+qRdTUBc1dOvopEdhq7t8T71iQ+72mDmtFJ8eTDrlt3JC83RLmWl8TxzA5c
+        pw+Nb7woQtqg6/4fkklepsfeQOyWodBSfQorZXAFW/vQNC+MRWC+4oQhMMHsPf7OgPcATw+4/nWCn
+        EdVWbAXHcPP/j56yNIoW/XSxHDRSklowo5DWqYzR3lyNgOmZ/4O7L2ghwO9StEK8TTShRE7lYOM4c
+        RWyfl+sw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1oxFGF-005LgP-Rn
-        for netfilter-devel@vger.kernel.org; Mon, 21 Nov 2022 22:27:31 +0000
+        id 1oxFGG-005LgP-0O
+        for netfilter-devel@vger.kernel.org; Mon, 21 Nov 2022 22:27:32 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 30/34] output: pgsql: remove a couple of struct members
-Date:   Mon, 21 Nov 2022 22:26:07 +0000
-Message-Id: <20221121222611.3914559-31-jeremy@azazel.net>
+Subject: [PATCH ulogd2 31/34] output: pgsql: remove variable-length arrays
+Date:   Mon, 21 Nov 2022 22:26:08 +0000
+Message-Id: <20221121222611.3914559-32-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221121222611.3914559-1-jeremy@azazel.net>
 References: <20221121222611.3914559-1-jeremy@azazel.net>
@@ -54,160 +54,185 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The `pgsql_have_schemas` of `struct pgsql_instance` is never used.  The
-`pgres` member is always assigned and cleared in the same function.
+VLA's are deprecated.
+
+Group all the SQL macros at the top of the file and format them.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/pgsql/ulogd_output_PGSQL.c | 46 ++++++++++++++++---------------
- 1 file changed, 24 insertions(+), 22 deletions(-)
+ output/pgsql/ulogd_output_PGSQL.c | 95 ++++++++++++++++++++-----------
+ 1 file changed, 62 insertions(+), 33 deletions(-)
 
 diff --git a/output/pgsql/ulogd_output_PGSQL.c b/output/pgsql/ulogd_output_PGSQL.c
-index 9dfef7946775..70bfbee7f565 100644
+index 70bfbee7f565..b125674b7364 100644
 --- a/output/pgsql/ulogd_output_PGSQL.c
 +++ b/output/pgsql/ulogd_output_PGSQL.c
-@@ -31,8 +31,6 @@ struct pgsql_instance {
- 	struct db_instance db_inst;
+@@ -79,20 +79,46 @@ static struct config_keyset pgsql_kset = {
+ #define schema_ce(x)	((x)->ces[DB_CE_NUM + 5])
+ #define connstr_ce(x)	((x)->ces[DB_CE_NUM + 6])
  
- 	PGconn *dbh;
--	PGresult *pgres;
--	unsigned char pgsql_have_schemas;
- };
+-#define PGSQL_HAVE_NAMESPACE_TEMPLATE 			\
+-	"SELECT nspname FROM pg_namespace n WHERE n.nspname='%s'"
++#define PGSQL_HAVE_NAMESPACE_TEMPLATE                         \
++	"SELECT nspname "                                     \
++	"FROM pg_namespace n "                                \
++	"WHERE n.nspname = '%s'"
++
++#define PGSQL_GETCOLUMN_TEMPLATE                              \
++	"SELECT a.attname "                                   \
++	"FROM pg_class c, pg_attribute a "                    \
++	"WHERE c.relname = '%s' "                             \
++	"AND a.attnum > 0 "                                   \
++	"AND a.attrelid = c.oid "                             \
++	"ORDER BY a.attnum"
++
++#define PGSQL_GETCOLUMN_TEMPLATE_SCHEMA                       \
++	"SELECT a.attname "                                   \
++	"FROM pg_attribute a, pg_class c "                    \
++	"LEFT JOIN pg_namespace n ON c.relnamespace = n.oid " \
++	"WHERE c.relname = '%s' "                             \
++	"AND n.nspname = '%s' "                               \
++	"AND a.attnum > 0 "                                   \
++	"AND a.attrelid = c.oid "                             \
++	"AND a.attisdropped = FALSE "                         \
++	"ORDER BY a.attnum"
  
- /* our configuration directives */
-@@ -90,6 +88,7 @@ static int pgsql_namespace(struct ulogd_pluginstance *upi)
+ /* Determine if server support schemas */
+ static int pgsql_namespace(struct ulogd_pluginstance *upi)
+ {
  	struct pgsql_instance *pi = (struct pgsql_instance *) upi->private;
- 	char pgbuf[strlen(PGSQL_HAVE_NAMESPACE_TEMPLATE) +
- 		   strlen(schema_ce(upi->config_kset).u.string) + 1];
-+	PGresult *pgres;
+-	char pgbuf[strlen(PGSQL_HAVE_NAMESPACE_TEMPLATE) +
+-		   strlen(schema_ce(upi->config_kset).u.string) + 1];
+ 	PGresult *pgres;
++	char *pgbuf;
++	int rv = -1;
  
  	if (!pi->dbh)
  		return -1;
-@@ -98,28 +97,28 @@ static int pgsql_namespace(struct ulogd_pluginstance *upi)
+ 
++	pgbuf = malloc(sizeof(PGSQL_HAVE_NAMESPACE_TEMPLATE) +
++		       strlen(schema_ce(upi->config_kset).u.string));
++	if (!pgbuf)
++		return -1;
++
+ 	sprintf(pgbuf, PGSQL_HAVE_NAMESPACE_TEMPLATE,
  		schema_ce(upi->config_kset).u.string);
  	ulogd_log(ULOGD_DEBUG, "%s\n", pgbuf);
- 
--	pi->pgres = PQexec(pi->dbh, pgbuf);
--	if (!pi->pgres) {
-+	pgres = PQexec(pi->dbh, pgbuf);
-+	if (!pgres) {
+@@ -100,7 +126,7 @@ static int pgsql_namespace(struct ulogd_pluginstance *upi)
+ 	pgres = PQexec(pi->dbh, pgbuf);
+ 	if (!pgres) {
  		ulogd_log(ULOGD_DEBUG, "\n result false");
- 		return -1;
+-		return -1;
++		goto err_free_buf;
  	}
  
--	if (PQresultStatus(pi->pgres) == PGRES_TUPLES_OK) {
--		if (PQntuples(pi->pgres)) {
-+	if (PQresultStatus(pgres) == PGRES_TUPLES_OK) {
-+		if (PQntuples(pgres)) {
+ 	if (PQresultStatus(pgres) == PGRES_TUPLES_OK) {
+@@ -108,51 +134,50 @@ static int pgsql_namespace(struct ulogd_pluginstance *upi)
  			ulogd_log(ULOGD_DEBUG, "using schema %s\n",
  				  schema_ce(upi->config_kset).u.string);
  			pi->db_inst.schema = schema_ce(upi->config_kset).u.string;
- 		} else {
+-		} else {
++			rv = 0;
++		} else
  			ulogd_log(ULOGD_ERROR, "schema %s not found: %s\n",
- 				 schema_ce(upi->config_kset).u.string, PQerrorMessage(pi->dbh));
--			PQclear(pi->pgres);
-+			PQclear(pgres);
- 			return -1;
- 		}
+-				 schema_ce(upi->config_kset).u.string, PQerrorMessage(pi->dbh));
+-			PQclear(pgres);
+-			return -1;
+-		}
++				  schema_ce(upi->config_kset).u.string,
++				  PQerrorMessage(pi->dbh));
  	} else {
  		pi->db_inst.schema = NULL;
++		rv = 0;
  	}
  
--	PQclear(pi->pgres);
-+	PQclear(pgres);
+ 	PQclear(pgres);
  
- 	return 0;
- }
-@@ -137,6 +136,7 @@ static int get_columns_pgsql(struct ulogd_pluginstance *upi)
- 	char pgbuf[strlen(PGSQL_GETCOLUMN_TEMPLATE_SCHEMA)
- 		   + strlen(table_ce(upi->config_kset).u.string)
- 		   + strlen(pi->db_inst.schema) + 2];
-+	PGresult *pgres;
- 	int rv;
+-	return 0;
+-}
+-
+-#define PGSQL_GETCOLUMN_TEMPLATE 			\
+-	"SELECT  a.attname FROM pg_class c, pg_attribute a WHERE c.relname ='%s' AND a.attnum>0 AND a.attrelid=c.oid ORDER BY a.attnum"
++err_free_buf:
++	free(pgbuf);
+ 
+-#define PGSQL_GETCOLUMN_TEMPLATE_SCHEMA 		\
+-	"SELECT a.attname FROM pg_attribute a, pg_class c LEFT JOIN pg_namespace n ON c.relnamespace=n.oid WHERE c.relname ='%s' AND n.nspname='%s' AND a.attnum>0 AND a.attrelid=c.oid AND a.attisdropped=FALSE ORDER BY a.attnum"
++	return rv;
++}
+ 
+ /* find out which columns the table has */
+ static int get_columns_pgsql(struct ulogd_pluginstance *upi)
+ {
+ 	struct pgsql_instance *pi = (struct pgsql_instance *) upi->private;
+-	char pgbuf[strlen(PGSQL_GETCOLUMN_TEMPLATE_SCHEMA)
+-		   + strlen(table_ce(upi->config_kset).u.string)
+-		   + strlen(pi->db_inst.schema) + 2];
+ 	PGresult *pgres;
+-	int rv;
++	char *pgbuf;
++	int rv = -1;
  
  	if (!pi->dbh) {
-@@ -156,27 +156,27 @@ static int get_columns_pgsql(struct ulogd_pluginstance *upi)
+ 		ulogd_log(ULOGD_ERROR, "no database handle\n");
+ 		return -1;
+ 	}
+ 
+-	if (pi->db_inst.schema) {
+-		snprintf(pgbuf, sizeof(pgbuf)-1,
+-			 PGSQL_GETCOLUMN_TEMPLATE_SCHEMA,
+-			 table_ce(upi->config_kset).u.string,
+-			 pi->db_inst.schema);
+-	} else {
+-		snprintf(pgbuf, sizeof(pgbuf)-1, PGSQL_GETCOLUMN_TEMPLATE,
+-			 table_ce(upi->config_kset).u.string);
+-	}
++	pgbuf = malloc(sizeof(PGSQL_GETCOLUMN_TEMPLATE_SCHEMA) +
++		       strlen(table_ce(upi->config_kset).u.string) +
++		       strlen(pi->db_inst.schema));
++	if (!pgbuf)
++		return -1;
++
++	if (pi->db_inst.schema)
++		sprintf(pgbuf, PGSQL_GETCOLUMN_TEMPLATE_SCHEMA,
++			table_ce(upi->config_kset).u.string,
++			pi->db_inst.schema);
++	else
++		sprintf(pgbuf, PGSQL_GETCOLUMN_TEMPLATE,
++			table_ce(upi->config_kset).u.string);
  
  	ulogd_log(ULOGD_DEBUG, "%s\n", pgbuf);
  
--	pi->pgres = PQexec(pi->dbh, pgbuf);
--	if (!pi->pgres) {
-+	pgres = PQexec(pi->dbh, pgbuf);
-+	if (!pgres) {
+@@ -160,14 +185,13 @@ static int get_columns_pgsql(struct ulogd_pluginstance *upi)
+ 	if (!pgres) {
  		ulogd_log(ULOGD_DEBUG, "result false (%s)",
  			  PQerrorMessage(pi->dbh));
- 		return -1;
+-		return -1;
++		goto err_free_buf;
  	}
  
--	if (PQresultStatus(pi->pgres) != PGRES_TUPLES_OK) {
-+	if (PQresultStatus(pgres) != PGRES_TUPLES_OK) {
+ 	if (PQresultStatus(pgres) != PGRES_TUPLES_OK) {
  		ulogd_log(ULOGD_DEBUG, "pres_command_not_ok (%s)",
  			  PQerrorMessage(pi->dbh));
--		PQclear(pi->pgres);
-+		PQclear(pgres);
- 		return -1;
+-		PQclear(pgres);
+-		return -1;
++		goto err_clear_res;
  	}
  
--	rv = ulogd_db_alloc_input_keys(upi, PQntuples(pi->pgres), pi->pgres);
-+	rv = ulogd_db_alloc_input_keys(upi, PQntuples(pgres), pgres);
- 
- 	/* ID (starting by '.') is a sequence */
+ 	rv = ulogd_db_alloc_input_keys(upi, PQntuples(pgres), pgres);
+@@ -176,7 +200,12 @@ static int get_columns_pgsql(struct ulogd_pluginstance *upi)
  	if (!rv && upi->input.keys[0].name[0] == '.')
  		upi->input.keys[0].flags |= ULOGD_KEYF_INACTIVE;
  
--	PQclear(pi->pgres);
-+	PQclear(pgres);
++err_clear_res:
+ 	PQclear(pgres);
++
++err_free_buf:
++	free(pgbuf);
++
  	return rv;
  }
  
-@@ -207,6 +207,7 @@ static int open_db_pgsql(struct ulogd_pluginstance *upi)
- 	char *connstr = connstr_ce(upi->config_kset).u.string;
- 	char *schema = NULL;
- 	char pgbuf[128];
-+	PGresult *pgres;
- 
- 	if (!connstr[0]) {
- 		char         *server = host_ce(upi->config_kset).u.string;
-@@ -260,13 +261,13 @@ static int open_db_pgsql(struct ulogd_pluginstance *upi)
- 
- 	if (!(schema == NULL) && (strcmp(schema,"public"))) {
- 		snprintf(pgbuf, 128, "SET search_path='%.63s', \"$user\", 'public'", schema);
--		pi->pgres = PQexec(pi->dbh, pgbuf);
--		if ((PQresultStatus(pi->pgres) == PGRES_COMMAND_OK)) {
--			PQclear(pi->pgres);
-+		pgres = PQexec(pi->dbh, pgbuf);
-+		if ((PQresultStatus(pgres) == PGRES_COMMAND_OK)) {
-+			PQclear(pgres);
- 		} else {
- 			ulogd_log(ULOGD_ERROR, "could not set search path to (%s): %s\n",
- 				 schema, PQerrorMessage(pi->dbh));
--			PQclear(pi->pgres);
-+			PQclear(pgres);
- 			close_db_pgsql(upi);
- 			return -1;
- 		}
-@@ -286,16 +287,17 @@ static int execute_pgsql(struct ulogd_pluginstance *upi,
- 			 const struct db_stmt *stmt)
- {
- 	struct pgsql_instance *pi = (struct pgsql_instance *) upi->private;
-+	PGresult *pgres;
- 
--	pi->pgres = PQexec(pi->dbh, stmt->sql);
--	if (!(pi->pgres && ((PQresultStatus(pi->pgres) == PGRES_COMMAND_OK)
--		|| (PQresultStatus(pi->pgres) == PGRES_TUPLES_OK)))) {
-+	pgres = PQexec(pi->dbh, stmt->sql);
-+	if (!(pgres && ((PQresultStatus(pgres) == PGRES_COMMAND_OK)
-+		|| (PQresultStatus(pgres) == PGRES_TUPLES_OK)))) {
- 		ulogd_log(ULOGD_ERROR, "execute failed (%s)\n",
- 			  PQerrorMessage(pi->dbh));
- 		return -1;
- 	}
- 
--	PQclear(pi->pgres);
-+	PQclear(pgres);
- 
- 	return 0;
- }
 -- 
 2.35.1
 
