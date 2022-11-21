@@ -2,70 +2,153 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 310AB632E06
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 21:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C84632FD4
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbiKUUf5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 21 Nov 2022 15:35:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
+        id S231678AbiKUW1q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 21 Nov 2022 17:27:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbiKUUfz (ORCPT
+        with ESMTP id S231747AbiKUW1l (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 21 Nov 2022 15:35:55 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FE6D9B80;
-        Mon, 21 Nov 2022 12:35:55 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D66B761465;
-        Mon, 21 Nov 2022 20:35:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF146C433D6;
-        Mon, 21 Nov 2022 20:35:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1669062954;
-        bh=uBI/+z4D892XWJGEL8Mg8igdUbmaBy3ZhQQHzB+U+wM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=V4XnPYEyKLy8VWkqcBWKryJpFYf9qd6i+70Mc+f/pbEAJGgLoBi1eHYlPeoH36LbV
-         5lvYcJKHvy83VrB8g53ySbOy7tXlPLjC8bsjv4e7zJphptMpVn2jaBgRhzFVGLNcJY
-         q8Xj0+aJ2CORRaNzfgHPzibuOiyBenTlAN7oIi4tGqvdnzqTLwxnqe07dfupODDASn
-         U//nvOlxxqy2Mpx79G92Rfc2Bk3h3YT1auzWDBX7spGaoAfF6kI0Q/Rypb9AKbZ7z+
-         MCYNFEXJO2pLAgruXgs+wlQX9nalsw09SZS35ONJpPYJ9eO0ki1gSe+MiLDRIXdbuk
-         JmKC0569JAG7w==
-Date:   Mon, 21 Nov 2022 12:35:52 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Felix Fietkau <nbd@nbd.name>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] netfilter: nf_flow_table: add missing locking
-Message-ID: <20221121123552.16c00373@kernel.org>
-In-Reply-To: <441bcda3-403f-0bf6-2d6f-d8c9d2ce44d6@nbd.name>
-References: <20221121182615.90843-1-nbd@nbd.name>
-        <3a9c2e94-3c45-5f83-c703-75e1cde13be1@nbd.name>
-        <CANn89iKps9pM=DPn1aWF1SDMqrr=HHkHL8VofVHThUmtqzn=tQ@mail.gmail.com>
-        <441bcda3-403f-0bf6-2d6f-d8c9d2ce44d6@nbd.name>
+        Mon, 21 Nov 2022 17:27:41 -0500
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C27EDFDB
+        for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:27:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=e/q79Yah04wOaP247MrddlCmFY2Dwp3p+Izri27SvTI=; b=K5kbO2+4otUr0R0TlK3E12n/sK
+        mo3MQjLfEoYztTnkQ6sMFBBVfx3q6qhFZ5GXFQ9p1Y/GB2yTbCnWQaCbqb3QSAkmBeVkT3TlcAMWm
+        175CS2pLk0aisimoM66CH1GGjNOAb7VTxjoG12ZpkxCgEcjWeBQRUd6zyq9NBaKrPxEbyNwN5FScx
+        MozahC785Og9KHthASArKoqVwqa+rLSkrSkwMNwQk+ltNBcpHkqyJXfNZNWlgd5VSV2KS2E4fM62K
+        nWDNQ+YeKgBWmjKqAXqriyAvbuRi1nduRKQBNe1cS6sZwPooTxSec9vUH62KM6Ke5yjJznHyWiame
+        j/7FuWMQ==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.94.2)
+        (envelope-from <jeremy@azazel.net>)
+        id 1oxFGB-005LgP-Qb
+        for netfilter-devel@vger.kernel.org; Mon, 21 Nov 2022 22:27:27 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH ulogd2 00/34] Refactor of the DB output plug-ins
+Date:   Mon, 21 Nov 2022 22:25:37 +0000
+Message-Id: <20221121222611.3914559-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, 21 Nov 2022 21:08:12 +0100 Felix Fietkau wrote:
-> > Could you also add a Fixes: tag ?  
-> 
-> I don't know which commit to use for that tag.
+In his feedback to my last series of clean-up patches at the beginning
+of the year, Pablo suggested consolidating some parallel implementations
+of the same functionality in the SQL output plug-ins.  I already had
+some patches in the works aimed at tidying up the DB API.  This
+patch-set is the result.  In addition to the suggested de-duping and
+other tidy-ups, I have added prep & exec support in order to convert the
+sqlite3 plug-in to the DB API, and updated the MySQL and PostgreSQL 
+plug-ins to use it as well (DBI doesn't do prep & exec).
 
-The oldest upstream commit where the problem you're solving 
-can trigger?
+This patch-set is structured as follows.
+
+  * Patches 1-4 are bug-fixes.
+  * Patches 5-13 are miscellaneous tidying.
+  * Patch 14 does the consolidation Pablo suggested.
+  * Patches 15-26 refactor and clean up the common DB API.
+  * Patches 27-28 add prep & exec support to the common DB API.
+  * Patch 29 converts the MySQL plug-in to use prep & exec.
+  * Patch 30-33 tidy up and convert the PostgreSQL plug-in to use prep &
+    exec.
+  * Patch 34 converts the SQLite plug-in to use the common DB API.
+
+Jeremy Sowden (34):
+  ulogd: fix parse-error check
+  filter: fix buffer overruns in filter plug-ins
+  output: JSON: remove incorrect config value check
+  db: fix back-log capacity checks
+  build: add checks to configure.ac
+  src: remove some trailing white space
+  src: remove zero-valued config-key fields
+  src: parenthesize config-entry macro arguments
+  src: define constructors and destructors consistently
+  src: remove `TIME_ERR` macro
+  src: remove superfluous casts
+  conffile: replace malloc+strcpy with strdup
+  output: remove zero-initialized `struct ulogd_plugin` members
+  output: de-duplicate allocation of input keys
+  db: reorganize source
+  db: use consistent integer return values to indicate errors
+  db: change return type of two functions to `void`
+  db: open-code `_loop_reconnect_db`
+  db: improve calculation of sql statement length
+  db: refactor configuration
+  db: refactor ring-buffer initialization
+  db: refactor ring-buffer
+  db: refactor backlog
+  db: use `struct db_stmt` objects more widely
+  db: synchronize access to ring-buffer
+  db: avoid cancelling ring-buffer thread
+  db, IP2BIN: defer formatting of raw strings
+  db: add prep & exec support
+  output: mysql: add prep & exec support
+  output: pgsql: remove a couple of struct members
+  output: pgsql: remove variable-length arrays
+  output: pgsql: tidy up `open_db_pgsql` and fix memory leak
+  output: pgsql: add prep & exec support
+  output: sqlite3: reimplement using the common DB API
+
+ cftest/cftest.c                           |    2 +-
+ configure.ac                              |   47 +-
+ filter/raw2packet/ulogd_raw2packet_BASE.c |    4 +-
+ filter/ulogd_filter_HWHDR.c               |    8 +-
+ filter/ulogd_filter_IFINDEX.c             |    4 +-
+ filter/ulogd_filter_IP2BIN.c              |   73 +-
+ filter/ulogd_filter_IP2HBIN.c             |    4 +-
+ filter/ulogd_filter_IP2STR.c              |   10 +-
+ filter/ulogd_filter_MARK.c                |    7 +-
+ filter/ulogd_filter_PRINTFLOW.c           |    4 +-
+ filter/ulogd_filter_PRINTPKT.c            |    4 +-
+ filter/ulogd_filter_PWSNIFF.c             |    2 +-
+ include/ulogd/db.h                        |  121 +-
+ input/flow/ulogd_inpflow_NFCT.c           |   37 +-
+ input/packet/ulogd_inppkt_NFLOG.c         |   47 +-
+ input/packet/ulogd_inppkt_ULOG.c          |   55 +-
+ input/packet/ulogd_inppkt_UNIXSOCK.c      |    5 -
+ input/sum/ulogd_inpflow_NFACCT.c          |   15 +-
+ libipulog/libipulog.c                     |    2 +-
+ libipulog/ulog_test.c                     |    2 +-
+ output/dbi/ulogd_output_DBI.c             |  132 +--
+ output/ipfix/ulogd_output_IPFIX.c         |   38 +-
+ output/mysql/ulogd_output_MYSQL.c         |  257 +++--
+ output/pcap/ulogd_output_PCAP.c           |   30 +-
+ output/pgsql/ulogd_output_PGSQL.c         |  416 ++++---
+ output/sqlite3/ulogd_output_SQLITE3.c     |  480 +++-----
+ output/ulogd_output_GPRINT.c              |    7 +-
+ output/ulogd_output_GRAPHITE.c            |    9 +-
+ output/ulogd_output_JSON.c                |   29 +-
+ output/ulogd_output_LOGEMU.c              |    2 -
+ output/ulogd_output_NACCT.c               |    5 +-
+ output/ulogd_output_OPRINT.c              |    5 +-
+ output/ulogd_output_SYSLOG.c              |   16 +-
+ output/ulogd_output_XML.c                 |    5 -
+ src/conffile.c                            |    4 +-
+ src/hash.c                                |    4 +-
+ src/ulogd.c                               |   80 +-
+ util/db.c                                 | 1244 ++++++++++++++-------
+ 38 files changed, 1829 insertions(+), 1387 deletions(-)
+
+-- 
+2.35.1
+
