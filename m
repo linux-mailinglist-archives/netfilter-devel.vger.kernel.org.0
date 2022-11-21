@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6A2633023
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1DC63300A
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbiKUW7A (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 21 Nov 2022 17:59:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
+        id S230517AbiKUW5L (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 21 Nov 2022 17:57:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbiKUW66 (ORCPT
+        with ESMTP id S229476AbiKUW5K (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 21 Nov 2022 17:58:58 -0500
+        Mon, 21 Nov 2022 17:57:10 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452F32F383
-        for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:58:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF6BC75AE
+        for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:57:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=NcR8P1UVxs7CiQPu46xw1pmJnznEx0JYTUDnx1jP+tg=; b=BrPNd61HPa9wCeBMsU/ZFepCax
-        kTsaVsE7UvpATTY2SSuus2On0p/5bMCRxK3asN2ST03pVfj4arz5zFFocPPfzSCJudpuv9H55hyz3
-        R3uuhGIGuVaHxy67HcqTSK/2i6IdUHkcD20PZp/togf3SlYfwA/ydN4+0uBUSbByqrcIo1zYzaQkx
-        Xpg7cGClXftnC0LJup/+iYI26nt71SRGdhm+rb1SsOrYUuYdMMoBOD/6yVKRXiOWwpCPT92bA1BXe
-        c4aVLh4/D6WF1Ovt+xMQ6/veveMU/xKgNLQ+9s2RjfO2SZc5TpXvpe1AP6cNbCcaxHqVoXGe88MUA
-        jmEUFTfg==;
+        bh=ieYUiwMzqGCMHiktm9MQ0rFPNckn4Ke6RPrvf23nkLA=; b=GD1ZuPtUsrowmisGdlUu7VKLDS
+        q7QIaGZXQZCWLQdmevS79nzxRHkO2RN4ql+NplYLGL22z9ErgHpysyV9VNRESmdRwGCDRsyi3BikP
+        anfr3syjPAaqWnCjKRjQ0/3K+nu0WPm8Q+wlEQoIT4JhHlApiv+uMsXpzsL0XNXy88YwQ+5fu35+a
+        2FehTCgU/ckKLmWJoV6qWLUs1ppprgQiDLKyybDW7NwBb8K3oHtsrmzp4719klPN05s4+aNt2Z28l
+        IIaWWFANzJJwnCcg0hFiK3aT8RydDBJIhS7vgV4TZ0ASA1PfIzANxxw4N/cck1jBAmmRURbgZMCJ0
+        Ze9g9osg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1oxFGD-005LgP-VY
+        id 1oxFGE-005LgP-45
         for netfilter-devel@vger.kernel.org; Mon, 21 Nov 2022 22:27:30 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 16/34] db: use consistent integer return values to indicate errors
-Date:   Mon, 21 Nov 2022 22:25:53 +0000
-Message-Id: <20221121222611.3914559-17-jeremy@azazel.net>
+Subject: [PATCH ulogd2 17/34] db: change return type of two functions to `void`
+Date:   Mon, 21 Nov 2022 22:25:54 +0000
+Message-Id: <20221121222611.3914559-18-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221121222611.3914559-1-jeremy@azazel.net>
 References: <20221121222611.3914559-1-jeremy@azazel.net>
@@ -54,232 +54,91 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Internally, we use `-1` for error and `0` for success.  The `interp`
-functions that return to `ulogd_propagate_results` return
-`ULOGD_IRET_ERR` and `ULOGD_IRET_OK`.
+`_stop_db` and `_loop_reconnect_db` always return successfully.  Change
+the return types and remove error-checking from callers.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/dbi/ulogd_output_DBI.c     |  2 +-
- output/pgsql/ulogd_output_PGSQL.c |  8 ++---
- util/db.c                         | 59 +++++++++++++++++--------------
- 3 files changed, 38 insertions(+), 31 deletions(-)
+ util/db.c | 24 +++++++++---------------
+ 1 file changed, 9 insertions(+), 15 deletions(-)
 
-diff --git a/output/dbi/ulogd_output_DBI.c b/output/dbi/ulogd_output_DBI.c
-index 5c10c787fb6a..3b8d8c325131 100644
---- a/output/dbi/ulogd_output_DBI.c
-+++ b/output/dbi/ulogd_output_DBI.c
-@@ -96,7 +96,7 @@ static int get_columns_dbi(struct ulogd_pluginstance *upi)
- 
- 	if (!pi->dbh) {
- 		ulogd_log(ULOGD_ERROR, "no database handle\n");
--		return 1;
-+		return -1;
- 	}
- 
- 	snprintf(query, 256, "SELECT * FROM %s", table);
-diff --git a/output/pgsql/ulogd_output_PGSQL.c b/output/pgsql/ulogd_output_PGSQL.c
-index c5bbc966d66d..70a4d48459ff 100644
---- a/output/pgsql/ulogd_output_PGSQL.c
-+++ b/output/pgsql/ulogd_output_PGSQL.c
-@@ -92,7 +92,7 @@ static int pgsql_namespace(struct ulogd_pluginstance *upi)
- 		   strlen(schema_ce(upi->config_kset).u.string) + 1];
- 
- 	if (!pi->dbh)
--		return 1;
-+		return -1;
- 
- 	sprintf(pgbuf, PGSQL_HAVE_NAMESPACE_TEMPLATE,
- 		schema_ce(upi->config_kset).u.string);
-@@ -101,7 +101,7 @@ static int pgsql_namespace(struct ulogd_pluginstance *upi)
- 	pi->pgres = PQexec(pi->dbh, pgbuf);
- 	if (!pi->pgres) {
- 		ulogd_log(ULOGD_DEBUG, "\n result false");
--		return 1;
-+		return -1;
- 	}
- 
- 	if (PQresultStatus(pi->pgres) == PGRES_TUPLES_OK) {
-@@ -141,7 +141,7 @@ static int get_columns_pgsql(struct ulogd_pluginstance *upi)
- 
- 	if (!pi->dbh) {
- 		ulogd_log(ULOGD_ERROR, "no database handle\n");
--		return 1;
-+		return -1;
- 	}
- 
- 	if (pi->db_inst.schema) {
-@@ -228,7 +228,7 @@ static int open_db_pgsql(struct ulogd_pluginstance *upi)
- 
- 		cp = connstr = malloc(len);
- 		if (!connstr)
--			return -ENOMEM;
-+			return -1;
- 
- 		if (server[0])
- 			cp += sprintf(cp, "host=%s ", server);
 diff --git a/util/db.c b/util/db.c
-index 7a6401f73609..cd9ebef077dd 100644
+index cd9ebef077dd..0514a87e0759 100644
 --- a/util/db.c
 +++ b/util/db.c
-@@ -111,7 +111,7 @@ ulogd_db_configure(struct ulogd_pluginstance *upi,
- 		di->backlog_full = 0;
- 	}
+@@ -43,7 +43,7 @@ static int _interp_db_init(struct ulogd_pluginstance *upi);
+ static int _interp_db_main(struct ulogd_pluginstance *upi);
+ static int _interp_db_disabled(struct ulogd_pluginstance *upi);
+ static int _reconnect_db(struct ulogd_pluginstance *upi);
+-static int _stop_db(struct ulogd_pluginstance *upi);
++static void _stop_db(struct ulogd_pluginstance *upi);
  
--	return ret;
-+	return 0;
- }
+ static char *_format_key(char *key);
+ static int _create_sql_stmt(struct ulogd_pluginstance *upi);
+@@ -56,7 +56,7 @@ static int _process_backlog(struct ulogd_pluginstance *upi);
+ 
+ static int _add_to_ring(struct ulogd_pluginstance *upi, struct db_instance *di);
+ static void *_process_ring(void *arg);
+-static int _loop_reconnect_db(struct ulogd_pluginstance *upi);
++static void _loop_reconnect_db(struct ulogd_pluginstance *upi);
  
  int
-@@ -131,7 +131,7 @@ ulogd_db_alloc_input_keys(struct ulogd_pluginstance *upi,
- 	if (!upi->input.keys) {
- 		upi->input.num_keys = 0;
- 		ulogd_log(ULOGD_ERROR, "ENOMEM\n");
--		return -ENOMEM;
-+		return -1;
- 	}
- 
- 	for (i = 0; i < num_keys; i++) {
-@@ -170,10 +170,8 @@ ulogd_db_start(struct ulogd_pluginstance *upi)
- 	if (di->ring.size > 0) {
- 		/* allocate */
- 		di->ring.ring = calloc(di->ring.size, sizeof(char) * di->ring.length);
--		if (di->ring.ring == NULL) {
--			ret = -1;
-+		if (di->ring.ring == NULL)
- 			goto db_error;
--		}
- 		di->ring.wr_place = di->ring.ring;
- 		ulogd_log(ULOGD_NOTICE,
- 			  "Allocating %d elements of size %d for ring\n",
-@@ -198,7 +196,7 @@ ulogd_db_start(struct ulogd_pluginstance *upi)
- 
- 	di->interp = &_interp_db_init;
- 
--	return ret;
-+	return 0;
- 
- mutex_error:
- 	pthread_mutex_destroy(&di->ring.mutex);
-@@ -208,7 +206,7 @@ alloc_error:
- 	free(di->ring.ring);
- db_error:
- 	di->driver->close_db(upi);
--	return ret;
-+	return -1;
- }
- 
- /* this is a wrapper that just calls the current real interp function */
-@@ -283,16 +281,18 @@ _interp_db_init(struct ulogd_pluginstance *upi)
- 			_bind_sql_stmt(upi, di->stmt);
- 			_add_to_backlog(upi, di->stmt, strlen(di->stmt));
- 		}
--		return 0;
-+		return ULOGD_IRET_OK;
- 	}
- 
--	if (di->driver->open_db(upi)) {
-+	if (di->driver->open_db(upi) < 0) {
- 		ulogd_log(ULOGD_ERROR, "can't establish database connection\n");
- 		if (di->backlog_memcap && !di->backlog_full) {
- 			_bind_sql_stmt(upi, di->stmt);
- 			_add_to_backlog(upi, di->stmt, strlen(di->stmt));
- 		}
--		return _reconnect_db(upi);
-+		if (_reconnect_db(upi) < 0)
-+			return ULOGD_IRET_ERR;
-+		return ULOGD_IRET_OK;
- 	}
- 
- 	/* enable 'real' logging */
-@@ -311,40 +311,48 @@ _interp_db_main(struct ulogd_pluginstance *upi)
- {
- 	struct db_instance *di = (struct db_instance *) &upi->private;
- 
--	if (di->ring.size)
--		return _add_to_ring(upi, di);
-+	if (di->ring.size) {
-+		if (_add_to_ring(upi, di) < 0)
-+			return ULOGD_IRET_ERR;
-+		return ULOGD_IRET_OK;
-+	}
- 
- 	_bind_sql_stmt(upi, di->stmt);
- 
- 	/* if backup log is not empty we add current query to it */
- 	if (!llist_empty(&di->backlog)) {
- 		int ret = _add_to_backlog(upi, di->stmt, strlen(di->stmt));
--		if (ret == 0)
--			return _process_backlog(upi);
--		else {
--			ret = _process_backlog(upi);
--			if (ret)
--				return ret;
--			/* try adding once the data to backlog */
--			return _add_to_backlog(upi, di->stmt, strlen(di->stmt));
-+		if (ret == 0) {
-+			if (_process_backlog(upi) < 0)
-+				return ULOGD_IRET_ERR;
-+			return ULOGD_IRET_OK;
- 		}
-+		ret = _process_backlog(upi);
-+		if (ret < 0)
-+			return ULOGD_IRET_ERR;
-+		/* try adding once the data to backlog */
-+		if (_add_to_backlog(upi, di->stmt, strlen(di->stmt)) < 0)
-+			return ULOGD_IRET_ERR;
-+		return ULOGD_IRET_OK;
- 	}
- 
- 	if (di->driver->execute(upi, di->stmt, strlen(di->stmt)) < 0) {
- 		_add_to_backlog(upi, di->stmt, strlen(di->stmt));
- 		/* error occur, database connexion need to be closed */
- 		di->driver->close_db(upi);
--		return _reconnect_db(upi);
-+		if (_reconnect_db(upi) < 0)
-+			return ULOGD_IRET_ERR;
-+		return ULOGD_IRET_OK;
- 	}
- 
--	return 0;
-+	return ULOGD_IRET_OK;
- }
- 
- /* no connection, plugin disabled */
- static int
- _interp_db_disabled(struct ulogd_pluginstance *upi)
- {
--	return 0;
-+	return ULOGD_IRET_OK;
- }
- 
- static int
-@@ -367,7 +375,6 @@ _reconnect_db(struct ulogd_pluginstance *upi)
- 	/* Disable plugin permanently */
- 	ulogd_log(ULOGD_ERROR, "permanently disabling plugin\n");
- 	di->interp = &_interp_db_disabled;
--
+ ulogd_db_configure(struct ulogd_pluginstance *upi,
+@@ -378,7 +378,7 @@ _reconnect_db(struct ulogd_pluginstance *upi)
  	return 0;
  }
  
-@@ -438,7 +445,7 @@ _create_sql_stmt(struct ulogd_pluginstance *upi)
- 	di->stmt = malloc(size);
- 	if (!di->stmt) {
- 		ulogd_log(ULOGD_ERROR, "OOM!\n");
--		return -ENOMEM;
-+		return -1;
+-static int
++static void
+ _stop_db(struct ulogd_pluginstance *upi)
+ {
+ 	struct db_instance *di = (struct db_instance *) upi->private;
+@@ -397,7 +397,6 @@ _stop_db(struct ulogd_pluginstance *upi)
+ 		pthread_mutex_destroy(&di->ring.mutex);
+ 		di->ring.ring = NULL;
  	}
- 	di->ring.length = size + 1;
+-	return 0;
+ }
  
-@@ -717,7 +724,7 @@ _loop_reconnect_db(struct ulogd_pluginstance * upi)
+ static char *
+@@ -695,14 +694,10 @@ _process_ring(void *gdi)
+ 		while (*wr_place == RING_QUERY_READY) {
+ 			if (di->driver->execute(upi, wr_place + 1,
+ 						strlen(wr_place + 1)) < 0) {
+-				if (_loop_reconnect_db(upi) != 0) {
+-					/* loop has failed on unrecoverable error */
+-					ulogd_log(ULOGD_ERROR,
+-						  "permanently disabling plugin\n");
+-					di->interp = &_interp_db_disabled;
+-					return NULL;
+-				} else /* try to re run query */
+-					continue;
++				_loop_reconnect_db(upi);
++				/* try to re run query */
++				continue;
++
+ 			}
+ 			*wr_place = RING_NO_QUERY;
+ 			di->ring.rd_item++;
+@@ -717,7 +712,7 @@ _process_ring(void *gdi)
+ 	return NULL;
+ }
  
- 	di->driver->close_db(upi);
- 	while (1) {
--		if (di->driver->open_db(upi)) {
-+		if (di->driver->open_db(upi) < 0) {
+-static int
++static void
+ _loop_reconnect_db(struct ulogd_pluginstance * upi)
+ {
+ 	struct db_instance *di = (struct db_instance *) &upi->private;
+@@ -727,8 +722,7 @@ _loop_reconnect_db(struct ulogd_pluginstance * upi)
+ 		if (di->driver->open_db(upi) < 0) {
  			sleep(1);
  		} else {
- 			return 0;
+-			return 0;
++			return;
+ 		}
+ 	}
+-	return 0;
+ }
 -- 
 2.35.1
 
