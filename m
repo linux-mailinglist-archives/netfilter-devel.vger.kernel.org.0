@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C1F632FCD
-	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9232B632FD1
+	for <lists+netfilter-devel@lfdr.de>; Mon, 21 Nov 2022 23:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbiKUW1i (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 21 Nov 2022 17:27:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
+        id S231664AbiKUW1n (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 21 Nov 2022 17:27:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbiKUW1h (ORCPT
+        with ESMTP id S231653AbiKUW1k (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 21 Nov 2022 17:27:37 -0500
+        Mon, 21 Nov 2022 17:27:40 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC65DFD0
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA5EDF90
         for <netfilter-devel@vger.kernel.org>; Mon, 21 Nov 2022 14:27:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,22 +21,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Cx37xVJxTIYoDBvY4mgkjoAKv+gPEA0mrr7wrbIkY2s=; b=LRe3Bm6JlYuj0S95OfRhOmMFTz
-        WC8raEwPibQDnYINKXoiIisIeeTocd8N/1FKLxnJlX0cBeGPGmqE9TFAIQBPaScMm+Q9UuPPPoEUt
-        IKg8aEUHmWYFuBtIMhg56vM3MxqCB4JVnOc4TtwR+1dvcDt7lyMpPd85soyYcmBsqhlWwrJsdsD6Q
-        9NxPGdLhASPCWdr+428Rm3qSIM8tu7fC8PILt0e/as1iaCzFbgdG0TICUIbnaaVtK/80JaK4gsV9u
-        GuYbTPBlGrCma4WEpxZp25TI3B3bmMcXVWiDqAFF4zQNA5FquT2cLkzRsxoA4pVv29CTTwkpfjw/4
-        MieGHVZQ==;
+        bh=T0JGjVQgxddBashlYWl8j9XPBfxpBgwEoql+fLkJXeo=; b=jZaIqlpTaTHAtBfexLCIl85oV7
+        lIp6n4XMM/HZO8l22lxD8OHl33lkFk1tRaP1I/HUMHsNOgIOqG47TCY2bdh7SUJXwTfKLmB59GUBS
+        rCc2iYBdeYAQrqpH7pEXr0ans92aDe/zmv5hSeLiO7u57cd9KfA8MuvEvdmiQYz5Dq1n+L31ur5DK
+        ORRPN096bthYlHvXBLrIR3SaBdbKjVeMmGq3+dGTXXvA/q2BtEtVoMcEreVIKuiLgqto+kHNrOV7d
+        0Ngkv94WBdGxx6I3YzsNv5j0OMjUysiJSHKsnevCznmkLPlvGNnL693/fOyzEMYKAzzSQDoAdqfj4
+        mtEtfaDg==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1oxFGC-005LgP-R7
-        for netfilter-devel@vger.kernel.org; Mon, 21 Nov 2022 22:27:28 +0000
+        id 1oxFGC-005LgP-VB
+        for netfilter-devel@vger.kernel.org; Mon, 21 Nov 2022 22:27:29 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 08/34] src: parenthesize config-entry macro arguments
-Date:   Mon, 21 Nov 2022 22:25:45 +0000
-Message-Id: <20221121222611.3914559-9-jeremy@azazel.net>
+Subject: [PATCH ulogd2 09/34] src: define constructors and destructors consistently
+Date:   Mon, 21 Nov 2022 22:25:46 +0000
+Message-Id: <20221121222611.3914559-10-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221121222611.3914559-1-jeremy@azazel.net>
 References: <20221121222611.3914559-1-jeremy@azazel.net>
@@ -54,271 +54,363 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-It's avoids problems with operator precedence.  For example, with no
-parentheses:
-
-  #define blah_ce(x) (x->ces[0])
-
-  blah_ce(&whatever)
-
-yields:
-
-  (&(whatever->ces[0]))
-
-instead of:
-
-  ((&whatever)->ces[0])
+Remove separate declarations and declare the functions static.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/ulogd/db.h                | 14 +++++++-------
- input/flow/ulogd_inpflow_NFCT.c   | 18 +++++++++---------
- input/packet/ulogd_inppkt_NFLOG.c | 24 ++++++++++++------------
- input/sum/ulogd_inpflow_NFACCT.c  |  6 +++---
- output/dbi/ulogd_output_DBI.c     | 14 +++++++-------
- output/ipfix/ulogd_output_IPFIX.c | 12 ++++++------
- output/mysql/ulogd_output_MYSQL.c | 10 +++++-----
- output/pgsql/ulogd_output_PGSQL.c | 14 +++++++-------
- output/ulogd_output_GRAPHITE.c    |  6 +++---
- output/ulogd_output_JSON.c        |  8 ++++----
- 10 files changed, 63 insertions(+), 63 deletions(-)
+ filter/raw2packet/ulogd_raw2packet_BASE.c |  4 +---
+ filter/ulogd_filter_HWHDR.c               |  4 +---
+ filter/ulogd_filter_IFINDEX.c             |  4 +---
+ filter/ulogd_filter_IP2BIN.c              |  4 +---
+ filter/ulogd_filter_IP2HBIN.c             |  4 +---
+ filter/ulogd_filter_IP2STR.c              |  4 +---
+ filter/ulogd_filter_MARK.c                |  4 +---
+ filter/ulogd_filter_PRINTFLOW.c           |  4 +---
+ filter/ulogd_filter_PRINTPKT.c            |  4 +---
+ filter/ulogd_filter_PWSNIFF.c             |  2 +-
+ input/flow/ulogd_inpflow_NFCT.c           |  5 +----
+ input/packet/ulogd_inppkt_NFLOG.c         |  4 +---
+ input/packet/ulogd_inppkt_ULOG.c          | 11 ++++++-----
+ input/sum/ulogd_inpflow_NFACCT.c          |  4 +---
+ output/dbi/ulogd_output_DBI.c             |  4 ++--
+ output/ipfix/ulogd_output_IPFIX.c         |  4 +---
+ output/mysql/ulogd_output_MYSQL.c         |  4 +---
+ output/pcap/ulogd_output_PCAP.c           |  4 +---
+ output/pgsql/ulogd_output_PGSQL.c         |  4 +---
+ output/sqlite3/ulogd_output_SQLITE3.c     |  5 +----
+ 20 files changed, 26 insertions(+), 61 deletions(-)
 
-diff --git a/include/ulogd/db.h b/include/ulogd/db.h
-index bf62f236d772..50925a69f240 100644
---- a/include/ulogd/db.h
-+++ b/include/ulogd/db.h
-@@ -103,13 +103,13 @@ struct db_instance {
- 		}
+diff --git a/filter/raw2packet/ulogd_raw2packet_BASE.c b/filter/raw2packet/ulogd_raw2packet_BASE.c
+index 9117d27da09a..71ef006c90fb 100644
+--- a/filter/raw2packet/ulogd_raw2packet_BASE.c
++++ b/filter/raw2packet/ulogd_raw2packet_BASE.c
+@@ -1002,9 +1002,7 @@ static struct ulogd_plugin base_plugin = {
+ 	.version = VERSION,
+ };
  
- #define DB_CE_NUM		7
--#define table_ce(x)		(x->ces[0])
--#define reconnect_ce(x)		(x->ces[1])
--#define timeout_ce(x)		(x->ces[2])
--#define procedure_ce(x)		(x->ces[3])
--#define backlog_memcap_ce(x)	(x->ces[4])
--#define backlog_oneshot_ce(x)	(x->ces[5])
--#define ringsize_ce(x)		(x->ces[6])
-+#define table_ce(x)		((x)->ces[0])
-+#define reconnect_ce(x)		((x)->ces[1])
-+#define timeout_ce(x)		((x)->ces[2])
-+#define procedure_ce(x)		((x)->ces[3])
-+#define backlog_memcap_ce(x)	((x)->ces[4])
-+#define backlog_oneshot_ce(x)	((x)->ces[5])
-+#define ringsize_ce(x)		((x)->ces[6])
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static void __attribute__ ((constructor)) init(void)
+ {
+ 	ulogd_register_plugin(&base_plugin);
+ }
+diff --git a/filter/ulogd_filter_HWHDR.c b/filter/ulogd_filter_HWHDR.c
+index a5ee60dea44b..08a84fc49d75 100644
+--- a/filter/ulogd_filter_HWHDR.c
++++ b/filter/ulogd_filter_HWHDR.c
+@@ -236,9 +236,7 @@ static struct ulogd_plugin mac2str_pluging = {
+ 	.version = VERSION,
+ };
  
- void ulogd_db_signal(struct ulogd_pluginstance *upi, int signal);
- int ulogd_db_start(struct ulogd_pluginstance *upi);
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static __attribute__ ((constructor)) void init(void)
+ {
+ 	ulogd_register_plugin(&mac2str_pluging);
+ }
+diff --git a/filter/ulogd_filter_IFINDEX.c b/filter/ulogd_filter_IFINDEX.c
+index 3ca57955190c..2205e0025ca1 100644
+--- a/filter/ulogd_filter_IFINDEX.c
++++ b/filter/ulogd_filter_IFINDEX.c
+@@ -149,9 +149,7 @@ static struct ulogd_plugin ifindex_plugin = {
+ 	.version = VERSION,
+ };
+ 
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static __attribute__ ((constructor)) void init(void)
+ {
+ 	ulogd_register_plugin(&ifindex_plugin);
+ }
+diff --git a/filter/ulogd_filter_IP2BIN.c b/filter/ulogd_filter_IP2BIN.c
+index 6d5a60abe85e..30dd61c2d06b 100644
+--- a/filter/ulogd_filter_IP2BIN.c
++++ b/filter/ulogd_filter_IP2BIN.c
+@@ -234,9 +234,7 @@ static struct ulogd_plugin ip2bin_pluging = {
+ 	.version = VERSION,
+ };
+ 
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static __attribute__ ((constructor)) void init(void)
+ {
+ 	ulogd_register_plugin(&ip2bin_pluging);
+ }
+diff --git a/filter/ulogd_filter_IP2HBIN.c b/filter/ulogd_filter_IP2HBIN.c
+index 087e824ae94b..61a13faf9bd8 100644
+--- a/filter/ulogd_filter_IP2HBIN.c
++++ b/filter/ulogd_filter_IP2HBIN.c
+@@ -190,9 +190,7 @@ static struct ulogd_plugin ip2hbin_pluging = {
+ 	.version = VERSION,
+ };
+ 
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static __attribute__ ((constructor)) void init(void)
+ {
+ 	ulogd_register_plugin(&ip2hbin_pluging);
+ }
+diff --git a/filter/ulogd_filter_IP2STR.c b/filter/ulogd_filter_IP2STR.c
+index 4d0536817b6c..177107fa8707 100644
+--- a/filter/ulogd_filter_IP2STR.c
++++ b/filter/ulogd_filter_IP2STR.c
+@@ -224,9 +224,7 @@ static struct ulogd_plugin ip2str_pluging = {
+ 	.version = VERSION,
+ };
+ 
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static __attribute__ ((constructor)) void init(void)
+ {
+ 	ulogd_register_plugin(&ip2str_pluging);
+ }
+diff --git a/filter/ulogd_filter_MARK.c b/filter/ulogd_filter_MARK.c
+index 94343a2b6b5b..61b4d9a7eaea 100644
+--- a/filter/ulogd_filter_MARK.c
++++ b/filter/ulogd_filter_MARK.c
+@@ -111,9 +111,7 @@ static struct ulogd_plugin mark_pluging = {
+ 	.version = VERSION,
+ };
+ 
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static __attribute__ ((constructor)) void init(void)
+ {
+ 	ulogd_register_plugin(&mark_pluging);
+ }
+diff --git a/filter/ulogd_filter_PRINTFLOW.c b/filter/ulogd_filter_PRINTFLOW.c
+index 95351f881c54..618b18b445c5 100644
+--- a/filter/ulogd_filter_PRINTFLOW.c
++++ b/filter/ulogd_filter_PRINTFLOW.c
+@@ -57,9 +57,7 @@ static struct ulogd_plugin printflow_plugin = {
+ 	.version = VERSION,
+ };
+ 
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static __attribute__ ((constructor)) void init(void)
+ {
+ 	ulogd_register_plugin(&printflow_plugin);
+ }
+diff --git a/filter/ulogd_filter_PRINTPKT.c b/filter/ulogd_filter_PRINTPKT.c
+index de5c4688a4f1..7199e3cada07 100644
+--- a/filter/ulogd_filter_PRINTPKT.c
++++ b/filter/ulogd_filter_PRINTPKT.c
+@@ -57,9 +57,7 @@ static struct ulogd_plugin printpkt_plugin = {
+ 	.version = VERSION,
+ };
+ 
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static __attribute__ ((constructor)) void init(void)
+ {
+ 	ulogd_register_plugin(&printpkt_plugin);
+ }
+diff --git a/filter/ulogd_filter_PWSNIFF.c b/filter/ulogd_filter_PWSNIFF.c
+index ef9e02115d84..6f4a04fc8329 100644
+--- a/filter/ulogd_filter_PWSNIFF.c
++++ b/filter/ulogd_filter_PWSNIFF.c
+@@ -170,7 +170,7 @@ static struct ulogd_plugin pwsniff_plugin = {
+ 	.version = VERSION,
+ };
+ 
+-void __attribute__ ((constructor)) init(void)
++static void __attribute__ ((constructor)) init(void)
+ {
+ 	ulogd_register_plugin(&pwsniff_plugin);
+ }
 diff --git a/input/flow/ulogd_inpflow_NFCT.c b/input/flow/ulogd_inpflow_NFCT.c
-index 76250f2a9982..04910601fb8c 100644
+index 04910601fb8c..6209cdbd5dc1 100644
 --- a/input/flow/ulogd_inpflow_NFCT.c
 +++ b/input/flow/ulogd_inpflow_NFCT.c
-@@ -137,15 +137,15 @@ static struct config_keyset nfct_kset = {
- 		},
- 	},
+@@ -1545,10 +1545,7 @@ static struct ulogd_plugin nfct_plugin = {
+ 	.version	= VERSION,
  };
--#define pollint_ce(x)	(x->ces[0])
--#define usehash_ce(x)	(x->ces[1])
--#define buckets_ce(x)	(x->ces[2])
--#define maxentries_ce(x) (x->ces[3])
--#define eventmask_ce(x) (x->ces[4])
--#define nlsockbufsize_ce(x) (x->ces[5])
--#define nlsockbufmaxsize_ce(x) (x->ces[6])
--#define nlresynctimeout_ce(x) (x->ces[7])
--#define reliable_ce(x)	(x->ces[8])
-+#define pollint_ce(x)		((x)->ces[0])
-+#define usehash_ce(x)		((x)->ces[1])
-+#define buckets_ce(x)		((x)->ces[2])
-+#define maxentries_ce(x)	((x)->ces[3])
-+#define eventmask_ce(x)		((x)->ces[4])
-+#define nlsockbufsize_ce(x)	((x)->ces[5])
-+#define nlsockbufmaxsize_ce(x)	((x)->ces[6])
-+#define nlresynctimeout_ce(x)	((x)->ces[7])
-+#define reliable_ce(x)		((x)->ces[8])
- #define src_filter_ce(x)	((x)->ces[9])
- #define dst_filter_ce(x)	((x)->ces[10])
- #define proto_filter_ce(x)	((x)->ces[11])
+ 
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static void __attribute__ ((constructor)) init(void)
+ {
+ 	ulogd_register_plugin(&nfct_plugin);
+ }
+-
 diff --git a/input/packet/ulogd_inppkt_NFLOG.c b/input/packet/ulogd_inppkt_NFLOG.c
-index e197a705cb4d..4cbae69fee20 100644
+index 4cbae69fee20..191716b6e2d7 100644
 --- a/input/packet/ulogd_inppkt_NFLOG.c
 +++ b/input/packet/ulogd_inppkt_NFLOG.c
-@@ -99,18 +99,18 @@ static struct config_keyset libulog_kset = {
- 	}
+@@ -712,9 +712,7 @@ struct ulogd_plugin libulog_plugin = {
+ 	.version	= VERSION,
  };
  
--#define bufsiz_ce(x)	(x->ces[0])
--#define group_ce(x)	(x->ces[1])
--#define unbind_ce(x)	(x->ces[2])
--#define bind_ce(x)	(x->ces[3])
--#define seq_ce(x)	(x->ces[4])
--#define seq_global_ce(x)	(x->ces[5])
--#define label_ce(x)	(x->ces[6])
--#define nlsockbufsize_ce(x) (x->ces[7])
--#define nlsockbufmaxsize_ce(x) (x->ces[8])
--#define nlthreshold_ce(x) (x->ces[9])
--#define nltimeout_ce(x) (x->ces[10])
--#define attach_conntrack_ce(x) (x->ces[11])
-+#define bufsiz_ce(x)		((x)->ces[0])
-+#define group_ce(x)		((x)->ces[1])
-+#define unbind_ce(x)		((x)->ces[2])
-+#define bind_ce(x)		((x)->ces[3])
-+#define seq_ce(x)		((x)->ces[4])
-+#define seq_global_ce(x)	((x)->ces[5])
-+#define label_ce(x)		((x)->ces[6])
-+#define nlsockbufsize_ce(x)	((x)->ces[7])
-+#define nlsockbufmaxsize_ce(x)	((x)->ces[8])
-+#define nlthreshold_ce(x)	((x)->ces[9])
-+#define nltimeout_ce(x)		((x)->ces[10])
-+#define attach_conntrack_ce(x)	((x)->ces[11])
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static void __attribute__ ((constructor)) init(void)
+ {
+ 	ulogd_register_plugin(&libulog_plugin);
+ }
+diff --git a/input/packet/ulogd_inppkt_ULOG.c b/input/packet/ulogd_inppkt_ULOG.c
+index bc271dbfd0b1..fd4f5693cab2 100644
+--- a/input/packet/ulogd_inppkt_ULOG.c
++++ b/input/packet/ulogd_inppkt_ULOG.c
+@@ -265,7 +265,8 @@ static int configure(struct ulogd_pluginstance *upi,
+ {
+ 	return config_parse_file(upi->id, upi->config_kset);
+ }
+-static int init(struct ulogd_pluginstance *upi)
++
++static int start(struct ulogd_pluginstance *upi)
+ {
+ 	struct ulog_input *ui = (struct ulog_input *) &upi->private;
  
- enum nflog_keys {
- 	NFLOG_KEY_RAW_MAC = 0,
+@@ -298,7 +299,7 @@ out_buf:
+ 	return -1;
+ }
+ 
+-static int fini(struct ulogd_pluginstance *pi)
++static int stop(struct ulogd_pluginstance *pi)
+ {
+ 	struct ulog_input *ui = (struct ulog_input *)pi->private;
+ 
+@@ -320,13 +321,13 @@ struct ulogd_plugin libulog_plugin = {
+ 		.num_keys = ARRAY_SIZE(output_keys),
+ 	},
+ 	.configure = &configure,
+-	.start = &init,
+-	.stop = &fini,
++	.start = &start,
++	.stop = &stop,
+ 	.config_kset = &libulog_kset,
+ 	.version = VERSION,
+ };
+ 
+-void __attribute__ ((constructor)) initializer(void)
++static void __attribute__ ((constructor)) init(void)
+ {
+ 	ulogd_register_plugin(&libulog_plugin);
+ }
 diff --git a/input/sum/ulogd_inpflow_NFACCT.c b/input/sum/ulogd_inpflow_NFACCT.c
-index 539fb67f5863..c680a52a80e8 100644
+index c680a52a80e8..9a1991e7aef7 100644
 --- a/input/sum/ulogd_inpflow_NFACCT.c
 +++ b/input/sum/ulogd_inpflow_NFACCT.c
-@@ -51,9 +51,9 @@ static struct config_keyset nfacct_kset = {
- 	},
- 	.num_ces = 3,
+@@ -300,9 +300,7 @@ static struct ulogd_plugin nfacct_plugin = {
+ 	.version	= VERSION,
  };
--#define pollint_ce(x)	(x->ces[0])
--#define zerocounter_ce(x) (x->ces[1])
--#define timestamp_ce(x) (x->ces[2])
-+#define pollint_ce(x)		((x)->ces[0])
-+#define zerocounter_ce(x)	((x)->ces[1])
-+#define timestamp_ce(x)		((x)->ces[2])
  
- enum ulogd_nfacct_keys {
- 	ULOGD_NFACCT_NAME,
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static void __attribute__ ((constructor)) init(void)
+ {
+ 	ulogd_register_plugin(&nfacct_plugin);
+ }
 diff --git a/output/dbi/ulogd_output_DBI.c b/output/dbi/ulogd_output_DBI.c
-index 5639125dde1f..95bd35789c08 100644
+index 95bd35789c08..7f42c08efc2b 100644
 --- a/output/dbi/ulogd_output_DBI.c
 +++ b/output/dbi/ulogd_output_DBI.c
-@@ -78,13 +78,13 @@ static struct config_keyset dbi_kset = {
- 		},
- 	},
+@@ -307,14 +307,14 @@ static struct ulogd_plugin dbi_plugin = {
+ 	.version	= VERSION,
  };
--#define db_ce(x)	(x->ces[DB_CE_NUM+0])
--#define host_ce(x)	(x->ces[DB_CE_NUM+1])
--#define user_ce(x)	(x->ces[DB_CE_NUM+2])
--#define pass_ce(x)	(x->ces[DB_CE_NUM+3])
--#define port_ce(x)	(x->ces[DB_CE_NUM+4])
--#define schema_ce(x)	(x->ces[DB_CE_NUM+5])
--#define dbtype_ce(x)	(x->ces[DB_CE_NUM+6])
-+#define db_ce(x)	((x)->ces[DB_CE_NUM + 0])
-+#define host_ce(x)	((x)->ces[DB_CE_NUM + 1])
-+#define user_ce(x)	((x)->ces[DB_CE_NUM + 2])
-+#define pass_ce(x)	((x)->ces[DB_CE_NUM + 3])
-+#define port_ce(x)	((x)->ces[DB_CE_NUM + 4])
-+#define schema_ce(x)	((x)->ces[DB_CE_NUM + 5])
-+#define dbtype_ce(x)	((x)->ces[DB_CE_NUM + 6])
  
+-void __attribute__ ((constructor)) init(void)
++static void __attribute__ ((constructor)) init(void)
+ {
+ 	dbi_initialize_r(NULL, &libdbi_instance);
  
- /* find out which columns the table has */
+ 	ulogd_register_plugin(&dbi_plugin);
+ }
+ 
+-void __attribute__ ((destructor)) fini(void)
++static void __attribute__ ((destructor)) fini(void)
+ {
+ 	dbi_shutdown_r(libdbi_instance);
+ }
 diff --git a/output/ipfix/ulogd_output_IPFIX.c b/output/ipfix/ulogd_output_IPFIX.c
-index 13d170108375..745d30a163b2 100644
+index 745d30a163b2..45fd36bc271c 100644
 --- a/output/ipfix/ulogd_output_IPFIX.c
 +++ b/output/ipfix/ulogd_output_IPFIX.c
-@@ -40,12 +40,12 @@ enum {
- 	SEND_TEMPLATE_CE
+@@ -504,9 +504,7 @@ static struct ulogd_plugin ipfix_plugin = {
+ 	.version = VERSION,
  };
  
--#define oid_ce(x)		(x->ces[OID_CE])
--#define host_ce(x)		(x->ces[HOST_CE])
--#define port_ce(x)		(x->ces[PORT_CE])
--#define proto_ce(x)		(x->ces[PROTO_CE])
--#define mtu_ce(x)		(x->ces[MTU_CE])
--#define send_template_ce(x)	(x->ces[SEND_TEMPLATE_CE])
-+#define oid_ce(x)		((x)->ces[OID_CE])
-+#define host_ce(x)		((x)->ces[HOST_CE])
-+#define port_ce(x)		((x)->ces[PORT_CE])
-+#define proto_ce(x)		((x)->ces[PROTO_CE])
-+#define mtu_ce(x)		((x)->ces[MTU_CE])
-+#define send_template_ce(x)	((x)->ces[SEND_TEMPLATE_CE])
- 
- static const struct config_keyset ipfix_kset = {
- 	.num_ces = 6,
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static void __attribute__ ((constructor)) init(void)
+ {
+ 	ulogd_register_plugin(&ipfix_plugin);
+ }
 diff --git a/output/mysql/ulogd_output_MYSQL.c b/output/mysql/ulogd_output_MYSQL.c
-index dc49a2ae4e5b..0b79a9cd270c 100644
+index 0b79a9cd270c..c98b98284748 100644
 --- a/output/mysql/ulogd_output_MYSQL.c
 +++ b/output/mysql/ulogd_output_MYSQL.c
-@@ -89,11 +89,11 @@ static struct config_keyset kset_mysql = {
- 		},
- 	},
+@@ -278,9 +278,7 @@ static struct ulogd_plugin plugin_mysql = {
+ 	.version   = VERSION,
  };
--#define db_ce(x)	(x->ces[DB_CE_NUM+0])
--#define	host_ce(x)	(x->ces[DB_CE_NUM+1])
--#define user_ce(x)	(x->ces[DB_CE_NUM+2])
--#define pass_ce(x)	(x->ces[DB_CE_NUM+3])
--#define port_ce(x)	(x->ces[DB_CE_NUM+4])
-+#define db_ce(x)	((x)->ces[DB_CE_NUM + 0])
-+#define host_ce(x)	((x)->ces[DB_CE_NUM + 1])
-+#define user_ce(x)	((x)->ces[DB_CE_NUM + 2])
-+#define pass_ce(x)	((x)->ces[DB_CE_NUM + 3])
-+#define port_ce(x)	((x)->ces[DB_CE_NUM + 4])
- /* find out which columns the table has */
- static int get_columns_mysql(struct ulogd_pluginstance *upi)
+ 
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static void __attribute__ ((constructor)) init(void)
  {
+ 	ulogd_register_plugin(&plugin_mysql);
+ }
+diff --git a/output/pcap/ulogd_output_PCAP.c b/output/pcap/ulogd_output_PCAP.c
+index c125ffcd2a8f..5f9fde3c48ed 100644
+--- a/output/pcap/ulogd_output_PCAP.c
++++ b/output/pcap/ulogd_output_PCAP.c
+@@ -307,9 +307,7 @@ static struct ulogd_plugin pcap_plugin = {
+ 	.version	= VERSION,
+ };
+ 
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static void __attribute__ ((constructor)) init(void)
+ {
+ 	ulogd_register_plugin(&pcap_plugin);
+ }
 diff --git a/output/pgsql/ulogd_output_PGSQL.c b/output/pgsql/ulogd_output_PGSQL.c
-index 1890cb574a95..7f215f0fee4c 100644
+index 7f215f0fee4c..a508f9cf75a1 100644
 --- a/output/pgsql/ulogd_output_PGSQL.c
 +++ b/output/pgsql/ulogd_output_PGSQL.c
-@@ -74,13 +74,13 @@ static struct config_keyset pgsql_kset = {
- 		},
- 	},
- };
--#define db_ce(x)	(x->ces[DB_CE_NUM+0])
--#define host_ce(x)	(x->ces[DB_CE_NUM+1])
--#define user_ce(x)	(x->ces[DB_CE_NUM+2])
--#define pass_ce(x)	(x->ces[DB_CE_NUM+3])
--#define port_ce(x)	(x->ces[DB_CE_NUM+4])
--#define schema_ce(x)	(x->ces[DB_CE_NUM+5])
--#define connstr_ce(x)	(x->ces[DB_CE_NUM+6])
-+#define db_ce(x)	((x)->ces[DB_CE_NUM + 0])
-+#define host_ce(x)	((x)->ces[DB_CE_NUM + 1])
-+#define user_ce(x)	((x)->ces[DB_CE_NUM + 2])
-+#define pass_ce(x)	((x)->ces[DB_CE_NUM + 3])
-+#define port_ce(x)	((x)->ces[DB_CE_NUM + 4])
-+#define schema_ce(x)	((x)->ces[DB_CE_NUM + 5])
-+#define connstr_ce(x)	((x)->ces[DB_CE_NUM + 6])
- 
- #define PGSQL_HAVE_NAMESPACE_TEMPLATE 			\
- 	"SELECT nspname FROM pg_namespace n WHERE n.nspname='%s'"
-diff --git a/output/ulogd_output_GRAPHITE.c b/output/ulogd_output_GRAPHITE.c
-index 28280b200544..22434707bcf9 100644
---- a/output/ulogd_output_GRAPHITE.c
-+++ b/output/ulogd_output_GRAPHITE.c
-@@ -79,9 +79,9 @@ static struct config_keyset graphite_kset = {
- 	},
+@@ -357,9 +357,7 @@ static struct ulogd_plugin pgsql_plugin = {
+ 	.version	= VERSION,
  };
  
--#define host_ce(x)	(x->ces[0])
--#define port_ce(x)	(x->ces[1])
--#define prefix_ce(x)	(x->ces[2])
-+#define host_ce(x)	((x)->ces[0])
-+#define port_ce(x)	((x)->ces[1])
-+#define prefix_ce(x)	((x)->ces[2])
+-void __attribute__ ((constructor)) init(void);
+-
+-void init(void)
++static void __attribute__ ((constructor)) init(void)
+ {
+ 	ulogd_register_plugin(&pgsql_plugin);
+ }
+diff --git a/output/sqlite3/ulogd_output_SQLITE3.c b/output/sqlite3/ulogd_output_SQLITE3.c
+index 8dd7cec586cf..40d99ca3b249 100644
+--- a/output/sqlite3/ulogd_output_SQLITE3.c
++++ b/output/sqlite3/ulogd_output_SQLITE3.c
+@@ -435,10 +435,7 @@ static struct ulogd_plugin sqlite3_plugin = {
+ 	.version = VERSION,
+ };
  
- struct graphite_instance {
- 	int sck;
-diff --git a/output/ulogd_output_JSON.c b/output/ulogd_output_JSON.c
-index 59aab305e545..76b51b2afaa7 100644
---- a/output/ulogd_output_JSON.c
-+++ b/output/ulogd_output_JSON.c
-@@ -45,10 +45,10 @@
- #define ULOGD_JSON_DEFAULT_DEVICE "Netfilter"
- #endif
- 
--#define host_ce(x)	(x->ces[JSON_CONF_HOST])
--#define port_ce(x)	(x->ces[JSON_CONF_PORT])
--#define mode_ce(x)	(x->ces[JSON_CONF_MODE])
--#define file_ce(x)	(x->ces[JSON_CONF_FILENAME])
-+#define host_ce(x)	((x)->ces[JSON_CONF_HOST])
-+#define port_ce(x)	((x)->ces[JSON_CONF_PORT])
-+#define mode_ce(x)	((x)->ces[JSON_CONF_MODE])
-+#define file_ce(x)	((x)->ces[JSON_CONF_FILENAME])
- #define unlikely(x) __builtin_expect((x),0)
- 
- struct json_priv {
+-static void init(void) __attribute__((constructor));
+-
+-static void
+-init(void)
++static void __attribute__ ((constructor)) init(void)
+ {
+ 	ulogd_register_plugin(&sqlite3_plugin);
+ }
 -- 
 2.35.1
 
