@@ -2,128 +2,65 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EC1634250
-	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Nov 2022 18:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF0E634318
+	for <lists+netfilter-devel@lfdr.de>; Tue, 22 Nov 2022 18:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234310AbiKVRRQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 22 Nov 2022 12:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39198 "EHLO
+        id S232676AbiKVR5K (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 22 Nov 2022 12:57:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbiKVRRP (ORCPT
+        with ESMTP id S233207AbiKVR4u (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 22 Nov 2022 12:17:15 -0500
-Received: from smtp-bc0f.mail.infomaniak.ch (smtp-bc0f.mail.infomaniak.ch [45.157.188.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C4C78189;
-        Tue, 22 Nov 2022 09:17:13 -0800 (PST)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4NGrXl5C5RzMqFlf;
-        Tue, 22 Nov 2022 18:17:11 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4NGrXl0z1kzMppB8;
-        Tue, 22 Nov 2022 18:17:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-        s=20191114; t=1669137431;
-        bh=P+IUgH4nyscpfUnyctWIrg0KUE05NslDqW8Y/LDZpUA=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=DqKmNL5wf/uL3kr+Z4KJUKawpibnFEcLsjYEXFE+pBFTNJm6VhhKmJm7oxfeomNMJ
-         FQ4vP5jUeaFMr2Fm1IpSyqBlMmALwlqfqDLXsfSWW9fH0RufRxCPvrenCq6D8Fngk4
-         UL27qgTs0dy10193flsnIx85obphfivUyATAgdKc=
-Message-ID: <acd844ba-07b2-8a14-0089-77b3c4dcb68b@digikod.net>
-Date:   Tue, 22 Nov 2022 18:17:10 +0100
+        Tue, 22 Nov 2022 12:56:50 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DFB686B2
+        for <netfilter-devel@vger.kernel.org>; Tue, 22 Nov 2022 09:55:51 -0800 (PST)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1oxXUr-0007ib-Fj; Tue, 22 Nov 2022 18:55:49 +0100
+Date:   Tue, 22 Nov 2022 18:55:49 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [iptables-nft RFC 1/5] nft-shared: dump errors on stdout to
+ garble output
+Message-ID: <Y30NJTaQx8Wn7RLE@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+References: <20221121111932.18222-1-fw@strlen.de>
+ <20221121111932.18222-2-fw@strlen.de>
 MIME-Version: 1.0
-User-Agent: 
-Subject: Re: [PATCH v8 02/12] landlock: Refactor
- landlock_find_rule/insert_rule
-Content-Language: en-US
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-To:     Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Cc:     willemdebruijn.kernel@gmail.com, gnoack3000@gmail.com,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, artem.kuzin@huawei.com
-References: <20221021152644.155136-1-konstantin.meskhidze@huawei.com>
- <20221021152644.155136-3-konstantin.meskhidze@huawei.com>
- <5c6c99f7-4218-1f79-477e-5d943c9809fd@digikod.net>
-In-Reply-To: <5c6c99f7-4218-1f79-477e-5d943c9809fd@digikod.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221121111932.18222-2-fw@strlen.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-
-On 17/11/2022 19:41, Mickaël Salaün wrote:
+On Mon, Nov 21, 2022 at 12:19:28PM +0100, Florian Westphal wrote:
+> Intentionally garble iptables-nft output if we cannot dissect
+> an expression that we've just encountered, rather than dump an
+> error message on stderr.
 > 
-> On 21/10/2022 17:26, Konstantin Meskhidze wrote:
-
-[...]
-
->> diff --git a/security/landlock/ruleset.h b/security/landlock/ruleset.h
->> index f2ad932d396c..608ab356bc3e 100644
->> --- a/security/landlock/ruleset.h
->> +++ b/security/landlock/ruleset.h
->> @@ -49,6 +49,46 @@ struct landlock_layer {
->>    	access_mask_t access;
->>    };
->>
->> +/**
->> + * union landlock_key - Key of a ruleset's red-black tree
->> + */
->> +union landlock_key {
->> +	/**
->> +	 * @object: Pointer to identify a kernel object (e.g. an inode).
->> +	 */
->> +	struct landlock_object *object;
->> +	/**
->> +	 * @data: A raw data value to identify a network socket port.
+> The idea here is that
+> iptables-save | iptables-restore
 > 
-> "Raw data to identify an arbitrary 32-bit value (e.g. a TCP port)."
-> 
-> 
->> +	 */
->> +	uintptr_t data;
->> +};
->> +
->> +/**
->> + * enum landlock_key_type - Type of &union landlock_key
->> + */
->> +enum landlock_key_type {
->> +	/**
->> +	 * @LANDLOCK_KEY_INODE: Type of &landlock_ruleset.root_inode's node
->> +	 * keys.
->> +	 */
->> +	LANDLOCK_KEY_INODE = 1,
->> +};
->> +
->> +/**
->> + * struct landlock_id - Unique rule identifier for a ruleset
->> + */
->> +struct landlock_id {
->> +	/**
->> +	 * @key: A union to identify either a kernel object (e.g. an inode) or
->> +	 * a raw data value (e.g. a network socket port).
-> 
-> "a 32-bit value (e.g. a TCP port)."
+> will fail, rather than restore an incomplete ruleset.
 
-Instead:
-@key: Identifies either a kernel object (e.g. an inode) or a raw value 
-(e.g. a TCP port).
+What I don't like about this is that users won't notice the problem
+until they try to restore the ruleset. For us it is clearly beneficial
+to see where things break, but I doubt regular users care and we should
+just tell them to stop mixing iptables and nft calls.
 
-> 
-> 
->> +	 */
->> +	union landlock_key key;
->> +	/**
->> +	 * @type: A enumerator to identify the type of landlock_ruleset's root tree.
+Can we maybe add "--force" to iptables-nft-save to make it print as much
+as possible despite the table being considered incompatible? Not sure
+how ugly this is to implement, though.
 
-@type: Type of a landlock_ruleset's root tree.
+We still exit(0) in case parsing fails, BTW. Guess this is the most
+important thing to fix despite all the above.
 
-
->> +	 */
->> +	const enum landlock_key_type type;
->> +};
+Thanks, Phil
