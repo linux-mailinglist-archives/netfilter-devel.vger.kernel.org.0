@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A084636610
-	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Nov 2022 17:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4588636615
+	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Nov 2022 17:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239082AbiKWQoa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 23 Nov 2022 11:44:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
+        id S239044AbiKWQoj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 23 Nov 2022 11:44:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239140AbiKWQoW (ORCPT
+        with ESMTP id S239081AbiKWQoi (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 23 Nov 2022 11:44:22 -0500
+        Wed, 23 Nov 2022 11:44:38 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A056488F82
-        for <netfilter-devel@vger.kernel.org>; Wed, 23 Nov 2022 08:44:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6916D975
+        for <netfilter-devel@vger.kernel.org>; Wed, 23 Nov 2022 08:44:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=uPOaYyEpjRmI/CcWzxez884C3cOLcpwwgqRrl5LaA08=; b=EHThgDoMv3mGWv8MCgTLQHj1wU
-        wR15BLf+A7ba2B7vQvjwBJHNU1snZst5qugC1JKmm1lHcVzqMJaKykOZjuxYfTF4hII/aWLZs6mxj
-        vJSA00V+X3w9qSMgeCzu4IT1lGR2GZzwAEqLxWG2Uc70sZeGJtgx0d+IFwFwR1K3H41NORPTtr0rk
-        YzSB5wV93tyuZLNC7u/jlURVLtGzyD670OaqlkUBNpw/OTK7PXkx4g+e6n/ewYFBxyNlRE7/xWQis
-        g37+/W2xDRl0GKwJ4KEI5y97GUciSwBRwJlCPnUSK7EYfBllRNxlkgFmDWZR/XJfTAS/2wWd2Praq
-        RR5DZtew==;
+        bh=KJZ0nEO1VBlWJ2KeVCjw/8w9I7aYSpIIsBbb6aomuao=; b=IrIYDa0n2n7vlzcf9bRcqA3Dlr
+        YAvWwJjf2sC/+NlM24oLDfYsFIY9AlpHaful4b2ti0u6HMIJyXWZCbOpKfM8MKZXn3ngFMkrAGxId
+        4372020LgSG8prP6Ufkddw/Lx/6XgMoWAcSwh6c1EalUSK+WBjW3WIoW2q32GanKDitfgF9JMjOPK
+        175HY6lWsHmLTLB8thSMVqVE4CGdmd9lfWuaaXFlokJVDYLAJCb+Dcw5To1zo2Yx27qPSNPiljwGb
+        WAIPViyezxMp4/MJOqtmhWE6r+D9nvcX8fj4R7TAqy+wfRZJpOXk8ivP57UaZ7z+6gkFeiPzsZKbL
+        KkRAbiaw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1oxsrE-0003xB-3T
-        for netfilter-devel@vger.kernel.org; Wed, 23 Nov 2022 17:44:20 +0100
+        id 1oxsrU-0003xN-0h
+        for netfilter-devel@vger.kernel.org; Wed, 23 Nov 2022 17:44:36 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 09/13] extensions: ecn: Sanitize xlate callback
-Date:   Wed, 23 Nov 2022 17:43:46 +0100
-Message-Id: <20221123164350.10502-10-phil@nwl.cc>
+Subject: [iptables PATCH 10/13] extensions: tcp: Translate TCP option match
+Date:   Wed, 23 Nov 2022 17:43:47 +0100
+Message-Id: <20221123164350.10502-11-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221123164350.10502-1-phil@nwl.cc>
 References: <20221123164350.10502-1-phil@nwl.cc>
@@ -51,27 +51,48 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Catch unexpected values in einfo->ip_ect.
+A simple task since 'tcp option' expression exists.
 
-Fixes: ca42442093d3d ("iptables: extensions: libxt_ecn: Add translation to nft")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libxt_ecn.c | 2 ++
- 1 file changed, 2 insertions(+)
+ extensions/libxt_tcp.c      | 9 ++++++---
+ extensions/libxt_tcp.txlate | 6 ++++++
+ 2 files changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/extensions/libxt_ecn.c b/extensions/libxt_ecn.c
-index ad3c7a0307a0d..83a4acfab7da7 100644
---- a/extensions/libxt_ecn.c
-+++ b/extensions/libxt_ecn.c
-@@ -156,6 +156,8 @@ static int ecn_xlate(struct xt_xlate *xl,
- 		case 3:
- 			xt_xlate_add(xl, "ce");
- 			break;
-+		default:
-+			return 0;
- 		}
+diff --git a/extensions/libxt_tcp.c b/extensions/libxt_tcp.c
+index 0b115cddf15d9..043382d47b8ba 100644
+--- a/extensions/libxt_tcp.c
++++ b/extensions/libxt_tcp.c
+@@ -430,9 +430,12 @@ static int tcp_xlate(struct xt_xlate *xl,
+ 		space = " ";
  	}
- 	return 1;
+ 
+-	/* XXX not yet implemented */
+-	if (tcpinfo->option || (tcpinfo->invflags & XT_TCP_INV_OPTION))
+-		return 0;
++	if (tcpinfo->option) {
++		xt_xlate_add(xl, "%stcp option %u %s", space, tcpinfo->option,
++			     tcpinfo->invflags & XT_TCP_INV_OPTION ?
++			     "missing" : "exists");
++		space = " ";
++	}
+ 
+ 	if (tcpinfo->flg_mask || (tcpinfo->invflags & XT_TCP_INV_FLAGS)) {
+ 		xt_xlate_add(xl, "%stcp flags %s", space,
+diff --git a/extensions/libxt_tcp.txlate b/extensions/libxt_tcp.txlate
+index 921d4af024d32..a1f0e909bb46c 100644
+--- a/extensions/libxt_tcp.txlate
++++ b/extensions/libxt_tcp.txlate
+@@ -24,3 +24,9 @@ nft add rule ip filter INPUT ip frag-off & 0x1fff != 0 ip protocol tcp counter
+ 
+ iptables-translate -A INPUT ! -f -p tcp --dport 22
+ nft add rule ip filter INPUT ip frag-off & 0x1fff 0 tcp dport 22 counter
++
++iptables-translate -A INPUT -p tcp --tcp-option 23
++nft add rule ip filter INPUT tcp option 23 exists counter
++
++iptables-translate -A INPUT -p tcp ! --tcp-option 23
++nft add rule ip filter INPUT tcp option 23 missing counter
 -- 
 2.38.0
 
