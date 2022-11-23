@@ -2,72 +2,93 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F940636111
-	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Nov 2022 15:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 591CB6362A4
+	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Nov 2022 16:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238421AbiKWOFZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 23 Nov 2022 09:05:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
+        id S236875AbiKWPCF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 23 Nov 2022 10:02:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236316AbiKWOFB (ORCPT
+        with ESMTP id S238103AbiKWPCD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 23 Nov 2022 09:05:01 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243C65A6EA
-        for <netfilter-devel@vger.kernel.org>; Wed, 23 Nov 2022 06:01:01 -0800 (PST)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1oxqJ9-0002Km-Hk; Wed, 23 Nov 2022 15:00:59 +0100
-Date:   Wed, 23 Nov 2022 15:00:59 +0100
-From:   Phil Sutter <phil@nwl.cc>
+        Wed, 23 Nov 2022 10:02:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67659616C
+        for <netfilter-devel@vger.kernel.org>; Wed, 23 Nov 2022 07:01:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1669215659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FM3rua+YJ3wAZfR5GvCKM+092JwtI664TeDSun388g8=;
+        b=QV9Wm966v+FNWwC8uYH81NL4hOfn43bz8//3gFnykbr8ylGqT6Uxha06xk6JJFvmiSfpzA
+        ZjUP3c9V2idsMLm6ETN2jKc/9Ot32ZZzzQaYXGT6ZaBxWU1W2ekGKvag6bu4pudqSRcWMO
+        JnTqMFP9tO3dD24HCb4YC0gPL0AO/ew=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-561-Z-pUyIETM1W7NIbqfUWi9w-1; Wed, 23 Nov 2022 10:00:58 -0500
+X-MC-Unique: Z-pUyIETM1W7NIbqfUWi9w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D7DAC296A601;
+        Wed, 23 Nov 2022 15:00:57 +0000 (UTC)
+Received: from localhost (wsfd-netdev-vmhost.ntdv.lab.eng.bos.redhat.com [10.19.188.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C9F87C1908A;
+        Wed, 23 Nov 2022 15:00:57 +0000 (UTC)
+Date:   Wed, 23 Nov 2022 10:00:47 -0500
+From:   Eric Garver <egarver@redhat.com>
 To:     Florian Westphal <fw@strlen.de>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH iptables-nft] iptables-nft: exit nonzero when
- iptables-save cannot decode all expressions
-Message-ID: <Y34nm0mdezcnTAKT@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+Subject: Re: [PATCH v2 nf] netfilter: conntrack: set icmpv6 redirects as
+ RELATED
+Message-ID: <Y341n075lg67rm0U@wsfd-netdev-vmhost.ntdv.lab.eng.bos.redhat.com>
+Mail-Followup-To: Eric Garver <egarver@redhat.com>,
         Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-References: <20221123134929.4700-1-fw@strlen.de>
+References: <20221123121639.27624-1-fw@strlen.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221123134929.4700-1-fw@strlen.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20221123121639.27624-1-fw@strlen.de>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Nov 23, 2022 at 02:49:29PM +0100, Florian Westphal wrote:
-> We always return 0, even if we printed some error message half-way.
-> Increment an error counter whenever an error message was printed so that
-> the chain-loop can exit with an error if this counter is nonzero.
+On Wed, Nov 23, 2022 at 01:16:39PM +0100, Florian Westphal wrote:
+> icmp conntrack will set icmp redirects as RELATED, but icmpv6 will not
+> do this.
 > 
-> Another effect is that iptables-restore won't have a chance to print the
-                                  ~~~~~~~
-*save?
+> For icmpv6, only icmp errors (code <= 128) are examined for RELATED state.
+> ICMPV6 Redirects are part of neighbour discovery mechanism, those are
+> handled by marking a selected subset (e.g.  neighbour solicitations) as
+> UNTRACKED, but not REDIRECT -- they will thus be flagged as INVALID.
+> 
+> Add minimal support for REDIRECTs.  No parsing of neighbour options is
+> added for simplicity, so this will only check that we have the embeeded
+> original header (ND_OPT_REDIRECT_HDR), and then attempt to do a flow
+> lookup for this tuple.
+> 
+> Also extend the existing test case to cover redirects.
+> 
+> Reported-by: Eric Garver <eric@garver.life>
+> Link: https://github.com/firewalld/firewalld/issues/1046
+> Signed-off-by: Florian Westphal <fw@strlen.de>
+> ---
+>  v2: fix up comment typo and reformat commit message.  No other changes.
+> 
+>  net/netfilter/nf_conntrack_proto_icmpv6.c     | 53 +++++++++++++++++++
+>  .../netfilter/conntrack_icmp_related.sh       | 36 ++++++++++++-
+>  2 files changed, 87 insertions(+), 2 deletions(-)
 
-[...]
-> diff --git a/iptables/nft.c b/iptables/nft.c
-> index 4c0110bb8040..67c5877ce9cc 100644
-> --- a/iptables/nft.c
-> +++ b/iptables/nft.c
-[...]
-> @@ -1919,6 +1927,9 @@ int nft_rule_save(struct nft_handle *h, const char *table, unsigned int format)
->  
->  	ret = nft_chain_foreach(h, table, nft_rule_save_cb, &d);
->  
-> +	if (ret == 0 && d.errors)
-> +		xtables_error(VERSION_PROBLEM, "Cannot decode all rules provided by kernel");
+Thanks Florian!
 
-*by the kernel?
+Acked-by: Eric Garver <eric@garver.life>
 
-My English is certainly worse than yours, though. :D
-
-Apart from that,
-
-Acked-by: Phil Sutter <phil@nwl.cc>
-
-Thanks!
