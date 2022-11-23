@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A853263660C
-	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Nov 2022 17:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314B163661B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Nov 2022 17:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239139AbiKWQoS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 23 Nov 2022 11:44:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
+        id S239087AbiKWQpF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 23 Nov 2022 11:45:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239137AbiKWQoR (ORCPT
+        with ESMTP id S239170AbiKWQpA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 23 Nov 2022 11:44:17 -0500
+        Wed, 23 Nov 2022 11:45:00 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647E1686B6
-        for <netfilter-devel@vger.kernel.org>; Wed, 23 Nov 2022 08:44:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092BD90386
+        for <netfilter-devel@vger.kernel.org>; Wed, 23 Nov 2022 08:44:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Cp2sy9HhZmY0uODe+U2UNif4AtnadXo4Jwgeb9yX1HQ=; b=SOPY3SNLsFuRaPwowjqetaa3Wv
-        S0JNKaYEJ+R3Q5W/ucGBTxkBXIjH8fQVK/MvjX+iElymdBzI5wXUd+tnhXgOcgIplrqKrfagveiYM
-        LtB6k8GMXbShj6lUFMzenLwIgjIWTRA2p6oBf9tvyfiKqM210DDUf2w9Mu1EPYLGJIjW8raFWaHOo
-        IOQqCjkcUXiehN1YDZ9ma6vt9F1XGbQcpZig5CIRKWAW9UpMiXwxm19fX/ONielAwf2lW4Y8fDi9s
-        nmcws1JqpFNTTzeeWZ8iQsrmQQdXLa3pUntRq5GSQHQ9Z/jy8e3qzyTzA/jmtRzWAPd5iKrmZ+Xbl
-        0nPFH3ig==;
+        bh=wijOBQMwMhiz/NiD6q5oMMRq92gL2hDTRhFWHCjxaDo=; b=NF7PyqjWX5+gKSdyUUwGh4CjDv
+        h0tdxkCg6y4svfn6Z2J5M4ahFa9aINbJD4ZYddHJqfDQJ2njoaKhd+yjrlbAIwA/zNMSpDJLBGvVj
+        2Fb/lT10vNCxG0zkfzaM1ozDUjz+BUUVEg+A05NHwKmUgLfpiAV0h5p0dF6xMtWt6rNeDpEhcDVzY
+        gEPu0BCt8M3CluobdFGvIETHL2iKSdCUWhtif//zvSyDAuB4i3CEbw8PqWgIcXeQ/4Nfcg104VSs4
+        OxNp/+DlsN4b13EA/wEJnAz+AvmJiCQIqVrXoI6nedecPl+q9++IdixZIr3YEXIL8OmDoTehKeVeY
+        75mB9OPQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1oxsr8-0003x7-Pd
-        for netfilter-devel@vger.kernel.org; Wed, 23 Nov 2022 17:44:14 +0100
+        id 1oxsrp-0003zF-EW
+        for netfilter-devel@vger.kernel.org; Wed, 23 Nov 2022 17:44:57 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 03/13] extensions: libebt_redirect: Fix xlate return code
-Date:   Wed, 23 Nov 2022 17:43:40 +0100
-Message-Id: <20221123164350.10502-4-phil@nwl.cc>
+Subject: [iptables PATCH 04/13] extensions: libipt_ttl: Sanitize xlate callback
+Date:   Wed, 23 Nov 2022 17:43:41 +0100
+Message-Id: <20221123164350.10502-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221123164350.10502-1-phil@nwl.cc>
 References: <20221123164350.10502-1-phil@nwl.cc>
@@ -51,27 +51,36 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The callback is supposed to return 1 on success, not 0.
+Catch unexpected values in info->mode, also fix indenting.
 
-Fixes: 24ce7465056ae ("ebtables-compat: add redirect match extension")
+Fixes: 1b320a1a1dc1f ("extensions: libipt_ttl: Add translation to nft")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libebt_redirect.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ extensions/libipt_ttl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/extensions/libebt_redirect.c b/extensions/libebt_redirect.c
-index 6e653997ee99e..4d4c7a02cea89 100644
---- a/extensions/libebt_redirect.c
-+++ b/extensions/libebt_redirect.c
-@@ -86,7 +86,7 @@ static int brredir_xlate(struct xt_xlate *xl,
- 	xt_xlate_add(xl, "meta set pkttype host");
- 	if (red->target != EBT_ACCEPT)
- 		xt_xlate_add(xl, " %s ", brredir_verdict(red->target));
--	return 0;
-+	return 1;
- }
+diff --git a/extensions/libipt_ttl.c b/extensions/libipt_ttl.c
+index 6bdd219618091..86ba554ef92a8 100644
+--- a/extensions/libipt_ttl.c
++++ b/extensions/libipt_ttl.c
+@@ -106,7 +106,7 @@ static int ttl_xlate(struct xt_xlate *xl,
+ 	const struct ipt_ttl_info *info =
+ 		(struct ipt_ttl_info *) params->match->data;
  
- static struct xtables_target brredirect_target = {
+-		switch (info->mode) {
++	switch (info->mode) {
+ 		case IPT_TTL_EQ:
+ 			xt_xlate_add(xl, "ip ttl");
+ 			break;
+@@ -121,7 +121,7 @@ static int ttl_xlate(struct xt_xlate *xl,
+ 			break;
+ 		default:
+ 			/* Should not happen. */
+-			break;
++			return 0;
+ 	}
+ 
+ 	xt_xlate_add(xl, " %u", info->ttl);
 -- 
 2.38.0
 
