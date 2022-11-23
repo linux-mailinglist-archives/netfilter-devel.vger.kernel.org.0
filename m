@@ -2,91 +2,122 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD70B636619
-	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Nov 2022 17:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23554636AA4
+	for <lists+netfilter-devel@lfdr.de>; Wed, 23 Nov 2022 21:15:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239106AbiKWQo7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 23 Nov 2022 11:44:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
+        id S237899AbiKWUOz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 23 Nov 2022 15:14:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239110AbiKWQot (ORCPT
+        with ESMTP id S237323AbiKWUOy (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 23 Nov 2022 11:44:49 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7656A90386
-        for <netfilter-devel@vger.kernel.org>; Wed, 23 Nov 2022 08:44:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Wed, 23 Nov 2022 15:14:54 -0500
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5610856ED6
+        for <netfilter-devel@vger.kernel.org>; Wed, 23 Nov 2022 12:14:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=2M8deBPSvhp1v9lBZb2pX8GtjDn79jy6VKN6ktGBIvY=; b=qT2W98Cru1kUCMwG3o+YL6FkFn
-        DE3Qgh3WMj4wmPU89LDeZeojMh9CAZzYfArkRcgYKIwkJJK8i7rbT56KO25ZW3qTgk8q0gHemGtqH
-        Tt7uT4XaXGssASseKxZACHz4l36zl4lZNLK9HTTOSH3rwaLDmDf/waNws6V+iaC3GSJNFo6/oYC0k
-        +NbVas2nPCqxLLidilqJPukHjXs/LTqFNtFqZlNlHkqf0WIJpyqt5y6ye2HTVbjLp8r7FJrKqJ31M
-        nkFuR2VGLDZURfH7iEwswq4DjosowgopS6ROX384qaZ/r0k5id3iVmWpDtMep5aifjikAF2ptOy9L
-        hO76Hirg==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1oxsre-0003z7-ST
-        for netfilter-devel@vger.kernel.org; Wed, 23 Nov 2022 17:44:46 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 13/13] extensions: ipcomp: Add comment to clarify xlate callback
-Date:   Wed, 23 Nov 2022 17:43:50 +0100
-Message-Id: <20221123164350.10502-14-phil@nwl.cc>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20221123164350.10502-1-phil@nwl.cc>
-References: <20221123164350.10502-1-phil@nwl.cc>
+        bh=pLaS1lGDMea/xK1zvgHucvaB2R2aB7Ju2TcYP3uwW8g=; b=Pmtz/K3MfUmM2JARyAbvFaDUre
+        pv0Z5v5fYgd35h6yhWE20FsCsNIlhaITvYRiHt+dIyLuQ17Rw6zfKpwDKdpzFqp6qmckHukdb2w4U
+        LmZBqq24M2Kkig9cZNWmRQ7f+recXBnJSXDsZJR3SVEkdgA29SIuiWbACjfpjaph/Tx0oehfz0FXp
+        6j4OcW9xEBG+/7n3dWl3VPXHbkIcQkSwXA/op1qdTLzYy/onH8DGweQdKWSoqnykXc5lMjl4rHSpp
+        iQeP/dPjEo6t3ePMODdyiZ1+6sfst7scPKbnELBCrQzhgDSNQ5zg9qG5SEfbRwg7r5mwgUhpETBDI
+        XUnM4ksQ==;
+Received: from [2001:8b0:fb7d:d6d6:d237:45ff:fe20:4c6f] (helo=azazel.net)
+        by kadath.azazel.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <jeremy@azazel.net>)
+        id 1oxw8u-007RtH-Da; Wed, 23 Nov 2022 20:14:48 +0000
+Date:   Wed, 23 Nov 2022 20:14:44 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Robert O'Brien <robrien@foxtrot-research.com>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: PATCH ulogd2 filter BASE ARP packet IP addresses
+Message-ID: <Y35/NEI+wqK06zv0@azazel.net>
+References: <004301d8f531$bb2c60c0$31852240$@foxtrot-research.com>
+ <005601d8f532$49cd7080$dd685180$@foxtrot-research.com>
+ <Y24taNAVtz53JPDB@salvia>
+ <001c01d8f851$38ac6050$aa0520f0$@foxtrot-research.com>
+ <Y3KFKuhzFWbbAKWL@salvia>
+ <Y3wBIqCFTAFob4/4@azazel.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BAce5xrJx3ROBxfa"
+Content-Disposition: inline
+In-Reply-To: <Y3wBIqCFTAFob4/4@azazel.net>
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d6:d237:45ff:fe20:4c6f
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Kernel ignores 'hdrres' field, this matching on reserved field value was
-never effective.
 
-While being at it, drop its description from man page. Continue to parse
-and print it for compatibility reasons, but avoid attracting new users.
+--BAce5xrJx3ROBxfa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- extensions/libxt_ipcomp.c     | 2 ++
- extensions/libxt_ipcomp.c.man | 3 ---
- 2 files changed, 2 insertions(+), 3 deletions(-)
+On 2022-11-21, at 22:52:18 +0000, Jeremy Sowden wrote:
+> On 2022-11-14, at 19:12:58 +0100, Pablo Neira Ayuso wrote:
+> > On Mon, Nov 14, 2022 at 12:47:52PM -0500, Robert O'Brien wrote:
+> > > I will create a bug report and attach an example ulogd
+> > > configuration file that demonstrates the issue.
+> >
+> > OK.
+> >
+> > > I will send a patch using git send-email and mention it in my bug
+> > > report. What is the email address to where I should send the
+> > > patch?
+> >
+> > Please use netfilter-devel@vger.kernel.org so patchwork catches this
+> > patch.
+>
+> I think there are at least a couple more places where IP addresses are
+> not correctly handled:
+>
+>   https://git.netfilter.org/ulogd2/tree/output/sqlite3/ulogd_output_SQLITE3.c?h=ulogd-2.0.8&id=79aa980f2df9dda0c097e8f883a62f414b9e5138#n176
+>   https://git.netfilter.org/ulogd2/tree/filter/raw2packet/ulogd_raw2packet_BASE.c?h=ulogd-2.0.8&id=79aa980f2df9dda0c097e8f883a62f414b9e5138#n647
+>
+> I'll see if I can find any others.
 
-diff --git a/extensions/libxt_ipcomp.c b/extensions/libxt_ipcomp.c
-index b5c43128466fb..4171c4a1c4eb7 100644
---- a/extensions/libxt_ipcomp.c
-+++ b/extensions/libxt_ipcomp.c
-@@ -101,6 +101,8 @@ static int comp_xlate(struct xt_xlate *xl,
- 	const struct xt_ipcomp *compinfo =
- 		(struct xt_ipcomp *)params->match->data;
- 
-+	/* ignore compinfo->hdrres like kernel's xt_ipcomp.c does */
-+
- 	xt_xlate_add(xl, "comp cpi %s",
- 		     compinfo->invflags & XT_IPCOMP_INV_SPI ? "!= " : "");
- 	if (compinfo->spis[0] != compinfo->spis[1])
-diff --git a/extensions/libxt_ipcomp.c.man b/extensions/libxt_ipcomp.c.man
-index f3b17d2167697..824f5b3d9dbb4 100644
---- a/extensions/libxt_ipcomp.c.man
-+++ b/extensions/libxt_ipcomp.c.man
-@@ -2,6 +2,3 @@ This module matches the parameters in IPcomp header of IPsec packets.
- .TP
- [\fB!\fP] \fB\-\-ipcompspi\fP \fIspi\fP[\fB:\fP\fIspi\fP]
- Matches IPcomp header CPI value.
--.TP
--\fB\-\-compres\fP
--Matches if the reserved field is filled with zero.
--- 
-2.38.0
+Didn't find any other endianness bugs, but there are assumptions in some
+of the output plug-ins that all `ULOGD_RET_IPADDR` values are IPv4
+addresses that can be treated as uint32_t values, which is not valid.
+One possibility would be to handle all IP addresses internally as in
+IPv6 format (i.e., convert IPv4 addresses to `::ffff:w.x.y.z` -- this is
+what the IP2BIN filter does) and then convert the IPv4 addresses back on
+output.
 
+J.
+
+--BAce5xrJx3ROBxfa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmN+fy0ACgkQKYasCr3x
+BA3+dBAA0CVjz70ZfKWS9u6nK71+e9KrMijLApNOvG0m02bDfOoV/C6HaqX+P8vO
+H7K/B0Zg3qKWjnYF8RcXklLSTJoM7xmUT/I77ped4NxvCgx+nCx29ZA8c/aoBGpK
+h3VM3W0XkcsuSYg+tUQtdve2ezppB+kIr8EckEH6V+CQVkapQXx8TygSi9FOmmO0
+h2Za5U5SJFMQA9GHpTWoLnsDQlCGOWB9kdItWwbRfqYQtSlFF9NCzgjSOKuHf3J8
+5bK7f56Q9p8G48bEaxqpfoaIxqtBtpwSfbnh5iVBtj/ESSjdRKjHZ1Z8lHss5HzA
+enaeXkd4djAwVWe6OI3hu6/O//yxZN9v6GI1+4w0UX8nNy//YYuTWawEJFn7/U0e
+1HUR8UZX48a3tdPxHpp/HUgznLnLrwYCqBwxK17OHAM0LyFjHUPYMrIeCpvoaU5l
+8sKQvsR/ht5v7tJ+eMyyQger/hBsdKpUFCPxbXLap9E8eNCeoSHQphc188vecGed
+o0BtUTzBxcu7TwCcnMBtEWblIgLcANXIWYIqCfKpl2m8rItXj59yeC/IKfb+Dny7
+5THx3J0msnJ1O10FqbHkOSIlfa2R4CKUNnmfNL7wqj6Sd1T9y6Cn/WifKGowKDOH
+JrSHDEOZwD6YFJE4ERLVrRUZypxIhvAJ0uPit6DRZy4lCrKQNEs=
+=S8xp
+-----END PGP SIGNATURE-----
+
+--BAce5xrJx3ROBxfa--
