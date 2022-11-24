@@ -2,74 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 387C7637D2F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Nov 2022 16:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4499A637DD5
+	for <lists+netfilter-devel@lfdr.de>; Thu, 24 Nov 2022 17:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbiKXPpC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 24 Nov 2022 10:45:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
+        id S229495AbiKXQ5P (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 24 Nov 2022 11:57:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbiKXPpB (ORCPT
+        with ESMTP id S229498AbiKXQ5C (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 24 Nov 2022 10:45:01 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43F793CF6
-        for <netfilter-devel@vger.kernel.org>; Thu, 24 Nov 2022 07:45:00 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1oyEPL-0001Bt-DQ; Thu, 24 Nov 2022 16:44:59 +0100
-Date:   Thu, 24 Nov 2022 16:44:59 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH iptables-nft 3/3] extensions: remove trailing spaces
-Message-ID: <20221124154459.GF2753@breakpoint.cc>
-References: <20221124134939.8245-1-fw@strlen.de>
- <20221124134939.8245-4-fw@strlen.de>
- <Y399MCSuWa64CTAZ@orbyte.nwl.cc>
+        Thu, 24 Nov 2022 11:57:02 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451AB3D90A
+        for <netfilter-devel@vger.kernel.org>; Thu, 24 Nov 2022 08:56:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=C3bXRQSzNCm6bw+uclphXTf+avL2APB4G1Np9hukNww=; b=IyD6ykyhQGkjwoHHFPIhjzw4ih
+        IkMm/3MyfR9zEmC9eH/6m71VN1ReFbBUdmza5OWOce5VGBWkl7d5UsrWCWlyId+/Ob6ARdHG919Wf
+        xOj6nIoq3GvycFWbkaTlCmqxUgWnRkbKTNTbiQlnN5dMrvkCx7b/xyeGsZb2416/MHZH/xmR71XqT
+        ac6GbI/1eUHzPuR/bqW/M5y8Z5bVuziVUDO38mce5jXwDwF0lsz/j3qACNNh0u9kgwL7WXNmFeWcp
+        55ZQH0AJGflmVC+td5bb36GhzXPhvmZcPisjCV1oiBFrH95ZOQBQyhfMIluLkpEluh1CoXs/5QSX1
+        0lzw5ANg==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1oyFWx-0000qt-MA; Thu, 24 Nov 2022 17:56:55 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>
+Subject: [nft PATCH 0/4] xt: Rewrite unsupported compat expression dumping
+Date:   Thu, 24 Nov 2022 17:56:37 +0100
+Message-Id: <20221124165641.26921-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y399MCSuWa64CTAZ@orbyte.nwl.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Phil Sutter <phil@nwl.cc> wrote:
-> On Thu, Nov 24, 2022 at 02:49:39PM +0100, Florian Westphal wrote:
-> > Previous patches cause minor test breakage, e.g:
-> > exp: nft 'add rule ip mangle INPUT iifname "iifname" tcp dport 80 ct state invalid,untracked  counter synproxy sack-perm timestamp wscale 7 mss 1460'
-> > res: nft 'add rule ip mangle INPUT iifname "iifname" tcp dport 80 ct state invalid,untracked  counter synproxy sack-perm timestamp wscale 7 mss 1460 '
-> > 
-> > So fix up the ->xlate callbacks of the affected modules to not print a
-> > tailing space character.
-> 
-> I am considering something like this:
-> 
-> | diff --git a/libxtables/xtables.c b/libxtables/xtables.c
-> | index 479dbae078156..367eefaba8e74 100644
-> | --- a/libxtables/xtables.c
-> | +++ b/libxtables/xtables.c
-> | @@ -2496,6 +2496,11 @@ static void __xt_xlate_add(struct xt_xlate *xl, enum xt_xlate_type type,
-> |         struct xt_xlate_buf *buf = &xl->buf[type];
-> |         int len;
-> |  
-> | +       if (buf->off && !isspace(buf->data[buf->off - 1])) {
-> | +               buf->data[buf->off] = ' ';
-> | +               buf->off++;
-> | +               buf->rem--;
-> | +       }
-> |         len = vsnprintf(buf->data + buf->off, buf->rem, fmt, ap);
-> |         if (len < 0 || len >= buf->rem)
-> |                 xtables_error(RESOURCE_PROBLEM, "OOM");
-> 
-> Maybe it needs an extra xt_xlate_add_nospc() but it should eliminate the
-> majority of the "whitespace here or there or not at all" fiddling all over the
-> code. WDYT?
+Alternative approach to my previous dump and restore support of xt
+compat expressions:
 
-I think its a good idea.
+If translation is not available or not successful, fall back to a
+format which allows to be parsed easily.
+
+When parsing, reject these expressions explicitly with a meaningful
+error message.
+
+Phil Sutter (4):
+  xt: Delay libxtables access until translation
+  xt: Purify enum nft_xt_type
+  xt: Rewrite unsupported compat expression dumping
+  xt: Fall back to generic printing from translation
+
+ doc/libnftables-json.adoc |  18 +++-
+ doc/statements.txt        |  17 ++++
+ include/json.h            |   2 +
+ include/parser.h          |   1 +
+ include/statement.h       |  11 +-
+ src/json.c                |  19 ++--
+ src/parser_bison.y        |  18 ++++
+ src/parser_json.c         |   5 +
+ src/scanner.l             |   3 +
+ src/statement.c           |   1 +
+ src/xt.c                  | 207 +++++++++++++++-----------------------
+ 11 files changed, 163 insertions(+), 139 deletions(-)
+
+-- 
+2.38.0
+
