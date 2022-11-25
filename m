@@ -2,42 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F18638E17
-	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Nov 2022 17:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B53D638E19
+	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Nov 2022 17:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbiKYQMq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 25 Nov 2022 11:12:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
+        id S229777AbiKYQMy (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 25 Nov 2022 11:12:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbiKYQMn (ORCPT
+        with ESMTP id S229748AbiKYQMw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 25 Nov 2022 11:12:43 -0500
+        Fri, 25 Nov 2022 11:12:52 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FCF10FCD
-        for <netfilter-devel@vger.kernel.org>; Fri, 25 Nov 2022 08:12:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13F911C3C
+        for <netfilter-devel@vger.kernel.org>; Fri, 25 Nov 2022 08:12:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=EBPb/QQ01VPtimA179jFso+bc4iqGLMMXAxVi6owxt4=; b=VoqI558YNoABrCl55/z+oH6zq7
-        23MF72JOKHSc3uE7IoUU3JikwjyvFND8khGEI+wN0Y7NupwvFHk7rDTn387a5cfjRZ+5aL6Uyk9c9
-        eXftnZEy+kRS3975TL29S1T6w4snr0gG+yc21cNhA7ev9SE50lXxu5zKeYOKA5oRemfMXOWlSJoRa
-        juBvNU4HljvsJ6M5XqE4I1ajqpbXZv59WN0tzCZkhgEvsbrnITYU506GE3EEO9mZL56FSveYksvmH
-        GZnsGrwrdjIaMXSDfzibnWg9IepczO6NC3A4gfQuLFrygJJU4GkjVmS4VFiHz4zuCMjSTyW55hWTo
-        X3K/go4w==;
+        bh=5b4XT65QpOUrOI5PgSgC3L49LtQS/mQU8Ns6KVzCdLM=; b=lKdlUeCLBwi8jmSm69Tof7tzcr
+        U/hIgltBCy/tCIe+jG1a1DasNHDP0cxtAqDi1Hz6QmtXj4NuEUrHe8hcMVScFRoZUDpsfqyL96sBo
+        +UK/leUUdnvthuviYymhPI7pJBrkpy1MWRnpFQ+O7Nwjr52mr0T9H0TviLp5DTJaRbmVA3vDY1vN2
+        ElWk2MlIRRfjAV9XRwBAGfsf9+0YXGikZWiSfxC4wEvRBVaM2R8hL8XmtuTunJH6lMD78MIZdH6i/
+        3XDgO/T7dWpBZa41bwendVGpghhvAdRwHywtEBbxOtsIDmrmXeBPDHvvt6S8TNh6pnb0xeGyc9bvT
+        j+wMDyyg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1oybJe-0006Z0-Gj; Fri, 25 Nov 2022 17:12:38 +0100
+        id 1oybJp-0006ZS-3J; Fri, 25 Nov 2022 17:12:49 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [iptables PATCH 1/4] libxtables: xt_xlate_add() to take care of spacing
-Date:   Fri, 25 Nov 2022 17:12:26 +0100
-Message-Id: <20221125161229.18406-1-phil@nwl.cc>
+Subject: [iptables PATCH 2/4] extensions: Leverage xlate auto-spacing
+Date:   Fri, 25 Nov 2022 17:12:27 +0100
+Message-Id: <20221125161229.18406-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
+In-Reply-To: <20221125161229.18406-1-phil@nwl.cc>
+References: <20221125161229.18406-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -49,233 +51,482 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Try to eliminate most of the whitespace issues by separating strings
-from separate xt_xlate_add() calls by whitespace if needed.
-
-Cover the common case of consecutive range, list or MAC/IP address
-printing by inserting whitespace only if the string to be appended
-starts with an alphanumeric character or a brace. The latter helps to
-make spacing in anonymous sets consistent.
-
-Provide *_nospc() variants which disable the auto-spacing for the
-mandatory exception to the rule.
-
-Make things round by dropping any trailing whitespace before returning
-the buffer via xt_xlate_get().
+Drop code which is used explicitly to deal with spacing.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libxt_dccp.txlate      |  2 +-
- extensions/libxt_hashlimit.c      |  2 +-
- extensions/libxt_hashlimit.txlate |  4 +--
- extensions/libxt_multiport.txlate |  2 +-
- extensions/libxt_tcp.c            |  7 ++--
- extensions/libxt_time.txlate      |  6 ++--
- include/xtables.h                 |  3 ++
- libxtables/xtables.c              | 58 +++++++++++++++++++++++++++----
- 8 files changed, 66 insertions(+), 18 deletions(-)
+ extensions/libip6t_frag.c    | 28 +++++++++++-----------------
+ extensions/libip6t_rt.c      |  7 ++-----
+ extensions/libxt_dccp.c      | 11 ++---------
+ extensions/libxt_devgroup.c  |  4 +---
+ extensions/libxt_iprange.c   | 12 +++---------
+ extensions/libxt_sctp.c      | 32 +++++++++++++-------------------
+ extensions/libxt_tcp.c       | 15 +++++----------
+ extensions/libxt_time.txlate |  6 +++---
+ extensions/libxt_udp.c       |  6 ++----
+ iptables/nft-bridge.c        |  3 ---
+ iptables/xtables-translate.c |  5 -----
+ 11 files changed, 42 insertions(+), 87 deletions(-)
 
-diff --git a/extensions/libxt_dccp.txlate b/extensions/libxt_dccp.txlate
-index ea853f6acf627..be950bcb6dbda 100644
---- a/extensions/libxt_dccp.txlate
-+++ b/extensions/libxt_dccp.txlate
-@@ -14,7 +14,7 @@ iptables-translate -A INPUT -p dccp -m dccp --dccp-types INVALID
- nft add rule ip filter INPUT dccp type 10-15 counter
+diff --git a/extensions/libip6t_frag.c b/extensions/libip6t_frag.c
+index 72a43153c53dc..49c787e709a9e 100644
+--- a/extensions/libip6t_frag.c
++++ b/extensions/libip6t_frag.c
+@@ -178,7 +178,6 @@ static int frag_xlate(struct xt_xlate *xl,
+ {
+ 	const struct ip6t_frag *fraginfo =
+ 		(struct ip6t_frag *)params->match->data;
+-	char *space= "";
  
- iptables-translate -A INPUT -p dccp -m dccp --dport 100 --dccp-types REQUEST,RESPONSE,DATA,ACK,DATAACK,CLOSEREQ,CLOSE,SYNC,SYNCACK,INVALID
--nft add rule ip filter INPUT dccp dport 100 dccp type {request, response, data, ack, dataack, closereq, close, sync, syncack, 10-15} counter
-+nft add rule ip filter INPUT dccp dport 100 dccp type { request, response, data, ack, dataack, closereq, close, sync, syncack, 10-15 } counter
+ 	if (!(fraginfo->ids[0] == 0 && fraginfo->ids[1] == 0xFFFFFFFF)) {
+ 		xt_xlate_add(xl, "frag id %s",
+@@ -190,26 +189,21 @@ static int frag_xlate(struct xt_xlate *xl,
+ 		else
+ 			xt_xlate_add(xl, "%u", fraginfo->ids[0]);
  
- iptables-translate -A INPUT -p dccp -m dccp --sport 200 --dport 100
- nft add rule ip filter INPUT dccp sport 200 dccp dport 100 counter
-diff --git a/extensions/libxt_hashlimit.c b/extensions/libxt_hashlimit.c
-index 93ee1c32e54c3..24e784ab1ab10 100644
---- a/extensions/libxt_hashlimit.c
-+++ b/extensions/libxt_hashlimit.c
-@@ -1270,7 +1270,7 @@ static void hashlimit_print_subnet_xlate(struct xt_xlate *xl,
- 			}
- 		}
- 
--		xt_xlate_add(xl, fmt, acm);
-+		xt_xlate_add_nospc(xl, fmt, acm);
- 		if (nblocks > 0)
- 			xt_xlate_add(xl, "%c", sep);
+-		space = " ";
  	}
-diff --git a/extensions/libxt_hashlimit.txlate b/extensions/libxt_hashlimit.txlate
-index 6c8d07f113d26..251a30d371db4 100644
---- a/extensions/libxt_hashlimit.txlate
-+++ b/extensions/libxt_hashlimit.txlate
-@@ -1,5 +1,5 @@
- iptables-translate -A OUTPUT -m tcp -p tcp --dport 443 -m hashlimit --hashlimit-above 20kb/s --hashlimit-burst 1mb --hashlimit-mode dstip --hashlimit-name https --hashlimit-dstmask 24 -m state --state NEW -j DROP
--nft add rule ip filter OUTPUT tcp dport 443 meter https { ip daddr and 255.255.255.0 timeout 60s limit rate over 20 kbytes/second burst 1 mbytes} ct state new  counter drop
-+nft add rule ip filter OUTPUT tcp dport 443 meter https { ip daddr and 255.255.255.0 timeout 60s limit rate over 20 kbytes/second burst 1 mbytes } ct state new  counter drop
  
- iptables-translate -A OUTPUT -m tcp -p tcp --dport 443 -m hashlimit --hashlimit-upto 300 --hashlimit-burst 15 --hashlimit-mode srcip,dstip --hashlimit-name https --hashlimit-htable-expire 300000 -m state --state NEW -j DROP
--nft add rule ip filter OUTPUT tcp dport 443 meter https { ip daddr . ip saddr timeout 300s limit rate 300/second burst 15 packets} ct state new  counter drop
-+nft add rule ip filter OUTPUT tcp dport 443 meter https { ip daddr . ip saddr timeout 300s limit rate 300/second burst 15 packets } ct state new  counter drop
-diff --git a/extensions/libxt_multiport.txlate b/extensions/libxt_multiport.txlate
-index bced1b84c447e..bf0152650d79e 100644
---- a/extensions/libxt_multiport.txlate
-+++ b/extensions/libxt_multiport.txlate
-@@ -1,5 +1,5 @@
- iptables-translate -t filter -A INPUT -p tcp -m multiport --dports 80,81 -j ACCEPT
--nft add rule ip filter INPUT ip protocol tcp tcp dport { 80,81} counter accept
-+nft add rule ip filter INPUT ip protocol tcp tcp dport { 80,81 } counter accept
+ 	/* ignore ineffective IP6T_FRAG_LEN bit */
  
- iptables-translate -t filter -A INPUT -p tcp -m multiport --dports 80:88 -j ACCEPT
- nft add rule ip filter INPUT ip protocol tcp tcp dport 80-88 counter accept
+-	if (fraginfo->flags & IP6T_FRAG_RES) {
+-		xt_xlate_add(xl, "%sfrag reserved 1", space);
+-		space = " ";
+-	}
+-	if (fraginfo->flags & IP6T_FRAG_FST) {
+-		xt_xlate_add(xl, "%sfrag frag-off 0", space);
+-		space = " ";
+-	}
+-	if (fraginfo->flags & IP6T_FRAG_MF) {
+-		xt_xlate_add(xl, "%sfrag more-fragments 1", space);
+-		space = " ";
+-	}
+-	if (fraginfo->flags & IP6T_FRAG_NMF) {
+-		xt_xlate_add(xl, "%sfrag more-fragments 0", space);
+-	}
++	if (fraginfo->flags & IP6T_FRAG_RES)
++		xt_xlate_add(xl, "frag reserved 1");
++
++	if (fraginfo->flags & IP6T_FRAG_FST)
++		xt_xlate_add(xl, "frag frag-off 0");
++
++	if (fraginfo->flags & IP6T_FRAG_MF)
++		xt_xlate_add(xl, "frag more-fragments 1");
++
++	if (fraginfo->flags & IP6T_FRAG_NMF)
++		xt_xlate_add(xl, "frag more-fragments 0");
+ 
+ 	return 1;
+ }
+diff --git a/extensions/libip6t_rt.c b/extensions/libip6t_rt.c
+index 9708b5a0c42f3..d5b0458bb397e 100644
+--- a/extensions/libip6t_rt.c
++++ b/extensions/libip6t_rt.c
+@@ -248,17 +248,15 @@ static int rt_xlate(struct xt_xlate *xl,
+ 		    const struct xt_xlate_mt_params *params)
+ {
+ 	const struct ip6t_rt *rtinfo = (struct ip6t_rt *)params->match->data;
+-	char *space = "";
+ 
+ 	if (rtinfo->flags & IP6T_RT_TYP) {
+ 		xt_xlate_add(xl, "rt type%s %u",
+ 			     (rtinfo->invflags & IP6T_RT_INV_TYP) ? " !=" : "",
+ 			      rtinfo->rt_type);
+-		space = " ";
+ 	}
+ 
+ 	if (!(rtinfo->segsleft[0] == 0 && rtinfo->segsleft[1] == 0xFFFFFFFF)) {
+-		xt_xlate_add(xl, "%srt seg-left%s ", space,
++		xt_xlate_add(xl, "rt seg-left%s ",
+ 			     (rtinfo->invflags & IP6T_RT_INV_SGS) ? " !=" : "");
+ 
+ 		if (rtinfo->segsleft[0] != rtinfo->segsleft[1])
+@@ -266,11 +264,10 @@ static int rt_xlate(struct xt_xlate *xl,
+ 					rtinfo->segsleft[1]);
+ 		else
+ 			xt_xlate_add(xl, "%u", rtinfo->segsleft[0]);
+-		space = " ";
+ 	}
+ 
+ 	if (rtinfo->flags & IP6T_RT_LEN) {
+-		xt_xlate_add(xl, "%srt hdrlength%s %u", space,
++		xt_xlate_add(xl, "rt hdrlength%s %u",
+ 			     (rtinfo->invflags & IP6T_RT_INV_LEN) ? " !=" : "",
+ 			      rtinfo->hdrlen);
+ 	}
+diff --git a/extensions/libxt_dccp.c b/extensions/libxt_dccp.c
+index abd420fcc0032..bfceced3f79de 100644
+--- a/extensions/libxt_dccp.c
++++ b/extensions/libxt_dccp.c
+@@ -343,7 +343,6 @@ static int dccp_xlate(struct xt_xlate *xl,
+ {
+ 	const struct xt_dccp_info *einfo =
+ 		(const struct xt_dccp_info *)params->match->data;
+-	char *space = "";
+ 	int ret = 1;
+ 
+ 	if (einfo->flags & XT_DCCP_SRC_PORTS) {
+@@ -353,27 +352,21 @@ static int dccp_xlate(struct xt_xlate *xl,
+ 
+ 		if (einfo->spts[0] != einfo->spts[1])
+ 			xt_xlate_add(xl, "-%u", einfo->spts[1]);
+-
+-		space = " ";
+ 	}
+ 
+ 	if (einfo->flags & XT_DCCP_DEST_PORTS) {
+-		xt_xlate_add(xl, "%sdccp dport%s %u", space,
++		xt_xlate_add(xl, "dccp dport%s %u",
+ 			     einfo->invflags & XT_DCCP_DEST_PORTS ? " !=" : "",
+ 			     einfo->dpts[0]);
+ 
+ 		if (einfo->dpts[0] != einfo->dpts[1])
+ 			xt_xlate_add(xl, "-%u", einfo->dpts[1]);
+-
+-		space = " ";
+ 	}
+ 
+ 	if (einfo->flags & XT_DCCP_TYPE && einfo->typemask) {
+-		xt_xlate_add(xl, "%sdccp type%s ", space,
++		xt_xlate_add(xl, "dccp type%s ",
+ 			     einfo->invflags & XT_DCCP_TYPE ? " !=" : "");
+ 		ret = dccp_type_xlate(einfo, xl);
+-
+-		space = " ";
+ 	}
+ 
+ 	/* FIXME: no dccp option support in nftables yet */
+diff --git a/extensions/libxt_devgroup.c b/extensions/libxt_devgroup.c
+index a88211c5090d8..f60526ffded98 100644
+--- a/extensions/libxt_devgroup.c
++++ b/extensions/libxt_devgroup.c
+@@ -129,7 +129,6 @@ static void devgroup_show_xlate(const struct xt_devgroup_info *info,
+ 				struct xt_xlate *xl, int numeric)
+ {
+ 	enum xt_op op = XT_OP_EQ;
+-	char *space = "";
+ 
+ 	if (info->flags & XT_DEVGROUP_MATCH_SRC) {
+ 		if (info->flags & XT_DEVGROUP_INVERT_SRC)
+@@ -137,13 +136,12 @@ static void devgroup_show_xlate(const struct xt_devgroup_info *info,
+ 		xt_xlate_add(xl, "iifgroup ");
+ 		print_devgroup_xlate(info->src_group, op,
+ 				     info->src_mask, xl, numeric);
+-		space = " ";
+ 	}
+ 
+ 	if (info->flags & XT_DEVGROUP_MATCH_DST) {
+ 		if (info->flags & XT_DEVGROUP_INVERT_DST)
+ 			op = XT_OP_NEQ;
+-		xt_xlate_add(xl, "%soifgroup ", space);
++		xt_xlate_add(xl, "oifgroup ");
+ 		print_devgroup_xlate(info->dst_group, op,
+ 				     info->dst_mask, xl, numeric);
+ 	}
+diff --git a/extensions/libxt_iprange.c b/extensions/libxt_iprange.c
+index 04ce7b364f1c6..0df709d5462f1 100644
+--- a/extensions/libxt_iprange.c
++++ b/extensions/libxt_iprange.c
+@@ -317,16 +317,14 @@ static int iprange_xlate(struct xt_xlate *xl,
+ 			 const struct xt_xlate_mt_params *params)
+ {
+ 	const struct ipt_iprange_info *info = (const void *)params->match->data;
+-	char *space = "";
+ 
+ 	if (info->flags & IPRANGE_SRC) {
+ 		xt_xlate_add(xl, "ip saddr%s",
+ 			     info->flags & IPRANGE_SRC_INV ? " !=" : "");
+ 		print_iprange_xlate(&info->src, xl);
+-		space = " ";
+ 	}
+ 	if (info->flags & IPRANGE_DST) {
+-		xt_xlate_add(xl, "%sip daddr%s", space,
++		xt_xlate_add(xl, "ip daddr%s",
+ 			     info->flags & IPRANGE_DST_INV ? " !=" : "");
+ 		print_iprange_xlate(&info->dst, xl);
+ 	}
+@@ -339,7 +337,6 @@ static int iprange_mt4_xlate(struct xt_xlate *xl,
+ {
+ 	const struct xt_iprange_mtinfo *info =
+ 		(const void *)params->match->data;
+-	char *space = "";
+ 
+ 	if (info->flags & IPRANGE_SRC) {
+ 		xt_xlate_add(xl, "ip saddr%s %s",
+@@ -347,10 +344,9 @@ static int iprange_mt4_xlate(struct xt_xlate *xl,
+ 			     xtables_ipaddr_to_numeric(&info->src_min.in));
+ 		xt_xlate_add(xl, "-%s",
+ 			     xtables_ipaddr_to_numeric(&info->src_max.in));
+-		space = " ";
+ 	}
+ 	if (info->flags & IPRANGE_DST) {
+-		xt_xlate_add(xl, "%sip daddr%s %s", space,
++		xt_xlate_add(xl, "ip daddr%s %s",
+ 			     info->flags & IPRANGE_DST_INV ? " !=" : "",
+ 			     xtables_ipaddr_to_numeric(&info->dst_min.in));
+ 		xt_xlate_add(xl, "-%s",
+@@ -365,7 +361,6 @@ static int iprange_mt6_xlate(struct xt_xlate *xl,
+ {
+ 	const struct xt_iprange_mtinfo *info =
+ 		(const void *)params->match->data;
+-	char *space = "";
+ 
+ 	if (info->flags & IPRANGE_SRC) {
+ 		xt_xlate_add(xl, "ip6 saddr%s %s",
+@@ -373,10 +368,9 @@ static int iprange_mt6_xlate(struct xt_xlate *xl,
+ 			     xtables_ip6addr_to_numeric(&info->src_min.in6));
+ 		xt_xlate_add(xl, "-%s",
+ 			     xtables_ip6addr_to_numeric(&info->src_max.in6));
+-		space = " ";
+ 	}
+ 	if (info->flags & IPRANGE_DST) {
+-		xt_xlate_add(xl, "%sip6 daddr%s %s", space,
++		xt_xlate_add(xl, "ip6 daddr%s %s",
+ 			     info->flags & IPRANGE_DST_INV ? " !=" : "",
+ 			     xtables_ip6addr_to_numeric(&info->dst_min.in6));
+ 		xt_xlate_add(xl, "-%s",
+diff --git a/extensions/libxt_sctp.c b/extensions/libxt_sctp.c
+index 8f069a43e7b71..fe5f5621a033d 100644
+--- a/extensions/libxt_sctp.c
++++ b/extensions/libxt_sctp.c
+@@ -489,24 +489,24 @@ static void sctp_save(const void *ip, const struct xt_entry_match *match)
+ 	}
+ }
+ 
+-static const char *sctp_xlate_chunk(struct xt_xlate *xl, const char *space,
+-				    const struct xt_sctp_info *einfo,
+-				    const struct sctp_chunk_names *scn)
++static void sctp_xlate_chunk(struct xt_xlate *xl,
++			     const struct xt_sctp_info *einfo,
++			     const struct sctp_chunk_names *scn)
+ {
+ 	bool inv = einfo->invflags & XT_SCTP_CHUNK_TYPES;
+ 	const struct xt_sctp_flag_info *flag_info = NULL;
+ 	int i;
+ 
+ 	if (!scn->nftname)
+-		return space;
++		return;
+ 
+ 	if (!SCTP_CHUNKMAP_IS_SET(einfo->chunkmap, scn->chunk_type)) {
+ 		if (einfo->chunk_match_type != SCTP_CHUNK_MATCH_ONLY)
+-			return space;
++			return;
+ 
+-		xt_xlate_add(xl, "%ssctp chunk %s %s", space,
++		xt_xlate_add(xl, "sctp chunk %s %s",
+ 			     scn->nftname, inv ? "exists" : "missing");
+-		return " ";
++		return;
+ 	}
+ 
+ 	for (i = 0; i < einfo->flag_count; i++) {
+@@ -517,16 +517,14 @@ static const char *sctp_xlate_chunk(struct xt_xlate *xl, const char *space,
+ 	}
+ 
+ 	if (!flag_info) {
+-		xt_xlate_add(xl, "%ssctp chunk %s %s", space,
++		xt_xlate_add(xl, "sctp chunk %s %s",
+ 			     scn->nftname, inv ? "missing" : "exists");
+-		return " ";
++		return;
+ 	}
+ 
+-	xt_xlate_add(xl, "%ssctp chunk %s flags & 0x%x %s 0x%x", space,
++	xt_xlate_add(xl, "sctp chunk %s flags & 0x%x %s 0x%x",
+ 		     scn->nftname, flag_info->flag_mask,
+ 		     inv ? "!=" : "==", flag_info->flag);
+-
+-	return " ";
+ }
+ 
+ static int sctp_xlate(struct xt_xlate *xl,
+@@ -534,7 +532,6 @@ static int sctp_xlate(struct xt_xlate *xl,
+ {
+ 	const struct xt_sctp_info *einfo =
+ 		(const struct xt_sctp_info *)params->match->data;
+-	const char *space = "";
+ 
+ 	if (!einfo->flags)
+ 		return 0;
+@@ -548,19 +545,17 @@ static int sctp_xlate(struct xt_xlate *xl,
+ 			xt_xlate_add(xl, "sctp sport%s %u",
+ 				     einfo->invflags & XT_SCTP_SRC_PORTS ? " !=" : "",
+ 				     einfo->spts[0]);
+-		space = " ";
+ 	}
+ 
+ 	if (einfo->flags & XT_SCTP_DEST_PORTS) {
+ 		if (einfo->dpts[0] != einfo->dpts[1])
+-			xt_xlate_add(xl, "%ssctp dport%s %u-%u", space,
++			xt_xlate_add(xl, "sctp dport%s %u-%u",
+ 				     einfo->invflags & XT_SCTP_DEST_PORTS ? " !=" : "",
+ 				     einfo->dpts[0], einfo->dpts[1]);
+ 		else
+-			xt_xlate_add(xl, "%ssctp dport%s %u", space,
++			xt_xlate_add(xl, "sctp dport%s %u",
+ 				     einfo->invflags & XT_SCTP_DEST_PORTS ? " !=" : "",
+ 				     einfo->dpts[0]);
+-		space = " ";
+ 	}
+ 
+ 	if (einfo->flags & XT_SCTP_CHUNK_TYPES) {
+@@ -570,8 +565,7 @@ static int sctp_xlate(struct xt_xlate *xl,
+ 			return 0;
+ 
+ 		for (i = 0; i < ARRAY_SIZE(sctp_chunk_names); i++)
+-			space = sctp_xlate_chunk(xl, space, einfo,
+-						 &sctp_chunk_names[i]);
++			sctp_xlate_chunk(xl, einfo, &sctp_chunk_names[i]);
+ 	}
+ 
+ 	return 1;
 diff --git a/extensions/libxt_tcp.c b/extensions/libxt_tcp.c
-index 043382d47b8ba..2ef842990a4e8 100644
+index 2ef842990a4e8..f82572828649b 100644
 --- a/extensions/libxt_tcp.c
 +++ b/extensions/libxt_tcp.c
-@@ -380,10 +380,9 @@ static void print_tcp_xlate(struct xt_xlate *xl, uint8_t flags)
+@@ -397,7 +397,6 @@ static int tcp_xlate(struct xt_xlate *xl,
+ {
+ 	const struct xt_tcp *tcpinfo =
+ 		(const struct xt_tcp *)params->match->data;
+-	char *space= "";
  
- 		for (i = 0; (flags & tcp_flag_names_xlate[i].flag) == 0; i++);
+ 	if (tcpinfo->spts[0] != 0 || tcpinfo->spts[1] != 0xffff) {
+ 		if (tcpinfo->spts[0] != tcpinfo->spts[1]) {
+@@ -411,33 +410,29 @@ static int tcp_xlate(struct xt_xlate *xl,
+ 					"!= " : "",
+ 				   tcpinfo->spts[0]);
+ 		}
+-		space = " ";
+ 	}
  
--		if (have_flag)
--			xt_xlate_add(xl, ",");
--
--		xt_xlate_add(xl, "%s", tcp_flag_names_xlate[i].name);
-+		xt_xlate_add(xl, "%s%s",
-+			     have_flag ? "," : "",
-+			     tcp_flag_names_xlate[i].name);
- 		have_flag = 1;
+ 	if (tcpinfo->dpts[0] != 0 || tcpinfo->dpts[1] != 0xffff) {
+ 		if (tcpinfo->dpts[0] != tcpinfo->dpts[1]) {
+-			xt_xlate_add(xl, "%stcp dport %s%u-%u", space,
++			xt_xlate_add(xl, "tcp dport %s%u-%u",
+ 				   tcpinfo->invflags & XT_TCP_INV_DSTPT ?
+ 					"!= " : "",
+ 				   tcpinfo->dpts[0], tcpinfo->dpts[1]);
+ 		} else {
+-			xt_xlate_add(xl, "%stcp dport %s%u", space,
++			xt_xlate_add(xl, "tcp dport %s%u",
+ 				   tcpinfo->invflags & XT_TCP_INV_DSTPT ?
+ 					"!= " : "",
+ 				   tcpinfo->dpts[0]);
+ 		}
+-		space = " ";
+ 	}
  
- 		flags &= ~tcp_flag_names_xlate[i].flag;
+-	if (tcpinfo->option) {
+-		xt_xlate_add(xl, "%stcp option %u %s", space, tcpinfo->option,
++	if (tcpinfo->option)
++		xt_xlate_add(xl, "tcp option %u %s", tcpinfo->option,
+ 			     tcpinfo->invflags & XT_TCP_INV_OPTION ?
+ 			     "missing" : "exists");
+-		space = " ";
+-	}
+ 
+ 	if (tcpinfo->flg_mask || (tcpinfo->invflags & XT_TCP_INV_FLAGS)) {
+-		xt_xlate_add(xl, "%stcp flags %s", space,
++		xt_xlate_add(xl, "tcp flags %s",
+ 			     tcpinfo->invflags & XT_TCP_INV_FLAGS ? "!= ": "");
+ 		print_tcp_xlate(xl, tcpinfo->flg_cmp);
+ 		xt_xlate_add(xl, " / ");
 diff --git a/extensions/libxt_time.txlate b/extensions/libxt_time.txlate
-index ff4a7b88a8742..2083ab94f4c24 100644
+index 2083ab94f4c24..6aea2aed5fa22 100644
 --- a/extensions/libxt_time.txlate
 +++ b/extensions/libxt_time.txlate
-@@ -1,5 +1,5 @@
+@@ -1,11 +1,11 @@
  iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --weekdays Sa,Su -j REJECT
--nft add rule ip filter INPUT icmp type echo-request  meta day {6,0} counter reject
-+nft add rule ip filter INPUT icmp type echo-request  meta day { 6,0 } counter reject
+-nft add rule ip filter INPUT icmp type echo-request  meta day { 6,0 } counter reject
++nft add rule ip filter INPUT icmp type echo-request meta day { 6,0 } counter reject
  
  iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --timestart 12:00 -j REJECT
- nft add rule ip filter INPUT icmp type echo-request  meta hour "12:00:00"-"23:59:59" counter reject
-@@ -20,7 +20,7 @@ iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --datestart
- nft add rule ip filter INPUT icmp type echo-request meta time "2020-01-29 00:00:00"-"2038-01-19 03:14:07" meta hour "12:00:00"-"23:59:59" counter reject
+-nft add rule ip filter INPUT icmp type echo-request  meta hour "12:00:00"-"23:59:59" counter reject
++nft add rule ip filter INPUT icmp type echo-request meta hour "12:00:00"-"23:59:59" counter reject
  
- iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --datestart 2020-01-29T00:00:00 --timestart 12:00 --timestop 19:00 --weekdays Mon,Tue,Wed,Thu,Fri -j REJECT
--nft add rule ip filter INPUT icmp type echo-request meta time "2020-01-29 00:00:00"-"2038-01-19 03:14:07" meta hour "12:00:00"-"19:00:00" meta day {1,2,3,4,5} counter reject
-+nft add rule ip filter INPUT icmp type echo-request meta time "2020-01-29 00:00:00"-"2038-01-19 03:14:07" meta hour "12:00:00"-"19:00:00" meta day { 1,2,3,4,5 } counter reject
+ iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --timestop 12:00 -j REJECT
+-nft add rule ip filter INPUT icmp type echo-request  meta hour "00:00:00"-"12:00:00" counter reject
++nft add rule ip filter INPUT icmp type echo-request meta hour "00:00:00"-"12:00:00" counter reject
  
- iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --datestart 2020-01-29T00:00:00 --timestart 12:00 --timestop 19:00 ! --weekdays Mon,Tue,Wed,Thu,Fri -j REJECT
--nft add rule ip filter INPUT icmp type echo-request meta time "2020-01-29 00:00:00"-"2038-01-19 03:14:07" meta hour "12:00:00"-"19:00:00" meta day {6,0} counter reject
-+nft add rule ip filter INPUT icmp type echo-request meta time "2020-01-29 00:00:00"-"2038-01-19 03:14:07" meta hour "12:00:00"-"19:00:00" meta day { 6,0 } counter reject
-diff --git a/include/xtables.h b/include/xtables.h
-index 9eba4f619d351..dad1949e55370 100644
---- a/include/xtables.h
-+++ b/include/xtables.h
-@@ -621,8 +621,11 @@ extern const char *xtables_lmap_id2name(const struct xtables_lmap *, int);
- struct xt_xlate *xt_xlate_alloc(int size);
- void xt_xlate_free(struct xt_xlate *xl);
- void xt_xlate_add(struct xt_xlate *xl, const char *fmt, ...) __attribute__((format(printf,2,3)));
-+void xt_xlate_add_nospc(struct xt_xlate *xl, const char *fmt, ...) __attribute__((format(printf,2,3)));
- #define xt_xlate_rule_add xt_xlate_add
-+#define xt_xlate_rule_add_nospc xt_xlate_add_nospc
- void xt_xlate_set_add(struct xt_xlate *xl, const char *fmt, ...) __attribute__((format(printf,2,3)));
-+void xt_xlate_set_add_nospc(struct xt_xlate *xl, const char *fmt, ...) __attribute__((format(printf,2,3)));
- void xt_xlate_add_comment(struct xt_xlate *xl, const char *comment);
- const char *xt_xlate_get_comment(struct xt_xlate *xl);
- void xl_xlate_set_family(struct xt_xlate *xl, uint8_t family);
-diff --git a/libxtables/xtables.c b/libxtables/xtables.c
-index 479dbae078156..e3e444acbbaa2 100644
---- a/libxtables/xtables.c
-+++ b/libxtables/xtables.c
-@@ -2490,16 +2490,39 @@ void xt_xlate_free(struct xt_xlate *xl)
- 	free(xl);
- }
- 
-+static bool isbrace(char c)
-+{
-+	switch (c) {
-+	case '(':
-+	case ')':
-+	case '{':
-+	case '}':
-+	case '[':
-+	case ']':
-+		return true;
-+	}
-+	return false;
-+}
-+
- static void __xt_xlate_add(struct xt_xlate *xl, enum xt_xlate_type type,
--			   const char *fmt, va_list ap)
-+			   bool space, const char *fmt, va_list ap)
+ iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --datestart 2021 -j REJECT
+ nft add rule ip filter INPUT icmp type echo-request meta time "2021-01-01 00:00:00"-"2038-01-19 03:14:07" counter reject
+diff --git a/extensions/libxt_udp.c b/extensions/libxt_udp.c
+index 0c7a4bc221993..ba1c3eb768592 100644
+--- a/extensions/libxt_udp.c
++++ b/extensions/libxt_udp.c
+@@ -156,7 +156,6 @@ static int udp_xlate(struct xt_xlate *xl,
+ 		     const struct xt_xlate_mt_params *params)
  {
- 	struct xt_xlate_buf *buf = &xl->buf[type];
-+	char tmpbuf[1024] = "";
- 	int len;
+ 	const struct xt_udp *udpinfo = (struct xt_udp *)params->match->data;
+-	char *space= "";
  
--	len = vsnprintf(buf->data + buf->off, buf->rem, fmt, ap);
--	if (len < 0 || len >= buf->rem)
-+	len = vsnprintf(tmpbuf, 1024, fmt, ap);
-+	if (len < 0 || len >= buf->rem - 1)
- 		xtables_error(RESOURCE_PROBLEM, "OOM");
+ 	if (udpinfo->spts[0] != 0 || udpinfo->spts[1] != 0xFFFF) {
+ 		if (udpinfo->spts[0] != udpinfo->spts[1]) {
+@@ -170,17 +169,16 @@ static int udp_xlate(struct xt_xlate *xl,
+ 					 "!= ": "",
+ 				   udpinfo->spts[0]);
+ 		}
+-		space = " ";
+ 	}
  
-+	if (space && buf->off &&
-+	    !isspace(buf->data[buf->off - 1]) &&
-+	    (isalnum(tmpbuf[0]) || isbrace(tmpbuf[0]))) {
-+		buf->data[buf->off] = ' ';
-+		buf->off++;
-+		buf->rem--;
-+	}
-+	sprintf(buf->data + buf->off, "%s", tmpbuf);
- 	buf->rem -= len;
- 	buf->off += len;
- }
-@@ -2509,7 +2532,16 @@ void xt_xlate_rule_add(struct xt_xlate *xl, const char *fmt, ...)
- 	va_list ap;
- 
- 	va_start(ap, fmt);
--	__xt_xlate_add(xl, XT_XLATE_RULE, fmt, ap);
-+	__xt_xlate_add(xl, XT_XLATE_RULE, true, fmt, ap);
-+	va_end(ap);
-+}
-+
-+void xt_xlate_rule_add_nospc(struct xt_xlate *xl, const char *fmt, ...)
-+{
-+	va_list ap;
-+
-+	va_start(ap, fmt);
-+	__xt_xlate_add(xl, XT_XLATE_RULE, false, fmt, ap);
- 	va_end(ap);
- }
- 
-@@ -2518,7 +2550,16 @@ void xt_xlate_set_add(struct xt_xlate *xl, const char *fmt, ...)
- 	va_list ap;
- 
- 	va_start(ap, fmt);
--	__xt_xlate_add(xl, XT_XLATE_SET, fmt, ap);
-+	__xt_xlate_add(xl, XT_XLATE_SET, true, fmt, ap);
-+	va_end(ap);
-+}
-+
-+void xt_xlate_set_add_nospc(struct xt_xlate *xl, const char *fmt, ...)
-+{
-+	va_list ap;
-+
-+	va_start(ap, fmt);
-+	__xt_xlate_add(xl, XT_XLATE_SET, false, fmt, ap);
- 	va_end(ap);
+ 	if (udpinfo->dpts[0] != 0 || udpinfo->dpts[1] != 0xFFFF) {
+ 		if (udpinfo->dpts[0]  != udpinfo->dpts[1]) {
+-			xt_xlate_add(xl,"%sudp dport %s%u-%u", space,
++			xt_xlate_add(xl,"udp dport %s%u-%u",
+ 				   udpinfo->invflags & XT_UDP_INV_SRCPT ?
+ 					 "!= ": "",
+ 				   udpinfo->dpts[0], udpinfo->dpts[1]);
+ 		} else {
+-			xt_xlate_add(xl,"%sudp dport %s%u", space,
++			xt_xlate_add(xl,"udp dport %s%u",
+ 				   udpinfo->invflags & XT_UDP_INV_SRCPT ?
+ 					 "!= ": "",
+ 				   udpinfo->dpts[0]);
+diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
+index 4367d072906df..3180091364fa2 100644
+--- a/iptables/nft-bridge.c
++++ b/iptables/nft-bridge.c
+@@ -830,7 +830,6 @@ static int xlate_ebaction(const struct iptables_command_state *cs, struct xt_xla
+ 		else if (strcmp(cs->jumpto, XTC_LABEL_RETURN) == 0)
+ 			xt_xlate_add(xl, " return");
+ 		else if (cs->target->xlate) {
+-			xt_xlate_add(xl, " ");
+ 			struct xt_xlate_tg_params params = {
+ 				.ip		= (const void *)&cs->eb,
+ 				.target		= cs->target->t,
+@@ -876,8 +875,6 @@ static void nft_bridge_xlate_mac(struct xt_xlate *xl, const char *type, bool inv
+ 		for (i=1; i < ETH_ALEN; i++)
+ 			xt_xlate_add(xl, ":%02x", mac[i] & mask[i]);
+ 	}
+-
+-	xt_xlate_add(xl, " ");
  }
  
-@@ -2545,7 +2586,12 @@ uint8_t xt_xlate_get_family(struct xt_xlate *xl)
+ static int nft_bridge_xlate(const struct iptables_command_state *cs,
+diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
+index d1e87f167df74..4e8db4bedff88 100644
+--- a/iptables/xtables-translate.c
++++ b/iptables/xtables-translate.c
+@@ -83,7 +83,6 @@ int xlate_action(const struct iptables_command_state *cs, bool goto_set,
+ 		else if (strcmp(cs->jumpto, XTC_LABEL_RETURN) == 0)
+ 			xt_xlate_add(xl, " return");
+ 		else if (cs->target->xlate) {
+-			xt_xlate_add(xl, " ");
+ 			struct xt_xlate_tg_params params = {
+ 				.ip		= (const void *)&cs->fw,
+ 				.target		= cs->target->t,
+@@ -122,10 +121,6 @@ int xlate_matches(const struct iptables_command_state *cs, struct xt_xlate *xl)
+ 			return 0;
  
- const char *xt_xlate_get(struct xt_xlate *xl)
- {
--	return xl->buf[XT_XLATE_RULE].data;
-+	struct xt_xlate_buf *buf = &xl->buf[XT_XLATE_RULE];
-+
-+	while (buf->off && isspace(buf->data[buf->off - 1]))
-+		buf->data[--buf->off] = '\0';
-+
-+	return buf->data;
- }
- 
- const char *xt_xlate_set_get(struct xt_xlate *xl)
+ 		ret = matchp->match->xlate(xl, &params);
+-
+-		if (strcmp(matchp->match->name, "comment") != 0)
+-			xt_xlate_add(xl, " ");
+-
+ 		if (!ret)
+ 			break;
+ 	}
 -- 
 2.38.0
 
