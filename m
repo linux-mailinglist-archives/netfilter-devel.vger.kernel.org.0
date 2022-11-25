@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF28638E1A
-	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Nov 2022 17:13:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 484B2638E18
+	for <lists+netfilter-devel@lfdr.de>; Fri, 25 Nov 2022 17:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbiKYQNB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 25 Nov 2022 11:13:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
+        id S229581AbiKYQMs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 25 Nov 2022 11:12:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbiKYQM5 (ORCPT
+        with ESMTP id S229748AbiKYQMq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 25 Nov 2022 11:12:57 -0500
+        Fri, 25 Nov 2022 11:12:46 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA1E10FCD
-        for <netfilter-devel@vger.kernel.org>; Fri, 25 Nov 2022 08:12:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6367111452
+        for <netfilter-devel@vger.kernel.org>; Fri, 25 Nov 2022 08:12:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=mEXzDIFq4evpE8gDSoP0AasEUt6Ri6VM0HojPQu4Z6g=; b=KGoUgX+hiLic/LUFPLgX/YBfiR
-        2xykOj5DJJLcOeZ0X00Tz58wTcNaZ3Ta6wwtt2jhBdDcVYgtoGgwhGjRYDtYAaWYhKFLeBBsFgRzA
-        /2I+Ds7VyuuH+HGDqcuLxxrEwP4wQ1F71OnjOvdQjmoMOc+oXFP9dk8YdroQdq8p7DvhaP1+xtmja
-        iX+7zyH8o23vfux99HCAAsBn5V4dx8lED09ey++Llh8RGHv6uEGOxHhXghM4wW3jj5bBbqFe5lQXb
-        d1jgYtvk+Qs2YTpiuLbuhxbum8zUhC90p3rVTE9uNnmHKRWHRGs+4sJPAe5LKsHDKeyVLgNj9B4F+
-        AWVaXjeg==;
+        bh=hwEYK8xl+2l9KsBsKOkVcZH7k/Rvwltq8weXgq03nnI=; b=CcwU4KsyFxfuEXtiABHWXtwfNo
+        pSuLufRXkei++k+W+boN8KxyKk+Yar89WBQRG0QDX3x3dQVAyxgNTL+fPHZbjgx+Q/iawCYxWWsuP
+        8tf5OdedzB4/1n8lCOmYD3K3E28ANMEhGXNGHy4rxDC47pAWDD0cs3QM/uE7cWKFhsTBEZYuEXi9J
+        SOIhyVBnilhZffH3awMBhyNFYGRoWEbMtRw5rgn0or/W9eCRiUYXnFX3t4PUj16gxOS4ySNJQumhT
+        eDIdLEPxOODPS563QJ6vfFiIaWY3L/PP2hBVNzLxsDNBFwxWIySmdUs3C3u1Yjna8HRItKll1ofSX
+        prdVJgow==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1oybJu-0006Zw-Gj; Fri, 25 Nov 2022 17:12:54 +0100
+        id 1oybJj-0006ZC-Qj; Fri, 25 Nov 2022 17:12:43 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [iptables PATCH 3/4] extensions: libxt_conntrack: Drop extra whitespace in xlate
-Date:   Fri, 25 Nov 2022 17:12:28 +0100
-Message-Id: <20221125161229.18406-3-phil@nwl.cc>
+Subject: [iptables PATCH 4/4] extensions: xlate: Format sets consistently
+Date:   Fri, 25 Nov 2022 17:12:29 +0100
+Message-Id: <20221125161229.18406-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221125161229.18406-1-phil@nwl.cc>
 References: <20221125161229.18406-1-phil@nwl.cc>
@@ -51,49 +51,109 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-No point in having this. Interestingly, other test cases even made up
-for it.
+Print a space after separating commas.
 
-Fixes: 0afd957f6bc03 ("extensions: libxt_state: add translation to nft")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libxt_SYNPROXY.txlate  | 2 +-
- extensions/libxt_conntrack.c      | 1 -
- extensions/libxt_hashlimit.txlate | 4 ++--
- 3 files changed, 3 insertions(+), 4 deletions(-)
+ extensions/libxt_multiport.c      |  4 ++--
+ extensions/libxt_multiport.txlate |  2 +-
+ extensions/libxt_time.c           | 12 ++++--------
+ extensions/libxt_time.txlate      |  6 +++---
+ 4 files changed, 10 insertions(+), 14 deletions(-)
 
-diff --git a/extensions/libxt_SYNPROXY.txlate b/extensions/libxt_SYNPROXY.txlate
-index b3de2b2a8c9dc..a2a3b6c522fe7 100644
---- a/extensions/libxt_SYNPROXY.txlate
-+++ b/extensions/libxt_SYNPROXY.txlate
-@@ -1,2 +1,2 @@
- iptables-translate -t mangle -A INPUT -i iifname -p tcp -m tcp --dport 80 -m state --state INVALID,UNTRACKED -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss 1460
--nft add rule ip mangle INPUT iifname "iifname" tcp dport 80 ct state invalid,untracked  counter synproxy sack-perm timestamp wscale 7 mss 1460
-+nft add rule ip mangle INPUT iifname "iifname" tcp dport 80 ct state invalid,untracked counter synproxy sack-perm timestamp wscale 7 mss 1460
-diff --git a/extensions/libxt_conntrack.c b/extensions/libxt_conntrack.c
-index 08dba42db5a18..09548c297695f 100644
---- a/extensions/libxt_conntrack.c
-+++ b/extensions/libxt_conntrack.c
-@@ -1186,7 +1186,6 @@ static int state_xlate(struct xt_xlate *xl,
- 	xt_xlate_add(xl, "ct state ");
- 	state_xlate_print(xl, sinfo->state_mask,
- 			  sinfo->invert_flags & XT_CONNTRACK_STATE);
--	xt_xlate_add(xl, " ");
- 	return 1;
- }
+diff --git a/extensions/libxt_multiport.c b/extensions/libxt_multiport.c
+index 6b0c8190a1020..f3136d8a1ff56 100644
+--- a/extensions/libxt_multiport.c
++++ b/extensions/libxt_multiport.c
+@@ -497,7 +497,7 @@ static int __multiport_xlate(struct xt_xlate *xl,
+ 		xt_xlate_add(xl, "{ ");
  
-diff --git a/extensions/libxt_hashlimit.txlate b/extensions/libxt_hashlimit.txlate
-index 251a30d371db4..4cc26868e29c0 100644
---- a/extensions/libxt_hashlimit.txlate
-+++ b/extensions/libxt_hashlimit.txlate
+ 	for (i = 0; i < multiinfo->count; i++)
+-		xt_xlate_add(xl, "%s%u", i ? "," : "", multiinfo->ports[i]);
++		xt_xlate_add(xl, "%s%u", i ? ", " : "", multiinfo->ports[i]);
+ 
+ 	if (multiinfo->count > 1)
+ 		xt_xlate_add(xl, "}");
+@@ -560,7 +560,7 @@ static int __multiport_xlate_v1(struct xt_xlate *xl,
+ 		xt_xlate_add(xl, "{ ");
+ 
+ 	for (i = 0; i < multiinfo->count; i++) {
+-		xt_xlate_add(xl, "%s%u", i ? "," : "", multiinfo->ports[i]);
++		xt_xlate_add(xl, "%s%u", i ? ", " : "", multiinfo->ports[i]);
+ 		if (multiinfo->pflags[i])
+ 			xt_xlate_add(xl, "-%u", multiinfo->ports[++i]);
+ 	}
+diff --git a/extensions/libxt_multiport.txlate b/extensions/libxt_multiport.txlate
+index bf0152650d79e..4f0c9c020f865 100644
+--- a/extensions/libxt_multiport.txlate
++++ b/extensions/libxt_multiport.txlate
 @@ -1,5 +1,5 @@
- iptables-translate -A OUTPUT -m tcp -p tcp --dport 443 -m hashlimit --hashlimit-above 20kb/s --hashlimit-burst 1mb --hashlimit-mode dstip --hashlimit-name https --hashlimit-dstmask 24 -m state --state NEW -j DROP
--nft add rule ip filter OUTPUT tcp dport 443 meter https { ip daddr and 255.255.255.0 timeout 60s limit rate over 20 kbytes/second burst 1 mbytes } ct state new  counter drop
-+nft add rule ip filter OUTPUT tcp dport 443 meter https { ip daddr and 255.255.255.0 timeout 60s limit rate over 20 kbytes/second burst 1 mbytes } ct state new counter drop
+ iptables-translate -t filter -A INPUT -p tcp -m multiport --dports 80,81 -j ACCEPT
+-nft add rule ip filter INPUT ip protocol tcp tcp dport { 80,81 } counter accept
++nft add rule ip filter INPUT ip protocol tcp tcp dport { 80, 81 } counter accept
  
- iptables-translate -A OUTPUT -m tcp -p tcp --dport 443 -m hashlimit --hashlimit-upto 300 --hashlimit-burst 15 --hashlimit-mode srcip,dstip --hashlimit-name https --hashlimit-htable-expire 300000 -m state --state NEW -j DROP
--nft add rule ip filter OUTPUT tcp dport 443 meter https { ip daddr . ip saddr timeout 300s limit rate 300/second burst 15 packets } ct state new  counter drop
-+nft add rule ip filter OUTPUT tcp dport 443 meter https { ip daddr . ip saddr timeout 300s limit rate 300/second burst 15 packets } ct state new counter drop
+ iptables-translate -t filter -A INPUT -p tcp -m multiport --dports 80:88 -j ACCEPT
+ nft add rule ip filter INPUT ip protocol tcp tcp dport 80-88 counter accept
+diff --git a/extensions/libxt_time.c b/extensions/libxt_time.c
+index d27d84caf546e..580861d3a940a 100644
+--- a/extensions/libxt_time.c
++++ b/extensions/libxt_time.c
+@@ -466,9 +466,10 @@ static int time_xlate(struct xt_xlate *xl,
+ 	const struct xt_time_info *info =
+ 		(const struct xt_time_info *)params->match->data;
+ 	unsigned int h, m, s,
+-		     i, sep, mask, count;
++		     i, mask, count;
+ 	time_t tt_start, tt_stop;
+ 	struct tm *t_start, *t_stop;
++	const char *sep = "";
+ 
+ 	if (info->date_start != 0 ||
+ 	    info->date_stop != INT_MAX) {
+@@ -498,7 +499,6 @@ static int time_xlate(struct xt_xlate *xl,
+ 	if (info->monthdays_match != XT_TIME_ALL_MONTHDAYS)
+ 		return 0;
+ 	if (info->weekdays_match != XT_TIME_ALL_WEEKDAYS) {
+-		sep = 0;
+ 		mask = info->weekdays_match;
+ 		count = time_count_weekdays(mask);
+ 
+@@ -507,12 +507,8 @@ static int time_xlate(struct xt_xlate *xl,
+ 			xt_xlate_add(xl, "{");
+ 		for (i = 1; i <= 7; ++i)
+ 			if (mask & (1 << i)) {
+-				if (sep)
+-					xt_xlate_add(xl, ",%u", i%7);
+-				else {
+-					xt_xlate_add(xl, "%u", i%7);
+-					++sep;
+-				}
++				xt_xlate_add(xl, "%s%u", sep, i%7);
++				sep = ", ";
+ 			}
+ 		if (count > 1)
+ 			xt_xlate_add(xl, "}");
+diff --git a/extensions/libxt_time.txlate b/extensions/libxt_time.txlate
+index 6aea2aed5fa22..5577c6ca4cbd1 100644
+--- a/extensions/libxt_time.txlate
++++ b/extensions/libxt_time.txlate
+@@ -1,5 +1,5 @@
+ iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --weekdays Sa,Su -j REJECT
+-nft add rule ip filter INPUT icmp type echo-request meta day { 6,0 } counter reject
++nft add rule ip filter INPUT icmp type echo-request meta day { 6, 0 } counter reject
+ 
+ iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --timestart 12:00 -j REJECT
+ nft add rule ip filter INPUT icmp type echo-request meta hour "12:00:00"-"23:59:59" counter reject
+@@ -20,7 +20,7 @@ iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --datestart
+ nft add rule ip filter INPUT icmp type echo-request meta time "2020-01-29 00:00:00"-"2038-01-19 03:14:07" meta hour "12:00:00"-"23:59:59" counter reject
+ 
+ iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --datestart 2020-01-29T00:00:00 --timestart 12:00 --timestop 19:00 --weekdays Mon,Tue,Wed,Thu,Fri -j REJECT
+-nft add rule ip filter INPUT icmp type echo-request meta time "2020-01-29 00:00:00"-"2038-01-19 03:14:07" meta hour "12:00:00"-"19:00:00" meta day { 1,2,3,4,5 } counter reject
++nft add rule ip filter INPUT icmp type echo-request meta time "2020-01-29 00:00:00"-"2038-01-19 03:14:07" meta hour "12:00:00"-"19:00:00" meta day { 1, 2, 3, 4, 5 } counter reject
+ 
+ iptables-translate -A INPUT -p icmp --icmp-type echo-request -m time --datestart 2020-01-29T00:00:00 --timestart 12:00 --timestop 19:00 ! --weekdays Mon,Tue,Wed,Thu,Fri -j REJECT
+-nft add rule ip filter INPUT icmp type echo-request meta time "2020-01-29 00:00:00"-"2038-01-19 03:14:07" meta hour "12:00:00"-"19:00:00" meta day { 6,0 } counter reject
++nft add rule ip filter INPUT icmp type echo-request meta time "2020-01-29 00:00:00"-"2038-01-19 03:14:07" meta hour "12:00:00"-"19:00:00" meta day { 6, 0 } counter reject
 -- 
 2.38.0
 
