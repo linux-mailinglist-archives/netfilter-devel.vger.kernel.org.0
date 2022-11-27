@@ -2,42 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 449AF63990C
+	by mail.lfdr.de (Postfix) with ESMTP id E886663990E
 	for <lists+netfilter-devel@lfdr.de>; Sun, 27 Nov 2022 01:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbiK0AX0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 26 Nov 2022 19:23:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45386 "EHLO
+        id S229587AbiK0AXZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 26 Nov 2022 19:23:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbiK0AXY (ORCPT
+        with ESMTP id S229552AbiK0AXY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 26 Nov 2022 19:23:24 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB35DEFB
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC93DF09
         for <netfilter-devel@vger.kernel.org>; Sat, 26 Nov 2022 16:23:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=I26HNUpisAStJINeCkkSb4DWg/cFSzj5lu0PsD06s60=; b=Xgvqmt0F08eLoFt8c4ULpljs4F
-        R5jRR2L10tpoFT0Q7+tHYCLL1HM0teK7h6EXLJDzXyFivH56kpU3sjrsjy9UjuxVGQEWomsBrF+fM
-        scIZffSwjeqzMw4vhPfH029F3n/VSrWIDPMw+UpDVjw8oDc/E9lsILD1yX4aYlytvSEckXX4fbbgD
-        eEe5gXSWS2VCmL5eCeLZB9CECNKZoSI/30+YFc661XWdLsErwXCq5CNacG+ez3R8OBdKZB/U1sqOO
-        xOVXnvm2/Z7/fwfNvtV2S30TQK8/Er4XpQXFz3qVQLInr+S7W/6L2BWsOktvxvVM2LyikssL9Lnyb
-        rddOXniQ==;
+        bh=8qKGulmiuCI3T8wnDIozstdFRMeWyQn/5yHZebBv1jw=; b=q/vAXA8NksxAYHVrxc9xpjv+4u
+        tR+76XLeDNg+C3uHuDXV+qsIvWdR1KQYfv1SVCNTvd7NKUsYMwtVYLeHR+X1YO8omxm+avHiyPZer
+        xzxGmt1bOefcDh3FykIHY0MrNewZ2g2aHqmN7fyET3Mnnadx2aSh/nAWejGgjl//iJCQUdHMb7nVw
+        2TJcQrkUjiUNhxkUUH7OhvKOu9uKAwdZcI0f0fcFQ9t9uGaki3m0qwYtKZDP+CCjCDdDlCqg6zVG+
+        1nQFeC1b2BY3C58rHqRcV8Q+XzjeYd/LsFEpK620sD6QTh2lN7arALOhvINMdNQ8CnigTTNdCyisL
+        vthi+aUQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1oz5S2-00Aj1L-K6; Sun, 27 Nov 2022 00:23:18 +0000
+        id 1oz5S2-00Aj1L-Qt; Sun, 27 Nov 2022 00:23:18 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
 Cc:     Robert O'Brien <robrien@foxtrot-research.com>
-Subject: [PATCH ulogd2 0/3] IP Address Formatting Fixes
-Date:   Sun, 27 Nov 2022 00:22:57 +0000
-Message-Id: <20221127002300.191936-1-jeremy@azazel.net>
+Subject: [PATCH ulogd2 1/3] filter: IP2BIN: correct spelling of variable
+Date:   Sun, 27 Nov 2022 00:22:58 +0000
+Message-Id: <20221127002300.191936-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221127002300.191936-1-jeremy@azazel.net>
+References: <20221127002300.191936-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
@@ -52,55 +54,31 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Robert O'Brien reported a bug in the output of the source and target IP
-addresses of ARP packets using the GPRINT output plug-in and proposed a
-fix for that particular bug:
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ filter/ulogd_filter_IP2BIN.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-  https://lore.kernel.org/netfilter-devel/005601d8f532$49cd7080$dd685180$@foxtrot-research.com/
-
-It transpires that there are a number of incorrect assumptions about the
-format of IP addresses in the code-base.  In a couple of places there
-are endianness mismatches, but more commonly it is assumed that all IP
-addresses are IPv4.
-
-This series fixes a couple of things I noticed during triage, and then
-converts all addresses internally to IPv6, using IPv4-in-IPv6 format for
-IPv4 addresses, converting them back to IPv4 where necessary (e.g., on
-output).
-
-Things to note.
-
-  1. Previously IP2HBIN passed IPv6 address through unmodified.  Now it
-     ignores them altogether.
-  2. The GPRINT and OPRINT plug-ins now use `inet_ntop` to format
-     addresses and handle IPv6 address correctly.
-  3. The SQL output plug-ins, which previously output garbage for IPv6
-     addresses, now output NULL.
-
-Patch 1 fixes a misspelt variable.
-Patch 2 adds some missing int64_t support.
-Patch 3 contains the IP address changes.
-
-Jeremy Sowden (3):
-  filter: IP2BIN: correct spelling of variable
-  output: add missing support for int64_t values
-  src: keep IPv4 addresses internally in IPv4-in-IPv6 format
-
- filter/raw2packet/ulogd_raw2packet_BASE.c | 24 +++++--
- filter/ulogd_filter_IP2BIN.c              | 39 +++-------
- filter/ulogd_filter_IP2HBIN.c             | 13 ++--
- filter/ulogd_filter_IP2STR.c              |  5 +-
- include/ulogd/ulogd.h                     | 52 ++++++++++++++
- input/flow/ulogd_inpflow_NFCT.c           | 24 ++++---
- output/ipfix/ulogd_output_IPFIX.c         |  4 +-
- output/sqlite3/ulogd_output_SQLITE3.c     | 24 +++++--
- output/ulogd_output_GPRINT.c              | 38 +++++++---
- output/ulogd_output_JSON.c                |  3 +
- output/ulogd_output_OPRINT.c              | 87 +++++++++++++----------
- src/ulogd.c                               |  3 +-
- util/db.c                                 | 18 +++--
- 13 files changed, 219 insertions(+), 115 deletions(-)
-
+diff --git a/filter/ulogd_filter_IP2BIN.c b/filter/ulogd_filter_IP2BIN.c
+index 2172d93506d5..ee1238ff4940 100644
+--- a/filter/ulogd_filter_IP2BIN.c
++++ b/filter/ulogd_filter_IP2BIN.c
+@@ -218,7 +218,7 @@ static int interp_ip2bin(struct ulogd_pluginstance *pi)
+ 	return ULOGD_IRET_OK;
+ }
+ 
+-static struct ulogd_plugin ip2bin_pluging = {
++static struct ulogd_plugin ip2bin_plugin = {
+ 	.name = "IP2BIN",
+ 	.input = {
+ 		.keys = ip2bin_inp,
+@@ -238,5 +238,5 @@ void __attribute__ ((constructor)) init(void);
+ 
+ void init(void)
+ {
+-	ulogd_register_plugin(&ip2bin_pluging);
++	ulogd_register_plugin(&ip2bin_plugin);
+ }
 -- 
 2.35.1
 
