@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A0463CACA
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Nov 2022 22:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D89663CAC3
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Nov 2022 22:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236789AbiK2V6C (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Nov 2022 16:58:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
+        id S236827AbiK2V5d (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Nov 2022 16:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236860AbiK2V5e (ORCPT
+        with ESMTP id S236999AbiK2V5X (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Nov 2022 16:57:34 -0500
+        Tue, 29 Nov 2022 16:57:23 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A6CBDA
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Nov 2022 13:57:32 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AF16C733
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Nov 2022 13:57:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=AQeLBcBbLJO7wdNQt6WhlIZcWfI6NNeDPzNZA0EJlrM=; b=hQUYz4uppEW2+bcRrt50euXycN
-        uDD78oyc36/ovrAZ2PJShUdtxgJfiPloEjHMQsO4ktZ4eOsyjV96VzNSMWzm6eCsD92fqdjoitYC8
-        97BsYnDWMEEx5Lg3jHHhNhVi1D2hIcYX5ZvpxiInUuAnAzV6RUhC6FTwJ4t1J3eF5+7dVSWiaxVTN
-        Xnmd9hGmlhEEnb7R5CTOR3ecvrxCfjv8pLDgPHN9OvdLU31UbaVYE7JgD6UZ8aHZcH5EubGOIpQLP
-        vGoTRTm4HwSIIA43xrX3EXdnUuTr2+fBkRaUXXP5uL+1FQ5CZv9xegWNZJAXzxm+Pa2+Ls4RoZlQN
-        /FF6wPeg==;
+        bh=1jVGbrRA2hFfo2dFiRcu920YM47p+i601W6q6pCoRnw=; b=l067lX0dgY+0xGi+WrOHAIY3fS
+        OLU/kD7rcd3LpYznJfjQEff/+UH7ScT8EKXLG/vrW4822/6B+w4DemMCDZbv7SLcWRxie9zWvxWc6
+        CObetS+ncHUy2Vxc3C3+Xq8eMDn4Qo86qxAkvrFTymjGI4fDnTuIAUBmq6XlpteFLlPKVHJkxhhSp
+        ZmBaODivv8zjvEBTk+EqqstUaOG02heW3o3hFs6lHswV9JyOG5EdIUaotY/RWIk/153FQ4MhH0TEu
+        N3LXPz4pfL7ExVxjOO8LtifPAluRkx5s2cTQD1/vHNyTIJx2EiPDY7MRJc1BYdqFAyGOOY1EHKckV
+        RhyYbuaw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1p08SJ-00DjQp-N3
+        id 1p08SJ-00DjQp-Ql
         for netfilter-devel@vger.kernel.org; Tue, 29 Nov 2022 21:47:55 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 v2 v2 10/34] src: remove `TIME_ERR` macro
-Date:   Tue, 29 Nov 2022 21:47:25 +0000
-Message-Id: <20221129214749.247878-11-jeremy@azazel.net>
+Subject: [PATCH ulogd2 v2 v2 11/34] src: remove superfluous casts
+Date:   Tue, 29 Nov 2022 21:47:26 +0000
+Message-Id: <20221129214749.247878-12-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221129214749.247878-1-jeremy@azazel.net>
 References: <20221129214749.247878-1-jeremy@azazel.net>
@@ -54,81 +54,122 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The `TIME_ERR` macro is used to check the return value of time(2).
-However, two of the definitions of it are never used.  The third is used
-to check the return value of `time(NULL)`.  However, time(2) with a
-`NULL` argument can never fail, so we don't need to perform the check.
+We're not writing C++, we don't need to cast void pointers.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/ulogd/db.h                |  2 +-
- output/dbi/ulogd_output_DBI.c     |  1 -
- output/pgsql/ulogd_output_PGSQL.c |  1 -
- util/db.c                         | 14 ++++++--------
- 4 files changed, 7 insertions(+), 11 deletions(-)
+ cftest/cftest.c       | 2 +-
+ libipulog/libipulog.c | 2 +-
+ libipulog/ulog_test.c | 2 +-
+ src/conffile.c        | 2 +-
+ src/hash.c            | 4 ++--
+ src/ulogd.c           | 2 +-
+ util/db.c             | 4 ++--
+ 7 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/include/ulogd/db.h b/include/ulogd/db.h
-index 50925a69f240..a6fd25b4c043 100644
---- a/include/ulogd/db.h
-+++ b/include/ulogd/db.h
-@@ -62,7 +62,7 @@ struct db_instance {
- 	unsigned char backlog_full;
- 	struct llist_head backlog;
- };
--#define TIME_ERR		((time_t)-1)	/* Be paranoid */
-+
- #define RECONNECT_DEFAULT	2
- #define MAX_ONESHOT_REQUEST	10
- #define RING_BUFFER_DEFAULT_SIZE	0
-diff --git a/output/dbi/ulogd_output_DBI.c b/output/dbi/ulogd_output_DBI.c
-index 7f42c08efc2b..88b530ead034 100644
---- a/output/dbi/ulogd_output_DBI.c
-+++ b/output/dbi/ulogd_output_DBI.c
-@@ -37,7 +37,6 @@ struct dbi_instance {
- 	dbi_conn dbh;
- 	dbi_result result;
- };
--#define TIME_ERR	((time_t)-1)
+diff --git a/cftest/cftest.c b/cftest/cftest.c
+index b99882be5840..b16e75a5a451 100644
+--- a/cftest/cftest.c
++++ b/cftest/cftest.c
+@@ -19,7 +19,7 @@ int main()
+ 	strcpy(f.key, "spalte");
+ 	f.type = CONFIG_TYPE_STRING;
+ 	f.options |= CONFIG_OPT_MANDATORY;
+-	f.u.str.string = (char *) malloc(100);
++	f.u.str.string = malloc(100);
+ 	f.u.str.maxlen = 99;
+ 	config_register_key(&f);
  
- /* our configuration directives */
- static struct config_keyset dbi_kset = {
-diff --git a/output/pgsql/ulogd_output_PGSQL.c b/output/pgsql/ulogd_output_PGSQL.c
-index a508f9cf75a1..b798555b5ade 100644
---- a/output/pgsql/ulogd_output_PGSQL.c
-+++ b/output/pgsql/ulogd_output_PGSQL.c
-@@ -34,7 +34,6 @@ struct pgsql_instance {
- 	PGresult *pgres;
- 	unsigned char pgsql_have_schemas;
- };
--#define TIME_ERR	((time_t)-1)
+diff --git a/libipulog/libipulog.c b/libipulog/libipulog.c
+index b49f7f2cbd79..371c0d7622d6 100644
+--- a/libipulog/libipulog.c
++++ b/libipulog/libipulog.c
+@@ -129,7 +129,7 @@ struct ipulog_handle *ipulog_create_handle(uint32_t gmask,
+ 	struct ipulog_handle *h;
+ 	int status;
  
- /* our configuration directives */
- static struct config_keyset pgsql_kset = {
-diff --git a/util/db.c b/util/db.c
-index dab66216e07d..fb41266648d5 100644
---- a/util/db.c
-+++ b/util/db.c
-@@ -302,14 +302,12 @@ static int _init_reconnect(struct ulogd_pluginstance *upi)
- 		if (time(NULL) < di->reconnect)
- 			return -1;
- 		di->reconnect = time(NULL);
--		if (di->reconnect != TIME_ERR) {
--			ulogd_log(ULOGD_ERROR, "no connection to database, "
--				  "attempting to reconnect after %u seconds\n",
--				  reconnect_ce(upi->config_kset).u.value);
--			di->reconnect += reconnect_ce(upi->config_kset).u.value;
--			di->interp = &_init_db;
--			return -1;
--		}
-+		ulogd_log(ULOGD_ERROR,
-+			  "no connection to database, attempting to reconnect after %u seconds\n",
-+			  reconnect_ce(upi->config_kset).u.value);
-+		di->reconnect += reconnect_ce(upi->config_kset).u.value;
-+		di->interp = &_init_db;
-+		return -1;
+-	h = (struct ipulog_handle *) malloc(sizeof(struct ipulog_handle));
++	h = malloc(sizeof(*h));
+ 	if (h == NULL)
+ 	{
+ 		ipulog_errno = IPULOG_ERR_HANDLE;
+diff --git a/libipulog/ulog_test.c b/libipulog/ulog_test.c
+index 06657172a0cd..6b796d064992 100644
+--- a/libipulog/ulog_test.c
++++ b/libipulog/ulog_test.c
+@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
  	}
  
- 	/* Disable plugin permanently */
+ 	/* allocate a receive buffer */
+-	buf = (unsigned char *) malloc(MYBUFSIZ);
++	buf = malloc(MYBUFSIZ);
+ 	
+ 	/* create ipulog handle */
+ 	h = ipulog_create_handle(ipulog_group2gmask(atoi(argv[2])));
+diff --git a/src/conffile.c b/src/conffile.c
+index 66769decc93c..8a208d6d8cfe 100644
+--- a/src/conffile.c
++++ b/src/conffile.c
+@@ -104,7 +104,7 @@ int config_register_file(const char *file)
+ 
+ 	pr_debug("%s: registered config file '%s'\n", __func__, file);
+ 
+-	fname = (char *) malloc(strlen(file)+1);
++	fname = malloc(strlen(file)+1);
+ 	if (!fname)
+ 		return -ERROOM;
+ 
+diff --git a/src/hash.c b/src/hash.c
+index 1d991309734f..2f7f5deebece 100644
+--- a/src/hash.c
++++ b/src/hash.c
+@@ -34,9 +34,9 @@ hashtable_create(int hashsize, int limit,
+ 	int i;
+ 	struct hashtable *h;
+ 	int size = sizeof(struct hashtable)
+-		   + hashsize * sizeof(struct llist_head);
++		 + sizeof(struct llist_head) * hashsize;
+ 
+-	h = (struct hashtable *) calloc(size, 1);
++	h = calloc(size, 1);
+ 	if (h == NULL) {
+ 		errno = ENOMEM;
+ 		return NULL;
+diff --git a/src/ulogd.c b/src/ulogd.c
+index ec0745e63169..82f936168ebc 100644
+--- a/src/ulogd.c
++++ b/src/ulogd.c
+@@ -720,7 +720,7 @@ static int load_plugin(const char *file)
+ 		return -1;
+ 	}
+ 
+-	ph = (struct ulogd_plugin_handle *) calloc(1, sizeof(*ph));
++	ph = calloc(1, sizeof(*ph));
+ 	ph->handle = handle;
+ 	llist_add(&ph->list, &ulogd_plugins_handle);
+ 	return 0;
+diff --git a/util/db.c b/util/db.c
+index fb41266648d5..6749079697dc 100644
+--- a/util/db.c
++++ b/util/db.c
+@@ -85,7 +85,7 @@ static int sql_createstmt(struct ulogd_pluginstance *upi)
+ 
+ 	ulogd_log(ULOGD_DEBUG, "allocating %u bytes for statement\n", size);
+ 
+-	mi->stmt = (char *) malloc(size);
++	mi->stmt = malloc(size);
+ 	if (!mi->stmt) {
+ 		ulogd_log(ULOGD_ERROR, "OOM!\n");
+ 		return -ENOMEM;
+@@ -575,7 +575,7 @@ static int __loop_reconnect_db(struct ulogd_pluginstance * upi) {
+ 
+ static void *__inject_thread(void *gdi)
+ {
+-	struct ulogd_pluginstance *upi = (struct ulogd_pluginstance *) gdi;
++	struct ulogd_pluginstance *upi = gdi;
+ 	struct db_instance *di = (struct db_instance *) &upi->private;
+ 	char *wr_place;
+ 
 -- 
 2.35.1
 
