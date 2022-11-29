@@ -2,35 +2,46 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E66363C1D0
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Nov 2022 15:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 050E363C25E
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Nov 2022 15:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbiK2OGU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Nov 2022 09:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
+        id S233074AbiK2OXv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Nov 2022 09:23:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234975AbiK2OGD (ORCPT
+        with ESMTP id S232883AbiK2OXu (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Nov 2022 09:06:03 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6448751C01
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Nov 2022 06:06:02 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1p01FI-00042U-Oq; Tue, 29 Nov 2022 15:06:00 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH v2 iptables-nft 3/3] xlate-test: avoid shell entanglements
-Date:   Tue, 29 Nov 2022 15:05:42 +0100
-Message-Id: <20221129140542.28311-4-fw@strlen.de>
-X-Mailer: git-send-email 2.37.4
-In-Reply-To: <20221129140542.28311-1-fw@strlen.de>
-References: <20221129140542.28311-1-fw@strlen.de>
+        Tue, 29 Nov 2022 09:23:50 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D0D10C9
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Nov 2022 06:23:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=kiH+EaMf8IIl2NetFdFtiC0ltNNS93a/Y9qol4JUnRY=; b=I26FOyV6hO3rEn9t6axli1A4Zz
+        wE7DY2qEUD3sezcZXaReHo34bk+Y4mdzZi5QZ/sllcldM2DDlsUqMIzewEvNjVc8EVNMEgCx/uK9b
+        e7+8sIfCa+hczfS1LU+dzGhGUy7QUai4IlV2r4P14GxEK92qbrHAVVnhpj9VtyZ9Dmz+wNrBNQP5D
+        RVvYn8prmz8Uy8X1yln1XRKjGuu5C3KDZ64fbrKVOrKCB6clsQnIA1GfiBnSSJP4IC/wxQAOk550o
+        dMcepbawGIgEbFMOQiNR5OnN3eMfZ1JUJtqVjopvxjvFG3t9HrmIBxdY1zBQgODWEc3EIGmdQhLOL
+        dVxlPwSQ==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1p01WU-0006Yw-3i; Tue, 29 Nov 2022 15:23:46 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Florian Westphal <fwestpha@redhat.com>
+Subject: [iptables PATCH] tests: shell: Test selective ebtables flushing
+Date:   Tue, 29 Nov 2022 15:23:38 +0100
+Message-Id: <20221129142338.2394-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -38,62 +49,68 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Feed the nft expected output found in the .txlate test files to
-nft -f via pipe/stdin directly without the shell mangling it.
+Found this on disk, maybe there was a problem with this and among match
+at some point? Anyway, it is relevant again since it fails recently.
 
-The shell step isn't needed anymore because xtables-translate no longer
-escapes quotes.
-
-We only need to remove the "nft '" and trailing "'" because nft doesn't
-expect those.
-
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- new in v2.
+ .../shell/testcases/ebtables/0006-flush_0     | 47 +++++++++++++++++++
+ 1 file changed, 47 insertions(+)
+ create mode 100755 iptables/tests/shell/testcases/ebtables/0006-flush_0
 
- xlate-test.py | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/xlate-test.py b/xlate-test.py
-index f3fcd797af90..b93bf0547213 100755
---- a/xlate-test.py
-+++ b/xlate-test.py
-@@ -7,11 +7,11 @@ import shlex
- import argparse
- from subprocess import Popen, PIPE
- 
--def run_proc(args, shell = False):
-+def run_proc(args, shell = False, input = None):
-     """A simple wrapper around Popen, returning (rc, stdout, stderr)"""
-     process = Popen(args, text = True, shell = shell,
--                    stdout = PIPE, stderr = PIPE)
--    output, error = process.communicate()
-+                    stdin = PIPE, stdout = PIPE, stderr = PIPE)
-+    output, error = process.communicate(input)
-     return (process.returncode, output, error)
- 
- keywords = ("iptables-translate", "ip6tables-translate", "ebtables-translate")
-@@ -100,15 +100,15 @@ def test_one_replay(name, sourceline, expected, result):
-         fam = "ip6 "
-     elif srccmd.startswith("ebt"):
-         fam = "bridge "
+diff --git a/iptables/tests/shell/testcases/ebtables/0006-flush_0 b/iptables/tests/shell/testcases/ebtables/0006-flush_0
+new file mode 100755
+index 0000000000000..5d714529c4409
+--- /dev/null
++++ b/iptables/tests/shell/testcases/ebtables/0006-flush_0
+@@ -0,0 +1,47 @@
++#!/bin/bash
 +
-+    expected = expected.removeprefix("nft '").removesuffix("'")
-     nft_input = [
-             "flush ruleset",
-             "add table " + fam + table_name,
--            "add chain " + fam + table_name + " " + chain_name
--    ] + [ l.removeprefix("nft ") for l in expected.split("\n") ]
-+            "add chain " + fam + table_name + " " + chain_name,
-+    ] + [ expected ]
- 
--    # feed input via the pipe to make sure the shell "does its thing"
--    cmd = "echo \"" + "\n".join(nft_input) + "\" | " + args.nft + " -f -"
--    rc, output, error = run_proc(cmd, shell = True)
-+    rc, output, error = run_proc([args.nft, "-f", "-"], shell = False, input = "\n".join(nft_input))
-     if rc != 0:
-         result.append(name + ": " + red("Fail"))
-         result.append(args.nft + " call failed: " + error.rstrip('\n'))
++set -e
++
++# there is no legacy backend to test
++[[ $XT_MULTI == *xtables-nft-multi ]] || { echo "skip $XT_MULTI"; exit 0; }
++
++RULESET='*filter
++:INPUT ACCEPT
++:FORWARD ACCEPT
++:OUTPUT ACCEPT
++-A FORWARD --among-dst fe:ed:ba:be:13:37=10.0.0.1 -j ACCEPT
++-A OUTPUT --among-src c0:ff:ee:90:0:0=192.168.0.1 -j DROP
++*nat
++:PREROUTING ACCEPT
++:OUTPUT ACCEPT
++:POSTROUTING ACCEPT
++-A OUTPUT --among-src c0:ff:ee:90:90:90=192.168.0.1 -j DROP'
++
++$XT_MULTI ebtables-restore <<<$RULESET
++diff -u <(echo -e "$RULESET") <($XT_MULTI ebtables-save | grep -v '^#')
++
++RULESET='*filter
++:INPUT ACCEPT
++:FORWARD ACCEPT
++:OUTPUT ACCEPT
++-A FORWARD --among-dst fe:ed:ba:be:13:37=10.0.0.1 -j ACCEPT
++-A OUTPUT --among-src c0:ff:ee:90:0:0=192.168.0.1 -j DROP
++*nat
++:PREROUTING ACCEPT
++:OUTPUT ACCEPT
++:POSTROUTING ACCEPT'
++
++$XT_MULTI ebtables -t nat -F
++diff -u <(echo -e "$RULESET") <($XT_MULTI ebtables-save | grep -v '^#')
++
++RULESET='*filter
++:INPUT ACCEPT
++:FORWARD ACCEPT
++:OUTPUT ACCEPT
++*nat
++:PREROUTING ACCEPT
++:OUTPUT ACCEPT
++:POSTROUTING ACCEPT'
++
++$XT_MULTI ebtables -t filter -F
++diff -u <(echo -e "$RULESET") <($XT_MULTI ebtables-save | grep -v '^#')
 -- 
-2.37.4
+2.38.0
 
