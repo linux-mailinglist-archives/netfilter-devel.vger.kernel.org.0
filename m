@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7365363CABC
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Nov 2022 22:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3907B63CAC7
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Nov 2022 22:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236712AbiK2V53 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Nov 2022 16:57:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
+        id S237120AbiK2V6B (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Nov 2022 16:58:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236772AbiK2V5E (ORCPT
+        with ESMTP id S237109AbiK2V52 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Nov 2022 16:57:04 -0500
+        Tue, 29 Nov 2022 16:57:28 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF6B6E541
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Nov 2022 13:57:03 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB2C86C733
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Nov 2022 13:57:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=TCGWhjQfs6se8nw6k6gwwo7z/eXpja866L4dvEvRk9Q=; b=TOGR2YAKPL2/Tz2CsxT94eRPX0
-        2TtSQYgB8RMfFTS/6oWehbw6TVnZrwgU8gXUKFHVTp/ao24Vj2D+tQJH4Q2RhyE/H8seKa/jM51Bo
-        DRijk3CZRsEHTWAucM6YB1AEKdOa+mfmvue55KUxCmJOvzPs1eg4RlHxEibdZSjKy6oRBphd8XA+X
-        HFMeLC+mK7Uuoa8scNM77TjAEauaya4s4AD/j7P+TPTV4O8mjKHWoRfiWlGncDoZXaSy90zpPdm7f
-        P34RAL6iBn/C1RUlnV8FrILZk9BDCO3xFqS+kU2i4Ulfoi2s/sm5YXenW1SJYZzwzRbDCT5oafWSJ
-        AoVK8cgA==;
+        bh=Tgcc9tkSxRZPjF0xQbzd+2ZGLaJ9oozwBAfcmq1tZFE=; b=jOeHlj9+2f1tmCiAht8Xk8sY8l
+        GofbcvefhgfRgRgpWr++moWt+yuE/JbcOfH76SehGqjR2+8rTwpQwx4WPdD/Azto81LJqPi64rwU4
+        xfmI5woYzExNQXdt/zENMD8p30tSnKX/gc0jrwaw4kakkSaaCY1qLENAHeXu+aeDgC/P/W3BhBljN
+        HHVHyHZtmXLHrLmfIcmkyHc8q7GvctqHSQxgJ8t9ArMIYCNcug64ZBgFUJnrnH1CdXHC9ij2Sebos
+        xKCRJkX5ivQ3bjrIr5/MncA5SS9MjNOdXUMKzIJPwtS0zwjWkuymxXec7QJbQWcL75hoJ3K9BiM/S
+        Wc4QcY9g==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1p08SM-00DjQp-NW
+        id 1p08SM-00DjQp-Py
         for netfilter-devel@vger.kernel.org; Tue, 29 Nov 2022 21:47:58 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 v2 v2 32/34] output: pgsql: tidy up `open_db_pgsql` and fix memory leak
-Date:   Tue, 29 Nov 2022 21:47:47 +0000
-Message-Id: <20221129214749.247878-33-jeremy@azazel.net>
+Subject: [PATCH ulogd2 v2 v2 33/34] output: pgsql: add prep & exec support
+Date:   Tue, 29 Nov 2022 21:47:48 +0000
+Message-Id: <20221129214749.247878-34-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221129214749.247878-1-jeremy@azazel.net>
 References: <20221129214749.247878-1-jeremy@azazel.net>
@@ -54,115 +54,213 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
- * Remove some excess parentheses and a superfluous local variable.
- * Tighten up the scope of a couple of other variables.
- * Streamline the error-handling.
- * Free the connexion string.
+Now that the common DB API offers prep-exec support, update the Postgres
+plug-in to use it.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- output/pgsql/ulogd_output_PGSQL.c | 57 +++++++++++++++++--------------
- 1 file changed, 32 insertions(+), 25 deletions(-)
+ output/pgsql/ulogd_output_PGSQL.c | 145 +++++++++++++++++++++++++-----
+ 1 file changed, 123 insertions(+), 22 deletions(-)
 
 diff --git a/output/pgsql/ulogd_output_PGSQL.c b/output/pgsql/ulogd_output_PGSQL.c
-index b125674b7364..8c9aabf873ca 100644
+index 8c9aabf873ca..01afec1003f0 100644
 --- a/output/pgsql/ulogd_output_PGSQL.c
 +++ b/output/pgsql/ulogd_output_PGSQL.c
-@@ -232,11 +232,9 @@ static int close_db_pgsql(struct ulogd_pluginstance *upi)
- static int open_db_pgsql(struct ulogd_pluginstance *upi)
+@@ -10,6 +10,7 @@
+  *
+  */
+ 
++#include <limits.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <errno.h>
+@@ -27,6 +28,8 @@
+ #define DEBUGP(x, args...)
+ #endif
+ 
++#define BUF_SIZE (sizeof(uint64_t) * CHAR_BIT / 3 + 1)
++
+ struct pgsql_instance {
+ 	struct db_instance db_inst;
+ 
+@@ -217,6 +220,12 @@ get_column_pgsql(void *vp, unsigned int i)
+ 	return PQgetvalue(pgres, i, 0);
+ }
+ 
++static unsigned int
++format_param_pgsql(char *buf, unsigned int size, unsigned int idx)
++{
++	return snprintf(buf, size, "$%u,", idx + 1);
++}
++
+ static int close_db_pgsql(struct ulogd_pluginstance *upi)
  {
  	struct pgsql_instance *pi = (struct pgsql_instance *) upi->private;
--	int len;
- 	char *connstr = connstr_ce(upi->config_kset).u.string;
--	char *schema = NULL;
--	char pgbuf[128];
--	PGresult *pgres;
-+	PGresult *pgres = NULL;
+@@ -313,38 +322,130 @@ err_close_db:
+ 	return rv;
+ }
+ 
+-static int escape_string_pgsql(struct ulogd_pluginstance *upi,
+-			       char *dst, const char *src, unsigned int len)
++static int
++prepare_pgsql(struct ulogd_pluginstance *upi, const struct db_stmt *stmt)
+ {
+-	return PQescapeString(dst, src, strlen(src));
++	struct pgsql_instance *pi = (struct pgsql_instance *) upi->private;
++	PGresult *pgres;
++	int rv;
++
++	pgres = PQprepare(pi->dbh, procedure_ce(upi->config_kset).u.string,
++			  stmt->sql, 0, NULL);
++	if (PQresultStatus(pgres) != PGRES_COMMAND_OK) {
++		ulogd_log(ULOGD_ERROR, "Failed to prepare statement: %s\n",
++			  PQerrorMessage(pi->dbh));
++		rv = -1;
++	} else
++		rv = 0;
++
++	PQclear(pgres);
++	return rv;
+ }
+ 
+-static int execute_pgsql(struct ulogd_pluginstance *upi,
+-			 const struct db_stmt *stmt)
++static int
++execute_pgsql(struct ulogd_pluginstance *upi, const struct db_stmt *stmt)
+ {
+ 	struct pgsql_instance *pi = (struct pgsql_instance *) upi->private;
++	char **bindings, *buffers;
+ 	PGresult *pgres;
++	unsigned int i;
 +	int rv = -1;
  
- 	if (!connstr[0]) {
- 		char         *server = host_ce(upi->config_kset).u.string;
-@@ -245,10 +243,11 @@ static int open_db_pgsql(struct ulogd_pluginstance *upi)
- 		char         *pass   = pass_ce(upi->config_kset).u.string;
- 		char         *db     = db_ce(upi->config_kset).u.string;
- 		char         *cp;
+-	pgres = PQexec(pi->dbh, stmt->sql);
+-	if (!(pgres && ((PQresultStatus(pgres) == PGRES_COMMAND_OK)
+-		|| (PQresultStatus(pgres) == PGRES_TUPLES_OK)))) {
+-		ulogd_log(ULOGD_ERROR, "execute failed (%s)\n",
+-			  PQerrorMessage(pi->dbh));
++	if (!(bindings = malloc(stmt->nr_params * sizeof(*bindings)))) {
++		ulogd_log(ULOGD_ERROR, "Memory allocation failure\n");
+ 		return -1;
+ 	}
+ 
++	if (!(buffers = malloc(stmt->nr_params * BUF_SIZE))) {
++		ulogd_log(ULOGD_ERROR, "Memory allocation failure\n");
++		goto err_free_bindings;
++	}
 +
- 		/* 80 is more than what we need for the fixed parts below */
--		len = 80 + strlen(user) + strlen(db);
-+		size_t len = 80 + strlen(user) + strlen(db);
- 
--		/* hostname and  and password are the only optionals */
-+		/* hostname and and password are the only optionals */
- 		if (server[0])
- 			len += strlen(server);
- 		if (pass[0])
-@@ -271,39 +270,47 @@ static int open_db_pgsql(struct ulogd_pluginstance *upi)
- 		if (pass[0])
- 			cp += sprintf(cp, " password=%s", pass);
- 	}
++	for (i = 0; i < stmt->nr_params; i++) {
++		struct db_stmt_arg *arg = &stmt->args[i];
++		union db_stmt_arg_value *val = &arg->value;
 +
- 	pi->dbh = PQconnectdb(connstr);
- 	if (PQstatus(pi->dbh) != CONNECTION_OK) {
- 		ulogd_log(ULOGD_ERROR, "unable to connect to db (%s): %s\n",
- 			  connstr, PQerrorMessage(pi->dbh));
--		close_db_pgsql(upi);
--		return -1;
-+		goto err_close_db;
- 	}
- 
--	if (pgsql_namespace(upi)) {
-+	if (pgsql_namespace(upi) < 0) {
- 		ulogd_log(ULOGD_ERROR, "problem testing for pgsql schemas\n");
--		close_db_pgsql(upi);
--		return -1;
-+		goto err_close_db;
- 	}
- 
--	pi=(struct pgsql_instance *)upi->private;
--	schema = pi->db_inst.schema;
-+	if (pi->db_inst.schema != NULL && strcmp(pi->db_inst.schema,"public") != 0) {
-+		char pgbuf[128];
- 
--	if (!(schema == NULL) && (strcmp(schema,"public"))) {
--		snprintf(pgbuf, 128, "SET search_path='%.63s', \"$user\", 'public'", schema);
-+		snprintf(pgbuf, sizeof(pgbuf),
-+			 "SET search_path='%.63s', \"$user\", 'public'",
-+			 pi->db_inst.schema);
- 		pgres = PQexec(pi->dbh, pgbuf);
--		if ((PQresultStatus(pgres) == PGRES_COMMAND_OK)) {
--			PQclear(pgres);
--		} else {
--			ulogd_log(ULOGD_ERROR, "could not set search path to (%s): %s\n",
--				 schema, PQerrorMessage(pi->dbh));
--			PQclear(pgres);
--			close_db_pgsql(upi);
--			return -1;
-+		if (PQresultStatus(pgres) != PGRES_COMMAND_OK) {
-+			ulogd_log(ULOGD_ERROR,
-+				  "could not set search path to (%s): %s\n",
-+				  pi->db_inst.schema, PQerrorMessage(pi->dbh));
-+			goto err_free_result;
- 		}
--
- 	}
++		if (arg->null) {
++			bindings[i] = NULL;
++			continue;
++		}
++
++		switch (arg->type) {
++		case ULOGD_RET_STRING:
++		case ULOGD_RET_RAWSTR:
++			bindings[i] = val->ptr;
++			continue;
++		}
++
++		bindings[i] = &buffers[i * BUF_SIZE];
++
++		switch (arg->type) {
++		case ULOGD_RET_BOOL:
++			snprintf(bindings[i], BUF_SIZE, "%d", val->b);
++			break;
++		case ULOGD_RET_INT8:
++			snprintf(bindings[i], BUF_SIZE, "%" PRId8, val->i8);
++			break;
++		case ULOGD_RET_UINT8:
++			snprintf(bindings[i], BUF_SIZE, "%" PRIu8, val->ui8);
++			break;
++		case ULOGD_RET_INT16:
++			snprintf(bindings[i], BUF_SIZE, "%" PRId16, val->i16);
++			break;
++		case ULOGD_RET_UINT16:
++			snprintf(bindings[i], BUF_SIZE, "%" PRIu16, val->ui16);
++			break;
++		case ULOGD_RET_INT32:
++			snprintf(bindings[i], BUF_SIZE, "%" PRId32, val->i32);
++			break;
++		case ULOGD_RET_IPADDR:
++		case ULOGD_RET_UINT32:
++			snprintf(bindings[i], BUF_SIZE, "%" PRIu32, val->ui32);
++			break;
++		case ULOGD_RET_INT64:
++			snprintf(bindings[i], BUF_SIZE, "%" PRId64, val->i64);
++			break;
++		case ULOGD_RET_UINT64:
++			snprintf(bindings[i], BUF_SIZE, "%" PRIu64, val->ui64);
++			break;
++		}
++	}
++
++	pgres = PQexecPrepared(pi->dbh, procedure_ce(upi->config_kset).u.string,
++			       stmt->nr_params, (const char **) bindings, NULL,
++			       NULL, 0);
++
++	switch (PQresultStatus(pgres)) {
++	case PGRES_COMMAND_OK:
++	case PGRES_TUPLES_OK:
++		rv = 0;
++		break;
++	default:
++		ulogd_log(ULOGD_ERROR,
++			  "Failed to execute statement: status = %s, error = %s\n",
++			  PQresStatus(PQresultStatus(pgres)),
++			  PQerrorMessage(pi->dbh));
++		break;
++	}
++
+ 	PQclear(pgres);
  
 -	return 0;
-+	rv = 0;
++	free (buffers);
 +
-+err_free_result:
-+	PQclear(pgres);
-+
-+err_close_db:
-+	if (rv == -1)
-+		close_db_pgsql(upi);
-+
-+	if (connstr != connstr_ce(upi->config_kset).u.string)
-+		free(connstr);
++err_free_bindings:
++	free (bindings);
 +
 +	return rv;
  }
  
- static int escape_string_pgsql(struct ulogd_pluginstance *upi,
+ static struct db_driver db_driver_pgsql = {
+-	.get_columns	= &get_columns_pgsql,
+-	.get_column	= &get_column_pgsql,
+-	.open_db	= &open_db_pgsql,
+-	.close_db	= &close_db_pgsql,
+-	.escape_string	= &escape_string_pgsql,
+-	.execute	= &execute_pgsql,
++	.get_columns	= get_columns_pgsql,
++	.get_column	= get_column_pgsql,
++	.format_param	= format_param_pgsql,
++	.open_db	= open_db_pgsql,
++	.close_db	= close_db_pgsql,
++	.prepare	= prepare_pgsql,
++	.execute	= execute_pgsql,
+ };
+ 
+ static int configure_pgsql(struct ulogd_pluginstance *upi,
+@@ -367,11 +468,11 @@ static struct ulogd_plugin pgsql_plugin = {
+ 	},
+ 	.config_kset	= &pgsql_kset,
+ 	.priv_size	= sizeof(struct pgsql_instance),
+-	.configure	= &configure_pgsql,
+-	.start		= &ulogd_db_start,
+-	.stop		= &ulogd_db_stop,
+-	.signal		= &ulogd_db_signal,
+-	.interp		= &ulogd_db_interp,
++	.configure	= configure_pgsql,
++	.start		= ulogd_db_start,
++	.stop		= ulogd_db_stop,
++	.signal		= ulogd_db_signal,
++	.interp		= ulogd_db_interp,
+ 	.version	= VERSION,
+ };
+ 
 -- 
 2.35.1
 
