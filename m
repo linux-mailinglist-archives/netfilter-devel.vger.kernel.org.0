@@ -2,70 +2,95 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4298863C92A
-	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Nov 2022 21:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA8063CA2D
+	for <lists+netfilter-devel@lfdr.de>; Tue, 29 Nov 2022 22:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236092AbiK2US1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 29 Nov 2022 15:18:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
+        id S236910AbiK2VMD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 29 Nov 2022 16:12:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234987AbiK2USZ (ORCPT
+        with ESMTP id S236988AbiK2VLl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 29 Nov 2022 15:18:25 -0500
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7804995A2
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Nov 2022 12:18:24 -0800 (PST)
-Received: by mail-vk1-xa44.google.com with SMTP id bi15so7443785vkb.11
-        for <netfilter-devel@vger.kernel.org>; Tue, 29 Nov 2022 12:18:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
-        b=WUrteBJor5iabiHyu/h6Kh1u4hc7rm0OlJ8vin71QE2YIa0sJuk9tz3TYeTbZH6MOw
-         DHr03XIRbLSiM2j9OJYY2lpizwycNUBUgNXMuTjZKcPBoim/7K3vCnpqUXqRUm3Oz6qV
-         yuPQMKuDKEz68OzjAOFqca02jt9zWWPqM/jXvh/boC5T4Q/BTJvAh5YSSGf26Y0E3zH2
-         TOxXYoy9AyaeJoR+6UfvmNSKYo8KvwE3lEJFRtKX0JOrYu4t41KY6iIl3QeD37rm0M0r
-         GKhOeJf70G4rIdx1bRLUwjwlsm1vS6oiNXUHApy2eKB8ro/QmllrbIJgRnYqIWTgsrYI
-         Z69A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SzBlYeGeT15Xra75w9IZDBjQ7Da3XKSmRdlnDJDYrko=;
-        b=sPxs2UR+BiwWGtioDd4eWsqwjZOsYv+lhgnFmDp/8aa7bkrC4BoBcGMB9kgjGW0tdo
-         uxh2HWUwlI0xryFwssJhmuavzn3EojkYDKsyGnIJmEN0R9cqOyQmQ/w2cuZXHw5dC+d4
-         dKmtJT/ikSAgk727YxLko8zYYJrXI4//8WiJFq4uMq9zomszNq1jUIAglJZFK23O2CyB
-         r3/vP5jBYOcQKDN73dO3Hv60EO8aNPOmDF4P1CQeS9sKWYE66+PEMIV0TyDN3yB+iPKu
-         jIhTKawD1JpkvoSGlwBlaRrPgvePGVh40kwhdRFuK5yHFYw0U9Xvf5pKQYJ1A/RU1v6J
-         v3oQ==
-X-Gm-Message-State: ANoB5pnblU251wPmfKKoLVvtG80/9Px0ZGM+azPusK/wALc5BQP/BOX/
-        6CIONrmzCoCp+JmyC0VRCcGaVXx+kVazzc12UXk=
-X-Google-Smtp-Source: AA0mqf5ayvorfcB9j/U/Td0EzpinEGhlLui08ksxXYMGSLvmhH0ipr59y3ATqQaK+cma/0LkwLplgR+RKZ5i3q31gWU=
-X-Received: by 2002:a1f:2b8e:0:b0:3bc:5598:2096 with SMTP id
- r136-20020a1f2b8e000000b003bc55982096mr24704898vkr.36.1669753103355; Tue, 29
- Nov 2022 12:18:23 -0800 (PST)
+        Tue, 29 Nov 2022 16:11:41 -0500
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6104D68686
+        for <netfilter-devel@vger.kernel.org>; Tue, 29 Nov 2022 13:11:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=bhRgA0rGv0zNNc5D9kgnbWsiyoRcGZetS60UOdxkiGQ=; b=JJfmxrjkD2m79Cuc2s8mc65X7a
+        uC8qM4iIpJ1QM1FbJmCvKQzosONhvbDsaQanft8BL7yETT+/WDj3iIWsey1QVqkGml5cgN92fIu2I
+        kbCBOgx+7ATkUznLheqRl2y4J17KHPg6JbVf7vXTnAsB1v9weLyM4Pg2tYuLhpyqhzkyJ5OBjHjKS
+        tygkYOJigEkNDY57pS9ChWZLdmbpPC9mW1J7WZxowRnP1Iz3JF4agRR7RF84kqGNk4jKxWu42U1OA
+        BX8D22Cf1DYo94h+Y3IgqaMu9vsaaMX9Zvzo9J+xrMLxAu4K0OFo+hiXFaIjFyPOtdyq6svnWxZ1s
+        l7M4HQ0A==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.94.2)
+        (envelope-from <jeremy@azazel.net>)
+        id 1p07t8-00DjG0-3a
+        for netfilter-devel@vger.kernel.org; Tue, 29 Nov 2022 21:11:34 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH ulogd2] pgsql: correct `ulog2.ip_totlen` type
+Date:   Tue, 29 Nov 2022 21:11:27 +0000
+Message-Id: <20221129211127.246934-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Received: by 2002:a59:dd17:0:b0:32b:c965:6e63 with HTTP; Tue, 29 Nov 2022
- 12:18:22 -0800 (PST)
-Reply-To: mr.abraham022@gmail.com
-From:   "Mr.Abraham" <chiogb001@gmail.com>
-Date:   Tue, 29 Nov 2022 20:18:22 +0000
-Message-ID: <CACHdXT21_0OLyG4p5xAiMBzF1BibPBSEd-mm85a3qGko1CZ=tg@mail.gmail.com>
-Subject: hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-My Greeting, Did you receive the letter i sent to you. Please answer me.
-Regard, Mr.Abraham
+The types of `ip_totlen` in the `ulog` view and the `INSERT_IP_PACKET_FULL`
+function are `integer`, but the column in the `ulog2` table is `smallint`.  The
+"total length" field of an IP packet is an unsigned 16-bit integer, whereas
+`smallint` in PostgreSQL is a signed 16-bit integer type.  Change the type of
+`ulog2.ip_totlen` to `integer`.
+
+Link: https://bugzilla.netfilter.org/show_bug.cgi?id=1556
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ doc/pgsql-ulogd2-flat.sql | 2 +-
+ doc/pgsql-ulogd2.sql      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/doc/pgsql-ulogd2-flat.sql b/doc/pgsql-ulogd2-flat.sql
+index 6cd2150cd96b..94c903795ede 100644
+--- a/doc/pgsql-ulogd2-flat.sql
++++ b/doc/pgsql-ulogd2-flat.sql
+@@ -43,7 +43,7 @@ CREATE TABLE ulog2 (
+   ip_protocol smallint default NULL,
+   ip_tos smallint default NULL,
+   ip_ttl smallint default NULL,
+-  ip_totlen smallint default NULL,
++  ip_totlen integer default NULL,
+   ip_ihl smallint default NULL,
+   ip_csum integer default NULL,
+   ip_id integer default NULL,
+diff --git a/doc/pgsql-ulogd2.sql b/doc/pgsql-ulogd2.sql
+index 0e01ba4ba57d..edc81e760768 100644
+--- a/doc/pgsql-ulogd2.sql
++++ b/doc/pgsql-ulogd2.sql
+@@ -55,7 +55,7 @@ CREATE TABLE ulog2 (
+   ip_protocol smallint default NULL,
+   ip_tos smallint default NULL,
+   ip_ttl smallint default NULL,
+-  ip_totlen smallint default NULL,
++  ip_totlen integer default NULL,
+   ip_ihl smallint default NULL,
+   ip_csum integer default NULL,
+   ip_id integer default NULL,
+-- 
+2.35.1
+
