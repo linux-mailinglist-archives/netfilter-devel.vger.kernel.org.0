@@ -2,52 +2,65 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E05B463D346
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Nov 2022 11:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC3663D348
+	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Nov 2022 11:28:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235225AbiK3K03 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 30 Nov 2022 05:26:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
+        id S235107AbiK3K2A (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 30 Nov 2022 05:28:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235107AbiK3K02 (ORCPT
+        with ESMTP id S229892AbiK3K17 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 30 Nov 2022 05:26:28 -0500
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F982EF15
-        for <netfilter-devel@vger.kernel.org>; Wed, 30 Nov 2022 02:26:28 -0800 (PST)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id 956CE58730FB7; Wed, 30 Nov 2022 11:26:26 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id 9382D60D45410;
-        Wed, 30 Nov 2022 11:26:26 +0100 (CET)
-Date:   Wed, 30 Nov 2022 11:26:26 +0100 (CET)
-From:   Jan Engelhardt <jengelh@inai.de>
+        Wed, 30 Nov 2022 05:27:59 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 490EDBDD
+        for <netfilter-devel@vger.kernel.org>; Wed, 30 Nov 2022 02:27:57 -0800 (PST)
+Date:   Wed, 30 Nov 2022 11:27:50 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     Jeremy Sowden <jeremy@azazel.net>
-cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH ulogd2 v2 v2 13/34] output: remove zero-initialized
- `struct ulogd_plugin` members
-In-Reply-To: <20221129214749.247878-14-jeremy@azazel.net>
-Message-ID: <83oq798n-8481-15s8-498r-4o82ssqr4873@vanv.qr>
-References: <20221129214749.247878-1-jeremy@azazel.net> <20221129214749.247878-14-jeremy@azazel.net>
-User-Agent: Alpine 2.25 (LSU 592 2021-09-18)
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH ulogd2 v2 v2 00/34] Refactor of the DB output plug-ins
+Message-ID: <Y4cwJm/ped79pJ/p@salvia>
+References: <20221129214749.247878-1-jeremy@azazel.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20221129214749.247878-1-jeremy@azazel.net>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+On Tue, Nov 29, 2022 at 09:47:15PM +0000, Jeremy Sowden wrote:
+> In his feedback to my last series of clean-up patches at the beginning
+> of the year, Pablo suggested consolidating some parallel implementations
+> of the same functionality in the SQL output plug-ins.  I already had
+> some patches in the works aimed at tidying up the DB API.  This
+> patch-set is the result.  In addition to the suggested de-duping and
+> other tidy-ups, I have added prep & exec support in order to convert the
+> sqlite3 plug-in to the DB API, and updated the MySQL and PostgreSQL 
+> plug-ins to use it as well (DBI doesn't do prep & exec).
+> 
+> This patch-set is structured as follows.
+> 
+>   * Patches 1-4 are bug-fixes.
+>   * Patches 5-13 are miscellaneous tidying.
+>   * Patch 14 does the consolidation Pablo suggested.
+>   * Patches 15-26 refactor and clean up the common DB API.
+>   * Patches 27-28 add prep & exec support to the common DB API.
+>   * Patch 29 converts the MySQL plug-in to use prep & exec.
+>   * Patch 30-33 tidy up and convert the PostgreSQL plug-in to use prep &
+>     exec.
+>   * Patch 34 converts the SQLite plug-in to use the common DB API.
 
-On Tuesday 2022-11-29 22:47, Jeremy Sowden wrote:
+It's great that ulogd2 is getting updates, thanks a lot.
 
->Struct members are zero-initialized as a matter of course.
->
->--- a/output/ipfix/ulogd_output_IPFIX.c
->+++ b/output/ipfix/ulogd_output_IPFIX.c
->@@ -486,22 +486,22 @@ again:
->+	.config_kset    = (struct config_keyset *) &ipfix_kset,
+But would it be possible to start with a smaller batch? We review
+integrate and then you follow up with more updates.
 
-Here's an opportunity to remove casts, I think.
+I'll aim at being swift on it.
+
+I'd suggest 10-15 patches in each round.
