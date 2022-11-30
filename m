@@ -2,93 +2,50 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CBC63E086
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Nov 2022 20:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 577C463E0D4
+	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Nov 2022 20:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229448AbiK3TO1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 30 Nov 2022 14:14:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
+        id S229499AbiK3ThF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 30 Nov 2022 14:37:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbiK3TO1 (ORCPT
+        with ESMTP id S229472AbiK3ThE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 30 Nov 2022 14:14:27 -0500
+        Wed, 30 Nov 2022 14:37:04 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B666B62E8C
-        for <netfilter-devel@vger.kernel.org>; Wed, 30 Nov 2022 11:14:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=nsbi1ZNj67NQtY9RqGE+fQD3PpkE4QkX/XH8Z/PmN64=; b=og5C4o8k91wi2ctP7g+dAFqYQF
-        K4BaOpY4DZJPes+Hak/smHAC75jHDFmI2qaI6KjT2PsqiThxyY2rK/PK+tKmrOKKRF1NRGt1xOuX3
-        HapgOFPVI8reaTp9UzzEmjhDl4WPI58PnOs0ceG19YFwU9fxbxW4jVLN7eHsfrwliBC19SRh4bTHp
-        dmVANSLDgy4bYcUXcltUxX8uwM3CIR8jUBPhNzx4A0hG3RQftSTbVTATcc4Tnu5gAt1rwSWuTBdWk
-        Ecaqoxrema039XgpW/ciYYju3OTCk7FbDVLeF1VJSCLdnb9xBZ/kje3DUGu4DjstEo8c/+m7LoKKf
-        x1opcMKw==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1p0SXJ-0001BP-2f
-        for netfilter-devel@vger.kernel.org; Wed, 30 Nov 2022 20:14:25 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71658B1BC
+        for <netfilter-devel@vger.kernel.org>; Wed, 30 Nov 2022 11:37:03 -0800 (PST)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1p0StC-0001lB-4A; Wed, 30 Nov 2022 20:37:02 +0100
+Date:   Wed, 30 Nov 2022 20:37:02 +0100
 From:   Phil Sutter <phil@nwl.cc>
-To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 9/9] libiptc: Eliminate garbage access
-Date:   Wed, 30 Nov 2022 20:13:45 +0100
-Message-Id: <20221130191345.14543-10-phil@nwl.cc>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20221130191345.14543-1-phil@nwl.cc>
-References: <20221130191345.14543-1-phil@nwl.cc>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH v3 iptables-nft 0/3] remove escape_quotes support
+Message-ID: <Y4ew3gceeoLUpPb9@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>
+References: <20221130093154.29004-1-fw@strlen.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221130093154.29004-1-fw@strlen.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When adding a rule, valgrind prints:
+On Wed, Nov 30, 2022 at 10:31:51AM +0100, Florian Westphal wrote:
+> Changes since v3:
+> - replace strcmp(s, "") with s[0], do not escape '
+> - handle multiline expectations
 
-Syscall param socketcall.setsockopt(optval) points to uninitialised byte(s)
-   at 0x4A8165A: setsockopt (in /lib64/libc.so.6)
-   by 0x4857A48: iptc_commit (libiptc.c:2676)
-   by 0x10E4BB: iptables_main (iptables-standalone.c:61)
-   by 0x49A3349: (below main) (in /lib64/libc.so.6)
- Address 0x4b63788 is 40 bytes inside a block of size 1,448 alloc'd
-   at 0x484659F: calloc (vg_replace_malloc.c:1328)
-   by 0x4857654: iptc_commit (libiptc.c:2564)
-   by 0x10E4BB: iptables_main (iptables-standalone.c:61)
-   by 0x49A3349: (below main) (in /lib64/libc.so.6)
+Series applied after dropping the strcmp() changes and eliminating the
+missed tick escaping.
 
-This is because repl->counters is not initialized upon allocation. Since
-the field is an array, make use of calloc() which implicitly does the
-initialization.
-
-Fixes: e37c0dc100c51 ("Revert the recent addition of memset()'s to TC_COMMIT. One of them is bogus and the other one needs more investigation to why valgrind is complaining.")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- libiptc/libiptc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/libiptc/libiptc.c b/libiptc/libiptc.c
-index 97823f935d1ee..f9b7779efdba5 100644
---- a/libiptc/libiptc.c
-+++ b/libiptc/libiptc.c
-@@ -2554,8 +2554,8 @@ TC_COMMIT(struct xtc_handle *handle)
- 			+ sizeof(STRUCT_COUNTERS) * new_number;
- 
- 	/* These are the old counters we will get from kernel */
--	repl->counters = malloc(sizeof(STRUCT_COUNTERS)
--				* handle->info.num_entries);
-+	repl->counters = calloc(handle->info.num_entries,
-+				sizeof(STRUCT_COUNTERS));
- 	if (!repl->counters) {
- 		errno = ENOMEM;
- 		goto out_free_repl;
--- 
-2.38.0
-
+Thanks!
