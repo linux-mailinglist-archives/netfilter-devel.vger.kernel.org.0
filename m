@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C9563E084
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Nov 2022 20:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D93763E081
+	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Nov 2022 20:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbiK3TOR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 30 Nov 2022 14:14:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33166 "EHLO
+        id S229566AbiK3TOC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 30 Nov 2022 14:14:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbiK3TOQ (ORCPT
+        with ESMTP id S229456AbiK3TOA (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 30 Nov 2022 14:14:16 -0500
+        Wed, 30 Nov 2022 14:14:00 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011C762E8C
-        for <netfilter-devel@vger.kernel.org>; Wed, 30 Nov 2022 11:14:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28525803C
+        for <netfilter-devel@vger.kernel.org>; Wed, 30 Nov 2022 11:13:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=t1z2kGghzgtSeyENJQ3L/mLTDt8JL0/4Uy5vRFSqROE=; b=CBsRkFZ2lBILGoSwVUq/QI26X/
-        WEzYB4ZQWY1ByVGpGwNUzuQSbyzZO/jy0x2W3IMvciCpn0MqHhSkh60UlEBfOF+zNTR5DrPziP2mG
-        9OTZTyDZmRRBsMT0XPUmpPje7oDKD06+Y2xAO5q85WUgQi4l5bbji5W4Q5nbsBdlOg+LTSRtucpBB
-        ulWFviDtq6WUrNHI4Vn2ehqsDom7tJ1SRAqgpz4+k/e7JLTEYmcvrt6XGk3TQ8uGwrrSmeOBjGFEb
-        2vpQBNJ+whWFzWcoHVOxy4rssJPYo3DO77rE/hkGphxWCmda4V1KBbTLqo96F5oB4IpfCTEnH/756
-        h4wqjDsA==;
+        bh=2vhSk1GNY4CVVA2Ll9QvL8F0T6hpfweB8UpiTk5LHHA=; b=Uf36i+AdWy8TBNCi9wud6/ijHh
+        g7ScWUNjx6CFZpDHH3zOgNpy1qZvsgXz3ZXL1+HSn/BY2cyvg9kUYCcdJTBU6Uu2Ksxsr7Cr3rg8B
+        duGczBA2JY0SB9ZjBEZfuYAWwi5pDyIioa23sbTat6/TZdi60WFBmquBtTgmnfN9WPGcGYsHBH/il
+        A566FkHFnWvCAjl4974G74aj5OWPE9B0sOknk/+c+QSS/LRfygluKH3dpqqeJak9SxFaCEYXnKOzu
+        thxiAgJk4uolIlH8c6X7AILhNmRk62/oFU51gA+avCX2jh+YE9/o3dvnhfrLNDRov2D10rtnffNAA
+        gunh6GrA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1p0SX8-0001Ab-9q
-        for netfilter-devel@vger.kernel.org; Wed, 30 Nov 2022 20:14:14 +0100
+        id 1p0SWs-00019Y-A5
+        for netfilter-devel@vger.kernel.org; Wed, 30 Nov 2022 20:13:58 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 6/9] xtables: Introduce xtables_clear_iptables_command_state()
-Date:   Wed, 30 Nov 2022 20:13:42 +0100
-Message-Id: <20221130191345.14543-7-phil@nwl.cc>
+Subject: [iptables PATCH 7/9] iptables: Properly clear iptables_command_state object
+Date:   Wed, 30 Nov 2022 20:13:43 +0100
+Message-Id: <20221130191345.14543-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221130191345.14543-1-phil@nwl.cc>
 References: <20221130191345.14543-1-phil@nwl.cc>
@@ -51,195 +51,72 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This is nft_clear_iptables_command_state() but in a location reachable
-by legacy iptables, too.
+When adding a rule with a target which defines a udata_size, valgrind
+prints:
 
-Changes callers in non-family-specific code to use clear_cs callback
-instead of directly calling it - ebtables still has a custom variant.
+8 bytes in 1 blocks are definitely lost in loss record 1 of 1
+   at 0x484659F: calloc (vg_replace_malloc.c:1328)
+   by 0x486B128: xtables_calloc (xtables.c:434)
+   by 0x1128B4: xs_init_target (xshared.c:238)
+   by 0x113CD3: command_jump (xshared.c:877)
+   by 0x114969: do_parse (xshared.c:1644)
+   by 0x10EEB9: do_command4 (iptables.c:691)
+   by 0x10E45B: iptables_main (iptables-standalone.c:59)
+   by 0x49A2349: (below main) (in /lib64/libc.so.6)
 
+It is not sufficient to free cs.target->t, so call
+xtables_clear_iptables_command_state() which takes care of all the
+details.
+
+Fixes: 2dba676b68ef8 ("extensions: support for per-extension instance "global" variable space")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-arp.c           |  4 ++--
- iptables/nft-ipv4.c          |  4 ++--
- iptables/nft-ipv6.c          |  4 ++--
- iptables/nft-shared.c        | 14 --------------
- iptables/nft-shared.h        |  1 -
- iptables/xshared.c           | 17 +++++++++++++++++
- iptables/xshared.h           |  2 ++
- iptables/xtables-translate.c |  2 +-
- iptables/xtables.c           |  2 +-
- 9 files changed, 27 insertions(+), 23 deletions(-)
+ iptables/ip6tables.c | 3 +--
+ iptables/iptables.c  | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
-index 59f100af2a6b9..d670cbe629fe4 100644
---- a/iptables/nft-arp.c
-+++ b/iptables/nft-arp.c
-@@ -490,7 +490,7 @@ nft_arp_print_rule(struct nft_handle *h, struct nftnl_rule *r,
- 	if (!(format & FMT_NONEWLINE))
- 		fputc('\n', stdout);
- 
--	nft_clear_iptables_command_state(&cs);
-+	xtables_clear_iptables_command_state(&cs);
- }
- 
- static bool nft_arp_is_same(const struct iptables_command_state *cs_a,
-@@ -787,7 +787,7 @@ struct nft_family_ops nft_family_ops_arp = {
- 	},
- 	.rule_to_cs		= nft_rule_to_iptables_command_state,
- 	.init_cs		= nft_arp_init_cs,
--	.clear_cs		= nft_clear_iptables_command_state,
-+	.clear_cs		= xtables_clear_iptables_command_state,
- 	.parse_target		= nft_ipv46_parse_target,
- 	.add_entry		= nft_arp_add_entry,
- 	.delete_entry		= nft_arp_delete_entry,
-diff --git a/iptables/nft-ipv4.c b/iptables/nft-ipv4.c
-index 6c62dd46dddac..42167351710e6 100644
---- a/iptables/nft-ipv4.c
-+++ b/iptables/nft-ipv4.c
-@@ -247,7 +247,7 @@ static void nft_ipv4_print_rule(struct nft_handle *h, struct nftnl_rule *r,
- 	if (!(format & FMT_NONEWLINE))
- 		fputc('\n', stdout);
- 
--	nft_clear_iptables_command_state(&cs);
-+	xtables_clear_iptables_command_state(&cs);
- }
- 
- static void nft_ipv4_save_rule(const struct iptables_command_state *cs,
-@@ -454,7 +454,7 @@ struct nft_family_ops nft_family_ops_ipv4 = {
- 	},
- 	.parse_target		= nft_ipv46_parse_target,
- 	.rule_to_cs		= nft_rule_to_iptables_command_state,
--	.clear_cs		= nft_clear_iptables_command_state,
-+	.clear_cs		= xtables_clear_iptables_command_state,
- 	.xlate			= nft_ipv4_xlate,
- 	.add_entry		= nft_ipv4_add_entry,
- 	.delete_entry		= nft_ipv4_delete_entry,
-diff --git a/iptables/nft-ipv6.c b/iptables/nft-ipv6.c
-index 98c35afa67ad9..3a373b7eb2cfe 100644
---- a/iptables/nft-ipv6.c
-+++ b/iptables/nft-ipv6.c
-@@ -211,7 +211,7 @@ static void nft_ipv6_print_rule(struct nft_handle *h, struct nftnl_rule *r,
- 	if (!(format & FMT_NONEWLINE))
- 		fputc('\n', stdout);
- 
--	nft_clear_iptables_command_state(&cs);
-+	xtables_clear_iptables_command_state(&cs);
- }
- 
- static void nft_ipv6_save_rule(const struct iptables_command_state *cs,
-@@ -423,7 +423,7 @@ struct nft_family_ops nft_family_ops_ipv6 = {
- 	},
- 	.parse_target		= nft_ipv46_parse_target,
- 	.rule_to_cs		= nft_rule_to_iptables_command_state,
--	.clear_cs		= nft_clear_iptables_command_state,
-+	.clear_cs		= xtables_clear_iptables_command_state,
- 	.xlate			= nft_ipv6_xlate,
- 	.add_entry		= nft_ipv6_add_entry,
- 	.delete_entry		= nft_ipv6_delete_entry,
-diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
-index 63d251986f65b..f1503b6ce0cbc 100644
---- a/iptables/nft-shared.c
-+++ b/iptables/nft-shared.c
-@@ -1293,20 +1293,6 @@ bool nft_rule_to_iptables_command_state(struct nft_handle *h,
- 	return ret;
- }
- 
--void nft_clear_iptables_command_state(struct iptables_command_state *cs)
--{
--	xtables_rule_matches_free(&cs->matches);
--	if (cs->target) {
--		free(cs->target->t);
--		cs->target->t = NULL;
--
--		if (cs->target == cs->target->next) {
--			free(cs->target);
--			cs->target = NULL;
--		}
--	}
--}
--
- void nft_ipv46_save_chain(const struct nftnl_chain *c, const char *policy)
- {
- 	const char *chain = nftnl_chain_get_str(c, NFTNL_CHAIN_NAME);
-diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
-index e2c3ac7b0cc5c..07d39131cb0d6 100644
---- a/iptables/nft-shared.h
-+++ b/iptables/nft-shared.h
-@@ -216,7 +216,6 @@ void get_cmp_data(struct nftnl_expr *e, void *data, size_t dlen, bool *inv);
- bool nft_rule_to_iptables_command_state(struct nft_handle *h,
- 					const struct nftnl_rule *r,
- 					struct iptables_command_state *cs);
--void nft_clear_iptables_command_state(struct iptables_command_state *cs);
- void print_matches_and_target(struct iptables_command_state *cs,
- 			      unsigned int format);
- void nft_ipv46_save_chain(const struct nftnl_chain *c, const char *policy);
-diff --git a/iptables/xshared.c b/iptables/xshared.c
-index d400dc595ea99..2a894c19a011d 100644
---- a/iptables/xshared.c
-+++ b/iptables/xshared.c
-@@ -1356,6 +1356,23 @@ static const char *optstring_lookup(int family)
- 	return "";
- }
- 
-+void xtables_clear_iptables_command_state(struct iptables_command_state *cs)
-+{
-+	xtables_rule_matches_free(&cs->matches);
-+	if (cs->target) {
-+		free(cs->target->t);
-+		cs->target->t = NULL;
-+
-+		free(cs->target->udata);
-+		cs->target->udata = NULL;
-+
-+		if (cs->target == cs->target->next) {
-+			free(cs->target);
-+			cs->target = NULL;
-+		}
-+	}
-+}
-+
- void do_parse(int argc, char *argv[],
- 	      struct xt_cmd_parse *p, struct iptables_command_state *cs,
- 	      struct xtables_args *args)
-diff --git a/iptables/xshared.h b/iptables/xshared.h
-index bfae4b4e1b5d3..0ed9f3c29c600 100644
---- a/iptables/xshared.h
-+++ b/iptables/xshared.h
-@@ -130,6 +130,8 @@ struct iptables_command_state {
- 	bool restore;
- };
- 
-+void xtables_clear_iptables_command_state(struct iptables_command_state *cs);
-+
- typedef int (*mainfunc_t)(int, char **);
- 
- struct subcommand {
-diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
-index 4e8db4bedff88..e8d251b3162d9 100644
---- a/iptables/xtables-translate.c
-+++ b/iptables/xtables-translate.c
-@@ -336,7 +336,7 @@ static int do_command_xlate(struct nft_handle *h, int argc, char *argv[],
- 		exit(1);
+diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
+index 1d2326570a71d..345af4519bfe7 100644
+--- a/iptables/ip6tables.c
++++ b/iptables/ip6tables.c
+@@ -778,7 +778,6 @@ int do_command6(int argc, char *argv[], char **table,
+ 			xtables_find_target(cs.jumpto, XTF_LOAD_MUST_SUCCEED);
+ 		} else {
+ 			e = generate_entry(&cs.fw6, cs.matches, cs.target->t);
+-			free(cs.target->t);
+ 		}
  	}
  
--	nft_clear_iptables_command_state(&cs);
-+	h->ops->clear_cs(&cs);
+@@ -880,7 +879,7 @@ int do_command6(int argc, char *argv[], char **table,
+ 	if (verbose > 1)
+ 		dump_entries6(*handle);
  
- 	if (h->family == AF_INET) {
- 		free(args.s.addr.v4);
-diff --git a/iptables/xtables.c b/iptables/xtables.c
-index 70924176df8c1..22d6ea58376fc 100644
---- a/iptables/xtables.c
-+++ b/iptables/xtables.c
-@@ -262,7 +262,7 @@ int do_commandx(struct nft_handle *h, int argc, char *argv[], char **table,
+-	xtables_rule_matches_free(&cs.matches);
++	xtables_clear_iptables_command_state(&cs);
  
- 	*table = p.table;
+ 	if (e != NULL) {
+ 		free(e);
+diff --git a/iptables/iptables.c b/iptables/iptables.c
+index d246198f49d27..6f7b34762ea40 100644
+--- a/iptables/iptables.c
++++ b/iptables/iptables.c
+@@ -773,7 +773,6 @@ int do_command4(int argc, char *argv[], char **table,
+ 			xtables_find_target(cs.jumpto, XTF_LOAD_MUST_SUCCEED);
+ 		} else {
+ 			e = generate_entry(&cs.fw, cs.matches, cs.target->t);
+-			free(cs.target->t);
+ 		}
+ 	}
  
--	nft_clear_iptables_command_state(&cs);
-+	h->ops->clear_cs(&cs);
+@@ -875,7 +874,7 @@ int do_command4(int argc, char *argv[], char **table,
+ 	if (verbose > 1)
+ 		dump_entries(*handle);
  
- 	free(args.s.addr.ptr);
- 	free(args.s.mask.ptr);
+-	xtables_rule_matches_free(&cs.matches);
++	xtables_clear_iptables_command_state(&cs);
+ 
+ 	if (e != NULL) {
+ 		free(e);
 -- 
 2.38.0
 
