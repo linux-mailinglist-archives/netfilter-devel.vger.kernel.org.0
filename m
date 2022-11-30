@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EF463E08A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Nov 2022 20:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3609C63E080
+	for <lists+netfilter-devel@lfdr.de>; Wed, 30 Nov 2022 20:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbiK3TOp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 30 Nov 2022 14:14:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33308 "EHLO
+        id S229475AbiK3TN4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 30 Nov 2022 14:13:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbiK3TOo (ORCPT
+        with ESMTP id S229566AbiK3TNz (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 30 Nov 2022 14:14:44 -0500
+        Wed, 30 Nov 2022 14:13:55 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A9F63D50
-        for <netfilter-devel@vger.kernel.org>; Wed, 30 Nov 2022 11:14:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E24785803C
+        for <netfilter-devel@vger.kernel.org>; Wed, 30 Nov 2022 11:13:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=DICZhItptfZ9OVvefJInZmmbG9RmBjPNowkwLp+CT5E=; b=nwysA/byxpbDK1XxS3/azQ/ljk
-        BTde3fjkG2fESyLWrdqYtfuWLxi/Kz/8vWqhPvvuHBYGtHjfzEa9B2l6fOtyAe6uGHjCL9KPld82O
-        KOYKQd4RIwRI7P1XOFN635H7Ty7fvgLY73D7OMAw6KTAGlpq5/DFbo41AeFtybk61wv+i/8+sPG06
-        ojXQ/yocueUQuvS+i0zB6Y3JFmvz8CQ9s8ymOLa1Pqlknp6txt1SjqLclZ99w+OX01F43G45sERn3
-        SmiCVpnBG/cli3tv+thZMosSZt/7fMsCzIFydWicGvuN6jBYdJrAP/IuL1Q5TcFYMiW9K11lj5gTI
-        2EKWy2cA==;
+        bh=4PAdxYaL4c9mIgfzDnntIUsSu4Xaoz277RfRCAcKvLM=; b=EHg0WYprmNi66mizTsz+hpaLZF
+        hDjPkNMLukTNjgLdNGmVC8gB+HNI06Z9fvFCyOOnD5F2/WzsjgxWyHE5PZEgMtRdAAm4Hg8U5TQzl
+        aExChkt24CmCyaf8Nsf5CyGZ5UZq2tMCHtyamNF/qPtId1cTlyyhB8fPE7y/PVyOM3YL9hViadTuR
+        tLWOvCFGygARS1/uKTQQPjoTJtDE+pn1jxEgWiANBsxF2YKDMh9DPBp0Heeo6uVnHY/IetZ2T63uM
+        OpAXs6L2HsuXe9Rw/72xa8xIA0GMVV7JFgstuENFQH2dPUczlWk5CnI5Q4NLVkcjVbZo9onZyDWKA
+        sishQcsA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1p0SXa-0001CT-CV
-        for netfilter-devel@vger.kernel.org; Wed, 30 Nov 2022 20:14:42 +0100
+        id 1p0SWm-00019E-Ry
+        for netfilter-devel@vger.kernel.org; Wed, 30 Nov 2022 20:13:53 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 4/9] nft: Plug memleak in nft_rule_zero_counters()
-Date:   Wed, 30 Nov 2022 20:13:40 +0100
-Message-Id: <20221130191345.14543-5-phil@nwl.cc>
+Subject: [iptables PATCH 5/9] iptables: Plug memleaks in print_firewall()
+Date:   Wed, 30 Nov 2022 20:13:41 +0100
+Message-Id: <20221130191345.14543-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221130191345.14543-1-phil@nwl.cc>
 References: <20221130191345.14543-1-phil@nwl.cc>
@@ -51,48 +51,88 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-When zeroing a specific rule, valgrind reports:
+When adding a rule in verbose mode, valgrind prints:
 
-40 bytes in 1 blocks are definitely lost in loss record 1 of 1
-   at 0x484659F: calloc (vg_replace_malloc.c:1328)
-   by 0x48DE128: xtables_calloc (xtables.c:434)
-   by 0x11C7C6: nft_parse_immediate (nft-shared.c:1071)
-   by 0x11C7C6: nft_rule_to_iptables_command_state (nft-shared.c:1236)
-   by 0x119AF5: nft_rule_zero_counters (nft.c:2877)
-   by 0x11A3CA: nft_prepare (nft.c:3445)
-   by 0x11A7A8: nft_commit (nft.c:3479)
-   by 0x114258: xtables_main.isra.0 (xtables-standalone.c:94)
-   by 0x1142D9: xtables_ip6_main (xtables-standalone.c:118)
-   by 0x49F2349: (below main) (in /lib64/libc.so.6)
+192 bytes in 1 blocks are definitely lost in loss record 1 of 2
+   at 0x48417E5: malloc (vg_replace_malloc.c:381)
+   by 0x486B158: xtables_malloc (xtables.c:446)
+   by 0x486C1F6: xtables_find_match (xtables.c:826)
+   by 0x10E684: print_match (iptables.c:115)
+   by 0x10E684: print_firewall (iptables.c:169)
+   by 0x10FC0C: print_firewall_line (iptables.c:196)
+   by 0x10FC0C: append_entry (iptables.c:221)
+   by 0x10FC0C: do_command4 (iptables.c:776)
+   by 0x10E45B: iptables_main (iptables-standalone.c:59)
+   by 0x49A2349: (below main) (in /lib64/libc.so.6)
 
-Have to free the matches/target in populated iptables_command_state object
-again. While being at it, call the proper family_ops callbacks since this is
-family-agnostic code.
+200 bytes in 1 blocks are definitely lost in loss record 2 of 2
+   at 0x48417E5: malloc (vg_replace_malloc.c:381)
+   by 0x486B158: xtables_malloc (xtables.c:446)
+   by 0x486BBD6: xtables_find_target (xtables.c:956)
+   by 0x10E579: print_firewall (iptables.c:145)
+   by 0x10FC0C: print_firewall_line (iptables.c:196)
+   by 0x10FC0C: append_entry (iptables.c:221)
+   by 0x10FC0C: do_command4 (iptables.c:776)
+   by 0x10E45B: iptables_main (iptables-standalone.c:59)
+   by 0x49A2349: (below main) (in /lib64/libc.so.6)
 
-Fixes: a69cc575295ee ("xtables: allow to reset the counters of an existing rule")
+If the match/target was cloned, it needs to be freed. Basically a bug since
+day 1.
+
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ iptables/ip6tables.c | 6 ++++++
+ iptables/iptables.c  | 6 ++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 4af55341a210f..5def01ad6bfbc 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -2873,10 +2873,11 @@ int nft_rule_zero_counters(struct nft_handle *h, const char *chain,
- 		goto error;
- 	}
- 
--	nft_rule_to_iptables_command_state(h, r, &cs);
--
-+	h->ops->rule_to_cs(h, r, &cs);
- 	cs.counters.pcnt = cs.counters.bcnt = 0;
- 	new_rule = nft_rule_new(h, chain, table, &cs);
-+	h->ops->clear_cs(&cs);
+diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
+index 062b2b152d554..1d2326570a71d 100644
+--- a/iptables/ip6tables.c
++++ b/iptables/ip6tables.c
+@@ -122,6 +122,9 @@ print_match(const struct xt_entry_match *m,
+ 			printf("%s%s ", match->name, unsupported_rev);
+ 		else
+ 			printf("%s ", match->name);
 +
- 	if (!new_rule)
- 		return 1;
- 
++		if (match->next == match)
++			free(match);
+ 	} else {
+ 		if (name[0])
+ 			printf("UNKNOWN match `%s' ", name);
+@@ -179,6 +182,9 @@ print_firewall(const struct ip6t_entry *fw,
+ 			tg->print(&fw->ipv6, t, format & FMT_NUMERIC);
+ 		else if (target->print)
+ 			printf(" %s%s", target->name, unsupported_rev);
++
++		if (target->next == target)
++			free(target);
+ 	} else if (t->u.target_size != sizeof(*t))
+ 		printf("[%u bytes of unknown target data] ",
+ 		       (unsigned int)(t->u.target_size - sizeof(*t)));
+diff --git a/iptables/iptables.c b/iptables/iptables.c
+index 0351b39fb7e3e..d246198f49d27 100644
+--- a/iptables/iptables.c
++++ b/iptables/iptables.c
+@@ -122,6 +122,9 @@ print_match(const struct xt_entry_match *m,
+ 			printf("%s%s ", match->name, unsupported_rev);
+ 		else
+ 			printf("%s ", match->name);
++
++		if (match->next == match)
++			free(match);
+ 	} else {
+ 		if (name[0])
+ 			printf("UNKNOWN match `%s' ", name);
+@@ -178,6 +181,9 @@ print_firewall(const struct ipt_entry *fw,
+ 			tg->print(&fw->ip, t, format & FMT_NUMERIC);
+ 		else if (target->print)
+ 			printf(" %s%s", target->name, unsupported_rev);
++
++		if (target->next == target)
++			free(target);
+ 	} else if (t->u.target_size != sizeof(*t))
+ 		printf("[%u bytes of unknown target data] ",
+ 		       (unsigned int)(t->u.target_size - sizeof(*t)));
 -- 
 2.38.0
 
