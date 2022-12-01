@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A6563F578
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Dec 2022 17:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C3963F57A
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Dec 2022 17:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232287AbiLAQkR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Dec 2022 11:40:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
+        id S231846AbiLAQka (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Dec 2022 11:40:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbiLAQj6 (ORCPT
+        with ESMTP id S232294AbiLAQkE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Dec 2022 11:39:58 -0500
+        Thu, 1 Dec 2022 11:40:04 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C02FAA8D4
-        for <netfilter-devel@vger.kernel.org>; Thu,  1 Dec 2022 08:39:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6E9ABA26
+        for <netfilter-devel@vger.kernel.org>; Thu,  1 Dec 2022 08:39:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=oltnq2cQR4bW61KzjwX1IsyY9cQZ0Aum/Wbu/PjuqNg=; b=gTFqHJ9lXdwpKguZXDCutNB+ZB
-        pCayETs/M+mV5HUMJvk8+e/R1m26RQK2eFgKAELDNpwLl3+YkEUhFO3zNDVJ4+7aXGNkL5I9/VKKx
-        vaCE4y3VG30xaozXsJO4TwQyvaaZVmzO3PN8TdQGNa+O6Dmn13BW+F7ay6vv98SDH4GM/qBZpykDS
-        +hVN/4Ecd4ECZzStadS0EKklZvs3WAWBvWTIOYrbDvCP+kOLIxLLJy2yT1ZUtFIztLofKshRbFIX7
-        W9jq5RHquLBsaua2tJOpDoH4N7hyk0xILsGTa3IgtAI/JBKTwKyPRnhASmxiHdQhUnkHRQ1H6yCr6
-        WgYRbuLQ==;
+        bh=MLK87kKE6XEepbhFzYpBB8gYoFa9pxROwtVnmL2DnZg=; b=jxCgf7aMO7OLMGRmThUeF3+ovI
+        XJgEUf6P9NfGh4D9v5Y4wH5VZzipdtYBa75KhekuUu6y+X+CQBDdOa+WJ4H0ULUVHu0Ch4V8ds1zP
+        jV3rYzLCJYfyrH3jE1v1qTZ9Nkgk6WpuRPWeAH0Gi6zI/tyPRzbvzElm/mqjZyOBc26OD8fDauJsU
+        pr9O4/vkDJbaNk1m/8C6Naa89uQ/CW2Qi+4knQd9eSjCPN7XnQu1m64bP/oMvpDgyAAO3exZ9M6rS
+        dyGNwMKbx6h8beVb2lgZVtBnyOHKDu5kbrminXuXWR+cNHaQ3pBBvWIe7qC8tOSJ3GehY52eOzUCs
+        8snvlCwg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1p0mb6-0002Xw-Oy; Thu, 01 Dec 2022 17:39:40 +0100
+        id 1p0mbH-0002YG-DU; Thu, 01 Dec 2022 17:39:51 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [iptables PATCH 4/7] nft: Fix match generator for '! -i +'
-Date:   Thu,  1 Dec 2022 17:39:13 +0100
-Message-Id: <20221201163916.30808-5-phil@nwl.cc>
+Subject: [iptables PATCH 5/7] nft: Recognize INVAL/D interface name
+Date:   Thu,  1 Dec 2022 17:39:14 +0100
+Message-Id: <20221201163916.30808-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221201163916.30808-1-phil@nwl.cc>
 References: <20221201163916.30808-1-phil@nwl.cc>
@@ -51,44 +51,59 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-It's actually nonsense since it will never match, but iptables accepts
-it and the resulting nftables rule must behave identically. Reuse the
-solution implemented into xtables-translate (by commit e179e87a1179e)
-and turn the above match into 'iifname INVAL/D'.
+It is just a hack to translate '! -i +' into a never matching nft rule,
+but recognize it anyway for completeness' sake and to make xlate replay
+test pass.
 
-The commit this fixes merely ignored the fact that "any interface" match
-might be inverted.
-
-Fixes: 0a8635183edd0 ("xtables-compat: ignore '+' interface name")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-shared.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ iptables/nft-shared.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
 diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
-index e812a9bcae466..bcb6ada34e0fb 100644
+index bcb6ada34e0fb..b7e073df5a270 100644
 --- a/iptables/nft-shared.c
 +++ b/iptables/nft-shared.c
-@@ -168,6 +168,9 @@ void add_iniface(struct nft_handle *h, struct nftnl_rule *r,
- 	if (iface[iface_len - 1] == '+') {
- 		if (iface_len > 1)
- 			add_cmp_ptr(r, op, iface, iface_len - 1, reg);
-+		else if (op != NFT_CMP_EQ)
-+			add_cmp_ptr(r, NFT_CMP_EQ, "INVAL/D",
-+				    strlen("INVAL/D") + 1, reg);
- 	} else {
- 		add_cmp_ptr(r, op, iface, iface_len + 1, reg);
- 	}
-@@ -185,6 +188,9 @@ void add_outiface(struct nft_handle *h, struct nftnl_rule *r,
- 	if (iface[iface_len - 1] == '+') {
- 		if (iface_len > 1)
- 			add_cmp_ptr(r, op, iface, iface_len - 1, reg);
-+		else if (op != NFT_CMP_EQ)
-+			add_cmp_ptr(r, NFT_CMP_EQ, "INVAL/D",
-+				    strlen("INVAL/D") + 1, reg);
- 	} else {
- 		add_cmp_ptr(r, op, iface, iface_len + 1, reg);
- 	}
+@@ -359,6 +359,21 @@ static int parse_meta_pkttype(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 	return 0;
+ }
+ 
++static void parse_invalid_iface(char *iface, unsigned char *mask,
++				uint8_t *invflags, uint8_t invbit)
++{
++	if (*invflags & invbit || strcmp(iface, "INVAL/D"))
++		return;
++
++	/* nft's poor "! -o +" excuse */
++	*invflags |= invbit;
++	iface[0] = '+';
++	iface[1] = '\0';
++	mask[0] = 0xff;
++	mask[1] = 0xff;
++	memset(mask + 2, 0, IFNAMSIZ - 2);
++}
++
+ int parse_meta(struct nft_xt_ctx *ctx, struct nftnl_expr *e, uint8_t key,
+ 	       char *iniface, unsigned char *iniface_mask,
+ 	       char *outiface, unsigned char *outiface_mask, uint8_t *invflags)
+@@ -393,6 +408,8 @@ int parse_meta(struct nft_xt_ctx *ctx, struct nftnl_expr *e, uint8_t key,
+ 			*invflags |= IPT_INV_VIA_IN;
+ 
+ 		parse_ifname(ifname, len, iniface, iniface_mask);
++		parse_invalid_iface(iniface, iniface_mask,
++				    invflags, IPT_INV_VIA_IN);
+ 		break;
+ 	case NFT_META_BRI_OIFNAME:
+ 	case NFT_META_OIFNAME:
+@@ -401,6 +418,8 @@ int parse_meta(struct nft_xt_ctx *ctx, struct nftnl_expr *e, uint8_t key,
+ 			*invflags |= IPT_INV_VIA_OUT;
+ 
+ 		parse_ifname(ifname, len, outiface, outiface_mask);
++		parse_invalid_iface(outiface, outiface_mask,
++				    invflags, IPT_INV_VIA_OUT);
+ 		break;
+ 	case NFT_META_MARK:
+ 		parse_meta_mark(ctx, e);
 -- 
 2.38.0
 
