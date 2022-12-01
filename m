@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AB763F577
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Dec 2022 17:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C1163F57C
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Dec 2022 17:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbiLAQkM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Dec 2022 11:40:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
+        id S232296AbiLAQkc (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Dec 2022 11:40:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232327AbiLAQjy (ORCPT
+        with ESMTP id S232315AbiLAQkG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Dec 2022 11:39:54 -0500
+        Thu, 1 Dec 2022 11:40:06 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A607BD896
-        for <netfilter-devel@vger.kernel.org>; Thu,  1 Dec 2022 08:39:37 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE32ABA33
+        for <netfilter-devel@vger.kernel.org>; Thu,  1 Dec 2022 08:40:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Fp+OMZPg/e3lIG1kPF+uUCZiVZgJ84+yMIYa2Q0P/L8=; b=P+UnZM89BpOk3MWbTQVYXJwMeT
-        0R67YDMuhF9OMkO9PECCgV0DWuGMdgVMSKJ5XpIV0qsrNtyNAGotpu8f80KFDqqE9QBH/YfIF3Avo
-        5fL7sq7A6CTmEjizlWYdodaRdCZflmWeAjp4dDLDq5SCY3oTLXu+Kz3chasY3/RkIPy9pqbS6R8dP
-        aXGcGmG2MYOZ1089bmpmiJpL0ah7Sj7NHJNQdJYENOfZNqHCGVcw4u3CzKAcMwQ6oBEm0VZngKa7N
-        0Fgmxp/VKl/XPXHRjVdqWR1xAH4cvTXGo9f/7A4PROPy3bFFL9FjpXKAeFsgekJHp8XTeN0eCd6/r
-        YYRYjf4Q==;
+        bh=YYcn/PZ3E4akKl8eCSS5hrbAW9HorLFlD5yL21BcrK4=; b=Q/ExjC0xiKVF72kpoygF790Qus
+        Vub/tAbduNADR+pmKyWW1b/r8YPoY6s+2SRzwqJOjSL8Qa3QWcOjzt8FNgDf+/mOhDwrXUPcoyEAH
+        Mn2wHjcRivs/U7t4vlxVvelpKHMi+hTuisXkYZ1fWbUa2jHkkmWDtdK/4Km8IoN/qPUNsftL95C97
+        pazwtIswO9ZE9vajxQtUknlqZQksOAyisPGRWEPLLLIvVC1pN50PRMWse60NbxPq3QxIQ0PbgDemM
+        f/mZ9jkGL+l6qKT9RB3yYtqHaJ2dgQuqC8+W06XAW1wAoUCUQvJT92SrHuv+B+Qr7HhoDUev9ckhW
+        Gha8CohQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1p0mb1-0002Xr-EW; Thu, 01 Dec 2022 17:39:35 +0100
+        id 1p0mbS-0002be-1z; Thu, 01 Dec 2022 17:40:02 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [iptables PATCH 1/7] ebtables: Implement --check command
-Date:   Thu,  1 Dec 2022 17:39:10 +0100
-Message-Id: <20221201163916.30808-2-phil@nwl.cc>
+Subject: [iptables PATCH 2/7] tests: xlate: Use --check to verify replay
+Date:   Thu,  1 Dec 2022 17:39:11 +0100
+Message-Id: <20221201163916.30808-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221201163916.30808-1-phil@nwl.cc>
 References: <20221201163916.30808-1-phil@nwl.cc>
@@ -51,74 +51,95 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Sadly, '-C' is in use already for --change-counters (even though
-ebtables-nft does not implement this), so add a long-option only. It is
-needed for xlate testsuite in replay mode, which will use '--check'
-instead of '-C'.
+After applying the translated rule using nft, pass the untranslated rule
+to --check instead of dumping the ruleset and performing a string
+search. This fixes for mandatory match reordering (e.g. addresses before
+interfaces) and minor differences like /32 netmasks or even just
+whitespace changes.
 
+Fixes: 223e34b057b95 ("tests: xlate-test: Replay results for reverse direction testing")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-eb.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ xlate-test.py | 46 ++++++++++++++++++----------------------------
+ 1 file changed, 18 insertions(+), 28 deletions(-)
 
-diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index c5fc338575f67..7214a767ffe96 100644
---- a/iptables/xtables-eb.c
-+++ b/iptables/xtables-eb.c
-@@ -198,6 +198,7 @@ struct option ebt_original_options[] =
- 	{ "delete-chain"   , optional_argument, 0, 'X' },
- 	{ "init-table"     , no_argument      , 0, 11  },
- 	{ "concurrent"     , no_argument      , 0, 13  },
-+	{ "check"          , required_argument, 0, 14  },
- 	{ 0 }
- };
+diff --git a/xlate-test.py b/xlate-test.py
+index 6513b314beb35..4f037ef6ed96d 100755
+--- a/xlate-test.py
++++ b/xlate-test.py
+@@ -67,6 +67,7 @@ xtables_nft_multi = 'xtables-nft-multi'
+     srcwords = sourceline.split()
  
-@@ -730,6 +731,7 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
- 		case 'N': /* Make a user defined chain */
- 		case 'E': /* Rename chain */
- 		case 'X': /* Delete chain */
-+		case 14:  /* check a rule */
- 			/* We allow -N chainname -P policy */
- 			if (command == 'N' && c == 'P') {
- 				command = c;
-@@ -907,7 +909,8 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
- 			if (!OPT_COMMANDS)
- 				xtables_error(PARAMETER_PROBLEM,
- 					      "No command specified");
--			if (command != 'A' && command != 'D' && command != 'I' && command != 'C')
-+			if (command != 'A' && command != 'D' &&
-+			    command != 'I' && command != 'C' && command != 14)
- 				xtables_error(PARAMETER_PROBLEM,
- 					      "Command and option do not match");
- 			if (c == 'i') {
-@@ -1088,7 +1091,7 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
- 					      argv[optind]);
+     srccmd = srcwords[0]
++    ipt = srccmd.split('-')[0]
+     table_idx = -1
+     chain_idx = -1
+     table_name = "filter"
+@@ -84,16 +85,12 @@ xtables_nft_multi = 'xtables-nft-multi'
  
- 			if (command != 'A' && command != 'I' &&
--			    command != 'D' && command != 'C')
-+			    command != 'D' && command != 'C' && command != 14)
- 				xtables_error(PARAMETER_PROBLEM,
- 					      "Extensions only for -A, -I, -D and -C");
- 		}
-@@ -1109,7 +1112,7 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
+     if searchline is None:
+         # adjust sourceline as required
+-        srcwords[chain_idx] = "-A"
+-        if table_idx >= 0:
+-            srcwords.pop(table_idx)
+-            srcwords.pop(table_idx)
+-        searchline = " ".join(srcwords[1:])
+-    elif not searchline.startswith("-A"):
+-        tmp = ["-A", chain_name]
+-        if len(searchline) > 0:
+-            tmp.extend(searchline)
+-        searchline = " ".join(tmp)
++        checkcmd = srcwords[:]
++        checkcmd[0] = ipt
++        checkcmd[chain_idx] = "--check"
++    else:
++        checkcmd = [ipt, "-t", table_name]
++        checkcmd += ["--check", chain_name, searchline]
  
- 	/* Do the final checks */
- 	if (command == 'A' || command == 'I' ||
--	    command == 'D' || command == 'C') {
-+	    command == 'D' || command == 'C' || command == 14) {
- 		for (xtrm_i = cs.matches; xtrm_i; xtrm_i = xtrm_i->next)
- 			xtables_option_mfcall(xtrm_i->match);
+     fam = ""
+     if srccmd.startswith("ip6"):
+@@ -110,30 +107,23 @@ xtables_nft_multi = 'xtables-nft-multi'
  
-@@ -1161,6 +1164,9 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
- 	} else if (command == 'D') {
- 		ret = delete_entry(h, chain, *table, &cs, rule_nr - 1,
- 				   rule_nr_end, flags & OPT_VERBOSE);
-+	} else if (command == 14) {
-+		ret = nft_cmd_rule_check(h, chain, *table,
-+					 &cs, flags & OPT_VERBOSE);
- 	} /*else if (replace->command == 'C') {
- 		ebt_change_counters(replace, new_entry, rule_nr, rule_nr_end, &(new_entry->cnt_surplus), chcounter);
- 		if (ebt_errormsg[0] != '\0')
+     rc, output, error = run_proc([args.nft, "-f", "-"], shell = False, input = "\n".join(nft_input))
+     if rc != 0:
+-        result.append(name + ": " + red("Fail"))
++        result.append(name + ": " + red("Replay Fail"))
+         result.append(args.nft + " call failed: " + error.rstrip('\n'))
+         for line in nft_input:
+             result.append(magenta("input: ") + line)
+         return False
+ 
+-    ipt = srccmd.split('-')[0]
+-    rc, output, error = run_proc([xtables_nft_multi, ipt + "-save"])
++    rc, output, error = run_proc([xtables_nft_multi] + checkcmd)
+     if rc != 0:
+-        result.append(name + ": " + red("Fail"))
+-        result.append(ipt + "-save call failed: " + error)
+-        return False
+-
+-    if output.find(searchline) < 0:
+-        outline = None
+-        for l in output.split('\n'):
+-            if l.startswith('-A '):
+-                output = l
+-                break
+-        result.append(name + ": " + red("Replay fail"))
+-        result.append(magenta("src: '") + str(expected) + "'")
+-        result.append(magenta("exp: '") + searchline + "'")
+-        for l in output.split('\n'):
+-            result.append(magenta("res: ") + l)
++        result.append(name + ": " + red("Check Fail"))
++        result.append(magenta("check: ") + " ".join(checkcmd))
++        result.append(magenta("error: ") + error)
++        rc, output, error = run_proc([xtables_nft_multi, ipt + "-save"])
++        for l in output.split("\n"):
++            result.append(magenta("ipt: ") + l)
++        rc, output, error = run_proc([args.nft, "list", "ruleset"])
++        for l in output.split("\n"):
++            result.append(magenta("nft: ") + l)
+         return False
+ 
+     return True
 -- 
 2.38.0
 
