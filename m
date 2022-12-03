@@ -2,42 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB80641889
-	for <lists+netfilter-devel@lfdr.de>; Sat,  3 Dec 2022 20:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9AB7641887
+	for <lists+netfilter-devel@lfdr.de>; Sat,  3 Dec 2022 20:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbiLCTCY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 3 Dec 2022 14:02:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46732 "EHLO
+        id S229821AbiLCTCX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 3 Dec 2022 14:02:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbiLCTCW (ORCPT
+        with ESMTP id S229469AbiLCTCW (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sat, 3 Dec 2022 14:02:22 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5DB1C91B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4ED1C90B
         for <netfilter-devel@vger.kernel.org>; Sat,  3 Dec 2022 11:02:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=tKbBW2NIVlzWPiGTUZeX6PxHp8XeIirZpfwZjn7C76E=; b=euOkIyS5B0I5/Q18oyGLrb+JjT
-        vJmDOmr+toYJSKvTFL/eQ4igEJlWkfgX9iFWl9PYQW5oNfN1I+yJSI31y9OV3yciAHoLXOVAHhjmS
-        tGp8U0rMiqAsgqmyN3VEVlirEFX6DbsCZhC6hLDb+h9pVTq3IQVCxXazJ5UIMaNTMsauU98SyDtDd
-        NQoSObClqIH1WPKEQGMP9jxaViMHH5g/AXFWggXDvwkRtEG5acs8o9IbFSzIIEU8BxpBdUB7JjrjW
-        48Exkdx6J20VPJ3K3MdHBrfYh00Xp4JeudhPNQCKn+L+nXaUrIeQ3FoWdoPjsjBGSEBK0tn/g7MMA
-        meaYiVfw==;
+        bh=dE6DqpCW13ZPM7Xi3YGxG8CRniylGGp8Kw2SxX2Igsk=; b=hrNbjdlIDcJaURkM+d8wLb+Cpo
+        8jyhK1YHOUWw5ef6OzEpqs7KQwc0qpANJyC5SiWfrwsdh+d/G2U3k5Z7JdyAJeLtDqEfXHGsbRmb0
+        1HhgWnNeOSXUDUgAzShKYD9EQjzcmtHjjbevk6Y9Hb7L/unyOf9uXssDtia7uZHysEU4Wmib9Y5gz
+        lZeuUoVpLMjg3vmenaTpvMEvf/HtPTo4tvSerwgtd5eJ+wgF5skAvY6hzhhPuchUQcIfUMb3Sdsec
+        Q92jCWai1OQB9l+K98f01P0C1tbpqf2RLWKeIWB5XtIiF+GrGlfN8cK2iN9NkeF8nUWpXbxPwyAgg
+        IhhwXIOw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtp (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1p1XmE-000B5v-4F
+        id 1p1XmE-000B5v-9x
         for netfilter-devel@vger.kernel.org; Sat, 03 Dec 2022 19:02:18 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 0/4] Some bug-fixes
-Date:   Sat,  3 Dec 2022 19:02:08 +0000
-Message-Id: <20221203190212.346490-1-jeremy@azazel.net>
+Subject: [PATCH ulogd2 1/4] ulogd: fix parse-error check
+Date:   Sat,  3 Dec 2022 19:02:09 +0000
+Message-Id: <20221203190212.346490-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221203190212.346490-1-jeremy@azazel.net>
+References: <20221203190212.346490-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
@@ -52,25 +54,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-As requested by Pablo, I've broken up the 34-part "Refactor of the DB
-output plug-ins" patch-series I sent out last month into smaller chunks.
-This first set contains four unrelated bug-fixes.
+If `config_parse_file` returns `-ERRTOOLONG`, `config_errce` may be
+`NULL`.  However, the calling function checks whether
+`config_errce->key` is `NULL` instead.
 
-Jeremy Sowden (4):
-  ulogd: fix parse-error check
-  filter: fix buffer sizes in filter plug-ins
-  JSON: remove incorrect config value check
-  db: fix back-log capacity checks
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ src/ulogd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- filter/ulogd_filter_HWHDR.c   |  4 ++--
- filter/ulogd_filter_IP2BIN.c  | 14 +++++++-------
- filter/ulogd_filter_IP2HBIN.c |  2 +-
- filter/ulogd_filter_IP2STR.c  |  6 +++---
- output/ulogd_output_JSON.c    |  8 +++-----
- src/ulogd.c                   |  2 +-
- util/db.c                     | 11 +++++++----
- 7 files changed, 24 insertions(+), 23 deletions(-)
-
+diff --git a/src/ulogd.c b/src/ulogd.c
+index b02f2602a895..8ea9793ec0fb 100644
+--- a/src/ulogd.c
++++ b/src/ulogd.c
+@@ -1134,7 +1134,7 @@ static int parse_conffile(const char *section, struct config_keyset *ce)
+ 				"section \"%s\" not found\n", section);
+ 			break;
+ 		case -ERRTOOLONG:
+-			if (config_errce->key)
++			if (config_errce)
+ 				ulogd_log(ULOGD_ERROR,
+ 					  "string value too long for key \"%s\"\n",
+ 					  config_errce->key);
 -- 
 2.35.1
 
