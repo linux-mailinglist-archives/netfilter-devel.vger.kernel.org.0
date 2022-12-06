@@ -2,24 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3DC644A26
-	for <lists+netfilter-devel@lfdr.de>; Tue,  6 Dec 2022 18:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0A3644EC6
+	for <lists+netfilter-devel@lfdr.de>; Tue,  6 Dec 2022 23:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231600AbiLFRQo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 6 Dec 2022 12:16:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51828 "EHLO
+        id S229612AbiLFWxz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 6 Dec 2022 17:53:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235688AbiLFRQn (ORCPT
+        with ESMTP id S229626AbiLFWxx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 6 Dec 2022 12:16:43 -0500
+        Tue, 6 Dec 2022 17:53:53 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 98641DEA5
-        for <netfilter-devel@vger.kernel.org>; Tue,  6 Dec 2022 09:16:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6FFCF4A056
+        for <netfilter-devel@vger.kernel.org>; Tue,  6 Dec 2022 14:53:51 -0800 (PST)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
+Cc:     kadlec@netfilter.org
 Subject: [PATCH nft] doc: statements: fwd supports for sending packets via neighbouring layer
-Date:   Tue,  6 Dec 2022 18:16:37 +0100
-Message-Id: <20221206171637.7286-1-pablo@netfilter.org>
+Date:   Tue,  6 Dec 2022 23:53:01 +0100
+Message-Id: <20221206225302.61932-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
