@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717D9646095
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Dec 2022 18:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3DA646097
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Dec 2022 18:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbiLGRph (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 7 Dec 2022 12:45:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50628 "EHLO
+        id S229976AbiLGRpn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 7 Dec 2022 12:45:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbiLGRpa (ORCPT
+        with ESMTP id S229689AbiLGRpl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 7 Dec 2022 12:45:30 -0500
+        Wed, 7 Dec 2022 12:45:41 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBADA686A3
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 09:45:28 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728A456557
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 09:45:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=dgwR8wVqeEnYvw8E+2h2nbHesm3u3OYnAiwWrIc3olY=; b=ISiFmFgfb2zyzqpO5ChdUKw5My
-        rUijy8gGe88PYZI4oZuuLUjNLNmGPOfQpRlYQUMj1aJ+7kjCxV663zPkXK/jh3A44PSGP3PrbdlBy
-        kkVHIyP7bQeyR73/l8T2OO8aJkuumkzEVh9yIRQiskjDjeGOjSVFwqUHu1r+wz2JJ1A+4Tn3ta+c1
-        UGK2L+OPULWPduOdtqYwx2hRuYh5DKEngysX9QqiQJ+8TiWPLGUiDCGqp04WHkjxi71eIRKHUOrYo
-        jdSlu7NdCC25rDou/vhqMzBZoDOGR/bjhlXefwuPbHw8330ebbjJl9TmW44o2PjM3BBENJn5MADrj
-        5Dylh6iA==;
+        bh=CbQy84V2ui7XOJWqJr4SUhkk+7zswHQFcSj4f76uwmU=; b=OTCRNsk/36TVjrtvqx2eVN6i6s
+        caQQz/PHnhrzFLHO6ltbDmKWnTXtBlm2zIEzo4z9r64/DHewheb+e8wz6DUssygib1B3tJ/isXDcZ
+        1Ooeq/8iI/qqmRxCCXcjp/fD5Dp/Ei+07I39L/+sbTgDTwH1sTO2C1cfLQIom61XTnrGCLliPiHub
+        V4MwZwh3uifAbynqsnz955CPB4+v5HCT/PCJi4T86Gx5ODDONwDEgDVjgsmXrItcvVLWZpIG5wHJg
+        isaT1SS5m+7R0U8H77PJy0rfU1DlS9wDxUgB5FlyUt9/i48FJ5f1CA9DbQ9Xb1Z7v7Cp/mW9NUs1t
+        q9hbrvCw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1p2yU3-0000iF-6O
-        for netfilter-devel@vger.kernel.org; Wed, 07 Dec 2022 18:45:27 +0100
+        id 1p2yUD-0000in-RY
+        for netfilter-devel@vger.kernel.org; Wed, 07 Dec 2022 18:45:37 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 04/11] extensions: Makefile: Merge initext targets
-Date:   Wed,  7 Dec 2022 18:44:23 +0100
-Message-Id: <20221207174430.4335-5-phil@nwl.cc>
+Subject: [iptables PATCH 05/11] iptables/Makefile: Reorg variable assignments
+Date:   Wed,  7 Dec 2022 18:44:24 +0100
+Message-Id: <20221207174430.4335-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221207174430.4335-1-phil@nwl.cc>
 References: <20221207174430.4335-1-phil@nwl.cc>
@@ -51,153 +51,98 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Abstract initext*.c and .initext*.dd stamp file recipes so a single one
-serves for all variants.
+Introduce helper variables holding SOURCES, LDADD and CFLAGS used by
+both legacy and nft builds. Specify also internal header files, builds
+should depend on them. Doing that, reorder lists for clarity.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/GNUmakefile.in | 106 +++++---------------------------------
- 1 file changed, 14 insertions(+), 92 deletions(-)
+ iptables/Makefile.am | 58 ++++++++++++++++++++++++--------------------
+ 1 file changed, 32 insertions(+), 26 deletions(-)
 
-diff --git a/extensions/GNUmakefile.in b/extensions/GNUmakefile.in
-index 0239a06a90cd1..188e7a7902566 100644
---- a/extensions/GNUmakefile.in
-+++ b/extensions/GNUmakefile.in
-@@ -175,111 +175,33 @@ initexta_func := $(addprefix arpt_,${pfa_build_mod})
- initext4_func := $(addprefix ipt_,${pf4_build_mod})
- initext6_func := $(addprefix ip6t_,${pf6_build_mod})
+diff --git a/iptables/Makefile.am b/iptables/Makefile.am
+index acd3ce0c438e1..406147f00f43d 100644
+--- a/iptables/Makefile.am
++++ b/iptables/Makefile.am
+@@ -6,46 +6,52 @@ AM_LDFLAGS       = ${regular_LDFLAGS}
  
--.initext.dd: FORCE
--	@echo "${initext_func}" >$@.tmp; \
--	cmp -s $@ $@.tmp || mv $@.tmp $@; \
--	rm -f $@.tmp;
--
--.initextb.dd: FORCE
--	@echo "${initextb_func}" >$@.tmp; \
--	cmp -s $@ $@.tmp || mv $@.tmp $@; \
--	rm -f $@.tmp;
--
--.initexta.dd: FORCE
--	@echo "${initexta_func}" >$@.tmp; \
--	cmp -s $@ $@.tmp || mv $@.tmp $@; \
--	rm -f $@.tmp;
--
--.initext4.dd: FORCE
--	@echo "${initext4_func}" >$@.tmp; \
--	cmp -s $@ $@.tmp || mv $@.tmp $@; \
--	rm -f $@.tmp;
-+initexts := ext exta extb ext4 ext6
-+initext_depfiles = $(patsubst %,.init%.dd,${initexts})
-+initext_sources = $(patsubst %,init%.c,${initexts})
+ BUILT_SOURCES =
  
--.initext6.dd: FORCE
--	@echo "${initext6_func}" >$@.tmp; \
-+${initext_depfiles}: FORCE
-+	@echo "$(value $(patsubst .%.dd,%,$@)_func)" >$@.tmp; \
- 	cmp -s $@ $@.tmp || mv $@.tmp $@; \
- 	rm -f $@.tmp;
+-xtables_legacy_multi_SOURCES  = xtables-legacy-multi.c iptables-xml.c
+-xtables_legacy_multi_CFLAGS   = ${AM_CFLAGS}
+-xtables_legacy_multi_LDADD    = ../extensions/libext.a
++common_sources = iptables-xml.c xtables-multi.h xshared.c xshared.h
++common_ldadd   = ../extensions/libext.a ../libxtables/libxtables.la -lm
++common_cflags  = ${AM_CFLAGS}
+ if ENABLE_STATIC
+-xtables_legacy_multi_CFLAGS  += -DALL_INCLUSIVE
++common_cflags += -DALL_INCLUSIVE
+ endif
++
++xtables_legacy_multi_SOURCES  = ${common_sources} xtables-legacy-multi.c \
++				iptables-restore.c iptables-save.c
++xtables_legacy_multi_CFLAGS   = ${common_cflags}
++xtables_legacy_multi_LDADD    = ${common_ldadd}
+ if ENABLE_IPV4
+-xtables_legacy_multi_SOURCES += iptables-standalone.c iptables.c
++xtables_legacy_multi_SOURCES += iptables-standalone.c iptables.c iptables-multi.h
+ xtables_legacy_multi_CFLAGS  += -DENABLE_IPV4
+ xtables_legacy_multi_LDADD   += ../libiptc/libip4tc.la ../extensions/libext4.a
+ endif
+ if ENABLE_IPV6
+-xtables_legacy_multi_SOURCES += ip6tables-standalone.c ip6tables.c
++xtables_legacy_multi_SOURCES += ip6tables-standalone.c ip6tables.c ip6tables-multi.h
+ xtables_legacy_multi_CFLAGS  += -DENABLE_IPV6
+ xtables_legacy_multi_LDADD   += ../libiptc/libip6tc.la ../extensions/libext6.a
+ endif
+-xtables_legacy_multi_SOURCES += xshared.c iptables-restore.c iptables-save.c
+-xtables_legacy_multi_LDADD   += ../libxtables/libxtables.la -lm
  
--initext.c: .initext.dd
--	${AM_VERBOSE_GEN}
--	@( \
--	echo "" >$@; \
--	for i in ${initext_func}; do \
--		echo "extern void lib$${i}_init(void);" >>$@; \
--	done; \
--	echo "void init_extensions(void);" >>$@; \
--	echo "void init_extensions(void)" >>$@; \
--	echo "{" >>$@; \
--	for i in ${initext_func}; do \
--		echo  " ""lib$${i}_init();" >>$@; \
--	done; \
--	echo "}" >>$@; \
--	);
--
--initextb.c: .initextb.dd
--	${AM_VERBOSE_GEN}
--	@( \
--	echo "" >$@; \
--	for i in ${initextb_func}; do \
--		echo "extern void lib$${i}_init(void);" >>$@; \
--	done; \
--	echo "void init_extensionsb(void);" >>$@; \
--	echo "void init_extensionsb(void)" >>$@; \
--	echo "{" >>$@; \
--	for i in ${initextb_func}; do \
--		echo  " ""lib$${i}_init();" >>$@; \
--	done; \
--	echo "}" >>$@; \
--	);
--
--initexta.c: .initexta.dd
-+${initext_sources}: %.c: .%.dd
- 	${AM_VERBOSE_GEN}
- 	@( \
-+	initext_func="$(value $(basename $@)_func)"; \
-+	funcname="init_extensions$(patsubst initext%.c,%,$@)"; \
- 	echo "" >$@; \
--	for i in ${initexta_func}; do \
-+	for i in $${initext_func}; do \
- 		echo "extern void lib$${i}_init(void);" >>$@; \
- 	done; \
--	echo "void init_extensionsa(void);" >>$@; \
--	echo "void init_extensionsa(void)" >>$@; \
-+	echo "void $${funcname}(void);" >>$@; \
-+	echo "void $${funcname}(void)" >>$@; \
- 	echo "{" >>$@; \
--	for i in ${initexta_func}; do \
-+	for i in $${initext_func}; do \
- 		echo  " ""lib$${i}_init();" >>$@; \
- 	done; \
- 	echo "}" >>$@; \
- 	);
+ # iptables using nf_tables api
+ if ENABLE_NFTABLES
+-xtables_nft_multi_SOURCES  = xtables-nft-multi.c iptables-xml.c
+-xtables_nft_multi_CFLAGS   = ${AM_CFLAGS}
+-xtables_nft_multi_LDADD    = ../extensions/libext.a ../extensions/libext_ebt.a
+-if ENABLE_STATIC
+-xtables_nft_multi_CFLAGS  += -DALL_INCLUSIVE
+-endif
++xtables_nft_multi_SOURCES  = ${common_sources} xtables-nft-multi.c
++xtables_nft_multi_CFLAGS   = ${common_cflags}
++xtables_nft_multi_LDADD    = ${common_ldadd} \
++			     ../extensions/libext_arpt.a \
++			     ../extensions/libext_ebt.a \
++			     ../extensions/libext4.a \
++			     ../extensions/libext6.a \
++			     ${libmnl_LIBS} ${libnftnl_LIBS} \
++			     ${libnetfilter_conntrack_LIBS}
+ xtables_nft_multi_CFLAGS  += -DENABLE_NFTABLES -DENABLE_IPV4 -DENABLE_IPV6
+-xtables_nft_multi_SOURCES += xtables-save.c xtables-restore.c \
+-				xtables-standalone.c xtables.c nft.c \
+-				nft-shared.c nft-ipv4.c nft-ipv6.c nft-arp.c \
+-				xtables-monitor.c nft-cache.c \
+-				xtables-arp.c \
+-				nft-bridge.c nft-cmd.c nft-chain.c \
+-				xtables-eb-standalone.c xtables-eb.c \
+-				xtables-eb-translate.c \
+-				xtables-translate.c
+-xtables_nft_multi_LDADD   += ${libmnl_LIBS} ${libnftnl_LIBS} ${libnetfilter_conntrack_LIBS} ../extensions/libext4.a ../extensions/libext6.a ../extensions/libext_ebt.a ../extensions/libext_arpt.a
+-xtables_nft_multi_SOURCES += xshared.c
+-xtables_nft_multi_LDADD   += ../libxtables/libxtables.la -lm
++xtables_nft_multi_SOURCES += nft.c nft.h \
++			     nft-arp.c nft-ipv4.c nft-ipv6.c \
++			     nft-bridge.c nft-bridge.h \
++			     nft-cache.c nft-cache.h \
++			     nft-chain.c nft-chain.h \
++			     nft-cmd.c nft-cmd.h \
++			     nft-shared.c nft-shared.h \
++			     xtables-monitor.c \
++			     xtables.c xtables-arp.c xtables-eb.c \
++			     xtables-standalone.c xtables-eb-standalone.c \
++			     xtables-translate.c xtables-eb-translate.c \
++			     xtables-save.c xtables-restore.c
+ endif
  
--initext4.c: .initext4.dd
--	${AM_VERBOSE_GEN}
--	@( \
--	echo "" >$@; \
--	for i in ${initext4_func}; do \
--		echo "extern void lib$${i}_init(void);" >>$@; \
--	done; \
--	echo "void init_extensions4(void);" >>$@; \
--	echo "void init_extensions4(void)" >>$@; \
--	echo "{" >>$@; \
--	for i in ${initext4_func}; do \
--		echo  " ""lib$${i}_init();" >>$@; \
--	done; \
--	echo "}" >>$@; \
--	);
--
--initext6.c: .initext6.dd
--	${AM_VERBOSE_GEN}
--	@( \
--	echo "" >$@; \
--	for i in ${initext6_func}; do \
--		echo "extern void lib$${i}_init(void);" >>$@; \
--	done; \
--	echo "void init_extensions6(void);" >>$@; \
--	echo "void init_extensions6(void)" >>$@; \
--	echo "{" >>$@; \
--	for i in ${initext6_func}; do \
--		echo " ""lib$${i}_init();" >>$@; \
--	done; \
--	echo "}" >>$@; \
--	);
--
- #
- #	Manual pages
- #
-@@ -308,8 +230,8 @@ man_run    = \
- 		fi; \
- 	done >$@;
- 
--matches.man: .initext.dd .initextb.dd .initexta.dd .initext4.dd .initext6.dd $(wildcard ${srcdir}/lib*.man)
-+matches.man: ${initext_depfiles} $(wildcard ${srcdir}/lib*.man)
- 	$(call man_run,$(call ex_matches,${pfx_build_mod} ${pfb_build_mod} ${pfa_build_mod} ${pf4_build_mod} ${pf6_build_mod} ${pfx_symlinks}))
- 
--targets.man: .initext.dd .initextb.dd .initexta.dd .initext4.dd .initext6.dd $(wildcard ${srcdir}/lib*.man)
-+targets.man: ${initext_depfiles} $(wildcard ${srcdir}/lib*.man)
- 	$(call man_run,$(call ex_targets,${pfx_build_mod} ${pfb_build_mod} ${pfa_build_mod} ${pf4_build_mod} ${pf6_build_mod} ${pfx_symlinks}))
+ sbin_PROGRAMS    = xtables-legacy-multi
 -- 
 2.38.0
 
