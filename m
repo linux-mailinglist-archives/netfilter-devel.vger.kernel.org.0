@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BD364608C
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Dec 2022 18:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC71C646092
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Dec 2022 18:45:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbiLGRpB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 7 Dec 2022 12:45:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50148 "EHLO
+        id S230112AbiLGRpS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 7 Dec 2022 12:45:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbiLGRo5 (ORCPT
+        with ESMTP id S230096AbiLGRpO (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 7 Dec 2022 12:44:57 -0500
+        Wed, 7 Dec 2022 12:45:14 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D97528AB
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 09:44:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34265CD04
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 09:45:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=hu9Fqapqq+o/g+t8Ydyy/0DjgvMo1RRUc82z1HJKEFE=; b=Demg6LBL9bquKlLkUylONsldTp
-        xQ3WGhGISfbAjlzKP2zhNaeifqViOE4iZoUt9RjbednzNvjMpBYhYbxZ76Mg69+MBcapoXUdQWPhn
-        mtt++ZVRkO9uUrqLDngkVuLhzC4pzdb3gHfGPHPiOzJKzv80iXcSgHGc+hPRLbx1Umw11xOI5q6MH
-        zD1YQN6Q9ISEpj6/jTyrIBPOvLEqcE9BNpceHm3d66/yWlhOPEtR40uGKqx/Y9G4zJmcp7q8U11ri
-        tosLldybwC5FWTWHUdX2NsrI5/NsK8bA9UX4Ojn19SUM9kdQHN5UTP/Q8jxElK/rx5vnvO4KNDKwS
-        mHCyUwUA==;
+        bh=Yx0leTgAXTFvqyiI+jLJ6+LvVrqH5ZasJPNY8UF0Z/Q=; b=Dby03Ngff9e40LGNVy3UUvrYdk
+        kwQ/7AQLUujheQ4X0P6Kbp1n5BRPRabIEbKE68pNe/ZlgEqkkUkC3faoF20N3nLp5iMnr94CNqBn+
+        OqyH5ZkU6/5C1rIrj/HUb8ZBcfBcTqe9KOoOV3Y4lSY3KmKqQ6sTX6e3f+5aImZoqZPGkmvHl6trf
+        3JMRyoEgzaSmfw9GIMl80lPOOuMjVLY4WodiykNDu678/5Ni6divh7j8oraE9krbLUR6X085JlepI
+        47lBf6T5ggHXs2EJDyGYQ745hH58nN9fzTY3fUyFMGHD4fuOKILmrSup0QUbuZy29aI4UadtaYxJF
+        WP5EnnYg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1p2yTX-0000fV-Bj
-        for netfilter-devel@vger.kernel.org; Wed, 07 Dec 2022 18:44:55 +0100
+        id 1p2yTn-0000hQ-8e
+        for netfilter-devel@vger.kernel.org; Wed, 07 Dec 2022 18:45:11 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 08/11] Makefile: Generate .tar.bz2 archive with 'make dist'
-Date:   Wed,  7 Dec 2022 18:44:27 +0100
-Message-Id: <20221207174430.4335-9-phil@nwl.cc>
+Subject: [iptables PATCH 09/11] include/Makefile: xtables-version.h is generated
+Date:   Wed,  7 Dec 2022 18:44:28 +0100
+Message-Id: <20221207174430.4335-10-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221207174430.4335-1-phil@nwl.cc>
 References: <20221207174430.4335-1-phil@nwl.cc>
@@ -51,26 +51,39 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Instead of the default .tar.gz one.
+List it in nodist_include_HEADERS so it is installed but not
+distributed - configure generates it from xtables-version.h.in.
 
+While being at it, list xtables.h in plain include_HEADERS. It doesn't
+sit in a sub-dir, so the nobase prefix does not make a difference.
+
+Fixes: df60a301bf24c ("build: separate AC variable replacements from xtables.h")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- Makefile.am | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/Makefile.am | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Makefile.am b/Makefile.am
-index 1292f4b7065f4..4a5c6fd41e8fd 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -1,7 +1,7 @@
+diff --git a/include/Makefile.am b/include/Makefile.am
+index 348488a45ce84..07c88b901e808 100644
+--- a/include/Makefile.am
++++ b/include/Makefile.am
+@@ -1,13 +1,13 @@
  # -*- Makefile -*-
  
- ACLOCAL_AMFLAGS  = -I m4
--AUTOMAKE_OPTIONS = foreign subdir-objects
-+AUTOMAKE_OPTIONS = foreign subdir-objects dist-bzip2 no-dist-gzip
+-include_HEADERS =
+-nobase_include_HEADERS = xtables.h xtables-version.h
++include_HEADERS = xtables.h
++nodist_include_HEADERS = xtables-version.h
  
- SUBDIRS          = libiptc libxtables
- if ENABLE_DEVEL
+ if ENABLE_LIBIPQ
+ include_HEADERS += libipq/libipq.h
+ endif
+ 
+-nobase_include_HEADERS += \
++nobase_include_HEADERS = \
+ 	libiptc/ipt_kernel_headers.h libiptc/libiptc.h \
+ 	libiptc/libip6tc.h libiptc/libxtc.h libiptc/xtcshared.h
+ 
 -- 
 2.38.0
 
