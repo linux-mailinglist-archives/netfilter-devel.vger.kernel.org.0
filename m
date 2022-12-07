@@ -2,102 +2,50 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B8064608F
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Dec 2022 18:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4784646135
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Dec 2022 19:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbiLGRpE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 7 Dec 2022 12:45:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
+        id S229611AbiLGShC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 7 Dec 2022 13:37:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbiLGRpC (ORCPT
+        with ESMTP id S229788AbiLGSg4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 7 Dec 2022 12:45:02 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383A552145
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 09:45:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=32jO/JhrhvUbvduNN6e5SJ9FA0mVQAAWtdNzchPrnAQ=; b=YziOmt/ufaMV1xDnX9vqvE+Z5v
-        Pkitm8Tc8Yjb0qC8oY/jkAx0JT9AwvDftk+NvelDRql2b155b/bZ7xve+tvsJbirZS3/B+XGfDGW1
-        oOVMwW6bXjBfug74YZbhS7/qRgKW6cw+rEhs9dgW1wBXHhGwUZcWWj9HYMMmAUbvbOTT9ZVgOherl
-        qErymvpXe4RlPB+AWyAWZKWefFP/WDFSE3sJqedAqDDbsvlxio5YWWXypRxwbMzdfTRQdgqyCf1Y8
-        BTIkVV9PbUhOmVvhB89RJZ4ZUeBffu8eh4eoEuZp1E0KBUDHT96MkrvpvEkfvvy293L1GVQtGHuxG
-        hsg8zR3Q==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1p2yTc-0000g9-Km
-        for netfilter-devel@vger.kernel.org; Wed, 07 Dec 2022 18:45:00 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 11/11] Makefile.am: Integrate testsuites
-Date:   Wed,  7 Dec 2022 18:44:30 +0100
-Message-Id: <20221207174430.4335-12-phil@nwl.cc>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20221207174430.4335-1-phil@nwl.cc>
-References: <20221207174430.4335-1-phil@nwl.cc>
+        Wed, 7 Dec 2022 13:36:56 -0500
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10DA450B0
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 10:36:51 -0800 (PST)
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 09C8C5872649A; Wed,  7 Dec 2022 19:36:50 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id 06B1960C29140;
+        Wed,  7 Dec 2022 19:36:50 +0100 (CET)
+Date:   Wed, 7 Dec 2022 19:36:50 +0100 (CET)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Phil Sutter <phil@nwl.cc>
+cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [iptables PATCH 03/11] Makefile: Generate ip6tables man pages
+ on the fly
+In-Reply-To: <20221207174430.4335-4-phil@nwl.cc>
+Message-ID: <q9532812-p481-rsr1-44ns-559482nqrq@vanv.qr>
+References: <20221207174430.4335-1-phil@nwl.cc> <20221207174430.4335-4-phil@nwl.cc>
+User-Agent: Alpine 2.25 (LSU 592 2021-09-18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Support calling 'make check' in topdir to run all three testsuites.
-While updating .gitignore, also add 'configure~' my autotools create and
-the tags file.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- .gitignore  | 12 ++++++++++++
- Makefile.am |  2 ++
- 2 files changed, 14 insertions(+)
+On Wednesday 2022-12-07 18:44, Phil Sutter wrote:
+> 	${AM_VERBOSE_GEN} echo '.so man8/xtables-translate.8' >$@
+> 
+>+ip6tables.8 ip6tables-apply.8 ip6tables-restore.8 ip6tables-save.8:
+>+	${AM_VERBOSE_GEN} sed 's|^ip6|.so man8/ip|' <<<$@ >$@
 
-diff --git a/.gitignore b/.gitignore
-index a206fb4870bc8..ec4e44cad8aa7 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -20,6 +20,7 @@ Makefile.in
- /build-aux/
- /config.*
- /configure
-+/configure~
- /libtool
- /stamp-h1
- /iptables/iptables-apply.8
-@@ -29,3 +30,14 @@ Makefile.in
- 
- # vim/nano swap file
- *.swp
-+
-+/tags
-+
-+# make check results
-+/test-suite.log
-+/iptables-test.py.log
-+/iptables-test.py.trs
-+/xlate-test.py.log
-+/xlate-test.py.trs
-+iptables/tests/shell/run-tests.sh.log
-+iptables/tests/shell/run-tests.sh.trs
-diff --git a/Makefile.am b/Makefile.am
-index 4a5c6fd41e8fd..b2f4b9f599ceb 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -33,3 +33,5 @@ endif
- 
- config.status: extensions/GNUmakefile.in \
- 	include/xtables-version.h.in
-+
-+TESTS = xlate-test.py iptables-test.py iptables/tests/shell/run-tests.sh
--- 
-2.38.0
+<<< is not sh-compatible
 
