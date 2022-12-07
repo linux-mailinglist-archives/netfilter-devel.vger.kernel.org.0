@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0EC646089
-	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Dec 2022 18:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 717D9646095
+	for <lists+netfilter-devel@lfdr.de>; Wed,  7 Dec 2022 18:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbiLGRpA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 7 Dec 2022 12:45:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
+        id S229981AbiLGRph (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 7 Dec 2022 12:45:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbiLGRor (ORCPT
+        with ESMTP id S230127AbiLGRpa (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 7 Dec 2022 12:44:47 -0500
+        Wed, 7 Dec 2022 12:45:30 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0D556549
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 09:44:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBADA686A3
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 09:45:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=hOowBiZnq9cWjSnged+eeIs3MLMLp6B/sQth6aZceFE=; b=i2UHJeSKj0vcL89DIpFKor0j5C
-        Ju6XUEfUPyGDYeBwBjnec9vXtpSgmCdHrXAPJKU+uP1mM47kTM83EF+qWJriPQc6qs43tzDArYwbf
-        2e8ac8qF17N2LgxbsA/E5n1CDqGL8elpzL58Mx630Fe8xGmwLVXuK7W3pnE7OROh6KhS6RaHkdxoW
-        wlsqoBCkVKUgdWc+OspLLefnCDW9RFExlWVnTCiYf/+7y/KOeNPSUqp5NogPAGlpyN5mHHNSZcy1V
-        gRfzSMuscdgG0v5qj+Lzn5De6+ZLJsuDoughkBjKByxNf+i6a78f8zrPdeYqZUzO2NBXhoLF0Ijct
-        cDJyza5g==;
+        bh=dgwR8wVqeEnYvw8E+2h2nbHesm3u3OYnAiwWrIc3olY=; b=ISiFmFgfb2zyzqpO5ChdUKw5My
+        rUijy8gGe88PYZI4oZuuLUjNLNmGPOfQpRlYQUMj1aJ+7kjCxV663zPkXK/jh3A44PSGP3PrbdlBy
+        kkVHIyP7bQeyR73/l8T2OO8aJkuumkzEVh9yIRQiskjDjeGOjSVFwqUHu1r+wz2JJ1A+4Tn3ta+c1
+        UGK2L+OPULWPduOdtqYwx2hRuYh5DKEngysX9QqiQJ+8TiWPLGUiDCGqp04WHkjxi71eIRKHUOrYo
+        jdSlu7NdCC25rDou/vhqMzBZoDOGR/bjhlXefwuPbHw8330ebbjJl9TmW44o2PjM3BBENJn5MADrj
+        5Dylh6iA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1p2yTM-0000fN-OI
-        for netfilter-devel@vger.kernel.org; Wed, 07 Dec 2022 18:44:44 +0100
+        id 1p2yU3-0000iF-6O
+        for netfilter-devel@vger.kernel.org; Wed, 07 Dec 2022 18:45:27 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 03/11] Makefile: Generate ip6tables man pages on the fly
-Date:   Wed,  7 Dec 2022 18:44:22 +0100
-Message-Id: <20221207174430.4335-4-phil@nwl.cc>
+Subject: [iptables PATCH 04/11] extensions: Makefile: Merge initext targets
+Date:   Wed,  7 Dec 2022 18:44:23 +0100
+Message-Id: <20221207174430.4335-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221207174430.4335-1-phil@nwl.cc>
 References: <20221207174430.4335-1-phil@nwl.cc>
@@ -51,63 +51,153 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-No need to drag them around, creating them is simple.
+Abstract initext*.c and .initext*.dd stamp file recipes so a single one
+serves for all variants.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/Makefile.am         | 3 +++
- iptables/ip6tables-apply.8   | 1 -
- iptables/ip6tables-restore.8 | 1 -
- iptables/ip6tables-save.8    | 1 -
- iptables/ip6tables.8         | 1 -
- 5 files changed, 3 insertions(+), 4 deletions(-)
- delete mode 100644 iptables/ip6tables-apply.8
- delete mode 100644 iptables/ip6tables-restore.8
- delete mode 100644 iptables/ip6tables-save.8
- delete mode 100644 iptables/ip6tables.8
+ extensions/GNUmakefile.in | 106 +++++---------------------------------
+ 1 file changed, 14 insertions(+), 92 deletions(-)
 
-diff --git a/iptables/Makefile.am b/iptables/Makefile.am
-index 23f8352d30610..acd3ce0c438e1 100644
---- a/iptables/Makefile.am
-+++ b/iptables/Makefile.am
-@@ -105,6 +105,9 @@ iptables-extensions.8: iptables-extensions.8.tmpl ../extensions/matches.man ../e
- iptables-translate.8 ip6tables-translate.8 iptables-restore-translate.8 ip6tables-restore-translate.8:
- 	${AM_VERBOSE_GEN} echo '.so man8/xtables-translate.8' >$@
+diff --git a/extensions/GNUmakefile.in b/extensions/GNUmakefile.in
+index 0239a06a90cd1..188e7a7902566 100644
+--- a/extensions/GNUmakefile.in
++++ b/extensions/GNUmakefile.in
+@@ -175,111 +175,33 @@ initexta_func := $(addprefix arpt_,${pfa_build_mod})
+ initext4_func := $(addprefix ipt_,${pf4_build_mod})
+ initext6_func := $(addprefix ip6t_,${pf6_build_mod})
  
-+ip6tables.8 ip6tables-apply.8 ip6tables-restore.8 ip6tables-save.8:
-+	${AM_VERBOSE_GEN} sed 's|^ip6|.so man8/ip|' <<<$@ >$@
-+
- pkgconfig_DATA = xtables.pc
+-.initext.dd: FORCE
+-	@echo "${initext_func}" >$@.tmp; \
+-	cmp -s $@ $@.tmp || mv $@.tmp $@; \
+-	rm -f $@.tmp;
+-
+-.initextb.dd: FORCE
+-	@echo "${initextb_func}" >$@.tmp; \
+-	cmp -s $@ $@.tmp || mv $@.tmp $@; \
+-	rm -f $@.tmp;
+-
+-.initexta.dd: FORCE
+-	@echo "${initexta_func}" >$@.tmp; \
+-	cmp -s $@ $@.tmp || mv $@.tmp $@; \
+-	rm -f $@.tmp;
+-
+-.initext4.dd: FORCE
+-	@echo "${initext4_func}" >$@.tmp; \
+-	cmp -s $@ $@.tmp || mv $@.tmp $@; \
+-	rm -f $@.tmp;
++initexts := ext exta extb ext4 ext6
++initext_depfiles = $(patsubst %,.init%.dd,${initexts})
++initext_sources = $(patsubst %,init%.c,${initexts})
  
- # Using if..fi avoids an ugly "error (ignored)" message :)
-diff --git a/iptables/ip6tables-apply.8 b/iptables/ip6tables-apply.8
-deleted file mode 100644
-index 994b487a43598..0000000000000
---- a/iptables/ip6tables-apply.8
-+++ /dev/null
-@@ -1 +0,0 @@
--.so man8/iptables-apply.8
-diff --git a/iptables/ip6tables-restore.8 b/iptables/ip6tables-restore.8
-deleted file mode 100644
-index cf4ea3e7926c4..0000000000000
---- a/iptables/ip6tables-restore.8
-+++ /dev/null
-@@ -1 +0,0 @@
--.so man8/iptables-restore.8
-diff --git a/iptables/ip6tables-save.8 b/iptables/ip6tables-save.8
-deleted file mode 100644
-index 182f55c12f962..0000000000000
---- a/iptables/ip6tables-save.8
-+++ /dev/null
-@@ -1 +0,0 @@
--.so man8/iptables-save.8
-diff --git a/iptables/ip6tables.8 b/iptables/ip6tables.8
-deleted file mode 100644
-index 0dee41adb3965..0000000000000
---- a/iptables/ip6tables.8
-+++ /dev/null
-@@ -1 +0,0 @@
--.so man8/iptables.8
+-.initext6.dd: FORCE
+-	@echo "${initext6_func}" >$@.tmp; \
++${initext_depfiles}: FORCE
++	@echo "$(value $(patsubst .%.dd,%,$@)_func)" >$@.tmp; \
+ 	cmp -s $@ $@.tmp || mv $@.tmp $@; \
+ 	rm -f $@.tmp;
+ 
+-initext.c: .initext.dd
+-	${AM_VERBOSE_GEN}
+-	@( \
+-	echo "" >$@; \
+-	for i in ${initext_func}; do \
+-		echo "extern void lib$${i}_init(void);" >>$@; \
+-	done; \
+-	echo "void init_extensions(void);" >>$@; \
+-	echo "void init_extensions(void)" >>$@; \
+-	echo "{" >>$@; \
+-	for i in ${initext_func}; do \
+-		echo  " ""lib$${i}_init();" >>$@; \
+-	done; \
+-	echo "}" >>$@; \
+-	);
+-
+-initextb.c: .initextb.dd
+-	${AM_VERBOSE_GEN}
+-	@( \
+-	echo "" >$@; \
+-	for i in ${initextb_func}; do \
+-		echo "extern void lib$${i}_init(void);" >>$@; \
+-	done; \
+-	echo "void init_extensionsb(void);" >>$@; \
+-	echo "void init_extensionsb(void)" >>$@; \
+-	echo "{" >>$@; \
+-	for i in ${initextb_func}; do \
+-		echo  " ""lib$${i}_init();" >>$@; \
+-	done; \
+-	echo "}" >>$@; \
+-	);
+-
+-initexta.c: .initexta.dd
++${initext_sources}: %.c: .%.dd
+ 	${AM_VERBOSE_GEN}
+ 	@( \
++	initext_func="$(value $(basename $@)_func)"; \
++	funcname="init_extensions$(patsubst initext%.c,%,$@)"; \
+ 	echo "" >$@; \
+-	for i in ${initexta_func}; do \
++	for i in $${initext_func}; do \
+ 		echo "extern void lib$${i}_init(void);" >>$@; \
+ 	done; \
+-	echo "void init_extensionsa(void);" >>$@; \
+-	echo "void init_extensionsa(void)" >>$@; \
++	echo "void $${funcname}(void);" >>$@; \
++	echo "void $${funcname}(void)" >>$@; \
+ 	echo "{" >>$@; \
+-	for i in ${initexta_func}; do \
++	for i in $${initext_func}; do \
+ 		echo  " ""lib$${i}_init();" >>$@; \
+ 	done; \
+ 	echo "}" >>$@; \
+ 	);
+ 
+-initext4.c: .initext4.dd
+-	${AM_VERBOSE_GEN}
+-	@( \
+-	echo "" >$@; \
+-	for i in ${initext4_func}; do \
+-		echo "extern void lib$${i}_init(void);" >>$@; \
+-	done; \
+-	echo "void init_extensions4(void);" >>$@; \
+-	echo "void init_extensions4(void)" >>$@; \
+-	echo "{" >>$@; \
+-	for i in ${initext4_func}; do \
+-		echo  " ""lib$${i}_init();" >>$@; \
+-	done; \
+-	echo "}" >>$@; \
+-	);
+-
+-initext6.c: .initext6.dd
+-	${AM_VERBOSE_GEN}
+-	@( \
+-	echo "" >$@; \
+-	for i in ${initext6_func}; do \
+-		echo "extern void lib$${i}_init(void);" >>$@; \
+-	done; \
+-	echo "void init_extensions6(void);" >>$@; \
+-	echo "void init_extensions6(void)" >>$@; \
+-	echo "{" >>$@; \
+-	for i in ${initext6_func}; do \
+-		echo " ""lib$${i}_init();" >>$@; \
+-	done; \
+-	echo "}" >>$@; \
+-	);
+-
+ #
+ #	Manual pages
+ #
+@@ -308,8 +230,8 @@ man_run    = \
+ 		fi; \
+ 	done >$@;
+ 
+-matches.man: .initext.dd .initextb.dd .initexta.dd .initext4.dd .initext6.dd $(wildcard ${srcdir}/lib*.man)
++matches.man: ${initext_depfiles} $(wildcard ${srcdir}/lib*.man)
+ 	$(call man_run,$(call ex_matches,${pfx_build_mod} ${pfb_build_mod} ${pfa_build_mod} ${pf4_build_mod} ${pf6_build_mod} ${pfx_symlinks}))
+ 
+-targets.man: .initext.dd .initextb.dd .initexta.dd .initext4.dd .initext6.dd $(wildcard ${srcdir}/lib*.man)
++targets.man: ${initext_depfiles} $(wildcard ${srcdir}/lib*.man)
+ 	$(call man_run,$(call ex_targets,${pfx_build_mod} ${pfb_build_mod} ${pfa_build_mod} ${pf4_build_mod} ${pf6_build_mod} ${pfx_symlinks}))
 -- 
 2.38.0
 
