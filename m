@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 981836465B9
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Dec 2022 01:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E216465BB
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Dec 2022 01:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229480AbiLHAMx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 7 Dec 2022 19:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
+        id S229602AbiLHANu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 7 Dec 2022 19:13:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbiLHAMw (ORCPT
+        with ESMTP id S229544AbiLHANu (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 7 Dec 2022 19:12:52 -0500
+        Wed, 7 Dec 2022 19:13:50 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C6C43859
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 16:12:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60300654EC
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 16:13:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
         Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
         Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
         In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=00eoPsIx5Z9mO2WrrVytoRPL9KPJVm5b6TmOxHRwRDw=; b=ci1SOHxIlAnJpKGW0wjDpbZCdM
-        spBVyCDkfw9KjrhaUAzE0kaa6Rhu8Z9BYh2rRIotkOVQlh01aFjRINXbhxE925w19Bpq3ViDZeJUy
-        T4qszmqM0OhFtsZtgc/eopXPlAi64u3gx0VMSroAdXsy0IhX0ybkTlOiGO4c+cudDtPEX0sDEgGRU
-        eYWPpGiOnpS6zFyo7hGnGqSX1OJANVBgKToVkxo4wEGKSNrp6IxjaihZH4vajEjtJEjlXMconsiTL
-        5+yvV6nLIO4odgF3jULCpbgPcJam93pVxdylHIqz/mi5Xu4BFtC7WZbmkOWpZenbLnZLmj7XDuHqG
-        jPyWtaSg==;
+        bh=KSffUvRiazGfHz5xjo9SgaQD1udxz1ecGS/B0qEbKus=; b=qAedNzCSA0JfKA/79Ownmgo0Wt
+        OK5/uhT26pcT5A2KoW87hR1cHCTqFh4qhatoXNtqI7MPGehJrNASN39dWNx+8f7KoNDOAbe0eSesP
+        EI1NI7P6ecUfZmqAfFCVOQplhLEy4L1qkeZRBqLJ1F68NoMEg9SK0dkIlRvgABZU0fxy98IagnGWJ
+        WNkPKZYxuS7kFm1/XFo60h7QE6X1iCz4Ci/RJvzSzUzMWx4uXS0EROX4WRt7gJrFKpOU6cFQiNr1a
+        wXvU2E8XfK3e//PG36FDMIplqIJkb+PMwmeBGeJr/2TYD4vP/5VqRvYB670j9APKKAYE5IKv17JLW
+        H8r2Kcbg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1p34Wv-0005TF-4y; Thu, 08 Dec 2022 01:12:49 +0100
+        id 1p34Xr-0005Ts-Pk; Thu, 08 Dec 2022 01:13:47 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>
-Subject: [conntrack-tools PATCH] Makefile: Create LZMA-compressed dist-files
-Date:   Thu,  8 Dec 2022 01:12:40 +0100
-Message-Id: <20221208001240.20745-1-phil@nwl.cc>
+Subject: [libmnl PATCH] Makefile: Create LZMA-compressed dist-files
+Date:   Thu,  8 Dec 2022 01:13:39 +0100
+Message-Id: <20221208001339.21578-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -59,15 +59,15 @@ Signed-off-by: Phil Sutter <phil@nwl.cc>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/configure.ac b/configure.ac
-index f26189ae4b1b9..01e6027c4622c 100644
+index dcdd4245175e6..25916e2701385 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -4,7 +4,7 @@ AC_CONFIG_AUX_DIR([build-aux])
+@@ -5,7 +5,7 @@ AC_CONFIG_AUX_DIR([build-aux])
  AC_CANONICAL_HOST
  AC_CONFIG_MACRO_DIR([m4])
- AM_INIT_AUTOMAKE([-Wall foreign subdir-objects
--	tar-pax no-dist-gzip dist-bzip2 1.6])
-+	tar-pax no-dist-gzip dist-xz 1.6])
+ AC_CONFIG_HEADERS([config.h])
+-AM_INIT_AUTOMAKE([foreign tar-pax no-dist-gzip dist-bzip2 1.6 subdir-objects])
++AM_INIT_AUTOMAKE([foreign tar-pax no-dist-gzip dist-xz 1.6 subdir-objects])
  
  dnl kernel style compile messages
  m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
