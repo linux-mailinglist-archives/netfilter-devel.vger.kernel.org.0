@@ -2,47 +2,54 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C85E36465B7
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Dec 2022 01:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E93546465BA
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Dec 2022 01:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbiLHAMI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 7 Dec 2022 19:12:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40220 "EHLO
+        id S229523AbiLHANZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 7 Dec 2022 19:13:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbiLHALx (ORCPT
+        with ESMTP id S229544AbiLHANX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 7 Dec 2022 19:11:53 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492E38BD2B
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 16:11:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=nrXFqxna2DVLfqSkubpR2DPcs8BdNrnnLsJU92CV9yc=; b=EmfOrN81UTwbvRSbJWwVxi7/EM
-        enxp122YFQaNZtT1H0O9u3iQmJT8j+zJJ5n9+kvhLkZXVr6btlb7mRPAPBrI8VCIM7BVvoCNn+ugb
-        u11CM8yOO92JachqSy/d92q2E4qzASy8f/F0+J7TaX4KFpWXU76PMnV2ig80UaXGUrJqa7VKUrWRf
-        SKkXgBv9r2RrM/DgOAcrDIF67aoswXLKBvinawqOZvaoWUPd5vThiIYAUW8DqfoFpdr8hAmmr2Wzp
-        6TbvpKk0YUryJFz9PUCaZq0QOzNVJhPbwtzAjTpOoQEtFggSI0cWmWplMNcIGZRwb6km9L1QsbQ2h
-        xakoURLw==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1p34Vz-0005Sr-Nh; Thu, 08 Dec 2022 01:11:51 +0100
-From:   Phil Sutter <phil@nwl.cc>
+        Wed, 7 Dec 2022 19:13:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399CE8BD2B
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Dec 2022 16:12:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1670458349;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nebgbwWBcUeMzPdcCMltYB4FRwR9IqecRxZu52AQurA=;
+        b=ffvZXSoxWhk8kreCeGFCGhqJyuHa4t7amQom8FSgP6cspQ4o02ICl7Pcho9ppO4WG/1SL2
+        BOfjnr1zdREbRxHKRvIwUCnAs8m86ujqT8dVMJzlKY0ZUvJfjlUT8wyR9lPDh1iEsjEqcO
+        DjEjWfQYYNP1pAxbVkZMWa12ng4xZNg=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-205-TnyrEhwBMJCNPBqCOW1-tA-1; Wed, 07 Dec 2022 19:12:28 -0500
+X-MC-Unique: TnyrEhwBMJCNPBqCOW1-tA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B16663813F3F;
+        Thu,  8 Dec 2022 00:12:27 +0000 (UTC)
+Received: from xic (unknown [10.39.192.88])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 416212027061;
+        Thu,  8 Dec 2022 00:12:26 +0000 (UTC)
+From:   Phil Sutter <psutter@redhat.com>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>
-Subject: [libnetfilter_cttimeout PATCH] Makefile: Create LZMA-compressed dist-files
-Date:   Thu,  8 Dec 2022 01:11:43 +0100
-Message-Id: <20221208001143.19649-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.38.0
+Subject: [libnetfilter_cthelper PATCH] Makefile: Create LZMA-compressed dist-files
+Date:   Thu,  8 Dec 2022 01:12:19 +0100
+Message-Id: <20221208001219.20219-1-psutter@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -53,13 +60,13 @@ Use a more modern alternative to bzip2.
 
 Suggested-by: Jan Engelhardt <jengelh@inai.de>
 Suggested-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Phil Sutter <psutter@redhat.com>
 ---
  configure.ac | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/configure.ac b/configure.ac
-index ac7402126d206..ff571d4b88466 100644
+index 809842fe0c93b..333b2280ad389 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -6,7 +6,7 @@ AC_CANONICAL_HOST
