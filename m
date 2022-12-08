@@ -2,102 +2,98 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C7B64737D
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Dec 2022 16:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93EB56474CF
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Dec 2022 18:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbiLHPrS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 8 Dec 2022 10:47:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
+        id S230029AbiLHREC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 8 Dec 2022 12:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbiLHPrR (ORCPT
+        with ESMTP id S229571AbiLHREB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 8 Dec 2022 10:47:17 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E3D5B84E
-        for <netfilter-devel@vger.kernel.org>; Thu,  8 Dec 2022 07:47:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=br+idYhXLrqePbFJ5j2WBpC+2jWg+ABKdRC9iRKr/40=; b=lRLCnhjnYBBdyprNDxBI+n5IOt
-        TZ5DrjgBNBy0heBtCZ/hHjwLaLkdUlK07GHWICNsUm5jfFEO7es8HbK2inzNAuxm1I1jePU8ETrcd
-        JzS8aalBOr5BHK7dGlQIEKxpepsFyiBm0keOxjJ+Mn0vfKAXvCFR3kC4+M/aYW901GWsLwkL3JiaS
-        yURrLH4CaXwZbj3SXzggti2iVyKnX7bYn/WAsE/m9tDfzR1ToR8wfjc6Ssteb3x5Zcuwp1PPa/gCG
-        h/V/U3ILjMeLcEhw02ufFYGYPOwoklHh/qzhzRmwtuAbY57Xa+lcp9YgeLQIXHVs71n8artpBDaO+
-        qwaQ3W+Q==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1p3J7D-0005hG-AI; Thu, 08 Dec 2022 16:47:15 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     netfilter-devel@vger.kernel.org
-Cc:     Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables PATCH v2 11/11] Makefile.am: Integrate testsuites
-Date:   Thu,  8 Dec 2022 16:46:16 +0100
-Message-Id: <20221208154616.14622-12-phil@nwl.cc>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20221208154616.14622-1-phil@nwl.cc>
-References: <20221208154616.14622-1-phil@nwl.cc>
+        Thu, 8 Dec 2022 12:04:01 -0500
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 427DE450A2;
+        Thu,  8 Dec 2022 09:04:00 -0800 (PST)
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+        by mg.ssi.bg (Proxmox) with ESMTP id 4FC2D372B6;
+        Thu,  8 Dec 2022 19:03:58 +0200 (EET)
+Received: from ink.ssi.bg (unknown [193.238.174.40])
+        by mg.ssi.bg (Proxmox) with ESMTP id 024F837343;
+        Thu,  8 Dec 2022 19:03:54 +0200 (EET)
+Received: from ja.ssi.bg (unknown [178.16.129.10])
+        by ink.ssi.bg (Postfix) with ESMTPS id 707053C07E2;
+        Thu,  8 Dec 2022 19:03:50 +0200 (EET)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.17.1/8.16.1) with ESMTP id 2B8H3iO7059867;
+        Thu, 8 Dec 2022 19:03:45 +0200
+Date:   Thu, 8 Dec 2022 19:03:44 +0200 (EET)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+cc:     Simon Horman <horms@verge.net.au>, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, Jiri Wiesner <jwiesner@suse.de>,
+        yunhong-cgl jiang <xintian1976@gmail.com>,
+        dust.li@linux.alibaba.com
+Subject: Re: [PATCHv7 0/6] ipvs: Use kthreads for stats
+In-Reply-To: <Y5HV0EpOrQtdU11y@salvia>
+Message-ID: <1866fdd6-dff-67b5-cd66-41bc8962957d@ssi.bg>
+References: <20221122164604.66621-1-ja@ssi.bg> <Y5HTM6jY/ZRw+ar0@salvia> <Y5HV0EpOrQtdU11y@salvia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Support calling 'make check' in topdir to run all three testsuites.
-While updating .gitignore, also add 'configure~' my autotools create and
-the tags file.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- .gitignore  | 12 ++++++++++++
- Makefile.am |  2 ++
- 2 files changed, 14 insertions(+)
+	Hello,
 
-diff --git a/.gitignore b/.gitignore
-index a206fb4870bc8..ec4e44cad8aa7 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -20,6 +20,7 @@ Makefile.in
- /build-aux/
- /config.*
- /configure
-+/configure~
- /libtool
- /stamp-h1
- /iptables/iptables-apply.8
-@@ -29,3 +30,14 @@ Makefile.in
- 
- # vim/nano swap file
- *.swp
-+
-+/tags
-+
-+# make check results
-+/test-suite.log
-+/iptables-test.py.log
-+/iptables-test.py.trs
-+/xlate-test.py.log
-+/xlate-test.py.trs
-+iptables/tests/shell/run-tests.sh.log
-+iptables/tests/shell/run-tests.sh.trs
-diff --git a/Makefile.am b/Makefile.am
-index dc3552067a67f..4ba0392610622 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -33,3 +33,5 @@ endif
- 
- config.status: extensions/GNUmakefile.in \
- 	include/xtables-version.h.in
-+
-+TESTS = xlate-test.py iptables-test.py iptables/tests/shell/run-tests.sh
--- 
-2.38.0
+On Thu, 8 Dec 2022, Pablo Neira Ayuso wrote:
+
+> On Thu, Dec 08, 2022 at 01:06:14PM +0100, Pablo Neira Ayuso wrote:
+> > On Tue, Nov 22, 2022 at 06:45:58PM +0200, Julian Anastasov wrote:
+> > > 	Hello,
+> > > 
+> > > 	This patchset implements stats estimation in kthread context.
+> > > It replaces the code that runs on single CPU in timer context every
+> > > 2 seconds and causing latency splats as shown in reports [1], [2], [3].
+> > > The solution targets setups with thousands of IPVS services, destinations
+> > > and multi-CPU boxes.
+> > 
+> > Series applied to nf-next, thanks.
+> 
+> Oh wait. I have to hold this back, I have a fundamental question:
+> 
+> [PATCHv7 4/6] ipvs: use kthreads for stats estimation
+> 
+> uses kthreads, these days the preferred interface for this is the
+> generic workqueue infrastructure.
+> 
+> Then, I can see patch:
+> 
+>  [PATCHv7 5/6] ipvs: add est_cpulist and est_nice sysctl vars
+> 
+> allows for CPU pinning which is also possible via sysfs.
+> 
+> Is there any particular reason for not using the generic workqueue
+> infrastructure? I could not find a reason in the commit logs.
+
+	The estimation can take long time when using
+multiple IPVS rules (eg. millions estimator structures) and
+especially when box has multiple CPUs due to the for_each_possible_cpu
+usage that expects packets from any CPU. With est_nice sysctl
+we have more control how to prioritize the estimation
+kthreads compared to other processes/kthreads that
+have latency requirements (such as servers). As a benefit,
+we can see these kthreads in top and decide if we will
+need some further control to limit their CPU usage (max
+number of structure to estimate per kthread).
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
 
