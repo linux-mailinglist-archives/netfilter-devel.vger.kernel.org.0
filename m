@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A283964737F
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Dec 2022 16:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFEE364737C
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Dec 2022 16:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbiLHPrb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 8 Dec 2022 10:47:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36374 "EHLO
+        id S230116AbiLHPrO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 8 Dec 2022 10:47:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbiLHPr3 (ORCPT
+        with ESMTP id S230152AbiLHPrM (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 8 Dec 2022 10:47:29 -0500
+        Thu, 8 Dec 2022 10:47:12 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249FB59157
-        for <netfilter-devel@vger.kernel.org>; Thu,  8 Dec 2022 07:47:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6DA63B98
+        for <netfilter-devel@vger.kernel.org>; Thu,  8 Dec 2022 07:47:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Yx0leTgAXTFvqyiI+jLJ6+LvVrqH5ZasJPNY8UF0Z/Q=; b=FvZnYcbvbzlvtN/5GIlJ4Gb7pN
-        2kg4gEHpWqglWierjPJSsT7lpSv8T5sS+y1JSaIg9+w1ewC6hiKdgR9sdufVabu+lTWkbuZ+ImqxM
-        sU58wrqTsCANCLj/QfFsNo/2r8l0+veXcP2ocQCpBQHIdDbAFVdiRT07oa85UbtNM4GJTJ9fpQKD0
-        llisHNiVUNUavr4K/FbbqfQCwvwsvvgbrWtc56wA9HkdH8CQCRt68h+EzBki/di+9GxN0gtanN1wz
-        Mna7BHJ8KNnC+kgzEzw3eBz9lk8afFqpCTuc3hQl2yxKNAWV9cmHoFICWpjplLNlAZh1K/opv+0Bg
-        UJPzeQBQ==;
+        bh=+N/osBc2nUEvgWSGsinRPNQupZuA5jDDdsRozTYm6+k=; b=mtKKP9r1M4V5+n3m/v+e6KD/b9
+        XYdEry7Y5TOLGK4IlYHTMVDIgoWYT3Z0kHPEBDMIb3SBIPwaNrzZGQZu7OZJ03VknHz8AuDkPQHEM
+        tFfXF72wkgnBxD+8HbjVbroehuCx5tqjQPO8VeWsUguXUV+e0SJxsjQ8FLBUMB5HVwELjF7zco1gt
+        Wk1WqU4R8hJXPMU9kHeyKNFUiMELN+3V1o8EmFXNocg3TnhMtAqX/7o/l4jD5QXKvk358Bp/W35vf
+        q3UzsukvMCB89QgiH0wQq5pBrnucnv7b0Ua94BbhDMcIkKAia90c6WYlC7Pd3DP/uw6OLtQ3iGcOR
+        SCqWSvlQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1p3J7N-0005hr-Sf; Thu, 08 Dec 2022 16:47:25 +0100
+        id 1p3J77-0005gy-WA; Thu, 08 Dec 2022 16:47:10 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables PATCH v2 09/11] include/Makefile: xtables-version.h is generated
-Date:   Thu,  8 Dec 2022 16:46:14 +0100
-Message-Id: <20221208154616.14622-10-phil@nwl.cc>
+Subject: [iptables PATCH v2 10/11] tests: Adjust testsuite return codes to automake guidelines
+Date:   Thu,  8 Dec 2022 16:46:15 +0100
+Message-Id: <20221208154616.14622-11-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221208154616.14622-1-phil@nwl.cc>
 References: <20221208154616.14622-1-phil@nwl.cc>
@@ -51,38 +51,80 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-List it in nodist_include_HEADERS so it is installed but not
-distributed - configure generates it from xtables-version.h.in.
+As per the manual[1]:
 
-While being at it, list xtables.h in plain include_HEADERS. It doesn't
-sit in a sub-dir, so the nobase prefix does not make a difference.
+"When no test protocol is in use, an exit status of 0 from a test script
+will denote a success, an exit status of 77 a skipped test, an exit
+status of 99 a hard error, and any other exit status will denote a
+failure."
 
-Fixes: df60a301bf24c ("build: separate AC variable replacements from xtables.h")
+[1] https://www.gnu.org/software/automake/manual/html_node/Scripts_002dbased-Testsuites.html
+
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- include/Makefile.am | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ iptables-test.py                  | 2 +-
+ iptables/tests/shell/run-tests.sh | 4 +++-
+ xlate-test.py                     | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/include/Makefile.am b/include/Makefile.am
-index 348488a45ce84..07c88b901e808 100644
---- a/include/Makefile.am
-+++ b/include/Makefile.am
-@@ -1,13 +1,13 @@
- # -*- Makefile -*-
+diff --git a/iptables-test.py b/iptables-test.py
+index dc031c2b60450..de1e1e95fda55 100755
+--- a/iptables-test.py
++++ b/iptables-test.py
+@@ -579,7 +579,7 @@ STDERR_IS_TTY = sys.stderr.isatty()
  
--include_HEADERS =
--nobase_include_HEADERS = xtables.h xtables-version.h
-+include_HEADERS = xtables.h
-+nodist_include_HEADERS = xtables-version.h
+     if os.getuid() != 0:
+         print("You need to be root to run this, sorry", file=sys.stderr)
+-        return
++        return 77
  
- if ENABLE_LIBIPQ
- include_HEADERS += libipq/libipq.h
- endif
+     if not args.netns and not args.no_netns and not spawn_netns():
+         print("Cannot run in own namespace, connectivity might break",
+diff --git a/iptables/tests/shell/run-tests.sh b/iptables/tests/shell/run-tests.sh
+index 7a80af3432285..1125690583b46 100755
+--- a/iptables/tests/shell/run-tests.sh
++++ b/iptables/tests/shell/run-tests.sh
+@@ -21,7 +21,6 @@ EOF
  
--nobase_include_HEADERS += \
-+nobase_include_HEADERS = \
- 	libiptc/ipt_kernel_headers.h libiptc/libiptc.h \
- 	libiptc/libip6tc.h libiptc/libxtc.h libiptc/xtcshared.h
+ msg_error() {
+         echo "E: $1 ..." >&2
+-        exit 1
+ }
+ 
+ msg_warn() {
+@@ -34,10 +33,12 @@ msg_info() {
+ 
+ if [ "$(id -u)" != "0" ] ; then
+         msg_error "this requires root!"
++        exit 77
+ fi
+ 
+ if [ ! -d "$TESTDIR" ] ; then
+         msg_error "missing testdir $TESTDIR"
++        exit 99
+ fi
+ 
+ # support matching repeated pattern in SINGLE check below
+@@ -76,6 +77,7 @@ while [ -n "$1" ]; do
+ 		;;
+ 	*)
+ 		msg_error "unknown parameter '$1'"
++		exit 99
+ 		;;
+ 	esac
+ done
+diff --git a/xlate-test.py b/xlate-test.py
+index 4f037ef6ed96d..4cb1401b71677 100755
+--- a/xlate-test.py
++++ b/xlate-test.py
+@@ -250,7 +250,7 @@ xtables_nft_multi = 'xtables-nft-multi'
+                 tests, passed, failed, errors = run_test(args.test, payload)
+         except IOError:
+             print(red("Error: ") + "test file does not exist", file=sys.stderr)
+-            return -1
++            return 99
+     else:
+         files, tests, passed, failed, errors = load_test_files()
  
 -- 
 2.38.0
