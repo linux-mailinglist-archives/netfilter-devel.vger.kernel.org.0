@@ -2,42 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2544E647377
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Dec 2022 16:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8017E64737E
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Dec 2022 16:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbiLHPrB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 8 Dec 2022 10:47:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
+        id S229478AbiLHPrZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 8 Dec 2022 10:47:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbiLHPqy (ORCPT
+        with ESMTP id S230162AbiLHPrX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 8 Dec 2022 10:46:54 -0500
+        Thu, 8 Dec 2022 10:47:23 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8CC442E6
-        for <netfilter-devel@vger.kernel.org>; Thu,  8 Dec 2022 07:46:53 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEAD53EEF
+        for <netfilter-devel@vger.kernel.org>; Thu,  8 Dec 2022 07:47:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=2OLObfF9hDDSXOAuRRszauenCcpl5XhpuBludPBgUSQ=; b=hjqfdL3gEGHfhfwz2dXvjDsQrA
-        A6qYRWYPI9Su+Ig2HIt9uiGCG/JCGf4wE0MtuS68OSYeyL/3RECM4+3KAbbmUlWgBJySh3cg1R+ll
-        Uwm3kmTXmxQdfdijDdp7pOcmMKQuKLgql1jlMgB9GYjaCPm0BM2OxGJUDQfWMFPRGeQCk9L1fexvc
-        O+McalVsyhzijES0jZ811YEt4mfAgEuIQmAMyuLO4ab4lmatA7rchwI05N1c7ZguKDjyLUGzhLCls
-        CEg7gHlb1EaAdqJWJerSXpdOdrX9Z5yNyoIIWYtKJ0tMEMMKytWZPwN0kCY75ih3RgQ7lSwRP1hos
-        4WGK/PCw==;
+        bh=tLGtIK9XXbvP9Sb5QeP5gtqJFq5hXd6lRuug8+mwZ+0=; b=m2HF4324xop+I8JVhkstz0vIok
+        UZAkLFsDPY6LrTPTVEpWvUSeCFAeLmzuxP8UFUfxZrGLoQFO/Jubxi9y4KtwVGLoLq9UU2i5iimqA
+        +d2Hq1Jc3V4f6aXUNDAQ79ltxPOje9wTN9xk7qYJKsFGcLWaiyJpehP5HiCYAZ4qYsU4w4NcUhu21
+        SBlJqhPKLUyVrjajTkItu9jOMm9IuMQVHW97w/ov/lnmm9DFUK+n5zwm3dCfFQzBjJF9GPv0orOuJ
+        uHYGhabscDQMVyy3fml39yt1VYvU2CUxy3v9HzyuD+HU0YSYWB/TX17qT37Ln///ahc5yMFJr5Qx/
+        1GkHltcQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1p3J6q-0005fT-Cg; Thu, 08 Dec 2022 16:46:52 +0100
+        id 1p3J7I-0005hY-Jh; Thu, 08 Dec 2022 16:47:20 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Jan Engelhardt <jengelh@inai.de>
-Subject: [iptables PATCH v2 00/11] Support 'make dist' and 'make check'
-Date:   Thu,  8 Dec 2022 16:46:05 +0100
-Message-Id: <20221208154616.14622-1-phil@nwl.cc>
+Subject: [iptables PATCH v2 01/11] Drop INCOMPATIBILITIES file
+Date:   Thu,  8 Dec 2022 16:46:06 +0100
+Message-Id: <20221208154616.14622-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
+In-Reply-To: <20221208154616.14622-1-phil@nwl.cc>
+References: <20221208154616.14622-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -49,63 +51,34 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The goal of this series is to replace the custom 'tarball' Makefile
-target by automake's standard 'dist' target. Due to the special
-non-automake extensions/GNUMakefile.in and some other minor details,
-this hasn't been functional.
+The problems described in there were relevant 17 years ago.
 
-Patches 1-6 are preparation work and cleanup of left-overs noticed when
-comparing final tarball contents.
-
-Patches 7 and 8 then enable 'dist' and 'distcheck' targets.
-
-Finally, patches 9 and 10 integrate testsuite scripts for use with 'make
-check'. The 'distcheck' target triggers them, too. But since one doesn't
-do that as uid 0, only xlate-test.py actually executes and the others
-are skipped.
-
-Changes since v1:
-- Replace bashism in patch 3.
-- Generate .tar.xz instead of .tar.bz2 in patch 8.
-
-Phil Sutter (11):
-  Drop INCOMPATIBILITIES file
-  Drop libiptc/linux_stddef.h
-  Makefile: Generate ip6tables man pages on the fly
-  extensions: Makefile: Merge initext targets
-  iptables/Makefile: Reorg variable assignments
-  iptables/Makefile: Split nft-variant man page list
-  Makefile: Fix for 'make distcheck'
-  Makefile: Generate .tar.xz archive with 'make dist'
-  include/Makefile: xtables-version.h is generated
-  tests: Adjust testsuite return codes to automake guidelines
-  Makefile.am: Integrate testsuites
-
- .gitignore                        |  12 +++
- INCOMPATIBILITIES                 |  14 ----
- Makefile.am                       |   8 +-
- extensions/GNUmakefile.in         | 121 +++++++-----------------------
- include/Makefile.am               |   8 +-
- iptables-test.py                  |   2 +-
- iptables/Makefile.am              |  84 +++++++++++----------
- iptables/ip6tables-apply.8        |   1 -
- iptables/ip6tables-restore.8      |   1 -
- iptables/ip6tables-save.8         |   1 -
- iptables/ip6tables.8              |   1 -
- iptables/tests/shell/run-tests.sh |   4 +-
- libipq/Makefile.am                |   2 +-
- libiptc/Makefile.am               |   2 +
- libiptc/linux_stddef.h            |  39 ----------
- utils/Makefile.am                 |   4 +-
- xlate-test.py                     |   2 +-
- 17 files changed, 107 insertions(+), 199 deletions(-)
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ INCOMPATIBILITIES | 14 --------------
+ 1 file changed, 14 deletions(-)
  delete mode 100644 INCOMPATIBILITIES
- delete mode 100644 iptables/ip6tables-apply.8
- delete mode 100644 iptables/ip6tables-restore.8
- delete mode 100644 iptables/ip6tables-save.8
- delete mode 100644 iptables/ip6tables.8
- delete mode 100644 libiptc/linux_stddef.h
 
+diff --git a/INCOMPATIBILITIES b/INCOMPATIBILITIES
+deleted file mode 100644
+index ddb24087c9696..0000000000000
+--- a/INCOMPATIBILITIES
++++ /dev/null
+@@ -1,14 +0,0 @@
+-INCOMPATIBILITIES:
+-
+-- The REJECT target has an '--reject-with admin-prohib' option which used
+-  with kernels that do not support it, will result in a plain DROP instead
+-  of REJECT.  Use with caution.
+-  Kernels that do support it:
+-  	2.4 - since 2.4.22-pre9
+-	2.6 - all
+-
+-- There are some issues related to upgrading from 1.2.x to 1.3.x on a system
+-  with dynamic ruleset changes during runtime. (Please see 
+-  https://bugzilla.netfilter.org/bugzilla/show_bug.cgi?id=334).
+-  After upgrading from 1.2 to 1.3, it suggest go do an iptables-save, then
+-  iptables-restore to ensure your dynamic rule changes continue to work.
 -- 
 2.38.0
 
