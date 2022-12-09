@@ -2,29 +2,33 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68715648248
-	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Dec 2022 13:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 605436484F4
+	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Dec 2022 16:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229470AbiLIMQ4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 9 Dec 2022 07:16:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
+        id S230344AbiLIPXz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 9 Dec 2022 10:23:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbiLIMQv (ORCPT
+        with ESMTP id S230337AbiLIPXw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 9 Dec 2022 07:16:51 -0500
+        Fri, 9 Dec 2022 10:23:52 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 188844A07C
-        for <netfilter-devel@vger.kernel.org>; Fri,  9 Dec 2022 04:16:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 513A78C6BD
+        for <netfilter-devel@vger.kernel.org>; Fri,  9 Dec 2022 07:23:52 -0800 (PST)
+Date:   Fri, 9 Dec 2022 16:23:49 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 3/3,v2] netlink: unfold function to generate concatenations for keys and data
-Date:   Fri,  9 Dec 2022 13:16:45 +0100
-Message-Id: <20221209121645.903831-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221209121645.903831-1-pablo@netfilter.org>
-References: <20221209121645.903831-1-pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: [iptables PATCH 1/7] ebtables: Implement --check command
+Message-ID: <Y5NTBWT+YiM3o3qQ@salvia>
+References: <20221201163916.30808-1-phil@nwl.cc>
+ <20221201163916.30808-2-phil@nwl.cc>
+ <Y5JZxolqr+dzWsgh@salvia>
+ <Y5KENOfZGWxPU8au@orbyte.nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Y5KENOfZGWxPU8au@orbyte.nwl.cc>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -33,141 +37,41 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add a specific function to generate concatenation with and without
-intervals in maps. This restores the original function added by
-8ac2f3b2fca3 ("src: Add support for concatenated set ranges") which is
-used by 66746e7dedeb ("src: support for nat with interval
-concatenation") to generate the data concatenations in maps.
+On Fri, Dec 09, 2022 at 01:41:24AM +0100, Phil Sutter wrote:
+> On Thu, Dec 08, 2022 at 10:40:22PM +0100, Pablo Neira Ayuso wrote:
+> > On Thu, Dec 01, 2022 at 05:39:10PM +0100, Phil Sutter wrote:
+> > > Sadly, '-C' is in use already for --change-counters (even though
+> > > ebtables-nft does not implement this), so add a long-option only. It is
+> > > needed for xlate testsuite in replay mode, which will use '--check'
+> > > instead of '-C'.
+> > 
+> > Hm, yet another of those exotic deviations (from ip{6}tables) in
+> > ebtables.
+> > 
+> > This -C is not supported by ebtables-nft, right? If so,
+> > according to manpage, ebtables -C takes start_nr[:end_nr].
+> > 
+> > Maybe there is a chance to get this aligned with other ip{6}tables
+> > tools by checking if optarg is available? Otherwise, really check the
+> > ruleset?
+> > 
+> > BTW, I'm re-reading the ebtables manpage, not sure how this feature -C
+> > was supposed to be used. Do you understand the usecase?
+> 
+> Yes, it's odd - so fits perfectly the rest of ebtables syntax. ;)
+> 
+> There are two ways to use it:
+> 
+> 1) ebtables -C <CHAIN> <RULENO> <PCNT> <BCNT>
+> 2) ebtables -C <CHAIN> <PCNT> <BCNT> <RULESPEC>
+> 
+> So I could check if the two parameters following the chain name are
+> numbers or not to distinguish between --change-counters and --check, but
+> it's ugly and with ebtables-nft not supporting one of them makes things
+> actually worse.
+> 
+> We need --check only for internal purposes, let's please just leave it
+> like this - there are much more important things to work on.
 
-Only the set element key requires the byteswap introduced by 1017d323cafa
-("src: support for selectors with different byteorder with interval
-concatenations"). Therefore, better not to reuse the same function for
-key and data as the future might bring support for more kind of
-concatenations in data maps.
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-v2: Rebased on top on current series, split functions for the non-expand
-    case for set element data bytecode generation.
-
- src/netlink.c | 63 +++++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 53 insertions(+), 10 deletions(-)
-
-diff --git a/src/netlink.c b/src/netlink.c
-index 15eb890e422a..efbc65650c4b 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -254,8 +254,8 @@ static int netlink_export_pad(unsigned char *data, const mpz_t v,
- 	return netlink_padded_len(i->len) / BITS_PER_BYTE;
- }
- 
--static int netlink_gen_concat_data_expr(uint32_t flags, const struct expr *i,
--					unsigned char *data)
-+static int __netlink_gen_concat_key(uint32_t flags, const struct expr *i,
-+				    unsigned char *data)
- {
- 	struct expr *expr;
- 
-@@ -307,8 +307,8 @@ static int netlink_gen_concat_data_expr(uint32_t flags, const struct expr *i,
- 	return netlink_export_pad(data, i->value, i);
- }
- 
--static void __netlink_gen_concat(const struct expr *expr,
--				 struct nft_data_linearize *nld)
-+static void netlink_gen_concat_key(const struct expr *expr,
-+				    struct nft_data_linearize *nld)
- {
- 	unsigned int len = expr->len / BITS_PER_BYTE, offset = 0;
- 	unsigned char data[len];
-@@ -317,12 +317,40 @@ static void __netlink_gen_concat(const struct expr *expr,
- 	memset(data, 0, len);
- 
- 	list_for_each_entry(i, &expr->expressions, list)
--		offset += netlink_gen_concat_data_expr(expr->flags, i, data + offset);
-+		offset += __netlink_gen_concat_key(expr->flags, i, data + offset);
- 
- 	memcpy(nld->value, data, len);
- 	nld->len = len;
- }
- 
-+static int __netlink_gen_concat_data(int end, const struct expr *i,
-+				     unsigned char *data)
-+{
-+	switch (i->etype) {
-+	case EXPR_RANGE:
-+		i = end ? i->right : i->left;
-+		break;
-+	case EXPR_PREFIX:
-+		if (end) {
-+			int count;
-+			mpz_t v;
-+
-+			mpz_init_bitmask(v, i->len - i->prefix_len);
-+			mpz_add(v, i->prefix->value, v);
-+			count = netlink_export_pad(data, v, i);
-+			mpz_clear(v);
-+			return count;
-+		}
-+		return netlink_export_pad(data, i->prefix->value, i);
-+	case EXPR_VALUE:
-+		break;
-+	default:
-+		BUG("invalid expression type '%s' in set", expr_ops(i)->name);
-+	}
-+
-+	return netlink_export_pad(data, i->value, i);
-+}
-+
- static void __netlink_gen_concat_expand(const struct expr *expr,
- 				        struct nft_data_linearize *nld)
- {
-@@ -333,18 +361,33 @@ static void __netlink_gen_concat_expand(const struct expr *expr,
- 	memset(data, 0, len);
- 
- 	list_for_each_entry(i, &expr->expressions, list)
--		offset += netlink_gen_concat_data_expr(0, i, data + offset);
-+		offset += __netlink_gen_concat_data(false, i, data + offset);
-+
-+	list_for_each_entry(i, &expr->expressions, list)
-+		offset += __netlink_gen_concat_data(true, i, data + offset);
-+
-+	memcpy(nld->value, data, len);
-+	nld->len = len;
-+}
-+
-+static void __netlink_gen_concat(const struct expr *expr,
-+				 struct nft_data_linearize *nld)
-+{
-+	unsigned int len = expr->len / BITS_PER_BYTE, offset = 0;
-+	unsigned char data[len];
-+	const struct expr *i;
-+
-+	memset(data, 0, len);
- 
- 	list_for_each_entry(i, &expr->expressions, list)
--		offset += netlink_gen_concat_data_expr(EXPR_F_INTERVAL_END, i, data + offset);
-+		offset += __netlink_gen_concat_data(expr->flags, i, data + offset);
- 
- 	memcpy(nld->value, data, len);
- 	nld->len = len;
- }
- 
- static void netlink_gen_concat_data(const struct expr *expr,
--				    struct nft_data_linearize *nld,
--				    bool expand)
-+				    struct nft_data_linearize *nld, bool expand)
- {
- 	if (expand)
- 		__netlink_gen_concat_expand(expr, nld);
-@@ -438,7 +481,7 @@ static void netlink_gen_key(const struct expr *expr,
- 	case EXPR_VALUE:
- 		return netlink_gen_constant_data(expr, data);
- 	case EXPR_CONCAT:
--		return netlink_gen_concat_data(expr, data, false);
-+		return netlink_gen_concat_key(expr, data);
- 	case EXPR_RANGE:
- 		return netlink_gen_range(expr, data);
- 	case EXPR_PREFIX:
--- 
-2.30.2
-
+OK, just an idea in case there is a need for getting ebtables more
+aligned with other xtables userspace.
