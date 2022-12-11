@@ -2,154 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E091649391
-	for <lists+netfilter-devel@lfdr.de>; Sun, 11 Dec 2022 11:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5FE64951E
+	for <lists+netfilter-devel@lfdr.de>; Sun, 11 Dec 2022 17:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbiLKKMb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 11 Dec 2022 05:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
+        id S230031AbiLKQqu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 11 Dec 2022 11:46:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbiLKKMV (ORCPT
+        with ESMTP id S230014AbiLKQqu (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 11 Dec 2022 05:12:21 -0500
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0FFDBD2D5;
-        Sun, 11 Dec 2022 02:12:20 -0800 (PST)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
-        pabeni@redhat.com, edumazet@google.com
-Subject: [PATCH net-next 12/12] ipvs: run_estimation should control the kthread tasks
-Date:   Sun, 11 Dec 2022 11:12:04 +0100
-Message-Id: <20221211101204.1751-13-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221211101204.1751-1-pablo@netfilter.org>
-References: <20221211101204.1751-1-pablo@netfilter.org>
+        Sun, 11 Dec 2022 11:46:50 -0500
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A02BBC33
+        for <netfilter-devel@vger.kernel.org>; Sun, 11 Dec 2022 08:46:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=OwR5ThgoPVrWlEjqXmdEoVPj1W+l0A59d9opBf5+UGk=; b=ZBjBJ5MoJmALwm+Ljub0AVC53i
+        3t2n6b/CFg5UBG48JfYEqgAClFaESPYcG55oyew85c1Sh/Sx/nbV84ESnTI2Tk85QEGAM1M10r9Bw
+        SAfrpLiCI5wevequ+aW9WyPGZz4sw4ql8wnjHFNShZtqtQEUeG7kwxjjdMLXF+ii7vGjsy+6CZeNT
+        M/38nM7I1a/cnv+FiBY1cj6s9ynILkbvbaAhno/zLNFrfHFOSfJVD598ucGBGGKZfol4R9P4iPG/0
+        OkIX7rvY8uXpSY80clpNIksANyDuz+NKiQTVO96iNJwtzprEtXt6x+pfugbFMojCzeeIYy5dU1haN
+        n0k+2cLw==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtp (Exim 4.94.2)
+        (envelope-from <jeremy@azazel.net>)
+        id 1p4PTN-008tm0-44
+        for netfilter-devel@vger.kernel.org; Sun, 11 Dec 2022 16:46:41 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH ulogd2] build: fix pgsql fall-back configuration of CFLAGS
+Date:   Sun, 11 Dec 2022 16:46:31 +0000
+Message-Id: <20221211164631.812617-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Julian Anastasov <ja@ssi.bg>
+When using mysql_config and pcap_config to configure `CFLAGS`, one
+requests the actual flags:
 
-Change the run_estimation flag to start/stop the kthread tasks.
+  $mysql_config --cflags
+  $pcap_config --cflags
 
-Signed-off-by: Julian Anastasov <ja@ssi.bg>
-Cc: yunhong-cgl jiang <xintian1976@gmail.com>
-Cc: "dust.li" <dust.li@linux.alibaba.com>
-Reviewed-by: Jiri Wiesner <jwiesner@suse.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+By constrast, when using pg_config, one requests the include-directory:
+
+  $pg_config --includedir
+
+Therefore, the `-I` option has to be explicitly added.
+
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- Documentation/networking/ipvs-sysctl.rst |  4 ++--
- include/net/ip_vs.h                      |  6 +++--
- net/netfilter/ipvs/ip_vs_ctl.c           | 29 +++++++++++++++++++++++-
- net/netfilter/ipvs/ip_vs_est.c           |  2 +-
- 4 files changed, 35 insertions(+), 6 deletions(-)
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/networking/ipvs-sysctl.rst b/Documentation/networking/ipvs-sysctl.rst
-index 1b778705d706..3fb5fa142eef 100644
---- a/Documentation/networking/ipvs-sysctl.rst
-+++ b/Documentation/networking/ipvs-sysctl.rst
-@@ -324,8 +324,8 @@ run_estimation - BOOLEAN
- 	0 - disabled
- 	not 0 - enabled (default)
+diff --git a/configure.ac b/configure.ac
+index 6ee29ce321d0..70eed9dc1745 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -92,7 +92,7 @@ AS_IF([test "x$enable_pgsql" != "xno"], [
  
--	If disabled, the estimation will be stop, and you can't see
--	any update on speed estimation data.
-+	If disabled, the estimation will be suspended and kthread tasks
-+	stopped.
+     AS_IF([command -v "$pg_config" >/dev/null], [
  
- 	You can always re-enable estimation by setting this value to 1.
- 	But be careful, the first estimation after re-enable is not
-diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-index dc51b5497cf7..c6c61100d244 100644
---- a/include/net/ip_vs.h
-+++ b/include/net/ip_vs.h
-@@ -1605,8 +1605,10 @@ void ip_vs_est_kthread_stop(struct ip_vs_est_kt_data *kd);
- static inline void ip_vs_est_stopped_recalc(struct netns_ipvs *ipvs)
- {
- #ifdef CONFIG_SYSCTL
--	ipvs->est_stopped = ipvs->est_cpulist_valid &&
--			    cpumask_empty(sysctl_est_cpulist(ipvs));
-+	/* Stop tasks while cpulist is empty or if disabled with flag */
-+	ipvs->est_stopped = !sysctl_run_estimation(ipvs) ||
-+			    (ipvs->est_cpulist_valid &&
-+			     cpumask_empty(sysctl_est_cpulist(ipvs)));
- #endif
- }
+-      libpq_CFLAGS="`$pg_config --includedir`"
++      libpq_CFLAGS="-I`$pg_config --includedir`"
+       libpq_LIBS="`$pg_config --libdir` -lpq"
  
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index 38df3ee655ed..c9f598505642 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -2056,6 +2056,32 @@ static int ipvs_proc_est_nice(struct ctl_table *table, int write,
- 	return ret;
- }
- 
-+static int ipvs_proc_run_estimation(struct ctl_table *table, int write,
-+				    void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	struct netns_ipvs *ipvs = table->extra2;
-+	int *valp = table->data;
-+	int val = *valp;
-+	int ret;
-+
-+	struct ctl_table tmp_table = {
-+		.data = &val,
-+		.maxlen = sizeof(int),
-+		.mode = table->mode,
-+	};
-+
-+	ret = proc_dointvec(&tmp_table, write, buffer, lenp, ppos);
-+	if (write && ret >= 0) {
-+		mutex_lock(&ipvs->est_mutex);
-+		if (*valp != val) {
-+			*valp = val;
-+			ip_vs_est_reload_start(ipvs);
-+		}
-+		mutex_unlock(&ipvs->est_mutex);
-+	}
-+	return ret;
-+}
-+
- /*
-  *	IPVS sysctl table (under the /proc/sys/net/ipv4/vs/)
-  *	Do not change order or insert new entries without
-@@ -2230,7 +2256,7 @@ static struct ctl_table vs_vars[] = {
- 		.procname	= "run_estimation",
- 		.maxlen		= sizeof(int),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= ipvs_proc_run_estimation,
- 	},
- 	{
- 		.procname	= "est_cpulist",
-@@ -4323,6 +4349,7 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
- 	tbl[idx++].data = &ipvs->sysctl_schedule_icmp;
- 	tbl[idx++].data = &ipvs->sysctl_ignore_tunneled;
- 	ipvs->sysctl_run_estimation = 1;
-+	tbl[idx].extra2 = ipvs;
- 	tbl[idx++].data = &ipvs->sysctl_run_estimation;
- 
- 	ipvs->est_cpulist_valid = 0;
-diff --git a/net/netfilter/ipvs/ip_vs_est.c b/net/netfilter/ipvs/ip_vs_est.c
-index e0f5f5da5b6d..df56073bb282 100644
---- a/net/netfilter/ipvs/ip_vs_est.c
-+++ b/net/netfilter/ipvs/ip_vs_est.c
-@@ -212,7 +212,7 @@ static int ip_vs_estimation_kthread(void *data)
- 				kd->est_timer = now;
- 		}
- 
--		if (sysctl_run_estimation(ipvs) && kd->tick_len[row])
-+		if (kd->tick_len[row])
- 			ip_vs_tick_estimation(kd, row);
- 
- 		row++;
+       AC_SUBST([libpq_CFLAGS])
 -- 
-2.30.2
+2.35.1
 
