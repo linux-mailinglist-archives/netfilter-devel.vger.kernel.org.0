@@ -2,107 +2,81 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDEF64D528
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Dec 2022 03:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E2664DCC6
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Dec 2022 15:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbiLOCCI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 14 Dec 2022 21:02:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
+        id S229471AbiLOOQr (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 15 Dec 2022 09:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbiLOCCH (ORCPT
+        with ESMTP id S229613AbiLOOQq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 14 Dec 2022 21:02:07 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF4F2ED5E;
-        Wed, 14 Dec 2022 18:02:06 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 28B5E61CE5;
-        Thu, 15 Dec 2022 02:02:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E66BEC433EF;
-        Thu, 15 Dec 2022 02:02:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1671069725;
-        bh=5wIJyUE2h46AaDrI7YOVEtNZr4I0U12viyqrqK8D7nY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nuLlG1Y3eR6+90le0R+7lHHFjmWe/I0UckdGZGs553u43aBnyMymKUphlDaISDiUn
-         7PphYDIodnpMSIWiPoZ1BJhTutGjvbvVaxbeMO3b+oR/vUyiB2ei23FiIvky6ZeLZn
-         r3iE+RuwXwhdoZ7FU40dtJ2G/nKVCIPboKb098unFh9T0v7KKntrEeSbZ+so3IWvHm
-         3XmoLatEaV2MODYxktlL07i8+sRaxDFDpor6ZiB2FBv3GDGAfwLGwF+BXavTKZueYW
-         H73wXDLHQYOgMvIXOhCtmHkvSnWcXHrNFrb5QqSquLmNlG9ms5jlCtc8e8TfsGkWpO
-         /j3tWKwtl+HnQ==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, edumazet@google.com, pabeni@redhat.com,
-        jiri@resnulli.us, jacob.e.keller@intel.com, leon@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, pablo@netfilter.org,
-        kadlec@netfilter.org, fw@strlen.de, johannes@sipsolutions.net,
-        ecree.xilinx@gmail.com, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org
-Subject: [RFC net-next 05/15] netlink: add macro for checking dump ctx size
-Date:   Wed, 14 Dec 2022 18:01:45 -0800
-Message-Id: <20221215020155.1619839-6-kuba@kernel.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221215020155.1619839-1-kuba@kernel.org>
-References: <20221215020155.1619839-1-kuba@kernel.org>
+        Thu, 15 Dec 2022 09:16:46 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242AC1D66D
+        for <netfilter-devel@vger.kernel.org>; Thu, 15 Dec 2022 06:16:44 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1p5p2N-0000XM-1D; Thu, 15 Dec 2022 15:16:39 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>, kernel test robot <lkp@intel.com>
+Subject: [PATCH nf] netfilter: conntrack: fix ipv6 exthdr error check
+Date:   Thu, 15 Dec 2022 15:16:33 +0100
+Message-Id: <20221215141633.13253-1-fw@strlen.de>
+X-Mailer: git-send-email 2.37.4
+In-Reply-To: <202212151110.zPbmpj0L-lkp@intel.com>
+References: <202212151110.zPbmpj0L-lkp@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We encourage casting struct netlink_callback::ctx to a local
-struct (in a comment above the field). Provide a convenience
-macro for checking if the local struct fits into the ctx.
+smatch warnings:
+net/netfilter/nf_conntrack_proto.c:167 nf_confirm() warn: unsigned 'protoff' is never less than zero.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-CC: pablo@netfilter.org
-CC: kadlec@netfilter.org
-CC: fw@strlen.de
-CC: johannes@sipsolutions.net
-CC: ecree.xilinx@gmail.com
-CC: netfilter-devel@vger.kernel.org
-CC: coreteam@netfilter.org
----
- include/linux/netlink.h              | 4 ++++
- net/netfilter/nf_conntrack_netlink.c | 2 +-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+We need to check if ipv6_skip_exthdr() returned an error, but protoff is
+unsigned.  Use a signed integer for this.
 
-diff --git a/include/linux/netlink.h b/include/linux/netlink.h
-index d81bde5a5844..38f6334f408c 100644
---- a/include/linux/netlink.h
-+++ b/include/linux/netlink.h
-@@ -263,6 +263,10 @@ struct netlink_callback {
- 	};
- };
+Fixes: a70e483460d5 ("netfilter: conntrack: merge ipv4+ipv6 confirm functions")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nf_conntrack_proto.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/net/netfilter/nf_conntrack_proto.c b/net/netfilter/nf_conntrack_proto.c
+index 99323fb12d0f..ccef340be575 100644
+--- a/net/netfilter/nf_conntrack_proto.c
++++ b/net/netfilter/nf_conntrack_proto.c
+@@ -141,6 +141,7 @@ unsigned int nf_confirm(void *priv,
+ 	struct nf_conn *ct;
+ 	bool seqadj_needed;
+ 	__be16 frag_off;
++	int start;
+ 	u8 pnum;
  
-+#define NL_ASSET_DUMP_CTX_FITS(type_name)				\
-+	BUILD_BUG_ON(sizeof(type_name) >				\
-+		     sizeof_field(struct netlink_callback, ctx))
+ 	ct = nf_ct_get(skb, &ctinfo);
+@@ -163,9 +164,11 @@ unsigned int nf_confirm(void *priv,
+ 		break;
+ 	case NFPROTO_IPV6:
+ 		pnum = ipv6_hdr(skb)->nexthdr;
+-		protoff = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &pnum, &frag_off);
+-		if (protoff < 0 || (frag_off & htons(~0x7)) != 0)
++		start = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &pnum, &frag_off);
++		if (start < 0 || (frag_off & htons(~0x7)) != 0)
+ 			return nf_conntrack_confirm(skb);
 +
- struct netlink_notify {
- 	struct net *net;
- 	u32 portid;
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 1286ae7d4609..90672e293e57 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -3866,7 +3866,7 @@ static int __init ctnetlink_init(void)
- {
- 	int ret;
- 
--	BUILD_BUG_ON(sizeof(struct ctnetlink_list_dump_ctx) > sizeof_field(struct netlink_callback, ctx));
-+	NL_ASSET_DUMP_CTX_FITS(struct ctnetlink_list_dump_ctx);
- 
- 	ret = nfnetlink_subsys_register(&ctnl_subsys);
- 	if (ret < 0) {
++		protoff = start;
+ 		break;
+ 	default:
+ 		return nf_conntrack_confirm(skb);
 -- 
-2.38.1
+2.37.4
 
