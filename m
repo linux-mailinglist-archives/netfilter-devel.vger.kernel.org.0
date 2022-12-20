@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D846523C8
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Dec 2022 16:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7C36523CA
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Dec 2022 16:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbiLTPjJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 20 Dec 2022 10:39:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
+        id S229771AbiLTPjV (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 20 Dec 2022 10:39:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbiLTPjI (ORCPT
+        with ESMTP id S229749AbiLTPjU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 20 Dec 2022 10:39:08 -0500
+        Tue, 20 Dec 2022 10:39:20 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360EE11474
-        for <netfilter-devel@vger.kernel.org>; Tue, 20 Dec 2022 07:39:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76015E0
+        for <netfilter-devel@vger.kernel.org>; Tue, 20 Dec 2022 07:39:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=2C2lTkbVWkoFkZMvRmmoLROS0eIgcWt+WSbrvru+LEw=; b=oLeaqK0ex8VXpcfkB2Q8TuE3mB
-        rMqJJkkmr9L5U3djXmzxKfEdcCD0RaEQ1BoyH2n3qd5gfoSYYcOWW1Gf2vxz0kEUHrj67+ni/IgtO
-        GpfiESFlMw8O+Mp6cFUlDaP3kpx1Ad7iJxURmhiDqo4R5/Z3F6aE1sYsN/SoZOy6PQEI1DPbANPs6
-        bYeq6VctmHA5WJCDXnDyz2M+1Xh/tDzLPNkc6E3XLJLxFaYA321aWachAmDUFDlbIvOqZx6tQ/0Ur
-        LhqazLkOxG+ty8oejEs9kP6CCsQJxQ8pnL95NbbOLnwA3EFgVzjn/Sk9uFQXTTofb1d2km4jtvTUb
-        LTRSb4aw==;
+        bh=X4naVIVqK7eTpUSEybE3n/RTgudBwOsPaGOW58kLOJI=; b=gWGi+vTawIFBxdRbH9GbNlnO6L
+        OkZfZUnkLSS9oL8skIUx+cc0drGUqfPFRxMmgXrG5QEAt2qWCttHXXa7pLJ47X4I3U0fIHW4v0h3a
+        F+igK4skbi2nOGkvXmYKYGy/iz0dTOkG9Fn6vF5PyHmhWkgT0s25Z18J+5JvI3O7qS+wTeI0GIkkB
+        C3BQbswrTDoVZa3ESBBMJn6gI1FSP1YXvjghv9LXiyJvJaNrLchfZGImEbKZcicYVNCAUFk0S3pep
+        pvorhVM2xNYa+ePUZk6AwdEHTMiJa9BCZtmekwTMuIp4MDlg9g6C1pP8+T6VIo0wkoceixJDuWlwM
+        bBD2PaBw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1p7ehu-0000Fc-LO; Tue, 20 Dec 2022 16:39:06 +0100
+        id 1p7ei5-0000GS-8Y; Tue, 20 Dec 2022 16:39:17 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [conntrack-tools PATCH 3/4] conntrack: Fix for unused assignment in ct_save_snprintf()
-Date:   Tue, 20 Dec 2022 16:38:46 +0100
-Message-Id: <20221220153847.24152-4-phil@nwl.cc>
+Subject: [conntrack-tools PATCH 4/4] conntrack: Sanitize free_tmpl_objects()
+Date:   Tue, 20 Dec 2022 16:38:47 +0100
+Message-Id: <20221220153847.24152-5-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221220153847.24152-1-phil@nwl.cc>
 References: <20221220153847.24152-1-phil@nwl.cc>
@@ -51,26 +51,31 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Setting 'ret' without calling BUFFER_SIZE() is pointless.
+The function unconditionally dereferenced its parameter, yet it is
+possible for the passed 'cur_tmpl' pointer when called from exit_error()
+to be still NULL: It is assigned to by alloc_tmpl_objects() at start of
+do_parse(), though callers of that function might call exit_error() in
+beforehand.
 
-Fixes: 1c596b9ec8f26 ("conntrack: implement save output format")
+Fixes: 258b4540f4512 ("conntrack: add struct ct_tmpl")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/conntrack.c | 1 -
- 1 file changed, 1 deletion(-)
+ src/conntrack.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/src/conntrack.c b/src/conntrack.c
-index 07fae3dc2ff07..2bd71e17e6be6 100644
+index 2bd71e17e6be6..23eaf274a78a1 100644
 --- a/src/conntrack.c
 +++ b/src/conntrack.c
-@@ -761,7 +761,6 @@ static int ct_save_snprintf(char *buf, size_t len,
- 		BUFFER_SIZE(ret, size, len, offset);
- 		break;
- 	default:
--		ret = 0;
- 		break;
- 	}
+@@ -139,6 +139,8 @@ static int alloc_tmpl_objects(struct ct_tmpl *tmpl)
  
+ static void free_tmpl_objects(struct ct_tmpl *tmpl)
+ {
++	if (!tmpl)
++		return;
+ 	if (tmpl->ct)
+ 		nfct_destroy(tmpl->ct);
+ 	if (tmpl->exptuple)
 -- 
 2.38.0
 
