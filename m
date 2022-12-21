@@ -2,239 +2,248 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80909653257
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Dec 2022 15:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9255E6533FC
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Dec 2022 17:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbiLUOWf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 21 Dec 2022 09:22:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58140 "EHLO
+        id S229601AbiLUQ3G (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 21 Dec 2022 11:29:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbiLUOWd (ORCPT
+        with ESMTP id S233777AbiLUQ3D (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 21 Dec 2022 09:22:33 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB445F6B
-        for <netfilter-devel@vger.kernel.org>; Wed, 21 Dec 2022 06:22:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Ol9H94Mi5+y+cdqc3H4FjaAj/6zeeqHG2EFHhtAjBX0=; b=S3PZy2w8mha6rCp0wh/vvuL5FT
-        Vdcg1z+Rjv7uioFANqLnHRrz37DDVJtMHBo2PNk/bgBmXcLSCNh56PRUE2f8Yt3Hry3zx3rq98v/F
-        dDGVjVStj15yyQr6wBMic9jJSU70dSRqNYPLIvlSg0P4jfp4vC1vTnnSm4yP6o+bMmeR1LiU9voJy
-        lmikm9X8geUOHfBT0VdVh/Oqs3TtO3lEs6j51+bNLeutYlU4cR/zxGDvRMgCa2Wowz1inx5eC3J3G
-        ciBx4Q2f7NzwVnR8LyKy4u+UHchYXhZoKIZreKaNAfPI/2iGn66V8pmDbYIriZiwdcETX6+pOfLjw
-        0svSeZXA==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1p7zzK-0002cW-7N; Wed, 21 Dec 2022 15:22:30 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [nf-next PATCH v2] netfilter: nf_tables: Introduce NFTA_RULE_ACTUAL_EXPR
-Date:   Wed, 21 Dec 2022 15:22:21 +0100
-Message-Id: <20221221142221.27211-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.38.0
+        Wed, 21 Dec 2022 11:29:03 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4960C8FE0
+        for <netfilter-devel@vger.kernel.org>; Wed, 21 Dec 2022 08:29:00 -0800 (PST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf,v5 1/4] netfilter: nf_tables: consolidate set description
+Date:   Wed, 21 Dec 2022 17:28:51 +0100
+Message-Id: <20221221162854.62199-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Allow for user space to provide an improved variant of the rule for
-actual use. The variant in NFTA_RULE_EXPRESSIONS may provide maximum
-compatibility for old user space tools (e.g. in outdated containers).
+Add the following fields to the set description:
 
-The new attribute is also dumped back to user space, e.g. for comparison
-against the compatible variant.
+- key type
+- data type
+- object type
+- policy
+- gc_int: garbage collection interval)
+- timeout: element timeout
 
-While being at it, improve nft_rule_policy for NFTA_RULE_EXPRESSIONS.
+This prepares for stricter set type checks on updates in a follow up
+patch.
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-Changes since v1:
-- Rename the new attribute as suggested
-- Avoid the changing attribute meaning - ACTUAL_EXPR will always contain
-  the new variant, both on input and output
-- Rename the new struct nft_rule field accordingly
-- Add the new attribute to nft_rule_policy
----
- include/net/netfilter/nf_tables.h        | 13 ++++++++
- include/uapi/linux/netfilter/nf_tables.h |  3 ++
- net/netfilter/nf_tables_api.c            | 38 ++++++++++++++++++++----
- 3 files changed, 49 insertions(+), 5 deletions(-)
+v5: no changes
+
+ include/net/netfilter/nf_tables.h | 12 +++++++
+ net/netfilter/nf_tables_api.c     | 58 +++++++++++++++----------------
+ 2 files changed, 40 insertions(+), 30 deletions(-)
 
 diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index e69ce23566eab..e8446abb7620c 100644
+index e69ce23566ea..4957b4775757 100644
 --- a/include/net/netfilter/nf_tables.h
 +++ b/include/net/netfilter/nf_tables.h
-@@ -946,10 +946,22 @@ struct nft_expr_ops {
- 	void				*data;
- };
- 
-+/**
-+ *	struct nft_dump_expr - compat expression blob for rule dumps
-+ *
-+ *	@dlen: length of @data
-+ *	@data: blob used as payload of NFTA_RULE_EXPRESSIONS attribute
-+ */
-+struct nft_dump_expr {
-+	int	dlen;
-+	char	data[];
-+};
-+
+@@ -312,17 +312,29 @@ struct nft_set_iter {
  /**
-  *	struct nft_rule - nf_tables rule
+  *	struct nft_set_desc - description of set elements
   *
-  *	@list: used internally
-+ *	@dump_expr: Expression blob to dump instead of live data
-  *	@handle: rule handle
-  *	@genmask: generation mask
-  *	@dlen: length of expression data
-@@ -958,6 +970,7 @@ struct nft_expr_ops {
++ *	@ktype: key type
+  *	@klen: key length
++ *	@dtype: data type
+  *	@dlen: data length
++ *	@objtype: object type
++ *	@flags: flags
+  *	@size: number of set elements
++ *	@policy: set policy
++ *	@gc_int: garbage collector interval
+  *	@field_len: length of each field in concatenation, bytes
+  *	@field_count: number of concatenated fields in element
+  *	@expr: set must support for expressions
   */
- struct nft_rule {
- 	struct list_head		list;
-+	struct nft_dump_expr		*dump_expr;
- 	u64				handle:42,
- 					genmask:2,
- 					dlen:12,
-diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
-index cfa844da1ce61..3e0fc9e8784cb 100644
---- a/include/uapi/linux/netfilter/nf_tables.h
-+++ b/include/uapi/linux/netfilter/nf_tables.h
-@@ -247,6 +247,8 @@ enum nft_chain_attributes {
-  * @NFTA_RULE_USERDATA: user data (NLA_BINARY, NFT_USERDATA_MAXLEN)
-  * @NFTA_RULE_ID: uniquely identifies a rule in a transaction (NLA_U32)
-  * @NFTA_RULE_POSITION_ID: transaction unique identifier of the previous rule (NLA_U32)
-+ * @NFTA_RULE_CHAIN_ID: add the rule to chain by ID, alternative to @NFTA_RULE_CHAIN (NLA_U32)
-+ * @NFTA_RULE_ACTUAL_EXPR: list of expressions to really use if @NFTA_RULE_EXPRESSIONS must contain a compatible representation of the rule (NLA_NESTED: nft_expr_attributes)
-  */
- enum nft_rule_attributes {
- 	NFTA_RULE_UNSPEC,
-@@ -261,6 +263,7 @@ enum nft_rule_attributes {
- 	NFTA_RULE_ID,
- 	NFTA_RULE_POSITION_ID,
- 	NFTA_RULE_CHAIN_ID,
-+	NFTA_RULE_ACTUAL_EXPR,
- 	__NFTA_RULE_MAX
- };
- #define NFTA_RULE_MAX		(__NFTA_RULE_MAX - 1)
+ struct nft_set_desc {
++	u32			ktype;
+ 	unsigned int		klen;
++	u32			dtype;
+ 	unsigned int		dlen;
++	u32			objtype;
+ 	unsigned int		size;
++	u32			policy;
++	u32			gc_int;
++	u64			timeout;
+ 	u8			field_len[NFT_REG32_COUNT];
+ 	u8			field_count;
+ 	bool			expr;
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 6269b0d9977c6..b3a14819f91f8 100644
+index 832b881f7c17..1deecc1a6c00 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -3019,7 +3019,7 @@ static const struct nla_policy nft_rule_policy[NFTA_RULE_MAX + 1] = {
- 	[NFTA_RULE_CHAIN]	= { .type = NLA_STRING,
- 				    .len = NFT_CHAIN_MAXNAMELEN - 1 },
- 	[NFTA_RULE_HANDLE]	= { .type = NLA_U64 },
--	[NFTA_RULE_EXPRESSIONS]	= { .type = NLA_NESTED },
-+	[NFTA_RULE_EXPRESSIONS]	= NLA_POLICY_NESTED_ARRAY(nft_expr_policy),
- 	[NFTA_RULE_COMPAT]	= { .type = NLA_NESTED },
- 	[NFTA_RULE_POSITION]	= { .type = NLA_U64 },
- 	[NFTA_RULE_USERDATA]	= { .type = NLA_BINARY,
-@@ -3027,6 +3027,7 @@ static const struct nla_policy nft_rule_policy[NFTA_RULE_MAX + 1] = {
- 	[NFTA_RULE_ID]		= { .type = NLA_U32 },
- 	[NFTA_RULE_POSITION_ID]	= { .type = NLA_U32 },
- 	[NFTA_RULE_CHAIN_ID]	= { .type = NLA_U32 },
-+	[NFTA_RULE_ACTUAL_EXPR]	= NLA_POLICY_NESTED_ARRAY(nft_expr_policy),
- };
+@@ -3780,8 +3780,7 @@ static bool nft_set_ops_candidate(const struct nft_set_type *type, u32 flags)
+ static const struct nft_set_ops *
+ nft_select_set_ops(const struct nft_ctx *ctx,
+ 		   const struct nlattr * const nla[],
+-		   const struct nft_set_desc *desc,
+-		   enum nft_set_policies policy)
++		   const struct nft_set_desc *desc)
+ {
+ 	struct nftables_pernet *nft_net = nft_pernet(ctx->net);
+ 	const struct nft_set_ops *ops, *bops;
+@@ -3810,7 +3809,7 @@ nft_select_set_ops(const struct nft_ctx *ctx,
+ 		if (!ops->estimate(desc, flags, &est))
+ 			continue;
  
- static int nf_tables_fill_rule_info(struct sk_buff *skb, struct net *net,
-@@ -3064,9 +3065,18 @@ static int nf_tables_fill_rule_info(struct sk_buff *skb, struct net *net,
- 	if (chain->flags & NFT_CHAIN_HW_OFFLOAD)
- 		nft_flow_rule_stats(chain, rule);
- 
--	list = nla_nest_start_noflag(skb, NFTA_RULE_EXPRESSIONS);
--	if (list == NULL)
-+	if (rule->dump_expr) {
-+		if (nla_put(skb, NFTA_RULE_EXPRESSIONS,
-+			    rule->dump_expr->dlen, rule->dump_expr->data) < 0)
-+			goto nla_put_failure;
-+
-+		list = nla_nest_start_noflag(skb, NFTA_RULE_ACTUAL_EXPR);
-+	} else {
-+		list = nla_nest_start_noflag(skb, NFTA_RULE_EXPRESSIONS);
-+	}
-+	if (!list)
- 		goto nla_put_failure;
-+
- 	nft_rule_for_each_expr(expr, next, rule) {
- 		if (nft_expr_dump(skb, NFTA_LIST_ELEM, expr, reset) < 0)
- 			goto nla_put_failure;
-@@ -3366,6 +3376,7 @@ static void nf_tables_rule_destroy(const struct nft_ctx *ctx,
- 		nf_tables_expr_destroy(ctx, expr);
- 		expr = next;
- 	}
-+	kfree(rule->dump_expr);
- 	kfree(rule);
- }
- 
-@@ -3443,7 +3454,9 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
- 	struct nft_rule *rule, *old_rule = NULL;
- 	struct nft_expr_info *expr_info = NULL;
+-		switch (policy) {
++		switch (desc->policy) {
+ 		case NFT_SET_POL_PERFORMANCE:
+ 			if (est.lookup < best.lookup)
+ 				break;
+@@ -4392,7 +4391,6 @@ static int nf_tables_set_desc_parse(struct nft_set_desc *desc,
+ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
+ 			    const struct nlattr * const nla[])
+ {
+-	u32 ktype, dtype, flags, policy, gc_int, objtype;
+ 	struct netlink_ext_ack *extack = info->extack;
+ 	u8 genmask = nft_genmask_next(info->net);
  	u8 family = info->nfmsg->nfgen_family;
-+	struct nft_dump_expr *dump_expr = NULL;
- 	struct nft_flow_rule *flow = NULL;
-+	const struct nlattr *expr_nla;
- 	struct net *net = info->net;
- 	struct nft_userdata *udata;
- 	struct nft_table *table;
-@@ -3529,14 +3542,15 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+@@ -4405,10 +4403,10 @@ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
+ 	struct nft_set *set;
+ 	struct nft_ctx ctx;
+ 	size_t alloc_size;
+-	u64 timeout;
+ 	char *name;
+ 	int err, i;
+ 	u16 udlen;
++	u32 flags;
+ 	u64 size;
  
- 	n = 0;
- 	size = 0;
--	if (nla[NFTA_RULE_EXPRESSIONS]) {
-+	expr_nla = nla[NFTA_RULE_ACTUAL_EXPR] ?: nla[NFTA_RULE_EXPRESSIONS];
-+	if (expr_nla) {
- 		expr_info = kvmalloc_array(NFT_RULE_MAXEXPRS,
- 					   sizeof(struct nft_expr_info),
- 					   GFP_KERNEL);
- 		if (!expr_info)
- 			return -ENOMEM;
+ 	if (nla[NFTA_SET_TABLE] == NULL ||
+@@ -4419,10 +4417,10 @@ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
  
--		nla_for_each_nested(tmp, nla[NFTA_RULE_EXPRESSIONS], rem) {
-+		nla_for_each_nested(tmp, expr_nla, rem) {
- 			err = -EINVAL;
- 			if (nla_type(tmp) != NFTA_LIST_ELEM)
- 				goto err_release_expr;
-@@ -3556,6 +3570,19 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
- 	if (size >= 1 << 12)
- 		goto err_release_expr;
+ 	memset(&desc, 0, sizeof(desc));
  
-+	if (nla[NFTA_RULE_ACTUAL_EXPR]) {
-+		int dlen = nla_len(nla[NFTA_RULE_EXPRESSIONS]);
-+
-+		/* store unused NFTA_RULE_EXPRESSIONS for later */
-+		dump_expr = kvmalloc(sizeof(*dump_expr) + dlen, GFP_KERNEL);
-+		if (!dump_expr) {
-+			err = -ENOMEM;
-+			goto err_release_expr;
-+		}
-+		dump_expr->dlen = dlen;
-+		nla_memcpy(dump_expr->data, nla[NFTA_RULE_EXPRESSIONS], dlen);
-+	}
-+
- 	if (nla[NFTA_RULE_USERDATA]) {
- 		ulen = nla_len(nla[NFTA_RULE_USERDATA]);
- 		if (ulen > 0)
-@@ -3572,6 +3599,7 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
- 	rule->handle = handle;
- 	rule->dlen   = size;
- 	rule->udata  = ulen ? 1 : 0;
-+	rule->dump_expr = dump_expr;
+-	ktype = NFT_DATA_VALUE;
++	desc.ktype = NFT_DATA_VALUE;
+ 	if (nla[NFTA_SET_KEY_TYPE] != NULL) {
+-		ktype = ntohl(nla_get_be32(nla[NFTA_SET_KEY_TYPE]));
+-		if ((ktype & NFT_DATA_RESERVED_MASK) == NFT_DATA_RESERVED_MASK)
++		desc.ktype = ntohl(nla_get_be32(nla[NFTA_SET_KEY_TYPE]));
++		if ((desc.ktype & NFT_DATA_RESERVED_MASK) == NFT_DATA_RESERVED_MASK)
+ 			return -EINVAL;
+ 	}
  
- 	if (ulen) {
- 		udata = nft_userdata(rule);
+@@ -4447,17 +4445,17 @@ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
+ 			return -EOPNOTSUPP;
+ 	}
+ 
+-	dtype = 0;
++	desc.dtype = 0;
+ 	if (nla[NFTA_SET_DATA_TYPE] != NULL) {
+ 		if (!(flags & NFT_SET_MAP))
+ 			return -EINVAL;
+ 
+-		dtype = ntohl(nla_get_be32(nla[NFTA_SET_DATA_TYPE]));
+-		if ((dtype & NFT_DATA_RESERVED_MASK) == NFT_DATA_RESERVED_MASK &&
+-		    dtype != NFT_DATA_VERDICT)
++		desc.dtype = ntohl(nla_get_be32(nla[NFTA_SET_DATA_TYPE]));
++		if ((desc.dtype & NFT_DATA_RESERVED_MASK) == NFT_DATA_RESERVED_MASK &&
++		    desc.dtype != NFT_DATA_VERDICT)
+ 			return -EINVAL;
+ 
+-		if (dtype != NFT_DATA_VERDICT) {
++		if (desc.dtype != NFT_DATA_VERDICT) {
+ 			if (nla[NFTA_SET_DATA_LEN] == NULL)
+ 				return -EINVAL;
+ 			desc.dlen = ntohl(nla_get_be32(nla[NFTA_SET_DATA_LEN]));
+@@ -4472,34 +4470,34 @@ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
+ 		if (!(flags & NFT_SET_OBJECT))
+ 			return -EINVAL;
+ 
+-		objtype = ntohl(nla_get_be32(nla[NFTA_SET_OBJ_TYPE]));
+-		if (objtype == NFT_OBJECT_UNSPEC ||
+-		    objtype > NFT_OBJECT_MAX)
++		desc.objtype = ntohl(nla_get_be32(nla[NFTA_SET_OBJ_TYPE]));
++		if (desc.objtype == NFT_OBJECT_UNSPEC ||
++		    desc.objtype > NFT_OBJECT_MAX)
+ 			return -EOPNOTSUPP;
+ 	} else if (flags & NFT_SET_OBJECT)
+ 		return -EINVAL;
+ 	else
+-		objtype = NFT_OBJECT_UNSPEC;
++		desc.objtype = NFT_OBJECT_UNSPEC;
+ 
+-	timeout = 0;
++	desc.timeout = 0;
+ 	if (nla[NFTA_SET_TIMEOUT] != NULL) {
+ 		if (!(flags & NFT_SET_TIMEOUT))
+ 			return -EINVAL;
+ 
+-		err = nf_msecs_to_jiffies64(nla[NFTA_SET_TIMEOUT], &timeout);
++		err = nf_msecs_to_jiffies64(nla[NFTA_SET_TIMEOUT], &desc.timeout);
+ 		if (err)
+ 			return err;
+ 	}
+-	gc_int = 0;
++	desc.gc_int = 0;
+ 	if (nla[NFTA_SET_GC_INTERVAL] != NULL) {
+ 		if (!(flags & NFT_SET_TIMEOUT))
+ 			return -EINVAL;
+-		gc_int = ntohl(nla_get_be32(nla[NFTA_SET_GC_INTERVAL]));
++		desc.gc_int = ntohl(nla_get_be32(nla[NFTA_SET_GC_INTERVAL]));
+ 	}
+ 
+-	policy = NFT_SET_POL_PERFORMANCE;
++	desc.policy = NFT_SET_POL_PERFORMANCE;
+ 	if (nla[NFTA_SET_POLICY] != NULL)
+-		policy = ntohl(nla_get_be32(nla[NFTA_SET_POLICY]));
++		desc.policy = ntohl(nla_get_be32(nla[NFTA_SET_POLICY]));
+ 
+ 	if (nla[NFTA_SET_DESC] != NULL) {
+ 		err = nf_tables_set_desc_parse(&desc, nla[NFTA_SET_DESC]);
+@@ -4544,7 +4542,7 @@ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
+ 	if (!(info->nlh->nlmsg_flags & NLM_F_CREATE))
+ 		return -ENOENT;
+ 
+-	ops = nft_select_set_ops(&ctx, nla, &desc, policy);
++	ops = nft_select_set_ops(&ctx, nla, &desc);
+ 	if (IS_ERR(ops))
+ 		return PTR_ERR(ops);
+ 
+@@ -4584,18 +4582,18 @@ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
+ 	set->table = table;
+ 	write_pnet(&set->net, net);
+ 	set->ops = ops;
+-	set->ktype = ktype;
++	set->ktype = desc.ktype;
+ 	set->klen = desc.klen;
+-	set->dtype = dtype;
+-	set->objtype = objtype;
++	set->dtype = desc.dtype;
++	set->objtype = desc.objtype;
+ 	set->dlen = desc.dlen;
+ 	set->flags = flags;
+ 	set->size = desc.size;
+-	set->policy = policy;
++	set->policy = desc.policy;
+ 	set->udlen = udlen;
+ 	set->udata = udata;
+-	set->timeout = timeout;
+-	set->gc_int = gc_int;
++	set->timeout = desc.timeout;
++	set->gc_int = desc.gc_int;
+ 
+ 	set->field_count = desc.field_count;
+ 	for (i = 0; i < desc.field_count; i++)
 -- 
-2.38.0
+2.30.2
 
