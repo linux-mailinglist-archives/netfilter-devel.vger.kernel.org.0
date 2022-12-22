@@ -2,53 +2,68 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39020654484
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Dec 2022 16:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371AD654515
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Dec 2022 17:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbiLVPo5 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 22 Dec 2022 10:44:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50708 "EHLO
+        id S235510AbiLVQ00 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 22 Dec 2022 11:26:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbiLVPoi (ORCPT
+        with ESMTP id S230357AbiLVQ0G (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 22 Dec 2022 10:44:38 -0500
+        Thu, 22 Dec 2022 11:26:06 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE7432BB2
-        for <netfilter-devel@vger.kernel.org>; Thu, 22 Dec 2022 07:44:18 -0800 (PST)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1p8Nk1-000708-5T; Thu, 22 Dec 2022 16:44:17 +0100
-Date:   Thu, 22 Dec 2022 16:44:17 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659AC201AF
+        for <netfilter-devel@vger.kernel.org>; Thu, 22 Dec 2022 08:25:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=mHJJ3Ax4//fMbj9htqx98H23O+w8Xzu57DrGGMSwewg=; b=n7HfnnWFRpixXLCMCvpyeDuvA9
+        7xyVTMa2HBtjf8s05sL2r0WoXAB4leTnv9wc35Uvw99crVSbnh10Bd52/bcsE7Gz7qoDP4y4UVUfa
+        v8l9VY0AKOyJ4dO5jyuXVHPuuqcMhmLQt7B0z+nV8liaHX3q5ZyhO8w+33+flkXN79aB3blqIwJ7a
+        CAIj0ThdcTB2XhHITm+uYYZ0m4RkqF+A1Gpa4D8QBvPolb4nnJzYiSdBoD1ANxRqShybicxPbAygM
+        Xl5agLONo15X8RwZUMVW+Q4gBvrvC8ybwqOrQ1dG/ALtRhIXPYTpHDHgJxKlYXnDtBQUa9oI0J5Zn
+        S+IQPIZQ==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1p8OOJ-0007LO-PD
+        for netfilter-devel@vger.kernel.org; Thu, 22 Dec 2022 17:25:55 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Subject: Re: [iptables PATCH] nft: Reject tcp/udp extension without proper
- protocol match
-Message-ID: <Y6R7USvnqmN76oAr@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-References: <20221222150310.10977-1-phil@nwl.cc>
+Subject: [iptables PATCH 1/3] gitignore: Ignore utils/nfsynproxy
+Date:   Thu, 22 Dec 2022 17:25:39 +0100
+Message-Id: <20221222162541.30207-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221222150310.10977-1-phil@nwl.cc>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Dec 22, 2022 at 04:03:10PM +0100, Phil Sutter wrote:
-> Internally, 'th' expression is used, which works but matches both
-> protocols. Since users won't expect '-m tcp --dport 1' to match UDP
-> packets, catch missing/wrong '-p' argument.
-> 
-> Fixes: c034cf31dd1a9 ("nft: prefer native expressions instead of udp match")
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
+Fixes: 9e6928f037823 ("utils: add nfsynproxy tool")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ utils/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
-Patch applied.
+diff --git a/utils/.gitignore b/utils/.gitignore
+index 6300812b1701b..e508bb3270c4f 100644
+--- a/utils/.gitignore
++++ b/utils/.gitignore
+@@ -2,3 +2,4 @@
+ /nfnl_osf.8
+ /nfbpf_compile
+ /nfbpf_compile.8
++/nfsynproxy
+-- 
+2.38.0
+
