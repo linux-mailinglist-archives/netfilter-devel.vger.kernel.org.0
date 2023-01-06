@@ -2,29 +2,38 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 123A565F839
-	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Jan 2023 01:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 593FF65F855
+	for <lists+netfilter-devel@lfdr.de>; Fri,  6 Jan 2023 01:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234263AbjAFAio (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 5 Jan 2023 19:38:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
+        id S235595AbjAFAu0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 5 Jan 2023 19:50:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235891AbjAFAhk (ORCPT
+        with ESMTP id S234805AbjAFAuZ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 5 Jan 2023 19:37:40 -0500
+        Thu, 5 Jan 2023 19:50:25 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0433763F54
-        for <netfilter-devel@vger.kernel.org>; Thu,  5 Jan 2023 16:37:37 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 252DA4D701
+        for <netfilter-devel@vger.kernel.org>; Thu,  5 Jan 2023 16:50:25 -0800 (PST)
+Date:   Fri, 6 Jan 2023 01:50:21 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,v2 4/4] netfilter: nf_tables: allow to create netdev chain without device
-Date:   Fri,  6 Jan 2023 01:37:29 +0100
-Message-Id: <20230106003729.26596-4-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230106003729.26596-1-pablo@netfilter.org>
-References: <20230106003729.26596-1-pablo@netfilter.org>
+To:     Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+Cc:     "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>,
+        Long Xin <lxin@redhat.com>,
+        Claudio Porfiri <claudio.porfiri@ericsson.com>
+Subject: Re: [RFC PATCH] netfilter: conntrack: simplify sctp state machine
+Message-ID: <Y7dwTU9Ky6RN1u7L@salvia>
+References: <20230104113143.21769-1-sriram.yagnaraman@est.tech>
+ <Y7WVAEky9Iy3Ri3T@salvia>
+ <DBBP189MB1433F79520D32E1CB0F8A62A95FA9@DBBP189MB1433.EURP189.PROD.OUTLOOK.COM>
+ <Y7a6VqqMmW191RIG@salvia>
+ <DBBP189MB14337144265DA856B8321D1695FA9@DBBP189MB1433.EURP189.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <DBBP189MB14337144265DA856B8321D1695FA9@DBBP189MB1433.EURP189.PROD.OUTLOOK.COM>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -33,97 +42,62 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Relax netdev chain creation to allow for loading the ruleset, then
-adding/deleting devices at a later stage. Hardware offload does not
-support for this feature yet.
+On Thu, Jan 05, 2023 at 12:11:44PM +0000, Sriram Yagnaraman wrote:
+> > -----Original Message-----
+> > From: Pablo Neira Ayuso <pablo@netfilter.org>
+> > Sent: Thursday, 5 January 2023 12:54
+> > To: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+> > Cc: netfilter-devel@vger.kernel.org; Florian Westphal <fw@strlen.de>;
+> > Marcelo Ricardo Leitner <mleitner@redhat.com>; Long Xin
+> > <lxin@redhat.com>; Claudio Porfiri <claudio.porfiri@ericsson.com>
+> > Subject: Re: [RFC PATCH] netfilter: conntrack: simplify sctp state machine
+> > 
+> > On Thu, Jan 05, 2023 at 11:41:13AM +0000, Sriram Yagnaraman wrote:
+> > > > -----Original Message-----
+> > > > From: Pablo Neira Ayuso <pablo@netfilter.org>
+> > > > Sent: Wednesday, 4 January 2023 16:02
+> > > > To: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+> > > > Cc: netfilter-devel@vger.kernel.org; Florian Westphal
+> > > > <fw@strlen.de>; Marcelo Ricardo Leitner <mleitner@redhat.com>; Long
+> > > > Xin <lxin@redhat.com>
+> > > > Subject: Re: [RFC PATCH] netfilter: conntrack: simplify sctp state
+> > > > machine
+> > > >
+> > > > On Wed, Jan 04, 2023 at 12:31:43PM +0100, Sriram Yagnaraman wrote:
+> > > > > All the paths in an SCTP connection are kept alive either by
+> > > > > actual DATA/SACK running through the connection or by HEARTBEAT.
+> > > > > This patch proposes a simple state machine with only two states
+> > > > > OPEN_WAIT and ESTABLISHED (similar to UDP). The reason for this
+> > > > > change is a full stateful approach to SCTP is difficult when the
+> > > > > association is multihomed since the endpoints could use different
+> > > > > paths in the network during the lifetime of an association.
+> > > >
+> > > > Do you mean the router/firewall might not see all packets for
+> > > > association is multihomed?
+> > > >
+> > > > Could you please provide an example?
+> > >
+> > > Let's say the primary and alternate/secondary paths between the SCTP
+> > > endpoints traverse different middle boxes. If an SCTP endpoint detects
+> > > network failure on the primary path, it will switch to using the
+> > > secondary path and all subsequent packets will not be seen by the
+> > > middlebox on the primary path, including SHUTDOWN sequences if they
+> > > happen at that time.
+> > 
+> > OK, then on the primary middle box the SCTP flow will just timeout?
+> > (because no more packets are seen).
+> 
+> Yes, they will timeout unless the primary path comes up before the
+> SHUTDOWN sequence. And the default timeout for an ESTABLISHED SCTP
+> connection is 5 days, which is a "long" time to clean-up this entry.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
-v2: new in this series.
+Does the middle box have a chance to see any packet that provides a
+hint to shorten this timeout? no HEARTBEAT packets are seen in this
+case on the former primary path?
 
- net/netfilter/nf_tables_api.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+What I am missing are a more detailed list of issues with the existing
+approach. Your patch description says "SCTP tracking with multihoming
+is difficult", probably a list of scenarios would help to understand
+the motivation to simplify the state machine.
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 53531e958f01..80542877f9df 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -2005,9 +2005,8 @@ struct nft_chain_hook {
- 	struct list_head		list;
- };
- 
--static int nft_chain_parse_netdev(struct net *net,
--				  struct nlattr *tb[],
--				  struct list_head *hook_list)
-+static int nft_chain_parse_netdev(struct net *net, struct nlattr *tb[],
-+				  struct list_head *hook_list, u32 flags)
- {
- 	struct nft_hook *hook;
- 	int err;
-@@ -2024,19 +2023,20 @@ static int nft_chain_parse_netdev(struct net *net,
- 		if (err < 0)
- 			return err;
- 
--		if (list_empty(hook_list))
--			return -EINVAL;
--	} else {
--		return -EINVAL;
- 	}
- 
-+	if (flags & NFT_CHAIN_HW_OFFLOAD &&
-+	    list_empty(hook_list))
-+		return -EINVAL;
-+
- 	return 0;
- }
- 
- static int nft_chain_parse_hook(struct net *net,
- 				const struct nlattr * const nla[],
- 				struct nft_chain_hook *hook, u8 family,
--				struct netlink_ext_ack *extack, bool add)
-+				u32 flags, struct netlink_ext_ack *extack,
-+				bool add)
- {
- 	struct nftables_pernet *nft_net = nft_pernet(net);
- 	struct nlattr *ha[NFTA_HOOK_MAX + 1];
-@@ -2095,7 +2095,7 @@ static int nft_chain_parse_hook(struct net *net,
- 
- 	INIT_LIST_HEAD(&hook->list);
- 	if (nft_base_chain_netdev(family, hook->num)) {
--		err = nft_chain_parse_netdev(net, ha, &hook->list);
-+		err = nft_chain_parse_netdev(net, ha, &hook->list, flags);
- 		if (err < 0) {
- 			module_put(type->owner);
- 			return err;
-@@ -2238,8 +2238,8 @@ static int nf_tables_addchain(struct nft_ctx *ctx, u8 family, u8 genmask,
- 		if (flags & NFT_CHAIN_BINDING)
- 			return -EOPNOTSUPP;
- 
--		err = nft_chain_parse_hook(net, nla, &hook, family, extack,
--					   true);
-+		err = nft_chain_parse_hook(net, nla, &hook, family, flags,
-+					   extack, true);
- 		if (err < 0)
- 			return err;
- 
-@@ -2381,7 +2381,7 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
- 			return -EEXIST;
- 		}
- 		err = nft_chain_parse_hook(ctx->net, nla, &hook, ctx->family,
--					   extack, false);
-+					   flags, extack, false);
- 		if (err < 0)
- 			return err;
- 
-@@ -2657,7 +2657,7 @@ static int nft_delchain_hook(struct nft_ctx *ctx, struct nft_chain *chain,
- 		return -EOPNOTSUPP;
- 
- 	err = nft_chain_parse_hook(ctx->net, nla, &chain_hook, ctx->family,
--				   extack, false);
-+				   chain->flags, extack, false);
- 	if (err < 0)
- 		return err;
- 
--- 
-2.30.2
-
+Thanks.
