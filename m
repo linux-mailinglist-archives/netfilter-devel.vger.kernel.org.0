@@ -2,105 +2,161 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6DE661593
-	for <lists+netfilter-devel@lfdr.de>; Sun,  8 Jan 2023 14:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2882C661EF8
+	for <lists+netfilter-devel@lfdr.de>; Mon,  9 Jan 2023 08:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbjAHN46 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 8 Jan 2023 08:56:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50538 "EHLO
+        id S230415AbjAIHEv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 9 Jan 2023 02:04:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbjAHN45 (ORCPT
+        with ESMTP id S233735AbjAIHE3 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 8 Jan 2023 08:56:57 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DE6D2FC
-        for <netfilter-devel@vger.kernel.org>; Sun,  8 Jan 2023 05:56:55 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id l1-20020a17090a384100b00226f05b9595so4611285pjf.0
-        for <netfilter-devel@vger.kernel.org>; Sun, 08 Jan 2023 05:56:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HcpM41K3Tg/Gq2Sy2fOw39ukTQf5X/VzmfsS+yU67xU=;
-        b=KEW1uA95W83mO1+vVHYnP/RPB2eVYPV7ayenPBDk2MNA0R8eI72I+xLBVZ6h1dbzZ5
-         IKqz2LlKUY0fSmJpT97cxSqqxRrrB4dSEH5yt62Nfj4h+8dR+uC6X+gKCi56w9Udb0Lz
-         lv0JRl3rzun04VV2pScW0HdCX0QwE13NCxI+KCNGA+Apz9qhMdMVjiY6XZdSJf3oQwyZ
-         Q4A/DSAcdj7mVncKkiDF/u4TUQtKU6wQo9KzMOB40EuMM4dRTjiy+SPdUsBjMZIOdYbX
-         la593oQA0txirQjBJV0z6jzay2LfRZmo2Yz7ZKJdtvb2f68clgtf00HeHM9RAj0ICIrg
-         btbQ==
+        Mon, 9 Jan 2023 02:04:29 -0500
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD881209F;
+        Sun,  8 Jan 2023 23:04:28 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id d17so7172691wrs.2;
+        Sun, 08 Jan 2023 23:04:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HcpM41K3Tg/Gq2Sy2fOw39ukTQf5X/VzmfsS+yU67xU=;
-        b=zEGCfh47y3ZrreCbDHJ5M0pLXeTFAtjpwFAQiOIpyT0ja9MWYc1XwMkmghVAnDK0T5
-         wRikQ9Q3jcngO7g2PR+HB5mlyLQJmC2DvvyFiZJ6XxD6qu2IG5gvIXhYePE/5fy3yO/s
-         bbSaOrayrXREILcCMpEd+Ol2mWI6aQjfATeMAUbNpK+vOgvwrIHtgkXsSz/60Z6kLegz
-         V7EtUzchLoXH+l/+gbAodKAlpv2p4jnmIq2p6aTYJTnLC20xbiU/1KEe8GCn2KblL/lZ
-         7tpgcGBu3CdFAlzToiV7PXka57ECXfIdPFgaE2af4IzsbnN9MXFE6uZN2fjKRbRjUcdE
-         r12w==
-X-Gm-Message-State: AFqh2krZN47JMnRQ7pvAX/jF0Ew+EybSI8mARXLFGP0gnfD7pd2KFotb
-        QVKXPItbb0+hC4QLplY7VZ84M88G5qfWy1ZmUIY=
-X-Google-Smtp-Source: AMrXdXszcWMQPjb2mcCW2ed5N7gHY0Bc9T8gpYexbiURqxjXgJLmErPYn31ImjA9qwZZ46d1phV8kCO77EIrvjZWjeg=
-X-Received: by 2002:a17:90b:78e:b0:21a:1a66:cd91 with SMTP id
- l14-20020a17090b078e00b0021a1a66cd91mr4680665pjz.190.1673186215049; Sun, 08
- Jan 2023 05:56:55 -0800 (PST)
+        bh=wYsLuw/5810Zy5eTIZ7iJqDyeo47uMIQ6w06dFLUs+Q=;
+        b=sAewqlyPfF/tYbLsIM2FVlgzIG7BjDCLgtQ9ugaEgH8k8gwvTWBRfaj201PWt7yPVN
+         hwuwAtdkTF7yzoPn2QJKGw145ncqj3htgtDy8NZ9GKoknprlncA+wgLbqJP0uJ2OA0TM
+         AWudzCprDqvdOPjR+fMsAXZgF1Oii4RlHuayRmXlsvtFs1JFjBPRTKP+xZppdNOuEjdV
+         QNX4wlOn7L71+9maTMik1nvGyYi5IoUs1yyMn2yiiwOvMUuCBFRkHoPiQUs+QMUIS5rU
+         ZreC0PyS8TKWfb5UqSXGWTX1DRv8aG1m7/aQbTVRoUWFzc0WZ3m8f2GwVK/VmpGt2Wet
+         MJiA==
+X-Gm-Message-State: AFqh2kpj5Noxj8G4JUyVZHARTpp/jngq9tZ/h5M8X4j33DQOCNRUmqls
+        53uuDuWFJVC9PXMBOmOszmw=
+X-Google-Smtp-Source: AMrXdXsEyHJGnZLB96JH3rcVegZBjOFlVPnyGgXG2g9g13hBlhCt3SpTnjtaAmK/XwGxmzdpSoCmAQ==
+X-Received: by 2002:a05:6000:38d:b0:2b5:90e:cfa5 with SMTP id u13-20020a056000038d00b002b5090ecfa5mr10255103wrf.29.1673247866783;
+        Sun, 08 Jan 2023 23:04:26 -0800 (PST)
+Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id f3-20020adfdb43000000b00236883f2f5csm7846356wrj.94.2023.01.08.23.04.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Jan 2023 23:04:26 -0800 (PST)
+Message-ID: <07786498-2209-3af0-8d68-c34427049947@kernel.org>
+Date:   Mon, 9 Jan 2023 08:04:23 +0100
 MIME-Version: 1.0
-Received: by 2002:a05:7022:6890:b0:50:37fa:6d9b with HTTP; Sun, 8 Jan 2023
- 05:56:54 -0800 (PST)
-Reply-To: muhammadabdulrahma999@gmail.com
-From:   muhammad <jameswilliams0j@gmail.com>
-Date:   Sun, 8 Jan 2023 05:56:54 -0800
-Message-ID: <CAGpaBj5ByuBnrf1QzfiFpNFos_m5UqYqpRnV00zhhR+gvnwCww@mail.gmail.com>
-Subject: Re:Urgent supply to Qatar
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=6.5 required=5.0 tests=BAYES_50,DEAR_SOMETHING,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:1041 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5015]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [jameswilliams0j[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [muhammadabdulrahma999[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  2.0 DEAR_SOMETHING BODY: Contains 'Dear (something)'
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: ******
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH net-next] Remove DECnet support from kernel
+Content-Language: en-US
+To:     Stephen Hemminger <stephen@networkplumber.org>,
+        netdev@vger.kernel.org
+Cc:     David Ahern <dsahern@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>, Borislav Petkov <bp@suse.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Akhmat Karakotov <hmukos@yandex-team.ru>,
+        Antoine Tenart <atenart@kernel.org>,
+        Xin Long <lucien.xin@gmail.com>,
+        Juergen Gross <jgross@suse.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Suma Hegde <suma.hegde@amd.com>, Chen Yu <yu.c.chen@intel.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexandre Ghiti <alexandre.ghiti@canonical.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Menglong Dong <imagedong@tencent.com>,
+        Petr Machata <petrm@nvidia.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Yuwei Wang <wangyuweihx@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Kees Cook <keescook@chromium.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Wang Qing <wangqing@vivo.com>, Yu Zhe <yuzhe@nfschina.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
+        "open list:NETFILTER" <coreteam@netfilter.org>
+References: <20220818004357.375695-1-stephen@networkplumber.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20220818004357.375695-1-stephen@networkplumber.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dear Sir/Madam,
+On 18. 08. 22, 2:43, Stephen Hemminger wrote:
+> DECnet is an obsolete network protocol that receives more attention
+> from kernel janitors than users. It belongs in computer protocol
+> history museum not in Linux kernel.
+> 
+> It has been "Orphaned" in kernel since 2010. The iproute2 support
+> for DECnet was dropped in 5.0 release. The documentation link on
+> Sourceforge says it is abandoned there as well.
+> 
+> Leave the UAPI alone to keep userspace programs compiling.
+> This means that there is still an empty neighbour table
+> for AF_DECNET.
+> 
+> The table of /proc/sys/net entries was updated to match
+> current directories and reformatted to be alphabetical.
+> 
+> Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+> Acked-by: David Ahern <dsahern@kernel.org>
 
-An open Tender for the supply of your company products to (Doha,
-Qatar). Urgently furnish us in full details about the standard of your
-product. We will appreciate it more if you give us with Details:
-Specification and Catalogs or Price list via Email.To avoid making a
-wrong choice of products before placing an order for it.
+...
+>   include/uapi/linux/dn.h                       |  149 -
+>   include/uapi/linux/netfilter_decnet.h         |   72 -
 
-Terms of payment:An upfront payment of 80% (T/T) will be made to your
-account for production,While 20% will be paid before shipment.
+Hi,
 
-Thanks and Regards
+this breaks userspace. Some projects include linux/dn.h:
+
+   https://codesearch.debian.net/search?q=include.*linux%2Fdn.h&literal=0
+
+
+I found Trinity fails to build:
+  net/proto-decnet.c:5:10: fatal error: linux/dn.h: No such file or 
+directory
+      5 | #include <linux/dn.h>
+
+
+
+Should we provide the above as empty files?
+
+thanks,
+-- 
+js
+suse labs
+
