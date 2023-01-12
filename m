@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3181667D69
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jan 2023 19:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 958E6667D71
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jan 2023 19:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240277AbjALSFI (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 12 Jan 2023 13:05:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
+        id S240283AbjALSFL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 12 Jan 2023 13:05:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240273AbjALSDn (ORCPT
+        with ESMTP id S240289AbjALSDq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 12 Jan 2023 13:03:43 -0500
+        Thu, 12 Jan 2023 13:03:46 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC37321B5
-        for <netfilter-devel@vger.kernel.org>; Thu, 12 Jan 2023 09:28:28 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22065D8A6
+        for <netfilter-devel@vger.kernel.org>; Thu, 12 Jan 2023 09:28:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=WoRycyQQB2DfXF1CAX3NmL8k/neprOoQdF/VauuLx90=; b=PcFrlm14ugy7u178m5hhgqWGKf
-        rvOMVs7jXL5S+/vGLUTc2oVYB9WS/R0cbh45jCpcBeUDuXkdRwjFnYDwfr1oUT+tpMSgrLABAz3jz
-        oQunAVXHQaBB4C941Y2FSt+4kz5Lc7u8gYIU+QuoCUseHQp3nT1f6ym0GMNywxmFNC2uZPv334xyY
-        4etGjpSoyS7i3ZYACeVqAklNrHlLSAwNcMFeJqvHagINev0MhzpOEx4Rf1NMT5V1fx+ywL0aro2CB
-        5CfFtVyCVja2TDgdnN6vAPBYXC725I9YbnlD3bY1CbTIRESxWDh5M7ViwY7Lky4juRX1ZCNmiUEa9
-        RXWxu8Lw==;
+        bh=j225oaoLvGYd0XmWeeph4DlU3FICwA+oDKMitQlYTMk=; b=dpGjREYs20GTBUx07UW6HdUeLV
+        dNaD8HTyaHn+CTDF6LKah6XlBszZiMJK6+XlcHhMlo0o+U2zBRC9SuQyIS2y7YqMzkUJzV2B2+Kcz
+        qkiAhz7GKkpXjQI8YAPtMceBNEKMEM+wa3x8gxlAgGWP/d60lrY6uWf4Co012eEycAw6boeis3m5X
+        X2t638s5Z+2tTBImDs2i0pPOd104Mfbsm5NwEhk1nQnKc+MKPzmQ3zyeyvkqbQibBooycGQIC7Gk9
+        kQXtnwvnIlftM4TLihI2SBl0g1CwvNIOsyHIDF22WW7Qoge17khTtJ9mS+t5HV7OVwSRCph40nXsq
+        If6VFnlQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1pG1NK-0000D0-V4; Thu, 12 Jan 2023 18:28:26 +0100
+        id 1pG1Ng-0000DO-2X; Thu, 12 Jan 2023 18:28:48 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 1/5] optimize: Clarify chain_optimize() array allocations
-Date:   Thu, 12 Jan 2023 18:28:19 +0100
-Message-Id: <20230112172823.7298-2-phil@nwl.cc>
+Cc:     netfilter-devel@vger.kernel.org, Phil Sutter <psutter@redhat.com>
+Subject: [nft PATCH 2/5] optimize: Do not return garbage from stack
+Date:   Thu, 12 Jan 2023 18:28:20 +0100
+Message-Id: <20230112172823.7298-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20230112172823.7298-1-phil@nwl.cc>
 References: <20230112172823.7298-1-phil@nwl.cc>
@@ -51,38 +51,31 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Arguments passed to sizeof() where deemed suspicious by covscan due to
-the different type. Consistently specify size of an array 'a' using
-'sizeof(*a) * nmemb'.
+From: Phil Sutter <psutter@redhat.com>
 
-For the statement arrays in stmt_matrix, even use xzalloc_array() since
-the item count is fixed and therefore can't be zero.
+If input does not contain a single 'add' command (unusual, but
+possible), 'ret' value was not initialized by nft_optimize() before
+returning its value.
 
 Fixes: fb298877ece27 ("src: add ruleset optimization infrastructure")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- src/optimize.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ src/optimize.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/optimize.c b/src/optimize.c
-index 32aed866eb49f..12cae00da4ab4 100644
+index 12cae00da4ab4..289c442dc915e 100644
 --- a/src/optimize.c
 +++ b/src/optimize.c
-@@ -1113,10 +1113,11 @@ static int chain_optimize(struct nft_ctx *nft, struct list_head *rules)
- 		ctx->num_rules++;
- 	}
+@@ -1217,7 +1217,7 @@ static int cmd_optimize(struct nft_ctx *nft, struct cmd *cmd)
+ int nft_optimize(struct nft_ctx *nft, struct list_head *cmds)
+ {
+ 	struct cmd *cmd;
+-	int ret;
++	int ret = 0;
  
--	ctx->rule = xzalloc(sizeof(ctx->rule) * ctx->num_rules);
--	ctx->stmt_matrix = xzalloc(sizeof(struct stmt *) * ctx->num_rules);
-+	ctx->rule = xzalloc(sizeof(*ctx->rule) * ctx->num_rules);
-+	ctx->stmt_matrix = xzalloc(sizeof(*ctx->stmt_matrix) * ctx->num_rules);
- 	for (i = 0; i < ctx->num_rules; i++)
--		ctx->stmt_matrix[i] = xzalloc(sizeof(struct stmt *) * MAX_STMTS);
-+		ctx->stmt_matrix[i] = xzalloc_array(MAX_STMTS,
-+						    sizeof(**ctx->stmt_matrix));
- 
- 	merge = xzalloc(sizeof(*merge) * ctx->num_rules);
- 
+ 	list_for_each_entry(cmd, cmds, list) {
+ 		switch (cmd->op) {
 -- 
 2.38.0
 
