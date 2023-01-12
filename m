@@ -2,74 +2,47 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA581667427
-	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jan 2023 15:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A01566760E
+	for <lists+netfilter-devel@lfdr.de>; Thu, 12 Jan 2023 15:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233223AbjALODM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 12 Jan 2023 09:03:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
+        id S237379AbjALO2Q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 12 Jan 2023 09:28:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbjALODK (ORCPT
+        with ESMTP id S236786AbjALO1y (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 12 Jan 2023 09:03:10 -0500
+        Thu, 12 Jan 2023 09:27:54 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560866174
-        for <netfilter-devel@vger.kernel.org>; Thu, 12 Jan 2023 06:03:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=BoIgTS/o5zoHImF1/xGJWOhlyOkfvbFwlgQIo8gB9qE=; b=RqmzGA8FIFRkV18ldhoC1q+bLX
-        uAvzlMpob0i1qEvHCFxpofv4Mg7lhJApQ1hCqPQEcwkKz/3gKW7FJ/1riLfV8vozeSL/sr0SxZwa2
-        3shiYcS4EVKvlwqKTEcFWDNvHYl6SIbqb94pqwgddrgeDm9F65oztIpRxt17Nfq8iGsPEYif+KrHn
-        nXZj3A9GMYv/JGVr2bqEjj6FVKMcd3Hj9L84K8C7wf1LIUfsLv/1mZO3y4Zsmm23jTm3M4wA1P6vy
-        YxQLMrXpfA4ZXTvLhAs7RuQRDjqZYd3oHo8GzEugjTTwmKK5HncAcWpHeZ1Yh08a7cy4XmEcJKNKL
-        wsDoBPOQ==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1pFyAd-0006QM-BF
-        for netfilter-devel@vger.kernel.org; Thu, 12 Jan 2023 15:03:07 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8EA574EB
+        for <netfilter-devel@vger.kernel.org>; Thu, 12 Jan 2023 06:18:43 -0800 (PST)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1pFyPi-0006YJ-6G
+        for netfilter-devel@vger.kernel.org; Thu, 12 Jan 2023 15:18:42 +0100
+Date:   Thu, 12 Jan 2023 15:18:42 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH] extensions: NAT: Fix for -Werror=format-security
-Date:   Thu, 12 Jan 2023 15:03:03 +0100
-Message-Id: <20230112140303.17986-1-phil@nwl.cc>
-X-Mailer: git-send-email 2.38.0
+Subject: Re: [iptables PATCH] extensions: NAT: Fix for -Werror=format-security
+Message-ID: <Y8AWwpyCAut9tXMM@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        netfilter-devel@vger.kernel.org
+References: <20230112140303.17986-1-phil@nwl.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230112140303.17986-1-phil@nwl.cc>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Have to pass either a string literal or format string to xt_xlate_add().
+On Thu, Jan 12, 2023 at 03:03:03PM +0100, Phil Sutter wrote:
+> Have to pass either a string literal or format string to xt_xlate_add().
+> 
+> Fixes: f30c5edce0413 ("extensions: Merge SNAT, DNAT, REDIRECT and MASQUERADE")
+> Signed-off-by: Phil Sutter <phil@nwl.cc>
 
-Fixes: f30c5edce0413 ("extensions: Merge SNAT, DNAT, REDIRECT and MASQUERADE")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- extensions/libxt_NAT.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/extensions/libxt_NAT.c b/extensions/libxt_NAT.c
-index da9f22012c5d6..2a6343986d54f 100644
---- a/extensions/libxt_NAT.c
-+++ b/extensions/libxt_NAT.c
-@@ -424,7 +424,7 @@ __NAT_xlate(struct xt_xlate *xl, const struct nf_nat_range2 *r,
- 	if (r->flags & NF_NAT_RANGE_PROTO_OFFSET)
- 		return 0;
- 
--	xt_xlate_add(xl, tgt);
-+	xt_xlate_add(xl, "%s", tgt);
- 	if (strlen(range_str))
- 		xt_xlate_add(xl, " to %s", range_str);
- 	if (r->flags & NF_NAT_RANGE_PROTO_RANDOM) {
--- 
-2.38.0
-
+Patch applied.
