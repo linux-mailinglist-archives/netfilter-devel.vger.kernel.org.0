@@ -2,233 +2,138 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB49166B9B9
-	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Jan 2023 10:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DF166BA7F
+	for <lists+netfilter-devel@lfdr.de>; Mon, 16 Jan 2023 10:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbjAPJA1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 16 Jan 2023 04:00:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60070 "EHLO
+        id S232085AbjAPJgN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 16 Jan 2023 04:36:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232500AbjAPI7q (ORCPT
+        with ESMTP id S232211AbjAPJgL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 16 Jan 2023 03:59:46 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAD8166DD;
-        Mon, 16 Jan 2023 00:58:51 -0800 (PST)
-Received: from lhrpeml500004.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4NwQq342nBz67wqY;
-        Mon, 16 Jan 2023 16:55:59 +0800 (CST)
-Received: from mscphis00759.huawei.com (10.123.66.134) by
- lhrpeml500004.china.huawei.com (7.191.163.9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Mon, 16 Jan 2023 08:58:49 +0000
-From:   Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-To:     <mic@digikod.net>
-CC:     <willemdebruijn.kernel@gmail.com>, <gnoack3000@gmail.com>,
-        <linux-security-module@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <netfilter-devel@vger.kernel.org>, <yusongping@huawei.com>,
-        <artem.kuzin@huawei.com>
-Subject: [PATCH v9 12/12] landlock: Document Landlock's network support
-Date:   Mon, 16 Jan 2023 16:58:18 +0800
-Message-ID: <20230116085818.165539-13-konstantin.meskhidze@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230116085818.165539-1-konstantin.meskhidze@huawei.com>
-References: <20230116085818.165539-1-konstantin.meskhidze@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 16 Jan 2023 04:36:11 -0500
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2114.outbound.protection.outlook.com [40.107.21.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B23418A9E
+        for <netfilter-devel@vger.kernel.org>; Mon, 16 Jan 2023 01:36:08 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DGo9IqNMGgGscn9+UMdf98nCYK8irPrrzmmSpJfZtlyVY1ZENJMtbmVUsS/xxHzgdxpxS7UbnQ9neDAxAXQAAnzK8ji5yfrrZd+wlN4Fdz7JS5xIlwnvt0MpxWIKsA04lnXpXJ7D3BPK8CtEklNTV1o0Jz3Apj4ZLLt8ktN9CtULHogtolQS+5tq7sBiXHOYiLueDq4jJm4M5W9jhovLmk1BoS4rpb7WgZNjwiMC0/3oG45AfzreXL+bNXIBbcpqRAzc04B34/3ydEXCJuTfpHjaVCq49+64U3rJYAAYb9LFvPKqxJ1bawTlD+GK2uL5vLCMr5hoLBFQ5159wzl1ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DFSeYtW9TFJ6vMRTlNBpO+JPzm/7UvjDLT6RUKKofpc=;
+ b=guxFlComb74N1O6zzDpeqhiG2dWMb54FjpmTB6w6K7io0eD0/J+pfJLoN8aWTmRk0L2wCvLRyzqUPG+d+tcOk4Fsy2AL9g9U/ZHap3SWV6OwTNgePCYnD5UXiy25KGQre2MMHH7pcl6WGeWmTx4BCoMbGGx/L/RF3IWBDb7t2y8zlQ8cfXnJo0pPfRO0qmApAlovdJP0eGMEhbinQOKzYSfeh9qncqIqU53SsLelwV7DJgO+7VrxBjHuPMAhY5QrDmH3P0tHnbb7w/g28i8tH852h+0hctTGA4wxERWPSu81aX+jkoyS7nKJS7plD+XK6LOZcesUkcS6SvLmmVtXag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=est.tech; dmarc=pass action=none header.from=est.tech;
+ dkim=pass header.d=est.tech; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=estab.onmicrosoft.com;
+ s=selector2-estab-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DFSeYtW9TFJ6vMRTlNBpO+JPzm/7UvjDLT6RUKKofpc=;
+ b=floRbDcMFumR1zm8rrZ2am0yB3LrEwH7uAKtbTY7f+YIllHHw0hmuxRVun2lYCMTUHTssXBjiYyL1ZncEwfBTSTR3ED7nAQQZ1ahvLtwKZl82PIzcMEYjm3Um3We+JWncJ3r7rTN6wnkIhgINWAuC6IyGeV/tQaaaPMgJEFSUE0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=est.tech;
+Received: from DBBP189MB1433.EURP189.PROD.OUTLOOK.COM (2603:10a6:10:1e7::15)
+ by AM7P189MB1012.EURP189.PROD.OUTLOOK.COM (2603:10a6:20b:14c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.12; Mon, 16 Jan
+ 2023 09:36:01 +0000
+Received: from DBBP189MB1433.EURP189.PROD.OUTLOOK.COM
+ ([fe80::8f70:435b:ab64:9420]) by DBBP189MB1433.EURP189.PROD.OUTLOOK.COM
+ ([fe80::8f70:435b:ab64:9420%8]) with mapi id 15.20.5986.023; Mon, 16 Jan 2023
+ 09:36:01 +0000
+From:   Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>,
+        Long Xin <lxin@redhat.com>,
+        Claudio Porfiri <claudio.porfiri@ericsson.com>,
+        Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+Subject: [PATCH 0/3] sctp conntrack fixes
+Date:   Mon, 16 Jan 2023 10:35:53 +0100
+Message-Id: <20230116093556.9437-1-sriram.yagnaraman@est.tech>
+X-Mailer: git-send-email 2.34.1
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.123.66.134]
-X-ClientProxiedBy: mscpeml100002.china.huawei.com (7.188.26.75) To
- lhrpeml500004.china.huawei.com (7.191.163.9)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: GVYP280CA0026.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:150:f9::29) To DBBP189MB1433.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:10:1e7::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DBBP189MB1433:EE_|AM7P189MB1012:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3bafc572-b655-48f8-d086-08daf7a51425
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6ILmOQaB/Vdfzfa2nyz9uRoNYZrxSOFqm3Lwkzitpv0Z7LhGwUq4SpfNZUfcssLHXMYCtfdqJ5OORYuoOpK6Nxwc1+i84/FE4KcynrrSWlGPbuWuTwsxoP0Fd2PSXlpc9P6n31tIa6EB0+xuSPdcPg9g7ekVzsoCXZdU8RHXx/dKrhgZLCGO09/efOihKTtvvwn4UbFmobAIlMEVMadFz7Yo55GT1j8PeyXgjEW/9t5BgOfir5oTYH1y9IYblH4KTDlv9xd2PyMohrhcYOK+zKUFNTEch63fAoyOAh58z1tHBcuHqcvlsV03OXUQXGyXRRb4ud8xPcNflBmfvYNcnhr5+3YR+cQUSs0jh1WgPcJYm3wT2nbW9ZKRDq4ai5IunNQHgDzFHJRWXaRqVN6fHZCJlb6qeb3D//IcNCC55MM90NGAu/22VkTRavurR+ll8/2bhNLmQb6eoi6Z8OHV/fr6nae0omyOSbBszMop2rcAgNcJGXNh6UMH7sc+LaALZkBoin7+f3XRKP6/OInq2N+puWTFGhij/egI+G0urQK1JR2XI0prlWbkXI2y2OvkmIf/khSBZiqzdFPzh1otBBDTPQIezacS271EZqFUC+JbXO9rIrsBl6QbJIECI3Ac8Q6A3rNgeTq/uZaS/hfvhi520hDkGuPVG3v0EMejQqzMioWbFm7zLzhkBAX1FFKiTTrXBBwe9CpA97FvpeHI0CfssxZhaKP7PNMEIAQeapI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBP189MB1433.EURP189.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(376002)(396003)(346002)(39830400003)(136003)(451199015)(6486002)(966005)(2906002)(83380400001)(478600001)(4744005)(86362001)(26005)(186003)(5660300002)(54906003)(6512007)(8936002)(36756003)(44832011)(38100700002)(1076003)(2616005)(6666004)(41300700001)(6506007)(4326008)(66946007)(70586007)(6916009)(66476007)(8676002)(66556008)(316002)(37730700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?m5YqceuMTe+bRhanPJLKkDI1bU429S2I84N17aaTimZ2JkEjW9ZlDG4WXoZm?=
+ =?us-ascii?Q?Ux44bs85VvIcfqV/cj3C9xudvKg8494jT33+WWw7O8R+mhd0vQH/s06mixKf?=
+ =?us-ascii?Q?EFR6LuTG2YoARSHKRVMJv/N4Np22jCVUX+qgzU4PADcY5b3JOi3M6gc/R5z0?=
+ =?us-ascii?Q?Na1Ye3wbbZ5INnCW8DU0C1aQioSjnhCXURtRaerB0Kg1Wnui9dRWQAQM7VE8?=
+ =?us-ascii?Q?BXg0BEvr2WfS7W+LTRGTvgolobjmlMdfLIlEqqR0JV5vBT2dz3FRv2I26/Du?=
+ =?us-ascii?Q?/Qsu6ZrdOYkEzFvu8tqUgcP4+NEOp9OLaDC8PMV0Bmhq95mPuduiDAAwQYxq?=
+ =?us-ascii?Q?WVS/ymrWmLx3wPsWKn1rVDbNVmH27HWm7azwx9BaXLtLXJ+OsyChxX1xDOr/?=
+ =?us-ascii?Q?eHJhwKC3zebnZaKokUAxn1I9fFCENTW7XiJIJLy41T2Lb7u7sWRuaRC1kNMy?=
+ =?us-ascii?Q?h5ST/t845O/rmq5NLg9RlF6r62Zin9agrKm9tvsBOX4qlagk04moPwVmB24a?=
+ =?us-ascii?Q?0Dw9pMqI91p+Xot5E5yrk3N3QeGYlFGUEY0cVVd3VcKCGgVifJIyT6hX7Wl4?=
+ =?us-ascii?Q?2iJUvt4AT8o40t1gRpTJOCOS5wLceTCAmDSk7WCabOCtNl4CbvDqIlZAQQl0?=
+ =?us-ascii?Q?2+2hYmAm2u4czHCKuBBdksIWjscYW8kXfVLHBzZjE6AvTdRdqtqV6TdYcTEQ?=
+ =?us-ascii?Q?Zy7P71vSY81Wni7rSDE5/TYPz4babnQPHx7+Tx4ufXvEtxNGSatCwlW0Mzhp?=
+ =?us-ascii?Q?s7DEu1ZBNxr12a1YgnWRXxTAa527iv7lV7JVOqtpY8srQLUChoYJedtKnwx3?=
+ =?us-ascii?Q?q2lqInTGs+1jdNodD60JaKPFxqLh7pUTjoZKiteQtcl7u9pPQTdk+wwfdiZN?=
+ =?us-ascii?Q?wp3T7WE3EhOeHGcWCER8UY7ukXmpnDiJup2JFHpRURCnEm8y8P1fVoRt+lt7?=
+ =?us-ascii?Q?iyyR3gtVIUYaFbeOdfobo+az4aD6OJlxSRVSZAtd2xgJnqj8f1ax3lc/BuPv?=
+ =?us-ascii?Q?xfq4cf27edLdnqpKFPI0E7MgZWyofxiUedhX82tGElnj59Jq3Y0CdAdm98PL?=
+ =?us-ascii?Q?kAb4uKdfmz2CpvxuBCxehH2WD2RWOqaJO6tV7xUjmz1IU7EbbQjAuSAxtFTq?=
+ =?us-ascii?Q?EM48hIrYjY6A1hdl5tUSXBC5D+TmHej7T2Y5zxPq0C6c5+0RAoid2yfMtc0Y?=
+ =?us-ascii?Q?1965obQp2gh+3l1umu1WTje83i5R6DLmIkpEPD8KV1WmqHoWmR2VHt1rkih9?=
+ =?us-ascii?Q?ixDji8irtozFXvU5BeG4rgBqW1oxx8vxTUsLIaZrf1Kzl9ADinXMVW1XF/67?=
+ =?us-ascii?Q?Ioucv+F5JooEziRPHXJ4gxsQ1Emh2+SyEi2xe4hI4vGwETOH51XPX7T6y1vc?=
+ =?us-ascii?Q?kaIc6NKZ0HZY8QnMB8So5cE19/NTVZXtGFOvyoKrArGHnnnzuQzmzcKlvWBW?=
+ =?us-ascii?Q?gsVII6NF+kaM1/Z3+JGSpWqnTItlNOriQzcgPNR+21rA6Ncq9Wt2ovFPB5Nf?=
+ =?us-ascii?Q?zYE5lg9n6IZE6Z+fLIcGryqGnpYUi5hKw1LXIDrSmNpMR5Cp+4m//fm0FdHv?=
+ =?us-ascii?Q?PaEEeP2Mr6jEinkNgZLhz9yKqz657hmptq92LW486FLVogOM+tezdrNNTn9p?=
+ =?us-ascii?Q?Xg=3D=3D?=
+X-OriginatorOrg: est.tech
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3bafc572-b655-48f8-d086-08daf7a51425
+X-MS-Exchange-CrossTenant-AuthSource: DBBP189MB1433.EURP189.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2023 09:36:00.7596
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d2585e63-66b9-44b6-a76e-4f4b217d97fd
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pb9Ux1gutHLxEWeUgM7SpiLrQ6QXDsmfN/F4t/+L7lrxqtBh0gZc0kVoRJVevAmgz2BJJ9pCeMcN06cH7FIB3j+BavaJUveomDf6soiZyAs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7P189MB1012
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Describe network access rules for TCP sockets. Add network access
-example in the tutorial. Add kernel configuration support for network.
+A less diruptive change as opposed to below RFC patch:
+https://lore.kernel.org/netfilter-devel/20230104113143.21769-1-sriram.yagnaraman@est.tech/
 
-Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
----
+This contains a couple of bug fixes to existing bugs that were found
+during the review of the above patch series, and also a patch that
+unifies the ESTABLISHED states for primary and secondary paths.
 
-Changes since v8:
-* Minor refactoring.
+Sriram Yagnaraman (3):
+  netfilter: conntrack: fix vtag checks for ABORT/SHUTDOWN_COMPLETE
+  netfilter: conntrack: fix bug in for_each_sctp_chunk
+  netfilter: conntrack: unify established states for SCTP paths
 
-Changes since v7:
-* Fixes documentaion logic errors and typos as Mickaёl suggested:
-https://lore.kernel.org/netdev/9f354862-2bc3-39ea-92fd-53803d9bbc21@digikod.net/
+ .../uapi/linux/netfilter/nf_conntrack_sctp.h  |   4 +-
+ .../linux/netfilter/nfnetlink_cttimeout.h     |   4 +-
+ net/netfilter/nf_conntrack_proto_sctp.c       | 119 +++++++++---------
+ net/netfilter/nf_conntrack_standalone.c       |  16 ---
+ 4 files changed, 60 insertions(+), 83 deletions(-)
 
-Changes since v6:
-* Adds network support documentaion.
-
----
- Documentation/userspace-api/landlock.rst | 72 ++++++++++++++++++------
- 1 file changed, 56 insertions(+), 16 deletions(-)
-
-diff --git a/Documentation/userspace-api/landlock.rst b/Documentation/userspace-api/landlock.rst
-index d8cd8cd9ce25..980558b879d6 100644
---- a/Documentation/userspace-api/landlock.rst
-+++ b/Documentation/userspace-api/landlock.rst
-@@ -11,10 +11,10 @@ Landlock: unprivileged access control
- :Date: October 2022
- 
- The goal of Landlock is to enable to restrict ambient rights (e.g. global
--filesystem access) for a set of processes.  Because Landlock is a stackable
--LSM, it makes possible to create safe security sandboxes as new security layers
--in addition to the existing system-wide access-controls. This kind of sandbox
--is expected to help mitigate the security impact of bugs or
-+filesystem or network access) for a set of processes.  Because Landlock
-+is a stackable LSM, it makes possible to create safe security sandboxes as new
-+security layers in addition to the existing system-wide access-controls. This
-+kind of sandbox is expected to help mitigate the security impact of bugs or
- unexpected/malicious behaviors in user space applications.  Landlock empowers
- any process, including unprivileged ones, to securely restrict themselves.
- 
-@@ -30,18 +30,20 @@ Landlock rules
- 
- A Landlock rule describes an action on an object.  An object is currently a
- file hierarchy, and the related filesystem actions are defined with `access
--rights`_.  A set of rules is aggregated in a ruleset, which can then restrict
--the thread enforcing it, and its future children.
-+rights`_.  Since ABI version 4 a port data appears with related network actions
-+for TCP socket families.  A set of rules is aggregated in a ruleset, which
-+can then restrict the thread enforcing it, and its future children.
- 
- Defining and enforcing a security policy
- ----------------------------------------
- 
- We first need to define the ruleset that will contain our rules.  For this
- example, the ruleset will contain rules that only allow read actions, but write
--actions will be denied.  The ruleset then needs to handle both of these kind of
-+actions will be denied. The ruleset then needs to handle both of these kind of
- actions.  This is required for backward and forward compatibility (i.e. the
- kernel and user space may not know each other's supported restrictions), hence
--the need to be explicit about the denied-by-default access rights.
-+the need to be explicit about the denied-by-default access rights.  Also ruleset
-+will have network rules for specific ports, so it should handle network actions.
- 
- .. code-block:: c
- 
-@@ -62,6 +64,9 @@ the need to be explicit about the denied-by-default access rights.
-             LANDLOCK_ACCESS_FS_MAKE_SYM |
-             LANDLOCK_ACCESS_FS_REFER |
-             LANDLOCK_ACCESS_FS_TRUNCATE,
-+        .handled_access_net =
-+            LANDLOCK_ACCESS_NET_BIND_TCP |
-+            LANDLOCK_ACCESS_NET_CONNECT_TCP,
-     };
- 
- Because we may not know on which kernel version an application will be
-@@ -70,14 +75,18 @@ should try to protect users as much as possible whatever the kernel they are
- using.  To avoid binary enforcement (i.e. either all security features or
- none), we can leverage a dedicated Landlock command to get the current version
- of the Landlock ABI and adapt the handled accesses.  Let's check if we should
--remove the ``LANDLOCK_ACCESS_FS_REFER`` or ``LANDLOCK_ACCESS_FS_TRUNCATE``
--access rights, which are only supported starting with the second and third
--version of the ABI.
-+remove the ``LANDLOCK_ACCESS_FS_REFER`` or ``LANDLOCK_ACCESS_FS_TRUNCATE`` or
-+network access rights, which are only supported starting with the second,
-+third and fourth version of the ABI.
- 
- .. code-block:: c
- 
-     int abi;
- 
-+    #define ACCESS_NET_BIND_CONNECT ( \
-+        LANDLOCK_ACCESS_NET_BIND_TCP | \
-+        LANDLOCK_ACCESS_NET_CONNECT_TCP)
-+
-     abi = landlock_create_ruleset(NULL, 0, LANDLOCK_CREATE_RULESET_VERSION);
-     if (abi < 0) {
-         /* Degrades gracefully if Landlock is not handled. */
-@@ -92,6 +101,11 @@ version of the ABI.
-     case 2:
-         /* Removes LANDLOCK_ACCESS_FS_TRUNCATE for ABI < 3 */
-         ruleset_attr.handled_access_fs &= ~LANDLOCK_ACCESS_FS_TRUNCATE;
-+    case 3:
-+        /* Removes network support for ABI < 4 */
-+		ruleset_attr.handled_access_net &=
-+			~(LANDLOCK_ACCESS_NET_BIND_TCP |
-+			  LANDLOCK_ACCESS_NET_CONNECT_TCP);
-     }
- 
- This enables to create an inclusive ruleset that will contain our rules.
-@@ -143,10 +157,24 @@ for the ruleset creation, by filtering access rights according to the Landlock
- ABI version.  In this example, this is not required because all of the requested
- ``allowed_access`` rights are already available in ABI 1.
- 
--We now have a ruleset with one rule allowing read access to ``/usr`` while
--denying all other handled accesses for the filesystem.  The next step is to
--restrict the current thread from gaining more privileges (e.g. thanks to a SUID
--binary).
-+For network access-control, we can add a set of rules that allow to use a port
-+number for a specific action. All ports values must be defined in network byte
-+order.
-+
-+.. code-block:: c
-+
-+    struct landlock_net_service_attr net_service = {
-+        .allowed_access = LANDLOCK_ACCESS_NET_BIND_TCP,
-+        .port = htons(8080),
-+    };
-+
-+    err = landlock_add_rule(ruleset_fd, LANDLOCK_RULE_NET_SERVICE,
-+                            &net_service, 0);
-+
-+The next step is to restrict the current thread from gaining more privileges
-+(e.g. thanks to a SUID binary). We now have a ruleset with the first rule allowing
-+read access to ``/usr`` while denying all other handled accesses for the filesystem,
-+and a second rule allowing TCP binding on port 8080.
- 
- .. code-block:: c
- 
-@@ -355,7 +383,7 @@ Access rights
- -------------
- 
- .. kernel-doc:: include/uapi/linux/landlock.h
--    :identifiers: fs_access
-+    :identifiers: fs_access net_access
- 
- Creating a new ruleset
- ----------------------
-@@ -374,6 +402,7 @@ Extending a ruleset
- 
- .. kernel-doc:: include/uapi/linux/landlock.h
-     :identifiers: landlock_rule_type landlock_path_beneath_attr
-+                  landlock_net_service_attr
- 
- Enforcing a ruleset
- -------------------
-@@ -451,6 +480,12 @@ always allowed when using a kernel that only supports the first or second ABI.
- Starting with the Landlock ABI version 3, it is now possible to securely control
- truncation thanks to the new ``LANDLOCK_ACCESS_FS_TRUNCATE`` access right.
- 
-+Network support (ABI < 4)
-+-------------------------
-+
-+Starting with the Landlock ABI version 4, it is now possible to restrict TCP
-+bind and connect actions to only a set of allowed ports.
-+
- .. _kernel_support:
- 
- Kernel support
-@@ -469,6 +504,11 @@ still enable it by adding ``lsm=landlock,[...]`` to
- Documentation/admin-guide/kernel-parameters.rst thanks to the bootloader
- configuration.
- 
-+To be able to explicitly allow TCP operations (e.g., adding a network rule with
-+``LANDLOCK_ACCESS_NET_TCP_BIND``), the kernel must support TCP (``CONFIG_INET=y``).
-+Otherwise, sys_landlock_add_rule() returns an ``EAFNOSUPPORT`` error, which can
-+safely be ignored because this kind of TCP operation is already not possible.
-+
- Questions and answers
- =====================
- 
 -- 
-2.25.1
+2.34.1
 
