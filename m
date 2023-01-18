@@ -2,112 +2,115 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC10E671C3A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Jan 2023 13:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B185671D17
+	for <lists+netfilter-devel@lfdr.de>; Wed, 18 Jan 2023 14:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbjARMgX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 18 Jan 2023 07:36:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
+        id S231364AbjARNJP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 18 Jan 2023 08:09:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbjARMfA (ORCPT
+        with ESMTP id S230402AbjARNI6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 18 Jan 2023 07:35:00 -0500
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39E914616D
-        for <netfilter-devel@vger.kernel.org>; Wed, 18 Jan 2023 03:58:50 -0800 (PST)
-Date:   Wed, 18 Jan 2023 12:58:47 +0100
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [nf-next PATCH v2] netfilter: nf_tables: Introduce
- NFTA_RULE_ACTUAL_EXPR
-Message-ID: <Y8fe9+XHbxYyD4LY@salvia>
-References: <20221221142221.27211-1-phil@nwl.cc>
- <Y7/drsGvc8MkQiTY@orbyte.nwl.cc>
- <Y7/pzxvu2v4t4PgZ@salvia>
- <Y7/2843ObHqTDIFQ@orbyte.nwl.cc>
+        Wed, 18 Jan 2023 08:08:58 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1598D3A842;
+        Wed, 18 Jan 2023 04:32:39 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1pI7cA-00073r-5f; Wed, 18 Jan 2023 13:32:26 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     <netdev@vger.kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <netfilter-devel@vger.kernel.org>, Florian Westphal <fw@strlen.de>
+Subject: [PATCH net-next 0/9] Netfilter updates for net-next
+Date:   Wed, 18 Jan 2023 13:31:59 +0100
+Message-Id: <20230118123208.17167-1-fw@strlen.de>
+X-Mailer: git-send-email 2.38.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Y7/2843ObHqTDIFQ@orbyte.nwl.cc>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Jan 12, 2023 at 01:02:59PM +0100, Phil Sutter wrote:
-> On Thu, Jan 12, 2023 at 12:06:55PM +0100, Pablo Neira Ayuso wrote:
-> > On Thu, Jan 12, 2023 at 11:15:10AM +0100, Phil Sutter wrote:
-> > > Bump?
-> > > 
-> > > On Wed, Dec 21, 2022 at 03:22:21PM +0100, Phil Sutter wrote:
-> > > > Allow for user space to provide an improved variant of the rule for
-> > > > actual use. The variant in NFTA_RULE_EXPRESSIONS may provide maximum
-> > > > compatibility for old user space tools (e.g. in outdated containers).
-> > > > 
-> > > > The new attribute is also dumped back to user space, e.g. for comparison
-> > > > against the compatible variant.
-> > > > 
-> > > > While being at it, improve nft_rule_policy for NFTA_RULE_EXPRESSIONS.
-> > 
-> > Could you split this in two patches?
-> 
-> Separate the nft_rule_policy_change? Sure!
+Hello,
 
-Thanks.
+following patch set includes netfilter updates for your *net-next* tree.
 
-> > I still don't see how this is improving the situation for the scenario
-> > you describe, if you could extend a bit on how you plan to use this
-> > I'd appreciate.
-> 
-> I can send you my WiP libnftnl and iptables patches if that helps.
-> 
-> The approach this patch follows is pretty simple, though: The kernel
-> will accept NFTA_RULE_ACTUAL_EXPR to override NFTA_RULE_EXPRESSIONS for
-> use in the live ruleset.  When fetching the ruleset, old user space will
-> ignore NFTA_RULE_ACTUAL_EXPR, so new user space may submit a compatible
-> variant of the rule in NFTA_RULE_EXPRESSIONS and a modern variant in
-> NFTA_RULE_ACTUAL_EXPR.
+1. Replace pr_debug use with nf_log infra for debugging in sctp
+   conntrack.
+2. Remove pr_debug calls, they are either useless or we have better
+   options in place.
+3. Avoid repeated load of ct->status in some spots.
+   Some bit-flags cannot change during the lifeetime of
+   a connection, so no need to re-fetch those.
+4. Avoid uneeded nesting of rcu_read_lock during tuple lookup.
+5. Remove the CLUSTERIP target.  Marked as obsolete for years,
+   and we still have WARN splats wrt. races of the out-of-band
+   /proc interface installed by this target.
+6. Add static key to nf_tables to avoid the retpoline mitigation
+   if/else if cascade provided the cpu doesn't need the retpoline thunk.
+7. add nf_tables objref calls to the retpoline mitigation workaround.
+8. Split parts of nft_ct.c that do not need symbols exported by
+   the conntrack modules and place them in nf_tables directly.
+   This allows to avoid indirect call for 'ct status' checks.
+9. Add 'destroy' commands to nf_tables.  They are identical
+   to the existing 'delete' commands, but do not indicate
+   an error if the referenced object (set, chain, rule...)
+   did not exist, from Fernando.
 
-so _ACTUAL_EXPR is the modern representation, and _RULE_EXPRESSIONS
-the old one?
+The following changes since commit c4791b3196bf46367bcf6cc56a09b32e037c4f49:
 
-Maybe the opposite is better? I mean, no changes in the
-NFTA_RULE_EXPRESSIONS semantics, these are always the expressions that
-run in the datapath, and the alternative expression representation is
-just for backward compatibility?
+  Merge branch 'net-mdio-continue-separating-c22-and-c45' (2023-01-17 19:34:10 -0800)
 
-Maybe all this can be handled from _USERDATA? I mean, to add the
-netlink representation there?
+are available in the Git repository at:
 
-> In iptables, when converting a rule from iptables_command_state into
-> nftnl expressions, I insert all expressions into both
-> NFTA_RULE_EXPRESSIONS and NFTA_RULE_ACTUAL_EXPR unless an extension does
-> fancy stuff (e.g. was converted into native expressions).
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git
 
-So NFTA_RULE_EXPRESSIONS contains xt compat expression or is it
-ACTUAL_EXPR?
+for you to fetch changes up to f80a612dd77c4585171e44a06b490466bdeec1ae:
 
-Probably you can just add NFTA_RULE_COMPAT_EXPRS? This new attribute
-provides a pure xt compat representation? _ACTUAL concept gets me
-confused.
+  netfilter: nf_tables: add support to destroy operation (2023-01-18 13:09:00 +0100)
 
-> My test piece is limit match which had to be converted once (see commit
-> 5de8dcf75941c for details): I add the native expressions to
-> NFTA_RULE_ACTUAL_EXPR and create a compat "match" expression for
-> NFTA_RULE_EXPRESSIONS only.
+----------------------------------------------------------------
+Fernando Fernandez Mancera (1):
+      netfilter: nf_tables: add support to destroy operation
 
-What gets me confused is what the kernel actually uses from the
-datapath.
+Florian Westphal (8):
+      netfilter: conntrack: sctp: use nf log infrastructure for invalid packets
+      netfilter: conntrack: remove pr_debug calls
+      netfilter: conntrack: avoid reload of ct->status
+      netfilter: conntrack: move rcu read lock to nf_conntrack_find_get
+      netfilter: ip_tables: remove clusterip target
+      netfilter: nf_tables: add static key to skip retpoline workarounds
+      netfilter: nf_tables: avoid retpoline overhead for objref calls
+      netfilter: nf_tables: avoid retpoline overhead for some ct expression calls
 
-> The kernel will use the native expressions in the ruleset, dumps will
-> contain the compat "match" expression instead.
+ include/net/netfilter/nf_tables_core.h   |  16 +
+ include/uapi/linux/netfilter/nf_tables.h |  14 +
+ net/ipv4/netfilter/Kconfig               |  14 -
+ net/ipv4/netfilter/Makefile              |   1 -
+ net/ipv4/netfilter/ipt_CLUSTERIP.c       | 929 -------------------------------
+ net/netfilter/Makefile                   |   6 +
+ net/netfilter/nf_conntrack_core.c        |  46 +-
+ net/netfilter/nf_conntrack_proto.c       |  20 +-
+ net/netfilter/nf_conntrack_proto_sctp.c  |  46 +-
+ net/netfilter/nf_conntrack_proto_tcp.c   |   9 -
+ net/netfilter/nf_conntrack_proto_udp.c   |  10 +-
+ net/netfilter/nf_tables_api.c            | 111 +++-
+ net/netfilter/nf_tables_core.c           |  35 +-
+ net/netfilter/nft_ct.c                   |  39 +-
+ net/netfilter/nft_ct_fast.c              |  56 ++
+ net/netfilter/nft_objref.c               |  12 +-
+ 16 files changed, 302 insertions(+), 1062 deletions(-)
+ delete mode 100644 net/ipv4/netfilter/ipt_CLUSTERIP.c
+ create mode 100644 net/netfilter/nft_ct_fast.c
+-- 
+2.38.2
 
-Both representations should be dumped, right? In my mind, userspace
-just falls back to my proposed NFTA_RULE_COMPAT_EXPRS in case it
-cannot decode NFTA_RULE_EXPRESSIONS.
-
-Sorry for taking a while to come back here.
