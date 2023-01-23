@@ -2,85 +2,79 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CED0B678396
-	for <lists+netfilter-devel@lfdr.de>; Mon, 23 Jan 2023 18:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7415567894D
+	for <lists+netfilter-devel@lfdr.de>; Mon, 23 Jan 2023 22:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232449AbjAWRt2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 23 Jan 2023 12:49:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58002 "EHLO
+        id S233032AbjAWVQL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 23 Jan 2023 16:16:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbjAWRt1 (ORCPT
+        with ESMTP id S231674AbjAWVQL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 23 Jan 2023 12:49:27 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF1A7ED7;
-        Mon, 23 Jan 2023 09:49:26 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 585F760F2F;
-        Mon, 23 Jan 2023 17:49:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35990C433D2;
-        Mon, 23 Jan 2023 17:49:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674496165;
-        bh=p57XG+etvdiOWCPI57K6WXYfqGLKqyyqsXc5nssX9Ls=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fhkFSIcaAeKb4biePn0z8kyzBe1VP/s3k+NRHtXpHCe23ktLLjLNHRBX4pOO3IZmm
-         XPtgBJW5YhmvjIjyKjazSBPMOw6aY0FbKoH7wrV+0A5jz/Zm9wzHhkvNlbMizBz71i
-         +YyAvrpA/Wllvt7GnLOHbLJvR768JxUFVDFdDFy7oExGBf8IvyZNfAqld19ShoucB+
-         Nt2uPUKPfVIj7PrERUMDeIwBI9OgVxvkFHrtyXXfAlLh8Q2ei2PfE3WvgEvuvqY93i
-         AXb0UqVg+tMazYb8ZR2nnw+VrhkS/ouAcsTNYGkLhfjB4xkI6QAK5bT/NiUfdVjy8z
-         xrj0mNwLN+KGA==
-Date:   Mon, 23 Jan 2023 19:44:58 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
-Cc:     "coreteam@netfilter.org" <coreteam@netfilter.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "fw@strlen.de" <fw@strlen.de>, "joe@perches.com" <joe@perches.com>,
-        "kadlec@netfilter.org" <kadlec@netfilter.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "pablo@netfilter.org" <pablo@netfilter.org>
-Subject: Re: [PATCH v2] netfilter: conntrack: remote a return value of the
- 'seq_print_acct' function.
-Message-ID: <Y87Hmv5qSZcD3rRZ@unreal>
-References: <Y86Lji5prQEAxKLi@unreal>
- <20230123143202.1785569-1-Ilia.Gavrilov@infotecs.ru>
+        Mon, 23 Jan 2023 16:16:11 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE4C338005;
+        Mon, 23 Jan 2023 13:16:09 -0800 (PST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+        pabeni@redhat.com, edumazet@google.com
+Subject: [PATCH net 0/2] Netfilter fixes for net
+Date:   Mon, 23 Jan 2023 22:15:59 +0100
+Message-Id: <20230123211601.292930-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230123143202.1785569-1-Ilia.Gavrilov@infotecs.ru>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Jan 23, 2023 at 02:31:54PM +0000, Gavrilov Ilia wrote:
-> The static 'seq_print_acct' function always returns 0.
-> 
-> Change the return value to 'void' and remove unnecessary checks.
-> 
-> Found by InfoTeCS on behalf of Linux Verification Center
-> (linuxtesting.org) with SVACE.
-> 
-> Fixes: 1ca9e41770cb ("netfilter: Remove uses of seq_<foo> return values")
-> Signed-off-by: Ilia.Gavrilov <Ilia.Gavrilov@infotecs.ru>
-> ---
-> V2: Fix coding style
->  net/netfilter/nf_conntrack_standalone.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
-> 
+Hi,
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+The following patchset contains Netfilter fixes for net:
+
+1) Fix overlap detection in rbtree set backend: Detect overlap by going
+   through the ordered list of valid tree nodes. To shorten the number of
+   visited nodes in the list, this algorithm descends the tree to search
+   for an existing element greater than the key value to insert that is
+   greater than the new element.
+
+2) Fix for the rbtree set garbage collector: Skip inactive and busy
+   elements when checking for expired elements to avoid interference
+   with an ongoing transaction from control plane.
+
+This is a rather large fix coming at this stage of the 6.2-rc. Since
+33c7aba0b4ff ("netfilter: nf_tables: do not set up extensions for end
+interval"), bogus overlap errors in the rbtree set occur more frequently.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 71ab9c3e2253619136c31c89dbb2c69305cc89b1:
+
+  net: fix UaF in netns ops registration error path (2023-01-20 18:51:18 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git HEAD
+
+for you to fetch changes up to 5d235d6ce75c12a7fdee375eb211e4116f7ab01b:
+
+  netfilter: nft_set_rbtree: skip elements in transaction from garbage collection (2023-01-23 21:38:33 +0100)
+
+----------------------------------------------------------------
+Pablo Neira Ayuso (2):
+      netfilter: nft_set_rbtree: Switch to node list walk for overlap detection
+      netfilter: nft_set_rbtree: skip elements in transaction from garbage collection
+
+ net/netfilter/nft_set_rbtree.c | 332 +++++++++++++++++++++++++----------------
+ 1 file changed, 204 insertions(+), 128 deletions(-)
