@@ -2,95 +2,90 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2C967A10A
-	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Jan 2023 19:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1661567A178
+	for <lists+netfilter-devel@lfdr.de>; Tue, 24 Jan 2023 19:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbjAXSRf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 24 Jan 2023 13:17:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34066 "EHLO
+        id S233279AbjAXSlB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 24 Jan 2023 13:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjAXSRe (ORCPT
+        with ESMTP id S233657AbjAXSk7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 24 Jan 2023 13:17:34 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122244C6E6;
-        Tue, 24 Jan 2023 10:17:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=sGkPrI9T/JW6jnSg9wDuqsLtaD2yspPjDXYdbyVMsxI=; b=4ygpDxXafniLv9bX62broNnGvL
-        5wvEnJ1kr5M2yB91imIHIzMLAncnNPOXpt9+ASgeV2ctyFcArNn9+6TmG1v4i8ZRiYyZHWGPe7eWo
-        oqkf8K8EMsIiYGvgh9SiVh+R8TdUSaszLQ6olS17PTcMDg03jJNy4+i+2qMne8vvhOsvUkVmmTG4H
-        AGEdYNlxdFiBckGnfb5HKvvnvKCRUwwOvGw47uzq3/STOozfro18L5y1HaZ3BOUNTCjWZBxIu2SP6
-        Fcxr+VGw/6NFkKPU0JtTKtSoIvxrWvm8rCHC9VZljXG2SXi+RXVbkJkstvGN/HmeBkGnZtC4IydaZ
-        xmzR6szQ==;
-Received: from [2601:1c2:d80:3110::9307] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pKNrJ-004vl4-BA; Tue, 24 Jan 2023 18:17:25 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     netdev@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Subject: [PATCH net-next] net: Kconfig: fix spellos
-Date:   Tue, 24 Jan 2023 10:17:24 -0800
-Message-Id: <20230124181724.18166-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.39.1
+        Tue, 24 Jan 2023 13:40:59 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 43E3449558;
+        Tue, 24 Jan 2023 10:40:35 -0800 (PST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+        pabeni@redhat.com, edumazet@google.com
+Subject: [PATCH net 0/4] Netfilter fixes for net
+Date:   Tue, 24 Jan 2023 19:39:29 +0100
+Message-Id: <20230124183933.4752-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Fix spelling in net/ Kconfig files.
-(reported by codespell)
+Hi,
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>
-Cc: netfilter-devel@vger.kernel.org
-Cc: coreteam@netfilter.org
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Jiri Pirko <jiri@resnulli.us>
----
- net/netfilter/ipset/Kconfig |    2 +-
- net/sched/Kconfig           |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+The following patchset contains Netfilter fixes for net:
 
-diff -- a/net/netfilter/ipset/Kconfig b/net/netfilter/ipset/Kconfig
---- a/net/netfilter/ipset/Kconfig
-+++ b/net/netfilter/ipset/Kconfig
-@@ -30,7 +30,7 @@ config IP_SET_BITMAP_IP
- 	depends on IP_SET
- 	help
- 	  This option adds the bitmap:ip set type support, by which one
--	  can store IPv4 addresses (or network addresse) from a range.
-+	  can store IPv4 addresses (or network addresses) from a range.
- 
- 	  To compile it as a module, choose M here.  If unsure, say N.
- 
-diff -- a/net/sched/Kconfig b/net/sched/Kconfig
---- a/net/sched/Kconfig
-+++ b/net/sched/Kconfig
-@@ -337,7 +337,7 @@ config NET_SCH_FQ
- 	  Say Y here if you want to use the FQ packet scheduling algorithm.
- 
- 	  FQ does flow separation, and is able to respect pacing requirements
--	  set by TCP stack into sk->sk_pacing_rate (for localy generated
-+	  set by TCP stack into sk->sk_pacing_rate (for locally generated
- 	  traffic)
- 
- 	  To compile this driver as a module, choose M here: the module
+1) Perform SCTP vtag verification for ABORT/SHUTDOWN_COMPLETE according
+   to RFC 9260, Sect 8.5.1.
+
+2) Fix infinite loop if SCTP chunk size is zero in for_each_sctp_chunk().
+   And remove useless check in this macro too.
+
+3) Revert DATA_SENT state in the SCTP tracker, this was applied in the
+   previous merge window. Next patch in this series provides a more
+   simple approach to multihoming support.
+
+4) Unify HEARTBEAT_ACKED and ESTABLISHED states for SCTP multihoming
+   support, use default ESTABLISHED of 210 seconds based on
+   heartbeat timeout * maximum number of retransmission + round-trip timeout.
+   Otherwise, SCTP conntrack entry that represents secondary paths
+   remain stale in the table for up to 5 days.
+
+This is a slightly large batch with fixes for the SCTP connection
+tracking helper, all patches from Sriram Yagnaraman.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 208a21107ef0ae86c92078caf84ce80053e73f7a:
+
+  Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue (2023-01-23 22:36:59 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git HEAD
+
+for you to fetch changes up to a44b7651489f26271ac784b70895e8a85d0cebf4:
+
+  netfilter: conntrack: unify established states for SCTP paths (2023-01-24 09:52:52 +0100)
+
+----------------------------------------------------------------
+Sriram Yagnaraman (4):
+      netfilter: conntrack: fix vtag checks for ABORT/SHUTDOWN_COMPLETE
+      netfilter: conntrack: fix bug in for_each_sctp_chunk
+      Revert "netfilter: conntrack: add sctp DATA_SENT state"
+      netfilter: conntrack: unify established states for SCTP paths
+
+ Documentation/networking/nf_conntrack-sysctl.rst   |  10 +-
+ include/uapi/linux/netfilter/nf_conntrack_sctp.h   |   3 +-
+ include/uapi/linux/netfilter/nfnetlink_cttimeout.h |   3 +-
+ net/netfilter/nf_conntrack_proto_sctp.c            | 170 +++++++++------------
+ net/netfilter/nf_conntrack_standalone.c            |  16 --
+ 5 files changed, 77 insertions(+), 125 deletions(-)
