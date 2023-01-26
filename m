@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7ED67CAE3
-	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Jan 2023 13:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3284767CAD6
+	for <lists+netfilter-devel@lfdr.de>; Thu, 26 Jan 2023 13:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236676AbjAZMY6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 26 Jan 2023 07:24:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
+        id S236668AbjAZMYR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 26 Jan 2023 07:24:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237074AbjAZMYv (ORCPT
+        with ESMTP id S229470AbjAZMYQ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 26 Jan 2023 07:24:51 -0500
+        Thu, 26 Jan 2023 07:24:16 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3516A31A
-        for <netfilter-devel@vger.kernel.org>; Thu, 26 Jan 2023 04:24:41 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9C01BAEB
+        for <netfilter-devel@vger.kernel.org>; Thu, 26 Jan 2023 04:24:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=VaDkkm2VKTnn3yomvJxquK9kPTOSNtaeu2NmyI2jmE0=; b=AvA1FzOuV4RKqFunAPFTbXwoX/
-        NjJN3fpVhDwWEw4XbvE8U+RMzsKrxwHENWVt/BfaPALaqL5NbDC6mZRsotj1+2BR2wbNh1TqzqJ7t
-        Qhu04aXuCqjA3FOnmPby3R0IEaRVcbmet+7fneVmARGROsi1BFeEx0gSMjouaIDHw85rm7Jn1Mpfd
-        Fh/6sRnygQZrtgdidPI8Z8tyV8wz2Nu+w2C2jz2jObNEYVldrZSkGMkKea8etLI9TLC0xKx42lY/y
-        NHCzCAgHZ7Y284sNLifRdyAkq80uT1+FZp7X285hgTUdPWuHSX2tOxTO2nQsv9Vju/7oZgu2QqZcS
-        HLtXKEow==;
+        bh=/FFCW9GhpZrLEmSXj82OYUi/+evxb/w1ECd0BdOrhng=; b=SQn9eGPdyF16FewtUqxduEV8FN
+        nvPzJf1X7hqbv7Ne3qPAL4TxMls8/A/X4qykp02hOm0PkrAwRC6MZdfv6S+rKxAhPZw6joLdkdlP0
+        7zLM3iRXm2LCEupaNxRE0QZ7IiDe2cnAAYa052kso1+G/e/YFxPyI67ArgHaOJW6jz4ifHY1gMlCy
+        vBi7DgWDzCWdLW0zfCWugLoE1jCLLl0Ifk5wyXL9YvPWP/47lrL23u6NpjMiwo/AyGEmPdcY03JXz
+        kekvtAoke1n40I9ADSLwcLqs1FG6mL0SBb1zo62+tePt+VgECbvLERE4AIjBC5lDUN/p6mRA84vMy
+        pjxpVh9Q==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1pL1J1-00058S-Ny
-        for netfilter-devel@vger.kernel.org; Thu, 26 Jan 2023 13:24:39 +0100
+        id 1pL1Ia-00056p-VN
+        for netfilter-devel@vger.kernel.org; Thu, 26 Jan 2023 13:24:13 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 6/7] ebtables-translate: Print flush command after parsing is finished
-Date:   Thu, 26 Jan 2023 13:24:05 +0100
-Message-Id: <20230126122406.23288-7-phil@nwl.cc>
+Subject: [iptables PATCH 7/7] tests: xlate: Support testing multiple individual files
+Date:   Thu, 26 Jan 2023 13:24:06 +0100
+Message-Id: <20230126122406.23288-8-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20230126122406.23288-1-phil@nwl.cc>
 References: <20230126122406.23288-1-phil@nwl.cc>
@@ -51,46 +51,59 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Otherwise, bad calls like 'ebtables-translate -F -F' produce wrong
-output instead of an error message.
+Simple use-case: run xlate-test for ebtables-nft:
+
+| % ./xlate-test.py extensions/libebt_*.txlate
+
+The script interpreted all parameters as a single file.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-eb-translate.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ xlate-test.py | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/iptables/xtables-eb-translate.c b/iptables/xtables-eb-translate.c
-index 99347c0c3ee46..da7e5e3dda1f3 100644
---- a/iptables/xtables-eb-translate.c
-+++ b/iptables/xtables-eb-translate.c
-@@ -247,13 +247,6 @@ static int do_commandeb_xlate(struct nft_handle *h, int argc, char *argv[], char
- 			ret = 1;
- 			break;
- 		case 'F': /* Flush */
--			if (p.chain) {
--				printf("flush chain bridge %s %s\n", p.table, p.chain);
--			} else {
--				printf("flush table bridge %s\n", p.table);
--			}
--			ret = 1;
--			break;
- 		case 'Z': /* Zero counters */
- 			if (c == 'Z') {
- 				if ((flags & OPT_ZERO) || (flags & OPT_COMMAND && command != 'L'))
-@@ -506,6 +499,13 @@ static int do_commandeb_xlate(struct nft_handle *h, int argc, char *argv[], char
+diff --git a/xlate-test.py b/xlate-test.py
+index 4cb1401b71677..1b544600aa242 100755
+--- a/xlate-test.py
++++ b/xlate-test.py
+@@ -241,17 +241,22 @@ xtables_nft_multi = 'xtables-nft-multi'
+                             + '/iptables/' + xtables_nft_multi
  
- 	if (command == 'P') {
- 		return 0;
-+	} else if (command == 'F') {
-+			if (p.chain) {
-+				printf("flush chain bridge %s %s\n", p.table, p.chain);
-+			} else {
-+				printf("flush table bridge %s\n", p.table);
-+			}
-+			ret = 1;
- 	} else if (command == 'A') {
- 		ret = nft_rule_eb_xlate_add(h, &p, &cs, true);
- 		if (!ret)
+     files = tests = passed = failed = errors = 0
+-    if args.test:
+-        if not args.test.endswith(".txlate"):
+-            args.test += ".txlate"
++    for test in args.test:
++        if not test.endswith(".txlate"):
++            test += ".txlate"
+         try:
+-            with open(args.test, "r") as payload:
+-                files = 1
+-                tests, passed, failed, errors = run_test(args.test, payload)
++            with open(test, "r") as payload:
++                t, p, f, e = run_test(test, payload)
++                files += 1
++                tests += t
++                passed += p
++                failed += f
++                errors += e
+         except IOError:
+             print(red("Error: ") + "test file does not exist", file=sys.stderr)
+             return 99
+-    else:
++
++    if files == 0:
+         files, tests, passed, failed, errors = load_test_files()
+ 
+     if files > 1:
+@@ -272,6 +277,6 @@ parser.add_argument('-n', '--nft', type=str, default='nft',
+                     help='Replay using given nft binary (default: \'%(default)s\')')
+ parser.add_argument('--no-netns', action='store_true',
+                     help='Do not run testsuite in own network namespace')
+-parser.add_argument("test", nargs="?", help="run only the specified test file")
++parser.add_argument("test", nargs="*", help="run only the specified test file(s)")
+ args = parser.parse_args()
+ sys.exit(main())
 -- 
 2.38.0
 
