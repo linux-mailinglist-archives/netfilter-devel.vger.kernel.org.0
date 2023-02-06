@@ -2,40 +2,30 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 703E068B907
-	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Feb 2023 10:53:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8AF68B9DC
+	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Feb 2023 11:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjBFJwj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 6 Feb 2023 04:52:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46810 "EHLO
+        id S229899AbjBFKUC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 6 Feb 2023 05:20:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbjBFJwb (ORCPT
+        with ESMTP id S230239AbjBFKTk (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 6 Feb 2023 04:52:31 -0500
+        Mon, 6 Feb 2023 05:19:40 -0500
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46F901C7F7
-        for <netfilter-devel@vger.kernel.org>; Mon,  6 Feb 2023 01:52:30 -0800 (PST)
-Date:   Mon, 6 Feb 2023 10:52:26 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C4F80ED
+        for <netfilter-devel@vger.kernel.org>; Mon,  6 Feb 2023 02:19:36 -0800 (PST)
+Date:   Mon, 6 Feb 2023 11:19:33 +0100
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [nf-next PATCH v2] netfilter: nf_tables: Introduce
- NFTA_RULE_ACTUAL_EXPR
-Message-ID: <Y+DN2miPlSlBAIaj@salvia>
-References: <Y7/pzxvu2v4t4PgZ@salvia>
- <Y7/2843ObHqTDIFQ@orbyte.nwl.cc>
- <Y8fe9+XHbxYyD4LY@salvia>
- <Y8f4pNIcb2zH9QqZ@orbyte.nwl.cc>
- <Y9wrzkablavNnUXl@salvia>
- <Y90QrjOONoZmcCZL@orbyte.nwl.cc>
- <Y90o8eq3egHbtC3Z@salvia>
- <Y900iRzf2q8xnXyv@orbyte.nwl.cc>
- <Y94oUYqArYqhkmOX@salvia>
- <Y97HaXaEtIlFUQSJ@orbyte.nwl.cc>
+To:     Fernando Fernandez Mancera <ffmancera@riseup.net>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nft v6] src: add support to command "destroy"
+Message-ID: <Y+DUNb50mi5KiHCS@salvia>
+References: <20230102143822.632-1-ffmancera@riseup.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Y97HaXaEtIlFUQSJ@orbyte.nwl.cc>
+In-Reply-To: <20230102143822.632-1-ffmancera@riseup.net>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -44,38 +34,33 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Sat, Feb 04, 2023 at 10:00:25PM +0100, Phil Sutter wrote:
-> On Sat, Feb 04, 2023 at 10:41:37AM +0100, Pablo Neira Ayuso wrote:
-> > On Fri, Feb 03, 2023 at 05:21:29PM +0100, Phil Sutter wrote:
-> > [...]
-> > > On Fri, Feb 03, 2023 at 04:32:01PM +0100, Pablo Neira Ayuso wrote:
-> > [...]
-> > > > I also wonder if this might cause problems with nftables and implicit
-> > > > sets, they are bound to one single lookup expression that, when gone,
-> > > > the set is released. Now you will have two expressions pointing to an
-> > > > implicit set. Same thing with implicit chains. This might get tricky
-> > > > with the transaction interface.
-> > > 
-> > > While indeed two lookup expressions will refer to the same anonymous
-> > > set, only one of those expressions will ever be in use. There's no way
-> > > the kernel would switch between rule variants (or use both at the same
-> > > time).
-> > 
-> > OK, but control plane will reject two lookup expressions that refer to
-> > the same anonymous set.
+On Mon, Jan 02, 2023 at 03:38:22PM +0100, Fernando Fernandez Mancera wrote:
+> "destroy" command performs a deletion as "delete" command but does not fail
+> when the object does not exist. As there is no NLM_F_* flag for ignoring such
+> error, it needs to be ignored directly on error handling.
 > 
-> Only if it sees the second expression: If NFTA_RULE_ACTUAL_EXPR is
-> present, the kernel will copy the content of NFTA_RULE_EXPRESSIONS into
-> a buffer pointed to by nft_rule::dump_expr. It does not inspect the
-> content apart from nla_policy checking which merely ensures it's a
-> nested array of elements conforming to nft_expr_policy (i.e., have a
-> NAME and DATA attribute).
+> Example of use:
 > 
-> The copied data is touched only by nf_tables_fill_rule_info() which
-> copies it as-is into the skb. Later, nf_tables_rule_destroy() just frees
-> the whole blob.
-> 
-> So effectively the kernel doesn't know or care what expressions are
-> contained in NFTA_RULE_EXPRESSIONS.
+> 	# nft list ruleset
+>         table ip filter {
+>                 chain output {
+>                 }
+>         }
+>         # nft destroy table ip missingtable
+> 	# echo $?
+> 	0
+>         # nft list ruleset
+>         table ip filter {
+>                 chain output {
+>                 }
+>         }
 
-Copy should work, sorry I thought you were parsing the expression again.
+Applied, thanks.
+
+[...]
+>  create mode 100755 tests/shell/testcases/rule_management/0011destroy_0
+>  create mode 100755 tests/shell/testcases/rule_management/0012destroy_0
+>  create mode 100644 tests/shell/testcases/rule_management/dumps/0011destroy_0.nft
+>  create mode 100644 tests/shell/testcases/rule_management/dumps/0012destroy_0.nft
+
+More tests for other objects would be good to have.
