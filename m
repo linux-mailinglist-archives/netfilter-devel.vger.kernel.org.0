@@ -2,144 +2,102 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 169E768C00D
-	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Feb 2023 15:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 311D168C423
+	for <lists+netfilter-devel@lfdr.de>; Mon,  6 Feb 2023 18:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbjBFO26 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 6 Feb 2023 09:28:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46648 "EHLO
+        id S229548AbjBFRDd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 6 Feb 2023 12:03:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231367AbjBFO2t (ORCPT
+        with ESMTP id S229536AbjBFRDd (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 6 Feb 2023 09:28:49 -0500
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18647244AB
-        for <netfilter-devel@vger.kernel.org>; Mon,  6 Feb 2023 06:28:46 -0800 (PST)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 2/2] rule: expand standalone chain that contains rules
-Date:   Mon,  6 Feb 2023 15:28:41 +0100
-Message-Id: <20230206142841.594538-2-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230206142841.594538-1-pablo@netfilter.org>
-References: <20230206142841.594538-1-pablo@netfilter.org>
+        Mon, 6 Feb 2023 12:03:33 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D617F1B557
+        for <netfilter-devel@vger.kernel.org>; Mon,  6 Feb 2023 09:03:31 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 83909606E1;
+        Mon,  6 Feb 2023 17:03:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1675703010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=vqflvKKU5z+Hnugd3McuTk5/fCdSazq3jJ3fvDDzkTY=;
+        b=DhpG6LpdIbceI1bTAVsqofOmMWB3bE2TMV0g/gnIRFJNFMgVfbEcggVP2eUZ4qWAOykl3f
+        +9GTgV/weqeKgjW0913YHV4qIgaOwYOFh03kPproeqTyFZyc+HbrUpLFxLetsLaScS6Fxc
+        QPXbZQkPeI1UUN8dF+Sdb/b12pSIMD4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1675703010;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=vqflvKKU5z+Hnugd3McuTk5/fCdSazq3jJ3fvDDzkTY=;
+        b=XMKIPAV59iBP+SEGlBpfMWpoCn33nvtF4OnZ08RB8vGrA5J08ROhWcFqRb/EFMdGzsl6tj
+        VjKiw4DOii45hcBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 36B23138E8;
+        Mon,  6 Feb 2023 17:03:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id G9qRCuIy4WP2IgAAMHmgww
+        (envelope-from <pvorel@suse.cz>); Mon, 06 Feb 2023 17:03:30 +0000
+From:   Petr Vorel <pvorel@suse.cz>
+To:     ltp@lists.linux.it
+Cc:     Petr Vorel <pvorel@suse.cz>, netfilter-devel@vger.kernel.org
+Subject: [PATCH 1/1] iptables_lib.sh: Fix for iptables-translate >= v1.8.9
+Date:   Mon,  6 Feb 2023 18:03:25 +0100
+Message-Id: <20230206170325.19813-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Otherwise rules that this chain contains are ignored when expressed
-using the following syntax:
+iptables-translate <= v1.8.8 didn't use quotes:
+$ iptables-translate -A INPUT -s 127.0.0.1 -p icmp -j DROP
+nft add rule ip filter INPUT ip protocol icmp ip saddr 127.0.0.1 counter drop
 
-chain inet filter input2 {
-       type filter hook input priority filter; policy accept;
-       ip saddr 1.2.3.4 tcp dport { 22, 443, 123 } drop
-}
+iptables-translate since v1.8.9 started to add quotes:
+$ iptables-translate -A INPUT -s 127.0.0.1 -p icmp -j DROP
+nft 'add rule ip filter INPUT ip protocol icmp ip saddr 127.0.0.1 counter drop'
 
-and importing chain definitions like these from another file.
+That broke nft01.sh test:
 
-When expanding the chain, remove the rule so the new CMD_OBJ_CHAIN
-case does not expand it again.
+Error: syntax error, unexpected junk
+'add rule ip filter INPUT ip protocol icmp ip saddr 127.0.0.1 counter drop'
+^
+nft01 1 TFAIL: nft command failed to append new rule
 
-Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1655
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Therefore filter out also quotes (to existing backslash).
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- src/rule.c                                    | 15 +++++++++---
- .../testcases/include/0020include_chain_0     | 23 +++++++++++++++++++
- .../include/dumps/0020include_chain_0.nft     |  6 +++++
- 3 files changed, 41 insertions(+), 3 deletions(-)
- create mode 100755 tests/shell/testcases/include/0020include_chain_0
- create mode 100644 tests/shell/testcases/include/dumps/0020include_chain_0.nft
+ testcases/network/iptables/iptables_lib.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/rule.c b/src/rule.c
-index 3f239cf8c46a..c162059bfd9e 100644
---- a/src/rule.c
-+++ b/src/rule.c
-@@ -1312,11 +1312,12 @@ void cmd_add_loc(struct cmd *cmd, uint16_t offset, const struct location *loc)
- 
- static void nft_cmd_expand_chain(struct chain *chain, struct list_head *new_cmds)
- {
--	struct rule *rule;
-+	struct rule *rule, *next;
- 	struct handle h;
- 	struct cmd *new;
- 
--	list_for_each_entry(rule, &chain->rules, list) {
-+	list_for_each_entry_safe(rule, next, &chain->rules, list) {
-+		list_del(&rule->list);
- 		memset(&h, 0, sizeof(h));
- 		handle_merge(&h, &rule->handle);
- 		if (chain->flags & CHAIN_F_BINDING) {
-@@ -1324,7 +1325,7 @@ static void nft_cmd_expand_chain(struct chain *chain, struct list_head *new_cmds
- 			rule->handle.chain.location = chain->location;
- 		}
- 		new = cmd_alloc(CMD_ADD, CMD_OBJ_RULE, &h,
--				&rule->location, rule_get(rule));
-+				&rule->location, rule);
- 		list_add_tail(&new->list, new_cmds);
- 	}
+diff --git a/testcases/network/iptables/iptables_lib.sh b/testcases/network/iptables/iptables_lib.sh
+index ab76cbd416..7e138ea33b 100755
+--- a/testcases/network/iptables/iptables_lib.sh
++++ b/testcases/network/iptables/iptables_lib.sh
+@@ -22,7 +22,7 @@ NFRUN()
+ 	if [ "$use_iptables" = 1 ]; then
+ 		ip${TST_IPV6}tables $@
+ 	else
+-		$(ip${TST_IPV6}tables-translate $@ | sed 's,\\,,g')
++		$(ip${TST_IPV6}tables-translate $@ | sed "s/[\']//g")
+ 	fi
  }
-@@ -1385,6 +1386,14 @@ void nft_cmd_expand(struct cmd *cmd)
  
- 		list_splice(&new_cmds, &cmd->list);
- 		break;
-+	case CMD_OBJ_CHAIN:
-+		chain = cmd->chain;
-+		if (!chain || list_empty(&chain->rules))
-+			break;
-+
-+		nft_cmd_expand_chain(chain, &new_cmds);
-+		list_splice(&new_cmds, &cmd->list);
-+		break;
- 	case CMD_OBJ_SET:
- 	case CMD_OBJ_MAP:
- 		set = cmd->set;
-diff --git a/tests/shell/testcases/include/0020include_chain_0 b/tests/shell/testcases/include/0020include_chain_0
-new file mode 100755
-index 000000000000..8f78e8c606ec
---- /dev/null
-+++ b/tests/shell/testcases/include/0020include_chain_0
-@@ -0,0 +1,23 @@
-+#!/bin/bash
-+
-+set -e
-+
-+tmpfile1=$(mktemp -p .)
-+if [ ! -w $tmpfile1 ] ; then
-+	echo "Failed to create tmp file" >&2
-+	exit 0
-+fi
-+
-+trap "rm -rf $tmpfile1" EXIT # cleanup if aborted
-+
-+RULESET="table inet filter { }
-+include \"$tmpfile1\""
-+
-+RULESET2="chain inet filter input2 {
-+	type filter hook input priority filter; policy accept;
-+	ip saddr 1.2.3.4 tcp dport { 22, 443, 123 } drop
-+}"
-+
-+echo "$RULESET2" > $tmpfile1
-+
-+$NFT -o -f - <<< $RULESET
-diff --git a/tests/shell/testcases/include/dumps/0020include_chain_0.nft b/tests/shell/testcases/include/dumps/0020include_chain_0.nft
-new file mode 100644
-index 000000000000..3ad6db14d2f5
---- /dev/null
-+++ b/tests/shell/testcases/include/dumps/0020include_chain_0.nft
-@@ -0,0 +1,6 @@
-+table inet filter {
-+	chain input2 {
-+		type filter hook input priority filter; policy accept;
-+		ip saddr 1.2.3.4 tcp dport { 22, 123, 443 } drop
-+	}
-+}
 -- 
-2.30.2
+2.39.1
 
