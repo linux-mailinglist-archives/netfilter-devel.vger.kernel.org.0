@@ -2,119 +2,109 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D4C69A347
-	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Feb 2023 02:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703D369AB88
+	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Feb 2023 13:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbjBQBHa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 16 Feb 2023 20:07:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
+        id S230022AbjBQMaZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 17 Feb 2023 07:30:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjBQBH3 (ORCPT
+        with ESMTP id S230129AbjBQMaL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 16 Feb 2023 20:07:29 -0500
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E3254D2C
-        for <netfilter-devel@vger.kernel.org>; Thu, 16 Feb 2023 17:07:28 -0800 (PST)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-16dcb07b805so4840945fac.0
-        for <netfilter-devel@vger.kernel.org>; Thu, 16 Feb 2023 17:07:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=datadoghq.com; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=x/fPBMlx5DtVPheRVp81IECJwxXx2Mnz0JsPoFom1VI=;
-        b=TngCKolj4pdn4uLnHhupO4cuYCKv5pOmA87mnqIf1OzR9f1bmBtxrc8IUg/u905npT
-         MT6Aq0c2mT3uFz0gDWVg0hpNv+S+w0KIznWXP5LXYGI+ZAFY+VduTl0vzxu6LTsLMpUj
-         syujKgNHrHx/MIMDZ8FTvA8Jzlj2UbMtUanBM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x/fPBMlx5DtVPheRVp81IECJwxXx2Mnz0JsPoFom1VI=;
-        b=q2bqCD9hSbfeOI3KE3XJBU3fDpX6LdO1Qn2hDuYI4AC3I4JDTHW/tUGVWzNKGkmH5s
-         sZ56NpGP43RTgeCu9ZrbV7lNkYA6aD4MNDz6LrRSIc1ubNRWTHdGAv4dcZpPngiSC5VZ
-         KIhPHH/T0kDkbHe7XB0fWvgUULf6gTaOcSBxkfCZhw8UQgOaF5Wks7WKmQvocRC1RXvX
-         ZGEjqq4hbPGXXCGznGBFS1mnynwP/mAkQ+KSlzcoCsgeIHbrFBD7dZEI+GYzDmF5fAMc
-         TWAYb5On9u8vSVWqa1Ytl3wwzldONlUD9CUGR0cp3dEQjARdIztJtwUp174Rrph8v2JL
-         4KOw==
-X-Gm-Message-State: AO0yUKV1iq/hS28221oQejjDMxneqZdaMJkCFUsp8rHNq+YtSwW+D+iI
-        oPjvfFhKc+fN8YkwpbNZvCSfWxP/OuhteMqsTskpwig5ebJ3fv3G
-X-Google-Smtp-Source: AK7set9Uq29xwrxxkU9Usq5vwKFNS8GS8CVModKLQKnAePeIEllpJPtwsT2Kha54lhp6aGBLjTDbtBx7dYoHYwCj/d4=
-X-Received: by 2002:a05:6870:828c:b0:16e:39d2:4c8a with SMTP id
- q12-20020a056870828c00b0016e39d24c8amr313212oae.59.1676596047235; Thu, 16 Feb
- 2023 17:07:27 -0800 (PST)
+        Fri, 17 Feb 2023 07:30:11 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 714256782C;
+        Fri, 17 Feb 2023 04:30:05 -0800 (PST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+        pabeni@redhat.com, edumazet@google.com
+Subject: [PATCH net-next 0/6] Netfilter/IPVS updates for net-next
+Date:   Fri, 17 Feb 2023 13:29:51 +0100
+Message-Id: <20230217122957.799277-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CALvGib_xHOVD2+6tKm2Sf0wVkQwut2_z2gksZPcGw30tOvOAAA@mail.gmail.com>
- <20230215100236.GC9908@breakpoint.cc> <CALvGib8TSNk47Spapt2dMe+R_ohzZZz9yC5Ou3qqRxJqtYfBmg@mail.gmail.com>
- <20230216151822.GB14032@breakpoint.cc>
-In-Reply-To: <20230216151822.GB14032@breakpoint.cc>
-From:   Bryce Kahle <bryce.kahle@datadoghq.com>
-Date:   Thu, 16 Feb 2023 17:07:16 -0800
-Message-ID: <CALvGib_Ua9bboMeDesvVqH_yiqVKxMTxFKZeg14DvONaTiOZRA@mail.gmail.com>
-Subject: Re: PROBLEM: nf_conntrack_events autodetect mode invalidates
- NETLINK_LISTEN_ALL_NSID netlink socket option
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-I'd prefer whichever option doesn't require changes on our end. I'm
-not familiar with the ins/outs of a kernel module param, but we are
-running on customer hosts so we often start far later than when the
-kernel module was loaded.
+Hi,
 
-On Thu, Feb 16, 2023 at 7:18 AM Florian Westphal <fw@strlen.de> wrote:
->
-> Bryce Kahle <bryce.kahle@datadoghq.com> wrote:
-> > I have posted the reproducer at
-> > https://github.com/brycekahle/netfilter-reproducer
->
-> Thanks.  Resolving this in a backwards compatible way is
-> intrusive because at the time the ctnetlink subscription happens
-> nsid isn't set yet.
->
-> We'd need a new callback in netlink_kernel_cfg so that ctnetlink
-> can be informed about activation of 'allnet' option on an existing
-> socket.
->
-> We'd also need a new flag in netfilter/core.c for that and not in
-> ctnetlink because else we'd create an unwanted module dependency in
-> nf_conntrack.
->
-> I can think of 3 alternative solutions:
-> 1. revert back to 'default 1'.
->    I don't want to do that because for almost all conntrack use
->    cases the extension allocation is unecessary.
->
-> 2. Switch netns creation behaviour to enable the extensions if
->    init_net has nf_conntrack_events=1.
->    This would require user intervention, but probably fine.
->    Downside is that this will be different from all the other
->    settings.
->
-> 3. Add a module param to conntrack to override the default
->    setting.  We already have such params for accounting and timestamps.
->
-> I'd go with 3).  Bryce, would that work for you?
->
-> Pablo, whats your take on this?
-> If you prefer I can work on the new netlink_kernel_cfg callback
-> to see how intrusive it really is.
->
-> Breakage scenario is:
->
-> 1. Parent netns opens ctnetlink event sk
-> 2. Parent netns sets ALL_NSID flag
-> 3. No events from child netns, because no ctnetlink
->    event sockets were created in this netns and thus
->    conntrack objects get no event extension.
->
-> Extending the existing bind callback doesn't work because
-> ALL_NSID flag is set after event subscription.
+The following patchset contains Netfilter updates for net-next:
+
+1) Add safeguard to check for NULL tupe in objects updates via
+   NFT_MSG_NEWOBJ, this should not ever happen. From Alok Tiwari.
+
+2) Incorrect pointer check in the new destroy rule command,
+   from Yang Yingliang.
+
+3) Incorrect status bitcheck in nf_conntrack_udp_packet(),
+   from Florian Westphal.
+
+4) Simplify seq_print_acct(), from Ilia Gavrilov.
+
+5) Use 2-arg optimal variant of kfree_rcu() in IPVS,
+   from Julian Anastasov.
+
+6) TCP connection enters CLOSE state in conntrack for locally
+   originated TCP reset packet from the reject target,
+   from Florian Westphal.
+
+The fixes #2 and #3 in this series address issues from the previous pull
+nf-next request in this net-next cycle.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit dd25cfab16e6bff1bbd75b42b8334c4419c90a4f:
+
+  Merge branch 'net-ipa-remaining-ipa-v5-0-support' (2023-01-31 21:45:54 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git HEAD
+
+for you to fetch changes up to 2954fe60e33da0f4de4d81a4c95c7dddb517d00c:
+
+  netfilter: let reset rules clean out conntrack entries (2023-02-17 13:04:56 +0100)
+
+----------------------------------------------------------------
+Alok Tiwari (1):
+      netfilter: nf_tables: NULL pointer dereference in nf_tables_updobj()
+
+Florian Westphal (2):
+      netfilter: conntrack: udp: fix seen-reply test
+      netfilter: let reset rules clean out conntrack entries
+
+Gavrilov Ilia (1):
+      netfilter: conntrack: remote a return value of the 'seq_print_acct' function.
+
+Julian Anastasov (1):
+      ipvs: avoid kfree_rcu without 2nd arg
+
+Yang Yingliang (1):
+      netfilter: nf_tables: fix wrong pointer passed to PTR_ERR()
+
+ include/linux/netfilter.h               |  3 +++
+ include/net/ip_vs.h                     |  1 +
+ include/net/netfilter/nf_conntrack.h    |  8 ++++++++
+ net/ipv4/netfilter/nf_reject_ipv4.c     |  1 +
+ net/ipv6/netfilter/nf_reject_ipv6.c     |  1 +
+ net/netfilter/core.c                    | 16 +++++++++++++++
+ net/netfilter/ipvs/ip_vs_est.c          |  2 +-
+ net/netfilter/nf_conntrack_core.c       | 12 +++++++++++
+ net/netfilter/nf_conntrack_proto_tcp.c  | 35 +++++++++++++++++++++++++++++++++
+ net/netfilter/nf_conntrack_proto_udp.c  |  2 +-
+ net/netfilter/nf_conntrack_standalone.c | 12 ++++-------
+ net/netfilter/nf_tables_api.c           |  5 ++++-
+ 12 files changed, 87 insertions(+), 11 deletions(-)
