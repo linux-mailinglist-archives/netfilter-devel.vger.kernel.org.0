@@ -2,44 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C749869AD07
-	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Feb 2023 14:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B640869B07A
+	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Feb 2023 17:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbjBQNtW (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 17 Feb 2023 08:49:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45802 "EHLO
+        id S229700AbjBQQSC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 17 Feb 2023 11:18:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbjBQNtU (ORCPT
+        with ESMTP id S230501AbjBQQRy (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 17 Feb 2023 08:49:20 -0500
+        Fri, 17 Feb 2023 11:17:54 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C64B43903
-        for <netfilter-devel@vger.kernel.org>; Fri, 17 Feb 2023 05:49:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF63F900F
+        for <netfilter-devel@vger.kernel.org>; Fri, 17 Feb 2023 08:17:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=xYd2dxbVUy3LT+LOmb7AMeC8goTVgc92ZP5KN/Y/MHc=; b=JeXgxEG7oozMt8KP/Oidi6l1If
-        97/OyfvlaTpJ8leZtbjIV3geuiX6yxh5j4h2CJXo0qQT9/ff6qizz5hMPz76+0SBAnKGu9ZxHLyJX
-        5yfN8OLlIOJNg1ic+CMa8TsIlgflMNZWqOwH3hqsu27ZygMdGk0kpzA7dVdDS5nTEMtyVu8FkH1xQ
-        c5LGMQvy8VSh1G1eGH5sTmX26bO2/FGJC1m8SXIAPYAJ0q75xSJKQsvGtQErfOVHYZfCU4Aj8Mbgt
-        mtYWCOWJUaIEfytWFKIQwtwWuEaOswq9ZDz7QoTazA6mOqYd2/gGVV55CIEG7LwxglPi7tiUvaESa
-        ZvbM8bQg==;
+        bh=+oC7W4gPjxbs00Nwx9r890AYjlbMHfIQ8ZfXpqgHA6k=; b=mgkKbnvUUcretsBeY827rcJ3Yp
+        qx3rK3csZUfYRwcqvBr6ViB81qUtBpzH7aPeyjOra1q2iZKnVghW5tWM9s35tX+5UPLuaWhxC8iUt
+        xe7OM24MfEe9Fu5Q8EngtWVgcWqgLmksBGLaUTAr2yBnuXvfJnWVRR9mNrSXLiCS4DhhpVKm4QWK8
+        nfw90EXLI50uvwpdFDLeSa5IZ7qTrV5Leuf5oyx3RI+gXr2jvLMia8D9rD5MSuqE1rLPnnxIG6FCf
+        A5Z5iT+eZq2ziT/VRQM/lzs20/fjaJYTTe2WXDGHK1nmX0qScYOdjhjaSITaSm8coWNhswSqim0Pg
+        dFY7qCTQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1pT16m-0001vU-Fr
-        for netfilter-devel@vger.kernel.org; Fri, 17 Feb 2023 14:49:04 +0100
+        id 1pT3QU-0003W4-Q0
+        for netfilter-devel@vger.kernel.org; Fri, 17 Feb 2023 17:17:34 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] tests: xlate: Print file names even if specified
-Date:   Fri, 17 Feb 2023 14:48:55 +0100
-Message-Id: <20230217134855.17247-2-phil@nwl.cc>
+Subject: [iptables PATCH 1/6] extensions: libebt_redirect: Fix target translation
+Date:   Fri, 17 Feb 2023 17:17:10 +0100
+Message-Id: <20230217161715.26120-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20230217134855.17247-1-phil@nwl.cc>
-References: <20230217134855.17247-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -51,27 +49,45 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Since the script now supports running for multiple files given on
-command line, do not skip printing a status line for each.
+While EBT_ACCEPT is the default verdict for ebtables targets, omitting
+it from translation implicitly converts it into 'continue'. Omit the
+non-default EBT_CONTINUE instead.
 
+Fixes: 24ce7465056ae ("ebtables-compat: add redirect match extension")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- xlate-test.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ extensions/libebt_redirect.c      | 2 +-
+ extensions/libebt_redirect.txlate | 8 ++++++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+ create mode 100644 extensions/libebt_redirect.txlate
 
-diff --git a/xlate-test.py b/xlate-test.py
-index 09e3b67a853df..6a11659868479 100755
---- a/xlate-test.py
-+++ b/xlate-test.py
-@@ -176,7 +176,7 @@ xtables_nft_multi = 'xtables-nft-multi'
-                 result.append(name + ": " + red("Fail"))
-                 result.append("nft flush ruleset call failed: " + error)
+diff --git a/extensions/libebt_redirect.c b/extensions/libebt_redirect.c
+index 4d4c7a02cea89..389f3ccb53f60 100644
+--- a/extensions/libebt_redirect.c
++++ b/extensions/libebt_redirect.c
+@@ -84,7 +84,7 @@ static int brredir_xlate(struct xt_xlate *xl,
+ 	const struct ebt_redirect_info *red = (const void*)params->target->data;
  
--    if (passed == tests) and not args.test:
-+    if (passed == tests):
-         print(name + ": " + green("OK"))
-     if not test_passed:
-         print("\n".join(result), file=sys.stderr)
+ 	xt_xlate_add(xl, "meta set pkttype host");
+-	if (red->target != EBT_ACCEPT)
++	if (red->target != EBT_CONTINUE)
+ 		xt_xlate_add(xl, " %s ", brredir_verdict(red->target));
+ 	return 1;
+ }
+diff --git a/extensions/libebt_redirect.txlate b/extensions/libebt_redirect.txlate
+new file mode 100644
+index 0000000000000..f0dd5deaf6406
+--- /dev/null
++++ b/extensions/libebt_redirect.txlate
+@@ -0,0 +1,8 @@
++ebtables-translate -t nat -A PREROUTING -d de:ad:00:00:be:ef -j redirect
++nft 'add rule bridge nat PREROUTING ether daddr de:ad:00:00:be:ef counter meta set pkttype host accept'
++
++ebtables-translate -t nat -A PREROUTING -d de:ad:00:00:be:ef -j redirect --redirect-target RETURN
++nft 'add rule bridge nat PREROUTING ether daddr de:ad:00:00:be:ef counter meta set pkttype host return'
++
++ebtables-translate -t nat -A PREROUTING -d de:ad:00:00:be:ef -j redirect --redirect-target CONTINUE
++nft 'add rule bridge nat PREROUTING ether daddr de:ad:00:00:be:ef counter meta set pkttype host'
 -- 
 2.38.0
 
