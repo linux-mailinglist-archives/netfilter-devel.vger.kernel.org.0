@@ -2,42 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 015F269ACDC
-	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Feb 2023 14:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5CA69ACDE
+	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Feb 2023 14:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjBQNqo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 17 Feb 2023 08:46:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
+        id S229773AbjBQNqt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 17 Feb 2023 08:46:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbjBQNqj (ORCPT
+        with ESMTP id S229591AbjBQNqs (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 17 Feb 2023 08:46:39 -0500
+        Fri, 17 Feb 2023 08:46:48 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C7320D13
-        for <netfilter-devel@vger.kernel.org>; Fri, 17 Feb 2023 05:46:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11206B33E
+        for <netfilter-devel@vger.kernel.org>; Fri, 17 Feb 2023 05:46:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=oQ0Wsg4FK/x8iKjwNwZmNIX+kJmlW8fkhOwhq/kBGEU=; b=DLaFsXnLpNHDmGlGHh6wqsrxx5
-        LHPmWWCG3CVY7csqUluvROU27H6PX973r6xwbtlkZH/xtjBaFDPta9SzelZkkHvkd0YsyVLswID1z
-        a/E25Tqwcxqe4Mly/lfHARSbGipSEvnTsddZSfcnwt+hMxxsiCcgI3QejvJq8+jCZl/UzYhB+pyro
-        skALbm1W9xamLxQnbqiqdGcd1JriRmF/jRj0Ds1rx/QqyUMe9wHIMLYVGUV5KHMThXLjuKu+yeJTx
-        bWf6f2eiicYgEVJOrAic2Pl3til3fq0cYbg6gqTmz9wk8kmuKfGxyOmagzcvvmsZFaZfyWTsjzMH0
-        yxJuV3fw==;
+        bh=asg5PNoStMWFetzstk1We8DcuzU8Y3UmsKqff026EzE=; b=kxSttLaheNQitb/pRMLrTiBd/3
+        aD3B+yR9W/bfhtnUx0WpNecr5fTMSEsUdxvO9K0BU0cUbQSqqBaQH/W2K7LTCXlYkrBJSU8d4qz14
+        VCSp9/gMbX/5nHONK+OQ/7VmFy5xg/6xNKkzXwC7XL7mxJrVTTXyT576N9ITW4+r7HlczM4YZUlbF
+        f8Ok6uhgyScrhhBGX4bEw4IbbTAqEzljaQq9uy8aZpJK6cS8DnMgiU7mp62i0syXl5wjEjWxOlMq/
+        MfNZgKBxunr0U1bsUq6So9n81xeb5J9xjwZIevDLkPFfEt4vl44V6/V6Xa1zQMTjvZz5Qy6jkNllo
+        n+jRsd/g==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1pT13x-0001uG-Bh
-        for netfilter-devel@vger.kernel.org; Fri, 17 Feb 2023 14:46:09 +0100
+        id 1pT148-0001uV-0I
+        for netfilter-devel@vger.kernel.org; Fri, 17 Feb 2023 14:46:20 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 1/3] nft-shared: Lookup matches in iptables_command_state
-Date:   Fri, 17 Feb 2023 14:45:58 +0100
-Message-Id: <20230217134600.14433-1-phil@nwl.cc>
+Subject: [iptables PATCH 2/3] nft-shared: Use nft_create_match() in one more spot
+Date:   Fri, 17 Feb 2023 14:45:59 +0100
+Message-Id: <20230217134600.14433-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
+In-Reply-To: <20230217134600.14433-1-phil@nwl.cc>
+References: <20230217134600.14433-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -49,189 +51,56 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Some matches may turn into multiple nft statements (naturally or via
-translation). Such statements must parse into a single extension again
-in order to rebuild the rule as it was.
-
-Introduce nft_find_match_in_cs() to iterate through the lists and drop
-tcp/udp port match caching in struct nft_xt_ctx which is not needed
-anymore.
-
-Note: Match reuse is not enabled unconditionally for all matches,
-because iptables supports having multiple instances of the same
-extension.
+By dropping the per-family 'cs->matches' selection (which is the default
+anyway), code becomes identical to the function's body.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-shared.c | 70 +++++++++++++++++++++++++------------------
- iptables/nft-shared.h |  4 ---
- 2 files changed, 41 insertions(+), 33 deletions(-)
+ iptables/nft-shared.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
 diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
-index 4a7b5406892c4..df3cc6ac994cf 100644
+index df3cc6ac994cf..52e745fea85c2 100644
 --- a/iptables/nft-shared.c
 +++ b/iptables/nft-shared.c
-@@ -304,7 +304,7 @@ static void parse_ifname(const char *name, unsigned int len, char *dst, unsigned
- static struct xtables_match *
- nft_create_match(struct nft_xt_ctx *ctx,
- 		 struct iptables_command_state *cs,
--		 const char *name);
-+		 const char *name, bool reuse);
- 
- static uint32_t get_meta_mask(struct nft_xt_ctx *ctx, enum nft_registers sreg)
- {
-@@ -322,7 +322,7 @@ static int parse_meta_mark(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+@@ -1202,16 +1202,13 @@ static void nft_parse_limit(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 	__u32 burst = nftnl_expr_get_u32(e, NFTNL_EXPR_LIMIT_BURST);
+ 	__u64 unit = nftnl_expr_get_u64(e, NFTNL_EXPR_LIMIT_UNIT);
+ 	__u64 rate = nftnl_expr_get_u64(e, NFTNL_EXPR_LIMIT_RATE);
+-	struct xtables_rule_match **matches;
  	struct xtables_match *match;
- 	uint32_t value;
+ 	struct xt_rateinfo *rinfo;
+-	size_t size;
  
--	match = nft_create_match(ctx, ctx->cs, "mark");
-+	match = nft_create_match(ctx, ctx->cs, "mark", false);
- 	if (!match)
- 		return -1;
- 
-@@ -344,7 +344,7 @@ static int parse_meta_pkttype(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
- 	struct xtables_match *match;
- 	uint8_t value;
- 
--	match = nft_create_match(ctx, ctx->cs, "pkttype");
-+	match = nft_create_match(ctx, ctx->cs, "pkttype", false);
- 	if (!match)
- 		return -1;
- 
-@@ -641,15 +641,39 @@ static void nft_parse_bitwise(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
- 	dreg->bitwise.set = true;
- }
- 
-+static struct xtables_match *
-+nft_find_match_in_cs(struct iptables_command_state *cs, const char *name)
-+{
-+	struct xtables_rule_match *rm;
-+	struct ebt_match *ebm;
-+
-+	for (ebm = cs->match_list; ebm; ebm = ebm->next) {
-+		if (ebm->ismatch &&
-+		    !strcmp(ebm->u.match->m->u.user.name, name))
-+			return ebm->u.match;
-+	}
-+	for (rm = cs->matches; rm; rm = rm->next) {
-+		if (!strcmp(rm->match->m->u.user.name, name))
-+			return rm->match;
-+	}
-+	return NULL;
-+}
-+
- static struct xtables_match *
- nft_create_match(struct nft_xt_ctx *ctx,
- 		 struct iptables_command_state *cs,
--		 const char *name)
-+		 const char *name, bool reuse)
- {
- 	struct xtables_match *match;
- 	struct xt_entry_match *m;
- 	unsigned int size;
- 
-+	if (reuse) {
-+		match = nft_find_match_in_cs(cs, name);
-+		if (match)
-+			return match;
-+	}
-+
- 	match = xtables_find_match(name, XTF_TRY_LOAD,
- 				   &cs->matches);
- 	if (!match)
-@@ -671,38 +695,26 @@ nft_create_match(struct nft_xt_ctx *ctx,
- static struct xt_udp *nft_udp_match(struct nft_xt_ctx *ctx,
- 			            struct iptables_command_state *cs)
- {
--	struct xt_udp *udp = ctx->tcpudp.udp;
- 	struct xtables_match *match;
- 
--	if (!udp) {
--		match = nft_create_match(ctx, cs, "udp");
--		if (!match)
--			return NULL;
--
--		udp = (void*)match->m->data;
--		ctx->tcpudp.udp = udp;
--	}
-+	match = nft_create_match(ctx, cs, "udp", true);
-+	if (!match)
-+		return NULL;
- 
--	return udp;
-+	return (struct xt_udp *)match->m->data;
- }
- 
- static struct xt_tcp *nft_tcp_match(struct nft_xt_ctx *ctx,
- 			            struct iptables_command_state *cs)
- {
--	struct xt_tcp *tcp = ctx->tcpudp.tcp;
- 	struct xtables_match *match;
- 
--	if (!tcp) {
--		match = nft_create_match(ctx, cs, "tcp");
--		if (!match) {
--			ctx->errmsg = "tcp match extension not found";
--			return NULL;
--		}
--		tcp = (void*)match->m->data;
--		ctx->tcpudp.tcp = tcp;
-+	match = nft_create_match(ctx, cs, "tcp", true);
-+	if (!match) {
-+		ctx->errmsg = "tcp match extension not found";
-+		return NULL;
+ 	switch (ctx->h->family) {
+ 	case NFPROTO_IPV4:
+ 	case NFPROTO_IPV6:
+ 	case NFPROTO_BRIDGE:
+-		matches = &ctx->cs->matches;
+ 		break;
+ 	default:
+ 		fprintf(stderr, "BUG: nft_parse_limit() unknown family %d\n",
+@@ -1219,19 +1216,12 @@ static void nft_parse_limit(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
+ 		exit(EXIT_FAILURE);
  	}
+ 
+-	match = xtables_find_match("limit", XTF_TRY_LOAD, matches);
++	match = nft_create_match(ctx, ctx->cs, "limit", false);
+ 	if (match == NULL) {
+ 		ctx->errmsg = "limit match extension not found";
+ 		return;
+ 	}
+ 
+-	size = XT_ALIGN(sizeof(struct xt_entry_match)) + match->size;
+-	match->m = xtables_calloc(1, size);
+-	match->m->u.match_size = size;
+-	strcpy(match->m->u.user.name, match->name);
+-	match->m->u.user.revision = match->revision;
+-	xs_init_match(match);
 -
--	return tcp;
-+	return (struct xt_tcp *)match->m->data;
- }
- 
- static void nft_parse_udp_range(struct nft_xt_ctx *ctx,
-@@ -872,14 +884,14 @@ static void nft_parse_icmp(struct nft_xt_ctx *ctx,
- 
- 	switch (ctx->h->family) {
- 	case NFPROTO_IPV4:
--		match = nft_create_match(ctx, cs, "icmp");
-+		match = nft_create_match(ctx, cs, "icmp", false);
- 		break;
- 	case NFPROTO_IPV6:
- 		if (icmp.type == UINT8_MAX) {
- 			ctx->errmsg = "icmp6 code with any type match not supported";
- 			return;
- 		}
--		match = nft_create_match(ctx, cs, "icmp6");
-+		match = nft_create_match(ctx, cs, "icmp6", false);
- 		break;
- 	default:
- 		ctx->errmsg = "unexpected family for icmp match";
-@@ -1640,10 +1652,10 @@ int nft_parse_hl(struct nft_xt_ctx *ctx,
- 	 */
- 	switch (ctx->h->family) {
- 	case NFPROTO_IPV4:
--		match = nft_create_match(ctx, ctx->cs, "ttl");
-+		match = nft_create_match(ctx, ctx->cs, "ttl", false);
- 		break;
- 	case NFPROTO_IPV6:
--		match = nft_create_match(ctx, ctx->cs, "hl");
-+		match = nft_create_match(ctx, ctx->cs, "hl", false);
- 		break;
- 	default:
- 		return -1;
-diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
-index 07d39131cb0d6..b8bc1a6ce2e93 100644
---- a/iptables/nft-shared.h
-+++ b/iptables/nft-shared.h
-@@ -76,10 +76,6 @@ struct nft_xt_ctx {
- 	struct nft_handle *h;
- 	uint32_t flags;
- 	const char *table;
--	union {
--		struct xt_tcp *tcp;
--		struct xt_udp *udp;
--	} tcpudp;
- 
- 	struct nft_xt_ctx_reg regs[1 + 16];
- 
+ 	rinfo = (void *)match->m->data;
+ 	rinfo->avg = XT_LIMIT_SCALE * unit / rate;
+ 	rinfo->burst = burst;
 -- 
 2.38.0
 
