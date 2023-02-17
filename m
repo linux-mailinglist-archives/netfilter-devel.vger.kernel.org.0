@@ -2,92 +2,123 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB8169B077
-	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Feb 2023 17:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B3269B1DA
+	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Feb 2023 18:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbjBQQSB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 17 Feb 2023 11:18:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49616 "EHLO
+        id S229824AbjBQRfx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 17 Feb 2023 12:35:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbjBQQRx (ORCPT
+        with ESMTP id S229942AbjBQRfx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 17 Feb 2023 11:17:53 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA9EB465
-        for <netfilter-devel@vger.kernel.org>; Fri, 17 Feb 2023 08:17:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=RTfLwdbK7rB2a6R9Xkzk/wFqGaL1QjoYMKWZyM3bruo=; b=gom2PrQHDFjnsSaLA0CFvsAPCR
-        XKwy+ZHr+c26HYfC2ZniVCIHsmdH7hwPoZSD6nBHWeAij60e3x2RLRToQc+ho80sVSrQwzOpj6zxl
-        mVWiFjWu2Bp83lWhbKUpKWb+/1qNMlGG8LbddF5SVc8yrdTSOLyb1kjeeZx8Bz8l0fB0zFZmMbbXy
-        lLk4iyE9uC3YI2KgjoDl3sx8ykpETWbwGZtNMbyV4AfwXZwmfLjmgN5QAIpOoa1bZicqu23CACJc/
-        N63cr1J1HM9e4FAh75h3jPSQsEaLfLYvhBvfcoaoAfdRImba4r8j1RlHK3ViiuOTn2k+SiWOTkeAt
-        mkVyzDoA==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1pT3QP-0003Vw-Bu
-        for netfilter-devel@vger.kernel.org; Fri, 17 Feb 2023 17:17:29 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 6/6] xtables-translate: Support insert with index
-Date:   Fri, 17 Feb 2023 17:17:15 +0100
-Message-Id: <20230217161715.26120-6-phil@nwl.cc>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20230217161715.26120-1-phil@nwl.cc>
-References: <20230217161715.26120-1-phil@nwl.cc>
+        Fri, 17 Feb 2023 12:35:53 -0500
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB8A6F3F5
+        for <netfilter-devel@vger.kernel.org>; Fri, 17 Feb 2023 09:35:50 -0800 (PST)
+Received: by mail-il1-f206.google.com with SMTP id s4-20020a056e021a0400b0031570404cf1so584515ild.1
+        for <netfilter-devel@vger.kernel.org>; Fri, 17 Feb 2023 09:35:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MEfTQWD+Xd9NO9abt6Gu9FLHicfehK5yJjw31ImtgaU=;
+        b=mOPZOqkkn7ySi+HEGGnHK2agF1aflAkpWnh9wAX4Uc2DPhwtEPaECXiYGochNTfjZ1
+         7YrrnM7KHgtr5oBWO/dxjE5MdDu3nffLqqFKc9ckfD1cu2Y5K+8tFxT+p/FcH34n7rQO
+         ewgKYJ+SRRUZR68FT6JR30qhfvMTIXmkg2nCzIXpHnTIUstAh62sP1jnBwCuztIkQJiz
+         eQVi6ctHqTNZQJNR6wadqlPpyjde6Vhgrq0wHy3VhVAsCgJvcPI5sfTjDYd3HBXcqkyI
+         NadTgW/cNzOotjgVWostWEzyWmK/ysTZW0/woF1zoXvvhDLTw2ewSRZpjlRtc6yvgAO2
+         pYOA==
+X-Gm-Message-State: AO0yUKVsYu1DJ3aO19270GET3B0Y6kkXDY1VW6oCgvn2oRgKQkSxj8Ya
+        9qHhDwnkAxahVkQbtFLNjgWKgr/dA8pmK2CgkH1eizxmU7a5
+X-Google-Smtp-Source: AK7set8tb2VWTHjWtZjW2lm8L7mdmsXsFIPQ3gizAf4gyMxNmT/l8Z72k6QNZsAclUlRTeGcVhlrkAY74b+j3ukma6SM1GqgHK0I
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6638:229a:b0:3c4:e84b:2a40 with SMTP id
+ y26-20020a056638229a00b003c4e84b2a40mr637363jas.6.1676655349622; Fri, 17 Feb
+ 2023 09:35:49 -0800 (PST)
+Date:   Fri, 17 Feb 2023 09:35:49 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000866d0e05f4e8be87@google.com>
+Subject: [syzbot] [bridge?] [coreteam?] KASAN: vmalloc-out-of-bounds Read in __ebt_unregister_table
+From:   syzbot <syzbot+f61594de72d6705aea03@syzkaller.appspotmail.com>
+To:     bridge@lists.linux-foundation.org, coreteam@netfilter.org,
+        davem@davemloft.net, edumazet@google.com, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pabeni@redhat.com,
+        pablo@netfilter.org, razor@blackwall.org, roopa@nvidia.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Translation is pretty simple due to nft's 'insert rule ... index'
-support. Testing the translation is sadly not: index 1 vanishes (as it
-should), higher indexes are rejected in replay mode since no rules
-previously exist.
+Hello,
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+syzbot found the following issue on:
+
+HEAD commit:    3ac88fa4605e Merge tag 'net-6.2-final' of git://git.kernel..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12986e58c80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe56f7d193926860
+dashboard link: https://syzkaller.appspot.com/bug?extid=f61594de72d6705aea03
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14123acf480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143058d7480000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/37b6278f1cdc/disk-3ac88fa4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/0a0d5eb58ca1/vmlinux-3ac88fa4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6c92dbf4b7ab/bzImage-3ac88fa4.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f61594de72d6705aea03@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in __ebt_unregister_table+0xc00/0xcd0 net/bridge/netfilter/ebtables.c:1168
+Read of size 4 at addr ffffc90005425000 by task kworker/u4:4/74
+
+CPU: 0 PID: 74 Comm: kworker/u4:4 Not tainted 6.2.0-rc8-syzkaller-00083-g3ac88fa4605e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/21/2023
+Workqueue: netns cleanup_net
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd1/0x138 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:306 [inline]
+ print_report+0x15e/0x45d mm/kasan/report.c:417
+ kasan_report+0xbf/0x1f0 mm/kasan/report.c:517
+ __ebt_unregister_table+0xc00/0xcd0 net/bridge/netfilter/ebtables.c:1168
+ ebt_unregister_table+0x35/0x40 net/bridge/netfilter/ebtables.c:1372
+ ops_exit_list+0xb0/0x170 net/core/net_namespace.c:169
+ cleanup_net+0x4ee/0xb10 net/core/net_namespace.c:613
+ process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
+ worker_thread+0x669/0x1090 kernel/workqueue.c:2436
+ kthread+0x2e8/0x3a0 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+
+Memory state around the buggy address:
+ ffffc90005424f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90005424f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>ffffc90005425000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+                   ^
+ ffffc90005425080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90005425100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+==================================================================
+
+
 ---
- extensions/libebt_ip.txlate  | 2 +-
- iptables/xtables-translate.c | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/extensions/libebt_ip.txlate b/extensions/libebt_ip.txlate
-index 28996832225cb..44ce927614b57 100644
---- a/extensions/libebt_ip.txlate
-+++ b/extensions/libebt_ip.txlate
-@@ -4,7 +4,7 @@ nft 'add rule bridge filter FORWARD ip saddr != 192.168.0.0/24 counter accept'
- ebtables-translate -I FORWARD -p ip --ip-dst 10.0.0.1
- nft 'insert rule bridge filter FORWARD ip daddr 10.0.0.1 counter'
- 
--ebtables-translate -I OUTPUT 3 -p ip -o eth0 --ip-tos 0xff
-+ebtables-translate -I OUTPUT -p ip -o eth0 --ip-tos 0xff
- nft 'insert rule bridge filter OUTPUT oifname "eth0" ether type ip @nh,8,8 0xff counter'
- 
- ebtables-translate -A FORWARD -p ip --ip-proto tcp --ip-dport 22
-diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
-index 22b2fbc869eed..88e0a6b639494 100644
---- a/iptables/xtables-translate.c
-+++ b/iptables/xtables-translate.c
-@@ -173,6 +173,8 @@ static int nft_rule_xlate_add(struct nft_handle *h,
- 	       tick,
- 	       append ? "add" : "insert",
- 	       family2str[h->family], p->table, p->chain);
-+	if (!append && p->rulenum > 1)
-+		printf("index %d ", p->rulenum);
- 
- 	printf("%s%s\n", xt_xlate_rule_get(xl), tick);
- 
--- 
-2.38.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
