@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0269669B078
-	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Feb 2023 17:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB8169B077
+	for <lists+netfilter-devel@lfdr.de>; Fri, 17 Feb 2023 17:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbjBQQSB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S230464AbjBQQSB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Fri, 17 Feb 2023 11:18:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbjBQQRy (ORCPT
+        with ESMTP id S230499AbjBQQRx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 17 Feb 2023 11:17:54 -0500
+        Fri, 17 Feb 2023 11:17:53 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCD75FC46
-        for <netfilter-devel@vger.kernel.org>; Fri, 17 Feb 2023 08:17:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA9EB465
+        for <netfilter-devel@vger.kernel.org>; Fri, 17 Feb 2023 08:17:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=PaSanOGEJ6xUbfu0sxfHr2DGCwT8uBvAtLSvC3Ml2nU=; b=HIKz/iqUqUC6g1mWqeC+LGQyJr
-        pL2Xy7PH2PBb1CLFg0rN72bt4ysyUkR1g1kfkcOHmk8c7p7o/GYO1C3wSXshxf4spU7VJzsAqWko7
-        IyMkMil5l39F1BIiigi6MVfHeVUoizA3GVQiKzs25wFQWHBMYM7DHculqnkNiHefSUPZPNfbCg7MX
-        FPlj75x9KbKUZtTO8FNg+05HMAn32McYNiSJqQcJ6nzk/g+nhZkUFuUrxuYvk2B+IlyihCk/9dDMA
-        mW7NWN9WpoQe1dzy8+Hf/Ml3C5hgkjZvFA/6AapCobXV3+ft4z8JUKqHkOGr2t7zyWqblF+4adkyN
-        yCUvn/2A==;
+        bh=RTfLwdbK7rB2a6R9Xkzk/wFqGaL1QjoYMKWZyM3bruo=; b=gom2PrQHDFjnsSaLA0CFvsAPCR
+        XKwy+ZHr+c26HYfC2ZniVCIHsmdH7hwPoZSD6nBHWeAij60e3x2RLRToQc+ho80sVSrQwzOpj6zxl
+        mVWiFjWu2Bp83lWhbKUpKWb+/1qNMlGG8LbddF5SVc8yrdTSOLyb1kjeeZx8Bz8l0fB0zFZmMbbXy
+        lLk4iyE9uC3YI2KgjoDl3sx8ykpETWbwGZtNMbyV4AfwXZwmfLjmgN5QAIpOoa1bZicqu23CACJc/
+        N63cr1J1HM9e4FAh75h3jPSQsEaLfLYvhBvfcoaoAfdRImba4r8j1RlHK3ViiuOTn2k+SiWOTkeAt
+        mkVyzDoA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1pT3QK-0003Vj-25
-        for netfilter-devel@vger.kernel.org; Fri, 17 Feb 2023 17:17:24 +0100
+        id 1pT3QP-0003Vw-Bu
+        for netfilter-devel@vger.kernel.org; Fri, 17 Feb 2023 17:17:29 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 5/6] ebtables: ip and ip6 matches depend on protocol match
-Date:   Fri, 17 Feb 2023 17:17:14 +0100
-Message-Id: <20230217161715.26120-5-phil@nwl.cc>
+Subject: [iptables PATCH 6/6] xtables-translate: Support insert with index
+Date:   Fri, 17 Feb 2023 17:17:15 +0100
+Message-Id: <20230217161715.26120-6-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20230217161715.26120-1-phil@nwl.cc>
 References: <20230217161715.26120-1-phil@nwl.cc>
@@ -51,38 +51,42 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This is consistent with legacy ebtables, also avoids invalid
-combinations like '-p IPv6 --ip-source 1.2.3.4'.
+Translation is pretty simple due to nft's 'insert rule ... index'
+support. Testing the translation is sadly not: index 1 vanishes (as it
+should), higher indexes are rejected in replay mode since no rules
+previously exist.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft-bridge.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ extensions/libebt_ip.txlate  | 2 +-
+ iptables/xtables-translate.c | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
-index 83cbe31559d4b..b9983b203f6d0 100644
---- a/iptables/nft-bridge.c
-+++ b/iptables/nft-bridge.c
-@@ -104,11 +104,18 @@ static int
- nft_bridge_add_match(struct nft_handle *h, const struct ebt_entry *fw,
- 		     struct nftnl_rule *r, struct xt_entry_match *m)
- {
--	if (!strcmp(m->u.user.name, "802_3") &&
--	    !(fw->bitmask & EBT_802_3))
-+	if (!strcmp(m->u.user.name, "802_3") && !(fw->bitmask & EBT_802_3))
- 		xtables_error(PARAMETER_PROBLEM,
- 			      "For 802.3 DSAP/SSAP filtering the protocol must be LENGTH");
+diff --git a/extensions/libebt_ip.txlate b/extensions/libebt_ip.txlate
+index 28996832225cb..44ce927614b57 100644
+--- a/extensions/libebt_ip.txlate
++++ b/extensions/libebt_ip.txlate
+@@ -4,7 +4,7 @@ nft 'add rule bridge filter FORWARD ip saddr != 192.168.0.0/24 counter accept'
+ ebtables-translate -I FORWARD -p ip --ip-dst 10.0.0.1
+ nft 'insert rule bridge filter FORWARD ip daddr 10.0.0.1 counter'
  
-+	if (!strcmp(m->u.user.name, "ip") && fw->ethproto != htons(ETH_P_IP))
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "For IP filtering the protocol must be specified as IPv4.");
-+
-+	if (!strcmp(m->u.user.name, "ip6") && fw->ethproto != htons(ETH_P_IPV6))
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "For IPv6 filtering the protocol must be specified as IPv6.");
-+
- 	return add_match(h, r, m);
- }
+-ebtables-translate -I OUTPUT 3 -p ip -o eth0 --ip-tos 0xff
++ebtables-translate -I OUTPUT -p ip -o eth0 --ip-tos 0xff
+ nft 'insert rule bridge filter OUTPUT oifname "eth0" ether type ip @nh,8,8 0xff counter'
+ 
+ ebtables-translate -A FORWARD -p ip --ip-proto tcp --ip-dport 22
+diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
+index 22b2fbc869eed..88e0a6b639494 100644
+--- a/iptables/xtables-translate.c
++++ b/iptables/xtables-translate.c
+@@ -173,6 +173,8 @@ static int nft_rule_xlate_add(struct nft_handle *h,
+ 	       tick,
+ 	       append ? "add" : "insert",
+ 	       family2str[h->family], p->table, p->chain);
++	if (!append && p->rulenum > 1)
++		printf("index %d ", p->rulenum);
+ 
+ 	printf("%s%s\n", xt_xlate_rule_get(xl), tick);
  
 -- 
 2.38.0
