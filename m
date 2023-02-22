@@ -2,78 +2,131 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 015DD69F977
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Feb 2023 18:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F33F669FE31
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Feb 2023 23:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbjBVRC6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Feb 2023 12:02:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
+        id S232415AbjBVWME (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Feb 2023 17:12:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbjBVRCx (ORCPT
+        with ESMTP id S232238AbjBVWMB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 Feb 2023 12:02:53 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3974217
-        for <netfilter-devel@vger.kernel.org>; Wed, 22 Feb 2023 09:02:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=u0Fq0CuabpnS1Ml60dMeqbKfr0SdoEPKyFS9xdsYkSA=; b=CoKt//dXGC62XQpMYhMxpXEE5I
-        o8dHajv8rsVtlrvmjPYsXdduzrsOV+XP80y/QwkG7t51ql/XhazGDextDnn2PIihUgv/VFF9B1UCb
-        F5oqGOVtiWwpJjAP5pZh1dQ5ywVPdiz5k2pbJQSgu4RatEYZShZvBAkDmInAdHcNWZUB16JdONKPX
-        XfgZUlDte0tON7OVMHFltCBYPKfaTmofOXj5J2b0SpH28LmsAxjQhoVedSA0uQAIaOOP31z6o7oyN
-        9rmtyXV94bI+zHnXT934CDwlLCYYFzqAt7cDhjWQkC4Fhi5GSsXH6TIKveq0/Ng9ccZDH654OeQji
-        Z6BmwUZA==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1pUsW1-0005Yk-Qp; Wed, 22 Feb 2023 18:02:49 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: [ipset PATCH 2/2] xlate: Drop dead code
-Date:   Wed, 22 Feb 2023 18:02:41 +0100
-Message-Id: <20230222170241.26208-3-phil@nwl.cc>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20230222170241.26208-1-phil@nwl.cc>
-References: <20230222170241.26208-1-phil@nwl.cc>
+        Wed, 22 Feb 2023 17:12:01 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5F19E42BD1
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Feb 2023 14:11:45 -0800 (PST)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nft] evaluate: expand value to range in nat mapping with intervals
+Date:   Wed, 22 Feb 2023 23:11:38 +0100
+Message-Id: <20230222221139.2670-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Set type is not needed when manipulating elements, the assigned
-variable was unused in that case.
+If the data in the mapping contains a range, then upgrade value to range.
 
-Fixes: 325af556cd3a6 ("add ipset to nftables translation infrastructure")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
+/dev/stdin:11:57-75: Error: Could not process rule: Invalid argument
+dnat ip to iifname . ip saddr map { enp2s0 . 10.1.1.136 : 1.1.2.69, enp2s0 . 10.1.1.1-10.1.1.135 : 1.1.2.66-1.84.236.78 }
+                                    ^^^^^^^^^^^^^^^^^^^
+
+Fixes: 9599d9d25a6b ("src: NAT support for intervals in maps")
+Fixes: 66746e7dedeb ("src: support for nat with interval concatenation")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- lib/ipset.c | 3 ---
- 1 file changed, 3 deletions(-)
+ src/evaluate.c                                | 26 +++++++++++++++++--
+ tests/shell/testcases/sets/0047nat_0          |  5 ++++
+ .../shell/testcases/sets/dumps/0047nat_0.nft  |  5 ++++
+ 3 files changed, 34 insertions(+), 2 deletions(-)
 
-diff --git a/lib/ipset.c b/lib/ipset.c
-index 2e098e435d954..8e63af56d2a51 100644
---- a/lib/ipset.c
-+++ b/lib/ipset.c
-@@ -1876,9 +1876,6 @@ static int ipset_xlate(struct ipset *ipset, enum ipset_cmd cmd,
- 				cmd == IPSET_CMD_DEL ? "delete" : "get",
- 		       ipset_xlate_family(family), table, set);
+diff --git a/src/evaluate.c b/src/evaluate.c
+index d24f8b66b0de..f37f3c2bb70f 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -1805,10 +1805,28 @@ static void map_set_concat_info(struct expr *map)
+ 	}
+ }
  
--		typename = ipset_data_get(data, IPSET_OPT_TYPENAME);
--		type = ipset_xlate_set_type(typename);
--
- 		xlate_set = (struct ipset_xlate_set *)
- 				ipset_xlate_set_get(ipset, set);
- 		if (xlate_set && xlate_set->interval)
++static void mapping_expr_expand(struct expr *init)
++{
++	struct expr *i, *range;
++
++	list_for_each_entry(i, &init->expressions, list) {
++		assert(i->etype == EXPR_MAPPING);
++		switch (i->right->etype) {
++		case EXPR_VALUE:
++			range = range_expr_alloc(&i->location, expr_get(i->right), expr_get(i->right));
++			expr_free(i->right);
++			i->right = range;
++			break;
++		default:
++			break;
++		}
++	}
++}
++
+ static int expr_evaluate_map(struct eval_ctx *ctx, struct expr **expr)
+ {
+-	struct expr_ctx ectx = ctx->ectx;
+ 	struct expr *map = *expr, *mappings;
++	struct expr_ctx ectx = ctx->ectx;
+ 	const struct datatype *dtype;
+ 	struct expr *key, *data;
+ 
+@@ -1879,9 +1897,13 @@ static int expr_evaluate_map(struct eval_ctx *ctx, struct expr **expr)
+ 		if (binop_transfer(ctx, expr) < 0)
+ 			return -1;
+ 
+-		if (ctx->set->data->flags & EXPR_F_INTERVAL)
++		if (ctx->set->data->flags & EXPR_F_INTERVAL) {
+ 			ctx->set->data->len *= 2;
+ 
++			if (set_is_anonymous(ctx->set->flags))
++				mapping_expr_expand(ctx->set->init);
++		}
++
+ 		ctx->set->key->len = ctx->ectx.len;
+ 		ctx->set = NULL;
+ 		map = *expr;
+diff --git a/tests/shell/testcases/sets/0047nat_0 b/tests/shell/testcases/sets/0047nat_0
+index d19f5b69fd33..1ef165f14c96 100755
+--- a/tests/shell/testcases/sets/0047nat_0
++++ b/tests/shell/testcases/sets/0047nat_0
+@@ -8,6 +8,11 @@ EXPECTED="table ip x {
+ 				 10.141.11.0/24 : 192.168.4.2-192.168.4.3 }
+             }
+ 
++            chain x {
++                    type nat hook prerouting priority dstnat; policy accept;
++                    dnat ip to iifname . ip saddr map { enp2s0 . 10.1.1.136 : 1.1.2.69, enp2s0 . 10.1.1.1-10.1.1.135 : 1.1.2.66-1.84.236.78 }
++            }
++
+             chain y {
+                     type nat hook postrouting priority srcnat; policy accept;
+                     snat to ip saddr map @y
+diff --git a/tests/shell/testcases/sets/dumps/0047nat_0.nft b/tests/shell/testcases/sets/dumps/0047nat_0.nft
+index 97c04a1637a2..d844470ebe35 100644
+--- a/tests/shell/testcases/sets/dumps/0047nat_0.nft
++++ b/tests/shell/testcases/sets/dumps/0047nat_0.nft
+@@ -6,6 +6,11 @@ table ip x {
+ 			     10.141.12.0/24 : 192.168.5.10-192.168.5.20 }
+ 	}
+ 
++	chain x {
++		type nat hook prerouting priority dstnat; policy accept;
++		dnat ip to iifname . ip saddr map { "enp2s0" . 10.1.1.136 : 1.1.2.69/32, "enp2s0" . 10.1.1.1-10.1.1.135 : 1.1.2.66-1.84.236.78 }
++	}
++
+ 	chain y {
+ 		type nat hook postrouting priority srcnat; policy accept;
+ 		snat ip to ip saddr map @y
 -- 
-2.38.0
+2.30.2
 
