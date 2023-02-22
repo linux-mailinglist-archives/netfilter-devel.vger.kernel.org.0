@@ -2,60 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A0169F922
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Feb 2023 17:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 408CF69F979
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Feb 2023 18:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbjBVQi7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 22 Feb 2023 11:38:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
+        id S232410AbjBVRDF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Feb 2023 12:03:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbjBVQi6 (ORCPT
+        with ESMTP id S229504AbjBVRDE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 22 Feb 2023 11:38:58 -0500
+        Wed, 22 Feb 2023 12:03:04 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9721167D
-        for <netfilter-devel@vger.kernel.org>; Wed, 22 Feb 2023 08:38:46 -0800 (PST)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1pUs8h-00059C-EN; Wed, 22 Feb 2023 17:38:43 +0100
-Date:   Wed, 22 Feb 2023 17:38:43 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C0D1CAD1
+        for <netfilter-devel@vger.kernel.org>; Wed, 22 Feb 2023 09:03:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=tZ7jTTKUW+vXdao317YzCVOS082ZYJVNgKZ9qNCN7YM=; b=dJ+5yYrtmdBCftldU+9mH5Ggle
+        3Vr1mz0NuB9CODzWL+9bS+Ou1JwqaUFjMzCcAFYZzhJhpJifQD8lpNVwHSgc+qAvBVxwwgN4vdK4O
+        lJj7Xv1dD4Y1kL8zkwzj1DdtCNQ7RYLmxLcMHvN9ZWoNCDhcjwbuYVlwWn7DXaILHnzw+ICWrw45Z
+        eCw8MratFQsJ3CqyDP1dOMbC3ISHR5kXbGLrsDmWmFKR1qkhMr5e6pgYUPcviNQh7jVn+e2zZunzP
+        Mn2bnedt9oOPbaxNHEi2VFYMqfLKca9loh3kz2VJHwTrEk/JXosJ20SwBiT9PZS4dajVd0j+LpgQa
+        7fi7AbJA==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1pUsWC-0005Yx-FR; Wed, 22 Feb 2023 18:03:00 +0100
 From:   Phil Sutter <phil@nwl.cc>
-To:     Thomas Devoogdt <thomas@devoogdt.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH] [iptables] extensions: libxt_LOG.c: fix
- linux/netfilter/xt_LOG.h include on Linux < 3.4
-Message-ID: <Y/ZFE5ybIYKTJrIA@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Thomas Devoogdt <thomas@devoogdt.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-References: <20230222072349.509917-1-thomas.devoogdt@barco.com>
- <Y/XouZlrtw/SN/C2@salvia>
- <Y/YFcwp/gyZY5Pmw@orbyte.nwl.cc>
- <Y/YZC1Feu9gOCdWF@salvia>
- <Y/Y1efOjGyBo0MAj@orbyte.nwl.cc>
- <Y/Y62lQorHG1PK2g@orbyte.nwl.cc>
- <CACXRmJgs2XkwO5ODjNwe9MExaVbNxCr7JqfuN-wSAC4iDFy0-Q@mail.gmail.com>
+To:     Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [ipset PATCH 0/2] Two minor code fixes
+Date:   Wed, 22 Feb 2023 18:02:39 +0100
+Message-Id: <20230222170241.26208-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACXRmJgs2XkwO5ODjNwe9MExaVbNxCr7JqfuN-wSAC4iDFy0-Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Feb 22, 2023 at 05:21:58PM +0100, Thomas Devoogdt wrote:
-> I saw your new commit:
-> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230222155601.31645-1-phil@nwl.cc/,
-> 
-> Thx in advance.
-> No further action from my side is required I guess.
+These were identified by Coverity tool, no problems in practice. Still
+worth fixing to reduce noise in code checkers.
 
-Thanks for confirming. I'll push the patch.
+Phil Sutter (2):
+  xlate: Fix for fd leak in error path
+  xlate: Drop dead code
 
-Cheers, Phil
+ lib/ipset.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+-- 
+2.38.0
+
