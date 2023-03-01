@@ -2,60 +2,38 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA7D6A73FC
-	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Mar 2023 20:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 152826A741F
+	for <lists+netfilter-devel@lfdr.de>; Wed,  1 Mar 2023 20:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjCATFo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 1 Mar 2023 14:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44230 "EHLO
+        id S229523AbjCATQY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 1 Mar 2023 14:16:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjCATFn (ORCPT
+        with ESMTP id S229451AbjCATQX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 1 Mar 2023 14:05:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5806B43913
-        for <netfilter-devel@vger.kernel.org>; Wed,  1 Mar 2023 11:04:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1677697495;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lN9AxhiUyuhLIudz4BxR16dkYrIus6PcPshd5X+tifg=;
-        b=cvPT9sC+QOxdtOOXhPwhtEVP8brVt2ykYMZKMhVyBMC4xbAeTKqDSViKnlPQAxJtPPL9tT
-        2nPItcNjNSyC2ZPspbrXjANp0Kwpdh5nbjRtd0fdQ4X5hKTggPNhzOYanPjmEyOA4JQ9/P
-        0D24qFVsxlidZr756RnEXZ2yKDN4dV4=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-519-bUyAZ1J-PTCa7yK0lo7aww-1; Wed, 01 Mar 2023 14:04:52 -0500
-X-MC-Unique: bUyAZ1J-PTCa7yK0lo7aww-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AF8AA1C0A58D;
-        Wed,  1 Mar 2023 19:04:51 +0000 (UTC)
-Received: from localhost (unknown [10.22.11.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8A0D040C6EC4;
-        Wed,  1 Mar 2023 19:04:51 +0000 (UTC)
-Date:   Wed, 1 Mar 2023 14:04:51 -0500
-From:   Eric Garver <eric@garver.life>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     netfilter-devel@vger.kernel.org
+        Wed, 1 Mar 2023 14:16:23 -0500
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5EC4DBC8
+        for <netfilter-devel@vger.kernel.org>; Wed,  1 Mar 2023 11:16:22 -0800 (PST)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1pXRw3-0001kn-PM; Wed, 01 Mar 2023 20:16:19 +0100
+Date:   Wed, 1 Mar 2023 20:16:19 +0100
+From:   Phil Sutter <phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Eric Garver <eric@garver.life>
 Subject: Re: [iptables PATCH] nft-restore: Fix for deletion of new,
  referenced rule
-Message-ID: <Y/+h01zul5wWUIs2@egarver.remote.csb>
-Mail-Followup-To: Eric Garver <eric@garver.life>, Phil Sutter <phil@nwl.cc>,
-        netfilter-devel@vger.kernel.org
+Message-ID: <Y/+kgw1Crwh+3TqB@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        netfilter-devel@vger.kernel.org, Eric Garver <eric@garver.life>
 References: <20230228171549.28483-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20230228171549.28483-1-phil@nwl.cc>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,7 +56,4 @@ On Tue, Feb 28, 2023 at 06:15:49PM +0100, Phil Sutter wrote:
 > Fixes: 760b35b46e4cc ("nft: Fix for add and delete of same rule in single batch")
 > Signed-off-by: Phil Sutter <phil@nwl.cc>
 
-Tested-by: Eric Garver <eric@garver.life>
-
-Thanks Phil!
-
+Patch applied.
