@@ -2,71 +2,74 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D026A9432
-	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Mar 2023 10:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DB16A944E
+	for <lists+netfilter-devel@lfdr.de>; Fri,  3 Mar 2023 10:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbjCCJdO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 3 Mar 2023 04:33:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
+        id S229511AbjCCJlk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 3 Mar 2023 04:41:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbjCCJdN (ORCPT
+        with ESMTP id S229510AbjCCJlk (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 3 Mar 2023 04:33:13 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E413410C7
-        for <netfilter-devel@vger.kernel.org>; Fri,  3 Mar 2023 01:33:12 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1pY1mo-0008SF-Sl; Fri, 03 Mar 2023 10:33:10 +0100
-Date:   Fri, 3 Mar 2023 10:33:10 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Major =?iso-8859-15?Q?D=E1vid?= <major.david@balasys.hu>
-Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
+        Fri, 3 Mar 2023 04:41:40 -0500
+Received: from mail.balasys.hu (mail.balasys.hu [185.199.30.237])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25D61B2E1
+        for <netfilter-devel@vger.kernel.org>; Fri,  3 Mar 2023 01:41:38 -0800 (PST)
+Received: from [10.90.100.85] (unknown [10.90.100.85])
+        by mail.balasys.hu (Postfix) with ESMTPSA id 40AEE2B4A31;
+        Fri,  3 Mar 2023 10:41:37 +0100 (CET)
+Message-ID: <31f0312c-7410-dbcd-4c35-5adbc036714c@balasys.hu>
+Date:   Fri, 3 Mar 2023 10:41:37 +0100
+MIME-Version: 1.0
 Subject: Re: CPU soft lockup in a spin lock using tproxy and nfqueue
-Message-ID: <20230303093310.GC20617@breakpoint.cc>
+Content-Language: hu-HU
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>
 References: <401bd6ed-314a-a196-1cdc-e13c720cc8f2@balasys.hu>
  <20230302142946.GB309@breakpoint.cc>
  <f8d03b81-8980-b54e-a2a3-57f8e54044be@balasys.hu>
  <20230303000926.GC9239@breakpoint.cc>
  <374ce7bf-e953-ab61-15ac-d99efce9152d@balasys.hu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <374ce7bf-e953-ab61-15ac-d99efce9152d@balasys.hu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+ <20230303093310.GC20617@breakpoint.cc>
+From:   =?UTF-8?Q?Major_D=c3=a1vid?= <major.david@balasys.hu>
+In-Reply-To: <20230303093310.GC20617@breakpoint.cc>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Major Dávid <major.david@balasys.hu> wrote:
-> On 3/3/23 01:09, Florian Westphal wrote:
-> > 
-> > Which one?  As far as I can see TCP stack would end up adding a
-> > duplicate quadruple to the hash if we only drop the reference and
-> > keep the listen sk around.
+On 3/3/23 10:33, Florian Westphal wrote:
+>>
+>> I just thought that tcp_timewait_state_process is called by TCP stack to
+>> handle TW state, which actually call inet_twsk_deschedule_put parallel to tproxy and
+>> that would be the root cause of the deadlock.
 > 
-> I just thought that tcp_timewait_state_process is called by TCP stack to
-> handle TW state, which actually call inet_twsk_deschedule_put parallel to tproxy and
-> that would be the root cause of the deadlock.
+> No, it won't be called.
+> 
+> We can do two things:
+> 1. Assign the tw sk to skb->sk, then its handled by
+>     tcp_timewait_state_process() in tcp stack.
+> 
+> Problem is that after the tw sk was handled, tcp stack won't find
+> a listener socket if the tproxy service is running on a different port.
+> 
+> 2. Assign the listener socket to skb->sk (this is whats done now).
+> 
+>> So I guess now, basically we would leak away the tw socket if we do not call put in tproxy?
+> 
+> We could just drop the reference, but then, as far as i can see, we end
+> up with two identical connection entries in the ehash table.
 
-No, it won't be called.
+Okay, I agree with this, and thanks again the quick fix here.
 
-We can do two things:
-1. Assign the tw sk to skb->sk, then its handled by
-   tcp_timewait_state_process() in tcp stack.
+When we could expect this in the mainline or 5.15 LTS?
 
-Problem is that after the tw sk was handled, tcp stack won't find
-a listener socket if the tproxy service is running on a different port.
+Should I do someting further with the bugzilla ticket 1662?
 
-2. Assign the listener socket to skb->sk (this is whats done now).
 
-> So I guess now, basically we would leak away the tw socket if we do not call put in tproxy?
-
-We could just drop the reference, but then, as far as i can see, we end
-up with two identical connection entries in the ehash table.
