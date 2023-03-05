@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D786AAF20
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6E76AAF21
 	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Mar 2023 11:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbjCEKkY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S229519AbjCEKkY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Sun, 5 Mar 2023 05:40:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46002 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjCEKkW (ORCPT
+        with ESMTP id S229495AbjCEKkW (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 5 Mar 2023 05:40:22 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29386126D4
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDAD126E6
         for <netfilter-devel@vger.kernel.org>; Sun,  5 Mar 2023 02:40:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,23 +21,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=kj8VrxY9eF2eQf73OWssH22OiZ3PUPfz6YRoOzAOA0g=; b=czyxVLfc1aOIWFQXnnPZK23uvF
-        iRLWaCvSpYqPRhFgFjZCWpEwJ+CWkS6rhC/yFfugCxCWNOApwS7Bhryg6nqR1iynY99Hs+KXErxvT
-        0hentbXLyVBOIBMzL8Keupjdx65xQqZ70TSdLqOzmEpZD+USSd0ZSuE4FTddYB4Y0O0jemN+BlQd8
-        hV5eD+7dr4oWp0TbOyouW8gpkR2yqYA3aqhVIDhp5mdSZYv0aMKJsXO7yVeodBBNI/3wPGKXT3D7V
-        FN1h1v5DQTo1KzbOO3Wkp35Eg4zWRC0kuRlvf24RcuM2MBRG0O9LV4e0loQ0lcN1a6+1SW3ZpEPi6
-        SP3R79aw==;
+        bh=vYU1r4Mv7UZianIqQMxC2KKgLLjruAPfmJLzl71N9s4=; b=H2MrlhKQT+c17NdHvEuHgIRyjr
+        AV+3QnkhpjzJS00TRCEqHCVX02VmzhikI//Ms9iwKeNQ2KdLm/2F3D4yHV3AirdlI3S1Hiy1MOO8f
+        af/a/jSB9zOoRxTtSnBDGkB97yrx3CMAau0JcejaQlZmiZHsDmnTynjXKwTDZ2KQuY+R1QcE9G7Je
+        3glmokd9D89Nm1VOPG2Iahk72O4uDjAoTXFCmL7s5ZrqRUg9+aT8GPKAvkEEgTe4nCSWVecUYSOVQ
+        cN8YpUnlW7jiw5oIctWenjP1H0HNprkkbV5ClFGU4oWtby7ycWafAOrhXG0yb3AvEtOztdjsUS3Cr
+        oSQoH1Tw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1pYlmt-00DzM9-07
+        id 1pYlmt-00DzM9-FL
         for netfilter-devel@vger.kernel.org; Sun, 05 Mar 2023 10:40:19 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH libnftnl 1/3] nat: add support for shifted port-ranges
-Date:   Sun,  5 Mar 2023 10:24:38 +0000
-Message-Id: <20230305102440.2234017-2-jeremy@azazel.net>
+Subject: [PATCH libnftnl 2/3] masq: add support for shifted port-ranges
+Date:   Sun,  5 Mar 2023 10:24:39 +0000
+Message-Id: <20230305102440.2234017-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230305102440.2234017-1-jeremy@azazel.net>
 References: <20230305102440.2234017-1-jeremy@azazel.net>
@@ -55,162 +55,159 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Support for shifted port-ranges in DNAT was added to iptables in 2018.
-This allows one to redirect packets intended for one port to another in
-a range in such a way that the new port chosen has the same offset in
-the range as the original port had from a specified base value.
-
-For example, by using the base value 2000, one could redirect packets
-intended for 10.0.0.1:2000-3000 to 10.10.0.1:12000-13000 so that the old
-and new ports were at the same offset in their respective ranges, i.e.:
-
-  10.0.0.1:2345 -> 10.10.0.1:12345
-
-However, while support for this was added to the common NAT infra-
-structure in the kernel, only the xt_nat module was updated to make use
-of it.  This support has now also been added to the nft_nat module, so
-make it available in user space.
-
-In contrast to iptables, where shifting is only available for DNAT, both
-DNAT and SNAT are supported.
+Support for using shift port-ranges when masquerading has now been added
+to the nft_masq kernel module, so make it available in user space.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
  include/libnftnl/expr.h             |  1 +
  include/linux/netfilter/nf_tables.h |  2 ++
- src/expr/nat.c                      | 22 ++++++++++++++++++++++
- tests/nft-expr_nat-test.c           |  4 ++++
- 4 files changed, 29 insertions(+)
+ src/expr/masq.c                     | 25 +++++++++++++++++++++++--
+ tests/nft-expr_masq-test.c          |  4 ++++
+ 4 files changed, 30 insertions(+), 2 deletions(-)
 
 diff --git a/include/libnftnl/expr.h b/include/libnftnl/expr.h
-index 9873228dd794..e118a57d4769 100644
+index e118a57d4769..18d17d6368a8 100644
 --- a/include/libnftnl/expr.h
 +++ b/include/libnftnl/expr.h
-@@ -150,6 +150,7 @@ enum {
- 	NFTNL_EXPR_NAT_REG_PROTO_MIN,
- 	NFTNL_EXPR_NAT_REG_PROTO_MAX,
- 	NFTNL_EXPR_NAT_FLAGS,
-+	NFTNL_EXPR_NAT_REG_PROTO_BASE,
+@@ -243,6 +243,7 @@ enum {
+ 	NFTNL_EXPR_MASQ_FLAGS		= NFTNL_EXPR_BASE,
+ 	NFTNL_EXPR_MASQ_REG_PROTO_MIN,
+ 	NFTNL_EXPR_MASQ_REG_PROTO_MAX,
++	NFTNL_EXPR_MASQ_REG_PROTO_BASE,
  };
  
  enum {
 diff --git a/include/linux/netfilter/nf_tables.h b/include/linux/netfilter/nf_tables.h
-index 4608646f2103..5c7a47ac8746 100644
+index 5c7a47ac8746..3b86bddac67c 100644
 --- a/include/linux/netfilter/nf_tables.h
 +++ b/include/linux/netfilter/nf_tables.h
-@@ -1415,6 +1415,7 @@ enum nft_nat_types {
-  * @NFTA_NAT_REG_PROTO_MIN: source register of proto range start (NLA_U32: nft_registers)
-  * @NFTA_NAT_REG_PROTO_MAX: source register of proto range end (NLA_U32: nft_registers)
-  * @NFTA_NAT_FLAGS: NAT flags (see NF_NAT_RANGE_* in linux/netfilter/nf_nat.h) (NLA_U32)
-+ * @NFTA_NAT_REG_PROTO_BASE: source register of proto range base offset (NLA_U32: nft_registers)
+@@ -1453,12 +1453,14 @@ enum nft_tproxy_attributes {
+  * @NFTA_MASQ_FLAGS: NAT flags (see NF_NAT_RANGE_* in linux/netfilter/nf_nat.h) (NLA_U32)
+  * @NFTA_MASQ_REG_PROTO_MIN: source register of proto range start (NLA_U32: nft_registers)
+  * @NFTA_MASQ_REG_PROTO_MAX: source register of proto range end (NLA_U32: nft_registers)
++ * @NFTA_MASQ_REG_PROTO_BASE: source register of proto range base offset (NLA_U32: nft_registers)
   */
- enum nft_nat_attributes {
- 	NFTA_NAT_UNSPEC,
-@@ -1425,6 +1426,7 @@ enum nft_nat_attributes {
- 	NFTA_NAT_REG_PROTO_MIN,
- 	NFTA_NAT_REG_PROTO_MAX,
- 	NFTA_NAT_FLAGS,
-+	NFTA_NAT_REG_PROTO_BASE,
- 	__NFTA_NAT_MAX
+ enum nft_masq_attributes {
+ 	NFTA_MASQ_UNSPEC,
+ 	NFTA_MASQ_FLAGS,
+ 	NFTA_MASQ_REG_PROTO_MIN,
+ 	NFTA_MASQ_REG_PROTO_MAX,
++	NFTA_MASQ_REG_PROTO_BASE,
+ 	__NFTA_MASQ_MAX
  };
- #define NFTA_NAT_MAX		(__NFTA_NAT_MAX - 1)
-diff --git a/src/expr/nat.c b/src/expr/nat.c
-index ca727be0cda6..6d304870d419 100644
---- a/src/expr/nat.c
-+++ b/src/expr/nat.c
-@@ -29,6 +29,7 @@ struct nftnl_expr_nat {
- 	enum nft_registers sreg_addr_max;
- 	enum nft_registers sreg_proto_min;
- 	enum nft_registers sreg_proto_max;
-+	enum nft_registers sreg_proto_base;
- 	int                family;
- 	enum nft_nat_types type;
- 	uint32_t	   flags;
-@@ -59,6 +60,9 @@ nftnl_expr_nat_set(struct nftnl_expr *e, uint16_t type,
- 	case NFTNL_EXPR_NAT_REG_PROTO_MAX:
- 		memcpy(&nat->sreg_proto_max, data, sizeof(nat->sreg_proto_max));
+ #define NFTA_MASQ_MAX		(__NFTA_MASQ_MAX - 1)
+diff --git a/src/expr/masq.c b/src/expr/masq.c
+index e6e528d9acca..be6f523ab20c 100644
+--- a/src/expr/masq.c
++++ b/src/expr/masq.c
+@@ -24,11 +24,12 @@ struct nftnl_expr_masq {
+ 	uint32_t		flags;
+ 	enum nft_registers	sreg_proto_min;
+ 	enum nft_registers	sreg_proto_max;
++	enum nft_registers	sreg_proto_base;
+ };
+ 
+ static int
+ nftnl_expr_masq_set(struct nftnl_expr *e, uint16_t type,
+-		       const void *data, uint32_t data_len)
++		    const void *data, uint32_t data_len)
+ {
+ 	struct nftnl_expr_masq *masq = nftnl_expr_data(e);
+ 
+@@ -42,6 +43,9 @@ nftnl_expr_masq_set(struct nftnl_expr *e, uint16_t type,
+ 	case NFTNL_EXPR_MASQ_REG_PROTO_MAX:
+ 		memcpy(&masq->sreg_proto_max, data, sizeof(masq->sreg_proto_max));
  		break;
-+	case NFTNL_EXPR_NAT_REG_PROTO_BASE:
-+		memcpy(&nat->sreg_proto_base, data, sizeof(nat->sreg_proto_base));
++	case NFTNL_EXPR_MASQ_REG_PROTO_BASE:
++		memcpy(&masq->sreg_proto_base, data, sizeof(masq->sreg_proto_base));
 +		break;
- 	case NFTNL_EXPR_NAT_FLAGS:
- 		memcpy(&nat->flags, data, sizeof(nat->flags));
- 		break;
-@@ -94,6 +98,9 @@ nftnl_expr_nat_get(const struct nftnl_expr *e, uint16_t type,
- 	case NFTNL_EXPR_NAT_REG_PROTO_MAX:
- 		*data_len = sizeof(nat->sreg_proto_max);
- 		return &nat->sreg_proto_max;
-+	case NFTNL_EXPR_NAT_REG_PROTO_BASE:
-+		*data_len = sizeof(nat->sreg_proto_base);
-+		return &nat->sreg_proto_base;
- 	case NFTNL_EXPR_NAT_FLAGS:
- 		*data_len = sizeof(nat->flags);
- 		return &nat->flags;
-@@ -116,6 +123,7 @@ static int nftnl_expr_nat_cb(const struct nlattr *attr, void *data)
- 	case NFTA_NAT_REG_ADDR_MAX:
- 	case NFTA_NAT_REG_PROTO_MIN:
- 	case NFTA_NAT_REG_PROTO_MAX:
-+	case NFTA_NAT_REG_PROTO_BASE:
- 	case NFTA_NAT_FLAGS:
+ 	default:
+ 		return -1;
+ 	}
+@@ -50,7 +54,7 @@ nftnl_expr_masq_set(struct nftnl_expr *e, uint16_t type,
+ 
+ static const void *
+ nftnl_expr_masq_get(const struct nftnl_expr *e, uint16_t type,
+-		       uint32_t *data_len)
++		    uint32_t *data_len)
+ {
+ 	struct nftnl_expr_masq *masq = nftnl_expr_data(e);
+ 
+@@ -64,6 +68,9 @@ nftnl_expr_masq_get(const struct nftnl_expr *e, uint16_t type,
+ 	case NFTNL_EXPR_MASQ_REG_PROTO_MAX:
+ 		*data_len = sizeof(masq->sreg_proto_max);
+ 		return &masq->sreg_proto_max;
++	case NFTNL_EXPR_MASQ_REG_PROTO_BASE:
++		*data_len = sizeof(masq->sreg_proto_base);
++		return &masq->sreg_proto_base;
+ 	}
+ 	return NULL;
+ }
+@@ -79,6 +86,7 @@ static int nftnl_expr_masq_cb(const struct nlattr *attr, void *data)
+ 	switch (type) {
+ 	case NFTA_MASQ_REG_PROTO_MIN:
+ 	case NFTA_MASQ_REG_PROTO_MAX:
++	case NFTA_MASQ_REG_PROTO_BASE:
+ 	case NFTA_MASQ_FLAGS:
  		if (mnl_attr_validate(attr, MNL_TYPE_U32) < 0)
  			abi_breakage();
-@@ -163,6 +171,11 @@ nftnl_expr_nat_parse(struct nftnl_expr *e, struct nlattr *attr)
- 			ntohl(mnl_attr_get_u32(tb[NFTA_NAT_REG_PROTO_MAX]));
- 		e->flags |= (1 << NFTNL_EXPR_NAT_REG_PROTO_MAX);
- 	}
-+	if (tb[NFTA_NAT_REG_PROTO_BASE]) {
-+		nat->sreg_proto_base =
-+			ntohl(mnl_attr_get_u32(tb[NFTA_NAT_REG_PROTO_BASE]));
-+		e->flags |= (1 << NFTNL_EXPR_NAT_REG_PROTO_BASE);
-+	}
- 	if (tb[NFTA_NAT_FLAGS]) {
- 		nat->flags = ntohl(mnl_attr_get_u32(tb[NFTA_NAT_FLAGS]));
- 		e->flags |= (1 << NFTNL_EXPR_NAT_FLAGS);
-@@ -192,6 +205,9 @@ nftnl_expr_nat_build(struct nlmsghdr *nlh, const struct nftnl_expr *e)
- 	if (e->flags & (1 << NFTNL_EXPR_NAT_REG_PROTO_MAX))
- 		mnl_attr_put_u32(nlh, NFTA_NAT_REG_PROTO_MAX,
- 				 htonl(nat->sreg_proto_max));
-+	if (e->flags & (1 << NFTNL_EXPR_NAT_REG_PROTO_BASE))
-+		mnl_attr_put_u32(nlh, NFTA_NAT_REG_PROTO_BASE,
-+				 htonl(nat->sreg_proto_base));
- 	if (e->flags & (1 << NFTNL_EXPR_NAT_FLAGS))
- 		mnl_attr_put_u32(nlh, NFTA_NAT_FLAGS, htonl(nat->flags));
+@@ -102,6 +110,9 @@ nftnl_expr_masq_build(struct nlmsghdr *nlh, const struct nftnl_expr *e)
+ 	if (e->flags & (1 << NFTNL_EXPR_MASQ_REG_PROTO_MAX))
+ 		mnl_attr_put_u32(nlh, NFTA_MASQ_REG_PROTO_MAX,
+ 				 htobe32(masq->sreg_proto_max));
++	if (e->flags & (1 << NFTNL_EXPR_MASQ_REG_PROTO_BASE))
++		mnl_attr_put_u32(nlh, NFTA_MASQ_REG_PROTO_BASE,
++				 htobe32(masq->sreg_proto_base));
  }
-@@ -258,6 +274,12 @@ nftnl_expr_nat_snprintf(char *buf, size_t remain,
+ 
+ static int
+@@ -127,6 +138,11 @@ nftnl_expr_masq_parse(struct nftnl_expr *e, struct nlattr *attr)
+ 			be32toh(mnl_attr_get_u32(tb[NFTA_MASQ_REG_PROTO_MAX]));
+ 		e->flags |= (1 << NFTNL_EXPR_MASQ_REG_PROTO_MAX);
+ 	}
++	if (tb[NFTA_MASQ_REG_PROTO_BASE]) {
++		masq->sreg_proto_base =
++			be32toh(mnl_attr_get_u32(tb[NFTA_MASQ_REG_PROTO_BASE]));
++		e->flags |= (1 << NFTNL_EXPR_MASQ_REG_PROTO_BASE);
++	}
+ 
+ 	return 0;
+ }
+@@ -147,6 +163,11 @@ static int nftnl_expr_masq_snprintf(char *buf, size_t remain,
+ 			       masq->sreg_proto_max);
  		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
  	}
- 
-+	if (e->flags & (1 << NFTNL_EXPR_NAT_REG_PROTO_BASE)) {
-+		ret = snprintf(buf + offset, remain,
-+			       "proto_base reg %u ", nat->sreg_proto_base);
++	if (e->flags & (1 << NFTNL_EXPR_MASQ_REG_PROTO_BASE)) {
++		ret = snprintf(buf + offset, remain, "proto_base reg %u ",
++			       masq->sreg_proto_base);
 +		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
 +	}
-+
- 	if (e->flags & (1 << NFTNL_EXPR_NAT_FLAGS)) {
- 		ret = snprintf(buf + offset, remain, "flags 0x%x ", nat->flags);
+ 	if (e->flags & (1 << NFTNL_EXPR_MASQ_FLAGS)) {
+ 		ret = snprintf(buf + offset, remain, "flags 0x%x ", masq->flags);
  		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
-diff --git a/tests/nft-expr_nat-test.c b/tests/nft-expr_nat-test.c
-index 3a365dd307c2..1204c4b7be62 100644
---- a/tests/nft-expr_nat-test.c
-+++ b/tests/nft-expr_nat-test.c
-@@ -49,6 +49,9 @@ static void cmp_nftnl_expr(struct nftnl_expr *rule_a,
- 	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_NAT_REG_PROTO_MAX) !=
- 	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_NAT_REG_PROTO_MAX))
- 		print_err("Expr NFTNL_EXPR_NAT_REG_PROTO_MAX mismatches");
-+	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_NAT_REG_PROTO_BASE) !=
-+	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_NAT_REG_PROTO_BASE))
-+		print_err("Expr NFTNL_EXPR_NAT_REG_PROTO_BASE mismatches");
- 	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_NAT_FLAGS) !=
- 	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_NAT_FLAGS))
- 		print_err("Expr NFTNL_EXPR_NAT_FLAGS mismatches");
-@@ -77,6 +80,7 @@ int main(int argc, char *argv[])
- 	nftnl_expr_set_u32(ex, NFTNL_EXPR_NAT_REG_ADDR_MAX, 0x5134682);
- 	nftnl_expr_set_u32(ex, NFTNL_EXPR_NAT_REG_PROTO_MIN, 0x6124385);
- 	nftnl_expr_set_u32(ex, NFTNL_EXPR_NAT_REG_PROTO_MAX, 0x2153846);
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_NAT_REG_PROTO_BASE, 0xbf3c0fbf);
- 	nftnl_expr_set_u32(ex, NFTNL_EXPR_NAT_FLAGS, 0x4213683);
+diff --git a/tests/nft-expr_masq-test.c b/tests/nft-expr_masq-test.c
+index 09179149421e..2bb93c47da54 100644
+--- a/tests/nft-expr_masq-test.c
++++ b/tests/nft-expr_masq-test.c
+@@ -37,6 +37,9 @@ static void cmp_nftnl_expr(struct nftnl_expr *rule_a,
+ 	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_MASQ_REG_PROTO_MAX) !=
+ 	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_MASQ_REG_PROTO_MAX))
+ 		print_err("Expr NFTNL_EXPR_MASQ_REG_PROTO_MAX mismatches");
++	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_MASQ_REG_PROTO_BASE) !=
++	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_MASQ_REG_PROTO_BASE))
++		print_err("Expr NFTNL_EXPR_MASQ_REG_PROTO_BASE mismatches");
+ }
+ 
+ int main(int argc, char *argv[])
+@@ -59,6 +62,7 @@ int main(int argc, char *argv[])
+ 	nftnl_expr_set_u32(ex, NFTNL_EXPR_MASQ_FLAGS, 0x1234568);
+ 	nftnl_expr_set_u32(ex, NFTNL_EXPR_MASQ_REG_PROTO_MIN, 0x5432178);
+ 	nftnl_expr_set_u32(ex, NFTNL_EXPR_MASQ_REG_PROTO_MAX, 0x8765421);
++	nftnl_expr_set_u32(ex, NFTNL_EXPR_MASQ_REG_PROTO_BASE, 0x0f1facdb);
  
  	nftnl_rule_add_expr(a, ex);
+ 
 -- 
 2.39.2
 
