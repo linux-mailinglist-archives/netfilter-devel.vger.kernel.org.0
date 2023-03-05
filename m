@@ -2,55 +2,46 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E587C6AA991
-	for <lists+netfilter-devel@lfdr.de>; Sat,  4 Mar 2023 13:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6B76AAF0D
+	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Mar 2023 11:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbjCDMkq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 4 Mar 2023 07:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
+        id S229681AbjCEKaK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 5 Mar 2023 05:30:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjCDMkp (ORCPT
+        with ESMTP id S229687AbjCEKaG (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 4 Mar 2023 07:40:45 -0500
-X-Greylist: delayed 2405 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 04 Mar 2023 04:40:43 PST
+        Sun, 5 Mar 2023 05:30:06 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900F4F77C
-        for <netfilter-devel@vger.kernel.org>; Sat,  4 Mar 2023 04:40:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A519D503
+        for <netfilter-devel@vger.kernel.org>; Sun,  5 Mar 2023 02:30:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=REavg1rntZTp/m31SQfivFAzX4d4gWKpU6IscZ6SgI8=; b=HTG/4X+/4/Kny3XMtYaEKzJ/99
-        nYs4RmhgumEY6ZLiH/bKwd4z4yFd+GPEi0Eq6/L6BlUUpp5gNTkoGfF0HQ96gK0ywhQI+xDx0XLPk
-        1T72SI7S2K8Skr6rE5ZSBViJcltGomEDrc3Gtn5VpE/H+waqw4sZ595jpVJDEwQtgUCK57NAToaHP
-        BEprhLNaBsh7YtdD9bUarNKV1TVm+ZQCdFxefgaHw6uyo9KUDhtV6422UWc/civcF6ZSV1SB8bdJP
-        bvwYn0ERZ1GzYrGoBT6wyh1iAMYY4Wsc8brQoGTZcrIMUSqwf+V4dr1S/mUbULFxe7R8wglRoYV+I
-        bNKETmKA==;
-Received: from [2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f] (helo=celephais.dreamlands)
-        by kadath.azazel.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        bh=sYYd8+bI0241RdVDOIY+NxmQtr2PqmJbh0y7ndtGXQM=; b=iEfEdqn7lWbaKOlCRZXM+Cszr5
+        /dD/yYOgjlPlU8m4+5pgQqYAwFP0iPUmrqKhqEGbMp1ciUikPb/e4H6aZ1iRQa5ENTMy7fzqC+Cw9
+        FnxKlcq4n+SVNYtmASoEB8dbxmiMLgwQ0khx9XKRS2UAO1IR/NA68x5eZpjTPKcymOq6j/hN4u0Qq
+        hpF0cpt3iB0EXuTbWUSMVW0xR1J2H6SoHpwu2gaWfojHc39nXzs5y7GBTrmFTVleEilG/RdkBAfVe
+        xXcrov3Y4qVSAslMFkvbYSUQUQiIAiKOup6dtP7p5v0PtKsaaBs6woOfIzaz7UG6EyQHfaoC9gbqU
+        34cqKQoQ==;
+Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
+        by kadath.azazel.net with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1pYQZ0-00Cie2-G5; Sat, 04 Mar 2023 12:00:35 +0000
-Date:   Sat, 4 Mar 2023 12:00:33 +0000
+        id 1pYlcu-00DzC0-7a
+        for netfilter-devel@vger.kernel.org; Sun, 05 Mar 2023 10:30:00 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>,
-        Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>
-Subject: Re: [nft PATCH v4 13/32] evaluate: support shifts larger than the
- width of the left operand
-Message-ID: <ZAMy4dowt9bDaPAS@celephais.dreamlands>
-References: <20220404121410.188509-1-jeremy@azazel.net>
- <20220404121410.188509-14-jeremy@azazel.net>
- <YovHkOThO0KYRGda@salvia>
- <Y+I+khlMuL+kFoq9@salvia>
+To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH nftables 0/8] Support for shifted port-ranges in NAT
+Date:   Sun,  5 Mar 2023 10:14:10 +0000
+Message-Id: <20230305101418.2233910-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FYnJG0FwakhA4wIz"
-Content-Disposition: inline
-In-Reply-To: <Y+I+khlMuL+kFoq9@salvia>
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
 X-SA-Exim-Mail-From: jeremy@azazel.net
 X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -62,49 +53,70 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Support for shifted port-ranges was added to iptables for DNAT in 2018.
+This allows one to redirect packets intended for one port to another in
+a range in such a way that the new port chosen has the same offset in
+the range as the original port had from a specified base value.
 
---FYnJG0FwakhA4wIz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For example, by using the base value 2000, one could redirect packets
+intended for 10.0.0.1:2000-3000 to 10.10.0.1:12000-13000 so that the old
+and new ports were at the same offset in their respective ranges, i.e.:
 
-On 2023-02-07, at 13:05:38 +0100, Pablo Neira Ayuso wrote:
-> Long time, no news.
->=20
-> On Mon, May 23, 2022 at 07:42:43PM +0200, Pablo Neira Ayuso wrote:
-> > Hi,
-> >=20
-> > I just tested patches 9 and 14 alone, and meta mark set ip dscp ...
-> > now works fine.
->=20
-> I have applied 9 and 14, including one testcase for tests/py, so
->=20
->         meta mark set ip dscp
->=20
-> works, so there is at least some progress on this, sorry about this :(
+  10.0.0.1:2345 -> 10.10.0.1:12345
 
-A step in the right direction. :) Thanks, Pablo.
+This patch-set adds support for doing likewise to nftables.  In contrast
+to iptables, this works for `snat`, `redirect` and `masquerade`
+statements as well as well as `dnat`.
 
-J.
+Patches 1-3 add support for shifted ranges to the NAT statements.
+Patches 4-5 add JSON support for shifted ranges.
+Patches 6-7 update the NAT documentation to cover shifted ranges.
+Patch 8 adds some Python test-cases for shifted ranges.
 
---FYnJG0FwakhA4wIz
-Content-Type: application/pgp-signature; name="signature.asc"
+Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=970672
+Link: https://bugzilla.netfilter.org/show_bug.cgi?id=1501
 
------BEGIN PGP SIGNATURE-----
+libnftnl & kernel patch-sets to follow.
 
-iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmQDMtEACgkQKYasCr3x
-BA3QohAAih7bCOMgr4L1Iz79H4BKFdSCaf2Dga6MR1kZKW3UzrGm2ZUp4NJTHKr/
-afdKm4lvIRz+NzUR4HOXGcHYKt7MHjT02VueSVlSLoHff2LbkXi14s6sT7fA132W
-MsWYUGcZ366u2zrh32340F7V+0odhGT719j+I9Tuf2RI9wcgHwKt+C5AgvgMt/qy
-lI/3pgAZ133CBb5mZPl9l7GmHv1er3A5fcyKbBQ35lvBPN8buABJ9zFp8jEylEs5
-5UvEwyafxGky1gWCzqCDuf3GjEftcDfQQ1CqWgYzFSXyuEw22WACTQM+7Xf2Cd9W
-0ASXvIaGrhv+T4bpp4cTU8RYJaHyxL2yy1IjU98iTesOp8NYxHcIhYNZTDdwgQEp
-RAbq3rWh/QhzzJPD+/jWYqzkMZnhZz2vbez6FBKrguLtCGmVH4UkYT/2IyHcFolI
-i+A8pACgcC5por+XUvWZcjw1wQneA6G/24f3UOZbEBbH7Vruq6JPokKCeauo6Geu
-hkhdXRTS7Y6QEv+KsF8gUp0yV9tjGJ6O6jqj2WQ0hvV86jGcGMn+/+SG1LwKTRVk
-fI0coZYSxbNEQEN767BM1JuqKUbUk1UO/T3GUsH5vYRqNbjoe0Gfjfy1O3OiPV5f
-efm2uDrvpb7SC8CV4Zv+zfAh/o50MLF8TLUpPsUsJe5GPHXYF6s=
-=i+Xw
------END PGP SIGNATURE-----
+Jeremy Sowden (8):
+  nat: add support for shifted port-ranges
+  masq: add support for shifted port-ranges
+  redir: add support for shifted port-ranges
+  json: formatting fixes
+  json: add support for shifted nat port-ranges
+  doc: correct NAT statement description
+  doc: add shifted port-ranges to nat statements
+  test: py: add tests for shifted nat port-ranges
 
---FYnJG0FwakhA4wIz--
+ doc/statements.txt                    | 11 +++-
+ include/statement.h                   |  1 +
+ src/evaluate.c                        | 10 +++
+ src/json.c                            |  4 ++
+ src/netlink_delinearize.c             | 48 +++++++++++++-
+ src/netlink_linearize.c               | 29 ++++++---
+ src/parser_bison.y                    | 55 +++++++++++++++-
+ src/parser_json.c                     | 49 ++++++++-------
+ src/statement.c                       |  4 ++
+ tests/py/inet/dnat.t                  |  3 +
+ tests/py/inet/dnat.t.json             | 91 +++++++++++++++++++++++++++
+ tests/py/inet/dnat.t.payload          | 33 ++++++++++
+ tests/py/inet/snat.t                  |  3 +
+ tests/py/inet/snat.t.json             | 91 +++++++++++++++++++++++++++
+ tests/py/inet/snat.t.payload          | 34 ++++++++++
+ tests/py/ip/masquerade.t              |  1 +
+ tests/py/ip/masquerade.t.json         | 26 ++++++++
+ tests/py/ip/masquerade.t.payload      |  8 +++
+ tests/py/ip/redirect.t                |  1 +
+ tests/py/ip/redirect.t.json           | 26 ++++++++
+ tests/py/ip/redirect.t.payload        |  8 +++
+ tests/py/ip6/masquerade.t             |  1 +
+ tests/py/ip6/masquerade.t.json        | 25 ++++++++
+ tests/py/ip6/masquerade.t.payload.ip6 |  8 +++
+ tests/py/ip6/redirect.t               |  1 +
+ tests/py/ip6/redirect.t.json          | 26 ++++++++
+ tests/py/ip6/redirect.t.payload.ip6   |  8 +++
+ 27 files changed, 569 insertions(+), 36 deletions(-)
+
+-- 
+2.39.2
+
