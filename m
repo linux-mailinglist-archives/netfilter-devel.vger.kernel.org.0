@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DE76AAF09
-	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Mar 2023 11:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41206AAF0F
+	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Mar 2023 11:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbjCEKaH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 5 Mar 2023 05:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
+        id S229692AbjCEKaL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 5 Mar 2023 05:30:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjCEKaG (ORCPT
+        with ESMTP id S229568AbjCEKaH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 5 Mar 2023 05:30:06 -0500
+        Sun, 5 Mar 2023 05:30:07 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE80CDFF
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7D2D507
         for <netfilter-devel@vger.kernel.org>; Sun,  5 Mar 2023 02:30:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,23 +21,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=IDH7mdRQXnt60IONd6+Tu7cSAGQgeBx9E/LMAK1zgF4=; b=GLOLS9DrFAmNH34wbau+CFIqos
-        Q9gVAm694KGO8oEjWYSBDLA6kY3tdodMDbUZFTWwwqMhgSmRhi9RPfpM+Io8LdV+o5XKCHKTbeHxK
-        n2z/CTW7wtH+iapFXEZRGiUKW7mNh7TvvhUNWUQ07SbIRQrNrqsnDdXsM0k1qFAxDjwH1JFZLogZk
-        98yMmU7xMLe41BlPSQT2FRqYTwBCSUC9dbzpNPuHbLvBKwXxXt5RMFsA0eB+wy86zHYz4TQ6crlh1
-        QH/x3e3dacUyvrFFKWeZy0Xh/UKTYHfXHES4BKUiedDBjdC68E0mUcKyjuclE4StLEHTAzxGiK010
-        DQYLWgBw==;
+        bh=fRCEqMhBHbWetvu4+PPrDgbwXDNwlaoXp+fIim5z7PY=; b=IEcFxHVrLTxCCDt5NGFf45kt4D
+        XhusbAEzXAAvxx3o3TUQUj4647cJXRi3Mo+f46wZPQwJcO99faTGqBvrXvzBMu67/kffoZLaVYnt8
+        z8XvmqbtrjOLK/R/4sd/bpHXH8CwzZEKX3JiK/ytf7G8AKOR2ctjQpitfmgh2iy3Yu8rVHfHTeoyX
+        /24N1dxJL1RcCJgfESexEBg4Cog00/zdAmuSqcqoVGn0tjnrXnKIg1Vv96a72pyuNGdMQZIsAGgXg
+        9exLXsFChhxkqD9hS9Y32sXZIFEci2eWssQJ8s7SMms8Hg4ZNjZ6YjWlAREqIbZKv15a8EBzJi+YT
+        +L/lAZIw==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1pYlcv-00DzC0-BB
+        id 1pYlcv-00DzC0-JL
         for netfilter-devel@vger.kernel.org; Sun, 05 Mar 2023 10:30:01 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nftables 5/8] json: add support for shifted nat port-ranges
-Date:   Sun,  5 Mar 2023 10:14:15 +0000
-Message-Id: <20230305101418.2233910-6-jeremy@azazel.net>
+Subject: [PATCH nftables 6/8] doc: correct NAT statement description
+Date:   Sun,  5 Mar 2023 10:14:16 +0000
+Message-Id: <20230305101418.2233910-7-jeremy@azazel.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230305101418.2233910-1-jeremy@azazel.net>
 References: <20230305101418.2233910-1-jeremy@azazel.net>
@@ -55,45 +55,26 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Specifying a port specifies that a port, not an address, should be
+modified.
+
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- src/json.c        | 4 ++++
- src/parser_json.c | 8 ++++++++
- 2 files changed, 12 insertions(+)
+ doc/statements.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/json.c b/src/json.c
-index f15461d33894..f6874b94c7ec 100644
---- a/src/json.c
-+++ b/src/json.c
-@@ -1407,6 +1407,10 @@ json_t *nat_stmt_json(const struct stmt *stmt, struct output_ctx *octx)
- 		json_object_set_new(root, "port",
- 				    expr_print_json(stmt->nat.proto, octx));
- 
-+	if (stmt->nat.proto_base)
-+		json_object_set_new(root, "base_port",
-+				    expr_print_json(stmt->nat.proto_base, octx));
-+
- 	nat_stmt_add_array(root, "flags", array);
- 
- 	if (stmt->nat.type_flags) {
-diff --git a/src/parser_json.c b/src/parser_json.c
-index d8d4f1b79e6e..fca9645c7e57 100644
---- a/src/parser_json.c
-+++ b/src/parser_json.c
-@@ -2153,6 +2153,14 @@ static struct stmt *json_parse_nat_stmt(struct json_ctx *ctx,
- 			return NULL;
- 		}
- 	}
-+	if (!json_unpack(value, "{s:o}", "base_port", &tmp)) {
-+		stmt->nat.proto_base = json_parse_stmt_expr(ctx, tmp);
-+		if (!stmt->nat.proto) {
-+			json_error(ctx, "Invalid nat base port.");
-+			stmt_free(stmt);
-+			return NULL;
-+		}
-+	}
- 	if (!json_unpack(value, "{s:o}", "flags", &tmp)) {
- 		int flags = json_parse_nat_flags(ctx, tmp);
+diff --git a/doc/statements.txt b/doc/statements.txt
+index 0532b2b16c7d..b2794bcd6821 100644
+--- a/doc/statements.txt
++++ b/doc/statements.txt
+@@ -405,7 +405,7 @@ You may specify a mapping to relate a list of tuples composed of arbitrary
+ expression key with address value. |
+ ipv4_addr, ipv6_addr, e.g. abcd::1234, or you can use a mapping, e.g. meta mark map { 10 : 192.168.1.2, 20 : 192.168.1.3 }
+ |port|
+-Specifies that the source/destination address of the packet should be modified. |
++Specifies that the source/destination port of the packet should be modified. |
+ port number (16 bit)
+ |===============================
  
 -- 
 2.39.2
