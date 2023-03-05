@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9516AAF84
+	by mail.lfdr.de (Postfix) with ESMTP id DEA0F6AAF86
 	for <lists+netfilter-devel@lfdr.de>; Sun,  5 Mar 2023 13:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbjCEMeT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 5 Mar 2023 07:34:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42880 "EHLO
+        id S229669AbjCEMeU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 5 Mar 2023 07:34:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjCEMeR (ORCPT
+        with ESMTP id S229663AbjCEMeR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Sun, 5 Mar 2023 07:34:17 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD22AEC5D
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8DAEC6B
         for <netfilter-devel@vger.kernel.org>; Sun,  5 Mar 2023 04:34:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,23 +21,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=iMHv903WpbwLYeQvNAg9U+fKnWOdvg0RLLw7dlApsO4=; b=LX4R9veC7RNHhntQwUDM+Ck1Xp
-        fby6WqrSRzcY2Hh/kMbgOptGLvU22QlNlLa7ZfmNoODBeK+MGmcXCDWDKNcS4haXh0ZnBkKACDZre
-        SB73JmFZPShLVjMfJRLi5UXJ0yo2VfI6O5qBKGY9yzJBxhVs+wxc15i0RS4p2+/97wm8NExY1bC0T
-        4q4x7YjiJx3DXNGdpiaoLDgP2W0wowhTD+OhMDkH4DqNnCK7CfsXk+Oec/IM8ES7FY15e2Qr+YU94
-        4o/rN62gFeQ7Cqc9Pq7utSPyl+K42CG78QYOQ3FsfUkYnukb+BsUYhWswvotaa68MPkDGhn7ypgBc
-        YVDSQ1Tw==;
+        bh=W0fDvTQIfFLVEyi+c1yf0Iy3NLE3+H20FSNWg7iQkwk=; b=BVYBajf+zkIlqwcGNmkI18uUvN
+        OaaJl+Rw+bLOI8n1uJuYH/zUMVRmfOYJpob/qvkmP+ZyBGfzwDF8/maaE0zOvELJ8LIiJ5bVApWl5
+        +z6tQU6i11Siuaw0LAT5XVaRosnnJSrtfFk+/Ao5wQBZ0LThMh39I1Gqg+O+SXeXexGca7Ds3FDEP
+        uHPIjph4ehBu82ptcvmDEWuHabNoTU2FudwVdEMBixEZ0XkY72MA92NYAnWSt1614sguASAGLdf0G
+        G4CqECImZgGL9pfXPtC3x6vjKx6lJo1m9/C+qB4Q3PYOKY+q0KhbnvwJD2habgroLf+C4jf/xFQRm
+        VurKt1YA==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1pYnZ7-00E3og-1O
+        id 1pYnZ7-00E3og-4N
         for netfilter-devel@vger.kernel.org; Sun, 05 Mar 2023 12:34:13 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next 07/13] netfilter: nft_masq: deduplicate eval call-backs
-Date:   Sun,  5 Mar 2023 12:18:11 +0000
-Message-Id: <20230305121817.2234734-8-jeremy@azazel.net>
+Subject: [PATCH nf-next 08/13] netfilter: nft_masq: add support for shifted port-ranges
+Date:   Sun,  5 Mar 2023 12:18:12 +0000
+Message-Id: <20230305121817.2234734-9-jeremy@azazel.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230305121817.2234734-1-jeremy@azazel.net>
 References: <20230305121817.2234734-1-jeremy@azazel.net>
@@ -55,147 +55,126 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-nft_masq has separate ipv4 and ipv6 call-backs which share much of their
-code, and an inet one switch containing a switch that calls one of the
-others based on the family of the packet.  Merge the ipv4 and ipv6 ones
-into the inet one in order to get rid of the duplicate code.
-
-Const-qualify the `priv` pointer since we don't need to write through
-it.
+Support was recently added to nft_nat to allow shifting port-ranges
+during NAT.  Extend this support to allow them to used in masquerading
+as well.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- net/netfilter/nft_masq.c | 75 ++++++++++++++++------------------------
- 1 file changed, 29 insertions(+), 46 deletions(-)
+ include/uapi/linux/netfilter/nf_tables.h |  2 ++
+ net/netfilter/nf_nat_masquerade.c        |  2 ++
+ net/netfilter/nft_masq.c                 | 22 ++++++++++++++++++++--
+ 3 files changed, 24 insertions(+), 2 deletions(-)
 
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index af6032720c78..bab3e3c6de74 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -1470,12 +1470,14 @@ enum nft_tproxy_attributes {
+  * @NFTA_MASQ_FLAGS: NAT flags (see NF_NAT_RANGE_* in linux/netfilter/nf_nat.h) (NLA_U32)
+  * @NFTA_MASQ_REG_PROTO_MIN: source register of proto range start (NLA_U32: nft_registers)
+  * @NFTA_MASQ_REG_PROTO_MAX: source register of proto range end (NLA_U32: nft_registers)
++ * @NFTA_MASQ_REG_PROTO_BASE: source register of proto range base offset (NLA_U32: nft_registers)
+  */
+ enum nft_masq_attributes {
+ 	NFTA_MASQ_UNSPEC,
+ 	NFTA_MASQ_FLAGS,
+ 	NFTA_MASQ_REG_PROTO_MIN,
+ 	NFTA_MASQ_REG_PROTO_MAX,
++	NFTA_MASQ_REG_PROTO_BASE,
+ 	__NFTA_MASQ_MAX
+ };
+ #define NFTA_MASQ_MAX		(__NFTA_MASQ_MAX - 1)
+diff --git a/net/netfilter/nf_nat_masquerade.c b/net/netfilter/nf_nat_masquerade.c
+index 1a506b0c6511..8d40b507d4ad 100644
+--- a/net/netfilter/nf_nat_masquerade.c
++++ b/net/netfilter/nf_nat_masquerade.c
+@@ -69,6 +69,7 @@ nf_nat_masquerade_ipv4(struct sk_buff *skb, unsigned int hooknum,
+ 	newrange.max_addr.ip = newsrc;
+ 	newrange.min_proto   = range->min_proto;
+ 	newrange.max_proto   = range->max_proto;
++	newrange.base_proto  = range->base_proto;
+ 
+ 	/* Hand modified range to generic setup. */
+ 	return nf_nat_setup_info(ct, &newrange, NF_NAT_MANIP_SRC);
+@@ -264,6 +265,7 @@ nf_nat_masquerade_ipv6(struct sk_buff *skb, const struct nf_nat_range2 *range,
+ 	newrange.max_addr.in6	= src;
+ 	newrange.min_proto	= range->min_proto;
+ 	newrange.max_proto	= range->max_proto;
++	newrange.base_proto     = range->base_proto;
+ 
+ 	return nf_nat_setup_info(ct, &newrange, NF_NAT_MANIP_SRC);
+ }
 diff --git a/net/netfilter/nft_masq.c b/net/netfilter/nft_masq.c
-index 9544c2f16998..b115d77fbbc7 100644
+index b115d77fbbc7..80cf5d59b917 100644
 --- a/net/netfilter/nft_masq.c
 +++ b/net/netfilter/nft_masq.c
-@@ -96,23 +96,39 @@ static int nft_masq_dump(struct sk_buff *skb,
- 	return -1;
- }
- 
--static void nft_masq_ipv4_eval(const struct nft_expr *expr,
--			       struct nft_regs *regs,
--			       const struct nft_pktinfo *pkt)
-+static void nft_masq_eval(const struct nft_expr *expr,
-+			  struct nft_regs *regs,
-+			  const struct nft_pktinfo *pkt)
- {
--	struct nft_masq *priv = nft_expr_priv(expr);
-+	const struct nft_masq *priv = nft_expr_priv(expr);
- 	struct nf_nat_range2 range;
- 
- 	memset(&range, 0, sizeof(range));
- 	range.flags = priv->flags;
- 	if (priv->sreg_proto_min) {
--		range.min_proto.all = (__force __be16)nft_reg_load16(
--			&regs->data[priv->sreg_proto_min]);
--		range.max_proto.all = (__force __be16)nft_reg_load16(
--			&regs->data[priv->sreg_proto_max]);
-+		range.min_proto.all = (__force __be16)
-+			nft_reg_load16(&regs->data[priv->sreg_proto_min]);
-+		range.max_proto.all = (__force __be16)
-+			nft_reg_load16(&regs->data[priv->sreg_proto_max]);
-+	}
-+
-+	switch (nft_pf(pkt)) {
-+	case NFPROTO_IPV4:
-+		regs->verdict.code = nf_nat_masquerade_ipv4(pkt->skb,
-+							    nft_hook(pkt),
-+							    &range,
-+							    nft_out(pkt));
-+		break;
-+#ifdef CONFIG_NF_TABLES_IPV6
-+	case NFPROTO_IPV6:
-+		regs->verdict.code = nf_nat_masquerade_ipv6(pkt->skb, &range,
-+							    nft_out(pkt));
-+		break;
-+#endif
-+	default:
-+		WARN_ON_ONCE(1);
-+		break;
- 	}
--	regs->verdict.code = nf_nat_masquerade_ipv4(pkt->skb, nft_hook(pkt),
--						    &range, nft_out(pkt));
- }
- 
- static void
-@@ -125,7 +141,7 @@ static struct nft_expr_type nft_masq_ipv4_type;
- static const struct nft_expr_ops nft_masq_ipv4_ops = {
- 	.type		= &nft_masq_ipv4_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_masq)),
--	.eval		= nft_masq_ipv4_eval,
-+	.eval		= nft_masq_eval,
- 	.init		= nft_masq_init,
- 	.destroy	= nft_masq_ipv4_destroy,
- 	.dump		= nft_masq_dump,
-@@ -143,25 +159,6 @@ static struct nft_expr_type nft_masq_ipv4_type __read_mostly = {
+@@ -17,12 +17,14 @@ struct nft_masq {
+ 	u32			flags;
+ 	u8			sreg_proto_min;
+ 	u8			sreg_proto_max;
++	u8			sreg_proto_base;
  };
  
- #ifdef CONFIG_NF_TABLES_IPV6
--static void nft_masq_ipv6_eval(const struct nft_expr *expr,
--			       struct nft_regs *regs,
--			       const struct nft_pktinfo *pkt)
--{
--	struct nft_masq *priv = nft_expr_priv(expr);
--	struct nf_nat_range2 range;
--
--	memset(&range, 0, sizeof(range));
--	range.flags = priv->flags;
--	if (priv->sreg_proto_min) {
--		range.min_proto.all = (__force __be16)nft_reg_load16(
--			&regs->data[priv->sreg_proto_min]);
--		range.max_proto.all = (__force __be16)nft_reg_load16(
--			&regs->data[priv->sreg_proto_max]);
--	}
--	regs->verdict.code = nf_nat_masquerade_ipv6(pkt->skb, &range,
--						    nft_out(pkt));
--}
--
- static void
- nft_masq_ipv6_destroy(const struct nft_ctx *ctx, const struct nft_expr *expr)
- {
-@@ -172,7 +169,7 @@ static struct nft_expr_type nft_masq_ipv6_type;
- static const struct nft_expr_ops nft_masq_ipv6_ops = {
- 	.type		= &nft_masq_ipv6_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_masq)),
--	.eval		= nft_masq_ipv6_eval,
-+	.eval		= nft_masq_eval,
- 	.init		= nft_masq_init,
- 	.destroy	= nft_masq_ipv6_destroy,
- 	.dump		= nft_masq_dump,
-@@ -204,20 +201,6 @@ static inline void nft_masq_module_exit_ipv6(void) {}
- #endif
+ static const struct nla_policy nft_masq_policy[NFTA_MASQ_MAX + 1] = {
+ 	[NFTA_MASQ_FLAGS]		= { .type = NLA_U32 },
+ 	[NFTA_MASQ_REG_PROTO_MIN]	= { .type = NLA_U32 },
+ 	[NFTA_MASQ_REG_PROTO_MAX]	= { .type = NLA_U32 },
++	[NFTA_MASQ_REG_PROTO_BASE]	= { .type = NLA_U32 },
+ };
  
- #ifdef CONFIG_NF_TABLES_INET
--static void nft_masq_inet_eval(const struct nft_expr *expr,
--			       struct nft_regs *regs,
--			       const struct nft_pktinfo *pkt)
--{
--	switch (nft_pf(pkt)) {
--	case NFPROTO_IPV4:
--		return nft_masq_ipv4_eval(expr, regs, pkt);
--	case NFPROTO_IPV6:
--		return nft_masq_ipv6_eval(expr, regs, pkt);
--	}
--
--	WARN_ON_ONCE(1);
--}
--
- static void
- nft_masq_inet_destroy(const struct nft_ctx *ctx, const struct nft_expr *expr)
+ static int nft_masq_validate(const struct nft_ctx *ctx,
+@@ -43,7 +45,7 @@ static int nft_masq_init(const struct nft_ctx *ctx,
+ 			 const struct nft_expr *expr,
+ 			 const struct nlattr * const tb[])
  {
-@@ -228,7 +211,7 @@ static struct nft_expr_type nft_masq_inet_type;
- static const struct nft_expr_ops nft_masq_inet_ops = {
- 	.type		= &nft_masq_inet_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_masq)),
--	.eval		= nft_masq_inet_eval,
-+	.eval		= nft_masq_eval,
- 	.init		= nft_masq_init,
- 	.destroy	= nft_masq_inet_destroy,
- 	.dump		= nft_masq_dump,
+-	u32 plen = sizeof_field(struct nf_nat_range, min_proto.all);
++	u32 plen = sizeof_field(struct nf_nat_range2, min_proto.all);
+ 	struct nft_masq *priv = nft_expr_priv(expr);
+ 	int err;
+ 
+@@ -65,9 +67,21 @@ static int nft_masq_init(const struct nft_ctx *ctx,
+ 						      plen);
+ 			if (err < 0)
+ 				return err;
++
++			if (tb[NFTA_MASQ_REG_PROTO_BASE]) {
++				err = nft_parse_register_load
++					(tb[NFTA_MASQ_REG_PROTO_BASE],
++					 &priv->sreg_proto_base, plen);
++				if (err < 0)
++					return err;
++
++				priv->flags |= NF_NAT_RANGE_PROTO_OFFSET;
++			}
+ 		} else {
+ 			priv->sreg_proto_max = priv->sreg_proto_min;
+ 		}
++
++		priv->flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
+ 	}
+ 
+ 	return nf_ct_netns_get(ctx->net, ctx->family);
+@@ -86,7 +100,9 @@ static int nft_masq_dump(struct sk_buff *skb,
+ 		if (nft_dump_register(skb, NFTA_MASQ_REG_PROTO_MIN,
+ 				      priv->sreg_proto_min) ||
+ 		    nft_dump_register(skb, NFTA_MASQ_REG_PROTO_MAX,
+-				      priv->sreg_proto_max))
++				      priv->sreg_proto_max) ||
++		    nft_dump_register(skb, NFTA_MASQ_REG_PROTO_BASE,
++				      priv->sreg_proto_base))
+ 			goto nla_put_failure;
+ 	}
+ 
+@@ -110,6 +126,8 @@ static void nft_masq_eval(const struct nft_expr *expr,
+ 			nft_reg_load16(&regs->data[priv->sreg_proto_min]);
+ 		range.max_proto.all = (__force __be16)
+ 			nft_reg_load16(&regs->data[priv->sreg_proto_max]);
++		range.base_proto.all = (__force __be16)
++			nft_reg_load16(&regs->data[priv->sreg_proto_base]);
+ 	}
+ 
+ 	switch (nft_pf(pkt)) {
 -- 
 2.39.2
 
