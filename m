@@ -2,115 +2,154 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 152FE6AF192
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Mar 2023 19:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCAD6AF2AA
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Mar 2023 19:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbjCGSpj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Mar 2023 13:45:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        id S230332AbjCGSzF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 Mar 2023 13:55:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231486AbjCGSpM (ORCPT
+        with ESMTP id S231402AbjCGSyb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 Mar 2023 13:45:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3471FA9DC8
-        for <netfilter-devel@vger.kernel.org>; Tue,  7 Mar 2023 10:34:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678214001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IYcpmbNmD+ppUYYsUdIFEHZgjqXqKhESFZ61WVHPzOE=;
-        b=gKKahPc/wFWgvd8jb3ZuopBZ7Nl8qohceiIxzKD0XEMEbxwd6CJ6sFekkHEwElWA5gBNI0
-        jHqqFrrMYE40s+Vd2cTbeOddMrbM7aWPM+wrYpM+2FuyM308YZmpfpD7J+YSDJgjN9kjoX
-        Ve2C+66OknAh2QTNv9Cx5m+s0ufdjV0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-321-714dGVqfPdedlIo5ZvnLRg-1; Tue, 07 Mar 2023 13:33:16 -0500
-X-MC-Unique: 714dGVqfPdedlIo5ZvnLRg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D4B6985A5A3;
-        Tue,  7 Mar 2023 18:33:15 +0000 (UTC)
-Received: from RHTPC1VM0NT (unknown [10.22.32.201])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DB4304010E7B;
-        Tue,  7 Mar 2023 18:33:14 +0000 (UTC)
-From:   Aaron Conole <aconole@redhat.com>
-To:     Xin Long <lucien.xin@gmail.com>
-Cc:     netfilter-devel@vger.kernel.org,
-        network dev <netdev@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>, davem@davemloft.net,
-        kuba@kernel.org, Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Pravin B Shelar <pshelar@ovn.org>
-Subject: Re: [PATCH nf-next 1/6] netfilter: bridge: call pskb_may_pull in
- br_nf_check_hbh_len
-References: <cover.1677888566.git.lucien.xin@gmail.com>
-        <4c156bee64fa58bacb808cead7a7f43d531fd587.1677888566.git.lucien.xin@gmail.com>
-Date:   Tue, 07 Mar 2023 13:33:14 -0500
-In-Reply-To: <4c156bee64fa58bacb808cead7a7f43d531fd587.1677888566.git.lucien.xin@gmail.com>
-        (Xin Long's message of "Fri, 3 Mar 2023 19:12:37 -0500")
-Message-ID: <f7tpm9k4djp.fsf@redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Tue, 7 Mar 2023 13:54:31 -0500
+Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758299E326
+        for <netfilter-devel@vger.kernel.org>; Tue,  7 Mar 2023 10:42:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=G+qz8VVF1zJJ1PzAyGkxk5oJYFkUWx3OPCnXQL7/jMs=; b=PTK8x7VTLOayaBYsTp1E6HcO51
+        8glO8KEAoPBs3aFANcz9AvrnwB5YRYDPBuXJzE08fR1E5L3/9IBNHhT4Wj+pzVxirYvMgfAYJDXv0
+        ErbG6qtgCnHCyjkv1CsA8AryzIqgZ36pkb2MtrtxEqNEa7OU1D64NekYtiyNQZci6x9G+QxfWXRfN
+        9R2XmMAxvyzlsdi/oeImbZDn0H4n4aXBXtMXSnl8AI0R9ijKZbgRvOICtOg4RRh4XOl392bHJIeg2
+        H9yO+bze1sYu31ahq7k5tbg5K1ik4pwL49+aV8HM6OT6bgEHyCvJXKJxhopv7dvcjQxovdi9r4KLG
+        rrYosihQ==;
+Received: from [2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f] (helo=celephais.dreamlands)
+        by kadath.azazel.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <jeremy@azazel.net>)
+        id 1pZcGO-00Gqx9-Sf; Tue, 07 Mar 2023 18:42:16 +0000
+Date:   Tue, 7 Mar 2023 18:42:15 +0000
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH nf-next 05/13] netfilter: nft_nat: add support for
+ shifted port-ranges
+Message-ID: <20230307184215.GD226246@celephais.dreamlands>
+References: <20230305121817.2234734-1-jeremy@azazel.net>
+ <20230305121817.2234734-6-jeremy@azazel.net>
+ <20230307122751.GB13059@breakpoint.cc>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="K/rj9BPe+CzL5Cof"
+Content-Disposition: inline
+In-Reply-To: <20230307122751.GB13059@breakpoint.cc>
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on kadath.azazel.net); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Xin Long <lucien.xin@gmail.com> writes:
 
-> When checking Hop-by-hop option header, if the option data is in
-> nonlinear area, it should do pskb_may_pull instead of discarding
-> the skb as a bad IPv6 packet.
->
-> Signed-off-by: Xin Long <lucien.xin@gmail.com>
-> ---
+--K/rj9BPe+CzL5Cof
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Aaron Conole <aconole@redhat.com>
+On 2023-03-07, at 13:27:51 +0100, Florian Westphal wrote:
+> Jeremy Sowden <jeremy@azazel.net> wrote:
+> > index 5c29915ab028..0517a3efb259 100644
+> > --- a/net/netfilter/nft_nat.c
+> > +++ b/net/netfilter/nft_nat.c
+> > @@ -25,6 +25,7 @@ struct nft_nat {
+> >  	u8			sreg_addr_max;
+> >  	u8			sreg_proto_min;
+> >  	u8			sreg_proto_max;
+> > +	u8			sreg_proto_base;
+> >  	enum nf_nat_manip_type  type:8;
+> >  	u8			family;
+> >  	u16			flags;
+> > @@ -58,6 +59,8 @@ static void nft_nat_setup_proto(struct nf_nat_range2 =
+*range,
+> >  		nft_reg_load16(&regs->data[priv->sreg_proto_min]);
+> >  	range->max_proto.all =3D (__force __be16)
+> >  		nft_reg_load16(&regs->data[priv->sreg_proto_max]);
+> > +	range->base_proto.all =3D (__force __be16)
+> > +		nft_reg_load16(&regs->data[priv->sreg_proto_base]);
+>=20
+> Hmmm!  See below.
+>=20
+> > -	plen =3D sizeof_field(struct nf_nat_range, min_proto.all);
+> > +	plen =3D sizeof_field(struct nf_nat_range2, min_proto.all);
+> >  	if (tb[NFTA_NAT_REG_PROTO_MIN]) {
+> >  		err =3D nft_parse_register_load(tb[NFTA_NAT_REG_PROTO_MIN],
+> >  					      &priv->sreg_proto_min, plen);
+> > @@ -239,6 +243,16 @@ static int nft_nat_init(const struct nft_ctx *ctx,=
+ const struct nft_expr *expr,
+> >  						      plen);
+> >  			if (err < 0)
+> >  				return err;
+> > +
+> > +			if (tb[NFTA_NAT_REG_PROTO_BASE]) {
+> > +				err =3D nft_parse_register_load
+> > +					(tb[NFTA_NAT_REG_PROTO_BASE],
+> > +					 &priv->sreg_proto_base, plen);
+> > +				if (err < 0)
+> > +					return err;
+> > +
+> > +				priv->flags |=3D NF_NAT_RANGE_PROTO_OFFSET;
+>=20
+> So sreg_proto_base is only set if tb[NFTA_NAT_REG_PROTO_BASE] gets
+> passed.
+>=20
+> So, I would expect that all accesses to priv->sreg_proto_base are
+> guarded with a 'if (priv->sreg_proto_base)' check.
+>=20
+> > @@ -286,7 +300,9 @@ static int nft_nat_dump(struct sk_buff *skb,
+> >  		if (nft_dump_register(skb, NFTA_NAT_REG_PROTO_MIN,
+> >  				      priv->sreg_proto_min) ||
+> >  		    nft_dump_register(skb, NFTA_NAT_REG_PROTO_MAX,
+> > -				      priv->sreg_proto_max))
+> > +				      priv->sreg_proto_max) ||
+> > +		    nft_dump_register(skb, NFTA_NAT_REG_PROTO_BASE,
+> > +				      priv->sreg_proto_base))
+>=20
+> sreg_proto_min/max are only dumped when set, so NFTA_NAT_REG_PROTO_BASE
+> should not be dumped unconditionally either?
+>=20
 
->  net/bridge/br_netfilter_ipv6.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/net/bridge/br_netfilter_ipv6.c b/net/bridge/br_netfilter_ipv6.c
-> index 6b07f30675bb..5cd3e4c35123 100644
-> --- a/net/bridge/br_netfilter_ipv6.c
-> +++ b/net/bridge/br_netfilter_ipv6.c
-> @@ -45,14 +45,18 @@
->   */
->  static int br_nf_check_hbh_len(struct sk_buff *skb)
->  {
-> -	unsigned char *raw = (u8 *)(ipv6_hdr(skb) + 1);
-> +	int len, off = sizeof(struct ipv6hdr);
-> +	unsigned char *nh;
->  	u32 pkt_len;
-> -	const unsigned char *nh = skb_network_header(skb);
-> -	int off = raw - nh;
-> -	int len = (raw[1] + 1) << 3;
->  
-> -	if ((raw + len) - skb->data > skb_headlen(skb))
-> +	if (!pskb_may_pull(skb, off + 8))
->  		goto bad;
-> +	nh = (u8 *)(ipv6_hdr(skb) + 1);
-> +	len = (nh[1] + 1) << 3;
-> +
-> +	if (!pskb_may_pull(skb, off + len))
-> +		goto bad;
-> +	nh = skb_network_header(skb);
->  
->  	off += 2;
->  	len -= 2;
+Agreed.  Will fix.
 
+J.
+
+
+--K/rj9BPe+CzL5Cof
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmQHhYAACgkQKYasCr3x
+BA1RWA//TC1BgDvcNXk3YBPwvoZ11BrTn6DVRWpwPoRLRDB2VW+DHY2mcb3XVWwl
+aPqDSbEDCWHrCggkN2wqZ5P1JvPh0tkOZhPAmfUMG/eUtZPKVaahD0wsqyms3P9I
+oEDICfQkeZ/XPdAow19KopGQFK2lKIjg/niNHuyWrdj3zhHi2bbbY/iphZ0ELbAH
+ogHiezr6bImh+k896911+tKfbSTr7Pdz9PeXdMzBNdTLRuw1kvgCKffMjxxx8zG9
+AycW8iIkFPtYLjemR9zTNi+bNn/9PMiTeTRWQFdJRogmu/L3u3W+sC+/EmI9Daeh
+4M9KLvyIfAfYkoSZ4DEFWY8isdu/L7L24fx1iq1/VLdqeFlMBq90MphI2FaPMAgg
+54GLDs1kkD+cXNbLS2+Y4LB4XPdkq98ZPEWk5w6HmdJu7coeADM6C3ty11oA5lHn
+7hjC96ZDTy7ntIjYbfvZJlqvdTSHr/6kpsi5d6c5v7c1luzDfKbHVw3ehShfr3Jp
+IBFlk8GnmpKzxS0/eGQQUvLtl9fdkhq+3vh0i5jfenMnfE1nVa0jKS/HqmSMdqiM
+QBWORYXCF/Fwv7MnYdu8mrvaAr41Pgmq9onRv+x2b1R3h+7aSiyRT81oszEiG5Yv
+qni30n+0pUzIWevL3Gsm4a2BYrGdsC5X1xQ7RPthTjKccwig4MY=
+=1/df
+-----END PGP SIGNATURE-----
+
+--K/rj9BPe+CzL5Cof--
