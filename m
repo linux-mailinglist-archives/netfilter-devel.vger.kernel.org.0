@@ -2,80 +2,91 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E25746AE182
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Mar 2023 14:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 971D86AE2A4
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Mar 2023 15:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbjCGN61 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Mar 2023 08:58:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
+        id S229812AbjCGOfU (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 Mar 2023 09:35:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjCGN60 (ORCPT
+        with ESMTP id S231366AbjCGOe0 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 Mar 2023 08:58:26 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6CD74DEC
-        for <netfilter-devel@vger.kernel.org>; Tue,  7 Mar 2023 05:58:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=O3EcEz0UupV7//I4f2mtjn6eoX99ZePOdu4sc8BupEM=; b=FKcWSaviYDf4LwHYdZMm9Ml0ww
-        szFA5FyltMhTA4r04faP69yBbecL7HfYCneeohNAowXk+aZgS+rdXHHTl3xT0HsJkoKbBIJ0n0GAa
-        bJJRwagv6J6HX1PXZFYpCGA4RNhCXPGo8mcwFIkJMQFdxaDo1hMG4HdxfvBOoP8r0R7P92HbjtAgW
-        tXwLrLGoY7dMMTq5fsm4kyJ3zDhiZxC208aCwz6Rd+oKM8/POYqCFMt6MV3YAx2HMRaNGcn3fFe2o
-        g7FNbAOM+I6uJSJXi55jZXwHSczV14AEEypdJF1K3QHP5n6Sd/aUSH/Lt15XcrxhmGfEUFXzS3aK/
-        LQwVo9pg==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1pZXpc-00058T-PJ; Tue, 07 Mar 2023 14:58:20 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ipset PATCH 4/4] tests: hash:ip,port.t: 'vrrp' is printed as 'carp'
-Date:   Tue,  7 Mar 2023 14:58:12 +0100
-Message-Id: <20230307135812.25993-5-phil@nwl.cc>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20230307135812.25993-1-phil@nwl.cc>
-References: <20230307135812.25993-1-phil@nwl.cc>
+        Tue, 7 Mar 2023 09:34:26 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3C285A59;
+        Tue,  7 Mar 2023 06:30:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D3DF60DBB;
+        Tue,  7 Mar 2023 14:30:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 98807C433D2;
+        Tue,  7 Mar 2023 14:30:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678199418;
+        bh=gXPkTWbahz3ORbfpJZiBGYEwqJ/rCSLFbAFkrFKsIlo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=c+AUUZrfajAt1OLLGXhkxoECKDnahh2grC0BEunkmlG3xRq63e0SClRfjfq7Za4Hc
+         1PZVXfIwfVZGrL9RoRFE+gWF61sMPuIohgiRV/WQtOs/UzLOEKQYsynkOL0P8itVS8
+         ABlPvSm0oRCxEAlpPoBy0Y9sv18pI85t0UVr1vRcnrAIOjkvnzjGkMh47Zt07PFkXH
+         msfrYqWBH08G2rpHMzxOpqeac/FGQfuXAKt9deA5n/e/gYJABzulBxH4JB8FaUaof4
+         qeMyPgnY5nylM5xoDReJTymLIN+9n6XJhTWI0B5XIJ58OVL97e7W/BLxa7Nh1Lz1SQ
+         aRcp+HNjU+e7g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 73419E61B65;
+        Tue,  7 Mar 2023 14:30:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net 1/3] netfilter: ctnetlink: revert to dumping mark
+ regardless of event type
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167819941844.11375.13263488021043524057.git-patchwork-notify@kernel.org>
+Date:   Tue, 07 Mar 2023 14:30:18 +0000
+References: <20230307100424.2037-2-pablo@netfilter.org>
+In-Reply-To: <20230307100424.2037-2-pablo@netfilter.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-| % grep vrrp /etc/protocols
-| carp	112	CARP	vrrp		# Common Address Redundancy Protocol
+Hello:
 
-Nowadays, carp seems to be the preferred name for protocol 112. Simply
-change the expected output for lack of idea for a backwards compatible
-change which is not simply using another protocol.
+This series was applied to netdev/net.git (main)
+by Pablo Neira Ayuso <pablo@netfilter.org>:
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- tests/hash:ip,port.t.list2 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue,  7 Mar 2023 11:04:22 +0100 you wrote:
+> From: Ivan Delalande <colona@arista.com>
+> 
+> It seems that change was unintentional, we have userspace code that
+> needs the mark while listening for events like REPLY, DESTROY, etc.
+> Also include 0-marks in requested dumps, as they were before that fix.
+> 
+> Fixes: 1feeae071507 ("netfilter: ctnetlink: fix compilation warning after data race fixes in ct mark")
+> Signed-off-by: Ivan Delalande <colona@arista.com>
+> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+> 
+> [...]
 
-diff --git a/tests/hash:ip,port.t.list2 b/tests/hash:ip,port.t.list2
-index ffaedb561eb1c..0c5d3a15ef369 100644
---- a/tests/hash:ip,port.t.list2
-+++ b/tests/hash:ip,port.t.list2
-@@ -6,6 +6,6 @@ Size in memory: 480
- References: 0
- Number of entries: 3
- Members:
-+2.0.0.1,carp:0
- 2.0.0.1,tcp:80
- 2.0.0.1,udp:80
--2.0.0.1,vrrp:0
+Here is the summary with links:
+  - [net,1/3] netfilter: ctnetlink: revert to dumping mark regardless of event type
+    https://git.kernel.org/netdev/net/c/9f7dd42f0db1
+  - [net,2/3] netfilter: tproxy: fix deadlock due to missing BH disable
+    https://git.kernel.org/netdev/net/c/4a02426787bf
+  - [net,3/3] netfilter: conntrack: adopt safer max chain length
+    https://git.kernel.org/netdev/net/c/c77737b736ce
+
+You are awesome, thank you!
 -- 
-2.38.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
