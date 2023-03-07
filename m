@@ -2,81 +2,98 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7EF6ADB55
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Mar 2023 11:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A22C06ADEAD
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Mar 2023 13:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbjCGKEi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Mar 2023 05:04:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
+        id S229685AbjCGM2F (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 Mar 2023 07:28:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbjCGKEf (ORCPT
+        with ESMTP id S229477AbjCGM2E (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 Mar 2023 05:04:35 -0500
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29073392B2;
-        Tue,  7 Mar 2023 02:04:33 -0800 (PST)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
-        pabeni@redhat.com, edumazet@google.com
-Subject: [PATCH net 3/3] netfilter: conntrack: adopt safer max chain length
-Date:   Tue,  7 Mar 2023 11:04:24 +0100
-Message-Id: <20230307100424.2037-4-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230307100424.2037-1-pablo@netfilter.org>
-References: <20230307100424.2037-1-pablo@netfilter.org>
+        Tue, 7 Mar 2023 07:28:04 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7C05FDD
+        for <netfilter-devel@vger.kernel.org>; Tue,  7 Mar 2023 04:27:54 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1pZWQ3-0000Ac-Q6; Tue, 07 Mar 2023 13:27:51 +0100
+Date:   Tue, 7 Mar 2023 13:27:51 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     Jeremy Sowden <jeremy@azazel.net>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH nf-next 05/13] netfilter: nft_nat: add support for
+ shifted port-ranges
+Message-ID: <20230307122751.GB13059@breakpoint.cc>
+References: <20230305121817.2234734-1-jeremy@azazel.net>
+ <20230305121817.2234734-6-jeremy@azazel.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230305121817.2234734-6-jeremy@azazel.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+Jeremy Sowden <jeremy@azazel.net> wrote:
+> index 5c29915ab028..0517a3efb259 100644
+> --- a/net/netfilter/nft_nat.c
+> +++ b/net/netfilter/nft_nat.c
+> @@ -25,6 +25,7 @@ struct nft_nat {
+>  	u8			sreg_addr_max;
+>  	u8			sreg_proto_min;
+>  	u8			sreg_proto_max;
+> +	u8			sreg_proto_base;
+>  	enum nf_nat_manip_type  type:8;
+>  	u8			family;
+>  	u16			flags;
+> @@ -58,6 +59,8 @@ static void nft_nat_setup_proto(struct nf_nat_range2 *range,
+>  		nft_reg_load16(&regs->data[priv->sreg_proto_min]);
+>  	range->max_proto.all = (__force __be16)
+>  		nft_reg_load16(&regs->data[priv->sreg_proto_max]);
+> +	range->base_proto.all = (__force __be16)
+> +		nft_reg_load16(&regs->data[priv->sreg_proto_base]);
 
-Customers using GKE 1.25 and 1.26 are facing conntrack issues
-root caused to commit c9c3b6811f74 ("netfilter: conntrack: make
-max chain length random").
+Hmmm!  See below.
 
-Even if we assume Uniform Hashing, a bucket often reachs 8 chained
-items while the load factor of the hash table is smaller than 0.5
+> -	plen = sizeof_field(struct nf_nat_range, min_proto.all);
+> +	plen = sizeof_field(struct nf_nat_range2, min_proto.all);
+>  	if (tb[NFTA_NAT_REG_PROTO_MIN]) {
+>  		err = nft_parse_register_load(tb[NFTA_NAT_REG_PROTO_MIN],
+>  					      &priv->sreg_proto_min, plen);
+> @@ -239,6 +243,16 @@ static int nft_nat_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
+>  						      plen);
+>  			if (err < 0)
+>  				return err;
+> +
+> +			if (tb[NFTA_NAT_REG_PROTO_BASE]) {
+> +				err = nft_parse_register_load
+> +					(tb[NFTA_NAT_REG_PROTO_BASE],
+> +					 &priv->sreg_proto_base, plen);
+> +				if (err < 0)
+> +					return err;
+> +
+> +				priv->flags |= NF_NAT_RANGE_PROTO_OFFSET;
 
-With a limit of 16, we reach load factors of 3.
-With a limit of 32, we reach load factors of 11.
-With a limit of 40, we reach load factors of 15.
-With a limit of 50, we reach load factors of 24.
+So sreg_proto_base is only set if tb[NFTA_NAT_REG_PROTO_BASE] gets
+passed.
 
-This patch changes MIN_CHAINLEN to 50, to minimize risks.
+So, I would expect that all accesses to priv->sreg_proto_base are
+guarded with a 'if (priv->sreg_proto_base)' check.
 
-Ideally, we could in the future add a cushion based on expected
-load factor (2 * nf_conntrack_max / nf_conntrack_buckets),
-because some setups might expect unusual values.
+> @@ -286,7 +300,9 @@ static int nft_nat_dump(struct sk_buff *skb,
+>  		if (nft_dump_register(skb, NFTA_NAT_REG_PROTO_MIN,
+>  				      priv->sreg_proto_min) ||
+>  		    nft_dump_register(skb, NFTA_NAT_REG_PROTO_MAX,
+> -				      priv->sreg_proto_max))
+> +				      priv->sreg_proto_max) ||
+> +		    nft_dump_register(skb, NFTA_NAT_REG_PROTO_BASE,
+> +				      priv->sreg_proto_base))
 
-Fixes: c9c3b6811f74 ("netfilter: conntrack: make max chain length random")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_conntrack_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 7250082e7de5..c6a6a6099b4e 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -96,8 +96,8 @@ static DEFINE_MUTEX(nf_conntrack_mutex);
- #define GC_SCAN_MAX_DURATION	msecs_to_jiffies(10)
- #define GC_SCAN_EXPIRED_MAX	(64000u / HZ)
- 
--#define MIN_CHAINLEN	8u
--#define MAX_CHAINLEN	(32u - MIN_CHAINLEN)
-+#define MIN_CHAINLEN	50u
-+#define MAX_CHAINLEN	(80u - MIN_CHAINLEN)
- 
- static struct conntrack_gc_work conntrack_gc_work;
- 
--- 
-2.30.2
-
+sreg_proto_min/max are only dumped when set, so NFTA_NAT_REG_PROTO_BASE
+should not be dumped unconditionally either?
