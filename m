@@ -2,42 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 101CD6AFA69
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Mar 2023 00:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D684D6AFA67
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Mar 2023 00:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbjCGXbq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Mar 2023 18:31:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41266 "EHLO
+        id S229551AbjCGXbp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 Mar 2023 18:31:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjCGXbk (ORCPT
+        with ESMTP id S229922AbjCGXbk (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 7 Mar 2023 18:31:40 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62451A8E95
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8A8A8E98
         for <netfilter-devel@vger.kernel.org>; Tue,  7 Mar 2023 15:31:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=k6UftfULumyNXmzqwfsEJbKGbjFYRxG7N1hMZy7L7v0=; b=YPvAKEzXR7KOZkpEB5tftlmKPd
-        nu8/NdNYNuYK+anPomHx9Bq4Noyn5aF3RQvLMAn7CVw0ptIzYUtF3wskn21V1021VsVFnTiUz1xp+
-        XEHCWCDp8ILPxyK4iGLgz5vSilUoVJ9oiiiShCDdJWEQuNce3kVt5NATgO/F32Ed7wYURFhrCrUQp
-        vXDEQB/LehBc58D8pccLAKlZV79ZxYYHvPRb4MzRB1zJ26TjWG1J9D4CZ/7ZslQgNn3LhhJzCSayz
-        PrZ1iA4XYLU4Lex2z69lEMyVcaJIL1umaNVz5Yt9Ah0IHBd9m9MouqqGAUt2+IBFeygDeqEKRNAoL
-        0efJmcog==;
+        bh=Ze7HW2K/3yDW5ws4Ak4ExqR4mml7aPSUkkqCpCYl1I4=; b=ol+38VknR24tquHhsHVJMWvsY0
+        2x0txzBDvGH09FKjuQiBX8hYMOV9cbW5cE8U4UJrituokPtHzUyVQdqKIOZsRmY52PDZuVmUT/wtj
+        VFM8+Y2+9hlf+Gtro9aqY98wFMKA21OAN07QIKk3c1gA5zLVzyN+2ebftrTIQ0uO1wO4riwhgBF85
+        eN5wj/FOfgLK/ZHlU5Dzz20rXIhD59rxHVgMyuToRYGexZsSFeVMEb6insk1l+DWXlQuZ4H709n3K
+        v+f0UWG7GgRhm782TVfrv0IxyAtrCDKHalIFEKYZW95OO6eYaaZ6zWWAqPhaahhIUPKl4YunjS3vw
+        OGCpMTtQ==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1pZgmN-00H2Ov-Gi; Tue, 07 Mar 2023 23:31:35 +0000
+        id 1pZgmN-00H2Ov-JH
+        for netfilter-devel@vger.kernel.org; Tue, 07 Mar 2023 23:31:35 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nf-next v2 8/9] netfilter: nft_redir: deduplicate eval call-backs
-Date:   Tue,  7 Mar 2023 23:30:55 +0000
-Message-Id: <20230307233056.2681361-9-jeremy@azazel.net>
+Subject: [PATCH nf-next v2 9/9] netfilter: nft_redir: add support for shifted port-ranges
+Date:   Tue,  7 Mar 2023 23:30:56 +0000
+Message-Id: <20230307233056.2681361-10-jeremy@azazel.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230307233056.2681361-1-jeremy@azazel.net>
 References: <20230307233056.2681361-1-jeremy@azazel.net>
@@ -55,166 +55,116 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-nft_redir has separate ipv4 and ipv6 call-backs which share much of
-their code, and an inet one switch containing a switch that calls one of
-the others based on the family of the packet.  Merge the ipv4 and ipv6
-ones into the inet one in order to get rid of the duplicate code.
-
-Const-qualify the `priv` pointer since we don't need to write through
-it.
-
-Assign `priv->flags` to the range instead of OR-ing it in.
-
-Set the `NF_NAT_RANGE_PROTO_SPECIFIED` flag once during init, rather
-than on every eval.
+Support was recently added to nft_nat to allow shifting port-ranges
+during NAT.  Extend this support to allow them to used in redirecting
+as well.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
-Reviewed-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nft_redir.c | 81 ++++++++++++++-------------------------
- 1 file changed, 29 insertions(+), 52 deletions(-)
+ include/uapi/linux/netfilter/nf_tables.h |  2 ++
+ net/netfilter/nf_nat_redirect.c          |  1 +
+ net/netfilter/nft_redir.c                | 23 ++++++++++++++++++++++-
+ 3 files changed, 25 insertions(+), 1 deletion(-)
 
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index bab3e3c6de74..7249b67acd67 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -1488,12 +1488,14 @@ enum nft_masq_attributes {
+  * @NFTA_REDIR_REG_PROTO_MIN: source register of proto range start (NLA_U32: nft_registers)
+  * @NFTA_REDIR_REG_PROTO_MAX: source register of proto range end (NLA_U32: nft_registers)
+  * @NFTA_REDIR_FLAGS: NAT flags (see NF_NAT_RANGE_* in linux/netfilter/nf_nat.h) (NLA_U32)
++ * @NFTA_REDIR_REG_PROTO_BASE: source register of proto range base offset (NLA_U32: nft_registers)
+  */
+ enum nft_redir_attributes {
+ 	NFTA_REDIR_UNSPEC,
+ 	NFTA_REDIR_REG_PROTO_MIN,
+ 	NFTA_REDIR_REG_PROTO_MAX,
+ 	NFTA_REDIR_FLAGS,
++	NFTA_REDIR_REG_PROTO_BASE,
+ 	__NFTA_REDIR_MAX
+ };
+ #define NFTA_REDIR_MAX		(__NFTA_REDIR_MAX - 1)
+diff --git a/net/netfilter/nf_nat_redirect.c b/net/netfilter/nf_nat_redirect.c
+index 54ce8e6113ed..5641078da2cb 100644
+--- a/net/netfilter/nf_nat_redirect.c
++++ b/net/netfilter/nf_nat_redirect.c
+@@ -41,6 +41,7 @@ nf_nat_redirect(struct sk_buff *skb, const struct nf_nat_range2 *range,
+ 	newrange.max_addr	= *newdst;
+ 	newrange.min_proto	= range->min_proto;
+ 	newrange.max_proto	= range->max_proto;
++	newrange.base_proto	= range->base_proto;
+ 
+ 	return nf_nat_setup_info(ct, &newrange, NF_NAT_MANIP_DST);
+ }
 diff --git a/net/netfilter/nft_redir.c b/net/netfilter/nft_redir.c
-index 77a459470cb7..1d52a05a8b03 100644
+index 1d52a05a8b03..adb010c40a07 100644
 --- a/net/netfilter/nft_redir.c
 +++ b/net/netfilter/nft_redir.c
-@@ -64,6 +64,8 @@ static int nft_redir_init(const struct nft_ctx *ctx,
+@@ -16,12 +16,14 @@
+ struct nft_redir {
+ 	u8			sreg_proto_min;
+ 	u8			sreg_proto_max;
++	u8			sreg_proto_base;
+ 	u16			flags;
+ };
+ 
+ static const struct nla_policy nft_redir_policy[NFTA_REDIR_MAX + 1] = {
+ 	[NFTA_REDIR_REG_PROTO_MIN]	= { .type = NLA_U32 },
+ 	[NFTA_REDIR_REG_PROTO_MAX]	= { .type = NLA_U32 },
++	[NFTA_REDIR_REG_PROTO_BASE]	= { .type = NLA_U32 },
+ 	[NFTA_REDIR_FLAGS]		= { .type = NLA_U32 },
+ };
+ 
+@@ -48,7 +50,7 @@ static int nft_redir_init(const struct nft_ctx *ctx,
+ 	unsigned int plen;
+ 	int err;
+ 
+-	plen = sizeof_field(struct nf_nat_range, min_addr.all);
++	plen = sizeof_field(struct nf_nat_range2, min_addr.all);
+ 	if (tb[NFTA_REDIR_REG_PROTO_MIN]) {
+ 		err = nft_parse_register_load(tb[NFTA_REDIR_REG_PROTO_MIN],
+ 					      &priv->sreg_proto_min, plen);
+@@ -61,6 +63,16 @@ static int nft_redir_init(const struct nft_ctx *ctx,
+ 						      plen);
+ 			if (err < 0)
+ 				return err;
++
++			if (tb[NFTA_REDIR_REG_PROTO_BASE]) {
++				err = nft_parse_register_load
++					(tb[NFTA_REDIR_REG_PROTO_BASE],
++					 &priv->sreg_proto_base, plen);
++				if (err < 0)
++					return err;
++
++				priv->flags |= NF_NAT_RANGE_PROTO_OFFSET;
++			}
  		} else {
  			priv->sreg_proto_max = priv->sreg_proto_min;
  		}
+@@ -89,6 +101,11 @@ static int nft_redir_dump(struct sk_buff *skb,
+ 		if (nft_dump_register(skb, NFTA_REDIR_REG_PROTO_MAX,
+ 				      priv->sreg_proto_max))
+ 			goto nla_put_failure;
 +
-+		priv->flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
++		if (priv->sreg_proto_base)
++			if (nft_dump_register(skb, NFTA_REDIR_REG_PROTO_BASE,
++					      priv->sreg_proto_base))
++				goto nla_put_failure;
  	}
  
- 	if (tb[NFTA_REDIR_FLAGS]) {
-@@ -99,26 +101,37 @@ static int nft_redir_dump(struct sk_buff *skb,
- 	return -1;
- }
- 
--static void nft_redir_ipv4_eval(const struct nft_expr *expr,
--				struct nft_regs *regs,
--				const struct nft_pktinfo *pkt)
-+static void nft_redir_eval(const struct nft_expr *expr,
-+			   struct nft_regs *regs,
-+			   const struct nft_pktinfo *pkt)
- {
--	struct nft_redir *priv = nft_expr_priv(expr);
-+	const struct nft_redir *priv = nft_expr_priv(expr);
- 	struct nf_nat_range2 range;
- 
- 	memset(&range, 0, sizeof(range));
-+	range.flags = priv->flags;
- 	if (priv->sreg_proto_min) {
--		range.min_proto.all = (__force __be16)nft_reg_load16(
--			&regs->data[priv->sreg_proto_min]);
--		range.max_proto.all = (__force __be16)nft_reg_load16(
--			&regs->data[priv->sreg_proto_max]);
--		range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
-+		range.min_proto.all = (__force __be16)
-+			nft_reg_load16(&regs->data[priv->sreg_proto_min]);
-+		range.max_proto.all = (__force __be16)
-+			nft_reg_load16(&regs->data[priv->sreg_proto_max]);
+ 	if (priv->flags != 0 &&
+@@ -115,6 +132,10 @@ static void nft_redir_eval(const struct nft_expr *expr,
+ 			nft_reg_load16(&regs->data[priv->sreg_proto_min]);
+ 		range.max_proto.all = (__force __be16)
+ 			nft_reg_load16(&regs->data[priv->sreg_proto_max]);
++
++		if (priv->sreg_proto_base)
++			range.base_proto.all = (__force __be16)
++				nft_reg_load16(&regs->data[priv->sreg_proto_base]);
  	}
  
--	range.flags |= priv->flags;
--
--	regs->verdict.code =
--		nf_nat_redirect_ipv4(pkt->skb, &range, nft_hook(pkt));
-+	switch (nft_pf(pkt)) {
-+	case NFPROTO_IPV4:
-+		regs->verdict.code = nf_nat_redirect_ipv4(pkt->skb, &range,
-+							  nft_hook(pkt));
-+		break;
-+#ifdef CONFIG_NF_TABLES_IPV6
-+	case NFPROTO_IPV6:
-+		regs->verdict.code = nf_nat_redirect_ipv6(pkt->skb, &range,
-+							  nft_hook(pkt));
-+		break;
-+#endif
-+	default:
-+		WARN_ON_ONCE(1);
-+		break;
-+	}
- }
- 
- static void
-@@ -131,7 +144,7 @@ static struct nft_expr_type nft_redir_ipv4_type;
- static const struct nft_expr_ops nft_redir_ipv4_ops = {
- 	.type		= &nft_redir_ipv4_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_redir)),
--	.eval		= nft_redir_ipv4_eval,
-+	.eval		= nft_redir_eval,
- 	.init		= nft_redir_init,
- 	.destroy	= nft_redir_ipv4_destroy,
- 	.dump		= nft_redir_dump,
-@@ -149,28 +162,6 @@ static struct nft_expr_type nft_redir_ipv4_type __read_mostly = {
- };
- 
- #ifdef CONFIG_NF_TABLES_IPV6
--static void nft_redir_ipv6_eval(const struct nft_expr *expr,
--				struct nft_regs *regs,
--				const struct nft_pktinfo *pkt)
--{
--	struct nft_redir *priv = nft_expr_priv(expr);
--	struct nf_nat_range2 range;
--
--	memset(&range, 0, sizeof(range));
--	if (priv->sreg_proto_min) {
--		range.min_proto.all = (__force __be16)nft_reg_load16(
--			&regs->data[priv->sreg_proto_min]);
--		range.max_proto.all = (__force __be16)nft_reg_load16(
--			&regs->data[priv->sreg_proto_max]);
--		range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
--	}
--
--	range.flags |= priv->flags;
--
--	regs->verdict.code =
--		nf_nat_redirect_ipv6(pkt->skb, &range, nft_hook(pkt));
--}
--
- static void
- nft_redir_ipv6_destroy(const struct nft_ctx *ctx, const struct nft_expr *expr)
- {
-@@ -181,7 +172,7 @@ static struct nft_expr_type nft_redir_ipv6_type;
- static const struct nft_expr_ops nft_redir_ipv6_ops = {
- 	.type		= &nft_redir_ipv6_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_redir)),
--	.eval		= nft_redir_ipv6_eval,
-+	.eval		= nft_redir_eval,
- 	.init		= nft_redir_init,
- 	.destroy	= nft_redir_ipv6_destroy,
- 	.dump		= nft_redir_dump,
-@@ -200,20 +191,6 @@ static struct nft_expr_type nft_redir_ipv6_type __read_mostly = {
- #endif
- 
- #ifdef CONFIG_NF_TABLES_INET
--static void nft_redir_inet_eval(const struct nft_expr *expr,
--				struct nft_regs *regs,
--				const struct nft_pktinfo *pkt)
--{
--	switch (nft_pf(pkt)) {
--	case NFPROTO_IPV4:
--		return nft_redir_ipv4_eval(expr, regs, pkt);
--	case NFPROTO_IPV6:
--		return nft_redir_ipv6_eval(expr, regs, pkt);
--	}
--
--	WARN_ON_ONCE(1);
--}
--
- static void
- nft_redir_inet_destroy(const struct nft_ctx *ctx, const struct nft_expr *expr)
- {
-@@ -224,7 +201,7 @@ static struct nft_expr_type nft_redir_inet_type;
- static const struct nft_expr_ops nft_redir_inet_ops = {
- 	.type		= &nft_redir_inet_type,
- 	.size		= NFT_EXPR_SIZE(sizeof(struct nft_redir)),
--	.eval		= nft_redir_inet_eval,
-+	.eval		= nft_redir_eval,
- 	.init		= nft_redir_init,
- 	.destroy	= nft_redir_inet_destroy,
- 	.dump		= nft_redir_dump,
+ 	switch (nft_pf(pkt)) {
 -- 
 2.39.2
 
