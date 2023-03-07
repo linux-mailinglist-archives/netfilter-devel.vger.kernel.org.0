@@ -2,43 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB096AE185
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Mar 2023 14:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B05116AE183
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Mar 2023 14:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbjCGN6k (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Mar 2023 08:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
+        id S230344AbjCGN63 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 Mar 2023 08:58:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjCGN6j (ORCPT
+        with ESMTP id S229743AbjCGN62 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 Mar 2023 08:58:39 -0500
+        Tue, 7 Mar 2023 08:58:28 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D9C74DF3
-        for <netfilter-devel@vger.kernel.org>; Tue,  7 Mar 2023 05:58:38 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF1B74DEC
+        for <netfilter-devel@vger.kernel.org>; Tue,  7 Mar 2023 05:58:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=60oZkiga/2LwulyuE0EnPIOyPA0Gq8YwO21kqAYpZb0=; b=GBfGuzleOF8gOW+J/QEicsW+HB
-        YtxVirU5bKtMZXTe0TsjkIHVx9tERl4WxUDQaM1v2xLOyuwhfNfUsQH1lJ88r4UX8OaSKFqpIm86J
-        0USRpwmdXi8u8Elmir3kXC4LeirprhvhTnJeOmSICTSCrf9hwxXCzkS6zFmgiHpJPyoXa3/V9I//r
-        mvqw0iXRgfPCu2PJKMMlFg0XwApiCEGRnV5FzBNJ5+glLsjS7o2RjYrco+sSHMMhpxPxpWvF413ht
-        yeykDey7tfxkdkSkOePZL5b1TdEuM7DeBqO+cl98zdY8WWrwc6a4c+stf+a3I9em5cx4qQha8f41H
-        gM6y0z0g==;
+        bh=yIEHQCwhlRtk9SsepWZ7Vs3aH5Su7X+C8jVir1DWJ9E=; b=QZ9HeyEoXvcsbHRSX+pjPwHMEG
+        /apc2aqcfTJxdmVNl2FhoGDUVnLs6ppOQTqUX6aYCzAEvlxqEoER7t+Qatjmw76CNXcnwKUtEjcLr
+        j0fzOrOBj6dZkKiVSZ8kRpEynYMCiAIx2+zmAYXsZ02DF7AMKOVmu+vvRSss6kQxbM0fVKzxHJxDL
+        UXL2QEqgOLzLBwN9Rw2FqqXvIlwm7rHBpFS5OUycOf8KZf0DfkR1ldVqzp5vIggfXYcd7ZVXwSOH0
+        l6yX+iFIlidnip7B15D8oTTN8/wXdFl777sqrLZM7Z22c0efbC291PPsYGAmTJGzMPSusXqFhO+4L
+        5G6hZQIQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1pZXps-00059K-LP; Tue, 07 Mar 2023 14:58:36 +0100
+        id 1pZXpi-00058c-2A; Tue, 07 Mar 2023 14:58:26 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Jozsef Kadlecsik <kadlec@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org,
         Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ipset PATCH 0/4] Some testsuite improvements
-Date:   Tue,  7 Mar 2023 14:58:08 +0100
-Message-Id: <20230307135812.25993-1-phil@nwl.cc>
+Subject: [ipset PATCH 1/4] tests: xlate: Test built binary by default
+Date:   Tue,  7 Mar 2023 14:58:09 +0100
+Message-Id: <20230307135812.25993-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
+In-Reply-To: <20230307135812.25993-1-phil@nwl.cc>
+References: <20230307135812.25993-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -50,36 +52,47 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Patch 1 fixes the reason why xlate testuite failed for me - it was
-simply not testing the right binary. Make it adhere to what the regular
-testsuite does by calling the built ipset tool instead of the installed
-one.
+Testing the host's iptables-translate by default is unintuitive. Since
+the ipset-translate symlink is created upon 'make install', add a local
+symlink to the repository pointing at a built binary in src/. Using this
+by default is consistent with the regular testsuite.
 
-Patch 2 is just bonus, the idea for it came from a "does this even work"
-sanity check while debugging the above.
-
-Patch 3 fixes for missing 'netmask' tool on my system. Not entirely
-satisfying though, there's no 'sendip', either (but the testsuite may
-run without).
-
-Patch 4 avoids a spurious testsuite failure for me. Not sure if it's a
-good solution or will just move the spurious failure to others' systems.
-
-Phil Sutter (4):
-  tests: xlate: Test built binary by default
-  tests: xlate: Make test input valid
-  tests: cidr.sh: Add ipcalc fallback
-  tests: hash:ip,port.t: 'vrrp' is printed as 'carp'
-
- tests/cidr.sh               | 32 ++++++++++++++++++++++++++++----
- tests/hash:ip,port.t.list2  |  2 +-
- tests/xlate/ipset-translate |  1 +
- tests/xlate/runtest.sh      | 14 ++++++++++----
- tests/xlate/xlate.t         |  6 +++---
- tests/xlate/xlate.t.nft     |  4 ++--
- 6 files changed, 45 insertions(+), 14 deletions(-)
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ tests/xlate/ipset-translate | 1 +
+ tests/xlate/runtest.sh      | 8 ++------
+ 2 files changed, 3 insertions(+), 6 deletions(-)
  create mode 120000 tests/xlate/ipset-translate
 
+diff --git a/tests/xlate/ipset-translate b/tests/xlate/ipset-translate
+new file mode 120000
+index 0000000000000..91980c18bb040
+--- /dev/null
++++ b/tests/xlate/ipset-translate
+@@ -0,0 +1 @@
++../../src/ipset
+\ No newline at end of file
+diff --git a/tests/xlate/runtest.sh b/tests/xlate/runtest.sh
+index a2a02c05d7573..6a2f80c0d9e61 100755
+--- a/tests/xlate/runtest.sh
++++ b/tests/xlate/runtest.sh
+@@ -6,14 +6,10 @@ if [ ! -x "$DIFF" ] ; then
+ 	exit 1
+ fi
+ 
+-IPSET_XLATE=$(which ipset-translate)
+-if [ ! -x "$IPSET_XLATE" ] ; then
+-	echo "ERROR: ipset-translate is not installed yet"
+-	exit 1
+-fi
++ipset_xlate=${IPSET_XLATE_BIN:-$(dirname $0)/ipset-translate}
+ 
+ TMP=$(mktemp)
+-ipset-translate restore < xlate.t &> $TMP
++$ipset_xlate restore < xlate.t &> $TMP
+ if [ $? -ne 0 ]
+ then
+ 	cat $TMP
 -- 
 2.38.0
 
