@@ -2,42 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 711B36AE186
-	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Mar 2023 14:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7E66AE184
+	for <lists+netfilter-devel@lfdr.de>; Tue,  7 Mar 2023 14:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbjCGN6p (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Mar 2023 08:58:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39412 "EHLO
+        id S230288AbjCGN6f (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 Mar 2023 08:58:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjCGN6o (ORCPT
+        with ESMTP id S229743AbjCGN6e (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 Mar 2023 08:58:44 -0500
+        Tue, 7 Mar 2023 08:58:34 -0500
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E3130D2
-        for <netfilter-devel@vger.kernel.org>; Tue,  7 Mar 2023 05:58:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B9E74DEF
+        for <netfilter-devel@vger.kernel.org>; Tue,  7 Mar 2023 05:58:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=hLaP8JqMLuFPtaAwPpU1IdFHuRE8l4ORmbU48OaQFws=; b=RvHB7wvVyI+PxGTl4m34hdlgWm
-        hv8WN6GZwC+H1XRq/awhxVjK1QRgNhNglDXA96eK6eiMkLXxfBWMDDU5lIzAPIy5XRsC8ZOE5EAQV
-        NLAoiju/SYVhixiNbD1Anbtzxp/WLjaqmJZVYkgleOrqvojQeEGs6WqC5AGS4lTYpoFY7NucSR9KE
-        zkQ6KXoUco4JEhdjBNsMI3wIWAt50JnZHiJsV1I36fnQ1XbB6A4Zt3QLWvGKRId9uPGTVKsswk4jz
-        WMg58ZQ942yyFkTCJhuYa036WWNOKsnAiLtdz2MYYltmmEpD865k7AuLuOu6kaLPr35b0/VP5izNC
-        rjRV4Tng==;
+        bh=1pUtQ/EadlDgYofAqvGmRW9igd8X07bCgLPW4E08blU=; b=KQp+mHPbbGZ8HHd4JkV5/MAKTC
+        V7w1gokVZ1Sw6GAj1XA7kf1kj5k0/WH8rRhR1Zq3uPsh3ixJlJkp5qiqIMuIYkISEnbxrzl0mDiBq
+        SQ6viXCaskRN80ooghD8tpOfoRKdbBmX0yCIqMAs039mrQVLc1rNU+cWMH2z9shJN4lcthq7wQ8WQ
+        9b78btQstgZDDGfWclWKugQk9YjdvKABPciGbTy258vbGCwTbt5oT4nSeHjo/vDb0V8UQIQqQAhS2
+        IPAr9H65C5LsrWOErLBNqJpjIGLi10b4rA/UPVHFRGW2I9FaiQU0mvmM67opCFub/zD4roHx4UxHD
+        ANeCrTKA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1pZXpx-00059v-UW; Tue, 07 Mar 2023 14:58:41 +0100
+        id 1pZXpn-00059C-Bv; Tue, 07 Mar 2023 14:58:31 +0100
 From:   Phil Sutter <phil@nwl.cc>
 To:     Jozsef Kadlecsik <kadlec@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org,
         Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ipset PATCH 2/4] tests: xlate: Make test input valid
-Date:   Tue,  7 Mar 2023 14:58:10 +0100
-Message-Id: <20230307135812.25993-3-phil@nwl.cc>
+Subject: [ipset PATCH 3/4] tests: cidr.sh: Add ipcalc fallback
+Date:   Tue,  7 Mar 2023 14:58:11 +0100
+Message-Id: <20230307135812.25993-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20230307135812.25993-1-phil@nwl.cc>
 References: <20230307135812.25993-1-phil@nwl.cc>
@@ -52,84 +52,72 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Make sure ipset at least accepts the test input by running it against
-plain ipset once for sanity. This exposed two issues:
+If netmask is not available, ipcalc may be a viable replacement.
 
-* Set 'hip5' doesn't have comment support, so add the commented elements
-  to 'hip6' instead (likely a typo).
-* Set 'bip1' range 2.0.0.1-2.1.0.1 exceeds the max allowed for bitmap
-  sets. Reduce it accordingly.
-
-Fixes: 7587d1c4b5465 ("tests: add tests ipset to nftables")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- tests/xlate/runtest.sh  | 10 ++++++++++
- tests/xlate/xlate.t     |  6 +++---
- tests/xlate/xlate.t.nft |  4 ++--
- 3 files changed, 15 insertions(+), 5 deletions(-)
+ tests/cidr.sh | 32 ++++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
 
-diff --git a/tests/xlate/runtest.sh b/tests/xlate/runtest.sh
-index 6a2f80c0d9e61..8b42f0b414d72 100755
---- a/tests/xlate/runtest.sh
-+++ b/tests/xlate/runtest.sh
-@@ -6,8 +6,18 @@ if [ ! -x "$DIFF" ] ; then
- 	exit 1
- fi
+diff --git a/tests/cidr.sh b/tests/cidr.sh
+index b7d695ae7c0b3..2c4d9399f02dc 100755
+--- a/tests/cidr.sh
++++ b/tests/cidr.sh
+@@ -37,6 +37,30 @@ NETS="0.0.0.0/1
  
-+ipset=${IPSET_BIN:-../../src/ipset}
- ipset_xlate=${IPSET_XLATE_BIN:-$(dirname $0)/ipset-translate}
+ ipset="../src/ipset"
  
-+$ipset restore < xlate.t
-+rc=$?
-+$ipset destroy
-+if [ $rc -ne 0 ]
-+then
-+	echo -e "[\033[0;31mERROR\033[0m] invalid test input"
++if which netmask >/dev/null 2>&1; then
++	net_first_addr() {
++		netmask -r $1 | cut -d - -f 1
++	}
++	net_last_addr() {
++		netmask -r $1 | cut -d - -f 2 | cut -d ' ' -f 1
++	}
++elif which ipcalc >/dev/null 2>&1; then
++	net_first_addr() {
++		ipcalc $1 | awk '/^Address:/{print $2}'
++	}
++	net_last_addr() {
++		# Netmask tool prints broadcast address as last one, so
++		# prefer that instead of HostMax. Also fix for /31 and /32
++		# being recognized as special by ipcalc.
++		ipcalc $1 | awk '/^(Hostroute|HostMax):/{out=$2}
++				 /^Broadcast:/{out=$2}
++				 END{print out}'
++	}
++else
++	echo "need either netmask or ipcalc tools"
 +	exit 1
 +fi
 +
- TMP=$(mktemp)
- $ipset_xlate restore < xlate.t &> $TMP
- if [ $? -ne 0 ]
-diff --git a/tests/xlate/xlate.t b/tests/xlate/xlate.t
-index f09cb202bb6c0..38cbc787bb854 100644
---- a/tests/xlate/xlate.t
-+++ b/tests/xlate/xlate.t
-@@ -11,8 +11,8 @@ add hip4 192.168.10.0
- create hip5 hash:ip maxelem 24
- add hip5 192.168.10.0
- create hip6 hash:ip comment
--add hip5 192.168.10.1
--add hip5 192.168.10.2 comment "this is a comment"
-+add hip6 192.168.10.1
-+add hip6 192.168.10.2 comment "this is a comment"
- create ipp1 hash:ip,port
- add ipp1 192.168.10.1,0
- add ipp1 192.168.10.2,5
-@@ -23,7 +23,7 @@ create ipp3 hash:ip,port counters
- add ipp3 192.168.10.3,20 packets 5 bytes 3456
- create ipp4 hash:ip,port timeout 4 counters
- add ipp4 192.168.10.3,20 packets 5 bytes 3456
--create bip1 bitmap:ip range 2.0.0.1-2.1.0.1 timeout 5
-+create bip1 bitmap:ip range 2.0.0.1-2.0.1.1 timeout 5
- create bip2 bitmap:ip range 10.0.0.0/8 netmask 24 timeout 5
- add bip2 10.10.10.0
- add bip2 10.10.20.0 timeout 12
-diff --git a/tests/xlate/xlate.t.nft b/tests/xlate/xlate.t.nft
-index 0152a30811258..8fb2a29b9c79f 100644
---- a/tests/xlate/xlate.t.nft
-+++ b/tests/xlate/xlate.t.nft
-@@ -12,8 +12,8 @@ add element inet global hip4 { 192.168.10.0/24 }
- add set inet global hip5 { type ipv4_addr; size 24; }
- add element inet global hip5 { 192.168.10.0 }
- add set inet global hip6 { type ipv4_addr; }
--add element inet global hip5 { 192.168.10.1 }
--add element inet global hip5 { 192.168.10.2 comment "this is a comment" }
-+add element inet global hip6 { 192.168.10.1 }
-+add element inet global hip6 { 192.168.10.2 comment "this is a comment" }
- add set inet global ipp1 { type ipv4_addr . inet_proto . inet_service; }
- add element inet global ipp1 { 192.168.10.1 . tcp . 0 }
- add element inet global ipp1 { 192.168.10.2 . tcp . 5 }
+ case "$1" in
+ net)
+     $ipset n test hash:net
+@@ -46,9 +70,9 @@ net)
+     done <<<"$NETS"
+ 
+     while IFS= read x; do
+-    	first=`netmask -r $x | cut -d - -f 1`
++    	first=`net_first_addr $x`
+     	$ipset test test $first >/dev/null 2>&1
+-    	last=`netmask -r $x | cut -d - -f 2 | cut -d ' ' -f 1`
++    	last=`net_last_addr $x`
+     	$ipset test test $last >/dev/null 2>&1
+     done <<<"$NETS"
+ 
+@@ -67,9 +91,9 @@ net,port)
+ 
+     n=1
+     while IFS= read x; do
+-    	first=`netmask -r $x | cut -d - -f 1`
++    	first=`net_first_addr $x`
+     	$ipset test test $first,$n >/dev/null 2>&1
+-    	last=`netmask -r $x | cut -d - -f 2 | cut -d ' ' -f 1`
++    	last=`net_last_addr $x`
+     	$ipset test test $last,$n >/dev/null 2>&1
+     	n=$((n+1))
+     done <<<"$NETS"
 -- 
 2.38.0
 
