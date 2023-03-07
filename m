@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F046AFA65
-	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Mar 2023 00:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F566AFA62
+	for <lists+netfilter-devel@lfdr.de>; Wed,  8 Mar 2023 00:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbjCGXbn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 7 Mar 2023 18:31:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
+        id S229927AbjCGXbk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 7 Mar 2023 18:31:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbjCGXbj (ORCPT
+        with ESMTP id S229795AbjCGXbi (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 7 Mar 2023 18:31:39 -0500
+        Tue, 7 Mar 2023 18:31:38 -0500
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007C3A8C70
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A727A8C5E
         for <netfilter-devel@vger.kernel.org>; Tue,  7 Mar 2023 15:31:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,23 +21,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=qlxpCSoK+NhgMUfeaKi8he8/WKGyekBfAjCcxpgsWb4=; b=pqNsFhGCYpUpuwRoWfQOb8zjk0
-        bo5l110k8AofdKa3FMCNT/ihkrijA/H35arG2Wsq2w65Zl/ayN/SCJBnmuafeyVfi8fELtqY1+tJK
-        oI2chKilv8M5yrL15f3Tx+jhzhpAYmmfsQ+sMWkFkCJgwcN0StEK6d3w1FTCVSK2O80HY7wWAk74u
-        ToTdmSWrcsDJ/co4C5CZGi7d6jwWuh9GyJ5GvzYV9EShH7pOc5Cc9LJwjklGogwhjJgbG00lTyXO/
-        pJMliUV0OzyK07ZQw5/f7BZ9tjxU2bp0V1Q6YUn7g9x7irn2Egkm+dxZCisZm5lXjwegPX+tHtKX4
-        /s7Encrw==;
+        bh=Ymf/oMxa+WxyfhPIOTUOmo/6lrxHMSbBW18nO/brCoY=; b=pSFh5AhGc+Cvs00QG7yJKI4mFo
+        0QRlSkkGS0xPI8BUYcLH3WLmzcbJIgTgpip/z0b3fgFL7/mWLOfHyrCOeRp0OCKXMep9F/0a290u0
+        PukSPNLuUmNgRt2j7vEOpN+cygAHH6hrL2hw0cnsDqEtNYVr5uIJGQ0bxFvotYTtvagI9yqPqx3n6
+        VpJM2bbxR7PM+U9PmXMxqafeJrAMGQsBQan9y+25a3rMP5bXjdKM930UFI0Eg1VVYMLYHJALt5mET
+        8l4FrbDyTlkaVVNOXFuk5YpkkIxWfQyLoatqhYOmPFe//P/E+ww3eQlbtnYWpIPYGpqp+Z7B+xWVC
+        8pC/D4Ag==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1pZgmM-00H2Ov-Q2
+        id 1pZgmM-00H2Ov-TL
         for netfilter-devel@vger.kernel.org; Tue, 07 Mar 2023 23:31:34 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH nf-next v2 1/9] netfilter: conntrack: fix typo
-Date:   Tue,  7 Mar 2023 23:30:48 +0000
-Message-Id: <20230307233056.2681361-2-jeremy@azazel.net>
+Subject: [PATCH nf-next v2 2/9] netfilter: nat: fix indentation of function arguments
+Date:   Tue,  7 Mar 2023 23:30:49 +0000
+Message-Id: <20230307233056.2681361-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230307233056.2681361-1-jeremy@azazel.net>
 References: <20230307233056.2681361-1-jeremy@azazel.net>
@@ -55,26 +55,29 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-There's a spelling mistake in a comment.  Fix it.
+A couple of arguments to a function call are incorrectly indented.
+Fix them.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- net/netfilter/nf_conntrack_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_nat_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 7250082e7de5..004c54132a3b 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -1294,7 +1294,7 @@ __nf_conntrack_confirm(struct sk_buff *skb)
- }
- EXPORT_SYMBOL_GPL(__nf_conntrack_confirm);
- 
--/* Returns true if a connection correspondings to the tuple (required
-+/* Returns true if a connection corresponds to the tuple (required
-    for NAT). */
- int
- nf_conntrack_tuple_taken(const struct nf_conntrack_tuple *tuple,
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index e29e4ccb5c5a..ce829d434f13 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -549,8 +549,8 @@ get_unique_tuple(struct nf_conntrack_tuple *tuple,
+ 		if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
+ 			if (!(range->flags & NF_NAT_RANGE_PROTO_OFFSET) &&
+ 			    l4proto_in_range(tuple, maniptype,
+-			          &range->min_proto,
+-			          &range->max_proto) &&
++					     &range->min_proto,
++					     &range->max_proto) &&
+ 			    (range->min_proto.all == range->max_proto.all ||
+ 			     !nf_nat_used_tuple(tuple, ct)))
+ 				return;
 -- 
 2.39.2
 
