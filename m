@@ -2,66 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B476B3F09
-	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Mar 2023 13:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 874E46B3F17
+	for <lists+netfilter-devel@lfdr.de>; Fri, 10 Mar 2023 13:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjCJMTs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 10 Mar 2023 07:19:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52790 "EHLO
+        id S229906AbjCJMWZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 10 Mar 2023 07:22:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjCJMTr (ORCPT
+        with ESMTP id S230360AbjCJMWU (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 10 Mar 2023 07:19:47 -0500
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA73F1854
-        for <netfilter-devel@vger.kernel.org>; Fri, 10 Mar 2023 04:19:46 -0800 (PST)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1pabiq-0001s0-Gi; Fri, 10 Mar 2023 13:19:44 +0100
-Date:   Fri, 10 Mar 2023 13:19:44 +0100
-From:   Phil Sutter <phil@nwl.cc>
-To:     Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [ipset PATCH 0/4] Some testsuite improvements
-Message-ID: <ZAsgYKVbW35rGPA4@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-References: <20230307135812.25993-1-phil@nwl.cc>
+        Fri, 10 Mar 2023 07:22:20 -0500
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5865111FBE
+        for <netfilter-devel@vger.kernel.org>; Fri, 10 Mar 2023 04:22:18 -0800 (PST)
+Date:   Fri, 10 Mar 2023 13:22:16 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Phil Sutter <phil@nwl.cc>, Jozsef Kadlecsik <kadlec@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [ipset PATCH 0/2] Two minor code fixes
+Message-ID: <ZAsg+PA6VS/er/q1@salvia>
+References: <20230222170241.26208-1-phil@nwl.cc>
+ <Y//RlHWq86REFVu6@salvia>
+ <ZABmjujQuFgknGXR@orbyte.nwl.cc>
+ <ZAsa7a2mF7wGk8fI@salvia>
+ <ZAsdAyikGXVmd8QS@orbyte.nwl.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230307135812.25993-1-phil@nwl.cc>
+In-Reply-To: <ZAsdAyikGXVmd8QS@orbyte.nwl.cc>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Mar 07, 2023 at 02:58:08PM +0100, Phil Sutter wrote:
-> Patch 1 fixes the reason why xlate testuite failed for me - it was
-> simply not testing the right binary. Make it adhere to what the regular
-> testsuite does by calling the built ipset tool instead of the installed
-> one.
+On Fri, Mar 10, 2023 at 01:05:23PM +0100, Phil Sutter wrote:
+> On Fri, Mar 10, 2023 at 12:56:29PM +0100, Pablo Neira Ayuso wrote:
+> > On Thu, Mar 02, 2023 at 10:04:14AM +0100, Phil Sutter wrote:
+> > > On Wed, Mar 01, 2023 at 11:28:36PM +0100, Pablo Neira Ayuso wrote:
+> > > > On Wed, Feb 22, 2023 at 06:02:39PM +0100, Phil Sutter wrote:
+> > > > > These were identified by Coverity tool, no problems in practice. Still
+> > > > > worth fixing to reduce noise in code checkers.
+> > > > 
+> > > > LGTM.
+> > > > 
+> > > > Did you run ipset xlate tests? These should not break those but just
+> > > > in case.
+> > > 
+> > > I didn't, thanks for the reminder. Testsuite fails, but it does with
+> > > HEAD as well. And so does the other testsuite ("make tests"), BtW. I'll
+> > > investigate.
+> > 
+> > Does this work after your testsuite updates? If so, push them out.
 > 
-> Patch 2 is just bonus, the idea for it came from a "does this even work"
-> sanity check while debugging the above.
-> 
-> Patch 3 fixes for missing 'netmask' tool on my system. Not entirely
-> satisfying though, there's no 'sendip', either (but the testsuite may
-> run without).
-> 
-> Patch 4 avoids a spurious testsuite failure for me. Not sure if it's a
-> good solution or will just move the spurious failure to others' systems.
-> 
-> Phil Sutter (4):
->   tests: xlate: Test built binary by default
->   tests: xlate: Make test input valid
->   tests: cidr.sh: Add ipcalc fallback
->   tests: hash:ip,port.t: 'vrrp' is printed as 'carp'
+> Yes, it does. Should I push the testsuite updates, too? I'm uncertain
+> about the s/vrrp/carp/, don't want to break anyone's test setup.
 
-Series applied.
+I can see some distros still use vrrp en /etc/protocols, yes, I'm
+ambivalent on this one.
