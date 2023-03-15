@@ -2,77 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6685D6BAFC2
-	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Mar 2023 12:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D74686BAFE4
+	for <lists+netfilter-devel@lfdr.de>; Wed, 15 Mar 2023 13:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbjCOL7b (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 15 Mar 2023 07:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
+        id S229725AbjCOMHj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 15 Mar 2023 08:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbjCOL71 (ORCPT
+        with ESMTP id S229556AbjCOMHj (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 15 Mar 2023 07:59:27 -0400
-X-Greylist: delayed 391 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 15 Mar 2023 04:59:23 PDT
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [IPv6:2001:738:5001::45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D24667031
-        for <netfilter-devel@vger.kernel.org>; Wed, 15 Mar 2023 04:59:23 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp0.kfki.hu (Postfix) with ESMTP id 6B9BA67400EF;
-        Wed, 15 Mar 2023 12:52:47 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
-        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Wed, 15 Mar 2023 12:52:45 +0100 (CET)
-Received: from mentat.rmki.kfki.hu (host-94-248-211-167.kabelnet.hu [94.248.211.167])
-        (Authenticated sender: kadlecsik.jozsef@wigner.hu)
-        by smtp0.kfki.hu (Postfix) with ESMTPSA id D187B67400EB;
-        Wed, 15 Mar 2023 12:52:44 +0100 (CET)
-Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
-        id 7569A884; Wed, 15 Mar 2023 12:52:44 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by mentat.rmki.kfki.hu (Postfix) with ESMTP id 71B36900;
-        Wed, 15 Mar 2023 12:52:44 +0100 (CET)
-Date:   Wed, 15 Mar 2023 12:52:44 +0100 (CET)
-From:   Jozsef Kadlecsik <kadlec@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>
-cc:     netfilter-devel@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [ipset PATCH] tests: hash:ip,port.t: Replace VRRP by GRE
- protocol
-In-Reply-To: <ZAuap2hATJLQexpN@orbyte.nwl.cc>
-Message-ID: <f0245962-5ea1-5b68-b8d6-258779585a@netfilter.org>
-References: <20230310174903.5089-1-phil@nwl.cc> <ZAuap2hATJLQexpN@orbyte.nwl.cc>
+        Wed, 15 Mar 2023 08:07:39 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 48C012B291
+        for <netfilter-devel@vger.kernel.org>; Wed, 15 Mar 2023 05:06:35 -0700 (PDT)
+Date:   Wed, 15 Mar 2023 13:06:01 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Sven Auhagen <sven.auhagen@voleatech.de>
+Cc:     netfilter-devel@vger.kernel.org, abdelrahmanhesham94@gmail.com,
+        ja@ssi.bg
+Subject: Re: [PATCH v4] netfilter: nf_flow_table: count offloaded flows
+Message-ID: <ZBG0qQV7uvj26ReX@salvia>
+References: <20230228101413.tcmse45valxojb2u@SvensMacbookPro.hq.voleatech.com>
+ <ZBGugrmYyUeyTLqr@salvia>
+ <20230315114533.p5nrnjimlg2jktpe@SvensMacbookPro.hq.voleatech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-deepspam: ham 0%
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230315114533.p5nrnjimlg2jktpe@SvensMacbookPro.hq.voleatech.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Phil, Pablo,
-
-On Fri, 10 Mar 2023, Phil Sutter wrote:
-
-> On Fri, Mar 10, 2023 at 06:49:03PM +0100, Phil Sutter wrote:
-> > Some systems may not have "vrrp" as alias to "carp" yet, so use a
-> > protocol which is less likely to cause problems for testing purposes.
-> > 
-> > Fixes: a67aa712ed912 ("tests: hash:ip,port.t: 'vrrp' is printed as 'carp'")
-> > Signed-off-by: Phil Sutter <phil@nwl.cc>
+On Wed, Mar 15, 2023 at 12:45:33PM +0100, Sven Auhagen wrote:
+> On Wed, Mar 15, 2023 at 12:39:46PM +0100, Pablo Neira Ayuso wrote:
+> > Hi Sven,
 > 
-> Patch applied.
+> Hi Pablo,
+> 
+> > 
+> > On Tue, Feb 28, 2023 at 11:14:13AM +0100, Sven Auhagen wrote:
+> > > Add a counter per namespace so we know the total offloaded
+> > > flows.
+> > 
+> > Thanks for your patch.
+> > 
+> > I would like to avoid this atomic operation in the packet path, it
+> > should be possible to rewrite this with percpu counters.
+> > 
+> 
+> Isn't it possible though that a flow is added and then removed
+> on two different CPUs and I might end up with negative counters
+> on one CPU?
 
-Thank you for helping me out in these times! For the time being I can only 
-work on ipset sporadically.
+I mean, keep per cpu counters for addition and deletions. Then, when
+dumping you could collected them and provide the number.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+We used to have these stats for conntrack in:
+
+/proc/net/stat/nf_conntrack
+
+but they were removed, see 'insert' and 'delete', they never get
+updated anymore. conntrack is using atomic for this: cnet->count, but
+it is required for the upper cap (maximum number of entries).
+
+> > But, you can achieve the same effect with:
+> > 
+> >   conntrack -L | grep OFFLOAD | wc -l
+> > 
+> 
+> Yes, we are doing that right now but when we have like
+> 10 Mio. conntrack entries this ends up beeing a very long
+> and expensive operation to get the number of offloaded
+> flows. It would be really beneficial to know it without
+> going through all conntrack entries.
+> 
+> > ?
+
+Yes, with such a large number of entries, conntrack -L is not
+convenient.
