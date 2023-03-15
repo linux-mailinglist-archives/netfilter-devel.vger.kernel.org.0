@@ -2,107 +2,69 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2146BD880
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Mar 2023 20:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C54E66BD8B1
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Mar 2023 20:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjCPTCl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 16 Mar 2023 15:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
+        id S229878AbjCPTQJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 16 Mar 2023 15:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjCPTCk (ORCPT
+        with ESMTP id S229620AbjCPTQI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 16 Mar 2023 15:02:40 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ED38DE2502
-        for <netfilter-devel@vger.kernel.org>; Thu, 16 Mar 2023 12:02:19 -0700 (PDT)
-Date:   Thu, 16 Mar 2023 20:02:15 +0100
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Jeremy Sowden <jeremy@azazel.net>
-Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH ulogd2 v3 1/2] pcap: simplify opening of output file
-Message-ID: <ZBNnt5POeEw1sr0v@salvia>
-References: <20230316110754.260967-1-jeremy@azazel.net>
- <20230316110754.260967-2-jeremy@azazel.net>
+        Thu, 16 Mar 2023 15:16:08 -0400
+X-Greylist: delayed 110643 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 16 Mar 2023 12:16:03 PDT
+Received: from sragenkab.go.id (mail.sragenkab.go.id [103.172.109.4])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id E89AE60D56
+        for <netfilter-devel@vger.kernel.org>; Thu, 16 Mar 2023 12:16:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=sragenkab.go.id;
+         h=mime-version:content-type:content-transfer-encoding:date:from
+        :to:subject:reply-to:message-id; q=dns/txt; s=dkim1; bh=QGcIAmD5
+        O/Y9qXzDV8MxyimbsW3+rMaQ/kz75GzBHbk=; b=uNPhWcvDNDIk7dRLPFQNDfCu
+        9U0L+G6Ld2ZVEhRTIO/SbX2Zqqv5n7dXqQNjbTEs4+DwHIxEx/T41zA/YFVsQxPx
+        SLsN3CkHRBQG4dJa69DMAMHPLyXQXV6YpR26UK2PBvhaAgF9Jt1DpYrh7j/8jBP/
+        /OUcery31tSsgWD5KbKK7f/lTPWOsz/wMhEbboZmRqhwNvjqOtAn6F3eGer6gabX
+        vGuuAi0rGxwT5GSY8IPsqMqfm91rr5Mn4Nt3KnhT7MRKQQ1/2WK6wxEv8XZuPij5
+        waCgEChnBGV+eph5pF4L7SsyPdmHtmYyv9LGrMrqj9DFihzhiO/MJJjcZ2OsIw==
+Received: (qmail 65754 invoked from network); 15 Mar 2023 02:14:51 -0000
+Received: from localhost (HELO mail2.sragenkab.go.id) (127.0.0.1)
+  by localhost with SMTP; 15 Mar 2023 02:14:51 -0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230316110754.260967-2-jeremy@azazel.net>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 14 Mar 2023 19:14:50 -0700
+From:   Ibrahim Tafa <jurnalsukowati@sragenkab.go.id>
+To:     undisclosed-recipients:;
+Subject: LOAN FUNDING OPPORTUNITY
+Reply-To: <ibrahimtafa@abienceinvestmentsfze.com>
+Mail-Reply-To: <ibrahimtafa@abienceinvestmentsfze.com>
+Message-ID: <f9832a4b4b8555a318ee86163778e0bf@sragenkab.go.id>
+X-Sender: jurnalsukowati@sragenkab.go.id
+User-Agent: Roundcube Webmail/0.8.1
+X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        SUBJ_ALL_CAPS,UNDISC_MONEY autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 11:07:53AM +0000, Jeremy Sowden wrote:
-> Instead of statting the file, and choosing the mode with which to open
-> it and whether to write the PCAP header based on the result, always open
-> it with mode "a" and _then_ stat it.  This simplifies the flow-control
-> and avoids a race between statting and opening.
-> 
-> Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
-> ---
->  output/pcap/ulogd_output_PCAP.c | 42 ++++++++++++---------------------
->  1 file changed, 15 insertions(+), 27 deletions(-)
-> 
-> diff --git a/output/pcap/ulogd_output_PCAP.c b/output/pcap/ulogd_output_PCAP.c
-> index e7798f20c8fc..220fc6dec5fe 100644
-> --- a/output/pcap/ulogd_output_PCAP.c
-> +++ b/output/pcap/ulogd_output_PCAP.c
-> @@ -220,33 +220,21 @@ static int append_create_outfile(struct ulogd_pluginstance *upi)
->  {
->  	struct pcap_instance *pi = (struct pcap_instance *) &upi->private;
->  	char *filename = upi->config_kset->ces[0].u.string;
-> -	struct stat st_dummy;
-> -	int exist = 0;
-> -
-> -	if (stat(filename, &st_dummy) == 0 && st_dummy.st_size > 0)
-> -		exist = 1;
-> -
-> -	if (!exist) {
-> -		pi->of = fopen(filename, "w");
-> -		if (!pi->of) {
-> -			ulogd_log(ULOGD_ERROR, "can't open pcap file %s: %s\n",
-> -				  filename,
-> -				  strerror(errno));
-> -			return -EPERM;
-> -		}
-> -		if (!write_pcap_header(pi)) {
-> -			ulogd_log(ULOGD_ERROR, "can't write pcap header: %s\n",
-> -				  strerror(errno));
-> -			return -ENOSPC;
-> -		}
-> -	} else {
-> -		pi->of = fopen(filename, "a");
-> -		if (!pi->of) {
-> -			ulogd_log(ULOGD_ERROR, "can't open pcap file %s: %s\n", 
-> -				filename,
-> -				strerror(errno));
-> -			return -EPERM;
-> -		}		
-> +	struct stat st_of;
-> +
-> +	pi->of = fopen(filename, "a");
-> +	if (!pi->of) {
-> +		ulogd_log(ULOGD_ERROR, "can't open pcap file %s: %s\n",
-> +			  filename,
-> +			  strerror(errno));
-> +		return -EPERM;
-> +	}
-> +	if (fstat(fileno(pi->of), &st_of) == 0 && st_of.st_size == 0) {
-> +	    if (!write_pcap_header(pi)) {
-        ^^^^
-coding style nitpick, it can be fixed before applying it.
 
-> +		    ulogd_log(ULOGD_ERROR, "can't write pcap header: %s\n",
-> +			      strerror(errno));
-> +		    return -ENOSPC;
-> +	    }
->  	}
->  
->  	return 0;
-> -- 
-> 2.39.2
-> 
+
+-- 
+Greetings,
+   I am contacting you based on the Investment/Loan opportunity for 
+companies in need of financing a project/business, We have developed a 
+new method of financing that doesn't take long to receive financing from 
+our clients.
+    If you are looking for funds to finance your project/Business or if 
+you are willing to work as our agent in your country to find clients in 
+need of financing and earn commissions, then get back to me for more 
+details.
+
+Regards,
+Ibrahim Tafa
+ABIENCE INVESTMENT GROUP FZE, United Arab Emirates
