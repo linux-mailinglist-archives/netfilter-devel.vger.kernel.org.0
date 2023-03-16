@@ -2,43 +2,45 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 756306BCD8D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Mar 2023 12:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23936BCD8F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 16 Mar 2023 12:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230141AbjCPLIL (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 16 Mar 2023 07:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
+        id S230131AbjCPLIM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 16 Mar 2023 07:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbjCPLIJ (ORCPT
+        with ESMTP id S230148AbjCPLIL (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 16 Mar 2023 07:08:09 -0400
+        Thu, 16 Mar 2023 07:08:11 -0400
 Received: from kadath.azazel.net (unknown [IPv6:2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0E25C138
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F5799240
         for <netfilter-devel@vger.kernel.org>; Thu, 16 Mar 2023 04:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=AXgtNZlOca9B/9BiI0B4S1EsfJeiPqAoI2UmQO2h50w=; b=lcwmjKMMGLBteo1e9sOb72yRA3
-        3i5xFHFppaGSAoDiXUoP1nC0lsMN3ZQGeZGo7Ce1wYHIgofWUFSWxweXCzChGMyYgI6XxBoLUbi9A
-        isrtZeteoz8pRYqv9R6ELqK26C6CtcnzuKVsmtSTw972cl3MRr5BPlSKORvl7FS15GaZ97DvtgTSl
-        ydv+dpHRTMXtCDRa7dG6RQllLmePajx/wH0gAohr1h8ZxODdJIiMAUYJVYyrw2UO1PoqKFCorIAKw
-        saBLt6LStPVD00B00Nm5xkLa+zsEJlThl1hRt6i7cpCVpkDRm1gqj+oJTZo/9Ib8xkDEynEveAViX
-        4BN8CF3w==;
+        bh=SDp7cREWNJcmQqSmQp3zU3uT6IywS6bQkUUoA2piVmo=; b=HpyGUgoPMmxer3B0ZGWpAXnDDf
+        1cc0qPC2QJEJX/ssgNj/8oTalchLzhwghC4mfNBt9pcV9IeQqfQhLxxUjXZXToKSGr9xKmeoswZBj
+        Iw5Jd/0ofbDk2mZFTk9UI0kHfeZZ5m/GSHuEqAHfJGGegrAVkt9UHSBp5AokrT6u7ep84ywaVfcra
+        qR+QvTp70wxnVj+mN322TA6UiwlW4STHy2zdEF2oS6mUvJcKl8ztPfCbxudETOYdtJKnzMK4eFzKM
+        nJE82QjPDws/TMnW0uM3TI2s74pydROpUAJwqH1qlQDaB5w/IOwJX22nQsuRvvjsccEvq/ObrfsPw
+        hlY6Mjow==;
 Received: from ulthar.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae])
         by kadath.azazel.net with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1pclSl-00AuPp-Pf
-        for netfilter-devel@vger.kernel.org; Thu, 16 Mar 2023 11:08:03 +0000
+        id 1pclSl-00AuPp-VJ
+        for netfilter-devel@vger.kernel.org; Thu, 16 Mar 2023 11:08:04 +0000
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH ulogd2 v3 0/2] pcap: prevent crashes when output `FILE *` is null
-Date:   Thu, 16 Mar 2023 11:07:52 +0000
-Message-Id: <20230316110754.260967-1-jeremy@azazel.net>
+Subject: [PATCH ulogd2 v3 1/2] pcap: simplify opening of output file
+Date:   Thu, 16 Mar 2023 11:07:53 +0000
+Message-Id: <20230316110754.260967-2-jeremy@azazel.net>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230316110754.260967-1-jeremy@azazel.net>
+References: <20230316110754.260967-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:2e4d:54ff:fe4b:a9ae
@@ -53,35 +55,69 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If ulogd2 receives a signal it will attempt to re-open the pcap output
-file.  If this fails (because the permissions or ownership have changed
-for example), the FILE pointer will be null and when the next packet
-comes in, the null pointer will be passed to fwrite and ulogd will
-crash.
+Instead of statting the file, and choosing the mode with which to open
+it and whether to write the PCAP header based on the result, always open
+it with mode "a" and _then_ stat it.  This simplifies the flow-control
+and avoids a race between statting and opening.
 
-The first patch simplifies the logic of the code that opens the output
-file, and the second avoids closing the existing stream if `fopen`
-fails.
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+---
+ output/pcap/ulogd_output_PCAP.c | 42 ++++++++++++---------------------
+ 1 file changed, 15 insertions(+), 27 deletions(-)
 
-Link: https://bugs.launchpad.net/ubuntu/+source/ulogd2/+bug/1429778
-
-Change since v2
-
- * The first patch is new.
- * In the second patch, just keep the old stream open, rather than
-   disabling output and trying to reopen at intervals.
-
-Change since v1
-
- * Correct subject-prefix.
-
-Jeremy Sowden (2):
-  pcap: simplify opening of output file
-  pcap: prevent crashes when output `FILE *` is null
-
- output/pcap/ulogd_output_PCAP.c | 50 +++++++++++++--------------------
- 1 file changed, 19 insertions(+), 31 deletions(-)
-
+diff --git a/output/pcap/ulogd_output_PCAP.c b/output/pcap/ulogd_output_PCAP.c
+index e7798f20c8fc..220fc6dec5fe 100644
+--- a/output/pcap/ulogd_output_PCAP.c
++++ b/output/pcap/ulogd_output_PCAP.c
+@@ -220,33 +220,21 @@ static int append_create_outfile(struct ulogd_pluginstance *upi)
+ {
+ 	struct pcap_instance *pi = (struct pcap_instance *) &upi->private;
+ 	char *filename = upi->config_kset->ces[0].u.string;
+-	struct stat st_dummy;
+-	int exist = 0;
+-
+-	if (stat(filename, &st_dummy) == 0 && st_dummy.st_size > 0)
+-		exist = 1;
+-
+-	if (!exist) {
+-		pi->of = fopen(filename, "w");
+-		if (!pi->of) {
+-			ulogd_log(ULOGD_ERROR, "can't open pcap file %s: %s\n",
+-				  filename,
+-				  strerror(errno));
+-			return -EPERM;
+-		}
+-		if (!write_pcap_header(pi)) {
+-			ulogd_log(ULOGD_ERROR, "can't write pcap header: %s\n",
+-				  strerror(errno));
+-			return -ENOSPC;
+-		}
+-	} else {
+-		pi->of = fopen(filename, "a");
+-		if (!pi->of) {
+-			ulogd_log(ULOGD_ERROR, "can't open pcap file %s: %s\n", 
+-				filename,
+-				strerror(errno));
+-			return -EPERM;
+-		}		
++	struct stat st_of;
++
++	pi->of = fopen(filename, "a");
++	if (!pi->of) {
++		ulogd_log(ULOGD_ERROR, "can't open pcap file %s: %s\n",
++			  filename,
++			  strerror(errno));
++		return -EPERM;
++	}
++	if (fstat(fileno(pi->of), &st_of) == 0 && st_of.st_size == 0) {
++	    if (!write_pcap_header(pi)) {
++		    ulogd_log(ULOGD_ERROR, "can't write pcap header: %s\n",
++			      strerror(errno));
++		    return -ENOSPC;
++	    }
+ 	}
+ 
+ 	return 0;
 -- 
 2.39.2
 
