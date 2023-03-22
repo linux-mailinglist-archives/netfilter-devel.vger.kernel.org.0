@@ -2,75 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0946C4037
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Mar 2023 03:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC6B6C41BD
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Mar 2023 05:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbjCVCNR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 21 Mar 2023 22:13:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
+        id S229694AbjCVE6X (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 22 Mar 2023 00:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjCVCNI (ORCPT
+        with ESMTP id S229459AbjCVE6W (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 21 Mar 2023 22:13:08 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41935A1B4
-        for <netfilter-devel@vger.kernel.org>; Tue, 21 Mar 2023 19:12:44 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id s23so11662688uae.5
-        for <netfilter-devel@vger.kernel.org>; Tue, 21 Mar 2023 19:12:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679451164;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dQlu0Oc2Q0nPMBCNq5iTPUZpwrRZlsMdPt2zjra8+VI=;
-        b=qNbw/c75cbzn9+niSm00wyE0YIAvUXY8wPEA/T7OdOwzYsGw+VP25yFjjNj4qb+l2B
-         nek6L+BhIe3UVjpN2sJ1Gfb/Vybmc3zdb0wSPznQ7L2mPjZoKkm91h9GbQrU8ntzBRHI
-         zaeKKWCSrXQxlf5VrzsXFEOK8x9m9GbNxBykCd1IEryMrZCF0Th0patc5Qpg7tWWoGfE
-         QWGg4LYN2/lI22wcEhebgGN/RNnAerV+PzrgGWdFjJErUyfSKQBxr6bzrUkQIaDUykoV
-         NIJwLjsuQQpXZajUwxCYQULNJmVBYHRjpcfdKL7E5yuz3SKiKdfFptdp2uZd/lk8BP9U
-         7fvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679451164;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dQlu0Oc2Q0nPMBCNq5iTPUZpwrRZlsMdPt2zjra8+VI=;
-        b=uc5Ap0Uezx6pMn92Vae7Ja4VoLADH3Bbrw6XH+WobAzdNiPGjS2gSTsuhpWlmEd+O0
-         C2zNGHwuBFa0zNWaaVf98R/cFs7x7chEkWJ96ghqqZ/9sEnmK58rm71dxPIsWyFvg96H
-         2XThTGpFtsBzQzBQtva8EE4Nq/XA8vgnpkymcZfcMnNyTKHltGsLYZb/9noE9jbwNyNW
-         AjuFTzfmQmrWudJQTESCOAaLvdwVDlJ/E2jcTWccbHG3/fUrtlkr3MUDSxVMFYqIkkQH
-         vycbX221SRXL/FSwsNBv5zH6c1J+0T6rov63FFAVzOH4UbjIz8LHJWaWRf+W63M4x4/M
-         vCCQ==
-X-Gm-Message-State: AO0yUKVsDsEIq4OlkgOw5QddEqU0uvuyqk1LDGDtjzwSQq0U/lq1mIJw
-        104Jk0GC9QNcEy1WKPOjh/vTrCioJZZJvDzEf24=
-X-Google-Smtp-Source: AK7set/h3FYX5LR3/BPmzMSLo/lpotMgwHBP1sjKqtKOidWNWJolR0WW8ZObsEyBG0JHyFSkc5ZvI1DJ2FIIzWboq9s=
-X-Received: by 2002:a1f:1c53:0:b0:439:d35c:892b with SMTP id
- c80-20020a1f1c53000000b00439d35c892bmr1522667vkc.1.1679451163702; Tue, 21 Mar
- 2023 19:12:43 -0700 (PDT)
+        Wed, 22 Mar 2023 00:58:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DD526584;
+        Tue, 21 Mar 2023 21:58:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E40A2B819BC;
+        Wed, 22 Mar 2023 04:58:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04591C4339B;
+        Wed, 22 Mar 2023 04:58:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679461098;
+        bh=Y81qCp1LHk8B/PcrfomdLSIZfNVP8dHYfNNJSh3UeOA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hKxwGQPOCze6EutMfsj1SPtw7PZAN56KHNR3eXyLH3rYsHmChXStxLQIUQuHxG2va
+         /NPtJKSSNS4HlIsXJiW7m3soLWaImMGSjDWXo0oFU1QBEZNQDirleYE9O25VydG+0t
+         1uS8NXkJhKSoPttuYxVnM+0PLpEVAiNlBz3qBCOQhWlMd+nOFNhC96tVkwRuhuK/7i
+         QmM0DBVUVSMXFafGw5H2muU/SQE8YZTKx+g3n0RI5VBDjzNQe21LLZskUlJfXFDlKb
+         nhLufRAea5WBBaig4FEVcWcgpx9cnpCPJ/1o4gsiFbWHQU+svmkoCw+zlpd6nkeJzI
+         uZvhfvZZq94vw==
+Date:   Tue, 21 Mar 2023 21:58:16 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Paul Blakey <paulb@nvidia.com>
+Cc:     <netdev@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        "Jozsef Kadlecsik" <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
+        <linux-kernel@vger.kernel.org>, Oz Shlomo <ozsh@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>, Vlad Buslov <vladbu@nvidia.com>
+Subject: Re: [PATCH net-next 1/1] netfilter: ctnetlink: Support offloaded
+ conntrack entry deletion
+Message-ID: <20230321215816.40450b38@kernel.org>
+In-Reply-To: <1679406604-133128-1-git-send-email-paulb@nvidia.com>
+References: <1679406604-133128-1-git-send-email-paulb@nvidia.com>
 MIME-Version: 1.0
-Received: by 2002:a59:b325:0:b0:3aa:7148:e1ba with HTTP; Tue, 21 Mar 2023
- 19:12:42 -0700 (PDT)
-Reply-To: mariamkouame01@hotmail.com
-From:   Mariam Kouame <mariamkouame1991@gmail.com>
-Date:   Tue, 21 Mar 2023 19:12:42 -0700
-Message-ID: <CAGjw6zAy0+L8VcYO6Pn7RN=HrZUU_5Fh7z3B0njFroCUm--5FQ@mail.gmail.com>
-Subject: from mariam kouame
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dear,
+On Tue, 21 Mar 2023 15:50:04 +0200 Paul Blakey wrote:
+> To: Paul Blakey <paulb@nvidia.com>, <netdev@vger.kernel.org>, Saeed Mahameed  <saeedm@nvidia.com>, Pablo Neira Ayuso <pablo@netfilter.org>, "Jozsef  Kadlecsik" <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, "David S.  Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub  Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,  <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,  <linux-kernel@vger.kernel.org>
+> CC: Oz Shlomo <ozsh@nvidia.com>, Roi Dayan <roid@nvidia.com>, Vlad Buslov  <vladbu@nvidia.com>
 
-Please grant me permission to share a very crucial discussion with
-you. I am looking forward to hearing from you at your earliest
-convenience.
+Please put the maintainers you expect to take the patch on To:
+And the rest of the people on CC:
 
-Mrs. Mariam Kouame
+> Subject: [PATCH net-next 1/1] netfilter: ctnetlink: Support offloaded conntrack entry deletion
+
+git log --no-merges \
+	--format='%<(20)%cn %cs  %<(47,trunc)%s' \
+	-- \
+	net/netfilter/nf_conntrack_netlink.c
+
+clearly not net-next, we don't take patches to this file.
