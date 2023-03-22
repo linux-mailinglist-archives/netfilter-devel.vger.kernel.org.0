@@ -2,128 +2,90 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9656C590A
-	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Mar 2023 22:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D826C5908
+	for <lists+netfilter-devel@lfdr.de>; Wed, 22 Mar 2023 22:53:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbjCVVxT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S230013AbjCVVxT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Wed, 22 Mar 2023 17:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbjCVVxR (ORCPT
+        with ESMTP id S230016AbjCVVxR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Wed, 22 Mar 2023 17:53:17 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 017872BEDD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0196C33CFD
         for <netfilter-devel@vger.kernel.org>; Wed, 22 Mar 2023 14:53:09 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft,v2 0/8] mark statement support for non-constant expression
-Date:   Wed, 22 Mar 2023 22:52:55 +0100
-Message-Id: <20230322215303.239763-1-pablo@netfilter.org>
+Subject: [PATCH nft,v2 1/8] netlink_delinearize: correct type and byte-order of shifts
+Date:   Wed, 22 Mar 2023 22:52:56 +0100
+Message-Id: <20230322215303.239763-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230322215303.239763-1-pablo@netfilter.org>
+References: <20230322215303.239763-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.0 required=5.0 tests=SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.0 required=5.0 tests=SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+From: Jeremy Sowden <jeremy@azazel.net>
 
-This is v2 of the following patchset:
+Downgrade to base type integer instead of the specific type from the
+expression that is used in the shift operation.
 
-https://marc.info/?l=netfilter-devel&m=167904710124404&w=2
+Without this, listing a rule like:
 
-this takes over the initial effort from Jeremy Sowden to enhance mark
-statements support for variable expression.
+  ct mark set ip dscp lshift 2 or 0x10
 
-No kernel updates are required in this batch.
+will return:
 
-Previous patch #1 in this series has been already applied upstream:
+  ct mark set ip dscp << 2 | cs2
 
-fe623a509492 ("evaluate: insert byte-order conversions for expressions between 9 and 15 bits")
+because the type of the OR's right operand will be transitively derived
+from `ip dscp`.  However, this is not valid syntax:
 
-Main change is patch #2 in this series:
+  # nft add rule t c ct mark set ip dscp '<<' 2 '|' cs2
+  Error: Could not parse integer
+  add rule t c ct mark set ip dscp << 2 | cs2
+                                          ^^^
 
-("evaluate: support shifts larger than the width of the left operand")
+Use xinteger_type to print the output in hexadecimal.
 
-which slightly simplifies the logic to set the maximum shift length
-according to the mark statement datatype length (which is 32-bits).
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/netlink_delinearize.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Anything else, no changes.
-
-Jeremy Sowden (4):
-  netlink_delinearize: correct type and byte-order of shifts
-  evaluate: don't eval unary arguments
-  tests: shell: rename and move bitwise test-cases
-  tests: shell: add test-cases for ct and packet mark payload expressions
-
-Pablo Neira Ayuso (4):
-  evaluate: support shifts larger than the width of the left operand
-  evaluate: get length from statement instead of lhs expression
-  evaluate: relax type-checking for integer arguments in mark statements
-  tests: py: add test-cases for ct and packet mark payload expressions
-
- src/evaluate.c                                | 48 ++++++++----
- src/netlink_delinearize.c                     | 17 +++-
- tests/py/ip/ct.t                              |  2 +
- tests/py/ip/ct.t.json                         | 58 ++++++++++++++
- tests/py/ip/ct.t.payload                      | 18 +++++
- tests/py/ip/meta.t                            |  5 ++
- tests/py/ip/meta.t.json                       | 78 +++++++++++++++++++
- tests/py/ip/meta.t.payload                    | 25 ++++++
- tests/py/ip6/ct.t                             |  6 ++
- tests/py/ip6/ct.t.payload                     | 19 +++++
- tests/py/ip6/meta.t                           |  3 +
- tests/py/ip6/meta.t.json                      | 58 ++++++++++++++
- tests/py/ip6/meta.t.payload                   | 20 +++++
- .../0040mark_binop_0}                         |  2 +-
- .../0040mark_binop_1}                         |  2 +-
- .../shell/testcases/bitwise/0040mark_binop_2  | 11 +++
- .../shell/testcases/bitwise/0040mark_binop_3  | 11 +++
- .../shell/testcases/bitwise/0040mark_binop_4  | 11 +++
- .../shell/testcases/bitwise/0040mark_binop_5  | 11 +++
- .../shell/testcases/bitwise/0040mark_binop_6  | 11 +++
- .../shell/testcases/bitwise/0040mark_binop_7  | 11 +++
- .../shell/testcases/bitwise/0040mark_binop_8  | 11 +++
- .../shell/testcases/bitwise/0040mark_binop_9  | 11 +++
- .../dumps/0040mark_binop_0.nft}               |  2 +-
- .../dumps/0040mark_binop_1.nft}               |  2 +-
- .../bitwise/dumps/0040mark_binop_2.nft        |  6 ++
- .../bitwise/dumps/0040mark_binop_3.nft        |  6 ++
- .../bitwise/dumps/0040mark_binop_4.nft        |  6 ++
- .../bitwise/dumps/0040mark_binop_5.nft        |  6 ++
- .../bitwise/dumps/0040mark_binop_6.nft        |  6 ++
- .../bitwise/dumps/0040mark_binop_7.nft        |  6 ++
- .../bitwise/dumps/0040mark_binop_8.nft        |  6 ++
- .../bitwise/dumps/0040mark_binop_9.nft        |  6 ++
- 33 files changed, 478 insertions(+), 23 deletions(-)
- create mode 100644 tests/py/ip6/ct.t
- create mode 100644 tests/py/ip6/ct.t.payload
- rename tests/shell/testcases/{chains/0040mark_shift_0 => bitwise/0040mark_binop_0} (68%)
- rename tests/shell/testcases/{chains/0040mark_shift_1 => bitwise/0040mark_binop_1} (70%)
- create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_2
- create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_3
- create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_4
- create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_5
- create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_6
- create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_7
- create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_8
- create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_9
- rename tests/shell/testcases/{chains/dumps/0040mark_shift_0.nft => bitwise/dumps/0040mark_binop_0.nft} (58%)
- rename tests/shell/testcases/{chains/dumps/0040mark_shift_1.nft => bitwise/dumps/0040mark_binop_1.nft} (64%)
- create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_2.nft
- create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_3.nft
- create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_4.nft
- create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_5.nft
- create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_6.nft
- create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_7.nft
- create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_8.nft
- create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_9.nft
-
+diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
+index 60350cd6cd96..c1b4c1148d33 100644
+--- a/src/netlink_delinearize.c
++++ b/src/netlink_delinearize.c
+@@ -2810,8 +2810,17 @@ static void expr_postprocess(struct rule_pp_ctx *ctx, struct expr **exprp)
+ 		}
+ 		expr_postprocess(ctx, &expr->right);
+ 
+-		expr_set_type(expr, expr->left->dtype,
+-			      expr->left->byteorder);
++		switch (expr->op) {
++		case OP_LSHIFT:
++		case OP_RSHIFT:
++			expr_set_type(expr, &xinteger_type,
++				      BYTEORDER_HOST_ENDIAN);
++			break;
++		default:
++			expr_set_type(expr, expr->left->dtype,
++				      expr->left->byteorder);
++		}
++
+ 		break;
+ 	case EXPR_RELATIONAL:
+ 		switch (expr->left->etype) {
 -- 
 2.30.2
 
