@@ -2,104 +2,104 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DC76CBB93
-	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Mar 2023 11:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4071C6CBEF8
+	for <lists+netfilter-devel@lfdr.de>; Tue, 28 Mar 2023 14:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbjC1J4Q (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 28 Mar 2023 05:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
+        id S230245AbjC1M0b (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 28 Mar 2023 08:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjC1J4P (ORCPT
+        with ESMTP id S230103AbjC1M0a (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 28 Mar 2023 05:56:15 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73272683
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Mar 2023 02:56:12 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id n14so11311104qta.10
-        for <netfilter-devel@vger.kernel.org>; Tue, 28 Mar 2023 02:56:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679997372;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JXfaiVEaS7XgCqm5+wRW8Wdj+DYINCUUAzdNfbuxeug=;
-        b=oNpRRMCj1Ys1IpK5a22wzMpiU0aH0umsZ6l7wLDgCJ3/KFPwMnMdKazmDxuj3XQ8yh
-         ON05pEm312fdyl5FkYFzuhNAs7MxdFXR0NSl6ImFsyVxJtsao1AREtirfq/ceqr7iP/r
-         YnQcbKVkl4JCsLNKUqx9hw2zOLNVCT1tFYY2KxHnTjFh0HF8EH2jn8JY7f+1oNZiGp/r
-         ScPe5JyM7JAiRoUcWLrkfkiFTxhuyw8IMKESp6AnhSqXjwq9tT3AOsNspDKcf70sYsBn
-         iU4ViJnsmC+II11PFBEdUPSaFwxgep/quBA5aDnD+SXElJ+pPTZ3JjS2G7dAPDXWbpAm
-         z8bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679997372;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JXfaiVEaS7XgCqm5+wRW8Wdj+DYINCUUAzdNfbuxeug=;
-        b=2RDAYasT/UB2mnqiwG22tQlwufjCMIXFNQRWeNlZbITsMtDKz6dDLQwwcOySiTWJGX
-         T4PgGvgtCcBWFdYijZ4kx1oHd3c2Xi9f7T/l5xkejcscwIqfHvTjhS7WjCDngERWM5X7
-         ko5aTtvBHJQ3R5kRFYK3QD0prCZr9as89ZkO5FS2kmS+Ph57c1yOnhVqPNPBnuGXHrUH
-         FrcS0sclGXsvHkXl3fX05RPNpOEj+6yFpwYANc7ajAxf7VOsMig5iVYu4GsFszVhR+vN
-         cyENmuWQBdX/yYV3nGmNCmQZz4EnZcvR+fqYsjLNZqERkkEPMKsvIiHW1fVEfKeEvqnp
-         rBPQ==
-X-Gm-Message-State: AO0yUKXkhHB+45AkCxNBX9tQr9oYiCLzk8XoLPOFO3PsCsqv5B7ZXx0R
-        WT4fC/rAXpV67Pu9JeHbxeltKufNF4KlUcoZjQk=
-X-Google-Smtp-Source: AK7set95v8Ofqkc1geuyI9y7sn7ZY7YoaNPmMZfK37EwA7cmfge23sx3bxXPeb4oaZ0EsDyOdIoHTyQdAVPedguPGGs=
-X-Received: by 2002:a05:622a:1a0d:b0:3d7:9d03:75ae with SMTP id
- f13-20020a05622a1a0d00b003d79d0375aemr5661952qtb.10.1679997372038; Tue, 28
- Mar 2023 02:56:12 -0700 (PDT)
+        Tue, 28 Mar 2023 08:26:30 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C692ABC
+        for <netfilter-devel@vger.kernel.org>; Tue, 28 Mar 2023 05:26:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=V1IgTwD9FG+pc/b70l6f8z7glpmomsF5KueUbfTyRw0=; b=jsfpL3m1TA+m3lyiDrfXMIbpdS
+        i350tnEnf/yUCIIODs1X7Q/pC/Iz40suDWCkGvh+/vmZfayx7MwXcK7d5ESTaWLvcZ74MKE5tNRT4
+        +II1YgnNff/GUbMHMof17nEvwCOI4NVqF74EtGEtD+1zWHmF/CK/kolJHr2kOHNG2H6Y5JMMfhXiU
+        S4wXdgCN5U54mEz7bsHTzPY4INd/X9FLlUXhwtwLhueckODVHoBfGCHZ+fRy3b/Nl9KJkqe2wxet7
+        9j9XtSQajfUgZTIOLy/uEgQdctEXB8bxM6ghg6twlrGYiLcGe5W5mksIxZnvMZ885t6KsmuHF07e0
+        jyK/9Lbw==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1ph8PB-00016X-Px; Tue, 28 Mar 2023 14:26:25 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nft PATCH] xt: Fix translation error path
+Date:   Tue, 28 Mar 2023 14:26:16 +0200
+Message-Id: <20230328122616.14100-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-Received: by 2002:a0c:e4cf:0:b0:5dd:d6fd:2925 with HTTP; Tue, 28 Mar 2023
- 02:56:11 -0700 (PDT)
-Reply-To: hitnodeby23@yahoo.com
-From:   Hinda Itno Deby <beattykate.01@gmail.com>
-Date:   Tue, 28 Mar 2023 02:56:11 -0700
-Message-ID: <CA+AyO7esQY5EN6kTOhPTz7ZfnKy7eG0zPjFuPbu9qJaY0EROig@mail.gmail.com>
-Subject: Reply
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM,UNDISC_MONEY,URG_BIZ autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:830 listed in]
-        [list.dnswl.org]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [beattykate.01[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [beattykate.01[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [hitnodeby23[at]yahoo.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.9 URG_BIZ Contains urgent matter
-        *  2.9 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
- Hello Dear
+If xtables support was compiled in but the required libxtables DSO is
+not found, nft prints an error message and leaks memory:
 
-My name is Hinda Itno Deby Please I want us to discuss Urgent Business
-Proposal, if you are interested kindly reply to me so i can give you
-all the details.
+| counter packets 0 bytes 0 XT target MASQUERADE not found
 
-Thanks and God Bless You.
+This is not as bad as it seems, the output combines stdout and stderr.
+Dropping stderr produces an incomplete ruleset listing, though. While
+this seemingly inline output can't easily be avoided, fix a few things:
 
-Ms Hinda Itno Deby
+* Respect octx->error_fp, libnftables might have been configured to
+  redirect stderr somewhere else.
+* Align error message formatting with others.
+* Don't return immediately, but free allocated memory and fall back to
+  printing the expression in "untranslated" form.
+
+Fixes: 5c30feeee5cfe ("xt: Delay libxtables access until translation")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ src/xt.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/src/xt.c b/src/xt.c
+index f63096a554e7f..b17aafd565382 100644
+--- a/src/xt.c
++++ b/src/xt.c
+@@ -56,9 +56,10 @@ void xt_stmt_xlate(const struct stmt *stmt, struct output_ctx *octx)
+ 	case NFT_XT_MATCH:
+ 		mt = xtables_find_match(stmt->xt.name, XTF_TRY_LOAD, NULL);
+ 		if (!mt) {
+-			fprintf(stderr, "XT match %s not found\n",
++			fprintf(octx->error_fp,
++				"# Warning: XT match %s not found\n",
+ 				stmt->xt.name);
+-			return;
++			break;
+ 		}
+ 		size = XT_ALIGN(sizeof(*m)) + stmt->xt.infolen;
+ 
+@@ -83,9 +84,10 @@ void xt_stmt_xlate(const struct stmt *stmt, struct output_ctx *octx)
+ 	case NFT_XT_TARGET:
+ 		tg = xtables_find_target(stmt->xt.name, XTF_TRY_LOAD);
+ 		if (!tg) {
+-			fprintf(stderr, "XT target %s not found\n",
++			fprintf(octx->error_fp,
++				"# Warning: XT target %s not found\n",
+ 				stmt->xt.name);
+-			return;
++			break;
+ 		}
+ 		size = XT_ALIGN(sizeof(*t)) + stmt->xt.infolen;
+ 
+-- 
+2.38.0
+
