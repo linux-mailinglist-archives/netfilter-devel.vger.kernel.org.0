@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFFB6D6576
-	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Apr 2023 16:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E916D6575
+	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Apr 2023 16:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbjDDOev (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S234811AbjDDOev (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Tue, 4 Apr 2023 10:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235098AbjDDOeq (ORCPT
+        with ESMTP id S235107AbjDDOeq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Tue, 4 Apr 2023 10:34:46 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6151A1BEA
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D67C4268C
         for <netfilter-devel@vger.kernel.org>; Tue,  4 Apr 2023 07:34:45 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft 2/4] evaluate: bogus missing transport protocol
-Date:   Tue,  4 Apr 2023 16:34:35 +0200
-Message-Id: <20230404143437.133493-3-pablo@netfilter.org>
+Subject: [PATCH nft 3/4] netlink_delinearize: do not reset protocol context for nat protocol expression
+Date:   Tue,  4 Apr 2023 16:34:36 +0200
+Message-Id: <20230404143437.133493-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230404143437.133493-1-pablo@netfilter.org>
 References: <20230404143437.133493-1-pablo@netfilter.org>
@@ -33,55 +33,31 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Users have to specify a transport protocol match such as
-
-	meta protocol tcp
-
-before the redirect statement, even if the redirect statement already
-implicitly refers to the transport protocol, for instance:
-
-test.nft:3:16-53: Error: transport protocol mapping is only valid after transport protocol match
-                redirect to :tcp dport map { 83 : 8083, 84 : 8084 }
-                ~~~~~~~~     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Evaluate the redirect expression before the mandatory check for the
-transport protocol match, so protocol context already provides a
-transport protocol.
+This patch reverts 403b46ada490 ("netlink_delinearize: kill dependency
+before eval of 'redirect' stmt"). Since ("evaluate: bogus missing
+transport protocol"), this workaround is not required anymore.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- src/evaluate.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ src/netlink_delinearize.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/src/evaluate.c b/src/evaluate.c
-index c4ddb007ef44..fe15d7ace5dd 100644
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -3569,6 +3569,13 @@ static int nat_evaluate_transport(struct eval_ctx *ctx, struct stmt *stmt,
- 				  struct expr **expr)
- {
- 	struct proto_ctx *pctx = eval_proto_ctx(ctx);
-+	int err;
-+
-+	err = stmt_evaluate_arg(ctx, stmt,
-+				&inet_service_type, 2 * BITS_PER_BYTE,
-+				BYTEORDER_BIG_ENDIAN, expr);
-+	if (err < 0)
-+		return err;
- 
- 	if (pctx->protocol[PROTO_BASE_TRANSPORT_HDR].desc == NULL &&
- 	    !nat_evaluate_addr_has_th_expr(stmt->nat.addr))
-@@ -3576,9 +3583,7 @@ static int nat_evaluate_transport(struct eval_ctx *ctx, struct stmt *stmt,
- 					 "transport protocol mapping is only "
- 					 "valid after transport protocol match");
- 
--	return stmt_evaluate_arg(ctx, stmt,
--				 &inet_service_type, 2 * BITS_PER_BYTE,
--				 BYTEORDER_BIG_ENDIAN, expr);
-+	return 0;
- }
- 
- static const char *stmt_name(const struct stmt *stmt)
+diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
+index fd166eb15c01..935a6667a1c7 100644
+--- a/src/netlink_delinearize.c
++++ b/src/netlink_delinearize.c
+@@ -3375,10 +3375,8 @@ static void rule_parse_postprocess(struct netlink_parse_ctx *ctx, struct rule *r
+ 		case STMT_NAT:
+ 			if (stmt->nat.addr != NULL)
+ 				expr_postprocess(&rctx, &stmt->nat.addr);
+-			if (stmt->nat.proto != NULL) {
+-				payload_dependency_reset(&dl->pdctx);
++			if (stmt->nat.proto != NULL)
+ 				expr_postprocess(&rctx, &stmt->nat.proto);
+-			}
+ 			break;
+ 		case STMT_TPROXY:
+ 			if (stmt->tproxy.addr)
 -- 
 2.30.2
 
