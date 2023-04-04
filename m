@@ -2,35 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 118A76D5C47
-	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Apr 2023 11:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3D26D5D6E
+	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Apr 2023 12:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234085AbjDDJqQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 4 Apr 2023 05:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
+        id S234058AbjDDK0p (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 4 Apr 2023 06:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234190AbjDDJqP (ORCPT
+        with ESMTP id S234193AbjDDK0g (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 4 Apr 2023 05:46:15 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD2D199E
-        for <netfilter-devel@vger.kernel.org>; Tue,  4 Apr 2023 02:45:55 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1pjdEg-0004k5-2q; Tue, 04 Apr 2023 11:45:54 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH iptables 2/2] ebtables-nft: add broute table emulation
-Date:   Tue,  4 Apr 2023 11:45:44 +0200
-Message-Id: <20230404094544.2892-2-fw@strlen.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230404094544.2892-1-fw@strlen.de>
-References: <20230404094544.2892-1-fw@strlen.de>
+        Tue, 4 Apr 2023 06:26:36 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4423130F7;
+        Tue,  4 Apr 2023 03:26:13 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id m2so32238793wrh.6;
+        Tue, 04 Apr 2023 03:26:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680603971;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2cV2Dka8GlFwpI8wHuKuZQguPKqTBu//QF7+SDUmI+o=;
+        b=HWxgSnsmYYJ4kXFewV1I5RgQcJ2fWaBRKrZg8CuBKlej6ph+S0CAadS1jGgQZIzBcx
+         CLagu6drb50CcyrWGlBXIpO9Jxqq56p0bylaHkOmXJb8UJsR9MvEHAcA3ArI76uyDYM+
+         S3ktm6SMT5avSTt7GdXeLZiUt18y1Z2ogTwyQj9kHqbHFNCWrLK0d8xgW2J80MtdPCUO
+         Ccwpvvt8kcf9XnZU//DQqnqZPFhspaXNEwQVIu5hQz6h46nPtKnvacybkbuqYDl0reEV
+         +SbPGwHbQKlH3M0OqVt9CO1zSfAzeJPaBJoAJ1nk9K33dqh64Akiv/cDKQq7PxOx3FTY
+         w7Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680603971;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2cV2Dka8GlFwpI8wHuKuZQguPKqTBu//QF7+SDUmI+o=;
+        b=2MZUH7v91othfIK3+Um4oXB4Z1Y/rY0JR5MGDThU5TFr8didxcTkPeMCjsUpFIajja
+         6QwdLxMvrzxBbZli4afU6Z/do//7lJ4Hu3SzhiXizERlorYbE9FX2qSmu8/+ByhwQs+0
+         /msPsSsWjAyCtxVVQ6CmRqJGyXVb0pElPQ7anNmVPGVC/BZTbmcDItH0LR1gg/mw7eMq
+         3zqMNl+ezpofrZ87EeceFAXXrUSxvdE5m/BD66rTm6zU1LhxixPnUhXk2y1NU7gUTMbD
+         cJ5C5SvQXQZsJpv6syiariqZjH0rrfto4BCr+IWsLhPZhd4tiQaxibjMYhYKh9/PgdvD
+         nugQ==
+X-Gm-Message-State: AAQBX9fjrPmMUfqPNyYN8Ix0oLPscyEX8rF2eytCzS0VV9eaGhHfPsmK
+        cYPuFqOGIxsxneyCXX06yuoUp+Ydq8c=
+X-Google-Smtp-Source: AKy350YHoQMowhZLIwsN6WZl0ucoFEqan10GsGRaC52zNTSzA7OjX29QnGQEKicDgSfzLDC2n0n4MA==
+X-Received: by 2002:a5d:6102:0:b0:2d2:74d6:6f79 with SMTP id v2-20020a5d6102000000b002d274d66f79mr1035974wrt.59.1680603971554;
+        Tue, 04 Apr 2023 03:26:11 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id w6-20020a5d6086000000b002cf8220cc75sm11968665wrt.24.2023.04.04.03.26.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 Apr 2023 03:26:08 -0700 (PDT)
+Subject: Re: [External] Re: [PATCH] udp:nat:vxlan tx after nat should recsum
+ if vxlan tx offload on
+To:     Fei Cheng <chenwei.0515@bytedance.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     dsahern@kernel.org, davem@davemloft.net,
+        netfilter-devel@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>, ecree@amd.com
+References: <20230401023029.967357-1-chenwei.0515@bytedance.com>
+ <CAF=yD-Lg_XSnE9frH9UFpJCZLx-gg2KHzVu7KmnigidujCvepQ@mail.gmail.com>
+ <fae01ad9-4270-2153-9ba4-cf116c8ed975@gmail.com>
+ <25fe50f2-9f1d-ec48-52af-780eb9ba6e09@bytedance.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <aa903bc8-a1d1-3fce-99fa-b0896f149ec1@gmail.com>
+Date:   Tue, 4 Apr 2023 11:26:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <25fe50f2-9f1d-ec48-52af-780eb9ba6e09@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -38,284 +81,36 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Use new 'meta broute set 1' to emulate -t broute.  If '-t broute' is given,
-automatically translate -j DROP to 'meta broute set 1 accept' internally.
+On 04/04/2023 02:48, Fei Cheng wrote:
+> Thank you for remind plain text.
+> Use csum_start to seperate these two cases, maybe a good idea.
+> 1.Disable tx csum
+> skb->ip_summed ==  CHECKSUM_PARTIAL && skb_transport_header == udp
+> 2.Enable tx csum
+> skb->ip_summed ==  CHECKSUM_PARTIAL && skb_transport_header != udp
+> 
+> Correct?
 
-Reverse translation zaps the broute and pretends verdict was DROP.
+What do you mean by "skb_transport_header == udp"?  That it is a UDP
+ header?  Or that it is at the offset of the UDP header?  The inner
+ L4 packet could be UDP as well.
+And why are you even looking at skb_transport_header when it's
+ csum_start that determines what the hardware will do?
+AFAICT nothing in nf_nat_proto.c looks at skb_transport_header anyway;
+ indeed in nf_nat_icmp_reply_translation() we can call into this code
+ with hdroff ending up pointing way deeper in the packet.
 
-Note that BROUTING is internally handled via PREROUTING, i.e. 'redirect'
-and 'nat' targets are not available, they will need to be emulated via
-nft expressions.
+In any case, after digging deeper into the netfilter code, it looks to
+ me like there's no issue in the first place: netfilter doesn't
+ 'recompute' the UDP checksum, it just accumulates delta into it to
+ account for the changes it made to the packet, on the assumption that
+ the existing checksum is correct.
+Which AIUI will do the right thing whether the checksum is
+* a correct checksum for an unencapsulated packet
+* a pseudohdr sum for a CHECKSUM_PARTIAL (unencapsulated) packet
+* a correct (LCO) checksum for an encapsulated packet, whose inner L4
+  checksum may or may not be CHECKSUM_PARTIAL offloaded.
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- iptables/ebtables-nft.8 | 42 +++++++++++++++++++++++++++--------------
- iptables/nft-bridge.c   | 36 +++++++++++++++++++++++++++++++++++
- iptables/nft-shared.c   | 39 +++++++++++++++++++++++++++-----------
- iptables/nft-shared.h   |  3 +++
- iptables/nft.c          | 13 +++++++++++++
- iptables/nft.h          |  3 ++-
- 6 files changed, 110 insertions(+), 26 deletions(-)
+Do you have a test case that breaks with the current code?
 
-diff --git a/iptables/ebtables-nft.8 b/iptables/ebtables-nft.8
-index d75aae240bc0..d639bdf5e292 100644
---- a/iptables/ebtables-nft.8
-+++ b/iptables/ebtables-nft.8
-@@ -55,7 +55,7 @@ It is analogous to the
- application, but less complicated, due to the fact that the Ethernet protocol
- is much simpler than the IP protocol.
- .SS CHAINS
--There are two ebtables tables with built-in chains in the
-+There are three ebtables tables with built-in chains in the
- Linux kernel. These tables are used to divide functionality into
- different sets of rules. Each set of rules is called a chain.
- Each chain is an ordered list of rules that can match Ethernet frames. If a
-@@ -81,7 +81,10 @@ an 'extension' (see below) or a jump to a user-defined chain.
- .B ACCEPT
- means to let the frame through.
- .B DROP
--means the frame has to be dropped.
-+means the frame has to be dropped. In the
-+.BR BROUTING " chain however, the " ACCEPT " and " DROP " target have different"
-+meanings (see the info provided for the
-+.BR -t " option)."
- .B CONTINUE
- means the next rule has to be checked. This can be handy, f.e., to know how many
- frames pass a certain point in the chain, to log those frames or to apply multiple
-@@ -93,17 +96,13 @@ For the extension targets please refer to the
- .B "TARGET EXTENSIONS"
- section of this man page.
- .SS TABLES
--As stated earlier, there are two ebtables tables in the Linux
--kernel.  The table names are
--.BR filter " and " nat .
--Of these two tables,
-+As stated earlier, the table names are
-+.BR filter ", " nat " and " broute .
-+Of these tables,
- the filter table is the default table that the command operates on.
--If you are working with the filter table, then you can drop the '-t filter'
--argument to the ebtables command.  However, you will need to provide
--the -t argument for
--.B nat
--table.  Moreover, the -t argument must be the
--first argument on the ebtables command line, if used. 
-+If you are working with the a table other than filter, you will need to provide
-+the -t argument.  Moreover, the -t argument must be the
-+first argument on the ebtables command line, if used.
- .TP
- .B "-t, --table"
- .br
-@@ -131,6 +130,23 @@ iptables world to ebtables it is easier to have the same names. Note that you
- can change the name
- .BR "" ( -E )
- if you don't like the default.
-+.br
-+.br
-+.B broute
-+is used to make a brouter, it has one built-in chain:
-+.BR BROUTING .
-+The targets
-+.BR DROP " and " ACCEPT
-+have a special meaning in the broute table (these names are used for
-+compatibility reasons with ebtables-legacy).
-+.B DROP
-+actually means the frame has to be routed, while
-+.B ACCEPT
-+means the frame has to be bridged. The
-+.B BROUTING
-+chain is traversed very early.
-+Normally those frames
-+would be bridged, but you can decide otherwise here.
- .SH EBTABLES COMMAND LINE ARGUMENTS
- After the initial ebtables '-t table' command line argument, the remaining
- arguments can be divided into several groups.  These groups
-@@ -1059,8 +1075,6 @@ arp message and the hardware address length in the arp header is 6 bytes.
- .BR "" "See " http://netfilter.org/mailinglists.html
- .SH BUGS
- The version of ebtables this man page ships with does not support the
--.B broute
--table. Also there is no support for
- .B string
- match. Further, support for atomic-options
- .RB ( --atomic-file ", " --atomic-init ", " --atomic-save ", " --atomic-commit )
-diff --git a/iptables/nft-bridge.c b/iptables/nft-bridge.c
-index b9983b203f6d..22860d6b91a6 100644
---- a/iptables/nft-bridge.c
-+++ b/iptables/nft-bridge.c
-@@ -95,8 +95,44 @@ static void add_logical_outiface(struct nft_handle *h, struct nftnl_rule *r,
- 		add_cmp_ptr(r, op, iface, iface_len + 1, reg);
- }
- 
-+static int add_meta_broute(struct nftnl_rule *r)
-+{
-+	struct nftnl_expr *expr;
-+
-+	expr = nftnl_expr_alloc("immediate");
-+	if (expr == NULL)
-+		return -1;
-+
-+	nftnl_expr_set_u32(expr, NFTNL_EXPR_IMM_DREG, NFT_REG32_01);
-+	nftnl_expr_set_u8(expr, NFTNL_EXPR_IMM_DATA, 1);
-+	nftnl_rule_add_expr(r, expr);
-+
-+	expr = nftnl_expr_alloc("meta");
-+	if (expr == NULL)
-+		return -1;
-+	nftnl_expr_set_u32(expr, NFTNL_EXPR_META_KEY, NFT_META_BRI_BROUTE);
-+	nftnl_expr_set_u32(expr, NFTNL_EXPR_META_SREG, NFT_REG32_01);
-+
-+	nftnl_rule_add_expr(r, expr);
-+	return 0;
-+}
-+
- static int _add_action(struct nftnl_rule *r, struct iptables_command_state *cs)
- {
-+	const char *table = nftnl_rule_get_str(r, NFTNL_RULE_TABLE);
-+
-+	if (cs->target &&
-+	    table && strcmp(table, "broute") == 0) {
-+		if (strcmp(cs->jumpto, XTC_LABEL_DROP) == 0) {
-+			int ret = add_meta_broute(r);
-+
-+			if (ret)
-+				return ret;
-+
-+			cs->jumpto = "ACCEPT";
-+		}
-+	}
-+
- 	return add_action(r, cs, false);
- }
- 
-diff --git a/iptables/nft-shared.c b/iptables/nft-shared.c
-index 1b22eb7afd30..c19d78e46972 100644
---- a/iptables/nft-shared.c
-+++ b/iptables/nft-shared.c
-@@ -511,8 +511,24 @@ void get_cmp_data(struct nftnl_expr *e, void *data, size_t dlen, bool *inv)
- 	*inv = (op == NFT_CMP_NEQ);
- }
- 
--static void nft_meta_set_to_target(struct nft_xt_ctx *ctx,
--				   struct nftnl_expr *e)
-+static bool nft_parse_meta_set_common(struct nft_xt_ctx* ctx,
-+				      struct nft_xt_ctx_reg *sreg)
-+{
-+	if ((sreg->type != NFT_XT_REG_IMMEDIATE)) {
-+		ctx->errmsg = "meta sreg is not an immediate";
-+		return false;
-+	}
-+
-+	if (sreg->immediate.data[0] == 0) {
-+		ctx->errmsg = "meta sreg immediate is 0";
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
-+static void nft_parse_meta_set(struct nft_xt_ctx *ctx,
-+			       struct nftnl_expr *e)
- {
- 	struct xtables_target *target;
- 	struct nft_xt_ctx_reg *sreg;
-@@ -528,18 +544,17 @@ static void nft_meta_set_to_target(struct nft_xt_ctx *ctx,
- 
- 	switch (nftnl_expr_get_u32(e, NFTNL_EXPR_META_KEY)) {
- 	case NFT_META_NFTRACE:
--		if ((sreg->type != NFT_XT_REG_IMMEDIATE)) {
--			ctx->errmsg = "meta nftrace but reg not immediate";
-+		if (!nft_parse_meta_set_common(ctx, sreg))
- 			return;
--		}
--
--		if (sreg->immediate.data[0] == 0) {
--			ctx->errmsg = "trace is cleared";
--			return;
--		}
- 
- 		targname = "TRACE";
- 		break;
-+	case NFT_META_BRI_BROUTE:
-+		if (!nft_parse_meta_set_common(ctx, sreg))
-+			return;
-+
-+		ctx->cs->jumpto = "DROP";
-+		return;
- 	default:
- 		ctx->errmsg = "meta sreg key not supported";
- 		return;
-@@ -568,7 +583,7 @@ static void nft_parse_meta(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
-         struct nft_xt_ctx_reg *reg;
- 
- 	if (nftnl_expr_is_set(e, NFTNL_EXPR_META_SREG)) {
--		nft_meta_set_to_target(ctx, e);
-+		nft_parse_meta_set(ctx, e);
- 		return;
- 	}
- 
-@@ -1145,6 +1160,8 @@ static void nft_parse_immediate(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
- 	/* Standard target? */
- 	switch(verdict) {
- 	case NF_ACCEPT:
-+		if (cs->jumpto && strcmp(ctx->table, "broute") == 0)
-+			break;
- 		cs->jumpto = "ACCEPT";
- 		break;
- 	case NF_DROP:
-diff --git a/iptables/nft-shared.h b/iptables/nft-shared.h
-index b8bc1a6ce2e9..2c4c0d90cd07 100644
---- a/iptables/nft-shared.h
-+++ b/iptables/nft-shared.h
-@@ -61,6 +61,9 @@ struct nft_xt_ctx_reg {
- 		struct {
- 			uint32_t key;
- 		} meta_dreg;
-+		struct {
-+			uint32_t key;
-+		} meta_sreg;
- 	};
- 
- 	struct {
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 5ef5335a24c1..1cb104e75ccc 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -643,6 +643,19 @@ static const struct builtin_table xtables_bridge[NFT_TABLE_MAX] = {
- 			},
- 		},
- 	},
-+	[NFT_TABLE_BROUTE] = {
-+		.name = "broute",
-+		.type	= NFT_TABLE_BROUTE,
-+		.chains = {
-+			{
-+				.name   = "BROUTING",
-+				.type   = "filter",
-+				.prio   = NF_BR_PRI_FIRST,
-+				.hook   = NF_BR_PRE_ROUTING,
-+			},
-+		},
-+	},
-+
- };
- 
- static int nft_table_builtin_add(struct nft_handle *h,
-diff --git a/iptables/nft.h b/iptables/nft.h
-index 56005863ed4c..1d18982dc8cf 100644
---- a/iptables/nft.h
-+++ b/iptables/nft.h
-@@ -14,8 +14,9 @@ enum nft_table_type {
- 	NFT_TABLE_RAW,
- 	NFT_TABLE_FILTER,
- 	NFT_TABLE_NAT,
-+	NFT_TABLE_BROUTE,
- };
--#define NFT_TABLE_MAX	(NFT_TABLE_NAT + 1)
-+#define NFT_TABLE_MAX	(NFT_TABLE_BROUTE + 1)
- 
- struct builtin_chain {
- 	const char *name;
--- 
-2.39.2
-
+-ed
