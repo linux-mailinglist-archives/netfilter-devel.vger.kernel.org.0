@@ -2,145 +2,58 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6496DCA50
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Apr 2023 20:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58A46DCF38
+	for <lists+netfilter-devel@lfdr.de>; Tue, 11 Apr 2023 03:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbjDJSDR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 10 Apr 2023 14:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
+        id S229701AbjDKB07 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 10 Apr 2023 21:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjDJSDQ (ORCPT
+        with ESMTP id S229618AbjDKB05 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 10 Apr 2023 14:03:16 -0400
-Received: from libel.victim.com (libel.victim.com [5.200.21.143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE0A170A
-        for <netfilter-devel@vger.kernel.org>; Mon, 10 Apr 2023 11:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pifke.org;
-         s=sept2013; h=Content-Type:MIME-Version:Message-ID:Date:References:
-        In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LMOEXi7yS0Ibo7mxro4tujnhn3YKIJBwGInKwomi048=; b=Oj9gtifulxxpJry7IVfVlV7d/7
-        hyJbpqEm34BwWCS0R5FudKh3r/M6arR/6f9wezW0g49e5ftcrOXYMANEfluCcTu5EQPBTmad3JWsH
-        64z65mleM29v7CwwurOE2O9dri6t30fvv121T1VqwrBt0ZQ1qUJ0aPnbaWDyw7Z+Cf1UuMb57IeAx
-        aziFEYewCXqafVEpEroQvfkfWQGBYRQo2pxO77b3d0vLzwxzVRzInSC3s/Nlq8fCLaga7Nz+lVDYH
-        e6ARguNxMbFEr8k4vEUQ68liAyoF1wyInocCQCrpbXfu8ir9+ifnZwO5/wQlmAl+jHN/JRDnD/XpM
-        WetVhdNg==;
-Received: from [2620:b0:2000:da00::2] (helo=stabbing.victim.com)
-        by libel.victim.com with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim)
-        (envelope-from <dave@pifke.org>)
-        id 1plvrC-0001IX-Vl; Mon, 10 Apr 2023 18:03:11 +0000
-From:   Dave Pifke <dave@pifke.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH] src: try SO_SNDBUF before SO_SNDBUFFORCE
-In-Reply-To: <ZDH0EJN9O0DrWp0W@calendula>
-References: <87wn2n8ghs.fsf@stabbing.victim.com> <ZDH0EJN9O0DrWp0W@calendula>
-Date:   Mon, 10 Apr 2023 12:03:34 -0600
-Message-ID: <87r0sr8vih.fsf@stabbing.victim.com>
+        Mon, 10 Apr 2023 21:26:57 -0400
+X-Greylist: delayed 12106 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 10 Apr 2023 18:26:48 PDT
+Received: from zimbra-dc.paul-scerri.ch (dc.paul-scerri.ch [62.220.130.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F210A2708;
+        Mon, 10 Apr 2023 18:26:48 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra-dc.paul-scerri.ch (Postfix) with ESMTP id 22FED5E332F;
+        Mon, 10 Apr 2023 22:14:16 +0200 (CEST)
+Received: from zimbra-dc.paul-scerri.ch ([127.0.0.1])
+        by localhost (zimbra-dc.paul-scerri.ch [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id KP7hu4oBCnvZ; Mon, 10 Apr 2023 22:14:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra-dc.paul-scerri.ch (Postfix) with ESMTP id C3AC25C321E;
+        Mon, 10 Apr 2023 21:55:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at zimbra-dc.paul-scerri.ch
+Received: from zimbra-dc.paul-scerri.ch ([127.0.0.1])
+        by localhost (zimbra-dc.paul-scerri.ch [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id e8Wo_nunpJjO; Mon, 10 Apr 2023 21:55:18 +0200 (CEST)
+Received: from [185.169.4.108] (unknown [185.169.4.108])
+        by zimbra-dc.paul-scerri.ch (Postfix) with ESMTPSA id A0FAF583033;
+        Mon, 10 Apr 2023 21:39:43 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Re
+To:     Recipients <wiki@paul-scerri.ch>
+From:   "Maria-Elisabeth Schaeffler" <wiki@paul-scerri.ch>
+Date:   Mon, 10 Apr 2023 12:39:42 -0700
+Reply-To: mariaelisabeths457@gmail.com
+Message-Id: <20230410193943.A0FAF583033@zimbra-dc.paul-scerri.ch>
+X-Spam-Status: No, score=2.8 required=5.0 tests=FREEMAIL_FORGED_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+Your email account has been selected for a donation of €1,700,000. Please contact for more information.
 
-Pablo Neira Ayuso <pablo@netfilter.org> writes:
-
-> setsockopt() with SO_SNDBUF never fails: it trims the newbuffsiz that is
-> specified by net.core.wmem_max
-
-Oh, good catch!  Your revised patch LGTM, and is closer to what was
-being done in the immediately proceeding function, mnl_set_rcvbuffer.
-
-However, after thinking about it, I feel we should be checking the
-receiver value after setsockopt returns.  If someone is running
-e.g. AppArmor, it seems better to me to attempt the non-privileged
-operation first, to avoid adding noise in the logs.
-
-Also, I don't think there are any current situations where
-SO_SNDBUFFORCE might also trim down the value, but after re-reading the
-man page, I'm not sure the contract precludes that in the future.
-
-Attached is a V3 patch for consideration, which also changes the code to
-attempt the non-privileged SO_RCVBUF before SO_RCVBUFFORCE.  I defer to
-your judgment on which version is actually better; I tested both and
-they both work a) in a container where SO_SNDBUFFORCE fails, and b)
-outside a container with wmem_max set to a small-ish value where
-SO_SNDBUFFORCE is required.
-
---=-=-=
-Content-Type: text/x-diff
-Content-Disposition: inline; filename=so-sndbuf-v3.patch
-
-diff --git a/src/mnl.c b/src/mnl.c
-index 26f943db..dcc22b82 100644
---- a/src/mnl.c
-+++ b/src/mnl.c
-@@ -259,10 +259,19 @@ static void mnl_set_sndbuffer(const struct mnl_socket *nl,
- 	if (newbuffsiz <= sndnlbuffsiz)
- 		return;
- 
--	/* Rise sender buffer length to avoid hitting -EMSGSIZE */
--	if (setsockopt(mnl_socket_get_fd(nl), SOL_SOCKET, SO_SNDBUFFORCE,
--		       &newbuffsiz, sizeof(socklen_t)) < 0)
--		return;
-+	/* Raise sender buffer length to avoid hitting -EMSGSIZE.  The kernel may
-+	 * reduce this to /proc/sys/net/core/wmem_max, see socket(7).
-+	 */
-+	sndnlbuffsiz = newbuffsiz;
-+	if (setsockopt(mnl_socket_get_fd(nl), SOL_SOCKET, SO_SNDBUF,
-+		   &sndnlbuffsiz, sizeof(socklen_t)) < 0 || sndnlbuffsiz < newbuffsiz) {
-+		/* If SO_SNDBUF failed or the resulting size is still too small, try
-+		 * again with SO_SNDBUFFORCE.  This requires CAP_NET_ADMIN.
-+		 */
-+		sndnlbuffsiz = newbuffsiz;
-+		setsockopt(mnl_socket_get_fd(nl), SOL_SOCKET, SO_SNDBUFFORCE,
-+		   &sndnlbuffsiz, sizeof(socklen_t));
-+	}
- }
- 
- static unsigned int nlsndbufsiz;
-@@ -280,14 +289,16 @@ static int mnl_set_rcvbuffer(const struct mnl_socket *nl, socklen_t bufsiz)
- 	if (nlsndbufsiz >= bufsiz)
- 		return 0;
- 
--	ret = setsockopt(mnl_socket_get_fd(nl), SOL_SOCKET, SO_RCVBUFFORCE,
--			 &bufsiz, sizeof(socklen_t));
--	if (ret < 0) {
--		/* If this doesn't work, try to reach the system wide maximum
--		 * (or whatever the user requested).
-+	nlsndbufsiz = bufsiz;
-+	ret = setsockopt(mnl_socket_get_fd(nl), SOL_SOCKET, SO_RCVBUF,
-+			 &nlsndbufsiz, sizeof(socklen_t));
-+	if (ret < 0 || nlsndbufsiz < bufsiz) {
-+		/* If this doesn't work, try again with SO_RCVBUFFORCE.  This requires
-+		 * CAP_NET_ADMIN.
- 		 */
--		ret = setsockopt(mnl_socket_get_fd(nl), SOL_SOCKET, SO_RCVBUF,
--				 &bufsiz, sizeof(socklen_t));
-+		nlsndbufsiz = bufsiz;
-+		ret = setsockopt(mnl_socket_get_fd(nl), SOL_SOCKET, SO_RCVBUFFORCE,
-+				 &nlsndbufsiz, sizeof(socklen_t));
- 	}
- 
- 	return ret;
-
---=-=-=
-Content-Type: text/plain
-
-
-
--- 
-Dave Pifke, dave@pifke.org
-
---=-=-=--
+Mrs Maria Elisabeth Schaeffler
+CEO SCHAEFFLER.
