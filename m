@@ -2,82 +2,125 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD336E3318
-	for <lists+netfilter-devel@lfdr.de>; Sat, 15 Apr 2023 20:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D436E3452
+	for <lists+netfilter-devel@lfdr.de>; Sun, 16 Apr 2023 00:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbjDOSVe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sat, 15 Apr 2023 14:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60168 "EHLO
+        id S229894AbjDOW45 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 15 Apr 2023 18:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbjDOSVd (ORCPT
+        with ESMTP id S229600AbjDOW44 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sat, 15 Apr 2023 14:21:33 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08665270A
-        for <netfilter-devel@vger.kernel.org>; Sat, 15 Apr 2023 11:21:33 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id lh8so8544941plb.1
-        for <netfilter-devel@vger.kernel.org>; Sat, 15 Apr 2023 11:21:33 -0700 (PDT)
+        Sat, 15 Apr 2023 18:56:56 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2849B2D78
+        for <netfilter-devel@vger.kernel.org>; Sat, 15 Apr 2023 15:56:55 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id l21so4050076pla.5
+        for <netfilter-devel@vger.kernel.org>; Sat, 15 Apr 2023 15:56:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681582892; x=1684174892;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A6JQjgUDE1SxlvUoKtzIbQ0h23DC8XvuP/VCa8o54TI=;
-        b=STP0KfAZfSL6MYOd01WbAFENCBUd7L7P0XTmyNx/NM/a4YjQZF+ciYNt7fKzmXnHng
-         9vg39BT3p+FJ2kF3doZzqKtC3MHfHDJQ9o8S0F9i2xib53e7F1p3K0lKtdFQGi2O/Nwi
-         rrr194iTQWNj8cpt49k1THkB9hEFd82I+S3Of79DQGRPt+rNP+jpFQBZZq3RDGvTspaR
-         Iuh30y5vk9zJYGoSrHUBcoLqrm0s25Gf/MS1MslwwPRaeuVgGyIcGXy53vHRKbfzCKiz
-         LIGMLwVcfBF47PqQyzELIc37nKBQVSIAsmhbRcVxHtD9Wk3+kwvyMvQxeDDtQfu/kcgn
-         mbdg==
+        d=networkplumber-org.20221208.gappssmtp.com; s=20221208; t=1681599414; x=1684191414;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ubRjxle8AfL59Prm/wkmTmVjb75/p8iBeRuuijtLjNg=;
+        b=TZKMN8poAHP4YwAqnU9eEVSOlb5ek8a5pOp6pAenCZDEHOJssxaf+A4++1IIYw7MpM
+         7aq9yaEQTpQNruGixDOeSiEIZuumGKqQqq61OfoKbml+6JwtYe2rw4/T/V8o5iEBSi51
+         OSOWCMJ+FlQaNG/1ktYx6rTm4HSd8b8EpSnbipfzd+GjNGowid2Q/djKv2jOWWHaHmEP
+         hSiqOIeyIH6QSf2ALrjHP/WGwHSsfWJFwgnpnRFGR3vBzTBTPXI+33kdhOkhQoB8hegE
+         UeeIqG5sqAzmDiUPg8p1YaOLplu+Tnxv7+bB8KIo23tQvL0qQzEtGCfEbteC9xiY3pS+
+         pioA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681582892; x=1684174892;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A6JQjgUDE1SxlvUoKtzIbQ0h23DC8XvuP/VCa8o54TI=;
-        b=gJ6tM/GplBGszDe9aYswihFWDEykmkrT6zKoDbODKwje9QN/8+qKSkhW5IevO8osDj
-         YW8Bq4Nc3+6ScSGkF8vwxdJ0A/+rDWd1hirPgnVmK2EdVyKrj/uHCzs0Lf8kGodsXfuH
-         3oYwZmt1/m9WMqlspCAgAcPNGo9N0x9Gv6KsvT0ZXBMqW6bv+KxK9TeAPuFlQ+8Q3LMj
-         LLUb3pysKNW6g1s5IFe81QiPBzOxkykhWzhnU2boe9Iy1qbcZ19Pa4xyW9yyY6Qaw3A8
-         mJfiRUReBGLoxYYATucwgyuZyeB17blcbtTtn56OsO6ANWWcAJ0SeoGznPOrYlfKtzwg
-         azeA==
-X-Gm-Message-State: AAQBX9ekn9MjOUOha9hAzhVvk8mVMYVYeHgXYVWCbIlPJozGUkppZ+05
-        nWcetnKyfNViPkO+Oc+slxeYinH8JoXgW4ruo3s=
-X-Google-Smtp-Source: AKy350ZXJ/nnHVEJHG2sSaybJaMu2mRi4M11kMvcQfFQjonuDDNcY/UPC8TMCQt+eLXSTDbxElikB9thFVQiGpIT7xU=
-X-Received: by 2002:a17:90a:de92:b0:23f:a4da:1208 with SMTP id
- n18-20020a17090ade9200b0023fa4da1208mr9931458pjv.39.1681582892124; Sat, 15
- Apr 2023 11:21:32 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681599414; x=1684191414;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ubRjxle8AfL59Prm/wkmTmVjb75/p8iBeRuuijtLjNg=;
+        b=F1a65RijxnUU7zn17qIhhk1hNLCbul09FVXUhR4MoM+7rLCyoW5JDt6A/KnvWyisVb
+         idSD3ddQ9sY0dLaDjLSiv+lhR/Vu3VWUdi1o11Ur8zoeqNEcXe39wysIic8gU8Qm1MJx
+         4vpCIJ9oflQmPNXn4v5IwdDJ9GbEwqXvJskUdK3LXpUT3NfEMfd5lr35kJS/6nShZXyi
+         gjEVJZzaIaD5eiRt2OmlZ22e4cO0Qd7SqEJRhQFmWUvcUDI9oLkcxvVMKvO0Ak02QJOQ
+         oNRFF6gAxmV5dRQYEG22beFuw9YJqAt0yQ6ns9G8LhPIIQaivsEEWraZ5VTLycXqeDhs
+         jwAg==
+X-Gm-Message-State: AAQBX9fDhjFyGh9iosQjYmyN+zuJDgNe+PfdyGFWyxMGVoRHhrmHPMmQ
+        7x85ZEERZxcH9tjDGQhWRKnP3A==
+X-Google-Smtp-Source: AKy350bsEaGCTirqACeAVtm48St3ie5XE0fYZj2D3HWUz1dZxDWvNItGbUZOV8DjHKhZt7C3oJG6Eg==
+X-Received: by 2002:a05:6a20:78a8:b0:e9:5b0a:deff with SMTP id d40-20020a056a2078a800b000e95b0adeffmr9990865pzg.22.1681599414582;
+        Sat, 15 Apr 2023 15:56:54 -0700 (PDT)
+Received: from hermes.local (204-195-120-218.wavecable.com. [204.195.120.218])
+        by smtp.gmail.com with ESMTPSA id e25-20020a635019000000b00502e6bfedc0sm4647359pgb.0.2023.04.15.15.56.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Apr 2023 15:56:54 -0700 (PDT)
+Date:   Sat, 15 Apr 2023 15:56:51 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     david.keisarschm@mail.huji.ac.il
+Cc:     linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>, Jason@zx2c4.com,
+        keescook@chromium.org, ilay.bahat1@gmail.com, aksecurity@gmail.com,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] Replace invocation of weak PRNG
+Message-ID: <20230415155651.18ce590f@hermes.local>
+In-Reply-To: <20230415173756.5520-1-david.keisarschm@mail.huji.ac.il>
+References: <20230415173756.5520-1-david.keisarschm@mail.huji.ac.il>
 MIME-Version: 1.0
-Received: by 2002:a05:7300:8ba7:b0:b9:287c:5bc0 with HTTP; Sat, 15 Apr 2023
- 11:21:31 -0700 (PDT)
-Reply-To: robertcurran39@gmail.com
-From:   ROBERT CURRAN <adamuyau630@gmail.com>
-Date:   Sat, 15 Apr 2023 19:21:31 +0100
-Message-ID: <CAOsSf6UBYVH11bgrLin=kU5HQ=tEQ97xaLCRON25QUxzpoRGTQ@mail.gmail.com>
-Subject: URGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-ATTENTION:
+On Sat, 15 Apr 2023 20:37:53 +0300
+david.keisarschm@mail.huji.ac.il wrote:
 
-The International Monetary Fund (IMF) in conjunction with the WORLD
-BANK have approved your pending inheritor funds and hereby brings this
-information to your notice.
+> diff --git a/include/uapi/linux/netfilter/xt_dscp.h b/include/uapi/linux/netfilter/xt_dscp.h
+> index 7594e4df8..223d635e8 100644
+> --- a/include/uapi/linux/netfilter/xt_dscp.h
+> +++ b/include/uapi/linux/netfilter/xt_dscp.h
+> @@ -1,32 +1,27 @@
+>  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> -/* x_tables module for matching the IPv4/IPv6 DSCP field
+> +/* x_tables module for setting the IPv4/IPv6 DSCP field
+>   *
+>   * (C) 2002 Harald Welte <laforge@gnumonks.org>
+> + * based on ipt_FTOS.c (C) 2000 by Matthew G. Marsh <mgm@paktronix.com>
+>   * This software is distributed under GNU GPL v2, 1991
+>   *
+>   * See RFC2474 for a description of the DSCP field within the IP Header.
+>   *
+> - * xt_dscp.h,v 1.3 2002/08/05 19:00:21 laforge Exp
+> + * xt_DSCP.h,v 1.7 2002/03/14 12:03:13 laforge Exp
+>  */
 
-You are required to contact this office as you receive this
-notification as your recipient's email is listed in our central
-database. so that we can normalize documents on your behalf and advise
-you on how to make a claim.
+This part of the change is a mess.
+Why are you adding ipt_FTOS.c here?
+Why are you updating ancient header line from 2002?
 
-Truly,
-Robert Curran
-Coordinator, International Settlements Unit
