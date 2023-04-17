@@ -2,70 +2,70 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B51556E4270
-	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Apr 2023 10:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933306E426F
+	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Apr 2023 10:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbjDQIW3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 17 Apr 2023 04:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
+        id S230421AbjDQIWS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 17 Apr 2023 04:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbjDQIWT (ORCPT
+        with ESMTP id S230218AbjDQIV5 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 17 Apr 2023 04:22:19 -0400
-X-Greylist: delayed 653 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 17 Apr 2023 01:22:16 PDT
-Received: from mail.bizcodes.pl (mail.bizcodes.pl [151.80.57.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBCD1BC9
-        for <netfilter-devel@vger.kernel.org>; Mon, 17 Apr 2023 01:22:16 -0700 (PDT)
-Received: by mail.bizcodes.pl (Postfix, from userid 1002)
-        id 52F08A4C20; Mon, 17 Apr 2023 08:06:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bizcodes.pl; s=mail;
-        t=1681718855; bh=5QPMt7jNntM5ZbstM20BWsHIeLbmRE8lVU4Iu89IleQ=;
-        h=Date:From:To:Subject:From;
-        b=S0RUcG67FVM6wcimTE/jCLo+yEfPEWV8S1ifveR4nSaT4Wjr+mEqY097pezObzKi4
-         TEcJnA4RqshTXlFC8VDRsyWMB4QvgpFqcJXf42U2HSS6tHNFNdNI/5w4/76qwv8yqz
-         tWiwYAeVJmpUzAqb1yirw6L+zfZ9/zbhkngCPQlZ92N9n4RK3G+/+/tpQCgir1TMQq
-         OmCsERDiTilnCGaSCamroRF6zkFsC+neqFBv3jd5QnuUZ7ntZ+zy7dWEZIWXVfyfSz
-         0rR9pvNBLf22sBpv/anfY371uc52UV5vTD+Ab+zyQGUXdFdtxBFc1OLEnJla0HkMH6
-         kYsE32ETWgbbg==
-Received: by mail.bizcodes.pl for <netfilter-devel@vger.kernel.org>; Mon, 17 Apr 2023 08:06:09 GMT
-Message-ID: <20230417064500-0.1.8q.srso.0.dglm579hh2@bizcodes.pl>
-Date:   Mon, 17 Apr 2023 08:06:09 GMT
-From:   "Marcin Chruszcz" <marcin.chruszcz@bizcodes.pl>
-To:     <netfilter-devel@vger.kernel.org>
-Subject: Prezentacja
-X-Mailer: mail.bizcodes.pl
+        Mon, 17 Apr 2023 04:21:57 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456D14212
+        for <netfilter-devel@vger.kernel.org>; Mon, 17 Apr 2023 01:21:43 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1poK7J-0002x7-3m; Mon, 17 Apr 2023 10:21:41 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     netfilter-devel <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH nf] netfilter: nf_tables: fix ifdef to also consider nf_tables=m
+Date:   Mon, 17 Apr 2023 10:21:36 +0200
+Message-Id: <20230417082136.6123-1-fw@strlen.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dzie=C5=84 dobry!
+nftables can be built as a module, so fix the preprocessor conditional
+accordingly.
 
-Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
-=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
-zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
+Fixes: 478b360a47b7 ("netfilter: nf_tables: fix nf_trace always-on with XT_TRACE=n")
+Reported-by: Florian Fainelli <f.fainelli@gmail.com>
+Reported-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ include/linux/skbuff.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
-=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
-dostaw.
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 1ec3530c8191..dbcaac8b6966 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -4713,7 +4713,7 @@ static inline void nf_reset_ct(struct sk_buff *skb)
+ 
+ static inline void nf_reset_trace(struct sk_buff *skb)
+ {
+-#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE) || defined(CONFIG_NF_TABLES)
++#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE) || IS_ENABLED(CONFIG_NF_TABLES)
+ 	skb->nf_trace = 0;
+ #endif
+ }
+@@ -4733,7 +4733,7 @@ static inline void __nf_copy(struct sk_buff *dst, const struct sk_buff *src,
+ 	dst->_nfct = src->_nfct;
+ 	nf_conntrack_get(skb_nfct(src));
+ #endif
+-#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE) || defined(CONFIG_NF_TABLES)
++#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE) || IS_ENABLED(CONFIG_NF_TABLES)
+ 	if (copy)
+ 		dst->nf_trace = src->nf_trace;
+ #endif
+-- 
+2.39.2
 
-Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
-nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
- co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
-
-Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
-=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
-zania w Pa=C5=84stwa firmie.
-
-
-Pozdrawiam
-Marcin Chruszcz
