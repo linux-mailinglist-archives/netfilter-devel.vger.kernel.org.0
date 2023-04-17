@@ -2,68 +2,70 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E230C6E4163
-	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Apr 2023 09:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51556E4270
+	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Apr 2023 10:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbjDQHll (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 17 Apr 2023 03:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58972 "EHLO
+        id S230089AbjDQIW3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 17 Apr 2023 04:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbjDQHlh (ORCPT
+        with ESMTP id S230218AbjDQIWT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 17 Apr 2023 03:41:37 -0400
-X-Greylist: delayed 326 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 17 Apr 2023 00:41:15 PDT
-Received: from mail.mahavavy.com (mail.mahavavy.com [92.222.170.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E24AED
-        for <netfilter-devel@vger.kernel.org>; Mon, 17 Apr 2023 00:41:15 -0700 (PDT)
-Received: by mail.mahavavy.com (Postfix, from userid 1002)
-        id 0BBEB22208; Mon, 17 Apr 2023 07:35:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mahavavy.com; s=mail;
-        t=1681716947; bh=IfqQW79nVX/qUpmHcJiWDpV9BQnOf/s+Zcq9ON74QJY=;
+        Mon, 17 Apr 2023 04:22:19 -0400
+X-Greylist: delayed 653 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 17 Apr 2023 01:22:16 PDT
+Received: from mail.bizcodes.pl (mail.bizcodes.pl [151.80.57.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBCD1BC9
+        for <netfilter-devel@vger.kernel.org>; Mon, 17 Apr 2023 01:22:16 -0700 (PDT)
+Received: by mail.bizcodes.pl (Postfix, from userid 1002)
+        id 52F08A4C20; Mon, 17 Apr 2023 08:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bizcodes.pl; s=mail;
+        t=1681718855; bh=5QPMt7jNntM5ZbstM20BWsHIeLbmRE8lVU4Iu89IleQ=;
         h=Date:From:To:Subject:From;
-        b=RL7Kh9QaMOO7sipMIdy0XgEvHZlWvzvSOQORiULPy/25TJZZR12goAFmNQMMwB4SY
-         GIaNcmZQIxwv6A/7ikEAFs5G19oMUrSR7gVK0WFTV2WmYx58IxkfGHvb0JYgEudQz1
-         SFIrpq/R1lA9iS7TSviOVJvk0Lv5HfXMwgUhqugY4z1jfbklwxml26ol1qhiWPDk4u
-         XCpeOVVjfOuep8gxgBi79v9YX84IJsbfd8RWEAFBShORS74iacsqCLas2D3LpxnAiu
-         /a6OKzKpBoTIbspuNHSTPvjw713MR7Z1lXFe+lsC0jsogjp4crjtOrgdZGUBbebJJ/
-         NgEaagxonUnZA==
-Received: by mail.mahavavy.com for <netfilter-devel@vger.kernel.org>; Mon, 17 Apr 2023 07:35:37 GMT
-Message-ID: <20230417064500-0.1.20.2zpr.0.hbk9nhumma@mahavavy.com>
-Date:   Mon, 17 Apr 2023 07:35:37 GMT
-From:   =?UTF-8?Q? "Kristi=C3=A1n_Plet=C3=A1nek" ?= 
-        <kristian.pletanek@mahavavy.com>
+        b=S0RUcG67FVM6wcimTE/jCLo+yEfPEWV8S1ifveR4nSaT4Wjr+mEqY097pezObzKi4
+         TEcJnA4RqshTXlFC8VDRsyWMB4QvgpFqcJXf42U2HSS6tHNFNdNI/5w4/76qwv8yqz
+         tWiwYAeVJmpUzAqb1yirw6L+zfZ9/zbhkngCPQlZ92N9n4RK3G+/+/tpQCgir1TMQq
+         OmCsERDiTilnCGaSCamroRF6zkFsC+neqFBv3jd5QnuUZ7ntZ+zy7dWEZIWXVfyfSz
+         0rR9pvNBLf22sBpv/anfY371uc52UV5vTD+Ab+zyQGUXdFdtxBFc1OLEnJla0HkMH6
+         kYsE32ETWgbbg==
+Received: by mail.bizcodes.pl for <netfilter-devel@vger.kernel.org>; Mon, 17 Apr 2023 08:06:09 GMT
+Message-ID: <20230417064500-0.1.8q.srso.0.dglm579hh2@bizcodes.pl>
+Date:   Mon, 17 Apr 2023 08:06:09 GMT
+From:   "Marcin Chruszcz" <marcin.chruszcz@bizcodes.pl>
 To:     <netfilter-devel@vger.kernel.org>
-Subject: =?UTF-8?Q?Tlakov=C4=9B_lit=C3=BD?=
-X-Mailer: mail.mahavavy.com
+Subject: Prezentacja
+X-Mailer: mail.bizcodes.pl
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIXED_ES,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dobr=C3=A9 r=C3=A1no,
+Dzie=C5=84 dobry!
 
-zaji=C5=A1=C5=A5ujeme technologii tlakov=C3=A9ho lit=C3=AD hlin=C3=ADku.
+Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
+=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
+zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
 
-M=C3=A1me v=C3=BDrobn=C3=AD z=C3=A1vody v Polsku, =C5=A0v=C3=A9dsku a =C4=
-=8C=C3=ADn=C4=9B se schopnost=C3=AD flexibiln=C4=9B p=C5=99esouvat v=C3=BD=
-robu mezi lokalitami.
+Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
+=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
+dostaw.
 
-Na=C5=A1e lic=C3=AD bu=C5=88ky jsou v=C4=9Bt=C5=A1inou automatick=C3=A9 n=
-ebo poloautomatick=C3=A9, co=C5=BE umo=C5=BE=C5=88uje v=C3=BDrobu velk=C3=
-=BDch v=C3=BDrobn=C3=ADch s=C3=A9ri=C3=AD s vysokou flexibilitou detail=C5=
-=AF.
-=20
-Poskytujeme podporu v ka=C5=BEd=C3=A9 f=C3=A1zi v=C3=BDvoje projektu, vyv=
-=C3=ADj=C3=ADme strukturu detailu.
+Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
+nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
+ co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
 
-Cht=C4=9Bli byste mluvit o spolupr=C3=A1ci v t=C3=A9to oblasti?
+Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
+=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
+zania w Pa=C5=84stwa firmie.
 
-Pozdravy
-Kristi=C3=A1n Plet=C3=A1nek
+
+Pozdrawiam
+Marcin Chruszcz
