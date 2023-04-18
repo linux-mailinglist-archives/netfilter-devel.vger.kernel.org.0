@@ -2,118 +2,75 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2B66E4EAF
-	for <lists+netfilter-devel@lfdr.de>; Mon, 17 Apr 2023 18:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751576E595C
+	for <lists+netfilter-devel@lfdr.de>; Tue, 18 Apr 2023 08:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbjDQQ7r (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 17 Apr 2023 12:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
+        id S230514AbjDRGWx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 18 Apr 2023 02:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjDQQ7q (ORCPT
+        with ESMTP id S231175AbjDRGWg (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 17 Apr 2023 12:59:46 -0400
-Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2AEB4;
-        Mon, 17 Apr 2023 09:59:45 -0700 (PDT)
-Received: from mg.ssi.bg (localhost [127.0.0.1])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTP id CEC681B28D;
-        Mon, 17 Apr 2023 19:59:41 +0300 (EEST)
-Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTPS id B557B1B257;
-        Mon, 17 Apr 2023 19:59:41 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [178.16.129.10])
-        by ink.ssi.bg (Postfix) with ESMTPS id A51913C043A;
-        Mon, 17 Apr 2023 19:59:36 +0300 (EEST)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.17.1/8.16.1) with ESMTP id 33HGxZgk120021;
-        Mon, 17 Apr 2023 19:59:35 +0300
-Date:   Mon, 17 Apr 2023 19:59:35 +0300 (EEST)
-From:   Julian Anastasov <ja@ssi.bg>
-To:     Simon Horman <horms@kernel.org>
-cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, lvs-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: Re: [PATCH nf-next v3 0/4] ipvs: Cleanups for v6.4
-In-Reply-To: <20230409-ipvs-cleanup-v3-0-5149ea34b0b9@kernel.org>
-Message-ID: <a873ffc-bcdf-934f-127a-80188e8b33e6@ssi.bg>
-References: <20230409-ipvs-cleanup-v3-0-5149ea34b0b9@kernel.org>
+        Tue, 18 Apr 2023 02:22:36 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B665A40C8
+        for <netfilter-devel@vger.kernel.org>; Mon, 17 Apr 2023 23:22:14 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-2efbaad9d76so1971059f8f.0
+        for <netfilter-devel@vger.kernel.org>; Mon, 17 Apr 2023 23:22:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681798932; x=1684390932;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G7upYASidmeqEEydII3qqc7RD6bnaXjO6ELYE2uwAgE=;
+        b=kQWsV4Tz8ONae/ZV3g4mKlz01gv9K7mPuYB0n+5r3FINyUCeW1WNxSrrXfLOj3cikO
+         rfiJeZdlFo3ZxaxKlNXHGKoOhCfVMgoyR+F/R0LTkXr5ZbAUv/nk49RiepOnDraK8lSv
+         JXEeOQZ7NgtODtF057F3iO1OVM2yeYUPWlCcu20i63449Nqww+s9mHjcibeyC2mAASIG
+         PyIQdrT0YNOgjcOl7eQwEXvjQ3tSFHdljERJUOrGAM1JZijPpQR0fyq4nX2w8muQoTNe
+         3XAsC/XaqeLMfD+5cDgjCs+7FUa/vZlo+gBRRw/12LaKISgdoMEOL/bn7FgvG5aOKt26
+         Gt5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681798932; x=1684390932;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=G7upYASidmeqEEydII3qqc7RD6bnaXjO6ELYE2uwAgE=;
+        b=Ziv6rKGbWZYw5TYX1PXfkpLNBFs84rovmi/KaXuNB+hYFvTx5yn5++2IooY5YLXJII
+         Xxf31nZb9Dqtl9KDtsIYsKX+3qnNeL1YTkAy9MKFpJy1/8KtUmd9H+NMwBlWkAYf/XYY
+         a90c7B/uLqCnLuifgp9Vcn2BsY0YDAkCmAHRXPx3qqgCTHxcSQIwQh90uVbtdshk9Xiq
+         NCyQ1v/yVlD/vmhKkZGFgYeQ1e7738h2EMbH+b5bb8Qu0Ole2kCV0iLex/P8MgkEK8gN
+         Lm9lmesA4wINL7VPwiJzUhj6I0ySlMMijJ5v0rl+InYPp8OSLKuFXZhZ/kfpjGHUWJV/
+         i98A==
+X-Gm-Message-State: AAQBX9ec4AcTTe2+5vx3CB2rCiQ3Bekt/y8iXLfHIr0UJvcuYZkZWRLH
+        PVlAO7SnL8RMdeGMAq5SdsxPI4vg815x3pr2xAg=
+X-Google-Smtp-Source: AKy350axxIXlrB4k6OFYW6pFt7yccvkq4Q4USRuesIHJgZ8xqXkgpDxpOj7/Qx4rY5PR2cTvCUO1qpUHE9CQGyD1qHQ=
+X-Received: by 2002:adf:e710:0:b0:2cf:3a99:9c1e with SMTP id
+ c16-20020adfe710000000b002cf3a999c1emr861420wrm.49.1681798931620; Mon, 17 Apr
+ 2023 23:22:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:a5d:5587:0:b0:2bf:cbee:1860 with HTTP; Mon, 17 Apr 2023
+ 23:22:11 -0700 (PDT)
+Reply-To: mariamkouame.info@myself.com
+From:   Mariam Kouame <contact.mariamkouame4@gmail.com>
+Date:   Mon, 17 Apr 2023 23:22:11 -0700
+Message-ID: <CAHkNMZwCD52eM-QWksRekhwnp30RVhb0fzoxmMPHKZpYyHB1YQ@mail.gmail.com>
+Subject: from mariam kouame
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Dear,
 
-	Hello,
+Please grant me permission to share a very crucial discussion with
+you.I am looking forward to hearing from you at your earliest
+convenience.
 
-On Mon, 17 Apr 2023, Simon Horman wrote:
-
-> Hi Julian,
-> 
-> this series aims to clean up IPVS in several ways without
-> implementing any functional changes, aside from removing
-> some debugging output.
-> 
-> Patch 1/4: Update width of source for ip_vs_sync_conn_options
->            The operation is safe, use an annotation to describe it properly.
-> 
-> Patch 2/4: Consistently use array_size() in ip_vs_conn_init()
->            It seems better to use helpers consistently.
-> 
-> Patch 3/4: Remove {Enter,Leave}Function
->            These seem to be well past their use-by date.
-> 
-> Patch 4/4: Correct spelling in comments
-> 	   I can't spell. But codespell helps me these days.
-> 
-> All changes: compile tested only!
-> 
-> ---
-> Changes in v3:
-> - Patch 2/4: Correct division by 1024.
->              It was applied to the wrong variable in v2.
-> - Add Horatiu's Reviewed-by tag.
-> 
-> Changes in v2:
-> - Patch 1/4: Correct spelling of 'conn' in subject.
-> - Patch 2/4: Restore division by 1024. It was lost on v1.
-> 
-> ---
-> Simon Horman (4):
->       ipvs: Update width of source for ip_vs_sync_conn_options
->       ipvs: Consistently use array_size() in ip_vs_conn_init()
->       ipvs: Remove {Enter,Leave}Function
->       ipvs: Correct spelling in comments
-
-	The patchset looks good to me, thanks!
-
-Acked-by: Julian Anastasov <ja@ssi.bg>
-
->  include/net/ip_vs.h             | 32 +++++----------------
->  net/netfilter/ipvs/ip_vs_conn.c | 12 ++++----
->  net/netfilter/ipvs/ip_vs_core.c |  8 ------
->  net/netfilter/ipvs/ip_vs_ctl.c  | 26 +----------------
->  net/netfilter/ipvs/ip_vs_sync.c |  7 +----
->  net/netfilter/ipvs/ip_vs_xmit.c | 62 ++++++-----------------------------------
->  6 files changed, 23 insertions(+), 124 deletions(-)
-> 
-> base-commit: 99676a5766412f3936c55b9d18565d248e5463ee
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
-
+Mrs. Mariam Kouame
