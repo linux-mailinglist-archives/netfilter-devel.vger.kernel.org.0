@@ -2,34 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F41416E773B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 19 Apr 2023 12:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D396E84FF
+	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Apr 2023 00:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbjDSKLe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 19 Apr 2023 06:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
+        id S232508AbjDSWc7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 19 Apr 2023 18:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjDSKLc (ORCPT
+        with ESMTP id S230359AbjDSWc6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 19 Apr 2023 06:11:32 -0400
+        Wed, 19 Apr 2023 18:32:58 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DA99EE7
-        for <netfilter-devel@vger.kernel.org>; Wed, 19 Apr 2023 03:11:30 -0700 (PDT)
-Date:   Wed, 19 Apr 2023 12:11:27 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B656140C6
+        for <netfilter-devel@vger.kernel.org>; Wed, 19 Apr 2023 15:32:25 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Tzung-Bi Shih <tzungbi@kernel.org>
-Cc:     kadlec@netfilter.org, fw@strlen.de,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        jiejiang@chromium.org, jasongustaman@chromium.org,
-        garrick@chromium.org
-Subject: Re: [PATCH v3] netfilter: conntrack: fix wrong ct->timeout value
-Message-ID: <ZD++Tztor/BvG+ZY@calendula>
-References: <20230419051526.3170053-1-tzungbi@kernel.org>
- <ZD+a+R6+OgXm4QFZ@calendula>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next,v4 1/7] netfilter: nf_tables: extended netlink error reporting for netdevice
+Date:   Thu, 20 Apr 2023 00:23:29 +0200
+Message-Id: <20230419222335.1039-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="3Y3LdtmN9jgRrot4"
-Content-Disposition: inline
-In-Reply-To: <ZD+a+R6+OgXm4QFZ@calendula>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -39,59 +32,165 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
+Flowtable and netdev chains are bound to one or several netdevice,
+extend netlink error reporting to specify the the netdevice that
+triggers the error.
 
---3Y3LdtmN9jgRrot4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v4: new in this series
 
-On Wed, Apr 19, 2023 at 09:40:44AM +0200, Pablo Neira Ayuso wrote:
-> On Wed, Apr 19, 2023 at 01:15:26PM +0800, Tzung-Bi Shih wrote:
-> > (struct nf_conn)->timeout is an interval before the conntrack
-> > confirmed.  After confirmed, it becomes a timestamp[1].
-> > 
-> > It is observed that timeout of an unconfirmed conntrack:
-> > - Set by calling ctnetlink_change_timeout().  As a result,
-> >   `nfct_time_stamp` was wrongly added to `ct->timeout` twice[2].
-> > - Get by calling ctnetlink_dump_timeout().  As a result,
-> >   `nfct_time_stamp` was wrongly subtracted[3].
-> > 
-> > Separate the 2 cases in:
-> > - Setting `ct->timeout` in __nf_ct_set_timeout().
-> > - Getting `ct->timeout` in ctnetlink_dump_timeout().
-> 
-> Applied, thanks
+ net/netfilter/nf_tables_api.c | 38 ++++++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 14 deletions(-)
 
-I have to amend this patch, I have to collapsed the attached chunk.
-Otherwise conntrack creation via ctnetlink breaks.
-
-
---3Y3LdtmN9jgRrot4
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="x.patch"
-
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index d3ee18854698..d65290646f63 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -2253,9 +2253,6 @@ ctnetlink_create_conntrack(struct net *net,
- 	if (!cda[CTA_TIMEOUT])
- 		goto err1;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index e48ab8dfb541..900abed9f534 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -1955,7 +1955,8 @@ static struct nft_hook *nft_hook_list_find(struct list_head *hook_list,
  
--	timeout = (u64)ntohl(nla_get_be32(cda[CTA_TIMEOUT])) * HZ;
--	__nf_ct_set_timeout(ct, timeout);
--
- 	rcu_read_lock();
-  	if (cda[CTA_HELP]) {
- 		char *helpname = NULL;
-@@ -2319,6 +2316,9 @@ ctnetlink_create_conntrack(struct net *net,
- 	/* we must add conntrack extensions before confirmation. */
- 	ct->status |= IPS_CONFIRMED;
+ static int nf_tables_parse_netdev_hooks(struct net *net,
+ 					const struct nlattr *attr,
+-					struct list_head *hook_list)
++					struct list_head *hook_list,
++					struct netlink_ext_ack *extack)
+ {
+ 	struct nft_hook *hook, *next;
+ 	const struct nlattr *tmp;
+@@ -1969,10 +1970,12 @@ static int nf_tables_parse_netdev_hooks(struct net *net,
  
-+	timeout = (u64)ntohl(nla_get_be32(cda[CTA_TIMEOUT])) * HZ;
-+	__nf_ct_set_timeout(ct, timeout);
-+
- 	if (cda[CTA_STATUS]) {
- 		err = ctnetlink_change_status(ct, cda);
+ 		hook = nft_netdev_hook_alloc(net, tmp);
+ 		if (IS_ERR(hook)) {
++			NL_SET_BAD_ATTR(extack, tmp);
+ 			err = PTR_ERR(hook);
+ 			goto err_hook;
+ 		}
+ 		if (nft_hook_list_find(hook_list, hook)) {
++			NL_SET_BAD_ATTR(extack, tmp);
+ 			kfree(hook);
+ 			err = -EEXIST;
+ 			goto err_hook;
+@@ -2005,20 +2008,23 @@ struct nft_chain_hook {
+ 
+ static int nft_chain_parse_netdev(struct net *net,
+ 				  struct nlattr *tb[],
+-				  struct list_head *hook_list)
++				  struct list_head *hook_list,
++				  struct netlink_ext_ack *extack)
+ {
+ 	struct nft_hook *hook;
+ 	int err;
+ 
+ 	if (tb[NFTA_HOOK_DEV]) {
+ 		hook = nft_netdev_hook_alloc(net, tb[NFTA_HOOK_DEV]);
+-		if (IS_ERR(hook))
++		if (IS_ERR(hook)) {
++			NL_SET_BAD_ATTR(extack, tb[NFTA_HOOK_DEV]);
+ 			return PTR_ERR(hook);
++		}
+ 
+ 		list_add_tail(&hook->list, hook_list);
+ 	} else if (tb[NFTA_HOOK_DEVS]) {
+ 		err = nf_tables_parse_netdev_hooks(net, tb[NFTA_HOOK_DEVS],
+-						   hook_list);
++						   hook_list, extack);
  		if (err < 0)
+ 			return err;
+ 
+@@ -2086,7 +2092,7 @@ static int nft_chain_parse_hook(struct net *net,
+ 
+ 	INIT_LIST_HEAD(&hook->list);
+ 	if (nft_base_chain_netdev(family, hook->num)) {
+-		err = nft_chain_parse_netdev(net, ha, &hook->list);
++		err = nft_chain_parse_netdev(net, ha, &hook->list, extack);
+ 		if (err < 0) {
+ 			module_put(type->owner);
+ 			return err;
+@@ -7568,7 +7574,8 @@ static const struct nla_policy nft_flowtable_hook_policy[NFTA_FLOWTABLE_HOOK_MAX
+ static int nft_flowtable_parse_hook(const struct nft_ctx *ctx,
+ 				    const struct nlattr *attr,
+ 				    struct nft_flowtable_hook *flowtable_hook,
+-				    struct nft_flowtable *flowtable, bool add)
++				    struct nft_flowtable *flowtable,
++				    struct netlink_ext_ack *extack, bool add)
+ {
+ 	struct nlattr *tb[NFTA_FLOWTABLE_HOOK_MAX + 1];
+ 	struct nft_hook *hook;
+@@ -7615,7 +7622,8 @@ static int nft_flowtable_parse_hook(const struct nft_ctx *ctx,
+ 	if (tb[NFTA_FLOWTABLE_HOOK_DEVS]) {
+ 		err = nf_tables_parse_netdev_hooks(ctx->net,
+ 						   tb[NFTA_FLOWTABLE_HOOK_DEVS],
+-						   &flowtable_hook->list);
++						   &flowtable_hook->list,
++						   extack);
+ 		if (err < 0)
+ 			return err;
+ 	}
+@@ -7758,7 +7766,8 @@ static void nft_flowtable_hooks_destroy(struct list_head *hook_list)
+ }
+ 
+ static int nft_flowtable_update(struct nft_ctx *ctx, const struct nlmsghdr *nlh,
+-				struct nft_flowtable *flowtable)
++				struct nft_flowtable *flowtable,
++				struct netlink_ext_ack *extack)
+ {
+ 	const struct nlattr * const *nla = ctx->nla;
+ 	struct nft_flowtable_hook flowtable_hook;
+@@ -7769,7 +7778,7 @@ static int nft_flowtable_update(struct nft_ctx *ctx, const struct nlmsghdr *nlh,
+ 	int err;
+ 
+ 	err = nft_flowtable_parse_hook(ctx, nla[NFTA_FLOWTABLE_HOOK],
+-				       &flowtable_hook, flowtable, false);
++				       &flowtable_hook, flowtable, extack, false);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -7874,7 +7883,7 @@ static int nf_tables_newflowtable(struct sk_buff *skb,
+ 
+ 		nft_ctx_init(&ctx, net, skb, info->nlh, family, table, NULL, nla);
+ 
+-		return nft_flowtable_update(&ctx, info->nlh, flowtable);
++		return nft_flowtable_update(&ctx, info->nlh, flowtable, extack);
+ 	}
+ 
+ 	nft_ctx_init(&ctx, net, skb, info->nlh, family, table, NULL, nla);
+@@ -7915,7 +7924,7 @@ static int nf_tables_newflowtable(struct sk_buff *skb,
+ 		goto err3;
+ 
+ 	err = nft_flowtable_parse_hook(&ctx, nla[NFTA_FLOWTABLE_HOOK],
+-				       &flowtable_hook, flowtable, true);
++				       &flowtable_hook, flowtable, extack, true);
+ 	if (err < 0)
+ 		goto err4;
+ 
+@@ -7967,7 +7976,8 @@ static void nft_flowtable_hook_release(struct nft_flowtable_hook *flowtable_hook
+ }
+ 
+ static int nft_delflowtable_hook(struct nft_ctx *ctx,
+-				 struct nft_flowtable *flowtable)
++				 struct nft_flowtable *flowtable,
++				 struct netlink_ext_ack *extack)
+ {
+ 	const struct nlattr * const *nla = ctx->nla;
+ 	struct nft_flowtable_hook flowtable_hook;
+@@ -7977,7 +7987,7 @@ static int nft_delflowtable_hook(struct nft_ctx *ctx,
+ 	int err;
+ 
+ 	err = nft_flowtable_parse_hook(ctx, nla[NFTA_FLOWTABLE_HOOK],
+-				       &flowtable_hook, flowtable, false);
++				       &flowtable_hook, flowtable, extack, false);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -8059,7 +8069,7 @@ static int nf_tables_delflowtable(struct sk_buff *skb,
+ 	nft_ctx_init(&ctx, net, skb, info->nlh, family, table, NULL, nla);
+ 
+ 	if (nla[NFTA_FLOWTABLE_HOOK])
+-		return nft_delflowtable_hook(&ctx, flowtable);
++		return nft_delflowtable_hook(&ctx, flowtable, extack);
+ 
+ 	if (flowtable->use > 0) {
+ 		NL_SET_BAD_ATTR(extack, attr);
+-- 
+2.30.2
 
---3Y3LdtmN9jgRrot4--
