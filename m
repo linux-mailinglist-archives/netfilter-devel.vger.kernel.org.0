@@ -2,33 +2,55 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAB76E9A53
-	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Apr 2023 19:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6536E9AC6
+	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Apr 2023 19:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231279AbjDTRHG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 20 Apr 2023 13:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
+        id S231574AbjDTRcl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 20 Apr 2023 13:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbjDTRHF (ORCPT
+        with ESMTP id S231561AbjDTRck (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 20 Apr 2023 13:07:05 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D2F4211C;
-        Thu, 20 Apr 2023 10:07:03 -0700 (PDT)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
-        pabeni@redhat.com, edumazet@google.com
-Subject: [PATCH net 2/2] netfilter: conntrack: fix wrong ct->timeout value
-Date:   Thu, 20 Apr 2023 19:06:57 +0200
-Message-Id: <20230420170657.45373-3-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230420170657.45373-1-pablo@netfilter.org>
-References: <20230420170657.45373-1-pablo@netfilter.org>
+        Thu, 20 Apr 2023 13:32:40 -0400
+Received: from smtp-190c.mail.infomaniak.ch (smtp-190c.mail.infomaniak.ch [IPv6:2001:1600:4:17::190c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF6B3599
+        for <netfilter-devel@vger.kernel.org>; Thu, 20 Apr 2023 10:32:39 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Q2Pqn3z0KzMq6VV;
+        Thu, 20 Apr 2023 19:32:37 +0200 (CEST)
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Q2Pqm20sjzMppF7;
+        Thu, 20 Apr 2023 19:32:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+        s=20191114; t=1682011957;
+        bh=fAnbmRZ7wTyF29YzCTBtEnYRkDr9hbMEBLNoGztZMtM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=cIDOqDFj+mh+tVNGcDDcJEcbMC7z/JEwjq5mBTUb3kR99rhFDqVG8w+jIbezUKelx
+         vJvGpoB9IZyllDMY/y1paYOzKgrLUFyIL487Sqh/J5jYdngxbSIde1IhTYJ0IzIo1B
+         McwPgEfkNaDGxnXOIV/2uw6pnzJeur8X44cwclNg=
+Message-ID: <17ddf6a0-79d1-b493-0432-c8e84593b165@digikod.net>
+Date:   Thu, 20 Apr 2023 19:32:35 +0200
 MIME-Version: 1.0
+User-Agent: 
+Subject: Re: [PATCH v10 02/13] landlock: Allow filesystem layout changes for
+ domains without such rule type
+Content-Language: en-US
+To:     "Konstantin Meskhidze (A)" <konstantin.meskhidze@huawei.com>
+Cc:     willemdebruijn.kernel@gmail.com, gnoack3000@gmail.com,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, yusongping@huawei.com,
+        artem.kuzin@huawei.com
+References: <20230323085226.1432550-1-konstantin.meskhidze@huawei.com>
+ <20230323085226.1432550-3-konstantin.meskhidze@huawei.com>
+ <062447d5-bd64-f58e-9476-0d2d2034f333@digikod.net>
+ <3dd0376c-2835-d1c0-60a9-79d1d22a4d3f@huawei.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+In-Reply-To: <3dd0376c-2835-d1c0-60a9-79d1d22a4d3f@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Infomaniak-Routing: alpha
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -36,111 +58,98 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Tzung-Bi Shih <tzungbi@kernel.org>
 
-(struct nf_conn)->timeout is an interval before the conntrack
-confirmed.  After confirmed, it becomes a timestamp.
+On 20/04/2023 13:42, Konstantin Meskhidze (A) wrote:
+> 
+> 
+> 4/16/2023 7:09 PM, Mickaël Salaün пишет:
+>>
+>> On 23/03/2023 09:52, Konstantin Meskhidze wrote:
+>>> From: Mickaël Salaün <mic@digikod.net>
+>>>
+>>> Allow mount point and root directory changes when there is no filesystem
+>>> rule tied to the current Landlock domain.  This doesn't change anything
+>>> for now because a domain must have at least a (filesystem) rule, but
+>>> this will change when other rule types will come.  For instance, a
+>>> domain only restricting the network should have no impact on filesystem
+>>> restrictions.
+>>>
+>>> Add a new get_current_fs_domain() helper to quickly check filesystem
+>>> rule existence for all filesystem LSM hooks.
+>>>
+>>> Remove unnecessary inlining.
+>>>
+>>> Signed-off-by: Mickaël Salaün <mic@digikod.net>
+>>> ---
+>>>
+>>> Changes since v9:
+>>> * Refactors documentaion landlock.rst.
+>>> * Changes ACCESS_FS_INITIALLY_DENIED constant
+>>> to LANDLOCK_ACCESS_FS_INITIALLY_DENIED.
+>>> * Gets rid of unnecessary masking of access_dom in
+>>> get_raw_handled_fs_accesses() function.
+>>>
+>>> Changes since v8:
+>>> * Refactors get_handled_fs_accesses().
+>>> * Adds landlock_get_raw_fs_access_mask() helper.
+>>>
+>>> ---
+>>>    Documentation/userspace-api/landlock.rst |  6 +-
+>>>    security/landlock/fs.c                   | 78 ++++++++++++------------
+>>>    security/landlock/ruleset.h              | 25 +++++++-
+>>>    security/landlock/syscalls.c             |  6 +-
+>>>    4 files changed, 68 insertions(+), 47 deletions(-)
+>>>
+>>
+>> [...]
+>>
+>>> diff --git a/security/landlock/syscalls.c b/security/landlock/syscalls.c
+>>> index 71aca7f990bc..d35cd5d304db 100644
+>>> --- a/security/landlock/syscalls.c
+>>> +++ b/security/landlock/syscalls.c
+>>> @@ -310,6 +310,7 @@ SYSCALL_DEFINE4(landlock_add_rule, const int, ruleset_fd,
+>>>    	struct path path;
+>>>    	struct landlock_ruleset *ruleset;
+>>>    	int res, err;
+>>> +	access_mask_t mask;
+>>>
+>>>    	if (!landlock_initialized)
+>>>    		return -EOPNOTSUPP;
+>>> @@ -348,9 +349,8 @@ SYSCALL_DEFINE4(landlock_add_rule, const int, ruleset_fd,
+>>>    	 * Checks that allowed_access matches the @ruleset constraints
+>>>    	 * (ruleset->access_masks[0] is automatically upgraded to 64-bits).
+>>>    	 */
+>>> -	if ((path_beneath_attr.allowed_access |
+>>> -	     landlock_get_fs_access_mask(ruleset, 0)) !=
+>>> -	    landlock_get_fs_access_mask(ruleset, 0)) {
+>>> +	mask = landlock_get_raw_fs_access_mask(ruleset, 0);
+>>> +	if ((path_beneath_attr.allowed_access | mask) != mask) {
+>>
+>> This hunk can be moved to the previous patch (i.e. mask = …). This patch
+>> should only contains the new landlock_get_raw_fs_access_mask() call.
+>>
+> 
+>    Sorry. Did not get this tip. Please can you explain what do you mean here?
 
-It is observed that timeout of an unconfirmed conntrack:
-- Set by calling ctnetlink_change_timeout(). As a result,
-  `nfct_time_stamp` was wrongly added to `ct->timeout` twice.
-- Get by calling ctnetlink_dump_timeout(). As a result,
-  `nfct_time_stamp` was wrongly subtracted.
+You can squash this part in the previous patch:
 
-Call Trace:
- <TASK>
- dump_stack_lvl
- ctnetlink_dump_timeout
- __ctnetlink_glue_build
- ctnetlink_glue_build
- __nfqnl_enqueue_packet
- nf_queue
- nf_hook_slow
- ip_mc_output
- ? __pfx_ip_finish_output
- ip_send_skb
- ? __pfx_dst_output
- udp_send_skb
- udp_sendmsg
- ? __pfx_ip_generic_getfrag
- sock_sendmsg
+-	if ((path_beneath_attr.allowed_access |
+-	     landlock_get_fs_access_mask(ruleset, 0)) !=
+-	    landlock_get_fs_access_mask(ruleset, 0)) {
++	mask = landlock_get_fs_access_mask(ruleset, 0);
++	if ((path_beneath_attr.allowed_access | mask) != mask) {
 
-Separate the 2 cases in:
-- Setting `ct->timeout` in __nf_ct_set_timeout().
-- Getting `ct->timeout` in ctnetlink_dump_timeout().
+And this patch will then only include this part:
 
-Pablo appends:
+-	mask = landlock_get_fs_access_mask(ruleset, 0);
++	mask = landlock_get_raw_fs_access_mask(ruleset, 0);
 
-Update ctnetlink to set up the timeout _after_ the IPS_CONFIRMED flag is
-set on, otherwise conntrack creation via ctnetlink breaks.
 
-Note that the problem described in this patch occurs since the
-introduction of the nfnetlink_queue conntrack support, select a
-sufficiently old Fixes: tag for -stable kernel to pick up this fix.
-
-Fixes: a4b4766c3ceb ("netfilter: nfnetlink_queue: rename related to nfqueue attaching conntrack info")
-Signed-off-by: Tzung-Bi Shih <tzungbi@kernel.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- include/net/netfilter/nf_conntrack_core.h |  6 +++++-
- net/netfilter/nf_conntrack_netlink.c      | 13 +++++++++----
- 2 files changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/include/net/netfilter/nf_conntrack_core.h b/include/net/netfilter/nf_conntrack_core.h
-index 71d1269fe4d4..3384859a8921 100644
---- a/include/net/netfilter/nf_conntrack_core.h
-+++ b/include/net/netfilter/nf_conntrack_core.h
-@@ -89,7 +89,11 @@ static inline void __nf_ct_set_timeout(struct nf_conn *ct, u64 timeout)
- {
- 	if (timeout > INT_MAX)
- 		timeout = INT_MAX;
--	WRITE_ONCE(ct->timeout, nfct_time_stamp + (u32)timeout);
-+
-+	if (nf_ct_is_confirmed(ct))
-+		WRITE_ONCE(ct->timeout, nfct_time_stamp + (u32)timeout);
-+	else
-+		ct->timeout = (u32)timeout;
- }
- 
- int __nf_ct_change_timeout(struct nf_conn *ct, u64 cta_timeout);
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index d3ee18854698..6f3b23a6653c 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -176,7 +176,12 @@ static int ctnetlink_dump_status(struct sk_buff *skb, const struct nf_conn *ct)
- static int ctnetlink_dump_timeout(struct sk_buff *skb, const struct nf_conn *ct,
- 				  bool skip_zero)
- {
--	long timeout = nf_ct_expires(ct) / HZ;
-+	long timeout;
-+
-+	if (nf_ct_is_confirmed(ct))
-+		timeout = nf_ct_expires(ct) / HZ;
-+	else
-+		timeout = ct->timeout / HZ;
- 
- 	if (skip_zero && timeout == 0)
- 		return 0;
-@@ -2253,9 +2258,6 @@ ctnetlink_create_conntrack(struct net *net,
- 	if (!cda[CTA_TIMEOUT])
- 		goto err1;
- 
--	timeout = (u64)ntohl(nla_get_be32(cda[CTA_TIMEOUT])) * HZ;
--	__nf_ct_set_timeout(ct, timeout);
--
- 	rcu_read_lock();
-  	if (cda[CTA_HELP]) {
- 		char *helpname = NULL;
-@@ -2319,6 +2321,9 @@ ctnetlink_create_conntrack(struct net *net,
- 	/* we must add conntrack extensions before confirmation. */
- 	ct->status |= IPS_CONFIRMED;
- 
-+	timeout = (u64)ntohl(nla_get_be32(cda[CTA_TIMEOUT])) * HZ;
-+	__nf_ct_set_timeout(ct, timeout);
-+
- 	if (cda[CTA_STATUS]) {
- 		err = ctnetlink_change_status(ct, cda);
- 		if (err < 0)
--- 
-2.30.2
-
+>>
+>>>    		err = -EINVAL;
+>>>    		goto out_put_ruleset;
+>>>    	}
+>>> --
+>>> 2.25.1
+>>>
+>> .
