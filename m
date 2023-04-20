@@ -2,32 +2,30 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACBD6E9A25
-	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Apr 2023 19:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9216E9A50
+	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Apr 2023 19:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbjDTRA3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 20 Apr 2023 13:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40278 "EHLO
+        id S230450AbjDTRHD (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 20 Apr 2023 13:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbjDTRA0 (ORCPT
+        with ESMTP id S231223AbjDTRHC (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 20 Apr 2023 13:00:26 -0400
+        Thu, 20 Apr 2023 13:07:02 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C282455AB
-        for <netfilter-devel@vger.kernel.org>; Thu, 20 Apr 2023 10:00:00 -0700 (PDT)
-Date:   Thu, 20 Apr 2023 18:59:55 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E27A811C;
+        Thu, 20 Apr 2023 10:07:01 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     netfilter-devel@vger.kernel.org,
-        Stefano Brivio <sbrivio@redhat.com>
-Subject: Re: [nft PATCH] tests: shell: Fix for unstable
- sets/0043concatenated_ranges_0
-Message-ID: <ZEFvi9PIl846K0LD@calendula>
-References: <20230420154723.27089-1-phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+        pabeni@redhat.com, edumazet@google.com
+Subject: [PATCH net 0/2] Netfilter fixes for net
+Date:   Thu, 20 Apr 2023 19:06:55 +0200
+Message-Id: <20230420170657.45373-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230420154723.27089-1-phil@nwl.cc>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -37,46 +35,47 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Apr 20, 2023 at 05:47:23PM +0200, Phil Sutter wrote:
-> On my (slow?) testing VM, The test tends to fail when doing a full run
-> (i.e., calling run-test.sh without arguments) and tends to pass when run
-> individually.
-> 
-> The problem seems to be the 1s element timeout which in some cases may
-> pass before element deletion occurs. Simply fix this by doubling the
-> timeout. It has to pass just once, so shouldn't hurt too much.
+Hi,
 
-I have seen this with CONFIG_KASAN too, thanks Phil.
+The following patchset contains late Netfilter fixes for net:
 
-> Fixes: 618393c6b3f25 ("tests: Introduce test for set with concatenated ranges")
-> Cc: Stefano Brivio <sbrivio@redhat.com>
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
-> ---
->  tests/shell/testcases/sets/0043concatenated_ranges_0 | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tests/shell/testcases/sets/0043concatenated_ranges_0 b/tests/shell/testcases/sets/0043concatenated_ranges_0
-> index 11767373bcd22..6e8f4000aa4ef 100755
-> --- a/tests/shell/testcases/sets/0043concatenated_ranges_0
-> +++ b/tests/shell/testcases/sets/0043concatenated_ranges_0
-> @@ -147,7 +147,7 @@ for ta in ${TYPES}; do
->  			eval add_b=\$ADD_${tb}
->  			eval add_c=\$ADD_${tc}
->  			${NFT} add element inet filter test \
-> -				"{ ${add_a} . ${add_b} . ${add_c} timeout 1s${mapv}}"
-> +				"{ ${add_a} . ${add_b} . ${add_c} timeout 2s${mapv}}"
->  			[ $(${NFT} list ${setmap} inet filter test |	\
->  			   grep -c "${add_a} . ${add_b} . ${add_c}") -eq 1 ]
->  
-> @@ -180,7 +180,7 @@ for ta in ${TYPES}; do
->  				continue
->  			fi
->  
-> -			sleep 1
-> +			sleep 2
->  			[ $(${NFT} list ${setmap} inet filter test |		\
->  			   grep -c "${add_a} . ${add_b} . ${add_c} ${mapv}") -eq 0 ]
->  			timeout_tested=1
-> -- 
-> 2.40.0
-> 
+1) Set on IPS_CONFIRMED before change_status() otherwise EBUSY is
+   bogusly hit. This bug was introduced in the 6.3 release cycle.
+
+2) Fix nfnetlink_queue conntrack support: Set/dump timeout
+   accordingly for unconfirmed conntrack entries. Make sure this
+   is done after IPS_CONFIRMED is set on. This is an old bug, it
+   happens since the introduction of this feature.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit 92e8c732d8518588ac34b4cb3feaf37d2cb87555:
+
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf (2023-04-18 20:46:31 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git HEAD
+
+for you to fetch changes up to 73db1b8f2bb6725b7391e85aab41fdf592b3c0c1:
+
+  netfilter: conntrack: fix wrong ct->timeout value (2023-04-19 12:08:38 +0200)
+
+----------------------------------------------------------------
+Pablo Neira Ayuso (1):
+      netfilter: conntrack: restore IPS_CONFIRMED out of nf_conntrack_hash_check_insert()
+
+Tzung-Bi Shih (1):
+      netfilter: conntrack: fix wrong ct->timeout value
+
+ include/net/netfilter/nf_conntrack_core.h |  6 +++++-
+ net/netfilter/nf_conntrack_bpf.c          |  1 +
+ net/netfilter/nf_conntrack_core.c         |  1 -
+ net/netfilter/nf_conntrack_netlink.c      | 16 ++++++++++++----
+ 4 files changed, 18 insertions(+), 6 deletions(-)
