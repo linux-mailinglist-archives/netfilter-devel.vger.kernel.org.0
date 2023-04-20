@@ -2,27 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEBD6E9F2E
-	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Apr 2023 00:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8E46E9F3F
+	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Apr 2023 00:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232984AbjDTWlf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 20 Apr 2023 18:41:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
+        id S232354AbjDTWs2 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 20 Apr 2023 18:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbjDTWlc (ORCPT
+        with ESMTP id S229761AbjDTWs1 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 20 Apr 2023 18:41:32 -0400
+        Thu, 20 Apr 2023 18:48:27 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 866364203
-        for <netfilter-devel@vger.kernel.org>; Thu, 20 Apr 2023 15:41:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B31B226A9
+        for <netfilter-devel@vger.kernel.org>; Thu, 20 Apr 2023 15:48:25 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,v6 7/7] netfilter: nf_tables: remove artificial cap on maximum number of netdevices
-Date:   Fri, 21 Apr 2023 00:34:34 +0200
-Message-Id: <20230420223434.256393-7-pablo@netfilter.org>
+Subject: [PATCH nft,v3 1/2] mnl: flowtable support for extended netlink error reporting
+Date:   Fri, 21 Apr 2023 00:48:20 +0200
+Message-Id: <20230420224821.322008-1-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230420223434.256393-1-pablo@netfilter.org>
-References: <20230420223434.256393-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -34,56 +32,231 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Remove NFT_NETDEVICE_MAX (256) artificial cap on the maximum number of
-netdevices that are allowed per chain/flowtable.
+This patch extends existing flowtable support to improve error
+reporting:
 
+ # nft add flowtable inet x y '{ devices = { x } ; }'
+ Error: Could not process rule: No such file or directory
+ add flowtable inet x y { devices = { x } ; }
+                                      ^
+ # nft delete flowtable inet x y '{ devices = { x } ; }'
+ Error: Could not process rule: No such file or directory
+ delete flowtable inet x y { devices = { x } ; }
+                                         ^
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
-v6: no changes
+v2: fixes to make tests/shell happy
 
- include/net/netfilter/nf_tables.h | 2 --
- net/netfilter/nf_tables_api.c     | 8 +-------
- 2 files changed, 1 insertion(+), 9 deletions(-)
+ src/mnl.c | 142 +++++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 82 insertions(+), 60 deletions(-)
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 262dc17d2c0b..552e19ba4f43 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -1344,8 +1344,6 @@ struct nft_object_ops {
- int nft_register_obj(struct nft_object_type *obj_type);
- void nft_unregister_obj(struct nft_object_type *obj_type);
- 
--#define NFT_NETDEVICE_MAX	256
--
- /**
-  *	struct nft_flowtable - nf_tables flow table
-  *
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 1cf52af26ba6..0e072b2365df 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -1978,7 +1978,7 @@ static int nf_tables_parse_netdev_hooks(struct net *net,
+diff --git a/src/mnl.c b/src/mnl.c
+index ce9e4ee1c059..4c16facaccab 100644
+--- a/src/mnl.c
++++ b/src/mnl.c
+@@ -718,6 +718,51 @@ err:
+ /*
+  * Chain
+  */
++
++struct nft_dev {
++	const char	*ifname;
++	struct location	*location;
++};
++
++static struct nft_dev *nft_dev_array(const struct expr *dev_expr, int *num_devs)
++{
++	struct nft_dev *dev_array;
++	unsigned int ifname_len;
++	char ifname[IFNAMSIZ];
++	int i = 0, len = 1;
++	struct expr *expr;
++
++	list_for_each_entry(expr, &dev_expr->expressions, list)
++		len++;
++
++	dev_array = xmalloc(sizeof(struct nft_dev) * len);
++
++	list_for_each_entry(expr, &dev_expr->expressions, list) {
++		ifname_len = div_round_up(expr->len, BITS_PER_BYTE);
++		memset(ifname, 0, sizeof(ifname));
++		mpz_export_data(ifname, expr->value, BYTEORDER_HOST_ENDIAN,
++				ifname_len);
++		dev_array[i].ifname = xstrdup(ifname);
++		dev_array[i].location = &expr->location;
++		i++;
++	}
++
++	dev_array[i].ifname = NULL;
++	*num_devs = i;
++
++	return dev_array;
++}
++
++static void nft_dev_array_free(const struct nft_dev *dev_array)
++{
++	int i = 0;
++
++	while (dev_array[i].ifname != NULL)
++		xfree(dev_array[i++].ifname);
++
++	xfree(dev_array);
++}
++
+ int mnl_nft_chain_add(struct netlink_ctx *ctx, struct cmd *cmd,
+ 		      unsigned int flags)
  {
- 	struct nft_hook *hook, *next;
- 	const struct nlattr *tmp;
--	int rem, n = 0, err;
-+	int rem, err;
+@@ -1907,48 +1952,30 @@ err:
+ 	return NULL;
+ }
  
- 	nla_for_each_nested(tmp, attr, rem) {
- 		if (nla_type(tmp) != NFTA_DEVICE_NAME) {
-@@ -1999,12 +1999,6 @@ static int nf_tables_parse_netdev_hooks(struct net *net,
- 			goto err_hook;
- 		}
- 		list_add_tail(&hook->list, hook_list);
--		n++;
+-static const char **nft_flowtable_dev_array(struct cmd *cmd)
++static void mnl_nft_ft_devs_build(struct nlmsghdr *nlh, struct cmd *cmd)
+ {
+-	unsigned int ifname_len;
+-	const char **dev_array;
+-	char ifname[IFNAMSIZ];
+-	int i = 0, len = 1;
+-	struct expr *expr;
++	const struct expr *dev_expr = cmd->flowtable->dev_expr;
++	const struct nft_dev *dev_array;
++	struct nlattr *nest_dev;
++	int i, num_devs= 0;
+ 
+-	list_for_each_entry(expr, &cmd->flowtable->dev_expr->expressions, list)
+-		len++;
 -
--		if (n == NFT_NETDEVICE_MAX) {
--			err = -EFBIG;
--			goto err_hook;
--		}
+-	dev_array = xmalloc(sizeof(char *) * len);
+-
+-	list_for_each_entry(expr, &cmd->flowtable->dev_expr->expressions, list) {
+-		ifname_len = div_round_up(expr->len, BITS_PER_BYTE);
+-		memset(ifname, 0, sizeof(ifname));
+-		mpz_export_data(ifname, expr->value, BYTEORDER_HOST_ENDIAN,
+-				ifname_len);
+-		dev_array[i++] = xstrdup(ifname);
++	dev_array = nft_dev_array(dev_expr, &num_devs);
++	nest_dev = mnl_attr_nest_start(nlh, NFTA_FLOWTABLE_HOOK_DEVS);
++	for (i = 0; i < num_devs; i++) {
++		cmd_add_loc(cmd, nlh->nlmsg_len, dev_array[i].location);
++		mnl_attr_put_strz(nlh, NFTA_DEVICE_NAME, dev_array[i].ifname);
  	}
  
- 	return 0;
+-	dev_array[i] = NULL;
+-
+-	return dev_array;
+-}
+-
+-static void nft_flowtable_dev_array_free(const char **dev_array)
+-{
+-	int i = 0;
+-
+-	while (dev_array[i] != NULL)
+-		xfree(dev_array[i++]);
+-
+-	free(dev_array);
++	mnl_attr_nest_end(nlh, nest_dev);
++	nft_dev_array_free(dev_array);
+ }
+ 
+ int mnl_nft_flowtable_add(struct netlink_ctx *ctx, struct cmd *cmd,
+ 			  unsigned int flags)
+ {
+ 	struct nftnl_flowtable *flo;
+-	const char **dev_array;
+ 	struct nlmsghdr *nlh;
++	struct nlattr *nest;
+ 	int priority;
+ 
+ 	flo = nftnl_flowtable_alloc();
+@@ -1958,24 +1985,6 @@ int mnl_nft_flowtable_add(struct netlink_ctx *ctx, struct cmd *cmd,
+ 	nftnl_flowtable_set_u32(flo, NFTNL_FLOWTABLE_FAMILY,
+ 				cmd->handle.family);
+ 
+-	if (cmd->flowtable->hook.name) {
+-		nftnl_flowtable_set_u32(flo, NFTNL_FLOWTABLE_HOOKNUM,
+-					cmd->flowtable->hook.num);
+-		mpz_export_data(&priority, cmd->flowtable->priority.expr->value,
+-				BYTEORDER_HOST_ENDIAN, sizeof(int));
+-		nftnl_flowtable_set_u32(flo, NFTNL_FLOWTABLE_PRIO, priority);
+-	} else {
+-		nftnl_flowtable_set_u32(flo, NFTNL_FLOWTABLE_HOOKNUM, 0);
+-		nftnl_flowtable_set_u32(flo, NFTNL_FLOWTABLE_PRIO, 0);
+-	}
+-
+-	if (cmd->flowtable->dev_expr) {
+-		dev_array = nft_flowtable_dev_array(cmd);
+-		nftnl_flowtable_set_data(flo, NFTNL_FLOWTABLE_DEVICES,
+-					 dev_array, 0);
+-		nft_flowtable_dev_array_free(dev_array);
+-	}
+-
+ 	nftnl_flowtable_set_u32(flo, NFTNL_FLOWTABLE_FLAGS,
+ 				cmd->flowtable->flags);
+ 
+@@ -1991,6 +2000,21 @@ int mnl_nft_flowtable_add(struct netlink_ctx *ctx, struct cmd *cmd,
+ 	mnl_attr_put_strz(nlh, NFTA_FLOWTABLE_NAME, cmd->handle.flowtable.name);
+ 
+ 	nftnl_flowtable_nlmsg_build_payload(nlh, flo);
++
++	nest = mnl_attr_nest_start(nlh, NFTA_FLOWTABLE_HOOK);
++
++	if (cmd->flowtable && cmd->flowtable->priority.expr) {
++		mnl_attr_put_u32(nlh, NFTA_FLOWTABLE_HOOK_NUM, htonl(cmd->flowtable->hook.num));
++		mpz_export_data(&priority, cmd->flowtable->priority.expr->value,
++				BYTEORDER_HOST_ENDIAN, sizeof(int));
++		mnl_attr_put_u32(nlh, NFTA_FLOWTABLE_HOOK_PRIORITY, htonl(priority));
++	}
++
++	if (cmd->flowtable->dev_expr)
++		mnl_nft_ft_devs_build(nlh, cmd);
++
++	mnl_attr_nest_end(nlh, nest);
++
+ 	nftnl_flowtable_free(flo);
+ 
+ 	mnl_nft_batch_continue(ctx->batch);
+@@ -2002,8 +2026,8 @@ int mnl_nft_flowtable_del(struct netlink_ctx *ctx, struct cmd *cmd)
+ {
+ 	enum nf_tables_msg_types msg_type = NFT_MSG_DELFLOWTABLE;
+ 	struct nftnl_flowtable *flo;
+-	const char **dev_array;
+ 	struct nlmsghdr *nlh;
++	struct nlattr *nest;
+ 
+ 	flo = nftnl_flowtable_alloc();
+ 	if (!flo)
+@@ -2012,16 +2036,6 @@ int mnl_nft_flowtable_del(struct netlink_ctx *ctx, struct cmd *cmd)
+ 	nftnl_flowtable_set_u32(flo, NFTNL_FLOWTABLE_FAMILY,
+ 				cmd->handle.family);
+ 
+-	if (cmd->flowtable && cmd->flowtable->dev_expr) {
+-		nftnl_flowtable_set_u32(flo, NFTNL_FLOWTABLE_HOOKNUM, 0);
+-		nftnl_flowtable_set_u32(flo, NFTNL_FLOWTABLE_PRIO, 0);
+-
+-		dev_array = nft_flowtable_dev_array(cmd);
+-		nftnl_flowtable_set_data(flo, NFTNL_FLOWTABLE_DEVICES,
+-					 dev_array, 0);
+-		nft_flowtable_dev_array_free(dev_array);
+-	}
+-
+ 	if (cmd->op == CMD_DESTROY)
+ 		msg_type = NFT_MSG_DESTROYFLOWTABLE;
+ 
+@@ -2044,6 +2058,14 @@ int mnl_nft_flowtable_del(struct netlink_ctx *ctx, struct cmd *cmd)
+ 	}
+ 
+ 	nftnl_flowtable_nlmsg_build_payload(nlh, flo);
++
++	if (cmd->op == CMD_DELETE &&
++	    cmd->flowtable && cmd->flowtable->dev_expr) {
++		nest = mnl_attr_nest_start(nlh, NFTA_FLOWTABLE_HOOK);
++		mnl_nft_ft_devs_build(nlh, cmd);
++		mnl_attr_nest_end(nlh, nest);
++	}
++
+ 	nftnl_flowtable_free(flo);
+ 
+ 	mnl_nft_batch_continue(ctx->batch);
 -- 
 2.30.2
 
