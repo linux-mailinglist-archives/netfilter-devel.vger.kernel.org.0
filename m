@@ -2,88 +2,195 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9856E99AA
-	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Apr 2023 18:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F9B6E9A1C
+	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Apr 2023 18:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbjDTQhM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 20 Apr 2023 12:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52346 "EHLO
+        id S229565AbjDTQ6k (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 20 Apr 2023 12:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbjDTQhG (ORCPT
+        with ESMTP id S229716AbjDTQ6j (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 20 Apr 2023 12:37:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07EA3AA4
-        for <netfilter-devel@vger.kernel.org>; Thu, 20 Apr 2023 09:36:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682008561;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sldBKJY82MsApTKZ62ld5w6opIim9pqSE/sgrzAPQZM=;
-        b=bAmYxX5LgTdQ8nuFdXt8nIUz/QHTvDU/qlhzRXlQXE8bv5xjgIk5fWPzWIMNYUidXJeqmD
-        YfxgT7m+8jyxS3c1kNp4Q7cn3bzEIdRiHsLF7YWa6WW92PaGVq8vT8+fxz6SCHMNAF/3ah
-        tIkm6/jW8Yx9cavw1Gxsgm5mhsasKEM=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-477-L-9ttOTRNZClXxFHxQwN9Q-1; Thu, 20 Apr 2023 12:35:57 -0400
-X-MC-Unique: L-9ttOTRNZClXxFHxQwN9Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 370571C08989;
-        Thu, 20 Apr 2023 16:35:57 +0000 (UTC)
-Received: from maya.cloud.tilaa.com (unknown [10.42.30.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F13DE2026D16;
-        Thu, 20 Apr 2023 16:35:56 +0000 (UTC)
-Date:   Thu, 20 Apr 2023 18:35:54 +0200
-From:   Stefano Brivio <sbrivio@redhat.com>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] tests: shell: Fix for unstable
- sets/0043concatenated_ranges_0
-Message-ID: <20230420183554.4af78bbd@elisabeth>
-In-Reply-To: <20230420154723.27089-1-phil@nwl.cc>
-References: <20230420154723.27089-1-phil@nwl.cc>
-Organization: Red Hat
+        Thu, 20 Apr 2023 12:58:39 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 14F544EFD
+        for <netfilter-devel@vger.kernel.org>; Thu, 20 Apr 2023 09:57:52 -0700 (PDT)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Subject: [PATCH nf-next,v5 1/7] netfilter: nf_tables: extended netlink error reporting for netdevice
+Date:   Thu, 20 Apr 2023 18:55:57 +0200
+Message-Id: <20230420165603.43876-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, 20 Apr 2023 17:47:23 +0200
-Phil Sutter <phil@nwl.cc> wrote:
+Flowtable and netdev chains are bound to one or several netdevice,
+extend netlink error reporting to specify the the netdevice that
+triggers the error.
 
-> On my (slow?) testing VM, The test tends to fail when doing a full run
-> (i.e., calling run-test.sh without arguments) and tends to pass when run
-> individually.
-> 
-> The problem seems to be the 1s element timeout which in some cases may
-> pass before element deletion occurs.
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v5: no changes
 
-Whoops. Yes I think so too.
+ net/netfilter/nf_tables_api.c | 38 ++++++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 14 deletions(-)
 
-> Simply fix this by doubling the
-> timeout. It has to pass just once, so shouldn't hurt too much.
-> 
-> Fixes: 618393c6b3f25 ("tests: Introduce test for set with concatenated ranges")
-> Cc: Stefano Brivio <sbrivio@redhat.com>
-> Signed-off-by: Phil Sutter <phil@nwl.cc>
-
-Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
-
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index e48ab8dfb541..900abed9f534 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -1955,7 +1955,8 @@ static struct nft_hook *nft_hook_list_find(struct list_head *hook_list,
+ 
+ static int nf_tables_parse_netdev_hooks(struct net *net,
+ 					const struct nlattr *attr,
+-					struct list_head *hook_list)
++					struct list_head *hook_list,
++					struct netlink_ext_ack *extack)
+ {
+ 	struct nft_hook *hook, *next;
+ 	const struct nlattr *tmp;
+@@ -1969,10 +1970,12 @@ static int nf_tables_parse_netdev_hooks(struct net *net,
+ 
+ 		hook = nft_netdev_hook_alloc(net, tmp);
+ 		if (IS_ERR(hook)) {
++			NL_SET_BAD_ATTR(extack, tmp);
+ 			err = PTR_ERR(hook);
+ 			goto err_hook;
+ 		}
+ 		if (nft_hook_list_find(hook_list, hook)) {
++			NL_SET_BAD_ATTR(extack, tmp);
+ 			kfree(hook);
+ 			err = -EEXIST;
+ 			goto err_hook;
+@@ -2005,20 +2008,23 @@ struct nft_chain_hook {
+ 
+ static int nft_chain_parse_netdev(struct net *net,
+ 				  struct nlattr *tb[],
+-				  struct list_head *hook_list)
++				  struct list_head *hook_list,
++				  struct netlink_ext_ack *extack)
+ {
+ 	struct nft_hook *hook;
+ 	int err;
+ 
+ 	if (tb[NFTA_HOOK_DEV]) {
+ 		hook = nft_netdev_hook_alloc(net, tb[NFTA_HOOK_DEV]);
+-		if (IS_ERR(hook))
++		if (IS_ERR(hook)) {
++			NL_SET_BAD_ATTR(extack, tb[NFTA_HOOK_DEV]);
+ 			return PTR_ERR(hook);
++		}
+ 
+ 		list_add_tail(&hook->list, hook_list);
+ 	} else if (tb[NFTA_HOOK_DEVS]) {
+ 		err = nf_tables_parse_netdev_hooks(net, tb[NFTA_HOOK_DEVS],
+-						   hook_list);
++						   hook_list, extack);
+ 		if (err < 0)
+ 			return err;
+ 
+@@ -2086,7 +2092,7 @@ static int nft_chain_parse_hook(struct net *net,
+ 
+ 	INIT_LIST_HEAD(&hook->list);
+ 	if (nft_base_chain_netdev(family, hook->num)) {
+-		err = nft_chain_parse_netdev(net, ha, &hook->list);
++		err = nft_chain_parse_netdev(net, ha, &hook->list, extack);
+ 		if (err < 0) {
+ 			module_put(type->owner);
+ 			return err;
+@@ -7568,7 +7574,8 @@ static const struct nla_policy nft_flowtable_hook_policy[NFTA_FLOWTABLE_HOOK_MAX
+ static int nft_flowtable_parse_hook(const struct nft_ctx *ctx,
+ 				    const struct nlattr *attr,
+ 				    struct nft_flowtable_hook *flowtable_hook,
+-				    struct nft_flowtable *flowtable, bool add)
++				    struct nft_flowtable *flowtable,
++				    struct netlink_ext_ack *extack, bool add)
+ {
+ 	struct nlattr *tb[NFTA_FLOWTABLE_HOOK_MAX + 1];
+ 	struct nft_hook *hook;
+@@ -7615,7 +7622,8 @@ static int nft_flowtable_parse_hook(const struct nft_ctx *ctx,
+ 	if (tb[NFTA_FLOWTABLE_HOOK_DEVS]) {
+ 		err = nf_tables_parse_netdev_hooks(ctx->net,
+ 						   tb[NFTA_FLOWTABLE_HOOK_DEVS],
+-						   &flowtable_hook->list);
++						   &flowtable_hook->list,
++						   extack);
+ 		if (err < 0)
+ 			return err;
+ 	}
+@@ -7758,7 +7766,8 @@ static void nft_flowtable_hooks_destroy(struct list_head *hook_list)
+ }
+ 
+ static int nft_flowtable_update(struct nft_ctx *ctx, const struct nlmsghdr *nlh,
+-				struct nft_flowtable *flowtable)
++				struct nft_flowtable *flowtable,
++				struct netlink_ext_ack *extack)
+ {
+ 	const struct nlattr * const *nla = ctx->nla;
+ 	struct nft_flowtable_hook flowtable_hook;
+@@ -7769,7 +7778,7 @@ static int nft_flowtable_update(struct nft_ctx *ctx, const struct nlmsghdr *nlh,
+ 	int err;
+ 
+ 	err = nft_flowtable_parse_hook(ctx, nla[NFTA_FLOWTABLE_HOOK],
+-				       &flowtable_hook, flowtable, false);
++				       &flowtable_hook, flowtable, extack, false);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -7874,7 +7883,7 @@ static int nf_tables_newflowtable(struct sk_buff *skb,
+ 
+ 		nft_ctx_init(&ctx, net, skb, info->nlh, family, table, NULL, nla);
+ 
+-		return nft_flowtable_update(&ctx, info->nlh, flowtable);
++		return nft_flowtable_update(&ctx, info->nlh, flowtable, extack);
+ 	}
+ 
+ 	nft_ctx_init(&ctx, net, skb, info->nlh, family, table, NULL, nla);
+@@ -7915,7 +7924,7 @@ static int nf_tables_newflowtable(struct sk_buff *skb,
+ 		goto err3;
+ 
+ 	err = nft_flowtable_parse_hook(&ctx, nla[NFTA_FLOWTABLE_HOOK],
+-				       &flowtable_hook, flowtable, true);
++				       &flowtable_hook, flowtable, extack, true);
+ 	if (err < 0)
+ 		goto err4;
+ 
+@@ -7967,7 +7976,8 @@ static void nft_flowtable_hook_release(struct nft_flowtable_hook *flowtable_hook
+ }
+ 
+ static int nft_delflowtable_hook(struct nft_ctx *ctx,
+-				 struct nft_flowtable *flowtable)
++				 struct nft_flowtable *flowtable,
++				 struct netlink_ext_ack *extack)
+ {
+ 	const struct nlattr * const *nla = ctx->nla;
+ 	struct nft_flowtable_hook flowtable_hook;
+@@ -7977,7 +7987,7 @@ static int nft_delflowtable_hook(struct nft_ctx *ctx,
+ 	int err;
+ 
+ 	err = nft_flowtable_parse_hook(ctx, nla[NFTA_FLOWTABLE_HOOK],
+-				       &flowtable_hook, flowtable, false);
++				       &flowtable_hook, flowtable, extack, false);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -8059,7 +8069,7 @@ static int nf_tables_delflowtable(struct sk_buff *skb,
+ 	nft_ctx_init(&ctx, net, skb, info->nlh, family, table, NULL, nla);
+ 
+ 	if (nla[NFTA_FLOWTABLE_HOOK])
+-		return nft_delflowtable_hook(&ctx, flowtable);
++		return nft_delflowtable_hook(&ctx, flowtable, extack);
+ 
+ 	if (flowtable->use > 0) {
+ 		NL_SET_BAD_ATTR(extack, attr);
 -- 
-Stefano
+2.30.2
 
