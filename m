@@ -2,48 +2,47 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 048566F0E73
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Apr 2023 00:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB796F18A1
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Apr 2023 15:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344297AbjD0WpJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 27 Apr 2023 18:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
+        id S1346028AbjD1NA3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 28 Apr 2023 09:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344237AbjD0WpI (ORCPT
+        with ESMTP id S229551AbjD1NA2 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 27 Apr 2023 18:45:08 -0400
+        Fri, 28 Apr 2023 09:00:28 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829F22123
-        for <netfilter-devel@vger.kernel.org>; Thu, 27 Apr 2023 15:45:06 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1psAMI-0002Ij-38; Fri, 28 Apr 2023 00:45:02 +0200
-Date:   Fri, 28 Apr 2023 00:45:02 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D7A269F
+        for <netfilter-devel@vger.kernel.org>; Fri, 28 Apr 2023 06:00:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=iuzHJjMf/pdGxEUkShfveYUzlybi5izCMyEecH14kac=; b=I4z6wUZuuUSkWiwBk1Sp5DxU7n
+        HZ6iHbeP8QGifw4c0QAAb4Pqsd8zmEdqxLIA7Hv+gZZCu+fenwKDSLdT63JDCSSZqQkCXhvV0Ro45
+        lGUuN81M+4bo/4gOkNcJ1yd49eopPTpbemURVI8Q4iVk8oRoX3Wu4c7B6nwux/FXoOLmGgmd3J5zW
+        XicD2mgo5x27AX5zPpryK3MtEk+FKVTeONU8FIWACn+3hzSgYkQFHTYJ0S/m55uAxbZjZ++mOswDq
+        0vfzpVCuVhUlciMaJlDic/8WgYxUISWQHWTq6uxLvyjYYNCpO1k5zN3iTfvAHJhDcEbSHYr1300mE
+        rfIP3MhQ==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1psNi5-0001zo-Sj
+        for netfilter-devel@vger.kernel.org; Fri, 28 Apr 2023 15:00:25 +0200
 From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Subject: Re: [nf-next PATCH v2] netfilter: nf_tables: Introduce
- NFTA_RULE_ACTUAL_EXPR
-Message-ID: <ZEr67mbP9KHzAGnl@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-References: <Y+IrUPyJi/GE6Cbk@salvia>
- <Y+Iudd7MODhgjrgz@orbyte.nwl.cc>
- <Y+4LoOjaT1RU6I1r@orbyte.nwl.cc>
- <Y+4Tmv3H24XTiEhK@salvia>
- <Y+4cBvcq7tH2Iw2t@orbyte.nwl.cc>
- <ZEmCdMVboNu6dKiL@calendula>
- <ZEpVGpY3QzUwAMia@orbyte.nwl.cc>
- <ZEpWIxsipUoH489w@calendula>
- <ZEpdebCsg5JVYCU2@orbyte.nwl.cc>
- <ZEpzjLiFZWRAManK@calendula>
+To:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 1/3] arptables: Fix parsing of inverted 'arp operation' match
+Date:   Fri, 28 Apr 2023 15:05:29 +0200
+Message-Id: <20230428130531.14195-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZEpzjLiFZWRAManK@calendula>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,81 +50,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 03:07:24PM +0200, Pablo Neira Ayuso wrote:
-> On Thu, Apr 27, 2023 at 01:33:13PM +0200, Phil Sutter wrote:
-> > On Thu, Apr 27, 2023 at 01:01:55PM +0200, Pablo Neira Ayuso wrote:
-> > > On Thu, Apr 27, 2023 at 12:57:30PM +0200, Phil Sutter wrote:
-> > > > Hi Pablo,
-> > > > 
-> > > > On Wed, Apr 26, 2023 at 09:58:44PM +0200, Pablo Neira Ayuso wrote:
-> > > > [...]
-> > > > > My proposal:
-> > > > 
-> > > > Thanks for returning to this. Your approach requires to define a minimum
-> > > > version from which on forward-compat is guaranteed. I was trying to
-> > > > avoid this requirement though so things would work for "unknown user
-> > > > space".
-> > > 
-> > > You also require a kernel that supports your approach.
-> > 
-> > Sure. But in the described use-case, anything but old user space (i.e.,
-> > container content) is under control.
-> 
-> This is a "forward compatibility" mechanism, we can do nothing about
-> the past, but prepare to handle this scenario better in the future.
-> 
-> This problem has been always there, and we already discussed that it
-> affects other existing utilities and interfaces in the kernel,
-> including iptables legacy.
+The wrong bit was set in 'invflags', probably due to copy'n'paste from
+the previous case.
 
-Yes, sure. If iptables-legacy moved at the pace iptables-nft did and
-containers were a thing back then, the same situation had arisen. I
-don't even see us in charge to solve the problem, other tools lack
-forward compatibility, too. And I have not seen any guarantees about
-mixed use of different tool versions. The only reason I see for
-iptables-nft to attempt such a guarantee is its perspective of replacing
-itself internally with native nftables expressions, in consequence the
-tendency of each new version to break compatibility for the previous
-one.
+Fixes: 84909d171585d ("xtables: bootstrap ARP compatibility layer for nftables")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/nft-arp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Introducing a mode which creates a compatible ruleset for users
-requiring it should be enough from my point of view. Sure, one may argue
-it hinders future deprecation of xtables extensions in kernel. But the
-active use of older versions of iptables-nft does that already.
+diff --git a/iptables/nft-arp.c b/iptables/nft-arp.c
+index 8963573a72e9e..a8e49f442c6d7 100644
+--- a/iptables/nft-arp.c
++++ b/iptables/nft-arp.c
+@@ -244,7 +244,7 @@ static void nft_arp_parse_payload(struct nft_xt_ctx *ctx,
+ 		fw->arp.arhln = ar_hln;
+ 		fw->arp.arhln_mask = 0xff;
+ 		if (inv)
+-			fw->arp.invflags |= IPT_INV_ARPOP;
++			fw->arp.invflags |= IPT_INV_ARPHLN;
+ 		break;
+ 	case offsetof(struct arphdr, ar_pln):
+ 		get_cmp_data(e, &ar_pln, sizeof(ar_pln), &inv);
+-- 
+2.40.0
 
-> > > > Currently, the only offending extension is ebt_among since it doesn't
-> > > > exist (and never did) in non-native form. If I implement among extension
-> > > > parsing (even in non-functional form), my original approach would work.
-> > > > This also means having a minimum version for full compat, but it affects
-> > > > ebtables (actually, use of ebt_among) only.
-> > > 
-> > > Yes, but this is fully user data, kernel really does not need to do
-> > > anything with this alternative representation, which is what I do not
-> > > like from you proposal.
-> > 
-> > OK.
-> > 
-> > > I really think userdata is the place to deal with this.
-> > 
-> > Having to touch old user space is not a good solution for the given
-> > use-case. If kernel modification is a no-go, I'd rather introduce a
-> > "compat mode" in iptables-nft which causes rule creation in the most
-> > compatible form. This might impact run-time performance but is much
-> > simpler to implement and maintain.
-> 
-> This introduces conditional bytecode generation, how will you enable
-> this?
-
-Commandline (or input file) parser creates match and target objects
-which add_match() may or may not turn into native code. In compat mode,
-one could always allocate a "match" expression and call __add_match().
-
-In turn, nftnl_rule parser creates match and target objects from native
-expressions (if supported). Upon encountering a "match" object, it
-merely does an extension lookup and copies the payload into the
-allocated object.
-
-So compat mode is a flag for iptables-nft-restore and 'iptables-nft -A',
-the reverse path works automatically.
-
-Cheers, Phil
