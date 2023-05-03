@@ -2,186 +2,108 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 254E46F5845
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 May 2023 14:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C1D6F5847
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 May 2023 14:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjECM4T (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 May 2023 08:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
+        id S229626AbjECM4Z (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 May 2023 08:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbjECM4Q (ORCPT
+        with ESMTP id S229754AbjECM4U (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 May 2023 08:56:16 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F4D59CF
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 May 2023 05:56:13 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3f315735514so22781695e9.1
-        for <netfilter-devel@vger.kernel.org>; Wed, 03 May 2023 05:56:13 -0700 (PDT)
+        Wed, 3 May 2023 08:56:20 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAEC40C4
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 May 2023 05:56:19 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3f178da21b5so33738415e9.3
+        for <netfilter-devel@vger.kernel.org>; Wed, 03 May 2023 05:56:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1683118571; x=1685710571;
-        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5Ci7zWQ2KMgPFaDccNIAUdnzkTb5S94q6dvoxP2b3gA=;
-        b=IYqugN+lfkEvHWc+kcN4DyUO55VGU6YBFhuCRDkCLf7Dx1SC4uVlLbGTlW16BzKUn1
-         VlY0wUAHtN6OxtH1gkiBG9uIfIwSDEH8x8qCrRsy4BSm0Yh3M5GNRJrxToyXRYG0Lh0b
-         lvYKYLejMYSQfIGELGh5jwWDLvBcT6wxcpa40=
+        d=broadcom.com; s=google; t=1683118577; x=1685710577;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2poujsEU62hOTmD9gr1saisa0/PyqaYzMrKshJvsub0=;
+        b=R0tZrCqpcN6P3SzNHnJJY0oXedcn6WHxZLtPFfQ0xaL+qrf81aXaIbfdDrBqsb9Ozq
+         quckKHrAYjyDiYiNbo1lU9UFDEMHSv1qWm7XWognMz1uJxmhMlvuEeXVLg6/IJq84xXF
+         y/CFg9c7ZsRL+/WYap8X/7MxG2qGXRyAJE138=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683118571; x=1685710571;
-        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5Ci7zWQ2KMgPFaDccNIAUdnzkTb5S94q6dvoxP2b3gA=;
-        b=MTYqqw2Xklcv60nqL3CyLbflBW5RogOxm12Aj49zcE1Z7zINtJwZ5h/H8r9ltaWdyj
-         Dr93MAfJamgv511OlSA9gkMYtlFaW80J45PE5nvuRNMFwUcnsLuGs0uUuRde0Tidy98C
-         Ves+7ZDanOY1G0u/9gdZRGabPyEUTT5v2N3Edc9FI954omY7KvoiwMZF0AvpijqdcFf6
-         GUSvr0y3/Isz0fmjo7dH/139KNWaB+f0vLpf6VEbo+HYNtnqb6bKv5pQdgGYPwm+6eY8
-         tLi+0dFs32dn5E3b85sfxcjD1BzrkkM+oDjYz+vNoxwiF9K1gPUlBx+h6wQgqTdqWNj1
-         MiRw==
-X-Gm-Message-State: AC+VfDxBSAMKEKHQBMajpiJhajTtXZ76/fojEab0+AKz5rvnxusCEpng
-        RR+H+OcHSHlX5SPE43U2m4VizMZMlr7VcZ62sKO6kl36cMhWgEWt2p+Uo07DiQY9YN2tQC0AONX
-        J6oWrnZ7qAK/4QbOUUEdudfwUDiEDbx41OzX1viwH0LKmXjnYYYptd3StyWzYKvHzmR4XAbw2XU
-        IkjqoROUpY6zZ6duB3ZTqvsQ==
-X-Google-Smtp-Source: ACHHUZ62mx4+JpZyKOlTZczs09UaFKWCn0ImcooI9XSugdrpj65Lq4eC2z10A8W5UBqh7eJxZEBm6g==
-X-Received: by 2002:a5d:6148:0:b0:306:3881:d9ae with SMTP id y8-20020a5d6148000000b003063881d9aemr1530413wrt.26.1683118571354;
-        Wed, 03 May 2023 05:56:11 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683118577; x=1685710577;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2poujsEU62hOTmD9gr1saisa0/PyqaYzMrKshJvsub0=;
+        b=BjlHtctefCftSDQGno4UGfIw+6w5BOHfFeV5fgBlGvfLe1STHpNZPJoIV0EMbX/+N+
+         Um9tZ60I8rxgHzWQJanS/Pn1UE35qxq4yl5+hDO5VItKKE+7/LKGL6iGEjiKWJn4IgJG
+         SoHBmLaQcw/zGoIbfvyQwBg3uli4sDU9llCzU6lPIMa5IXf5rqp0m3Gryo2qyFgFpIW5
+         muO5vYrLTHALsuEN0Zpw20WqKKWajGguH9h2t5VaOBYpp4fB9qvub51Gu3R+yqibqa+b
+         kSjzFVrwQridQ5L+4vAY6dS7+Lq10wcU2fczUM9s2EQw2nk+GOqxDkfVE6T6XrKwLDZF
+         H5+g==
+X-Gm-Message-State: AC+VfDzu/LaYUnoiLSBVKdZ4sexNbw1RbgHRGqR3KqMn8xi8wIsyijeP
+        7zk5zlSN9zUkJUsqyHFSFiHBhqt4HmwElsrGCfTT353gWIa5A/KG6YCUwXPQZnur/7c+2A/1sxm
+        fyUEDwHoVDu7lHbw9TzxkmprMIyYtm5+yQDfzatERh4LCmpedHHUvmE0tUUstz6leEQOWRKoBuM
+        J2xJd13p9DeUDrtZ4AY/fzfg==
+X-Google-Smtp-Source: ACHHUZ538EYuPf240+ETC+KyeJQHxdMFqLXjxL5Om/BToxqiWJp4oZ5XTcoV2OoIGX4/Zi7+WGirDQ==
+X-Received: by 2002:a7b:c5c6:0:b0:3f0:8fb3:24ea with SMTP id n6-20020a7bc5c6000000b003f08fb324eamr14308666wmk.9.1683118577350;
+        Wed, 03 May 2023 05:56:17 -0700 (PDT)
 Received: from localhost.localdomain ([192.19.250.250])
-        by smtp.gmail.com with ESMTPSA id u6-20020a05600c00c600b003ee1b2ab9a0sm1855396wmm.11.2023.05.03.05.56.10
+        by smtp.gmail.com with ESMTPSA id u6-20020a05600c00c600b003ee1b2ab9a0sm1855396wmm.11.2023.05.03.05.56.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 May 2023 05:56:10 -0700 (PDT)
+        Wed, 03 May 2023 05:56:16 -0700 (PDT)
 From:   Boris Sukholitko <boris.sukholitko@broadcom.com>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Ilya Lifshits <ilya.lifshits@broadcom.com>,
         Boris Sukholitko <boris.sukholitko@broadcom.com>
-Subject: [PATCH nf-next 00/19] netfilter: nftables: dscp modification offload
-Date:   Wed,  3 May 2023 15:55:33 +0300
-Message-Id: <20230503125552.41113-1-boris.sukholitko@broadcom.com>
+Subject: [PATCH nf-next 01/19] selftest: netfilter: use /proc for pid checking
+Date:   Wed,  3 May 2023 15:55:34 +0300
+Message-Id: <20230503125552.41113-2-boris.sukholitko@broadcom.com>
 X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20230503125552.41113-1-boris.sukholitko@broadcom.com>
+References: <20230503125552.41113-1-boris.sukholitko@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000094763c05fac99454"
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        boundary="000000000000efcc2005fac99491"
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
---00000000000094763c05fac99454
+--000000000000efcc2005fac99491
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Some ps commands (e.g. busybox derived) have no -p option. Use /proc for
+pid existence check.
 
-Consider ruleset such as:
+Signed-off-by: Boris Sukholitko <boris.sukholitko@broadcom.com>
+---
+ tools/testing/selftests/netfilter/nft_flowtable.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-table inet filter {
-        chain forward {
-                type filter hook forward priority filter; policy accept;
-                ip dscp set cs3
-                ct state established,related accept
-        }
-}
-
-As expected, all of the packets from 10.0.2.99 to 10.0.1.99 have IPv4 tos field
-changed to 0x60:
-
-...
-13:36:42.474591 fe:dc:b3:e2:dc:3b > 5a:45:4d:2a:25:65, ethertype IPv4 (0x0800), length 1090: (tos 0x60, ttl 62, id 39855, offset 0, flags [none], proto TCP (6), length 1076)
-    10.0.2.99.12345 > 10.0.1.99.44084: Flags [P.], cksum 0x1bec (incorrect -> 0x44c3), seq 1:1025, ack 1025, win 1987, options [nop,nop,TS val 2854899766 ecr 3249774499], length 1024
-...
-
-Now lets try to add flow offload:
-
-table inet filter {
-        flowtable f1 {
-                hook ingress priority filter
-                devices = { veth0, veth1 }
-        }
-
-        chain forward {
-                type filter hook forward priority filter; policy accept;
-                ip dscp set cs3
-                ip protocol { tcp, udp, gre } flow add 
-                ct state established,related accept
-        }
-}
-
-Although some of the packets still have their TOS being correct, some are not:
-
-...
-13:41:17.138782 5e:d5:1f:a3:ba:d1 > d2:d2:73:e6:5b:92, ethertype IPv4 (0x0800), length 1090: (tos 0x0, ttl 62, id 20142, offset 0, flags [none], proto TCP (6), length 1076)
-    10.0.2.99.12345 > 10.0.1.99.34230: Flags [P.], cksum 0x1bec (incorrect -> 0xc090), seq 1:1025, ack 1, win 2009, options [nop,nop,TS val 2855174430 ecr 3250049157], length 1024
-...
-
-The root cause for the bug seems to be that nft_payload_set_eval (which sets the
-dscp tos field) isn't being called on the offload fast path in
-nf_flow_offload_ip_hook.
-
-The fix in this patch series is to have payload modifications recorded in the
-new conntrack extension. Then we apply those modifications on the fast path.
-
-To signal intent to record payload changes, we add offload flag to the nft
-userspace tool (separate patches follow). For example the dscp set line becomes:
-
-....
-ip dscp set cs3 offload
-...
-
-Some high level description of the patches:
-
-* patches 1-4 fix small but annoying infelicities in nft_flowtable.sh test script
-* patches 5-7 export payload modification functionality from nft_payload.c
-* patches 8-10 add new NFT_PAYLOAD_CAN_OFFLOAD flag being set by the userspace
-* patches 11-13 are technical changes to add the new conntrack extension
-* patches 14-16 add payload context to the conntrack and apply them on the fast path
-* patches 17-18 save the payload context if NFT_PAYLOAD_CAN_OFFLOAD flag is set.
-* patch 19 adds dscp modification offload test to the nft_payload.sh test script.
-
-Thanks,
-Boris.
-
-Boris Sukholitko (19):
-  selftest: netfilter: use /proc for pid checking
-  selftest: netfilter: no need for ps -x option
-  selftest: netfilter: wait for specific nc pids
-  selftest: netfilter: monitor result file sizes
-  netfilter: nft_payload: refactor mangle operation
-  netfilter: nft_payload: publish nft_payload_set
-  netfilter: nft_payload: export mangle
-  netfilter: nft_payload: use flag for checksum need
-  netfilter: nft_payload: add offload flag define
-  netfilter: nft_payload: allow offload in the netlink
-  netfilter: conntrack: nft extension Kconfig
-  netfilter: nft: empty nft conntrack extension
-  netfilter: conntrack: register nft extension
-  netfilter: nft: add payload context into extension
-  netfilter: nft: add payload application
-  netfilter: nftables: fast path payload mangle
-  netfilter: nftables: payload save mechanism
-  netfilter: nft_payload: save payload if needed
-  selftests: netfilter: dscp offload test
-
- include/net/netfilter/nf_conntrack_extend.h   |  3 +
- include/net/netfilter/nf_tables.h             | 68 +++++++++++++++++++
- include/uapi/linux/netfilter/nf_tables.h      |  1 +
- net/netfilter/Kconfig                         | 10 +++
- net/netfilter/Makefile                        |  2 +
- net/netfilter/nf_conntrack_core.c             |  2 +
- net/netfilter/nf_conntrack_extend.c           |  9 ++-
- net/netfilter/nf_conntrack_netlink.c          |  2 +
- net/netfilter/nf_flow_table_ip.c              |  3 +
- net/netfilter/nft_conntrack_ext.c             | 56 +++++++++++++++
- net/netfilter/nft_payload.c                   | 46 +++++++------
- .../selftests/netfilter/nft_flowtable.sh      | 61 +++++++++++++++--
- 12 files changed, 237 insertions(+), 26 deletions(-)
- create mode 100644 net/netfilter/nft_conntrack_ext.c
-
+diff --git a/tools/testing/selftests/netfilter/nft_flowtable.sh b/tools/testing/selftests/netfilter/nft_flowtable.sh
+index 7060bae04ec8..4d8bc51b7a7b 100755
+--- a/tools/testing/selftests/netfilter/nft_flowtable.sh
++++ b/tools/testing/selftests/netfilter/nft_flowtable.sh
+@@ -288,11 +288,11 @@ test_tcp_forwarding_ip()
+ 
+ 	sleep 3
+ 
+-	if ps -p $lpid > /dev/null;then
++	if test -d /proc/"$lpid"/; then
+ 		kill $lpid
+ 	fi
+ 
+-	if ps -p $cpid > /dev/null;then
++	if test -d /proc/"$cpid"/; then
+ 		kill $cpid
+ 	fi
+ 
 -- 
 2.32.0
 
 
---00000000000094763c05fac99454
+--000000000000efcc2005fac99491
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -252,14 +174,14 @@ zPffqO2QS6e4oXzmoYuX9sCNfol1TaQgCYgYoC4rexOBLLtYbwdKWi3/ttntZ2PHS1QRaDzrBSuw
 L39zqstTC0LC/YoSKC/cU9igMELugG/Twy9uVlg2XXTY1wUYSWMsYlpydsrVyG18UScp7FlGFbWX
 EWKS7pkxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwA
-ydoyIjshhiv/IkUwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIh0dMpKnO6XSXty
-MLMc58jQRi7q2VaoSI5OqDF/Fzm1MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDUwMzEyNTYxMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+ydoyIjshhiv/IkUwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIL5rXS964Vxc4N4O
+V9ZFLQXgXQz9zQR7CL7Tcg3vFiEiMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDUwMzEyNTYxN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCROq0WyPmqP9+Ro4NG0djf1gsSsuhwVi1u
-8Z6JVEUptDQxg/6TfSR7MgXl0clJkVcqNqdXOjp4iG0YpTWkDmEh+/lmIwS9kqWXLCYEsNdq1qdl
-0DnHVwhcfbrapj5XynDp8Tv794M69UC9e05D1FqxxKL2KzuDz9TxETIrAypHYnFdzLFwD0m86c1/
-fuoGbuQhb6EIhc3bdHU0GrilNNY+HDKRd5Sn+nxc8anZLE2HdjW3EP67GsOk0pjWRsuSuUFIKTL4
-VYh2RcMQrP15tlVYFb9qK7GM5iT31OVXpLOr/NpGGfYBx2sChoyR7IBsmUfiAylXnQSffZ+L8FC4
-hAJE
---00000000000094763c05fac99454--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCP6al2gDaVw/jjg8zN0qyAovZDe0itvdvO
+5AZLS90gD8YsOuChjzZbxinz+7nGAidFk55v4+DhAEBz0YNDaig6L4WgR4YdsQKJ7OfxHoGMonHF
+j0+pUNyHkK6pXWLRyXOckr6Jq3fLIPBmZMkfKEG2lAcIrZ4TYD3JzFYgsyMoUplsqV2gz2682beq
+Py//uM8FW89irYEuAxPUN44r0JoAg8GqchkdThk339699GH52WGUmlBQ6x/mr+bO1xfNJHvagMBW
+vhLPJiuzU3zcWS0a6W9ha1v9+wXrMwPSarPrZvYejpntXL5fOo8wykmvOwlxXSbPLfpQeXGNZOKL
+dOPg
+--000000000000efcc2005fac99491--
