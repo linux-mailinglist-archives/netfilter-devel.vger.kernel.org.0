@@ -2,64 +2,64 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C1D6F5847
+	by mail.lfdr.de (Postfix) with ESMTP id 08E0E6F5846
 	for <lists+netfilter-devel@lfdr.de>; Wed,  3 May 2023 14:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbjECM4Z (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 May 2023 08:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
+        id S229671AbjECM4Y (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 May 2023 08:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbjECM4U (ORCPT
+        with ESMTP id S229626AbjECM4V (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 May 2023 08:56:20 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAEC40C4
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 May 2023 05:56:19 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3f178da21b5so33738415e9.3
-        for <netfilter-devel@vger.kernel.org>; Wed, 03 May 2023 05:56:19 -0700 (PDT)
+        Wed, 3 May 2023 08:56:21 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818615262
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 May 2023 05:56:20 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3f173af665fso32872155e9.3
+        for <netfilter-devel@vger.kernel.org>; Wed, 03 May 2023 05:56:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1683118577; x=1685710577;
+        d=broadcom.com; s=google; t=1683118578; x=1685710578;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2poujsEU62hOTmD9gr1saisa0/PyqaYzMrKshJvsub0=;
-        b=R0tZrCqpcN6P3SzNHnJJY0oXedcn6WHxZLtPFfQ0xaL+qrf81aXaIbfdDrBqsb9Ozq
-         quckKHrAYjyDiYiNbo1lU9UFDEMHSv1qWm7XWognMz1uJxmhMlvuEeXVLg6/IJq84xXF
-         y/CFg9c7ZsRL+/WYap8X/7MxG2qGXRyAJE138=
+        bh=s81vBDHcdaF6D6Qrr/JdT0cnNe2+UFNhqawDm4XaSTY=;
+        b=cOusQLbHYAZYk74ITWeoMkEfW+0ZPoKjdNl9HQ/AtS/eG280cQ9tjCJ/1hIoFLNGLE
+         hVMjQZrZEGVfJSLgyhNK5oeyBiX8M4ip/QtX2Bzi4m69uGXxC+1/YSApnK3/4N+d/+9v
+         whI5fODGN+It4tVtDRtZQKxywo12BIwmujSsU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683118577; x=1685710577;
+        d=1e100.net; s=20221208; t=1683118578; x=1685710578;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2poujsEU62hOTmD9gr1saisa0/PyqaYzMrKshJvsub0=;
-        b=BjlHtctefCftSDQGno4UGfIw+6w5BOHfFeV5fgBlGvfLe1STHpNZPJoIV0EMbX/+N+
-         Um9tZ60I8rxgHzWQJanS/Pn1UE35qxq4yl5+hDO5VItKKE+7/LKGL6iGEjiKWJn4IgJG
-         SoHBmLaQcw/zGoIbfvyQwBg3uli4sDU9llCzU6lPIMa5IXf5rqp0m3Gryo2qyFgFpIW5
-         muO5vYrLTHALsuEN0Zpw20WqKKWajGguH9h2t5VaOBYpp4fB9qvub51Gu3R+yqibqa+b
-         kSjzFVrwQridQ5L+4vAY6dS7+Lq10wcU2fczUM9s2EQw2nk+GOqxDkfVE6T6XrKwLDZF
-         H5+g==
-X-Gm-Message-State: AC+VfDzu/LaYUnoiLSBVKdZ4sexNbw1RbgHRGqR3KqMn8xi8wIsyijeP
-        7zk5zlSN9zUkJUsqyHFSFiHBhqt4HmwElsrGCfTT353gWIa5A/KG6YCUwXPQZnur/7c+2A/1sxm
-        fyUEDwHoVDu7lHbw9TzxkmprMIyYtm5+yQDfzatERh4LCmpedHHUvmE0tUUstz6leEQOWRKoBuM
-        J2xJd13p9DeUDrtZ4AY/fzfg==
-X-Google-Smtp-Source: ACHHUZ538EYuPf240+ETC+KyeJQHxdMFqLXjxL5Om/BToxqiWJp4oZ5XTcoV2OoIGX4/Zi7+WGirDQ==
-X-Received: by 2002:a7b:c5c6:0:b0:3f0:8fb3:24ea with SMTP id n6-20020a7bc5c6000000b003f08fb324eamr14308666wmk.9.1683118577350;
-        Wed, 03 May 2023 05:56:17 -0700 (PDT)
+        bh=s81vBDHcdaF6D6Qrr/JdT0cnNe2+UFNhqawDm4XaSTY=;
+        b=X+SbaJvPK49m6mmkcItRZ1xXA1Ecq/wbQ+tGyLs05mA7kGgudGmdrxCAbz9Rgb8F4i
+         EkyK3us2lnEOZRIaadGziW7YzCbmWAYKSgDQehTumOm/EabTTc/2Bb+OG6a74zsj+RiG
+         mrPLWbUO8I+HqC7LFo6NkrDDOcneWoFM+soeHWB5x2I6hnEZnJhxf2+TDmRifcpOdDQZ
+         mJaUC9XSfjdcImFaM8+dazenK0Vb06AisXAcLwu6dzKwKP49TVsEHzQO87e8BcBGnbXc
+         qBFwhQaHaMDf9Cm0TpWt1sxXnA5uuO4zC8q2v3GeIwCPD0XB4L3n2tFK3CF0iXh70SCU
+         LzlQ==
+X-Gm-Message-State: AC+VfDxrfavlAVUXM8lshkVskFEsVGfl+HVYu4ZxYNMXSdLcD6DyeKtO
+        jHSUs4gEjY61sgxJ5TeCOpoj+PtHb46jdrcnhrrsNO/vvUIkL/QLVmrZ7pnIzGTpuBGpd0zQE0v
+        DJ0MRU4ztZeRcvuR8iw6U5lsK6SIUAcAiCcv2V+5NOJ5uxTpl0VgujXFPIxWxX2HZfkojImcufd
+        k04lfNwQcEw3AG0IoMaZweOg==
+X-Google-Smtp-Source: ACHHUZ6cPXG+bCXIjuKdthXEXnKy1QixNYBAPu1rrKBPHJINwd19LJeNxD0VHNtN0UrKXvmAjw66mQ==
+X-Received: by 2002:a05:600c:281:b0:3ed:2ae9:6c75 with SMTP id 1-20020a05600c028100b003ed2ae96c75mr13703619wmk.37.1683118578578;
+        Wed, 03 May 2023 05:56:18 -0700 (PDT)
 Received: from localhost.localdomain ([192.19.250.250])
-        by smtp.gmail.com with ESMTPSA id u6-20020a05600c00c600b003ee1b2ab9a0sm1855396wmm.11.2023.05.03.05.56.16
+        by smtp.gmail.com with ESMTPSA id u6-20020a05600c00c600b003ee1b2ab9a0sm1855396wmm.11.2023.05.03.05.56.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 May 2023 05:56:16 -0700 (PDT)
+        Wed, 03 May 2023 05:56:18 -0700 (PDT)
 From:   Boris Sukholitko <boris.sukholitko@broadcom.com>
 To:     netfilter-devel@vger.kernel.org
 Cc:     Ilya Lifshits <ilya.lifshits@broadcom.com>,
         Boris Sukholitko <boris.sukholitko@broadcom.com>
-Subject: [PATCH nf-next 01/19] selftest: netfilter: use /proc for pid checking
-Date:   Wed,  3 May 2023 15:55:34 +0300
-Message-Id: <20230503125552.41113-2-boris.sukholitko@broadcom.com>
+Subject: [PATCH nf-next 02/19] selftest: netfilter: no need for ps -x option
+Date:   Wed,  3 May 2023 15:55:35 +0300
+Message-Id: <20230503125552.41113-3-boris.sukholitko@broadcom.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20230503125552.41113-1-boris.sukholitko@broadcom.com>
 References: <20230503125552.41113-1-boris.sukholitko@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000efcc2005fac99491"
+        boundary="00000000000002f85605fac995b9"
 X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -70,11 +70,12 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
---000000000000efcc2005fac99491
+--00000000000002f85605fac995b9
 Content-Transfer-Encoding: 8bit
 
-Some ps commands (e.g. busybox derived) have no -p option. Use /proc for
-pid existence check.
+Some ps commands (e.g. busybox derived) have no -x option. For the
+purposes of hash calculation of the list of processes this option is
+inessential.
 
 Signed-off-by: Boris Sukholitko <boris.sukholitko@broadcom.com>
 ---
@@ -82,28 +83,25 @@ Signed-off-by: Boris Sukholitko <boris.sukholitko@broadcom.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/netfilter/nft_flowtable.sh b/tools/testing/selftests/netfilter/nft_flowtable.sh
-index 7060bae04ec8..4d8bc51b7a7b 100755
+index 4d8bc51b7a7b..3cf20e9bd3a6 100755
 --- a/tools/testing/selftests/netfilter/nft_flowtable.sh
 +++ b/tools/testing/selftests/netfilter/nft_flowtable.sh
-@@ -288,11 +288,11 @@ test_tcp_forwarding_ip()
+@@ -489,8 +489,8 @@ ip -net $nsr1 addr add 10.0.1.1/24 dev veth0
+ ip -net $nsr1 addr add dead:1::1/64 dev veth0
+ ip -net $nsr1 link set up dev veth0
  
- 	sleep 3
- 
--	if ps -p $lpid > /dev/null;then
-+	if test -d /proc/"$lpid"/; then
- 		kill $lpid
- 	fi
- 
--	if ps -p $cpid > /dev/null;then
-+	if test -d /proc/"$cpid"/; then
- 		kill $cpid
- 	fi
+-KEY_SHA="0x"$(ps -xaf | sha1sum | cut -d " " -f 1)
+-KEY_AES="0x"$(ps -xaf | md5sum | cut -d " " -f 1)
++KEY_SHA="0x"$(ps -af | sha1sum | cut -d " " -f 1)
++KEY_AES="0x"$(ps -af | md5sum | cut -d " " -f 1)
+ SPI1=$RANDOM
+ SPI2=$RANDOM
  
 -- 
 2.32.0
 
 
---000000000000efcc2005fac99491
+--00000000000002f85605fac995b9
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -174,14 +172,14 @@ zPffqO2QS6e4oXzmoYuX9sCNfol1TaQgCYgYoC4rexOBLLtYbwdKWi3/ttntZ2PHS1QRaDzrBSuw
 L39zqstTC0LC/YoSKC/cU9igMELugG/Twy9uVlg2XXTY1wUYSWMsYlpydsrVyG18UScp7FlGFbWX
 EWKS7pkxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwA
-ydoyIjshhiv/IkUwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIL5rXS964Vxc4N4O
-V9ZFLQXgXQz9zQR7CL7Tcg3vFiEiMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDUwMzEyNTYxN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+ydoyIjshhiv/IkUwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJmwRc1nbwmMvdZ7
+yGxSGkaNVLO/84SXjfWLb+vZt6FlMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDUwMzEyNTYxOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCP6al2gDaVw/jjg8zN0qyAovZDe0itvdvO
-5AZLS90gD8YsOuChjzZbxinz+7nGAidFk55v4+DhAEBz0YNDaig6L4WgR4YdsQKJ7OfxHoGMonHF
-j0+pUNyHkK6pXWLRyXOckr6Jq3fLIPBmZMkfKEG2lAcIrZ4TYD3JzFYgsyMoUplsqV2gz2682beq
-Py//uM8FW89irYEuAxPUN44r0JoAg8GqchkdThk339699GH52WGUmlBQ6x/mr+bO1xfNJHvagMBW
-vhLPJiuzU3zcWS0a6W9ha1v9+wXrMwPSarPrZvYejpntXL5fOo8wykmvOwlxXSbPLfpQeXGNZOKL
-dOPg
---000000000000efcc2005fac99491--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAfwOvcMGvqvCKNiiOt/EePRPCcS1ulj3D3
+5GF6+QbK3uoS2BfDxA1vtOcL+YmBXkR20mq10KY9vM72VDPFvsP6iORGoHbmwRAujX8Gy3rIOlyL
+9xGdOcdsbPZ0J9fmFclEM8Qg8tu3unVLEJ0jFh43JMu0rKsLcSRi9wYCO0hlVIwPsjiP7itFkPMy
+1L9YoY21/3QIJqgIw3hPrW8I8HsOoG0/0aabX/UjAwKYAWO0R+yXRUOBmvYmrsD88fbulfZLPhwD
+v+aPb8cXOUwgzeBd/+SDcvhmd4zdXzfk4hN0gnMx+1Sr/dXoy8EwRkkXALNm1FacitaMljUL7GjO
+GKol
+--00000000000002f85605fac995b9--
