@@ -2,215 +2,127 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 735B16F5B6B
-	for <lists+netfilter-devel@lfdr.de>; Wed,  3 May 2023 17:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0BD6F5BF5
+	for <lists+netfilter-devel@lfdr.de>; Wed,  3 May 2023 18:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbjECPl0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 3 May 2023 11:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60854 "EHLO
+        id S229499AbjECQ2O (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 3 May 2023 12:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjECPlZ (ORCPT
+        with ESMTP id S229449AbjECQ2N (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 3 May 2023 11:41:25 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE9D1997
-        for <netfilter-devel@vger.kernel.org>; Wed,  3 May 2023 08:41:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1683128484; x=1714664484;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9HA1S84wZNk6GkRlQO3x/m2Oi6FiXO4dgjR6rmy9XR4=;
-  b=YtHDamwFZ083Jl14mUBIrEkX6P7RtaUtrdhPR0jY3EZKeJ3rZzK29mzF
-   RTP7wulAjmcTjJeK/39wwv5Kh8pATxiqO9shc8viRUaCrP/a6FY26P2M3
-   0C/ap0TBNpXAd5BcV2TF1z0yAsMjmFdXZDtCCCGyaoPSgoFP4s1ZCZGIG
-   2wLPRFASrikS/Lj6F6IrNZampIIoweUCTchdde/yU/jrC5EZvQOs0BO4V
-   kYcOJYNG0LQPQKYHCDZqfbpGvC+AEAnK/g3cmhqKkU5735DRX/04vB1uU
-   16cjfhZ/4a4pQrfnNfc0sL+sZ9qDp6mgd2S1zWWrp60nR4Zq1kBFae9lg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10699"; a="337821054"
-X-IronPort-AV: E=Sophos;i="5.99,247,1677571200"; 
-   d="scan'208";a="337821054"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2023 08:41:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10699"; a="840721880"
-X-IronPort-AV: E=Sophos;i="5.99,247,1677571200"; 
-   d="scan'208";a="840721880"
-Received: from lkp-server01.sh.intel.com (HELO e3434d64424d) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 03 May 2023 08:41:22 -0700
-Received: from kbuild by e3434d64424d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1puEbZ-00026q-1R;
-        Wed, 03 May 2023 15:41:21 +0000
-Date:   Wed, 3 May 2023 23:41:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Boris Sukholitko <boris.sukholitko@broadcom.com>,
-        netfilter-devel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Ilya Lifshits <ilya.lifshits@broadcom.com>,
-        Boris Sukholitko <boris.sukholitko@broadcom.com>
-Subject: Re: [PATCH nf-next 16/19] netfilter: nftables: fast path payload
- mangle
-Message-ID: <202305032310.WgPNAhx8-lkp@intel.com>
-References: <20230503125552.41113-17-boris.sukholitko@broadcom.com>
+        Wed, 3 May 2023 12:28:13 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF88F26A9
+        for <netfilter-devel@vger.kernel.org>; Wed,  3 May 2023 09:28:12 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2ac78bb48eeso4172531fa.1
+        for <netfilter-devel@vger.kernel.org>; Wed, 03 May 2023 09:28:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683131291; x=1685723291;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1o3TDsmabgBewcVwpqP80qF6wI2yiYJ2QQkuG02ZCd0=;
+        b=XbHh+MGtX4JK5c81Aoh/iJLuHgqQrcWWGk+t7OyXwrNX69zOUk1o9haOpdOMcX+o4N
+         LKDYy49UreOr6C+reFATF3sw6goyEsmaOptLlhtMa8LPXeakRlcJqE2wwijwr1oMGCk6
+         jwb2u5CNYcvbcbXIC/Xl+rFAE4Jra/CIeCbpNhkAM2/K1CDq1AShh+WsUuvUOXZdrH4z
+         1QunzbBof9oN0TMZRpClmyqz+iE2as/CCl2U0znMxtBSH3ZEm9CueGJzGCVJPDviq3zl
+         7Y+VX/2kBUB6Xe4ngRWTs4AyGdXiq0OJcb+ZiMQj0UKDzPLUEkv/UM11jjrhz9E5LOiV
+         vFTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683131291; x=1685723291;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1o3TDsmabgBewcVwpqP80qF6wI2yiYJ2QQkuG02ZCd0=;
+        b=k2W/Z7CuidW7u758fmbgddpkXkChqLEzLp3dHkfU7zTT6WMS0N82gz0Pphtsnp2tnK
+         xis69RUIzRzllzxT6vSILeXGZAHymbaRd/Nw7/NeUPvlB/FFGP2ydt2sv3NZWsgdE+G/
+         vNWLRtQeHvVTp7B1gevqCLCys70l0j1x2v/oiY0yTWuV4WyPwHbUIlEz1MjDA4eWEIrl
+         8IWxH33658D0x3Y7/7XX+r0dfJzXFW1wcU9G0IXpOMfFJMCzt1FldrL0FGjBv5l5GeZp
+         F2DYsrRCc+6dEenXd9rRfbNCi69OMnf83eTyU0stSgQFi7U5hYLvmDrwNI/4tnS2RM7u
+         hzSg==
+X-Gm-Message-State: AC+VfDzAcBIyIycVI/B4NGIYpxwCvXonvcHeAZyfgLM0iRgrH9z+n+Gs
+        9ylxUHr+5nsYjDkgTGB+ocCL898bgfxpOhw0oxY=
+X-Google-Smtp-Source: ACHHUZ7lgNcP9gqysdRrGgmm74Z4Qz457LDMGGZXWUpuIb3j9Gg72sE6ve2+7W9JjiWJfrogHBFi9xbCHJKsDhqmoMg=
+X-Received: by 2002:a2e:330e:0:b0:2a8:c842:d30c with SMTP id
+ d14-20020a2e330e000000b002a8c842d30cmr152796ljc.44.1683131290763; Wed, 03 May
+ 2023 09:28:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230503125552.41113-17-boris.sukholitko@broadcom.com>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Reply-To: mrstheresenina112@gmail.com
+Sender: honbarristermatthias@gmail.com
+Received: by 2002:a05:6022:51a9:b0:3e:7a0a:82a5 with HTTP; Wed, 3 May 2023
+ 09:28:09 -0700 (PDT)
+From:   "Mrs. Therese Nina" <mrstheresenina112@gmail.com>
+Date:   Wed, 3 May 2023 09:28:09 -0700
+X-Google-Sender-Auth: 9oQb_0CBA3xIKMcFet9RzUOUcbw
+Message-ID: <CADkLFNzRRxLvdcYWKsgshgBO9AXcj45b4LD+cPzTCR7e2Dv_rA@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=7.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,MONEY_FRAUD_5,
+        MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:236 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [mrstheresenina112[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [mrstheresenina112[at]gmail.com]
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  2.2 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  3.1 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  1.1 MONEY_FRAUD_5 Lots of money and many fraud phrases
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Boris,
+Hello Good Morning
 
-kernel test robot noticed the following build warnings:
+I write you this letter from the heart full of sincerity and tension,
+My Name is Mrs. Therese Nina, from Norway, I know that this message
+will be a surprise to you. Firstly, I am married to Mr. Patrick Nina,
+A gold merchant who owns a small gold Mine in Austria; He died of
+cardiovascular disease in mid-March 2011. During his lifetime he
+deposited the sum of =E2=82=AC 8.5 Million Euro in a bank in Vienna, the
+Capital city of Austria.
 
-[auto build test WARNING on shuah-kselftest/next]
-[also build test WARNING on shuah-kselftest/fixes linus/master v6.3 next-20230428]
-[cannot apply to nf-next/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I am not in good health in which I sleep every night without knowing
+if I may be alive to see the next day. I am suffering from long term
+cancer and presently I am partially suffering from a stroke illness
+which has become almost impossible for me to move around, I have
+decided to donate what I have to you for the support of helping
+Motherless babies less privileged Widows' because I am dying and
+diagnosed with cancer for about two years ago.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Boris-Sukholitko/selftest-netfilter-use-proc-for-pid-checking/20230503-205838
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
-patch link:    https://lore.kernel.org/r/20230503125552.41113-17-boris.sukholitko%40broadcom.com
-patch subject: [PATCH nf-next 16/19] netfilter: nftables: fast path payload mangle
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230503/202305032310.WgPNAhx8-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/35886376721f375b56fd9b99c079298c8e027a26
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Boris-Sukholitko/selftest-netfilter-use-proc-for-pid-checking/20230503-205838
-        git checkout 35886376721f375b56fd9b99c079298c8e027a26
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=m68k olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=m68k SHELL=/bin/bash net/netfilter/
+I need a very honest person who can claim this money and use it for
+Charity works, for orphanages, widows and also build schools for less
+privilege that will be named after my late husband and my name; and I
+will give you more information on how the fund will be transferred to
+your bank account.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202305032310.WgPNAhx8-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   net/netfilter/nf_flow_table_ip.c: In function 'nf_flow_offload_ip_hook':
->> net/netfilter/nf_flow_table_ip.c:395:58: warning: implicit conversion from 'enum flow_offload_tuple_dir' to 'enum ip_conntrack_dir' [-Wenum-conversion]
-     395 |         if (nf_flow_offload_apply_payload(skb, flow->ct, dir, thoff))
-         |                                                          ^~~
-
-
-vim +395 net/netfilter/nf_flow_table_ip.c
-
-   339	
-   340	unsigned int
-   341	nf_flow_offload_ip_hook(void *priv, struct sk_buff *skb,
-   342				const struct nf_hook_state *state)
-   343	{
-   344		struct flow_offload_tuple_rhash *tuplehash;
-   345		struct nf_flowtable *flow_table = priv;
-   346		struct flow_offload_tuple tuple = {};
-   347		enum flow_offload_tuple_dir dir;
-   348		struct flow_offload *flow;
-   349		struct net_device *outdev;
-   350		u32 hdrsize, offset = 0;
-   351		unsigned int thoff, mtu;
-   352		struct rtable *rt;
-   353		struct iphdr *iph;
-   354		__be32 nexthop;
-   355		int ret;
-   356	
-   357		if (skb->protocol != htons(ETH_P_IP) &&
-   358		    !nf_flow_skb_encap_protocol(skb, htons(ETH_P_IP), &offset))
-   359			return NF_ACCEPT;
-   360	
-   361		if (nf_flow_tuple_ip(skb, state->in, &tuple, &hdrsize, offset) < 0)
-   362			return NF_ACCEPT;
-   363	
-   364		tuplehash = flow_offload_lookup(flow_table, &tuple);
-   365		if (tuplehash == NULL)
-   366			return NF_ACCEPT;
-   367	
-   368		dir = tuplehash->tuple.dir;
-   369		flow = container_of(tuplehash, struct flow_offload, tuplehash[dir]);
-   370	
-   371		mtu = flow->tuplehash[dir].tuple.mtu + offset;
-   372		if (unlikely(nf_flow_exceeds_mtu(skb, mtu)))
-   373			return NF_ACCEPT;
-   374	
-   375		iph = (struct iphdr *)(skb_network_header(skb) + offset);
-   376		thoff = (iph->ihl * 4) + offset;
-   377		if (nf_flow_state_check(flow, iph->protocol, skb, thoff))
-   378			return NF_ACCEPT;
-   379	
-   380		if (!nf_flow_dst_check(&tuplehash->tuple)) {
-   381			flow_offload_teardown(flow);
-   382			return NF_ACCEPT;
-   383		}
-   384	
-   385		if (skb_try_make_writable(skb, thoff + hdrsize))
-   386			return NF_DROP;
-   387	
-   388		flow_offload_refresh(flow_table, flow);
-   389	
-   390		nf_flow_encap_pop(skb, tuplehash);
-   391		thoff -= offset;
-   392	
-   393		iph = ip_hdr(skb);
-   394		nf_flow_nat_ip(flow, skb, thoff, dir, iph);
- > 395		if (nf_flow_offload_apply_payload(skb, flow->ct, dir, thoff))
-   396			return NF_DROP;
-   397	
-   398		ip_decrease_ttl(iph);
-   399		skb_clear_tstamp(skb);
-   400	
-   401		if (flow_table->flags & NF_FLOWTABLE_COUNTER)
-   402			nf_ct_acct_update(flow->ct, tuplehash->tuple.dir, skb->len);
-   403	
-   404		if (unlikely(tuplehash->tuple.xmit_type == FLOW_OFFLOAD_XMIT_XFRM)) {
-   405			rt = (struct rtable *)tuplehash->tuple.dst_cache;
-   406			memset(skb->cb, 0, sizeof(struct inet_skb_parm));
-   407			IPCB(skb)->iif = skb->dev->ifindex;
-   408			IPCB(skb)->flags = IPSKB_FORWARDED;
-   409			return nf_flow_xmit_xfrm(skb, state, &rt->dst);
-   410		}
-   411	
-   412		switch (tuplehash->tuple.xmit_type) {
-   413		case FLOW_OFFLOAD_XMIT_NEIGH:
-   414			rt = (struct rtable *)tuplehash->tuple.dst_cache;
-   415			outdev = rt->dst.dev;
-   416			skb->dev = outdev;
-   417			nexthop = rt_nexthop(rt, flow->tuplehash[!dir].tuple.src_v4.s_addr);
-   418			skb_dst_set_noref(skb, &rt->dst);
-   419			neigh_xmit(NEIGH_ARP_TABLE, outdev, &nexthop, skb);
-   420			ret = NF_STOLEN;
-   421			break;
-   422		case FLOW_OFFLOAD_XMIT_DIRECT:
-   423			ret = nf_flow_queue_xmit(state->net, skb, tuplehash, ETH_P_IP);
-   424			if (ret == NF_DROP)
-   425				flow_offload_teardown(flow);
-   426			break;
-   427		default:
-   428			WARN_ON_ONCE(1);
-   429			ret = NF_DROP;
-   430			break;
-   431		}
-   432	
-   433		return ret;
-   434	}
-   435	EXPORT_SYMBOL_GPL(nf_flow_offload_ip_hook);
-   436	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Warm Regards
+Mrs. Therese Nina
