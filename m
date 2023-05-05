@@ -2,29 +2,33 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEBA6F85D4
-	for <lists+netfilter-devel@lfdr.de>; Fri,  5 May 2023 17:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A186F85E1
+	for <lists+netfilter-devel@lfdr.de>; Fri,  5 May 2023 17:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbjEEPcN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 5 May 2023 11:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
+        id S232906AbjEEPeH (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 5 May 2023 11:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232972AbjEEPcK (ORCPT
+        with ESMTP id S232791AbjEEPeH (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 5 May 2023 11:32:10 -0400
+        Fri, 5 May 2023 11:34:07 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D9C1B150DC
-        for <netfilter-devel@vger.kernel.org>; Fri,  5 May 2023 08:31:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A6A9011A
+        for <netfilter-devel@vger.kernel.org>; Fri,  5 May 2023 08:34:05 -0700 (PDT)
+Date:   Fri, 5 May 2023 17:34:02 +0200
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,v1 12/12] netfilter: nf_tables: re-enable expression reduction
-Date:   Fri,  5 May 2023 17:31:30 +0200
-Message-Id: <20230505153130.2385-13-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230505153130.2385-1-pablo@netfilter.org>
-References: <20230505153130.2385-1-pablo@netfilter.org>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf-next 0/3] netfilter: nf_tables: reject loads from
+ uninitialized registers
+Message-ID: <ZFUh6r8BrMefU7G6@calendula>
+References: <20230505111656.32238-1-fw@strlen.de>
+ <ZFUTfE/u4q34TTDY@calendula>
+ <20230505145113.GD6126@breakpoint.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230505145113.GD6126@breakpoint.cc>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -34,39 +38,36 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The register track provides what registers already contain prefetched
-expressions.
+On Fri, May 05, 2023 at 04:51:13PM +0200, Florian Westphal wrote:
+> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> > On Fri, May 05, 2023 at 01:16:53PM +0200, Florian Westphal wrote:
+> > > Keep a per-rule bitmask that tracks registers that have seen a store,
+> > > then reject loads when the accessed registers haven't been flagged.
+> > > 
+> > > This changes uabi contract, because we previously allowed this.
+> > > Neither nftables nor iptables-nft create such rules.
+> > > 
+> > > In case there is breakage, we could insert an 'store 0 to x'
+> > > immediate expression into the ruleset automatically, but this
+> > > isn't done here.
+> > > 
+> > > Let me know if you think the "refuse" approach is too risky.
+> > 
+> > Might the NFT_BREAK case defeat this approach? Sequence is:
+> > 
+> > 1) expression that writes on register hits NFT_BREAK (nothing is written)
+> > 2) expression that read from register, it reads uninitialized data.
+> >
+> > From ruleset load step, we cannot know if the write fails, because it
+> > is subject to NFT_BREAK.
+> 
+> Yes, but its irrelevant: If 1) issues NFT_BREAK, 2) won't execute.
 
-The expr->ops->reduce() operation already cancels register tracking in
-case an expression updates overwrites existing prefetched expression.
+And register tracking is done per rule, given context is per rule too,
+good.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index d0c80e11557e..23540b1d6e8d 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -9150,7 +9150,16 @@ static int nft_prefetch_build(struct nft_regs_track *track,
- static bool nft_expr_reduce(struct nft_regs_track *track,
- 			    const struct nft_expr *expr)
- {
--	return false;
-+	if (!expr->ops->reduce) {
-+		pr_warn_once("missing reduce for expression %s ",
-+			     expr->ops->type->name);
-+		return false;
-+	}
-+
-+	if (nft_reduce_is_readonly(expr))
-+		return false;
-+
-+	return expr->ops->reduce(track, expr);
- }
- 
- static int nf_tables_commit_chain_prepare(struct net *net, struct nft_chain *chain)
--- 
-2.30.2
-
+I wonder if it is worth to move the bitmask away from nft_ctx, given
+this structure is stored in the struct nft_trans, hence increasing the
+size of this object which is not required at a later state, maybe
+there is a need for a new container structure that store data useful
+for the initial preparation step of the commit protocol.
