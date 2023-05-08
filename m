@@ -2,40 +2,37 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A51D46FB7D5
-	for <lists+netfilter-devel@lfdr.de>; Mon,  8 May 2023 21:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C13E6FB7FA
+	for <lists+netfilter-devel@lfdr.de>; Mon,  8 May 2023 22:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233462AbjEHT5I (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 8 May 2023 15:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45576 "EHLO
+        id S233773AbjEHUH4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 8 May 2023 16:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232854AbjEHT5G (ORCPT
+        with ESMTP id S233434AbjEHUHq (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 8 May 2023 15:57:06 -0400
+        Mon, 8 May 2023 16:07:46 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7747E65A8
-        for <netfilter-devel@vger.kernel.org>; Mon,  8 May 2023 12:56:37 -0700 (PDT)
-Date:   Mon, 8 May 2023 21:47:02 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 111C55597
+        for <netfilter-devel@vger.kernel.org>; Mon,  8 May 2023 13:07:45 -0700 (PDT)
+Date:   Mon, 8 May 2023 22:07:40 +0200
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Jeremy Sowden <jeremy@azazel.net>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: Re: [PATCH nftables 8/8] test: py: add tests for shifted nat
- port-ranges
-Message-ID: <ZFlRttICtWKTGWaV@calendula>
-References: <20230305101418.2233910-1-jeremy@azazel.net>
- <20230305101418.2233910-9-jeremy@azazel.net>
- <20230324225904.GB17250@breakpoint.cc>
- <ZCCtjm1rgpa5Z+Sr@salvia>
- <20230411122140.GA1279805@celephais.dreamlands>
- <ZDaQmlLBAnopcqdO@calendula>
- <20230425195143.GC5944@celephais.dreamlands>
- <ZFLJ886DVa1d53kc@calendula>
- <20230508175823.GA979099@celephais.dreamlands>
+To:     Boris Sukholitko <boris.sukholitko@broadcom.com>
+Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
+        Ilya Lifshits <ilya.lifshits@broadcom.com>
+Subject: Re: [PATCH nf-next 00/19] netfilter: nftables: dscp modification
+ offload
+Message-ID: <ZFlWjETnQgotP6NO@calendula>
+References: <20230503125552.41113-1-boris.sukholitko@broadcom.com>
+ <20230503184630.GB28036@breakpoint.cc>
+ <CADuVC7imr-YL4aUKbrRSQbQ_2QY_A5zCiAfmqgz9o49-n8AkTg@mail.gmail.com>
+ <20230507173758.GA25617@breakpoint.cc>
+ <ZFj7PomKpCnLsDz2@noodle>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230508175823.GA979099@celephais.dreamlands>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZFj7PomKpCnLsDz2@noodle>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -45,64 +42,90 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, May 08, 2023 at 06:58:23PM +0100, Jeremy Sowden wrote:
-> On 2023-05-03, at 22:54:11 +0200, Pablo Neira Ayuso wrote:
-> > On Tue, Apr 25, 2023 at 08:51:43PM +0100, Jeremy Sowden wrote:
-> > > On 2023-04-12, at 13:06:02 +0200, Pablo Neira Ayuso wrote:
-> > > > I mean, would it be possible to add a NFT_BITWISE_BOOL variant that
-> > > > takes _SREG2 via select_ops?
+On Mon, May 08, 2023 at 04:38:06PM +0300, Boris Sukholitko wrote:
+> On Sun, May 07, 2023 at 07:37:58PM +0200, Florian Westphal wrote:
+> > Boris Sukholitko <boris.sukholitko@broadcom.com> wrote:
+> > > On Wed, May 3, 2023 at 9:46 PM Florian Westphal <fw@strlen.de> wrote:
+> > > >
+> > > > Boris Sukholitko <boris.sukholitko@broadcom.com> wrote:
+> > > [... snip to non working offload ...]
 > > > 
-> > > In an earlier version, instead of adding new boolean ops, I added
-> > > support for passing the mask and xor arguments in registers:
+> > > > > table inet filter {
+> > > > >         flowtable f1 {
+> > > > >                 hook ingress priority filter
+> > > > >                 devices = { veth0, veth1 }
+> > > > >         }
+> > > > >
+> > > > >         chain forward {
+> > > > >                 type filter hook forward priority filter; policy accept;
+> > > > >                 ip dscp set cs3 offload
+> > > > >                 ip protocol { tcp, udp, gre } flow add @f1
+> > > > >                 ct state established,related accept
+> > > > >         }
+> > > > > }
 > > > 
-> > >   https://lore.kernel.org/netfilter-devel/20200224124931.512416-1-jeremy@azazel.net/
+> > > [...]
 > > > 
-> > > Doing the same thing with one extra register is straightforward for AND
-> > > and XOR:
+> > > >
+> > > > I wish you would have reported this before you started to work on
+> > > > this, because this is not a bug, this is expected behaviour.
+> > > >
+> > > > Once you offload, the ruleset is bypassed, this is by design.
 > > > 
-> > >   AND(x, y) = (x & y) ^ 0
-> > >   XOR(x, y) = (x & 1) ^ y
+> > > From the rules UI perspective it seems possible to accelerate
+> > > forward chain handling with the statements such as dscp modification there.
 > > > 
-> > > since we can pass y in _SREG2 and 0 in _XOR for AND, and 1 in _MASK and
-> > > y in _SREG2 for XOR.  For OR:
-> > > 
-> > >   OR(x, y) = (x & ~y) ^ y
-> > > 
-> > > it's a bit more complicated.  Instead of getting both the mask and xor
-> > > arguments from user space, we need to do something like passing y in
-> > > _SREG2 alone, and then constructing the bitwise negation in the kernel.
-> > >
-> > > Obviously, this means that the kernel is no longer completely agnostic
-> > > about the sorts of mask-and-xor expressions user space may send.
-> > >
-> > > Since that is the case, we could go further and just perform the
-> > > original ope- rations.  Thus if we get an boolean op with an _SREG2
-> > > argument:
-> > > 
-> > >   * if there is an _XOR of 0, compute:
-> > > 
-> > >     _SREG & _SREG2
-> > > 
-> > >   * if there is a _MASK of 1, compute:
-> > > 
-> > >     _SREG ^ _SREG2
-> > > 
-> > >   * if there are no _MASK or _XOR arguments, compute:
-> > > 
-> > >     _SREG | _SREG2
+> > > Isn't it better to modify the packets according to the bypassed
+> > > ruleset thus making the behaviour more consistent?
 > > 
-> > OK, if my understanding is correct, these are the two options:
+> > The behaviour is consistent.  Once flow is offloaded, ruleset is
+> > bypassed.  Its easy to not offload those flows that need the ruleset.
 > > 
-> > 1) Infer from arguments the type of operation.
-> > 2) Have explicit NFT_BITWISE_{AND,OR,XOR} operations.
+> > > > Lets not make the software offload more complex as it already is.
+> > > 
+> > > Could you please tell which parts of software offload are too complex?
+> > > It's not too bad from what I've seen :)
+> > > 
+> > > This patch series adds 56 lines of code in the new nf_conntrack.ext.c
+> > > file. 20 of them (nf_flow_offload_apply_payload) are used in
+> > > the software fast path. Is it too high of a price?
 > > 
-> > If so, I think it is better to stick to your original patch, where
-> > explicit bitwise operations NFT_BITWISE_{_AND,_OR,_XOR} are added
-> > (which is what you proposed last time IIRC).
+> > 56 lines of code *now*.
 > > 
-> > Thanks for explaining.
+> > Next someone wants to call into sets/maps for named counters that
+> > they need.  Then someone wants limit or quota to work.  Then they want fib
+> > for RPF.  Then xfrm policy matching to augment acccounting.
+> > This will go on until we get to the point where removing "fast" path
+> > turns into a performance optimization.
 > 
-> No problem.  I'll get rebasing.
+> OK. May I assume that you are concerned with the eventual performance impact
+> on the software fast path (i.e. nf_flow_offload_ip_hook)?
 
-Please, small batch, not larger than 10 patches if possible.
+I think Florian's concern is that there is better infrastructure to
+handle for ruleset offloads, ie. ingress/egress ruleset hardware
+offload infrastructure.
 
+> Obviously the performance of the fast path is very important to our
+> customers. Otherwise they would not be requiring dscp fast path
+> modification. :)
+> 
+> One of the things we've thought about regarding the fast path
+> performance is rewriting nf_flow_offload_ip_hook to work with
+> nf_flowtable->flow_block instead of flow_offload_tuple.
+> 
+> We hope that iterating over flow_action_entry list similar to what the
+> hardware acceleration does, will be more efficient also in software.
+> 
+> Nice side-effect of such optimization would be that the amount of
+> feature bloat (such as dscp modification!) will not affect your typical
+> connection unless the user actually uses them.
+> 
+> For example, for dscp payload modification we'll generate
+> FLOW_ACTION_MANGLE entry. This entry will appear on flow_block's of
+> the only connections which require it. Others will be uneffected.
+>
+> Would you be ok with such direction (with performance tests of
+> course)?
+
+I am still missing the reason why the ingress/egress ruleset hardware
+offload infrastructure is not a good fit for your requirements.
