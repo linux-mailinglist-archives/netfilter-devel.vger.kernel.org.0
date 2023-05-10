@@ -2,24 +2,24 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A411A6FD85B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 10 May 2023 09:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B466FD85D
+	for <lists+netfilter-devel@lfdr.de>; Wed, 10 May 2023 09:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbjEJHg6 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 10 May 2023 03:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
+        id S229500AbjEJHhA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 10 May 2023 03:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbjEJHg5 (ORCPT
+        with ESMTP id S235883AbjEJHg6 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 10 May 2023 03:36:57 -0400
+        Wed, 10 May 2023 03:36:58 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3F11919F
-        for <netfilter-devel@vger.kernel.org>; Wed, 10 May 2023 00:36:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2C91E7B
+        for <netfilter-devel@vger.kernel.org>; Wed, 10 May 2023 00:36:56 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next 2/3] netfilter: flowtable: split IPv4 datapath in helper functions
-Date:   Wed, 10 May 2023 09:36:43 +0200
-Message-Id: <20230510073644.105679-2-pablo@netfilter.org>
+Subject: [PATCH nf-next 3/3] netfilter: flowtable: split IPv6 datapath in helper functions
+Date:   Wed, 10 May 2023 09:36:44 +0200
+Message-Id: <20230510073644.105679-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230510073644.105679-1-pablo@netfilter.org>
 References: <20230510073644.105679-1-pablo@netfilter.org>
@@ -35,7 +35,7 @@ List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
 Add context structure and helper functions to look up for a matching
-IPv4 entry in the flowtable and to forward packets.
+IPv6 entry in the flowtable and to forward packets.
 
 nf_flow_offload_forward() returns -1 to NF_DROP, 0 to pass up packets
 to classic path and 1 to enter fast path.
@@ -44,51 +44,38 @@ No functional changes are intended.
 
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_flow_table_ip.c | 116 ++++++++++++++++++++-----------
- 1 file changed, 74 insertions(+), 42 deletions(-)
+ net/netfilter/nf_flow_table_ip.c | 109 +++++++++++++++++++------------
+ 1 file changed, 68 insertions(+), 41 deletions(-)
 
 diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-index 19efba1e51ef..d3988287b5df 100644
+index d3988287b5df..c461d636c793 100644
 --- a/net/netfilter/nf_flow_table_ip.c
 +++ b/net/netfilter/nf_flow_table_ip.c
-@@ -163,38 +163,43 @@ static void nf_flow_tuple_encap(struct sk_buff *skb,
+@@ -567,32 +567,31 @@ static void nf_flow_nat_ipv6(const struct flow_offload *flow,
  	}
  }
  
--static int nf_flow_tuple_ip(struct sk_buff *skb, const struct net_device *dev,
--			    struct flow_offload_tuple *tuple, u32 *hdrsize,
--			    u32 offset)
-+struct nf_flowtable_ctx {
-+	const struct net_device	*in;
-+	u32			offset;
-+	u32			hdrsize;
-+};
-+
-+static int nf_flow_tuple_ip(struct nf_flowtable_ctx *ctx, struct sk_buff *skb,
-+			    struct flow_offload_tuple *tuple)
+-static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
+-			      struct flow_offload_tuple *tuple, u32 *hdrsize,
+-			      u32 offset)
++static int nf_flow_tuple_ipv6(struct nf_flowtable_ctx *ctx, struct sk_buff *skb,
++			      struct flow_offload_tuple *tuple)
  {
  	struct flow_ports *ports;
+ 	struct ipv6hdr *ip6h;
  	unsigned int thoff;
- 	struct iphdr *iph;
- 	u8 ipproto;
+ 	u8 nexthdr;
  
--	if (!pskb_may_pull(skb, sizeof(*iph) + offset))
-+	if (!pskb_may_pull(skb, sizeof(*iph) + ctx->offset))
+-	thoff = sizeof(*ip6h) + offset;
++	thoff = sizeof(*ip6h) + ctx->offset;
+ 	if (!pskb_may_pull(skb, thoff))
  		return -1;
  
--	iph = (struct iphdr *)(skb_network_header(skb) + offset);
-+	iph = (struct iphdr *)(skb_network_header(skb) + ctx->offset);
- 	thoff = (iph->ihl * 4);
+-	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + offset);
++	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + ctx->offset);
  
- 	if (ip_is_fragment(iph) ||
- 	    unlikely(ip_has_options(thoff)))
- 		return -1;
- 
--	thoff += offset;
-+	thoff += ctx->offset;
- 
- 	ipproto = iph->protocol;
- 	switch (ipproto) {
+ 	nexthdr = ip6h->nexthdr;
+ 	switch (nexthdr) {
  	case IPPROTO_TCP:
 -		*hdrsize = sizeof(struct tcphdr);
 +		ctx->hdrsize = sizeof(struct tcphdr);
@@ -104,81 +91,64 @@ index 19efba1e51ef..d3988287b5df 100644
  		break;
  #endif
  	default:
-@@ -204,7 +209,7 @@ static int nf_flow_tuple_ip(struct sk_buff *skb, const struct net_device *dev,
- 	if (iph->ttl <= 1)
+@@ -602,7 +601,7 @@ static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
+ 	if (ip6h->hop_limit <= 1)
  		return -1;
  
 -	if (!pskb_may_pull(skb, thoff + *hdrsize))
 +	if (!pskb_may_pull(skb, thoff + ctx->hdrsize))
  		return -1;
  
- 	switch (ipproto) {
-@@ -224,13 +229,13 @@ static int nf_flow_tuple_ip(struct sk_buff *skb, const struct net_device *dev,
+ 	switch (nexthdr) {
+@@ -622,65 +621,47 @@ static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
  	}
  	}
  
--	iph = (struct iphdr *)(skb_network_header(skb) + offset);
-+	iph = (struct iphdr *)(skb_network_header(skb) + ctx->offset);
+-	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + offset);
++	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + ctx->offset);
  
- 	tuple->src_v4.s_addr	= iph->saddr;
- 	tuple->dst_v4.s_addr	= iph->daddr;
- 	tuple->l3proto		= AF_INET;
- 	tuple->l4proto		= ipproto;
+ 	tuple->src_v6		= ip6h->saddr;
+ 	tuple->dst_v6		= ip6h->daddr;
+ 	tuple->l3proto		= AF_INET6;
+ 	tuple->l4proto		= nexthdr;
 -	tuple->iifidx		= dev->ifindex;
 +	tuple->iifidx		= ctx->in->ifindex;
  	nf_flow_tuple_encap(skb, tuple);
  
  	return 0;
-@@ -336,58 +341,56 @@ static unsigned int nf_flow_queue_xmit(struct net *net, struct sk_buff *skb,
- 	return NF_STOLEN;
  }
  
 -unsigned int
--nf_flow_offload_ip_hook(void *priv, struct sk_buff *skb,
--			const struct nf_hook_state *state)
-+static struct flow_offload_tuple_rhash *
-+nf_flow_offload_lookup(struct nf_flowtable_ctx *ctx,
-+		       struct nf_flowtable *flow_table, struct sk_buff *skb)
+-nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
+-			  const struct nf_hook_state *state)
++static int nf_flow_offload_ipv6_forward(struct nf_flowtable_ctx *ctx,
++					struct nf_flowtable *flow_table,
++					struct flow_offload_tuple_rhash *tuplehash,
++					struct sk_buff *skb)
  {
 -	struct flow_offload_tuple_rhash *tuplehash;
 -	struct nf_flowtable *flow_table = priv;
- 	struct flow_offload_tuple tuple = {};
--	enum flow_offload_tuple_dir dir;
--	struct flow_offload *flow;
+-	struct flow_offload_tuple tuple = {};
+ 	enum flow_offload_tuple_dir dir;
+-	const struct in6_addr *nexthop;
+ 	struct flow_offload *flow;
 -	struct net_device *outdev;
+ 	unsigned int thoff, mtu;
 -	u32 hdrsize, offset = 0;
--	unsigned int thoff, mtu;
--	struct rtable *rt;
--	struct iphdr *iph;
--	__be32 nexthop;
+ 	struct ipv6hdr *ip6h;
+-	struct rt6_info *rt;
 -	int ret;
- 
- 	if (skb->protocol != htons(ETH_P_IP) &&
--	    !nf_flow_skb_encap_protocol(skb, htons(ETH_P_IP), &offset))
+-
+-	if (skb->protocol != htons(ETH_P_IPV6) &&
+-	    !nf_flow_skb_encap_protocol(skb, htons(ETH_P_IPV6), &offset))
 -		return NF_ACCEPT;
-+	    !nf_flow_skb_encap_protocol(skb, htons(ETH_P_IP), &ctx->offset))
-+		return NULL;
- 
--	if (nf_flow_tuple_ip(skb, state->in, &tuple, &hdrsize, offset) < 0)
+-
+-	if (nf_flow_tuple_ipv6(skb, state->in, &tuple, &hdrsize, offset) < 0)
 -		return NF_ACCEPT;
-+	if (nf_flow_tuple_ip(ctx, skb, &tuple) < 0)
-+		return NULL;
- 
+-
 -	tuplehash = flow_offload_lookup(flow_table, &tuple);
 -	if (tuplehash == NULL)
 -		return NF_ACCEPT;
-+	return flow_offload_lookup(flow_table, &tuple);
-+}
-+
-+static int nf_flow_offload_forward(struct nf_flowtable_ctx *ctx,
-+				   struct nf_flowtable *flow_table,
-+				   struct flow_offload_tuple_rhash *tuplehash,
-+				   struct sk_buff *skb)
-+{
-+	enum flow_offload_tuple_dir dir;
-+	struct flow_offload *flow;
-+	unsigned int thoff, mtu;
-+	struct iphdr *iph;
  
  	dir = tuplehash->tuple.dir;
  	flow = container_of(tuplehash, struct flow_offload, tuplehash[dir]);
@@ -189,11 +159,11 @@ index 19efba1e51ef..d3988287b5df 100644
 -		return NF_ACCEPT;
 +		return 0;
  
--	iph = (struct iphdr *)(skb_network_header(skb) + offset);
--	thoff = (iph->ihl * 4) + offset;
-+	iph = (struct iphdr *)(skb_network_header(skb) + ctx->offset);
-+	thoff = (iph->ihl * 4) + ctx->offset;
- 	if (nf_flow_state_check(flow, iph->protocol, skb, thoff))
+-	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + offset);
+-	thoff = sizeof(*ip6h) + offset;
++	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + ctx->offset);
++	thoff = sizeof(*ip6h) + ctx->offset;
+ 	if (nf_flow_state_check(flow, ip6h->nexthdr, skb, thoff))
 -		return NF_ACCEPT;
 +		return 0;
  
@@ -210,22 +180,33 @@ index 19efba1e51ef..d3988287b5df 100644
  
  	flow_offload_refresh(flow_table, flow);
  
- 	nf_flow_encap_pop(skb, tuplehash);
--	thoff -= offset;
-+	thoff -= ctx->offset;
- 
- 	iph = ip_hdr(skb);
- 	nf_flow_nat_ip(flow, skb, thoff, dir, iph);
-@@ -398,6 +401,35 @@ nf_flow_offload_ip_hook(void *priv, struct sk_buff *skb,
+@@ -695,6 +676,52 @@ nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
  	if (flow_table->flags & NF_FLOWTABLE_COUNTER)
  		nf_ct_acct_update(flow->ct, tuplehash->tuple.dir, skb->len);
  
 +	return 1;
 +}
 +
++static struct flow_offload_tuple_rhash *
++nf_flow_offload_ipv6_lookup(struct nf_flowtable_ctx *ctx,
++			    struct nf_flowtable *flow_table,
++			    struct sk_buff *skb)
++{
++	struct flow_offload_tuple tuple = {};
++
++	if (skb->protocol != htons(ETH_P_IPV6) &&
++	    !nf_flow_skb_encap_protocol(skb, htons(ETH_P_IPV6), &ctx->offset))
++		return NULL;
++
++	if (nf_flow_tuple_ipv6(ctx, skb, &tuple) < 0)
++		return NULL;
++
++	return flow_offload_lookup(flow_table, &tuple);
++}
++
 +unsigned int
-+nf_flow_offload_ip_hook(void *priv, struct sk_buff *skb,
-+			const struct nf_hook_state *state)
++nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
++			  const struct nf_hook_state *state)
 +{
 +	struct flow_offload_tuple_rhash *tuplehash;
 +	struct nf_flowtable *flow_table = priv;
@@ -233,25 +214,25 @@ index 19efba1e51ef..d3988287b5df 100644
 +	struct nf_flowtable_ctx ctx = {
 +		.in	= state->in,
 +	};
++	const struct in6_addr *nexthop;
 +	struct flow_offload *flow;
 +	struct net_device *outdev;
-+	struct rtable *rt;
-+	__be32 nexthop;
++	struct rt6_info *rt;
 +	int ret;
 +
-+	tuplehash = nf_flow_offload_lookup(&ctx, flow_table, skb);
-+	if (!tuplehash)
++	tuplehash = nf_flow_offload_ipv6_lookup(&ctx, flow_table, skb);
++	if (tuplehash == NULL)
 +		return NF_ACCEPT;
 +
-+	ret = nf_flow_offload_forward(&ctx, flow_table, tuplehash, skb);
++	ret = nf_flow_offload_ipv6_forward(&ctx, flow_table, tuplehash, skb);
 +	if (ret < 0)
 +		return NF_DROP;
 +	else if (ret == 0)
 +		return NF_ACCEPT;
 +
  	if (unlikely(tuplehash->tuple.xmit_type == FLOW_OFFLOAD_XMIT_XFRM)) {
- 		rt = (struct rtable *)tuplehash->tuple.dst_cache;
- 		memset(skb->cb, 0, sizeof(struct inet_skb_parm));
+ 		rt = (struct rt6_info *)tuplehash->tuple.dst_cache;
+ 		memset(skb->cb, 0, sizeof(struct inet6_skb_parm));
 -- 
 2.30.2
 
