@@ -2,129 +2,163 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0A37051DD
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 May 2023 17:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFBD7053AD
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 May 2023 18:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233910AbjEPPQT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 16 May 2023 11:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
+        id S229684AbjEPQZ1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 16 May 2023 12:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233839AbjEPPQR (ORCPT
+        with ESMTP id S229666AbjEPQZZ (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 16 May 2023 11:16:17 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 912B640E4;
-        Tue, 16 May 2023 08:16:15 -0700 (PDT)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, sashal@kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH -stable,4.14 8/8] netfilter: nf_tables: do not allow SET_ID to refer to another table
-Date:   Tue, 16 May 2023 17:16:06 +0200
-Message-Id: <20230516151606.4892-9-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230516151606.4892-1-pablo@netfilter.org>
-References: <20230516151606.4892-1-pablo@netfilter.org>
+        Tue, 16 May 2023 12:25:25 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F047A267
+        for <netfilter-devel@vger.kernel.org>; Tue, 16 May 2023 09:25:07 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1pyxTW-0003YB-US; Tue, 16 May 2023 18:24:34 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nft] mnl: support bpf id decode in nft list hooks
+Date:   Tue, 16 May 2023 18:24:29 +0200
+Message-Id: <20230516162429.22821-1-fw@strlen.de>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-[ 470ee20e069a6d05ae549f7d0ef2bdbcee6a81b2 ]
+This allows 'nft list hooks' to also display the bpf program id
+attached.  Example:
 
-When doing lookups for sets on the same batch by using its ID, a set from a
-different table can be used.
+hook input {
+  -0000000128 nf_hook_run_bpf id 6
+  ..
 
-Then, when the table is removed, a reference to the set may be kept after
-the set is freed, leading to a potential use-after-free.
-
-When looking for sets by ID, use the table that was used for the lookup by
-name, and only return sets belonging to that same table.
-
-This fixes CVE-2022-2586, also reported as ZDI-CAN-17470.
-
-Reported-by: Team Orca of Sea Security (@seasecresponse)
-Fixes: 958bee14d071 ("netfilter: nf_tables: use new transaction infrastructure to handle sets")
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/net/netfilter/nf_tables.h | 2 ++
- net/netfilter/nf_tables_api.c     | 7 +++++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ include/linux/netfilter/nfnetlink_hook.h | 24 ++++++++++++--
+ src/mnl.c                                | 40 ++++++++++++++++++++++++
+ 2 files changed, 61 insertions(+), 3 deletions(-)
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 4eb90800fc2e..0d625ff7841a 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -381,6 +381,7 @@ void nft_unregister_set(struct nft_set_type *type);
+diff --git a/include/linux/netfilter/nfnetlink_hook.h b/include/linux/netfilter/nfnetlink_hook.h
+index bbcd285b22e1..84a561a74b98 100644
+--- a/include/linux/netfilter/nfnetlink_hook.h
++++ b/include/linux/netfilter/nfnetlink_hook.h
+@@ -32,8 +32,12 @@ enum nfnl_hook_attributes {
+ /**
+  * enum nfnl_hook_chain_info_attributes - chain description
   *
-  *	@list: table set list node
-  *	@bindings: list of set bindings
-+ *	@table: table this set belongs to
-  * 	@name: name of the set
-  * 	@ktype: key type (numeric type defined by userspace, not used in the kernel)
-  * 	@dtype: data type (verdict or numeric type defined by userspace)
-@@ -404,6 +405,7 @@ void nft_unregister_set(struct nft_set_type *type);
- struct nft_set {
- 	struct list_head		list;
- 	struct list_head		bindings;
-+	struct nft_table		*table;
- 	char				*name;
- 	u32				ktype;
- 	u32				dtype;
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 86913d53eead..345fa29f34b9 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -2746,6 +2746,7 @@ static struct nft_set *nf_tables_set_lookup(const struct nft_table *table,
+- * NFNLA_HOOK_INFO_DESC: nft chain and table name (enum nft_table_attributes) (NLA_NESTED)
+- * NFNLA_HOOK_INFO_TYPE: chain type (enum nfnl_hook_chaintype) (NLA_U32)
++ * @NFNLA_HOOK_INFO_DESC: nft chain and table name (NLA_NESTED)
++ * @NFNLA_HOOK_INFO_TYPE: chain type (enum nfnl_hook_chaintype) (NLA_U32)
++ *
++ * NFNLA_HOOK_INFO_DESC depends on NFNLA_HOOK_INFO_TYPE value:
++ *   NFNL_HOOK_TYPE_NFTABLES: enum nft_table_attributes
++ *   NFNL_HOOK_TYPE_BPF: enum nfnl_hook_bpf_attributes
+  */
+ enum nfnl_hook_chain_info_attributes {
+ 	NFNLA_HOOK_INFO_UNSPEC,
+@@ -55,10 +59,24 @@ enum nfnl_hook_chain_desc_attributes {
+ /**
+  * enum nfnl_hook_chaintype - chain type
+  *
+- * @NFNL_HOOK_TYPE_NFTABLES nf_tables base chain
++ * @NFNL_HOOK_TYPE_NFTABLES: nf_tables base chain
++ * @NFNL_HOOK_TYPE_BPF: bpf program
+  */
+ enum nfnl_hook_chaintype {
+ 	NFNL_HOOK_TYPE_NFTABLES = 0x1,
++	NFNL_HOOK_TYPE_BPF,
++};
++
++/**
++ * enum nfnl_hook_bpf_attributes - bpf prog description
++ *
++ * @NFNLA_HOOK_BPF_ID: bpf program id (NLA_U32)
++ */
++enum nfnl_hook_bpf_attributes {
++	NFNLA_HOOK_BPF_UNSPEC,
++	NFNLA_HOOK_BPF_ID,
++	__NFNLA_HOOK_BPF_MAX,
+ };
++#define NFNLA_HOOK_BPF_MAX (__NFNLA_HOOK_BPF_MAX - 1)
+ 
+ #endif /* _NFNL_HOOK_H */
+diff --git a/src/mnl.c b/src/mnl.c
+index adc0bd3d61cf..91775c41b246 100644
+--- a/src/mnl.c
++++ b/src/mnl.c
+@@ -2273,6 +2273,27 @@ static int dump_nf_attr_chain_cb(const struct nlattr *attr, void *data)
+ 	return MNL_CB_OK;
  }
  
- static struct nft_set *nf_tables_set_lookup_byid(const struct net *net,
-+						 const struct nft_table *table,
- 						 const struct nlattr *nla,
- 						 u8 genmask)
- {
-@@ -2757,6 +2758,7 @@ static struct nft_set *nf_tables_set_lookup_byid(const struct net *net,
- 			struct nft_set *set = nft_trans_set(trans);
- 
- 			if (id == nft_trans_set_id(trans) &&
-+			    set->table == table &&
- 			    nft_active_genmask(set, genmask))
- 				return set;
++static int dump_nf_attr_bpf_cb(const struct nlattr *attr, void *data)
++{
++	int type = mnl_attr_get_type(attr);
++	const struct nlattr **tb = data;
++
++	if (mnl_attr_type_valid(attr, NFNLA_HOOK_BPF_MAX) < 0)
++		return MNL_CB_OK;
++
++	switch(type) {
++	case NFNLA_HOOK_BPF_ID:
++                if (mnl_attr_validate(attr, MNL_TYPE_U32) < 0)
++                        return MNL_CB_ERROR;
++		break;
++	default:
++		return MNL_CB_OK;
++	}
++
++	tb[type] = attr;
++	return MNL_CB_OK;
++}
++
+ struct dump_nf_hook_data {
+ 	struct list_head *hook_list;
+ 	int family;
+@@ -2332,6 +2353,23 @@ static int dump_nf_hooks(const struct nlmsghdr *nlh, void *_data)
+ 				hook->chain = xstrdup(chainname);
+ 			}
+ 			hook->chain_family = mnl_attr_get_u8(info[NFNLA_CHAIN_FAMILY]);
++		} else if (type == NFNL_HOOK_TYPE_BPF) {
++			struct nlattr *info[NFNLA_HOOK_BPF_MAX + 1] = {};
++
++			if (mnl_attr_parse_nested(nested[NFNLA_HOOK_INFO_DESC],
++						  dump_nf_attr_bpf_cb, info) < 0) {
++				basehook_free(hook);
++				return -1;
++			}
++
++			if (info[NFNLA_HOOK_BPF_ID]) {
++				char tmpbuf[16];
++
++				snprintf(tmpbuf, sizeof(tmpbuf), "id %u",
++					 ntohl(mnl_attr_get_u32(info[NFNLA_HOOK_BPF_ID])));
++
++				hook->chain = xstrdup(tmpbuf);
++			}
  		}
-@@ -2777,7 +2779,7 @@ struct nft_set *nft_set_lookup(const struct net *net,
- 		if (!nla_set_id)
- 			return set;
- 
--		set = nf_tables_set_lookup_byid(net, nla_set_id, genmask);
-+		set = nf_tables_set_lookup_byid(net, table, nla_set_id, genmask);
  	}
- 	return set;
- }
-@@ -3272,6 +3274,7 @@ static int nf_tables_newset(struct net *net, struct sock *nlsk,
- 	}
+ 	if (tb[NFNLA_HOOK_HOOKNUM])
+@@ -2453,6 +2491,8 @@ static void print_hooks(struct netlink_ctx *ctx, int family, struct list_head *h
  
- 	INIT_LIST_HEAD(&set->bindings);
-+	set->table = table;
- 	set->ops   = ops;
- 	set->ktype = ktype;
- 	set->klen  = desc.klen;
-@@ -4209,7 +4212,7 @@ static int nf_tables_newsetelem(struct net *net, struct sock *nlsk,
- 				   genmask);
- 	if (IS_ERR(set)) {
- 		if (nla[NFTA_SET_ELEM_LIST_SET_ID]) {
--			set = nf_tables_set_lookup_byid(net,
-+			set = nf_tables_set_lookup_byid(net, ctx.table,
- 					nla[NFTA_SET_ELEM_LIST_SET_ID],
- 					genmask);
+ 		if (hook->table && hook->chain)
+ 			fprintf(fp, " chain %s %s %s", family2str(hook->chain_family), hook->table, hook->chain);
++		else if (hook->hookfn && hook->chain)
++			fprintf(fp, " %s %s", hook->hookfn, hook->chain);
+ 		else if (hook->hookfn) {
+ 			fprintf(fp, " %s", hook->hookfn);
  		}
 -- 
-2.30.2
+2.39.3
 
