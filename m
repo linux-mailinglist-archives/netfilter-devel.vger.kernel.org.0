@@ -2,26 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5460070519E
-	for <lists+netfilter-devel@lfdr.de>; Tue, 16 May 2023 17:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DBE7051A4
+	for <lists+netfilter-devel@lfdr.de>; Tue, 16 May 2023 17:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233947AbjEPPGu (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 16 May 2023 11:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
+        id S233848AbjEPPGx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 16 May 2023 11:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233916AbjEPPGs (ORCPT
+        with ESMTP id S233675AbjEPPGt (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 16 May 2023 11:06:48 -0400
+        Tue, 16 May 2023 11:06:49 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 778CC5B91;
-        Tue, 16 May 2023 08:06:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3E19F7690;
+        Tue, 16 May 2023 08:06:44 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     gregkh@linuxfoundation.org, sashal@kernel.org,
         stable@vger.kernel.org
-Subject: [PATCH -stable,4.19 8/9] netfilter: nf_tables: validate NFTA_SET_ELEM_OBJREF based on NFT_SET_OBJECT flag
-Date:   Tue, 16 May 2023 17:06:12 +0200
-Message-Id: <20230516150613.4566-9-pablo@netfilter.org>
+Subject: [PATCH -stable,4.19 9/9] netfilter: nf_tables: do not allow RULE_ID to refer to another chain
+Date:   Tue, 16 May 2023 17:06:13 +0200
+Message-Id: <20230516150613.4566-10-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230516150613.4566-1-pablo@netfilter.org>
 References: <20230516150613.4566-1-pablo@netfilter.org>
@@ -36,51 +36,56 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-[ 5a2f3dc31811e93be15522d9eb13ed61460b76c8 ]
+[ 36d5b2913219ac853908b0f1c664345e04313856 ]
 
-If the NFTA_SET_ELEM_OBJREF netlink attribute is present and
-NFT_SET_OBJECT flag is set on, report EINVAL.
+When doing lookups for rules on the same batch by using its ID, a rule from
+a different chain can be used. If a rule is added to a chain but tries to
+be positioned next to a rule from a different chain, it will be linked to
+chain2, but the use counter on chain1 would be the one to be incremented.
 
-Move existing sanity check earlier to validate that NFT_SET_OBJECT
-requires NFTA_SET_ELEM_OBJREF.
+When looking for rules by ID, use the chain that was used for the lookup by
+name. The chain used in the context copied to the transaction needs to
+match that same chain. That way, struct nft_rule does not need to get
+enlarged with another member.
 
-Fixes: 8aeff920dcc9 ("netfilter: nf_tables: add stateful object reference to set elements")
+Fixes: 1a94e38d254b ("netfilter: nf_tables: add NFTA_RULE_ID attribute")
+Fixes: 75dd48e2e420 ("netfilter: nf_tables: Support RULE_ID reference in new rule")
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ net/netfilter/nf_tables_api.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 875ebdd8ddc8..9fe1c2e192e2 100644
+index 9fe1c2e192e2..766fbf334bfb 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -4428,6 +4428,15 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 			return -EINVAL;
- 	}
+@@ -2769,6 +2769,7 @@ static int nf_tables_newrule(struct net *net, struct sock *nlsk,
+ }
  
-+	if (set->flags & NFT_SET_OBJECT) {
-+		if (!nla[NFTA_SET_ELEM_OBJREF] &&
-+		    !(flags & NFT_SET_ELEM_INTERVAL_END))
-+			return -EINVAL;
-+	} else {
-+		if (nla[NFTA_SET_ELEM_OBJREF])
-+			return -EINVAL;
-+	}
-+
- 	if ((flags & NFT_SET_ELEM_INTERVAL_END) &&
- 	     (nla[NFTA_SET_ELEM_DATA] ||
- 	      nla[NFTA_SET_ELEM_OBJREF] ||
-@@ -4462,10 +4471,6 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 	}
+ static struct nft_rule *nft_rule_lookup_byid(const struct net *net,
++					     const struct nft_chain *chain,
+ 					     const struct nlattr *nla)
+ {
+ 	u32 id = ntohl(nla_get_be32(nla));
+@@ -2778,6 +2779,7 @@ static struct nft_rule *nft_rule_lookup_byid(const struct net *net,
+ 		struct nft_rule *rule = nft_trans_rule(trans);
  
- 	if (nla[NFTA_SET_ELEM_OBJREF] != NULL) {
--		if (!(set->flags & NFT_SET_OBJECT)) {
--			err = -EINVAL;
--			goto err2;
--		}
- 		obj = nft_obj_lookup(ctx->table, nla[NFTA_SET_ELEM_OBJREF],
- 				     set->objtype, genmask);
- 		if (IS_ERR(obj)) {
+ 		if (trans->msg_type == NFT_MSG_NEWRULE &&
++		    trans->ctx.chain == chain &&
+ 		    id == nft_trans_rule_id(trans))
+ 			return rule;
+ 	}
+@@ -2824,7 +2826,7 @@ static int nf_tables_delrule(struct net *net, struct sock *nlsk,
+ 
+ 			err = nft_delrule(&ctx, rule);
+ 		} else if (nla[NFTA_RULE_ID]) {
+-			rule = nft_rule_lookup_byid(net, nla[NFTA_RULE_ID]);
++			rule = nft_rule_lookup_byid(net, chain, nla[NFTA_RULE_ID]);
+ 			if (IS_ERR(rule)) {
+ 				NL_SET_BAD_ATTR(extack, nla[NFTA_RULE_ID]);
+ 				return PTR_ERR(rule);
 -- 
 2.30.2
 
