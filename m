@@ -2,132 +2,175 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 894EB706191
-	for <lists+netfilter-devel@lfdr.de>; Wed, 17 May 2023 09:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D9F70681B
+	for <lists+netfilter-devel@lfdr.de>; Wed, 17 May 2023 14:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229773AbjEQHqN (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 17 May 2023 03:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42888 "EHLO
+        id S231409AbjEQM30 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 17 May 2023 08:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjEQHqM (ORCPT
+        with ESMTP id S230303AbjEQM3Z (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 17 May 2023 03:46:12 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0ED2118
-        for <netfilter-devel@vger.kernel.org>; Wed, 17 May 2023 00:46:10 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 41be03b00d2f7-52079a12451so256023a12.3
-        for <netfilter-devel@vger.kernel.org>; Wed, 17 May 2023 00:46:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684309570; x=1686901570;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=z7/UrOrH7WBlk+aHFLuoAPaV4sjjLKIsLUZnOqmSEYI=;
-        b=WUrb0Obvq5IJMlhrTZvu0B8lv1WX157LaPIl2qOKg4bW3oCggFuWDJWppudZqjf0sL
-         UKlBh8hqzhKuvfooppTR3yO7cDdzPIl8bjjwMk7KRpGfZIFnb9PZg22GvFpaSnQzX1WV
-         1LEWk3Qqy/lps3mOiV/M3Rkaem9GulHu6nQTgbWERgSonNpcGHU1O5zwY8Os/8y4kRhq
-         Jcnauh/YlzEnLARuf5N4xfCJhWt8s0FM0uCHeaWFUOjamz7oSwxDR7JeXD3gqlcBXYgF
-         dXo3jYxEFxJjRlMvXkMggq64VJNLJoQ4od9HqPp3/8K7cZJ79hx9YZnCnJEO4eMY0owW
-         VpdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684309570; x=1686901570;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=z7/UrOrH7WBlk+aHFLuoAPaV4sjjLKIsLUZnOqmSEYI=;
-        b=cF9X6EPdxInDO38ymlM2vtxBqU6NTqeLOCN/8KLKEKG7o/ko4UV2zi+T1rLYq+cEJQ
-         ghqVboz2HzDXjbcyFiu3/0ntg0uMpqDOceIvtU/PhKBjoRTcXjIIv62tvRnpw6oXyRGx
-         WIfpwbZVEBxtqCcBDRTgmkY1ewbYbkYIdF7EhkQlp2mzpsmkBxvoRpPMvuqLFTGhG+KC
-         tj5dtmffkL2Ft9mczRAulsSaQAXUd8sbhl8KgMryTwMjNqdFMT+xodGS7EAwozJe5Aoh
-         AQKY4XV09Gd25T6sH7c7Y2PcbSFM/7GseZPB8OghurPKT8Rnso8PF3lkVcGMI8LIb9yZ
-         OUxA==
-X-Gm-Message-State: AC+VfDzOqn34J2mea3OJe0ybFiVnAno9Va0A94PbiSDx02gZlzlJSESa
-        D7HGmhB7omt1aSMnWBx8KXpo7MccAlqR+HMenHE=
-X-Google-Smtp-Source: ACHHUZ4AIkQgcymkBhb7tChZZtiqHFbU717q8uTHJKX1gM148hilxx+11l/PLJpjC64DYdjU1bp45HIqkqCG1V8gvH8=
-X-Received: by 2002:a05:6a20:9192:b0:f3:2d33:de72 with SMTP id
- v18-20020a056a20919200b000f32d33de72mr48933639pzd.21.1684309570080; Wed, 17
- May 2023 00:46:10 -0700 (PDT)
+        Wed, 17 May 2023 08:29:25 -0400
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743891BD6;
+        Wed, 17 May 2023 05:29:22 -0700 (PDT)
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+        by mg.bb.i.ssi.bg (Proxmox) with ESMTP id 0A3F919BE0;
+        Wed, 17 May 2023 15:29:21 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
+        by mg.bb.i.ssi.bg (Proxmox) with ESMTPS id E523119BDF;
+        Wed, 17 May 2023 15:29:20 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [178.16.129.10])
+        by ink.ssi.bg (Postfix) with ESMTPS id 335D63C0323;
+        Wed, 17 May 2023 15:29:17 +0300 (EEST)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.17.1/8.16.1) with ESMTP id 34HCTDao054259;
+        Wed, 17 May 2023 15:29:15 +0300
+Date:   Wed, 17 May 2023 15:29:13 +0300 (EEST)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Abhijeet Rastogi <abhijeet.1989@gmail.com>
+cc:     Simon Horman <horms@verge.net.au>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] ipvs: increase ip_vs_conn_tab_bits range for 64BIT
+In-Reply-To: <20230412-increase_ipvs_conn_tab_bits-v3-1-c813278f2d24@gmail.com>
+Message-ID: <d992be69-139b-5f82-4831-3bd33f12e770@ssi.bg>
+References: <20230412-increase_ipvs_conn_tab_bits-v3-1-c813278f2d24@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7300:3ba5:b0:c5:c072:4b75 with HTTP; Wed, 17 May 2023
- 00:46:09 -0700 (PDT)
-Reply-To: didieracouetey46@gmail.com
-From:   " Mrs. Cristalina Georgieva" <jachymjachym346@gmail.com>
-Date:   Wed, 17 May 2023 07:46:09 +0000
-Message-ID: <CAF7ef8wvca8om1UwyQp7Yxbd0prmJSVRVZBBvgG+MH_mQH9tnQ@mail.gmail.com>
-Subject: hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-5rOo5oSPOiDopqrmhJvjgarjgovln7rph5Hlj5fnm4rogIXjga7nmobmp5gNCg0KICAg5oWO6YeN
-44Gr6Kqt44KA77yB77yB77yBDQoNCiAgIOOBk+OBrumbu+WtkOODoeODg+OCu+ODvOOCuOOBr+ap
-n+WvhuOBp+OBguOCiuOAgeWOs+WvhuOBq+OBguOBquOBn+Wum+OBruOCguOBruOBp+OBmeOAgg0K
-DQrjgYLjgarjgZ/jgYwxNeWEhOODieODq+imj+aooeOBruizh+mHkeOCkuWPl+OBkeWPluOBo+OB
-puOBhOOBquOBhOOBruOBr+aYjuOCieOBi+OBp+OBmeOAguOBk+OCjOOBr+OAgemBjuWOu+OBruiF
-kOaVl+OBl+OBn+aUv+W6nOW9ueS6uuOBjOWIqeW3seeahOOBqueQhueUseOBp+izh+mHkeOCkuOB
-u+OBqOOCk+OBqeiHquWIhuOBn+OBoeOBoOOBkeOBruOCguOBruOBq+OBl+OAgeOBguOBquOBn+OB
-ruizh+mHkeOCkuOBmeOBueOBpuipkOasuuOBl+OCiOOBhuOBqOOBl+OBpuWIqeeUqOOBl+OBn+OB
-n+OCgeOBp+OBmeOAgg0K5Z+66YeR44CCIOOBk+OCjOOBq+OCiOOCiuOAgeOBiuWuouanmOWBtOOB
-q+WkmuWkp+OBquaQjeWkseOBjOeZuueUn+OBl+OAgeizh+mHkeOBruWPl+OBkeWPluOCiuOBq+S4
-jeW/heimgeOBqumBheOCjOOBjOeUn+OBmOOBvuOBl+OBn+OAgg0KDQrjgqTjg7Pjgr/jg7zjg53j
-g7zjg6vjga7lm73lrrbkuK3lpK7lsYDjga/jgIHlm73pgKPjgajpgKPpgqbmjZzmn7vlsYDvvIhG
-SULvvInjga7mlK/mj7TjgpLlj5fjgZHjgabjgIHnj77lm73pmpvpgJrosqjln7rph5Hnt4/oo4Hj
-gavlr77jgZfjgIHjgYLjgarjgZ/jgoTku5bjga7kurrjgZ/jgaHjgavlr77jgZnjgovjgZnjgbnj
-gabjga7lr77lpJblgrXli5njga7muIXnrpfjgpLmjqjpgLLjgZnjgovjgojjgYblp5Tku7vjgZnj
-govjgZPjgajjgavmiJDlip/jgZfjgb7jgZfjgZ/jgIINCuWlkee0hOmHkeOAgeWuneOBj+OBmC/j
-gq7jg6Pjg7Pjg5bjg6vjgIHnm7jntprjgarjganjgpLlj5fjgZHlj5bjgonjgarjgYTlgIvkurrj
-gIIgQVRN44Kr44O844OJ44Gn5pSv5omV44GE44KS5Y+X44GR5Y+W44KK44G+44GZ44CCDQoNCk9S
-QSDjg5Djg7Pjgq8g44Kr44O844OJOiDlkI3liY3jgYzmmpflj7fljJbjgZXjgozjgZ/jg5Hjg7zj
-gr3jg4rjg6njgqTjgrrjgZXjgozjgZ8gT1JBIOODkOODs+OCryBBVE0NCuOCq+ODvOODieOCkueZ
-uuihjOOBl+OBvuOBmeOAguOBk+OBruOCq+ODvOODieOCkuS9v+eUqOOBmeOCi+OBqOOAgVZpc2Eg
-44Kr44O844OJ44Gu44Ot44K044GM5LuY44GE44Gm44GE44KLIEFUTSDjgYvjgokgMSDml6XjgYLj
-gZ/jgormnIDlpKcgMjAsMDAwDQrjg4njg6vjgpLlvJXjgY3lh7rjgZnjgZPjgajjgYzjgafjgY3j
-gb7jgZnjgIIg44G+44Gf44CBT1JBIOODkOODs+OCryDjgqvjg7zjg4njgpLkvb/nlKjjgZnjgovj
-gajjgIHos4fph5HjgpLpioDooYzlj6PluqfjgavpgIHph5HjgafjgY3jgb7jgZnjgIIgQVRNDQrj
-gqvjg7zjg4njgavjga/jgIHjgYLjgarjgZ/jga7lm73jgYrjgojjgbPkuJbnlYzkuK3jga7jganj
-ga4gQVRNIOapn+OBp+OCguS9v+eUqOOBp+OBjeOCi+OBk+OBqOOCkuaYjueiuuOBq+OBmeOCi+OD
-nuODi+ODpeOCouODq+OBjOS7mOWxnuOBl+OBpuOBhOOBvuOBmeOAgg0KDQros4fph5Hjga8gQVRN
-IFZpc2Eg44Kr44O844OJ57WM55Sx44Gn6YCB44KJ44KM44CBRmVkRXggRXhwcmVzcyDntYznlLHj
-gafphY3pgZTjgZXjgozjgb7jgZnjgIIg56eB44Gf44Gh44GvIEZlZEV4IEV4cHJlc3MNCuOBqOWl
-kee0hOOCkue1kOOCk+OBp+OBhOOBvuOBmeOAgumAo+e1oeOBmeOCi+W/heimgeOBjOOBguOCi+OB
-ruOBr+OAgU9SQSDpioDooYzjga7jg4fjgqPjg6zjgq/jgr/jg7zjgafjgYLjgosgTVIg44Gg44GR
-44Gn44GZ44CCIERJRElFUiBBQ09VRVRFWQ0K44GT44Gu44Oh44O844Or44Ki44OJ44Os44K544GL
-44KJOiAsIChkaWRpZXJhY291ZXRleTQ2QGdtYWlsLmNvbSkNCg0KDQrpgJrluLjjga7jg6zjg7zj
-g4jjgpLotoXjgYjjgovph5HpoY3jgpLopoHmsYLjgZnjgovkurrjga/plpPpgZXjgYTjgarjgY/o
-qZDmrLrluKvjgafjgYLjgorjgIHku5bjga7kurrjgavpgKPntaHjgpLlj5bjgaPjgZ/loLTlkIjj
-ga/jgZ3jga7kurrjgajjga7pgKPntaHjgpLkuK3mraLjgZnjgovlv4XopoHjgYzjgYLjgovjgZPj
-gajjgavms6jmhI/jgZfjgabjgY/jgaDjgZXjgYTjgIINCg0K44G+44Gf44CB44GU6LKg5ouF44GE
-44Gf44Gg44GP44Gu44Gv6YWN6YCB5paZ44Gu44G/44Gn44GZ44Gu44Gn44GU5a6J5b+D44GP44Gg
-44GV44GE44CCIOOBneOCjOS7peS4iuOBruOCguOBruOBr+OBguOCiuOBvuOBm+OCk++8gSDlv4Xo
-poHjgarmg4XloLHjgajphY3pgIHmlpnjgpLlj5fjgZHlj5bjgaPjgabjgYvjgokgMg0K5Za25qWt
-5pel5Lul5YaF44Gr6LOH6YeR44KS5Y+X44GR5Y+W44KL44GT44Go44KS5L+d6Ki844GX44G+44GZ
-44CCDQoNCuazqDog56iO6YeR5omL5pWw5paZ44KS5ZCr44KB44CB44GZ44G544Gm44GvIElNRiDj
-gajkuJbnlYzpioDooYzjgavjgojjgaPjgablh6bnkIbjgZXjgozjgovjgZ/jgoHjgIHmlK/miZXj
-gYblv4XopoHjgYzjgYLjgovjga7jga8gRmVkRXgg44Gu6YWN6YCB5paZ44Gg44GR44Gn44GZ44CC
-DQrjgZPjgozjga/jgIFGZWRFeCBFeHByZXNzIOOBriBDT0QgKOS7o+mHkeW8leaPmykg44K144O8
-44OT44K544GM6KaP57SE44Gr44KI44KK5Zu96Zqb6YWN6YCB44Gr44Gv6YGp55So44GV44KM44Gq
-44GE44Gf44KB44Gn44GZ44CCDQoNCjE1IOWEhOODieODq+ebuOW9k+OBruODleOCoeODs+ODieOC
-kuODquODquODvOOCueOBmeOCi+OBq+OBr+OAgeiqpOmFjemAgeOCkumBv+OBkeOCi+OBn+OCgeOB
-q+mFjemAgeaDheWgseOCkuaPkOS+m+OBmeOCi+W/heimgeOBjOOBguOCiuOBvuOBmeOAgg0KDQog
-ICAxLiDjgYLjgarjgZ/jga7jg5Xjg6vjg43jg7zjg6AgLi4uLi4uLi4uLi4uLi4uLi4uLg0KMi4g
-44GC44Gq44Gf44Gu5Zu9Li4uLi4NCjMuIOOBguOBquOBn+OBruihly4uLi4uDQo0LiDjgYLjgarj
-gZ/jga7lrozlhajjgarkvY/miYAgLi4uLi4uDQo1LiDlm73nsY0gLi4uLi4uDQo2LiDnlJ/lubTm
-nIjml6Uv5oCn5Yil4oCm4oCmDQo3LiDogbfmpa3igKbigKYNCjguIOmbu+ipseeVquWPt+KApuKA
-pg0KOS4g6LK056S+44Gu44Oh44O844Or44Ki44OJ44Os44K5IOKApuKApg0KMTAuIOWAi+S6uuOD
-oeODvOODq+OCouODieODrOOCuSAuLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4NCjEx
-LiDlm73pmpvjg5Hjgrnjg53jg7zjg4jjgb7jgZ/jga/mnInlirnjgarouqvliIboqLzmmI7mm7jj
-ga7jgrPjg5Tjg7w6DQoNCuW/heimgeS6i+mgheOCkk1S44G+44Gn44GK6YCB44KK44GP44Gg44GV
-44GE44CCIERJRElFUiBBQ09VRVRFWSBPcmFCYW5rIOODh+OCo+ODrOOCr+OCv+ODvOOAgeODoeOD
-vOODq+OCouODieODrOOCuSA9DQooZGlkaWVyYWNvdWV0ZXk0NkBnbWFpbC5jb20pIOOBvuOBp+S7
-iuOBmeOBkOOBlOmAo+e1oeOBj+OBoOOBleOBhOOAgg0KDQrjgYrjgoHjgafjgajjgYbjgZTjgZbj
-gYTjgb7jgZkNCg==
+
+	Hello,
+
+On Tue, 16 May 2023, Abhijeet Rastogi wrote:
+
+> Current range [8, 20] is set purely due to historical reasons
+> because at the time, ~1M (2^20) was considered sufficient.
+> With this change, 27 is the upper limit for 64-bit, 20 otherwise.
+> 
+> Previous change regarding this limit is here.
+> 
+> Link: https://lore.kernel.org/all/86eabeb9dd62aebf1e2533926fdd13fed48bab1f.1631289960.git.aclaudi@redhat.com/T/#u
+> 
+> Signed-off-by: Abhijeet Rastogi <abhijeet.1989@gmail.com>
+
+	Looks good to me, thanks!
+
+Acked-by: Julian Anastasov <ja@ssi.bg>
+
+	I'll post my patch on top of this.
+
+> ---
+> The conversation for this started at: 
+> 
+> https://www.spinics.net/lists/netfilter/msg60995.html
+> 
+> The upper limit for algo is any bit size less than 32, so this
+> change will allow us to set bit size > 20. Today, it is common to have
+> RAM available to handle greater than 2^20 connections per-host.
+> 
+> Distros like RHEL already allow setting limits higher than 20.
+> ---
+> Changes in v3:
+> - Fix text width in Kconfig, now text is 70 columns, excluding tab.
+> - Link to v2: https://lore.kernel.org/r/20230412-increase_ipvs_conn_tab_bits-v2-1-994c0df018e6@gmail.com
+> 
+> Changes in v2:
+> - Lower the ranges, 27 for 64bit, 20 otherwise
+> - Link to v1: https://lore.kernel.org/r/20230412-increase_ipvs_conn_tab_bits-v1-1-60a4f9f4c8f2@gmail.com
+> ---
+>  net/netfilter/ipvs/Kconfig      | 27 ++++++++++++++-------------
+>  net/netfilter/ipvs/ip_vs_conn.c |  4 ++--
+>  2 files changed, 16 insertions(+), 15 deletions(-)
+> 
+> diff --git a/net/netfilter/ipvs/Kconfig b/net/netfilter/ipvs/Kconfig
+> index 271da8447b29..2a3017b9c001 100644
+> --- a/net/netfilter/ipvs/Kconfig
+> +++ b/net/netfilter/ipvs/Kconfig
+> @@ -44,7 +44,8 @@ config	IP_VS_DEBUG
+>  
+>  config	IP_VS_TAB_BITS
+>  	int "IPVS connection table size (the Nth power of 2)"
+> -	range 8 20
+> +	range 8 20 if !64BIT
+> +	range 8 27 if 64BIT
+>  	default 12
+>  	help
+>  	  The IPVS connection hash table uses the chaining scheme to handle
+> @@ -54,24 +55,24 @@ config	IP_VS_TAB_BITS
+>  
+>  	  Note the table size must be power of 2. The table size will be the
+>  	  value of 2 to the your input number power. The number to choose is
+> -	  from 8 to 20, the default number is 12, which means the table size
+> -	  is 4096. Don't input the number too small, otherwise you will lose
+> -	  performance on it. You can adapt the table size yourself, according
+> -	  to your virtual server application. It is good to set the table size
+> -	  not far less than the number of connections per second multiplying
+> -	  average lasting time of connection in the table.  For example, your
+> -	  virtual server gets 200 connections per second, the connection lasts
+> -	  for 200 seconds in average in the connection table, the table size
+> -	  should be not far less than 200x200, it is good to set the table
+> -	  size 32768 (2**15).
+> +	  from 8 to 27 for 64BIT(20 otherwise), the default number is 12,
+> +	  which means the table size is 4096. Don't input the number too
+> +	  small, otherwise you will lose performance on it. You can adapt the
+> +	  table size yourself, according to your virtual server application.
+> +	  It is good to set the table size not far less than the number of
+> +	  connections per second multiplying average lasting time of
+> +	  connection in the table.  For example, your virtual server gets 200
+> +	  connections per second, the connection lasts for 200 seconds in
+> +	  average in the connection table, the table size should be not far
+> +	  less than 200x200, it is good to set the table size 32768 (2**15).
+>  
+>  	  Another note that each connection occupies 128 bytes effectively and
+>  	  each hash entry uses 8 bytes, so you can estimate how much memory is
+>  	  needed for your box.
+>  
+>  	  You can overwrite this number setting conn_tab_bits module parameter
+> -	  or by appending ip_vs.conn_tab_bits=? to the kernel command line
+> -	  if IP VS was compiled built-in.
+> +	  or by appending ip_vs.conn_tab_bits=? to the kernel command line if
+> +	  IP VS was compiled built-in.
+>  
+>  comment "IPVS transport protocol load balancing support"
+>  
+> diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+> index 13534e02346c..e1b9b52909a5 100644
+> --- a/net/netfilter/ipvs/ip_vs_conn.c
+> +++ b/net/netfilter/ipvs/ip_vs_conn.c
+> @@ -1484,8 +1484,8 @@ int __init ip_vs_conn_init(void)
+>  	int idx;
+>  
+>  	/* Compute size and mask */
+> -	if (ip_vs_conn_tab_bits < 8 || ip_vs_conn_tab_bits > 20) {
+> -		pr_info("conn_tab_bits not in [8, 20]. Using default value\n");
+> +	if (ip_vs_conn_tab_bits < 8 || ip_vs_conn_tab_bits > 27) {
+> +		pr_info("conn_tab_bits not in [8, 27]. Using default value\n");
+>  		ip_vs_conn_tab_bits = CONFIG_IP_VS_TAB_BITS;
+>  	}
+>  	ip_vs_conn_tab_size = 1 << ip_vs_conn_tab_bits;
+> 
+> ---
+> base-commit: 09a9639e56c01c7a00d6c0ca63f4c7c41abe075d
+> change-id: 20230412-increase_ipvs_conn_tab_bits-4322c90da216
+> 
+> Best regards,
+> -- 
+> Abhijeet Rastogi <abhijeet.1989@gmail.com>
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
+
