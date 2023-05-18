@@ -2,35 +2,63 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A86A707D14
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 May 2023 11:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4DF3707D1F
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 May 2023 11:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbjERJlP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 18 May 2023 05:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        id S229812AbjERJnh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 18 May 2023 05:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbjERJlO (ORCPT
+        with ESMTP id S230261AbjERJng (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 18 May 2023 05:41:14 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 961691724
-        for <netfilter-devel@vger.kernel.org>; Thu, 18 May 2023 02:41:13 -0700 (PDT)
-Date:   Thu, 18 May 2023 11:41:10 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] evaluate: Reject set stmt refs to sets without
- dynamic flag
-Message-ID: <ZGXytiRHHS5O6U2v@calendula>
-References: <20230503105022.5728-1-phil@nwl.cc>
- <ZFt35MXmXZWxcb56@calendula>
- <ZFuEcXxYCG9U9eMQ@orbyte.nwl.cc>
+        Thu, 18 May 2023 05:43:36 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A17C212D
+        for <netfilter-devel@vger.kernel.org>; Thu, 18 May 2023 02:43:34 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id 5614622812f47-3945180bef1so1154736b6e.1
+        for <netfilter-devel@vger.kernel.org>; Thu, 18 May 2023 02:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684403013; x=1686995013;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4jlL8pzL6NVZbuVjV4h5KPilkuQmPMJRpXcDIhZ2tX0=;
+        b=ETByJ6wPpYnJWZJdzeplHcfgn8uXV34fkRc/aZgKnMDrIyG6mG0tyPrF4rXNcCdUdS
+         V2JgsWugNZAk27kAVjpi39ILWvSSNTRNuISHCPwPRu8/xO//4q/eU9g8JbWuZEX2UXAe
+         YBwf0bK1S2uWmtRv6hF5yInj+46ABHmad5EdNiLMRVkkDhlurjTgecc4gyT4omHEER1u
+         UQRpX5onqOsirdOIDHKq7bZqBG0XUcTMUUbJqIioU4jeuTXkKRCJ4IJaPQ3Qpxl8mAZm
+         HAi8CHHGiv0Yn+vs27YoiJDfDoJl6zW8qqSNM0YtgWACtkmnEuuKKEBPkRTaaWAHP7Qp
+         LMSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684403013; x=1686995013;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4jlL8pzL6NVZbuVjV4h5KPilkuQmPMJRpXcDIhZ2tX0=;
+        b=KjM4CzEdv0zEu4YYYuIxHSbwlOZCCNMhPtK3LbbgskMEVMBHN5CpboDNkkCc8pLG8P
+         +aCbySxWZioiuX0UnZVuC8fXxVH81bgsTxdXYahUFUjPPH5tk/FLEMw5l4MK5GKPgAjq
+         R/ZDn8m0TTHmB+hraOl7XRXfIcFNPILcM1QUY54VH3Ql4iWZ18FYr5h4Y0CgyfDPW8i4
+         eEZq51tWL1FfTzZD1WyVADxsrJf/uUq+bVFJT0y1q7lIiMa4aGdk7XFyWSaNEP1Q+o09
+         t/xYMyKLuWu14O8Epqox4QO8Cmjwd3t7JzXQBf26DRGrnNl3gXW8hhJc1v+Tm5M9K9jt
+         3Asw==
+X-Gm-Message-State: AC+VfDyMzxTKOruej/9nt2AQy7oYdHmYu6wv7JkCgP17d5Jnx3iLnjuy
+        jGIi2IvnViruZHvTA8xScMuxQprMnYg6PkjrIVE=
+X-Google-Smtp-Source: ACHHUZ7QLp3kB9MSKg6syG0tG8csXgQ/7TsbWjht60Rweqq7ihTKnq3E2v13ascLRtD6zLcHx7VQp7LkKTSHgOZt3Qc=
+X-Received: by 2002:a05:6808:b33:b0:394:3e2d:515b with SMTP id
+ t19-20020a0568080b3300b003943e2d515bmr1032935oij.15.1684403013444; Thu, 18
+ May 2023 02:43:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZFuEcXxYCG9U9eMQ@orbyte.nwl.cc>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Received: by 2002:a05:6838:8644:b0:646:9742:4799 with HTTP; Thu, 18 May 2023
+ 02:43:33 -0700 (PDT)
+Reply-To: contact.ninacoulibaly@inbox.eu
+From:   Nina Coulibaly <ninacoulibaly014@gmail.com>
+Date:   Thu, 18 May 2023 02:43:33 -0700
+Message-ID: <CAPnh-Axc2Mu8G6iXBcPrXv86oVXvggnWbEkHz9gYHa9y8yqGHA@mail.gmail.com>
+Subject: from nina coulibaly
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_40,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -38,58 +66,10 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, May 10, 2023 at 01:48:01PM +0200, Phil Sutter wrote:
-> Hi Pablo,
-> 
-> On Wed, May 10, 2023 at 12:54:28PM +0200, Pablo Neira Ayuso wrote:
-> > On Wed, May 03, 2023 at 12:50:22PM +0200, Phil Sutter wrote:
-> > > This is a revert of commit 8d443adfcc8c1 ("evaluate: attempt to set_eval
-> > > flag if dynamic updates requested"), implementing the alternative
-> > > mentioned in the comment it added.
-> > > 
-> > > Reason is the inconsistent behaviour when applying the same ruleset
-> > > twice: In the first call, the set lacking 'dynamic' flag does not exist
-> > > and is therefore added to the cache. Consequently, both the 'add set'
-> > > command and the set statement point at the same set object. In the
-> > > second call, a set with same name exists already, so the object created
-> > > for 'add set' command is not added to cache and consequently not updated
-> > > with the missing flag. The kernel thus rejects the NEWSET request as the
-> > > existing set differs from the new one.
-> > 
-> > # cat test.nft
-> > flush ruleset
-> 
-> Just remove this 'flush ruleset' call, then it should trigger.
+Dear,
 
-I cannot reproduce it yet :(
+Please grant me permission to share a very crucial discussion with
+you.I am looking forward to hearing from you at your earliest
+convenience.
 
-# cat test.nft
-table ip test {
-        set dlist {
-                type ipv4_addr
-                size 65535
-        }
-
-        chain output {
-                type filter hook output priority filter; policy accept;
-                udp dport 1234 update @dlist { ip daddr } counter packets 0 bytes 0
-        }
-}
-# nft -f test.nft
-# nft -f test.nft
-# nft list ruleset
-table ip test {
-        set dlist {
-                type ipv4_addr
-                size 65535
-                flags dynamic
-        }
-
-        chain output {
-                type filter hook output priority filter; policy accept;
-                udp dport 1234 update @dlist { ip daddr } counter packets 0 bytes 0
-                udp dport 1234 update @dlist { ip daddr } counter packets 0 bytes 0
-        }
-}
-
-Maybe I need a specific kernel? I am trying with latest.
+Mrs. Nina Coulibaly
