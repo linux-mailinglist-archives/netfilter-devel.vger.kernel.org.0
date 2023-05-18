@@ -2,256 +2,106 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 140F6707D91
-	for <lists+netfilter-devel@lfdr.de>; Thu, 18 May 2023 12:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D56F707F2D
+	for <lists+netfilter-devel@lfdr.de>; Thu, 18 May 2023 13:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbjERKIb (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 18 May 2023 06:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
+        id S229816AbjERL0U (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 18 May 2023 07:26:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbjERKIa (ORCPT
+        with ESMTP id S230031AbjERL0Q (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 18 May 2023 06:08:30 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2EBD1717;
-        Thu, 18 May 2023 03:08:28 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1pzaYa-0005qm-LB; Thu, 18 May 2023 12:08:24 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netdev@vger.kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH net-next 9/9] netfilter: flowtable: split IPv6 datapath in helper functions
-Date:   Thu, 18 May 2023 12:07:59 +0200
-Message-Id: <20230518100759.84858-10-fw@strlen.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230518100759.84858-1-fw@strlen.de>
-References: <20230518100759.84858-1-fw@strlen.de>
+        Thu, 18 May 2023 07:26:16 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF693172A
+        for <netfilter-devel@vger.kernel.org>; Thu, 18 May 2023 04:26:14 -0700 (PDT)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1pzblr-0008MN-6k; Thu, 18 May 2023 13:26:11 +0200
+Date:   Thu, 18 May 2023 13:26:11 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+Subject: Re: [nft PATCH] evaluate: Reject set stmt refs to sets without
+ dynamic flag
+Message-ID: <ZGYLUx/fNGPXPqN9@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
+References: <20230503105022.5728-1-phil@nwl.cc>
+ <ZFt35MXmXZWxcb56@calendula>
+ <ZFuEcXxYCG9U9eMQ@orbyte.nwl.cc>
+ <ZGXytiRHHS5O6U2v@calendula>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZGXytiRHHS5O6U2v@calendula>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+Hi Pablo,
 
-Add context structure and helper functions to look up for a matching
-IPv6 entry in the flowtable and to forward packets.
+On Thu, May 18, 2023 at 11:41:10AM +0200, Pablo Neira Ayuso wrote:
+> On Wed, May 10, 2023 at 01:48:01PM +0200, Phil Sutter wrote:
+> > Hi Pablo,
+> > 
+> > On Wed, May 10, 2023 at 12:54:28PM +0200, Pablo Neira Ayuso wrote:
+> > > On Wed, May 03, 2023 at 12:50:22PM +0200, Phil Sutter wrote:
+> > > > This is a revert of commit 8d443adfcc8c1 ("evaluate: attempt to set_eval
+> > > > flag if dynamic updates requested"), implementing the alternative
+> > > > mentioned in the comment it added.
+> > > > 
+> > > > Reason is the inconsistent behaviour when applying the same ruleset
+> > > > twice: In the first call, the set lacking 'dynamic' flag does not exist
+> > > > and is therefore added to the cache. Consequently, both the 'add set'
+> > > > command and the set statement point at the same set object. In the
+> > > > second call, a set with same name exists already, so the object created
+> > > > for 'add set' command is not added to cache and consequently not updated
+> > > > with the missing flag. The kernel thus rejects the NEWSET request as the
+> > > > existing set differs from the new one.
+> > > 
+> > > # cat test.nft
+> > > flush ruleset
+> > 
+> > Just remove this 'flush ruleset' call, then it should trigger.
+> 
+> I cannot reproduce it yet :(
 
-No functional changes are intended.
+This is very odd.
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- net/netfilter/nf_flow_table_ip.c | 112 ++++++++++++++++++++-----------
- 1 file changed, 71 insertions(+), 41 deletions(-)
+> # cat test.nft
+> table ip test {
+>         set dlist {
+>                 type ipv4_addr
+>                 size 65535
+>         }
+> 
+>         chain output {
+>                 type filter hook output priority filter; policy accept;
+>                 udp dport 1234 update @dlist { ip daddr } counter packets 0 bytes 0
+>         }
+> }
+> # nft -f test.nft
+> # nft -f test.nft
 
-diff --git a/net/netfilter/nf_flow_table_ip.c b/net/netfilter/nf_flow_table_ip.c
-index 3fb476167d1d..d248763917ad 100644
---- a/net/netfilter/nf_flow_table_ip.c
-+++ b/net/netfilter/nf_flow_table_ip.c
-@@ -570,32 +570,31 @@ static void nf_flow_nat_ipv6(const struct flow_offload *flow,
- 	}
- }
- 
--static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
--			      struct flow_offload_tuple *tuple, u32 *hdrsize,
--			      u32 offset)
-+static int nf_flow_tuple_ipv6(struct nf_flowtable_ctx *ctx, struct sk_buff *skb,
-+			      struct flow_offload_tuple *tuple)
- {
- 	struct flow_ports *ports;
- 	struct ipv6hdr *ip6h;
- 	unsigned int thoff;
- 	u8 nexthdr;
- 
--	thoff = sizeof(*ip6h) + offset;
-+	thoff = sizeof(*ip6h) + ctx->offset;
- 	if (!pskb_may_pull(skb, thoff))
- 		return -1;
- 
--	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + offset);
-+	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + ctx->offset);
- 
- 	nexthdr = ip6h->nexthdr;
- 	switch (nexthdr) {
- 	case IPPROTO_TCP:
--		*hdrsize = sizeof(struct tcphdr);
-+		ctx->hdrsize = sizeof(struct tcphdr);
- 		break;
- 	case IPPROTO_UDP:
--		*hdrsize = sizeof(struct udphdr);
-+		ctx->hdrsize = sizeof(struct udphdr);
- 		break;
- #ifdef CONFIG_NF_CT_PROTO_GRE
- 	case IPPROTO_GRE:
--		*hdrsize = sizeof(struct gre_base_hdr);
-+		ctx->hdrsize = sizeof(struct gre_base_hdr);
- 		break;
- #endif
- 	default:
-@@ -605,7 +604,7 @@ static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
- 	if (ip6h->hop_limit <= 1)
- 		return -1;
- 
--	if (!pskb_may_pull(skb, thoff + *hdrsize))
-+	if (!pskb_may_pull(skb, thoff + ctx->hdrsize))
- 		return -1;
- 
- 	switch (nexthdr) {
-@@ -625,65 +624,47 @@ static int nf_flow_tuple_ipv6(struct sk_buff *skb, const struct net_device *dev,
- 	}
- 	}
- 
--	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + offset);
-+	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + ctx->offset);
- 
- 	tuple->src_v6		= ip6h->saddr;
- 	tuple->dst_v6		= ip6h->daddr;
- 	tuple->l3proto		= AF_INET6;
- 	tuple->l4proto		= nexthdr;
--	tuple->iifidx		= dev->ifindex;
-+	tuple->iifidx		= ctx->in->ifindex;
- 	nf_flow_tuple_encap(skb, tuple);
- 
- 	return 0;
- }
- 
--unsigned int
--nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
--			  const struct nf_hook_state *state)
-+static int nf_flow_offload_ipv6_forward(struct nf_flowtable_ctx *ctx,
-+					struct nf_flowtable *flow_table,
-+					struct flow_offload_tuple_rhash *tuplehash,
-+					struct sk_buff *skb)
- {
--	struct flow_offload_tuple_rhash *tuplehash;
--	struct nf_flowtable *flow_table = priv;
--	struct flow_offload_tuple tuple = {};
- 	enum flow_offload_tuple_dir dir;
--	const struct in6_addr *nexthop;
- 	struct flow_offload *flow;
--	struct net_device *outdev;
- 	unsigned int thoff, mtu;
--	u32 hdrsize, offset = 0;
- 	struct ipv6hdr *ip6h;
--	struct rt6_info *rt;
--	int ret;
--
--	if (skb->protocol != htons(ETH_P_IPV6) &&
--	    !nf_flow_skb_encap_protocol(skb, htons(ETH_P_IPV6), &offset))
--		return NF_ACCEPT;
--
--	if (nf_flow_tuple_ipv6(skb, state->in, &tuple, &hdrsize, offset) < 0)
--		return NF_ACCEPT;
--
--	tuplehash = flow_offload_lookup(flow_table, &tuple);
--	if (tuplehash == NULL)
--		return NF_ACCEPT;
- 
- 	dir = tuplehash->tuple.dir;
- 	flow = container_of(tuplehash, struct flow_offload, tuplehash[dir]);
- 
--	mtu = flow->tuplehash[dir].tuple.mtu + offset;
-+	mtu = flow->tuplehash[dir].tuple.mtu + ctx->offset;
- 	if (unlikely(nf_flow_exceeds_mtu(skb, mtu)))
--		return NF_ACCEPT;
-+		return 0;
- 
--	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + offset);
--	thoff = sizeof(*ip6h) + offset;
-+	ip6h = (struct ipv6hdr *)(skb_network_header(skb) + ctx->offset);
-+	thoff = sizeof(*ip6h) + ctx->offset;
- 	if (nf_flow_state_check(flow, ip6h->nexthdr, skb, thoff))
--		return NF_ACCEPT;
-+		return 0;
- 
- 	if (!nf_flow_dst_check(&tuplehash->tuple)) {
- 		flow_offload_teardown(flow);
--		return NF_ACCEPT;
-+		return 0;
- 	}
- 
--	if (skb_try_make_writable(skb, thoff + hdrsize))
--		return NF_DROP;
-+	if (skb_try_make_writable(skb, thoff + ctx->hdrsize))
-+		return -1;
- 
- 	flow_offload_refresh(flow_table, flow);
- 
-@@ -698,6 +679,52 @@ nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
- 	if (flow_table->flags & NF_FLOWTABLE_COUNTER)
- 		nf_ct_acct_update(flow->ct, tuplehash->tuple.dir, skb->len);
- 
-+	return 1;
-+}
-+
-+static struct flow_offload_tuple_rhash *
-+nf_flow_offload_ipv6_lookup(struct nf_flowtable_ctx *ctx,
-+			    struct nf_flowtable *flow_table,
-+			    struct sk_buff *skb)
-+{
-+	struct flow_offload_tuple tuple = {};
-+
-+	if (skb->protocol != htons(ETH_P_IPV6) &&
-+	    !nf_flow_skb_encap_protocol(skb, htons(ETH_P_IPV6), &ctx->offset))
-+		return NULL;
-+
-+	if (nf_flow_tuple_ipv6(ctx, skb, &tuple) < 0)
-+		return NULL;
-+
-+	return flow_offload_lookup(flow_table, &tuple);
-+}
-+
-+unsigned int
-+nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
-+			  const struct nf_hook_state *state)
-+{
-+	struct flow_offload_tuple_rhash *tuplehash;
-+	struct nf_flowtable *flow_table = priv;
-+	enum flow_offload_tuple_dir dir;
-+	struct nf_flowtable_ctx ctx = {
-+		.in	= state->in,
-+	};
-+	const struct in6_addr *nexthop;
-+	struct flow_offload *flow;
-+	struct net_device *outdev;
-+	struct rt6_info *rt;
-+	int ret;
-+
-+	tuplehash = nf_flow_offload_ipv6_lookup(&ctx, flow_table, skb);
-+	if (tuplehash == NULL)
-+		return NF_ACCEPT;
-+
-+	ret = nf_flow_offload_ipv6_forward(&ctx, flow_table, tuplehash, skb);
-+	if (ret < 0)
-+		return NF_DROP;
-+	else if (ret == 0)
-+		return NF_ACCEPT;
-+
- 	if (unlikely(tuplehash->tuple.xmit_type == FLOW_OFFLOAD_XMIT_XFRM)) {
- 		rt = (struct rt6_info *)tuplehash->tuple.dst_cache;
- 		memset(skb->cb, 0, sizeof(struct inet6_skb_parm));
-@@ -706,6 +733,9 @@ nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
- 		return nf_flow_xmit_xfrm(skb, state, &rt->dst);
- 	}
- 
-+	dir = tuplehash->tuple.dir;
-+	flow = container_of(tuplehash, struct flow_offload, tuplehash[dir]);
-+
- 	switch (tuplehash->tuple.xmit_type) {
- 	case FLOW_OFFLOAD_XMIT_NEIGH:
- 		rt = (struct rt6_info *)tuplehash->tuple.dst_cache;
--- 
-2.40.1
+On my side, this second call emits:
 
+| /tmp/test.nft:2:6-10: Error: Could not process rule: File exists
+|         set dlist {
+|             ^^^^^
+
+> Maybe I need a specific kernel? I am trying with latest.
+
+IIUC, it is not kernel-related. I can reproduce with:
+
+nftables @ d486c9e626405 ("datatype: add hint error handler")
+libnftnl @ libnftnl-1.2.5
+linux @ b50a8b0d57ab1 ("net: openvswitch: Use struct_size()")
+
+Cheers, Phil
