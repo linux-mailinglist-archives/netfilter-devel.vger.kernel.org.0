@@ -2,93 +2,103 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D009710FD2
-	for <lists+netfilter-devel@lfdr.de>; Thu, 25 May 2023 17:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52E9710FF3
+	for <lists+netfilter-devel@lfdr.de>; Thu, 25 May 2023 17:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241770AbjEYPkf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 25 May 2023 11:40:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
+        id S230502AbjEYPug (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 25 May 2023 11:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241776AbjEYPkc (ORCPT
+        with ESMTP id S236063AbjEYPuT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 25 May 2023 11:40:32 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74EF9198
-        for <netfilter-devel@vger.kernel.org>; Thu, 25 May 2023 08:40:31 -0700 (PDT)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf-next,v1 6/6] netfilter: nf_tables: skip comment match when building blob
-Date:   Thu, 25 May 2023 17:40:24 +0200
-Message-Id: <20230525154024.222338-7-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230525154024.222338-1-pablo@netfilter.org>
+        Thu, 25 May 2023 11:50:19 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03C9C0
+        for <netfilter-devel@vger.kernel.org>; Thu, 25 May 2023 08:50:17 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1q2DEG-0006c9-Cz; Thu, 25 May 2023 17:50:16 +0200
+Date:   Thu, 25 May 2023 17:50:16 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH nf-next,v1 0/6] nf_tables combo match
+Message-ID: <20230525155016.GA25057@breakpoint.cc>
 References: <20230525154024.222338-1-pablo@netfilter.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230525154024.222338-1-pablo@netfilter.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Use tracking infrastructure to skip the comment match when building
-the ruleset blob, this restores the comment match suppression done in
-c828414ac935 ("netfilter: nft_compat: suppress comment match"). If
-.track returns -1, then skip the expression.
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> Hi,
+> 
+> This patchset provides the combo match for payload and the iifname and
+> oifname meta selector. The idea is to track and coalesce expressions in
+> an internal special combo expression. This batch adds support to coalesce
+> the following expressions:
+> 
+> 	payload + cmp
+> 	payload + bitwise + cmp
+> 	meta {iifname,oifname} + cmp
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- net/netfilter/nf_tables_api.c |  3 ++-
- net/netfilter/nft_compat.c    | 12 ++++++++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+Interesting concept, thanks for exploring this.
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 3c5c3f3af333..3fc1a7d30f8b 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -8917,7 +8917,8 @@ static int nft_expr_track(struct nft_exprs_track *expr_track,
- 	if (ret > 0) {
- 		expr_track->num_exprs++;
- 		return 1;
--	}
-+	} else if (ret < 0)
-+		return 0;
- 
- 	switch (expr_track->num_exprs) {
- 	case 0:
-diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
-index e178b479dfaf..89a5e4d2b03d 100644
---- a/net/netfilter/nft_compat.c
-+++ b/net/netfilter/nft_compat.c
-@@ -734,6 +734,17 @@ static const struct nfnetlink_subsystem nfnl_compat_subsys = {
- 
- static struct nft_expr_type nft_match_type;
- 
-+static int nft_match_track(struct nft_expr_track *track,
-+			   const struct nft_expr *expr)
-+{
-+	const struct xt_match *match = expr->ops->data;
-+
-+	if (!strcmp(match->name, "comment"))
-+		return -1;
-+
-+	return 1;
-+}
-+
- static const struct nft_expr_ops *
- nft_match_select_ops(const struct nft_ctx *ctx,
- 		     const struct nlattr * const tb[])
-@@ -776,6 +787,7 @@ nft_match_select_ops(const struct nft_ctx *ctx,
- 	ops->dump = nft_match_dump;
- 	ops->validate = nft_match_validate;
- 	ops->data = match;
-+	ops->track = nft_match_track;
- 
- 	matchsize = NFT_EXPR_SIZE(XT_ALIGN(match->matchsize));
- 	if (matchsize > NFT_MATCH_LARGE_THRESH) {
--- 
-2.30.2
+> The coalesce happens when the ruleset blob is built, the expression
+> tracking is done at rule level, ie. by iterating over the expressions
+> that represent the rule. The expression tracking happens twice, once to
+> calculate the ruleset blob (because the combo expression alters the
+> expected rule data size) and then to build the ruleset blob.
 
+This might be useful for other representation transformations, cf. the
+pending 'remove register zeroing' patchset.
+
+If that breaks 3rd party users we can now simply force the zeroing
+from the internal ruleset representation.
+
+> This batch replaces the existing approach which based on fast variants
+> of the cmp and bitwise expressions, that are also removed.
+
+I think its good to re-evaluate the eval loop from time to time
+and axe whats not needed anymore.
+
+> This approach is an alternative to the register track & reduce approach,
+> which so far works at chain level. Such approach requires descending the
+> tree of chains and tracking registers from base to leaf chains, this
+> becomes more complicated with dynamic ruleset, but it could be useful
+> for static rulesets, such approach also requires significant updates in
+> userspace. Therefore, I'm inclined towards this more simple solution.
+
+I like this approach.
+
+> One question with this update is whether removing the fast bitwise and
+> cmp variants slows down other (non-coalesced) expressions. The results
+> I collected with a simple ruleset to test worst case scenario like this:
+> 
+> 	-m state --state ESTABLISHED -j DROP
+> 	... 99 times more
+> 	-m state --state NEW -j DROP  [ <- this is the matching rule ]
+
+Oh, I was about to ask if you're using an out-of-tree version but
+then I saw you picked this to test *absence* of any cmp/bitwise.
+
+> shows 301 Mb/s without this patchset vs 412 Mb/s with this patchset,
+
+Did not expect such a big difference.
+
+> that it, results are better with this patchset while the payload and
+> meta expression that are coalesced show much better numbers.
+> 
+> I'm collecting more detailed numbers, I will post them soon.
+
+Excellent, thanks!  I think this is a good appraoch, I will review
+patches in more detail soon.
