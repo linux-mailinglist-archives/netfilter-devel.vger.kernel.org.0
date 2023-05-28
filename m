@@ -2,45 +2,43 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB767139C4
-	for <lists+netfilter-devel@lfdr.de>; Sun, 28 May 2023 15:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4468C7139D0
+	for <lists+netfilter-devel@lfdr.de>; Sun, 28 May 2023 16:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbjE1N4Z (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 28 May 2023 09:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
+        id S229565AbjE1OBe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 28 May 2023 10:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbjE1N4V (ORCPT
+        with ESMTP id S229450AbjE1OBd (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 28 May 2023 09:56:21 -0400
+        Sun, 28 May 2023 10:01:33 -0400
 Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC1BD9
-        for <netfilter-devel@vger.kernel.org>; Sun, 28 May 2023 06:56:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FBABD
+        for <netfilter-devel@vger.kernel.org>; Sun, 28 May 2023 07:01:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=20220717; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=vFI0Mp74OzIsFASa+oORTiYNK+wddJ8+czxTQiq8VSQ=; b=Xv0b9WFpVXaPfiVP2C719ZC7LK
-        e9BV0ESuA5TvQpt1JZ6PS5kNThPjcgxMq7C2JxucF6MeDdB27hm8s3WGiE98JGN1CyA5n/mvrgRu5
-        7vwoI+Zy/aeFZzqDl4hQL94lTMCZ3W4lkRT4S+mZm200ESGuJzmO4FwoSK4P2vA/FEsaEQzek4Ahj
-        Uegf4R2t3VMRqJagH6SMLhFNN6jF3FxIHauq/o9D2Gr2sFxOB8u3JKoT8yIQCaZoe/0cGX0DTbLdf
-        jG/Af+ZuXXKin3pMmoQHh/G28XCXyqqEFsMo9lXz0ZoXr1jeP0x/JMmbSg1bAejMk+SUUkcyyqmse
-        CE/moO+A==;
+        bh=XiX+qmPQBmO3Z8lK+vmlkyPvsCMtMUha4qHR1QmjZhM=; b=h+NyjW8sNl/l8k6ArQT/1vGDe1
+        C4MGzGM8+Q1UrZaEA6sbGqjPCX0uRya42uU4aGqX1/eF1yytLg9bBCwFQXmikmIHD3smKz41O35AV
+        7pPYpiVARQsYoZIEAE8RMr6HKwS5DP5BKFsNpr4kct2D3cfllLcVTVWt32skyjrfUG0EcgGUZW62h
+        jkNH2DZMENp+1ZbPtlSMAP1ESglC+E9mRl5wsIZOwqYHoLismnfhd3ibWtJFTfS1T5zIdVtglDb6x
+        YMvxRDXimFSVzbKz96QBnW1FrWBf3hRR41y/NOWXpCl4i1vPaHrWJq5qn2UsC2fWPuj3ROpYIZC3k
+        DjR0SZmw==;
 Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
         by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1q3GsY-008We9-GO
-        for netfilter-devel@vger.kernel.org; Sun, 28 May 2023 14:56:14 +0100
+        id 1q3Gxe-008Xe1-3x; Sun, 28 May 2023 15:01:30 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH libnftnl v3 5/5] tests: bitwise: add tests for new boolean operations
-Date:   Sun, 28 May 2023 14:56:01 +0100
-Message-Id: <20230528135601.1218337-6-jeremy@azazel.net>
+Cc:     Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>
+Subject: [PATCH nft v5 0/8] Bitwise boolean operations with variable RHS operands
+Date:   Sun, 28 May 2023 15:00:50 +0100
+Message-Id: <20230528140058.1218669-1-jeremy@azazel.net>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230528135601.1218337-1-jeremy@azazel.net>
-References: <20230528135601.1218337-1-jeremy@azazel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608
@@ -56,137 +54,128 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-We already have tests for mask-and-xor operations with constant RHS
-operands.  Add tests for new operations with variable RHS operands.
+This patch-set adds support for new bitwise boolean operations to
+nftables, and uses this to extend the types of value which can be
+assigned to packet marks and payload fields.  The original motivation
+for these changes was Kevin Darbyshire-Bryant's wish to be able to set
+the conntrack mark to a bitwise expression derived from a DSCP value:
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- tests/nft-expr_bitwise-test.c | 105 ++++++++++++++++++++++++++++++++++
- 1 file changed, 105 insertions(+)
+  https://lore.kernel.org/netfilter-devel/20191203160652.44396-1-ldir@darbyshire-bryant.me.uk/#r
 
-diff --git a/tests/nft-expr_bitwise-test.c b/tests/nft-expr_bitwise-test.c
-index 7a821ed69ec1..f4b3a7ea2558 100644
---- a/tests/nft-expr_bitwise-test.c
-+++ b/tests/nft-expr_bitwise-test.c
-@@ -201,6 +201,99 @@ static void test_rshift(void)
- 	test_shift(NFT_BITWISE_RSHIFT);
- }
- 
-+static void cmp_nftnl_expr_bool(const char *opname,
-+				const struct nftnl_expr *rule_a,
-+				const struct nftnl_expr *rule_b)
-+{
-+	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_DREG) !=
-+	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_DREG))
-+		print_err(opname, "Expr BITWISE_DREG mismatches");
-+	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_SREG) !=
-+	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_SREG))
-+		print_err(opname, "Expr BITWISE_SREG mismatches");
-+	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_SREG2) !=
-+	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_SREG2))
-+		print_err(opname, "Expr BITWISE_SREG2 mismatches");
-+	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_OP) !=
-+	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_OP))
-+		print_err(opname, "Expr BITWISE_OP mismatches");
-+	if (nftnl_expr_get_u16(rule_a, NFTNL_EXPR_BITWISE_LEN) !=
-+	    nftnl_expr_get_u16(rule_b, NFTNL_EXPR_BITWISE_LEN))
-+		print_err(opname, "Expr BITWISE_LEN mismatches");
-+}
-+
-+static void test_bool(enum nft_bitwise_ops op)
-+{
-+	struct nftnl_rule *a, *b;
-+	struct nftnl_expr *ex;
-+	struct nlmsghdr *nlh;
-+	char buf[4096];
-+	struct nftnl_expr_iter *iter_a, *iter_b;
-+	struct nftnl_expr *rule_a, *rule_b;
-+	const char *opname =
-+		op == NFT_BITWISE_AND ? "and" :
-+		op == NFT_BITWISE_OR  ? "or"  : "xor";
-+
-+	a = nftnl_rule_alloc();
-+	b = nftnl_rule_alloc();
-+	if (a == NULL || b == NULL)
-+		print_err(opname, "OOM");
-+	ex = nftnl_expr_alloc("bitwise");
-+	if (ex == NULL)
-+		print_err(opname, "OOM");
-+
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_SREG, 0x12345678);
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_SREG2, 0x90abcdef);
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_DREG, 0x78123456);
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_OP, op);
-+	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_LEN, 0x56781234);
-+
-+	nftnl_rule_add_expr(a, ex);
-+
-+	nlh = nftnl_rule_nlmsg_build_hdr(buf, NFT_MSG_NEWRULE, AF_INET, 0, 1234);
-+	nftnl_rule_nlmsg_build_payload(nlh, a);
-+
-+	if (nftnl_rule_nlmsg_parse(nlh, b) < 0)
-+		print_err(opname, "parsing problems");
-+
-+	iter_a = nftnl_expr_iter_create(a);
-+	iter_b = nftnl_expr_iter_create(b);
-+	if (iter_a == NULL || iter_b == NULL)
-+		print_err(opname, "OOM");
-+
-+	rule_a = nftnl_expr_iter_next(iter_a);
-+	rule_b = nftnl_expr_iter_next(iter_b);
-+	if (rule_a == NULL || rule_b == NULL)
-+		print_err(opname, "OOM");
-+
-+	if (nftnl_expr_iter_next(iter_a) != NULL ||
-+	    nftnl_expr_iter_next(iter_b) != NULL)
-+		print_err(opname, "More 1 expr.");
-+
-+	nftnl_expr_iter_destroy(iter_a);
-+	nftnl_expr_iter_destroy(iter_b);
-+
-+	cmp_nftnl_expr_bool(opname, rule_a, rule_b);
-+
-+	nftnl_rule_free(a);
-+	nftnl_rule_free(b);
-+}
-+
-+static void test_and(void)
-+{
-+	test_bool(NFT_BITWISE_AND);
-+}
-+
-+static void test_or(void)
-+{
-+	test_bool(NFT_BITWISE_OR);
-+}
-+
-+static void test_xor(void)
-+{
-+	test_bool(NFT_BITWISE_XOR);
-+}
-+
- int main(int argc, char *argv[])
- {
- 	test_mask_xor();
-@@ -215,6 +308,18 @@ int main(int argc, char *argv[])
- 	if (!test_ok)
- 		exit(EXIT_FAILURE);
- 
-+	test_and();
-+	if (!test_ok)
-+		exit(EXIT_FAILURE);
-+
-+	test_or();
-+	if (!test_ok)
-+		exit(EXIT_FAILURE);
-+
-+	test_xor();
-+	if (!test_ok)
-+		exit(EXIT_FAILURE);
-+
- 	printf("%s: \033[32mOK\e[0m\n", argv[0]);
- 	return EXIT_SUCCESS;
- }
+For example:
+
+  nft add rule t c ct mark set ip dscp lshift 26 or 0x10
+
+Examples like this could be implemented solely by changes to user space.
+However, other examples came up in later discussion, such as:
+
+  nft add rule t c ct mark set ct mark and 0xffff0000 or meta mark and 0xffff
+
+and most recently:
+
+  nft add rule t c ct mark set ct mark or ip dscp or 0x200
+
+which require boolean bitwise operations with two variable operands.
+
+Hitherto, the kernel has required that AND, OR and XOR operations be
+converted in user space to mask-and-xor operations on one register and
+two immediate values.  The related kernel space patch-set, however, adds
+support for performing these operations directly on one register and an
+immediate value, or on two registers.  This patch-set extends nftables
+to make use of this functionality.
+
+The previous version of this series also included a few small changes to
+make it easier to add debug output and changes to support the assign-
+ments which did not require binops on two registers.  The former have
+been dropped and the latter were reworked and applied by Pablo.  The
+following remain.
+
+* Patch 1 adds support for linearizing and delinearizing the new
+  operations.
+* Patches 2-7 add support for using them in payload and mark
+  assignments.
+* Patch 8 adds tests for the new assignments.
+
+Jeremy Sowden (8):
+  netlink: support (de)linearization of new bitwise boolean operations
+  netlink_delinearize: refactor stmt_payload_binop_postprocess
+  netlink_delinearize: add support for processing variable payload
+    statement arguments
+  evaluate: prevent nested byte-order conversions
+  evaluate: preserve existing binop properties
+  evaluate: allow binop expressions with variable right-hand operands
+  parser_json: allow RHS mark and payload expressions
+  tests: add tests for binops with variable RHS operands
+
+ include/linux/netfilter/nf_tables.h           |  19 +-
+ src/evaluate.c                                |  67 ++--
+ src/netlink_delinearize.c                     | 335 ++++++++++++------
+ src/netlink_linearize.c                       |  62 +++-
+ src/parser_json.c                             |   8 +-
+ tests/py/any/ct.t                             |   1 +
+ tests/py/any/ct.t.json                        |  37 ++
+ tests/py/any/ct.t.payload                     |   9 +
+ tests/py/inet/meta.t                          |   2 +
+ tests/py/inet/meta.t.json                     |  37 ++
+ tests/py/inet/meta.t.payload                  |   9 +
+ tests/py/ip/ct.t                              |   1 +
+ tests/py/ip/ct.t.json                         |  36 ++
+ tests/py/ip/ct.t.payload                      |  11 +
+ tests/py/ip/ip.t                              |   2 +
+ tests/py/ip/ip.t.json                         |  77 +++-
+ tests/py/ip/ip.t.payload                      |  28 ++
+ tests/py/ip/ip.t.payload.bridge               |  32 ++
+ tests/py/ip/ip.t.payload.inet                 |  32 ++
+ tests/py/ip/ip.t.payload.netdev               |  32 ++
+ tests/py/ip6/ct.t                             |   1 +
+ tests/py/ip6/ct.t.json                        |  36 ++
+ tests/py/ip6/ct.t.payload                     |  12 +
+ tests/py/ip6/ip6.t                            |   2 +
+ tests/py/ip6/ip6.t.json                       |  76 ++++
+ tests/py/ip6/ip6.t.payload.inet               |  36 ++
+ tests/py/ip6/ip6.t.payload.ip6                |  32 ++
+ .../shell/testcases/bitwise/0040mark_binop_10 |  11 +
+ .../shell/testcases/bitwise/0040mark_binop_11 |  11 +
+ .../shell/testcases/bitwise/0040mark_binop_12 |  11 +
+ .../shell/testcases/bitwise/0040mark_binop_13 |  11 +
+ .../testcases/bitwise/0044payload_binop_0     |  11 +
+ .../testcases/bitwise/0044payload_binop_1     |  11 +
+ .../testcases/bitwise/0044payload_binop_2     |  11 +
+ .../testcases/bitwise/0044payload_binop_3     |  11 +
+ .../testcases/bitwise/0044payload_binop_4     |  11 +
+ .../testcases/bitwise/0044payload_binop_5     |  11 +
+ .../bitwise/dumps/0040mark_binop_10.nft       |   6 +
+ .../bitwise/dumps/0040mark_binop_11.nft       |   6 +
+ .../bitwise/dumps/0040mark_binop_12.nft       |   6 +
+ .../bitwise/dumps/0040mark_binop_13.nft       |   6 +
+ .../bitwise/dumps/0044payload_binop_0.nft     |   6 +
+ .../bitwise/dumps/0044payload_binop_1.nft     |   6 +
+ .../bitwise/dumps/0044payload_binop_2.nft     |   6 +
+ .../bitwise/dumps/0044payload_binop_3.nft     |   6 +
+ .../bitwise/dumps/0044payload_binop_4.nft     |   6 +
+ .../bitwise/dumps/0044payload_binop_5.nft     |   6 +
+ 47 files changed, 1062 insertions(+), 140 deletions(-)
+ create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_10
+ create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_11
+ create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_12
+ create mode 100755 tests/shell/testcases/bitwise/0040mark_binop_13
+ create mode 100755 tests/shell/testcases/bitwise/0044payload_binop_0
+ create mode 100755 tests/shell/testcases/bitwise/0044payload_binop_1
+ create mode 100755 tests/shell/testcases/bitwise/0044payload_binop_2
+ create mode 100755 tests/shell/testcases/bitwise/0044payload_binop_3
+ create mode 100755 tests/shell/testcases/bitwise/0044payload_binop_4
+ create mode 100755 tests/shell/testcases/bitwise/0044payload_binop_5
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_10.nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_11.nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_12.nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0040mark_binop_13.nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0044payload_binop_0.nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0044payload_binop_1.nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0044payload_binop_2.nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0044payload_binop_3.nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0044payload_binop_4.nft
+ create mode 100644 tests/shell/testcases/bitwise/dumps/0044payload_binop_5.nft
+
 -- 
 2.39.2
 
