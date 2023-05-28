@@ -2,18 +2,18 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9927139C2
-	for <lists+netfilter-devel@lfdr.de>; Sun, 28 May 2023 15:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B838B7139C1
+	for <lists+netfilter-devel@lfdr.de>; Sun, 28 May 2023 15:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbjE1N4X (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Sun, 28 May 2023 09:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
+        id S229580AbjE1N4W (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sun, 28 May 2023 09:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjE1N4R (ORCPT
+        with ESMTP id S229612AbjE1N4S (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Sun, 28 May 2023 09:56:17 -0400
+        Sun, 28 May 2023 09:56:18 -0400
 Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E17FCF
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE72C9
         for <netfilter-devel@vger.kernel.org>; Sun, 28 May 2023 06:56:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,23 +21,23 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=2/ZZL2Jn/fSyKKYSZaj4bvhKc8ZFcKNxqdg1r6uo9xQ=; b=na77830mIOVn0VlLQhlgUnrhdC
-        xkzpvhf/jYipDsvXRV8fR3EjICIPyPEPXcYUrIhsFtvh3ez+tAaQC+SuTu6z1o0aabXEJbb+az3VJ
-        r1QCUj2Kd5LQj8FdswI3I+njIZy5TAsVwzBxUnntuQSEN0tHGD+eMwkRxDcQKPIcM5Rp6cfAviQuX
-        np8/Zmt8Id1RCoEIUDM8tFx00bjoMGwcYbs2rXrKDOtMjQ44jkeSAdo7DgrnGgs5HDa+4EEIxMtYs
-        LrzsbS31wDYiWGtrfTWZTwA3WrEEp6rzgGD7bL8BNJQNqL2+6SKdHJSlymxY/rNdUZomYOyn9NKhn
-        IYgjJNqA==;
+        bh=Ng8PjlQ/1C8/4RrRNiSrwn3iSG41Pq3rvQ3hGBvjkFM=; b=X5mRk2IlhrE8Gd+RIurO4W+5Cw
+        fdMpk1/BlT0xtuBgXrWzFjGeCW2IBGn3Mbpr/ACWOssNyGvJ9a3ipwDE0wqACpLhyitZ+MAd1/dTl
+        hLSLwFUXZ0EAF66QMP7hHoywRzJ2e1Xv6pJIkKkPiwVuzKovhcfk5hamNc+8WNPylV+2/JdkPyeTP
+        hGUyJEh5U5qucOh9L7tgZMb9XkPd6uK28M2znEhektJfPGcPNJISfEjFfL7x/x2Z6i7Gg+XMUW2Pn
+        g3Ki/CPnnz/k5ZFqtqlFbf3K3sgRU/3r0rmW70qd0ONhdzRTiPubljg0CY6RbiuHFqu/9/Mu9oh8C
+        r+gS+A7A==;
 Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
         by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1q3GsY-008We9-A5
+        id 1q3GsY-008We9-Ba
         for netfilter-devel@vger.kernel.org; Sun, 28 May 2023 14:56:14 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH libnftnl v3 1/5] include: add new bitwise boolean attributes to nf_tables.h
-Date:   Sun, 28 May 2023 14:55:57 +0100
-Message-Id: <20230528135601.1218337-2-jeremy@azazel.net>
+Subject: [PATCH libnftnl v3 2/5] expr: bitwise: rename some boolean operation functions
+Date:   Sun, 28 May 2023 14:55:58 +0100
+Message-Id: <20230528135601.1218337-3-jeremy@azazel.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230528135601.1218337-1-jeremy@azazel.net>
 References: <20230528135601.1218337-1-jeremy@azazel.net>
@@ -56,65 +56,150 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The kernel now has native support for AND, OR and XOR bitwise
-operations.
+In the next patch we add support for doing AND, OR and XOR operations
+directly in the kernel, so rename some functions and an enum constant
+related to mask-and-xor boolean operations.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- include/linux/netfilter/nf_tables.h | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ src/expr/bitwise.c            |  8 ++++----
+ tests/nft-expr_bitwise-test.c | 34 +++++++++++++++++-----------------
+ 2 files changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/include/linux/netfilter/nf_tables.h b/include/linux/netfilter/nf_tables.h
-index c48b19333630..f1c455606bcf 100644
---- a/include/linux/netfilter/nf_tables.h
-+++ b/include/linux/netfilter/nf_tables.h
-@@ -539,16 +539,27 @@ enum nft_immediate_attributes {
- /**
-  * enum nft_bitwise_ops - nf_tables bitwise operations
-  *
-- * @NFT_BITWISE_BOOL: mask-and-xor operation used to implement NOT, AND, OR and
-- *                    XOR boolean operations
-+ * @NFT_BITWISE_MASK_XOR: mask-and-xor operation used to implement NOT, AND, OR
-+ *                        and XOR boolean operations
-  * @NFT_BITWISE_LSHIFT: left-shift operation
-  * @NFT_BITWISE_RSHIFT: right-shift operation
-+ * @NFT_BITWISE_AND: and operation
-+ * @NFT_BITWISE_OR: or operation
-+ * @NFT_BITWISE_XOR: xor operation
-  */
- enum nft_bitwise_ops {
--	NFT_BITWISE_BOOL,
-+	NFT_BITWISE_MASK_XOR,
- 	NFT_BITWISE_LSHIFT,
- 	NFT_BITWISE_RSHIFT,
-+	NFT_BITWISE_AND,
-+	NFT_BITWISE_OR,
-+	NFT_BITWISE_XOR,
- };
-+/*
-+ * Old name for NFT_BITWISE_MASK_XOR, predating the addition of NFT_BITWISE_AND,
-+ * NFT_BITWISE_OR and NFT_BITWISE_XOR.  Retained for backwards-compatibility.
-+ */
-+#define NFT_BITWISE_BOOL NFT_BITWISE_MASK_XOR
+diff --git a/src/expr/bitwise.c b/src/expr/bitwise.c
+index 2d272335e377..4cac017736fe 100644
+--- a/src/expr/bitwise.c
++++ b/src/expr/bitwise.c
+@@ -210,8 +210,8 @@ nftnl_expr_bitwise_parse(struct nftnl_expr *e, struct nlattr *attr)
+ }
  
- /**
-  * enum nft_bitwise_attributes - nf_tables bitwise expression netlink attributes
-@@ -561,6 +572,7 @@ enum nft_bitwise_ops {
-  * @NFTA_BITWISE_OP: type of operation (NLA_U32: nft_bitwise_ops)
-  * @NFTA_BITWISE_DATA: argument for non-boolean operations
-  *                     (NLA_NESTED: nft_data_attributes)
-+ * @NFTA_BITWISE_SREG2: second source register (NLA_U32: nft_registers)
-  *
-  * The bitwise expression supports boolean and shift operations.  It implements
-  * the boolean operations by performing the following operation:
-@@ -584,6 +596,7 @@ enum nft_bitwise_attributes {
- 	NFTA_BITWISE_XOR,
- 	NFTA_BITWISE_OP,
- 	NFTA_BITWISE_DATA,
-+	NFTA_BITWISE_SREG2,
- 	__NFTA_BITWISE_MAX
- };
- #define NFTA_BITWISE_MAX	(__NFTA_BITWISE_MAX - 1)
+ static int
+-nftnl_expr_bitwise_snprintf_bool(char *buf, size_t remain,
+-				 const struct nftnl_expr_bitwise *bitwise)
++nftnl_expr_bitwise_snprintf_mask_xor(char *buf, size_t remain,
++				     const struct nftnl_expr_bitwise *bitwise)
+ {
+ 	int offset = 0, ret;
+ 
+@@ -260,8 +260,8 @@ nftnl_expr_bitwise_snprintf(char *buf, size_t size,
+ 	int err = -1;
+ 
+ 	switch (bitwise->op) {
+-	case NFT_BITWISE_BOOL:
+-		err = nftnl_expr_bitwise_snprintf_bool(buf, size, bitwise);
++	case NFT_BITWISE_MASK_XOR:
++		err = nftnl_expr_bitwise_snprintf_mask_xor(buf, size, bitwise);
+ 		break;
+ 	case NFT_BITWISE_LSHIFT:
+ 		err = nftnl_expr_bitwise_snprintf_shift(buf, size, "<<", bitwise);
+diff --git a/tests/nft-expr_bitwise-test.c b/tests/nft-expr_bitwise-test.c
+index 44c4bf06f041..95e9a1952084 100644
+--- a/tests/nft-expr_bitwise-test.c
++++ b/tests/nft-expr_bitwise-test.c
+@@ -27,32 +27,32 @@ static void print_err(const char *test, const char *msg)
+ 	printf("\033[31mERROR:\e[0m [%s] %s\n", test, msg);
+ }
+ 
+-static void cmp_nftnl_expr_bool(struct nftnl_expr *rule_a,
+-				struct nftnl_expr *rule_b)
++static void cmp_nftnl_expr_mask_xor(struct nftnl_expr *rule_a,
++				    struct nftnl_expr *rule_b)
+ {
+ 	uint32_t maska, maskb;
+ 	uint32_t xora, xorb;
+ 
+ 	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_DREG) !=
+ 	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_DREG))
+-		print_err("bool", "Expr BITWISE_DREG mismatches");
++		print_err("mask & xor", "Expr BITWISE_DREG mismatches");
+ 	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_SREG) !=
+ 	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_SREG))
+-		print_err("bool", "Expr BITWISE_SREG mismatches");
++		print_err("mask & xor", "Expr BITWISE_SREG mismatches");
+ 	if (nftnl_expr_get_u32(rule_a, NFTNL_EXPR_BITWISE_OP) !=
+ 	    nftnl_expr_get_u32(rule_b, NFTNL_EXPR_BITWISE_OP))
+-		print_err("bool", "Expr BITWISE_OP mismatches");
++		print_err("mask & xor", "Expr BITWISE_OP mismatches");
+ 	if (nftnl_expr_get_u16(rule_a, NFTNL_EXPR_BITWISE_LEN) !=
+ 	    nftnl_expr_get_u16(rule_b, NFTNL_EXPR_BITWISE_LEN))
+-		print_err("bool", "Expr BITWISE_LEN mismatches");
++		print_err("mask & xor", "Expr BITWISE_LEN mismatches");
+ 	nftnl_expr_get(rule_a, NFTNL_EXPR_BITWISE_MASK, &maska);
+ 	nftnl_expr_get(rule_b, NFTNL_EXPR_BITWISE_MASK, &maskb);
+ 	if (maska != maskb)
+-		print_err("bool", "Size of BITWISE_MASK mismatches");
++		print_err("mask & xor", "Size of BITWISE_MASK mismatches");
+ 	nftnl_expr_get(rule_a, NFTNL_EXPR_BITWISE_XOR, &xora);
+ 	nftnl_expr_get(rule_b, NFTNL_EXPR_BITWISE_XOR, &xorb);
+ 	if (xora != xorb)
+-		print_err("bool", "Size of BITWISE_XOR mismatches");
++		print_err("mask & xor", "Size of BITWISE_XOR mismatches");
+ }
+ 
+ static void cmp_nftnl_expr_lshift(struct nftnl_expr *rule_a,
+@@ -101,7 +101,7 @@ static void cmp_nftnl_expr_rshift(struct nftnl_expr *rule_a,
+ 		print_err("rshift", "Expr BITWISE_DATA mismatches");
+ }
+ 
+-static void test_bool(void)
++static void test_mask_xor(void)
+ {
+ 	struct nftnl_rule *a, *b = NULL;
+ 	struct nftnl_expr *ex = NULL;
+@@ -115,10 +115,10 @@ static void test_bool(void)
+ 	a = nftnl_rule_alloc();
+ 	b = nftnl_rule_alloc();
+ 	if (a == NULL || b == NULL)
+-		print_err("bool", "OOM");
++		print_err("mask & xor", "OOM");
+ 	ex = nftnl_expr_alloc("bitwise");
+ 	if (ex == NULL)
+-		print_err("bool", "OOM");
++		print_err("mask & xor", "OOM");
+ 
+ 	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_SREG, 0x12345678);
+ 	nftnl_expr_set_u32(ex, NFTNL_EXPR_BITWISE_DREG, 0x78123456);
+@@ -133,26 +133,26 @@ static void test_bool(void)
+ 	nftnl_rule_nlmsg_build_payload(nlh, a);
+ 
+ 	if (nftnl_rule_nlmsg_parse(nlh, b) < 0)
+-		print_err("bool", "parsing problems");
++		print_err("mask & xor", "parsing problems");
+ 
+ 	iter_a = nftnl_expr_iter_create(a);
+ 	iter_b = nftnl_expr_iter_create(b);
+ 	if (iter_a == NULL || iter_b == NULL)
+-		print_err("bool", "OOM");
++		print_err("mask & xor", "OOM");
+ 
+ 	rule_a = nftnl_expr_iter_next(iter_a);
+ 	rule_b = nftnl_expr_iter_next(iter_b);
+ 	if (rule_a == NULL || rule_b == NULL)
+-		print_err("bool", "OOM");
++		print_err("mask & xor", "OOM");
+ 
+ 	if (nftnl_expr_iter_next(iter_a) != NULL ||
+ 	    nftnl_expr_iter_next(iter_b) != NULL)
+-		print_err("bool", "More 1 expr.");
++		print_err("mask & xor", "More 1 expr.");
+ 
+ 	nftnl_expr_iter_destroy(iter_a);
+ 	nftnl_expr_iter_destroy(iter_b);
+ 
+-	cmp_nftnl_expr_bool(rule_a,rule_b);
++	cmp_nftnl_expr_mask_xor(rule_a,rule_b);
+ 
+ 	nftnl_rule_free(a);
+ 	nftnl_rule_free(b);
+@@ -268,7 +268,7 @@ static void test_rshift(void)
+ 
+ int main(int argc, char *argv[])
+ {
+-	test_bool();
++	test_mask_xor();
+ 	if (!test_ok)
+ 		exit(EXIT_FAILURE);
+ 
 -- 
 2.39.2
 
