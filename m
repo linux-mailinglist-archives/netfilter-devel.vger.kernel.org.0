@@ -2,86 +2,104 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 142D271A3BA
-	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Jun 2023 18:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A83671EF5C
+	for <lists+netfilter-devel@lfdr.de>; Thu,  1 Jun 2023 18:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbjFAQGO (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 1 Jun 2023 12:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
+        id S229947AbjFAQmv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 1 Jun 2023 12:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233687AbjFAQGN (ORCPT
+        with ESMTP id S229476AbjFAQmu (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 1 Jun 2023 12:06:13 -0400
-Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8962218F
-        for <netfilter-devel@vger.kernel.org>; Thu,  1 Jun 2023 09:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=NhchK
-        NA7+KCHagGl2wrKXzXrB5jvEsSy0NCb3iSY8Bc=; b=bhLGmUxcaOu1LiKiIHW0G
-        4lIUUGnz4Eu+LwH4xzoDtrs99E7nmDJd9m9iqeH6b98dDg76KmDIHMRDPQdHMoKP
-        UUBcfv7BfL+w9SULP4sdzIE7mHqLgHrjxWzVxcp+IqrPwZkmZzNYbxHE59VFAqWC
-        pop1l5Z0HFZSqZGzSeydN8=
-Received: from localhost.localdomain (unknown [58.101.35.131])
-        by zwqz-smtp-mta-g0-1 (Coremail) with SMTP id _____wBnChndwXhk68qlAg--.46177S4;
-        Fri, 02 Jun 2023 00:05:51 +0800 (CST)
-From:   tongxiaoge1001@126.com
-To:     pablo@netfilter.org, netfilter-devel@vger.kernel.org
-Cc:     shixuantong1@huawei.com, shixuantong <tongxiaoge1001@126.com>
-Subject: [PATCH] Add test cases to improve code coverage
-Date:   Fri,  2 Jun 2023 00:05:37 +0800
-Message-Id: <20230601160537.72366-1-tongxiaoge1001@126.com>
-X-Mailer: git-send-email 2.33.0
+        Thu, 1 Jun 2023 12:42:50 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3DD184
+        for <netfilter-devel@vger.kernel.org>; Thu,  1 Jun 2023 09:42:48 -0700 (PDT)
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
+        (envelope-from <n0-1@orbyte.nwl.cc>)
+        id 1q4lNu-0005BJ-AT; Thu, 01 Jun 2023 18:42:46 +0200
+Date:   Thu, 1 Jun 2023 18:42:46 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+Subject: Re: nftables: Writers starve readers
+Message-ID: <ZHjKhvWbM5tb/lEh@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+References: <ZHhm1dn6L1BUAQKK@orbyte.nwl.cc>
+ <20230601151105.GB26130@breakpoint.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wBnChndwXhk68qlAg--.46177S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7AFWfZFWDur1UXrWrKF1DGFg_yoW8Xw17pa
-        1YqryUCrsayFnrGrs2kw4q9as5C3WIyF18Kryrur1xCrs8X3y8X3srtrnxGrZxZrZ5A3Wf
-        u3WUZFWDK34qy3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jOkuxUUUUU=
-X-Originating-IP: [58.101.35.131]
-X-CM-SenderInfo: pwrqw55ldrwvirqqiqqrswhudrp/1tbiHAKBWlpEKGCiPgAAsP
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230601151105.GB26130@breakpoint.cc>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: shixuantong <tongxiaoge1001@126.com>
+On Thu, Jun 01, 2023 at 05:11:05PM +0200, Florian Westphal wrote:
+> Phil Sutter <phil@nwl.cc> wrote:
+> > A call to 'nft list ruleset' in a second terminal hangs without output.
+> > It apparently hangs in nft_cache_update() because rule_cache_dump()
+> > returns EINTR. On kernel side, I guess it stems from
+> > nl_dump_check_consistent() in __nf_tables_dump_rules(). I haven't
+> > checked, but the generation counter likely increases while dumping the
+> > 100k rules.
+> 
+> Yes.
+> 
+> > One may deem this scenario unrealistic, but I had to insert a 'sleep 5'
+> > into the while-loop to unblock 'nft list ruleset' again. A new rule
+> > every 4s especially in such a large ruleset is not that unrealistic IMO.
+> 
+> Several seconds is very strange indeed, how is the data that needs
+> to be transferred to userspace and how large is the buffer provided
+> during dumps? strace would help here.
 
----
- tests/nft-rule-test.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Each recvmsg() call returns 32KB, grepping for NFT_MSG_NEWRULE returns
+4290 lines.
 
-diff --git a/tests/nft-rule-test.c b/tests/nft-rule-test.c
-index 3652bf6..3a92223 100644
---- a/tests/nft-rule-test.c
-+++ b/tests/nft-rule-test.c
-@@ -48,6 +48,12 @@ static void cmp_nftnl_rule(struct nftnl_rule *a, struct nftnl_rule *b)
- 	if (nftnl_rule_get_u32(a, NFTNL_RULE_COMPAT_FLAGS) !=
- 	    nftnl_rule_get_u32(b, NFTNL_RULE_COMPAT_FLAGS))
- 		print_err("Rule compat_flags mismatches");
-+	if (nftnl_rule_get_u32(a, NFTNL_RULE_ID) !=
-+            nftnl_rule_get_u32(b, NFTNL_RULE_ID))
-+                print_err("Rule id mismatches");
-+	if (nftnl_rule_get_u32(a, NFTNL_RULE_POSITION_ID) !=
-+            nftnl_rule_get_u32(b, NFTNL_RULE_POSITION_ID))
-+                print_err("Rule position_id mismatches");
- 	if (nftnl_rule_get_u64(a, NFTNL_RULE_POSITION) !=
- 	    nftnl_rule_get_u64(b, NFTNL_RULE_POSITION))
- 		print_err("Rule compat_position mismatches");
-@@ -84,6 +90,8 @@ int main(int argc, char *argv[])
- 	nftnl_rule_set_u64(a, NFTNL_RULE_HANDLE, 0x1234567812345678);
- 	nftnl_rule_set_u32(a, NFTNL_RULE_COMPAT_PROTO, 0x12345678);
- 	nftnl_rule_set_u32(a, NFTNL_RULE_COMPAT_FLAGS, 0x12345678);
-+	nftnl_rule_set_u32(a, NFTNL_RULE_ID, 0x12345678);
-+	nftnl_rule_set_u32(a, NFTNL_RULE_POSITION_ID, 0x12345678);
- 	nftnl_rule_set_u64(a, NFTNL_RULE_POSITION, 0x1234567812345678);
- 	nftnl_rule_set_data(a, NFTNL_RULE_USERDATA,
- 			    nftnl_udata_buf_data(udata),
--- 
-2.33.0
+| # time ./src/nft list ruleset | wc -l
+| # Warning: table ip filter is managed by iptables-nft, do not touch!
+| # Warning: table ip nat is managed by iptables-nft, do not touch!
+| # Warning: table ip mangle is managed by iptables-nft, do not touch!
+| 100190
+| 
+| real  0m5.572s
+| user  0m1.014s
+| sys   0m4.885s 
 
+> If thats rather small, then dumping a chain with 10k rules may
+> have to re-iterate the existig list for long time before it finds
+> the starting point on where to resume the dump.
+
+To my surprise, the mnl_nft_rule_dump() code-path does not call
+mnl_set_rcvbuffer(). Though explicitly calling it from nft_mnl_talk() passing
+1<<24 as buffer size does not lead to different behaviour. I seem to recall the
+32k was a kernel-side limit in netlink?
+
+> > I wonder if we can provide some fairness to readers? Ideally a reader
+> > would just see the ruleset as it was when it started dumping, but
+> > keeping a copy of the large ruleset is probably not feasible.
+> 
+> I can't think of a good solution.  We could add a
+> "--allow-inconsistent-dump" flag to nftables that disables the restart
+> logic for -EINTR case, but we can't make that the default unfortunately.
+> 
+> Or we could experiment with serializing the remaining rules into a
+> private kernel-side kmalloc'd buffer once the userspace buffer is
+> full, then copy from that buffer on resume without the inconsistency check.
+> 
+> I don't think that we can solve this, slowing down writers when there
+> are dumpers will load to the same issue, just in the oppostite direction.
+
+You're probably right, thanks for spending cycles on it.
+
+Cheers, Phil
