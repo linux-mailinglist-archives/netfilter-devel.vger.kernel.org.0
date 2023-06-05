@@ -2,42 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA97722FA9
-	for <lists+netfilter-devel@lfdr.de>; Mon,  5 Jun 2023 21:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADD0722FA2
+	for <lists+netfilter-devel@lfdr.de>; Mon,  5 Jun 2023 21:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbjFETUq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 5 Jun 2023 15:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
+        id S232171AbjFETUR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 5 Jun 2023 15:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235539AbjFETTv (ORCPT
+        with ESMTP id S235760AbjFETTx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 5 Jun 2023 15:19:51 -0400
+        Mon, 5 Jun 2023 15:19:53 -0400
 Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5331702
-        for <netfilter-devel@vger.kernel.org>; Mon,  5 Jun 2023 12:19:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E271706
+        for <netfilter-devel@vger.kernel.org>; Mon,  5 Jun 2023 12:19:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
         s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=nYuY1ihBvSji0HCIpSK5PJx4FHWv/wqhbesM3GboJGE=; b=GL+z/mItEEUSjxt8Fu78gQ5N3l
-        RrHtVHOxCYkCWAAg2OEd1hgqXxmnZb66tyTG2mkRJLPlVIpeNxQsuDif0Iz4bU++4O32JaoEWxIX/
-        c4Afb5G0sro+gMQrlh2QYOZS6UkE4xQ9sbtzllW1DNp4shp92iwx7L0YSEKQHD4j54fT6qonjZeG2
-        l29i+ZZ5cCMZw9YoqX71up9ML1mJ71Or43Jt3dc5dsiUz5o7L3w60IZgMS4/FDvxUsxUOzBSsH6LO
-        oY9k58k1KUdLkNLXSNFEnEclyZTIypr/KUgQmR/OlMaFq51EoKbMQRMMOiswogdk4h7fCOq2GP12f
-        HNDgxZKw==;
+        bh=FGBJWk09SxVYUOVSifnIcd9VrkGVyWS7kh9bnNpDVxQ=; b=W6Xjbof9dykaDkhFNfqknWdXB4
+        mfAXqNrIwSBmCgssRXITZp1jqmbAF+A4sG/QCHid0Tzl4G0zhfpSyFXQVewIN3Usat7SK8tEQYDfW
+        XP/8H11SsuEaecJ5Q8bmVsBHyxl/PgUZ+6+sUMLqw2DNj6Xff0vuHh4jFGdnaVHw5xoTRpEF4Znbu
+        M4V1TlpH6R6a3yiBPwwyrqxZkC5bDpy7HIESea1oZA1PC1T8K8lj1MEYm/bQsXE799ykDXQ2lAMjJ
+        55V5I2a73vAw+wP4fz+BXeLNUuYwp6kR1/0YA+7furzVPXmuseIFlm3OMLcywb3h8MrLkMogYVV9q
+        bGBdgWzw==;
 Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
         by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <jeremy@azazel.net>)
-        id 1q6FjL-00H0rc-48
+        id 1q6FjL-00H0rc-5l
         for netfilter-devel@vger.kernel.org; Mon, 05 Jun 2023 20:19:03 +0100
 From:   Jeremy Sowden <jeremy@azazel.net>
 To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons 2/8] xt_ipp2p: fix Soulseek false-positive matches
-Date:   Mon,  5 Jun 2023 20:17:29 +0100
-Message-Id: <20230605191735.119210-3-jeremy@azazel.net>
+Subject: [PATCH xtables-addons 3/8] xt_ipp2p: change byte-orer conversion
+Date:   Mon,  5 Jun 2023 20:17:30 +0100
+Message-Id: <20230605191735.119210-4-jeremy@azazel.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230605191735.119210-1-jeremy@azazel.net>
 References: <20230605191735.119210-1-jeremy@azazel.net>
@@ -56,45 +56,29 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-According to the comment, the last match attempted is:
-
-  14 00 00 00 01 yy 00 00 00 STRING(YY) 01 00 00 00 00 46|50 00 00 00 00
-
-However, the conditional that inspects the last ten bytes is followed by
-a semi-colon, so the printk and return statements are executed regard-
-less of what the last ten bytes are.
-
-Remove the semi-colon and only execute the printk and return if the
-conditional expression is true.
+Instead of converting the packet bytes before comparing it to a constant,
+convert the constant.
 
 Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
 ---
- extensions/xt_ipp2p.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ extensions/xt_ipp2p.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/extensions/xt_ipp2p.c b/extensions/xt_ipp2p.c
-index a90d1b3d57c8..5f7d5f61b96e 100644
+index 5f7d5f61b96e..4790c2fca229 100644
 --- a/extensions/xt_ipp2p.c
 +++ b/extensions/xt_ipp2p.c
-@@ -448,13 +448,13 @@ search_soul(const unsigned char *payload, const unsigned int plen)
- 			const unsigned char *w = payload + 9 + y;
- 			if (get_u32(w, 0) == 0x01 &&
- 			    (get_u16(w, 4) == 0x4600 ||
--			    get_u16(w, 4) == 0x5000) &&
--			    get_u32(w, 6) == 0x00)
--				;
-+			     get_u16(w, 4) == 0x5000) &&
-+			    get_u32(w, 6) == 0x00) {
- #ifdef IPP2P_DEBUG_SOUL
--	    		printk(KERN_DEBUG "Soulssek special client command recognized\n");
-+				printk(KERN_DEBUG "Soulseek special client command recognized\n");
- #endif
--	    		return IPP2P_SOUL * 100 + 9;
-+				return IPP2P_SOUL * 100 + 9;
-+			}
- 		}
- 	}
- 	return 0;
+@@ -210,8 +210,8 @@ udp_search_bit(const unsigned char *haystack, const unsigned int packet_len)
+ 	switch (packet_len) {
+ 	case 16:
+ 		/* ^ 00 00 04 17 27 10 19 80 */
+-		if (ntohl(get_u32(haystack, 0)) == 0x00000417 &&
+-		    ntohl(get_u32(haystack, 4)) == 0x27101980)
++		if (get_u32(haystack, 0) == __constant_htonl(0x00000417) &&
++		    get_u32(haystack, 4) == __constant_htonl(0x27101980))
+ 			return IPP2P_BIT * 100 + 50;
+ 		break;
+ 	case 36:
 -- 
 2.39.2
 
