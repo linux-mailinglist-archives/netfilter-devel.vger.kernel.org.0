@@ -2,76 +2,141 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE44721FCA
-	for <lists+netfilter-devel@lfdr.de>; Mon,  5 Jun 2023 09:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811C1722A94
+	for <lists+netfilter-devel@lfdr.de>; Mon,  5 Jun 2023 17:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbjFEHkS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 5 Jun 2023 03:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
+        id S234755AbjFEPNY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 5 Jun 2023 11:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbjFEHkB (ORCPT
+        with ESMTP id S233932AbjFEPNN (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 5 Jun 2023 03:40:01 -0400
-X-Greylist: delayed 536 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 05 Jun 2023 00:39:57 PDT
-Received: from mail.paretdee.com (mail.paretdee.com [141.95.17.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DC2AD
-        for <netfilter-devel@vger.kernel.org>; Mon,  5 Jun 2023 00:39:57 -0700 (PDT)
-Received: by mail.paretdee.com (Postfix, from userid 1002)
-        id 110DFA21CE; Mon,  5 Jun 2023 07:30:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=paretdee.com; s=mail;
-        t=1685950257; bh=YtPWhpqttWkror/OXW+RT7d5qvBhyF8jxaFrqRhKfz8=;
-        h=Date:From:To:Subject:From;
-        b=HQEKGHlcrbCALkZFg2jaY5XElpIcYAdN0cCAM65MI8jPQDcq5Fdlj/pS/n4exiqFW
-         tXZ84NZsnpTd6vslnErUXPthpu5eAje6egEBbhyLyDsCDBCBqskq60GvbR1PaxK3Rx
-         pH1tAxiiQQDw7Yi42eU2GwsiS99P0yNkck6yJ/idVEdcTzWqVfRb76LMK6zi+NB2a5
-         dsTCal+pBp5enT4wYqpi9PflJpqEgF1ruQa7JEZHtZAPK85RRvIFVBX+reuJiRZEEl
-         DMs+IenY2l8D7OFvGm3tiixn9b32F+BoSbAKVnqNY8xpkrGIHUYUhaVmzUsXlMiGhm
-         JjUuPHDh8RqSQ==
-Received: by paretdee.com for <netfilter-devel@vger.kernel.org>; Mon,  5 Jun 2023 07:30:43 GMT
-Message-ID: <20230605064520-0.1.6h.d8f7.0.kur7zemapd@paretdee.com>
-Date:   Mon,  5 Jun 2023 07:30:43 GMT
-From:   "Leos Sladek" <leos.sladek@paretdee.com>
-To:     <netfilter-devel@vger.kernel.org>
-Subject: =?UTF-8?Q?Fotovoltaick=C3=A9_rozvodnice?=
-X-Mailer: mail.paretdee.com
+        Mon, 5 Jun 2023 11:13:13 -0400
+X-Greylist: delayed 605 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 05 Jun 2023 08:12:28 PDT
+Received: from smtp-42ae.mail.infomaniak.ch (smtp-42ae.mail.infomaniak.ch [IPv6:2001:1600:4:17::42ae])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4F31BF
+        for <netfilter-devel@vger.kernel.org>; Mon,  5 Jun 2023 08:12:28 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4QZcK92Hf0zMqYTR;
+        Mon,  5 Jun 2023 17:02:21 +0200 (CEST)
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4QZcK80Jb5zMrK3h;
+        Mon,  5 Jun 2023 17:02:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+        s=20191114; t=1685977341;
+        bh=8LypuOr5m5yp1T2kVIMo8zx5AGopO/50AfLfFNI9IN4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GV+QlfYKG5GPSIziXgCRfwpuQRwlP414bzmpoP1sl0tm9vwznegS1NFMnLY5mTKZa
+         9DlM2goDlktzM/q/GFQEOxk8hZE5racUBGyTzDAvWWNHW1BKBSHmkBdL7+XeO2oiDh
+         +FvNXv88/gA1ptQeoSBeCXaZ1uQoC2epRpqEmLc0=
+Message-ID: <8f3d242a-c0ee-217e-8094-84093ce4e134@digikod.net>
+Date:   Mon, 5 Jun 2023 17:02:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: 
+Subject: Re: [PATCH v11 00/12] Network support for Landlock
+Content-Language: en-US
+To:     Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+Cc:     willemdebruijn.kernel@gmail.com, gnoack3000@gmail.com,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, yusongping@huawei.com,
+        artem.kuzin@huawei.com,
+        =?UTF-8?Q?G=c3=bcnther_Noack?= <gnoack3000@gmail.com>
+References: <20230515161339.631577-1-konstantin.meskhidze@huawei.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+In-Reply-To: <20230515161339.631577-1-konstantin.meskhidze@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Infomaniak-Routing: alpha
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dobr=C3=BD den,
+Hi Konstantin,
 
-obrac=C3=ADm se na V=C3=A1s jm=C3=A9nem dlouholet=C3=A9ho v=C3=BDrobce fo=
-tovoltaick=C3=BDch rozvodnic ur=C4=8Den=C3=BDch pro
-soukrom=C3=A9 i pr=C5=AFmyslov=C3=A9 pou=C5=BEit=C3=AD.
+The kernel code looks good. I found some issues in tests and 
+documentation, and I'm still reviewing the whole patches. In the 
+meantime, I've pushed it in -next, we'll see how it goes.
 
-Dod=C3=A1v=C3=A1me fotovoltaick=C3=A9 rozvodnice na zak=C3=A1zku a jsme s=
-chopni realizovat i ty nejn=C3=A1ro=C4=8Dn=C4=9Bj=C5=A1=C3=AD
-po=C5=BEadavky instala=C4=8Dn=C3=ADch firem, velkoobchod=C5=AF a distribu=
-tor=C5=AF.
+We need to have this new code covered by syzkaller. I'll work on that 
+unless you want to.
 
-Vyu=C5=BE=C3=ADv=C3=A1me nejkvalitn=C4=9Bj=C5=A1=C3=AD komponenty a mater=
-i=C3=A1ly, =C4=8D=C3=ADm=C5=BE dosahujeme vy=C5=A1=C5=A1=C3=AD odolnost, =
-stabilitu
-provozu a ochranu proti vod=C4=9B, vlku, prachu a n=C3=A1raz=C5=AFm.
-
-V na=C5=A1em sortimentu jsou tak=C3=A9 omezova=C4=8De p=C5=99ep=C4=9Bt=C3=
-=AD AC/DC, kter=C3=A9 zaji=C5=A1=C5=A5uj=C3=AD ochranu
-fotovoltaick=C3=BDch nap=C3=A1jec=C3=ADch instalac=C3=AD p=C5=99ed negati=
-vn=C3=ADmi efekty p=C5=99ep=C4=9Bt=C3=AD a chr=C3=A1n=C3=AD za=C5=99=C3=AD=
-zen=C3=AD p=C5=99ed
-efekty p=C5=AFsoben=C3=AD p=C5=99ep=C4=9Bt=C3=AD a bleskov=C3=BDch proud=C5=
-=AF.
-
-Chcete si vyzkou=C5=A1et na=C5=A1e =C5=99e=C5=A1en=C3=AD?
+Regards,
+  Mickaël
 
 
-S pozdravem
-Leos Sladek
+On 15/05/2023 18:13, Konstantin Meskhidze wrote:
+> Hi,
+> This is a new V11 patch related to Landlock LSM network confinement.
+> It is based on the landlock's -next branch on top of v6.2-rc3+ kernel version:
+> https://git.kernel.org/pub/scm/linux/kernel/git/mic/linux.git/log/?h=next
+> 
+> It brings refactoring of previous patch version V10.
+> Mostly there are fixes of logic and typos, refactoring some selftests.
+> 
+> All test were run in QEMU evironment and compiled with
+>   -static flag.
+>   1. network_test: 36/36 tests passed.
+>   2. base_test: 7/7 tests passed.
+>   3. fs_test: 78/78 tests passed.
+>   4. ptrace_test: 8/8 tests passed.
+> 
+> Previous versions:
+> v10: https://lore.kernel.org/linux-security-module/20230323085226.1432550-1-konstantin.meskhidze@huawei.com/
+> v9: https://lore.kernel.org/linux-security-module/20230116085818.165539-1-konstantin.meskhidze@huawei.com/
+> v8: https://lore.kernel.org/linux-security-module/20221021152644.155136-1-konstantin.meskhidze@huawei.com/
+> v7: https://lore.kernel.org/linux-security-module/20220829170401.834298-1-konstantin.meskhidze@huawei.com/
+> v6: https://lore.kernel.org/linux-security-module/20220621082313.3330667-1-konstantin.meskhidze@huawei.com/
+> v5: https://lore.kernel.org/linux-security-module/20220516152038.39594-1-konstantin.meskhidze@huawei.com
+> v4: https://lore.kernel.org/linux-security-module/20220309134459.6448-1-konstantin.meskhidze@huawei.com/
+> v3: https://lore.kernel.org/linux-security-module/20220124080215.265538-1-konstantin.meskhidze@huawei.com/
+> v2: https://lore.kernel.org/linux-security-module/20211228115212.703084-1-konstantin.meskhidze@huawei.com/
+> v1: https://lore.kernel.org/linux-security-module/20211210072123.386713-1-konstantin.meskhidze@huawei.com/
+> 
+> Konstantin Meskhidze (11):
+>    landlock: Make ruleset's access masks more generic
+>    landlock: Refactor landlock_find_rule/insert_rule
+>    landlock: Refactor merge/inherit_ruleset functions
+>    landlock: Move and rename layer helpers
+>    landlock: Refactor layer helpers
+>    landlock: Refactor landlock_add_rule() syscall
+>    landlock: Add network rules and TCP hooks support
+>    selftests/landlock: Share enforce_ruleset()
+>    selftests/landlock: Add 11 new test suites dedicated to network
+>    samples/landlock: Add network demo
+>    landlock: Document Landlock's network support
+> 
+> Mickaël Salaün (1):
+>    landlock: Allow filesystem layout changes for domains without such
+>      rule type
+> 
+>   Documentation/userspace-api/landlock.rst     |   89 +-
+>   include/uapi/linux/landlock.h                |   48 +
+>   samples/landlock/sandboxer.c                 |  128 +-
+>   security/landlock/Kconfig                    |    1 +
+>   security/landlock/Makefile                   |    2 +
+>   security/landlock/fs.c                       |  232 +--
+>   security/landlock/limits.h                   |    7 +-
+>   security/landlock/net.c                      |  174 +++
+>   security/landlock/net.h                      |   26 +
+>   security/landlock/ruleset.c                  |  405 +++++-
+>   security/landlock/ruleset.h                  |  185 ++-
+>   security/landlock/setup.c                    |    2 +
+>   security/landlock/syscalls.c                 |  163 ++-
+>   tools/testing/selftests/landlock/base_test.c |    2 +-
+>   tools/testing/selftests/landlock/common.h    |   10 +
+>   tools/testing/selftests/landlock/config      |    4 +
+>   tools/testing/selftests/landlock/fs_test.c   |   74 +-
+>   tools/testing/selftests/landlock/net_test.c  | 1317 ++++++++++++++++++
+>   18 files changed, 2520 insertions(+), 349 deletions(-)
+>   create mode 100644 security/landlock/net.c
+>   create mode 100644 security/landlock/net.h
+>   create mode 100644 tools/testing/selftests/landlock/net_test.c
+> 
+> --
+> 2.25.1
+> 
