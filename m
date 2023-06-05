@@ -2,47 +2,47 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 993FB722A88
-	for <lists+netfilter-devel@lfdr.de>; Mon,  5 Jun 2023 17:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E264722C0C
+	for <lists+netfilter-devel@lfdr.de>; Mon,  5 Jun 2023 18:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233842AbjFEPLR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 5 Jun 2023 11:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48914 "EHLO
+        id S232217AbjFEQAn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 5 Jun 2023 12:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232894AbjFEPKQ (ORCPT
+        with ESMTP id S230445AbjFEQAm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 5 Jun 2023 11:10:16 -0400
-Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 11639E58
-        for <netfilter-devel@vger.kernel.org>; Mon,  5 Jun 2023 08:10:00 -0700 (PDT)
+        Mon, 5 Jun 2023 12:00:42 -0400
+Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 52AE3B7
+        for <netfilter-devel@vger.kernel.org>; Mon,  5 Jun 2023 09:00:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=atRbz
-        VD5gzHRWW5/k9kAN454+QkrwNfWBMgp+CfsT8E=; b=j6pweRAG9iXdukdkAlQIB
-        YjhbxnhdwnUcxw1ZffEjcfAgL0rWUviTjkgURSLlkr88W154kkzZ//lUwVT2ZNps
-        EvuERYGEL315518fpMsECtNZXBu7IROjeHridkSVtxuBY0kuTLrkwVU07aGJCAqt
-        JhSS7TX9SZxEUjq4sWFWOQ=
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=/PprR
+        OYzbNTq2/Pvl68nLVIUNed0RFA3mGYfSghbkUE=; b=o8E/xA+DpvhqKrVWFvFPx
+        4KMLUw+vcv0DvZhhFSRbfjuLu+vncgkoKcyOVz1O5bcxDvaGb8v7K3ue5tNVpo7L
+        iBgTPoUJXnQBRCjceIzRQs8X7XPYclQ7hNqANiC4jBiQnOvVdU+mlOBF/vI+ZqmO
+        IEOzTFE7+1yTfsbKo8ZTgw=
 Received: from localhost.localdomain (unknown [58.101.35.131])
-        by zwqz-smtp-mta-g4-1 (Coremail) with SMTP id _____wCXzzuv+n1kYEMKAw--.52698S4;
-        Mon, 05 Jun 2023 23:09:37 +0800 (CST)
+        by zwqz-smtp-mta-g3-1 (Coremail) with SMTP id _____wC3CHuUBn5kW74IAw--.10668S4;
+        Tue, 06 Jun 2023 00:00:22 +0800 (CST)
 From:   tongxiaoge1001@126.com
 To:     pablo@netfilter.org
 Cc:     netfilter-devel@vger.kernel.org, shixuantong1@huawei.com,
         tongxiaoge1001@126.com
-Subject: [PATCH] add some test cases to improve code coverage
-Date:   Mon,  5 Jun 2023 23:09:33 +0800
-Message-Id: <20230605150933.104932-1-tongxiaoge1001@126.com>
+Subject: [PATCH] define "i" only if attr is NFTNL_CHAIN_DEVICES. When attr isn't NFTNL_CHAIN_DEVICES, "i" is useless.
+Date:   Tue,  6 Jun 2023 00:00:16 +0800
+Message-Id: <20230605160016.105485-1-tongxiaoge1001@126.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <ZHjqV4Nj5/ALy9fN@calendula>
 References: <ZHjqV4Nj5/ALy9fN@calendula>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCXzzuv+n1kYEMKAw--.52698S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7AFWxZFW7uFyxtrWfCrWktFb_yoW8CF4kpa
-        n0vry7Kr4rAFnrt3Z2kwsFgFn5Cw1vkr18Cr9F9r17Ar4rXay8JFsrKF93GFn5Jr4rXwn3
-        Zw1qyFWUKrsYvaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jz_M3UUUUU=
+X-CM-TRANSID: _____wC3CHuUBn5kW74IAw--.10668S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZw17ArW5KFyDGF1UKw45Jrb_yoW3Wwb_KF
+        1jqFWkWFW8AF4DJ395tr92kr9aqws5Gr4xG34IyF47t3yYqws7Z3WktFZ3Wrn5JayvyF92
+        ya43ArnYkrW3AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUncAw7UUUUU==
 X-Originating-IP: [58.101.35.131]
-X-CM-SenderInfo: pwrqw55ldrwvirqqiqqrswhudrp/1tbiiheFWlpEDx5mfQAAsW
+X-CM-SenderInfo: pwrqw55ldrwvirqqiqqrswhudrp/1tbiihSFWlpEDx6d+QAAsq
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FROM,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -56,50 +56,31 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 From: shixuantong <tongxiaoge1001@126.com>
 
 ---
- tests/nft-rule-test.c  | 3 +++
- tests/nft-table-test.c | 8 ++++++++
- 2 files changed, 11 insertions(+)
+ src/chain.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/tests/nft-rule-test.c b/tests/nft-rule-test.c
-index 3a92223..8cbd961 100644
---- a/tests/nft-rule-test.c
-+++ b/tests/nft-rule-test.c
-@@ -106,6 +106,9 @@ int main(int argc, char *argv[])
+diff --git a/src/chain.c b/src/chain.c
+index dcfcd04..eb2cba7 100644
+--- a/src/chain.c
++++ b/src/chain.c
+@@ -150,8 +150,6 @@ bool nftnl_chain_is_set(const struct nftnl_chain *c, uint16_t attr)
+ EXPORT_SYMBOL(nftnl_chain_unset);
+ void nftnl_chain_unset(struct nftnl_chain *c, uint16_t attr)
+ {
+-	int i;
+-
+ 	if (!(c->flags & (1 << attr)))
+ 		return;
  
- 	cmp_nftnl_rule(a,b);
- 
-+	nftnl_rule_unset(a, NFTNL_RULE_TABLE);
-+	nftnl_rule_unset(a, NFTNL_RULE_CHAIN);
-+	nftnl_rule_unset(a, NFTNL_RULE_USERDATA);
- 	nftnl_rule_free(a);
- 	nftnl_rule_free(b);
- 	if (!test_ok)
-diff --git a/tests/nft-table-test.c b/tests/nft-table-test.c
-index 53cf3d1..61becd4 100644
---- a/tests/nft-table-test.c
-+++ b/tests/nft-table-test.c
-@@ -35,6 +35,12 @@ static void cmp_nftnl_table(struct nftnl_table *a, struct nftnl_table *b)
- 	if (nftnl_table_get_u32(a, NFTNL_TABLE_FAMILY) !=
- 	    nftnl_table_get_u32(b, NFTNL_TABLE_FAMILY))
- 		print_err("table family mismatches");
-+	if (nftnl_table_get_u64(a, NFTNL_TABLE_HANDLE) !=
-+            nftnl_table_get_u64(b, NFTNL_TABLE_HANDLE))
-+                print_err("tabke handle mismatches");
-+	if (strcmp(nftnl_table_get_str(a, NFTNL_TABLE_USERDATA),
-+                   nftnl_table_get_str(b, NFTNL_TABLE_USERDATA)) != 0)
-+                print_err("table userdata mismatches");
- }
- 
- int main(int argc, char *argv[])
-@@ -53,6 +59,8 @@ int main(int argc, char *argv[])
- 	nftnl_table_set_str(a, NFTNL_TABLE_NAME, "test");
- 	nftnl_table_set_u32(a, NFTNL_TABLE_FAMILY, AF_INET);
- 	nftnl_table_set_u32(a, NFTNL_TABLE_FLAGS, 0);
-+	nftnl_table_set_u64(a, NFTNL_TABLE_HANDLE, 0x12345678);
-+	nftnl_table_set_str(a, NFTNL_TABLE_USERDATA, "test for userdata");
- 
- 	/* cmd extracted from include/linux/netfilter/nf_tables.h */
- 	nlh = nftnl_nlmsg_build_hdr(buf, NFT_MSG_NEWTABLE, AF_INET, 0, 1234);
+@@ -181,7 +179,7 @@ void nftnl_chain_unset(struct nftnl_chain *c, uint16_t attr)
+ 		xfree(c->dev);
+ 		break;
+ 	case NFTNL_CHAIN_DEVICES:
+-		for (i = 0; i < c->dev_array_len; i++)
++		for (int i = 0; i < c->dev_array_len; i++)
+ 			xfree(c->dev_array[i]);
+ 		xfree(c->dev_array);
+ 		break;
 -- 
 2.33.0
 
