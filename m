@@ -2,53 +2,38 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E4C722FA6
-	for <lists+netfilter-devel@lfdr.de>; Mon,  5 Jun 2023 21:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B1C723181
+	for <lists+netfilter-devel@lfdr.de>; Mon,  5 Jun 2023 22:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235345AbjFETUT (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 5 Jun 2023 15:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
+        id S231407AbjFEUgi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 5 Jun 2023 16:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235782AbjFETTz (ORCPT
+        with ESMTP id S229822AbjFEUgh (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 5 Jun 2023 15:19:55 -0400
-Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183FA170F
-        for <netfilter-devel@vger.kernel.org>; Mon,  5 Jun 2023 12:19:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20220717; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=PJT81BzRs/yHfDDfeWxI/KSga8MxqnzMfUDsCESegEk=; b=ILyRLb2T0Vd9H5eCngLnBoo8wY
-        pdLpXTp9b2nWbjPxojwS6bH9KtKrJcH+LKrwm0E6c1OAIorB5SfdGc7g/MfiPdWixfSTyXjQEtbA7
-        15rXhPsZjoWtQrDSv41U6n33ny2W9ar/sr9xIY+gH8E46Z2pYmzJ/IGKwcXUH7iZkX+DUEtPqGH2S
-        wqzu8i6XDksPsaBvg7+yr7Va4GH9MbYjFzo2r8hhrv0mcZO746kFMJDERt3leOKfSwNOp9PMx15Z+
-        JKGAC0OqZQmQRtUM223UG+PedepYxKo7HXV4CPjYVQth67MLkE5Wchb34xzn0QXqg7nRSdFDNo6jf
-        kmRzCV1g==;
-Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
-        by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <jeremy@azazel.net>)
-        id 1q6FjL-00H0rc-FC
-        for netfilter-devel@vger.kernel.org; Mon, 05 Jun 2023 20:19:03 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
-Subject: [PATCH xtables-addons 8/8] xt_ipp2p: drop requirement that skb is linear
-Date:   Mon,  5 Jun 2023 20:17:35 +0100
-Message-Id: <20230605191735.119210-9-jeremy@azazel.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230605191735.119210-1-jeremy@azazel.net>
-References: <20230605191735.119210-1-jeremy@azazel.net>
+        Mon, 5 Jun 2023 16:36:37 -0400
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE8E94
+        for <netfilter-devel@vger.kernel.org>; Mon,  5 Jun 2023 13:36:35 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 0F08F587493C2; Mon,  5 Jun 2023 22:36:34 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id 0D22760D48F85;
+        Mon,  5 Jun 2023 22:36:34 +0200 (CEST)
+Date:   Mon, 5 Jun 2023 22:36:34 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Jeremy Sowden <jeremy@azazel.net>
+cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: [PATCH xtables-addons 5/8] xt_ipp2p: rearrange some conditionals
+ and a couple of loops
+In-Reply-To: <20230605191735.119210-6-jeremy@azazel.net>
+Message-ID: <9qn76633-qp55-3q8n-osn7-p26s3ss2rsqq@vanv.qr>
+References: <20230605191735.119210-1-jeremy@azazel.net> <20230605191735.119210-6-jeremy@azazel.net>
+User-Agent: Alpine 2.25 (LSU 592 2021-09-18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_FAIL,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,31 +41,24 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-It is no longer necessary.
+On Monday 2023-06-05 21:17, Jeremy Sowden wrote:
 
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
----
- extensions/xt_ipp2p.c | 7 -------
- 1 file changed, 7 deletions(-)
+>Reduce indentation and improve the readability of the code.
 
-diff --git a/extensions/xt_ipp2p.c b/extensions/xt_ipp2p.c
-index def2d1ffc7bf..c7712660816d 100644
---- a/extensions/xt_ipp2p.c
-+++ b/extensions/xt_ipp2p.c
-@@ -1278,13 +1278,6 @@ ipp2p_mt(const struct sk_buff *skb, struct xt_action_param *par)
- 		return 0;
- 	}
- 
--	/* make sure that skb is linear */
--	if (skb_is_nonlinear(skb)) {
--		if (info->debug)
--			printk("IPP2P.match: nonlinear skb found\n");
--		return 0;
--	}
--
- 	if (family == NFPROTO_IPV4) {
- 		const struct iphdr *ip = ip_hdr(skb);
- 
--- 
-2.39.2
-
+Applying patch extensions/xt_ipp2p.c with 3 rejects...
+Hunk #1 applied cleanly.
+Hunk #2 applied cleanly.
+Rejected hunk #3.
+Hunk #4 applied cleanly.
+Hunk #5 applied cleanly.
+Hunk #6 applied cleanly.
+Hunk #7 applied cleanly.
+Rejected hunk #8.
+Hunk #9 applied cleanly.
+Rejected hunk #10.
+Hunk #11 applied cleanly.
+Hunk #12 applied cleanly.
+Hunk #13 applied cleanly.
+Hunk #14 applied cleanly.
+Patch failed at 0001 xt_ipp2p: rearrange some conditionals and a couple of loops
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
