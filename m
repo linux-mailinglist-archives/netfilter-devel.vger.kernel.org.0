@@ -2,174 +2,342 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A86727220
-	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Jun 2023 00:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A0B7274A4
+	for <lists+netfilter-devel@lfdr.de>; Thu,  8 Jun 2023 03:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbjFGWyk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 7 Jun 2023 18:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        id S230479AbjFHB5J (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 7 Jun 2023 21:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232957AbjFGWyj (ORCPT
+        with ESMTP id S229991AbjFHB5I (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 7 Jun 2023 18:54:39 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779781FFF
-        for <netfilter-devel@vger.kernel.org>; Wed,  7 Jun 2023 15:54:36 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-973f78329e3so694266b.3
-        for <netfilter-devel@vger.kernel.org>; Wed, 07 Jun 2023 15:54:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686178475; x=1688770475;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
-        b=WeqXDhOYObEU4Q4S3JxL3bEVQtplVvNKCfakhFkSuiLBGZe/ef388CiKUayAOmbEOV
-         ZR0I5GAxPbS54gQ7Fi+hG72GeTokI+noW1OPwtavsLtjymUzaeyKWDDpDiOtNBnLq40U
-         hKN8QzuE3yuzJvRNnur8tzVGd/WDVGu93YT1PuP86BcJTXG/Q3+EyiY1Ov5Itgxf9sfV
-         puzj8gFJzfO5zpoPQ0K3fO44i5t5qr504eako4ZleNRX8Z/LIaI8UL0On16+KpM6t7Hk
-         P05xDxotWEktWnY1d5dyENuc5li2l9dXU7CCPzvtyNY2IFMeysO2qVasevOMBOewfS/V
-         nc1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686178475; x=1688770475;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lwmqmz3SLTAm/5XHn54kA2Qkz1KiGdBlOiEDAaxIk1A=;
-        b=DZ2FpJ3/67NuK2rmNTrqiMYFMq4cMcwp4U5G5A1maEhTBttrND85f7b10PAK5JRsKi
-         /Es5lIEhKgvowV527PXWzw/5xSN24/9LbIutEqbF/edcZzYAmpRBh90eiwCwQ3HdtX1v
-         z5cSFw/Et8kRmTQRXFYTBZNe+imm4Oy55HIR7ZI3WzfBdd23YSMJjhwEfkL13KjLRFq+
-         QBCKNrb4WuvW/+2eZWnKCvCwdzBYQ6vK8G7ZyfiIqSSXr0e0LzEWtwacz23GZRi13ze8
-         Pz5fBhg0BiQnGplMVKnKL6um3gtgiaqk7mKarV8ERj4ZeAhXuQ70HRJsE/cQ3VW53MHn
-         ES5Q==
-X-Gm-Message-State: AC+VfDyvVTWExCXB7P0We0cdyjWcUARJB5SngJF50e2VtKXJKajuIx5r
-        my3uDQIR7hiaD4xeAgLYbuO7RWEFzKpdk8kyuCg=
-X-Google-Smtp-Source: ACHHUZ7J0yv2Uy0Ff3URHHllMh6dn7geAOftATdUjaOMCSCEm6sdR3gpAsqx+SgrMGXj3gnAhFPKaDZy027dlMN9Xtw=
-X-Received: by 2002:a17:907:783:b0:94a:6de2:ba9 with SMTP id
- xd3-20020a170907078300b0094a6de20ba9mr6600647ejb.68.1686178474547; Wed, 07
- Jun 2023 15:54:34 -0700 (PDT)
+        Wed, 7 Jun 2023 21:57:08 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CA52E1FF5
+        for <netfilter-devel@vger.kernel.org>; Wed,  7 Jun 2023 18:57:06 -0700 (PDT)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     sbrivio@redhat.com
+Subject: [PATCH nf,v3] netfilter: nf_tables: integrate pipapo into commit protocol
+Date:   Thu,  8 Jun 2023 03:57:00 +0200
+Message-Id: <20230608015701.133419-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:a54:2409:0:b0:217:72a9:f646 with HTTP; Wed, 7 Jun 2023
- 15:54:33 -0700 (PDT)
-Reply-To: unitednationcompensationcoordinatortreasury@hotmail.com
-From:   "UNITED NATION DEPUTY SECRETARY-GENERAL (U.N)" 
-        <successikolo@gmail.com>
-Date:   Wed, 7 Jun 2023 15:54:33 -0700
-Message-ID: <CADFNGJ9M60ti_yHcUzQD8BP2Qji_qiW+6MK-iYxt_qf8B830+w@mail.gmail.com>
-Subject: CONTACT DHL OFFICE IMMEDIATELY FOR YOUR ATM MASTER CARD 1.5 MILLION,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.6 required=5.0 tests=ADVANCE_FEE_3_NEW_FRM_MNY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FILL_THIS_FORM,FORM_FRAUD_5,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        LOTS_OF_MONEY,MONEY_FORM,MONEY_FRAUD_5,MONEY_FREEMAIL_REPTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
-        T_FILL_THIS_FORM_LOAN,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:631 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [successikolo[at]gmail.com]
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  0.2 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  0.0 FILL_THIS_FORM Fill in a form with personal information
-        *  0.0 T_FILL_THIS_FORM_LOAN Answer loan question(s)
-        *  0.0 MONEY_FORM Lots of money if you fill out a form
-        *  1.3 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.0 ADVANCE_FEE_3_NEW_FRM_MNY Advance Fee fraud form and lots of
-        *      money
-        *  0.2 MONEY_FRAUD_5 Lots of money and many fraud phrases
-        *  0.0 FORM_FRAUD_5 Fill a form and many fraud phrases
-X-Spam-Level: ******
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-UNITED NATION DEPUTY SECRETARY-GENERAL.
+The pipapo set backend follows copy-on-update approach, maintaining one
+clone of the existing datastructure that is being updated. The clone
+and current datastructures are swapped via rcu from the commit step.
 
-This is to official inform you that we have been having meetings for
-the past three (3) weeks which ended two days ago with MR. JIM YONG
-KIM the world bank president and other seven continent presidents on
-the congress we treated on solution to scam victim problems.
+The existing integration with the commit protocol is flawed because
+there is no operation to clean up the clone if the transaction is
+aborted. Moreover, the datastructure swap happens on set element
+activation.
 
- Note: we have decided to contact you following the reports we
-received from anti-fraud international monitoring group your
-name/email has been submitted to us therefore the united nations have
-agreed to compensate you with the sum of (USD$ 1.5 Million) this
-compensation is also including international business that failed you
-in the past due to government problems etc.
+This patch adds two new operations for sets: commit and abort, these new
+operations are invoked from the commit and abort steps, after the
+transactions have been digested, and it updates the pipapo set backend
+to use it.
 
- We have arranged your payment through our ATM Master Card and
-deposited it in DHL Office to deliver it to you which is the latest
-instruction from the World Bank president MR. JIM YONG KIM, For your
-information=E2=80=99s, the delivery charges already paid by U.N treasury, t=
-he
-only money you will send to DHL office south Korea is
-($500). for security keeping fee, U.N coordinator already paid for
-others charges fees for delivery except the security keeping fee, the
-director of DHL refused to collect the security keeping fee from U.N
-coordinator, the Director of DHL office said that they don=E2=80=99t know
-exactly time you will contact them to reconfirm your details to avoid
-counting demur-rage that is why they refused collecting the ($500) .
-for security keeping fee.
+This patch adds a new ->pending_update field to sets to maintain a list
+of sets that require this new commit and abort operations.
 
- Therefore be advice to contact DHL Office agent south Korea. Rev:John
-Lee Tae-seok
-who is in position to deliver your ATM
-Master Card to your location address, contact DHL Office immediately
-with the bellow email & phone number as listed below.
+Fixes: 3c4287f62044 ("nf_tables: Add set type for arbitrary concatenation of ranges")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+v3: fix sparse issue reported by robot.
 
- Contact name: John Lee Tae-seok
+ include/net/netfilter/nf_tables.h |  4 ++-
+ net/netfilter/nf_tables_api.c     | 56 +++++++++++++++++++++++++++++++
+ net/netfilter/nft_set_pipapo.c    | 55 +++++++++++++++++++++---------
+ 3 files changed, 99 insertions(+), 16 deletions(-)
 
- Email:( dhlgeneralheadquartersrepublic@gmail.com )
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 2e24ea1d744c..83db182decc8 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -462,7 +462,8 @@ struct nft_set_ops {
+ 					       const struct nft_set *set,
+ 					       const struct nft_set_elem *elem,
+ 					       unsigned int flags);
+-
++	void				(*commit)(const struct nft_set *set);
++	void				(*abort)(const struct nft_set *set);
+ 	u64				(*privsize)(const struct nlattr * const nla[],
+ 						    const struct nft_set_desc *desc);
+ 	bool				(*estimate)(const struct nft_set_desc *desc,
+@@ -557,6 +558,7 @@ struct nft_set {
+ 	u16				policy;
+ 	u16				udlen;
+ 	unsigned char			*udata;
++	struct list_head		pending_update;
+ 	/* runtime data below here */
+ 	const struct nft_set_ops	*ops ____cacheline_aligned;
+ 	u16				flags:14,
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 0519d45ede6b..3bb0800b3849 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -4919,6 +4919,7 @@ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
+ 
+ 	set->num_exprs = num_exprs;
+ 	set->handle = nf_tables_alloc_handle(table);
++	INIT_LIST_HEAD(&set->pending_update);
+ 
+ 	err = nft_trans_set_add(&ctx, NFT_MSG_NEWSET, set);
+ 	if (err < 0)
+@@ -9275,10 +9276,25 @@ static void nf_tables_commit_audit_log(struct list_head *adl, u32 generation)
+ 	}
+ }
+ 
++static void nft_set_commit_update(struct list_head *set_update_list)
++{
++	struct nft_set *set, *next;
++
++	list_for_each_entry_safe(set, next, set_update_list, pending_update) {
++		list_del_init(&set->pending_update);
++
++		if (!set->ops->commit)
++			continue;
++
++		set->ops->commit(set);
++	}
++}
++
+ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ {
+ 	struct nftables_pernet *nft_net = nft_pernet(net);
+ 	struct nft_trans *trans, *next;
++	LIST_HEAD(set_update_list);
+ 	struct nft_trans_elem *te;
+ 	struct nft_chain *chain;
+ 	struct nft_table *table;
+@@ -9453,6 +9469,11 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 			nf_tables_setelem_notify(&trans->ctx, te->set,
+ 						 &te->elem,
+ 						 NFT_MSG_NEWSETELEM);
++			if (te->set->ops->commit &&
++			    list_empty(&te->set->pending_update)) {
++				list_add_tail(&te->set->pending_update,
++					      &set_update_list);
++			}
+ 			nft_trans_destroy(trans);
+ 			break;
+ 		case NFT_MSG_DELSETELEM:
+@@ -9467,6 +9488,11 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 				atomic_dec(&te->set->nelems);
+ 				te->set->ndeact--;
+ 			}
++			if (te->set->ops->commit &&
++			    list_empty(&te->set->pending_update)) {
++				list_add_tail(&te->set->pending_update,
++					      &set_update_list);
++			}
+ 			break;
+ 		case NFT_MSG_NEWOBJ:
+ 			if (nft_trans_obj_update(trans)) {
+@@ -9529,6 +9555,8 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 		}
+ 	}
+ 
++	nft_set_commit_update(&set_update_list);
++
+ 	nft_commit_notify(net, NETLINK_CB(skb).portid);
+ 	nf_tables_gen_notify(net, skb, NFT_MSG_NEWGEN);
+ 	nf_tables_commit_audit_log(&adl, nft_net->base_seq);
+@@ -9588,10 +9616,25 @@ static void nf_tables_abort_release(struct nft_trans *trans)
+ 	kfree(trans);
+ }
+ 
++static void nft_set_abort_update(struct list_head *set_update_list)
++{
++	struct nft_set *set, *next;
++
++	list_for_each_entry_safe(set, next, set_update_list, pending_update) {
++		list_del_init(&set->pending_update);
++
++		if (!set->ops->abort)
++			continue;
++
++		set->ops->abort(set);
++	}
++}
++
+ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
+ {
+ 	struct nftables_pernet *nft_net = nft_pernet(net);
+ 	struct nft_trans *trans, *next;
++	LIST_HEAD(set_update_list);
+ 	struct nft_trans_elem *te;
+ 
+ 	if (action == NFNL_ABORT_VALIDATE &&
+@@ -9701,6 +9744,12 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
+ 			nft_setelem_remove(net, te->set, &te->elem);
+ 			if (!nft_setelem_is_catchall(te->set, &te->elem))
+ 				atomic_dec(&te->set->nelems);
++
++			if (te->set->ops->abort &&
++			    list_empty(&te->set->pending_update)) {
++				list_add_tail(&te->set->pending_update,
++					      &set_update_list);
++			}
+ 			break;
+ 		case NFT_MSG_DELSETELEM:
+ 		case NFT_MSG_DESTROYSETELEM:
+@@ -9711,6 +9760,11 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
+ 			if (!nft_setelem_is_catchall(te->set, &te->elem))
+ 				te->set->ndeact--;
+ 
++			if (te->set->ops->abort &&
++			    list_empty(&te->set->pending_update)) {
++				list_add_tail(&te->set->pending_update,
++					      &set_update_list);
++			}
+ 			nft_trans_destroy(trans);
+ 			break;
+ 		case NFT_MSG_NEWOBJ:
+@@ -9753,6 +9807,8 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
+ 		}
+ 	}
+ 
++	nft_set_abort_update(&set_update_list);
++
+ 	synchronize_rcu();
+ 
+ 	list_for_each_entry_safe_reverse(trans, next,
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index 06d46d182634..15e451dc3fc4 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -1600,17 +1600,10 @@ static void pipapo_free_fields(struct nft_pipapo_match *m)
+ 	}
+ }
+ 
+-/**
+- * pipapo_reclaim_match - RCU callback to free fields from old matching data
+- * @rcu:	RCU head
+- */
+-static void pipapo_reclaim_match(struct rcu_head *rcu)
++static void pipapo_free_match(struct nft_pipapo_match *m)
+ {
+-	struct nft_pipapo_match *m;
+ 	int i;
+ 
+-	m = container_of(rcu, struct nft_pipapo_match, rcu);
+-
+ 	for_each_possible_cpu(i)
+ 		kfree(*per_cpu_ptr(m->scratch, i));
+ 
+@@ -1625,7 +1618,19 @@ static void pipapo_reclaim_match(struct rcu_head *rcu)
+ }
+ 
+ /**
+- * pipapo_commit() - Replace lookup data with current working copy
++ * pipapo_reclaim_match - RCU callback to free fields from old matching data
++ * @rcu:	RCU head
++ */
++static void pipapo_reclaim_match(struct rcu_head *rcu)
++{
++	struct nft_pipapo_match *m;
++
++	m = container_of(rcu, struct nft_pipapo_match, rcu);
++	pipapo_free_match(m);
++}
++
++/**
++ * nft_pipapo_commit() - Replace lookup data with current working copy
+  * @set:	nftables API set representation
+  *
+  * While at it, check if we should perform garbage collection on the working
+@@ -1635,7 +1640,7 @@ static void pipapo_reclaim_match(struct rcu_head *rcu)
+  * We also need to create a new working copy for subsequent insertions and
+  * deletions.
+  */
+-static void pipapo_commit(const struct nft_set *set)
++static void nft_pipapo_commit(const struct nft_set *set)
+ {
+ 	struct nft_pipapo *priv = nft_set_priv(set);
+ 	struct nft_pipapo_match *new_clone, *old;
+@@ -1660,6 +1665,26 @@ static void pipapo_commit(const struct nft_set *set)
+ 	priv->clone = new_clone;
+ }
+ 
++static void nft_pipapo_abort(const struct nft_set *set)
++{
++	struct nft_pipapo *priv = nft_set_priv(set);
++	struct nft_pipapo_match *new_clone, *m;
++
++	if (!priv->dirty)
++		return;
++
++	m = rcu_dereference(priv->match);
++
++	new_clone = pipapo_clone(m);
++	if (IS_ERR(new_clone))
++		return;
++
++	priv->dirty = false;
++
++	pipapo_free_match(priv->clone);
++	priv->clone = new_clone;
++}
++
+ /**
+  * nft_pipapo_activate() - Mark element reference as active given key, commit
+  * @net:	Network namespace
+@@ -1667,8 +1692,7 @@ static void pipapo_commit(const struct nft_set *set)
+  * @elem:	nftables API element representation containing key data
+  *
+  * On insertion, elements are added to a copy of the matching data currently
+- * in use for lookups, and not directly inserted into current lookup data, so
+- * we'll take care of that by calling pipapo_commit() here. Both
++ * in use for lookups, and not directly inserted into current lookup data. Both
+  * nft_pipapo_insert() and nft_pipapo_activate() are called once for each
+  * element, hence we can't purpose either one as a real commit operation.
+  */
+@@ -1684,8 +1708,6 @@ static void nft_pipapo_activate(const struct net *net,
+ 
+ 	nft_set_elem_change_active(net, set, &e->ext);
+ 	nft_set_elem_clear_busy(&e->ext);
+-
+-	pipapo_commit(set);
+ }
+ 
+ /**
+@@ -1931,7 +1953,6 @@ static void nft_pipapo_remove(const struct net *net, const struct nft_set *set,
+ 		if (i == m->field_count) {
+ 			priv->dirty = true;
+ 			pipapo_drop(m, rulemap);
+-			pipapo_commit(set);
+ 			return;
+ 		}
+ 
+@@ -2230,6 +2251,8 @@ const struct nft_set_type nft_set_pipapo_type = {
+ 		.init		= nft_pipapo_init,
+ 		.destroy	= nft_pipapo_destroy,
+ 		.gc_init	= nft_pipapo_gc_init,
++		.commit		= nft_pipapo_commit,
++		.abort		= nft_pipapo_abort,
+ 		.elemsize	= offsetof(struct nft_pipapo_elem, ext),
+ 	},
+ };
+@@ -2252,6 +2275,8 @@ const struct nft_set_type nft_set_pipapo_avx2_type = {
+ 		.init		= nft_pipapo_init,
+ 		.destroy	= nft_pipapo_destroy,
+ 		.gc_init	= nft_pipapo_gc_init,
++		.commit		= nft_pipapo_commit,
++		.abort		= nft_pipapo_abort,
+ 		.elemsize	= offsetof(struct nft_pipapo_elem, ext),
+ 	},
+ };
+-- 
+2.30.2
 
- Do not hesitate to Contact Rev: John Lee Tae-seok, as soon as you
-
- read this message. Email:( dhlgeneralheadquartersrepublic@gmail.com )
-
- Make sure you reconfirmed DHL Office your details ASAP as stated
-below to avoid wrong delivery.
-
- Your full name..........
-
- Home address:.........
-
- Your country...........
-
- Your city..............
-
- Telephone......
-
- Occupation:.......
-
- Age:=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6..
-
- Let us know as soon as possible you receive your ATM MasterCard
-for proper verification.
-
- Regards,
-
- Mrs Vivian kakadu.
-
- DEPUTY SECRETARY-GENERAL (U.N)
