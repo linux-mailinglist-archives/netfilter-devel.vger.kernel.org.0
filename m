@@ -2,25 +2,27 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2007298EB
+	by mail.lfdr.de (Postfix) with ESMTP id C76147298EC
 	for <lists+netfilter-devel@lfdr.de>; Fri,  9 Jun 2023 14:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231760AbjFIMBs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S230407AbjFIMBs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Fri, 9 Jun 2023 08:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbjFIMBq (ORCPT
+        with ESMTP id S231760AbjFIMBp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 9 Jun 2023 08:01:46 -0400
+        Fri, 9 Jun 2023 08:01:45 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 15A9C1A2
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 15C881BC6
         for <netfilter-devel@vger.kernel.org>; Fri,  9 Jun 2023 05:01:43 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nf 1/3] netfilter: nf_tables: fix chain binding transaction logic
-Date:   Fri,  9 Jun 2023 14:01:35 +0200
-Message-Id: <20230609120137.66297-1-pablo@netfilter.org>
+Subject: [PATCH nf 2/3] netfilter: nf_tables: disallow unbound anonymous set from commit step
+Date:   Fri,  9 Jun 2023 14:01:36 +0200
+Message-Id: <20230609120137.66297-2-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230609120137.66297-1-pablo@netfilter.org>
+References: <20230609120137.66297-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -32,129 +34,102 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-In case of error from the preparation phase, the deactivate function
-marks this chain as inactive in the next generation, so it is not
-reachable anymore from the transaction list. In this case, immediate
-destroy skips releasing the chain object because the transaction deals
-with this. From the commit phase, deactivate detaches the chain from the
-rule, then the immediate destroy function releases now this (unbound)
-chain.
+Bail out if userspace creates an anonymous set which remains unbound
+after this transaction.
 
-While at it, set chain->bound flag for NFT_CHAIN_BINDING only by
-checking for the new nft_chain_binding() helper function.
+Add a list of pending objects, this list is never used in iterations
+as it stores object of different type.
 
-Fixes: d0e2c7de92c7 ("netfilter: nf_tables: add NFT_CHAIN_BINDING")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/net/netfilter/nf_tables.h |  5 +++
- net/netfilter/nft_immediate.c     | 52 ++++++++++++++++++++++++++++---
- 2 files changed, 52 insertions(+), 5 deletions(-)
+ include/net/netfilter/nf_tables.h |  3 +++
+ net/netfilter/nf_tables_api.c     | 17 +++++++++++++++++
+ 2 files changed, 20 insertions(+)
 
 diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 83db182decc8..66e5c7a8ec21 100644
+index 66e5c7a8ec21..d24146b526a1 100644
 --- a/include/net/netfilter/nf_tables.h
 +++ b/include/net/netfilter/nf_tables.h
-@@ -1140,6 +1140,11 @@ int nft_chain_validate_dependency(const struct nft_chain *chain,
- int nft_chain_validate_hooks(const struct nft_chain *chain,
-                              unsigned int hook_flags);
+@@ -511,6 +511,7 @@ struct nft_set_elem_expr {
+  *
+  *	@list: table set list node
+  *	@bindings: list of set bindings
++ *	@pending_list: list of pending anonymous set not yet bound to rule
+  *	@table: table this set belongs to
+  *	@net: netnamespace this set belongs to
+  * 	@name: name of the set
+@@ -540,6 +541,7 @@ struct nft_set_elem_expr {
+ struct nft_set {
+ 	struct list_head		list;
+ 	struct list_head		bindings;
++	struct list_head		pending_list;
+ 	struct nft_table		*table;
+ 	possible_net_t			net;
+ 	char				*name;
+@@ -1707,6 +1709,7 @@ struct nftables_pernet {
+ 	struct list_head	commit_list;
+ 	struct list_head	module_list;
+ 	struct list_head	notify_list;
++	struct list_head	pending_list;
+ 	struct mutex		commit_mutex;
+ 	u64			table_handle;
+ 	unsigned int		base_seq;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 69bceefaa5c8..11beb6750531 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -4926,6 +4926,12 @@ static int nf_tables_newset(struct sk_buff *skb, const struct nfnl_info *info,
+ 	if (err < 0)
+ 		goto err_set_expr_alloc;
  
-+static inline bool nft_chain_binding(const struct nft_chain *chain)
-+{
-+	return chain->flags & NFT_CHAIN_BINDING;
-+}
++	if (nft_set_is_anonymous(set)) {
++		struct nftables_pernet *nft_net = nft_pernet(net);
 +
- static inline bool nft_chain_is_bound(struct nft_chain *chain)
- {
- 	return (chain->flags & NFT_CHAIN_BINDING) && chain->bound;
-diff --git a/net/netfilter/nft_immediate.c b/net/netfilter/nft_immediate.c
-index c9d2f7c29f53..054243b9b89e 100644
---- a/net/netfilter/nft_immediate.c
-+++ b/net/netfilter/nft_immediate.c
-@@ -76,11 +76,13 @@ static int nft_immediate_init(const struct nft_ctx *ctx,
- 		switch (priv->data.verdict.code) {
- 		case NFT_JUMP:
- 		case NFT_GOTO:
--			if (nft_chain_is_bound(chain)) {
--				err = -EBUSY;
--				goto err1;
-+			if (nft_chain_binding(chain)) {
-+				if (chain->bound) {
-+					err = -EBUSY;
-+					goto err1;
-+				}
-+				chain->bound = true;
++		list_add_tail(&set->pending_list, &nft_net->pending_list);
++	}
++
+ 	list_add_tail_rcu(&set->list, &table->sets);
+ 	table->use++;
+ 	return 0;
+@@ -5108,6 +5114,9 @@ int nf_tables_bind_set(const struct nft_ctx *ctx, struct nft_set *set,
+ 	}
+ bind:
+ 	binding->chain = ctx->chain;
++	if (nft_set_is_anonymous(set))
++		list_del(&set->pending_list);
++
+ 	list_add_tail_rcu(&binding->list, &set->bindings);
+ 	nft_set_trans_bind(ctx, set);
+ 	set->use++;
+@@ -8792,6 +8801,11 @@ static int nf_tables_validate(struct net *net)
+ 	struct nftables_pernet *nft_net = nft_pernet(net);
+ 	struct nft_table *table;
+ 
++	if (!list_empty(&nft_net->pending_list)) {
++		pr_warn_once("rejecting nftables ruleset with pending objects\n");
++		return -EINVAL;
++	}
++
+ 	list_for_each_entry(table, &nft_net->tables, list) {
+ 		switch (table->validate_state) {
+ 		case NFT_VALIDATE_SKIP:
+@@ -9727,6 +9741,8 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
+ 			if (nft_trans_set_bound(trans)) {
+ 				nft_trans_destroy(trans);
+ 				break;
++			} else if (nft_set_is_anonymous(nft_trans_set(trans))) {
++				list_del(&nft_trans_set(trans)->pending_list);
  			}
--			chain->bound = true;
+ 			list_del_rcu(&nft_trans_set(trans)->list);
  			break;
- 		default:
- 			break;
-@@ -98,6 +100,23 @@ static void nft_immediate_activate(const struct nft_ctx *ctx,
- 				   const struct nft_expr *expr)
- {
- 	const struct nft_immediate_expr *priv = nft_expr_priv(expr);
-+	const struct nft_data *data = &priv->data;
-+	struct nft_chain *chain;
-+
-+	if (priv->dreg == NFT_REG_VERDICT) {
-+		switch (data->verdict.code) {
-+		case NFT_JUMP:
-+		case NFT_GOTO:
-+			chain = data->verdict.chain;
-+			if (!nft_chain_binding(chain))
-+				break;
-+
-+			nft_clear(ctx->net, chain);
-+			break;
-+		default:
-+			break;
-+	        }
-+	}
+@@ -10599,6 +10615,7 @@ static int __net_init nf_tables_init_net(struct net *net)
+ 	INIT_LIST_HEAD(&nft_net->commit_list);
+ 	INIT_LIST_HEAD(&nft_net->module_list);
+ 	INIT_LIST_HEAD(&nft_net->notify_list);
++	INIT_LIST_HEAD(&nft_net->pending_list);
+ 	mutex_init(&nft_net->commit_mutex);
+ 	nft_net->base_seq = 1;
  
- 	return nft_data_hold(&priv->data, nft_dreg_to_type(priv->dreg));
- }
-@@ -107,10 +126,30 @@ static void nft_immediate_deactivate(const struct nft_ctx *ctx,
- 				     enum nft_trans_phase phase)
- {
- 	const struct nft_immediate_expr *priv = nft_expr_priv(expr);
-+	const struct nft_data *data = &priv->data;
-+	struct nft_chain *chain;
- 
- 	if (phase == NFT_TRANS_COMMIT)
- 		return;
- 
-+	if (priv->dreg == NFT_REG_VERDICT) {
-+		switch (data->verdict.code) {
-+		case NFT_JUMP:
-+		case NFT_GOTO:
-+			chain = data->verdict.chain;
-+			if (!nft_chain_binding(chain))
-+				break;
-+
-+			if (phase == NFT_TRANS_PREPARE)
-+				nft_deactivate_next(ctx->net, chain);
-+			else
-+				chain->bound = false;
-+			break;
-+		default:
-+			break;
-+	        }
-+	}
-+
- 	return nft_data_release(&priv->data, nft_dreg_to_type(priv->dreg));
- }
- 
-@@ -131,7 +170,10 @@ static void nft_immediate_destroy(const struct nft_ctx *ctx,
- 	case NFT_GOTO:
- 		chain = data->verdict.chain;
- 
--		if (!nft_chain_is_bound(chain))
-+		if (!nft_chain_binding(chain))
-+			break;
-+
-+		if (chain->bound)
- 			break;
- 
- 		chain_ctx = *ctx;
 -- 
 2.30.2
 
