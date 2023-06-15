@@ -2,42 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B12731B9F
-	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Jun 2023 16:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06FF731BA1
+	for <lists+netfilter-devel@lfdr.de>; Thu, 15 Jun 2023 16:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240874AbjFOOo0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 15 Jun 2023 10:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59406 "EHLO
+        id S241063AbjFOOoh (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 15 Jun 2023 10:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238918AbjFOOo0 (ORCPT
+        with ESMTP id S239165AbjFOOog (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 15 Jun 2023 10:44:26 -0400
+        Thu, 15 Jun 2023 10:44:36 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BDB2738
-        for <netfilter-devel@vger.kernel.org>; Thu, 15 Jun 2023 07:44:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B802738
+        for <netfilter-devel@vger.kernel.org>; Thu, 15 Jun 2023 07:44:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=lwhq6F/YyvCascMaNV0M5svv3DyZJs4xN1FRoW59ZKc=; b=eAXr2r0Kj4P8uWjbU1Zw6V3WaJ
-        jZq+z7Q6wiUooitfvhTXMZdUQYSEuWTMCf0fTQpGEpgcaNe6v/SnwGsoIYQGad+GmJ+g+mDN+5A9s
-        YPWTORnwvooSvvPzxC+D2ZdHfArMEFcT778/ZKQpvWWvjOqO9n+zX876wscvrvvnJejcPtjcXLOl3
-        iadWX6BqPLVPf6FlpIdLlcjtYlcbkiTxU7paW4G/8B7Xj0DCyWxnbQEeHL37238LSBI8xfYtUF9ld
-        Lt572ZOSerfd4BDc9RIlGoXCZiaEBy92Cqub5JcE6ncY2DeLvv3YKY/kscubDw4WLLx4ETVTOjXsc
-        Brzc1s7A==;
+        bh=f49sFOnwqYYyt6cJnGOJ1Ssf+UJUwwd7iFeSQ/UG/4A=; b=NazyMdBGuTXuCUx3qtLckVWUI5
+        CLzVmDh7SEMmkGEim9PAmSKCgc9b5dHXza8HAK0L1dYmJBR2QPiHxTIy7ESAjfCigTL5hhuALvuP0
+        CPYysczQPqu3Ir9W29YCuVrTx5nj7/gBLC3yIc/obAQ69kTBT0q7uSTEXDMqmcB2Ix+PTt8OeX19c
+        bwmmBgB7ev/pCYiEJOMSuwHSwn1yIN1+v87L/U7r5bAtOVrYMIHRwQ0kxMkZAx3xzXb7E6p1M5HOY
+        KszU6aaGIE7GwT9YObo8r2pBbcAlpxrO0J4SizamlDy1GEydifojkLG5rYIrZoSlcr3SEXwYsgHwa
+        BsWsmQUw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1q9oD1-0003mt-I1; Thu, 15 Jun 2023 16:44:23 +0200
+        id 1q9oDC-0003nX-9B; Thu, 15 Jun 2023 16:44:34 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>
 Cc:     netfilter-devel@vger.kernel.org
-Subject: [nft PATCH 0/3] Implement 'reset {set,map,element}' commands
-Date:   Thu, 15 Jun 2023 16:44:11 +0200
-Message-Id: <20230615144414.1393-1-phil@nwl.cc>
+Subject: [nft PATCH 1/3] evaluate: Merge some cases in cmd_evaluate_list()
+Date:   Thu, 15 Jun 2023 16:44:12 +0200
+Message-Id: <20230615144414.1393-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230615144414.1393-1-phil@nwl.cc>
+References: <20230615144414.1393-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -49,34 +51,70 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This series makes use of the new NFT_MSG_GETSETELEM_RESET message type
-to reset state in set elements.
+The code for set, map and meter were almost identical apart from the
+specific last check. Fold them together and make the distinction in that
+spot only.
 
-Patches one and two are fallout from working on the actual
-implementation in patch three.
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ src/evaluate.c | 36 ++++--------------------------------
+ 1 file changed, 4 insertions(+), 32 deletions(-)
 
-Phil Sutter (3):
-  evaluate: Merge some cases in cmd_evaluate_list()
-  evaluate: Cache looked up set for list commands
-  Implement 'reset {set,map,element}' commands
-
- doc/libnftables-json.adoc                  |  2 +-
- doc/nft.txt                                | 13 ++--
- include/linux/netfilter/nf_tables.h        |  2 +
- include/mnl.h                              |  6 +-
- include/netlink.h                          |  5 +-
- src/cache.c                                |  9 ++-
- src/evaluate.c                             | 42 +++--------
- src/json.c                                 |  9 ++-
- src/mnl.c                                  | 22 ++++--
- src/netlink.c                              |  8 +--
- src/parser_bison.y                         | 12 ++++
- src/parser_json.c                          |  4 ++
- src/rule.c                                 | 27 +++++--
- tests/shell/testcases/sets/reset_command_0 | 82 ++++++++++++++++++++++
- 14 files changed, 181 insertions(+), 62 deletions(-)
- create mode 100755 tests/shell/testcases/sets/reset_command_0
-
+diff --git a/src/evaluate.c b/src/evaluate.c
+index 00bb8988bd4c9..3983fcaa35880 100644
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -5337,38 +5337,8 @@ static int cmd_evaluate_list(struct eval_ctx *ctx, struct cmd *cmd)
+ 
+ 		return 0;
+ 	case CMD_OBJ_SET:
+-		table = table_cache_find(&ctx->nft->cache.table_cache,
+-					 cmd->handle.table.name,
+-					 cmd->handle.family);
+-		if (!table)
+-			return table_not_found(ctx);
+-
+-		set = set_cache_find(table, cmd->handle.set.name);
+-		if (set == NULL)
+-			return set_not_found(ctx, &ctx->cmd->handle.set.location,
+-					     ctx->cmd->handle.set.name);
+-		else if (!set_is_literal(set->flags))
+-			return cmd_error(ctx, &ctx->cmd->handle.set.location,
+-					 "%s", strerror(ENOENT));
+-
+-		return 0;
+-	case CMD_OBJ_METER:
+-		table = table_cache_find(&ctx->nft->cache.table_cache,
+-					 cmd->handle.table.name,
+-					 cmd->handle.family);
+-		if (!table)
+-			return table_not_found(ctx);
+-
+-		set = set_cache_find(table, cmd->handle.set.name);
+-		if (set == NULL)
+-			return set_not_found(ctx, &ctx->cmd->handle.set.location,
+-					     ctx->cmd->handle.set.name);
+-		else if (!set_is_meter(set->flags))
+-			return cmd_error(ctx, &ctx->cmd->handle.set.location,
+-					 "%s", strerror(ENOENT));
+-
+-		return 0;
+ 	case CMD_OBJ_MAP:
++	case CMD_OBJ_METER:
+ 		table = table_cache_find(&ctx->nft->cache.table_cache,
+ 					 cmd->handle.table.name,
+ 					 cmd->handle.family);
+@@ -5379,7 +5349,9 @@ static int cmd_evaluate_list(struct eval_ctx *ctx, struct cmd *cmd)
+ 		if (set == NULL)
+ 			return set_not_found(ctx, &ctx->cmd->handle.set.location,
+ 					     ctx->cmd->handle.set.name);
+-		else if (!map_is_literal(set->flags))
++		if ((cmd->obj == CMD_OBJ_SET && !set_is_literal(set->flags)) ||
++		    (cmd->obj == CMD_OBJ_MAP && !map_is_literal(set->flags)) ||
++		    (cmd->obj == CMD_OBJ_METER && !set_is_meter(set->flags)))
+ 			return cmd_error(ctx, &ctx->cmd->handle.set.location,
+ 					 "%s", strerror(ENOENT));
+ 
 -- 
 2.40.0
 
