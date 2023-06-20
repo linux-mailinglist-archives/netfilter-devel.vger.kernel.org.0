@@ -2,33 +2,51 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A08C473711E
-	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jun 2023 18:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2295A737127
+	for <lists+netfilter-devel@lfdr.de>; Tue, 20 Jun 2023 18:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbjFTQCo (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 20 Jun 2023 12:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
+        id S232519AbjFTQFA (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 20 Jun 2023 12:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbjFTQCn (ORCPT
+        with ESMTP id S229506AbjFTQE7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 20 Jun 2023 12:02:43 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6C66D188
-        for <netfilter-devel@vger.kernel.org>; Tue, 20 Jun 2023 09:02:41 -0700 (PDT)
-Date:   Tue, 20 Jun 2023 18:02:36 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH nft 4/6] parser: reject zero-length interface names
-Message-ID: <ZJHNnJVsLZL3AmH3@calendula>
-References: <20230619204306.11785-1-fw@strlen.de>
- <20230619204306.11785-5-fw@strlen.de>
+        Tue, 20 Jun 2023 12:04:59 -0400
+X-Greylist: delayed 1201 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 20 Jun 2023 09:04:49 PDT
+Received: from tretyak2.mcst.ru (tretyak2.mcst.ru [212.5.119.215])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6591F4;
+        Tue, 20 Jun 2023 09:04:49 -0700 (PDT)
+Received: from tretyak2.mcst.ru (localhost [127.0.0.1])
+        by tretyak2.mcst.ru (Postfix) with ESMTP id E5BCF1023A3;
+        Tue, 20 Jun 2023 18:27:39 +0300 (MSK)
+Received: from frog.lab.sun.mcst.ru (frog.lab.sun.mcst.ru [176.16.4.50])
+        by tretyak2.mcst.ru (Postfix) with ESMTP id DC62F102395;
+        Tue, 20 Jun 2023 18:26:38 +0300 (MSK)
+Received: from artemiev-i.lab.sun.mcst.ru (avior-1 [192.168.53.223])
+        by frog.lab.sun.mcst.ru (8.13.4/8.12.11) with ESMTP id 35KFQceY023407;
+        Tue, 20 Jun 2023 18:26:38 +0300
+From:   Igor Artemiev <Igor.A.Artemiev@mcst.ru>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Igor Artemiev <Igor.A.Artemiev@mcst.ru>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+Subject: [lvc-project] [PATCH] netfilter: ebtables: remove unnecessary NULL check
+Date:   Tue, 20 Jun 2023 18:25:49 +0300
+Message-Id: <20230620152549.2109063-1-Igor.A.Artemiev@mcst.ru>
+X-Mailer: git-send-email 2.39.0.152.ga5737674b6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230619204306.11785-5-fw@strlen.de>
+Content-Transfer-Encoding: 8bit
+X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
+         bases: 20111107 #2745587, check: 20230620 notchecked
+X-AV-Checked: ClamAV using ClamSMTP
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -36,96 +54,33 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Mon, Jun 19, 2023 at 10:43:04PM +0200, Florian Westphal wrote:
-> device "" results in an assertion during evaluation.
-> Before:
-> nft: expression.c:426: constant_expr_alloc: Assertion `(((len) + (8) - 1) / (8)) > 0' failed.
-> After:
-> zero_length_devicename_assert:3:42-49: Error: you cannot set an empty interface name
-> type filter hook ingress device""lo" priority -1
->                          ^^^^^^^^
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
->  src/parser_bison.y                            | 36 ++++++++++++++++---
->  .../nft-f/zero_length_devicename_assert       |  5 +++
->  2 files changed, 36 insertions(+), 5 deletions(-)
->  create mode 100644 tests/shell/testcases/bogons/nft-f/zero_length_devicename_assert
-> 
-> diff --git a/src/parser_bison.y b/src/parser_bison.y
-> index f5f6bf04d064..d5a2f85387cb 100644
-> --- a/src/parser_bison.y
-> +++ b/src/parser_bison.y
-> @@ -144,6 +144,33 @@ static bool already_set(const void *attr, const struct location *loc,
->  	return true;
->  }
->  
-> +static struct expr* ifname_expr_alloc(const struct location *location,
+In ebt_do_table() 'private->chainstack' cannot be NULL
+and the 'cs' pointer is dereferenced below, so it does not make
+sense to compare 'private->chainstack' with NULL. 
 
-Nitpick:
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-static struct expr *ifname_expr_alloc(const struct location *location,
-                   ^
+Signed-off-by: Igor Artemiev <Igor.A.Artemiev@mcst.ru>
+---
+ net/bridge/netfilter/ebtables.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> +				      struct list_head *queue,
-> +				      const char *name)
-> +{
-> +	unsigned int length = strlen(name);
-> +	struct expr *expr;
-> +
-> +	if (length == 0) {
-> +		xfree(name);
-> +		erec_queue(error(location, "empty interface name"), queue);
-> +		return NULL;
-> +	}
-> +
-> +	if (length > 16) {
+diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
+index 757ec46fc45a..74daca8a5142 100644
+--- a/net/bridge/netfilter/ebtables.c
++++ b/net/bridge/netfilter/ebtables.c
+@@ -212,10 +212,7 @@ unsigned int ebt_do_table(void *priv, struct sk_buff *skb,
+ 	private = table->private;
+ 	cb_base = COUNTER_BASE(private->counters, private->nentries,
+ 	   smp_processor_id());
+-	if (private->chainstack)
+-		cs = private->chainstack[smp_processor_id()];
+-	else
+-		cs = NULL;
++	cs = private->chainstack[smp_processor_id()];
+ 	chaininfo = private->hook_entry[hook];
+ 	nentries = private->hook_entry[hook]->nentries;
+ 	point = (struct ebt_entry *)(private->hook_entry[hook]->data);
+-- 
+2.30.2
 
-                     IFNAMSIZ instead of 16?
-
-> +		xfree(name);
-> +		erec_queue(error(location, "interface name too long"), queue);
-> +		return NULL;
-> +	}
-> +
-> +	expr = constant_expr_alloc(location, &ifname_type, BYTEORDER_HOST_ENDIAN,
-> +				   length * BITS_PER_BYTE, name);
-> +
-> +	xfree(name);
-> +
-> +	return expr;
-> +}
-> +
->  #define YYLLOC_DEFAULT(Current, Rhs, N)	location_update(&Current, Rhs, N)
->  
->  #define symbol_value(loc, str) \
-> @@ -2664,12 +2691,11 @@ int_num			:	NUM			{ $$ = $1; }
->  
->  dev_spec		:	DEVICE	string
->  			{
-> -				struct expr *expr;
-> +				struct expr *expr = ifname_expr_alloc(&@$, state->msgs, $2);
-> +
-> +				if (!expr)
-> +					YYERROR;
->  
-> -				expr = constant_expr_alloc(&@$, &string_type,
-> -							   BYTEORDER_HOST_ENDIAN,
-> -							   strlen($2) * BITS_PER_BYTE, $2);
-> -				xfree($2);
->  				$$ = compound_expr_alloc(&@$, EXPR_LIST);
->  				compound_expr_add($$, expr);
->  
-> diff --git a/tests/shell/testcases/bogons/nft-f/zero_length_devicename_assert b/tests/shell/testcases/bogons/nft-f/zero_length_devicename_assert
-> new file mode 100644
-> index 000000000000..84f330730fce
-> --- /dev/null
-> +++ b/tests/shell/testcases/bogons/nft-f/zero_length_devicename_assert
-> @@ -0,0 +1,5 @@
-> +table ip x {
-> +        chain Main_Ingress1 {
-> +                type filter hook ingress device""lo" priority -1
-> +	}
-> +}
-> -- 
-> 2.39.3
-> 
