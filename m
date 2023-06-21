@@ -2,27 +2,38 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED572737FF2
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Jun 2023 13:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8837380F7
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Jun 2023 13:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbjFUKsM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 21 Jun 2023 06:48:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
+        id S232562AbjFUKk7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 21 Jun 2023 06:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231915AbjFUKri (ORCPT
+        with ESMTP id S230264AbjFUKkP (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 21 Jun 2023 06:47:38 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26281BDF;
-        Wed, 21 Jun 2023 03:46:14 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1qBvLf-0006WT-QB; Wed, 21 Jun 2023 12:46:03 +0200
-Date:   Wed, 21 Jun 2023 12:46:03 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     "Igor A. Artemiev" <Igor.A.Artemiev@mcst.ru>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Wed, 21 Jun 2023 06:40:15 -0400
+Received: from tretyak2.mcst.ru (tretyak2.mcst.ru [212.5.119.215])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62062101;
+        Wed, 21 Jun 2023 03:39:15 -0700 (PDT)
+Received: from tretyak2.mcst.ru (localhost [127.0.0.1])
+        by tretyak2.mcst.ru (Postfix) with ESMTP id 8B30710239C;
+        Wed, 21 Jun 2023 13:39:10 +0300 (MSK)
+Received: from frog.lab.sun.mcst.ru (frog.lab.sun.mcst.ru [176.16.4.50])
+        by tretyak2.mcst.ru (Postfix) with ESMTP id 81FED102390;
+        Wed, 21 Jun 2023 13:38:15 +0300 (MSK)
+Received: from [172.16.7.18] (gang [172.16.7.18])
+        by frog.lab.sun.mcst.ru (8.13.4/8.12.11) with ESMTP id 35LAcEJg022490;
+        Wed, 21 Jun 2023 13:38:14 +0300
+Message-ID: <f687fe6f-3330-a9c5-4760-f753638c7b03@mcst.ru>
+Date:   Wed, 21 Jun 2023 13:49:28 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+From:   "Igor A. Artemiev" <Igor.A.Artemiev@mcst.ru>
+Subject: Re: [lvc-project] [PATCH] netfilter: ebtables: remove unnecessary
+ NULL check
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         "David S . Miller" <davem@davemloft.net>,
         Paolo Abeni <pabeni@redhat.com>,
@@ -30,19 +41,17 @@ Cc:     Florian Westphal <fw@strlen.de>,
         netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         lvc-project@linuxtesting.org
-Subject: Re: [lvc-project] [PATCH] netfilter: ebtables: remove unnecessary
- NULL check
-Message-ID: <20230621104603.GA24035@breakpoint.cc>
 References: <20230620152549.2109063-1-Igor.A.Artemiev@mcst.ru>
  <20230620163806.GB3799@breakpoint.cc>
- <f687fe6f-3330-a9c5-4760-f753638c7b03@mcst.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f687fe6f-3330-a9c5-4760-f753638c7b03@mcst.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Language: en-US
+In-Reply-To: <20230620163806.GB3799@breakpoint.cc>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
+         bases: 20111107 #2745587, check: 20230621 notchecked
+X-AV-Checked: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,20 +59,21 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Igor A. Artemiev <Igor.A.Artemiev@mcst.ru> wrote:
-> On 6/20/23 19:38, Florian Westphal wrote:
-> > Igor Artemiev <Igor.A.Artemiev@mcst.ru> wrote:
-> > > In ebt_do_table() 'private->chainstack' cannot be NULL
-> > > and the 'cs' pointer is dereferenced below, so it does not make
-> > > sense to compare 'private->chainstack' with NULL.
-> > ?  Why do you think that?
-> > 
-> The 'cs' pointer is dereferenced below without checking, as it is assumed to
-> always be initialized with 'private->chainstack[smp_processor_id()]'.
+On 6/20/23 19:38, Florian Westphal wrote:
+> Igor Artemiev <Igor.A.Artemiev@mcst.ru> wrote:
+>> In ebt_do_table() 'private->chainstack' cannot be NULL
+>> and the 'cs' pointer is dereferenced below, so it does not make
+>> sense to compare 'private->chainstack' with NULL.
+> ?  Why do you think that?
+>
+The 'cs' pointer is dereferenced below without checking, as it is 
+assumed to always be initialized with 
+'private->chainstack[smp_processor_id()]'.
+>> +	cs = private->chainstack[smp_processor_id()];
+> Looks like NULL deref to me.  Did you test this?
+>
+No, I didn't test this.
 
-No, its not.  The dereferencing is conditional, as is the allocation
-of the chainstack.
+Thanks,
+Igor
 
-No user defined chains, no chain stack.
-
-With this change, "ebtables-legacy -A INPUT" causes kernel panic.
