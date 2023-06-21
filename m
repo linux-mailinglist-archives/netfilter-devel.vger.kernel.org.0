@@ -2,56 +2,167 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D45738887
-	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Jun 2023 17:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021ED738A08
+	for <lists+netfilter-devel@lfdr.de>; Wed, 21 Jun 2023 17:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbjFUPMs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 21 Jun 2023 11:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50694 "EHLO
+        id S233298AbjFUPpd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 21 Jun 2023 11:45:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230199AbjFUPM2 (ORCPT
+        with ESMTP id S233857AbjFUPpB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 21 Jun 2023 11:12:28 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 280A25B87
-        for <netfilter-devel@vger.kernel.org>; Wed, 21 Jun 2023 08:08:08 -0700 (PDT)
-Date:   Wed, 21 Jun 2023 16:49:27 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Phil Sutter <phil@nwl.cc>, netfilter-devel@vger.kernel.org
-Subject: Re: [nft PATCH] cli: Make valgrind happy
-Message-ID: <ZJMN90PRXDIdL83N@calendula>
-References: <20230620140352.21633-1-phil@nwl.cc>
- <ZJHOEff+hNaj6g8e@calendula>
- <ZJLpQ0Wxnek0dtVQ@orbyte.nwl.cc>
+        Wed, 21 Jun 2023 11:45:01 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B61A19A9
+        for <netfilter-devel@vger.kernel.org>; Wed, 21 Jun 2023 08:44:59 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1qC00u-0000Fd-OQ; Wed, 21 Jun 2023 17:44:56 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>, Eric Dumazet <edumazet@google.com>
+Subject: [PATCH nf] netfilter: conntrack: dccp: copy entire header to stack buffer, not just basic one
+Date:   Wed, 21 Jun 2023 17:44:51 +0200
+Message-Id: <20230621154451.8176-1-fw@strlen.de>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZJLpQ0Wxnek0dtVQ@orbyte.nwl.cc>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Jun 21, 2023 at 02:12:51PM +0200, Phil Sutter wrote:
-> On Tue, Jun 20, 2023 at 06:04:33PM +0200, Pablo Neira Ayuso wrote:
-> > On Tue, Jun 20, 2023 at 04:03:52PM +0200, Phil Sutter wrote:
-> > > Missing call to nft_ctx_free() upsets valgrind enough to suspect
-> > > possible losses, add them where sensible. This fixes reports with
-> > > readline-lined builds at least. The same code is shared for libedit
-> > > though, and there's an obvious spot for linenoise.
-> > 
-> > Maybe call nft_ctx_free() from cli_exit() ?
-> 
-> That's doable, but linenoise code does not use the static global cli_nft
-> variable and thus cli_exit() can't access the struct nft_ctx pointer.
-> 
-> At first, I tried to make main() not exit after calling cli_init() so
-> final cleanup takes place. But the different CLI variants are a bit of a
-> mess in that regard: While there are code-paths returning to caller,
-> most don't. I'm tempted to fix that instead. What do you think?
+Eric Dumazet says:
+  nf_conntrack_dccp_packet() has an unique:
 
-That's also fine, go ahead update and test all these cli variants.
+  dh = skb_header_pointer(skb, dataoff, sizeof(_dh), &_dh);
+
+  And nothing more is 'pulled' from the packet, depending on the content.
+  dh->dccph_doff, and/or dh->dccph_x ...)
+  So dccp_ack_seq() is happily reading stuff past the _dh buffer.
+
+BUG: KASAN: stack-out-of-bounds in nf_conntrack_dccp_packet+0x1134/0x11c0
+Read of size 4 at addr ffff000128f66e0c by task syz-executor.2/29371
+[..]
+
+Fix this by increasing the stack buffer to also include room for
+the extra sequence numbers and all the known dccp packet type headers,
+then pull again after the initial validation of the basic header.
+
+While at it, mark packets invalid that lack 48bit sequence bit but
+where RFC says the type MUST use them.
+
+Compile tested only.
+
+Heads-up: I intend to remove dccp conntrack support later this year.
+
+Fixes: 2bc780499aa3 ("[NETFILTER]: nf_conntrack: add DCCP protocol support")
+Reported-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ net/netfilter/nf_conntrack_proto_dccp.c | 50 ++++++++++++++++++++++++-
+ 1 file changed, 48 insertions(+), 2 deletions(-)
+
+diff --git a/net/netfilter/nf_conntrack_proto_dccp.c b/net/netfilter/nf_conntrack_proto_dccp.c
+index c1557d47ccd1..745a1f76c249 100644
+--- a/net/netfilter/nf_conntrack_proto_dccp.c
++++ b/net/netfilter/nf_conntrack_proto_dccp.c
+@@ -432,9 +432,19 @@ static bool dccp_error(const struct dccp_hdr *dh,
+ 		       struct sk_buff *skb, unsigned int dataoff,
+ 		       const struct nf_hook_state *state)
+ {
++	static const unsigned long require_seq48 = 1 << DCCP_PKT_REQUEST |
++						   1 << DCCP_PKT_RESPONSE |
++						   1 << DCCP_PKT_CLOSEREQ |
++						   1 << DCCP_PKT_CLOSE |
++						   1 << DCCP_PKT_RESET |
++						   1 << DCCP_PKT_SYNC |
++						   1 << DCCP_PKT_SYNCACK;
+ 	unsigned int dccp_len = skb->len - dataoff;
+ 	unsigned int cscov;
+ 	const char *msg;
++	u8 type;
++
++	BUILD_BUG_ON(DCCP_PKT_INVALID >= BITS_PER_LONG);
+ 
+ 	if (dh->dccph_doff * 4 < sizeof(struct dccp_hdr) ||
+ 	    dh->dccph_doff * 4 > dccp_len) {
+@@ -459,26 +469,57 @@ static bool dccp_error(const struct dccp_hdr *dh,
+ 		goto out_invalid;
+ 	}
+ 
+-	if (dh->dccph_type >= DCCP_PKT_INVALID) {
++	type = dh->dccph_type;
++	if (type >= DCCP_PKT_INVALID) {
+ 		msg = "nf_ct_dccp: reserved packet type ";
+ 		goto out_invalid;
+ 	}
++
++	if (test_bit(type, &require_seq48) && !dh->dccph_x) {
++		msg = "nf_ct_dccp: type lacks 48bit sequence numbers";
++		goto out_invalid;
++	}
++
+ 	return false;
+ out_invalid:
+ 	nf_l4proto_log_invalid(skb, state, IPPROTO_DCCP, "%s", msg);
+ 	return true;
+ }
+ 
++struct nf_conntrack_dccp_buf {
++	struct dccp_hdr _dh;	 /* must be first */
++	struct dccp_hdr_ext ext; /* optional depending dh->dccph_x */
++	union {			 /* depends on header type */
++		struct dccp_hdr_ack_bits ack;
++		struct dccp_hdr_request req;
++		struct dccp_hdr_response response;
++		struct dccp_hdr_reset rst;
++	} u;
++};
++
++static struct dccp_hdr *
++dccp_header_pointer(const struct sk_buff *skb, int offset, const struct dccp_hdr *dh,
++		    struct nf_conntrack_dccp_buf *buf)
++{
++	unsigned int hdrlen = __dccp_hdr_len(dh);
++
++	if (hdrlen > sizeof(*buf))
++		return NULL;
++
++	return skb_header_pointer(skb, offset, hdrlen, buf);
++}
++
+ int nf_conntrack_dccp_packet(struct nf_conn *ct, struct sk_buff *skb,
+ 			     unsigned int dataoff,
+ 			     enum ip_conntrack_info ctinfo,
+ 			     const struct nf_hook_state *state)
+ {
+ 	enum ip_conntrack_dir dir = CTINFO2DIR(ctinfo);
+-	struct dccp_hdr _dh, *dh;
++	struct nf_conntrack_dccp_buf _dh;
+ 	u_int8_t type, old_state, new_state;
+ 	enum ct_dccp_roles role;
+ 	unsigned int *timeouts;
++	struct dccp_hdr *dh;
+ 
+ 	dh = skb_header_pointer(skb, dataoff, sizeof(_dh), &_dh);
+ 	if (!dh)
+@@ -487,6 +528,11 @@ int nf_conntrack_dccp_packet(struct nf_conn *ct, struct sk_buff *skb,
+ 	if (dccp_error(dh, skb, dataoff, state))
+ 		return -NF_ACCEPT;
+ 
++	/* pull again, including possible 48 bit sequences and subtype header */
++	dh = dccp_header_pointer(skb, dataoff, dh, &_dh);
++	if (!dh)
++		return NF_DROP;
++
+ 	type = dh->dccph_type;
+ 	if (!nf_ct_is_confirmed(ct) && !dccp_new(ct, skb, dh, state))
+ 		return -NF_ACCEPT;
+-- 
+2.39.3
+
