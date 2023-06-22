@@ -2,85 +2,82 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB04C73A39D
-	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Jun 2023 16:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BD173A558
+	for <lists+netfilter-devel@lfdr.de>; Thu, 22 Jun 2023 17:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbjFVOvm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 22 Jun 2023 10:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
+        id S230319AbjFVPrC (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 22 Jun 2023 11:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbjFVOvW (ORCPT
+        with ESMTP id S230201AbjFVPrB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 22 Jun 2023 10:51:22 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E181F2682;
-        Thu, 22 Jun 2023 07:50:55 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-57083a06b71so63479497b3.1;
-        Thu, 22 Jun 2023 07:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687445455; x=1690037455;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=h8i9k7iv1RVJET/Cr/juNPiq2j0xcHXuSj+X6Emo+kQ=;
-        b=TR6LpoiLpjDe4ONbyiH/m3qEgmQB3C8zRmRRQZUq3ZyMsIWg9cr1iem7vnC6S8DsFS
-         dIxVIm3xtHjWFOKe5Z7/UUHd5LEYQbXeeQ+DDxb6aIGtp2ZhQAcjs7nXDg1DMc6P1O/5
-         QPpkFNsEWP60Zg1JJdJqlCPYOqCUncsMySfoR1jkuh3O6Wnmpc5ff5WQsKhuRnctC4Sq
-         hLKBxrPheccHBRGUlEAytiJa4mzHz7m6ZRUWr8srJS2xCi/HRVJUfK9DC4kNWE2dRXDt
-         u7qNtBv/IuEKEtIONF8psmei4YIYstPhxF3srTq6/VQRqW70/MkBLvuCg8+eXRULXYQP
-         uIhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687445455; x=1690037455;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h8i9k7iv1RVJET/Cr/juNPiq2j0xcHXuSj+X6Emo+kQ=;
-        b=ShsdvulG0kHmR7t3oB4R0aCrnomvHNSApOcvo0WFCazG6I9prK42WT9q4lSJlgpICA
-         dJjAuQ5Ds+pZ5OmFJqeyfl0vBzlCeM7AE11lqFqwTVF32OjATdFg5BkBfJTiGtw5MbY5
-         tz8ISHoV+YVzHcYE7DMvHdZwqBOBYuvqZaxV12eijZikA9YCj2QOhkVPb+z8eXxPuIwN
-         n1yQY7ukGOfiD+u0zPqgh94/W+2Kg4evT66eVWVZQSmEG90h1W2bzgZhv1sju8hgQ3P1
-         YnkUES4ZEylfXnwlCCNTopP9qHXg0z2lDQUCnwmb3lWGoyUz9kLl1d5dSl66Z5n6Oh9Z
-         Po1A==
-X-Gm-Message-State: AC+VfDxeLkKlLib+MjHg4LVl5RlRdTK+HjGjejyp2WV2Q2DigjaZ3WLG
-        jS6H3ewTINOIAyAuEWL/7nu2S8mKs3U2bVfEBco=
-X-Google-Smtp-Source: ACHHUZ5cZlyOFoP4CshYPHdGbrklMJMXRSZWHKv63RSFljlHi/JKlu6SZOMEdd3E/yhHrK8AQbv4hpSULI8CaAWSorQ=
-X-Received: by 2002:a81:8492:0:b0:56f:f7f6:52d8 with SMTP id
- u140-20020a818492000000b0056ff7f652d8mr17840914ywf.5.1687445454810; Thu, 22
- Jun 2023 07:50:54 -0700 (PDT)
+        Thu, 22 Jun 2023 11:47:01 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26C0EA
+        for <netfilter-devel@vger.kernel.org>; Thu, 22 Jun 2023 08:47:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=3OsvYCFMzeDTXvFRYLDY76xutjCnhRzznovrsqz0TjU=; b=Ghlmh97t/1k6ZiMyISxZBZcAUZ
+        vRaRCSdNmb27f5h5NJp1VSg/WRdepGmqWIK+bYYnF9M0BMPfkMRtCrRmZEBwHl9T2KCQkvSHkDylw
+        2iVCsaB8WYGQuHHrijf3fbjvsz+jhha64JCPYZiq5jQCk0UwAF7GIqHqBBdiXWEgjsFmaUqluWye3
+        kdw33sVTSp87h3WDOiYdNHn3+k59Gk0HV8HMzQeaKwr2X/jiSU/OHDuEj5qQDtOpDn0zHrc+hDn63
+        HnJkYYholE47F93KzuRaeNc7ED4Zk0z/EhIm4CbeoLxPR2HIyaCc2sBLrK7ZejIMbrZDvGae7m2z+
+        iowJV0nQ==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1qCMWR-0001sd-3B; Thu, 22 Jun 2023 17:46:59 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org
+Subject: [nft PATCH 0/4] cli: Make valgrind (kind of) happy
+Date:   Thu, 22 Jun 2023 17:46:30 +0200
+Message-Id: <20230622154634.25862-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-From:   =?UTF-8?B?0JzQsNGA0Log0JrQvtGA0LXQvdCx0LXRgNCz?= 
-        <socketpair@gmail.com>
-Date:   Thu, 22 Jun 2023 17:50:43 +0300
-Message-ID: <CAEmTpZGTbHcd84vA5VL6FfDc8+n+E0VMt+GpPkVLw5Vijp5iLA@mail.gmail.com>
-Subject: ipset hash:net:port:net
-To:     Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
-        netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        kadlecsik.jozsef@wigner.hu, kadlec@sunserv.kfki.hu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi everyone.
+The following series is more or less a v2 of my previous single patch
+adding nft_ctx_free() calls to cli.c, following a different path:
+Eliminate any program exit points from cli.c so nft context deinit at
+end of main() happens. This is nicer design as said function allocates
+the context in the first place.
 
-1. In the latest ipset, adding "1.2.3.4/0,tcp:0,1.2.3.0/24" is not
-allowed. I would like it to be allowed. It should match on any TCP
-traffic that matches source and destination.
-2. The same for protocol number 0. I want  "1.2.3.4/0,0:0,1.2.3.0/24"
-to match all traffic that matches source and destination.
+Patch 1 is minor cleanup, patch 2 updates main() to free the context in
+all cases, too and patch 3 then changes CLI code as described above.
+Patch 4 extends shell testsuite by a '-V' (valgrind) mode as present in
+iptables' shell testsuite already which wraps all calls to $NFT by
+valgrind and collects non-empty logs.
 
-These requirements come from the real cases, where an administrator
-adds rules to control access to his networks.
+Sadly, I could not eliminate all valgrind complaints because each of the
+three CLI backends leaves allocated memory in place at exit. None seem
+to have sufficient deinit functions, except linenoise - but that code
+runs only for terminals put in raw mode.
 
-Is it possible to make such changes? TCP port 0 is not real thing, as
-well as IP protocol 0. So we can give them special meaning in IPSets.
+Phil Sutter (4):
+  main: Make 'buf' variable branch-local
+  main: Call nft_ctx_free() before exiting
+  cli: Make cli_init() return to caller
+  tests: shell: Introduce valgrind mode
 
-although icmp:0 is not so clear in this case. Possibly allow to set -1
-? as protocol or port for matching any ?
+ include/cli.h            |  2 +-
+ src/cli.c                | 63 ++++++++++++++++++++++++++--------------
+ src/main.c               | 42 +++++++++++++++------------
+ tests/shell/run-tests.sh | 47 ++++++++++++++++++++++++++++++
+ 4 files changed, 113 insertions(+), 41 deletions(-)
 
 -- 
-Segmentation fault
+2.40.0
+
