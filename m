@@ -2,46 +2,30 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AEB73D726
-	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Jun 2023 07:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C46273D7EB
+	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Jun 2023 08:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbjFZFbZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 26 Jun 2023 01:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55300 "EHLO
+        id S229542AbjFZGsB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 26 Jun 2023 02:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjFZFbY (ORCPT
+        with ESMTP id S229507AbjFZGr7 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 26 Jun 2023 01:31:24 -0400
-X-Greylist: delayed 500 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 25 Jun 2023 22:31:18 PDT
-Received: from tsukuyomi.43-1.org (tsukuyomi.43-1.org [116.203.33.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D04E44;
-        Sun, 25 Jun 2023 22:31:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=43-1.org;
- i=@43-1.org; q=dns/txt; s=2019; t=1687756972; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version
- : content-type : from;
- bh=Eq4k6m+p07AiJXh4wBi2hik11r7Xs7nEHyzRzDKtkag=;
- b=NUgI0vT/PM49fItVgX9+3ne7CAVuWcZ2azz+OC2gdh6Z/z8WGBcH1Yxu2BP5PcWdcqbaD
- /2cSrI/nMbkSoBywV/4dBeAUV0gqTOjbhczJkf6pxtSL62RxONgXyONN7SdAses43lUD7iV
- 9/Z5rLIfcOgQKth2mnle3+GxAKmBBc0+kaNAMs41Hh0Z3k93LxJ9xKGiEaBrVxiD1ExMrIJ
- y5O1072Sec5G9Inj5ZmPRgiCY+uHJSP3D1fLaNi3CFNo0O1SIauQqfoQdDs3JgEYmD/bbGc
- Uso8ddxYK1WjsR7/f0mqNWy+5TEJ90jlzckIWBD65k4Ua3NzEF8ZLDS2pHtg==
-From:   Matthias Maier <tamiko@43-1.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: Kernel oops with netfilter: nf_tables: incorrect error path
- handling with NFT_MSG_NEWRULE
-In-Reply-To: <ZJjIRQevLKW+YJP6@calendula> (Pablo Neira Ayuso's message of
-        "Mon, 26 Jun 2023 01:05:41 +0200")
-References: <87cz1j5tof.fsf@43-1.org> <ZJjIRQevLKW+YJP6@calendula>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-Date:   Mon, 26 Jun 2023 00:22:51 -0500
-Message-ID: <87ttuuajbo.fsf@43-1.org>
+        Mon, 26 Jun 2023 02:47:59 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4CC241B7;
+        Sun, 25 Jun 2023 23:47:55 -0700 (PDT)
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+        pabeni@redhat.com, edumazet@google.com
+Subject: [PATCH net-next 0/8] Netfilter/IPVS updates for net-next
+Date:   Mon, 26 Jun 2023 08:47:41 +0200
+Message-Id: <20230626064749.75525-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -50,62 +34,95 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi Pablo,
+Hi,
 
-Thanks a lot for the quick reponse!
+The following patchset contains Netfilter/IPVS updates for net-next:
 
+1) Allow slightly larger IPVS connection table size from Kconfig for
+   64-bit arch, from Abhijeet Rastogi.
 
-On Sun, Jun 25, 2023, at 18:05 CDT, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+2) Since IPVS connection table might be larger than 2^20 after previous
+   patch, allow to limit it depending on the available memory.
+   Moreover, use kvmalloc. From Julian Anastasov.
 
-> [...]
->
-> Could you give a try to these two fixes on top?
->
-> 26b5a5712eb8 netfilter: nf_tables: add NFT_TRANS_PREPARE_ERROR to deal with bound set/chain
-> 4bedf9eee016 netfilter: nf_tables: fix chain binding transaction logic
+3) Do not rebuild VLAN header in nft_payload when matching source and
+   destination MAC address.
 
-These two patches alone were not enough, I had to apply the third patch
-you mentioned:
+4) Remove nested rcu read lock side in ip_set_test(), from Florian Westphal.
 
-> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230625224219.64876-1-pablo@netfilter.org/
+5) Allow to update set size, also from Florian.
 
-With all three patches I do not run into the oops any more.
+6) Improve NAT tuple selection when connection is closing,
+   from Florian Westphal.
 
+7) Support for resetting set element stateful expression, from Phil Sutter.
 
-Nevertheless, please find below a (somehwat minimal) reproducer. Loading
-this ruleset into nft_tables via  $ nft -f reproducer.ruleset  previously
-oopsed the kernel.
+8) Use NLA_POLICY_MAX to narrow down maximum attribute value in nf_tables,
+   from Florian Westphal.
 
-Best,
-Matthias
+Please, pull these changes from:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-23-06-26
 
+Thanks.
 
-define guarded_ports = {ssh}
+----------------------------------------------------------------
 
-table inet portknock {
-        set clients_ipv4 {
-                type ipv4_addr
-                flags timeout
-        }
+The following changes since commit 4ff3dfc91c8458f65366f283167d1cd6f16be06f:
 
-        set candidates_ipv4 {
-                type ipv4_addr . inet_service
-                flags timeout
-        }
+  Merge branch 'splice-net-handle-msg_splice_pages-in-chelsio-tls' (2023-06-01 13:41:40 +0200)
 
-        chain input {
-                type filter hook input priority -10; policy accept;
+are available in the Git repository at:
 
-                tcp dport 10001 add @candidates_ipv4 {ip  saddr . 10002 timeout 1s}
-                tcp dport 10002 ip  saddr . tcp dport @candidates_ipv4 add @candidates_ipv4 {ip  saddr . 10003 timeout 1s}
-                tcp dport 10003 ip  saddr . tcp dport @candidates_ipv4 add @candidates_ipv4 {ip  saddr . 10004 timeout 1s}
-                tcp dport 10004 ip  saddr . tcp dport @candidates_ipv4 add @candidates_ipv4 {ip  saddr . 10005 timeout 1s}
-                tcp dport 10005 ip  saddr . tcp dport @candidates_ipv4 add @clients_ipv4 {ip  saddr timeout 600s} log prefix "Successful portknock: "
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf-next.git nf-next-23-06-26
 
-                tcp dport $guarded_ports ip  saddr @clients_ipv4 counter accept
-                tcp dport $guarded_ports ct state established,related counter accept
+for you to fetch changes up to a412dbf40ff37515acca4bba666f5386aa37246e:
 
-                tcp dport $guarded_ports reject with tcp reset
-        }
-}
+  netfilter: nf_tables: limit allowed range via nla_policy (2023-06-26 08:05:57 +0200)
+
+----------------------------------------------------------------
+netfilter pull request 23-06-26
+
+----------------------------------------------------------------
+Abhijeet Rastogi (1):
+      ipvs: increase ip_vs_conn_tab_bits range for 64BIT
+
+Florian Westphal (4):
+      netfilter: ipset: remove rcu_read_lock_bh pair from ip_set_test
+      netfilter: nf_tables: permit update of set size
+      netfilter: snat: evict closing tcp entries on reply tuple collision
+      netfilter: nf_tables: limit allowed range via nla_policy
+
+Julian Anastasov (1):
+      ipvs: dynamically limit the connection hash table
+
+Pablo Neira Ayuso (1):
+      netfilter: nft_payload: rebuild vlan header when needed
+
+Phil Sutter (1):
+      netfilter: nf_tables: Introduce NFT_MSG_GETSETELEM_RESET
+
+ include/net/netfilter/nf_tables.h        |  3 ++
+ include/uapi/linux/netfilter/nf_tables.h |  2 +
+ net/netfilter/ipset/ip_set_core.c        |  2 -
+ net/netfilter/ipvs/Kconfig               | 27 +++++-----
+ net/netfilter/ipvs/ip_vs_conn.c          | 26 +++++----
+ net/netfilter/nf_nat_core.c              | 92 ++++++++++++++++++++++++++++++--
+ net/netfilter/nf_tables_api.c            | 72 ++++++++++++++++++-------
+ net/netfilter/nft_bitwise.c              |  2 +-
+ net/netfilter/nft_byteorder.c            |  6 +--
+ net/netfilter/nft_ct.c                   |  2 +-
+ net/netfilter/nft_dynset.c               |  2 +-
+ net/netfilter/nft_exthdr.c               |  4 +-
+ net/netfilter/nft_fwd_netdev.c           |  2 +-
+ net/netfilter/nft_hash.c                 |  2 +-
+ net/netfilter/nft_meta.c                 |  2 +-
+ net/netfilter/nft_payload.c              |  3 +-
+ net/netfilter/nft_range.c                |  2 +-
+ net/netfilter/nft_reject.c               |  2 +-
+ net/netfilter/nft_rt.c                   |  2 +-
+ net/netfilter/nft_socket.c               |  4 +-
+ net/netfilter/nft_tproxy.c               |  2 +-
+ net/netfilter/nft_tunnel.c               |  4 +-
+ net/netfilter/nft_xfrm.c                 |  4 +-
+ 23 files changed, 199 insertions(+), 70 deletions(-)
