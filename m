@@ -2,25 +2,25 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2628073DCD0
+	by mail.lfdr.de (Postfix) with ESMTP id 8790273DCD2
 	for <lists+netfilter-devel@lfdr.de>; Mon, 26 Jun 2023 13:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjFZLFS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        id S229815AbjFZLFS (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
         Mon, 26 Jun 2023 07:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48524 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjFZLFR (ORCPT
+        with ESMTP id S229471AbjFZLFR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
         Mon, 26 Jun 2023 07:05:17 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8FA0C9D;
-        Mon, 26 Jun 2023 04:05:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7BE339F;
+        Mon, 26 Jun 2023 04:05:15 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     stable@vger.kernel.org, carnil@debian.org
-Subject: [PATCH -stable,5.10 1/3] netfilter: nftables: statify nft_parse_register()
-Date:   Mon, 26 Jun 2023 13:05:04 +0200
-Message-Id: <20230626110506.76630-2-pablo@netfilter.org>
+Subject: [PATCH -stable,5.10 2/3] netfilter: nf_tables: validate registers coming from userspace.
+Date:   Mon, 26 Jun 2023 13:05:05 +0200
+Message-Id: <20230626110506.76630-3-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230626110506.76630-1-pablo@netfilter.org>
 References: <20230626110506.76630-1-pablo@netfilter.org>
@@ -35,49 +35,80 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-[ 08a01c11a5bb3de9b0a9c9b2685867e50eda9910 ]
+[ 6e1acfa387b9ff82cfc7db8cc3b6959221a95851 ]
 
-This function is not used anymore by any extension, statify it.
+Bail out in case userspace uses unsupported registers.
 
+Fixes: 49499c3e6e18 ("netfilter: nf_tables: switch registers to 32 bit addressing")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- include/net/netfilter/nf_tables.h | 1 -
- net/netfilter/nf_tables_api.c     | 3 +--
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ net/netfilter/nf_tables_api.c | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 564fbe0c865f..030237f3d82a 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -205,7 +205,6 @@ static inline enum nft_registers nft_type_to_reg(enum nft_data_types type)
- }
- 
- int nft_parse_u32_check(const struct nlattr *attr, int max, u32 *dest);
--unsigned int nft_parse_register(const struct nlattr *attr);
- int nft_dump_register(struct sk_buff *skb, unsigned int attr, unsigned int reg);
- 
- int nft_parse_register_load(const struct nlattr *attr, u8 *sreg, u32 len);
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index fe51cedd9cc3..e1e1cde42075 100644
+index e1e1cde42075..0b2a6f988e9b 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -8489,7 +8489,7 @@ EXPORT_SYMBOL_GPL(nft_parse_u32_check);
-  *	Registers used to be 128 bit wide, these register numbers will be
-  *	mapped to the corresponding 32 bit register numbers.
-  */
--unsigned int nft_parse_register(const struct nlattr *attr)
-+static unsigned int nft_parse_register(const struct nlattr *attr)
+@@ -8480,26 +8480,23 @@ int nft_parse_u32_check(const struct nlattr *attr, int max, u32 *dest)
+ }
+ EXPORT_SYMBOL_GPL(nft_parse_u32_check);
+ 
+-/**
+- *	nft_parse_register - parse a register value from a netlink attribute
+- *
+- *	@attr: netlink attribute
+- *
+- *	Parse and translate a register value from a netlink attribute.
+- *	Registers used to be 128 bit wide, these register numbers will be
+- *	mapped to the corresponding 32 bit register numbers.
+- */
+-static unsigned int nft_parse_register(const struct nlattr *attr)
++static int nft_parse_register(const struct nlattr *attr, u32 *preg)
  {
  	unsigned int reg;
  
-@@ -8501,7 +8501,6 @@ unsigned int nft_parse_register(const struct nlattr *attr)
- 		return reg + NFT_REG_SIZE / NFT_REG32_SIZE - NFT_REG32_00;
+ 	reg = ntohl(nla_get_be32(attr));
+ 	switch (reg) {
+ 	case NFT_REG_VERDICT...NFT_REG_4:
+-		return reg * NFT_REG_SIZE / NFT_REG32_SIZE;
++		*preg = reg * NFT_REG_SIZE / NFT_REG32_SIZE;
++		break;
++	case NFT_REG32_00...NFT_REG32_15:
++		*preg = reg + NFT_REG_SIZE / NFT_REG32_SIZE - NFT_REG32_00;
++		break;
+ 	default:
+-		return reg + NFT_REG_SIZE / NFT_REG32_SIZE - NFT_REG32_00;
++		return -ERANGE;
  	}
++
++	return 0;
  }
--EXPORT_SYMBOL_GPL(nft_parse_register);
  
  /**
-  *	nft_dump_register - dump a register value to a netlink attribute
+@@ -8550,7 +8547,10 @@ int nft_parse_register_load(const struct nlattr *attr, u8 *sreg, u32 len)
+ 	u32 reg;
+ 	int err;
+ 
+-	reg = nft_parse_register(attr);
++	err = nft_parse_register(attr, &reg);
++	if (err < 0)
++		return err;
++
+ 	err = nft_validate_register_load(reg, len);
+ 	if (err < 0)
+ 		return err;
+@@ -8619,7 +8619,10 @@ int nft_parse_register_store(const struct nft_ctx *ctx,
+ 	int err;
+ 	u32 reg;
+ 
+-	reg = nft_parse_register(attr);
++	err = nft_parse_register(attr, &reg);
++	if (err < 0)
++		return err;
++
+ 	err = nft_validate_register_store(ctx, reg, data, type, len);
+ 	if (err < 0)
+ 		return err;
 -- 
 2.30.2
 
