@@ -2,40 +2,57 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 636E773FA79
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jun 2023 12:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4DC73FAA0
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jun 2023 13:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbjF0Ksa (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 27 Jun 2023 06:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
+        id S230422AbjF0LAZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 27 Jun 2023 07:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231388AbjF0Ks0 (ORCPT
+        with ESMTP id S229568AbjF0LAY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 27 Jun 2023 06:48:26 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C1210FF;
-        Tue, 27 Jun 2023 03:48:23 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1qE6FA-0003Jr-AG; Tue, 27 Jun 2023 12:48:20 +0200
-Date:   Tue, 27 Jun 2023 12:48:20 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
-        fw@strlen.de, daniel@iogearbox.net, dsahern@kernel.org
-Subject: Re: [PATCH bpf-next 0/7] Support defragmenting IPv(4|6) packets in
- BPF
-Message-ID: <20230627104820.GF3207@breakpoint.cc>
-References: <cover.1687819413.git.dxu@dxuuu.xyz>
+        Tue, 27 Jun 2023 07:00:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C5D1BE9
+        for <netfilter-devel@vger.kernel.org>; Tue, 27 Jun 2023 04:00:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 240676113A
+        for <netfilter-devel@vger.kernel.org>; Tue, 27 Jun 2023 11:00:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 84088C433C9;
+        Tue, 27 Jun 2023 11:00:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1687863622;
+        bh=BYNUTlfP7f+F3b9ynsAQKbHDC50G0DCol5Tq/g0IjEA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=c8hZ+o1ZTaRX/xB01+g4P7JfO861D0RV5G0GltHcQ2Rz0zuG9lKMMrlUfL82cSBLX
+         WiiVBQRO12aUUVXYjm/NjzOn9U4EOk8L5j4iezAIEyxFRRftURYxADNU/QQWJQAFtT
+         QAFDFsVq7sBGY4LWu0jBjBx7Qmg+rOQK+6c/viFHvpQIzeK19feI18omLW0u0yXL26
+         DM0LZfflveOaGwqZXdf8MCPuc0ACDk6mXRGIj4RsoepLv66SSemQyXD68aBGQ+hssr
+         qDTrolVXIbEbsKTr6dM4gG9ixTHYF1cwgyZia8gOKS5rv+M3GsMLoFcTN3pvShrh0n
+         Yd5TESiq/jCyg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6240CE5380A;
+        Tue, 27 Jun 2023 11:00:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1687819413.git.dxu@dxuuu.xyz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 1/6] lib/ts_bm: reset initial match offset for every block
+ of text
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168786362239.16210.6293213397519316594.git-patchwork-notify@kernel.org>
+Date:   Tue, 27 Jun 2023 11:00:22 +0000
+References: <20230627065304.66394-2-pablo@netfilter.org>
+In-Reply-To: <20230627065304.66394-2-pablo@netfilter.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,13 +60,41 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Daniel Xu <dxu@dxuuu.xyz> wrote:
-> Patches 1 & 2 are stolenfrom Florian. Hopefully he doesn't mind. There
-> were some outstanding comments on the v2 [2] but it doesn't look like a
-> v3 was ever submitted.  I've addressed the comments and put them in this
-> patchset cuz I needed them.
+Hello:
 
-I did not submit a v3 because i had to wait for the bpf -> bpf-next
-merge to get "bpf: netfilter: Add BPF_NETFILTER bpf_attach_type".
+This series was applied to netdev/net.git (main)
+by Pablo Neira Ayuso <pablo@netfilter.org>:
 
-Now that has been done so I will do v3 shortly.
+On Tue, 27 Jun 2023 08:52:59 +0200 you wrote:
+> From: Jeremy Sowden <jeremy@azazel.net>
+> 
+> The `shift` variable which indicates the offset in the string at which
+> to start matching the pattern is initialized to `bm->patlen - 1`, but it
+> is not reset when a new block is retrieved.  This means the implemen-
+> tation may start looking at later and later positions in each successive
+> block and miss occurrences of the pattern at the beginning.  E.g.,
+> consider a HTTP packet held in a non-linear skb, where the HTTP request
+> line occurs in the second block:
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/6] lib/ts_bm: reset initial match offset for every block of text
+    https://git.kernel.org/netdev/net/c/6f67fbf8192d
+  - [net,2/6] netfilter: conntrack: dccp: copy entire header to stack buffer, not just basic one
+    https://git.kernel.org/netdev/net/c/ff0a3a7d52ff
+  - [net,3/6] linux/netfilter.h: fix kernel-doc warnings
+    https://git.kernel.org/netdev/net/c/f18e7122cc73
+  - [net,4/6] netfilter: nf_conntrack_sip: fix the ct_sip_parse_numerical_param() return value.
+    https://git.kernel.org/netdev/net/c/f188d3008748
+  - [net,5/6] netfilter: nf_tables: unbind non-anonymous set if rule construction fails
+    https://git.kernel.org/netdev/net/c/3e70489721b6
+  - [net,6/6] netfilter: nf_tables: fix underflow in chain reference counter
+    https://git.kernel.org/netdev/net/c/b389139f12f2
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
