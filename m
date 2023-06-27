@@ -2,68 +2,108 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E2173F66F
-	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jun 2023 10:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0AE73FA09
+	for <lists+netfilter-devel@lfdr.de>; Tue, 27 Jun 2023 12:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbjF0IFv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 27 Jun 2023 04:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
+        id S229652AbjF0KSs (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 27 Jun 2023 06:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjF0IFu (ORCPT
+        with ESMTP id S229501AbjF0KSR (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 27 Jun 2023 04:05:50 -0400
-Received: from mail.mahavavy.com (mail.mahavavy.com [92.222.170.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7781A4
-        for <netfilter-devel@vger.kernel.org>; Tue, 27 Jun 2023 01:05:49 -0700 (PDT)
-Received: by mail.mahavavy.com (Postfix, from userid 1002)
-        id C26A021E2E; Tue, 27 Jun 2023 08:05:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mahavavy.com; s=mail;
-        t=1687853147; bh=IfqQW79nVX/qUpmHcJiWDpV9BQnOf/s+Zcq9ON74QJY=;
-        h=Date:From:To:Subject:From;
-        b=x+RCO1FH1Gdn4c9CiX3Io6A5FK6+X2GwIW3YKrsXqEsRM0OQuwBzKvDzwtjL/5cwi
-         CnISgZ4X4lAnFl19RQ55QUHqsauXucHtsFi7q7r31MSjbdMciQ0CiyyvL88Qmgez0p
-         nyET2p6mR0bjWUXy2Z1I4D8Qf/7dx0/NYSHZxeIljCAUJDwloolSCfeXk2ifDjDHPe
-         DZ3pfRjCGzHCWSSpvcsVvOYRfMnx+JrG22+r0i74rHnWnzlVrh8rZTkYtx331CV24f
-         hiFlpLhRtlKJGQAVmtJnjmZsb0QiUvrKJq6NKbm4tgNSOJB/qEvRKDMcYoGHB++PGo
-         BVvH5QAvnI0Jg==
-Received: by mail.mahavavy.com for <netfilter-devel@vger.kernel.org>; Tue, 27 Jun 2023 08:05:44 GMT
-Message-ID: <20230627064500-0.1.3e.7uc8.0.ir90lr5xg1@mahavavy.com>
-Date:   Tue, 27 Jun 2023 08:05:44 GMT
-From:   =?UTF-8?Q? "Kristi=C3=A1n_Plet=C3=A1nek" ?= 
-        <kristian.pletanek@mahavavy.com>
-To:     <netfilter-devel@vger.kernel.org>
-Subject: =?UTF-8?Q?Tlakov=C4=9B_lit=C3=BD?=
-X-Mailer: mail.mahavavy.com
+        Tue, 27 Jun 2023 06:18:17 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E4F3A99;
+        Tue, 27 Jun 2023 03:15:54 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3a1e6022b93so1128651b6e.1;
+        Tue, 27 Jun 2023 03:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687860954; x=1690452954;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hVVzoMXdpNjtgUHY250Y/W5hOx8AigmyoHcaBv9Xj10=;
+        b=LjOBDS4/K1nP0HoVX8WCclOQn7pQ/8iXxDkxd2EJZUZIqL8CU+WBtEb2dbMRXIV+xW
+         hx2e+Bfjd2qjVdRqcI1yWk0+RL+wnpCpmxEHEV49SbegpKBXo7w324p4AU+g4nbQufcT
+         L33nhOWiZgUoYXZ+qgy5OZ1wGOLBmiwMowWB2NwSbRg6E8jOrPlCh/7FiRl/AZK/Gojc
+         QQK5REJcXX5w2UghRVPnEyLmr+cB8eKAWoyJTsxeQtR/I8Jz2xGtI+KMmyYY/PUv4XdN
+         cZYbTCx4452vernxkvXK1Je4I1bQQt61t9xXcAQUsjSU96fm/Ly9Ce/vvPPHpxZwicmA
+         2pug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687860954; x=1690452954;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hVVzoMXdpNjtgUHY250Y/W5hOx8AigmyoHcaBv9Xj10=;
+        b=B8HydU5L3LlgBdcy3retH4TYyIezRlzrxt90udnFLf1XO2kCRst+2XRz/vUnXg8ua2
+         xr3QSPVExZbpQI7Jt64cHo5cZVRL4q2ULSbGS4b6MyhUO8VHrSb8u3LQdnN8kfMqsJUd
+         LMGZuSsVuAu036Mgwcas3k6s+j5JhPQmAGSod+UsZI3Pod5k+vspsj76AVqictuibUwF
+         3UT+8Fa9anY0QPEDfrzXDghpd7bqoWl9T0lDHPqN5l/WP5L1RHj0Z30fFLWCbKadBy2E
+         xYd/sZNtNfL9W6aTcnH1tTfBX0gElIpytUoMSzZ50Y8VrP6eirDAWeL8PlNtMIHeDeKN
+         HKiw==
+X-Gm-Message-State: AC+VfDwPVUj9XddDZ9Vx4Fle8WwTYunP8ALkya1vSnmf6DFRFEu+ehlv
+        feQG4CynDaXyLdUPJxY9hlo=
+X-Google-Smtp-Source: ACHHUZ4D4aCFbAdAdylYjRsMiktTcMuKpBXxQJbIUAzAKWIfqqhf+oEuf1AZTXi3NvUtUseIGyC/nQ==
+X-Received: by 2002:a05:6808:1cf:b0:3a1:dcca:9628 with SMTP id x15-20020a05680801cf00b003a1dcca9628mr5197155oic.10.1687860954084;
+        Tue, 27 Jun 2023 03:15:54 -0700 (PDT)
+Received: from [192.168.0.103] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id t4-20020a62ea04000000b00659b8313d08sm5146492pfh.78.2023.06.27.03.15.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jun 2023 03:15:53 -0700 (PDT)
+Message-ID: <99b64dfd-be4a-2248-5c42-8eb9197824e1@gmail.com>
+Date:   Tue, 27 Jun 2023 17:15:42 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIXED_ES,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: Fwd: High cpu usage caused by kernel process when upgraded to
+ linux 5.19.17 or later
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "J. Avila" <elavila@google.com>,
+        Vivek Anand <vivekanand754@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Renninger <trenn@suse.com>,
+        Shuah Khan <shuah@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Netfilter Development <netfilter-devel@vger.kernel.org>,
+        Netfilter Core Developers <coreteam@netfilter.org>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Linux Power Management <linux-pm@vger.kernel.org>,
+        x86@kernel.org
+References: <01ac399d-f793-49d4-844b-72cd8e0034df@gmail.com>
+ <ZJpJkL3dPXxgw6RK@debian.me>
+ <20230627073035.GV4253@hirez.programming.kicks-ass.net>
+Content-Language: en-US
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <20230627073035.GV4253@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Dobr=C3=A9 r=C3=A1no,
+On 6/27/23 14:30, Peter Zijlstra wrote:
+> I can't tell from this. Also, please don't use bugzilla.
 
-zaji=C5=A1=C5=A5ujeme technologii tlakov=C3=A9ho lit=C3=AD hlin=C3=ADku.
+Why not BZ? I'm confused too...
 
-M=C3=A1me v=C3=BDrobn=C3=AD z=C3=A1vody v Polsku, =C5=A0v=C3=A9dsku a =C4=
-=8C=C3=ADn=C4=9B se schopnost=C3=AD flexibiln=C4=9B p=C5=99esouvat v=C3=BD=
-robu mezi lokalitami.
+-- 
+An old man doll... just what I always wanted! - Clara
 
-Na=C5=A1e lic=C3=AD bu=C5=88ky jsou v=C4=9Bt=C5=A1inou automatick=C3=A9 n=
-ebo poloautomatick=C3=A9, co=C5=BE umo=C5=BE=C5=88uje v=C3=BDrobu velk=C3=
-=BDch v=C3=BDrobn=C3=ADch s=C3=A9ri=C3=AD s vysokou flexibilitou detail=C5=
-=AF.
-=20
-Poskytujeme podporu v ka=C5=BEd=C3=A9 f=C3=A1zi v=C3=BDvoje projektu, vyv=
-=C3=ADj=C3=ADme strukturu detailu.
-
-Cht=C4=9Bli byste mluvit o spolupr=C3=A1ci v t=C3=A9to oblasti?
-
-Pozdravy
-Kristi=C3=A1n Plet=C3=A1nek
