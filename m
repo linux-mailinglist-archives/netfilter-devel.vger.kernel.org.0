@@ -2,46 +2,119 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8EC7746F72
-	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Jul 2023 13:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6B7746E82
+	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Jul 2023 12:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbjGDLLj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 4 Jul 2023 07:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
+        id S229938AbjGDKZg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 4 Jul 2023 06:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbjGDLLj (ORCPT
+        with ESMTP id S229914AbjGDKZf (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 4 Jul 2023 07:11:39 -0400
-X-Greylist: delayed 10601 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 04 Jul 2023 04:11:37 PDT
-Received: from server113.hostingvirtuale.com (server113.hostingvirtuale.com [185.31.67.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7F334DA
-        for <netfilter-devel@vger.kernel.org>; Tue,  4 Jul 2023 04:11:37 -0700 (PDT)
-Received: by server113.hostingvirtuale.com (Postfix, from userid 1501)
-        id 904AD124C6C; Tue,  4 Jul 2023 10:10:55 +0200 (CEST)
-To:     netfilter-devel@vger.kernel.org
-Subject: Loan/Investment offer.
-X-PHP-Originating-Script: 1501:mach.php(6) : eval()'d code
-Date:   Tue, 4 Jul 2023 10:10:54 +0200
-From:   Frank Dawson <support@autiliavolpe.it>
-Reply-To: frankjody2@gmail.com
-Message-ID: <a360055a1d1f63c8a9258b3c4e7fc875@autiliavolpe.it>
+        Tue, 4 Jul 2023 06:25:35 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D44135
+        for <netfilter-devel@vger.kernel.org>; Tue,  4 Jul 2023 03:25:33 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1qGdDw-00061N-1t; Tue, 04 Jul 2023 12:25:32 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf] netfilter: conntrack: don't fold port numbers into addresses before hashing
+Date:   Tue,  4 Jul 2023 12:25:23 +0200
+Message-Id: <20230704102523.5795-1-fw@strlen.de>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_50,
-        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ***
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello.
-I am Frank Jody Dawson, I have investors and they are seeking to invest in any lucrative venture worldwide, like aviation, real estate, agriculture, industrial, medical equipment and renewable energy. My investors are mainly from the Arabian countries who are widely in real estate and oil and gas, but now they want to expand their businesses across the globe in any lucrative business.
-Your profile caught my attention so I decided to message and see if we
-can work together?
-Thank you,
-Frank.
+Originally this used jhash2() over tuple and folded the zone id,
+the pernet hash value, destination port and l4 protocol number into the
+32bit seed value.
+
+When the switch to siphash was done, I used an on-stack temporary
+buffer to build a suitable key to be hashed via siphash().
+
+But this showed up as performance regression, so I got rid of
+the temporary copy and collected to-be-hashed data in 4 u64 variables.
+
+This makes it easy to build tuples that produce the same hash, which isn't
+desirable even though chain lengths are limited.
+
+Switch back to plain siphash, but just like with jhash2(), take advantage
+of the fact that most of to-be-hashed data is already in a suitable order.
+
+Use an empty struct as annotation in 'struct nf_conntrack_tuple' to mark
+last member that can be used as hash input.
+
+The only remaining data that isn't present in the tuple structure are the
+zone identifier and the pernet hash: fold those into the key.
+
+Fixes: d2c806abcf0b ("netfilter: conntrack: use siphash_4u64")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ include/net/netfilter/nf_conntrack_tuple.h |  3 +++
+ net/netfilter/nf_conntrack_core.c          | 20 +++++++-------------
+ 2 files changed, 10 insertions(+), 13 deletions(-)
+
+diff --git a/include/net/netfilter/nf_conntrack_tuple.h b/include/net/netfilter/nf_conntrack_tuple.h
+index 9334371c94e2..f7dd950ff250 100644
+--- a/include/net/netfilter/nf_conntrack_tuple.h
++++ b/include/net/netfilter/nf_conntrack_tuple.h
+@@ -67,6 +67,9 @@ struct nf_conntrack_tuple {
+ 		/* The protocol. */
+ 		u_int8_t protonum;
+ 
++		/* The direction must be ignored for the tuplehash */
++		struct { } __nfct_hash_offsetend;
++
+ 		/* The direction (for tuplehash) */
+ 		u_int8_t dir;
+ 	} dst;
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index d119f1d4c2fc..992393102d5f 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -211,24 +211,18 @@ static u32 hash_conntrack_raw(const struct nf_conntrack_tuple *tuple,
+ 			      unsigned int zoneid,
+ 			      const struct net *net)
+ {
+-	u64 a, b, c, d;
++	siphash_key_t key;
+ 
+ 	get_random_once(&nf_conntrack_hash_rnd, sizeof(nf_conntrack_hash_rnd));
+ 
+-	/* The direction must be ignored, handle usable tuplehash members manually */
+-	a = (u64)tuple->src.u3.all[0] << 32 | tuple->src.u3.all[3];
+-	b = (u64)tuple->dst.u3.all[0] << 32 | tuple->dst.u3.all[3];
++	key = nf_conntrack_hash_rnd;
+ 
+-	c = (__force u64)tuple->src.u.all << 32 | (__force u64)tuple->dst.u.all << 16;
+-	c |= tuple->dst.protonum;
++	key.key[0] ^= zoneid;
++	key.key[1] ^= net_hash_mix(net);
+ 
+-	d = (u64)zoneid << 32 | net_hash_mix(net);
+-
+-	/* IPv4: u3.all[1,2,3] == 0 */
+-	c ^= (u64)tuple->src.u3.all[1] << 32 | tuple->src.u3.all[2];
+-	d += (u64)tuple->dst.u3.all[1] << 32 | tuple->dst.u3.all[2];
+-
+-	return (u32)siphash_4u64(a, b, c, d, &nf_conntrack_hash_rnd);
++	return siphash((void *)tuple,
++			offsetofend(struct nf_conntrack_tuple, dst.__nfct_hash_offsetend),
++			&key);
+ }
+ 
+ static u32 scale_hash(u32 hash)
+-- 
+2.39.3
 
