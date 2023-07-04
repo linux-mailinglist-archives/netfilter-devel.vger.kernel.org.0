@@ -2,100 +2,46 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D21746BFE
-	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Jul 2023 10:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EC7746F72
+	for <lists+netfilter-devel@lfdr.de>; Tue,  4 Jul 2023 13:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbjGDIeB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 4 Jul 2023 04:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50242 "EHLO
+        id S230258AbjGDLLj (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 4 Jul 2023 07:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231688AbjGDIdX (ORCPT
+        with ESMTP id S230028AbjGDLLj (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 4 Jul 2023 04:33:23 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1C84FC
-        for <netfilter-devel@vger.kernel.org>; Tue,  4 Jul 2023 01:33:22 -0700 (PDT)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
+        Tue, 4 Jul 2023 07:11:39 -0400
+X-Greylist: delayed 10601 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 04 Jul 2023 04:11:37 PDT
+Received: from server113.hostingvirtuale.com (server113.hostingvirtuale.com [185.31.67.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7F334DA
+        for <netfilter-devel@vger.kernel.org>; Tue,  4 Jul 2023 04:11:37 -0700 (PDT)
+Received: by server113.hostingvirtuale.com (Postfix, from userid 1501)
+        id 904AD124C6C; Tue,  4 Jul 2023 10:10:55 +0200 (CEST)
 To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] tests: shell: refcount memleak in map rhs with timeouts
-Date:   Tue,  4 Jul 2023 10:33:05 +0200
-Message-Id: <20230704083305.6399-2-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230704083305.6399-1-pablo@netfilter.org>
-References: <20230704083305.6399-1-pablo@netfilter.org>
+Subject: Loan/Investment offer.
+X-PHP-Originating-Script: 1501:mach.php(6) : eval()'d code
+Date:   Tue, 4 Jul 2023 10:10:54 +0200
+From:   Frank Dawson <support@autiliavolpe.it>
+Reply-To: frankjody2@gmail.com
+Message-ID: <a360055a1d1f63c8a9258b3c4e7fc875@autiliavolpe.it>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=UTF-8
+X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Extend coverage for refcount leaks on map element expiration.
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- .../testcases/maps/0018map_leak_timeout_0     | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
- create mode 100755 tests/shell/testcases/maps/0018map_leak_timeout_0
-
-diff --git a/tests/shell/testcases/maps/0018map_leak_timeout_0 b/tests/shell/testcases/maps/0018map_leak_timeout_0
-new file mode 100755
-index 000000000000..5a07ec7477d9
---- /dev/null
-+++ b/tests/shell/testcases/maps/0018map_leak_timeout_0
-@@ -0,0 +1,48 @@
-+#!/bin/bash
-+
-+set -e
-+
-+RULESET="table ip t {
-+        map sourcemap {
-+                type ipv4_addr : verdict
-+                timeout 3s
-+                elements = { 100.123.10.2 : jump c }
-+        }
-+
-+        chain c {
-+        }
-+}"
-+
-+$NFT -f - <<< "$RULESET"
-+# again, since it is addition, not creation, it is successful
-+$NFT -f - <<< "$RULESET"
-+
-+# wait for elements to expire
-+sleep 5
-+
-+# flush it to check for refcount leak
-+$NFT flush ruleset
-+
-+#
-+# again with stateful objects
-+#
-+
-+RULESET="table ip t {
-+	counter c {}
-+
-+        map sourcemap {
-+                type ipv4_addr : counter
-+                timeout 3s
-+                elements = { 100.123.10.2 : \"c\" }
-+        }
-+}"
-+
-+$NFT -f - <<< "$RULESET"
-+# again, since it is addition, not creation, it is successful
-+$NFT -f - <<< "$RULESET"
-+# flush it to check for refcount leak
-+
-+# wait for elements to expire
-+sleep 5
-+
-+$NFT flush ruleset
--- 
-2.30.2
+Hello.
+I am Frank Jody Dawson, I have investors and they are seeking to invest in any lucrative venture worldwide, like aviation, real estate, agriculture, industrial, medical equipment and renewable energy. My investors are mainly from the Arabian countries who are widely in real estate and oil and gas, but now they want to expand their businesses across the globe in any lucrative business.
+Your profile caught my attention so I decided to message and see if we
+can work together?
+Thank you,
+Frank.
 
