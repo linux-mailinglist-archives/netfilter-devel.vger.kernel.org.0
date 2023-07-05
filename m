@@ -2,31 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F9974879B
-	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Jul 2023 17:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951A4748994
+	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Jul 2023 18:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232724AbjGEPP3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 5 Jul 2023 11:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47550 "EHLO
+        id S231860AbjGEQys (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 5 Jul 2023 12:54:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232571AbjGEPP3 (ORCPT
+        with ESMTP id S231815AbjGEQyk (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 5 Jul 2023 11:15:29 -0400
+        Wed, 5 Jul 2023 12:54:40 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39CAF10EA;
-        Wed,  5 Jul 2023 08:15:28 -0700 (PDT)
-Date:   Wed, 5 Jul 2023 17:15:24 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2B5121989;
+        Wed,  5 Jul 2023 09:54:34 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     sashal@kernel.org, gregkh@linuxfoundation.org,
         stable@vger.kernel.org
-Subject: Re: [PATCH -stable,5.10,v2 00/11] stable fixes for 5.10
-Message-ID: <ZKWJDBS4w5Wc9uho@calendula>
-References: <20230705150011.59408-1-pablo@netfilter.org>
+Subject: [PATCH -stable,5.4 00/10] stable fixes for 5.4
+Date:   Wed,  5 Jul 2023 18:54:13 +0200
+Message-Id: <20230705165423.50054-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230705150011.59408-1-pablo@netfilter.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -36,82 +34,66 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hi,
+Hi Greg, Sasha,
 
-On Wed, Jul 05, 2023 at 05:00:00PM +0200, Pablo Neira Ayuso wrote:
-> Hi Greg, Sasha,
-> 
-> [ This is v2 appends patch #11 f838e0906dd3 as Florian suggested. ]
-                                 ^^^^^^^^^^^^
-                  this should be 2024439bd5ce instead
+The following list shows the backported patches, I am using original
+commit IDs for reference:
 
-> The following list shows the backported patches, I am using original
-> commit IDs for reference:
-> 
-> 1) 0854db2aaef3 ("netfilter: nf_tables: use net_generic infra for transaction data")
-> 
-> 2) 81ea01066741 ("netfilter: nf_tables: add rescheduling points during loop detection walks")
-> 
-> 3) 1240eb93f061 ("netfilter: nf_tables: incorrect error path handling with NFT_MSG_NEWRULE")
-> 
-> 4) 4bedf9eee016 ("netfilter: nf_tables: fix chain binding transaction logic")
-> 
-> 5) 26b5a5712eb8 ("netfilter: nf_tables: add NFT_TRANS_PREPARE_ERROR to deal with bound set/chain")
-> 
-> 6) 938154b93be8 ("netfilter: nf_tables: reject unbound anonymous set before commit phase")
-> 
-> 7) 62e1e94b246e ("netfilter: nf_tables: reject unbound chain set before commit phase")
-> 
-> 8) f8bb7889af58 ("netfilter: nftables: rename set element data activation/deactivation functions")
-> 
-> 9) 628bd3e49cba ("netfilter: nf_tables: drop map element references from preparation phase")
-> 
-> 10) 3e70489721b6 ("netfilter: nf_tables: unbind non-anonymous set if rule construction fails")
-> 
-> 11) f838e0906dd3 ("netfilter: nf_tables: fix scheduling-while-atomic splat")
+1) 1e9451cbda45 ("netfilter: nf_tables: fix nat hook table deletion")
 
-Nitpick, incorrect original commit in this cover letter patch #11:
+2) 802b805162a1 ("netfilter: nftables: add helper function to set the base sequence number")
 
-  11) 2024439bd5ce ("netfilter: nf_tables: fix scheduling-while-atomic splat")
+3) 19c28b1374fb ("netfilter: add helper function to set up the nfnetlink header and use it")
 
-Backport of patch #11 already points to the valid original commit.
+4) 0854db2aaef3 ("netfilter: nf_tables: use net_generic infra for transaction data")
 
-> Note:
-> 
-> - Patch #1 is a backported dependency patch required by these fixes.
-> - Patch #2 needs a follow up fix coming in this series as patch #11.
-> 
-> Please, apply,
-> Thanks.
-> 
-> Florian Westphal (3):
->   netfilter: nf_tables: use net_generic infra for transaction data
->   netfilter: nf_tables: add rescheduling points during loop detection walks
->   netfilter: nf_tables: fix scheduling-while-atomic splat
-> 
-> Pablo Neira Ayuso (8):
->   netfilter: nf_tables: incorrect error path handling with NFT_MSG_NEWRULE
->   netfilter: nf_tables: fix chain binding transaction logic
->   netfilter: nf_tables: add NFT_TRANS_PREPARE_ERROR to deal with bound set/chain
->   netfilter: nf_tables: reject unbound anonymous set before commit phase
->   netfilter: nf_tables: reject unbound chain set before commit phase
->   netfilter: nftables: rename set element data activation/deactivation functions
->   netfilter: nf_tables: drop map element references from preparation phase
->   netfilter: nf_tables: unbind non-anonymous set if rule construction fails
-> 
->  include/net/netfilter/nf_tables.h |  41 +-
->  include/net/netns/nftables.h      |   7 -
->  net/netfilter/nf_tables_api.c     | 692 +++++++++++++++++++++---------
->  net/netfilter/nf_tables_offload.c |  30 +-
->  net/netfilter/nft_chain_filter.c  |  11 +-
->  net/netfilter/nft_dynset.c        |   6 +-
->  net/netfilter/nft_immediate.c     |  90 +++-
->  net/netfilter/nft_set_bitmap.c    |   5 +-
->  net/netfilter/nft_set_hash.c      |  23 +-
->  net/netfilter/nft_set_pipapo.c    |  14 +-
->  net/netfilter/nft_set_rbtree.c    |   5 +-
->  11 files changed, 678 insertions(+), 246 deletions(-)
-> 
-> -- 
-> 2.30.2
-> 
+5) 81ea01066741 ("netfilter: nf_tables: add rescheduling points during loop detection walks")
+
+6) 1240eb93f061 ("netfilter: nf_tables: incorrect error path handling with NFT_MSG_NEWRULE")
+
+7) 26b5a5712eb8 ("netfilter: nf_tables: add NFT_TRANS_PREPARE_ERROR to deal with bound set/chain")
+
+8) 938154b93be8 ("netfilter: nf_tables: reject unbound anonymous set before commit phase")
+
+9) 3e70489721b6 ("netfilter: nf_tables: unbind non-anonymous set if rule construction fails")
+
+10) 2024439bd5ce ("netfilter: nf_tables: fix scheduling-while-atomic splat")
+
+Please, apply,
+Thanks
+
+Florian Westphal (4):
+  netfilter: nf_tables: fix nat hook table deletion
+  netfilter: nf_tables: use net_generic infra for transaction data
+  netfilter: nf_tables: add rescheduling points during loop detection walks
+  netfilter: nf_tables: fix scheduling-while-atomic splat
+
+Pablo Neira Ayuso (6):
+  netfilter: nftables: add helper function to set the base sequence number
+  netfilter: add helper function to set up the nfnetlink header and use it
+  netfilter: nf_tables: incorrect error path handling with NFT_MSG_NEWRULE
+  netfilter: nf_tables: add NFT_TRANS_PREPARE_ERROR to deal with bound set/chain
+  netfilter: nf_tables: reject unbound anonymous set before commit phase
+  netfilter: nf_tables: unbind non-anonymous set if rule construction fails
+
+ include/linux/netfilter/nfnetlink.h  |  27 ++
+ include/net/netfilter/nf_tables.h    |  14 +
+ include/net/netns/nftables.h         |   6 -
+ net/netfilter/ipset/ip_set_core.c    |  17 +-
+ net/netfilter/nf_conntrack_netlink.c |  77 ++--
+ net/netfilter/nf_tables_api.c        | 510 ++++++++++++++++-----------
+ net/netfilter/nf_tables_offload.c    |  29 +-
+ net/netfilter/nf_tables_trace.c      |   9 +-
+ net/netfilter/nfnetlink_acct.c       |  11 +-
+ net/netfilter/nfnetlink_cthelper.c   |  11 +-
+ net/netfilter/nfnetlink_cttimeout.c  |  22 +-
+ net/netfilter/nfnetlink_log.c        |  11 +-
+ net/netfilter/nfnetlink_queue.c      |  12 +-
+ net/netfilter/nft_chain_filter.c     |  11 +-
+ net/netfilter/nft_compat.c           |  11 +-
+ net/netfilter/nft_dynset.c           |   6 +-
+ 16 files changed, 418 insertions(+), 366 deletions(-)
+
+-- 
+2.30.2
+
