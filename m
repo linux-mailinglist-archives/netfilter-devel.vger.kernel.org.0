@@ -2,83 +2,148 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3050D7489AB
+	by mail.lfdr.de (Postfix) with ESMTP id E51577489AE
 	for <lists+netfilter-devel@lfdr.de>; Wed,  5 Jul 2023 18:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbjGEQzY (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 5 Jul 2023 12:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
+        id S229775AbjGEQzZ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 5 Jul 2023 12:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbjGEQzX (ORCPT
+        with ESMTP id S230385AbjGEQzY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 5 Jul 2023 12:55:23 -0400
+        Wed, 5 Jul 2023 12:55:24 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A61D01713;
-        Wed,  5 Jul 2023 09:55:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 57CF910C3;
+        Wed,  5 Jul 2023 09:55:23 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     sashal@kernel.org, gregkh@linuxfoundation.org,
         stable@vger.kernel.org
-Subject: [PATCH -stable,4.19 02/10] netfilter: nf_tables: add rescheduling points during loop detection walks
-Date:   Wed,  5 Jul 2023 18:55:08 +0200
-Message-Id: <20230705165516.50145-3-pablo@netfilter.org>
+Subject: [PATCH -stable,4.19 03/10] netfilter: nftables: add helper function to set the base sequence number
+Date:   Wed,  5 Jul 2023 18:55:09 +0200
+Message-Id: <20230705165516.50145-4-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230705165516.50145-1-pablo@netfilter.org>
 References: <20230705165516.50145-1-pablo@netfilter.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+[ 802b805162a1b7d8391c40ac8a878e9e63287aff ]
 
-[ 81ea010667417ef3f218dfd99b69769fe66c2b67 ]
+This patch adds a helper function to calculate the base sequence number
+field that is stored in the nfnetlink header. Use the helper function
+whenever possible.
 
-Add explicit rescheduling points during ruleset walk.
-
-Switching to a faster algorithm is possible but this is a much
-smaller change, suitable for nf tree.
-
-Link: https://bugzilla.netfilter.org/show_bug.cgi?id=1460
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ net/netfilter/nf_tables_api.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index fe9db14d01ce..d5008a51069c 100644
+index d5008a51069c..154bdcc27d72 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -2552,6 +2552,8 @@ int nft_chain_validate(const struct nft_ctx *ctx, const struct nft_chain *chain)
- 			if (err < 0)
- 				return err;
- 		}
-+
-+		cond_resched();
- 	}
+@@ -561,6 +561,11 @@ nf_tables_chain_type_lookup(struct net *net, const struct nlattr *nla,
+ 	return ERR_PTR(-ENOENT);
+ }
  
- 	return 0;
-@@ -6956,9 +6958,13 @@ static int nf_tables_check_loops(const struct nft_ctx *ctx,
- 				break;
- 			}
- 		}
++static __be16 nft_base_seq(const struct net *net)
++{
++	return htons(net->nft.base_seq & 0xffff);
++}
 +
-+		cond_resched();
- 	}
+ static const struct nla_policy nft_table_policy[NFTA_TABLE_MAX + 1] = {
+ 	[NFTA_TABLE_NAME]	= { .type = NLA_STRING,
+ 				    .len = NFT_TABLE_MAXNAMELEN - 1 },
+@@ -583,7 +588,7 @@ static int nf_tables_fill_table_info(struct sk_buff *skb, struct net *net,
+ 	nfmsg = nlmsg_data(nlh);
+ 	nfmsg->nfgen_family	= family;
+ 	nfmsg->version		= NFNETLINK_V0;
+-	nfmsg->res_id		= htons(net->nft.base_seq & 0xffff);
++	nfmsg->res_id		= nft_base_seq(net);
  
- 	list_for_each_entry(set, &ctx->table->sets, list) {
-+		cond_resched();
-+
- 		if (!nft_is_active_next(ctx->net, set))
- 			continue;
- 		if (!(set->flags & NFT_SET_MAP) ||
+ 	if (nla_put_string(skb, NFTA_TABLE_NAME, table->name) ||
+ 	    nla_put_be32(skb, NFTA_TABLE_FLAGS, htonl(table->flags)) ||
+@@ -1218,7 +1223,7 @@ static int nf_tables_fill_chain_info(struct sk_buff *skb, struct net *net,
+ 	nfmsg = nlmsg_data(nlh);
+ 	nfmsg->nfgen_family	= family;
+ 	nfmsg->version		= NFNETLINK_V0;
+-	nfmsg->res_id		= htons(net->nft.base_seq & 0xffff);
++	nfmsg->res_id		= nft_base_seq(net);
+ 
+ 	if (nla_put_string(skb, NFTA_CHAIN_TABLE, table->name))
+ 		goto nla_put_failure;
+@@ -2265,7 +2270,7 @@ static int nf_tables_fill_rule_info(struct sk_buff *skb, struct net *net,
+ 	nfmsg = nlmsg_data(nlh);
+ 	nfmsg->nfgen_family	= family;
+ 	nfmsg->version		= NFNETLINK_V0;
+-	nfmsg->res_id		= htons(net->nft.base_seq & 0xffff);
++	nfmsg->res_id		= nft_base_seq(net);
+ 
+ 	if (nla_put_string(skb, NFTA_RULE_TABLE, table->name))
+ 		goto nla_put_failure;
+@@ -3176,7 +3181,7 @@ static int nf_tables_fill_set(struct sk_buff *skb, const struct nft_ctx *ctx,
+ 	nfmsg = nlmsg_data(nlh);
+ 	nfmsg->nfgen_family	= ctx->family;
+ 	nfmsg->version		= NFNETLINK_V0;
+-	nfmsg->res_id		= htons(ctx->net->nft.base_seq & 0xffff);
++	nfmsg->res_id		= nft_base_seq(ctx->net);
+ 
+ 	if (nla_put_string(skb, NFTA_SET_TABLE, ctx->table->name))
+ 		goto nla_put_failure;
+@@ -4032,7 +4037,7 @@ static int nf_tables_dump_set(struct sk_buff *skb, struct netlink_callback *cb)
+ 	nfmsg = nlmsg_data(nlh);
+ 	nfmsg->nfgen_family = table->family;
+ 	nfmsg->version      = NFNETLINK_V0;
+-	nfmsg->res_id	    = htons(net->nft.base_seq & 0xffff);
++	nfmsg->res_id	    = nft_base_seq(net);
+ 
+ 	if (nla_put_string(skb, NFTA_SET_ELEM_LIST_TABLE, table->name))
+ 		goto nla_put_failure;
+@@ -4104,7 +4109,7 @@ static int nf_tables_fill_setelem_info(struct sk_buff *skb,
+ 	nfmsg = nlmsg_data(nlh);
+ 	nfmsg->nfgen_family	= ctx->family;
+ 	nfmsg->version		= NFNETLINK_V0;
+-	nfmsg->res_id		= htons(ctx->net->nft.base_seq & 0xffff);
++	nfmsg->res_id		= nft_base_seq(ctx->net);
+ 
+ 	if (nla_put_string(skb, NFTA_SET_TABLE, ctx->table->name))
+ 		goto nla_put_failure;
+@@ -5152,7 +5157,7 @@ static int nf_tables_fill_obj_info(struct sk_buff *skb, struct net *net,
+ 	nfmsg = nlmsg_data(nlh);
+ 	nfmsg->nfgen_family	= family;
+ 	nfmsg->version		= NFNETLINK_V0;
+-	nfmsg->res_id		= htons(net->nft.base_seq & 0xffff);
++	nfmsg->res_id		= nft_base_seq(net);
+ 
+ 	if (nla_put_string(skb, NFTA_OBJ_TABLE, table->name) ||
+ 	    nla_put_string(skb, NFTA_OBJ_NAME, obj->name) ||
+@@ -5813,7 +5818,7 @@ static int nf_tables_fill_flowtable_info(struct sk_buff *skb, struct net *net,
+ 	nfmsg = nlmsg_data(nlh);
+ 	nfmsg->nfgen_family	= family;
+ 	nfmsg->version		= NFNETLINK_V0;
+-	nfmsg->res_id		= htons(net->nft.base_seq & 0xffff);
++	nfmsg->res_id		= nft_base_seq(net);
+ 
+ 	if (nla_put_string(skb, NFTA_FLOWTABLE_TABLE, flowtable->table->name) ||
+ 	    nla_put_string(skb, NFTA_FLOWTABLE_NAME, flowtable->name) ||
+@@ -6051,7 +6056,7 @@ static int nf_tables_fill_gen_info(struct sk_buff *skb, struct net *net,
+ 	nfmsg = nlmsg_data(nlh);
+ 	nfmsg->nfgen_family	= AF_UNSPEC;
+ 	nfmsg->version		= NFNETLINK_V0;
+-	nfmsg->res_id		= htons(net->nft.base_seq & 0xffff);
++	nfmsg->res_id		= nft_base_seq(net);
+ 
+ 	if (nla_put_be32(skb, NFTA_GEN_ID, htonl(net->nft.base_seq)) ||
+ 	    nla_put_be32(skb, NFTA_GEN_PROC_PID, htonl(task_pid_nr(current))) ||
 -- 
 2.30.2
 
