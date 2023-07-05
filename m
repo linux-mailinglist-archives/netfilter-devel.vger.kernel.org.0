@@ -2,33 +2,29 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEFB74912A
-	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Jul 2023 00:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7648749144
+	for <lists+netfilter-devel@lfdr.de>; Thu,  6 Jul 2023 01:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbjGEW4y (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 5 Jul 2023 18:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60828 "EHLO
+        id S230436AbjGEXEQ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 5 Jul 2023 19:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjGEW4y (ORCPT
+        with ESMTP id S229772AbjGEXEP (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 5 Jul 2023 18:56:54 -0400
+        Wed, 5 Jul 2023 19:04:15 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D220CF7;
-        Wed,  5 Jul 2023 15:56:53 -0700 (PDT)
-Date:   Thu, 6 Jul 2023 00:56:50 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AAA7E102;
+        Wed,  5 Jul 2023 16:04:14 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Cc:     netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        Florian Westphal <fw@strlen.de>
-Subject: Re: [PATCH v2] netfilter: nf_tables: prevent OOB access in
- nft_byteorder_eval
-Message-ID: <ZKX1Mt2pjVTpjA24@calendula>
-References: <20230705201232.GG3751@breakpoint.cc>
- <20230705210535.943194-1-cascardo@canonical.com>
+To:     netfilter-devel@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+        pabeni@redhat.com, edumazet@google.com
+Subject: [PATCH net 0/6] Netfilter fixes for net
+Date:   Thu,  6 Jul 2023 01:04:00 +0200
+Message-Id: <20230705230406.52201-1-pablo@netfilter.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230705210535.943194-1-cascardo@canonical.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -38,9 +34,72 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Jul 05, 2023 at 06:05:35PM -0300, Thadeu Lima de Souza Cascardo wrote:
-> When evaluating byteorder expressions with size 2, a union with 32-bit and
-> 16-bit members is used. Since the 16-bit members are aligned to 32-bit,
-> the array accesses will be out-of-bounds.
+Hi,
 
-Applied to nf, thanks
+The following patchset contains Netfilter fixes for net:
+
+1) Fix missing overflow use refcount checks in nf_tables.
+
+2) Do not set IPS_ASSURED for IPS_NAT_CLASH entries in GRE tracker,
+   from Florian Westphal.
+
+3) Bail out if nf_ct_helper_hash is NULL before registering helper,
+   from Florent Revest.
+
+4) Use siphash() instead siphash_4u64() to fix performance regression,
+   also from Florian.
+
+5) Do not allow to add rules to removed chains via ID,
+   from Thadeu Lima de Souza Cascardo.
+
+6) Fix oob read access in byteorder expression, also from Thadeu.
+
+Please, pull these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-23-07-06
+
+Thanks.
+
+----------------------------------------------------------------
+
+The following changes since commit c451410ca7e3d8eeb31d141fc20c200e21754ba4:
+
+  Merge branch 'mptcp-fixes' (2023-07-05 10:51:14 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-23-07-06
+
+for you to fetch changes up to caf3ef7468f7534771b5c44cd8dbd6f7f87c2cbd:
+
+  netfilter: nf_tables: prevent OOB access in nft_byteorder_eval (2023-07-06 00:53:14 +0200)
+
+----------------------------------------------------------------
+netfilter pull request 23-07-06
+
+----------------------------------------------------------------
+Florent Revest (1):
+      netfilter: conntrack: Avoid nf_ct_helper_hash uses after free
+
+Florian Westphal (2):
+      netfilter: conntrack: gre: don't set assured flag for clash entries
+      netfilter: conntrack: don't fold port numbers into addresses before hashing
+
+Pablo Neira Ayuso (1):
+      netfilter: nf_tables: report use refcount overflow
+
+Thadeu Lima de Souza Cascardo (2):
+      netfilter: nf_tables: do not ignore genmask when looking up chain by id
+      netfilter: nf_tables: prevent OOB access in nft_byteorder_eval
+
+ include/net/netfilter/nf_conntrack_tuple.h |   3 +
+ include/net/netfilter/nf_tables.h          |  31 ++++-
+ net/netfilter/nf_conntrack_core.c          |  20 ++--
+ net/netfilter/nf_conntrack_helper.c        |   4 +
+ net/netfilter/nf_conntrack_proto_gre.c     |  10 +-
+ net/netfilter/nf_tables_api.c              | 174 ++++++++++++++++++-----------
+ net/netfilter/nft_byteorder.c              |  14 +--
+ net/netfilter/nft_flow_offload.c           |   6 +-
+ net/netfilter/nft_immediate.c              |   8 +-
+ net/netfilter/nft_objref.c                 |   8 +-
+ 10 files changed, 178 insertions(+), 100 deletions(-)
