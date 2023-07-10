@@ -2,99 +2,91 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 271F174D348
-	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jul 2023 12:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111B774D3CC
+	for <lists+netfilter-devel@lfdr.de>; Mon, 10 Jul 2023 12:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbjGJKYe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 10 Jul 2023 06:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
+        id S233019AbjGJKlx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 10 Jul 2023 06:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230345AbjGJKYd (ORCPT
+        with ESMTP id S231531AbjGJKln (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 10 Jul 2023 06:24:33 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEF494
-        for <netfilter-devel@vger.kernel.org>; Mon, 10 Jul 2023 03:24:31 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbc77e76abso45162105e9.1
-        for <netfilter-devel@vger.kernel.org>; Mon, 10 Jul 2023 03:24:31 -0700 (PDT)
+        Mon, 10 Jul 2023 06:41:43 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228FC123;
+        Mon, 10 Jul 2023 03:41:40 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-bc379e4c1cbso5508563276.2;
+        Mon, 10 Jul 2023 03:41:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gooddata.com; s=google; t=1688984668; x=1691576668;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6cRtBGl2Jd1fZvryX9XkjpF1gAXAlryMpWJLazKFVjI=;
-        b=X4DS7UynebrTJVoaLCWi34C2KFcljiicvoAdlMxJT2icAMBTv8+436wBbgEcmL4vQz
-         oCO0Ll7lSOswr7ix+SyzTxWy2h0Keubes4cuNUQ7L3nJ6iQo9pTweuGARhbYVMZKkha2
-         pat2F06Gp2SsANs8SONYRmZXEf5fAlq31XSfE=
+        d=gmail.com; s=20221208; t=1688985700; x=1691577700;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bmQLilPsv1+o9dpVfU0n6GqcdjgC09j/u6QpTRFz0XI=;
+        b=eI+SBvrLFuHf0wip9WUKMldMlxbIbs+8sW6XDIrDv0sY1ImWgCaMCm8KgR2EYyn/J8
+         uAOtq72v8B9TAE+cAcZ+3T9uARSm85IydeVZXfJqxsYaWXAOyWjPMKMUDixkAhST5IW4
+         1aJABnzIgbhpB/x+fcRYCGzoYVSsObCUSBGpCUfJT+S1NSxBgJN12REwe7086pxNt5WG
+         eN6J0YpQtgi0VVjQvx6AdmljzBjj6ANcJhaz99vz9CNTwtaTSaMe0CJUviwR5TbxFylT
+         wcmL7DHYnuGT9bzNT2gU1aDJhQoszCaIPL/alEFp9lvzw5Cwaq8p7Adj0QKl/kTkDi7a
+         9Xeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688984668; x=1691576668;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6cRtBGl2Jd1fZvryX9XkjpF1gAXAlryMpWJLazKFVjI=;
-        b=V1NDKocKnMLAZBOSPa2w5gE0Gv93UaBrGjjJyNAAqB01FHGVkMb7wZT9RgF/jVulI6
-         ak1nptxnTsdZxsiCatL+mGCtJTUaNrOSgYvGlz5hH+PtR2FdGEd6PMyPC4AE1sJF4bYQ
-         ankJP/lIOLJfCK0L7m2Qr1Vu5WXymueSPcv9ars/lSiOzbaVtUTgkqLCSp+Otb8oSVRL
-         du6uWfnw5Yg1DXvAhpi2wVtwH0F9XEAE5PJwKbVp09xD0bpm8IzS7eXpH7KBOMrCxnKj
-         7aJI0x4nEX263n2rQwORh0WByPMf+uhS4is7axxMdgCkOrVySBtgbhtf9E0Jh5C91x2B
-         KAlw==
-X-Gm-Message-State: ABy/qLYaaaxsVeeaPRdrjqp0UguzXNRvet4IHoF4iyg4ScQGz+I7K4Qr
-        MFfQot+F9DW2kDrAP6WxxF/VocZTyiWRCN3PycLmYOnH64qerzllAKU=
-X-Google-Smtp-Source: APBJJlEzrjahu6hPGchrl8vN+fympQ1Z+FsBQ/pvfT9nGT1KLynwxnHBOS+0ucXJb7NNFFFxWPY0yxhUYl8lY62dNLo=
-X-Received: by 2002:a05:600c:21d4:b0:3fb:ad5d:9568 with SMTP id
- x20-20020a05600c21d400b003fbad5d9568mr10754047wmj.38.1688984668668; Mon, 10
- Jul 2023 03:24:28 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1688985700; x=1691577700;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bmQLilPsv1+o9dpVfU0n6GqcdjgC09j/u6QpTRFz0XI=;
+        b=QnEVTVkLXLZYFsPFf2O1YryW7w53dY1mPCL2CKYYGjuk3CvU8OlY+4yRKJi+ZsxEN6
+         atzLuDYFQwtU3nHnHR59DRT0GnLfdjjbJzljJ9aHO2lNljS5qEaL+lUNJypCNNdNYwEZ
+         fvlLKgRAeHKHgohJ24XMSSqVW81fnOEbkubU+NKN332wiUHqeeM4wK9+ZIzsOEy+8YKe
+         kspB8haI1bxeop0jUUsDxQ9i94myMB/halsUEPhK0QzcsK8j+yiS5yTqTeHdYsnotEdd
+         mq0LvEfawIr01kFeAmvuntLbSXuEjZU+jEiF1w0lTBDaeZQKfBWQCp0qefzJwGg3cA5C
+         LG8Q==
+X-Gm-Message-State: ABy/qLZ+ALLtz33suGWEheOlyvYuJwg9dWhQ2z4onO1IkNzcR+KKboSR
+        L1JvVVGGmJWNANW1wlnYTbvOfQNTx3oDDaHk8Wa6t2EAKco=
+X-Google-Smtp-Source: APBJJlGNVqWENF241nOZK+8gNRzOgayLH8nUDuN8QOMR7IHHOlCkSJYX0vv5Ou9qYsGOwoG4N5nb3y4P0BrTJfSSLSo=
+X-Received: by 2002:a25:4c85:0:b0:c24:4536:1723 with SMTP id
+ z127-20020a254c85000000b00c2445361723mr12260167yba.26.1688985699969; Mon, 10
+ Jul 2023 03:41:39 -0700 (PDT)
 MIME-Version: 1.0
-From:   Igor Raits <igor@gooddata.com>
-Date:   Mon, 10 Jul 2023 12:24:17 +0200
-Message-ID: <CA+9S74jbOefRzu1YxUrXC7gbYY8xDKH6QNJBuAQoNnnLODxWrg@mail.gmail.com>
-Subject: ebtables-nft can't delete complex rules by specifying complete rule
- with kernel 6.3+
-To:     netfilter-devel@vger.kernel.org
+References: <20230710172602.05d32c03@canb.auug.org.au> <CANiq72npQiWMebvYTu8Z+XuJAyUH6-iygGtbF9V6y+R2aD1-vw@mail.gmail.com>
+ <20230710182229.36bcf79d@canb.auug.org.au>
+In-Reply-To: <20230710182229.36bcf79d@canb.auug.org.au>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 10 Jul 2023 12:41:29 +0200
+Message-ID: <CANiq72mb5Rryeh-q9J+jZX1doHjUK+13yim3=Rrm-2j87dzQVg@mail.gmail.com>
+Subject: Re: linux-next: branches to be removed
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Leo Li <leoyang.li@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Hello,
+On Mon, Jul 10, 2023 at 12:16=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.or=
+g.au> wrote:
+>
+> I have resurrected it.  You might consider just resetting the branch to
+> something recent in Linus' tree.
 
-We started to observe the issue regarding ebtables-nft and how it
-can't wipe rules when specifying full rule. Removing the rule by index
-works fine, though. Also with kernel 6.1.y it works completely fine.
+Done, thanks!
 
-I've started with 1.8.8 provided in CentOS Stream 9, then tried the
-latest git version and all behave exactly the same. See the behavior
-below. As you can see, simple DROP works, but more complex one do not.
-
-As bugzilla requires some special sign-up procedure, apologize for
-reporting it directly here in the ML.
-
-# ebtables -L
-Bridge table: filter
-
-Bridge chain: INPUT, entries: 0, policy: ACCEPT
-
-Bridge chain: FORWARD, entries: 0, policy: ACCEPT
-
-Bridge chain: OUTPUT, entries: 0, policy: ACCEPT
-# ebtables -t nat -N barani
-# ebtables -t nat -A barani -i br_public --among-src fa:16:3e:26:bf:42 -j RETURN
-# ebtables -t nat -D barani -i br_public --among-src fa:16:3e:26:bf:42 -j RETURN
-ebtables v1.8.9 (nf_tables):  RULE_DELETE failed (Invalid argument):
-rule in chain barani
-# ebtables -t nat -A barani -j DROP
-# ebtables -t nat -D barani -j DROP
-# ebtables -t nat -L barani
-Bridge table: nat
-
-Bridge chain: barani, entries: 1, policy: RETURN
--i br_public --among-src fa:16:3e:26:bf:42 -j RETURN
-# ebtables -t nat -D barani 1
-# ebtables -t nat -L barani
-Bridge table: nat
-
-Bridge chain: barani, entries: 0, policy: RETURN
+Cheers,
+Miguel
