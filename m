@@ -2,26 +2,26 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8D1751C39
+	by mail.lfdr.de (Postfix) with ESMTP id B26BC751C3B
 	for <lists+netfilter-devel@lfdr.de>; Thu, 13 Jul 2023 10:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234630AbjGMItw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 13 Jul 2023 04:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50938 "EHLO
+        id S234621AbjGMItv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 13 Jul 2023 04:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234628AbjGMItZ (ORCPT
+        with ESMTP id S234547AbjGMItY (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 13 Jul 2023 04:49:25 -0400
+        Thu, 13 Jul 2023 04:49:24 -0400
 Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A8D32686;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 63A1910FA;
         Thu, 13 Jul 2023 01:49:16 -0700 (PDT)
 From:   Pablo Neira Ayuso <pablo@netfilter.org>
 To:     netfilter-devel@vger.kernel.org
 Cc:     gregkh@linuxfoundation.org, stable@vger.kernel.org,
         sashal@kernel.org
-Subject: [PATCH -stable,5.10 v3 10/11] netfilter: nf_tables: unbind non-anonymous set if rule construction fails
-Date:   Thu, 13 Jul 2023 10:48:58 +0200
-Message-Id: <20230713084859.71541-11-pablo@netfilter.org>
+Subject: [PATCH -stable,5.10 v3 11/11] netfilter: nf_tables: fix scheduling-while-atomic splat
+Date:   Thu, 13 Jul 2023 10:48:59 +0200
+Message-Id: <20230713084859.71541-12-pablo@netfilter.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230713084859.71541-1-pablo@netfilter.org>
 References: <20230713084859.71541-1-pablo@netfilter.org>
@@ -36,30 +36,38 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-[ Upstream commit 3e70489721b6c870252c9082c496703677240f53 ]
+From: Florian Westphal <fw@strlen.de>
 
-Otherwise a dangling reference to a rule object that is gone remains
-in the set binding list.
+[ Upstream commit 2024439bd5ceb145eeeb428b2a59e9b905153ac3 ]
 
-Fixes: 26b5a5712eb8 ("netfilter: nf_tables: add NFT_TRANS_PREPARE_ERROR to deal with bound set/chain")
+nf_tables_check_loops() can be called from rhashtable list
+walk so cond_resched() cannot be used here.
+
+Fixes: 81ea01066741 ("netfilter: nf_tables: add rescheduling points during loop detection walks")
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- net/netfilter/nf_tables_api.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/netfilter/nf_tables_api.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 6f6e8c567892..25b834868eac 100644
+index 25b834868eac..7e037daaa613 100644
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -4689,6 +4689,8 @@ void nf_tables_deactivate_set(const struct nft_ctx *ctx, struct nft_set *set,
- 		nft_set_trans_unbind(ctx, set);
- 		if (nft_set_is_anonymous(set))
- 			nft_deactivate_next(ctx->net, set);
-+		else
-+			list_del_rcu(&binding->list);
+@@ -8684,13 +8684,9 @@ static int nf_tables_check_loops(const struct nft_ctx *ctx,
+ 				break;
+ 			}
+ 		}
+-
+-		cond_resched();
+ 	}
  
- 		set->use--;
- 		break;
+ 	list_for_each_entry(set, &ctx->table->sets, list) {
+-		cond_resched();
+-
+ 		if (!nft_is_active_next(ctx->net, set))
+ 			continue;
+ 		if (!(set->flags & NFT_SET_MAP) ||
 -- 
 2.30.2
 
