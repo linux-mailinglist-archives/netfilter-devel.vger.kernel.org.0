@@ -2,166 +2,155 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2DD753592
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jul 2023 10:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1067536FC
+	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jul 2023 11:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235439AbjGNIut (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Jul 2023 04:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55866 "EHLO
+        id S235974AbjGNJsR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 14 Jul 2023 05:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235517AbjGNIus (ORCPT
+        with ESMTP id S235072AbjGNJsE (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:50:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24EA26B2
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Jul 2023 01:49:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689324599;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9TjVXwn7iD/vD0Qhmgtp+Jj1u5DqSWW5VUu9BhWccyw=;
-        b=LM3qc9twZBFvAZpIW0a7X3iC14k7YXsHKjUu3Jyrz0mxtEsZPmWohbiKM/g/t4lWQCo6uE
-        gk9f2YEaBVMoCjRfORmGOeRSbN0BIT/cn9sjBuBGE1w+M1rY1HczyCzc5sqjGCVtxCA1yb
-        jg1y6JagHT8fjTMfimFx701xqmJj+/s=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-111-RoLCYWabOPOpIilWu1aXNg-1; Fri, 14 Jul 2023 04:49:57 -0400
-X-MC-Unique: RoLCYWabOPOpIilWu1aXNg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 54EDB1064B40;
-        Fri, 14 Jul 2023 08:49:57 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.39.192.135])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AF444492B03;
-        Fri, 14 Jul 2023 08:49:56 +0000 (UTC)
-From:   Thomas Haller <thaller@redhat.com>
-To:     NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Thomas Haller <thaller@redhat.com>
-Subject: [nft v2 PATCH 3/3] py: add input_{set,get}_flags() API to helpers
-Date:   Fri, 14 Jul 2023 10:48:53 +0200
-Message-ID: <20230714084943.1080757-3-thaller@redhat.com>
-In-Reply-To: <20230714084943.1080757-1-thaller@redhat.com>
-References: <ZKxG23yJzlRRPpsO@calendula>
- <20230714084943.1080757-1-thaller@redhat.com>
+        Fri, 14 Jul 2023 05:48:04 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8A32D73;
+        Fri, 14 Jul 2023 02:47:59 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qKFOn-0002GU-MB; Fri, 14 Jul 2023 11:47:41 +0200
+Date:   Fri, 14 Jul 2023 11:47:41 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org,
+        Network Development <netdev@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>
+Subject: Re: [PATCH bpf-next v4 2/6] netfilter: bpf: Support
+ BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+Message-ID: <20230714094741.GA7912@breakpoint.cc>
+References: <cover.1689203090.git.dxu@dxuuu.xyz>
+ <d3b0ff95c58356192ea3b50824f8cdbf02c354e3.1689203090.git.dxu@dxuuu.xyz>
+ <CAADnVQKKfEtZYZxihxvG3aQ34E1m95qTZ=jTD7yd0qvOASpAjQ@mail.gmail.com>
+ <kwiwaeaijj6sxwz5fhtxyoquhz2kpujbsbeajysufgmdjgyx5c@f6lqrd23xr5f>
+ <CAADnVQLcAoN5z+HD_44UKgJJc6t5TPW8+Ai9We0qJpau4NtEzA@mail.gmail.com>
+ <wltfmammaf5g4gumsbna4kmwo6dtd24g472o7kgkug42dhwcy2@32fmd7q6kvg4>
+ <CAADnVQJQZ2jQSWByVvi3N2ZOoL0XDSJzx5biSVvq=inS7OSW7A@mail.gmail.com>
+ <t6wypww537golmoosbikfuombrqq555fh5mbycwl4whto6joo4@hcqlospkgqyr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <t6wypww537golmoosbikfuombrqq555fh5mbycwl4whto6joo4@hcqlospkgqyr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Note that the corresponding API for output flags does not expose the
-plain numeric flags. Instead, it exposes the underlying, flag-based C
-API more directly.
+Daniel Xu <dxu@dxuuu.xyz> wrote:
+> On Thu, Jul 13, 2023 at 04:10:03PM -0700, Alexei Starovoitov wrote:
+> > Why is rcu_assign_pointer() used?
+> > If it's not RCU protected, what is the point of rcu_*() accessors
+> > and rcu_read_lock() ?
+> > 
+> > In general, the pattern:
+> > rcu_read_lock();
+> > ptr = rcu_dereference(...);
+> > rcu_read_unlock();
+> > ptr->..
+> > is a bug. 100%.
 
-Reasons:
+FWIW, I agree with Alexei, it does look... dodgy.
 
-- a flags property has the benefits that adding new flags is very light
-  weight. Otherwise, every addition of a flag requires new API. That new
-  API increases the documentation and what the user needs to understand.
-  With a flag API, we just need new documentation what the new flag is.
-  It's already clear how to use it.
+> The reason I left it like this is b/c otherwise I think there is a race
+> with module unload and taking a refcnt. For example:
+> 
+> ptr = READ_ONCE(global_var)
+>                                              <module unload on other cpu>
+> // ptr invalid
+> try_module_get(ptr->owner) 
+>
 
-- opinionated, also the usage of "many getter/setter API" is not have
-  better usability. Its convenient when we can do similar things (setting
-  a boolean flag) depending on an argument of a function, instead of
-  having different functions.
+Yes, I agree.
 
-  Compare
+> I think the the synchronize_rcu() call in
+> kernel/module/main.c:free_module() protects against that race based on
+> my reading.
+> 
+> Maybe the ->enable() path can store a copy of the hook ptr in
+> struct bpf_nf_link to get rid of the odd rcu_dereference()?
+> 
+> Open to other ideas too -- would appreciate any hints.
 
-     ctx.set_reversedns_output(True)
-     ctx.set_handle_output(True)
+I would suggest the following:
 
-  with
+- Switch ordering of patches 2 and 3.
+  What is currently patch 3 would add the .owner fields only.
 
-     ctx.ouput_set_flags(NFT_CTX_OUTPUT_REVERSEDNS | NFT_CTX_OUTPUT_HANDLE)
+Then, what is currently patch #2 would document the rcu/modref
+interaction like this (omitting error checking for brevity):
 
-  Note that the vast majority of users of this API will just create one
-  nft_ctx instance and set the flags once. Each user application
-  probably has only one place where they call the setter once. So
-  while I think flags have better usability, it doesn't matter much
-  either way.
+rcu_read_lock();
+v6_hook = rcu_dereference(nf_defrag_v6_hook);
+if (!v6_hook) {
+        rcu_read_unlock();
+        err = request_module("nf_defrag_ipv6");
+        if (err)
+                 return err < 0 ? err : -EINVAL;
+        rcu_read_lock();
+	v6_hook = rcu_dereference(nf_defrag_v6_hook);
+}
 
-- if individual properties are preferable over flags, then the C API
-  should also do that. In other words, the Python API should be similar
-  to the underlying C API.
+if (v6_hook && try_module_get(v6_hook->owner))
+	v6_hook = rcu_pointer_handoff(v6_hook);
+else
+	v6_hook = NULL;
 
-- I don't understand how to do this best. Is Nftables.output_flags
-  public API? It appears to be, as it has no underscore. Why does this
-  additional mapping from function (get_reversedns_output()) to name
-  ("reversedns") to number (1<<0) exist?
+rcu_read_unlock();
 
-Downside is the inconsistency with the existing output flags API.
+if (!v6_hook)
+	err();
+v6_hook->enable();
 
-Signed-off-by: Thomas Haller <thaller@redhat.com>
----
 
-This is probably a controversial approach :)
+I'd store the v4/6_hook pointer in the nf bpf link struct, its probably more
+self-explanatory for the disable side in that we did pick up a module reference
+that we still own at delete time, without need for any rcu involvement.
 
- py/nftables.py | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+Because above handoff is repetitive for ipv4 and ipv6,
+I suggest to add an agnostic helper for this.
 
-diff --git a/py/nftables.py b/py/nftables.py
-index b9fa63bb8789..795700db45ef 100644
---- a/py/nftables.py
-+++ b/py/nftables.py
-@@ -21,6 +21,16 @@ import os
- 
- NFTABLES_VERSION = "0.1"
- 
-+"""Prevent blocking DNS lookups for IP addresses.
-+
-+By default, nftables will try to resolve IP addresses with blocking getaddrinfo() API.
-+By setting this flag, only literal IP adddresses are supported in input.
-+
-+This numeric flag can be passed to Nftables.input_get_flags() and Nftables.input_set_flags().
-+"""
-+NFT_CTX_INPUT_NO_DNS = 1
-+
-+
- class SchemaValidator:
-     """Libnftables JSON validator using jsonschema"""
- 
-@@ -159,6 +169,27 @@ class Nftables:
-     def __del__(self):
-         self.nft_ctx_free(self.__ctx)
- 
-+    def input_get_flags(self):
-+        """Query input flags for the nft context.
-+
-+        See input_get_flags() for supported flags.
-+
-+        Returns the currently set input flags as number.
-+        """
-+        return self.nft_ctx_input_get_flags(self.__ctx)
-+
-+    def input_set_flags(self, flags):
-+        """Set input flags for the nft context as number.
-+
-+        By default, a new context objects has no flags set.
-+
-+        Supported flags are NFT_CTX_INPUT_NO_DNS (0x1) to disable blocking address
-+        lookup via getaddrinfo.
-+
-+        Returns nothing.
-+        """
-+        self.nft_ctx_input_set_flags(self.__ctx, flags)
-+
-     def __get_output_flag(self, name):
-         flag = self.output_flags[name]
-         return self.nft_ctx_output_get_flags(self.__ctx) & flag
--- 
-2.41.0
+I know you added distinct structures for ipv4 and ipv6 but if they would use
+ the same one you could add
 
+static const struct nf_defrag_hook *get_proto_frag_hook(const struct nf_defrag_hook __rcu *hook,
+							const char *modulename);
+
+And then use it like:
+
+v4_hook = get_proto_frag_hook(nf_defrag_v4_hook, "nf_defrag_ipv4");
+
+Without a need to copy the modprobe and handoff part.
+
+What do you think?
