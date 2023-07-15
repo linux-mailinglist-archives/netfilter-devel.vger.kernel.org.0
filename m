@@ -2,70 +2,92 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC00753E22
-	for <lists+netfilter-devel@lfdr.de>; Fri, 14 Jul 2023 16:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75AB9754892
+	for <lists+netfilter-devel@lfdr.de>; Sat, 15 Jul 2023 14:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236157AbjGNOyq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 14 Jul 2023 10:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59996 "EHLO
+        id S229768AbjGOM7w (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Sat, 15 Jul 2023 08:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235574AbjGNOyo (ORCPT
+        with ESMTP id S229552AbjGOM7v (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:54:44 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45BC3A95
-        for <netfilter-devel@vger.kernel.org>; Fri, 14 Jul 2023 07:54:14 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1qKKBQ-00044a-He; Fri, 14 Jul 2023 16:54:12 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft] exthdr: prefer raw_type instead of desc->type
-Date:   Fri, 14 Jul 2023 16:53:57 +0200
-Message-ID: <20230714145400.27274-1-fw@strlen.de>
-X-Mailer: git-send-email 2.41.0
+        Sat, 15 Jul 2023 08:59:51 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA3135B5
+        for <netfilter-devel@vger.kernel.org>; Sat, 15 Jul 2023 05:59:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=JZpDcHr9UbFhwKI8OVs1zoqs/OVnkAkxASjNpQiIzpk=; b=QqUMHmRakTK4yorGyi4RDRbFmi
+        LYVw2u2GGIVRG6URjd7yLgJw1toQ1EL0alCXcBKAgxNcR3dF3GxGv5un1wNDP6xCcLqNzEWB6si3H
+        WAxYSxb6yDXNqlgh3xf5J4eiR8AT3th7MGd6P2RQ7K3JrDFUw+uc9MJjHiKlNxMsNU9dsUWcGBPn7
+        RVZIlpMxo3k+WDjLzGc5g/PhExlBUgn5DBF+H+uvCZRBUvXHkc9rdLBnE48+XLoo83MfrnoYvP0tY
+        d3GspRjcnNd35LW4k47mUxUxtrGyDZMKCmaVocDEBaNkBQIxTeks5EQKux3U47MMXiTsNyeSQ2KcA
+        WFPDKM5g==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1qKesG-0002NR-7E; Sat, 15 Jul 2023 14:59:48 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>, igor@gooddata.com
+Subject: [iptables PATCH 0/3] Follow-up on dangling set fix
+Date:   Sat, 15 Jul 2023 14:59:25 +0200
+Message-Id: <20230715125928.18395-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On ancient kernels desc can be NULL, because such kernels do not
-understand NFTA_EXTHDR_TYPE.
+While testing/analyzing the changes in commit 4e95200ded923, I noticed
+comparison of rules containing among matches was not behaving right. In
+fact, most part of the among match data was ignored when comparing, due
+to the way among extension scales its payload. This problem exists since
+day 1 of the extension implementation for ebtables-nft. Patch 1 fixes
+this by placing a hash of the "invisible" data in well-known space.
 
-Thus they don't include it in the reverse dump, so the tcp/ip
-option gets treated like an ipv6 exthdr, but no matching
-description will be found.
+Patch 2 is a minor cleanup of commit 4e95200ded923, eliminating some
+ineffective function signature changes.
 
-This then gives a crash due to the null deref.
+Patch 3 adds set (with element) dumps to debug output.
 
-Just use the raw value here, this will at least make nft print
-that the exthdr and type is invalid.
+Note about 4e95200ded923 itself: I don't quite like the approach of
+conditionally converting a rule into libnftnl format using only compat
+expressions for extensions. I am aware my proposed compatibility mode
+does the same, but it's a global switch changing add_match() behaviour
+consistently. What the commit above does works only because for rule
+comparison, both rules are converted back into iptables_command_state
+objects. I'd like to follow an alternative path of delaying the
+rule conversion so that it does not happen in nft_cmd_new() but later
+from nft_action() (or so). This should eliminate some back-and-forth and
+also implicitly fix the case of needless set creation.
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- src/exthdr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Phil Sutter (3):
+  extensions: libebt_among: Fix for false positive match comparison
+  nft: Do not pass nft_rule_ctx to add_nft_among()
+  nft: Include sets in debug output
 
-diff --git a/src/exthdr.c b/src/exthdr.c
-index f5527ddb4a3f..0358005b1b89 100644
---- a/src/exthdr.c
-+++ b/src/exthdr.c
-@@ -405,7 +405,7 @@ bool exthdr_find_template(struct expr *expr, const struct expr *mask, unsigned i
- 		found = tcpopt_find_template(expr, off, mask_len - mask_offset);
- 		break;
- 	case NFT_EXTHDR_OP_IPV6:
--		exthdr_init_raw(expr, expr->exthdr.desc->type,
-+		exthdr_init_raw(expr, expr->exthdr.raw_type,
- 				off, mask_len - mask_offset, expr->exthdr.op, 0);
- 
- 		/* still failed to find a template... Bug. */
+ extensions/libebt_among.c                     |  1 +
+ iptables/nft-bridge.h                         | 16 ++++++++
+ iptables/nft-cache.c                          | 10 ++++-
+ iptables/nft-ruleparse-bridge.c               |  2 +
+ iptables/nft.c                                | 17 +++++---
+ .../testcases/ebtables/0009-among-lookup_0    | 39 +++++++++++++++++++
+ 6 files changed, 78 insertions(+), 7 deletions(-)
+ create mode 100755 iptables/tests/shell/testcases/ebtables/0009-among-lookup_0
+
 -- 
-2.41.0
+2.40.0
 
