@@ -2,58 +2,58 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E2075B14E
-	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Jul 2023 16:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EC575B2C7
+	for <lists+netfilter-devel@lfdr.de>; Thu, 20 Jul 2023 17:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbjGTOcw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 20 Jul 2023 10:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58580 "EHLO
+        id S232071AbjGTPeE (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 20 Jul 2023 11:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbjGTOcw (ORCPT
+        with ESMTP id S232568AbjGTPeD (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:32:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D96F26AD
-        for <netfilter-devel@vger.kernel.org>; Thu, 20 Jul 2023 07:32:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689863523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/FFg+Shveq1rwruBhJh8Oh1SOYL5hrtL0zSKAqH0R1k=;
-        b=Yp/JQ0oArbhC2EVBw4IZK76d2GyRAKVEHvRvK/nrbcgAyQ1/6HhdumHEBN/d5/m+q7eJDQ
-        9ChM28n6iZM06lzrpvmhc4lfxg0bGDMCB5DgRK2o0E92Zt6JoxJqQb1QLhP3Ig4t7jlZWi
-        LzAYa0t3rLLJZ0kjvdlG67riFSxYYGw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-145-SFG_Kp9bNXSsC_MGVU_oXg-1; Thu, 20 Jul 2023 10:32:00 -0400
-X-MC-Unique: SFG_Kp9bNXSsC_MGVU_oXg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 091651044590;
-        Thu, 20 Jul 2023 14:32:00 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.39.192.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 45B6C40C206F;
-        Thu, 20 Jul 2023 14:31:59 +0000 (UTC)
-From:   Thomas Haller <thaller@redhat.com>
-To:     NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>, Phil Sutter <phil@nwl.cc>,
-        Thomas Haller <thaller@redhat.com>
-Subject: [nft v3 PATCH 4/4] py: add Nftables.input_{set,get}_flags() API
-Date:   Thu, 20 Jul 2023 16:27:03 +0200
-Message-ID: <20230720143147.669250-5-thaller@redhat.com>
-In-Reply-To: <20230720143147.669250-1-thaller@redhat.com>
-References: <20230720143147.669250-1-thaller@redhat.com>
+        Thu, 20 Jul 2023 11:34:03 -0400
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2422710
+        for <netfilter-devel@vger.kernel.org>; Thu, 20 Jul 2023 08:33:45 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-992b2249d82so159218566b.1
+        for <netfilter-devel@vger.kernel.org>; Thu, 20 Jul 2023 08:33:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689867206; x=1690472006;
+        h=mime-version:user-agent:message-id:date:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OXYyLfTPgWVmlufpTqUemn/pzuDPhFkoy/SwKuJfd7E=;
+        b=YnwXPtSqwvaScheSNpaNWMXcSqzXb2SY/N6FST5Q0K/vNoXJAf73kbzBVqXVgOccaq
+         68jNi3YTyFdcyUiUtpwPyvPq82hB0dtguk2Syl4bHCy/mxOdGUxZInfe7N0Go2Dk0w+z
+         OFUk5hUwoZzFhTLHP5yPhzKNglv+ZbxYCdCCZQfsEn1c+To4noPtINoRuBwSYdpLohdl
+         Zvvquu7v3vEaidkjOZ2sYh3GDdV0sPYQTRBHEx/amklB+uE6P7I8O3w7PQXl9oFi2xui
+         /W1SaHNxSX3mu2YuHX/CZymfxVYjSJi0PJkTKnOtXNVh+5WWLc1NBQm1ISzFvACxPXBn
+         RLBQ==
+X-Gm-Message-State: ABy/qLZHYCSX6unqsOWTVbn41U5MJ2YdZyyGbcoKMtUl2p1alUJoRfhN
+        q87ssLIGbx/X1xsLZFdS0a0=
+X-Google-Smtp-Source: APBJJlGhJrr/KNGC634+qimG5wlrj/QgEFZRYbTncWsMrLp2UoQXDxPiJRuLPXe0B+XJudCU0qyn0w==
+X-Received: by 2002:a17:906:9a:b0:997:8a65:1cf8 with SMTP id 26-20020a170906009a00b009978a651cf8mr2475835ejc.8.1689867205695;
+        Thu, 20 Jul 2023 08:33:25 -0700 (PDT)
+Received: from rhea.home.vuxu.org ([94.45.237.107])
+        by smtp.gmail.com with ESMTPSA id l26-20020a170906a41a00b00997cce73cc7sm852450ejz.29.2023.07.20.08.33.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 08:33:25 -0700 (PDT)
+Received: from localhost (rhea.home.vuxu.org [local])
+        by rhea.home.vuxu.org (OpenSMTPD) with ESMTPA id 4410936d;
+        Thu, 20 Jul 2023 15:33:23 +0000 (UTC)
+From:   Leah Neukirchen <leah@vuxu.org>
+To:     arturo@netfilter.org
+Cc:     netfilter-devel@vger.kernel.org, pablo@netfilter.org
+Subject: Re: [ANNOUNCE] nftables 1.0.8 release
+In-Reply-To: <cc7b9429-540e-967d-1c50-7475b28a0973@netfilter.org>
+Date:   Thu, 20 Jul 2023 17:33:23 +0200
+Message-ID: <87351i8unw.fsf@vuxu.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,FAKE_REPLY_C,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,99 +61,22 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Add new API to expose the input flags in the Python API.
+For Void Linux, I have applied this fix, which results in installing
+the same way was for 1.0.7 (else it creates a .egg directory which isn't
+loaded properly on a plain Python):
 
-Note that the chosen approach differs from the existing
-nft_ctx_output_get_flags() and nft_ctx_output_get_debug()
-API, which themselves are inconsistent approaches.
+--- a/py/Makefile.am
++++ b/py/Makefile.am
+@@ -7,7 +7,7 @@
+ install-exec-local:
+ 	cd $(srcdir) && \
+ 		$(PYTHON_BIN) setup.py build --build-base $(abs_builddir) \
+-		install --prefix $(DESTDIR)$(prefix)
++		install --prefix $(prefix) --root $(DESTDIR)
+ 
+ uninstall-local:
+ 	rm -rf $(DESTDIR)$(prefix)/lib*/python*/site-packages/nftables
 
-The new API directly exposes the underlying C API, that is, the numeric
-flags.
 
-Signed-off-by: Thomas Haller <thaller@redhat.com>
----
- py/nftables.py | 54 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
-
-diff --git a/py/nftables.py b/py/nftables.py
-index 68fcd7dd103c..e2417b7598c0 100644
---- a/py/nftables.py
-+++ b/py/nftables.py
-@@ -21,6 +21,29 @@ import os
- 
- NFTABLES_VERSION = "0.1"
- 
-+"""Prevent blocking DNS lookups for IP addresses.
-+
-+By default, nftables will try to resolve IP addresses with blocking getaddrinfo() API.
-+By setting this flag, only literal IP addresses are supported in input.
-+
-+This numeric flag can be passed to Nftables.input_get_flags() and is returned
-+by Nftables.input_set_flags().
-+"""
-+NFT_CTX_INPUT_NO_DNS = 1
-+
-+"""Attempt to parse input in JSON format.
-+
-+By default, input will be parsed using the nftables format. By setting
-+this flag, the parsing will first attempt to read the input in the
-+JSON format as documented in libnftables-json manual. This flag is
-+implied by NFT_CTX_OUTPUT_JSON flag (Nftables.set_json_output()).
-+
-+This numeric flag can be passed to Nftables.input_get_flags() and is returned
-+by Nftables.input_set_flags().
-+"""
-+NFT_CTX_INPUT_JSON = 2
-+
-+
- class SchemaValidator:
-     """Libnftables JSON validator using jsonschema"""
- 
-@@ -82,6 +105,13 @@ class Nftables:
-         self.nft_ctx_new.restype = c_void_p
-         self.nft_ctx_new.argtypes = [c_int]
- 
-+        self.nft_ctx_input_get_flags = lib.nft_ctx_input_get_flags
-+        self.nft_ctx_input_get_flags.restype = c_uint
-+        self.nft_ctx_input_get_flags.argtypes = [c_void_p]
-+
-+        self.nft_ctx_input_set_flags = lib.nft_ctx_input_set_flags
-+        self.nft_ctx_input_set_flags.argtypes = [c_void_p, c_uint]
-+
-         self.nft_ctx_output_get_flags = lib.nft_ctx_output_get_flags
-         self.nft_ctx_output_get_flags.restype = c_uint
-         self.nft_ctx_output_get_flags.argtypes = [c_void_p]
-@@ -152,6 +182,30 @@ class Nftables:
-     def __del__(self):
-         self.nft_ctx_free(self.__ctx)
- 
-+    def input_get_flags(self):
-+        """Query input flags for the nft context.
-+
-+        See input_get_flags() for supported flags.
-+
-+        Returns the currently set input flags as number.
-+        """
-+        return self.nft_ctx_input_get_flags(self.__ctx)
-+
-+    def input_set_flags(self, flags):
-+        """Set input flags for the nft context as number.
-+
-+        By default, a new context objects has flags set to zero.
-+
-+        The following flags are currently supported.
-+        NFT_CTX_INPUT_NO_DNS (0x1) disables blocking address lookup.
-+        NFT_CTX_INPUT_JSON (0x2) enables JSON mode for input.
-+
-+        Unknown flags are silently accepted.
-+
-+        Returns nothing.
-+        """
-+        self.nft_ctx_input_set_flags(self.__ctx, flags)
-+
-     def __get_output_flag(self, name):
-         flag = self.output_flags[name]
-         return (self.nft_ctx_output_get_flags(self.__ctx) & flag) != 0
 -- 
-2.41.0
-
+Leah Neukirchen  <leah@vuxu.org>  https://leahneukirchen.org/
