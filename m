@@ -2,109 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B832675C3E5
-	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Jul 2023 12:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4169C75C8A7
+	for <lists+netfilter-devel@lfdr.de>; Fri, 21 Jul 2023 15:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbjGUKAX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 21 Jul 2023 06:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        id S231605AbjGUN6M (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 21 Jul 2023 09:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbjGUKAQ (ORCPT
+        with ESMTP id S231846AbjGUN6J (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:00:16 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B84F30DD
-        for <netfilter-devel@vger.kernel.org>; Fri, 21 Jul 2023 02:59:58 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1qMmvT-0007v5-RO; Fri, 21 Jul 2023 11:59:55 +0200
-Date:   Fri, 21 Jul 2023 11:59:55 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        igor@gooddata.com
-Subject: Re: [iptables PATCH 1/3] extensions: libebt_among: Fix for false
- positive match comparison
-Message-ID: <ZLpXG2GzqH3QLveA@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        igor@gooddata.com
-References: <20230715125928.18395-1-phil@nwl.cc>
- <20230715125928.18395-2-phil@nwl.cc>
- <ZLUg97WtqnWR6aqT@calendula>
+        Fri, 21 Jul 2023 09:58:09 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4601BE2
+        for <netfilter-devel@vger.kernel.org>; Fri, 21 Jul 2023 06:57:42 -0700 (PDT)
+Received: from [46.222.37.117] (port=10278 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qMqRE-00AAKO-Rv; Fri, 21 Jul 2023 15:44:59 +0200
+Date:   Fri, 21 Jul 2023 15:44:54 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Leah Neukirchen <leah@vuxu.org>
+Cc:     arturo@netfilter.org, netfilter-devel@vger.kernel.org,
+        Jan Engelhardt <jengelh@inai.de>, phil@nwl.cc
+Subject: Re: [ANNOUNCE] nftables 1.0.8 release
+Message-ID: <ZLqL1g6YAbNOloRN@calendula>
+References: <cc7b9429-540e-967d-1c50-7475b28a0973@netfilter.org>
+ <87351i8unw.fsf@vuxu.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZLUg97WtqnWR6aqT@calendula>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <87351i8unw.fsf@vuxu.org>
+X-Spam-Score: -1.9 (-)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Pablo,
+Hi,
 
-On Mon, Jul 17, 2023 at 01:07:35PM +0200, Pablo Neira Ayuso wrote:
-> On Sat, Jul 15, 2023 at 02:59:26PM +0200, Phil Sutter wrote:
-> > When comparing matches for equality, trailing data in among match is not
-> > considered. Therefore two matches with identical pairs count may be
-> > treated as identical when the pairs actually differ.
+Thanks for your patch.
+
+On Thu, Jul 20, 2023 at 05:33:23PM +0200, Leah Neukirchen wrote:
+> For Void Linux, I have applied this fix, which results in installing
+> the same way was for 1.0.7 (else it creates a .egg directory which isn't
+> loaded properly on a plain Python):
 > 
-> By "trailing data", you mean the right-hand side of this?
-> 
->         fe:ed:ba:be:00:01=10.0.0.1
-> 
-> > Matches' parsing callbacks have no access to the xtables_match itself,
-> > so can't update userspacesize field as needed.
-> > 
-> > To fix this, extend struct nft_among_data by a hash field to contain a
-> > DJB hash of the trailing data.
-> 
-> Is this DJB hash use subject to collisions?
+> --- a/py/Makefile.am
+> +++ b/py/Makefile.am
+> @@ -7,7 +7,7 @@
+>  install-exec-local:
+>  	cd $(srcdir) && \
+>  		$(PYTHON_BIN) setup.py build --build-base $(abs_builddir) \
+> -		install --prefix $(DESTDIR)$(prefix)
+> +		install --prefix $(prefix) --root $(DESTDIR)
+>  
+>  uninstall-local:
+>  	rm -rf $(DESTDIR)$(prefix)/lib*/python*/site-packages/nftables
 
-Thanks for the heads-up. I suspected DJB hash algo might not be perfect
-when it comes to collisions, but "good enough" for the task. In fact,
-collisions are pretty common, so this approach is not a proper solution
-to the problem.
+I proposed the following patch to remove py integration with
+autotools/automake:
 
-Searching for other ways to fix the issue, I noticed that
-compare_matches() was deliberately changed to compare only the first
-'userspacesize' bytes of extensions to avoid false-negatives caused by
-kernel-internals in extension data.
+https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230718120119.172757-2-pablo@netfilter.org/
 
-I see two different solutions and would like to hear your opinion. First
-one is a hack, special treatment for among match in compare_matches():
+Rationale is that this provides more flexibility to users and
+packagers to deal with nftables Python support.
 
-| @@ -381,6 +381,7 @@ bool compare_matches(struct xtables_rule_match *mt1,
-|         for (mp1 = mt1, mp2 = mt2; mp1 && mp2; mp1 = mp1->next, mp2 = mp2->next) {
-|                 struct xt_entry_match *m1 = mp1->match->m;
-|                 struct xt_entry_match *m2 = mp2->match->m;
-| +               size_t cmplen = mp1->match->userspacesize;
-|  
-|                 if (strcmp(m1->u.user.name, m2->u.user.name) != 0) {
-|                         DEBUGP("mismatching match name\n");
-| @@ -392,8 +393,10 @@ bool compare_matches(struct xtables_rule_match *mt1,
-|                         return false;
-|                 }
-|  
-| -               if (memcmp(m1->data, m2->data,
-| -                          mp1->match->userspacesize) != 0) {
-| +               if (!strcmp(m1->u.user.name, "among"))
-| +                       cmplen = m1->u.match_size - sizeof(*m1);
-| +
-| +               if (memcmp(m1->data, m2->data, cmplen) != 0) {
-|                         DEBUGP("mismatch match data\n");
-|                         return false;
-|                 }
+Python install infrastructure is a moving target, setup.py is still
+left in place so you can still invoke it.
 
-The second one is more generic, reusing extensions' 'udata' pointer. One
-could make xtables_option_{m,t}fcall() functions zero the scratch area
-if present (so locally created extensions match ones fetched from
-kernel) and compare that scratch area in compare_matches(). For among
-match, using the scratch area to store pairs is fine.
-
-Cheers, Phil
+Does this make sense to you?
