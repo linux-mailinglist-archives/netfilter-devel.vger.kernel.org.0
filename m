@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A00E761544
-	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Jul 2023 13:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77B2761518
+	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Jul 2023 13:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234575AbjGYL05 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 25 Jul 2023 07:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
+        id S234594AbjGYLZg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 25 Jul 2023 07:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234562AbjGYL04 (ORCPT
+        with ESMTP id S234597AbjGYLZf (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 25 Jul 2023 07:26:56 -0400
+        Tue, 25 Jul 2023 07:25:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6D2A6;
-        Tue, 25 Jul 2023 04:26:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7E613D;
+        Tue, 25 Jul 2023 04:25:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 396D46168E;
-        Tue, 25 Jul 2023 11:26:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46A7EC433C8;
-        Tue, 25 Jul 2023 11:26:54 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 65FAC6166E;
+        Tue, 25 Jul 2023 11:25:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79131C433C7;
+        Tue, 25 Jul 2023 11:25:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690284414;
-        bh=buOdSrwBY2i9Z3LLwxVY+Rr6q8F4NyizMsrrqrJmxcQ=;
+        s=korg; t=1690284332;
+        bh=IWBoDHMDl92qNmaLZ6dH47zNmuusT9RUCSmnaSfZVwQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bV2siBkqi244jcje+UmxtaD2ZE2qGoHczlkC3djc1lcHTVtpUdB3xDV3fgFYPkOcT
-         rjI/7V9qBBsQLUuAuXOxc1WF6+4FDaoA3w4Zp3/8jr7TwJkGLHAgQdmDnfB2nEVZlO
-         sJGyIsKg5JYNnHTm2j/fk2eF+m1r4UwRR6aPbl78=
+        b=gt8K5/f9gzIVYlV7qcbNJV97B6psl/+YoSuD2w6SwsHsWTATA5BtwvM59Xhpn4vwJ
+         3m0zjBtkPqAvE5hf1T9Ta/DptlXBAHkyRCXuI+gIDa5o+GaHRV9O94gSoAy9KSHwvC
+         Pwdalpxd938GrxkvkuX1cf1NyXD3MHicQwPk8EYk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org, netfilter-devel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         patches@lists.linux.dev, Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.10 318/509] netfilter: nf_tables: reject unbound chain set before commit phase
-Date:   Tue, 25 Jul 2023 12:44:17 +0200
-Message-ID: <20230725104608.265852367@linuxfoundation.org>
+Subject: [PATCH 5.10 319/509] netfilter: nftables: rename set element data activation/deactivation functions
+Date:   Tue, 25 Jul 2023 12:44:18 +0200
+Message-ID: <20230725104608.305294211@linuxfoundation.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230725104553.588743331@linuxfoundation.org>
 References: <20230725104553.588743331@linuxfoundation.org>
@@ -56,49 +56,87 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 62e1e94b246e685d89c3163aaef4b160e42ceb02 ]
+[ Upstream commit f8bb7889af58d8e74d2d61c76b1418230f1610fa ]
 
-Use binding list to track set transaction and to check for unbound
-chains before entering the commit phase.
+Rename:
 
-Bail out if chain binding remain unused before entering the commit
-step.
+- nft_set_elem_activate() to nft_set_elem_data_activate().
+- nft_set_elem_deactivate() to nft_set_elem_data_deactivate().
 
-Fixes: d0e2c7de92c7 ("netfilter: nf_tables: add NFT_CHAIN_BINDING")
+To prepare for updates in the set element infrastructure to add support
+for the special catch-all element.
+
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nf_tables_api.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ net/netfilter/nf_tables_api.c |   22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
 --- a/net/netfilter/nf_tables_api.c
 +++ b/net/netfilter/nf_tables_api.c
-@@ -360,6 +360,11 @@ static void nft_trans_commit_list_add_ta
- 		if (nft_set_is_anonymous(nft_trans_set(trans)))
- 			list_add_tail(&trans->binding_list, &nft_net->binding_list);
- 		break;
-+	case NFT_MSG_NEWCHAIN:
-+		if (!nft_trans_chain_update(trans) &&
-+		    nft_chain_binding(nft_trans_chain(trans)))
-+			list_add_tail(&trans->binding_list, &nft_net->binding_list);
-+		break;
- 	}
+@@ -5270,8 +5270,8 @@ void nft_set_elem_destroy(const struct n
+ }
+ EXPORT_SYMBOL_GPL(nft_set_elem_destroy);
  
- 	list_add_tail(&trans->list, &nft_net->commit_list);
-@@ -8043,6 +8048,14 @@ static int nf_tables_commit(struct net *
- 				return -EINVAL;
- 			}
- 			break;
-+		case NFT_MSG_NEWCHAIN:
-+			if (!nft_trans_chain_update(trans) &&
-+			    nft_chain_binding(nft_trans_chain(trans)) &&
-+			    !nft_trans_chain_bound(trans)) {
-+				pr_warn_once("nftables ruleset with unbound chain\n");
-+				return -EINVAL;
-+			}
-+			break;
- 		}
+-/* Only called from commit path, nft_set_elem_deactivate() already deals with
+- * the refcounting from the preparation phase.
++/* Only called from commit path, nft_setelem_data_deactivate() already deals
++ * with the refcounting from the preparation phase.
+  */
+ static void nf_tables_set_elem_destroy(const struct nft_ctx *ctx,
+ 				       const struct nft_set *set, void *elem)
+@@ -5649,9 +5649,9 @@ void nft_data_hold(const struct nft_data
  	}
+ }
+ 
+-static void nft_set_elem_activate(const struct net *net,
+-				  const struct nft_set *set,
+-				  struct nft_set_elem *elem)
++static void nft_setelem_data_activate(const struct net *net,
++				      const struct nft_set *set,
++				      struct nft_set_elem *elem)
+ {
+ 	const struct nft_set_ext *ext = nft_set_elem_ext(set, elem->priv);
+ 
+@@ -5661,9 +5661,9 @@ static void nft_set_elem_activate(const
+ 		(*nft_set_ext_obj(ext))->use++;
+ }
+ 
+-static void nft_set_elem_deactivate(const struct net *net,
+-				    const struct nft_set *set,
+-				    struct nft_set_elem *elem)
++static void nft_setelem_data_deactivate(const struct net *net,
++					const struct nft_set *set,
++					struct nft_set_elem *elem)
+ {
+ 	const struct nft_set_ext *ext = nft_set_elem_ext(set, elem->priv);
+ 
+@@ -5740,7 +5740,7 @@ static int nft_del_setelem(struct nft_ct
+ 	kfree(elem.priv);
+ 	elem.priv = priv;
+ 
+-	nft_set_elem_deactivate(ctx->net, set, &elem);
++	nft_setelem_data_deactivate(ctx->net, set, &elem);
+ 
+ 	nft_trans_elem(trans) = elem;
+ 	nft_trans_commit_list_add_tail(ctx->net, trans);
+@@ -5774,7 +5774,7 @@ static int nft_flush_set(const struct nf
+ 	}
+ 	set->ndeact++;
+ 
+-	nft_set_elem_deactivate(ctx->net, set, elem);
++	nft_setelem_data_deactivate(ctx->net, set, elem);
+ 	nft_trans_elem_set(trans) = set;
+ 	nft_trans_elem(trans) = *elem;
+ 	nft_trans_commit_list_add_tail(ctx->net, trans);
+@@ -8413,7 +8413,7 @@ static int __nf_tables_abort(struct net
+ 		case NFT_MSG_DELSETELEM:
+ 			te = (struct nft_trans_elem *)trans->data;
+ 
+-			nft_set_elem_activate(net, te->set, &te->elem);
++			nft_setelem_data_activate(net, te->set, &te->elem);
+ 			te->set->ops->activate(net, te->set, &te->elem);
+ 			te->set->ndeact--;
  
 
 
