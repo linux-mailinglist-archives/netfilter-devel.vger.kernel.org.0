@@ -2,69 +2,64 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0156676222C
-	for <lists+netfilter-devel@lfdr.de>; Tue, 25 Jul 2023 21:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D15762D93
+	for <lists+netfilter-devel@lfdr.de>; Wed, 26 Jul 2023 09:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbjGYTYl (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 25 Jul 2023 15:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
+        id S232371AbjGZHam (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 26 Jul 2023 03:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjGYTYi (ORCPT
+        with ESMTP id S232128AbjGZH3r (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 25 Jul 2023 15:24:38 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F3B1FF2
-        for <netfilter-devel@vger.kernel.org>; Tue, 25 Jul 2023 12:24:37 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1qONe7-0002pj-0j; Tue, 25 Jul 2023 21:24:35 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft] netlink: delinearize: copy set keytype if needed
-Date:   Tue, 25 Jul 2023 21:24:27 +0200
-Message-ID: <20230725192430.7428-1-fw@strlen.de>
-X-Mailer: git-send-email 2.41.0
+        Wed, 26 Jul 2023 03:29:47 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C98435B8
+        for <netfilter-devel@vger.kernel.org>; Wed, 26 Jul 2023 00:28:20 -0700 (PDT)
+Received: from [46.222.121.5] (port=4644 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qOYwQ-005Bz1-9l; Wed, 26 Jul 2023 09:28:16 +0200
+Date:   Wed, 26 Jul 2023 09:28:11 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Jeremy Sowden <jeremy@azazel.net>
+Cc:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: Re: ulogd2 patch ping
+Message-ID: <ZMDLC8QFOUH9z7xQ@calendula>
+References: <20230725191128.GE84273@celephais.dreamlands>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230725191128.GE84273@celephais.dreamlands>
+X-Spam-Score: -1.9 (-)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Output before:
-add @dynmark { 0xa020304 [invalid type] timeout 1s : 0x00000002 } comment "also check timeout-gc"
+Hi Jeremy,
 
-after:
-add @dynmark { 10.2.3.4 timeout 1s : 0x00000002 } comment "also check timeout-gc"
+On Tue, Jul 25, 2023 at 08:11:28PM +0100, Jeremy Sowden wrote:
+> There is a ulogd2 patch of mine from the end of last that is still under
+> review in Patchwork:
+> 
+>   https://patchwork.ozlabs.org/project/netfilter-devel/patch/20221208222208.681865-1-jeremy@azazel.net/
+> 
+> It would be great to get a yea or nay.
 
-This is a followup to 76c358ccfea0 ("src: maps: update data expression dtype based on set"),
-which did fix the map expression, but not the key.
+What plugins are still IPv4-only in ulogd2?
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- Found with an unrelated test case, i will submit that one as well soon.
+Maybe add _IPV4 | _IPV6 flags to plugins hence it is possible to
+validate if user's stack is valid, otherwise bail out and provide a
+reason via logging?
 
- src/netlink_delinearize.c | 2 ++
- 1 file changed, 2 insertions(+)
+Regarding translation from network to host byte, I think it makes more
+sense to keep IPv4 addres in network byte, so filter and output
+plugings always expect them such way as you did in your patch?
 
-diff --git a/src/netlink_delinearize.c b/src/netlink_delinearize.c
-index 9241f46622ff..125b6c685f80 100644
---- a/src/netlink_delinearize.c
-+++ b/src/netlink_delinearize.c
-@@ -1734,6 +1734,8 @@ static void netlink_parse_dynset(struct netlink_parse_ctx *ctx,
- 		expr = netlink_parse_concat_key(ctx, loc, sreg, set->key);
- 		if (expr == NULL)
- 			return;
-+	} else if (expr->dtype == &invalid_type) {
-+		expr_set_type(expr, datatype_get(set->key->dtype), set->key->byteorder);
- 	}
- 
- 	expr = set_elem_expr_alloc(&expr->location, expr);
--- 
-2.41.0
-
+Let me know, thanks!
