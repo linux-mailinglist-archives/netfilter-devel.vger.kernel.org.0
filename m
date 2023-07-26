@@ -2,77 +2,59 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA11763E10
-	for <lists+netfilter-devel@lfdr.de>; Wed, 26 Jul 2023 20:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F07764201
+	for <lists+netfilter-devel@lfdr.de>; Thu, 27 Jul 2023 00:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbjGZSBi (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 26 Jul 2023 14:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
+        id S229690AbjGZWRm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 26 Jul 2023 18:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbjGZSBh (ORCPT
+        with ESMTP id S229590AbjGZWRl (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 26 Jul 2023 14:01:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E832697;
-        Wed, 26 Jul 2023 11:01:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mOs0FbEX7U/JftVf/7w+izAt0GEtfD+who6ul2jmL1A=; b=Iln/whwi3yb0OCDfnbyBjMdx+m
-        juFI59CritCNSyW6F5D0XpHC0iscqFmdZ00//lCiuYir0a6u4x+Trb0fDiT1I8lWJsP6oU29GK/FQ
-        HnfImdfWz3d/FFVFAVn2c5NvOhMlPOV/jQ9Gw7gF/R+QQhgAxkPBg30gZGpfWe9e6F1g3T860ToDU
-        3b3igthrZTDls6/w68U1gJwMhAvJIATJevMX85S2LJO5gw+sF1p7LDa7daV4DC/GaXuMpeYo9ezaB
-        YVbkS848bTHFzserKKNJffxnqBuL9rIXky9EaSjRDnBy0AFCo9mO69kFKWdY6Q9jqUcRgtsOlJyZn
-        kzcXs81A==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOip5-00BERo-0b;
-        Wed, 26 Jul 2023 18:01:19 +0000
-Date:   Wed, 26 Jul 2023 11:01:19 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>, willy@infradead.org,
-        keescook@chromium.org, josh@joshtriplett.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvs-devel@vger.kernel.org
-Subject: Re: [PATCH 10/14] netfilter: Update to register_net_sysctl_sz
-Message-ID: <ZMFfb4bJ6neACe5X@bombadil.infradead.org>
-References: <20230726140635.2059334-1-j.granados@samsung.com>
- <CGME20230726140706eucas1p1b11e5f0bd17f0de19af9608cbd8d17f3@eucas1p1.samsung.com>
- <20230726140635.2059334-11-j.granados@samsung.com>
+        Wed, 26 Jul 2023 18:17:41 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A94270D
+        for <netfilter-devel@vger.kernel.org>; Wed, 26 Jul 2023 15:17:39 -0700 (PDT)
+Received: from [46.222.17.104] (port=6972 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qOmp3-006kB3-Ml; Thu, 27 Jul 2023 00:17:35 +0200
+Date:   Thu, 27 Jul 2023 00:17:31 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        netfilter-devel@vger.kernel.org
+Subject: Netfilter -stable patches for 6.1.y
+Message-ID: <ZMGbe24I9I+FOH57@calendula>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230726140635.2059334-11-j.granados@samsung.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Score: -1.9 (-)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 04:06:30PM +0200, Joel Granados wrote:
-> This is part of the effort to remove the sentinel (last empty) element
-> from the ctl_table arrays. We update to the new function and pass it the
-> array size. Care is taken to mirror the NULL assignments with a size of
-> zero (for the unprivileged users)
+Hi Greg, Sasha,
 
-Same in this commit, the "why" is missing and size impact, if any.
+Could you please cherry-pick:
 
-  Luis
+ 29ad9a305943 ("netfilter: nf_tables: fix underflow in chain reference counter")
+ b8ae60de6fd3 ("netfilter: nf_tables: fix underflow in object reference counter"
+
+into 6.1.y?
+
+Other -stable kernels I have just audited do not need these updates,
+since this fix have been already included in my recent -stable backports.
+
+Thanks.
+
+P.S: Moving forward, I will add the Cc: stable@vger.kernel.org tag to
+     patches as Greg suggested.
