@@ -2,42 +2,44 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85908766D45
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jul 2023 14:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE29F766D47
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jul 2023 14:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235314AbjG1McK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 28 Jul 2023 08:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48448 "EHLO
+        id S235664AbjG1McP (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 28 Jul 2023 08:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234685AbjG1McJ (ORCPT
+        with ESMTP id S234825AbjG1McP (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:32:09 -0400
+        Fri, 28 Jul 2023 08:32:15 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4BB211D
-        for <netfilter-devel@vger.kernel.org>; Fri, 28 Jul 2023 05:32:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886C3187
+        for <netfilter-devel@vger.kernel.org>; Fri, 28 Jul 2023 05:32:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Em0uHW4Ldk3cLoNwOZczfccqkMMqkVW/ybpDJFo9fLA=; b=fZ8GbN/C5fpryY6IWV8/jFemae
-        gO7S44UfrOQwcd219J6gXAzFKa6wmJ9NjtcXvdDyejFQX8hwGbxOws6yZlApP995gYq6qaLMtKx55
-        PA+fMi0Kc9VE2b20O4Oj7kTlO7hRUk303bqidEOKWf573qz6xZ6MOwLu9Op7ohf4sQzUjt3wgrm2n
-        tF70lgYVBNLTF+7m2EEO4jYJuVKTjnj5TYq3wxvN95u4UbjmVNKoQlnMgD4r6/w9BgmZ70O/TXlJf
-        5Vq4F6KK+pp9AC9f0YT7TMqoYpbkUwyfDTJabm/ike5BJYnqkMEjSMduaZScaI7WVky74NAggLv+6
-        VN5UVxdg==;
+        bh=vAMmkCR7a53rn4nsvServ8hd9o8i0isuVTB84quE5a8=; b=SM090ZlQlAsqjk1P0IGQKFVM4O
+        GY6v/p0O8ErSrWKiu9VbeozTNfWgXpTB3VWZqEiz2+VSsAH5svO1wDi+WccbTx2L0EIzl/rUE/ER9
+        Km4A09GZwpQOHroA/B/b+9ghHnEZS6hbHQ4tE6HUVGj41f18MDcQ1h+VVRavLEjheS3lwqf9PGTZI
+        lBOEb10YXv0U/VVg7PR1ktaOcUlWpCJPtS2ICoMMhnhYM6kfubCpee++Ws9jmHVdS7BgPfx46b49f
+        Iofl+ry2zlt69AOsfj8VZRPBGxXT7z4ESZJ0h4GRo3TB0BNsrtmotO411KUHWi/VL+6H5tRxwLnhX
+        vp5ZuF/g==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qPMdV-0006Bs-VX
-        for netfilter-devel@vger.kernel.org; Fri, 28 Jul 2023 14:32:02 +0200
+        id 1qPMdg-0006CF-LJ
+        for netfilter-devel@vger.kernel.org; Fri, 28 Jul 2023 14:32:12 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 1/4] *tables-restore: Enforce correct counters syntax if present
-Date:   Fri, 28 Jul 2023 14:31:44 +0200
-Message-Id: <20230728123147.15750-1-phil@nwl.cc>
+Subject: [iptables PATCH 2/4] *tables: Reject invalid chain names when renaming
+Date:   Fri, 28 Jul 2023 14:31:45 +0200
+Message-Id: <20230728123147.15750-2-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230728123147.15750-1-phil@nwl.cc>
+References: <20230728123147.15750-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -50,102 +52,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-If '--counters' option was not given, restore parsers would ignore
-anything following the policy word. Make them more strict, rejecting
-anything in that spot which does not look like counter values even if
-not restoring counters.
+While given chain name was sanity checked with --new-chain command,
+--rename-chain command allowed to choose an invalid name. Keep things
+consistent by adding the missing check.
 
+Fixes: e6869a8f59d77 ("reorganized tree after kernel merge")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/iptables-restore.c                   | 20 +++++++++----------
- .../ipt-restore/0008-restore-counters_0       |  7 +++++++
- iptables/xtables-restore.c                    | 18 ++++++++---------
- 3 files changed, 24 insertions(+), 21 deletions(-)
+ iptables/xshared.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/iptables/iptables-restore.c b/iptables/iptables-restore.c
-index 6f7ddf93b01bb..f11b2dc2fd316 100644
---- a/iptables/iptables-restore.c
-+++ b/iptables/iptables-restore.c
-@@ -283,23 +283,21 @@ ip46tables_restore_main(const struct iptables_restore_cb *cb,
- 					      xt_params->program_name, line);
+diff --git a/iptables/xshared.c b/iptables/xshared.c
+index 28c65faed7b25..5f75a0a57a023 100644
+--- a/iptables/xshared.c
++++ b/iptables/xshared.c
+@@ -1511,6 +1511,7 @@ void do_parse(int argc, char *argv[],
+ 					   "-%c requires old-chain-name and "
+ 					   "new-chain-name",
+ 					    cmd2char(CMD_RENAME_CHAIN));
++			assert_valid_chain_name(p->newname);
+ 			break;
  
- 			if (strcmp(policy, "-") != 0) {
-+				char *ctrs = strtok(NULL, " \t\n");
- 				struct xt_counters count = {};
- 
--				if (counters) {
--					char *ctrs;
--					ctrs = strtok(NULL, " \t\n");
--
--					if (!ctrs || !parse_counters(ctrs, &count))
--						xtables_error(PARAMETER_PROBLEM,
--							      "invalid policy counters for chain '%s'",
--							      chain);
--				}
-+				if ((!ctrs && counters) ||
-+				    (ctrs && !parse_counters(ctrs, &count)))
-+					xtables_error(PARAMETER_PROBLEM,
-+						      "invalid policy counters for chain '%s'",
-+						      chain);
- 
- 				DEBUGP("Setting policy of chain %s to %s\n",
- 					chain, policy);
- 
--				if (!cb->ops->set_policy(chain, policy, &count,
--						     handle))
-+				if (!cb->ops->set_policy(chain, policy,
-+							 counters ? &count : NULL,
-+							 handle))
- 					xtables_error(OTHER_PROBLEM,
- 						      "Can't set policy `%s' on `%s' line %u: %s",
- 						      policy, chain, line,
-diff --git a/iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0 b/iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0
-index 5ac70682b76bf..854768c96e0da 100755
---- a/iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0
-+++ b/iptables/tests/shell/testcases/ipt-restore/0008-restore-counters_0
-@@ -20,3 +20,10 @@ EXPECT=":foo - [0:0]
- 
- $XT_MULTI iptables-restore --counters <<< "$DUMP"
- diff -u -Z <(echo -e "$EXPECT") <($XT_MULTI iptables-save --counters | grep foo)
-+
-+# if present, counters must be in proper format
-+! $XT_MULTI iptables-restore <<EOF
-+*filter
-+:FORWARD ACCEPT bar
-+COMMIT
-+EOF
-diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
-index abe56374289f4..23cd349819f4f 100644
---- a/iptables/xtables-restore.c
-+++ b/iptables/xtables-restore.c
-@@ -166,19 +166,17 @@ static void xtables_restore_parse_line(struct nft_handle *h,
- 				      xt_params->program_name, line);
- 
- 		if (nft_chain_builtin_find(state->curtable, chain)) {
--			if (counters) {
--				char *ctrs;
--				ctrs = strtok(NULL, " \t\n");
-+			char *ctrs = strtok(NULL, " \t\n");
- 
--				if (!ctrs || !parse_counters(ctrs, &count))
--					xtables_error(PARAMETER_PROBLEM,
--						      "invalid policy counters for chain '%s'",
--						      chain);
--
--			}
-+			if ((!ctrs && counters) ||
-+			    (ctrs && !parse_counters(ctrs, &count)))
-+				xtables_error(PARAMETER_PROBLEM,
-+					      "invalid policy counters for chain '%s'",
-+					      chain);
- 			if (cb->chain_set &&
- 			    cb->chain_set(h, state->curtable->name,
--					  chain, policy, &count) < 0) {
-+					  chain, policy,
-+					  counters ? &count : NULL) < 0) {
- 				xtables_error(OTHER_PROBLEM,
- 					      "Can't set policy `%s' on `%s' line %u: %s",
- 					      policy, chain, line,
+ 		case 'P':
 -- 
 2.40.0
 
