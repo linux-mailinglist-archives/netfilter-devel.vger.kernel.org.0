@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 715F7766D43
-	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jul 2023 14:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DBE766D46
+	for <lists+netfilter-devel@lfdr.de>; Fri, 28 Jul 2023 14:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234303AbjG1McG (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Fri, 28 Jul 2023 08:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48382 "EHLO
+        id S234685AbjG1McM (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 28 Jul 2023 08:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235314AbjG1McE (ORCPT
+        with ESMTP id S234825AbjG1McK (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:32:04 -0400
+        Fri, 28 Jul 2023 08:32:10 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBBB30E1
-        for <netfilter-devel@vger.kernel.org>; Fri, 28 Jul 2023 05:31:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19D310FA
+        for <netfilter-devel@vger.kernel.org>; Fri, 28 Jul 2023 05:32:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=0IATrOL8/gMUKg0/+RkK5yx4q+zMCWnqyAEWYckJ8Sg=; b=daFZJv1D7TzY1kM4Dx+Qcai6zE
-        ijSbOC2pPTg3+EI+WtSuTyuv0qRxrR3jGtvxeOlHrlOZLPH2Ad9OtAXuf2AKcBz8VGLG9XHywuYCS
-        0k+BkVSjI6Zhq8OJBdzbf0IsvCnhMDnsHdfXLUl3hwPdBwC8bK10HxExrKG0UGBAkGZri+ELcRYII
-        zmjW35fy005ML942Y8TUZx3bNLaYfg/YWQPHcmZrtIYRlDujY547QuGof4W2NLEquqX9pnR2hSHJp
-        HQ4/I2xP8ynmAnkkUQwtdvGu5arQJ3iiWb+hnBG5+ofJ/ERp0HWG3QZfRLAnIciMtXtAyjoQwKvGb
-        uh5oy0qQ==;
+        bh=gN4iYRuXDN7mEINCREPoLs1oXrrNEDLmCoy8qU48Aoc=; b=M4QjHVzPOp+P9l2W7f9E9KesdH
+        5It9TL8QBFIpxPyc+wOV7mja1kKcwNUyqzqRmA64jA5LjPbZk2DEgBe1eqnMzYYjTevJnfgMBJFjW
+        qtLyfaDHYbh9Y6HRumyHiCtgt4oMQaFf8hAhNMMok2/bPmIEBiG+SgFKYUbl9g/v4ZAlPT6gAdIO8
+        pCTAQ4g7F0DCbV1rOV8bZH5JGlsB6foCgL7MnAVly/GH2NLlzY9GnXM/dQQDqzgeNMGJRAmigrwMC
+        sjyq60RvRB9EmBsgqBDUJCuioBJyN27F88t+VD5rEH8gVitP5Q4+jnpWvXDjsh1FAVPu66EyVFdie
+        uQWXgJPA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qPMdQ-0006Bn-4C
-        for netfilter-devel@vger.kernel.org; Fri, 28 Jul 2023 14:31:56 +0200
+        id 1qPMdb-0006Bw-Ad
+        for netfilter-devel@vger.kernel.org; Fri, 28 Jul 2023 14:32:07 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 3/4] ebtables: Improve invalid chain name detection
-Date:   Fri, 28 Jul 2023 14:31:46 +0200
-Message-Id: <20230728123147.15750-3-phil@nwl.cc>
+Subject: [iptables PATCH 4/4] tests: shell: Fix and extend chain rename test
+Date:   Fri, 28 Jul 2023 14:31:47 +0200
+Message-Id: <20230728123147.15750-4-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230728123147.15750-1-phil@nwl.cc>
 References: <20230728123147.15750-1-phil@nwl.cc>
@@ -52,91 +52,84 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Fix several issues:
+The old version exited unintentionally before testing ip6tables. Replace
+it by a more complete variant testing for all tools, creating and
+renaming of,chains with various illegal names instead of just renaming
+to a clashing name.
 
-- Most importantly, --new-chain command accepted any name. Introduce
-  ebt_assert_valid_chain_name() for use with both --new-chain and
-  --rename-chain.
-- Restrict maximum name length to what legacy ebtables allows - this is
-  a bit more than iptables-nft, subject to be unified.
-- Like iptables, legacy ebtables rejects names prefixed by '-' or '!'.
-- Use xs_has_arg() for consistency, keep the check for extra args for
-  now.
-
-Fixes: da871de2a6efb ("nft: bootstrap ebtables-compat")
+Fixes: ed9cfe1b48526 ("tests: add initial save/restore test cases")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/xtables-eb.c | 33 ++++++++++++++++++++++++++++-----
- 1 file changed, 28 insertions(+), 5 deletions(-)
+ .../tests/shell/testcases/chain/0003rename_0  | 40 +++++++++++++++++++
+ .../tests/shell/testcases/chain/0003rename_1  | 12 ------
+ 2 files changed, 40 insertions(+), 12 deletions(-)
+ create mode 100755 iptables/tests/shell/testcases/chain/0003rename_0
+ delete mode 100755 iptables/tests/shell/testcases/chain/0003rename_1
 
-diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
-index bf35f52b7585d..08eec79d80400 100644
---- a/iptables/xtables-eb.c
-+++ b/iptables/xtables-eb.c
-@@ -42,6 +42,10 @@
- #include "nft.h"
- #include "nft-bridge.h"
- 
-+/* from linux/netfilter_bridge/ebtables.h */
-+#define EBT_TABLE_MAXNAMELEN 32
-+#define EBT_CHAIN_MAXNAMELEN EBT_TABLE_MAXNAMELEN
+diff --git a/iptables/tests/shell/testcases/chain/0003rename_0 b/iptables/tests/shell/testcases/chain/0003rename_0
+new file mode 100755
+index 0000000000000..4cb2745bc2523
+--- /dev/null
++++ b/iptables/tests/shell/testcases/chain/0003rename_0
+@@ -0,0 +1,40 @@
++#!/bin/bash -x
 +
- /*
-  * From include/ebtables_u.h
-  */
-@@ -74,6 +78,26 @@ static int ebt_check_inverse2(const char option[], int argc, char **argv)
- 	return ebt_invert;
- }
- 
-+/* XXX: merge with assert_valid_chain_name()? */
-+static void ebt_assert_valid_chain_name(const char *chainname)
-+{
-+	if (strlen(chainname) >= EBT_CHAIN_MAXNAMELEN)
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "Chain name length can't exceed %d",
-+			      EBT_CHAIN_MAXNAMELEN - 1);
-+
-+	if (*chainname == '-' || *chainname == '!')
-+		xtables_error(PARAMETER_PROBLEM, "No chain name specified");
-+
-+	if (xtables_find_target(chainname, XTF_TRY_LOAD))
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "Target with name %s exists", chainname);
-+
-+	if (strchr(chainname, ' ') != NULL)
-+		xtables_error(PARAMETER_PROBLEM,
-+			      "Use of ' ' not allowed in chain names");
++die() {
++	echo "E: $@"
++	exit 1
 +}
 +
- /*
-  * Glue code to use libxtables
-  */
-@@ -751,6 +775,7 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
- 			flags |= OPT_COMMAND;
- 
- 			if (c == 'N') {
-+				ebt_assert_valid_chain_name(chain);
- 				ret = nft_cmd_chain_user_add(h, chain, *table);
- 				break;
- 			} else if (c == 'X') {
-@@ -764,14 +789,12 @@ int do_commandeb(struct nft_handle *h, int argc, char *argv[], char **table,
- 			}
- 
- 			if (c == 'E') {
--				if (optind >= argc)
-+				if (!xs_has_arg(argc, argv))
- 					xtables_error(PARAMETER_PROBLEM, "No new chain name specified");
- 				else if (optind < argc - 1)
- 					xtables_error(PARAMETER_PROBLEM, "No extra options allowed with -E");
--				else if (strlen(argv[optind]) >= NFT_CHAIN_MAXNAMELEN)
--					xtables_error(PARAMETER_PROBLEM, "Chain name length can't exceed %d"" characters", NFT_CHAIN_MAXNAMELEN - 1);
--				else if (strchr(argv[optind], ' ') != NULL)
--					xtables_error(PARAMETER_PROBLEM, "Use of ' ' not allowed in chain names");
++cmds="iptables ip6tables"
++[[ $XT_MULTI == *xtables-nft-multi ]] && cmds+=" arptables ebtables"
 +
-+				ebt_assert_valid_chain_name(argv[optind]);
- 
- 				errno = 0;
- 				ret = nft_cmd_chain_user_rename(h, chain, *table,
++declare -A invnames
++invnames["existing"]="c2"
++invnames["spaced"]="foo bar"
++invnames["dashed"]="-foo"
++invnames["negated"]="!foo"
++# XXX: ebtables-nft accepts 255 chars
++#invnames["overlong"]="thisisquitealongnameforachain"
++invnames["standard target"]="ACCEPT"
++invnames["extension target"]="DNAT"
++
++for cmd in $cmds; do
++	$XT_MULTI $cmd -N c1 || die "$cmd: can't add chain c1"
++	$XT_MULTI $cmd -N c2 || die "$cmd: can't add chain c2"
++	for key in "${!invnames[@]}"; do
++		val="${invnames[$key]}"
++		if [[ $key == "extension target" ]]; then
++			if [[ $cmd == "arptables" ]]; then
++				val="mangle"
++			elif [[ $cmd == "ebtables" ]]; then
++				val="dnat"
++			fi
++		fi
++		$XT_MULTI $cmd -N "$val" && \
++			die "$cmd: added chain with $key name"
++		$XT_MULTI $cmd -E c1 "$val" && \
++			die "$cmd: renamed to $key name"
++	done
++done
++
++exit 0
+diff --git a/iptables/tests/shell/testcases/chain/0003rename_1 b/iptables/tests/shell/testcases/chain/0003rename_1
+deleted file mode 100755
+index 975c8e196b9f5..0000000000000
+--- a/iptables/tests/shell/testcases/chain/0003rename_1
++++ /dev/null
+@@ -1,12 +0,0 @@
+-#!/bin/bash
+-
+-$XT_MULTI iptables -N c1 || exit 0
+-$XT_MULTI iptables -N c2 || exit 0
+-$XT_MULTI iptables -E c1 c2 || exit 1
+-
+-$XT_MULTI ip6tables -N c1 || exit 0
+-$XT_MULTI ip6tables -N c2 || exit 0
+-$XT_MULTI ip6tables -E c1 c2 || exit 1
+-
+-echo "E: Renamed with existing chain" >&2
+-exit 0
 -- 
 2.40.0
 
