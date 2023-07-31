@@ -2,114 +2,84 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 831F1768E85
-	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Jul 2023 09:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D54768FF6
+	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Jul 2023 10:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbjGaHVR (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 31 Jul 2023 03:21:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59406 "EHLO
+        id S231384AbjGaIVp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 31 Jul 2023 04:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbjGaHT3 (ORCPT
+        with ESMTP id S231336AbjGaIVT (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 31 Jul 2023 03:19:29 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2455B2D67;
-        Mon, 31 Jul 2023 00:17:59 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbab0d0b88so35766965e9.0;
-        Mon, 31 Jul 2023 00:17:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690787878; x=1691392678;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q2sRNbI2azaNM3epQYqeDbNNvVsnx+uOoBBxcjhRKfE=;
-        b=FX60aiiY2KctEUh+j9yuK0cGnmKW2WpFZ3k1hVMZjIYTseBraxngepIWNvfcXGsPq1
-         7xSVdY+8zc9yIZ57nKdT+hlUE0Ql178jQsRiH723XYn4HhHTr/pv49QmaTcNQ2XsUNAi
-         PWzt+UqFr/sg0NpYqkGyiJNK7oFd9qBYvtgDfg+keM7SyoPlJi+mcwnnV0qqy8UUXXH+
-         yEQM7BNRR98OhKiErQTxzAomz+aqzdV0nWU9PRrMuhWCCwSQ75cIObdPL85tLs8lZ4Tp
-         84iwFiXBPFqH6x90lqRFXFaxycKbeNqBugndgd7V/GFzGnSbrjoxW1nQKlMiaVkRQI3W
-         1DjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690787878; x=1691392678;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q2sRNbI2azaNM3epQYqeDbNNvVsnx+uOoBBxcjhRKfE=;
-        b=HDJUJ5lI3B1ru52ZusBW9FM5UVqAa9eE897G41o42Kj+842Ju+/VQsPjvDRaaBnJGg
-         /QyGOcdSqOx5ToD0N5XIPsMA/RPaKy3DAeVpMHuUCnZcnZau+6QkVicej0ibzOwUHAWu
-         ccOUR8EwLFd31gX9z3FhJ3jpiEVonnaCt/R+TnEL9b7wK0jWvbBLze3I2RUuWwYXPfXl
-         T6YlMDQTBo89L5tKZNkTQ3rVnhGCSy7nwLnP01mXyoTF+QRiGCDQA2Fapih3WAE61p56
-         zjyFwMmgMr7+mppwL/b7vLQcKxXZ+m88Bt5GQWo51Ilpg3VoUffASjtGalUD0wk0EIxZ
-         H49A==
-X-Gm-Message-State: ABy/qLZ0ZGwTE3qVopxwcKG79bf4z4ejDBFk6F+jj/rr6EWIdHBUnwzF
-        GdDYN3kC0MnYld2z/7ID8N8=
-X-Google-Smtp-Source: APBJJlGu0nMEMnREkxmuP9HbttYHTkOQMIO/9DuZ+oCLZJRAJKvQMp2PbLtUuafN9hLtmhCbZ6/OJw==
-X-Received: by 2002:a5d:60c1:0:b0:313:e88d:e6d3 with SMTP id x1-20020a5d60c1000000b00313e88de6d3mr10154506wrt.14.1690787877583;
-        Mon, 31 Jul 2023 00:17:57 -0700 (PDT)
-Received: from localhost ([165.225.194.214])
-        by smtp.gmail.com with ESMTPSA id k1-20020adff5c1000000b00313de682eb3sm12164837wrp.65.2023.07.31.00.17.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 00:17:57 -0700 (PDT)
-From:   Joel Granados <joel.granados@gmail.com>
-X-Google-Original-From: Joel Granados <j.granados@samsung.com>
-To:     mcgrof@kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Kees Cook <keescook@chromium.org>,
-        "D. Wythe" <alibuda@linux.alibaba.com>, mptcp@lists.linux.dev,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Paolo Abeni <pabeni@redhat.com>, coreteam@netfilter.org,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Alexander Aring <alex.aring@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        bridge@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        Joerg Reuter <jreuter@yaina.de>, Julian Anastasov <ja@ssi.bg>,
-        David Ahern <dsahern@kernel.org>,
-        netfilter-devel@vger.kernel.org, Wen Gu <guwen@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        linux-wpan@vger.kernel.org, lvs-devel@vger.kernel.org,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-sctp@vger.kernel.org, Tony Lu <tonylu@linux.alibaba.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Florian Westphal <fw@strlen.de>, willy@infradead.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-rdma@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Simon Horman <horms@verge.net.au>,
-        Mat Martineau <martineau@kernel.org>, josh@joshtriplett.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Eric Dumazet <edumazet@google.com>, linux-hams@vger.kernel.org,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Xin Long <lucien.xin@gmail.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        Joel Granados <j.granados@samsung.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Subject: [PATCH v2 14/14] sysctl: Use ctl_table_size as stopping criteria for list macro
-Date:   Mon, 31 Jul 2023 09:17:28 +0200
-Message-Id: <20230731071728.3493794-15-j.granados@samsung.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230731071728.3493794-1-j.granados@samsung.com>
-References: <20230731071728.3493794-1-j.granados@samsung.com>
+        Mon, 31 Jul 2023 04:21:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC05E7A;
+        Mon, 31 Jul 2023 01:20:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CF30160F99;
+        Mon, 31 Jul 2023 08:20:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3E9D4C433AD;
+        Mon, 31 Jul 2023 08:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690791623;
+        bh=iFw1eTT0uqbhzj8JDGSr0fgbWXoLNoGg8HGa6Krj/BE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=pdzuiheNxcAIUt7dl4VvftR6KVgfb4WfHYzXw7S4BW3HMeL0KMuaUJegDV4ye1i2q
+         xt+IXuw4p4K/OydDVMCVezK9Voc5opQc2n1uQHW+pCcF2S8wyiKFcuPa64UxEPUtvQ
+         G1Iwdhc79AaODYjflPpqOtbjQJnp2U4Fo+ECkhcQA/WYz7nibFltasYOX6TfOGyiQm
+         DkftOEw0qo8qS7YQ1KRXR6FKZrHxTFzDS6vQd6ySIF1lkhclBxDg0VactJ9YcERA3Q
+         lruw6F4hQjhGdeD4QZ4puijNgB6y1lT949oNG2pypUD5bnAAqPINZFgkA0SmN19lHN
+         qOipMmAtNgTCQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1B4A1E96AC0;
+        Mon, 31 Jul 2023 08:20:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Subject: Re: [PATCH v3 net-next] net: flow_dissector: Use 64bits for used_keys
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169079162310.10005.11385616493848955483.git-patchwork-notify@kernel.org>
+Date:   Mon, 31 Jul 2023 08:20:23 +0000
+References: <20230728232215.2071351-1-rkannoth@marvell.com>
+In-Reply-To: <20230728232215.2071351-1-rkannoth@marvell.com>
+To:     Ratheesh Kannoth <rkannoth@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vladimir.oltean@nxp.com, claudiu.manoil@nxp.com,
+        alexandre.belloni@bootlin.com, andrew@lunn.ch,
+        f.fainelli@gmail.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, olteanv@gmail.com,
+        michael.chan@broadcom.com, rajur@chelsio.com,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        taras.chornyi@plvision.eu, saeedm@nvidia.com, leon@kernel.org,
+        idosch@nvidia.com, petrm@nvidia.com, horatiu.vultur@microchip.com,
+        lars.povlsen@microchip.com, Steen.Hegelund@microchip.com,
+        daniel.machon@microchip.com, simon.horman@corigine.com,
+        aelior@marvell.com, manishc@marvell.com, ecree.xilinx@gmail.com,
+        habetsm.xilinx@gmail.com, peppe.cavallaro@st.com,
+        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        mcoquelin.stm32@gmail.com, pablo@netfilter.org,
+        kadlec@netfilter.org, fw@strlen.de,
+        muhammad.husaini.zulkifli@intel.com, coreteam@netfilter.org,
+        ioana.ciornei@nxp.com, wojciech.drewek@intel.com,
+        gerhard@engleder-embedded.com, oss-drivers@corigine.com,
+        shenjian15@huawei.com, wentao.jia@corigine.com,
+        linux-net-drivers@amd.com, huangguangbin2@huawei.com,
+        hui.zhou@corigine.com, linux-rdma@vger.kernel.org,
+        louis.peens@corigine.com, zdoychev@maxlinear.com,
+        intel-wired-lan@lists.osuosl.org, wenjuan.geng@corigine.com,
+        grygorii.strashko@ti.com, kurt@linutronix.de,
+        UNGLinuxDriver@microchip.com, netfilter-devel@vger.kernel.org,
+        lanhao@huawei.com, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, shmulik.ladkani@gmail.com,
+        d-tatianin@yandex-team.ru,
+        linux-stm32@st-md-mailman.stormreply.com, jdamato@fastly.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -117,45 +87,28 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-This is a preparation commit to make it easy to remove the sentinel
-elements (empty end markers) from the ctl_table arrays. It both allows
-the systematic removal of the sentinels and adds the ctl_table_size
-variable to the stopping criteria of the list_for_each_table_entry macro
-that traverses all ctl_table arrays. Once all the sentinels are removed
-by subsequent commits, ctl_table_size will become the only stopping
-criteria in the macro. We don't actually remove any elements in this
-commit, but it sets things up to for the removal process to take place.
+Hello:
 
-By adding header->ctl_table_size as an additional stopping criteria for
-the list_for_each_table_entry macro, it will execute until it finds an
-"empty" ->procname or until the size runs out. Therefore if a ctl_table
-array with a sentinel is passed its size will be too big (by one
-element) but it will stop on the sentinel. On the other hand, if the
-ctl_table array without a sentinel is passed its size will be just write
-and there will be no need for a sentinel.
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-Signed-off-by: Joel Granados <j.granados@samsung.com>
-Suggested-by: Jani Nikula <jani.nikula@linux.intel.com>
----
- fs/proc/proc_sysctl.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+On Sat, 29 Jul 2023 04:52:15 +0530 you wrote:
+> As 32bits of dissector->used_keys are exhausted,
+> increase the size to 64bits.
+> 
+> This is base change for ESP/AH flow dissector patch.
+> Please find patch and discussions at
+> https://lore.kernel.org/netdev/ZMDNjD46BvZ5zp5I@corigine.com/T/#t
+> 
+> [...]
 
-diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index 817bc51c58d8..504e847c2a3a 100644
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -19,8 +19,9 @@
- #include <linux/kmemleak.h>
- #include "internal.h"
- 
--#define list_for_each_table_entry(entry, header) \
--	for ((entry) = (header->ctl_table); (entry)->procname; (entry)++)
-+#define list_for_each_table_entry(entry, header)	\
-+	entry = header->ctl_table;			\
-+	for (size_t i = 0 ; i < header->ctl_table_size && entry->procname; ++i, entry++)
- 
- static const struct dentry_operations proc_sys_dentry_operations;
- static const struct file_operations proc_sys_file_operations;
+Here is the summary with links:
+  - [v3,net-next] net: flow_dissector: Use 64bits for used_keys
+    https://git.kernel.org/netdev/net-next/c/2b3082c6ef3b
+
+You are awesome, thank you!
 -- 
-2.30.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
