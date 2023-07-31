@@ -2,128 +2,107 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF4B7694BB
-	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Jul 2023 13:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E44769519
+	for <lists+netfilter-devel@lfdr.de>; Mon, 31 Jul 2023 13:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbjGaLYg (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Mon, 31 Jul 2023 07:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37786 "EHLO
+        id S230501AbjGaLkq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Mon, 31 Jul 2023 07:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbjGaLYf (ORCPT
+        with ESMTP id S231134AbjGaLkm (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:24:35 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 954B7F1
-        for <netfilter-devel@vger.kernel.org>; Mon, 31 Jul 2023 04:24:32 -0700 (PDT)
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     netfilter-devel@vger.kernel.org
-Subject: [PATCH nft] libnftables: Drop cache in -c/--check mode
-Date:   Mon, 31 Jul 2023 13:24:24 +0200
-Message-Id: <20230731112424.69600-1-pablo@netfilter.org>
-X-Mailer: git-send-email 2.30.2
+        Mon, 31 Jul 2023 07:40:42 -0400
+Received: from taras.nevrast.org (unknown [IPv6:2a05:d01c:431:aa03:b7e1:333d:ea2a:b14e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE50AE68
+        for <netfilter-devel@vger.kernel.org>; Mon, 31 Jul 2023 04:40:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20220717; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:
+        Date:Subject:To:From:Sender:Reply-To:Cc:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=5vpmH/sYFwwjvjEnuFC4H57jOLb0IPMnIkPYru29M7Y=; b=UiYdGLpu76UU4r0TleG4kpsxXa
+        GMWjPM2QigQv7DqT4598Ckch7jJcj+lPlmM7VeJtXZ7zW4BYmfelOa9lG7TS0153qfqUifsUfJIyh
+        yynis2UVQ0qe/2qSshIG7LBedhwTTX1TbpHTZa9SMKruj4FGE+13IE/6djEfhiIztG7DiiFzLXIfx
+        yxOjaX3/5bpi6qLZVn7UoWhk5w15KWf5D+Jh+cR8tGYD8kofi257mWxDYHxUgnX+VMexxoMk4UPJH
+        Xl3uDCJ/dDfEN1AFGt87VFpo6sTEe3QBp5pEumyDdAVrZ0a6tMPiA22zMEjold/DOsmaE6xQfFU0p
+        ZYX3m6MA==;
+Received: from [2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608] (helo=ulthar.dreamlands)
+        by taras.nevrast.org with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <jeremy@azazel.net>)
+        id 1qQRGP-0062Uw-1D
+        for netfilter-devel@vger.kernel.org;
+        Mon, 31 Jul 2023 12:40:37 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Netfilter Devel <netfilter-devel@vger.kernel.org>
+Subject: [PATCH nft 0/3] Python Build Modernization
+Date:   Mon, 31 Jul 2023 12:40:21 +0100
+Message-Id: <20230731114024.2836892-1-jeremy@azazel.net>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-SA-Exim-Connect-IP: 2001:8b0:135f:bcd1:e0cb:4eff:fedf:e608
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Extend e0aace943412 ("libnftables: Drop cache in error case") to also
-drop the cache with -c/--check, this is a dry run mode and kernel does
-not get any update.
+Directly invoking setup.py to build and install a Python module is
+deprecated:
 
-This fixes a bug with -o/--optimize, which first runs in an implicit
--c/--check mode to validate that the ruleset is correct, then it
-provides the proposed optimization. In this case, if the cache is not
-emptied, old objects in the cache refer to scanner data that was
-already released, which triggers BUG like this:
+  https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html
 
- BUG: invalid input descriptor type 151665524
- nft: erec.c:161: erec_print: Assertion `0' failed.
- Aborted
+Pablo recently removed the autotooling which did this.  This patch-set
+updates the Python build configuration to add support for modern
+alternatives while leaving the setup.py script around for users who may
+need it.
 
-This bug was triggered in a ruleset that contains a set for geoip
-filtering. This patch also extends tests/shell to cover this case.
+The approach I have used is described here:
 
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- src/libnftables.c                                     |  7 +++++--
- .../optimizations/dumps/skip_unsupported.nft          | 11 +++++++++++
- tests/shell/testcases/optimizations/skip_unsupported  | 11 +++++++++++
- 3 files changed, 27 insertions(+), 2 deletions(-)
+  https://setuptools.pypa.io/en/latest/build_meta.html
 
-diff --git a/src/libnftables.c b/src/libnftables.c
-index 6fc4f7db6760..e214abb69cf2 100644
---- a/src/libnftables.c
-+++ b/src/libnftables.c
-@@ -607,8 +607,10 @@ err:
- 	    nft_output_json(&nft->output) &&
- 	    nft_output_echo(&nft->output))
- 		json_print_echo(nft);
--	if (rc)
-+
-+	if (rc || nft->check)
- 		nft_cache_release(&nft->cache);
-+
- 	return rc;
- }
- 
-@@ -713,7 +715,8 @@ err:
- 	    nft_output_json(&nft->output) &&
- 	    nft_output_echo(&nft->output))
- 		json_print_echo(nft);
--	if (rc)
-+
-+	if (rc || nft->check)
- 		nft_cache_release(&nft->cache);
- 
- 	scope_release(nft->state->scopes[0]);
-diff --git a/tests/shell/testcases/optimizations/dumps/skip_unsupported.nft b/tests/shell/testcases/optimizations/dumps/skip_unsupported.nft
-index 43b6578dc704..f24855e7b5e1 100644
---- a/tests/shell/testcases/optimizations/dumps/skip_unsupported.nft
-+++ b/tests/shell/testcases/optimizations/dumps/skip_unsupported.nft
-@@ -1,4 +1,15 @@
- table inet x {
-+	set GEOIP_CC_wan-lan_120 {
-+		type ipv4_addr
-+		flags interval
-+		elements = { 1.32.128.0/18, 1.32.200.0-1.32.204.128,
-+			     1.32.207.0/24, 1.32.216.118-1.32.216.255,
-+			     1.32.219.0-1.32.222.255, 1.32.226.0/23,
-+			     1.32.231.0/24, 1.32.233.0/24,
-+			     1.32.238.0/23, 1.32.240.0/24,
-+			     223.223.220.0/22, 223.255.254.0/24 }
-+	}
-+
- 	chain y {
- 		ip saddr 1.2.3.4 tcp dport 80 meta mark set 0x0000000a accept
- 		ip saddr 1.2.3.4 tcp dport 81 meta mark set 0x0000000b accept
-diff --git a/tests/shell/testcases/optimizations/skip_unsupported b/tests/shell/testcases/optimizations/skip_unsupported
-index 9313c302048c..6baa8280a9b5 100755
---- a/tests/shell/testcases/optimizations/skip_unsupported
-+++ b/tests/shell/testcases/optimizations/skip_unsupported
-@@ -3,6 +3,17 @@
- set -e
- 
- RULESET="table inet x {
-+	set GEOIP_CC_wan-lan_120 {
-+		type ipv4_addr
-+		flags interval
-+		elements = { 1.32.128.0/18, 1.32.200.0-1.32.204.128,
-+			     1.32.207.0/24, 1.32.216.118-1.32.216.255,
-+			     1.32.219.0-1.32.222.255, 1.32.226.0/23,
-+			     1.32.231.0/24, 1.32.233.0/24,
-+			     1.32.238.0/23, 1.32.240.0/24,
-+			     223.223.220.0/22, 223.255.254.0/24 }
-+	}
-+
- 	chain y {
- 		ip saddr 1.2.3.4 tcp dport 80 meta mark set 10 accept
- 		ip saddr 1.2.3.4 tcp dport 81 meta mark set 11 accept
+We move the setuptools configuration out of setup.py into setup.cfg, and
+then add a pyproject.toml configuration file to tell PEP-517 build tools
+to use setuptools.
+
+Setuptools also supports putting all its configuration into
+pyproject.toml files:
+
+  https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+
+However, this is much more recent than its setup.cfg support (2022 vs
+2016), which is why I decided to stick with the approach described
+above.
+
+Jeremy Sowden (3):
+  py: move package source into src directory
+  py: use setup.cfg to configure setuptools
+  py: add pyproject.toml to support PEP-517-compatible build-systems
+
+ INSTALL                  |  3 ++-
+ py/Makefile.am           |  2 +-
+ py/pyproject.toml        |  3 +++
+ py/setup.cfg             | 24 ++++++++++++++++++++++++
+ py/setup.py              | 23 ++---------------------
+ py/{ => src}/__init__.py |  0
+ py/{ => src}/nftables.py |  0
+ py/{ => src}/schema.json |  0
+ 8 files changed, 32 insertions(+), 23 deletions(-)
+ create mode 100644 py/pyproject.toml
+ create mode 100644 py/setup.cfg
+ rename py/{ => src}/__init__.py (100%)
+ rename py/{ => src}/nftables.py (100%)
+ rename py/{ => src}/schema.json (100%)
+
 -- 
-2.30.2
+2.40.1
 
