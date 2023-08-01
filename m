@@ -2,129 +2,111 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCAF76B84C
-	for <lists+netfilter-devel@lfdr.de>; Tue,  1 Aug 2023 17:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3149076B875
+	for <lists+netfilter-devel@lfdr.de>; Tue,  1 Aug 2023 17:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbjHAPPd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 1 Aug 2023 11:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
+        id S233798AbjHAPU0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 1 Aug 2023 11:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbjHAPPc (ORCPT
+        with ESMTP id S234145AbjHAPUX (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:15:32 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E661B1
-        for <netfilter-devel@vger.kernel.org>; Tue,  1 Aug 2023 08:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=cT06ld6xUiThuoJ2eB/Nz8hUVJ/BHpETSfyGZeL36Sw=; b=as2cNPYddIGlzRXNttsOA3NsON
-        WHo+qw/vtUy9vgxq1Agewwhqp7CgA2s85cfBFrYDkUzoltG4UeooFalYKEEHnpWR00ByDq7O7P54t
-        qiFEnHt4PpSk56502oDUpmYL6U1vNiQpwE8UKL1cSCfodrDatxffgp99JX8HBjwbLdPSHUYuSbvTy
-        ukHE4CN/8eMxJ2yCACfXrFuB1Mi3tvjWXcAJPbVdSgY9fuogmO4+Km2xCWUCDIq8Ab3mEKGvemoXj
-        oHnx6oY+JELHLtUHdUIXNKR/0kt6dOyRdvrzSaPT0eFLJ3PfiiQMu5qTkGd+46QDgir4K/BxQ8Krp
-        nwLjZvOw==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1qQr5p-0005Tg-VE
-        for netfilter-devel@vger.kernel.org; Tue, 01 Aug 2023 17:15:26 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 2/2] iptables-apply: Eliminate shellcheck warnings
-Date:   Tue,  1 Aug 2023 17:15:17 +0200
-Message-Id: <20230801151517.15280-2-phil@nwl.cc>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230801151517.15280-1-phil@nwl.cc>
-References: <20230801151517.15280-1-phil@nwl.cc>
+        Tue, 1 Aug 2023 11:20:23 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EDB10F5;
+        Tue,  1 Aug 2023 08:20:17 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id E7CC75C01DE;
+        Tue,  1 Aug 2023 11:20:15 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 01 Aug 2023 11:20:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1690903215; x=1690989615; bh=gJ
+        mKl0XnfNOfeViEaAye1ljmUyCgjpGGF5LwtdmY9m8=; b=kAI8OP+w7hRnTsNISf
+        Uz+0k1ByOl3+BgqmhHW9gkvOaahlgmnyQYuQXD0XvuiC9wbgMXM+fUWkkxp0+vZ2
+        HqA6h2rJh0ciY1zXNCldFw8QkHIcXqBNbAqm9ygVKkUkMFc1ohf4++NLc+6uUgXr
+        9WhZ/xhp1GqOI9MDlYiO7QkatBosPBRWgoCTCqEPVlZvjua1IweDyTJP77cMOZBn
+        dc86f1YG6SOXdeazIGGb/lBpPWrMObPdqseYvBMPzexLCojwScx7TusVPKSIiqNw
+        9oRic0LKT/n5BXIIAYJ/6zwEBYeTgKvmopa3VM/LGOT/SZX10vLcB8aPADrHMLvv
+        E1aA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690903215; x=1690989615; bh=gJmKl0XnfNOfe
+        ViEaAye1ljmUyCgjpGGF5LwtdmY9m8=; b=U3O8+Gro+DkZxLXCtbWwh6i9IVZXB
+        hNHMFHthh6/il7yvHM4u1C6NOh/jSLpAXZA83VYSmVOmH0VLK+0Ydg2RUpg5Mlza
+        25wh7vqZVROnVgoCa8/9hXlYUCoNu7ZYbeaH5IFalx9vBv3a0kjP+5mx8IoSs4SW
+        xKGENUCVy1ZlWdxgXopgv+5KoPPexXR6Rz3CHmBzxLyAHM/Z+IPG6zdMTxSS1NxM
+        WWZ1jHC3yY0xfF6hV0/ycGiy+ozB5CVKmyBnoS6jDcPoW275+TOFxLYwVCYeyTSC
+        A2TNvuqCGz0ts8Frf0dbZjpMqSrMYEka4l4h5hHkGEeWbaGXavGsbFLDg==
+X-ME-Sender: <xms:riLJZLBKShiHEt2Jt0XrZxQlvbCqcP8vETNLGad1i2726e2Kq6t8og>
+    <xme:riLJZBgJ8thDWvPCaILDz5Q-jFTPISTjfStM7Kz6vFX8rQiSn_7sbTy_tOwm6tm1w
+    _S7RD1sLf6DEKh7Qg>
+X-ME-Received: <xmr:riLJZGnHufzWUOKIv0dzHj-Q4YwEoPHbYLQCgWYwXbhUu7pYs5Hvoi77dySZyueS9H3ugM3VYXbBzwN0qmefzMdBqy2Ocmc5exQzRes>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeigdekgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddt
+    vdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenuc
+    ggtffrrghtthgvrhhnpedvfeekteduudefieegtdehfeffkeeuudekheduffduffffgfeg
+    iedttefgvdfhvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:riLJZNyp8avT4hqkWtTi6P7QFYLejjQX1DmMAko_e6a1u1Y1cSuQnA>
+    <xmx:riLJZAS_lO_aF1M4T4pQrfMD4BAr65r2RhU0HQpogBNz8g4CQAtu9Q>
+    <xmx:riLJZAaJibbHNJLxn4HWL59zmo30xOjafDy0_v5LUPIbHJUB4m0gTA>
+    <xmx:ryLJZCBKkD_yXavyx1-3FGHLfr9nSP4AUF0aamOKeyb6FaHa2n4t1Q>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 1 Aug 2023 11:20:13 -0400 (EDT)
+Date:   Tue, 1 Aug 2023 09:20:12 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] netfilter: bpf_link: avoid unused-function warning
+Message-ID: <z3gp6rcrlotwjwux7chza4vmbgv747v5jlr4xhuaad3y2yofsf@jjiju6zltbmh>
+References: <20230801150304.1980987-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801150304.1980987-1-arnd@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Actual warnings were only about use of '-a' in bracket expressions
-(replace by '&&' pipeline) and the immediate evaluation of the variable
-in trap command.
+Hi Arnd,
 
-The remaining changes silence info-level messages: missing quoting
-around variables, pointless '$' in arithmetic expressions, backticks
-instead of $(...), missing '-r' parameter when calling read and an
-awkward negated '-z' check.
+On Tue, Aug 01, 2023 at 05:02:41PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The newly added function is unused in some random configurations:
+> 
+> net/netfilter/nf_bpf_link.c:32:1: error: 'get_proto_defrag_hook' defined but not used [-Werror=unused-function]
+>    32 | get_proto_defrag_hook(struct bpf_nf_link *link,
+>       | ^~~~~~~~~~~~~~~~~~~~~
+> 
 
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- iptables/iptables-apply | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+This was fixed in 81584c23f249 ("netfilter: bpf: Only define get_proto_defrag_hook() if necessary").
 
-diff --git a/iptables/iptables-apply b/iptables/iptables-apply
-index 3a7df5e3cbc1f..c603fb2113ef3 100755
---- a/iptables/iptables-apply
-+++ b/iptables/iptables-apply
-@@ -141,9 +141,9 @@ for opt in $OPTS; do
- 			;;
- 		(*)
- 			case "${OPT_STATE:-}" in
--				(SET_TIMEOUT) eval TIMEOUT=$opt;;
-+				(SET_TIMEOUT) eval TIMEOUT="$opt";;
- 				(SET_SAVEFILE)
--					eval SAVEFILE=$opt
-+					eval SAVEFILE="$opt"
- 					[ -z "$SAVEFILE" ] && SAVEFILE="$DEF_SAVEFILE"
- 					;;
- 			esac
-@@ -163,13 +163,13 @@ done
- 
- # Validate parameters
- if [ "$TIMEOUT" -ge 0 ] 2>/dev/null; then
--	TIMEOUT=$(($TIMEOUT))
-+	TIMEOUT=$((TIMEOUT))
- else
- 	echo "Error: timeout must be a positive number" >&2
- 	exit 1
- fi
- 
--if [ -n "$SAVEFILE" -a -e "$SAVEFILE" -a ! -w "$SAVEFILE" ]; then
-+if [ -n "$SAVEFILE" ] && [ -e "$SAVEFILE" ] && [ ! -w "$SAVEFILE" ]; then
- 	echo "Error: savefile not writable: $SAVEFILE" >&2
- 	exit 8
- fi
-@@ -205,8 +205,8 @@ esac
- ### Begin work
- 
- # Store old iptables rules to temporary file
--TMPFILE=`mktemp /tmp/$PROGNAME-XXXXXXXX`
--trap "rm -f $TMPFILE" EXIT HUP INT QUIT ILL TRAP ABRT BUS \
-+TMPFILE=$(mktemp "/tmp/$PROGNAME-XXXXXXXX")
-+trap 'rm -f $TMPFILE' EXIT HUP INT QUIT ILL TRAP ABRT BUS \
- 		      FPE USR1 SEGV USR2 PIPE ALRM TERM
- 
- if ! "$SAVE" >"$TMPFILE"; then
-@@ -257,13 +257,13 @@ esac
- # Prompt user for confirmation
- echo -n "Can you establish NEW connections to the machine? (y/N) "
- 
--read -n1 -t "$TIMEOUT" ret 2>&1 || :
-+read -r -n1 -t "$TIMEOUT" ret 2>&1 || :
- case "${ret:-}" in
- 	(y*|Y*)
- 		# Success
- 		echo
- 
--		if [ ! -z "$SAVEFILE" ]; then
-+		if [ -n "$SAVEFILE" ]; then
- 			# Write successfully applied rules to the savefile
- 			echo "Writing successfully applied rules to '$SAVEFILE'..."
- 			if ! "$SAVE" >"$SAVEFILE"; then
--- 
-2.40.0
-
+Thanks,
+Daniel
