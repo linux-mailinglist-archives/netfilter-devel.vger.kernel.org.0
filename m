@@ -2,49 +2,38 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6342C76C2B2
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 04:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FFC76C858
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 10:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjHBCGF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 1 Aug 2023 22:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
+        id S230396AbjHBIb0 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Aug 2023 04:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbjHBCGE (ORCPT
+        with ESMTP id S229499AbjHBIb0 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 22:06:04 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6128213D
-        for <netfilter-devel@vger.kernel.org>; Tue,  1 Aug 2023 19:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Hi5kUFvESbkyFBH+RQcgBdV1ob9dRSPMlqhMTkO3mrE=; b=SsZmS+1q/JDM8QSFvtKAgL2qW1
-        +oJd2xhIs1wwQZXf8SEqvwee15eQJ19XRFXU80EEl+ZuQcL6CSuhYvAf+GjrpW9R6Y9XCx+xAIdgw
-        myuJ+AX08KwLx6/PT4axgndJfCDlUzcfL19H+9G7U79qGGTTM2opOdUBRvq+XolR7qSwwYQ85wiRi
-        ryG+4+cdjz10E+/l8ytihDhk6JSvLxouUpGBtE7HdCnjRCBr7ibhA4/aqHUFc+fXxPf1TutKcA5OE
-        MTAS9sMXXJ5wHEmDsH7Ckzo6uEeNssZj6cMgCcAPFNkTTO5lMRp3j77QvnvmYsSxO+aOHIvgEFD53
-        e8F7V7hQ==;
-Received: from localhost ([::1] helo=xic)
-        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
-        (envelope-from <phil@nwl.cc>)
-        id 1qR1FR-0002vB-3l
-        for netfilter-devel@vger.kernel.org; Wed, 02 Aug 2023 04:06:01 +0200
-From:   Phil Sutter <phil@nwl.cc>
-To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH 3/3] tests: libipt_icmp.t: Enable tests with numeric output
-Date:   Wed,  2 Aug 2023 04:05:47 +0200
-Message-Id: <20230802020547.28886-3-phil@nwl.cc>
-X-Mailer: git-send-email 2.40.0
+        Wed, 2 Aug 2023 04:31:26 -0400
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1D2171D
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Aug 2023 01:31:23 -0700 (PDT)
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 4D8F45872FA13; Wed,  2 Aug 2023 10:31:16 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id 4CE2460C29143;
+        Wed,  2 Aug 2023 10:31:16 +0200 (CEST)
+Date:   Wed, 2 Aug 2023 10:31:16 +0200 (CEST)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Phil Sutter <phil@nwl.cc>
+cc:     netfilter-devel@vger.kernel.org, Amelia Downs <adowns@vmware.com>
+Subject: Re: [iptables PATCH 1/3] extensions: libipt_icmp: Fix confusion
+ between 255/255 and any
 In-Reply-To: <20230802020547.28886-1-phil@nwl.cc>
+Message-ID: <s4402816-ros7-qqoq-73r0-147po5s5862p@vanv.qr>
 References: <20230802020547.28886-1-phil@nwl.cc>
+User-Agent: Alpine 2.26 (LSU 649 2022-06-02)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,36 +41,31 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Unrelated to the question whether numeric (save) output is desired or
-not, enable the tests and expect the known format.
 
-Using --list without --numeric prints the names, BTW.
+On Wednesday 2023-08-02 04:05, Phil Sutter wrote:
+>
+>It is not entirely clear what the fixed commit was trying to establish,
+>but the save output is certainly not correct (especially since print
+>callback gets things right).
+>
+>Fixes: fc9237da4e845 ("Fix '-p icmp -m icmp' issue (Closes: #37)")
 
-Fixes: 49d5b7277c7f2 ("extensions: libipt_icmp: add unit test")
-Signed-off-by: Phil Sutter <phil@nwl.cc>
----
- extensions/libipt_icmp.t | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+"""(libipt_icmp.c):
+ * Up to kernel <=2.4.20 the problem was:
+ * '-p icmp ' matches all icmp packets
+ * '-p icmp -m icmp' matches _only_ ICMP type 0 :(
+ * This is now fixed by initializing the field * to icmp type 0xFF
+"""
 
-diff --git a/extensions/libipt_icmp.t b/extensions/libipt_icmp.t
-index 08692900dba12..3c97cf4e06128 100644
---- a/extensions/libipt_icmp.t
-+++ b/extensions/libipt_icmp.t
-@@ -1,11 +1,8 @@
- :INPUT,FORWARD,OUTPUT
- -p icmp -m icmp --icmp-type any;=;OK
--# output uses the number, better use the name?
--# ERROR: cannot find: iptables -I INPUT -p icmp -m icmp --icmp-type echo-reply
--# -p icmp -m icmp --icmp-type echo-reply;=;OK
--# output uses the number, better use the name?
--# ERROR: annot find: iptables -I INPUT -p icmp -m icmp --icmp-type destination-unreachable
--# -p icmp -m icmp --icmp-type destination-unreachable;=;OK
-+# XXX: output uses the number, better use the name?
-+-p icmp -m icmp --icmp-type echo-reply;-p icmp -m icmp --icmp-type 0;OK
-+-p icmp -m icmp --icmp-type destination-unreachable;-p icmp -m icmp --icmp-type 3;OK
- # it does not acccept name/name, should we accept this?
- # ERROR: cannot load: iptables -A INPUT -p icmp -m icmp --icmp-type destination-unreachable/network-unreachable
- # -p icmp -m icmp --icmp-type destination-unreachable/network-unreachable;=;OK
--- 
-2.40.0
+But also:
 
+v1.2.7a-35-gfc9237da missed touching *libip6t_icmp6.c*, so
+it was never updated with the same "bug".
+
+In icmp6, --icmpv6-type was (and still is to this date) mandatory, which means
+`-p icmp6 -m icmp6` would *not* implicitly go match ICMP(v6) type 0 like its
+IPv4 counterpart.
+
+Then, in v1.4.10-115-g1b8db4f4, libipt_icmp.c more or less accidentally gained
+XTOPT_MAND (possible spill from IPv6 code), therefore `-p icmp -m icmp` would
+also stop implicitly doing ICMP type "any".
