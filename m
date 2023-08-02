@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F4076D362
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 18:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E83076D35E
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 18:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbjHBQKX (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Aug 2023 12:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
+        id S232082AbjHBQKB (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Aug 2023 12:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231665AbjHBQKX (ORCPT
+        with ESMTP id S231690AbjHBQKB (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:10:23 -0400
+        Wed, 2 Aug 2023 12:10:01 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BB1E1
-        for <netfilter-devel@vger.kernel.org>; Wed,  2 Aug 2023 09:10:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30269E1
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Aug 2023 09:10:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=T4blAogervW9vczVa+/4GETelyACZm4HV6nWJTc1bBU=; b=SZ4JSOQthydSx6gYXMkAuBWKxy
-        H7jyqlEGIHjnIP13+C5+ZnsDYByiawxPI4bufO+lOsKjdmS1ab9cGUoesgH6dXK2/5+ri9N7951RP
-        dOsHP0SQSu8UAFDqpViwbpuashxDsz2J7xCusO+wL/AKGHqxOj9K6j5YDHwfzxCaXGJ+q51C6z4Pg
-        OWL5LG2NQBU+XRNA9oyx+GGLwW3HBjg/t4TZ1xNSVLjY2a1S92UZQoctbhFmJoeSnBuw+Ka/Zy9WB
-        G73V60MEOrHDW38gNz+olzcDc+9iIgqs/mJaYvvPDg2ULbrlmUB8CH+avhqlf1/JDzNZ79smYaVAx
-        6WqE7Z6A==;
+        bh=WR2JIEuuwH83+3VqVFMvTLiiltBU/28fj7f0buuyjL4=; b=BYQJ6Hezb+5OTXXhlhcTIMg9s9
+        yokSdbxRTe+MLOXsYNFYaiYkHgshDVFrN/wdekwrAJHxaD5EBDev92w0tcc0Kq5Xp9t1gc8xyof3F
+        yArQw5dxD8PVJJ3G8VPoBz9rxGI6zI9pxlT/ulYr9bwbjKXvJNPPsSkF0pVl0PE18LCEZ8lS36e63
+        umQLLW75RCwibTzYItI03zBWj+gCUgWCtOSTQCUxO0iPymi6rUpGizXWqq1DO47tn4vrFThCTeFC7
+        i7iPf04KP7DCFC1Tu7o52FauUtr8fBNFClQnHYkapQSMesZIE+SFC6XdOpi2ciX5V/q3V43wv/Id3
+        kfJKwvSQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qREQW-0004vX-Cz; Wed, 02 Aug 2023 18:10:20 +0200
+        id 1qREQA-0004uB-K5
+        for netfilter-devel@vger.kernel.org; Wed, 02 Aug 2023 18:09:58 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Cc:     Steven Barre <steven.barre@dxcas.com>
-Subject: [iptables PATCH v2 01/15] man: iptables.8: Extend exit code description
-Date:   Wed,  2 Aug 2023 18:09:09 +0200
-Message-Id: <20230802160923.17949-2-phil@nwl.cc>
+Subject: [iptables PATCH v2 02/15] man: iptables.8: Trivial spelling fixes
+Date:   Wed,  2 Aug 2023 18:09:10 +0200
+Message-Id: <20230802160923.17949-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230802160923.17949-1-phil@nwl.cc>
 References: <20230802160923.17949-1-phil@nwl.cc>
@@ -52,35 +52,59 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Codes 3 and 4 were missing.
+- Missing "and" as well as full stop
+- Missing comma in enumeration
+- Duplicate "previous"
+- Confusions are avoided rather than simplified
+- Missing space after comma
 
-Reported-by: Steven Barre <steven.barre@dxcas.com>
-Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1353
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/iptables.8.in | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ iptables/iptables.8.in | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/iptables/iptables.8.in b/iptables/iptables.8.in
-index f81c632f2be86..2dd1406615106 100644
+index 2dd1406615106..6486588e34744 100644
 --- a/iptables/iptables.8.in
 +++ b/iptables/iptables.8.in
-@@ -410,9 +410,12 @@ the default setting.
- iptables can use extended packet matching and target modules.
- A list of these is available in the \fBiptables\-extensions\fP(8) manpage.
- .SH DIAGNOSTICS
--Various error messages are printed to standard error.  The exit code
--is 0 for correct functioning.  Errors which appear to be caused by
--invalid or abused command line parameters cause an exit code of 2, and
-+Various error messages are printed to standard error.  The exit code is 0 for
-+correct functioning.  Errors which appear to be caused by invalid or abused
-+command line parameters cause an exit code of 2. Errors which indicate an
-+incompatibility between kernel and user space cause an exit code of 3. Errors
-+which indicate a resource problem, such as a busy lock, failing memory
-+allocation or error messages from kernel cause an exit code of 4. Finally,
- other errors cause an exit code of 1.
- .SH BUGS
- Bugs?  What's this? ;-)
+@@ -125,8 +125,8 @@ This table is used mainly for configuring exemptions from connection
+ tracking in combination with the NOTRACK target.  It registers at the netfilter
+ hooks with higher priority and is thus called before ip_conntrack, or any other
+ IP tables.  It provides the following built-in chains: \fBPREROUTING\fP
+-(for packets arriving via any network interface) \fBOUTPUT\fP
+-(for packets generated by local processes)
++(for packets arriving via any network interface) and \fBOUTPUT\fP
++(for packets generated by local processes).
+ .TP
+ \fBsecurity\fP:
+ This table is used for Mandatory Access Control (MAC) networking rules, such
+@@ -258,7 +258,7 @@ This option has no effect in ip6tables and ip6tables-restore.
+ [\fB!\fP] \fB\-p\fP, \fB\-\-protocol\fP \fIprotocol\fP
+ The protocol of the rule or of the packet to check.
+ The specified protocol can be one of \fBtcp\fP, \fBudp\fP, \fBudplite\fP,
+-\fBicmp\fP, \fBicmpv6\fP,\fBesp\fP, \fBah\fP, \fBsctp\fP, \fBmh\fP or the special keyword "\fBall\fP",
++\fBicmp\fP, \fBicmpv6\fP, \fBesp\fP, \fBah\fP, \fBsctp\fP, \fBmh\fP or the special keyword "\fBall\fP",
+ or it can be a numeric value, representing one of these protocols or a
+ different one.  A protocol name from /etc/protocols is also allowed.
+ A "!" argument before the protocol inverts the
+@@ -386,7 +386,7 @@ network names, or services (whenever applicable).
+ \fB\-x\fP, \fB\-\-exact\fP
+ Expand numbers.
+ Display the exact value of the packet and byte counters,
+-instead of only the rounded number in K's (multiples of 1000)
++instead of only the rounded number in K's (multiples of 1000),
+ M's (multiples of 1000K) or G's (multiples of 1000M).  This option is
+ only relevant for the \fB\-L\fP command.
+ .TP
+@@ -441,7 +441,7 @@ entering the \fBFORWARD\fP chain.
+ .PP
+ The various forms of NAT have been separated out; \fBiptables\fP
+ is a pure packet filter when using the default `filter' table, with
+-optional extension modules.  This should simplify much of the previous
++optional extension modules.  This should avoid much of the
+ confusion over the combination of IP masquerading and packet filtering
+ seen previously.  So the following options are handled differently:
+ .nf
 -- 
 2.40.0
 
