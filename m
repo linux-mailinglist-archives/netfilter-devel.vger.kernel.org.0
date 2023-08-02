@@ -2,44 +2,42 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF5E76C2A1
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 04:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BF676C2B3
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 04:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbjHBCEe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 1 Aug 2023 22:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57066 "EHLO
+        id S230314AbjHBCGJ (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 1 Aug 2023 22:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjHBCEd (ORCPT
+        with ESMTP id S230036AbjHBCGI (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 22:04:33 -0400
+        Tue, 1 Aug 2023 22:06:08 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3B610E
-        for <netfilter-devel@vger.kernel.org>; Tue,  1 Aug 2023 19:04:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2209410E
+        for <netfilter-devel@vger.kernel.org>; Tue,  1 Aug 2023 19:06:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
-        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=nv+9yDxHPWuwpmCRZwX8eRrIn2pL5TbGUnBRPYvyUsI=; b=JUATgdjDV8ARmw8qWHLeBElgvh
-        B7WZnSc33L8AZOtpYHbL69Oxm7e6kcCJNGW/GapagkEnVrlxmF7kiP0m8yUz9Cz1F5A7t0YCsfk2G
-        05w5IbpDtgCMjuP/BxJ2RJipQwHC280hOHx6KvIuHXJE0dxd5PX/G1m1vvyYTp0Rb+frIwB28aZum
-        AupryVzOQcMg6bpAgliLHzFCpdOiQq8dDzZuqXWZJizcucQ9vJBvOF7pqtaiOYsIszh5NDeGHJbjN
-        0PU2Sm6mw1NCjLX95ZeLNdgep0e/rNh+GYBM/amVG8GCWNpioN8c4wkFnr0LU6rq+dI3u1aRAuZLb
-        Eulo2Iaw==;
+        bh=aGZe4kM0yMTtv9V8NyiMNDpajLVmgo6bZTSYEkZFwlg=; b=LZ0H5ExU9FtoU8o+OFKdbo3nGO
+        Jia/3FFolO9Piy4dAW2XxZ6uB+Tuhhu1/Maip0761jAeFI9JoXCwd30r5juPUAweazrUwti6ykpBB
+        Fi+D+6PL3EQflQXfHCqZLPZ0kr7hwrcOxXgsHhXRtxOkuhBFX6BjT3Z4BTT5z+/dLNl8cAUUnd+Ca
+        G0IKUv6gXG3r7EFbSuVTJQiapefYVAwaO3/vCvyVthBcjstVWIUvFJpzx9nw3htAZVBD0Tyi4t6t2
+        IGmxgVM8V1I4UlipgFz2fp3Uy4kUHzQydPwVi5C3vD2S4FUst9b4jCnyWpwHZR9VzDyJOEvK7/fGT
+        if1XEWhg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qR1Dx-0002p5-Vv; Wed, 02 Aug 2023 04:04:30 +0200
+        id 1qR1FW-0002vU-FY; Wed, 02 Aug 2023 04:06:06 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Cc:     debian@helgefjell.de
-Subject: [iptables PATCH 16/16] man: iptables-save.8: Trivial: Missing space in enumeration
-Date:   Wed,  2 Aug 2023 04:04:00 +0200
-Message-Id: <20230802020400.28220-17-phil@nwl.cc>
+Cc:     Amelia Downs <adowns@vmware.com>
+Subject: [iptables PATCH 1/3] extensions: libipt_icmp: Fix confusion between 255/255 and any
+Date:   Wed,  2 Aug 2023 04:05:45 +0200
+Message-Id: <20230802020547.28886-1-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230802020400.28220-1-phil@nwl.cc>
-References: <20230802020400.28220-1-phil@nwl.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -52,26 +50,48 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Reported-by: debian@helgefjell.de
-Fixes: 6a79d78986c02 ("iptables: mention iptables-apply(8) in manpages")
+Per definition, ICMP type "any" is type 255 and the full range of codes
+(0-255). Save callback though ignored the actual code values, printing
+"any" for every type 255 match. This at least confuses users as they
+can't find their rule added as '--icmp-type 255/255' anymore.
+
+It is not entirely clear what the fixed commit was trying to establish,
+but the save output is certainly not correct (especially since print
+callback gets things right).
+
+Reported-by: Amelia Downs <adowns@vmware.com>
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1600
+Fixes: fc9237da4e845 ("Fix '-p icmp -m icmp' issue (Closes: #37)")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/iptables-save.8.in | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ extensions/libipt_icmp.c | 3 ++-
+ extensions/libipt_icmp.t | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/iptables/iptables-save.8.in b/iptables/iptables-save.8.in
-index 540f85d485ee2..bcf446cd3e5b1 100644
---- a/iptables/iptables-save.8.in
-+++ b/iptables/iptables-save.8.in
-@@ -66,7 +66,7 @@ Rusty Russell <rusty@rustcorp.com.au>
- .br
- Andras Kis-Szabo <kisza@sch.bme.hu> contributed ip6tables-save.
- .SH SEE ALSO
--\fBiptables\-apply\fP(8),\fBiptables\-restore\fP(8), \fBiptables\fP(8)
-+\fBiptables\-apply\fP(8), \fBiptables\-restore\fP(8), \fBiptables\fP(8)
- .PP
- The iptables-HOWTO, which details more iptables usage, the NAT-HOWTO,
- which details NAT, and the netfilter-hacking-HOWTO which details the
+diff --git a/extensions/libipt_icmp.c b/extensions/libipt_icmp.c
+index b0318aebc2c57..171b3b3949e54 100644
+--- a/extensions/libipt_icmp.c
++++ b/extensions/libipt_icmp.c
+@@ -108,7 +108,8 @@ static void icmp_save(const void *ip, const struct xt_entry_match *match)
+ 		printf(" !");
+ 
+ 	/* special hack for 'any' case */
+-	if (icmp->type == 0xFF) {
++	if (icmp->type == 0xFF &&
++	    icmp->code[0] == 0 && icmp->code[1] == 0xFF) {
+ 		printf(" --icmp-type any");
+ 	} else {
+ 		printf(" --icmp-type %u", icmp->type);
+diff --git a/extensions/libipt_icmp.t b/extensions/libipt_icmp.t
+index f4ba65c27f032..ce4a33f9633b5 100644
+--- a/extensions/libipt_icmp.t
++++ b/extensions/libipt_icmp.t
+@@ -13,3 +13,5 @@
+ # we accept "iptables -I INPUT -p tcp -m tcp", why not this below?
+ # ERROR: cannot load: iptables -A INPUT -p icmp -m icmp
+ # -p icmp -m icmp;=;OK
++-p icmp -m icmp --icmp-type 255/255;=;OK
++-p icmp -m icmp --icmp-type 255/0:255;-p icmp -m icmp --icmp-type any;OK
 -- 
 2.40.0
 
