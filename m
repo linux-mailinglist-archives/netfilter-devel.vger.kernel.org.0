@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA1076C2AE
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 04:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F090E76C2A4
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 04:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbjHBCF3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 1 Aug 2023 22:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
+        id S230495AbjHBCEt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 1 Aug 2023 22:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbjHBCF0 (ORCPT
+        with ESMTP id S231445AbjHBCEs (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 22:05:26 -0400
+        Tue, 1 Aug 2023 22:04:48 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322322139
-        for <netfilter-devel@vger.kernel.org>; Tue,  1 Aug 2023 19:05:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1608212D
+        for <netfilter-devel@vger.kernel.org>; Tue,  1 Aug 2023 19:04:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=C3w0Cax1RVBiv1VuTcHhwXzun6+WWPV4C1Yf35scylw=; b=o/ldZw5om8NzHW5OT7B6qQfnke
-        YtThOpL7/aIwmKi3JBpnCkjFbKgWuBNu8U0Nc3QYOcJxBNSvawzFOGFaQlkJYI3jWiDMX2rh9/ewG
-        AMljx8OEeVSM1fmwFDhP7BRiKlnKhEmF9KeTmSC24k43iTbH1dsXoGh6ROYFPzl260ekDNzHTx/ol
-        CrhTq3GaWZBiTmjO65YQvEHm4+x0wNMYEyyCEJj14tThX4zgpoOM8fSSXXdulhZHAg5SO30M2cFEN
-        gs7Pm4naJDeov7roVlLHU/MUwsdLEFH9UzRsDHlIhRAQmTJKpt/s1U4dpfwUXDKcoHYeprKOr//jR
-        JD5iwe6Q==;
+        bh=LalZa9w87JM4hnnW48OPcULhKE1lcZQfdRkQfsAUU04=; b=eQ1zOnj3PiJPM/Kfa+3lWwFmnZ
+        kImax5i2Zklhoqi++ndAO5V6E8+PO53WWCepQuAMcE1+tqhiKILzzzIwXKFnfJUyGmgeuGQ9sndLq
+        v71ItnQ/3Dd2YxnOiEGpFIUfIV27270QEvO6I4Z1mj8OPsPDLI5Hq6KFFvd7u5qqotELXcjlED976
+        FjTgXkeRonFcSEuighPvnmXX/NBmArJx+/Wnv0M+rzlhSoCDl1MQKQjC5gWz9W9KNbRTqJb60UemI
+        YLT+AgCc7p2FmHeZKceiuNFzjNPaUhPbsQWOIqZPRuk4smmr4Iughh055b7zQ6n1K8cQCT1pgJ4iH
+        jBSDOaSg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qR1Ep-0002tq-GH; Wed, 02 Aug 2023 04:05:23 +0200
+        id 1qR1EE-0002qo-0b
+        for netfilter-devel@vger.kernel.org; Wed, 02 Aug 2023 04:04:46 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Cc:     debian@helgefjell.de
-Subject: [iptables PATCH 08/16] man: iptables-restore.8: Consistently document -w option
-Date:   Wed,  2 Aug 2023 04:03:52 +0200
-Message-Id: <20230802020400.28220-9-phil@nwl.cc>
+Subject: [iptables PATCH 09/16] man: iptables-restore.8: Drop -W option from synopsis
+Date:   Wed,  2 Aug 2023 04:03:53 +0200
+Message-Id: <20230802020400.28220-10-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230802020400.28220-1-phil@nwl.cc>
 References: <20230802020400.28220-1-phil@nwl.cc>
@@ -52,33 +52,33 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Use the same name for the option's argument.
+The description was dropped already, there is no benefit in still
+listing it.
 
-Reported-by: debian@helgefjell.de
-Fixes: 65801d02a482b ("iptables-restore.8: document -w/-W options")
+Fixes: 07e2107ef0cbc ("xshared: Implement xtables lock timeout using signals")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
  iptables/iptables-restore.8.in | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/iptables/iptables-restore.8.in b/iptables/iptables-restore.8.in
-index 5846a47cefbcc..ac639687ca1ad 100644
+index ac639687ca1ad..24d9fc06af25a 100644
 --- a/iptables/iptables-restore.8.in
 +++ b/iptables/iptables-restore.8.in
-@@ -23,11 +23,11 @@ iptables-restore \(em Restore IP Tables
- .P
+@@ -24,11 +24,11 @@ iptables-restore \(em Restore IP Tables
  ip6tables-restore \(em Restore IPv6 Tables
  .SH SYNOPSIS
--\fBiptables\-restore\fP [\fB\-chntvV\fP] [\fB\-w\fP \fIsecs\fP]
-+\fBiptables\-restore\fP [\fB\-chntvV\fP] [\fB\-w\fP \fIseconds\fP]
- [\fB\-W\fP \fIusecs\fP] [\fB\-M\fP \fImodprobe\fP] [\fB\-T\fP \fIname\fP]
+ \fBiptables\-restore\fP [\fB\-chntvV\fP] [\fB\-w\fP \fIseconds\fP]
+-[\fB\-W\fP \fIusecs\fP] [\fB\-M\fP \fImodprobe\fP] [\fB\-T\fP \fIname\fP]
++[\fB\-M\fP \fImodprobe\fP] [\fB\-T\fP \fIname\fP]
  [\fBfile\fP]
  .P
--\fBip6tables\-restore\fP [\fB\-chntvV\fP] [\fB\-w\fP \fIsecs\fP]
-+\fBip6tables\-restore\fP [\fB\-chntvV\fP] [\fB\-w\fP \fIseconds\fP]
- [\fB\-W\fP \fIusecs\fP] [\fB\-M\fP \fImodprobe\fP] [\fB\-T\fP \fIname\fP]
+ \fBip6tables\-restore\fP [\fB\-chntvV\fP] [\fB\-w\fP \fIseconds\fP]
+-[\fB\-W\fP \fIusecs\fP] [\fB\-M\fP \fImodprobe\fP] [\fB\-T\fP \fIname\fP]
++[\fB\-M\fP \fImodprobe\fP] [\fB\-T\fP \fIname\fP]
  [\fBfile\fP]
  .SH DESCRIPTION
+ .PP
 -- 
 2.40.0
 
