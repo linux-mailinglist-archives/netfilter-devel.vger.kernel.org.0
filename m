@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B042276C2A3
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 04:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AE476C2AF
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 04:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbjHBCEn (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 1 Aug 2023 22:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
+        id S230308AbjHBCFd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 1 Aug 2023 22:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbjHBCEm (ORCPT
+        with ESMTP id S230399AbjHBCFc (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 22:04:42 -0400
+        Tue, 1 Aug 2023 22:05:32 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1CF212C
-        for <netfilter-devel@vger.kernel.org>; Tue,  1 Aug 2023 19:04:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAD62139
+        for <netfilter-devel@vger.kernel.org>; Tue,  1 Aug 2023 19:05:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=NnsaSFj88Ho3/+4cCEu38d7ZJykr43ttQ8nN0EAtVHg=; b=RL2ccZ01uMiJDWHLnyqzW3o4iQ
-        b7+Q0Bw9uyVwU7WPF0bDxLSX08L4fFModQE4aefmX2i4G93AmyHHCnv0spfdnlDRbfZWC7x1vObhH
-        CZkKZCOnJRin57ii8cG4pDL+num9+Vz+f8FKyaePcSNBCnU2ronHNIv0FfWRBfDoretw5UUHo9BLT
-        QcDxqMi76+eHqkR9VZ2EBZznUCFrUsPq5bZMSEHIRjrVANKzHVerrKasO0gkZZUx7foRQ5DjVbkBC
-        voXGN8xEeQqIrsnao9B9GpVXAIJ5pLP3angHPzgBrlSVr2agODOv5TaJdwMcwP09R/tdXR2spkHp6
-        8a9rzTug==;
+        bh=G3NEGrSjXnU3DUgT2BKOHDIgIdxk+LO5Plc8bmK7cOY=; b=qrla3WPZzTxQHjNzUp9G/MGi/n
+        9e5brQn1kl/yxzTosoSuUPSa7R4WgiZB3JDRiOBYZH+il+y9qZioY0V4Is2KQvksqHPmZXhE7xW0R
+        /chUQVabY+oHM1/99KEF2RWGwAZbzFCew97B52Emu1f14tkkmXMKYrsbwXYblREma+sVmH8oYw9k1
+        LYvrqxqYLrbKWYPktK6MUD5I6tm5AUwWWMQZh5WRTwYe5WSS1L/eifPOTKVC/dXzAjsB04AQmF3LK
+        QX2hA5lhH5izfPcsYMoWwA0YZvde9u4uv7RdEF8kjst7B+ee445oLTdzCoyHWxvnr1NfSobcrAWqN
+        ONCkdBxQ==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qR1E8-0002qb-Lb; Wed, 02 Aug 2023 04:04:40 +0200
+        id 1qR1Eu-0002tw-Q7; Wed, 02 Aug 2023 04:05:28 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     debian@helgefjell.de
-Subject: [iptables PATCH 11/16] man: iptables-restore.8: Start paragraphs in upper-case
-Date:   Wed,  2 Aug 2023 04:03:55 +0200
-Message-Id: <20230802020400.28220-12-phil@nwl.cc>
+Subject: [iptables PATCH 12/16] man: iptables-restore.8: Trivial: Missing space after comma
+Date:   Wed,  2 Aug 2023 04:03:56 +0200
+Message-Id: <20230802020400.28220-13-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230802020400.28220-1-phil@nwl.cc>
 References: <20230802020400.28220-1-phil@nwl.cc>
@@ -52,35 +52,26 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Also add a missing full stop in one spot.
-
 Reported-by: debian@helgefjell.de
-Fixes: 117341ada43dd ("Added iptbles-restore and iptables-save manpages")
+Fixes: 6a79d78986c02 ("iptables: mention iptables-apply(8) in manpages")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/iptables-restore.8.in | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ iptables/iptables-restore.8.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/iptables/iptables-restore.8.in b/iptables/iptables-restore.8.in
-index 61f1fdd0baa26..f97f53813aeed 100644
+index f97f53813aeed..b7217b4118fc0 100644
 --- a/iptables/iptables-restore.8.in
 +++ b/iptables/iptables-restore.8.in
-@@ -40,13 +40,13 @@ are used to restore IP and IPv6 Tables from data specified on STDIN or in
- specify \fIfile\fP as an argument.
- .TP
- \fB\-c\fR, \fB\-\-counters\fR
--restore the values of all packet and byte counters
-+Restore the values of all packet and byte counters.
- .TP
- \fB\-h\fP, \fB\-\-help\fP
- Print a short option summary.
- .TP
- \fB\-n\fR, \fB\-\-noflush\fR
--don't flush the previous contents of the table. If not specified,
-+Don't flush the previous contents of the table. If not specified,
- both commands flush (delete) all previous contents of the respective table.
- .TP
- \fB\-t\fP, \fB\-\-test\fP
+@@ -82,7 +82,7 @@ from Rusty Russell.
+ .br
+ Andras Kis-Szabo <kisza@sch.bme.hu> contributed ip6tables-restore.
+ .SH SEE ALSO
+-\fBiptables\-apply\fP(8),\fBiptables\-save\fP(8), \fBiptables\fP(8)
++\fBiptables\-apply\fP(8), \fBiptables\-save\fP(8), \fBiptables\fP(8)
+ .PP
+ The iptables-HOWTO, which details more iptables usage, the NAT-HOWTO,
+ which details NAT, and the netfilter-hacking-HOWTO which details the
 -- 
 2.40.0
 
