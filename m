@@ -2,124 +2,86 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CB376BDBC
-	for <lists+netfilter-devel@lfdr.de>; Tue,  1 Aug 2023 21:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E651776C2A8
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 04:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbjHAT3J (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 1 Aug 2023 15:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
+        id S229772AbjHBCFK (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 1 Aug 2023 22:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbjHAT3I (ORCPT
+        with ESMTP id S229952AbjHBCFK (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:29:08 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B698D103;
-        Tue,  1 Aug 2023 12:29:07 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 891CB5C00D1;
-        Tue,  1 Aug 2023 15:29:04 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 01 Aug 2023 15:29:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690918144; x=1691004544; bh=50
-        K0rjAZpMOLnZsQS3es5SZ7R2JGHZMJS2+QIhOnXEc=; b=T9GkXm5gSU3tOXrp9E
-        36ZU/UZXuBRob2tmtMybh09WX2gr52fiBEgj86/KpJvPMt7JaiHDWo36mUPT6P2v
-        mNUtYOgMCsOeA8LCZMR9MfZexBqvuwl0MHyP3QYaU47l40L3o6vIkexRf9wW94HN
-        mUWUfczWXu+ls645LESj+SPKBOXKEp19EGb5GnX1YmWMwrO/wjl3s7Z4vA+YhF2A
-        fv+2SSmdPrVG4ixz31HsCVwgqRrZFGBgzBgqLB2Quoilr3mmLmx8XmF/m7TcO8Nu
-        mYUIZGfHAhYHWKQ2ok2EJBHYI4mi65kvEqhFaz9xbSEGQmOph1pvOdPzXmrYk0eW
-        Aj6Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690918144; x=1691004544; bh=50K0rjAZpMOLn
-        ZsQS3es5SZ7R2JGHZMJS2+QIhOnXEc=; b=ysrqy/DPDf0EDgyHSuuTQzcKD6IEe
-        5Nsi0NaQcyAXZCHiWQOBtDspe1Ckg5vHX/sBUi8GbhHobW/XqZr+HGbHg3E/B1Wd
-        t4Ex+90CAKfXIJ61NGvdpDQkg0oaP+L9ycpf0MvqRmo6W65x4D2zIu3vvmgfkD/T
-        li4xwcjbfTP266cmlZZ0hkTHnC0wH1Dqlxe5hnSQDpK4NjIY05OqCTm5cA1zQtXx
-        PVtDdgYBshNCIqWFrXkaS9Q0ZEsBsE/EnKRBlX1XWIrVq1Ir9AGGKNJTVIusofx6
-        Ae4q3x/ObPB/VzNmp/+uZO9dzV+0T5JubSCz9jC+KlpwUfllOG+kdr0Fg==
-X-ME-Sender: <xms:AF3JZI6fiaI-pjU2nZvB6MIVZtW8ZcoxupuDdlAMacWqgeeCBnQxPA>
-    <xme:AF3JZJ6f0FxRdpyqu6juKKBhOYP9GE6a6RcH_IJCUOnelPycwe0Eg6gg-a6rIXoqU
-    qtxeZv4p0YUEGbnDA>
-X-ME-Received: <xmr:AF3JZHdCRBWRDfDjX-ktcCZFzKEztQ_sKbTg1HQURmKzbPIFrFzGOkcwQx_twWL87qAWAvVhZOD-Fe0Z9_8SxBrvjbcfyACQsdALoSc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeigddufeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
-    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:AF3JZNKiXh6XPsasb7_LWp1ls-nxuZtwkCqhldtR7rafO1d64ob4Zg>
-    <xmx:AF3JZMLDb2Zq3odcK6LbthBi2C3Y0_0NzQPyMuOvuAGkuikbxFUmwQ>
-    <xmx:AF3JZOxBNTvdS-eIePhnA-f47JroGxCypBhyZeYaBVm5LKixfXYE6A>
-    <xmx:AF3JZPZdCUZISi1hQuNEJMuTbjBQWjP_VPOUaK5Ir2b9zHRXyZtrwg>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 1 Aug 2023 15:29:03 -0400 (EDT)
-Date:   Tue, 1 Aug 2023 13:29:01 -0600
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] netfilter: bpf_link: avoid unused-function warning
-Message-ID: <ewu46co43ldtnsedbaqvs4ihpebr7wxjbpum32iq4i766egpyu@bzocmghr636q>
-References: <20230801150304.1980987-1-arnd@kernel.org>
- <z3gp6rcrlotwjwux7chza4vmbgv747v5jlr4xhuaad3y2yofsf@jjiju6zltbmh>
- <b795ccdf-ad53-407e-ba01-a703e353b3fb@app.fastmail.com>
+        Tue, 1 Aug 2023 22:05:10 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F83212D
+        for <netfilter-devel@vger.kernel.org>; Tue,  1 Aug 2023 19:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=VzrReA6btN13dEB6YGhN4VGigQbZCrQJhrwzFG9b094=; b=BsilEd/neMB+G5E35PXe+pf3UN
+        Y7i03eC3CIRmovJpUTyDUVlpp2CQUJD/s7UivvSwoh/aoPt7vV/jtRnuvf+bLckvAog/mxi2kUP/p
+        lwxp7DF1kcAsVqdFIaWGoL+z997MO3BDyL+xnZYf4jfBcS0a2kj+fJUSTeC6XobQd1jQizAVZFFSY
+        vr67VMdszrrqfQ+MMpbEZ/h40kJDA2pIpqNuowBcPr/tQ6QoBCrjTu3TbH0Oq36ZOpmTCkygdL6/4
+        Q6/BBdjoFvXSqMhN3xwvoNAhVSAO6o7642Ve6JxQcXJy+54bMG2JLnCygHtbIsqfJHFVuT9O8ozaQ
+        4oGYiPzg==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1qR1EZ-0002ss-CO
+        for netfilter-devel@vger.kernel.org; Wed, 02 Aug 2023 04:05:07 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH 00/16] Man pages review
+Date:   Wed,  2 Aug 2023 04:03:44 +0200
+Message-Id: <20230802020400.28220-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b795ccdf-ad53-407e-ba01-a703e353b3fb@app.fastmail.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 07:27:33PM +0200, Arnd Bergmann wrote:
-> On Tue, Aug 1, 2023, at 17:20, Daniel Xu wrote:
-> > Hi Arnd,
-> >
-> > On Tue, Aug 01, 2023 at 05:02:41PM +0200, Arnd Bergmann wrote:
-> >> From: Arnd Bergmann <arnd@arndb.de>
-> >> 
-> >> The newly added function is unused in some random configurations:
-> >> 
-> >> net/netfilter/nf_bpf_link.c:32:1: error: 'get_proto_defrag_hook' defined but not used [-Werror=unused-function]
-> >>    32 | get_proto_defrag_hook(struct bpf_nf_link *link,
-> >>       | ^~~~~~~~~~~~~~~~~~~~~
-> >> 
-> >
-> > This was fixed in 81584c23f249 ("netfilter: bpf: Only define 
-> > get_proto_defrag_hook() if necessary").
-> 
-> Ok, I guess this will be in tomorrow's linux-next then, right?
-> 
->     Arnd
+Thanks to the manpage-l10n project, we received several tickets listing
+a number of corrections and improvements to the different iptables man
+pages. This series implements what I considered valid and worth keeping.
 
-I'm not too familiar with the linux-next process, but chatgpt is telling
-me it should be.
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1682
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1683
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=1684
 
-Thanks,
-Daniel
+Phil Sutter (16):
+  man: iptables.8: Extend exit code description
+  man: iptables.8: Trivial spelling fixes
+  man: iptables.8: Fix intra page reference
+  man: iptables.8: Clarify --goto description
+  man: Use HTTPS for links to netfilter.org
+  man: iptables.8: Trivial font fixes
+  man: iptables-restore.8: Fix --modprobe description
+  man: iptables-restore.8: Consistently document -w option
+  man: iptables-restore.8: Drop -W option from synopsis
+  man: iptables-restore.8: Put 'file' in italics in synopsis
+  man: iptables-restore.8: Start paragraphs in upper-case
+  man: iptables-restore.8: Trivial: Missing space after comma
+  man: iptables-save.8: Clarify 'available tables'
+  man: iptables-save.8: Fix --modprobe description
+  man: iptables-save.8: Start paragraphs in upper-case
+  man: iptables-save.8: Trivial: Missing space in enumeration
+
+ extensions/libxt_nfacct.man    |  2 +-
+ iptables/iptables-restore.8.in | 25 ++++++++--------
+ iptables/iptables-save.8.in    | 18 +++++++-----
+ iptables/iptables.8.in         | 53 ++++++++++++++++++----------------
+ 4 files changed, 53 insertions(+), 45 deletions(-)
+
+-- 
+2.40.0
+
