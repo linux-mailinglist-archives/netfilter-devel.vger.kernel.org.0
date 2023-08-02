@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9E576C2A7
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 04:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED9176C2A5
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 04:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbjHBCFF (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 1 Aug 2023 22:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
+        id S229557AbjHBCEz (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 1 Aug 2023 22:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjHBCFE (ORCPT
+        with ESMTP id S229952AbjHBCEx (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 1 Aug 2023 22:05:04 -0400
+        Tue, 1 Aug 2023 22:04:53 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B75B10E
-        for <netfilter-devel@vger.kernel.org>; Tue,  1 Aug 2023 19:05:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B926212D
+        for <netfilter-devel@vger.kernel.org>; Tue,  1 Aug 2023 19:04:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=azUVxuSWTUOUP4KzlKHHp0ceYQKkLjXam8gCzUuOZ3k=; b=HGhDx3AjmtO08yLO27Eo2M2Xk7
-        iWz+SF7yiYmzq+/OocDpSFAhOTVGjUTl1IdpwouDnzt2vFw/dQ5rGnAYXaM+j94x8KiJ+EP1+O/c8
-        7KX9cL7pjMQsRCwvnW02iO/7B50LTazVOGl9yB3DhybZ/eII7mlLJj4ojEFFjFVl4bZEo0omISQ73
-        I1D0P7wYNHqQT+FHYUyNX40daQH9LmPBORSQYNf1gYYZ0zRCTPVu0cNzImXwKXThxL54mRRpKRF8N
-        Jbi05RWislJP5froAQyJ/mk6ZiYCiKGN8g+Cvx4/Qb9XxAmwEKFE+gUIuyqiO2vCQwM3owRi70A6q
-        cCwoBwWg==;
+        bh=oUwssCubsHestsANx8KnTNqbOoOnZZAFrDw9JPDo5FE=; b=ate9UMz0ZdzevSL8vIuMJ5rzX6
+        JFgqy7m+SPHNWHN4qEbE2b25EVeM82RBtCEQlAZtqXmewcZ4Kh2xuAfNk7B90WWP3G8aykYGv49Ey
+        B5MTgW2845DBcZyTckWEAkjVlOK68TtvXfdVK2DYqxkuNtozhtS1mdcZssi5bBA6bqBDoKd88xBhV
+        5XBIYxtjxdEj/dNmvl5TeUGi/vIvJO1WKb2CSU8ciFTrCLsq5tJ5bzbxaYvlhgec2MEpzItOkG4t6
+        qtn+AmespDH7GFOrZa7diLN2rRZcYnhlxyD00eow8Mj3qa3sKuWi4IY3bJlWXPrXXp3EFvE9+Mr1M
+        mgaT2f1g==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qR1EU-0002rr-3B; Wed, 02 Aug 2023 04:05:02 +0200
+        id 1qR1EJ-0002qs-EO; Wed, 02 Aug 2023 04:04:51 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
 Cc:     debian@helgefjell.de
-Subject: [iptables PATCH 14/16] man: iptables-save.8: Fix --modprobe description
-Date:   Wed,  2 Aug 2023 04:03:58 +0200
-Message-Id: <20230802020400.28220-15-phil@nwl.cc>
+Subject: [iptables PATCH 15/16] man: iptables-save.8: Start paragraphs in upper-case
+Date:   Wed,  2 Aug 2023 04:03:59 +0200
+Message-Id: <20230802020400.28220-16-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230802020400.28220-1-phil@nwl.cc>
 References: <20230802020400.28220-1-phil@nwl.cc>
@@ -52,35 +52,32 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-- Consistently use 'modprobe' as option argument name
-- Add a reference to modprobe man page
-- Put the path in italics and the command in bold
+Also add a missing full stop.
 
 Reported-by: debian@helgefjell.de
-Fixes: fbb5639c02218 ("iptables-save: module loading corrections")
+Fixes: 117341ada43dd ("Added iptbles-restore and iptables-save manpages")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/iptables-save.8.in | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ iptables/iptables-save.8.in | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/iptables/iptables-save.8.in b/iptables/iptables-save.8.in
-index cea972bcd6e0e..c0d9b202ad7bd 100644
+index c0d9b202ad7bd..540f85d485ee2 100644
 --- a/iptables/iptables-save.8.in
 +++ b/iptables/iptables-save.8.in
-@@ -36,9 +36,10 @@ and
- are used to dump the contents of IP or IPv6 Table in easily parseable format
- either to STDOUT or to a specified file.
+@@ -46,10 +46,10 @@ Specify a filename to log the output to. If not specified, iptables-save
+ will log to STDOUT.
  .TP
--\fB\-M\fR, \fB\-\-modprobe\fR \fImodprobe_program\fP
--Specify the path to the modprobe program. By default, iptables-save will
--inspect /proc/sys/kernel/modprobe to determine the executable's path.
-+\fB\-M\fR, \fB\-\-modprobe\fR \fImodprobe\fP
-+Specify the path to the \fBmodprobe\fP(8) program. By default,
-+\fBiptables-save\fP will inspect \fI/proc/sys/kernel/modprobe\fP to determine
-+the executable's path.
+ \fB\-c\fR, \fB\-\-counters\fR
+-include the current values of all packet and byte counters in the output
++Include the current values of all packet and byte counters in the output.
  .TP
- \fB\-f\fR, \fB\-\-file\fR \fIfilename\fP
- Specify a filename to log the output to. If not specified, iptables-save
+ \fB\-t\fR, \fB\-\-table\fR \fItablename\fP
+-restrict output to only one table. If the kernel is configured with automatic
++Restrict output to only one table. If the kernel is configured with automatic
+ module loading, an attempt will be made to load the appropriate module for
+ that table if it is not already there.
+ .br
 -- 
 2.40.0
 
