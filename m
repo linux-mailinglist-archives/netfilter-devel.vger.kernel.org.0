@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE58B76D35D
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 18:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBCC76D36A
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 18:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbjHBQJ4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Aug 2023 12:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
+        id S229464AbjHBQKv (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Aug 2023 12:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232096AbjHBQJ4 (ORCPT
+        with ESMTP id S231415AbjHBQKu (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:09:56 -0400
+        Wed, 2 Aug 2023 12:10:50 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB08D171B
-        for <netfilter-devel@vger.kernel.org>; Wed,  2 Aug 2023 09:09:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A124AE1
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Aug 2023 09:10:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=Fm9uswpRhmQWLrC/6KteD+0m5GS1oHPRauVPEvYafMA=; b=cJ/OS9pfeXJrf6WUS5qvb5T7mc
-        dBhom3kUxManIfaIxgLVhlNfJiczDqAmKmiM4QTq8lx+LwCJv5o2dPmRWHvRb+u05MGDP6U6zQJcy
-        j0btDwaN/Kl4D1bRReu383K5RKwlkcEbhaCS9vWtu8kNr++Uxa9eWfRvuDBG0jsG+bzFqvpCtxUE9
-        G8xA6xNnhJ84BudvhSwfoqOWI7VaHx7qv01HGis+W4H1QKUM3BpozwA1M8G8+v2ym2P4lxBwlk2k+
-        D7OlSfGpvk7dYBl6bXYpwm1aNZxzEZ0MVTnIh9tTzAEXRBZhanoztYRL4aXC1o7zQF0MOYPbXRkh7
-        4gecX65A==;
+        bh=xU8sNqJgSvJcAdqwfKPbRimnpu6NfYG9t1KcXFMChCQ=; b=CVl/BpJgb8XPa4opMVoKnuLRFV
+        J89pNVLzKm+jg+Rjdl2JhqdKQ36vbdW2rpS7RwZfM1UVVMzj+r3JaGv3D4tAqimRI8NqmZ/dh2gn7
+        fSMjewKo7N9sveG4q1Ef6eAf+br6FUj30LmDiHtaOd9op8A/oOLVG3+HZNlFEgmzmnfF68mX7W0f1
+        /fAzqT1fZObTPyZBfatThMF7OSIUHBN8IyUFkdcuv/hDPeSrPIU7QQNGa/La/DC7NYe2OL0ck7Xif
+        JuR5fbXuYWcTqOLp7g9cBge7oMi3ybx3lNCzMpel1xG7HRvJZnDJX9dmbSsVwfgk74e2kBDpIVSS7
+        B0qaOQyA==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qREQ5-0004u7-9i
-        for netfilter-devel@vger.kernel.org; Wed, 02 Aug 2023 18:09:53 +0200
+        id 1qREQx-0004ym-Vq
+        for netfilter-devel@vger.kernel.org; Wed, 02 Aug 2023 18:10:48 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 14/15] man: iptables-save.8: Fix --modprobe description
-Date:   Wed,  2 Aug 2023 18:09:22 +0200
-Message-Id: <20230802160923.17949-15-phil@nwl.cc>
+Subject: [iptables PATCH v2 15/15] man: iptables-save.8: Start paragraphs in upper-case
+Date:   Wed,  2 Aug 2023 18:09:23 +0200
+Message-Id: <20230802160923.17949-16-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230802160923.17949-1-phil@nwl.cc>
 References: <20230802160923.17949-1-phil@nwl.cc>
@@ -52,37 +52,31 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-- Consistently use 'modprobe' as option argument name
-- Add a reference to modprobe man page
-- Put the path in italics and the command in bold
+Also add a missing full stop.
 
-Fixes: fbb5639c02218 ("iptables-save: module loading corrections")
+Fixes: 117341ada43dd ("Added iptbles-restore and iptables-save manpages")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
-Changes since v1:
-- Non-bold "modprobe" and iptables-restore program name
----
- iptables/iptables-save.8.in | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ iptables/iptables-save.8.in | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/iptables/iptables-save.8.in b/iptables/iptables-save.8.in
-index 7f84907352238..118dddcdf62d5 100644
+index 118dddcdf62d5..65c1f28ccc3c7 100644
 --- a/iptables/iptables-save.8.in
 +++ b/iptables/iptables-save.8.in
-@@ -36,9 +36,10 @@ and
- are used to dump the contents of IP or IPv6 Table in easily parseable format
- either to STDOUT or to a specified file.
+@@ -46,10 +46,10 @@ Specify a filename to log the output to. If not specified, iptables-save
+ will log to STDOUT.
  .TP
--\fB\-M\fR, \fB\-\-modprobe\fR \fImodprobe_program\fP
--Specify the path to the modprobe program. By default, iptables-save will
--inspect /proc/sys/kernel/modprobe to determine the executable's path.
-+\fB\-M\fR, \fB\-\-modprobe\fR \fImodprobe\fP
-+Specify the path to the modprobe(8) program. By default,
-+iptables-save will inspect \fI/proc/sys/kernel/modprobe\fP to determine
-+the executable's path.
+ \fB\-c\fR, \fB\-\-counters\fR
+-include the current values of all packet and byte counters in the output
++Include the current values of all packet and byte counters in the output.
  .TP
- \fB\-f\fR, \fB\-\-file\fR \fIfilename\fP
- Specify a filename to log the output to. If not specified, iptables-save
+ \fB\-t\fR, \fB\-\-table\fR \fItablename\fP
+-restrict output to only one table. If the kernel is configured with automatic
++Restrict output to only one table. If the kernel is configured with automatic
+ module loading, an attempt will be made to load the appropriate module for
+ that table if it is not already there.
+ .br
 -- 
 2.40.0
 
