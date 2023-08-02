@@ -2,79 +2,117 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 964DD76CE31
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 15:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9823B76CF40
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 15:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233889AbjHBNQ1 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Aug 2023 09:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53442 "EHLO
+        id S234282AbjHBNyt (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Aug 2023 09:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjHBNQ1 (ORCPT
+        with ESMTP id S234337AbjHBNys (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:16:27 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5934C268F;
-        Wed,  2 Aug 2023 06:16:26 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RGCBw5Qm5z1GDJ7;
-        Wed,  2 Aug 2023 21:15:20 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 2 Aug
- 2023 21:16:22 +0800
-From:   Yue Haibing <yuehaibing@huawei.com>
-To:     <pablo@netfilter.org>, <kadlec@netfilter.org>, <fw@strlen.de>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <lucien.xin@gmail.com>,
-        <yuehaibing@huawei.com>
-CC:     <netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-        <netdev@vger.kernel.org>
-Subject: [PATCH net-next] netfilter: helper: Remove unused function declarations
-Date:   Wed, 2 Aug 2023 21:15:49 +0800
-Message-ID: <20230802131549.332-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Wed, 2 Aug 2023 09:54:48 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E162119
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Aug 2023 06:54:42 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1qRCJE-0004cr-MH; Wed, 02 Aug 2023 15:54:40 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>
+Subject: [PATCH nft] tests: add dynmap datapath add/delete test case
+Date:   Wed,  2 Aug 2023 15:54:28 +0200
+Message-ID: <20230802135432.2234-1-fw@strlen.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Commit b118509076b3 ("netfilter: remove nf_conntrack_helper sysctl and modparam toggles")
-leave these unused declarations.
-
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/net/netfilter/nf_conntrack_helper.h | 3 ---
- 1 file changed, 3 deletions(-)
+ .../maps/dumps/typeof_maps_add_delete.nft     | 22 ++++++++++++
+ .../testcases/maps/typeof_maps_add_delete     | 35 +++++++++++++++++++
+ 2 files changed, 57 insertions(+)
+ create mode 100644 tests/shell/testcases/maps/dumps/typeof_maps_add_delete.nft
+ create mode 100755 tests/shell/testcases/maps/typeof_maps_add_delete
 
-diff --git a/include/net/netfilter/nf_conntrack_helper.h b/include/net/netfilter/nf_conntrack_helper.h
-index f30b1694b690..de2f956abf34 100644
---- a/include/net/netfilter/nf_conntrack_helper.h
-+++ b/include/net/netfilter/nf_conntrack_helper.h
-@@ -136,8 +136,6 @@ static inline void *nfct_help_data(const struct nf_conn *ct)
- 	return (void *)help->data;
- }
- 
--void nf_conntrack_helper_pernet_init(struct net *net);
--
- int nf_conntrack_helper_init(void);
- void nf_conntrack_helper_fini(void);
- 
-@@ -182,5 +180,4 @@ void nf_nat_helper_unregister(struct nf_conntrack_nat_helper *nat);
- int nf_nat_helper_try_module_get(const char *name, u16 l3num,
- 				 u8 protonum);
- void nf_nat_helper_put(struct nf_conntrack_helper *helper);
--void nf_ct_set_auto_assign_helper_warned(struct net *net);
- #endif /*_NF_CONNTRACK_HELPER_H*/
+diff --git a/tests/shell/testcases/maps/dumps/typeof_maps_add_delete.nft b/tests/shell/testcases/maps/dumps/typeof_maps_add_delete.nft
+new file mode 100644
+index 000000000000..9134673cf48a
+--- /dev/null
++++ b/tests/shell/testcases/maps/dumps/typeof_maps_add_delete.nft
+@@ -0,0 +1,22 @@
++table ip dynset {
++	map dynmark {
++		typeof ip daddr : meta mark
++		size 64
++		counter
++		timeout 5m
++	}
++
++	chain test_ping {
++		ip saddr @dynmark counter packets 0 bytes 0 comment "should not increment"
++		ip saddr != @dynmark add @dynmark { ip saddr : 0x00000001 } counter packets 1 bytes 84
++		ip saddr @dynmark counter packets 1 bytes 84 comment "should increment"
++		ip saddr @dynmark delete @dynmark { ip saddr : 0x00000001 }
++		ip saddr @dynmark counter packets 0 bytes 0 comment "delete should be instant but might fail under memory pressure"
++	}
++
++	chain input {
++		type filter hook input priority filter; policy accept;
++		add @dynmark { 10.2.3.4 timeout 1s : 0x00000002 } comment "also check timeout-gc"
++		meta l4proto icmp ip daddr 127.0.0.42 jump test_ping
++	}
++}
+diff --git a/tests/shell/testcases/maps/typeof_maps_add_delete b/tests/shell/testcases/maps/typeof_maps_add_delete
+new file mode 100755
+index 000000000000..341de538e90e
+--- /dev/null
++++ b/tests/shell/testcases/maps/typeof_maps_add_delete
+@@ -0,0 +1,35 @@
++#!/bin/bash
++
++EXPECTED='table ip dynset {
++	map dynmark {
++		typeof ip daddr : meta mark
++		counter
++		size 64
++		timeout 5m
++	}
++
++	chain test_ping {
++		ip saddr @dynmark counter comment "should not increment"
++		ip saddr != @dynmark add @dynmark { ip saddr : 0x1 } counter
++		ip saddr @dynmark counter comment "should increment"
++		ip saddr @dynmark delete @dynmark { ip saddr : 0x1 }
++		ip saddr @dynmark counter comment "delete should be instant but might fail under memory pressure"
++	}
++
++	chain input {
++		type filter hook input priority 0; policy accept;
++
++		add @dynmark { 10.2.3.4 timeout 1s : 0x2 } comment "also check timeout-gc"
++		meta l4proto icmp ip daddr 127.0.0.42 jump test_ping
++	}
++}'
++
++set -e
++$NFT -f - <<< $EXPECTED
++$NFT list ruleset
++
++ip link set lo up
++ping -c 1 127.0.0.42
++
++# wait so that 10.2.3.4 times out.
++sleep 2
 -- 
-2.34.1
+2.41.0
 
