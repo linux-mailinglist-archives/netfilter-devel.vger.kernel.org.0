@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4255276D35A
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 18:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122BB76D364
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 18:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbjHBQJm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Aug 2023 12:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        id S231361AbjHBQKe (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Aug 2023 12:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232795AbjHBQJl (ORCPT
+        with ESMTP id S231209AbjHBQKd (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:09:41 -0400
+        Wed, 2 Aug 2023 12:10:33 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA2A1BFD
-        for <netfilter-devel@vger.kernel.org>; Wed,  2 Aug 2023 09:09:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0195CE1
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Aug 2023 09:10:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=5TO84p//iC6CUeE9Yli1pcrPhWmNJx07POOwnhKFWVs=; b=dU4JsrhSKCpVG9fAa5UUfX7mtz
-        5Oi3KwSuZUYbOT8oAY1Olsdha6hfhY11NTNUKFJBsC2s3CkAHsnzcDhczXd463VvmHN6cudYkTWkp
-        1XZC+fjNpz/37SyNnmufV9E7Q+ECStdI/sOCZYXkBIvqQ6HC/zM+xzeOlzFx7Tsz6O5V0LSQkONL7
-        5ugQAJYjSmc5PToZq2S11jjfNx8uQT0Ol23Iq88Vza4LsNlIxK16s3OqNSwuquspLQ+zry1OZ+ta7
-        DGr4O6142OMPO7xkVCULyTlFXFNIBq3zc/cmWrKGzN7u0iTR/M2bBrib4xGvzp2FMzb9sZtMXetCK
-        CUquoV7A==;
+        bh=ivyY5J5NiN6TO49HkeqNRFX7VZ4rJYUem8RAARRBlds=; b=Rm/xf1V2yJcqN0b4BN4ydbwVDD
+        0lsfpq0NzJwHWuKEPzCfCtLm2nq0lKj/RDDlzePUoHiW0yG/mt/jaJOGArfQGPi1/iQPxblBUVQO/
+        GxJKAYAjH2R+tEAip5xMh5ukUaiS1J3GbTiVjCf+H339rjniSbr+lK6fmsoAREd9yuMhSjOZy/92x
+        Vg+P7woN86/lgMukFQYtmCpn8fmphLy5BaDekVoJ5+8nGCyDAmbeELX7teEcyL7+kkEHNtj63IEf5
+        yeuYGf1BqmPpaFhKpxHdegbEK/uEJ3oYid22DMxN21OtcKRjYcc0ckfMFxuFgkfqBeEckvxe0mCPw
+        xOiflLsg==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qREPp-0004tq-6h
-        for netfilter-devel@vger.kernel.org; Wed, 02 Aug 2023 18:09:37 +0200
+        id 1qREQh-0004wu-Ab
+        for netfilter-devel@vger.kernel.org; Wed, 02 Aug 2023 18:10:31 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 07/15] man: iptables-restore.8: Fix --modprobe description
-Date:   Wed,  2 Aug 2023 18:09:15 +0200
-Message-Id: <20230802160923.17949-8-phil@nwl.cc>
+Subject: [iptables PATCH v2 08/15] man: iptables-restore.8: Consistently document -w option
+Date:   Wed,  2 Aug 2023 18:09:16 +0200
+Message-Id: <20230802160923.17949-9-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230802160923.17949-1-phil@nwl.cc>
 References: <20230802160923.17949-1-phil@nwl.cc>
@@ -52,37 +52,32 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-- Consistently use 'modprobe' as option argument name
-- Add a reference to modprobe man page
-- Put the path in italics, and the command in bold
+Use the same name for the option's argument.
 
-Fixes: 8c46901ff5785 ("doc: document iptables-restore's -M option")
+Fixes: 65801d02a482b ("iptables-restore.8: document -w/-W options")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
-Changes since v1:
-- Non-bold "modprobe" and iptables-restore program name
----
- iptables/iptables-restore.8.in | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ iptables/iptables-restore.8.in | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/iptables/iptables-restore.8.in b/iptables/iptables-restore.8.in
-index 20216842d8358..f95f00acd8d49 100644
+index f95f00acd8d49..a63a344c0bd72 100644
 --- a/iptables/iptables-restore.8.in
 +++ b/iptables/iptables-restore.8.in
-@@ -67,9 +67,10 @@ the program will exit if the lock cannot be obtained.  This option will
- make the program wait (indefinitely or for optional \fIseconds\fP) until
- the exclusive lock can be obtained.
- .TP
--\fB\-M\fP, \fB\-\-modprobe\fP \fImodprobe_program\fP
--Specify the path to the modprobe program. By default, iptables-restore will
--inspect /proc/sys/kernel/modprobe to determine the executable's path.
-+\fB\-M\fP, \fB\-\-modprobe\fP \fImodprobe\fP
-+Specify the path to the modprobe(8) program. By default,
-+iptables-restore will inspect \fI/proc/sys/kernel/modprobe\fP to
-+determine the executable's path.
- .TP
- \fB\-T\fP, \fB\-\-table\fP \fIname\fP
- Restore only the named table even if the input stream contains other ones.
+@@ -23,11 +23,11 @@ iptables-restore \(em Restore IP Tables
+ .P
+ ip6tables-restore \(em Restore IPv6 Tables
+ .SH SYNOPSIS
+-\fBiptables\-restore\fP [\fB\-chntvV\fP] [\fB\-w\fP \fIsecs\fP]
++\fBiptables\-restore\fP [\fB\-chntvV\fP] [\fB\-w\fP \fIseconds\fP]
+ [\fB\-W\fP \fIusecs\fP] [\fB\-M\fP \fImodprobe\fP] [\fB\-T\fP \fIname\fP]
+ [\fBfile\fP]
+ .P
+-\fBip6tables\-restore\fP [\fB\-chntvV\fP] [\fB\-w\fP \fIsecs\fP]
++\fBip6tables\-restore\fP [\fB\-chntvV\fP] [\fB\-w\fP \fIseconds\fP]
+ [\fB\-W\fP \fIusecs\fP] [\fB\-M\fP \fImodprobe\fP] [\fB\-T\fP \fIname\fP]
+ [\fBfile\fP]
+ .SH DESCRIPTION
 -- 
 2.40.0
 
