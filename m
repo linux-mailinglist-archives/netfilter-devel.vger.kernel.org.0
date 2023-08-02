@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B5676D363
-	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 18:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7925276D36D
+	for <lists+netfilter-devel@lfdr.de>; Wed,  2 Aug 2023 18:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbjHBQK3 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 2 Aug 2023 12:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
+        id S231415AbjHBQK7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 2 Aug 2023 12:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbjHBQK2 (ORCPT
+        with ESMTP id S232448AbjHBQK4 (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:10:28 -0400
+        Wed, 2 Aug 2023 12:10:56 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FCD7171B
-        for <netfilter-devel@vger.kernel.org>; Wed,  2 Aug 2023 09:10:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F311A1BFD
+        for <netfilter-devel@vger.kernel.org>; Wed,  2 Aug 2023 09:10:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=YIFW9NswOndTXfKRhwMgvdZaEdBxOvo3HVNYO65T/g4=; b=pkeeJ12q1n7K+czEDqeFe4zqZF
-        DNe6OMj4dpT+UyVItfmKIoJ6S8vd6/hBoXVRZq6pXItO8A0SAev0sr7DNjtYwvAHb++tCjSCfEs7/
-        O9+odseSlbHNpiXaFjC6H5bFxvKsEumDCbJNdduu1AmJxE4EVTn4d1CWcTmF/OiATODaNftf8mcyU
-        0IQ3GCI8u5WbS8WwYucXWD7mOmGXLPN/WQDjrctUPrZA+nVAy9SQwjokSP/SMkx8KKyumOjv4U7wU
-        bRHjHWtr5FLSvkLY1WUPzVixHvmN9WW6ys5wvNrNRJOhemFUwRHxHH0qF/aY2wbxHDHZ0ezdAHRkk
-        62MhbpFg==;
+        bh=YyOdPY7JOT9qXh8KSqS/mkJe3O79T5nqBXa7lzRmg0w=; b=ReDe813QhhmeuBhdddImiF4Qx9
+        MXaTXCocUqnG5NL7V4fJ4yEFJoUqKiJBTMs8vdQE2hPf00YTmXplIeYS5R23Csa7IjmcWe3pNAmkt
+        M2Qli2LWO1n4M3QfxRmjkZMVmZ+2bDxWG9DN4nMN1hM67qWPX/V1bNEGJI1o0bbcsIf+3BarMvGCV
+        xpxrpTcLBcFw6NRJDGSiy+uK8u27O49VJOhcrvs5TTzqHn7yHhh6CFRodi6EK6Ok0psmJk/r18FVj
+        rMjUSnWkFiTvxp07QYURbGufW7le1kul39Iey1iL+xiAP2YgRuqGNA4T96EU+ciAbVNqJ4OFaKJRX
+        y9rOrO/A==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qREQb-0004ve-OV
-        for netfilter-devel@vger.kernel.org; Wed, 02 Aug 2023 18:10:25 +0200
+        id 1qRER3-0004yu-Cq
+        for netfilter-devel@vger.kernel.org; Wed, 02 Aug 2023 18:10:53 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 05/15] man: Use HTTPS for links to netfilter.org
-Date:   Wed,  2 Aug 2023 18:09:13 +0200
-Message-Id: <20230802160923.17949-6-phil@nwl.cc>
+Subject: [iptables PATCH v2 06/15] man: iptables.8: Trivial font fixes
+Date:   Wed,  2 Aug 2023 18:09:14 +0200
+Message-Id: <20230802160923.17949-7-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230802160923.17949-1-phil@nwl.cc>
 References: <20230802160923.17949-1-phil@nwl.cc>
@@ -52,48 +52,47 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The browser is redirected there anyway, but who cares about such minor
-details nowadays.
+No content changes intended, just type commands in bold and the single
+path reference in italics.
 
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- extensions/libxt_nfacct.man | 2 +-
- iptables/iptables.8.in      | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Changes since v1:
+- Put only commands in bold font, not program names
+- Add missing dash-escaping if done so
+---
+ iptables/iptables.8.in | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/extensions/libxt_nfacct.man b/extensions/libxt_nfacct.man
-index b755f9770451c..a818fedd6b1ac 100644
---- a/extensions/libxt_nfacct.man
-+++ b/extensions/libxt_nfacct.man
-@@ -26,5 +26,5 @@ nfacct get http\-traffic
- .PP
- You can obtain
- .B nfacct(8)
--from http://www.netfilter.org or, alternatively, from the git.netfilter.org
-+from https://www.netfilter.org or, alternatively, from the git.netfilter.org
- repository.
 diff --git a/iptables/iptables.8.in b/iptables/iptables.8.in
-index c83275b294872..71a6251d6b00c 100644
+index 71a6251d6b00c..ecaa5553942df 100644
 --- a/iptables/iptables.8.in
 +++ b/iptables/iptables.8.in
-@@ -419,7 +419,7 @@ allocation or error messages from kernel cause an exit code of 4. Finally,
- other errors cause an exit code of 1.
- .SH BUGS
- Bugs?  What's this? ;-)
--Well, you might want to have a look at http://bugzilla.netfilter.org/
-+Well, you might want to have a look at https://bugzilla.netfilter.org/
- \fBiptables\fP will exit immediately with an error code of 111 if it finds
- that it was called as a setuid-to-root program.
- iptables cannot be used safely in this manner because it trusts
-@@ -463,7 +463,7 @@ not in the standard distribution,
- and the netfilter-hacking-HOWTO details the netfilter internals.
- .br
- See
--.BR "http://www.netfilter.org/" .
-+.BR "https://www.netfilter.org/" .
- .SH AUTHORS
- Rusty Russell originally wrote iptables, in early consultation with Michael
- Neuling.
+@@ -244,13 +244,13 @@ add, delete, insert, replace and append commands).
+ \fB\-4\fP, \fB\-\-ipv4\fP
+ This option has no effect in iptables and iptables-restore.
+ If a rule using the \fB\-4\fP option is inserted with (and only with)
+-ip6tables-restore, it will be silently ignored. Any other uses will throw an
++\fBip6tables\-restore\fP, it will be silently ignored. Any other uses will throw an
+ error. This option allows IPv4 and IPv6 rules in a single rule file
+ for use with both iptables-restore and ip6tables-restore.
+ .TP
+ \fB\-6\fP, \fB\-\-ipv6\fP
+ If a rule using the \fB\-6\fP option is inserted with (and only with)
+-iptables-restore, it will be silently ignored. Any other uses will throw an
++\fBiptables\-restore\fP, it will be silently ignored. Any other uses will throw an
+ error. This option allows IPv4 and IPv6 rules in a single rule file
+ for use with both iptables-restore and ip6tables-restore.
+ This option has no effect in ip6tables and ip6tables-restore.
+@@ -260,7 +260,7 @@ The protocol of the rule or of the packet to check.
+ The specified protocol can be one of \fBtcp\fP, \fBudp\fP, \fBudplite\fP,
+ \fBicmp\fP, \fBicmpv6\fP, \fBesp\fP, \fBah\fP, \fBsctp\fP, \fBmh\fP or the special keyword "\fBall\fP",
+ or it can be a numeric value, representing one of these protocols or a
+-different one.  A protocol name from /etc/protocols is also allowed.
++different one.  A protocol name from \fI/etc/protocols\fP is also allowed.
+ A "!" argument before the protocol inverts the
+ test.  The number zero is equivalent to \fBall\fP. "\fBall\fP"
+ will match with all protocols and is taken as default when this
 -- 
 2.40.0
 
