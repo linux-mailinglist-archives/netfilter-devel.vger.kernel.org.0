@@ -2,185 +2,93 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5027376F38C
-	for <lists+netfilter-devel@lfdr.de>; Thu,  3 Aug 2023 21:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EB576FD05
+	for <lists+netfilter-devel@lfdr.de>; Fri,  4 Aug 2023 11:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbjHCTjd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 3 Aug 2023 15:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
+        id S230326AbjHDJPx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Fri, 4 Aug 2023 05:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjHCTjc (ORCPT
+        with ESMTP id S230154AbjHDJPb (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 3 Aug 2023 15:39:32 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8D44221
-        for <netfilter-devel@vger.kernel.org>; Thu,  3 Aug 2023 12:39:27 -0700 (PDT)
+        Fri, 4 Aug 2023 05:15:31 -0400
+Received: from Chamillionaire.breakpoint.cc (unknown [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F4949C9
+        for <netfilter-devel@vger.kernel.org>; Fri,  4 Aug 2023 02:13:03 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1qReAP-0007hv-U8; Thu, 03 Aug 2023 21:39:25 +0200
+        (envelope-from <fw@strlen.de>)
+        id 1qRqrX-0003jb-E6; Fri, 04 Aug 2023 11:12:47 +0200
+Date:   Fri, 4 Aug 2023 11:12:47 +0200
 From:   Florian Westphal <fw@strlen.de>
-To:     <netfilter-devel@vger.kernel.org>
-Cc:     robert.smith51@protonmail.com, Florian Westphal <fw@strlen.de>
-Subject: [PATCH iptables] nft-ruleparse: parse meta mark set as MARK target
-Date:   Thu,  3 Aug 2023 21:39:13 +0200
-Message-ID: <20230803193917.26779-1-fw@strlen.de>
-X-Mailer: git-send-email 2.41.0
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>
+Subject: Re: nftables: syntax ambiguity with objref map and ct helper objects
+Message-ID: <20230804091247.GK30550@breakpoint.cc>
+References: <20230728195614.GA18109@breakpoint.cc>
+ <ZMenriLfu+luvh9i@calendula>
+ <20230731124637.GA7056@breakpoint.cc>
+ <ZMfT97SbKBov4UzD@calendula>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMfT97SbKBov4UzD@calendula>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RDNS_NONE,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Mixing nftables and iptables-nft in the same table doesn't work,
-but some people do this.
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> On Mon, Jul 31, 2023 at 02:46:37PM +0200, Florian Westphal wrote:
+> [...]
+> > My point is how nft should differentiate between
+> > 
+> > ct helper "bla" {
+> > 
+> > rule add ct helper "foo"
+> > 
+> > In above map declaration.  What does
+> > 
+> > "typeof ip saddr : ct helper" declare?
+> > As far as I can see its arbitrary 16-byte strings, so the
+> > above doesn't delcare an objref map that maps ip addresses
+> > to conntrack helper templates.
+> 
+> Oh, indeed. Selector semantics are overloaded, I proposed kernel
+> patches that have remained behind:
+> 
+> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210309210134.13620-2-pablo@netfilter.org/
+> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210309210134.13620-3-pablo@netfilter.org/
 
-v1.8.8 ignored rules it could not represent in iptables syntax,
-v1.8.9 bails in this case.
+Even if we had those two patches in tree, we would still need
+a different userspace syntax for the two cases.
 
-Add parsing of meta mark expressions so iptables-nft can render them
-as -j MARK rules.
+We can't go for
 
-This is flawed, nft has features that have no corresponding
-syntax in iptables, but we can't undo this.
+"typeof ip saddr : ct helpername"
 
-Link: https://bugzilla.netfilter.org/show_bug.cgi?id=1659
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- iptables/nft-ruleparse.c | 83 +++++++++++++++++++++++++++-------------
- 1 file changed, 56 insertions(+), 27 deletions(-)
+because we need to continue to support
+ct helper "foo"
 
-diff --git a/iptables/nft-ruleparse.c b/iptables/nft-ruleparse.c
-index edbbfa40e9c4..44b9bcc268f4 100644
---- a/iptables/nft-ruleparse.c
-+++ b/iptables/nft-ruleparse.c
-@@ -84,6 +84,37 @@ nft_create_match(struct nft_xt_ctx *ctx,
- 	return match->m->data;
- }
- 
-+static void *
-+nft_create_target(struct nft_xt_ctx *ctx,
-+		  struct iptables_command_state *cs,
-+		  const char *name)
-+{
-+	struct xtables_target *target;
-+	struct xt_entry_target *t;
-+	unsigned int size;
-+
-+	target = xtables_find_target(name, XTF_TRY_LOAD);
-+	if (!target) {
-+		ctx->errmsg = "target not found";
-+		return NULL;
-+	}
-+
-+	size = XT_ALIGN(sizeof(struct xt_entry_target)) + target->size;
-+
-+	t = xtables_calloc(1, size);
-+	t->u.target_size = size;
-+	t->u.user.revision = target->revision;
-+	strcpy(t->u.user.name, name);
-+
-+	target->t = t;
-+
-+	xs_init_target(target);
-+
-+	ctx->h->ops->rule_parse->target(target, ctx->cs);
-+
-+	return target->t->data;
-+}
-+
- static void nft_parse_counter(struct nftnl_expr *e, struct xt_counters *counters)
- {
- 	counters->pcnt = nftnl_expr_get_u64(e, NFTNL_EXPR_CTR_PACKETS);
-@@ -112,23 +143,14 @@ static bool nft_parse_meta_set_common(struct nft_xt_ctx* ctx,
- 		return false;
- 	}
- 
--	if (sreg->immediate.data[0] == 0) {
--		ctx->errmsg = "meta sreg immediate is 0";
--		return false;
--	}
--
- 	return true;
- }
- 
- static void nft_parse_meta_set(struct nft_xt_ctx *ctx,
- 			       struct nftnl_expr *e)
- {
--	struct xtables_target *target;
- 	struct nft_xt_ctx_reg *sreg;
- 	enum nft_registers sregnum;
--	struct xt_entry_target *t;
--	unsigned int size;
--	const char *targname;
- 
- 	sregnum = nftnl_expr_get_u32(e, NFTNL_EXPR_META_SREG);
- 	sreg = nft_xt_ctx_get_sreg(ctx, sregnum);
-@@ -140,7 +162,13 @@ static void nft_parse_meta_set(struct nft_xt_ctx *ctx,
- 		if (!nft_parse_meta_set_common(ctx, sreg))
- 			return;
- 
--		targname = "TRACE";
-+		if (sreg->immediate.data[0] == 0) {
-+			ctx->errmsg = "meta sreg immediate is 0";
-+			return;
-+		}
-+
-+		if (nft_create_target(ctx, ctx->cs, "TRACE"))
-+			return;
- 		break;
- 	case NFT_META_BRI_BROUTE:
- 		if (!nft_parse_meta_set_common(ctx, sreg))
-@@ -148,27 +176,28 @@ static void nft_parse_meta_set(struct nft_xt_ctx *ctx,
- 
- 		ctx->cs->jumpto = "DROP";
- 		return;
--	default:
--		ctx->errmsg = "meta sreg key not supported";
--		return;
--	}
--
--	target = xtables_find_target(targname, XTF_TRY_LOAD);
--	if (target == NULL) {
--		ctx->errmsg = "target TRACE not found";
--		return;
--	}
-+	case NFT_META_MARK: {
-+		struct xt_mark_tginfo2 *mt;
- 
--	size = XT_ALIGN(sizeof(struct xt_entry_target)) + target->size;
-+		if (!nft_parse_meta_set_common(ctx, sreg))
-+			return;
- 
--	t = xtables_calloc(1, size);
--	t->u.target_size = size;
--	t->u.user.revision = target->revision;
--	strcpy(t->u.user.name, targname);
-+		mt = nft_create_target(ctx, ctx->cs, "MARK");
-+		if (!mt)
-+			return;
- 
--	target->t = t;
-+		mt->mark = sreg->immediate.data[0];
-+		if (sreg->bitwise.set)
-+			mt->mask = sreg->bitwise.mask[0];
-+		else
-+			mt->mask = ~0u;
- 
--	ctx->h->ops->rule_parse->target(target, ctx->cs);
-+		return;
-+	}
-+	default:
-+		ctx->errmsg = "meta sreg key not supported";
-+		return;
-+	}
- }
- 
- static void nft_parse_meta(struct nft_xt_ctx *ctx, struct nftnl_expr *e)
--- 
-2.41.0
+So maybe
 
+typeof ip saddr : objref ct helper
+
+Or:
+
+typeof ip saddr : ct helper
+flags objref
+
+(Might be able to make this work by internally mangling
+ the type after the "objref" flag is found).
+
+> I also proposed change to have two selectors, one for the helper type
+> and another for the user-defined helper name. I still have to update
+> libnftnl and nftables.
+
+Did not recall that.
