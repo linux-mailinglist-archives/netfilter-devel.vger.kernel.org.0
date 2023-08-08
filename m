@@ -2,22 +2,22 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 289D97742D3
-	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Aug 2023 19:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E827C77426C
+	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Aug 2023 19:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235065AbjHHRup (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 8 Aug 2023 13:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
+        id S232459AbjHHRo7 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 8 Aug 2023 13:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234898AbjHHRuR (ORCPT
+        with ESMTP id S232310AbjHHRoi (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 8 Aug 2023 13:50:17 -0400
+        Tue, 8 Aug 2023 13:44:38 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5863527561;
-        Tue,  8 Aug 2023 09:22:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E894EAA151;
+        Tue,  8 Aug 2023 09:20:05 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1qTM2S-0000Kx-Rm; Tue, 08 Aug 2023 14:42:16 +0200
+        id 1qTM2X-0000LW-5P; Tue, 08 Aug 2023 14:42:21 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netdev@vger.kernel.org>
 Cc:     Paolo Abeni <pabeni@redhat.com>,
@@ -25,11 +25,10 @@ Cc:     Paolo Abeni <pabeni@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         <netfilter-devel@vger.kernel.org>,
-        Yue Haibing <yuehaibing@huawei.com>,
-        Simon Horman <horms@kernel.org>
-Subject: [PATCH next-next 3/5] netfilter: conntrack: Remove unused function declarations
-Date:   Tue,  8 Aug 2023 14:41:46 +0200
-Message-ID: <20230808124159.19046-4-fw@strlen.de>
+        Yue Haibing <yuehaibing@huawei.com>
+Subject: [PATCH next-next 4/5] netfilter: h323: Remove unused function declarations
+Date:   Tue,  8 Aug 2023 14:41:47 +0200
+Message-ID: <20230808124159.19046-5-fw@strlen.de>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230808124159.19046-1-fw@strlen.de>
 References: <20230808124159.19046-1-fw@strlen.de>
@@ -46,58 +45,30 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 
 From: Yue Haibing <yuehaibing@huawei.com>
 
-Commit 1015c3de23ee ("netfilter: conntrack: remove extension register api")
-leave nf_conntrack_acct_fini() and nf_conntrack_labels_init() unused, remove it.
-And commit a0ae2562c6c4 ("netfilter: conntrack: remove l3proto abstraction")
-leave behind nf_ct_l3proto_try_module_get() and nf_ct_l3proto_module_put().
+Commit f587de0e2feb ("[NETFILTER]: nf_conntrack/nf_nat: add H.323 helper port")
+declared but never implemented these.
 
 Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/net/netfilter/nf_conntrack.h        | 4 ----
- include/net/netfilter/nf_conntrack_acct.h   | 2 --
- include/net/netfilter/nf_conntrack_labels.h | 1 -
- 3 files changed, 7 deletions(-)
+ include/linux/netfilter/nf_conntrack_h323.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
-index a72028dbef0c..4085765c3370 100644
---- a/include/net/netfilter/nf_conntrack.h
-+++ b/include/net/netfilter/nf_conntrack.h
-@@ -190,10 +190,6 @@ static inline void nf_ct_put(struct nf_conn *ct)
- 		nf_ct_destroy(&ct->ct_general);
- }
+diff --git a/include/linux/netfilter/nf_conntrack_h323.h b/include/linux/netfilter/nf_conntrack_h323.h
+index 9e937f64a1ad..81286c499325 100644
+--- a/include/linux/netfilter/nf_conntrack_h323.h
++++ b/include/linux/netfilter/nf_conntrack_h323.h
+@@ -34,10 +34,6 @@ struct nf_ct_h323_master {
+ int get_h225_addr(struct nf_conn *ct, unsigned char *data,
+ 		  TransportAddress *taddr, union nf_inet_addr *addr,
+ 		  __be16 *port);
+-void nf_conntrack_h245_expect(struct nf_conn *new,
+-			      struct nf_conntrack_expect *this);
+-void nf_conntrack_q931_expect(struct nf_conn *new,
+-			      struct nf_conntrack_expect *this);
  
--/* Protocol module loading */
--int nf_ct_l3proto_try_module_get(unsigned short l3proto);
--void nf_ct_l3proto_module_put(unsigned short l3proto);
--
- /* load module; enable/disable conntrack in this namespace */
- int nf_ct_netns_get(struct net *net, u8 nfproto);
- void nf_ct_netns_put(struct net *net, u8 nfproto);
-diff --git a/include/net/netfilter/nf_conntrack_acct.h b/include/net/netfilter/nf_conntrack_acct.h
-index 4b2b7f8914ea..a120685cac93 100644
---- a/include/net/netfilter/nf_conntrack_acct.h
-+++ b/include/net/netfilter/nf_conntrack_acct.h
-@@ -78,6 +78,4 @@ static inline void nf_ct_acct_update(struct nf_conn *ct, u32 dir,
- 
- void nf_conntrack_acct_pernet_init(struct net *net);
- 
--void nf_conntrack_acct_fini(void);
--
- #endif /* _NF_CONNTRACK_ACCT_H */
-diff --git a/include/net/netfilter/nf_conntrack_labels.h b/include/net/netfilter/nf_conntrack_labels.h
-index 66bab6c60d12..fcb19a4e8f2b 100644
---- a/include/net/netfilter/nf_conntrack_labels.h
-+++ b/include/net/netfilter/nf_conntrack_labels.h
-@@ -52,7 +52,6 @@ int nf_connlabels_replace(struct nf_conn *ct,
- 			  const u32 *data, const u32 *mask, unsigned int words);
- 
- #ifdef CONFIG_NF_CONNTRACK_LABELS
--int nf_conntrack_labels_init(void);
- int nf_connlabels_get(struct net *net, unsigned int bit);
- void nf_connlabels_put(struct net *net);
- #else
+ struct nfct_h323_nat_hooks {
+ 	int (*set_h245_addr)(struct sk_buff *skb, unsigned int protoff,
 -- 
 2.41.0
 
