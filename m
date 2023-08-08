@@ -2,77 +2,78 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB38774B0A
-	for <lists+netfilter-devel@lfdr.de>; Tue,  8 Aug 2023 22:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEFB774E8A
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Aug 2023 00:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbjHHUjd (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 8 Aug 2023 16:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
+        id S230079AbjHHWsf (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 8 Aug 2023 18:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbjHHUi5 (ORCPT
+        with ESMTP id S229526AbjHHWse (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 8 Aug 2023 16:38:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E085A7D
-        for <netfilter-devel@vger.kernel.org>; Tue,  8 Aug 2023 13:07:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691525273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XQxg2+GFsWE1eF8crOmGCbQlbI55NVJdzJHl8bILcbo=;
-        b=Td/V4sRhZCg+PE+me/dJz5nzChZkBxVJaL1dI7u6m7YcY1KuE2SFklLN11vOC9Cwk9gXnx
-        6ve/3rpe6oqmne87QR2k/nDVsWA9+mBJmZjXQOqZjW5Rb1DNzprWvGF2os9Bhw3le789Lq
-        NNk3EY4eP0Cd/bIq5hGTNa3r3Ze8C8M=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-434-oSNdlrezPGC0kdHeXv2GTg-1; Tue, 08 Aug 2023 16:07:52 -0400
-X-MC-Unique: oSNdlrezPGC0kdHeXv2GTg-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31799700ed4so544963f8f.1
-        for <netfilter-devel@vger.kernel.org>; Tue, 08 Aug 2023 13:07:50 -0700 (PDT)
+        Tue, 8 Aug 2023 18:48:34 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B4B106
+        for <netfilter-devel@vger.kernel.org>; Tue,  8 Aug 2023 15:48:34 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-56942667393so77484927b3.2
+        for <netfilter-devel@vger.kernel.org>; Tue, 08 Aug 2023 15:48:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691534913; x=1692139713;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w6IYf4nshxor0R0BfWz4JihwJzXUnsgpsQ8Bx+FCm50=;
+        b=v/F4rK8C1c6Y8YTaAeOsPAc5rlC8DfTsdhN2NcOQy8xZRaoS9cvitj9HgolcvWE5XN
+         ZCiP+oEC5RA+WP6fZlEU1CnM2RNWG7JAxRMbaAZFn9uJ6EZdyRVTLnMIFZmpJ0leHpqh
+         7spA+UxF93A8SpFyC9uM2L+GVmrc2Oz7NekmEKSBkf/D0u4FLjt9CTUbtd+8gtFhaZz7
+         k18znWmvXCXpii8KvsTYg2aJQtU0osYwWxLYMWbgCMw6nzwrDCkx//Fl2Uaf3ok/PA19
+         fBUF7829XdzW7mM47blfRSu0JxMy05t+IbWe2W6Sq0zG9sswyCnMVFGIHsZd252DX9zq
+         QYqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691525269; x=1692130069;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=1e100.net; s=20221208; t=1691534913; x=1692139713;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=XQxg2+GFsWE1eF8crOmGCbQlbI55NVJdzJHl8bILcbo=;
-        b=bSHgfk/j2QOcOjCDTJFODTKNgIy9RRO4dovoXftFU9IYFxVBWo6i/ggv2d5FGjn6FG
-         VLDFTZYapW2WMgq6ZH2mdBbZ3afXSKPemNR7bLgwXvrfse6SiaOBaHJDF0LZRFdW4v3I
-         OVw8YsFCjCH8DCWQlI+BDZBKnQGu3V1DMAVm2nPZcKP3tmfS1tWZOOxzCVey7EXNS5DM
-         uGK1/hTj5kPAdH2Wd3ev8AGkCoa+ykNsKdp8lz4Z4+FfvDZljb4qXT/dG4CfowebN8yF
-         sJXKJJGDZLP+ZgwiHumDRSqdyEio1pzoUqFn9R//29cC1ndQc8bJkswdm9oWzWeXQntb
-         FDug==
-X-Gm-Message-State: AOJu0YxbFFLc5D+dT9/p9WynQ7K1a+GJ3+0P1NK2+InJu8Lj7NSnVo6b
-        /XJwAhJoOO6kFBRX5YgZc6OINXelYXcK073VNeV5QbYg/ITn6y4XEyiaUBijXliyHVh09DXi6s6
-        4iIvF1IUW6T7SOca7/Xnk92DbDKPpHeOADRuX
-X-Received: by 2002:adf:e892:0:b0:317:5f08:32a3 with SMTP id d18-20020adfe892000000b003175f0832a3mr318419wrm.6.1691525269651;
-        Tue, 08 Aug 2023 13:07:49 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFil7N/gk6ljHxJZUn7WRLS6XdAC5j4SvWXn4adaQKAHgMz38u+bdhJ34WH8VKxAgew6gl50g==
-X-Received: by 2002:adf:e892:0:b0:317:5f08:32a3 with SMTP id d18-20020adfe892000000b003175f0832a3mr318412wrm.6.1691525269377;
-        Tue, 08 Aug 2023 13:07:49 -0700 (PDT)
-Received: from [10.0.0.196] ([37.186.180.70])
-        by smtp.gmail.com with ESMTPSA id o10-20020a5d474a000000b003141a3c4353sm14542273wrs.30.2023.08.08.13.07.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 13:07:48 -0700 (PDT)
-Message-ID: <87ab9a5321184254f40941a1f6f265b4ac66804f.camel@redhat.com>
-Subject: Re: [nft PATCH v4 6/6] py: add Nftables.{get,set}_input() API
-From:   Thomas Haller <thaller@redhat.com>
-To:     Phil Sutter <phil@nwl.cc>
-Cc:     NetFilter <netfilter-devel@vger.kernel.org>
-Date:   Tue, 08 Aug 2023 22:07:48 +0200
-In-Reply-To: <ZNJLbiVq6QolAOvi@orbyte.nwl.cc>
-References: <20230803193940.1105287-1-thaller@redhat.com>
-         <20230803193940.1105287-13-thaller@redhat.com>
-         <ZNJLbiVq6QolAOvi@orbyte.nwl.cc>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        bh=w6IYf4nshxor0R0BfWz4JihwJzXUnsgpsQ8Bx+FCm50=;
+        b=gSlYl/4OidGoym635Ts9LEWld/fGDTjQ7GI2y9hiUYFFDGdb8na16IpmJGCZcLnQCv
+         YGYUlMwz7fPEbD95bS2ZfoSQXmcBD+z5w5tovn53C4AEvIrJM+Wn8lte2DClqiB1EcRK
+         H9ypF86pLKWifRFB9R9Oi7g/b9hPstDJAIW+4bKbXeYgeaQPUxK2lNBBVlQVhc99rnz9
+         gzoMYLtSyW8AAExvKAydwL/30MYuilcdAps717hOrUAWRdWQTev9jP0FjBYJdS+kUg6k
+         dH6hh9dJdeJfijeWKx2CB1jLadT/IiWlsksJLiciK9Ui10J//jghz40i7FIYVd/x7pve
+         E9fw==
+X-Gm-Message-State: AOJu0Yyw+1ne30XGTXPdenC+tE+3Zad8CKN/cauIVRlSHpPvx8jKY/hy
+        pRZWlyvBLTtCVBQXTfJjHrMOF/exJj0oycUPYQ==
+X-Google-Smtp-Source: AGHT+IGCKCpjw+qQSDFPyaaHwnCmIRgOXWU0/CPaXzJcAH1H2D2px83oqOo3PmhmQlTBWJHjAd9H6SpIq9/Lr6ycUw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:aa0b:0:b0:586:4eae:b942 with SMTP
+ id i11-20020a81aa0b000000b005864eaeb942mr25570ywh.4.1691534913334; Tue, 08
+ Aug 2023 15:48:33 -0700 (PDT)
+Date:   Tue, 08 Aug 2023 22:48:05 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIACXG0mQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDCwNz3bzUEhBOy8wpSS3SNTEwMjcytExKMks1VwLqKShKTcusAJsXHVt bCwBxh7PoXwAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691534912; l=1704;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=ZOPiCy7w2pT1kz3c5DhiCZiV+zTmBFI8xyOrhaHPkq8=; b=35hLj7PJ6DP6/IdiB2Ylc5Y2G6xQ/3oI1SXKLWZ4BpDIns5/qOxf/7y6WjAKgN2o0Nv1hmmKZ
+ 7RXdFr4FcSnA1LghMYnhNj8402rOA1pYEJ9KZdZBr1W0Mso8AV+M+KL
+X-Mailer: b4 0.12.3
+Message-ID: <20230808-net-netfilter-v1-0-efbbe4ec60af@google.com>
+Subject: [PATCH 0/7] netfilter: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,50 +81,44 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Tue, 2023-08-08 at 16:04 +0200, Phil Sutter wrote:
-> On Thu, Aug 03, 2023 at 09:35:24PM +0200, Thomas Haller wrote:
-> > Similar to the existing Nftables.{get,set}_debug() API.
-> >=20
-> > Only notable (internal) difference is that
-> > nft_ctx_input_set_flags()
-> > returns the old value already, so we don't need to call
-> > Nftables.get_input() first.
-> >=20
-> > The benefit of this API, is that it follows the existing API for
-> > debug
-> > flags. Also, when future flags are added it requires few changes to
-> > the
-> > python code.
-> >=20
-> > The disadvantage is that it looks different from the underlying C
-> > API,
-> > which is confusing when reading the C API. Also, it's a bit
-> > cumbersome
-> > to reset only one flag. For example:
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0 def _drop_flag_foo(flag):
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if isinstance(flag, int):
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retu=
-rn flag & ~FOO_NUM
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if flag =3D=3D 'foo':
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retu=
-rn 0
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return flag
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0 ctx.set_input(_drop_flag_foo(v) for v in ctx.g=
-et_input())
->=20
-> Which would be easier if there were dedicated setter/getter pairs for
-> each flag. The code for debug flags optimizes for setting multiple
-> flags
-> at once ("get me all the debugging now!"). Not a veto from my side
-> though, adding getter/setter pairs after the fact is still possible
-> without breaking anything.
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Or
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ the case for `strncpy`!
 
-  ctx.set_input(ctx.get_input(numeric=3DTrue) & ~FOO_NUM)
+This series of patches aims to swap out `strncpy` for more robust and
+less ambiguous interfaces like `strscpy` and `strtomem`. This patch
+series, if applied in its entirety, removes most if not all instances of
+`strncpy` in the `net/netfilter` directory.
 
+[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+[2]: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
 
-Thomas
+Link: https://github.com/KSPP/linux/issues/90
+---
+Justin Stitt (7):
+      netfilter: ipset: refactor deprecated strncpy
+      netfilter: nf_tables: refactor deprecated strncpy
+      netfilter: nf_tables: refactor deprecated strncpy
+      netfilter: nft_meta: refactor deprecated strncpy
+      netfilter: nft_osf: refactor deprecated strncpy to strscpy
+      netfilter: x_tables: refactor deprecated strncpy
+      netfilter: xtables: refactor deprecated strncpy
+
+ net/netfilter/ipset/ip_set_core.c | 10 +++++-----
+ net/netfilter/nft_ct.c            |  2 +-
+ net/netfilter/nft_fib.c           |  2 +-
+ net/netfilter/nft_meta.c          |  6 +++---
+ net/netfilter/nft_osf.c           |  6 +++---
+ net/netfilter/x_tables.c          |  5 ++---
+ net/netfilter/xt_repldata.h       |  2 +-
+ 7 files changed, 16 insertions(+), 17 deletions(-)
+---
+base-commit: 14f9643dc90adea074a0ffb7a17d337eafc6a5cc
+change-id: 20230807-net-netfilter-4027219bb6e7
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
