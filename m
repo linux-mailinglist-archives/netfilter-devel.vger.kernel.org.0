@@ -2,24 +2,39 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 509177759ED
-	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Aug 2023 13:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ADCD775EE8
+	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Aug 2023 14:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbjHILD4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Wed, 9 Aug 2023 07:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
+        id S232106AbjHIM2g (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Wed, 9 Aug 2023 08:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbjHILDz (ORCPT
+        with ESMTP id S229549AbjHIM2f (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Wed, 9 Aug 2023 07:03:55 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDEF410F3;
-        Wed,  9 Aug 2023 04:03:54 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1qTgya-0001jV-So; Wed, 09 Aug 2023 13:03:41 +0200
-Date:   Wed, 9 Aug 2023 13:03:40 +0200
-From:   Phil Sutter <phil@nwl.cc>
+        Wed, 9 Aug 2023 08:28:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2362E1FCC;
+        Wed,  9 Aug 2023 05:28:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AD68D63889;
+        Wed,  9 Aug 2023 12:28:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25A73C433C7;
+        Wed,  9 Aug 2023 12:28:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691584114;
+        bh=sEM6A7v8beM65GOpgbPHHqgeliizvdkk3E1U4YHkLoU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lpoK/uANDrW8WWjFdIuPn8HIUyukQYCDHPHUzvttZ439ycDydHiICm5YqRDCqY6fX
+         GhUTaH+Tj/1szgSGYR7S6EQdOjsMVdj4pvqmSSrtvP5avxFBLiaWavN8Kb3h28jJXg
+         0VqS1lIIo9GuUeiOgZH1PUu7H7QSp23twNms3I9JUpceKvuKxSZpnG5ZNNoIHDz3Ed
+         UMGCP3VYYbXzf8n4GhWVDo8RVGAGAuw7lwGS4GMhtU3bZxpSZum6GlCMb07OXLrdwn
+         5fLzVBS/OUNhIv+pdDtHcBi114C5FDI0zl8wpha3dCK7Ny0bGlzjDJ21vQU6w/HEoR
+         FzVF/NRyH3dQQ==
+Date:   Wed, 9 Aug 2023 14:28:27 +0200
+From:   Simon Horman <horms@kernel.org>
 To:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
 Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
@@ -33,51 +48,45 @@ Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
         linux-kernel@vger.kernel.org,
         Wang Weiyang <wangweiyang2@huawei.com>,
         Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
-Subject: Re: [PATCH] netfilter: ebtables: replace zero-length array members
-Message-ID: <ZNNyjNDht6v84hvS@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
-        "GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
-References: <20230809075136.1323302-1-gongruiqi@huaweicloud.com>
+Subject: Re: [PATCH v3] netfilter: ebtables: fix fortify warnings in
+ size_entry_mwt()
+Message-ID: <ZNOGa02ymvkTAXPD@vergenet.net>
+References: <20230809074503.1323102-1-gongruiqi@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230809075136.1323302-1-gongruiqi@huaweicloud.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230809074503.1323102-1-gongruiqi@huaweicloud.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 03:51:36PM +0800, GONG, Ruiqi wrote:
+On Wed, Aug 09, 2023 at 03:45:03PM +0800, GONG, Ruiqi wrote:
 > From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
 > 
-> As suggested by Kees[1], replace the old-style 0-element array members
-> of multiple structs in ebtables.h with modern C99 flexible array.
+> When compiling with gcc 13 and CONFIG_FORTIFY_SOURCE=y, the following
+> warning appears:
 > 
-> [1]: https://lore.kernel.org/all/5E8E0F9C-EE3F-4B0D-B827-DC47397E2A4A@kernel.org/
+> In function ‘fortify_memcpy_chk’,
+>     inlined from ‘size_entry_mwt’ at net/bridge/netfilter/ebtables.c:2118:2:
+> ./include/linux/fortify-string.h:592:25: error: call to ‘__read_overflow2_field’
+> declared with attribute warning: detected read beyond size of field (2nd parameter);
+> maybe use struct_group()? [-Werror=attribute-warning]
+>   592 |                         __read_overflow2_field(q_size_field, size);
+>       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
-> Link: https://github.com/KSPP/linux/issues/21
-> Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
+> The compiler is complaining:
+> 
+> memcpy(&offsets[1], &entry->watchers_offset,
+>                        sizeof(offsets) - sizeof(offsets[0]));
+> 
+> where memcpy reads beyong &entry->watchers_offset to copy
 
-I tried this once[1], but it was rejected pointing at a revert[2]. It
-seems gcc was improved since then: The warning is gone and I don't find
--Wno-stringop-overflow flag in iptables sources.
+nit: beyong -> beyond
 
-Cheers, Phil
-
-[1] https://lore.kernel.org/all/20200719100220.4666-1-phil@nwl.cc/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1e6e9d0f4859ec698d55381ea26f4136eff3afe1
+...
