@@ -2,62 +2,62 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E688775011
+	by mail.lfdr.de (Postfix) with ESMTP id 778DC775012
 	for <lists+netfilter-devel@lfdr.de>; Wed,  9 Aug 2023 03:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbjHIBHm (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 8 Aug 2023 21:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
+        id S231209AbjHIBHp (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 8 Aug 2023 21:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbjHIBHl (ORCPT
+        with ESMTP id S231347AbjHIBHn (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 8 Aug 2023 21:07:41 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D8319BC
-        for <netfilter-devel@vger.kernel.org>; Tue,  8 Aug 2023 18:07:41 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d4ca2881833so4077117276.3
-        for <netfilter-devel@vger.kernel.org>; Tue, 08 Aug 2023 18:07:41 -0700 (PDT)
+        Tue, 8 Aug 2023 21:07:43 -0400
+Received: from mail-oi1-x24a.google.com (mail-oi1-x24a.google.com [IPv6:2607:f8b0:4864:20::24a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE26719AF
+        for <netfilter-devel@vger.kernel.org>; Tue,  8 Aug 2023 18:07:42 -0700 (PDT)
+Received: by mail-oi1-x24a.google.com with SMTP id 5614622812f47-3a78c2cdd77so6889921b6e.1
+        for <netfilter-devel@vger.kernel.org>; Tue, 08 Aug 2023 18:07:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691543261; x=1692148061;
+        d=google.com; s=20221208; t=1691543262; x=1692148062;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8kynZ2eY0/O6E/bQJdWZNL+mmpUwUSkdwurja4abucs=;
-        b=Ol0O7ydBLmDGDB+SZ9v11BQgV4K8njIy76TSgXpaauJtbgStqpW/RYu/DWTxMxv5ZB
-         +9MacsQSpkAhtOY9LVIFSQQtbwXVuIBhhpzOiV/EdBvEkZB/SRk8+/hM3Av3riZbSVSG
-         QtCWUqHY7ASjZgsslXjvn1A8l6P037btB4PjAGygJPGdrTpttKYWlOta5a139Ww0nVw2
-         4wZvofllE9KdG42dhpE4GXt+mC+sxQs7bOpHb0LRCj1twgqrLPVTJYEBe17+KyMG8QjB
-         UtPRDLE2isjgjcvvsvJSfiJwpN73phog9iVfBbXoVUO8z8mhgWMyyQoeNpXAgTDKPl0/
-         qpJg==
+        bh=CVz1ojRkhYeSRtVo9H/tM0do8XQLIQHE9IgccPkP+yI=;
+        b=YM0EF08LMQ5WvMrXeAp8gjjtszwUk2pUWzHCMZ0zn+G2isYfsms0AEcAOJHR+FzqoJ
+         5gGzXyXgO1s6N6jbssTgI6zymokr1AXoo+FhWaVJg4ihaxML7ucWHHuIxbr5HzCvt2MG
+         Tt3yOmk7P8lv4yKQX63qFntp01EHrSBjsYSJq/s2dMp7zCD1Je4SxOgsOQ9tGtmEzCoe
+         SpySLAiirdXb9RHkLdoS1GVfBe+V+nm33FdHqqxIkhu9U007DhL2rTOQ0/2K+sDSPX6C
+         uGWsZ8A2DtO3QHV8XEPMcKLOS6G2USuAt/czHn56zM0QWZ4AQUFXQcNZZzbRLXv8blyO
+         iMnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691543261; x=1692148061;
+        d=1e100.net; s=20221208; t=1691543262; x=1692148062;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8kynZ2eY0/O6E/bQJdWZNL+mmpUwUSkdwurja4abucs=;
-        b=P7Vmm2P7U51Iu1IyKn1nFVIH2Btujm3EokaUkYCIF0IJq520+QJ/gSTN+yedf9y92p
-         83ksXuKjyxB7gEuWvDYpfzfynAo2xkl+9b8ciCdWNKwi+f7NvS3eVc3cRif+kHVschrg
-         aORpJNrQsHS4hcp3eCfrkhvNSvhudnI0AGA7/1VlACq5i8LKEoGnFFu36pURyBQcpugv
-         jWJd84QUNcSu0/IbKb+rxZK0GIGoWZuNwZosjjEslfj1ZZPIqpaVhoET7rv2T3R2SC6P
-         sr96fx4OV0Jh+j6XSf6S+ppCuKgR9ME6UgZJb1q+VRFjbKeZujDLNFcBeH6xWDbHfFxF
-         82kg==
-X-Gm-Message-State: AOJu0YxXGGEVwi9VuGS1TOQjGD8GfW9tawse+qB38yORECVAd+K8KUiv
-        78+Um4oRkbnbZQX42HxzxUPJasjLIilq+MIKbg==
-X-Google-Smtp-Source: AGHT+IGWrBqKRyMPFFB9tEV4Q4dgsTSTg2iWnoP8DD7tIMTceBZqZZlfU6ptL0dqjEgU1ZHHFa6n34AN1ZEUPEROSA==
+        bh=CVz1ojRkhYeSRtVo9H/tM0do8XQLIQHE9IgccPkP+yI=;
+        b=Ql9FzQZ2GkP+7bHUIYoaGxvM4uRXdiVDxaABy0X64O3oFzC8TFWpQoKC2SLRBcT4F7
+         04ho89omGlVF4nF67wFFxKOGVnJwNRynlgKQEd8QapyM/bKdu/LyshQej0kHnGdPqyw9
+         H6I0XzZ9AkZ6mpTyqELRiS0IB7vfkumB4dH3WSxBr6QpsVO6EHNFrc6flnKg+Z/gbbx9
+         i0v00lMAksV/exi74qidIR27l2qreS9P37qiui6PxYOUQ4eR4k2WkDIAYbTF2IFSHJDI
+         ZvKkswlCte5KyLMvVAFsvznBk3xvAXFG97bZzjOPZ5uOM3ekl4+F6hQ2sgGrSw1sFUhF
+         6a6w==
+X-Gm-Message-State: AOJu0YwqoqfwlFM+hrI1pxHOWhEFAenByTRRv2GRqhzttcvbATu1vsiV
+        ZsImQsu2Y8S6h/Jo6SgZ++5M1jDblZTtnowDJw==
+X-Google-Smtp-Source: AGHT+IEKxVs1OlcWwiqA53GB6oh49zRgHksKsF0BWd5xdJypQdb1s8ZOL6iCRc3UIvJ02CL7Fj3KY4dzDtnnYJ2MCA==
 X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a5b:181:0:b0:d4f:d7a5:ba3b with SMTP
- id r1-20020a5b0181000000b00d4fd7a5ba3bmr30722ybl.8.1691543260881; Tue, 08 Aug
- 2023 18:07:40 -0700 (PDT)
-Date:   Wed, 09 Aug 2023 01:06:05 +0000
+ (user=justinstitt job=sendgmr) by 2002:a05:6808:1594:b0:3a4:18d1:1686 with
+ SMTP id t20-20020a056808159400b003a418d11686mr793268oiw.10.1691543262146;
+ Tue, 08 Aug 2023 18:07:42 -0700 (PDT)
+Date:   Wed, 09 Aug 2023 01:06:06 +0000
 In-Reply-To: <20230809-net-netfilter-v2-0-5847d707ec0a@google.com>
 Mime-Version: 1.0
 References: <20230809-net-netfilter-v2-0-5847d707ec0a@google.com>
 X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691543258; l=903;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691543258; l=692;
  i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=GfuXN5T5xhe6k6w3cRknlOVNIOtegqmz8uQBUV4/tcw=; b=GYSS0ZoTuERfJ/SVnofWzjum44puD5h0s+zSjx2gITL2EhREYqCQpVB9N07nRO0v9d+gxkHdQ
- SOb7icKznTnC9EnhPquUOW6p8PVJ2Ep9ughhPfdNGQsR/NcIvz+Wupm
+ bh=Rb7knhgVRoO1cFP5KZBOoghV8KJqLMcT0yWjrGm/ENU=; b=SGRqAQLRAvrm1QwRllI6+LYWlBGAQP3OWJJwRohe3cZ2RB+HyT7yASIlpFuvkLVwAhf0uTtpO
+ XHh1FrAHIHoC+nIE6P/23cWFGuKLtpQSj4dwTByKp1fsGBUz1TyiFoX
 X-Mailer: b4 0.12.3
-Message-ID: <20230809-net-netfilter-v2-2-5847d707ec0a@google.com>
-Subject: [PATCH v2 2/7] netfilter: nf_tables: refactor deprecated strncpy
+Message-ID: <20230809-net-netfilter-v2-3-5847d707ec0a@google.com>
+Subject: [PATCH v2 3/7] netfilter: nf_tables: refactor deprecated strncpy
 From:   Justin Stitt <justinstitt@google.com>
 To:     Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
@@ -73,7 +73,7 @@ Cc:     linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,28 +84,23 @@ X-Mailing-List: netfilter-devel@vger.kernel.org
 Prefer `strscpy_pad` over `strncpy`.
 
 Signed-off-by: Justin Stitt <justinstitt@google.com>
-
 ---
-Note: Opt for `strscpy_pad` over `strscpy` since padding is wanted [1]
-
-Link: https://lore.kernel.org/all/20230808234001.GJ9741@breakpoint.cc/ [1]
----
- net/netfilter/nft_ct.c | 2 +-
+ net/netfilter/nft_fib.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
-index 38958e067aa8..bbf11c4871b2 100644
---- a/net/netfilter/nft_ct.c
-+++ b/net/netfilter/nft_ct.c
-@@ -108,7 +108,7 @@ static void nft_ct_get_eval(const struct nft_expr *expr,
- 		helper = rcu_dereference(help->helper);
- 		if (helper == NULL)
- 			goto err;
--		strncpy((char *)dest, helper->name, NF_CT_HELPER_NAME_LEN);
-+		strscpy_pad((char *)dest, helper->name, NF_CT_HELPER_NAME_LEN);
- 		return;
- #ifdef CONFIG_NF_CONNTRACK_LABELS
- 	case NFT_CT_LABELS: {
+diff --git a/net/netfilter/nft_fib.c b/net/netfilter/nft_fib.c
+index 6e049fd48760..8c250a47a3b4 100644
+--- a/net/netfilter/nft_fib.c
++++ b/net/netfilter/nft_fib.c
+@@ -150,7 +150,7 @@ void nft_fib_store_result(void *reg, const struct nft_fib *priv,
+ 		if (priv->flags & NFTA_FIB_F_PRESENT)
+ 			*dreg = !!dev;
+ 		else
+-			strncpy(reg, dev ? dev->name : "", IFNAMSIZ);
++			strscpy_pad(reg, dev ? dev->name : "", IFNAMSIZ);
+ 		break;
+ 	default:
+ 		WARN_ON_ONCE(1);
 
 -- 
 2.41.0.640.ga95def55d0-goog
