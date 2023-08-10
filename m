@@ -2,41 +2,41 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4917776D1
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Aug 2023 13:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4637776D5
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Aug 2023 13:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbjHJLXk (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 10 Aug 2023 07:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50626 "EHLO
+        id S233279AbjHJLXx (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 10 Aug 2023 07:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbjHJLXj (ORCPT
+        with ESMTP id S232354AbjHJLXw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:23:39 -0400
+        Thu, 10 Aug 2023 07:23:52 -0400
 Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9088268A
-        for <netfilter-devel@vger.kernel.org>; Thu, 10 Aug 2023 04:23:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81514268A
+        for <netfilter-devel@vger.kernel.org>; Thu, 10 Aug 2023 04:23:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
         s=mail2022; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=5vd/PUErkm7zyamcb3Rr/kzuL/THySBbt4MOXcC/1YE=; b=C3zVI47lT2V/8+VP4dqEiDNFbm
-        8cy//ZXpm2rcvnh6m5L/CwyBTtK1ohbZmL0kD5fu9RNIpgsu1CyILGkrx31y/UaGGVOvUwBt0xtga
-        7/FSgcLo1z4sg721sY6AM1IjrpMIeZ3x6bK1PXxkoo/3kHD+bs01I+dGcU5guvutlhSu2kMj47AXv
-        OnKB0baA/Ydj267J+GMJ1x4ayzsaJt0UIfiWSEFXoKuUFXjEVvNJH+4IiTgACs6qTIeQJeYVYuRgO
-        ctc0eDcfJyU8cojog6NrjHcJjnnC5kzEmurklc0CicfAD8CWas3TyuOGWTWAxzqE7SsmPFk6k0PET
-        kWHyPryg==;
+        bh=fgaTGbuNOLietYUA25eTyYiUOp31cEanTFOf7vocWnQ=; b=mm0GGzTQy8wqRcrZT9dwHqLGBq
+        1v9u5P2pI+djBYCV5UMVV3Q80cPYR1TbnlFcZ/GlT/l5AflsDLlkmCMvFZ/55mk3agSBR6CvqPVfk
+        oQjjh/B1yYNsSKU04rYBLmbJ/GC9ZfAMc+XuTglxz/1xhjXmN++hcmbrbj38+LylSJyepu6SfZW49
+        b9Z8dENJoS3klWFDX36gZxT61GhLvh2b4uvSC5tdPD3G+GHavRD3Ag9PY1JFyt2hpkotZ0KPuXmtQ
+        fYd3vKaaHjqLcWpyOqYbmDYQ8W0A1A9pbIgupWuI07J6+O7gqA48bDijWzEwLwOr8eRoNauA9fMEg
+        /c8EK3vw==;
 Received: from localhost ([::1] helo=xic)
         by orbyte.nwl.cc with esmtp (Exim 4.94.2)
         (envelope-from <phil@nwl.cc>)
-        id 1qU3lN-0004Nq-RG
-        for netfilter-devel@vger.kernel.org; Thu, 10 Aug 2023 13:23:34 +0200
+        id 1qU3ld-0004OA-UR
+        for netfilter-devel@vger.kernel.org; Thu, 10 Aug 2023 13:23:49 +0200
 From:   Phil Sutter <phil@nwl.cc>
 To:     netfilter-devel@vger.kernel.org
-Subject: [iptables PATCH v2 1/3] nft: Create builtin chains with counters enabled
-Date:   Thu, 10 Aug 2023 13:23:23 +0200
-Message-Id: <20230810112325.20630-2-phil@nwl.cc>
+Subject: [iptables PATCH v2 2/3] Revert "libiptc: fix wrong maptype of base chain counters on restore"
+Date:   Thu, 10 Aug 2023 13:23:24 +0200
+Message-Id: <20230810112325.20630-3-phil@nwl.cc>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230810112325.20630-1-phil@nwl.cc>
 References: <20230810112325.20630-1-phil@nwl.cc>
@@ -51,60 +51,33 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-The kernel enables policy counters for nftables chains only if
-NFTA_CHAIN_COUNTERS attribute is present. For this to be generated, one
-has to set NFTNL_CHAIN_PACKETS and NFTNL_CHAIN_BYTES attributes in the
-allocated nftnl_chain object.
+This reverts commit 7c4d668c9c2ee007c82063b7fc784cbbf46b2ec4.
 
-The above happened for base chains only with iptables-nft-restore if
-called with --counters flag. Since this is very unintuitive to users,
-fix the situation by adding counters to base chains in any case.
+The change can't be right: A simple rule append call will reset all
+built-in chains' counters. The old code works fine even given the
+mentioned "empty restore" use-case, at least if counters don't change on
+the fly in-kernel.
 
-Fixes: 384958620abab ("use nf_tables and nf_tables compatibility interface")
+Closes: https://bugzilla.netfilter.org/show_bug.cgi?id=912
+Fixes: 7c4d668c9c2ee ("libiptc: fix wrong maptype of base chain counters on restore")
 Signed-off-by: Phil Sutter <phil@nwl.cc>
 ---
- iptables/nft.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ libiptc/libiptc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/iptables/nft.c b/iptables/nft.c
-index 326dc20b21d65..97fd4f49fdb4c 100644
---- a/iptables/nft.c
-+++ b/iptables/nft.c
-@@ -701,6 +701,9 @@ nft_chain_builtin_alloc(int family, const char *tname,
+diff --git a/libiptc/libiptc.c b/libiptc/libiptc.c
+index 634f0bc76b91c..e475063367c26 100644
+--- a/libiptc/libiptc.c
++++ b/libiptc/libiptc.c
+@@ -822,7 +822,7 @@ static int __iptcc_p_del_policy(struct xtc_handle *h, unsigned int num)
  
- 	nftnl_chain_set_str(c, NFTNL_CHAIN_TYPE, chain->type);
- 
-+	nftnl_chain_set_u64(c, NFTNL_CHAIN_PACKETS, 0);
-+	nftnl_chain_set_u64(c, NFTNL_CHAIN_BYTES, 0);
-+
- 	return c;
- }
- 
-@@ -961,6 +964,7 @@ static struct nftnl_chain *nft_chain_new(struct nft_handle *h,
- 				       int policy,
- 				       const struct xt_counters *counters)
- {
-+	static const struct xt_counters zero = {};
- 	struct nftnl_chain *c;
- 	const struct builtin_table *_t;
- 	const struct builtin_chain *_c;
-@@ -985,12 +989,10 @@ static struct nftnl_chain *nft_chain_new(struct nft_handle *h,
- 		return NULL;
- 	}
- 
--	if (counters) {
--		nftnl_chain_set_u64(c, NFTNL_CHAIN_BYTES,
--					counters->bcnt);
--		nftnl_chain_set_u64(c, NFTNL_CHAIN_PACKETS,
--					counters->pcnt);
--	}
-+	if (!counters)
-+		counters = &zero;
-+	nftnl_chain_set_u64(c, NFTNL_CHAIN_BYTES, counters->bcnt);
-+	nftnl_chain_set_u64(c, NFTNL_CHAIN_PACKETS, counters->pcnt);
- 
- 	return c;
- }
+ 		/* save counter and counter_map information */
+ 		h->chain_iterator_cur->counter_map.maptype =
+-						COUNTER_MAP_ZEROED;
++						COUNTER_MAP_NORMAL_MAP;
+ 		h->chain_iterator_cur->counter_map.mappos = num-1;
+ 		memcpy(&h->chain_iterator_cur->counters, &pr->entry->counters,
+ 			sizeof(h->chain_iterator_cur->counters));
 -- 
 2.40.0
 
