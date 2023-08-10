@@ -2,136 +2,67 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B65CC7775C5
-	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Aug 2023 12:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE35C7776D2
+	for <lists+netfilter-devel@lfdr.de>; Thu, 10 Aug 2023 13:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbjHJK3V (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Thu, 10 Aug 2023 06:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
+        id S230364AbjHJLXq (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Thu, 10 Aug 2023 07:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231963AbjHJK3U (ORCPT
+        with ESMTP id S232354AbjHJLXp (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:29:20 -0400
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA8D11F;
-        Thu, 10 Aug 2023 03:29:16 -0700 (PDT)
-Received: from [78.30.34.192] (port=33176 helo=gnumonks.org)
-        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <pablo@gnumonks.org>)
-        id 1qU2ul-009Krh-D2; Thu, 10 Aug 2023 12:29:13 +0200
-Date:   Thu, 10 Aug 2023 12:29:10 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, stable@vger.kernel.org
-Subject: Re: [PATCH net 0/5] Netfilter fixes for net
-Message-ID: <ZNS79p44qv1zpl+X@calendula>
-References: <20230810070830.24064-1-pablo@netfilter.org>
- <2023081006-nurture-landside-fb56@gregkh>
+        Thu, 10 Aug 2023 07:23:45 -0400
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5906268A
+        for <netfilter-devel@vger.kernel.org>; Thu, 10 Aug 2023 04:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+        s=mail2022; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=xctmncFJpYrEaW9bdO94qzbXqF1dszHE5/pt/S8NH4s=; b=SY/xAgbri8LLAeBlZ0bs/lC9t1
+        LjrDtrUNEAbI//WZi9s1GQO3U0rE8u2QPrTrvqFJJd9JEqPiCsGeYo7Sif4icOsDfBgJpLf6S/vzr
+        hEkC+FMhVPhV3yb5TNvrTCDIUoepFbgVBT/yDNCx/1Zm5Ed91KhzLZCOrPV3WF6V9st97omWfEgzY
+        Agg/ht8BN+2moN4iGpPya4+VHzKpg5EP3fk5vqB9rD474bEQh+CdX0qyR3DPjNiBYSEMvV1KnDpMB
+        IF6WdUIvlp6iBSf64DeHg51KMbFNQbaZ50MV48gbFLnOgDytyTpjRuCzOhsihHHo6PmkZ5akffMSz
+        fxTVvSgA==;
+Received: from localhost ([::1] helo=xic)
+        by orbyte.nwl.cc with esmtp (Exim 4.94.2)
+        (envelope-from <phil@nwl.cc>)
+        id 1qU3lT-0004Nw-8m
+        for netfilter-devel@vger.kernel.org; Thu, 10 Aug 2023 13:23:39 +0200
+From:   Phil Sutter <phil@nwl.cc>
+To:     netfilter-devel@vger.kernel.org
+Subject: [iptables PATCH v2 0/3] Chain counter fixes here and there
+Date:   Thu, 10 Aug 2023 13:23:22 +0200
+Message-Id: <20230810112325.20630-1-phil@nwl.cc>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2023081006-nurture-landside-fb56@gregkh>
-X-Spam-Score: -1.9 (-)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 09:49:11AM +0200, Greg KH wrote:
-> On Thu, Aug 10, 2023 at 09:08:25AM +0200, Pablo Neira Ayuso wrote:
-> > Hi,
-> > 
-> > The following patchset contains Netfilter fixes for net.
-> > 
-> > The existing attempt to resolve races between control plane and GC work
-> > is error prone, as reported by Bien Pham <phamnnb@sea.com>, some places
-> > forgot to call nft_set_elem_mark_busy(), leading to double-deactivation
-> > of elements.
-> > 
-> > This series contains the following patches:
-> > 
-> > 1) Do not skip expired elements during walk otherwise elements might
-> >    never decrement the reference counter on data, leading to memleak.
-> > 
-> > 2) Add a GC transaction API to replace the former attempt to deal with
-> >    races between control plane and GC. GC worker sets on NFT_SET_ELEM_DEAD_BIT
-> >    on elements and it creates a GC transaction to remove the expired
-> >    elements, GC transaction could abort in case of interference with
-> >    control plane and retried later (GC async). Set backends such as
-> >    rbtree and pipapo also perform GC from control plane (GC sync), in
-> >    such case, element deactivation and removal is safe because mutex
-> >    is held then collected elements are released via call_rcu().
-> > 
-> > 3) Adapt existing set backends to use the GC transaction API.
-> > 
-> > 4) Update rhash set backend to set on _DEAD bit to report deleted
-> >    elements from datapath for GC.
-> > 
-> > 5) Remove old GC batch API and the NFT_SET_ELEM_BUSY_BIT.
-> > 
-> > Florian Westphal (1):
-> >   netfilter: nf_tables: don't skip expired elements during walk
-> > 
-> > Pablo Neira Ayuso (4):
-> >   netfilter: nf_tables: GC transaction API to avoid race with control plane
-> >   netfilter: nf_tables: adapt set backend to use GC transaction API
-> >   netfilter: nft_set_hash: mark set element as dead when deleting from packet path
-> >   netfilter: nf_tables: remove busy mark and gc batch API
-> > 
-> > Please, pull these changes from:
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git nf-23-08-10
-> > 
-> > Thanks.
-> > 
-> > ----------------------------------------------------------------
-> > 
-> > The following changes since commit c5ccff70501d92db445a135fa49cf9bc6b98c444:
-> > 
-> >   Merge branch 'net-sched-bind-logic-fixes-for-cls_fw-cls_u32-and-cls_route' (2023-07-31 20:10:39 -0700)
-> > 
-> > are available in the Git repository at:
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git tags/nf-23-08-10
-> > 
-> > for you to fetch changes up to a2dd0233cbc4d8a0abb5f64487487ffc9265beb5:
-> > 
-> >   netfilter: nf_tables: remove busy mark and gc batch API (2023-08-10 08:25:27 +0200)
-> > 
-> > ----------------------------------------------------------------
-> > netfilter pull request 23-08-10
-> > 
-> > ----------------------------------------------------------------
-> > Florian Westphal (1):
-> >       netfilter: nf_tables: don't skip expired elements during walk
-> > 
-> > Pablo Neira Ayuso (4):
-> >       netfilter: nf_tables: GC transaction API to avoid race with control plane
-> >       netfilter: nf_tables: adapt set backend to use GC transaction API
-> >       netfilter: nft_set_hash: mark set element as dead when deleting from packet path
-> >       netfilter: nf_tables: remove busy mark and gc batch API
-> > 
-> >  include/net/netfilter/nf_tables.h | 120 ++++++---------
-> >  net/netfilter/nf_tables_api.c     | 307 ++++++++++++++++++++++++++++++--------
-> >  net/netfilter/nft_set_hash.c      |  85 +++++++----
-> >  net/netfilter/nft_set_pipapo.c    |  66 +++++---
-> >  net/netfilter/nft_set_rbtree.c    | 146 ++++++++++--------
-> >  5 files changed, 476 insertions(+), 248 deletions(-)
-> 
-> <formletter>
-> 
-> This is not the correct way to submit patches for inclusion in the
-> stable kernel tree.  Please read:
->     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> for how to do this properly.
+Resending patch 2 after the test I created for it in patch 3 exposed the
+iptables-nft bug fixed in patch 1.
 
-I will re-submit this once this hit upstream.
+Phil Sutter (3):
+  nft: Create builtin chains with counters enabled
+  Revert "libiptc: fix wrong maptype of base chain counters on restore"
+  tests: shell: Test chain policy counter behaviour
 
-Thanks.
+ iptables/nft.c                                | 14 ++--
+ .../shell/testcases/chain/0007counters_0      | 78 +++++++++++++++++++
+ libiptc/libiptc.c                             |  2 +-
+ 3 files changed, 87 insertions(+), 7 deletions(-)
+ create mode 100755 iptables/tests/shell/testcases/chain/0007counters_0
+
+-- 
+2.40.0
+
