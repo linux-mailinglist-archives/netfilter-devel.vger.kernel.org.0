@@ -2,22 +2,22 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC30C77D602
-	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Aug 2023 00:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCBF77D608
+	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Aug 2023 00:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240286AbjHOWax (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 15 Aug 2023 18:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
+        id S240395AbjHOWa4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 15 Aug 2023 18:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240377AbjHOWas (ORCPT
+        with ESMTP id S240393AbjHOWaw (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 15 Aug 2023 18:30:48 -0400
+        Tue, 15 Aug 2023 18:30:52 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7D31BFF;
-        Tue, 15 Aug 2023 15:30:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742AC1BFF;
+        Tue, 15 Aug 2023 15:30:51 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1qW2Yl-0004c7-97; Wed, 16 Aug 2023 00:30:43 +0200
+        id 1qW2Yp-0004cY-Hu; Wed, 16 Aug 2023 00:30:47 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netdev@vger.kernel.org>
 Cc:     Paolo Abeni <pabeni@redhat.com>,
@@ -25,11 +25,10 @@ Cc:     Paolo Abeni <pabeni@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         <netfilter-devel@vger.kernel.org>,
-        Sishuai Gong <sishuai.system@gmail.com>,
-        Simon Horman <horms@kernel.org>, Julian Anastasov <ja@ssi.bg>
-Subject: [PATCH net 6/9] ipvs: fix racy memcpy in proc_do_sync_threshold
-Date:   Wed, 16 Aug 2023 00:29:56 +0200
-Message-ID: <20230815223011.7019-7-fw@strlen.de>
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH net 7/9] netfilter: nf_tables: fix GC transaction races with netns and netlink event exit path
+Date:   Wed, 16 Aug 2023 00:29:57 +0200
+Message-ID: <20230815223011.7019-8-fw@strlen.de>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230815223011.7019-1-fw@strlen.de>
 References: <20230815223011.7019-1-fw@strlen.de>
@@ -44,64 +43,114 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Sishuai Gong <sishuai.system@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-When two threads run proc_do_sync_threshold() in parallel,
-data races could happen between the two memcpy():
+Netlink event path is missing a synchronization point with GC
+transactions. Add GC sequence number update to netns release path and
+netlink event path, any GC transaction losing race will be discarded.
 
-Thread-1			Thread-2
-memcpy(val, valp, sizeof(val));
-				memcpy(valp, val, sizeof(val));
-
-This race might mess up the (struct ctl_table *) table->data,
-so we add a mutex lock to serialize them.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Link: https://lore.kernel.org/netdev/B6988E90-0A1E-4B85-BF26-2DAF6D482433@gmail.com/
-Signed-off-by: Sishuai Gong <sishuai.system@gmail.com>
-Acked-by: Simon Horman <horms@kernel.org>
-Acked-by: Julian Anastasov <ja@ssi.bg>
+Fixes: 5f68718b34a5 ("netfilter: nf_tables: GC transaction API to avoid race with control plane")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/ipvs/ip_vs_ctl.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/netfilter/nf_tables_api.c | 36 +++++++++++++++++++++++++++++++----
+ 1 file changed, 32 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index 62606fb44d02..4bb0d90eca1c 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -1876,6 +1876,7 @@ static int
- proc_do_sync_threshold(struct ctl_table *table, int write,
- 		       void *buffer, size_t *lenp, loff_t *ppos)
- {
-+	struct netns_ipvs *ipvs = table->extra2;
- 	int *valp = table->data;
- 	int val[2];
- 	int rc;
-@@ -1885,6 +1886,7 @@ proc_do_sync_threshold(struct ctl_table *table, int write,
- 		.mode = table->mode,
- 	};
- 
-+	mutex_lock(&ipvs->sync_mutex);
- 	memcpy(val, valp, sizeof(val));
- 	rc = proc_dointvec(&tmp, write, buffer, lenp, ppos);
- 	if (write) {
-@@ -1894,6 +1896,7 @@ proc_do_sync_threshold(struct ctl_table *table, int write,
- 		else
- 			memcpy(valp, val, sizeof(val));
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 6f31022cacc6..8ac4dd8be1a2 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -9739,6 +9739,22 @@ static void nft_set_commit_update(struct list_head *set_update_list)
  	}
-+	mutex_unlock(&ipvs->sync_mutex);
- 	return rc;
  }
  
-@@ -4321,6 +4324,7 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
- 	ipvs->sysctl_sync_threshold[0] = DEFAULT_SYNC_THRESHOLD;
- 	ipvs->sysctl_sync_threshold[1] = DEFAULT_SYNC_PERIOD;
- 	tbl[idx].data = &ipvs->sysctl_sync_threshold;
-+	tbl[idx].extra2 = ipvs;
- 	tbl[idx++].maxlen = sizeof(ipvs->sysctl_sync_threshold);
- 	ipvs->sysctl_sync_refresh_period = DEFAULT_SYNC_REFRESH_PERIOD;
- 	tbl[idx++].data = &ipvs->sysctl_sync_refresh_period;
++static unsigned int nft_gc_seq_begin(struct nftables_pernet *nft_net)
++{
++	unsigned int gc_seq;
++
++	/* Bump gc counter, it becomes odd, this is the busy mark. */
++	gc_seq = READ_ONCE(nft_net->gc_seq);
++	WRITE_ONCE(nft_net->gc_seq, ++gc_seq);
++
++	return gc_seq;
++}
++
++static void nft_gc_seq_end(struct nftables_pernet *nft_net, unsigned int gc_seq)
++{
++	WRITE_ONCE(nft_net->gc_seq, ++gc_seq);
++}
++
+ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ {
+ 	struct nftables_pernet *nft_net = nft_pernet(net);
+@@ -9824,9 +9840,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 
+ 	WRITE_ONCE(nft_net->base_seq, base_seq);
+ 
+-	/* Bump gc counter, it becomes odd, this is the busy mark. */
+-	gc_seq = READ_ONCE(nft_net->gc_seq);
+-	WRITE_ONCE(nft_net->gc_seq, ++gc_seq);
++	gc_seq = nft_gc_seq_begin(nft_net);
+ 
+ 	/* step 3. Start new generation, rules_gen_X now in use. */
+ 	net->nft.gencursor = nft_gencursor_next(net);
+@@ -10039,7 +10053,7 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 	nf_tables_gen_notify(net, skb, NFT_MSG_NEWGEN);
+ 	nf_tables_commit_audit_log(&adl, nft_net->base_seq);
+ 
+-	WRITE_ONCE(nft_net->gc_seq, ++gc_seq);
++	nft_gc_seq_end(nft_net, gc_seq);
+ 	nf_tables_commit_release(net);
+ 
+ 	return 0;
+@@ -11040,6 +11054,7 @@ static int nft_rcv_nl_event(struct notifier_block *this, unsigned long event,
+ 	struct net *net = n->net;
+ 	unsigned int deleted;
+ 	bool restart = false;
++	unsigned int gc_seq;
+ 
+ 	if (event != NETLINK_URELEASE || n->protocol != NETLINK_NETFILTER)
+ 		return NOTIFY_DONE;
+@@ -11047,6 +11062,9 @@ static int nft_rcv_nl_event(struct notifier_block *this, unsigned long event,
+ 	nft_net = nft_pernet(net);
+ 	deleted = 0;
+ 	mutex_lock(&nft_net->commit_mutex);
++
++	gc_seq = nft_gc_seq_begin(nft_net);
++
+ 	if (!list_empty(&nf_tables_destroy_list))
+ 		rcu_barrier();
+ again:
+@@ -11069,6 +11087,8 @@ static int nft_rcv_nl_event(struct notifier_block *this, unsigned long event,
+ 		if (restart)
+ 			goto again;
+ 	}
++	nft_gc_seq_end(nft_net, gc_seq);
++
+ 	mutex_unlock(&nft_net->commit_mutex);
+ 
+ 	return NOTIFY_DONE;
+@@ -11106,12 +11126,20 @@ static void __net_exit nf_tables_pre_exit_net(struct net *net)
+ static void __net_exit nf_tables_exit_net(struct net *net)
+ {
+ 	struct nftables_pernet *nft_net = nft_pernet(net);
++	unsigned int gc_seq;
+ 
+ 	mutex_lock(&nft_net->commit_mutex);
++
++	gc_seq = nft_gc_seq_begin(nft_net);
++
+ 	if (!list_empty(&nft_net->commit_list) ||
+ 	    !list_empty(&nft_net->module_list))
+ 		__nf_tables_abort(net, NFNL_ABORT_NONE);
++
+ 	__nft_release_tables(net);
++
++	nft_gc_seq_end(nft_net, gc_seq);
++
+ 	mutex_unlock(&nft_net->commit_mutex);
+ 	WARN_ON_ONCE(!list_empty(&nft_net->tables));
+ 	WARN_ON_ONCE(!list_empty(&nft_net->module_list));
 -- 
 2.41.0
 
