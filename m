@@ -2,34 +2,34 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5283177D60B
-	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Aug 2023 00:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC30C77D602
+	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Aug 2023 00:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240400AbjHOWa4 (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 15 Aug 2023 18:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41946 "EHLO
+        id S240286AbjHOWax (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 15 Aug 2023 18:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240373AbjHOWam (ORCPT
+        with ESMTP id S240377AbjHOWas (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 15 Aug 2023 18:30:42 -0400
+        Tue, 15 Aug 2023 18:30:48 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510DA1BFF;
-        Tue, 15 Aug 2023 15:30:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7D31BFF;
+        Tue, 15 Aug 2023 15:30:47 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1qW2Yg-0004be-Vk; Wed, 16 Aug 2023 00:30:39 +0200
+        id 1qW2Yl-0004c7-97; Wed, 16 Aug 2023 00:30:43 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netdev@vger.kernel.org>
 Cc:     Paolo Abeni <pabeni@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        <netfilter-devel@vger.kernel.org>, Xin Long <lucien.xin@gmail.com>,
-        Paolo Valerio <pvalerio@redhat.com>,
-        Simon Horman <horms@kernel.org>
-Subject: [PATCH net 5/9] netfilter: set default timeout to 3 secs for sctp shutdown send and recv state
-Date:   Wed, 16 Aug 2023 00:29:55 +0200
-Message-ID: <20230815223011.7019-6-fw@strlen.de>
+        <netfilter-devel@vger.kernel.org>,
+        Sishuai Gong <sishuai.system@gmail.com>,
+        Simon Horman <horms@kernel.org>, Julian Anastasov <ja@ssi.bg>
+Subject: [PATCH net 6/9] ipvs: fix racy memcpy in proc_do_sync_threshold
+Date:   Wed, 16 Aug 2023 00:29:56 +0200
+Message-ID: <20230815223011.7019-7-fw@strlen.de>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230815223011.7019-1-fw@strlen.de>
 References: <20230815223011.7019-1-fw@strlen.de>
@@ -44,86 +44,64 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Sishuai Gong <sishuai.system@gmail.com>
 
-In SCTP protocol, it is using the same timer (T2 timer) for SHUTDOWN and
-SHUTDOWN_ACK retransmission. However in sctp conntrack the default timeout
-value for SCTP_CONNTRACK_SHUTDOWN_ACK_SENT state is 3 secs while it's 300
-msecs for SCTP_CONNTRACK_SHUTDOWN_SEND/RECV state.
+When two threads run proc_do_sync_threshold() in parallel,
+data races could happen between the two memcpy():
 
-As Paolo Valerio noticed, this might cause unwanted expiration of the ct
-entry. In my test, with 1s tc netem delay set on the NAT path, after the
-SHUTDOWN is sent, the sctp ct entry enters SCTP_CONNTRACK_SHUTDOWN_SEND
-state. However, due to 300ms (too short) delay, when the SHUTDOWN_ACK is
-sent back from the peer, the sctp ct entry has expired and been deleted,
-and then the SHUTDOWN_ACK has to be dropped.
+Thread-1			Thread-2
+memcpy(val, valp, sizeof(val));
+				memcpy(valp, val, sizeof(val));
 
-Also, it is confusing these two sysctl options always show 0 due to all
-timeout values using sec as unit:
+This race might mess up the (struct ctl_table *) table->data,
+so we add a mutex lock to serialize them.
 
-  net.netfilter.nf_conntrack_sctp_timeout_shutdown_recd = 0
-  net.netfilter.nf_conntrack_sctp_timeout_shutdown_sent = 0
-
-This patch fixes it by also using 3 secs for sctp shutdown send and recv
-state in sctp conntrack, which is also RTO.initial value in SCTP protocol.
-
-Note that the very short time value for SCTP_CONNTRACK_SHUTDOWN_SEND/RECV
-was probably used for a rare scenario where SHUTDOWN is sent on 1st path
-but SHUTDOWN_ACK is replied on 2nd path, then a new connection started
-immediately on 1st path. So this patch also moves from SHUTDOWN_SEND/RECV
-to CLOSE when receiving INIT in the ORIGINAL direction.
-
-Fixes: 9fb9cbb1082d ("[NETFILTER]: Add nf_conntrack subsystem.")
-Reported-by: Paolo Valerio <pvalerio@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Link: https://lore.kernel.org/netdev/B6988E90-0A1E-4B85-BF26-2DAF6D482433@gmail.com/
+Signed-off-by: Sishuai Gong <sishuai.system@gmail.com>
+Acked-by: Simon Horman <horms@kernel.org>
+Acked-by: Julian Anastasov <ja@ssi.bg>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- Documentation/networking/nf_conntrack-sysctl.rst | 4 ++--
- net/netfilter/nf_conntrack_proto_sctp.c          | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ net/netfilter/ipvs/ip_vs_ctl.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/networking/nf_conntrack-sysctl.rst b/Documentation/networking/nf_conntrack-sysctl.rst
-index 8b1045c3b59e..c383a394c665 100644
---- a/Documentation/networking/nf_conntrack-sysctl.rst
-+++ b/Documentation/networking/nf_conntrack-sysctl.rst
-@@ -178,10 +178,10 @@ nf_conntrack_sctp_timeout_established - INTEGER (seconds)
- 	Default is set to (hb_interval * path_max_retrans + rto_max)
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index 62606fb44d02..4bb0d90eca1c 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -1876,6 +1876,7 @@ static int
+ proc_do_sync_threshold(struct ctl_table *table, int write,
+ 		       void *buffer, size_t *lenp, loff_t *ppos)
+ {
++	struct netns_ipvs *ipvs = table->extra2;
+ 	int *valp = table->data;
+ 	int val[2];
+ 	int rc;
+@@ -1885,6 +1886,7 @@ proc_do_sync_threshold(struct ctl_table *table, int write,
+ 		.mode = table->mode,
+ 	};
  
- nf_conntrack_sctp_timeout_shutdown_sent - INTEGER (seconds)
--	default 0.3
-+	default 3
++	mutex_lock(&ipvs->sync_mutex);
+ 	memcpy(val, valp, sizeof(val));
+ 	rc = proc_dointvec(&tmp, write, buffer, lenp, ppos);
+ 	if (write) {
+@@ -1894,6 +1896,7 @@ proc_do_sync_threshold(struct ctl_table *table, int write,
+ 		else
+ 			memcpy(valp, val, sizeof(val));
+ 	}
++	mutex_unlock(&ipvs->sync_mutex);
+ 	return rc;
+ }
  
- nf_conntrack_sctp_timeout_shutdown_recd - INTEGER (seconds)
--	default 0.3
-+	default 3
- 
- nf_conntrack_sctp_timeout_shutdown_ack_sent - INTEGER (seconds)
- 	default 3
-diff --git a/net/netfilter/nf_conntrack_proto_sctp.c b/net/netfilter/nf_conntrack_proto_sctp.c
-index 91eacc9b0b98..b6bcc8f2f46b 100644
---- a/net/netfilter/nf_conntrack_proto_sctp.c
-+++ b/net/netfilter/nf_conntrack_proto_sctp.c
-@@ -49,8 +49,8 @@ static const unsigned int sctp_timeouts[SCTP_CONNTRACK_MAX] = {
- 	[SCTP_CONNTRACK_COOKIE_WAIT]		= 3 SECS,
- 	[SCTP_CONNTRACK_COOKIE_ECHOED]		= 3 SECS,
- 	[SCTP_CONNTRACK_ESTABLISHED]		= 210 SECS,
--	[SCTP_CONNTRACK_SHUTDOWN_SENT]		= 300 SECS / 1000,
--	[SCTP_CONNTRACK_SHUTDOWN_RECD]		= 300 SECS / 1000,
-+	[SCTP_CONNTRACK_SHUTDOWN_SENT]		= 3 SECS,
-+	[SCTP_CONNTRACK_SHUTDOWN_RECD]		= 3 SECS,
- 	[SCTP_CONNTRACK_SHUTDOWN_ACK_SENT]	= 3 SECS,
- 	[SCTP_CONNTRACK_HEARTBEAT_SENT]		= 30 SECS,
- };
-@@ -105,7 +105,7 @@ static const u8 sctp_conntracks[2][11][SCTP_CONNTRACK_MAX] = {
- 	{
- /*	ORIGINAL	*/
- /*                  sNO, sCL, sCW, sCE, sES, sSS, sSR, sSA, sHS */
--/* init         */ {sCL, sCL, sCW, sCE, sES, sSS, sSR, sSA, sCW},
-+/* init         */ {sCL, sCL, sCW, sCE, sES, sCL, sCL, sSA, sCW},
- /* init_ack     */ {sCL, sCL, sCW, sCE, sES, sSS, sSR, sSA, sCL},
- /* abort        */ {sCL, sCL, sCL, sCL, sCL, sCL, sCL, sCL, sCL},
- /* shutdown     */ {sCL, sCL, sCW, sCE, sSS, sSS, sSR, sSA, sCL},
+@@ -4321,6 +4324,7 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
+ 	ipvs->sysctl_sync_threshold[0] = DEFAULT_SYNC_THRESHOLD;
+ 	ipvs->sysctl_sync_threshold[1] = DEFAULT_SYNC_PERIOD;
+ 	tbl[idx].data = &ipvs->sysctl_sync_threshold;
++	tbl[idx].extra2 = ipvs;
+ 	tbl[idx++].maxlen = sizeof(ipvs->sysctl_sync_threshold);
+ 	ipvs->sysctl_sync_refresh_period = DEFAULT_SYNC_REFRESH_PERIOD;
+ 	tbl[idx++].data = &ipvs->sysctl_sync_refresh_period;
 -- 
 2.41.0
 
