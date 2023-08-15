@@ -2,32 +2,33 @@ Return-Path: <netfilter-devel-owner@vger.kernel.org>
 X-Original-To: lists+netfilter-devel@lfdr.de
 Delivered-To: lists+netfilter-devel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 297F677D600
-	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Aug 2023 00:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2162A77D603
+	for <lists+netfilter-devel@lfdr.de>; Wed, 16 Aug 2023 00:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240361AbjHOWay (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
-        Tue, 15 Aug 2023 18:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47624 "EHLO
+        id S235300AbjHOWaw (ORCPT <rfc822;lists+netfilter-devel@lfdr.de>);
+        Tue, 15 Aug 2023 18:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240303AbjHOWaa (ORCPT
+        with ESMTP id S240320AbjHOWae (ORCPT
         <rfc822;netfilter-devel@vger.kernel.org>);
-        Tue, 15 Aug 2023 18:30:30 -0400
+        Tue, 15 Aug 2023 18:30:34 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271691BFF;
-        Tue, 15 Aug 2023 15:30:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAAF1FEE;
+        Tue, 15 Aug 2023 15:30:34 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1qW2YU-0004aK-4l; Wed, 16 Aug 2023 00:30:26 +0200
+        id 1qW2YY-0004ak-Cn; Wed, 16 Aug 2023 00:30:30 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     <netdev@vger.kernel.org>
 Cc:     Paolo Abeni <pabeni@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        <netfilter-devel@vger.kernel.org>
-Subject: [PATCH net 2/9] netfilter: nf_tables: fix kdoc warnings after gc rework
-Date:   Wed, 16 Aug 2023 00:29:52 +0200
-Message-ID: <20230815223011.7019-3-fw@strlen.de>
+        <netfilter-devel@vger.kernel.org>,
+        lonial con <kongln9170@gmail.com>
+Subject: [PATCH net 3/9] netfilter: nf_tables: deactivate catchall elements in next generation
+Date:   Wed, 16 Aug 2023 00:29:53 +0200
+Message-ID: <20230815223011.7019-4-fw@strlen.de>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230815223011.7019-1-fw@strlen.de>
 References: <20230815223011.7019-1-fw@strlen.de>
@@ -42,47 +43,41 @@ Precedence: bulk
 List-ID: <netfilter-devel.vger.kernel.org>
 X-Mailing-List: netfilter-devel@vger.kernel.org
 
-Jakub Kicinski says:
-  We've got some new kdoc warnings here:
-  net/netfilter/nft_set_pipapo.c:1557: warning: Function parameter or member '_set' not described in 'pipapo_gc'
-  net/netfilter/nft_set_pipapo.c:1557: warning: Excess function parameter 'set' description in 'pipapo_gc'
-  include/net/netfilter/nf_tables.h:577: warning: Function parameter or member 'dead' not described in 'nft_set'
+When flushing, individual set elements are disabled in the next
+generation via the ->flush callback.
 
-Fixes: 5f68718b34a5 ("netfilter: nf_tables: GC transaction API to avoid race with control plane")
-Fixes: f6c383b8c31a ("netfilter: nf_tables: adapt set backend to use GC transaction API")
-Reported-by: Jakub Kicinski <kuba@kernel.org>
-Closes: https://lore.kernel.org/netdev/20230810104638.746e46f1@kernel.org/
+Catchall elements are not disabled.  This is incorrect and may lead to
+double-deactivations of catchall elements which then results in memory
+leaks:
+
+WARNING: CPU: 1 PID: 3300 at include/net/netfilter/nf_tables.h:1172 nft_map_deactivate+0x549/0x730
+CPU: 1 PID: 3300 Comm: nft Not tainted 6.5.0-rc5+ #60
+RIP: 0010:nft_map_deactivate+0x549/0x730
+ [..]
+ ? nft_map_deactivate+0x549/0x730
+ nf_tables_delset+0xb66/0xeb0
+
+(the warn is due to nft_use_dec() detecting underflow).
+
+Fixes: aaa31047a6d2 ("netfilter: nftables: add catch-all set element support")
+Reported-by: lonial con <kongln9170@gmail.com>
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- include/net/netfilter/nf_tables.h | 1 +
- net/netfilter/nft_set_pipapo.c    | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
-index 35870858ddf2..e9ae567c037d 100644
---- a/include/net/netfilter/nf_tables.h
-+++ b/include/net/netfilter/nf_tables.h
-@@ -534,6 +534,7 @@ struct nft_set_elem_expr {
-  *	@expr: stateful expression
-  * 	@ops: set ops
-  * 	@flags: set flags
-+ *	@dead: set will be freed, never cleared
-  *	@genmask: generation mask
-  * 	@klen: key length
-  * 	@dlen: data length
-diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
-index 5fa12cfc7b84..f95b3844162e 100644
---- a/net/netfilter/nft_set_pipapo.c
-+++ b/net/netfilter/nft_set_pipapo.c
-@@ -1549,7 +1549,7 @@ static void nft_pipapo_gc_deactivate(struct net *net, struct nft_set *set,
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index c62227ae7746..6f31022cacc6 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -7091,6 +7091,7 @@ static int nft_set_catchall_flush(const struct nft_ctx *ctx,
+ 		ret = __nft_set_catchall_flush(ctx, set, &elem);
+ 		if (ret < 0)
+ 			break;
++		nft_set_elem_change_active(ctx->net, set, ext);
+ 	}
  
- /**
-  * pipapo_gc() - Drop expired entries from set, destroy start and end elements
-- * @set:	nftables API set representation
-+ * @_set:	nftables API set representation
-  * @m:		Matching data
-  */
- static void pipapo_gc(const struct nft_set *_set, struct nft_pipapo_match *m)
+ 	return ret;
 -- 
 2.41.0
 
